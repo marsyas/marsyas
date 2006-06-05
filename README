@@ -1,0 +1,75 @@
+Welcome to marsyas.
+
+MARSYAS is a software framework that was created as part of my
+research in Princeton University as a Phd graduate student. It is a
+collection of classes written in C++ and JAVA for various sound
+analysis and synthesis tasks. It started my first year in graduate school
+(1998) when I rewrote various tools that I had been using in order to
+make my life easier and also to code them the way I wanted them to be.
+
+This library is made by me for my own research purposes. Anyone who
+finds anything useful is welcome to use it, but I have no
+responsibility whatsoever. I will be happy to answer any questions and
+I will try to keep developing the library/toolkit. Until now
+development is guided by what my research needs and whenever I find
+some free time other stuff.
+
+The basic goal for MARSYAS has been to design a flexible and easily
+extensible system that allows rapid prototyping of audio
+applications. MARSYAS is released as free software under the GNU
+public licence hoping that people will actively contribute to its
+development. Please send bugs, comments, additions, problems and
+anything else to gtzan@@cs.cmu.edu. This version 0.2 is the third 
+major rewrite of Marsyas and is still in experimental stage. Feedback 
+is more than welcome. 
+
+
+MARSYAS is free software. Please see the file COPYING for details.
+For documentation, please see the files in the doc subdirectory.
+A good place to start is the marsyas 0.2 tutorial. 
+
+
+Building and Installation instructions
+--------------------------------------
+For generic building and installation instructions 
+please see the INSTALL file. To install as a user 
+do (change /home/gtzan/ to your home directory) 
+
+./configure --prefix =/home/gtzan
+make 
+make install
+
+
+The marsyas executables will be installed in 
+~/bin and the data file in ~/share/marsyas/. 
+To run your executables anywhere add 
+(your home directory)/bin to your PATH. 
+
+./configure without --pref will install 
+marsyas in the default system location. 
+(/usr/local in my system). As a user 
+you will not be able to add data files 
+unless you make /usr/local/share/marsyas 
+writable by users. (this can be achieved
+by executing as root: 
+chmod a+wx -R /usr/local/share/marsyas/) 
+
+
+Building and Installation instructions under OS X
+-------------------------------------------------
+
+Do 
+./configure 
+make 
+make install 
+
+
+
+Building and Installation instructions under Windows 
+with Visual Studio 6
+--------------------------------------------------
+
+Goto the directory marsyasVisualStudio and 
+there is a project file for compiling Marsyas
+
+

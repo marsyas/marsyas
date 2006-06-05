@@ -1,0 +1,82 @@
+/*
+** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+**  
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+** 
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+** 
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software 
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
+/** 
+    \class Plucked
+    \brief Multiply input realvec with gain
+
+   Simple MarSystem example. Just multiply the values of the input realvec
+with gain and put them in the output vector. This object can be used 
+as a prototype template for building more complicated MarSystems. 
+*/
+
+#ifndef MARSYAS_PLUCKED_H
+#define MARSYAS_PLUCKED_H
+
+
+#include "MarSystem.h"	
+#include "Gain.h" 
+
+
+class Plucked: public MarSystem
+{
+private: 
+  void addControls();
+  realvec delayline1_;
+  realvec pickDelayLine_;
+  realvec noise_;
+  
+  
+  real delaylineSize_;
+  real a_;
+  real b_;
+  real blend_;
+  real loss_;
+  real s_;
+  real d_; //the delay of the all pass filter dependant on the freq
+  real g_; //coefficient of all pass filter g_=-(1-d)/d+1)
+  real c_;//output of inverse comb filt (for pick pos)
+
+  real noteon_;
+
+  natural wp_;
+  natural wpp_;
+  
+  natural rp_;
+  
+  natural pointer1_;
+  natural pointer2_;
+  natural pointer3_;
+  natural picklength_;
+  natural N_;
+  natural p;
+  MarSystem* gain_;
+  realvec gout_;
+  
+  
+	
+public:
+  Plucked(std::string name);
+  ~Plucked();
+  MarSystem* clone() const;  
+  
+  void update();
+  void process(realvec& in, realvec& out);
+};
+
+#endif

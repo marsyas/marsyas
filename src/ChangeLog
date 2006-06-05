@@ -1,0 +1,5 @@
+2005-02-05    <gtzan@epikouros.cs.uvic.ca>
+
+	* sfplay.cpp (sfplay): changed to use the new CollectionFileSource
+	embedded in SoundFileSource. Seems to be working 
+

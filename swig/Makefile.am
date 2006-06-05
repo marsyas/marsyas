@@ -1,0 +1,3 @@
+SUBDIRS = @SWIG_SUBDIRS@
+DIST_SUBDIRS = ruby python
+EXTRA_DIST = common

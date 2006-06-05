@@ -1,0 +1,17 @@
+Newest towards the top.
+
+--- 6 / 03 / 06 ---
+Added documentation for common/ and ruby/ files (python users will just have to look at the Ruby equivalents). Built 0.3.5 and fixed Ruby's installer to support --prefix.
+
+--- 6 / 02 / 06 ---
+I'm looking to submit the current version 0.3.3 for the marsyas project. Before this can be done, I have to put more content in the documentation than what was created by the command "touch" (AKA nada). Any older entries than this have actually been written after this one, but refer to stuff I did earlier.
+
+When I submit this to the project I will bump up the version (probably to 0.3.5). Also a python bindings set based on the same SWIG code has been generated. It compiles, but there are no guarentees on how well it will actually run. Plus it misses some of the Ruby dynamicness.
+
+--- 6 / 01 / 06 ---
+Met with George (y'all know him right?), and showed him my "stuff". He told me that if I got together a complete package (working code + documentation) he would consider adding it to the main marsyas distribution for the release of marsyas-0.2.6.
+
+I first gotta come up with a better build system than my hacked together makefiles though.
+
+--- 5 / 30 / 06 ---
+Decided to put my recently learned SWIG knowledge to good use. I am making a SWIG binding of marysas for Ruby. Maybe later I'll add support for other languages.

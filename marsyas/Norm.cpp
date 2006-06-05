@@ -1,0 +1,108 @@
+/*
+** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+**  
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+** 
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+** 
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software 
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
+/** 
+    \class Norm
+    \brief Norm: normalize input row vectors
+
+    Normalize by subtracting mean and dividing by standard deviation
+*/
+
+
+#include "Norm.h"
+using namespace std;
+
+
+
+Norm::Norm(string name)
+{
+  type_ = "Norm";
+  name_ = name;
+  addControls();
+}
+
+
+Norm::~Norm()
+{
+}
+
+
+MarSystem* 
+Norm::clone() const 
+{
+  return new Norm(*this);
+}
+
+void 
+Norm::addControls()
+{
+  addDefaultControls();
+}
+
+
+void
+Norm::update()
+{
+  MRSDIAG("Norm.cpp - Norm:update");
+  
+  setctrl("natural/onSamples", getctrl("natural/inSamples"));
+  setctrl("natural/onObservations", getctrl("natural/inObservations"));
+  setctrl("real/osrate", getctrl("real/israte"));
+  defaultUpdate();
+}
+
+
+void 
+Norm::process(realvec& in, realvec& out)
+{
+  
+  checkFlow(in,out);
+  realvec row(inSamples_);
+  real mean;
+  real std;
+  
+
+  for (o=0; o < inObservations_; o++)
+    {
+      // calculate the mean and standard deviation 
+      // of each row 
+      for (t = 0; t < inSamples_; t++)
+	row(t) = in(o,t);
+      mean = row.mean();
+      std =  row.std();
+      
+      for (t = 0; t < inSamples_; t++)
+	{
+	  // Scale to -1.0 1.0 audio range
+	  out(o,t) = (real)(0.05 * ((in(o,t) - mean) / std)); 
+	  
+	}
+    }
+  
+  
+}
+
+
+
+
+
+
+
+	
+
+	

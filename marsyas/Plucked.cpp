@@ -1,0 +1,195 @@
+/*
+** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+**  
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+** 
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+** 
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software 
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
+/** 
+    \class Plucked
+    \brief Multiply input realvec with gain
+
+   Implementation of the Karplus_Strong 1D Digital Waveguide Model. 
+   http://ccrma.stanford.edu/~jos/SimpleStrings/Karplus_Strong_Algorithm.html 
+   With extensions proposed by Jaffe and Smith: Blend Factor, Decay, and Stretch Factor.
+*/
+
+
+
+#include "Plucked.h"
+using namespace std;
+
+Plucked::Plucked(string name)
+{
+  type_ = "Plucked";
+  name_ = name; 
+  pointer1_ = 0;
+  pointer2_ = 0;
+  pointer3_ = 0;
+  a_ = 0;
+  b_ = 0;
+  noteon_ = 0.0;
+  delaylineSize_ = 0;
+  gain_ = NULL;
+  
+  addControls();
+  
+}
+
+Plucked::~Plucked()
+{
+  delete gain_;
+}
+
+MarSystem* 
+Plucked::clone() const 
+{
+  return new Plucked(*this);
+}
+
+void 
+Plucked::addControls()
+{
+  addDefaultControls();
+  addctrl("real/frequency", 100.0);
+  addctrl("real/pluckpos", 0.5);
+  addctrl("real/nton", 0.5);
+  addctrl("real/loss",1.0);
+  addctrl("real/stretch",0.2);
+  setctrlState("real/frequency", true);
+  setctrlState("real/nton", true);
+  setctrlState("real/loss", true);
+}
+
+
+void
+Plucked::update()
+{
+  MRSDIAG("Plucked.cpp - Plucked:update");
+  
+  setctrl("natural/onSamples", getctrl("natural/inSamples"));
+  setctrl("natural/onObservations", getctrl("natural/inObservations"));
+  setctrl("real/osrate", getctrl("real/israte"));
+
+
+  gain_ = new Gain("pluckedGain");
+  gain_->updctrl("natural/inSamples", getctrl("natural/inSamples"));
+  gain_->updctrl("natural/inSamples", getctrl("natural/inSamples"));
+  gain_->updctrl("real/israte", getctrl("real/israte"));
+  gain_->updctrl("real/gain", 2.0);
+  
+  
+  gout_.create(gain_->getctrl("natural/inObservations").toNatural(), 
+	       gain_->getctrl("natural/inSamples").toNatural());
+  
+  
+  
+  real freq = getctrl("real/frequency").toReal();
+  real pos = getctrl("real/pluckpos").toReal();
+  noteon_ = getctrl("real/nton").toReal();
+
+  loss_ = getctrl("real/loss").toReal();  
+
+  
+  s_ = getctrl("real/stretch").toReal();
+
+  // loweset frequency on a piano is 27.5Hz ... 22050/27.5 ~= 802*2 for commuted
+  // this is the longest delay line required
+  
+  if (delaylineSize_ == 0) 
+  {
+    delaylineSize_ = 2048;
+    noise_.create((natural)delaylineSize_);
+    delayline1_.create((natural)delaylineSize_);
+    pickDelayLine_.create((natural)delaylineSize_);
+    
+    for (t = 0; t < delaylineSize_; t++)
+      {
+	noise_(t) = (real)(rand() / (RAND_MAX + 1.0) -0.5);
+      }
+    
+  }
+  
+  if (noteon_ > 0)
+    {		
+      
+      a_ = 0;
+      d_ = 2*22050/freq;
+      N_ = (natural)floor(d_);
+      g_=-(-1+d_)/(-d_-1);//for all pass implementation 
+      picklength_= (natural)floor(N_*pos);//for inverse comb implementation
+      
+      
+      for (t = 0; t < N_; t++)
+	{
+	  pickDelayLine_(0)=noise_(t);
+	  delayline1_(t) = noise_(t)+ (real)0.1 * pickDelayLine_(picklength_-1);
+	  
+	  
+	  //shift the pick delayline to the right 1 cell
+	  for(p=0; p<=picklength_-2; p++)
+	    pickDelayLine_(picklength_-1-p) = pickDelayLine_(picklength_-1-p-1);
+	  
+	  
+	}
+      wp_ = 1;
+      wpp_ = 0;
+      rp_ = N_-1;
+      
+    }	
+  defaultUpdate();
+}
+
+
+void 
+Plucked::process(realvec &in, realvec &out)
+{
+  checkFlow(in,out);
+
+
+  if (noteon_ > 0)
+    {
+      for (t = 0; t < inSamples_; t++)
+	{
+	  // wp holds the current sample
+	  // wpp holds the previous sample
+	  a_ = delayline1_(wp_);
+	  b_ = delayline1_(wpp_);
+	  
+	  // rp_ holds the sample at delay N_ 
+	  delayline1_(rp_) =loss_*((1-s_)*a_ + s_* b_);
+
+	  rp_ = (rp_ + +1)  %N_;
+	  wp_ = (wp_ + 1)   %N_;
+	  wpp_ = (wpp_ + 1) %N_;
+	  
+
+	  
+	  gout_(0,t) = a_;
+	  
+	}
+    }
+  
+  gain_->process(gout_, out);
+  
+
+}
+
+
+
+
+
+
+
+	

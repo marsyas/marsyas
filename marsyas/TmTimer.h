@@ -1,0 +1,72 @@
+/*
+** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.uvic.ca>
+**  
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+** 
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+** 
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software 
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
+/**
+   \class Timer
+   \brief Abstract Timer
+
+*/
+
+#ifndef MARSYAS_TM_TIMER_H
+#define MARSYAS_TM_TIMER_H
+
+#include "MarControlValue.h"
+
+#include <iostream>
+#include <string> 
+
+class Scheduler;
+
+class TmTimer {
+protected:
+    std::string type_;		// Type of MarSystem
+    std::string name_;		// Name of instance
+
+    unsigned long cur_time_;
+
+    natural granularity_;
+    natural next_trigger_;
+
+protected:
+    void init();
+
+public:
+    // Constructors 
+    TmTimer();
+    TmTimer(std::string name);
+    virtual ~TmTimer();
+
+    virtual std::string getName();
+    virtual void setName(std::string name);
+    virtual TmTimer* clone()=0;
+
+    virtual void setScheduler(Scheduler* s)=0;
+    void setGranularity(natural g);
+    natural getTime();
+    void tick();
+
+    virtual natural readTimeSrc()=0;
+    virtual void trigger()=0;
+    virtual natural intervalsize(std::string interval)=0;
+
+    // the usual stream IO 
+//    friend ostream& operator<<(ostream&, Scheduler&);
+//    friend istream& operator>>(istream&, Scheduler&);
+};
+
+#endif

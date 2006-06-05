@@ -1,0 +1,123 @@
+
+
+
+
+#include <stdio.h>
+
+#include "Collection.h"
+#include "MarSystemManager.h"  
+#include "CommandLineOptions.h"
+
+#include <sstream> 
+using namespace std;
+
+
+CommandLineOptions cmd_options;
+
+int helpopt;
+int usageopt;
+
+
+
+
+void 
+printUsage(string progName)
+{
+  MRSDIAG("sfinfo.cpp - printUsage");
+  cerr << "Usage : " << progName << "file1 file2 file3" << endl;
+  cerr << endl;
+  cerr << "where file1, ..., fileN are sound files in a MARSYAS supported format" << endl;
+  exit(1);
+}
+
+void 
+printHelp(string progName)
+{
+  MRSDIAG("sfinfo.cpp - printHelp");
+  cerr << "sfinfo, MARSYAS, Copyright George Tzanetakis " << endl;
+  cerr << "--------------------------------------------" << endl;
+  cerr << "Prints information about the sound files provided as arguments " << endl;
+  cerr << endl;
+  cerr << "Usage : " << progName << "[-c collection] file1 file2 file3" << endl;
+  cerr << endl;
+  cerr << "where file1, ..., fileN are sound files in a Marsyas supported format" << endl;
+  cerr << "Help Options:" << endl;
+  cerr << "-u --usage      : display short usage info" << endl;
+  cerr << "-h --help       : display this information " << endl;
+  exit(1);
+}
+
+
+
+void sfinfo(vector<string> soundfiles)
+{
+
+  MRSDIAG("sfinfo.cpp - sfinfo");
+  MarSystemManager mng;
+  MarSystem* src = mng.create("SoundFileSource", "src");
+
+  vector<string>::iterator sfi;  
+  for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
+    {
+      string sfName = *sfi;
+      src->updctrl("string/filename", sfName);
+      
+      if (src == NULL) 
+	{
+	  string errmsg = "Skipping file: " + sfName + " (problem with reading)";
+	  MRSWARN(errmsg);
+	}
+      else 
+	{
+	  cout << endl << (*src) << endl; 
+	}
+    }
+  
+  delete src;
+}
+
+
+void 
+initOptions()
+{
+  cmd_options.addBoolOption("help", "h", false);
+  cmd_options.addBoolOption("usage", "u", false);
+}
+
+void 
+loadOptions()
+{
+  helpopt = cmd_options.getBoolOption("help");
+  usageopt = cmd_options.getBoolOption("usage");
+}
+
+
+
+int
+main(int argc, const char **argv)
+{
+  MRSDIAG("sfinfo.cpp - main");
+
+  string progName = argv[0];  
+  progName = progName.erase(0,3);
+  
+  if (argc == 1)
+    printUsage(progName);
+  
+  initOptions();
+  cmd_options.readOptions(argc,argv);
+  loadOptions();
+  
+  vector<string> soundfiles = cmd_options.getRemaining();
+  
+  if (helpopt) 
+    printHelp(progName);
+  
+  if (usageopt)
+    printUsage(progName);
+
+  
+  sfinfo(soundfiles);
+
+  exit(1);
+}

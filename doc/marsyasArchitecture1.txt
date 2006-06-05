@@ -1,0 +1,5 @@
+In the html and pdf versions of the documentation 
+this is a figure. I don't think any of those 
+work for info. 
+
+

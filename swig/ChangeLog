@@ -1,0 +1,37 @@
+2006-06-03	<carlosc@uvic.ca>
+
+	* marsyas-swig/ruby : Added comment to *.i & *.rb files. Version (0.3.5)
+
+	* configure.ac : Fixed ruby install variables to use prefix.
+
+2006-06-02	<carlosc@uvic.ca>
+	
+	* marsyas-swig (update): Added documentation for package. Version (0.3.4)
+	
+	* marsyas-swig : Version (0.3.3)
+
+	* marsyas-swig/ruby : Moved Ruby specific code to ruby subdir.
+
+	* marsyas-swig/common : Moved common marsyas.i to common subdir.
+
+	* marsyas-swig : Version (0.3.1)
+	
+	* marsyas-swig/python : Made python version & subdir.
+
+2006-06-01	<carlosc@uvic.ca>
+	
+	* marsyas-swig : Using autoconf/automake/libtool instead of trying to get mkmf
+	to work properly, and now can be build / installed with marsyas. Version (0.2.1)
+
+	* marsyas : Patched configure.in to allow for marsyas-swig as a
+	subfolder (swig) to be configured, built and installed as part of
+	marsyas.
+
+2006-05-30	<carlosc@uvic.ca>
+	
+	* marsyas-swig (update) : Completed special Ruby wrapper for *special* features
+	like automatic class & property generation. Bump version to (0.1.1).
+
+	* marsyas-swig : Initial version (0.0.1). Supports similar interface
+	to older pysyas, but written for Ruby. Uses Ruby's mkmf, but shouldn't
+	be installed.

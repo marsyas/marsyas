@@ -1,0 +1,106 @@
+/*
+** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.uvic.ca>
+**  
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+** 
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+** 
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software 
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
+/** 
+    \class MinArgMin
+    \brief Calculate k minimums and their positions
+
+    The output is : min1, argmin1, min2, argmin2, .... 
+*/
+
+
+#include "MinArgMin.h"
+using namespace std;
+
+MinArgMin::MinArgMin(string name)
+{
+  type_ = "MinArgMin";
+  name_ = name;
+  addControls();
+}
+
+
+MinArgMin::~MinArgMin()
+{
+}
+
+
+MarSystem* 
+MinArgMin::clone() const 
+{
+  return new MinArgMin(*this);
+}
+
+
+void
+MinArgMin::addControls()
+{
+  addDefaultControls();
+  addctrl("natural/nMinimums", (natural)1);
+}
+
+
+
+
+void
+MinArgMin::update()
+{
+  type_ = "MinArgMin";
+  natural k = getctrl("natural/nMinimums").toNatural();
+
+  setctrl("natural/onSamples",  2 * k);
+  setctrl("natural/onObservations", getctrl("natural/inObservations"));
+  setctrl("real/osrate", getctrl("real/israte"));  
+  defaultUpdate();
+}
+
+
+
+void 
+MinArgMin::process(realvec& in, realvec& out)
+{
+  out.setval(MAXREAL);
+  natural k = getctrl("natural/nMinimums").toNatural();
+  natural inSamples = getctrl("natural/inSamples").toNatural();
+  
+  
+  for (t=0; t < inSamples; t++)
+    {
+      // for all the current minimums 
+      for (ki=0; ki < k; ki++)
+	{
+	  if (in(0,t) < out(0,2*ki))
+	    {
+	      out(0,2*ki) = in(t);
+	      out(0,2*ki+1) = (real)t;
+	      break;	    
+	    }
+	}
+    }
+}
+
+
+
+
+
+
+	
+
+	
+
+	

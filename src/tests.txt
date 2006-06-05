@@ -1,0 +1,8 @@
+# test drive sfplay 
+
+sfplay ~/data/sound/formats/caravan22050_1.au 
+sfplay ~/data/sound/formats/caravan44100_2.au
+sfplay ~/data/sound/formats/caravan44100_2.wav
+sfplay ~/data/sound/formats/caravan22050_1.wav
+sfplay -l 3 ~/data/sound/formats/* 
+sfplay -s 3 -l 3 ~/data/sound/formats/* 

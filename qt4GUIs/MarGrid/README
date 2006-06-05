@@ -1,0 +1,27 @@
+
+MarGrid 
+--------
+
+Creates a grid where soundfiles can be placed 
+based on automatic feature extraction and content-based 
+similarity. Currently uses the Self-Organizing Map 
+MarSystem. Other methods will be investigated 
+in the future. 
+
+The code requires 
+that Qt 4.0 or later is installed in your system 
+and has only been tested on Linux systems. Of course 
+Marsyas 0.2.2 or later must also installed. 
+
+
+To compile: 
+
+qmake 
+make 
+MarGrid 
+
+Any comments/feedback/questions: 
+George Tzanetakis 
+http://www.cs.uvic.ca/~gtzan
+gtzan@cs.uvic.ca 
+
