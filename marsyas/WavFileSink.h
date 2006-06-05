@@ -74,6 +74,8 @@ private:
   std::string filename_;
   FILE *sfp_;
   long sfp_begin_;  
+  natural nChannels_;
+  
 
   unsigned long ByteSwapLong(unsigned long nLongNumber);
   unsigned short ByteSwapShort (unsigned short nValue);  

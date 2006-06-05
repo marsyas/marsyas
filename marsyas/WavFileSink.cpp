@@ -57,7 +57,6 @@ WavFileSink::addControls()
 {
   addDefaultControls();
   addctrl("natural/nChannels", (natural)1);
-  addctrl("natural/channel", (natural)0);
   addctrl("string/filename", "default");
   setctrlState("string/filename", true);
 }
@@ -88,13 +87,14 @@ WavFileSink::update()
   setctrl("real/osrate", getctrl("real/israte"));
 
 
-  natural nChannels = getctrl("natural/nChannels").toNatural();      
+  nChannels_ = getctrl("natural/inObservations").toNatural();      
+  setctrl("natural/nChannels", nChannels_);
   
   delete sdata_;
   delete cdata_;
   
-  sdata_ = new short[getctrl("natural/inSamples").toNatural() * nChannels];
-  cdata_ = new unsigned char[getctrl("natural/inSamples").toNatural() * nChannels];
+  sdata_ = new short[getctrl("natural/inSamples").toNatural() * nChannels_];
+  cdata_ = new unsigned char[getctrl("natural/inSamples").toNatural() * nChannels_];
   
   filename_ = getctrl("string/filename").toString();
   
@@ -187,25 +187,21 @@ WavFileSink::putLinear16Swap(natural c, realvec& slice)
 {
 
   
-  natural nChannels = getctrl("natural/nChannels").toNatural();
-  natural nSamples = getctrl("natural/inSamples").toNatural();
-  
-  for (t=0; t < nSamples; t++)
+  for (c=0; c < nChannels_; c++)
+    for (t=0; t < inSamples_; t++)
     {
 #if defined(__BIG_ENDIAN__)
-      sdata_[t*nChannels + c] = ByteSwapShort((short)(slice(0,t) * MAXSHRT));
+      sdata_[t*nChannels_ + c] = ByteSwapShort((short)(slice(0,t) * MAXSHRT));
 #else
-      sdata_[t*nChannels + c] = (short)(slice(0,t) * MAXSHRT);
+      sdata_[t*nChannels_ + c] = (short)(slice(0,t) * MAXSHRT);
 #endif
 
     }
 
-  if (c == nChannels -1) 
+  
+  if ((natural)fwrite(sdata_, sizeof(short), nChannels_ * inSamples_, sfp_) != nChannels_ * inSamples_)
     {
-      if ((natural)fwrite(sdata_, sizeof(short), nChannels * nSamples, sfp_) != nChannels * nSamples)
-	{
-	  MRSERR("Problem: could not write window to file " + filename_);
-	}
+      MRSERR("Problem: could not write window to file " + filename_);
     }
 }
 
@@ -223,16 +219,14 @@ WavFileSink::process(realvec& in, realvec& out)
 	out(o,t) = in(o,t);
       }
 
-  natural c = getctrl("natural/channel").toNatural();
-  natural nChannels = getctrl("natural/nChannels").toNatural();
-  setctrl("natural/channel", (c + 1)%nChannels);  
+
   long fileSize;
   fpos_ = ftell(sfp_);
 
   // jump to start and write data size
   fseek(sfp_, 40, SEEK_SET);
   written_ += inSamples_;
-  fileSize = (written_ * 2 * nChannels);
+  fileSize = (written_ * 2 * nChannels_);
   fwrite(&fileSize, 4, 1, sfp_);
   fseek(sfp_, fpos_, SEEK_SET);
 

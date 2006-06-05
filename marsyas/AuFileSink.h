@@ -93,6 +93,9 @@ private:
   FILE *sfp_;
   long sfp_begin_;  
 
+  natural nChannels_;
+  
+
   unsigned long ByteSwapLong(unsigned long nLongNumber);
   unsigned short ByteSwapShort (unsigned short nValue);
 
@@ -102,7 +105,7 @@ public:
   ~AuFileSink();
   MarSystem* clone() const;  
 
-  void putLinear16(natural c, realvec& slice);
+  void putLinear16(realvec& slice);
   void putHeader(std::string filename);
   void update();
   bool checkExtension(std::string filename);

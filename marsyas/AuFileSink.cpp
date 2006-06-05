@@ -57,7 +57,6 @@ AuFileSink::addControls()
   addDefaultControls();
   addctrl("natural/nChannels", (natural)1);
   setctrlState("natural/nChannels", true);
-  addctrl("natural/channel", (natural)0);
   addctrl("string/filename", "daufile");
   setctrlState("string/filename", true);
 }
@@ -84,13 +83,15 @@ AuFileSink::update()
   setctrl("natural/onObservations", getctrl("natural/inObservations"));
   setctrl("real/osrate", getctrl("real/israte"));
 
-  natural nChannels = getctrl("natural/nChannels").toNatural();      
+  nChannels_ = getctrl("natural/inObservations").toNatural();      
+  setctrl("natural/nChannels", nChannels_);
+  
   
   delete sdata_;
   delete cdata_;
   
-  sdata_ = new short[getctrl("natural/inSamples").toNatural() * nChannels];
-  cdata_ = new unsigned char[getctrl("natural/inSamples").toNatural() * nChannels];
+  sdata_ = new short[getctrl("natural/inSamples").toNatural() * nChannels_];
+  cdata_ = new unsigned char[getctrl("natural/inSamples").toNatural() * nChannels_];
 
   filename_ = getctrl("string/filename").toString();
   
@@ -160,30 +161,26 @@ AuFileSink::ByteSwapShort (unsigned short nValue)
 
 
 void 
-AuFileSink::putLinear16(natural c, realvec& slice)
+AuFileSink::putLinear16(realvec& slice)
 {
-  natural nChannels = getctrl("natural/nChannels").toNatural();
-  natural nSamples = getctrl("natural/inSamples").toNatural();
-
-  for (t=0; t < nSamples; t++)
-    {
+  
+  for (c=0; c < nChannels_; c++)
+    for (t=0; t < inSamples_; t++)
+      {
 #if defined(__BIG_ENDIAN__)
-      sdata_[t*nChannels + c] = (short)(slice(0,t) * MAXSHRT);      
+	sdata_[t*nChannels_ + c] = (short)(slice(0,t) * MAXSHRT);      
 #else
-      sdata_[t*nChannels + c] = ByteSwapShort((short)(slice(0,t) * MAXSHRT));
-
+	sdata_[t*nChannels_ + c] = ByteSwapShort((short)(slice(0,t) * MAXSHRT));
+	
 #endif 
-    }
+      }
   
   
-
-  if (c == nChannels -1) 
+  if ((natural)fwrite(sdata_, sizeof(short), nChannels_ * inSamples_, sfp_) != nChannels_ * inSamples_)
     {
-      if ((natural)fwrite(sdata_, sizeof(short), nChannels * nSamples, sfp_) != nChannels * nSamples)
-	{
-	  MRSWARN("Problem: could not write window to file" + filename_);
-	}
+      MRSWARN("Problem: could not write window to file" + filename_);
     }
+
 }
 
 
@@ -209,25 +206,20 @@ AuFileSink::process(realvec& in, realvec& out)
       }
   
   
-  natural c = getctrl("natural/channel").toNatural();
-  natural nChannels = getctrl("natural/nChannels").toNatural();
-  
-  setctrl("natural/channel", (c + 1)%nChannels);  
-  
   long fileSize;
   fpos_ = ftell(sfp_);
   fseek(sfp_, 8, SEEK_SET);
   written_ += inSamples_;
 #if defined(__BIG_ENDIAN__)
-  fileSize = (written_ * 2 * nChannels);
+  fileSize = (written_ * 2 * nChannels_);
 #else
-  fileSize = ByteSwapLong(written_ * 2 * nChannels);
+  fileSize = ByteSwapLong(written_ * 2 * nChannels_);
 #endif
 
   fwrite(&fileSize, 4, 1, sfp_);
   fseek(sfp_, fpos_, SEEK_SET);
   
-  putLinear16(c, in);
+  putLinear16(in);
 
 }
 

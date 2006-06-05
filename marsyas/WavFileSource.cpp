@@ -284,7 +284,7 @@ WavFileSource::update()
   nChannels_ = getctrl("natural/nChannels").toNatural();
 
   setctrl("natural/onSamples", inSamples_);
-  setctrl("natural/onObservations", inObservations_);
+  setctrl("natural/onObservations", nChannels_);
   setctrl("real/osrate", israte_);
   
   filename_ = getctrl("string/filename").toString();    
@@ -373,29 +373,27 @@ natural
 WavFileSource::getLinear16(realvec& slice)
 {
   natural c = 0;
-  natural nChannels = getctrl("natural/nChannels").toNatural();
-  natural inSamples = getctrl("natural/inSamples").toNatural();
 
-  fseek(sfp_, 2 * pos_ * nChannels + sfp_begin_, SEEK_SET);
+  fseek(sfp_, 2 * pos_ * nChannels_ + sfp_begin_, SEEK_SET);
 
 
 
 
-  samplesToRead_ = inSamples * nChannels;
+  samplesToRead_ = inSamples_ * nChannels_;
   
   samplesRead_ = (natural)fread(sdata_, sizeof(short), samplesToRead_, sfp_);
   
   if (samplesRead_ != samplesToRead_)
     {
-      for (t=0; t < inSamples; t++)
-	{
-	  slice(0, t) = 0.0;
-	}
-      samplesToWrite_ = samplesRead_ / nChannels;
+      for (c=0; c < nChannels_; c++)
+	for (t=0; t < inSamples_; t++)
+	  {
+	    slice(c, t) = 0.0;
+	  }
+      samplesToWrite_ = samplesRead_ / nChannels_;
     }
   else 
     samplesToWrite_ = inSamples_;
-  
   
   for (t=0; t < samplesToWrite_; t++)
     {
@@ -403,25 +401,21 @@ WavFileSource::getLinear16(realvec& slice)
       
       
 #if defined(__BIG_ENDIAN__)
-      slice(0,t) = 0.0;
       
       for (c=0; c < nChannels_; c++)
 	{
 	  sval_ = ByteSwapShort(sdata_[nChannels_*t + c]);
-	  slice(0, t) += (real) sval_ / (FMAXSHRT);
+	  slice(c, t) = (real) sval_ / (FMAXSHRT);
 	}
-      slice(0,t) /= nChannels_;      
       
 #else
 
 
-      slice(0,t) = 0.0;
       for (c=0; c < nChannels_; c++)
 	{
 	  sval_ = sdata_[nChannels_ *t + c];
-	  slice(0, t) += ((real) sval_ / (FMAXSHRT));
+	  slice(c, t) = ((real) sval_ / (FMAXSHRT));
 	}
-      slice(0,t) /= nChannels_;      
 #endif  
     }
   

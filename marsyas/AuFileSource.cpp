@@ -190,6 +190,7 @@ AuFileSource::getHeader(string filename)
 	  fseek(sfp_, hdr_.hdrLength, 0);
 	  sfp_begin_ = ftell(sfp_);
 	  setctrl("natural/nChannels", hdr_.channels);
+      
 	  setctrl("real/israte", (real)hdr_.srate);
 	  setctrl("natural/size", size_);
 	  setctrl("bool/notEmpty", (MarControlValue)true);
@@ -232,8 +233,9 @@ AuFileSource::getLinear16(realvec& slice)
   // pad with zeros if necessary 
   if (samplesRead_ != samplesToRead_)
     {
-      for (t=0; t < inSamples_; t++)
-	slice(0, t) = 0.0;
+      for (c=0; c < nChannels_; c++)
+	for (t=0; t < inSamples_; t++)
+	  slice(c, t) = 0.0;
       samplesToWrite_ = samplesRead_ / nChannels_;
     }
   else 
@@ -246,14 +248,11 @@ AuFileSource::getLinear16(realvec& slice)
       sval_ = 0;
       
 #if defined(__BIG_ENDIAN__)
-      slice(0,t) = 0.0;
       for (c=0; c < nChannels_; c++)
-	slice(0, t) += ((real) sdata_[nChannels_*t + c] / (FMAXSHRT));
-      slice(0,t) /= nChannels_;      
+	slice(c, t) = ((real) sdata_[nChannels_*t + c] / (FMAXSHRT));
       
 #else
       
-      slice(0,t) = 0.0;
       
       for (c=0; c < nChannels_; c++)
 	{
@@ -261,9 +260,8 @@ AuFileSource::getLinear16(realvec& slice)
 	  usval_ = ((usval_ >> 8) | (usval_ << 8));
 	  sval_ = usval_;
 	  
-	  slice(0, t) += (real) sval_ / (FMAXSHRT);
+	  slice(c, t) = (real) sval_ / (FMAXSHRT);
 	}
-      slice(0,t) /= nChannels_;      
       
 #endif 
 
@@ -284,11 +282,11 @@ AuFileSource::update()
   inSamples_ = getctrl("natural/inSamples").toNatural();
   inObservations_ = getctrl("natural/inObservations").toNatural();
   israte_ = getctrl("real/israte").toReal();
-
   nChannels_ = getctrl("natural/nChannels").toNatural();
-
+  
   setctrl("natural/onSamples", inSamples_);
-  setctrl("natural/onObservations", inObservations_);
+  setctrl("natural/onObservations", nChannels_);
+  
   setctrl("real/osrate", israte_);
    
   filename_ = getctrl("string/filename").toString();    
