@@ -45,7 +45,8 @@ The marsyas executables will be installed in
 To run your executables anywhere add 
 (your home directory)/bin to your PATH. 
 
-./configure without --pref will install 
+./configure 
+without --pref will install 
 marsyas in the default system location. 
 (/usr/local in my system). As a user 
 you will not be able to add data files 
