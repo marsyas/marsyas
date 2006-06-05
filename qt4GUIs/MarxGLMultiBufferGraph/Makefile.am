@@ -1,0 +1,1 @@
+EXTRA_DIST = main.cpp MarxGLMultiBufferGraph.cpp Marx3dSlider.cpp MarSystemWrapper.cpp TopPanelNew.cpp MarxGLMultiBufferGraph.h Marx3dSlider.h TopPanelNew.h MarSystemWrapper.h MarxGLMultiBufferGraph.pro  
