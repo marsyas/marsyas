@@ -41,6 +41,8 @@ adjusted to reflect Marsyas controls.
 
 #include "common.h"
 #include "MarSystemManager.h"
+#include <string> 
+using namespace std;
 
 
 class MarSystemWrapper: public QThread

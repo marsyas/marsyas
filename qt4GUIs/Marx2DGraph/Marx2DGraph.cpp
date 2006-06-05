@@ -1,45 +1,85 @@
+/*
+** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+**
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+                                                                                        
+/**
+   \class Marx2DGraph.cpp
+   \brief 2D Graphing
+                                                                                        
+Marx2DGraph provides 2D graphing for Marsyas where the ordinates are
+given by a marsyas realvec object and the abscissa a per sample spacing.
+Plot types are give in Marx2DGraph.h and include points, precsion,
+linear and polynomial interpolation.
+
+*/
+
+
 #include "Marx2DGraph.h"
 
-#include <string> 
-#include <iostream>
-#include <sstream>
-#include <iomanip>
-using namespace std;
 
-
-
+//! A default constructor
+/*!
+  A default constructor when buffer size isn't otherwise specified.
+*/
 Marx2DGraph::Marx2DGraph( QWidget *parent )
   : QWidget(parent)
 {
   Marx2DGraph(0, 0);
 }
 
+
+//! The real constructor
+/*!
+  The real constructor
+                                                                                        
+  \param size an integer giving buffer size
+  \param parent a pointer to the parent widget
+*/
+
 Marx2DGraph::Marx2DGraph( int size, QWidget *parent )
   : QWidget(parent)
 {
 
   xpos = 0;  // x border around graph
-  ypos = 0;  // yborder around graph
-  xaxisoffset = 20;  // how far in to draw right of xaxis
-  yaxisoffset = 20;  // how far in to draw top of yaxis
-  width = QWidget::width() - 2*xpos;  
+  ypos = 0;  // y border around graph
+  xaxisoffset = 30;  // how far in to draw right of xaxis
+  yaxisoffset = 30;  // how far in to draw top of yaxis
+  width = QWidget::width() - 2*xpos;    // widget width
   height = QWidget::height() - 2*ypos;  // widget height
   gheight = height - yaxisoffset*2;     // graph height
   gwidth  = width  - xaxisoffset*2;     // graph width
 
   yaxisscale = 20.0;
+  showXaxis = true;
 
   buffersize = size;
-  buffer = new float[buffersize];
+  buffer = new realvec(buffersize);
 
   plot_type = POINTS;
   point_size = 5;
   point_type = XS;
   pen_width = 2.;
+  data_pen_width = 2.;
 
   antialias = false;  // much faster
 
   ticks = true;
+  axis_display_type = CONNECTED;
+  show_axis_scale = false;
 
   data_color = QColor(255, 0, 0);
   label_color = QColor(0, 0, 0);
@@ -51,6 +91,10 @@ Marx2DGraph::Marx2DGraph( int size, QWidget *parent )
   pen.setWidthF( pen_width );
 
   label = "";
+  xlabelmessage = "";
+  xlabel = false;
+  ylabelmessage = "";
+  ylabel = false;
 
   display = false;
   dsamplestring = "";
@@ -60,13 +104,117 @@ Marx2DGraph::Marx2DGraph( int size, QWidget *parent )
 }
 
 
+//! displayXaxis
+/*!
+  Toggles whether the X axis is drawn.
+                                                                                        
+  \param bool on/off
+*/
+void
+Marx2DGraph::displayXaxis( bool tf )
+{
+  showXaxis = tf;
+  update();
+}
+
+
+//! setXAxisLabel
+/*!
+  Add a label below and center of the x axis.
+                                                                                        
+  \param string message
+*/
+void 
+Marx2DGraph::setXAxisLabel( string m )
+{
+  xlabelmessage = m;
+  update();
+}
+
+
+//! setYAxisLabel
+/*!
+  Add a label below and center of the y axis.
+                                                                                        
+  \param string message
+*/
+void 
+Marx2DGraph::setYAxisLabel( string m )
+{
+  ylabelmessage = m;
+  update();
+}
+
+
+//! setXAxisLabel
+/*!
+  Add a label below and center of the x axis.
+                                                                                        
+  \param string message
+*/
+void 
+Marx2DGraph::setXAxisLabelOn( bool tf )
+{
+  if (tf && !xlabel) { yaxisoffset += 16; }
+  else if (!tf && xlabel) { yaxisoffset -= 16; }  
+
+  xlabel = tf;  
+  update();
+}
+
+
+//! setYAxisLabel
+/*!
+  Add a label below and center of the y axis.
+                                                                                        
+  \param string message
+*/
+void 
+Marx2DGraph::setYAxisLabelOn( bool tf )
+{
+  if (tf && !ylabel) { xaxisoffset += 24; }
+  else if (!tf && ylabel) { xaxisoffset -= 24; } 
+
+  ylabel = tf;
+  update();
+}
+
+
+
+//! setAxisDisplayType
+/*!
+  Controls how the axis will be drawn: enum { CONNECTED, BROKEN }.
+                                                                                        
+  \param type an int given by the enumeration above
+*/
+void
+Marx2DGraph::setAxisDisplayType( int type )
+{
+  axis_display_type = type;
+}
+
+
+//! setGraphDataColor
+/*!
+  Change the plot color.
+                                                                                        
+  \param c a QColor object
+*/
 void 
 Marx2DGraph::setGraphDataColor( QColor c )
 {
   data_color = c;
-  update();}
+  update();
+}
 
 
+//! setGraphLabelsAndAxisColor
+/*!
+  Change the labels and axis colors, ie. labels and axis are displayed
+  in the same color
+                                                                                        
+  \param c a QColor object
+*/
 void 
 Marx2DGraph::setGraphLabelsAndAxisColor( QColor c )
 {
@@ -75,6 +223,12 @@ Marx2DGraph::setGraphLabelsAndAxisColor( QColor c )
 }
 
 
+//! setBGColor
+/*!
+  Set the background color of the graph.  The default color is white.
+                                                                                        
+  \param c a QColor object
+*/
 void 
 Marx2DGraph::setBGColor( QColor c )
 {
@@ -83,44 +237,107 @@ Marx2DGraph::setBGColor( QColor c )
 }
 
 
+//! setGraphDataPointSize
+/*!
+  Set the point size when the graph type is POINT.
+                                                                                        
+  \param p a float such as magnitude 5.0
+*/
 void 
 Marx2DGraph::setGraphDataPointSize(float p)
 {
   point_size = p;
+  update();
 }
 
 
+//! setGraphDataPointType
+/*!
+  Set the point style when the graph type is POINT.  Options are given
+  in the enumeration: enum { CIRCLES, SQUARES, XS };
+                                                                                        
+  \param t an int corresponding to the above enum
+*/
 void 
 Marx2DGraph::setGraphDataPointType( int t )
 {
   point_type = t;
+  update();
 }
 
+
+//! setGraphDataLineSize
+/*!
+  Set the graph line thickness when plotting style is
+  LINEAR_INTERPOLATION or POLYNOMIAL_INTERPOLATION.
+                                                                                        
+  \param p a float such as magnitude 2.0
+*/
 void 
 Marx2DGraph::setGraphDataLineSize( float p )
 {
-  pen_width = p;
+  data_pen_width = p;
+  update();
 }
 
 
+//! setPlotType
+/*!
+  Choose the style of the plot: enum { POINTS, PRECISION,
+  LINEAR_INTERPOLATION, POLYNOMIAL_INTERPOLATION }.
+                                                                                        
+  \param type an int corresponding to the above enumeration
+*/
 void 
 Marx2DGraph::setPlotType(int type)
 {
   plot_type = type;
+  update();
 }
 
+
+//! setAntialias
+/*!
+  Toggles antialiasing on and off.  When rapidly redrawing plot
+  buffers, such as in plotting realtime audio output, antialias will
+  probably need to be turned off, which is the default configuration.
+*/
 void 
 Marx2DGraph::setAntialias(bool tf)
 {
   antialias = tf;
+  update();
 }
 
 
-bool 
-Marx2DGraph::setBuffer( float *b, int s )
+//! setShowAxisScale
+/*!
+  Toggle the displaying of axis scale label.
+
+  \param bool true/false is on/off respectively
+*/
+void 
+Marx2DGraph::setShowAxisScale( bool tf )
 {
-  if ( s == buffersize ) { 
-    buffer = b;
+  show_axis_scale = tf;
+  update();
+}
+
+
+//! setBuffer
+/*!
+  Set the buffer and automatically update the graphics.
+                                                                                        
+  \param *b a pointer to an array of floats
+  \param s the size of the buffer
+                                                                                        
+  \return bool true if the buffer's successfully updated
+*/
+bool 
+Marx2DGraph::setBuffer( realvec& rv )
+{
+  if ( rv.getSize() == buffersize ) { 
+     *buffer = rv;
 
     int xu = (int)(xaxisoffset+xpos) + pen.width() + 1;
     int yu = (int)(yaxisoffset+ypos);
@@ -128,36 +345,87 @@ Marx2DGraph::setBuffer( float *b, int s )
     int yl = (int)(yaxisoffset+ypos+gheight) - pen.width() - 1;
 
     repaint( QRect( QPoint(xu, yu), QPoint(xl, yl)) );
-    //repaint();
+
     return true;
   }
   return false;
 }
 
 
+
 void
 Marx2DGraph::draw_y_ticks(QPainter *painter)
 {
   float interval = gheight/10;
-
-  for (int i=0; i<10; i++) {
+                                                                                        
+  int stop = 10;
+  int start = 0;
+  if (!showXaxis){ stop = 11; }
+  if (axis_display_type == BROKEN){
+    stop = 10;
+    start = 1;
+  }
+                                                                                        
+  for (int i=start; i<stop; i++) {
     painter->drawLine( QLineF( xaxisoffset+xpos, yaxisoffset+ypos+i*interval,
-			       xaxisoffset+xpos-5, yaxisoffset+ypos+i*interval) );
+                               xaxisoffset+xpos-5, yaxisoffset+ypos+i*interval) );
+
+    /* draw axis scale label */
+    if ( (i == 1 || i == 2) && show_axis_scale) {
+      ostringstream ds;
+      ds << setprecision(3) << (gheight/2.0 - i*interval )/(gheight/2);
+      //(gheight/2.0 + ypos + yaxisoffset) - (gheight/2)*val
+
+      painter->drawText( QPointF(xaxisoffset+xpos-25, yaxisoffset+ypos+i*interval), 
+			QString( QString::fromStdString(ds.str()) )
+			); 
+    }
+
   }
 }
+
 
 
 void Marx2DGraph::draw_x_ticks(QPainter *painter)
 {
   float interval = gwidth/10;
-
-  for (int i=1; i<11; i++) {
+                                                                                        
+  int stop=11;
+  if (axis_display_type == BROKEN){ stop = 10; }
+  for (int i=1; i<stop; i++) {
     painter->drawLine( QLineF( xaxisoffset+xpos+i*interval, yaxisoffset+ypos+gheight,
-			       xaxisoffset+xpos+i*interval, yaxisoffset+ypos+gheight+5) );
+                               xaxisoffset+xpos+i*interval, yaxisoffset+ypos+gheight+5)
+		       );
+
+    /* draw axis scale label */
+    if (i == 1 && show_axis_scale) {
+      ostringstream ds;
+      ds << setprecision(0) << ((float)buffersize/10.0)*(float)i;
+
+      painter->drawText( QPointF(xaxisoffset+xpos+i*interval, yaxisoffset+ypos+gheight+17), 
+			QString( QString::fromStdString(ds.str()) )
+			); 
+    }
+    else if (i == 2 && show_axis_scale) {
+      ostringstream ds;
+      ds << setprecision(0) << ((float)buffersize/10.0)*(float)i;
+
+      painter->drawText( QPointF(xaxisoffset+xpos+i*interval, yaxisoffset+ypos+gheight+17), 
+			 QString( QString::fromStdString(ds.str()) )
+			);       
+    }
+
   }
 }
 
 
+
+//! addLabel
+/*!
+  Give the graph a label and update the graphic.
+                                                                                        
+  \param lb a string providing the label
+*/
 void 
 Marx2DGraph::addLabel( string lb )
 {
@@ -171,8 +439,9 @@ Marx2DGraph::paintEvent( QPaintEvent * )
 {
   QPainter painter(this);
 
-  painter.setPen( QPen( QColor(0, 0, 0) ) );
-  painter.setBrush( QBrush( QColor(255, 255, 255), Qt::SolidPattern ) );
+  pen.setColor( bg_color);
+  painter.setPen( pen );
+  painter.setBrush( QBrush( bg_color, Qt::SolidPattern ) );
   
   if (antialias) {
     painter.setRenderHint( QPainter::Antialiasing );
@@ -181,24 +450,49 @@ Marx2DGraph::paintEvent( QPaintEvent * )
     
   /* draw backdrop */
   painter.drawRect( QRectF( xpos, ypos, width, height ) );
+  pen.setColor( QColor(0, 0, 0));
+  painter.setPen( pen );
   
   /* draw y axis */
-  painter.drawLine( QLineF( xaxisoffset+xpos, yaxisoffset+ypos, 
-			    xaxisoffset+xpos, yaxisoffset+ypos+gheight ) );
+  float ext = 0.0;
+  if (axis_display_type == BROKEN){ ext = gheight/10; }
+  painter.drawLine( QLineF( xaxisoffset+xpos, yaxisoffset+ypos+ext,
+                            xaxisoffset+xpos, yaxisoffset+ypos+gheight-ext ) );
   if (ticks)
     draw_y_ticks( &painter );
+
+  if (ylabel) {
+    painter.rotate(270); 
+    painter.drawText( QPointF(-1*(height/2)-32, 
+			      xpos+xaxisoffset-32 ), 
+		      QString(QString::fromStdString(ylabelmessage))
+		      );
+    painter.rotate(90);   
+  }
   
   /* draw x axis */
-  painter.drawLine( QLineF( xaxisoffset+xpos, yaxisoffset+ypos+gheight, 
-			    xaxisoffset+xpos+gwidth, yaxisoffset+ypos+gheight ) );
-  if (ticks)
-    draw_x_ticks( &painter );
+  if (showXaxis) {
+    ext = 0.0;
+    if (axis_display_type == BROKEN){ ext = gwidth/10; }
+    painter.drawLine( QLineF( xaxisoffset+xpos+ext, yaxisoffset+ypos+gheight,
+                              xaxisoffset+xpos+gwidth-ext, yaxisoffset+ypos+gheight ) );
+    if (ticks)
+      draw_x_ticks( &painter );
+
+    if (xlabel) {
+      painter.drawText( QPointF((width/2)-32, 
+				yaxisoffset+ypos+gheight+30 ), 
+			QString(QString::fromStdString(xlabelmessage))
+			);     
+    }
+  }
   
   /* draw label */
   if (label != "") {
-    painter.rotate(270);      painter.drawText( QPointF(-1*(gheight+ypos+2*yaxisoffset-2), 
-							gwidth+xpos+2*xaxisoffset-5 ), 
-						QString(QString::fromStdString(label))
+    painter.rotate(270);      
+    painter.drawText( QPointF(-1*(gheight+ypos+2*yaxisoffset-2), 
+			      gwidth+xpos+2*xaxisoffset-5 ), 
+		      QString(QString::fromStdString(label))
 			);
     painter.rotate(90);
   }
@@ -208,6 +502,7 @@ Marx2DGraph::paintEvent( QPaintEvent * )
   /* draw data */
   painter.setBrush( QBrush( data_color, Qt::SolidPattern ) );
   pen.setColor( data_color );
+  pen.setWidthF( data_pen_width );
   painter.setPen(pen);
   
   switch (plot_type) {
@@ -218,12 +513,12 @@ Marx2DGraph::paintEvent( QPaintEvent * )
   case LINEAR_INTERPOLATION:
     plotlinearinterpolation(&painter); break;
   case POLYNOMIAL_INTERPOLATION:
-    plotpoints(&painter);
     plotpolyinterpolation(&painter); 
     break;
   default:
     plotpoints(&painter); break;
   }
+  pen.setWidthF( pen_width );
 
 
   // if necessary, draw the floating pane displaying the cursor coordinates
@@ -257,7 +552,6 @@ Marx2DGraph::plotpolyinterpolation(QPainter* painter)
 
   // divided difference algorithm
   // modified from kyle louden's "algorithms in c"
-
   float lastw=-1, lasth;
   for (int h=0; h<buffersize-3; h++) {
     float *table, *coeff, *x, *pz, *z;
@@ -272,10 +566,10 @@ Marx2DGraph::plotpolyinterpolation(QPainter* painter)
     z     = new float[steps];
     
     x[0] = h+0; x[1] = h+1; x[2] = h+2; x[3] = h+3;
-    table[0] = buffer[h+0]; 
-    table[1] = buffer[h+1];
-    table[2] = buffer[h+2]; 
-    table[3] = buffer[h+3];
+    table[0] = (float)((*buffer)(h)); 
+    table[1] = (float)((*buffer)(h+1));
+    table[2] = (float)((*buffer)(h+2)); 
+    table[3] = (float)((*buffer)(h+3));
     
     coeff[0] = table[0];
     
@@ -331,8 +625,10 @@ Marx2DGraph::plotlinearinterpolation(QPainter* painter)
 {
   float lastw=-1, lasth;
   for (int i=0; i<buffersize; i++) {
+    float val = (float)((*buffer)(i));
+
     float w = ((gwidth/(buffersize-1)))*i + xpos + xaxisoffset;
-    float h = (gheight/2.0 + ypos + yaxisoffset) - (gheight/2)*buffer[i];
+    float h = (gheight/2.0 + ypos + yaxisoffset) - (gheight/2)*val;
 
     if (lastw >=0) {
       painter->drawLine( QLineF( lastw, lasth, w, h ) );  
@@ -348,8 +644,10 @@ void
 Marx2DGraph::plotprecision(QPainter* painter)
 {
   for (int i=0; i<buffersize; i++) {
+    float val = (float)((*buffer)(i));
+
     float w = (gwidth/(buffersize-1))*i + xpos + xaxisoffset;
-    float h = (gheight/2.0 + ypos + yaxisoffset) - (gheight/2)*buffer[i];
+    float h = (gheight/2.0 + ypos + yaxisoffset) - (gheight/2)*val;
     float b = yaxisoffset+ypos+gheight;
     painter->drawLine( QLineF( w, h, w, b ) );
   }
@@ -361,8 +659,12 @@ Marx2DGraph::plotpoints(QPainter* painter)
 {
   float p = point_size/2.;
   for (int i=0; i<buffersize; i++) {
+    float val = (float)((*buffer)(i));
+
+
+
     float w = (gwidth/(buffersize-1))*i + xpos + xaxisoffset;
-    float h = (gheight/2.0 + ypos + yaxisoffset) - (gheight/2)*buffer[i];
+    float h = (gheight/2.0 + ypos + yaxisoffset) - (gheight/2.0)*val;
 
     switch (point_type) {
     case CIRCLES:
@@ -407,7 +709,7 @@ Marx2DGraph::mousePressEvent(QMouseEvent* me)
   mousex = (float)me->x();
   mousey = (float)me->y();
 
-  double dsample = (mousex - xpos - xaxisoffset)*(buffersize - 1)/gwidth;
+  dsample = (mousex - xpos - xaxisoffset)*(buffersize - 1)/gwidth;
   display = true;
 
   if (me->button() == Qt::LeftButton) {
@@ -416,16 +718,13 @@ Marx2DGraph::mousePressEvent(QMouseEvent* me)
 
     if (dsample - floor(dsample) > .5) { dsample = ceil(dsample);}
     else { dsample = floor(dsample); }
-    dvalue  = buffer[(int)dsample]; 
-
-    //std::cout << "left dsample: " << dsample << "\t" << "dvalue " << dvalue << "\n";
+    dvalue  = (*buffer)((int)dsample); 
   }
   else if (me->button() == Qt::RightButton) {
     dsamplestring = "estimated sample = ";
     dvaluestring  = "       its value = ";
 
     dvalue  = (mousey - gheight/2. - ypos - yaxisoffset)*-2/gheight;
-    //std::cout << "right dsample: " << dsample << "\t" << "dvalue " << dvalue << "\n";
   }
 
   ostringstream ds, dv;

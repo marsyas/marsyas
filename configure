@@ -3468,6 +3468,8 @@ _ACEOF
        *) echo Diagnostics disabled ;;
 esac
 
+enable_warnings="yes"
+
 # Check whether --enable-warnings or --disable-warnings was given.
 if test "${enable_warnings+set}" = set; then
   enableval="$enable_warnings"
@@ -3727,7 +3729,7 @@ fi
 
 
 
-                                                                                                                                                                                                                                      ac_config_files="$ac_config_files Makefile marsyas/Makefile src/Makefile src/plugins/Makefile src/tcl/Makefile distributed/Makefile marsyas/system/Makefile doc/Makefile doc/marsyas/Makefile marsyasVisualStudio/Makefile marsyasVisualStudio/sfplay/Makefile marsyasVisualStudio/sfinfo/Makefile marsyasVisualStudio/phasevocoder/Makefile marsyasVisualStudio/marsyas/Makefile marsyasVisualStudio/sfplugin/Makefile marsyasVisualStudio/bextract/Makefile marsyasVisualStudio/extract/Makefile marsyasVisualStudio/classifyFile/Makefile qt4GUIs/Makefile qt4GUIs/MarPlayer/Makefile qt4GUIs/MarPlayer/images/Makefile qt4GUIs/MarGrid/Makefile qt4GUIs/Marx2DGraph/Makefile"
+                                                                                                                                                                                                                                                                              ac_config_files="$ac_config_files Makefile marsyas/Makefile src/Makefile src/plugins/Makefile src/tcl/Makefile distributed/Makefile marsyas/system/Makefile doc/Makefile doc/marsyas/Makefile marsyasVisualStudio/Makefile marsyasVisualStudio/sfplay/Makefile marsyasVisualStudio/sfinfo/Makefile marsyasVisualStudio/phasevocoder/Makefile marsyasVisualStudio/marsyas/Makefile marsyasVisualStudio/sfplugin/Makefile marsyasVisualStudio/bextract/Makefile marsyasVisualStudio/extract/Makefile marsyasVisualStudio/classifyFile/Makefile qt4GUIs/Makefile qt4GUIs/MarPlayer/Makefile qt4GUIs/MarPlayer/images/Makefile qt4GUIs/MarGrid/Makefile qt4GUIs/Marx2DGraph/Makefile qt4GUIs/MarxGLMultiBufferGraph/Makefile qt4GUIs/Marx2DGraphStacked/Makefile qt4GUIs/MarxGL2Din3DSpaceGraph/Makefile qt4GUIs/MarxGLGraph/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -4309,6 +4311,10 @@ do
   "qt4GUIs/MarPlayer/images/Makefile" ) CONFIG_FILES="$CONFIG_FILES qt4GUIs/MarPlayer/images/Makefile" ;;
   "qt4GUIs/MarGrid/Makefile" ) CONFIG_FILES="$CONFIG_FILES qt4GUIs/MarGrid/Makefile" ;;
   "qt4GUIs/Marx2DGraph/Makefile" ) CONFIG_FILES="$CONFIG_FILES qt4GUIs/Marx2DGraph/Makefile" ;;
+  "qt4GUIs/MarxGLMultiBufferGraph/Makefile" ) CONFIG_FILES="$CONFIG_FILES qt4GUIs/MarxGLMultiBufferGraph/Makefile" ;;
+  "qt4GUIs/Marx2DGraphStacked/Makefile" ) CONFIG_FILES="$CONFIG_FILES qt4GUIs/Marx2DGraphStacked/Makefile" ;;
+  "qt4GUIs/MarxGL2Din3DSpaceGraph/Makefile" ) CONFIG_FILES="$CONFIG_FILES qt4GUIs/MarxGL2Din3DSpaceGraph/Makefile" ;;
+  "qt4GUIs/MarxGLGraph/Makefile" ) CONFIG_FILES="$CONFIG_FILES qt4GUIs/MarxGLGraph/Makefile" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "marsyas/config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS marsyas/config.h" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
@@ -4723,6 +4729,10 @@ s,@INSTALL@,$ac_INSTALL,;t t
     qt4GUIs/MarPlayer/images/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
     qt4GUIs/MarGrid/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
     qt4GUIs/Marx2DGraph/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
+    qt4GUIs/MarxGLMultiBufferGraph/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
+    qt4GUIs/Marx2DGraphStacked/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
+    qt4GUIs/MarxGL2Din3DSpaceGraph/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
+    qt4GUIs/MarxGLGraph/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
   esac
 done
 _ACEOF

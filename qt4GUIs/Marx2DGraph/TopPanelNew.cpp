@@ -1,51 +1,47 @@
 #include "TopPanelNew.h"
 
 
-TopPanelNew::TopPanelNew(QWidget *parent)
+TopPanelNew::TopPanelNew(string au, QWidget *parent)
   : QWidget(parent)
 {
 
+  audio_file = au;
 
   // create the Marsyas 
   MarSystemManager mng;
   pnet = mng.create("Series", "pnet");
   pnet->addMarSystem(mng.create("SoundFileSource", "src"));
   pnet->addMarSystem(mng.create("AudioSink", "dest"));
-  pnet->updctrl("SoundFileSource/src/string/filename", 
-		"/home/gtzan/data/sound/music_speech/music/gravity.au");
+  pnet->updctrl( "SoundFileSource/src/string/filename", au );
+//   pnet->updctrl("SoundFileSource/src/string/filename", 
+// 		"/usr/home/sardine/build/marsyas-0.2.4/Marx2DGraph/permiteme.au");
   
-  nTicks = 1;
+  nTicks = 500;
   
 
   // initialize graphs 
-  int num;
-  float* x;
+  int num = 512;
 
-  num = 512;
-  x = new float[num];
-  for (int i=0; i<num; i++) {
-    x[i] = 0.0;
-  }
-  
   graph2 = new Marx2DGraph(num, 0);
-  graph2->setPlotType(Marx2DGraph::POINTS);
-  graph2->setBuffer(x, num);
-  graph2->addLabel("Points");
+  //graph2->setPlotType(Marx2DGraph::POINTS);
+  graph2->setPlotType(Marx2DGraph::POLYNOMIAL_INTERPOLATION);
+  graph2->setGraphDataLineSize( 1.0 );
+
+  graph2->addLabel( "Demo Graph");
   
-  graph3 = new Marx2DGraph(num, 0);
-  graph3->setPlotType(Marx2DGraph::LINEAR_INTERPOLATION);
-  graph3->setBuffer(x, num);
-  graph3->addLabel("Linear Interpolation");
+//   graph3 = new Marx2DGraph(num, 0);
+//   graph3->setPlotType(Marx2DGraph::LINEAR_INTERPOLATION);
+//   graph3->addLabel("redundant graph for testing");
 
   
   QGridLayout *gridLayout = new QGridLayout;
   QPushButton *tickButton = new QPushButton(tr("Tick"));
   QSpinBox   *numTicksSpinBox = new QSpinBox();
   numTicksSpinBox->setRange(1, 1000);
-  numTicksSpinBox->setValue(1);
+  numTicksSpinBox->setValue(nTicks);
 
-  gridLayout->addWidget(graph2, 0, 0); 
-  gridLayout->addWidget(graph3, 0, 1); 
+  gridLayout->addWidget(graph2, 0, 0, 1, 0, 0); 
+//   gridLayout->addWidget(graph3, 0, 1); 
   gridLayout->addWidget(tickButton, 1, 0);
   gridLayout->addWidget(numTicksSpinBox, 1, 1);
   
@@ -63,7 +59,7 @@ TopPanelNew::TopPanelNew(QWidget *parent)
 void 
 TopPanelNew::setTicks(int v)
 {
-  cout << "setTicks called" << endl;
+//   cout << "setTicks called" << endl;
   nTicks = v;
 }
 
@@ -71,10 +67,7 @@ TopPanelNew::setTicks(int v)
 void 
 TopPanelNew::tick()
 {
-  cout << "Tick called" << endl;
-  
-  int num = 512;
-  float* x = new float[num];
+//   cout << "Tick called" << endl;
   
   for (int i=0; i < nTicks; i++) 
     {
@@ -82,12 +75,10 @@ TopPanelNew::tick()
       pnet->updctrl("bool/probe", true);
       realvec out(512);
       out = pnet->getctrl("realvec/input0").toVec();
-      for (int i=0; i<num; i++) {
-	x[i] = out(i);
-      }
 
-      graph2->setBuffer(x, num);
-      graph3->setBuffer(x, num);            
+
+      graph2->setBuffer( out );
+//       graph3->setBuffer( out );
       
     }
   

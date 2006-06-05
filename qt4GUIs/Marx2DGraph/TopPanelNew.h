@@ -11,7 +11,7 @@ class TopPanelNew : public QWidget
    Q_OBJECT
 
 public:
-  TopPanelNew(QWidget *parent = 0);
+  TopPanelNew(string au = "", QWidget *parent = 0);
 
 public slots: 
   void tick();
@@ -25,6 +25,8 @@ private:
   MarSystem* pnet;
   
   int nTicks;
+
+  string audio_file;
   
 };
 

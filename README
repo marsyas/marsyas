@@ -55,6 +55,10 @@ writable by users. (this can be achieved
 by executing as root: 
 chmod a+wx -R /usr/local/share/marsyas/) 
 
+./configure --help 
+
+provides information about configuration options 
+
 
 Building and Installation instructions under OS X
 -------------------------------------------------

@@ -5,18 +5,23 @@
 #include <QPen>
 #include <QBrush>
 #include <QPainter>
-#include <QPainterPath>
 #include <QPalette>
 #include <QColor>
 #include <QRectF>
 #include <QLineF>
 #include <QSize>
-#include <QPoint>
 #include <QGridLayout>
 #include <QString>
 #include <QMouseEvent>
 
-#include <math.h> 
+#include<sstream>
+#include <iostream>
+#include <iomanip>
+#include <string>
+
+#include "realvec.h"
+
+using namespace std;
 
 class Marx2DGraph : public QWidget
 {
@@ -27,22 +32,33 @@ class Marx2DGraph : public QWidget
   Marx2DGraph( QWidget *parent=0 );
   Marx2DGraph( int size=0, QWidget *parent=0 );
 
-  bool setBuffer( float*, int );
+  bool setBuffer( realvec& );
 
-  void setPlotType(int);
+  void test();
+
+  void setPlotType( int );
+  void setAxisDisplayType( int );
   void setGraphDataColor( QColor );
   void setGraphLabelsAndAxisColor( QColor );
   void setBGColor( QColor );
   void setGraphDataPointSize( float );
   void setGraphDataPointType( int );
   void setGraphDataLineSize( float );
-  void setAntialias(bool tf);
+  void setShowAxisScale( bool );
+  void setAntialias( bool );
+  void setXAxisLabel( string );
+  void setYAxisLabel( string );
+  void setXAxisLabelOn( bool );
+  void setYAxisLabelOn( bool );
+
+  void displayXaxis( bool );
   
-  void addLabel( std::string );
+  void addLabel( string );
 
 
   enum { POINTS, PRECISION, LINEAR_INTERPOLATION, POLYNOMIAL_INTERPOLATION };
-  enum { CIRCLES, SQUARES, XS };
+  enum { CIRCLES, SQUARES, XS }; // point display shape
+  enum { CONNECTED, BROKEN };    // axis display types
   
 
  protected:
@@ -66,20 +82,29 @@ class Marx2DGraph : public QWidget
 
   bool ticks;
   bool display;
+  bool showXaxis;
+  bool show_axis_scale;
 
   bool antialias;
 
   float mousex;
   float mousey;
-  float dsampl; // sample associated with mouse click
+  float dsample; // sample associated with mouse click
   float dvalue;  // value associated with mouse click
-  std::string dsamplestring;
-  std::string dvaluestring;
+  string dsamplestring;
+  string dvaluestring;
   
-  float* buffer;
-  int buffersize;
+/*   float* buffer; */
+  realvec* buffer;
+  long buffersize;
 
   int plot_type;
+  int axis_display_type;
+
+  string xlabelmessage;
+  string ylabelmessage;
+  bool xlabel;
+  bool ylabel;
 
   float width, height, xpos, ypos;
   float gheight, gwidth;
@@ -96,8 +121,9 @@ class Marx2DGraph : public QWidget
 
   QPen pen;
   float pen_width;
+  float data_pen_width;
 
-  std::string label;
+  string label;
 
 };
 

@@ -4,17 +4,25 @@
 
 #include "Marx2DGraph.h"
 #include <QPushButton>
-#include "TopPanel.h"
 #include "TopPanelNew.h"
 
 int main(int argc, char *argv[])
 {
+
   QApplication app(argc, argv);
-  // TopPanel panel;
-  TopPanelNew panel;
+
+  if (argc < 2) {
+    cout << "Usuage:\n\t$ ./Marx2DGraph /path/to/audiofile.au\n";
+    return 0;
+  }
+
+  string progName = argv[0];
+  string audioFile = argv[1];
+
+  TopPanelNew* panel = new TopPanelNew( audioFile );
   
-  panel.setGeometry(100, 100, 800, 600);
-  panel.show();
+  panel->setGeometry(100, 100, 400, 300);
+  panel->show();
 
   return app.exec();
 }

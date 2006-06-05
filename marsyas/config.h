@@ -14,7 +14,7 @@
 /* #undef MRSDIAGNOSTIC */
 
 /* Enable Marsyas Warnings */
-/* #undef MRSWARNING */
+#define MRSWARNING 1
 
 /* Name of package */
 #define PACKAGE "marsyas"

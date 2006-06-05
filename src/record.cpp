@@ -28,7 +28,6 @@
 #include "Accumulator.h"
 #include "MidiInput.h"
 #include "CommandLineOptions.h"
-#include "RtMidi.h"
 
 #include <string> 
 #include <iostream> 
