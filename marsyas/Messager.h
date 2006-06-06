@@ -67,6 +67,7 @@
 #define __STK_REALTIME__
 
 #ifndef WIN32
+#include <sys/types.h>
 #include <sys/select.h> 
 #endif 
 
