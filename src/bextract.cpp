@@ -581,13 +581,12 @@ void bextract_train(vector<Collection> cls, natural label,
   // which can be used for real-time classification 
 
   
-  /* MarSystem* dest=NULL;
+  MarSystem* dest=NULL;
   if (pluginName != EMPTYSTRING) // output to stdout 
     {
       dest = mng.create("AudioSink", "dest");
       dest->updctrl("bool/mute", true);
     }
-  */ 
   
   
   // Calculate windowed power spectrum and then 
@@ -666,8 +665,8 @@ void bextract_train(vector<Collection> cls, natural label,
   
   featureNetwork->addMarSystem(src->clone());
   
-  // if (pluginName != EMPTYSTRING) // don't put audio object
-  // featureNetwork->addMarSystem(dest);
+  if (pluginName != EMPTYSTRING) // don't put audio object
+   featureNetwork->addMarSystem(dest);
   
   featureNetwork->addMarSystem(mng.create("Features", "features"));
   

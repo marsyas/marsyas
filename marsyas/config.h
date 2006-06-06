@@ -13,7 +13,7 @@
 /* Enable Marsyas Diagnostics */
 /* #undef MRSDIAGNOSTIC */
 
-/* Enable Marsyas Warnings */
+/* Enable Audio IO */
 #define MRSWARNING 1
 
 /* Name of package */

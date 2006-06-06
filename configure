@@ -827,6 +827,7 @@ Optional Features:
   --enable-assert         Turn assertions on
   --enable-diagnostics    Turn diagnostics on
   --enable-warnings       Turn warnings on
+  --enable-audio          Enable Audio IO
   --enable-debug          Compile for debugging with gdb
   --enable-distributed    Compile code for distributed audio processing
                           (experimental)
@@ -3468,12 +3469,13 @@ _ACEOF
        *) echo Diagnostics disabled ;;
 esac
 
-enable_warnings="yes"
 
 # Check whether --enable-warnings or --disable-warnings was given.
 if test "${enable_warnings+set}" = set; then
   enableval="$enable_warnings"
-
+  enable_warnings=$enableval
+else
+  enable_warnings=yes
 fi;
 case "$enable_warnings" in
        yes)
@@ -3486,6 +3488,28 @@ _ACEOF
        ;;
        *) echo Warnings disabled ;;
 esac
+
+
+
+# Check whether --enable-audio or --disable-audio was given.
+if test "${enable_audio+set}" = set; then
+  enableval="$enable_audio"
+  enable_audio=$enableval
+else
+  enable_audio=yes
+fi;
+case "$enable_audio" in
+       yes)
+
+cat >>confdefs.h <<\_ACEOF
+#define MRSWARNING 1
+_ACEOF
+
+               echo Audio enabled
+       ;;
+       *) echo Audio disabled ;;
+esac
+
 
 
 # Check whether --enable-debug or --disable-debug was given.

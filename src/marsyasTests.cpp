@@ -290,16 +290,8 @@ test_fft(string sfName)
   series->addMarSystem(mng.create("SoundFileSource","src"));
   series->addMarSystem(mng.create("Spectrum", "spk"));
   series->addMarSystem(mng.create("InvSpectrum", "ispk"));
-  series->addMarSystem(mng.create("Gain", "g1"));
   series->addMarSystem(mng.create("SoundFileSink", "dest"));
 
-  /* MarSystem* innerSeries = mng.create("Series", "inner");
-  innerSeries->addMarSystem(mng.create("Spectrum", "inner_spk"));
-  innerSeries->addMarSystem(mng.create("InvSpectrum", "inner_ispk"));  
-  innerSeries->addMarSystem(mng.create("Gain", "g2"));  
-  series->addMarSystem(innerSeries);
-  */ 
-  
   series->updctrl("SoundFileSource/src/string/filename", sfName);
   series->updctrl("SoundFileSink/dest/string/filename",  "sftransformOutput.au");
 
@@ -308,9 +300,6 @@ test_fft(string sfName)
   
   while (series->getctrl("SoundFileSource/src/bool/notEmpty").toBool())
     {
-      g = series->getctrl("Gain/g1/real/gain").toReal();
-      g+=0.01;
-      series->updctrl("Gain/g1/real/gain",g);
       series->tick();
       i++; 
     }
