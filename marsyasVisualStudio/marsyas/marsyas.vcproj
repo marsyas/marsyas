@@ -252,6 +252,9 @@
 				RelativePath="..\..\marsyas\LPCResyn.cpp">
 			</File>
 			<File
+				RelativePath="..\..\marsyas\LPCwarped.cpp">
+			</File>
+			<File
 				RelativePath="..\..\marsyas\MarControls.cpp">
 			</File>
 			<File
@@ -654,6 +657,9 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\Limiter.h">
+			</File>
+			<File
+				RelativePath="..\..\marsyas\LPCwarped.h">
 			</File>
 			<File
 				RelativePath="..\..\marsyas\MarControls.h">
