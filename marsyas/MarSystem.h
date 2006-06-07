@@ -52,6 +52,7 @@ extractors like Spectral Centroid.
 #include <vector>
 #include <iostream>
 #include <map>
+#include <string>
 
 
 
