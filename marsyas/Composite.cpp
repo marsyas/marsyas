@@ -187,8 +187,15 @@ Composite::hasControl(string cname)
     }
   
   string prefix = "/" + type_ + "/" + name_;
-  string childcontrol = cname.substr(prefix.length(), cname.length()-prefix.length());  
-  string cprefix = cname.substr(0, prefix.length());
+
+  natural cname_l = cname.length();
+  natural prefix_l = prefix.length();
+  
+  if ( cname_l <= prefix_l )
+  	return false;
+	  
+  string childcontrol = cname.substr(prefix_l, cname_l-prefix_l);  
+  string cprefix = cname.substr(0, prefix_l);
   
   // wrong type 
   if (cprefix != prefix) 
