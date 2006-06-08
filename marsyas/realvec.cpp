@@ -105,7 +105,6 @@ realvec::operator=(const realvec& a)
 }
 
 
-
 real *
 realvec::getData()
 {
@@ -122,6 +121,23 @@ realvec::mean()
     }
   if (sum != 0.0) sum /= size_;
   return sum;
+}
+
+
+void
+realvec::meanSample(realvec &means)
+{
+   means.create(rows_);
+   
+   for( natural i=0 ; i<rows_ ; i++ )
+   {
+      for( natural j=0 ; j<cols_ ; j++ )
+      {
+         means.data_[i] += data_[rows_*j + i];
+      }
+      if( cols_ != 0 )
+         means.data_[i] /= cols_;
+   }
 }
 
 
@@ -159,11 +175,40 @@ realvec::var()
 }
 
 
-
 real 
 realvec::std()
 {
   return sqrt(var());
+}
+
+
+void
+realvec::stdSample(realvec &stds)
+{
+   realvec means;
+   meanSample(means);
+   stdSample(means,stds);
+}
+
+
+void
+realvec::stdSample(realvec &means, realvec &stds)
+{
+   stds.create(rows_);
+   
+   for( natural i=0 ; i<rows_ ; i++ )
+   {
+      for( natural j=0 ; j<cols_ ; j++ )
+      {
+         stds.data_[i] += ( data_[rows_*j + i] - means.data_[i] ) * 
+         ( data_[rows_*j + i] - means.data_[i] );
+      }
+      if( cols_ != 0 ){
+         stds.data_[i] /= cols_;
+         stds.data_[i] = sqrt(stds.data_[i]);
+      }
+      
+   }
 }
 
  

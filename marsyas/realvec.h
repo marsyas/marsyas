@@ -116,8 +116,11 @@ public:
 
   // Statistics 
   real mean();
+  void meanSample(realvec &means);
   real sum();
   real std();
+  void stdSample(realvec &stds);
+  void stdSample(realvec &means, realvec &stds);
   real var();
   void abs();
   void sqr();
