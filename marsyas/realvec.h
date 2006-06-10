@@ -97,8 +97,7 @@ public:
   realvec& operator-=(const real val);
 
   friend realvec operator+(const realvec& vec1, const realvec& vec2);
-  friend realvec operator-(const realvec& vec1, const realvec& vec2);
-  
+  friend realvec operator-(const realvec& vec1, const realvec& vec2);  
   
   // item access
   real& operator()(const natural i);
@@ -106,13 +105,16 @@ public:
   real& operator()(const long r, const long c);
   real operator()(const long r, const long c) const;
   
+  // Matlab-like indexing
+  realvec& operator()(std::string r, std::string c);
+  realvec& operator()(std::string r);
+  
   // output functions 
   void debug_info();
   void write(std::string filename);
   void read(std::string filename);
   friend std::ostream& operator<<(std::ostream&, const realvec&);
   friend std::istream& operator>>(std::istream&, realvec&);
-
 
   // Statistics 
   real mean();
@@ -238,10 +240,6 @@ real& realvec::operator()(const long r, const long c)
   MRSASSERT(r < rows_);
   MRSASSERT(c < cols_);
 
-  
-
-
-
   return data_[c * rows_ + r];  
 }
 
@@ -263,7 +261,6 @@ real& realvec::operator()(const natural i)
   
   return data_[i];
 }
-
 
 
 #endif /* !MARSYAS_REALVEC_H */

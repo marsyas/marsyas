@@ -79,7 +79,7 @@ Annotator::update()
      while( labels_str_.length() != 0 )
      {
         natural i = labels_str_.find(",");
-        labels_.push_back( atoi( labels_str_.substr(0, i).c_str() ) );
+        labels_.push_back( strtol( labels_str_.substr(0, i).c_str() , NULL , 10 ) );
         labels_str_ = labels_str_.substr( i+1 , labels_str_.length()-i-1 );
      }
      

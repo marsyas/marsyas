@@ -551,6 +551,135 @@ operator-(const realvec& vec1, const realvec& vec2)
   return diff;
 }
 
+// Jen
+
+realvec&
+realvec::operator()(std::string r, std::string c)
+{
+   natural r_l = r.length();
+   natural c_l = c.length();
+   
+   natural r_c = r.find(":");
+   natural c_c = c.find(":");
+   
+   natural r_a;
+   natural r_b;
+   
+   natural c_a;
+   natural c_b;
+   
+   char *endptr;
+   
+   MRSASSERT( (r_c == 0 && r_l == 1) || (r_c == string::npos) || (r_c>0 && r_l-r_c>1) );
+   MRSASSERT( (c_c == 0 && c_l == 1) || (c_c == string::npos) || (c_c>0 && c_l-c_c>1) );
+   
+   if( r_c != string::npos && r_l > 1 )
+   {
+      r_a = (natural)strtol( r.substr(0,r_c).c_str() , &endptr , 10  );
+      MRSASSERT( *endptr == '\0' );
+      r_b = (natural)strtol( r.substr(r_c+1,r_l-r_c-1).c_str() , &endptr , 10  );
+      MRSASSERT( *endptr == '\0' );
+   }
+   else if( r_c == string::npos )
+   {
+      r_a = r_b = (natural)strtol( r.c_str() , &endptr , 10 );
+      MRSASSERT( *endptr == '\0' );
+   }
+   else
+   {
+      r_a = 0;
+      r_b = rows_-1;
+   }
+   
+   MRSASSERT( r_a >= 0 && r_b < rows_ );
+   
+   if( c_c != string::npos && c_l > 1 )
+   {
+      c_a = (natural)strtol( c.substr(0,c_c).c_str() , &endptr , 10  );
+      MRSASSERT( *endptr == '\0' );
+      c_b = (natural)strtol( c.substr(c_c+1,c_l-c_c-1).c_str() , &endptr , 10 );      
+      MRSASSERT( *endptr == '\0' );
+   }
+   else if( c_c == string::npos )
+   {
+      c_a = c_b = (natural)strtol( c.c_str() , &endptr , 10 );
+      MRSASSERT( *endptr == '\0' );
+   }
+   else
+   {
+      c_a = 0;
+      c_b = cols_-1;
+   }
+   
+   MRSASSERT( c_a >= 0 && c_b < cols_ );
+   
+   r_l = r_b - r_a + 1;
+   c_l = c_b - c_a + 1;
+   
+   realvec matrix;
+   
+   matrix.create( r_l , c_l );
+   
+   for( c_c = c_a ; c_c <= c_b ; c_c++ )
+   {
+      for( r_c = r_a ; r_c <= r_b ; r_c++ )
+      {
+         matrix.data_[(c_c-c_a) * r_l + (r_c-r_a)] = data_[c_c * rows_ + r_c];
+      }
+   }       
+   
+   return matrix;
+}
+
+realvec&
+realvec::operator()(std::string c)
+{
+   natural c_l = c.length();
+   
+   natural c_c = c.find(":");
+   
+   natural c_a;
+   natural c_b;
+   
+   char *endptr;
+   
+   MRSASSERT( (c_c == 0 && c_l == 1) || (c_c == string::npos) || (c_c>0 && c_l-c_c>1) );
+   
+   if( c_c != string::npos && c_l > 1 )
+   {
+      c_a = (natural)strtol( c.substr(0,c_c).c_str() , &endptr , 10  );
+      MRSASSERT( *endptr == '\0' );
+      c_b = (natural)strtol( c.substr(c_c+1,c_l-c_c-1).c_str() , &endptr , 10  );      
+      MRSASSERT( *endptr == '\0' );
+   }
+   else if( c_c == string::npos )
+   {
+      c_a = c_b = (natural)strtol( c.c_str() , &endptr , 10 );
+      MRSASSERT( *endptr == '\0' );
+   }
+   else
+   {
+      c_a = 0;
+      c_b = (rows_*cols_)-1;
+   }
+   
+   MRSASSERT( c_a >= 0 && c_b < rows_*cols_ );   
+   
+   c_l = c_b - c_a + 1;
+   
+   realvec matrix;
+   
+   matrix.create( c_l );
+   
+   for( c_c = c_a ; c_c <= c_b ; c_c++ )
+   {
+      matrix.data_[(c_c-c_a)] = data_[c_c];
+   }
+   
+   return matrix;
+}
+
+// Jen end
 
 void 
 realvec::send(Communicator *com)
