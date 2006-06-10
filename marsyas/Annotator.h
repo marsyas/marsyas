@@ -27,12 +27,16 @@
 
 #include "MarSystem.h"	
 
-
+#include <vector>
 
 class Annotator: public MarSystem
 {
 private: 
   void addControls();
+   std::vector<natural> labels_;
+   std::string labels_str_;
+   natural labels_index_;
+   
 public:
   Annotator(std::string name);
   ~Annotator();

@@ -53,6 +53,10 @@ Annotator::addControls()
 {
   addDefaultControls();
   addctrl("natural/label", 0);
+  addctrl("string/labels","");
+  setctrlState("string/labels",true);
+  labels_str_ = "";
+  labels_index_ = 0;  
 }
 
 
@@ -66,6 +70,23 @@ Annotator::update()
   setctrl("real/osrate", getctrl("real/israte"));
 
   setctrl("string/onObsNames", getctrl("string/inObsNames"));
+  
+  if( labels_str_.compare( getctrl("string/labels").toString() ) != 0 )
+  {     
+     labels_str_ = getctrl("string/labels").toString();
+     labels_.clear();
+     
+     while( labels_str_.length() != 0 )
+     {
+        natural i = labels_str_.find(",");
+        labels_.push_back( atoi( labels_str_.substr(0, i).c_str() ) );
+        labels_str_ = labels_str_.substr( i+1 , labels_str_.length()-i-1 );
+     }
+     
+     labels_index_ = 0;
+  }
+  
+  
   defaultUpdate();
 }
 
@@ -77,17 +98,24 @@ Annotator::process(realvec& in, realvec& out)
 
   natural label = getctrl("natural/label").toNatural();  
   
-  
-  
   for (o=0; o < inObservations_; o++)
     for (t = 0; t < inSamples_; t++)
       {
 	out(o,t) =  in(o,t);
       }
-  for (t=0; t < inSamples_; t++) 
-    {
-      out(onObservations_-1, t) = (real)label;
-    }
+
+       
+       for (t=0; t < inSamples_; t++) 
+       {
+          if( labels_.size() == 0 ){
+             out(onObservations_-1, t) = (real)label;
+          }
+          else{
+             out(onObservations_-1, t) = (real)labels_[labels_index_];
+             labels_index_ = (labels_index_+1) % labels_.size();
+             
+          }
+       }       
   
       
   
