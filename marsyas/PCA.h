@@ -45,6 +45,7 @@ private:
    realvec corr_matrix_;
    natural dims_;
    natural npc_;
+   realvec npcs_;
    
    realvec means_;
    realvec stds_;

@@ -58,9 +58,11 @@ void
 PCA::addControls()
 {
   addDefaultControls();
+   npcs_.create(3,3);
    
    addctrl("natural/npc",3);
    setctrlState("natural/npc",true);
+   addctrl("realvec/pcs",npcs_);
    dims_ = 0;
 }
 
@@ -68,7 +70,7 @@ void
 PCA::update()
 {
   MRSDIAG("PCA.cpp - PCA:update");
-  
+   
   setctrl("natural/onSamples", getctrl("natural/inSamples"));
   setctrl("natural/onObservations", getctrl("natural/npc"));
   setctrl("real/osrate", getctrl("real/israte"));
@@ -77,10 +79,14 @@ PCA::update()
   onObservations_ = getctrl("natural/onObservations").toNatural();
   
   npc_ = getctrl("natural/npc").toNatural();
+    
+  if( npcs_.getRows() != inObservations_ || npcs_.getCols() != npc_ )
+      npcs_.create(inObservations_,npc_);
   
   if( npc_ != onObservations_ ){
+     
      updctrl("natural/onObservations", npc_ );
-     onObservations_ = npc_;
+     onObservations_ = npc_;     
   }
     
   if( dims_ != inObservations_ ) 
@@ -139,8 +145,8 @@ PCA::process(realvec& in, realvec& out)
   tqli( evals, interm, inObservations_, corr_matrix_);
        
   /* evals now contains the eigenvalues,
-     corr_matrix_ now contain the associated eigenvectors. */
-  
+     corr_matrix_ now contains the associated eigenvectors. */
+    
   /* Project row data onto the top "npc_" principal components. */  
   for( t=0 ; t<inSamples_ ; t++ )
   {
@@ -151,9 +157,13 @@ PCA::process(realvec& in, realvec& out)
      {
         out(o,t) = 0.0;
         for(o2=0 ; o2 < inObservations_ ; o2++)
+        {
            out(o,t) += interm[o2] * corr_matrix_(o2,inObservations_-o-1);
+           npcs_(o2,o) = corr_matrix_(o2,inObservations_-o-1);
+        }
      }
   }    
+  setctrl("realvec/pcs",npcs_);
 }
 
 /*  Reduce a real, symmetric matrix to a symmetric, tridiag. matrix. */
