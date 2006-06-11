@@ -106,8 +106,8 @@ public:
   real operator()(const long r, const long c) const;
   
   // Matlab-like indexing
-  realvec& operator()(std::string r, std::string c);
-  realvec& operator()(std::string r);
+  realvec operator()(std::string r, std::string c);
+  realvec operator()(std::string r);
   
   // output functions 
   void debug_info();

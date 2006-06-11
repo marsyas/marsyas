@@ -553,7 +553,7 @@ operator-(const realvec& vec1, const realvec& vec2)
 
 // Jen
 
-realvec&
+realvec
 realvec::operator()(std::string r, std::string c)
 {
    natural r_l = r.length();
@@ -631,7 +631,7 @@ realvec::operator()(std::string r, std::string c)
    return matrix;
 }
 
-realvec&
+realvec
 realvec::operator()(std::string c)
 {
    natural c_l = c.length();
