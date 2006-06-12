@@ -3753,7 +3753,7 @@ fi
 
 
 
-                                                                                                                                                                                                                                                                              ac_config_files="$ac_config_files Makefile marsyas/Makefile src/Makefile src/plugins/Makefile src/tcl/Makefile distributed/Makefile marsyas/system/Makefile doc/Makefile doc/marsyas/Makefile marsyasVisualStudio/Makefile marsyasVisualStudio/sfplay/Makefile marsyasVisualStudio/sfinfo/Makefile marsyasVisualStudio/phasevocoder/Makefile marsyasVisualStudio/marsyas/Makefile marsyasVisualStudio/sfplugin/Makefile marsyasVisualStudio/bextract/Makefile marsyasVisualStudio/extract/Makefile marsyasVisualStudio/classifyFile/Makefile qt4GUIs/Makefile qt4GUIs/MarPlayer/Makefile qt4GUIs/MarPlayer/images/Makefile qt4GUIs/MarGrid/Makefile qt4GUIs/Marx2DGraph/Makefile qt4GUIs/MarxGLMultiBufferGraph/Makefile qt4GUIs/Marx2DGraphStacked/Makefile qt4GUIs/MarxGL2Din3DSpaceGraph/Makefile qt4GUIs/MarxGLGraph/Makefile"
+                                                                                                                                                                                                                                                                    ac_config_files="$ac_config_files Makefile marsyas/Makefile src/Makefile src/plugins/Makefile src/tcl/Makefile distributed/Makefile doc/Makefile doc/marsyas/Makefile marsyasVisualStudio/Makefile marsyasVisualStudio/sfplay/Makefile marsyasVisualStudio/sfinfo/Makefile marsyasVisualStudio/phasevocoder/Makefile marsyasVisualStudio/marsyas/Makefile marsyasVisualStudio/sfplugin/Makefile marsyasVisualStudio/bextract/Makefile marsyasVisualStudio/extract/Makefile marsyasVisualStudio/classifyFile/Makefile qt4GUIs/Makefile qt4GUIs/MarPlayer/Makefile qt4GUIs/MarPlayer/images/Makefile qt4GUIs/MarGrid/Makefile qt4GUIs/Marx2DGraph/Makefile qt4GUIs/MarxGLMultiBufferGraph/Makefile qt4GUIs/Marx2DGraphStacked/Makefile qt4GUIs/MarxGL2Din3DSpaceGraph/Makefile qt4GUIs/MarxGLGraph/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -4318,7 +4318,6 @@ do
   "src/plugins/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/plugins/Makefile" ;;
   "src/tcl/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/tcl/Makefile" ;;
   "distributed/Makefile" ) CONFIG_FILES="$CONFIG_FILES distributed/Makefile" ;;
-  "marsyas/system/Makefile" ) CONFIG_FILES="$CONFIG_FILES marsyas/system/Makefile" ;;
   "doc/Makefile" ) CONFIG_FILES="$CONFIG_FILES doc/Makefile" ;;
   "doc/marsyas/Makefile" ) CONFIG_FILES="$CONFIG_FILES doc/marsyas/Makefile" ;;
   "marsyasVisualStudio/Makefile" ) CONFIG_FILES="$CONFIG_FILES marsyasVisualStudio/Makefile" ;;
@@ -4736,7 +4735,6 @@ s,@INSTALL@,$ac_INSTALL,;t t
     src/plugins/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
     src/tcl/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
     distributed/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
-    marsyas/system/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
     doc/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
     doc/marsyas/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
     marsyasVisualStudio/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
