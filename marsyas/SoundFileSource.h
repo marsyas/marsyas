@@ -58,6 +58,10 @@ are children of this class.
 #include "MP3FileSource.h"
 #endif
 
+#ifdef OGG_VORBIS
+#include "OggFileSource.h"
+#endif
+
 #include "CollectionFileSource.h"
 
 #include <stdio.h>

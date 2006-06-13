@@ -304,6 +304,14 @@ SoundFileSource::checkType()
     }
 #endif 
   
+#ifdef OGG_VORBIS
+  else if (ext == ".ogg")
+    {
+      delete src_;
+      src_ = new OggFileSource(name_);
+    }
+#endif 
+
   else 
     {
       
