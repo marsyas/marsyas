@@ -206,12 +206,13 @@ void OggFileSource::process(realvec& in, realvec& out)
     int bitstream=0;
     size_t read = 0;
     long r = 0;
+    bool eof = false; 
     do
     {
       r = ov_read(&vf, buf+read, size-read, 0, 2/*use 1 for 8bit samples..use 2 for 16*/, 1, &bitstream);
       if(r <= 0)
       {
-        closeFile();
+        eof = true;
         break;
       }
       read += (size_t) r;
@@ -237,6 +238,10 @@ void OggFileSource::process(realvec& in, realvec& out)
       }
     }
     delete [] buf;
+    
+    if(eof)
+	  closeFile();
+        
 #endif
   }
   else
