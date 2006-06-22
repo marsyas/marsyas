@@ -91,14 +91,14 @@ ac_aux_dir = @ac_aux_dir@
 
 EXTRA_DIST = Future-Work.html History.html index.html The-Index.html Installation.html Introduction.html Linux-Installation.html Mac-OSX-Installation.html Sample-Executables.html Understanding-MarSystems-and-Composites.html Users-and-Projects.html Windows--cygwin-.html Windows--Visual-Studio-.html Building-the-dataflow-network.html Writing-your-own-MarSystems.html marsyasArchitecture1.png
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
-CONFIG_HEADER = ../../[marsyas/config.h]
+CONFIG_HEADER = ../../marsyas/config.h
 CONFIG_CLEAN_FILES = 
 DIST_COMMON =  Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:

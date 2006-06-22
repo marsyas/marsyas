@@ -1,4 +1,4 @@
-dnl aclocal.m4 generated automatically by aclocal 1.4-p6
+dnl aclocal.m4t generated automatically by aclocal 1.4-p6
 
 dnl Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
@@ -294,6 +294,19 @@ AC_SUBST(QT_GUILINK)
 AC_SUBST(QASSISTANTCLIENT_LDADD)
 
 ])
+
+# Define a conditional.
+
+AC_DEFUN([AM_CONDITIONAL],
+[AC_SUBST($1_TRUE)
+AC_SUBST($1_FALSE)
+if $2; then
+  $1_TRUE=
+  $1_FALSE='#'
+else
+  $1_TRUE='#'
+  $1_FALSE=
+fi])
 
 # lib-prefix.m4 serial 4 (gettext-0.14.2)
 dnl Copyright (C) 2001-2005 Free Software Foundation, Inc.
@@ -1113,19 +1126,6 @@ fi
 test -z "$LD" && AC_MSG_ERROR([no acceptable ld found in \$PATH])
 AC_LIB_PROG_LD_GNU
 ])
-
-# Define a conditional.
-
-AC_DEFUN([AM_CONDITIONAL],
-[AC_SUBST($1_TRUE)
-AC_SUBST($1_FALSE)
-if $2; then
-  $1_TRUE=
-  $1_FALSE='#'
-else
-  $1_TRUE='#'
-  $1_FALSE=
-fi])
 
 # Like AC_CONFIG_HEADER, but automatically create stamp file.
 
