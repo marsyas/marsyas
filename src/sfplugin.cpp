@@ -1,5 +1,5 @@
 
-#include <stdio.h>
+#include <cstdio>
 
 #include "Collection.h"
 #include "MarSystemManager.h"  
@@ -8,7 +8,9 @@
 
 #include <fstream> 
 #include <iostream>
+
 using namespace std;
+using namespace Marsyas;
 
 
 #define EMPTYSTRING "MARSYAS_EMPTY"
@@ -86,8 +88,8 @@ void sfplugin(vector<string> soundfiles, string pluginName)
       cout << "Manager does not support system " << endl;
       exit(1);
     }
-  real srate;
-  natural nChannels;
+  mrs_real srate;
+  mrs_natural nChannels;
 
   // run audio through the plugin for each file in the collection
   // assume there is a SoundFileSource in the plugin 
@@ -107,35 +109,35 @@ void sfplugin(vector<string> soundfiles, string pluginName)
       sfName = *sfi;
       cout << "sfName = " << sfName << endl;
       
-      msys->updctrl("string/filename", sfName);
+      msys->updctrl("mrs_string/filename", sfName);
       
       
 
       // hack for teligence 
-   //    natural size = msys->getctrl("SoundFileSource/src/natural/size").toNatural();
-   //    natural inSamples = msys->getctrl("SoundFileSource/src/natural/inSamples").toNatural();
+   //    mrs_natural size = msys->getctrl("SoundFileSource/src/mrs_natural/size").toNatural();
+   //    mrs_natural inSamples = msys->getctrl("SoundFileSource/src/mrs_natural/inSamples").toNatural();
 
      //  cout << "size = " << size << endl;
      //  cout << "inSamples = " << inSamples << endl;
-     //  natural memSize = size / inSamples;
+     //  mrs_natural memSize = size / inSamples;
      //  cout << "memSize = " << memSize << endl;
-     //  msys->updctrl("Confidence/confidence/natural/memSize", memSize);
+     //  msys->updctrl("Confidence/confidence/mrs_natural/memSize", memSize);
      //  cout << (*msys) << endl;      
       
       // end of hack 
       
       
-      srate = msys->getctrl("real/israte").toReal();
+      srate = msys->getctrl("mrs_real/israte").toReal();
       
       // playback offset and duration 
-      offset = (natural) (start * srate);
-      duration = (natural) (length * srate);
+      offset = (mrs_natural) (start * srate);
+      duration = (mrs_natural) (length * srate);
 
-      msys->updctrl("natural/pos", offset);     
+      msys->updctrl("mrs_natural/pos", offset);     
       
-      natural samplesPlayed = 0;
-      natural onSamples = msys->getctrl("natural/onSamples").toNatural();
-      natural wc = 0;
+      mrs_natural samplesPlayed = 0;
+      mrs_natural onSamples = msys->getctrl("mrs_natural/onSamples").toNatural();
+      mrs_natural wc = 0;
       
       if (onetick) 
 	{
@@ -150,10 +152,10 @@ void sfplugin(vector<string> soundfiles, string pluginName)
 	      samplesPlayed += onSamples;
 	      
 	      // rewind 
-	      if (msys->getctrl("bool/notEmpty").toBool() == false)
+	      if (msys->getctrl("mrs_bool/notEmpty").toBool() == false)
 		{
 		  if (loop) 
-		    msys->updctrl("natural/pos", 0);
+		    msys->updctrl("mrs_natural/pos", 0);
 		  else 
 		    break;
 		}

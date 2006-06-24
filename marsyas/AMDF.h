@@ -28,9 +28,10 @@ the location of valleys.
 #ifndef MARSYAS_AMDF_H
 #define MARSYAS_AMDF_H
 
-
 #include "MarSystem.h"	
 
+namespace Marsyas
+{
 
 class AMDF: public MarSystem
 {
@@ -44,6 +45,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 

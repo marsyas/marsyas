@@ -27,12 +27,8 @@
 
 */
 
-
-
 #ifndef MARSYAS_NETWORKSOCKET_H
 #define MARSYAS_NETWORKSOCKET_H
-
-
 
 #ifndef WIN32
 #include "config.h"
@@ -47,7 +43,6 @@
 #include <errno.h>
 #else 
 
-
 #ifndef CYGWIN
 #include <Winsock2.h>
 #include "win_config.h"
@@ -55,15 +50,16 @@
 #include <cygwin/in.h> 
 #endif 
 
-#define MSG_WAITALL NULL  // HACK HACK NOT SURE IF IT WORKS 
+#define MSG_WAITALL NULL  // HACK HACK NOT SURE IF IT WORKS [!] macro redefinition => Winsock2.h
 #endif
-
 
 #include "MarSystem.h"
 #include "common.h"
 
 #define MAXCONNECT 1
 
+namespace Marsyas
+{
 
 class NetworkSocket: public MarSystem
 {
@@ -107,7 +103,7 @@ class NetworkSocket: public MarSystem
   static bool valid( int sockfd ); 
   
   //! returns to the caller of the marsystem, the controls from the remote host
-  real* const recvControls();
+  mrs_real* const recvControls();
   
 protected:
   
@@ -115,18 +111,18 @@ protected:
   bool createSocket( void );
 
   //! routine setup for a server (handles TCP and UDP), assume no controls
-  bool setupSource ( natural dataPort = 5009, natural controlsPort = 0 );
+  bool setupSource ( mrs_natural dataPort = 5009, mrs_natural controlsPort = 0 );
   
   //! routine setup for a client to connect to a host, assume no controls
-  bool setupSink ( const std::string& host, natural dataPort = 5009, natural controlsPort = 0 );
+  bool setupSink ( const std::string& host, mrs_natural dataPort = 5009, mrs_natural controlsPort = 0 );
    
   //! sends an vector to a TCP socket connection
-  bool sendTCP ( realvec& in, natural inSamples, 
-  			natural inObservations, real israte );
+  bool sendTCP ( realvec& in, mrs_natural inSamples, 
+  			mrs_natural inObservations, mrs_real israte );
 	      
   //! sends an vector to a UDP socket connection
-  bool sendUDP ( realvec& in, natural inSamples, 
-  			natural inObservations, real israte );
+  bool sendUDP ( realvec& in, mrs_natural inSamples, 
+  			mrs_natural inObservations, mrs_real israte );
   
   //! receives a vector from a TCP socket connetion
   int recvTCP ( realvec& out ) ;
@@ -150,15 +146,16 @@ protected:
   
   
   bool byteSwap;
-  real swap( real argument );
-  real controls[4];	// a pointer to the controls received
+  mrs_real swap( mrs_real argument );
+  mrs_real controls[4];	// a pointer to the controls received
   
 private:
-
 
   struct sockaddr_in m_addr, c_addr, cliAddr, cliCont;
   int count;
   		 
 };
+
+}//namespace Marsyas
 
 #endif

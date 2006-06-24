@@ -21,10 +21,12 @@
 #if !defined(__SOCKET_H)
 #define __SOCKET_H
 
-
 #include <stdio.h>
 #include <string.h>
 #include "common.h" 
+
+namespace Marsyas
+{
 
 class Socket 
 {
@@ -102,5 +104,7 @@ class Socket
   bool server;
 
 };
+
+}//namespace Marsyas
 
 #endif // defined(__SOCKET_H)

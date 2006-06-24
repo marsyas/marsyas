@@ -21,15 +21,14 @@
     \brief NetworkUDPSink
     \author Stuart Bray June 2004 
 
-    Sink for data using the UDP protocal 
+    Sink for data using the UDP protocol 
 */
-
-
 
 #include "NetworkUDPSink.h"
 #include "SocketException.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 NetworkUDPSink::NetworkUDPSink( string name )
 {
@@ -46,17 +45,17 @@ MarSystem* NetworkUDPSink::clone() const {
 
 void NetworkUDPSink::addControls() {
   addDefaultControls();
-  addctrl("real/gain", 1.0);
-  addctrl("string/host", "localhost");
-  addctrl("natural/dataPort", 5009);
-  addctrl("natural/controlsPort", 5010);
+  addctrl("mrs_real/gain", 1.0);
+  addctrl("mrs_string/host", "localhost");
+  addctrl("mrs_natural/dataPort", 5009);
+  addctrl("mrs_natural/controlsPort", 5010);
 }
 
 void NetworkUDPSink::update() {
   MRSDIAG("NetworkUDPSink.cpp - NetworkUDPSink:update");
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   defaultUpdate();
 }
 
@@ -67,9 +66,9 @@ void NetworkUDPSink::process( realvec& in, realvec& out ) {
   if ( !valid(s_sock) )
 	  refresh();
   
-  if ( !NetworkSocket::sendUDP( in, getctrl("natural/inSamples").toNatural(), 
-				getctrl("natural/inObservations").toNatural(), 
-				getctrl("real/israte").toReal() ) ) {
+  if ( !NetworkSocket::sendUDP( in, getctrl("mrs_natural/inSamples").toNatural(), 
+				getctrl("mrs_natural/inObservations").toNatural(), 
+				getctrl("mrs_real/israte").toReal() ) ) {
     throw SocketException ( "Could not write to socket." );
   }
 
@@ -87,10 +86,10 @@ void NetworkUDPSink::refresh() {
     throw SocketException ( "Could not create client socket." );
   }
 
-  natural dataPort = getctrl("natural/dataPort").toNatural();
-  natural controlsPort = getctrl("natural/controlsPort").toNatural();
+  mrs_natural dataPort = getctrl("mrs_natural/dataPort").toNatural();
+  mrs_natural controlsPort = getctrl("mrs_natural/controlsPort").toNatural();
   
-  if ( ! NetworkSocket::setupSink ( getctrl("string/host").toString(),
+  if ( ! NetworkSocket::setupSink ( getctrl("mrs_string/host").toString(),
    		dataPort, controlsPort ) ) {
     throw SocketException ( "Could not setup address structure." );
   }

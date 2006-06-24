@@ -27,12 +27,15 @@ the singal. Used for sending waveform plots to editor.
 #ifndef MARSYAS_ABSMAX_H
 #define MARSYAS_ABSMAX_H
 
-#include "MarSystem.h"	
+#include "MarSystem.h"
+
+namespace Marsyas
+{
 
 class AbsMax: public MarSystem
 {
 private:
-  real max_;
+  mrs_real max_;
   
   void addControls();
   
@@ -46,6 +49,8 @@ public:
   
   
 };
+
+}//Marsyas namespace
 
 #endif
 

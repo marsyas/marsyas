@@ -16,10 +16,10 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 #include "NoiseSource.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 	
 NoiseSource::NoiseSource(string name)
 {
@@ -54,17 +54,17 @@ void
 NoiseSource::update()
 {
 
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
   wavetableSize_ = 8*8192;  // 8192
-  wavetable_.create((natural)wavetableSize_);
+  wavetable_.create((mrs_natural)wavetableSize_);
   
   for (t=0; t < wavetableSize_; t++)
-    // wavetable_(t) = (real)(0.5 * sin(incr * t));
+    // wavetable_(t) = (mrs_real)(0.5 * sin(incr * t));
 	// Random Generator
-    wavetable_(t) = (real)(2.0 * rand() / (RAND_MAX + 1.0) );
+    wavetable_(t) = (mrs_real)(2.0 * rand() / (RAND_MAX + 1.0) );
     index_ = 0;
   defaultUpdate();
 }
@@ -77,14 +77,14 @@ NoiseSource::process(realvec &in, realvec &out)
 {
   checkFlow(in,out);
   
-  real incr = (440.0 * wavetableSize_) / (getctrl("real/israte").toReal());
+  mrs_real incr = (440.0 * wavetableSize_) / (getctrl("mrs_real/israte").toReal());
   
   
-  natural inSamples = getctrl("natural/inSamples").toNatural();
+  mrs_natural inSamples = getctrl("mrs_natural/inSamples").toNatural();
   
   for (t=0; t < inSamples; t++)
     {
-      out(0,t) = wavetable_((natural)index_);
+      out(0,t) = wavetable_((mrs_natural)index_);
       index_ += incr;
       while (index_ >= wavetableSize_)
 	index_ -= wavetableSize_;

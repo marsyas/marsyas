@@ -24,14 +24,8 @@
    (Next, Sun audio format). 
 */
 
-
-
-
 #ifndef MARSYAS_AUFILESOURCE_H
 #define MARSYAS_AUFILESOURCE_H
-
-
-
 
 
 #include "AbsSoundFileSource.h"
@@ -39,38 +33,24 @@
 #include <string> 
 #include <vector> 
 
-
-#define SND_MAGIC_NUM 0x2e736e64
+namespace Marsyas
+{
 
 /********  NeXT/Sun Soundfile Header Struct   *******/
-
 struct snd_header 
 {
-  char pref[4];
-  long hdrLength;
-  long fileLength;
-  long mode;
-  long srate;
-  long channels;
-  char comment[1024];
+	char pref[4];
+	long hdrLength;
+	long fileLength;
+	long mode;
+	long srate;
+	long channels;
+	char comment[1024];
 };
-
 
 /* Array containing descriptions of
 the various formats for the samples
 of the Next .snd/ Sun .au format */
-
-
-/* types of .snd files */  
-#define SND_FORMAT_UNSPECIFIED 0
-#define SND_FORMAT_MULAW_8     1
-#define SND_FORMAT_LINEAR_8    2
-#define SND_FORMAT_LINEAR_16   3
-#define SND_FORMAT_LINEAR_24   4
-#define SND_FORMAT_LINEAR_32   5
-#define SND_FORMAT_FLOAT       6
-
-
 
 
 class AuFileSource: public AbsSoundFileSource
@@ -88,11 +68,11 @@ private:
   FILE *sfp_;
   long sfp_begin_;
   
-  natural sampleSize_;			// in bytes
-  natural size_;  
-  natural csize_;
+  mrs_natural sampleSize_;			// in bytes
+  mrs_natural size_;  
+  mrs_natural csize_;
 
-  natural samplesOut_;
+  mrs_natural samplesOut_;
   
   
 
@@ -102,17 +82,17 @@ private:
   std::vector<std::string> sndFormats_;
   std::vector<int>    sndFormatSizes_;
   
-  natural nChannels_;
-  natural samplesToRead_;
-  natural samplesToWrite_;
-  natural samplesRead_;
+  mrs_natural nChannels_;
+  mrs_natural samplesToRead_;
+  mrs_natural samplesToWrite_;
+  mrs_natural samplesRead_;
   
 
-  real duration_;
+  mrs_real duration_;
   bool advance_;
-  natural cindex_;
+  mrs_natural cindex_;
   
-  real repetitions_;
+  mrs_real repetitions_;
   
  
 public:
@@ -123,14 +103,11 @@ public:
   void update();
   void getHeader(std::string filename);
   void process(realvec& in,realvec &out);
-  
 
-  natural getLinear16(realvec& win);
-
-  
+  mrs_natural getLinear16(realvec& win);
 };
 
-
+}//namespace Marsyas
 
 
 #endif    /* !MARSYAS_AUFILESOURCE_H */ 

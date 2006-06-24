@@ -27,9 +27,10 @@
 #ifndef MARSYAS_NETWORKUDPSINK_H
 #define MARSYAS_NETWORKUDPSINK_H
 
-
 #include "NetworkSocket.h"	
 
+namespace Marsyas
+{
 
 class NetworkUDPSink: public NetworkSocket
 {
@@ -49,5 +50,6 @@ class NetworkUDPSink: public NetworkSocket
   void refresh();
 };
 
+}//namespace Marsyas
 
 #endif 

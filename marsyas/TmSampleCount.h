@@ -28,6 +28,8 @@
 #include "TmTimer.h"
 #include "MarControlValue.h"
 
+namespace Marsyas
+{
 
 // forward declaration of MarSystem allows Scheduler.getctrl("insamples")
 // for scheduler count
@@ -53,9 +55,11 @@ public:
 
     void setReadCtrl(MarSystem* ms, std::string cname); // where to read time info
     void setScheduler(Scheduler* s);
-    natural readTimeSrc();
+    mrs_natural readTimeSrc();
     void trigger();
-    natural intervalsize(std::string interval);
+    mrs_natural intervalsize(std::string interval);
 };
+
+}//namespace Marsyas
 
 #endif

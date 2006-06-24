@@ -22,21 +22,19 @@
 
 */
 
-
-
 #ifndef MARSYAS_PLOTSINK_H
 #define MARSYAS_PLOTSINK_H
 
 #include "MarSystem.h"
 
-
-
+namespace Marsyas
+{
 
 class PlotSink: public MarSystem
 {
 private:
   void addControls();
-  natural counter_;
+  mrs_natural counter_;
   
 public:
   PlotSink(std::string name);
@@ -47,6 +45,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 
 #endif

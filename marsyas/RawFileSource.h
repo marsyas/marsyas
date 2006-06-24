@@ -24,14 +24,14 @@
    monophonic stream of 16-bit signed integers in big-endian byte
    order with a sample rate of 22050 Hz.
 */
-
+#ifndef MARSYAS_RAWFILESOURCE_H
+#define MARSYAS_RAWFILESOURCE_H
 
 #include "AbsSoundFileSource.h"
 #include <sys/stat.h>
 
-#ifndef MARSYAS_RAWFILESOURCE_H
-#define MARSYAS_RAWFILESOURCE_H
-
+namespace Marsyas
+{
 
 class RawFileSource : public AbsSoundFileSource
 {
@@ -39,20 +39,20 @@ class RawFileSource : public AbsSoundFileSource
 private: 
   
   FILE *sfp_;
-  real time_;
-  real rate_;				// loop frequency
+  mrs_real time_;
+  mrs_real rate_;				// loop frequency
   
   short *buffer_;
   
   
   realvec data_;
-  real phaseOffset_;
+  mrs_real phaseOffset_;
   
   unsigned long fileSize_;
   unsigned long bufferSize_;
   bool byteSwap_;
   std::string filename_;
-  natural ch_, pos_, nChannels_;
+  mrs_natural ch_, pos_, nChannels_;
 
   void addControls();
   void swap16(unsigned char *ptr);
@@ -73,11 +73,12 @@ public:
   
   
   // helpers for synthesis routines
-  void setFrequency(real frequency);
+  void setFrequency(mrs_real frequency);
   void openFile(std::string filename);
   
 	
 };
 
+}//namespace Marsyas
 
 #endif    /* !MARSYAS_RAWFILESOURCE_H */ 

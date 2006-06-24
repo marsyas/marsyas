@@ -25,20 +25,21 @@
 #ifndef MARSYAS_HARMONICENHANCER_H
 #define MARSYAS_HARMONICENHANCER_H
 
-
 #include "MarSystem.h"	
 #include <cfloat> 
 
+namespace Marsyas
+{
 
 class HarmonicEnhancer: public MarSystem
 {
 private: 
   void addControls();
-  void harm_prob(real& pmax, real factor, 
-			    real& s1, natural& t1, 
-			    real& s2, natural& t2, 
-			    natural tmx,
-			    natural size, 
+  void harm_prob(mrs_real& pmax, mrs_real factor, 
+			    mrs_real& s1, mrs_natural& t1, 
+			    mrs_real& s2, mrs_natural& t2, 
+			    mrs_natural tmx,
+			    mrs_natural size, 
 		 realvec& in);
 
   realvec flag_;
@@ -52,6 +53,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 	

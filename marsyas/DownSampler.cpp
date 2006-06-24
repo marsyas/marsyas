@@ -24,12 +24,10 @@
     Downsample the signal by an integer factor.
 */
 
-
-
-
 #include "DownSampler.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 
 DownSampler::DownSampler(string name)
@@ -39,11 +37,9 @@ DownSampler::DownSampler(string name)
   addControls();
 }
 
-
 DownSampler::~DownSampler()
 {
 }
-
 
 MarSystem* 
 DownSampler::clone() const 
@@ -55,8 +51,8 @@ void
 DownSampler::addControls()
 {
   addDefaultControls();
-  addctrl("natural/factor", 2);
-  setctrlState("natural/factor", true);
+  addctrl("mrs_natural/factor", 2);
+  setctrlState("mrs_natural/factor", true);
 }
 
 
@@ -65,13 +61,12 @@ DownSampler::update()
 {
   MRSDIAG("DownSampler.cpp - DownSampler:update");
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples").toNatural() / getctrl("natural/factor").toNatural());
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples").toNatural() / getctrl("mrs_natural/factor").toNatural());
   
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  natural factor = getctrl("natural/factor").toNatural();
-  setctrl("real/osrate", getctrl("real/israte").toReal() / factor);
-
-  
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  mrs_natural factor = getctrl("mrs_natural/factor").toNatural();
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal() / factor);
+ 
   defaultUpdate();
 }
 
@@ -81,11 +76,11 @@ DownSampler::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 
-  natural factor = getctrl("natural/factor").toNatural();
+  mrs_natural factor = getctrl("mrs_natural/factor").toNatural();
   for (o=0; o < inObservations_; o++)
     for (t = 0; t < inSamples_ / factor; t++)
       {
-	out(o,t) = in(o,t * factor);
+		out(o,t) = in(o,t * factor);
       }
 
 }

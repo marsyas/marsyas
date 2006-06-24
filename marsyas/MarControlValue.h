@@ -25,17 +25,17 @@
 
 */
 
-
-
 #ifndef __MARCONTROLVALUE__
 #define __MARCONTROLVALUE__
-
 
 #include <string> 
 #include <iostream>
 
 #include "realvec.h"
 #include "common.h"
+
+namespace Marsyas
+{
 
 enum types_
 {
@@ -53,8 +53,8 @@ class MarControlValue
 protected:
   int type_;
   
-  real r;
-  natural n;
+  mrs_real r;
+  mrs_natural n;
   bool b;
   std::string s;
   realvec v;
@@ -74,19 +74,19 @@ public:
   MarControlValue(bool be);
   
   
-  // MarControlValue(natural i);
+  // MarControlValue(mrs_natural i);
   MarControlValue(realvec& ve);
 
   
-  bool update(real re);
-  bool update(natural ne);
+  bool update(mrs_real re);
+  bool update(mrs_natural ne);
   bool update(bool be);
   bool update(realvec ve);
   bool update(std::string st);
   bool update(MarControlValue &val);
   
-  real toReal();
-  natural toNatural();
+  mrs_real toReal();
+  mrs_natural toNatural();
   bool toBool();
   std::string toString();
   realvec toVec(); 
@@ -97,6 +97,8 @@ public:
   friend std::ostream& operator<<(std::ostream&, const MarControlValue&);
   friend bool operator!=(MarControlValue& v1, MarControlValue& v2);
 };
+
+}//namespace Marsyas
 
 #endif
  

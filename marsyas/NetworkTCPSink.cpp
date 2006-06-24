@@ -25,12 +25,11 @@
     NetworkSink that uses the TCP communication protocol
 */
 
-
-
 #include "NetworkTCPSink.h"
 #include "SocketException.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 NetworkTCPSink::NetworkTCPSink( string name ) 
 {
@@ -47,17 +46,17 @@ MarSystem* NetworkTCPSink::clone() const {
 
 void NetworkTCPSink::addControls() {
   addDefaultControls();
-  addctrl("real/gain", 1.0);
-  addctrl("string/host", "localhost");
-  addctrl("natural/dataPort", 5009);
-  addctrl("natural/controlsPort", 5010);
+  addctrl("mrs_real/gain", 1.0);
+  addctrl("mrs_string/host", "localhost");
+  addctrl("mrs_natural/dataPort", 5009);
+  addctrl("mrs_natural/controlsPort", 5010);
 }
 
 void NetworkTCPSink::update() {
   MRSDIAG("NetworkTCPSink.cpp - NetworkTCPSink:update");
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   defaultUpdate();
 }
 
@@ -69,9 +68,9 @@ void NetworkTCPSink::process( realvec& in, realvec& out ) {
 	  refresh();
   }
   
-  if ( !NetworkSocket::sendTCP( in, getctrl("natural/inSamples").toNatural(), 
-			     getctrl("natural/inObservations").toNatural(),
-			     getctrl("real/israte").toReal() ) ) {
+  if ( !NetworkSocket::sendTCP( in, getctrl("mrs_natural/inSamples").toNatural(), 
+			     getctrl("mrs_natural/inObservations").toNatural(),
+			     getctrl("mrs_real/israte").toReal() ) ) {
     throw SocketException ( "Could not write to socket." );
   }
 
@@ -92,10 +91,10 @@ void NetworkTCPSink::refresh() {
   }
   
 
-  natural dataPort = getctrl("natural/dataPort").toNatural();
-  natural controlsPort = getctrl("natural/controlsPort").toNatural();
+  mrs_natural dataPort = getctrl("mrs_natural/dataPort").toNatural();
+  mrs_natural controlsPort = getctrl("mrs_natural/controlsPort").toNatural();
 
-  if ( !NetworkSocket::setupSink( getctrl("string/host").toString(), 
+  if ( !NetworkSocket::setupSink( getctrl("mrs_string/host").toString(), 
   					dataPort, controlsPort) ) {
     throw SocketException( "Could not setup TCP Sink" );
     exit(1);

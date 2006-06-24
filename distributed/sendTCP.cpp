@@ -1,12 +1,13 @@
-#include <stdio.h>
+#include <cstdio>
 #include "Collection.h"
 #include "MrsDoctor.h"
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"
 
 #include <vector> 
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 #define EMPTYSTRING "MARSYAS_EMPTY"
 
@@ -26,8 +27,8 @@ float start = 0.0f;
 float length = 1000.0f;
 float gain = 1.0f;
 float repetitions = 1;
-natural offset;
-natural duration;
+mrs_natural offset;
+mrs_natural duration;
 
 
 CommandLineOptions cmd_options;
@@ -78,28 +79,28 @@ void sfplayFile(MarSystem* msys, string sfName)
 {
   cerr << "Playing " << sfName << " ";
   // update filename 
-  msys->updctrl("SoundFileSource/src/string/filename", sfName);
+  msys->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
   
   // get channels and sampling rate 
-  natural nChannels = msys->getctrl("SoundFileSource/src/natural/nChannels").toNatural();
-  real srate = msys->getctrl("SoundFileSource/src/real/israte").toReal();
+  mrs_natural nChannels = msys->getctrl("SoundFileSource/src/mrs_natural/nChannels").toNatural();
+  mrs_real srate = msys->getctrl("SoundFileSource/src/mrs_real/israte").toReal();
   
   // playback offset & duration
-  offset = (natural) (start * srate * nChannels);
-  duration = (natural) (length * srate * nChannels);  
+  offset = (mrs_natural) (start * srate * nChannels);
+  duration = (mrs_natural) (length * srate * nChannels);  
  
   // udpate controls
-  // msys->updctrl("natural/inSamples", 2 * MRS_DEFAULT_SLICE_NSAMPLES);
-  msys->updctrl("natural/inSamples", 512);
+  // msys->updctrl("mrs_natural/inSamples", 2 * MRS_DEFAULT_SLICE_NSAMPLES);
+  msys->updctrl("mrs_natural/inSamples", 512);
 
-  msys->updctrl("Gain/gt/real/gain", gain);
-  msys->updctrl("SoundFileSource/src/natural/pos", offset);      
+  msys->updctrl("Gain/gt/mrs_real/gain", gain);
+  msys->updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
   
   
-  natural wc=0;
-  natural samplesPlayed = 0;
-  natural onSamples = msys->getctrl("natural/onSamples").toNatural();
-  natural repeatId = 1;
+  mrs_natural wc=0;
+  mrs_natural samplesPlayed = 0;
+  mrs_natural onSamples = msys->getctrl("mrs_natural/onSamples").toNatural();
+  mrs_natural repeatId = 1;
 
   // play the sound 
   while (repetitions * duration > samplesPlayed)
@@ -107,14 +108,14 @@ void sfplayFile(MarSystem* msys, string sfName)
       msys->tick();			// everything happens here 
       if (samplesPlayed > repeatId * duration) // rewind 
 	{
-	  msys->updctrl("SoundFileSource/src/natural/pos", offset);   
+	  msys->updctrl("SoundFileSource/src/mrs_natural/pos", offset);   
 	  repeatId++;
 	}
       wc ++;
       samplesPlayed += onSamples;
       
       // no duration specified so use all of source input 
-      if (!(msys->getctrl("SoundFileSource/src/bool/notEmpty").toBool()) && (repeatId == 1))
+      if (!(msys->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool()) && (repeatId == 1))
 	{
 	  duration = samplesPlayed-onSamples;
 	}
@@ -129,14 +130,14 @@ void sfplay(Collection l)
 {
   MRSDIAG("sfplay.cpp - sfplay");
   
-  natural i;
+  mrs_natural i;
   MarSystemManager mng;
   string sfName;
 
   // Output destination is a NetworkTCPSink
   NetworkTCPSink* dest = (NetworkTCPSink*) mng.create("NetworkTCPSink", "dest");
-  dest->updctrl("natural/dataPort", port);
-  dest->updctrl("string/host", host);
+  dest->updctrl("mrs_natural/dataPort", port);
+  dest->updctrl("mrs_string/host", host);
   
   // create playback network with source-gain-dest
   MarSystem* playbacknet = mng.create("Series", "playbacknet");
@@ -145,13 +146,13 @@ void sfplay(Collection l)
   playbacknet->addMarSystem(dest);
   playbacknet->update();
  
-  playbacknet->linkctrl("string/filename", "SoundFileSource/src/string/filename");
-  playbacknet->linkctrl("natural/nChannels", "SoundFileSource/src/natural/nChannels");
-  playbacknet->linkctrl("real/israte", "SoundFileSource/src/real/israte");
-  playbacknet->linkctrl("natural/pos", "SoundFileSource/src/natural/pos");
-  playbacknet->linkctrl("natural/nChannels", "AudioSink/dest/natural/nChannels");
-  playbacknet->linkctrl("bool/notEmpty", "SoundFileSource/src/bool/notEmpty");
-  playbacknet->linkctrl("bool/mute", "Gain/gt/bool/mute");
+  playbacknet->linkctrl("mrs_string/filename", "SoundFileSource/src/mrs_string/filename");
+  playbacknet->linkctrl("mrs_natural/nChannels", "SoundFileSource/src/mrs_natural/nChannels");
+  playbacknet->linkctrl("mrs_real/israte", "SoundFileSource/src/mrs_real/israte");
+  playbacknet->linkctrl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
+  playbacknet->linkctrl("mrs_natural/nChannels", "AudioSink/dest/mrs_natural/nChannels");
+  playbacknet->linkctrl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+  playbacknet->linkctrl("mrs_bool/mute", "Gain/gt/mrs_bool/mute");
   
   dest->refresh();
 
@@ -192,7 +193,7 @@ readCollection(Collection& l, string name)
   collectionstr += name;
   ifstream from(collectionstr.c_str());
   ifstream from1(name.c_str());
-  natural attempts  =0;
+  mrs_natural attempts  =0;
 
 
   MRSDIAG("Trying current working directory: " + name);

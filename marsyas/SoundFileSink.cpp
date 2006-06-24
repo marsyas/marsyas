@@ -26,10 +26,13 @@ Specific IO classes for various formats like AuFileSink
 are children of this class. 
 */
 
-
 #include "SoundFileSink.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
+
+#define UnsignedToFloat(u) (((double)((long)(u - 2147483647L - 1))) + 2147483648.0)
+#define FloatToUnsigned(f)      ((unsigned long)(((long)(f - 2147483648.0)) + 2147483647L) + 1)
 	
 SoundFileSink::SoundFileSink(string name)
 {
@@ -85,10 +88,10 @@ void
 SoundFileSink::addControls()
 {
   addDefaultControls();
-  addctrl("natural/channel", (natural)0);
-  addctrl("natural/nChannels",(natural)1);
-  addctrl("string/filename", "defaultfile");
-  setctrlState("string/filename", true);
+  addctrl("mrs_natural/channel", (mrs_natural)0);
+  addctrl("mrs_natural/nChannels",(mrs_natural)1);
+  addctrl("mrs_string/filename", "defaultfile");
+  setctrlState("mrs_string/filename", true);
 
 }
 
@@ -96,7 +99,7 @@ SoundFileSink::addControls()
 void
 SoundFileSink::putHeader()
 {
-  string filename = getctrl("string/filename").toString();
+  string filename = getctrl("mrs_string/filename").toString();
   dest_->putHeader(filename);
 }
 
@@ -149,7 +152,7 @@ SoundFileSink::putHeader()
 bool 
 SoundFileSink::checkType()
 {
-  string filename = getctrl("string/filename").toString();
+  string filename = getctrl("mrs_string/filename").toString();
   // check if file exists
   if (filename != "defaultfile")
     {
@@ -190,7 +193,7 @@ SoundFileSink::checkType()
 	  wrn += filename;
 	  MRSWARN(wrn);
 	  filename_ = "defaultfile";
-	  setctrl("string/filename", "defaultfile");
+	  setctrl("mrs_string/filename", "defaultfile");
 	  return false;
 	}
       else 
@@ -205,20 +208,20 @@ void
 SoundFileSink::update()
 {
   
-  if (filename_ != getctrl("string/filename").toString())
+  if (filename_ != getctrl("mrs_string/filename").toString())
     {
       if (checkType() == true)
 	{
-	  dest_->setctrl("natural/inSamples", getctrl("natural/inSamples"));
-	  dest_->setctrl("natural/inObservations", getctrl("natural/inObservations"));
-	  dest_->setctrl("real/israte", getctrl("real/israte"));
+	  dest_->setctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
+	  dest_->setctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
+	  dest_->setctrl("mrs_real/israte", getctrl("mrs_real/israte"));
 	  dest_->update();
 
 	  putHeader();
-	  filename_ = getctrl("string/filename").toString();
+	  filename_ = getctrl("mrs_string/filename").toString();
 	  
-	  setctrl("natural/nChannels", dest_->getctrl("natural/nChannels"));
-	  setctrl("real/israte", dest_->getctrl("real/israte"));
+	  setctrl("mrs_natural/nChannels", dest_->getctrl("mrs_natural/nChannels"));
+	  setctrl("mrs_real/israte", dest_->getctrl("mrs_real/israte"));
 	}
       else 
 	dest_ = NULL;
@@ -227,14 +230,14 @@ SoundFileSink::update()
   
   if (dest_ != NULL)
     {
-      dest_->setctrl("natural/inSamples", getctrl("natural/inSamples"));
-      dest_->setctrl("natural/inObservations", getctrl("natural/inObservations"));
-      dest_->setctrl("real/israte", getctrl("real/israte"));
+      dest_->setctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
+      dest_->setctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
+      dest_->setctrl("mrs_real/israte", getctrl("mrs_real/israte"));
       dest_->update();
       
-      setctrl("natural/onSamples", dest_->getctrl("natural/onSamples"));
-      setctrl("natural/onObservations", dest_->getctrl("natural/onObservations"));
-      setctrl("real/osrate", dest_->getctrl("real/israte"));
+      setctrl("mrs_natural/onSamples", dest_->getctrl("mrs_natural/onSamples"));
+      setctrl("mrs_natural/onObservations", dest_->getctrl("mrs_natural/onObservations"));
+      setctrl("mrs_real/osrate", dest_->getctrl("mrs_real/israte"));
       
       
     }
@@ -379,7 +382,7 @@ SoundFileSink::read_ieee_extended()
 */ 
 
 void 
-SoundFileSink::putFloat(natural c, realvec& win)
+SoundFileSink::putFloat(mrs_natural c, realvec& win)
 {
   MRSWARN("SoundFileSink::putFloat not implemented");
 }
@@ -388,10 +391,10 @@ SoundFileSink::putFloat(natural c, realvec& win)
 
 
 /* void 
-SoundFileSink::putLinear16(natural c, realvec& slice)
+SoundFileSink::putLinear16(mrs_natural c, realvec& slice)
 {
-  natural nChannels = getctrl("natural/nChannels").toNatural();
-  natural nSamples = getctrl("natural/inSamples").toNatural();
+  mrs_natural nChannels = getctrl("mrs_natural/nChannels").toNatural();
+  mrs_natural nSamples = getctrl("mrs_natural/inSamples").toNatural();
 
   for (t=0; t < nSamples; t++)
     {
@@ -402,7 +405,7 @@ SoundFileSink::putLinear16(natural c, realvec& slice)
 
   if (c == nChannels -1) 
     {
-      if ((natural)fwrite(sdata_, sizeof(short), nChannels * nSamples, sfp_) != nChannels * nSamples)
+      if ((mrs_natural)fwrite(sdata_, sizeof(short), nChannels * nSamples, sfp_) != nChannels * nSamples)
 	{
 	MRSERR("Problem: could not write window to file " + filename_);
 	}
@@ -413,12 +416,12 @@ SoundFileSink::putLinear16(natural c, realvec& slice)
 
 /* 
 void 
-SoundFileSink::putLinear16Swap(natural c, realvec& slice)
+SoundFileSink::putLinear16Swap(mrs_natural c, realvec& slice)
 {
 
   
-  natural nChannels = getctrl("natural/nChannels").toNatural();
-  natural nSamples = getctrl("natural/inSamples").toNatural();
+  mrs_natural nChannels = getctrl("mrs_natural/nChannels").toNatural();
+  mrs_natural nSamples = getctrl("mrs_natural/inSamples").toNatural();
   
   for (t=0; t < nSamples; t++)
     {
@@ -427,7 +430,7 @@ SoundFileSink::putLinear16Swap(natural c, realvec& slice)
 
   if (c == nChannels -1) 
     {
-      if ((natural)fwrite(sdata_, sizeof(short), nChannels * nSamples, sfp_) != nChannels * nSamples)
+      if ((mrs_natural)fwrite(sdata_, sizeof(short), nChannels * nSamples, sfp_) != nChannels * nSamples)
 	{
 	MRSERR("Problem: could not write window to file ");
 	}

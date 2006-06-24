@@ -27,8 +27,9 @@
 */
 
 #include "SFM.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 SFM::SFM(string name)
 {
@@ -63,17 +64,17 @@ SFM::update()
   //above a determined value (e.g. due to signal sampling rate or
   //bandwidth limitations), the nr of bands should be reduced. 
   
-  //nrBands_ = getctrl("natural/nrbands");// can this be received as a control value?
+  //nrBands_ = getctrl("mrs_natural/nrbands");// can this be received as a control value?
   nrBands_ = 24;
   //can this parameter be dinamically modified, depending on the
   //sampling frequency?!?
   nrValidBands_ = nrBands_; 
 
-  setctrl("natural/onSamples", (natural)1);
-  setctrl("natural/onObservations", (natural)nrBands_); 
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", (mrs_natural)1);
+  setctrl("mrs_natural/onObservations", (mrs_natural)nrBands_); 
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  natural i;
+  mrs_natural i;
   
   MRSDIAG("SFM.cpp - SFM:update");
   
@@ -93,14 +94,14 @@ SFM::update()
 	 bandHiEdge_(i) = edge_(i+1) * 1.05f; //band overlapping (MPEG7)
   }
   
-  fftSize_ = getctrl("natural/inObservations").toNatural();
+  fftSize_ = getctrl("mrs_natural/inObservations").toNatural();
   //fftBinFreqs_.create(fftSize_);
   
   // spectrum sampling rate - not audio 
-  df_ = getctrl("real/israte").toReal();
+  df_ = getctrl("mrs_real/israte").toReal();
 
   //calculate the frequency (Hz) of each FFT bin
-  //for (natural k=0; k < fftSize_ ; k++)
+  //for (mrs_natural k=0; k < fftSize_ ; k++)
   //  fftBinFreqs_(k) = (float) k * df_;
 
   //calculate FFT bin indexes for each band's edges
@@ -109,8 +110,8 @@ SFM::update()
   for(i = 0; i < nrBands_; i++)
     {
       
-      il_[i] = (natural)(bandLoEdge_(i)/df_ + 0.5f); //round to nearest int (MPEG7)
-      ih_[i] = (natural)(bandHiEdge_(i)/df_ + 0.5f); //round to nearest int (MPEG7)
+      il_[i] = (mrs_natural)(bandLoEdge_(i)/df_ + 0.5f); //round to nearest int (MPEG7)
+      ih_[i] = (mrs_natural)(bandHiEdge_(i)/df_ + 0.5f); //round to nearest int (MPEG7)
 	  
       //must verify if sampling rate is enough
       //for the specified nr of bands. If not, 
@@ -132,10 +133,10 @@ SFM::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 
-  natural i, k, bandwidth;
-  double c;
-  double aritMean;
-  double geoMean;
+  mrs_natural i, k, bandwidth;
+  mrs_real c;
+  mrs_real aritMean;
+  mrs_real geoMean;
 
   //default SFM value = 1.0; (MPEG7 defines SFM=1.0 for silence)
   out.setval(1.0);
@@ -156,7 +157,7 @@ SFM::process(realvec& in, realvec& out)
 	    }
     if (aritMean != 0.0)
       {
-	out(i) = (float)(geoMean/aritMean);
+		out(i) = geoMean/aritMean;
       }
     //else //mean power = 0 => silence...
     //  out(i) = 1.0; //MPEG-7

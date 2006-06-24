@@ -16,7 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /** 
      \class LPC
     \brief Compute LPC coefficients, Pitch and Power of window.
@@ -40,38 +39,41 @@
 #include "Peaker.h"
 #include "MaxArgMax.h"
 
+namespace Marsyas
+{
+
 class LPC: public MarSystem
 {
 private: 
   void addControls();
   
-  natural inSize_;
-  natural outSize_;
-  natural order_;
+  mrs_natural inSize_;
+  mrs_natural outSize_;
+  mrs_natural order_;
   realvec rmat_;
   realvec corr_;
   realvec pres_;
   realvec Zs_;
   realvec temp_;
-  real pitch_;
-  real power_;
-  real minPitchRes_;
+  mrs_real pitch_;
+  mrs_real power_;
+  mrs_real minPitchRes_;
   realvec pitchres_;
   realvec pitExOut_;
   realvec fanoutOut_;
   realvec faninOut_;
-  real lowFreq_;
-  real highFreq_;
-  natural highSamples_;
-  natural lowSamples_;
-  natural firstTime_;
+  mrs_real lowFreq_;
+  mrs_real highFreq_;
+  mrs_natural highSamples_;
+  mrs_natural lowSamples_;
+  mrs_natural firstTime_;
   
   MarSystem* pitchExtractor_;
   MarSystem* fanout_;
   MarSystem* fanin_;
   MarSystem* pitchExtractorEnd_;
   AutoCorrelation* autocorr_;
-  natural hopSize_;
+  mrs_natural hopSize_;
   bool networkCreated_;
   
 public:
@@ -84,9 +86,9 @@ public:
   void update();
   void predict(realvec& data, realvec& coeffs);
   void process(realvec& in, realvec& out);
-  
-
 };
+
+}//namespace Marsyas
 
 #endif
 

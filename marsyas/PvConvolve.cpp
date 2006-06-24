@@ -16,7 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /** 
     \class PvConvolve
     \brief PvConvolve
@@ -25,8 +24,9 @@
 */
 
 #include "PvConvolve.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 PvConvolve::PvConvolve(string name)
 {
@@ -60,9 +60,9 @@ PvConvolve::addControls()
 void
 PvConvolve::update()
 {
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations").toNatural() / 2);
-  setctrl("real/osrate", getctrl("real/israte").toReal());
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations").toNatural() / 2);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal());
   defaultUpdate();  
 }
 
@@ -77,10 +77,10 @@ PvConvolve::process(realvec& in, realvec& out)
   checkFlow(in,out); 
 
 
-  natural N2 = onObservations_ / 2;
-  real sqN = (real)N2 * N2;
+  mrs_natural N2 = onObservations_ / 2;
+  mrs_real sqN = (mrs_real)N2 * N2;
   
-  real r1, i1, r2, i2;
+  mrs_real r1, i1, r2, i2;
   
   for (o=0; o < N2; o++)  
     {

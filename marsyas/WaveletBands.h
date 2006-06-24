@@ -32,29 +32,30 @@ Wavelet Transform to get back to time domain.
 #include "MarSystem.h"	
 #include "WaveletPyramid.h"
 
+namespace Marsyas
+{
+
 class WaveletBands: public MarSystem
 {
 private:
   realvec band_;
   realvec tband_;
-  
 
   void addControls();
   WaveletPyramid *iwvpt_;
-  
-  
 
 public:
   WaveletBands(std::string name);
   ~WaveletBands();
   WaveletBands(const WaveletBands& a);
-  
-  
+
   MarSystem* clone() const;
   void update();
   void process(realvec& in, realvec& out);
   
 };
+
+}//namespace Marsyas
 
 #endif
 

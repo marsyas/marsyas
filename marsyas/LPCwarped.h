@@ -35,19 +35,22 @@ May 2006
 #ifndef MARSYAS_LPCWARPED_H
 #define MARSYAS_LPCWARPED_H
 
-#include "MarSystem.h"	
+#include "MarSystem.h"
+
+namespace Marsyas
+{
 
 class LPCwarped: public MarSystem
 {
 private: 
 	void addControls();
 
-	natural order_;
+	mrs_natural order_;
 
 	realvec Zs_;
 	realvec temp_;
-	real pitch_;
-	real power_;
+	mrs_real pitch_;
+	mrs_real power_;
 	
 	/**Warped autocorrelation for LPC calculation
 	*Based on the code from: http://www.musicdsp.org/showone.php?id=137
@@ -56,7 +59,7 @@ private:
 	*@param r autocorrelation output vector size (LPCorder + 1)
 	*@param lambda frequency resolution (warp)
 	*/
-	void autocorrelationWarped(realvec& in, realvec& r, real lambda);
+	void autocorrelationWarped(realvec& in, realvec& r, mrs_real lambda);
 
 	/**Levinson-Durbin Recursion Algorithm
 	*Based on the code from: http://www.musicdsp.org/showone.php?id=137
@@ -82,6 +85,8 @@ public:
 	void update();
 	void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 

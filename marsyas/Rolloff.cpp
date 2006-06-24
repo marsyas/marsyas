@@ -28,8 +28,9 @@
 */
 
 #include "Rolloff.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 Rolloff::Rolloff():MarSystem()
 {
@@ -58,8 +59,8 @@ void
 Rolloff::addControls()
 {
   addDefaultControls();
-  addctrl("real/percentage", 0.9);
-  setctrlState("real/percentage", true);
+  addctrl("mrs_real/percentage", 0.9);
+  setctrlState("mrs_real/percentage", true);
 }
 
 
@@ -67,13 +68,13 @@ void
 Rolloff::update()
 {
   MRSDIAG("Rolloff.cpp - Rolloff:update");
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", (natural)1);
-  setctrl("real/osrate", getctrl("real/israte").toReal());
-  setctrl("string/onObsNames", "Rolloff,");
-  sumWindow_.create(getctrl("natural/inObservations").toNatural());
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", (mrs_natural)1);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal());
+  setctrl("mrs_string/onObsNames", "Rolloff,");
+  sumWindow_.create(getctrl("mrs_natural/inObservations").toNatural());
 
-  perc_ = getctrl("real/percentage").toReal();
+  perc_ = getctrl("mrs_real/percentage").toReal();
   defaultUpdate();
 }
 
@@ -102,7 +103,7 @@ Rolloff::process(realvec& in, realvec& out)
 	{
 	  if (sumWindow_(o) < perc_ *total_)
 	    {
-	      out(0,t) = (real)o / inObservations_;
+	      out(0,t) = (mrs_real)o / inObservations_;
 	      return;
 	    }
 	}

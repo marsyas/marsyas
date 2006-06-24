@@ -24,9 +24,10 @@
 #ifndef MARSYAS_CASCADE_H
 #define MARSYAS_CASCADE_H
 
-
-
 #include "Composite.h"
+
+namespace Marsyas
+{
 
 class Cascade: public Composite
 {
@@ -41,10 +42,11 @@ public:
   ~Cascade();
   MarSystem* clone() const;    
   
-  
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 	

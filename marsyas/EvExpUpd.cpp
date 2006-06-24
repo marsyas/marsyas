@@ -25,8 +25,9 @@
 #include "EvExpUpd.h"
 #include "MarSystem.h"
 #include "Expression.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 EvExpUpd::EvExpUpd(string cname, string expr) { exp_list=NULL; set(NULL,cname,expr); }
 EvExpUpd::EvExpUpd(MarSystem* target, string cname, string expr) { 

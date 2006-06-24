@@ -1,5 +1,5 @@
 
-#include <stdio.h>
+#include <cstdio>
 #include <iostream>
 #include <string>
 
@@ -19,6 +19,8 @@
 #include "MarSystemManager.h"
 #include "HalfWaveRectifier.h"
 #include "CommandLineOptions.h"
+
+using namespace Marsyas;
 
 CommandLineOptions cmd_options;
 
@@ -67,14 +69,14 @@ printHelp(string progName)
 
 // Play soundfile given by sfName, playbacknet contains the playback 
 // network of MarSystem objects 
-void play(real gain, string outName)
+void play(mrs_real gain, string outName)
 {
 
   NetworkUDPSource* netSrc = new NetworkUDPSource("netSrc");
   
   // update controls if they are passed on cmd line...
   if ( port != 0 ) {
-  	netSrc->updctrl("natural/port", port);
+  	netSrc->updctrl("mrs_natural/port", port);
   }
   
   
@@ -85,7 +87,7 @@ void play(real gain, string outName)
   else 			
     {
       dest = new AuFileSink("dest");
-      dest->updctrl("string/filename", outName);      
+      dest->updctrl("mrs_string/filename", outName);      
     }
 
   cout << "Creating playback network..." << endl;
@@ -100,19 +102,19 @@ void play(real gain, string outName)
   cout << playbacknet << endl;      
   
   // udpate controls
-  playbacknet.updctrl("natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
-  playbacknet.updctrl("Gain/gt/real/gain", gain);
+  playbacknet.updctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
+  playbacknet.updctrl("Gain/gt/mrs_real/gain", gain);
   
   // may want to update this as control data from networksource...
   if (outName == EMPTYSTRING) 
-    playbacknet.updctrl("AudioSink/dest/natural/nChannels", 1);
+    playbacknet.updctrl("AudioSink/dest/mrs_natural/nChannels", 1);
   else 
-    playbacknet.updctrl("AuFileSink/dest/natural/nChannels", 1);
+    playbacknet.updctrl("AuFileSink/dest/mrs_natural/nChannels", 1);
 	
-  natural wc=0;
-  natural samplesPlayed = 0;
-  natural onSamples = playbacknet.getctrl("natural/onSamples").toNatural();
-  // natural repeatId = 1;
+  mrs_natural wc=0;
+  mrs_natural samplesPlayed = 0;
+  mrs_natural onSamples = playbacknet.getctrl("mrs_natural/onSamples").toNatural();
+  // mrs_natural repeatId = 1;
   
   netSrc->refresh();
   

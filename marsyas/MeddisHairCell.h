@@ -16,7 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /** 
     \class MeddisHairCell
     \brief MeddisHairCell for auditory models 
@@ -30,39 +29,38 @@
 
 #include "MarSystem.h"
 
-
-
-
+namespace Marsyas
+{
 
 class MeddisHairCell: public MarSystem
 {
 private: 
   void addControls();
   
-  natural numChannels;
+  mrs_natural numChannels;
   
   //parameters
-  real M;
-  real A;
-  real B;
-  real g;
-  real y;
-  real l;
-  real r;
-  real x;
-  real h;
+  mrs_real M;
+  mrs_real A;
+  mrs_real B;
+  mrs_real g;
+  mrs_real y;
+  mrs_real l;
+  mrs_real r;
+  mrs_real x;
+  mrs_real h;
   
   //internal constants
-  real dt;
-  real gdt;
-  real ydt;
-  real ldt;
-  real rdt;
-  real xdt;
+  mrs_real dt;
+  mrs_real gdt;
+  mrs_real ydt;
+  mrs_real ldt;
+  mrs_real rdt;
+  mrs_real xdt;
   
   //initial values
-  real kt;
-  real spont;
+  mrs_real kt;
+  mrs_real spont;
   
   realvec c;
   realvec q;
@@ -76,6 +74,8 @@ public:
   void update();
   void process(realvec& in, realvec& out); 
 };
+
+}//namespace Marsyas
 
 #endif 
 

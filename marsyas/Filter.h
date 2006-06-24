@@ -16,9 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
-
-
 /**  
      \class Filter
      \brief Filter a Signal 
@@ -28,22 +25,23 @@ object. The filter is implemented as a direct form II structure. This
 is a canonical form which has the minimum number of delay elements.
 */
 
-
-
 #ifndef MARSYAS_FILTER_H
 #define MARSYAS_FILTER_H
 
 #include "MarSystem.h"
 
+namespace Marsyas
+{
+
 class Filter: public MarSystem
 {
 private:
-	natural norder_;			// Numerator order
-	natural dorder_;			// Denominator order
-	natural order_;
-	natural channels_;
+	mrs_natural norder_;			// Numerator order
+	mrs_natural dorder_;			// Denominator order
+	mrs_natural order_;
+	mrs_natural channels_;
 	realvec state_;
-	real fgain_;
+	mrs_real fgain_;
 	realvec ncoeffs_;
 	realvec dcoeffs_;
 
@@ -58,6 +56,8 @@ public:
 	void process(realvec& in, realvec& out);
 	void write(std::string filename);
 };
+
+}//namespace Marsyas
 
     
 #endif

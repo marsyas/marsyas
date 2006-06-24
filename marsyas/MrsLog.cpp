@@ -3,7 +3,9 @@
 #include "MrsLog.h"
 #include <iostream>
 #include <fstream>
+
 using namespace std;
+using namespace Marsyas;
 
 
 string MrsLog::fname_ = "marsyas.log";

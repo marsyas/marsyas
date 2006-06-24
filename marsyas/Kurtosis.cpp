@@ -25,11 +25,10 @@
 for characterizing the magnitude spectrum. 
 */
 
-
-
 #include "Kurtosis.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 
 Kurtosis::Kurtosis(string name)
@@ -63,10 +62,10 @@ Kurtosis::update()
 {
   MRSDIAG("Kurtosis.cpp - Kurtosis:update");
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", (natural)1);
-  setctrl("real/osrate", getctrl("real/israte"));
-  setctrl("string/onObsNames", "Kurtosis,");
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", (mrs_natural)1);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+  setctrl("mrs_string/onObsNames", "Kurtosis,");
 
   defaultUpdate();
   obsrow_.create(inObservations_);
@@ -82,30 +81,29 @@ Kurtosis::process(realvec& in, realvec& out)
     {
       
       for (o=0; o < inObservations_; o++)
-	{
-	  obsrow_(o) = in(o,t);
-	}
+		{
+		  obsrow_(o) = in(o,t);
+		}
       z_ = 0.0;
       for (o=0; o < inObservations_; o++)
-	{
-	  b_ =  obsrow_(o) - obsrow_.mean() ;
-	  
-	  // take x - u to the fourth power into the sum
-	  z_ += (b_ * b_ * b_ * b_); 
-	}
+		{
+		  b_ =  obsrow_(o) - obsrow_.mean() ;
+		  
+		  // take x - u to the fourth power into the sum
+		  z_ += (b_ * b_ * b_ * b_); 
+		}
       
       // standard deviation to the fourth power
       q_ = obsrow_.var() * obsrow_.var();
 
 
       if ((z_ < 1.0e-45)||(q_ < 1.0e-45))
-	out(0,t) = 0.5;
+		out(0,t) = 0.5;
       else 
-	{
-	  // out(0,t) = (real)((z_ /  q_ * inObservations_) - 3.0);
-	  out(0,t) = (real)((z_ /  q_ ) - 3.0);
-	}
-    }
-    
+		{
+		  // out(0,t) = (mrs_real)((z_ /  q_ * inObservations_) - 3.0);
+		  out(0,t) = (mrs_real)((z_ /  q_ ) - 3.0);
+		}
+    }   
 }
 

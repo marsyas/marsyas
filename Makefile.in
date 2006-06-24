@@ -51,6 +51,9 @@ AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 Audio = @Audio@
+CC = @CC@
+CCDEPMODE = @CCDEPMODE@
+CFLAGS = @CFLAGS@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 CXXDEPMODE = @CXXDEPMODE@
@@ -78,7 +81,6 @@ MAKEINFO = @MAKEINFO@
 MRSSWIG = @MRSSWIG@
 MslLibs = @MslLibs@
 OBJEXT = @OBJEXT@
-OGGLIB = @OGGLIB@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -92,9 +94,12 @@ SHELL = @SHELL@
 STRIP = @STRIP@
 VERSION = @VERSION@
 ac_aux_dir = @ac_aux_dir@
+ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_RANLIB = @ac_ct_RANLIB@
 ac_ct_STRIP = @ac_ct_STRIP@
+am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
+am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
 am__fastdepCXX_TRUE = @am__fastdepCXX_TRUE@
 am__include = @am__include@
@@ -144,7 +149,7 @@ EXTRA_DIST = bootstrap TODO
 
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = marsyas src $(DISTRIBUTED) doc marsyasVisualStudio qt4GUIs $(MRSSWIG) 
+SUBDIRS = marsyas src $(DISTRIBUTED) doc marsyasVisualStudio2003 marsyasVisualStudio2005 marsyasMATLAB qt4GUIs $(MRSSWIG) 
 
 # we must now explicitly define subdirs to be included in the dist
 DIST_SUBDIRS = marsyas src distributed doc marsyasVisualStudio \

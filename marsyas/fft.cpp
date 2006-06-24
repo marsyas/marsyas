@@ -26,12 +26,11 @@ to the fft implementation in Numerical Recipes. Returns an fvec of complex
 values (2*i, 2*i+1) = (Real, Imaginary).
 */
 
-
 #include "fft.h"
 
-typedef struct { real re ; real im ; } complex ;
+using namespace Marsyas;
 
-
+//typedef struct { mrs_real re ; mrs_real im ; } complex ; //lmartins: not needed and can create name clashing!
 
 /*
  * bitreverse places real array x containing N/2 complex values
@@ -39,9 +38,9 @@ typedef struct { real re ; real im ; } complex ;
  */
 
 void
-fft::bitreverse(real x[], int N ) 
+fft::bitreverse(mrs_real x[], int N ) 
 {
-  real rtemp, itemp ;
+  mrs_real rtemp, itemp ;
   int i, j, m ;
   for ( i = j = 0 ; i < N ; i += 2, j += m ) {
     if ( j > i ) {
@@ -65,10 +64,10 @@ fft::bitreverse(real x[], int N )
  * 2*N real values.  N MUST be a power of 2.
  */
 void
-fft::rfft( real x[], int  N, int forward ) 
+fft::rfft( mrs_real x[], int  N, int forward ) 
 {
-  real c1, c2, h1r, h1i, h2r, h2i, wr, wi, wpr, wpi, temp, theta ;
-  real xr, xi ;
+  mrs_real c1, c2, h1r, h1i, h2r, h2i, wr, wi, wpr, wpi, temp, theta ;
+  mrs_real xr, xi ;
   int i, i1, i2, i3, i4, N2p1 ;
   theta = PI/N ;
   wr = 1. ;
@@ -88,7 +87,7 @@ fft::rfft( real x[], int  N, int forward )
 	xi = 0. ;
         x[1] = 0. ;
       }
-    wpr = (real)(-2.*pow( sin( 0.5*theta ), 2. ));
+    wpr = (mrs_real)(-2.*pow( sin( 0.5*theta ), 2. ));
     wpi = sin( theta ) ;
     N2p1 = (N<<1) + 1 ;
     for ( i = 0 ; i <= N>>1 ; i++ ) 
@@ -137,21 +136,21 @@ fft::rfft( real x[], int  N, int forward )
  */
 
 void
-fft::cfft(real x[], int NC, int forward ) 
+fft::cfft(mrs_real x[], int NC, int forward ) 
 {
-  real wr, wi, wpr, wpi, theta, scale ;
+  mrs_real wr, wi, wpr, wpi, theta, scale ;
   int mmax, ND, m, i, j, delta ;
   ND = NC<<1 ;
   bitreverse( x, ND ) ;
   for ( mmax = 2 ; mmax < ND ; mmax = delta ) {
     delta = mmax<<1 ;
     theta = TWOPI/( forward? mmax : -mmax ) ;
-    wpr = (real)(-2.*pow( sin( 0.5*theta ), 2. ));
+    wpr = (mrs_real)(-2.*pow( sin( 0.5*theta ), 2. ));
     wpi = sin( theta ) ;
     wr = 1. ;
     wi = 0. ;
     for ( m = 0 ; m < mmax ; m += 2 ) {
-      register real rtemp, itemp ;
+      register mrs_real rtemp, itemp ;
             for ( i = m ; i < ND ; i += delta ) 
 	      {
 		j = i + mmax ;
@@ -169,8 +168,8 @@ fft::cfft(real x[], int NC, int forward )
   /*
    * scale output
    */
-  scale = forward ? (real)1.0/ND : (real)2.0 ;
-  { register real *xi=x, *xe=x+ND ;
+  scale = forward ? (mrs_real)1.0/ND : (mrs_real)2.0 ;
+  { register mrs_real *xi=x, *xe=x+ND ;
   while ( xi < xe )
     *xi++ *= scale ;
   }

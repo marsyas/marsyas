@@ -25,18 +25,13 @@
 of communicator. 
 */
 
-
-
-
-
 #if !defined(__Communicator_h)
 #define __Communicator_h
 
-
-
 #include <string> 
 
-#define MAX_MESSAGE 256
+namespace Marsyas
+{
 
 class Communicator
 {
@@ -47,5 +42,6 @@ public:
   virtual void receive_message(char *message)=0;
 };
 
+}//namespace Marsyas
 
 #endif

@@ -9,14 +9,16 @@
 // *************************************************************
 
 
-#include <stdio.h>
+#include <cstdio>
 #include <sys/time.h>
 #include "MarSystemManager.h" 
 #include "Messager.h"
 
 #include <string> 
-#include <iostream> 
+#include <iostream>
+
 using namespace std;
+using namespace Marsyas;
 
 double 
 currentTime(void)
@@ -45,30 +47,30 @@ sfmixer(string sfName1)
   MarSystem* Channel_1_1 = mng.create("Series", "Channel_1_1");
   Channel_1_1->addMarSystem(mng.create("SoundFileSource","src"));
   Channel_1_1->addMarSystem(mng.create("Gain","gain"));
-  Channel_1_1->updctrl("SoundFileSource/src/string/filename",sfName1);
-  Channel_1_1->updctrl("Gain/gain/real/gain", 0.0);
+  Channel_1_1->updctrl("SoundFileSource/src/mrs_string/filename",sfName1);
+  Channel_1_1->updctrl("Gain/gain/mrs_real/gain", 0.0);
      
   
   // Set up Channel 2 - 1
   MarSystem* Channel_2_1 = mng.create("Series", "Channel_2_1");
   Channel_2_1->addMarSystem(mng.create("SoundFileSource","src"));
   Channel_2_1->addMarSystem(mng.create("Gain","gain"));
-  Channel_2_1->updctrl("SoundFileSource/src/string/filename",sfName1);
-  Channel_2_1->updctrl("Gain/gain/real/gain", 0.0);
+  Channel_2_1->updctrl("SoundFileSource/src/mrs_string/filename",sfName1);
+  Channel_2_1->updctrl("Gain/gain/mrs_real/gain", 0.0);
 
   // Set up Channel 3 - 1
   MarSystem* Channel_3_1 = mng.create("Series", "Channel_3_1");
   Channel_3_1->addMarSystem(mng.create("SoundFileSource","src"));
   Channel_3_1->addMarSystem(mng.create("Gain","gain"));
-  Channel_3_1->updctrl("SoundFileSource/src/string/filename",sfName1);
-  Channel_3_1->updctrl("Gain/gain/real/gain", 0.0);
+  Channel_3_1->updctrl("SoundFileSource/src/mrs_string/filename",sfName1);
+  Channel_3_1->updctrl("Gain/gain/mrs_real/gain", 0.0);
 
   // Set up Channel 4 - 1
   MarSystem* Channel_4_1 = mng.create("Series", "Channel_4_1");
   Channel_4_1->addMarSystem(mng.create("SoundFileSource","src"));
   Channel_4_1->addMarSystem(mng.create("Gain","gain"));
-  Channel_4_1->updctrl("SoundFileSource/src/string/filename",sfName1);
-  Channel_4_1->updctrl("Gain/gain/real/gain", 0.0);
+  Channel_4_1->updctrl("SoundFileSource/src/mrs_string/filename",sfName1);
+  Channel_4_1->updctrl("Gain/gain/mrs_real/gain", 0.0);
 
 
   // Funnel all Channels together with a Fanin for Mix 1
@@ -82,41 +84,41 @@ sfmixer(string sfName1)
   MarSystem* mixer1 = mng.create("Series", "mixer1");
   mixer1->addMarSystem(mix1);
   mixer1->addMarSystem(mng.create("Gain","gain"));
-  mixer1->updctrl("Gain/gain/real/gain", 0.0);
+  mixer1->updctrl("Gain/gain/mrs_real/gain", 0.0);
 
   // Mixer 1 for main Output 1 (CROSS FADE CHAIN)
   MarSystem* Cmixer1 = mng.create("Series", "Cmixer1");
   Cmixer1->addMarSystem(mixer1);
   Cmixer1->addMarSystem(mng.create("Gain","gain"));
-  Cmixer1->updctrl("Gain/gain/real/gain", 0.0);
+  Cmixer1->updctrl("Gain/gain/mrs_real/gain", 0.0);
 
   // Set up Channel 1 - 2
   MarSystem* Channel_1_2 = mng.create("Series", "Channel_1_2");
   Channel_1_2->addMarSystem(mng.create("SoundFileSource","src"));
   Channel_1_2->addMarSystem(mng.create("Gain","gain"));
-  Channel_1_2->updctrl("SoundFileSource/src/string/filename",sfName1);
-  Channel_1_2->updctrl("Gain/gain/real/gain", 0.0);
+  Channel_1_2->updctrl("SoundFileSource/src/mrs_string/filename",sfName1);
+  Channel_1_2->updctrl("Gain/gain/mrs_real/gain", 0.0);
   
   // Set up Channel 2 - 2
   MarSystem* Channel_2_2 = mng.create("Series", "Channel_2_2");
   Channel_2_2->addMarSystem(mng.create("SoundFileSource","src"));
   Channel_2_2->addMarSystem(mng.create("Gain","gain"));
-  Channel_2_2->updctrl("SoundFileSource/src/string/filename",sfName1);
-  Channel_2_2->updctrl("Gain/gain/real/gain", 0.0);
+  Channel_2_2->updctrl("SoundFileSource/src/mrs_string/filename",sfName1);
+  Channel_2_2->updctrl("Gain/gain/mrs_real/gain", 0.0);
 
   // Set up Channel 3 - 2
   MarSystem* Channel_3_2 = mng.create("Series", "Channel_3_2");
   Channel_3_2->addMarSystem(mng.create("SoundFileSource","src"));
   Channel_3_2->addMarSystem(mng.create("Gain","gain"));
-  Channel_3_2->updctrl("SoundFileSource/src/string/filename",sfName1);
-  Channel_3_2->updctrl("Gain/gain/real/gain", 0.0);
+  Channel_3_2->updctrl("SoundFileSource/src/mrs_string/filename",sfName1);
+  Channel_3_2->updctrl("Gain/gain/mrs_real/gain", 0.0);
 
   // Set up Channel 4 - 2
   MarSystem* Channel_4_2 = mng.create("Series", "Channel_4_2");
   Channel_4_2->addMarSystem(mng.create("SoundFileSource","src"));
   Channel_4_2->addMarSystem(mng.create("Gain","gain"));
-  Channel_4_2->updctrl("SoundFileSource/src/string/filename",sfName1);
-  Channel_4_2->updctrl("Gain/gain/real/gain", 1.0);
+  Channel_4_2->updctrl("SoundFileSource/src/mrs_string/filename",sfName1);
+  Channel_4_2->updctrl("Gain/gain/mrs_real/gain", 1.0);
 
 
   // Funnel all Channels together with a Fanin for Mixer 2
@@ -130,13 +132,13 @@ sfmixer(string sfName1)
   MarSystem* mixer2 = mng.create("Series", "mixer2");
   mixer2->addMarSystem(mix2);
   mixer2->addMarSystem(mng.create("Gain","gain"));
-  mixer2->updctrl("Gain/gain/real/gain", 1.0);
+  mixer2->updctrl("Gain/gain/mrs_real/gain", 1.0);
 
   // Mixer 2 for main Output 2 (CROSS FADE CHAIN)
   MarSystem* Cmixer2 = mng.create("Series", "Cmixer2");
   Cmixer2->addMarSystem(mixer2);
   Cmixer2->addMarSystem(mng.create("Gain","gain"));
-  Cmixer2->updctrl("Gain/gain/real/gain", 1.0);
+  Cmixer2->updctrl("Gain/gain/mrs_real/gain", 1.0);
 
   // Master Mixer using Fan Out 
   MarSystem *mixMaster = mng.create("Series", "mixMaster"); 
@@ -147,10 +149,10 @@ sfmixer(string sfName1)
   mixMaster->addMarSystem(mng.create("Sum", "sum"));
   mixMaster->addMarSystem(mng.create("Gain","gain"));
   mixMaster->addMarSystem(mng.create("AudioSink","dest"));
-  mixMaster->updctrl("Gain/gain/real/gain", 1.0);
+  mixMaster->updctrl("Gain/gain/mrs_real/gain", 1.0);
   
   // initialize controls for Series
-  mixMaster->updctrl("natural/inSamples", 256);
+  mixMaster->updctrl("mrs_natural/inSamples", 256);
  
 
   // create variables for messager
@@ -158,7 +160,7 @@ sfmixer(string sfName1)
   bool done = false;
   int type;
   string cname;
-  real dur;
+  mrs_real dur;
 
   // create variables for timing
   double start = -1.0;
@@ -182,52 +184,52 @@ sfmixer(string sfName1)
       //  mixer1->tick();
       mixMaster->tick();
       // mixMaster->tick();
-      if (Channel_1_1->getctrl("SoundFileSource/src/natural/size").toNatural() < Channel_1_1->getctrl("SoundFileSource/src/natural/pos").toNatural() + mixer1->getctrl("natural/inSamples").toNatural())
+      if (Channel_1_1->getctrl("SoundFileSource/src/mrs_natural/size").toNatural() < Channel_1_1->getctrl("SoundFileSource/src/mrs_natural/pos").toNatural() + mixer1->getctrl("mrs_natural/inSamples").toNatural())
       	{
       	  // reset to 0 for looping
-      	  Channel_1_1->updctrl("SoundFileSource/src/natural/pos", 0);
+      	  Channel_1_1->updctrl("SoundFileSource/src/mrs_natural/pos", 0);
       	} 
       
-      if (Channel_2_1->getctrl("SoundFileSource/src/natural/size").toNatural() < Channel_2_1->getctrl("SoundFileSource/src/natural/pos").toNatural() + mixer1->getctrl("natural/inSamples").toNatural())
+      if (Channel_2_1->getctrl("SoundFileSource/src/mrs_natural/size").toNatural() < Channel_2_1->getctrl("SoundFileSource/src/mrs_natural/pos").toNatural() + mixer1->getctrl("mrs_natural/inSamples").toNatural())
       	{
       	  // reset to 0 for looping
-      	  Channel_2_1->updctrl("SoundFileSource/src/natural/pos", 0);
+      	  Channel_2_1->updctrl("SoundFileSource/src/mrs_natural/pos", 0);
       	}
       
-      if (Channel_3_1->getctrl("SoundFileSource/src/natural/size").toNatural() < Channel_3_1->getctrl("SoundFileSource/src/natural/pos").toNatural() + mixer1->getctrl("natural/inSamples").toNatural())
+      if (Channel_3_1->getctrl("SoundFileSource/src/mrs_natural/size").toNatural() < Channel_3_1->getctrl("SoundFileSource/src/mrs_natural/pos").toNatural() + mixer1->getctrl("mrs_natural/inSamples").toNatural())
       	{
       	  // reset to 0 for looping
-      	  Channel_3_1->updctrl("SoundFileSource/src/natural/pos", 0);
+      	  Channel_3_1->updctrl("SoundFileSource/src/mrs_natural/pos", 0);
       	} 
       
-      if (Channel_4_1->getctrl("SoundFileSource/src/natural/size").toNatural() < Channel_4_1->getctrl("SoundFileSource/src/natural/pos").toNatural() + mixer1->getctrl("natural/inSamples").toNatural())
+      if (Channel_4_1->getctrl("SoundFileSource/src/mrs_natural/size").toNatural() < Channel_4_1->getctrl("SoundFileSource/src/mrs_natural/pos").toNatural() + mixer1->getctrl("mrs_natural/inSamples").toNatural())
       	{
       	  // reset to 0 for looping
-      	  Channel_4_1->updctrl("SoundFileSource/src/natural/pos", 0);
+      	  Channel_4_1->updctrl("SoundFileSource/src/mrs_natural/pos", 0);
       	}
 
-      if (Channel_1_2->getctrl("SoundFileSource/src/natural/size").toNatural() < Channel_1_2->getctrl("SoundFileSource/src/natural/pos").toNatural() + mixer2->getctrl("natural/inSamples").toNatural())
+      if (Channel_1_2->getctrl("SoundFileSource/src/mrs_natural/size").toNatural() < Channel_1_2->getctrl("SoundFileSource/src/mrs_natural/pos").toNatural() + mixer2->getctrl("mrs_natural/inSamples").toNatural())
       	{
       	  // reset to 0 for looping
-      	  Channel_1_2->updctrl("SoundFileSource/src/natural/pos", 0);
+      	  Channel_1_2->updctrl("SoundFileSource/src/mrs_natural/pos", 0);
       	} 
       
-      if (Channel_2_2->getctrl("SoundFileSource/src/natural/size").toNatural() < Channel_2_2->getctrl("SoundFileSource/src/natural/pos").toNatural() + mixer2->getctrl("natural/inSamples").toNatural())
+      if (Channel_2_2->getctrl("SoundFileSource/src/mrs_natural/size").toNatural() < Channel_2_2->getctrl("SoundFileSource/src/mrs_natural/pos").toNatural() + mixer2->getctrl("mrs_natural/inSamples").toNatural())
       	{
       	  // reset to 0 for looping
-      	  Channel_2_2->updctrl("SoundFileSource/src/natural/pos", 0);
+      	  Channel_2_2->updctrl("SoundFileSource/src/mrs_natural/pos", 0);
       	}
       
-      if (Channel_3_2->getctrl("SoundFileSource/src/natural/size").toNatural() < Channel_3_2->getctrl("SoundFileSource/src/natural/pos").toNatural() + mixer2->getctrl("natural/inSamples").toNatural())
+      if (Channel_3_2->getctrl("SoundFileSource/src/mrs_natural/size").toNatural() < Channel_3_2->getctrl("SoundFileSource/src/mrs_natural/pos").toNatural() + mixer2->getctrl("mrs_natural/inSamples").toNatural())
       	{
       	  // reset to 0 for looping
-      	  Channel_3_2->updctrl("SoundFileSource/src/natural/pos", 0);
+      	  Channel_3_2->updctrl("SoundFileSource/src/mrs_natural/pos", 0);
       	} 
       
-      if (Channel_4_2->getctrl("SoundFileSource/src/natural/size").toNatural() < Channel_4_2->getctrl("SoundFileSource/src/natural/pos").toNatural() + mixer2->getctrl("natural/inSamples").toNatural())
+      if (Channel_4_2->getctrl("SoundFileSource/src/mrs_natural/size").toNatural() < Channel_4_2->getctrl("SoundFileSource/src/mrs_natural/pos").toNatural() + mixer2->getctrl("mrs_natural/inSamples").toNatural())
       	{
       	  // reset to 0 for looping
-      	  Channel_4_2->updctrl("SoundFileSource/src/natural/pos", 0);
+      	  Channel_4_2->updctrl("SoundFileSource/src/mrs_natural/pos", 0);
       	}
 
 
@@ -245,78 +247,78 @@ sfmixer(string sfName1)
 
 	  // MIXER SLIDER MESSAGES
 
-	  if (cname == "Gain/gt/real/gain1") 
+	  if (cname == "Gain/gt/mrs_real/gain1") 
 	    {
 	      float x;
 	      inss >> dur >> x;
-	      Channel_1_1->updctrl("Gain/gain/real/gain", x);
+	      Channel_1_1->updctrl("Gain/gain/mrs_real/gain", x);
 	    }
-	  else if (cname == "Gain/gt/real/gain2") 
+	  else if (cname == "Gain/gt/mrs_real/gain2") 
 	    {
 	      float x;
 	      inss >> dur >> x;
-	      Channel_2_1->updctrl("Gain/gain/real/gain", x);
+	      Channel_2_1->updctrl("Gain/gain/mrs_real/gain", x);
 	    }	  	 
-	  else if (cname == "Gain/gt/real/gain3") 
+	  else if (cname == "Gain/gt/mrs_real/gain3") 
 	    {
 	      float x;
 	      inss >> dur >> x;
-	      Channel_3_1->updctrl("Gain/gain/real/gain", x);
+	      Channel_3_1->updctrl("Gain/gain/mrs_real/gain", x);
 	    }	  
-	  else if (cname == "Gain/gt/real/gain4") 
+	  else if (cname == "Gain/gt/mrs_real/gain4") 
 	    {
 	      float x;
 	      inss >> dur >> x;
-	      Channel_4_1->updctrl("Gain/gain/real/gain", x);
+	      Channel_4_1->updctrl("Gain/gain/mrs_real/gain", x);
 	    }	 
-	  else if (cname == "Gain/gt/real/gain5") 
+	  else if (cname == "Gain/gt/mrs_real/gain5") 
 	    {
 	      float x;
 	      inss >> dur >> x;
-	      Channel_1_2->updctrl("Gain/gain/real/gain", x);
+	      Channel_1_2->updctrl("Gain/gain/mrs_real/gain", x);
 	    }	   
-	  else if (cname == "Gain/gt/real/gain6") 
+	  else if (cname == "Gain/gt/mrs_real/gain6") 
 	    {
 	      float x;
 	      inss >> dur >> x;
-	      Channel_2_2->updctrl("Gain/gain/real/gain", x);
+	      Channel_2_2->updctrl("Gain/gain/mrs_real/gain", x);
 	    }	  	 
-	  else if (cname == "Gain/gt/real/gain7") 
+	  else if (cname == "Gain/gt/mrs_real/gain7") 
 	    {
 	      float x;
 	      inss >> dur >> x;
-	      Channel_3_2->updctrl("Gain/gain/real/gain", x);
+	      Channel_3_2->updctrl("Gain/gain/mrs_real/gain", x);
 	    }	  
-	  else if (cname == "Gain/gt/real/gain8") 
+	  else if (cname == "Gain/gt/mrs_real/gain8") 
 	    {
 	      float x;
 	      inss >> dur >> x;
-	      Channel_4_2->updctrl("Gain/gain/real/gain", x);
+	      Channel_4_2->updctrl("Gain/gain/mrs_real/gain", x);
 	    }	   
-	  else if (cname == "Gain/gt/real/gainmain") 
+	  else if (cname == "Gain/gt/mrs_real/gainmain") 
 	    {
 	      float x;
 	      inss >> dur >> x;
-	      mixMaster->updctrl("Gain/gain/real/gain", x);
+	      mixMaster->updctrl("Gain/gain/mrs_real/gain", x);
 	    }	 
-	  else if (cname == "Gain/gt/real/gainleft") 
+	  else if (cname == "Gain/gt/mrs_real/gainleft") 
 	    {
 	      float x;
 	      inss >> dur >> x;
-	      mixer1->updctrl("Gain/gain/real/gain", x);
+	      mixer1->updctrl("Gain/gain/mrs_real/gain", x);
 	    }	  
-	  else if (cname == "Gain/gt/real/gainright") 
+	  else if (cname == "Gain/gt/mrs_real/gainright") 
 	    {
 	      float x;
 	      inss >> dur >> x;
-	      mixer2->updctrl("Gain/gain/real/gain", x);
+	      mixer2->updctrl("Gain/gain/mrs_real/gain", x);
 	    }	  
-	  else if (cname == "Gain/gt/real/gaincross") 
+	  else if (cname == "Gain/gt/mrs_real/gaincross") 
 	    {
 	      float x;
 	      inss >> dur >> x;
-	      Cmixer1->updctrl("Gain/gain/real/gain", dur);
-	      Cmixer2->updctrl("Gain/gain/real/gain", x);
+	      Cmixer1->updctrl("Gain/gain/mrs_real/gain", dur);
+	      Cmixer2->updctrl("Gain/gain/mrs_real/gain", x);
 	    }
 
 	  // LOAD COMMANDS
@@ -324,60 +326,60 @@ sfmixer(string sfName1)
 	    {
 	      string x;
 	      inss >> x;
-	      Channel_1_1->updctrl("SoundFileSource/src/string/filename",x);
+	      Channel_1_1->updctrl("SoundFileSource/src/mrs_string/filename",x);
 	    }
 	  else if (cname == "Audio/Track2/String/Filename")
 	    {
 	      string x;
 	      inss >> x;
-	      Channel_2_1->updctrl("SoundFileSource/src/string/filename",x);
+	      Channel_2_1->updctrl("SoundFileSource/src/mrs_string/filename",x);
 	    }
 	  else if (cname == "Audio/Track3/String/Filename")
 	    {
 	      string x;
 	      inss >> x;
-	      Channel_3_1->updctrl("SoundFileSource/src/string/filename",x);
+	      Channel_3_1->updctrl("SoundFileSource/src/mrs_string/filename",x);
 	    }
 	  else if (cname == "Audio/Track4/String/Filename")
 	    {
 	      string x;
 	      inss >> x;
-	      Channel_4_1->updctrl("SoundFileSource/src/string/filename",x);
+	      Channel_4_1->updctrl("SoundFileSource/src/mrs_string/filename",x);
 	    }
 	  else if (cname == "Audio/Track5/String/Filename")
 	    {
 	      string x;
 	      inss >> x;
-	      Channel_1_2->updctrl("SoundFileSource/src/string/filename",x);
+	      Channel_1_2->updctrl("SoundFileSource/src/mrs_string/filename",x);
 	    }
 	  else if (cname == "Audio/Track6/String/Filename")
 	    {
 	      string x;
 	      inss >> x;
-	      Channel_2_2->updctrl("SoundFileSource/src/string/filename",x);
+	      Channel_2_2->updctrl("SoundFileSource/src/mrs_string/filename",x);
 	    }
 	  else if (cname == "Audio/Track7/String/Filename")
 	    {
 	      string x;
 	      inss >> x;
-	      Channel_3_2->updctrl("SoundFileSource/src/string/filename",x);
+	      Channel_3_2->updctrl("SoundFileSource/src/mrs_string/filename",x);
 	    }
 	  else if (cname == "Audio/Track8/String/Filename")
 	    {
 	      string x;
 	      inss >> x;
-	      Channel_4_2->updctrl("SoundFileSource/src/string/filename",x);
+	      Channel_4_2->updctrl("SoundFileSource/src/mrs_string/filename",x);
 	    }
 
 	  // MUTE COMMANDS
 	  else if (cname == "Channel/Track1/Mute/on")
 	    {
              
-	      Channel_1_1->updctrl("SoundFileSource/src/bool/mute",true);
+	      Channel_1_1->updctrl("SoundFileSource/src/mrs_bool/mute",true);
 	    }
 	  else if (cname == "Channel/Track1/Mute/off")
 	    {
-	      Channel_1_1->updctrl("SoundFileSource/src/bool/mute",false);
+	      Channel_1_1->updctrl("SoundFileSource/src/mrs_bool/mute",false);
 	    }
 
 

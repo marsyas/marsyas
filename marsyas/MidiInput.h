@@ -24,9 +24,11 @@
 #ifndef MARSYAS_MIDIINPUT_H
 #define MARSYAS_MIDIINPUT_H
 
-
 #include "MarSystem.h"	
 #include "RtMidi.h"
+
+namespace Marsyas
+{
 
 class MidiInput: public MarSystem
 {
@@ -46,5 +48,7 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif

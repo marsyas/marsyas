@@ -20,9 +20,7 @@
     record: record a clip using AudioSource
 */
 
-
-
-#include <stdio.h>
+#include <cstdio>
 #include "Collection.h"
 #include "MarSystemManager.h"
 #include "Accumulator.h"
@@ -30,14 +28,15 @@
 #include "CommandLineOptions.h"
 
 #include <string> 
-#include <iostream> 
-using namespace std;
+#include <iostream>
 
+using namespace std;
+using namespace Marsyas;
 
 int helpopt;
 int usageopt;
-real lengthopt;
-real gopt;
+mrs_real lengthopt;
+mrs_real gopt;
 
 
 #define EMPTYSTRING "MARSYAS_EMPTY" 
@@ -102,7 +101,7 @@ loadOptions()
 
 
 void 
-record(real length, real gain, string filename) 
+record(mrs_real length, mrs_real gain, string filename) 
 {
   MarSystemManager mng;
   
@@ -113,21 +112,21 @@ record(real length, real gain, string filename)
   recordNet->addMarSystem(asrc);
   // recordNet->addMarSystem(dest);
   
-  recordNet->updctrl("AudioSource/asrc/natural/inSamples", 100);
-  recordNet->updctrl("AudioSource/asrc/real/gain", gain);
-  recordNet->updctrl("SoundFileSink/dest/string/filename", filename);
+  recordNet->updctrl("AudioSource/asrc/mrs_natural/inSamples", 100);
+  recordNet->updctrl("AudioSource/asrc/mrs_real/gain", gain);
+  recordNet->updctrl("SoundFileSink/dest/mrs_string/filename", filename);
   
-  real srate = recordNet->getctrl("AudioSource/asrc/real/israte").toReal();
+  mrs_real srate = recordNet->getctrl("AudioSource/asrc/mrs_real/israte").toReal();
   
-  natural inSamples = recordNet->getctrl("AudioSource/asrc/natural/inSamples").toNatural();
+  mrs_natural inSamples = recordNet->getctrl("AudioSource/asrc/mrs_natural/inSamples").toNatural();
   
 
-  natural iterations = (natural)((srate * length) / inSamples);
+  mrs_natural iterations = (mrs_natural)((srate * length) / inSamples);
 
 
 
   
-  for (natural t = 0; t < iterations; t++) 
+  for (mrs_natural t = 0; t < iterations; t++) 
     {
       recordNet->tick();
     }
@@ -141,7 +140,7 @@ record(real length, real gain, string filename)
 
 
 void 
-recordVirtualSensor(real length, real gain, string filename) 
+recordVirtualSensor(mrs_real length, mrs_real gain, string filename) 
 {
   MarSystemManager mng;
 
@@ -158,12 +157,12 @@ recordVirtualSensor(real length, real gain, string filename)
   MidiInput* midiin = new MidiInput("midiin");
   recordNet->addMarSystem(midiin);
   // recordNet->addMarSystem(dest); 
-  recordNet->updctrl("AudioSource/asrc/natural/inSamples", 4096);
-  recordNet->updctrl("AudioSource/asrc/real/gain", gain);
-  recordNet->updctrl("AudioSource/asrc/real/israte", 44100.0); 
-  recordNet->updctrl("AudioSource/asrc/real/osrate", 44100.0); 
+  recordNet->updctrl("AudioSource/asrc/mrs_natural/inSamples", 4096);
+  recordNet->updctrl("AudioSource/asrc/mrs_real/gain", gain);
+  recordNet->updctrl("AudioSource/asrc/mrs_real/israte", 44100.0); 
+  recordNet->updctrl("AudioSource/asrc/mrs_real/osrate", 44100.0); 
   
-  recordNet->linkctrl("bool/notEmpty", "AudioSource/asrc/bool/notEmpty");
+  recordNet->linkctrl("mrs_bool/notEmpty", "AudioSource/asrc/mrs_bool/notEmpty");
 
 
 
@@ -186,46 +185,46 @@ recordVirtualSensor(real length, real gain, string filename)
   pnet->addMarSystem(mng.create("WekaSink", "wsink"));
 
 
-  pnet->updctrl("WekaSink/wsink/natural/nLabels", 2);
-  pnet->updctrl("WekaSink/wsink/string/labelNames", "edge, middle");
-  pnet->updctrl("WekaSink/wsink/string/filename", "vsensor.arff");
+  pnet->updctrl("WekaSink/wsink/mrs_natural/nLabels", 2);
+  pnet->updctrl("WekaSink/wsink/mrs_string/labelNames", "edge, middle");
+  pnet->updctrl("WekaSink/wsink/mrs_string/filename", "vsensor.arff");
 
-  pnet->updctrl("SoundFileSink/dest/real/israte", 44100.0); 
-  pnet->updctrl("SoundFileSink/dest/real/osrate", 44100.0); 
-  pnet->updctrl("SoundFileSink/dest/string/filename", "vsens.au");   
-
-
+  pnet->updctrl("SoundFileSink/dest/mrs_real/israte", 44100.0); 
+  pnet->updctrl("SoundFileSink/dest/mrs_real/osrate", 44100.0); 
+  pnet->updctrl("SoundFileSink/dest/mrs_string/filename", "vsens.au");   
 
 
-  real srate = recordNet->getctrl("AudioSource/asrc/real/israte").toReal();
+
+
+  mrs_real srate = recordNet->getctrl("AudioSource/asrc/mrs_real/israte").toReal();
   
-  natural inSamples = recordNet->getctrl("AudioSource/asrc/natural/inSamples").toNatural();
+  mrs_natural inSamples = recordNet->getctrl("AudioSource/asrc/mrs_natural/inSamples").toNatural();
   cout << *recordNet << endl; 
 
-  natural iterations = (natural)((srate * length) / inSamples);
+  mrs_natural iterations = (mrs_natural)((srate * length) / inSamples);
   cout << "iterations" << endl;
 
 
   int r;
   
-  for (natural t = 0; t < iterations; t++)
+  for (mrs_natural t = 0; t < iterations; t++)
      {
        r = midiin->rval;
        cout << r << endl;
        if (r > 61)
 	 {
 	   cout << "middle" << endl;
-	   pnet->setctrl("Annotator/ann/natural/label", (MarControlValue)1);
+	   pnet->setctrl("Annotator/ann/mrs_natural/label", (MarControlValue)1);
 	 }
        /* else if (r > 61) 
 	 {
 	   cout << "middle" << endl;
-	   pnet->setctrl("Annotator/ann/natural/label", (MarControlValue)1);
+	   pnet->setctrl("Annotator/ann/mrs_natural/label", (MarControlValue)1);
 	 }
        */ 
        else
 	 {
-	   pnet->setctrl("Annotator/ann/natural/label", (MarControlValue)0);
+	   pnet->setctrl("Annotator/ann/mrs_natural/label", (MarControlValue)0);
 	   cout << "edge" << endl;
 	 }
 

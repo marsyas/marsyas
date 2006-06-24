@@ -24,9 +24,10 @@
 #ifndef MARSYAS_PARALLEL_H
 #define MARSYAS_PARALLEL_H
 
-
-
 #include "Composite.h"
+
+namespace Marsyas
+{
 
 class Parallel: public Composite
 {
@@ -41,11 +42,12 @@ public:
   
   ~Parallel();
   MarSystem* clone() const;    
-  
-  
+
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 

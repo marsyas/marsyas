@@ -16,7 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /**
    \class ViconFileSource
    \brief ViconFileSource for exported VICON .txt files
@@ -25,8 +24,9 @@
 */
 
 #include "ViconFileSource.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 ViconFileSource::ViconFileSource(string name)
 {
@@ -49,11 +49,11 @@ void
 ViconFileSource::addControls()
 {
   addDefaultControls();
-  addctrl("bool/notEmpty", true);  
-  addctrl("natural/size", 0);
-  addctrl("string/markers", " ");
-  addctrl("string/filename", "dviconfile");
-  setctrlState("string/filename", true);
+  addctrl("mrs_bool/notEmpty", true);  
+  addctrl("mrs_natural/size", 0);
+  addctrl("mrs_string/markers", " ");
+  addctrl("mrs_string/filename", "dviconfile");
+  setctrlState("mrs_string/filename", true);
 }
 
 
@@ -84,8 +84,8 @@ ViconFileSource::getHeader(string filename)
 	  
 	  fileObs_++;
 	}
-      setctrl("natural/onObservations", fileObs_);
-      setctrl("string/markers", buffer);
+      setctrl("mrs_natural/onObservations", fileObs_);
+      setctrl("mrs_string/markers", buffer);
     }
 } 
 
@@ -93,20 +93,20 @@ ViconFileSource::getHeader(string filename)
 void
 ViconFileSource::update()
 {
-  inObservations_ = getctrl("natural/inObservations").toNatural();
-  israte_ = getctrl("real/israte").toReal();
+  inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+  israte_ = getctrl("mrs_real/israte").toReal();
 
 
-  if (filename_ != getctrl("string/filename").toString())
+  if (filename_ != getctrl("mrs_string/filename").toString())
     {
-      filename_ = getctrl("string/filename").toString();
+      filename_ = getctrl("mrs_string/filename").toString();
       getHeader(filename_);
       
     }
   
-  setctrl("natural/onSamples", inSamples_);
-  setctrl("natural/onObservations", fileObs_);
-  setctrl("real/osrate", israte_);
+  setctrl("mrs_natural/onSamples", inSamples_);
+  setctrl("mrs_natural/onObservations", fileObs_);
+  setctrl("mrs_real/osrate", israte_);
     
        
   defaultUpdate();
@@ -128,7 +128,7 @@ ViconFileSource::process(realvec& in, realvec& out)
 	  res = fgets(buffer, 4096, vfp_);
 	  if (res == NULL) 
 	    {
-	      setctrl("bool/notEmpty",(MarControlValue)false);
+	      setctrl("mrs_bool/notEmpty",(MarControlValue)false);
 	      return;
 	    }
 	  
@@ -141,12 +141,12 @@ ViconFileSource::process(realvec& in, realvec& out)
 	      line.getline(entry, 256, ',');
 	      if (!strcmp(entry,"")) 
 		{
-		  for (natural j=0; j < o; j++)
+		  for (mrs_natural j=0; j < o; j++)
 		    out(j,t) = 0.0;
 		  notValidLine = true;
 		}
 	      else 
-		out(o,t) = (real)atof(entry);
+			out(o,t) = (mrs_real)atof(entry);
 
 	      if (notValidLine) break;
 	    }

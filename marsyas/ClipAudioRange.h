@@ -26,8 +26,10 @@
 #ifndef MARSYAS_CLIPAUDIORANGE_H
 #define MARSYAS_CLIPAUDIORANGE_H
 
-#include "MarSystem.h"	
+#include "MarSystem.h"
 
+namespace Marsyas
+{
 
 class ClipAudioRange: public MarSystem
 {
@@ -41,6 +43,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 

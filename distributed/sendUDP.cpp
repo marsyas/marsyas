@@ -1,5 +1,5 @@
 
-#include <stdio.h>
+#include <cstdio>
 #include <iostream>
 #include <string>
 #include "Collection.h"
@@ -18,6 +18,8 @@
 #include "MarSystemManager.h"
 #include "HalfWaveRectifier.h"
 #include "CommandLineOptions.h"
+
+using namespace Marsyas;
 
 CommandLineOptions cmd_options;
 
@@ -79,28 +81,28 @@ printHelp(string progName)
 
 // Play soundfile given by sfName, msys contains the playback 
 // network of MarSystem objects 
-void sfplayFile(MarSystem& msys, natural offset, natural duration, 
-real start, real length, real gain, real repetitions, string sfName )
+void sfplayFile(MarSystem& msys, mrs_natural offset, mrs_natural duration, 
+mrs_real start, mrs_real length, mrs_real gain, mrs_real repetitions, string sfName )
 {
-  msys.updctrl("SoundFileSource/src/string/filename", sfName);
-  natural nChannels = msys.getctrl("SoundFileSource/src/natural/nChannels").toNatural();
-  real srate = msys.getctrl("SoundFileSource/src/real/israte").toReal();
+  msys.updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  mrs_natural nChannels = msys.getctrl("SoundFileSource/src/mrs_natural/nChannels").toNatural();
+  mrs_real srate = msys.getctrl("SoundFileSource/src/mrs_real/israte").toReal();
   
   // playback offset & duration
-  offset = (natural) (start * srate * nChannels);
-  duration = (natural) (length * srate * nChannels);
+  offset = (mrs_natural) (start * srate * nChannels);
+  duration = (mrs_natural) (length * srate * nChannels);
   
   // udpate controls
-  msys.updctrl("natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
-  msys.updctrl("Gain/gt/real/gain", gain);
-  msys.updctrl("SoundFileSource/src/natural/pos", offset);      
+  msys.updctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
+  msys.updctrl("Gain/gt/mrs_real/gain", gain);
+  msys.updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
   
-  natural wc=0;
-  natural samplesPlayed = 0;
-  natural onSamples = msys.getctrl("natural/onSamples").toNatural();
-  // natural repeatId = 1;
+  mrs_natural wc=0;
+  mrs_natural samplesPlayed = 0;
+  mrs_natural onSamples = msys.getctrl("mrs_natural/onSamples").toNatural();
+  // mrs_natural repeatId = 1;
   
-  while (msys.getctrl("SoundFileSource/src/bool/notEmpty").toBool())
+  while (msys.getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool())
     {
       msys.tick();
       wc ++;
@@ -111,7 +113,7 @@ real start, real length, real gain, real repetitions, string sfName )
 
 
 // Play a collection l of soundfiles
-void sfplay(Collection l, natural offset, natural duration, real start, real length, real gain, real repetitions)
+void sfplay(Collection l, mrs_natural offset, mrs_natural duration, mrs_real start, mrs_real length, mrs_real gain, mrs_real repetitions)
 {
   MRSDIAG("sendUDP.cpp - sendUDP");
   int i;
@@ -119,15 +121,15 @@ void sfplay(Collection l, natural offset, natural duration, real start, real len
   // Load first soundfile in collection 
   string sfName = l.entry(0);
   SoundFileSource* src = new SoundFileSource("src");
-  src->updctrl("string/filename", sfName);
+  src->updctrl("mrs_string/filename", sfName);
 
   // create the network sink
   NetworkUDPSink* netSink = new NetworkUDPSink("netSink");
   
   // update controls if they are passed on cmd line...
   if ( host != EMPTYSTRING && port != 0 ) {
-  	netSink->updctrl("string/host", host);
-  	netSink->updctrl("natural/port", port);
+  	netSink->updctrl("mrs_string/host", host);
+  	netSink->updctrl("mrs_natural/port", port);
   }
   if ( port != 0 && host == EMPTYSTRING ) {
   	cerr << "Please specify a hostname." << endl;
@@ -147,7 +149,7 @@ void sfplay(Collection l, natural offset, natural duration, real start, real len
   playbacknet.addMarSystem(auSink);
   playbacknet.addMarSystem(netSink);
   
-  playbacknet.updctrl("AudioSink/auSink/natural/nChannels", 1);
+  playbacknet.updctrl("AudioSink/auSink/mrs_natural/nChannels", 1);
   
   // output the MarSystem
   cout << playbacknet << endl;      
@@ -155,8 +157,8 @@ void sfplay(Collection l, natural offset, natural duration, real start, real len
   // refresh the connection...
 
   netSink->refresh();
-  cout << "Connecting to host: " << netSink->getctrl("string/host");
-  cout << " on port: " << netSink->getctrl("natural/port") << endl;
+  cout << "Connecting to host: " << netSink->getctrl("mrs_string/host");
+  cout << " on port: " << netSink->getctrl("mrs_natural/port") << endl;
  
  
   // For each file in collection playback the sound
@@ -178,7 +180,7 @@ readCollection(Collection& l, string name)
   collectionstr += name;
   ifstream from(collectionstr.c_str());
   ifstream from1(name.c_str());
-  natural attempts  =0;
+  mrs_natural attempts  =0;
   
   
   MRSDIAG("Trying default MARSYAS mf directory: " + collectionstr);

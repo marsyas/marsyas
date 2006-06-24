@@ -8,8 +8,6 @@
 
 #include "realvec.h"
 
-using namespace std;
-
 class MarxGLColorGraph : public QGLWidget
 {
   
@@ -17,7 +15,7 @@ public:
 
   MarxGLColorGraph( QWidget *parent, long b=0 );
 
-  bool setBuffer( realvec& );
+  bool setBuffer( Marsyas::realvec& );
   void setBufferSize( long );
 
   void setContrast( float );
@@ -30,7 +28,7 @@ protected:
 private:
   QColor bgcolor;
 
-  realvec* buffer;
+  Marsyas::realvec* buffer;
   long buffersize;
 
   float yzero;

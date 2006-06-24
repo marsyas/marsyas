@@ -25,7 +25,7 @@
 #include <config.h>
 #endif
 
-#include <stdio.h>
+#include <cstdio>
 
 #ifndef WIN32
 #include <dirent.h>
@@ -42,7 +42,9 @@
 #include "Collection.h"
 
 #include <string>
+
 using namespace std;
+using namespace Marsyas;
 
 
 

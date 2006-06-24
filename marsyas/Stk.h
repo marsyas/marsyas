@@ -17,6 +17,9 @@
 
 #include <string>
 
+namespace Marsyas
+{
+
 // Most data in STK is passed and calculated with the
 // following user-definable floating-point type.  You
 // can change this to "float" if you prefer or perhaps
@@ -191,5 +194,7 @@ typedef double FLOAT64;
 #endif
 
 //#define _STK_DEBUG_
+
+}//namespace Marsyas
 
 #endif

@@ -22,10 +22,10 @@
 
 */
 
-
 #include "MarFileSink.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 
 MarFileSink::MarFileSink()
@@ -65,30 +65,25 @@ MarFileSink::update()
 {
   MRSDIAG("MarFileSink.cpp - MarFileSink:update");
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
-  
-
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 }
-
-
-
 
 void 
 MarFileSink::process(realvec& in, realvec& out)
 {
   
-  natural nObservations = getctrl("natural/inObservations").toNatural();
-  natural nSamples = getctrl("natural/inSamples").toNatural();
+  mrs_natural nObservations = getctrl("mrs_natural/inObservations").toNatural();
+  mrs_natural nSamples = getctrl("mrs_natural/inSamples").toNatural();
 
   checkFlow(in, out);
   
   for (o=0; o < nObservations; o++)
     for (t = 0; t < nSamples; t++)
       {
-	out(o,t) = in(o,t);
-	cout << out(o,t) << " ";
+		out(o,t) = in(o,t);
+		cout << out(o,t) << " ";
       }
   cout << endl;
 }

@@ -23,11 +23,10 @@
     Normalize by subtracting mean and dividing by standard deviation
 */
 
-
 #include "Norm.h"
+
 using namespace std;
-
-
+using namespace Marsyas;
 
 Norm::Norm(string name)
 {
@@ -60,9 +59,9 @@ Norm::update()
 {
   MRSDIAG("Norm.cpp - Norm:update");
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   defaultUpdate();
 }
 
@@ -73,8 +72,8 @@ Norm::process(realvec& in, realvec& out)
   
   checkFlow(in,out);
   realvec row(inSamples_);
-  real mean;
-  real std;
+  mrs_real mean;
+  mrs_real std;
   
 
   for (o=0; o < inObservations_; o++)
@@ -89,7 +88,7 @@ Norm::process(realvec& in, realvec& out)
       for (t = 0; t < inSamples_; t++)
 	{
 	  // Scale to -1.0 1.0 audio range
-	  out(o,t) = (real)(0.05 * ((in(o,t) - mean) / std)); 
+	  out(o,t) = (mrs_real)(0.05 * ((in(o,t) - mean) / std)); 
 	  
 	}
     }

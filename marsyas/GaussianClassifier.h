@@ -41,8 +41,10 @@ MarSystem.
 #ifndef MARSYAS_GAUSSIANCLASSIFIER_H
 #define MARSYAS_GAUSSIANCLASSIFIER_H
 
-#include "MarSystem.h"	
+#include "MarSystem.h"
 
+namespace Marsyas
+{
 
 class GaussianClassifier: public MarSystem
 {
@@ -61,6 +63,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 	

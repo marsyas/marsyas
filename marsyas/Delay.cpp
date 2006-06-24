@@ -23,11 +23,10 @@
    Simple Delay example
 */
 
-
-
 #include "Delay.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 
 Delay::Delay(string name)
@@ -55,12 +54,12 @@ void
 Delay::addControls()
 {
   addDefaultControls();
-  addctrl("real/gain", 1.0);
-  addctrl("real/feedback", 0.3);
-  addctrl("real/delay", 0.2);
-  setctrlState("real/gain", true);
-  setctrlState("real/feedback", true);
-  setctrlState("real/delay", true);
+  addctrl("mrs_real/gain", 1.0);
+  addctrl("mrs_real/feedback", 0.3);
+  addctrl("mrs_real/delay", 0.2);
+  setctrlState("mrs_real/gain", true);
+  setctrlState("mrs_real/feedback", true);
+  setctrlState("mrs_real/delay", true);
 }
 
 
@@ -69,19 +68,19 @@ Delay::update()
 {
   MRSDIAG("Delay.cpp - Delay:update");
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-  gain = getctrl("real/gain").toReal();
-  feedback = getctrl("real/feedback").toReal();
-  delay = getctrl("real/delay").toReal();
+  gain = getctrl("mrs_real/gain").toReal();
+  feedback = getctrl("mrs_real/feedback").toReal();
+  delay = getctrl("mrs_real/delay").toReal();
   
   bufferSize_ = 22050;
-  cursor_ = (natural)floor(bufferSize_*delay+0.5);
-  buffer_.create((natural)bufferSize_);
+  cursor_ = (mrs_natural)floor(bufferSize_*delay+0.5);
+  buffer_.create((mrs_natural)bufferSize_);
   
-  setctrl("string/onObsNames", getctrl("string/inObsNames"));
+  setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
   defaultUpdate();  
 }
 

@@ -16,18 +16,15 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /** 
     \class Normalize
     \brief Normalize my mapping min/max range to user specified range
-
-
 */
 
-
 #include "Normalize.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 
 Normalize::Normalize(string name)
@@ -62,11 +59,11 @@ Normalize::update()
 {
   MRSDIAG("Normalize.cpp - Normalize:update");
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-  setctrl("string/onObsNames", getctrl("string/inObsNames"));
+  setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
   defaultUpdate();  
   
 }
@@ -78,7 +75,7 @@ Normalize::process(realvec& in, realvec& out)
   
   checkFlow(in,out);
 
-  real rms = 0.0;
+  mrs_real rms = 0.0;
 
   for (t = 0; t < inSamples_; t++)  
     {
@@ -86,17 +83,17 @@ Normalize::process(realvec& in, realvec& out)
 
       // calculate 2-norm 
       for (o=0; o < inObservations_; o++)
-	{
-	  rms += (in(o,t) * in(o,t));
-	}
+		{
+		  rms += (in(o,t) * in(o,t));
+		}
       rms = sqrt(rms);
 
       // normalize 
       for (o=0; o < inObservations_; o++)
-	{
-	  out(o,t) = in(o,t) / rms;
-	}
-      
+		{
+		  out(o,t) = in(o,t) / rms;
+		}
+ 
     }
   
 }

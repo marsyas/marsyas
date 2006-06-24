@@ -27,12 +27,10 @@ past observations. It used to compute "texture" features
 window -around 1 second-.
 */
 
-
-
-
 #include "Memory.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 
 Memory::Memory(string name)
@@ -59,10 +57,10 @@ void
 Memory::addControls()
 {
   addDefaultControls();
-  addctrl("natural/memSize", 40);
-  setctrlState("natural/memSize", true);
-  addctrl("bool/reset", false);
-  setctrlState("bool/reset", true);
+  addctrl("mrs_natural/memSize", 40);
+  setctrlState("mrs_natural/memSize", true);
+  addctrl("mrs_bool/reset", false);
+  setctrlState("mrs_bool/reset", true);
 }
 
 
@@ -71,19 +69,18 @@ Memory::update()
 {
   MRSDIAG("Memory.cpp - Memory:update");
   
+  mrs_natural memSize = getctrl("mrs_natural/memSize").toNatural();
   
-  natural memSize = getctrl("natural/memSize").toNatural();
-  
-  setctrl("natural/onSamples", getctrl("natural/inSamples").toNatural() * memSize);
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte").toReal());
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples").toNatural() * memSize);
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal());
 
-  reset_ = getctrl("bool/reset").toBool();
+  reset_ = getctrl("mrs_bool/reset").toBool();
 
   defaultUpdate();
   
   ostringstream oss;
-  string inObsNames = getctrl("string/inObsNames").toString();
+  string inObsNames = getctrl("mrs_string/inObsNames").toString();
   for (int i = 0; i < inObservations_; i++)
     {
       string inObsName;
@@ -93,7 +90,7 @@ Memory::update()
       inObsNames = temp;
       oss << "Mem" << memSize << "_" << inObsName << ",";
     }
-  setctrl("string/onObsNames", oss.str());
+  setctrl("mrs_string/onObsNames", oss.str());
 
 }
 
@@ -107,13 +104,13 @@ Memory::process(realvec& in, realvec& out)
 
 
 
-  natural memSize = getctrl("natural/memSize").toNatural();
+  mrs_natural memSize = getctrl("mrs_natural/memSize").toNatural();
 
   if (reset_) 
     {
       out.setval(0.0);
       reset_ = false;
-      setctrl("bool/reset", (MarControlValue)false);
+      setctrl("mrs_bool/reset", (MarControlValue)false);
       end_ = 0;
     }
   

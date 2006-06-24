@@ -16,18 +16,16 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /** 
     \class PeakPeriods2BPM
     \brief PeakPeriods2BPM: convert peaks to beats per minute 
 
 */
 
-
 #include "PeakPeriods2BPM.h"
+
 using namespace std;
-
-
+using namespace Marsyas;
 
 PeakPeriods2BPM::PeakPeriods2BPM(string name)
 {
@@ -60,11 +58,11 @@ PeakPeriods2BPM::update()
 {
   MRSDIAG("PeakPeriods2BPM.cpp - PeakPeriods2BPM:update");
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  srate_ = getctrl("real/israte").toReal();
+  srate_ = getctrl("mrs_real/israte").toReal();
   defaultUpdate();
 }
 
@@ -78,7 +76,7 @@ PeakPeriods2BPM::process(realvec& in, realvec& out)
     for (t = 0; t < inSamples_/2; t++)
       {
 	out(o,2*t) = in(o,2*t);
-	out(o,2*t+1) = (real)(srate_ * 60.0 / in(o, 2*t+1));
+	out(o,2*t+1) = (mrs_real)(srate_ * 60.0 / in(o, 2*t+1));
       }
   
 }

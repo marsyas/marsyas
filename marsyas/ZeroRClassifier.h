@@ -31,14 +31,16 @@ MarSystem results.
 #ifndef MARSYAS_ZERORCLASSIFIER_H
 #define MARSYAS_ZERORCLASSIFIER_H
 
-#include "MarSystem.h"	
+#include "MarSystem.h"
+
+namespace Marsyas
+{
 
 class ZeroRClassifier: public MarSystem
 {
 private: 
   void addControls();
   realvec labelSizes_;
-  
 
 public:
   ZeroRClassifier();
@@ -49,6 +51,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 	

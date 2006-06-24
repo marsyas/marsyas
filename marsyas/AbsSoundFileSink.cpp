@@ -21,9 +21,10 @@
    \brief Abstract Interface for SoundFileSinks of various formats
 */
 
-
 #include "AbsSoundFileSink.h"
+
 using namespace std;
+using namespace Marsyas;
 
 AbsSoundFileSink::AbsSoundFileSink()
 {

@@ -21,9 +21,11 @@
    \class TmTimer
    \brief Abstract TmTimer
 */
-#include "TmTimer.h"
-using namespace std;
 
+#include "TmTimer.h"
+
+using namespace std;
+using namespace Marsyas;
 
 TmTimer::TmTimer() { init(); }
 TmTimer::TmTimer(string name) { name_=name; init(); }
@@ -33,16 +35,16 @@ void TmTimer::init() { cur_time_=0; granularity_=0; next_trigger_=0; }
 string TmTimer::getName() { return name_; }
 void TmTimer::setName(string name) { name_=name; }
 
-void TmTimer::setGranularity(natural g) { granularity_=g; }
+void TmTimer::setGranularity(mrs_natural g) { granularity_=g; }
 
-natural TmTimer::getTime() { return cur_time_; }
+mrs_natural TmTimer::getTime() { return cur_time_; }
 /* this is a very simple implementation of granularity. What if we want it to
    be every 1 second of real time. Could be done by reading a control for
    a specific value. What if the size of the sample buffer changes during
    processing. Might have to have a size relative to certain parameters like
    sample buffer size. So many questions. */
 void TmTimer::tick() {
-    natural chunk = readTimeSrc();
+    mrs_natural chunk = readTimeSrc();
     if (next_trigger_<1) {
         if (granularity_>0) { next_trigger_=granularity_; }
         trigger();
@@ -52,7 +54,7 @@ void TmTimer::tick() {
 
 /*
 ostream&
-operator<< (ostream& o, Scheduler& sys) {
+Marsyas::operator<< (ostream& o, Scheduler& sys) {
 //    sys.put(o);
     
     return o;

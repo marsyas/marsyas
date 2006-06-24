@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MarGrid", "MarGrid.vcproj", "{A78C11A4-C458-36ED-B96F-38B6756E536C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7ABC801D-6288-47B6-853B-A07F93404686} = {7ABC801D-6288-47B6-853B-A07F93404686}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "marsyas", "..\..\marsyasVisualStudio2005\marsyas\marsyas.vcproj", "{7ABC801D-6288-47B6-853B-A07F93404686}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A78C11A4-C458-36ED-B96F-38B6756E536C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A78C11A4-C458-36ED-B96F-38B6756E536C}.Debug|Win32.Build.0 = Debug|Win32
+		{A78C11A4-C458-36ED-B96F-38B6756E536C}.Release|Win32.ActiveCfg = Release|Win32
+		{A78C11A4-C458-36ED-B96F-38B6756E536C}.Release|Win32.Build.0 = Release|Win32
+		{7ABC801D-6288-47B6-853B-A07F93404686}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7ABC801D-6288-47B6-853B-A07F93404686}.Debug|Win32.Build.0 = Debug|Win32
+		{7ABC801D-6288-47B6-853B-A07F93404686}.Release|Win32.ActiveCfg = Release|Win32
+		{7ABC801D-6288-47B6-853B-A07F93404686}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

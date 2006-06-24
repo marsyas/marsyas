@@ -25,9 +25,9 @@
 plus various utility functions.
 */ 
 
-
-
 #include "Color.h"
+
+using namespace Marsyas;
 
 Color::Color()
 {
@@ -39,9 +39,6 @@ Color::Color()
 Color::~Color()
 {
 }
-
-
-
 
 Color::Color(float r, float g, float b)
 {

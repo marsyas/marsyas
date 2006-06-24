@@ -22,8 +22,9 @@
 # Process this file with autoconf to produce a configure script.
 AC_INIT([marsyas], [0.2.6], [gtzan@cs.uvic.ca])
 AC_CONFIG_AUX_DIR(config)
+AC_CONFIG_SRCDIR([marsyas/MrsLog.h])
 AC_CANONICAL_SYSTEM
-AM_CONFIG_HEADER(marsyas/config.h)
+AM_CONFIG_HEADER([marsyas/config.h])
 AM_INIT_AUTOMAKE([marsyas], [0.2.6])
 
 
@@ -32,6 +33,7 @@ MRS_DEFAULT_CXXFLAGS="-O3 -Wall"
 if test "x$CXXFLAGS" == "x"; then 
 	CXXFLAGS="$MRS_DEFAULT_CXXFLAGS" 
 fi
+AC_PROG_CC
 AC_PROG_CXX 
 AC_SUBST(ac_aux_dir)
 AC_PROG_RANLIB
@@ -125,25 +127,6 @@ case "x$with_mad" in
 esac
 AC_SUBST([MADLIB])
 
-AC_ARG_WITH([ogg],[AC_HELP_STRING([--with-ogg],[Link to libvorbis (ogg audio decoder)])])
-OGGLIB=""
-case "x$with_ogg" in
-       xyes)
-               OGGLIB="-lvorbis -lvorbisfile"
-               AC_DEFINE([OGG_VORBIS],[1],[Enable ogg vorbis decoding])
-               echo Ogg vorbis decoding enabled
-       ;;
-       xno|x)  echo Ogg vorbis decoding disabled ;;
-       *)
-               # Passed a prefix for mad
-               OGGLIB="-L${with_ogg}/lib -lvorbis -lvorbisfile"
-               CPPFLAGS="$CPPFLAGS -I${with_ogg}/include"
-               AC_DEFINE([OGG_VORBIS],[1],[Enable ogg vorbis decoding])
-               echo Ogg vorbis decoding enabled
-       ;;
-esac
-AC_SUBST([OGGLIB])
-
 AC_ARG_WITH([readline],[AC_HELP_STRING([--with-readline],[Readline functionality for Marsyas scriping language (MSL)])])
 MslLibs=""
 case "x$with_readline" in
@@ -168,10 +151,10 @@ AC_ARG_ENABLE([bindings],
                               [Enables SWIG generated bindings])
               ]
 )
-AC_CONFIG_SUBDIRS([[swig]])
 MRSSWIG=
 case "$enable_bindings" in
        yes)
+       	       AC_CONFIG_SUBDIRS([[swig]])
                MRSSWIG="swig"
                echo SWIG bindings enabled
        ;;
@@ -194,29 +177,29 @@ case "${host}" in
 
 if test "$enable_oss" = yes; then 
 	AC_DEFINE([__LINUX_OSS__],[1], [LINUX SYSTEM FOR RTAUDIO])	
-	Libs="-lpthread ${MADLIB} ${OGGLIB}"
+	Libs="-lpthread ${MADLIB}"
 	echo "Using OSS audio"
 else 
 	AC_DEFINE([__LINUX_ALSA__],[1], [LINUX SYSTEM FOR RTAUDIO])	
 	AC_DEFINE([__LINUX_ALSASEQ__],[1], [LINUX SYSTEM FOR RTAUDIO])	
-	Libs="-lpthread -lasound ${MADLIB} ${OGGLIB}"
+	Libs="-lpthread -lasound ${MADLIB}"
 fi 
 	AC_DEFINE([__OS_LINUX__],[1], [LINUX STUFF])
 	echo "Using ALSA audio"
 	;;
 	powerpc-*-darwin*) 
-	Libs="-lpthread ${MADLIB} ${OGGLIB} -framework CoreAudio -framework CoreMidi -framework CoreFoundation"
+	Libs="-lpthread ${MADLIB} -framework CoreAudio -framework CoreMidi -framework CoreFoundation"
 	AC_DEFINE([__MACOSX_CORE__],[1], [MACOSX SYSTEM FOR RTAUDIO])		
 	AC_DEFINE([__BIG_ENDIAN__], [1], [IS BIG ENDINA])
 	AC_DEFINE([__OS_MACOSX__],[1], [MACOSX STUFF])
 	;;
 	i386-*-darwin*) 
-	Libs="-lpthread ${MADLIB} ${OGGLIB} -framework CoreAudio -framework CoreMidi -framework CoreFoundation"
+	Libs="-lpthread ${MADLIB} -framework CoreAudio -framework CoreMidi -framework CoreFoundation"
 	AC_DEFINE([__MACOSX_CORE__],[1], [MACOSX SYSTEM FOR RTAUDIO])		
 	AC_DEFINE([__OS_MACOSX__],[1], [MACOSX STUFF])
 	;;
 	*-*-cygwin*) 
-	Libs="-lpthread -ldsound -lwinmm ${MADLIB} ${OGGLIB}"
+	Libs="-lpthread -ldsound -lwinmm ${MADLIB}"
 	Includes="/usr/include/directx"
 	AC_DEFINE([__WINDOWS_DS__],[1], [WINDOWS SYSTEM FOR RTAUDIO])		
 	AC_DEFINE([__WINDOWS_MM__],[1], [WINDOWS SYSTEM FOR RTAUDIO])		
@@ -242,6 +225,6 @@ AC_SUBST(MslLibs)
 
 
 
-AC_CONFIG_FILES([Makefile marsyas/Makefile src/Makefile src/plugins/Makefile src/tcl/Makefile distributed/Makefile doc/Makefile doc/marsyas/Makefile marsyasVisualStudio/Makefile marsyasVisualStudio/sfplay/Makefile marsyasVisualStudio/sfinfo/Makefile marsyasVisualStudio/phasevocoder/Makefile marsyasVisualStudio/marsyas/Makefile marsyasVisualStudio/sfplugin/Makefile marsyasVisualStudio/bextract/Makefile marsyasVisualStudio/extract/Makefile marsyasVisualStudio/classifyFile/Makefile qt4GUIs/Makefile qt4GUIs/MarPlayer/Makefile qt4GUIs/MarPlayer/images/Makefile qt4GUIs/MarGrid/Makefile qt4GUIs/Marx2DGraph/Makefile qt4GUIs/MarxGLMultiBufferGraph/Makefile qt4GUIs/Marx2DGraphStacked/Makefile qt4GUIs/MarxGL2Din3DSpaceGraph/Makefile qt4GUIs/MarxGLGraph/Makefile], [test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in])
+AC_CONFIG_FILES([Makefile marsyas/Makefile src/Makefile src/plugins/Makefile src/tcl/Makefile distributed/Makefile doc/Makefile doc/marsyas/Makefile marsyasVisualStudio2003/Makefile marsyasVisualStudio2003/sfplay/Makefile marsyasVisualStudio2003/sfinfo/Makefile marsyasVisualStudio2003/phasevocoder/Makefile marsyasVisualStudio2003/marsyas/Makefile marsyasVisualStudio2003/sfplugin/Makefile marsyasVisualStudio2003/bextract/Makefile marsyasVisualStudio2003/extract/Makefile marsyasVisualStudio2003/classifyFile/Makefile marsyasVisualStudio2005/Makefile marsyasVisualStudio2005/marsyas/Makefile marsyasVisualStudio2005/sfplay/Makefile marsyasVisualStudio2005/sfinfo/Makefile marsyasVisualStudio2005/sfplugin/Makefile marsyasVisualStudio2005/phasevocoder/Makefile marsyasVisualStudio2005/bextract/Makefile marsyasVisualStudio2005/extract/Makefile marsyasVisualStudio2005/classifyFile/Makefile marsyasVisualStudio2005/Tutorial/Makefile marsyasVisualStudio2005/marsyasTests/Makefile marsyasVisualStudio2005/LPCExample/Makefile qt4GUIs/Makefile qt4GUIs/MarPlayer/Makefile qt4GUIs/MarPlayer/images/Makefile qt4GUIs/MarGrid/Makefile qt4GUIs/Marx2DGraph/Makefile qt4GUIs/MarxGLMultiBufferGraph/Makefile qt4GUIs/Marx2DGraphStacked/Makefile qt4GUIs/MarxGL2Din3DSpaceGraph/Makefile qt4GUIs/MarxGLGraph/Makefile marsyasMATLAB/Makefile], [test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in])
 
 AC_OUTPUT

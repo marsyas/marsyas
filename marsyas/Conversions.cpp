@@ -22,23 +22,28 @@
 */
 
 #include "Conversions.h"
+
 using namespace std;
+using namespace Marsyas;
 
-
-real pitch2hertz(real pitch) {
-  return real(440.0 * pow(2.0, ((pitch - 69.0) / 12.0)));
+mrs_real
+Marsyas::pitch2hertz(mrs_real pitch) {
+  return mrs_real(440.0 * pow(2.0, ((pitch - 69.0) / 12.0)));
 }
 
-real hertz2pitch(real hz) {
-  return (hz == 0.0) ? (real)0.0 : (real)(69.0 + 12.0 * (log(hz/440.0)/log(2.0)));
+mrs_real
+Marsyas::hertz2pitch(mrs_real hz) {
+  return (hz == 0.0) ? (mrs_real)0.0 : (mrs_real)(69.0 + 12.0 * (log(hz/440.0)/log(2.0)));
 }
 
-real samples2hertz(natural samples, real srate) {
-    return (samples == 0.0)  ? (real)0.0 : (real) (srate * 1.0) / (samples);
+mrs_real
+Marsyas::samples2hertz(mrs_natural samples, mrs_real srate) {
+    return (samples == 0.0)  ? (mrs_real)0.0 : (mrs_real) (srate * 1.0) / (samples);
 }
 
-natural hertz2samples(real hz, real srate) {
-  return (hz == 0.0) ? (natural)0 : (natural) (srate / hz);
+mrs_natural
+Marsyas::hertz2samples(mrs_real hz, mrs_real srate) {
+  return (hz == 0.0) ? (mrs_natural)0 : (mrs_natural) (srate / hz);
 }
 
 /* convert a string representing time to number of samples base on the 
@@ -48,19 +53,20 @@ natural hertz2samples(real hz, real srate) {
    Errors: -1 is returned. ie more than 1 decimal point, invalid time
      division.
 */
-natural time2samples(string time, real srate) {
+mrs_natural
+Marsyas::time2samples(string time, mrs_real srate) {
 //example times: { "10us", "10ms", "10s", "10m", "10h" }
     if (time=="") { return 0; }
     // calculate time value
-    real samples=0;
+    mrs_real samples=0;
     int i=0;
     int len=time.length();
     bool decimal_point=false;
-    real divisor = 10.0;
+    mrs_real divisor = 10.0;
     for (i=0;i<len && (time[i]=='.' || (time[i]>='0' && time[i]<='9'));i++) {
         if (decimal_point) {
             if (time[i]=='.') { return -1.0; }
-            samples = samples + ((real)(time[i]-'0'))/divisor;
+            samples = samples + ((mrs_real)(time[i]-'0'))/divisor;
             divisor = divisor * 10.0;
         } else if (time[i]=='.') {
             decimal_point=true;
@@ -94,21 +100,22 @@ natural time2samples(string time, real srate) {
             }
         }
     }
-    return (natural)samples;
+    return (mrs_natural)samples;
 }
-natural time2usecs(string time) {
+mrs_natural
+Marsyas::time2usecs(string time) {
 //example times: { "10us", "10ms", "10s", "10m", "10h" }
     if (time=="") { return 0; }
     // calculate time value
-    real usecs=0;
+    mrs_real usecs=0;
     int i=0;
     int len=time.length();
     bool decimal_point=false;
-    real divisor = 10.0;
+    mrs_real divisor = 10.0;
     for (i=0;i<len && (time[i]=='.' || (time[i]>='0' && time[i]<='9'));i++) {
         if (decimal_point) {
             if (time[i]=='.') { return -1.0; }
-            usecs = usecs + ((real)(time[i]-'0'))/divisor;
+            usecs = usecs + ((mrs_real)(time[i]-'0'))/divisor;
             divisor = divisor * 10.0;
         } else if (time[i]=='.') {
             decimal_point=true;
@@ -142,6 +149,6 @@ natural time2usecs(string time) {
             }
         }
     }
-    return (natural)usecs;
+    return (mrs_natural)usecs;
 }
 

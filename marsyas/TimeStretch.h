@@ -28,10 +28,13 @@
 
 #include "MarSystem.h"	
 
+namespace Marsyas
+{
+
 class TimeStretch: public MarSystem
 {
 private:
-  real ni, w_;
+  mrs_real ni, w_;
   unsigned long li;
   unsigned long ri;
 
@@ -45,6 +48,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 

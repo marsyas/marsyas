@@ -23,8 +23,9 @@
 */
 
 #include "MarEvent.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 MarEvent::MarEvent()
 {
@@ -34,7 +35,7 @@ MarEvent::MarEvent()
 MarEvent::~MarEvent() { }
 string MarEvent::getType() const { return event_type_; }
 /*
-ostream& operator<< (ostream& o, MarEvent& e) {
+ostream& Marsyas::operator<< (ostream& o, MarEvent& e) {
 //    sys.put(o);
     o << "MarEvent<" << e.getCName() << "," << e.getValue() << ">";
     return o;

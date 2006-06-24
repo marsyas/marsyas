@@ -29,8 +29,9 @@
 #define PORT_NUM 50000
 
 #include <iostream> 
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 int
 main(int argc, char **argv)

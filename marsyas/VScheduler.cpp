@@ -23,8 +23,12 @@
 */
 
 #include "VScheduler.h"
-using namespace std;
 
+using namespace std;
+//using namespace Marsyas;
+
+namespace Marsyas //lmartins: hack: should work without this [?][!]
+{
 
 VScheduler::VScheduler() {
     schedulers=NULL;
@@ -105,8 +109,10 @@ void VScheduler::post(ScheduledEvent* e) {
 }
 
 //ostream&
-//operator<< (ostream& o, Scheduler& sys) {
+//Marsyas::operator<< (ostream& o, Scheduler& sys) {
 ////    sys.put(o);
 //    return o;
 //}
+
+}//namespace Marsyas
 

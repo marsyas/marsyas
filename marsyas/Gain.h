@@ -28,10 +28,10 @@ as a prototype template for building more complicated MarSystems.
 #ifndef MARSYAS_GAIN_H
 #define MARSYAS_GAIN_H
 
-
 #include "MarSystem.h"	
 
-
+namespace Marsyas
+{
 
 class Gain: public MarSystem
 {
@@ -45,5 +45,7 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif

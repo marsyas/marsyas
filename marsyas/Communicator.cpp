@@ -25,9 +25,11 @@
 of communicator. 
 */
 
-
 #include "Communicator.h"
 
+using namespace Marsyas;
+
+#define MAX_MESSAGE 256
 
 Communicator::Communicator()
 {

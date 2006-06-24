@@ -23,11 +23,10 @@
     Class for handling command-line options 
 */
 
-
-
 #include "CommandLineOptions.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 CommandLineOptions::CommandLineOptions()
 {
@@ -56,7 +55,7 @@ CommandLineOptions::addBoolOption(string lname, string sname, bool value)
 
 
 void 
-CommandLineOptions::addNaturalOption(string lname, string sname, natural value)
+CommandLineOptions::addNaturalOption(string lname, string sname, mrs_natural value)
 {
 
   string dlname;
@@ -76,7 +75,7 @@ CommandLineOptions::addNaturalOption(string lname, string sname, natural value)
 
 
 void 
-CommandLineOptions::addRealOption(string lname,string sname,real value)
+CommandLineOptions::addRealOption(string lname,string sname,mrs_real value)
 {
 
   string dlname;
@@ -165,7 +164,7 @@ CommandLineOptions::readOptions(int argc, const char **argv)
 	  if (riter_ != realOptions_.end())
 	    {
 	      if (i < argc -1) 
-		realOptions_[key] = (real)atof((arguments_[i+1]).c_str());
+		realOptions_[key] = (mrs_real)atof((arguments_[i+1]).c_str());
 	      i++;
 	      notFound = false;
 	    }
@@ -197,13 +196,13 @@ CommandLineOptions::getBoolOption(string lname)
 }
 
 
-natural 
+mrs_natural 
 CommandLineOptions::getNaturalOption(string lname)
 {
   return naturalOptions_["--" + lname];
 }
 
-real 
+mrs_real 
 CommandLineOptions::getRealOption(string lname)
 {
   return realOptions_["--" + lname];

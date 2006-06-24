@@ -28,7 +28,8 @@
 
 #include "MarSystem.h"	
 
-
+namespace Marsyas
+{
 
 class Norm: public MarSystem
 {
@@ -43,6 +44,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 

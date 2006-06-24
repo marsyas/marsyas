@@ -4,21 +4,23 @@
 #include "CommandLineOptions.h"
 
 #include <string> 
-#include <iostream> 
+#include <iostream>
+
 using namespace std;
+using namespace Marsyas;
 
 CommandLineOptions cmd_options;
 
 #define EMPTYSTRING "MARSYAS_EMPTY"
 int helpopt;
 int usageopt;
-natural bufferSizeopt;
-natural inputSizeopt;
+mrs_natural bufferSizeopt;
+mrs_natural inputSizeopt;
 string backgroundopt;
 bool verbose_opt;
 string mappingopt;
 string deviceopt;
-natural portopt;
+mrs_natural portopt;
 
 vector<string> tempo_map[11][11];
 
@@ -82,7 +84,7 @@ midiInfo()
 
 
 //Pluck Karplus Strong Model Plucked.cpp outputs to DAC
-void PluckLive(string deviceopt, real pos, real fre, real loz, real stret)
+void PluckLive(string deviceopt, mrs_real pos, mrs_real fre, mrs_real loz, mrs_real stret)
 {
 
 
@@ -118,7 +120,7 @@ void PluckLive(string deviceopt, real pos, real fre, real loz, real stret)
   MarSystem* series = mng.create("Series", "series");
   
   MarSystem* mix  = mng.create("Fanout", "mix");
-  for (natural i = 0; i < 16; i++) 
+  for (mrs_natural i = 0; i < 16; i++) 
     {
       ostringstream oss;
       oss << "src" << i;
@@ -132,15 +134,15 @@ void PluckLive(string deviceopt, real pos, real fre, real loz, real stret)
   series->update();
   
   
-  series->updctrl("Gain/gain/real/gain", 0.10);
-  series->updctrl("AudioSink/dest/real/israte", 
-		  series->getctrl("Fanout/mix/Plucked/src0/real/osrate"));
+  series->updctrl("Gain/gain/mrs_real/gain", 0.10);
+  series->updctrl("AudioSink/dest/mrs_real/israte", 
+		  series->getctrl("Fanout/mix/Plucked/src0/mrs_real/osrate"));
   
-  series->updctrl("AudioSink/dest/natural/bufferSize", 128); 
-  series->updctrl("Fanout/mix/Plucked/src0/real/frequency",fre);
-  series->updctrl("Fanout/mix/Plucked/src0/real/pluckpos",pos);
-  series->updctrl("Fanout/mix/Plucked/src0/real/loss",loz);
-  series->updctrl("natural/inSamples", 64);
+  series->updctrl("AudioSink/dest/mrs_natural/bufferSize", 128); 
+  series->updctrl("Fanout/mix/Plucked/src0/mrs_real/frequency",fre);
+  series->updctrl("Fanout/mix/Plucked/src0/mrs_real/pluckpos",pos);
+  series->updctrl("Fanout/mix/Plucked/src0/mrs_real/loss",loz);
+  series->updctrl("mrs_natural/inSamples", 64);
   series->update();
   
   
@@ -149,17 +151,17 @@ void PluckLive(string deviceopt, real pos, real fre, real loz, real stret)
     {
       ostringstream oss1;
       oss1 << "Fanout/mix/Plucked/src" 
-	   << i << "/real/nton";
+	   << i << "/mrs_real/nton";
       series->updctrl(oss1.str(), 0.0);      
     }
   
 
   
-  natural t=0;
+  mrs_natural t=0;
   
   int channel, type, byte2, byte3;
   int mes_count = 0;
-  real freq;
+  mrs_real freq;
   int p0byte3, p1byte3, p2byte3;
 
 
@@ -221,10 +223,10 @@ void PluckLive(string deviceopt, real pos, real fre, real loz, real stret)
 		      
 		      ostringstream oss, oss1;
 		      oss << "Fanout/mix/Plucked/src" 
-			  << i << "/real/frequency";
+			  << i << "/mrs_real/frequency";
 		      
 		      oss1 << "Fanout/mix/Plucked/src" 
-			   << i << "/real/nton";
+			   << i << "/mrs_real/nton";
 		      
 		      if (voices[i] != 0) 
 			{
@@ -251,7 +253,7 @@ void PluckLive(string deviceopt, real pos, real fre, real loz, real stret)
 			  ostringstream oss, oss1;
 
 			  oss1 << "Fanout/mix/Plucked/src" 
-			       << i << "/real/nton";
+			       << i << "/mrs_real/nton";
 
 			  
 			  series->updctrl(oss1.str(), 0.0);      
@@ -272,7 +274,7 @@ void PluckLive(string deviceopt, real pos, real fre, real loz, real stret)
 		  
 		  if ((byte3 > 25)&&(abs(byte3 - p0byte3) > 2))
 		    {
-		      series->updctrl("Fanout/mix/Plucked/src0/real/frequency",freq);      		    
+		      series->updctrl("Fanout/mix/Plucked/src0/mrs_real/frequency",freq);      		    
 		    }
 		  
 		}		
@@ -285,7 +287,7 @@ void PluckLive(string deviceopt, real pos, real fre, real loz, real stret)
 	    {
 	      freq = 220.0 * pow( 2.0, (byte3 - 60.0) / 12.0 );
 	      if ((byte3 > 25)&&(abs(byte3 - p1byte3) > 2))
-		series->updctrl("Fanout/mix/Plucked/src1/real/frequency",freq);      
+		series->updctrl("Fanout/mix/Plucked/src1/mrs_real/frequency",freq);      
 	      
 	      p1byte3 = byte3;
 	      
@@ -296,7 +298,7 @@ void PluckLive(string deviceopt, real pos, real fre, real loz, real stret)
 	    {
 	      freq = 220.0 * pow( 2.0, (byte3 - 62.0) / 12.0 );
 	      if ((byte3 > 25)&&(abs(byte3 - p2byte3) > 2))
-		series->updctrl("Fanout/mix/Plucked/src2/real/frequency",freq);      
+		series->updctrl("Fanout/mix/Plucked/src2/mrs_real/frequency",freq);      
 	      
 	      p2byte3 = byte3;
 	      
@@ -314,8 +316,8 @@ void PluckLive(string deviceopt, real pos, real fre, real loz, real stret)
 
 
 void 
-midiBoomChickAnnotate(natural bufferSize, 
-		      natural inputSize, 
+midiBoomChickAnnotate(mrs_natural bufferSize, 
+		      mrs_natural inputSize, 
 		      string backgroundopt)
 {
  
@@ -354,7 +356,7 @@ midiBoomChickAnnotate(natural bufferSize,
   total->addMarSystem(mng.create("AudioSink", "dest"));
 
   // output file 
-  pnet->updctrl("SoundFileSink/dest/string/filename", "drum.wav");
+  pnet->updctrl("SoundFileSink/dest/mrs_string/filename", "drum.wav");
   
 
   int byte2, byte3;
@@ -363,16 +365,16 @@ midiBoomChickAnnotate(natural bufferSize,
   int prev_pitch;
   
   // bass drum and snare drum sounds 
-  pnet->updctrl("Fanout/oscbank/SoundFileSource/src3/string/filename", "../rawwaves/sd22k.wav");
-  pnet->updctrl("Fanout/oscbank/SoundFileSource/src4/string/filename", "../rawwaves/bd22k.wav");
+  pnet->updctrl("Fanout/oscbank/SoundFileSource/src3/mrs_string/filename", "../rawwaves/sd22k.wav");
+  pnet->updctrl("Fanout/oscbank/SoundFileSource/src4/mrs_string/filename", "../rawwaves/bd22k.wav");
   if (backgroundopt != EMPTYSTRING) 
-    bbank->updctrl("SoundFileSource/src5/string/filename", backgroundopt);
+    bbank->updctrl("SoundFileSource/src5/mrs_string/filename", backgroundopt);
 
 
-  total->updctrl("AudioSink/dest/natural/bufferSize", bufferSize);
-  total->updctrl("natural/inSamples", inputSize);
-  pnet->linkctrl("natural/pos3", "Fanout/oscbank/SoundFileSource/src3/natural/pos");    
-  pnet->linkctrl("natural/pos4", "Fanout/oscbank/SoundFileSource/src4/natural/pos");    
+  total->updctrl("AudioSink/dest/mrs_natural/bufferSize", bufferSize);
+  total->updctrl("mrs_natural/inSamples", inputSize);
+  pnet->linkctrl("mrs_natural/pos3", "Fanout/oscbank/SoundFileSource/src3/mrs_natural/pos");    
+  pnet->linkctrl("mrs_natural/pos4", "Fanout/oscbank/SoundFileSource/src4/mrs_natural/pos");    
   
   
   
@@ -390,10 +392,10 @@ midiBoomChickAnnotate(natural bufferSize,
 	    {
 	      // rewind the files 
 	      if (byte2 == 44) 
-		pnet->updctrl("natural/pos3", 0);
+		pnet->updctrl("mrs_natural/pos3", 0);
 	      
 	      if (byte2 == 53) 
-		pnet->updctrl("natural/pos4", 0);		
+		pnet->updctrl("mrs_natural/pos4", 0);		
 	      
 	    }
 	  
@@ -404,11 +406,11 @@ midiBoomChickAnnotate(natural bufferSize,
 	      if ((byte3 >= 40) && 
 		  (byte3 <= 100))
 		{
-		  pnet->updctrl("natural/pos3", 0);	
+		  pnet->updctrl("mrs_natural/pos3", 0);	
 		}
 	      else 
 		{
-		  pnet->updctrl("natural/pos4", 0);	              
+		  pnet->updctrl("mrs_natural/pos4", 0);	              
 		}
 	    }
 	  
@@ -418,11 +420,11 @@ midiBoomChickAnnotate(natural bufferSize,
 	      if ((byte3 >= 40) && 
 		  (byte3 <= 100))
 		{
-		  pnet->updctrl("natural/pos3", 0);	
+		  pnet->updctrl("mrs_natural/pos3", 0);	
 		}
 	      else 
 		{
-		  pnet->updctrl("natural/pos4", 0);	              
+		  pnet->updctrl("mrs_natural/pos4", 0);	              
 		}
 	    } 
 	}
@@ -470,10 +472,10 @@ void midiBrowse()
   series->addMarSystem(mng.create("AudioSink", "dest"));
   
   // only update controls from Composite level 
-  series->updctrl("natural/inSamples", 128);
+  series->updctrl("mrs_natural/inSamples", 128);
   vector<string> retrievedFiles = tempo_map[1][1];
   sfName = retrievedFiles[0];
-  series->updctrl("SoundFileSource/src/string/filename", sfName);
+  series->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
   
 
 
@@ -531,7 +533,7 @@ void midiBrowse()
 	   if (retrievedFiles.size() !=  0) 
            {
              sfName = retrievedFiles[pindex]; 
-             series->updctrl("SoundFileSource/src/string/filename", sfName);	  
+             series->updctrl("SoundFileSource/src/mrs_string/filename", sfName);	  
 	     if (byte2 == 2)
 	     {
 	     int zgrid;
@@ -602,10 +604,10 @@ tempotest_sfplay(string sfName)
   series->addMarSystem(mng.create("AudioSink", "dest"));
   
   // only update controls from Composite level 
-  series->updctrl("natural/inSamples", 128);
-  series->updctrl("SoundFileSource/src/string/filename", sfName);
+  series->updctrl("mrs_natural/inSamples", 128);
+  series->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
   
-  while (series->getctrl("SoundFileSource/src/bool/notEmpty").toBool())
+  while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool())
     series->tick();
 
   delete series;

@@ -30,8 +30,9 @@
 */
 
 #include "SCF.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 SCF::SCF(string name)
 {
@@ -66,17 +67,17 @@ SCF::update()
   //above a determined value (e.g. due to signal sampling rate or
   //bandwidth limitations), the nr of bands should be reduced. 
   
-  //nrBands_ = getctrl("natural/nrbands");// can this be received as a control value?
+  //nrBands_ = getctrl("mrs_natural/nrbands");// can this be received as a control value?
   nrBands_ = 24;
   //can this parameter be dinamically modified, depending on the
   //sampling frequency?!?
   nrValidBands_ = nrBands_; 
 
-  setctrl("natural/onSamples", (natural)1);
-  setctrl("natural/onObservations", (natural)nrBands_); 
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", (mrs_natural)1);
+  setctrl("mrs_natural/onObservations", (mrs_natural)nrBands_); 
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  natural i;
+  mrs_natural i;
 
   MRSDIAG("SCF.cpp - SCF:update");
 
@@ -97,14 +98,14 @@ SCF::update()
       bandHiEdge_(i) = edge_(i+1) * 1.05f; //band overlapping (MPEG7)
     }
 
-  fftSize_ = getctrl("natural/inObservations").toNatural();
+  fftSize_ = getctrl("mrs_natural/inObservations").toNatural();
   //fftBinFreqs_.create(fftSize_);
 
   // spectrum sampling rate - not audio 
-  df_ = getctrl("real/israte").toReal();
+  df_ = getctrl("mrs_real/israte").toReal();
 
   //calculate the frequency (Hz) of each FFT bin
-  //for (natural k=0; k < fftSize_ ; k++)
+  //for (mrs_natural k=0; k < fftSize_ ; k++)
   //	fftBinFreqs_(k) = (float) k * df_;
 
   //calculate FFT bin indexes for each band's edges
@@ -113,8 +114,8 @@ SCF::update()
   for(i = 0; i < nrBands_; i++)
     {
       //round to nearest int (MPEG7)
-      il_[i] = (natural)(bandLoEdge_(i)/df_ + 0.5f); 
-      ih_[i] = (natural)(bandHiEdge_(i)/df_ + 0.5f); 
+      il_[i] = (mrs_natural)(bandLoEdge_(i)/df_ + 0.5f); 
+      ih_[i] = (mrs_natural)(bandHiEdge_(i)/df_ + 0.5f); 
  
       //must verify if sampling rate is enough
       //for the specified nr of bands. If not, 
@@ -137,7 +138,7 @@ SCF::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   
-  natural i, k, bandwidth;
+  mrs_natural i, k, bandwidth;
   double c, maxc;
   double aritMean ;
 

@@ -21,13 +21,10 @@
     \brief Update midi inpput using controls. Just through for dataflow. 
 */
 
-
-
-
 #include "MidiInput.h"
+
 using namespace std;
-
-
+using namespace Marsyas;
 
 MidiInput::MidiInput(string name)
 {
@@ -61,14 +58,11 @@ void
 MidiInput::update()
 {
   MRSDIAG("MidiInput.cpp - MidiInput:update");
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
-  setctrl("string/onObsNames", getctrl("string/inObsNames"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+  setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
 
-
-
-  
   try { 
     midiin = new RtMidiIn();
   } 
@@ -76,7 +70,7 @@ MidiInput::update()
     error.printMessage();
     return;
   }
-  
+
   
   try { 
     midiin->openPort(0);
@@ -88,9 +82,6 @@ MidiInput::update()
     } 
   midiin->setCallback(&MidiInput::mycallback, this);
   midiin->ignoreTypes(false, false, false);
-  
-
-
 
   defaultUpdate();  
 }
@@ -120,10 +111,6 @@ MidiInput::mycallback(double deltatime, std::vector< unsigned char > * message, 
 	}
 
     }
-  
-  
-  
-  
 }
 
 void 
@@ -131,14 +118,11 @@ MidiInput::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 
-  
   for (o=0; o < inObservations_; o++)
     for (t = 0; t < inSamples_; t++)
       {
-	out(o,t) =  in(o,t);
+		out(o,t) =  in(o,t);
       }
-
-
 }
 
 

@@ -23,12 +23,10 @@
     Calculates classification confidence by majority voting. 
 */
 
-
-
 #include "Confidence.h"
+
 using namespace std;
-
-
+using namespace Marsyas;
 
 Confidence::Confidence(string name)
 {
@@ -58,15 +56,15 @@ void
 Confidence::addControls()
 {
   addDefaultControls();
-  addctrl("natural/memSize", 40);
-  addctrl("natural/nLabels", 2);
-  setctrlState("natural/nLabels", true);
-  addctrl("string/labelNames", "Music,Speech");
-  setctrlState("string/labelNames", true);
-  addctrl("bool/print", false);
-  setctrlState("bool/print", true);
-  addctrl("bool/forcePrint", false);
-  setctrlState("bool/forcePrint", true);
+  addctrl("mrs_natural/memSize", 40);
+  addctrl("mrs_natural/nLabels", 2);
+  setctrlState("mrs_natural/nLabels", true);
+  addctrl("mrs_string/labelNames", "Music,Speech");
+  setctrlState("mrs_string/labelNames", true);
+  addctrl("mrs_bool/print", false);
+  setctrlState("mrs_bool/print", true);
+  addctrl("mrs_bool/forcePrint", false);
+  setctrlState("mrs_bool/forcePrint", true);
 }
 
 
@@ -74,20 +72,20 @@ void
 Confidence::update()
 {
   MRSDIAG("Confidence.cpp - Confidence:update");
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-  confidences_.stretch(getctrl("natural/nLabels").toNatural());
-  string labelNames = getctrl("string/labelNames").toString();
+  confidences_.stretch(getctrl("mrs_natural/nLabels").toNatural());
+  string labelNames = getctrl("mrs_string/labelNames").toString();
   
   labelNames_.clear();
 
-  print_ = getctrl("bool/print").toBool();
-  forcePrint_ = getctrl("bool/forcePrint").toBool();
+  print_ = getctrl("mrs_bool/print").toBool();
+  forcePrint_ = getctrl("mrs_bool/forcePrint").toBool();
   
   
-  for (int i = 0; i < getctrl("natural/nLabels").toNatural(); i++)
+  for (int i = 0; i < getctrl("mrs_natural/nLabels").toNatural(); i++)
     {
       string labelName;
       string temp;
@@ -108,13 +106,13 @@ Confidence::process(realvec& in, realvec& out)
 {
   
   checkFlow(in,out);
-  bool mute = getctrl("bool/mute").toBool();  
+  bool mute = getctrl("mrs_bool/mute").toBool();  
   
-  natural memSize = getctrl("natural/memSize").toNatural();
-  natural nLabels = getctrl("natural/nLabels").toNatural();
+  mrs_natural memSize = getctrl("mrs_natural/memSize").toNatural();
+  mrs_natural nLabels = getctrl("mrs_natural/nLabels").toNatural();
   
-  natural label;
-  natural l;
+  mrs_natural label;
+  mrs_natural l;
   
 
   if (mute == false) 
@@ -127,7 +125,7 @@ Confidence::process(realvec& in, realvec& out)
 	    out(o,t) = in(o,t);
 	    if (o==0) 
 	      {
-		label = (natural)in(o,t);
+		label = (mrs_natural)in(o,t);
 		confidences_(label) = confidences_(label) + 1;
 	      }
 	    
@@ -140,11 +138,11 @@ Confidence::process(realvec& in, realvec& out)
       if (cond || forcePrint_)
 	{
 	  
-	  real max_conf = 0;
-	  natural max_l = 0;
+	  mrs_real max_conf = 0;
+	  mrs_natural max_l = 0;
 	  for (l=0; l < nLabels; l++)
 	    {
-	      real conf = ((confidences_(l)) / count_);
+	      mrs_real conf = ((confidences_(l)) / count_);
 	      if (conf > max_conf) 
 		{
 		  max_conf = conf;

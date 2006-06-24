@@ -182,11 +182,11 @@ FAQ
 	scheme, you still have the rest of your program to worry about.
 
 	For example:
-	<SoundFileSource instance>.updControl("string/filename","foo")
+	<SoundFileSource instance>.updControl("mrs_string/filename","foo")
 
 	Now this may seem harmless enough, but thanks to C++
 	"magic"/CRUFT, the code that gets called is actually this:
-	<SoundFileSource instance>.updControl(string("string/filename"),MarControlValue(string("foo")));
+	<SoundFileSource instance>.updControl(string("mrs_string/filename"),MarControlValue(string("foo")));
 
 	Those 3 extra objects (2 strings, 1 MarControlValue), are placed
 	on the stack, and are therefore not freed until the calling
@@ -200,7 +200,7 @@ FAQ
 
 	pipe = <Series containing sfs>
 	sfs = <SoundFileSource>
-	while (sfs.getControl("/SoundFileSource/sfs/bool/notEmpty").toBool())
+	while (sfs.getControl("/SoundFileSource/sfs/mrs_bool/notEmpty").toBool())
 		pipe.tick();
 
 	If the soundfile is sufficiently long enough, or is a line in

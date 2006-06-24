@@ -34,13 +34,14 @@
 #include "MarSystem.h"	
 #include "Composite.h" 
 
-
+namespace Marsyas
+{
 
 class Accumulator: public Composite
 {
 private: 
   void addControls();
-  natural nTimes_;
+  mrs_natural nTimes_;
   realvec tout_;
   
   
@@ -54,5 +55,7 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif

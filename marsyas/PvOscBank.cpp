@@ -16,7 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /** 
     \class PvOscBank
     \brief PvOscBank
@@ -25,12 +24,10 @@
 
 */
 
-
-
 #include "PvOscBank.h"
+
 using namespace std;
-
-
+using namespace Marsyas;
 
 PvOscBank::PvOscBank(string name)
 {
@@ -59,12 +56,12 @@ void
 PvOscBank::addControls()
 {
   addDefaultControls();
-  addctrl("natural/Interpolation", MRS_DEFAULT_SLICE_NSAMPLES/4);
-  setctrlState("natural/Interpolation", true);
-  addctrl("real/PitchShift", 1.0);
-  setctrlState("real/PitchShift", true);
-  addctrl("real/SynthesisThreshold", 0.0);
-  setctrlState("real/SynthesisThreshold", true);
+  addctrl("mrs_natural/Interpolation", MRS_DEFAULT_SLICE_NSAMPLES/4);
+  setctrlState("mrs_natural/Interpolation", true);
+  addctrl("mrs_real/PitchShift", 1.0);
+  setctrlState("mrs_real/PitchShift", true);
+  addctrl("mrs_real/SynthesisThreshold", 0.0);
+  setctrlState("mrs_real/SynthesisThreshold", true);
 }
 
 
@@ -72,11 +69,11 @@ PvOscBank::addControls()
 void
 PvOscBank::update()
 {
-  setctrl("natural/onSamples", getctrl("natural/Interpolation"));
-  setctrl("natural/onObservations", (natural)1);
-  setctrl("real/osrate", getctrl("real/israte"));  
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/Interpolation"));
+  setctrl("mrs_natural/onObservations", (mrs_natural)1);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
 
-  // natural inObservations = getctrl("natural/inObservations").toNatural();
+  // mrs_natural inObservations = getctrl("mrs_natural/inObservations").toNatural();
 
   defaultUpdate();
 
@@ -101,10 +98,10 @@ PvOscBank::update()
   psize_ = size_;
   
 
-  P_ = getctrl("real/PitchShift").toReal();
-  I_ = getctrl("natural/Interpolation").toNatural();
-  S_ = getctrl("real/SynthesisThreshold").toReal();
-  R_ = getctrl("real/osrate").toReal();
+  P_ = getctrl("mrs_real/PitchShift").toReal();
+  I_ = getctrl("mrs_natural/Interpolation").toNatural();
+  S_ = getctrl("mrs_real/SynthesisThreshold").toReal();
+  R_ = getctrl("mrs_real/osrate").toReal();
 
 }
 
@@ -135,11 +132,11 @@ PvOscBank::process(realvec& in, realvec& out)
 
   
   if (P_ > 1.0)
-    NP_ = (natural)(N_/P_);
+    NP_ = (mrs_natural)(N_/P_);
   else
     NP_ = N_;
 
-  Iinv_ = (real)(1.0 / I_);
+  Iinv_ = (mrs_real)(1.0 / I_);
   Pinc_ = P_ * L_ / R_;
   
 
@@ -164,7 +161,7 @@ PvOscBank::process(realvec& in, realvec& out)
 	  // into output slice 
 	  for (c=0; c < I_; c++)
 	    {
-	      naddress_ = (natural)address_ % L_;
+	      naddress_ = (mrs_natural)address_ % L_;
 	      out(0, c) += a_ * table_(naddress_);
 	      address_ += f_;
 	      

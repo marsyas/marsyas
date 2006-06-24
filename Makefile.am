@@ -26,7 +26,7 @@ EXTRA_DIST              = bootstrap TODO
 AUTOMAKE_OPTIONS        = foreign
 
 
-SUBDIRS			= marsyas src $(DISTRIBUTED) doc marsyasVisualStudio qt4GUIs $(MRSSWIG) 
+SUBDIRS			= marsyas src $(DISTRIBUTED) doc marsyasVisualStudio2003 marsyasVisualStudio2005 marsyasMATLAB qt4GUIs $(MRSSWIG) 
  
 # we must now explicitly define subdirs to be included in the dist
 DIST_SUBDIRS		= marsyas src distributed doc marsyasVisualStudio \

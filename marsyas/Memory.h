@@ -32,13 +32,14 @@ window -around 1 second-.
 
 #include "MarSystem.h"	
 
-
+namespace Marsyas
+{
 
 class Memory: public MarSystem
 {
 private: 
   void addControls();
-  natural end_;
+  mrs_natural end_;
   bool reset_;
 
 public:
@@ -49,9 +50,10 @@ public:
   
   void update();
   void process(realvec& in, realvec& out);
-  
 
 };
+
+}//namespace Marsyas
 
 #endif
 

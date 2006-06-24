@@ -8,8 +8,6 @@
 
 #include <iostream>
 
-using namespace std;
-
 
 class Marx3dSlider : public QWidget
 {

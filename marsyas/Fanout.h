@@ -28,10 +28,10 @@ make each of their outputs a separate observation
 #ifndef MARSYAS_FANOUT_H
 #define MARSYAS_FANOUT_H
 
-
-
-
 #include "Composite.h"
+
+namespace Marsyas
+{
 
 class Fanout: public Composite
 {
@@ -39,10 +39,10 @@ private:
   void addControls();
   void deleteSlices();  
 
-  natural enable_;
+  mrs_natural enable_;
   realvec enabled_;
   bool probe_;
-  natural disable_;
+  mrs_natural disable_;
   
 public:
   Fanout();
@@ -57,7 +57,7 @@ public:
   void process(realvec& in, realvec& out);
 };
 
-
+}//namespace Marsyas
 
 #endif
 

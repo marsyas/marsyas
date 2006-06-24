@@ -23,7 +23,12 @@
 */
 #include "Expression.h"
 #include "MarSystem.h"
+
 using namespace std;
+using namespace Marsyas;
+
+namespace Marsyas
+{
 
 enum {
     SYM_NONE,
@@ -194,7 +199,7 @@ struct Expr* parse_expr(bool* fail, struct Expr** list) {
                 TOK=TOK->next->next; // advance to first param or )
                 while(TOK!=NULL && TOK->sym!=SYM_RBRKT) {
                     // call parse_expr and append to parameters list
-                    struct Expr* o = parse_expr(fail,list);
+					struct Expr* o = Marsyas::parse_expr(fail,list);
                     if (TOK!=NULL && o!=NULL) {
                         if (e->params==NULL) { e->params=o; }
                         else {
@@ -220,7 +225,7 @@ struct Expr* parse_expr(bool* fail, struct Expr** list) {
             } else if (CURR(SYM_LBRKT)) {
                 TOK_ADVANCE;
                 // parse the next token as an expression
-                struct Expr* e = parse_expr(fail,list);
+				struct Expr* e = Marsyas::parse_expr(fail,list);
                 if (root==NULL) { root=e; curr=e; }
                 else { curr->rchild=e; }
                 e->enclosed=true; // signal (expr) is non-modifiable
@@ -285,20 +290,20 @@ Val eval(bool* fail, MarSystem* target_, struct Expr* tree) {
             struct Expr* e = tree->params;
             while (e!=NULL) { e = e->next; num_params++; }
             if (tree->val=="Math.rand" && num_params==0) {
-                return Val((real)rand());
+                return Val((mrs_real)rand());
             } else { COUGH("Expr (Eval): Unknown name."); }
         } else if (tree->sym==SYM_NAME) {
-            if (tree->val=="Math.RAND_MAX") { return Val((real)RAND_MAX); }
+            if (tree->val=="Math.RAND_MAX") { return Val((mrs_real)RAND_MAX); }
             else { COUGH("Expr (Eval): Unknown name."); }
         } else if (tree->sym==SYM_REAL) {
-            return (real)atof((tree->val).c_str());
+            return (mrs_real)atof((tree->val).c_str());
         } else if (tree->sym==SYM_NATURAL) {
-            return (natural)atoi(tree->val.c_str());
+            return (mrs_natural)atoi(tree->val.c_str());
         } else if (tree->tsym==SYM_OP_MINUS && tree->lchild==NULL) {
-            return - eval(fail,target_,tree->lchild);
+			return - Marsyas::eval(fail,target_,tree->lchild);
         } else if (tree->sym==SYM_OPER) {
-            Val l = eval(fail,target_,tree->lchild);
-            Val r = eval(fail,target_,tree->rchild);
+			Val l = Marsyas::eval(fail,target_,tree->lchild);
+			Val r = Marsyas::eval(fail,target_,tree->rchild);
             if (tree->tsym==SYM_OP_PLUS) { return l+r; }
             else if (tree->tsym==SYM_OP_MINUS) { return l-r; }
             else if (tree->tsym==SYM_OP_MUL) { return l*r; }
@@ -309,9 +314,9 @@ Val eval(bool* fail, MarSystem* target_, struct Expr* tree) {
                 string s = "/"+target_->getType()+"/"+target_->getName()+"/"+tree->val;
                 if (target_->hasControl(s)) {
                     MarControlValue v = target_->getctrl(tree->val);
-                    if (v.getType()==mar_real) { return (real)v.toReal(); }
-                    else if (v.getType()==mar_natural) { return (natural)v.toNatural(); }
-                    COUGH("Expr (Eval): Controls must have real/natural values.");
+                    if (v.getType()==mar_real) { return (mrs_real)v.toReal(); }
+                    else if (v.getType()==mar_natural) { return (mrs_natural)v.toNatural(); }
+                    COUGH("Expr (Eval): Controls must have mrs_real/mrs_natural values.");
                 } else { COUGH("Expr (Eval): Control does not exist."); }
             }
         }
@@ -319,3 +324,5 @@ Val eval(bool* fail, MarSystem* target_, struct Expr* tree) {
     }
     return Val(); // this is an error, but must return something
 }
+
+}//namespace Marsyas

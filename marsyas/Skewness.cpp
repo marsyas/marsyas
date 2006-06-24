@@ -21,13 +21,11 @@
     \brief Skewness computes the skewness of the input 
 
 */
- 
-
 
 #include "Skewness.h"
+
 using namespace std;
-
-
+using namespace Marsyas;
 
 Skewness::Skewness(string name)
 {
@@ -60,10 +58,10 @@ Skewness::update()
 {
   MRSDIAG("Skewness.cpp - Skewness:update");
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", (natural)1);
-  setctrl("real/osrate", getctrl("real/israte"));
-  setctrl("string/onObsNames", "Skewness,");
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", (mrs_natural)1);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+  setctrl("mrs_string/onObsNames", "Skewness,");
   defaultUpdate();
   obsrow_.create(inObservations_);
 }
@@ -78,30 +76,30 @@ Skewness::process(realvec& in, realvec& out)
     {
       
       for (o=0; o < inObservations_; o++)
-	{
-	  obsrow_(o) = in(o,t);
-	}
+		{
+		  obsrow_(o) = in(o,t);
+		}
       z_ = 0.0;
       for (o=0; o < inObservations_; o++)
-	{
-	  b_ =  obsrow_(o) - obsrow_.mean() ;
-	  
-	  // take x - mean to the third power into the sum
-	  z_ += (b_ * b_ * b_); 
-	}
+		{
+		  b_ =  obsrow_(o) - obsrow_.mean() ;
+		  
+		  // take x - mean to the third power into the sum
+		  z_ += (b_ * b_ * b_); 
+		}
       if (z_ < 1.0e-45)
-	  z_ /= inObservations_;
+		z_ /= inObservations_;
       else
-	z_ = 0.0;
+		z_ = 0.0;
 
       
       // standard deviation to the fourth power
-      q_ = pow(obsrow_.var(), (real)1.5);
+      q_ = pow(obsrow_.var(), (mrs_real)1.5);
 
       if ((q_ < 1.0e-45)||(z_== 1.0e-45))
-	out(0,t) = 0.5;
+		out(0,t) = 0.5;
       else 
-	out(0,t) = (z_ / q_)  / inObservations_;
+		out(0,t) = (z_ / q_)  / inObservations_;
     }
     
 }

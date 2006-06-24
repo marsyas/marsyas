@@ -11,7 +11,7 @@ class TopPanelNew : public QWidget
    Q_OBJECT
 
 public:
-  TopPanelNew(string au = "", QWidget *parent = 0);
+  TopPanelNew(std::string au = "", QWidget *parent = 0);
 
 public slots: 
   void tick();
@@ -22,11 +22,11 @@ public slots:
 private: 
   Marx2DGraph* graph2;
   Marx2DGraph* graph3;
-  MarSystem* pnet;
+  Marsyas::MarSystem* pnet;
   
   int nTicks;
 
-  string audio_file;
+  std::string audio_file;
   
 };
 

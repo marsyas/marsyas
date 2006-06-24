@@ -21,11 +21,10 @@
    \brief Abstract Interface for SoundFileSource of various formats
 */
 
-
-
 #include "AbsSoundFileSource.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 
 AbsSoundFileSource::AbsSoundFileSource()

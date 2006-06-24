@@ -22,10 +22,10 @@
 
 */
 
-
-
 #include "Mean.h"
+
 using namespace std;
+using namespace Marsyas;
 
 Mean::Mean():MarSystem()
 {
@@ -62,15 +62,15 @@ void
 Mean::update()
 {
   MRSDIAG("Mean.cpp - Mean:update");
-  setctrl("natural/onSamples", (natural)1);
-  setctrl("natural/onObservations", getctrl("natural/inObservations").toNatural());
-  setctrl("real/osrate", getctrl("real/israte").toReal());
+  setctrl("mrs_natural/onSamples", (mrs_natural)1);
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations").toNatural());
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal());
 
-  obsrow_.create(getctrl("natural/inSamples").toNatural());
+  obsrow_.create(getctrl("mrs_natural/inSamples").toNatural());
   defaultUpdate();
 
   ostringstream oss;
-  string inObsNames = getctrl("string/inObsNames").toString();
+  string inObsNames = getctrl("mrs_string/inObsNames").toString();
   for (int i = 0; i < inObservations_; i++)
     {
       string inObsName;
@@ -80,30 +80,30 @@ Mean::update()
       inObsNames = temp;
       oss << "Mean" << "_" << inObsName << ",";
     }
-  setctrl("string/onObsNames", oss.str());
+  setctrl("mrs_string/onObsNames", oss.str());
 
 
 
 }
-
-
-
 
 void 
 Mean::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 
+  /*
   out.setval(0.0);
   for (o=0; o < inObservations_; o++)
     {
       for (t = 0; t < inSamples_; t++)
-	{
-	  // Calculate mean 
-	  obsrow_(t) = in(o,t);
-	}
+		{
+		  // Calculate mean 
+		  obsrow_(t) = in(o,t);
+		}
       out(o,0) = obsrow_.mean();
     }
+	*/
+  out = in.meanObs();
 }
 
       

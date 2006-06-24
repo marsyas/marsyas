@@ -2,6 +2,9 @@
 
 #include <QGridLayout>
 
+using namespace std;
+using namespace Marsyas;
+
 
 TopPanelNew::TopPanelNew(string au, QWidget *parent)
   : QWidget(parent)
@@ -16,15 +19,15 @@ TopPanelNew::TopPanelNew(string au, QWidget *parent)
   pnet->addMarSystem(mng.create("Hamming", "hamming"));
   pnet->addMarSystem(mng.create("Spectrum","spk"));
   pnet->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-  pnet->updctrl("PowerSpectrum/pspk/string/spectrumType","power");  
+  pnet->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","power");  
 
 
   pnet->addMarSystem(mng.create("Memory", "mem"));
   //  pnet->addMarSystem(mng.create("AudioSink", "dest"));
-  pnet->updctrl( "SoundFileSource/src/string/filename", au );
-  pnet->updctrl( "Memory/mem/natural/memSize", 12);
+  pnet->updctrl( "SoundFileSource/src/mrs_string/filename", au );
+  pnet->updctrl( "Memory/mem/mrs_natural/memSize", 12);
   pnet->addMarSystem(mng.create("Gain", "gain"));
-  pnet->updctrl("Gain/gain/real/gain", 2000.0);
+  pnet->updctrl("Gain/gain/mrs_real/gain", 2000.0);
   //pnet->addMarSystem(mng.create("PlotSink", "psink"));
   pnet->addMarSystem(mng.create("Gain", "gain1"));
   
@@ -226,15 +229,15 @@ TopPanelNew::tick()
   for (int i=0; i < nTicks; i++) 
     {
       pnet->tick();
-      pnet->updctrl("bool/probe", true);
+      pnet->updctrl("mrs_bool/probe", true);
 
 //       realvec out(512);
-//       out = pnet->getctrl("realvec/input0").toVec();
+//       out = pnet->getctrl("mrs_realvec/input0").toVec();
 
       realvec out(256, 12);
 //       cout << out.getRows() << "\t";
 //       cout << out.getCols() << "\n";
-      out = pnet->getctrl("realvec/input5").toVec();
+      out = pnet->getctrl("mrs_realvec/input5").toVec();
 
 //       out.setval(0.0);
 //       for (int g=0; g < 12; g++)

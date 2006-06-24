@@ -24,11 +24,21 @@
    (Next, Sun audio format). 
 */
 
-
 #include "AuFileSource.h"
+
 using namespace std;
+using namespace Marsyas;
 
+#define SND_MAGIC_NUM 0x2e736e64
 
+/* types of .snd files */  
+#define SND_FORMAT_UNSPECIFIED 0
+#define SND_FORMAT_MULAW_8     1
+#define SND_FORMAT_LINEAR_8    2
+#define SND_FORMAT_LINEAR_16   3
+#define SND_FORMAT_LINEAR_24   4
+#define SND_FORMAT_LINEAR_32   5
+#define SND_FORMAT_FLOAT       6
 
 AuFileSource::AuFileSource(string name)
 {
@@ -83,39 +93,39 @@ void
 AuFileSource::addControls()
 {
   addDefaultControls();
-  addctrl("natural/nChannels",(natural)1);
-  addctrl("bool/notEmpty", true);  
-  addctrl("natural/pos", (natural)0);
-  setctrlState("natural/pos", true);
-  addctrl("natural/loopPos", (natural)0);
-  setctrlState("natural/pos", true);
-  addctrl("string/filename", "daufile");
-  setctrlState("string/filename", true);
-  addctrl("natural/size", (natural)0);
-  addctrl("string/filetype", "au");
+  addctrl("mrs_natural/nChannels",(mrs_natural)1);
+  addctrl("mrs_bool/notEmpty", true);  
+  addctrl("mrs_natural/pos", (mrs_natural)0);
+  setctrlState("mrs_natural/pos", true);
+  addctrl("mrs_natural/loopPos", (mrs_natural)0);
+  setctrlState("mrs_natural/pos", true);
+  addctrl("mrs_string/filename", "daufile");
+  setctrlState("mrs_string/filename", true);
+  addctrl("mrs_natural/size", (mrs_natural)0);
+  addctrl("mrs_string/filetype", "au");
 
-  addctrl("real/repetitions", 1.0);
-  setctrlState("real/repetitions", true);
+  addctrl("mrs_real/repetitions", 1.0);
+  setctrlState("mrs_real/repetitions", true);
 
-  addctrl("real/duration", -1.0);
-  setctrlState("real/duration", true);
+  addctrl("mrs_real/duration", -1.0);
+  setctrlState("mrs_real/duration", true);
 
-  addctrl("bool/advance", false);
-  setctrlState("bool/advance", true);
+  addctrl("mrs_bool/advance", false);
+  setctrlState("mrs_bool/advance", true);
 
-  addctrl("bool/shuffle", false);
-  setctrlState("bool/shuffle", true);
+  addctrl("mrs_bool/shuffle", false);
+  setctrlState("mrs_bool/shuffle", true);
 
-  addctrl("natural/cindex", 0);
-  setctrlState("natural/cindex", true);
+  addctrl("mrs_natural/cindex", 0);
+  setctrlState("mrs_natural/cindex", true);
   
 
-  addctrl("string/allfilenames", ",");
-  setctrlState("string/allfilenames", true);
-  addctrl("natural/numFiles", 1);
+  addctrl("mrs_string/allfilenames", ",");
+  setctrlState("mrs_string/allfilenames", true);
+  addctrl("mrs_natural/numFiles", 1);
 
       
-  addctrl("string/currentlyPlaying", "daufile");
+  addctrl("mrs_string/currentlyPlaying", "daufile");
   
 
   
@@ -152,11 +162,11 @@ AuFileSource::getHeader(string filename)
 	   (hdr_.pref[1] != 's')))
 	{
 	  MRSWARN("Filename " + filename + " is not correct .au file \n or has settings that are not supported in Marsyas");
-	  setctrl("natural/nChannels", (natural)1);
-	  setctrl("real/israte", (real)22050.0);
-	  setctrl("natural/size", (natural)0);
+	  setctrl("mrs_natural/nChannels", (mrs_natural)1);
+	  setctrl("mrs_real/israte", (mrs_real)22050.0);
+	  setctrl("mrs_natural/size", (mrs_natural)0);
 	  notEmpty_ = false;
-	  setctrl("bool/notEmpty", (MarControlValue)false);
+	  setctrl("mrs_bool/notEmpty", (MarControlValue)false);
 	}
       else 
 	{ 
@@ -189,27 +199,27 @@ AuFileSource::getHeader(string filename)
 
 	  fseek(sfp_, hdr_.hdrLength, 0);
 	  sfp_begin_ = ftell(sfp_);
-	  setctrl("natural/nChannels", hdr_.channels);
+	  setctrl("mrs_natural/nChannels", hdr_.channels);
       
-	  setctrl("real/israte", (real)hdr_.srate);
-	  setctrl("natural/size", size_);
-	  setctrl("bool/notEmpty", (MarControlValue)true);
+	  setctrl("mrs_real/israte", (mrs_real)hdr_.srate);
+	  setctrl("mrs_natural/size", size_);
+	  setctrl("mrs_bool/notEmpty", (MarControlValue)true);
 	  notEmpty_ = true;
 	  samplesOut_ = 0;
 	  pos_ = 0;
-	  setctrl("natural/pos", (MarControlValue)0);
+	  setctrl("mrs_natural/pos", (MarControlValue)0);
 	}
     }
   else
     {
-      setctrl("natural/nChannels", (natural)1);
-      setctrl("real/israte", (real)22050.0);
-      setctrl("natural/size", (natural)0);
+      setctrl("mrs_natural/nChannels", (mrs_natural)1);
+      setctrl("mrs_real/israte", (mrs_real)22050.0);
+      setctrl("mrs_natural/size", (mrs_natural)0);
       notEmpty_ = false;
-      setctrl("bool/notEmpty", (MarControlValue)false);
+      setctrl("mrs_bool/notEmpty", (MarControlValue)false);
       pos_ = 0;
     }
-  nChannels_ = getctrl("natural/nChannels").toNatural();
+  nChannels_ = getctrl("mrs_natural/nChannels").toNatural();
   samplesRead_ = 0;
   
   
@@ -219,10 +229,10 @@ AuFileSource::getHeader(string filename)
 
 
 
-natural
+mrs_natural
 AuFileSource::getLinear16(realvec& slice)
 {
-  natural c = 0;
+  mrs_natural c = 0;
   fseek(sfp_, 2 * pos_ * nChannels_ + sfp_begin_, SEEK_SET);
   
 
@@ -249,7 +259,7 @@ AuFileSource::getLinear16(realvec& slice)
       
 #if defined(__BIG_ENDIAN__)
       for (c=0; c < nChannels_; c++)
-	slice(c, t) = ((real) sdata_[nChannels_*t + c] / (FMAXSHRT));
+	slice(c, t) = ((mrs_real) sdata_[nChannels_*t + c] / (FMAXSHRT));
       
 #else
       
@@ -260,7 +270,7 @@ AuFileSource::getLinear16(realvec& slice)
 	  usval_ = ((usval_ >> 8) | (usval_ << 8));
 	  sval_ = usval_;
 	  
-	  slice(c, t) = (real) sval_ / (FMAXSHRT);
+	  slice(c, t) = (mrs_real) sval_ / (FMAXSHRT);
 	}
       
 #endif 
@@ -278,20 +288,20 @@ AuFileSource::update()
 {
   
   
-  nChannels_ = getctrl("natural/nChannels").toNatural();  
-  inSamples_ = getctrl("natural/inSamples").toNatural();
-  inObservations_ = getctrl("natural/inObservations").toNatural();
-  israte_ = getctrl("real/israte").toReal();
-  nChannels_ = getctrl("natural/nChannels").toNatural();
+  nChannels_ = getctrl("mrs_natural/nChannels").toNatural();  
+  inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
+  inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+  israte_ = getctrl("mrs_real/israte").toReal();
+  nChannels_ = getctrl("mrs_natural/nChannels").toNatural();
   
-  setctrl("natural/onSamples", inSamples_);
-  setctrl("natural/onObservations", nChannels_);
+  setctrl("mrs_natural/onSamples", inSamples_);
+  setctrl("mrs_natural/onObservations", nChannels_);
   
-  setctrl("real/osrate", israte_);
+  setctrl("mrs_real/osrate", israte_);
    
-  filename_ = getctrl("string/filename").toString();    
-  pos_ = getctrl("natural/pos").toNatural();
-  rewindpos_ = getctrl("natural/loopPos").toNatural();
+  filename_ = getctrl("mrs_string/filename").toString();    
+  pos_ = getctrl("mrs_natural/pos").toNatural();
+  rewindpos_ = getctrl("mrs_natural/loopPos").toNatural();
   
   delete sdata_;
   delete cdata_;
@@ -299,18 +309,18 @@ AuFileSource::update()
   sdata_ = new short[inSamples_ * nChannels_];
   cdata_ = new unsigned char[inSamples_ * nChannels_];   
 
-  repetitions_ = getctrl("real/repetitions").toReal();
+  repetitions_ = getctrl("mrs_real/repetitions").toReal();
 
   
-  duration_ = getctrl("real/duration").toReal();
-  advance_ = getctrl("bool/advance").toBool();
-  cindex_ = getctrl("natural/cindex").toNatural();
+  duration_ = getctrl("mrs_real/duration").toReal();
+  advance_ = getctrl("mrs_bool/advance").toBool();
+  cindex_ = getctrl("mrs_natural/cindex").toNatural();
   
   
   
   if (duration_ != -1.0)
     {
-      csize_ = (natural)(duration_ * israte_ );
+      csize_ = (mrs_natural)(duration_ * israte_ );
     }
   
   
@@ -328,7 +338,7 @@ AuFileSource::process(realvec& in, realvec &out)
 {
   
   
-  if (getctrl("natural/size").toNatural() != 0)
+  if (getctrl("mrs_natural/size").toNatural() != 0)
     {
   
       checkFlow(in,out);
@@ -338,8 +348,8 @@ AuFileSource::process(realvec& in, realvec &out)
 	case SND_FORMAT_UNSPECIFIED:
 	  {
 	    MRSWARN("AuFileSource::Unspecified format");
-	    updctrl("natural/pos", pos_);
-	    updctrl("bool/notEmpty", (pos_ < size_ * nChannels_));
+	    updctrl("mrs_natural/pos", pos_);
+	    updctrl("mrs_bool/notEmpty", (pos_ < size_ * nChannels_));
 
 	    
 	    break;
@@ -347,21 +357,21 @@ AuFileSource::process(realvec& in, realvec &out)
 	case SND_FORMAT_MULAW_8:
 	  {
 	    MRSWARN("MU_LAW for now not supported");
-	    updctrl("natural/pos", pos_);
-	    updctrl("bool/notEmpty", (pos_ < size_ * nChannels_));
+	    updctrl("mrs_natural/pos", pos_);
+	    updctrl("mrs_bool/notEmpty", (pos_ < size_ * nChannels_));
 	    break;
 	  }
 	case SND_FORMAT_LINEAR_8:
 	  {
 	    // pos_ = getLinear8(c, out);
-	    setctrl("natural/pos", pos_);
-	    setctrl("bool/notEmpty", (MarControlValue)(pos_ < size_ * nChannels_));
+	    setctrl("mrs_natural/pos", pos_);
+	    setctrl("mrs_bool/notEmpty", (MarControlValue)(pos_ < size_ * nChannels_));
 	    break;
 	  }
 	case SND_FORMAT_LINEAR_16:
 	  {
 	    getLinear16(out);
-	    setctrl("natural/pos", pos_);	    
+	    setctrl("mrs_natural/pos", pos_);	    
 	    if (pos_ >= rewindpos_ + csize_) 
 	      {
 		if (repetitions_ != 1)

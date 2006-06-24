@@ -25,9 +25,10 @@
 
 */
 
-
 #include "MarControlValue.h"
+
 using namespace std;
+using namespace Marsyas;
 
 
 MarControlValue::MarControlValue()
@@ -88,14 +89,14 @@ MarControlValue::operator=(const MarControlValue& a)
 
 MarControlValue::MarControlValue(double re)
 {
-  r = (real)re;
+  r = (mrs_real)re;
   type_ = mar_real;
 }
  
 
 MarControlValue::MarControlValue(float re)
 {
-  r = (real)re;
+  r = (mrs_real)re;
   type_ = mar_real;
 }
 
@@ -168,11 +169,11 @@ MarControlValue::update(MarControlValue &val)
    
 
 bool
-MarControlValue::update(natural ne)
+MarControlValue::update(mrs_natural ne)
 {
   if(type_ != mar_natural)
   {
-    MRSWARN("MarControlValue::update(natural) Incorrect type");
+    MRSWARN("MarControlValue::update(mrs_natural) Incorrect type");
     return false;
   }
   n = ne;
@@ -180,11 +181,11 @@ MarControlValue::update(natural ne)
 }
 
 bool
-MarControlValue::update(real re)
+MarControlValue::update(mrs_real re)
 {
   if(type_ != mar_real)
   {
-    MRSWARN("MarControlValue::update(natural) Incorrect type");
+    MRSWARN("MarControlValue::update(mrs_natural) Incorrect type");
     return false;
   }
   r = re;
@@ -234,11 +235,11 @@ MarControlValue::update(realvec ve)
   
 /* 
 bool
-MarControlValue::update(natural n) 
+MarControlValue::update(mrs_natural n) 
 {
   if(type_ != mar_natural)
   {
-    MRSWARN("MarControlValue::update(real) Incorrect type");
+    MRSWARN("MarControlValue::update(mrs_real) Incorrect type");
     return false;
   }
   i = n;
@@ -248,7 +249,7 @@ MarControlValue::update(natural n)
   
 
   
-real
+mrs_real
 MarControlValue::toReal() 
 {
 
@@ -271,7 +272,7 @@ MarControlValue::toBool()
 }
 
 
-natural
+mrs_natural
 MarControlValue::toNatural() 
 {
   if(type_ != mar_natural) 
@@ -306,17 +307,17 @@ MarControlValue::getSType()
 {
   string res;
   
-  if(getType() == mar_string) res = "string";
-  if(getType() == mar_real) res = "real";
-  if(getType() == mar_vec) res = "realvec";
-  if(getType() == mar_natural) res = "natural";
-  if(getType() == mar_bool) res = "bool";
+  if(getType() == mar_string) res = "mrs_string";
+  if(getType() == mar_real) res = "mrs_real";
+  if(getType() == mar_vec) res = "mrs_realvec";
+  if(getType() == mar_natural) res = "mrs_natural";
+  if(getType() == mar_bool) res = "mrs_bool";
   return res;
   
 }
 
 bool 
-operator!=(MarControlValue& v1, MarControlValue& v2)
+Marsyas::operator!=(MarControlValue& v1, MarControlValue& v2)
 {
   if (v1.getType() != v2.getType())
     MRSWARN("Types of MarControlValue are different");
@@ -332,7 +333,7 @@ operator!=(MarControlValue& v1, MarControlValue& v2)
 
 
 ostream&
-operator<<(ostream& o, const MarControlValue& m)
+Marsyas::operator<<(ostream& o, const MarControlValue& m)
 {
   if(m.type_ == mar_string) o << m.s;
   if(m.type_ == mar_real) o << m.r;

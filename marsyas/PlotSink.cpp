@@ -16,20 +16,17 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /**
    \class PlotSink
    \brief PlotSink: Text output sink
 
 */
 
-
 #include "PlotSink.h"
 #include <iomanip> 
+
 using namespace std;
-
-
-
+using namespace Marsyas;
 
 PlotSink::PlotSink(string name)
 {
@@ -55,9 +52,9 @@ void
 PlotSink::addControls()
 {
   addDefaultControls();
-  addctrl("string/separator", ",");
-  addctrl("bool/sequence", true);
-  addctrl("string/outputFilename", "marsyas");
+  addctrl("mrs_string/separator", ",");
+  addctrl("mrs_bool/sequence", true);
+  addctrl("mrs_string/outputFilename", "marsyas");
 }
 
 
@@ -67,9 +64,9 @@ PlotSink::update()
   MRSDIAG("PlotSink.cpp - PlotSink:update");
 
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
   defaultUpdate();
   
@@ -84,12 +81,12 @@ PlotSink::process(realvec& in, realvec& out)
   checkFlow(in,out);
   
   
-  natural nObservations = getctrl("natural/inObservations").toNatural();
-  natural nSamples = getctrl("natural/inSamples").toNatural();
+  mrs_natural nObservations = getctrl("mrs_natural/inObservations").toNatural();
+  mrs_natural nSamples = getctrl("mrs_natural/inSamples").toNatural();
 
-  string sep = getctrl("string/separator").toString();
-  bool seq = getctrl("bool/sequence").toBool();
-  string outName = getctrl("string/outputFilename").toString();
+  string sep = getctrl("mrs_string/separator").toString();
+  bool seq = getctrl("mrs_bool/sequence").toBool();
+  string outName = getctrl("mrs_string/outputFilename").toString();
   counter_++;
   
   if (!seq) 

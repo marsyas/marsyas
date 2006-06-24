@@ -30,21 +30,21 @@ using the Fast Fourier Transform (FFT).
 #include "MarSystem.h"	
 #include "fft.h"
 
-
+namespace Marsyas
+{
 
 class Spectrum: public MarSystem
 {
 private:
   fft myfft_;
   realvec tempVec_;
-  real cutoff_;
-  real lowcutoff_;
+  mrs_real cutoff_;
+  mrs_real lowcutoff_;
   
   void addControls();
-  real re_,im_;
-  natural ponObservations_;
-  
-  
+  mrs_real re_,im_;
+  mrs_natural ponObservations_;
+ 
 public:
   Spectrum(std::string name);
   ~Spectrum();
@@ -54,6 +54,8 @@ public:
   void process(realvec& in, realvec& out);
   
 };
+
+}//namespace Marsyas
 
 #endif
 

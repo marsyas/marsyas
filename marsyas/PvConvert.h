@@ -34,10 +34,8 @@ directly in Hz.
 
 #include "MarSystem.h"	
 
-
-
-
-
+namespace Marsyas
+{
 
 class PvConvert: public MarSystem
 {
@@ -45,32 +43,30 @@ private:
   realvec lastphase_;
   realvec phase_;
   realvec mag_;
-  
-  
-  real fundamental_;
-  real factor_;
+ 
+  mrs_real fundamental_;
+  mrs_real factor_;
   realvec sortedmags_;
   realvec sortedpos_;
   
-  natural kmax_;
-  natural size_, psize_;
-  
-  
+  mrs_natural kmax_;
+  mrs_natural size_, psize_;
+
   void addControls();
-  
- 
+
 public:
   PvConvert(std::string name);
   
   ~PvConvert();
   MarSystem* clone() const;    
 
-
   void update();
   void process(realvec& in, realvec& out);
   void process1(realvec& in, realvec& out);
   
 };
+
+}//namespace Marsyas
 
 #endif
 

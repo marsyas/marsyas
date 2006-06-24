@@ -23,12 +23,10 @@
 
 */
 
-
-
-
 #include "TimeStretch.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 TimeStretch::TimeStretch(string name)
 {
@@ -54,7 +52,7 @@ void
 TimeStretch::addControls()
 {
   addDefaultControls();
-  addctrl("real/factor", 1.0);
+  addctrl("mrs_real/factor", 1.0);
 }
 
 
@@ -62,9 +60,9 @@ TimeStretch::addControls()
 void
 TimeStretch::update()
 {
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));  
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
   defaultUpdate();
 }
 
@@ -74,8 +72,8 @@ void
 TimeStretch::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
-  real factor = getctrl("real/factor").toReal();
-  natural inSamples = getctrl("natural/inSamples").toNatural();
+  mrs_real factor = getctrl("mrs_real/factor").toReal();
+  mrs_natural inSamples = getctrl("mrs_natural/inSamples").toNatural();
   
   for (t=0; t < inSamples; t++)
     {

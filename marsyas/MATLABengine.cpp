@@ -1,3 +1,34 @@
+/*
+** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+**  
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+** 
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+** 
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software 
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
+
+/** 
+\class MATLABengine
+\brief Utility class for exchanging data between Marsyas and MATLAB
+
+	In order to use this class in Marsyas, _MARSYAS_ENGINE_ must be defined.
+	Check out the test and demonstration code at the marsyasTests.cpp.
+	More info on how to build with MATLAB engine support at: 
+	
+		http://www.mathworks.com/access/helpdesk/help/techdoc/matlab_external/f39903.html
+	
+	Code by Luís Gustavo Martins <lmartins@inescporto.pt>
+*/
 
 #ifdef _MATLAB_ENGINE_
 
@@ -5,6 +36,7 @@
 #include "MATLABengine.h"
 
 using namespace std;
+using namespace Marsyas;
 
 MATLABengine * MATLABengine::instance_ = 0;
 
@@ -32,6 +64,9 @@ MATLABengine::getMatlabEng()
 	return instance_;
 }
 
+//-------------------------------------------------------------------
+//					setters
+//-------------------------------------------------------------------
 void
 MATLABengine::evalString(string MATLABcmd)
 {
@@ -39,79 +74,7 @@ MATLABengine::evalString(string MATLABcmd)
 }
 
 void
-MATLABengine::putVariable(realvec &value, string MATLABname)
-{
-	//----------------------------------
-	// send a realvec to a MATLAB matrix
-	//----------------------------------
-	int dims[2]; //realvec is 2D (maximum)
-
-	//realvec is row-wise but
-	//MATLAB arrays are column-wise!
-	//Must transpose input and then output 
-	//in order to pass the array correctly to MATLAB!
-
-	//transpose input!
-	dims[0] = value.getCols(); //rows = columns!
-	dims[1] = value.getRows(); //columns = rows!
-
-	//realvec are by default double precision matrices => mxDOUBLE_CLASS
-	mxArray *mxMatrix = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxREAL);
-	real *data = value.getData();
-	memcpy((void *)mxGetPr(mxMatrix), (void *)(data), dims[0]*dims[1]*mxGetElementSize(mxMatrix));
-	engPutVariable(engine_, MATLABname.c_str(), mxMatrix);
-
-	//transpose output (already inside MATLAB)
-	string tranposeCmd = MATLABname + "=" + MATLABname + "';";
-	engEvalString(engine_, tranposeCmd.c_str());
-
-	mxDestroyArray(mxMatrix);
-}
-
-void
-MATLABengine::putVariable(double *value, unsigned int size, string MATLABname)
-{
-	//-----------------------------------
-	//send C/C++ vector to MATLAB vector
-	//-----------------------------------
-	int dims[2];
-	dims[0] = 1; //row vector
-	dims[1] = size;
-
-	mxArray *mxVector = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxREAL);
-	memcpy(mxGetData(mxVector), (void *)value, size*mxGetElementSize(mxVector));
-	engPutVariable(engine_, MATLABname.c_str(), mxVector);
-
-	//Convert to MATLAB double type
-	//string MatCmd = MATLABname + "=double(" + MATLABname + ");";
-	//engEvalString(engine_, MatCmd.c_str());
-
-	mxDestroyArray(mxVector);
-}
-
-void
-MATLABengine::putVariable(float *value, unsigned int size, string MATLABname)
-{
-	//-----------------------------------
-	//send C/C++ vector to MATLAB vector
-	//-----------------------------------
-	int dims[2];
-	dims[0] = 1; //row vector
-	dims[1] = size;
-
-	mxArray *mxVector = mxCreateNumericArray(2, dims, mxSINGLE_CLASS, mxREAL);
-	memcpy(mxGetData(mxVector), (void *)value, size*mxGetElementSize(mxVector));
-	engPutVariable(engine_, MATLABname.c_str(), mxVector);
-
-	//Convert to MATLAB double type
-	string MatCmd = MATLABname + "=double(" + MATLABname + ");";
-	engEvalString(engine_, MatCmd.c_str());
-
-	mxDestroyArray(mxVector);
-}
-
-void
-MATLABengine::putVariable(int *value, unsigned int size, string MATLABname)
+MATLABengine::putVariable(const long *const value, unsigned int size, string MATLABname)
 {
 	//-----------------------------------
 	//send C/C++ vector to MATLAB vector
@@ -132,29 +95,99 @@ MATLABengine::putVariable(int *value, unsigned int size, string MATLABname)
 }
 
 void
-MATLABengine::putVariable(int value, string MATLABname)
+MATLABengine::putVariable(const float *const value, unsigned int size, string MATLABname)
 {
-	putVariable(&value, 1, MATLABname);
+	//-----------------------------------
+	//send C/C++ vector to MATLAB vector
+	//-----------------------------------
+	int dims[2];
+	dims[0] = 1; //row vector
+	dims[1] = size;
+
+	mxArray *mxVector = mxCreateNumericArray(2, dims, mxSINGLE_CLASS, mxREAL);
+	memcpy(mxGetData(mxVector), (void *)value, size*mxGetElementSize(mxVector));
+	engPutVariable(engine_, MATLABname.c_str(), mxVector);
+
+	//Convert to MATLAB double type
+	string MatCmd = MATLABname + "=double(" + MATLABname + ");";
+	engEvalString(engine_, MatCmd.c_str());
+
+	mxDestroyArray(mxVector);
 }
+
 
 void
-MATLABengine::putVariable(float value, string MATLABname)
+MATLABengine::putVariable(const double *const value, unsigned int size, string MATLABname)
 {
-	putVariable(&value, 1, MATLABname);
+	//-----------------------------------
+	//send C/C++ vector to MATLAB vector
+	//-----------------------------------
+	int dims[2];
+	dims[0] = 1; //row vector
+	dims[1] = size;
+
+	mxArray *mxVector = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxREAL);
+	memcpy(mxGetData(mxVector), (void *)value, size*mxGetElementSize(mxVector));
+	engPutVariable(engine_, MATLABname.c_str(), mxVector);
+	
+	mxDestroyArray(mxVector);
 }
 
-void
-MATLABengine::putVariable(double scalar, string MATLABname)
-{
-	putVariable(&scalar, 1, MATLABname);
-}
 
-
-//-------------------------------------------------
-// C++ STL Types
-//-------------------------------------------------
 void 
-MATLABengine::putVariable(vector<double> &value, string MATLABname)
+MATLABengine::putVariable(mrs_natural value, string MATLABname)
+{
+	long lvalue = (long)value;
+	putVariable(&lvalue,1, MATLABname);
+}
+void 
+MATLABengine::putVariable(mrs_real value, string MATLABname)
+{
+	double dvalue = (double)value;
+	putVariable(&dvalue,1, MATLABname);
+}
+
+void 
+MATLABengine::putVariable(mrs_complex value, string MATLABname)
+{
+	int dims[2];
+	dims[0] = 1; 
+	dims[1] = 1;
+
+	mxArray *mxVector = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxCOMPLEX);
+	double *xr = mxGetPr(mxVector);
+	double *xi = mxGetPi(mxVector);
+
+	*xr = (double)value.real();
+	*xi = (double)value.imag();
+
+	engPutVariable(engine_, MATLABname.c_str(), mxVector);
+
+	mxDestroyArray(mxVector);
+}
+
+
+
+void
+MATLABengine::putVariable(realvec value, string MATLABname)
+{
+	//----------------------------------
+	// send a realvec to a MATLAB matrix
+	//----------------------------------
+	int dims[2]; //realvec is 2D
+	dims[0] = value.getRows(); 
+	dims[1] = value.getCols(); 
+
+	//realvec are by default double precision matrices => mxDOUBLE_CLASS
+	mxArray *mxMatrix = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxREAL);
+	mrs_real *data = value.getData();
+	memcpy((void *)mxGetPr(mxMatrix), (void *)(data), dims[0]*dims[1]*mxGetElementSize(mxMatrix));
+	engPutVariable(engine_, MATLABname.c_str(), mxMatrix);
+
+	mxDestroyArray(mxMatrix);
+}
+void 
+MATLABengine::putVariable(vector<mrs_natural> value, string MATLABname)
 {
 	int dims[2];
 	dims[0] = 1; //row vector
@@ -165,128 +198,275 @@ MATLABengine::putVariable(vector<double> &value, string MATLABname)
 
 	for(unsigned int i = 0; i < value.size(); i++)
 	{
-		*(x + i) = value[i];
+		*(x + i) = (double)value[i];
 	}
 
 	engPutVariable(engine_, MATLABname.c_str(), mxVector);
 
-	//Convert to MATLAB double type
-	//string MatCmd = MATLABname + "=double(" + MATLABname + ");";
-	//engEvalString(engine_, MatCmd.c_str());
-
 	mxDestroyArray(mxVector);
-
 }
 
-// void 
-// MATLABengine::putVariable(complex<double> &value, string MATLABname)
-// {
-// 	int dims[2];
-// 	dims[0] = 1; 
-// 	dims[1] = 1;
-// 
-// 	mxArray *mxVector = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxCOMPLEX);
-// 	double *xr = mxGetPr(mxVector);
-// 	double *xi = mxGetPi(mxVector);
-// 
-// 	*xr = value.real();
-// 	*xi = value.imag();
-// 
-// 	engPutVariable(engine_, MATLABname.c_str(), mxVector);
-// 
-// 	//Convert to MATLAB double type
-// 	//string MatCmd = MATLABname + "=double(" + MATLABname + ");";
-// 	//engEvalString(engine_, MatCmd.c_str());
-// 
-// 	mxDestroyArray(mxVector);
-// }
-// 
-// void 
-// MATLABengine::putVariable(vector< complex<double> > &value, string MATLABname)
-// {
-// 	int dims[2];
-// 	dims[0] = 1; //row vector
-// 	dims[1] = value.size();
-// 
-// 	mxArray *mxVector = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxCOMPLEX);
-// 	double *xr = mxGetPr(mxVector);
-// 	double *xi = mxGetPi(mxVector);
-// 
-// 	for(unsigned int i = 0; i < value.size(); i++)
-// 	{
-// 		*(xr + i) = value[i].real();
-// 		*(xi + i) = value[i].imag();
-// 	}
-// 
-// 	engPutVariable(engine_, MATLABname.c_str(), mxVector);
-// 
-// 	//Convert to MATLAB double type
-// 	//string MatCmd = MATLABname + "=double(" + MATLABname + ");";
-// 	//engEvalString(engine_, MatCmd.c_str());
-// 
-// 	mxDestroyArray(mxVector);
-// }
 
-//-------------------------------------------------------------------
-// getters
-//-------------------------------------------------------------------
-
-void
-MATLABengine::getVariable(std::string MATLABname, double& value)
+void 
+MATLABengine::putVariable(vector<mrs_real> value, string MATLABname)
 {
 	int dims[2];
-	dims[0] = 1;
-	dims[1] = 1;
+	dims[0] = 1; //row vector
+	dims[1] = value.size();
 
 	mxArray *mxVector = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxREAL);
-	mxVector = engGetVariable(engine_, MATLABname.c_str());
-	
-	value = mxGetScalar(mxVector);
-	
+	double *x = mxGetPr(mxVector);
+
+	for(unsigned int i = 0; i < value.size(); i++)
+	{
+		*(x + i) = (double)value[i];
+	}
+
+	engPutVariable(engine_, MATLABname.c_str(), mxVector);
+
 	mxDestroyArray(mxVector);
 }
 
-//-------------------------------------------------------------------
-// TESTING METHODS
-//-------------------------------------------------------------------
-void
-MATLABengine::test()
+void 
+MATLABengine::putVariable(vector<mrs_complex> value, string MATLABname)
 {
-	//---------------------------------------
-	double double_scalar = 3.123456789;
-	MATLABengine::getMatlabEng()->putVariable(double_scalar,"double_scalar");
-	//---------------------------------------
-	realvec marsyas_realvec1D(4);
-	marsyas_realvec1D(0) = 3.123456789;
-	marsyas_realvec1D(1) = 3.987654321;
-	marsyas_realvec1D(2) = 2.0;
-	marsyas_realvec1D(3) = 1.1234567890123456789;
-	MATLABengine::getMatlabEng()->putVariable(marsyas_realvec1D,"marsyas_realvec1D");
-	//---------------------------------------
-	realvec marsyas_realvec2D(2,3);
-	marsyas_realvec2D.setval(1.123456789);
-	MATLABengine::getMatlabEng()->putVariable(marsyas_realvec2D,"marsyas_realvec2D");
-	//---------------------------------------
-	double double_array[4] = {1.123456789, 2.123456789, 3.123456789, 0.0};
-	MATLABengine::getMatlabEng()->putVariable(double_array,4,"double_array");
-	//---------------------------------------
-// 	complex<double> complex_double(1.123456789, 2.123456789);
-// 	MATLABengine::getMatlabEng()->putVariable(complex_double, "complex_double");
-	//---------------------------------------
-	vector<double> vector_double(4);
-	vector_double[0] = 1.123456789;
-	vector_double[1] = 2.123456789;
-	vector_double[2] = 3.123456789;
-	vector_double[3] = 4.123456789;
-	MATLABengine::getMatlabEng()->putVariable(vector_double, "vector_double");
-	//---------------------------------------
-// 	vector< complex<double> > vector_complex_double(4);
-// 	vector_complex_double[0] = complex<double> (1.123456789, 2.123456789);
-// 	vector_complex_double[1] = complex<double> (3.123456789, 4.123456789);
-// 	vector_complex_double[2] = complex<double> (5.123456789, 6.123456789);
-// 	vector_complex_double[3] = complex<double> (7.123456789, 8.123456789);
-// 	MATLABengine::getMatlabEng()->putVariable(vector_complex_double, "vector_complex_double");
+	int dims[2];
+	dims[0] = 1; //row vector
+	dims[1] = value.size();
+
+	mxArray *mxVector = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxCOMPLEX);
+	double *xr = mxGetPr(mxVector);
+	double *xi = mxGetPi(mxVector);
+
+	for(unsigned int i = 0; i < value.size(); i++)
+	{
+		*(xr + i) = (double)value[i].real();
+		*(xi + i) = (double)value[i].imag();
+	}
+
+	engPutVariable(engine_, MATLABname.c_str(), mxVector);
+
+	mxDestroyArray(mxVector);
 }
+
+
+//-------------------------------------------------------------------
+//					getters
+//-------------------------------------------------------------------
+int
+MATLABengine::getVariable(std::string MATLABname, mrs_natural& value)
+{
+	mxArray* mxVector = engGetVariable(engine_, MATLABname.c_str());
+
+	if (mxVector == NULL) {
+		MRSERR("MATLABengine::getVariable(std::string, mrs_natural&) error: Get Array Failed");
+		return -1;
+	}
+	else {		
+		if (mxGetNumberOfElements(mxVector) > 1)
+			MRSWARN("MATLABengine::getVariable(std::string, mrs_natural&): MATLAB array => getting first element only!");
+
+		if(mxIsComplex(mxVector))
+			MRSWARN("MATLABengine::getVariable(std::string, mrs_natural&): MATLAB complex number => getting real part only!");
+		
+		value = (mrs_natural)mxGetScalar(mxVector);
+		mxDestroyArray(mxVector);
+		return 0;
+	} 
+}
+int
+MATLABengine::getVariable(std::string MATLABname, mrs_real& value)
+{
+	mxArray* mxVector = engGetVariable(engine_, MATLABname.c_str());
+
+	if (mxVector == NULL) {
+		MRSERR("MATLABengine::getVariable(std::string, mrs_real&) error: Get Array Failed");
+		return -1;
+	}
+	else {
+		if (mxGetNumberOfElements(mxVector) > 1)
+			MRSWARN("MATLABengine::getVariable(std::string, mrs_real&): MATLAB array => getting first element only!");
+		
+		if(mxIsComplex(mxVector))
+			MRSWARN("MATLABengine::getVariable(std::string, mrs_real&): MATLAB complex number => getting real part only!");
+		
+		value = (mrs_real)mxGetScalar(mxVector);
+		mxDestroyArray(mxVector);
+		return 0;
+	} 
+}
+
+int
+MATLABengine::getVariable(std::string MATLABname, mrs_complex& value)
+{
+	mxArray* mxVector = engGetVariable(engine_, MATLABname.c_str());
+
+	if (mxVector == NULL) {
+		MRSERR("MATLABengine::getVariable(std::string, mrs_complex&) error: Get Array Failed");
+		return -1;
+	}
+	else {
+		if (mxGetNumberOfElements(mxVector) > 1)
+			MRSWARN("MATLABengine::getVariable(std::string, mrs_real&): MATLAB array => getting first element only!");
+		
+		if(mxIsComplex(mxVector))
+			value = mrs_complex((mrs_real)(*mxGetPr(mxVector)),(mrs_real)(*mxGetPi(mxVector)));
+		else
+		{
+			value = mrs_complex((mrs_real)(*mxGetPr(mxVector)),0);
+			MRSWARN("MATLABengine::getVariable(std::string, mrs_complex&): MATLAB real number => setting imaginary part to zero!");
+		}
+		
+		mxDestroyArray(mxVector);
+		return 0;
+	} 
+}
+
+int
+MATLABengine::getVariable(std::string MATLABname, realvec& value)
+{
+	mxArray* mxVector = engGetVariable(engine_, MATLABname.c_str());
+
+	if (mxVector == NULL) {
+		MRSERR("MATLABengine::getVariable(std::string, realvec&) error: Get Array Failed");
+		return -1;
+	}
+	else {
+		if (mxGetNumberOfDimensions(mxVector) > 2)
+		{
+			MRSERR("MATLABengine::getVariable(std::string, realvecl&): MATLAB array with more than 2 dimensions!");
+			return -1;
+		}
+
+		if(mxIsComplex(mxVector))
+			MRSWARN("MATLABengine::getVariable(std::string, realvec&): MATLAB complex array => getting real part only!");
+
+		//number of rows and cols for the 2D MATLAB array
+		//resize realvec accordingly
+		value.create(mxGetDimensions(mxVector)[0],mxGetDimensions(mxVector)[1]);
+		for(unsigned int i= 0; i < mxGetNumberOfElements(mxVector); i++)
+		{
+			//both Marsyas realvec and MATLAB arrays are column-wise,
+			//so they can be copied as linear vectors
+			value(i) = (mrs_real)(*(mxGetPr(mxVector)+i));
+		}
+
+		mxDestroyArray(mxVector);
+		return 0;
+	} 
+}
+
+int
+MATLABengine::getVariable(std::string MATLABname, vector<mrs_natural>& value)
+{
+	mxArray* mxVector = engGetVariable(engine_, MATLABname.c_str());
+
+	if (mxVector == NULL) {
+		MRSERR("MATLABengine::getVariable(std::string, vector<mrs_natural>&) error: Get Array Failed");
+		return -1;
+	}
+	else {
+		if (mxGetNumberOfDimensions(mxVector) > 2)
+		{
+			MRSERR("MATLABengine::getVariable(std::string, vector<mrs_natural>&): MATLAB array with more than 2 dimensions!");
+			return -1;
+		}
+
+		if(mxIsComplex(mxVector))
+			MRSWARN("MATLABengine::getVariable(std::string, vector<mrs_natural>&): MATLAB complex data => getting real part only!");
+
+		if(mxGetM(mxVector) > 1 && mxGetN(mxVector) > 1)
+			MRSWARN("MATLABengine::getVariable(std::string, vector<mrs_natural>&): MATLAB array => will be got as a column-wise vector!");
+
+		value.clear();
+		value.reserve(mxGetNumberOfElements(mxVector));
+
+		for(unsigned int i= 0; i < mxGetNumberOfElements(mxVector); i++)
+		{
+			//if MATLAB variable is an array, it will be got as a column-wise vector
+			value.push_back((mrs_natural)(*(mxGetPr(mxVector)+i)));
+		}
+
+		mxDestroyArray(mxVector);
+		return 0;
+	} 
+}
+
+int
+MATLABengine::getVariable(std::string MATLABname, vector<mrs_real>& value)
+{
+	mxArray* mxVector = engGetVariable(engine_, MATLABname.c_str());
+
+	if (mxVector == NULL) {
+		MRSERR("MATLABengine::getVariable(std::string, vector<mrs_real>&) error: Get Array Failed");
+		return -1;
+	}
+	else {
+		if (mxGetNumberOfDimensions(mxVector) > 2)
+		{
+			MRSERR("MATLABengine::getVariable(std::string, vector<mrs_real>&): MATLAB array with more than 2 dimensions!");
+			return -1;
+		}
+
+		if(mxIsComplex(mxVector))
+			MRSWARN("MATLABengine::getVariable(std::string, vector<mrs_real>&): MATLAB complex data => getting real part only!");
+
+		if(mxGetM(mxVector) > 1 && mxGetN(mxVector) > 1)
+			MRSWARN("MATLABengine::getVariable(std::string, vector<mrs_real>&): MATLAB array => will be got as a column-wise vector!");
+
+		value.clear();
+		value.reserve(mxGetNumberOfElements(mxVector));
+					
+		for(unsigned int i= 0; i < mxGetNumberOfElements(mxVector); i++)
+		{
+			//if MATLAB variable is an array, it will be got as a column-wise vector
+			value.push_back((mrs_real)(*(mxGetPr(mxVector)+i)));
+		}
+
+		mxDestroyArray(mxVector);
+		return 0;
+	} 
+}
+
+int
+MATLABengine::getVariable(std::string MATLABname, vector<mrs_complex>& value)
+{
+	mxArray* mxVector = engGetVariable(engine_, MATLABname.c_str());
+
+	if (mxVector == NULL) {
+		MRSERR("MATLABengine::getVariable(std::string, vector<mrs_complex>&) error: Get Array Failed");
+		return -1;
+	}
+	else {
+		if (mxGetNumberOfDimensions(mxVector) > 2)
+		{
+			MRSERR("MATLABengine::getVariable(std::string, vector<mrs_complex>&): MATLAB array with more than 2 dimensions!");
+			return -1;
+		}
+
+		if(mxGetM(mxVector) > 1 && mxGetN(mxVector) > 1)
+			MRSWARN("MATLABengine::getVariable(std::string, vector<mrs_complex>&): MATLAB array => will be got as a column-wise vector!");
+
+		value.clear();
+		value.reserve(mxGetNumberOfElements(mxVector));
+
+		for(unsigned int i= 0; i < mxGetNumberOfElements(mxVector); i++)
+		{
+			//if MATLAB variable is an array, it will be got as a column-wise vector
+			if(mxIsComplex(mxVector))
+				value.push_back( mrs_complex( (mrs_real)(*(mxGetPr(mxVector)+i)), (mrs_real)(*(mxGetPi(mxVector)+i)) ));
+			else
+			{
+				value.push_back(mrs_complex( (mrs_real)(*(mxGetPr(mxVector)+i)), 0 ));
+				MRSWARN("MATLABengine::getVariable(std::string, vector<mrs_complex>&): MATLAB real numbers => setting imaginary parts to zero!");
+			}
+		}
+
+		mxDestroyArray(mxVector);
+		return 0;
+	} 
+}
+
 
 #endif //_MATLAB_ENGINE
 

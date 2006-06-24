@@ -25,12 +25,10 @@ a WaveletStep for the WaveletPyramid algorithm. The code is
 is based on the Numerical Recipies wavelet code. 
 */
 
-
-
-
 #include "Daub4.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 Daub4::Daub4(string name)
 {
@@ -57,8 +55,8 @@ void
 Daub4::addControls()
 {
   addDefaultControls();
-  addctrl("bool/forward", true);
-  addctrl("natural/processSize", 0);
+  addctrl("mrs_bool/forward", true);
+  addctrl("mrs_natural/processSize", 0);
 }
 
 
@@ -70,14 +68,14 @@ Daub4::update()
 {
   MRSDIAG("Daub4.cpp - Daub4:update");
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   c0_ = 0.4829629131445341f;
   c1_ = 0.8365163037378079f;
   c2_ = 0.2241438680420143f;
   c3_ = -0.1294095225512604f;
-  workspace_.create(getctrl("natural/inSamples").toNatural());
+  workspace_.create(getctrl("mrs_natural/inSamples").toNatural());
   
   defaultUpdate();
 }
@@ -90,9 +88,9 @@ Daub4::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 
-  natural nh, nh1, i, j;
-  natural n = getctrl("natural/processSize").toNatural();
-  bool forward = getctrl("bool/forward").toBool();
+  mrs_natural nh, nh1, i, j;
+  mrs_natural n = getctrl("mrs_natural/processSize").toNatural();
+  bool forward = getctrl("mrs_bool/forward").toBool();
   
 
   if (n < 4) return;

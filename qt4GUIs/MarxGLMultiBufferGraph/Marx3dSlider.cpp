@@ -1,7 +1,7 @@
 
 #include "Marx3dSlider.h"
 
-
+using namespace std;
 
 Marx3dSlider::Marx3dSlider( QWidget *parent ) :
   QWidget( parent )

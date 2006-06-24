@@ -30,16 +30,19 @@
 #ifndef MARSYAS_ROLLOFF_H
 #define MARSYAS_ROLLOFF_H
 
-#include "MarSystem.h"	
+#include "MarSystem.h"
+
+namespace Marsyas
+{
 
 class Rolloff: public MarSystem
 {
 private: 
   void addControls();
   realvec sumWindow_;
-  real perc_;
-  real sum_;
-  real total_;
+  mrs_real perc_;
+  mrs_real sum_;
+  mrs_real total_;
   
 public:
   Rolloff();
@@ -51,6 +54,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 

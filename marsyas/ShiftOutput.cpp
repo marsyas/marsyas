@@ -27,7 +27,9 @@ with gain and put them in the output vector.
 */
 
 #include "ShiftOutput.h"
+
 using namespace std;
+using namespace Marsyas;
 
 ShiftOutput::ShiftOutput():MarSystem()
 {
@@ -60,10 +62,10 @@ void
 ShiftOutput::addControls()
 {
   addDefaultControls();
-  addctrl("natural/Interpolation", (natural)MRS_DEFAULT_SLICE_NSAMPLES / 2);
-  setctrlState("natural/Interpolation", true);
-  addctrl("natural/WindowSize", (natural)MRS_DEFAULT_SLICE_NSAMPLES);
-  addctrl("natural/Decimation", (natural)MRS_DEFAULT_SLICE_NSAMPLES/2);
+  addctrl("mrs_natural/Interpolation", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES / 2);
+  setctrlState("mrs_natural/Interpolation", true);
+  addctrl("mrs_natural/WindowSize", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES);
+  addctrl("mrs_natural/Decimation", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES/2);
 }
 
 
@@ -71,11 +73,11 @@ ShiftOutput::addControls()
 void
 ShiftOutput::update()
 {
-  setctrl("natural/onSamples", getctrl("natural/Interpolation"));
-  setctrl("natural/onObservations", (natural)1);
-  setctrl("real/osrate", getctrl("real/israte"));  
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/Interpolation"));
+  setctrl("mrs_natural/onObservations", (mrs_natural)1);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
   
-  setctrl("natural/WindowSize",getctrl("natural/inSamples"));
+  setctrl("mrs_natural/WindowSize",getctrl("mrs_natural/inSamples"));
 
 
   defaultUpdate();
@@ -83,10 +85,10 @@ ShiftOutput::update()
   
   tmpSlice_.stretch(inObservations_, inSamples_);
   
-  I_ = getctrl("natural/onSamples").toNatural();
-  N_ = getctrl("natural/inSamples").toNatural();
-  Nw_ = getctrl("natural/WindowSize").toNatural();
-  D_ = getctrl("natural/Decimation").toNatural();
+  I_ = getctrl("mrs_natural/onSamples").toNatural();
+  N_ = getctrl("mrs_natural/inSamples").toNatural();
+  Nw_ = getctrl("mrs_natural/WindowSize").toNatural();
+  D_ = getctrl("mrs_natural/Decimation").toNatural();
 
 
 }

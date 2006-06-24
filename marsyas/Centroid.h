@@ -31,14 +31,16 @@ time samle. The center is defined as the normalized first moment
 
 #include "MarSystem.h"	
 
+namespace Marsyas
+{
 
 class Centroid: public MarSystem
 {
 private: 
   void addControls();
   
-  real m0_;
-  real m1_;
+  mrs_real m0_;
+  mrs_real m1_;
   
 public:
   Centroid();
@@ -49,9 +51,9 @@ public:
   
   void update();
   void process(realvec& in, realvec& out);
-  
-
 };
+
+}//namespace Marsyas
 
 #endif
 

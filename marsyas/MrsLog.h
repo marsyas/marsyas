@@ -24,7 +24,8 @@
 #include <string> 
 
 
-
+namespace Marsyas
+{
 
 class MrsLog
 {
@@ -46,6 +47,6 @@ private:
 
 };
 
-
+} //namespec Marsyas
 
 #endif 

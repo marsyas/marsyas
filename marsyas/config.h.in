@@ -15,9 +15,6 @@
 /* Enable Audio IO */
 #undef MRSWARNING
 
-/* Enable ogg vorbis decoding */
-#undef OGG_VORBIS
-
 /* Name of package */
 #undef PACKAGE
 

@@ -27,8 +27,10 @@ observation stream and sums the results.
 #ifndef MARSYAS_FANIN_H
 #define MARSYAS_FANIN_H
 
-
 #include "Composite.h"
+
+namespace Marsyas
+{
 
 class Fanin: public Composite
 {
@@ -48,7 +50,7 @@ public:
   void process(realvec& in, realvec& out);
 };
 
-
+}//namespace Marsyas
 
 #endif
 

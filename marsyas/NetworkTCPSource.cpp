@@ -24,11 +24,11 @@
     NetworkSource that uses the TCP communication protocol
 */
 
-
 #include "NetworkTCPSource.h"
 #include "SocketException.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 //  
 // Constructor sets up the server...
@@ -49,10 +49,10 @@ MarSystem* NetworkTCPSource::clone() const {
 void NetworkTCPSource::addControls()
 {
   addDefaultControls();
-  addctrl("real/gain", 1.0); 
-  addctrl("natural/dataPort", 5009);
-  addctrl("natural/controlsPort", 5010);
-  addctrl("bool/notEmpty", true); 
+  addctrl("mrs_real/gain", 1.0); 
+  addctrl("mrs_natural/dataPort", 5009);
+  addctrl("mrs_natural/controlsPort", 5010);
+  addctrl("mrs_bool/notEmpty", true); 
 }
 
 string NetworkTCPSource::getClientAddr()
@@ -63,17 +63,17 @@ string NetworkTCPSource::getClientAddr()
 void NetworkTCPSource::update()
 {
   MRSDIAG("NetworkTCPSource.cpp - NetworkTCPSource:update");
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   defaultUpdate();
 }
 
 void NetworkTCPSource::process( realvec& in, realvec& out )
 {
 
-  natural inSamples = getctrl("natural/inSamples").toNatural();
-  natural inObservations = getctrl("natural/inObservations").toNatural();
+  mrs_natural inSamples = getctrl("mrs_natural/inSamples").toNatural();
+  mrs_natural inObservations = getctrl("mrs_natural/inObservations").toNatural();
   
   checkFlow(in,out);
  
@@ -91,10 +91,10 @@ void NetworkTCPSource::process( realvec& in, realvec& out )
   
   if ( byteSwap ) {
     int i = 0;
-    real* data = out.getData();
+    mrs_real* data = out.getData();
 	  
     for ( i = 0; i < (inObservations * inSamples); i++ ) {
-	real tmp = swap( data[i] );
+	mrs_real tmp = swap( data[i] );
 	data[i] = tmp;
     }
   }
@@ -120,8 +120,8 @@ void NetworkTCPSource::refresh()
     exit(1);
   }
 
-  natural dataPort = getctrl("natural/dataPort").toNatural();
-  natural controlsPort = getctrl("natural/controlsPort").toNatural();
+  mrs_natural dataPort = getctrl("mrs_natural/dataPort").toNatural();
+  mrs_natural controlsPort = getctrl("mrs_natural/controlsPort").toNatural();
 
   if ( ! NetworkSocket::setupSource ( dataPort, controlsPort ) ) {
     throw SocketException ( "Could not setup TCP source." );

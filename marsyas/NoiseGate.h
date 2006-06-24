@@ -28,21 +28,21 @@ as a prototype template for building more complicated MarSystems.
 #ifndef MARSYAS_NOISEGATE_H
 #define MARSYAS_NOISEGATE_H
 
-
 #include "MarSystem.h"	
 
-
+namespace Marsyas
+{
 
 class NoiseGate: public MarSystem
 {
 private: 
   void addControls();
-  real state_;
-  real xdprev_;
-  real gainsprev_;
+  mrs_real state_;
+  mrs_real xdprev_;
+  mrs_real gainsprev_;
   realvec xd_;
   realvec gains_;
-  float alpha_;
+  mrs_real alpha_;
   
 public:
   NoiseGate(std::string name);
@@ -52,5 +52,7 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif

@@ -26,9 +26,6 @@
 #ifndef MARSYAS_MARSYSTEMMANAGER_H
 #define MARSYAS_MARSYSTEMMANAGER_H
 
-
-
-
 #include "MarSystem.h"
 #include "Gain.h"
 #include "HalfWaveRectifier.h"
@@ -114,7 +111,8 @@
 #include "LPC.h"
 #include "LPCwarped.h"
 #include "LPCResyn.h"
-#include "SOM.h" 
+#include "LSP.h"
+#include "SOM.h"
 
 #ifndef WIN32 
 #include "NetworkTCPSink.h"
@@ -130,6 +128,8 @@
 #include "NetworkUDPSource.h"
 #endif 
 
+namespace Marsyas
+{
 
 class MarSystemManager
 {
@@ -152,7 +152,7 @@ public:
   std::vector <std::string> registeredPrototypes(); 
 };
 
-
+}//namespace Marsyas
 
 #endif
 

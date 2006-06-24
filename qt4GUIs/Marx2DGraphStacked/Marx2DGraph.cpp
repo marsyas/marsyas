@@ -30,6 +30,9 @@ linear and polynomial interpolation.
 
 #include "Marx2DGraph.h"
 
+using namespace std;
+using namespace Marsyas;
+
 
 //! A default constructor
 /*!

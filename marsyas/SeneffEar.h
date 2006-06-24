@@ -26,8 +26,6 @@ This is a direct reimplementation of the corresponding model
 from the Auditory Toolbox in Matlab by Malcolm Slaney. 
 */
 
-
-
 #ifndef MARSYAS_SENEFFEAR_H
 #define MARSYAS_SENEFFEAR_H
 
@@ -36,19 +34,20 @@ from the Auditory Toolbox in Matlab by Malcolm Slaney.
 #include "Cascade.h"
 #include "Parallel.h"
 
-
+namespace Marsyas
+{
 
 class SeneffEar: public MarSystem
 {
 private: 
   void addControls();
   
-  natural stage;
+  mrs_natural stage;
   
   bool firstUpdate;
   
-  natural channels;
-  real fs;
+  mrs_natural channels;
+  mrs_real fs;
   
   realvec PreemphasisRThetaCoeffs;
   realvec FilterBankRThetaCoeffs;
@@ -69,21 +68,21 @@ private:
   realvec slice_2;
   realvec slice_3;
   
-  real hwrA;
-  real hwrB;
-  real hwrG;
+  mrs_real hwrA;
+  mrs_real hwrB;
+  mrs_real hwrG;
 
-  real Tua;
-  real Tub;
+  mrs_real Tua;
+  mrs_real Tub;
 
   realvec Cn;
 
-  real lpAlpha;
+  mrs_real lpAlpha;
   Filter* lowPassFilter;
 
-  real initial_yn;
-  real alpha_agc;
-  real kagc;
+  mrs_real initial_yn;
+  mrs_real alpha_agc;
+  mrs_real kagc;
   Filter* AGCfilter;
 
   void polyConv(realvec&, realvec&, realvec&);
@@ -97,6 +96,8 @@ public:
   void update();
   void process(realvec& in, realvec& out); 
 };
+
+}//namespace Marsyas
 
 #endif
 

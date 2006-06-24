@@ -24,10 +24,10 @@
 
 */
 
-
 #include "FM.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 FM :: FM( string name ) 
 {
@@ -37,11 +37,11 @@ FM :: FM( string name )
   
   // create the wavetable.
   wavetableSize_ = 8192;
-  wavetable_.create((natural)wavetableSize_);
+  wavetable_.create((mrs_natural)wavetableSize_);
   
-  real incr = TWOPI / wavetableSize_;
+  mrs_real incr = TWOPI / wavetableSize_;
   for (t=0; t < wavetableSize_; t++) {
-    wavetable_(t) = (real)(0.5 * sin(incr * t));
+    wavetable_(t) = (mrs_real)(0.5 * sin(incr * t));
     
     
   }
@@ -67,19 +67,19 @@ void
 FM::addControls() 
 {
   addDefaultControls();
-  addctrl("natural/nChannels",1);
+  addctrl("mrs_natural/nChannels",1);
   
-  addctrl("real/mDepth", 15.0);						// modulator depth
-  setctrlState("real/mDepth",true);
+  addctrl("mrs_real/mDepth", 15.0);						// modulator depth
+  setctrlState("mrs_real/mDepth",true);
   
-  addctrl("real/mSpeed", 6.0);						// modulator speed
-  setctrlState("real/mSpeed", true);
+  addctrl("mrs_real/mSpeed", 6.0);						// modulator speed
+  setctrlState("mrs_real/mSpeed", true);
   
-  addctrl("real/cFrequency", 1000.0);			// carrier frequency
-  setctrlState("real/cFrequency", true);
+  addctrl("mrs_real/cFrequency", 1000.0);			// carrier frequency
+  setctrlState("mrs_real/cFrequency", true);
   
-  addctrl("bool/noteon", false);
-  setctrlState("bool/noteon", true);
+  addctrl("mrs_bool/noteon", false);
+  setctrlState("mrs_bool/noteon", true);
 
 }	
 
@@ -88,17 +88,17 @@ void FM::update()
 {
   MRSDIAG("FM.cpp - FM:update");
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
   // update the controls for the FM  
-  cFrequency_ = getctrl("real/cFrequency").toReal();
-  isRate_ = getctrl("real/israte").toReal();
-  mSpeed_ = getctrl("real/mSpeed").toReal();
-  mDepth_ = getctrl("real/mDepth").toReal();
-  mRate_ = (mSpeed_ * wavetableSize_) / getctrl("real/israte").toReal();
-  inSamples_ = getctrl("natural/inSamples").toNatural();
+  cFrequency_ = getctrl("mrs_real/cFrequency").toReal();
+  isRate_ = getctrl("mrs_real/israte").toReal();
+  mSpeed_ = getctrl("mrs_real/mSpeed").toReal();
+  mDepth_ = getctrl("mrs_real/mDepth").toReal();
+  mRate_ = (mSpeed_ * wavetableSize_) / getctrl("mrs_real/israte").toReal();
+  inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
   
   defaultUpdate();
 }	
@@ -108,10 +108,10 @@ void FM::process( realvec& in, realvec& out )
   checkFlow(in,out);
   
 
-  register real mSample_;
-  register real oFrequency_;								
+  register mrs_real mSample_;
+  register mrs_real oFrequency_;								
 											
-  if (getctrl("bool/noteon").toBool() == false) {
+  if (getctrl("mrs_bool/noteon").toBool() == false) {
   	return;
   }
   
@@ -119,7 +119,7 @@ void FM::process( realvec& in, realvec& out )
     {
       
       // calculate the modulator output
-      mSample_ = wavetable_((natural)mIndex_);
+      mSample_ = wavetable_((mrs_natural)mIndex_);
       mIndex_ += mRate_;
       mSample_ *= mDepth_;
       
@@ -127,7 +127,7 @@ void FM::process( realvec& in, realvec& out )
       oFrequency_ = cFrequency_ + mSample_;
       oRate_ = (oFrequency_ * wavetableSize_) / isRate_;
       
-      out(0,t) = wavetable_((natural)oIndex_);
+      out(0,t) = wavetable_((mrs_natural)oIndex_);
       
       // we are one sample behind in case this index goes off the map
       oIndex_ += oRate_;    

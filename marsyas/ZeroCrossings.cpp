@@ -24,12 +24,10 @@
 signal crosses the zero line. 
 */
 
-
-
-
 #include "ZeroCrossings.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 ZeroCrossings::ZeroCrossings():MarSystem()
 {
@@ -70,11 +68,11 @@ ZeroCrossings::update()
 
   MRSDIAG("ZeroCrossings.cpp - ZeroCrossings:update");
   
-  setctrl("natural/onSamples", (natural)1);
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte").toReal() / getctrl("natural/inSamples").toNatural());
+  setctrl("mrs_natural/onSamples", (mrs_natural)1);
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal() / getctrl("mrs_natural/inSamples").toNatural());
 
-  setctrl("string/onObsNames", "ZeroCrossings,");  
+  setctrl("mrs_string/onObsNames", "ZeroCrossings,");  
   defaultUpdate();
 }
 

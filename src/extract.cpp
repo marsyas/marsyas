@@ -22,7 +22,7 @@
 
 
 
-#include <stdio.h>
+#include <cstdio>
 #include "Collection.h"
 #include "MarSystemManager.h"
 #include "Accumulator.h"
@@ -30,8 +30,9 @@
 
 #include <iostream> 
 #include <string> 
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 int helpopt;
 int usageopt;
@@ -105,8 +106,8 @@ void simple_extract(string sfName)
 {
   MarSystemManager mng;
   MarSystem *src = mng.create("SoundFileSource", "src");
-  src->updctrl("string/filename", sfName);
-  src->updctrl("natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
+  src->updctrl("mrs_string/filename", sfName);
+  src->updctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
   
   
   MarSystem* spectralShape = mng.create("Series", "spectralShape");
@@ -122,8 +123,8 @@ void simple_extract(string sfName)
   spectralShape->addMarSystem(statistics);
   
   
-  // spectralShape->updctrl("PowerSpectrum/pspk/string/spectrumType","decibels");
-  spectralShape->updctrl("Memory/mem/natural/memSize",400);
+  // spectralShape->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","decibels");
+  spectralShape->updctrl("Memory/mem/mrs_natural/memSize",400);
 
   // spectralShape->addMarSystem(mng.create("Kurtosis", "kurtosis"));
   
@@ -137,17 +138,17 @@ void simple_extract(string sfName)
   featureNetwork->addMarSystem(spectralShape);
 
   
-  // while (featureNetwork->getctrl("SoundFileSource/src/bool/notEmpty").toBool())
+  // while (featureNetwork->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool())
   // {
 
-  realvec in(featureNetwork->getctrl("natural/inObservations").toNatural(), 
-	     featureNetwork->getctrl("natural/inSamples").toNatural());
+  realvec in(featureNetwork->getctrl("mrs_natural/inObservations").toNatural(), 
+	     featureNetwork->getctrl("mrs_natural/inSamples").toNatural());
 
-  realvec out(featureNetwork->getctrl("natural/onObservations").toNatural(), 
-	      featureNetwork->getctrl("natural/onSamples").toNatural());
+  realvec out(featureNetwork->getctrl("mrs_natural/onObservations").toNatural(), 
+	      featureNetwork->getctrl("mrs_natural/onSamples").toNatural());
   
 
-  for (natural i=0; i < 400; i++) 
+  for (mrs_natural i=0; i < 400; i++) 
     {
       featureNetwork->process(in,out);
     }
@@ -159,11 +160,11 @@ void simple_extract(string sfName)
   plot.setval(1.0);
   
 
-  for (natural c = 0; c < 400; c++)
+  for (mrs_natural c = 0; c < 400; c++)
     {
-      for (natural r=50; r < 50 + round(out(0,c) * 50.0); r++)
+      for (mrs_natural r=50; r < 50 + round(out(0,c) * 50.0); r++)
 	plot(r,c) = 0.0;
-      for (natural r=50; r > 50 - round(out(0,c) * 50.0); r--)
+      for (mrs_natural r=50; r > 50 - round(out(0,c) * 50.0); r--)
 	plot(r,c) = 0.0;
       
     }
@@ -180,7 +181,7 @@ void simple_extract(string sfName)
 
 
 void 
-newExtract(string sfName, natural memSize, string extractorStr)
+newExtract(string sfName, mrs_natural memSize, string extractorStr)
 {
   MarSystemManager mng;
   
@@ -191,8 +192,8 @@ newExtract(string sfName, natural memSize, string extractorStr)
     }
   // Find proper soundfile format and create SignalSource 
   MarSystem *src = mng.create("SoundFileSource", "src");
-  src->updctrl("string/filename", sfName);
-  src->updctrl("natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
+  src->updctrl("mrs_string/filename", sfName);
+  src->updctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
   // Calculate windowed power spectrum and then 
   // calculate specific feature sets 
   
@@ -200,7 +201,7 @@ newExtract(string sfName, natural memSize, string extractorStr)
   spectralShape->addMarSystem(mng.create("Hamming", "hamming"));
   spectralShape->addMarSystem(mng.create("Spectrum","spk"));
   spectralShape->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-  spectralShape->updctrl("PowerSpectrum/pspk/string/spectrumType","power");  
+  spectralShape->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","power");  
   
   // Spectrum Shape descriptors
   MarSystem* spectrumFeatures = mng.create("Fanout","spectrumFeatures");
@@ -224,8 +225,8 @@ newExtract(string sfName, natural memSize, string extractorStr)
   fnet->addMarSystem(spectralShape);
   fnet->addMarSystem(wsink);
   
-  fnet->updctrl("WekaSink/wsink/string/filename", "newextract.arff");
-  // fnet->updctrl("Series/spectralShape/Fanout/spectrumFeatures/natural/disable", (MarControlValue)0);    
+  fnet->updctrl("WekaSink/wsink/mrs_string/filename", "newextract.arff");
+  // fnet->updctrl("Series/spectralShape/Fanout/spectrumFeatures/mrs_natural/disable", (MarControlValue)0);    
   cout << *fnet << endl;
   
 
@@ -237,7 +238,7 @@ newExtract(string sfName, natural memSize, string extractorStr)
 
 
 
-void extract_trainAccumulator(string sfName, natural memSize, 
+void extract_trainAccumulator(string sfName, mrs_natural memSize, 
 			      string extractorStr)
 {
 
@@ -254,8 +255,8 @@ void extract_trainAccumulator(string sfName, natural memSize,
 
   // Find proper soundfile format and create SignalSource 
   MarSystem *src = mng.create("SoundFileSource", "src");
-  src->updctrl("string/filename", sfName);
-  src->updctrl("natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
+  src->updctrl("mrs_string/filename", sfName);
+  src->updctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
   // Calculate windowed power spectrum and then 
   // calculate specific feature sets 
   
@@ -263,7 +264,7 @@ void extract_trainAccumulator(string sfName, natural memSize,
   spectralShape->addMarSystem(mng.create("Hamming", "hamming"));
   spectralShape->addMarSystem(mng.create("Spectrum","spk"));
   spectralShape->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-  spectralShape->updctrl("PowerSpectrum/pspk/string/spectrumType","power");  
+  spectralShape->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","power");  
   
   // Spectrum Shape descriptors
   Fanout spectrumFeatures("spectrumFeatures");
@@ -331,15 +332,15 @@ void extract_trainAccumulator(string sfName, natural memSize,
 
 
   // update controls I
-  featureNetwork->updctrl("Memory/memory/natural/memSize", memSize);
-  featureNetwork->updctrl(src->getType() + "/src/natural/inSamples", 
+  featureNetwork->updctrl("Memory/memory/mrs_natural/memSize", memSize);
+  featureNetwork->updctrl(src->getType() + "/src/mrs_natural/inSamples", 
 			 MRS_DEFAULT_SLICE_NSAMPLES);
-  featureNetwork->updctrl(src->getType() + "/src/natural/pos", offset);      
+  featureNetwork->updctrl(src->getType() + "/src/mrs_natural/pos", offset);      
   featureNetwork->addMarSystem(wsink->clone());
 
   // accumulate feature vectors over 30 seconds 
   MarSystem* acc = mng.create("Accumulator", "acc");
-  acc->updctrl("natural/nTimes", 1290);
+  acc->updctrl("mrs_natural/nTimes", 1290);
   // add network to accumulator
   acc->addMarSystem(featureNetwork->clone());
 
@@ -350,43 +351,43 @@ void extract_trainAccumulator(string sfName, natural memSize,
   total->addMarSystem(mng.create("PlotSink", "psink"));
   
   // update controls 
-  total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
-  total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/natural/pos", offset);      
+  total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
+  total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/mrs_natural/pos", offset);      
 
 
-  total->updctrl("PlotSink/psink/string/separator", ",");
+  total->updctrl("PlotSink/psink/mrs_string/separator", ",");
   
 
   // Calculate duration, offest parameters if necessary 
-  offset = (natural) (start 
-		      * src->getctrl("real/israte").toReal() 
-		      * src->getctrl("natural/nChannels").toNatural());
-  duration = (natural) (length 
-			* src->getctrl("real/israte").toReal() 
-			* src->getctrl("natural/nChannels").toNatural());
+  offset = (mrs_natural) (start 
+		      * src->getctrl("mrs_real/israte").toReal() 
+		      * src->getctrl("mrs_natural/nChannels").toNatural());
+  duration = (mrs_natural) (length 
+			* src->getctrl("mrs_real/israte").toReal() 
+			* src->getctrl("mrs_natural/nChannels").toNatural());
   
 
   realvec in;
   realvec featureRes;
   
-  in.create(total->getctrl("natural/inObservations").toNatural(), 
-	    total->getctrl("natural/inSamples").toNatural());
-  featureRes.create(total->getctrl("natural/onObservations").toNatural(), 
-		    total->getctrl("natural/onSamples").toNatural());
+  in.create(total->getctrl("mrs_natural/inObservations").toNatural(), 
+	    total->getctrl("mrs_natural/inSamples").toNatural());
+  featureRes.create(total->getctrl("mrs_natural/onObservations").toNatural(), 
+		    total->getctrl("mrs_natural/onSamples").toNatural());
 
   
 
-  total->linkctrl("string/filename", 
-		  "Accumulator/acc/Series/featureNetwork/SoundFileSource/src/string/filename");
-  total->linkctrl("natural/nChannels", 
-		  "Accumulator/acc/Series/featureNetwork/SoundFileSource/src/natural/nChannels");
-  total->linkctrl("real/israte", "Accumulator/acc/Series/featureNetwork/SoundFileSource/src/real/israte");
-  total->linkctrl("natural/pos", 
-		  "Accumulator/acc/Series/featureNetwork/SoundFileSource/src/natural/pos");
-  total->linkctrl("natural/nChannels", 
-		  "Accumulator/acc/Series/featureNetwork/AudioSink/dest/natural/nChannels");
-  total->linkctrl("bool/notEmpty", 
-		  "Accumulator/acc/Series/featureNetwork/SoundFileSource/src/bool/notEmpty");
+  total->linkctrl("mrs_string/filename", 
+		  "Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename");
+  total->linkctrl("mrs_natural/nChannels", 
+		  "Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/nChannels");
+  total->linkctrl("mrs_real/israte", "Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_real/israte");
+  total->linkctrl("mrs_natural/pos", 
+		  "Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/pos");
+  total->linkctrl("mrs_natural/nChannels", 
+		  "Accumulator/acc/Series/featureNetwork/AudioSink/dest/mrs_natural/nChannels");
+  total->linkctrl("mrs_bool/notEmpty", 
+		  "Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_bool/notEmpty");
   
 
   if (pluginName != EMPTYSTRING)

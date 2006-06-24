@@ -24,11 +24,39 @@
    (Next, Sun audio format). 
 */
 
-
 #include "AuFileSink.h"
+
 using namespace std;
+using namespace Marsyas;
 
+#define SND_MAGIC_NUM 0x2e736e64
 
+/********  NeXT/Sun Soundfile Header Struct   *******/
+
+/* struct snd_header 
+{
+char pref[4];
+long hdrLength;
+long fileLength;
+long mode;
+long srate;
+long channels;
+char comment[1024];
+};
+*/ 
+
+/* Array containing descriptions of
+the various formats for the samples
+of the Next .snd/ Sun .au format */
+
+/* types of .snd files */  
+#define SND_FORMAT_UNSPECIFIED 0
+#define SND_FORMAT_MULAW_8     1
+#define SND_FORMAT_LINEAR_8    2
+#define SND_FORMAT_LINEAR_16   3
+#define SND_FORMAT_LINEAR_24   4
+#define SND_FORMAT_LINEAR_32   5
+#define SND_FORMAT_FLOAT       6
 
 AuFileSink::AuFileSink(string name)
 {
@@ -38,7 +66,6 @@ AuFileSink::AuFileSink(string name)
   sdata_ = NULL;
   addControls();
 }
-
 
 AuFileSink::~AuFileSink()
 {
@@ -55,10 +82,10 @@ void
 AuFileSink::addControls()
 {
   addDefaultControls();
-  addctrl("natural/nChannels", (natural)1);
-  setctrlState("natural/nChannels", true);
-  addctrl("string/filename", "daufile");
-  setctrlState("string/filename", true);
+  addctrl("mrs_natural/nChannels", (mrs_natural)1);
+  setctrlState("mrs_natural/nChannels", true);
+  addctrl("mrs_string/filename", "daufile");
+  setctrlState("mrs_string/filename", true);
 }
 
 
@@ -79,21 +106,21 @@ void
 AuFileSink::update()
 {
   MRSDIAG("AudioFileSink::update");
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  nChannels_ = getctrl("natural/inObservations").toNatural();      
-  setctrl("natural/nChannels", nChannels_);
+  nChannels_ = getctrl("mrs_natural/inObservations").toNatural();      
+  setctrl("mrs_natural/nChannels", nChannels_);
   
   
   delete sdata_;
   delete cdata_;
   
-  sdata_ = new short[getctrl("natural/inSamples").toNatural() * nChannels_];
-  cdata_ = new unsigned char[getctrl("natural/inSamples").toNatural() * nChannels_];
+  sdata_ = new short[getctrl("mrs_natural/inSamples").toNatural() * nChannels_];
+  cdata_ = new unsigned char[getctrl("mrs_natural/inSamples").toNatural() * nChannels_];
 
-  filename_ = getctrl("string/filename").toString();
+  filename_ = getctrl("mrs_string/filename").toString();
   
   defaultUpdate();
 }
@@ -102,7 +129,7 @@ AuFileSink::update()
 void 
 AuFileSink::putHeader(string filename)
 {
-  natural nChannels = (natural)getctrl("natural/nChannels").toNatural();
+  mrs_natural nChannels = (mrs_natural)getctrl("mrs_natural/nChannels").toNatural();
   
   written_ = 0;
   char *comment = "MARSYAS 2001, George Tzanetakis.\n";
@@ -118,22 +145,17 @@ AuFileSink::putHeader(string filename)
 	  hdr_.hdrLength = 24 + commentSize;
 	  hdr_.fileLength = 0;
 	  hdr_.mode = SND_FORMAT_LINEAR_16;                           
-	  hdr_.srate = (natural)getctrl("real/israte").toReal();
+	  hdr_.srate = (mrs_natural)getctrl("mrs_real/israte").toReal();
 	  hdr_.channels = nChannels;
 
 #else
 	  hdr_.hdrLength = ByteSwapLong(24 + commentSize);
 	  hdr_.fileLength = ByteSwapLong(0);
 	  hdr_.mode = ByteSwapLong(SND_FORMAT_LINEAR_16);                           
-	  hdr_.srate = ByteSwapLong((natural)getctrl("real/israte").toReal());
+	  hdr_.srate = ByteSwapLong((mrs_natural)getctrl("mrs_real/israte").toReal());
 	  hdr_.channels = ByteSwapLong(nChannels);
 
 #endif 
-
-  
-
-
-
 
   fwrite(&hdr_, 24, 1, sfp_);
   // Write comment part of header 
@@ -148,17 +170,12 @@ AuFileSink::ByteSwapLong(unsigned long nLongNumber)
   return (((nLongNumber&0x000000FF)<<24)+((nLongNumber&0x0000FF00)<<8)+
 	  ((nLongNumber&0x00FF0000)>>8)+((nLongNumber&0xFF000000)>>24));
 }
- 
-
 
 unsigned short 
 AuFileSink::ByteSwapShort (unsigned short nValue)
 {
   return (((nValue>> 8)) | (nValue << 8));
 }
-
-
-
 
 void 
 AuFileSink::putLinear16(realvec& slice)
@@ -176,21 +193,17 @@ AuFileSink::putLinear16(realvec& slice)
       }
   
   
-  if ((natural)fwrite(sdata_, sizeof(short), nChannels_ * inSamples_, sfp_) != nChannels_ * inSamples_)
+  if ((mrs_natural)fwrite(sdata_, sizeof(short), nChannels_ * inSamples_, sfp_) != nChannels_ * inSamples_)
     {
       MRSWARN("Problem: could not write window to file" + filename_);
     }
 
 }
 
-
-
-
-
 void 
 AuFileSink::process(realvec& in, realvec& out)
 {
-  
+
   checkFlow(in,out);
   
   // copy input to output 
@@ -204,8 +217,7 @@ AuFileSink::process(realvec& in, realvec& out)
 
 	  out(o,t) = in(o,t);
       }
-  
-  
+
   long fileSize;
   fpos_ = ftell(sfp_);
   fseek(sfp_, 8, SEEK_SET);

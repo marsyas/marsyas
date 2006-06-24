@@ -16,7 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /** 
     \class InvSpectrum
     \brief Convert back the complex spectrum to time domain
@@ -25,10 +24,10 @@
 using the Inverse Fast Fourier Transform (IFFT) 
 */
 
-
-
 #include "InvSpectrum.h"
+
 using namespace std;
+using namespace Marsyas;
 
 InvSpectrum::InvSpectrum():MarSystem()
 {
@@ -65,11 +64,11 @@ InvSpectrum::addControls()
 void 
 InvSpectrum::update()
 {
-  setctrl("natural/onSamples", getctrl("natural/inObservations"));
-  setctrl("natural/onObservations", (natural)1);
-  setctrl("real/osrate", getctrl("real/israte").toReal() * getctrl("natural/inObservations").toNatural());
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_natural/onObservations", (mrs_natural)1);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal() * getctrl("mrs_natural/inObservations").toNatural());
   
-  tempVec_.create(getctrl("natural/onSamples").toNatural());
+  tempVec_.create(getctrl("mrs_natural/onSamples").toNatural());
   
   defaultUpdate();
 }
@@ -82,7 +81,7 @@ InvSpectrum::process(realvec& in, realvec& out)
   for (t=0; t < onSamples_; t++)
     out(0,t) = in(t,0);
 
-  real *tmp = out.getData();
+  mrs_real *tmp = out.getData();
   myfft_.rfft(tmp, onSamples_/2, FFT_INVERSE);  
   
   

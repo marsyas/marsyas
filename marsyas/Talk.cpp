@@ -24,10 +24,10 @@
 Specifically used for handling the graphical user interface events. 
 */
 
-
 #include "Talk.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
   
 Talk::Talk()
 {
@@ -217,14 +217,14 @@ Talk::cmd_fft(unsigned int start, unsigned int winSize)
 
 
 
-void Talk::cmd_play(natural start, natural end, natural lineSize)
+void Talk::cmd_play(mrs_natural start, mrs_natural end, mrs_natural lineSize)
 {
   communicator_->send_message("From Server: Play command received\n");
 
   
   
-  src_->updctrl("natural/pos", (natural)start * lineSize);
-  src_->updctrl("natural/inSamples", lineSize);
+  src_->updctrl("mrs_natural/pos", (mrs_natural)start * lineSize);
+  src_->updctrl("mrs_natural/inSamples", lineSize);
   
 
   
@@ -233,8 +233,8 @@ void Talk::cmd_play(natural start, natural end, natural lineSize)
   series->addMarSystem(dest_);
   
 
-  series->updctrl("AudioSink/dest/natural/nChannels", 
-		  series->getctrl("SoundFileSource/src/natural/nChannels").toNatural());  
+  series->updctrl("AudioSink/dest/mrs_natural/nChannels", 
+		  series->getctrl("SoundFileSource/src/mrs_natural/nChannels").toNatural());  
   for (int i=0; i < end-start; i++)
     {
       series->tick();
@@ -245,14 +245,14 @@ void Talk::cmd_play(natural start, natural end, natural lineSize)
 
 
 void 
-Talk::cmd_load(string fname, natural lineSize)
+Talk::cmd_load(string fname, mrs_natural lineSize)
 {
   cout << "cmd_load called" << endl;
   
   src_ = new SoundFileSource("src");
-  src_->updctrl("string/filename", fname);
+  src_->updctrl("mrs_string/filename", fname);
   fname_ = fname;
-  src_->updctrl("natural/inSamples", lineSize);
+  src_->updctrl("mrs_natural/inSamples", lineSize);
   AbsMax* absmax = new AbsMax("absmax");
 
   Series *series = new Series("plot");
@@ -260,20 +260,20 @@ Talk::cmd_load(string fname, natural lineSize)
   series->addMarSystem(absmax);
   
 
-  natural hops = src_->getctrl("natural/size").toNatural() * src_->getctrl("natural/nChannels").toNatural() / src_->getctrl("natural/inSamples").toNatural() + 1;
+  mrs_natural hops = src_->getctrl("mrs_natural/size").toNatural() * src_->getctrl("mrs_natural/nChannels").toNatural() / src_->getctrl("mrs_natural/inSamples").toNatural() + 1;
   
   
   Accumulator* acc = new Accumulator("acc");
-  acc->updctrl("natural/nTimes", hops);
+  acc->updctrl("mrs_natural/nTimes", hops);
   acc->addMarSystem(series);  
 
   
 
-  realvec in(acc->getctrl("natural/inObservations").toNatural(), 
-	     acc->getctrl("natural/inSamples").toNatural());
+  realvec in(acc->getctrl("mrs_natural/inObservations").toNatural(), 
+	     acc->getctrl("mrs_natural/inSamples").toNatural());
   
-  realvec out(acc->getctrl("natural/onObservations").toNatural(), 
-	      acc->getctrl("natural/onSamples").toNatural());
+  realvec out(acc->getctrl("mrs_natural/onObservations").toNatural(), 
+	      acc->getctrl("mrs_natural/onSamples").toNatural());
   
 	      
   
@@ -369,7 +369,7 @@ Talk::cmd_segment(string systemName, unsigned int memSize, unsigned int numPeaks
 
   TimeLine tline;
   
-  natural hops = src_->getctrl("natural/size").toNatural() * src_->getctrl("natural/nChannels").toNatural() / src_->getctrl("natural/inSamples").toNatural() + 1;
+  mrs_natural hops = src_->getctrl("mrs_natural/size").toNatural() * src_->getctrl("mrs_natural/nChannels").toNatural() / src_->getctrl("mrs_natural/inSamples").toNatural() + 1;
 
   if(!strcmp(systemName.c_str(), "REG"))
     tline.regular(100, hops);
@@ -763,7 +763,7 @@ Talk::process(char *message)
       
       realvec mask(mask_size);
       for (int i=0; i<mask_size; i++)
-	mask(i) = (real)atof(strtok(NULL, SEPCHARS));
+	mask(i) = (mrs_real)atof(strtok(NULL, SEPCHARS));
       cerr << "Segment command." << endl;
       string systemName = strtok(NULL, SEPCHARS);
       int memSize = atoi(strtok(NULL, SEPCHARS));

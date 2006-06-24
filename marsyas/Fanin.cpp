@@ -25,10 +25,10 @@ corresponding to executing the System objects one after the other
 in sequence. 
 */
 
-
 #include "Fanin.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 Fanin::Fanin():Composite()
 {
@@ -57,7 +57,7 @@ Fanin::Fanin(const Fanin& a)
   name_ = a.name_;
   ncontrols_ = a.ncontrols_; 		
 
-  for (natural i=0; i< a.marsystemsSize_; i++)
+  for (mrs_natural i=0; i< a.marsystemsSize_; i++)
     {
       addMarSystem((*a.marsystems_[i]).clone());
     }
@@ -100,28 +100,28 @@ Fanin::update()
 {
   if (marsystemsSize_ != 0) 
     {
-      setctrl("natural/inSamples", marsystems_[0]->getctrl("natural/inSamples"));
-      natural obs = 0;
-      for (natural i=0; i < marsystemsSize_; i++)
+      setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
+      mrs_natural obs = 0;
+      for (mrs_natural i=0; i < marsystemsSize_; i++)
 	{
-	  obs += marsystems_[i]->getctrl("natural/inObservations").toNatural();
+	  obs += marsystems_[i]->getctrl("mrs_natural/inObservations").toNatural();
 	}
-      setctrl("natural/inObservations", obs); 
-      setctrl("real/israte", marsystems_[0]->getctrl("real/israte"));  
+      setctrl("mrs_natural/inObservations", obs); 
+      setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte"));  
       
-      // setctrl("natural/inSamples", getctrl("natural/inSamples"));
-      // setctrl("natural/inObservations", getctrl("natural/inObservations"));
-      // setctrl("real/israte", getctrl("real/israte"));  
+      // setctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
+      // setctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
+      // setctrl("mrs_real/israte", getctrl("mrs_real/israte"));  
       
-      for (natural i=0; i < marsystemsSize_; i++)
+      for (mrs_natural i=0; i < marsystemsSize_; i++)
 	{
-	  marsystems_[i]->updctrl("natural/inSamples", getctrl("natural/inSamples"));
-	  marsystems_[i]->updctrl("natural/inObservations", 1);
-	  marsystems_[i]->updctrl("real/israte", getctrl("real/israte"));
+	  marsystems_[i]->updctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
+	  marsystems_[i]->updctrl("mrs_natural/inObservations", 1);
+	  marsystems_[i]->updctrl("mrs_real/israte", getctrl("mrs_real/israte"));
 	}
-      setctrl("natural/onSamples", marsystems_[0]->getctrl("natural/onSamples").toNatural());
-      setctrl("natural/onObservations", (natural)1);
-      setctrl("real/osrate", marsystems_[0]->getctrl("real/osrate").toReal());
+      setctrl("mrs_natural/onSamples", marsystems_[0]->getctrl("mrs_natural/onSamples").toNatural());
+      setctrl("mrs_natural/onObservations", (mrs_natural)1);
+      setctrl("mrs_real/osrate", marsystems_[0]->getctrl("mrs_real/osrate").toReal());
       
       
       
@@ -129,9 +129,9 @@ Fanin::update()
       
       // SHOULD ADD CHECK THAT THE OUTSLICEINF OF 
       // ALL THE MARSYSTEMS IS THE SAME 
-      for (natural i=0; i< marsystemsSize_; i++)
+      for (mrs_natural i=0; i< marsystemsSize_; i++)
 	{
-	  slices_.push_back(new realvec(marsystems_[i]->getctrl("natural/onObservations").toNatural() , marsystems_[i]->getctrl("natural/onSamples").toNatural()));			
+	  slices_.push_back(new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural() , marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural()));			
 	  (slices_[i])->setval(0.0);
 	}
       

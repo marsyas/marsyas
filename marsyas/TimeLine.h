@@ -16,8 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
-
 /** 
     \class TimeLine 
     \brief TimeLine is a list of TimeRegions. 
@@ -41,20 +39,19 @@
 
 */
 
-
-
 #ifndef MARSYAS_TIMELINE_H
 #define MARSYAS_TIMELINE_H
 
 #include "realvec.h"
 #include "Color.h"
 
-
 #include <string>
 #include "Communicator.h"
 
 #include <vector>
 
+namespace Marsyas
+{
 
 struct TimeRegion
 {
@@ -64,9 +61,6 @@ struct TimeRegion
   unsigned int end;
   std::string name;
 };
-
-
-#define SEPCHARS " \t\n"
 
 class TimeLine
 {
@@ -103,8 +97,7 @@ public:
   void info();
 
   unsigned int getClassId(unsigned int index);
-  
-
+ 
   //void lengths_info();
   void print(FILE *fp);
   void printnew(FILE *fp);
@@ -116,6 +109,8 @@ public:
   //void print_mmf(FILE *fp);
   
 };
+
+}//namespace Marsyas
 
 
 

@@ -24,15 +24,10 @@
 Based on the Numerical Recipies wavelet code. 
 */
 
-
-
-
-
-
-
 #include "WaveletPyramid.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 WaveletPyramid::WaveletPyramid(string name)
 {
@@ -77,7 +72,7 @@ void
 WaveletPyramid::addControls()
 {
   addDefaultControls();
-  addctrl("bool/forward", true);
+  addctrl("mrs_bool/forward", true);
 
   delete waveletStep_;
   waveletStep_ = new Daub4("daub4");
@@ -89,13 +84,13 @@ WaveletPyramid::update()
   
   MRSDIAG("WaveletPyramid.cpp - WaveletPyramid:update");
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  waveletStep_->updctrl("natural/inSamples", getctrl("natural/inSamples"));
-  waveletStep_->updctrl("natural/inObservations", getctrl("natural/inObservations"));
-  waveletStep_->updctrl("real/israte", getctrl("real/israte"));
+  waveletStep_->updctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
+  waveletStep_->updctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
+  waveletStep_->updctrl("mrs_real/israte", getctrl("mrs_real/israte"));
 		       
 
   defaultUpdate();
@@ -108,12 +103,12 @@ WaveletPyramid::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   
-  natural nn;
-  natural n;
+  mrs_natural nn;
+  mrs_natural n;
   bool forward;
   
   
-  n = getctrl("natural/inSamples").toNatural();
+  n = getctrl("mrs_natural/inSamples").toNatural();
   if (n < 4) return;
 
 
@@ -123,13 +118,13 @@ WaveletPyramid::process(realvec& in, realvec& out)
 	out(o,t) = in(o,t);
       }  
 
-  forward = getctrl("bool/forward").toBool();
-  waveletStep_->setctrl("bool/forward", (MarControlValue)forward);
+  forward = getctrl("mrs_bool/forward").toBool();
+  waveletStep_->setctrl("mrs_bool/forward", (MarControlValue)forward);
   if (forward) 
     {
       for (nn= n; nn >=4; nn >>=1) 
 	{
-	  waveletStep_->setctrl("natural/processSize",nn);
+	  waveletStep_->setctrl("mrs_natural/processSize",nn);
 	  waveletStep_->process(out, out);	  
 	}
     }
@@ -137,7 +132,7 @@ WaveletPyramid::process(realvec& in, realvec& out)
     {
       for (nn=4; nn <= n; nn <<=1)
 	{
-	  waveletStep_->setctrl("natural/processSize", nn);
+	  waveletStep_->setctrl("mrs_natural/processSize", nn);
 	  waveletStep_->process(out, out);
 	}
     }

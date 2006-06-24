@@ -20,8 +20,6 @@
 
 #include "Socket.h"
 
-
-
 #ifndef WIN32
 
 #include <sys/socket.h>
@@ -37,6 +35,8 @@
 #include <Winsock2.h>
 
 #endif
+
+using namespace Marsyas;
 
 Socket :: Socket( int port )
 {

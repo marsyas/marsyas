@@ -26,15 +26,17 @@
 #ifndef MARSYAS_HISTOGRAM_H
 #define MARSYAS_HISTOGRAM_H
 
-#include "MarSystem.h"	
+#include "MarSystem.h"
 
+namespace Marsyas
+{
 
 class Histogram: public MarSystem
 {
 private: 
   void addControls();
-  natural startBin_;
-  natural endBin_;
+  mrs_natural startBin_;
+  mrs_natural endBin_;
   bool reset_;
   
 public:
@@ -46,6 +48,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 

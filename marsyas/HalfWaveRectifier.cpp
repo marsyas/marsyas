@@ -24,8 +24,9 @@
 */
 
 #include "HalfWaveRectifier.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 HalfWaveRectifier::HalfWaveRectifier(string name)
 {
@@ -55,9 +56,9 @@ HalfWaveRectifier::addControls()
 void 
 HalfWaveRectifier::update()
 {
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
   defaultUpdate();
 }
@@ -68,15 +69,15 @@ void
 HalfWaveRectifier::process(realvec& in, realvec& out)
 {
   
-  natural inSamples = getctrl("natural/inSamples").toNatural();
+  mrs_natural inSamples = getctrl("mrs_natural/inSamples").toNatural();
   
   
   for (t=0; t < inSamples; t++)
     {
       if (in(0,t) < 0.0)
-	out(0,t) = 0.0;
+		out(0,t) = 0.0;
       else
-	out(0,t) = in(0,t);
+		out(0,t) = in(0,t);
     }
 }
 

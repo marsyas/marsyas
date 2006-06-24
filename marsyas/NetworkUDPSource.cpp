@@ -25,8 +25,9 @@
 
 #include "NetworkUDPSource.h"
 #include "SocketException.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 //  
 // Constructor sets up the server...
@@ -47,10 +48,10 @@ MarSystem* NetworkUDPSource::clone() const {
 void NetworkUDPSource::addControls()
 {
   addDefaultControls();
-  addctrl("real/gain", 1.0);
-  addctrl("natural/dataPort", 5009);
-  addctrl("natural/controlsPort", 5010);
-  addctrl("bool/notEmpty", true); 
+  addctrl("mrs_real/gain", 1.0);
+  addctrl("mrs_natural/dataPort", 5009);
+  addctrl("mrs_natural/controlsPort", 5010);
+  addctrl("mrs_bool/notEmpty", true); 
 }
 
 
@@ -62,9 +63,9 @@ string NetworkUDPSource::getClientAddr()
 void NetworkUDPSource::update()
 {
   MRSDIAG("NetworkUDPSource.cpp - NetworkUDPSource:update");
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   defaultUpdate();
 }
 
@@ -97,10 +98,10 @@ void NetworkUDPSource::refresh()
     throw SocketException ( "Could not create server socket." );
   }
 
-  cout << "Waiting for data on port: " << getctrl("natural/dataPort") << endl;
+  cout << "Waiting for data on port: " << getctrl("mrs_natural/dataPort") << endl;
 
-  natural dataPort = getctrl("natural/dataPort").toNatural();
-  natural controlsPort = getctrl("natural/controlsPort").toNatural();
+  mrs_natural dataPort = getctrl("mrs_natural/dataPort").toNatural();
+  mrs_natural controlsPort = getctrl("mrs_natural/controlsPort").toNatural();
 
   if ( ! NetworkSocket::setupSource ( dataPort, controlsPort ) ) {
     throw SocketException ( "Could not bind to port." );

@@ -88,7 +88,7 @@ frame .noteOn -bg black
 # frame .gain -bg black
 
 # .scale .gain.mix -from 50 -to 200 -length 300 \
-# -command {printWhatz "Gain/gt/real/gain 0.1  " 44} \
+# -command {printWhatz "Gain/gt/mrs_real/gain 0.1  " 44} \
 # -orient horizontal -label "Gain " \
 # -tickinterval 50 -showvalue true -bg grey66  \
 
@@ -99,7 +99,7 @@ frame .noteOn -bg black
 frame .pitch -bg black
 
 scale .pitch.mix -from 50 -to 200 -length 300 \
--command {printWhatz "PvOscBank/ob/real/PitchShift 0.1 " 44} \
+-command {printWhatz "PvOscBank/ob/mrs_real/PitchShift 0.1 " 44} \
 -orient horizontal -label "Pitch Shift" -variable pitchShift \
 -tickinterval 50 -showvalue true -bg grey66  \
 
@@ -120,7 +120,7 @@ pack .interpolation
 
 frame .sinusoids -bg black
 scale .sinusoids.mix -from 0 -to 1023 -length 300 \
--command {printWhatz "PvConvert/conv/natural/Sinusoids 0.1 " 44} \
+-command {printWhatz "PvConvert/conv/mrs_natural/Sinusoids 0.1 " 44} \
 -orient horizontal -label "#Sinusoids " -variable sinusoids \
 -tickinterval 250 -showvalue true -bg grey66  \
 
@@ -161,8 +161,8 @@ proc myExit {} {
 
 proc doBoth {value1 value2 } { 
    global outID
-   puts $outID [format "%s %d" "PvOscBank/ob/natural/Interpolation 0.1" $value2]
-   #puts $outID [format "%s %d" "PvShiftOutput/so/natural/Interpolation" $value2]
+   puts $outID [format "%s %d" "PvOscBank/ob/mrs_natural/Interpolation 0.1" $value2]
+   #puts $outID [format "%s %d" "PvShiftOutput/so/mrs_natural/Interpolation" $value2]
    flush $outID
 }
 

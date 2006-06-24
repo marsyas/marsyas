@@ -25,15 +25,13 @@
 
 #include "realvec.h"
 
-using namespace std;
-
 class MarxGLMultiBufferGraph : public QGLWidget
 {
 
 public:
   MarxGLMultiBufferGraph( QWidget* parent=0, long n=0, int d=0 );
 
-  bool setBuffer( realvec& );
+  bool setBuffer( Marsyas::realvec& );
 
   // the int corresponds to the enum of X, Y or Z
   void modelRotate( int, float );
@@ -60,7 +58,7 @@ private:
   int depth;
   long buffersize;
 
-  realvec buffer;          // the current top buffer
+  Marsyas::realvec buffer;          // the current top buffer
 
   QColor bgcolor;
 

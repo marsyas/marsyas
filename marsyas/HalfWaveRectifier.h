@@ -27,6 +27,9 @@
 
 #include "MarSystem.h"	
 
+namespace Marsyas
+{
+
 class HalfWaveRectifier: public MarSystem
 {
 private:
@@ -39,9 +42,10 @@ public:
   MarSystem* clone() const;
   void update();
   void process(realvec& in, realvec& out);
-  
-  
+
 };
+
+}//namespace Marsyas
 
 #endif
 

@@ -28,15 +28,16 @@ as a prototype template for building more complicated MarSystems.
 #ifndef MARSYAS_COMPEXP_H
 #define MARSYAS_COMPEXP_H
 
-
 #include "MarSystem.h"	
 
+namespace Marsyas
+{
 
 class CompExp: public MarSystem
 {
 private: 
   void addControls();
-  real xdprev_;
+  mrs_real xdprev_;
   realvec xd_;
   realvec gains_;
   float alpha_;
@@ -49,5 +50,7 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif

@@ -16,12 +16,10 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
-
-
 #include "Peaker1.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 Peaker1::Peaker1(string name)
 {
@@ -47,46 +45,39 @@ void
 Peaker1::addControls()
 {
   addDefaultControls();
-  addctrl("real/peakSpacing", 0.0);
-  addctrl("real/peakStrength", 0.0);
-  addctrl("natural/peakStart", (natural)0);
-  addctrl("natural/peakEnd", (natural)0);
-  addctrl("real/peakGain", 1.0);
+  addctrl("mrs_real/peakSpacing", 0.0);
+  addctrl("mrs_real/peakStrength", 0.0);
+  addctrl("mrs_natural/peakStart", (mrs_natural)0);
+  addctrl("mrs_natural/peakEnd", (mrs_natural)0);
+  addctrl("mrs_real/peakGain", 1.0);
 }
-
-
 
 void 
 Peaker1::update()
 {
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));  
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
   defaultUpdate();
 }
 
 void 
 Peaker1::process(realvec& in, realvec& out)
 {
-
   checkFlow(in,out);
+   
+  mrs_real peakSpacing;
+  mrs_real peakStrength;
+  mrs_real peakGain;
   
-  
-  real peakSpacing;
-  real peakStrength;
-  real peakGain;
-  
-  natural peakStart;
-  natural peakEnd;
-  
+  mrs_natural peakStart;
+  mrs_natural peakEnd;
 
-  
-
-  peakSpacing = getctrl("real/peakSpacing").toReal();
-  peakStrength = getctrl("real/peakStrength").toReal();
-  peakStart = getctrl("natural/peakStart").toNatural();
-  peakEnd = getctrl("natural/peakEnd").toNatural();
-  peakGain = getctrl("real/peakGain").toReal();
+  peakSpacing = getctrl("mrs_real/peakSpacing").toReal();
+  peakStrength = getctrl("mrs_real/peakStrength").toReal();
+  peakStart = getctrl("mrs_natural/peakStart").toNatural();
+  peakEnd = getctrl("mrs_natural/peakEnd").toNatural();
+  peakGain = getctrl("mrs_real/peakGain").toReal();
 
   out.setval(0.0);
 
@@ -94,7 +85,7 @@ Peaker1::process(realvec& in, realvec& out)
   for (o = 0; o < inObservations_; o++)
     {
       rms_ = 0.0;
-      peakSpacing = (real)(peakSpacing * inSamples_);
+      peakSpacing = (mrs_real)(peakSpacing * inSamples_);
       for (t=peakStart+1; t < peakEnd-1; t++)
 	{
 	  if (fabs(in(o,t)) > rms_)
@@ -106,8 +97,8 @@ Peaker1::process(realvec& in, realvec& out)
       // rms_ /= (peakEnd - peakStart);
       // rms_ = sqrt(rms_);
       
-      real max;
-      natural maxIndex;
+      mrs_real max;
+      mrs_natural maxIndex;
       
       bool peakFound = false;
       
@@ -123,7 +114,7 @@ Peaker1::process(realvec& in, realvec& out)
 	      // check for another peak in the peakSpacing area
 	      max = in(o,t);
 	      maxIndex = t;
-	      for (int j=0; j < (natural)peakSpacing; j++)
+	      for (int j=0; j < (mrs_natural)peakSpacing; j++)
 		{
 		  if (t+j < peakEnd-1) 
 		    if (in(o,t+j) > max)
@@ -133,7 +124,7 @@ Peaker1::process(realvec& in, realvec& out)
 		      }
 		}
 	      out(o,maxIndex) = in(o,maxIndex) / rms_;
-	      t += (natural)peakSpacing;
+	      t += (mrs_natural)peakSpacing;
 	      if (t > peakEnd-1) 
 		t = peakEnd-1;
 	      peakFound = true;

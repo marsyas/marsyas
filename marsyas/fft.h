@@ -28,19 +28,20 @@ values (2*i, 2*i+1) = (Real, Imaginary).
 
 #ifndef MARSYAS_FFT_H 
 #define MARSYAS_FFT_H
-	
 
-
-#include <stdio.h>
-#include <math.h>
+#include <cstdio>
+#include <cmath>
 #include "common.h" 
+
+namespace Marsyas
+{
 
 class fft
 {
 public:
-  void bitreverse(real x[], int N);
-  void rfft( real x[], int  N, int forward);
-  void cfft(real x[], int N, int forward);
+  void bitreverse(mrs_real x[], int N);
+  void rfft( mrs_real x[], int  N, int forward);
+  void cfft(mrs_real x[], int N, int forward);
 
   // fft(SignalSource *src);
   
@@ -49,6 +50,8 @@ public:
   // void process(fvec& in, int instart, int inlength, fvec& out, int outstart, int outlength);
   // void unprocess(fvec& out, fvec& in);
 };
+
+}//namespace Marsyas
 
 
 #endif

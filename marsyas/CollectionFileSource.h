@@ -25,18 +25,16 @@ SoundFiles. The soundfiles are played one after the other with specifics
 such as offsets,durations as a single SoundFileSource. 
 */
 
-
 #ifndef MARSYAS_COLLECTIONFILESOURCE_H
 #define MARSYAS_COLLECTIONFILESOURCE_H
-
 
 #include "AbsSoundFileSource.h"
 #include "SoundFileSource.h"
 #include "Collection.h"
 #include "DownSampler.h" 
 
-
-
+namespace Marsyas
+{
 
 class CollectionFileSource: public AbsSoundFileSource 
 {
@@ -44,38 +42,31 @@ private:
   void addControls();
   void getHeader(std::string filename);
   
-  natural nChannels_;
+  mrs_natural nChannels_;
   std::string filename_;
   MarSystem* isrc_;
   MarSystem* downsampler_;
   
   Collection col_;
   bool mngCreated_;
-  natural cindex_;
-  real repetitions_;
-  real duration_;
+  mrs_natural cindex_;
+  mrs_real repetitions_;
+  mrs_real duration_;
 
   bool advance_;
-  
 
   realvec temp_;
   realvec tempi_;
-  
-  
-  
 
 public:
   CollectionFileSource(std::string name);
   ~CollectionFileSource();
   MarSystem* clone() const;    
-
-
-  
   void update();
   void process(realvec& in,realvec &out);
 };
 
-
+}//namespace Marsyas
 
 
 #endif    /* !MARSYAS_COLLECTIONFILESOURCE_H */ 

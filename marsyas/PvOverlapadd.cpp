@@ -25,10 +25,10 @@ fold and rotate windowed input into output array (FFT) (length N)
 according to current input time (t)
 */
 
-
-
 #include "PvOverlapadd.h"
+
 using namespace std;
+using namespace Marsyas;
 
 
 PvOverlapadd::PvOverlapadd():MarSystem()
@@ -60,11 +60,11 @@ void
 PvOverlapadd::addControls()
 {
   addDefaultControls();
-  addctrl("natural/Time",0);
-  addctrl("natural/WindowSize", MRS_DEFAULT_SLICE_NSAMPLES);
-  setctrlState("natural/WindowSize", true);
-  addctrl("natural/FFTSize", MRS_DEFAULT_SLICE_NSAMPLES);
-  addctrl("natural/Interpolation", MRS_DEFAULT_SLICE_NSAMPLES /4);
+  addctrl("mrs_natural/Time",0);
+  addctrl("mrs_natural/WindowSize", MRS_DEFAULT_SLICE_NSAMPLES);
+  setctrlState("mrs_natural/WindowSize", true);
+  addctrl("mrs_natural/FFTSize", MRS_DEFAULT_SLICE_NSAMPLES);
+  addctrl("mrs_natural/Interpolation", MRS_DEFAULT_SLICE_NSAMPLES /4);
 }
 
 
@@ -72,14 +72,14 @@ PvOverlapadd::addControls()
 void
 PvOverlapadd::update()
 {
-  setctrl("natural/onSamples", getctrl("natural/WindowSize"));
-  setctrl("natural/onObservations", (natural)1);
-  setctrl("real/osrate", getctrl("real/israte"));    
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/WindowSize"));
+  setctrl("mrs_natural/onObservations", (mrs_natural)1);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));    
 
-  natural N,Nw,I;
-  N = getctrl("natural/inSamples").toNatural();
-  Nw = getctrl("natural/onSamples").toNatural();
-  I = getctrl("natural/Interpolation").toNatural();
+  mrs_natural N,Nw,I;
+  N = getctrl("mrs_natural/inSamples").toNatural();
+  Nw = getctrl("mrs_natural/onSamples").toNatural();
+  I = getctrl("mrs_natural/Interpolation").toNatural();
   // create synthesis window 
   
   swin_.create(Nw);
@@ -87,8 +87,8 @@ PvOverlapadd::update()
   
   for (t=0; t < Nw; t++)
     {
-      awin_(t) = (real)(0.54 - 0.46 * cos(TWOPI * t/(Nw-1)));
-      swin_(t) = (real)(0.54 - 0.46 * cos(TWOPI * t/(Nw-1)));
+      awin_(t) = (mrs_real)(0.54 - 0.46 * cos(TWOPI * t/(Nw-1)));
+      swin_(t) = (mrs_real)(0.54 - 0.46 * cos(TWOPI * t/(Nw-1)));
     }
   /* when Nw > N also apply interpolating (sinc) windows 
    * to ensure that window are 0 at increments of N (the 
@@ -97,8 +97,8 @@ PvOverlapadd::update()
    */ 
   if (Nw > N) 
     {
-      real x;
-      x = (real)(-(Nw -1) / 2.0);
+      mrs_real x;
+      x = (mrs_real)(-(Nw -1) / 2.0);
       for (t=0; t < Nw; t++, x += 1.0)
 	{
 	  if (x != 0.0) 
@@ -110,27 +110,27 @@ PvOverlapadd::update()
     }
   
   /* normalize window for unit gain */ 
-  real sum = (real)0.0;
+  mrs_real sum = (mrs_real)0.0;
   
   for (t =0; t < Nw; t++)
     {
       sum += awin_(t);
     }
   
-  real afac = (real)(2.0/ sum);
-  real sfac = Nw > N ? (real)1.0 /afac : (real)afac;
+  mrs_real afac = (mrs_real)(2.0/ sum);
+  mrs_real sfac = Nw > N ? (mrs_real)1.0 /afac : (mrs_real)afac;
   awin_ *= afac;
   swin_ *= sfac;
   
   if (Nw <= N)
     {
-      sum = (real)0.0;
+      sum = (mrs_real)0.0;
       
       for (t = 0; t < Nw; t+= I)
 	{
 	  sum += swin_(t) * swin_(t);
 	}
-      for (sum = (real)1.0/sum, t =0; t < Nw; t++)
+      for (sum = (mrs_real)1.0/sum, t =0; t < Nw; t++)
 	swin_(t) *= sum;
     }
 }
@@ -144,12 +144,12 @@ PvOverlapadd::process(realvec& in, realvec& out)
 
   
   // add assertions for sizes
-  natural N,Nw;
+  mrs_natural N,Nw;
   int n;
   
-  N = getctrl("natural/inSamples").toNatural();
-  Nw = getctrl("natural/onSamples").toNatural();
-  n  = getctrl("natural/Time").toNatural();
+  N = getctrl("mrs_natural/inSamples").toNatural();
+  Nw = getctrl("mrs_natural/onSamples").toNatural();
+  n  = getctrl("mrs_natural/Time").toNatural();
   
   while (n < 0) 
     n += N;

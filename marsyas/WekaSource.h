@@ -8,17 +8,14 @@
 #ifndef MARSYAS_WEKASOURCE_H
 #define MARSYAS_WEKASOURCE_H
 
-
-
-
 #include "MarSystem.h" 
-#define MAX_OBS		500
-
 
 #include <fstream>
 
+#define WEKASOURCE_MAX_OBS	500
 
-
+namespace Marsyas
+{
 
 class WekaSource:public MarSystem 
 {
@@ -31,9 +28,9 @@ private:
   std::string labelNames_;
   std::string data_;
   
-  natural totalObs_;	   //Total number of features available per sample in the current weka file
+  mrs_natural totalObs_;	   //Total number of features available per sample in the current weka file
   
-  bool extract [MAX_OBS];  //Represents the features to be extracted from the current weka file 
+  bool extract [WEKASOURCE_MAX_OBS];  //Represents the features to be extracted from the current weka file 
   			   //(Upper limit of 500 features per sample)
   std::ifstream* mis_;
   
@@ -50,6 +47,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 
 #endif

@@ -20,11 +20,7 @@
 
 #include "common.h"
 
-
-
 #if (defined(__CYGWIN__) || defined(__OS_LINUX__) || defined(__OS_MACOSX__))
-
-
   #include <pthread.h>
   #define THREAD_TYPE
   typedef pthread_t THREAD_HANDLE;
@@ -45,6 +41,9 @@
   typedef CRITICAL_SECTION MUTEX;
 
 #endif
+
+namespace Marsyas
+{
 
 class Thread 
 {
@@ -100,5 +99,7 @@ class Mutex
   MUTEX mutex;
 
 };
+
+}//namespace Marsyas
 
 #endif // defined(__THREAD_H)

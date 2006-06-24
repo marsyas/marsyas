@@ -26,12 +26,15 @@
 #ifndef MARSYAS_MAXARGMAX_H
 #define MARSYAS_MAXARGMAX_H
 
-#include "MarSystem.h"	
+#include "MarSystem.h"
+
+namespace Marsyas
+{
 
 class MaxArgMax: public MarSystem
 {
 private:
-  natural ki;			
+  mrs_natural ki;			
   void addControls();
   
 public:
@@ -41,9 +44,9 @@ public:
   MarSystem* clone() const;
   void update();
   void process(realvec& in, realvec& out);
-  
-  
 };
+
+}
 
 #endif
 

@@ -16,8 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
-
 /** 
     \class SilenceRemove 
 
@@ -27,11 +25,10 @@ tick silence remove is the same as playing the sound with
 silences removed. 
 */
 
-
 #include "SilenceRemove.h"
+
 using namespace std;
-
-
+using namespace Marsyas;
 
 SilenceRemove::SilenceRemove(string name):Composite()
 {
@@ -53,7 +50,7 @@ SilenceRemove::SilenceRemove(const SilenceRemove& a)
   dbg_ = a.dbg_;
   ncontrols_ = a.ncontrols_; 		
 
-  for (natural i=0; i< a.marsystemsSize_; i++)
+  for (mrs_natural i=0; i< a.marsystemsSize_; i++)
     {
       addMarSystem((*a.marsystems_[i]).clone());
     }
@@ -70,39 +67,34 @@ void
 SilenceRemove::addControls()
 {
   addDefaultControls();
-  addctrl("real/threshold", 0.0);
-  setctrlState("real/threshold", true);
+  addctrl("mrs_real/threshold", 0.0);
+  setctrlState("mrs_real/threshold", true);
 }
-
-
-
-
 
 void
 SilenceRemove::update()
 {
   MRSDIAG("SilenceRemove.cpp - SilenceRemove:update");
   
-  threshold_ = getctrl("real/threshold").toReal();
+  threshold_ = getctrl("mrs_real/threshold").toReal();
   
   if (marsystemsSize_ > 0)
     {
       // set input characteristics 
-      setctrl("natural/inSamples", 
-	      marsystems_[0]->getctrl("natural/inSamples").toNatural());
-      setctrl("natural/inObservations", 
-	      marsystems_[0]->getctrl("natural/inObservations"));
-      setctrl("real/israte", 
-	      marsystems_[0]->getctrl("real/israte"));
+      setctrl("mrs_natural/inSamples", 
+	      marsystems_[0]->getctrl("mrs_natural/inSamples").toNatural());
+      setctrl("mrs_natural/inObservations", 
+	      marsystems_[0]->getctrl("mrs_natural/inObservations"));
+      setctrl("mrs_real/israte", 
+	      marsystems_[0]->getctrl("mrs_real/israte"));
       
       // set output characteristics 
-      setctrl("natural/onSamples", marsystems_[0]->getctrl("natural/onSamples").toNatural());
-      setctrl("natural/onObservations", marsystems_[0]->getctrl("natural/onObservations").toNatural());
-      setctrl("real/osrate", getctrl("real/israte"));
+      setctrl("mrs_natural/onSamples", marsystems_[0]->getctrl("mrs_natural/onSamples").toNatural());
+      setctrl("mrs_natural/onObservations", marsystems_[0]->getctrl("mrs_natural/onObservations").toNatural());
+      setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
       marsystems_[0]->update();
     }
 
-  
   defaultUpdate();
 }
 
@@ -112,12 +104,11 @@ SilenceRemove::process(realvec& in, realvec& out)
 {
   
   checkFlow(in,out);
-  real rms = 0.0;
-  natural count = 0;
+  mrs_real rms = 0.0;
+  mrs_natural count = 0;
 
-  threshold_ = (real)0.01;
+  threshold_ = (mrs_real)0.01;
 
-  
   do 
     {
       
@@ -132,8 +123,7 @@ SilenceRemove::process(realvec& in, realvec& out)
       rms /= count;
       rms = sqrt(rms);
       count = 0;
-    } while (rms < threshold_ && (marsystems_[0]->getctrl("bool/notEmpty").toBool()));
-  
+    } while (rms < threshold_ && (marsystems_[0]->getctrl("mrs_bool/notEmpty").toBool()));
   
 }
 

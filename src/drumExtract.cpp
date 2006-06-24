@@ -20,22 +20,21 @@
     extract: batch feature extraction 
 */
 
-
-
-#include <stdio.h>
+#include <cstdio>
 #include "Collection.h"
 #include "MarSystemManager.h"
 #include "Accumulator.h"
 #include "CommandLineOptions.h"
 
 #include <string> 
-#include <iostream> 
-using namespace std;
+#include <iostream>
 
+using namespace std;
+using namespace Marsyas;
 
 int helpopt;
 int usageopt;
-real lengthopt;
+mrs_real lengthopt;
 
 #define EMPTYSTRING "MARSYAS_EMPTY" 
 
@@ -99,21 +98,21 @@ drumExtract(vector<Collection> cls, string classNames)
 {
   MarSystemManager mng;
   MarSystem* src = mng.create("SoundFileSource", "src");
-  src->updctrl("natural/inSamples", 4096);
+  src->updctrl("mrs_natural/inSamples", 4096);
   
   
-  natural inObservations = src->getctrl("natural/inObservations").toNatural();
-  natural inSamples = src->getctrl("natural/inSamples").toNatural();  
+  mrs_natural inObservations = src->getctrl("mrs_natural/inObservations").toNatural();
+  mrs_natural inSamples = src->getctrl("mrs_natural/inSamples").toNatural();  
   
   realvec in(inObservations, inSamples);
   realvec out(inObservations, inSamples);
 
-  natural cj,i;
-  natural win = 0;
-  natural startPos = 0;
-  natural endPos = 0;
-  natural startWin = 0;
-  natural endWin = 0;
+  mrs_natural cj,i;
+  mrs_natural win = 0;
+  mrs_natural startPos = 0;
+  mrs_natural endPos = 0;
+  mrs_natural startWin = 0;
+  mrs_natural endWin = 0;
 
   MarSystem* extractNet = mng.create("Series", "extractNet");
   extractNet->addMarSystem(src);
@@ -142,19 +141,19 @@ drumExtract(vector<Collection> cls, string classNames)
   extractNet->addMarSystem(mng.create("WekaSink",  "wsink"));
   extractNet->addMarSystem(mng.create("GaussianClassifier", "classifier"));  
 
-  extractNet->updctrl("WekaSink/wsink/natural/nLabels", (natural)cls.size());
-  extractNet->updctrl("WekaSink/wsink/string/labelNames",classNames);  
-  extractNet->updctrl("WekaSink/wsink/string/filename", "art.arff");
+  extractNet->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
+  extractNet->updctrl("WekaSink/wsink/mrs_string/labelNames",classNames);  
+  extractNet->updctrl("WekaSink/wsink/mrs_string/filename", "art.arff");
 
   
-  extractNet->updctrl("GaussianClassifier/classifier/natural/nLabels", (natural)cls.size());
-  extractNet->updctrl("GaussianClassifier/classifier/string/mode","train");     
+  extractNet->updctrl("GaussianClassifier/classifier/mrs_natural/nLabels", (mrs_natural)cls.size());
+  extractNet->updctrl("GaussianClassifier/classifier/mrs_string/mode","train");     
 
 
-  for (cj=0; cj < (natural)cls.size(); cj++)
+  for (cj=0; cj < (mrs_natural)cls.size(); cj++)
     {
       Collection l = cls[cj];
-      extractNet->updctrl("Annotator/ann/natural/label", cj);
+      extractNet->updctrl("Annotator/ann/mrs_natural/label", cj);
       
       for (i=0; i < l.size(); i++)
 	{ 
@@ -163,16 +162,16 @@ drumExtract(vector<Collection> cls, string classNames)
 	  endPos = 0;
 	  startWin = 0;
 	  endWin = 0;
-	  src->updctrl("string/filename", l.entry(i));
+	  src->updctrl("mrs_string/filename", l.entry(i));
 	  cout << "Processing " << l.entry(i) << endl;
 	  
-	  src->updctrl("natural/inSamples", 4096);
+	  src->updctrl("mrs_natural/inSamples", 4096);
 	  
-	  while(src->getctrl("bool/notEmpty").toBool()) 
+	  while(src->getctrl("mrs_bool/notEmpty").toBool()) 
 	    {
 	      src->process(in,out);
 	      
-	      for (natural t = 0; t < inSamples; t++)
+	      for (mrs_natural t = 0; t < inSamples; t++)
 		{
 		  if ((fabs(out(0,t)) > 0.1)&&(startPos == 0))
 		    {
@@ -191,9 +190,9 @@ drumExtract(vector<Collection> cls, string classNames)
 	    }
 	  endPos = startPos + 512;
 	  
-	  extractNet->updctrl("SoundFileSource/src/natural/inSamples", 
+	  extractNet->updctrl("SoundFileSource/src/mrs_natural/inSamples", 
 			      endPos - startPos);
-	  extractNet->updctrl("SoundFileSource/src/natural/pos", startPos);
+	  extractNet->updctrl("SoundFileSource/src/mrs_natural/pos", startPos);
 	  extractNet->tick();
 	  
 
@@ -202,14 +201,14 @@ drumExtract(vector<Collection> cls, string classNames)
     }
   
   
-  extractNet->updctrl("GaussianClassifier/classifier/bool/done", (MarControlValue)true);
-  extractNet->updctrl("GaussianClassifier/classifier/string/mode","predict");   	  
+  extractNet->updctrl("GaussianClassifier/classifier/mrs_bool/done", (MarControlValue)true);
+  extractNet->updctrl("GaussianClassifier/classifier/mrs_string/mode","predict");   	  
   extractNet->tick();  
   
   cout << (*extractNet) << endl;
   
 
-  cout << "Wrote " << extractNet->getctrl("WekaSink/wsink/string/filename").toString() << endl;
+  cout << "Wrote " << extractNet->getctrl("WekaSink/wsink/mrs_string/filename").toString() << endl;
 
   
   return;
@@ -218,8 +217,8 @@ drumExtract(vector<Collection> cls, string classNames)
 
   
 
-  /* src->updctrl("string/filename", filename);
-  src->updctrl("natural/inSamples", 4096);
+  /* src->updctrl("mrs_string/filename", filename);
+  src->updctrl("mrs_natural/inSamples", 4096);
   
 
 
@@ -244,7 +243,7 @@ readCollection(Collection& l, string name)
 {
   MRSDIAG("sfplay.cpp - readCollection");
   ifstream from1(name.c_str());
-  natural attempts  =0;
+  mrs_natural attempts  =0;
 
 
   MRSDIAG("Trying current working directory: " + name);

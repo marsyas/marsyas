@@ -29,8 +29,10 @@
 #ifndef MARSYAS_NetworkTCPSink_H
 #define MARSYAS_NetworkTCPSink_H
 
-#include "NetworkSocket.h"	
+#include "NetworkSocket.h"
 
+namespace Marsyas
+{
 
 class NetworkTCPSink: public NetworkSocket
 {
@@ -49,6 +51,8 @@ class NetworkTCPSink: public NetworkSocket
   void process( realvec& in, realvec& out );
   void refresh();
 };
+
+}//namespace Marsyas
 
 #endif
 

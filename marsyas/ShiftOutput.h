@@ -31,13 +31,16 @@ with gain and put them in the output vector.
 
 #include "MarSystem.h"	
 
+namespace Marsyas
+{
+
 class ShiftOutput: public MarSystem
 {
 private:
   void addControls();
   realvec tmpSlice_;
-  natural N_,Nw_,I_,D_;  
-  natural n_;
+  mrs_natural N_,Nw_,I_,D_;  
+  mrs_natural n_;
   
 
 public:
@@ -50,6 +53,8 @@ public:
   void process(realvec& in, realvec& out);
   
 };
+
+}//namespace Marsyas
 
 #endif
 

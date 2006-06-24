@@ -30,18 +30,19 @@ parameters of the peak selection process can be adjusted.
 
 #include "MarSystem.h"	
 
+namespace Marsyas
+{
+
 class Peaker: public MarSystem
 {
 private:
-  real rms_;
+  mrs_real rms_;
   void addControls();
 
-  natural twice_;
-  natural half_;
-  natural triple_;
-  natural third_;
-  
-  
+  mrs_natural twice_;
+  mrs_natural half_;
+  mrs_natural triple_;
+  mrs_natural third_;
   
 public:
   Peaker(std::string name);
@@ -51,6 +52,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 

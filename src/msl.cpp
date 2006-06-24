@@ -19,6 +19,7 @@ making it functional by itself.
 #include <readline/history.h>
 #endif 
 using namespace std;
+using namespace Marsyas;
 
 //
 // global command list for tab completion

@@ -20,6 +20,8 @@
 #include <QtGui>
 #include "MarPlayer.h"
 
+using namespace Marsyas;
+
 MarPlayer::MarPlayer()
 {
   ui.setupUi(this);
@@ -78,11 +80,11 @@ MarPlayer::createConnections()
 	  this, SLOT(positionSlider(int)));
 
 
-  connect(mapper_, SIGNAL(durationChanged(real)), 
-	  this, SLOT(setDuration(real)));
+  connect(mapper_, SIGNAL(durationChanged(mrs_real)), 
+	  this, SLOT(setDuration(mrs_real)));
 
-  connect(mapper_, SIGNAL(timeChanged(real)), 
-	  this, SLOT(setTime(real)));
+  connect(mapper_, SIGNAL(timeChanged(mrs_real)), 
+	  this, SLOT(setTime(mrs_real)));
 
   connect(ui.gainSlider, SIGNAL(valueChanged(int)), 
 	  mapper_,SLOT(setGain(int)));
@@ -119,7 +121,7 @@ MarPlayer::positionSlider(int val)
 
 // set duration of song on corresponding slider
 void 
-MarPlayer::setDuration(real val) 
+MarPlayer::setDuration(mrs_real val) 
 {
   
   QTime dur;
@@ -130,7 +132,7 @@ MarPlayer::setDuration(real val)
 
 // set current time of soundfile on corresponding slider 
 void 
-MarPlayer::setTime(real val) 
+MarPlayer::setTime(mrs_real val) 
 {
   
   QTime dur;

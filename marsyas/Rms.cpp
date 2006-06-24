@@ -24,11 +24,10 @@
 a realvec
 */
 
-
-
 #include "Rms.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 Rms::Rms()
 {
@@ -65,9 +64,9 @@ Rms::addControls()
 void 
 Rms::update()
 {
-  setctrl("natural/onSamples", (natural)1);
-  setctrl("natural/onObservations", (natural)1);
-  setctrl("real/osrate", getctrl("real/israte").toReal() / getctrl("natural/inSamples").toNatural());
+  setctrl("mrs_natural/onSamples", (mrs_natural)1);
+  setctrl("mrs_natural/onObservations", (mrs_natural)1);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal() / getctrl("mrs_natural/inSamples").toNatural());
   defaultUpdate();
 }
 
@@ -77,8 +76,8 @@ Rms::update()
 void 
 Rms::process(realvec& in, realvec& out)
 {
-  real val;
-  real rmsEnergy = 0.0;
+  mrs_real val;
+  mrs_real rmsEnergy = 0.0;
   
   
   for (t=0; t < inSamples_; t++)
@@ -93,7 +92,7 @@ Rms::process(realvec& in, realvec& out)
     }
 
   // SCALING SHOULD BE REMOVED 
-  out(0) = (real)(rmsEnergy * 10000000.0);
+  out(0) = (mrs_real)(rmsEnergy * 10000000.0);
 }
 
 

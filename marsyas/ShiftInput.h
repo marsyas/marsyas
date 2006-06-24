@@ -30,17 +30,17 @@ with gain and put them in the output vector.
 
 #include "MarSystem.h"	
 
+namespace Marsyas
+{
 
 class ShiftInput: public MarSystem
 {
 private:
   realvec pout_;
   void addControls();
-  natural N_, D_, W_, PW_;
+  mrs_natural N_, D_, W_, PW_;
 
   bool reset_;
-  
-  
 
 public:
   ShiftInput(std::string name);
@@ -51,6 +51,8 @@ public:
   void process(realvec& in, realvec& out);
   
 };
+
+}//namespace Marsyas
 
 #endif
 

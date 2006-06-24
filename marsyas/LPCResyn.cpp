@@ -25,11 +25,10 @@
 
 */
 
-
-
 #include "LPCResyn.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 LPCResyn::LPCResyn(string name)
 {
@@ -59,8 +58,8 @@ void
 LPCResyn::addControls()
 {
   addDefaultControls();
-  addctrl("natural/order", order_);
-  setctrlState("natural/order", true);
+  addctrl("mrs_natural/order", order_);
+  setctrlState("mrs_natural/order", true);
 }
 
 
@@ -69,17 +68,17 @@ LPCResyn::update()
 {
   MRSDIAG("LPCResyn.cpp - LPCResyn:update");
   //cout<<"LPCResyn Update--------------------"<< endl;
-  //setctrl("natural/onSamples", 512);//default may need to override when using this marsystem element.
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  //setctrl("mrs_natural/onSamples", 512);//default may need to override when using this marsystem element.
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
   
-  order_ =  getctrl("natural/order").toNatural();
+  order_ =  getctrl("mrs_natural/order").toNatural();
   inSize_ = order_+1;
-  outSize_ = getctrl("natural/onSamples").toNatural()-order_;
+  outSize_ = getctrl("mrs_natural/onSamples").toNatural()-order_;
 
   
-  Zs_.create((natural)order_);
+  Zs_.create((mrs_natural)order_);
 
   defaultUpdate();
  
@@ -92,10 +91,10 @@ LPCResyn::process(realvec& in, realvec& out)
   //cout<<"LPCResyn Process--------------------"<< endl;
   checkFlow(in,out); 
   //cout<<"resyn in vector:"<<in<<endl;
-  real input;
-  real pitch;
-  real output;
-  natural i,j;
+  mrs_real input;
+  mrs_real pitch;
+  mrs_real output;
+  mrs_natural i,j;
   //cout<<" Resyn input= "<<in(inSize_-1)<<" resyn pitch= "<<in(inSize_-2)<< endl;
   //cout<<"Resyn input: "<<in<<endl;
   input = in(inSize_-1);
@@ -108,8 +107,8 @@ LPCResyn::process(realvec& in, realvec& out)
       output = 0.0;
       if (pitch == 0.0) {
 	//cout<<"input: "<< input<<"RAND_MAX"<<RAND_MAX<<" in noise output: "<<output<<endl;
-	//output = input * 20.0 * (real)(1.0- rand() * (RAND_MAX + 1.0));
-      output =input * 20.0* (real)(rand() / (RAND_MAX + 1.0) -0.5);
+	//output = input * 20.0 * (mrs_real)(1.0- rand() * (RAND_MAX + 1.0));
+      output =input * 20.0* (mrs_real)(rand() / (RAND_MAX + 1.0) -0.5);
       }
       else
 	{

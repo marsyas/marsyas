@@ -25,9 +25,11 @@
 plus various utility functions.
 */ 
 
-
 #if !defined(__Color_h)
 #define __Color_h
+
+namespace Marsyas
+{
 
 class Color
 {
@@ -48,5 +50,6 @@ public:
   float getB();
 };
 
+}//namespace Marsyas
 
 #endif

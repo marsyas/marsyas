@@ -31,6 +31,9 @@ is based on the Numerical Recipies wavelet code.
 #include "common.h"
 #include "MarSystem.h"
 
+namespace Marsyas
+{
+
 class WaveletStep: public MarSystem
 {
 protected:
@@ -49,5 +52,7 @@ public:
   virtual void process(realvec& in, realvec& out);
   
 };
+
+}//namespace Marsyas
 
 #endif

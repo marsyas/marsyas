@@ -37,7 +37,7 @@ add textureStatistics > featureNetwork
 # top level Series
 create Series total 
 create Accumulator acc 
-updctrl acc natural/nTimes 1292
+updctrl acc mrs_natural/nTimes 1292
 add featureNetwork > acc 
 add acc > total 
 
@@ -51,14 +51,14 @@ add totalStatistics > total
 
 # add the Annotator
 create Annotator ann
-updctrl ann natural/label 5
+updctrl ann mrs_natural/label 5
 add ann > total 
 
 # add a Network Sink
 create NetworkTCPSink nsink
 updctrl nsink string/host localhost 
-updctrl nsink natural/dataPort 5011 
-updctrl nsink natural/controlsPort 5012
+updctrl nsink mrs_natural/dataPort 5011 
+updctrl nsink mrs_natural/controlsPort 5012
 add nsink > total
 
-link total bool/notEmpty Accumulator/acc/Series/featureNetwork/NetworkTCPSource/src/bool/notEmpty
+link total bool/notEmpty Accumulator/acc/Series/featureNetwork/NetworkTCPSource/src/mrs_bool/notEmpty

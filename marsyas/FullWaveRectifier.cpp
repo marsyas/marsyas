@@ -23,11 +23,10 @@
 
 */
 
-
-
 #include "FullWaveRectifier.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 
 FullWaveRectifier::FullWaveRectifier(string name)
@@ -61,9 +60,9 @@ FullWaveRectifier::update()
 {
   MRSDIAG("FullWaveRectifier.cpp - FullWaveRectifier:update");
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   defaultUpdate();
 }
 
@@ -82,11 +81,6 @@ FullWaveRectifier::process(realvec& in, realvec& out)
 	else 
 	  out(o,t) = in(o,t);
       }
-
-
-  
-
-  
 }
 
 

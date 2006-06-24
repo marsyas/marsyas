@@ -53,7 +53,7 @@ public slots:
 protected:
   void mousePressEvent(QMouseEvent *event);
   void paintEvent(QPaintEvent *event);
-  void addFile(int grid_x, int grid_y, string filename);
+  void addFile(int grid_x, int grid_y, std::string filename);
   void resetPredict();
   
   
@@ -62,8 +62,8 @@ private:
     const QRect targetSquare(const QPoint &position) const;
 
 
-  MarSystemManager mng;  
-  QVector<QList <string> > files;
+  Marsyas::MarSystemManager mng;  
+  QVector<QList <std::string> > files;
   QVector<int> counters;
   QVector<int> counterSizes;
   QVector<int> labels;
@@ -78,16 +78,16 @@ private:
   QRect classicalRec;
   int inPlace;
   MarSystemWrapper*  mwr_;
-  MarSystem* pnet_;
+  Marsyas::MarSystem* pnet_;
 
   int som_height;
   int som_width;
   int cell_size;
 
-  realvec norm_som_fmatrix;
-  MarSystem* som_;
-  MarSystem* total_;
-  MarSystem* norm_;
+  Marsyas::realvec norm_som_fmatrix;
+  Marsyas::MarSystem* som_;
+  Marsyas::MarSystem* total_;
+  Marsyas::MarSystem* norm_;
   
  
   

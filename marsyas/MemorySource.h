@@ -25,15 +25,16 @@
 
 #include "MarSystem.h"	
 
-
+namespace Marsyas
+{
 
 class MemorySource: public MarSystem
 {
 private: 
   void addControls();
   
-  natural count_;
-  natural samplesToUse_;
+  mrs_natural count_;
+  mrs_natural samplesToUse_;
 
 public:
   MemorySource(std::string name);
@@ -43,6 +44,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 	

@@ -28,6 +28,8 @@
 
 #include "MarSystem.h"	
 
+namespace Marsyas
+{
 
 class PvConvolve: public MarSystem
 {
@@ -35,18 +37,17 @@ private:
   
   void addControls();
   
- 
 public:
   PvConvolve(std::string name);
   
   ~PvConvolve();
   MarSystem* clone() const;    
 
-
   void update();
   void process(realvec& in, realvec& out);
-  
-};
+ };
+
+}//namespace Marsyas
 
 #endif
 

@@ -27,9 +27,11 @@
 #ifndef MARSYAS_MSLMODEL_H
 #define MARSYAS_MSLMODEL_H
 
-
 #include "MarSystemManager.h"
 #include "common.h"
+
+namespace Marsyas
+{
 
 typedef std::vector<std::string> cmdList_t;
 
@@ -358,5 +360,7 @@ private:
 
 protected:
 };
+
+}//namespace Marsyas
 
 #endif

@@ -25,15 +25,13 @@
 unrelated convenience utilities related to filenames. 
 */
 
-
-	
-
-
 #ifndef MARSYAS_FILENAME_H
 #define MARSYAS_FILENAME_H
 
-
 #include <string>
+
+namespace Marsyas
+{
 
 class FileName
 {
@@ -51,8 +49,6 @@ public:
   std::string ext();				// returns the filename extension
 };
 
-
-
-	
+}//namespace Marsyas
 
 #endif

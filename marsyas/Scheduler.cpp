@@ -23,12 +23,14 @@
 */
 
 #include "Scheduler.h"
-using namespace std;
 
 // include marsystem here to prevent circular dependencies
 // and allow calling calling of get in samples from parent 
 #include "MarSystem.h"
 #include "TmGetTime.h"
+
+using namespace std;
+using namespace Marsyas;
 
 
 Scheduler::Scheduler() {
@@ -107,12 +109,12 @@ void Scheduler::dispatch() {
 void Scheduler::post(string event_time, Repeat rep, MarEvent* me) {
     rep.count--;
     // should probably check if rep.count==0
-    natural stime = timer->getTime() + timer->intervalsize(event_time);
+    mrs_natural stime = timer->getTime() + timer->intervalsize(event_time);
     post(new ScheduledEvent(stime,rep,me));
 }
 
 void Scheduler::post(string event_time, MarEvent* me) {
-    natural stime = timer->getTime() + timer->intervalsize(event_time);
+    mrs_natural stime = timer->getTime() + timer->intervalsize(event_time);
     post(new ScheduledEvent(stime,Repeat("", 0),me));
 }
 void
@@ -122,7 +124,7 @@ Scheduler::post(ScheduledEvent* e) {
 }
 
 //ostream&
-//operator<< (ostream& o, Scheduler& sys) {
+//Marsyas::operator<< (ostream& o, Scheduler& sys) {
 ////    sys.put(o);
 //    return o;
 //}

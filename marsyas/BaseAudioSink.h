@@ -23,11 +23,13 @@
    Abstract base class used as interface for real-time audio sinks.
 */
 
-
 #ifndef MARSYAS_BASEAUDIOSINK_H
 #define MARSYAS_BASEAUDIOSINK_H
 
 #include "MarSystem.h"
+
+namespace Marsyas
+{
 
 class BaseAudioSink:public MarSystem
 {
@@ -40,8 +42,7 @@ public:
   virtual void process(realvec& in, realvec& out) = 0;
 };
 
-
-
+}//namespace Marsyas
 
 #endif
 

@@ -30,7 +30,6 @@ is used to communicate with MarSystemWrapper.
 #ifndef MARPLAYER_H
 #define MARPLAYER_H
 
-
 #include <QMainWindow>
 #include "Mapper.h"
 #include "ui_MarPlayerForm.h"
@@ -50,8 +49,8 @@ private slots:
   void about();
   void positionSlider(int);
   void seekPos();
-  void setDuration(real);
-  void setTime(real);
+  void setDuration(Marsyas::mrs_real);
+  void setTime(Marsyas::mrs_real);
   
 
 private: 

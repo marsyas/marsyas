@@ -34,27 +34,27 @@
 
 #include "MarSystem.h"	
 
+namespace Marsyas
+{
 
 class SCF: public MarSystem
 {
 private: 
   void addControls();
-  
 
-  natural nrBands_;
-  natural nrValidBands_;
+  mrs_natural nrBands_;
+  mrs_natural nrValidBands_;
 
   realvec edge_;
   realvec bandLoEdge_;
   realvec bandHiEdge_;
 
-  natural fftSize_;
-  real df_;
+  mrs_natural fftSize_;
+  mrs_real df_;
   //realvec fftBinFreqs_;
-  std::vector<natural> il_;
-  std::vector<natural> ih_;
+  std::vector<mrs_natural> il_;
+  std::vector<mrs_natural> ih_;
 
-  
 public:
   SCF(std::string name);
   ~SCF();
@@ -63,6 +63,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 

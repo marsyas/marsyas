@@ -26,6 +26,8 @@
 
 #include "MarSystem.h"	
 
+namespace Marsyas
+{
 
 class Negative: public MarSystem
 {
@@ -44,6 +46,8 @@ public:
   void process(realvec& in, realvec& out);
   
 };
+
+}//namespace Marsyas
 
 #endif
 

@@ -41,17 +41,20 @@ MarSystem.
 #ifndef MARSYAS_KNNCLASSIFIER_H
 #define MARSYAS_KNNCLASSIFIER_H
 
-#include "MarSystem.h"	
+#include "MarSystem.h"
+
+namespace Marsyas
+{
 
 class KNNClassifier: public MarSystem
 {
 private: 
   void addControls();
-  natural k_;
+  mrs_natural k_;
   realvec trainSet_;
-  natural nPoints_;
-  natural grow_;
-  natural nPredictions_;
+  mrs_natural nPoints_;
+  mrs_natural grow_;
+  mrs_natural nPredictions_;
   
 
 public:
@@ -63,6 +66,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 	

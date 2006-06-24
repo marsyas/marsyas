@@ -24,6 +24,8 @@
 */
 
 #include "BaseAudioSink.h"
+
+using namespace Marsyas;
 	
 BaseAudioSink::BaseAudioSink()
 {

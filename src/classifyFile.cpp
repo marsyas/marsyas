@@ -1,5 +1,5 @@
 
-#include <stdio.h>
+#include <cstdio>
 
 #include "Collection.h"
 #include "MarSystemManager.h"  
@@ -7,11 +7,11 @@
 
 #include <fstream> 
 #include <iostream>
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 #define EMPTYSTRING "MARSYAS_EMPTY"
-
 
 string pluginName = EMPTYSTRING;
 CommandLineOptions cmd_options;
@@ -77,7 +77,7 @@ void classifyFile(vector<string> soundfiles, string pluginName)
       cout << "Manager does not support system " << endl;
       exit(1);
     }
-  real srate;
+  mrs_real srate;
   
   // run audio through the plugin for each file in the collection
   // assume there is a SoundFileSource in the plugin 
@@ -91,7 +91,7 @@ void classifyFile(vector<string> soundfiles, string pluginName)
 
   
   vector<string>::iterator sfi;  
-  natural count = 0;
+  mrs_natural count = 0;
 
 
 
@@ -104,33 +104,33 @@ void classifyFile(vector<string> soundfiles, string pluginName)
 
       // udpate source filename 
       sfName = *sfi;
-      msys->updctrl("string/filename", sfName);
+      msys->updctrl("mrs_string/filename", sfName);
       
       
 
-      natural size = msys->getctrl("SilenceRemove/srm/SoundFileSource/src/natural/size").toNatural();
-      natural inSamples = msys->getctrl("SilenceRemove/srm/SoundFileSource/src/natural/inSamples").toNatural();
+      mrs_natural size = msys->getctrl("SilenceRemove/srm/SoundFileSource/src/mrs_natural/size").toNatural();
+      mrs_natural inSamples = msys->getctrl("SilenceRemove/srm/SoundFileSource/src/mrs_natural/inSamples").toNatural();
 
-      natural memSize = (size / inSamples);
+      mrs_natural memSize = (size / inSamples);
       memSize /= 2;
       
       // hardwire to approximately 15 seconds 
       memSize = 600;
       
 
-      msys->updctrl("Confidence/confidence/natural/memSize", memSize);
+      msys->updctrl("Confidence/confidence/mrs_natural/memSize", memSize);
       
       if (verboseopt) 
 	cout << (*msys) << endl;      
       
       
       
-      srate = msys->getctrl("real/israte").toReal();
+      srate = msys->getctrl("mrs_real/israte").toReal();
       
       
-      natural samplesPlayed = 0;
-      natural onSamples = msys->getctrl("natural/onSamples").toNatural();
-      natural wc = 0;
+      mrs_natural samplesPlayed = 0;
+      mrs_natural onSamples = msys->getctrl("mrs_natural/onSamples").toNatural();
+      mrs_natural wc = 0;
       int i;
       
 
@@ -146,10 +146,10 @@ void classifyFile(vector<string> soundfiles, string pluginName)
 	    cout << sfName << " ";
 	  // 
 	  
-	    // while (msys->getctrl("bool/notEmpty").toBool())
+	    // while (msys->getctrl("mrs_bool/notEmpty").toBool())
 	    for (i=0; i < memSize-1; i++) 
 	      {
-		if (msys->getctrl("bool/notEmpty").toBool() == false) 
+		if (msys->getctrl("mrs_bool/notEmpty").toBool() == false) 
 		  {
 		    break;
 		  }
@@ -160,8 +160,8 @@ void classifyFile(vector<string> soundfiles, string pluginName)
 	    
 	    if (i >= 10) 
 	      {
-		msys->updctrl("Confidence/confidence/bool/print", true);
-		msys->updctrl("Confidence/confidence/bool/forcePrint", true);
+		msys->updctrl("Confidence/confidence/mrs_bool/print", true);
+		msys->updctrl("Confidence/confidence/mrs_bool/forcePrint", true);
 		msys->tick();	      
 	      }
 	    else 
@@ -170,10 +170,10 @@ void classifyFile(vector<string> soundfiles, string pluginName)
 	    
 	}
       
-      msys->updctrl("Confidence/confidence/bool/print",false);
-      msys->updctrl("Confidence/confidence/bool/forcePrint", false);
-      msys->updctrl("Memory/memory/bool/reset", true);
-      msys->updctrl("SilenceRemove/srm/SoundFileSource/src/string/filename", "defaultfile");
+      msys->updctrl("Confidence/confidence/mrs_bool/print",false);
+      msys->updctrl("Confidence/confidence/mrs_bool/forcePrint", false);
+      msys->updctrl("Memory/memory/mrs_bool/reset", true);
+      msys->updctrl("SilenceRemove/srm/SoundFileSource/src/mrs_string/filename", "defaultfile");
       
     }
   

@@ -1,5 +1,8 @@
 #include "TopPanelNew.h"
 
+using namespace std;
+using namespace Marsyas;
+
 
 TopPanelNew::TopPanelNew(string au, QWidget *parent)
   : QWidget(parent)
@@ -12,8 +15,8 @@ TopPanelNew::TopPanelNew(string au, QWidget *parent)
   pnet = mng.create("Series", "pnet");
   pnet->addMarSystem(mng.create("SoundFileSource", "src"));
   pnet->addMarSystem(mng.create("AudioSink", "dest"));
-  pnet->updctrl( "SoundFileSource/src/string/filename", au );
-//   pnet->updctrl("SoundFileSource/src/string/filename", 
+  pnet->updctrl( "SoundFileSource/src/mrs_string/filename", au );
+//   pnet->updctrl("SoundFileSource/src/mrs_string/filename", 
 // 		"/usr/home/sardine/build/marsyas-0.2.4/Marx2DGraph/permiteme.au");
   
   nTicks = 500;
@@ -72,9 +75,9 @@ TopPanelNew::tick()
   for (int i=0; i < nTicks; i++) 
     {
       pnet->tick();
-      pnet->updctrl("bool/probe", true);
+      pnet->updctrl("mrs_bool/probe", true);
       realvec out(512);
-      out = pnet->getctrl("realvec/input0").toVec();
+      out = pnet->getctrl("mrs_realvec/input0").toVec();
 
 
       graph2->setBuffer( out );

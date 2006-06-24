@@ -28,10 +28,10 @@ with the Qt code through the standard signal/slot mechanism
 adjusted to reflect Marsyas controls. 
 */
 
-
-
 #include "MarSystemWrapper.h"
 
+using namespace std;
+using namespace Marsyas;
 
 MarSystemWrapper::MarSystemWrapper(MarSystem* msys)
 {
@@ -97,21 +97,11 @@ MarSystemWrapper::updctrl(QString cname, MarControlValue value)
   else    
     {
       cnames_.push_back(cname);          //lmartins
-      cvalues_.push_back(value);         //lmartins  guard_ = true;
+      cvalues_.push_back(value);         //lmartins  
+	  guard_ = true;
       emit ctrlChanged(cname, value);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
 
 void MarSystemWrapper::pause()
 {
@@ -133,40 +123,40 @@ void MarSystemWrapper::run()
       running_ = true;
 
       if (guard_ == true)
-	{
-	  // udpate stored controls
-	  vector<QString>::iterator  vsi;
-	  vector<MarControlValue>::iterator vvi;
-	  
-	  for (vsi = cnames_.begin(), vvi = cvalues_.begin(); 
-	       vsi != cnames_.end();
-	       ++vsi, ++vvi)
-	    {
-	      
-	      msys_->updctrl(vsi->toStdString(), *vvi);
-	    }
-	  
-	  cnames_.clear();
-	  cvalues_.clear();
-	  guard_ = false;
-	}
+		{
+		  // udpate stored controls
+		  vector<QString>::iterator  vsi;
+		  vector<MarControlValue>::iterator vvi;
+		  
+		  for (vsi = cnames_.begin(), vvi = cvalues_.begin(); 
+			   vsi != cnames_.end();
+			   ++vsi, ++vvi)
+			{
+		      
+			  msys_->updctrl(vsi->toStdString(), *vvi);
+			}
+		  
+		  cnames_.clear();
+		  cvalues_.clear();
+		  guard_ = false;
+		}
       
       if (!pause_)
-	{
-	  msys_->tick();	
-	  empty_ = false;
-	}
+		{
+		  msys_->tick();	
+		  empty_ = false;
+		}
       
       
       if (empty_ == false) 
-	{	 
-	  if (msys_->getctrl("bool/notEmpty").toBool() == false) 
-	    {
-	      empty_ = true;
-	      pause();
-	    }
-	  
-	  
-	}
+		{	 
+		  if (msys_->getctrl("mrs_bool/notEmpty").toBool() == false) 
+			{
+			  empty_ = true;
+			  pause();
+			}
+		  
+		  
+		}
     }
 }

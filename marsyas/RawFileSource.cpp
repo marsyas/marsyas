@@ -27,8 +27,9 @@
 */
 
 #include "RawFileSource.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 RawFileSource::RawFileSource(string name)
 {
@@ -63,26 +64,26 @@ void
 RawFileSource::addControls() 
 {
   addDefaultControls();
-  addctrl("natural/nChannels",1);
-  addctrl("real/frequency",440.0);
-  setctrlState("real/frequency",true);
-  addctrl("natural/size", 0);
-  addctrl("natural/pos", 0);
-  setctrlState("natural/pos", true);
-  addctrl("string/filename", "defaultfile.au");
-  setctrlState("string/filename", true);
-  addctrl("bool/notEmpty", true);
+  addctrl("mrs_natural/nChannels",1);
+  addctrl("mrs_real/frequency",440.0);
+  setctrlState("mrs_real/frequency",true);
+  addctrl("mrs_natural/size", 0);
+  addctrl("mrs_natural/pos", 0);
+  setctrlState("mrs_natural/pos", true);
+  addctrl("mrs_string/filename", "defaultfile.au");
+  setctrlState("mrs_string/filename", true);
+  addctrl("mrs_bool/notEmpty", true);
   notEmpty_ = true;
-  addctrl("bool/noteon", false);
-  setctrlState("bool/noteon", true);
-  addctrl("string/filetype", "raw");
+  addctrl("mrs_bool/noteon", false);
+  setctrlState("mrs_bool/noteon", true);
+  addctrl("mrs_string/filetype", "raw");
 }	
 
 
 void RawFileSource::openFile(string filename) 
 {
   getHeader(filename);
-  rate_ = fileSize_ * getctrl("real/frequency").toReal() / getctrl("real/israte").toReal();
+  rate_ = fileSize_ * getctrl("mrs_real/frequency").toReal() / getctrl("mrs_real/israte").toReal();
 }
 
 
@@ -96,7 +97,7 @@ bool RawFileSource::getRawInfo( const char *fileName )
   }
   
   // length in 2-byte samples
-  fileSize_ = (natural) filestat.st_size / 2;  
+  fileSize_ = (mrs_natural) filestat.st_size / 2;  
   bufferSize_ = fileSize_;
   
   // assume little endian for now
@@ -125,7 +126,7 @@ void RawFileSource::getHeader(string fileName)
   }
   
   // allocate storage for the buffer
-  natural samples = (bufferSize_+1)* getctrl("natural/nChannels").toNatural();
+  mrs_natural samples = (bufferSize_+1)* getctrl("mrs_natural/nChannels").toNatural();
   data_.create(samples);
   buffer_ = new short[bufferSize_];
   
@@ -148,10 +149,10 @@ void RawFileSource::swap16(unsigned char *ptr)
 //
 // read all the raw data into data[] 
 //
-void RawFileSource::readData(unsigned natural index)
+void RawFileSource::readData(unsigned long index)//[!]
 {
-  natural i;
-  natural length = bufferSize_;
+  mrs_natural i;
+  mrs_natural length = bufferSize_;
   
   // Read samples into data[].  
   if (fseek(sfp_, index, SEEK_SET) == -1) {
@@ -180,15 +181,15 @@ void RawFileSource::readData(unsigned natural index)
   data_(length) = data_(length-1);
   
   // find the peak
-  real max = 0.0;
+  mrs_real max = 0.0;
   for (i=0; i < length; i++) {
     if (fabs(data_(i)) > max)
-      max = (real) fabs((double) data_(i));
+      max = (mrs_real) fabs((double) data_(i));
   }
   
   // now normalize according to the peak.
   if (max > 0.0) {
-    max = (real)(1.0 / max);
+    max = (mrs_real)(1.0 / max);
     max *= 1.0;					// constant factor for now.				
     for ( i=0; i <= length; i++ )  {
       data_(i) *= max;
@@ -203,19 +204,19 @@ void RawFileSource::readData(unsigned natural index)
 void RawFileSource::update() 
 {
  
-  nChannels_ = getctrl("natural/nChannels").toNatural();  
-  inSamples_ = getctrl("natural/inSamples").toNatural();
-  inObservations_ = getctrl("natural/inObservations").toNatural();
-  israte_ = getctrl("real/israte").toReal();
+  nChannels_ = getctrl("mrs_natural/nChannels").toNatural();  
+  inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
+  inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+  israte_ = getctrl("mrs_real/israte").toReal();
   
-  setctrl("natural/onSamples", inSamples_);
-  setctrl("natural/onObservations", inObservations_);
-  setctrl("real/osrate", israte_);
+  setctrl("mrs_natural/onSamples", inSamples_);
+  setctrl("mrs_natural/onObservations", inObservations_);
+  setctrl("mrs_real/osrate", israte_);
   
-  filename_ = getctrl("string/filename").toString();    
-  pos_ = getctrl("natural/pos").toNatural();
+  filename_ = getctrl("mrs_string/filename").toString();    
+  pos_ = getctrl("mrs_natural/pos").toNatural();
 
-  rate_ = fileSize_ * getctrl("real/frequency").toReal() / israte_;
+  rate_ = fileSize_ * getctrl("mrs_real/frequency").toReal() / israte_;
 
   defaultUpdate();
 }	
@@ -225,10 +226,10 @@ void RawFileSource::process(realvec& in,realvec &out)
 {
   checkFlow(in,out);
 
-  real alpha;
-  natural i, index;
+  mrs_real alpha;
+  mrs_natural i, index;
   
-  if (getctrl("bool/noteon").toBool() == false) {
+  if (getctrl("mrs_bool/noteon").toBool() == false) {
     return;
   }
   
@@ -240,8 +241,8 @@ void RawFileSource::process(realvec& in,realvec &out)
     }
     
     // linear interpolation
-    index = (natural) time_;
-    alpha = time_ - (real) index;			// fractional part of time address
+    index = (mrs_natural) time_;
+    alpha = time_ - (mrs_real) index;			// fractional part of time address
     out(0,i) = data_(index);
     out(0,i) += (alpha * (data_(index+1) - data_(index)));
     

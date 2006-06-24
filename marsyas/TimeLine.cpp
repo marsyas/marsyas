@@ -16,9 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
-
-
 /** 
     \class TimeLine 
     \brief TimeLine is a list of TimeRegions. 
@@ -42,18 +39,12 @@
 
 */
 
-
-
-
-
-
-
-
-
-
 #include "TimeLine.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
+
+#define SEPCHARS " \t\n"
 
 TimeLine::TimeLine()
 {
@@ -472,7 +463,7 @@ TimeLine::write(string filename)
 }
 
 ostream&
-operator<<(ostream& o, const TimeLine& tline)
+Marsyas::operator<<(ostream& o, const TimeLine& tline)
 {
   o << tline.numRegions_ << endl;
   o << tline.lineSize_ << endl;

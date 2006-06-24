@@ -23,10 +23,10 @@
     The output is : max1, argmax1, max2, argmax2, .... 
 */
 
-
 #include "MaxArgMax.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 MaxArgMax::MaxArgMax(string name)
 {
@@ -52,19 +52,19 @@ void
 MaxArgMax::addControls()
 {
   addDefaultControls();
-  addctrl("natural/nMaximums", (natural)1);
-  setctrlState("natural/nMaximums", true);
+  addctrl("mrs_natural/nMaximums", (mrs_natural)1);
+  setctrlState("mrs_natural/nMaximums", true);
 }
 
 
 void
 MaxArgMax::update()
 {
-  natural k = getctrl("natural/nMaximums").toNatural();
+  mrs_natural k = getctrl("mrs_natural/nMaximums").toNatural();
   
-  setctrl("natural/onSamples",  2 * k);
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));  
+  setctrl("mrs_natural/onSamples",  2 * k);
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
 
   defaultUpdate();
 }
@@ -79,21 +79,21 @@ MaxArgMax::process(realvec& in, realvec& out)
 
   
   out.setval(0.0);
-  natural k = getctrl("natural/nMaximums").toNatural();
+  mrs_natural k = getctrl("mrs_natural/nMaximums").toNatural();
 
   
 
     for (o=0; o < inObservations_; o++)
       for (t=0; t < inSamples_; t++)
 	{
-	  real newmax = in(0,t);
-	  real newmax_i = t;
+	  mrs_real newmax = in(0,t);
+	  mrs_real newmax_i = t;
 	  for (ki=0; ki < k; ki++)
 	    {
 	      if (newmax > out(0, 2*ki))
 		{
-		  real oldmax = out(0, 2*ki);
-		  real oldmax_i = out(0,2*ki+1);
+		  mrs_real oldmax = out(0, 2*ki);
+		  mrs_real oldmax_i = out(0,2*ki+1);
 		  out(0,2*ki) = newmax;
 		  out(0,2*ki+1) = newmax_i;
 		  newmax = oldmax;

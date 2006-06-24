@@ -12,7 +12,7 @@
 
 #include <pthread.h>
 #include <iostream>
-#include <stdio.h>
+#include <cstdio>
 #include <sstream>
 #include <map>
 
@@ -23,6 +23,7 @@
 #include "SocketException.h"
 
 using namespace std;
+using namespace Marsyas;
 
 // define our mutex and the soundfile collection
 pthread_mutex_t sf_mutex;
@@ -52,9 +53,9 @@ void* run(void * arg)
   // Output destination is a NetworkTCPSink
   NetworkTCPSink* dest = (NetworkTCPSink*) mng.create("NetworkTCPSink", "dest");
   
-  dest->updctrl("natural/dataPort", data->dataPort);
-  dest->updctrl("natural/controlsPort", data->controlsPort);
-  dest->updctrl("string/host", data->host);
+  dest->updctrl("mrs_natural/dataPort", data->dataPort);
+  dest->updctrl("mrs_natural/controlsPort", data->controlsPort);
+  dest->updctrl("mrs_string/host", data->host);
   
   // create playback network
   MarSystem* playbacknet = mng.create("Series", "playbacknet");
@@ -62,18 +63,18 @@ void* run(void * arg)
   playbacknet->addMarSystem(dest);
   playbacknet->update();
  
-  playbacknet->linkctrl("string/filename", "SoundFileSource/src/string/filename");
-  playbacknet->linkctrl("natural/nChannels", "SoundFileSource/src/natural/nChannels");
-  playbacknet->linkctrl("real/israte", "SoundFileSource/src/real/israte");
-  playbacknet->linkctrl("natural/pos", "SoundFileSource/src/natural/pos");
-  playbacknet->linkctrl("bool/notEmpty", "SoundFileSource/src/bool/notEmpty");
+  playbacknet->linkctrl("mrs_string/filename", "SoundFileSource/src/mrs_string/filename");
+  playbacknet->linkctrl("mrs_natural/nChannels", "SoundFileSource/src/mrs_natural/nChannels");
+  playbacknet->linkctrl("mrs_real/israte", "SoundFileSource/src/mrs_real/israte");
+  playbacknet->linkctrl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
+  playbacknet->linkctrl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
  
   dest->refresh();
   
-  playbacknet->updctrl("natural/inSamples", 512);
+  playbacknet->updctrl("mrs_natural/inSamples", 512);
     
-  natural wc = 0;
-  natural onSamples = playbacknet->getctrl("natural/onSamples").toNatural();
+  mrs_natural wc = 0;
+  mrs_natural onSamples = playbacknet->getctrl("mrs_natural/onSamples").toNatural();
   char sf_buffer[256];
   
   while ( true ) {
@@ -98,11 +99,11 @@ void* run(void * arg)
 	}
 	
 	cout << "Thread: " << data->thread_id << " playing " << soundfile << endl;
-	playbacknet->updctrl("SoundFileSource/src/string/filename", soundfile);
-	playbacknet->updctrl("bool/notEmpty", true);
+	playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", soundfile);
+	playbacknet->updctrl("mrs_bool/notEmpty", true);
 	
 	// play the sound 
-  	while ( playbacknet->getctrl("bool/notEmpty").toBool() )
+  	while ( playbacknet->getctrl("mrs_bool/notEmpty").toBool() )
   	  {
 		try {
 	      		playbacknet->tick(); // everything happens here 

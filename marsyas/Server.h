@@ -25,16 +25,11 @@ Send/receive message strings Communicator methods are supported.
 Used for compatibility with the marsyas-0.1 Java interface 
 */
 
-
-
 #if !defined(__Server_h)
 #define __Server_h
 
-
-
 #include <stdio.h>
 #include <signal.h>
-
 
 #ifndef WIN32
 #include <strings.h>
@@ -51,19 +46,12 @@ Used for compatibility with the marsyas-0.1 Java interface
 #include <process.h>
 #endif
 
-
-
 #include <string>
-
 
 #include "Talk.h"
 
-#define NLCHARS "\x0D\x0A"		// Newline and Carriage return 
-#define MAX_MESSAGE 256
-
-#ifdef WIN32
-#define MAXHOSTNAMELEN 1024
-#endif 
+namespace Marsyas
+{
 
 class Server: public Communicator 
 {
@@ -84,8 +72,7 @@ public:
   void receive_message(char *message);
 };
 
-
-
+}//namespace Marsyas
 
 #endif
 

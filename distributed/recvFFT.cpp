@@ -1,10 +1,11 @@
-#include <stdio.h>
+#include <cstdio>
 #include "Collection.h"
 #include "MrsDoctor.h"
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"
 #include "SocketException.h"
 
+using namespace Marsyas;
 
 CommandLineOptions cmd_options;
 
@@ -51,13 +52,13 @@ printHelp(string progName)
 
 // Play soundfile given by sfName, playbacknet contains the playback 
 // network of MarSystem objects 
-void sftransform(real gain, string outName)
+void sftransform(mrs_real gain, string outName)
 {
 	
   
   MarSystemManager mng;
   MarSystem* dest = mng.create("SoundFileSink", "dest");
-  dest->updctrl("string/filename", "sftransformOutput.au");
+  dest->updctrl("mrs_string/filename", "sftransformOutput.au");
 
   NetworkTCPSource* netSrc = new NetworkTCPSource("netSrc");
 
@@ -69,16 +70,16 @@ void sftransform(real gain, string outName)
   
   // update controls if they are passed on cmd line...
   if ( port != 0 ) {
-  	netSrc->updctrl("natural/port", port);
+  	netSrc->updctrl("mrs_natural/port", port);
   }
   
   playbacknet->update();
   
-  playbacknet->linkctrl("natural/nChannels", "NetworkTCPSource/netSrc/natural/nChannels");
-  playbacknet->linkctrl("natural/pos", "NetworkTCPSource/netSrc/natural/pos");
-  playbacknet->linkctrl("natural/nChannels", "SoundFileSink/dest/natural/nChannels");
-  playbacknet->linkctrl("bool/notEmpty", "NetworkTCPSource/netSrc/bool/notEmpty");
-  playbacknet->linkctrl("bool/mute", "Gain/gt/bool/mute");
+  playbacknet->linkctrl("mrs_natural/nChannels", "NetworkTCPSource/netSrc/mrs_natural/nChannels");
+  playbacknet->linkctrl("mrs_natural/pos", "NetworkTCPSource/netSrc/mrs_natural/pos");
+  playbacknet->linkctrl("mrs_natural/nChannels", "SoundFileSink/dest/mrs_natural/nChannels");
+  playbacknet->linkctrl("mrs_bool/notEmpty", "NetworkTCPSource/netSrc/mrs_bool/notEmpty");
+  playbacknet->linkctrl("mrs_bool/mute", "Gain/gt/mrs_bool/mute");
 
   
   // output network description to cout  
@@ -89,18 +90,18 @@ void sftransform(real gain, string outName)
   cout << "Connection Established with: " << netSrc->getClientAddr() << endl;
   
   // udpate controls
-  //playbacknet.updctrl("natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
+  //playbacknet.updctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
   
   
-  playbacknet->updctrl("Gain/gt/real/gain", gain);
+  playbacknet->updctrl("Gain/gt/mrs_real/gain", gain);
 
 	
-  natural wc=0;
-  natural samplesPlayed = 0;
-  natural onSamples = playbacknet->getctrl("natural/onSamples").toNatural();
-  // natural repeatId = 1;
+  mrs_natural wc=0;
+  mrs_natural samplesPlayed = 0;
+  mrs_natural onSamples = playbacknet->getctrl("mrs_natural/onSamples").toNatural();
+  // mrs_natural repeatId = 1;
   
-  real* controls = 0;
+  mrs_real* controls = 0;
   
   while (true) 
   {
@@ -109,16 +110,16 @@ void sftransform(real gain, string outName)
       		if ( controls != 0 ) {
 			
 			// get some reference controls, so if they have changed we update them
-			natural inSamples = playbacknet->getctrl("natural/inSamples").toNatural();
-			natural inObservations = playbacknet->getctrl("natural/inObservations").toNatural();
-			real israte = playbacknet->getctrl("real/israte").toReal();
+			mrs_natural inSamples = playbacknet->getctrl("mrs_natural/inSamples").toNatural();
+			mrs_natural inObservations = playbacknet->getctrl("mrs_natural/inObservations").toNatural();
+			mrs_real israte = playbacknet->getctrl("mrs_real/israte").toReal();
 			
-			if ( (natural)controls[1] != inSamples || (natural)controls[2] != inObservations 
+			if ( (mrs_natural)controls[1] != inSamples || (mrs_natural)controls[2] != inObservations 
 					|| controls[3] != israte ) {
 			
-				playbacknet->updctrl("natural/inSamples", (natural)controls[1]);
-				playbacknet->updctrl("natural/inObservations", (natural)controls[2]);
-				playbacknet->updctrl("real/israte", controls[3]);
+				playbacknet->updctrl("mrs_natural/inSamples", (mrs_natural)controls[1]);
+				playbacknet->updctrl("mrs_natural/inObservations", (mrs_natural)controls[2]);
+				playbacknet->updctrl("mrs_real/israte", controls[3]);
 			}
       		}
 		playbacknet->tick();

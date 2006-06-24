@@ -26,22 +26,22 @@
 #ifndef MARSYAS_NORMMINMAX_H
 #define MARSYAS_NORMMINMAX_H
 
-
 #include "MarSystem.h"	
 
 #include <cfloat>
 
+namespace Marsyas
+{
 
 class NormMaxMin: public MarSystem
 {
 private: 
-  real lower_;
-  real upper_;
-  real range_;
+  mrs_real lower_;
+  mrs_real upper_;
+  mrs_real range_;
   bool train_;
   bool init_;
   
- 
   void addControls();
   realvec maximums_;
   realvec minimums_;
@@ -54,6 +54,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 	

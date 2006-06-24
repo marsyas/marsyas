@@ -16,7 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /** 
     \class WaveletBands
     \brief Calculate time-domain wavelet-based bands
@@ -27,15 +26,10 @@ we are interested in and then performing the Inverse
 Wavelet Transform to get back to time domain. 
 */
 
-
-
-
-
-
-
 #include "WaveletBands.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 WaveletBands::WaveletBands(string name)
 {
@@ -79,10 +73,10 @@ void
 WaveletBands::addControls()
 {
   addDefaultControls();
-  addctrl("natural/nBands", 4);
-  setctrlState("natural/nBands", true);
-  addctrl("natural/startBand", 5);
-  setctrlState("natural/startBand", true);
+  addctrl("mrs_natural/nBands", 4);
+  setctrlState("mrs_natural/nBands", true);
+  addctrl("mrs_natural/startBand", 5);
+  setctrlState("mrs_natural/startBand", true);
 
   delete iwvpt_;
   iwvpt_ = new WaveletPyramid("iwvpt");
@@ -94,24 +88,24 @@ WaveletBands::update()
 {
   
   MRSDIAG("WaveletBands.cpp - WaveletBands:update");
-  natural nBands = getctrl("natural/nBands").toNatural();
+  mrs_natural nBands = getctrl("mrs_natural/nBands").toNatural();
 
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations").toNatural() * nBands);
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations").toNatural() * nBands);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
 
-  iwvpt_->setctrl("bool/forward", (MarControlValue)false);
+  iwvpt_->setctrl("mrs_bool/forward", (MarControlValue)false);
   
-  iwvpt_->updctrl("natural/inSamples", getctrl("natural/inSamples"));
-  iwvpt_->updctrl("natural/inObservations", getctrl("natural/inObservations"));
-  iwvpt_->updctrl("real/israte", getctrl("real/israte"));
+  iwvpt_->updctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
+  iwvpt_->updctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
+  iwvpt_->updctrl("mrs_real/israte", getctrl("mrs_real/israte"));
 
 
-  band_.create(getctrl("natural/inObservations").toNatural(), 
-	       getctrl("natural/inSamples").toNatural());
-  tband_.create(getctrl("natural/inObservations").toNatural(), 
-		getctrl("natural/inSamples").toNatural());
+  band_.create(getctrl("mrs_natural/inObservations").toNatural(), 
+	       getctrl("mrs_natural/inSamples").toNatural());
+  tband_.create(getctrl("mrs_natural/inObservations").toNatural(), 
+		getctrl("mrs_natural/inSamples").toNatural());
   
 
   defaultUpdate();
@@ -125,9 +119,9 @@ WaveletBands::process(realvec& in, realvec& out)
   checkFlow(in,out);
   
 
-  natural level;
-  natural hlevel, llevel;
-  natural base = getctrl("natural/startBand").toNatural();
+  mrs_natural level;
+  mrs_natural hlevel, llevel;
+  mrs_natural base = getctrl("mrs_natural/startBand").toNatural();
 
   for (o = 0; o < onObservations_; o++)
     {

@@ -29,10 +29,12 @@ code to resize the buffers was borrowed from Marsyas AudioSource.
 
 */
 
-
-
 #include "MP3FileSource.h"
+
 using namespace std;
+using namespace Marsyas;
+
+#define INPUT_BUFFER_SIZE (5*8192)
 
 
 MP3FileSource::MP3FileSource(string name)
@@ -102,39 +104,39 @@ MP3FileSource::addControls()
   addDefaultControls();
 
   // nChannels is one for now
-  addctrl("natural/nChannels",1);
-  addctrl("natural/bitRate", 160000);
-  setctrlState("natural/nChannels", true);
-  addctrl("bool/init", false);
-  setctrlState("bool/init", true);
-  addctrl("bool/notEmpty", true);
-  addctrl("natural/loopPos", (natural)0);
-  setctrlState("natural/loopPos", true);
-  addctrl("natural/pos", (natural)0);
-  setctrlState("natural/pos", true);
-  addctrl("string/filename", "daufile");
-  setctrlState("string/filename", true);
-  addctrl("natural/size", (natural)0);
-  addctrl("string/filetype", "mp3");
-  addctrl("real/repetitions", 1.0);
-  setctrlState("real/repetitions", true);
-  addctrl("real/duration", -1.0);
-  setctrlState("real/duration", true);
+  addctrl("mrs_natural/nChannels",1);
+  addctrl("mrs_natural/bitRate", 160000);
+  setctrlState("mrs_natural/nChannels", true);
+  addctrl("mrs_bool/init", false);
+  setctrlState("mrs_bool/init", true);
+  addctrl("mrs_bool/notEmpty", true);
+  addctrl("mrs_natural/loopPos", (mrs_natural)0);
+  setctrlState("mrs_natural/loopPos", true);
+  addctrl("mrs_natural/pos", (mrs_natural)0);
+  setctrlState("mrs_natural/pos", true);
+  addctrl("mrs_string/filename", "daufile");
+  setctrlState("mrs_string/filename", true);
+  addctrl("mrs_natural/size", (mrs_natural)0);
+  addctrl("mrs_string/filetype", "mp3");
+  addctrl("mrs_real/repetitions", 1.0);
+  setctrlState("mrs_real/repetitions", true);
+  addctrl("mrs_real/duration", -1.0);
+  setctrlState("mrs_real/duration", true);
 
-  addctrl("bool/advance", false);
-  setctrlState("bool/advance", true);
+  addctrl("mrs_bool/advance", false);
+  setctrlState("mrs_bool/advance", true);
 
-  addctrl("bool/shuffle", false);
-  setctrlState("bool/shuffle", true);
+  addctrl("mrs_bool/shuffle", false);
+  setctrlState("mrs_bool/shuffle", true);
 
-  addctrl("natural/cindex", 0);
-  setctrlState("natural/cindex", true);
+  addctrl("mrs_natural/cindex", 0);
+  setctrlState("mrs_natural/cindex", true);
 
 
-  addctrl("string/allfilenames", ",");
-  addctrl("natural/numFiles", 1);
+  addctrl("mrs_string/allfilenames", ",");
+  addctrl("mrs_natural/numFiles", 1);
 	
-  addctrl("string/currentlyPlaying", "daufile");
+  addctrl("mrs_string/currentlyPlaying", "daufile");
 }
 
 
@@ -162,11 +164,11 @@ MP3FileSource::getHeader(string filename)
 
   if (myStat.st_size == 0 ) {
     MRSWARN("Error reading file: " + filename);
-    setctrl("natural/nChannels", (natural)1);
-    setctrl("real/israte", (real)22050.0);
-    setctrl("natural/size", (natural)0);
+    setctrl("mrs_natural/nChannels", (mrs_natural)1);
+    setctrl("mrs_real/israte", (mrs_real)22050.0);
+    setctrl("mrs_natural/size", (mrs_natural)0);
     notEmpty_ = 0;
-    setctrl("bool/notEmpty", (MarControlValue)false);	  
+    setctrl("mrs_bool/notEmpty", (MarControlValue)false);	  
     return;
   }
   
@@ -181,11 +183,11 @@ MP3FileSource::getHeader(string filename)
   if (numRead != myStat.st_size) 
     {
       MRSWARN("Error reading: " + filename + " to memory.");
-      setctrl("natural/nChannels", (natural)1);
-      setctrl("real/israte", (real)22050.0);
-      setctrl("natural/size", (natural)0);
+      setctrl("mrs_natural/nChannels", (mrs_natural)1);
+      setctrl("mrs_real/israte", (mrs_real)22050.0);
+      setctrl("mrs_natural/size", (mrs_natural)0);
       notEmpty_ = 0;
-      setctrl("bool/notEmpty", (MarControlValue)false);	  
+      setctrl("mrs_bool/notEmpty", (MarControlValue)false);	  
       return;
     }
   
@@ -198,7 +200,7 @@ MP3FileSource::getHeader(string filename)
  
 
   // if there is nothing in the stream...
-  notEmpty_ = getctrl("bool/notEmpty").toBool(); 
+  notEmpty_ = getctrl("mrs_bool/notEmpty").toBool(); 
   if (!notEmpty_) {
     pos_ = 0;
     return;
@@ -251,29 +253,29 @@ MP3FileSource::getHeader(string filename)
 	
   frameSamples_ = 32 * MAD_NSBSAMPLES(&frame.header);
   bufferSize_ = frameSamples_; // mad frame size
-  natural bitRate = frame.header.bitrate;
-  real sampleRate = frame.header.samplerate;
+  mrs_natural bitRate = frame.header.bitrate;
+  mrs_real sampleRate = frame.header.samplerate;
 
   
   // only works for a constant bitrate, duration is (bits in file / bitrate)
-  real duration_ = 2 * (fileSize_ * 8) / bitRate;
-  advance_ = getctrl("bool/advance").toBool();
-  cindex_ = getctrl("natural/cindex").toNatural();
+  mrs_real duration_ = 2 * (fileSize_ * 8) / bitRate;
+  advance_ = getctrl("mrs_bool/advance").toBool();
+  cindex_ = getctrl("mrs_natural/cindex").toNatural();
   
   
-  size_ = (natural) ((duration_ * sampleRate) / MAD_NCHANNELS(&frame.header));
+  size_ = (mrs_natural) ((duration_ * sampleRate) / MAD_NCHANNELS(&frame.header));
 
   
   csize_ = size_ * MAD_NCHANNELS(&frame.header);
-  totalFrames_ = (natural)((sampleRate * duration_) / frameSamples_);
+  totalFrames_ = (mrs_natural)((sampleRate * duration_) / frameSamples_);
   
   
   // update some controls 
-  updctrl("real/duration", duration_);
-  updctrl("natural/nChannels", MAD_NCHANNELS(&frame.header)); 
-  updctrl("real/israte", sampleRate);
-  updctrl("natural/size", size_ / 2);
-  updctrl("natural/bitRate", bitRate);
+  updctrl("mrs_real/duration", duration_);
+  updctrl("mrs_natural/nChannels", MAD_NCHANNELS(&frame.header)); 
+  updctrl("mrs_real/israte", sampleRate);
+  updctrl("mrs_natural/size", size_ / 2);
+  updctrl("mrs_natural/bitRate", bitRate);
 
   offset = 0;
   pos_ = samplesOut_ = frameCount_ = 0;
@@ -299,26 +301,26 @@ MP3FileSource::update()
 {
   MRSDIAG("MP3FileSource::update");
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
  
-  israte_ = getctrl("real/israte").toReal();
-  inSamples_ = getctrl("natural/inSamples").toNatural();
+  israte_ = getctrl("mrs_real/israte").toReal();
+  inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
 
-  pos_ = getctrl("natural/pos").toNatural();
+  pos_ = getctrl("mrs_natural/pos").toNatural();
   
   // if the user has seeked somewhere in the file
   if ( currentPos_ != pos_ && pos_ < size_) {
 	  
     // compute a new file offset using the frame target
-    real ratio = (real)pos_/size_;
+    mrs_real ratio = (mrs_real)pos_/size_;
 
 #ifdef MAD_MP3     
     madStructInitialize();
 #endif 
     
-    natural targetOffset = (natural) (fileSize_ * (real)ratio);
+    mrs_natural targetOffset = (mrs_natural) (fileSize_ * (mrs_real)ratio);
   
     // if we are rewinding, we call fillStream with -1
     if (targetOffset==0) {
@@ -329,16 +331,16 @@ MP3FileSource::update()
     currentPos_ = pos_;
   }
 
-  filename_ = getctrl("string/filename").toString();    
-  duration_ = getctrl("real/duration").toReal();
-  advance_ = getctrl("bool/advance").toBool();
+  filename_ = getctrl("mrs_string/filename").toString();    
+  duration_ = getctrl("mrs_real/duration").toReal();
+  advance_ = getctrl("mrs_bool/advance").toBool();
   //rewindpos_ = pos_;
   
-  repetitions_ = getctrl("real/repetitions").toReal();
+  repetitions_ = getctrl("mrs_real/repetitions").toReal();
   
   if (duration_ != -1.0)
     {
-      csize_ = (natural)(duration_ * israte_);
+      csize_ = (mrs_natural)(duration_ * israte_);
     }
 	
   defaultUpdate();
@@ -369,7 +371,7 @@ MP3FileSource::update()
  * 		threshold.  (As in AudioSource, etc). 
  *
  */
-natural 
+mrs_natural 
 MP3FileSource::getLinear16(realvec& slice) {
 
 		
@@ -377,7 +379,7 @@ MP3FileSource::getLinear16(realvec& slice) {
 #ifdef MAD_MP3  
   register double peak = 1.0/32767; // normalize 24-bit sample
   register mad_fixed_t left_ch, right_ch;
-  register real sample;
+  register mrs_real sample;
 	 
   // decode a frame if necessary 
   while (ri_ < inSamples_) {
@@ -435,13 +437,13 @@ MP3FileSource::getLinear16(realvec& slice) {
 	left_ch = synth.pcm.samples[0][t];
 	
 	
-	sample = (real) scale(left_ch);	
+	sample = (mrs_real) scale(left_ch);	
 	
 	// for 2 channel audio we can add the channels 
 	// and divide by two
 	if(MAD_NCHANNELS(&frame.header)==2) {
 		right_ch = synth.pcm.samples[1][t];
-		sample += (real) scale(right_ch);
+		sample += (mrs_real) scale(right_ch);
 		sample /= 2; 
 	}
 	
@@ -462,7 +464,7 @@ MP3FileSource::getLinear16(realvec& slice) {
   }
 	
   // keep track of where we are
-  pos_ += inSamples_; // (inSamples_ * getctrl("natural/nChannels").toNatural());
+  pos_ += inSamples_; // (inSamples_ * getctrl("mrs_natural/nChannels").toNatural());
   currentPos_ = pos_;	
 	
 	
@@ -546,7 +548,7 @@ void MP3FileSource::madStructFinish() {
  *
  */
 void 
-MP3FileSource::fillStream( natural target ) 
+MP3FileSource::fillStream( mrs_natural target ) 
 {
 
   // fill the input buffer
@@ -554,8 +556,8 @@ MP3FileSource::fillStream( natural target )
   if (stream.buffer == NULL || stream.error == MAD_ERROR_BUFLEN) 
     {
     
-      register natural remaining = 0;
-      register natural chunk = INPUT_BUFFER_SIZE;
+      register mrs_natural remaining = 0;
+      register mrs_natural chunk = INPUT_BUFFER_SIZE;
       
       // when called with the default parameter, carry on decoding...	  
       if ( stream.next_frame != NULL ) {

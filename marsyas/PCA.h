@@ -33,22 +33,27 @@
 #ifndef MARSYAS_PCA_H
 #define MARSYAS_PCA_H
 
+#include "MarSystem.h"
 
-#include "MarSystem.h"	
+#include <string>
+
+namespace Marsyas
+{
 
 class PCA: public MarSystem
 {
 private: 
-  void addControls();
+   void addControls();
    
    realvec in_data_;
    realvec corr_matrix_;
-   natural dims_;
-   natural npc_;
+   mrs_natural dims_;
+   mrs_natural npc_;
    realvec npcs_;
    
    realvec means_;
    realvec stds_;
+
 public:
   PCA(std::string name);
   ~PCA();
@@ -56,9 +61,11 @@ public:
     
   void update();
   void process(realvec& in, realvec& out);
-  void tred2(realvec &a, natural m, real *d, real *e);
-  void tqli(real d[], real e[], natural m, realvec &z);
+  void tred2(realvec &a, mrs_natural m, mrs_real *d, mrs_real *e);
+  void tqli(mrs_real d[], mrs_real e[], mrs_natural m, realvec &z);
   
 };
+
+}//namespace Marsyas
 
 #endif

@@ -28,7 +28,8 @@
 
 #include "MarSystem.h"	
 
-
+namespace Marsyas
+{
 
 class Confidence: public MarSystem
 {
@@ -36,13 +37,12 @@ private:
   void addControls();
 
   realvec confidences_;
-  natural count_;
+  mrs_natural count_;
   std::vector<std::string> labelNames_;
   bool print_;
   bool forcePrint_;
   
-  natural predictions_;
-  
+  mrs_natural predictions_;
 
 public:
   Confidence(std::string name);
@@ -52,6 +52,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 

@@ -26,11 +26,10 @@ time samle. The center is defined as the normalized first moment
 (center of gravity) of the observation vector. 
 */
 
-
-
 #include "Centroid.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 Centroid::Centroid():MarSystem()
 {
@@ -67,10 +66,10 @@ void
 Centroid::update()
 {
   MRSDIAG("Centroid.cpp - Centroid:update");
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", (natural)1);
-  setctrl("real/osrate", getctrl("real/israte").toReal());
-  setctrl("string/onObsNames", "Centroid,");
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", (mrs_natural)1);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal());
+  setctrl("mrs_string/onObsNames", "Centroid,");
   
   defaultUpdate();
 }

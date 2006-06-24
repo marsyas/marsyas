@@ -22,11 +22,10 @@
 
 */
 
-
-
 #include "ClassOutputSink.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 
 ClassOutputSink::ClassOutputSink(string name)
@@ -58,22 +57,22 @@ void
 ClassOutputSink::addControls()
 {
   addDefaultControls();
-  addctrl("natural/memSize", 40);
-  addctrl("natural/nLabels", 2);
+  addctrl("mrs_natural/memSize", 40);
+  addctrl("mrs_natural/nLabels", 2);
 
-  addctrl("string/filename", "mugle.mf");
-  setctrlState("string/filename", true);
-  setctrlState("natural/nLabels", true);
-  addctrl("string/labelNames", "Music,Speech");
-  setctrlState("string/labelNames", true);
-  addctrl("bool/silent", true);
+  addctrl("mrs_string/filename", "mugle.mf");
+  setctrlState("mrs_string/filename", true);
+  setctrlState("mrs_natural/nLabels", true);
+  addctrl("mrs_string/labelNames", "Music,Speech");
+  setctrlState("mrs_string/labelNames", true);
+  addctrl("mrs_bool/silent", true);
 }
 
 
 void 
 ClassOutputSink::putHeader()
 {
-  if ((filename_ != getctrl("string/filename").toString()))
+  if ((filename_ != getctrl("mrs_string/filename").toString()))
     {
       if (mos_ != NULL) 
 	{
@@ -84,7 +83,7 @@ ClassOutputSink::putHeader()
 	}
 
       
-      filename_ = getctrl("string/filename").toString();
+      filename_ = getctrl("mrs_string/filename").toString();
   
       mos_ = new ofstream;
       mos_->open(filename_.c_str());
@@ -99,17 +98,17 @@ ClassOutputSink::update()
   MRSDIAG("ClassOutputSink.cpp - ClassOutputSink:update");
   cout << "ClassOutputSink::update" << endl;
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-  string labelNames = getctrl("string/labelNames").toString();
+  string labelNames = getctrl("mrs_string/labelNames").toString();
   
   labelNames_.clear();
 
   string temp;  
 
-  for (int i = 0; i < getctrl("natural/nLabels").toNatural(); i++)
+  for (int i = 0; i < getctrl("mrs_natural/nLabels").toNatural(); i++)
     {
       string labelName;
 
@@ -132,8 +131,8 @@ ClassOutputSink::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   
-  natural p;
-  natural g;
+  mrs_natural p;
+  mrs_natural g;
   
   
   for (o=0; o < inObservations_; o++)
@@ -142,13 +141,13 @@ ClassOutputSink::process(realvec& in, realvec& out)
 	out(o,t) = in(o,t);
       }
   
-  if (!getctrl("bool/silent").toBool())
+  if (!getctrl("mrs_bool/silent").toBool())
     {
       for (o = 0; o < inObservations_; o++)
 	for (t = 0; t < inSamples_; t++)	
 	  {
-	    p = (natural)in(o,t);
-	    g = (natural)in(1,t);
+	    p = (mrs_natural)in(o,t);
+	    g = (mrs_natural)in(1,t);
 	    if (o < inObservations_-1)
 	      cout << "Predicted: " << labelNames_[p] << endl;
 	    (*mos_) << labelNames_[p] << endl;

@@ -16,7 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /** 
     \class PvUnconvert
     \brief PvUnconvert
@@ -31,8 +30,9 @@ directly in Hz.
 */
 
 #include "PvUnconvert.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 PvUnconvert::PvUnconvert():MarSystem()
 {
@@ -65,7 +65,7 @@ void
 PvUnconvert::addControls()
 {
   addDefaultControls();
-  addctrl("natural/Interpolation", MRS_DEFAULT_SLICE_NSAMPLES/4);
+  addctrl("mrs_natural/Interpolation", MRS_DEFAULT_SLICE_NSAMPLES/4);
 }
 
 
@@ -73,19 +73,19 @@ PvUnconvert::addControls()
 void
 PvUnconvert::update()
 {
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations").toNatural() - 2);
-  setctrl("real/osrate", getctrl("real/israte"));  
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations").toNatural() - 2);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
   
-  natural inObservations = getctrl("natural/inObservations").toNatural();
-  natural onObservations = getctrl("natural/onObservations").toNatural();
-  real israte = getctrl("real/israte").toReal();
+  mrs_natural inObservations = getctrl("mrs_natural/inObservations").toNatural();
+  mrs_natural onObservations = getctrl("mrs_natural/onObservations").toNatural();
+  mrs_real israte = getctrl("mrs_real/israte").toReal();
   
   N2_ = onObservations/2;
   lastphase_.create(N2_+1);
   
-  fundamental_ = (real) (israte  / inObservations);
-  factor_ = (((getctrl("natural/Interpolation").toNatural()* TWOPI)/(israte * onObservations)));
+  fundamental_ = (mrs_real) (israte  / inObservations);
+  factor_ = (((getctrl("mrs_natural/Interpolation").toNatural()* TWOPI)/(israte * onObservations)));
   
 }
 
@@ -97,9 +97,9 @@ PvUnconvert::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   
-  real phase;
-  natural re, amp, im, freq;
-  real mag;
+  mrs_real phase;
+  mrs_natural re, amp, im, freq;
+  mrs_real mag;
   
 
   for (t=0; t <= N2_; t++)

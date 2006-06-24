@@ -38,10 +38,10 @@ MarSystem.
 
 */
 
-
 #include "KNNClassifier.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 KNNClassifier::KNNClassifier():MarSystem()
 {
@@ -71,19 +71,19 @@ void
 KNNClassifier::addControls()
 {
   addDefaultControls();
-  addctrl("string/mode", "train");
-  addctrl("natural/nLabels", 1);
-  setctrlState("natural/nLabels", true);
-  trainSet_.create((natural)1,(natural)1);
-  addctrl("natural/grow", 1);
-  addctrl("natural/k", 1);
+  addctrl("mrs_string/mode", "train");
+  addctrl("mrs_natural/nLabels", 1);
+  setctrlState("mrs_natural/nLabels", true);
+  trainSet_.create((mrs_natural)1,(mrs_natural)1);
+  addctrl("mrs_natural/grow", 1);
+  addctrl("mrs_natural/k", 1);
   k_ = 1;
-  addctrl("realvec/trainSet", trainSet_);
-  addctrl("natural/nPoints", 0);
-  addctrl("bool/done", false);
-  addctrl("natural/nPredictions", 1);
-  setctrlState("natural/nPredictions", true);
-  setctrlState("bool/done", true);
+  addctrl("mrs_realvec/trainSet", trainSet_);
+  addctrl("mrs_natural/nPoints", 0);
+  addctrl("mrs_bool/done", false);
+  addctrl("mrs_natural/nPredictions", 1);
+  setctrlState("mrs_natural/nPredictions", true);
+  setctrlState("mrs_bool/done", true);
   
 }
 
@@ -93,23 +93,23 @@ KNNClassifier::update()
 {
   MRSDIAG("KNNClassifier.cpp - KNNClassifier:update");
   
-  nPredictions_ = getctrl("natural/nPredictions").toNatural();
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", (natural) nPredictions_ + 1);
-  setctrl("real/osrate", getctrl("real/israte"));
+  nPredictions_ = getctrl("mrs_natural/nPredictions").toNatural();
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", (mrs_natural) nPredictions_ + 1);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  inObservations_ = getctrl("natural/inObservations").toNatural();
-  grow_ = getctrl("natural/grow").toNatural();
-  nPoints_ = getctrl("natural/nPoints").toNatural();
-  k_ = getctrl("natural/k").toNatural();
-  string mode = getctrl("string/mode").toString();
+  inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+  grow_ = getctrl("mrs_natural/grow").toNatural();
+  nPoints_ = getctrl("mrs_natural/nPoints").toNatural();
+  k_ = getctrl("mrs_natural/k").toNatural();
+  string mode = getctrl("mrs_string/mode").toString();
 
   if (mode == "train")
     {
       if (inObservations_ != trainSet_.getCols())
 	{
-	  trainSet_.stretch(1, getctrl("natural/inObservations").toNatural());
-	  setctrl("realvec/trainSet", trainSet_);
+	  trainSet_.stretch(1, getctrl("mrs_natural/inObservations").toNatural());
+	  setctrl("mrs_realvec/trainSet", trainSet_);
 	}
     }
   
@@ -117,16 +117,16 @@ KNNClassifier::update()
 
   if (mode == "predict")
     {
-      trainSet_.create(getctrl("realvec/trainSet").toVec().getRows(), 
-		       getctrl("realvec/trainSet").toVec().getCols());
-      trainSet_ = getctrl("realvec/trainSet").toVec();
+      trainSet_.create(getctrl("mrs_realvec/trainSet").toVec().getRows(), 
+		       getctrl("mrs_realvec/trainSet").toVec().getCols());
+      trainSet_ = getctrl("mrs_realvec/trainSet").toVec();
     }
   
 
-  if (getctrl("bool/done").toBool())
+  if (getctrl("mrs_bool/done").toBool())
     { 
-      setctrl("bool/done", (MarControlValue)false);
-      setctrl("realvec/trainSet", trainSet_);
+      setctrl("mrs_bool/done", (MarControlValue)false);
+      setctrl("mrs_realvec/trainSet", trainSet_);
     }
   defaultUpdate();
 }
@@ -137,11 +137,11 @@ KNNClassifier::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   
-  real v;
-  string mode = getctrl("string/mode").toString();
-  real label;
-  natural nlabels = getctrl("natural/nLabels").toNatural();
-  natural prediction;
+  mrs_real v;
+  string mode = getctrl("mrs_string/mode").toString();
+  mrs_real label;
+  mrs_natural nlabels = getctrl("mrs_natural/nLabels").toNatural();
+  mrs_natural prediction;
   int x, y;  
   int p;
   
@@ -158,7 +158,7 @@ KNNClassifier::process(realvec& in, realvec& out)
 	      // expontentially stretch trainSet_ realvec 
 	      grow_ = 2*grow_;
 	      trainSet_.stretch(grow_, inObservations_);
-	      updctrl("natural/grow", grow_);
+	      updctrl("mrs_natural/grow", grow_);
 	    }
 	
 	  for (o=0; o < inObservations_; o++)
@@ -171,7 +171,7 @@ KNNClassifier::process(realvec& in, realvec& out)
 	  
 	  // update number of points
 	  nPoints_= nPoints_ +1;
-	  updctrl("natural/nPoints", nPoints_);
+	  updctrl("mrs_natural/nPoints", nPoints_);
 	}
     }
   
@@ -195,7 +195,7 @@ KNNClassifier::process(realvec& in, realvec& out)
 
 	  for (p = 0; p < nPoints_; p++)
 	    {
-	      real sum = 0;
+	      mrs_real sum = 0;
 	      for (o=0; o < inObservations_-1; o++)
 		{
 		  v = in(o,t);
@@ -209,7 +209,7 @@ KNNClassifier::process(realvec& in, realvec& out)
 	  // Find k smallest distances
 	  
 	  // initialize kMin RealVec
-	  real kmaxV = Distance(0); // max value initialization
+	  mrs_real kmaxV = Distance(0); // max value initialization
 	  int kmaxI = 0; // max Index initialization
 
 	  for (x=0; x < k_; x++)
@@ -224,7 +224,7 @@ KNNClassifier::process(realvec& in, realvec& out)
 	      
 	      if (Distance(y) < kmaxV)
 		{
-		  real kmaxV_t = 0.0;
+		  mrs_real kmaxV_t = 0.0;
 		  int kmaxI_t = 1;
 		  
 		   kMin(kmaxI,0) = Distance(y); // value
@@ -256,7 +256,7 @@ KNNClassifier::process(realvec& in, realvec& out)
 	  
 
 	  // find largest value in kSmallest
-	  real max = kSmallest(0);
+	  mrs_real max = kSmallest(0);
 	  int maxI = 0;     
 	  for (x=0; x<nlabels; x++)
 	    {
@@ -267,7 +267,7 @@ KNNClassifier::process(realvec& in, realvec& out)
 		}
 	    }
 	  prediction = maxI;
-	  out(0,t) = (real)prediction;
+	  out(0,t) = (mrs_real)prediction;
 	  if (nPredictions_ >= 1)
 	    for (x=0; x < nPredictions_; x++)
 	      out(x,t) = kMin(x,1);

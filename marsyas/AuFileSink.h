@@ -24,59 +24,15 @@
    (Next, Sun audio format). 
 */
 
-
-
-
 #ifndef MARSYAS_AUFILESINK_H
 #define MARSYAS_AUFILESINK_H
-
-
-
 
 #include "AbsSoundFileSink.h"
 #include "AuFileSource.h"
 #include "FileName.h"
 
-
-
-
-
-
-
-
-#define SND_MAGIC_NUM 0x2e736e64
-
-/********  NeXT/Sun Soundfile Header Struct   *******/
-
-/* struct snd_header 
+namespace Marsyas
 {
-  char pref[4];
-  long hdrLength;
-  long fileLength;
-  long mode;
-  long srate;
-  long channels;
-  char comment[1024];
-};
-*/ 
-
-
-
-/* Array containing descriptions of
-the various formats for the samples
-of the Next .snd/ Sun .au format */
-
-
-/* types of .snd files */  
-#define SND_FORMAT_UNSPECIFIED 0
-#define SND_FORMAT_MULAW_8     1
-#define SND_FORMAT_LINEAR_8    2
-#define SND_FORMAT_LINEAR_16   3
-#define SND_FORMAT_LINEAR_24   4
-#define SND_FORMAT_LINEAR_32   5
-#define SND_FORMAT_FLOAT       6
-
-
 
 class AuFileSink: public AbsSoundFileSink
 {
@@ -93,13 +49,11 @@ private:
   FILE *sfp_;
   long sfp_begin_;  
 
-  natural nChannels_;
-  
+  mrs_natural nChannels_;
 
   unsigned long ByteSwapLong(unsigned long nLongNumber);
   unsigned short ByteSwapShort (unsigned short nValue);
 
-  
 public:
   AuFileSink(std::string name);
   ~AuFileSink();
@@ -112,8 +66,7 @@ public:
   void process(realvec& in, realvec& out);
 };
 
-
-
+}//namespace Marsyas
 
 #endif    /* !MARSYAS_AUFILESINK_H */ 
 

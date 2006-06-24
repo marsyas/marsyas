@@ -1,9 +1,16 @@
 #include <QApplication>
-#include <math.h>
+#include <QPushButton>
+
+#include <cmath>
 #include <iostream>
 
+#include "common.h" //for PI
+
 #include "Marx2DStackedGraphs.h"
-#include <QPushButton>
+
+using namespace std;
+using namespace Marsyas;
+
 
 class TopPanel : public QWidget
 {
@@ -19,7 +26,7 @@ TopPanel::TopPanel(QWidget *parent)
   realvec* x;
   x = new realvec(num, 4);
   for (int i=0; i<num; i++) {
-    double val = sin( ((double)i/(double)(num-1)) * 2 * M_PI );
+    double val = sin( ((double)i/(double)(num-1)) * 2 * PI );
     
     (*x)(i, 0) = val;
     (*x)(i, 1) = val;
@@ -30,7 +37,7 @@ TopPanel::TopPanel(QWidget *parent)
 //   realvec* x;
 //   x = new realvec(num);
 //   for (int i=0; i<num; i++) {
-//     double val = sin( ((double)i/(double)(num-1)) * 2 * M_PI );
+//     double val = sin( ((double)i/(double)(num-1)) * 2 * PI );
 //     (*x)(i) = val;
 //   }
 

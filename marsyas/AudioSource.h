@@ -23,15 +23,14 @@
    Real-time Audio Source based on RtAudio
 */
 
-
-
 #ifndef MARSYAS_AUDIOSOURCE_H
 #define MARSYAS_AUDIOSOURCE_H
 
-
-
 #include "RtAudio.h"
 #include "MarSystem.h" 
+
+namespace Marsyas
+{
 
 class AudioSource:public MarSystem
 {
@@ -44,17 +43,17 @@ private:
   int nBuffers_;
   bool isInitialized_;
   
-  real gain_;
+  mrs_real gain_;
   
   
-  natural nChannels_;
-  real *data_;  
+  mrs_natural nChannels_;
+  mrs_real *data_;  
   realvec reservoir_;
-  natural reservoirSize_;
-  natural preservoirSize_;
+  mrs_natural reservoirSize_;
+  mrs_natural preservoirSize_;
   
-  natural rstart_;
-  natural ri_;
+  mrs_natural rstart_;
+  mrs_natural ri_;
   
 
   realvec pwin_;
@@ -62,7 +61,7 @@ private:
   realvec pdin_;
   
   
-  real sampleRate_;
+  mrs_real sampleRate_;
   
   
   void addControls();
@@ -78,6 +77,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 
 #endif

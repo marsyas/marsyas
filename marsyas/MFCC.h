@@ -30,26 +30,25 @@ function in the Auditory Toolbox by Malcolm Slaney.
 
 #include "MarSystem.h"	
 
+namespace Marsyas
+{
 
 class MFCC: public MarSystem
 {
 private: 
   void addControls();
   
-  real lowestFrequency_;
-  natural linearFilters_;
-  real linearSpacing_;
-  natural logFilters_;
-  real logSpacing_;
-  natural totalFilters_;
+  mrs_real lowestFrequency_;
+  mrs_natural linearFilters_;
+  mrs_real linearSpacing_;
+  mrs_natural logFilters_;
+  mrs_real logSpacing_;
+  mrs_natural totalFilters_;
 
-  natural fftSize_, pfftSize_;
-  natural samplingRate_, psamplingRate_;
-  natural cepstralCoefs_;
+  mrs_natural fftSize_, pfftSize_;
+  mrs_natural samplingRate_, psamplingRate_;
+  mrs_natural cepstralCoefs_;
 
-
-  
-  
   realvec freqs_;
   realvec lower_;
   realvec center_;
@@ -63,8 +62,6 @@ private:
   realvec fmagnitude_;
 
   bool init_;
-  
-
 
 public:
   MFCC(std::string name);
@@ -74,6 +71,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 

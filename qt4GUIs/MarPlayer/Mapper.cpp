@@ -29,11 +29,10 @@ and also receives updates from the MarSystemWrapper
 which it signals to MainWindow to update the GUI. 
 */
 
-
 #include "Mapper.h" 
 
+using namespace Marsyas;
 
-#include "Mapper.h"
 
 Mapper::Mapper()
 {
@@ -45,7 +44,7 @@ Mapper::Mapper()
   pnet_->addMarSystem(mng.create("SoundFileSource", "src"));
   pnet_->addMarSystem(mng.create("Gain", "gain"));
   pnet_->addMarSystem(mng.create("AudioSink", "dest"));
-  pnet_->linkctrl("bool/notEmpty", "SoundFileSource/src/bool/notEmpty");
+  pnet_->linkctrl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
   
   // make a QT-like object wrapped around the MarSystem
   mwr_ = new MarSystemWrapper(pnet_);
@@ -56,18 +55,18 @@ Mapper::Mapper()
 void 
 Mapper::open(QString fileName, int pos)
 {
-  mwr_->updctrl("SoundFileSource/src/string/filename", fileName.toStdString());  
+  mwr_->updctrl("SoundFileSource/src/mrs_string/filename", fileName.toStdString());  
   // loop forever the piece 
-  mwr_->updctrl("SoundFileSource/src/real/repetitions", -1.0); 
+  mwr_->updctrl("SoundFileSource/src/mrs_real/repetitions", -1.0); 
 
   
-  natural size = 
-    mwr_->getctrl("SoundFileSource/src/natural/size").toNatural();
+  mrs_natural size = 
+    mwr_->getctrl("SoundFileSource/src/mrs_natural/size").toNatural();
   
-  real srate = 
-    mwr_->getctrl("SoundFileSource/src/real/osrate").toReal();    
+  mrs_real srate = 
+    mwr_->getctrl("SoundFileSource/src/mrs_real/osrate").toReal();    
   
-  real duration = (size / srate);
+  mrs_real duration = (size / srate);
   emit durationChanged(duration);
   
   setPos(pos);
@@ -84,12 +83,12 @@ Mapper::open(QString fileName, int pos)
 void 
 Mapper::setPos() 
 {
-  natural pos = mwr_->getctrl("SoundFileSource/src/natural/pos").toNatural();
-  natural size = mwr_->getctrl("SoundFileSource/src/natural/size").toNatural();
-  real srate = 
-    mwr_->getctrl("SoundFileSource/src/real/osrate").toReal();    
+  mrs_natural pos = mwr_->getctrl("SoundFileSource/src/mrs_natural/pos").toNatural();
+  mrs_natural size = mwr_->getctrl("SoundFileSource/src/mrs_natural/size").toNatural();
+  mrs_real srate = 
+    mwr_->getctrl("SoundFileSource/src/mrs_real/osrate").toReal();    
   
-  real duration = (pos / srate);
+  mrs_real duration = (pos / srate);
   emit timeChanged(duration);
   
   float rpos = pos * 1.0 / size;
@@ -106,11 +105,11 @@ Mapper::setPos(int val)
   float fval = val / 100.0f;
   
   float fsize = 
-    mwr_->getctrl("SoundFileSource/src/natural/size").toNatural();
+    mwr_->getctrl("SoundFileSource/src/mrs_natural/size").toNatural();
   fsize *= fval;
   
   int size = (int) fsize;
-  mwr_->updctrl("SoundFileSource/src/natural/pos", size);
+  mwr_->updctrl("SoundFileSource/src/mrs_natural/pos", size);
 }
 
 
@@ -119,7 +118,7 @@ void
 Mapper::setGain(int val)
 {
   float fval = val / 100.0f;
-  mwr_->updctrl("Gain/gain/real/gain", fval);
+  mwr_->updctrl("Gain/gain/mrs_real/gain", fval);
 }
 
 

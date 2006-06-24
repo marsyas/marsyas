@@ -31,6 +31,8 @@
 #include "MarControlValue.h"
 #include "MarEvent.h"
 
+namespace Marsyas
+{
 
 class MarSystem; // forward declaration
 
@@ -68,5 +70,7 @@ public:
     friend std::ostream& operator<<(std::ostream&, MarEvent&);
     friend std::istream& operator>>(std::istream&, MarEvent&);
 };
+
+}//namespace Marsyas
 
 #endif

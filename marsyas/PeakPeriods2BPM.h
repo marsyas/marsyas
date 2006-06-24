@@ -27,15 +27,15 @@
 
 #include "MarSystem.h"	
 
-
+namespace Marsyas
+{
 
 class PeakPeriods2BPM: public MarSystem
 {
 private: 
   void addControls();
-  real srate_;
-  real factor_;
-  
+  mrs_real srate_;
+  mrs_real factor_;
 
 public:
   PeakPeriods2BPM(std::string name);
@@ -45,6 +45,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 

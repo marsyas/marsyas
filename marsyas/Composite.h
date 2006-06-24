@@ -31,9 +31,10 @@ all objects in the composite.
 #ifndef MARSYAS_COMPOSITE_H
 #define MARSYAS_COMPOSITE_H
 
-
-
 #include "MarSystem.h"
+
+namespace Marsyas
+{
 
 class Composite: public MarSystem
 {
@@ -41,9 +42,9 @@ protected:
 
   std::vector<realvec*>   slices_;
 
-  natural marsystemsSize_;
+  mrs_natural marsystemsSize_;
   std::vector<MarSystem*> marsystems_;			
-  natural i;
+  mrs_natural i;
   virtual void addControls();
   
   
@@ -56,8 +57,8 @@ public:
   void updctrl(std::string cname, MarControlValue value);
   void updControl(std::string cname, MarControlValue value);
   void setControl(std::string cname, MarControlValue value);
-  void setControl(std::string cname, real value);
-  void setControl(std::string cname, natural value);
+  void setControl(std::string cname, mrs_real value);
+  void setControl(std::string cname, mrs_natural value);
   
   virtual void update() = 0;
   
@@ -77,7 +78,7 @@ public:
   virtual void process(realvec& in, realvec& out) = 0;
 };
 
-
+}//namespace Marsyas
 
 #endif
 

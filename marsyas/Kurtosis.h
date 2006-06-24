@@ -29,15 +29,17 @@ for characterizing the magnitude spectrum.
 
 #include "MarSystem.h"	
 
+namespace Marsyas
+{
 
 class Kurtosis: public MarSystem
 {
 private: 
   void addControls();
   realvec obsrow_;
-  real z_;
-  real b_;
-  real q_;
+  mrs_real z_;
+  mrs_real b_;
+  mrs_real q_;
 public:
   Kurtosis(std::string name);
   ~Kurtosis();
@@ -46,5 +48,7 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif

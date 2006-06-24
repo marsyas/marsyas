@@ -24,44 +24,44 @@
 the code from the Auditory Toolbox by Malcolm Slaney. 
 */
 
-
-
 #ifndef MARSYAS_ERB_H
 #define MARSYAS_ERB_H
 
 #include "MarSystem.h"
 #include "Fanout.h"
 
+namespace Marsyas
+{
 
 class ERB: public MarSystem
 {
 private: 
   void addControls();
   
-  real lowFreq;
-  real highFreq;
-  real fs;
-  real EarQ;
-  real minBW;
+  mrs_real lowFreq;
+  mrs_real highFreq;
+  mrs_real fs;
+  mrs_real EarQ;
+  mrs_real minBW;
   
-  real A0, A2, B0;
+  mrs_real A0, A2, B0;
   
-  natural numChannels;
-  natural order;
+  mrs_natural numChannels;
+  mrs_natural order;
   
   realvec fcoefs;
   realvec centerFreqs;
   
-  real E(real);
-  real B(real);
-  real B1(real, real);
-  real B2(real);
-  real A11(real, real);
-  real A12(real, real);
-  real A13(real, real);
-  real A14(real, real);
-  real gain(real, real);
-  real abs(real, real);
+  mrs_real E(mrs_real);
+  mrs_real B(mrs_real);
+  mrs_real B1(mrs_real, mrs_real);
+  mrs_real B2(mrs_real);
+  mrs_real A11(mrs_real, mrs_real);
+  mrs_real A12(mrs_real, mrs_real);
+  mrs_real A13(mrs_real, mrs_real);
+  mrs_real A14(mrs_real, mrs_real);
+  mrs_real gain(mrs_real, mrs_real);
+  mrs_real abs(mrs_real, mrs_real);
   
   Fanout *filterBank;
   
@@ -73,6 +73,8 @@ public:
   void update();
   void process(realvec& in, realvec& out); 
 };
+
+}//namespace Marsyas
 
 #endif
 

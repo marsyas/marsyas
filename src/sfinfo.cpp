@@ -1,16 +1,14 @@
 
-
-
-
-#include <stdio.h>
+#include <cstdio>
 
 #include "Collection.h"
 #include "MarSystemManager.h"  
 #include "CommandLineOptions.h"
 
-#include <sstream> 
-using namespace std;
+#include <sstream>
 
+using namespace std;
+using namespace Marsyas;
 
 CommandLineOptions cmd_options;
 
@@ -60,7 +58,7 @@ void sfinfo(vector<string> soundfiles)
   for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
     {
       string sfName = *sfi;
-      src->updctrl("string/filename", sfName);
+      src->updctrl("mrs_string/filename", sfName);
       
       if (src == NULL) 
 	{

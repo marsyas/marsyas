@@ -16,6 +16,8 @@
 #include <stdio.h>
 #include <string.h>
 
+using namespace Marsyas;
+
 MY_FLOAT Stk :: srate = (MY_FLOAT) SRATE;
 std::string Stk :: rawwavepath = RAWWAVE_PATH;
 const Stk::STK_FORMAT Stk :: STK_SINT8 = 1;

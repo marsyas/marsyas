@@ -24,15 +24,16 @@
 
 #include "ScheduledEvent.h"
 #include "MarSystem.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 ScheduledEvent::ScheduledEvent() { event_=NULL; }
 
-ScheduledEvent::ScheduledEvent(natural time, MarEvent* event) {
+ScheduledEvent::ScheduledEvent(mrs_natural time, MarEvent* event) {
     setEvent(time,event);
 }
-ScheduledEvent::ScheduledEvent(natural time, Repeat rep, MarEvent* event) {
+ScheduledEvent::ScheduledEvent(mrs_natural time, Repeat rep, MarEvent* event) {
     setEvent(time,rep,event);
 }
 ScheduledEvent::ScheduledEvent(const ScheduledEvent& s) {
@@ -43,18 +44,18 @@ ScheduledEvent::~ScheduledEvent() {
     if (event_!=NULL) { delete(event_); event_=NULL; }
 }
 
-void ScheduledEvent::setEvent(natural time, MarEvent* event) {
+void ScheduledEvent::setEvent(mrs_natural time, MarEvent* event) {
     setEvent(time,Repeat(),event);
 }
-void ScheduledEvent::setEvent(natural time, Repeat rep, MarEvent* event) {
+void ScheduledEvent::setEvent(mrs_natural time, Repeat rep, MarEvent* event) {
     time_=time; event_=event; repetition=rep;
 }
 void ScheduledEvent::setTimer(TmTimer* t) { timer_=t; }
 
-natural ScheduledEvent::getTime() const { return time_; }
+mrs_natural ScheduledEvent::getTime() const { return time_; }
 MarEvent* ScheduledEvent::getEvent() { return event_; }
 
-natural ScheduledEvent::getRepetitionCount() { return repetition.count; }
+mrs_natural ScheduledEvent::getRepetitionCount() { return repetition.count; }
 string ScheduledEvent::getRepetitionInterval() { return repetition.interval; }
 Repeat ScheduledEvent::getRepetition() { return repetition; }
 
@@ -96,7 +97,7 @@ bool ScheduledEvent::operator>(const ScheduledEvent &se) const {
 }
 
 ostream&
-operator<< (ostream& o, ScheduledEvent& sys) {
+Marsyas::operator<< (ostream& o, ScheduledEvent& sys) {
 //    sys.put(o);
     o << "ScheduledEvent<" << sys.time_ << "," << sys.event_ << ">";
     return o;

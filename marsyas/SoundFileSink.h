@@ -25,25 +25,15 @@ Specific IO classes for various formats like AuFileSink
 are children of this class. 
 */
 
-	
-
 #ifndef MARSYAS_SOUNDFILESINK_H
 #define MARSYAS_SOUNDFILESINK_H
-
 
 #include "realvec.h"
 #include "AuFileSink.h" 
 #include "WavFileSink.h"
 
-
-
-
-#define UnsignedToFloat(u) (((double)((long)(u - 2147483647L - 1))) + 2147483648.0)
-
-
-# define FloatToUnsigned(f)      ((unsigned long)(((long)(f - 2147483648.0)) + 2147483647L) + 1)
-
-
+namespace Marsyas
+{
 
 class SoundFileSink: public MarSystem
 {
@@ -63,31 +53,24 @@ protected:
 
   AbsSoundFileSink* dest_;
 
-  
-
-  
-  
 public:
   SoundFileSink(std::string name);
   SoundFileSink(const SoundFileSink& a);
   ~SoundFileSink();
   MarSystem* clone() const;    
   bool checkType();
-  
-  
-  
+
   virtual void process(realvec& in, realvec& out);
   virtual void update();
   virtual void putHeader();
-  
-  
-  // void putLinear16(natural c, realvec& win);
-  // void putLinear16Swap(natural c, realvec& win);
-  void putFloat(natural c, realvec& win);
+
+  // void putLinear16(mrs_natural c, realvec& win);
+  // void putLinear16Swap(mrs_natural c, realvec& win);
+  void putFloat(mrs_natural c, realvec& win);
   
 };
 
-
+}//namespace Marsyas
 
 #endif /* !MARSYAS_SOUNDFILESINK_H */ 
 

@@ -24,11 +24,13 @@
 
 */
 
-
 #ifndef MARSYAS_FM_H
 #define MARSYAS_FM_H	
 
 #include "MarSystem.h" 
+
+namespace Marsyas
+{
 
 class FM: public MarSystem
 {
@@ -44,22 +46,24 @@ public:
 private: 
 
   void addControls();
-  real mDepth_;	
-  real mSpeed_;
-  real cFrequency_;
-  natural inSamples_;
+  mrs_real mDepth_;	
+  mrs_real mSpeed_;
+  mrs_real cFrequency_;
+  mrs_natural inSamples_;
   
   realvec wavetable_;
-  real wavetableSize_;
-  real mIndex_;
-  real oIndex_;
-  real mRate_;
-  real oRate_;
-  real isRate_;
+  mrs_real wavetableSize_;
+  mrs_real mIndex_;
+  mrs_real oIndex_;
+  mrs_real mRate_;
+  mrs_real oRate_;
+  mrs_real isRate_;
   
 protected:
   
 };
+
+}//namespace Marsyas
 
 
 #endif

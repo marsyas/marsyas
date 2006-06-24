@@ -21,12 +21,10 @@
     \brief Negate the input
 */
 
-
-
-
 #include "Negative.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 Negative::Negative(string name)
 {
@@ -57,15 +55,11 @@ Negative::clone() const
 void
 Negative::update()
 {
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   defaultUpdate();
-  
 }
-
-
-
 
 void 
 Negative::process(realvec& in, realvec& out)

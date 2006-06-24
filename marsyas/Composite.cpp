@@ -28,9 +28,10 @@ all objects in the composite.
 
 */
 
-
 #include "Composite.h"
+
 using namespace std;
+using namespace Marsyas;
 
 Composite::Composite():MarSystem()
 {
@@ -126,15 +127,15 @@ Composite::hasControlState(string cname)
 
 
   // default composite controls
-  if ((nchildcontrol == "natural/inSamples")||
-      (nchildcontrol == "natural/inObservations")||
-      (nchildcontrol == "real/israte")||
-      (nchildcontrol == "natural/onSamples")||
-      (nchildcontrol == "natural/onObservations")||
-      (nchildcontrol == "real/osrate")||
-      (nchildcontrol == "bool/debug")||
-      (nchildcontrol == "string/inObsNames")||
-      (nchildcontrol == "string/onObsNames"))    
+  if ((nchildcontrol == "mrs_natural/inSamples")||
+      (nchildcontrol == "mrs_natural/inObservations")||
+      (nchildcontrol == "mrs_real/israte")||
+      (nchildcontrol == "mrs_natural/onSamples")||
+      (nchildcontrol == "mrs_natural/onObservations")||
+      (nchildcontrol == "mrs_real/osrate")||
+      (nchildcontrol == "mrs_bool/debug")||
+      (nchildcontrol == "mrs_string/inObsNames")||
+      (nchildcontrol == "mrs_string/onObsNames"))    
 
     {
       return ncontrols_.hasState(cname);
@@ -188,14 +189,16 @@ Composite::hasControl(string cname)
   
   string prefix = "/" + type_ + "/" + name_;
 
-  natural cname_l = cname.length();
-  natural prefix_l = prefix.length();
-  
+  //Jen
+  mrs_natural cname_l = cname.length();
+  mrs_natural prefix_l = prefix.length();
+
   if ( cname_l <= prefix_l )
-  	return false;
-	  
+	  return false;
+
   string childcontrol = cname.substr(prefix_l, cname_l-prefix_l);  
   string cprefix = cname.substr(0, prefix_l);
+  //end Jen
   
   // wrong type 
   if (cprefix != prefix) 
@@ -218,7 +221,7 @@ Composite::hasControl(string cname)
 
 
 void
-Composite::setControl(string cname, real value)
+Composite::setControl(string cname, mrs_real value)
 {
   bool controlFound = false;
   
@@ -248,7 +251,7 @@ Composite::setControl(string cname, real value)
 
 
 void
-Composite::setControl(string cname, natural value)
+Composite::setControl(string cname, mrs_natural value)
 {
   bool controlFound = false;
   
@@ -359,8 +362,8 @@ Composite::updControl(string cname, MarControlValue value)
 	    {
 	      
 	      update();
-	      dbg_ = getctrl("bool/debug").toBool();
-	      mute_ = getctrl("bool/mute").toBool();
+	      dbg_ = getctrl("mrs_bool/debug").toBool();
+	      mute_ = getctrl("mrs_bool/mute").toBool();
 	      if ((inObservations_ != inTick_.getRows()) ||
 		  (inSamples_ != inTick_.getCols())      ||
 		  (onObservations_ != outTick_.getRows()) ||
@@ -376,15 +379,15 @@ Composite::updControl(string cname, MarControlValue value)
   
       
       // default controls - semantics of composites 
-      if ((nchildcontrol == "natural/inSamples")||
-	  (nchildcontrol == "natural/inObservations")||
-	  (nchildcontrol == "real/israte")||
-	  (nchildcontrol == "natural/onSamples")||
-	  (nchildcontrol == "natural/onObservations")||
-	  (nchildcontrol == "real/osrate")||
-	  (nchildcontrol == "bool/debug")||
-	  (nchildcontrol == "string/inObsNames")||
-	  (nchildcontrol == "string/onObsNames"))
+      if ((nchildcontrol == "mrs_natural/inSamples")||
+	  (nchildcontrol == "mrs_natural/inObservations")||
+	  (nchildcontrol == "mrs_real/israte")||
+	  (nchildcontrol == "mrs_natural/onSamples")||
+	  (nchildcontrol == "mrs_natural/onObservations")||
+	  (nchildcontrol == "mrs_real/osrate")||
+	  (nchildcontrol == "mrs_bool/debug")||
+	  (nchildcontrol == "mrs_string/inObsNames")||
+	  (nchildcontrol == "mrs_string/onObsNames"))
 	{
 	  
 	  marsystems_[0]->updctrl(nchildcontrol, value);
@@ -484,15 +487,15 @@ Composite::getControl(string cname)
       
       
       // default composite controls 
-      if ((nchildcontrol == "natural/inSamples")||
-	  (nchildcontrol == "natural/inObservations")||
-	  (nchildcontrol == "real/israte")||
-	  (nchildcontrol == "natural/onSamples")||
-	  (nchildcontrol == "natural/onObservations")||
-	  (nchildcontrol == "real/osrate")||
-	  (nchildcontrol == "bool/debug") ||
-	  (nchildcontrol == "string/inObsNames")||
-	  (nchildcontrol == "string/onObsNames"))
+      if ((nchildcontrol == "mrs_natural/inSamples")||
+	  (nchildcontrol == "mrs_natural/inObservations")||
+	  (nchildcontrol == "mrs_real/israte")||
+	  (nchildcontrol == "mrs_natural/onSamples")||
+	  (nchildcontrol == "mrs_natural/onObservations")||
+	  (nchildcontrol == "mrs_real/osrate")||
+	  (nchildcontrol == "mrs_bool/debug") ||
+	  (nchildcontrol == "mrs_string/inObsNames")||
+	  (nchildcontrol == "mrs_string/onObsNames"))
 	{
 
 	  return ncontrols_.getControl(cname);
@@ -514,10 +517,10 @@ Composite::getControl(string cname)
       if (!controlFound)
 	{
 	  MRSWARN("Composite::getctrl - Unsupported control name = " + cname);
-	  return (natural)0;
+	  return (mrs_natural)0;
 	}
     }
-  return (natural)0;
+  return (mrs_natural)0;
 
 }
 

@@ -29,13 +29,8 @@
 #include "MarSystem.h"	
 #include "fft.h"
 
-
-
-#define PSD_POWER 1
-#define PSD_MAG 2
-#define PSD_DB  3
-#define PSD_PD  4 
-
+namespace Marsyas
+{
 
 class PowerSpectrum: public MarSystem
 {
@@ -43,12 +38,11 @@ private:
   void addControls();
   
   std::string stype_;
-  natural ntype_;
+  mrs_natural ntype_;
 
-  natural N2_;
-  real re_, im_;
-  real dB_, pwr_;
-  
+  mrs_natural N2_;
+  mrs_real re_, im_;
+  mrs_real dB_, pwr_;
 
 public:
   PowerSpectrum();
@@ -60,6 +54,8 @@ public:
   void process(realvec& in, realvec& out);
   
 };
+
+}//namespace Marsyas
 
 #endif
 

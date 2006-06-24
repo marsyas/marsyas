@@ -22,12 +22,10 @@
     
 */
 
-
-
 #include "Annotator.h"
+
 using namespace std;
-
-
+using namespace Marsyas;
 
 Annotator::Annotator(string name)
 {
@@ -52,11 +50,11 @@ void
 Annotator::addControls()
 {
   addDefaultControls();
-  addctrl("natural/label", 0);
-  addctrl("string/labels","");
-  setctrlState("string/labels",true);
+  addctrl("mrs_natural/label", 0);
+  addctrl("mrs_string/labels","");
+  setctrlState("mrs_string/labels",true);
   labels_str_ = "";
-  labels_index_ = 0;  
+  labels_index_ = 0; 
 }
 
 
@@ -65,28 +63,27 @@ Annotator::update()
 {
   MRSDIAG("Annotator.cpp - Annotator:update");
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations").toNatural()+1);
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations").toNatural()+1);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  setctrl("string/onObsNames", getctrl("string/inObsNames"));
-  
-  if( labels_str_.compare( getctrl("string/labels").toString() ) != 0 )
+  setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
+
+  if( labels_str_.compare( getctrl("mrs_string/labels").toString() ) != 0 )
   {     
-     labels_str_ = getctrl("string/labels").toString();
-     labels_.clear();
-     
-     while( labels_str_.length() != 0 )
-     {
-        natural i = labels_str_.find(",");
-        labels_.push_back( strtol( labels_str_.substr(0, i).c_str() , NULL , 10 ) );
-        labels_str_ = labels_str_.substr( i+1 , labels_str_.length()-i-1 );
-     }
-     
-     labels_index_ = 0;
+	  labels_str_ = getctrl("mrs_string/labels").toString();
+	  labels_.clear();
+
+	  while( labels_str_.length() != 0 )
+	  {
+		  mrs_natural i = labels_str_.find(",");
+		  labels_.push_back( strtol( labels_str_.substr(0, i).c_str() , NULL , 10 ) );
+		  labels_str_ = labels_str_.substr( i+1 , labels_str_.length()-i-1 );
+	  }
+
+	  labels_index_ = 0;
   }
-  
-  
+
   defaultUpdate();
 }
 
@@ -96,29 +93,27 @@ Annotator::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 
-  natural label = getctrl("natural/label").toNatural();  
+  mrs_natural label = getctrl("mrs_natural/label").toNatural();  
   
   for (o=0; o < inObservations_; o++)
-    for (t = 0; t < inSamples_; t++)
-      {
-	out(o,t) =  in(o,t);
-      }
+	for (t = 0; t < inSamples_; t++)
+	  {
+		  out(o,t) =  in(o,t);
+	  }
+	
+  for (t=0; t < inSamples_; t++) 
+  {
+	if( labels_.size() == 0 )
+	{
+		out(onObservations_-1, t) = (mrs_real)label;
+	}
+	else
+	{
+		out(onObservations_-1, t) = (mrs_real)labels_[labels_index_];
+		labels_index_ = (labels_index_+1) % labels_.size();
+	}
+  } 
 
-       
-       for (t=0; t < inSamples_; t++) 
-       {
-          if( labels_.size() == 0 ){
-             out(onObservations_-1, t) = (real)label;
-          }
-          else{
-             out(onObservations_-1, t) = (real)labels_[labels_index_];
-             labels_index_ = (labels_index_+1) % labels_.size();
-             
-          }
-       }       
-  
-      
-  
 }
 
 

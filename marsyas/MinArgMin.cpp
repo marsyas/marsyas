@@ -23,9 +23,10 @@
     The output is : min1, argmin1, min2, argmin2, .... 
 */
 
-
 #include "MinArgMin.h"
+
 using namespace std;
+using namespace Marsyas;
 
 MinArgMin::MinArgMin(string name)
 {
@@ -51,21 +52,18 @@ void
 MinArgMin::addControls()
 {
   addDefaultControls();
-  addctrl("natural/nMinimums", (natural)1);
+  addctrl("mrs_natural/nMinimums", (mrs_natural)1);
 }
-
-
-
 
 void
 MinArgMin::update()
 {
   type_ = "MinArgMin";
-  natural k = getctrl("natural/nMinimums").toNatural();
+  mrs_natural k = getctrl("mrs_natural/nMinimums").toNatural();
 
-  setctrl("natural/onSamples",  2 * k);
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));  
+  setctrl("mrs_natural/onSamples",  2 * k);
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
   defaultUpdate();
 }
 
@@ -75,8 +73,8 @@ void
 MinArgMin::process(realvec& in, realvec& out)
 {
   out.setval(MAXREAL);
-  natural k = getctrl("natural/nMinimums").toNatural();
-  natural inSamples = getctrl("natural/inSamples").toNatural();
+  mrs_natural k = getctrl("mrs_natural/nMinimums").toNatural();
+  mrs_natural inSamples = getctrl("mrs_natural/inSamples").toNatural();
   
   
   for (t=0; t < inSamples; t++)
@@ -87,7 +85,7 @@ MinArgMin::process(realvec& in, realvec& out)
 	  if (in(0,t) < out(0,2*ki))
 	    {
 	      out(0,2*ki) = in(t);
-	      out(0,2*ki+1) = (real)t;
+	      out(0,2*ki+1) = (mrs_real)t;
 	      break;	    
 	    }
 	}

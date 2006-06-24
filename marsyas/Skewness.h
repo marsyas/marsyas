@@ -27,16 +27,17 @@
 
 #include "MarSystem.h"	
 
-
+namespace Marsyas
+{
 
 class Skewness: public MarSystem
 {
 private: 
   void addControls();
   realvec obsrow_;
-  real z_;
-  real b_;
-  real q_;
+  mrs_real z_;
+  mrs_real b_;
+  mrs_real q_;
 public:
   Skewness(std::string name);
   ~Skewness();
@@ -45,5 +46,7 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif

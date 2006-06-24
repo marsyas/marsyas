@@ -27,7 +27,8 @@
 
 #include "MarSystem.h"	
 
-
+namespace Marsyas
+{
 
 class Mean: public MarSystem
 {
@@ -44,9 +45,10 @@ public:
   
   void update();
   void process(realvec& in, realvec& out);
-  
 
 };
+
+}//namespace Marsyas
 
 #endif
 

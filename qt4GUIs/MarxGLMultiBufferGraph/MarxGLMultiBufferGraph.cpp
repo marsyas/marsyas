@@ -26,6 +26,9 @@ further back along the Z axis as new buffers are introduced.
 
 #include "MarxGLMultiBufferGraph.h"
 
+using namespace std;
+using namespace Marsyas;
+
 
 MarxGLMultiBufferGraph::MarxGLMultiBufferGraph( QWidget* parent, long n, int d )
   : QGLWidget(parent) 

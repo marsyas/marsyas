@@ -29,6 +29,9 @@ used for mixing audio signals before SoudFileSink or AudioSink.
 
 #include "MarSystem.h"	
 
+namespace Marsyas
+{
+
 class Sum: public MarSystem
 {
 private: 
@@ -41,6 +44,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 

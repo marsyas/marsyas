@@ -30,6 +30,9 @@
 #include "MarSystem.h"	
 #include "fft.h"
 
+namespace Marsyas
+{
+
 class AutoCorrelation: public MarSystem
 {
 private:
@@ -47,6 +50,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 

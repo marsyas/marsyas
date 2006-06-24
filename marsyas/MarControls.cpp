@@ -10,9 +10,10 @@ a particular MarSystem.
 
 */
 
-
 #include "MarControls.h"
+
 using namespace std;
+using namespace Marsyas;
 
 
 bool 
@@ -90,12 +91,12 @@ MarControls::updControl(string cname, bool value)
 
 
 bool
-MarControls::updControl(string cname, real value)
+MarControls::updControl(string cname, mrs_real value)
 {
   iter_ = controls_.find(cname);
   if (iter_ == controls_.end())
   {
-    MRSWARN("MarControls::updctrl Unsupported real control name = " + cname);
+    MRSWARN("MarControls::updctrl Unsupported mrs_real control name = " + cname);
     return false;
   }
   else if(!(iter_->second.update(value)))
@@ -109,13 +110,13 @@ MarControls::updControl(string cname, real value)
 
 
 bool
-MarControls::updControl(string cname, natural value)
+MarControls::updControl(string cname, mrs_natural value)
 {
   
   iter_ = controls_.find(cname);
   if (iter_ == controls_.end())
   {
-    MRSWARN("MarControls::updctrl Unsupported natural control name = " + cname);
+    MRSWARN("MarControls::updctrl Unsupported mrs_natural control name = " + cname);
     return false;
   }
   else if(!(iter_->second.update(value)))
@@ -171,26 +172,26 @@ MarControls::size()
 
 
 istream& 
-operator>> (istream& is, MarControls& c)
+Marsyas::operator>> (istream& is, MarControls& c)
 {
   string skipstr;
   
   is >> skipstr >> skipstr >> skipstr;
   
-  natural nControls;
+  mrs_natural nControls;
   is >> nControls;
   
   
-  natural i;
+  mrs_natural i;
   string type;
-  string rstr = "real";
-  string nstr = "natural";
-  string bstr = "bool";
-  string sstr = "string";
-  string vstr = "realvec";
-  real   rcvalue;
+  string rstr = "mrs_real";
+  string nstr = "mrs_natural";
+  string bstr = "mrs_bool";
+  string sstr = "mrs_string";
+  string vstr = "mrs_realvec";
+  mrs_real   rcvalue;
   string scvalue;
-  natural ncvalue;
+  mrs_natural ncvalue;
   bool bcvalue;
   string cname;
   map<string, MarControlValue>::iterator iter;  
@@ -266,7 +267,7 @@ operator>> (istream& is, MarControls& c)
 }
 
 ostream&
-operator<< (ostream& o, const MarControls& c)
+Marsyas::operator<< (ostream& o, const MarControls& c)
 {
   o << "# MarControls = " << c.controls_.size() << endl;
   map<string, MarControlValue>::const_iterator iter;

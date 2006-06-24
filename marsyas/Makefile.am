@@ -54,7 +54,7 @@ Norm.h DownSampler.h WaveletBands.h Sum.h \
 PeakPeriods2BPM.h Histogram.h BeatHistoFeatures.h MslModel.h \
 CommandLineOptions.h RawFileSource.h FM.h \
 ANN_node.h Annotator.h ZeroRClassifier.h KNNClassifier.h Filter.h \
-Kurtosis.h Skewness.h ERB.h CollectionFileSource.h MeddisHairCell.h ViconFileSource.h Cascade.h Parallel.h SeneffEar.h OggFileSource.h MP3FileSource.h ClassOutputSink.h ClipAudioRange.h SilenceRemove.h RtMidi.h Stk.h Limiter.h CompExp.h NoiseGate.h NoiseSource.h Plucked.h Delay.h NormMaxMin.h HarmonicEnhancer.h Reassign.h Normalize.h AMDF.h SMO.h SOM.h LPC.h LPCwarped.h LPCResyn.h WekaSource.h MemorySource.h config.h MidiInput.h MATLABengine.h dsound.h 
+Kurtosis.h Skewness.h ERB.h CollectionFileSource.h MeddisHairCell.h ViconFileSource.h Cascade.h Parallel.h SeneffEar.h MP3FileSource.h ClassOutputSink.h ClipAudioRange.h SilenceRemove.h RtMidi.h Stk.h Limiter.h CompExp.h NoiseGate.h NoiseSource.h Plucked.h Delay.h NormMaxMin.h HarmonicEnhancer.h Reassign.h Normalize.h AMDF.h SMO.h SOM.h LPC.h LPCwarped.h LPCResyn.h LSP.h WekaSource.h MemorySource.h config.h MidiInput.h MATLABengine.h NumericLib.h vmblock.h lu.h dsound.h 
 
 lib_LIBRARIES         = libmarsyas.a
 
@@ -88,7 +88,7 @@ Norm.cpp DownSampler.cpp WaveletBands.cpp Sum.cpp \
 PeakPeriods2BPM.cpp Histogram.cpp BeatHistoFeatures.cpp MslModel.cpp \
 CommandLineOptions.cpp RawFileSource.cpp FM.cpp \
 ANN_node.cpp Annotator.cpp ZeroRClassifier.cpp KNNClassifier.cpp Filter.cpp \
-Kurtosis.cpp Skewness.cpp AMDF.cpp SMO.cpp SOM.cpp LPC.cpp LPCwarped.cpp LPCResyn.cpp ERB.cpp CollectionFileSource.cpp MeddisHairCell.cpp ViconFileSource.cpp Cascade.cpp Parallel.cpp SeneffEar.cpp OggFileSource.cpp MP3FileSource.cpp ClassOutputSink.cpp ClipAudioRange.cpp SilenceRemove.cpp \
-RtMidi.cpp Stk.cpp Limiter.cpp NoiseSource.cpp CompExp.cpp NoiseGate.cpp Plucked.cpp Delay.cpp NormMaxMin.cpp HarmonicEnhancer.cpp Reassign.cpp Normalize.cpp WekaSource.cpp MemorySource.cpp MidiInput.cpp MATLABengine.cpp
+Kurtosis.cpp Skewness.cpp AMDF.cpp SMO.cpp SOM.cpp LPC.cpp LPCwarped.cpp LPCResyn.cpp LSP.cpp ERB.cpp CollectionFileSource.cpp MeddisHairCell.cpp ViconFileSource.cpp Cascade.cpp Parallel.cpp SeneffEar.cpp MP3FileSource.cpp ClassOutputSink.cpp ClipAudioRange.cpp SilenceRemove.cpp \
+RtMidi.cpp Stk.cpp Limiter.cpp NoiseSource.cpp CompExp.cpp NoiseGate.cpp Plucked.cpp Delay.cpp NormMaxMin.cpp HarmonicEnhancer.cpp Reassign.cpp Normalize.cpp WekaSource.cpp MemorySource.cpp MidiInput.cpp NumericLib.cpp vmblock.cpp lu.cpp MATLABengine.cpp
 
 

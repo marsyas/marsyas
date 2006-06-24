@@ -28,9 +28,10 @@ in sequence.
 #ifndef MARSYAS_SERIES_H
 #define MARSYAS_SERIES_H
 
-
-
 #include "Composite.h" 
+
+namespace Marsyas
+{
 
 class Series: public Composite
 {
@@ -48,12 +49,12 @@ public:
   ~Series();
   MarSystem* clone() const;  
   
-  real* const recvControls();
+  mrs_real* const recvControls();
   void update();
   void process(realvec& in, realvec& out);
 };
 
-
+}//namespace Marsyas
 
 #endif
 

@@ -16,7 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /** 
     \class NormMaxMin
     \brief Normalize my mapping min/max range to user specified range
@@ -24,11 +23,10 @@
 
 */
 
-
 #include "NormMaxMin.h"
+
 using namespace std;
-
-
+using namespace Marsyas;
 
 NormMaxMin::NormMaxMin(string name)
 {
@@ -54,20 +52,20 @@ void
 NormMaxMin::addControls()
 {
   addDefaultControls();
-  addctrl("real/lower", 0.0);
-  addctrl("real/upper", 1.0);
+  addctrl("mrs_real/lower", 0.0);
+  addctrl("mrs_real/upper", 1.0);
   maximums_.create(1);
   minimums_.create(1);
-  addctrl("realvec/maximums", maximums_);
-  addctrl("realvec/minimums", minimums_);
-  setctrlState("realvec/maximums", true);
-  setctrlState("realvec/minimums", true);
+  addctrl("mrs_realvec/maximums", maximums_);
+  addctrl("mrs_realvec/minimums", minimums_);
+  setctrlState("mrs_realvec/maximums", true);
+  setctrlState("mrs_realvec/minimums", true);
 
-  addctrl("bool/train", true);
-  setctrlState("bool/train", true);
+  addctrl("mrs_bool/train", true);
+  setctrlState("mrs_bool/train", true);
 
-  addctrl("bool/init", false);
-  setctrlState("bool/init", true);
+  addctrl("mrs_bool/init", false);
+  setctrlState("mrs_bool/init", true);
   
 }
 
@@ -77,17 +75,17 @@ NormMaxMin::update()
 {
   MRSDIAG("NormMaxMin.cpp - NormMaxMin:update");
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-  setctrl("string/onObsNames", getctrl("string/inObsNames"));
+  setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
   defaultUpdate();  
   
-  init_ = getctrl("bool/init").toBool();
+  init_ = getctrl("mrs_bool/init").toBool();
 
-  natural msize = (getctrl("realvec/maximums").toVec().getSize());
-  natural nsize = maximums_.getSize();
+  mrs_natural msize = (getctrl("mrs_realvec/maximums").toVec().getSize());
+  mrs_natural nsize = maximums_.getSize();
   
   
   if (msize != nsize) 
@@ -104,15 +102,15 @@ NormMaxMin::update()
 
       maximums_.setval(DBL_MIN);
       minimums_.setval(DBL_MAX);
-      setctrl("realvec/maximums", maximums_);
-      setctrl("realvec/minimums", minimums_);  
+      setctrl("mrs_realvec/maximums", maximums_);
+      setctrl("mrs_realvec/minimums", minimums_);  
     }
-  train_ = getctrl("bool/train").toBool();
+  train_ = getctrl("mrs_bool/train").toBool();
   
   if (!train_)
     {
-      maximums_ = getctrl("realvec/maximums").toVec();
-      minimums_ = getctrl("realvec/minimums").toVec();
+      maximums_ = getctrl("mrs_realvec/maximums").toVec();
+      minimums_ = getctrl("mrs_realvec/minimums").toVec();
     }
   
   
@@ -124,14 +122,14 @@ void
 NormMaxMin::process(realvec& in, realvec& out)
 {
   init_ = true;
-  setctrl("bool/init", (MarControlValue)init_);
+  setctrl("mrs_bool/init", (MarControlValue)init_);
   
   checkFlow(in,out);
 
 
-  lower_ = getctrl("real/lower").toReal();
-  upper_ = getctrl("real/upper").toReal();
-  train_ = getctrl("bool/train").toBool();
+  lower_ = getctrl("mrs_real/lower").toReal();
+  upper_ = getctrl("mrs_real/upper").toReal();
+  train_ = getctrl("mrs_bool/train").toBool();
   
   if (lower_ > upper_) 
     {
@@ -156,8 +154,8 @@ NormMaxMin::process(realvec& in, realvec& out)
 	    
 	  }
       
-      setctrl("realvec/maximums", maximums_);
-      setctrl("realvec/minimums", minimums_);  
+      setctrl("mrs_realvec/maximums", maximums_);
+      setctrl("mrs_realvec/minimums", minimums_);  
     }
   else
     {
@@ -169,10 +167,6 @@ NormMaxMin::process(realvec& in, realvec& out)
 	  }
       
     }
-  
-	
-  
-
 }
 
 

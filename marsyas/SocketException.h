@@ -22,8 +22,14 @@
     \author Stuart Bray June 2004
 */
 
+#ifndef SOCKETEXCEPTION_H
+#define SOCKETEXCEPTION_H
+
 #include <string>
 #include <iostream>
+
+namespace Marsyas
+{
 
 class SocketException
 {
@@ -38,4 +44,6 @@ class SocketException
   std::string message;
 };
 
+}//namespace Marsyas
 
+#endif

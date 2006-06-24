@@ -28,6 +28,8 @@
 
 #include "MarSystem.h"	
 
+namespace Marsyas
+{
 
 class DownSampler: public MarSystem
 {
@@ -41,6 +43,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 	

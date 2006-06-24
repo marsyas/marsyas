@@ -25,10 +25,10 @@
 using the Fast Fourier Transform (FFT). 
 */
 
-
 #include "Spectrum.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 
 Spectrum::Spectrum(string name)
@@ -51,10 +51,10 @@ void
 Spectrum::addControls()
 {
   addDefaultControls();
-  addctrl("real/cutoff", 1.0);
-  setctrlState("real/cutoff", true);
-  addctrl("real/lowcutoff", 0.0);
-  setctrlState("real/lowcutoff", true);
+  addctrl("mrs_real/cutoff", 1.0);
+  setctrlState("mrs_real/cutoff", true);
+  addctrl("mrs_real/lowcutoff", 0.0);
+  setctrlState("mrs_real/lowcutoff", true);
 }
 
 MarSystem* 
@@ -68,12 +68,12 @@ void
 Spectrum::update()
 {
   
-  setctrl("natural/onSamples", (natural)1);
-  setctrl("natural/onObservations", getctrl("natural/inSamples"));
-  setctrl("real/osrate", getctrl("real/israte").toReal() / getctrl("natural/inSamples").toNatural());
+  setctrl("mrs_natural/onSamples", (mrs_natural)1);
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal() / getctrl("mrs_natural/inSamples").toNatural());
   
-  cutoff_ = getctrl("real/cutoff").toReal();
-  lowcutoff_ = getctrl("real/lowcutoff").toReal();
+  cutoff_ = getctrl("mrs_real/cutoff").toReal();
+  lowcutoff_ = getctrl("mrs_real/lowcutoff").toReal();
 
 
   defaultUpdate();
@@ -82,12 +82,12 @@ Spectrum::update()
     {
       tempVec_.stretch(inSamples_);
       ostringstream oss;
-      for (natural n=0; n < onObservations_/2; n++)
+      for (mrs_natural n=0; n < onObservations_/2; n++)
 	{
 	  oss << "rbin_" << n << ",";
 	  oss << "ibin_" << n << ",";
 	}
-      setctrl("string/onObsNames", oss.str());
+      setctrl("mrs_string/onObsNames", oss.str());
     }
   
   ponObservations_ = onObservations_;
@@ -109,7 +109,7 @@ Spectrum::process(realvec& in, realvec& out)
       out(t,0) = in(0,t);	
     }
 
-  real *tmp = tempVec_.getData();
+  mrs_real *tmp = tempVec_.getData();
   tmp = out.getData();
   myfft_.rfft(tmp, inSamples_/2, FFT_FORWARD);
 
@@ -117,7 +117,7 @@ Spectrum::process(realvec& in, realvec& out)
   
   if (cutoff_ != 1.0) 
     {
-      for (t= (natural)((cutoff_ * inSamples_) / 2); t < inSamples_/2; t++)
+      for (t= (mrs_natural)((cutoff_ * inSamples_) / 2); t < inSamples_/2; t++)
 	{
 	  out(2*t) = 0;
 	  out(2*t+1) = 0;
@@ -126,7 +126,7 @@ Spectrum::process(realvec& in, realvec& out)
   
   if (lowcutoff_ != 0.0)
     {
-      for (t=0; t < (natural)((lowcutoff_ * inSamples_) /2); t++)
+      for (t=0; t < (mrs_natural)((lowcutoff_ * inSamples_) /2); t++)
 	{
 	  out(2*t) = 0;
 	  out(2*t+1) = 0;	

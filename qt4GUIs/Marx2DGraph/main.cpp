@@ -1,9 +1,10 @@
 #include <QApplication>
+#include <QPushButton>
 #include <math.h>
 #include <iostream>
+#include <string>
 
 #include "Marx2DGraph.h"
-#include <QPushButton>
 #include "TopPanelNew.h"
 
 int main(int argc, char *argv[])
@@ -12,12 +13,12 @@ int main(int argc, char *argv[])
   QApplication app(argc, argv);
 
   if (argc < 2) {
-    cout << "Usuage:\n\t$ ./Marx2DGraph /path/to/audiofile.au\n";
+	std::cout << "Usuage:\n\t$ ./Marx2DGraph /path/to/audiofile.au\n";
     return 0;
   }
 
-  string progName = argv[0];
-  string audioFile = argv[1];
+  std::string progName = argv[0];
+  std::string audioFile = argv[1];
 
   TopPanelNew* panel = new TopPanelNew( audioFile );
   

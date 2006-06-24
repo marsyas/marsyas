@@ -25,10 +25,10 @@
 unrelated convenience utilities related to filenames. 
 */
 
-
 #include "FileName.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 FileName::FileName()
 {

@@ -24,18 +24,15 @@
    List of files used for batch processing.
 */
 
-
-
 #include "Collection.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 Collection::Collection()
 {
   collectionList_.reserve(1000);
 }
-
-
 
 Collection::~Collection()
 {
@@ -67,7 +64,7 @@ Collection::write(string filename)
 
 
 ostream& 
-operator<<(ostream& o, const Collection& l)
+Marsyas::operator<<(ostream& o, const Collection& l)
 {
   // o << "# MARSYAS Collection " << endl;
   // o << "# name = " << l.name_ << endl << endl;
@@ -81,10 +78,10 @@ operator<<(ostream& o, const Collection& l)
 
 
 
-natural
+mrs_natural
 Collection::size()
 {
-  return (natural)collectionList_.size();
+  return (mrs_natural)collectionList_.size();
 }
 
 
@@ -100,10 +97,10 @@ Collection::add(string entry)
   collectionList_.push_back(entry);
 }
 
-natural 
+mrs_natural 
 Collection::getSize() 
 {
-  natural size = collectionList_.size();
+  mrs_natural size = collectionList_.size();
   return size;
 }
 
@@ -118,7 +115,7 @@ Collection::shuffle()
   
   for (i=0;  i < size; i++)
     {
-      rind = (unsigned int)(((real)rand() / (real)(RAND_MAX))*size);
+      rind = (unsigned int)(((mrs_real)rand() / (mrs_real)(RAND_MAX))*size);
       temp = collectionList_[i];
       collectionList_[i] = collectionList_[rind];
       collectionList_[rind] = temp;
@@ -152,7 +149,7 @@ Collection::entry(unsigned int i)
 
 
 istream& 
-operator>>(istream& i, Collection& l)
+Marsyas::operator>>(istream& i, Collection& l)
 {
   
   MRSDIAG("Collection.cpp - operator>>");

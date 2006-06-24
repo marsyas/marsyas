@@ -24,18 +24,18 @@
     Class for handling command-line options 
 */
 
-
 #ifndef MARSYAS_COMMANDLINEOPTIONS_H
 #define MARSYAS_COMMANDLINEOPTIONS_H
 
-
 #include "common.h" 
-
 
 #include <vector> 
 #include <string> 
 #include <map>
 #include <iostream> 
+
+namespace Marsyas
+{
 
 class CommandLineOptions
 {
@@ -44,35 +44,34 @@ protected:
   std::vector<std::string> remaining_;
   
 
-  std::map<std::string, real> realOptions_;
-  std::map<std::string, natural> naturalOptions_;
+  std::map<std::string, mrs_real> realOptions_;
+  std::map<std::string, mrs_natural> naturalOptions_;
   std::map<std::string, std::string> stringOptions_;
   std::map<std::string, bool> boolOptions_;
   std::map<std::string, std::string> longNames_;
   
   std::map<std::string, std::string>::iterator nameIter_;
-  std::map<std::string, real>::iterator riter_;
-  std::map<std::string, natural>::iterator niter_;
+  std::map<std::string, mrs_real>::iterator riter_;
+  std::map<std::string, mrs_natural>::iterator niter_;
   std::map<std::string, std::string>::iterator siter_;
   std::map<std::string, bool>::iterator biter_;
 
-
 public:
   CommandLineOptions();
-  void addRealOption(std::string lname, std::string sname, real value);
-  void addNaturalOption(std::string lname, std::string sname, natural value);
+  void addRealOption(std::string lname, std::string sname, mrs_real value);
+  void addNaturalOption(std::string lname, std::string sname, mrs_natural value);
   void addStringOption(std::string lname, std::string sname, std::string value);
   void addBoolOption(std::string lname, std::string sname, bool value);
 
   void readOptions(int argc, const char** argv);
   bool getBoolOption(std::string lname);
-  natural getNaturalOption(std::string lname);
-  real getRealOption(std::string lname);
+  mrs_natural getNaturalOption(std::string lname);
+  mrs_real getRealOption(std::string lname);
   std::string getStringOption(std::string lname);
-  std::vector<std::string> getRemaining();
-  
-  
+  std::vector<std::string> getRemaining();  
 };
+
+}//namespace Marsyas
 
 #endif
 

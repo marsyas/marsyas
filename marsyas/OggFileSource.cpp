@@ -25,10 +25,10 @@
 This class reads an ogg file using the vorbis ogg decoder library.
 */
 
-
 #include "OggFileSource.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 OggFileSource::OggFileSource(string name)
 {
@@ -37,7 +37,6 @@ OggFileSource::OggFileSource(string name)
   notEmpty_ = false;
   addControls();
 }
-
 
 OggFileSource::~OggFileSource()
 {
@@ -70,39 +69,39 @@ OggFileSource::addControls()
   addDefaultControls();
 
   // nChannels is one for now
-  addctrl("natural/nChannels",1);
-  addctrl("natural/bitRate", 160000);
-  setctrlState("natural/nChannels", true);
-  addctrl("bool/init", false);
-  setctrlState("bool/init", true);
-  addctrl("bool/notEmpty", true);
-  addctrl("natural/loopPos", (natural)0);
-  setctrlState("natural/loopPos", true);
-  addctrl("natural/pos", (natural)0);
-  setctrlState("natural/pos", true);
-  addctrl("string/filename", "daufile");
-  setctrlState("string/filename", true);
-  addctrl("natural/size", (natural)0);
-  addctrl("string/filetype", "ogg");
-  addctrl("real/repetitions", 1.0);
-  setctrlState("real/repetitions", true);
-  addctrl("real/duration", -1.0);
-  setctrlState("real/duration", true);
+  addctrl("mrs_natural/nChannels",1);
+  addctrl("mrs_natural/bitRate", 160000);
+  setctrlState("mrs_natural/nChannels", true);
+  addctrl("mrs_bool/init", false);
+  setctrlState("mrs_bool/init", true);
+  addctrl("mrs_bool/notEmpty", true);
+  addctrl("mrs_natural/loopPos", (mrs_natural)0);
+  setctrlState("mrs_natural/loopPos", true);
+  addctrl("mrs_natural/pos", (mrs_natural)0);
+  setctrlState("mrs_natural/pos", true);
+  addctrl("mrs_string/filename", "daufile");
+  setctrlState("mrs_string/filename", true);
+  addctrl("mrs_natural/size", (mrs_natural)0);
+  addctrl("mrs_string/filetype", "ogg");
+  addctrl("mrs_real/repetitions", 1.0);
+  setctrlState("mrs_real/repetitions", true);
+  addctrl("mrs_real/duration", -1.0);
+  setctrlState("mrs_real/duration", true);
 
-  addctrl("bool/advance", false);
-  setctrlState("bool/advance", true);
+  addctrl("mrs_bool/advance", false);
+  setctrlState("mrs_bool/advance", true);
 
-  addctrl("bool/shuffle", false);
-  setctrlState("bool/shuffle", true);
+  addctrl("mrs_bool/shuffle", false);
+  setctrlState("mrs_bool/shuffle", true);
 
-  addctrl("natural/cindex", 0);
-  setctrlState("natural/cindex", true);
+  addctrl("mrs_natural/cindex", 0);
+  setctrlState("mrs_natural/cindex", true);
 
 
-  addctrl("string/allfilenames", ",");
-  addctrl("natural/numFiles", 1);
+  addctrl("mrs_string/allfilenames", ",");
+  addctrl("mrs_natural/numFiles", 1);
 
-  addctrl("string/currentlyPlaying", "daufile");
+  addctrl("mrs_string/currentlyPlaying", "daufile");
 }
 
 
@@ -116,12 +115,12 @@ OggFileSource::getHeader(string filename)
 {
   // if we have a file open already, close it
   closeFile();
-  real duration = 0;
-  real israte = 22050.0;
-  natural nChannels = 1;
-  natural size = 0;
+  mrs_real duration = 0;
+  mrs_real israte = 22050.0;
+  mrs_natural nChannels = 1;
+  mrs_natural size = 0;
   notEmpty_ = false;
-  natural bitRate = 128*1024;
+  mrs_natural bitRate = 128*1024;
   
 #ifdef OGG_VORBIS
   FILE* fp = fopen(filename.c_str(), "rb");
@@ -141,12 +140,12 @@ OggFileSource::getHeader(string filename)
   {
     MRSWARN(filename + " does not appear to be an Ogg bitstream.");
   }
-  setctrl("natural/nChannels", nChannels);
-  setctrl("real/israte", israte);
-  setctrl("natural/size", size);
-  setctrl("bool/notEmpty", (MarControlValue)notEmpty_);
-  setctrl("natural/bitRate", bitRate);
-  updctrl("real/duration", duration);
+  setctrl("mrs_natural/nChannels", nChannels);
+  setctrl("mrs_real/israte", israte);
+  setctrl("mrs_natural/size", size);
+  setctrl("mrs_bool/notEmpty", (MarControlValue)notEmpty_);
+  setctrl("mrs_natural/bitRate", bitRate);
+  updctrl("mrs_real/duration", duration);
 }
 
 /**
@@ -164,12 +163,12 @@ OggFileSource::update()
 {
   MRSDIAG("OggFileSource::update");
 
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  natural pos = getctrl("natural/pos").toNatural();
-  natural size = getctrl("natural/size").toNatural();
+  mrs_natural pos = getctrl("mrs_natural/pos").toNatural();
+  mrs_natural size = getctrl("mrs_natural/size").toNatural();
 
 #ifdef OGG_VORBIS
   // if the user has seeked somewhere in the file
@@ -193,12 +192,12 @@ void OggFileSource::process(realvec& in, realvec& out)
   if (notEmpty_)
   {
 #ifdef OGG_VORBIS
-    /*real duration = getctrl("real/duration").toReal();
-    real rate = getctrl("real/israte").toReal();
+    /*mrs_real duration = getctrl("mrs_real/duration").toReal();
+    mrs_real rate = getctrl("mrs_real/israte").toReal();
     */
-    natural observations = getctrl("natural/inObservations").toNatural();
-    natural samples = getctrl("natural/inSamples").toNatural();
-    natural israte = (natural)getctrl("real/israte").toReal();
+    mrs_natural observations = getctrl("mrs_natural/inObservations").toNatural();
+    mrs_natural samples = getctrl("mrs_natural/inSamples").toNatural();
+    mrs_natural israte = (mrs_natural)getctrl("mrs_real/israte").toReal();
 
     //size_t size = (size_t)(duration * rate);
     size_t size = vi->channels*sizeof(short int)*((size_t)(observations * samples));

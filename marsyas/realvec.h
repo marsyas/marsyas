@@ -18,96 +18,89 @@
 
 /** 
     \class realvec
-    \brief Vector of real values
+    \brief Vector of mrs_real values
 
-    Array (vector in the numerical sense) of real values. Basic 
+    Array (vector in the numerical sense) of mrs_real values. Basic 
 arithmetic operations and statistics are supported. 
 */
 
-	
-
 #ifndef MARSYAS_REALVEC_H
-#define MARSYAS_REALVEC_H 1
+#define MARSYAS_REALVEC_H 
 
-
-
-#include <math.h>
-#include "common.h"
-
-
+#include <cmath>
 #include <string>
 #include <iostream>
 #include <fstream>
 
-
+#include "common.h"
 #include "MrsLog.h"
 #include "Communicator.h"
+
+namespace Marsyas
+{
 
 class realvec 
 {
 private:
-  real *data_;
-  natural size_;
-  natural rows_;
-  natural cols_;
-
-  
+  mrs_real *data_;
+  mrs_natural size_;
+  mrs_natural rows_;
+  mrs_natural cols_;
   
 public:
   realvec();
   ~realvec();
-  realvec(natural size);
-  realvec(natural rows, natural cols);
-  
+  realvec(mrs_natural size);
+  realvec(mrs_natural rows, mrs_natural cols);
   realvec(const realvec& a);
   realvec& operator=(const realvec& a);
+
+  void allocate(mrs_natural size);//just allocate(size)  
+  void allocate(mrs_natural rows, mrs_natural cols);	
+
+  void create(mrs_natural size);// allocate(size) + fill zeros
+  void create(mrs_natural rows, mrs_natural cols); 
+  void create(mrs_real val, mrs_natural rows, mrs_natural cols);	
   
+  void stretch(mrs_natural rows, mrs_natural cols); // allocate(size) + keep old vals
+  void stretch(mrs_natural size);// allocate(size) + keep old vals
 
-  void create(natural size);		// allocate(size) + fill zeros
-  void stretch(natural size);		// allocate(size) + keep old vals
-  void allocate(natural size);	        // just allocate(size)  
-
-  void create(natural rows, natural cols); 
-  void stretch(natural rows, natural cols); // allocate(size) + keep old vals
-  void create(real val, natural rows, natural cols);	
-  void allocate(natural rows, natural cols);	        
-  int  invert(realvec& res);
-
-
-  void setval(natural start, natural end, real val);
-  void setval(real val);			// set all entries to val 
-  natural getSize() const;
-  natural getCols();
-  natural getRows();
+  void setval(mrs_natural start, mrs_natural end, mrs_real val);// set all entries to val 
+  void setval(mrs_real val);// set all entries to val 
   
-  real *getData();			// dirty for easy integration 
-
+  mrs_natural getSize() const;
+  mrs_natural getCols() const;
+  mrs_natural getRows() const;
+  
+  mrs_real *getData() const;// dirty for easy integration 
 
   void shuffle();
   
-
   // vector operations 
   realvec& operator+=(const realvec& vec);
   realvec& operator-=(const realvec& vec);
   realvec& operator*=(const realvec& vec);
   realvec& operator/=(const realvec& vec);
-  realvec& operator*=(const real val);
-  realvec& operator/=(const real val);
-  realvec& operator+=(const real val);
-  realvec& operator-=(const real val);
+  realvec& operator*=(const mrs_real val);
+  realvec& operator/=(const mrs_real val);
+  realvec& operator+=(const mrs_real val);
+  realvec& operator-=(const mrs_real val);
 
   friend realvec operator+(const realvec& vec1, const realvec& vec2);
-  friend realvec operator-(const realvec& vec1, const realvec& vec2);  
-  
+  friend realvec operator-(const realvec& vec1, const realvec& vec2);
+   
   // item access
-  real& operator()(const natural i);
-  real operator()(const natural i) const;
-  real& operator()(const long r, const long c);
-  real operator()(const long r, const long c) const;
-  
+  mrs_real& operator()(const mrs_natural i);
+  mrs_real operator()(const mrs_natural i) const;
+  mrs_real& operator()(const long r, const long c);
+  mrs_real operator()(const long r, const long c) const;
   // Matlab-like indexing
-  realvec operator()(std::string r, std::string c);
-  realvec operator()(std::string r);
+  realvec operator()(std::string r, std::string c);//Jen
+  realvec operator()(std::string r);//Jen
+  // vector indexing
+  realvec getRow(const mrs_natural r) const;//lmartins
+  realvec getCol(const mrs_natural c) const;//lmartins
+
   
   // output functions 
   void debug_info();
@@ -116,31 +109,46 @@ public:
   friend std::ostream& operator<<(std::ostream&, const realvec&);
   friend std::istream& operator>>(std::istream&, realvec&);
 
-  // Statistics 
-  real mean();
-  void meanSample(realvec &means);
-  real sum();
-  real std();
-  void stdSample(realvec &stds);
-  void stdSample(realvec &means, realvec &stds);
-  real var();
+  // Observations statistics 
+  realvec meanObs() const;//lmartins
+  realvec stdObs() const;//lmartins
+  realvec varObs() const;//lmartins
+  void normObs();//lmartins
+  
+  // Vector/Matrix Algebra and Statistics
+  mrs_real maxval() const;//lmartins
+  mrs_real minval() const;//lmartins
+  mrs_real mean() const;
+  mrs_real sum() const;
+  mrs_real std() const;
+  mrs_real var() const;
   void abs();
   void sqr();
   void sqroot();
-  void renorm(real old_mean, real old_std, real new_mean, real new_std);
+  void renorm(mrs_real old_mean, mrs_real old_std, mrs_real new_mean, mrs_real new_std);
+  mrs_natural invert(realvec& res);//lmartins: this seems to be both inplace and returning the inverse matrix in "res"... why both?!? [!][?] 
+
+  realvec covariance() const; //Typical covariance calculation, as performed by MATLAB cov(). //lmartins
+  realvec covariance2() const;//Marsyas0.1 covariance calculation (assumes standardized data, and uses biased estimation) //lmartins
+  realvec correlation() const; //lmartins
+  mrs_real trace() const; //lmartins
+  mrs_real det() const; //lmartins
+  
+  // Distances and metrics (should this be here?)[?]
+  static mrs_real divergenceShape(realvec Ci, realvec Cj);//lmartins 
+  static mrs_real bhattacharyyaShape(realvec Ci, realvec Cj); //lmartins
+
+  // Communications
   void send(Communicator *com);
+
 };
-
-
-
-
 
 
 inline 
 realvec&
-realvec::operator/=(const real val)
+realvec::operator/=(const mrs_real val)
 {
-  for (natural i=0; i<size_; i++)
+  for (mrs_natural i=0; i<size_; i++)
     data_[i] /= val;
   return *this;
 }
@@ -148,42 +156,36 @@ realvec::operator/=(const real val)
 
 inline 
 realvec&
-realvec::operator*=(const real val)
+realvec::operator*=(const mrs_real val)
 {
-  for (natural i=0; i<size_; i++)
+  for (mrs_natural i=0; i<size_; i++)
     data_[i] *= val;
   return *this;
 }
 
-
-
-
 inline 
 realvec&
-realvec::operator-=(const real val)
+realvec::operator-=(const mrs_real val)
 {
-  for (natural i=0; i<size_; i++)
+  for (mrs_natural i=0; i<size_; i++)
     data_[i] -= val;
   return *this;
 }
 
 inline 
 realvec&
-realvec::operator+=(const real val)
+realvec::operator+=(const mrs_real val)
 {
-  for (natural i=0; i<size_; i++)
+  for (mrs_natural i=0; i<size_; i++)
     data_[i] += val;
   return *this;
 }
-
-
-
   
 inline
 realvec& 
 realvec::operator+=(const realvec& vec)
 {
-  for (natural i=0; i<size_; i++)
+  for (mrs_natural i=0; i<size_; i++)
     data_[i] += vec.data_[i];
   return *this;
 }
@@ -192,22 +194,16 @@ inline
 realvec& 
 realvec::operator-=(const realvec& vec)
 {
-  for (natural i=0; i<size_; i++)
+  for (mrs_natural i=0; i<size_; i++)
     data_[i] -= vec.data_[i];
   return *this;
 }
-
-
-
-
-
-
 
 inline
 realvec& 
 realvec::operator*=(const realvec& vec)
 {
-  for (natural i=0; i<size_; i++)
+  for (mrs_natural i=0; i<size_; i++)
     data_[i] *= vec.data_[i];
   return *this;
 }
@@ -216,14 +212,13 @@ inline
 realvec& 
 realvec::operator/=(const realvec& vec)
 {
-  for (natural i=0; i<size_; i++)
+  for (mrs_natural i=0; i<size_; i++)
     data_[i] /= vec.data_[i];
   return *this;
 }
-  
-
+ 
 inline 
-real realvec::operator()(const long r, const long c) const
+mrs_real realvec::operator()(const long r, const long c) const
 {
   MRSASSERT(r < rows_);
   MRSASSERT(c < cols_);
@@ -232,29 +227,24 @@ real realvec::operator()(const long r, const long c) const
   // return data_[r * cols_ + c];
 }
 
-
 inline 
-real& realvec::operator()(const long r, const long c)
+mrs_real& realvec::operator()(const long r, const long c)
 {
-  
   MRSASSERT(r < rows_);
   MRSASSERT(c < cols_);
 
   return data_[c * rows_ + r];  
 }
 
-
-
 inline 
-real realvec::operator()(const natural i) const
+mrs_real realvec::operator()(const mrs_natural i) const
 {
   MRSASSERT(i < size_);
   return data_[i];
 }
 
-
 inline 
-real& realvec::operator()(const natural i)
+mrs_real& realvec::operator()(const mrs_natural i)
 {
   
   MRSASSERT(i < size_);
@@ -262,6 +252,7 @@ real& realvec::operator()(const natural i)
   return data_[i];
 }
 
+}//namespace Marsyas
 
 #endif /* !MARSYAS_REALVEC_H */
 

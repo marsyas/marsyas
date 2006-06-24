@@ -25,9 +25,10 @@
 #ifndef MARSYAS_MAREVENT_H
 #define MARSYAS_MAREVENT_H
 
-
 #include <iostream>
 
+namespace Marsyas
+{
 
 class MarSystem; // forward declaration
 
@@ -52,5 +53,7 @@ public:
     friend std::ostream& operator<<(std::ostream&, MarEvent&);
     friend std::istream& operator>>(std::istream&, MarEvent&);
 };
+
+}//namespace Marsyas
 
 #endif

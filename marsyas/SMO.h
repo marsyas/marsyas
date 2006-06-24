@@ -34,7 +34,8 @@ weka for training.
 
 #include "MarSystem.h"	
 
-
+namespace Marsyas
+{
 
 class SMO: public MarSystem
 {
@@ -50,6 +51,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 	

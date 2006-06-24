@@ -31,14 +31,17 @@ is based on the Numerical Recipies wavelet code.
 #include "MarSystem.h"	
 #include "WaveletStep.h"
 
+namespace Marsyas
+{
+
 class Daub4: public MarSystem
 {
 private:
   realvec workspace_;
-  real c0_;
-  real c1_;
-  real c2_;
-  real c3_;
+  mrs_real c0_;
+  mrs_real c1_;
+  mrs_real c2_;
+  mrs_real c3_;
 
   
 public:
@@ -50,5 +53,7 @@ public:
   void process(realvec& in, realvec& out);
   
 };
+
+}//namespace Marsyas
 
 #endif

@@ -25,11 +25,10 @@
 Fast Fourier Transform (FFT). 
 */
 
-
-
 #include "AutoCorrelation.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 AutoCorrelation::AutoCorrelation(string name)
 {
@@ -67,7 +66,7 @@ void
 AutoCorrelation::addControls()
 {
   addDefaultControls();
-  addctrl("real/magcompress", 2.0);
+  addctrl("mrs_real/magcompress", 2.0);
   delete myfft_;
   myfft_ = new fft();
 }
@@ -84,12 +83,12 @@ void
 AutoCorrelation::update()
 {
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));  
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
 
   
-  scratch_.create(2*getctrl("natural/onSamples").toNatural());
+  scratch_.create(2*getctrl("mrs_natural/onSamples").toNatural());
   defaultUpdate();
 }
 
@@ -98,10 +97,10 @@ void
 AutoCorrelation::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
-  real re,im,am;
-  real k;
+  mrs_real re,im,am;
+  mrs_real k;
   
-  k = getctrl("real/magcompress").toReal();
+  k = getctrl("mrs_real/magcompress").toReal();
   
   // Copy to output to perform inplace fft and zeropad to double size
 
@@ -110,7 +109,7 @@ AutoCorrelation::process(realvec& in, realvec& out)
       for (t=0; t < inSamples_; t++)
 	scratch_(t) = in(o,t); 
   
-      real *tmp = scratch_.getData();
+      mrs_real *tmp = scratch_.getData();
       myfft_->rfft(tmp, inSamples_/2, FFT_FORWARD);
       
       // Special case for zero and Nyquist/2 only real part 

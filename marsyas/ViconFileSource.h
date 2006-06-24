@@ -23,15 +23,13 @@
    ViconFileSource reader for exported VICON .txt files.
 */
 
-
 #ifndef MARSYAS_VICONFILESOURCE_H
 #define MARSYAS_VICONFILESOURCE_H
 
-
 #include "MarSystem.h" 
 
-
-
+namespace Marsyas
+{
 
 class ViconFileSource: public MarSystem 
 {
@@ -43,8 +41,8 @@ private:
   FILE *vfp_;
   long vfp_begin_;
     
-  natural size_;  
-  natural fileObs_;
+  mrs_natural size_;  
+  mrs_natural fileObs_;
   void addControls();
       
 public:
@@ -57,6 +55,8 @@ public:
   void getHeader(std::string filename);
   void process(realvec& in, realvec &out);
 };
+
+}//namespace Marsyas
 
 
 #endif     /* !MARSYAS_VICONFILESOURCE_H */ 

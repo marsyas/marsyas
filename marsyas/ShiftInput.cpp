@@ -26,8 +26,9 @@ with gain and put them in the output vector.
 */
 
 #include "ShiftInput.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 ShiftInput::ShiftInput(string name)
 {
@@ -52,12 +53,12 @@ void
 ShiftInput::addControls()
 {
   addDefaultControls();
-  addctrl("natural/Decimation", (natural)MRS_DEFAULT_SLICE_NSAMPLES/2);
-  addctrl("natural/WindowSize", (natural)MRS_DEFAULT_SLICE_NSAMPLES);
-  setctrlState("natural/WindowSize", true);
+  addctrl("mrs_natural/Decimation", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES/2);
+  addctrl("mrs_natural/WindowSize", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES);
+  setctrlState("mrs_natural/WindowSize", true);
 
-  addctrl("bool/reset", true);
-  setctrlState("bool/reset", true);
+  addctrl("mrs_bool/reset", true);
+  setctrlState("mrs_bool/reset", true);
 
 }
 
@@ -67,22 +68,22 @@ void
 ShiftInput::update()
 {
   
-  reset_ = getctrl("bool/reset").toBool();  
+  reset_ = getctrl("mrs_bool/reset").toBool();  
 
-  setctrl("natural/onSamples", getctrl("natural/WindowSize"));
-  setctrl("natural/onObservations", (natural)1);
-  setctrl("real/osrate", getctrl("real/israte"));  
-  setctrl("natural/Decimation", getctrl("natural/inSamples"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/WindowSize"));
+  setctrl("mrs_natural/onObservations", (mrs_natural)1);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
+  setctrl("mrs_natural/Decimation", getctrl("mrs_natural/inSamples"));
   
-  W_ = getctrl("natural/WindowSize").toNatural();
+  W_ = getctrl("mrs_natural/WindowSize").toNatural();
 
   
   if (PW_ != W_) 
     pout_.stretch(W_);
   
   PW_ = W_;  
-  N_ = getctrl("natural/onSamples").toNatural();
-  D_ = getctrl("natural/inSamples").toNatural();
+  N_ = getctrl("mrs_natural/onSamples").toNatural();
+  D_ = getctrl("mrs_natural/inSamples").toNatural();
 
   defaultUpdate();
 }
@@ -99,7 +100,7 @@ ShiftInput::process(realvec& in, realvec& out)
     {
       pout_.setval(0.0);
       reset_ = false;
-      setctrl("bool/reset", (MarControlValue)false);
+      setctrl("mrs_bool/reset", (MarControlValue)false);
     }
   
   

@@ -27,10 +27,10 @@
 
 */
 
-
 #include "NetworkSocket.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 
 /**
@@ -179,7 +179,7 @@ bool NetworkSocket::createSocket() {
  * Function: setupSource
  * Description: Routine network setup for UDP / TCP server
  */ 
-bool NetworkSocket::setupSource ( natural dataPort, natural controlsPort ) {
+bool NetworkSocket::setupSource ( mrs_natural dataPort, mrs_natural controlsPort ) {
 
   if ( type_ == "NetworkTCPSource" ) {
 	  if ( !valid(s_sock) || !valid(c_sock) ) {
@@ -242,7 +242,7 @@ bool NetworkSocket::setupSource ( natural dataPort, natural controlsPort ) {
  * Function: setupSink
  * Description: Routine setup for client to connect to host
  */ 
-bool NetworkSocket::setupSink( const string& host, natural dataPort, natural controlsPort ) {
+bool NetworkSocket::setupSink( const string& host, mrs_natural dataPort, mrs_natural controlsPort ) {
 
   struct hostent* h = gethostbyname( host.c_str() );
   
@@ -298,26 +298,26 @@ bool NetworkSocket::setupSink( const string& host, natural dataPort, natural con
  * 				elements. 
  */
 bool 
-NetworkSocket::sendUDP(realvec& in, natural inSamples, 
-	  natural inObservations, real israte )  
+NetworkSocket::sendUDP(realvec& in, mrs_natural inSamples, 
+	  mrs_natural inObservations, mrs_real israte )  
 {
 
   // create buffer of proper size to include control data...
-  real* buffer = new real[inSamples + 3];
+  mrs_real* buffer = new mrs_real[inSamples + 3];
 
-  buffer[0] = ( real ) inSamples;
-  buffer[1] = ( real ) inObservations;
+  buffer[0] = ( mrs_real ) inSamples;
+  buffer[1] = ( mrs_real ) inObservations;
   buffer[2] = israte;
   
   // now fill the buffer with samples...
-  real* data = in.getData();
+  mrs_real* data = in.getData();
   int i;
   
   for ( i = 3; i < inSamples + 3; i++ ) {
     buffer[i] = *(data + i - 3);
   }
   
-  if ( ::sendto ( s_sock, buffer, sizeof(real) *
+  if ( ::sendto ( s_sock, buffer, sizeof(mrs_real) *
 		  (inSamples+3), 0, (struct sockaddr*)&m_addr, sizeof(m_addr) ) <= 0) {
     MRSERR("Could not send vector over UDP socket.");
     delete buffer;
@@ -335,24 +335,24 @@ NetworkSocket::sendUDP(realvec& in, natural inSamples,
  * 				we can send the controls as a seperate packet because with
  * 				TCP we know the next packet will be a vector. 
  */
-bool NetworkSocket::sendTCP ( realvec& in, natural inSamples, 
-					natural inObservations, real israte )  {
+bool NetworkSocket::sendTCP ( realvec& in, mrs_natural inSamples, 
+					mrs_natural inObservations, mrs_real israte )  {
 
 	// for TCP we can send the controls seperately
-	real ctrl_send[4];
+	mrs_real ctrl_send[4];
 	ctrl_send[0] = 1.0; // for endien check
-	ctrl_send[1] = (real) inSamples;
-	ctrl_send[2] = (real) inObservations;
+	ctrl_send[1] = (mrs_real) inSamples;
+	ctrl_send[2] = (mrs_real) inObservations;
 	ctrl_send[3] = israte;
 	
 	
-	if ( ::send(c_sock, ctrl_send, sizeof( real )*4, 0 ) <= 0 ) {
+	if ( ::send(c_sock, ctrl_send, sizeof( mrs_real )*4, 0 ) <= 0 ) {
 	  MRSERR("sendTCP: Could not send TCP control data.");
 	  return false;
 	}
 	
 	// vector data...
-	if ( ::send ( s_sock, in.getData(), sizeof(real) *
+	if ( ::send ( s_sock, in.getData(), sizeof(mrs_real) *
 		      				(inSamples*inObservations), 0 ) <= 0 ) {
 	  MRSERR("sendTCP: Could not send TCP vector data.");
 	  return false;
@@ -371,20 +371,20 @@ int NetworkSocket::recvUDP ( realvec& out )  {
     int status = 0; 
 	  	
     // assume a size 512 vector
-    natural inSamples = getctrl("natural/inSamples").toNatural();
-    natural inObservations = getctrl("natural/inObservations").toNatural();
+    mrs_natural inSamples = getctrl("mrs_natural/inSamples").toNatural();
+    mrs_natural inObservations = getctrl("mrs_natural/inObservations").toNatural();
     
     
-    real* buffer = new real[(inSamples*inObservations)+3];
+    mrs_real* buffer = new mrs_real[(inSamples*inObservations)+3];
 	  	
     int cliLen = sizeof(cliAddr);
 #ifndef CYGWIN
-    status = ::recvfrom(s_sock, buffer, sizeof(real) * 
+    status = ::recvfrom(s_sock, buffer, sizeof(mrs_real) * 
 			      ((inSamples*inObservations)+3), MSG_WAITALL,
 			      (struct sockaddr *) &cliAddr, (socklen_t *)&cliLen);
       
 #else	  	
-    status = ::recvfrom(s_sock, buffer, sizeof(real) * 
+    status = ::recvfrom(s_sock, buffer, sizeof(mrs_real) * 
 			      ((inSamples*inObservations)+3), MSG_NOSIGNAL,
 			      (struct sockaddr *) &cliAddr, (socklen_t *)&cliLen);
 #endif
@@ -393,14 +393,14 @@ int NetworkSocket::recvUDP ( realvec& out )  {
 	  MRSERR("Could not receive UDP data...");
 		return 0;
 	} else {
-		updctrl("natural/inSamples", (natural) buffer[0]);
-		updctrl("natural/inObservations",(natural) buffer[1]);
-		updctrl("real/israte", buffer[2]);
+		updctrl("mrs_natural/inSamples", (mrs_natural) buffer[0]);
+		updctrl("mrs_natural/inObservations",(mrs_natural) buffer[1]);
+		updctrl("mrs_real/israte", buffer[2]);
 	}
 	  	
 	// process the data to an output vector...
 	out.create( inObservations, inSamples ); 
-	real* data = out.getData();
+	mrs_real* data = out.getData();
 		
 	int i;
 	for ( i = 0; i < 512; i++ ) {
@@ -420,7 +420,7 @@ int NetworkSocket::recvUDP ( realvec& out )  {
  * 		perform the necessary updates. 
  *
  */
-real* const NetworkSocket::recvControls() {
+mrs_real* const NetworkSocket::recvControls() {
 
    
     // only TCP MarSystems use this function
@@ -436,33 +436,33 @@ real* const NetworkSocket::recvControls() {
     int ctrl_status = 0; 
     
 #ifndef CYGWIN
-    ctrl_status = ::recv( client_c, controls, sizeof( real )*4, MSG_WAITALL );
+    ctrl_status = ::recv( client_c, controls, sizeof( mrs_real )*4, MSG_WAITALL );
 #else 
-    ctrl_status = ::recv( client_c, controls, sizeof( real )*4, MSG_NOSIGNAL);
+    ctrl_status = ::recv( client_c, controls, sizeof( mrs_real )*4, MSG_NOSIGNAL);
 #endif
     
     if (ctrl_status <= 0) { 
       MRSERR("recvControls: No TCP control data.");
-      	updctrl("bool/notEmpty", false);
+      	updctrl("mrs_bool/notEmpty", false);
      	return 0;
     }
 
     if ( controls[0] != 1.0 ) {
 
 	byteSwap = true;
-        updctrl("natural/inSamples", (natural)swap(controls[1]));
-        updctrl("natural/inObservations", (natural)swap(controls[2]));
-        updctrl("real/israte", swap(controls[3]));
+        updctrl("mrs_natural/inSamples", (mrs_natural)swap(controls[1]));
+        updctrl("mrs_natural/inObservations", (mrs_natural)swap(controls[2]));
+        updctrl("mrs_real/israte", swap(controls[3]));
 	
 	// return proper values
-	controls[1] = getctrl("natural/inSamples").toNatural();
-	controls[2] = getctrl("natural/inObservations").toNatural();
-	controls[3] = getctrl("real/israte").toReal();
+	controls[1] = getctrl("mrs_natural/inSamples").toNatural();
+	controls[2] = getctrl("mrs_natural/inObservations").toNatural();
+	controls[3] = getctrl("mrs_real/israte").toReal();
       
     } else {
-	updctrl("natural/inSamples",(natural) controls[1]);
- 	updctrl("natural/inObservations", (natural) controls[2]);
-     	updctrl("real/israte", controls[3]);
+	updctrl("mrs_natural/inSamples",(mrs_natural) controls[1]);
+ 	updctrl("mrs_natural/inObservations", (mrs_natural) controls[2]);
+     	updctrl("mrs_real/israte", controls[3]);
     }
     return controls;
 }
@@ -475,18 +475,18 @@ real* const NetworkSocket::recvControls() {
 int NetworkSocket::recvTCP ( realvec& out )  {
 	
     // create our slice with updated controls
-    natural inSamples = getctrl("natural/inSamples").toNatural();
-    natural inObservations = getctrl("natural/inObservations").toNatural();
+    mrs_natural inSamples = getctrl("mrs_natural/inSamples").toNatural();
+    mrs_natural inObservations = getctrl("mrs_natural/inObservations").toNatural();
     
     out.create(inObservations, inSamples);  
-    real* data = out.getData();
+    mrs_real* data = out.getData();
 
 	
 #ifndef CYGWIN  	
-    return ::recv ( client_d, data, sizeof(real)*(inObservations*inSamples), 
+    return ::recv ( client_d, data, sizeof(mrs_real)*(inObservations*inSamples), 
 		      MSG_WAITALL );  															
 #else    
-    return ::recv ( client_d, data, sizeof(real)*(inObservations*inSamples), 
+    return ::recv ( client_d, data, sizeof(mrs_real)*(inObservations*inSamples), 
 		      MSG_NOSIGNAL);  															
 #endif
 
@@ -541,7 +541,7 @@ int NetworkSocket :: accept( void )
 		return client_d;
 	  
   	cout << "Client connected on data port: " << 
-		getctrl("natural/dataPort").toNatural() << endl;
+		getctrl("mrs_natural/dataPort").toNatural() << endl;
 	
 
 	// if we're a MarSystem, accept a connection for controls also
@@ -556,7 +556,7 @@ int NetworkSocket :: accept( void )
   		}
 			
 		cout << "Client connected on controls port: " << 
-			getctrl("natural/controlsPort").toNatural() << endl;
+			getctrl("mrs_natural/controlsPort").toNatural() << endl;
   		
   	}
   } 
@@ -638,11 +638,11 @@ int NetworkSocket :: readBuffer(int socket, void *buffer, long bufferSize, int f
  * Function: swap
  * Description: converts endianness
  */
-real NetworkSocket::swap ( real argument ) {
+mrs_real NetworkSocket::swap ( mrs_real argument ) {
 	
 	typedef union X {
-		real num; 
-		char x[ sizeof(real) ];
+		mrs_real num; 
+		char x[ sizeof(mrs_real) ];
 	};
 	
 	X s1, s2;

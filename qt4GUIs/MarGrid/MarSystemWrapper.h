@@ -9,22 +9,21 @@
 #include "common.h"
 #include "MarSystemManager.h"
 
-
 class MarSystemWrapper: public QThread
 {
   Q_OBJECT
   
 public:
-  MarSystemWrapper(MarSystem* msys);
+  MarSystemWrapper(Marsyas::MarSystem* msys);
   
   
 public slots:
 
-  void updctrl(QString cname, MarControlValue value);
+  void updctrl(QString cname, Marsyas::MarControlValue value);
   
 
   
-  MarControlValue getctrl(string cname);
+  Marsyas::MarControlValue getctrl(std::string cname);
   
   void probe(int);
   void play();
@@ -34,20 +33,20 @@ public slots:
   
   
 signals: 
-  void ctrlChanged(QString cname, MarControlValue value);
+  void ctrlChanged(QString cname, Marsyas::MarControlValue value);
   void posChanged(int val);
   
 private:
   QString cur_cname;
-  MarControlValue cur_value;
+  Marsyas::MarControlValue cur_value;
 
-  realvec vec_;
+  Marsyas::realvec vec_;
   
   
-  MarSystem* msys_;
+  Marsyas::MarSystem* msys_;
   
-  vector<QString> cnames_;
-  vector<MarControlValue> cvalues_;
+  std::vector<QString> cnames_;
+  std::vector<Marsyas::MarControlValue> cvalues_;
   
   bool guard_;
   bool pause_;

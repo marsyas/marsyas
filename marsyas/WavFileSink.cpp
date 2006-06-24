@@ -24,12 +24,10 @@
    SoundFileSink writer for .wav sound files.
 */
 
-
-
 #include "WavFileSink.h"
+
 using namespace std;
-
-
+using namespace Marsyas;
 
 WavFileSink::WavFileSink(string name)
 {
@@ -56,9 +54,9 @@ void
 WavFileSink::addControls()
 {
   addDefaultControls();
-  addctrl("natural/nChannels", (natural)1);
-  addctrl("string/filename", "default");
-  setctrlState("string/filename", true);
+  addctrl("mrs_natural/nChannels", (mrs_natural)1);
+  addctrl("mrs_string/filename", "default");
+  setctrlState("mrs_string/filename", true);
 }
 
 
@@ -79,24 +77,22 @@ void
 WavFileSink::update()
 {
 
-  
   MRSDIAG("WavFileSink::update");
 
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-
-  nChannels_ = getctrl("natural/inObservations").toNatural();      
-  setctrl("natural/nChannels", nChannels_);
+  nChannels_ = getctrl("mrs_natural/inObservations").toNatural();      
+  setctrl("mrs_natural/nChannels", nChannels_);
   
   delete sdata_;
   delete cdata_;
   
-  sdata_ = new short[getctrl("natural/inSamples").toNatural() * nChannels_];
-  cdata_ = new unsigned char[getctrl("natural/inSamples").toNatural() * nChannels_];
+  sdata_ = new short[getctrl("mrs_natural/inSamples").toNatural() * nChannels_];
+  cdata_ = new unsigned char[getctrl("mrs_natural/inSamples").toNatural() * nChannels_];
   
-  filename_ = getctrl("string/filename").toString();
+  filename_ = getctrl("mrs_string/filename").toString();
   
   defaultUpdate();
   
@@ -108,7 +104,7 @@ WavFileSink::putHeader(string filename)
 {
 
 
-  natural nChannels = (natural)getctrl("natural/nChannels").toNatural();
+  mrs_natural nChannels = (mrs_natural)getctrl("mrs_natural/nChannels").toNatural();
   sfp_ = fopen(filename.c_str(), "wb");
   
   written_ = 0;
@@ -136,7 +132,7 @@ WavFileSink::putHeader(string filename)
   hdr_.chunk_size = ByteSwapLong(16);
   hdr_.format_tag = ByteSwapShort(1);
   hdr_.num_chans = ByteSwapShort((signed short)nChannels);
-  hdr_.sample_rate = ByteSwapLong((natural)getctrl("real/israte").toReal());
+  hdr_.sample_rate = ByteSwapLong((mrs_natural)getctrl("mrs_real/israte").toReal());
   hdr_.bytes_per_sec = ByteSwapLong(hdr_.sample_rate * 2);
   hdr_.bytes_per_samp = ByteSwapShort(2);
   hdr_.bits_per_samp = ByteSwapShort(16);
@@ -145,7 +141,7 @@ WavFileSink::putHeader(string filename)
   hdr_.chunk_size = 16;
   hdr_.format_tag = 1;
   hdr_.num_chans = (signed short)nChannels;
-  hdr_.sample_rate = (natural)getctrl("real/israte").toReal();
+  hdr_.sample_rate = (mrs_natural)getctrl("mrs_real/israte").toReal();
   hdr_.bytes_per_sec = hdr_.sample_rate * 2;
   hdr_.bytes_per_samp = 2;
   hdr_.bits_per_samp = 16;
@@ -157,9 +153,7 @@ WavFileSink::putHeader(string filename)
   hdr_.data[1] = 'a';
   hdr_.data[2] = 't';
   hdr_.data[3] = 'a';
-  
 
-  
   fwrite(&hdr_, 4, 11, sfp_);
   
   sfp_begin_ = ftell(sfp_);  
@@ -172,8 +166,6 @@ WavFileSink::ByteSwapLong(unsigned long nLongNumber)
   return (((nLongNumber&0x000000FF)<<24)+((nLongNumber&0x0000FF00)<<8)+
 	  ((nLongNumber&0x00FF0000)>>8)+((nLongNumber&0xFF000000)>>24));
 }
- 
-
 
 unsigned short 
 WavFileSink::ByteSwapShort (unsigned short nValue)
@@ -181,12 +173,10 @@ WavFileSink::ByteSwapShort (unsigned short nValue)
   return (((nValue>> 8)) | (nValue << 8));
 }
 
-
 void 
-WavFileSink::putLinear16Swap(natural c, realvec& slice)
+WavFileSink::putLinear16Swap(mrs_natural c, realvec& slice)
 {
 
-  
   for (c=0; c < nChannels_; c++)
     for (t=0; t < inSamples_; t++)
     {
@@ -198,14 +188,11 @@ WavFileSink::putLinear16Swap(natural c, realvec& slice)
 
     }
 
-  
-  if ((natural)fwrite(sdata_, sizeof(short), nChannels_ * inSamples_, sfp_) != nChannels_ * inSamples_)
+  if ((mrs_natural)fwrite(sdata_, sizeof(short), nChannels_ * inSamples_, sfp_) != nChannels_ * inSamples_)
     {
       MRSERR("Problem: could not write window to file " + filename_);
     }
 }
-
-
 
 void 
 WavFileSink::process(realvec& in, realvec& out)
@@ -216,7 +203,7 @@ WavFileSink::process(realvec& in, realvec& out)
   for (o=0; o < inObservations_; o++)
     for (t=0; t < inSamples_; t++)
       {
-	out(o,t) = in(o,t);
+		out(o,t) = in(o,t);
       }
 
 

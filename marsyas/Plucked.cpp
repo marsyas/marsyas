@@ -25,10 +25,10 @@
    With extensions proposed by Jaffe and Smith: Blend Factor, Decay, and Stretch Factor.
 */
 
-
-
 #include "Plucked.h"
+
 using namespace std;
+using namespace Marsyas;
 
 Plucked::Plucked(string name)
 {
@@ -62,14 +62,14 @@ void
 Plucked::addControls()
 {
   addDefaultControls();
-  addctrl("real/frequency", 100.0);
-  addctrl("real/pluckpos", 0.5);
-  addctrl("real/nton", 0.5);
-  addctrl("real/loss",1.0);
-  addctrl("real/stretch",0.2);
-  setctrlState("real/frequency", true);
-  setctrlState("real/nton", true);
-  setctrlState("real/loss", true);
+  addctrl("mrs_real/frequency", 100.0);
+  addctrl("mrs_real/pluckpos", 0.5);
+  addctrl("mrs_real/nton", 0.5);
+  addctrl("mrs_real/loss",1.0);
+  addctrl("mrs_real/stretch",0.2);
+  setctrlState("mrs_real/frequency", true);
+  setctrlState("mrs_real/nton", true);
+  setctrlState("mrs_real/loss", true);
 }
 
 
@@ -78,31 +78,31 @@ Plucked::update()
 {
   MRSDIAG("Plucked.cpp - Plucked:update");
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
 
   gain_ = new Gain("pluckedGain");
-  gain_->updctrl("natural/inSamples", getctrl("natural/inSamples"));
-  gain_->updctrl("natural/inSamples", getctrl("natural/inSamples"));
-  gain_->updctrl("real/israte", getctrl("real/israte"));
-  gain_->updctrl("real/gain", 2.0);
+  gain_->updctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
+  gain_->updctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
+  gain_->updctrl("mrs_real/israte", getctrl("mrs_real/israte"));
+  gain_->updctrl("mrs_real/gain", 2.0);
   
   
-  gout_.create(gain_->getctrl("natural/inObservations").toNatural(), 
-	       gain_->getctrl("natural/inSamples").toNatural());
+  gout_.create(gain_->getctrl("mrs_natural/inObservations").toNatural(), 
+	       gain_->getctrl("mrs_natural/inSamples").toNatural());
   
   
   
-  real freq = getctrl("real/frequency").toReal();
-  real pos = getctrl("real/pluckpos").toReal();
-  noteon_ = getctrl("real/nton").toReal();
+  mrs_real freq = getctrl("mrs_real/frequency").toReal();
+  mrs_real pos = getctrl("mrs_real/pluckpos").toReal();
+  noteon_ = getctrl("mrs_real/nton").toReal();
 
-  loss_ = getctrl("real/loss").toReal();  
+  loss_ = getctrl("mrs_real/loss").toReal();  
 
   
-  s_ = getctrl("real/stretch").toReal();
+  s_ = getctrl("mrs_real/stretch").toReal();
 
   // loweset frequency on a piano is 27.5Hz ... 22050/27.5 ~= 802*2 for commuted
   // this is the longest delay line required
@@ -110,13 +110,13 @@ Plucked::update()
   if (delaylineSize_ == 0) 
   {
     delaylineSize_ = 2048;
-    noise_.create((natural)delaylineSize_);
-    delayline1_.create((natural)delaylineSize_);
-    pickDelayLine_.create((natural)delaylineSize_);
+    noise_.create((mrs_natural)delaylineSize_);
+    delayline1_.create((mrs_natural)delaylineSize_);
+    pickDelayLine_.create((mrs_natural)delaylineSize_);
     
     for (t = 0; t < delaylineSize_; t++)
       {
-	noise_(t) = (real)(rand() / (RAND_MAX + 1.0) -0.5);
+	noise_(t) = (mrs_real)(rand() / (RAND_MAX + 1.0) -0.5);
       }
     
   }
@@ -126,15 +126,15 @@ Plucked::update()
       
       a_ = 0;
       d_ = 2*22050/freq;
-      N_ = (natural)floor(d_);
+      N_ = (mrs_natural)floor(d_);
       g_=-(-1+d_)/(-d_-1);//for all pass implementation 
-      picklength_= (natural)floor(N_*pos);//for inverse comb implementation
+      picklength_= (mrs_natural)floor(N_*pos);//for inverse comb implementation
       
       
       for (t = 0; t < N_; t++)
 	{
 	  pickDelayLine_(0)=noise_(t);
-	  delayline1_(t) = noise_(t)+ (real)0.1 * pickDelayLine_(picklength_-1);
+	  delayline1_(t) = noise_(t)+ (mrs_real)0.1 * pickDelayLine_(picklength_-1);
 	  
 	  
 	  //shift the pick delayline to the right 1 cell

@@ -21,16 +21,14 @@
    \brief Abstract Interface for SoundFileSource of various formats
 */
 
-
-
 #ifndef MARSYAS_ABSSOUNDFILESOURCE_H
 #define MARSYAS_ABSSOUNDFILESOURCE_H
-
-
 
 #include "MarSystem.h" 
 #include <string> 
 
+namespace Marsyas
+{
 
 class AbsSoundFileSource: public MarSystem
 {
@@ -45,13 +43,13 @@ public:
   virtual void process(realvec& in,realvec &out) = 0;
 
   // public for efficiency 
-  natural pos_;
-  natural rewindpos_;
+  mrs_natural pos_;
+  mrs_natural rewindpos_;
   
   bool notEmpty_;
 };
 
-
+}//namespace Marsyas
 
 
 #endif    /* !MARSYAS_ABSSOUNDFILESOURCE_H */ 

@@ -24,8 +24,9 @@ Essentially forms a weighted sum of the input rows of observations.
 */
 
 #include "ANN_node.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 ANN_node::ANN_node(string name)
 {
@@ -50,10 +51,10 @@ void
 ANN_node::addControls()
 {
   addDefaultControls();
-  addctrl("realvec/weights", weights_);
-  setctrlState("realvec/weights", true);
-  addctrl("real/bias", bias_);
-  setctrlState("real/bias", true);
+  addctrl("mrs_realvec/weights", weights_);
+  setctrlState("mrs_realvec/weights", true);
+  addctrl("mrs_real/bias", bias_);
+  setctrlState("mrs_real/bias", true);
 }
 
 
@@ -62,15 +63,15 @@ ANN_node::update()
 {
   MRSDIAG("ANN_node.cpp - ANN_node:update");
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", (natural)1);
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", (mrs_natural)1);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
  
-  weights_.create(getctrl("realvec/weights").toVec().getSize());
-  weights_ = getctrl("realvec/weights").toVec(); 
+  weights_.create(getctrl("mrs_realvec/weights").toVec().getSize());
+  weights_ = getctrl("mrs_realvec/weights").toVec(); 
 
-  bias_ = getctrl("real/bias").toReal(); 
+  bias_ = getctrl("mrs_real/bias").toReal(); 
   defaultUpdate();
 }
 

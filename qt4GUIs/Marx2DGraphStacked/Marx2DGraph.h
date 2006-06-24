@@ -32,14 +32,12 @@
 #include <QString>
 #include <QMouseEvent>
 
-#include<sstream>
+#include <sstream>
 #include <iostream>
 #include <iomanip>
 #include <string>
 
 #include "realvec.h"
-
-using namespace std;
 
 class Marx2DGraph : public QWidget
 {
@@ -47,10 +45,10 @@ class Marx2DGraph : public QWidget
 
  public: 
 
-  Marx2DGraph( QWidget *parent=0 );
-  Marx2DGraph( int size=0, QWidget *parent=0 );
+  Marx2DGraph( QWidget *parent=0 ); //warning C4520: 'Marx2DGraph' : multiple default constructors specified	[!]
+  Marx2DGraph( int size=0, QWidget *parent=0 );//warning C4520: 'Marx2DGraph' : multiple default constructors specified	[!]
 
-  bool setBuffer( realvec& );
+  bool setBuffer( Marsyas::realvec& );
 
   void test();
 
@@ -64,14 +62,14 @@ class Marx2DGraph : public QWidget
   void setGraphDataLineSize( float );
   void setShowAxisScale( bool );
   void setAntialias( bool );
-  void setXAxisLabel( string );
-  void setYAxisLabel( string );
+  void setXAxisLabel( std::string );
+  void setYAxisLabel( std::string );
   void setXAxisLabelOn( bool );
   void setYAxisLabelOn( bool );
 
   void displayXaxis( bool );
   
-  void addLabel( string );
+  void addLabel( std::string );
 
 
   enum { POINTS, PRECISION, LINEAR_INTERPOLATION, POLYNOMIAL_INTERPOLATION };
@@ -109,18 +107,18 @@ class Marx2DGraph : public QWidget
   float mousey;
   float dsample; // sample associated with mouse click
   float dvalue;  // value associated with mouse click
-  string dsamplestring;
-  string dvaluestring;
+  std::string dsamplestring;
+  std::string dvaluestring;
   
 /*   float* buffer; */
-  realvec* buffer;
+  Marsyas::realvec* buffer;
   long buffersize;
 
   int plot_type;
   int axis_display_type;
 
-  string xlabelmessage;
-  string ylabelmessage;
+  std::string xlabelmessage;
+  std::string ylabelmessage;
   bool xlabel;
   bool ylabel;
 
@@ -141,7 +139,7 @@ class Marx2DGraph : public QWidget
   float pen_width;
   float data_pen_width;
 
-  string label;
+  std::string label;
 
 };
 

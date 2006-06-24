@@ -28,6 +28,8 @@
 
 #include "NetworkSocket.h"	
 
+namespace Marsyas
+{
 
 class NetworkUDPSource: public NetworkSocket
 {
@@ -47,6 +49,8 @@ class NetworkUDPSource: public NetworkSocket
   void process( realvec& in, realvec& out );
   void refresh();
 };
+
+}//namespace Marsyas
 
 
 #endif 

@@ -28,20 +28,17 @@ Marsyas including transformations like FFT, Filter as well as feature
 extractors like Spectral Centroid.
 */
 
-
-
-
 #include "MarSystem.h"
+
 using namespace std;
-
-
+using namespace Marsyas;
 
 MarSystem::MarSystem()
 {
   name_ = "MarSystemPrototype";
   type_ = "MarSystem";
   scheduler.removeAll();
-  scheduler.addTimer(new TmSampleCount(NULL, this, "natural/inSamples"));
+  scheduler.addTimer(new TmSampleCount(NULL, this, "mrs_natural/inSamples"));
 }
 
 MarSystem::MarSystem(string name)
@@ -49,9 +46,8 @@ MarSystem::MarSystem(string name)
   type_ = "MarSystem";
   name_ = name;
   scheduler.removeAll();
-  scheduler.addTimer(new TmSampleCount(NULL, this, "natural/inSamples"));
+  scheduler.addTimer(new TmSampleCount(NULL, this, "mrs_natural/inSamples"));
 }
-
 
 // copy constructor 
 MarSystem::MarSystem(const MarSystem& a)
@@ -69,8 +65,6 @@ MarSystem::MarSystem(const MarSystem& a)
   mute_ = a.mute_;
 }
 
-
-
 MarSystem::~MarSystem()
 {
   
@@ -79,33 +73,31 @@ MarSystem::~MarSystem()
 void
 MarSystem::addDefaultControls()
 {
-  addctrl("natural/inSamples", (natural)MRS_DEFAULT_SLICE_NSAMPLES);
-  setctrlState("natural/inSamples", true);
-  addctrl("natural/inObservations", (natural)MRS_DEFAULT_SLICE_NOBSERVATIONS);
-  setctrlState("natural/inObservations", true);
-  addctrl("real/israte", MRS_DEFAULT_SLICE_SRATE);
-  setctrlState("real/israte", true);
-  addctrl("natural/onSamples", (natural)MRS_DEFAULT_SLICE_NSAMPLES);
-  addctrl("natural/onObservations", (natural)MRS_DEFAULT_SLICE_NOBSERVATIONS);
-  addctrl("real/osrate", MRS_DEFAULT_SLICE_SRATE);  
-  addctrl("bool/debug", false);
-  setctrlState("bool/debug", true);
-  addctrl("bool/mute", false);
-  setctrlState("bool/mute", true);
-  setctrlState("bool/debug", true);
-  addctrl("string/inObsNames", ",");
-  setctrlState("string/inObsNames", true);
-  addctrl("string/onObsNames", ",");
+  addctrl("mrs_natural/inSamples", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES);
+  setctrlState("mrs_natural/inSamples", true);
+  addctrl("mrs_natural/inObservations", (mrs_natural)MRS_DEFAULT_SLICE_NOBSERVATIONS);
+  setctrlState("mrs_natural/inObservations", true);
+  addctrl("mrs_real/israte", MRS_DEFAULT_SLICE_SRATE);
+  setctrlState("mrs_real/israte", true);
+  addctrl("mrs_natural/onSamples", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES);
+  addctrl("mrs_natural/onObservations", (mrs_natural)MRS_DEFAULT_SLICE_NOBSERVATIONS);
+  addctrl("mrs_real/osrate", MRS_DEFAULT_SLICE_SRATE);  
+  addctrl("mrs_bool/debug", false);
+  setctrlState("mrs_bool/debug", true);
+  addctrl("mrs_bool/mute", false);
+  setctrlState("mrs_bool/mute", true);
+  setctrlState("mrs_bool/debug", true);
+  addctrl("mrs_string/inObsNames", ",");
+  setctrlState("mrs_string/inObsNames", true);
+  addctrl("mrs_string/onObsNames", ",");
   
-  inObservations_ = getctrl("natural/inObservations").toNatural();
-  inSamples_ = getctrl("natural/inSamples").toNatural();
-  onObservations_ = getctrl("natural/onObservations").toNatural();
-  onSamples_ = getctrl("natural/onSamples").toNatural();
+  inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+  inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
+  onObservations_ = getctrl("mrs_natural/onObservations").toNatural();
+  onSamples_ = getctrl("mrs_natural/onSamples").toNatural();
   dbg_ = false;
   mute_ = false;
 }
-
-
 
 // assignment operator
 MarSystem& 
@@ -122,13 +114,11 @@ MarSystem::operator=(const MarSystem& a)
   return *this;
 }
 
-
 void 
 MarSystem::addMarSystem(MarSystem *marsystem)
 {
   MRSWARN("Trying to add MarSystem to a non-Composite - Ignoring");
 }
-
 
 void
 MarSystem::setName(string name)
@@ -138,9 +128,6 @@ MarSystem::setName(string name)
   addControls();
 }
  
-
-
-
 string 
 MarSystem::getType()
 {
@@ -160,16 +147,13 @@ MarSystem::getPrefix()
   return prefix;
 }
 
-
 void 
 MarSystem::checkFlow(realvec& in, realvec& out)
 {
-  
-
-  natural irows = in.getRows();
-  natural icols = in.getCols();
-  natural orows = out.getRows();
-  natural ocols = out.getCols();
+  mrs_natural irows = in.getRows();
+  mrs_natural icols = in.getCols();
+  mrs_natural orows = out.getRows();
+  mrs_natural ocols = out.getCols();
 
   dbg_ = false;
   
@@ -188,17 +172,11 @@ MarSystem::checkFlow(realvec& in, realvec& out)
       MRSWARN("Output Slice Cols = " << ocols );      
     }
   
-  
-  
-
   MRSASSERT(irows == inObservations_);
   MRSASSERT(icols == inSamples_);
   MRSASSERT(orows == onObservations_);
   MRSASSERT(ocols == onSamples_);
-  
 }
-
-
 
 void 
 MarSystem::tick()
@@ -207,18 +185,14 @@ MarSystem::tick()
   process(inTick_,outTick_);
 }
 
-
-
 void 
 MarSystem::update()
 {
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
 }
-
-
 
 MarControlValue
 MarSystem::getctrl(string cname)
@@ -227,13 +201,11 @@ MarSystem::getctrl(string cname)
   return ncontrols_.getControl("/" + type_ + "/" + name_ + "/" + cname);
 }
 
-
 void
 MarSystem::linkctrl(string visible, string inside)
 {
   linkControl(visible, inside);   
 }
-
 
  void
  MarSystem::linkControl(string visible, string inside)
@@ -248,9 +220,6 @@ MarSystem::linkctrl(string visible, string inside)
    synonymList = synonyms_[visible];
    synonymList.push_back(inside);
    synonyms_[visible] = synonymList;
-
-
-
  }
 
 
@@ -283,7 +252,6 @@ MarSystem::linkctrl(string visible, string inside)
 	 }
      }
 
-
    return ncontrols_.getControl(cname);
  }
 
@@ -312,27 +280,23 @@ MarSystem::linkctrl(string visible, string inside)
    ncontrols_.setState(cname,val);
  }
 
-
- void MarSystem::setControl(string cname, real value)
+ void MarSystem::setControl(string cname, mrs_real value)
  {
    ncontrols_.updControl(cname,value);
 
  }
 
- void MarSystem::setControl(string cname, natural value)
+ void MarSystem::setControl(string cname, mrs_natural value)
  {
    ncontrols_.updControl(cname,value);
  }
-
-
 
  void MarSystem::setControl(string cname, MarControlValue value)
  {
    ncontrols_.updControl(cname, value);
  }
 
-
- void MarSystem::setctrl(string cname, natural value)
+ void MarSystem::setctrl(string cname, mrs_natural value)
  {
    if (ocname_ != cname) 
      {
@@ -347,8 +311,7 @@ MarSystem::linkctrl(string visible, string inside)
    setControl(prefix_, value); 
  }
 
-
- void MarSystem::setctrl(string cname, real value)
+ void MarSystem::setctrl(string cname, mrs_real value)
  {
    if (ocname_ != cname) 
      {
@@ -362,7 +325,6 @@ MarSystem::linkctrl(string visible, string inside)
      }
    setControl(prefix_, value); 
  }
-
 
  void MarSystem::setctrl(string cname, MarControlValue value)
  {
@@ -382,10 +344,10 @@ MarSystem::linkctrl(string visible, string inside)
  void 
  MarSystem::defaultUpdate()
  {
-   inObservations_ = getctrl("natural/inObservations").toNatural();
-   inSamples_ = getctrl("natural/inSamples").toNatural();
-   onObservations_ = getctrl("natural/onObservations").toNatural();
-   onSamples_ = getctrl("natural/onSamples").toNatural();
+   inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+   inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
+   onObservations_ = getctrl("mrs_natural/onObservations").toNatural();
+   onSamples_ = getctrl("mrs_natural/onSamples").toNatural();
 
    if ((inObservations_ != inTick_.getRows()) ||
        (inSamples_ != inTick_.getCols())      ||
@@ -395,25 +357,20 @@ MarSystem::linkctrl(string visible, string inside)
        inTick_.create(inObservations_, inSamples_);
        outTick_.create(onObservations_, onSamples_);
      }
-
-   
-
  }
 
 
- natural 
+ mrs_natural 
  MarSystem::inObservations() const
  {
    return inObservations_;
  }
 
- natural 
+ mrs_natural 
  MarSystem::inSamples() const
  {
    return inSamples_;
  }
-
-
 
  bool 
  MarSystem::hasControl(string cname) 
@@ -436,9 +393,9 @@ MarSystem::linkctrl(string visible, string inside)
        vector<string> synonymList = synonyms_[shortcname];
        vector<string>::iterator si;
        for (si = synonymList.begin(); si != synonymList.end(); ++si)
-	 {
-	   hasControl(prefix + *si);
-	 }
+		 {
+		   hasControl(prefix + *si);
+		 }
      }
 
    return ncontrols_.hasControl(cname);
@@ -459,54 +416,47 @@ MarSystem::linkctrl(string visible, string inside)
    if (pos == 0) 
      shortcname = cname.substr(prefix.length(), cname.length());
 
-
    ei = synonyms_.find(shortcname);
    if (ei != synonyms_.end())
      {
        vector<string> synonymList = synonyms_[shortcname];
        vector<string>::iterator si;
        for (si = synonymList.begin(); si != synonymList.end(); ++si)
-	 {
-	   updControl(prefix + *si, value);
-	 }
+		 {
+		   updControl(prefix + *si, value);
+		 }
      }
 
    else
      {
-
        oldval_ = getControl(cname);
        setControl(cname, value);
        if (hasControlState(cname) && (value != oldval_)) 
-	 {
-	   update();
-	   dbg_ = getctrl("bool/debug").toBool();
+		 {
+		   update();
+		   dbg_ = getctrl("mrs_bool/debug").toBool();
 
-	   mute_ = getctrl("bool/mute").toBool();
+		   mute_ = getctrl("mrs_bool/mute").toBool();
 
-	   if ((inObservations_ != inTick_.getRows()) ||
-	       (inSamples_ != inTick_.getCols())      ||
-	       (onObservations_ != outTick_.getRows()) ||
-	       (onSamples_ != outTick_.getCols()))
-	     {
-	       inTick_.create(inObservations_, inSamples_);
-	       outTick_.create(onObservations_, onSamples_);
-	     }
+		   if ((inObservations_ != inTick_.getRows()) ||
+			   (inSamples_ != inTick_.getCols())      ||
+			   (onObservations_ != outTick_.getRows()) ||
+			   (onSamples_ != outTick_.getCols()))
+			 {
+			   inTick_.create(inObservations_, inSamples_);
+			   outTick_.create(onObservations_, onSamples_);
+			 }
 
-	 }
+		 }
      }
    
  }
-
-
-
 
  map<string, MarControlValue>
  MarSystem::getControls()
  {
    return ncontrols_.getControls();
  }
-
-
 
  MarSystem* 
  MarSystem::clone() const
@@ -515,7 +465,6 @@ MarSystem::linkctrl(string visible, string inside)
    MRSWARN("CLONING SHOULD BE IMPLEMENTED FOR DERIVED CLASS");
    return 0;
  }
-
 
  void
  MarSystem::addctrl(string cname, MarControlValue val)
@@ -530,17 +479,12 @@ MarSystem::linkctrl(string visible, string inside)
    ncontrols_.addControl(cname, val);
  }
 
- 
-
-
-
 void
 MarSystem::updctrl(string cname, MarControlValue value)
 {
    MRSDIAG("MarSystem::upctrl");
    updControl("/" + type_ + "/" + name_ + "/" + cname, value); 
  }
-
 
 void 
 MarSystem::updctrl(MarEvent* me) 
@@ -551,7 +495,6 @@ MarSystem::updctrl(MarEvent* me)
      delete(me);
    }
 }
-
 
 /* this method clashes with updctrl(string cname, MarControlValue val)
    when val=0, which can be interpreted as ev=NULL
@@ -611,9 +554,6 @@ MarSystem::updctrl(TmTime t, Repeat r, string cname, MarControlValue value)
   scheduler.post(t,r,new EvValUpd(this,cname,value));
 }
 
-
-
-
 void
 MarSystem::addTimer(TmTimer* t)
 {
@@ -628,14 +568,11 @@ MarSystem::removeTimer(string name)
 
   /****** NEIL ADDED END *******/
 
-
-real* 
+mrs_real* 
 const MarSystem::recvControls() 
 {
   return NULL;
 }
-
-
 
  // write *this to s 
 
@@ -663,15 +600,14 @@ MarSystem::put(ostream &o)
       for (vi = syns.begin(); vi != syns.end(); ++vi) 
 	o << "# " << (*vi) << endl;
     }
-  
-  
+   
   return o;
 }
 
 
 
 ostream& 
-operator<< (ostream& o, MarSystem& sys)
+Marsyas::operator<< (ostream& o, MarSystem& sys)
 {
   sys.put(o);
   return o;

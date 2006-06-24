@@ -11,7 +11,7 @@
 
 #include <pthread.h>
 #include <iostream>
-#include <stdio.h>
+#include <cstdio>
 #include <sstream>
 #include <map>
 #include <vector>
@@ -23,6 +23,7 @@
 #include "SocketException.h"
 
 using namespace std;
+using namespace Marsyas;
 
 
 CommandLineOptions cmd_options;
@@ -50,22 +51,22 @@ void* run(void * arg)
   featureNetwork->addMarSystem(mng.create("AudioSink", "sink"));
   // featureNetwork->addMarSystem(mng.create("PlotSink", "psink"));
   
-  featureNetwork->updctrl("NetworkTCPSource/src/natural/dataPort", data->dataPort);
-  featureNetwork->updctrl("NetworkTCPSource/src/natural/controlsPort", data->controlsPort);
+  featureNetwork->updctrl("NetworkTCPSource/src/mrs_natural/dataPort", data->dataPort);
+  featureNetwork->updctrl("NetworkTCPSource/src/mrs_natural/controlsPort", data->controlsPort);
 
-  featureNetwork->linkctrl("bool/notEmpty", "NetworkTCPSource/src/bool/notEmpty");
+  featureNetwork->linkctrl("mrs_bool/notEmpty", "NetworkTCPSource/src/mrs_bool/notEmpty");
   
   src->refresh();
   
-  natural wc = 0;
+  mrs_natural wc = 0;
   
-  real* controls = 0;
+  mrs_real* controls = 0;
   
-  natural onSamples = featureNetwork->getctrl("natural/onSamples").toNatural();
+  mrs_natural onSamples = featureNetwork->getctrl("mrs_natural/onSamples").toNatural();
   
   
   // start the network 
-  while ( featureNetwork->getctrl("bool/notEmpty").toBool() ) {
+  while ( featureNetwork->getctrl("mrs_bool/notEmpty").toBool() ) {
 
 	try {
 		
@@ -73,16 +74,16 @@ void* run(void * arg)
       		if ( controls != 0 ) {
 			
 			// get some reference controls, so if they have changed we update them
-			natural inSamples = featureNetwork->getctrl("natural/inSamples").toNatural();
-			natural inObservations = featureNetwork->getctrl("natural/inObservations").toNatural();
-			real israte = featureNetwork->getctrl("real/israte").toReal();
+			mrs_natural inSamples = featureNetwork->getctrl("mrs_natural/inSamples").toNatural();
+			mrs_natural inObservations = featureNetwork->getctrl("mrs_natural/inObservations").toNatural();
+			mrs_real israte = featureNetwork->getctrl("mrs_real/israte").toReal();
 			
-			if ( (natural)controls[1] != inSamples || (natural)controls[2] != inObservations 
+			if ( (mrs_natural)controls[1] != inSamples || (mrs_natural)controls[2] != inObservations 
 					|| controls[3] != israte ) {
 			
-				featureNetwork->updctrl("natural/inSamples", (natural)controls[1]);
-				featureNetwork->updctrl("natural/inObservations", (natural)controls[2]);
-				featureNetwork->updctrl("real/israte", controls[3]);
+				featureNetwork->updctrl("mrs_natural/inSamples", (mrs_natural)controls[1]);
+				featureNetwork->updctrl("mrs_natural/inObservations", (mrs_natural)controls[2]);
+				featureNetwork->updctrl("mrs_real/israte", controls[3]);
 			}
       		}
 		

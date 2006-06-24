@@ -25,17 +25,16 @@
 #include <QGridLayout>
 
 #include "Marx2DGraph.h"
-using namespace std;
 
 class Marx2DStackedGraphs : public QWidget
 {
 
  public:
-  Marx2DStackedGraphs(QWidget *parent = 0);
-  Marx2DStackedGraphs(unsigned int n=0, QWidget *parent = 0);
-  Marx2DStackedGraphs(int s=0, unsigned int n=0, QWidget *parent = 0 );
+  Marx2DStackedGraphs(QWidget *parent = 0);//warning C4520: 'Marx2DGraph' : multiple default constructors specified	[!]
+  Marx2DStackedGraphs(unsigned int n=0, QWidget *parent = 0);//warning C4520: 'Marx2DGraph' : multiple default constructors specified	[!]
+  Marx2DStackedGraphs(int s=0, unsigned int n=0, QWidget *parent = 0 );//warning C4520: 'Marx2DGraph' : multiple default constructors specified	[!]
 
-  bool setBuffers( realvec& );
+  bool setBuffers( Marsyas::realvec& );
 
   enum { setPlotType, setAxisDisplayType, setGraphDataPointType };
   bool setMarxGraphIntArgs( int, int, int );
@@ -50,13 +49,13 @@ class Marx2DStackedGraphs : public QWidget
   bool setMarxGraphBooleanArgs( int, int, bool );
 
   enum { setXAxisLabel, setYAxisLabel, addLabel }; 
-  bool setMarxGraphStringArgs( int, int, string );
+  bool setMarxGraphStringArgs( int, int, std::string );
 
  protected:
 
 
  private:
-  vector<Marx2DGraph*> graphs;
+  std::vector<Marx2DGraph*> graphs;
   unsigned int numgraphs;
 
   int buffersize;

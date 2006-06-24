@@ -26,13 +26,15 @@
 #ifndef MARSYAS_COLLECTION_H
 #define MARSYAS_COLLECTION_H
 
-
 #include <string> 
 #include <vector>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include "common.h"
+
+namespace Marsyas
+{
 
 class Collection
 {
@@ -42,10 +44,10 @@ private:
 public:
   Collection();
   ~Collection();
-  natural size();
+  mrs_natural size();
   void setName(std::string name);
   std::string entry(unsigned int i);
-  natural getSize();
+  mrs_natural getSize();
   void add(std::string entry);
   std::string name();
   void shuffle();
@@ -55,14 +57,8 @@ public:
   
   friend std::ostream& operator<<(std::ostream&, const Collection&);
   friend std::istream& operator>>(std::istream&, Collection&);
-  
-
 };
 
-
-
-
-
-
+}//namespace Marsyas
 
 #endif

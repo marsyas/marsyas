@@ -25,8 +25,9 @@
 */
 
 #include "AudioSource.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 AudioSource::AudioSource(string name)
 {
@@ -69,12 +70,12 @@ void
 AudioSource::addControls()
 {
   addDefaultControls();
-  addctrl("natural/nChannels",1);
-  addctrl("real/gain", 1.05);
-  setctrlState("real/gain", true);
-  setctrlState("natural/nChannels", true);
-  addctrl("bool/init", false);
-  setctrlState("bool/init", true);
+  addctrl("mrs_natural/nChannels",1);
+  addctrl("mrs_real/gain", 1.05);
+  setctrlState("mrs_real/gain", true);
+  setctrlState("mrs_natural/nChannels", true);
+  addctrl("mrs_bool/init", false);
+  setctrlState("mrs_bool/init", true);
 }
 
 
@@ -82,11 +83,11 @@ void
 AudioSource::init()
 {
   
-  nChannels_ = getctrl("natural/nChannels").toNatural();
+  nChannels_ = getctrl("mrs_natural/nChannels").toNatural();
   
-  RtAudioFormat format = ( sizeof(real) == 8 ) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
+  RtAudioFormat format = ( sizeof(mrs_real) == 8 ) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
   
-  int rtSrate = (natural)getctrl("real/israte").toReal();
+  int rtSrate = (mrs_natural)getctrl("mrs_real/israte").toReal();
   bufferSize_ = 256;
 
 #ifdef __OS_MACOSX__
@@ -104,7 +105,7 @@ AudioSource::init()
   try {
     audio_ = new RtAudio(0, 0, 0, rtChannels, format,
 			 rtSrate, &bufferSize_, 4);
-    data_ = (real *) audio_->getStreamBuffer();
+    data_ = (mrs_real *) audio_->getStreamBuffer();
   }
   catch (RtError &error) 
     {
@@ -120,15 +121,15 @@ AudioSource::update()
   MRSDIAG("AudioSource::update");
 
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-  nChannels_ = getctrl("natural/nChannels").toNatural();
-  sampleRate_ = getctrl("real/israte").toReal();
+  nChannels_ = getctrl("mrs_natural/nChannels").toNatural();
+  sampleRate_ = getctrl("mrs_real/israte").toReal();
 
-  mute_ = getctrl("bool/mute").toBool();
-  gain_ = getctrl("real/gain").toReal();
+  mute_ = getctrl("mrs_bool/mute").toBool();
+  gain_ = getctrl("mrs_real/gain").toReal();
   
   defaultUpdate();
   
@@ -181,7 +182,7 @@ AudioSource::process(realvec& in, realvec& out)
     }
   checkFlow(in,out);
 
-  natural nChannels = getctrl("natural/nChannels").toNatural();
+  mrs_natural nChannels = getctrl("mrs_natural/nChannels").toNatural();
   
   if (mute_) return;
 

@@ -29,6 +29,9 @@ ie. graph buffers should be of identitical lengths.
 
 #include <QPushButton>
 
+using namespace std;
+using namespace Marsyas;
+
 
 //! A default constructor
 /*!

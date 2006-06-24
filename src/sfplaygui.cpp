@@ -1,5 +1,5 @@
 
-#include <stdio.h>
+#include <cstdio>
 
 #include "Collection.h"
 #include "MarSystemManager.h"
@@ -7,7 +7,9 @@
 #include "CommandLineOptions.h"
 
 #include <string> 
+
 using namespace std;
+using namespace Marsyas;
 
 #define EMPTYSTRING "MARSYAS_EMPTY"
 
@@ -24,8 +26,8 @@ float start = 0.0f;
 float length = 1000.0f;
 float gain = 1.0f;
 float repetitions = 1;
-natural offset;
-natural duration;
+mrs_natural offset;
+mrs_natural duration;
 
 
 CommandLineOptions cmd_options;
@@ -65,13 +67,13 @@ printHelp(string progName)
 }
 
 
-void sfplaygui(Collection l, natural offset, natural duration, real start, real length, real gain, string outName)
+void sfplaygui(Collection l, mrs_natural offset, mrs_natural duration, mrs_real start, mrs_real length, mrs_real gain, string outName)
 {
 
   string sfName = l.entry(0);
   
   SoundFileSource* src = new SoundFileSource("src");
-  src->updctrl("string/filename", sfName);
+  src->updctrl("mrs_string/filename", sfName);
 
   Messager* messager =0;
   messager = new Messager(2,2001);  
@@ -93,7 +95,7 @@ void sfplaygui(Collection l, natural offset, natural duration, real start, real 
       else 				// filename output
 	{
 	  dest = new SoundFileSink("dest");
-	  dest->updctrl("string/filename", outName);      
+	  dest->updctrl("mrs_string/filename", outName);      
 	}
       // create playback network 
       playbacknet.addMarSystem(src);
@@ -103,15 +105,15 @@ void sfplaygui(Collection l, natural offset, natural duration, real start, real 
       
 
       int type;
-      natural i;
+      mrs_natural i;
       
-      natural nChannels = playbacknet.getctrl("SoundFileSource/src/natural/nChannels").toNatural();
-      real srate = playbacknet.getctrl("SoundFileSource/src/real/israte").toReal();
+      mrs_natural nChannels = playbacknet.getctrl("SoundFileSource/src/mrs_natural/nChannels").toNatural();
+      mrs_real srate = playbacknet.getctrl("SoundFileSource/src/mrs_real/israte").toReal();
       
       
       // playback offset & duration
-      offset = (natural) (start * srate * nChannels);
-      duration = (natural) (length * srate * nChannels);  
+      offset = (mrs_natural) (start * srate * nChannels);
+      duration = (mrs_natural) (length * srate * nChannels);  
       
       
       for (i=0; i < l.size(); i++)
@@ -119,31 +121,31 @@ void sfplaygui(Collection l, natural offset, natural duration, real start, real 
 	  sfName = l.entry(i);
 	  cerr << "[" << start << ":" << (start + length) << "] - [" << offset << ":" << (offset + duration) << "] - " <<  sfName << "-" << endl;      
 	  
-	  playbacknet.updctrl("SoundFileSource/src/string/filename", sfName);
+	  playbacknet.updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 
-	  natural nChannels = src->getctrl("natural/nChannels").toNatural();
-	  real srate = src->getctrl("real/israte").toReal();
+	  mrs_natural nChannels = src->getctrl("mrs_natural/nChannels").toNatural();
+	  mrs_real srate = src->getctrl("mrs_real/israte").toReal();
       
 	  // playback offset & duration
-	  offset = (natural) (start * srate * nChannels);
-	  duration = (natural) (length * srate * nChannels);
+	  offset = (mrs_natural) (start * srate * nChannels);
+	  duration = (mrs_natural) (length * srate * nChannels);
 	  
 	  // udpate controls
-	  // playbacknet.updctrl("natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES/64);
-	  playbacknet.updctrl("natural/inSamples", 256);
-	  playbacknet.updctrl("Gain/gt/real/gain", gain);
+	  // playbacknet.updctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES/64);
+	  playbacknet.updctrl("mrs_natural/inSamples", 256);
+	  playbacknet.updctrl("Gain/gt/mrs_real/gain", gain);
 	  
-	  playbacknet.updctrl("SoundFileSource/src/natural/pos", offset);      
-	  playbacknet.updctrl(dest->getType() + "/dest/natural/nChannels", 
-			      src->getctrl("natural/nChannels").toNatural());
+	  playbacknet.updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
+	  playbacknet.updctrl(dest->getType() + "/dest/mrs_natural/nChannels", 
+			      src->getctrl("mrs_natural/nChannels").toNatural());
 	  
-	  natural wc=0;
-	  natural samplesPlayed = 0;
-	  natural onSamples = playbacknet.getctrl("natural/onSamples").toNatural();
+	  mrs_natural wc=0;
+	  mrs_natural samplesPlayed = 0;
+	  mrs_natural onSamples = playbacknet.getctrl("mrs_natural/onSamples").toNatural();
 	  string message;
 	  bool done = false;
 	  
-	  while ((playbacknet.getctrl("SoundFileSource/src/bool/notEmpty").toBool()) && (duration > samplesPlayed) && !done)
+	  while ((playbacknet.getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool()) && (duration > samplesPlayed) && !done)
 	    {
 
 	      
@@ -155,8 +157,8 @@ void sfplaygui(Collection l, natural offset, natural duration, real start, real 
 		  message = messager->getMessage();
 		  stringstream inss(message);
 		  string cname = "";
-		  real dur;
-		  real val;
+		  mrs_real dur;
+		  mrs_real val;
 		  inss >> cname >> dur >> val;
 		  val = val / 100.0;
 		  if (cname != "") 
@@ -188,7 +190,7 @@ readCollection(Collection& l, string name)
 {
   MRSDIAG("sfplay.cpp - readCollection");
   ifstream from1(name.c_str());
-  natural attempts  =0;
+  mrs_natural attempts  =0;
 
 
   MRSDIAG("Trying current working directory: " + name);

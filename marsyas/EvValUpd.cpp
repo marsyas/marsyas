@@ -24,8 +24,9 @@
 
 #include "EvValUpd.h"
 #include "MarSystem.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 EvValUpd::EvValUpd(string cname, MarControlValue val) {
     event_type_ = "UpdateValue"; set(NULL,cname,val);
@@ -58,7 +59,7 @@ EvValUpd* EvValUpd::clone() { return new EvValUpd(*this); }
 
 
 /*
-ostream& operator<< (ostream& o, EvValUpd& e) {
+ostream& Marsyas::operator<< (ostream& o, EvValUpd& e) {
 //    sys.put(o);
     o << "EvValUpd<" << e.getCName() << "," << e.getValue() << ">";
     return o;

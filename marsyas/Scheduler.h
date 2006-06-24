@@ -44,6 +44,8 @@
 #include "Heap.h"
 //#include <map> 
 
+namespace Marsyas
+{
 
 class Scheduler {
 protected:
@@ -85,5 +87,7 @@ public:
 //    friend ostream& operator<<(ostream&, Scheduler&);
 //    friend istream& operator>>(istream&, Scheduler&);
 };
+
+}//namespace Marsyas
 
 #endif

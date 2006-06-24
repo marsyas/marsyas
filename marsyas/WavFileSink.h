@@ -23,13 +23,8 @@
    SoundFileSink writer for .wav sound files.
 */
 
-
-
-
 #ifndef MARSYAS_WAVFILESINK_H
 #define MARSYAS_WAVFILESINK_H
-
-
 
 #include "common.h"
 #include "SoundFileSink.h"
@@ -37,7 +32,8 @@
 #include "FileName.h"
 #include "AbsSoundFileSink.h"
 
-
+namespace Marsyas
+{
 
 struct wavhdr {
   char riff[4];           // "RIFF"
@@ -57,9 +53,6 @@ struct wavhdr {
   signed int data_length;    // in bytes
 };
 
-
-
-
 class WavFileSink: public AbsSoundFileSink
 {
 private:
@@ -74,27 +67,24 @@ private:
   std::string filename_;
   FILE *sfp_;
   long sfp_begin_;  
-  natural nChannels_;
-  
+  mrs_natural nChannels_;
 
   unsigned long ByteSwapLong(unsigned long nLongNumber);
   unsigned short ByteSwapShort (unsigned short nValue);  
 
-  
 public:
   WavFileSink(std::string name);
   ~WavFileSink();
   MarSystem* clone() const;  
   
-  void putLinear16Swap(natural c, realvec& slice);
+  void putLinear16Swap(mrs_natural c, realvec& slice);
   void putHeader(std::string filename);
   void update();
   bool checkExtension(std::string filename);
   void process(realvec& in, realvec& out);
 };
 
-
-
+}//namespace Marsyas
 
 #endif    /* !MARSYAS_WAVFILESINK_H */ 
 

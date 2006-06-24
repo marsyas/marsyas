@@ -21,9 +21,11 @@
    \class TmTime
    \brief TmTime
 */
-#include "TmTime.h"
-using namespace std;
 
+#include "TmTime.h"
+
+using namespace std;
+using namespace Marsyas;
 
 TmTime::TmTime(string timer_name, string time) { set(timer_name,time); }
 TmTime::~TmTime() {}

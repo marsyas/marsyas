@@ -29,8 +29,6 @@ a particular MarSystem.
 
 */
 
-
-
 #ifndef MARSYAS_CONTROLS_H
 #define MARSYAS_CONTROLS_H
 
@@ -40,25 +38,26 @@ a particular MarSystem.
 #include <map>
 #include <string> 
 
-
+namespace Marsyas
+{
 
 class MarControls
 {
 protected:
   std::map<std::string, MarControlValue> controls_;
-  std::map<std::string, real> rcontrols_;
-  std::map<std::string, natural> ncontrols_;
+  std::map<std::string, mrs_real> rcontrols_;
+  std::map<std::string, mrs_natural> ncontrols_;
   
   std::map<std::string, bool> hasState_;
   std::map<std::string, MarControlValue>::iterator iter_;
-  std::map<std::string, real>::iterator riter_;
+  std::map<std::string, mrs_real>::iterator riter_;
 public:
   bool hasState(std::string cname);
   void setState(std::string cname, bool st);
   void addControl(std::string cname, MarControlValue value);
   bool updControl(std::string cname, MarControlValue value);
-  bool updControl(std::string cname, natural);
-  bool updControl(std::string cname, real);
+  bool updControl(std::string cname, mrs_natural);
+  bool updControl(std::string cname, mrs_real);
   bool updControl(std::string cname, bool);
   bool hasControl(std::string cname);
   
@@ -71,6 +70,8 @@ public:
   friend std::istream& operator>>(std::istream&, MarControls& c);
   friend std::ostream& operator<<(std::ostream&, const MarControls& c);
 };
+
+}//namespace Marsyas
 
 #endif
 

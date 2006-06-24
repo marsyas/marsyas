@@ -19,16 +19,17 @@
 #ifndef MARSYAS_NOISESOURCE_H
 #define MARSYAS_NOISESOURCE_H	
 
-
 #include "MarSystem.h"
 
+namespace Marsyas
+{
 
 class NoiseSource: public MarSystem
 {
 private: 
   realvec wavetable_;
-  real wavetableSize_;
-  real index_;
+  mrs_real wavetableSize_;
+  mrs_real index_;
   
   void addControls();
   
@@ -42,9 +43,6 @@ public:
   
 };
 
-
-
-
-
+}//namespace Marsyas
 
 #endif /* !MARSYAS_NOISESOURCE_H */ 

@@ -47,6 +47,9 @@ AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 Audio = @Audio@
+CC = @CC@
+CCDEPMODE = @CCDEPMODE@
+CFLAGS = @CFLAGS@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 CXXDEPMODE = @CXXDEPMODE@
@@ -74,7 +77,6 @@ MAKEINFO = @MAKEINFO@
 MRSSWIG = @MRSSWIG@
 MslLibs = @MslLibs@
 OBJEXT = @OBJEXT@
-OGGLIB = @OGGLIB@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -88,9 +90,12 @@ SHELL = @SHELL@
 STRIP = @STRIP@
 VERSION = @VERSION@
 ac_aux_dir = @ac_aux_dir@
+ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_RANLIB = @ac_ct_RANLIB@
 ac_ct_STRIP = @ac_ct_STRIP@
+am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
+am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
 am__fastdepCXX_TRUE = @am__fastdepCXX_TRUE@
 am__include = @am__include@
@@ -167,7 +172,7 @@ Norm.h DownSampler.h WaveletBands.h Sum.h \
 PeakPeriods2BPM.h Histogram.h BeatHistoFeatures.h MslModel.h \
 CommandLineOptions.h RawFileSource.h FM.h \
 ANN_node.h Annotator.h ZeroRClassifier.h KNNClassifier.h Filter.h \
-Kurtosis.h Skewness.h ERB.h CollectionFileSource.h MeddisHairCell.h ViconFileSource.h Cascade.h Parallel.h SeneffEar.h OggFileSource.h MP3FileSource.h ClassOutputSink.h ClipAudioRange.h SilenceRemove.h RtMidi.h Stk.h Limiter.h CompExp.h NoiseGate.h NoiseSource.h Plucked.h Delay.h NormMaxMin.h HarmonicEnhancer.h Reassign.h Normalize.h AMDF.h SMO.h SOM.h LPC.h LPCwarped.h LPCResyn.h WekaSource.h MemorySource.h config.h MidiInput.h MATLABengine.h dsound.h 
+Kurtosis.h Skewness.h ERB.h CollectionFileSource.h MeddisHairCell.h ViconFileSource.h Cascade.h Parallel.h SeneffEar.h MP3FileSource.h ClassOutputSink.h ClipAudioRange.h SilenceRemove.h RtMidi.h Stk.h Limiter.h CompExp.h NoiseGate.h NoiseSource.h Plucked.h Delay.h NormMaxMin.h HarmonicEnhancer.h Reassign.h Normalize.h AMDF.h SMO.h SOM.h LPC.h LPCwarped.h LPCResyn.h LSP.h WekaSource.h MemorySource.h config.h MidiInput.h MATLABengine.h NumericLib.h vmblock.h lu.h dsound.h 
 
 
 lib_LIBRARIES = libmarsyas.a
@@ -202,8 +207,8 @@ Norm.cpp DownSampler.cpp WaveletBands.cpp Sum.cpp \
 PeakPeriods2BPM.cpp Histogram.cpp BeatHistoFeatures.cpp MslModel.cpp \
 CommandLineOptions.cpp RawFileSource.cpp FM.cpp \
 ANN_node.cpp Annotator.cpp ZeroRClassifier.cpp KNNClassifier.cpp Filter.cpp \
-Kurtosis.cpp Skewness.cpp AMDF.cpp SMO.cpp SOM.cpp LPC.cpp LPCwarped.cpp LPCResyn.cpp ERB.cpp CollectionFileSource.cpp MeddisHairCell.cpp ViconFileSource.cpp Cascade.cpp Parallel.cpp SeneffEar.cpp OggFileSource.cpp MP3FileSource.cpp ClassOutputSink.cpp ClipAudioRange.cpp SilenceRemove.cpp \
-RtMidi.cpp Stk.cpp Limiter.cpp NoiseSource.cpp CompExp.cpp NoiseGate.cpp Plucked.cpp Delay.cpp NormMaxMin.cpp HarmonicEnhancer.cpp Reassign.cpp Normalize.cpp WekaSource.cpp MemorySource.cpp MidiInput.cpp MATLABengine.cpp
+Kurtosis.cpp Skewness.cpp AMDF.cpp SMO.cpp SOM.cpp LPC.cpp LPCwarped.cpp LPCResyn.cpp LSP.cpp ERB.cpp CollectionFileSource.cpp MeddisHairCell.cpp ViconFileSource.cpp Cascade.cpp Parallel.cpp SeneffEar.cpp MP3FileSource.cpp ClassOutputSink.cpp ClipAudioRange.cpp SilenceRemove.cpp \
+RtMidi.cpp Stk.cpp Limiter.cpp NoiseSource.cpp CompExp.cpp NoiseGate.cpp Plucked.cpp Delay.cpp NormMaxMin.cpp HarmonicEnhancer.cpp Reassign.cpp Normalize.cpp WekaSource.cpp MemorySource.cpp MidiInput.cpp NumericLib.cpp vmblock.cpp lu.cpp MATLABengine.cpp
 
 subdir = marsyas
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -259,10 +264,10 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	ZeroRClassifier.$(OBJEXT) KNNClassifier.$(OBJEXT) \
 	Filter.$(OBJEXT) Kurtosis.$(OBJEXT) Skewness.$(OBJEXT) \
 	AMDF.$(OBJEXT) SMO.$(OBJEXT) SOM.$(OBJEXT) LPC.$(OBJEXT) \
-	LPCwarped.$(OBJEXT) LPCResyn.$(OBJEXT) ERB.$(OBJEXT) \
-	CollectionFileSource.$(OBJEXT) MeddisHairCell.$(OBJEXT) \
-	ViconFileSource.$(OBJEXT) Cascade.$(OBJEXT) Parallel.$(OBJEXT) \
-	SeneffEar.$(OBJEXT) OggFileSource.$(OBJEXT) \
+	LPCwarped.$(OBJEXT) LPCResyn.$(OBJEXT) LSP.$(OBJEXT) \
+	ERB.$(OBJEXT) CollectionFileSource.$(OBJEXT) \
+	MeddisHairCell.$(OBJEXT) ViconFileSource.$(OBJEXT) \
+	Cascade.$(OBJEXT) Parallel.$(OBJEXT) SeneffEar.$(OBJEXT) \
 	MP3FileSource.$(OBJEXT) ClassOutputSink.$(OBJEXT) \
 	ClipAudioRange.$(OBJEXT) SilenceRemove.$(OBJEXT) \
 	RtMidi.$(OBJEXT) Stk.$(OBJEXT) Limiter.$(OBJEXT) \
@@ -270,7 +275,8 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	Plucked.$(OBJEXT) Delay.$(OBJEXT) NormMaxMin.$(OBJEXT) \
 	HarmonicEnhancer.$(OBJEXT) Reassign.$(OBJEXT) \
 	Normalize.$(OBJEXT) WekaSource.$(OBJEXT) MemorySource.$(OBJEXT) \
-	MidiInput.$(OBJEXT) MATLABengine.$(OBJEXT)
+	MidiInput.$(OBJEXT) NumericLib.$(OBJEXT) vmblock.$(OBJEXT) \
+	lu.$(OBJEXT) MATLABengine.$(OBJEXT)
 libmarsyas_a_OBJECTS = $(am_libmarsyas_a_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I.
@@ -314,8 +320,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/KNNClassifier.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Kurtosis.Po ./$(DEPDIR)/LPC.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/LPCResyn.Po ./$(DEPDIR)/LPCwarped.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Limiter.Po ./$(DEPDIR)/MATLABengine.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/MFCC.Po ./$(DEPDIR)/MP3FileSource.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/LSP.Po ./$(DEPDIR)/Limiter.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/MATLABengine.Po ./$(DEPDIR)/MFCC.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/MP3FileSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MarControlValue.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MarControls.Po ./$(DEPDIR)/MarEvent.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MarFileSink.Po ./$(DEPDIR)/MarSystem.Po \
@@ -333,9 +340,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/NetworkUDPSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/NoiseGate.Po ./$(DEPDIR)/NoiseSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Norm.Po ./$(DEPDIR)/NormMaxMin.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Normalize.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/OggFileSource.Po ./$(DEPDIR)/OnePole.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Parallel.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Normalize.Po ./$(DEPDIR)/NumericLib.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/OnePole.Po ./$(DEPDIR)/Parallel.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PeakPeriods2BPM.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Peaker.Po ./$(DEPDIR)/Peaker1.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PlotSink.Po ./$(DEPDIR)/Plucked.Po \
@@ -375,7 +381,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/WekaSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ZeroCrossings.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ZeroRClassifier.Po ./$(DEPDIR)/fft.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/realvec.Po
+@AMDEP_TRUE@	./$(DEPDIR)/lu.Po ./$(DEPDIR)/realvec.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/vmblock.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -512,6 +519,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LPC.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LPCResyn.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LPCwarped.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LSP.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Limiter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MATLABengine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MFCC.Po@am__quote@
@@ -543,7 +551,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Norm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NormMaxMin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Normalize.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OggFileSource.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NumericLib.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OnePole.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parallel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeakPeriods2BPM.Po@am__quote@
@@ -606,7 +614,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZeroCrossings.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZeroRClassifier.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fft.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lu.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/realvec.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vmblock.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" \

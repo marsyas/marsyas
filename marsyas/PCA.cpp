@@ -30,9 +30,10 @@
    components.
 */
 
-
 #include "PCA.h"
+
 using namespace std;
+using namespace Marsyas;
 
 #define SIGN(a, b) ( (b) < 0 ? -fabs(a) : fabs(a) )
 
@@ -57,12 +58,12 @@ PCA::clone() const
 void 
 PCA::addControls()
 {
-  addDefaultControls();
+   addDefaultControls();
    npcs_.create(3,3);
    
-   addctrl("natural/npc",3);
-   setctrlState("natural/npc",true);
-   addctrl("realvec/pcs",npcs_);
+   addctrl("mrs_natural/npc",3);
+   setctrlState("mrs_natural/npc",true);
+   addctrl("mrs_realvec/pcs",npcs_);
    dims_ = 0;
 }
 
@@ -71,21 +72,21 @@ PCA::update()
 {
   MRSDIAG("PCA.cpp - PCA:update");
    
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/npc"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/npc"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  inObservations_ = getctrl("natural/inObservations").toNatural();
-  onObservations_ = getctrl("natural/onObservations").toNatural();
+  inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+  onObservations_ = getctrl("mrs_natural/onObservations").toNatural();
   
-  npc_ = getctrl("natural/npc").toNatural();
+  npc_ = getctrl("mrs_natural/npc").toNatural();
     
   if( npcs_.getRows() != inObservations_ || npcs_.getCols() != npc_ )
       npcs_.create(inObservations_,npc_);
   
   if( npc_ != onObservations_ ){
      
-     updctrl("natural/onObservations", npc_ );
+     updctrl("mrs_natural/onObservations", npc_ );
      onObservations_ = npc_;     
   }
     
@@ -100,7 +101,7 @@ PCA::update()
   {
      oss << "PC_" << i << ",";
   }
-  setctrl("string/onObsNames", oss.str());
+  setctrl("mrs_string/onObsNames", oss.str());
   
   defaultUpdate();  
 }
@@ -110,20 +111,24 @@ PCA::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
       
-  natural o1,o2;
+  mrs_natural o1,o2;
    
   realvec in_data_( in );
 
-  real evals [inObservations_];
-  real interm[inObservations_];  
+  mrs_real* evals = new mrs_real[inObservations_];
+  mrs_real* interm = new mrs_real[inObservations_];  
   
-  in.meanSample(means_);
-  in.stdSample(means_,stds_);  
+  //in.meanSample(means_);//original code
+  //in.stdSample(means_,stds_); //original code
+  //means_.create(in.getRows());//not needed anymore if using new realvec::operator=() ;-)
+  //stds_.create(in.getRows());//not needed anymore if using new realvec::operator=() ;-)
+  means_ = in.meanObs(); 
+  stds_ = in.stdObs(); 
 
   // Adjust data : ( X - means(X) ) / ( sqrt(n) * stds(X) )
   for (o=0; o < inObservations_; o++)
      for (t = 0; t < inSamples_; t++)
-        in(o,t) = ( in(o,t) - means_(o) ) / ( sqrt(inSamples_) * stds_(o) ) ;
+		 in(o,t) = ( in(o,t) - means_(o) ) / ( sqrt((mrs_real)inSamples_) * stds_(o) ) ;
   
   // Calculate the correlation matrix
   for ( o1 = 0 ; o1 < inObservations_-1 ; o1++ )
@@ -163,12 +168,15 @@ PCA::process(realvec& in, realvec& out)
         }
      }
   }    
-  setctrl("realvec/pcs",npcs_);
+  setctrl("mrs_realvec/pcs",npcs_);
+
+  delete [] evals;
+  delete [] interm;
 }
 
 /*  Reduce a real, symmetric matrix to a symmetric, tridiag. matrix. */
 void 
-PCA::tred2(realvec &a, natural m, real *d, real *e)
+PCA::tred2(realvec &a, mrs_natural m, mrs_real *d, mrs_real *e)
 /* Householder reductiom of matrix a to tridiagomal form.
 Algorithm: Martim et al., Num. Math. 11, 181-195, 1968.
 Ref: Smith et al., Matrix Eigemsystem Routimes -- EISPACK Guide
@@ -180,8 +188,8 @@ Source code adapted from F. Murtagh, Munich, 6 June 1989
 http://astro.u-strasbg.fr/~fmurtagh/mda-sw/pca.c
 */
 {
-   natural l, k, j, i;
-   real scale, hh, h, g, f;
+   mrs_natural l, k, j, i;
+   mrs_real scale, hh, h, g, f;
    
    for (i = m-1; i > 0; i--)
    {
@@ -258,14 +266,14 @@ http://astro.u-strasbg.fr/~fmurtagh/mda-sw/pca.c
 
 /*  Tridiagonal QL algorithm -- Implicit  */
 void 
-PCA::tqli(real d[], real e[], natural m, realvec &z)
+PCA::tqli(mrs_real d[], mrs_real e[], mrs_natural m, realvec &z)
 /*
  Source code adapted from F. Murtagh, Munich, 6 June 1989
  http://astro.u-strasbg.fr/~fmurtagh/mda-sw/pca.c
 */
 {
-   natural n, l, iter, i, k;
-   real s, r, p, g, f, dd, c, b;
+   mrs_natural n, l, iter, i, k;
+   mrs_real s, r, p, g, f, dd, c, b;
    
    for (i = 1; i < m; i++)
       e[i-1] = e[i];
@@ -282,7 +290,7 @@ PCA::tqli(real d[], real e[], natural m, realvec &z)
          }
          if (n != l)
          {
-            assert( iter++ != 30 ); // No convergence
+            MRSASSERT( iter++ != 30 ); // No convergence
 
             g = (d[l+1] - d[l]) / (2.0 * e[l]);
             r = sqrt((g * g) + 1.0);

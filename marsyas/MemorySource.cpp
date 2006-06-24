@@ -16,19 +16,15 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /** 
     \class MemorySource
 
 */
 
-
-
-
 #include "MemorySource.h"
+
 using namespace std;
-
-
+using namespace Marsyas;
 
 MemorySource::MemorySource(string name)
 {
@@ -53,11 +49,11 @@ MemorySource::clone() const
 void 
 MemorySource::addControls()
 {
-  samplesToUse_ = (natural)MRS_DEFAULT_SLICE_NSAMPLES;
-  addctrl("natural/samplesToUse", (natural)MRS_DEFAULT_SLICE_NSAMPLES);
-  setctrlState("natural/samplesToUse", true);
-  addctrl("bool/done", false);
-  setctrlState("bool/done", true);
+  samplesToUse_ = (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES;
+  addctrl("mrs_natural/samplesToUse", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES);
+  setctrlState("mrs_natural/samplesToUse", true);
+  addctrl("mrs_bool/done", false);
+  setctrlState("mrs_bool/done", true);
   addDefaultControls();  
 }
 
@@ -67,13 +63,13 @@ MemorySource::update()
 {
   MRSDIAG("MemorySource.cpp - MemorySource:update");
   
-  setctrl("natural/onObservations", getctrl("natural/inObservations")  );
-  setctrl("real/osrate", getctrl("real/israte").toReal());
-  samplesToUse_ = getctrl("natural/samplesToUse").toNatural();
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")  );
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal());
+  samplesToUse_ = getctrl("mrs_natural/samplesToUse").toNatural();
   
-  if( getctrl("bool/done").toBool() ){
+  if( getctrl("mrs_bool/done").toBool() ){
     count_ = 0;
-    setctrl("bool/done", (MarControlValue) false);
+    setctrl("mrs_bool/done", (MarControlValue) false);
   }
   
   defaultUpdate();
@@ -84,26 +80,25 @@ void
 MemorySource::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
-  
-  
+
   if( count_ < 1 + (samplesToUse_ -1) / onSamples_ ){
     
     for (o=0; o < inObservations_; o++){
       for (t = 0 ; t < onSamples_ && count_*onSamples_+t < samplesToUse_ ; t++)
-	{
-	  out(o,t) = in(o,count_*onSamples_+t);
-	}
+		{
+		  out(o,t) = in(o,count_*onSamples_+t);
+		}
       
       for( ; t < onSamples_ ; t++ )
-	{
-	  out(o,t) = 0.;
-	}
+		{
+		  out(o,t) = 0.;
+		}
     }
     count_++;
   }
   
   if( count_ >= 1 + (samplesToUse_ -1) / onSamples_ )
-    setctrl("bool/done", (MarControlValue) true);  
+    setctrl("mrs_bool/done", (MarControlValue) true);  
 }
 
 

@@ -28,16 +28,16 @@ with the Qt code through the standard signal/slot mechanism
 adjusted to reflect Marsyas controls. 
 */
 
-
-
-
 #ifndef MARSYSTEMWRAPPER_H
 #define MARSYSTEMWRAPPER_H
 
 #include <QObject>
 #include <QCheckBox>
 #include <QThread>
-#include <QString> 
+#include <QString>
+
+#include <vector>
+#include <string>
 
 #include "common.h"
 #include "MarSystemManager.h"
@@ -48,30 +48,30 @@ class MarSystemWrapper: public QThread
   Q_OBJECT
   
 public:
-  MarSystemWrapper(MarSystem* msys);
+  MarSystemWrapper(Marsyas::MarSystem* msys);
   
   
 public slots:
 
-  void updctrl(QString cname, MarControlValue value);
-  MarControlValue getctrl(string cname);
+  void updctrl(QString cname, Marsyas::MarControlValue value);
+  Marsyas::MarControlValue getctrl(std::string cname);
   
   void play();
   void pause();
   void run();
   
 signals: 
-  void ctrlChanged(QString cname, MarControlValue value);
+  void ctrlChanged(QString cname, Marsyas::MarControlValue value);
   void posChanged(int val);
   
 private:
   QString cur_cname_;
-  MarControlValue cur_value_;
+  Marsyas::MarControlValue cur_value_;
 
-  MarSystem* msys_;			// the underlying MarSystem
+  Marsyas::MarSystem* msys_;			// the underlying MarSystem
   
-  vector<QString> cnames_;
-  vector<MarControlValue> cvalues_;
+  std::vector<QString> cnames_;
+  std::vector<Marsyas::MarControlValue> cvalues_;
   
   bool guard_;
   bool pause_;

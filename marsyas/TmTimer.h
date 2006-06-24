@@ -30,6 +30,9 @@
 #include <iostream>
 #include <string> 
 
+namespace Marsyas
+{
+
 class Scheduler;
 
 class TmTimer {
@@ -39,8 +42,8 @@ protected:
 
     unsigned long cur_time_;
 
-    natural granularity_;
-    natural next_trigger_;
+    mrs_natural granularity_;
+    mrs_natural next_trigger_;
 
 protected:
     void init();
@@ -56,17 +59,19 @@ public:
     virtual TmTimer* clone()=0;
 
     virtual void setScheduler(Scheduler* s)=0;
-    void setGranularity(natural g);
-    natural getTime();
+    void setGranularity(mrs_natural g);
+    mrs_natural getTime();
     void tick();
 
-    virtual natural readTimeSrc()=0;
+    virtual mrs_natural readTimeSrc()=0;
     virtual void trigger()=0;
-    virtual natural intervalsize(std::string interval)=0;
+    virtual mrs_natural intervalsize(std::string interval)=0;
 
     // the usual stream IO 
 //    friend ostream& operator<<(ostream&, Scheduler&);
 //    friend istream& operator>>(istream&, Scheduler&);
 };
+
+}//namespace Marsyas
 
 #endif

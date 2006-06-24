@@ -26,10 +26,10 @@
 #ifndef MARSYAS_NORMALIZE_H
 #define MARSYAS_NORMALIZE_H
 
-
 #include "MarSystem.h"	
 
-
+namespace Marsyas
+{
 
 class Normalize: public MarSystem
 {
@@ -43,6 +43,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 	

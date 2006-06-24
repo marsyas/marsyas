@@ -20,17 +20,16 @@
     textract: batch feature extraction 
 */
 
-
-
-#include <stdio.h>
+#include <cstdio>
 #include "Collection.h"
 #include "MarSystemManager.h"
 #include "Accumulator.h"
 #include "TimeLine.h"
 #include "CommandLineOptions.h"
-#include <string> 
-using namespace std;
+#include <string>
 
+using namespace std;
+using namespace Marsyas;
 
 
 
@@ -103,7 +102,7 @@ printHelp(string progName)
 
 
 
-void textract_trainAccumulator(string sfName, natural offset, natural duration, real start, real length, real gain, natural label, string pluginName, string wekafname, natural memSize, string extractorStr, TimeLine& tline)
+void textract_trainAccumulator(string sfName, mrs_natural offset, mrs_natural duration, mrs_real start, mrs_real length, mrs_real gain, mrs_natural label, string pluginName, string wekafname, mrs_natural memSize, string extractorStr, TimeLine& tline)
 {
   
   MRSDIAG("sfplay.cpp - sfplay");
@@ -115,12 +114,12 @@ void textract_trainAccumulator(string sfName, natural offset, natural duration, 
   
   // Find proper soundfile format and create SignalSource 
   SoundFileSource *src = new SoundFileSource("src");
-  src->updctrl("string/filename", sfName);
-  src->updctrl("natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
+  src->updctrl("mrs_string/filename", sfName);
+  src->updctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
 
   if (tlineName == EMPTYSTRING)
     {
-      natural hops = src->getctrl("natural/size").toNatural() * src->getctrl("natural/nChannels").toNatural() / 2048 + 1;
+      mrs_natural hops = src->getctrl("mrs_natural/size").toNatural() * src->getctrl("mrs_natural/nChannels").toNatural() / 2048 + 1;
       tline.regular(100, hops);
     }
   
@@ -135,25 +134,25 @@ void textract_trainAccumulator(string sfName, natural offset, natural duration, 
   series->addMarSystem(dest_);
   
 
-  series->updctrl("AudioSink/dest/natural/nChannels", 
-		  series->getctrl("SoundFileSource/src/natural/nChannels").toNatural());  
+  series->updctrl("AudioSink/dest/mrs_natural/nChannels", 
+		  series->getctrl("SoundFileSource/src/mrs_natural/nChannels").toNatural());  
   
 
 
   // Calculate duration, offest parameters if necessary 
   if (start > 0.0f) 
-    offset = (natural) (start 
-			* src->getctrl("real/israte").toReal() 
-			* src->getctrl("natural/nChannels").toNatural());
+    offset = (mrs_natural) (start 
+			* src->getctrl("mrs_real/israte").toReal() 
+			* src->getctrl("mrs_natural/nChannels").toNatural());
   if (length != 30.0f) 
-    duration = (natural) (length 
-			  * src->getctrl("real/israte").toReal() 
-			  * src->getctrl("natural/nChannels").toNatural());
+    duration = (mrs_natural) (length 
+			  * src->getctrl("mrs_real/israte").toReal() 
+			  * src->getctrl("mrs_natural/nChannels").toNatural());
   MarSystemManager mng;
 
   // accumulate feature vectors over 30 seconds 
   Accumulator* acc = new Accumulator("acc");
-  acc->updctrl("natural/nTimes", 100);
+  acc->updctrl("mrs_natural/nTimes", 100);
   
   // Calculate windowed power spectrum and then 
   // calculate specific feature sets 
@@ -162,7 +161,7 @@ void textract_trainAccumulator(string sfName, natural offset, natural duration, 
   spectralShape->addMarSystem(mng.create("Hamming", "hamming"));
   spectralShape->addMarSystem(mng.create("Spectrum","spk"));
   spectralShape->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-  spectralShape->updctrl("PowerSpectrum/pspk/string/spectrumType","power");  
+  spectralShape->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","power");  
 
   // Spectrum Shape descriptors
   Fanout* spectrumFeatures = new Fanout("spectrumFeatures");
@@ -218,7 +217,7 @@ void textract_trainAccumulator(string sfName, natural offset, natural duration, 
   featureNetwork->addMarSystem(src->clone());
   featureNetwork->addMarSystem(mng.create("Features", "features"));
   featureNetwork->addMarSystem(mng.create("Memory", "memory"));
-  featureNetwork->updctrl("Memory/memory/natural/memSize", memSize);
+  featureNetwork->updctrl("Memory/memory/mrs_natural/memSize", memSize);
   featureNetwork->addMarSystem(mng.create("Statistics", "statistics"));  
 
 
@@ -234,24 +233,24 @@ void textract_trainAccumulator(string sfName, natural offset, natural duration, 
   total->addMarSystem(wsink->clone());
   
   // update controls 
-  total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
-  total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/natural/pos", offset);      
+  total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
+  total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/mrs_natural/pos", offset);      
 
-  natural wc = 0;
-  natural samplesPlayed =0;
+  mrs_natural wc = 0;
+  mrs_natural samplesPlayed =0;
   
   // main loop for extracting the features 
   string className = "";
   
-  total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/string/filename", sfName);
+  total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", sfName);
   wc = 0;  	  
   samplesPlayed = 0;
   
-  total->updctrl("WekaSink/wsink/natural/nLabels", (natural)3);
+  total->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)3);
   if (wekafname == EMPTYSTRING) 
-    total->updctrl("WekaSink/wsink/string/filename", "weka2.arff");
+    total->updctrl("WekaSink/wsink/mrs_string/filename", "weka2.arff");
   else 
-    total->updctrl("WekaSink/wsink/string/filename", wekafname);  
+    total->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  
   
   // total->tick();
   
@@ -262,13 +261,13 @@ void textract_trainAccumulator(string sfName, natural offset, natural duration, 
       cout << "start = " << tline.start(r) << endl;
       cout << "end = " << tline.end(r) << endl;
 
-      total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/natural/pos", (natural)tline.start(r) * tline.lineSize_);
-      total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/natural/inSamples", tline.lineSize_);
+      total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/pos", (mrs_natural)tline.start(r) * tline.lineSize_);
+      total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/inSamples", tline.lineSize_);
       if (tlineName == EMPTYSTRING)
       {
 	if ((tline.getRClassId(r) > 0) && (tline.getRClassId(r) != 4))
 	  {
-	    total->updctrl("WekaSink/wsink/natural/label", tline.getRClassId(r)-1);
+	    total->updctrl("WekaSink/wsink/mrs_natural/label", tline.getRClassId(r)-1);
 	  }
       }
       else

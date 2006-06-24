@@ -24,11 +24,10 @@
 used for mixing audio signals before SoudFileSink or AudioSink. 
 */
 
-
 #include "Sum.h"
+
 using namespace std;
-
-
+using namespace Marsyas;
 
 Sum::Sum(string name)
 {
@@ -61,9 +60,9 @@ Sum::update()
 {
   MRSDIAG("Sum.cpp - Sum:update");
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", (MarControlValue)1);
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", (MarControlValue)1);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   defaultUpdate();
 }
 
@@ -77,11 +76,8 @@ Sum::process(realvec& in, realvec& out)
   for (o=0; o < inObservations_; o++)
     for (t = 0; t < inSamples_; t++)
       {
-	out(0,t) += in(o,t);
+		out(0,t) += in(o,t);
       }
-
-
-  
 }
 
 

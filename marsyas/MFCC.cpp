@@ -25,11 +25,10 @@ used in Speech Recognition. The code is based on the correspdonging
 function in the Auditory Toolbox by Malcolm Slaney. 
 */
 
-
-
 #include "MFCC.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 MFCC::MFCC(string name)
 {
@@ -65,17 +64,17 @@ MFCC::update()
   
   MRSDIAG("MFCC.cpp - MFCC:update");
   
-  setctrl("natural/onSamples", (natural)1);
-  setctrl("natural/onObservations", (natural)13);
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", (mrs_natural)1);
+  setctrl("mrs_natural/onObservations", (mrs_natural)13);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
   // Initialize frequency boundaries for filters 
 
-  natural i,j;
+  mrs_natural i,j;
 
 
-  fftSize_ = 2 * getctrl("natural/inObservations").toNatural();
-  samplingRate_ = (natural) (getctrl("real/israte").toReal() * getctrl("natural/inObservations").toNatural() * 2);
+  fftSize_ = 2 * getctrl("mrs_natural/inObservations").toNatural();
+  samplingRate_ = (mrs_natural) (getctrl("mrs_real/israte").toReal() * getctrl("mrs_natural/inObservations").toNatural() * 2);
 
 
   
@@ -89,7 +88,7 @@ MFCC::update()
       
       for (i=0; i < cepstralCoefs_; i++)
 	oss << "MFCC_" << i << ",";
-      setctrl("string/onObsNames", oss.str());
+      setctrl("mrs_string/onObsNames", oss.str());
       
       freqs_.create(42);
       lowestFrequency_ = 133.3333f;
@@ -115,7 +114,7 @@ MFCC::update()
       float first_log = freqs_(linearFilters_-1);
       for (i=1; i<=logFilters_+2; i++)
 	{
-	  freqs_(linearFilters_-1+i) = first_log * pow(logSpacing_, (real)i);
+	  freqs_(linearFilters_-1+i) = first_log * pow(logSpacing_, (mrs_real)i);
 	}  
       
       
@@ -130,7 +129,7 @@ MFCC::update()
 	upper_(i-2) = freqs_(i);
       
       for (i=0; i<totalFilters_; i++)
-	triangle_heights_(i) = (real)(2.0 / (upper_(i) - lower_(i)));
+	triangle_heights_(i) = (mrs_real)(2.0 / (upper_(i) - lower_(i)));
       
       
       
@@ -143,7 +142,7 @@ MFCC::update()
       mfccFilterWeights_.create(totalFilters_, fftSize_);
       mfccDCT_.create(cepstralCoefs_, totalFilters_);
       
-      natural chan;
+      mrs_natural chan;
       
       // Initialize mfccFilterWeights
       for (chan = 0; chan < totalFilters_; chan++)
@@ -162,13 +161,13 @@ MFCC::update()
 	  }
       
       // Initialize MFCC_DCT
-      real scale_fac = (real)(1.0/ sqrt((real)(totalFilters_/2)));
+      mrs_real scale_fac = (mrs_real)(1.0/ sqrt((mrs_real)(totalFilters_/2)));
       for (j = 0; j<cepstralCoefs_; j++)
 	for (i=0; i< totalFilters_; i++)
 	  {
 	    mfccDCT_(j, i) = scale_fac * cos(j * (2*i +1) * PI/2/totalFilters_);
 	    if (i == 0)
-	      mfccDCT_(j,i) *= (real)(sqrt(2.0)/2.0);
+	      mfccDCT_(j,i) *= (mrs_real)(sqrt(2.0)/2.0);
 	  }  
     }
   
@@ -178,7 +177,7 @@ MFCC::update()
   
   
 
-  natural inSize = getctrl("natural/inObservations").toNatural();  
+  mrs_natural inSize = getctrl("mrs_natural/inObservations").toNatural();  
   fmagnitude_.stretch(inSize*2);
   earMagnitude_.stretch(totalFilters_);
 
@@ -193,7 +192,7 @@ MFCC::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 
-  natural i,k;
+  mrs_natural i,k;
   
   // mirror the spectrum 
   for (o=0; o < inObservations_; o++)
@@ -202,7 +201,7 @@ MFCC::process(realvec& in, realvec& out)
     fmagnitude_(o+ inObservations_) = fmagnitude_(inObservations_ - o);
   
   
-  real sum =0.0;
+  mrs_real sum =0.0;
   // Calculate the filterbank responce
   for (i=0; i<totalFilters_; i++)
     { 

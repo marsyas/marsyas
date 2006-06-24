@@ -22,11 +22,8 @@
 
 */
 
-
-
 #ifndef MARSYAS_WEKASINK_H
 #define MARSYAS_WEKASINK_H
-
 
 #include "MarSystem.h"
 
@@ -34,7 +31,8 @@
 #include <sstream>
 #include <iomanip>
 
-
+namespace Marsyas
+{
 
 class WekaSink: public MarSystem
 {
@@ -44,9 +42,8 @@ private:
   std::ofstream* mos_;
 
   std::vector<std::string> labelNames_;
-  natural precision_;
-  natural downsample_;
-  
+  mrs_natural precision_;
+  mrs_natural downsample_;
 
 public:
   WekaSink();
@@ -54,8 +51,7 @@ public:
   WekaSink(const WekaSink& a);
   
   ~WekaSink();
-  
-
+ 
   MarSystem* clone() const;  
   void putHeader(std::string inObsNames);
   
@@ -66,6 +62,8 @@ public:
   std::ofstream* getOfstream(){ return mos_; }
      
 };
+
+}//namespace Marsyas
 
 
 #endif

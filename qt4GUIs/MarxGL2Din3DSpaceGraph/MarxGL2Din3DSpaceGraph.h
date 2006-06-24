@@ -22,12 +22,9 @@
 
 #include <QGLWidget>
 #include <QColor>
-
-#include "realvec.h"
-
 #include <QKeyEvent> // for testing only!!!
 
-using namespace std;
+#include "realvec.h"
 
 class MarxGL2Din3DSpaceGraph : public QGLWidget
 {
@@ -36,7 +33,7 @@ public:
 
   MarxGL2Din3DSpaceGraph( QWidget *parent, long b=0 );
 
-  bool setBuffer( realvec& );
+  bool setBuffer( Marsyas::realvec& );
   void setXAxisStretch( float );
   void setYAxisStretch( float );
   bool setYNormalizeFactor( float );
@@ -55,7 +52,7 @@ protected:
 private:
   QColor bgcolor;
 
-  realvec* buffer;
+  Marsyas::realvec* buffer;
   long buffersize;
 
   float x_axis_stretch;

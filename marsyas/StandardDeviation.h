@@ -30,7 +30,8 @@ vector.
 
 #include "MarSystem.h"	
 
-
+namespace Marsyas
+{
 
 class StandardDeviation: public MarSystem
 {
@@ -47,9 +48,10 @@ public:
   
   void update();
   void process(realvec& in, realvec& out);
-  
 
 };
+
+}//namespace Marsyas
 
 #endif
 

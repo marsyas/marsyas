@@ -25,13 +25,8 @@ Specifically used for handling the graphical user interface events.
 
 */
 
-
-
-
-
 #ifndef MARSYAS_TALK_H 
 #define MARSYAS_TALK_H
-
 
 #include <string.h>
 #include <stdio.h>
@@ -57,13 +52,15 @@ Specifically used for handling the graphical user interface events.
 #define MARSYAS_MFDIR ""
 #endif
 
+namespace Marsyas
+{
 
 class Talk
 {
 private:
   Communicator* communicator_;
-  void cmd_load(std::string fname, natural lineSize);
-  void cmd_play(natural start, natural end, natural lineSize);
+  void cmd_load(std::string fname, mrs_natural lineSize);
+  void cmd_play(mrs_natural start, mrs_natural end, mrs_natural lineSize);
   
   void cmd_merge(std::string systemName, unsigned int pstart, unsigned int pend, 
 		 unsigned int start,  unsigned int end, 
@@ -86,6 +83,8 @@ public:
   void init(Communicator* communicator);
   void process(char *message);
 };
+
+}//namespace Marsyas
 
 
 

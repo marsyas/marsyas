@@ -32,9 +32,10 @@ directly in Hz.
 
 #include "PvConvert.h"
 
-#include <algorithm> 
-using namespace std;
+#include <algorithm>
 
+using namespace std;
+using namespace Marsyas;
 
 PvConvert::PvConvert(string name)
 {
@@ -62,9 +63,9 @@ void
 PvConvert::addControls()
 {
   addDefaultControls();
-  addctrl("natural/Decimation",MRS_DEFAULT_SLICE_NSAMPLES/4);
-  addctrl("natural/Sinusoids", 1);
-  setctrlState("natural/Sinusoids", true);
+  addctrl("mrs_natural/Decimation",MRS_DEFAULT_SLICE_NSAMPLES/4);
+  addctrl("mrs_natural/Sinusoids", 1);
+  setctrlState("mrs_natural/Sinusoids", true);
   
   
 }
@@ -76,9 +77,9 @@ void
 PvConvert::update()
 {
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations").toNatural() + 2);
-  setctrl("real/osrate", getctrl("real/israte").toReal() * getctrl("natural/inObservations").toNatural());  
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations").toNatural() + 2);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal() * getctrl("mrs_natural/inObservations").toNatural());  
 
   defaultUpdate();  
   
@@ -96,10 +97,10 @@ PvConvert::update()
   psize_ = size_;
   
   
-  factor_ = ((getctrl("real/osrate").toReal()) / 
-	     (real)( getctrl("natural/Decimation").toNatural()* TWOPI));
-  fundamental_ = (real) (getctrl("real/osrate").toReal() / (real)getctrl("natural/inObservations").toNatural());
-  kmax_ = getctrl("natural/Sinusoids").toNatural();
+  factor_ = ((getctrl("mrs_real/osrate").toReal()) / 
+	     (mrs_real)( getctrl("mrs_natural/Decimation").toNatural()* TWOPI));
+  fundamental_ = (mrs_real) (getctrl("mrs_real/osrate").toReal() / (mrs_real)getctrl("mrs_natural/inObservations").toNatural());
+  kmax_ = getctrl("mrs_natural/Sinusoids").toNatural();
 
 }
 
@@ -114,10 +115,10 @@ PvConvert::process1(realvec& in, realvec& out)
   
   checkFlow(in,out); 
   
-  natural N2 = inObservations_/2;
-  real a;
-  real b;
-  real phasediff;
+  mrs_natural N2 = inObservations_/2;
+  mrs_real a;
+  mrs_real b;
+  mrs_real phasediff;
 
   // handle amplitudes
   for (t=0; t <= N2; t++)
@@ -151,7 +152,7 @@ PvConvert::process1(realvec& in, realvec& out)
   for (t=2; t <= N2; t++)
     {
 
-      real val = mag_(t);
+      mrs_real val = mag_(t);
       if ((val > mag_(t-1)) && (val > mag_(t+1))) 
 	found = true;
       else
@@ -195,10 +196,10 @@ PvConvert::process(realvec& in, realvec& out)
   checkFlow(in,out); 
 
   
-  natural N2 = inObservations_/2;
-  real a;
-  real b;
-  real phasediff;
+  mrs_natural N2 = inObservations_/2;
+  mrs_real a;
+  mrs_real b;
+  mrs_real phasediff;
 
   // handle amplitudes
   for (t=0; t <= N2; t++)
@@ -228,11 +229,11 @@ PvConvert::process(realvec& in, realvec& out)
     }
 
 
-  real* data = sortedmags_.getData();
-  sort(data, data+(N2+1), greater<real>());
+  mrs_real* data = sortedmags_.getData();
+  sort(data, data+(N2+1), greater<mrs_real>());
   
   bool found;
-  real val;
+  mrs_real val;
   
 
   for (t=0; t <= N2; t++)

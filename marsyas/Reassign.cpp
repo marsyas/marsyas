@@ -22,12 +22,11 @@
 
 */
 
-
-
 #include "Reassign.h"
 #include <cfloat>
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 Reassign::Reassign(string name)
 {
@@ -61,14 +60,14 @@ Reassign::update()
   MRSDIAG("Reassign.cpp - Reassign:update");
    
 
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));  
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
 
-  flag_.create(getctrl("natural/inSamples").toNatural());
+  flag_.create(getctrl("mrs_natural/inSamples").toNatural());
   
   
-  setctrl("string/onObsNames", getctrl("string/inObsNames"));
+  setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
   defaultUpdate();  
 }
 
@@ -80,16 +79,16 @@ Reassign::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 
-  real mx = DBL_MIN;
-  natural tmx  = 0;
+  mrs_real mx = DBL_MIN;
+  mrs_natural tmx  = 0;
   
 
   
-  real pmax = DBL_MIN;
-  natural t1;
-  natural t2;
-  real s1;
-  real s2;
+  mrs_real pmax = DBL_MIN;
+  mrs_natural t1;
+  mrs_natural t2;
+  mrs_real s1;
+  mrs_real s2;
 
   flag_.setval(0.0);
   

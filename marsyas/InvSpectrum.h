@@ -30,6 +30,9 @@ using the Inverse Fast Fourier Transform (IFFT)
 #include "MarSystem.h"	
 #include "fft.h"
 
+namespace Marsyas
+{
+
 class InvSpectrum: public MarSystem
 {
 private:
@@ -46,9 +49,9 @@ public:
   MarSystem* clone() const;
   void update();
   void process(realvec& in, realvec& out);
-  
-  
 };
+
+}//namespace Marsyas
 
 #endif
 

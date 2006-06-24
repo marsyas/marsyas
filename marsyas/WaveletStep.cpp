@@ -25,13 +25,10 @@ pyramid algorithm. Called by WaveletPyramid. The code is
 is based on the Numerical Recipies wavelet code. 
 */
 
-
-
-
-
 #include "WaveletStep.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 WaveletStep::WaveletStep()
 {

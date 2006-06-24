@@ -29,13 +29,10 @@ weka for training.
 
 */
 
-
-
-
-
 #include "SMO.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 SMO::SMO(string name)
 {
@@ -60,13 +57,13 @@ void
 SMO::addControls()
 {
   addDefaultControls();
-  addctrl("string/mode", "train");
-  addctrl("natural/nLabels", 1);
-  setctrlState("natural/nLabels", true);
+  addctrl("mrs_string/mode", "train");
+  addctrl("mrs_natural/nLabels", 1);
+  setctrlState("mrs_natural/nLabels", true);
   weights_.create(1);
-  addctrl("realvec/weights", weights_);
-  addctrl("bool/done", false);
-  setctrlState("bool/done", true);
+  addctrl("mrs_realvec/weights", weights_);
+  addctrl("mrs_bool/done", false);
+  setctrlState("mrs_bool/done", true);
   
 }
 
@@ -76,24 +73,24 @@ SMO::update()
 {
   MRSDIAG("SMO.cpp - SMO:update");
 
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", (natural)2);
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", (mrs_natural)2);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
   
-  natural inObservations = getctrl("natural/inObservations").toNatural();
-  natural nlabels = getctrl("natural/nLabels").toNatural();
+  mrs_natural inObservations = getctrl("mrs_natural/inObservations").toNatural();
+  mrs_natural nlabels = getctrl("mrs_natural/nLabels").toNatural();
 
 
-  natural mcols = (getctrl("realvec/weights").toVec()).getCols();
-  natural ncols = weights_.getCols();
+  mrs_natural mcols = (getctrl("mrs_realvec/weights").toVec()).getCols();
+  mrs_natural ncols = weights_.getCols();
   
   
   
   if (inObservations != mcols)
     {
       weights_.create(inObservations);
-      updctrl("realvec/weights", weights_);
+      updctrl("mrs_realvec/weights", weights_);
     }
   
   
@@ -102,10 +99,10 @@ SMO::update()
       weights_.create(inObservations);
     }
   
-  string mode = getctrl("string/mode").toString();
+  string mode = getctrl("mrs_string/mode").toString();
   if (mode == "predict")
     {
-      weights_ = getctrl("realvec/weights").toVec();
+      weights_ = getctrl("mrs_realvec/weights").toVec();
     }
 
   defaultUpdate();
@@ -116,22 +113,22 @@ void
 SMO::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
-  real v;
-  string mode = getctrl("string/mode").toString();
+  mrs_real v;
+  string mode = getctrl("mrs_string/mode").toString();
 
   
 
 
-  natural nlabels = getctrl("natural/nLabels").toNatural();
-  natural l;
-  natural prediction = 0;
-  real label;
+  mrs_natural nlabels = getctrl("mrs_natural/nLabels").toNatural();
+  mrs_natural l;
+  mrs_natural prediction = 0;
+  mrs_real label;
   
 
-  real diff;
-  real sq_sum=0.0;
+  mrs_real diff;
+  mrs_real sq_sum=0.0;
 
-  real thres;
+  mrs_real thres;
   
 
   
@@ -142,8 +139,8 @@ SMO::process(realvec& in, realvec& out)
       for (t = 0; t < inSamples_; t++)  
 	{
 	  label = in(inObservations_-1, t);
-	  out(0,t) = (real) label;
-	  out(1,t) = (real) label;
+	  out(0,t) = (mrs_real) label;
+	  out(1,t) = (mrs_real) label;
 	}
 
       weights_(0) = 0.4122;
@@ -274,16 +271,16 @@ SMO::process(realvec& in, realvec& out)
 	      prediction = 1;
 	    }
 	  
-	  out(0,t) = (real) prediction;
-	  out(1,t) = (real) label;
+	  out(0,t) = (mrs_real) prediction;
+	  out(1,t) = (mrs_real) label;
 	}
       
       
     }
   
-  if (getctrl("bool/done").toBool())
+  if (getctrl("mrs_bool/done").toBool())
     {
-      updctrl("realvec/weights", weights_);
+      updctrl("mrs_realvec/weights", weights_);
     }
 
   

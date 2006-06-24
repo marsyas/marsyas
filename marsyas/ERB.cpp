@@ -25,13 +25,13 @@
 the code from the Auditory Toolbox by Malcolm Slaney. 
 */
 
-
 #include "ERB.h"
 #include "Series.h"
 #include "Filter.h"
 #include <sstream>
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 ERB::ERB(string name)
 {
@@ -62,11 +62,11 @@ ERB::addControls()
 {
   addDefaultControls();
   
-  addctrl("natural/numChannels", 1);
-  addctrl("real/lowFreq", 100.0f);
+  addctrl("mrs_natural/numChannels", 1);
+  addctrl("mrs_real/lowFreq", 100.0f);
   
-  setctrlState("natural/numChannels", true);
-  setctrlState("real/lowFreq", true);
+  setctrlState("mrs_natural/numChannels", true);
+  setctrlState("mrs_real/lowFreq", true);
   
 }
 
@@ -76,12 +76,12 @@ ERB::update()
   MRSDIAG("ERB.cpp - ERB:update");
   
   //FilterBank creation
-  if (numChannels != getctrl("natural/numChannels").toNatural()){
-    numChannels = getctrl("natural/numChannels").toNatural();
+  if (numChannels != getctrl("mrs_natural/numChannels").toNatural()){
+    numChannels = getctrl("mrs_natural/numChannels").toNatural();
     if (filterBank) delete filterBank;
     filterBank = new Fanout("filterBank");
     stringstream name;
-    for(natural i = 0; i < numChannels; i++){
+    for(mrs_natural i = 0; i < numChannels; i++){
       name << "channel_" << i;
       Series* channel = new Series(name.str());
       name.str("");
@@ -107,19 +107,19 @@ ERB::update()
     fcoefs.create(numChannels, 10);
   }
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", numChannels*getctrl("natural/inObservations").toNatural());
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", numChannels*getctrl("mrs_natural/inObservations").toNatural());
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
   //Coefficients computation
-  lowFreq = getctrl("real/lowFreq").toReal();
-  fs = getctrl("real/israte").toReal();
+  lowFreq = getctrl("mrs_real/lowFreq").toReal();
+  fs = getctrl("mrs_real/israte").toReal();
   highFreq = fs/2;
   EarQ = 9.26449f;
   minBW = 24.7f;
   order = 1;
   
-  for (natural i = 0; i < numChannels; i++){
+  for (mrs_natural i = 0; i < numChannels; i++){
     centerFreqs(i) = - (EarQ*minBW) + exp((i+1)*(-log(highFreq+EarQ*minBW) + log(lowFreq+EarQ*minBW))/numChannels)*(highFreq + EarQ*minBW);
   }
   
@@ -127,7 +127,7 @@ ERB::update()
   A2 = 0.0f;
   B0 = 1.0f;
   
-  for (natural i = 0; i < numChannels; i++){
+  for (mrs_natural i = 0; i < numChannels; i++){
     fcoefs(i,0) = A0;
     fcoefs(i,1) = A11(centerFreqs(i), B(E(centerFreqs(i))));
     fcoefs(i,2) = A12(centerFreqs(i), B(E(centerFreqs(i))));
@@ -144,35 +144,35 @@ ERB::update()
   stringstream channel,filter,ctrl;
   realvec b(1,3),a(1,3);
   channel << "Series/channel_0/";
-  ctrl << channel.str() << "natural/inSamples";
-  filterBank->setctrl(ctrl.str(), getctrl("natural/inSamples"));
+  ctrl << channel.str() << "mrs_natural/inSamples";
+  filterBank->setctrl(ctrl.str(), getctrl("mrs_natural/inSamples"));
   ctrl.str("");
-  ctrl << channel.str() << "natural/inObservations";
-  filterBank->setctrl(ctrl.str(), getctrl("natural/inObservations"));
+  ctrl << channel.str() << "mrs_natural/inObservations";
+  filterBank->setctrl(ctrl.str(), getctrl("mrs_natural/inObservations"));
   ctrl.str("");
-  ctrl << channel.str() << "natural/onObservations";
-  filterBank->setctrl(ctrl.str(), getctrl("natural/inObservations"));
+  ctrl << channel.str() << "mrs_natural/onObservations";
+  filterBank->setctrl(ctrl.str(), getctrl("mrs_natural/inObservations"));
   ctrl.str("");
-  ctrl << channel.str() << "real/israte";
-  filterBank->setctrl(ctrl.str(), getctrl("real/israte"));
-  for(natural i = 0; i < numChannels; i++){
+  ctrl << channel.str() << "mrs_real/israte";
+  filterBank->setctrl(ctrl.str(), getctrl("mrs_real/israte"));
+  for(mrs_natural i = 0; i < numChannels; i++){
     //filter 0
     channel.str("");
     channel << "Series/channel_" << i << "/";
     filter.str("");
     filter << channel.str() << "Filter/filter_" << i << "_" << 0 << "/";
     ctrl.str("");
-    ctrl << filter.str() << "natural/inSamples";
-    filterBank->setctrl(ctrl.str(), getctrl("natural/inSamples"));
+    ctrl << filter.str() << "mrs_natural/inSamples";
+    filterBank->setctrl(ctrl.str(), getctrl("mrs_natural/inSamples"));
     ctrl.str("");
-    ctrl << filter.str() << "natural/inObservations";
-    filterBank->setctrl(ctrl.str(), getctrl("natural/inObservations"));
+    ctrl << filter.str() << "mrs_natural/inObservations";
+    filterBank->setctrl(ctrl.str(), getctrl("mrs_natural/inObservations"));
     ctrl.str("");
-    ctrl << filter.str() << "natural/onObservations";
-    filterBank->setctrl(ctrl.str(), getctrl("natural/inObservations"));
+    ctrl << filter.str() << "mrs_natural/onObservations";
+    filterBank->setctrl(ctrl.str(), getctrl("mrs_natural/inObservations"));
     ctrl.str("");
-    ctrl << filter.str() << "real/israte";
-    filterBank->setctrl(ctrl.str(), getctrl("real/israte"));
+    ctrl << filter.str() << "mrs_real/israte";
+    filterBank->setctrl(ctrl.str(), getctrl("mrs_real/israte"));
     a(0) = fcoefs(i,6);
     a(1) = fcoefs(i,7);
     a(2) = fcoefs(i,8);
@@ -180,10 +180,10 @@ ERB::update()
     b(1) = fcoefs(i,1)/fcoefs(i,9);
     b(2) = fcoefs(i,5)/fcoefs(i,9);
     ctrl.str("");
-    ctrl << filter.str() << "realvec/ncoeffs";
+    ctrl << filter.str() << "mrs_realvec/ncoeffs";
     filterBank->setctrl(ctrl.str(), b);
     ctrl.str("");
-    ctrl << filter.str() << "realvec/dcoeffs";
+    ctrl << filter.str() << "mrs_realvec/dcoeffs";
     filterBank->setctrl(ctrl.str(), a);
     //filter 1
     filter.str("");
@@ -195,10 +195,10 @@ ERB::update()
     b(1) = fcoefs(i,2);
     b(2) = fcoefs(i,5);
     ctrl.str("");
-    ctrl << filter.str() << "realvec/ncoeffs";
+    ctrl << filter.str() << "mrs_realvec/ncoeffs";
     filterBank->setctrl(ctrl.str(), b);
     ctrl.str("");
-    ctrl << filter.str() << "realvec/dcoeffs";
+    ctrl << filter.str() << "mrs_realvec/dcoeffs";
     filterBank->setctrl(ctrl.str(), a);
     //filter 2
     filter.str("");
@@ -210,10 +210,10 @@ ERB::update()
     b(1) = fcoefs(i,3);
     b(2) = fcoefs(i,5);
     ctrl.str("");
-    ctrl << filter.str() << "realvec/ncoeffs";
+    ctrl << filter.str() << "mrs_realvec/ncoeffs";
     filterBank->setctrl(ctrl.str(), b);
     ctrl.str("");
-    ctrl << filter.str() << "realvec/dcoeffs";
+    ctrl << filter.str() << "mrs_realvec/dcoeffs";
     filterBank->setctrl(ctrl.str(), a);
     //filter 3
     filter.str("");
@@ -225,10 +225,10 @@ ERB::update()
     b(1) = fcoefs(i,4);
     b(2) = fcoefs(i,5);
     ctrl.str("");
-    ctrl << filter.str() << "realvec/ncoeffs";
+    ctrl << filter.str() << "mrs_realvec/ncoeffs";
     filterBank->setctrl(ctrl.str(), b);
     ctrl.str("");
-    ctrl << filter.str() << "realvec/dcoeffs";
+    ctrl << filter.str() << "mrs_realvec/dcoeffs";
     filterBank->setctrl(ctrl.str(), a);
   }
   //update the whole filter bank
@@ -238,65 +238,65 @@ ERB::update()
 }
 
 
-real 
-ERB::E(real x)
+mrs_real 
+ERB::E(mrs_real x)
 {
-  return pow(pow(x/EarQ, (real)order) + pow(minBW, (real)order), 1/(real)order);
+  return pow(pow(x/EarQ, (mrs_real)order) + pow(minBW, (mrs_real)order), 1/(mrs_real)order);
 }
 
-real 
-ERB::B(real x)
+mrs_real 
+ERB::B(mrs_real x)
 {
   return 1.019f*2.0f*PI*x;
 }
 
-real 
-ERB::B1(real x, real y)
+mrs_real 
+ERB::B1(mrs_real x, mrs_real y)
 {
   return -2.0f*cos(2.0f*x*PI/fs)/exp(y/fs);
 }
 
-real 
-ERB::B2(real x)
+mrs_real 
+ERB::B2(mrs_real x)
 {
   return exp(-2.0f*x/fs);
 }
 
-real 
-ERB::A11(real x, real y)
+mrs_real 
+ERB::A11(mrs_real x, mrs_real y)
 {
   return -(2.0f/fs*cos(2.0f*x*PI/fs)/exp(y/fs) + 2.0f*sqrt(3.0f+sqrt(8.0f))/fs*sin(2.0f*x*PI/fs)/exp(y/fs))/2.0f;
 }
 
 
-real 
-ERB::A12(real x, real y)
+mrs_real 
+ERB::A12(mrs_real x, mrs_real y)
 {
   return -(2.0f/fs*cos(2.0f*x*PI/fs)/exp(y/fs) - 2.0f*sqrt(3.0f+sqrt(8.0f))/fs*sin(2.0f*x*PI/fs)/exp(y/fs))/2.0f;
 }
 
-real 
-ERB::A13(real x, real y)
+mrs_real 
+ERB::A13(mrs_real x, mrs_real y)
 {
   return -(2.0f/fs*cos(2.0f*x*PI/fs)/exp(y/fs) + 2.0f*sqrt(3.0f-sqrt(8.0f))/fs*sin(2.0f*x*PI/fs)/exp(y/fs))/2.0f;
 }
 
-real 
-ERB::A14(real x, real y)
+mrs_real 
+ERB::A14(mrs_real x, mrs_real y)
 {
   return -(2.0f/fs*cos(2.0f*x*PI/fs)/exp(y/fs) - 2.0f*sqrt(3.0f-sqrt(8.0f))/fs*sin(2.0f*x*PI/fs)/exp(y/fs))/2.0f;
 }
 
-real 
-ERB::gain(real x, real y)
+mrs_real 
+ERB::gain(mrs_real x, mrs_real y)
 {
-  real r1(2.0f*x*PI/fs);
-  real r2(sqrt(3.0f-sqrt(8.0f)));
-  real r3(sqrt(3.0f+sqrt(8.0f)));
-  real z1r(cos(2.0f*r1)),z1i(sin(2.0f*r1));
-  real z2r(cos(r1)),z2i(sin(r1));
-  real z3r(-2.0f*z1r/fs),z3i(-2.0f*z1i/fs);
-  real z4r(2.0f*exp(-y/fs)*z2r/fs),z4i(2.0f*exp(-y/fs)*z2i/fs);
+  mrs_real r1(2.0f*x*PI/fs);
+  mrs_real r2(sqrt(3.0f-sqrt(8.0f)));
+  mrs_real r3(sqrt(3.0f+sqrt(8.0f)));
+  mrs_real z1r(cos(2.0f*r1)),z1i(sin(2.0f*r1));
+  mrs_real z2r(cos(r1)),z2i(sin(r1));
+  mrs_real z3r(-2.0f*z1r/fs),z3i(-2.0f*z1i/fs);
+  mrs_real z4r(2.0f*exp(-y/fs)*z2r/fs),z4i(2.0f*exp(-y/fs)*z2i/fs);
   return abs(z3r + z4r*(cos(r1)-r2*sin(r1)),z3i + z4i*(cos(r1)-r2*sin(r1)))*
     abs(z3r + z4r*(cos(r1)+r2*sin(r1)),z3i + z4i*(cos(r1)+r2*sin(r1)))*
     abs(z3r + z4r*(cos(r1)-r3*sin(r1)),z3i + z4i*(cos(r1)-r3*sin(r1)))*
@@ -304,8 +304,8 @@ ERB::gain(real x, real y)
     pow(abs(-2.0f/exp(2.0f*y/fs) - 2.0f*z1r + 2.0f*(1.0f + z1r)/exp(y/fs),2.0f*z1i*(-1.0f + 1.0f/exp(y/fs))),4);
 }
 
-real 
-ERB::abs(real r1, real r2)
+mrs_real 
+ERB::abs(mrs_real r1, mrs_real r2)
 {
   return sqrt(r1*r1 + r2*r2);
 }

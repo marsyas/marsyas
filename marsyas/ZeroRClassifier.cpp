@@ -27,11 +27,10 @@
 
 */
 
-
-
 #include "ZeroRClassifier.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 ZeroRClassifier::ZeroRClassifier():MarSystem()
 {
@@ -61,11 +60,11 @@ void
 ZeroRClassifier::addControls()
 {
   addDefaultControls();
-  addctrl("string/mode", "train");
-  addctrl("natural/nLabels", 1);
-  setctrlState("natural/nLabels", true);
-  addctrl("bool/done", false);
-  addctrl("natural/prediction", 0);
+  addctrl("mrs_string/mode", "train");
+  addctrl("mrs_natural/nLabels", 1);
+  setctrlState("mrs_natural/nLabels", true);
+  addctrl("mrs_bool/done", false);
+  addctrl("mrs_natural/prediction", 0);
 }
 
 void
@@ -73,15 +72,15 @@ ZeroRClassifier::update()
 {
   MRSDIAG("ZeroRClassifier.cpp - ZeroRClassifier:update");
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", (natural)2);
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", (mrs_natural)2);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
    
-  natural nlabels = getctrl("natural/nLabels").toNatural();
+  mrs_natural nlabels = getctrl("mrs_natural/nLabels").toNatural();
 
   if (labelSizes_.getSize() != nlabels)
     labelSizes_.create(nlabels);  
-  string mode = getctrl("string/mode").toString();
+  string mode = getctrl("mrs_string/mode").toString();
   if (mode == "predict")
     {
     
@@ -93,12 +92,12 @@ void
 ZeroRClassifier::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
-  string mode = getctrl("string/mode").toString();
-  natural nlabels = getctrl("natural/nLabels").toNatural();
-  natural l;
-  natural prediction = 0;
+  string mode = getctrl("mrs_string/mode").toString();
+  mrs_natural nlabels = getctrl("mrs_natural/nLabels").toNatural();
+  mrs_natural l;
+  mrs_natural prediction = 0;
   
-  real label;
+  mrs_real label;
   
   if (mode == "train")  
     {
@@ -117,14 +116,14 @@ ZeroRClassifier::process(realvec& in, realvec& out)
       for (t=0; t < inSamples_; t++)
 	{    
 	  label = in(inObservations_-1, t);	  
-	  prediction = getctrl("natural/prediction").toNatural();
-	  out(0,t) = (real)prediction;
+	  prediction = getctrl("mrs_natural/prediction").toNatural();
+	  out(0,t) = (mrs_real)prediction;
 	  out(1,t) = label;
 	}
 
     }
   
-  if (getctrl("bool/done").toBool())
+  if (getctrl("mrs_bool/done").toBool())
     {
       int max = -1;
       for (l=0; l < nlabels; l++)
@@ -135,7 +134,7 @@ ZeroRClassifier::process(realvec& in, realvec& out)
 	      max = (int)labelSizes_(l);
 	    }
 	}
-      updctrl("natural/prediction", prediction);
+      updctrl("mrs_natural/prediction", prediction);
     }
 }
 

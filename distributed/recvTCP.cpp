@@ -1,10 +1,11 @@
-#include <stdio.h>
+#include <cstdio>
 #include "Collection.h"
 #include "MrsDoctor.h"
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"
 #include "SocketException.h"
 
+using namespace Marsyas;
 
 CommandLineOptions cmd_options;
 
@@ -53,15 +54,15 @@ printHelp(string progName)
 
 // Play soundfile given by sfName, playbacknet contains the playback 
 // network of MarSystem objects 
-void play(real gain, string outName)
+void play(mrs_real gain, string outName)
 {
 	
   NetworkTCPSource* netSrc = new NetworkTCPSource("netSrc");
   
   // update controls if they are passed on cmd line...
   if ( port != 0 ) {
-  	netSrc->updctrl("natural/dataPort", port);
-	netSrc->updctrl("natural/controlsPort", port+1);
+  	netSrc->updctrl("mrs_natural/dataPort", port);
+	netSrc->updctrl("mrs_natural/controlsPort", port+1);
   }
   
   // Output destination is either audio or soundfile 
@@ -72,7 +73,7 @@ void play(real gain, string outName)
   else 				// filename output
     {
       dest = mn.create("SoundFileSink", "dest");
-      dest->updctrl("string/filename", fileName);
+      dest->updctrl("mrs_string/filename", fileName);
     }
 
   cout << "Creating playback network..." << endl;
@@ -91,21 +92,21 @@ void play(real gain, string outName)
   cout << "Connection Established with: " << netSrc->getClientAddr() << endl;
   
   // udpate controls
-  playbacknet.updctrl("natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
-  playbacknet.updctrl("Gain/gt/real/gain", gain);
+  playbacknet.updctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
+  playbacknet.updctrl("Gain/gt/mrs_real/gain", gain);
   
   // may want to update this as control data from networksource...
   //if (outName == EMPTYSTRING) 
-  //  playbacknet.updctrl("AudioSink/dest/natural/nChannels", 1);
+  //  playbacknet.updctrl("AudioSink/dest/mrs_natural/nChannels", 1);
   //else 
-  //  playbacknet.updctrl("SoundFileSink/dest/natural/nChannels", 1);
+  //  playbacknet.updctrl("SoundFileSink/dest/mrs_natural/nChannels", 1);
 	
-  natural wc=0;
-  natural samplesPlayed = 0;
-  natural onSamples = playbacknet.getctrl("natural/onSamples").toNatural();
-  // natural repeatId = 1;
+  mrs_natural wc=0;
+  mrs_natural samplesPlayed = 0;
+  mrs_natural onSamples = playbacknet.getctrl("mrs_natural/onSamples").toNatural();
+  // mrs_natural repeatId = 1;
  
-  real* controls = 0;
+  mrs_real* controls = 0;
   
   while (true) 
   {
@@ -115,16 +116,16 @@ void play(real gain, string outName)
       		if ( controls != 0 ) {
 			
 			// get some reference controls, so if they have changed we update them
-			natural inSamples = playbacknet.getctrl("natural/inSamples").toNatural();
-			natural inObservations = playbacknet.getctrl("natural/inObservations").toNatural();
-			real israte = playbacknet.getctrl("real/israte").toReal();
+			mrs_natural inSamples = playbacknet.getctrl("mrs_natural/inSamples").toNatural();
+			mrs_natural inObservations = playbacknet.getctrl("mrs_natural/inObservations").toNatural();
+			mrs_real israte = playbacknet.getctrl("mrs_real/israte").toReal();
 			
-			if ( (natural)controls[1] != inSamples || (natural)controls[2] != inObservations 
+			if ( (mrs_natural)controls[1] != inSamples || (mrs_natural)controls[2] != inObservations 
 					|| controls[3] != israte ) {
 			
-				playbacknet.updctrl("natural/inSamples", (natural)controls[1]);
-				playbacknet.updctrl("natural/inObservations", (natural)controls[2]);
-				playbacknet.updctrl("real/israte", controls[3]);
+				playbacknet.updctrl("mrs_natural/inSamples", (mrs_natural)controls[1]);
+				playbacknet.updctrl("mrs_natural/inObservations", (mrs_natural)controls[2]);
+				playbacknet.updctrl("mrs_real/israte", controls[3]);
 			}
       		}
 		  

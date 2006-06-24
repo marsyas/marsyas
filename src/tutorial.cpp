@@ -3,11 +3,12 @@
 // help in understanding how to use the Marsyas audio 
 // processing software framework. 
 
-#include <stdio.h>
+#include <cstdio>
 #include "MarSystemManager.h" 
-#include <string> 
-using namespace std;
+#include <string>
 
+using namespace std;
+using namespace Marsyas;
 
 
 // 
@@ -21,18 +22,18 @@ sfplay1(string sfName)
   // create a soundfilesource for reading samples 
   // from the file 
   MarSystem* src = new SoundFileSource("src");
-  src->updctrl("string/filename", sfName);
-  src->updctrl("natural/inSamples", 2048);
+  src->updctrl("mrs_string/filename", sfName);
+  src->updctrl("mrs_natural/inSamples", 2048);
   
   // simple MarSystem a gain control 
   MarSystem* gain = new Gain("gain");
-  gain->updctrl("real/gain", 2.0);
-  gain->updctrl("natural/inSamples", 2048);  
+  gain->updctrl("mrs_real/gain", 2.0);
+  gain->updctrl("mrs_natural/inSamples", 2048);  
   
   // SoundFileSink writes to a file 
   MarSystem* dest = new SoundFileSink("dest");
-  dest->updctrl("natural/inSamples", 2048);  
-  dest->updctrl("string/filename", "ajay.au");
+  dest->updctrl("mrs_natural/inSamples", 2048);  
+  dest->updctrl("mrs_string/filename", "ajay.au");
   
   // write system to output 
   cout << (*src) << endl;
@@ -42,14 +43,14 @@ sfplay1(string sfName)
   realvec out;
   realvec gout;
   
-  in.create(src->getctrl("natural/inObservations").toNatural(), 
-	    src->getctrl("natural/inSamples").toNatural());
+  in.create(src->getctrl("mrs_natural/inObservations").toNatural(), 
+	    src->getctrl("mrs_natural/inSamples").toNatural());
   
-  out.create(src->getctrl("natural/onObservations").toNatural(), 
-	     src->getctrl("natural/onSamples").toNatural());
+  out.create(src->getctrl("mrs_natural/onObservations").toNatural(), 
+	     src->getctrl("mrs_natural/onSamples").toNatural());
   
-  gout.create(src->getctrl("natural/onObservations").toNatural(), 
-	      src->getctrl("natural/onSamples").toNatural());
+  gout.create(src->getctrl("mrs_natural/onObservations").toNatural(), 
+	      src->getctrl("mrs_natural/onSamples").toNatural());
   
   // nothing happens until process is called 
   // usually for MarSystems the in matrix is processed 
@@ -59,7 +60,7 @@ sfplay1(string sfName)
   // reading the samples 
   // from the file 
   
-  gain->updctrl("real/gain", 0.0);
+  gain->updctrl("mrs_real/gain", 0.0);
   
   cout << (*gain) << endl;
   for (int i=0; i < 20; i++)
@@ -67,8 +68,8 @@ sfplay1(string sfName)
       // call process seperately for each MarSystem 
       src->process(in,out);
       // multiply window with gain 
-      gain->updctrl("real/gain", 
-		    gain->getctrl("real/gain").toReal() + 0.1);
+      gain->updctrl("mrs_real/gain", 
+		    gain->getctrl("mrs_real/gain").toReal() + 0.1);
       gain->process(out, gout);
       dest->process(gout, gout); 	// Just outputs the input to the file 
       // and copies it to the output
@@ -85,7 +86,7 @@ sfplay1(string sfName)
 
 //Pluck Karplus Strong Model Kastro.cpp output to wavfile
 void 
-Pluck(real pos, real fre, real loz, real stret, string name)
+Pluck(mrs_real pos, mrs_real fre, mrs_real loz, mrs_real stret, string name)
 {
  
 
@@ -104,22 +105,22 @@ Pluck(real pos, real fre, real loz, real stret, string name)
   
 
   
-  series->updctrl("Gain/gain/real/gain", 1.0);
+  series->updctrl("Gain/gain/mrs_real/gain", 1.0);
 
 
 
-  series->updctrl("SoundFileSink/dest/natural/nChannels", 
-  series->getctrl("Plucked/src/natural/nChannels"));
-  series->updctrl("SoundFileSink/dest/real/israte", 
-   series->getctrl("Plucked/src/real/osrate"));
-  series->updctrl("SoundFileSink/dest/string/filename",name);
+  series->updctrl("SoundFileSink/dest/mrs_natural/nChannels", 
+  series->getctrl("Plucked/src/mrs_natural/nChannels"));
+  series->updctrl("SoundFileSink/dest/mrs_real/israte", 
+   series->getctrl("Plucked/src/mrs_real/osrate"));
+  series->updctrl("SoundFileSink/dest/mrs_string/filename",name);
 
-  series->updctrl("Plucked/src/real/frequency",fre);
- series->updctrl("Plucked/src/real/pluckpos",pos);
- // series->updctrl("Plucked/src/real/loss",loz);
- //series->updctrl("Plucked/src/real/stretch",stret);
+  series->updctrl("Plucked/src/mrs_real/frequency",fre);
+ series->updctrl("Plucked/src/mrs_real/pluckpos",pos);
+ // series->updctrl("Plucked/src/mrs_real/loss",loz);
+ //series->updctrl("Plucked/src/mrs_real/stretch",stret);
   
-  series->updctrl("natural/inSamples", 512);
+  series->updctrl("mrs_natural/inSamples", 512);
   series->update();
   
 
@@ -128,12 +129,12 @@ Pluck(real pos, real fre, real loz, real stret, string name)
   cout << (*series) << endl;
 
 
- realvec in(series->getctrl("natural/inObservations").toNatural(), 
-	     series->getctrl("natural/inSamples").toNatural());
-  realvec out(series->getctrl("natural/onObservations").toNatural(), 
-	      series->getctrl("natural/onSamples").toNatural());
+ realvec in(series->getctrl("mrs_natural/inObservations").toNatural(), 
+	     series->getctrl("mrs_natural/inSamples").toNatural());
+  realvec out(series->getctrl("mrs_natural/onObservations").toNatural(), 
+	      series->getctrl("mrs_natural/onSamples").toNatural());
 
-  natural t=0;
+  mrs_natural t=0;
   
  
 	 for (t = 0; t < 400; t++)
@@ -147,7 +148,7 @@ Pluck(real pos, real fre, real loz, real stret, string name)
 
 
   
-  //while (series->getctrl("SoundFileSource/src/bool/notEmpty").toBool())
+  //while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool())
   //{
   //  series->tick();
   //}
@@ -157,7 +158,7 @@ Pluck(real pos, real fre, real loz, real stret, string name)
 
 
 //Pluck Karplus Strong Model Plucked.cpp outputs to DAC
-void PluckLive(real pos, real fre, real loz, real stret)
+void PluckLive(mrs_real pos, mrs_real fre, mrs_real loz, mrs_real stret)
 {
  
 
@@ -176,21 +177,21 @@ void PluckLive(real pos, real fre, real loz, real stret)
   
 
   
-  series->updctrl("Gain/gain/real/gain", 1.0);
+  series->updctrl("Gain/gain/mrs_real/gain", 1.0);
 
-  series->updctrl("AudioSink/dest/natural/nChannels", 
-  series->getctrl("Plucked/src/natural/nChannels"));
-series->updctrl("AudioSink/dest/real/israte", 
-series->getctrl("Plucked/src/real/osrate"));
+  series->updctrl("AudioSink/dest/mrs_natural/nChannels", 
+  series->getctrl("Plucked/src/mrs_natural/nChannels"));
+series->updctrl("AudioSink/dest/mrs_real/israte", 
+series->getctrl("Plucked/src/mrs_real/osrate"));
 
 
 
-  series->updctrl("Plucked/src/real/frequency",fre);
- series->updctrl("Plucked/src/real/pluckpos",pos);
- //series->updctrl("Plucked/src/real/loss",loz);
- //series->updctrl("Plucked/src/real/stretch",stret);
+  series->updctrl("Plucked/src/mrs_real/frequency",fre);
+ series->updctrl("Plucked/src/mrs_real/pluckpos",pos);
+ //series->updctrl("Plucked/src/mrs_real/loss",loz);
+ //series->updctrl("Plucked/src/mrs_real/stretch",stret);
   
-  series->updctrl("natural/inSamples", 512);
+  series->updctrl("mrs_natural/inSamples", 512);
   series->update();
   
 
@@ -199,12 +200,12 @@ series->getctrl("Plucked/src/real/osrate"));
   cout << (*series) << endl;
 
 
- realvec in(series->getctrl("natural/inObservations").toNatural(), 
-	     series->getctrl("natural/inSamples").toNatural());
-  realvec out(series->getctrl("natural/onObservations").toNatural(), 
-	      series->getctrl("natural/onSamples").toNatural());
+ realvec in(series->getctrl("mrs_natural/inObservations").toNatural(), 
+	     series->getctrl("mrs_natural/inSamples").toNatural());
+  realvec out(series->getctrl("mrs_natural/onObservations").toNatural(), 
+	      series->getctrl("mrs_natural/onSamples").toNatural());
 
-  natural t=0;
+  mrs_natural t=0;
   
  
 	 for (t = 0; t < 400; t++)
@@ -218,7 +219,7 @@ series->getctrl("Plucked/src/real/osrate"));
 
 
   
-  //while (series->getctrl("SoundFileSource/src/bool/notEmpty").toBool())
+  //while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool())
   //{
   //  series->tick();
   //}
@@ -237,20 +238,20 @@ series->getctrl("Plucked/src/real/osrate"));
    // create a soundfilesource for reading samples 
    // from the file 
    MarSystem* src = new SoundFileSource("src");
-   src->updctrl("string/filename", sfName);
-   src->updctrl("natural/inSamples", 2048);
+   src->updctrl("mrs_string/filename", sfName);
+   src->updctrl("mrs_natural/inSamples", 2048);
 
    // simple MarSystem a gain control 
    MarSystem* gain = new Gain("gain");
-   gain->updctrl("real/gain", 2.0);
-   gain->updctrl("natural/inSamples", 2048);  
+   gain->updctrl("mrs_real/gain", 2.0);
+   gain->updctrl("mrs_natural/inSamples", 2048);  
 
    // SoundFileSink writes to a file 
    MarSystem* dest = new SoundFileSink("dest");
-   dest->updctrl("natural/inSamples", 2048);  
-   dest->updctrl("real/israte", src->getctrl("real/osrate"));
-   dest->updctrl("natural/nChannels", src->getctrl("natural/nChannels"));
-   dest->updctrl("string/filename", "ajay.wav");
+   dest->updctrl("mrs_natural/inSamples", 2048);  
+   dest->updctrl("mrs_real/israte", src->getctrl("mrs_real/osrate"));
+   dest->updctrl("mrs_natural/nChannels", src->getctrl("mrs_natural/nChannels"));
+   dest->updctrl("mrs_string/filename", "ajay.wav");
 
    // write system to output 
    cout << (*src) << endl;
@@ -260,14 +261,14 @@ series->getctrl("Plucked/src/real/osrate"));
    realvec out;
    realvec gout;
 
-   in.create(src->getctrl("natural/inObservations").toNatural(), 
-	     src->getctrl("natural/inSamples").toNatural());
+   in.create(src->getctrl("mrs_natural/inObservations").toNatural(), 
+	     src->getctrl("mrs_natural/inSamples").toNatural());
 
-   out.create(src->getctrl("natural/onObservations").toNatural(), 
-	      src->getctrl("natural/onSamples").toNatural());
+   out.create(src->getctrl("mrs_natural/onObservations").toNatural(), 
+	      src->getctrl("mrs_natural/onSamples").toNatural());
 
-   gout.create(src->getctrl("natural/onObservations").toNatural(), 
-	       src->getctrl("natural/onSamples").toNatural());
+   gout.create(src->getctrl("mrs_natural/onObservations").toNatural(), 
+	       src->getctrl("mrs_natural/onSamples").toNatural());
 
    // nothing happens until process is called 
    // usually for MarSystems the in matrix is processed 
@@ -277,15 +278,15 @@ series->getctrl("Plucked/src/real/osrate"));
    // reading the samples 
    // from the file 
 
-   gain->updctrl("real/gain", 1.0);
+   gain->updctrl("mrs_real/gain", 1.0);
 
-   while (src->getctrl("bool/notEmpty").toBool())
+   while (src->getctrl("mrs_bool/notEmpty").toBool())
      {
        // call process seperately for each MarSystem 
        src->process(in,out);
        // multiply window with gain 
-       /* gain->updctrl("real/gain", 
-	  gain->getctrl("real/gain").toReal() + 0.1); */ 
+       /* gain->updctrl("mrs_real/gain", 
+	  gain->getctrl("mrs_real/gain").toReal() + 0.1); */ 
 
        gain->process(out, gout);
        dest->process(gout, gout); 	
@@ -314,22 +315,22 @@ series->getctrl("Plucked/src/real/osrate"));
    series->addMarSystem(mng.create("Gain", "gain"));
    series->addMarSystem(mng.create("SoundFileSink", "dest"));
 
-   series->updctrl("SoundFileSource/src/string/filename", sfName);
+   series->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 
 
-   series->updctrl("Gain/gain/real/gain", 1.0);
-   series->updctrl("SoundFileSink/dest/natural/nChannels", 
-		   series->getctrl("SoundFileSource/src/natural/nChannels"));
-   series->updctrl("SoundFileSink/dest/real/israte", 
-		   series->getctrl("SoundFileSource/src/real/osrate"));
+   series->updctrl("Gain/gain/mrs_real/gain", 1.0);
+   series->updctrl("SoundFileSink/dest/mrs_natural/nChannels", 
+		   series->getctrl("SoundFileSource/src/mrs_natural/nChannels"));
+   series->updctrl("SoundFileSink/dest/mrs_real/israte", 
+		   series->getctrl("SoundFileSource/src/mrs_real/osrate"));
 
-   series->updctrl("natural/inSamples", 2048);  
-   series->updctrl("SoundFileSink/dest/string/filename", "ajay.wav");
+   series->updctrl("mrs_natural/inSamples", 2048);  
+   series->updctrl("SoundFileSink/dest/mrs_string/filename", "ajay.wav");
 
 
    cout << (*series) << endl;
 
-   while (series->getctrl("SoundFileSource/src/bool/notEmpty").toBool())
+   while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool())
      {
        series->tick();
      }
@@ -354,18 +355,18 @@ series->getctrl("Plucked/src/real/osrate"));
    // create a soundfilesource for reading samples 
    // from the file 
    MarSystem* src = new SoundFileSource("src");
-   src->updctrl("string/filename", sfName);
-   src->updctrl("natural/inSamples", 2048);
+   src->updctrl("mrs_string/filename", sfName);
+   src->updctrl("mrs_natural/inSamples", 2048);
 
    // simple MarSystem a gain control 
    MarSystem* gain = new Gain("gain");
-   gain->updctrl("real/gain", 2.0);
-   gain->updctrl("natural/inSamples", 2048);  
+   gain->updctrl("mrs_real/gain", 2.0);
+   gain->updctrl("mrs_natural/inSamples", 2048);  
 
    // SoundFileSink writes to a file 
    MarSystem* dest = new SoundFileSink("dest");
-   dest->updctrl("natural/inSamples", 2048);  
-   dest->updctrl("string/filename", "ajay.au");
+   dest->updctrl("mrs_natural/inSamples", 2048);  
+   dest->updctrl("mrs_string/filename", "ajay.au");
 
    // add MarSystems to series Composite 
    series->addMarSystem(src);
@@ -379,11 +380,11 @@ series->getctrl("Plucked/src/real/osrate"));
    realvec in; 
    realvec out;
 
-   in.create(series->getctrl("natural/inObservations").toNatural(), 
-	     series->getctrl("natural/inSamples").toNatural());
+   in.create(series->getctrl("mrs_natural/inObservations").toNatural(), 
+	     series->getctrl("mrs_natural/inSamples").toNatural());
 
-   out.create(series->getctrl("natural/onObservations").toNatural(), 
-	      series->getctrl("natural/onSamples").toNatural());
+   out.create(series->getctrl("mrs_natural/onObservations").toNatural(), 
+	      series->getctrl("mrs_natural/onSamples").toNatural());
 
    // nothing happens until process is called 
    // usually for MarSystems the in matrix is processed 
@@ -401,12 +402,12 @@ series->getctrl("Plucked/src/real/osrate"));
    // MarSystems can be updated using a OSC-inspired 
    // path notation 
 
-   series->updctrl("Gain/gain/real/gain", 0.0);
+   series->updctrl("Gain/gain/mrs_real/gain", 0.0);
 
    for (int i=0; i<20; i++)
      {
-       series->updctrl("Gain/gain/real/gain", 
-		       series->getctrl("Gain/gain/real/gain").toReal() + 0.1);      
+       series->updctrl("Gain/gain/mrs_real/gain", 
+		       series->getctrl("Gain/gain/mrs_real/gain").toReal() + 0.1);      
        series->process(in,out);  
 
      }
@@ -432,15 +433,15 @@ series->getctrl("Plucked/src/real/osrate"));
    // create a soundfilesource for reading samples 
    // from the file 
    MarSystem* src = new SoundFileSource("src");
-   src->updctrl("string/filename", sfName);
+   src->updctrl("mrs_string/filename", sfName);
 
    // simple MarSystem a gain control 
    MarSystem* gain = new Gain("gain");
-   gain->updctrl("real/gain", 2.0);
+   gain->updctrl("mrs_real/gain", 2.0);
 
    // SoundFileSink writes to a file 
    MarSystem* dest = new SoundFileSink("dest");
-   dest->updctrl("string/filename", "ajay.au");
+   dest->updctrl("mrs_string/filename", "ajay.au");
 
    // add MarSystems to series Composite 
    series->addMarSystem(src);
@@ -448,7 +449,7 @@ series->getctrl("Plucked/src/real/osrate"));
    series->addMarSystem(dest);
 
    // we only need to change window size at the composite level
-   series->updctrl("natural/inSamples", 4096);
+   series->updctrl("mrs_natural/inSamples", 4096);
 
    cout << (*series) << endl;
 
@@ -458,12 +459,12 @@ series->getctrl("Plucked/src/real/osrate"));
    // as sideeffects this works 
 
 
-   series->updctrl("Gain/gain/real/gain", 0.0);
+   series->updctrl("Gain/gain/mrs_real/gain", 0.0);
    for (int i=0; i<20; i++)
      {
        series->tick();
-       series->updctrl("Gain/gain/real/gain", 
-		       series->getctrl("Gain/gain/real/gain").toReal() + 0.1);
+       series->updctrl("Gain/gain/mrs_real/gain", 
+		       series->getctrl("Gain/gain/mrs_real/gain").toReal() + 0.1);
      }
 
    // Composite deletes the added MarSystems 
@@ -485,10 +486,10 @@ series->getctrl("Plucked/src/real/osrate"));
    MarSystem* series = mng.create("Series", "series");
    series->addMarSystem(mng.create("SoundFileSource", "src"));
    series->addMarSystem(mng.create("Spectrum", "spk"));
-   //series->updctrl("Spectrum/spk/real/cutoff", 0.02721);
-   //series->updctrl("Spectrum/spk/real/lowcutoff", 0.0136);
-    series->updctrl("Spectrum/spk/real/cutoff", 0.2494331);
-    series->updctrl("Spectrum/spk/real/lowcutoff", 0.1524);  //0.1224 --> 2700 Hz
+   //series->updctrl("Spectrum/spk/mrs_real/cutoff", 0.02721);
+   //series->updctrl("Spectrum/spk/mrs_real/lowcutoff", 0.0136);
+    series->updctrl("Spectrum/spk/mrs_real/cutoff", 0.2494331);
+    series->updctrl("Spectrum/spk/mrs_real/lowcutoff", 0.1524);  //0.1224 --> 2700 Hz
 
    series->addMarSystem(mng.create("InvSpectrum", "ispk"));  
    // series->addMarSystem(mng.create("Filter", "fillher"));
@@ -503,9 +504,9 @@ series->getctrl("Plucked/src/real/osrate"));
 
 
    // only update controls from Composite level 
-   series->updctrl("natural/inSamples", 128);
-   series->updctrl("SoundFileSource/src/string/filename", sfName);
-   series->updctrl("SoundFileSink/dest/string/filename", "ajay.wav"); 
+   series->updctrl("mrs_natural/inSamples", 128);
+   series->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+   series->updctrl("SoundFileSink/dest/mrs_string/filename", "ajay.wav"); 
 
    /* realvec a(5),b(5);
    a(0) = 1.0;
@@ -536,26 +537,26 @@ series->getctrl("Plucked/src/real/osrate"));
    bl(4) = 0.0006;
 
 
-   series->updctrl("Filter/fillher/realvec/ncoeffs", bl);
-   series->updctrl("Filter/fillher/realvec/dcoeffs", al);
+   series->updctrl("Filter/fillher/mrs_realvec/ncoeffs", bl);
+   series->updctrl("Filter/fillher/mrs_realvec/dcoeffs", al);
    */ 
 
-   // series->updctrl("Gain/gain/real/gain", 10000.0);
+   // series->updctrl("Gain/gain/mrs_real/gain", 10000.0);
 
 
-   series->linkctrl("natural/gain", "Gain/gain/real/gain");
+   series->linkctrl("mrs_natural/gain", "Gain/gain/mrs_real/gain");
 
    realvec in;
 
-   while (series->getctrl("SoundFileSource/src/bool/notEmpty").toBool())
+   while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool())
      {
        series->tick();
 
-       series->updctrl("bool/probe", (MarControlValue)true);
-       series->getctrl("realvec/input0").toVec().write("nin0.plot");
-       series->getctrl("realvec/input1").toVec().write("nin1.plot");
-       series->getctrl("realvec/input2").toVec().write("nin2.plot");
-       series->getctrl("realvec/input3").toVec().write("nin3.plot");
+       series->updctrl("mrs_bool/probe", (MarControlValue)true);
+       series->getctrl("mrs_realvec/input0").toVec().write("nin0.plot");
+       series->getctrl("mrs_realvec/input1").toVec().write("nin1.plot");
+       series->getctrl("mrs_realvec/input2").toVec().write("nin2.plot");
+       series->getctrl("mrs_realvec/input3").toVec().write("nin3.plot");
      }
   
   
@@ -578,10 +579,10 @@ tempotest_sfplay(string sfName)
   series->addMarSystem(mng.create("AudioSink", "dest"));
   
   // only update controls from Composite level 
-  series->updctrl("natural/inSamples", 128);
-  series->updctrl("SoundFileSource/src/string/filename", sfName);
+  series->updctrl("mrs_natural/inSamples", 128);
+  series->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
   
-  while (series->getctrl("SoundFileSource/src/bool/notEmpty").toBool())
+  while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool())
     series->tick();
 
   delete series;
@@ -605,25 +606,25 @@ sfplay5(string sfName)
   series->addMarSystem(mng.create("Hamming", "hamming"));
   series->addMarSystem(mng.create("Spectrum", "spk"));
   series->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-  series->updctrl("PowerSpectrum/pspk/string/spectrumType", "power");
+  series->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType", "power");
   series->addMarSystem(mng.create("Centroid", "centroid"));
 		       
   // only update controls from Composite level 
-  series->updctrl("natural/inSamples", 4096);
-  series->updctrl("SoundFileSource/src/string/filename", sfName);
-  series->updctrl("SoundFileSink/dest/string/filename", "ajay.au");
+  series->updctrl("mrs_natural/inSamples", 4096);
+  series->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  series->updctrl("SoundFileSink/dest/mrs_string/filename", "ajay.au");
   
   cout << (*series) << endl;
 
-  realvec in(series->getctrl("natural/inObservations").toNatural(), 
-	     series->getctrl("natural/inSamples").toNatural());
-  realvec out(series->getctrl("natural/onObservations").toNatural(), 
-	      series->getctrl("natural/onSamples").toNatural());
+  realvec in(series->getctrl("mrs_natural/inObservations").toNatural(), 
+	     series->getctrl("mrs_natural/inSamples").toNatural());
+  realvec out(series->getctrl("mrs_natural/onObservations").toNatural(), 
+	      series->getctrl("mrs_natural/onSamples").toNatural());
   
 	     
 
   // play all the file 
-  while (series->getctrl("SoundFileSource/src/bool/notEmpty").toBool())
+  while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool())
     {
       series->process(in,out);
       cout << "centroid = " << out(0,0) << endl;
@@ -650,7 +651,7 @@ sfplay6(string sfName)
   series->addMarSystem(mng.create("Hamming", "hamming"));
   series->addMarSystem(mng.create("Spectrum", "spk"));
   series->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-  series->updctrl("PowerSpectrum/pspk/string/spectrumType", "power");
+  series->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType", "power");
 
   // fanout of two features that both are 
   // calculated on the mangitude spectrum 
@@ -663,21 +664,21 @@ sfplay6(string sfName)
   
 		       
   // only update controls from Composite level 
-  series->updctrl("natural/inSamples", 4096);
-  series->updctrl("SoundFileSource/src/string/filename", sfName);
-  series->updctrl("SoundFileSink/dest/string/filename", "ajay.au");
+  series->updctrl("mrs_natural/inSamples", 4096);
+  series->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  series->updctrl("SoundFileSink/dest/mrs_string/filename", "ajay.au");
   
   cout << (*series) << endl;
 
-  realvec in(series->getctrl("natural/inObservations").toNatural(), 
-	     series->getctrl("natural/inSamples").toNatural());
-  realvec out(series->getctrl("natural/onObservations").toNatural(), 
-	      series->getctrl("natural/onSamples").toNatural());
+  realvec in(series->getctrl("mrs_natural/inObservations").toNatural(), 
+	     series->getctrl("mrs_natural/inSamples").toNatural());
+  realvec out(series->getctrl("mrs_natural/onObservations").toNatural(), 
+	      series->getctrl("mrs_natural/onSamples").toNatural());
   
 	     
 
   // play all the file 
-  while (series->getctrl("SoundFileSource/src/bool/notEmpty").toBool())
+  while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool())
     {
       series->process(in,out);
       // output observation 1 and observation 2 
@@ -703,7 +704,7 @@ sfplay7(string sfName)
   // Accumulator accumulates many calls to tick 
   // and outputs the whole thing as nTimes samples 
   MarSystem* acc = mng.create("Accumulator", "acc");
-  acc->updctrl("natural/nTimes", 100);
+  acc->updctrl("mrs_natural/nTimes", 100);
 
   // Create a series Composite 
   MarSystem* series = mng.create("Series", "series");
@@ -714,7 +715,7 @@ sfplay7(string sfName)
   series->addMarSystem(mng.create("Hamming", "hamming"));
   series->addMarSystem(mng.create("Spectrum", "spk"));
   series->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-  series->updctrl("PowerSpectrum/pspk/string/spectrumType", "power");
+  series->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType", "power");
 
   // fanout of two features that both are 
   // calculated on the mangitude spectrum 
@@ -726,14 +727,14 @@ sfplay7(string sfName)
   
 		       
   // only update controls from Composite level 
-  series->updctrl("natural/inSamples", 512);
-  series->updctrl("SoundFileSource/src/string/filename", sfName);
-  series->updctrl("SoundFileSink/dest/string/filename", "ajay.au");
+  series->updctrl("mrs_natural/inSamples", 512);
+  series->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  series->updctrl("SoundFileSink/dest/mrs_string/filename", "ajay.au");
   
   cout << (*series) << endl;
   
   // play all the file 
-  // while (series->getctrl("SoundFileSource/src/bool/notEmpty").toBool())
+  // while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool())
   acc->addMarSystem(series);
   total->addMarSystem(acc);
   
@@ -743,10 +744,10 @@ sfplay7(string sfName)
   total->addMarSystem(stats);
   
   // always allocate after updating/adding marsystems 
-  realvec in(total->getctrl("natural/inObservations").toNatural(), 
-	     total->getctrl("natural/inSamples").toNatural());
-  realvec out(total->getctrl("natural/onObservations").toNatural(), 
-	      total->getctrl("natural/onSamples").toNatural());
+  realvec in(total->getctrl("mrs_natural/inObservations").toNatural(), 
+	     total->getctrl("mrs_natural/inSamples").toNatural());
+  realvec out(total->getctrl("mrs_natural/onObservations").toNatural(), 
+	      total->getctrl("mrs_natural/onSamples").toNatural());
 		      
 
 
@@ -769,11 +770,11 @@ void test_normMaxMin()
 
 
   
-  in.create((natural)4,(natural)3);
-  out.create((natural)4,(natural)3);
+  in.create((mrs_natural)4,(mrs_natural)3);
+  out.create((mrs_natural)4,(mrs_natural)3);
   
-  nrm->updctrl("natural/inSamples", (natural)3);
-  nrm->updctrl("natural/inObservations", (natural)4);
+  nrm->updctrl("mrs_natural/inSamples", (mrs_natural)3);
+  nrm->updctrl("mrs_natural/inObservations", (mrs_natural)4);
 
 
 
@@ -922,7 +923,7 @@ tempo_test(string fname, int tempo, int rank)
 
 
 /* vector< vector<string> > tempo_map;
-  vector< vector<real> > strength_map;
+  vector< vector<mrs_real> > strength_map;
   vector< vector<string> >::iterator iter;
 
   int i;  
@@ -1026,15 +1027,15 @@ test_collection(string sfName)
   pnet->addMarSystem(mng.create("AudioSink", "dest"));
   
   
-  pnet->updctrl("SoundFileSource/src/string/filename", sfName);
-  pnet->updctrl("SoundFileSource/src/bool/shuffle", true);
+  pnet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  pnet->updctrl("SoundFileSource/src/mrs_bool/shuffle", true);
   cout << "first round" << endl; 
 
 
   for (int k=0; k < 4; k++) 
     {
-      pnet->updctrl("SoundFileSource/src/natural/cindex", k);
-      cout << pnet->getctrl("SoundFileSource/src/string/currentlyPlaying").toString() << endl;
+      pnet->updctrl("SoundFileSource/src/mrs_natural/cindex", k);
+      cout << pnet->getctrl("SoundFileSource/src/mrs_string/currentlyPlaying").toString() << endl;
       for (int i=0; i <100; i++) 
 	{
 	  
@@ -1042,13 +1043,13 @@ test_collection(string sfName)
 	}
     }
   cout << "second round" << endl;
-  pnet->updctrl("SoundFileSource/src/string/filename", "music1.mf"); 
+  pnet->updctrl("SoundFileSource/src/mrs_string/filename", "music1.mf"); 
   for (int k=0; k < 4; k++) 
     {
-      pnet->updctrl("SoundFileSource/src/natural/cindex", k);
-      cout << pnet->getctrl("SoundFileSource/src/string/currentlyPlaying").toString() << endl;
+      pnet->updctrl("SoundFileSource/src/mrs_natural/cindex", k);
+      cout << pnet->getctrl("SoundFileSource/src/mrs_string/currentlyPlaying").toString() << endl;
       for (int i=0; i <100; i++) 
-// 	while(pnet->getctrl("SoundFileSource/src/bool/notEmpty").toBool())
+// 	while(pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool())
 	  {
 	    pnet->tick();
 	  }
@@ -1093,7 +1094,7 @@ void test_SOM(string collectionName)
 
   
   MarSystem* acc = mng.create("Accumulator", "acc");
-  acc->updctrl("natural/nTimes", 1200);
+  acc->updctrl("mrs_natural/nTimes", 1200);
   acc->addMarSystem(extractNet);
 
 
@@ -1113,9 +1114,9 @@ void test_SOM(string collectionName)
   total->addMarSystem(mng.create("ClassOutputSink", "csink"));
   
 
-  total->updctrl("KNNClassifier/knn/natural/k",3);
-  total->updctrl("KNNClassifier/knn/natural/nPredictions", 3);
-  total->updctrl("KNNClassifier/knn/string/mode","train");  
+  total->updctrl("KNNClassifier/knn/mrs_natural/k",3);
+  total->updctrl("KNNClassifier/knn/mrs_natural/nPredictions", 3);
+  total->updctrl("KNNClassifier/knn/mrs_string/mode","train");  
   */ 
   
 
@@ -1123,72 +1124,72 @@ void test_SOM(string collectionName)
   
 
   // link top-level controls 
-  total->linkctrl("string/filename",
-		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/string/filename");  
+  total->linkctrl("mrs_string/filename",
+		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/filename");  
 
-  total->linkctrl("natural/pos",
-		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/natural/pos");  
-
-
-  total->linkctrl("string/allfilenames",
-		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/string/allfilenames");  
-
-  total->linkctrl("natural/numFiles",
-		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/natural/numFiles");  
+  total->linkctrl("mrs_natural/pos",
+		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/pos");  
 
 
-  total->linkctrl("bool/notEmpty",
-		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/bool/notEmpty");  
-  total->linkctrl("bool/advance",
-		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/bool/advance");  
+  total->linkctrl("mrs_string/allfilenames",
+		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/allfilenames");  
 
-  total->linkctrl("bool/memReset",
-		  "Accumulator/acc/Series/extractNet/Memory/mem/bool/reset");  
-
-  total->linkctrl("natural/label",
-		  "Annotator/ann/natural/label");
+  total->linkctrl("mrs_natural/numFiles",
+		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/numFiles");  
 
 
+  total->linkctrl("mrs_bool/notEmpty",
+		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/notEmpty");  
+  total->linkctrl("mrs_bool/advance",
+		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/advance");  
 
-  total->updctrl("Accumulator/acc/Series/extractNet/SoundFileSource/src/natural/inSamples", 512);
+  total->linkctrl("mrs_bool/memReset",
+		  "Accumulator/acc/Series/extractNet/Memory/mem/mrs_bool/reset");  
+
+  total->linkctrl("mrs_natural/label",
+		  "Annotator/ann/mrs_natural/label");
+
+
+
+  total->updctrl("Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/inSamples", 512);
   
   
   
   
-  total->updctrl("string/filename", collectionName);
+  total->updctrl("mrs_string/filename", collectionName);
 
-  /* total->updctrl("ClassOutputSink/csink/string/labelNames", 
-		 total->getctrl("string/allfilenames"));
+  /* total->updctrl("ClassOutputSink/csink/mrs_string/labelNames", 
+		 total->getctrl("mrs_string/allfilenames"));
 
-  total->updctrl("ClassOutputSink/csink/natural/nLabels", 
-		 total->getctrl("natural/numFiles"));
-
-
+  total->updctrl("ClassOutputSink/csink/mrs_natural/nLabels", 
+		 total->getctrl("mrs_natural/numFiles"));
 
 
-  total->updctrl("KNNClassifier/knn/natural/nLabels", 
-		 total->getctrl("natural/numFiles"));
+
+
+  total->updctrl("KNNClassifier/knn/mrs_natural/nLabels", 
+		 total->getctrl("mrs_natural/numFiles"));
   */ 
   
 
   
-  natural l=0;
+  mrs_natural l=0;
 
-  /* while (total->getctrl("bool/notEmpty").toBool())
+  /* while (total->getctrl("mrs_bool/notEmpty").toBool())
     {
-      total->updctrl("natural/label", l);
+      total->updctrl("mrs_natural/label", l);
       total->tick();
-      total->updctrl("bool/memReset", true);
-      total->updctrl("bool/advance", true);
+      total->updctrl("mrs_bool/memReset", true);
+      total->updctrl("mrs_bool/advance", true);
       l++;
       cerr << "Processed " << l << " files " << endl;
     }
   */ 
   
-  /* total->updctrl("KNNClassifier/knn/bool/done",true);  
-  total->updctrl("KNNClassifier/knn/string/mode", "predict");
-  total->updctrl("ClassOutputSink/csink/string/filename", "similar.mf");
-  total->updctrl("ClassOutputSink/csink/bool/silent", false);
+  /* total->updctrl("KNNClassifier/knn/mrs_bool/done",true);  
+  total->updctrl("KNNClassifier/knn/mrs_string/mode", "predict");
+  total->updctrl("ClassOutputSink/csink/mrs_string/filename", "similar.mf");
+  total->updctrl("ClassOutputSink/csink/mrs_bool/silent", false);
   */ 
   
   //cout << (*total) << endl;
@@ -1204,11 +1205,11 @@ void test_SOM(string collectionName)
   
 
   MarSystem* som = mng.create("SOM", "som");
-  som->updctrl("natural/inObservations", 2);
-  som->updctrl("natural/inSamples", 1);
-  som->updctrl("natural/grid_height", grid_height);
-  som->updctrl("natural/grid_width", grid_width);
-  som->updctrl("string/mode", "train");
+  som->updctrl("mrs_natural/inObservations", 2);
+  som->updctrl("mrs_natural/inSamples", 1);
+  som->updctrl("mrs_natural/grid_height", grid_height);
+  som->updctrl("mrs_natural/grid_width", grid_width);
+  som->updctrl("mrs_string/mode", "train");
 
 
 
@@ -1239,7 +1240,7 @@ void test_SOM(string collectionName)
 
   // output initial map 
   realvec som_map;
-  som_map.create((natural)grid_width,(natural)grid_height);
+  som_map.create((mrs_natural)grid_width,(mrs_natural)grid_height);
   
   
   for (int k=0; k < iterations; k++) 
@@ -1252,7 +1253,7 @@ void test_SOM(string collectionName)
 	  input(0) = train_data(i);
 	  input(1) = 0;
 	  som->process(input, output);
-	  som_map((natural)output(0), (natural)output(1)) = train_data(i) * 64.0;
+	  som_map((mrs_natural)output(0), (mrs_natural)output(1)) = train_data(i) * 64.0;
 	  if (i==100)
 	    {
 	      ostringstream oss;
@@ -1271,9 +1272,9 @@ void test_SOM(string collectionName)
   cout << "predicting" << endl;
 
 
-  som->updctrl("bool/done", true);
+  som->updctrl("mrs_bool/done", true);
   // predict 
-  som->updctrl("string/mode", "predict");
+  som->updctrl("mrs_string/mode", "predict");
   
   for (int i=0; i < 100; i++) 
     {
@@ -1283,7 +1284,7 @@ void test_SOM(string collectionName)
       cout << "input(1) = " << input(1) << endl;
       som->process(input,output);
       som->process(input, output);
-      som_map((natural)output(0), (natural)output(1)) = train_data(i) * 64.0;
+      som_map((mrs_natural)output(0), (mrs_natural)output(1)) = train_data(i) * 64.0;
       if (i==99)
 	{
 	  ostringstream oss;
@@ -1320,15 +1321,15 @@ test_scheduler()
   series->addMarSystem(mng.create("SoundFileSink", "dest"));
   
   // basic setup
-  series->updctrl("natural/inSamples", 256);
-  series->updctrl("SoundFileSource/src/string/filename", ipName);
-  series->updctrl("SoundFileSink/dest/string/filename", opName);
+  series->updctrl("mrs_natural/inSamples", 256);
+  series->updctrl("SoundFileSource/src/mrs_string/filename", ipName);
+  series->updctrl("SoundFileSink/dest/mrs_string/filename", opName);
   
   // adjust some gain in a demonstrative but otherwise useless way
-//   series->updctrl("1.5s","Gain/gain/real/gain", 0.0);
-//   series->updctrl("3.0s","Gain/gain/real/gain", 1.0);
-//   series->updctrl("3.500s","Gain/gain/real/gain", 0.0);
-//  series->updctrl("4s","Gain/gain/real/gain", 1.0);
+//   series->updctrl("1.5s","Gain/gain/mrs_real/gain", 0.0);
+//   series->updctrl("3.0s","Gain/gain/mrs_real/gain", 1.0);
+//   series->updctrl("3.500s","Gain/gain/mrs_real/gain", 0.0);
+//  series->updctrl("4s","Gain/gain/mrs_real/gain", 1.0);
   
   // loop for a time, waving hands
   for (int i=0; i<10000; i++) {
@@ -1344,11 +1345,11 @@ test_scheduler()
 
 
 
-void shake(natural bufferSize, natural inputSize,string backgroundopt) 
+void shake(mrs_natural bufferSize, mrs_natural inputSize,string backgroundopt) 
 {
  
  
-  real amp;
+  mrs_real amp;
   cout<<"before MarSystemManager in Shake"<<endl;
   MarSystemManager mng;
    cout<<"before MarSystemManager in Shake"<<endl;
@@ -1358,18 +1359,18 @@ void shake(natural bufferSize, natural inputSize,string backgroundopt)
   series->update();
   
   
-  series->updctrl("Gain/gain/real/gain", 1.0);
-  series->updctrl("AudioSink/dest/natural/bufferSize", 128); 
-  series->updctrl("natural/inSamples", 64);
+  series->updctrl("Gain/gain/mrs_real/gain", 1.0);
+  series->updctrl("AudioSink/dest/mrs_natural/bufferSize", 128); 
+  series->updctrl("mrs_natural/inSamples", 64);
   series->update();
   
   
   while(1) 
 
     {  
-      amp = (real) (7 * rand() / (RAND_MAX + 1.0) );
-      series->updctrl("Maraca/maraca/real/frequency",2000.0);
-      series->updctrl("Maraca/maraca/real/amplitude",amp);
+      amp = (mrs_real) (7 * rand() / (RAND_MAX + 1.0) );
+      series->updctrl("Maraca/maraca/mrs_real/frequency",2000.0);
+      series->updctrl("Maraca/maraca/mrs_real/amplitude",amp);
      
 
       series->tick();	

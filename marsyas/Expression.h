@@ -26,6 +26,9 @@
 #include "MarSystem.h"
 #include "MrsLog.h" 
 
+namespace Marsyas
+{
+
 struct Expr {
     public:
     unsigned char sym; unsigned char tsym;
@@ -50,13 +53,13 @@ struct Expr {
 
 struct Val {
     public:
-    real r;
-    natural n;
+    mrs_real r;
+    mrs_natural n;
     bool isreal;
     Val() {r=0;};
     Val(const Val& v) { isreal=v.isreal; r=v.r; n=v.n; };
-    Val(real nr) { r=nr; isreal=true; };
-    Val(natural nn) { n=nn; isreal=false; };
+    Val(mrs_real nr) { r=nr; isreal=true; };
+    Val(mrs_natural nn) { n=nn; isreal=false; };
     bool operator==(const Val& v) {
         if (isreal!=v.isreal) { return false; }
         if (isreal) { return r==v.r; }
@@ -88,7 +91,9 @@ struct Expr* symbol(bool *fail, std::string sym, unsigned char type);
 struct Expr* parse(bool* fail, struct Expr* list);
 struct Expr* parse_expr(bool* fail, struct Expr** list);
 
-real string2real(std::string s);
-natural string2natural(std::string s);
+mrs_real string2real(std::string s);
+mrs_natural string2natural(std::string s);
 Val eval(bool* fail, MarSystem* target_, struct Expr* tree);
 void clear_expr_list(struct Expr* e);
+
+}//namespace Marsyas

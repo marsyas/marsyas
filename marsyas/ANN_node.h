@@ -28,13 +28,15 @@ Essentialky forms a weighted sum of the input rows of observations.
 
 #include "MarSystem.h"	
 
+namespace Marsyas
+{
 
 class ANN_node: public MarSystem
 {
 private: 
   void addControls();
   realvec weights_;
-  real bias_;
+  mrs_real bias_;
 
 public:
   ANN_node(std::string name);
@@ -44,6 +46,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 	

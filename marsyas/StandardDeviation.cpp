@@ -25,31 +25,26 @@ The resulting standard deviations are returned as a column
 vector. 
 */
 
-
-
 #include "StandardDeviation.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 StandardDeviation::StandardDeviation():MarSystem()
 {
   type_ = "StandardDeviation";
 }
 
-
 StandardDeviation::StandardDeviation(string name)
 {
   type_ = "StandardDeviation";
   name_ = name;
   addControls();
-  
 }
-
 
 StandardDeviation::~StandardDeviation()
 {
 }
-
 
 MarSystem* 
 StandardDeviation::clone() const 
@@ -63,20 +58,19 @@ StandardDeviation::addControls()
   addDefaultControls();
 }
 
-
 void
 StandardDeviation::update()
 {
   MRSDIAG("StandardDeviation.cpp - StandardDeviation:update");
-  setctrl("natural/onSamples", (natural)1);
-  setctrl("natural/onObservations", getctrl("natural/inObservations").toNatural());
-  setctrl("real/osrate", getctrl("real/israte").toReal());
+  setctrl("mrs_natural/onSamples", (mrs_natural)1);
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations").toNatural());
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal());
 
-  obsrow_.create(getctrl("natural/inSamples").toNatural());
+  obsrow_.create(getctrl("mrs_natural/inSamples").toNatural());
   defaultUpdate();
 
   ostringstream oss;
-  string inObsNames = getctrl("string/inObsNames").toString();
+  string inObsNames = getctrl("mrs_string/inObsNames").toString();
   for (int i = 0; i < inObservations_; i++)
     {
       string inObsName;
@@ -86,21 +80,17 @@ StandardDeviation::update()
       inObsNames = temp;
       oss << "Std" << "_" << inObsName << ",";
     }
-  setctrl("string/onObsNames", oss.str());
+  setctrl("mrs_string/onObsNames", oss.str());
 
 }
-
-
-
 
 void 
 StandardDeviation::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   
+  /*
   out.setval(0.0);
-  
-  
   for (o=0; o < inObservations_; o++)
     {
       for (t = 0; t < inSamples_; t++)
@@ -110,7 +100,8 @@ StandardDeviation::process(realvec& in, realvec& out)
 	}
       out(o,0) = obsrow_.std();
     }
-  
+  */
+  out = in.stdObs(); 
 }
 
       

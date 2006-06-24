@@ -27,7 +27,7 @@
 #ifndef MARSYAS_SCHEDULEDEVENT_H
 #define MARSYAS_SCHEDULEDEVENT_H
 
-#include <stdio.h>
+#include <cstdio>
 #include <string>
 #include <iostream>
 
@@ -36,10 +36,12 @@
 #include "Repeat.h"
 #include "TmTimer.h"
 
+namespace Marsyas
+{
 
 class ScheduledEvent {
 protected:
-    natural time_;
+    mrs_natural time_;
     MarEvent* event_;
     Repeat repetition;
     TmTimer* timer_;
@@ -47,21 +49,21 @@ protected:
 public:
     // Constructors
     ScheduledEvent();
-    ScheduledEvent(natural time, MarEvent* event);
-    ScheduledEvent(natural time, Repeat rep, MarEvent* event);
+    ScheduledEvent(mrs_natural time, MarEvent* event);
+    ScheduledEvent(mrs_natural time, Repeat rep, MarEvent* event);
     ScheduledEvent(const ScheduledEvent& s);
     virtual ~ScheduledEvent();
 
-    void setEvent(natural time, MarEvent* event);
-    void setEvent(natural time, Repeat rep, MarEvent* event);
+    void setEvent(mrs_natural time, MarEvent* event);
+    void setEvent(mrs_natural time, Repeat rep, MarEvent* event);
     void setTimer(TmTimer* t);
 
     friend class ScheduledEventOrdering;
     // Naming methods
-    natural    getTime() const;
+    mrs_natural    getTime() const;
 
     MarEvent* getEvent();
-    natural getRepetitionCount();
+    mrs_natural getRepetitionCount();
     std::string getRepetitionInterval();
     Repeat getRepetition();
 
@@ -98,4 +100,7 @@ public:
     }
 };
 */
+
+}//namespace Marsyas
+
 #endif

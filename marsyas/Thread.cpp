@@ -13,6 +13,8 @@
 
 #include "Thread.h"
 
+using namespace Marsyas;
+
 
 Thread :: Thread()
 {

@@ -23,9 +23,10 @@
 */
 
 #include "EvGetUpd.h"
-using namespace std;
-
 #include "MarSystem.h"
+
+using namespace std;
+using namespace Marsyas;
 
 EvGetUpd::EvGetUpd(MarSystem* src, string scname,
                    MarSystem* tgt, string tcname) {
@@ -61,7 +62,7 @@ EvGetUpd* EvGetUpd::clone() { return new EvGetUpd(*this); }
 
 
 /*
-ostream& operator<< (ostream& o, EvValUpd& e) {
+ostream& Marsyas::operator<< (ostream& o, EvValUpd& e) {
 //    sys.put(o);
     o << "EvValUpd<" << e.getCName() << "," << e.getValue() << ">";
     return o;

@@ -23,10 +23,11 @@
           current number of microseconds
 */
 #include "TmGetTime.h"
-using namespace std;
-
 #include "Scheduler.h"
 #include "Conversions.h" // time2usecs
+
+using namespace std;
+using namespace Marsyas;
 
 TmGetTime::TmGetTime() { name_="System"; init(); last_usecs=readTimeSrc(); }
 TmGetTime::TmGetTime(string name) { name_=name; init(); last_usecs=readTimeSrc(); }
@@ -37,7 +38,7 @@ TmTimer* TmGetTime::clone() { return new TmGetTime(*this); }
 
 void TmGetTime::setScheduler(Scheduler* s) { scheduler=s; }
 
-natural TmGetTime::readTimeSrc() {
+mrs_natural TmGetTime::readTimeSrc() {
 /*  struct timeval {
      int tv_sec; //seconds
      int tv_usec; //microseconds
@@ -56,7 +57,7 @@ natural TmGetTime::readTimeSrc() {
 }
 void TmGetTime::trigger() { scheduler->dispatch(); }
 
-natural TmGetTime::intervalsize(string interval) {
+mrs_natural TmGetTime::intervalsize(string interval) {
     return time2usecs(interval);
 }
 

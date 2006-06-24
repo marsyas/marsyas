@@ -1,7 +1,7 @@
 
 
 
-#include <stdio.h>
+#include <cstdio>
 
 #include "Collection.h"
 #include "MarSystemManager.h"
@@ -9,8 +9,10 @@
 #include "Conversions.h"
 
 #include <string> 
-#include <iostream> 
+#include <iostream>
+
 using namespace std;
+using namespace Marsyas;
 
 CommandLineOptions cmd_options;
 
@@ -20,8 +22,8 @@ int helpopt;
 int usageopt;
 int wopt = 2 * MRS_DEFAULT_SLICE_NSAMPLES;
 int hopt = 2 * MRS_DEFAULT_SLICE_NSAMPLES;
-real lpopt = 36.0;
-real upopt = 128.0;
+mrs_real lpopt = 36.0;
+mrs_real upopt = 128.0;
 int plopt = 0;
 float topt = 0.2f;
 
@@ -66,91 +68,91 @@ printHelp(string progName)
 
 
 
-void LPCTestSoundFile(string sfName,natural winSize, natural hoSize, 
-		      real lowFrek, real highFrek)
+void LPCTestSoundFile(string sfName,mrs_natural winSize, mrs_natural hoSize, 
+		      mrs_real lowFrek, mrs_real highFrek)
 {
  
   MarSystemManager mng;
   //LPC network
-  natural lpcOrder = 20;
+  mrs_natural lpcOrder = 20;
   // cout<<"hopeSize" <<hoSize <<endl;
   MarSystem* input = mng.create("Series", "input");
   input->addMarSystem(mng.create("SoundFileSource","src"));
-  input->updctrl("SoundFileSource/src/string/filename", sfName);
-  input->updctrl("SoundFileSource/src/natural/inSamples", hoSize);
+  input->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  input->updctrl("SoundFileSource/src/mrs_natural/inSamples", hoSize);
 
 
   input->addMarSystem(mng.create("ShiftInput", "si"));
 
-  input->updctrl("ShiftInput/si/natural/Decimation", hoSize);
-  input->updctrl("ShiftInput/si/natural/WindowSize", winSize);
+  input->updctrl("ShiftInput/si/mrs_natural/Decimation", hoSize);
+  input->updctrl("ShiftInput/si/mrs_natural/WindowSize", winSize);
 
   input->addMarSystem(mng.create("LPC", "lpc"));
-  input->updctrl("LPC/lpc/natural/order",lpcOrder);
+  input->updctrl("LPC/lpc/mrs_natural/order",lpcOrder);
   //need to this so array outbound error doesnt occur in LPC.cpp
   //max hopSize = inSamples-lpcOrder
   
-  input->updctrl("LPC/lpc/natural/hopSize",hoSize);
-  input->updctrl("LPC/lpc/real/minPitchRes",0.1);
-  input->updctrl("LPC/lpc/real/lowFreq",(real)lowFrek);
-  input->updctrl("LPC/lpc/real/highFreq",(real)highFrek);
+  input->updctrl("LPC/lpc/mrs_natural/hopSize",hoSize);
+  input->updctrl("LPC/lpc/mrs_real/minPitchRes",0.1);
+  input->updctrl("LPC/lpc/mrs_real/lowFreq",(mrs_real)lowFrek);
+  input->updctrl("LPC/lpc/mrs_real/highFreq",(mrs_real)highFrek);
 
   input ->addMarSystem(mng.create("LPCResyn", "lpcResyn"));
-  input->updctrl("LPCResyn/lpcResyn/natural/order",lpcOrder);
-  input->updctrl("LPCResyn/lpcResyn/natural/onSamples",input->getctrl("LPC/lpc/natural/hopSize").toNatural());
+  input->updctrl("LPCResyn/lpcResyn/mrs_natural/order",lpcOrder);
+  input->updctrl("LPCResyn/lpcResyn/mrs_natural/onSamples",input->getctrl("LPC/lpc/mrs_natural/hopSize").toNatural());
   
   
 
   input->addMarSystem(mng.create("ShiftOutput", "so"));
   
-  input->updctrl("ShiftOutput/so/natural/WindowSize", winSize);      
-  input->updctrl("ShiftOutput/so/natural/Decimation", hoSize);
+  input->updctrl("ShiftOutput/so/mrs_natural/WindowSize", winSize);      
+  input->updctrl("ShiftOutput/so/mrs_natural/Decimation", hoSize);
 
 
   input->addMarSystem(mng.create("AudioSink","sink"));
-  // input->updctrl("AudioSink/sink/natural/inSamples",input->getctrl("LPC/lpc/natural/hopSize").toNatural());
-  input->updctrl("AudioSink/sink/natural/inSamples", hoSize);
+  // input->updctrl("AudioSink/sink/mrs_natural/inSamples",input->getctrl("LPC/lpc/mrs_natural/hopSize").toNatural());
+  input->updctrl("AudioSink/sink/mrs_natural/inSamples", hoSize);
   
-  //input->updctrl("SoundFileSink/sink/string/filename", "LPCResynthed.wav");
+  //input->updctrl("SoundFileSink/sink/mrs_string/filename", "LPCResynthed.wav");
 
   //cout << (*input) <<endl;
-  while(input->getctrl("SoundFileSource/src/bool/notEmpty").toBool()){
+  while(input->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool()){
    input->tick();
   }
 
 
 }
 
-void LPCTestLive(natural winSize, natural hoSize,real lowFrek, real highFrek)
+void LPCTestLive(mrs_natural winSize, mrs_natural hoSize,mrs_real lowFrek, mrs_real highFrek)
 {
  
   MarSystemManager mng;
   //LPC network
-  natural lpcOrder=7;
+  mrs_natural lpcOrder=7;
   cout <<"winsize: "<<winSize<<endl;
   MarSystem* input = mng.create("Series", "input");
   input->addMarSystem(mng.create("AudioSource","src"));
-  input->updctrl("AudioSource/src/natural/inSamples", winSize);  
+  input->updctrl("AudioSource/src/mrs_natural/inSamples", winSize);  
   input->addMarSystem(mng.create("Gain","g"));
-  input->updctrl("Gain/g/real/gain", 3.0);
+  input->updctrl("Gain/g/mrs_real/gain", 3.0);
 
   input->addMarSystem(mng.create("LPC", "lpc"));
-  input->updctrl("LPC/lpc/natural/order",lpcOrder);
+  input->updctrl("LPC/lpc/mrs_natural/order",lpcOrder);
   //need to this so array outbound error doesnt occur in LPC.cpp
   //max hopSize = inSamples-lpcOrder
-  input->updctrl("LPC/lpc/natural/hopSize",hoSize);
-  //input->updctrl("LPC/lpc/natural/inSamples",winSize);
+  input->updctrl("LPC/lpc/mrs_natural/hopSize",hoSize);
+  //input->updctrl("LPC/lpc/mrs_natural/inSamples",winSize);
   
-  input->updctrl("LPC/lpc/real/minPitchRes",0.008);
-  input->updctrl("LPC/lpc/real/lowFreq",200.0);
-  input->updctrl("LPC/lpc/real/highFreq",2000.0);
+  input->updctrl("LPC/lpc/mrs_real/minPitchRes",0.008);
+  input->updctrl("LPC/lpc/mrs_real/lowFreq",200.0);
+  input->updctrl("LPC/lpc/mrs_real/highFreq",2000.0);
 
   input ->addMarSystem(mng.create("LPCResyn", "lpcResyn"));
-  input->updctrl("LPCResyn/lpcResyn/natural/order",lpcOrder);
-  input->updctrl("LPCResyn/lpcResyn/natural/onSamples",input->getctrl("LPC/lpc/natural/hopSize").toNatural());
+  input->updctrl("LPCResyn/lpcResyn/mrs_natural/order",lpcOrder);
+  input->updctrl("LPCResyn/lpcResyn/mrs_natural/onSamples",input->getctrl("LPC/lpc/mrs_natural/hopSize").toNatural());
 
   input->addMarSystem(mng.create("AudioSink","sink"));
-  input->updctrl("AudioSink/sink/natural/inSamples",input->getctrl("LPC/lpc/natural/hopSize").toNatural());
+  input->updctrl("AudioSink/sink/mrs_natural/inSamples",input->getctrl("LPC/lpc/mrs_natural/hopSize").toNatural());
   
 
   //cout << (*input) <<endl;

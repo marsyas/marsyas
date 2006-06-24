@@ -27,6 +27,7 @@ the singal. Used for sending waveform plots to editor.
 
 #include "AbsMax.h"
 using namespace std;
+using namespace Marsyas;
 
 
 AbsMax::AbsMax(string name)
@@ -59,9 +60,9 @@ AbsMax::addControls()
 void
 AbsMax::update()
 {
-  setctrl("natural/onSamples",  (natural)1);
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte").toReal() / (real)getctrl("natural/inSamples").toNatural());  
+  setctrl("mrs_natural/onSamples",  (mrs_natural)1);
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal() / (mrs_real)getctrl("mrs_natural/inSamples").toNatural());  
   defaultUpdate();
 }
 

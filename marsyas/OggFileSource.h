@@ -25,11 +25,10 @@ This class reads an ogg file using the vorbis ogg decoder library.
 
 */
 
-
 #ifndef MARSYAS_OGGSOURCE_H
 #define MARSYAS_OGGSOURCE_H
 
-#include <stdio.h>
+#include <cstdio>
 
 #ifndef WIN32
 #include <sys/stat.h>
@@ -57,6 +56,9 @@ This class reads an ogg file using the vorbis ogg decoder library.
 #include "vorbis/vorbisfile.h"
 #endif
 
+namespace Marsyas
+{
+
 class OggFileSource: public AbsSoundFileSource
 {
 private:
@@ -80,5 +82,7 @@ public:
   void getHeader(std::string filename);
   
 };
+
+}//namespace Marsyas
 
 #endif	

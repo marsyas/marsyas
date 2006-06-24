@@ -26,10 +26,11 @@
 #ifndef MARSYAS_ABSSOUNDFILESINK_H
 #define MARSYAS_ABSSOUNDFILESINK_H
 
-
-
 #include "common.h"
-#include "MarSystem.h" 
+#include "MarSystem.h"
+
+namespace Marsyas
+{
 
 class AbsSoundFileSink: public MarSystem
 {
@@ -44,12 +45,11 @@ public:
   virtual void process(realvec& in,realvec &out) = 0;
 
   // public for efficiency 
-  natural pos_;
+  mrs_natural pos_;
   bool notEmpty_;
 };
 
-
-
+}//namespace Marsyas
 
 #endif    /* !MARSYAS_ABSSOUNDFILESOURCE_H */ 
 

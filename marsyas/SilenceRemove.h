@@ -25,19 +25,20 @@ tick silence remove is the same as playing the sound with
 silences removed. 
 */
 
-	
 #ifndef MARSYAS_SILENCEREMOVE_H
 #define MARSYAS_SILENCEREMOVE_H
 
 #include "MarSystem.h"	
 #include "Composite.h" 
 
+namespace Marsyas
+{
+
 class SilenceRemove: public Composite
 {
 private: 
   void addControls();
-  real threshold_;
-  
+  mrs_real threshold_;
   
 public:
   SilenceRemove(std::string name);
@@ -49,6 +50,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 	

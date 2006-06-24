@@ -24,12 +24,10 @@
 two succesive spectra. 
 */
 
-
-
 #include "Flux.h"
+
 using namespace std;
-
-
+using namespace Marsyas;
 
 Flux::Flux(string name)
 {
@@ -62,19 +60,16 @@ Flux::update()
 {
   
   MRSDIAG("Flux.cpp - Flux:update");
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", (natural)1);
-  setctrl("real/osrate", getctrl("real/israte").toReal());
-  setctrl("string/onObsNames", "Flux,");
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", (mrs_natural)1);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal());
+  setctrl("mrs_string/onObsNames", "Flux,");
   
-  prevWindow_.create(getctrl("natural/inObservations").toNatural(),
-		     getctrl("natural/inSamples").toNatural());
+  prevWindow_.create(getctrl("mrs_natural/inObservations").toNatural(),
+		     getctrl("mrs_natural/inSamples").toNatural());
 
   defaultUpdate();
 }
-
-
-
 
 void 
 Flux::process(realvec& in, realvec& out)
@@ -83,7 +78,6 @@ Flux::process(realvec& in, realvec& out)
   
   // computer flux of observations for each time sample 
   prevWindow_.setval(0.0);
-
 
   for (t = 0; t < inSamples_; t++)
     {
@@ -97,10 +91,9 @@ Flux::process(realvec& in, realvec& out)
 	  flux_ += (diff_ * diff_);
 	  prevWindow_(o,t) = in(o,t);
 	}
-      
 
       if (flux_ != 0.0)
-	flux_ = flux_ / (max_ * max_ * inObservations_);
+		flux_ = flux_ / (max_ * max_ * inObservations_);
       out(0,t) = flux_;
     }
 

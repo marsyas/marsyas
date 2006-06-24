@@ -28,24 +28,20 @@
 
 #include "MarSystem.h"	
 
-
-#define INF		0x7fffffff
-
-#define ALPHA_DEGRADE		0.98
-#define NEIGHBOURHOOD_DEGRADE	0.97
+namespace Marsyas
+{
 
 class SOM: public MarSystem
 {
 private: 
   void addControls();
   realvec grid_map_;
-  natural grid_width_;
-  natural grid_height_;
+  mrs_natural grid_width_;
+  mrs_natural grid_height_;
   realvec adjustments_;
-  real alpha_;
-  real neigh_std_;
-  
-
+  mrs_real alpha_;
+  mrs_real neigh_std_;
+ 
 public:
   SOM(std::string name);
   ~SOM();
@@ -60,9 +56,10 @@ private:
   
   void init_grid_map();
   realvec find_grid_location(realvec& in, int t);
-  
-  
+
 };
+
+}//namespace Marsyas
 
 #endif
 	

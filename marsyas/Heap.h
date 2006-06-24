@@ -47,6 +47,9 @@
     };
 */
 
+namespace Marsyas
+{
+
 template <typename Type, typename Comparator>
 class Heap {
 private:
@@ -171,4 +174,6 @@ private:
         return o;
     };
 };
+
+}//namespace Marsyas
 

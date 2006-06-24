@@ -25,11 +25,13 @@
 
 */
 
-
 #ifndef MARSYAS_OSCBANK_H
 #define MARSYAS_OSCBANK_H
 
 #include "MarSystem.h"	
+
+namespace Marsyas
+{
 
 class PvOscBank: public MarSystem
 {
@@ -38,20 +40,19 @@ private:
   realvec lastfreq_;
   realvec index_;
   realvec table_;
-  natural L_;
-  natural N_;
-  natural NP_;
-  real P_;
-  real Iinv_;
-  real Pinc_;
-  real R_;
-  natural I_;
-  real S_;
-  natural size_, psize_;
-  real address_,paddress_, ppaddress_,f_, finc_, a_, ainc_;
-  natural naddress_;
-  real tableval_;
-  
+  mrs_natural L_;
+  mrs_natural N_;
+  mrs_natural NP_;
+  mrs_real P_;
+  mrs_real Iinv_;
+  mrs_real Pinc_;
+  mrs_real R_;
+  mrs_natural I_;
+  mrs_real S_;
+  mrs_natural size_, psize_;
+  mrs_real address_,paddress_, ppaddress_,f_, finc_, a_, ainc_;
+  mrs_natural naddress_;
+  mrs_real tableval_;
 
   void addControls();
   
@@ -66,6 +67,8 @@ public:
   void process(realvec& in, realvec& out);
   
 };
+
+}//namespace Marsyas
 
 #endif
 

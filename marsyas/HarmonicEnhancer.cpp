@@ -22,11 +22,10 @@
 
 */
 
-
-
 #include "HarmonicEnhancer.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 
 HarmonicEnhancer::HarmonicEnhancer(string name)
@@ -60,39 +59,39 @@ HarmonicEnhancer::update()
 {
   MRSDIAG("HarmonicEnhancer.cpp - HarmonicEnhancer:update");
    
-  setctrl("natural/onSamples", (natural)1);
-  setctrl("natural/onObservations", (natural)4);
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", (mrs_natural)1);
+  setctrl("mrs_natural/onObservations", (mrs_natural)4);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  flag_.create(getctrl("natural/inSamples").toNatural());
+  flag_.create(getctrl("mrs_natural/inSamples").toNatural());
   
   
-  setctrl("string/onObsNames", getctrl("string/inObsNames"));
+  setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
   defaultUpdate();  
 }
 
 void 
-HarmonicEnhancer::harm_prob(real& pmax, real factor, 
-			    real& s1, natural& t1, 
-			    real& s2, natural& t2, 
-			    natural tmx,
-			    natural size, 
+HarmonicEnhancer::harm_prob(mrs_real& pmax, mrs_real factor, 
+			    mrs_real& s1, mrs_natural& t1, 
+			    mrs_real& s2, mrs_natural& t2, 
+			    mrs_natural tmx,
+			    mrs_natural size, 
 			    realvec& in)
 {
 
-  natural index = (natural) floor(factor * tmx + 0.5);
+  mrs_natural index = (mrs_natural) floor(factor * tmx + 0.5);
   
 
   
-  real prob;
-  real c;
+  mrs_real prob;
+  mrs_real c;
   
   if (index > 100.0)
     c = 1.0;
   else 
     c = 0.75;
 
-  real a;
+  mrs_real a;
   
   if ((tmx > 50)&&(tmx < 100))
     a = 1.5;
@@ -194,7 +193,7 @@ HarmonicEnhancer::harm_prob(real& pmax, real factor,
 	    s2 += in(0,index+3);	  
 
 	  t1 = tmx+1;
-	  t2 = (natural)(factor * t1);
+	  t2 = (mrs_natural)(factor * t1);
 	  pmax = prob;
 	}
       else 
@@ -219,7 +218,7 @@ HarmonicEnhancer::harm_prob(real& pmax, real factor,
 
 	  s2 = in(0,tmx);
 	  t1 = index+1;
-	  t2 = (natural)(factor * t1);
+	  t2 = (mrs_natural)(factor * t1);
 	  pmax = prob;
 	}
     }  
@@ -236,16 +235,16 @@ HarmonicEnhancer::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 
-  real mx = DBL_MIN;
-  natural tmx  = 0;
+  mrs_real mx = DBL_MIN;
+  mrs_natural tmx  = 0;
   
 
   
-  real pmax = DBL_MIN;
-  natural t1;
-  natural t2;
-  real s1;
-  real s2;
+  mrs_real pmax = DBL_MIN;
+  mrs_natural t1;
+  mrs_natural t2;
+  mrs_real s1;
+  mrs_real s2;
 
   
   flag_.setval(0.0);

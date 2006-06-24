@@ -16,7 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /** 
      \class LPC
     \brief Compute LPC coefficients, Pitch and Power of window.
@@ -29,25 +28,23 @@
 
 #include "MarSystem.h"	
 
+namespace Marsyas
+{
 
 class LPCResyn: public MarSystem
 {
 private: 
   void addControls();
   
-  natural inSize_;
-  natural outSize_;
-  natural order_;
-  
+  mrs_natural inSize_;
+  mrs_natural outSize_;
+  mrs_natural order_;
   
   realvec Zs_;
+
+  mrs_real ticker_;
   
-  
-  
-  real ticker_;
- 
-  
-  natural hopSize_;
+  mrs_natural hopSize_;
   
 public:
   LPCResyn();
@@ -58,9 +55,9 @@ public:
   
   void update();
   void process(realvec& in, realvec& out);
-  
-
 };
+
+}//namespace Marsyas
 
 #endif
 

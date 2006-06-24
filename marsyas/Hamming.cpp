@@ -24,10 +24,10 @@
 with gain and put them in the output vector. 
 */
 
-
-
 #include "Hamming.h"
+
 using namespace std;
+using namespace Marsyas;
 
 Hamming::Hamming()
 {
@@ -63,17 +63,17 @@ Hamming::addControls()
 void
 Hamming::update()
 {
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-  setctrl("string/onObsNames", getctrl("string/inObsNames"));  
-  natural inSamples = getctrl("natural/inSamples").toNatural();
+  setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));  
+  mrs_natural inSamples = getctrl("mrs_natural/inSamples").toNatural();
   envelope_.create(inSamples);
   
-  real A = (real)0.54;
-  real B = (real)0.46;
-  real i;
+  mrs_real A = (mrs_real)0.54;
+  mrs_real B = (mrs_real)0.46;
+  mrs_real i;
   for (t=0; t < inSamples; t++)
     {
       i = 2*PI*t / (inSamples-1);

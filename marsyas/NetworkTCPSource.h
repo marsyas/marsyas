@@ -27,7 +27,10 @@
 #ifndef MARSYAS_NetworkTCPSource_H
 #define MARSYAS_NetworkTCPSource_H
 
-#include "NetworkSocket.h"	
+#include "NetworkSocket.h"
+
+namespace Marsyas
+{
 
 class NetworkTCPSource: public NetworkSocket
 {
@@ -49,5 +52,7 @@ class NetworkTCPSource: public NetworkSocket
   void refresh();
   
 };
+
+}//namespace Marsyas
 
 #endif

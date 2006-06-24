@@ -30,20 +30,22 @@
 
 #include <string>
 
+namespace Marsyas
+{
 
 class Repeat {
 public:
     bool infinite;
     std::string interval;
-    natural count;
+    mrs_natural count;
 
 public:
     Repeat(); // no repetition
     Repeat(std::string time_interval); // infinite
-    Repeat(std::string time_interval, natural rep_count);
+    Repeat(std::string time_interval, mrs_natural rep_count);
 
-    void set(bool inf, std::string time_interval, natural rep_count);
-    natural interval2samples(real srate);
+    void set(bool inf, std::string time_interval, mrs_natural rep_count);
+    mrs_natural interval2samples(mrs_real srate);
 
     void operator++() { ++count; }
     void operator++(int) { count++; };
@@ -53,5 +55,7 @@ public:
 //    friend ostream& operator<<(ostream&, Scheduler&);
 //    friend istream& operator>>(istream&, Scheduler&);
 };
+
+}//namespace Marsyas
 
 #endif

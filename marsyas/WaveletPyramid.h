@@ -30,6 +30,9 @@ Based on the Numerical Recipies wavelet code.
 #include "MarSystem.h"	
 #include "Daub4.h"
 
+namespace Marsyas
+{
+
 class WaveletPyramid: public MarSystem
 {
 private:
@@ -47,5 +50,7 @@ public:
   void process(realvec& in, realvec& out);
   
 };
+
+}//namespace Marsyas
 
 #endif

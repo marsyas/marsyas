@@ -34,7 +34,8 @@
 #include <unistd.h>
 #endif 
 
-
+namespace Marsyas
+{
 
 class Scheduler; // forward declaration
 
@@ -53,9 +54,11 @@ public:
     TmTimer* clone();
 
     void setScheduler(Scheduler* s);
-    natural readTimeSrc();
+    mrs_natural readTimeSrc();
     void trigger();
-    natural intervalsize(std::string interval);
+    mrs_natural intervalsize(std::string interval);
 };
+
+}//namespace Marsyas
 
 #endif

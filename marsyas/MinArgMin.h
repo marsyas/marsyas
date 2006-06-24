@@ -28,11 +28,13 @@
 
 #include "MarSystem.h"	
 
+namespace Marsyas
+{
 
 class MinArgMin: public MarSystem
 {
 private:
-  natural ki;			
+  mrs_natural ki;			
   realvec maximums_;
   void addControls();
   
@@ -43,9 +45,9 @@ public:
   MarSystem* clone() const;  
   void update();
   void process(realvec& in, realvec& out);
-  
-  
 };
+
+}//namespace Marsyas
 
 #endif
 

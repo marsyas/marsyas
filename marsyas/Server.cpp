@@ -25,9 +25,17 @@ Send/receive message strings Communicator methods are supported.
 Used for compatibility with the marsyas 0.1 interface. 
 */
 
-
 #include "Server.h"
+
 using namespace std;
+using namespace Marsyas;
+
+#define NLCHARS "\x0D\x0A"		// Newline and Carriage return 
+#define MAX_MESSAGE 256
+
+#ifdef WIN32
+#define MAXHOSTNAMELEN 1024
+#endif 
 
 /* Code to establish a socket */
 

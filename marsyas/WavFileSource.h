@@ -23,19 +23,17 @@
    SoundFileSource reader for .wav sound files.
 */
 
-
 #ifndef MARSYAS_WAVFILESOURCE_H
 #define MARSYAS_WAVFILESOURCE_H
-
-
 
 #include "common.h"
 #include "AbsSoundFileSource.h"
 
-
 #include <string>
-#include <stdio.h>
+#include <cstdio>
 
+namespace Marsyas
+{
 
 class WavFileSource: public AbsSoundFileSource
 {
@@ -49,14 +47,14 @@ private:
   FILE *sfp_;
   long sfp_begin_;
   
-  natural sampleSize_;			// in bytes
-  natural csize_;
+  mrs_natural sampleSize_;			// in bytes
+  mrs_natural csize_;
   
-  natural size_;  
+  mrs_natural size_;  
 
   short sval_;
   bool advance_;
-  natural cindex_;
+  mrs_natural cindex_;
   
 
   unsigned short bits_;
@@ -66,16 +64,16 @@ private:
   unsigned short ByteSwapShort (unsigned short nValue);
 
   
-  natural nChannels_;
-  natural inSamples_;
-  natural samplesToRead_;
-  natural samplesRead_;
-  natural samplesToWrite_;
+  mrs_natural nChannels_;
+  mrs_natural inSamples_;
+  mrs_natural samplesToRead_;
+  mrs_natural samplesRead_;
+  mrs_natural samplesToWrite_;
 
-  natural samplesOut_;
+  mrs_natural samplesOut_;
   
-  real repetitions_;
-  real duration_;
+  mrs_real repetitions_;
+  mrs_real duration_;
   
   
   
@@ -84,15 +82,15 @@ public:
   ~WavFileSource();
   MarSystem* clone() const;  
 
-  natural getLinear16(realvec& win);
-  natural getLinear8(natural c, realvec& win);
+  mrs_natural getLinear16(realvec& win);
+  mrs_natural getLinear8(mrs_natural c, realvec& win);
 
   void update();
   void getHeader(std::string filename);
   void process(realvec& in, realvec &out);
 };
 
-
+}//namespace Marsyas
 
 
 #endif     /* !MARSYAS_WAVFILESOURCE_H */ 

@@ -29,12 +29,14 @@ signal crosses the zero line.
 
 #include "MarSystem.h"	
 
+namespace Marsyas
+{
 
 class ZeroCrossings: public MarSystem
 {
 private: 
   void addControls();
-  real zcrs_;
+  mrs_real zcrs_;
   
 public:
   ZeroCrossings();
@@ -45,9 +47,9 @@ public:
   
   void update();
   void process(realvec& in, realvec& out);
-  
-
 };
+
+}//namespace marsyas
 
 #endif
 

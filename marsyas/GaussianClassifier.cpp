@@ -38,13 +38,10 @@ MarSystem.
 
 */
 
-
-
-
-
 #include "GaussianClassifier.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 GaussianClassifier::GaussianClassifier(string name)
 {
@@ -69,15 +66,15 @@ void
 GaussianClassifier::addControls()
 {
   addDefaultControls();
-  addctrl("string/mode", "train");
-  addctrl("natural/nLabels", 1);
-  setctrlState("natural/nLabels", true);
+  addctrl("mrs_string/mode", "train");
+  addctrl("mrs_natural/nLabels", 1);
+  setctrlState("mrs_natural/nLabels", true);
   means_.create(1);
   covars_.create(1);
-  addctrl("realvec/means", means_);
-  addctrl("realvec/covars", covars_);
-  addctrl("bool/done", false);
-  setctrlState("bool/done", true);
+  addctrl("mrs_realvec/means", means_);
+  addctrl("mrs_realvec/covars", covars_);
+  addctrl("mrs_bool/done", false);
+  setctrlState("mrs_bool/done", true);
 
   
 }
@@ -88,19 +85,19 @@ GaussianClassifier::update()
 {
   MRSDIAG("GaussianClassifier.cpp - GaussianClassifier:update");
 
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", (natural)2);
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", (mrs_natural)2);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
   
-  natural inObservations = getctrl("natural/inObservations").toNatural();
-  natural nlabels = getctrl("natural/nLabels").toNatural();
+  mrs_natural inObservations = getctrl("mrs_natural/inObservations").toNatural();
+  mrs_natural nlabels = getctrl("mrs_natural/nLabels").toNatural();
 
 
-  natural mrows = (getctrl("realvec/means").toVec()).getRows();
-  natural mcols = (getctrl("realvec/means").toVec()).getCols();
-  natural nrows = means_.getRows();
-  natural ncols = means_.getCols();
+  mrs_natural mrows = (getctrl("mrs_realvec/means").toVec()).getRows();
+  mrs_natural mcols = (getctrl("mrs_realvec/means").toVec()).getCols();
+  mrs_natural nrows = means_.getRows();
+  mrs_natural ncols = means_.getCols();
   
   
   
@@ -109,8 +106,8 @@ GaussianClassifier::update()
     {
       means_.create(nlabels, inObservations);
       covars_.create(nlabels, inObservations);
-      updctrl("realvec/means", means_);
-      updctrl("realvec/covars", covars_);      
+      updctrl("mrs_realvec/means", means_);
+      updctrl("mrs_realvec/covars", covars_);      
       labelSizes_.create(nlabels);  
     }
   
@@ -122,11 +119,11 @@ GaussianClassifier::update()
       covars_.create(nlabels, inObservations);
     }
   
-  string mode = getctrl("string/mode").toString();
+  string mode = getctrl("mrs_string/mode").toString();
   if (mode == "predict")
     {
-      means_ = getctrl("realvec/means").toVec();
-      covars_ = getctrl("realvec/covars").toVec();
+      means_ = getctrl("mrs_realvec/means").toVec();
+      covars_ = getctrl("mrs_realvec/covars").toVec();
     }
 
   defaultUpdate();
@@ -137,20 +134,20 @@ void
 GaussianClassifier::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
-  real v;
-  string mode = getctrl("string/mode").toString();
+  mrs_real v;
+  string mode = getctrl("mrs_string/mode").toString();
 
   
 
 
-  natural nlabels = getctrl("natural/nLabels").toNatural();
-  natural l;
-  natural prediction = 0;
-  real label;
+  mrs_natural nlabels = getctrl("mrs_natural/nLabels").toNatural();
+  mrs_natural l;
+  mrs_natural prediction = 0;
+  mrs_real label;
   
 
-  real diff;
-  real sq_sum=0.0;
+  mrs_real diff;
+  mrs_real sq_sum=0.0;
 
   if (mode == "train")  
     {
@@ -162,13 +159,13 @@ GaussianClassifier::process(realvec& in, realvec& out)
 	    {
 	      v = in(o,t);
 	      
-	      means_((natural)label,o) = means_((natural)label,o) + v;
-	      covars_((natural)label,o) = covars_((natural)label,o) + v*v;
-	      out(0,t) = (real)label;	      
-	      out(1,t) = (real)label;
+	      means_((mrs_natural)label,o) = means_((mrs_natural)label,o) + v;
+	      covars_((mrs_natural)label,o) = covars_((mrs_natural)label,o) + v*v;
+	      out(0,t) = (mrs_real)label;	      
+	      out(1,t) = (mrs_real)label;
 	      
 	    }
-	  labelSizes_((natural)label) = labelSizes_((natural)label) + 1;
+	  labelSizes_((mrs_natural)label) = labelSizes_((mrs_natural)label) + 1;
 	  
 	}
     }
@@ -177,7 +174,7 @@ GaussianClassifier::process(realvec& in, realvec& out)
 
   if (mode == "predict")
     {
-      real min = 10000000.0;
+      mrs_real min = 10000000.0;
       for (t = 0; t < inSamples_; t++)  
 	{
 	  label = in(inObservations_-1, t);
@@ -199,12 +196,12 @@ GaussianClassifier::process(realvec& in, realvec& out)
 		}
 	    }
 	  
-	  out(0,t) = (real)prediction;
-	  out(1,t) = (real)label;
+	  out(0,t) = (mrs_real)prediction;
+	  out(1,t) = (mrs_real)label;
 	}
     }
   
-  if (getctrl("bool/done").toBool())
+  if (getctrl("mrs_bool/done").toBool())
     {
       
       for (l=0; l < nlabels; l++)
@@ -216,11 +213,11 @@ GaussianClassifier::process(realvec& in, realvec& out)
 	      (means_(l,o) * means_(l,o));
 	    if (covars_(l,o) != 0.0)
 	      {
-		covars_(l,o) = (real)(1.0 / covars_(l,o));
+		covars_(l,o) = (mrs_real)(1.0 / covars_(l,o));
 	      }
 	  }
-      updctrl("realvec/means", means_);
-      updctrl("realvec/covars", covars_);
+      updctrl("mrs_realvec/means", means_);
+      updctrl("mrs_realvec/covars", covars_);
     }
 
   

@@ -86,7 +86,7 @@ pack .noteOn
 frame .reverb -bg black
 
 scale .reverb.mix -from 0 -to 200 -length 300 \
--command {printWhatz "Gain/gt/real/gain 0.1  " 44} \
+-command {printWhatz "Gain/gt/mrs_real/gain 0.1  " 44} \
 -orient horizontal -label "Gain " \
 -tickinterval 50 -showvalue true -bg grey66  \
 -variable cont44

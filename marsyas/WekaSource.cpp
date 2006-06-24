@@ -7,8 +7,9 @@
 
 
 #include "WekaSource.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 WekaSource::WekaSource()
 {
@@ -80,20 +81,20 @@ WekaSource::addControls()
 {
   addDefaultControls();
   
-  addctrl("string/filename", "");
-  setctrlState("string/filename", true);
+  addctrl("mrs_string/filename", "");
+  setctrlState("mrs_string/filename", true);
   
   // A string of ',' separated indexes or index 
   // ranges (specified using '-') of the 
   // attributes desired from the weka file.
   // From this, the number of inObservations is inferred.
   // (Note: attribute indexing starts from 0)
-  addctrl("string/obsToExtract", "");
-  setctrlState("string/obsToExtract", true );
+  addctrl("mrs_string/obsToExtract", "");
+  setctrlState("mrs_string/obsToExtract", true );
   
-  addctrl("natural/nLabels", 2);
-  addctrl("string/labelNames", "");
-  addctrl("bool/notEmpty", (MarControlValue)false); 	
+  addctrl("mrs_natural/nLabels", 2);
+  addctrl("mrs_string/labelNames", "");
+  addctrl("mrs_bool/notEmpty", (MarControlValue)false); 	
 }
 
 
@@ -108,21 +109,21 @@ WekaSource::update()
   
   
   // If 'inSamples' was updated ...
-  if( inSamples_ != getctrl("natural/inSamples").toNatural() ){
+  if( inSamples_ != getctrl("mrs_natural/inSamples").toNatural() ){
     
-    inSamples_ = getctrl("natural/inSamples").toNatural();
-    setctrl("natural/onSamples", inSamples_ );	
+    inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
+    setctrl("mrs_natural/onSamples", inSamples_ );	
   }
   
   
   
   // If 'filename' was updated, or the attributes desired from the Weka file has changed,
   // parse the header portion of the file to get the required attribute names and possible output labels (if any)...
-  if( filename_ != getctrl("string/filename").toString() || obsToExtract_ != getctrl("string/obsToExtract").toString() ){
+  if( filename_ != getctrl("mrs_string/filename").toString() || obsToExtract_ != getctrl("mrs_string/obsToExtract").toString() ){
     
-    setctrl("bool/notEmpty", (MarControlValue)true);
+    setctrl("mrs_bool/notEmpty", (MarControlValue)true);
     
-    filename_ = getctrl("string/filename").toString();
+    filename_ = getctrl("mrs_string/filename").toString();
     inObservations_ = 0;
     string inObsNames = "";
     
@@ -130,7 +131,7 @@ WekaSource::update()
     // the required attributes from the Weka file.
     // Store this information in the 'bool extract []' for 
     // simple querying
-    obsToExtract_ = getctrl("string/obsToExtract").toString();
+    obsToExtract_ = getctrl("mrs_string/obsToExtract").toString();
     parseObsToExtract();
     
     if( mis_->is_open() ){
@@ -146,7 +147,7 @@ WekaSource::update()
     
     string curLabel;
     string::size_type curIndex;
-    natural nLabels;
+    mrs_natural nLabels;
     
     totalObs_ = 0;
     
@@ -161,9 +162,9 @@ WekaSource::update()
       if( !extract[totalObs_++] && strcmp( token_ , "output" ) != 0 )
 	continue;
       
-      // If the attribute is 'real' valued (most are),
+      // If the attribute is 'mrs_real' valued (most are),
       // store the attribute name
-      if( strcmp( token2_, "real" ) == 0 ){
+      if( strcmp( token2_, "mrs_real" ) == 0 ){
 	
 	inObsNames += string( token_ ) + ',';
 	inObservations_++;
@@ -180,7 +181,7 @@ WekaSource::update()
 	labelNames_ = labelNames_.substr( 1, labelNames_.length()-2 ); // Remove curly braces
 	if( labelNames_[ labelNames_.length()-1 ] != ',' )
 	  labelNames_ += ',';
-	setctrl("string/labelNames", labelNames_);
+	setctrl("mrs_string/labelNames", labelNames_);
 	
 	
 	// Now find the number of labels
@@ -192,7 +193,7 @@ WekaSource::update()
 	  nLabels++;
 	  curIndex = labelNames_.find(",", curIndex+1);
 	}
-	setctrl("natural/nLabels", nLabels);			
+	setctrl("mrs_natural/nLabels", nLabels);			
       }
       else
 	MRSWARN("Incompatible datatype " + string(token2_) + " found in file '" + filename_ + "'.  " + 
@@ -207,15 +208,15 @@ WekaSource::update()
     if( !mis_->eof() )
       data_ = string(token_);
     else{
-      setctrl("bool/notEmpty", (MarControlValue)false);
+      setctrl("mrs_bool/notEmpty", (MarControlValue)false);
       return;		
     }		
     
-    setctrl("string/inObsNames", inObsNames );    
-    setctrl("string/onObsNames", getctrl("string/inObsNames"));
+    setctrl("mrs_string/inObsNames", inObsNames );    
+    setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
     
-    setctrl("natural/inObservations", inObservations_ );
-    setctrl("natural/onObservations", getctrl("natural/inObservations") );
+    setctrl("mrs_natural/inObservations", inObservations_ );
+    setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations") );
   }
   
   defaultUpdate();
@@ -226,7 +227,7 @@ WekaSource::update()
 void 
 WekaSource::process(realvec& in,realvec &out)
 {
-	if( getctrl("bool/notEmpty").toBool() == false )
+	if( getctrl("mrs_bool/notEmpty").toBool() == false )
 		return;
 
   	checkFlow(in,out);
@@ -235,10 +236,10 @@ WekaSource::process(realvec& in,realvec &out)
 	string::size_type curIndex;
 	string::size_type curIndexF;
 	
-	natural labelIndex;
-	natural nObs;
+	mrs_natural labelIndex;
+	mrs_natural nObs;
 	
-	real parsedVal = 0.;
+	mrs_real parsedVal = 0.;
 
   	char token_  [2000];
 		
@@ -247,7 +248,7 @@ WekaSource::process(realvec& in,realvec &out)
 		curIndex = 0;
 		nObs = 0;
 		
-		for (o=0; o < totalObs_ && getctrl("bool/notEmpty").toBool() ; o++)
+		for (o=0; o < totalObs_ && getctrl("mrs_bool/notEmpty").toBool() ; o++)
 		{		
 			// Get the next attributes from the current sample of data...
 			curIndexF = data_.find(",", curIndex);
@@ -261,13 +262,13 @@ WekaSource::process(realvec& in,realvec &out)
 			
 			// ... and ignore it if it is not selected specifically by the obsToExtract_ ctrl
 			// (but we always extract the last attribute IF it holds the output labeling)
-			if( !extract[o] && ( o<totalObs_-1 || getctrl("string/inObsNames").toString().find("Label") == string::npos ) )
+			if( !extract[o] && ( o<totalObs_-1 || getctrl("mrs_string/inObsNames").toString().find("Label") == string::npos ) )
 				continue;
 			
 			
-			if( o < totalObs_-1 || getctrl("string/inObsNames").toString().find("Label") == string::npos ){
+			if( o < totalObs_-1 || getctrl("mrs_string/inObsNames").toString().find("Label") == string::npos ){
 			  
-			  parsedVal = (real) atof( ob.c_str() );
+			  parsedVal = (mrs_real) atof( ob.c_str() );
 				
 			  out(nObs++,t) = parsedVal;
 			  parsedVal = 0.;
@@ -287,11 +288,11 @@ WekaSource::process(realvec& in,realvec &out)
 							curIndex = labelNames_.find(",", curIndex+1 );
 					}						
 					
-					out(nObs++,t) = (real)labelIndex;
+					out(nObs++,t) = (mrs_real)labelIndex;
 				}
 				// ... If not, then assign label -1
 				else
-					out(nObs++,t) = (real) -1.;
+					out(nObs++,t) = (mrs_real) -1.;
 					
 			}
 			
@@ -305,7 +306,7 @@ WekaSource::process(realvec& in,realvec &out)
 			if( !mis_->eof() )
 				data_ = string(token_);
 			else{
-				setctrl("bool/notEmpty", (MarControlValue)false);
+				setctrl("mrs_bool/notEmpty", (MarControlValue)false);
 				return;
 			}				
 		}					
@@ -317,9 +318,9 @@ WekaSource::process(realvec& in,realvec &out)
 void
 WekaSource::parseObsToExtract()
 {
-	natural obs1 = -1;
-	natural obs2 = -1;
-	natural tmp;
+	mrs_natural obs1 = -1;
+	mrs_natural obs2 = -1;
+	mrs_natural tmp;
 	
 	char c;
 	bool range = false;
@@ -327,12 +328,12 @@ WekaSource::parseObsToExtract()
 	// If the string specifying the desired attributes is empty,
 	// assume all attributes are to be extracted from the Weka file.
 	if( obsToExtract_.empty() ){
-		for( natural i=0 ; i<MAX_OBS ; i++ )
+		for( mrs_natural i=0 ; i<WEKASOURCE_MAX_OBS ; i++ )
 			extract[i] = true;
 		return;	
 	}
 	
-	for( natural i=0 ; i<MAX_OBS ; i++ )
+	for( mrs_natural i=0 ; i<WEKASOURCE_MAX_OBS ; i++ )
 		extract[i] = false;
 	
 	// Parse the obsToExtract_ string, and store info in a
@@ -349,12 +350,12 @@ WekaSource::parseObsToExtract()
 		
 		switch (c){
 		
-			case ',' :	MRSASSERT( obs1 < MAX_OBS );
+			case ',' :	MRSASSERT( obs1 < WEKASOURCE_MAX_OBS );
 					if( !range )
 						extract[obs1] = true;	
 					else{
-						MRSASSERT( obs2 < MAX_OBS && obs1 <= obs2 );
-						for( natural j=obs1 ; j<=obs2 ; j++ )
+						MRSASSERT( obs2 < WEKASOURCE_MAX_OBS && obs1 <= obs2 );
+						for( mrs_natural j=obs1 ; j<=obs2 ; j++ )
 							extract[j] = true; 
 						range = false;
 					}

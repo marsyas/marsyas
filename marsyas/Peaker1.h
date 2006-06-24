@@ -27,15 +27,16 @@ parameters of the peak selection process can be adjusted.
 #ifndef MARSYAS_PEAKER1_H
 #define MARSYAS_PEAKER1_H
 
-#include "MarSystem.h"	
+#include "MarSystem.h"
+
+namespace Marsyas
+{
 
 class Peaker1: public MarSystem
 {
 private:
-  real rms_;
+  mrs_real rms_;
   void addControls();
-  
-  
   
 public:
   Peaker1(std::string name);
@@ -45,6 +46,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 

@@ -24,9 +24,12 @@
 
 #ifndef MARSYAS_TM_TIME_H
 #define MARSYAS_TM_TIME_H
-
  
-#include <string> 
+#include <string>
+#include "common.h"
+
+namespace Marsyas
+{
 
 class TmTime {
 protected:
@@ -48,5 +51,7 @@ public:
 //    friend ostream& operator<<(ostream&, Scheduler&);
 //    friend istream& operator>>(istream&, Scheduler&);
 };
+
+}//namespace Marsyas
 
 #endif

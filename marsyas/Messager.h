@@ -51,18 +51,12 @@
 #if !defined(__MESSAGER_H)
 #define __MESSSAGER_H
 
-
 #define MESSAGE_LENGTH  256
 #define MAX_MESSAGES 25
 #define STK_MIDI        0x0001
 #define STK_PIPE        0x0002
 #define STK_SOCKET      0x0004
 #define MY_FLOAT 
-
-
-
-
-
 
 #define __STK_REALTIME__
 
@@ -75,14 +69,13 @@
 #include "NetworkSocket.h"
 #include "common.h" 
 
-
-
+#define RT_BUFFER_SIZE 512
 
 extern "C" THREAD_RETURN THREAD_TYPE stdinHandler(void * ptr);
 
+namespace Marsyas
+{
 
-
-#define RT_BUFFER_SIZE 512
 
 class Messager // : public Stk
 {
@@ -118,7 +111,6 @@ public:
   long getDelta(void) const;
 
   std::string getMessage();
-  
 
   //! Return the current message type.
   long getType() const;
@@ -143,8 +135,6 @@ public:
   unsigned int messageIndex;
   int nMessages;
 
-
-
   // Check socket sources for new messages.
   bool socketMessage(void);
 
@@ -160,9 +150,8 @@ public:
   int pipefd;
   int fd[16];
   char error[256];
-
-
-
 };
+
+}//namespace Marsyas
 
 #endif // defined(__MESSAGER_H)

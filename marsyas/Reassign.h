@@ -25,18 +25,17 @@
 #ifndef MARSYAS_REASSIGN_H
 #define MARSYAS_REASSIGN_H
 
-
 #include "MarSystem.h"	
 
-
+namespace Marsyas
+{
 
 class Reassign: public MarSystem
 {
 private: 
   void addControls();
   realvec flag_;
-  
-  
+
 public:
   Reassign(std::string name);
   ~Reassign();
@@ -45,6 +44,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 	

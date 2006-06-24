@@ -29,11 +29,8 @@ Marsyas including transformations like FFT, Filter as well as feature
 extractors like Spectral Centroid.
 */
 
-
-
 #ifndef MARSYAS_MARSYSTEM_H
 #define MARSYAS_MARSYSTEM_H
-
 
 #include "realvec.h"
 #include "common.h"
@@ -54,25 +51,26 @@ extractors like Spectral Centroid.
 #include <map>
 #include <string>
 
-
+namespace Marsyas
+{
 
 class MarSystem
 {
 protected:
-  natural inObservations_;
-  natural inSamples_;
-  real israte_;
-  natural onObservations_;
-  natural onSamples_;
-  real osrate_;
+  mrs_natural inObservations_;
+  mrs_natural inSamples_;
+  mrs_real israte_;
+  mrs_natural onObservations_;
+  mrs_natural onSamples_;
+  mrs_real osrate_;
 
 
-  natural tinObservations_;
-  natural tinSamples_;
-  natural tonObservations_;
-  natural tonSamples_;
+  mrs_natural tinObservations_;
+  mrs_natural tinSamples_;
+  mrs_natural tonObservations_;
+  mrs_natural tonSamples_;
   
-  natural count_; // scheduling purposes
+  mrs_natural count_; // scheduling purposes
 
   realvec inTick_;
   realvec outTick_;
@@ -84,21 +82,18 @@ protected:
   
   std::string type_;		// Type of MarSystem
   std::string name_;		// Name of instance 
-  natural c,o,t;        // observation and time index
+  mrs_natural c,o,t;        // observation and time index
 
   bool dbg_;
   bool mute_;
-  
 
   VScheduler scheduler;
-  
-  
+
 protected:
   void addctrl(std::string cname, MarControlValue v);
   void addControl(std::string cname, MarControlValue v);
   virtual void addControls() = 0;	
   void addDefaultControls();
-  
   
 public:
   std::map<std::string,std::vector<std::string> > synonyms_;
@@ -146,12 +141,12 @@ public:
 /****** NEIL END *******/
 
   virtual void setControl(std::string cname, MarControlValue value);
-  virtual void setControl(std::string cname, real value);
-  virtual void setControl(std::string cname, natural value);
+  virtual void setControl(std::string cname, mrs_real value);
+  virtual void setControl(std::string cname, mrs_natural value);
 
   void setctrl(std::string cname, MarControlValue value);
-  void setctrl(std::string cname, real value);
-  void setctrl(std::string cname, natural value);
+  void setctrl(std::string cname, mrs_real value);
+  void setctrl(std::string cname, mrs_natural value);
 
   virtual void updControl(std::string cname, MarControlValue value);
   virtual MarControlValue getctrl(std::string cname);
@@ -163,25 +158,22 @@ public:
   void setctrlState(std::string cname, bool val);
   bool hasctrlState(std::string cname);
 
-
-  natural inObservations() const;
-  natural inSamples() const;
-  
-
+  mrs_natural inObservations() const;
+  mrs_natural inSamples() const;
+ 
   void checkFlow(realvec&in, realvec& out);
   
   virtual void defaultUpdate();
   virtual void addMarSystem(MarSystem *marsystem);
   virtual void linkctrl(std::string visible, std::string inside);
   virtual void linkControl(std::string visible, std::string inside);
-  
 
   // methods that actually do something 
   void tick();
   virtual void process(realvec& in, realvec& out)=0;   
  
   // method to receive controls from a network connection
-  virtual real* const recvControls();
+  virtual mrs_real* const recvControls();
 
   // derived class such as Composite can overide put 
   // essentially overiding operator<< 
@@ -191,5 +183,7 @@ public:
   friend std::ostream& operator<<(std::ostream&, MarSystem&);
   friend std::istream& operator>>(std::istream&, MarSystem&);
 };
+
+}//namespace Marsyas
 
 #endif

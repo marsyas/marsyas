@@ -24,7 +24,14 @@
 */
 
 #include "PowerSpectrum.h"
+
 using namespace std;
+using namespace Marsyas;
+
+#define PSD_POWER 1
+#define PSD_MAG 2
+#define PSD_DB  3
+#define PSD_PD  4 
 
 
 PowerSpectrum::PowerSpectrum():MarSystem()
@@ -48,8 +55,8 @@ void
 PowerSpectrum::addControls()
 {
   addDefaultControls();
-  addctrl("string/spectrumType", "power");
-  setctrlState("string/spectrumType", true);
+  addctrl("mrs_string/spectrumType", "power");
+  setctrlState("mrs_string/spectrumType", true);
 }
 
 MarSystem* 
@@ -62,14 +69,14 @@ PowerSpectrum::clone() const
 void 
 PowerSpectrum::update()
 {
-  setctrl("natural/onSamples", (natural)1);
-  // setctrl("natural/onObservations", (getctrl("natural/inObservations").toNatural() / 2) + 1);
-  setctrl("natural/onObservations", (getctrl("natural/inObservations").toNatural() / 2));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", (mrs_natural)1);
+  // setctrl("mrs_natural/onObservations", (getctrl("mrs_natural/inObservations").toNatural() / 2) + 1);
+  setctrl("mrs_natural/onObservations", (getctrl("mrs_natural/inObservations").toNatural() / 2));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-  setctrl("string/onObsNames", getctrl("string/inObsNames"));  
+  setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));  
 
-  stype_ = getctrl("string/spectrumType").toString();
+  stype_ = getctrl("mrs_string/spectrumType").toString();
   if (stype_ == "power")
     ntype_ = PSD_POWER;
   else if (stype_ == "magnitude") 
@@ -85,9 +92,9 @@ PowerSpectrum::update()
   N2_ = inObservations_ / 2;
   ostringstream oss;
   
-  for (natural n=0; n < N2_; n++)
+  for (mrs_natural n=0; n < N2_; n++)
     oss << "mbin_" << n << ",";
-  setctrl("string/onObsNames", oss.str());
+  setctrl("mrs_string/onObsNames", oss.str());
 
 }
 
@@ -126,13 +133,13 @@ PowerSpectrum::process(realvec& in, realvec& out)
 	  out(t,0) = sqrt(re_ * re_ + im_ * im_);
 	  break;
 	case PSD_DB:
-	  dB_ = (real)(20 * log10(re_ * re_ + im_ * im_ + 0.000000001));
+	  dB_ = (mrs_real)(20 * log10(re_ * re_ + im_ * im_ + 0.000000001));
 	  if (dB_ < -100) dB_ = -100;
 	  out(t,0) = dB_;	  
 	  break;
 	case PSD_PD:
 	  pwr_ = re_ * re_ + im_ * im_;	  
-	  out(t,0) = (real)(2.0 * pwr_) / N2_;	  
+	  out(t,0) = (mrs_real)(2.0 * pwr_) / N2_;	  
 	  break;
 	}
     }

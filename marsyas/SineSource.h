@@ -24,26 +24,23 @@
 
 */
 
-
-
 #ifndef MARSYAS_SINESOURCE_H
 #define MARSYAS_SINESOURCE_H	
 
 #include "MarSystem.h"
 
+#include <cstdio>
+#include <cmath>
 
-#include <stdio.h>
-#include <math.h>
-
-
-
+namespace Marsyas
+{
 
 class SineSource: public MarSystem
 {
 private: 
   realvec wavetable_;
-  real wavetableSize_;
-  real index_;
+  mrs_real wavetableSize_;
+  mrs_real index_;
   
   void addControls();
   
@@ -57,9 +54,6 @@ public:
   
 };
 
-
-
-
-
+}//namespace Marsyas
 
 #endif /* !MARSYAS_SINESOURCE_H */ 

@@ -26,22 +26,23 @@
 #ifndef MARSYAS_DELAY_H
 #define MARSYAS_DELAY_H
 
-
 #include "MarSystem.h"	
 
+namespace Marsyas
+{
 
 class Delay: public MarSystem
 {
 private: 
   void addControls();
 	realvec buffer_;
-	real delay_;
-	real gain;
-	real feedback;
-	real delay;
+	mrs_real delay_;
+	mrs_real gain;
+	mrs_real feedback;
+	mrs_real delay;
 	int i_;
-	natural cursor_;
-	natural bufferSize_;
+	mrs_natural cursor_;
+	mrs_natural bufferSize_;
 	
 public:
   Delay(std::string name);
@@ -51,5 +52,7 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif

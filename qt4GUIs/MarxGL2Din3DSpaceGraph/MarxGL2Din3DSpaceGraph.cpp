@@ -23,6 +23,8 @@
 
 #include "MarxGL2Din3DSpaceGraph.h"
 
+using namespace std;
+using namespace Marsyas;
 
 //! The constructor
 /*!

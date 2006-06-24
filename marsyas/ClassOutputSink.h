@@ -27,8 +27,8 @@
 
 #include "MarSystem.h"	
 
-
-
+namespace Marsyas
+{
 
 class ClassOutputSink: public MarSystem
 {
@@ -38,12 +38,10 @@ private:
   std::ofstream* mos_;
 
   realvec confidences_;
-  natural count_;
+  mrs_natural count_;
   std::vector<std::string> labelNames_;
   std::string filename_;
   void putHeader();
-
-  
  
 public:
   ClassOutputSink(std::string name);
@@ -53,6 +51,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 

@@ -32,6 +32,8 @@ adjusted to reflect Marsyas controls.
 
 #include "MarSystemWrapper.h"
 
+using namespace std;
+using namespace Marsyas;
 
 MarSystemWrapper::MarSystemWrapper(MarSystem* msys)
 {
@@ -124,7 +126,7 @@ void MarSystemWrapper::run()
       
       if (empty_ == false) 
 	{	 
-	  if (msys_->getctrl("bool/notEmpty").toBool() == false) 
+	  if (msys_->getctrl("mrs_bool/notEmpty").toBool() == false) 
 	    {
 	      empty_ = true;
 	      pause();

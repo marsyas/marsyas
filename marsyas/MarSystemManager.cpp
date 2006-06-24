@@ -25,14 +25,13 @@ corresponding to executing the System objects one after the other
 in sequence. 
 */
 
-
 #include "MarSystemManager.h"
+
 using namespace std;
+using namespace Marsyas;
 
 MarSystemManager::MarSystemManager()
 {
-
-  
   registerPrototype("Gain", new Gain("gp"));
   registerPrototype("SoundFileSource", new SoundFileSource("sfp"));
   registerPrototype("HalfWaveRectifier", new HalfWaveRectifier("hwrp"));
@@ -41,8 +40,6 @@ MarSystemManager::MarSystemManager()
   registerPrototype("Fanin", new Fanin("finp"));
   registerPrototype("Fanout", new Fanout("fonp"));
   registerPrototype("TimeStretch", new TimeStretch("tscp"));
-
-
 
   registerPrototype("Peaker", new Peaker("pkrp"));
   registerPrototype("Peaker1", new Peaker1("pkr1pr"));
@@ -59,9 +56,6 @@ MarSystemManager::MarSystemManager()
   registerPrototype("ShiftInput", new ShiftInput("sip"));
   registerPrototype("ShiftOutput", new ShiftOutput("sop"));
   registerPrototype("PvConvolve", new PvConvolve("pvconvpr"));
-  
-
-
 
   registerPrototype("AuFileSource", new AuFileSource("aufp"));
   registerPrototype("WavFileSource", new WavFileSource("wavfp"));
@@ -69,7 +63,6 @@ MarSystemManager::MarSystemManager()
   registerPrototype("AudioSink", new AudioSink("audiosinkp"));
   registerPrototype("AuFileSink", new AuFileSink("ausinkp"));
   registerPrototype("WavFileSink", new WavFileSink("wavsinkp"));
-  
 
   registerPrototype("Hamming", new Hamming("hmp"));
   registerPrototype("PowerSpectrum", new PowerSpectrum("pspkp"));
@@ -83,8 +76,6 @@ MarSystemManager::MarSystemManager()
   registerPrototype("PlotSink", new PlotSink("plotsp"));
   registerPrototype("GaussianClassifier", new GaussianClassifier("gaussp"));
 
-
-
   registerPrototype("Confidence", new Confidence("conf"));
   registerPrototype("Rms", new Rms("rms"));
   registerPrototype("WekaSink", new WekaSink("wsink"));
@@ -92,8 +83,6 @@ MarSystemManager::MarSystemManager()
   registerPrototype("SCF", new SCF("scf"));
   registerPrototype("SFM", new SFM("sfm"));
   registerPrototype("Accumulator", new Accumulator("acc"));
-
-
   
   registerPrototype("WaveletPyramid", new WaveletPyramid("wvpyramid"));
   registerPrototype("WaveletBands",   new WaveletBands("wvbands"));
@@ -102,7 +91,6 @@ MarSystemManager::MarSystemManager()
   registerPrototype("Norm", new Norm("norm"));
   registerPrototype("Sum", new Sum("sum"));
   registerPrototype("DownSampler", new DownSampler("ds"));
-
 
   registerPrototype("PeakPeriods2BPM", new PeakPeriods2BPM("p2bpm"));
   registerPrototype("Histogram", new Histogram("histop"));
@@ -116,11 +104,8 @@ MarSystemManager::MarSystemManager()
 
   registerPrototype("SMO", new SMO("smopr"));
 
-
   registerPrototype("Plucked", new Plucked("pluckedpr"));
   registerPrototype("Delay", new Delay("delaypr"));
-
-
 
   registerPrototype("Kurtosis", new Kurtosis("kurtosisp"));
   registerPrototype("Skewness", new Skewness("Skewnessp"));
@@ -138,18 +123,13 @@ MarSystemManager::MarSystemManager()
   registerPrototype("NormMaxMin", new NormMaxMin("normmaxminpr"));
   registerPrototype("Normalize", new Normalize("normalizepr"));
 
-
-
-
   registerPrototype("LPC", new LPC("lpcpr"));
   registerPrototype("LPCwarped", new LPCwarped("lpcwarppr"));
   registerPrototype("LPCResyn", new LPCResyn("lpcresynpr"));
-  
+  registerPrototype("LSP", new LSP("lsppr"));
 
 
   registerPrototype("SOM", new SOM("sompr"));
-  
-
 
   // example of creating a prototype for a composite MarSystem 
   MarSystem* pvocpr = new Series("pvocpr");
@@ -161,42 +141,38 @@ MarSystemManager::MarSystemManager()
   pvocpr->addMarSystem(new ShiftOutput("so"));
   pvocpr->addMarSystem(new Gain("gt"));
   
-  pvocpr->linkctrl("natural/Decimation", 
-		   "ShiftInput/si/natural/Decimation");
-  pvocpr->linkctrl("natural/Decimation", 
-		   "PvFold/fo/natural/Decimation");
-  pvocpr->linkctrl("natural/Decimation", 
-		   "PvConvert/conv/natural/Decimation");
-  pvocpr->linkctrl("natural/Decimation", 
-		   "ShiftOutput/so/natural/Decimation");
+  pvocpr->linkctrl("mrs_natural/Decimation", 
+		   "ShiftInput/si/mrs_natural/Decimation");
+  pvocpr->linkctrl("mrs_natural/Decimation", 
+		   "PvFold/fo/mrs_natural/Decimation");
+  pvocpr->linkctrl("mrs_natural/Decimation", 
+		   "PvConvert/conv/mrs_natural/Decimation");
+  pvocpr->linkctrl("mrs_natural/Decimation", 
+		   "ShiftOutput/so/mrs_natural/Decimation");
 
-  pvocpr->linkctrl("natural/Sinusoids", 
-		   "PvConvert/conv/natural/Sinusoids");
-  pvocpr->linkctrl("natural/FFTSize", 
-		   "PvFold/fo/natural/FFTSize");
+  pvocpr->linkctrl("mrs_natural/Sinusoids", 
+		   "PvConvert/conv/mrs_natural/Sinusoids");
+  pvocpr->linkctrl("mrs_natural/FFTSize", 
+		   "PvFold/fo/mrs_natural/FFTSize");
 
-  pvocpr->linkctrl("natural/WindowSize", 
-		   "PvFold/fo/natural/WindowSize");
-  pvocpr->linkctrl("natural/WindowSize", 
-		   "ShiftOutput/so/natural/WindowSize");
+  pvocpr->linkctrl("mrs_natural/WindowSize", 
+		   "PvFold/fo/mrs_natural/WindowSize");
+  pvocpr->linkctrl("mrs_natural/WindowSize", 
+		   "ShiftOutput/so/mrs_natural/WindowSize");
 
-  pvocpr->linkctrl("natural/Interpolation", 
-		   "PvOscBank/ob/natural/Interpolation");
-  pvocpr->linkctrl("natural/Interpolation", 
-		   "ShiftOutput/so/natural/Interpolation");
+  pvocpr->linkctrl("mrs_natural/Interpolation", 
+		   "PvOscBank/ob/mrs_natural/Interpolation");
+  pvocpr->linkctrl("mrs_natural/Interpolation", 
+		   "ShiftOutput/so/mrs_natural/Interpolation");
 
-  pvocpr->linkctrl("real/PitchShift", 
-		   "PvOscBank/ob/real/PitchShift");
+  pvocpr->linkctrl("mrs_real/PitchShift", 
+		   "PvOscBank/ob/mrs_real/PitchShift");
 
-
-  pvocpr->linkctrl("real/gain", 
-		   "Gain/gt/real/gain");
-
+  pvocpr->linkctrl("mrs_real/gain", 
+		   "Gain/gt/mrs_real/gain");
 
   registerPrototype("PhaseVocoder", pvocpr);
-  
-  
-
+ 
 #ifndef WIN32
   registerPrototype("NetworkTCPSink", new NetworkTCPSink("tcpsink"));
   registerPrototype("NetworkTCPSource", new NetworkTCPSource("tcpsource"));
@@ -204,17 +180,13 @@ MarSystemManager::MarSystemManager()
   registerPrototype("NetworkUDPSource", new NetworkUDPSource("udpsource"));
 #endif 
 
-
 #ifdef CYGWIN
   registerPrototype("NetworkTCPSink", new NetworkTCPSink("tcpsink"));
   registerPrototype("NetworkTCPSource", new NetworkTCPSource("tcpsource"));
   registerPrototype("NetworkUDPSink", new NetworkUDPSink("udpsink"));
   registerPrototype("NetworkUDPSource", new NetworkUDPSource("udpsource"));
 #endif 
-
-
 }
-
 
 MarSystemManager::~MarSystemManager()
 {
@@ -227,14 +199,11 @@ MarSystemManager::~MarSystemManager()
   registry.clear();
 }
 
-
-
 void 
 MarSystemManager::registerPrototype(string name, MarSystem *marsystem)
 {
   registry[name] = marsystem;
 }
-
 
 MarSystem* 
 MarSystemManager::getPrototype(string type) 
@@ -248,7 +217,6 @@ MarSystemManager::getPrototype(string type)
       return 0;
     }
 }
-
 
 MarSystem* 
 MarSystemManager::create(string type, string name) 
@@ -267,15 +235,11 @@ MarSystemManager::create(string type, string name)
     }
 }
 
-
-
-
-
 MarSystem* 
 MarSystemManager::getMarSystem(istream& is)
 {
   string skipstr;
-  natural i;
+  mrs_natural i;
   is >> skipstr;
   string mcomposite;
   bool   isComposite;
@@ -330,11 +294,9 @@ MarSystemManager::getMarSystem(istream& is)
       is >> skipstr;
 
       
-      natural nLinks;
+      mrs_natural nLinks;
       is >> nLinks;
-      
-      
-      
+       
       for (i=0; i < nLinks; i++)
 	{
 	  is >> skipstr;
@@ -363,7 +325,7 @@ MarSystemManager::getMarSystem(istream& is)
 	  is >> skipstr;
 	  is >> skipstr;
 	  
-	  natural nSynonyms;
+	  mrs_natural nSynonyms;
 	  is >> nSynonyms;
 	  
 
@@ -397,7 +359,7 @@ MarSystemManager::getMarSystem(istream& is)
       if (isComposite == true)
 	{
 	  is >> skipstr >> skipstr >> skipstr;
-	  natural nComponents;
+	  mrs_natural nComponents;
 	  is >> nComponents;
 	  for (i=0; i < nComponents; i++)
 	    {

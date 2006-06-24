@@ -24,15 +24,12 @@
 This class reads an mp3 file using the mad mp3 decoder library.  Some
 of this code was inspired from Bertrand Petit's madlld example.  The
 code to resize the buffers was borrowed from Marsyas AudioSource.
-	  
-
 */
-
 
 #ifndef MARSYAS_MP3SOURCE_H
 #define MARSYAS_MP3SOURCE_H
 
-#include <stdio.h>
+#include <cstdio>
 
 #ifndef WIN32
 #include <sys/stat.h>
@@ -55,25 +52,21 @@ code to resize the buffers was borrowed from Marsyas AudioSource.
 #include "config.h" 
 #endif 
 
-
-
-
 #ifdef MAD_MP3
 extern "C" {
 #include "mad.h"
 }
 #endif 
 
-#define INPUT_BUFFER_SIZE (5*8192)
-
-
+namespace Marsyas
+{
 
 class MP3FileSource: public AbsSoundFileSource
 {
 private:
  
   void addControls();
-  natural getLinear16(realvec& slice);
+  mrs_natural getLinear16(realvec& slice);
 
 #ifdef MAD_MP3
 
@@ -82,7 +75,7 @@ private:
   void madStructFinish();
 #endif
 
-  void fillStream( natural offset = 0 );
+  void fillStream( mrs_natural offset = 0 );
   void closeFile(); 
   
   // MAD stuff
@@ -92,10 +85,10 @@ private:
   struct mad_synth synth;
 #endif
 
-  natural fileSize_; 
-  natural frameSamples_;
-  natural totalFrames_;
-  natural frameCount_;
+  mrs_natural fileSize_; 
+  mrs_natural frameSamples_;
+  mrs_natural totalFrames_;
+  mrs_natural frameCount_;
   unsigned char* ptr_;
   int fd;
   FILE* fp;
@@ -103,22 +96,22 @@ private:
   
   // variables for buffer balancing
   int bufferSize_;
-  natural currentPos_;
+  mrs_natural currentPos_;
   realvec reservoir_;
-  natural reservoirSize_;
-  natural preservoirSize_;
-  natural ri_;
-  natural offset;
+  mrs_natural reservoirSize_;
+  mrs_natural preservoirSize_;
+  mrs_natural ri_;
+  mrs_natural offset;
 
   bool advance_;
-  natural cindex_;
+  mrs_natural cindex_;
   
-  real duration_;
-  natural csize_;
-  natural size_;
-  natural samplesOut_;
+  mrs_real duration_;
+  mrs_natural csize_;
+  mrs_natural size_;
+  mrs_natural samplesOut_;
   std::string filename_;
-  real repetitions_;
+  mrs_real repetitions_;
   
 public:
 
@@ -131,5 +124,7 @@ public:
   void getHeader(std::string filename);
   
 };
+
+}//namespace Marsyas
 
 #endif	

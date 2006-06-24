@@ -3,50 +3,52 @@
 
 #include <iostream> 
 #include <string>
+
 using namespace std;
+using namespace Marsyas;
 
 int 
 main(int argc, const char **argv)
 {
   string name = argv[1];
-  natural channel(atoi(argv[2]));
-  natural window(atoi(argv[3]));
-  real gain(atoi(argv[4]));
+  mrs_natural channel(atoi(argv[2]));
+  mrs_natural window(atoi(argv[3]));
+  mrs_real gain(atoi(argv[4]));
   
   MarSystemManager mng;
   MarSystem* src = mng.create("SoundFileSource", "src");
   MarSystem* erb = mng.create("ERB","ERBfilterBank");
   MarSystem* dest = mng.create("AudioSink", "dest");
   
-  src->updctrl("natural/inSamples", window);
-  src->updctrl("string/filename", name);
+  src->updctrl("mrs_natural/inSamples", window);
+  src->updctrl("mrs_string/filename", name);
   
-  erb->updctrl("natural/inObservations", src->getctrl("natural/onObservations"));
-  erb->updctrl("natural/inSamples", src->getctrl("natural/onSamples"));
-  erb->updctrl("real/israte",src->getctrl("real/osrate"));
-  erb->updctrl("natural/numChannels",24);
-  erb->updctrl("real/lowFreq",100.0f);
+  erb->updctrl("mrs_natural/inObservations", src->getctrl("mrs_natural/onObservations"));
+  erb->updctrl("mrs_natural/inSamples", src->getctrl("mrs_natural/onSamples"));
+  erb->updctrl("mrs_real/israte",src->getctrl("mrs_real/osrate"));
+  erb->updctrl("mrs_natural/numChannels",24);
+  erb->updctrl("mrs_real/lowFreq",100.0f);
   
-  dest->updctrl("natural/inObservations", src->getctrl("natural/onObservations"));
-  dest->updctrl("natural/inSamples", src->getctrl("natural/onSamples"));
-  dest->updctrl("real/israte", src->getctrl("real/osrate"));
-  dest->updctrl("natural/nChannels", 1);
+  dest->updctrl("mrs_natural/inObservations", src->getctrl("mrs_natural/onObservations"));
+  dest->updctrl("mrs_natural/inSamples", src->getctrl("mrs_natural/onSamples"));
+  dest->updctrl("mrs_real/israte", src->getctrl("mrs_real/osrate"));
+  dest->updctrl("mrs_natural/nChannels", 1);
   
   realvec src_in, dest_in;
   realvec src_out, erb_out, dest_out;
   
-  src_in.create(src->getctrl("natural/inObservations").toNatural(), src->getctrl("natural/inSamples").toNatural());
-  src_out.create(src->getctrl("natural/onObservations").toNatural(), src->getctrl("natural/onSamples").toNatural());
+  src_in.create(src->getctrl("mrs_natural/inObservations").toNatural(), src->getctrl("mrs_natural/inSamples").toNatural());
+  src_out.create(src->getctrl("mrs_natural/onObservations").toNatural(), src->getctrl("mrs_natural/onSamples").toNatural());
   
-  erb_out.create(erb->getctrl("natural/onObservations").toNatural(), erb->getctrl("natural/onSamples").toNatural());
+  erb_out.create(erb->getctrl("mrs_natural/onObservations").toNatural(), erb->getctrl("mrs_natural/onSamples").toNatural());
   
-  dest_in.create(dest->getctrl("natural/inObservations").toNatural(), dest->getctrl("natural/inSamples").toNatural());
-  dest_out.create(dest->getctrl("natural/onObservations").toNatural(), dest->getctrl("natural/onSamples").toNatural());
+  dest_in.create(dest->getctrl("mrs_natural/inObservations").toNatural(), dest->getctrl("mrs_natural/inSamples").toNatural());
+  dest_out.create(dest->getctrl("mrs_natural/onObservations").toNatural(), dest->getctrl("mrs_natural/onSamples").toNatural());
   
-  while (src->getctrl("bool/notEmpty").toBool()){
+  while (src->getctrl("mrs_bool/notEmpty").toBool()){
     src->process(src_in, src_out);
     erb->process(src_out, erb_out);
-    for (natural i = 0; i < erb->getctrl("natural/onSamples").toNatural(); i++){
+    for (mrs_natural i = 0; i < erb->getctrl("mrs_natural/onSamples").toNatural(); i++){
       dest_in(i) = gain*erb_out(channel,i);
     }
     dest->process(dest_in, dest_out);

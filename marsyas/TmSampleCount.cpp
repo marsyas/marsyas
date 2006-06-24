@@ -24,8 +24,9 @@
 #include "TmSampleCount.h"
 #include "MarSystem.h"
 #include "Scheduler.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 TmSampleCount::TmSampleCount() { name_="Virtual"; init(); }
 TmSampleCount::TmSampleCount(string name) { name_=name; init(); }
@@ -49,14 +50,14 @@ void TmSampleCount::setScheduler(Scheduler* s) { scheduler=s; }
 void TmSampleCount::setReadCtrl(MarSystem* ms, string cname) {
     read_src_=ms; read_cname_=cname;
 }
-natural TmSampleCount::readTimeSrc() {
+mrs_natural TmSampleCount::readTimeSrc() {
     return (read_src_->getctrl(read_cname_)).toNatural();
 }
 void TmSampleCount::trigger() {
     scheduler->dispatch();
 }
-natural TmSampleCount::intervalsize(string interval) {
+mrs_natural TmSampleCount::intervalsize(string interval) {
     return (read_src_==NULL) ? 0 :
-        time2samples(interval,read_src_->getctrl("real/israte").toReal());
+        time2samples(interval,read_src_->getctrl("mrs_real/israte").toReal());
 }
 

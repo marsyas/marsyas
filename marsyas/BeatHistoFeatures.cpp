@@ -27,10 +27,11 @@ keep changing.
 
 */
 
-
 #include "BeatHistoFeatures.h"
 #include <cfloat> 
+
 using namespace std;
+using namespace Marsyas;
 
 BeatHistoFeatures::BeatHistoFeatures(string name)
 {
@@ -88,48 +89,48 @@ BeatHistoFeatures::update()
 {
   MRSDIAG("BeatHistoFeatures.cpp - BeatHistoFeatures:update");
   
-  setctrl("natural/onSamples", (natural)1);
-  setctrl("natural/onObservations", (natural)8);
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", (mrs_natural)1);
+  setctrl("mrs_natural/onObservations", (mrs_natural)8);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  flag_.create(getctrl("natural/inSamples").toNatural());
-  mxr_->updctrl("natural/inSamples", getctrl("natural/inSamples"));
-  mxr_->updctrl("natural/inObservations", getctrl("natural/inObservations"));
-  mxr_->updctrl("real/israte", getctrl("real/israte"));
-  mxr_->updctrl("natural/nMaximums", 3);
+  flag_.create(getctrl("mrs_natural/inSamples").toNatural());
+  mxr_->updctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
+  mxr_->updctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
+  mxr_->updctrl("mrs_real/israte", getctrl("mrs_real/israte"));
+  mxr_->updctrl("mrs_natural/nMaximums", 3);
   
-  mxres_.create(mxr_->getctrl("natural/onObservations").toNatural(),
-		mxr_->getctrl("natural/onSamples").toNatural());
+  mxres_.create(mxr_->getctrl("mrs_natural/onObservations").toNatural(),
+		mxr_->getctrl("mrs_natural/onSamples").toNatural());
   
   
-  // setctrl("string/onObsNames", "BH_Sum, BH_MaxAmp1divSum, BH_MaxAmp2divSum, BH_MaxAmp3divSum, BH_MaxPos1, BH_MAXPos2, BH_MAXPos3, BH_MaAmp2divMaxAmp2");
+  // setctrl("mrs_string/onObsNames", "BH_Sum, BH_MaxAmp1divSum, BH_MaxAmp2divSum, BH_MaxAmp3divSum, BH_MaxPos1, BH_MAXPos2, BH_MAXPos3, BH_MaAmp2divMaxAmp2");
   
-  setctrl("string/onObsNames", "BH_LowPeakAmp, BH_LowPeakBPM, BH_HighPeakAmp, BH_HighPeakBPM, BH_HighLowRatio, BHSUM1, BHSUM2, BHSUM3");
+  setctrl("mrs_string/onObsNames", "BH_LowPeakAmp, BH_LowPeakBPM, BH_HighPeakAmp, BH_HighPeakBPM, BH_HighLowRatio, BHSUM1, BHSUM2, BHSUM3");
   defaultUpdate();
 }
 
 void 
-BeatHistoFeatures::harm_prob(real& pmax, real factor, 
-			     real& s1, natural& t1, 
-			     real& s2, natural& t2, 
-			     natural tmx,
-			     natural size, 
+BeatHistoFeatures::harm_prob(mrs_real& pmax, mrs_real factor, 
+			     mrs_real& s1, mrs_natural& t1, 
+			     mrs_real& s2, mrs_natural& t2, 
+			     mrs_natural tmx,
+			     mrs_natural size, 
 			     realvec& in)
 {
   
-  natural index = (natural) floor(factor * tmx + 0.5);
+  mrs_natural index = (mrs_natural) floor(factor * tmx + 0.5);
   
   
   
-  real prob;
-  real c;
+  mrs_real prob;
+  mrs_real c;
   
   if (index > 100.0)
     c = 1.0;
   else 
     c = 0.75;
   
-  real a;
+  mrs_real a;
   
   if ((tmx > 50)&&(tmx < 100))
     a = 1.5;
@@ -275,16 +276,16 @@ BeatHistoFeatures::process(realvec& in, realvec& out)
   
   checkFlow(in,out);
 
-  real mx = DBL_MIN;
-  natural tmx  = 0;
+  mrs_real mx = DBL_MIN;
+  mrs_natural tmx  = 0;
   
 
   
-  real pmax = DBL_MIN;
-  natural t1;
-  natural t2;
-  real s1;
-  real s2;
+  mrs_real pmax = DBL_MIN;
+  mrs_natural t1;
+  mrs_natural t2;
+  mrs_real s1;
+  mrs_real s2;
 
   t1 = 0;
   t2 = 0;
@@ -326,9 +327,9 @@ BeatHistoFeatures::process(realvec& in, realvec& out)
   
   flag_.setval(0.0);
   
-  real sum1 = 0.0;
-  real sum2 = 0.0;
-  real sum3 = 0.0;
+  mrs_real sum1 = 0.0;
+  mrs_real sum2 = 0.0;
+  mrs_real sum3 = 0.0;
   
   for (t = 40; t < 90; t++)
     sum1 += in(0,t);
@@ -374,7 +375,7 @@ BeatHistoFeatures::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 
-  real sum = 0;
+  mrs_real sum = 0;
 
   mxr_->process(in,mxres_);
   

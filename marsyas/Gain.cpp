@@ -25,12 +25,10 @@ with gain and put them in the output vector. This object can be used
 as a prototype template for building more complicated MarSystems. 
 */
 
-
-
 #include "Gain.h"
+
 using namespace std;
-
-
+using namespace Marsyas;
 
 Gain::Gain(string name)
 {
@@ -55,7 +53,7 @@ void
 Gain::addControls()
 {
   addDefaultControls();
-  addctrl("real/gain", 1.0);
+  addctrl("mrs_real/gain", 1.0);
 }
 
 
@@ -64,13 +62,11 @@ Gain::update()
 {
   MRSDIAG("Gain.cpp - Gain:update");
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
-
-
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-  setctrl("string/onObsNames", getctrl("string/inObsNames"));
+  setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
   defaultUpdate();  
 }
 
@@ -80,18 +76,13 @@ Gain::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 
-  real gain = getctrl("real/gain").toReal();
+  mrs_real gain = getctrl("mrs_real/gain").toReal();
   
   for (o=0; o < inObservations_; o++)
     for (t = 0; t < inSamples_; t++)
       {
-	out(o,t) =  gain * in(o,t);
+		out(o,t) =  gain * in(o,t);
       }
-
-
-  
-
-  
 }
 
 

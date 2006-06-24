@@ -40,6 +40,7 @@ which it signals to MainWindow to update the GUI.
 #include "MarSystemManager.h" 
 #include "MarSystemWrapper.h"
 
+
 class Mapper: public QObject
 {
     Q_OBJECT
@@ -57,19 +58,19 @@ public slots:
   
 signals: 
     void posChanged(int val);
-    void durationChanged(real val);
-    void timeChanged(real val);
+    void durationChanged(Marsyas::mrs_real val);
+    void timeChanged(Marsyas::mrs_real val);
   
   
 private:
-  real duration_;
+  Marsyas::mrs_real duration_;
   
   MarSystemWrapper* mwr_;		// the wrapper that turns 
                                         // any MarSystem into 
                                         // Qt-like object with 
                                         // signals and slots 
   
-  MarSystem* pnet_;			// the playback network 
+  Marsyas::MarSystem* pnet_;			// the playback network 
 
   
 };

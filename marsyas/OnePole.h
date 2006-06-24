@@ -30,15 +30,17 @@
 
 #include "MarSystem.h"	
 
+namespace Marsyas
+{
 
 class OnePole: public MarSystem
 {
 private: 
-  real alpha_;
-  real gain_;
+  mrs_real alpha_;
+  mrs_real gain_;
   
-
   void addControls();
+
 public:
   OnePole(std::string name);
   ~OnePole();
@@ -47,6 +49,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 	

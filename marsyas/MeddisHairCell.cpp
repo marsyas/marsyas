@@ -16,7 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /** 
     \class MeddisHairCell
     \brief MeddisHairCell for auditory models 
@@ -25,8 +24,9 @@
 */
 
 #include "MeddisHairCell.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 MeddisHairCell::MeddisHairCell(string name)
 {
@@ -54,7 +54,7 @@ void MeddisHairCell::addControls()
 {
   addDefaultControls();
   
-  addctrl("bool/subtractSpont", false);
+  addctrl("mrs_bool/subtractSpont", false);
   
 }
 
@@ -63,9 +63,9 @@ MeddisHairCell::update()
 {
   MRSDIAG("MeddisHairCell.cpp - MeddisHairCell:update");
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations").toNatural());
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations").toNatural());
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
   //parameters
   M = 1;
@@ -79,7 +79,7 @@ MeddisHairCell::update()
   h = 50000;
 
   //internal constants
-  dt = 1/getctrl("real/israte").toReal();
+  dt = 1/getctrl("mrs_real/israte").toReal();
   gdt = g*dt;
   ydt = y*dt;
   ldt = l*dt;
@@ -90,12 +90,12 @@ MeddisHairCell::update()
   kt = g*A/(A + B);
   spont = M*y*kt/(l*kt+y*(l + r));
   
-  if (numChannels != getctrl("natural/inSamples").toNatural()){
-    numChannels = getctrl("natural/inSamples").toNatural();
+  if (numChannels != getctrl("mrs_natural/inSamples").toNatural()){
+    numChannels = getctrl("mrs_natural/inSamples").toNatural();
     c.create(numChannels);
     q.create(numChannels);
     w.create(numChannels);
-    for (natural i = 0; i < numChannels; i++){
+    for (mrs_natural i = 0; i < numChannels; i++){
       c(i) = spont;
       q(i) = c(i)*(l + r)/kt;
       w(i) = c(i)*r/x;
@@ -111,18 +111,18 @@ MeddisHairCell::process(realvec& in, realvec& out)
   checkFlow(in, out);
   if (mute_) return;
   
-  real limitedSt;
-  real replenish;
-  real eject;
-  real loss;
-  real reuptake;
-  real reprocess;
-  bool subtractSpont = getctrl("bool/subtractSpont").toBool();
-  for (natural j = 0; j < getctrl("natural/inSamples").toNatural(); j++){
-    for (natural i = 0; i < getctrl("natural/inObservations").toNatural(); i++){
-      limitedSt = max(in(i,j) + A, (real)0.0);
+  mrs_real limitedSt;
+  mrs_real replenish;
+  mrs_real eject;
+  mrs_real loss;
+  mrs_real reuptake;
+  mrs_real reprocess;
+  bool subtractSpont = getctrl("mrs_bool/subtractSpont").toBool();
+  for (mrs_natural j = 0; j < getctrl("mrs_natural/inSamples").toNatural(); j++){
+    for (mrs_natural i = 0; i < getctrl("mrs_natural/inObservations").toNatural(); i++){
+      limitedSt = max(in(i,j) + A, (mrs_real)0.0);
       kt = gdt*limitedSt/(limitedSt + B);
-      replenish = max(ydt*(M - q(i)), (real)0.0);
+      replenish = max(ydt*(M - q(i)), (mrs_real)0.0);
       eject = kt*q(i);
       loss = ldt*c(i);
       reuptake = rdt*c(i);
@@ -130,7 +130,7 @@ MeddisHairCell::process(realvec& in, realvec& out)
       q(i) += replenish - eject + reprocess;
       c(i) += eject - loss - reuptake;
       w(i) += reuptake - reprocess;
-      out(i,j) = (subtractSpont) ? max((real)0.0, h*c(i) - spont) : h*c(i);
+      out(i,j) = (subtractSpont) ? max((mrs_real)0.0, h*c(i) - spont) : h*c(i);
     }
   }
 }

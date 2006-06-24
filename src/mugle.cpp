@@ -1,14 +1,12 @@
-#include <stdio.h>
+#include <cstdio>
 #include "Collection.h"
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"
 
-#include <vector> 
+#include <vector>
+
 using namespace std;
-
-
-
-
+using namespace Marsyas;
 
 
 /* global variables for various commandline options */ 
@@ -21,8 +19,8 @@ float start = 0.0f;
 float length = -1.0f;
 float gain = 1.0f;
 float repetitions = 1;
-natural offset;
-natural duration;
+mrs_natural offset;
+mrs_natural duration;
 
 
 #define EMPTYSTRING "MARSYAS_EMPTY"
@@ -111,7 +109,7 @@ void mugle(string queryName, string collectionName)
 
   
   MarSystem* acc = mng.create("Accumulator", "acc");
-  acc->updctrl("natural/nTimes", 1200);
+  acc->updctrl("mrs_natural/nTimes", 1200);
   acc->addMarSystem(extractNet);
 
 
@@ -127,79 +125,79 @@ void mugle(string queryName, string collectionName)
   total->addMarSystem(mng.create("ClassOutputSink", "csink"));
   
 
-  total->updctrl("KNNClassifier/knn/natural/k",3);
-  total->updctrl("KNNClassifier/knn/natural/nPredictions", 3);
-  total->updctrl("KNNClassifier/knn/string/mode","train");  
+  total->updctrl("KNNClassifier/knn/mrs_natural/k",3);
+  total->updctrl("KNNClassifier/knn/mrs_natural/nPredictions", 3);
+  total->updctrl("KNNClassifier/knn/mrs_string/mode","train");  
   
 
   
   
 
   // link top-level controls 
-  total->linkctrl("string/filename",
-		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/string/filename");  
+  total->linkctrl("mrs_string/filename",
+		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/filename");  
 
-  total->linkctrl("natural/pos",
-		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/natural/pos");  
-
-
-  total->linkctrl("string/allfilenames",
-		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/string/allfilenames");  
-
-  total->linkctrl("natural/numFiles",
-		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/natural/numFiles");  
+  total->linkctrl("mrs_natural/pos",
+		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/pos");  
 
 
-  total->linkctrl("bool/notEmpty",
-		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/bool/notEmpty");  
-  total->linkctrl("bool/advance",
-		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/bool/advance");  
+  total->linkctrl("mrs_string/allfilenames",
+		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/allfilenames");  
 
-  total->linkctrl("bool/memReset",
-		  "Accumulator/acc/Series/extractNet/Memory/mem/bool/reset");  
-
-  total->linkctrl("natural/label",
-		  "Annotator/ann/natural/label");
+  total->linkctrl("mrs_natural/numFiles",
+		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/numFiles");  
 
 
+  total->linkctrl("mrs_bool/notEmpty",
+		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/notEmpty");  
+  total->linkctrl("mrs_bool/advance",
+		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/advance");  
 
-  total->updctrl("Accumulator/acc/Series/extractNet/SoundFileSource/src/natural/inSamples", 512);
+  total->linkctrl("mrs_bool/memReset",
+		  "Accumulator/acc/Series/extractNet/Memory/mem/mrs_bool/reset");  
+
+  total->linkctrl("mrs_natural/label",
+		  "Annotator/ann/mrs_natural/label");
+
+
+
+  total->updctrl("Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/inSamples", 512);
   
   
   
   
   cout << "TARGET FEATURE VECTORS" << endl;
-  total->updctrl("string/filename", collectionName);
+  total->updctrl("mrs_string/filename", collectionName);
 
-  total->updctrl("ClassOutputSink/csink/string/labelNames", 
-		 total->getctrl("string/allfilenames"));
+  total->updctrl("ClassOutputSink/csink/mrs_string/labelNames", 
+		 total->getctrl("mrs_string/allfilenames"));
 
-  total->updctrl("ClassOutputSink/csink/natural/nLabels", 
-		 total->getctrl("natural/numFiles"));
-
-
+  total->updctrl("ClassOutputSink/csink/mrs_natural/nLabels", 
+		 total->getctrl("mrs_natural/numFiles"));
 
 
-  total->updctrl("KNNClassifier/knn/natural/nLabels", 
-		 total->getctrl("natural/numFiles"));
+
+
+  total->updctrl("KNNClassifier/knn/mrs_natural/nLabels", 
+		 total->getctrl("mrs_natural/numFiles"));
   
 
   
-  natural l=0;
+  mrs_natural l=0;
 
-  while (total->getctrl("bool/notEmpty").toBool())
+  while (total->getctrl("mrs_bool/notEmpty").toBool())
     {
-      total->updctrl("natural/label", l);
+      total->updctrl("mrs_natural/label", l);
       total->tick();
-      total->updctrl("bool/memReset", true);
-      total->updctrl("bool/advance", true);
+      total->updctrl("mrs_bool/memReset", true);
+      total->updctrl("mrs_bool/advance", true);
       l++;
       cerr << "Processed " << l << " files " << endl;
     }
-  total->updctrl("KNNClassifier/knn/bool/done",true);  
-  total->updctrl("KNNClassifier/knn/string/mode", "predict");
-  total->updctrl("ClassOutputSink/csink/string/filename", "similar.mf");
-  total->updctrl("ClassOutputSink/csink/bool/silent", false);
+  total->updctrl("KNNClassifier/knn/mrs_bool/done",true);  
+  total->updctrl("KNNClassifier/knn/mrs_string/mode", "predict");
+  total->updctrl("ClassOutputSink/csink/mrs_string/filename", "similar.mf");
+  total->updctrl("ClassOutputSink/csink/mrs_bool/silent", false);
   
   cout << (*total) << endl;
 
@@ -207,7 +205,7 @@ void mugle(string queryName, string collectionName)
 
 
   cout << "QUERY FEATURE VECTORS AND MATCHING " << endl;
-  total->updctrl("string/filename", queryName);
+  total->updctrl("mrs_string/filename", queryName);
   total->tick();
 
 

@@ -27,11 +27,11 @@
 #ifndef MARSYAS_AUDIOSINK_H
 #define MARSYAS_AUDIOSINK_H
 
-
 #include "RtAudio.h"
 #include "MarSystem.h"
 
-
+namespace Marsyas
+{
 
 class AudioSink:public MarSystem
 {
@@ -47,19 +47,19 @@ private:
   int srate_;
   
   
-  natural nChannels_;
-  real *data_;  
+  mrs_natural nChannels_;
+  mrs_real *data_;  
   realvec reservoir_;
-  natural reservoirSize_;
-  natural preservoirSize_;
+  mrs_natural reservoirSize_;
+  mrs_natural preservoirSize_;
   
-  natural rstart_;
-  natural ri_;
+  mrs_natural rstart_;
+  mrs_natural ri_;
   
-  natural start_;
-  natural end_;
-  natural diff_;
-  natural rsize_;
+  mrs_natural start_;
+  mrs_natural end_;
+  mrs_natural diff_;
+  mrs_natural rsize_;
   
   
 
@@ -68,7 +68,7 @@ private:
   realvec pdin_;
   
   
-  real sampleRate_;
+  mrs_real sampleRate_;
   
   
   void addControls();
@@ -86,6 +86,7 @@ public:
   void process(realvec& in, realvec& out);
 };
 
+}//namespace Marsyas
 
 #endif
 

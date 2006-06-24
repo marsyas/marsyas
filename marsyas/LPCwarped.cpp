@@ -33,10 +33,14 @@ May 2006
 */
 
 #include "LPCwarped.h"
+#include "MATLABengine.h"
 
 using namespace std;
+using namespace Marsyas;
 
+#ifdef _MATLAB_ENGINE_
 //#define _MATLAB_LPCwarped_
+#endif
 
 LPCwarped::LPCwarped(string name)
 {
@@ -61,10 +65,10 @@ LPCwarped::addControls()
 {
 	addDefaultControls();
 
-	addctrl("natural/order", (natural)10); 
-	setctrlState("natural/order", true); 
-	addctrl("real/lambda", (real)0.0);	
-	addctrl("real/gamma", (real)1.0);
+	addctrl("mrs_natural/order", (mrs_natural)10); 
+	setctrlState("mrs_natural/order", true); 
+	addctrl("mrs_real/lambda", (mrs_real)0.0);	
+	addctrl("mrs_real/gamma", (mrs_real)1.0);
 }
 
 void
@@ -72,18 +76,18 @@ LPCwarped::update()
 { 
 	MRSDIAG("LPCwarped.cpp - LPCwarped:update");
 
-	order_ = getctrl("natural/order").toNatural();
+	order_ = getctrl("mrs_natural/order").toNatural();
 
-	setctrl("natural/onObservations", (natural)(order_+2)); // <order_> coefs + pitch value + power value
-	setctrl("natural/onSamples", (natural)1);
-	setctrl("real/osrate", getctrl("real/israte"));
+	setctrl("mrs_natural/onObservations", (mrs_natural)(order_+2)); // <order_> coefs + pitch value + power value
+	setctrl("mrs_natural/onSamples", (mrs_natural)1);
+	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
 	//LPCwarped features names
 	ostringstream oss;
-	for (natural i = 0; i < order_; i++)
+	for (mrs_natural i = 0; i < order_; i++)
 		oss << "LPCwarped_" << i+1 << ",";
 	oss << "LPCwarped_Pitch," << "LPCwarped_Gain,";
-	setctrl("string/onObsNames", oss.str());
+	setctrl("mrs_string/onObsNames", oss.str());
 
 	temp_.create(order_ ,order_);
 	Zs_.create(order_);
@@ -99,27 +103,27 @@ LPCwarped::update()
 
 //perhaps this method could become an independent MarSystem in the future...
 void
-LPCwarped::autocorrelationWarped(realvec& in, realvec& r, real lambda) 
+LPCwarped::autocorrelationWarped(realvec& in, realvec& r, mrs_real lambda) 
 {
 	//*Based on the code from: http://www.musicdsp.org/showone.php?id=137
 
 	//find the order-P autocorrelation array, R, for the sequence x 
 	//of length L and using a warping factor of lambda
 
-	real* x = in.getData();
-	natural L = in.getSize();
-	real* R = r.getData();
-	natural P = in.getSize()/2;//order_;
+	mrs_real* x = in.getData();
+	mrs_natural L = in.getSize();
+	mrs_real* R = r.getData();
+	mrs_natural P = in.getSize()/2;//order_;
 
-	real* dl = new real[L];
-	real* Rt = new real[L];
-	real r1,r2,r1t;
+	mrs_real* dl = new mrs_real[L];
+	mrs_real* Rt = new mrs_real[L];
+	mrs_real r1,r2,r1t;
 	R[0]=0;
 	Rt[0]=0;
 	r1=0;
 	r2=0;
 	r1t=0;
-	for(natural k=0; k<L;k++)
+	for(mrs_natural k=0; k<L;k++)
 	{
 		Rt[0]+=x[k]*x[k];
 
@@ -127,12 +131,12 @@ LPCwarped::autocorrelationWarped(realvec& in, realvec& r, real lambda)
 		r1 = x[k];
 		r2 = dl[k];
 	}
-	for(natural i=1; i<=P; i++)
+	for(mrs_natural i=1; i<=P; i++)
 	{
 		Rt[i]=0;
 		r1=0;
 		r2=0;
-		for(natural k=0; k<L;k++)
+		for(mrs_natural k=0; k<L;k++)
 		{
 			Rt[i]+=dl[k]*x[k];
 
@@ -152,9 +156,9 @@ LPCwarped::autocorrelationWarped(realvec& in, realvec& r, real lambda)
 	//----------------------------------------------------
 	// estimate pitch 
 	//----------------------------------------------------
-	real temp = r(0);
+	mrs_real temp = r(0);
 	//set peak searching start point to 2% of total window size [?]
-	natural j = in.getSize() * 0.02; 
+	mrs_natural j = (mrs_natural)(in.getSize() * 0.02); 
 	//detect first local minimum...
 	while (r(j) < temp && j < in.getSize()/2)
 	{
@@ -163,7 +167,7 @@ LPCwarped::autocorrelationWarped(realvec& in, realvec& r, real lambda)
 	}
 	//... and then from there, detect higher peak => period estimate!
 	temp = 0.0;
-	for (natural i=j; i < in.getSize() * 0.5; i++)
+	for (mrs_natural i=j; i < in.getSize() * 0.5; i++)
 	{
 		if (r(i) > temp) 
 		{
@@ -176,9 +180,9 @@ LPCwarped::autocorrelationWarped(realvec& in, realvec& r, real lambda)
 	//this seems like some sort of Narrowed Autocorrelation (NAC)... [?][!]
 	//however, it does not seem to fit the NAC definition...
 	//so, what is this for??
-// 	real norm = 1.0 / (real)in.getSize();
-// 	natural k = in.getSize()/2;
-// 	for (natural i=0; i < in.getSize()/2; i++) 
+// 	mrs_real norm = 1.0 / (mrs_real)in.getSize();
+// 	mrs_natural k = in.getSize()/2;
+// 	for (mrs_natural i=0; i < in.getSize()/2; i++) 
 // 	r(i) *= (k-i) * norm;
 
 	//if autocorr peak not very prominent => not a good period estimate
@@ -191,7 +195,7 @@ LPCwarped::autocorrelationWarped(realvec& in, realvec& r, real lambda)
 	//measured in time samples... maybe this should be converted
 	//to a more convenient representation (e.g. pitch in Hz).
 	//Such a conversion would have to depend on the warp factor lambda... [!]
-	pitch_  = (real)j;
+	pitch_  = (mrs_real)j;
 
 //MATLAB engine stuff - for testing and validation purposes only!
 #ifdef _MATLAB_LPCwarped_
@@ -206,22 +210,22 @@ LPCwarped::LevinsonDurbin(realvec& r, realvec& a, realvec& k)
 {
 	//*Based on the code from: http://www.musicdsp.org/showone.php?id=137
 	
-	natural P = order_;
-	real* R = r.getData();
-	real* A = a.getData();
-	real* K = k.getData();
+	mrs_natural P = order_;
+	mrs_real* R = r.getData();
+	mrs_real* A = a.getData();
+	mrs_real* K = k.getData();
 
-	real Am1[62];
+	mrs_real Am1[62];
 
 	if(R[0]==0.0) {
-		for(natural i=1; i<=P; i++)
+		for(mrs_natural i=1; i<=P; i++)
 		{
 			K[i]=0.0;
 			A[i]=0.0;
 		}}
 	else {
-		real km,Em1,Em;
-		natural k,s,m;
+		mrs_real km,Em1,Em;
+		mrs_natural k,s,m;
 
 		for (k=0;k<=P;k++){
 			A[k]=0;
@@ -234,7 +238,7 @@ LPCwarped::LevinsonDurbin(realvec& r, realvec& a, realvec& k)
 
 		for (m=1;m<=P;m++)                //m=2:N+1
 		{
-			real err=0.0f;                //err = 0;
+			mrs_real err=0.0f;                //err = 0;
 
 			for (k=1;k<=m-1;k++)          //for k=2:m-1
 				err += Am1[k]*R[m-k];     // err = err + am1(k)*R(m-k+1);
@@ -259,9 +263,9 @@ LPCwarped::LevinsonDurbin(realvec& r, realvec& a, realvec& k)
 void 
 LPCwarped::predictionError(realvec& data, realvec& coeffs)
 {
-	natural i,j;
-	real power = 0.0;
-	real error, tmp;
+	mrs_natural i,j;
+	mrs_real power = 0.0;
+	mrs_real error, tmp;
 
 	//load delay line with input data...
 	for (i=0; i< order_; i++) 
@@ -269,7 +273,7 @@ LPCwarped::predictionError(realvec& data, realvec& coeffs)
 		Zs_(i) = data(order_-i-1);
 	}
 	//apply LPC filter and estimate RMS of the error (=~ LPC Gain)
-	natural count = 0;
+	mrs_natural count = 0;
 	for (i=order_; i<data.getSize() ; i++)
 	{
 		tmp = 0.0;
@@ -280,7 +284,7 @@ LPCwarped::predictionError(realvec& data, realvec& coeffs)
 		power += error * error;
 		count ++;
 	}
-	power_ = sqrt(power/(real)count);//=~LPC Gain
+	power_ = sqrt(power/(mrs_real)count);//=~LPC Gain
 }
 
 void 
@@ -288,13 +292,13 @@ LPCwarped::process(realvec& in, realvec& out)
 {
 	checkFlow(in,out); 
 
-	natural i;
+	mrs_natural i;
 
 //MATLAB engine stuff - for testing and validation purposes only!
 #ifdef _MATLAB_LPCwarped_
 	MATLABengine::getMatlabEng()->putVariable(in, "LPC_in");
 	MATLABengine::getMatlabEng()->putVariable(order_, "LPC_order");
-	MATLABengine::getMatlabEng()->putVariable(getctrl("real/gamma").toReal(), "LPC_gamma");
+	MATLABengine::getMatlabEng()->putVariable(getctrl("mrs_real/gamma").toReal(), "LPC_gamma");
 #endif
 
 	//-------------------------
@@ -303,7 +307,7 @@ LPCwarped::process(realvec& in, realvec& out)
 	//calculate warped autocorrelation coefs
 	realvec r(in.getSize());
 	//this also estimates the pitch_ - does it work if lambda != 0 [?]
-	autocorrelationWarped(in, r, getctrl("real/lambda").toReal()); 
+	autocorrelationWarped(in, r, getctrl("mrs_real/lambda").toReal()); 
 
 	//--------------------------
 	// Levison-Durbin recursion
@@ -328,9 +332,9 @@ LPCwarped::process(realvec& in, realvec& out)
 	// LPC Pole-shifting
 	//--------------------------
 	//verify if Z-Plane pole-shifting should be performed...
-	real gamma = getctrl("real/gamma").toReal();
+	mrs_real gamma = getctrl("mrs_real/gamma").toReal();
 	if(gamma != 1.0)
-		for(natural j = 0; j < order_; j++)
+		for(mrs_natural j = 0; j < order_; j++)
 			out(j) = (out(j) * pow(gamma, (double)j+1));
 
 	//---------------------------

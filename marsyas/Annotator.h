@@ -25,18 +25,21 @@
 #ifndef MARSYAS_ANNOTATOR_H
 #define MARSYAS_ANNOTATOR_H
 
-#include "MarSystem.h"	
+#include "MarSystem.h"
 
 #include <vector>
+
+namespace Marsyas
+{
 
 class Annotator: public MarSystem
 {
 private: 
   void addControls();
-   std::vector<natural> labels_;
-   std::string labels_str_;
-   natural labels_index_;
-   
+  std::vector<mrs_natural> labels_;
+  std::string labels_str_;
+  mrs_natural labels_index_;
+
 public:
   Annotator(std::string name);
   ~Annotator();
@@ -45,6 +48,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 #endif
 	

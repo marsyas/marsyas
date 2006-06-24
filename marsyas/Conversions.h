@@ -26,19 +26,21 @@
 
 #include "common.h"
 
-#include <math.h> 
+#include <cmath> 
 #include <string> 
 
+namespace Marsyas
+{
 
-real pitch2hertz(real pitch);
-natural hertz2samples(real hz, real srate);
-real samples2hertz(natural samples, real srate);
-real hertz2pitch(real hz);
+mrs_real pitch2hertz(mrs_real pitch);
+mrs_natural hertz2samples(mrs_real hz, mrs_real srate);
+mrs_real samples2hertz(mrs_natural samples, mrs_real srate);
+mrs_real hertz2pitch(mrs_real hz);
 
-natural time2samples(std::string time, real srate);
-natural time2usecs(std::string time);
+mrs_natural time2samples(std::string time, mrs_real srate);
+mrs_natural time2usecs(std::string time);
 
-
+}//namespace Marsyas
 
 #endif
 

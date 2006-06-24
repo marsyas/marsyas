@@ -25,10 +25,10 @@ fold and rotate windowed input into output array (FFT) (length N)
 according to current input time (t)
 */
 
-
-
 #include "PvFold.h"
+
 using namespace std;
+using namespace Marsyas;
 
 PvFold::PvFold(string name):MarSystem()
 {
@@ -53,11 +53,11 @@ void
 PvFold::addControls()
 {
   addDefaultControls();
-  addctrl("natural/WindowSize", MRS_DEFAULT_SLICE_NSAMPLES);
-  addctrl("natural/FFTSize", MRS_DEFAULT_SLICE_NSAMPLES);
-  setctrlState("natural/FFTSize", true);
-  addctrl("natural/Decimation", MRS_DEFAULT_SLICE_NSAMPLES/2);
-  setctrlState("natural/Decimation", true);
+  addctrl("mrs_natural/WindowSize", MRS_DEFAULT_SLICE_NSAMPLES);
+  addctrl("mrs_natural/FFTSize", MRS_DEFAULT_SLICE_NSAMPLES);
+  setctrlState("mrs_natural/FFTSize", true);
+  addctrl("mrs_natural/Decimation", MRS_DEFAULT_SLICE_NSAMPLES/2);
+  setctrlState("mrs_natural/Decimation", true);
   n_ = 0;
 }
 
@@ -66,14 +66,14 @@ PvFold::addControls()
 void
 PvFold::update()
 {
-  setctrl("natural/onSamples", getctrl("natural/FFTSize"));
-  setctrl("natural/onObservations", (natural)1);
-  setctrl("real/osrate", getctrl("real/israte"));  
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/FFTSize"));
+  setctrl("mrs_natural/onObservations", (mrs_natural)1);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
 
   
-  N_ = getctrl("natural/onSamples").toNatural();
-  Nw_ = getctrl("natural/inSamples").toNatural();
-  D_ = getctrl("natural/Decimation").toNatural();
+  N_ = getctrl("mrs_natural/onSamples").toNatural();
+  Nw_ = getctrl("mrs_natural/inSamples").toNatural();
+  D_ = getctrl("mrs_natural/Decimation").toNatural();
 
 
 
@@ -84,7 +84,7 @@ PvFold::update()
       awin_.stretch(Nw_);
       for (t=0; t < Nw_; t++)
 	{
-	  awin_(t) = (real)(0.54 - 0.46 * cos(TWOPI * t/(Nw_-1)));
+	  awin_(t) = (mrs_real)(0.54 - 0.46 * cos(TWOPI * t/(Nw_-1)));
 	}
       /* when Nw_ > N also apply interpolating (sinc) windows 
        * to ensure that window are 0 at increments of N (the 
@@ -93,8 +93,8 @@ PvFold::update()
        */ 
       if (Nw_ > N_) 
 	{
-	  real x;
-	  x = (real)(-(Nw_ -1) / 2.0);
+	  mrs_real x;
+	  x = (mrs_real)(-(Nw_ -1) / 2.0);
 	  for (t=0; t < Nw_; t++, x += 1.0)
 	    {
 	      if (x != 0.0) 
@@ -102,14 +102,14 @@ PvFold::update()
 	    }
 	}
       /* normalize window for unit gain */ 
-      real sum = 0.0;
+      mrs_real sum = 0.0;
       
       for (t =0; t < Nw_; t++)
 	{
 	  sum += awin_(t);
 	}
       
-      real afac = (real)(2.0/ sum);
+      mrs_real afac = (mrs_real)(2.0/ sum);
       awin_ *= afac;
     }
 

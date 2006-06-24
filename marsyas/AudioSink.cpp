@@ -23,12 +23,10 @@
    Real-time Audio Sink for Linux based on the OSS sound API. 
 */
 
-
-
 #include "AudioSink.h"
+
 using namespace std;
-
-
+using namespace Marsyas;
 
 AudioSink::AudioSink(string name)
 {
@@ -47,20 +45,13 @@ AudioSink::AudioSink(string name)
   isInitialized_ = 0;
   data_ = NULL;
   audio_ = NULL;
-
-  
 }
 
 AudioSink::~AudioSink()
 {
   delete audio_;
   data_ = 0; // RtAudio deletes the buffer itself.
-
-
 }
-
-
-
 
 MarSystem* 
 AudioSink::clone() const
@@ -68,37 +59,30 @@ AudioSink::clone() const
   return new AudioSink(*this);
 }
 
-
-
 void 
 AudioSink::addControls()
 {
   addDefaultControls();
-  addctrl("natural/nChannels",1);
-  setctrlState("natural/nChannels", true);
-  addctrl("bool/init", false);
-  setctrlState("bool/init", true);
+  addctrl("mrs_natural/nChannels",1);
+  setctrlState("mrs_natural/nChannels", true);
+  addctrl("mrs_bool/init", false);
+  setctrlState("mrs_bool/init", true);
 
 #ifdef __OS_MACOSX__
-  addctrl("natural/bufferSize", 1024);
+  addctrl("mrs_natural/bufferSize", 1024);
 #else
-  addctrl("natural/bufferSize", 512);
+  addctrl("mrs_natural/bufferSize", 512);
 #endif
 
-  setctrlState("natural/bufferSize", true);
+  setctrlState("mrs_natural/bufferSize", true);
 }
-
-
-
-
 
 void 
 AudioSink::init()
 {
-  nChannels_ = getctrl("natural/nChannels").toNatural();
+  nChannels_ = getctrl("mrs_natural/nChannels").toNatural();
   
-  RtAudioFormat format = ( sizeof(real) == 8 ) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
-
+  RtAudioFormat format = ( sizeof(mrs_real) == 8 ) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
   
   // hardwire channels to stereo playback even for mono
   int rtChannels = 2;
@@ -109,14 +93,13 @@ AudioSink::init()
     audio_ = new RtAudio(0, rtChannels, 0, 0, format,
 			 rtSrate_, &bufferSize_, 4);
 
-    data_ = (real *) audio_->getStreamBuffer();
+    data_ = (mrs_real *) audio_->getStreamBuffer();
   }
   catch (RtError &error) 
     {
       error.printMessage();
     }
   stopped_ = true;
-
 }
 
 
@@ -125,10 +108,10 @@ AudioSink::update()
 {
   MRSDIAG("AudioSink::update");
   
-  rtSrate_ = (natural)getctrl("real/israte").toReal();
+  rtSrate_ = (mrs_natural)getctrl("mrs_real/israte").toReal();
   srate_ = rtSrate_;
   
-  bufferSize_ = (natural)getctrl("natural/bufferSize").toNatural();
+  bufferSize_ = (mrs_natural)getctrl("mrs_natural/bufferSize").toNatural();
 
 #ifdef __OS_MACOSX__
   if (rtSrate_ == 22050) 
@@ -137,25 +120,22 @@ AudioSink::update()
       bufferSize_ = 2 * bufferSize_;
     }
 #endif	
+
+  setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));  
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-
-  setctrl("string/onObsNames", getctrl("string/inObsNames"));  
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
-  
-  nChannels_ = getctrl("natural/nChannels").toNatural();
+  nChannels_ = getctrl("mrs_natural/nChannels").toNatural();
 
 
-  if (getctrl("real/israte").toReal() != sampleRate_)
+  if (getctrl("mrs_real/israte").toReal() != sampleRate_)
     {
-      sampleRate_ = getctrl("real/israte").toReal();
+      sampleRate_ = getctrl("mrs_real/israte").toReal();
       isInitialized_ = false;
     }
-  
-
-
-  mute_ = getctrl("bool/mute").toBool();
+ 
+  mute_ = getctrl("mrs_bool/mute").toBool();
   
   defaultUpdate();
    
@@ -163,18 +143,13 @@ AudioSink::update()
     reservoirSize_ = 2 * bufferSize_;
   else 
     reservoirSize_ = 2 * inSamples_;
-
   
   if (reservoirSize_ > preservoirSize_)
     {
       reservoir_.stretch(reservoirSize_);
     }
   preservoirSize_ = reservoirSize_;
-  
-
 }
-
-
 
 void 
 AudioSink::start()
@@ -185,7 +160,6 @@ AudioSink::start()
   }
 }
 
-
 void 
 AudioSink::stop()
 {
@@ -194,10 +168,6 @@ AudioSink::stop()
     stopped_ = true;
   }
 }
-
-
-
-
 
 void 
 AudioSink::process(realvec& in, realvec& out)
@@ -209,8 +179,6 @@ AudioSink::process(realvec& in, realvec& out)
     }
   
   checkFlow(in,out);
-  
-
   
   // copy to output and into reservoir
 
@@ -224,20 +192,13 @@ AudioSink::process(realvec& in, realvec& out)
 	out(o,t) = in(o,t);
     }
   
-  
-  
   if (mute_) return;
   
-
   if ( stopped_ )
     {
       start();
     }
-  
-  
-  
-  
-  
+ 
   rsize_ = bufferSize_;
 #ifdef __OS_MACOSX__ 
   if (srate_ == 22050)
@@ -246,15 +207,10 @@ AudioSink::process(realvec& in, realvec& out)
     rsize_ = bufferSize_;
 #endif 
   
-  
   if (end_ >= start_) 
     diff_ = end_ - start_;
   else 
     diff_ = reservoirSize_ - (start_ - end_);
-  
-  
-    
-
 
   while (diff_ >= rsize_)  
     {
@@ -280,34 +236,22 @@ AudioSink::process(realvec& in, realvec& out)
 	  
 #endif 
 	}
-
-      
-
-      try {
+ 
+  try {
 	audio_->tickStream();
       }
       catch (RtError &error) 
-	{
-	  error.printMessage();
-	}
-      
+		{
+		  error.printMessage();
+		}
+    
       start_ = (start_ + rsize_) % reservoirSize_;
       
-      
-      
       if (end_ >= start_) 
-	diff_ = end_ - start_;
+		diff_ = end_ - start_;
       else 
-	diff_ = reservoirSize_ - (start_ - end_);
+		diff_ = reservoirSize_ - (start_ - end_);
     }
-  
-
-
-    
-
-
-
-
 }
 
  

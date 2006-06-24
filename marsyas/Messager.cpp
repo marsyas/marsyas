@@ -49,9 +49,9 @@
 /***************************************************/
 
 #include "Messager.h"
+
 using namespace std;
-
-
+using namespace Marsyas;
 
 int socket_port = 2001;
 

@@ -1,8 +1,6 @@
 #ifndef TOPPANELNEW_H
 #define TOPPANELNEW_H 
 
-#include "MarxGL2Din3DSpaceGraph.h"
-#include "MarSystemManager.h" 
 #include <QPushButton> 
 #include <QSpinBox>
 #include <QSlider>
@@ -10,12 +8,15 @@
 #include <QVBoxLayout>
 #include <QLabel>
 
+#include "MarxGL2Din3DSpaceGraph.h"
+#include "MarSystemManager.h" 
+
 class TopPanelNew : public QWidget
 {
    Q_OBJECT
 
 public:
-  TopPanelNew(string au = "", QWidget *parent = 0);
+  TopPanelNew(std::string au = "", QWidget *parent = 0);
 
 public slots: 
   void tick();
@@ -30,11 +31,11 @@ public slots:
 
 private: 
   MarxGL2Din3DSpaceGraph* graph;
-  MarSystem* pnet;
+  Marsyas::MarSystem* pnet;
   
   int nTicks;
 
-  string audio_file;
+  std::string audio_file;
   
 };
 

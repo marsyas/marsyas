@@ -23,12 +23,10 @@
     Calculate histogram
 */
 
-
-
-
 #include "Histogram.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 
 Histogram::Histogram(string name)
@@ -54,14 +52,14 @@ void
 Histogram::addControls()
 {
   addDefaultControls();
-  addctrl("real/gain", 1.0);
-  addctrl("bool/reset", false);
-  addctrl("natural/startBin", 0);
-  setctrlState("natural/startBin", true);
-  addctrl("natural/endBin", 100);
-  setctrlState("natural/endBin", true);
-  addctrl("bool/reset", true);
-  setctrlState("bool/reset", true);
+  addctrl("mrs_real/gain", 1.0);
+  addctrl("mrs_bool/reset", false);
+  addctrl("mrs_natural/startBin", 0);
+  setctrlState("mrs_natural/startBin", true);
+  addctrl("mrs_natural/endBin", 100);
+  setctrlState("mrs_natural/endBin", true);
+  addctrl("mrs_bool/reset", true);
+  setctrlState("mrs_bool/reset", true);
 
 }
 
@@ -73,13 +71,13 @@ Histogram::update()
 
   
 
-  startBin_ = getctrl("natural/startBin").toNatural();
-  endBin_ = getctrl("natural/endBin").toNatural();
-  reset_ = getctrl("bool/reset").toBool();  
+  startBin_ = getctrl("mrs_natural/startBin").toNatural();
+  endBin_ = getctrl("mrs_natural/endBin").toNatural();
+  reset_ = getctrl("mrs_bool/reset").toBool();  
   
-  setctrl("natural/onSamples", endBin_ - startBin_);
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", endBin_ - startBin_);
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
 
   defaultUpdate();
@@ -96,17 +94,17 @@ Histogram::process(realvec& in, realvec& out)
     {
       out.setval(0.0);
       reset_ = false;
-      setctrl("bool/reset", (MarControlValue)false);
+      setctrl("mrs_bool/reset", (MarControlValue)false);
     }
 
-  natural bin;
-  real amp;
+  mrs_natural bin;
+  mrs_real amp;
   
   
   for (o=0; o < inObservations_; o++)
     for (t = 0; t < inSamples_/2; t++)
       {
-	bin = (natural)in(o,2*t+1);
+	bin = (mrs_natural)in(o,2*t+1);
 	amp = in(o,2*t);
 
 	
@@ -117,15 +115,15 @@ Histogram::process(realvec& in, realvec& out)
 	
 
 	/* 
-	   real factor;	    
-	   natural index;
+	   mrs_real factor;	    
+	   mrs_natural index;
 	   
-	   index = (natural) 2 * bin;
+	   index = (mrs_natural) 2 * bin;
 	   factor = 0.25;
 	   if (index < endBin_ - startBin_)
 	   out(0,index) += factor * amp;
 	   
-	   index = (natural) round(0.5 * bin);
+	   index = (mrs_natural) round(0.5 * bin);
 	   factor = 0.25;
 	   
 	   if (index < endBin_ - startBin_)
@@ -138,7 +136,7 @@ Histogram::process(realvec& in, realvec& out)
 	   out(0,index) += factor * amp;
 	   
 	   
-	   index = (natural) round(0.33333 * bin);
+	   index = (mrs_natural) round(0.33333 * bin);
 	   factor = 0.15;
 	   
 	   if (index < endBin_ - startBin_)

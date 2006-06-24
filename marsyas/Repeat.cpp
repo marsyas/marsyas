@@ -22,19 +22,20 @@
    \brief 
 */
 #include "Repeat.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 Repeat::Repeat() { set(false,"",0); }
 Repeat::Repeat(string time_interval) { set(true,time_interval,0); }
-Repeat::Repeat(string time_interval, natural rep_count) {
+Repeat::Repeat(string time_interval, mrs_natural rep_count) {
     set(false,time_interval,rep_count);
 }
-void Repeat::set(bool inf, string time_interval, natural rep_count) {
+void Repeat::set(bool inf, string time_interval, mrs_natural rep_count) {
     infinite=inf;
     interval=time_interval;
     count=rep_count;
 }
-natural Repeat::interval2samples(real srate) {
+mrs_natural Repeat::interval2samples(mrs_real srate) {
     return time2samples(interval,srate);
 }

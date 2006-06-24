@@ -16,7 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /** 
     \class OnePole
     \brief Simple one-pole filter
@@ -26,10 +25,10 @@
     gain to (1.0-a). 
 */
 
-
 #include "OnePole.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 
 OnePole::OnePole(string name)
@@ -55,7 +54,7 @@ void
 OnePole::addControls()
 {
   addDefaultControls();
-  addctrl("real/alpha", 0.9);
+  addctrl("mrs_real/alpha", 0.9);
 }
 
 
@@ -64,12 +63,12 @@ OnePole::update()
 {
   MRSDIAG("OnePole.cpp - OnePole:update");
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-  alpha_ = getctrl("real/alpha").toReal();
-  gain_ = (real)(1.0 - alpha_);
+  alpha_ = getctrl("mrs_real/alpha").toReal();
+  gain_ = (mrs_real)(1.0 - alpha_);
   defaultUpdate();
   
 }

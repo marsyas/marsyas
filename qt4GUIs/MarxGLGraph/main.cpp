@@ -1,10 +1,13 @@
 #include <QApplication>
-#include <math.h>
+#include <QPushButton>
+
+#include <cmath>
 #include <iostream>
 
 #include "MarxGLColorGraph.h"
-#include <QPushButton>
 #include "TopPanelNew.h"
+
+using namespace std;
 
 int main(int argc, char *argv[])
 {

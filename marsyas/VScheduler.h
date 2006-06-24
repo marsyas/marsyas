@@ -35,8 +35,10 @@
 #include "TmTime.h"
 #include "Scheduler.h"
 
-
 #include <string> 
+
+namespace Marsyas
+{
 
 class VScheduler {
 protected:
@@ -78,5 +80,7 @@ public:
 //    friend ostream& operator<<(ostream&, Scheduler&);
 //    friend istream& operator>>(istream&, Scheduler&);
 };
+
+}//namespace Marsyas
 
 #endif

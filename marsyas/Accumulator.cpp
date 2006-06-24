@@ -28,13 +28,10 @@
     the rate of process requests
 */
 
-
-
-
 #include "Accumulator.h"
+
 using namespace std;
-
-
+using namespace Marsyas;
 
 Accumulator::Accumulator(string name):Composite()
 {
@@ -43,7 +40,6 @@ Accumulator::Accumulator(string name):Composite()
   dbg_ = false;
   addControls();
 }
-
 
 Accumulator::~Accumulator()
 {
@@ -56,7 +52,7 @@ Accumulator::Accumulator(const Accumulator& a)
   name_ = a.name_;
   ncontrols_ = a.ncontrols_; 		
   dbg_ = a.dbg_;
-  for (natural i=0; i< a.marsystemsSize_; i++)
+  for (mrs_natural i=0; i< a.marsystemsSize_; i++)
     {
       addMarSystem((*a.marsystems_[i]).clone());
     }
@@ -73,43 +69,38 @@ void
 Accumulator::addControls()
 {
   addDefaultControls();
-  addctrl("natural/nTimes", 5);
+  addctrl("mrs_natural/nTimes", 5);
   nTimes_ = 5;
-  setctrlState("natural/nTimes", true);
+  setctrlState("mrs_natural/nTimes", true);
 }
-
-
-
-
-
 
 void
 Accumulator::update()
 {
   MRSDIAG("Accumulator.cpp - Accumulator:update");
   
-  nTimes_ = getctrl("natural/nTimes").toNatural();
+  nTimes_ = getctrl("mrs_natural/nTimes").toNatural();
 
   string onObsNames;
   if (marsystemsSize_ > 0)
     {
       // set input characteristics 
-      setctrl("natural/inSamples", 
-	      marsystems_[0]->getctrl("natural/inSamples").toNatural());
-      setctrl("natural/inObservations", 
-	      marsystems_[0]->getctrl("natural/inObservations"));
-      setctrl("real/israte", 
-	      marsystems_[0]->getctrl("real/israte"));
+      setctrl("mrs_natural/inSamples", 
+	      marsystems_[0]->getctrl("mrs_natural/inSamples").toNatural());
+      setctrl("mrs_natural/inObservations", 
+	      marsystems_[0]->getctrl("mrs_natural/inObservations"));
+      setctrl("mrs_real/israte", 
+	      marsystems_[0]->getctrl("mrs_real/israte"));
       
       // set output characteristics 
-      setctrl("natural/onSamples", 
-	      nTimes_ * marsystems_[0]->getctrl("natural/onSamples").toNatural());
-      setctrl("natural/onObservations", 
-	      marsystems_[0]->getctrl("natural/onObservations").toNatural());
-      setctrl("real/osrate", getctrl("real/israte"));
-      setctrl("string/inObsNames", marsystems_[0]->getctrl("string/inObsNames"));
+      setctrl("mrs_natural/onSamples", 
+	      nTimes_ * marsystems_[0]->getctrl("mrs_natural/onSamples").toNatural());
+      setctrl("mrs_natural/onObservations", 
+	      marsystems_[0]->getctrl("mrs_natural/onObservations").toNatural());
+      setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+      setctrl("mrs_string/inObsNames", marsystems_[0]->getctrl("mrs_string/inObsNames"));
 
-      onObsNames = marsystems_[0]->getctrl("string/onObsNames").toString();
+      onObsNames = marsystems_[0]->getctrl("mrs_string/onObsNames").toString();
     }
   defaultUpdate();
 
@@ -125,7 +116,7 @@ Accumulator::update()
       onObsNames = temp;
       oss << "Acc" << nTimes_ << "_" << onObsName << ",";
     }
-  setctrl("string/onObsNames", oss.str());
+  setctrl("mrs_string/onObsNames", oss.str());
   
   tout_.create(onObservations_, onSamples_ / nTimes_);
 }

@@ -30,13 +30,15 @@ according to current input time (t)
 
 #include "MarSystem.h"	
 
+namespace Marsyas
+{
 
 class PvFold: public MarSystem
 {
 private:
   realvec awin_;
   void addControls();
-  natural N_, Nw_, D_, PNw_;
+  mrs_natural N_, Nw_, D_, PNw_;
   int n_;
   
   
@@ -49,6 +51,8 @@ public:
   void process(realvec& in, realvec& out);
   
 };
+
+}//namespace Marsyas
 
 #endif
 

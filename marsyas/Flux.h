@@ -24,21 +24,20 @@
 two succesive spectra. 
 */
 
-
-
-
 #ifndef MARSYAS_FLUX_H
 #define MARSYAS_FLUX_H
 
 #include "MarSystem.h"	
 
+namespace Marsyas
+{
 
 class Flux: public MarSystem
 {
 private: 
   void addControls();
   realvec prevWindow_;
-  real diff_,flux_, max_;
+  mrs_real diff_,flux_, max_;
 public:
   Flux(std::string name);
   
@@ -47,9 +46,9 @@ public:
   
   void update();
   void process(realvec& in, realvec& out);
-  
-
 };
+
+}//namespace Marsyas
 
 #endif
 

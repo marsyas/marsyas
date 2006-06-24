@@ -1,6 +1,9 @@
 
 #include "MarxGLColorGraph.h"
 
+using namespace std;
+using namespace Marsyas;
+
 
 MarxGLColorGraph::MarxGLColorGraph(QWidget *parent, long b)
   : QGLWidget(parent)

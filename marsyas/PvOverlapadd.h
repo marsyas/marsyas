@@ -30,6 +30,8 @@ according to current input time (t)
 
 #include "MarSystem.h"	
 
+namespace Marsyas
+{
 
 class PvOverlapadd: public MarSystem
 {
@@ -50,6 +52,8 @@ public:
   void process(realvec& in, realvec& out);
   
 };
+
+}//namespace Marsyas;
 
 #endif
 

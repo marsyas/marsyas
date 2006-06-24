@@ -1,18 +1,18 @@
 // Various tests of MarSystems. This is the place 
 // to put code that is still at testing/debugging phase. 
 
+#include <cstdio>
+#include <string> 
 
-#include <stdio.h>
 #include "MarSystemManager.h" 
 #include "Cascade.h" 
 #include "Parallel.h" 
 #include "CommandLineOptions.h"
 #include "FileName.h"
+#include "MATLABengine.h"
 
-
-
-#include <string> 
 using namespace std;
+using namespace Marsyas;
 
 #define EMPTYSTRING "MARSYAS_EMPTY"
 
@@ -22,12 +22,6 @@ int helpopt;
 int usageopt;
 int verboseopt;
 
-
-
-
-
-
-
 void 
 printUsage(string progName)
 {
@@ -36,7 +30,6 @@ printUsage(string progName)
   cerr << endl;
   exit(1);
 }
-
 
 void 
 printHelp(string progName)
@@ -63,7 +56,6 @@ printHelp(string progName)
   exit(1);
 }
 
-
 void 
 initOptions()
 {
@@ -81,7 +73,6 @@ loadOptions()
   verboseopt = cmd_options.getBoolOption("verbose");
   testName = cmd_options.getStringOption("testName");
 }
-
 
 void 
 test_scheduler(string sfName)
@@ -103,14 +94,14 @@ test_scheduler(string sfName)
   series1->addMarSystem(mng.create("SoundFileSink", "dest"));
   
   // only update controls from Composite level 
-  series1->updctrl("natural/inSamples", 256);
-  series1->updctrl("SoundFileSource/src/string/filename", ipName);
-  series1->updctrl("SoundFileSink/dest/string/filename", opName);
+  series1->updctrl("mrs_natural/inSamples", 256);
+  series1->updctrl("SoundFileSource/src/mrs_string/filename", ipName);
+  series1->updctrl("SoundFileSink/dest/mrs_string/filename", opName);
   
   // post events to the scheduler using updctrl(..)
-  series1->updctrl("Gain/gain/real/gain", 1.0);
-  series1->updctrl("1s", Repeat("2s", 3), new EvValUpd(series1,"Gain/gain/real/gain", 0.0));
-  series1->updctrl("2s", Repeat("2s", 3), new EvValUpd(series1,"Gain/gain/real/gain", 1.0));
+  series1->updctrl("Gain/gain/mrs_real/gain", 1.0);
+  series1->updctrl("1s", Repeat("2s", 3), new EvValUpd(series1,"Gain/gain/mrs_real/gain", 0.0));
+  series1->updctrl("2s", Repeat("2s", 3), new EvValUpd(series1,"Gain/gain/mrs_real/gain", 1.0));
   
   for (int i=0; i<10000; i++) {
     series1->tick();
@@ -119,11 +110,7 @@ test_scheduler(string sfName)
   // Composite deletes the added MarSystems
   // so you must not delete them
   delete series1;
-  
-  
 }
-
-
 
 void 
 test_schedulerExpr()
@@ -137,10 +124,10 @@ test_schedulerExpr()
   series->addMarSystem(mng.create("AudioSink", "dest"));
   
   // only update controls from Composite level
-  series->updctrl("natural/inSamples", 256);
+  series->updctrl("mrs_natural/inSamples", 256);
   
   series->updctrl("0s",Repeat("0.15s"), new EvExpUpd(series,
- "SineSource/src/real/frequency", "(120+3000*(Math.rand() / Math.RAND_MAX))"));
+ "SineSource/src/mrs_real/frequency", "(120+3000*(Math.rand() / Math.RAND_MAX))"));
   
   for (int i=0; i<10000; i++) 
     {
@@ -152,10 +139,6 @@ test_schedulerExpr()
   delete series;
 }
 
-
-
-
-
 void 
 test_fanoutswitch()
 {
@@ -165,24 +148,22 @@ test_fanoutswitch()
   
   MarSystem* pnet = mng.create("Series", "src");
   MarSystem* src = mng.create("SoundFileSource", "src");
-  src->updctrl("string/filename", "/home/gtzan/data/sound/music_speech/music/gravity.au");
+  src->updctrl("mrs_string/filename", "/home/gtzan/data/sound/music_speech/music/gravity.au");
 
   pnet->addMarSystem(src);
   pnet->addMarSystem(mng.create("PlotSink", "psink1"));  
-  pnet->updctrl("PlotSink/psink1/string/outputFilename", "in");
-  
-
+  pnet->updctrl("PlotSink/psink1/mrs_string/outputFilename", "in");
+ 
   MarSystem* mix = mng.create("Fanout", "mix");
   MarSystem* g1 = mng.create("Gain", "g1");
   MarSystem* g2 = mng.create("Gain", "g2");
   MarSystem* g3 = mng.create("Gain", "g3");
   MarSystem* g4 = mng.create("Gain", "g4");
-  
-  
-  g1->updctrl("real/gain", 1.5);
-  g2->updctrl("real/gain", 2.5);
-  g3->updctrl("real/gain", 3.0);
-  g4->updctrl("real/gain", 4.0);
+
+  g1->updctrl("mrs_real/gain", 1.5);
+  g2->updctrl("mrs_real/gain", 2.5);
+  g3->updctrl("mrs_real/gain", 3.0);
+  g4->updctrl("mrs_real/gain", 4.0);
   
   mix->addMarSystem(g1);
   mix->addMarSystem(g2);
@@ -193,14 +174,13 @@ test_fanoutswitch()
   pnet->addMarSystem(mng.create("PlotSink", "psink2"));
   
   // Disable subset of Fanout branches 
-  pnet->updctrl("Fanout/mix/natural/disable", 2);
-  pnet->updctrl("Fanout/mix/natural/disable", 0);
+  pnet->updctrl("Fanout/mix/mrs_natural/disable", 2);
+  pnet->updctrl("Fanout/mix/mrs_natural/disable", 0);
   
   // tick to check the result 
   // PlotSinks are used for output 
   pnet->tick();
 }
-
 
 void 
 test_rmsilence(string sfName)
@@ -212,30 +192,22 @@ test_rmsilence(string sfName)
   
   MarSystem* srm = mng.create("SilenceRemove", "srm");
   MarSystem* src = mng.create("SoundFileSource", "src");
-  src->updctrl("string/filename", sfName);
+  src->updctrl("mrs_string/filename", sfName);
   srm->addMarSystem(src);
-  
-  
 
   rmnet->addMarSystem(srm);
   rmnet->addMarSystem(mng.create("SoundFileSink", "dest"));
 
   FileName fname(sfName);  
-  rmnet->updctrl("SoundFileSink/dest/string/filename", "srm" + fname.name() + ".wav");
+  rmnet->updctrl("SoundFileSink/dest/mrs_string/filename", "srm" + fname.name() + ".wav");
 
-  
-  
-
-  while (rmnet->getctrl("SilenceRemove/srm/SoundFileSource/src/bool/notEmpty").toBool())
+  while (rmnet->getctrl("SilenceRemove/srm/SoundFileSource/src/mrs_bool/notEmpty").toBool())
     {
       rmnet->tick();
     }
   
   cout << "Finished removing silences. Output is " << "srm" + fname.name() + ".wav" << endl;
-  
 }
-
-
 
 void 
 test_mixer(string sfName0, string sfName1)
@@ -256,8 +228,7 @@ test_mixer(string sfName0, string sfName1)
   MarSystem* branch1 = mng.create("Series", "branch1");
   branch1->addMarSystem(mng.create("SoundFileSource", "src1"));
   branch1->addMarSystem(mng.create("Gain", "gain1"));
-  
-  
+
   mix->addMarSystem(branch0);
   mix->addMarSystem(branch1);
   
@@ -265,19 +236,16 @@ test_mixer(string sfName0, string sfName1)
   pnet->addMarSystem(mng.create("Sum", "sum"));
   pnet->addMarSystem(mng.create("AudioSink", "dest"));
 
-  
-  pnet->updctrl("Fanout/mix/Series/branch0/SoundFileSource/src0/string/filename", sfName0);
-  pnet->updctrl("Fanout/mix/Series/branch1/SoundFileSource/src1/string/filename", sfName1);
-  pnet->updctrl("Fanout/mix/Series/branch0/Gain/gain0/real/gain", 0.5);
-  pnet->updctrl("Fanout/mix/Series/branch1/Gain/gain1/real/gain", 0.5);
+  pnet->updctrl("Fanout/mix/Series/branch0/SoundFileSource/src0/mrs_string/filename", sfName0);
+  pnet->updctrl("Fanout/mix/Series/branch1/SoundFileSource/src1/mrs_string/filename", sfName1);
+  pnet->updctrl("Fanout/mix/Series/branch0/Gain/gain0/mrs_real/gain", 0.5);
+  pnet->updctrl("Fanout/mix/Series/branch1/Gain/gain1/mrs_real/gain", 0.5);
 
   while(1)
     {
       pnet->tick();
     }
-  
 }
-
 
 void 
 test_fft(string sfName) 
@@ -292,13 +260,13 @@ test_fft(string sfName)
   series->addMarSystem(mng.create("InvSpectrum", "ispk"));
   series->addMarSystem(mng.create("SoundFileSink", "dest"));
 
-  series->updctrl("SoundFileSource/src/string/filename", sfName);
-  series->updctrl("SoundFileSink/dest/string/filename",  "sftransformOutput.au");
+  series->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  series->updctrl("SoundFileSink/dest/mrs_string/filename",  "sftransformOutput.au");
 
-  real g;
-  natural i =0;
+  mrs_real g;
+  mrs_natural i =0;
   
-  while (series->getctrl("SoundFileSource/src/bool/notEmpty").toBool())
+  while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool())
     {
       series->tick();
       i++; 
@@ -308,8 +276,6 @@ test_fft(string sfName)
   delete series;
 }
 
-
-
 void 
 test_parallel()
 {
@@ -317,9 +283,9 @@ test_parallel()
   Parallel *parallel = new Parallel("parallel");
   
   realvec in;
-  in.create(natural(10), natural(10));
-  for (natural i = 0; i < in.getRows(); i++){
-    for (natural j = 0; j < in.getCols(); j++){
+  in.create(mrs_natural(10), mrs_natural(10));
+  for (mrs_natural i = 0; i < in.getRows(); i++){
+    for (mrs_natural j = 0; j < in.getCols(); j++){
       in(i,j) = i*j;
     }
   }
@@ -328,17 +294,17 @@ test_parallel()
   out.create(in.getRows(),in.getCols());
   
   Gain* g0 = new Gain("g0");
-  g0->setctrl("natural/inObservations", natural(3));
-  g0->setctrl("natural/inSamples", in.getCols());
-  g0->setctrl("real/gain", 3.0f);
+  g0->setctrl("mrs_natural/inObservations", mrs_natural(3));
+  g0->setctrl("mrs_natural/inSamples", in.getCols());
+  g0->setctrl("mrs_real/gain", 3.0f);
   
   Gain* g1 = new Gain("g1");
-  g1->setctrl("natural/inObservations", natural(2));
-  g1->setctrl("real/gain", 2.0f);
+  g1->setctrl("mrs_natural/inObservations", mrs_natural(2));
+  g1->setctrl("mrs_real/gain", 2.0f);
   
   Gain* g2 = new Gain("g2");
-  g2->setctrl("natural/inObservations", natural(5));
-  g2->setctrl("real/gain", 5.0f);
+  g2->setctrl("mrs_natural/inObservations", mrs_natural(5));
+  g2->setctrl("mrs_real/gain", 5.0f);
   
   parallel->addMarSystem(g0);
   parallel->addMarSystem(g1);
@@ -348,8 +314,6 @@ test_parallel()
   
   cout << out << endl;
 }
-
-
 
 void 
 test_cascade()
@@ -364,11 +328,11 @@ test_cascade()
   b(0) = 1.0f;
   b(1) = -0.9f;
   b(2) = 0.0f;
-  f0->setctrl("realvec/ncoeffs", a);
-  f0->setctrl("realvec/dcoeffs", b);
-  f0->setctrl("natural/inSamples", natural(5));
-  f0->setctrl("natural/inObservations", natural(1));
-  f0->setctrl("real/israte", 44100.0f);
+  f0->setctrl("mrs_realvec/ncoeffs", a);
+  f0->setctrl("mrs_realvec/dcoeffs", b);
+  f0->setctrl("mrs_natural/inSamples", mrs_natural(5));
+  f0->setctrl("mrs_natural/inObservations", mrs_natural(1));
+  f0->setctrl("mrs_real/israte", 44100.0f);
   
   Filter* f1 = new Filter("f1");
   a(0) = 1.0f;
@@ -377,24 +341,21 @@ test_cascade()
   b(0) = 1.0f;
   b(1) = 0.0f;
   b(2) = 0.0f;
-  f1->setctrl("realvec/ncoeffs", a);
-  f1->setctrl("realvec/dcoeffs", b);
+  f1->setctrl("mrs_realvec/ncoeffs", a);
+  f1->setctrl("mrs_realvec/dcoeffs", b);
   
   cascade->addMarSystem(f0);
   cascade->addMarSystem(f1);
   
   realvec in, out;
-  in.create(natural(1),natural(5));
+  in.create(mrs_natural(1),mrs_natural(5));
   in(0,0) = 1.0f;
-  out.create(natural(2),natural(5));
+  out.create(mrs_natural(2),mrs_natural(5));
   
   cascade->process(in, out);
   
   cout << out << endl;
-  
 }
-
-
 
 void 
 test_knn()
@@ -402,13 +363,12 @@ test_knn()
   MarSystemManager mng;
   MarSystem *knn = mng.create("KNNClassifier", "knn");
 
- 
   // ---- TEST TRAIN ---------------------
   
-  knn->updctrl("string/mode", "train");
+  knn->updctrl("mrs_string/mode", "train");
   
-  natural inS = 9;
-  natural inO = 3;
+  mrs_natural inS = 9;
+  mrs_natural inO = 3;
   
   realvec input(inO, inS);
   
@@ -430,8 +390,7 @@ test_knn()
   input(1,6) = 6.1;
   input(1,7) = 7.1;
   input(1,8) = 8.1;
-  
-
+ 
   // annotate :)
   input(2,0) = 0.0;
   input(2,1) = 0.0;
@@ -443,26 +402,24 @@ test_knn()
   input(2,7) = 1.0;
   input(2,8) = 1.0;
   
-  knn->updctrl("natural/inSamples", inS);
-  knn->updctrl("natural/inObservations", inO);
+  knn->updctrl("mrs_natural/inSamples", inS);
+  knn->updctrl("mrs_natural/inObservations", inO);
   
-  realvec output(knn->getctrl("natural/onObservations").toNatural(), knn->getctrl("natural/onSamples").toNatural());
+  realvec output(knn->getctrl("mrs_natural/onObservations").toNatural(), knn->getctrl("mrs_natural/onSamples").toNatural());
  
-
   cout << "INPUT: " << input << endl;
   
   knn->process(input, output);
   cout << "TEST: " << output << endl;
 
-
   // IMPORTANT updcontrol done and then process to indicate to KNN to finish  
-  knn->updctrl("bool/done", true);
+  knn->updctrl("mrs_bool/done", true);
   knn->tick();
   
   // --------------- TEST PREDICT -----------------
-  knn->updctrl("string/mode", "predict");
-  knn->updctrl("natural/k", 3);
-  knn->updctrl("natural/nLabels", 2);
+  knn->updctrl("mrs_string/mode", "predict");
+  knn->updctrl("mrs_natural/k", 3);
+  knn->updctrl("mrs_natural/nLabels", 2);
   inS = 1;
   inO = 3;
 
@@ -472,10 +429,10 @@ test_knn()
   input2(1,0) = 3.2;
   input2(2,0) = 1.0;
 
-  knn->updctrl("natural/inSamples", inS);
-  knn->updctrl("natural/inObservations", inO);
+  knn->updctrl("mrs_natural/inSamples", inS);
+  knn->updctrl("mrs_natural/inObservations", inO);
  
-  realvec output2(knn->getctrl("natural/onObservations").toNatural(), knn->getctrl("natural/onSamples").toNatural());
+  realvec output2(knn->getctrl("mrs_natural/onObservations").toNatural(), knn->getctrl("mrs_natural/onSamples").toNatural());
 
   cout << "Predict" << endl; 
   knn->process(input2, output2);
@@ -483,14 +440,11 @@ test_knn()
   cout << "PREDICT: " << output2 << endl;
 }
 
-
 // test filter 
 void 
 test_filter() 
 {
-
   // Test 1 
-
 
   /* realvec a(3),b(3);
   Filter* f = new Filter("f");
@@ -501,18 +455,18 @@ test_filter()
   b(1) = -0.9f;
   b(2) = 0.0f;
   
-  f->setctrl("realvec/ncoeffs", a);
-  f->setctrl("realvec/dcoeffs", b);
-  f->setctrl("natural/inSamples", natural(5));
-  f->setctrl("natural/inObservations", natural(2));
-  f->setctrl("real/israte", 44100.0f);
+  f->setctrl("mrs_realvec/ncoeffs", a);
+  f->setctrl("mrs_realvec/dcoeffs", b);
+  f->setctrl("mrs_natural/inSamples", mrs_natural(5));
+  f->setctrl("mrs_natural/inObservations", mrs_natural(2));
+  f->setctrl("mrs_real/israte", 44100.0f);
   f->update();
   
   realvec in, out;
-  in.create(natural(2),natural(5));
+  in.create(mrs_natural(2),mrs_natural(5));
   in(0,0) = 1.0f;
   in(1,0) = 1.0f;
-  out.create(natural(2),natural(5));
+  out.create(mrs_natural(2),mrs_natural(5));
   
   f->process(in, out);
   cout << out << endl;
@@ -549,25 +503,22 @@ test_filter()
   bh(3) = 0;
   bh(4) = 0.0087;
 
-  f->setctrl("realvec/ncoeffs", bl);
-  f->setctrl("realvec/dcoeffs", al);
-  f->setctrl("natural/inSamples", natural(20));
-  f->setctrl("natural/inObservations", natural(2));
-  f->setctrl("real/israte", 44100.0f);
+  f->setctrl("mrs_realvec/ncoeffs", bl);
+  f->setctrl("mrs_realvec/dcoeffs", al);
+  f->setctrl("mrs_natural/inSamples", mrs_natural(20));
+  f->setctrl("mrs_natural/inObservations", mrs_natural(2));
+  f->setctrl("mrs_real/israte", 44100.0f);
   f->update();
   
   realvec in, out;
-  in.create(natural(2),natural(20));
+  in.create(mrs_natural(2),mrs_natural(20));
   in(0,0) = 1.0f;
   in(1,0) = 1.0f;
-  out.create(natural(2),natural(20));
+  out.create(mrs_natural(2),mrs_natural(20));
 
   f->process(in, out);
   cout << out << endl;
-  
 }
-
-
 
 // test input,processing and sonification 
 // of Vicon (motion capture system) 
@@ -582,10 +533,7 @@ test_vicon(string vfName)
       cout << "No vicon file specified" << endl;
       return;
     }
-  
-  
 
-  
   MarSystemManager mng;
   MarSystem *viconNet = mng.create("Series", "viconNet");
   viconNet->addMarSystem(mng.create("ViconFileSource", "vsrc"));
@@ -593,11 +541,10 @@ test_vicon(string vfName)
   // viconNet->addMarSystem(mng.create("Vicon2Ctrl", "vctrl"));
   // viconNet->addMarSystem(mng.create("PlotSink", "vsrc"));
   
-  viconNet->updctrl("ViconFileSource/vsrc/natural/inSamples", 1);
-  viconNet->updctrl("ViconFileSource/vsrc/string/filename", vfName);
-  viconNet->updctrl("ViconFileSource/vsrc/real/israte", 120.0);
-   
-
+  viconNet->updctrl("ViconFileSource/vsrc/mrs_natural/inSamples", 1);
+  viconNet->updctrl("ViconFileSource/vsrc/mrs_string/filename", vfName);
+  viconNet->updctrl("ViconFileSource/vsrc/mrs_real/israte", 120.0);
+ 
   MarSystem* playbacknet = mng.create("Series", "playbacknet");
   MarSystem* sinebank = mng.create("Fanout", "sinebank");
   sinebank->addMarSystem(mng.create("SineSource", "ssrc1"));
@@ -612,18 +559,17 @@ test_vicon(string vfName)
   sinebank->addMarSystem(mng.create("SineSource", "ssrc10"));
   sinebank->addMarSystem(mng.create("SineSource", "ssrc11"));
   sinebank->addMarSystem(mng.create("SineSource", "ssrc12"));
-  
-  
+
   playbacknet->addMarSystem(sinebank);  
   playbacknet->addMarSystem(mng.create("Sum", "sum"));
   playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
 
-  realvec in(viconNet->getctrl("natural/inObservations").toNatural(), 
-	     viconNet->getctrl("natural/inSamples").toNatural());
-  realvec out(viconNet->getctrl("natural/onObservations").toNatural(), 
-	      viconNet->getctrl("natural/onSamples").toNatural());
+  realvec in(viconNet->getctrl("mrs_natural/inObservations").toNatural(), 
+	     viconNet->getctrl("mrs_natural/inSamples").toNatural());
+  realvec out(viconNet->getctrl("mrs_natural/onObservations").toNatural(), 
+	      viconNet->getctrl("mrs_natural/onSamples").toNatural());
   
-  playbacknet->updctrl("natural/inSamples", 184);
+  playbacknet->updctrl("mrs_natural/inSamples", 184);
 
 
   // set message to STK 
@@ -636,11 +582,8 @@ test_vicon(string vfName)
   cout << "ControlChange    0.0 1  1 0.000000" << endl;
   cout << "NoteOn           0.0 1 64.000000 64.000000" << endl;
   */ 
-  
 
-  
- 
-  while (viconNet->getctrl("ViconFileSource/vsrc/bool/notEmpty").toBool()) 
+  while (viconNet->getctrl("ViconFileSource/vsrc/mrs_bool/notEmpty").toBool()) 
     {
       viconNet->process(in,out);
       
@@ -666,25 +609,25 @@ test_vicon(string vfName)
       out(18,0) = 0.0;
      
 
-      // playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc1/real/frequency", fabs(out(13,0)));
-      // playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc1/real/frequency", fabs(fabs(out(1.0))));
+      // playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc1/mrs_real/frequency", fabs(out(13,0)));
+      // playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc1/mrs_real/frequency", fabs(fabs(out(1.0))));
 
-      playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc2/real/frequency", fabs(out(2,0)));
-      playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc3/real/frequency", fabs(out(3,0)));
+      playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc2/mrs_real/frequency", fabs(out(2,0)));
+      playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc3/mrs_real/frequency", fabs(out(3,0)));
       
-      playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc4/real/frequency", fabs(out(7,0)));
-      playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc5/real/frequency", fabs(out(8,0)));
-      playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc6/real/frequency", fabs(out(9,0)));
+      playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc4/mrs_real/frequency", fabs(out(7,0)));
+      playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc5/mrs_real/frequency", fabs(out(8,0)));
+      playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc6/mrs_real/frequency", fabs(out(9,0)));
 
       
-      playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc7/real/frequency", fabs(out(10,0)));
-      playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc8/real/frequency", fabs(out(11,0)));
-      playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc9/real/frequency", fabs(out(12,0)));
+      playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc7/mrs_real/frequency", fabs(out(10,0)));
+      playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc8/mrs_real/frequency", fabs(out(11,0)));
+      playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc9/mrs_real/frequency", fabs(out(12,0)));
 
 
-      playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc10/real/frequency", fabs(out(16,0)));
-      playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc11/real/frequency", fabs(out(17,0)));
-      playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc12/real/frequency", fabs(out(18,0)));
+      playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc10/mrs_real/frequency", fabs(out(16,0)));
+      playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc11/mrs_real/frequency", fabs(out(17,0)));
+      playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc12/mrs_real/frequency", fabs(out(18,0)));
       
 
       // cout << out(13,0) << endl;
@@ -699,14 +642,535 @@ test_vicon(string vfName)
     }
   
       
-  // cout << viconNet->getctrl("ViconFileSource/vsrc/string/markers") << endl;
-  // cout << "Sample Rate: " << viconNet->getctrl("ViconFileSource/vsrc/real/israte") << endl;
-
- 
-
-
+  // cout << viconNet->getctrl("ViconFileSource/vsrc/mrs_string/markers") << endl;
+  // cout << "Sample Rate: " << viconNet->getctrl("ViconFileSource/vsrc/mrs_real/israte") << endl;
 }
 
+void
+test_MATLABengine()
+{
+	//In order to test the MATLABengine class
+	// the following define must be set:
+	//	  _MATLAB_ENGINE_
+	//
+	// To build this test with MATLAB engine support, please consult the following site 
+	// for detailed info:
+	//
+	// http://www.mathworks.com/access/helpdesk/help/techdoc/matlab_external/f39903.html
+	//
+	// <lmartins@inescporto.pt> - 17.06.2006
+
+#ifdef _MATLAB_ENGINE_
+	
+	cout << endl;
+
+	//-------------------------------------------------------------------------------------------
+	cout << "******************************************************" << endl;
+	cout << "  TEST evaluate MATLAB command" << endl;
+	cout << "******************************************************" << endl;
+	cout << endl << "Run MATLAB benchmark utility..." << endl;
+	MATLABengine::getMatlabEng()->evalString("bench;");
+	cout << endl << "Press any key to continue..." << endl;
+	cout << endl << "Run other MATLAB stuff..." << endl;
+	MATLABengine::getMatlabEng()->evalString("a = magic(10);");
+	MATLABengine::getMatlabEng()->evalString("figure(3)");
+	MATLABengine::getMatlabEng()->evalString("imagesc(a);");
+	MATLABengine::getMatlabEng()->evalString("clear a;");
+	getchar();
+
+	//-------------------------------------------------------------------------------------------
+	cout << "******************************************************" << endl;
+	cout << "  TEST mrs_natural" << endl;
+	cout << "******************************************************" << endl;
+	mrs_natural Marsyas_natural = 123456789;
+	cout << "Send a mrs_natural to MATLAB: " << Marsyas_natural << endl;
+	MATLABengine::getMatlabEng()->putVariable(Marsyas_natural,"Marsyas_natural");
+	cout << endl << "Variable sent. Check MATLAB variable 'Marsyas_natural' and compare values..." << endl;
+	getchar();
+	Marsyas_natural = 0;
+	if(MATLABengine::getMatlabEng()->getVariable("Marsyas_natural", Marsyas_natural) == 0)
+		cout << "Get it from MATLAB back to Marsyas: " << Marsyas_natural << endl;
+	else
+		cout << "Error getting value back from MATLAB!" << endl;
+	getchar();
+	
+	//-------------------------------------------------------------------------------------------
+	cout << "******************************************************" << endl;
+	cout << "  TEST mrs_real" << endl;
+	cout << "******************************************************" << endl;
+	mrs_real Marsyas_real = 3.123456789;
+	cout << "Send a mrs_real to MATLAB: " << Marsyas_real << endl;
+	MATLABengine::getMatlabEng()->putVariable(Marsyas_real,"Marsyas_real");
+	cout << endl << "Variable sent: check MATLAB variable 'Marsyas_real' and compare values..." << endl;
+	getchar();
+	Marsyas_real = 0.0;
+	if(MATLABengine::getMatlabEng()->getVariable("Marsyas_real", Marsyas_real)== 0)
+		cout << "Get it from MATLAB back to Marsyas: " << Marsyas_real << endl;
+	else
+		cout << "Error getting value back from MATLAB!" << endl;
+	getchar();
+	
+	//-------------------------------------------------------------------------------------------
+	cout << "******************************************************" << endl;
+	cout << "  TEST mrs_complex" << endl;
+	cout << "******************************************************" << endl;
+	mrs_complex Marsyas_complex = mrs_complex(1.123456789, 2.123456789);
+	cout << "Send a mrs_complex to MATLAB: " << Marsyas_complex.real() << " + j" << Marsyas_complex.imag() << endl;
+	MATLABengine::getMatlabEng()->putVariable(Marsyas_complex,"Marsyas_complex");
+	cout << endl << "Variable sent: check MATLAB variable 'Marsyas_complex' and compare values..." << endl;
+	getchar();
+	Marsyas_complex = mrs_complex(0.0, 0.0);
+	if(MATLABengine::getMatlabEng()->getVariable("Marsyas_complex", Marsyas_complex) == 0)
+		cout << "Get it from MATLAB back to Marsyas: " << Marsyas_complex.real() << " + j" << Marsyas_complex.imag() << endl;
+	else
+		cout << "Error getting value back from MATLAB!" << endl;
+	getchar();
+	
+	//-------------------------------------------------------------------------------------------
+	cout << "******************************************************" << endl;
+	cout << "  TEST realvec (row vector)" << endl;
+	cout << "******************************************************" << endl;
+	realvec marRow_realvec1D(4);//Marsyas row vector
+	marRow_realvec1D(0) = 1.123456789;
+	marRow_realvec1D(1) = 2.123456789;
+	marRow_realvec1D(2) = 3.123456789;
+	marRow_realvec1D(3) = 4.123456789;
+	cout << "Send a realvec to MATLAB: " << endl;
+	cout << endl << marRow_realvec1D  << endl;
+	MATLABengine::getMatlabEng()->putVariable(marRow_realvec1D,"marRow_realvec1D");
+	cout << endl << "Variable sent: check MATLAB variable 'marRow_realvec1D' and compare values..." << endl;
+	getchar();
+	marRow_realvec1D.setval(0.0);
+	if(MATLABengine::getMatlabEng()->getVariable("marRow_realvec1D", marRow_realvec1D) == 0)
+		cout << "Get it from MATLAB back to Marsyas: " << endl << endl << marRow_realvec1D << endl;
+	else
+		cout << "Error getting value back from MATLAB!" << endl;
+	getchar();
+
+	//-------------------------------------------------------------------------------------------
+	cout << "******************************************************" << endl;
+	cout << "  TEST realvec (col vector)" << endl;
+	cout << "******************************************************" << endl;
+	realvec marCol_realvec1D(4,1);//Marsyas col vector
+	marCol_realvec1D(0) = 1.123456789;
+	marCol_realvec1D(1) = 2.123456789;
+	marCol_realvec1D(2) = 3.123456789;
+	marCol_realvec1D(3) = 4.123456789;
+	cout << "Send a realvec to MATLAB: " << endl;
+	cout << endl << marCol_realvec1D  << endl;
+	MATLABengine::getMatlabEng()->putVariable(marCol_realvec1D,"marCol_realvec1D");
+	cout << endl << "Variable sent: check MATLAB variable 'marCol_realvec1D' and compare values..." << endl;
+	getchar();
+	marCol_realvec1D.setval(0.0);
+	if(MATLABengine::getMatlabEng()->getVariable("marCol_realvec1D", marCol_realvec1D) == 0)
+		cout << "Get it from MATLAB back to Marsyas: " << endl << endl << marCol_realvec1D << endl;
+	else
+		cout << "Error getting value back from MATLAB!" << endl;
+	getchar();
+
+	//-------------------------------------------------------------------------------------------
+	cout << "******************************************************" << endl;
+	cout << "  TEST realvec (2D array)" << endl;
+	cout << "******************************************************" << endl;
+	realvec marsyas_realvec2D(2,3);//Marsyas matrix: 2 rows; 3 columns
+	marsyas_realvec2D(0,0) = 0.0;
+	marsyas_realvec2D(0,1) = 0.1;
+	marsyas_realvec2D(0,2) = 0.2;
+	marsyas_realvec2D(1,0) = 1.0;
+	marsyas_realvec2D(1,1) = 1.1;
+	marsyas_realvec2D(1,2) = 1.2;
+	cout << "Send a realvec to MATLAB: " << endl;
+	cout << endl << marsyas_realvec2D  << endl;
+	MATLABengine::getMatlabEng()->putVariable(marsyas_realvec2D,"marsyas_realvec2D");
+	cout << endl << "Variable sent: check MATLAB variable 'marsyas_realvec2D' and compare values..." << endl;
+	getchar();
+	marsyas_realvec2D.setval(0.0);
+	if(MATLABengine::getMatlabEng()->getVariable("marsyas_realvec2D", marsyas_realvec2D)==0)
+		cout << "Get it from MATLAB back to Marsyas: " << endl << endl << marsyas_realvec2D << endl;
+	else
+		cout << "Error getting value back from MATLAB!" << endl;
+	getchar();
+	
+
+	//-------------------------------------------------------------------------------------------
+	cout << "******************************************************" << endl;
+	cout << "  TEST std::vector<mrs_natural>" << endl;
+	cout << "******************************************************" << endl;
+	vector<mrs_natural> vector_natural(4);
+	vector_natural[0] = 1;
+	vector_natural[1] = 2;
+	vector_natural[2] = 3;
+	vector_natural[3] = 4;
+	cout << "Send a std::vector<mrs_natural> to MATLAB: " << endl;
+	cout << "vector_natural[0] = " << vector_natural[0] << endl;
+	cout << "vector_natural[1] = " << vector_natural[1] << endl;
+	cout << "vector_natural[2] = " << vector_natural[2] << endl;
+	cout << "vector_natural[3] = " << vector_natural[3] << endl;
+
+	MATLABengine::getMatlabEng()->putVariable(vector_natural,"vector_natural");
+	cout << endl << "Variable sent: check MATLAB variable 'vector_natural' and compare values..." << endl;
+	getchar();
+	vector_natural.clear();
+	if(MATLABengine::getMatlabEng()->getVariable("vector_natural", vector_natural)==0)
+	{
+		cout << "Get it from MATLAB back to Marsyas: " << endl;
+		cout << "vector_natural[0] = " << vector_natural[0] << endl;
+		cout << "vector_natural[1] = " << vector_natural[1] << endl;
+		cout << "vector_natural[2] = " << vector_natural[2] << endl;
+		cout << "vector_natural[3] = " << vector_natural[3] << endl;
+	}
+	else
+		cout << "Error getting value back from MATLAB!" << endl;
+	getchar();
+
+
+	//-------------------------------------------------------------------------------------------
+	cout << "******************************************************" << endl;
+	cout << "  TEST std::vector<mrs_real>" << endl;
+	cout << "******************************************************" << endl;
+	vector<mrs_real> vector_real(4);
+	vector_real[0] = 1.123456789;
+	vector_real[1] = 2.123456789;
+	vector_real[2] = 3.123456789;
+	vector_real[3] = 4.123456789;
+	cout << "Send a std::vector<mrs_real> to MATLAB: " << endl;
+	cout << "vector_real[0] = " << vector_real[0] << endl;
+	cout << "vector_real[1] = " << vector_real[1] << endl;
+	cout << "vector_real[2] = " << vector_real[2] << endl;
+	cout << "vector_real[3] = " << vector_real[3] << endl;
+	
+	MATLABengine::getMatlabEng()->putVariable(vector_real,"vector_real");
+	cout << endl << "Variable sent: check MATLAB variable 'vector_real' and compare values..." << endl;
+	getchar();
+	vector_real.clear();
+	if(MATLABengine::getMatlabEng()->getVariable("vector_real", vector_real)==0)
+	{
+		cout << "Get it from MATLAB back to Marsyas: " << endl;
+		cout << "vector_real[0] = " << vector_real[0] << endl;
+		cout << "vector_real[1] = " << vector_real[1] << endl;
+		cout << "vector_real[2] = " << vector_real[2] << endl;
+		cout << "vector_real[3] = " << vector_real[3] << endl;
+	}
+	else
+		cout << "Error getting value back from MATLAB!" << endl;
+	getchar();
+
+
+	//-------------------------------------------------------------------------------------------
+	cout << "******************************************************" << endl;
+	cout << "  TEST std::vector<mrs_complex>" << endl;
+	cout << "******************************************************" << endl;
+	vector<mrs_complex> vector_complex(4);
+	vector_complex[0] = mrs_complex(1.123456789, 2.123456789);
+	vector_complex[1] = mrs_complex(3.123456789, 4.123456789);
+	vector_complex[2] = mrs_complex(5.123456789, 6.123456789);
+	vector_complex[3] = mrs_complex(7.123456789, 8.123456789);
+	cout << "Send a std::vector<mrs_complex> to MATLAB: " << endl;
+	cout << "vector_complex[0] = " << vector_complex[0].real() << " + j" << vector_complex[0].imag() << endl;
+	cout << "vector_complex[1] = " << vector_complex[1].real() << " + j" << vector_complex[1].imag() << endl;
+	cout << "vector_complex[2] = " << vector_complex[2].real() << " + j" << vector_complex[2].imag() << endl;
+	cout << "vector_complex[3] = " << vector_complex[3].real() << " + j" << vector_complex[3].imag() << endl;
+
+	MATLABengine::getMatlabEng()->putVariable(vector_complex,"vector_complex");
+	cout << endl << "Variable sent: check MATLAB variable 'vector_complex' and compare values..." << endl;
+	getchar();
+	vector_complex.clear();
+	if(MATLABengine::getMatlabEng()->getVariable("vector_complex", vector_complex)==0)
+	{
+		cout << "Get it from MATLAB back to Marsyas: " << endl;
+		cout << "vector_complex[0] = " << vector_complex[0].real() << " + j" << vector_complex[0].imag() << endl;
+		cout << "vector_complex[1] = " << vector_complex[1].real() << " + j" << vector_complex[1].imag() << endl;
+		cout << "vector_complex[2] = " << vector_complex[2].real() << " + j" << vector_complex[2].imag() << endl;
+		cout << "vector_complex[3] = " << vector_complex[3].real() << " + j" << vector_complex[3].imag() << endl;
+	}
+	else
+		cout << "Error getting value back from MATLAB!" << endl;
+	getchar();
+
+#else
+	cout << endl << "MATLAB Engine not configured! Not possible to run test..." << endl;
+	cout << "To build this test with MATLAB engine support, check:" << endl << endl;
+	cout << "http://www.mathworks.com/access/helpdesk/help/techdoc/matlab_external/f39903.html" << endl;
+	getchar();
+
+#endif
+}
+
+void
+test_LPC_LSP(string sfName)
+{
+	// In order to test the LPC and LSP routines using the MATLABengine class
+	// for numeric validation of the routines and graphical plots of the results,
+	// the following defines must be set:
+	//
+	//	  _MATLAB_ENGINE_
+	//    _MATLAB_LPC_ (in LPCwarped.cpp) 
+	//    _MATLAB_LSP_ (in LSP.cpp)
+	//
+	// Additionally, inside MATLAB, the /marsyasMATLAB directory should be in the path
+	// so the LPC_test.m and LSP_test.m mfiles (included in /marsyasMATLAB) in can be  
+	// called directly from the C++ code for testing and plotting purposes.
+	//
+	// <lmartins@inescporto.pt> - 17.06.2006
+
+	cout << "TEST: LPCwarped and LSP calculation and validation using MATLAB (engine)" << endl;
+	cout << "Sound to analyze: " << sfName << endl;
+	
+	mrs_natural lpcOrder = 10;
+	mrs_natural hopSize = 512;
+
+	cout<<"LPC and LSP order: " <<lpcOrder <<endl;
+	cout<<"hopeSize: " <<hopSize <<endl;
+	
+	MarSystemManager mng;
+	
+	//LPC network
+	MarSystem* input = mng.create("Series", "input");
+	
+	input->addMarSystem(mng.create("SoundFileSource","src"));
+	input->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+	input->updctrl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
+
+	input->addMarSystem(mng.create("ShiftInput", "si"));
+	input->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
+	input->updctrl("ShiftInput/si/mrs_natural/WindowSize", hopSize);
+
+	input->addMarSystem(mng.create("LPCwarped", "lpcwarped"));
+	input->updctrl("LPCwarped/lpcwarped/mrs_natural/order",lpcOrder);
+	input->updctrl("LPCwarped/lpcwarped/mrs_real/lambda",0.0);
+	input->updctrl("LPCwarped/lpcwarped/mrs_real/gamma",1.0);
+
+	input->addMarSystem(mng.create("LSP", "lsp"));
+	input->updctrl("LSP/lsp/mrs_natural/order",lpcOrder);
+	input->updctrl("LSP/lsp/mrs_real/gamma",1.0);
+
+
+	int i = 0;
+	while(input->getctrl("SoundFileSource/src/bool/notEmpty").toBool())
+	{
+		input->tick();
+		cout << "Processed frame " << i << endl;
+		i++;
+	}
+
+	cout << endl << "LPCwarped and LSP processing finished!";
+}
+
+void
+test_realvec()
+{
+	//Test new operator= implementation:
+	//attributions are now performed even if the realvec arguments
+	//have different sizes => left hand realvec is deleted before 
+	//performing attribution. 
+	realvec a;
+	realvec b;
+
+	a.create(3);
+	a(0) = 1;
+	a(1) = 2;
+	a(2) = 3;
+	
+	//b.create(a.getSize()); //although a and b have diferent sizes, there is no need for this now!
+	b = a;
+
+	cout << endl << ">>>>>>>> realvec::operator=() : "<< endl;
+	cout << "attributions are now performed even if the realvec arguments have different sizes" << endl;
+	cout << "=> left hand realvec is deleted and then recreated during attribution." << endl << endl;
+
+	cout << a << endl << endl;
+	cout << b << endl << endl;
+
+	getchar();
+
+#ifdef _MATLAB_ENGINE_
+
+	realvec matrixA, matrixB;
+	realvec meanobs;
+	realvec stdobs;
+	realvec varobs;
+	realvec normobs;
+	realvec invMatrix;
+	realvec covmatrix;
+	realvec corrmatrix;
+	
+	cout << endl << ">>>>>>>> Create a simple matrix:" << endl << endl;
+	matrixA.create(2,3);
+	matrixA(0,0) = 1.0;
+	matrixA(0,1) = 2.0;
+	matrixA(0,2) = 3.0;
+	matrixA(1,0) = 4.0;
+	matrixA(1,1) = 5.0;
+	matrixA(1,2) = 6.0;
+	cout << matrixA << endl;
+	getchar();
+	cout << ">>>>>>>> realvec::getRow(1):" << endl << endl;
+	cout << matrixA.getRow(1) << endl;
+	getchar();
+	cout << ">>>>>>>> realvec::getCol(2):" << endl << endl;
+	cout << matrixA.getCol(2) << endl << endl;
+	getchar();
+	
+	cout << ">>>>>>>> Sending matrix to MATLAB..." << endl;
+	MATLAB->putVariable(matrixA, "matrixA");
+	cout << ">>>>>>>> ...complete! Press a key to continue." << endl;
+	getchar();
+	
+	cout << endl<< ">>>>>>>> calculate means of each row using MATLAB:" << endl << endl;
+	MATLAB->evalString("meanobs = mean(matrixA')'");
+	MATLAB->getVariable("meanobs", meanobs);
+	cout << meanobs << endl;
+	getchar();
+	cout << ">>>>>>>> compare with realvec::meanObs(): " << endl << endl;
+	cout << matrixA.meanObs() << endl;
+	getchar();
+
+	cout << endl<< ">>>>>>>> calculate stdev of each row using MATLAB:" << endl << endl;
+	//marsyas uses the biased estimator for the stdev calculation
+	MATLAB->evalString("stdobs = std(matrixA',1)'");
+	MATLAB->getVariable("stdobs", stdobs);
+	cout << stdobs << endl;
+	getchar();
+	cout << ">>>>>>>> compare with realvec::stdObs(): " << endl << endl;
+	cout << matrixA.stdObs() << endl;
+	getchar();
+
+	cout << endl<< ">>>>>>>> calculate variance of each row using MATLAB:" << endl << endl;
+	//marsyas uses the biased estimator for the var calculation
+	MATLAB->evalString("varobs = var(matrixA',1)'");
+	MATLAB->getVariable("varobs", varobs);
+	cout << varobs << endl;
+	getchar();
+	cout << ">>>>>>>> compare with realvec::varObs(): " << endl << endl;
+	cout << matrixA.varObs() << endl;
+	getchar();
+
+	cout << endl<< ">>>>>>>> Standardize observation's matrix using MATLAB:" << endl << endl;
+	MATLAB->evalString("matrixA = matrixA'");
+	MATLAB->evalString("clear normobs");
+	MATLAB->evalString("normobs(1,:) = matrixA(1,:) - mean(matrixA)");
+	MATLAB->evalString("normobs(1,:) = normobs(1,:) / std(matrixA,1)");
+	MATLAB->evalString("normobs(2,:) = matrixA(2,:) - mean(matrixA)");
+	MATLAB->evalString("normobs(2,:) = normobs(2,:) / std(matrixA,1)");
+	MATLAB->evalString("normobs(3,:) = matrixA(3,:) - mean(matrixA)");
+	MATLAB->evalString("normobs(3,:) = normobs(3,:) / std(matrixA,1)");
+	MATLAB->evalString("normobs = normobs'");
+	MATLAB->getVariable("normobs", normobs);
+	cout << normobs << endl;
+	getchar();
+	cout << ">>>>>>>> compare with realvec::normObs(): " << endl << endl;
+	matrixA.normObs();
+	cout << matrixA << endl;
+	getchar();
+
+
+	cout << ">>>>>>>> Creating a new random matrix in MATLAB..." << endl;
+ 	cout << ">>>>>>>> ... and get it into a realvec: " << endl << endl; 
+ 	MATLAB->evalString("matrixA = rand(2,30)");
+ 	MATLAB->getVariable("matrixA", matrixA);
+ 	cout << matrixA << endl;
+ 	getchar();
+
+	cout << endl<< ">>>>>>>> calculate COVARIANCE matrix using MATLAB (unbiased estimator):" << endl << endl;
+	MATLAB->evalString("covmatrix = cov(matrixA')'");
+	MATLAB->getVariable("covmatrix", covmatrix);
+	cout << covmatrix << endl;
+	getchar();
+	cout << ">>>>>>>> compare with realvec::covariance(): " << endl << endl;
+	//realvec::covariance() uses the unbiased estimator for the covar calculation
+	//matrixB.create(matrixA.getRows(),matrixA.getCols()); //no need for this anymore!:-)
+	matrixB = matrixA;
+	cout << matrixB.covariance() << endl;
+	getchar();
+
+	cout << endl<< ">>>>>>>> calculate COVARIANCE matrix using MATLAB (biased estimator):" << endl << endl;
+	MATLAB->evalString("covmatrix = cov(matrixA',1)'");
+	MATLAB->getVariable("covmatrix", covmatrix);
+	cout << covmatrix << endl;
+	getchar();
+	cout << ">>>>>>>> compare with realvec::covariance2(): " << endl << endl;
+	//realvec::covariance2() uses the biased estimator for the covar calculation
+	matrixB.create(matrixA.getRows(),matrixA.getCols());
+	matrixB = matrixA;
+	cout << matrixB.covariance2() << endl;
+	cout << ">>>>>>>> Results are different because realvec::covariance2() does not remove the mean from input data before estimating the cov matrix... " << endl << endl;
+	getchar();
+
+
+	cout << endl<< ">>>>>>>> calculate CORRELATION matrix using MATLAB:" << endl << endl;
+	MATLAB->evalString("corrmatrix = corrcoef(matrixA')'");
+	MATLAB->getVariable("corrmatrix", corrmatrix);
+	cout << corrmatrix << endl;
+	getchar();
+	cout << ">>>>>>>> compare with realvec::correlation(): " << endl << endl;
+	cout << matrixA.correlation() << endl;
+	getchar();
+
+	
+	//-----------------------
+	
+	cout << ">>>>>>>> Creating a random matrix in MATLAB..." << endl;
+	cout << ">>>>>>>> ... and get it into a realvec: " << endl << endl; 
+	MATLAB->evalString("matrixA = rand(4)");
+	MATLAB->getVariable("matrixA", matrixA);
+	cout << matrixA << endl;
+	getchar();
+
+	cout << endl << ">>>>>>>> Calculate TRACE using MATLAB: " << endl;
+	MATLAB->evalString("traceval = trace(matrixA)");
+	mrs_real traceval;
+	MATLAB->getVariable("traceval", traceval);
+	cout << traceval << endl << endl;
+	cout << endl << ">>>>>>>> Calculate TRACE using realvec::trace(): " << endl;
+	cout << matrixA.trace() << endl << endl;
+	getchar();
+
+	cout << endl << ">>>>>>>> Calculate matrix DETERMINANT using: " << endl;
+	cout << "realvec::det() = " << matrixA.det() << endl;
+	MATLAB->evalString("determinant = det(matrixA)");
+	mrs_real determinant;
+	MATLAB->getVariable("determinant", determinant);
+	cout << "MATLAB det() = " << determinant << endl << endl;
+	getchar();
+		
+	cout << ">>>>>>>> Invert the matrix using realvec::invert()... " << endl;
+	invMatrix.create(matrixA.getRows(),matrixA.getCols());
+	int res = matrixA.invert(invMatrix);
+	cout << ">>>>>>>> ...done! invert() returned: "<< res << endl << endl;
+	cout << invMatrix << endl;
+	getchar();
+	cout << ">>>>>>>> Invert the matrix using MATLAB... " << endl;
+	MATLAB->evalString("invMatrix = inv(matrixA)");
+	cout << ">>>>>>>> ...done! Get it to a realvec." << endl;
+	getchar();
+	matrixA.setval(0.0);
+	MATLAB->getVariable("invMatrix", matrixA);
+	cout << matrixA << endl;
+	getchar();
+	cout << "Compare results: difference should be a zero (or infinitesimal) valued matrix: " << endl << endl;
+	cout << matrixA - invMatrix << endl;
+	cout << "Maximum absolute error = " << (matrixA - invMatrix).maxval() << endl;
+	getchar();
+
+
+	//test DivergenceShape metrics
+	cout << ">>>>>>>> Creating two random matrices in MATLAB..." << endl;
+	cout << ">>>>>>>> ... and get them into realvecs: " << endl << endl; 
+	MATLAB->evalString("matrixA = cov(rand(40,4))");
+	MATLAB->evalString("matrixB = cov(rand(40,4))");
+	MATLAB->getVariable("matrixA", matrixA);
+	MATLAB->getVariable("matrixB", matrixB);
+	cout << ">>>>>>>> Done!" << endl << endl;
+	getchar();
+	cout << ">>>>>>>> Calculate Divergence Shape between the two matrices:" << endl;
+	cout << "realvec::divShape(Ci, Cj) = " << realvec::divergenceShape(matrixA,matrixB) << endl << endl;
+	cout << ">>>>>>>> Calculate Bhattacharyya Shape between the two matrices:" << endl;
+	cout << "realvec::battShape(Ci, Cj) = " << realvec::bhattacharyyaShape(matrixA,matrixB) << endl;
+	getchar();
+
+#endif
+
+}
 
 int
 main(int argc, const char **argv)
@@ -719,8 +1183,7 @@ main(int argc, const char **argv)
   initOptions();
   cmd_options.readOptions(argc, argv);
   loadOptions();
-  
-  
+
   vector<string> soundfiles = cmd_options.getRemaining();
   
   string fname0 = EMPTYSTRING;
@@ -730,12 +1193,9 @@ main(int argc, const char **argv)
     fname0 = soundfiles[0];
   if (soundfiles.size() > 1)  
     fname1 = soundfiles[1];
-  
-  
-
+ 
   // cout << "Vicon File is: " << vfName << endl;
-  
-
+ 
   cout << "Marsyas test name = " << testName << endl;
   
   if (testName == "vicon") 
@@ -760,6 +1220,13 @@ main(int argc, const char **argv)
     test_schedulerExpr();
   else if (testName == "mixer")
     test_mixer(fname0, fname1);
+  else if (testName == "MATLABengine")
+	  test_MATLABengine();
+  else if (testName == "LPC_LSP")
+	  test_LPC_LSP(fname0);
+  else if (testName == "realvec")
+	  test_realvec();
+
   else 
     {
       cout << "Unsupported test " << endl;

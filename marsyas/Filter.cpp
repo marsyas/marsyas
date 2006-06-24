@@ -26,10 +26,10 @@ object. The filter is implemented as a direct form II structure. This
 is a canonical form which has the minimum number of delay elements.
 */
 
-
 #include "Filter.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 Filter::Filter(string name)
 {
@@ -64,15 +64,15 @@ Filter::addControls()
   state_.create(channels_,order_-1);
   ncoeffs_(0) = 1.0f;
   dcoeffs_(0) = 1.0f;
-  addctrl("realvec/ncoeffs", ncoeffs_);
-  addctrl("realvec/dcoeffs", dcoeffs_);
-  addctrl("real/fgain", fgain_);
-  addctrl("natural/stateUpdate", natural(0));
-  addctrl("realvec/state", state_);
+  addctrl("mrs_realvec/ncoeffs", ncoeffs_);
+  addctrl("mrs_realvec/dcoeffs", dcoeffs_);
+  addctrl("mrs_real/fgain", fgain_);
+  addctrl("mrs_natural/stateUpdate", mrs_natural(0));
+  addctrl("mrs_realvec/state", state_);
   
-  setctrlState("realvec/ncoeffs", true);
-  setctrlState("realvec/dcoeffs", true);
-  setctrlState("realvec/state", true);
+  setctrlState("mrs_realvec/ncoeffs", true);
+  setctrlState("mrs_realvec/dcoeffs", true);
+  setctrlState("mrs_realvec/state", true);
   
   update();
 }
@@ -82,55 +82,55 @@ void Filter::update()
 {
   MRSDIAG("Filter.cpp - Filter:update");
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-  if (getctrl("realvec/ncoeffs").toVec().getSize() != norder_)
+  if (getctrl("mrs_realvec/ncoeffs").toVec().getSize() != norder_)
     {
-      ncoeffs_.create(getctrl("realvec/ncoeffs").toVec().getSize());
+      ncoeffs_.create(getctrl("mrs_realvec/ncoeffs").toVec().getSize());
       norder_ = ncoeffs_.getSize();
       order_ = (norder_ > dorder_) ? norder_ : dorder_;
-      channels_ = getctrl("natural/inObservations").toNatural();
+      channels_ = getctrl("mrs_natural/inObservations").toNatural();
       state_.create(channels_,order_-1);
-      setctrl("realvec/state", state_);
+      setctrl("mrs_realvec/state", state_);
     }
   
-  if (getctrl("realvec/dcoeffs").toVec().getSize() != dorder_)
+  if (getctrl("mrs_realvec/dcoeffs").toVec().getSize() != dorder_)
     {
 
-      dcoeffs_.create(getctrl("realvec/dcoeffs").toVec().getSize());
+      dcoeffs_.create(getctrl("mrs_realvec/dcoeffs").toVec().getSize());
       dorder_ = dcoeffs_.getSize();
       order_ = (norder_ > dorder_) ? norder_ : dorder_;
-      channels_ = getctrl("natural/inObservations").toNatural();
+      channels_ = getctrl("mrs_natural/inObservations").toNatural();
       state_.create(channels_,order_-1);
-      setctrl("realvec/state", state_);
+      setctrl("mrs_realvec/state", state_);
     }
   
-  if (getctrl("natural/inObservations").toNatural() != channels_)
+  if (getctrl("mrs_natural/inObservations").toNatural() != channels_)
     {
-      channels_ = getctrl("natural/inObservations").toNatural();
+      channels_ = getctrl("mrs_natural/inObservations").toNatural();
       state_.create(channels_,order_-1);
     }
   
-  ncoeffs_ = getctrl("realvec/ncoeffs").toVec();
-  dcoeffs_ = getctrl("realvec/dcoeffs").toVec();
-  if (getctrl("natural/stateUpdate").toNatural()) 
-    state_ = getctrl("realvec/state").toVec();
+  ncoeffs_ = getctrl("mrs_realvec/ncoeffs").toVec();
+  dcoeffs_ = getctrl("mrs_realvec/dcoeffs").toVec();
+  if (getctrl("mrs_natural/stateUpdate").toNatural()) 
+    state_ = getctrl("mrs_realvec/state").toVec();
   
-  real d0 = dcoeffs_(0);
+  mrs_real d0 = dcoeffs_(0);
   if (d0 != 1.0) {
-    for (natural i = 0; i < dorder_; i++){
+    for (mrs_natural i = 0; i < dorder_; i++){
       dcoeffs_(i) /= d0;
     }
     
-    for (natural i = 0; i < norder_; i++){
+    for (mrs_natural i = 0; i < norder_; i++){
       ncoeffs_(i) /= d0;
     }
   }
   
   fgain_ = 1.0f;
-  setctrl("real/fgain", 1.0f);
+  setctrl("mrs_real/fgain", 1.0f);
   
   defaultUpdate();
 }
@@ -147,12 +147,12 @@ Filter::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   
-  natural i,j,c;
-  natural size = in.getCols();
-  natural stateSize = state_.getCols();
-  natural channels = in.getRows();
+  mrs_natural i,j,c;
+  mrs_natural size = in.getCols();
+  mrs_natural stateSize = state_.getCols();
+  mrs_natural channels = in.getRows();
   
-  real gain = getctrl("real/fgain").toReal();
+  mrs_real gain = getctrl("mrs_real/fgain").toReal();
   
   // State array holds the various delays for the difference equation 
   // of the filter. Similar implementation as described in the manual

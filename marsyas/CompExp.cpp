@@ -33,24 +33,24 @@ as a prototype template for building more complicated MarSystems.
 	Options: Threshold can be set to any value between -1.0 and 1
 	Compressor  -1.0 <= thresh < 0
 	Expander	0 <= thresh <= 1.0	
-		series->updctrl("NoiseGate/noisegate/real/thresh", thresh);
+		series->updctrl("NoiseGate/noisegate/mrs_real/thresh", thresh);
 		
 	Attack time can be calculated using the following formula: at = 1 - exp(-2.2*T/t_AT)
 	where at = attack time, T = sampling period, t_AT = time parameter 0.00016 < t_AT < 2.6 sec
-		series->updctrl("NoiseGate/noisegate/real/rolloff", t_AT);
+		series->updctrl("NoiseGate/noisegate/mrs_real/rolloff", t_AT);
 	
 	Release time can be calculated similar to at time: rt = 1 - exp(-2.2*T/t_RT)
 	where rt = release time, T = sampling period, t_RT = time parameter 0.001 < t_RT < 5.0 msec
-		series->updctrl("NoiseGate/noisegate/real/rt", t_RT);
+		series->updctrl("NoiseGate/noisegate/mrs_real/rt", t_RT);
 		
 	Slope factor: 0 < slope <= 1.0
-		series->updctrl("NoiseGate/noisegate/real/rt", slope);	
+		series->updctrl("NoiseGate/noisegate/mrs_real/rt", slope);	
 */
 
-
 #include "CompExp.h"
-using namespace std;
 
+using namespace std;
+using namespace Marsyas;
 
 CompExp::CompExp(string name)
 {
@@ -78,10 +78,10 @@ void
 CompExp::addControls()
 {
   addDefaultControls();
-  addctrl("real/thresh", 1.0);
-  addctrl("real/at", 0.0001);
-  addctrl("real/rt", 0.130);
-  addctrl("real/slope", 1.0);
+  addctrl("mrs_real/thresh", 1.0);
+  addctrl("mrs_real/at", 0.0001);
+  addctrl("mrs_real/rt", 0.130);
+  addctrl("mrs_real/slope", 1.0);
 }
 
 
@@ -90,9 +90,9 @@ CompExp::update()
 {
   MRSDIAG("CompExp.cpp - CompExp:update");
   
-  setctrl("natural/onSamples", getctrl("natural/inSamples"));
-  setctrl("natural/onObservations", getctrl("natural/inObservations"));
-  setctrl("real/osrate", getctrl("real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   defaultUpdate();
   xd_.create(inSamples_);
   gains_.create(inSamples_);
@@ -104,10 +104,10 @@ CompExp::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   
-  real thresh = getctrl("real/thresh").toReal();
-  real at = getctrl("real/at").toReal();
-  real rt = getctrl("real/rt").toReal();
-  real slope = getctrl("real/slope").toReal();
+  mrs_real thresh = getctrl("mrs_real/thresh").toReal();
+  mrs_real at = getctrl("mrs_real/at").toReal();
+  mrs_real rt = getctrl("mrs_real/rt").toReal();
+  mrs_real slope = getctrl("mrs_real/slope").toReal();
   
   // calculate at and rt time
   at = 1 - exp(-2.2/(22050*at));
@@ -134,14 +134,14 @@ CompExp::process(realvec& in, realvec& out)
 		  // Compressor
 		  if (thresh < 0)
 		    {
-			gains_(o,t) = pow((real)10.0,-slope*(log10(xd_(o,t))-log10(fabs(thresh))));
+			gains_(o,t) = pow((mrs_real)10.0,-slope*(log10(xd_(o,t))-log10(fabs(thresh))));
 			//  linear calculation of gains_ = 10^(-Compressor Slope * (current value - Compressor Threshold))
 			}
 		  // Expander
 		  else
 		  if (thresh >= 0)
 		    {
-			gains_(o,t) = pow((real)10.0,slope*(log10(xd_(o,t))-log10(thresh)));
+			gains_(o,t) = pow((mrs_real)10.0,slope*(log10(xd_(o,t))-log10(thresh)));
 			//  linear calculation of gains_ = 10^(Expander Slope * (current value - Expander Threshold))
 			}
 		}

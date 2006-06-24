@@ -25,19 +25,13 @@ Specific IO classes for various formats like AuFileSource
 are children of this class. 
 */
 
-
-	
-
 #ifndef MARSYAS_SOUNDFILESOURCE_H
 #define MARSYAS_SOUNDFILESOURCE_H
-
 
 #include "realvec.h"
 #include "AuFileSource.h"
 #include "WavFileSource.h"
 #include "RawFileSource.h"
-
-
 
 #ifdef WIN32
 
@@ -47,12 +41,9 @@ are children of this class.
 #include "win_config.h"
 #endif 
 
-
 #else 
 #include "config.h" 
 #endif 
-
-
 
 #ifdef MAD_MP3
 #include "MP3FileSource.h"
@@ -64,17 +55,11 @@ are children of this class.
 
 #include "CollectionFileSource.h"
 
-#include <stdio.h>
-#include <math.h>
+#include <cstdio>
+#include <cmath>
 
-
-
-#define UnsignedToFloat(u) (((double)((long)(u - 2147483647L - 1))) + 2147483648.0)
-
-
-# define FloatToUnsigned(f)      ((unsigned long)(((long)(f - 2147483648.0)) + 2147483647L) + 1)
-
-
+namespace Marsyas
+{
 
 class SoundFileSource: public MarSystem
 {
@@ -90,22 +75,20 @@ protected:
 
   long sfp_begin_;
   std::string filename_;
-  natural sampleSize_;			// in bytes
-  natural samplesRead_;
-  natural samplesToRead_;
-  natural nChannels_;
-  natural inSamples_;
-  natural inObservations_;
-  real israte_;
+  mrs_natural sampleSize_;			// in bytes
+  mrs_natural samplesRead_;
+  mrs_natural samplesToRead_;
+  mrs_natural nChannels_;
+  mrs_natural inSamples_;
+  mrs_natural inObservations_;
+  mrs_real israte_;
   
   AbsSoundFileSource* src_;
   bool advance_;
   bool shuffle_;
   
-  natural cindex_;
+  mrs_natural cindex_;
   std::string currentlyPlaying_;
-  
-  
   
 public:
   SoundFileSource(std::string name);
@@ -122,6 +105,6 @@ public:
 
 };
 
-
+}//namespace Marsyas
 
 #endif /* !MARSYAS_SOUNDFILESOURCE_H */ 

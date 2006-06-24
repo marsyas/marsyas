@@ -22,12 +22,13 @@
 
 */
 
-
-
 #ifndef MARSYAS_MARFILESINK_H
 #define MARSYAS_MARFILESINK_H
 
 #include "MarSystem.h" 
+
+namespace Marsyas
+{
 
 class MarFileSink:public MarSystem 
 {
@@ -42,6 +43,8 @@ public:
   void update();
   void process(realvec& in, realvec& out);
 };
+
+}//namespace Marsyas
 
 
 #endif
