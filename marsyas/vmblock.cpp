@@ -5,7 +5,16 @@
  * "Numerical Algorithms with C, by Gisela Engeln-Muellges *
  *  and Frank Uhlig, Springer-Verlag, 1996".               *
  **********************************************************/
+
+#ifndef __OS_MACOSX__
 #include <malloc.h>
+#elif 
+#include <malloc/malloc.h> 
+#endif
+
+
+
+
 
 #include "basis.h"
 #include "vmblock.h"
