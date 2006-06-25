@@ -6,9 +6,11 @@
  *  and Frank Uhlig, Springer-Verlag, 1996".               *
  **********************************************************/
 
+#include "config.h"
+
 #ifndef __OS_MACOSX__
 #include <malloc.h>
-#elif 
+#else 
 #include <malloc/malloc.h> 
 #endif
 
