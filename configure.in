@@ -20,12 +20,12 @@
 
 
 # Process this file with autoconf to produce a configure script.
-AC_INIT([marsyas], [0.2.6], [gtzan@cs.uvic.ca])
+AC_INIT([marsyas], [0.2.7], [gtzan@cs.uvic.ca])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_SRCDIR([marsyas/MrsLog.h])
 AC_CANONICAL_SYSTEM
 AM_CONFIG_HEADER([marsyas/config.h])
-AM_INIT_AUTOMAKE([marsyas], [0.2.6])
+AM_INIT_AUTOMAKE([marsyas], [0.2.7])
 
 
 #Default CXXFLAGS
@@ -151,10 +151,10 @@ AC_ARG_ENABLE([bindings],
                               [Enables SWIG generated bindings])
               ]
 )
+AC_CONFIG_SUBDIRS([[swig]])
 MRSSWIG=
 case "$enable_bindings" in
        yes)
-       	       AC_CONFIG_SUBDIRS([[swig]])
                MRSSWIG="swig"
                echo SWIG bindings enabled
        ;;
