@@ -101,7 +101,6 @@ public:
   realvec getRow(const mrs_natural r) const;//lmartins
   realvec getCol(const mrs_natural c) const;//lmartins
 
-  
   // output functions 
   void debug_info();
   void write(std::string filename);

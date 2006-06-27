@@ -6,7 +6,16 @@
  *  and Frank Uhlig, Springer-Verlag, 1996".               *
  **********************************************************/
 
-#include "config.h"
+#ifdef WIN32
+#ifdef CYGWIN 
+#include "config.h" 
+#else 
+#include "win_config.h"
+#endif 
+#else 
+#include "config.h" 
+#endif 
+
 
 #ifndef __OS_MACOSX__
 #include <malloc.h>
