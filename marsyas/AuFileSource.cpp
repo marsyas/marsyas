@@ -74,8 +74,8 @@ AuFileSource::AuFileSource(string name)
 AuFileSource::~AuFileSource()
 {
 
-  delete sdata_;
-  delete cdata_;
+  delete [] sdata_;
+  delete [] cdata_;
   if (sfp_ != NULL)
     fclose(sfp_);
 }
@@ -199,7 +199,7 @@ AuFileSource::getHeader(string filename)
 
 	  fseek(sfp_, hdr_.hdrLength, 0);
 	  sfp_begin_ = ftell(sfp_);
-	  setctrl("mrs_natural/nChannels", hdr_.channels);
+	  setctrl("mrs_natural/nChannels", (mrs_natural)hdr_.channels);
       
 	  setctrl("mrs_real/israte", (mrs_real)hdr_.srate);
 	  setctrl("mrs_natural/size", size_);
@@ -303,8 +303,8 @@ AuFileSource::update()
   pos_ = getctrl("mrs_natural/pos").toNatural();
   rewindpos_ = getctrl("mrs_natural/loopPos").toNatural();
   
-  delete sdata_;
-  delete cdata_;
+  delete [] sdata_;
+  delete [] cdata_;
   
   sdata_ = new short[inSamples_ * nChannels_];
   cdata_ = new unsigned char[inSamples_ * nChannels_];   

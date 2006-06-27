@@ -30,8 +30,21 @@
 
 #include "AbsSoundFileSource.h"
 
+
+#ifdef WIN32
+
+#ifndef CYGWIN
+typedef __int32 int32_t;
+#endif
+#endif
+
+
+
+#include <stdint.h> 
+
 #include <string> 
 #include <vector> 
+
 
 namespace Marsyas
 {
@@ -40,11 +53,11 @@ namespace Marsyas
 struct snd_header 
 {
 	char pref[4];
-	long hdrLength;
-	long fileLength;
-	long mode;
-	long srate;
-	long channels;
+	int32_t hdrLength;
+	int32_t fileLength;
+	int32_t mode;
+	int32_t srate;
+	int32_t channels;
 	char comment[1024];
 };
 

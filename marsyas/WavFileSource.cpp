@@ -47,8 +47,8 @@ WavFileSource::WavFileSource(string name)
 
 WavFileSource::~WavFileSource()
 {
-  delete sdata_;
-  delete cdata_;
+  delete [] sdata_;
+  delete [] cdata_;
   if (sfp_ != NULL)
     fclose(sfp_);
 }
@@ -289,8 +289,8 @@ WavFileSource::update()
   
 
  
-  delete sdata_;
-  delete cdata_;
+  delete [] sdata_;
+  delete [] cdata_;
   
   sdata_ = new short[inSamples_ * nChannels_];
   cdata_ = new unsigned char[inSamples_ * nChannels_];   

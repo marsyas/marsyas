@@ -127,6 +127,29 @@ case "x$with_mad" in
 esac
 AC_SUBST([MADLIB])
 
+
+
+AC_ARG_WITH([vorbis],[AC_HELP_STRING([--with-vorbis],[Link to libvorbis (ogg audio decoder)])])
+OGGLIB=""
+case "x$with_vorbis" in
+       xyes)
+               OGGLIB="-lvorbis -lvorbisfile"
+               AC_DEFINE([OGG_VORBIS],[1],[Enable ogg vorbis decoding])
+               echo Ogg vorbis decoding enabled
+       ;;
+       xno|x)  echo Ogg vorbis decoding disabled ;;
+       *)
+               OGGLIB="-L${with_ogg}/lib -lvorbis -lvorbisfile"
+               CPPFLAGS="$CPPFLAGS -I${with_ogg}/include"
+               AC_DEFINE([OGG_VORBIS],[1],[Enable ogg vorbis decoding])
+               echo Ogg vorbis decoding enabled
+       ;;
+esac
+AC_SUBST([OGGLIB])
+
+
+
+
 AC_ARG_WITH([readline],[AC_HELP_STRING([--with-readline],[Readline functionality for Marsyas scriping language (MSL)])])
 MslLibs=""
 case "x$with_readline" in
@@ -177,29 +200,29 @@ case "${host}" in
 
 if test "$enable_oss" = yes; then 
 	AC_DEFINE([__LINUX_OSS__],[1], [LINUX SYSTEM FOR RTAUDIO])	
-	Libs="-lpthread ${MADLIB}"
+	Libs="-lpthread ${MADLIB} ${OGGLIB}"
 	echo "Using OSS audio"
 else 
 	AC_DEFINE([__LINUX_ALSA__],[1], [LINUX SYSTEM FOR RTAUDIO])	
 	AC_DEFINE([__LINUX_ALSASEQ__],[1], [LINUX SYSTEM FOR RTAUDIO])	
-	Libs="-lpthread -lasound ${MADLIB}"
+	Libs="-lpthread -lasound ${MADLIB} ${OGGLIB}"
 fi 
 	AC_DEFINE([__OS_LINUX__],[1], [LINUX STUFF])
 	echo "Using ALSA audio"
 	;;
 	powerpc-*-darwin*) 
-	Libs="-lpthread ${MADLIB} -framework CoreAudio -framework CoreMidi -framework CoreFoundation"
+	Libs="-lpthread ${MADLIB} ${OGGLIB} -framework CoreAudio -framework CoreMidi -framework CoreFoundation"
 	AC_DEFINE([__MACOSX_CORE__],[1], [MACOSX SYSTEM FOR RTAUDIO])		
 	AC_DEFINE([__BIG_ENDIAN__], [1], [IS BIG ENDINA])
 	AC_DEFINE([__OS_MACOSX__],[1], [MACOSX STUFF])
 	;;
 	i386-*-darwin*) 
-	Libs="-lpthread ${MADLIB} -framework CoreAudio -framework CoreMidi -framework CoreFoundation"
+	Libs="-lpthread ${MADLIB} ${OGGLIB} -framework CoreAudio -framework CoreMidi -framework CoreFoundation"
 	AC_DEFINE([__MACOSX_CORE__],[1], [MACOSX SYSTEM FOR RTAUDIO])		
 	AC_DEFINE([__OS_MACOSX__],[1], [MACOSX STUFF])
 	;;
 	*-*-cygwin*) 
-	Libs="-lpthread -ldsound -lwinmm ${MADLIB}"
+	Libs="-lpthread -ldsound -lwinmm ${MADLIB} ${OGGLIB}"
 	Includes="/usr/include/directx"
 	AC_DEFINE([__WINDOWS_DS__],[1], [WINDOWS SYSTEM FOR RTAUDIO])		
 	AC_DEFINE([__WINDOWS_MM__],[1], [WINDOWS SYSTEM FOR RTAUDIO])		
