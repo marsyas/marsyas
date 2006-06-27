@@ -34,6 +34,10 @@ PvFold::PvFold(string name):MarSystem()
 {
   type_ = "PvFold";
   name_ = name;
+  N_ = 0;
+  Nw_ = 0;
+  PNw_ = 0;
+  D_ = 0;
   addControls();
 }
 
