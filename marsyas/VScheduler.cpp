@@ -46,6 +46,8 @@ bool VScheduler::eventPending() {
 }
 
 void VScheduler::addTimer(TmTimer* t) {
+    if (t == NULL) 
+	    return; 
     // look for schedulers with same name to ensure only one of each name
     for (int i=0;i<schedulers_count;i++) {
         if (schedulers[i]->getTimerName()==t->getName()) { return; }

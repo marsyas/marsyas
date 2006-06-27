@@ -38,7 +38,9 @@ MarSystem::MarSystem()
   name_ = "MarSystemPrototype";
   type_ = "MarSystem";
   scheduler.removeAll();
-  scheduler.addTimer(new TmSampleCount(NULL, this, "mrs_natural/inSamples"));
+  TmTimer* t = new TmSampleCount(NULL, this, "mrs_natural/inSamples");
+  scheduler.addTimer(t);
+  delete t;
 }
 
 MarSystem::MarSystem(string name)
@@ -46,7 +48,9 @@ MarSystem::MarSystem(string name)
   type_ = "MarSystem";
   name_ = name;
   scheduler.removeAll();
-  scheduler.addTimer(new TmSampleCount(NULL, this, "mrs_natural/inSamples"));
+  TmTimer* t = new TmSampleCount(NULL, this, "mrs_natural/inSamples");
+  scheduler.addTimer(t);
+  delete t;
 }
 
 // copy constructor 
