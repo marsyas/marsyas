@@ -41,6 +41,8 @@ WavFileSink::WavFileSink(string name)
 
 WavFileSink::~WavFileSink()
 {
+   delete [] sdata_;
+   delete [] cdata_;
 }
 
 MarSystem* 
@@ -86,8 +88,8 @@ WavFileSink::update()
   nChannels_ = getctrl("mrs_natural/inObservations").toNatural();      
   setctrl("mrs_natural/nChannels", nChannels_);
   
-  delete sdata_;
-  delete cdata_;
+  delete [] sdata_;
+  delete [] cdata_;
   
   sdata_ = new short[getctrl("mrs_natural/inSamples").toNatural() * nChannels_];
   cdata_ = new unsigned char[getctrl("mrs_natural/inSamples").toNatural() * nChannels_];
