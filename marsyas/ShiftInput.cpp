@@ -34,6 +34,10 @@ ShiftInput::ShiftInput(string name)
 {
   type_ = "ShiftInput";
   name_ = name;
+  PW_ = 0;
+  W_ = 0;
+  N_ = 0;
+  D_ = 0;
   addControls();
 }
 
