@@ -241,7 +241,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing Mapper.h..."
-						CommandLine="$(QTDIR)\bin\moc.exe  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DNDEBUG -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;C:\Qt\4.1.2\mkspecs\win32-msvc2005&quot; -I&quot;.\..\..\marsyas&quot; -I&quot;.\release&quot; -I&quot;.&quot; &quot;Mapper.h&quot; -o &quot;$(ConfigurationName)\moc_Mapper.cpp&quot;&#x0D;&#x0A;"
+						CommandLine="$(QTDIR)\bin\moc.exe  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DNDEBUG -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; -I&quot;.\..\..\marsyas&quot; -I&quot;.\release&quot; -I&quot;.&quot; &quot;Mapper.h&quot; -o &quot;$(ConfigurationName)\moc_Mapper.cpp&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="$(QTDIR)\bin\moc.exe;Mapper.h"
 						Outputs="&quot;$(ConfigurationName)\moc_Mapper.cpp&quot;"
 					/>
@@ -252,7 +252,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing Mapper.h..."
-						CommandLine="$(QTDIR)\bin\moc.exe  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;C:\Qt\4.1.2\mkspecs\win32-msvc2005&quot; -I&quot;.\..\..\marsyas&quot; -I&quot;.\debug&quot; -I&quot;.&quot; &quot;Mapper.h&quot; -o &quot;$(ConfigurationName)\moc_Mapper.cpp&quot;&#x0D;&#x0A;"
+						CommandLine="$(QTDIR)\bin\moc.exe  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; -I&quot;.\..\..\marsyas&quot; -I&quot;.\debug&quot; -I&quot;.&quot; &quot;Mapper.h&quot; -o &quot;$(ConfigurationName)\moc_Mapper.cpp&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="$(QTDIR)\bin\moc.exe;Mapper.h"
 						Outputs="&quot;$(ConfigurationName)\moc_Mapper.cpp&quot;"
 					/>
@@ -267,7 +267,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing MarPlayer.h..."
-						CommandLine="$(QTDIR)\bin\moc.exe  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DNDEBUG -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;C:\Qt\4.1.2\mkspecs\win32-msvc2005&quot; -I&quot;.\..\..\marsyas&quot; -I&quot;.\release&quot; -I&quot;.&quot; &quot;MarPlayer.h&quot; -o &quot;$(ConfigurationName)\moc_MarPlayer.cpp&quot;&#x0D;&#x0A;"
+						CommandLine="$(QTDIR)\bin\moc.exe  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DNDEBUG -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; -I&quot;.\..\..\marsyas&quot; -I&quot;.\release&quot; -I&quot;.&quot; &quot;MarPlayer.h&quot; -o &quot;$(ConfigurationName)\moc_MarPlayer.cpp&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="$(QTDIR)\bin\moc.exe;MarPlayer.h"
 						Outputs="&quot;$(ConfigurationName)\moc_MarPlayer.cpp&quot;"
 					/>
@@ -278,7 +278,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing MarPlayer.h..."
-						CommandLine="$(QTDIR)\bin\moc.exe  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;C:\Qt\4.1.2\mkspecs\win32-msvc2005&quot; -I&quot;.\..\..\marsyas&quot; -I&quot;.\debug&quot; -I&quot;.&quot; &quot;MarPlayer.h&quot; -o &quot;$(ConfigurationName)\moc_MarPlayer.cpp&quot;&#x0D;&#x0A;"
+						CommandLine="$(QTDIR)\bin\moc.exe  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; -I&quot;.\..\..\marsyas&quot; -I&quot;.\debug&quot; -I&quot;.&quot; &quot;MarPlayer.h&quot; -o &quot;$(ConfigurationName)\moc_MarPlayer.cpp&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="$(QTDIR)\bin\moc.exe;MarPlayer.h"
 						Outputs="&quot;$(ConfigurationName)\moc_MarPlayer.cpp&quot;"
 					/>
@@ -293,7 +293,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing MarSystemWrapper.h..."
-						CommandLine="$(QTDIR)\bin\moc.exe  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DNDEBUG -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;C:\Qt\4.1.2\mkspecs\win32-msvc2005&quot; -I&quot;.\..\..\marsyas&quot; -I&quot;.\release&quot; -I&quot;.&quot; &quot;MarSystemWrapper.h&quot; -o &quot;$(ConfigurationName)\moc_MarSystemWrapper.cpp&quot;&#x0D;&#x0A;"
+						CommandLine="$(QTDIR)\bin\moc.exe  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DNDEBUG -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; -I&quot;.\..\..\marsyas&quot; -I&quot;.\release&quot; -I&quot;.&quot; &quot;MarSystemWrapper.h&quot; -o &quot;$(ConfigurationName)\moc_MarSystemWrapper.cpp&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="$(QTDIR)\bin\moc.exe;MarSystemWrapper.h"
 						Outputs="&quot;$(ConfigurationName)\moc_MarSystemWrapper.cpp&quot;"
 					/>
@@ -304,7 +304,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing MarSystemWrapper.h..."
-						CommandLine="$(QTDIR)\bin\moc.exe  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;C:\Qt\4.1.2\mkspecs\win32-msvc2005&quot; -I&quot;.\..\..\marsyas&quot; -I&quot;.\debug&quot; -I&quot;.&quot; &quot;MarSystemWrapper.h&quot; -o &quot;$(ConfigurationName)\moc_MarSystemWrapper.cpp&quot;&#x0D;&#x0A;"
+						CommandLine="$(QTDIR)\bin\moc.exe  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; -I&quot;.\..\..\marsyas&quot; -I&quot;.\debug&quot; -I&quot;.&quot; &quot;MarSystemWrapper.h&quot; -o &quot;$(ConfigurationName)\moc_MarSystemWrapper.cpp&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="$(QTDIR)\bin\moc.exe;MarSystemWrapper.h"
 						Outputs="&quot;$(ConfigurationName)\moc_MarSystemWrapper.cpp&quot;"
 					/>
@@ -316,18 +316,6 @@
 			Filter="cpp;c;cxx;moc;h;def;odl;idl;res;"
 			UniqueIdentifier="{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}"
 			>
-			<File
-				RelativePath="release\MarPlayer_resource.res"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
 			<File
 				RelativePath="debug\MarPlayer_resource.res"
 				>
@@ -341,14 +329,14 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="release\moc_Mapper.cpp"
+				RelativePath="release\MarPlayer_resource.res"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool
-						Name="VCCLCompilerTool"
+						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 			</File>
@@ -357,6 +345,18 @@
 				>
 				<FileConfiguration
 					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="release\moc_Mapper.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -389,18 +389,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="release\moc_MarSystemWrapper.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="debug\moc_MarSystemWrapper.cpp"
 				>
 				<FileConfiguration
@@ -413,7 +401,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="release\qrc_MarPlayerForm.cpp"
+				RelativePath="release\moc_MarSystemWrapper.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -429,6 +417,18 @@
 				>
 				<FileConfiguration
 					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="release\qrc_MarPlayerForm.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool
