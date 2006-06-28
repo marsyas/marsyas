@@ -116,7 +116,7 @@ WekaSink::putHeader(string inObsNames)
 	  ostringstream oss;
 	  // oss << "attribute" << i; 
 	  oss << inObsName;
-	  (*mos_) << "@attribute " << oss.str() << " mrs_real" << endl;
+	  (*mos_) << "@attribute " << oss.str() << " real" << endl;
 	}
   (*mos_) << "@attribute output {";
   for (i=0; i < nLabels; i++) 
