@@ -113,6 +113,78 @@ test_scheduler(string sfName)
 }
 
 void 
+test_audiodevices()
+{
+  std::cout << "Testing audio devices" << endl;
+  
+
+  RtAudio *audio = 0;
+  RtAudioDeviceInfo info;
+  try {
+    audio = new RtAudio();
+  }
+  catch (RtError &error) {
+    error.printMessage();
+    exit(EXIT_FAILURE);
+  }
+
+  int devices = audio->getDeviceCount();
+  std::cout << "\nFound " << devices << " device(s) ...\n";
+
+  for (int i=1; i<=devices; i++) {
+    try {
+      info = audio->getDeviceInfo(i);
+    }
+    catch (RtError &error) {
+      error.printMessage();
+      break;
+    }
+
+    std::cout << "\nDevice Name = " << info.name << '\n';
+    if (info.probed == false)
+      std::cout << "Probe Status = UNsuccessful\n";
+    else {
+      std::cout << "Probe Status = Successful\n";
+      std::cout << "Output Channels = " << info.outputChannels << '\n';
+      std::cout << "Input Channels = " << info.inputChannels << '\n';
+      std::cout << "Duplex Channels = " << info.duplexChannels << '\n';
+      if (info.isDefault) std::cout << "This is the default device.\n";
+      else std::cout << "This is NOT the default device.\n";
+      if ( info.nativeFormats == 0 )
+        std::cout << "No natively supported data formats(?)!";
+      else {
+        std::cout << "Natively supported data formats:\n";
+        if ( info.nativeFormats & RTAUDIO_SINT8 )
+          std::cout << "  8-bit int\n";
+        if ( info.nativeFormats & RTAUDIO_SINT16 )
+          std::cout << "  16-bit int\n";
+        if ( info.nativeFormats & RTAUDIO_SINT24 )
+          std::cout << "  24-bit int\n";
+        if ( info.nativeFormats & RTAUDIO_SINT32 )
+          std::cout << "  32-bit int\n";
+        if ( info.nativeFormats & RTAUDIO_FLOAT32 )
+          std::cout << "  32-bit float\n";
+        if ( info.nativeFormats & RTAUDIO_FLOAT64 )
+          std::cout << "  64-bit float\n";
+      }
+      if ( info.sampleRates.size() < 1 )
+        std::cout << "No supported sample rates found!";
+      else {
+        std::cout << "Supported sample rates = ";
+        for (unsigned int j=0; j<info.sampleRates.size(); j++)
+          std::cout << info.sampleRates[j] << " ";
+      }
+      std::cout << std::endl;
+    }
+  }
+  std::cout << std::endl;
+
+  delete audio;
+
+}
+
+
+void 
 test_schedulerExpr()
 {
   
@@ -127,7 +199,7 @@ test_schedulerExpr()
   series->updctrl("mrs_natural/inSamples", 256);
   
   series->updctrl("0s",Repeat("0.15s"), new EvExpUpd(series,
- "SineSource/src/mrs_real/frequency", "(120+3000*(Math.rand() / Math.RAND_MAX))"));
+						     "SineSource/src/mrs_real/frequency", "(120+3000*(Math.rand() / Math.RAND_MAX))"));
   
   for (int i=0; i<10000; i++) 
     {
@@ -263,7 +335,6 @@ test_fft(string sfName)
   series->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
   series->updctrl("SoundFileSink/dest/mrs_string/filename",  "sftransformOutput.au");
 
-  mrs_real g;
   mrs_natural i =0;
   
   while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool())
@@ -447,29 +518,29 @@ test_filter()
   // Test 1 
 
   /* realvec a(3),b(3);
-  Filter* f = new Filter("f");
-  a(0) = 1.0f;
-  a(1) = 0.0f;
-  a(2) = 0.0f;
-  b(0) = 1.0f;
-  b(1) = -0.9f;
-  b(2) = 0.0f;
+     Filter* f = new Filter("f");
+     a(0) = 1.0f;
+     a(1) = 0.0f;
+     a(2) = 0.0f;
+     b(0) = 1.0f;
+     b(1) = -0.9f;
+     b(2) = 0.0f;
   
-  f->setctrl("mrs_realvec/ncoeffs", a);
-  f->setctrl("mrs_realvec/dcoeffs", b);
-  f->setctrl("mrs_natural/inSamples", mrs_natural(5));
-  f->setctrl("mrs_natural/inObservations", mrs_natural(2));
-  f->setctrl("mrs_real/israte", 44100.0f);
-  f->update();
+     f->setctrl("mrs_realvec/ncoeffs", a);
+     f->setctrl("mrs_realvec/dcoeffs", b);
+     f->setctrl("mrs_natural/inSamples", mrs_natural(5));
+     f->setctrl("mrs_natural/inObservations", mrs_natural(2));
+     f->setctrl("mrs_real/israte", 44100.0f);
+     f->update();
   
-  realvec in, out;
-  in.create(mrs_natural(2),mrs_natural(5));
-  in(0,0) = 1.0f;
-  in(1,0) = 1.0f;
-  out.create(mrs_natural(2),mrs_natural(5));
+     realvec in, out;
+     in.create(mrs_natural(2),mrs_natural(5));
+     in(0,0) = 1.0f;
+     in(1,0) = 1.0f;
+     out.create(mrs_natural(2),mrs_natural(5));
   
-  f->process(in, out);
-  cout << out << endl;
+     f->process(in, out);
+     cout << out << endl;
   */ 
 
   // Test 2 
@@ -574,13 +645,13 @@ test_vicon(string vfName)
 
   // set message to STK 
   /* cout << "ControlChange    0.0  1  44 24.000000" << endl;
-  cout << "AfterTouch       0.0 1 64.000000" << endl;
-  cout << "PitchChange      0.0 1 64.000" << endl;
-  cout << "ControlChange    0.0 1  2 20.000000" << endl;
-  cout << "ControlChange    0.0 1  4 64.000000" << endl;
-  cout << "ControlChange    0.0 1  11 64.000000" << endl;
-  cout << "ControlChange    0.0 1  1 0.000000" << endl;
-  cout << "NoteOn           0.0 1 64.000000 64.000000" << endl;
+     cout << "AfterTouch       0.0 1 64.000000" << endl;
+     cout << "PitchChange      0.0 1 64.000" << endl;
+     cout << "ControlChange    0.0 1  2 20.000000" << endl;
+     cout << "ControlChange    0.0 1  4 64.000000" << endl;
+     cout << "ControlChange    0.0 1  11 64.000000" << endl;
+     cout << "ControlChange    0.0 1  1 0.000000" << endl;
+     cout << "NoteOn           0.0 1 64.000000 64.000000" << endl;
   */ 
 
   while (viconNet->getctrl("ViconFileSource/vsrc/mrs_bool/notEmpty").toBool()) 
@@ -649,249 +720,249 @@ test_vicon(string vfName)
 void
 test_MATLABengine()
 {
-	//In order to test the MATLABengine class
-	// the following define must be set:
-	//	  _MATLAB_ENGINE_
-	//
-	// To build this test with MATLAB engine support, please consult the following site 
-	// for detailed info:
-	//
-	// http://www.mathworks.com/access/helpdesk/help/techdoc/matlab_external/f39903.html
-	//
-	// <lmartins@inescporto.pt> - 17.06.2006
+  //In order to test the MATLABengine class
+  // the following define must be set:
+  //	  _MATLAB_ENGINE_
+  //
+  // To build this test with MATLAB engine support, please consult the following site 
+  // for detailed info:
+  //
+  // http://www.mathworks.com/access/helpdesk/help/techdoc/matlab_external/f39903.html
+  //
+  // <lmartins@inescporto.pt> - 17.06.2006
 
 #ifdef _MATLAB_ENGINE_
 	
-	cout << endl;
+  cout << endl;
 
-	//-------------------------------------------------------------------------------------------
-	cout << "******************************************************" << endl;
-	cout << "  TEST evaluate MATLAB command" << endl;
-	cout << "******************************************************" << endl;
-	cout << endl << "Run MATLAB benchmark utility..." << endl;
-	MATLABengine::getMatlabEng()->evalString("bench;");
-	cout << endl << "Press any key to continue..." << endl;
-	cout << endl << "Run other MATLAB stuff..." << endl;
-	MATLABengine::getMatlabEng()->evalString("a = magic(10);");
-	MATLABengine::getMatlabEng()->evalString("figure(3)");
-	MATLABengine::getMatlabEng()->evalString("imagesc(a);");
-	MATLABengine::getMatlabEng()->evalString("clear a;");
-	getchar();
+  //-------------------------------------------------------------------------------------------
+  cout << "******************************************************" << endl;
+  cout << "  TEST evaluate MATLAB command" << endl;
+  cout << "******************************************************" << endl;
+  cout << endl << "Run MATLAB benchmark utility..." << endl;
+  MATLABengine::getMatlabEng()->evalString("bench;");
+  cout << endl << "Press any key to continue..." << endl;
+  cout << endl << "Run other MATLAB stuff..." << endl;
+  MATLABengine::getMatlabEng()->evalString("a = magic(10);");
+  MATLABengine::getMatlabEng()->evalString("figure(3)");
+  MATLABengine::getMatlabEng()->evalString("imagesc(a);");
+  MATLABengine::getMatlabEng()->evalString("clear a;");
+  getchar();
 
-	//-------------------------------------------------------------------------------------------
-	cout << "******************************************************" << endl;
-	cout << "  TEST mrs_natural" << endl;
-	cout << "******************************************************" << endl;
-	mrs_natural Marsyas_natural = 123456789;
-	cout << "Send a mrs_natural to MATLAB: " << Marsyas_natural << endl;
-	MATLABengine::getMatlabEng()->putVariable(Marsyas_natural,"Marsyas_natural");
-	cout << endl << "Variable sent. Check MATLAB variable 'Marsyas_natural' and compare values..." << endl;
-	getchar();
-	Marsyas_natural = 0;
-	if(MATLABengine::getMatlabEng()->getVariable("Marsyas_natural", Marsyas_natural) == 0)
-		cout << "Get it from MATLAB back to Marsyas: " << Marsyas_natural << endl;
-	else
-		cout << "Error getting value back from MATLAB!" << endl;
-	getchar();
+  //-------------------------------------------------------------------------------------------
+  cout << "******************************************************" << endl;
+  cout << "  TEST mrs_natural" << endl;
+  cout << "******************************************************" << endl;
+  mrs_natural Marsyas_natural = 123456789;
+  cout << "Send a mrs_natural to MATLAB: " << Marsyas_natural << endl;
+  MATLABengine::getMatlabEng()->putVariable(Marsyas_natural,"Marsyas_natural");
+  cout << endl << "Variable sent. Check MATLAB variable 'Marsyas_natural' and compare values..." << endl;
+  getchar();
+  Marsyas_natural = 0;
+  if(MATLABengine::getMatlabEng()->getVariable("Marsyas_natural", Marsyas_natural) == 0)
+    cout << "Get it from MATLAB back to Marsyas: " << Marsyas_natural << endl;
+  else
+    cout << "Error getting value back from MATLAB!" << endl;
+  getchar();
 	
-	//-------------------------------------------------------------------------------------------
-	cout << "******************************************************" << endl;
-	cout << "  TEST mrs_real" << endl;
-	cout << "******************************************************" << endl;
-	mrs_real Marsyas_real = 3.123456789;
-	cout << "Send a mrs_real to MATLAB: " << Marsyas_real << endl;
-	MATLABengine::getMatlabEng()->putVariable(Marsyas_real,"Marsyas_real");
-	cout << endl << "Variable sent: check MATLAB variable 'Marsyas_real' and compare values..." << endl;
-	getchar();
-	Marsyas_real = 0.0;
-	if(MATLABengine::getMatlabEng()->getVariable("Marsyas_real", Marsyas_real)== 0)
-		cout << "Get it from MATLAB back to Marsyas: " << Marsyas_real << endl;
-	else
-		cout << "Error getting value back from MATLAB!" << endl;
-	getchar();
+  //-------------------------------------------------------------------------------------------
+  cout << "******************************************************" << endl;
+  cout << "  TEST mrs_real" << endl;
+  cout << "******************************************************" << endl;
+  mrs_real Marsyas_real = 3.123456789;
+  cout << "Send a mrs_real to MATLAB: " << Marsyas_real << endl;
+  MATLABengine::getMatlabEng()->putVariable(Marsyas_real,"Marsyas_real");
+  cout << endl << "Variable sent: check MATLAB variable 'Marsyas_real' and compare values..." << endl;
+  getchar();
+  Marsyas_real = 0.0;
+  if(MATLABengine::getMatlabEng()->getVariable("Marsyas_real", Marsyas_real)== 0)
+    cout << "Get it from MATLAB back to Marsyas: " << Marsyas_real << endl;
+  else
+    cout << "Error getting value back from MATLAB!" << endl;
+  getchar();
 	
-	//-------------------------------------------------------------------------------------------
-	cout << "******************************************************" << endl;
-	cout << "  TEST mrs_complex" << endl;
-	cout << "******************************************************" << endl;
-	mrs_complex Marsyas_complex = mrs_complex(1.123456789, 2.123456789);
-	cout << "Send a mrs_complex to MATLAB: " << Marsyas_complex.real() << " + j" << Marsyas_complex.imag() << endl;
-	MATLABengine::getMatlabEng()->putVariable(Marsyas_complex,"Marsyas_complex");
-	cout << endl << "Variable sent: check MATLAB variable 'Marsyas_complex' and compare values..." << endl;
-	getchar();
-	Marsyas_complex = mrs_complex(0.0, 0.0);
-	if(MATLABengine::getMatlabEng()->getVariable("Marsyas_complex", Marsyas_complex) == 0)
-		cout << "Get it from MATLAB back to Marsyas: " << Marsyas_complex.real() << " + j" << Marsyas_complex.imag() << endl;
-	else
-		cout << "Error getting value back from MATLAB!" << endl;
-	getchar();
+  //-------------------------------------------------------------------------------------------
+  cout << "******************************************************" << endl;
+  cout << "  TEST mrs_complex" << endl;
+  cout << "******************************************************" << endl;
+  mrs_complex Marsyas_complex = mrs_complex(1.123456789, 2.123456789);
+  cout << "Send a mrs_complex to MATLAB: " << Marsyas_complex.real() << " + j" << Marsyas_complex.imag() << endl;
+  MATLABengine::getMatlabEng()->putVariable(Marsyas_complex,"Marsyas_complex");
+  cout << endl << "Variable sent: check MATLAB variable 'Marsyas_complex' and compare values..." << endl;
+  getchar();
+  Marsyas_complex = mrs_complex(0.0, 0.0);
+  if(MATLABengine::getMatlabEng()->getVariable("Marsyas_complex", Marsyas_complex) == 0)
+    cout << "Get it from MATLAB back to Marsyas: " << Marsyas_complex.real() << " + j" << Marsyas_complex.imag() << endl;
+  else
+    cout << "Error getting value back from MATLAB!" << endl;
+  getchar();
 	
-	//-------------------------------------------------------------------------------------------
-	cout << "******************************************************" << endl;
-	cout << "  TEST realvec (row vector)" << endl;
-	cout << "******************************************************" << endl;
-	realvec marRow_realvec1D(4);//Marsyas row vector
-	marRow_realvec1D(0) = 1.123456789;
-	marRow_realvec1D(1) = 2.123456789;
-	marRow_realvec1D(2) = 3.123456789;
-	marRow_realvec1D(3) = 4.123456789;
-	cout << "Send a realvec to MATLAB: " << endl;
-	cout << endl << marRow_realvec1D  << endl;
-	MATLABengine::getMatlabEng()->putVariable(marRow_realvec1D,"marRow_realvec1D");
-	cout << endl << "Variable sent: check MATLAB variable 'marRow_realvec1D' and compare values..." << endl;
-	getchar();
-	marRow_realvec1D.setval(0.0);
-	if(MATLABengine::getMatlabEng()->getVariable("marRow_realvec1D", marRow_realvec1D) == 0)
-		cout << "Get it from MATLAB back to Marsyas: " << endl << endl << marRow_realvec1D << endl;
-	else
-		cout << "Error getting value back from MATLAB!" << endl;
-	getchar();
+  //-------------------------------------------------------------------------------------------
+  cout << "******************************************************" << endl;
+  cout << "  TEST realvec (row vector)" << endl;
+  cout << "******************************************************" << endl;
+  realvec marRow_realvec1D(4);//Marsyas row vector
+  marRow_realvec1D(0) = 1.123456789;
+  marRow_realvec1D(1) = 2.123456789;
+  marRow_realvec1D(2) = 3.123456789;
+  marRow_realvec1D(3) = 4.123456789;
+  cout << "Send a realvec to MATLAB: " << endl;
+  cout << endl << marRow_realvec1D  << endl;
+  MATLABengine::getMatlabEng()->putVariable(marRow_realvec1D,"marRow_realvec1D");
+  cout << endl << "Variable sent: check MATLAB variable 'marRow_realvec1D' and compare values..." << endl;
+  getchar();
+  marRow_realvec1D.setval(0.0);
+  if(MATLABengine::getMatlabEng()->getVariable("marRow_realvec1D", marRow_realvec1D) == 0)
+    cout << "Get it from MATLAB back to Marsyas: " << endl << endl << marRow_realvec1D << endl;
+  else
+    cout << "Error getting value back from MATLAB!" << endl;
+  getchar();
 
-	//-------------------------------------------------------------------------------------------
-	cout << "******************************************************" << endl;
-	cout << "  TEST realvec (col vector)" << endl;
-	cout << "******************************************************" << endl;
-	realvec marCol_realvec1D(4,1);//Marsyas col vector
-	marCol_realvec1D(0) = 1.123456789;
-	marCol_realvec1D(1) = 2.123456789;
-	marCol_realvec1D(2) = 3.123456789;
-	marCol_realvec1D(3) = 4.123456789;
-	cout << "Send a realvec to MATLAB: " << endl;
-	cout << endl << marCol_realvec1D  << endl;
-	MATLABengine::getMatlabEng()->putVariable(marCol_realvec1D,"marCol_realvec1D");
-	cout << endl << "Variable sent: check MATLAB variable 'marCol_realvec1D' and compare values..." << endl;
-	getchar();
-	marCol_realvec1D.setval(0.0);
-	if(MATLABengine::getMatlabEng()->getVariable("marCol_realvec1D", marCol_realvec1D) == 0)
-		cout << "Get it from MATLAB back to Marsyas: " << endl << endl << marCol_realvec1D << endl;
-	else
-		cout << "Error getting value back from MATLAB!" << endl;
-	getchar();
+  //-------------------------------------------------------------------------------------------
+  cout << "******************************************************" << endl;
+  cout << "  TEST realvec (col vector)" << endl;
+  cout << "******************************************************" << endl;
+  realvec marCol_realvec1D(4,1);//Marsyas col vector
+  marCol_realvec1D(0) = 1.123456789;
+  marCol_realvec1D(1) = 2.123456789;
+  marCol_realvec1D(2) = 3.123456789;
+  marCol_realvec1D(3) = 4.123456789;
+  cout << "Send a realvec to MATLAB: " << endl;
+  cout << endl << marCol_realvec1D  << endl;
+  MATLABengine::getMatlabEng()->putVariable(marCol_realvec1D,"marCol_realvec1D");
+  cout << endl << "Variable sent: check MATLAB variable 'marCol_realvec1D' and compare values..." << endl;
+  getchar();
+  marCol_realvec1D.setval(0.0);
+  if(MATLABengine::getMatlabEng()->getVariable("marCol_realvec1D", marCol_realvec1D) == 0)
+    cout << "Get it from MATLAB back to Marsyas: " << endl << endl << marCol_realvec1D << endl;
+  else
+    cout << "Error getting value back from MATLAB!" << endl;
+  getchar();
 
-	//-------------------------------------------------------------------------------------------
-	cout << "******************************************************" << endl;
-	cout << "  TEST realvec (2D array)" << endl;
-	cout << "******************************************************" << endl;
-	realvec marsyas_realvec2D(2,3);//Marsyas matrix: 2 rows; 3 columns
-	marsyas_realvec2D(0,0) = 0.0;
-	marsyas_realvec2D(0,1) = 0.1;
-	marsyas_realvec2D(0,2) = 0.2;
-	marsyas_realvec2D(1,0) = 1.0;
-	marsyas_realvec2D(1,1) = 1.1;
-	marsyas_realvec2D(1,2) = 1.2;
-	cout << "Send a realvec to MATLAB: " << endl;
-	cout << endl << marsyas_realvec2D  << endl;
-	MATLABengine::getMatlabEng()->putVariable(marsyas_realvec2D,"marsyas_realvec2D");
-	cout << endl << "Variable sent: check MATLAB variable 'marsyas_realvec2D' and compare values..." << endl;
-	getchar();
-	marsyas_realvec2D.setval(0.0);
-	if(MATLABengine::getMatlabEng()->getVariable("marsyas_realvec2D", marsyas_realvec2D)==0)
-		cout << "Get it from MATLAB back to Marsyas: " << endl << endl << marsyas_realvec2D << endl;
-	else
-		cout << "Error getting value back from MATLAB!" << endl;
-	getchar();
+  //-------------------------------------------------------------------------------------------
+  cout << "******************************************************" << endl;
+  cout << "  TEST realvec (2D array)" << endl;
+  cout << "******************************************************" << endl;
+  realvec marsyas_realvec2D(2,3);//Marsyas matrix: 2 rows; 3 columns
+  marsyas_realvec2D(0,0) = 0.0;
+  marsyas_realvec2D(0,1) = 0.1;
+  marsyas_realvec2D(0,2) = 0.2;
+  marsyas_realvec2D(1,0) = 1.0;
+  marsyas_realvec2D(1,1) = 1.1;
+  marsyas_realvec2D(1,2) = 1.2;
+  cout << "Send a realvec to MATLAB: " << endl;
+  cout << endl << marsyas_realvec2D  << endl;
+  MATLABengine::getMatlabEng()->putVariable(marsyas_realvec2D,"marsyas_realvec2D");
+  cout << endl << "Variable sent: check MATLAB variable 'marsyas_realvec2D' and compare values..." << endl;
+  getchar();
+  marsyas_realvec2D.setval(0.0);
+  if(MATLABengine::getMatlabEng()->getVariable("marsyas_realvec2D", marsyas_realvec2D)==0)
+    cout << "Get it from MATLAB back to Marsyas: " << endl << endl << marsyas_realvec2D << endl;
+  else
+    cout << "Error getting value back from MATLAB!" << endl;
+  getchar();
 	
 
-	//-------------------------------------------------------------------------------------------
-	cout << "******************************************************" << endl;
-	cout << "  TEST std::vector<mrs_natural>" << endl;
-	cout << "******************************************************" << endl;
-	vector<mrs_natural> vector_natural(4);
-	vector_natural[0] = 1;
-	vector_natural[1] = 2;
-	vector_natural[2] = 3;
-	vector_natural[3] = 4;
-	cout << "Send a std::vector<mrs_natural> to MATLAB: " << endl;
-	cout << "vector_natural[0] = " << vector_natural[0] << endl;
-	cout << "vector_natural[1] = " << vector_natural[1] << endl;
-	cout << "vector_natural[2] = " << vector_natural[2] << endl;
-	cout << "vector_natural[3] = " << vector_natural[3] << endl;
+  //-------------------------------------------------------------------------------------------
+  cout << "******************************************************" << endl;
+  cout << "  TEST std::vector<mrs_natural>" << endl;
+  cout << "******************************************************" << endl;
+  vector<mrs_natural> vector_natural(4);
+  vector_natural[0] = 1;
+  vector_natural[1] = 2;
+  vector_natural[2] = 3;
+  vector_natural[3] = 4;
+  cout << "Send a std::vector<mrs_natural> to MATLAB: " << endl;
+  cout << "vector_natural[0] = " << vector_natural[0] << endl;
+  cout << "vector_natural[1] = " << vector_natural[1] << endl;
+  cout << "vector_natural[2] = " << vector_natural[2] << endl;
+  cout << "vector_natural[3] = " << vector_natural[3] << endl;
 
-	MATLABengine::getMatlabEng()->putVariable(vector_natural,"vector_natural");
-	cout << endl << "Variable sent: check MATLAB variable 'vector_natural' and compare values..." << endl;
-	getchar();
-	vector_natural.clear();
-	if(MATLABengine::getMatlabEng()->getVariable("vector_natural", vector_natural)==0)
-	{
-		cout << "Get it from MATLAB back to Marsyas: " << endl;
-		cout << "vector_natural[0] = " << vector_natural[0] << endl;
-		cout << "vector_natural[1] = " << vector_natural[1] << endl;
-		cout << "vector_natural[2] = " << vector_natural[2] << endl;
-		cout << "vector_natural[3] = " << vector_natural[3] << endl;
-	}
-	else
-		cout << "Error getting value back from MATLAB!" << endl;
-	getchar();
+  MATLABengine::getMatlabEng()->putVariable(vector_natural,"vector_natural");
+  cout << endl << "Variable sent: check MATLAB variable 'vector_natural' and compare values..." << endl;
+  getchar();
+  vector_natural.clear();
+  if(MATLABengine::getMatlabEng()->getVariable("vector_natural", vector_natural)==0)
+    {
+      cout << "Get it from MATLAB back to Marsyas: " << endl;
+      cout << "vector_natural[0] = " << vector_natural[0] << endl;
+      cout << "vector_natural[1] = " << vector_natural[1] << endl;
+      cout << "vector_natural[2] = " << vector_natural[2] << endl;
+      cout << "vector_natural[3] = " << vector_natural[3] << endl;
+    }
+  else
+    cout << "Error getting value back from MATLAB!" << endl;
+  getchar();
 
 
-	//-------------------------------------------------------------------------------------------
-	cout << "******************************************************" << endl;
-	cout << "  TEST std::vector<mrs_real>" << endl;
-	cout << "******************************************************" << endl;
-	vector<mrs_real> vector_real(4);
-	vector_real[0] = 1.123456789;
-	vector_real[1] = 2.123456789;
-	vector_real[2] = 3.123456789;
-	vector_real[3] = 4.123456789;
-	cout << "Send a std::vector<mrs_real> to MATLAB: " << endl;
-	cout << "vector_real[0] = " << vector_real[0] << endl;
-	cout << "vector_real[1] = " << vector_real[1] << endl;
-	cout << "vector_real[2] = " << vector_real[2] << endl;
-	cout << "vector_real[3] = " << vector_real[3] << endl;
+  //-------------------------------------------------------------------------------------------
+  cout << "******************************************************" << endl;
+  cout << "  TEST std::vector<mrs_real>" << endl;
+  cout << "******************************************************" << endl;
+  vector<mrs_real> vector_real(4);
+  vector_real[0] = 1.123456789;
+  vector_real[1] = 2.123456789;
+  vector_real[2] = 3.123456789;
+  vector_real[3] = 4.123456789;
+  cout << "Send a std::vector<mrs_real> to MATLAB: " << endl;
+  cout << "vector_real[0] = " << vector_real[0] << endl;
+  cout << "vector_real[1] = " << vector_real[1] << endl;
+  cout << "vector_real[2] = " << vector_real[2] << endl;
+  cout << "vector_real[3] = " << vector_real[3] << endl;
 	
-	MATLABengine::getMatlabEng()->putVariable(vector_real,"vector_real");
-	cout << endl << "Variable sent: check MATLAB variable 'vector_real' and compare values..." << endl;
-	getchar();
-	vector_real.clear();
-	if(MATLABengine::getMatlabEng()->getVariable("vector_real", vector_real)==0)
-	{
-		cout << "Get it from MATLAB back to Marsyas: " << endl;
-		cout << "vector_real[0] = " << vector_real[0] << endl;
-		cout << "vector_real[1] = " << vector_real[1] << endl;
-		cout << "vector_real[2] = " << vector_real[2] << endl;
-		cout << "vector_real[3] = " << vector_real[3] << endl;
-	}
-	else
-		cout << "Error getting value back from MATLAB!" << endl;
-	getchar();
+  MATLABengine::getMatlabEng()->putVariable(vector_real,"vector_real");
+  cout << endl << "Variable sent: check MATLAB variable 'vector_real' and compare values..." << endl;
+  getchar();
+  vector_real.clear();
+  if(MATLABengine::getMatlabEng()->getVariable("vector_real", vector_real)==0)
+    {
+      cout << "Get it from MATLAB back to Marsyas: " << endl;
+      cout << "vector_real[0] = " << vector_real[0] << endl;
+      cout << "vector_real[1] = " << vector_real[1] << endl;
+      cout << "vector_real[2] = " << vector_real[2] << endl;
+      cout << "vector_real[3] = " << vector_real[3] << endl;
+    }
+  else
+    cout << "Error getting value back from MATLAB!" << endl;
+  getchar();
 
 
-	//-------------------------------------------------------------------------------------------
-	cout << "******************************************************" << endl;
-	cout << "  TEST std::vector<mrs_complex>" << endl;
-	cout << "******************************************************" << endl;
-	vector<mrs_complex> vector_complex(4);
-	vector_complex[0] = mrs_complex(1.123456789, 2.123456789);
-	vector_complex[1] = mrs_complex(3.123456789, 4.123456789);
-	vector_complex[2] = mrs_complex(5.123456789, 6.123456789);
-	vector_complex[3] = mrs_complex(7.123456789, 8.123456789);
-	cout << "Send a std::vector<mrs_complex> to MATLAB: " << endl;
-	cout << "vector_complex[0] = " << vector_complex[0].real() << " + j" << vector_complex[0].imag() << endl;
-	cout << "vector_complex[1] = " << vector_complex[1].real() << " + j" << vector_complex[1].imag() << endl;
-	cout << "vector_complex[2] = " << vector_complex[2].real() << " + j" << vector_complex[2].imag() << endl;
-	cout << "vector_complex[3] = " << vector_complex[3].real() << " + j" << vector_complex[3].imag() << endl;
+  //-------------------------------------------------------------------------------------------
+  cout << "******************************************************" << endl;
+  cout << "  TEST std::vector<mrs_complex>" << endl;
+  cout << "******************************************************" << endl;
+  vector<mrs_complex> vector_complex(4);
+  vector_complex[0] = mrs_complex(1.123456789, 2.123456789);
+  vector_complex[1] = mrs_complex(3.123456789, 4.123456789);
+  vector_complex[2] = mrs_complex(5.123456789, 6.123456789);
+  vector_complex[3] = mrs_complex(7.123456789, 8.123456789);
+  cout << "Send a std::vector<mrs_complex> to MATLAB: " << endl;
+  cout << "vector_complex[0] = " << vector_complex[0].real() << " + j" << vector_complex[0].imag() << endl;
+  cout << "vector_complex[1] = " << vector_complex[1].real() << " + j" << vector_complex[1].imag() << endl;
+  cout << "vector_complex[2] = " << vector_complex[2].real() << " + j" << vector_complex[2].imag() << endl;
+  cout << "vector_complex[3] = " << vector_complex[3].real() << " + j" << vector_complex[3].imag() << endl;
 
-	MATLABengine::getMatlabEng()->putVariable(vector_complex,"vector_complex");
-	cout << endl << "Variable sent: check MATLAB variable 'vector_complex' and compare values..." << endl;
-	getchar();
-	vector_complex.clear();
-	if(MATLABengine::getMatlabEng()->getVariable("vector_complex", vector_complex)==0)
-	{
-		cout << "Get it from MATLAB back to Marsyas: " << endl;
-		cout << "vector_complex[0] = " << vector_complex[0].real() << " + j" << vector_complex[0].imag() << endl;
-		cout << "vector_complex[1] = " << vector_complex[1].real() << " + j" << vector_complex[1].imag() << endl;
-		cout << "vector_complex[2] = " << vector_complex[2].real() << " + j" << vector_complex[2].imag() << endl;
-		cout << "vector_complex[3] = " << vector_complex[3].real() << " + j" << vector_complex[3].imag() << endl;
-	}
-	else
-		cout << "Error getting value back from MATLAB!" << endl;
-	getchar();
+  MATLABengine::getMatlabEng()->putVariable(vector_complex,"vector_complex");
+  cout << endl << "Variable sent: check MATLAB variable 'vector_complex' and compare values..." << endl;
+  getchar();
+  vector_complex.clear();
+  if(MATLABengine::getMatlabEng()->getVariable("vector_complex", vector_complex)==0)
+    {
+      cout << "Get it from MATLAB back to Marsyas: " << endl;
+      cout << "vector_complex[0] = " << vector_complex[0].real() << " + j" << vector_complex[0].imag() << endl;
+      cout << "vector_complex[1] = " << vector_complex[1].real() << " + j" << vector_complex[1].imag() << endl;
+      cout << "vector_complex[2] = " << vector_complex[2].real() << " + j" << vector_complex[2].imag() << endl;
+      cout << "vector_complex[3] = " << vector_complex[3].real() << " + j" << vector_complex[3].imag() << endl;
+    }
+  else
+    cout << "Error getting value back from MATLAB!" << endl;
+  getchar();
 
 #else
-	cout << endl << "MATLAB Engine not configured! Not possible to run test..." << endl;
-	cout << "To build this test with MATLAB engine support, check:" << endl << endl;
-	cout << "http://www.mathworks.com/access/helpdesk/help/techdoc/matlab_external/f39903.html" << endl;
-	getchar();
+  cout << endl << "MATLAB Engine not configured! Not possible to run test..." << endl;
+  cout << "To build this test with MATLAB engine support, check:" << endl << endl;
+  cout << "http://www.mathworks.com/access/helpdesk/help/techdoc/matlab_external/f39903.html" << endl;
+  getchar();
 
 #endif
 }
@@ -899,274 +970,274 @@ test_MATLABengine()
 void
 test_LPC_LSP(string sfName)
 {
-	// In order to test the LPC and LSP routines using the MATLABengine class
-	// for numeric validation of the routines and graphical plots of the results,
-	// the following defines must be set:
-	//
-	//	  _MATLAB_ENGINE_
-	//    _MATLAB_LPC_ (in LPCwarped.cpp) 
-	//    _MATLAB_LSP_ (in LSP.cpp)
-	//
-	// Additionally, inside MATLAB, the /marsyasMATLAB directory should be in the path
-	// so the LPC_test.m and LSP_test.m mfiles (included in /marsyasMATLAB) in can be  
-	// called directly from the C++ code for testing and plotting purposes.
-	//
-	// <lmartins@inescporto.pt> - 17.06.2006
+  // In order to test the LPC and LSP routines using the MATLABengine class
+  // for numeric validation of the routines and graphical plots of the results,
+  // the following defines must be set:
+  //
+  //	  _MATLAB_ENGINE_
+  //    _MATLAB_LPC_ (in LPCwarped.cpp) 
+  //    _MATLAB_LSP_ (in LSP.cpp)
+  //
+  // Additionally, inside MATLAB, the /marsyasMATLAB directory should be in the path
+  // so the LPC_test.m and LSP_test.m mfiles (included in /marsyasMATLAB) in can be  
+  // called directly from the C++ code for testing and plotting purposes.
+  //
+  // <lmartins@inescporto.pt> - 17.06.2006
 
-	cout << "TEST: LPCwarped and LSP calculation and validation using MATLAB (engine)" << endl;
-	cout << "Sound to analyze: " << sfName << endl;
+  cout << "TEST: LPCwarped and LSP calculation and validation using MATLAB (engine)" << endl;
+  cout << "Sound to analyze: " << sfName << endl;
 	
-	mrs_natural lpcOrder = 10;
-	mrs_natural hopSize = 512;
+  mrs_natural lpcOrder = 10;
+  mrs_natural hopSize = 512;
 
-	cout<<"LPC and LSP order: " <<lpcOrder <<endl;
-	cout<<"hopeSize: " <<hopSize <<endl;
+  cout<<"LPC and LSP order: " <<lpcOrder <<endl;
+  cout<<"hopeSize: " <<hopSize <<endl;
 	
-	MarSystemManager mng;
+  MarSystemManager mng;
 	
-	//LPC network
-	MarSystem* input = mng.create("Series", "input");
+  //LPC network
+  MarSystem* input = mng.create("Series", "input");
 	
-	input->addMarSystem(mng.create("SoundFileSource","src"));
-	input->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-	input->updctrl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
+  input->addMarSystem(mng.create("SoundFileSource","src"));
+  input->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  input->updctrl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
 
-	input->addMarSystem(mng.create("ShiftInput", "si"));
-	input->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
-	input->updctrl("ShiftInput/si/mrs_natural/WindowSize", hopSize);
+  input->addMarSystem(mng.create("ShiftInput", "si"));
+  input->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
+  input->updctrl("ShiftInput/si/mrs_natural/WindowSize", hopSize);
 
-	input->addMarSystem(mng.create("LPCwarped", "lpcwarped"));
-	input->updctrl("LPCwarped/lpcwarped/mrs_natural/order",lpcOrder);
-	input->updctrl("LPCwarped/lpcwarped/mrs_real/lambda",0.0);
-	input->updctrl("LPCwarped/lpcwarped/mrs_real/gamma",1.0);
+  input->addMarSystem(mng.create("LPCwarped", "lpcwarped"));
+  input->updctrl("LPCwarped/lpcwarped/mrs_natural/order",lpcOrder);
+  input->updctrl("LPCwarped/lpcwarped/mrs_real/lambda",0.0);
+  input->updctrl("LPCwarped/lpcwarped/mrs_real/gamma",1.0);
 
-	input->addMarSystem(mng.create("LSP", "lsp"));
-	input->updctrl("LSP/lsp/mrs_natural/order",lpcOrder);
-	input->updctrl("LSP/lsp/mrs_real/gamma",1.0);
+  input->addMarSystem(mng.create("LSP", "lsp"));
+  input->updctrl("LSP/lsp/mrs_natural/order",lpcOrder);
+  input->updctrl("LSP/lsp/mrs_real/gamma",1.0);
 
 
-	int i = 0;
-	while(input->getctrl("SoundFileSource/src/bool/notEmpty").toBool())
-	{
-		input->tick();
-		cout << "Processed frame " << i << endl;
-		i++;
-	}
+  int i = 0;
+  while(input->getctrl("SoundFileSource/src/bool/notEmpty").toBool())
+    {
+      input->tick();
+      cout << "Processed frame " << i << endl;
+      i++;
+    }
 
-	cout << endl << "LPCwarped and LSP processing finished!";
+  cout << endl << "LPCwarped and LSP processing finished!";
 }
 
 void
 test_realvec()
 {
-	//Test new operator= implementation:
-	//attributions are now performed even if the realvec arguments
-	//have different sizes => left hand realvec is deleted before 
-	//performing attribution. 
-	realvec a;
-	realvec b;
+  //Test new operator= implementation:
+  //attributions are now performed even if the realvec arguments
+  //have different sizes => left hand realvec is deleted before 
+  //performing attribution. 
+  realvec a;
+  realvec b;
 
-	a.create(3);
-	a(0) = 1;
-	a(1) = 2;
-	a(2) = 3;
+  a.create(3);
+  a(0) = 1;
+  a(1) = 2;
+  a(2) = 3;
 	
-	//b.create(a.getSize()); //although a and b have diferent sizes, there is no need for this now!
-	b = a;
+  //b.create(a.getSize()); //although a and b have diferent sizes, there is no need for this now!
+  b = a;
 
-	cout << endl << ">>>>>>>> realvec::operator=() : "<< endl;
-	cout << "attributions are now performed even if the realvec arguments have different sizes" << endl;
-	cout << "=> left hand realvec is deleted and then recreated during attribution." << endl << endl;
+  cout << endl << ">>>>>>>> realvec::operator=() : "<< endl;
+  cout << "attributions are now performed even if the realvec arguments have different sizes" << endl;
+  cout << "=> left hand realvec is deleted and then recreated during attribution." << endl << endl;
 
-	cout << a << endl << endl;
-	cout << b << endl << endl;
+  cout << a << endl << endl;
+  cout << b << endl << endl;
 
-	getchar();
+  getchar();
 
 #ifdef _MATLAB_ENGINE_
 
-	realvec matrixA, matrixB;
-	realvec meanobs;
-	realvec stdobs;
-	realvec varobs;
-	realvec normobs;
-	realvec invMatrix;
-	realvec covmatrix;
-	realvec corrmatrix;
+  realvec matrixA, matrixB;
+  realvec meanobs;
+  realvec stdobs;
+  realvec varobs;
+  realvec normobs;
+  realvec invMatrix;
+  realvec covmatrix;
+  realvec corrmatrix;
 	
-	cout << endl << ">>>>>>>> Create a simple matrix:" << endl << endl;
-	matrixA.create(2,3);
-	matrixA(0,0) = 1.0;
-	matrixA(0,1) = 2.0;
-	matrixA(0,2) = 3.0;
-	matrixA(1,0) = 4.0;
-	matrixA(1,1) = 5.0;
-	matrixA(1,2) = 6.0;
-	cout << matrixA << endl;
-	getchar();
-	cout << ">>>>>>>> realvec::getRow(1):" << endl << endl;
-	cout << matrixA.getRow(1) << endl;
-	getchar();
-	cout << ">>>>>>>> realvec::getCol(2):" << endl << endl;
-	cout << matrixA.getCol(2) << endl << endl;
-	getchar();
+  cout << endl << ">>>>>>>> Create a simple matrix:" << endl << endl;
+  matrixA.create(2,3);
+  matrixA(0,0) = 1.0;
+  matrixA(0,1) = 2.0;
+  matrixA(0,2) = 3.0;
+  matrixA(1,0) = 4.0;
+  matrixA(1,1) = 5.0;
+  matrixA(1,2) = 6.0;
+  cout << matrixA << endl;
+  getchar();
+  cout << ">>>>>>>> realvec::getRow(1):" << endl << endl;
+  cout << matrixA.getRow(1) << endl;
+  getchar();
+  cout << ">>>>>>>> realvec::getCol(2):" << endl << endl;
+  cout << matrixA.getCol(2) << endl << endl;
+  getchar();
 	
-	cout << ">>>>>>>> Sending matrix to MATLAB..." << endl;
-	MATLAB->putVariable(matrixA, "matrixA");
-	cout << ">>>>>>>> ...complete! Press a key to continue." << endl;
-	getchar();
+  cout << ">>>>>>>> Sending matrix to MATLAB..." << endl;
+  MATLAB->putVariable(matrixA, "matrixA");
+  cout << ">>>>>>>> ...complete! Press a key to continue." << endl;
+  getchar();
 	
-	cout << endl<< ">>>>>>>> calculate means of each row using MATLAB:" << endl << endl;
-	MATLAB->evalString("meanobs = mean(matrixA')'");
-	MATLAB->getVariable("meanobs", meanobs);
-	cout << meanobs << endl;
-	getchar();
-	cout << ">>>>>>>> compare with realvec::meanObs(): " << endl << endl;
-	cout << matrixA.meanObs() << endl;
-	getchar();
+  cout << endl<< ">>>>>>>> calculate means of each row using MATLAB:" << endl << endl;
+  MATLAB->evalString("meanobs = mean(matrixA')'");
+  MATLAB->getVariable("meanobs", meanobs);
+  cout << meanobs << endl;
+  getchar();
+  cout << ">>>>>>>> compare with realvec::meanObs(): " << endl << endl;
+  cout << matrixA.meanObs() << endl;
+  getchar();
 
-	cout << endl<< ">>>>>>>> calculate stdev of each row using MATLAB:" << endl << endl;
-	//marsyas uses the biased estimator for the stdev calculation
-	MATLAB->evalString("stdobs = std(matrixA',1)'");
-	MATLAB->getVariable("stdobs", stdobs);
-	cout << stdobs << endl;
-	getchar();
-	cout << ">>>>>>>> compare with realvec::stdObs(): " << endl << endl;
-	cout << matrixA.stdObs() << endl;
-	getchar();
+  cout << endl<< ">>>>>>>> calculate stdev of each row using MATLAB:" << endl << endl;
+  //marsyas uses the biased estimator for the stdev calculation
+  MATLAB->evalString("stdobs = std(matrixA',1)'");
+  MATLAB->getVariable("stdobs", stdobs);
+  cout << stdobs << endl;
+  getchar();
+  cout << ">>>>>>>> compare with realvec::stdObs(): " << endl << endl;
+  cout << matrixA.stdObs() << endl;
+  getchar();
 
-	cout << endl<< ">>>>>>>> calculate variance of each row using MATLAB:" << endl << endl;
-	//marsyas uses the biased estimator for the var calculation
-	MATLAB->evalString("varobs = var(matrixA',1)'");
-	MATLAB->getVariable("varobs", varobs);
-	cout << varobs << endl;
-	getchar();
-	cout << ">>>>>>>> compare with realvec::varObs(): " << endl << endl;
-	cout << matrixA.varObs() << endl;
-	getchar();
+  cout << endl<< ">>>>>>>> calculate variance of each row using MATLAB:" << endl << endl;
+  //marsyas uses the biased estimator for the var calculation
+  MATLAB->evalString("varobs = var(matrixA',1)'");
+  MATLAB->getVariable("varobs", varobs);
+  cout << varobs << endl;
+  getchar();
+  cout << ">>>>>>>> compare with realvec::varObs(): " << endl << endl;
+  cout << matrixA.varObs() << endl;
+  getchar();
 
-	cout << endl<< ">>>>>>>> Standardize observation's matrix using MATLAB:" << endl << endl;
-	MATLAB->evalString("matrixA = matrixA'");
-	MATLAB->evalString("clear normobs");
-	MATLAB->evalString("normobs(1,:) = matrixA(1,:) - mean(matrixA)");
-	MATLAB->evalString("normobs(1,:) = normobs(1,:) / std(matrixA,1)");
-	MATLAB->evalString("normobs(2,:) = matrixA(2,:) - mean(matrixA)");
-	MATLAB->evalString("normobs(2,:) = normobs(2,:) / std(matrixA,1)");
-	MATLAB->evalString("normobs(3,:) = matrixA(3,:) - mean(matrixA)");
-	MATLAB->evalString("normobs(3,:) = normobs(3,:) / std(matrixA,1)");
-	MATLAB->evalString("normobs = normobs'");
-	MATLAB->getVariable("normobs", normobs);
-	cout << normobs << endl;
-	getchar();
-	cout << ">>>>>>>> compare with realvec::normObs(): " << endl << endl;
-	matrixA.normObs();
-	cout << matrixA << endl;
-	getchar();
-
-
-	cout << ">>>>>>>> Creating a new random matrix in MATLAB..." << endl;
- 	cout << ">>>>>>>> ... and get it into a realvec: " << endl << endl; 
- 	MATLAB->evalString("matrixA = rand(2,30)");
- 	MATLAB->getVariable("matrixA", matrixA);
- 	cout << matrixA << endl;
- 	getchar();
-
-	cout << endl<< ">>>>>>>> calculate COVARIANCE matrix using MATLAB (unbiased estimator):" << endl << endl;
-	MATLAB->evalString("covmatrix = cov(matrixA')'");
-	MATLAB->getVariable("covmatrix", covmatrix);
-	cout << covmatrix << endl;
-	getchar();
-	cout << ">>>>>>>> compare with realvec::covariance(): " << endl << endl;
-	//realvec::covariance() uses the unbiased estimator for the covar calculation
-	//matrixB.create(matrixA.getRows(),matrixA.getCols()); //no need for this anymore!:-)
-	matrixB = matrixA;
-	cout << matrixB.covariance() << endl;
-	getchar();
-
-	cout << endl<< ">>>>>>>> calculate COVARIANCE matrix using MATLAB (biased estimator):" << endl << endl;
-	MATLAB->evalString("covmatrix = cov(matrixA',1)'");
-	MATLAB->getVariable("covmatrix", covmatrix);
-	cout << covmatrix << endl;
-	getchar();
-	cout << ">>>>>>>> compare with realvec::covariance2(): " << endl << endl;
-	//realvec::covariance2() uses the biased estimator for the covar calculation
-	matrixB.create(matrixA.getRows(),matrixA.getCols());
-	matrixB = matrixA;
-	cout << matrixB.covariance2() << endl;
-	cout << ">>>>>>>> Results are different because realvec::covariance2() does not remove the mean from input data before estimating the cov matrix... " << endl << endl;
-	getchar();
+  cout << endl<< ">>>>>>>> Standardize observation's matrix using MATLAB:" << endl << endl;
+  MATLAB->evalString("matrixA = matrixA'");
+  MATLAB->evalString("clear normobs");
+  MATLAB->evalString("normobs(1,:) = matrixA(1,:) - mean(matrixA)");
+  MATLAB->evalString("normobs(1,:) = normobs(1,:) / std(matrixA,1)");
+  MATLAB->evalString("normobs(2,:) = matrixA(2,:) - mean(matrixA)");
+  MATLAB->evalString("normobs(2,:) = normobs(2,:) / std(matrixA,1)");
+  MATLAB->evalString("normobs(3,:) = matrixA(3,:) - mean(matrixA)");
+  MATLAB->evalString("normobs(3,:) = normobs(3,:) / std(matrixA,1)");
+  MATLAB->evalString("normobs = normobs'");
+  MATLAB->getVariable("normobs", normobs);
+  cout << normobs << endl;
+  getchar();
+  cout << ">>>>>>>> compare with realvec::normObs(): " << endl << endl;
+  matrixA.normObs();
+  cout << matrixA << endl;
+  getchar();
 
 
-	cout << endl<< ">>>>>>>> calculate CORRELATION matrix using MATLAB:" << endl << endl;
-	MATLAB->evalString("corrmatrix = corrcoef(matrixA')'");
-	MATLAB->getVariable("corrmatrix", corrmatrix);
-	cout << corrmatrix << endl;
-	getchar();
-	cout << ">>>>>>>> compare with realvec::correlation(): " << endl << endl;
-	cout << matrixA.correlation() << endl;
-	getchar();
+  cout << ">>>>>>>> Creating a new random matrix in MATLAB..." << endl;
+  cout << ">>>>>>>> ... and get it into a realvec: " << endl << endl; 
+  MATLAB->evalString("matrixA = rand(2,30)");
+  MATLAB->getVariable("matrixA", matrixA);
+  cout << matrixA << endl;
+  getchar();
+
+  cout << endl<< ">>>>>>>> calculate COVARIANCE matrix using MATLAB (unbiased estimator):" << endl << endl;
+  MATLAB->evalString("covmatrix = cov(matrixA')'");
+  MATLAB->getVariable("covmatrix", covmatrix);
+  cout << covmatrix << endl;
+  getchar();
+  cout << ">>>>>>>> compare with realvec::covariance(): " << endl << endl;
+  //realvec::covariance() uses the unbiased estimator for the covar calculation
+  //matrixB.create(matrixA.getRows(),matrixA.getCols()); //no need for this anymore!:-)
+  matrixB = matrixA;
+  cout << matrixB.covariance() << endl;
+  getchar();
+
+  cout << endl<< ">>>>>>>> calculate COVARIANCE matrix using MATLAB (biased estimator):" << endl << endl;
+  MATLAB->evalString("covmatrix = cov(matrixA',1)'");
+  MATLAB->getVariable("covmatrix", covmatrix);
+  cout << covmatrix << endl;
+  getchar();
+  cout << ">>>>>>>> compare with realvec::covariance2(): " << endl << endl;
+  //realvec::covariance2() uses the biased estimator for the covar calculation
+  matrixB.create(matrixA.getRows(),matrixA.getCols());
+  matrixB = matrixA;
+  cout << matrixB.covariance2() << endl;
+  cout << ">>>>>>>> Results are different because realvec::covariance2() does not remove the mean from input data before estimating the cov matrix... " << endl << endl;
+  getchar();
+
+
+  cout << endl<< ">>>>>>>> calculate CORRELATION matrix using MATLAB:" << endl << endl;
+  MATLAB->evalString("corrmatrix = corrcoef(matrixA')'");
+  MATLAB->getVariable("corrmatrix", corrmatrix);
+  cout << corrmatrix << endl;
+  getchar();
+  cout << ">>>>>>>> compare with realvec::correlation(): " << endl << endl;
+  cout << matrixA.correlation() << endl;
+  getchar();
 
 	
-	//-----------------------
+  //-----------------------
 	
-	cout << ">>>>>>>> Creating a random matrix in MATLAB..." << endl;
-	cout << ">>>>>>>> ... and get it into a realvec: " << endl << endl; 
-	MATLAB->evalString("matrixA = rand(4)");
-	MATLAB->getVariable("matrixA", matrixA);
-	cout << matrixA << endl;
-	getchar();
+  cout << ">>>>>>>> Creating a random matrix in MATLAB..." << endl;
+  cout << ">>>>>>>> ... and get it into a realvec: " << endl << endl; 
+  MATLAB->evalString("matrixA = rand(4)");
+  MATLAB->getVariable("matrixA", matrixA);
+  cout << matrixA << endl;
+  getchar();
 
-	cout << endl << ">>>>>>>> Calculate TRACE using MATLAB: " << endl;
-	MATLAB->evalString("traceval = trace(matrixA)");
-	mrs_real traceval;
-	MATLAB->getVariable("traceval", traceval);
-	cout << traceval << endl << endl;
-	cout << endl << ">>>>>>>> Calculate TRACE using realvec::trace(): " << endl;
-	cout << matrixA.trace() << endl << endl;
-	getchar();
+  cout << endl << ">>>>>>>> Calculate TRACE using MATLAB: " << endl;
+  MATLAB->evalString("traceval = trace(matrixA)");
+  mrs_real traceval;
+  MATLAB->getVariable("traceval", traceval);
+  cout << traceval << endl << endl;
+  cout << endl << ">>>>>>>> Calculate TRACE using realvec::trace(): " << endl;
+  cout << matrixA.trace() << endl << endl;
+  getchar();
 
-	cout << endl << ">>>>>>>> Calculate matrix DETERMINANT using: " << endl;
-	cout << "realvec::det() = " << matrixA.det() << endl;
-	MATLAB->evalString("determinant = det(matrixA)");
-	mrs_real determinant;
-	MATLAB->getVariable("determinant", determinant);
-	cout << "MATLAB det() = " << determinant << endl << endl;
-	getchar();
+  cout << endl << ">>>>>>>> Calculate matrix DETERMINANT using: " << endl;
+  cout << "realvec::det() = " << matrixA.det() << endl;
+  MATLAB->evalString("determinant = det(matrixA)");
+  mrs_real determinant;
+  MATLAB->getVariable("determinant", determinant);
+  cout << "MATLAB det() = " << determinant << endl << endl;
+  getchar();
 		
-	cout << ">>>>>>>> Invert the matrix using realvec::invert()... " << endl;
-	invMatrix.create(matrixA.getRows(),matrixA.getCols());
-	int res = matrixA.invert(invMatrix);
-	cout << ">>>>>>>> ...done! invert() returned: "<< res << endl << endl;
-	cout << invMatrix << endl;
-	getchar();
-	cout << ">>>>>>>> Invert the matrix using MATLAB... " << endl;
-	MATLAB->evalString("invMatrix = inv(matrixA)");
-	cout << ">>>>>>>> ...done! Get it to a realvec." << endl;
-	getchar();
-	matrixA.setval(0.0);
-	MATLAB->getVariable("invMatrix", matrixA);
-	cout << matrixA << endl;
-	getchar();
-	cout << "Compare results: difference should be a zero (or infinitesimal) valued matrix: " << endl << endl;
-	cout << matrixA - invMatrix << endl;
-	cout << "Maximum absolute error = " << (matrixA - invMatrix).maxval() << endl;
-	getchar();
+  cout << ">>>>>>>> Invert the matrix using realvec::invert()... " << endl;
+  invMatrix.create(matrixA.getRows(),matrixA.getCols());
+  int res = matrixA.invert(invMatrix);
+  cout << ">>>>>>>> ...done! invert() returned: "<< res << endl << endl;
+  cout << invMatrix << endl;
+  getchar();
+  cout << ">>>>>>>> Invert the matrix using MATLAB... " << endl;
+  MATLAB->evalString("invMatrix = inv(matrixA)");
+  cout << ">>>>>>>> ...done! Get it to a realvec." << endl;
+  getchar();
+  matrixA.setval(0.0);
+  MATLAB->getVariable("invMatrix", matrixA);
+  cout << matrixA << endl;
+  getchar();
+  cout << "Compare results: difference should be a zero (or infinitesimal) valued matrix: " << endl << endl;
+  cout << matrixA - invMatrix << endl;
+  cout << "Maximum absolute error = " << (matrixA - invMatrix).maxval() << endl;
+  getchar();
 
 
-	//test DivergenceShape metrics
-	cout << ">>>>>>>> Creating two random matrices in MATLAB..." << endl;
-	cout << ">>>>>>>> ... and get them into realvecs: " << endl << endl; 
-	MATLAB->evalString("matrixA = cov(rand(40,4))");
-	MATLAB->evalString("matrixB = cov(rand(40,4))");
-	MATLAB->getVariable("matrixA", matrixA);
-	MATLAB->getVariable("matrixB", matrixB);
-	cout << ">>>>>>>> Done!" << endl << endl;
-	getchar();
-	cout << ">>>>>>>> Calculate Divergence Shape between the two matrices:" << endl;
-	cout << "realvec::divShape(Ci, Cj) = " << realvec::divergenceShape(matrixA,matrixB) << endl << endl;
-	cout << ">>>>>>>> Calculate Bhattacharyya Shape between the two matrices:" << endl;
-	cout << "realvec::battShape(Ci, Cj) = " << realvec::bhattacharyyaShape(matrixA,matrixB) << endl;
-	getchar();
+  //test DivergenceShape metrics
+  cout << ">>>>>>>> Creating two random matrices in MATLAB..." << endl;
+  cout << ">>>>>>>> ... and get them into realvecs: " << endl << endl; 
+  MATLAB->evalString("matrixA = cov(rand(40,4))");
+  MATLAB->evalString("matrixB = cov(rand(40,4))");
+  MATLAB->getVariable("matrixA", matrixA);
+  MATLAB->getVariable("matrixB", matrixB);
+  cout << ">>>>>>>> Done!" << endl << endl;
+  getchar();
+  cout << ">>>>>>>> Calculate Divergence Shape between the two matrices:" << endl;
+  cout << "realvec::divShape(Ci, Cj) = " << realvec::divergenceShape(matrixA,matrixB) << endl << endl;
+  cout << ">>>>>>>> Calculate Bhattacharyya Shape between the two matrices:" << endl;
+  cout << "realvec::battShape(Ci, Cj) = " << realvec::bhattacharyyaShape(matrixA,matrixB) << endl;
+  getchar();
 
 #endif
 
@@ -1221,12 +1292,13 @@ main(int argc, const char **argv)
   else if (testName == "mixer")
     test_mixer(fname0, fname1);
   else if (testName == "MATLABengine")
-	  test_MATLABengine();
+    test_MATLABengine();
   else if (testName == "LPC_LSP")
-	  test_LPC_LSP(fname0);
+    test_LPC_LSP(fname0);
   else if (testName == "realvec")
-	  test_realvec();
-
+    test_realvec();
+  else if (testName == "audiodevices")
+    test_audiodevices();
   else 
     {
       cout << "Unsupported test " << endl;
