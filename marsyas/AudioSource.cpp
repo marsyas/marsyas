@@ -95,12 +95,10 @@ AudioSource::init()
   bufferSize_ = 1024;
 #endif	
 
-  // hardwire channels to stereo playback even for mono
-  int rtChannels = 2;
-
+  
   delete audio_;
   
-  rtChannels = 1;
+  int rtChannels = 1;
   
   try {
     audio_ = new RtAudio(0, 0, 0, rtChannels, format,

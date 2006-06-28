@@ -37,6 +37,7 @@ int helpopt;
 int usageopt;
 mrs_real lengthopt;
 mrs_real gopt;
+mrs_real sropt;
 
 
 #define EMPTYSTRING "MARSYAS_EMPTY" 
@@ -84,6 +85,7 @@ initOptions()
   cmd_options.addBoolOption("verbose", "v", false);
   cmd_options.addRealOption("length", "l", 3.0);
   cmd_options.addRealOption("gain", "g", 1.0);
+  cmd_options.addRealOption("srate", "s", 44100.0);
   
 }
 
@@ -95,7 +97,7 @@ loadOptions()
   usageopt = cmd_options.getBoolOption("usage");
   lengthopt = cmd_options.getRealOption("length");
   gopt = cmd_options.getRealOption("gain");
-  
+  sropt = cmd_options.getRealOption("srate"); 
 }
 
 
@@ -110,14 +112,15 @@ record(mrs_real length, mrs_real gain, string filename)
   MarSystem* dest = mng.create("SoundFileSink", "dest");
 
   recordNet->addMarSystem(asrc);
-  // recordNet->addMarSystem(dest);
+  recordNet->addMarSystem(dest);
   
   recordNet->updctrl("AudioSource/asrc/mrs_natural/inSamples", 100);
+  recordNet->updctrl("AudioSource/asrc/mrs_real/israte", sropt);
   recordNet->updctrl("AudioSource/asrc/mrs_real/gain", gain);
   recordNet->updctrl("SoundFileSink/dest/mrs_string/filename", filename);
   
   mrs_real srate = recordNet->getctrl("AudioSource/asrc/mrs_real/israte").toReal();
-  
+  cout << "AudioSource srate =  " << srate << endl; 
   mrs_natural inSamples = recordNet->getctrl("AudioSource/asrc/mrs_natural/inSamples").toNatural();
   
 

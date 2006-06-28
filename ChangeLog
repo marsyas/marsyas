@@ -1,3 +1,7 @@
+2006-06-28  George Tzanetakis  <gtzan@orfeas.cs.UVic.CA>
+
+	* src/record.cpp: added sampling rate option
+
 2006-05-07    <gtzan@localhost>
 
 	* marsyas (update): full redesign of logging infrastructure,
