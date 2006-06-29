@@ -36,11 +36,14 @@
 #ifndef CYGWIN
 typedef __int32 int32_t;
 #endif
+
+#else 
+#include <stdint.h> 
+
 #endif
 
 
 
-#include <stdint.h> 
 
 #include <string> 
 #include <vector> 
