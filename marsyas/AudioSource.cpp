@@ -98,7 +98,7 @@ AudioSource::init()
   
   delete audio_;
   
-  int rtChannels = 1;
+  int rtChannels = (mrs_natural)getctrl("mrs_natural/nChannels").toNatural();
   
   try {
     audio_ = new RtAudio(0, 0, 0, rtChannels, format,

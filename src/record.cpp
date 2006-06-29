@@ -116,6 +116,7 @@ record(mrs_real length, mrs_real gain, string filename)
   
   recordNet->updctrl("AudioSource/asrc/mrs_natural/inSamples", 100);
   recordNet->updctrl("AudioSource/asrc/mrs_real/israte", sropt);
+  recordNet->updctrl("AudioSource/asrc/mrs_natural/nChannels", 2);
   recordNet->updctrl("AudioSource/asrc/mrs_real/gain", gain);
   recordNet->updctrl("SoundFileSink/dest/mrs_string/filename", filename);
   
