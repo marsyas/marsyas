@@ -28,6 +28,11 @@
 #define is_lchild(_ND) ((_ND!=NULL)&&!(is_root(_ND))&&(!odd_id(_ND)))
 #define is_rchild(_ND) ((_ND!=NULL)&&!(is_root(_ND))&&( odd_id(_ND)))
 
+//only  relevant for WIN32 MSVC (and ignored by all other platforms)
+//For more info about the reason for this #pragma consult:
+//http://msdn2.microsoft.com/en-us/library/sa28fef8.aspx
+#pragma warning( disable : 4290 )
+
 /* This is heap is designed to sort pointers to objects.
    The heap template requires a Type, a Comparator object for determining Type
    ordering, and a Destructor object for destroying Type objects still in the
@@ -176,4 +181,9 @@ private:
 };
 
 }//namespace Marsyas
+
+//only  relevant for WIN32 MSVC (and ignored by all other platforms)
+//For more info about the reason for this #pragma consult:
+//http://msdn2.microsoft.com/en-us/library/sa28fef8.aspx
+#pragma warning( default : 4290 )
 
