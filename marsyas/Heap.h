@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -31,7 +31,9 @@
 //only  relevant for WIN32 MSVC (and ignored by all other platforms)
 //For more info about the reason for this #pragma consult:
 //http://msdn2.microsoft.com/en-us/library/sa28fef8.aspx
+#ifdef WIN32
 #pragma warning( disable : 4290 )
+#endif 
 
 /* This is heap is designed to sort pointers to objects.
    The heap template requires a Type, a Comparator object for determining Type
@@ -185,5 +187,6 @@ private:
 //only  relevant for WIN32 MSVC (and ignored by all other platforms)
 //For more info about the reason for this #pragma consult:
 //http://msdn2.microsoft.com/en-us/library/sa28fef8.aspx
+#ifdef WIN32
 #pragma warning( default : 4290 )
-
+#endif 

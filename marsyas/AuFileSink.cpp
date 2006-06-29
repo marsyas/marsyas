@@ -187,9 +187,9 @@ AuFileSink::putLinear16(realvec& slice)
     for (t=0; t < inSamples_; t++)
       {
 #if defined(__BIG_ENDIAN__)
-	sdata_[t*nChannels_ + c] = (short)(slice(0,t) * MAXSHRT);      
+	sdata_[t*nChannels_ + c] = (short)(slice(c,t) * MAXSHRT);      
 #else
-	sdata_[t*nChannels_ + c] = ByteSwapShort((short)(slice(0,t) * MAXSHRT));
+	sdata_[t*nChannels_ + c] = ByteSwapShort((short)(slice(c,t) * MAXSHRT));
 	
 #endif 
       }

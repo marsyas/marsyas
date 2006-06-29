@@ -1,3 +1,7 @@
+2006-06-29  George Tzanetakis  <gtzan@orfeas.cs.UVic.CA>
+
+	* marsyas/AudioSource.cpp (process): Added support for multichannel audio 
+
 2006-06-28  George Tzanetakis  <gtzan@orfeas.cs.UVic.CA>
 
 	* src/record.cpp: added sampling rate option

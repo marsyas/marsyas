@@ -91,7 +91,6 @@ AudioSource::init()
   bufferSize_ = 256;
 
 #ifdef __OS_MACOSX__
-  rtSrate = 44100;
   bufferSize_ = 1024;
 #endif	
 
@@ -120,10 +119,12 @@ AudioSource::update()
 
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
   nChannels_ = getctrl("mrs_natural/nChannels").toNatural();
+  setctrl("mrs_natural/inObservations", nChannels_);
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+
   sampleRate_ = getctrl("mrs_real/israte").toReal();
 
   mute_ = getctrl("mrs_bool/mute").toBool();
@@ -131,10 +132,10 @@ AudioSource::update()
   
   defaultUpdate();
   
-  if (inSamples_ < bufferSize_) 
-    reservoirSize_ = 2 * bufferSize_;
+  if (inSamples_ * inObservations_ < bufferSize_) 
+    reservoirSize_ = 2 * inObservations_ * bufferSize_;
   else 
-    reservoirSize_ = 2 * inSamples_;
+    reservoirSize_ = 2 * inSamples_ * inObservations_;
   
   if (reservoirSize_ > preservoirSize_)
     {
@@ -191,8 +192,7 @@ AudioSource::process(realvec& in, realvec& out)
 
 
   
-  
-  while (ri_ < inSamples_)
+  while (ri_ < inSamples_ * inObservations_)
     {
       
       try {
@@ -202,7 +202,8 @@ AudioSource::process(realvec& in, realvec& out)
 	{
 	  error.printMessage();
 	}
-      for (t=0; t < bufferSize_; t++)
+
+      for (t=0; t < inObservations_ * bufferSize_; t++)
 	{
 	  reservoir_(ri_) = data_[t];
 	  ri_++;
@@ -213,15 +214,13 @@ AudioSource::process(realvec& in, realvec& out)
   for (o=0; o < inObservations_; o++)
     for (t=0; t < inSamples_; t++)
       {
-	out(o,t) = gain_ * reservoir_(t);
+	out(o,t) = gain_ * reservoir_(inObservations_ * t + o);
       }
 
-  for (t=inSamples_; t < ri_; t++)
-    reservoir_(t-inSamples_) = reservoir_(t);
+  for (t=inSamples_*inObservations_; t < ri_; t++)
+    reservoir_(t-inSamples_ * inObservations_) = reservoir_(t);
   
-
-  ri_ = ri_ - inSamples_;
-  
+  ri_ = ri_ - inSamples_ * inObservations_;
   
 }
 

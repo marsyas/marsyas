@@ -38,6 +38,7 @@ int usageopt;
 mrs_real lengthopt;
 mrs_real gopt;
 mrs_real sropt;
+mrs_natural copt;
 
 
 #define EMPTYSTRING "MARSYAS_EMPTY" 
@@ -69,7 +70,9 @@ printHelp(string progName)
   cerr << "Help Options:" << endl;
   cerr << "-u --usage      : display short usage info" << endl;
   cerr << "-h --help       : display this information " << endl;
-  cerr << "-l --length     : playback length in seconds " << endl;
+  cerr << "-l --length     : record length in seconds " << endl;
+  cerr << "-s --srate      : samping rate " << endl;
+  cerr << "-c --channels   : number of channels to record " << endl;
   cerr << endl;
   exit(1);
 }
@@ -86,7 +89,7 @@ initOptions()
   cmd_options.addRealOption("length", "l", 3.0);
   cmd_options.addRealOption("gain", "g", 1.0);
   cmd_options.addRealOption("srate", "s", 44100.0);
-  
+  cmd_options.addNaturalOption("channels", "c", 1);
 }
 
 
@@ -98,6 +101,7 @@ loadOptions()
   lengthopt = cmd_options.getRealOption("length");
   gopt = cmd_options.getRealOption("gain");
   sropt = cmd_options.getRealOption("srate"); 
+  copt = cmd_options.getNaturalOption("channels");
 }
 
 
@@ -116,12 +120,14 @@ record(mrs_real length, mrs_real gain, string filename)
   
   recordNet->updctrl("AudioSource/asrc/mrs_natural/inSamples", 100);
   recordNet->updctrl("AudioSource/asrc/mrs_real/israte", sropt);
-  recordNet->updctrl("AudioSource/asrc/mrs_natural/nChannels", 2);
+  recordNet->updctrl("AudioSource/asrc/mrs_natural/nChannels", copt);
   recordNet->updctrl("AudioSource/asrc/mrs_real/gain", gain);
   recordNet->updctrl("SoundFileSink/dest/mrs_string/filename", filename);
   
   mrs_real srate = recordNet->getctrl("AudioSource/asrc/mrs_real/israte").toReal();
+  mrs_natural nChannels = recordNet->getctrl("AudioSource/asrc/mrs_natural/nChannels").toNatural();
   cout << "AudioSource srate =  " << srate << endl; 
+  cout << "AudioSource nChannels = " << nChannels << endl;
   mrs_natural inSamples = recordNet->getctrl("AudioSource/asrc/mrs_natural/inSamples").toNatural();
   
 
