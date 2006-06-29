@@ -46,7 +46,7 @@ AudioSource::AudioSource(string name)
   bufferSize_ = 256;
 
 #ifdef __OS_MACOSX__
-  bufferSize_ = 1024;
+  bufferSize_ = 2048;
 #endif	
 }
 
@@ -91,7 +91,7 @@ AudioSource::init()
   bufferSize_ = 256;
 
 #ifdef __OS_MACOSX__
-  bufferSize_ = 1024;
+  bufferSize_ = 2048;
 #endif	
 
   

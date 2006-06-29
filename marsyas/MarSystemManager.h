@@ -31,6 +31,7 @@
 #include "HalfWaveRectifier.h"
 #include "common.h"
 #include "Series.h"
+#include "Parallel.h"
 #include "Fanin.h" 
 #include "Fanout.h" 
 #include "TimeStretch.h" 

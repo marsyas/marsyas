@@ -205,7 +205,7 @@ newExtract(string sfName, mrs_natural memSize, string extractorStr)
   
   // Spectrum Shape descriptors
   MarSystem* spectrumFeatures = mng.create("Fanout","spectrumFeatures");
-  spectrumFeatures->addMarSystem(mng.create("Centroid", "cntrd"));
+  spectrumFeatures->addMarSystem(mng.create("entroid", "cntrd"));
   spectrumFeatures->addMarSystem(mng.create("Rolloff", "rlf"));      
   spectrumFeatures->addMarSystem(mng.create("Flux", "flux"));
   spectrumFeatures->addMarSystem(mng.create("MFCC", "mfcc"));

@@ -147,6 +147,102 @@ record(mrs_real length, mrs_real gain, string filename)
 }
 
 
+void 
+record_orcas(mrs_real length, mrs_real gain, string filename) 
+{
+  copt = 8;
+  sropt = 44100.0;
+
+  MarSystemManager mng;
+  
+  MarSystem* asrc = mng.create("AudioSource", "asrc");
+  MarSystem* dest1 = mng.create("SoundFileSink", "dest1");
+  MarSystem* dest2 = mng.create("SoundFileSink", "dest2");
+  MarSystem* dest3 = mng.create("SoundFileSink", "dest3");
+  MarSystem* dest4 = mng.create("SoundFileSink", "dest4");
+  
+  dest1->updctrl("mrs_natural/inObservations", 2);
+  dest1->updctrl("mrs_natural/inSamples", 2048);
+  dest1->updctrl("mrs_real/israte", sropt);
+  dest1->updctrl("mrs_string/filename", "orca1.au");
+
+  
+  dest2->updctrl("mrs_natural/inObservations", 2);
+  dest2->updctrl("mrs_natural/inSamples", 2048);
+  dest2->updctrl("mrs_real/israte", sropt);
+  dest2->updctrl("mrs_string/filename", "orca2.au");
+
+  
+  dest3->updctrl("mrs_natural/inObservations", 2);
+  dest3->updctrl("mrs_natural/inSamples", 2048);
+  dest3->updctrl("mrs_real/israte", sropt);
+  dest3->updctrl("mrs_string/filename", "orca3.au");
+
+  
+  dest4->updctrl("mrs_natural/inObservations", 2);
+  dest4->updctrl("mrs_natural/inSamples", 2048);
+  dest4->updctrl("mrs_real/israte", sropt);
+  dest4->updctrl("mrs_string/filename", "orca4.au");
+
+
+  asrc->updctrl("mrs_natural/inSamples", 2048);
+  asrc->updctrl("mrs_real/israte", sropt);
+  asrc->updctrl("mrs_natural/nChannels", copt);
+  asrc->updctrl("mrs_real/gain", gain);
+  
+  mrs_real srate = asrc->getctrl("mrs_real/israte").toReal();
+  mrs_natural nChannels = asrc->getctrl("mrs_natural/nChannels").toNatural();
+
+  mrs_natural inSamples = asrc->getctrl("mrs_natural/inSamples").toNatural();
+  mrs_natural iterations = (mrs_natural)((srate * length) / inSamples);
+
+
+  realvec rin;
+  realvec rout;
+  realvec orca1;
+  realvec orca2;
+  realvec orca3;
+  realvec orca4;
+  
+
+  rin.create(copt, 2048);
+  rout.create(copt, 2048);
+  
+  orca1.create(2, 2048);
+  orca2.create(2, 2048);
+  orca3.create(2, 2048);
+  orca4.create(2, 2048);
+
+  cout << *asrc << endl;
+  mrs_natural t;
+  for (mrs_natural i = 0; i < iterations; i++) 
+    {
+      asrc->process(rin,rout);
+      for (t=0; t < 2048; t++)
+	{ 
+	  orca1(0,t) = rout(0,t);
+	  orca1(1,t) = rout(1,t);
+	  orca2(0,t) = rout(2,t);
+	  orca2(1,t) = rout(3,t);
+	  orca3(0,t) = rout(4,t);
+	  orca3(1,t) = rout(5,t);
+	  orca4(0,t) = rout(6,t);
+	  orca4(1,t) = rout(7,t);
+	}
+      dest1->process(orca1,orca1);
+      dest2->process(orca2, orca2);
+      dest3->process(orca3, orca3);
+      dest4->process(orca4, orca4);
+    }
+
+  delete dest1;
+  delete dest2;
+  delete dest3;
+  delete dest4;
+  delete asrc;
+}
+
+
 
 
 void 
@@ -283,6 +379,7 @@ main(int argc, const char **argv)
     {	
       cout << "Recording " << lengthopt << " seconds to file " << *sfi << endl;
       // recordVirtualSensor(lengthopt,gopt,  *sfi);
+      //record_orcas(lengthopt,gopt,  *sfi);
       record(lengthopt,gopt,  *sfi);
 
     }

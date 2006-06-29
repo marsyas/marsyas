@@ -39,6 +39,8 @@ MarSystemManager::MarSystemManager()
   registerPrototype("Series", new Series("srp"));
   registerPrototype("Fanin", new Fanin("finp"));
   registerPrototype("Fanout", new Fanout("fonp"));
+  registerPrototype("Parallel", new Parallel("parallelp"));
+
   registerPrototype("TimeStretch", new TimeStretch("tscp"));
 
   registerPrototype("Peaker", new Peaker("pkrp"));

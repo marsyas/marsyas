@@ -1,5 +1,11 @@
 2006-06-29  George Tzanetakis  <gtzan@orfeas.cs.UVic.CA>
 
+	* src/record.cpp (main): Add record_orcalab for multiple soundfile recording from 4 simultaneous playing tapes 
+
+	* marsyas/Parallel.cpp (update): Problems with default control updating of Composites (not fixed just explored)
+
+	* marsyas/MarSystemManager.cpp: Added Parallel to MarSystemManager
+
 	* marsyas/AudioSource.cpp (process): Added support for multichannel audio 
 
 2006-06-28  George Tzanetakis  <gtzan@orfeas.cs.UVic.CA>
