@@ -255,6 +255,12 @@
 				RelativePath="..\..\marsyas\LPCwarped.cpp">
 			</File>
 			<File
+				RelativePath="..\..\marsyas\LSP.cpp">
+			</File>
+			<File
+				RelativePath="..\..\marsyas\lu.cpp">
+			</File>
+			<File
 				RelativePath="..\..\marsyas\MarControls.cpp">
 			</File>
 			<File
@@ -319,6 +325,9 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\NormMaxMin.cpp">
+			</File>
+			<File
+				RelativePath="..\..\marsyas\NumericLib.cpp">
 			</File>
 			<File
 				RelativePath="..\..\marsyas\OnePole.cpp">
@@ -466,6 +475,9 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\ViconFileSource.cpp">
+			</File>
+			<File
+				RelativePath="..\..\marsyas\vmblock.cpp">
 			</File>
 			<File
 				RelativePath="..\..\marsyas\VScheduler.cpp">
@@ -662,6 +674,12 @@
 				RelativePath="..\..\marsyas\LPCwarped.h">
 			</File>
 			<File
+				RelativePath="..\..\marsyas\LSP.h">
+			</File>
+			<File
+				RelativePath="..\..\marsyas\lu.h">
+			</File>
+			<File
 				RelativePath="..\..\marsyas\MarControls.h">
 			</File>
 			<File
@@ -726,6 +744,9 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\NormMaxMin.h">
+			</File>
+			<File
+				RelativePath="..\..\marsyas\NumericLib.h">
 			</File>
 			<File
 				RelativePath="..\..\marsyas\OnePole.h">
@@ -867,6 +888,9 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\ViconFileSource.h">
+			</File>
+			<File
+				RelativePath="..\..\marsyas\vmblock.h">
 			</File>
 			<File
 				RelativePath="..\..\marsyas\VScheduler.h">
