@@ -8,7 +8,7 @@ DEPENDPATH += .
 INCLUDEPATH += /usr/local/include/marsyas
 unix:LIBS += -lmarsyas -L/usr/local/lib
 !macx:LIBS += -lasound
-macx:LIBS += -framework CoreAduio -framework CoreMidi -framework CoreFoundation
+macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
 LIBS += -lm
 
 QT += opengl
