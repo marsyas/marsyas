@@ -65,8 +65,9 @@ MarSystem.getPrefix = new_instancemethod(_marsyas_python.MarSystem_getPrefix,Non
 MarSystem.setControl = new_instancemethod(_marsyas_python.MarSystem_setControl,None,MarSystem)
 MarSystem.getControl = new_instancemethod(_marsyas_python.MarSystem_getControl,None,MarSystem)
 MarSystem.hasControl = new_instancemethod(_marsyas_python.MarSystem_hasControl,None,MarSystem)
-MarSystem.updControl = new_instancemethod(_marsyas_python.MarSystem_updControl,None,MarSystem)
+MarSystem.linkControl = new_instancemethod(_marsyas_python.MarSystem_linkControl,None,MarSystem)
 MarSystem.getControls = new_instancemethod(_marsyas_python.MarSystem_getControls,None,MarSystem)
+MarSystem.updControl = new_instancemethod(_marsyas_python.MarSystem_updControl,None,MarSystem)
 MarSystem_swigregister = _marsyas_python.MarSystem_swigregister
 MarSystem_swigregister(MarSystem)
 

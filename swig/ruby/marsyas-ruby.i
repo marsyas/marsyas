@@ -5,6 +5,7 @@
 #include <string>
 #include <map>
 #include <marsyas/MarControlValue.h>
+#include <marsyas/Repeat.h>
 #include <ruby.h>
 
 using namespace std;
@@ -44,6 +45,23 @@ static MarControlValue VAL2MCV ( VALUE val ) {
         default:
         case T_NIL: return MarControlValue();
         }
+}
+
+static Repeat VAL2RPT ( VALUE val ) {
+	VALUE v1,v2;
+	switch(TYPE(val)) {
+	case T_STRING: return Repeat(VAL2STR(val));
+	case T_ARRAY:
+		if (RARRAY(val)->len == 1 && TYPE(v1=(RARRAY(val)->ptr[0]))==T_STRING)
+			return Repeat(VAL2STR(v1));
+		if (
+			RARRAY(val)->len >= 2 &&
+			TYPE(v1=(RARRAY(val)->ptr[0]))==T_STRING &&
+			TYPE(v2=(RARRAY(val)->ptr[1]))==T_FIXNUM
+		)
+			return Repeat(VAL2STR(v1),NUM2INT(v2));
+	}
+	return Repeat();
 }
 
 %}
@@ -93,6 +111,17 @@ static MarControlValue VAL2MCV ( VALUE val ) {
 %typemap(in) MarControlValue {
         $1 = VAL2MCV($input);
 }
+
+/* Handle a Repeat value as follows:
+ * - NIL -> Repeat()
+ * - [] -> Repeat()
+ * - string -> Repeat(string)
+ * - [string] -> Repeat(string)
+ * - [string,int] -> Repeat(string,int)
+ * - [string,int,...] -> Repeat(string,int)
+ * - Anything Else -> Repeat()
+ */
+%typemap(in) Repeat { $1 = VAL2RPT($input); }
 
 /* Rename the .so's module, and provide
  * Marsyas:: in marsyas.rb

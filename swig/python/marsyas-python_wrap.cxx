@@ -2462,10 +2462,11 @@ SWIG_Python_MustGetPtr(PyObject *obj, swig_type_info *ty, int argnum, int flags)
 #define SWIGTYPE_p_MarControlValue swig_types[0]
 #define SWIGTYPE_p_MarSystem swig_types[1]
 #define SWIGTYPE_p_MarSystemManager swig_types[2]
-#define SWIGTYPE_p_char swig_types[3]
-#define SWIGTYPE_p_string swig_types[4]
-static swig_type_info *swig_types[6];
-static swig_module_info swig_module = {swig_types, 5, 0, 0, 0, 0};
+#define SWIGTYPE_p_Repeat swig_types[3]
+#define SWIGTYPE_p_char swig_types[4]
+#define SWIGTYPE_p_string swig_types[5]
+static swig_type_info *swig_types[7];
+static swig_module_info swig_module = {swig_types, 6, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -2572,6 +2573,7 @@ namespace swig {
 #include <string>
 #include <map>
 #include <marsyas/MarControlValue.h>
+#include <marsyas/Repeat.h>
 #include <Python.h>
 
 using namespace std;
@@ -2601,6 +2603,27 @@ static MarControlValue PY2MCV ( PyObject *pyo ) {
         if (PyInt_Check(pyo)) return MarControlValue(PyInt_AsLong(pyo));
         if (PyString_Check(pyo)) return MarControlValue(PY2STR(pyo));
         return MarControlValue();
+}
+
+static Repeat PY2RPT ( PyObject *pyo ) {
+	Repeat r = Repeat();
+	if (PyString_Check(pyo)) r = Repeat(PY2STR(pyo));
+	else if (PySequence_Check(pyo))
+	{
+		PyObject *pyo1=NULL,*pyo2=NULL;
+		if (PySequence_Length(pyo)==1 && PyString_Check(pyo1=PySequence_GetItem(pyo,0)))
+			r = Repeat(PY2STR(pyo));
+		Py_CLEAR(pyo1);
+		if (
+			PySequence_Length(pyo)>=2 &&
+			PyString_Check(pyo1=PySequence_GetItem(pyo,0)) &&
+			PyInt_Check(pyo2=PySequence_GetItem(pyo,1))
+		)
+			r = Repeat(PY2STR(pyo1),PyInt_AsLong(pyo2));
+		Py_CLEAR(pyo1);
+		Py_CLEAR(pyo2);
+	}
+	return r;
 }
 
 
@@ -2685,6 +2708,8 @@ SWIGINTERNINLINE PyObject*
   return PyBool_FromLong(value ? 1 : 0);
 }
 
+SWIGINTERN void MarSystem_updControl__SWIG_1(MarSystem *self,string time,string cname,MarControlValue value){ self->updctrl(time,cname,value); }
+SWIGINTERN void MarSystem_updControl__SWIG_2(MarSystem *self,string time,Repeat rep,string cname,MarControlValue value){ self->updctrl(time,rep,cname,value); }
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -2934,7 +2959,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_MarSystem_updControl(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_MarSystem_updControl__SWIG_0(PyObject *SWIGUNUSEDPARM(self), int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
   MarSystem *arg1 = (MarSystem *) 0 ;
   string arg2 ;
@@ -2944,9 +2969,8 @@ SWIGINTERN PyObject *_wrap_MarSystem_updControl(PyObject *SWIGUNUSEDPARM(self), 
   int res2 ;
   char *buf2 = 0 ;
   int alloc2 = 0 ;
-  PyObject *swig_obj[3] ;
   
-  if (!SWIG_Python_UnpackTuple(args,"MarSystem_updControl",3,3,swig_obj)) SWIG_fail;
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarSystem_updControl" "', argument " "1"" of type '" "MarSystem *""'"); 
@@ -2961,6 +2985,45 @@ SWIGINTERN PyObject *_wrap_MarSystem_updControl(PyObject *SWIGUNUSEDPARM(self), 
     arg3 = PY2MCV(swig_obj[2]);
   }
   (arg1)->updControl(arg2,arg3);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MarSystem_linkControl(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MarSystem *arg1 = (MarSystem *) 0 ;
+  string arg2 ;
+  string arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  PyObject *swig_obj[3] ;
+  
+  if (!SWIG_Python_UnpackTuple(args,"MarSystem_linkControl",3,3,swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarSystem_linkControl" "', argument " "1"" of type '" "MarSystem *""'"); 
+  }
+  arg1 = reinterpret_cast< MarSystem * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(swig_obj[1], &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MarSystem_linkControl" "', argument " "2"" of type '" "string""'");
+  }
+  arg2 = buf2;
+  res3 = SWIG_AsCharPtrAndSize(swig_obj[2], &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MarSystem_linkControl" "', argument " "3"" of type '" "string""'");
+  }
+  arg3 = buf3;
+  (arg1)->linkControl(arg2,arg3);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -2996,6 +3059,116 @@ SWIGINTERN PyObject *_wrap_MarSystem_getControls(PyObject *SWIGUNUSEDPARM(self),
   }
   return resultobj;
 fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MarSystem_updControl__SWIG_1(PyObject *SWIGUNUSEDPARM(self), int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  MarSystem *arg1 = (MarSystem *) 0 ;
+  string arg2 ;
+  string arg3 ;
+  MarControlValue arg4 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  
+  if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarSystem_updControl" "', argument " "1"" of type '" "MarSystem *""'"); 
+  }
+  arg1 = reinterpret_cast< MarSystem * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(swig_obj[1], &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MarSystem_updControl" "', argument " "2"" of type '" "string""'");
+  }
+  arg2 = buf2;
+  res3 = SWIG_AsCharPtrAndSize(swig_obj[2], &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MarSystem_updControl" "', argument " "3"" of type '" "string""'");
+  }
+  arg3 = buf3;
+  {
+    arg4 = PY2MCV(swig_obj[3]);
+  }
+  MarSystem_updControl__SWIG_1(arg1,arg2,arg3,arg4);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MarSystem_updControl__SWIG_2(PyObject *SWIGUNUSEDPARM(self), int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  MarSystem *arg1 = (MarSystem *) 0 ;
+  string arg2 ;
+  Repeat arg3 ;
+  string arg4 ;
+  MarControlValue arg5 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int res4 ;
+  char *buf4 = 0 ;
+  int alloc4 = 0 ;
+  
+  if ((nobjs < 5) || (nobjs > 5)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarSystem_updControl" "', argument " "1"" of type '" "MarSystem *""'"); 
+  }
+  arg1 = reinterpret_cast< MarSystem * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(swig_obj[1], &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MarSystem_updControl" "', argument " "2"" of type '" "string""'");
+  }
+  arg2 = buf2;
+  {
+    arg3 = PY2RPT(swig_obj[2]);
+  }
+  res4 = SWIG_AsCharPtrAndSize(swig_obj[3], &buf4, NULL, &alloc4);
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "MarSystem_updControl" "', argument " "4"" of type '" "string""'");
+  }
+  arg4 = buf4;
+  {
+    arg5 = PY2MCV(swig_obj[4]);
+  }
+  MarSystem_updControl__SWIG_2(arg1,arg2,arg3,arg4,arg5);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MarSystem_updControl(PyObject *self, PyObject *args) {
+  int argc;
+  PyObject *argv[6];
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args,"MarSystem_updControl",0,5,argv))) SWIG_fail;
+  --argc;
+  if (argc == 3) {
+    return _wrap_MarSystem_updControl__SWIG_0(self, argc, argv);
+  }
+  if (argc == 4) {
+    return _wrap_MarSystem_updControl__SWIG_1(self, argc, argv);
+  }
+  if (argc == 5) {
+    return _wrap_MarSystem_updControl__SWIG_2(self, argc, argv);
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"No matching function for overloaded 'MarSystem_updControl'");
   return NULL;
 }
 
@@ -3154,8 +3327,9 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"MarSystem_setControl", _wrap_MarSystem_setControl, METH_VARARGS, NULL},
 	 { (char *)"MarSystem_getControl", _wrap_MarSystem_getControl, METH_VARARGS, NULL},
 	 { (char *)"MarSystem_hasControl", _wrap_MarSystem_hasControl, METH_VARARGS, NULL},
-	 { (char *)"MarSystem_updControl", _wrap_MarSystem_updControl, METH_VARARGS, NULL},
+	 { (char *)"MarSystem_linkControl", _wrap_MarSystem_linkControl, METH_VARARGS, NULL},
 	 { (char *)"MarSystem_getControls", (PyCFunction)_wrap_MarSystem_getControls, METH_O, NULL},
+	 { (char *)"MarSystem_updControl", _wrap_MarSystem_updControl, METH_VARARGS, NULL},
 	 { (char *)"delete_MarSystem", (PyCFunction)_wrap_delete_MarSystem, METH_O, NULL},
 	 { (char *)"MarSystem_swigregister", MarSystem_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_MarSystemManager", (PyCFunction)_wrap_new_MarSystemManager, METH_NOARGS, NULL},
@@ -3173,6 +3347,7 @@ static PyMethodDef SwigMethods[] = {
 static swig_type_info _swigt__p_MarControlValue = {"_p_MarControlValue", "MarControlValue *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_MarSystem = {"_p_MarSystem", "MarSystem *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_MarSystemManager = {"_p_MarSystemManager", "MarSystemManager *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_Repeat = {"_p_Repeat", "Repeat *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_string = {"_p_string", "string *", 0, 0, (void*)0, 0};
 
@@ -3180,6 +3355,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_MarControlValue,
   &_swigt__p_MarSystem,
   &_swigt__p_MarSystemManager,
+  &_swigt__p_Repeat,
   &_swigt__p_char,
   &_swigt__p_string,
 };
@@ -3187,6 +3363,7 @@ static swig_type_info *swig_type_initial[] = {
 static swig_cast_info _swigc__p_MarControlValue[] = {  {&_swigt__p_MarControlValue, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_MarSystem[] = {  {&_swigt__p_MarSystem, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_MarSystemManager[] = {  {&_swigt__p_MarSystemManager, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_Repeat[] = {  {&_swigt__p_Repeat, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_string[] = {  {&_swigt__p_string, 0, 0, 0},{0, 0, 0, 0}};
 
@@ -3194,6 +3371,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_MarControlValue,
   _swigc__p_MarSystem,
   _swigc__p_MarSystemManager,
+  _swigc__p_Repeat,
   _swigc__p_char,
   _swigc__p_string,
 };

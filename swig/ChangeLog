@@ -1,3 +1,24 @@
+2006-06-08	<carlosc@uvic.ca>
+
+	* marsyas-swig : Version bump (0.3.8)
+
+	* marsyas-swig/README : Updated to reflect changes in 0.3.7.
+
+2006-06-07	<carlosc@uvic.ca>
+	
+	* marsyas-swig (update) : Version Bump (0.3.7)
+	
+	* marsyas-swig/XXX/marsyas-XXX.i : Added target specific typemaps for Repeat class (ruby,python).
+	
+	* marsyas-swig/common/marsyas.i : Added linkControl, and sequencer based updControl to MarSystem class.
+	
+	* marsyas-swig : Version bump (0.3.6)
+	
+	* marsyas-swig/python/Makefile.am : Fixed Python installation to ignore
+	--program-prefix on .py files.
+	
+	* marsyas-swig/README : Removed C++ Rant.
+
 2006-06-03	<carlosc@uvic.ca>
 
 	* marsyas-swig/ruby : Added comment to *.i & *.rb files. Version (0.3.5)
@@ -6,7 +27,7 @@
 
 2006-06-02	<carlosc@uvic.ca>
 	
-	* marsyas-swig (update): Added documentation for package. Version (0.3.4)
+	* marsyas-swig (update) : Added documentation for package. Version (0.3.4)
 	
 	* marsyas-swig : Version (0.3.3)
 

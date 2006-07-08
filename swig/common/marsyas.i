@@ -1,5 +1,21 @@
 /* Define the default name for the marsyas package,
  * can be overridden in language-specific file
+ * 
+ * Only contains classes which stay arround for a 
+ * significant ammount of time:
+ *	- MarSystemManager
+ *	- MarSystem
+ *
+ * Other classes, which are meant realy to hold a
+ * value should be defined in a target language
+ * specific manner. Currently these classes are:
+ *	- string 			[I/O]
+ *	- MarControlValue		[I/O]
+ *	- vector<string>		[O]
+ *	- map<string,MarControlValue>	[O]
+ *	- Repeat			[I]
+ *
+ * These will probably be defined using SWIG typemaps.
  */
 %module marsyas
 
@@ -36,10 +52,17 @@ class MarSystem {
                 MarControlValue getControl(string cname);
                 bool            hasControl(string cname);
                 void            updControl(string cname, MarControlValue value);
+                void		linkControl(string visible, string inside);
                 
                 /* Listing of all controls & current values */
                 map<string,MarControlValue> getControls();
 };
+
+/* Add Sequencer Update Commands */
+%extend MarSystem {
+	void updControl(string time,string cname, MarControlValue value) { self->updctrl(time,cname,value); }
+	void updControl(string time,Repeat rep,string cname,MarControlValue value) { self->updctrl(time,rep,cname,value); }
+}
 
 class MarSystemManager {
         public:

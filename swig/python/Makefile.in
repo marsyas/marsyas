@@ -39,7 +39,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = @host@
 subdir = python
-DIST_COMMON = $(dist_python_SCRIPTS) $(srcdir)/Makefile.am \
+DIST_COMMON = $(dist_python_DATA) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -54,8 +54,6 @@ LTLIBRARIES = $(python_LTLIBRARIES)
 _marsyas_python_la_LIBADD =
 am__marsyas_python_la_OBJECTS = marsyas-python_wrap.lo
 _marsyas_python_la_OBJECTS = $(am__marsyas_python_la_OBJECTS)
-dist_pythonSCRIPT_INSTALL = $(INSTALL_SCRIPT)
-SCRIPTS = $(dist_python_SCRIPTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -70,6 +68,8 @@ CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(_marsyas_python_la_SOURCES)
 DIST_SOURCES = $(_marsyas_python_la_SOURCES)
+dist_pythonDATA_INSTALL = $(INSTALL_DATA)
+DATA = $(dist_python_DATA)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -102,6 +102,7 @@ EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
+GREP = @GREP@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
@@ -143,12 +144,9 @@ SWIG_FALSE = @SWIG_FALSE@
 SWIG_SUBDIRS = @SWIG_SUBDIRS@
 SWIG_TRUE = @SWIG_TRUE@
 VERSION = @VERSION@
-ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_F77 = @ac_ct_F77@
-ac_ct_RANLIB = @ac_ct_RANLIB@
-ac_ct_STRIP = @ac_ct_STRIP@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
@@ -163,32 +161,39 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
+datarootdir = @datarootdir@
+docdir = @docdir@
+dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
+htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
+localedir = @localedir@
 localstatedir = @localstatedir@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
+pdfdir = @pdfdir@
 pkgpyexecdir = @pkgpyexecdir@
 pkgpythondir = @pkgpythondir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
+psdir = @psdir@
 pyexecdir = @pyexecdir@
 pythondir = @pythondir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-dist_python_SCRIPTS = marsyas_python.py
+dist_python_DATA = marsyas_python.py
 python_LTLIBRARIES = _marsyas_python.la
 _marsyas_python_la_SOURCES = marsyas-python_wrap.cxx
 _marsyas_python_la_LDFLAGS = -module -avoid-version
@@ -257,25 +262,6 @@ clean-pythonLTLIBRARIES:
 	done
 _marsyas_python.la: $(_marsyas_python_la_OBJECTS) $(_marsyas_python_la_DEPENDENCIES) 
 	$(CXXLINK) -rpath $(pythondir) $(_marsyas_python_la_LDFLAGS) $(_marsyas_python_la_OBJECTS) $(_marsyas_python_la_LIBADD) $(LIBS)
-install-dist_pythonSCRIPTS: $(dist_python_SCRIPTS)
-	@$(NORMAL_INSTALL)
-	test -z "$(pythondir)" || $(mkdir_p) "$(DESTDIR)$(pythondir)"
-	@list='$(dist_python_SCRIPTS)'; for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  if test -f $$d$$p; then \
-	    f=`echo "$$p" | sed 's|^.*/||;$(transform)'`; \
-	    echo " $(dist_pythonSCRIPT_INSTALL) '$$d$$p' '$(DESTDIR)$(pythondir)/$$f'"; \
-	    $(dist_pythonSCRIPT_INSTALL) "$$d$$p" "$(DESTDIR)$(pythondir)/$$f"; \
-	  else :; fi; \
-	done
-
-uninstall-dist_pythonSCRIPTS:
-	@$(NORMAL_UNINSTALL)
-	@list='$(dist_python_SCRIPTS)'; for p in $$list; do \
-	  f=`echo "$$p" | sed 's|^.*/||;$(transform)'`; \
-	  echo " rm -f '$(DESTDIR)$(pythondir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(pythondir)/$$f"; \
-	done
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -318,6 +304,23 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
+install-dist_pythonDATA: $(dist_python_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(pythondir)" || $(mkdir_p) "$(DESTDIR)$(pythondir)"
+	@list='$(dist_python_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " $(dist_pythonDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(pythondir)/$$f'"; \
+	  $(dist_pythonDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(pythondir)/$$f"; \
+	done
+
+uninstall-dist_pythonDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(dist_python_DATA)'; for p in $$list; do \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " rm -f '$(DESTDIR)$(pythondir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(pythondir)/$$f"; \
+	done
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -396,7 +399,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES) $(SCRIPTS)
+all-am: Makefile $(LTLIBRARIES) $(DATA)
 installdirs:
 	for dir in "$(DESTDIR)$(pythondir)" "$(DESTDIR)$(pythondir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
@@ -446,7 +449,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-dist_pythonSCRIPTS install-pythonLTLIBRARIES
+install-data-am: install-dist_pythonDATA install-pythonLTLIBRARIES
 
 install-exec-am:
 
@@ -474,7 +477,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-dist_pythonSCRIPTS uninstall-info-am \
+uninstall-am: uninstall-dist_pythonDATA uninstall-info-am \
 	uninstall-pythonLTLIBRARIES
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
@@ -482,13 +485,13 @@ uninstall-am: uninstall-dist_pythonSCRIPTS uninstall-info-am \
 	distclean-compile distclean-generic distclean-libtool \
 	distclean-tags distdir dvi dvi-am html html-am info info-am \
 	install install-am install-data install-data-am \
-	install-dist_pythonSCRIPTS install-exec install-exec-am \
+	install-dist_pythonDATA install-exec install-exec-am \
 	install-info install-info-am install-man \
 	install-pythonLTLIBRARIES install-strip installcheck \
 	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-dist_pythonSCRIPTS \
+	tags uninstall uninstall-am uninstall-dist_pythonDATA \
 	uninstall-info-am uninstall-pythonLTLIBRARIES
 
 

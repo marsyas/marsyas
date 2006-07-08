@@ -1,4 +1,4 @@
-AC_INIT([marsyas-swig],[0.3.5],[carlosc@uvic.ca])
+AC_INIT([marsyas-swig],[0.3.8],[carlosc@uvic.ca])
 AM_INIT_AUTOMAKE
 
 AC_CONFIG_HEADER([config.h])
@@ -9,16 +9,16 @@ AC_DISABLE_STATIC
 AC_PROG_LIBTOOL
 
 AC_ARG_WITH([mad],
-	    [AC_HELP_STRING([--with-mad],[Links agains libmad])],
+	    [AS_HELP_STRING([--with-mad],[Links agains libmad])],
 	    [MAD_LIBS="-lmad"],
 	    [MAD_LIBS=""])
 
 ALSA_LIBS="-lpthread -lm -ldl -lasound"
 
 AC_ARG_ENABLE([bindings],
-	      [AC_HELP_STRING([--enable-bindings],[Use containing folder as Marsyas source])],
-	      [MRS_LIBS="$MAD_LIBS $ALSA_LIBS -lmarsyas -L../../marsyas"
-	       MRS_INCS="-I../.."
+	      [AS_HELP_STRING([--enable-bindings],[Use containing folder as Marsyas source])],
+	      [MRS_LIBS="$MAD_LIBS $ALSA_LIBS -L${topsrcdir}/../../marsyas -lmarsyas"
+	       MRS_INCS="-I${topsrcdir}/../.."
 	      ],
 	      [MRS_LIBS="$MAD_LIBS $ALSA_LIBS -lmarsyas"
 	       MRS_INCS=
@@ -36,7 +36,7 @@ AM_CONDITIONAL([SWIG],[test -x $SWIG])
 AC_SUBST([SWIG_SUBDIRS])
 
 AC_DEFUN([MRS_PROG_RUBY],
-	 [AC_ARG_WITH([ruby], [AC_HELP_STRING([--with-ruby],[Creates Ruby Module.])])
+	 [AC_ARG_WITH([ruby], [AS_HELP_STRING([--with-ruby],[Creates Ruby Module.])])
 	 function get_ruby_var
 	 {
 		 echo "puts Config::CONFIG[['${1}']]" | $RUBY -r rbconfig
@@ -61,7 +61,7 @@ AC_DEFUN([MRS_PROG_RUBY],
 
 AC_DEFUN([MRS_PROG_PYTHON],
 	 [AC_ARG_WITH([python],
-		      [AC_HELP_STRING([--with-python],[Creates Python Module.])],
+		      [AS_HELP_STRING([--with-python],[Creates Python Module.])],
 		      [AM_PATH_PYTHON
 		       AC_SUBST([SWIG_SUBDIRS],["$SWIG_SUBDIRS python"])
 		       AC_MSG_CHECKING([for python's include directory])
@@ -77,4 +77,5 @@ END`
 MRS_PROG_RUBY
 MRS_PROG_PYTHON
 
-AC_OUTPUT([Makefile ruby/Makefile python/Makefile])
+AC_CONFIG_FILES([Makefile ruby/Makefile python/Makefile])
+AC_OUTPUT

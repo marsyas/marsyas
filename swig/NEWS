@@ -1,5 +1,11 @@
 Newest towards the top.
 
+--- 6 / 08 / 06 ---
+Updated the readme to reflect the changes in package.
+
+--- 6 / 07 / 06 ---
+After extensive testing, the rant in the readme file about C++ has been proven not completely accurate, and so has been removed. Also the swig-bindings have been officially added to the Marsyas SVN repository on sourceforge. Added a few new methods to the common SWIG interface (linkControl), as well as the sequencing versions of updControl.
+
 --- 6 / 03 / 06 ---
 Added documentation for common/ and ruby/ files (python users will just have to look at the Ruby equivalents). Built 0.3.5 and fixed Ruby's installer to support --prefix.
 

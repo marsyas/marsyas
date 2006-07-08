@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <marsyas/MarControlValue.h>
+#include <marsyas/Repeat.h>
 #include <Python.h>
 
 using namespace std;
@@ -35,6 +36,27 @@ static MarControlValue PY2MCV ( PyObject *pyo ) {
         return MarControlValue();
 }
 
+static Repeat PY2RPT ( PyObject *pyo ) {
+	Repeat r = Repeat();
+	if (PyString_Check(pyo)) r = Repeat(PY2STR(pyo));
+	else if (PySequence_Check(pyo))
+	{
+		PyObject *pyo1=NULL,*pyo2=NULL;
+		if (PySequence_Length(pyo)==1 && PyString_Check(pyo1=PySequence_GetItem(pyo,0)))
+			r = Repeat(PY2STR(pyo));
+		Py_CLEAR(pyo1);
+		if (
+			PySequence_Length(pyo)>=2 &&
+			PyString_Check(pyo1=PySequence_GetItem(pyo,0)) &&
+			PyInt_Check(pyo2=PySequence_GetItem(pyo,1))
+		)
+			r = Repeat(PY2STR(pyo1),PyInt_AsLong(pyo2));
+		Py_CLEAR(pyo1);
+		Py_CLEAR(pyo2);
+	}
+	return r;
+}
+
 %}
 
 %typemap(out) string {
@@ -64,6 +86,10 @@ static MarControlValue PY2MCV ( PyObject *pyo ) {
 
 %typemap(in) MarControlValue {
         $1 = PY2MCV($input);
+}
+
+%typemap(in) Repeat {
+	$1 = PY2RPT($input);
 }
 
 %module marsyas_python
