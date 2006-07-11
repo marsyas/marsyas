@@ -56,6 +56,9 @@ namespace Marsyas
 
 class MarSystem
 {
+private:
+	void addControls();//add MarSystem default controls
+
 protected:
   mrs_natural inObservations_;
   mrs_natural inSamples_;
@@ -63,7 +66,6 @@ protected:
   mrs_natural onObservations_;
   mrs_natural onSamples_;
   mrs_real osrate_;
-
 
   mrs_natural tinObservations_;
   mrs_natural tinSamples_;
@@ -76,7 +78,6 @@ protected:
   realvec outTick_;
   std::string ocname_;
   std::string prefix_;
-  
 
   MarControlValue oldval_;
   
@@ -86,30 +87,32 @@ protected:
 
   bool dbg_;
   bool mute_;
+  bool active_;
 
-  VScheduler scheduler;
+  VScheduler scheduler_;
 
-protected:
-  void addctrl(std::string cname, MarControlValue v);
+	void addctrl(std::string cname, MarControlValue v);
   void addControl(std::string cname, MarControlValue v);
-  virtual void addControls() = 0;	
-  void addDefaultControls();
+  
+	virtual void localUpdate();
+	virtual void localActivate(bool state);
   
 public:
-  std::map<std::string,std::vector<std::string> > synonyms_;
-  MarControls ncontrols_;	// New controls class from Ari   
+  std::map<std::string,std::vector<std::string> > synonyms_;//make it protected? [!]
+  MarControls ncontrols_;	// New controls class from Ari  //make it protected? [!] 
 
   // Constructors 
-  MarSystem();
-  MarSystem(std::string name);
-  
+  //MarSystem();
+  MarSystem(std::string type, std::string name);
   MarSystem(const MarSystem& a);	// copy constructor
   virtual ~MarSystem();
-  MarSystem& operator=(const MarSystem& a); // copy assignment
-  virtual MarSystem* clone() const;
+
+	MarSystem& operator=(const MarSystem& a); // copy assignment
+
+	virtual MarSystem* clone() const = 0;
   
   // Naming methods 
-  virtual void   setName(std::string name);
+  virtual void setName(std::string name);
   std::string getType();
   std::string getName();
   std::string getPrefix();
@@ -154,7 +157,7 @@ public:
   virtual bool hasControl(std::string cname);
 
   void setControlState(std::string cname, bool val);
-  virtual bool hasControlState(std::string cname);
+	virtual bool hasControlState(std::string cname);
   void setctrlState(std::string cname, bool val);
   bool hasctrlState(std::string cname);
 
@@ -163,9 +166,9 @@ public:
  
   void checkFlow(realvec&in, realvec& out);
   
-  virtual void defaultUpdate();
   virtual void addMarSystem(MarSystem *marsystem);
-  virtual void linkctrl(std::string visible, std::string inside);
+  
+	virtual void linkctrl(std::string visible, std::string inside);
   virtual void linkControl(std::string visible, std::string inside);
 
   // methods that actually do something 
@@ -182,6 +185,8 @@ public:
   // the usual stream IO 
   friend std::ostream& operator<<(std::ostream&, MarSystem&);
   friend std::istream& operator>>(std::istream&, MarSystem&);
+
+	virtual void activate(bool state);
 };
 
 }//namespace Marsyas
