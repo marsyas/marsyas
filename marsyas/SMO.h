@@ -41,6 +41,8 @@ class SMO: public MarSystem
 {
 private: 
   void addControls();
+	void localUpdate();
+
   realvec weights_;
   
 public:
@@ -48,7 +50,6 @@ public:
   ~SMO();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

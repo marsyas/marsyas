@@ -44,6 +44,7 @@ class PCA: public MarSystem
 {
 private: 
    void addControls();
+	 void localUpdate();
    
    realvec in_data_;
    realvec corr_matrix_;
@@ -58,8 +59,7 @@ public:
   PCA(std::string name);
   ~PCA();
   MarSystem* clone() const;  
-    
-  void update();
+
   void process(realvec& in, realvec& out);
   void tred2(realvec &a, mrs_natural m, mrs_real *d, mrs_real *e);
   void tqli(mrs_real d[], mrs_real e[], mrs_natural m, realvec &z);

@@ -45,8 +45,7 @@ private:
   bool isInitialized_;
   int rtSrate_;
   int srate_;
-  
-  
+    
   mrs_natural nChannels_;
   mrs_real *data_;  
   realvec reservoir_;
@@ -61,28 +60,27 @@ private:
   mrs_natural diff_;
   mrs_natural rsize_;
   
-  
-
   realvec pwin_;
   realvec din_;
   realvec pdin_;
-  
-  
+   
   mrs_real sampleRate_;
-  
-  
+    
   void addControls();
+	void localUpdate();
+	
   void start();
   void stop();
-  
-  
+
+	void localActivate(bool state);
+    
 public:
   AudioSink(std::string name);
 
   ~AudioSink();
   MarSystem* clone() const;  
   void init();
-  void update();
+
   void process(realvec& in, realvec& out);
 };
 

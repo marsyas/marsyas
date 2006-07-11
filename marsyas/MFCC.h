@@ -36,7 +36,7 @@ namespace Marsyas
 class MFCC: public MarSystem
 {
 private: 
-  void addControls();
+	void localUpdate();
   
   mrs_real lowestFrequency_;
   mrs_natural linearFilters_;
@@ -67,8 +67,7 @@ public:
   MFCC(std::string name);
   ~MFCC();
   MarSystem* clone() const;  
-  
-  void update();
+
   void process(realvec& in, realvec& out);
 };
 

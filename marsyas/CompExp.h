@@ -37,6 +37,8 @@ class CompExp: public MarSystem
 {
 private: 
   void addControls();
+	void localUpdate();
+
   mrs_real xdprev_;
   realvec xd_;
   realvec gains_;
@@ -47,7 +49,6 @@ public:
   ~CompExp();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

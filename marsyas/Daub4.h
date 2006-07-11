@@ -43,13 +43,13 @@ private:
   mrs_real c2_;
   mrs_real c3_;
 
-  
+	void addControls();
+	void localUpdate();
+
 public:
   Daub4(std::string name);
   ~Daub4();
   MarSystem* clone() const;
-  void addControls();
-  void update();
   void process(realvec& in, realvec& out);
   
 };

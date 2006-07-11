@@ -34,7 +34,8 @@ namespace Marsyas
 class HarmonicEnhancer: public MarSystem
 {
 private: 
-  void addControls();
+	void localUpdate();
+
   void harm_prob(mrs_real& pmax, mrs_real factor, 
 			    mrs_real& s1, mrs_natural& t1, 
 			    mrs_real& s2, mrs_natural& t2, 
@@ -50,7 +51,6 @@ public:
   ~HarmonicEnhancer();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

@@ -35,17 +35,16 @@ class Hamming: public MarSystem
 {
 private: 
   realvec envelope_;
-  void addControls();
-  
+
+	void localUpdate();
   
 public:
-  Hamming();
   Hamming(std::string name);
   ~Hamming();
   
   MarSystem* clone() const;
-  void update();
-  void process(realvec& in, realvec& out);
+
+	void process(realvec& in, realvec& out);
   
 };
 

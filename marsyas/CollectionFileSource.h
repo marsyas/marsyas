@@ -40,6 +40,7 @@ class CollectionFileSource: public AbsSoundFileSource
 {
 private:
   void addControls();
+	void localUpdate();
   void getHeader(std::string filename);
   
   mrs_natural nChannels_;
@@ -62,7 +63,7 @@ public:
   CollectionFileSource(std::string name);
   ~CollectionFileSource();
   MarSystem* clone() const;    
-  void update();
+
   void process(realvec& in,realvec &out);
 };
 

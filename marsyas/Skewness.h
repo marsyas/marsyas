@@ -33,17 +33,17 @@ namespace Marsyas
 class Skewness: public MarSystem
 {
 private: 
-  void addControls();
   realvec obsrow_;
   mrs_real z_;
   mrs_real b_;
   mrs_real q_;
+
+	void localUpdate();
 public:
   Skewness(std::string name);
   ~Skewness();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

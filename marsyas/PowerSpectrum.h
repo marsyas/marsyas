@@ -36,6 +36,7 @@ class PowerSpectrum: public MarSystem
 {
 private:
   void addControls();
+	void localUpdate();
   
   std::string stype_;
   mrs_natural ntype_;
@@ -45,12 +46,10 @@ private:
   mrs_real dB_, pwr_;
 
 public:
-  PowerSpectrum();
   PowerSpectrum(std::string name);
   ~PowerSpectrum();
   MarSystem* clone() const;
 
-  void update();
   void process(realvec& in, realvec& out);
   
 };

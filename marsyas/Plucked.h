@@ -39,6 +39,8 @@ class Plucked: public MarSystem
 {
 private: 
   void addControls();
+	void localUpdate();
+
   realvec delayline1_;
   realvec pickDelayLine_;
   realvec noise_;
@@ -74,7 +76,6 @@ public:
   ~Plucked();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

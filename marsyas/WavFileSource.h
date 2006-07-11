@@ -60,9 +60,9 @@ private:
   unsigned short bits_;
 
   void addControls();
+	void localUpdate();
   unsigned long ByteSwapLong(unsigned long nLongNumber);
   unsigned short ByteSwapShort (unsigned short nValue);
-
   
   mrs_natural nChannels_;
   mrs_natural inSamples_;
@@ -85,7 +85,6 @@ public:
   mrs_natural getLinear16(realvec& win);
   mrs_natural getLinear8(mrs_natural c, realvec& win);
 
-  void update();
   void getHeader(std::string filename);
   void process(realvec& in, realvec &out);
 };

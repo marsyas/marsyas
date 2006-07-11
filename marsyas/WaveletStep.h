@@ -39,16 +39,13 @@ class WaveletStep: public MarSystem
 protected:
   int direction_;
   unsigned int processSize_;
-
   
 public:
-  WaveletStep();
   WaveletStep(std::string name);
   ~WaveletStep();
 
-  virtual void addControls();  
   virtual MarSystem* clone() const;
-  virtual void update();
+
   virtual void process(realvec& in, realvec& out);
   
 };

@@ -40,7 +40,7 @@ namespace Marsyas
 class SCF: public MarSystem
 {
 private: 
-  void addControls();
+	void localUpdate();
 
   mrs_natural nrBands_;
   mrs_natural nrValidBands_;
@@ -60,7 +60,6 @@ public:
   ~SCF();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

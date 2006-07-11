@@ -33,15 +33,12 @@ namespace Marsyas
 
 class Norm: public MarSystem
 {
-private: 
-  void addControls();
 public:
   // Norm();
   Norm(std::string name);
   ~Norm();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

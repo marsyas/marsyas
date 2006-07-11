@@ -42,6 +42,7 @@ private:
   mrs_real lowcutoff_;
   
   void addControls();
+	void localUpdate();
   mrs_real re_,im_;
   mrs_natural ponObservations_;
  
@@ -50,7 +51,6 @@ public:
   ~Spectrum();
   MarSystem* clone() const;
 
-  void update();
   void process(realvec& in, realvec& out);
   
 };

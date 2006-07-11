@@ -40,19 +40,17 @@ namespace Marsyas
 class Accumulator: public Composite
 {
 private: 
-  void addControls();
-  mrs_natural nTimes_;
-  realvec tout_;
-  
+	mrs_natural nTimes_;
+	realvec tout_;
+
+	void addControls();
+	void localUpdate();
   
 public:
-  Accumulator(std::string name);
-  Accumulator(const Accumulator& a);
-  
+	Accumulator(std::string name);
   ~Accumulator();
   MarSystem* clone() const;  
 
-  void update();
   void process(realvec& in, realvec& out);
 };
 

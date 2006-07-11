@@ -50,6 +50,8 @@ class GaussianClassifier: public MarSystem
 {
 private: 
   void addControls();
+	void localUpdate();
+
   realvec means_;
   realvec covars_;
   realvec labelSizes_;
@@ -60,7 +62,6 @@ public:
   ~GaussianClassifier();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

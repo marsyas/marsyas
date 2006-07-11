@@ -38,7 +38,6 @@ namespace Marsyas
 class BeatHistoFeatures: public MarSystem
 {
 private: 
-  void addControls();
   MarSystem* mxr_;
   realvec mxres_;
   realvec flag_;
@@ -48,7 +47,10 @@ private:
 			    mrs_real& s2, mrs_natural& t2, 
 			    mrs_natural tmx,
 			    mrs_natural size, 
-		 realvec& in);
+					realvec& in);
+
+	void addControls();
+	void localUpdate();
   
 public:
   BeatHistoFeatures(std::string name);
@@ -57,7 +59,6 @@ public:
   ~BeatHistoFeatures();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

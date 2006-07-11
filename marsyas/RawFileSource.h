@@ -55,6 +55,7 @@ private:
   mrs_natural ch_, pos_, nChannels_;
 
   void addControls();
+	void localUpdate();
   void swap16(unsigned char *ptr);
   
   void readData( unsigned long index );
@@ -67,7 +68,6 @@ public:
   RawFileSource(std::string name);
   ~RawFileSource();
   
-  void update();
   MarSystem* clone() const;
   void process(realvec& in,realvec &out);
   

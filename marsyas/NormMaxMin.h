@@ -43,6 +43,8 @@ private:
   bool init_;
   
   void addControls();
+	void localUpdate();
+
   realvec maximums_;
   realvec minimums_;
   
@@ -51,7 +53,6 @@ public:
   ~NormMaxMin();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

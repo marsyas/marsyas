@@ -64,6 +64,7 @@ class OggFileSource: public AbsSoundFileSource
 private:
  
   void addControls();
+	void localUpdate();
   void closeFile(); 
   
 #ifdef OGG_VORBIS
@@ -77,7 +78,7 @@ public:
   OggFileSource(const OggFileSource& a);
   ~OggFileSource();
   MarSystem* clone() const;  
-  void update();
+
   void process(realvec& in, realvec& out);
   void getHeader(std::string filename);
   

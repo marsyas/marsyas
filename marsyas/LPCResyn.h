@@ -35,6 +35,7 @@ class LPCResyn: public MarSystem
 {
 private: 
   void addControls();
+	void localUpdate();
   
   mrs_natural inSize_;
   mrs_natural outSize_;
@@ -47,13 +48,11 @@ private:
   mrs_natural hopSize_;
   
 public:
-  LPCResyn();
   LPCResyn(std::string name);
   
   ~LPCResyn();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

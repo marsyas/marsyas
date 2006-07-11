@@ -32,17 +32,16 @@ namespace Marsyas
 class Cascade: public Composite
 {
 private:
-  void addControls();
-  void deleteSlices();  
+  void deleteSlices();
+	void localUpdate();
   
 public:
-  Cascade(std::string name);
-  Cascade(const Cascade& a);
+	Cascade(std::string name);
+  //Cascade(const Cascade& a);
   
   ~Cascade();
   MarSystem* clone() const;    
-  
-  void update();
+
   void process(realvec& in, realvec& out);
 };
 

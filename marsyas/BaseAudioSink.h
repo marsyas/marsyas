@@ -37,7 +37,7 @@ protected:
   short *sdata_;
   
 public:
-  BaseAudioSink();
+	BaseAudioSink(std::string name);
   virtual ~BaseAudioSink();
   virtual void process(realvec& in, realvec& out) = 0;
 };

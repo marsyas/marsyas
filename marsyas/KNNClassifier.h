@@ -50,7 +50,9 @@ class KNNClassifier: public MarSystem
 {
 private: 
   void addControls();
-  mrs_natural k_;
+	void localUpdate();
+  
+	mrs_natural k_;
   realvec trainSet_;
   mrs_natural nPoints_;
   mrs_natural grow_;
@@ -58,12 +60,10 @@ private:
   
 
 public:
-  KNNClassifier();
   KNNClassifier(std::string name);
   ~KNNClassifier();
   MarSystem* clone() const;  
-  
-  void update();
+
   void process(realvec& in, realvec& out);
 };
 

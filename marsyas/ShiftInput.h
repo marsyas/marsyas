@@ -38,6 +38,7 @@ class ShiftInput: public MarSystem
 private:
   realvec pout_;
   void addControls();
+	void localUpdate();
   mrs_natural N_, D_, W_, PW_;
 
   bool reset_;
@@ -47,7 +48,6 @@ public:
   ~ShiftInput();
   MarSystem* clone() const;    
 
-  void update();
   void process(realvec& in, realvec& out);
   
 };

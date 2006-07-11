@@ -44,6 +44,7 @@ class LPCwarped: public MarSystem
 {
 private: 
 	void addControls();
+	void localUpdate();
 
 	mrs_natural order_;
 
@@ -77,12 +78,11 @@ private:
 	void predictionError(realvec& data, realvec& coeffs);
 
 public:
-	LPCwarped();
 	LPCwarped(std::string name);
 	~LPCwarped();
 
 	MarSystem* clone() const;  
-	void update();
+
 	void process(realvec& in, realvec& out);
 };
 

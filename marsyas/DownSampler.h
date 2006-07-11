@@ -35,12 +35,12 @@ class DownSampler: public MarSystem
 {
 private: 
   void addControls();
+	void localUpdate();
 public:
   DownSampler(std::string name);
   ~DownSampler();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

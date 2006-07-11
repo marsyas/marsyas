@@ -34,6 +34,7 @@ class ClassOutputSink: public MarSystem
 {
 private: 
   void addControls();
+	void localUpdate();
 
   std::ofstream* mos_;
 
@@ -48,7 +49,6 @@ public:
   ~ClassOutputSink();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

@@ -45,12 +45,14 @@ class MarControls
 {
 protected:
   std::map<std::string, MarControlValue> controls_;
-  std::map<std::string, mrs_real> rcontrols_;
-  std::map<std::string, mrs_natural> ncontrols_;
+	std::map<std::string, MarControlValue>::iterator iter_;
+  //std::map<std::string, mrs_real> rcontrols_;//lmartins: deprecated?
+	//std::map<std::string, mrs_real>::iterator riter_;//lmartins: deprecated?
+  //std::map<std::string, mrs_natural> ncontrols_;//lmartins: deprecated?
   
   std::map<std::string, bool> hasState_;
-  std::map<std::string, MarControlValue>::iterator iter_;
-  std::map<std::string, mrs_real>::iterator riter_;
+	std::map<std::string, bool>::iterator biter_;
+
 public:
   bool hasState(std::string cname);
   void setState(std::string cname, bool st);
@@ -66,6 +68,8 @@ public:
   std::map<std::string, MarControlValue> getControls();
   void clear();
   int size();
+
+	void renamePrefix(std::string oldPrefix, std::string newPrefix);
   
   friend std::istream& operator>>(std::istream&, MarControls& c);
   friend std::ostream& operator<<(std::ostream&, const MarControls& c);

@@ -32,18 +32,16 @@ namespace Marsyas
 class Parallel: public Composite
 {
 private:
-  void addControls();
+	void localUpdate();
   void deleteSlices();  
   
 public:
-  Parallel();
   Parallel(std::string name);
-  Parallel(const Parallel& a);
+  //Parallel(const Parallel& a);
   
   ~Parallel();
   MarSystem* clone() const;    
 
-  void update();
   void process(realvec& in, realvec& out);
 };
 

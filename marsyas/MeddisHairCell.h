@@ -36,6 +36,7 @@ class MeddisHairCell: public MarSystem
 {
 private: 
   void addControls();
+	void localUpdate();
   
   mrs_natural numChannels;
   
@@ -71,8 +72,8 @@ public:
   ~MeddisHairCell();
   
   MarSystem* clone() const;
-  void update();
-  void process(realvec& in, realvec& out); 
+
+	void process(realvec& in, realvec& out); 
 };
 
 }//namespace Marsyas

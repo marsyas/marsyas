@@ -34,17 +34,14 @@ namespace Marsyas
 
 class AbsSoundFileSink: public MarSystem
 {
-  
 public:
-  AbsSoundFileSink();
-  AbsSoundFileSink(std::string name);
-  ~AbsSoundFileSink();
+  AbsSoundFileSink(std::string type, std::string name);
+  virtual ~AbsSoundFileSink();
 
-  virtual void update() = 0;
   virtual void putHeader(std::string filename) = 0;
   virtual void process(realvec& in,realvec &out) = 0;
 
-  // public for efficiency 
+  // public for efficiency [!]
   mrs_natural pos_;
   bool notEmpty_;
 };

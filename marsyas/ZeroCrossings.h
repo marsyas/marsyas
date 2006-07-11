@@ -35,17 +35,16 @@ namespace Marsyas
 class ZeroCrossings: public MarSystem
 {
 private: 
-  void addControls();
   mrs_real zcrs_;
+
+	void localUpdate();
   
 public:
-  ZeroCrossings();
   ZeroCrossings(std::string name);
 
   ~ZeroCrossings();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

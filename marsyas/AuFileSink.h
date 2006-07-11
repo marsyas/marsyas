@@ -40,7 +40,6 @@ private:
   snd_header hdr_;
   unsigned long written_;
   long fpos_;
-  void addControls();
 
   short *sdata_;
   unsigned char *cdata_;
@@ -54,6 +53,9 @@ private:
   unsigned long ByteSwapLong(unsigned long nLongNumber);
   unsigned short ByteSwapShort (unsigned short nValue);
 
+	void addControls();
+	void localUpdate();
+
 public:
   AuFileSink(std::string name);
   ~AuFileSink();
@@ -61,7 +63,6 @@ public:
 
   void putLinear16(realvec& slice);
   void putHeader(std::string filename);
-  void update();
   bool checkExtension(std::string filename);
   void process(realvec& in, realvec& out);
 };

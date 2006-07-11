@@ -38,6 +38,7 @@ class PvFold: public MarSystem
 private:
   realvec awin_;
   void addControls();
+	void localUpdate();
   mrs_natural N_, Nw_, D_, PNw_;
   int n_;
   
@@ -47,7 +48,6 @@ public:
   ~PvFold();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
   
 };

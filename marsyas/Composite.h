@@ -38,44 +38,47 @@ namespace Marsyas
 
 class Composite: public MarSystem
 {
+private:
+	//if in the future all Composites should have
+	//some default controls (added to the default ones
+	//already created by MarSystem::addControls()), then
+	//implement this local addControls() method and 
+	//remember to call it at the Composite constructor
+	//
+	//void addControls();
+
+	void localActivate(bool state);
+
 protected:
-
-  std::vector<realvec*>   slices_;
-
+  std::vector<realvec*> slices_;
   mrs_natural marsystemsSize_;
-  std::vector<MarSystem*> marsystems_;			
-  mrs_natural i;
-  virtual void addControls();
+  std::vector<MarSystem*> marsystems_;
   
-  
-
 public:
-  Composite();
+  //Composite();
+	Composite(std::string type, std::string name);
   Composite(const Composite& a);
   
-  ~Composite();
+  virtual ~Composite();
+
   void updctrl(std::string cname, MarControlValue value);
   void updControl(std::string cname, MarControlValue value);
   void setControl(std::string cname, MarControlValue value);
   void setControl(std::string cname, mrs_real value);
   void setControl(std::string cname, mrs_natural value);
   
-  virtual void update() = 0;
-  
   bool hasControlState(std::string cname);
   bool hasControl(std::string cname);
   bool hasControlLocal(std::string cname);
-  
-  
-  
+   
   MarControlValue getctrl(std::string cname);
   MarControlValue getControl(std::string cname);
-  void addMarSystem(MarSystem *marsystem);
-
-
+  
+	void addMarSystem(MarSystem *marsystem);
   
   std::ostream& put(std::ostream& o);	  
-  virtual void process(realvec& in, realvec& out) = 0;
+  
+	virtual void process(realvec& in, realvec& out) = 0;
 };
 
 }//namespace Marsyas

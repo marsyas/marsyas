@@ -46,6 +46,7 @@ class LPC: public MarSystem
 {
 private: 
   void addControls();
+	void localUpdate();
   
   mrs_natural inSize_;
   mrs_natural outSize_;
@@ -77,13 +78,11 @@ private:
   bool networkCreated_;
   
 public:
-  LPC();
   LPC(std::string name);
   
   ~LPC();
   MarSystem* clone() const;  
   
-  void update();
   void predict(realvec& data, realvec& coeffs);
   void process(realvec& in, realvec& out);
 };

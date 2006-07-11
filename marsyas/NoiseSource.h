@@ -30,15 +30,14 @@ private:
   realvec wavetable_;
   mrs_real wavetableSize_;
   mrs_real index_;
-  
-  void addControls();
+ 
+	void localUpdate();
   
 public:
   NoiseSource(std::string name);
   ~NoiseSource();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
   
 };

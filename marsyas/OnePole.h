@@ -40,13 +40,13 @@ private:
   mrs_real gain_;
   
   void addControls();
+	void localUpdate();
 
 public:
   OnePole(std::string name);
   ~OnePole();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

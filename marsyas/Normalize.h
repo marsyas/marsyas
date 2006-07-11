@@ -32,15 +32,12 @@ namespace Marsyas
 {
 
 class Normalize: public MarSystem
-{
-  void addControls();
-  
+{ 
 public:
   Normalize(std::string name);
   ~Normalize();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

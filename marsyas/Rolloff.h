@@ -39,19 +39,18 @@ class Rolloff: public MarSystem
 {
 private: 
   void addControls();
+	void localUpdate();
   realvec sumWindow_;
   mrs_real perc_;
   mrs_real sum_;
   mrs_real total_;
   
 public:
-  Rolloff();
   Rolloff(std::string name);
   
   ~Rolloff();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

@@ -38,16 +38,15 @@ class InvSpectrum: public MarSystem
 private:
   fft myfft_;
   realvec tempVec_;
-  void addControls();
-  
+
+	void localUpdate();
   
 public:
-  InvSpectrum();
   InvSpectrum(std::string name);
   ~InvSpectrum();
   
   MarSystem* clone() const;
-  void update();
+
   void process(realvec& in, realvec& out);
 };
 

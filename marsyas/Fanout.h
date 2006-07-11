@@ -37,6 +37,7 @@ class Fanout: public Composite
 {
 private:
   void addControls();
+	void localUpdate();
   void deleteSlices();  
 
   mrs_natural enable_;
@@ -45,15 +46,12 @@ private:
   mrs_natural disable_;
   
 public:
-  Fanout();
   Fanout(std::string name);
-  Fanout(const Fanout& a);
+  //Fanout(const Fanout& a);
   
   ~Fanout();
   MarSystem* clone() const;    
-  
-  
-  void update();
+ 
   void process(realvec& in, realvec& out);
 };
 

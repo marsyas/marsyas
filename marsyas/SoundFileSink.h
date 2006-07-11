@@ -39,6 +39,7 @@ class SoundFileSink: public MarSystem
 {
 private: 
   virtual void addControls();
+	virtual void localUpdate();
   
 protected:
   short *sdata_;
@@ -61,7 +62,7 @@ public:
   bool checkType();
 
   virtual void process(realvec& in, realvec& out);
-  virtual void update();
+
   virtual void putHeader();
 
   // void putLinear16(mrs_natural c, realvec& win);

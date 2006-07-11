@@ -35,6 +35,8 @@ class SOM: public MarSystem
 {
 private: 
   void addControls();
+	void localUpdate();
+
   realvec grid_map_;
   mrs_natural grid_width_;
   mrs_natural grid_height_;
@@ -47,7 +49,7 @@ public:
   ~SOM();
   MarSystem* clone() const;  
   
-  void update();
+
   void process(realvec& in, realvec& out);
 
 private: 

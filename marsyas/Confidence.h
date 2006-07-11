@@ -35,6 +35,7 @@ class Confidence: public MarSystem
 {
 private: 
   void addControls();
+	void localUpdate();
 
   realvec confidences_;
   mrs_natural count_;
@@ -49,7 +50,6 @@ public:
   ~Confidence();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

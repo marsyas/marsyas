@@ -38,16 +38,16 @@ class SilenceRemove: public Composite
 {
 private: 
   void addControls();
+	void localUpdate();
   mrs_real threshold_;
   
 public:
-  SilenceRemove(std::string name);
-  SilenceRemove(const SilenceRemove& a);
+	SilenceRemove(std::string name);
+  //SilenceRemove(const SilenceRemove& a);
   
   ~SilenceRemove();
   MarSystem* clone() const;  
 
-  void update();
   void process(realvec& in, realvec& out);
 };
 

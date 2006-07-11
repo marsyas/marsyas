@@ -33,17 +33,16 @@ namespace Marsyas
 class Mean: public MarSystem
 {
 private: 
-  void addControls();
+	void localUpdate();
+
   realvec obsrow_;
   
 public:
-  Mean();
   Mean(std::string name);
   
   ~Mean();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 
 };

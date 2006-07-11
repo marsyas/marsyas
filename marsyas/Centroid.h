@@ -37,19 +37,17 @@ namespace Marsyas
 class Centroid: public MarSystem
 {
 private: 
-  void addControls();
+	void localUpdate();
   
   mrs_real m0_;
   mrs_real m1_;
   
 public:
-  Centroid();
   Centroid(std::string name);
   
   ~Centroid();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

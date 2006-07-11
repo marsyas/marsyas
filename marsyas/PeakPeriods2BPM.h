@@ -33,16 +33,16 @@ namespace Marsyas
 class PeakPeriods2BPM: public MarSystem
 {
 private: 
-  void addControls();
   mrs_real srate_;
   mrs_real factor_;
+
+	void localUpdate();
 
 public:
   PeakPeriods2BPM(std::string name);
   ~PeakPeriods2BPM();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

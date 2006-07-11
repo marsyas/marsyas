@@ -36,17 +36,15 @@ class Fanin: public Composite
 {
 private:
   // vector<realvec*> slices_;
-  void addControls();
+	void localUpdate();
   void deleteSlices();
   
 public:
-  Fanin();
   Fanin(std::string name);
-  Fanin(const Fanin& a);  
+  //Fanin(const Fanin& a);  
   ~Fanin();
   MarSystem* clone() const;  
 
-  void update();
   void process(realvec& in, realvec& out);
 };
 

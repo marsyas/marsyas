@@ -36,21 +36,22 @@ namespace Marsyas
 class Series: public Composite
 {
 private:
-  void addControls();
-  void deleteSlices();
-  realvec empty;
+  realvec empty_;
   bool probe_;
-  
+
+	void addControls();
+	void localUpdate();
+	void deleteSlices();
+
 public:
-  Series();
   Series(std::string name);
-  Series(const Series& a);
+  //Series(const Series& a);
   
   ~Series();
   MarSystem* clone() const;  
   
   mrs_real* const recvControls();
-  void update();
+
   void process(realvec& in, realvec& out);
 };
 

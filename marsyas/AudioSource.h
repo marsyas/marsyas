@@ -45,7 +45,6 @@ private:
   
   mrs_real gain_;
   
-  
   mrs_natural nChannels_;
   mrs_real *data_;  
   realvec reservoir_;
@@ -54,27 +53,27 @@ private:
   
   mrs_natural rstart_;
   mrs_natural ri_;
-  
 
   realvec pwin_;
   realvec din_;
   realvec pdin_;
   
-  
   mrs_real sampleRate_;
   
-  
   void addControls();
+	void localUpdate();
+
   void start();
   void stop();
 
+	void localActivate(bool state);
   
 public:
   AudioSource(std::string name);
   ~AudioSource();
   MarSystem* clone() const;  
   void init();
-  void update();
+
   void process(realvec& in, realvec& out);
 };
 

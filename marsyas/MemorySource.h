@@ -32,6 +32,7 @@ class MemorySource: public MarSystem
 {
 private: 
   void addControls();
+	void localUpdate();
   
   mrs_natural count_;
   mrs_natural samplesToUse_;
@@ -41,7 +42,6 @@ public:
   ~MemorySource();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

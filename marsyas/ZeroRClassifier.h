@@ -40,15 +40,14 @@ class ZeroRClassifier: public MarSystem
 {
 private: 
   void addControls();
+	void localUpdate();
   realvec labelSizes_;
 
 public:
-  ZeroRClassifier();
   ZeroRClassifier(std::string name);
   ~ZeroRClassifier();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

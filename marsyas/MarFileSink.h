@@ -32,15 +32,11 @@ namespace Marsyas
 
 class MarFileSink:public MarSystem 
 {
-private:
-  void addControls();
 public:
-  MarFileSink();
   MarFileSink(std::string name);
   ~MarFileSink();
   MarSystem* clone() const;  
-  
-  void update();
+
   void process(realvec& in, realvec& out);
 };
 

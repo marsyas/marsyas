@@ -34,13 +34,12 @@ namespace Marsyas
 class FullWaveRectifier: public MarSystem
 {
 private: 
-  void addControls();
+	void localUpdate();
 public:
   FullWaveRectifier(std::string name);
   ~FullWaveRectifier();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

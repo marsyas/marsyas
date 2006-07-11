@@ -36,18 +36,16 @@ class AbsMax: public MarSystem
 {
 private:
   mrs_real max_;
-  
-  void addControls();
+
+	void localUpdate();
   
 public:
   AbsMax(std::string name);
   ~AbsMax();
   
   MarSystem* clone() const;
-  void update();
   void process(realvec& in, realvec& out);
-  
-  
+ 
 };
 
 }//Marsyas namespace

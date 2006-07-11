@@ -35,6 +35,7 @@ class ANN_node: public MarSystem
 {
 private: 
   void addControls();
+	void localUpdate();
   realvec weights_;
   mrs_real bias_;
 
@@ -43,7 +44,6 @@ public:
   ~ANN_node();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

@@ -32,25 +32,20 @@ namespace Marsyas
 
 class AbsSoundFileSource: public MarSystem
 {
-  
 public:
-  AbsSoundFileSource();
-  AbsSoundFileSource(std::string name);
-  ~AbsSoundFileSource();
+  AbsSoundFileSource(std::string type, std::string name);
+  virtual ~AbsSoundFileSource();
 
-  virtual void update() = 0;
   virtual void getHeader(std::string filename) = 0;
   virtual void process(realvec& in,realvec &out) = 0;
 
-  // public for efficiency 
+  // public for efficiency [!]
   mrs_natural pos_;
   mrs_natural rewindpos_;
-  
   bool notEmpty_;
 };
 
 }//namespace Marsyas
-
 
 #endif    /* !MARSYAS_ABSSOUNDFILESOURCE_H */ 
 

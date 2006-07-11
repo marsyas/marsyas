@@ -36,17 +36,16 @@ namespace Marsyas
 class StandardDeviation: public MarSystem
 {
 private: 
-  void addControls();
   realvec obsrow_;
+
+	void localUpdate();
   
 public:
-  StandardDeviation();
   StandardDeviation(std::string name);
 
   ~StandardDeviation();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 
 };

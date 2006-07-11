@@ -59,9 +59,8 @@ private:
   wavhdr hdr_;
   unsigned long written_;
   long fpos_;
-  void addControls();
-  short * sdata_;
 
+  short * sdata_;
   unsigned char *cdata_;
   
   std::string filename_;
@@ -70,7 +69,10 @@ private:
   mrs_natural nChannels_;
 
   unsigned long ByteSwapLong(unsigned long nLongNumber);
-  unsigned short ByteSwapShort (unsigned short nValue);  
+  unsigned short ByteSwapShort (unsigned short nValue);
+
+	void addControls();
+	void localUpdate();
 
 public:
   WavFileSink(std::string name);
@@ -79,7 +81,6 @@ public:
   
   void putLinear16Swap(mrs_natural c, realvec& slice);
   void putHeader(std::string filename);
-  void update();
   bool checkExtension(std::string filename);
   void process(realvec& in, realvec& out);
 };

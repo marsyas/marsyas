@@ -27,27 +27,18 @@
 #ifndef MARSYAS_AUFILESOURCE_H
 #define MARSYAS_AUFILESOURCE_H
 
-
 #include "AbsSoundFileSource.h"
 
-
 #ifdef WIN32
-
 #ifndef CYGWIN
 typedef __int32 int32_t;
 #endif
-
 #else 
 #include <stdint.h> 
-
 #endif
-
-
-
 
 #include <string> 
 #include <vector> 
-
 
 namespace Marsyas
 {
@@ -68,7 +59,6 @@ struct snd_header
 the various formats for the samples
 of the Next .snd/ Sun .au format */
 
-
 class AuFileSource: public AbsSoundFileSource
 {
 private:
@@ -84,17 +74,12 @@ private:
   FILE *sfp_;
   long sfp_begin_;
   
-  mrs_natural sampleSize_;			// in bytes
+  mrs_natural sampleSize_;// in bytes
   mrs_natural size_;  
   mrs_natural csize_;
 
   mrs_natural samplesOut_;
-  
-  
-
-  void addControls();
-  unsigned long ByteSwapLong(unsigned long nLongNumber);
-  unsigned short ByteSwapShort (unsigned short nValue);
+ 
   std::vector<std::string> sndFormats_;
   std::vector<int>    sndFormatSizes_;
   
@@ -102,29 +87,32 @@ private:
   mrs_natural samplesToRead_;
   mrs_natural samplesToWrite_;
   mrs_natural samplesRead_;
-  
-
+ 
   mrs_real duration_;
   bool advance_;
   mrs_natural cindex_;
   
   mrs_real repetitions_;
-  
+
+	unsigned long ByteSwapLong(unsigned long nLongNumber);
+	unsigned short ByteSwapShort (unsigned short nValue);
+
+	void addControls();
+	void localUpdate();
  
 public:
   AuFileSource(std::string name);
   ~AuFileSource();
   MarSystem* clone() const;    
 
-  void update();
   void getHeader(std::string filename);
-  void process(realvec& in,realvec &out);
+	mrs_natural getLinear16(realvec& win);
 
-  mrs_natural getLinear16(realvec& win);
+	void process(realvec& in,realvec &out);
+
 };
 
 }//namespace Marsyas
-
 
 #endif    /* !MARSYAS_AUFILESOURCE_H */ 
 

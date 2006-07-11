@@ -36,13 +36,21 @@ namespace Marsyas
 class Gain: public MarSystem
 {
 private: 
-  void addControls();
+  //Add specific controls needed by this MarSystem.
+	void addControls();
+	
+	// lmartins: since this is the default MarSystem::localUpdate()
+	// (i.e. does not alters input data format) it's not needed to
+	// override it here! Use the default implementation defined in 
+	// MarSystem::localUpdate().
+	//
+	//void localUpdate();
+
 public:
   Gain(std::string name);
   ~Gain();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

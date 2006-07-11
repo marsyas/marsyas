@@ -35,6 +35,8 @@ class Delay: public MarSystem
 {
 private: 
   void addControls();
+	void localUpdate();
+	
 	realvec buffer_;
 	mrs_real delay_;
 	mrs_real gain;
@@ -49,7 +51,6 @@ public:
   ~Delay();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

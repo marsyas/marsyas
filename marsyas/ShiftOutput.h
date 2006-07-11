@@ -38,18 +38,17 @@ class ShiftOutput: public MarSystem
 {
 private:
   void addControls();
+	void localUpdate();
   realvec tmpSlice_;
   mrs_natural N_,Nw_,I_,D_;  
   mrs_natural n_;
   
 
 public:
-  ShiftOutput();
   ShiftOutput(std::string name);
   ~ShiftOutput();
   MarSystem* clone() const;  
 
-  void update();
   void process(realvec& in, realvec& out);
   
 };

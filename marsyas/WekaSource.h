@@ -21,6 +21,8 @@ class WekaSource:public MarSystem
 {
 private:
   void addControls();
+	void localUpdate();
+
   void parseObsToExtract();
   
   std::string filename_;
@@ -36,7 +38,6 @@ private:
   
 
 public:
-  WekaSource();
   WekaSource(std::string name);
   WekaSource(const WekaSource& a);
   
@@ -44,7 +45,6 @@ public:
   
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

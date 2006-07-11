@@ -39,7 +39,7 @@ private:
   fft *myfft_;
   realvec scratch_;
   virtual void addControls();
-  
+	void localUpdate();
   
 public:
   AutoCorrelation(std::string name);
@@ -47,7 +47,7 @@ public:
   AutoCorrelation(const AutoCorrelation& a);
   
   MarSystem* clone() const;
-  void update();
+
   void process(realvec& in, realvec& out);
 };
 

@@ -44,14 +44,13 @@ private:
   mrs_natural size_;  
   mrs_natural fileObs_;
   void addControls();
+	void localUpdate();
       
 public:
-  ViconFileSource();
   ViconFileSource(std::string name);
   ~ViconFileSource();
   MarSystem* clone() const;  
   
-  void update();
   void getHeader(std::string filename);
   void process(realvec& in, realvec &out);
 };

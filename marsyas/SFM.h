@@ -36,9 +36,7 @@ namespace Marsyas
 
 class SFM: public MarSystem
 {
-private: 
-  void addControls();
-  
+private:   
   mrs_natural nrBands_;
   mrs_natural nrValidBands_;
 
@@ -52,12 +50,13 @@ private:
   std::vector<mrs_natural> il_;
   std::vector<mrs_natural> ih_;
 
+	void localUpdate();
+
 public:
   SFM(std::string name);
   ~SFM();
   MarSystem* clone() const;  
-  
-  void update();
+ 
   void process(realvec& in, realvec& out);
 };
 

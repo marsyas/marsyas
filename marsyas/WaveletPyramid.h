@@ -38,6 +38,7 @@ class WaveletPyramid: public MarSystem
 private:
   Daub4* waveletStep_;
   void addControls();
+	void localUpdate();
   
 public:
   WaveletPyramid(std::string name);
@@ -46,7 +47,7 @@ public:
   
   
   MarSystem* clone() const;
-  void update();
+
   void process(realvec& in, realvec& out);
   
 };

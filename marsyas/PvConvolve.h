@@ -34,8 +34,7 @@ namespace Marsyas
 class PvConvolve: public MarSystem
 {
 private:
-  
-  void addControls();
+  void localUpdate();
   
 public:
   PvConvolve(std::string name);
@@ -43,7 +42,6 @@ public:
   ~PvConvolve();
   MarSystem* clone() const;    
 
-  void update();
   void process(realvec& in, realvec& out);
  };
 

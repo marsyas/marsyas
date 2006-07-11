@@ -35,7 +35,8 @@ namespace Marsyas
 class Kurtosis: public MarSystem
 {
 private: 
-  void addControls();
+	void localUpdate();
+
   realvec obsrow_;
   mrs_real z_;
   mrs_real b_;
@@ -45,7 +46,6 @@ public:
   ~Kurtosis();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

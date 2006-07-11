@@ -35,13 +35,12 @@ namespace Marsyas
 class Sum: public MarSystem
 {
 private: 
-  void addControls();
+  void localUpdate();
 public:
   Sum(std::string name);
   ~Sum();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

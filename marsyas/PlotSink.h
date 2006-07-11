@@ -42,7 +42,6 @@ public:
 
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 

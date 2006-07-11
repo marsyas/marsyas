@@ -32,16 +32,11 @@ namespace Marsyas
 class Negative: public MarSystem
 {
   
-private:
-  void addControls();
-  
 public:
   Negative(std::string name);
   ~Negative();
   
   MarSystem* clone() const;
-
-  void update();
   
   void process(realvec& in, realvec& out);
   

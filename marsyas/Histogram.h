@@ -35,7 +35,9 @@ class Histogram: public MarSystem
 {
 private: 
   void addControls();
-  mrs_natural startBin_;
+	void localUpdate();
+  
+	mrs_natural startBin_;
   mrs_natural endBin_;
   bool reset_;
   
@@ -45,7 +47,6 @@ public:
   ~Histogram();
   MarSystem* clone() const;  
   
-  void update();
   void process(realvec& in, realvec& out);
 };
 
