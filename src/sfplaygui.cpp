@@ -3,7 +3,7 @@
 
 #include "Collection.h"
 #include "MarSystemManager.h"
-// #include "Messager.h"
+#include "Messager.h"
 #include "CommandLineOptions.h"
 
 #include <string> 
@@ -75,8 +75,8 @@ void sfplaygui(Collection l, mrs_natural offset, mrs_natural duration, mrs_real 
   SoundFileSource* src = new SoundFileSource("src");
   src->updctrl("mrs_string/filename", sfName);
 
-  // Messager* messager =0;
-  // messager = new Messager(2,2001);  
+  Messager* messager =0;
+  messager = new Messager(2,2001);  
 
       
   MarSystemManager mn;
@@ -149,12 +149,12 @@ void sfplaygui(Collection l, mrs_natural offset, mrs_natural duration, mrs_real 
 	    {
 
 	      
-	      // type = messager->nextMessage();
+	      type = messager->nextMessage();
 	      if (type < 0) 
 		done = true;    
 	      else 
 		{
-		  // message = messager->getMessage();
+		  message = messager->getMessage();
 		  stringstream inss(message);
 		  string cname = "";
 		  mrs_real dur;
