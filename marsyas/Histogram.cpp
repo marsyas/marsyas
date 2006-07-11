@@ -29,11 +29,12 @@ using namespace std;
 using namespace Marsyas;
 
 
-Histogram::Histogram(string name)
+Histogram::Histogram(string name):MarSystem("Histogram",name)
 {
   type_ = "Histogram";
   name_ = name;
-  addControls();
+
+	addControls();
 }
 
 
@@ -51,7 +52,6 @@ Histogram::clone() const
 void 
 Histogram::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_real/gain", 1.0);
   addctrl("mrs_bool/reset", false);
   addctrl("mrs_natural/startBin", 0);
@@ -60,16 +60,13 @@ Histogram::addControls()
   setctrlState("mrs_natural/endBin", true);
   addctrl("mrs_bool/reset", true);
   setctrlState("mrs_bool/reset", true);
-
 }
 
 
 void
-Histogram::update()
+Histogram::localUpdate()
 {
-  MRSDIAG("Histogram.cpp - Histogram:update");
-
-  
+  MRSDIAG("Histogram.cpp - Histogram:localUpdate");
 
   startBin_ = getctrl("mrs_natural/startBin").toNatural();
   endBin_ = getctrl("mrs_natural/endBin").toNatural();
@@ -78,9 +75,6 @@ Histogram::update()
   setctrl("mrs_natural/onSamples", endBin_ - startBin_);
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-
-
-  defaultUpdate();
 }
 
 

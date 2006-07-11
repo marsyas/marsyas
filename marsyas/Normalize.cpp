@@ -27,47 +27,21 @@ using namespace std;
 using namespace Marsyas;
 
 
-Normalize::Normalize(string name)
+Normalize::Normalize(string name):MarSystem("Normalize",name)
 {
-  type_ = "Normalize";
-  name_ = name;
-  addControls();
+  //type_ = "Normalize";
+  //name_ = name;
 }
-
 
 Normalize::~Normalize()
 {
 }
-
 
 MarSystem* 
 Normalize::clone() const 
 {
   return new Normalize(*this);
 }
-
-void 
-Normalize::addControls()
-{
-  addDefaultControls();
-  
-}
-
-
-void
-Normalize::update()
-{
-  MRSDIAG("Normalize.cpp - Normalize:update");
-  
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  
-  setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
-  defaultUpdate();  
-  
-}
-
 
 void 
 Normalize::process(realvec& in, realvec& out)

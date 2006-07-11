@@ -28,14 +28,14 @@
 using namespace std;
 using namespace Marsyas;
 
-ViconFileSource::ViconFileSource(string name)
+ViconFileSource::ViconFileSource(string name):MarSystem("ViconFileSource",name)
 {
-  type_ = "ViconFileSource";
-  name_ = name;
+  //type_ = "ViconFileSource";
+  //name_ = name;
   
-  addControls();
   vfp_ = 0;
-  
+
+	addControls();
 }
 
 
@@ -48,7 +48,6 @@ ViconFileSource::~ViconFileSource()
 void 
 ViconFileSource::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_bool/notEmpty", true);  
   addctrl("mrs_natural/size", 0);
   addctrl("mrs_string/markers", " ");
@@ -91,7 +90,7 @@ ViconFileSource::getHeader(string filename)
 
 
 void
-ViconFileSource::update()
+ViconFileSource::localUpdate()
 {
   inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
   israte_ = getctrl("mrs_real/israte").toReal();
@@ -108,8 +107,7 @@ ViconFileSource::update()
   setctrl("mrs_natural/onObservations", fileObs_);
   setctrl("mrs_real/osrate", israte_);
     
-       
-  defaultUpdate();
+    
 }
  
 void

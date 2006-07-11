@@ -30,18 +30,12 @@ according to current input time (t)
 using namespace std;
 using namespace Marsyas;
 
-
-PvOverlapadd::PvOverlapadd():MarSystem()
+PvOverlapadd::PvOverlapadd(string name):MarSystem("PvOverlapadd",name)
 {
-  type_ = "PvOverlapadd";
-}
+  //type_ = "PvOverlapadd";
+  //name_ = name;
 
-
-PvOverlapadd::PvOverlapadd(string name)
-{
-  type_ = "PvOverlapadd";
-  name_ = name;
-  addControls();
+	addControls();
 }
 
 
@@ -59,7 +53,6 @@ PvOverlapadd::clone() const
 void 
 PvOverlapadd::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/Time",0);
   addctrl("mrs_natural/WindowSize", MRS_DEFAULT_SLICE_NSAMPLES);
   setctrlState("mrs_natural/WindowSize", true);
@@ -67,10 +60,8 @@ PvOverlapadd::addControls()
   addctrl("mrs_natural/Interpolation", MRS_DEFAULT_SLICE_NSAMPLES /4);
 }
 
-
-
 void
-PvOverlapadd::update()
+PvOverlapadd::localUpdate()
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/WindowSize"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
@@ -133,9 +124,10 @@ PvOverlapadd::update()
       for (sum = (mrs_real)1.0/sum, t =0; t < Nw; t++)
 	swin_(t) *= sum;
     }
+
+	//lmartins: This was missing the defaultUpdate() call which could be havoc!! [!]
+	//with the MarSystem refactoring the chances for such a issue are greatly reduced now!
 }
-
-
 
 
 void 

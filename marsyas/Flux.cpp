@@ -29,11 +29,10 @@ two succesive spectra.
 using namespace std;
 using namespace Marsyas;
 
-Flux::Flux(string name)
+Flux::Flux(string name):MarSystem("Flux",name)
 {
-  type_ = "Flux";
-  name_ = name;
-  addControls();
+  //type_ = "Flux";
+  //name_ = name;
 }
 
 
@@ -48,18 +47,10 @@ Flux::clone() const
   return new Flux(*this);
 }
 
-void 
-Flux::addControls()
-{
-  addDefaultControls();
-}
-
-
 void
-Flux::update()
+Flux::localUpdate()
 {
-  
-  MRSDIAG("Flux.cpp - Flux:update");
+  MRSDIAG("Flux.cpp - Flux:localUpdate");
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal());
@@ -67,8 +58,6 @@ Flux::update()
   
   prevWindow_.create(getctrl("mrs_natural/inObservations").toNatural(),
 		     getctrl("mrs_natural/inSamples").toNatural());
-
-  defaultUpdate();
 }
 
 void 

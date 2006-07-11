@@ -28,18 +28,19 @@
 using namespace std;
 using namespace Marsyas;
 
-Confidence::Confidence(string name)
+Confidence::Confidence(string name):MarSystem("Confidence",name)
 {
-  type_ = "Confidence";
-  name_ = name;
-  print_ = false;
+  //type_ = "Confidence";
+  //name_ = name;
+  
+	print_ = false;
   forcePrint_ = false;
   
   predictions_ = 0;
   count_ = 0;
-  addControls();
-}
 
+	addControls();
+}
 
 Confidence::~Confidence()
 {
@@ -55,7 +56,6 @@ Confidence::clone() const
 void 
 Confidence::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/memSize", 40);
   addctrl("mrs_natural/nLabels", 2);
   setctrlState("mrs_natural/nLabels", true);
@@ -67,11 +67,10 @@ Confidence::addControls()
   setctrlState("mrs_bool/forcePrint", true);
 }
 
-
 void
-Confidence::update()
+Confidence::localUpdate()
 {
-  MRSDIAG("Confidence.cpp - Confidence:update");
+  MRSDIAG("Confidence.cpp - Confidence:localUpdate");
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
@@ -83,9 +82,8 @@ Confidence::update()
 
   print_ = getctrl("mrs_bool/print").toBool();
   forcePrint_ = getctrl("mrs_bool/forcePrint").toBool();
-  
-  
-  for (int i = 0; i < getctrl("mrs_natural/nLabels").toNatural(); i++)
+    
+  for (mrs_natural i = 0; i < getctrl("mrs_natural/nLabels").toNatural(); i++)
     {
       string labelName;
       string temp;
@@ -95,16 +93,11 @@ Confidence::update()
       labelNames = temp;
       labelNames_.push_back(labelName);
     }  
-
-
-  defaultUpdate();
 }
-
 
 void 
 Confidence::process(realvec& in, realvec& out)
 {
-  
   checkFlow(in,out);
   bool mute = getctrl("mrs_bool/mute").toBool();  
   
@@ -113,58 +106,46 @@ Confidence::process(realvec& in, realvec& out)
   
   mrs_natural label;
   mrs_natural l;
-  
-
+ 
   if (mute == false) 
-    {
-      for (o=0; o < inObservations_; o++)
-	for (t = 0; t < inSamples_; t++)
-	  {
-	    
-	    
-	    out(o,t) = in(o,t);
-	    if (o==0) 
-	      {
-		label = (mrs_natural)in(o,t);
-		confidences_(label) = confidences_(label) + 1;
-	      }
-	    
+  {
+    for (o=0; o < inObservations_; o++)
+			for (t = 0; t < inSamples_; t++)
+			{
+	    	out(o,t) = in(o,t);
+				if (o==0) 
+				{
+					label = (mrs_natural)in(o,t);
+					confidences_(label) = confidences_(label) + 1;
+				} 
 	  }
-      count_++;
-      
-
-      
-      bool cond = ((count_ % memSize) == 0);
-      if (cond || forcePrint_)
-	{
-	  
-	  mrs_real max_conf = 0;
-	  mrs_natural max_l = 0;
-	  for (l=0; l < nLabels; l++)
-	    {
-	      mrs_real conf = ((confidences_(l)) / count_);
-	      if (conf > max_conf) 
+    count_++;
+    bool cond = ((count_ % memSize) == 0);
+    if (cond || forcePrint_)
 		{
-		  max_conf = conf;
-		  max_l = l;
-		}
-	    }
-	  if (print_) 
-	    cout << labelNames_[max_l] << "\t" << 
-	      ((confidences_(max_l) / count_)) * 100.0 << endl;
+			mrs_real max_conf = 0;
+			mrs_natural max_l = 0;
+			for (l=0; l < nLabels; l++)
+			{
+				mrs_real conf = ((confidences_(l)) / count_);
+				if (conf > max_conf) 
+				{
+					max_conf = conf;
+					max_l = l;
+				}
+			}
+			if (print_) 
+				cout << labelNames_[max_l] << "\t" << 
+					((confidences_(max_l) / count_)) * 100.0 << endl;
 
-	  if (cond || forcePrint_)
-	    {
-	      count_ = 0;
-	    }
-	  
-	  
-	  
-	  confidences_.setval(0.0);
-	  
-	}
-    }
-  
+			if (cond || forcePrint_)
+			{
+				count_ = 0;
+			}
+	    
+			confidences_.setval(0.0);
+		}
+  }
 }
 
 

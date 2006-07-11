@@ -28,11 +28,12 @@ Essentially forms a weighted sum of the input rows of observations.
 using namespace std;
 using namespace Marsyas;
 
-ANN_node::ANN_node(string name)
+ANN_node::ANN_node(string name):MarSystem("ANN_node", name)
 {
-  type_ = "ANN_node";
-  name_ = name;
-  addControls();
+  //type_ = "ANN_node";
+  //name_ = name;
+
+	addControls();
 }
 
 
@@ -50,31 +51,26 @@ ANN_node::clone() const
 void 
 ANN_node::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_realvec/weights", weights_);
   setctrlState("mrs_realvec/weights", true);
   addctrl("mrs_real/bias", bias_);
   setctrlState("mrs_real/bias", true);
 }
 
-
 void
-ANN_node::update()
+ANN_node::localUpdate()
 {
-  MRSDIAG("ANN_node.cpp - ANN_node:update");
+  MRSDIAG("ANN_node.cpp - ANN_node:localUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  
  
   weights_.create(getctrl("mrs_realvec/weights").toVec().getSize());
   weights_ = getctrl("mrs_realvec/weights").toVec(); 
 
   bias_ = getctrl("mrs_real/bias").toReal(); 
-  defaultUpdate();
 }
-
 
 void 
 ANN_node::process(realvec& in, realvec& out)

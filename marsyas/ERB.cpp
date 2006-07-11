@@ -33,16 +33,16 @@ the code from the Auditory Toolbox by Malcolm Slaney.
 using namespace std;
 using namespace Marsyas;
 
-ERB::ERB(string name)
+ERB::ERB(string name):MarSystem("ERB", name)
 {
-  type_ = "ERB";
-  name_ = name;
+  //type_ = "ERB";
+  //name_ = name;
   
   fs = 0;
   numChannels = 0;
   lowFreq = 0;
-  
-  addControls();
+
+	addControls();
 }
 
 
@@ -60,20 +60,17 @@ ERB::clone() const
 void 
 ERB::addControls()
 {
-  addDefaultControls();
-  
   addctrl("mrs_natural/numChannels", 1);
   addctrl("mrs_real/lowFreq", 100.0f);
   
   setctrlState("mrs_natural/numChannels", true);
-  setctrlState("mrs_real/lowFreq", true);
-  
+  setctrlState("mrs_real/lowFreq", true);  
 }
 
 void 
-ERB::update()
+ERB::localUpdate()
 {
-  MRSDIAG("ERB.cpp - ERB:update");
+  MRSDIAG("ERB.cpp - ERB:localUpdate");
   
   //FilterBank creation
   if (numChannels != getctrl("mrs_natural/numChannels").toNatural()){
@@ -233,8 +230,6 @@ ERB::update()
   }
   //update the whole filter bank
   filterBank->update();
-  
-  defaultUpdate();
 }
 
 

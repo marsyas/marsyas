@@ -28,11 +28,10 @@
 using namespace std;
 using namespace Marsyas;
 
-ClipAudioRange::ClipAudioRange(string name)
+ClipAudioRange::ClipAudioRange(string name):MarSystem("ClipAudioRange",name)
 {
-  type_ = "ClipAudioRange";
-  name_ = name;
-  addControls();
+  //type_ = "ClipAudioRange";
+  //name_ = name;
 }
 
 
@@ -47,30 +46,19 @@ ClipAudioRange::clone() const
   return new ClipAudioRange(*this);
 }
 
-void 
-ClipAudioRange::addControls()
-{
-  addDefaultControls();
-}
-
-
 void
-ClipAudioRange::update()
+ClipAudioRange::localUpdate()
 {
-  MRSDIAG("ClipAudioRange.cpp - ClipAudioRange:update");
+  MRSDIAG("ClipAudioRange.cpp - ClipAudioRange:localUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  defaultUpdate();
 }
-
 
 void 
 ClipAudioRange::process(realvec& in, realvec& out)
 {
-
-
   checkFlow(in,out);
   
   for (o=0; o < inObservations_; o++)

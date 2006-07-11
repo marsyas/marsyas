@@ -30,23 +30,19 @@ such as offsets,durations as a single SoundFileSource.
 using namespace std;
 using namespace Marsyas;
 
-CollectionFileSource::CollectionFileSource(string name)
+CollectionFileSource::CollectionFileSource(string name):AbsSoundFileSource("SoundFileSource", name)
 {
-  type_ = "SoundFileSource";
-  name_ = name;
+  //type_ = "SoundFileSource";
+  //name_ = name;
 
-  addControls();
+	addControls();
 }
-
-
 
 CollectionFileSource::~CollectionFileSource()
 {
-  
   delete isrc_;
   delete downsampler_;
 }
-
 
 MarSystem* 
 CollectionFileSource::clone() const
@@ -54,12 +50,9 @@ CollectionFileSource::clone() const
   return new CollectionFileSource(*this);
 }
 
-
-
 void
 CollectionFileSource::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/nChannels",(mrs_natural)1);
   addctrl("mrs_bool/notEmpty", true);  
   notEmpty_ = true;
@@ -75,7 +68,6 @@ CollectionFileSource::addControls()
   addctrl("mrs_string/filetype", "mf");
   addctrl("mrs_natural/cindex", 0);
   setctrlState("mrs_natural/cindex", true);
-
 
   addctrl("mrs_string/allfilenames", "collectionFileSource");
   setctrlState("mrs_string/allfilenames", true);
@@ -94,19 +86,16 @@ CollectionFileSource::addControls()
   
   addctrl("mrs_natural/cindex", 0);
   setctrlState("mrs_natural/cindex", true);
-  
 
   addctrl("mrs_string/currentlyPlaying", "daufile");
   
-  mngCreated_ = false;
-  
+  mngCreated_ = false; 
 }
 
 void 
 CollectionFileSource::getHeader(string filename)
 {
-  
-  col_.read(filename);
+	col_.read(filename);
   updctrl("mrs_string/allfilenames", col_.toLongString());
   updctrl("mrs_natural/numFiles", col_.getSize());  
 
@@ -118,26 +107,23 @@ CollectionFileSource::getHeader(string filename)
   pos_ = 0;
 }
 
-
 void
-CollectionFileSource::update()
+CollectionFileSource::localUpdate()
 {
-  
-  nChannels_ = getctrl("mrs_natural/nChannels").toNatural();  
+	nChannels_ = getctrl("mrs_natural/nChannels").toNatural();  
   inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
   inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
   
-
   nChannels_ = getctrl("mrs_natural/nChannels").toNatural();
   filename_ = getctrl("mrs_string/filename").toString();    
   pos_ = getctrl("mrs_natural/pos").toNatural();
   
   if (mngCreated_ == false) 
-    {
-      isrc_ = new SoundFileSource("isrc");
-      mngCreated_ = true;
-      downsampler_ = new DownSampler("downsampler_"); 
-    }
+  {
+    isrc_ = new SoundFileSource("isrc");
+    mngCreated_ = true;
+    downsampler_ = new DownSampler("downsampler_"); 
+  }
   
   repetitions_ = getctrl("mrs_real/repetitions").toReal();
   duration_ = getctrl("mrs_real/duration").toReal();
@@ -145,52 +131,42 @@ CollectionFileSource::update()
   cindex_ = getctrl("mrs_natural/cindex").toNatural();
 
   if (getctrl("mrs_bool/shuffle").toBool())
-    {
-      cout << "SHUFFLING" << endl;
-      col_.shuffle();
-      setctrl("mrs_bool/shuffle", (MarControlValue)false);
-    }
-  
-     
-  
+  {
+    cout << "SHUFFLING" << endl;
+    col_.shuffle();
+    setctrl("mrs_bool/shuffle", (MarControlValue)false);
+  }
   
   if (cindex_ < col_.size()) 
-    {
-      isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));
-      setctrl("mrs_string/currentlyPlaying", col_.entry(cindex_));
-    }
+  {
+    isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));
+    setctrl("mrs_string/currentlyPlaying", col_.entry(cindex_));
+  }
   
-
   israte_ = isrc_->getctrl("mrs_real/israte").toReal();
   setctrl("mrs_real/israte", israte_);
   setctrl("mrs_real/osrate", israte_);
 
-
-
   if (israte_ == 44100.0) 
-    {
-      downsampler_->updctrl("mrs_natural/inSamples", 2* inSamples_);
-      setctrl("mrs_natural/onSamples", inSamples_);
-      setctrl("mrs_real/israte", israte_/2);
-      setctrl("mrs_real/osrate", israte_/2);
-      temp_.create(inObservations_, 2 * inSamples_);
-      tempi_.create(inObservations_, 2 * inSamples_);
-      isrc_->updctrl("mrs_natural/inSamples", 2 * inSamples_);
-    }
+  {
+    downsampler_->updctrl("mrs_natural/inSamples", 2* inSamples_);
+    setctrl("mrs_natural/onSamples", inSamples_);
+    setctrl("mrs_real/israte", israte_/2);
+    setctrl("mrs_real/osrate", israte_/2);
+    temp_.create(inObservations_, 2 * inSamples_);
+    tempi_.create(inObservations_, 2 * inSamples_);
+    isrc_->updctrl("mrs_natural/inSamples", 2 * inSamples_);
+  }
   else
-    {
-      isrc_->updctrl("mrs_natural/inSamples", inSamples_);
-      setctrl("mrs_natural/onSamples", inSamples_);
-      setctrl("mrs_real/israte", israte_);
-      setctrl("mrs_real/osrate", israte_);
-      temp_.create(inObservations_, inSamples_);
-    }
+  {
+    isrc_->updctrl("mrs_natural/inSamples", inSamples_);
+    setctrl("mrs_natural/onSamples", inSamples_);
+    setctrl("mrs_real/israte", israte_);
+    setctrl("mrs_real/osrate", israte_);
+    temp_.create(inObservations_, inSamples_);
+  }
   
-
-  setctrl("mrs_natural/onObservations", inObservations_);
-
-  
-
+	setctrl("mrs_natural/onObservations", inObservations_);
 
   isrc_->updctrl("mrs_natural/inObservations", inObservations_);
   isrc_->updctrl("mrs_real/repetitions", repetitions_);
@@ -201,92 +177,85 @@ CollectionFileSource::update()
   isrc_->updctrl("mrs_natural/cindex", cindex_);
   
   cindex_ = getctrl("mrs_natural/cindex").toNatural();  
-
-  defaultUpdate();
 }
-
 
 void
 CollectionFileSource::process(realvec& in, realvec &out)
 {
-
-  checkFlow(in,out);
+	checkFlow(in,out);
   
   if (advance_) 
-    {
-      cindex_ = cindex_ + 1;
-      if (cindex_ >= col_.size() -1)  
-	{
-	  
-	  setctrl("mrs_bool/notEmpty", (MarControlValue)false);
-	  notEmpty_ = false;      
-	  advance_ = false;
-	}
+  {
+    cindex_ = cindex_ + 1;
+    if (cindex_ >= col_.size() -1)  
+		{
+			setctrl("mrs_bool/notEmpty", (MarControlValue)false);
+			notEmpty_ = false;      
+			advance_ = false;
+		}
 
-       setctrl("mrs_natural/cindex", cindex_);
+		setctrl("mrs_natural/cindex", cindex_);
 
-       isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));   
-       updctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));   
-       israte_ = isrc_->getctrl("mrs_real/israte").toReal();
+		isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));   
+		updctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));   
+		israte_ = isrc_->getctrl("mrs_real/israte").toReal();
 
-       setctrl("mrs_real/israte", israte_);
-       setctrl("mrs_real/osrate", israte_);
+		setctrl("mrs_real/israte", israte_);
+		setctrl("mrs_real/osrate", israte_);
 
-       if (israte_ == 44100)
-	 {
-	   isrc_->process(tempi_,temp_);
-	   setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
-	   setctrl("mrs_bool/notEmpty", (MarControlValue)isrc_->getctrl("mrs_bool/notEmpty"));
-	   downsampler_->process(temp_,out);
-	 }
-       else 
-	 {
-	   isrc_->process(in,out);
-	   setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
-	   setctrl("mrs_bool/notEmpty", (MarControlValue)isrc_->getctrl("mrs_bool/notEmpty"));
-	 }
-       update();      
+		if (israte_ == 44100)
+		{
+		 isrc_->process(tempi_,temp_);
+		 setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
+		 setctrl("mrs_bool/notEmpty", (MarControlValue)isrc_->getctrl("mrs_bool/notEmpty"));
+		 downsampler_->process(temp_,out);
+		}
+		else 
+		{
+		 isrc_->process(in,out);
+		 setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
+		 setctrl("mrs_bool/notEmpty", (MarControlValue)isrc_->getctrl("mrs_bool/notEmpty"));
+		}
+    
+		update();      
+    return;
+  }
+  else
+  {
+    if (israte_ == 44100)
+		{
+			isrc_->process(tempi_,temp_);
+			setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
+			setctrl("mrs_bool/notEmpty", (MarControlValue)isrc_->getctrl("mrs_bool/notEmpty"));
+			downsampler_->process(temp_,out);
+		}
+    else 
+		{
+			isrc_->process(in,out);
+			setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
+			setctrl("mrs_bool/notEmpty", (MarControlValue)isrc_->getctrl("mrs_bool/notEmpty"));
+		}
 
-       return;
-     }
-   else
-     {
-       if (israte_ == 44100)
-	 {
-	   isrc_->process(tempi_,temp_);
-	   setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
-	   setctrl("mrs_bool/notEmpty", (MarControlValue)isrc_->getctrl("mrs_bool/notEmpty"));
-	   downsampler_->process(temp_,out);
-	 }
-       else 
-	 {
-	   isrc_->process(in,out);
-	   setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
-	   setctrl("mrs_bool/notEmpty", (MarControlValue)isrc_->getctrl("mrs_bool/notEmpty"));
-	 }
-
-
-       if (isrc_->getctrl("mrs_bool/notEmpty").toBool() == false)
-	 {
-	   if (cindex_ < col_.size() -1)
-	     {
-	       cindex_ = cindex_ + 1;
-	       setctrl("mrs_natural/cindex", cindex_);
-	       isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));      
-	       isrc_->updctrl("mrs_natural/pos", 0);     
-	       pos_ = 0;
-	       israte_ = isrc_->getctrl("mrs_real/israte").toReal();
-	       setctrl("mrs_real/israte", israte_);
-	       setctrl("mrs_real/osrate", israte_);
-	     }
-	  else 
-	    {
-	      setctrl("mrs_bool/notEmpty", (MarControlValue)false);
-	      notEmpty_ = false;
-	    }
-	}
-    }
-  
+    if (isrc_->getctrl("mrs_bool/notEmpty").toBool() == false)
+		{
+			if (cindex_ < col_.size() -1)
+			{
+				 cindex_ = cindex_ + 1;
+				 setctrl("mrs_natural/cindex", cindex_);
+				 isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));      
+				 isrc_->updctrl("mrs_natural/pos", 0);     
+				 pos_ = 0;
+				 israte_ = isrc_->getctrl("mrs_real/israte").toReal();
+				 setctrl("mrs_real/israte", israte_);
+				 setctrl("mrs_real/osrate", israte_);
+			}
+			else 
+			{
+				setctrl("mrs_bool/notEmpty", (MarControlValue)false);
+				notEmpty_ = false;
+			}
+		}
+  } 
 }  
 
 

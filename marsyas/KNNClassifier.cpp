@@ -43,16 +43,12 @@ MarSystem.
 using namespace std;
 using namespace Marsyas;
 
-KNNClassifier::KNNClassifier():MarSystem()
+KNNClassifier::KNNClassifier(string name):MarSystem("KNNClassifier",name)
 {
-  type_ = "KNNClassifier";
-}
+  //type_ = "KNNClassifier";
+  //name_ = name;
 
-KNNClassifier::KNNClassifier(string name)
-{
-  type_ = "KNNClassifier";
-  name_ = name;
-  addControls();
+	addControls();
 }
 
 
@@ -70,7 +66,6 @@ KNNClassifier::clone() const
 void 
 KNNClassifier::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_string/mode", "train");
   addctrl("mrs_natural/nLabels", 1);
   setctrlState("mrs_natural/nLabels", true);
@@ -84,14 +79,13 @@ KNNClassifier::addControls()
   addctrl("mrs_natural/nPredictions", 1);
   setctrlState("mrs_natural/nPredictions", true);
   setctrlState("mrs_bool/done", true);
-  
 }
 
 
 void
-KNNClassifier::update()
+KNNClassifier::localUpdate()
 {
-  MRSDIAG("KNNClassifier.cpp - KNNClassifier:update");
+  MRSDIAG("KNNClassifier.cpp - KNNClassifier:localUpdate");
   
   nPredictions_ = getctrl("mrs_natural/nPredictions").toNatural();
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
@@ -128,7 +122,6 @@ KNNClassifier::update()
       setctrl("mrs_bool/done", (MarControlValue)false);
       setctrl("mrs_realvec/trainSet", trainSet_);
     }
-  defaultUpdate();
 }
 
 

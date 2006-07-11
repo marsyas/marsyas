@@ -28,11 +28,12 @@
 using namespace std;
 using namespace Marsyas;
 
-MinArgMin::MinArgMin(string name)
+MinArgMin::MinArgMin(string name):MarSystem("MinArgMin",name)
 {
-  type_ = "MinArgMin";
-  name_ = name;
-  addControls();
+  //type_ = "MinArgMin";
+  //name_ = name;
+
+	addControls();
 }
 
 
@@ -51,12 +52,11 @@ MinArgMin::clone() const
 void
 MinArgMin::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/nMinimums", (mrs_natural)1);
 }
 
 void
-MinArgMin::update()
+MinArgMin::localUpdate()
 {
   type_ = "MinArgMin";
   mrs_natural k = getctrl("mrs_natural/nMinimums").toNatural();
@@ -64,7 +64,6 @@ MinArgMin::update()
   setctrl("mrs_natural/onSamples",  2 * k);
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
-  defaultUpdate();
 }
 
 

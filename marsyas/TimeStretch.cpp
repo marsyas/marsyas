@@ -28,14 +28,13 @@
 using namespace std;
 using namespace Marsyas;
 
-TimeStretch::TimeStretch(string name)
+TimeStretch::TimeStretch(string name):MarSystem("TimeStretch",name)
 {
-  type_ = "TimeStretch";
-  name_ = name;
-  addControls();
+  //type_ = "TimeStretch";
+  //name_ = name;
+
+	addControls();
 }
-
-
 
 TimeStretch::~TimeStretch()
 {
@@ -47,26 +46,11 @@ TimeStretch::clone() const
   return new TimeStretch(*this);
 }
 
-
 void 
 TimeStretch::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_real/factor", 1.0);
 }
-
-
-
-void
-TimeStretch::update()
-{
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
-  defaultUpdate();
-}
-
-
 
 void 
 TimeStretch::process(realvec& in, realvec& out)

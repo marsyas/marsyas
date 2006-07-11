@@ -28,11 +28,12 @@
 using namespace std;
 using namespace Marsyas;
 
-MaxArgMax::MaxArgMax(string name)
+MaxArgMax::MaxArgMax(string name):MarSystem("MaxArgMax",name)
 {
-  type_ = "MaxArgMax";
-  name_ = name;
-  addControls();
+  //type_ = "MaxArgMax";
+  //name_ = name;
+
+	addControls();
 }
 
 
@@ -51,22 +52,19 @@ MaxArgMax::clone() const
 void 
 MaxArgMax::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/nMaximums", (mrs_natural)1);
   setctrlState("mrs_natural/nMaximums", true);
 }
 
 
 void
-MaxArgMax::update()
+MaxArgMax::localUpdate()
 {
   mrs_natural k = getctrl("mrs_natural/nMaximums").toNatural();
   
   setctrl("mrs_natural/onSamples",  2 * k);
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
-
-  defaultUpdate();
 }
 
 

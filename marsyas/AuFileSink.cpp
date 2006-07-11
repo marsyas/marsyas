@@ -58,13 +58,15 @@ of the Next .snd/ Sun .au format */
 #define SND_FORMAT_LINEAR_32   5
 #define SND_FORMAT_FLOAT       6
 
-AuFileSink::AuFileSink(string name)
+AuFileSink::AuFileSink(string name):AbsSoundFileSink("AuFileSink",name)
 {
-  type_ = "AuFileSink";
-  name_ = name;
-  cdata_ = NULL;
+  //type_ = "AuFileSink";
+  //name_ = name;
+  
+	cdata_ = NULL;
   sdata_ = NULL;
-  addControls();
+
+	addControls();
 }
 
 AuFileSink::~AuFileSink()
@@ -79,17 +81,14 @@ AuFileSink::clone() const
   return new AuFileSink(*this);
 }
 
-
 void 
 AuFileSink::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/nChannels", (mrs_natural)1);
   setctrlState("mrs_natural/nChannels", true);
   addctrl("mrs_string/filename", "daufile");
   setctrlState("mrs_string/filename", true);
 }
-
 
 bool 
 AuFileSink::checkExtension(string filename)
@@ -105,17 +104,16 @@ AuFileSink::checkExtension(string filename)
 }
 
 void 
-AuFileSink::update()
+AuFileSink::localUpdate()
 {
-  MRSDIAG("AudioFileSink::update");
+  MRSDIAG("AudioFileSink::localUpdate");
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
   nChannels_ = getctrl("mrs_natural/inObservations").toNatural();      
   setctrl("mrs_natural/nChannels", nChannels_);
-  
-  
+    
   delete [] sdata_;
   delete [] cdata_;
   
@@ -123,10 +121,7 @@ AuFileSink::update()
   cdata_ = new unsigned char[getctrl("mrs_natural/inSamples").toNatural() * nChannels_];
 
   filename_ = getctrl("mrs_string/filename").toString();
-  
-  defaultUpdate();
 }
-
   
 void 
 AuFileSink::putHeader(string filename)
@@ -142,21 +137,18 @@ AuFileSink::putHeader(string filename)
   hdr_.pref[2] = 'n';
   hdr_.pref[3] = 'd';
 
-
 #if defined(__BIG_ENDIAN__)
 	  hdr_.hdrLength = 24 + commentSize;
 	  hdr_.fileLength = 0;
 	  hdr_.mode = SND_FORMAT_LINEAR_16;                           
 	  hdr_.srate = (mrs_natural)getctrl("mrs_real/israte").toReal();
 	  hdr_.channels = nChannels;
-
 #else
 	  hdr_.hdrLength = ByteSwapLong(24 + commentSize);
 	  hdr_.fileLength = ByteSwapLong(0);
 	  hdr_.mode = ByteSwapLong(SND_FORMAT_LINEAR_16);                           
 	  hdr_.srate = ByteSwapLong((mrs_natural)getctrl("mrs_real/israte").toReal());
 	  hdr_.channels = ByteSwapLong(nChannels);
-
 #endif 
 
   fwrite(&hdr_, 24, 1, sfp_);
@@ -164,7 +156,6 @@ AuFileSink::putHeader(string filename)
   fwrite(comment, commentSize, 1, sfp_);      
   sfp_begin_ = ftell(sfp_);  
 }
-
 
 unsigned long 
 AuFileSink::ByteSwapLong(unsigned long nLongNumber)
@@ -182,43 +173,37 @@ AuFileSink::ByteSwapShort (unsigned short nValue)
 void 
 AuFileSink::putLinear16(realvec& slice)
 {
-  
   for (c=0; c < nChannels_; c++)
     for (t=0; t < inSamples_; t++)
-      {
-#if defined(__BIG_ENDIAN__)
-	sdata_[t*nChannels_ + c] = (short)(slice(c,t) * MAXSHRT);      
-#else
-	sdata_[t*nChannels_ + c] = ByteSwapShort((short)(slice(c,t) * MAXSHRT));
-	
-#endif 
-      }
-  
+    {
+			#if defined(__BIG_ENDIAN__)
+			sdata_[t*nChannels_ + c] = (short)(slice(c,t) * MAXSHRT);      
+			#else
+			sdata_[t*nChannels_ + c] = ByteSwapShort((short)(slice(c,t) * MAXSHRT));
+			#endif 
+    }
   
   if ((mrs_natural)fwrite(sdata_, sizeof(short), nChannels_ * inSamples_, sfp_) != nChannels_ * inSamples_)
-    {
-      MRSWARN("Problem: could not write window to file" + filename_);
-    }
-
+  {
+    MRSWARN("Problem: could not write window to file" + filename_);
+  }
 }
 
 void 
 AuFileSink::process(realvec& in, realvec& out)
 {
-
-  checkFlow(in,out);
+	checkFlow(in,out);
   
   // copy input to output 
   for (o=0; o < inObservations_; o++)
     for (t=0; t < inSamples_; t++)
-      {
-	if (in(o,t) > 1.0)
-	  MRSWARN("AuFileSink::Value out of range > 1.0");
-	if (in(o,t) < -1.0)
-	  MRSWARN("AuFileSink::Value out of range < -1.0"); 
-
-	  out(o,t) = in(o,t);
-      }
+    {
+			if (in(o,t) > 1.0)
+				MRSWARN("AuFileSink::Value out of range > 1.0");
+			if (in(o,t) < -1.0)
+				MRSWARN("AuFileSink::Value out of range < -1.0"); 
+			out(o,t) = in(o,t);
+    }
 
   long fileSize;
   fpos_ = ftell(sfp_);
@@ -234,7 +219,6 @@ AuFileSink::process(realvec& in, realvec& out)
   fseek(sfp_, fpos_, SEEK_SET);
   
   putLinear16(in);
-
 }
 
 

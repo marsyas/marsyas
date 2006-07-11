@@ -30,11 +30,12 @@ using namespace std;
 using namespace Marsyas;
 
 
-DownSampler::DownSampler(string name)
+DownSampler::DownSampler(string name):MarSystem("DownSampler",name)
 {
-  type_ = "DownSampler";
-  name_ = name;
-  addControls();
+  //type_ = "DownSampler";
+  //name_ = name;
+
+	addControls();
 }
 
 DownSampler::~DownSampler()
@@ -50,26 +51,20 @@ DownSampler::clone() const
 void 
 DownSampler::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/factor", 2);
   setctrlState("mrs_natural/factor", true);
 }
 
-
 void
-DownSampler::update()
+DownSampler::localUpdate()
 {
-  MRSDIAG("DownSampler.cpp - DownSampler:update");
+  MRSDIAG("DownSampler.cpp - DownSampler:localUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples").toNatural() / getctrl("mrs_natural/factor").toNatural());
-  
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   mrs_natural factor = getctrl("mrs_natural/factor").toNatural();
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal() / factor);
- 
-  defaultUpdate();
 }
-
 
 void 
 DownSampler::process(realvec& in, realvec& out)
@@ -79,10 +74,9 @@ DownSampler::process(realvec& in, realvec& out)
   mrs_natural factor = getctrl("mrs_natural/factor").toNatural();
   for (o=0; o < inObservations_; o++)
     for (t = 0; t < inSamples_ / factor; t++)
-      {
-		out(o,t) = in(o,t * factor);
-      }
-
+    {
+			out(o,t) = in(o,t * factor);
+    }
 }
 
 

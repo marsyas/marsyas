@@ -34,17 +34,12 @@ directly in Hz.
 using namespace std;
 using namespace Marsyas;
 
-PvUnconvert::PvUnconvert():MarSystem()
+PvUnconvert::PvUnconvert(string name):MarSystem("PvUnconvert",name)
 {
-  type_ = "PvUnconvert";
-}
+  //type_ = "PvUnconvert";
+  //name_ = name;
 
-
-PvUnconvert::PvUnconvert(string name)
-{
-  type_ = "PvUnconvert";
-  name_ = name;
-  addControls();
+	addControls();
 }
 
 
@@ -64,14 +59,11 @@ PvUnconvert::clone() const
 void 
 PvUnconvert::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/Interpolation", MRS_DEFAULT_SLICE_NSAMPLES/4);
 }
 
-
-
 void
-PvUnconvert::update()
+PvUnconvert::localUpdate()
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations").toNatural() - 2);
@@ -87,10 +79,10 @@ PvUnconvert::update()
   fundamental_ = (mrs_real) (israte  / inObservations);
   factor_ = (((getctrl("mrs_natural/Interpolation").toNatural()* TWOPI)/(israte * onObservations)));
   
+	//lmartins: This was missing the defaultUpdate() call which could be havoc!! [!]
+	//with the MarSystem refactoring the chances for such a issue are greatly reduced now!
+
 }
-
-
-
 
 void 
 PvUnconvert::process(realvec& in, realvec& out)

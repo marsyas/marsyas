@@ -29,11 +29,10 @@ using namespace std;
 using namespace Marsyas;
 
 
-FullWaveRectifier::FullWaveRectifier(string name)
+FullWaveRectifier::FullWaveRectifier(string name):MarSystem("FullWaveRectifier",name)
 {
-  type_ = "FullWaveRectifier";
-  name_ = name;
-  addControls();
+  //type_ = "FullWaveRectifier";
+  //name_ = name;
 }
 
 
@@ -48,22 +47,14 @@ FullWaveRectifier::clone() const
   return new FullWaveRectifier(*this);
 }
 
-void 
-FullWaveRectifier::addControls()
-{
-  addDefaultControls();
-}
-
-
 void
-FullWaveRectifier::update()
+FullWaveRectifier::localUpdate()
 {
-  MRSDIAG("FullWaveRectifier.cpp - FullWaveRectifier:update");
+  MRSDIAG("FullWaveRectifier.cpp - FullWaveRectifier:localUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  defaultUpdate();
 }
 
 

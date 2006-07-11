@@ -29,18 +29,10 @@ a realvec
 using namespace std;
 using namespace Marsyas;
 
-Rms::Rms()
+Rms::Rms(string name):MarSystem("Rms",name)
 {
-  type_ = "Rms";
-}
-
-
-Rms::Rms(string name)
-{
-  type_ = "Rms";
-  name_ = name;
-  addControls();
-  
+  //type_ = "Rms";
+	//name_ = name;  
 }
 
 Rms::~Rms()
@@ -53,25 +45,13 @@ Rms::clone() const
   return new Rms(*this);
 }
 
-
 void 
-Rms::addControls()
-{
-  addDefaultControls();
-}
-
-
-void 
-Rms::update()
+Rms::localUpdate()
 {
   setctrl("mrs_natural/onSamples", (mrs_natural)1);
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal() / getctrl("mrs_natural/inSamples").toNatural());
-  defaultUpdate();
 }
-
-
-
 
 void 
 Rms::process(realvec& in, realvec& out)

@@ -30,11 +30,10 @@ the location of valleys.
 using namespace std;
 using namespace Marsyas;
 
-AMDF::AMDF(string name)
+AMDF::AMDF(string name):MarSystem("AMDF", name)
 {
-  type_ = "AMDF";
-  name_ = name;
-  addControls();
+  //type_ = "AMDF";
+  //name_ = name;
 }
 
 
@@ -49,24 +48,16 @@ AMDF::clone() const
   return new AMDF(*this);
 }
 
-void 
-AMDF::addControls()
-{
-  addDefaultControls();
-}
-
-
 void
-AMDF::update()
+AMDF::localUpdate()
 {
-  MRSDIAG("AMDF.cpp - AMDF:update");
+  MRSDIAG("AMDF.cpp - AMDF:localUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
-  defaultUpdate();  
 }
 
 void 

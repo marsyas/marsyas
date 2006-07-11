@@ -34,11 +34,12 @@ weka for training.
 using namespace std;
 using namespace Marsyas;
 
-SMO::SMO(string name)
+SMO::SMO(string name):MarSystem("SMO",name)
 {
-  type_ = "SMO";
-  name_ = name;
-  addControls();
+  //type_ = "SMO";
+  //name_ = name;
+
+	addControls();
 }
 
 
@@ -56,7 +57,6 @@ SMO::clone() const
 void 
 SMO::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_string/mode", "train");
   addctrl("mrs_natural/nLabels", 1);
   setctrlState("mrs_natural/nLabels", true);
@@ -69,9 +69,9 @@ SMO::addControls()
 
 
 void
-SMO::update()
+SMO::localUpdate()
 {
-  MRSDIAG("SMO.cpp - SMO:update");
+  MRSDIAG("SMO.cpp - SMO:localUpdate");
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", (mrs_natural)2);
@@ -104,8 +104,6 @@ SMO::update()
     {
       weights_ = getctrl("mrs_realvec/weights").toVec();
     }
-
-  defaultUpdate();
 }
 
 

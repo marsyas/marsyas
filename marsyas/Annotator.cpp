@@ -27,18 +27,17 @@
 using namespace std;
 using namespace Marsyas;
 
-Annotator::Annotator(string name)
+Annotator::Annotator(string name):MarSystem("Annotator", name)
 {
-  type_ = "Annotator";
-  name_ = name;
-  addControls();
-}
+  //type_ = "Annotator";
+  //name_ = name;
 
+	addControls();
+}
 
 Annotator::~Annotator()
 {
 }
-
 
 MarSystem* 
 Annotator::clone() const 
@@ -49,7 +48,6 @@ Annotator::clone() const
 void 
 Annotator::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/label", 0);
   addctrl("mrs_string/labels","");
   setctrlState("mrs_string/labels",true);
@@ -59,9 +57,9 @@ Annotator::addControls()
 
 
 void
-Annotator::update()
+Annotator::localUpdate()
 {
-  MRSDIAG("Annotator.cpp - Annotator:update");
+  MRSDIAG("Annotator.cpp - Annotator:localUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations").toNatural()+1);
@@ -83,8 +81,6 @@ Annotator::update()
 
 	  labels_index_ = 0;
   }
-
-  defaultUpdate();
 }
 
 

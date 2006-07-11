@@ -28,11 +28,10 @@
 using namespace std;
 using namespace Marsyas;
 
-Norm::Norm(string name)
+Norm::Norm(string name):MarSystem("Norm",name)
 {
-  type_ = "Norm";
-  name_ = name;
-  addControls();
+  //type_ = "Norm";
+  //name_ = name;
 }
 
 
@@ -46,25 +45,6 @@ Norm::clone() const
 {
   return new Norm(*this);
 }
-
-void 
-Norm::addControls()
-{
-  addDefaultControls();
-}
-
-
-void
-Norm::update()
-{
-  MRSDIAG("Norm.cpp - Norm:update");
-  
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  defaultUpdate();
-}
-
 
 void 
 Norm::process(realvec& in, realvec& out)

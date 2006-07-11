@@ -42,11 +42,11 @@ using namespace Marsyas;
 //#define _MATLAB_LPCwarped_
 #endif
 
-LPCwarped::LPCwarped(string name)
+LPCwarped::LPCwarped(string name):MarSystem("LPCwarped",name)
 {
-	type_ = "LPCwarped";
-	name_ = name;
-	
+	//type_ = "LPCwarped";
+	//name_ = name;
+
 	addControls();
 }
 
@@ -63,8 +63,6 @@ LPCwarped::clone() const
 void 
 LPCwarped::addControls()
 {
-	addDefaultControls();
-
 	addctrl("mrs_natural/order", (mrs_natural)10); 
 	setctrlState("mrs_natural/order", true); 
 	addctrl("mrs_real/lambda", (mrs_real)0.0);	
@@ -72,9 +70,9 @@ LPCwarped::addControls()
 }
 
 void
-LPCwarped::update()
+LPCwarped::localUpdate()
 { 
-	MRSDIAG("LPCwarped.cpp - LPCwarped:update");
+	MRSDIAG("LPCwarped.cpp - LPCwarped:localUpdate");
 
 	order_ = getctrl("mrs_natural/order").toNatural();
 
@@ -91,8 +89,6 @@ LPCwarped::update()
 
 	temp_.create(order_ ,order_);
 	Zs_.create(order_);
-
-	defaultUpdate();
 
 	//MATLAB engine stuff - for testing and validation purposes only!
 #ifdef _MATLAB_LPCwarped_

@@ -28,12 +28,10 @@
 using namespace std;
 using namespace Marsyas;
 
-PvConvolve::PvConvolve(string name)
+PvConvolve::PvConvolve(string name):MarSystem("PvConvolve",name)
 {
-  type_ = "PvConvolve";
-  name_ = name;
-  
-  addControls();
+  //type_ = "PvConvolve";
+  //name_ = name;
 }
 
 
@@ -48,27 +46,13 @@ PvConvolve::clone() const
 }
 
 
-void 
-PvConvolve::addControls()
-{
-  addDefaultControls();
-}
-
-
-
-
 void
-PvConvolve::update()
+PvConvolve::localUpdate()
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations").toNatural() / 2);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal());
-  defaultUpdate();  
 }
-
-
-
-
 
 void 
 PvConvolve::process(realvec& in, realvec& out)

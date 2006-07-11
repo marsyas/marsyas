@@ -30,15 +30,17 @@ according to current input time (t)
 using namespace std;
 using namespace Marsyas;
 
-PvFold::PvFold(string name):MarSystem()
+PvFold::PvFold(string name):MarSystem("PvFold",name)
 {
-  type_ = "PvFold";
-  name_ = name;
-  N_ = 0;
+  //type_ = "PvFold";
+  //name_ = name;
+  
+	N_ = 0;
   Nw_ = 0;
   PNw_ = 0;
   D_ = 0;
-  addControls();
+
+	addControls();
 }
 
 
@@ -56,7 +58,6 @@ PvFold::clone() const
 void 
 PvFold::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/WindowSize", MRS_DEFAULT_SLICE_NSAMPLES);
   addctrl("mrs_natural/FFTSize", MRS_DEFAULT_SLICE_NSAMPLES);
   setctrlState("mrs_natural/FFTSize", true);
@@ -68,18 +69,15 @@ PvFold::addControls()
 
 
 void
-PvFold::update()
+PvFold::localUpdate()
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/FFTSize"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
-
   
   N_ = getctrl("mrs_natural/onSamples").toNatural();
   Nw_ = getctrl("mrs_natural/inSamples").toNatural();
   D_ = getctrl("mrs_natural/Decimation").toNatural();
-
-
 
   // create analysis window if necessary
   if (Nw_ != PNw_)
@@ -118,14 +116,7 @@ PvFold::update()
     }
 
   PNw_ = Nw_;
-  
-  defaultUpdate();
 }
-
-
-
-
-
 
 void 
 PvFold::process(realvec& in, realvec& out)

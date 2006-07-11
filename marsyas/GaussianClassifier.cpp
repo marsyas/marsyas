@@ -43,11 +43,12 @@ MarSystem.
 using namespace std;
 using namespace Marsyas;
 
-GaussianClassifier::GaussianClassifier(string name)
+GaussianClassifier::GaussianClassifier(string name):MarSystem("GaussianClassifier",name)
 {
-  type_ = "GaussianClassifier";
-  name_ = name;
-  addControls();
+  //type_ = "GaussianClassifier";
+  //name_ = name;
+
+	addControls();
 }
 
 
@@ -65,7 +66,6 @@ GaussianClassifier::clone() const
 void 
 GaussianClassifier::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_string/mode", "train");
   addctrl("mrs_natural/nLabels", 1);
   setctrlState("mrs_natural/nLabels", true);
@@ -75,43 +75,36 @@ GaussianClassifier::addControls()
   addctrl("mrs_realvec/covars", covars_);
   addctrl("mrs_bool/done", false);
   setctrlState("mrs_bool/done", true);
-
-  
 }
 
 
 void
-GaussianClassifier::update()
+GaussianClassifier::localUpdate()
 {
-  MRSDIAG("GaussianClassifier.cpp - GaussianClassifier:update");
+  MRSDIAG("GaussianClassifier.cpp - GaussianClassifier:localUpdate");
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", (mrs_natural)2);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-  
   mrs_natural inObservations = getctrl("mrs_natural/inObservations").toNatural();
   mrs_natural nlabels = getctrl("mrs_natural/nLabels").toNatural();
-
 
   mrs_natural mrows = (getctrl("mrs_realvec/means").toVec()).getRows();
   mrs_natural mcols = (getctrl("mrs_realvec/means").toVec()).getCols();
   mrs_natural nrows = means_.getRows();
   mrs_natural ncols = means_.getCols();
   
-  
-  
   if ((nlabels != mrows) || 
       (inObservations != mcols))
     {
       means_.create(nlabels, inObservations);
       covars_.create(nlabels, inObservations);
-      updctrl("mrs_realvec/means", means_);
-      updctrl("mrs_realvec/covars", covars_);      
+      updctrl("mrs_realvec/means", means_);//[?]
+      updctrl("mrs_realvec/covars", covars_);//[?]      
       labelSizes_.create(nlabels);  
     }
   
-
   if ((nlabels != nrows) || 
       (inObservations != ncols))
     {
@@ -125,10 +118,7 @@ GaussianClassifier::update()
       means_ = getctrl("mrs_realvec/means").toVec();
       covars_ = getctrl("mrs_realvec/covars").toVec();
     }
-
-  defaultUpdate();
 }
-
 
 void 
 GaussianClassifier::process(realvec& in, realvec& out)

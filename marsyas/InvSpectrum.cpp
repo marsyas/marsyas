@@ -29,17 +29,10 @@ using the Inverse Fast Fourier Transform (IFFT)
 using namespace std;
 using namespace Marsyas;
 
-InvSpectrum::InvSpectrum():MarSystem()
+InvSpectrum::InvSpectrum(string name):MarSystem("InvSpectrum",name)
 {
-  type_ = "InvSpectrum";
-}
-
-
-InvSpectrum::InvSpectrum(string name)
-{
-  type_ = "InvSpectrum";
-  name_ = name;
-  addControls();
+  //type_ = "InvSpectrum";
+  //name_ = name;
 }
 
 InvSpectrum::~InvSpectrum()
@@ -55,22 +48,13 @@ InvSpectrum::clone() const
 
 
 void 
-InvSpectrum::addControls()
-{
-  addDefaultControls();
-}
-
-
-void 
-InvSpectrum::update()
+InvSpectrum::localUpdate()
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal() * getctrl("mrs_natural/inObservations").toNatural());
   
   tempVec_.create(getctrl("mrs_natural/onSamples").toNatural());
-  
-  defaultUpdate();
 }
 
 void 

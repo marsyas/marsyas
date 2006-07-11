@@ -29,19 +29,11 @@ with gain and put them in the output vector.
 using namespace std;
 using namespace Marsyas;
 
-Hamming::Hamming()
+Hamming::Hamming(string name):MarSystem("Hamming",name)
 {
-  type_ = "Hamming";
+  //type_ = "Hamming";
+  //name_ = name;
 }
-
-
-Hamming::Hamming(string name)
-{
-  type_ = "Hamming";
-  name_ = name;
-  addControls();
-}
-
 
 Hamming::~Hamming()
 {
@@ -53,15 +45,8 @@ Hamming::clone() const
   return new Hamming(*this);
 }
 
-void 
-Hamming::addControls()
-{
-  addDefaultControls();
-}
-
-
 void
-Hamming::update()
+Hamming::localUpdate()
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
@@ -79,11 +64,7 @@ Hamming::update()
       i = 2*PI*t / (inSamples-1);
       envelope_(t) = A - B * cos(i);
     }
-  defaultUpdate();
 }
-
-
-
 
 void 
 Hamming::process(realvec& in, realvec& out)

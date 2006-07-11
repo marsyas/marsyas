@@ -29,11 +29,11 @@
 using namespace std;
 using namespace Marsyas;
 
-FM :: FM( string name ) 
+FM::FM(string name):MarSystem("FM",name)
 {
   
-  type_ = "FM";
-  name_ = name;
+  //type_ = "FM";
+  //name_ = name;
   
   // create the wavetable.
   wavetableSize_ = 8192;
@@ -48,9 +48,9 @@ FM :: FM( string name )
   
   mIndex_ = 0;
   oIndex_ = 0;
-  
-  addControls();
-  
+
+	addControls();
+
 }
 
 
@@ -66,7 +66,6 @@ MarSystem* FM::clone() const
 void
 FM::addControls() 
 {
-  addDefaultControls();
   addctrl("mrs_natural/nChannels",1);
   
   addctrl("mrs_real/mDepth", 15.0);						// modulator depth
@@ -80,13 +79,12 @@ FM::addControls()
   
   addctrl("mrs_bool/noteon", false);
   setctrlState("mrs_bool/noteon", true);
-
 }	
 
 
-void FM::update() 
+void FM::localUpdate() 
 {
-  MRSDIAG("FM.cpp - FM:update");
+  MRSDIAG("FM.cpp - FM:localUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
@@ -99,8 +97,6 @@ void FM::update()
   mDepth_ = getctrl("mrs_real/mDepth").toReal();
   mRate_ = (mSpeed_ * wavetableSize_) / getctrl("mrs_real/israte").toReal();
   inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
-  
-  defaultUpdate();
 }	
 
 void FM::process( realvec& in, realvec& out ) 

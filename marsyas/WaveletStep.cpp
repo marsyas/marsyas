@@ -30,15 +30,10 @@ is based on the Numerical Recipies wavelet code.
 using namespace std;
 using namespace Marsyas;
 
-WaveletStep::WaveletStep()
+WaveletStep::WaveletStep(string name):MarSystem("WaveletStep",name)
 {
-}
-
-
-WaveletStep::WaveletStep(string name)
-{
-  type_ = "WaveletStep";
-  name_ = name;
+  //type_ = "WaveletStep";
+  //name_ = name;
 }
 
 
@@ -46,27 +41,11 @@ WaveletStep::~WaveletStep()
 {
 }
 
-void 
-WaveletStep::update()
-{
-  defaultUpdate();
-}
-
-
-void 
-WaveletStep::addControls()
-{
-}
-
-
 MarSystem* 
 WaveletStep::clone() const 
 {
   return new WaveletStep(*this);
 }
-
-
-
 
 void 
 WaveletStep::process(realvec& in, realvec& out) 

@@ -21,11 +21,12 @@
 using namespace std;
 using namespace Marsyas;
 
-Peaker1::Peaker1(string name)
+Peaker1::Peaker1(string name):MarSystem("Peaker1",name)
 {
-  type_ = "Peaker1";
-  name_ = name;
-  addControls();
+  //type_ = "Peaker1";
+  //name_ = name;
+
+	addControls();
 }
 
 
@@ -39,26 +40,14 @@ Peaker1::clone() const
   return new Peaker1(*this);
 }
 
-
-
 void
 Peaker1::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_real/peakSpacing", 0.0);
   addctrl("mrs_real/peakStrength", 0.0);
   addctrl("mrs_natural/peakStart", (mrs_natural)0);
   addctrl("mrs_natural/peakEnd", (mrs_natural)0);
   addctrl("mrs_real/peakGain", 1.0);
-}
-
-void 
-Peaker1::update()
-{
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
-  defaultUpdate();
 }
 
 void 

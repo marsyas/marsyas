@@ -29,13 +29,15 @@ using namespace std;
 using namespace Marsyas;
 
 
-Delay::Delay(string name)
+Delay::Delay(string name):MarSystem("Delay",name)
 {
-  type_ = "Delay";
-  name_ = name;
-  delay_ = 0.0;
+  //type_ = "Delay";
+  //name_ = name;
+  
+	delay_ = 0.0;
   cursor_ = 0;
-  addControls();
+
+	addControls();
 }
 
 
@@ -53,7 +55,6 @@ Delay::clone() const
 void 
 Delay::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_real/gain", 1.0);
   addctrl("mrs_real/feedback", 0.3);
   addctrl("mrs_real/delay", 0.2);
@@ -62,11 +63,10 @@ Delay::addControls()
   setctrlState("mrs_real/delay", true);
 }
 
-
 void
-Delay::update()
+Delay::localUpdate()
 {
-  MRSDIAG("Delay.cpp - Delay:update");
+  MRSDIAG("Delay.cpp - Delay:localUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
@@ -81,7 +81,6 @@ Delay::update()
   buffer_.create((mrs_natural)bufferSize_);
   
   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
-  defaultUpdate();  
 }
 
 
@@ -91,13 +90,13 @@ Delay::process(realvec& in, realvec& out)
   checkFlow(in,out);
   for (o=0; o < inObservations_; o++)
     for (t = 0; t < inSamples_; t++)
-      {
-	if (cursor_ >= bufferSize_)
-	  cursor_ = 0; 
-	delay_ = buffer_(cursor_);
-	buffer_(cursor_++) = in(o,t) + delay_*feedback;
-	out(o,t) =  gain*delay_;
-      }
+    {
+			if (cursor_ >= bufferSize_)
+				cursor_ = 0; 
+			delay_ = buffer_(cursor_);
+			buffer_(cursor_++) = in(o,t) + delay_*feedback;
+			out(o,t) =  gain*delay_;
+    }
 }
 
 

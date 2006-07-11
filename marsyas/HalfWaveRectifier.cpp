@@ -16,7 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /** 
     \class HalfWaveRectifier
     \brief Half Wave Rectify 
@@ -28,11 +27,10 @@
 using namespace std;
 using namespace Marsyas;
 
-HalfWaveRectifier::HalfWaveRectifier(string name)
+HalfWaveRectifier::HalfWaveRectifier(string name):MarSystem("HalfWaveRectifier",name)
 {
-  type_ = "HalfWaveRectifier";
-  name_ = name;
-  addControls();
+  //type_ = "HalfWaveRectifier";
+  //name_ = name;
 }
 
 
@@ -46,24 +44,13 @@ HalfWaveRectifier::clone() const
   return new HalfWaveRectifier(*this);
 }
 
-
 void 
-HalfWaveRectifier::addControls()
-{
-  addDefaultControls();
-}
-
-void 
-HalfWaveRectifier::update()
+HalfWaveRectifier::localUpdate()
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  
-  defaultUpdate();
 }
-
-
 
 void 
 HalfWaveRectifier::process(realvec& in, realvec& out)

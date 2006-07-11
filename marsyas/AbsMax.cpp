@@ -29,14 +29,11 @@ the singal. Used for sending waveform plots to editor.
 using namespace std;
 using namespace Marsyas;
 
-
-AbsMax::AbsMax(string name)
+AbsMax::AbsMax(string name):MarSystem("AbsMax",name)
 {
-  type_ = "AbsMax";
-  name_ = name;
-  addControls();
+  //type_ = "AbsMax";
+  //name_ = name;
 }
-
 
 AbsMax::~AbsMax()
 {
@@ -49,40 +46,28 @@ AbsMax::clone() const
   return new AbsMax(*this);
 }
 
-
-void 
-AbsMax::addControls()
-{
-  addDefaultControls();
-}
-
-
 void
-AbsMax::update()
+AbsMax::localUpdate()
 {
   setctrl("mrs_natural/onSamples",  (mrs_natural)1);
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal() / (mrs_real)getctrl("mrs_natural/inSamples").toNatural());  
-  defaultUpdate();
 }
-
-
 
 void 
 AbsMax::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   for (o=0; o < inObservations_; o++)
-    {
-      max_ = 0.0;
-      for (t=0; t < inSamples_; t++)
-	{
-	  if (fabs(in(o,t)) > max_) 
-	    max_ = fabs(in(o,t));
-	}
-      out(o,0) = max_;
-    }
-  
+  {
+    max_ = 0.0;
+    for (t=0; t < inSamples_; t++)
+		{
+			if (fabs(in(o,t)) > max_) 
+				max_ = fabs(in(o,t));
+		}
+    out(o,0) = max_;
+  } 
 }
 
 

@@ -33,25 +33,21 @@
 using namespace std;
 using namespace Marsyas;
 
-SeneffEar::SeneffEar(string name)
+SeneffEar::SeneffEar(string name):MarSystem("SeneffEar",name)
 {
-  type_ = "SeneffEar";
-  name_ = name;
+  //type_ = "SeneffEar";
+  //name_ = name;
 
   firstUpdate = true;
   fs = 0.0f;
   stage = 4;
 
-  addControls();
+	addControls();
 }
-
-
 
 SeneffEar::~SeneffEar()
 {
 }
-
-
 
 MarSystem* 
 SeneffEar::clone() const 
@@ -59,20 +55,16 @@ SeneffEar::clone() const
   return new SeneffEar(*this);
 }
 
-
 void 
 SeneffEar::addControls()
 {
   addctrl("mrs_natural/stage", stage);
-
-  addDefaultControls();
-
 }
 
 void 
-SeneffEar::update()
+SeneffEar::localUpdate()
 {
-  MRSDIAG("SeneffEar.cpp - SeneffEar:update");
+  MRSDIAG("SeneffEar.cpp - SeneffEar:localUpdate");
 
   ostringstream name;
 
@@ -448,8 +440,6 @@ SeneffEar::update()
   setctrl("mrs_natural/onSamples", AGCfilter->getctrl("mrs_natural/onSamples"));
   setctrl("mrs_natural/onObservations", AGCfilter->getctrl("mrs_natural/onObservations").toNatural());
   setctrl("mrs_real/osrate", AGCfilter->getctrl("mrs_real/osrate"));
-
-  defaultUpdate();
 }
 
 void 

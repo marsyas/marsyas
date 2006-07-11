@@ -31,11 +31,12 @@ is a canonical form which has the minimum number of delay elements.
 using namespace std;
 using namespace Marsyas;
 
-Filter::Filter(string name)
+Filter::Filter(string name):MarSystem("Filter",name)
 {
   type_ = "Filter";
   name_ = name;
-  addControls();
+
+	addControls();
 }
 
 Filter::~Filter()
@@ -53,8 +54,6 @@ Filter::clone() const
 void 
 Filter::addControls()
 {
-  addDefaultControls();
-  
   norder_ = 2;
   dorder_ = 1;
   channels_ = 1;
@@ -74,13 +73,13 @@ Filter::addControls()
   setctrlState("mrs_realvec/dcoeffs", true);
   setctrlState("mrs_realvec/state", true);
   
-  update();
+  //update(); //lmartins?!?!?: [!][?]
 }
 
 
-void Filter::update()
+void Filter::localUpdate()
 {
-  MRSDIAG("Filter.cpp - Filter:update");
+  MRSDIAG("Filter.cpp - Filter:localUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
@@ -131,8 +130,6 @@ void Filter::update()
   
   fgain_ = 1.0f;
   setctrl("mrs_real/fgain", 1.0f);
-  
-  defaultUpdate();
 }
 
 void 

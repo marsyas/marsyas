@@ -32,17 +32,12 @@
 using namespace std;
 using namespace Marsyas;
 
-Rolloff::Rolloff():MarSystem()
+Rolloff::Rolloff(string name):MarSystem("Rolloff",name)
 {
-  type_ = "Rolloff";
-}
+  //type_ = "Rolloff";
+  //name_ = name;
 
-
-Rolloff::Rolloff(string name)
-{
-  type_ = "Rolloff";
-  name_ = name;
-  addControls();
+	addControls();
 }
 
 Rolloff::~Rolloff()
@@ -58,16 +53,15 @@ Rolloff::clone() const
 void 
 Rolloff::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_real/percentage", 0.9);
   setctrlState("mrs_real/percentage", true);
 }
 
-
 void
-Rolloff::update()
+Rolloff::localUpdate()
 {
-  MRSDIAG("Rolloff.cpp - Rolloff:update");
+  MRSDIAG("Rolloff.cpp - Rolloff:localUpdate");
+
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal());
@@ -75,11 +69,7 @@ Rolloff::update()
   sumWindow_.create(getctrl("mrs_natural/inObservations").toNatural());
 
   perc_ = getctrl("mrs_real/percentage").toReal();
-  defaultUpdate();
 }
-
-
-
 
 void 
 Rolloff::process(realvec& in, realvec& out)

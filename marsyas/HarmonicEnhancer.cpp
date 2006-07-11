@@ -28,13 +28,11 @@ using namespace std;
 using namespace Marsyas;
 
 
-HarmonicEnhancer::HarmonicEnhancer(string name)
+HarmonicEnhancer::HarmonicEnhancer(string name):MarSystem("HarmonicEnhancer",name)
 {
-  type_ = "HarmonicEnhancer";
-  name_ = name;
-  addControls();
+  //type_ = "HarmonicEnhancer";
+  //name_ = name;
 }
-
 
 HarmonicEnhancer::~HarmonicEnhancer()
 {
@@ -47,27 +45,19 @@ HarmonicEnhancer::clone() const
   return new HarmonicEnhancer(*this);
 }
 
-void 
-HarmonicEnhancer::addControls()
-{
-  addDefaultControls();
-}
-
 
 void
-HarmonicEnhancer::update()
+HarmonicEnhancer::localUpdate()
 {
-  MRSDIAG("HarmonicEnhancer.cpp - HarmonicEnhancer:update");
+  MRSDIAG("HarmonicEnhancer.cpp - HarmonicEnhancer:localUpdate");
    
   setctrl("mrs_natural/onSamples", (mrs_natural)1);
   setctrl("mrs_natural/onObservations", (mrs_natural)4);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
   flag_.create(getctrl("mrs_natural/inSamples").toNatural());
-  
-  
+    
   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
-  defaultUpdate();  
 }
 
 void 

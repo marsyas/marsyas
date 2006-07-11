@@ -30,17 +30,17 @@
 using namespace std;
 using namespace Marsyas;
 
-LPCResyn::LPCResyn(string name)
+LPCResyn::LPCResyn(string name):MarSystem("LPCResyn",name)
 {
-  type_ = "LPCResyn";
-  inSize_ = 10;//How do we add definitions? DEFAULTINSIZE
+  //type_ = "LPCResyn";
+  //name_ = name;
+
+	inSize_ = 10;//How do we add definitions? DEFAULTINSIZE
   hopSize_= 512;
   outSize_ = 512;
   order_ = 10;
-  
-  
-  addControls();
 
+	addControls();
 }
 
 LPCResyn::~LPCResyn()
@@ -57,31 +57,25 @@ LPCResyn::clone() const
 void 
 LPCResyn::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/order", order_);
   setctrlState("mrs_natural/order", true);
 }
 
 
 void
-LPCResyn::update()
+LPCResyn::localUpdate()
 {
-  MRSDIAG("LPCResyn.cpp - LPCResyn:update");
-  //cout<<"LPCResyn Update--------------------"<< endl;
+  MRSDIAG("LPCResyn.cpp - LPCResyn:localUpdate");
+  
   //setctrl("mrs_natural/onSamples", 512);//default may need to override when using this marsystem element.
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-
   
   order_ =  getctrl("mrs_natural/order").toNatural();
   inSize_ = order_+1;
   outSize_ = getctrl("mrs_natural/onSamples").toNatural()-order_;
-
   
   Zs_.create((mrs_natural)order_);
-
-  defaultUpdate();
- 
 }
 
 

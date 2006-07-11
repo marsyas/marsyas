@@ -28,9 +28,11 @@
 using namespace std;
 using namespace Marsyas;
 
-LPC::LPC(string name)
+LPC::LPC(string name):MarSystem("LPC",name)
 {
-  type_ = "LPC";
+  //type_ = "LPC";
+	//name_ = name;
+
   inSize_ = 512;//How do we add definitions? DEFAULTINSIZE
   hopSize_= 256;
   outSize_ = 10-1;
@@ -41,8 +43,8 @@ LPC::LPC(string name)
   lowFreq_ = 2000;
   firstTime_=1;
   networkCreated_ = false;
-  addControls();
 
+	addControls();
 }
 
 LPC::~LPC()
@@ -59,7 +61,6 @@ LPC::clone() const
 void 
 LPC::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/order", order_);
   setctrlState("mrs_natural/order", true);
   addctrl("mrs_real/minPitchRes",minPitchRes_);
@@ -70,17 +71,12 @@ LPC::addControls()
   addctrl("mrs_real/highFreq", highFreq_);
   setctrlState("mrs_real/lowFreq", true);
   setctrlState("mrs_real/highFreq", true);
-   
-  
- 
-
 }
 
-
 void
-LPC::update()
+LPC::localUpdate()
 { 
-  MRSDIAG("LPC.cpp - LPC:update");
+  MRSDIAG("LPC.cpp - LPC:localUpdate");
   //cout <<" LPC UPDATE**********" << endl;
   inSize_ = getctrl("mrs_natural/inSamples").toNatural();
   hopSize_ = getctrl("mrs_natural/hopSize").toNatural();
@@ -94,10 +90,7 @@ LPC::update()
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-
-
-
-  // Build the pitch extractor network 
+	// Build the pitch extractor network 
 
   if (networkCreated_ == false) 
     {
@@ -122,11 +115,7 @@ LPC::update()
       pitchExtractor_->addMarSystem(new MaxArgMax("mxr"));
       networkCreated_ = true;
     }
-  
-
-
-
-
+ 
   /* ---------------------
 //Not sure what to do with this.
      unsigned int i;
@@ -174,14 +163,11 @@ LPC::update()
   autocorr_->update();
   //cout << *autocorr_ << endl;   
 
-  
-
   rmat_.create((mrs_natural)order_ - 1,(mrs_natural)order_ - 1);
   temp_.create((mrs_natural)order_ - 1,(mrs_natural)order_ - 1);
   corr_.create((mrs_natural)inSize_);
   Zs_.create((mrs_natural)order_-1);
   pitchExtractor_->update();
-  defaultUpdate();
 }
 
 void 

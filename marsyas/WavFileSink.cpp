@@ -16,7 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /**
    \class WavFileSink
    \brief WavFileSink for .wav soundfiles
@@ -29,15 +28,16 @@
 using namespace std;
 using namespace Marsyas;
 
-WavFileSink::WavFileSink(string name)
+WavFileSink::WavFileSink(string name):AbsSoundFileSink("WavFileSink",name)
 {
-  type_ = "WavFileSink";
-  name_ = name;
-  sdata_ = NULL;
+  //type_ = "WavFileSink";
+  //name_ = name;
+  
+	sdata_ = NULL;
   cdata_ = NULL;
-  addControls();
-}
 
+	addControls();
+}
 
 WavFileSink::~WavFileSink()
 {
@@ -51,16 +51,13 @@ WavFileSink::clone() const
   return new WavFileSink(*this);
 }
 
-
 void 
 WavFileSink::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/nChannels", (mrs_natural)1);
   addctrl("mrs_string/filename", "default");
   setctrlState("mrs_string/filename", true);
 }
-
 
 bool 
 WavFileSink::checkExtension(string filename)
@@ -76,10 +73,9 @@ WavFileSink::checkExtension(string filename)
 }
 
 void 
-WavFileSink::update()
+WavFileSink::localUpdate()
 {
-
-  MRSDIAG("WavFileSink::update");
+  MRSDIAG("WavFileSink::localUpdate");
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
@@ -95,17 +91,11 @@ WavFileSink::update()
   cdata_ = new unsigned char[getctrl("mrs_natural/inSamples").toNatural() * nChannels_];
   
   filename_ = getctrl("mrs_string/filename").toString();
-  
-  defaultUpdate();
-  
 }
-
   
 void 
 WavFileSink::putHeader(string filename)
 {
-
-
   mrs_natural nChannels = (mrs_natural)getctrl("mrs_natural/nChannels").toNatural();
   sfp_ = fopen(filename.c_str(), "wb");
   
@@ -118,7 +108,6 @@ WavFileSink::putHeader(string filename)
   hdr_.riff[3] = 'F';
   
   hdr_.file_size = 44;
-  
   
   hdr_.wave[0] = 'W';
   hdr_.wave[1] = 'A';
@@ -150,7 +139,6 @@ WavFileSink::putHeader(string filename)
   hdr_.data_length = 0;
 #endif   
 
-
   hdr_.data[0] = 'd';
   hdr_.data[1] = 'a';
   hdr_.data[2] = 't';
@@ -160,7 +148,6 @@ WavFileSink::putHeader(string filename)
   
   sfp_begin_ = ftell(sfp_);  
 }
-
 
 unsigned long 
 WavFileSink::ByteSwapLong(unsigned long nLongNumber)
@@ -178,22 +165,20 @@ WavFileSink::ByteSwapShort (unsigned short nValue)
 void 
 WavFileSink::putLinear16Swap(mrs_natural c, realvec& slice)
 {
-
   for (c=0; c < nChannels_; c++)
     for (t=0; t < inSamples_; t++)
     {
-#if defined(__BIG_ENDIAN__)
+			#if defined(__BIG_ENDIAN__)
       sdata_[t*nChannels_ + c] = ByteSwapShort((short)(slice(0,t) * MAXSHRT));
-#else
+			#else
       sdata_[t*nChannels_ + c] = (short)(slice(0,t) * MAXSHRT);
-#endif
-
+			#endif
     }
 
   if ((mrs_natural)fwrite(sdata_, sizeof(short), nChannels_ * inSamples_, sfp_) != nChannels_ * inSamples_)
-    {
-      MRSERR("Problem: could not write window to file " + filename_);
-    }
+  {
+    MRSERR("Problem: could not write window to file " + filename_);
+  }
 }
 
 void 
@@ -204,10 +189,9 @@ WavFileSink::process(realvec& in, realvec& out)
   // copy input to output 
   for (o=0; o < inObservations_; o++)
     for (t=0; t < inSamples_; t++)
-      {
-		out(o,t) = in(o,t);
-      }
-
+    {
+			out(o,t) = in(o,t);
+    }
 
   long fileSize;
   fpos_ = ftell(sfp_);

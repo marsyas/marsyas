@@ -29,21 +29,18 @@
 using namespace std;
 using namespace Marsyas;
 
-WavFileSource::WavFileSource(string name)
+WavFileSource::WavFileSource(string name):AbsSoundFileSource("WavFileSource",name)
 {
-  type_ = "SoundFileSource";
-  name_ = name;
-  
+  //type_ = "SoundFileSource";//"WavFileSource" ?!?
+  //name_ = name;
 
   sdata_ = 0;
   cdata_ = 0;
   sfp_ = 0;
   pos_ = 0;
-  addControls();  
+
+	addControls();
 }
-
-
-
 
 WavFileSource::~WavFileSource()
 {
@@ -63,7 +60,6 @@ WavFileSource::clone() const
 void 
 WavFileSource::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/nChannels",(mrs_natural)1);
   addctrl("mrs_bool/notEmpty", true);  
   addctrl("mrs_natural/pos", (mrs_natural)0);
@@ -96,15 +92,6 @@ WavFileSource::addControls()
 
   addctrl("mrs_string/currentlyPlaying", "daufile");
 }
-
-
-  
-
-
-
-
-
-
 
 void 
 WavFileSource::getHeader(string filename)
@@ -263,13 +250,9 @@ WavFileSource::getHeader(string filename)
   nChannels_ = getctrl("mrs_natural/nChannels").toNatural();  
 }
 
-
-
-
 void
-WavFileSource::update()
+WavFileSource::localUpdate()
 {
-
   nChannels_ = getctrl("mrs_natural/nChannels").toNatural();  
   inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
   inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
@@ -283,12 +266,9 @@ WavFileSource::update()
   
   filename_ = getctrl("mrs_string/filename").toString();    
 
-
   pos_ = getctrl("mrs_natural/pos").toNatural();
   rewindpos_ = getctrl("mrs_natural/loopPos").toNatural();
   
-
- 
   delete [] sdata_;
   delete [] cdata_;
   
@@ -307,13 +287,9 @@ WavFileSource::update()
       csize_ = (mrs_natural)(duration_ * israte_);
     }
 
-
-  defaultUpdate();
-  samplesToRead_ = inSamples_ * nChannels_;
+  //defaultUpdate();
+	samplesToRead_ = inSamples_ * nChannels_;
 }
-
-
-
 
 mrs_natural 
 WavFileSource::getLinear8(mrs_natural c, realvec& slice)
@@ -344,8 +320,6 @@ WavFileSource::getLinear8(mrs_natural c, realvec& slice)
   pos_ += samplesToRead_;
   return pos_;
 }
-
-
 
 unsigned long 
 WavFileSource::ByteSwapLong(unsigned long nLongNumber)

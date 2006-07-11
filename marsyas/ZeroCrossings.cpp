@@ -29,17 +29,10 @@ signal crosses the zero line.
 using namespace std;
 using namespace Marsyas;
 
-ZeroCrossings::ZeroCrossings():MarSystem()
+ZeroCrossings::ZeroCrossings(string name):MarSystem("ZeroCrossings",name)
 {
-  type_ = "ZeroCrossings";
-}
-
-
-ZeroCrossings::ZeroCrossings(string name)
-{
-  type_ = "ZeroCrossings";
-  name_ = name;
-  addControls();
+  //type_ = "ZeroCrossings";
+  //name_ = name;
 }
 
 
@@ -54,26 +47,16 @@ ZeroCrossings::clone() const
   return new ZeroCrossings(*this);
 }
 
-void 
-ZeroCrossings::addControls()
-{
-  addDefaultControls();
-}
-
-
 void
-ZeroCrossings::update()
+ZeroCrossings::localUpdate()
 {
-
-
-  MRSDIAG("ZeroCrossings.cpp - ZeroCrossings:update");
+  MRSDIAG("ZeroCrossings.cpp - ZeroCrossings:localUpdate");
   
   setctrl("mrs_natural/onSamples", (mrs_natural)1);
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal() / getctrl("mrs_natural/inSamples").toNatural());
 
   setctrl("mrs_string/onObsNames", "ZeroCrossings,");  
-  defaultUpdate();
 }
 
 

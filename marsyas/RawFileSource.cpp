@@ -31,18 +31,18 @@
 using namespace std;
 using namespace Marsyas;
 
-RawFileSource::RawFileSource(string name)
+RawFileSource::RawFileSource(string name):AbsSoundFileSource("RawFileSource", name)
 {
-
-  type_ = "SoundFileSource";
-  name_ = name;
-  sfp_ = 0;
+  //type_ = "SoundFileSource"; //"RawFileSource"?!? 
+  //name_ = name;
+  
+	sfp_ = 0;
   phaseOffset_ = 0.0;
   
   bufferSize_ = 0;
   time_ = 0.0;
-  addControls();
 
+	addControls();
 }
 
 RawFileSource::~RawFileSource() 
@@ -50,7 +50,7 @@ RawFileSource::~RawFileSource()
   if (sfp_ != NULL)
     fclose(sfp_);
 
-  delete [] buffer_;
+  delete [] buffer_;//[!]
   
 }
 
@@ -63,7 +63,6 @@ MarSystem* RawFileSource::clone() const
 void
 RawFileSource::addControls() 
 {
-  addDefaultControls();
   addctrl("mrs_natural/nChannels",1);
   addctrl("mrs_real/frequency",440.0);
   setctrlState("mrs_real/frequency",true);
@@ -198,10 +197,7 @@ void RawFileSource::readData(unsigned long index)//[!]
   
 }
 
-
-
-
-void RawFileSource::update() 
+void RawFileSource::localUpdate() 
 {
  
   nChannels_ = getctrl("mrs_natural/nChannels").toNatural();  
@@ -217,8 +213,6 @@ void RawFileSource::update()
   pos_ = getctrl("mrs_natural/pos").toNatural();
 
   rate_ = fileSize_ * getctrl("mrs_real/frequency").toReal() / israte_;
-
-  defaultUpdate();
 }	
 
 

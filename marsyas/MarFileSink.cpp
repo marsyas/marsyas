@@ -27,20 +27,11 @@
 using namespace std;
 using namespace Marsyas;
 
-
-MarFileSink::MarFileSink()
+MarFileSink::MarFileSink(string name):MarSystem("MarFileSink",name)
 {
-  type_ = "MarFileSink";
+  //type_ = "MarFileSink";
+  //name_ = name;
 }
-
-MarFileSink::MarFileSink(string name)
-{
-  type_ = "MarFileSink";
-  name_ = name;
-  addControls();
-  
-}
-
 
 MarFileSink::~MarFileSink()
 {
@@ -51,23 +42,6 @@ MarSystem*
 MarFileSink::clone() const 
 {
   return new MarFileSink(*this);
-}
-
-void 
-MarFileSink::addControls()
-{
-  addDefaultControls();
-}
-
-
-void
-MarFileSink::update()
-{
-  MRSDIAG("MarFileSink.cpp - MarFileSink:update");
-  
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 }
 
 void 

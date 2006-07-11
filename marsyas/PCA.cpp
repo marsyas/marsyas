@@ -38,11 +38,12 @@ using namespace Marsyas;
 #define SIGN(a, b) ( (b) < 0 ? -fabs(a) : fabs(a) )
 
 
-PCA::PCA(string name)
+PCA::PCA(string name):MarSystem("PCA",name)
 {
-  type_ = "PCA";
-  name_ = name;
-  addControls();
+  //type_ = "PCA";
+  //name_ = name;
+
+	addControls();
 }
 
 PCA::~PCA()
@@ -58,7 +59,6 @@ PCA::clone() const
 void 
 PCA::addControls()
 {
-   addDefaultControls();
    npcs_.create(3,3);
    
    addctrl("mrs_natural/npc",3);
@@ -68,9 +68,9 @@ PCA::addControls()
 }
 
 void
-PCA::update()
+PCA::localUpdate()
 {
-  MRSDIAG("PCA.cpp - PCA:update");
+  MRSDIAG("PCA.cpp - PCA:localUpdate");
    
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/npc"));
@@ -102,8 +102,6 @@ PCA::update()
      oss << "PC_" << i << ",";
   }
   setctrl("mrs_string/onObsNames", oss.str());
-  
-  defaultUpdate();  
 }
 
 void 

@@ -28,12 +28,14 @@
 using namespace std;
 using namespace Marsyas;
 
-PlotSink::PlotSink(string name)
+PlotSink::PlotSink(string name):MarSystem("PlotSink",name)
 {
-  type_ = "PlotSink";
-  name_ = name;
-  addControls();
+  //type_ = "PlotSink";
+  //name_ = name;
+
   counter_ = 0;
+
+	addControls();
 }
 
 
@@ -51,29 +53,10 @@ PlotSink::clone() const
 void 
 PlotSink::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_string/separator", ",");
   addctrl("mrs_bool/sequence", true);
   addctrl("mrs_string/outputFilename", "marsyas");
 }
-
-
-void
-PlotSink::update()
-{
-  MRSDIAG("PlotSink.cpp - PlotSink:update");
-
-  
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  
-  defaultUpdate();
-  
-}
-
-
-
 
 void 
 PlotSink::process(realvec& in, realvec& out)

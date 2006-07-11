@@ -30,11 +30,12 @@ parameters of the peak selection process can be adjusted.
 using namespace std;
 using namespace Marsyas;
 
-Peaker::Peaker(string name)
+Peaker::Peaker(string name):MarSystem("Peaker",name)
 {
-  type_ = "Peaker";
-  name_ = name;
-  addControls();
+  //type_ = "Peaker";
+  //name_ = name;
+
+	addControls();
 }
 
 
@@ -48,28 +49,14 @@ Peaker::clone() const
   return new Peaker(*this);
 }
 
-
-
 void
 Peaker::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_real/peakSpacing", 0.0);
   addctrl("mrs_real/peakStrength", 0.0);
   addctrl("mrs_natural/peakStart", (mrs_natural)0);
   addctrl("mrs_natural/peakEnd", (mrs_natural)0);
   addctrl("mrs_real/peakGain", 1.0);
-}
-
-
-
-void 
-Peaker::update()
-{
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
-  defaultUpdate();
 }
 
 void 

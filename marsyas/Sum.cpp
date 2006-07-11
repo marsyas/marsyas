@@ -29,11 +29,10 @@ used for mixing audio signals before SoudFileSink or AudioSink.
 using namespace std;
 using namespace Marsyas;
 
-Sum::Sum(string name)
+Sum::Sum(string name):MarSystem("Sum",name)
 {
   type_ = "Sum";
   name_ = name;
-  addControls();
 }
 
 
@@ -48,22 +47,14 @@ Sum::clone() const
   return new Sum(*this);
 }
 
-void 
-Sum::addControls()
-{
-  addDefaultControls();
-}
-
-
 void
-Sum::update()
+Sum::localUpdate()
 {
-  MRSDIAG("Sum.cpp - Sum:update");
+  MRSDIAG("Sum.cpp - Sum:localUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", (MarControlValue)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  defaultUpdate();
 }
 
 

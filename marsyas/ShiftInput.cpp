@@ -30,17 +30,17 @@ with gain and put them in the output vector.
 using namespace std;
 using namespace Marsyas;
 
-ShiftInput::ShiftInput(string name)
+ShiftInput::ShiftInput(string name):MarSystem("ShiftInput",name)
 {
-  type_ = "ShiftInput";
-  name_ = name;
+  //type_ = "ShiftInput";
+  //name_ = name;
   PW_ = 0;
   W_ = 0;
   N_ = 0;
   D_ = 0;
-  addControls();
-}
 
+	addControls();
+}
 
 ShiftInput::~ShiftInput()
 {
@@ -56,20 +56,16 @@ ShiftInput::clone() const
 void
 ShiftInput::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/Decimation", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES/2);
   addctrl("mrs_natural/WindowSize", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES);
   setctrlState("mrs_natural/WindowSize", true);
 
   addctrl("mrs_bool/reset", true);
   setctrlState("mrs_bool/reset", true);
-
 }
 
-
-
 void
-ShiftInput::update()
+ShiftInput::localUpdate()
 {
   
   reset_ = getctrl("mrs_bool/reset").toBool();  
@@ -89,11 +85,7 @@ ShiftInput::update()
   N_ = getctrl("mrs_natural/onSamples").toNatural();
   D_ = getctrl("mrs_natural/inSamples").toNatural();
 
-  defaultUpdate();
 }
-
-
-
 
 void 
 ShiftInput::process(realvec& in, realvec& out)

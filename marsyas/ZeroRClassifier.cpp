@@ -32,16 +32,12 @@
 using namespace std;
 using namespace Marsyas;
 
-ZeroRClassifier::ZeroRClassifier():MarSystem()
+ZeroRClassifier::ZeroRClassifier(string name):MarSystem("ZeroRClassifier",name)
 {
-  type_ = "ZeroRClassifier";
-}
+  //type_ = "ZeroRClassifier";
+  //name_ = name;
 
-ZeroRClassifier::ZeroRClassifier(string name)
-{
-  type_ = "ZeroRClassifier";
-  name_ = name;
-  addControls();
+	addControls();
 }
 
 
@@ -59,7 +55,6 @@ ZeroRClassifier::clone() const
 void 
 ZeroRClassifier::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_string/mode", "train");
   addctrl("mrs_natural/nLabels", 1);
   setctrlState("mrs_natural/nLabels", true);
@@ -68,9 +63,9 @@ ZeroRClassifier::addControls()
 }
 
 void
-ZeroRClassifier::update()
+ZeroRClassifier::localUpdate()
 {
-  MRSDIAG("ZeroRClassifier.cpp - ZeroRClassifier:update");
+  MRSDIAG("ZeroRClassifier.cpp - ZeroRClassifier:localUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", (mrs_natural)2);
@@ -85,7 +80,6 @@ ZeroRClassifier::update()
     {
     
     }
-  defaultUpdate();
 }
 
 void 

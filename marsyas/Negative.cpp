@@ -26,11 +26,10 @@
 using namespace std;
 using namespace Marsyas;
 
-Negative::Negative(string name)
+Negative::Negative(string name):MarSystem("Negative",name)
 {
-  type_ = "Negative";
-  name_ = name;
-  addControls();
+  //type_ = "Negative";
+  //name_ = name;
 }
 
 
@@ -38,27 +37,10 @@ Negative::~Negative()
 {
 }
 
-void
-Negative::addControls()
-{
-  addDefaultControls();
-}
-
 MarSystem* 
 Negative::clone() const 
 {
   return new Negative(*this);
-}
-
-
-
-void
-Negative::update()
-{
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  defaultUpdate();
 }
 
 void 

@@ -28,14 +28,14 @@ using namespace std;
 using namespace Marsyas;
 
 
-ClassOutputSink::ClassOutputSink(string name)
+ClassOutputSink::ClassOutputSink(string name):MarSystem("ClassOutputSink", name)
 {
-  type_ = "ClassOutputSink";
-  name_ = name;
+  //type_ = "ClassOutputSink";
+  //name_ = name;
   mos_ = NULL;
-  addControls();
-}
 
+	addControls();
+}
 
 ClassOutputSink::~ClassOutputSink()
 {
@@ -43,9 +43,6 @@ ClassOutputSink::~ClassOutputSink()
     mos_->close();
   delete mos_;
 }
-
-
-
 
 MarSystem* 
 ClassOutputSink::clone() const 
@@ -56,7 +53,6 @@ ClassOutputSink::clone() const
 void 
 ClassOutputSink::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/memSize", 40);
   addctrl("mrs_natural/nLabels", 2);
 
@@ -67,7 +63,6 @@ ClassOutputSink::addControls()
   setctrlState("mrs_string/labelNames", true);
   addctrl("mrs_bool/silent", true);
 }
-
 
 void 
 ClassOutputSink::putHeader()
@@ -93,10 +88,9 @@ ClassOutputSink::putHeader()
 
 
 void
-ClassOutputSink::update()
+ClassOutputSink::localUpdate()
 {
-  MRSDIAG("ClassOutputSink.cpp - ClassOutputSink:update");
-  cout << "ClassOutputSink::update" << endl;
+  MRSDIAG("ClassOutputSink.cpp - ClassOutputSink:localUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
@@ -119,10 +113,8 @@ ClassOutputSink::update()
       labelNames_.push_back(labelName);
     }  
   count_ = 0;
-
   
   putHeader();
-  defaultUpdate();
 }
 
 

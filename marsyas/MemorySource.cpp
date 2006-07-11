@@ -26,12 +26,14 @@
 using namespace std;
 using namespace Marsyas;
 
-MemorySource::MemorySource(string name)
+MemorySource::MemorySource(string name):MarSystem("MemorySource",name)
 {
-  type_ = "MemorySource";
-  name_ = name;
-  count_= 0;
-  addControls();
+  //type_ = "MemorySource";
+  //name_ = name;
+  
+	count_= 0;
+
+	addControls();
 }
 
 
@@ -54,14 +56,13 @@ MemorySource::addControls()
   setctrlState("mrs_natural/samplesToUse", true);
   addctrl("mrs_bool/done", false);
   setctrlState("mrs_bool/done", true);
-  addDefaultControls();  
 }
 
 
 void
-MemorySource::update()
+MemorySource::localUpdate()
 {
-  MRSDIAG("MemorySource.cpp - MemorySource:update");
+  MRSDIAG("MemorySource.cpp - MemorySource:localUpdate");
   
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")  );
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal());
@@ -71,10 +72,7 @@ MemorySource::update()
     count_ = 0;
     setctrl("mrs_bool/done", (MarControlValue) false);
   }
-  
-  defaultUpdate();
 }
-
 
 void 
 MemorySource::process(realvec& in, realvec& out)
