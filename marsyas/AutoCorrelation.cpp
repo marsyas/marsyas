@@ -30,12 +30,13 @@ Fast Fourier Transform (FFT).
 using namespace std;
 using namespace Marsyas;
 
-AutoCorrelation::AutoCorrelation(string name)
+AutoCorrelation::AutoCorrelation(string name):MarSystem("AutoCorrelation",name)
 {
   type_ = "AutoCorrelation";
   name_ = name;
   myfft_ = NULL;
-  addControls();
+
+	addControls();
 }
 
 
@@ -45,30 +46,28 @@ AutoCorrelation::~AutoCorrelation()
 }
 
 // copy constructor 
-AutoCorrelation::AutoCorrelation(const AutoCorrelation& a)
+AutoCorrelation::AutoCorrelation(const AutoCorrelation& a):MarSystem(a)
 {
-  type_ = a.type_;
-  name_ = a.name_;
-  ncontrols_ = a.ncontrols_; 		
-  
-  inSamples_ = a.inSamples_;
-  inObservations_ = a.inObservations_;
-  onSamples_ = a.onSamples_;
-  onObservations_ = a.onObservations_;
-  dbg_ = a.dbg_;
-  mute_ = a.mute_;
-  myfft_ = NULL;
+// 	type_ = a.type_;
+// 	name_ = a.name_;
+// 	ncontrols_ = a.ncontrols_; 		
+// 
+// 	inSamples_ = a.inSamples_;
+// 	inObservations_ = a.inObservations_;
+// 	onSamples_ = a.onSamples_;
+// 	onObservations_ = a.onObservations_;
+// 	dbg_ = a.dbg_;
+// 	mute_ = a.mute_;
+	myfft_ = NULL;
 }
-
-
 
 void
 AutoCorrelation::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_real/magcompress", 2.0);
-  delete myfft_;
-  myfft_ = new fft();
+  
+	delete myfft_; //[?]
+  myfft_ = new fft();//[?]
 }
 
 MarSystem*
@@ -77,21 +76,15 @@ AutoCorrelation::clone() const
   return new AutoCorrelation(*this);
 }
 
-
-
 void
-AutoCorrelation::update()
+AutoCorrelation::localUpdate()
 {
-  
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
-
   
   scratch_.create(2*getctrl("mrs_natural/onSamples").toNatural());
-  defaultUpdate();
 }
-
 
 void 
 AutoCorrelation::process(realvec& in, realvec& out)

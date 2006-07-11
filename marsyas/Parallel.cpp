@@ -26,39 +26,26 @@
 using namespace std;
 using namespace Marsyas;
 
-Parallel::Parallel():Composite()
+Parallel::Parallel(string name):Composite("Parallel",name)
 {
-  type_ = "Parallel";
+  //type_ = "Parallel";
+  //name_ = name;
 }
-
-Parallel::Parallel(string name)
-{
-  type_ = "Parallel";
-  name_ = name;
-  addControls();
-}
-
 
 Parallel::~Parallel()
 {
   deleteSlices();
 }
 
-
-Parallel::Parallel(const Parallel& a)
-{
-  type_ = a.type_;
-  name_ = a.name_;
-  ncontrols_ = a.ncontrols_;		
-  
-  for (mrs_natural i=0; i< a.marsystemsSize_; i++) {
-    addMarSystem((*a.marsystems_[i]).clone());
-  }
-  
-  dbg_ = a.dbg_;
-  mute_ = a.mute_;
-}
-
+// Parallel::Parallel(const Parallel& a):Composite(a)
+// {
+// 	//lmartins: this is now done at Composite copy constructor
+// 	//
+// 	//   for (mrs_natural i=0; i< a.marsystemsSize_; i++)
+// 	//     {
+// 	//       addMarSystem((*a.marsystems_[i]).clone());
+// 	//     }
+// }
 
 void Parallel::deleteSlices()
 {
@@ -74,20 +61,17 @@ MarSystem* Parallel::clone() const
   return new Parallel(*this);
 }
 
-void Parallel::addControls()
+void Parallel::localUpdate()
 {
-  addDefaultControls();
-}
-
-void Parallel::update()
-{
-  if (marsystemsSize_ != 0) {
+  if (marsystemsSize_ != 0) 
+	{
     marsystems_[0]->update();
     
     mrs_natural inObservations = marsystems_[0]->getctrl("mrs_natural/inObservations").toNatural();
     mrs_natural onObservations = marsystems_[0]->getctrl("mrs_natural/onObservations").toNatural();
     
-    for (mrs_natural i=1; i < marsystemsSize_; i++) {
+    for (mrs_natural i=1; i < marsystemsSize_; i++) 
+		{
       marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/inSamples"));
       marsystems_[i]->setctrl("mrs_real/israte", marsystems_[i-1]->getctrl("mrs_real/osrate"));
       marsystems_[i]->update();
@@ -104,33 +88,44 @@ void Parallel::update()
     
     // update buffers for components
     
-    if ((mrs_natural)slices_.size() < 2*marsystemsSize_) {
+    if ((mrs_natural)slices_.size() < 2*marsystemsSize_) 
+		{
       slices_.resize(2*marsystemsSize_, NULL);
     }
     
-    for (mrs_natural i = 0; i < marsystemsSize_; i++) {
-      if (slices_[2*i] != NULL) {
-	if ((slices_[2*i])->getRows() != marsystems_[i]->getctrl("mrs_natural/inObservations").toNatural() || (slices_[2*i])->getCols() != marsystems_[i]->getctrl("mrs_natural/inSamples").toNatural()) {
-	  delete slices_[2*i];
-	  slices_[2*i] = new realvec(marsystems_[i]->getctrl("mrs_natural/inObservations").toNatural(), marsystems_[i]->getctrl("mrs_natural/inSamples").toNatural());
-	}
+    for (mrs_natural i = 0; i < marsystemsSize_; i++) 
+		{
+      if (slices_[2*i] != NULL) 
+			{
+				if ((slices_[2*i])->getRows() != marsystems_[i]->getctrl("mrs_natural/inObservations").toNatural() || (slices_[2*i])->getCols() != marsystems_[i]->getctrl("mrs_natural/inSamples").toNatural()) 
+				{
+				delete slices_[2*i];
+				slices_[2*i] = new realvec(marsystems_[i]->getctrl("mrs_natural/inObservations").toNatural(), marsystems_[i]->getctrl("mrs_natural/inSamples").toNatural());
+				}
       }
-      else {
-	slices_[2*i] = new realvec(marsystems_[i]->getctrl("mrs_natural/inObservations").toNatural(), marsystems_[i]->getctrl("mrs_natural/inSamples").toNatural());
+      else 
+			{
+				slices_[2*i] = new realvec(marsystems_[i]->getctrl("mrs_natural/inObservations").toNatural(), marsystems_[i]->getctrl("mrs_natural/inSamples").toNatural());
       }
-      (slices_[2*i])->setval(0.0);
-      if (slices_[2*i+1] != NULL) {
-	if ((slices_[2*i+1])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural() || (slices_[2*i+1])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural()) {
-	  delete slices_[2*i+1];
-	  slices_[2*i+1] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural(), marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural());
-	}
+      
+			(slices_[2*i])->setval(0.0);
+      
+			if (slices_[2*i+1] != NULL) 
+			{
+				if ((slices_[2*i+1])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural() || (slices_[2*i+1])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural()) 
+				{
+					delete slices_[2*i+1];
+					slices_[2*i+1] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural(), marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural());
+				}
       }
-      else {
-	slices_[2*i+1] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural(), marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural());
+      else 
+			{
+				slices_[2*i+1] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural(), marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural());
       }
-      (slices_[2*i+1])->setval(0.0);
+      
+			(slices_[2*i+1])->setval(0.0);
     }
-    defaultUpdate();
+		//defaultUpdate();
   }
 }
 
@@ -143,24 +138,31 @@ void Parallel::process(realvec& in, realvec& out)
   mrs_natural outIndex = 0;
   mrs_natural localIndex = 0;
   
-  if (marsystemsSize_ == 1) {
+  if (marsystemsSize_ == 1) 
+	{
     marsystems_[0]->process(in, out);
   }
-  else if (marsystemsSize_ > 1) {
-    for (mrs_natural i = 0; i < marsystemsSize_; i++) {
+  else if (marsystemsSize_ > 1) 
+	{
+    for (mrs_natural i = 0; i < marsystemsSize_; i++) 
+		{
       localIndex = marsystems_[i]->getctrl("mrs_natural/inObservations").toNatural();
-      for (o = 0; o < localIndex; o++) {
-	for (t = 0; t < onSamples_; t++) {
-	  (*(slices_[2*i]))(o,t) = in(inIndex + o,t);
-	}
+      for (o = 0; o < localIndex; o++) 
+			{
+				for (t = 0; t < onSamples_; t++) 
+				{
+					(*(slices_[2*i]))(o,t) = in(inIndex + o,t);
+				}
       }
       inIndex += localIndex;
       marsystems_[i]->process(*(slices_[2*i]), *(slices_[2*i+1]));
       localIndex = marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural();
-      for (o = 0; o < localIndex; o++) {
-	for (t = 0; t < onSamples_; t++) {
-	  out(outIndex + o,t) = (*(slices_[2*i+1]))(o,t);
-	}
+      for (o = 0; o < localIndex; o++) 
+			{
+				for (t = 0; t < onSamples_; t++) 
+				{
+					out(outIndex + o,t) = (*(slices_[2*i+1]))(o,t);
+				}
       }
       outIndex += localIndex;
     }

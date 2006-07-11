@@ -687,8 +687,6 @@ void bextract_train(vector<Collection> cls, mrs_natural label,
   featureNetwork->addMarSystem(wsink->clone());
   
 
-  cout << "winSize 1 = " << winSize << endl;
-
 
   // add classifier and confidence majority calculation 
 
@@ -940,7 +938,6 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
       return;
     }
   
-
   mng.registerPrototype("SpectrumFeatures", spectrumFeatures.clone());
 
 

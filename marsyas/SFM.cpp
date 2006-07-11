@@ -31,11 +31,10 @@
 using namespace std;
 using namespace Marsyas;
 
-SFM::SFM(string name)
+SFM::SFM(string name):MarSystem("SFM",name)
 {
-  type_ = "SFM";
-  name_ = name;
-  addControls();
+  //type_ = "SFM";
+  //name_ = name;
 }
 
 SFM::~SFM()
@@ -48,16 +47,12 @@ SFM::clone() const
   return new SFM(*this);
 }
 
-void 
-SFM::addControls()
-{
-  addDefaultControls();
-}
-
 void
-SFM::update()
+SFM::localUpdate()
 {
-  //MPEG-7 audio standard:
+  MRSDIAG("SFM.cpp - SFM:localUpdate");
+
+	//MPEG-7 audio standard:
   //assumes an 1/4 octave frequency resolution,
   //resulting in 24 frequency bands between 250Hz and 16kHz.
   //If the signal under analysis does not contain frequencies
@@ -75,8 +70,6 @@ SFM::update()
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
   mrs_natural i;
-  
-  MRSDIAG("SFM.cpp - SFM:update");
   
   edge_.create(nrBands_ + 1);
   bandLoEdge_.create(nrBands_);
@@ -124,8 +117,6 @@ SFM::update()
 	  break;
 	}
     }
-  
-  defaultUpdate();
 }
 
 void 

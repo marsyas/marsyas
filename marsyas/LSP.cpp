@@ -41,10 +41,10 @@ May 2006
 using namespace std;
 using namespace Marsyas;
 
-LSP::LSP(string name)
+LSP::LSP(string name):MarSystem("LSP",name)
 {
-	type_ = "LSP";
-	name_ = name;
+	//type_ = "LSP";
+	//name_ = name;
 
 	addControls();
 }
@@ -62,17 +62,15 @@ LSP::clone() const
 void 
 LSP::addControls()
 {
-	addDefaultControls();
-
 	addctrl("mrs_natural/order", (mrs_natural)10);
 	setctrlState("mrs_natural/order", true); 
 	addctrl("mrs_real/gamma", (mrs_real)1.0);
 }
 
 void
-LSP::update()
+LSP::localUpdate()
 { 
-	MRSDIAG("LSP.cpp - LSP:update");
+	MRSDIAG("LSP.cpp - LSP:localUpdate");
 
 	order_ = getctrl("mrs_natural/order").toNatural();
 
@@ -85,8 +83,6 @@ LSP::update()
 	for (mrs_natural i = 0; i < order_; i++)
 		oss << "LSP_" << i+1 << ",";
 	setctrl("mrs_string/onObsNames", oss.str());
-
-	defaultUpdate();
 }
 
 void 

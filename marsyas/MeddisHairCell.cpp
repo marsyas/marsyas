@@ -28,17 +28,15 @@
 using namespace std;
 using namespace Marsyas;
 
-MeddisHairCell::MeddisHairCell(string name)
+MeddisHairCell::MeddisHairCell(string name):MarSystem("MeddisHairCell",name)
 {
-  type_ = "MeddisHairCell";
-  name_ = name;
+  //type_ = "MeddisHairCell";
+  //name_ = name;
   
   numChannels = 0;
-  
-  addControls();
+
+	addControls();
 }
-
-
 
 MeddisHairCell::~MeddisHairCell()
 {
@@ -52,20 +50,18 @@ MeddisHairCell::clone() const
 
 void MeddisHairCell::addControls()
 {
-  addDefaultControls();
-  
   addctrl("mrs_bool/subtractSpont", false);
-  
 }
 
 void 
-MeddisHairCell::update()
+MeddisHairCell::localUpdate()
 {
-  MRSDIAG("MeddisHairCell.cpp - MeddisHairCell:update");
+  MRSDIAG("MeddisHairCell.cpp - MeddisHairCell:localUpdate");
   
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations").toNatural());
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+//   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+//   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+//   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+	MarSystem::localUpdate(); //lmartins: what about the feature names?!? [?]
   
   //parameters
   M = 1;
@@ -101,8 +97,6 @@ MeddisHairCell::update()
       w(i) = c(i)*r/x;
     }
   }
-
-  defaultUpdate();
 }
 
 void 

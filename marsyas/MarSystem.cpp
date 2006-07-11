@@ -33,24 +33,34 @@ extractors like Spectral Centroid.
 using namespace std;
 using namespace Marsyas;
 
-MarSystem::MarSystem()
-{
-  name_ = "MarSystemPrototype";
-  type_ = "MarSystem";
-  scheduler.removeAll();
-  TmTimer* t = new TmSampleCount(NULL, this, "mrs_natural/inSamples");
-  scheduler.addTimer(t);
-  delete t;
-}
+// MarSystem::MarSystem()//lmartins: this should be deprecated... [!]
+// {
+//   name_ = "MarSystemPrototype";
+//   type_ = "MarSystem";
+// 
+// 	scheduler_.removeAll();
+// 	TmTimer* t = new TmSampleCount(NULL, this, "mrs_natural/inSamples");
+// 	scheduler_.addTimer(t);
+// 	delete t;
+// 
+// 	//add default controls that 
+// 	//all MarSystems should have
+// 	addControls();
+// }
 
-MarSystem::MarSystem(string name)
+MarSystem::MarSystem(string type, string name)
 {
-  type_ = "MarSystem";
   name_ = name;
-  scheduler.removeAll();
+  type_ = type;
+
+  scheduler_.removeAll();
   TmTimer* t = new TmSampleCount(NULL, this, "mrs_natural/inSamples");
-  scheduler.addTimer(t);
+  scheduler_.addTimer(t);
   delete t;
+  
+  //add default controls that 
+  //all MarSystems should have
+  addControls();
 }
 
 // copy constructor 
@@ -67,6 +77,13 @@ MarSystem::MarSystem(const MarSystem& a)
   onObservations_ = a.onObservations_;
   dbg_ = a.dbg_;
   mute_ = a.mute_;
+  active_ = a.active_;
+  
+  //[!]
+  scheduler_.removeAll();
+  TmTimer* t = new TmSampleCount(NULL, this, "mrs_natural/inSamples");
+  scheduler_.addTimer(t);
+  delete t;
 }
 
 MarSystem::~MarSystem()
@@ -75,7 +92,7 @@ MarSystem::~MarSystem()
 }
 
 void
-MarSystem::addDefaultControls()
+MarSystem::addControls()
 {
   addctrl("mrs_natural/inSamples", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES);
   setctrlState("mrs_natural/inSamples", true);
@@ -86,11 +103,14 @@ MarSystem::addDefaultControls()
   addctrl("mrs_natural/onSamples", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES);
   addctrl("mrs_natural/onObservations", (mrs_natural)MRS_DEFAULT_SLICE_NOBSERVATIONS);
   addctrl("mrs_real/osrate", MRS_DEFAULT_SLICE_SRATE);  
-  addctrl("mrs_bool/debug", false);
-  setctrlState("mrs_bool/debug", true);
-  addctrl("mrs_bool/mute", false);
-  setctrlState("mrs_bool/mute", true);
-  setctrlState("mrs_bool/debug", true);
+  
+  addctrl("mrs_bool/debug", false);			//no debug by default
+  setctrlState("mrs_bool/debug", true);  
+  addctrl("mrs_bool/mute", false);			//unmuted by default
+  setctrlState("mrs_bool/mute", true);  
+  addctrl("mrs_bool/active",true);			//active by default
+  setctrlState("mrs_bool/active", true);
+
   addctrl("mrs_string/inObsNames", ",");
   setctrlState("mrs_string/inObsNames", true);
   addctrl("mrs_string/onObsNames", ",");
@@ -99,22 +119,34 @@ MarSystem::addDefaultControls()
   inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
   onObservations_ = getctrl("mrs_natural/onObservations").toNatural();
   onSamples_ = getctrl("mrs_natural/onSamples").toNatural();
-  dbg_ = false;
-  mute_ = false;
+  
+  dbg_ = getctrl("mrs_bool/debug").toBool();//false;
+  mute_ = getctrl("mrs_bool/mute").toBool();//false;
+  active_ = getctrl("mrs_bool/active").toBool();//true;
 }
 
-// assignment operator
+// assignment operator [?]
 MarSystem& 
 MarSystem::operator=(const MarSystem& a)
 {
   if (this != &a)
-    {
-      type_ = a.type_;
-      name_ = a.name_;
-      ncontrols_ = a.ncontrols_;	
+  {
+    type_ = a.type_;
+    name_ = a.name_;
+    ncontrols_ = a.ncontrols_;
+   // lmartins: shouldn't these also be copied?! [!][?]
+    /*
+      synonyms_ = a.synonyms_;
       
-    }
-
+      inSamples_ = a.inSamples_;
+      inObservations_ = a.inObservations_;
+      onSamples_ = a.onSamples_;
+      onObservations_ = a.onObservations_;
+      dbg_ = a.dbg_;
+      mute_ = a.mute_;
+      active_ = a.active_;
+    */
+  }
   return *this;
 }
 
@@ -127,11 +159,20 @@ MarSystem::addMarSystem(MarSystem *marsystem)
 void
 MarSystem::setName(string name)
 {
-  name_ = name;
-  ncontrols_.clear();		
-  addControls();
+  //name_ = name;
+  //ncontrols_.clear();		
+  //addControls();
+
+	if (name == name_)
+		return;
+
+	string oldPrefix = "/" + type_ + "/" + name_;
+	string newPrefix = "/" + type_ + "/" + name;
+
+	name_ = name;
+
+	ncontrols_.renamePrefix(oldPrefix, newPrefix);
 }
- 
 string 
 MarSystem::getType()
 {
@@ -154,48 +195,121 @@ MarSystem::getPrefix()
 void 
 MarSystem::checkFlow(realvec& in, realvec& out)
 {
-  mrs_natural irows = in.getRows();
-  mrs_natural icols = in.getCols();
-  mrs_natural orows = out.getRows();
-  mrs_natural ocols = out.getCols();
+	mrs_natural irows = in.getRows();
+	mrs_natural icols = in.getCols();
+	mrs_natural orows = out.getRows();
+	mrs_natural ocols = out.getCols();
 
-  dbg_ = false;
-  
-  if (dbg_)
-    {
-      MRSWARN("Debug CheckFlow Information");
-      MRSWARN("MarSystem Type    = " << type_); 
-      MRSWARN("MarSystem Name    = " << name_);
-      MRSWARN("inObservations_ = " << inObservations_);
-      MRSWARN("inSamples_ = " << inSamples_);
-      MRSWARN("onObservations_ = " << onObservations_);
-      MRSWARN("onSamples_ = " << onSamples_);      
-      MRSWARN("Input  Slice Rows = " << irows ); 
-      MRSWARN("Input  Slice Cols = " << icols ); 
-      MRSWARN("Output Slice Rows = " << orows );
-      MRSWARN("Output Slice Cols = " << ocols );      
-    }
-  
-  MRSASSERT(irows == inObservations_);
-  MRSASSERT(icols == inSamples_);
-  MRSASSERT(orows == onObservations_);
-  MRSASSERT(ocols == onSamples_);
+	//dbg_ = false; //lmartins: [!]
+
+	if (dbg_)
+	{
+		MRSWARN("Debug CheckFlow Information");
+		MRSWARN("MarSystem Type    = " << type_); 
+		MRSWARN("MarSystem Name    = " << name_);
+		MRSWARN("inObservations_ = " << inObservations_);
+		MRSWARN("inSamples_ = " << inSamples_);
+		MRSWARN("onObservations_ = " << onObservations_);
+		MRSWARN("onSamples_ = " << onSamples_);      
+		MRSWARN("Input  Slice Rows = " << irows ); 
+		MRSWARN("Input  Slice Cols = " << icols ); 
+		MRSWARN("Output Slice Rows = " << orows );
+		MRSWARN("Output Slice Cols = " << ocols );      
+	}
+
+	MRSASSERT(irows == inObservations_);
+	MRSASSERT(icols == inSamples_);
+	MRSASSERT(orows == onObservations_);
+	MRSASSERT(ocols == onSamples_);
 }
 
 void 
 MarSystem::tick()
 {
-  scheduler.tick();
-  process(inTick_,outTick_);
+  //if MarSystem is not active, ignore ticks
+	if(getctrl("mrs_bool/active").toBool())
+	{
+		scheduler_.tick();
+		process(inTick_,outTick_);
+	}
+	else
+		MRSDIAG("MarSystem::tick() : MarSystem is not active! Ignoring tick command.");
+}
+
+void 
+MarSystem::localUpdate()
+{
+	MRSDIAG("MarSystem.cpp - MarSystem:localUpdate");
+
+	//lmartins:
+	//By default, a MarSystem does not modify the input data stream format.
+	//Override this method on a derived MarSystem if data format changes
+	//should take place...
+	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+	setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
 }
 
 void 
 MarSystem::update()
 {
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+	MRSDIAG("MarSystem.cpp - MarSystem:localUpdate");
 
+	localUpdate();
+
+	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+	inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
+	onObservations_ = getctrl("mrs_natural/onObservations").toNatural();
+	onSamples_ = getctrl("mrs_natural/onSamples").toNatural();
+
+	dbg_ = getctrl("mrs_bool/debug").toBool();
+	mute_ = getctrl("mrs_bool/mute").toBool();
+	//active_ = getctrl("mrs_bool/active").toBool();
+
+	//check active status
+	bool active = getctrl("mrs_bool/active").toBool();
+	//if active status changed...
+	if(active_ !=  active)
+	{
+		active_ = active;
+		activate(active);
+	}
+
+	//resize input and output realvec if necessary
+	if ((inObservations_ != inTick_.getRows()) ||
+			(inSamples_ != inTick_.getCols())      ||
+			(onObservations_ != outTick_.getRows()) ||
+			(onSamples_ != outTick_.getCols()))
+	{
+		inTick_.create(inObservations_, inSamples_);
+		outTick_.create(onObservations_, onSamples_);
+	}
+}
+
+void
+MarSystem::activate(bool state)
+{
+	//since this method must be public (so it can be called in Composite::activate())
+	//we must guarantee that the "mrs_bool/active" control is in sync with any eventual 
+	//direct calls to MarSystem::activate() from client code
+	if(getctrl("mrs_bool/active").toBool() != state)
+	{
+		setctrl("mrs_bool/active", MarControlValue(state));
+		active_ = state;
+	}
+
+	//execute any code needed to run when activating/deactivating
+	//the derived MarSystem
+	localActivate(state);
+}
+
+void
+MarSystem::localActivate(bool state)
+{
+	// override this method if something needs to be done when 
+	// activating/deactivating the MarSystem (e.g. start/stop threads, etc)
+	// default: do nothing
 }
 
 MarControlValue
@@ -211,363 +325,335 @@ MarSystem::linkctrl(string visible, string inside)
   linkControl(visible, inside);   
 }
 
- void
- MarSystem::linkControl(string visible, string inside)
- {
+void
+MarSystem::linkControl(string visible, string inside)
+{
+	map<string, vector<string> >::iterator iter;
+	iter = synonyms_.find(visible);
 
-   map<string, vector<string> >::iterator iter;
-   iter = synonyms_.find(visible);
+	vector<string> synonymList; 
 
-   vector<string> synonymList; 
+	// extend list of synonyms
+	synonymList = synonyms_[visible];
+	synonymList.push_back(inside);
+	synonyms_[visible] = synonymList;
+}
 
-   // extend list of synonyms
-   synonymList = synonyms_[visible];
-   synonymList.push_back(inside);
-   synonyms_[visible] = synonymList;
- }
+MarControlValue
+MarSystem::getControl(string cname)
+{
+	MRSDIAG("MarSystem::getControl");
 
+	// check for synonyms - call recursively to resolve them 
+	map<string, vector<string> >::iterator ei;
 
- MarControlValue
- MarSystem::getControl(string cname)
- {
-   MRSDIAG("MarSystem::getControl");
+	// remove prefix for synonyms
+	string prefix = "/" + type_ + "/" + name_ + "/";
+	string::size_type pos = cname.find(prefix, 0);
+	string shortcname;
 
-
-   // check for synonyms - call recursively to resolve them 
-   map<string, vector<string> >::iterator ei;
-
-   // remove prefix for synonyms
-   string prefix = "/" + type_ + "/" + name_ + "/";
-   string::size_type pos = cname.find(prefix, 0);
-   string shortcname;
-
-   if (pos == 0) 
-     shortcname = cname.substr(prefix.length(), cname.length());
+	if (pos == 0) 
+		shortcname = cname.substr(prefix.length(), cname.length());
 
 
-   ei = synonyms_.find(shortcname);
-   if (ei != synonyms_.end())
-     {
-       vector<string> synonymList = synonyms_[shortcname];
-       vector<string>::iterator si;
-       for (si = synonymList.begin(); si != synonymList.end(); ++si)
+	ei = synonyms_.find(shortcname);
+	if (ei != synonyms_.end())
+	{
+		vector<string> synonymList = synonyms_[shortcname];
+		vector<string>::iterator si;
+		for (si = synonymList.begin(); si != synonymList.end(); ++si)
+		{
+			getControl(prefix + *si);
+		}
+	}
+
+	return ncontrols_.getControl(cname);
+}
+
+bool 
+MarSystem::hasctrlState(string cname)
+{
+	return ncontrols_.hasState("/" + type_ + "/" + name_ + "/" + cname);
+}
+
+void 
+MarSystem::setctrlState(string cname, bool val)
+{
+	ncontrols_.setState("/" + type_ + "/" + name_ + "/" + cname, val);
+}
+
+bool 
+MarSystem::hasControlState(string cname)
+{
+	return ncontrols_.hasState(cname);
+}
+
+void
+MarSystem::setControlState(string cname, bool val)
+{
+	ncontrols_.setState(cname,val);
+}
+
+void MarSystem::setControl(string cname, mrs_real value)
+{
+	ncontrols_.updControl(cname,value);
+}
+
+void MarSystem::setControl(string cname, mrs_natural value)
+{
+	ncontrols_.updControl(cname,value);
+}
+
+void MarSystem::setControl(string cname, MarControlValue value)
+{
+	ncontrols_.updControl(cname, value);
+}
+
+void MarSystem::setctrl(string cname, mrs_natural value)
+{
+	 if (ocname_ != cname) 
 	 {
-	   getControl(prefix + *si);
+		 ocname_ = cname;
+		 prefix_ = "/";
+		 prefix_ += type_;
+		 prefix_ += "/";
+		 prefix_ += name_;
+		 prefix_ += "/";
+		 prefix_ += cname;
 	 }
-     }
+	 setControl(prefix_, value); 
+}
 
-   return ncontrols_.getControl(cname);
- }
+void MarSystem::setctrl(string cname, mrs_real value)
+{
+	 if (ocname_ != cname) 
+	 {
+		 ocname_ = cname;
+		 prefix_ = "/";
+		 prefix_ += type_;
+		 prefix_ += "/";
+		 prefix_ += name_;
+		 prefix_ += "/";
+		 prefix_ += cname;
+	 }
+	 setControl(prefix_, value); 
+}
 
- bool 
- MarSystem::hasctrlState(string cname)
- {
-   return ncontrols_.hasState("/" + type_ + "/" + name_ + "/" + cname);
- }
+void MarSystem::setctrl(string cname, MarControlValue value)
+{
+	 if (ocname_ != cname) 
+	 {
+		 ocname_ = cname;
+		 prefix_ = "/";
+		 prefix_ += type_;
+		 prefix_ += "/";
+		 prefix_ += name_;
+		 prefix_ += "/";
+		 prefix_ += cname;
+	 }
+	 setControl(prefix_, value); 
+}
 
- void 
- MarSystem::setctrlState(string cname, bool val)
- {
-   ncontrols_.setState("/" + type_ + "/" + name_ + "/" + cname, val);
- }
+mrs_natural 
+MarSystem::inObservations() const
+{
+	return inObservations_;
+}
 
- bool 
- MarSystem::hasControlState(string cname)
- {
+mrs_natural 
+MarSystem::inSamples() const
+{
+	return inSamples_;
+}
 
-   return ncontrols_.hasState(cname);
- }
+bool 
+MarSystem::hasControl(string cname) 
+{
+	// check for synonyms - call recursively to resolve them 
+	map<string, vector<string> >::iterator ei;
 
- void
- MarSystem::setControlState(string cname, bool val)
- {
-   ncontrols_.setState(cname,val);
- }
+	// remove prefix for synonyms
+	string prefix = "/" + type_ + "/" + name_ + "/";
+	string::size_type pos = cname.find(prefix, 0);
+	string shortcname;
 
- void MarSystem::setControl(string cname, mrs_real value)
- {
-   ncontrols_.updControl(cname,value);
+	if (pos == 0) 
+	 shortcname = cname.substr(prefix.length(), cname.length());
 
- }
+	ei = synonyms_.find(shortcname);
+	if (ei != synonyms_.end())
+	{
+		vector<string> synonymList = synonyms_[shortcname];
+		vector<string>::iterator si;
+		for (si = synonymList.begin(); si != synonymList.end(); ++si)
+		{
+			hasControl(prefix + *si);
+		}
+	}
 
- void MarSystem::setControl(string cname, mrs_natural value)
- {
-   ncontrols_.updControl(cname,value);
- }
-
- void MarSystem::setControl(string cname, MarControlValue value)
- {
-   ncontrols_.updControl(cname, value);
- }
-
- void MarSystem::setctrl(string cname, mrs_natural value)
- {
-   if (ocname_ != cname) 
-     {
-       ocname_ = cname;
-       prefix_ = "/";
-       prefix_ += type_;
-       prefix_ += "/";
-       prefix_ += name_;
-       prefix_ += "/";
-       prefix_ += cname;
-     }
-   setControl(prefix_, value); 
- }
-
- void MarSystem::setctrl(string cname, mrs_real value)
- {
-   if (ocname_ != cname) 
-     {
-       ocname_ = cname;
-       prefix_ = "/";
-       prefix_ += type_;
-       prefix_ += "/";
-       prefix_ += name_;
-       prefix_ += "/";
-       prefix_ += cname;
-     }
-   setControl(prefix_, value); 
- }
-
- void MarSystem::setctrl(string cname, MarControlValue value)
- {
-   if (ocname_ != cname) 
-     {
-       ocname_ = cname;
-       prefix_ = "/";
-       prefix_ += type_;
-       prefix_ += "/";
-       prefix_ += name_;
-       prefix_ += "/";
-       prefix_ += cname;
-     }
-   setControl(prefix_, value); 
- }
-
- void 
- MarSystem::defaultUpdate()
- {
-   inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
-   inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
-   onObservations_ = getctrl("mrs_natural/onObservations").toNatural();
-   onSamples_ = getctrl("mrs_natural/onSamples").toNatural();
-
-   if ((inObservations_ != inTick_.getRows()) ||
-       (inSamples_ != inTick_.getCols())      ||
-       (onObservations_ != outTick_.getRows()) ||
-       (onSamples_ != outTick_.getCols()))
-     {
-       inTick_.create(inObservations_, inSamples_);
-       outTick_.create(onObservations_, onSamples_);
-     }
- }
+	return ncontrols_.hasControl(cname);
+}
 
 
- mrs_natural 
- MarSystem::inObservations() const
- {
-   return inObservations_;
- }
+void 
+MarSystem::updControl(string cname, MarControlValue value)
+{
+	// check for synonyms - call recursively to resolve them 
+	map<string, vector<string> >::iterator ei;
 
- mrs_natural 
- MarSystem::inSamples() const
- {
-   return inSamples_;
- }
+	// remove prefix for synonyms
+	string prefix = "/" + type_ + "/" + name_ + "/";
+	string::size_type pos = cname.find(prefix, 0);
+	string shortcname;
 
- bool 
- MarSystem::hasControl(string cname) 
- {
-   // check for synonyms - call recursively to resolve them 
-   map<string, vector<string> >::iterator ei;
+	if (pos == 0) 
+	 shortcname = cname.substr(prefix.length(), cname.length());
 
-   // remove prefix for synonyms
-   string prefix = "/" + type_ + "/" + name_ + "/";
-   string::size_type pos = cname.find(prefix, 0);
-   string shortcname;
-
-   if (pos == 0) 
-     shortcname = cname.substr(prefix.length(), cname.length());
-
-
-   ei = synonyms_.find(shortcname);
-   if (ei != synonyms_.end())
-     {
-       vector<string> synonymList = synonyms_[shortcname];
-       vector<string>::iterator si;
-       for (si = synonymList.begin(); si != synonymList.end(); ++si)
+	ei = synonyms_.find(shortcname);
+	if (ei != synonyms_.end())
+	{
+		 vector<string> synonymList = synonyms_[shortcname];
+		 vector<string>::iterator si;
+		 for (si = synonymList.begin(); si != synonymList.end(); ++si)
 		 {
-		   hasControl(prefix + *si);
+			 updControl(prefix + *si, value);
 		 }
-     }
+	}
+	else
+	{
+		oldval_ = getControl(cname);
+		setControl(cname, value);
+		if (hasControlState(cname) && (value != oldval_)) 
+		{
+			update();
+			/*
+			dbg_ = getctrl("mrs_bool/debug").toBool();
+			mute_ = getctrl("mrs_bool/mute").toBool();
 
-   return ncontrols_.hasControl(cname);
- }
+			if ((inObservations_ != inTick_.getRows()) ||
+			 (inSamples_ != inTick_.getCols())      ||
+			 (onObservations_ != outTick_.getRows()) ||
+			 (onSamples_ != outTick_.getCols()))
+			{
+			 inTick_.create(inObservations_, inSamples_);
+			 outTick_.create(onObservations_, onSamples_);
+			}
+			*/
+		}
+	}
+}
 
+map<string, MarControlValue>
+MarSystem::getControls()
+{
+	return ncontrols_.getControls();
+}
 
- void 
- MarSystem::updControl(string cname, MarControlValue value)
- {
-   // check for synonyms - call recursively to resolve them 
-   map<string, vector<string> >::iterator ei;
+//  MarSystem* 
+//  MarSystem::clone() const
+//  {
+//    MRSWARN("MARSYSTEM::CLONE CALLED");
+//    MRSWARN("CLONING SHOULD BE IMPLEMENTED FOR DERIVED CLASS");
+//    return 0;
+//  }
 
-   // remove prefix for synonyms
-   string prefix = "/" + type_ + "/" + name_ + "/";
-   string::size_type pos = cname.find(prefix, 0);
-   string shortcname;
+void
+MarSystem::addctrl(string cname, MarControlValue val)
+{
+	 ncontrols_.addControl("/" + type_ + "/" + name_ + "/" + cname, val);
+}
 
-   if (pos == 0) 
-     shortcname = cname.substr(prefix.length(), cname.length());
-
-   ei = synonyms_.find(shortcname);
-   if (ei != synonyms_.end())
-     {
-       vector<string> synonymList = synonyms_[shortcname];
-       vector<string>::iterator si;
-       for (si = synonymList.begin(); si != synonymList.end(); ++si)
-		 {
-		   updControl(prefix + *si, value);
-		 }
-     }
-
-   else
-     {
-       oldval_ = getControl(cname);
-       setControl(cname, value);
-       if (hasControlState(cname) && (value != oldval_)) 
-		 {
-		   update();
-		   dbg_ = getctrl("mrs_bool/debug").toBool();
-
-		   mute_ = getctrl("mrs_bool/mute").toBool();
-
-		   if ((inObservations_ != inTick_.getRows()) ||
-			   (inSamples_ != inTick_.getCols())      ||
-			   (onObservations_ != outTick_.getRows()) ||
-			   (onSamples_ != outTick_.getCols()))
-			 {
-			   inTick_.create(inObservations_, inSamples_);
-			   outTick_.create(onObservations_, onSamples_);
-			 }
-
-		 }
-     }
-   
- }
-
- map<string, MarControlValue>
- MarSystem::getControls()
- {
-   return ncontrols_.getControls();
- }
-
- MarSystem* 
- MarSystem::clone() const
- {
-   MRSWARN("MARSYSTEM::CLONE CALLED");
-   MRSWARN("CLONING SHOULD BE IMPLEMENTED FOR DERIVED CLASS");
-   return 0;
- }
-
- void
- MarSystem::addctrl(string cname, MarControlValue val)
- {
-   ncontrols_.addControl("/" + type_ + "/" + name_ + "/" + 
-			 cname, val);
- }
-
- void
- MarSystem::addControl(string cname, MarControlValue val)
- {
-   ncontrols_.addControl(cname, val);
- }
+void
+MarSystem::addControl(string cname, MarControlValue val)
+{
+	ncontrols_.addControl(cname, val);
+}
 
 void
 MarSystem::updctrl(string cname, MarControlValue value)
 {
-   MRSDIAG("MarSystem::upctrl");
-   updControl("/" + type_ + "/" + name_ + "/" + cname, value); 
- }
+	MRSDIAG("MarSystem::upctrl");
+	updControl("/" + type_ + "/" + name_ + "/" + cname, value); 
+}
 
 void 
 MarSystem::updctrl(MarEvent* me) 
 {
-   if (me != NULL) 
-   {
-     me->dispatch();
-     delete(me);
-   }
+	if (me != NULL) 
+	{
+		me->dispatch();
+		delete(me);
+	}
 }
 
 /* this method clashes with updctrl(string cname, MarControlValue val)
    when val=0, which can be interpreted as ev=NULL
 void MarSystem::updctrl(string  time, MarEvent* ev) {
-  scheduler.post(time, Repeat("",0), ev);
+  scheduler_.post(time, Repeat("",0), ev);
 }
 */
 void 
 MarSystem::updctrl(string  time, Repeat rep, MarEvent* ev) 
 {
-  scheduler.post(time, rep, ev);
+	scheduler_.post(time, rep, ev);
 }
   /****** NEIL ADDED START *******/
 /*
 void
 MarSystem::updctrl(Repeat rep, MarEvent* ev)
 {
-  scheduler.post("0", rep, ev);
+  scheduler_.post("0", rep, ev);
 }
 */
 void
 MarSystem::updctrl(string time, string cname, MarControlValue value)
 {
-  scheduler.post(time, Repeat(), new EvValUpd(this,cname,value));
+  scheduler_.post(time, Repeat(), new EvValUpd(this,cname,value));
 }
 void
 MarSystem::updctrl(string time, Repeat rep, string cname, MarControlValue value)
 {
-  scheduler.post(time, rep, new EvValUpd(this,cname,value));
+  scheduler_.post(time, rep, new EvValUpd(this,cname,value));
 }
 /*
 void
 MarSystem::updctrl(Repeat rep, string cname, MarControlValue value)
 {
-  scheduler.post("0", rep, new EvValUpd(this,cname,value));
+  scheduler_.post("0", rep, new EvValUpd(this,cname,value));
 }
 */
 
 void
 MarSystem::updctrl(TmTime t, MarEvent* ev)
 {
-  scheduler.post(t,Repeat(),ev);
+  scheduler_.post(t,Repeat(),ev);
 }
 void
 MarSystem::updctrl(TmTime t, Repeat r, MarEvent* ev)
 {
-  scheduler.post(t,r,ev);
+  scheduler_.post(t,r,ev);
 }
 void
 MarSystem::updctrl(TmTime t, string cname, MarControlValue value)
 {
-  scheduler.post(t,Repeat(),new EvValUpd(this,cname,value));
+  scheduler_.post(t,Repeat(),new EvValUpd(this,cname,value));
 }
 void
 MarSystem::updctrl(TmTime t, Repeat r, string cname, MarControlValue value)
 {
-  scheduler.post(t,r,new EvValUpd(this,cname,value));
+  scheduler_.post(t,r,new EvValUpd(this,cname,value));
 }
 
 void
 MarSystem::addTimer(TmTimer* t)
 {
-    scheduler.addTimer(t);
+    scheduler_.addTimer(t);
 }
 
 void
 MarSystem::removeTimer(string name)
 {
-    scheduler.removeTimer(name);
+    scheduler_.removeTimer(name);
 }
 
   /****** NEIL ADDED END *******/
@@ -579,7 +665,6 @@ const MarSystem::recvControls()
 }
 
  // write *this to s 
-
 ostream&
 MarSystem::put(ostream &o) 
 {
@@ -608,16 +693,12 @@ MarSystem::put(ostream &o)
   return o;
 }
 
-
-
 ostream& 
 Marsyas::operator<< (ostream& o, MarSystem& sys)
 {
   sys.put(o);
   return o;
 }
-
-
 	
 
 

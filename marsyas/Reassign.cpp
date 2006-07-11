@@ -28,11 +28,10 @@
 using namespace std;
 using namespace Marsyas;
 
-Reassign::Reassign(string name)
+Reassign::Reassign(string name):MarSystem("Reassign",name)
 {
-  type_ = "Reassign";
-  name_ = name;
-  addControls();
+  //type_ = "Reassign";
+  //name_ = name;
 }
 
 
@@ -47,32 +46,20 @@ Reassign::clone() const
   return new Reassign(*this);
 }
 
-void 
-Reassign::addControls()
-{
-  addDefaultControls();
-}
-
-
 void
-Reassign::update()
+Reassign::localUpdate()
 {
-  MRSDIAG("Reassign.cpp - Reassign:update");
+  MRSDIAG("Reassign.cpp - Reassign:localUpdate");
    
-
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
+//   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+//   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+//   setctrl("mrs_real/osrate", getctrl("mrs_real/israte")); 
+	MarSystem::localUpdate();
 
   flag_.create(getctrl("mrs_natural/inSamples").toNatural());
-  
-  
+
   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
-  defaultUpdate();  
 }
-
-
-
 
 void 
 Reassign::process(realvec& in, realvec& out)

@@ -38,21 +38,20 @@ namespace Marsyas
 class LSP: public MarSystem
 {
 private: 
-	void addControls();
-
 	mrs_natural order_;
 
 	///Z-Plane pole-shifting factor
 	//mrs_real gamma_;
-	//void init();
+
+	void addControls();
+	void localUpdate();
 	
 public:
-	LSP();
 	LSP(std::string name);
 	~LSP();
 
 	MarSystem* clone() const;  
-	void update();
+
 	void process(realvec& in, realvec& out);
 };
 

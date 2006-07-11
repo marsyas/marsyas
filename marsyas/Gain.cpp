@@ -30,18 +30,31 @@ as a prototype template for building more complicated MarSystems.
 using namespace std;
 using namespace Marsyas;
 
-Gain::Gain(string name)
+Gain::Gain(string name):MarSystem("Gain", name)
 {
-  type_ = "Gain";
-  name_ = name;
-  addControls();
+  //The type_ and name_ values are now passed to the
+	//base classes were they are set and used when adding 
+	//the corresponding controls (otherwise, it would create
+	//problems with the control paths not being all equal for
+	//a single MarSystem...).
+	//
+	//type_ = "Gain";
+  //name_ = name;
+  
+	//Add any specific controls needed by Gain
+	//(default controls all MarSystems should have
+	//were already added by MarSystem::addControl(), 
+	//called by :MarSystem(name) constructor).
+	//If no specific controls are needed by a MarSystem
+	//there is no need to implement and call this addControl()
+	//method (see for e.g. Rms.cpp)
+	addControls();
 }
 
 
 Gain::~Gain()
 {
 }
-
 
 MarSystem* 
 Gain::clone() const 
@@ -52,24 +65,28 @@ Gain::clone() const
 void 
 Gain::addControls()
 {
-  addDefaultControls();
+  //Add specific controls needed by this MarSystem.
   addctrl("mrs_real/gain", 1.0);
 }
 
-
-void
-Gain::update()
-{
-  MRSDIAG("Gain.cpp - Gain:update");
-  
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  
-  setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
-  defaultUpdate();  
-}
-
+// void
+// Gain::localUpdate()
+// {
+//   
+// lmartins: since this is the default MarSystem::localUpdate()
+// (i.e. does not alters input data format) it's not needed to
+// override it here!
+// see also Limiter.cpp for another example
+//   
+//   MRSDIAG("Gain.cpp - Gain:localUpdate");
+//   
+//   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+//   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+//   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+//   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
+//   
+// 	//defaultUpdate(); no longer needed here. Done at MarSystem::update()  
+//}
 
 void 
 Gain::process(realvec& in, realvec& out)
@@ -80,9 +97,9 @@ Gain::process(realvec& in, realvec& out)
   
   for (o=0; o < inObservations_; o++)
     for (t = 0; t < inSamples_; t++)
-      {
-		out(o,t) =  gain * in(o,t);
-      }
+    {
+			out(o,t) =  gain * in(o,t);
+    }
 }
 
 

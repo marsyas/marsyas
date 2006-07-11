@@ -25,8 +25,6 @@
 This class reads an mp3 file using the mad mp3 decoder library.  Some
 of this code was inspired from Bertrand Petit's madlld example.  The
 code to resize the buffers was borrowed from Marsyas AudioSource.
-	  
-
 */
 
 #include "MP3FileSource.h"
@@ -36,60 +34,46 @@ using namespace Marsyas;
 
 #define INPUT_BUFFER_SIZE (5*8192)
 
-
-MP3FileSource::MP3FileSource(string name)
+MP3FileSource::MP3FileSource(string name):AbsSoundFileSource("MP3FileSource", name)
 {
-  
-  type_ = "MP3FileSource";
-  name_ = name;
-  addControls();
+  //type_ = "MP3FileSource";
+  //name_ = name;
+
   ri_ = preservoirSize_ = 0;
-  ptr_ = 0;
+  ptr_ = NULL;
 
   fileSize_ = 0;
   fd = 0;  
   fp = NULL;
   offset = 0;
 
+	addControls();
 }
-
 
 MP3FileSource::~MP3FileSource()
 {
-
 #ifdef MAD_MP3  
   madStructFinish();
 #endif
   closeFile(); 
 }
 
-
-
-
-
-MP3FileSource::MP3FileSource(const MP3FileSource& a)
+MP3FileSource::MP3FileSource(const MP3FileSource& a):AbsSoundFileSource(a)
 {
-  type_ = a.type_;
-  name_ = a.name_;
-  ncontrols_ = a.ncontrols_; 		
-  
-  inSamples_ = a.inSamples_;
-  inObservations_ = a.inObservations_;
-  onSamples_ = a.onSamples_;
-  onObservations_ = a.onObservations_;
-  dbg_ = a.dbg_;
-  mute_ = a.mute_;
+// 	type_ = a.type_;
+// 	name_ = a.name_;
+// 	ncontrols_ = a.ncontrols_; 		
+// 
+// 	inSamples_ = a.inSamples_;
+// 	inObservations_ = a.inObservations_;
+// 	onSamples_ = a.onSamples_;
+// 	onObservations_ = a.onObservations_;
+// 	dbg_ = a.dbg_;
+// 	mute_ = a.mute_;
 
-  ptr_ = NULL;
+	ptr_ = NULL;
   fp = NULL;
-  
-
-
 }
-
-
-
-
 
 MarSystem* 
 MP3FileSource::clone() const
@@ -101,8 +85,6 @@ MP3FileSource::clone() const
 void 
 MP3FileSource::addControls()
 {
-  addDefaultControls();
-
   // nChannels is one for now
   addctrl("mrs_natural/nChannels",1);
   addctrl("mrs_natural/bitRate", 160000);
@@ -132,14 +114,11 @@ MP3FileSource::addControls()
   addctrl("mrs_natural/cindex", 0);
   setctrlState("mrs_natural/cindex", true);
 
-
   addctrl("mrs_string/allfilenames", ",");
   addctrl("mrs_natural/numFiles", 1);
 	
   addctrl("mrs_string/currentlyPlaying", "daufile");
 }
-
-
 
 /** 
  * Function: getHeader
@@ -297,9 +276,9 @@ MP3FileSource::getHeader(string filename)
  *
  */
 void 
-MP3FileSource::update()
+MP3FileSource::localUpdate()
 {
-  MRSDIAG("MP3FileSource::update");
+  MRSDIAG("MP3FileSource::localUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
@@ -343,7 +322,8 @@ MP3FileSource::update()
       csize_ = (mrs_natural)(duration_ * israte_);
     }
 	
-  defaultUpdate();
+  //defaultUpdate(); [!]
+	inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
   	
   if (inSamples_ < bufferSize_/2) {
     reservoirSize_ = 2 * bufferSize_;

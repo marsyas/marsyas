@@ -31,18 +31,12 @@ with gain and put them in the output vector.
 using namespace std;
 using namespace Marsyas;
 
-ShiftOutput::ShiftOutput():MarSystem()
+ShiftOutput::ShiftOutput(string name):MarSystem("ShiftOutput",name)
 {
-  type_ = "ShiftOutput";
-}
+  //type_ = "ShiftOutput";
+  //name_ = name;
 
-
-ShiftOutput::ShiftOutput(string name)
-{
-  type_ = "ShiftOutput";
-  name_ = name;
-  addControls();
-  
+	addControls();
 }
 
 
@@ -56,22 +50,17 @@ ShiftOutput::clone() const
   return new ShiftOutput(*this);
 }
 
-
-
 void
 ShiftOutput::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/Interpolation", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES / 2);
   setctrlState("mrs_natural/Interpolation", true);
   addctrl("mrs_natural/WindowSize", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES);
   addctrl("mrs_natural/Decimation", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES/2);
 }
 
-
-
 void
-ShiftOutput::update()
+ShiftOutput::localUpdate()
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/Interpolation"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
@@ -79,9 +68,9 @@ ShiftOutput::update()
   
   setctrl("mrs_natural/WindowSize",getctrl("mrs_natural/inSamples"));
 
-
-  defaultUpdate();
-  
+  //defaultUpdate(); [!]
+	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+	inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
   
   tmpSlice_.stretch(inObservations_, inSamples_);
   
@@ -89,12 +78,7 @@ ShiftOutput::update()
   N_ = getctrl("mrs_natural/inSamples").toNatural();
   Nw_ = getctrl("mrs_natural/WindowSize").toNatural();
   D_ = getctrl("mrs_natural/Decimation").toNatural();
-
-
 }
-
-
-
 
 void 
 ShiftOutput::process(realvec& in, realvec& out)

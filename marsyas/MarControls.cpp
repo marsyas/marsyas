@@ -41,10 +41,6 @@ MarControls::setState(string cname, bool st)
   
 }
 
-
-
-
-
 MarControlValue
 MarControls::getControl(string cname)
 {
@@ -55,7 +51,6 @@ MarControls::getControl(string cname)
   }
   return controls_[cname];
 }
-
   
 void
 MarControls::addControl(string cname, MarControlValue value)
@@ -69,7 +64,6 @@ MarControls::getControls()
 {
   return controls_;
 }
-
 
 bool
 MarControls::updControl(string cname, bool value)
@@ -108,7 +102,6 @@ MarControls::updControl(string cname, mrs_real value)
   return false;
 }
 
-
 bool
 MarControls::updControl(string cname, mrs_natural value)
 {
@@ -128,14 +121,12 @@ MarControls::updControl(string cname, mrs_natural value)
   return false;
 }
 
-
 bool 
 MarControls::hasControl(string cname) 
 {
   iter_ = controls_.find(cname);
   return (iter_ != controls_.end());
 }
-
 
 bool
 MarControls::updControl(string cname, MarControlValue value)
@@ -168,6 +159,35 @@ int
 MarControls::size()
 {
   return controls_.size();
+}
+
+void
+MarControls::renamePrefix(std::string oldPrefix, std::string newPrefix)
+{
+	map<std::string, MarControlValue> renamedControls;
+	map<std::string, bool> renamedHasState;
+
+	//for controls_
+	for(iter_ = controls_.begin(); iter_ != controls_.end(); iter_++)
+	{
+		string key = iter_->first;
+		key = key.substr(oldPrefix.length(),key.length()-oldPrefix.length());
+		key = newPrefix + key;
+
+		renamedControls[key] = iter_->second;
+	}
+	controls_ = renamedControls;
+
+	//for hasState_
+	for(biter_ = hasState_.begin(); biter_ != hasState_.end(); biter_++)
+	{
+		string key = biter_->first;
+		key = key.substr(oldPrefix.length(),key.length()-oldPrefix.length());
+		key = newPrefix + key;
+
+		renamedHasState[key] = biter_->second;
+	}
+	hasState_ = renamedHasState;
 }
 
 
@@ -278,6 +298,7 @@ Marsyas::operator<< (ostream& o, const MarControls& c)
   return o;
   
 }
+
 
 
 

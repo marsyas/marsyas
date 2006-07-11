@@ -28,12 +28,14 @@
 using namespace std;
 using namespace Marsyas;
 
-NormMaxMin::NormMaxMin(string name)
+NormMaxMin::NormMaxMin(string name):MarSystem("NormMaxMin",name)
 {
-  type_ = "NormMaxMin";
-  name_ = name;
+  //type_ = "NormMaxMin";
+  //name_ = name;
+
   init_ = false;
-  addControls();
+
+	addControls();
 }
 
 
@@ -51,7 +53,6 @@ NormMaxMin::clone() const
 void 
 NormMaxMin::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_real/lower", 0.0);
   addctrl("mrs_real/upper", 1.0);
   maximums_.create(1);
@@ -66,35 +67,34 @@ NormMaxMin::addControls()
 
   addctrl("mrs_bool/init", false);
   setctrlState("mrs_bool/init", true);
-  
 }
 
 
 void
-NormMaxMin::update()
+NormMaxMin::localUpdate()
 {
-  MRSDIAG("NormMaxMin.cpp - NormMaxMin:update");
+  MRSDIAG("NormMaxMin.cpp - NormMaxMin:localUpdate");
   
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  
-  setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
-  defaultUpdate();  
+//   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+//   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+//   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+//   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
+	MarSystem::localUpdate();
+  	
+	//defaultUpdate();  [!]
+	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
   
   init_ = getctrl("mrs_bool/init").toBool();
 
   mrs_natural msize = (getctrl("mrs_realvec/maximums").toVec().getSize());
   mrs_natural nsize = maximums_.getSize();
-  
-  
+    
   if (msize != nsize) 
     {
       maximums_.stretch(msize);
       minimums_.stretch(msize);
     }
   
-
   if (!init_)
     {
       maximums_.stretch(inObservations_);
@@ -111,10 +111,7 @@ NormMaxMin::update()
     {
       maximums_ = getctrl("mrs_realvec/maximums").toVec();
       minimums_ = getctrl("mrs_realvec/minimums").toVec();
-    }
-  
-  
-  
+    } 
 }
 
 

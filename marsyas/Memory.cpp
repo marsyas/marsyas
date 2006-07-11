@@ -33,14 +33,15 @@ using namespace std;
 using namespace Marsyas;
 
 
-Memory::Memory(string name)
+Memory::Memory(string name):MarSystem("Memory",name)
 {
-  type_ = "Memory";
-  name_ = name;
-  end_ = 0;
-  addControls();
-}
+  //type_ = "Memory";
+  //name_ = name;
+  
+	end_ = 0;
 
+	addControls();
+}
 
 Memory::~Memory()
 {
@@ -56,18 +57,16 @@ Memory::clone() const
 void 
 Memory::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/memSize", 40);
   setctrlState("mrs_natural/memSize", true);
   addctrl("mrs_bool/reset", false);
   setctrlState("mrs_bool/reset", true);
 }
 
-
 void
-Memory::update()
+Memory::localUpdate()
 {
-  MRSDIAG("Memory.cpp - Memory:update");
+  MRSDIAG("Memory.cpp - Memory:localUpdate");
   
   mrs_natural memSize = getctrl("mrs_natural/memSize").toNatural();
   
@@ -77,7 +76,8 @@ Memory::update()
 
   reset_ = getctrl("mrs_bool/reset").toBool();
 
-  defaultUpdate();
+  //defaultUpdate(); [!]
+	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
   
   ostringstream oss;
   string inObsNames = getctrl("mrs_string/inObsNames").toString();

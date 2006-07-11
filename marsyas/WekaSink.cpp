@@ -27,13 +27,14 @@
 using namespace std;
 using namespace Marsyas;
 
-WekaSink::WekaSink(string name)
+WekaSink::WekaSink(string name):MarSystem("WekaSink",name)
 {
-  type_ = "WekaSink";
-  name_ = name;
+  //type_ = "WekaSink";
+  //name_ = name;
 
   mos_ = NULL;
-  addControls();
+
+	addControls();
 }
 
 WekaSink::~WekaSink()
@@ -45,20 +46,20 @@ WekaSink::~WekaSink()
 
 }
 
-WekaSink::WekaSink(const WekaSink& a)
+WekaSink::WekaSink(const WekaSink& a):MarSystem(a)
 {
-  type_ = a.type_;
-  name_ = a.name_;
-  ncontrols_ = a.ncontrols_; 		
-  
-  inSamples_ = a.inSamples_;
-  inObservations_ = a.inObservations_;
-  onSamples_ = a.onSamples_;
-  onObservations_ = a.onObservations_;
-  dbg_ = a.dbg_;
-  mute_ = a.mute_;
-
-  mos_ = NULL;
+// 	type_ = a.type_;
+// 	name_ = a.name_;
+// 	ncontrols_ = a.ncontrols_; 		
+// 
+// 	inSamples_ = a.inSamples_;
+// 	inObservations_ = a.inObservations_;
+// 	onSamples_ = a.onSamples_;
+// 	onObservations_ = a.onObservations_;
+// 	dbg_ = a.dbg_;
+// 	mute_ = a.mute_;
+	
+	mos_ = NULL;
 }
 
 MarSystem* 
@@ -70,7 +71,6 @@ WekaSink::clone() const
 void 
 WekaSink::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/precision", 6);
   setctrlState("mrs_natural/precision", true);
   addctrl("mrs_string/filename", "weka.arff");
@@ -134,9 +134,9 @@ WekaSink::putHeader(string inObsNames)
 }
 
 void
-WekaSink::update()
+WekaSink::localUpdate()
 {
-  MRSDIAG("WekaSink.cpp - WekaSink:update");
+  MRSDIAG("WekaSink.cpp - WekaSink:localUpdate");
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
@@ -169,7 +169,6 @@ WekaSink::update()
 
   precision_ = getctrl("mrs_natural/precision").toNatural();
   downsample_ = getctrl("mrs_natural/downsample").toNatural();
-  defaultUpdate();
 }
 
 void 

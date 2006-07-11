@@ -12,7 +12,7 @@
 #include <cstdio>
 #include <sys/time.h>
 #include "MarSystemManager.h" 
-#include "Messager.h"
+// #include "Messager.h"
 
 #include <string> 
 #include <iostream>
@@ -37,8 +37,8 @@ sfmixer(string sfName1)
 {
  
   // Initialize Messager
-  Messager* messager =0;
-  messager = new Messager(2,2001);  
+  // Messager* messager =0;
+  // messager = new Messager(2,2001);  
 
   // Set up mixer1 Series
   MarSystemManager mng;
@@ -235,12 +235,12 @@ sfmixer(string sfName1)
 
       // ********* MESSAGER CONTROL ***************//
       
-      type = messager->nextMessage();
+      // type = messager->nextMessage();
       if (type < 0) 
 	done = true;
       else 
 	{
-	  message = messager->getMessage();
+	//   message = messager->getMessage();
 	  stringstream inss(message);
 	  inss >> cname;  
 	  //cout << cname << endl;
@@ -443,7 +443,7 @@ sfmixer(string sfName1)
     } // end Main while loop
   
   // clean up 
-  delete messager;  
+  //delete messager;  
 }
 
 int main(int argc, char **argv)

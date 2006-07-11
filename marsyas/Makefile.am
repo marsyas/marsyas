@@ -44,11 +44,11 @@ PvConvolve.h PvOscBank.h PvUnconvert.h PvOverlapadd.h Hamming.h \
 Fanout.h Fanin.h Negative.h SineSource.h MarSystemManager.h \
 PowerSpectrum.h Centroid.h Rolloff.h \
 Flux.h Memory.h Mean.h StandardDeviation.h ZeroCrossings.h \
-Socket.h Thread.h Messager.h GaussianClassifier.h AbsSoundFileSink.h AbsSoundFileSource.h \
+Socket.h Thread.h GaussianClassifier.h AbsSoundFileSink.h AbsSoundFileSource.h \
 Confidence.h MarFileSink.h WekaSink.h MFCC.h SCF.h SFM.h \
 WaveletPyramid.h WaveletStep.h Daub4.h OnePole.h RtAudio.h RtError.h Accumulator.h \
-NetworkSocket.h NetworkTCPSource.h NetworkUDPSource.h \
-NetworkTCPSink.h NetworkUDPSink.h SocketException.h Talk.h \
+NetworkSocket.h NetworkTCPSource.h NetworkTCPSink.h NetworkUDPSource.h NetworkUDPSink.h Messager.h \
+SocketException.h Talk.h \
 TimeLine.h Color.h Communicator.h Server.h AbsMax.h FullWaveRectifier.h \
 Norm.h DownSampler.h WaveletBands.h Sum.h \
 PeakPeriods2BPM.h Histogram.h BeatHistoFeatures.h MslModel.h \
@@ -78,11 +78,11 @@ PvConvolve.cpp PvOscBank.cpp PvUnconvert.cpp PvOverlapadd.cpp Hamming.cpp \
 Fanout.cpp Fanin.cpp Negative.cpp SineSource.cpp MarSystemManager.cpp \
 PowerSpectrum.cpp Centroid.cpp Rolloff.cpp \
 Flux.cpp Memory.cpp Mean.cpp StandardDeviation.cpp ZeroCrossings.cpp \
-Thread.cpp Socket.cpp Messager.cpp GaussianClassifier.cpp AbsSoundFileSink.cpp AbsSoundFileSource.cpp \
+Thread.cpp Socket.cpp GaussianClassifier.cpp AbsSoundFileSink.cpp AbsSoundFileSource.cpp \
 Confidence.cpp MarFileSink.cpp WekaSink.cpp MFCC.cpp SCF.cpp SFM.cpp \
 WaveletPyramid.cpp WaveletStep.cpp Daub4.cpp OnePole.cpp RtAudio.cpp Accumulator.cpp \
-NetworkSocket.cpp NetworkTCPSource.cpp NetworkUDPSource.cpp \
-NetworkTCPSink.cpp NetworkUDPSink.cpp Talk.cpp \
+NetworkSocket.cpp NetworkTCPSource.cpp NetworkTCPSink.cpp NetworkUDPSource.cpp NetworkUDPSink.cpp Messager.cpp \
+Talk.cpp \
 TimeLine.cpp Color.cpp Communicator.cpp Server.cpp AbsMax.cpp FullWaveRectifier.cpp \
 Norm.cpp DownSampler.cpp WaveletBands.cpp Sum.cpp \
 PeakPeriods2BPM.cpp Histogram.cpp BeatHistoFeatures.cpp MslModel.cpp \

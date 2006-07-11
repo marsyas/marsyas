@@ -259,8 +259,12 @@ MarSystemManager::getMarSystem(istream& is)
   is >> skipstr >> skipstr >> skipstr;
   string mtype;
   is >> mtype;
+  cout << "mtype = " << mtype << endl;
+  
   is >> skipstr >> skipstr >> skipstr;
   string mname;
+  cout << "mname = " << mname << endl;
+  
   is >> mname;
 
   MarSystem* msys = getPrototype(mtype);

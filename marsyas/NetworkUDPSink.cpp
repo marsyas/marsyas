@@ -30,33 +30,24 @@
 using namespace std;
 using namespace Marsyas;
 
-NetworkUDPSink::NetworkUDPSink( string name )
+NetworkUDPSink::NetworkUDPSink(string name):NetworkSocket("NetworkUDPSink",name)
 {
-  type_ = "NetworkUDPSink";
-  name_ = name;
   addControls();
 }
 
-NetworkUDPSink::~NetworkUDPSink() {}
+NetworkUDPSink::~NetworkUDPSink() 
+{
+}
 
 MarSystem* NetworkUDPSink::clone() const {
   return new NetworkUDPSink( *this );
 }
 
 void NetworkUDPSink::addControls() {
-  addDefaultControls();
   addctrl("mrs_real/gain", 1.0);
   addctrl("mrs_string/host", "localhost");
   addctrl("mrs_natural/dataPort", 5009);
   addctrl("mrs_natural/controlsPort", 5010);
-}
-
-void NetworkUDPSink::update() {
-  MRSDIAG("NetworkUDPSink.cpp - NetworkUDPSink:update");
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  defaultUpdate();
 }
 
 void NetworkUDPSink::process( realvec& in, realvec& out ) {

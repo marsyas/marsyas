@@ -37,14 +37,15 @@ directly in Hz.
 using namespace std;
 using namespace Marsyas;
 
-PvConvert::PvConvert(string name)
+PvConvert::PvConvert(string name):MarSystem("PvConvert",name)
 {
-  type_ = "PvConvert";
-  name_ = name;
-  psize_ = 0;
-  size_ = 0;
+  //type_ = "PvConvert";
+  //name_ = name;
   
-  addControls();
+	psize_ = 0;
+  size_ = 0;
+
+	addControls();
 }
 
 
@@ -62,26 +63,20 @@ PvConvert::clone() const
 void 
 PvConvert::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/Decimation",MRS_DEFAULT_SLICE_NSAMPLES/4);
   addctrl("mrs_natural/Sinusoids", 1);
   setctrlState("mrs_natural/Sinusoids", true);
-  
-  
 }
 
-
-
-
 void
-PvConvert::update()
+PvConvert::localUpdate()
 {
-  
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations").toNatural() + 2);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal() * getctrl("mrs_natural/inObservations").toNatural());  
 
-  defaultUpdate();  
+  //defaultUpdate(); [!]
+	onObservations_ = getctrl("mrs_natural/onObservations").toNatural();
   
   size_ = onObservations_ /2 +1;
   
@@ -95,7 +90,6 @@ PvConvert::update()
     }
   
   psize_ = size_;
-  
   
   factor_ = ((getctrl("mrs_real/osrate").toReal()) / 
 	     (mrs_real)( getctrl("mrs_natural/Decimation").toNatural()* TWOPI));

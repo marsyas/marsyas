@@ -42,12 +42,11 @@ class NetworkTCPSource: public NetworkSocket
  public:
   
   NetworkTCPSource( std::string name );
-  virtual ~NetworkTCPSource();
-  NetworkTCPSource() {};
+  ~NetworkTCPSource();
   MarSystem* clone() const;  
-
+  
   std::string getClientAddr();
-  void update();
+
   void process( realvec& in, realvec& out );
   void refresh();
   

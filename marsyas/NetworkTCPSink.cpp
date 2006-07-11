@@ -31,33 +31,22 @@
 using namespace std;
 using namespace Marsyas;
 
-NetworkTCPSink::NetworkTCPSink( string name ) 
+NetworkTCPSink::NetworkTCPSink(string name):NetworkSocket("NetworkTCPSink",name) 
 {
-  type_ = "NetworkTCPSink";
-  name_ = name;
   addControls();
 }
 
-NetworkTCPSink::~NetworkTCPSink() {}
+NetworkTCPSink::~NetworkTCPSink() {} 
 
 MarSystem* NetworkTCPSink::clone() const {
   return new NetworkTCPSink( *this );
 }
 
 void NetworkTCPSink::addControls() {
-  addDefaultControls();
   addctrl("mrs_real/gain", 1.0);
   addctrl("mrs_string/host", "localhost");
   addctrl("mrs_natural/dataPort", 5009);
   addctrl("mrs_natural/controlsPort", 5010);
-}
-
-void NetworkTCPSink::update() {
-  MRSDIAG("NetworkTCPSink.cpp - NetworkTCPSink:update");
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  defaultUpdate();
 }
 
 void NetworkTCPSink::process( realvec& in, realvec& out ) {

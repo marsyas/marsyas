@@ -29,13 +29,12 @@
 using namespace std;
 using namespace Marsyas;
 
-AudioSource::AudioSource(string name)
+AudioSource::AudioSource(string name):MarSystem("AudioSource", name)
 {
-  type_ = "AudioSource";
-  name_ = name;
+  //type_ = "AudioSource";
+  //name_ = name;
   
   counter_ = 0;
-  addControls();
   
   ri_ = 0;
   rstart_ = 0;
@@ -45,12 +44,12 @@ AudioSource::AudioSource(string name)
   audio_ = NULL;
   bufferSize_ = 256;
 
-#ifdef __OS_MACOSX__
+	#ifdef __OS_MACOSX__
   bufferSize_ = 2048;
-#endif	
+	#endif
+
+	addControls();
 }
-
-
 
 AudioSource::~AudioSource()
 {
@@ -65,11 +64,9 @@ AudioSource::clone() const
   return new AudioSource(*this);
 }
 
-
 void 
 AudioSource::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/nChannels",1);
   addctrl("mrs_real/gain", 1.05);
   setctrlState("mrs_real/gain", true);
@@ -77,7 +74,6 @@ AudioSource::addControls()
   addctrl("mrs_bool/init", false);
   setctrlState("mrs_bool/init", true);
 }
-
 
 void 
 AudioSource::init()
@@ -113,11 +109,10 @@ AudioSource::init()
 }
 
 void 
-AudioSource::update()
+AudioSource::localUpdate()
 {
-  MRSDIAG("AudioSource::update");
+  MRSDIAG("AudioSource::localUpdate");
 
-  
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
@@ -130,7 +125,9 @@ AudioSource::update()
   mute_ = getctrl("mrs_bool/mute").toBool();
   gain_ = getctrl("mrs_real/gain").toReal();
   
-  defaultUpdate();
+  //defaultUpdate(); [!]
+	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+	inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
   
   if (inSamples_ * inObservations_ < bufferSize_) 
     reservoirSize_ = 2 * inObservations_ * bufferSize_;
@@ -143,8 +140,6 @@ AudioSource::update()
     }
   preservoirSize_ = reservoirSize_;
 }
-
-
 
 void 
 AudioSource::start()
@@ -165,63 +160,63 @@ AudioSource::stop()
   }
 }
 
-
-
-
+void
+AudioSource::localActivate(bool state)
+{
+	if(state)
+		start();
+	else
+		stop();
+}
 
 void 
 AudioSource::process(realvec& in, realvec& out)
 {
-
-  
-  if (!isInitialized_)
-    {
-      init();
-      isInitialized_ = true;
-    }
   checkFlow(in,out);
-
+	
+	if (!isInitialized_)
+  {
+    init();
+    isInitialized_ = true;
+  }
+  
   mrs_natural nChannels = getctrl("mrs_natural/nChannels").toNatural();
   
-  if (mute_) return;
-
-
+  //check MUTE
+	if (mute_) return;
   
-  if ( stopped_ )
-    start();
-
-
+  if ( stopped_ )//[?]
+	  start();
   
   while (ri_ < inSamples_ * inObservations_)
-    {
-      
-      try {
-	audio_->tickStream();
-      }
-      catch (RtError &error) 
-	{
-	  error.printMessage();
-	}
-
-      for (t=0; t < inObservations_ * bufferSize_; t++)
-	{
-	  reservoir_(ri_) = data_[t];
-	  ri_++;
-	}
+  {
+    
+    try 
+		{
+			audio_->tickStream();
     }
+    catch (RtError &error) 
+		{
+			error.printMessage();
+		}
 
+    for (t=0; t < inObservations_ * bufferSize_; t++)
+		{
+			reservoir_(ri_) = data_[t];
+			ri_++;
+		}
+  }
   
   for (o=0; o < inObservations_; o++)
     for (t=0; t < inSamples_; t++)
       {
-	out(o,t) = gain_ * reservoir_(inObservations_ * t + o);
+				out(o,t) = gain_ * reservoir_(inObservations_ * t + o);
       }
 
   for (t=inSamples_*inObservations_; t < ri_; t++)
     reservoir_(t-inSamples_ * inObservations_) = reservoir_(t);
   
   ri_ = ri_ - inSamples_ * inObservations_;
-  
 }
 
 

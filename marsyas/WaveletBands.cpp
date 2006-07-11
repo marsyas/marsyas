@@ -31,12 +31,14 @@ Wavelet Transform to get back to time domain.
 using namespace std;
 using namespace Marsyas;
 
-WaveletBands::WaveletBands(string name)
+WaveletBands::WaveletBands(string name):MarSystem("WaveletBands",name)
 {
-  type_ = "WaveletBands";
-  name_ = name;
-  iwvpt_ = NULL;
-  addControls();
+  //type_ = "WaveletBands";
+  //name_ = name;
+  
+	iwvpt_ = NULL;
+
+	addControls();
 }
 
 WaveletBands::~WaveletBands()
@@ -46,19 +48,20 @@ WaveletBands::~WaveletBands()
 
 
 // copy constructor 
-WaveletBands::WaveletBands(const WaveletBands& a)
+WaveletBands::WaveletBands(const WaveletBands& a):MarSystem(a)
 {
-  type_ = a.type_;
-  name_ = a.name_;
-  ncontrols_ = a.ncontrols_; 		
-  
-  inSamples_ = a.inSamples_;
-  inObservations_ = a.inObservations_;
-  onSamples_ = a.onSamples_;
-  onObservations_ = a.onObservations_;
-  dbg_ = a.dbg_;
-  mute_ = a.mute_;
-  iwvpt_ = NULL;
+// 	type_ = a.type_;
+// 	name_ = a.name_;
+// 	ncontrols_ = a.ncontrols_; 		
+// 
+// 	inSamples_ = a.inSamples_;
+// 	inObservations_ = a.inObservations_;
+// 	onSamples_ = a.onSamples_;
+// 	onObservations_ = a.onObservations_;
+// 	dbg_ = a.dbg_;
+// 	mute_ = a.mute_;
+
+	iwvpt_ = NULL;
 }
 
 
@@ -72,7 +75,6 @@ WaveletBands::clone() const
 void 
 WaveletBands::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/nBands", 4);
   setctrlState("mrs_natural/nBands", true);
   addctrl("mrs_natural/startBand", 5);
@@ -84,10 +86,10 @@ WaveletBands::addControls()
 }
 
 void
-WaveletBands::update()
+WaveletBands::localUpdate()
 {
   
-  MRSDIAG("WaveletBands.cpp - WaveletBands:update");
+  MRSDIAG("WaveletBands.cpp - WaveletBands:localUpdate");
   mrs_natural nBands = getctrl("mrs_natural/nBands").toNatural();
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
@@ -106,10 +108,7 @@ WaveletBands::update()
 	       getctrl("mrs_natural/inSamples").toNatural());
   tband_.create(getctrl("mrs_natural/inObservations").toNatural(), 
 		getctrl("mrs_natural/inSamples").toNatural());
-  
-
-  defaultUpdate();
-  
+   
 }
 
 

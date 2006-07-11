@@ -31,16 +31,10 @@ time samle. The center is defined as the normalized first moment
 using namespace std;
 using namespace Marsyas;
 
-Centroid::Centroid():MarSystem()
+Centroid::Centroid(string name):MarSystem("Centroid", name)
 {
-  type_ = "Centroid";
-}
-
-Centroid::Centroid(string name)
-{
-  type_ = "Centroid";
-  name_ = name;
-  addControls();
+  //type_ = "Centroid";
+  //name_ = name;
 }
 
 
@@ -55,30 +49,22 @@ Centroid::clone() const
   return new Centroid(*this);
 }
 
-void 
-Centroid::addControls()
-{
-  addDefaultControls();
-}
-
-
 void
-Centroid::update()
+Centroid::localUpdate()
 {
-  MRSDIAG("Centroid.cpp - Centroid:update");
+  
+  MRSDIAG("Centroid.cpp - Centroid:localUpdate");
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal());
   setctrl("mrs_string/onObsNames", "Centroid,");
-  
-  defaultUpdate();
 }
-
 
 void 
 Centroid::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
+  
   
   // computer centroid of observations for each time sample 
   // using zero and first-order moments 

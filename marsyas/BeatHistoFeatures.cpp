@@ -33,32 +33,30 @@ keep changing.
 using namespace std;
 using namespace Marsyas;
 
-BeatHistoFeatures::BeatHistoFeatures(string name)
+BeatHistoFeatures::BeatHistoFeatures(string name):MarSystem("BeatHistoFeatures", name)
 {
-  type_ = "BeatHistoFeatures";
-  name_ = name;
-  mxr_ = NULL;
-  addControls();
-}
-
-
-BeatHistoFeatures::BeatHistoFeatures(const BeatHistoFeatures& a)
-{
-  type_ = a.type_;
-  name_ = a.name_;
-  ncontrols_ = a.ncontrols_; 		
+  //type_ = "BeatHistoFeatures";
+  //name_ = name;
   
-  inSamples_ = a.inSamples_;
-  inObservations_ = a.inObservations_;
-  onSamples_ = a.onSamples_;
-  onObservations_ = a.onObservations_;
-  dbg_ = a.dbg_;
-  mute_ = a.mute_;
-  mxr_ = NULL;
+	mxr_ = NULL;
+
+	addControls();
 }
 
-
-
+BeatHistoFeatures::BeatHistoFeatures(const BeatHistoFeatures& a):MarSystem(a)
+{
+// 	type_ = a.type_;
+// 	name_ = a.name_;
+// 	ncontrols_ = a.ncontrols_; 		
+// 
+// 	inSamples_ = a.inSamples_;
+// 	inObservations_ = a.inObservations_;
+// 	onSamples_ = a.onSamples_;
+// 	onObservations_ = a.onObservations_;
+// 	dbg_ = a.dbg_;
+// 	mute_ = a.mute_;
+	mxr_ = NULL;
+}
 
 BeatHistoFeatures::~BeatHistoFeatures()
 {
@@ -75,19 +73,14 @@ BeatHistoFeatures::clone() const
 void 
 BeatHistoFeatures::addControls()
 {
-  addDefaultControls();
-
-
-
-  delete mxr_;
-  mxr_ = new MaxArgMax("mxr");
+  delete mxr_;//[?]
+  mxr_ = new MaxArgMax("mxr");//[?]
 }
 
-
 void
-BeatHistoFeatures::update()
+BeatHistoFeatures::localUpdate()
 {
-  MRSDIAG("BeatHistoFeatures.cpp - BeatHistoFeatures:update");
+  MRSDIAG("BeatHistoFeatures.cpp - BeatHistoFeatures:localUpdate");
   
   setctrl("mrs_natural/onSamples", (mrs_natural)1);
   setctrl("mrs_natural/onObservations", (mrs_natural)8);
@@ -100,13 +93,11 @@ BeatHistoFeatures::update()
   mxr_->updctrl("mrs_natural/nMaximums", 3);
   
   mxres_.create(mxr_->getctrl("mrs_natural/onObservations").toNatural(),
-		mxr_->getctrl("mrs_natural/onSamples").toNatural());
-  
-  
+	mxr_->getctrl("mrs_natural/onSamples").toNatural());
+    
   // setctrl("mrs_string/onObsNames", "BH_Sum, BH_MaxAmp1divSum, BH_MaxAmp2divSum, BH_MaxAmp3divSum, BH_MaxPos1, BH_MAXPos2, BH_MAXPos3, BH_MaAmp2divMaxAmp2");
   
   setctrl("mrs_string/onObsNames", "BH_LowPeakAmp, BH_LowPeakBPM, BH_HighPeakAmp, BH_HighPeakBPM, BH_HighLowRatio, BHSUM1, BHSUM2, BHSUM3");
-  defaultUpdate();
 }
 
 void 

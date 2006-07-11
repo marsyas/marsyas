@@ -33,14 +33,14 @@ using namespace Marsyas;
 #define ALPHA_DEGRADE		0.98
 #define NEIGHBOURHOOD_DEGRADE	0.97
 
-SOM::SOM(string name)
+SOM::SOM(string name):MarSystem("SOM",name)
 {
+  //type_ = "SOM";
+  //name_ = name;
   
-  type_ = "SOM";
-  name_ = name;
-  srand(0);
-  
-  addControls();
+	srand(0);
+
+	addControls();
 }
 
 
@@ -58,7 +58,6 @@ SOM::clone() const
 void 
 SOM::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_string/mode", "train");
   addctrl("mrs_natural/nLabels", 1);	// number of feature vectors 
   setctrlState("mrs_natural/nLabels", true);
@@ -106,29 +105,23 @@ SOM::gaussian(double x, double mean, double std, bool scale)
   return exp( -(x-mean)*(x-mean)/(2.0*std*std) );
 }
 
-
 double 
 SOM::randD(double max)
 {
   return max  *  (double)rand() / ((double)(RAND_MAX)+(double)(1.0)) ; 
 }
 
-
-
-
-
 void
-SOM::update()
+SOM::localUpdate()
 {
-  MRSDIAG("SOM.cpp - SOM:update");
+  MRSDIAG("SOM.cpp - SOM:localUpdate");
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", (mrs_natural)3);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-  
-  defaultUpdate();
-  
+  //defaultUpdate();[!]
+	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
   
   mrs_natural nlabels = getctrl("mrs_natural/nLabels").toNatural();
 
@@ -137,55 +130,44 @@ SOM::update()
   
   mrs_natural grid_size = grid_width_ * grid_height_;
   
-  
   mrs_natural mrows = (getctrl("mrs_realvec/grid_map").toVec()).getRows();
   mrs_natural mcols = (getctrl("mrs_realvec/grid_map").toVec()).getCols();
-
 
   mrs_natural nrows = grid_map_.getRows();
   mrs_natural ncols = grid_map_.getCols();
 
   if ((grid_size != mrows) || 
       (inObservations_-1 != mcols))
-    {
-      if (inObservations_ != 1) 
-	{
-	  grid_map_.create(grid_size, inObservations_-1);
-	  adjustments_.create(inObservations_-1);      
-	  init_grid_map();
-	  updctrl("mrs_realvec/grid_map", grid_map_);	  
-	}
-      
-    }
-  
+  {
+    if (inObservations_ != 1) 
+		{
+			grid_map_.create(grid_size, inObservations_-1);
+			adjustments_.create(inObservations_-1);      
+			init_grid_map();
+			updctrl("mrs_realvec/grid_map", grid_map_);//[!] 	  
+		}
+    
+  }
 
   if ((grid_size != nrows) || 
       (inObservations_-1 != ncols))
-    {
-      if (inObservations_ != 1) 
-	{
-	  grid_map_.create(grid_size, inObservations_-1);
-	  adjustments_.create(inObservations_-1);
-	  init_grid_map();
-	  updctrl("mrs_realvec/grid_map", grid_map_);	  
-	}
-	  
-
-    }
+  {
+    if (inObservations_ != 1) 
+		{
+			grid_map_.create(grid_size, inObservations_-1);
+			adjustments_.create(inObservations_-1);
+			init_grid_map();
+			updctrl("mrs_realvec/grid_map", grid_map_);	//[!] 
+		}
+  }
   
   string mode = getctrl("mrs_string/mode").toString();
   
   if (mode == "predict")
     {
       grid_map_ = getctrl("mrs_realvec/grid_map").toVec();
-    }
-
-  defaultUpdate();
-
-  
+    }  
 }
-
-
 
 realvec
 SOM::find_grid_location(realvec& in, int t)

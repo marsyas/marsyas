@@ -32,14 +32,17 @@ using namespace Marsyas;
 //  
 // Constructor sets up the server...
 //
-NetworkUDPSource::NetworkUDPSource( string name ) : NetworkSocket()
+NetworkUDPSource::NetworkUDPSource(string name) : NetworkSocket("NetworkUDPSource",name)
 {
-  type_ = "NetworkUDPSource";
-  name_ = name;
-  addControls();
+  //type_ = "NetworkUDPSource";
+  //name_ = name;
+
+	addControls();
 }
 
-NetworkUDPSource::~NetworkUDPSource() {}
+NetworkUDPSource::~NetworkUDPSource() 
+{
+}
 
 MarSystem* NetworkUDPSource::clone() const {
   return new NetworkUDPSource(*this);
@@ -47,7 +50,6 @@ MarSystem* NetworkUDPSource::clone() const {
 
 void NetworkUDPSource::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_real/gain", 1.0);
   addctrl("mrs_natural/dataPort", 5009);
   addctrl("mrs_natural/controlsPort", 5010);
@@ -58,15 +60,6 @@ void NetworkUDPSource::addControls()
 string NetworkUDPSource::getClientAddr()
 {
   return NetworkSocket::inet_ntoa();
-}
-
-void NetworkUDPSource::update()
-{
-  MRSDIAG("NetworkUDPSource.cpp - NetworkUDPSource:update");
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  defaultUpdate();
 }
 
 void NetworkUDPSource::process( realvec& in, realvec& out )

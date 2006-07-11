@@ -31,11 +31,12 @@ using namespace std;
 using namespace Marsyas;
 
 
-OnePole::OnePole(string name)
+OnePole::OnePole(string name):MarSystem("OnePole",name)
 {
-  type_ = "OnePole";
-  name_ = name;
-  addControls();
+  //type_ = "OnePole";
+  //name_ = name;
+
+	addControls();
 }
 
 
@@ -53,26 +54,23 @@ OnePole::clone() const
 void 
 OnePole::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_real/alpha", 0.9);
 }
 
 
 void
-OnePole::update()
+OnePole::localUpdate()
 {
-  MRSDIAG("OnePole.cpp - OnePole:update");
+  MRSDIAG("OnePole.cpp - OnePole:localUpdate");
   
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+//   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+//   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+//   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+	MarSystem::localUpdate();
   
   alpha_ = getctrl("mrs_real/alpha").toReal();
   gain_ = (mrs_real)(1.0 - alpha_);
-  defaultUpdate();
-  
 }
-
 
 void 
 OnePole::process(realvec& in, realvec& out)

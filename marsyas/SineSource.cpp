@@ -27,11 +27,12 @@
 using namespace std;
 using namespace Marsyas;
 	
-SineSource::SineSource(string name)
+SineSource::SineSource(string name):MarSystem("SineSource",name)
 {
-  type_ = "SineSource";
-  name_ = name;
-  addControls();
+  //type_ = "SineSource";
+  //name_ = name;
+
+	addControls();
 }
 
 
@@ -50,20 +51,17 @@ SineSource::clone() const
 void 
 SineSource::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_real/frequency", 440.0);
 }
 
-
-
-
 void
-SineSource::update()
+SineSource::localUpdate()
 {
 
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+//   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+//   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+//   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+	MarSystem::localUpdate();
 
   wavetableSize_ = 8192;
   wavetable_.create((mrs_natural)wavetableSize_);
@@ -72,7 +70,6 @@ SineSource::update()
   for (t=0; t < wavetableSize_; t++)
     wavetable_(t) = (mrs_real)(0.5 * sin(incr * t));
   index_ = 0;
-  defaultUpdate();
 }
 
 

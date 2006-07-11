@@ -27,11 +27,10 @@
 using namespace std;
 using namespace Marsyas;
 
-PeakPeriods2BPM::PeakPeriods2BPM(string name)
+PeakPeriods2BPM::PeakPeriods2BPM(string name):MarSystem("PeakPeriods2BPM",name)
 {
-  type_ = "PeakPeriods2BPM";
-  name_ = name;
-  addControls();
+  //type_ = "PeakPeriods2BPM";
+  //name_ = name;
 }
 
 
@@ -46,26 +45,19 @@ PeakPeriods2BPM::clone() const
   return new PeakPeriods2BPM(*this);
 }
 
-void 
-PeakPeriods2BPM::addControls()
-{
-  addDefaultControls();
-}
-
-
 void
-PeakPeriods2BPM::update()
+PeakPeriods2BPM::localUpdate()
 {
-  MRSDIAG("PeakPeriods2BPM.cpp - PeakPeriods2BPM:update");
+  MRSDIAG("PeakPeriods2BPM.cpp - PeakPeriods2BPM:localUpdate");
   
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+//   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+//   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+//   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+	MarSystem::localUpdate();
 
   srate_ = getctrl("mrs_real/israte").toReal();
-  defaultUpdate();
-}
 
+}
 
 void 
 PeakPeriods2BPM::process(realvec& in, realvec& out)

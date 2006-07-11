@@ -105,78 +105,47 @@ printHelp(string progName)
 void simple_extract(string sfName)
 {
   MarSystemManager mng;
+  
+  MarSystem* fnet = mng.create("Series", "fnet");
+  
   MarSystem *src = mng.create("SoundFileSource", "src");
   src->updctrl("mrs_string/filename", sfName);
   src->updctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
   
   
   MarSystem* spectralShape = mng.create("Series", "spectralShape");
-  // spectralShape->addMarSystem(mng.create("AbsMax", "absmax"));
   spectralShape->addMarSystem(mng.create("Hamming", "hamming"));
   spectralShape->addMarSystem(mng.create("Spectrum","spk"));
   spectralShape->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-  spectralShape->addMarSystem(mng.create("MFCC", "mfcc"));
-  spectralShape->addMarSystem(mng.create("Memory", "mem"));
-  MarSystem* statistics = mng.create("Fanout", "statistics");
-  statistics->addMarSystem(mng.create("Mean", "mn"));
-  statistics->addMarSystem(mng.create("StandardDeviation", "std"));
-  spectralShape->addMarSystem(statistics);
-  
-  
-  // spectralShape->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","decibels");
-  spectralShape->updctrl("Memory/mem/mrs_natural/memSize",400);
+  // spectralShape->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","decibels"); 
 
-  // spectralShape->addMarSystem(mng.create("Kurtosis", "kurtosis"));
+  MarSystem* specDesc = mng.create("Fanout", "specDesc");
+  specDesc->addMarSystem(mng.create("Centroid", "cntrd"));
+  specDesc->addMarSystem(mng.create("Rolloff", "rolloff"));
+  spectralShape->addMarSystem(specDesc);
   
+  fnet->addMarSystem(src);
+  fnet->addMarSystem(spectralShape);
   
-  // spectralShape->addMarSystem(mng.create("PlotSink", "psink"));
+
+  cout << *fnet << endl;
+  
 
   
 
-  MarSystem* featureNetwork = mng.create("Series", "featureNetwork");
-  featureNetwork->addMarSystem(src);
-  featureNetwork->addMarSystem(spectralShape);
-
   
-  // while (featureNetwork->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool())
-  // {
+  realvec in(fnet->getctrl("mrs_natural/inObservations").toNatural(),
+             fnet->getctrl("mrs_natural/inSamples").toNatural());
 
-  realvec in(featureNetwork->getctrl("mrs_natural/inObservations").toNatural(), 
-	     featureNetwork->getctrl("mrs_natural/inSamples").toNatural());
-
-  realvec out(featureNetwork->getctrl("mrs_natural/onObservations").toNatural(), 
-	      featureNetwork->getctrl("mrs_natural/onSamples").toNatural());
-  
+  realvec out(fnet->getctrl("mrs_natural/onObservations").toNatural(),
+              fnet->getctrl("mrs_natural/onSamples").toNatural());
 
   for (mrs_natural i=0; i < 400; i++) 
     {
-      featureNetwork->process(in,out);
+      fnet->process(in,out);
     }
-
-
-  
-
-  /* realvec plot(100, 400);
-  plot.setval(1.0);
-  
-
-  for (mrs_natural c = 0; c < 400; c++)
-    {
-      for (mrs_natural r=50; r < 50 + round(out(0,c) * 50.0); r++)
-	plot(r,c) = 0.0;
-      for (mrs_natural r=50; r > 50 - round(out(0,c) * 50.0); r--)
-	plot(r,c) = 0.0;
-      
-    }
-  */ 
-  
-
   
   out.write("spectrogram.plot");
-  // plot.write("waveform.plot");
-  
-    
-
 }
 
 
@@ -468,9 +437,9 @@ main(int argc, const char **argv)
       string extractorStr = extractorName;
 
       //extract_trainAccumulator(sfname, memSize, extractorName);
-      newExtract(sfname, memSize, extractorName);
+      // newExtract(sfname, memSize, extractorName);
       
-      // simple_extract(sfname);
+      simple_extract(sfname);
       
     }
   

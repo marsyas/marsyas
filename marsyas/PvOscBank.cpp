@@ -29,14 +29,15 @@
 using namespace std;
 using namespace Marsyas;
 
-PvOscBank::PvOscBank(string name)
+PvOscBank::PvOscBank(string name):MarSystem("PvOscBank",name)
 {
-  type_ = "PvOscBank";
-  name_ = name;
-  psize_ = 0;
-  size_ = 0;
+  //type_ = "PvOscBank";
+  //name_ = name;
   
-  addControls();
+	psize_ = 0;
+  size_ = 0;
+
+	addControls();
 }
 
 
@@ -50,12 +51,9 @@ PvOscBank::clone() const
   return new PvOscBank(*this);
 }
 
-
-
 void 
 PvOscBank::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/Interpolation", MRS_DEFAULT_SLICE_NSAMPLES/4);
   setctrlState("mrs_natural/Interpolation", true);
   addctrl("mrs_real/PitchShift", 1.0);
@@ -64,10 +62,8 @@ PvOscBank::addControls()
   setctrlState("mrs_real/SynthesisThreshold", true);
 }
 
-
-
 void
-PvOscBank::update()
+PvOscBank::localUpdate()
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/Interpolation"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
@@ -75,52 +71,34 @@ PvOscBank::update()
 
   // mrs_natural inObservations = getctrl("mrs_natural/inObservations").toNatural();
 
-  defaultUpdate();
+  //defaultUpdate();
+	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
 
   size_ = inObservations_/2 + 1;
   
   if (size_ != psize_) 
-    {
-      lastamp_.stretch(size_);
-      lastfreq_.stretch(size_);
-      index_.stretch(size_);
-      N_ = inObservations_/2;
+  {
+    lastamp_.stretch(size_);
+    lastfreq_.stretch(size_);
+    index_.stretch(size_);
+    N_ = inObservations_/2;
 
-      L_ = 8192;
-      table_.stretch(L_);
-      
-      for (t=0; t < L_; t++)
-	{
-	  table_(t) = N_ * cos(TWOPI * t/L_);
-	}
-    }
+    L_ = 8192;
+    table_.stretch(L_);
+    
+    for (t=0; t < L_; t++)
+		{
+			table_(t) = N_ * cos(TWOPI * t/L_);
+		}
+  }
   
   psize_ = size_;
   
-
   P_ = getctrl("mrs_real/PitchShift").toReal();
   I_ = getctrl("mrs_natural/Interpolation").toNatural();
   S_ = getctrl("mrs_real/SynthesisThreshold").toReal();
   R_ = getctrl("mrs_real/osrate").toReal();
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-	
-
-	
-
-	
 	
 void 
 PvOscBank::process(realvec& in, realvec& out)

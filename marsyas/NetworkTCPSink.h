@@ -43,11 +43,9 @@ class NetworkTCPSink: public NetworkSocket
  public:
   	
   NetworkTCPSink( std::string name );
-  NetworkTCPSink() {};
-  virtual ~NetworkTCPSink();
+  ~NetworkTCPSink();
   MarSystem* clone() const;  
 	  
-  void update();
   void process( realvec& in, realvec& out );
   void refresh();
 };

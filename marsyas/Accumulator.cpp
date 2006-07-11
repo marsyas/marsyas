@@ -32,32 +32,19 @@
 
 using namespace std;
 using namespace Marsyas;
-
-Accumulator::Accumulator(string name):Composite()
+ 
+Accumulator::Accumulator(string name):Composite("Accumulator", name)
 {
-  type_ = "Accumulator";
-  name_ = name;
-  dbg_ = false;
+  //type_ = "Accumulator";
+  //name_ = name;
+  
+  marsystemsSize_ = 0;
   addControls();
 }
 
 Accumulator::~Accumulator()
 {
 }
-
-
-Accumulator::Accumulator(const Accumulator& a)
-{
-  type_ = a.type_;
-  name_ = a.name_;
-  ncontrols_ = a.ncontrols_; 		
-  dbg_ = a.dbg_;
-  for (mrs_natural i=0; i< a.marsystemsSize_; i++)
-    {
-      addMarSystem((*a.marsystems_[i]).clone());
-    }
-}
-
 
 MarSystem* 
 Accumulator::clone() const 
@@ -68,20 +55,20 @@ Accumulator::clone() const
 void 
 Accumulator::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/nTimes", 5);
-  nTimes_ = 5;
   setctrlState("mrs_natural/nTimes", true);
+  nTimes_ = 5;
 }
 
 void
-Accumulator::update()
+Accumulator::localUpdate()
 {
-  MRSDIAG("Accumulator.cpp - Accumulator:update");
+  MRSDIAG("Accumulator.cpp - Accumulator:localUpdate");
   
   nTimes_ = getctrl("mrs_natural/nTimes").toNatural();
 
   string onObsNames;
+  
   if (marsystemsSize_ > 0)
     {
       // set input characteristics 
@@ -91,7 +78,7 @@ Accumulator::update()
 	      marsystems_[0]->getctrl("mrs_natural/inObservations"));
       setctrl("mrs_real/israte", 
 	      marsystems_[0]->getctrl("mrs_real/israte"));
-      
+    
       // set output characteristics 
       setctrl("mrs_natural/onSamples", 
 	      nTimes_ * marsystems_[0]->getctrl("mrs_natural/onSamples").toNatural());
@@ -102,8 +89,10 @@ Accumulator::update()
 
       onObsNames = marsystems_[0]->getctrl("mrs_string/onObsNames").toString();
     }
-  defaultUpdate();
 
+  //defaultUpdate();
+  onObservations_ = getctrl("mrs_natural/onObservations").toNatural();
+  onSamples_ = getctrl("mrs_natural/onSamples").toNatural();
 
   ostringstream oss;
 
@@ -120,7 +109,6 @@ Accumulator::update()
   
   tout_.create(onObservations_, onSamples_ / nTimes_);
 }
-
 
 void 
 Accumulator::process(realvec& in, realvec& out)

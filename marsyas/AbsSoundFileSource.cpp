@@ -26,17 +26,9 @@
 using namespace std;
 using namespace Marsyas;
 
-
-AbsSoundFileSource::AbsSoundFileSource()
+AbsSoundFileSource::AbsSoundFileSource(string type, string name):MarSystem(type, name)
 {
 }
-
-
-AbsSoundFileSource::AbsSoundFileSource(string name)
-{
-}
-
-
 
 AbsSoundFileSource::~AbsSoundFileSource()
 {

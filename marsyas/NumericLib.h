@@ -20,8 +20,8 @@
 \class NumericLib
 \brief Assorted Numerical Routines
 
-	Numerical routines ported and adapted from several sources (indicated where appropriated).
-	Code adapted by <lmartins@inescporto.pt> - 16.06.2006 
+Numerical routines ported and adapted from several sources (indicated where appropriated).
+Code adapted by <lmartins@inescporto.pt> - 16.06.2006 
 */
 
 #if !defined(__NumericLib_h)
@@ -263,3 +263,5 @@ public:
 }//namespace Marsyas
 
 #endif //__NumericLib_h
+
+

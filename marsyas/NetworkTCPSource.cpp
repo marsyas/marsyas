@@ -33,14 +33,14 @@ using namespace Marsyas;
 //  
 // Constructor sets up the server...
 //
-NetworkTCPSource::NetworkTCPSource( string name ) 
+NetworkTCPSource::NetworkTCPSource(string name):NetworkSocket("NetworkTCPSource",name) 
 {
-  type_ = "NetworkTCPSource";
-  name_ = name;
   addControls();
 }
 
-NetworkTCPSource::~NetworkTCPSource() {}
+NetworkTCPSource::~NetworkTCPSource() 
+{
+}
 
 MarSystem* NetworkTCPSource::clone() const {
   return new NetworkTCPSource(*this);
@@ -48,7 +48,6 @@ MarSystem* NetworkTCPSource::clone() const {
 
 void NetworkTCPSource::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_real/gain", 1.0); 
   addctrl("mrs_natural/dataPort", 5009);
   addctrl("mrs_natural/controlsPort", 5010);
@@ -58,15 +57,6 @@ void NetworkTCPSource::addControls()
 string NetworkTCPSource::getClientAddr()
 {
   return NetworkSocket::inet_ntoa();
-}
-
-void NetworkTCPSource::update()
-{
-  MRSDIAG("NetworkTCPSource.cpp - NetworkTCPSource:update");
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  defaultUpdate();
 }
 
 void NetworkTCPSource::process( realvec& in, realvec& out )

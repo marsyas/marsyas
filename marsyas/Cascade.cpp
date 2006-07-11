@@ -26,34 +26,26 @@
 using namespace std;
 using namespace Marsyas;
 
-Cascade::Cascade(string name)
+Cascade::Cascade(string name):Composite("Cascade", name)
 {
-  type_ = "Cascade";
-  name_ = name;
-  addControls();
+  //type_ = "Cascade";
+  //name_ = name;
 }
 
+// Cascade::Cascade(const Cascade& a):Composite(a)
+// {
+// 	//lmartins: now done at Composite copy cnstructor
+// 	/*
+// 	for (mrs_natural i=0; i< a.marsystemsSize_; i++) 
+// 	{
+// 		addMarSystem((*a.marsystems_[i]).clone());
+// 	}*/
+// }
 
 Cascade::~Cascade()
 {
   deleteSlices();
 }
-
-
-Cascade::Cascade(const Cascade& a)
-{
-  type_ = a.type_;
-  name_ = a.name_;
-  ncontrols_ = a.ncontrols_;		
-  
-  for (mrs_natural i=0; i< a.marsystemsSize_; i++) {
-    addMarSystem((*a.marsystems_[i]).clone());
-  }
-  
-  dbg_ = a.dbg_;
-  mute_ = a.mute_;
-}
-
 
 void 
 Cascade::deleteSlices()
@@ -72,16 +64,10 @@ Cascade::clone() const
 }
 
 void 
-Cascade::addControls()
+Cascade::localUpdate()
 {
-  addDefaultControls();
-}
-
-
-void 
-Cascade::update()
-{
-  if (marsystemsSize_ != 0) {
+  if (marsystemsSize_ != 0) 
+	{
     marsystems_[0]->update();
     
     setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
@@ -103,27 +89,32 @@ Cascade::update()
     setctrl("mrs_real/osrate", marsystems_[0]->getctrl("mrs_real/osrate"));
     
     // update buffers between components
-    
-    if ((mrs_natural)slices_.size() < marsystemsSize_) {
+    if ((mrs_natural)slices_.size() < marsystemsSize_) 
+		{
       slices_.resize(marsystemsSize_, NULL);
     }
     
-    for (mrs_natural i = 0; i < marsystemsSize_; i++) {
-      if (slices_[i] != NULL) {
-	if ((slices_[i])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural() || (slices_[i])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural()) {
-	  delete slices_[i];
-	  slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural(), marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural());
-	}
+    for (mrs_natural i = 0; i < marsystemsSize_; i++) 
+		{
+      if (slices_[i] != NULL) 
+			{
+				if ((slices_[i])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural() || 
+						(slices_[i])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural()) 
+				{
+					delete slices_[i];
+					slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural(), marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural());
+				}
       }
-      else {
-	slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural(), marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural());
+      else 
+			{
+				slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural(), marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural());
       }
+
       (slices_[i])->setval(0.0);
     }
-    defaultUpdate();
+		//defaultUpdate();
   }
 }
-
       
 void 
 Cascade::process(realvec& in, realvec& out)
@@ -133,25 +124,32 @@ Cascade::process(realvec& in, realvec& out)
   mrs_natural outIndex = 0;
   mrs_natural localIndex = 0;
   
-  if (marsystemsSize_ == 1) {
+  if (marsystemsSize_ == 1) 
+	{
     marsystems_[0]->process(in, out);
   }
-  else if (marsystemsSize_ > 1) {
+  else if (marsystemsSize_ > 1) 
+	{
     marsystems_[0]->process(in, *(slices_[0]));
     localIndex = marsystems_[0]->getctrl("mrs_natural/onObservations").toNatural();
-    for (o = 0; o < localIndex; o++) {
-      for (t = 0; t < onSamples_; t++) {
-	out(outIndex + o,t) = (*(slices_[0]))(o,t);
+    for (o = 0; o < localIndex; o++) 
+		{
+      for (t = 0; t < onSamples_; t++) 
+			{
+				out(outIndex + o,t) = (*(slices_[0]))(o,t);
       }
     }
     outIndex += localIndex;
-    for (mrs_natural i = 1; i < marsystemsSize_; i++) {
+    for (mrs_natural i = 1; i < marsystemsSize_; i++) 
+		{
       marsystems_[i]->process(*(slices_[i-1]), *(slices_[i]));
       localIndex = marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural();
-      for (o = 0; o < localIndex; o++) {
-	for (t = 0; t < onSamples_; t++) {
-	  out(outIndex + o,t) = (*(slices_[i]))(o,t);
-	}
+      for (o = 0; o < localIndex; o++) 
+			{
+				for (t = 0; t < onSamples_; t++) 
+				{
+					out(outIndex + o,t) = (*(slices_[i]))(o,t);
+				}
       }
       outIndex += localIndex;
     }

@@ -66,8 +66,7 @@ class NetworkSocket: public MarSystem
 	
  public:
  
-  //! default constructor, used by distributed binaries
-  NetworkSocket();
+  NetworkSocket(std::string type, std::string name);
   
   //! class constructor that creatse a socket server listening on that port
   NetworkSocket( int port );
@@ -77,6 +76,8 @@ class NetworkSocket: public MarSystem
   
   //! destructor
   virtual ~NetworkSocket();
+
+  MarSystem* clone() const;
   
   //! Close the socket with the given descriptor.
   static void close( int socket );
@@ -131,11 +132,8 @@ protected:
   int recvUDP ( realvec& out ) ;
   
   //! stub function so this object can be instantiated
-  void process( realvec& in, realvec& out );
+  void process( realvec& in, realvec& out ); //[!]
   
-  //! stub function so this object can be instantiated
-  void addControls();
- 
   //! ensures we have a valid server when recvControls or process is called
   virtual void refresh(){}
   

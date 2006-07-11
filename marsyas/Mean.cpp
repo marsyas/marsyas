@@ -27,16 +27,10 @@
 using namespace std;
 using namespace Marsyas;
 
-Mean::Mean():MarSystem()
+Mean::Mean(string name):MarSystem("Mean",name)
 {
-  type_ = "Mean";
-}
-
-Mean::Mean(string name)
-{
-  type_ = "Mean";
-  name_ = name;
-  addControls();
+  //type_ = "Mean";
+  //name_ = name;
 }
 
 
@@ -51,23 +45,19 @@ Mean::clone() const
   return new Mean(*this);
 }
 
-void 
-Mean::addControls()
-{
-  addDefaultControls();
-}
-
-
 void
-Mean::update()
+Mean::localUpdate()
 {
-  MRSDIAG("Mean.cpp - Mean:update");
-  setctrl("mrs_natural/onSamples", (mrs_natural)1);
+  MRSDIAG("Mean.cpp - Mean:localUpdate");
+  
+	setctrl("mrs_natural/onSamples", (mrs_natural)1);
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations").toNatural());
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal());
 
   obsrow_.create(getctrl("mrs_natural/inSamples").toNatural());
-  defaultUpdate();
+  
+	//defaultUpdate(); [!]
+	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
 
   ostringstream oss;
   string inObsNames = getctrl("mrs_string/inObsNames").toString();
@@ -81,9 +71,6 @@ Mean::update()
       oss << "Mean" << "_" << inObsName << ",";
     }
   setctrl("mrs_string/onObsNames", oss.str());
-
-
-
 }
 
 void 

@@ -52,14 +52,15 @@ as a prototype template for building more complicated MarSystems.
 using namespace std;
 using namespace Marsyas;
 
-CompExp::CompExp(string name)
+CompExp::CompExp(string name):MarSystem("CompExp",name)
 {
-  type_ = "CompExp";
-  name_ = name;
+  //type_ = "CompExp";
+  //name_ = name;
+
   xdprev_ = 0.0;
   alpha_ = 0.0;
-  addControls();
-  
+
+	addControls();
 }
 
 
@@ -77,24 +78,25 @@ CompExp::clone() const
 void 
 CompExp::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_real/thresh", 1.0);
   addctrl("mrs_real/at", 0.0001);
   addctrl("mrs_real/rt", 0.130);
   addctrl("mrs_real/slope", 1.0);
 }
 
-
 void
-CompExp::update()
+CompExp::localUpdate()
 {
-  MRSDIAG("CompExp.cpp - CompExp:update");
+  MRSDIAG("CompExp.cpp - CompExp:localUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  defaultUpdate();
-  xd_.create(inSamples_);
+  
+	//defaultUpdate(); [!]
+	inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
+ 
+	xd_.create(inSamples_);
   gains_.create(inSamples_);
 }
 

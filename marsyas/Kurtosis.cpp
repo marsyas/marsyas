@@ -31,11 +31,10 @@ using namespace std;
 using namespace Marsyas;
 
 
-Kurtosis::Kurtosis(string name)
+Kurtosis::Kurtosis(string name):MarSystem("Kurtosis",name)
 {
-  type_ = "Kurtosis";
-  name_ = name;
-  addControls();
+  //type_ = "Kurtosis";
+  //name_ = name;
 }
 
 
@@ -50,25 +49,20 @@ Kurtosis::clone() const
   return new Kurtosis(*this);
 }
 
-void 
-Kurtosis::addControls()
-{
-  addDefaultControls();
-}
-
-
 void
-Kurtosis::update()
+Kurtosis::localUpdate()
 {
-  MRSDIAG("Kurtosis.cpp - Kurtosis:update");
+  MRSDIAG("Kurtosis.cpp - Kurtosis:localUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   setctrl("mrs_string/onObsNames", "Kurtosis,");
 
-  defaultUpdate();
-  obsrow_.create(inObservations_);
+  //defaultUpdate(); [!]
+	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+
+	obsrow_.create(inObservations_);
 }
 
 

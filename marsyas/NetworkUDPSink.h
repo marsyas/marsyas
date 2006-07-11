@@ -40,12 +40,10 @@ class NetworkUDPSink: public NetworkSocket
  	
  public:
   	
-  NetworkUDPSink( std::string name );
-  NetworkUDPSink();
-  virtual ~NetworkUDPSink();
+  NetworkUDPSink(std::string name);
+  ~NetworkUDPSink();
   MarSystem* clone() const;  
 	  
-  void update();
   void process( realvec& in, realvec& out );
   void refresh();
 };

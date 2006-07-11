@@ -21,18 +21,15 @@
 using namespace std;
 using namespace Marsyas;
 	
-NoiseSource::NoiseSource(string name)
+NoiseSource::NoiseSource(string name):MarSystem("NoiseSource",name)
 {
-  type_ = "NoiseSource";
-  name_ = name;
-  addControls();
+  //type_ = "NoiseSource";
+  //name_ = name;
 }
-
 
 NoiseSource::~NoiseSource()
 {
 }
-
 
 MarSystem* 
 NoiseSource::clone() const 
@@ -40,23 +37,13 @@ NoiseSource::clone() const
   return new NoiseSource(*this);
 }
 
-
-void 
-NoiseSource::addControls()
-{
-  addDefaultControls();
-}
-
-
-
-
 void
-NoiseSource::update()
+NoiseSource::localUpdate()
 {
-
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+//   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+//   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+//   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+	MarSystem::localUpdate();
 
   wavetableSize_ = 8*8192;  // 8192
   wavetable_.create((mrs_natural)wavetableSize_);
@@ -66,11 +53,7 @@ NoiseSource::update()
 	// Random Generator
     wavetable_(t) = (mrs_real)(2.0 * rand() / (RAND_MAX + 1.0) );
     index_ = 0;
-  defaultUpdate();
 }
-
-
-
 
 void 
 NoiseSource::process(realvec &in, realvec &out)

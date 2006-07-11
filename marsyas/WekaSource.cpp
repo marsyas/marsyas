@@ -11,29 +11,15 @@
 using namespace std;
 using namespace Marsyas;
 
-WekaSource::WekaSource()
+WekaSource::WekaSource(string name):MarSystem("WekaSource",name)
 {
-  type_ = "WekaSource";
-  name_ = "";
+  //type_ = "WekaSource";
+  //name_ = name;
   
   mis_ = new ifstream;
-  
-  addControls();
+
+	addControls();
 }
-
-
-
-WekaSource::WekaSource(string name)
-{
-  type_ = "WekaSource";
-  name_ = name;
-  
-  mis_ = new ifstream;
-  
-  addControls();
-}
-
-
 
 WekaSource::~WekaSource()
 {
@@ -42,31 +28,23 @@ WekaSource::~WekaSource()
   delete mis_;
 }
 
-
-
-WekaSource::WekaSource(const WekaSource& a)
+WekaSource::WekaSource(const WekaSource& a):MarSystem(a)
 {
-  type_ = a.type_;
-  name_ = a.name_;
-  ncontrols_ = a.ncontrols_; 		
-  
-  obsToExtract_ = a.obsToExtract_;	// String specifying the attributes to be extracted from a Weka file
+// 	type_ = a.type_;
+// 	name_ = a.name_;
+// 	ncontrols_ = a.ncontrols_; 		
+// 	inSamples_ = a.inSamples_;
+// 	inObservations_ = a.inObservations_;
+// 	onSamples_ = a.onSamples_;
+// 	onObservations_ = a.onObservations_;
+// 	dbg_ = a.dbg_;
+// 	mute_ = a.mute_;
+
+	obsToExtract_ = a.obsToExtract_;	// String specifying the attributes to be extracted from a Weka file
   labelNames_ = a.labelNames_;		// String specifying all possible output labels indicated in a Weka file
   
-  inSamples_ = a.inSamples_;
-  inObservations_ = a.inObservations_;
-  onSamples_ = a.onSamples_;
-  onObservations_ = a.onObservations_;
-  
-  dbg_ = a.dbg_;
-  mute_ = a.mute_;
-  
   mis_ = new ifstream(); 
-  
-  update();
 }
-
-
 
 MarSystem* 
 WekaSource::clone() const 
@@ -79,8 +57,6 @@ WekaSource::clone() const
 void 
 WekaSource::addControls()
 {
-  addDefaultControls();
-  
   addctrl("mrs_string/filename", "");
   setctrlState("mrs_string/filename", true);
   
@@ -97,12 +73,10 @@ WekaSource::addControls()
   addctrl("mrs_bool/notEmpty", (MarControlValue)false); 	
 }
 
-
-
 void
-WekaSource::update()
+WekaSource::localUpdate()
 {
-  MRSDIAG("WekaSource.cpp - WekaSource:update");
+  MRSDIAG("WekaSource.cpp - WekaSource:localUpdate");
   
   char token_  [2000];
   char token2_ [2000];	
@@ -114,9 +88,7 @@ WekaSource::update()
     inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
     setctrl("mrs_natural/onSamples", inSamples_ );	
   }
-  
-  
-  
+    
   // If 'filename' was updated, or the attributes desired from the Weka file has changed,
   // parse the header portion of the file to get the required attribute names and possible output labels (if any)...
   if( filename_ != getctrl("mrs_string/filename").toString() || obsToExtract_ != getctrl("mrs_string/obsToExtract").toString() ){
@@ -218,8 +190,6 @@ WekaSource::update()
     setctrl("mrs_natural/inObservations", inObservations_ );
     setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations") );
   }
-  
-  defaultUpdate();
 }
 
 

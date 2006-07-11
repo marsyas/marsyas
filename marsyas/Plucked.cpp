@@ -30,10 +30,11 @@
 using namespace std;
 using namespace Marsyas;
 
-Plucked::Plucked(string name)
+Plucked::Plucked(string name):MarSystem("Plucked",name)
 {
-  type_ = "Plucked";
-  name_ = name; 
+  //type_ = "Plucked";
+  //name_ = name;
+
   pointer1_ = 0;
   pointer2_ = 0;
   pointer3_ = 0;
@@ -42,9 +43,8 @@ Plucked::Plucked(string name)
   noteon_ = 0.0;
   delaylineSize_ = 0;
   gain_ = NULL;
-  
-  addControls();
-  
+
+	addControls();
 }
 
 Plucked::~Plucked()
@@ -61,7 +61,6 @@ Plucked::clone() const
 void 
 Plucked::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_real/frequency", 100.0);
   addctrl("mrs_real/pluckpos", 0.5);
   addctrl("mrs_real/nton", 0.5);
@@ -72,35 +71,30 @@ Plucked::addControls()
   setctrlState("mrs_real/loss", true);
 }
 
-
 void
-Plucked::update()
+Plucked::localUpdate()
 {
-  MRSDIAG("Plucked.cpp - Plucked:update");
+  MRSDIAG("Plucked.cpp - Plucked:localuUpdate");
   
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-
+//   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+//   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+//   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+	MarSystem::localUpdate();
 
   gain_ = new Gain("pluckedGain");
   gain_->updctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
   gain_->updctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
   gain_->updctrl("mrs_real/israte", getctrl("mrs_real/israte"));
   gain_->updctrl("mrs_real/gain", 2.0);
-  
-  
+   
   gout_.create(gain_->getctrl("mrs_natural/inObservations").toNatural(), 
 	       gain_->getctrl("mrs_natural/inSamples").toNatural());
-  
-  
-  
+   
   mrs_real freq = getctrl("mrs_real/frequency").toReal();
   mrs_real pos = getctrl("mrs_real/pluckpos").toReal();
   noteon_ = getctrl("mrs_real/nton").toReal();
 
   loss_ = getctrl("mrs_real/loss").toReal();  
-
   
   s_ = getctrl("mrs_real/stretch").toReal();
 
@@ -115,40 +109,33 @@ Plucked::update()
     pickDelayLine_.create((mrs_natural)delaylineSize_);
     
     for (t = 0; t < delaylineSize_; t++)
-      {
-	noise_(t) = (mrs_real)(rand() / (RAND_MAX + 1.0) -0.5);
-      }
-    
+    {
+			noise_(t) = (mrs_real)(rand() / (RAND_MAX + 1.0) -0.5);
+    }
   }
   
   if (noteon_ > 0)
-    {		
-      
-      a_ = 0;
-      d_ = 2*22050/freq;
-      N_ = (mrs_natural)floor(d_);
-      g_=-(-1+d_)/(-d_-1);//for all pass implementation 
-      picklength_= (mrs_natural)floor(N_*pos);//for inverse comb implementation
-      
-      
-      for (t = 0; t < N_; t++)
-	{
-	  pickDelayLine_(0)=noise_(t);
-	  delayline1_(t) = noise_(t)+ (mrs_real)0.1 * pickDelayLine_(picklength_-1);
-	  
-	  
-	  //shift the pick delayline to the right 1 cell
-	  for(p=0; p<=picklength_-2; p++)
-	    pickDelayLine_(picklength_-1-p) = pickDelayLine_(picklength_-1-p-1);
-	  
-	  
-	}
-      wp_ = 1;
-      wpp_ = 0;
-      rp_ = N_-1;
-      
-    }	
-  defaultUpdate();
+  {		
+    a_ = 0;
+    d_ = 2*22050/freq;
+    N_ = (mrs_natural)floor(d_);
+    g_=-(-1+d_)/(-d_-1);//for all pass implementation 
+    picklength_= (mrs_natural)floor(N_*pos);//for inverse comb implementation
+    
+    for (t = 0; t < N_; t++)
+		{
+			pickDelayLine_(0)=noise_(t);
+			delayline1_(t) = noise_(t)+ (mrs_real)0.1 * pickDelayLine_(picklength_-1);
+		  
+		  
+			//shift the pick delayline to the right 1 cell
+			for(p=0; p<=picklength_-2; p++)
+				pickDelayLine_(picklength_-1-p) = pickDelayLine_(picklength_-1-p-1);
+		}
+    wp_ = 1;
+    wpp_ = 0;
+    rp_ = N_-1;
+  }
 }
 
 

@@ -34,17 +34,16 @@ using namespace Marsyas;
 
 
 /**
- * Constructor used by all Marsystems of type NetworkSocket
- */  
-NetworkSocket::NetworkSocket() : s_sock(-1), c_sock (-1), client_c(-1),
-						client_d(-1)  {
- 
- type_ = "NetworkSocket";
- 
+* Constructor used by all Marsystems of type NetworkSocket
+*/  
+NetworkSocket::NetworkSocket(string type, string name) : MarSystem(type,name), s_sock(-1), c_sock (-1), client_c(-1),
+client_d(-1)
+{
+  
 #ifdef WIN32 
   WSADATA wsaData;
   WORD wVersionRequested = MAKEWORD(1,1);
-
+  
   WSAStartup(wVersionRequested, &wsaData);
   MRSERR("Incompatible Windows socket library version!");
 #endif
@@ -53,11 +52,11 @@ NetworkSocket::NetworkSocket() : s_sock(-1), c_sock (-1), client_c(-1),
 /**
  * Constructor: sets up a basic server listening on port
  */
-NetworkSocket::NetworkSocket( int port ) : s_sock(-1), c_sock(-1), client_c(-1),
-							client_d(-1)  {
-
-  type_ = "NetworkSocket";
-
+NetworkSocket::NetworkSocket( int port ) : MarSystem("NetworkSocket", "NetworSocketPrototype"), s_sock(-1), c_sock(-1), client_c(-1),
+							client_d(-1)
+	
+{
+  
 #ifdef WIN32
   WSADATA wsaData;
   WORD wVersionRequested = MAKEWORD(1,1);
@@ -76,10 +75,9 @@ NetworkSocket::NetworkSocket( int port ) : s_sock(-1), c_sock(-1), client_c(-1),
 /**
  * Constructor: connects a client to a server on port
  */
-NetworkSocket::NetworkSocket(int port, const string& hostname ) : s_sock(-1), 
-						c_sock(-1), client_c(-1), client_d(-1)  {
-
-  type_ = "NetworkSocket";
+NetworkSocket::NetworkSocket(int port, const string& hostname ) : MarSystem("NetworkSocket", "NetworkSocketPrototype"), s_sock(-1), 
+						c_sock(-1), client_c(-1), client_d(-1)
+{
 
 #ifdef WIN32
   WSADATA wsaData;
@@ -91,7 +89,7 @@ NetworkSocket::NetworkSocket(int port, const string& hostname ) : s_sock(-1),
     exit(1);
   }
 #endif
-
+  
   createSocket();
   setupSink( hostname, port );
 }
@@ -130,6 +128,14 @@ NetworkSocket::~NetworkSocket() {
 
 
 
+MarSystem* 
+NetworkSocket::clone() const 
+{
+   return new NetworkSocket(*this);
+}
+
+
+
 /**
  * Function: create
  * Description: creates a socket based on type_ for controls and data
@@ -143,35 +149,34 @@ bool NetworkSocket::createSocket() {
     if ( valid( c_sock ) ) {
     	close( c_sock );
     }
-	
-	if ( type_ == "NetworkUDPSource" || type_ == "NetworkUDPSink" ) {
-    		s_sock = socket( AF_INET, SOCK_DGRAM, 0 );
-		c_sock = socket( AF_INET, SOCK_DGRAM, 0 );
-	} else if ( type_ == "NetworkTCPSource" || type_ == "NetworkTCPSink" ) {
-		s_sock = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
-		c_sock = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
-	} else if ( type_ == "NetworkSocket" ) {
-		s_sock = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
-		return ( valid( s_sock ) ); // used by Messager
-	}
-  
-	// check for valid socket descriptor...
-	if ( !valid( s_sock ) || !valid( c_sock ) ) {
-	  MRSERR("Invalid  socket descriptor.");
-	  return false;
-	}
-
+    if ( type_ == "NetworkUDPSource" || type_ == "NetworkUDPSink" ) {
+      s_sock = socket( AF_INET, SOCK_DGRAM, 0 );
+      c_sock = socket( AF_INET, SOCK_DGRAM, 0 );
+    } else if ( type_ == "NetworkTCPSource" || type_ == "NetworkTCPSink" ) {
+      s_sock = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
+      c_sock = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
+    } else if ( type_ == "NetworkSocket" ) {
+      s_sock = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
+      return ( valid( s_sock ) ); // used by Messager
+    }
+    
+    // check for valid socket descriptor...
+    if ( !valid( s_sock ) || !valid( c_sock ) ) {
+      MRSERR("Invalid  socket descriptor.");
+      return false;
+    }
+    
   	// reuse the port if its in time-wait state...
-  	int flag = 1;
-  	if ( setsockopt( s_sock, SOL_SOCKET, SO_REUSEADDR, ( const char* ) &flag, 
-		sizeof ( flag ) ) == -1 ) {
-    	return false;
-  	}
-  	if ( setsockopt( c_sock, SOL_SOCKET, SO_REUSEADDR, ( const char* ) &flag, 
-		sizeof ( flag ) ) == -1 ) {
-    	return false;
-  	}
-  	return true;
+    int flag = 1;
+    if ( setsockopt( s_sock, SOL_SOCKET, SO_REUSEADDR, ( const char* ) &flag, 
+		     sizeof ( flag ) ) == -1 ) {
+      return false;
+    }
+    if ( setsockopt( c_sock, SOL_SOCKET, SO_REUSEADDR, ( const char* ) &flag, 
+		     sizeof ( flag ) ) == -1 ) {
+      return false;
+    }
+    return true;
 }
 
 
@@ -187,12 +192,12 @@ bool NetworkSocket::setupSource ( mrs_natural dataPort, mrs_natural controlsPort
 	    return false;
 	  }
   } else if ( type_ == "NetworkSource" ) {
-	  if ( !valid(s_sock) ) {
-	    MRSERR("Not a valid socket descriptor.");
-		return false;
-	  }
+    if ( !valid(s_sock) ) {
+      MRSERR("Not a valid socket descriptor.");
+      return false;
+    }
   }
-    
+  
   // address structure for datas
   m_addr.sin_family = AF_INET;
   m_addr.sin_addr.s_addr = htonl( INADDR_ANY );
@@ -217,7 +222,7 @@ bool NetworkSocket::setupSource ( mrs_natural dataPort, mrs_natural controlsPort
   
   // if its a UDP socket, we are done
   if (type_ == "NetworkUDPSource")
-  	return true;
+    return true;
   
   // listen for data port connection then data
   if ( ::listen ( s_sock, MAXCONNECT ) == -1 ) {
@@ -265,8 +270,9 @@ bool NetworkSocket::setupSink( const string& host, mrs_natural dataPort, mrs_nat
 
 
   // if its a UDP socket, we are done
-  if ( type_ == "NetworkUDPSink" ) 
+  /* if ( type_ == "NetworkUDPSink" ) 
   	return true;
+	*/
   
   // connect on the data port first
   if ( ::connect ( s_sock, ( sockaddr * ) &m_addr, sizeof ( m_addr ) ) < 0 ) {
@@ -376,26 +382,25 @@ int NetworkSocket::recvUDP ( realvec& out )  {
     
     
     mrs_real* buffer = new mrs_real[(inSamples*inObservations)+3];
-	  	
     int cliLen = sizeof(cliAddr);
 #ifndef CYGWIN
     status = ::recvfrom(s_sock, buffer, sizeof(mrs_real) * 
 			      ((inSamples*inObservations)+3), MSG_WAITALL,
 			      (struct sockaddr *) &cliAddr, (socklen_t *)&cliLen);
-      
 #else	  	
     status = ::recvfrom(s_sock, buffer, sizeof(mrs_real) * 
-			      ((inSamples*inObservations)+3), MSG_NOSIGNAL,
-			      (struct sockaddr *) &cliAddr, (socklen_t *)&cliLen);
+			((inSamples*inObservations)+3), MSG_NOSIGNAL,
+			(struct sockaddr *) &cliAddr, (socklen_t *)&cliLen);
+    
 #endif
 
 	if ( status <= 0 ) {
 	  MRSERR("Could not receive UDP data...");
 		return 0;
 	} else {
-		updctrl("mrs_natural/inSamples", (mrs_natural) buffer[0]);
-		updctrl("mrs_natural/inObservations",(mrs_natural) buffer[1]);
-		updctrl("mrs_real/israte", buffer[2]);
+	  updctrl("mrs_natural/inSamples", (mrs_natural) buffer[0]);
+	  updctrl("mrs_natural/inObservations",(mrs_natural) buffer[1]);
+	  updctrl("mrs_real/israte", buffer[2]);
 	}
 	  	
 	// process the data to an output vector...
@@ -404,10 +409,10 @@ int NetworkSocket::recvUDP ( realvec& out )  {
 		
 	int i;
 	for ( i = 0; i < 512; i++ ) {
-		*( data + i ) = buffer[i+3];
+		// *( data + i ) = buffer[i+3];
 	}
 
-	delete [] buffer;
+	// delete [] buffer;
 	return status;
 }
 
@@ -424,9 +429,10 @@ mrs_real* const NetworkSocket::recvControls() {
 
    
     // only TCP MarSystems use this function
-    if ( type_ == "NetworkUDPSource" ) {
+    /* if ( type_ == "NetworkUDPSource" ) {
 	    return 0;
     }
+    */ 
 
     if ( !valid( s_sock ) || !valid( c_sock ) ) {
 	    refresh();
@@ -443,8 +449,8 @@ mrs_real* const NetworkSocket::recvControls() {
     
     if (ctrl_status <= 0) { 
       MRSERR("recvControls: No TCP control data.");
-      	updctrl("mrs_bool/notEmpty", false);
-     	return 0;
+      updctrl("mrs_bool/notEmpty", false);
+      return 0;
     }
 
     if ( controls[0] != 1.0 ) {
@@ -459,11 +465,12 @@ mrs_real* const NetworkSocket::recvControls() {
 	controls[2] = getctrl("mrs_natural/inObservations").toNatural();
 	controls[3] = getctrl("mrs_real/israte").toReal();
       
-    } else {
+    } else 
+      {
 	updctrl("mrs_natural/inSamples",(mrs_natural) controls[1]);
- 	updctrl("mrs_natural/inObservations", (mrs_natural) controls[2]);
-     	updctrl("mrs_real/israte", controls[3]);
-    }
+	updctrl("mrs_natural/inObservations", (mrs_natural) controls[2]);
+	updctrl("mrs_real/israte", controls[3]);
+      }
     return controls;
 }
 
@@ -472,24 +479,25 @@ mrs_real* const NetworkSocket::recvControls() {
  * Function: recvTCP
  * Description: Receive a vector from a peer on a TCP socket connection.
  */
-int NetworkSocket::recvTCP ( realvec& out )  {
-	
-    // create our slice with updated controls
-    mrs_natural inSamples = getctrl("mrs_natural/inSamples").toNatural();
-    mrs_natural inObservations = getctrl("mrs_natural/inObservations").toNatural();
-    
-    out.create(inObservations, inSamples);  
-    mrs_real* data = out.getData();
-
-	
+int NetworkSocket::recvTCP ( realvec& out )  
+{
+  
+  // create our slice with updated controls
+  mrs_natural inSamples = getctrl("mrs_natural/inSamples").toNatural();
+  mrs_natural inObservations = getctrl("mrs_natural/inObservations").toNatural();
+  
+  out.create(inObservations, inSamples);  
+  mrs_real* data = out.getData();
+  
+  
 #ifndef CYGWIN  	
-    return ::recv ( client_d, data, sizeof(mrs_real)*(inObservations*inSamples), 
-		      MSG_WAITALL );  															
+  return ::recv ( client_d, data, sizeof(mrs_real)*(inObservations*inSamples), 
+		   		      MSG_WAITALL );  															
 #else    
-    return ::recv ( client_d, data, sizeof(mrs_real)*(inObservations*inSamples), 
-		      MSG_NOSIGNAL);  															
+  return ::recv ( client_d, data, sizeof(mrs_real)*(inObservations*inSamples), 
+		  MSG_NOSIGNAL);  															
 #endif
-
+  
 }
 
 
@@ -523,44 +531,48 @@ int NetworkSocket :: accept( void )
 {
 	
   // make sure its a TCP server
-  if ( ! ( type_ == "NetworkSocket" || type_ == "NetworkTCPSource" ) ) {
-	  return -1;
-  }
+  if ( ! ( type_ == "NetworkSocket" || type_ == "NetworkTCPSource" ) ) 
+    {
+      return -1;
+    }
   
-	 
+  
   int cliLen = sizeof( cliAddr );
   client_d = ::accept( s_sock, (struct sockaddr *) &cliAddr, (socklen_t *) &cliLen);
-	   
+  
   if( client_d < 0 ) {
-  	MRSERR("NetworkSocket::accept(): Could not accept connection");
-  	return -1;
-  } else {
-	
-	// if its Messager, we're done.
-	if ( type_ == "NetworkSocket" ) 
-		return client_d;
-	  
-  	cout << "Client connected on data port: " << 
-		getctrl("mrs_natural/dataPort").toNatural() << endl;
-	
-
-	// if we're a MarSystem, accept a connection for controls also
-	if ( type_ == "NetworkTCPSource" ) {
-  			
-		int cliLen = sizeof( cliCont );
-  		client_c = ::accept( c_sock, (struct sockaddr *) &cliCont, (socklen_t *) &cliLen);
-  		
-  		if ( client_c < 0) {
-		  MRSERR("NetworkSocket::accept(): Cannot accept connection");
-  			return -1;
-  		}
-			
-		cout << "Client connected on controls port: " << 
-			getctrl("mrs_natural/controlsPort").toNatural() << endl;
-  		
-  	}
+    MRSERR("NetworkSocket::accept(): Could not accept connection");
+    return -1;
   } 
-
+  else 
+    {
+      
+      // if its Messager, we're done.
+      if ( type_ == "NetworkSocket" ) 
+	return client_d;
+      
+      cout << "Client connected on data port: " << 
+	getctrl("mrs_natural/dataPort").toNatural() << endl;
+      
+      
+      // if we're a MarSystem, accept a connection for controls also
+      if ( type_ == "NetworkTCPSource" ) 
+	{
+	  
+	  int cliLen = sizeof( cliCont );
+	  client_c = ::accept( c_sock, (struct sockaddr *) &cliCont, (socklen_t *) &cliLen);
+	  
+	  if ( client_c < 0) {
+	    MRSERR("NetworkSocket::accept(): Cannot accept connection");
+	    return -1;
+	  }
+	  
+	  cout << "Client connected on controls port: " << 
+	    getctrl("mrs_natural/controlsPort").toNatural() << endl;
+	  
+	}
+    } 
+  
   return client_d;
 }
 
@@ -654,10 +666,6 @@ mrs_real NetworkSocket::swap ( mrs_real argument ) {
 	s2.x[3] = s1.x[0];
 	return s2.num;
 }
-
-
-//! stub function so we can use an object of this type
-void NetworkSocket::addControls() {}
 
 //! stub function so we can use an object of this type
 void NetworkSocket::process( realvec& in, realvec& out ){}

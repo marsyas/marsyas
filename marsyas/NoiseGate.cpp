@@ -63,16 +63,17 @@ as a prototype template for building more complicated MarSystems.
 using namespace std;
 using namespace Marsyas;
 
-NoiseGate::NoiseGate(string name)
+NoiseGate::NoiseGate(string name):MarSystem("NoiseGate",name)
 {
-  type_ = "NoiseGate";
-  name_ = name;
+  //type_ = "NoiseGate";
+  //name_ = name;
+
   state_ = 1.0;
   xdprev_ = 0.0;
   alpha_ = 0.0;
   gainsprev_ = 1.0;
-  addControls();
-  
+
+	addControls();
 }
 
 
@@ -90,7 +91,6 @@ NoiseGate::clone() const
 void 
 NoiseGate::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_real/thresh", 0.1);
   addctrl("mrs_real/release", 0.5);
   addctrl("mrs_real/rolloff", .130);
@@ -99,17 +99,19 @@ NoiseGate::addControls()
   addctrl("mrs_real/slope", 1.0);
 }
 
-
 void
-NoiseGate::update()
+NoiseGate::localUpdate()
 {
-  MRSDIAG("NoiseGate.cpp - NoiseGate:update");
+  MRSDIAG("NoiseGate.cpp - NoiseGate:localUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  defaultUpdate();
-  xd_.create(inSamples_);
+  
+	//defaultUpdate(); [!]
+	inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
+  
+	xd_.create(inSamples_);
   gains_.create(inSamples_);
 }
 

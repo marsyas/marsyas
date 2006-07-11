@@ -40,12 +40,10 @@ class NetworkUDPSource: public NetworkSocket
  public:
   	
   NetworkUDPSource( std::string name );
-  NetworkUDPSource();
-  virtual ~NetworkUDPSource();
+  ~NetworkUDPSource();
   MarSystem* clone() const;  
   std::string getClientAddr();
 	  
-  void update();
   void process( realvec& in, realvec& out );
   void refresh();
 };

@@ -33,18 +33,12 @@ using namespace Marsyas;
 #define PSD_DB  3
 #define PSD_PD  4 
 
-
-PowerSpectrum::PowerSpectrum():MarSystem()
+PowerSpectrum::PowerSpectrum(string name):MarSystem("PowerSpectrum",name)
 {
-  type_ = "PowerSpectrum";
-}
+  //type_ = "PowerSpectrum";
+  //name_ = name;
 
-
-PowerSpectrum::PowerSpectrum(string name)
-{
-  type_ = "PowerSpectrum";
-  name_ = name;
-  addControls();
+	addControls();
 }
 
 PowerSpectrum::~PowerSpectrum()
@@ -54,7 +48,6 @@ PowerSpectrum::~PowerSpectrum()
 void
 PowerSpectrum::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_string/spectrumType", "power");
   setctrlState("mrs_string/spectrumType", true);
 }
@@ -67,7 +60,7 @@ PowerSpectrum::clone() const
 
 
 void 
-PowerSpectrum::update()
+PowerSpectrum::localUpdate()
 {
   setctrl("mrs_natural/onSamples", (mrs_natural)1);
   // setctrl("mrs_natural/onObservations", (getctrl("mrs_natural/inObservations").toNatural() / 2) + 1);
@@ -86,19 +79,16 @@ PowerSpectrum::update()
   else if (stype_ == "powerdensity")
     ntype_ = PSD_PD;
   
-  
-  
-  defaultUpdate();
+  //defaultUpdate(); [!]
+	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+
   N2_ = inObservations_ / 2;
   ostringstream oss;
   
   for (mrs_natural n=0; n < N2_; n++)
     oss << "mbin_" << n << ",";
   setctrl("mrs_string/onObsNames", oss.str());
-
 }
-
-
 
 void 
 PowerSpectrum::process(realvec& in, realvec& out)

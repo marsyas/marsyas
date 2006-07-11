@@ -29,12 +29,14 @@ Based on the Numerical Recipies wavelet code.
 using namespace std;
 using namespace Marsyas;
 
-WaveletPyramid::WaveletPyramid(string name)
+WaveletPyramid::WaveletPyramid(string name):MarSystem("WaveletPyramid",name)
 {
-  type_ = "WaveletPyramid";
-  name_ = name;
-  waveletStep_ = NULL;
-  addControls();
+  //type_ = "WaveletPyramid";
+  //name_ = name;
+  
+	waveletStep_ = NULL;
+
+	addControls();
 
 }
 
@@ -45,19 +47,19 @@ WaveletPyramid::~WaveletPyramid()
 
 
 // copy constructor 
-WaveletPyramid::WaveletPyramid(const WaveletPyramid& a)
+WaveletPyramid::WaveletPyramid(const WaveletPyramid& a):MarSystem(a)
 {
-  type_ = a.type_;
-  name_ = a.name_;
-  ncontrols_ = a.ncontrols_; 		
-  
-  inSamples_ = a.inSamples_;
-  inObservations_ = a.inObservations_;
-  onSamples_ = a.onSamples_;
-  onObservations_ = a.onObservations_;
-  dbg_ = a.dbg_;
-  mute_ = a.mute_;
-  waveletStep_ = NULL;
+// 	type_ = a.type_;
+// 	name_ = a.name_;
+// 	ncontrols_ = a.ncontrols_; 		
+// 
+// 	inSamples_ = a.inSamples_;
+// 	inObservations_ = a.inObservations_;
+// 	onSamples_ = a.onSamples_;
+// 	onObservations_ = a.onObservations_;
+// 	dbg_ = a.dbg_;
+// 	mute_ = a.mute_;
+	waveletStep_ = NULL;
 }
 
 
@@ -71,7 +73,6 @@ WaveletPyramid::clone() const
 void 
 WaveletPyramid::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_bool/forward", true);
 
   delete waveletStep_;
@@ -79,10 +80,10 @@ WaveletPyramid::addControls()
 }
 
 void
-WaveletPyramid::update()
+WaveletPyramid::localUpdate()
 {
   
-  MRSDIAG("WaveletPyramid.cpp - WaveletPyramid:update");
+  MRSDIAG("WaveletPyramid.cpp - WaveletPyramid:localUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
@@ -92,9 +93,6 @@ WaveletPyramid::update()
   waveletStep_->updctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
   waveletStep_->updctrl("mrs_real/israte", getctrl("mrs_real/israte"));
 		       
-
-  defaultUpdate();
-  
 }
 
 

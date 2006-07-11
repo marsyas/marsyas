@@ -28,14 +28,14 @@
 using namespace std;
 using namespace Marsyas;
 
-AudioSink::AudioSink(string name)
+AudioSink::AudioSink(string name):MarSystem("AudioSink", name)
 {
-  type_ = "AudioSink";
-  name_ = name;
-  counter_ = 0;
+  //type_ = "AudioSink";
+  //name_ = name;
+  
+	counter_ = 0;
   bufferSize_ = 0;
 
-  addControls();
   ri_ = 0;
   start_ = 0;
   end_ = 0;
@@ -45,6 +45,8 @@ AudioSink::AudioSink(string name)
   isInitialized_ = 0;
   data_ = NULL;
   audio_ = NULL;
+
+	addControls();
 }
 
 AudioSink::~AudioSink()
@@ -62,7 +64,6 @@ AudioSink::clone() const
 void 
 AudioSink::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/nChannels",1);
   setctrlState("mrs_natural/nChannels", true);
   addctrl("mrs_bool/init", false);
@@ -104,22 +105,22 @@ AudioSink::init()
 
 
 void 
-AudioSink::update()
+AudioSink::localUpdate()
 {
-  MRSDIAG("AudioSink::update");
+  MRSDIAG("AudioSink::localUpdate");
   
   rtSrate_ = (mrs_natural)getctrl("mrs_real/israte").toReal();
   srate_ = rtSrate_;
   
   bufferSize_ = (mrs_natural)getctrl("mrs_natural/bufferSize").toNatural();
 
-#ifdef __OS_MACOSX__
+	#ifdef __OS_MACOSX__
   if (rtSrate_ == 22050) 
     {
       rtSrate_ = 44100;
       bufferSize_ = 2 * bufferSize_;
     }
-#endif	
+	#endif	
 
   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));  
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
@@ -127,7 +128,6 @@ AudioSink::update()
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
   nChannels_ = getctrl("mrs_natural/nChannels").toNatural();
-
 
   if (getctrl("mrs_real/israte").toReal() != sampleRate_)
     {
@@ -137,7 +137,8 @@ AudioSink::update()
  
   mute_ = getctrl("mrs_bool/mute").toBool();
   
-  defaultUpdate();
+  //defaultUpdate();
+	inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
    
   if (inSamples_ < bufferSize_) 
     reservoirSize_ = 2 * bufferSize_;
@@ -169,43 +170,52 @@ AudioSink::stop()
   }
 }
 
+void
+AudioSink::localActivate(bool state)
+{
+	if(state)
+		start();
+	else
+		stop();
+}
+
 void 
 AudioSink::process(realvec& in, realvec& out)
 {
-  if (!isInitialized_)
-    {
-      init();
-      isInitialized_ = true;
-    }
-  
   checkFlow(in,out);
+	
+	if (!isInitialized_)
+  {
+    init();
+    isInitialized_ = true;
+  }
   
   // copy to output and into reservoir
-
   for (t=0; t < inSamples_; t++)
-    {
-      
-      reservoir_(end_) = in(0,t);
-      end_ = (end_ + 1) % reservoirSize_;
-      
-      for (o=0; o < inObservations_; o++)
-	out(o,t) = in(o,t);
-    }
+  {
+    reservoir_(end_) = in(0,t);
+    end_ = (end_ + 1) % reservoirSize_;
+    
+    for (o=0; o < inObservations_; o++)
+			out(o,t) = in(o,t);
+  }
   
-  if (mute_) return;
+  //check MUTE
+	if (mute_) return;
   
-  if ( stopped_ )
-    {
-      start();
-    }
+
+  if ( stopped_ )//[?]
+  {
+    start();
+  }
  
   rsize_ = bufferSize_;
-#ifdef __OS_MACOSX__ 
+	#ifdef __OS_MACOSX__ 
   if (srate_ == 22050)
     rsize_ = bufferSize_/2;		// upsample to 44100
   else 
     rsize_ = bufferSize_;
-#endif 
+	#endif 
   
   if (end_ >= start_) 
     diff_ = end_ - start_;
@@ -213,45 +223,45 @@ AudioSink::process(realvec& in, realvec& out)
     diff_ = reservoirSize_ - (start_ - end_);
 
   while (diff_ >= rsize_)  
-    {
-      
-      for (t=0; t < rsize_; t++) 
-	{
-#ifndef __OS_MACOSX__
-	  data_[2*t] = reservoir_((start_+t)%reservoirSize_);
-	  data_[2*t+1] = reservoir_((start_+t)%reservoirSize_);
-#else
-	  if (srate_ == 22050)
-	    {
-	      data_[4*t] = reservoir_((start_+t) % reservoirSize_);
-	      data_[4*t+1] = reservoir_((start_+t)%reservoirSize_);
-	      data_[4*t+2] = reservoir_((start_+t) % reservoirSize_);
-	      data_[4*t+3] = reservoir_((start_+t) % reservoirSize_);
-	    }
-	  else
-	    {
-	      data_[2*t] = reservoir_((start_+t)%reservoirSize_);
-	      data_[2*t+1] = reservoir_((start_+t)%reservoirSize_);
-	    }
-	  
-#endif 
-	}
- 
-  try {
-	audio_->tickStream();
-      }
-      catch (RtError &error) 
+  {
+    for (t=0; t < rsize_; t++) 
 		{
-		  error.printMessage();
+			#ifndef __OS_MACOSX__
+			data_[2*t] = reservoir_((start_+t)%reservoirSize_);
+			data_[2*t+1] = reservoir_((start_+t)%reservoirSize_);
+			#else
+			if (srate_ == 22050)
+				{
+					data_[4*t] = reservoir_((start_+t) % reservoirSize_);
+					data_[4*t+1] = reservoir_((start_+t)%reservoirSize_);
+					data_[4*t+2] = reservoir_((start_+t) % reservoirSize_);
+					data_[4*t+3] = reservoir_((start_+t) % reservoirSize_);
+				}
+			else
+				{
+					data_[2*t] = reservoir_((start_+t)%reservoirSize_);
+					data_[2*t+1] = reservoir_((start_+t)%reservoirSize_);
+				}
+		  
+			#endif 
 		}
-    
-      start_ = (start_ + rsize_) % reservoirSize_;
-      
-      if (end_ >= start_) 
-		diff_ = end_ - start_;
-      else 
-		diff_ = reservoirSize_ - (start_ - end_);
+
+		try 
+		{
+			audio_->tickStream();
     }
+    catch (RtError &error) 
+		{
+			error.printMessage();
+		}
+  
+    start_ = (start_ + rsize_) % reservoirSize_;
+    
+    if (end_ >= start_) 
+			diff_ = end_ - start_;
+    else 
+			diff_ = reservoirSize_ - (start_ - end_);
+  }
 }
 
  

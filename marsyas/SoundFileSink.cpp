@@ -34,32 +34,34 @@ using namespace Marsyas;
 #define UnsignedToFloat(u) (((double)((long)(u - 2147483647L - 1))) + 2147483648.0)
 #define FloatToUnsigned(f)      ((unsigned long)(((long)(f - 2147483648.0)) + 2147483647L) + 1)
 	
-SoundFileSink::SoundFileSink(string name)
+SoundFileSink::SoundFileSink(string name):MarSystem("SoundFileSink",name)
 {
-  type_ = "SoundFileSink";
-  name_ = name;
-  sdata_ = NULL;
+  //type_ = "SoundFileSink";
+  //name_ = name;
+  
+	sdata_ = NULL;
   cdata_ = NULL;
   sfp_ = NULL;
   dest_ = NULL;
-  addControls();
+
+	addControls();
 }
 
 
-SoundFileSink::SoundFileSink(const SoundFileSink& a)
+SoundFileSink::SoundFileSink(const SoundFileSink& a):MarSystem(a)
 {
-  type_ = a.type_;
-  name_ = a.name_;
-  ncontrols_ = a.ncontrols_; 		
-  
-  inSamples_ = a.inSamples_;
-  inObservations_ = a.inObservations_;
-  onSamples_ = a.onSamples_;
-  onObservations_ = a.onObservations_;
-  dbg_ = a.dbg_;
-  mute_ = a.mute_;
+// 	type_ = a.type_;
+// 	name_ = a.name_;
+// 	ncontrols_ = a.ncontrols_; 		
+// 
+// 	inSamples_ = a.inSamples_;
+// 	inObservations_ = a.inObservations_;
+// 	onSamples_ = a.onSamples_;
+// 	onObservations_ = a.onObservations_;
+// 	dbg_ = a.dbg_;
+// 	mute_ = a.mute_;
 
-  sdata_ = NULL;
+	sdata_ = NULL;
   cdata_ = NULL;
   sfp_ = NULL;
   dest_ = NULL;
@@ -72,13 +74,6 @@ SoundFileSink::clone() const
   return new SoundFileSink(*this);
 }
 
-
-
-
-
-
-
-
 SoundFileSink::~SoundFileSink()
 {
   delete dest_;
@@ -87,12 +82,10 @@ SoundFileSink::~SoundFileSink()
 void
 SoundFileSink::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_natural/channel", (mrs_natural)0);
   addctrl("mrs_natural/nChannels",(mrs_natural)1);
   addctrl("mrs_string/filename", "defaultfile");
   setctrlState("mrs_string/filename", true);
-
 }
 
 
@@ -102,10 +95,6 @@ SoundFileSink::putHeader()
   string filename = getctrl("mrs_string/filename").toString();
   dest_->putHeader(filename);
 }
-
-
-
-
 
 /*
  * C O N V E R T   F R O M   I E E E   E X T E N D E D
@@ -146,8 +135,6 @@ SoundFileSink::putHeader()
 #ifndef HUGE_VAL
 # define HUGE_VAL HUGE
 #endif /*HUGE_VAL*/
-
-
 
 bool 
 SoundFileSink::checkType()
@@ -203,16 +190,15 @@ SoundFileSink::checkType()
   return true;
 }
 
-
 void 
-SoundFileSink::update()
+SoundFileSink::localUpdate()
 {
   
   if (filename_ != getctrl("mrs_string/filename").toString())
     {
       if (checkType() == true)
 	{
-	  dest_->setctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
+		dest_->setctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
 	  dest_->setctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
 	  dest_->setctrl("mrs_real/israte", getctrl("mrs_real/israte"));
 	  dest_->update();
@@ -241,8 +227,6 @@ SoundFileSink::update()
       
       
     }
-  
-  defaultUpdate();
 }
   
 

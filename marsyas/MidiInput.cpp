@@ -26,12 +26,12 @@
 using namespace std;
 using namespace Marsyas;
 
-MidiInput::MidiInput(string name)
+MidiInput::MidiInput(string name):MarSystem("MidiInput",name)
 {
-  type_ = "MidiInput";
-  name_ = name;
-  midiin = NULL;
-  addControls();
+  //type_ = "MidiInput";
+  //name_ = name;
+  
+	midiin = NULL;
 }
 
 
@@ -47,21 +47,16 @@ MidiInput::clone() const
   return new MidiInput(*this);
 }
 
-void 
-MidiInput::addControls()
-{
-  addDefaultControls();
-}
-
-
 void
-MidiInput::update()
+MidiInput::localUpdate()
 {
-  MRSDIAG("MidiInput.cpp - MidiInput:update");
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
+  MRSDIAG("MidiInput.cpp - MidiInput:localUpdate");
+  
+// 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+//   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+//   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+//   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
+	MarSystem::localUpdate();
 
   try { 
     midiin = new RtMidiIn();
@@ -70,7 +65,6 @@ MidiInput::update()
     error.printMessage();
     return;
   }
-
   
   try { 
     midiin->openPort(0);
@@ -81,9 +75,7 @@ MidiInput::update()
       return;
     } 
   midiin->setCallback(&MidiInput::mycallback, this);
-  midiin->ignoreTypes(false, false, false);
-
-  defaultUpdate();  
+  midiin->ignoreTypes(false, false, false); 
 }
 
 

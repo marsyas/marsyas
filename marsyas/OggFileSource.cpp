@@ -30,11 +30,13 @@ This class reads an ogg file using the vorbis ogg decoder library.
 using namespace std;
 using namespace Marsyas;
 
-OggFileSource::OggFileSource(string name)
+OggFileSource::OggFileSource(string name):AbsSoundFileSource("OggFileSource", name)
 {
-  type_ = "OggFileSource";
-  name_ = name;
-  notEmpty_ = false;
+  //type_ = "OggFileSource";
+  //name_ = name;
+  
+	notEmpty_ = false;
+
   addControls();
 }
 
@@ -43,18 +45,18 @@ OggFileSource::~OggFileSource()
   closeFile();
 }
 
-OggFileSource::OggFileSource(const OggFileSource& a)
+OggFileSource::OggFileSource(const OggFileSource& a):AbsSoundFileSource(a)
 {
-  type_ = a.type_;
-  name_ = a.name_;
-  ncontrols_ = a.ncontrols_;
-
-  inSamples_ = a.inSamples_;
-  inObservations_ = a.inObservations_;
-  onSamples_ = a.onSamples_;
-  onObservations_ = a.onObservations_;
-  dbg_ = a.dbg_;
-  mute_ = a.mute_;
+// 	type_ = a.type_;
+// 	name_ = a.name_;
+// 	ncontrols_ = a.ncontrols_;
+// 
+// 	inSamples_ = a.inSamples_;
+// 	inObservations_ = a.inObservations_;
+// 	onSamples_ = a.onSamples_;
+// 	onObservations_ = a.onObservations_;
+// 	dbg_ = a.dbg_;
+// 	mute_ = a.mute_;
 }
 
 MarSystem*
@@ -66,8 +68,6 @@ OggFileSource::clone() const
 void
 OggFileSource::addControls()
 {
-  addDefaultControls();
-
   // nChannels is one for now
   addctrl("mrs_natural/nChannels",1);
   addctrl("mrs_natural/bitRate", 160000);
@@ -96,7 +96,6 @@ OggFileSource::addControls()
 
   addctrl("mrs_natural/cindex", 0);
   setctrlState("mrs_natural/cindex", true);
-
 
   addctrl("mrs_string/allfilenames", ",");
   addctrl("mrs_natural/numFiles", 1);
@@ -159,9 +158,9 @@ OggFileSource::getHeader(string filename)
  *
  */
 void
-OggFileSource::update()
+OggFileSource::localUpdate()
 {
-  MRSDIAG("OggFileSource::update");
+  MRSDIAG("OggFileSource::localUpdate");
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));

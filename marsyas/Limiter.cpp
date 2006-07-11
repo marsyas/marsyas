@@ -51,13 +51,15 @@ as a prototype template for building more complicated MarSystems.
 using namespace std;
 using namespace Marsyas;
 
-Limiter::Limiter(string name)
+Limiter::Limiter(string name):MarSystem("Limiter",name)
 {
-  type_ = "Limiter";
-  name_ = name;
-  xdprev_ = 0.0;
+  //type_ = "Limiter";
+  //name_ = name;
+  
+	xdprev_ = 0.0;
   alpha_ = 0.0;
-  addControls(); 
+
+	addControls();
 }
 
 
@@ -75,7 +77,6 @@ Limiter::clone() const
 void 
 Limiter::addControls()
 {
-  addDefaultControls();
   addctrl("mrs_real/thresh", 1.0);
   addctrl("mrs_real/at", 0.0001);
   addctrl("mrs_real/rt", 0.130);
@@ -84,14 +85,19 @@ Limiter::addControls()
 
 
 void
-Limiter::update()
+Limiter::localUpdate()
 {
-  MRSDIAG("Limiter.cpp - Limiter:update");
+  MRSDIAG("Limiter.cpp - Limiter:localUpdate");
   
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  defaultUpdate();
+//   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+//   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+//   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+// 	setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
+	MarSystem::localUpdate(); //default localUpdate as defined at parent MarSystem class...
+  
+	//defaultUpdate(); [!]
+	inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
+
   xd_.create(inSamples_);
   gains_.create(inSamples_);
 }

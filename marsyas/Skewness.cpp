@@ -27,11 +27,10 @@
 using namespace std;
 using namespace Marsyas;
 
-Skewness::Skewness(string name)
+Skewness::Skewness(string name):MarSystem("Skewness",name)
 {
-  type_ = "Skewness";
-  name_ = name;
-  addControls();
+  //type_ = "Skewness";
+  //name_ = name;
 }
 
 
@@ -46,23 +45,20 @@ Skewness::clone() const
   return new Skewness(*this);
 }
 
-void 
-Skewness::addControls()
-{
-  addDefaultControls();
-}
-
 
 void
-Skewness::update()
+Skewness::localUpdate()
 {
-  MRSDIAG("Skewness.cpp - Skewness:update");
+  MRSDIAG("Skewness.cpp - Skewness:localUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   setctrl("mrs_string/onObsNames", "Skewness,");
-  defaultUpdate();
+  
+	//defaultUpdate();[!]
+	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+
   obsrow_.create(inObservations_);
 }
 

@@ -30,16 +30,10 @@ vector.
 using namespace std;
 using namespace Marsyas;
 
-StandardDeviation::StandardDeviation():MarSystem()
+StandardDeviation::StandardDeviation(string name):MarSystem("StandardDeviation",name)
 {
-  type_ = "StandardDeviation";
-}
-
-StandardDeviation::StandardDeviation(string name)
-{
-  type_ = "StandardDeviation";
-  name_ = name;
-  addControls();
+  //type_ = "StandardDeviation";
+  //name_ = name;
 }
 
 StandardDeviation::~StandardDeviation()
@@ -52,36 +46,33 @@ StandardDeviation::clone() const
   return new StandardDeviation(*this);
 }
 
-void 
-StandardDeviation::addControls()
-{
-  addDefaultControls();
-}
-
 void
-StandardDeviation::update()
+StandardDeviation::localUpdate()
 {
-  MRSDIAG("StandardDeviation.cpp - StandardDeviation:update");
-  setctrl("mrs_natural/onSamples", (mrs_natural)1);
+  MRSDIAG("StandardDeviation.cpp - StandardDeviation:localUpdate");
+  
+	setctrl("mrs_natural/onSamples", (mrs_natural)1);
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations").toNatural());
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal());
 
   obsrow_.create(getctrl("mrs_natural/inSamples").toNatural());
-  defaultUpdate();
+  
+	//defaultUpdate();
+	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
 
-  ostringstream oss;
+	ostringstream oss;
   string inObsNames = getctrl("mrs_string/inObsNames").toString();
   for (int i = 0; i < inObservations_; i++)
-    {
-      string inObsName;
-      string temp;
-      inObsName = inObsNames.substr(0, inObsNames.find(","));
-      temp = inObsNames.substr(inObsNames.find(",")+1, inObsNames.length());
-      inObsNames = temp;
-      oss << "Std" << "_" << inObsName << ",";
-    }
-  setctrl("mrs_string/onObsNames", oss.str());
-
+  {
+    string inObsName;
+    string temp;
+    inObsName = inObsNames.substr(0, inObsNames.find(","));
+    temp = inObsNames.substr(inObsNames.find(",")+1, inObsNames.length());
+    inObsNames = temp;
+    oss << "Std" << "_" << inObsName << ",";
+  }
+  
+	setctrl("mrs_string/onObsNames", oss.str());
 }
 
 void 
