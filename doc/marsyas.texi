@@ -104,9 +104,9 @@ Architecture
 
 
 MARSYAS (@b{M}usic @b{A}nalysis @b{R}etrieval and @b{S}ynthesis for
-@b{A}udio @b{S}ignals) is a software framework for audio analysis,
-synthesis and retrieval written by George Tzanetakis. Please direct 
-any questions/comments about Marsyas to (gtzan@@cs.uvic.ca)
+@b{A}udio @b{S}ignals) is a free software framework for audio
+analysis, synthesis and retrieval written by George Tzanetakis. Please
+direct any questions/comments about Marsyas to (gtzan@@cs.uvic.ca)
 @cindex Tzanetakis, George
 
 The major theme underlying the design of Marsyas has been to provide an
@@ -208,9 +208,6 @@ programming such as the clear separation of mutable and immutable
 data and the use of composition to build complicated systems have been
 another major source of inspiration.
 
-
-
-
 There is a plethora of programming languages, frameworks and
 environments for the analysis and synthesis of audio signals. The
 processing of audio signals requires extensive numerical calculations
@@ -240,7 +237,6 @@ initial motivation for dataflow ideas was the exploitation of parallel
 hardware and therefore dataflow systems are particularly suited for
 parallel and distributed computation.
 
-
 Despite these advantages, dataflow programming has not managed to
 become part of mainstream programming and replace existing imperative,
 object-oriented and functional languages. Some of the traditional
@@ -249,7 +245,6 @@ expressing complicated control information, the restrictions on using
 assignment and global state information, the difficulty of expressing
 iteration and complicated data structures, and the challenge of
 synchronization.
-
 
 There are two main ways that existing successful dataflow systems
 overcome these limitations. The first is to embed dataflow ideas into
@@ -263,7 +258,6 @@ nature and specific constraints are a good fit to a dataflow
 approach. For example, audio and multimedia processing typically deals
 with fixed-rate calculation of large buffers of numerical data.
 
-
 Computer music has been one of the most successful cases of dataflow
 applications even though the academic dataflow community doesn't seem
 to be particularly aware of this fact. Existing audio processing
@@ -275,9 +269,6 @@ restricted semantics of patching as well as the need to explicitly
 specify connections. Implicit Patching the technique used in
 Marsyas-0.2 is an attempt to overcome these problems while maintaining
 the advantages of dataflow computation. 
-
-
- 
 
 
 
@@ -307,21 +298,18 @@ http://marsyas.sourceforge.net </a>
 @end html
 
 
-@noindent Also the most recent working version of marsyas can be downloaded from: 
+@noindent For the brave the latest possibly unstable copy can be
+obtained from the subversion repository stored at the sourceforge website:
+To check out a working copy do: 
 
+@example 
+>svn co https://svn.sourceforge.net/svnroot/marsyas/trunk marsyas-0.2.8 
+@end example
 
-@ifnothtml
-http://www.cs.uvic.ca/~gtzan/marsyas-0.2.2.tar.gz
-@end ifnothtml
-
-@html 
-<a href=''http://www.cs.uvic.ca/~gtzan/marsyas-0.2.2.tar.gz''>
-http://www.cs.uvic.ca/~gtzan/marsyas-0.2.2.tar.gz </a> 
-@end html
-
-
-
-
+You can replace marsyas-0.2.8 with any directory you want. The 
+version/release (version 0.2 release 8) is independently assigned 
+from subversion revisions and the latest can be found by checking 
+the sourceforge website. 
 
 Installation is the biggest source of grief for first time users of
 Marsyas and the main source of email questions. Significant
@@ -334,14 +322,15 @@ of Marsyas and have frequent updates and support you are strongly
 encouraged to use Linux. 
 
 Marsyas is open source software and is distributed 
-as a tar ball (something like marsyas-0.2.2.tar.gz). 
+as a tar ball (something like marsyas-0.2.8.tar.gz). 
+
 To extract the source file type: 
 @example 
->tar -zxvf marsyas-0.2.2.tar.gz 
+>tar -zxvf marsyas-0.2.8.tar.gz 
 @end example
 
 This will create a subdirectory of the current 
-directory called marsyas-0.2.2 that contains 
+directory called marsyas-0.2.8 that contains 
 all the source files needed for compiling Marsyas. 
 
 There is a lot of work behind the development of Marsyas. Although
@@ -375,37 +364,15 @@ command-line prompt you have on your system.
 > make install                 (as root user)
 @end example
 
-By default Marsyas assumes that the ALSA sound system 
-and corresponding library and headers are installed. 
-Most new Linux distribution are using ALSA. 
-@cindex ALSA Sound System 
-@cindex OSS Sound System
+By default Marsyas assumes that in Linux systems the ALSA sound system
+and corresponding library and headers are installed.  Most new Linux
+distribution are using ALSA.
 
-@noindent If you want to install Marsyas using the older OSS sound system you 
-can do: 
-
-@example 
-> ./configure --enable-oss
-@end example 
-
-
-@noindent A frequent variation (if you don't have root priviledges) 
-is to install Marsyas in your home directory (replace /home/gtzan with 
-the appropriate path for your home directory). 
-This can be accomplished by doing: 
-
-
-@example
-> ./configure --prefix=/home/gtzan 
-> make 
-> make install 
-@end example
 
 In addition there are several configure options that 
 can be used to enable/disable assertions, enable/disable debugging 
 and include optional packages such as support for reading mp3s. 
 @xref{Configure Options}.  
-
 
 
 @node  Mac OSX Installation, Windows (cygwin), Linux Installation, Installation
@@ -426,18 +393,6 @@ using the standard autoconf procedure:
 > make install                         (as root user)
 @end example 
 
-A frequent variation (if you don't have root priviledges) 
-is to install Marsyas in your home directory (replace /home/gtzan with 
-the appropriate path for your home directory). 
-This can be accomplished by doing: 
-
-@example 
-> ./configure --prefix=/home/gtzan 
-> make 
-> make install
-@end example 
-
-
 In addition there are several configure options that 
 can be used to enable/disable assertions, enable/disable debugging 
 and include optional packages such as support for reading mp3s. 
@@ -449,18 +404,9 @@ and include optional packages such as support for reading mp3s.
 
 Installation under Windows using the cygwin environment and gcc is
 similar to Linux. The most recent version of Marsyas 0.2 use RtAudio
-for audio playback under Cygwin. In order to compile RtAudio you 
-will need to have DirectX installed properly in Cygwin. You can download the
-appropriate code from: 
-@ifnothtml http://chuck.cs.princeton.edu 
-@end ifnothtml
-@html <a href=''http://chuck.cs.princeton.edu''>
-http://chuck.cs.princeton.edu</a> 
-@end html
-
-
-under the Windows 
-installation. The standard autoconf installation procedure is used: 
+for audio playback under Cygwin. In order to compile RtAudio you will
+need to have the DirectX SDk installed. The standard autoconf
+installation procedure is used:
 
 @example 
 > ./configure 
@@ -475,19 +421,14 @@ In general, cygwin is not supported as well as Linux and OS X.
 @section Windows (Visual Studio)
 @cindex Windows
 
-Installation under Visual Studio is still under construction 
-and not the full functionality of Marsyas 0.2 is supported. 
-Currently there problems with interfacing marsyas 
-to RtAudio (the audio comes out garbled) so it's better 
-to output to a soundfile. Not all the executables are supported. 
-
-The main distribution contains a subdirectory named
-marsyasVisualStudio that contains the necessary project and solution
-files for compiling Marsyas under Visual Studio.  I have only tested
-this using Visual Studio 7.0 under Windows XP.  Older version of
-Visual Studio might not work. Support of the Windows port is not as
-good as Linux and OS X.
-
+Installation under Visual Studio is still under construction and not
+the full functionality of Marsyas 0.2 is supported.  Not all the
+executables are supported. The main distribution contains two
+subdirectories named marsyasVisualStudio2003, marsyasVisualStudio2005
+that contain the necessary project solution files for compiling
+Marsyas under Visual Studio. I have only tested this using Visual
+Studio 7.0 under Windows XP. Older version of Visual Studio might not
+work. Support of the Windows port is not as good as Linux and OS X.
 
 @node Configure Options, Structure of distribution, Windows (Visual Studio) , Installation
 @section Configure Options
@@ -543,6 +484,18 @@ major development so use at your own risk):
 > make 
 @end example
 
+
+@noindent A frequent variation (if you don't have root priviledges) 
+is to install Marsyas in your home directory (replace /home/gtzan with 
+the appropriate path for your home directory). 
+This can be accomplished by doing: 
+
+
+@example
+> ./configure --prefix=/home/gtzan 
+> make 
+> make install 
+@end example
 
 
 @node Structure of distribution,  , Configure Options, Installation

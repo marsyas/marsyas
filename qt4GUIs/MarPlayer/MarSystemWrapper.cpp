@@ -37,7 +37,6 @@ MarSystemWrapper::MarSystemWrapper(MarSystem* msys)
 {
   msys_ = msys;
   running_ = false;
-  guard_ = false;
   pause_ = true;
   empty_ = false;
 }
@@ -98,7 +97,6 @@ MarSystemWrapper::updctrl(QString cname, MarControlValue value)
     {
       cnames_.push_back(cname);          //lmartins
       cvalues_.push_back(value);         //lmartins  
-	  guard_ = true;
       emit ctrlChanged(cname, value);
     }
 }
@@ -122,41 +120,38 @@ void MarSystemWrapper::run()
     {
       running_ = true;
 
-      if (guard_ == true)
-		{
-		  // udpate stored controls
-		  vector<QString>::iterator  vsi;
-		  vector<MarControlValue>::iterator vvi;
-		  
-		  for (vsi = cnames_.begin(), vvi = cvalues_.begin(); 
-			   vsi != cnames_.end();
-			   ++vsi, ++vvi)
-			{
-		      
-			  msys_->updctrl(vsi->toStdString(), *vvi);
-			}
-		  
-		  cnames_.clear();
-		  cvalues_.clear();
-		  guard_ = false;
-		}
+      //  udpate stored controls atomically 
+
+      mutex_.tryLock();
+      vector<QString>::iterator  vsi;
+      vector<MarControlValue>::iterator vvi;
       
+      for (vsi = cnames_.begin(), vvi = cvalues_.begin(); 
+	   vsi != cnames_.end();
+	   ++vsi, ++vvi)
+	{
+	  
+	  msys_->updctrl(vsi->toStdString(), *vvi);
+	}
+      
+      cnames_.clear();
+      cvalues_.clear();
+      mutex_.unlock();
+      
+      // Now play the samples by ticking the MarSystem 
       if (!pause_)
-		{
-		  msys_->tick();	
-		  empty_ = false;
-		}
-      
+	{
+	  msys_->tick();	
+	  empty_ = false;
+	}
       
       if (empty_ == false) 
-		{	 
-		  if (msys_->getctrl("mrs_bool/notEmpty").toBool() == false) 
-			{
-			  empty_ = true;
-			  pause();
-			}
-		  
-		  
-		}
+	{	 
+	  if (msys_->getctrl("mrs_bool/notEmpty").toBool() == false) 
+	    {
+	      empty_ = true;
+	      pause();
+	    }
+	}
     }
 }

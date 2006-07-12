@@ -230,7 +230,7 @@ Marsyas::operator>> (istream& is, MarControls& c)
 
       iter = c.controls_.find(cname);
 
-
+      
       if (ctype == rstr)
 	{
 	  is >> skipstr >> rcvalue;
@@ -276,7 +276,7 @@ Marsyas::operator>> (istream& is, MarControls& c)
 	{
 	  realvec vcvalue;
   	  is >> skipstr >> vcvalue;
-
+	  
 	  if (iter == c.controls_.end())
 	    c.addControl(cname, vcvalue);
 	  else

@@ -35,7 +35,7 @@ adjusted to reflect Marsyas controls.
 #include <QCheckBox>
 #include <QThread>
 #include <QString>
-
+#include <QMutex> 
 #include <vector>
 #include <string>
 
@@ -73,7 +73,8 @@ private:
   std::vector<QString> cnames_;
   std::vector<Marsyas::MarControlValue> cvalues_;
   
-  bool guard_;
+  QMutex mutex_;
+  
   bool pause_;
   bool empty_;
   

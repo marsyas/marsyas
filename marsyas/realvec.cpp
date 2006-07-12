@@ -585,7 +585,7 @@ realvec::write(string filename)
 ostream& 
 Marsyas::operator<< (ostream& o, const realvec& vec)
 {
-  o << "# MARSYAS realvec" << endl;
+  o << "# MARSYAS mrs_realvec" << endl;
   o << "# Size = " << vec.size_ << endl << endl;
   o << endl;
 
@@ -605,7 +605,7 @@ Marsyas::operator<< (ostream& o, const realvec& vec)
   // o << vec.data_[i] << endl;
   o << endl;
   o << "# Size = " << vec.size_ << endl;
-  o << "# MARSYAS realvec" << endl;  
+  o << "# MARSYAS mrs_realvec" << endl;  
   return o;
 }
 

@@ -42,17 +42,23 @@ printHelp(string progName)
   cerr << "Usage : " << progName << "-t testName file1 file2 file3" << endl;
   cerr << endl;
   cerr << "Supported tests:" << endl;
+  cerr << "audiodevices    : test audio devices " << endl;
   cerr << "cascade         : test Cascade composite " << endl;
   cerr << "fanoutswitch    : test disabling fanout branches " << endl;
   cerr << "filter          : test filter MarSystem " << endl;
   cerr << "fft             : test fft analysis/resynthesis " << endl;
   cerr << "knn             : test K-NearestNeighbor classifier " << endl;
+  cerr << "marsystemIO     : test marsystem IO " << endl;
+  cerr << "mixer           : test fanout for mixing " << endl;
   cerr << "parallel        : test Parallel composite " << endl;
+  cerr << "realvec         : test realvec functions " << endl;
   cerr << "rmsilence  	   : test removing silences " << endl;
   cerr << "scheduler       : test scheduler " << endl;
   cerr << "schedulerExpr   : test scheduler with expressions " << endl;
   cerr << "vicon           : test processing of vicon motion capture data" << endl;
-  cerr << "mixer           : test fanout for mixing " << endl;
+
+
+  
   exit(1);
 }
 
@@ -280,6 +286,37 @@ test_rmsilence(string sfName)
   
   cout << "Finished removing silences. Output is " << "srm" + fname.name() + ".wav" << endl;
 }
+
+void
+test_marsystemIO()
+{
+  cout << "Testing IO of MarSystems" << endl;
+  MarSystemManager mng;
+
+  MarSystem* pnet = mng.create("Series", "pnet");
+  
+  MarSystem* src = mng.create("SoundFileSource", "src");
+  MarSystem* dest = mng.create("AudioSink", "dest");
+
+  
+  pnet->addMarSystem(src);
+  pnet->addMarSystem(dest);
+  
+  pnet->updctrl("mrs_natural/inSamples", 1024);
+  
+  
+  ofstream oss;
+  oss.open("marsystemIO.mpl");
+  oss << *pnet << endl;
+  ifstream iss;
+  iss.open("marsystemIO.mpl");
+  MarSystem* rsrc = mng.getMarSystem(iss);
+  
+  cout << *rsrc << endl;
+  
+  
+}
+
 
 void 
 test_mixer(string sfName0, string sfName1)
@@ -1017,7 +1054,7 @@ test_LPC_LSP(string sfName)
 
 
   int i = 0;
-  while(input->getctrl("SoundFileSource/src/bool/notEmpty").toBool())
+  while(input->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool())
     {
       input->tick();
       cout << "Processed frame " << i << endl;
@@ -1051,6 +1088,9 @@ test_realvec()
 
   cout << a << endl << endl;
   cout << b << endl << endl;
+
+  cout << "When tests stops - press a key to continue" << endl;
+  
 
   getchar();
 
@@ -1265,40 +1305,43 @@ main(int argc, const char **argv)
   if (soundfiles.size() > 1)  
     fname1 = soundfiles[1];
  
-  // cout << "Vicon File is: " << vfName << endl;
- 
   cout << "Marsyas test name = " << testName << endl;
+  cout << "fname0 = " << fname0 << endl;
+  cout << "fname1 = " << fname1 << endl;
   
-  if (testName == "vicon") 
-    test_vicon(fname0);   
-  else if (testName == "filter") 
-    test_filter();
-  else if (testName == "knn")
-    test_knn();
+
+  if (testName == "audiodevices")
+    test_audiodevices();
   else if (testName == "cascade") 
     test_cascade();
-  else if (testName == "parallel") 
-    test_parallel();
-  else if (testName == "fft") 
-    test_fft(fname0);
-  else if (testName == "rmsilence") 
-    test_rmsilence(fname0);
   else if (testName == "fanoutswitch")
     test_fanoutswitch();
+  else if (testName == "filter") 
+    test_filter();
+  else if (testName == "fft") 
+    test_fft(fname0);
+  else if (testName == "knn")
+    test_knn();
+  else if (testName == "marsystemIO")
+    test_marsystemIO();
+  else if (testName == "mixer")
+    test_mixer(fname0, fname1);
+  else if (testName == "parallel") 
+    test_parallel();
+  else if (testName == "vicon") 
+    test_vicon(fname0);   
+  else if (testName == "realvec")
+    test_realvec();
+  else if (testName == "rmsilence") 
+    test_rmsilence(fname0);
   else if (testName == "scheduler") 
     test_scheduler(fname0);
   else if (testName == "schedulerExpr") 
     test_schedulerExpr();
-  else if (testName == "mixer")
-    test_mixer(fname0, fname1);
   else if (testName == "MATLABengine")
     test_MATLABengine();
   else if (testName == "LPC_LSP")
     test_LPC_LSP(fname0);
-  else if (testName == "realvec")
-    test_realvec();
-  else if (testName == "audiodevices")
-    test_audiodevices();
   else 
     {
       cout << "Unsupported test " << endl;

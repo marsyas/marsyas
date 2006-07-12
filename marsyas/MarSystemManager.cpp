@@ -259,13 +259,11 @@ MarSystemManager::getMarSystem(istream& is)
   is >> skipstr >> skipstr >> skipstr;
   string mtype;
   is >> mtype;
-  cout << "mtype = " << mtype << endl;
   
   is >> skipstr >> skipstr >> skipstr;
   string mname;
-  cout << "mname = " << mname << endl;
-  
   is >> mname;
+  
 
   MarSystem* msys = getPrototype(mtype);
   
@@ -278,6 +276,7 @@ MarSystemManager::getMarSystem(istream& is)
     {
       msys->setName(mname);
       is >> (msys->ncontrols_);
+      
       msys->update();
       
       workingSet[msys->getName()] = msys; // add to workingSet
@@ -286,14 +285,17 @@ MarSystemManager::getMarSystem(istream& is)
       is >> skipstr;
       is >> skipstr;
       is >> skipstr;
+      
       is >> skipstr;
       
       if (skipstr != "links") 
 	{
 	  MRSWARN("Problem with reading links");
-	  MRSWARN("skipstr = " << skipstr);
 	  MRSWARN("mtype = " << mtype);
 	  MRSWARN("mname = " << mname);
+	  MRSWARN("skipstr = " << skipstr);
+
+
 	  
 	}
       

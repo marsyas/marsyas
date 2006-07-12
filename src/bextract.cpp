@@ -739,8 +739,6 @@ void bextract_train(vector<Collection> cls, mrs_natural label,
 
   featureNetwork->linkctrl("mrs_bool/notEmpty", 
 			"SoundFileSource/src/mrs_bool/notEmpty");
-  featureNetwork->linkctrl("mrs_bool/mute", 
-			"Gain/gt/mrs_bool/mute");  
 
 
   
@@ -1058,8 +1056,7 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
 
   featureNetwork->linkctrl("mrs_bool/notEmpty", 
 			"SilenceRemove/srm/SoundFileSource/src/mrs_bool/notEmpty");
-  featureNetwork->linkctrl("mrs_bool/mute", 
-			"Gain/gt/mrs_bool/mute");  
+
 
 
   

@@ -1,4 +1,4 @@
-This is marsyas.info, produced by makeinfo version 4.8 from
+This is marsyas.info, produced by makeinfo version 4.7 from
 marsyas.texi.
 
 INFO-DIR-SECTION Audio
@@ -78,9 +78,9 @@ File: marsyas.info,  Node: Introduction,  Next: Installation,  Prev: Top,  Up: T
 **************
 
 MARSYAS (Music Analysis Retrieval and Synthesis for Audio Signals) is a
-software framework for audio analysis, synthesis and retrieval written
-by George Tzanetakis. Please direct any questions/comments about
-Marsyas to (gtzan@cs.uvic.ca) 
+free software framework for audio analysis, synthesis and retrieval
+written by George Tzanetakis. Please direct any questions/comments
+about Marsyas to (gtzan@cs.uvic.ca) 
 
    The major theme underlying the design of Marsyas has been to provide
 an efficient and extensible framework for building audio analysis (and
@@ -251,9 +251,16 @@ use CVS and therefore the CVS repository is out of date)
 
    http://www.sourceforge.net/projects/marsyas
 
-Also the most recent working version of marsyas can be downloaded from:
+For the brave the latest possibly unstable copy can be obtained from
+the subversion repository stored at the sourceforge website: To check
+out a working copy do:
 
-   http://www.cs.uvic.ca/~gtzan/marsyas-0.2.2.tar.gz
+     >svn co https://svn.sourceforge.net/svnroot/marsyas/trunk marsyas-0.2.8
+
+   You can replace marsyas-0.2.8 with any directory you want. The
+version/release (version 0.2 release 8) is independently assigned from
+subversion revisions and the latest can be found by checking the
+sourceforge website.
 
    Installation is the biggest source of grief for first time users of
 Marsyas and the main source of email questions. Significant
@@ -265,11 +272,13 @@ you want to use the full functionality of Marsyas and have frequent
 updates and support you are strongly encouraged to use Linux.
 
    Marsyas is open source software and is distributed as a tar ball
-(something like marsyas-0.2.2.tar.gz).  To extract the source file type:
-     >tar -zxvf marsyas-0.2.2.tar.gz
+(something like marsyas-0.2.8.tar.gz).
+
+   To extract the source file type:
+     >tar -zxvf marsyas-0.2.8.tar.gz
 
    This will create a subdirectory of the current directory called
-marsyas-0.2.2 that contains all the source files needed for compiling
+marsyas-0.2.8 that contains all the source files needed for compiling
 Marsyas.
 
    There is a lot of work behind the development of Marsyas. Although
@@ -302,23 +311,9 @@ your system.
      > make
      > make install                 (as root user)
 
-   By default Marsyas assumes that the ALSA sound system and
-corresponding library and headers are installed.  Most new Linux
-distribution are using ALSA.  
-
-If you want to install Marsyas using the older OSS sound system you can
-do:
-
-     > ./configure --enable-oss
-
-A frequent variation (if you don't have root priviledges) is to install
-Marsyas in your home directory (replace /home/gtzan with the
-appropriate path for your home directory).  This can be accomplished by
-doing:
-
-     > ./configure --prefix=/home/gtzan
-     > make
-     > make install
+   By default Marsyas assumes that in Linux systems the ALSA sound
+system and corresponding library and headers are installed.  Most new
+Linux distribution are using ALSA.
 
    In addition there are several configure options that can be used to
 enable/disable assertions, enable/disable debugging and include
@@ -342,15 +337,6 @@ autoconf procedure:
      > make
      > make install                         (as root user)
 
-   A frequent variation (if you don't have root priviledges) is to
-install Marsyas in your home directory (replace /home/gtzan with the
-appropriate path for your home directory).  This can be accomplished by
-doing:
-
-     > ./configure --prefix=/home/gtzan
-     > make
-     > make install
-
    In addition there are several configure options that can be used to
 enable/disable assertions, enable/disable debugging and include
 optional packages such as support for reading mp3s.  *Note Configure
@@ -365,11 +351,8 @@ File: marsyas.info,  Node: Windows (cygwin),  Next: Windows (Visual Studio),  Pr
 Installation under Windows using the cygwin environment and gcc is
 similar to Linux. The most recent version of Marsyas 0.2 use RtAudio
 for audio playback under Cygwin. In order to compile RtAudio you will
-need to have DirectX installed properly in Cygwin. You can download the
-appropriate code from:
-
-   under the Windows installation. The standard autoconf installation
-procedure is used:
+need to have the DirectX SDk installed. The standard autoconf
+installation procedure is used:
 
      > ./configure
      > make
@@ -384,17 +367,13 @@ File: marsyas.info,  Node: Windows (Visual Studio),  Next: Configure Options,  P
 ===========================
 
 Installation under Visual Studio is still under construction and not
-the full functionality of Marsyas 0.2 is supported.  Currently there
-problems with interfacing marsyas to RtAudio (the audio comes out
-garbled) so it's better to output to a soundfile. Not all the
-executables are supported.
-
-   The main distribution contains a subdirectory named
-marsyasVisualStudio that contains the necessary project and solution
-files for compiling Marsyas under Visual Studio.  I have only tested
-this using Visual Studio 7.0 under Windows XP.  Older version of Visual
-Studio might not work. Support of the Windows port is not as good as
-Linux and OS X.
+the full functionality of Marsyas 0.2 is supported.  Not all the
+executables are supported. The main distribution contains two
+subdirectories named marsyasVisualStudio2003, marsyasVisualStudio2005
+that contain the necessary project solution files for compiling Marsyas
+under Visual Studio. I have only tested this using Visual Studio 7.0
+under Windows XP. Older version of Visual Studio might not work.
+Support of the Windows port is not as good as Linux and OS X.
 
 
 File: marsyas.info,  Node: Configure Options,  Next: Structure of distribution,  Prev: Windows (Visual Studio),  Up: Installation
@@ -445,6 +424,15 @@ risk):
      > cd qt4GUIs/MarPlayer
      > qmake
      > make
+
+A frequent variation (if you don't have root priviledges) is to install
+Marsyas in your home directory (replace /home/gtzan with the
+appropriate path for your home directory).  This can be accomplished by
+doing:
+
+     > ./configure --prefix=/home/gtzan
+     > make
+     > make install
 
 
 File: marsyas.info,  Node: Structure of distribution,  Prev: Configure Options,  Up: Installation
@@ -925,12 +913,10 @@ The Index
  [index ]
 * Menu:
 
-* ALSA Sound System:                     Linux Installation.   (line 17)
 * Cygwin:                                Windows (cygwin).     (line  6)
 * Linux:                                 Linux Installation.   (line  6)
 * Mac OSX:                               Mac OSX Installation. (line  6)
 * mkcollection:                          Misc.                 (line 13)
-* OSS Sound System:                      Linux Installation.   (line 17)
 * Perry Cook:                            History.              (line  8)
 * QT4:                                   Configure Options.    (line 38)
 * sfinfo:                                Misc.                 (line 74)
@@ -945,26 +931,26 @@ The Index
 Tag Table:
 Node: Top1065
 Node: Introduction2036
-Node: History4331
-Node: Context and Related Work6325
-Node: Installation11271
-Node: Linux Installation13092
-Node: Mac OSX Installation14330
-Node: Windows (cygwin)15472
-Node: Windows (Visual Studio)16192
-Node: Configure Options17018
-Node: Structure of distribution18747
-Node: Tools20993
-Node: Audio Feature Extraction/Classification22733
-Node: Synthesis22936
-Node: Utilities23083
-Node: Misc23195
-Node: Architecture33860
-Node: Building the dataflow network34826
-Node: Writing your own MarSystems37169
-Node: Tutorial37890
-Node: Future Work38003
-Node: Users and Projects38807
-Node: The Index39864
+Node: History4336
+Node: Context and Related Work6330
+Node: Installation11276
+Node: Linux Installation13438
+Node: Mac OSX Installation14295
+Node: Windows (cygwin)15148
+Node: Windows (Visual Studio)15777
+Node: Configure Options16493
+Node: Structure of distribution18508
+Node: Tools20754
+Node: Audio Feature Extraction/Classification22494
+Node: Synthesis22697
+Node: Utilities22844
+Node: Misc22956
+Node: Architecture33621
+Node: Building the dataflow network34587
+Node: Writing your own MarSystems36930
+Node: Tutorial37651
+Node: Future Work37764
+Node: Users and Projects38568
+Node: The Index39625
 
 End Tag Table
