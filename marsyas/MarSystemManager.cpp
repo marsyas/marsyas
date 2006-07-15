@@ -259,10 +259,13 @@ MarSystemManager::getMarSystem(istream& is)
   is >> skipstr >> skipstr >> skipstr;
   string mtype;
   is >> mtype;
+
+  
   
   is >> skipstr >> skipstr >> skipstr;
   string mname;
   is >> mname;
+  
   
 
   MarSystem* msys = getPrototype(mtype);
@@ -333,7 +336,7 @@ MarSystemManager::getMarSystem(istream& is)
 	  is >> skipstr;
 	  is >> skipstr;
 	  
-	  mrs_natural nSynonyms;
+	  mrs_natural nSynonyms = 0;
 	  is >> nSynonyms;
 	  
 

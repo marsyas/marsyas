@@ -33,9 +33,9 @@ AudioSink::AudioSink(string name):MarSystem("AudioSink", name)
   //type_ = "AudioSink";
   //name_ = name;
   
-	counter_ = 0;
+  counter_ = 0;
   bufferSize_ = 0;
-
+  
   ri_ = 0;
   start_ = 0;
   end_ = 0;
@@ -45,7 +45,8 @@ AudioSink::AudioSink(string name):MarSystem("AudioSink", name)
   isInitialized_ = 0;
   data_ = NULL;
   audio_ = NULL;
-
+  sampleRate_ = 0.0;
+  
 	addControls();
 }
 
@@ -114,13 +115,13 @@ AudioSink::localUpdate()
   
   bufferSize_ = (mrs_natural)getctrl("mrs_natural/bufferSize").toNatural();
 
-	#ifdef __OS_MACOSX__
+#ifdef __OS_MACOSX__
   if (rtSrate_ == 22050) 
     {
       rtSrate_ = 44100;
       bufferSize_ = 2 * bufferSize_;
     }
-	#endif	
+#endif	
 
   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));  
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
@@ -128,7 +129,7 @@ AudioSink::localUpdate()
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
   nChannels_ = getctrl("mrs_natural/nChannels").toNatural();
-
+  
   if (getctrl("mrs_real/israte").toReal() != sampleRate_)
     {
       sampleRate_ = getctrl("mrs_real/israte").toReal();

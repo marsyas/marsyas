@@ -684,7 +684,7 @@ void bextract_train(vector<Collection> cls, mrs_natural label,
 			  winSize);
   featureNetwork->updctrl(src->getType() + "/src/mrs_natural/pos", offset);      
   featureNetwork->addMarSystem(mng.create("Annotator", "annotator"));
-  featureNetwork->addMarSystem(wsink->clone());
+  featureNetwork->addMarSystem(wsink);
   
 
 

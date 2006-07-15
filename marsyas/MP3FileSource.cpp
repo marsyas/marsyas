@@ -46,8 +46,12 @@ MP3FileSource::MP3FileSource(string name):AbsSoundFileSource("MP3FileSource", na
   fd = 0;  
   fp = NULL;
   offset = 0;
-
-	addControls();
+  pos_ = 0;
+  size_ = 0;
+  currentPos_ = 0;
+  
+  
+  addControls();
 }
 
 MP3FileSource::~MP3FileSource()
@@ -71,8 +75,12 @@ MP3FileSource::MP3FileSource(const MP3FileSource& a):AbsSoundFileSource(a)
 // 	dbg_ = a.dbg_;
 // 	mute_ = a.mute_;
 
-	ptr_ = NULL;
+  ptr_ = NULL;
   fp = NULL;
+  
+  pos_ = 0;
+  size_ = 0;
+  currentPos_ = 0;
 }
 
 MarSystem* 
@@ -154,8 +162,11 @@ MP3FileSource::getHeader(string filename)
 
   
   
+  // libmad seems to read sometimes beyond the file size 
+  // added 2048 as padding for these cases - most likely 
+  // mp3 that are not properly formatted 
+  ptr_ = new unsigned char[myStat.st_size+2048]; 
 
-  ptr_ = new unsigned char[myStat.st_size];
   
   int numRead = fread(ptr_, sizeof(unsigned char), myStat.st_size, fp);
   
@@ -290,26 +301,27 @@ MP3FileSource::localUpdate()
   pos_ = getctrl("mrs_natural/pos").toNatural();
   
   // if the user has seeked somewhere in the file
-  if ( currentPos_ != pos_ && pos_ < size_) {
-	  
-    // compute a new file offset using the frame target
-    mrs_real ratio = (mrs_real)pos_/size_;
-
+  if ( (currentPos_ != pos_) && (pos_ < size_)) 
+    {
+      
+      // compute a new file offset using the frame target
+      mrs_real ratio = (mrs_real)pos_/size_;
+      
 #ifdef MAD_MP3     
-    madStructInitialize();
+      madStructInitialize();
 #endif 
-    
-    mrs_natural targetOffset = (mrs_natural) (fileSize_ * (mrs_real)ratio);
-  
-    // if we are rewinding, we call fillStream with -1
-    if (targetOffset==0) {
-	    fillStream(-1);
-    } else {
-	    fillStream(targetOffset);
+      
+      mrs_natural targetOffset = (mrs_natural) (fileSize_ * (mrs_real)ratio);
+      
+      // if we are rewinding, we call fillStream with -1
+      if (targetOffset==0) {
+	fillStream(-1);
+      } else {
+	fillStream(targetOffset);
+      }
+      currentPos_ = pos_;
     }
-    currentPos_ = pos_;
-  }
-
+  
   filename_ = getctrl("mrs_string/filename").toString();    
   duration_ = getctrl("mrs_real/duration").toReal();
   advance_ = getctrl("mrs_bool/advance").toBool();
@@ -590,6 +602,10 @@ void MP3FileSource::closeFile()
 
   fclose(fp);
   fd = 0;
+  pos_ = 0;
+  currentPos_ = 0;
+  size_ = 0;
+  
 
   delete [] ptr_;
 

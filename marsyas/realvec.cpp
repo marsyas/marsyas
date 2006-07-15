@@ -22,7 +22,7 @@
     \brief Vector of mrs_real values
 
     Array (vector in the numerical sense) of mrs_real values. Basic 
-arithmetic operations and statistics are supported. 
+    arithmetic operations and statistics are supported. 
 */
 
 #include "realvec.h"
@@ -79,7 +79,7 @@ realvec::realvec(mrs_natural rows, mrs_natural cols)
 
 
 realvec::realvec(const realvec& a) : size_(a.size_), 
-				   rows_(a.rows_), cols_(a.cols_)
+				     rows_(a.rows_), cols_(a.cols_)
 {
   data_ = NULL; 
   if( a.size_ > 0 )
@@ -94,40 +94,40 @@ realvec::operator=(const realvec& a)
   if (this != &a)
     {
       if (size_ != a.size_)
-		{
-		  //lmartins: [!]
-		  //Why doesn't this delete all data and creates a new realvec?
-		  //it would be then easier to use this operator in client code 
-		  //(i.e. no need to assure that the realvec implicated in the 
-		  // =  operation are equal sized)
-		  /*
-		  MRSERR("realvec::operator= : Different realvec sizes\n");
-		  MRSERR("realvec left unchanged\n");
+	{
+	  //lmartins: [!]
+	  //Why doesn't this delete all data and creates a new realvec?
+	  //it would be then easier to use this operator in client code 
+	  //(i.e. no need to assure that the realvec implicated in the 
+	  // =  operation are equal sized)
+	  /*
+	    MRSERR("realvec::operator= : Different realvec sizes\n");
+	    MRSERR("realvec left unchanged\n");
 
-		  MRSERR("Left size = " + size_);
-		  MRSERR("Right size = " + a.size_);
-		  return *this;
-		  */
-		  //Replacing above code by the following one (which still maintains backward compatibility
-		  // with any previous code in Marsyas that resizes l.h. realvec before using the = operator).
-		  MRSWARN("realvec::operator= : Different realvec sizes! l.h. realvec will be deleted and then recreated during attribution.");
-		  delete [] data_;
-		  data_ = NULL;
-		  if( a.size_ > 0 )
-			  data_ = new mrs_real[a.size_];
-		  for (mrs_natural i=0; i<a.size_; i++)
-			  data_[i] = a.data_[i];
-		  size_ = a.size_;
-		  rows_ = a.rows_;
-		  cols_ = a.cols_;
-		}
-	  else
-	  {
-		  for (mrs_natural i=0; i < size_; i++)
-			data_[i] = a.data_[i];
-		  rows_ = a.rows_;
-		  cols_ = a.cols_;
-	  }
+	    MRSERR("Left size = " + size_);
+	    MRSERR("Right size = " + a.size_);
+	    return *this;
+	  */
+	  //Replacing above code by the following one (which still maintains backward compatibility
+	  // with any previous code in Marsyas that resizes l.h. realvec before using the = operator).
+	  MRSWARN("realvec::operator= : Different realvec sizes! l.h. realvec will be deleted and then recreated during attribution.");
+	  delete [] data_;
+	  data_ = NULL;
+	  if( a.size_ > 0 )
+	    data_ = new mrs_real[a.size_];
+	  for (mrs_natural i=0; i<a.size_; i++)
+	    data_[i] = a.data_[i];
+	  size_ = a.size_;
+	  rows_ = a.rows_;
+	  cols_ = a.cols_;
+	}
+      else
+	{
+	  for (mrs_natural i=0; i < size_; i++)
+	    data_[i] = a.data_[i];
+	  rows_ = a.rows_;
+	  cols_ = a.cols_;
+	}
     }
 
   return *this;
@@ -379,76 +379,76 @@ realvec::renorm(mrs_real old_mean, mrs_real old_std, mrs_real new_mean, mrs_real
 mrs_natural 
 realvec::invert(realvec& res)
 {
-	if(rows_ != cols_)
-	{
-		MRSERR("realvec::invert() - matrix should be square!");
-		return -1;
-	}
+  if(rows_ != cols_)
+    {
+      MRSERR("realvec::invert() - matrix should be square!");
+      return -1;
+    }
 	
-	mrs_natural rank;
-	mrs_natural r,c,i;
-	mrs_real temp;
+  mrs_natural rank;
+  mrs_natural r,c,i;
+  mrs_real temp;
 
-	res.create(rows_, cols_);
+  res.create(rows_, cols_);
 
-	rank = 0;
-	for (r = 0; r < rows_; r++)
+  rank = 0;
+  for (r = 0; r < rows_; r++)
+    for (c=0; c < cols_; c++)
+      {
+	if (r == c) 
+	  res(r,c) = 1.0;
+	else 
+	  res(r,c) = 0.0;
+      }
+  for (i = 0; i < rows_; i++)
+    {
+      if ((*this)(i,i) == 0)
+	{
+	  for (r = i; r < rows_; r++)
+	    for (c = 0; c < cols_; c++)
+	      {
+		(*this)(i,c) += (*this)(r,c);
+		res(i,c) += res(r,c);
+	      }
+	}
+      for (r = i; r < rows_; r++) 
+	{
+	  temp = (*this)(r,i);
+	  if (temp != 0) 
+	    for (c =0; c < cols_; c++)
+	      {
+		(*this)(r,c) /= temp;
+		res(r,c) /= temp;
+	      }
+	}
+      if (i != rows_-1)
+	{
+	  for (r = i+1; r < rows_; r++)
+	    {
+	      temp = (*this)(r,i);
+	      if (temp != 0.0) 
 		for (c=0; c < cols_; c++)
-		{
-			if (r == c) 
-				res(r,c) = 1.0;
-			else 
-				res(r,c) = 0.0;
-		}
-		for (i = 0; i < rows_; i++)
-		{
-			if ((*this)(i,i) == 0)
-			{
-				for (r = i; r < rows_; r++)
-					for (c = 0; c < cols_; c++)
-					{
-						(*this)(i,c) += (*this)(r,c);
-						res(i,c) += res(r,c);
-					}
-			}
-			for (r = i; r < rows_; r++) 
-			{
-				temp = (*this)(r,i);
-				if (temp != 0) 
-					for (c =0; c < cols_; c++)
-					{
-						(*this)(r,c) /= temp;
-						res(r,c) /= temp;
-					}
-			}
-			if (i != rows_-1)
-			{
-				for (r = i+1; r < rows_; r++)
-				{
-					temp = (*this)(r,i);
-					if (temp != 0.0) 
-						for (c=0; c < cols_; c++)
-						{
-							(*this)(r,c) -= (*this)(i,c);
-							res(r,c) -= res(i,c);
-						}
-				}
-			}
-		}
-		for (i=1; i < rows_; i++)
-			for (r=0; r < i; r++)
-			{
-				temp = (*this)(r,i);
-				for (c=0; c < cols_; c++)
-				{
-					(*this)(r,c) -= (temp * (*this)(i,c));
-					res(r,c) -= (temp * res(i,c));
-				}
-			}
-			for (r =0; r < rows_; r++)
-				for (c=0; c < cols_; c++)
-					(*this)(r,c) = res(r,c);
-			return rank;
+		  {
+		    (*this)(r,c) -= (*this)(i,c);
+		    res(r,c) -= res(i,c);
+		  }
+	    }
+	}
+    }
+  for (i=1; i < rows_; i++)
+    for (r=0; r < i; r++)
+      {
+	temp = (*this)(r,i);
+	for (c=0; c < cols_; c++)
+	  {
+	    (*this)(r,c) -= (temp * (*this)(i,c));
+	    res(r,c) -= (temp * res(i,c));
+	  }
+      }
+  for (r =0; r < rows_; r++)
+    for (c=0; c < cols_; c++)
+      (*this)(r,c) = res(r,c);
+  return rank;
 }
 
 
@@ -686,512 +686,512 @@ Marsyas::operator>>(istream& is, realvec& vec)
 realvec
 realvec::operator()(std::string r, std::string c)
 {
-	mrs_natural r_l = r.length();
-	mrs_natural c_l = c.length();
-
-	mrs_natural r_c = r.find(":");
-	mrs_natural c_c = c.find(":");
-
-	mrs_natural r_a;
-	mrs_natural r_b;
-
-	mrs_natural c_a;
-	mrs_natural c_b;
-
-	char *endptr;
-
-	MRSASSERT( (r_c == 0 && r_l == 1) || (r_c == string::npos) || (r_c>0 && r_l-r_c>1) );
-	MRSASSERT( (c_c == 0 && c_l == 1) || (c_c == string::npos) || (c_c>0 && c_l-c_c>1) );
-
-	if( r_c != string::npos && r_l > 1 )
+  mrs_natural r_l = r.length();
+  mrs_natural c_l = c.length();
+  
+  mrs_natural r_c = r.find(":");
+  mrs_natural c_c = c.find(":");
+  
+  mrs_natural r_a;
+  mrs_natural r_b;
+  
+  mrs_natural c_a;
+  mrs_natural c_b;
+  
+  char *endptr;
+  
+  MRSASSERT( (r_c == 0 && r_l == 1) || (r_c == string::npos) || (r_c>0 && r_l-r_c>1) );
+  MRSASSERT( (c_c == 0 && c_l == 1) || (c_c == string::npos) || (c_c>0 && c_l-c_c>1) );
+  
+  if( r_c != string::npos && r_l > 1 )
+    {
+      r_a = (mrs_natural)strtol( r.substr(0,r_c).c_str() , &endptr , 10  );
+      MRSASSERT( *endptr == '\0' );
+      r_b = (mrs_natural)strtol( r.substr(r_c+1,r_l-r_c-1).c_str() , &endptr , 10  );
+      MRSASSERT( *endptr == '\0' );
+    }
+  else if( r_c == string::npos )
+    {
+      r_a = r_b = (mrs_natural)strtol( r.c_str() , &endptr , 10 );
+      MRSASSERT( *endptr == '\0' );
+    }
+  else
+    {
+      r_a = 0;
+      r_b = rows_-1;
+    }
+  
+  MRSASSERT( r_a >= 0 && r_b < rows_ );
+  
+  if( c_c != string::npos && c_l > 1 )
+    {
+      c_a = (mrs_natural)strtol( c.substr(0,c_c).c_str() , &endptr , 10  );
+      MRSASSERT( *endptr == '\0' );
+      c_b = (mrs_natural)strtol( c.substr(c_c+1,c_l-c_c-1).c_str() , &endptr , 10 );      
+      MRSASSERT( *endptr == '\0' );
+    }
+  else if( c_c == string::npos )
+    {
+      c_a = c_b = (mrs_natural)strtol( c.c_str() , &endptr , 10 );
+      MRSASSERT( *endptr == '\0' );
+    }
+  else
+    {
+      c_a = 0;
+      c_b = cols_-1;
+    }
+  
+  MRSASSERT( c_a >= 0 && c_b < cols_ );
+  
+  r_l = r_b - r_a + 1;
+  c_l = c_b - c_a + 1;
+  
+  realvec matrix;
+  
+  matrix.create( r_l , c_l );
+  
+  for( c_c = c_a ; c_c <= c_b ; c_c++ )
+    {
+      for( r_c = r_a ; r_c <= r_b ; r_c++ )
 	{
-		r_a = (mrs_natural)strtol( r.substr(0,r_c).c_str() , &endptr , 10  );
-		MRSASSERT( *endptr == '\0' );
-		r_b = (mrs_natural)strtol( r.substr(r_c+1,r_l-r_c-1).c_str() , &endptr , 10  );
-		MRSASSERT( *endptr == '\0' );
+	  matrix.data_[(c_c-c_a) * r_l + (r_c-r_a)] = data_[c_c * rows_ + r_c];
 	}
-	else if( r_c == string::npos )
-	{
-		r_a = r_b = (mrs_natural)strtol( r.c_str() , &endptr , 10 );
-		MRSASSERT( *endptr == '\0' );
-	}
-	else
-	{
-		r_a = 0;
-		r_b = rows_-1;
-	}
-
-	MRSASSERT( r_a >= 0 && r_b < rows_ );
-
-	if( c_c != string::npos && c_l > 1 )
-	{
-		c_a = (mrs_natural)strtol( c.substr(0,c_c).c_str() , &endptr , 10  );
-		MRSASSERT( *endptr == '\0' );
-		c_b = (mrs_natural)strtol( c.substr(c_c+1,c_l-c_c-1).c_str() , &endptr , 10 );      
-		MRSASSERT( *endptr == '\0' );
-	}
-	else if( c_c == string::npos )
-	{
-		c_a = c_b = (mrs_natural)strtol( c.c_str() , &endptr , 10 );
-		MRSASSERT( *endptr == '\0' );
-	}
-	else
-	{
-		c_a = 0;
-		c_b = cols_-1;
-	}
-
-	MRSASSERT( c_a >= 0 && c_b < cols_ );
-
-	r_l = r_b - r_a + 1;
-	c_l = c_b - c_a + 1;
-
-	realvec matrix;
-
-	matrix.create( r_l , c_l );
-
-	for( c_c = c_a ; c_c <= c_b ; c_c++ )
-	{
-		for( r_c = r_a ; r_c <= r_b ; r_c++ )
-		{
-			matrix.data_[(c_c-c_a) * r_l + (r_c-r_a)] = data_[c_c * rows_ + r_c];
-		}
-	}       
-
-	return matrix;
+    }       
+  
+  return matrix;
 }
 
 realvec
 realvec::operator()(std::string c)
 {
-	mrs_natural c_l = c.length();
+  mrs_natural c_l = c.length();
 
-	mrs_natural c_c = c.find(":");
+  mrs_natural c_c = c.find(":");
 
-	mrs_natural c_a;
-	mrs_natural c_b;
+  mrs_natural c_a;
+  mrs_natural c_b;
 
-	char *endptr;
+  char *endptr;
 
-	MRSASSERT( (c_c == 0 && c_l == 1) || (c_c == string::npos) || (c_c>0 && c_l-c_c>1) );
+  MRSASSERT( (c_c == 0 && c_l == 1) || (c_c == string::npos) || (c_c>0 && c_l-c_c>1) );
 
-	if( c_c != string::npos && c_l > 1 )
-	{
-		c_a = (mrs_natural)strtol( c.substr(0,c_c).c_str() , &endptr , 10  );
-		MRSASSERT( *endptr == '\0' );
-		c_b = (mrs_natural)strtol( c.substr(c_c+1,c_l-c_c-1).c_str() , &endptr , 10  );      
-		MRSASSERT( *endptr == '\0' );
-	}
-	else if( c_c == string::npos )
-	{
-		c_a = c_b = (mrs_natural)strtol( c.c_str() , &endptr , 10 );
-		MRSASSERT( *endptr == '\0' );
-	}
-	else
-	{
-		c_a = 0;
-		c_b = (rows_*cols_)-1;
-	}
+  if( c_c != string::npos && c_l > 1 )
+    {
+      c_a = (mrs_natural)strtol( c.substr(0,c_c).c_str() , &endptr , 10  );
+      MRSASSERT( *endptr == '\0' );
+      c_b = (mrs_natural)strtol( c.substr(c_c+1,c_l-c_c-1).c_str() , &endptr , 10  );      
+      MRSASSERT( *endptr == '\0' );
+    }
+  else if( c_c == string::npos )
+    {
+      c_a = c_b = (mrs_natural)strtol( c.c_str() , &endptr , 10 );
+      MRSASSERT( *endptr == '\0' );
+    }
+  else
+    {
+      c_a = 0;
+      c_b = (rows_*cols_)-1;
+    }
 
-	MRSASSERT( c_a >= 0 && c_b < rows_*cols_ );   
+  MRSASSERT( c_a >= 0 && c_b < rows_*cols_ );   
 
-	c_l = c_b - c_a + 1;
+  c_l = c_b - c_a + 1;
 
-	realvec matrix;
+  realvec matrix;
 
-	matrix.create( c_l );
+  matrix.create( c_l );
 
-	for( c_c = c_a ; c_c <= c_b ; c_c++ )
-	{
-		matrix.data_[(c_c-c_a)] = data_[c_c];
-	}
+  for( c_c = c_a ; c_c <= c_b ; c_c++ )
+    {
+      matrix.data_[(c_c-c_a)] = data_[c_c];
+    }
 
-	return matrix;
+  return matrix;
 }
 // Jen end
 
 realvec
 realvec::getRow(const mrs_natural r) const
 {
-	realvec rowvec(cols_);
+  realvec rowvec(cols_);
 
-	if(r >= rows_ )
-	{
-		MRSERR("realvec::getRow() - row index greater than realvec number of rows! Returning uninitialized row vector.");
-		return rowvec;
-	}
+  if(r >= rows_ )
+    {
+      MRSERR("realvec::getRow() - row index greater than realvec number of rows! Returning uninitialized row vector.");
+      return rowvec;
+    }
 
-	for (mrs_natural c=0; c < cols_; c++)
-	{
-		rowvec(c) = (*this)(r,c);
-	}
+  for (mrs_natural c=0; c < cols_; c++)
+    {
+      rowvec(c) = (*this)(r,c);
+    }
 
-	return rowvec;
+  return rowvec;
 }
 
 realvec
 realvec::getCol(const mrs_natural c) const
 {
-	realvec colvec(rows_,1);
+  realvec colvec(rows_,1);
 
-	if(c >= cols_)
-	{
-		MRSERR("realvec::getCol() - row index greater than realvec number of rows! Returning uninitialized column vector.");
-		return colvec;
-	}
+  if(c >= cols_)
+    {
+      MRSERR("realvec::getCol() - row index greater than realvec number of rows! Returning uninitialized column vector.");
+      return colvec;
+    }
 
-	for (mrs_natural r=0; r < rows_; r++)
-	{
-		colvec(r) = (*this)(r,c);
-	}
+  for (mrs_natural r=0; r < rows_; r++)
+    {
+      colvec(r) = (*this)(r,c);
+    }
 
-	return colvec;
+  return colvec;
 }
 
 mrs_real 
 realvec::maxval() const
 {
-	mrs_real max = numeric_limits<mrs_real>::max() * -1.0;
-	for (mrs_natural i=0; i < size_; i++)
-	{
-		if(data_[i] > max)
-			max = data_[i];
-	}
-	return max;
+  mrs_real max = numeric_limits<mrs_real>::max() * -1.0;
+  for (mrs_natural i=0; i < size_; i++)
+    {
+      if(data_[i] > max)
+	max = data_[i];
+    }
+  return max;
 }
 
 mrs_real 
 realvec::minval() const
 {
-	mrs_real min = numeric_limits<mrs_real>::max();
-	for (mrs_natural i=0; i < size_; i++)
-	{
-		if(data_[i] < min)
-			min = data_[i];
-	}
-	return min;
+  mrs_real min = numeric_limits<mrs_real>::max();
+  for (mrs_natural i=0; i < size_; i++)
+    {
+      if(data_[i] < min)
+	min = data_[i];
+    }
+  return min;
 }
 
 realvec
 realvec::meanObs() const
 {
-	realvec obsrow(cols_); //row vector
-	realvec meanobs(rows_, 1); //column vector
+  realvec obsrow(cols_); //row vector
+  realvec meanobs(rows_, 1); //column vector
 
-	for (mrs_natural r=0; r<rows_; r++)
-	{
-		//for (mrs_natural c=0; c<cols_; c++)
-		//{
-		//	obsrow(c) = (*this)(r,c); //get observation row
-		//}
-		obsrow = getRow(r);
-		meanobs(r,0) = obsrow.mean();
-	}
+  for (mrs_natural r=0; r<rows_; r++)
+    {
+      //for (mrs_natural c=0; c<cols_; c++)
+      //{
+      //	obsrow(c) = (*this)(r,c); //get observation row
+      //}
+      obsrow = getRow(r);
+      meanobs(r,0) = obsrow.mean();
+    }
 
-	return meanobs;	
+  return meanobs;	
 }
 
 realvec
 realvec::varObs() const
 {
-	realvec obsrow(cols_); //row vector
-	realvec varobs(rows_, 1); //column vector
+  realvec obsrow(cols_); //row vector
+  realvec varobs(rows_, 1); //column vector
 
-	for (mrs_natural r=0; r<rows_; r++)
-	{
-		//for (mrs_natural c=0; c<cols_; c++)
-		//{
-		//	obsrow(c) = (*this)(r,c); //get observation row
-		//}
-		obsrow = getRow(r);
-		varobs(r,0) = obsrow.var();
-	}
+  for (mrs_natural r=0; r<rows_; r++)
+    {
+      //for (mrs_natural c=0; c<cols_; c++)
+      //{
+      //	obsrow(c) = (*this)(r,c); //get observation row
+      //}
+      obsrow = getRow(r);
+      varobs(r,0) = obsrow.var();
+    }
 
-	return varobs;
+  return varobs;
 }
 
 realvec
 realvec::stdObs() const
 {
-	realvec obsrow(cols_); //row vector
-	realvec stdobs(rows_, 1); //column vector
+  realvec obsrow(cols_); //row vector
+  realvec stdobs(rows_, 1); //column vector
 
-	for (mrs_natural r=0; r<rows_; r++)
-	{
-		//for (mrs_natural c=0; c < cols_; c++)
-		//{
-		//	obsrow(c) = (*this)(r,c); //get observation row
-		//}
-		obsrow = getRow(r);
-		stdobs(r,0) = obsrow.std();
-	}
+  for (mrs_natural r=0; r<rows_; r++)
+    {
+      //for (mrs_natural c=0; c < cols_; c++)
+      //{
+      //	obsrow(c) = (*this)(r,c); //get observation row
+      //}
+      obsrow = getRow(r);
+      stdobs(r,0) = obsrow.std();
+    }
 
-	return stdobs;	
+  return stdobs;	
 }
 
 void
 realvec::normObs()
 {
-	//normalize (aka standardize) matrix
-	//using observations means and standard deviations 
+  //normalize (aka standardize) matrix
+  //using observations means and standard deviations 
 
-	realvec obsrow(cols_);
+  realvec obsrow(cols_);
 
-	for (mrs_natural r=0; r < rows_; r++)
+  for (mrs_natural r=0; r < rows_; r++)
+    {
+      //for (mrs_natural c=0; c < cols_; c++)
+      //{
+      //	obsrow(c) = (*this)(r,c); //get observation row
+      //}
+      obsrow = getRow(r);
+      for (mrs_natural c=0; c < cols_; c++)
 	{
-		//for (mrs_natural c=0; c < cols_; c++)
-		//{
-		//	obsrow(c) = (*this)(r,c); //get observation row
-		//}
-		obsrow = getRow(r);
-		for (mrs_natural c=0; c < cols_; c++)
-		{
-			(*this)(r,c) -= obsrow.mean();
-			(*this)(r,c) /= obsrow.std();
-		}
+	  (*this)(r,c) -= obsrow.mean();
+	  (*this)(r,c) /= obsrow.std();
 	}
+    }
 }
 
 realvec
 realvec::correlation() const
 {
-	//correlation as computed in Marsyas0.1
-	//computes the correlation between observations
-	//Assumes data points (i.e. examples) in columns and features (i.e. observations) in rows (as usual in Marsyas0.2).
+  //correlation as computed in Marsyas0.1
+  //computes the correlation between observations
+  //Assumes data points (i.e. examples) in columns and features (i.e. observations) in rows (as usual in Marsyas0.2).
 
-	realvec corr(rows_, rows_);//correlation matrix
+  realvec corr(rows_, rows_);//correlation matrix
 	
-	if(size_ == 0)
-	{
-		MRSERR("realvec::correlation() : empty input matrix! returning empty and invalid correlation matrix!")
-		return corr;
-	}
-
-	realvec temp = (*this);
-
-	// normalize observations (i.e subtract obs. mean, divide by obs. standard dev)
-	temp.normObs(); 
-
-	mrs_real sum = 0.0;
-	for (mrs_natural r1=0; r1< rows_; r1++)
-	{
-		for (mrs_natural r2=0; r2 < rows_; r2++)
-		{
-			sum = 0.0;
-
-			for (mrs_natural c=0; c < cols_; c++)
-				sum += (temp(r1,c) * temp(r2,c));
-
-			sum /= cols_;
-			corr(r1,r2) = sum;
-		}
-	}
+  if(size_ == 0)
+    {
+      MRSERR("realvec::correlation() : empty input matrix! returning empty and invalid correlation matrix!")
 	return corr;
+    }
+
+  realvec temp = (*this);
+
+  // normalize observations (i.e subtract obs. mean, divide by obs. standard dev)
+  temp.normObs(); 
+
+  mrs_real sum = 0.0;
+  for (mrs_natural r1=0; r1< rows_; r1++)
+    {
+      for (mrs_natural r2=0; r2 < rows_; r2++)
+	{
+	  sum = 0.0;
+
+	  for (mrs_natural c=0; c < cols_; c++)
+	    sum += (temp(r1,c) * temp(r2,c));
+
+	  sum /= cols_;
+	  corr(r1,r2) = sum;
+	}
+    }
+  return corr;
 }
 
 realvec 
 realvec::covariance() const
 {
-	//computes the (unbiased estimate) covariance between observations (as in MATLAB cov()).
-	//Assumes data points (i.e. examples) in columns and features (i.e. observations) in rows (as usual in Marsyas0.2).
-	//This method assumes non-standardized data (typical covariance calculation).
+  //computes the (unbiased estimate) covariance between observations (as in MATLAB cov()).
+  //Assumes data points (i.e. examples) in columns and features (i.e. observations) in rows (as usual in Marsyas0.2).
+  //This method assumes non-standardized data (typical covariance calculation).
 
-	realvec covar(rows_, rows_); //covariance matrix
+  realvec covar(rows_, rows_); //covariance matrix
 
-	if(size_ == 0)
-	{
-		MRSERR("realvec::covariance2() : empty input matrix! returning empty and invalid covariance matrix!")
-		return covar;
-	}
-
-	//check if there are sufficient data points for a good covariance estimation...
-	if(cols_ < (rows_ + 1))
-		MRSWARN("realvec::covariance() : nr. data points < nr. observations + 1 => covariance matrix is SINGULAR!");
-	if( (mrs_real)cols_ < ((mrs_real)rows_*(mrs_real)(rows_-1.0)/2.0))
-		MRSWARN("realvec::covariance() : too few data points => ill-calculation of covariance matrix!");
-
-	realvec meanobs = meanObs();//observation means
-
-	mrs_real sum = 0.0;
-	for (mrs_natural r1=0; r1< rows_; r1++)
-	{
-		for (mrs_natural r2=0; r2 < rows_; r2++)
-		{
-			sum = 0.0;
-			
-			for (mrs_natural c=0; c < cols_; c++)
-				sum += ((data_[c * rows_ + r1] - meanobs(r1)) * (data_[c * rows_ + r2]- meanobs(r2)));
-			
-			if(cols_ > 1)
-				sum /= (cols_ - 1);//unbiased covariance estimate
-			else
-				sum /= cols_; //biased covariance estimate
-
-			covar(r1,r2) = sum;
-		}
-	}
-
+  if(size_ == 0)
+    {
+      MRSERR("realvec::covariance2() : empty input matrix! returning empty and invalid covariance matrix!")
 	return covar;
+    }
+
+  //check if there are sufficient data points for a good covariance estimation...
+  if(cols_ < (rows_ + 1))
+    MRSWARN("realvec::covariance() : nr. data points < nr. observations + 1 => covariance matrix is SINGULAR!");
+  if( (mrs_real)cols_ < ((mrs_real)rows_*(mrs_real)(rows_-1.0)/2.0))
+    MRSWARN("realvec::covariance() : too few data points => ill-calculation of covariance matrix!");
+
+  realvec meanobs = meanObs();//observation means
+
+  mrs_real sum = 0.0;
+  for (mrs_natural r1=0; r1< rows_; r1++)
+    {
+      for (mrs_natural r2=0; r2 < rows_; r2++)
+	{
+	  sum = 0.0;
+			
+	  for (mrs_natural c=0; c < cols_; c++)
+	    sum += ((data_[c * rows_ + r1] - meanobs(r1)) * (data_[c * rows_ + r2]- meanobs(r2)));
+			
+	  if(cols_ > 1)
+	    sum /= (cols_ - 1);//unbiased covariance estimate
+	  else
+	    sum /= cols_; //biased covariance estimate
+
+	  covar(r1,r2) = sum;
+	}
+    }
+
+  return covar;
 }
 
 realvec 
 realvec::covariance2() const
 {
-	//covariance matrix as computed in Marsyas0.1
-	//computes the covariance between observations.
-	//Assumes data points (i.e. examples) in columns and features (i.e. observations) in rows (as usual in Marsyas0.2).
-	//This calculation assumes standardized data at its input...
-
-	realvec covar(rows_, rows_); //covariance matrix
-
-	if(size_ == 0)
-	{
-		MRSERR("realvec::covariance() : empty input matrix! returning empty and invalid covariance matrix!")
-		return covar;
-	}
-
-	//check if there are sufficient data points for a good covariance estimation...
-	if(cols_ < (rows_ + 1))
-		MRSWARN("realvec::covariance() : nr. data points < nr. observations + 1 => covariance matrix is SINGULAR!");
-	if( (mrs_real)cols_ < ((mrs_real)rows_*(mrs_real)(rows_-1.0)/2.0))
-		MRSWARN("realvec::covariance() : too few data points => ill-calculation of covariance matrix!");
-
-	for (mrs_natural r1=0; r1< rows_; r1++)
-	{
-		for (mrs_natural r2=0; r2 < rows_; r2++)
-		{
-			mrs_real sum = 0.0;
-
-			for (mrs_natural c=0; c < cols_; c++)
-				sum += (data_[c * rows_ + r1] * data_[c * rows_ + r2]);
-
-			sum /= cols_;
-			covar(r1,r2) = sum;
-		}
-	}
-
+  //covariance matrix as computed in Marsyas0.1
+  //computes the covariance between observations.
+  //Assumes data points (i.e. examples) in columns and features (i.e. observations) in rows (as usual in Marsyas0.2).
+  //This calculation assumes standardized data at its input...
+  
+  realvec covar(rows_, rows_); //covariance matrix
+  
+  if(size_ == 0)
+    {
+      MRSERR("realvec::covariance() : empty input matrix! returning empty and invalid covariance matrix!")
 	return covar;
+    }
+
+  //check if there are sufficient data points for a good covariance estimation...
+  if(cols_ < (rows_ + 1))
+    MRSWARN("realvec::covariance() : nr. data points < nr. observations + 1 => covariance matrix is SINGULAR!");
+  if( (mrs_real)cols_ < ((mrs_real)rows_*(mrs_real)(rows_-1.0)/2.0))
+    MRSWARN("realvec::covariance() : too few data points => ill-calculation of covariance matrix!");
+
+  for (mrs_natural r1=0; r1< rows_; r1++)
+    {
+      for (mrs_natural r2=0; r2 < rows_; r2++)
+	{
+	  mrs_real sum = 0.0;
+
+	  for (mrs_natural c=0; c < cols_; c++)
+	    sum += (data_[c * rows_ + r1] * data_[c * rows_ + r2]);
+
+	  sum /= cols_;
+	  covar(r1,r2) = sum;
+	}
+    }
+
+  return covar;
 }
 
 mrs_real
 realvec::trace() const
 {
-	if (cols_ != rows_)
-	{
-		MRSWARN("realvec::trace() - matrix is not square!");
-	}
+  if (cols_ != rows_)
+    {
+      MRSWARN("realvec::trace() - matrix is not square!");
+    }
 
-	mrs_real res = 0.0;
-	for(mrs_natural i = 0; i < size_; )
-	{
-		res += data_[i];
-		i += cols_+1;
-	}
+  mrs_real res = 0.0;
+  for(mrs_natural i = 0; i < size_; )
+    {
+      res += data_[i];
+      i += cols_+1;
+    }
 
-	return res;
+  return res;
 }
 
 mrs_real
 realvec::det() const
 {
-	NumericLib numlib;
-	return numlib.determinant(*this);
+  NumericLib numlib;
+  return numlib.determinant(*this);
 }
 
 mrs_real
 realvec::divergenceShape(realvec Ci, realvec Cj)
 {
-	///matrices should be square and equal sized
-	if(Ci.getCols() != Cj.getCols() && Ci.getRows() != Cj.getRows() &&
-		Ci.getCols()!= Ci.getRows())
-	{
-		MRSERR("realvec::divergenceShape() : input matrices should be square and equal sized. Returning invalid value...");
-		return -1.0;
-	}
+  ///matrices should be square and equal sized
+  if(Ci.getCols() != Cj.getCols() && Ci.getRows() != Cj.getRows() &&
+     Ci.getCols()!= Ci.getRows())
+    {
+      MRSERR("realvec::divergenceShape() : input matrices should be square and equal sized. Returning invalid value...");
+      return -1.0;
+    }
 
-	mrs_real res;
+  mrs_real res;
 
-	realvec Citemp(Ci.getRows(), Ci.getCols());
-	realvec invCi(Ci);
+  realvec Citemp(Ci.getRows(), Ci.getCols());
+  realvec invCi(Ci);
 
-	realvec Cjtemp(Cj.getRows(),Cj.getCols());
-	realvec invCj(Cj);
+  realvec Cjtemp(Cj.getRows(),Cj.getCols());
+  realvec invCj(Cj);
 
 #ifdef _MATLAB_REALVEC_
-	MATLAB->putVariable(Ci, "Ci");
-	MATLAB->putVariable(Cj, "Cj");
-	MATLAB->putVariable(Citemp, "Citemp");
-	MATLAB->putVariable(Cjtemp, "Cjtemp");
+  MATLAB->putVariable(Ci, "Ci");
+  MATLAB->putVariable(Cj, "Cj");
+  MATLAB->putVariable(Citemp, "Citemp");
+  MATLAB->putVariable(Cjtemp, "Cjtemp");
 #endif
 
 	
-	invCi.invert(Citemp); 
-	invCj.invert(Cjtemp);
+  invCi.invert(Citemp); 
+  invCj.invert(Cjtemp);
 
 #ifdef _MATLAB_REALVEC_
-	MATLAB->putVariable(Citemp, "Citemp2");
-	MATLAB->putVariable(Cjtemp, "Cjtemp2");
-	MATLAB->putVariable(invCi, "invCi");
-	MATLAB->putVariable(invCj, "invCj");
+  MATLAB->putVariable(Citemp, "Citemp2");
+  MATLAB->putVariable(Cjtemp, "Cjtemp2");
+  MATLAB->putVariable(invCi, "invCi");
+  MATLAB->putVariable(invCj, "invCj");
 #endif
 
-	Cj *= (-1.0);
-	Ci += Cj;
+  Cj *= (-1.0);
+  Ci += Cj;
 
 #ifdef _MATLAB_REALVEC_
-	MATLAB->putVariable(Ci, "Ci_minus_Cj");
+  MATLAB->putVariable(Ci, "Ci_minus_Cj");
 #endif
 
-	invCi *= (-1.0);
-	invCj += invCi;
+  invCi *= (-1.0);
+  invCj += invCi;
 
 #ifdef _MATLAB_REALVEC_
-	MATLAB->putVariable(invCj, "invCj_minus_invCi");
+  MATLAB->putVariable(invCj, "invCj_minus_invCi");
 #endif
 
-	Ci *= invCj;
+  Ci *= invCj;
 
-	res = Ci.trace() / 2.0;
+  res = Ci.trace() / 2.0;
 
 #ifdef _MATLAB_REALVEC_
-	MATLAB->putVariable(Ci, "divergenceMatrix");
-	MATLAB->putVariable(res, "divergence");
+  MATLAB->putVariable(Ci, "divergenceMatrix");
+  MATLAB->putVariable(res, "divergence");
 #endif
 
-	return res;
+  return res;
 }
 
 mrs_real
 realvec::bhattacharyyaShape(realvec Ci, realvec Cj)
 {
-	///matrices should be square and equal sized
-	if(Ci.getCols() != Cj.getCols() && Ci.getRows() != Cj.getRows() &&
-		Ci.getCols()!= Ci.getRows())
-	{
-		MRSERR("realvec::bhattacharyyaShape() : input matrices should be square and equal sized. Returning invalid value...");
-		return -1.0;
-	}
-
-	//denominator
-	mrs_real sqrtdetCi = sqrt(Ci.det());
-	mrs_real sqrtdetCj = sqrt(Cj.det());
-	mrs_real den = sqrtdetCi * sqrtdetCj;
+  ///matrices should be square and equal sized
+  if(Ci.getCols() != Cj.getCols() && Ci.getRows() != Cj.getRows() &&
+     Ci.getCols()!= Ci.getRows())
+    {
+      MRSERR("realvec::bhattacharyyaShape() : input matrices should be square and equal sized. Returning invalid value...");
+      return -1.0;
+    }
+  
+  //denominator
+  mrs_real sqrtdetCi = sqrt(Ci.det());
+  mrs_real sqrtdetCj = sqrt(Cj.det());
+  mrs_real den = sqrtdetCi * sqrtdetCj;
 #ifdef _MATLAB_REALVEC_
-	MATLAB->putVariable(Ci, "Ci");
-	MATLAB->putVariable(Cj, "Cj");
-	MATLAB->putVariable(sqrtdetCi, "sqrtdetCi");
-	MATLAB->putVariable(sqrtdetCj, "sqrtdetCj");
-	MATLAB->putVariable(den, "den");
+  MATLAB->putVariable(Ci, "Ci");
+  MATLAB->putVariable(Cj, "Cj");
+  MATLAB->putVariable(sqrtdetCi, "sqrtdetCi");
+  MATLAB->putVariable(sqrtdetCj, "sqrtdetCj");
+  MATLAB->putVariable(den, "den");
 #endif
-
-
-	//numerator
-	Ci += Cj;
-	Ci /= 2.0;
-	mrs_real num = Ci.det();
-
-	//bhattacharyyaShape
-	return log(num/den);
+  
+  
+  //numerator
+  Ci += Cj;
+  Ci /= 2.0;
+  mrs_real num = Ci.det();
+  
+  //bhattacharyyaShape
+  return log(num/den);
 }
 
 

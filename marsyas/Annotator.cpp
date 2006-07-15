@@ -49,8 +49,8 @@ void
 Annotator::addControls()
 {
   addctrl("mrs_natural/label", 0);
-  addctrl("mrs_string/labels","");
-  setctrlState("mrs_string/labels",true);
+  // addctrl("mrs_string/labels","");
+  // setctrlState("mrs_string/labels",true);
   labels_str_ = "";
   labels_index_ = 0; 
 }
@@ -67,20 +67,21 @@ Annotator::localUpdate()
 
   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
 
-  if( labels_str_.compare( getctrl("mrs_string/labels").toString() ) != 0 )
+  /* if( labels_str_.compare( getctrl("mrs_string/labels").toString() ) != 0 )
   {     
-	  labels_str_ = getctrl("mrs_string/labels").toString();
-	  labels_.clear();
-
+  labels_str_ = getctrl("mrs_string/labels").toString();
+  labels_.clear();
+	  
 	  while( labels_str_.length() != 0 )
 	  {
-		  mrs_natural i = labels_str_.find(",");
-		  labels_.push_back( strtol( labels_str_.substr(0, i).c_str() , NULL , 10 ) );
-		  labels_str_ = labels_str_.substr( i+1 , labels_str_.length()-i-1 );
+	  mrs_natural i = labels_str_.find(",");
+	  labels_.push_back( strtol( labels_str_.substr(0, i).c_str() , NULL , 10 ) );
+	  labels_str_ = labels_str_.substr( i+1 , labels_str_.length()-i-1 );
 	  }
-
+	  
 	  labels_index_ = 0;
   }
+   */ 
 }
 
 
@@ -99,15 +100,15 @@ Annotator::process(realvec& in, realvec& out)
 	
   for (t=0; t < inSamples_; t++) 
   {
-	if( labels_.size() == 0 )
-	{
+	// if( labels_.size() == 0 )
+	// {
 		out(onObservations_-1, t) = (mrs_real)label;
-	}
-	else
-	{
-		out(onObservations_-1, t) = (mrs_real)labels_[labels_index_];
-		labels_index_ = (labels_index_+1) % labels_.size();
-	}
+	// }
+	// else
+	// {
+	//	out(onObservations_-1, t) = (mrs_real)labels_[labels_index_];
+	// 	labels_index_ = (labels_index_+1) % labels_.size();
+	//}
   } 
 
 }

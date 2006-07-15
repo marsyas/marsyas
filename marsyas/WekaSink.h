@@ -38,8 +38,8 @@ class WekaSink: public MarSystem
 {
 private:
   void addControls();
-	void localUpdate();
-
+  void localUpdate();
+  
   std::string filename_;
   std::ofstream* mos_;
 

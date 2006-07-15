@@ -29,12 +29,8 @@ using namespace Marsyas;
 
 WekaSink::WekaSink(string name):MarSystem("WekaSink",name)
 {
-  //type_ = "WekaSink";
-  //name_ = name;
-
   mos_ = NULL;
-
-	addControls();
+  addControls();
 }
 
 WekaSink::~WekaSink()
@@ -88,50 +84,51 @@ WekaSink::putHeader(string inObsNames)
   if ((filename_ != getctrl("mrs_string/filename").toString()))
   {
     if (mos_ != NULL) 
-	{
-	  mos_->close();
-	  delete mos_;
-	  if (filename_ == "weka.arff")
-	    remove(filename_.c_str());
-	}
-	filename_ = getctrl("mrs_string/filename").toString();
+      {
+	mos_->close();
+	delete mos_;
+	if (filename_ == "weka.arff")
+	  remove(filename_.c_str());
+      }
+    filename_ = getctrl("mrs_string/filename").toString();
+    
+    mos_ = new ofstream;
+    mos_->open(filename_.c_str());
+    
+    (*mos_) << "@relation marsyas" << endl;
+    mrs_natural nAttributes = getctrl("mrs_natural/inObservations").toNatural()-1;
+    mrs_natural nLabels = getctrl("mrs_natural/nLabels").toNatural();
+    
+    mrs_natural i;
+    for (i =0; i < nAttributes; i++)
+      {
+	
+	string inObsName;
+	string temp;
+	inObsName = inObsNames.substr(0, inObsNames.find(","));
+	temp = inObsNames.substr(inObsNames.find(",")+1, inObsNames.length());
+	inObsNames = temp;
+	ostringstream oss;
+	// oss << "attribute" << i; 
+	oss << inObsName;
+	(*mos_) << "@attribute " << oss.str() << " real" << endl;
+      }
+    (*mos_) << "@attribute output {";
+    for (i=0; i < nLabels; i++) 
+      {
+	ostringstream oss;
+	// oss << "label" << i;
+	oss << labelNames_[i];
+	(*mos_) << oss.str();
+	if (i < nLabels-1)
+	  (*mos_) << ",";
+	// (*mos_) << "@attribute output {music,speech}" << endl;
+      }
+    (*mos_) << "}" << endl;
+    (*mos_) << "\n\n@data" << endl;
   }
-  
-  mos_ = new ofstream;
-  mos_->open(filename_.c_str());
-
-  (*mos_) << "@relation marsyas" << endl;
-  mrs_natural nAttributes = getctrl("mrs_natural/inObservations").toNatural()-1;
-  mrs_natural nLabels = getctrl("mrs_natural/nLabels").toNatural();
-  
-  mrs_natural i;
-  for (i =0; i < nAttributes; i++)
-	{
-
-	  string inObsName;
-	  string temp;
-	  inObsName = inObsNames.substr(0, inObsNames.find(","));
-	  temp = inObsNames.substr(inObsNames.find(",")+1, inObsNames.length());
-	  inObsNames = temp;
-	  ostringstream oss;
-	  // oss << "attribute" << i; 
-	  oss << inObsName;
-	  (*mos_) << "@attribute " << oss.str() << " real" << endl;
-	}
-  (*mos_) << "@attribute output {";
-  for (i=0; i < nLabels; i++) 
-	{
-	  ostringstream oss;
-	  // oss << "label" << i;
-	  oss << labelNames_[i];
-	  (*mos_) << oss.str();
-	  if (i < nLabels-1)
-		(*mos_) << ",";
-	  // (*mos_) << "@attribute output {music,speech}" << endl;
-	}
-  (*mos_) << "}" << endl;
-  (*mos_) << "\n\n@data" << endl;
 }
+
 
 void
 WekaSink::localUpdate()
@@ -187,36 +184,41 @@ WekaSink::process(realvec& in, realvec& out)
   static int count = 0;
   
   checkFlow(in,out);
-
+  
   mrs_natural label = 0;
+
+  
   
   for (t = 0; t < inSamples_; t++)
     {
       for (o=0; o < inObservations_; o++)
+	{
+	  out(o,t) = in(o,t);
+	  if (o < inObservations_-1)
+	    {
+	      if ((count % downsample_) == 0)
 		{
-		  out(o,t) = in(o,t);
-		  if (o < inObservations_-1)
-			{
-			  if ((count % downsample_) == 0)
-				{
-				  if( out(o,t) != out(o,t) )	// Jen's NaN check for MIREX 05
-		  			(*mos_) << fixed << setprecision(precision_) << 0. << ",";
-				  else
-		  			(*mos_) << fixed << setprecision(precision_) << out(o,t) << ",";
-				}
-			}
+		  if( out(o,t) != out(o,t) )	// Jen's NaN check for MIREX 05
+		    (*mos_) << fixed << setprecision(precision_) << 0. << ",";
+		  else
+		    (*mos_) << fixed << setprecision(precision_) << out(o,t) << ",";
 		}
+	    }
+	}
       
       label = (mrs_natural)in(inObservations_-1, t);
-
+      
       ostringstream oss;
       if ((count % downsample_) == 0)
-		{
-		  oss << labelNames_[label];
-		  (*mos_) << oss.str();
-		  (*mos_) << endl;
-		}
-    }
+	{
 
+
+
+	  oss << labelNames_[label];
+	  (*mos_) << oss.str();
+	  (*mos_) << endl;
+	}
+    }
+  
   count++;
 }

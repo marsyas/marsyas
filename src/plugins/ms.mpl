@@ -2,7 +2,8 @@
 # Type = Series
 # Name = featureNetwork
 
-# MarControls = 19
+# MarControls = 20
+# /Series/featureNetwork/mrs_bool/active = 1
 # /Series/featureNetwork/mrs_bool/debug = 0
 # /Series/featureNetwork/mrs_bool/mute = 0
 # /Series/featureNetwork/mrs_bool/probe = 0
@@ -12,7 +13,7 @@
 # /Series/featureNetwork/mrs_natural/onSamples = 1
 # /Series/featureNetwork/mrs_real/israte = 22050
 # /Series/featureNetwork/mrs_real/osrate = 43.0664
-# /Series/featureNetwork/mrs_realvec/input0 = # MARSYAS realvec
+# /Series/featureNetwork/mrs_realvec/input0 = # MARSYAS mrs_realvec
 # Size = 0
 
 
@@ -22,9 +23,9 @@
 
 
 # Size = 0
-# MARSYAS realvec
+# MARSYAS mrs_realvec
 
-# /Series/featureNetwork/mrs_realvec/input1 = # MARSYAS realvec
+# /Series/featureNetwork/mrs_realvec/input1 = # MARSYAS mrs_realvec
 # Size = 0
 
 
@@ -34,9 +35,9 @@
 
 
 # Size = 0
-# MARSYAS realvec
+# MARSYAS mrs_realvec
 
-# /Series/featureNetwork/mrs_realvec/input2 = # MARSYAS realvec
+# /Series/featureNetwork/mrs_realvec/input2 = # MARSYAS mrs_realvec
 # Size = 0
 
 
@@ -46,9 +47,9 @@
 
 
 # Size = 0
-# MARSYAS realvec
+# MARSYAS mrs_realvec
 
-# /Series/featureNetwork/mrs_realvec/input3 = # MARSYAS realvec
+# /Series/featureNetwork/mrs_realvec/input3 = # MARSYAS mrs_realvec
 # Size = 0
 
 
@@ -58,9 +59,9 @@
 
 
 # Size = 0
-# MARSYAS realvec
+# MARSYAS mrs_realvec
 
-# /Series/featureNetwork/mrs_realvec/input4 = # MARSYAS realvec
+# /Series/featureNetwork/mrs_realvec/input4 = # MARSYAS mrs_realvec
 # Size = 0
 
 
@@ -70,9 +71,9 @@
 
 
 # Size = 0
-# MARSYAS realvec
+# MARSYAS mrs_realvec
 
-# /Series/featureNetwork/mrs_realvec/input5 = # MARSYAS realvec
+# /Series/featureNetwork/mrs_realvec/input5 = # MARSYAS mrs_realvec
 # Size = 0
 
 
@@ -82,9 +83,9 @@
 
 
 # Size = 0
-# MARSYAS realvec
+# MARSYAS mrs_realvec
 
-# /Series/featureNetwork/mrs_realvec/input6 = # MARSYAS realvec
+# /Series/featureNetwork/mrs_realvec/input6 = # MARSYAS mrs_realvec
 # Size = 0
 
 
@@ -94,9 +95,9 @@
 
 
 # Size = 0
-# MARSYAS realvec
+# MARSYAS mrs_realvec
 
-# /Series/featureNetwork/mrs_realvec/input7 = # MARSYAS realvec
+# /Series/featureNetwork/mrs_realvec/input7 = # MARSYAS mrs_realvec
 # Size = 0
 
 
@@ -106,15 +107,12 @@
 
 
 # Size = 0
-# MARSYAS realvec
+# MARSYAS mrs_realvec
 
 # /Series/featureNetwork/mrs_string/inObsNames = audio,
 # /Series/featureNetwork/mrs_string/onObsNames = ,
 
-# Number of links = 6
-# Synonyms of /Series/featureNetwork/mrs_bool/mute = 
-# Number of synonyms = 1
-# /Series/featureNetwork/Gain/gt/mrs_bool/mute
+# Number of links = 5
 # Synonyms of /Series/featureNetwork/mrs_bool/notEmpty = 
 # Number of synonyms = 1
 # /Series/featureNetwork/SoundFileSource/src/mrs_bool/notEmpty
@@ -138,12 +136,15 @@
 # Type = SoundFileSource
 # Name = src
 
-# MarControls = 23
+# MarControls = 27
+# /SoundFileSource/src/mrs_bool/active = 1
 # /SoundFileSource/src/mrs_bool/advance = 0
 # /SoundFileSource/src/mrs_bool/debug = 0
 # /SoundFileSource/src/mrs_bool/mute = 0
 # /SoundFileSource/src/mrs_bool/notEmpty = 0
 # /SoundFileSource/src/mrs_bool/noteon = 0
+# /SoundFileSource/src/mrs_bool/shuffle = 0
+# /SoundFileSource/src/mrs_natural/cindex = 0
 # /SoundFileSource/src/mrs_natural/inObservations = 1
 # /SoundFileSource/src/mrs_natural/inSamples = 512
 # /SoundFileSource/src/mrs_natural/loopPos = 0
@@ -159,7 +160,8 @@
 # /SoundFileSource/src/mrs_real/osrate = 22050
 # /SoundFileSource/src/mrs_real/repetitions = 1
 # /SoundFileSource/src/mrs_string/allfilenames = ,
-# /SoundFileSource/src/mrs_string/filename = /home/gtzan/data/sound/music_speech/speech/voices.au
+# /SoundFileSource/src/mrs_string/currentlyPlaying = daufile
+# /SoundFileSource/src/mrs_string/filename = /home/gtzan/data/sound/music_speech/speech/shannon.au
 # /SoundFileSource/src/mrs_string/inObsNames = audio,
 # /SoundFileSource/src/mrs_string/onObsNames = audio,
 
@@ -169,7 +171,8 @@
 # Type = AudioSink
 # Name = dest
 
-# MarControls = 13
+# MarControls = 14
+# /AudioSink/dest/mrs_bool/active = 1
 # /AudioSink/dest/mrs_bool/debug = 0
 # /AudioSink/dest/mrs_bool/init = 0
 # /AudioSink/dest/mrs_bool/mute = 0
@@ -190,9 +193,12 @@
 # Type = Fanout
 # Name = features
 
-# MarControls = 10
+# MarControls = 13
+# /Fanout/features/mrs_bool/active = 1
 # /Fanout/features/mrs_bool/debug = 0
 # /Fanout/features/mrs_bool/mute = 0
+# /Fanout/features/mrs_bool/probe = 0
+# /Fanout/features/mrs_natural/disable = -1
 # /Fanout/features/mrs_natural/inObservations = 1
 # /Fanout/features/mrs_natural/inSamples = 512
 # /Fanout/features/mrs_natural/onObservations = 17
@@ -210,7 +216,8 @@
 # Type = Series
 # Name = SpectralShape
 
-# MarControls = 14
+# MarControls = 15
+# /Series/SpectralShape/mrs_bool/active = 1
 # /Series/SpectralShape/mrs_bool/debug = 0
 # /Series/SpectralShape/mrs_bool/mute = 0
 # /Series/SpectralShape/mrs_bool/probe = 0
@@ -220,7 +227,7 @@
 # /Series/SpectralShape/mrs_natural/onSamples = 1
 # /Series/SpectralShape/mrs_real/israte = 22050
 # /Series/SpectralShape/mrs_real/osrate = 43.0664
-# /Series/SpectralShape/mrs_realvec/input0 = # MARSYAS realvec
+# /Series/SpectralShape/mrs_realvec/input0 = # MARSYAS mrs_realvec
 # Size = 0
 
 
@@ -230,9 +237,9 @@
 
 
 # Size = 0
-# MARSYAS realvec
+# MARSYAS mrs_realvec
 
-# /Series/SpectralShape/mrs_realvec/input1 = # MARSYAS realvec
+# /Series/SpectralShape/mrs_realvec/input1 = # MARSYAS mrs_realvec
 # Size = 0
 
 
@@ -242,9 +249,9 @@
 
 
 # Size = 0
-# MARSYAS realvec
+# MARSYAS mrs_realvec
 
-# /Series/SpectralShape/mrs_realvec/input2 = # MARSYAS realvec
+# /Series/SpectralShape/mrs_realvec/input2 = # MARSYAS mrs_realvec
 # Size = 0
 
 
@@ -254,7 +261,7 @@
 
 
 # Size = 0
-# MARSYAS realvec
+# MARSYAS mrs_realvec
 
 # /Series/SpectralShape/mrs_string/inObsNames = audio,
 # /Series/SpectralShape/mrs_string/onObsNames = Centroid,Kurtosis,Rolloff,Flux,MFCC_0,MFCC_1,MFCC_2,MFCC_3,MFCC_4,MFCC_5,MFCC_6,MFCC_7,MFCC_8,MFCC_9,MFCC_10,MFCC_11,MFCC_12,
@@ -267,7 +274,8 @@
 # Type = Hamming
 # Name = hamming
 
-# MarControls = 10
+# MarControls = 11
+# /Hamming/hamming/mrs_bool/active = 1
 # /Hamming/hamming/mrs_bool/debug = 0
 # /Hamming/hamming/mrs_bool/mute = 0
 # /Hamming/hamming/mrs_natural/inObservations = 1
@@ -285,7 +293,8 @@
 # Type = Spectrum
 # Name = spk
 
-# MarControls = 12
+# MarControls = 13
+# /Spectrum/spk/mrs_bool/active = 1
 # /Spectrum/spk/mrs_bool/debug = 0
 # /Spectrum/spk/mrs_bool/mute = 0
 # /Spectrum/spk/mrs_natural/inObservations = 1
@@ -305,7 +314,8 @@
 # Type = PowerSpectrum
 # Name = pspk
 
-# MarControls = 11
+# MarControls = 12
+# /PowerSpectrum/pspk/mrs_bool/active = 1
 # /PowerSpectrum/pspk/mrs_bool/debug = 0
 # /PowerSpectrum/pspk/mrs_bool/mute = 0
 # /PowerSpectrum/pspk/mrs_natural/inObservations = 512
@@ -324,9 +334,12 @@
 # Type = Fanout
 # Name = spectrumFeatures
 
-# MarControls = 10
+# MarControls = 13
+# /Fanout/spectrumFeatures/mrs_bool/active = 1
 # /Fanout/spectrumFeatures/mrs_bool/debug = 0
 # /Fanout/spectrumFeatures/mrs_bool/mute = 0
+# /Fanout/spectrumFeatures/mrs_bool/probe = 0
+# /Fanout/spectrumFeatures/mrs_natural/disable = -1
 # /Fanout/spectrumFeatures/mrs_natural/inObservations = 256
 # /Fanout/spectrumFeatures/mrs_natural/inSamples = 1
 # /Fanout/spectrumFeatures/mrs_natural/onObservations = 17
@@ -344,7 +357,8 @@
 # Type = Centroid
 # Name = cntrd
 
-# MarControls = 10
+# MarControls = 11
+# /Centroid/cntrd/mrs_bool/active = 1
 # /Centroid/cntrd/mrs_bool/debug = 0
 # /Centroid/cntrd/mrs_bool/mute = 0
 # /Centroid/cntrd/mrs_natural/inObservations = 256
@@ -362,7 +376,8 @@
 # Type = Kurtosis
 # Name = krt
 
-# MarControls = 10
+# MarControls = 11
+# /Kurtosis/krt/mrs_bool/active = 1
 # /Kurtosis/krt/mrs_bool/debug = 0
 # /Kurtosis/krt/mrs_bool/mute = 0
 # /Kurtosis/krt/mrs_natural/inObservations = 256
@@ -380,7 +395,8 @@
 # Type = Rolloff
 # Name = rlf
 
-# MarControls = 11
+# MarControls = 12
+# /Rolloff/rlf/mrs_bool/active = 1
 # /Rolloff/rlf/mrs_bool/debug = 0
 # /Rolloff/rlf/mrs_bool/mute = 0
 # /Rolloff/rlf/mrs_natural/inObservations = 256
@@ -399,7 +415,8 @@
 # Type = Flux
 # Name = flux
 
-# MarControls = 10
+# MarControls = 11
+# /Flux/flux/mrs_bool/active = 1
 # /Flux/flux/mrs_bool/debug = 0
 # /Flux/flux/mrs_bool/mute = 0
 # /Flux/flux/mrs_natural/inObservations = 256
@@ -417,7 +434,8 @@
 # Type = MFCC
 # Name = mfcc
 
-# MarControls = 10
+# MarControls = 11
+# /MFCC/mfcc/mrs_bool/active = 1
 # /MFCC/mfcc/mrs_bool/debug = 0
 # /MFCC/mfcc/mrs_bool/mute = 0
 # /MFCC/mfcc/mrs_natural/inObservations = 256
@@ -438,7 +456,8 @@
 # Type = Memory
 # Name = memory
 
-# MarControls = 12
+# MarControls = 13
+# /Memory/memory/mrs_bool/active = 1
 # /Memory/memory/mrs_bool/debug = 0
 # /Memory/memory/mrs_bool/mute = 0
 # /Memory/memory/mrs_bool/reset = 0
@@ -458,9 +477,12 @@
 # Type = Fanout
 # Name = statistics
 
-# MarControls = 10
+# MarControls = 13
+# /Fanout/statistics/mrs_bool/active = 1
 # /Fanout/statistics/mrs_bool/debug = 0
 # /Fanout/statistics/mrs_bool/mute = 0
+# /Fanout/statistics/mrs_bool/probe = 0
+# /Fanout/statistics/mrs_natural/disable = -1
 # /Fanout/statistics/mrs_natural/inObservations = 17
 # /Fanout/statistics/mrs_natural/inSamples = 40
 # /Fanout/statistics/mrs_natural/onObservations = 34
@@ -478,7 +500,8 @@
 # Type = Mean
 # Name = mn
 
-# MarControls = 10
+# MarControls = 11
+# /Mean/mn/mrs_bool/active = 1
 # /Mean/mn/mrs_bool/debug = 0
 # /Mean/mn/mrs_bool/mute = 0
 # /Mean/mn/mrs_natural/inObservations = 17
@@ -496,7 +519,8 @@
 # Type = StandardDeviation
 # Name = std
 
-# MarControls = 10
+# MarControls = 11
+# /StandardDeviation/std/mrs_bool/active = 1
 # /StandardDeviation/std/mrs_bool/debug = 0
 # /StandardDeviation/std/mrs_bool/mute = 0
 # /StandardDeviation/std/mrs_natural/inObservations = 17
@@ -515,7 +539,8 @@
 # Type = Annotator
 # Name = annotator
 
-# MarControls = 11
+# MarControls = 12
+# /Annotator/annotator/mrs_bool/active = 1
 # /Annotator/annotator/mrs_bool/debug = 0
 # /Annotator/annotator/mrs_bool/mute = 0
 # /Annotator/annotator/mrs_natural/inObservations = 34
@@ -534,7 +559,8 @@
 # Type = WekaSink
 # Name = wsink
 
-# MarControls = 15
+# MarControls = 16
+# /WekaSink/wsink/mrs_bool/active = 1
 # /WekaSink/wsink/mrs_bool/debug = 0
 # /WekaSink/wsink/mrs_bool/mute = 1
 # /WekaSink/wsink/mrs_natural/downsample = 40
@@ -557,7 +583,8 @@
 # Type = GaussianClassifier
 # Name = gaussian
 
-# MarControls = 15
+# MarControls = 16
+# /GaussianClassifier/gaussian/mrs_bool/active = 1
 # /GaussianClassifier/gaussian/mrs_bool/debug = 0
 # /GaussianClassifier/gaussian/mrs_bool/done = 0
 # /GaussianClassifier/gaussian/mrs_bool/mute = 0
@@ -568,31 +595,31 @@
 # /GaussianClassifier/gaussian/mrs_natural/onSamples = 1
 # /GaussianClassifier/gaussian/mrs_real/israte = 43.0664
 # /GaussianClassifier/gaussian/mrs_real/osrate = 43.0664
-# /GaussianClassifier/gaussian/mrs_realvec/covars = # MARSYAS realvec
+# /GaussianClassifier/gaussian/mrs_realvec/covars = # MARSYAS mrs_realvec
 # Size = 70
 
 
 # type: matrix
 # rows: 2
 # columns: 35
-672.412 2.25095e-13 89.5734 281401 0.0234071 0.232361 0.513397 0.931746 1.87386 3.14524 3.59299 3.2908 4.21811 4.22253 4.68603 4.00005 5.20308 2632.27 2.07525e-12 105.06 767515 0.188581 4.92236 11.9496 18.9602 34.6502 50.5243 57.9311 50.1834 43.1419 41.9469 37.4821 38.1671 35.1481 0 
-547.156 2.29604e-13 56.7547 247029 0.0283737 0.465241 0.663504 1.21583 3.11321 3.43585 3.91215 5.90331 7.67155 8.40766 11.4518 7.94568 15.9784 471.991 1.95551e-12 79.3581 310892 0.116154 1.40777 5.23507 5.28905 9.50819 23.1527 22.2979 29.6301 45.2712 50.2724 57.3398 61.4123 59.81 0 
+672.465 1.47844e-08 89.3536 280622 0.023434 0.232253 0.513474 0.930575 1.87475 3.13977 3.59707 3.29198 4.22421 4.22828 4.65422 4.00283 5.17756 2626.81 1.34454e-07 105.216 770582 0.186219 4.96398 11.9005 19.2427 34.5306 50.6671 56.7696 49.6571 42.83 41.5965 37.4944 37.7197 35.686 0 
+548.521 1.50495e-08 56.4738 247656 0.0283223 0.466129 0.664828 1.22268 3.11712 3.43149 3.91019 5.90307 7.67176 8.4053 11.4916 7.93621 15.9553 472.536 1.27875e-07 79.5833 310570 0.116638 1.40734 5.24602 5.30676 9.4811 23.2459 22.3676 29.6922 45.1464 50.3509 57.1407 61.8475 59.6692 0 
 
 # Size = 70
-# MARSYAS realvec
+# MARSYAS mrs_realvec
 
-# /GaussianClassifier/gaussian/mrs_realvec/means = # MARSYAS realvec
+# /GaussianClassifier/gaussian/mrs_realvec/means = # MARSYAS mrs_realvec
 # Size = 70
 
 
 # type: matrix
 # rows: 2
 # columns: 35
-0.0637275 6.95084e+06 0.152105 0.00823376 -70.6699 5.63441 0.0308119 1.93388 0.358039 0.65807 0.31291 0.395904 0.313465 0.338928 0.306103 0.316947 0.314715 0.0256223 2.66177e+06 0.0936317 0.00299289 3.16363 0.986479 0.751975 0.631946 0.554694 0.51454 0.498393 0.499871 0.500675 0.498131 0.495665 0.481479 0.481751 0 
-0.0865025 7.80047e+06 0.278593 0.00814738 -76.5049 4.75225 0.152344 2.2623 0.601581 0.437161 0.507566 0.365622 0.475341 0.454826 0.38035 0.400381 0.447519 0.072411 3.55253e+06 0.240569 0.00401133 6.64523 2.13962 1.2967 1.33244 0.996558 0.77092 0.775156 0.711792 0.620098 0.587891 0.547877 0.519988 0.493575 0 
+0.0637268 27146.6 0.1521 0.00823383 -70.6726 5.63511 0.0304776 1.93409 0.358098 0.658199 0.312481 0.395602 0.31318 0.338987 0.306532 0.317066 0.314806 0.0256035 10399.8 0.0935429 0.00299166 3.16447 0.986811 0.751719 0.631266 0.55481 0.514335 0.498958 0.50015 0.501091 0.49834 0.495339 0.481519 0.48127 0 
+0.0864711 30468.4 0.278539 0.00814711 -76.5047 4.75276 0.152347 2.26264 0.601497 0.437217 0.507748 0.365702 0.475505 0.454779 0.380358 0.40043 0.447341 0.0724043 13876.3 0.240453 0.00401182 6.64419 2.14029 1.29787 1.33418 0.99655 0.770833 0.775057 0.711951 0.620028 0.587816 0.548158 0.519979 0.493539 0 
 
 # Size = 70
-# MARSYAS realvec
+# MARSYAS mrs_realvec
 
 # /GaussianClassifier/gaussian/mrs_string/inObsNames = Mean_Mem40_Centroid,Mean_Mem40_Kurtosis,Mean_Mem40_Rolloff,Mean_Mem40_Flux,Mean_Mem40_MFCC_0,Mean_Mem40_MFCC_1,Mean_Mem40_MFCC_2,Mean_Mem40_MFCC_3,Mean_Mem40_MFCC_4,Mean_Mem40_MFCC_5,Mean_Mem40_MFCC_6,Mean_Mem40_MFCC_7,Mean_Mem40_MFCC_8,Mean_Mem40_MFCC_9,Mean_Mem40_MFCC_10,Mean_Mem40_MFCC_11,Mean_Mem40_MFCC_12,Std_Mem40_Centroid,Std_Mem40_Kurtosis,Std_Mem40_Rolloff,Std_Mem40_Flux,Std_Mem40_MFCC_0,Std_Mem40_MFCC_1,Std_Mem40_MFCC_2,Std_Mem40_MFCC_3,Std_Mem40_MFCC_4,Std_Mem40_MFCC_5,Std_Mem40_MFCC_6,Std_Mem40_MFCC_7,Std_Mem40_MFCC_8,Std_Mem40_MFCC_9,Std_Mem40_MFCC_10,Std_Mem40_MFCC_11,Std_Mem40_MFCC_12,
 # /GaussianClassifier/gaussian/mrs_string/mode = predict
@@ -604,8 +631,10 @@
 # Type = Confidence
 # Name = confidence
 
-# MarControls = 14
+# MarControls = 16
+# /Confidence/confidence/mrs_bool/active = 1
 # /Confidence/confidence/mrs_bool/debug = 0
+# /Confidence/confidence/mrs_bool/forcePrint = 0
 # /Confidence/confidence/mrs_bool/mute = 0
 # /Confidence/confidence/mrs_bool/print = 1
 # /Confidence/confidence/mrs_natural/inObservations = 2
