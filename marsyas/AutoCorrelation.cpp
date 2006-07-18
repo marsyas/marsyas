@@ -66,8 +66,8 @@ AutoCorrelation::addControls()
 {
   addctrl("mrs_real/magcompress", 2.0);
   
-	delete myfft_; //[?]
-  myfft_ = new fft();//[?]
+	//delete myfft_; //[?]
+  //myfft_ = new fft();//[?]
 }
 
 MarSystem*
@@ -79,7 +79,10 @@ AutoCorrelation::clone() const
 void
 AutoCorrelation::localUpdate()
 {
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+	delete myfft_; //[!]
+	myfft_ = new fft();//[!]
+
+	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
   

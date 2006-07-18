@@ -40,7 +40,7 @@ BeatHistoFeatures::BeatHistoFeatures(string name):MarSystem("BeatHistoFeatures",
   
 	mxr_ = NULL;
 
-	addControls();
+	//addControls();
 }
 
 BeatHistoFeatures::BeatHistoFeatures(const BeatHistoFeatures& a):MarSystem(a)
@@ -70,19 +70,22 @@ BeatHistoFeatures::clone() const
   return new BeatHistoFeatures(*this);
 }
 
-void 
-BeatHistoFeatures::addControls()
-{
-  delete mxr_;//[?]
-  mxr_ = new MaxArgMax("mxr");//[?]
-}
+// void 
+// BeatHistoFeatures::addControls()
+// {
+//   //delete mxr_;//[?]
+//   //mxr_ = new MaxArgMax("mxr");//[?]
+//}
 
 void
 BeatHistoFeatures::localUpdate()
 {
   MRSDIAG("BeatHistoFeatures.cpp - BeatHistoFeatures:localUpdate");
   
-  setctrl("mrs_natural/onSamples", (mrs_natural)1);
+	delete mxr_;//[!]
+	mxr_ = new MaxArgMax("mxr");//[!]
+
+	setctrl("mrs_natural/onSamples", (mrs_natural)1);
   setctrl("mrs_natural/onObservations", (mrs_natural)8);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 

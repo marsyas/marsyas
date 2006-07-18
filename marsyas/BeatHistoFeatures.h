@@ -49,7 +49,7 @@ private:
 			    mrs_natural size, 
 					realvec& in);
 
-	void addControls();
+	//void addControls();
 	void localUpdate();
   
 public:
