@@ -56,7 +56,7 @@ protected:
   
 public:
   //Composite();
-	Composite(std::string type, std::string name);
+  Composite(std::string type, std::string name);
   Composite(const Composite& a);
   
   virtual ~Composite();
@@ -74,7 +74,7 @@ public:
   MarControlValue getctrl(std::string cname);
   MarControlValue getControl(std::string cname);
   
-	void addMarSystem(MarSystem *marsystem);
+  void addMarSystem(MarSystem *marsystem);
   
   std::ostream& put(std::ostream& o);	  
   
