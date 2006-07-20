@@ -149,7 +149,7 @@ void Parallel::process(realvec& in, realvec& out)
       localIndex = marsystems_[i]->getctrl("mrs_natural/inObservations").toNatural();
       for (o = 0; o < localIndex; o++) 
 			{
-				for (t = 0; t < onSamples_; t++) 
+				for (t = 0; t < inSamples_; t++) //lmartins: was t < onSamples [!]
 				{
 					(*(slices_[2*i]))(o,t) = in(inIndex + o,t);
 				}
