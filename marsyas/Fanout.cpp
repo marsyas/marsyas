@@ -112,7 +112,7 @@ Fanout::localUpdate()
 		{
 			oss << marsystems_[i]->getctrl("mrs_string/onObsNames");
 
-			//lmartins: replaced updctrl() calls by setctrl() + update() ==> more efficient!
+			//lmartins: replace updctrl() calls by setctrl() + update() ? ==> more efficient! [?]
 			marsystems_[i]->updctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/inSamples"));
 		  marsystems_[i]->updctrl("mrs_natural/inObservations", marsystems_[i-1]->getctrl("mrs_natural/inObservations"));
 			marsystems_[i]->updctrl("mrs_real/israte", marsystems_[i-1]->getctrl("mrs_real/israte"));

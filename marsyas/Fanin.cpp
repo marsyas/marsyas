@@ -77,21 +77,21 @@ Fanin::localUpdate()
     mrs_natural obs = 0;
     for (mrs_natural i=0; i < marsystemsSize_; i++)
 		{
-			obs += marsystems_[i]->getctrl("mrs_natural/inObservations").toNatural();
+			obs += marsystems_[i]->getctrl("mrs_natural/inObservations").toNatural();//[?]
 		}
-    setctrl("mrs_natural/inObservations", obs); 
+    setctrl("mrs_natural/inObservations", obs); //[?] 
     setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte"));  
     
     // setctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
     // setctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
     // setctrl("mrs_real/israte", getctrl("mrs_real/israte"));  
     
-    for (mrs_natural i=0; i < marsystemsSize_; i++)
+    for (mrs_natural i=0; i < marsystemsSize_; i++) //i=0 [?]
 		{
-			//lmartins: replaced updctrl() calls by setctrl() + update() ==> more efficient!
-			marsystems_[i]->setctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
-			marsystems_[i]->setctrl("mrs_natural/inObservations", (mrs_natural)1);
-			marsystems_[i]->setctrl("mrs_real/israte", getctrl("mrs_real/israte"));
+			 //lmartins: replace updctrl() calls by setctrl()? ==> more efficient! [?]
+			marsystems_[i]->updctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
+			marsystems_[i]->updctrl("mrs_natural/inObservations", (mrs_natural)1); //[?]
+			marsystems_[i]->updctrl("mrs_real/israte", getctrl("mrs_real/israte"));
 			marsystems_[i]->update();
 		}
     setctrl("mrs_natural/onSamples", marsystems_[0]->getctrl("mrs_natural/onSamples").toNatural());
