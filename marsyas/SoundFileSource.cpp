@@ -71,10 +71,10 @@ SoundFileSource::SoundFileSource(const SoundFileSource& a):MarSystem(a)
 // 	dbg_ = a.dbg_;
 // 	mute_ = a.mute_;
 
-	sdata_ = a.sdata_;
-  cdata_ = a.cdata_;
-  sfp_ = a.sfp_;
-  src_ = a.src_;
+	sdata_ = NULL;
+	cdata_ = NULL;
+	sfp_ = NULL;
+	src_ = NULL;
 }
 
 void

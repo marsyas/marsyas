@@ -71,9 +71,9 @@ protected:
   short *sdata_;
   unsigned char *cdata_;
   FILE *sfp_;
-  
   long sfp_begin_;
-  std::string filename_;
+
+	std::string filename_;
   mrs_natural sampleSize_;			// in bytes
   mrs_natural samplesRead_;
   mrs_natural samplesToRead_;
@@ -83,7 +83,8 @@ protected:
   //mrs_real israte_;
   
   AbsSoundFileSource* src_;
-  bool advance_;
+
+	bool advance_;
   bool shuffle_;
   
   mrs_natural cindex_;
