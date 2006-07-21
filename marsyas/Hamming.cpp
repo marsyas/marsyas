@@ -70,7 +70,8 @@ void
 Hamming::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
-  if (mute_) return;
+  //lmartins: if (mute_) return;
+	if(getctrl("mrs_bool/mute").toBool()) return;
   
   for (o=0; o < inObservations_; o++)
     for (t = 0; t < inSamples_; t++)

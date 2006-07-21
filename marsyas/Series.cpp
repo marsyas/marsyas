@@ -111,7 +111,7 @@ Series::localUpdate()
 
     for (mrs_natural i=1; i < marsystemsSize_; i++)
 		{
-		  //lmartins: replaced updctrl() calls by setctrl() ==> more efficient!
+		  //lmartins: replace updctrl() calls by setctrl()? ==> more efficient![?]
 		  marsystems_[i]->updctrl("mrs_string/inObsNames", marsystems_[i-1]->getctrl("mrs_string/onObsNames"));
 		  marsystems_[i]->updctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/onSamples"));
 		  marsystems_[i]->updctrl("mrs_natural/inObservations", marsystems_[i-1]->getctrl("mrs_natural/onObservations"));

@@ -478,7 +478,8 @@ void
 SeneffEar::process(realvec& in, realvec& out)
 {
   checkFlow(in, out);
-  if (mute_) return;
+  //lmartins: if (mute_) return;
+	if(getctrl("mrs_bool/mute").toBool()) return;
 
   mrs_natural s = 0;
   stage = getctrl("mrs_natural/stage").toNatural();

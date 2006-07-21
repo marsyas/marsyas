@@ -80,7 +80,8 @@ SineSource::process(realvec &in, realvec &out)
 {
   checkFlow(in,out);
 
-  if (mute_) 
+  //lmartins: if (mute_)
+	if(getctrl("mrs_bool/mute").toBool())
     {
       out.setval(0.0);
       return;

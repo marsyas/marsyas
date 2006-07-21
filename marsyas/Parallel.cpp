@@ -72,7 +72,8 @@ void Parallel::localUpdate()
     
     for (mrs_natural i=1; i < marsystemsSize_; i++) 
 		{
-      marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/inSamples"));
+      //lmartins: setctrl or updctrl?!? [?]
+	  marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/inSamples"));
       marsystems_[i]->setctrl("mrs_real/israte", marsystems_[i-1]->getctrl("mrs_real/osrate"));
       marsystems_[i]->update();
       inObservations += marsystems_[i]->getctrl("mrs_natural/inObservations").toNatural();

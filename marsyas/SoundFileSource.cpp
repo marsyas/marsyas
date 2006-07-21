@@ -299,7 +299,8 @@ SoundFileSource::process(realvec& in, realvec &out)
   {
     src_->process(in,out);
 
-    if (mute_) 
+    //lmartins: if (mute_)
+		if(getctrl("mrs_bool/mute").toBool())
 			out.setval(0.0);      
 
     setctrl("mrs_natural/pos", src_->pos_);

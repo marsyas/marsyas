@@ -83,11 +83,11 @@ SilenceRemove::localUpdate()
     setctrl("mrs_real/israte", 
       marsystems_[0]->getctrl("mrs_real/israte"));
     
-    // set output characteristics 
+    // set output characteristics
     setctrl("mrs_natural/onSamples", marsystems_[0]->getctrl("mrs_natural/onSamples").toNatural());
     setctrl("mrs_natural/onObservations", marsystems_[0]->getctrl("mrs_natural/onObservations").toNatural());
     setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-    marsystems_[0]->update();
+    marsystems_[0]->update(); //lmartins: shouldn't this have already been called?! [?]
   }
 }
 

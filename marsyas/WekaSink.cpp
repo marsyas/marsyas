@@ -159,9 +159,10 @@ WekaSink::localUpdate()
 
   string onObsNames = getctrl("mrs_string/inObsNames").toString();
 
-  mute_ = getctrl("mrs_bool/mute").toBool();
+  //mute_ = getctrl("mrs_bool/mute").toBool();
   
-  if (!mute_) 
+  //lmartins:if (!mute_)
+	if(!(getctrl("mrs_bool/mute").toBool()))
     putHeader(onObsNames);
 
   precision_ = getctrl("mrs_natural/precision").toNatural();
@@ -171,13 +172,14 @@ WekaSink::localUpdate()
 void 
 WekaSink::process(realvec& in, realvec& out)
 {
-  if (mute_) 				// copy input to output 
+  //lmartins: if (mute_) 				// copy input to output
+	if(getctrl("mrs_bool/mute").toBool())
     {
       for (o=0; o < inObservations_; o++)
-	for (t = 0; t < inSamples_; t++)
-	  {
-	    out(o,t) =  in(o,t);
-	  }
+				for (t = 0; t < inSamples_; t++)
+					{
+						out(o,t) =  in(o,t);
+					}
       return;
     }
   

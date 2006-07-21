@@ -136,7 +136,7 @@ AudioSink::localUpdate()
       isInitialized_ = false;
     }
  
-  mute_ = getctrl("mrs_bool/mute").toBool();
+  //lmartins: mute_ = getctrl("mrs_bool/mute").toBool();
   
   //defaultUpdate();
 	inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
@@ -202,8 +202,8 @@ AudioSink::process(realvec& in, realvec& out)
   }
   
   //check MUTE
-	if (mute_) return;
-  
+	//lmartins: if (mute_) return;
+	if(getctrl("mrs_bool/mute").toBool()) return;
 
   if ( stopped_ )//[?]
   {

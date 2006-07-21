@@ -122,7 +122,7 @@ AudioSource::localUpdate()
 
   sampleRate_ = getctrl("mrs_real/israte").toReal();
 
-  mute_ = getctrl("mrs_bool/mute").toBool();
+  //lmartins: mute_ = getctrl("mrs_bool/mute").toBool();
   gain_ = getctrl("mrs_real/gain").toReal();
   
   //defaultUpdate(); [!]
@@ -183,7 +183,8 @@ AudioSource::process(realvec& in, realvec& out)
   mrs_natural nChannels = getctrl("mrs_natural/nChannels").toNatural();
   
   //check MUTE
-	if (mute_) return;
+	//lmartins: if (mute_) return;
+	if(getctrl("mrs_bool/mute").toBool()) return;
   
   if ( stopped_ )//[?]
 	  start();

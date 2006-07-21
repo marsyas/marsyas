@@ -103,7 +103,8 @@ void
 MeddisHairCell::process(realvec& in, realvec& out)
 {
   checkFlow(in, out);
-  if (mute_) return;
+  //lmartins: if (mute_) return;
+	if(getctrl("mrs_bool/mute").toBool()) return;
   
   mrs_real limitedSt;
   mrs_real replenish;

@@ -1025,14 +1025,15 @@ test_LPC_LSP(string sfName)
   cout << "Sound to analyze: " << sfName << endl;
 	
   mrs_natural lpcOrder = 10;
-  mrs_natural hopSize = 512;
+  mrs_natural hopSize = 256;
 
   cout<<"LPC and LSP order: " <<lpcOrder <<endl;
   cout<<"hopeSize: " <<hopSize <<endl;
 	
-  MarSystemManager mng;
-	
-  //LPC network
+  /*
+	MarSystemManager mng;
+  
+	//LPC network
   MarSystem* input = mng.create("Series", "input");
 	
   input->addMarSystem(mng.create("SoundFileSource","src"));
@@ -1062,6 +1063,39 @@ test_LPC_LSP(string sfName)
     }
 
   cout << endl << "LPCwarped and LSP processing finished!";
+	*/
+
+	MarSystemManager mng;
+
+	MarSystem* input = mng.create("Series", "input");
+
+	input->addMarSystem(mng.create("SoundFileSource","src"));
+	input->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+	input->updctrl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
+
+	//input->addMarSystem(mng.create("ShiftInput", "si"));
+	//input->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
+	//input->updctrl("ShiftInput/si/mrs_natural/WindowSize", hopSize);
+
+	MarSystem* lspS = mng.create("Series","lspS");
+	lspS->addMarSystem(mng.create("LPCwarped", "lpcwarped"));
+	lspS->addMarSystem(mng.create("LSP", "lsp"));
+	input->addMarSystem(lspS);
+// 	input->updctrl("Series/lspS/LPCwarped/lpcwarped/mrs_natural/order",lpcOrder);
+// 	input->updctrl("Series/lspS/LPCwarped/lpcwarped/mrs_real/lambda",0.0);
+// 	input->updctrl("Series/lspS/LPCwarped/lpcwarped/mrs_real/gamma",1.0);
+// 	input->updctrl("Series/lspS/LSP/lsp/mrs_natural/order",lpcOrder);
+// 	input->updctrl("Series/lspS/LSP/lsp/mrs_real/gamma",1.0);
+
+	int i = 0;
+	while(input->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool())
+	{
+		input->tick();
+		cout << "Processed frame " << i << endl;
+		i++;
+	}
+
+	cout << endl << "LPCwarped and LSP processing finished!";
 }
 
 void

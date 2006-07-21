@@ -85,8 +85,8 @@ protected:
   std::string name_;		// Name of instance 
   mrs_natural c,o,t;        // observation and time index
 
-  bool dbg_;
-  bool mute_;
+  //bool dbg_;
+  //bool mute_;
   bool active_;
 
   VScheduler scheduler_;

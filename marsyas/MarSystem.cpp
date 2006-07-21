@@ -75,8 +75,8 @@ MarSystem::MarSystem(const MarSystem& a)
   inObservations_ = a.inObservations_;
   onSamples_ = a.onSamples_;
   onObservations_ = a.onObservations_;
-  dbg_ = a.dbg_;
-  mute_ = a.mute_;
+  //dbg_ = a.dbg_;
+  //mute_ = a.mute_;
   active_ = a.active_;
   
   //[!]
@@ -94,34 +94,37 @@ MarSystem::~MarSystem()
 void
 MarSystem::addControls()
 {
-  addctrl("mrs_natural/inSamples", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES);
+  //input pin controls (with state)
+	addctrl("mrs_natural/inSamples", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES);
   setctrlState("mrs_natural/inSamples", true);
   addctrl("mrs_natural/inObservations", (mrs_natural)MRS_DEFAULT_SLICE_NOBSERVATIONS);
   setctrlState("mrs_natural/inObservations", true);
   addctrl("mrs_real/israte", MRS_DEFAULT_SLICE_SRATE);
   setctrlState("mrs_real/israte", true);
-  addctrl("mrs_natural/onSamples", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES);
+	addctrl("mrs_string/inObsNames", ",");
+	setctrlState("mrs_string/inObsNames", true);
+
+  //output pin controls (stateless)
+	addctrl("mrs_natural/onSamples", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES);
   addctrl("mrs_natural/onObservations", (mrs_natural)MRS_DEFAULT_SLICE_NOBSERVATIONS);
-  addctrl("mrs_real/osrate", MRS_DEFAULT_SLICE_SRATE);  
-  
+  addctrl("mrs_real/osrate", MRS_DEFAULT_SLICE_SRATE);
+	addctrl("mrs_string/onObsNames", ",");
+
+	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+	inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
+	onObservations_ = getctrl("mrs_natural/onObservations").toNatural();
+	onSamples_ = getctrl("mrs_natural/onSamples").toNatural();
+
+	//other controls:
   addctrl("mrs_bool/debug", false);			//no debug by default
-  setctrlState("mrs_bool/debug", true);  
+  //setctrlState("mrs_bool/debug", true);  
   addctrl("mrs_bool/mute", false);			//unmuted by default
-  setctrlState("mrs_bool/mute", true);  
+  //setctrlState("mrs_bool/mute", true);  
   addctrl("mrs_bool/active",true);			//active by default
   setctrlState("mrs_bool/active", true);
-
-  addctrl("mrs_string/inObsNames", ",");
-  setctrlState("mrs_string/inObsNames", true);
-  addctrl("mrs_string/onObsNames", ",");
-  
-  inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
-  inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
-  onObservations_ = getctrl("mrs_natural/onObservations").toNatural();
-  onSamples_ = getctrl("mrs_natural/onSamples").toNatural();
-  
-  dbg_ = getctrl("mrs_bool/debug").toBool();//false;
-  mute_ = getctrl("mrs_bool/mute").toBool();//false;
+ 
+  //dbg_ = getctrl("mrs_bool/debug").toBool();//false;
+  //mute_ = getctrl("mrs_bool/mute").toBool();//false;
   active_ = getctrl("mrs_bool/active").toBool();//true;
 }
 
@@ -202,7 +205,8 @@ MarSystem::checkFlow(realvec& in, realvec& out)
 
 	//dbg_ = false; //lmartins: [!]
 
-	if (dbg_)
+	//lmartins: if (dbg_)
+	if(getctrl("mrs_bool/debug").toBool())
 	{
 		MRSWARN("Debug CheckFlow Information");
 		MRSWARN("MarSystem Type    = " << type_); 
@@ -263,10 +267,9 @@ MarSystem::update()
 	onObservations_ = getctrl("mrs_natural/onObservations").toNatural();
 	onSamples_ = getctrl("mrs_natural/onSamples").toNatural();
 
-	dbg_ = getctrl("mrs_bool/debug").toBool();
-	mute_ = getctrl("mrs_bool/mute").toBool();
-	//active_ = getctrl("mrs_bool/active").toBool();
-
+	//dbg_ = getctrl("mrs_bool/debug").toBool();
+	//mute_ = getctrl("mrs_bool/mute").toBool();
+	
 	//check active status
 	bool active = getctrl("mrs_bool/active").toBool();
 	//if active status changed...

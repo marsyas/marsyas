@@ -76,8 +76,10 @@ Cascade::localUpdate()
     
     mrs_natural onObservations = marsystems_[0]->getctrl("mrs_natural/onObservations").toNatural();
     
-    for (mrs_natural i=1; i < marsystemsSize_; i++) {
-      marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/onSamples"));
+    for (mrs_natural i=1; i < marsystemsSize_; i++) 
+		{
+      //lmartins: setctrl or updctrl?!? [?]
+	  marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/onSamples"));
       marsystems_[i]->setctrl("mrs_natural/inObservations", marsystems_[i-1]->getctrl("mrs_natural/onObservations"));
       marsystems_[i]->setctrl("mrs_real/israte", marsystems_[i-1]->getctrl("mrs_real/osrate"));
       marsystems_[i]->update();
