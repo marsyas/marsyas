@@ -16,7 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /** 
     \class MarSystemWrapper
     \brief Wraps a MarSystem network into a Qt-like object with signals/slots
@@ -41,15 +40,17 @@ MarSystemWrapper::MarSystemWrapper(MarSystem* msys)
   empty_ = false;
 }
 
-
 MarControlValue 
 MarSystemWrapper::getctrl(string cname)
 {
   MarControlValue v;
-  v = msys_->getctrl(cname);
-  return v;
+  
+	ctrlMutex_.lock();
+	v = msys_->getctrl(cname);
+  ctrlMutex_.unlock();
+	
+	return v;
 }
-
 
 void 
 MarSystemWrapper::updctrl(QString cname, MarControlValue value) 
@@ -58,100 +59,83 @@ MarSystemWrapper::updctrl(QString cname, MarControlValue value)
   // so if the thread is running they are stored 
   // and then the actual updates happen in between 
   // calls to tick 
-  /* cur_cname = cname;
-  cur_value = value;
+    
+	runningMutex_.lock();
   
-  cnames_.push_back(cname);
-  cvalues_.push_back(value);
-  if (!running_) 
-    {
-      msys_->updctrl(cname.toStdString(), value);
-      emit ctrlChanged(cname, value);
-    }
-  else 
-    {
-      guard_ = true;
-      emit ctrlChanged(cname, value);
-    }
-  */ 
-
-  // controls can not be updated at any point in Marsyas  
-  // so if the thread is running they are stored  
-  // and then the actual updates happen in between  // calls to tick  
-  //lmartins: cur_cname and cur_value do not comply with  
-  //the usual member variable naming convention used in marsyas
-  //(i.e. it should be cur_cname_ and cur_value_)    
-
-  cur_cname_ = cname;
-  cur_value_ = value;
-  
-  //cnames_.push_back(cname); //lmartins
-  //cvalues_.push_back(value); //lmartins
-  
-  if (!running_)    
-    {
-      msys_->updctrl(cname.toStdString(), value);
-      emit ctrlChanged(cname, value);
-    }
+	if (!running_)    
+  {
+    msys_->updctrl(cname.toStdString(), value);
+    emit ctrlChanged(cname, value);
+  }
   else    
-    {
-      cnames_.push_back(cname);          //lmartins
-      cvalues_.push_back(value);         //lmartins  
-      emit ctrlChanged(cname, value);
-    }
+  {
+    ctrlMutex_.lock();
+		cnames_.push_back(cname);
+    cvalues_.push_back(value);
+		ctrlMutex_.unlock();
+    emit ctrlChanged(cname, value);
+  }
+	
+	runningMutex_.unlock();
 }
 
 void MarSystemWrapper::pause()
 {
-  pause_ = true;
+  pauseMutex_.lock();
+	pause_ = true;
+	pauseMutex_.unlock();
 }
 
 
 void MarSystemWrapper::play()
 {
-  pause_ = false;
+  pauseMutex_.lock();
+	pause_ = false;
+	pauseMutex_.unlock();
 }
-
-
 
 void MarSystemWrapper::run() 
 {
   while(1)
-    {
-      running_ = true;
+  {
+    runningMutex_.lock();
+		running_ = true;
+		runningMutex_.unlock();
 
-      //  udpate stored controls atomically 
-
-      mutex_.tryLock();
-      vector<QString>::iterator  vsi;
-      vector<MarControlValue>::iterator vvi;
-      
-      for (vsi = cnames_.begin(), vvi = cvalues_.begin(); 
-	   vsi != cnames_.end();
-	   ++vsi, ++vvi)
-	{
-	  
-	  msys_->updctrl(vsi->toStdString(), *vvi);
-	}
-      
-      cnames_.clear();
-      cvalues_.clear();
-      mutex_.unlock();
-      
-      // Now play the samples by ticking the MarSystem 
-      if (!pause_)
-	{
-	  msys_->tick();	
-	  empty_ = false;
-	}
-      
-      if (empty_ == false) 
-	{	 
-	  if (msys_->getctrl("mrs_bool/notEmpty").toBool() == false) 
-	    {
-	      empty_ = true;
-	      pause();
-	    }
-	}
-    }
+    //update stored controls atomically 
+    if(ctrlMutex_.tryLock())
+		{
+			vector<QString>::iterator  vsi;
+			vector<MarControlValue>::iterator vvi;
+	    
+			for (vsi = cnames_.begin(), vvi = cvalues_.begin(); 
+					vsi != cnames_.end(); ++vsi, ++vvi)
+			{
+				msys_->updctrl(vsi->toStdString(), *vvi);
+			}
+	    
+			cnames_.clear();
+			cvalues_.clear();
+	    
+			ctrlMutex_.unlock();
+		}
+    
+    // Now play the samples by ticking the MarSystem
+		pauseMutex_.lock();
+    if (!pause_)
+		{
+			msys_->tick();	
+			empty_ = false;
+		}
+		pauseMutex_.unlock();
+    
+    if (empty_ == false) 
+		{	 
+			if (msys_->getctrl("mrs_bool/notEmpty").toBool() == false) 
+			{
+				empty_ = true;
+				pause();
+			}
+		}
+  }
 }

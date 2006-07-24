@@ -16,7 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /** 
     \class MarSystemWrapper
     \brief Wraps a MarSystem network into a Qt-like object with signals/slots
@@ -31,8 +30,8 @@ adjusted to reflect Marsyas controls.
 #ifndef MARSYSTEMWRAPPER_H
 #define MARSYSTEMWRAPPER_H
 
-#include <QObject>
-#include <QCheckBox>
+//#include <QObject>
+//#include <QCheckBox>
 #include <QThread>
 #include <QString>
 #include <QMutex> 
@@ -42,17 +41,28 @@ adjusted to reflect Marsyas controls.
 #include "common.h"
 #include "MarSystemManager.h"
 
-
 class MarSystemWrapper: public QThread
 {
   Q_OBJECT
   
+private:
+	Marsyas::MarSystem* msys_;			// the underlying MarSystem
+
+	std::vector<QString> cnames_;
+	std::vector<Marsyas::MarControlValue> cvalues_;
+
+	QMutex ctrlMutex_;
+	QMutex pauseMutex_;
+	QMutex runningMutex_;
+
+	volatile bool pause_;
+	volatile bool empty_;
+	volatile bool running_;  
+
 public:
   MarSystemWrapper(Marsyas::MarSystem* msys);
   
-  
 public slots:
-
   void updctrl(QString cname, Marsyas::MarControlValue value);
   Marsyas::MarControlValue getctrl(std::string cname);
   
@@ -63,22 +73,6 @@ public slots:
 signals: 
   void ctrlChanged(QString cname, Marsyas::MarControlValue value);
   void posChanged(int val);
-  
-private:
-  QString cur_cname_;
-  Marsyas::MarControlValue cur_value_;
-
-  Marsyas::MarSystem* msys_;			// the underlying MarSystem
-  
-  std::vector<QString> cnames_;
-  std::vector<Marsyas::MarControlValue> cvalues_;
-  
-  QMutex mutex_;
-  
-  bool pause_;
-  bool empty_;
-  
-  bool running_;  
   
 };
 

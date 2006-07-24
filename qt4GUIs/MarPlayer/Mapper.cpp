@@ -96,9 +96,6 @@ Mapper::setPos()
   emit posChanged(sliderPos);
 }
 
-
-
-
 void 
 Mapper::setPos(int val)
 {
@@ -111,8 +108,6 @@ Mapper::setPos(int val)
   int size = (int) fsize;
   mwr_->updctrl("SoundFileSource/src/mrs_natural/pos", size);
 }
-
-
 
 void 
 Mapper::setGain(int val)
