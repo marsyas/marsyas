@@ -37,14 +37,12 @@ class AudioSink:public MarSystem
 {
 private:
   RtAudio *audio_;
-  bool stopped_;
-  int stream_;
   int bufferSize_;
-  int counter_;
-  int nBuffers_;
-  bool isInitialized_;
   int rtSrate_;
   int srate_;
+
+	bool isInitialized_;
+	bool stopped_;
     
   mrs_natural nChannels_;
   mrs_real *data_;  
@@ -52,18 +50,11 @@ private:
   mrs_natural reservoirSize_;
   mrs_natural preservoirSize_;
   
-  mrs_natural rstart_;
-  mrs_natural ri_;
-  
   mrs_natural start_;
   mrs_natural end_;
   mrs_natural diff_;
   mrs_natural rsize_;
   
-  realvec pwin_;
-  realvec din_;
-  realvec pdin_;
-   
   void addControls();
 	void localUpdate();
 

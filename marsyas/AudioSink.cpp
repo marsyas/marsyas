@@ -30,14 +30,11 @@ using namespace Marsyas;
 
 AudioSink::AudioSink(string name):MarSystem("AudioSink", name)
 {
-  counter_ = 0;
   bufferSize_ = 0;
   
-  ri_ = 0;
   start_ = 0;
   end_ = 0;
   
-  rstart_ = 0;
   preservoirSize_ = 0;
 
   data_ = NULL;
@@ -248,8 +245,7 @@ AudioSink::process(realvec& in, realvec& out)
 					data_[2*t] = reservoir_((start_+t)%reservoirSize_);
 					data_[2*t+1] = reservoir_((start_+t)%reservoirSize_);
 				}
-		  
-			#endif 
+		  #endif 
 		}
 
 		//tick RtAudio
