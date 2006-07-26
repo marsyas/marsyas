@@ -30,8 +30,6 @@ adjusted to reflect Marsyas controls.
 #ifndef MARSYSTEMWRAPPER_H
 #define MARSYSTEMWRAPPER_H
 
-//#include <QObject>
-//#include <QCheckBox>
 #include <QThread>
 #include <QString>
 #include <QMutex> 
@@ -46,18 +44,12 @@ class MarSystemWrapper: public QThread
   Q_OBJECT
   
 private:
-	Marsyas::MarSystem* msys_;			// the underlying MarSystem
+	Marsyas::MarSystem* msys_; //the underlying MarSystem
 
 	std::vector<QString> cnames_;
 	std::vector<Marsyas::MarControlValue> cvalues_;
 
 	QMutex ctrlMutex_;
-	QMutex pauseMutex_;
-	QMutex runningMutex_;
-
-	volatile bool pause_;
-	volatile bool empty_;
-	volatile bool running_;  
 
 public:
   MarSystemWrapper(Marsyas::MarSystem* msys);

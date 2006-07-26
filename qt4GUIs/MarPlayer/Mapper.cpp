@@ -16,7 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /** 
     \class Mapper
     \brief Mapper maps the state of the GUI to MarSystemWrapper 
@@ -33,10 +32,8 @@ which it signals to MainWindow to update the GUI.
 
 using namespace Marsyas;
 
-
 Mapper::Mapper()
 {
-
   // create the MarSystem network for playback 
   MarSystemManager mng;  
   
@@ -46,19 +43,21 @@ Mapper::Mapper()
   pnet_->addMarSystem(mng.create("AudioSink", "dest"));
   pnet_->linkctrl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
   
-  // make a QT-like object wrapped around the MarSystem
+  // make a Qt-like thread object wrapped around the MarSystem
   mwr_ = new MarSystemWrapper(pnet_);
+
+	//lmartins:
+	//start the MarSystemWrapper thread
+	mwr_->start();
 }
-
-
 
 void 
 Mapper::open(QString fileName, int pos)
 {
   mwr_->updctrl("SoundFileSource/src/mrs_string/filename", fileName.toStdString());  
-  // loop forever the piece 
+  
+	// loop forever the piece [!]
   mwr_->updctrl("SoundFileSource/src/mrs_real/repetitions", -1.0); 
-
   
   mrs_natural size = 
     mwr_->getctrl("SoundFileSource/src/mrs_natural/size").toNatural();
@@ -70,7 +69,10 @@ Mapper::open(QString fileName, int pos)
   emit durationChanged(duration);
   
   setPos(pos);
-  mwr_->start();
+
+  //lmartins:
+	//thread already started at constructor
+	//mwr_->start();
 
   // timer is used to update the position slider "automatically" 
   // as the sound is playing 
@@ -78,7 +80,6 @@ Mapper::open(QString fileName, int pos)
   connect(timer, SIGNAL(timeout()), this, SLOT(setPos()));
   timer->start(250);
 }
-
 
 void 
 Mapper::setPos() 
@@ -115,7 +116,6 @@ Mapper::setGain(int val)
   float fval = val / 100.0f;
   mwr_->updctrl("Gain/gain/mrs_real/gain", fval);
 }
-
 
 void 
 Mapper::play()

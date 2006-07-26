@@ -35,9 +35,7 @@ using namespace Marsyas;
 MarSystemWrapper::MarSystemWrapper(MarSystem* msys)
 {
   msys_ = msys;
-  running_ = false;
-  pause_ = true;
-  empty_ = false;
+	updctrl("mrs_bool/active",false);
 }
 
 MarControlValue 
@@ -59,10 +57,7 @@ MarSystemWrapper::updctrl(QString cname, MarControlValue value)
   // so if the thread is running they are stored 
   // and then the actual updates happen in between 
   // calls to tick 
-    
-	runningMutex_.lock();
-  
-	if (!running_)    
+	if (!isRunning()) 
   {
     msys_->updctrl(cname.toStdString(), value);
     emit ctrlChanged(cname, value);
@@ -75,33 +70,23 @@ MarSystemWrapper::updctrl(QString cname, MarControlValue value)
 		ctrlMutex_.unlock();
     emit ctrlChanged(cname, value);
   }
-	
-	runningMutex_.unlock();
 }
 
 void MarSystemWrapper::pause()
 {
-  pauseMutex_.lock();
-	pause_ = true;
-	pauseMutex_.unlock();
+	updctrl("mrs_bool/active", false);
 }
 
 
 void MarSystemWrapper::play()
 {
-  pauseMutex_.lock();
-	pause_ = false;
-	pauseMutex_.unlock();
+	updctrl("mrs_bool/active", true);
 }
 
 void MarSystemWrapper::run() 
 {
-  while(1)
+	while(1)
   {
-    runningMutex_.lock();
-		running_ = true;
-		runningMutex_.unlock();
-
     //update stored controls atomically 
     if(ctrlMutex_.tryLock())
 		{
@@ -113,29 +98,21 @@ void MarSystemWrapper::run()
 			{
 				msys_->updctrl(vsi->toStdString(), *vvi);
 			}
-	    
 			cnames_.clear();
 			cvalues_.clear();
 	    
 			ctrlMutex_.unlock();
 		}
     
-    // Now play the samples by ticking the MarSystem
-		pauseMutex_.lock();
-    if (!pause_)
-		{
-			msys_->tick();	
-			empty_ = false;
-		}
-		pauseMutex_.unlock();
+		//if MarSystem is not active (i.e. paused)
+		//this tick is ignored
+		msys_->tick();
     
-    if (empty_ == false) 
-		{	 
-			if (msys_->getctrl("mrs_bool/notEmpty").toBool() == false) 
-			{
-				empty_ = true;
-				pause();
-			}
+    //check for EOF
+		if (msys_->getctrl("mrs_bool/notEmpty").toBool() == false) 
+		{
+			pause();
 		}
-  }
+
+	}
 }
