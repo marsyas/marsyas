@@ -64,10 +64,10 @@ private:
   realvec din_;
   realvec pdin_;
    
-  mrs_real sampleRate_;
-    
   void addControls();
 	void localUpdate();
+
+	void initRtAudio();
 	
   void start();
   void stop();
@@ -76,10 +76,8 @@ private:
     
 public:
   AudioSink(std::string name);
-
   ~AudioSink();
   MarSystem* clone() const;  
-  void init();
 
   void process(realvec& in, realvec& out);
 };

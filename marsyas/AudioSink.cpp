@@ -30,9 +30,6 @@ using namespace Marsyas;
 
 AudioSink::AudioSink(string name):MarSystem("AudioSink", name)
 {
-  //type_ = "AudioSink";
-  //name_ = name;
-  
   counter_ = 0;
   bufferSize_ = 0;
   
@@ -42,10 +39,12 @@ AudioSink::AudioSink(string name):MarSystem("AudioSink", name)
   
   rstart_ = 0;
   preservoirSize_ = 0;
-  isInitialized_ = 0;
+
   data_ = NULL;
   audio_ = NULL;
-  sampleRate_ = 0.0;
+
+	isInitialized_ = false;
+	stopped_ = true;//lmartins
   
 	addControls();
 }
@@ -75,45 +74,29 @@ AudioSink::addControls()
 #else
   addctrl("mrs_natural/bufferSize", 512);
 #endif
-
   setctrlState("mrs_natural/bufferSize", true);
 }
-
-void 
-AudioSink::init()
-{
-  nChannels_ = getctrl("mrs_natural/nChannels").toNatural();
-  
-  RtAudioFormat format = ( sizeof(mrs_real) == 8 ) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
-  
-  // hardwire channels to stereo playback even for mono
-  int rtChannels = 2;
-
-  delete audio_;
-  
-  try {
-    audio_ = new RtAudio(0, rtChannels, 0, 0, format,
-			 rtSrate_, &bufferSize_, 4);
-
-    data_ = (mrs_real *) audio_->getStreamBuffer();
-  }
-  catch (RtError &error) 
-    {
-      error.printMessage();
-    }
-  stopped_ = true;
-}
-
 
 void 
 AudioSink::localUpdate()
 {
   MRSDIAG("AudioSink::localUpdate");
-  
-  rtSrate_ = (mrs_natural)getctrl("mrs_real/israte").toReal();
+
+	//bypass audio from input to output
+	/*
+	setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));  
+	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+	*/
+	MarSystem::localUpdate();
+ 
+	rtSrate_ = (mrs_natural)getctrl("mrs_real/israte").toReal();
   srate_ = rtSrate_;
-  
-  bufferSize_ = (mrs_natural)getctrl("mrs_natural/bufferSize").toNatural();
+
+	nChannels_ = getctrl("mrs_natural/nChannels").toNatural();
+
+	bufferSize_ = (mrs_natural)getctrl("mrs_natural/bufferSize").toNatural();
 
 #ifdef __OS_MACOSX__
   if (rtSrate_ == 22050) 
@@ -122,35 +105,54 @@ AudioSink::localUpdate()
       bufferSize_ = 2 * bufferSize_;
     }
 #endif	
-
-  setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));  
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  
-  nChannels_ = getctrl("mrs_natural/nChannels").toNatural();
-  
-  if (getctrl("mrs_real/israte").toReal() != sampleRate_)
-    {
-      sampleRate_ = getctrl("mrs_real/israte").toReal();
-      isInitialized_ = false;
-    }
  
-  //lmartins: mute_ = getctrl("mrs_bool/mute").toBool();
-  
-  //defaultUpdate();
+	//setup RtAudio (may change bufferSize_ !!)
+	initRtAudio(); 
+	
+	//Resize reservoir if necessary
 	inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
-   
   if (inSamples_ < bufferSize_) 
     reservoirSize_ = 2 * bufferSize_;
   else 
     reservoirSize_ = 2 * inSamples_;
   
   if (reservoirSize_ > preservoirSize_)
-    {
       reservoir_.stretch(reservoirSize_);
-    }
+
   preservoirSize_ = reservoirSize_;
+
+	//if audio was playing (i.e.this was a re-init), keep it playing
+	if (!stopped_ && audio_) audio_->startStream();
+}
+
+void 
+AudioSink::initRtAudio()
+{
+	//marsyas represents audio data as float numbers
+	RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
+
+	// hardwire channels to stereo playback even for mono
+	int rtChannels = 2;
+
+	//create new RtAudio object (delete any existing one)
+	delete audio_;
+	try 
+	{
+		audio_ = new RtAudio(0, rtChannels, 0, 0, rtFormat,
+			rtSrate_, &bufferSize_, 4);
+
+		data_ = (mrs_real *) audio_->getStreamBuffer();
+	}
+	catch (RtError &error) 
+	{
+		error.printMessage();
+	}
+
+	//update bufferSize control which may have been changed
+	//by RtAudio (see RtAudio documentation)
+	setctrl("mrs_natural/bufferSize", (mrs_natural)bufferSize_);
+
+	isInitialized_ = true;
 }
 
 void 
@@ -185,13 +187,7 @@ AudioSink::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 	
-	if (!isInitialized_)
-  {
-    init();
-    isInitialized_ = true;
-  }
-  
-  // copy to output and into reservoir
+ // copy to output and into reservoir
   for (t=0; t < inSamples_; t++)
   {
     reservoir_(end_) = in(0,t);
@@ -201,16 +197,24 @@ AudioSink::process(realvec& in, realvec& out)
 			out(o,t) = in(o,t);
   }
   
-  //check MUTE
-	//lmartins: if (mute_) return;
-	if(getctrl("mrs_bool/mute").toBool()) return;
+	//check if RtAudio is initialized
+	if (!isInitialized_)
+		return;
 
-  if ( stopped_ )//[?]
+  //check MUTE
+	if(getctrl("mrs_bool/mute").toBool())
+		return;
+
+  //assure that RtAudio thread is running
+	//(this may be needed by if an explicit call to start()
+	//is not done before ticking or calling process() )
+	if ( stopped_ )
   {
     start();
   }
  
-  rsize_ = bufferSize_;
+  //update reservoir pointers 
+	rsize_ = bufferSize_;
 	#ifdef __OS_MACOSX__ 
   if (srate_ == 22050)
     rsize_ = bufferSize_/2;		// upsample to 44100
@@ -223,7 +227,8 @@ AudioSink::process(realvec& in, realvec& out)
   else 
     diff_ = reservoirSize_ - (start_ - end_);
 
-  while (diff_ >= rsize_)  
+  //send audio data in reservoir to RtAudio
+	while (diff_ >= rsize_)  
   {
     for (t=0; t < rsize_; t++) 
 		{
@@ -247,6 +252,7 @@ AudioSink::process(realvec& in, realvec& out)
 			#endif 
 		}
 
+		//tick RtAudio
 		try 
 		{
 			audio_->tickStream();
@@ -256,8 +262,8 @@ AudioSink::process(realvec& in, realvec& out)
 			error.printMessage();
 		}
   
+		//update reservoir pointers
     start_ = (start_ + rsize_) % reservoirSize_;
-    
     if (end_ >= start_) 
 			diff_ = end_ - start_;
     else 
