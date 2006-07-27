@@ -16,7 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /**
    \class AudioSource
    \brief Real-time audio source 
@@ -31,22 +30,14 @@ using namespace Marsyas;
 
 AudioSource::AudioSource(string name):MarSystem("AudioSource", name)
 {
-  //type_ = "AudioSource";
-  //name_ = name;
-  
-  counter_ = 0;
-  
-  ri_ = 0;
-  rstart_ = 0;
-  preservoirSize_ = 0;
-  isInitialized_ = false;
   data_ = NULL;
   audio_ = NULL;
-  bufferSize_ = 256;
 
-	#ifdef __OS_MACOSX__
-  bufferSize_ = 2048;
-	#endif
+	ri_ = 0;
+	preservoirSize_ = 0;
+
+	isInitialized_ = false;
+	stopped_ = true;
 
 	addControls();
 }
@@ -68,44 +59,16 @@ void
 AudioSource::addControls()
 {
   addctrl("mrs_natural/nChannels",1);
-  addctrl("mrs_real/gain", 1.05);
-  setctrlState("mrs_real/gain", true);
-  setctrlState("mrs_natural/nChannels", true);
-  addctrl("mrs_bool/init", false);
-  setctrlState("mrs_bool/init", true);
-}
+	setctrlState("mrs_natural/nChannels", true);
 
-void 
-AudioSource::init()
-{
+	#ifdef __OS_MACOSX__
+	addctrl("mrs_natural/bufferSize", 2048);
+	#else
+	addctrl("mrs_natural/bufferSize", 256);
+	#endif
+	setctrlState("mrs_natural/bufferSize", true);
   
-  nChannels_ = getctrl("mrs_natural/nChannels").toNatural();
-  
-  RtAudioFormat format = ( sizeof(mrs_real) == 8 ) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
-  
-  int rtSrate = (mrs_natural)getctrl("mrs_real/israte").toReal();
-  bufferSize_ = 256;
-
-#ifdef __OS_MACOSX__
-  bufferSize_ = 2048;
-#endif	
-
-  
-  delete audio_;
-  
-  int rtChannels = (mrs_natural)getctrl("mrs_natural/nChannels").toNatural();
-  
-  try {
-    audio_ = new RtAudio(0, 0, 0, rtChannels, format,
-			 rtSrate, &bufferSize_, 4);
-    data_ = (mrs_real *) audio_->getStreamBuffer();
-  }
-  catch (RtError &error) 
-    {
-      error.printMessage();
-    }
-  stopped_ = true;
-
+	addctrl("mrs_real/gain", 1.0); // 1.05) [!];
 }
 
 void 
@@ -115,21 +78,22 @@ AudioSource::localUpdate()
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  
-  nChannels_ = getctrl("mrs_natural/nChannels").toNatural();
+	nChannels_ = getctrl("mrs_natural/nChannels").toNatural();
   setctrl("mrs_natural/inObservations", nChannels_);
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 
-  sampleRate_ = getctrl("mrs_real/israte").toReal();
+	bufferSize_ = (mrs_natural)getctrl("mrs_natural/bufferSize").toNatural();
+	#ifdef __OS_MACOSX__
+	bufferSize_ = 8 * bufferSize_; //[!]
+	#endif	
 
-  //lmartins: mute_ = getctrl("mrs_bool/mute").toBool();
-  gain_ = getctrl("mrs_real/gain").toReal();
-  
-  //defaultUpdate(); [!]
+	initRtAudio(); 
+	
+	//resize reservoir if necessary
 	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
 	inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
-  
-  if (inSamples_ * inObservations_ < bufferSize_) 
+ 	
+	if (inSamples_ * inObservations_ < bufferSize_) 
     reservoirSize_ = 2 * inObservations_ * bufferSize_;
   else 
     reservoirSize_ = 2 * inSamples_ * inObservations_;
@@ -139,6 +103,36 @@ AudioSource::localUpdate()
       reservoir_.stretch(reservoirSize_);
     }
   preservoirSize_ = reservoirSize_;
+}
+
+void 
+AudioSource::initRtAudio()
+{
+	//marsyas represents audio data as float numbers
+	RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
+
+	int rtSrate = (int)getctrl("mrs_real/israte").toReal();
+	int rtChannels = (int)getctrl("mrs_natural/nChannels").toNatural();
+
+	//create new RtAudio object (delete any existing one)
+	delete audio_;
+	try {
+		audio_ = new RtAudio(0, 0, 0, rtChannels, rtFormat,
+			rtSrate, &bufferSize_, 4);
+
+		data_ = (mrs_real *) audio_->getStreamBuffer();
+	}
+	catch (RtError &error) 
+	{
+		error.printMessage();
+	}
+
+	//update bufferSize control which may have been changed
+	//by RtAudio (see RtAudio documentation)
+	setctrl("mrs_natural/bufferSize", (mrs_natural)bufferSize_);
+
+	isInitialized_ = true;
+	//stopped_ = true;
 }
 
 void 
@@ -174,24 +168,22 @@ AudioSource::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 	
+	//check if RtAudio is initialized
 	if (!isInitialized_)
-  {
-    init();
-    isInitialized_ = true;
-  }
-  
-  mrs_natural nChannels = getctrl("mrs_natural/nChannels").toNatural();
+    return;
   
   //check MUTE
-	//lmartins: if (mute_) return;
 	if(getctrl("mrs_bool/mute").toBool()) return;
-  
-  if ( stopped_ )//[?]
+
+	//assure that RtAudio thread is running
+	//(this may be needed by if an explicit call to start()
+	//is not done before ticking or calling process() )
+	if ( stopped_ )
 	  start();
-  
-  while (ri_ < inSamples_ * inObservations_)
+
+  //send audio to output
+	while (ri_ < inSamples_ * inObservations_)
   {
-    
     try 
 		{
 			audio_->tickStream();
@@ -211,7 +203,7 @@ AudioSource::process(realvec& in, realvec& out)
   for (o=0; o < inObservations_; o++)
     for (t=0; t < inSamples_; t++)
       {
-				out(o,t) = gain_ * reservoir_(inObservations_ * t + o);
+				out(o,t) = getctrl("mrs_real/gain").toReal() * reservoir_(inObservations_ * t + o);
       }
 
   for (t=inSamples_*inObservations_; t < ri_; t++)

@@ -36,32 +36,24 @@ class AudioSource:public MarSystem
 {
 private:
   RtAudio *audio_;
-  bool stopped_;
-  int stream_;
   int bufferSize_;
-  int counter_;
-  int nBuffers_;
-  bool isInitialized_;
-  
-  mrs_real gain_;
-  
-  mrs_natural nChannels_;
+ 
+	mrs_natural ri_;
+	mrs_natural nChannels_;
   mrs_real *data_;  
   realvec reservoir_;
   mrs_natural reservoirSize_;
   mrs_natural preservoirSize_;
-  
-  mrs_natural rstart_;
-  mrs_natural ri_;
 
-  realvec pwin_;
-  realvec din_;
-  realvec pdin_;
-  
-  mrs_real sampleRate_;
+	mrs_real gain_;
+
+	bool isInitialized_;
+	bool stopped_;
   
   void addControls();
 	void localUpdate();
+
+	void initRtAudio();
 
   void start();
   void stop();
@@ -72,7 +64,6 @@ public:
   AudioSource(std::string name);
   ~AudioSource();
   MarSystem* clone() const;  
-  void init();
 
   void process(realvec& in, realvec& out);
 };

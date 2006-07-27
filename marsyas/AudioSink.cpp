@@ -63,14 +63,12 @@ AudioSink::addControls()
 {
   addctrl("mrs_natural/nChannels",1);
   setctrlState("mrs_natural/nChannels", true);
-  addctrl("mrs_bool/init", false);
-  setctrlState("mrs_bool/init", true);
 
-#ifdef __OS_MACOSX__
+	#ifdef __OS_MACOSX__
   addctrl("mrs_natural/bufferSize", 1024);
-#else
+	#else
   addctrl("mrs_natural/bufferSize", 512);
-#endif
+	#endif
   setctrlState("mrs_natural/bufferSize", true);
 }
 
@@ -88,20 +86,20 @@ AudioSink::localUpdate()
 	*/
 	MarSystem::localUpdate();
  
-	rtSrate_ = (mrs_natural)getctrl("mrs_real/israte").toReal();
+	rtSrate_ = (int)getctrl("mrs_real/israte").toReal();
   srate_ = rtSrate_;
 
 	nChannels_ = getctrl("mrs_natural/nChannels").toNatural();
 
-	bufferSize_ = (mrs_natural)getctrl("mrs_natural/bufferSize").toNatural();
+	bufferSize_ = (int)getctrl("mrs_natural/bufferSize").toNatural();
 
-#ifdef __OS_MACOSX__
+	#ifdef __OS_MACOSX__
   if (rtSrate_ == 22050) 
     {
       rtSrate_ = 44100;
       bufferSize_ = 2 * bufferSize_;
     }
-#endif	
+	#endif	
  
 	//setup RtAudio (may change bufferSize_ !!)
 	initRtAudio(); 
