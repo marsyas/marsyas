@@ -33,14 +33,14 @@ using namespace Marsyas;
 
 RawFileSource::RawFileSource(string name):AbsSoundFileSource("RawFileSource", name)
 {
-  //type_ = "SoundFileSource"; //"RawFileSource"?!? 
-  //name_ = name;
+	sfp_ = NULL;
+	buffer_ = NULL;
   
-	sfp_ = 0;
-  phaseOffset_ = 0.0;
-  
+	phaseOffset_ = 0.0;
   bufferSize_ = 0;
   time_ = 0.0;
+
+	notEmpty_ = true;
 
 	addControls();
 }
@@ -50,15 +50,14 @@ RawFileSource::~RawFileSource()
   if (sfp_ != NULL)
     fclose(sfp_);
 
-  delete [] buffer_;//[!]
+  delete [] buffer_;
   
 }
 
 MarSystem* RawFileSource::clone() const
 {
-  return new RawFileSource(*this);
+  return new RawFileSource(*this);//[?] copy constructor?!?
 }
-
 
 void
 RawFileSource::addControls() 
@@ -72,7 +71,6 @@ RawFileSource::addControls()
   addctrl("mrs_string/filename", "defaultfile.au");
   setctrlState("mrs_string/filename", true);
   addctrl("mrs_bool/notEmpty", true);
-  notEmpty_ = true;
   addctrl("mrs_bool/noteon", false);
   setctrlState("mrs_bool/noteon", true);
   addctrl("mrs_string/filetype", "raw");
@@ -105,7 +103,6 @@ bool RawFileSource::getRawInfo( const char *fileName )
   return true;
 }
 
-
 //
 // STK raw files don't have a header, so just open the file and get info
 //
@@ -127,6 +124,9 @@ void RawFileSource::getHeader(string fileName)
   // allocate storage for the buffer
   mrs_natural samples = (bufferSize_+1)* getctrl("mrs_natural/nChannels").toNatural();
   data_.create(samples);
+
+	if(buffer_)
+		delete [] buffer_;
   buffer_ = new short[bufferSize_];
   
   // now read the data into our buffer (data_[]).

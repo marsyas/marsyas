@@ -35,10 +35,8 @@ namespace Marsyas
 
 class RawFileSource : public AbsSoundFileSource
 {
-
 private: 
-  
-  FILE *sfp_;
+	FILE *sfp_;
   mrs_real time_;
   mrs_real rate_;				// loop frequency
   
@@ -62,9 +60,7 @@ private:
   bool getRawInfo( const char *fileName );
   void getHeader(std::string filename);
 
-  
 public:
-  
   RawFileSource(std::string name);
   ~RawFileSource();
   
@@ -74,9 +70,7 @@ public:
   
   // helpers for synthesis routines
   void setFrequency(mrs_real frequency);
-  void openFile(std::string filename);
-  
-	
+  void openFile(std::string filename); //[?] not coherent with interface defined by AbsSoundFileSource!
 };
 
 }//namespace Marsyas

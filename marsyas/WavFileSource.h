@@ -38,25 +38,16 @@ namespace Marsyas
 class WavFileSource: public AbsSoundFileSource
 {
 private:
-
-  std::string tfname_;
-  std::string filename_;
-  
   short *sdata_;
   unsigned char *cdata_;
-  FILE *sfp_;
+  
+	FILE *sfp_;
   long sfp_begin_;
   
-  mrs_natural sampleSize_;			// in bytes
+  mrs_natural sampleSize_; //in bytes
   mrs_natural csize_;
-  
   mrs_natural size_;  
-
   short sval_;
-  bool advance_;
-  mrs_natural cindex_;
-  
-
   unsigned short bits_;
 
   void addControls();
@@ -75,15 +66,13 @@ private:
   mrs_real repetitions_;
   mrs_real duration_;
   
-  
-  
 public:
   WavFileSource(std::string name);
   ~WavFileSource();
   MarSystem* clone() const;  
 
-  mrs_natural getLinear16(realvec& win);
-  mrs_natural getLinear8(mrs_natural c, realvec& win);
+  mrs_natural getLinear16(realvec& win); //private [?]
+  mrs_natural getLinear8(mrs_natural c, realvec& win); //private [?]
 
   void getHeader(std::string filename);
   void process(realvec& in, realvec &out);

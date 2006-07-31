@@ -64,31 +64,18 @@ namespace Marsyas
 class SoundFileSource: public MarSystem
 {
 private:
-  void addControls();
-	void localUpdate();
-
-protected:
-  short *sdata_;
-  unsigned char *cdata_;
-  FILE *sfp_;
-  long sfp_begin_;
-
 	std::string filename_;
-  mrs_natural sampleSize_;			// in bytes
+  mrs_natural sampleSize_; //in bytes
   mrs_natural samplesRead_;
   mrs_natural samplesToRead_;
   mrs_natural nChannels_;
-  //mrs_natural inSamples_;
-  //mrs_natural inObservations_;
-  //mrs_real israte_;
   
   AbsSoundFileSource* src_;
 
 	bool advance_;
-  bool shuffle_;
-  
-  mrs_natural cindex_;
-  std::string currentlyPlaying_;
+
+	void addControls();
+	void localUpdate();
   
 public:
   SoundFileSource(std::string name);

@@ -16,7 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /**
    \class SoundFileSource
    \brief Interface for sound file sources 
@@ -31,17 +30,8 @@ are children of this class.
 using namespace std;
 using namespace Marsyas;
 
-//#define UnsignedToFloat(u) (((double)((long)(u - 2147483647L - 1))) + 2147483648.0)
-//#define FloatToUnsigned(f)      ((unsigned long)(((long)(f - 2147483648.0)) + 2147483647L) + 1)
-
 SoundFileSource::SoundFileSource(string name):MarSystem("SoundFileSource",name)
 {
-	//type_ = "SoundFileSource";
-  //name_ = name;
-  
-	sdata_ = NULL;
-  cdata_ = NULL;
-  sfp_ = NULL;
   src_ = NULL;
 
   addControls();
@@ -60,20 +50,6 @@ SoundFileSource::clone() const
 
 SoundFileSource::SoundFileSource(const SoundFileSource& a):MarSystem(a)
 {
-// 	type_ = a.type_;
-// 	name_ = a.name_;
-// 	ncontrols_ = a.ncontrols_; 		
-// 
-// 	inSamples_ = a.inSamples_;
-// 	inObservations_ = a.inObservations_;
-// 	onSamples_ = a.onSamples_;
-// 	onObservations_ = a.onObservations_;
-// 	dbg_ = a.dbg_;
-// 	mute_ = a.mute_;
-
-	sdata_ = NULL;
-	cdata_ = NULL;
-	sfp_ = NULL;
 	src_ = NULL;
 }
 
@@ -82,7 +58,8 @@ SoundFileSource::addControls()
 {
   addctrl("mrs_natural/nChannels",(mrs_natural)1);
   addctrl("mrs_bool/notEmpty", true);  
-  addctrl("mrs_natural/pos", (mrs_natural)0);
+  
+	addctrl("mrs_natural/pos", (mrs_natural)0);
   setctrlState("mrs_natural/pos", true);
 
   addctrl("mrs_natural/loopPos", (mrs_natural)0);
@@ -90,20 +67,27 @@ SoundFileSource::addControls()
 
   addctrl("mrs_string/filename", "defaultfile");
   setctrlState("mrs_string/filename", true);
-  addctrl("mrs_string/allfilenames", ",");
+  
+	addctrl("mrs_string/allfilenames", ",");
   setctrlState("mrs_string/allfilenames",true);
-  addctrl("mrs_natural/numFiles", 0);
-
-  addctrl("mrs_natural/size", (mrs_natural)0);
-  addctrl("mrs_real/frequency", 0.0);
+  
+	addctrl("mrs_natural/numFiles", 0);
+  
+	addctrl("mrs_natural/size", (mrs_natural)0);
+  
+	addctrl("mrs_real/frequency", 0.0);
   setctrlState("mrs_real/frequency",true);
-  addctrl("mrs_bool/noteon", false);
+  
+	addctrl("mrs_bool/noteon", false);
   setctrlState("mrs_bool/noteon", true);
-  addctrl("mrs_real/repetitions", 1.0);
+
+	addctrl("mrs_real/repetitions", 1.0);
   setctrlState("mrs_real/repetitions", true);  
-  addctrl("mrs_real/duration", -1.0);
+
+	addctrl("mrs_real/duration", -1.0);
   setctrlState("mrs_real/duration", true);  
-  addctrl("mrs_bool/advance", false);
+
+	addctrl("mrs_bool/advance", false);
   setctrlState("mrs_bool/advance", true);  
 
   addctrl("mrs_bool/shuffle", false);
@@ -137,7 +121,7 @@ SoundFileSource::localUpdate()
 			setctrl("mrs_bool/notEmpty", (MarControlValue)true);
 		  
 			if (src_->getctrl("mrs_natural/size").toNatural() != 0)
-				src_->notEmpty_ = true;
+				src_->notEmpty_ = true; //[!]
 		}
     else
 		{
@@ -149,44 +133,39 @@ SoundFileSource::localUpdate()
   }
   if (src_ != NULL) 
   {
-    src_->setctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
+		//pass configuration to audio source object and update it 
+		src_->setctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
     src_->setctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
     src_->setctrl("mrs_real/repetitions", getctrl("mrs_real/repetitions"));
     src_->setctrl("mrs_real/duration", getctrl("mrs_real/duration"));
     src_->setctrl("mrs_bool/advance", getctrl("mrs_bool/advance"));
     src_->setctrl("mrs_natural/cindex", getctrl("mrs_natural/cindex"));
     src_->setctrl("mrs_bool/shuffle", getctrl("mrs_bool/shuffle"));
-    
-    advance_ = getctrl("mrs_bool/advance").toBool();
-    cindex_ = getctrl("mrs_natural/cindex").toNatural();
-    currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying").toString();
-    shuffle_ = getctrl("mrs_bool/shuffle").toBool();
-        
     src_->setctrl("mrs_bool/notEmpty", getctrl("mrs_bool/notEmpty"));
     src_->setctrl("mrs_natural/pos", getctrl("mrs_natural/pos"));
-    src_->pos_ = getctrl("mrs_natural/pos").toNatural();
-    
+    src_->pos_ = getctrl("mrs_natural/pos").toNatural();//[!]
     src_->setctrl("mrs_natural/loopPos", getctrl("mrs_natural/loopPos"));
-    src_->rewindpos_ = getctrl("mrs_natural/loopPos").toNatural();
-    
-    src_->update();
+    src_->rewindpos_ = getctrl("mrs_natural/loopPos").toNatural();//[!]
+ 		src_->update();
 
-    setctrl("mrs_natural/onSamples", src_->getctrl("mrs_natural/onSamples"));
+    //sync local controls with the controls from the audio source object 
+		setctrl("mrs_natural/onSamples", src_->getctrl("mrs_natural/onSamples"));
     setctrl("mrs_natural/onObservations", src_->getctrl("mrs_natural/onObservations"));
-    setctrl("mrs_real/osrate", src_->getctrl("mrs_real/israte"));
-    setctrl("mrs_natural/pos", src_->pos_);
-    setctrl("mrs_natural/loopPos", src_->rewindpos_);
-    
-    setctrl("mrs_bool/notEmpty", (MarControlValue)src_->notEmpty_);
+    setctrl("mrs_real/osrate", src_->getctrl("mrs_real/israte")); //israte[?]
+    setctrl("mrs_natural/pos", src_->pos_);//[!]
+    setctrl("mrs_natural/loopPos", src_->rewindpos_);//[!]
+    setctrl("mrs_bool/notEmpty", (MarControlValue)src_->notEmpty_);//[!]
     setctrl("mrs_natural/size", src_->getctrl("mrs_natural/size"));
     setctrl("mrs_real/repetitions", src_->getctrl("mrs_real/repetitions"));
     setctrl("mrs_real/duration", src_->getctrl("mrs_real/duration"));
-    setctrl("mrs_bool/advance", src_->getctrl("mrs_bool/advance"));
-    setctrl("mrs_bool/shuffle", src_->getctrl("mrs_bool/shuffle"));
+    
+		advance_ = getctrl("mrs_bool/advance").toBool();//?!?!!? [!][?]
+		setctrl("mrs_bool/advance", src_->getctrl("mrs_bool/advance"));
+    
+		setctrl("mrs_bool/shuffle", src_->getctrl("mrs_bool/shuffle"));
     setctrl("mrs_natural/cindex", src_->getctrl("mrs_natural/cindex"));
     setctrl("mrs_string/currentlyPlaying", src_->getctrl("mrs_string/currentlyPlaying"));
-    
-    setctrl("mrs_string/allfilenames", src_->getctrl("mrs_string/allfilenames"));
+		setctrl("mrs_string/allfilenames", src_->getctrl("mrs_string/allfilenames"));
     setctrl("mrs_natural/numFiles", src_->getctrl("mrs_natural/numFiles"));
         
     if (src_->getctrl("mrs_string/filetype").toString() == "raw")
@@ -204,8 +183,8 @@ SoundFileSource::checkType()
   // check if file exists
   if (filename != "defaultfile")
   {
-    sfp_ = fopen(filename.c_str(), "r");
-    if (sfp_ == NULL) 
+    FILE * sfp = fopen(filename.c_str(), "r");
+    if (sfp == NULL) 
 		{
 			string wrn = "SoundFileSource::Problem opening file ";
 			wrn += filename;
@@ -214,7 +193,7 @@ SoundFileSource::checkType()
 			setctrl("mrs_string/filename", "defaultfile");
 			return false;
 		}
-    fclose(sfp_);
+    fclose(sfp);
   }
   else 
     filename_ = "defaultfile";
@@ -246,24 +225,21 @@ SoundFileSource::checkType()
     delete src_;
     src_ = new CollectionFileSource(name_);
   }
-
-#ifdef MAD_MP3
+	#ifdef MAD_MP3
   else if (ext == ".mp3")
     {
       delete src_;
       src_ = new MP3FileSource(name_);
     }
-#endif 
-
-#ifdef OGG_VORBIS
+	#endif 
+	#ifdef OGG_VORBIS
   else if (ext == ".ogg")
   {
 	  cout << "OGG" << endl;
 	  delete src_;
 	  src_ = new OggFileSource(name_);
   }
-#endif 
-  
+	#endif 
   else 
   {
     if (filename != "defaultfile")
@@ -281,15 +257,14 @@ SoundFileSource::checkType()
   return true;
 }
 
-
 void
 SoundFileSource::getHeader()
 {
   string filename = getctrl("mrs_string/filename").toString();
  
 	src_->getHeader(filename);
-  setctrl("mrs_natural/pos", (MarControlValue)0);
-  setctrl("mrs_natural/loopPos", (MarControlValue)0); 
+	setctrl("mrs_natural/pos", (MarControlValue)0);
+	setctrl("mrs_natural/loopPos", (MarControlValue)0); 
 }
 
 void
@@ -299,13 +274,12 @@ SoundFileSource::process(realvec& in, realvec &out)
   {
     src_->process(in,out);
 
-    //lmartins: if (mute_)
 		if(getctrl("mrs_bool/mute").toBool())
 			out.setval(0.0);      
 
-    setctrl("mrs_natural/pos", src_->pos_);
-    setctrl("mrs_natural/loopPos", src_->rewindpos_);
-    setctrl("mrs_bool/notEmpty", (MarControlValue)src_->notEmpty_);
+    setctrl("mrs_natural/pos", src_->pos_); //[!]
+    setctrl("mrs_natural/loopPos", src_->rewindpos_);//[!]
+    setctrl("mrs_bool/notEmpty", (MarControlValue)src_->notEmpty_);//[!]
   }
   
   if (advance_) 
