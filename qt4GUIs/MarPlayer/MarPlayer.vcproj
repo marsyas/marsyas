@@ -317,18 +317,6 @@
 			UniqueIdentifier="{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}"
 			>
 			<File
-				RelativePath="debug\MarPlayer_resource.res"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="release\MarPlayer_resource.res"
 				>
 				<FileConfiguration
@@ -341,14 +329,14 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="debug\moc_Mapper.cpp"
+				RelativePath="debug\MarPlayer_resource.res"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool
-						Name="VCCLCompilerTool"
+						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 			</File>
@@ -357,6 +345,18 @@
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="debug\moc_Mapper.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -389,25 +389,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="debug\moc_MarSystemWrapper.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="release\moc_MarSystemWrapper.cpp"
 				>
 				<FileConfiguration
@@ -427,11 +408,18 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="debug\qrc_MarPlayerForm.cpp"
+				RelativePath="debug\moc_MarSystemWrapper.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
 					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -443,6 +431,18 @@
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="debug\qrc_MarPlayerForm.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool

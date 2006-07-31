@@ -51,6 +51,8 @@ private:
 
 	QMutex ctrlMutex_;
 
+	void run();
+
 public:
   MarSystemWrapper(Marsyas::MarSystem* msys);
   
@@ -60,7 +62,6 @@ public slots:
   
   void play();
   void pause();
-  void run();
   
 signals: 
   void ctrlChanged(QString cname, Marsyas::MarControlValue value);
