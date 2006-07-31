@@ -173,8 +173,10 @@ MFCC::process(realvec& in, realvec& out)
   // mirror the spectrum 
   for (o=0; o < inObservations_; o++)
     fmagnitude_(o) = in(o,0);
+
+
   for (o=0; o< inObservations_; o++)
-    fmagnitude_(o+ inObservations_) = fmagnitude_(inObservations_ - o);
+    fmagnitude_(o + inObservations_) = fmagnitude_(inObservations_ - o -1);
   
   
   mrs_real sum =0.0;
