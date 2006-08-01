@@ -16,7 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /** 
     \class Mapper
     \brief Mapper maps the state of the GUI to MarSystemWrapper 
@@ -29,17 +28,13 @@ and also receives updates from the MarSystemWrapper
 which it signals to MainWindow to update the GUI. 
 */
 
-
-
 #ifndef MAPPER_H
 #define MAPPER_H
-
 
 #include <QObject> 
 #include <QTimer>
 #include "MarSystemManager.h" 
 #include "MarSystemWrapper.h"
-
 
 class Mapper: public QObject
 {
@@ -47,6 +42,7 @@ class Mapper: public QObject
 
 public:
     Mapper();
+		~Mapper();
 
 public slots: 
     void open(QString fileName, int val);
@@ -61,20 +57,17 @@ signals:
     void durationChanged(Marsyas::mrs_real val);
     void timeChanged(Marsyas::mrs_real val);
   
-  
 private:
   Marsyas::mrs_real duration_;
   
   MarSystemWrapper* mwr_;		// the wrapper that turns 
-                                        // any MarSystem into 
-                                        // Qt-like object with 
-                                        // signals and slots 
+                            // any MarSystem into 
+                            // Qt-like object with 
+                            // signals and slots 
   
-  Marsyas::MarSystem* pnet_;			// the playback network 
+  Marsyas::MarSystem* pnet_;// the playback network 
 
-  
 };
-
 
 #endif
 	

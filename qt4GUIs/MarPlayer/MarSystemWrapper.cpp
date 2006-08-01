@@ -29,12 +29,15 @@ adjusted to reflect Marsyas controls.
 
 #include "MarSystemWrapper.h"
 
+#include <QMutexLocker>
+
 using namespace std;
 using namespace Marsyas;
 
 MarSystemWrapper::MarSystemWrapper(MarSystem* msys)
 {
   msys_ = msys;
+	stopped_ = false;
 	updctrl("mrs_bool/active",false);
 }
 
@@ -72,6 +75,13 @@ MarSystemWrapper::updctrl(QString cname, MarControlValue value)
   }
 }
 
+void MarSystemWrapper::stopThread()
+{
+	stopMutex_.lock();
+	stopped_ = true;
+	stopMutex_.unlock();
+}
+
 void MarSystemWrapper::pause()
 {
 	updctrl("mrs_bool/active", false);
@@ -85,9 +95,18 @@ void MarSystemWrapper::play()
 
 void MarSystemWrapper::run() 
 {
-	while(1)
+	while(1)//forever
   {
-    //update stored controls atomically 
+		{
+			QMutexLocker stopLocker(&stopMutex_);
+				if(stopped_)
+				{
+					stopped_ = false;
+					break; //break from while(1) and exit run() => stops thread!
+				}
+		}
+				
+		//update stored controls atomically 
     if(ctrlMutex_.tryLock())
 		{
 			vector<QString>::iterator  vsi;

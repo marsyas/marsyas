@@ -48,8 +48,10 @@ private:
 
 	std::vector<QString> cnames_;
 	std::vector<Marsyas::MarControlValue> cvalues_;
-
 	QMutex ctrlMutex_;
+	
+	volatile bool stopped_;
+	QMutex stopMutex_;
 
 	void run();
 
@@ -60,6 +62,8 @@ public slots:
   void updctrl(QString cname, Marsyas::MarControlValue value);
   Marsyas::MarControlValue getctrl(std::string cname);
   
+	void stopThread();
+
   void play();
   void pause();
   

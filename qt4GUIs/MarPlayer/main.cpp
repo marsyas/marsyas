@@ -16,16 +16,15 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
-
 #include <QApplication>
 #include "MarPlayer.h"
 
 int 
 main(int argc, char *argv[])
 {
-  QApplication app(argc, argv);
-  MarPlayer *marplayer = new MarPlayer;
-  marplayer->show();
-  return app.exec();
+	QApplication a(argc, argv);
+	MarPlayer mp;
+	mp.show();
+	a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
+	return a.exec();
 }

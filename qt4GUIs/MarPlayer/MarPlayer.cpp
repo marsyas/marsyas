@@ -16,7 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 #include <QtGui>
 #include "MarPlayer.h"
 
@@ -28,6 +27,10 @@ MarPlayer::MarPlayer()
   init();
 }
 
+MarPlayer::~MarPlayer()
+{
+	delete mapper_;
+}
 
 void
 MarPlayer::init()
@@ -37,7 +40,6 @@ MarPlayer::init()
   mapper_ = new Mapper();		// mapper communicates with Marsyas 
   createConnections();
 }
-
 
 void 
 MarPlayer::createMenus()
@@ -49,8 +51,6 @@ MarPlayer::createMenus()
   helpMenu->addAction(aboutAct);
 }
 
-
-
 void MarPlayer::createActions()
 {
   openAct = new QAction(QIcon(":/images/open.png"), tr("&Open..."), this);
@@ -61,8 +61,6 @@ void MarPlayer::createActions()
   aboutAct->setStatusTip(tr("Show the application's About box"));
   connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 }
-
-
 
 void 
 MarPlayer::createConnections()
@@ -79,7 +77,6 @@ MarPlayer::createConnections()
   connect(mapper_, SIGNAL(posChanged(int)), 
 	  this, SLOT(positionSlider(int)));
 
-
   connect(mapper_, SIGNAL(durationChanged(mrs_real)), 
 	  this, SLOT(setDuration(mrs_real)));
 
@@ -93,8 +90,6 @@ MarPlayer::createConnections()
 	  this, SLOT(open(const QString&)));
 }
 
-
-
 void 
 MarPlayer::open()
 {
@@ -104,13 +99,11 @@ MarPlayer::open()
   open(fileName);
 }
 
-
 void 
 MarPlayer::open(const QString& text)
 {
   mapper_->open(text, ui.positionSlider->sliderPosition());  
 }
-
 
 void 
 MarPlayer::positionSlider(int val)
@@ -129,7 +122,6 @@ MarPlayer::setDuration(mrs_real val)
   ui.durTimeEdit->setTime(dur);
 }
 
-
 // set current time of soundfile on corresponding slider 
 void 
 MarPlayer::setTime(mrs_real val) 
@@ -140,14 +132,11 @@ MarPlayer::setTime(mrs_real val)
   ui.posTimeEdit->setTime(dur);
 }
 
-
 void 
 MarPlayer::seekPos()
 {
   mapper_->setPos(ui.positionSlider->sliderPosition());
 }
-
-
 
 void MarPlayer::about()
 {

@@ -51,6 +51,15 @@ Mapper::Mapper()
 	mwr_->start();
 }
 
+Mapper::~Mapper()
+{
+	mwr_->stopThread();
+	mwr_->wait();
+	delete mwr_;
+	
+	delete pnet_;
+}
+
 void 
 Mapper::open(QString fileName, int pos)
 {

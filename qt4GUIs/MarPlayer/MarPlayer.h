@@ -26,7 +26,6 @@ form (created using Designer) to the Mapper class which
 is used to communicate with MarSystemWrapper. 
 */
 
-
 #ifndef MARPLAYER_H
 #define MARPLAYER_H
 
@@ -34,14 +33,13 @@ is used to communicate with MarSystemWrapper.
 #include "Mapper.h"
 #include "ui_MarPlayerForm.h"
 
-
 class MarPlayer : public QMainWindow
 {
     Q_OBJECT
 
 public:
     MarPlayer();
-
+		~MarPlayer();
 
 private slots:
   void open();
@@ -51,14 +49,12 @@ private slots:
   void seekPos();
   void setDuration(Marsyas::mrs_real);
   void setTime(Marsyas::mrs_real);
-  
 
 private: 
   void init();
   void createMenus();
   void createActions();
   void createConnections();
-  
   
   Ui::MarPlayerForm ui;			// the main ui form created 
                                         // using Designer 
@@ -68,9 +64,6 @@ private:
   QAction* aboutAct;
   
   Mapper* mapper_;			// maps gui events to marsyas events
-  
-  
 };
-
 
 #endif
