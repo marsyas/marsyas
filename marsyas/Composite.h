@@ -58,17 +58,18 @@ public:
   //Composite();
   Composite(std::string type, std::string name);
   Composite(const Composite& a);
-  
   virtual ~Composite();
 
-  void updctrl(std::string cname, MarControlValue value);
+  //void updctrl(std::string cname, MarControlValue value); //clash with inherited method from MarSystem[!][?]
   void updControl(std::string cname, MarControlValue value);
-  void setControl(std::string cname, MarControlValue value);
+  
+	void setControl(std::string cname, MarControlValue value);
   void setControl(std::string cname, mrs_real value);
   void setControl(std::string cname, mrs_natural value);
   
   bool hasControlState(std::string cname);
-  bool hasControl(std::string cname);
+  
+	bool hasControl(std::string cname);
   bool hasControlLocal(std::string cname);
    
   MarControlValue getctrl(std::string cname);

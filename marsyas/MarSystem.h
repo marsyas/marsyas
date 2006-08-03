@@ -124,15 +124,14 @@ public:
   // new control methods 
   void updctrl(std::string cname, MarControlValue value);
   void updctrl(MarEvent* me);
-//  clashes with void upctrl(std::string cname, 0);
-//  void updctrl(std::string time, MarEvent* ev);
+	//void updctrl(std::string time, MarEvent* ev); //  clashes with void upctrl(std::string cname, 0);
   void updctrl(std::string time, Repeat rep, MarEvent* ev);
-  
-/****** NEIL START *******/
-//  void updctrl(Repeat rep, MarEvent* ev);
+	virtual void updControl(std::string cname, MarControlValue value);  
+	/****** NEIL START *******/
+	//void updctrl(Repeat rep, MarEvent* ev);
   void updctrl(std::string time, std::string cname, MarControlValue value);
   void updctrl(std::string time, Repeat rep, std::string cname, MarControlValue value);
-//  void updctrl(Repeat rep, std::string cname, MarControlValue value);
+	//void updctrl(Repeat rep, std::string cname, MarControlValue value);
 
   void addTimer(TmTimer* t);
   void removeTimer(std::string name);
@@ -141,25 +140,27 @@ public:
   void updctrl(TmTime t, Repeat rep, MarEvent* ev);
   void updctrl(TmTime t, std::string cname, MarControlValue value);
   void updctrl(TmTime t, Repeat rep, std::string cname, MarControlValue value);
-/****** NEIL END *******/
+	/****** NEIL END *******/
 
   virtual void setControl(std::string cname, MarControlValue value);
   virtual void setControl(std::string cname, mrs_real value);
   virtual void setControl(std::string cname, mrs_natural value);
-
   void setctrl(std::string cname, MarControlValue value);
   void setctrl(std::string cname, mrs_real value);
   void setctrl(std::string cname, mrs_natural value);
-
-  virtual void updControl(std::string cname, MarControlValue value);
+  
   virtual MarControlValue getctrl(std::string cname);
   virtual MarControlValue getControl(std::string cname);
-  virtual bool hasControl(std::string cname);
+
+	virtual bool hasControl(std::string cname);
 
   void setControlState(std::string cname, bool val);
 	virtual bool hasControlState(std::string cname);
   void setctrlState(std::string cname, bool val);
   bool hasctrlState(std::string cname);
+
+	virtual void linkctrl(std::string visible, std::string inside);
+	virtual void linkControl(std::string visible, std::string inside);
 
   mrs_natural inObservations() const;
   mrs_natural inSamples() const;
@@ -168,9 +169,6 @@ public:
   
   virtual void addMarSystem(MarSystem *marsystem);
   
-	virtual void linkctrl(std::string visible, std::string inside);
-  virtual void linkControl(std::string visible, std::string inside);
-
   // methods that actually do something 
   void tick();
   virtual void process(realvec& in, realvec& out)=0;   

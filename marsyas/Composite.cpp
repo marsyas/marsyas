@@ -111,11 +111,12 @@ Composite::addMarSystem(MarSystem *marsystem)
   update();
 }
 
-void 
-Composite::updctrl(string cname, MarControlValue value)
-{
-  updControl("/" + type_ + "/" + name_ + "/" + cname, value);
-}
+//clash with inherited method from MarSystem[!][?]
+// void 
+// Composite::updctrl(string cname, MarControlValue value)
+// {
+//   updControl("/" + type_ + "/" + name_ + "/" + cname, value);
+// }
 
 bool
 Composite::hasControlState(string cname)
