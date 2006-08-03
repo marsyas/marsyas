@@ -49,23 +49,27 @@ class MarSystem {
                 string getType ();
                 string getName ();
                 string getPrefix ();
-                
+
                 /* Methods for dealing with controls */
                 void            setControl(string cname, MarControlValue value);
                 MarControlValue getControl(string cname);
                 bool            hasControl(string cname);
                 void            updControl(string cname, MarControlValue value);
-                void		linkControl(string visible, string inside);
-                
+                void            linkControl(string visible, string inside);
+
+                void            updctrl(string time,Repeat rep,string cname,MarControlValue value);
+
                 /* Listing of all controls & current values */
                 map<string,MarControlValue> getControls();
 };
 
 /* Add Sequencer Update Commands */
+/*
 %extend MarSystem {
-	void updControl(string time,string cname, MarControlValue value) { self->updctrl(time,cname,value); }
-	void updControl(string time,Repeat rep,string cname,MarControlValue value) { self->updctrl(time,rep,cname,value); }
+        void updctrl(string time,string cname, MarControlValue value) { self->updctrl(time,cname,value); }
+        void updctrl(string time,Repeat rep,string cname,MarControlValue value) { self->updctrl(time,rep,cname,value); }
 }
+*/
 
 class MarSystemManager {
         public:

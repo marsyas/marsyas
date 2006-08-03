@@ -1604,20 +1604,20 @@ static MarControlValue VAL2MCV ( VALUE val ) {
 }
 
 static Repeat VAL2RPT ( VALUE val ) {
-	VALUE v1,v2;
-	switch(TYPE(val)) {
-	case T_STRING: return Repeat(VAL2STR(val));
-	case T_ARRAY:
-		if (RARRAY(val)->len == 1 && TYPE(v1=(RARRAY(val)->ptr[0]))==T_STRING)
-			return Repeat(VAL2STR(v1));
-		if (
-			RARRAY(val)->len >= 2 &&
-			TYPE(v1=(RARRAY(val)->ptr[0]))==T_STRING &&
-			TYPE(v2=(RARRAY(val)->ptr[1]))==T_FIXNUM
-		)
-			return Repeat(VAL2STR(v1),NUM2INT(v2));
-	}
-	return Repeat();
+        VALUE v1,v2;
+        switch(TYPE(val)) {
+                case T_STRING: return Repeat(VAL2STR(val));
+                case T_ARRAY:
+                               if (RARRAY(val)->len == 1 && TYPE(v1=(RARRAY(val)->ptr[0]))==T_STRING)
+                                       return Repeat(VAL2STR(v1));
+                               if (
+                                               RARRAY(val)->len >= 2 &&
+                                               TYPE(v1=(RARRAY(val)->ptr[0]))==T_STRING &&
+                                               TYPE(v2=(RARRAY(val)->ptr[1]))==T_FIXNUM
+                                  )
+                                       return Repeat(VAL2STR(v1),NUM2INT(v2));
+        }
+        return Repeat();
 }
 
 
@@ -1691,8 +1691,6 @@ SWIG_From_bool  (bool value)
   return value ? Qtrue : Qfalse;
 }
 
-SWIGINTERN void MarSystem_updControl__SWIG_1(MarSystem *self,string time,string cname,MarControlValue value){ self->updctrl(time,cname,value); }
-SWIGINTERN void MarSystem_updControl__SWIG_2(MarSystem *self,string time,Repeat rep,string cname,MarControlValue value){ self->updctrl(time,rep,cname,value); }
 swig_class cMarSystem;
 
 SWIGINTERN VALUE
@@ -1947,7 +1945,7 @@ fail:
 
 
 SWIGINTERN VALUE
-_wrap_MarSystem_updControl__SWIG_0(int argc, VALUE *argv, VALUE self) {
+_wrap_MarSystem_updControl(int argc, VALUE *argv, VALUE self) {
   MarSystem *arg1 = (MarSystem *) 0 ;
   string arg2 ;
   MarControlValue arg3 ;
@@ -2020,6 +2018,53 @@ fail:
 
 
 SWIGINTERN VALUE
+_wrap_MarSystem_updctrl(int argc, VALUE *argv, VALUE self) {
+  MarSystem *arg1 = (MarSystem *) 0 ;
+  string arg2 ;
+  Repeat arg3 ;
+  string arg4 ;
+  MarControlValue arg5 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int res4 ;
+  char *buf4 = 0 ;
+  int alloc4 = 0 ;
+  
+  if ((argc < 4) || (argc > 4)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 4)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "updctrl" "', argument " "1"" of type '" "MarSystem *""'"); 
+  }
+  arg1 = reinterpret_cast< MarSystem * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(argv[0], &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "updctrl" "', argument " "2"" of type '" "string""'");
+  }
+  arg2 = buf2;
+  {
+    arg3 = VAL2RPT(argv[1]); 
+  }
+  res4 = SWIG_AsCharPtrAndSize(argv[2], &buf4, NULL, &alloc4);
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "updctrl" "', argument " "4"" of type '" "string""'");
+  }
+  arg4 = buf4;
+  {
+    arg5 = VAL2MCV(argv[3]);
+  }
+  (arg1)->updctrl(arg2,arg3,arg4,arg5);
+  return Qnil;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
 _wrap_MarSystem_getControls(int argc, VALUE *argv, VALUE self) {
   MarSystem *arg1 = (MarSystem *) 0 ;
   map<string,MarControlValue > result;
@@ -2048,186 +2093,6 @@ _wrap_MarSystem_getControls(int argc, VALUE *argv, VALUE self) {
   }
   return vresult;
 fail:
-  return Qnil;
-}
-
-
-SWIGINTERN VALUE
-_wrap_MarSystem_updControl__SWIG_1(int argc, VALUE *argv, VALUE self) {
-  MarSystem *arg1 = (MarSystem *) 0 ;
-  string arg2 ;
-  string arg3 ;
-  MarControlValue arg4 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 ;
-  char *buf2 = 0 ;
-  int alloc2 = 0 ;
-  int res3 ;
-  char *buf3 = 0 ;
-  int alloc3 = 0 ;
-  
-  if ((argc < 3) || (argc > 3)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 3)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "updControl" "', argument " "1"" of type '" "MarSystem *""'"); 
-  }
-  arg1 = reinterpret_cast< MarSystem * >(argp1);
-  res2 = SWIG_AsCharPtrAndSize(argv[0], &buf2, NULL, &alloc2);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "updControl" "', argument " "2"" of type '" "string""'");
-  }
-  arg2 = buf2;
-  res3 = SWIG_AsCharPtrAndSize(argv[1], &buf3, NULL, &alloc3);
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "updControl" "', argument " "3"" of type '" "string""'");
-  }
-  arg3 = buf3;
-  {
-    arg4 = VAL2MCV(argv[2]);
-  }
-  MarSystem_updControl__SWIG_1(arg1,arg2,arg3,arg4);
-  return Qnil;
-fail:
-  return Qnil;
-}
-
-
-SWIGINTERN VALUE
-_wrap_MarSystem_updControl__SWIG_2(int argc, VALUE *argv, VALUE self) {
-  MarSystem *arg1 = (MarSystem *) 0 ;
-  string arg2 ;
-  Repeat arg3 ;
-  string arg4 ;
-  MarControlValue arg5 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 ;
-  char *buf2 = 0 ;
-  int alloc2 = 0 ;
-  int res4 ;
-  char *buf4 = 0 ;
-  int alloc4 = 0 ;
-  
-  if ((argc < 4) || (argc > 4)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 4)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "updControl" "', argument " "1"" of type '" "MarSystem *""'"); 
-  }
-  arg1 = reinterpret_cast< MarSystem * >(argp1);
-  res2 = SWIG_AsCharPtrAndSize(argv[0], &buf2, NULL, &alloc2);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "updControl" "', argument " "2"" of type '" "string""'");
-  }
-  arg2 = buf2;
-  {
-    arg3 = VAL2RPT(argv[1]); 
-  }
-  res4 = SWIG_AsCharPtrAndSize(argv[2], &buf4, NULL, &alloc4);
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "updControl" "', argument " "4"" of type '" "string""'");
-  }
-  arg4 = buf4;
-  {
-    arg5 = VAL2MCV(argv[3]);
-  }
-  MarSystem_updControl__SWIG_2(arg1,arg2,arg3,arg4,arg5);
-  return Qnil;
-fail:
-  return Qnil;
-}
-
-
-SWIGINTERN VALUE _wrap_MarSystem_updControl(int nargs, VALUE *args, VALUE self) {
-  int argc;
-  VALUE argv[6];
-  int ii;
-  
-  argc = nargs + 1;
-  argv[0] = self;
-  if (argc > 6) SWIG_fail;
-  for (ii = 1; (ii < argc); ii++) {
-    argv[ii] = args[ii-1];
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      void *vptr = 0;
-      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_string, 0);
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        void *vptr = 0;
-        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_MarControlValue, 0);
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_MarSystem_updControl__SWIG_0(nargs, args, self);
-        }
-      }
-    }
-  }
-  if (argc == 4) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      void *vptr = 0;
-      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_string, 0);
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        void *vptr = 0;
-        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_string, 0);
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          void *vptr = 0;
-          int res = SWIG_ConvertPtr(argv[3], &vptr, SWIGTYPE_p_MarControlValue, 0);
-          _v = SWIG_CheckState(res);
-          if (_v) {
-            return _wrap_MarSystem_updControl__SWIG_1(nargs, args, self);
-          }
-        }
-      }
-    }
-  }
-  if (argc == 5) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      void *vptr = 0;
-      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_string, 0);
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        void *vptr = 0;
-        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_Repeat, 0);
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          void *vptr = 0;
-          int res = SWIG_ConvertPtr(argv[3], &vptr, SWIGTYPE_p_string, 0);
-          _v = SWIG_CheckState(res);
-          if (_v) {
-            void *vptr = 0;
-            int res = SWIG_ConvertPtr(argv[4], &vptr, SWIGTYPE_p_MarControlValue, 0);
-            _v = SWIG_CheckState(res);
-            if (_v) {
-              return _wrap_MarSystem_updControl__SWIG_2(nargs, args, self);
-            }
-          }
-        }
-      }
-    }
-  }
-  
-fail:
-  rb_raise(rb_eArgError, "No matching function for overloaded 'MarSystem_updControl'");
   return Qnil;
 }
 
@@ -2624,9 +2489,10 @@ SWIGEXPORT void Init_marsyas_ruby(void) {
   rb_define_method(cMarSystem.klass, "setControl", VALUEFUNC(_wrap_MarSystem_setControl), -1);
   rb_define_method(cMarSystem.klass, "getControl", VALUEFUNC(_wrap_MarSystem_getControl), -1);
   rb_define_method(cMarSystem.klass, "hasControl", VALUEFUNC(_wrap_MarSystem_hasControl), -1);
-  rb_define_method(cMarSystem.klass, "linkControl", VALUEFUNC(_wrap_MarSystem_linkControl), -1);
-  rb_define_method(cMarSystem.klass, "getControls", VALUEFUNC(_wrap_MarSystem_getControls), -1);
   rb_define_method(cMarSystem.klass, "updControl", VALUEFUNC(_wrap_MarSystem_updControl), -1);
+  rb_define_method(cMarSystem.klass, "linkControl", VALUEFUNC(_wrap_MarSystem_linkControl), -1);
+  rb_define_method(cMarSystem.klass, "updctrl", VALUEFUNC(_wrap_MarSystem_updctrl), -1);
+  rb_define_method(cMarSystem.klass, "getControls", VALUEFUNC(_wrap_MarSystem_getControls), -1);
   cMarSystem.mark = 0;
   cMarSystem.destroy = (void (*)(void *)) free_MarSystem;
   cMarSystem.trackObjects = 0;

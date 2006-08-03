@@ -49,20 +49,20 @@ static MarControlValue VAL2MCV ( VALUE val ) {
 }
 
 static Repeat VAL2RPT ( VALUE val ) {
-	VALUE v1,v2;
-	switch(TYPE(val)) {
-	case T_STRING: return Repeat(VAL2STR(val));
-	case T_ARRAY:
-		if (RARRAY(val)->len == 1 && TYPE(v1=(RARRAY(val)->ptr[0]))==T_STRING)
-			return Repeat(VAL2STR(v1));
-		if (
-			RARRAY(val)->len >= 2 &&
-			TYPE(v1=(RARRAY(val)->ptr[0]))==T_STRING &&
-			TYPE(v2=(RARRAY(val)->ptr[1]))==T_FIXNUM
-		)
-			return Repeat(VAL2STR(v1),NUM2INT(v2));
-	}
-	return Repeat();
+        VALUE v1,v2;
+        switch(TYPE(val)) {
+                case T_STRING: return Repeat(VAL2STR(val));
+                case T_ARRAY:
+                               if (RARRAY(val)->len == 1 && TYPE(v1=(RARRAY(val)->ptr[0]))==T_STRING)
+                                       return Repeat(VAL2STR(v1));
+                               if (
+                                               RARRAY(val)->len >= 2 &&
+                                               TYPE(v1=(RARRAY(val)->ptr[0]))==T_STRING &&
+                                               TYPE(v2=(RARRAY(val)->ptr[1]))==T_FIXNUM
+                                  )
+                                       return Repeat(VAL2STR(v1),NUM2INT(v2));
+        }
+        return Repeat();
 }
 
 %}
