@@ -8,6 +8,7 @@
 #include <Python.h>
 
 using namespace std;
+using namespace Marsyas;
 
 static PyObject *STR2PY (string s) { return PyString_FromStringAndSize(s.c_str(),s.size()); }
 

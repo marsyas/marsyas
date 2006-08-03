@@ -1564,6 +1564,7 @@ static VALUE mMarsyas_ruby;
 #include <ruby.h>
 
 using namespace std;
+using namespace Marsyas;
 
 /* Helper functions */
 /* Convert string to Ruby VALUE */
@@ -1625,6 +1626,9 @@ static Repeat VAL2RPT ( VALUE val ) {
 #include <marsyas/MarSystem.h>
 #include <vector>
 #include <map>
+
+using namespace Marsyas;
+
 
 
 SWIGINTERN swig_type_info*
@@ -2150,13 +2154,76 @@ SWIGINTERN VALUE _wrap_MarSystem_updControl(int nargs, VALUE *args, VALUE self) 
     argv[ii] = args[ii-1];
   }
   if (argc == 3) {
-    return _wrap_MarSystem_updControl__SWIG_0(nargs, args, self);
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      void *vptr = 0;
+      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_string, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_MarControlValue, 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_MarSystem_updControl__SWIG_0(nargs, args, self);
+        }
+      }
+    }
   }
   if (argc == 4) {
-    return _wrap_MarSystem_updControl__SWIG_1(nargs, args, self);
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      void *vptr = 0;
+      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_string, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_string, 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          void *vptr = 0;
+          int res = SWIG_ConvertPtr(argv[3], &vptr, SWIGTYPE_p_MarControlValue, 0);
+          _v = SWIG_CheckState(res);
+          if (_v) {
+            return _wrap_MarSystem_updControl__SWIG_1(nargs, args, self);
+          }
+        }
+      }
+    }
   }
   if (argc == 5) {
-    return _wrap_MarSystem_updControl__SWIG_2(nargs, args, self);
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      void *vptr = 0;
+      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_string, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_Repeat, 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          void *vptr = 0;
+          int res = SWIG_ConvertPtr(argv[3], &vptr, SWIGTYPE_p_string, 0);
+          _v = SWIG_CheckState(res);
+          if (_v) {
+            void *vptr = 0;
+            int res = SWIG_ConvertPtr(argv[4], &vptr, SWIGTYPE_p_MarControlValue, 0);
+            _v = SWIG_CheckState(res);
+            if (_v) {
+              return _wrap_MarSystem_updControl__SWIG_2(nargs, args, self);
+            }
+          }
+        }
+      }
+    }
   }
   
 fail:

@@ -2577,6 +2577,7 @@ namespace swig {
 #include <Python.h>
 
 using namespace std;
+using namespace Marsyas;
 
 static PyObject *STR2PY (string s) { return PyString_FromStringAndSize(s.c_str(),s.size()); }
 
@@ -2632,6 +2633,9 @@ static Repeat PY2RPT ( PyObject *pyo ) {
 #include <marsyas/MarSystem.h>
 #include <vector>
 #include <map>
+
+using namespace Marsyas;
+
 
 
 SWIGINTERN swig_type_info*

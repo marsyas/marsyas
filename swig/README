@@ -8,6 +8,16 @@ ABOUT
 
 	Currently only a subset of Marsyas' features are supported.
 
+DEPENDENCIES
+	Required:
+		- Marsyas >= 0.2.8
+		- GNU Build System
+	
+	Optional:
+		- Python >= 2.4 (For Python support)
+		- Ruby >= 1.8 (For Ruby support)
+		- SWIG >= 2 (To perform changes to *.i files)
+
 INSTALATION
 	The Marsyas-SWIG package can be installed in one of two ways,
 	either after a user has installed Marsyas, or as part of the

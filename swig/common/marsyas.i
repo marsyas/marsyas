@@ -25,6 +25,9 @@
 #include <marsyas/MarSystem.h>
 #include <vector>
 #include <map>
+
+using namespace Marsyas;
+
 %}
 
 /* Basic mapping of input variables, treats all

@@ -1,4 +1,4 @@
-AC_INIT([marsyas-swig],[0.3.8],[carlosc@uvic.ca])
+AC_INIT([marsyas-swig],[0.3.10],[carlosc@uvic.ca])
 AM_INIT_AUTOMAKE
 
 AC_CONFIG_HEADER([config.h])
@@ -17,8 +17,8 @@ ALSA_LIBS="-lpthread -lm -ldl -lasound"
 
 AC_ARG_ENABLE([bindings],
 	      [AS_HELP_STRING([--enable-bindings],[Use containing folder as Marsyas source])],
-	      [MRS_LIBS="$MAD_LIBS $ALSA_LIBS -L${topsrcdir}/../../marsyas -lmarsyas"
-	       MRS_INCS="-I${topsrcdir}/../.."
+	      [MRS_LIBS="$MAD_LIBS $ALSA_LIBS -L\$(top_builddir)/../marsyas -lmarsyas"
+	       MRS_INCS="-I\$(top_srcdir)/.. -I\$(top_builddir)/.."
 	      ],
 	      [MRS_LIBS="$MAD_LIBS $ALSA_LIBS -lmarsyas"
 	       MRS_INCS=

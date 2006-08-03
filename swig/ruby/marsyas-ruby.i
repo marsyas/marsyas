@@ -9,6 +9,7 @@
 #include <ruby.h>
 
 using namespace std;
+using namespace Marsyas;
 
 /* Helper functions */
 /* Convert string to Ruby VALUE */

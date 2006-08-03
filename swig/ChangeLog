@@ -1,3 +1,15 @@
+2006-08-03	<carlosc@uvic.ca>
+
+	* marsyas-swig : Version bump (0.3.10)
+
+	* marsyas-swig : Fixed common, ruby, and python files to support
+	marsyas namespace in marsyas 0.2.8
+
+	* marsyas-swig/configure : Fixed configure script to (hopefully)
+	properly find & use parent files for marsyas.
+
+	* marsyas-swig/README : Added dependencies section.
+
 2006-06-08	<carlosc@uvic.ca>
 
 	* marsyas-swig : Version bump (0.3.8)
