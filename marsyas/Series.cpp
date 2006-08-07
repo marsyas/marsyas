@@ -131,8 +131,8 @@ Series::localUpdate()
     setctrl("mrs_real/osrate", marsystems_[marsystemsSize_-1]->getctrl("mrs_real/osrate").toReal());
     
     // update buffers (aka slices) between components 
-    if ((mrs_natural)slices_.size() < marsystemsSize_) 
-			slices_.resize(marsystemsSize_, NULL);
+    if ((mrs_natural)slices_.size() < marsystemsSize_-1) 
+			slices_.resize(marsystemsSize_-1, NULL);
     
 		for (mrs_natural i=0; i< marsystemsSize_-1; i++)
 		{

@@ -258,7 +258,7 @@ MarSystem::localUpdate()
 void 
 MarSystem::update()
 {
-	MRSDIAG("MarSystem.cpp - MarSystem:localUpdate");
+	MRSDIAG("MarSystem.cpp - MarSystem:update");
 
 	localUpdate();
 
