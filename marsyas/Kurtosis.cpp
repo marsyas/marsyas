@@ -79,9 +79,10 @@ Kurtosis::process(realvec& in, realvec& out)
 		  obsrow_(o) = in(o,t);
 		}
       z_ = 0.0;
+      mrs_real mean = obsrow_.mean();
       for (o=0; o < inObservations_; o++)
 		{
-		  b_ =  obsrow_(o) - obsrow_.mean() ;
+		  b_ =  obsrow_(o) - mean ;
 		  
 		  // take x - u to the fourth power into the sum
 		  z_ += (b_ * b_ * b_ * b_); 
