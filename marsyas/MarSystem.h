@@ -58,6 +58,8 @@ class MarSystem
 {
 private:
 	void addControls();//add MarSystem default controls
+	std::string type_;		// Type of MarSystem
+  std::string name_;		// Name of instance 
 
 protected:
   mrs_natural inObservations_;
@@ -81,8 +83,6 @@ protected:
 
   MarControlValue oldval_;
   
-  std::string type_;		// Type of MarSystem
-  std::string name_;		// Name of instance 
   mrs_natural c,o,t;        // observation and time index
 
   //bool dbg_;
@@ -113,9 +113,9 @@ public:
   
   // Naming methods 
   virtual void setName(std::string name);
-  std::string getType();
-  std::string getName();
-  std::string getPrefix();
+  std::string getType() const;
+  std::string getName() const;
+  std::string getPrefix() const;
 
   virtual void update();
   

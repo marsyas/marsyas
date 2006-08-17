@@ -208,28 +208,28 @@ SoundFileSource::checkType()
   if (ext == ".au")
   {
     delete src_;
-    src_ = new AuFileSource(name_);
+    src_ = new AuFileSource(getName());
   }
   else if (ext == ".wav")
   {
     delete src_;
-    src_ = new WavFileSource(name_);
+    src_ = new WavFileSource(getName());
   }
   else if (ext == ".raw") 
   {
     delete src_;
-    src_ = new RawFileSource(name_);
+    src_ = new RawFileSource(getName());
   }	
   else if (ext == ".mf") 
   {
     delete src_;
-    src_ = new CollectionFileSource(name_);
+    src_ = new CollectionFileSource(getName());
   }
 	#ifdef MAD_MP3
   else if (ext == ".mp3")
     {
       delete src_;
-      src_ = new MP3FileSource(name_);
+      src_ = new MP3FileSource(getName());
     }
 	#endif 
 	#ifdef OGG_VORBIS
@@ -237,7 +237,7 @@ SoundFileSource::checkType()
   {
 	  cout << "OGG" << endl;
 	  delete src_;
-	  src_ = new OggFileSource(name_);
+	  src_ = new OggFileSource(getName());
   }
 	#endif 
   else 

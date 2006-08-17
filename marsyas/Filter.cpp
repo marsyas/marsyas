@@ -33,9 +33,6 @@ using namespace Marsyas;
 
 Filter::Filter(string name):MarSystem("Filter",name)
 {
-  type_ = "Filter";
-  name_ = name;
-
 	addControls();
 }
 

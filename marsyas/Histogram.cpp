@@ -31,9 +31,6 @@ using namespace Marsyas;
 
 Histogram::Histogram(string name):MarSystem("Histogram",name)
 {
-  type_ = "Histogram";
-  name_ = name;
-
 	addControls();
 }
 

@@ -52,6 +52,7 @@ MarSystem::MarSystem(string type, string name)
 {
   name_ = name;
   type_ = type;
+  prefix_ = "/" + type_ + "/" + name_;
 
   scheduler_.removeAll();
   TmTimer* t = new TmSampleCount(NULL, this, "mrs_natural/inSamples");
@@ -171,28 +172,28 @@ MarSystem::setName(string name)
 
 	string oldPrefix = "/" + type_ + "/" + name_;
 	string newPrefix = "/" + type_ + "/" + name;
-
-	name_ = name;
+  	
+  name_ = name;
 
 	ncontrols_.renamePrefix(oldPrefix, newPrefix);
 }
 string 
-MarSystem::getType()
+MarSystem::getType() const
 {
   return type_;
 }
 
 string 
-MarSystem::getName()
+MarSystem::getName() const
 {
   return name_;
 }
 
 string
-MarSystem::getPrefix()
+MarSystem::getPrefix() const
 {
   string prefix = type_ + "/" + name_ + "/";
-  return prefix;
+  return prefix;	
 }
 
 void 
@@ -319,7 +320,14 @@ MarControlValue
 MarSystem::getctrl(string cname)
 {
   MRSDIAG("MarSystem::getctrl");
-  return ncontrols_.getControl("/" + type_ + "/" + name_ + "/" + cname);
+	string ctrl = "/";
+	ctrl.append(type_);
+	ctrl.append("/");
+	ctrl.append(name_);
+	ctrl.append("/");
+	ctrl.append(cname);
+  
+	return ncontrols_.getControl(ctrl);
 }
 
 void

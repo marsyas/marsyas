@@ -165,12 +165,12 @@ SoundFileSink::checkType()
   if (ext == ".au")
     {
       delete dest_;
-      dest_ = new AuFileSink(name_);
+			dest_ = new AuFileSink(getName());
     }
   else if (ext == ".wav")
     {
       delete dest_;
-      dest_ = new WavFileSink(name_);
+			dest_ = new WavFileSink(getName());
     }
   else 
     {

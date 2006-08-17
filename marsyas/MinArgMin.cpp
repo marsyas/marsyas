@@ -58,7 +58,6 @@ MinArgMin::addControls()
 void
 MinArgMin::localUpdate()
 {
-  type_ = "MinArgMin";
   mrs_natural k = getctrl("mrs_natural/nMinimums").toNatural();
 
   setctrl("mrs_natural/onSamples",  2 * k);

@@ -35,8 +35,8 @@ using namespace Marsyas;
 
 // Composite::Composite()//lmartins: this should be deprecated... [!]
 // {
-//   type_ = "Composite";
-// 	name_ = "CompositePrototype";
+//   getType() = "Composite";
+// 	getName() = "CompositePrototype";
 //   
 // 	marsystemsSize_ = 0;
 // 
@@ -49,8 +49,8 @@ using namespace Marsyas;
 
 Composite::Composite(string type, string name):MarSystem(type, name)
 {
-  //type_ = "Composite";
-  //name_ = name;
+  //getType() = "Composite";
+  //getName() = name;
 
   marsystemsSize_ = 0;
 
@@ -66,8 +66,8 @@ Composite::Composite(const Composite& a):MarSystem(a)
 {
   //Now done by MarSystem copy constructor
   //
-  //   type_ = a.type_;
-  //   name_ = a.name_;
+  //   getType() = a.getType();
+  //   getName() = a.getName();
   //   ncontrols_ = a.ncontrols_; 		
   //   synonyms_ = a.synonyms_;
   //   
@@ -115,7 +115,7 @@ Composite::addMarSystem(MarSystem *marsystem)
 // void 
 // Composite::updctrl(string cname, MarControlValue value)
 // {
-//   updControl("/" + type_ + "/" + name_ + "/" + cname, value);
+//   updControl("/" + getType() + "/" + getName() + "/" + cname, value);
 // }
 
 bool
@@ -123,7 +123,7 @@ Composite::hasControlState(string cname)
 {
   bool controlFound = false;
   
-  string prefix = "/" + type_ + "/" + name_;
+  string prefix = "/" + getType() + "/" + getName();
   string childcontrol = cname.substr(prefix.length(), cname.length()-prefix.length());
   string nchildcontrol = childcontrol.substr(1, childcontrol.length());  
 
@@ -193,7 +193,7 @@ Composite::hasControl(string cname)
       return true;
     }
   
-  string prefix = "/" + type_ + "/" + name_;
+  string prefix = "/" + getType() + "/" + getName();
 
   //Jen
   mrs_natural cname_l = cname.length();
@@ -227,7 +227,7 @@ Composite::setControl(string cname, mrs_real value)
 {
   bool controlFound = false;
   
-  string prefix = "/" + type_ + "/" + name_;
+  string prefix = "/" + getType() + "/" + getName();
   string childcontrol = cname.substr(prefix.length(), cname.length()-prefix.length());
   //string nchildcontrol = childcontrol.substr(1, childcontrol.length());
 
@@ -254,7 +254,7 @@ Composite::setControl(string cname, mrs_natural value)
 {
   bool controlFound = false;
   
-  string prefix = "/" + type_ + "/" + name_;
+  string prefix = "/" + getType() + "/" + getName();
   string childcontrol = cname.substr(prefix.length(), cname.length()-prefix.length());
   //string nchildcontrol = childcontrol.substr(1, childcontrol.length());
   
@@ -283,7 +283,7 @@ Composite::setControl(string cname, MarControlValue value)
 {
   bool controlFound = false;
   
-  string prefix = "/" + type_ + "/" + name_;
+  string prefix = "/" + getType() + "/" + getName();
   string childcontrol = cname.substr(prefix.length(), cname.length()-prefix.length());
   //string nchildcontrol = childcontrol.substr(1, childcontrol.length());
  
@@ -312,7 +312,7 @@ Composite::updControl(string cname, MarControlValue value)
   map<string, vector<string> >::iterator ei;
 
   // remove prefix for synonyms
-  string prefix = "/" + type_ + "/" + name_ + "/";
+  string prefix = "/" + getType() + "/" + getName() + "/";
   string::size_type pos = cname.find(prefix, 0);
   string shortcname;
   
@@ -331,7 +331,7 @@ Composite::updControl(string cname, MarControlValue value)
   }
   else
   {
-    string prefix = "/" + type_ + "/" + name_;
+    string prefix = "/" + getType() + "/" + getName();
     string childcontrol = cname.substr(prefix.length(), cname.length()-prefix.length());
     string nchildcontrol = childcontrol.substr(1, childcontrol.length());  
     
@@ -403,7 +403,7 @@ Composite::updControl(string cname, MarControlValue value)
     if (!controlFound) 
 		{
 			MRSWARN("Composite::updControl - Unsupported control name = " + cname);
-			MRSWARN("Composite::updControl - Composite name = " + name_);
+			MRSWARN("Composite::updControl - Composite name = " + getName());
 		}
   }
 }
@@ -411,7 +411,7 @@ Composite::updControl(string cname, MarControlValue value)
 MarControlValue
 Composite::getctrl(string cname)
 {
-  MarControlValue v = getControl("/" + type_ + "/" + name_ + "/" + cname);  
+  MarControlValue v = getControl("/" + getType() + "/" + getName() + "/" + cname);  
   return v;
 }
 
@@ -423,7 +423,7 @@ Composite::getControl(string cname)
   map<string, vector<string> >::iterator ei;
   
   // remove prefix for synonyms
-  string prefix = "/" + type_ + "/" + name_ + "/";
+  string prefix = "/" + getType() + "/" + getName() + "/";
   string::size_type pos = cname.find(prefix, 0);
   string shortcname;
   
@@ -443,7 +443,7 @@ Composite::getControl(string cname)
     }
   else 
     {
-      string prefix = "/" + type_ + "/" + name_;
+      string prefix = "/" + getType() + "/" + getName();
       string childcontrol = cname.substr(prefix.length(), cname.length()-prefix.length());
       string nchildcontrol = childcontrol.substr(1, childcontrol.length());
       bool controlFound = false;      
@@ -499,8 +499,8 @@ ostream&
 Composite::put(ostream& o) 
 {
   o << "# MarSystemComposite" << endl;
-  o << "# Type = " << type_ << endl;
-  o << "# Name = " << name_ << endl;
+  o << "# Type = " << getType() << endl;
+  o << "# Name = " << getName() << endl;
   
   o << endl;
   o << ncontrols_ << endl;
@@ -512,7 +512,7 @@ Composite::put(ostream& o)
     {
       vector<string> syns = mi->second;
       vector<string>::iterator vi;
-      string prefix = "/" + type_ + "/" + name_ + "/";
+      string prefix = "/" + getType() + "/" + getName() + "/";
       o << "# Synonyms of " << prefix + mi->first << " = " << endl;
       o << "# Number of synonyms = " << syns.size() << endl;
     

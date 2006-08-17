@@ -32,8 +32,6 @@ using namespace Marsyas;
 
 AutoCorrelation::AutoCorrelation(string name):MarSystem("AutoCorrelation",name)
 {
-  type_ = "AutoCorrelation";
-  name_ = name;
   myfft_ = NULL;
 
 	addControls();

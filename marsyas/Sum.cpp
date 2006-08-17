@@ -31,8 +31,6 @@ using namespace Marsyas;
 
 Sum::Sum(string name):MarSystem("Sum",name)
 {
-  type_ = "Sum";
-  name_ = name;
 }
 
 

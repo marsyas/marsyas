@@ -138,7 +138,7 @@ NetworkSocket::clone() const
 
 /**
  * Function: create
- * Description: creates a socket based on type_ for controls and data
+ * Description: creates a socket based on getType() for controls and data
  */ 
 bool NetworkSocket::createSocket() {
 	
@@ -149,13 +149,13 @@ bool NetworkSocket::createSocket() {
     if ( valid( c_sock ) ) {
     	close( c_sock );
     }
-    if ( type_ == "NetworkUDPSource" || type_ == "NetworkUDPSink" ) {
+    if ( getType() == "NetworkUDPSource" || getType() == "NetworkUDPSink" ) {
       s_sock = socket( AF_INET, SOCK_DGRAM, 0 );
       c_sock = socket( AF_INET, SOCK_DGRAM, 0 );
-    } else if ( type_ == "NetworkTCPSource" || type_ == "NetworkTCPSink" ) {
+    } else if ( getType() == "NetworkTCPSource" || getType() == "NetworkTCPSink" ) {
       s_sock = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
       c_sock = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
-    } else if ( type_ == "NetworkSocket" ) {
+    } else if ( getType() == "NetworkSocket" ) {
       s_sock = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
       return ( valid( s_sock ) ); // used by Messager
     }
@@ -186,12 +186,12 @@ bool NetworkSocket::createSocket() {
  */ 
 bool NetworkSocket::setupSource ( mrs_natural dataPort, mrs_natural controlsPort ) {
 
-  if ( type_ == "NetworkTCPSource" ) {
+  if ( getType() == "NetworkTCPSource" ) {
 	  if ( !valid(s_sock) || !valid(c_sock) ) {
 	    MRSERR("Not a valid socket descriptor.");
 	    return false;
 	  }
-  } else if ( type_ == "NetworkSource" ) {
+  } else if ( getType() == "NetworkSource" ) {
     if ( !valid(s_sock) ) {
       MRSERR("Not a valid socket descriptor.");
       return false;
@@ -221,7 +221,7 @@ bool NetworkSocket::setupSource ( mrs_natural dataPort, mrs_natural controlsPort
   }
   
   // if its a UDP socket, we are done
-  if (type_ == "NetworkUDPSource")
+  if (getType() == "NetworkUDPSource")
     return true;
   
   // listen for data port connection then data
@@ -270,7 +270,7 @@ bool NetworkSocket::setupSink( const string& host, mrs_natural dataPort, mrs_nat
 
 
   // if its a UDP socket, we are done
-  /* if ( type_ == "NetworkUDPSink" ) 
+  /* if ( getType() == "NetworkUDPSink" ) 
   	return true;
 	*/
   
@@ -429,7 +429,7 @@ mrs_real* const NetworkSocket::recvControls() {
 
    
     // only TCP MarSystems use this function
-    /* if ( type_ == "NetworkUDPSource" ) {
+    /* if ( getType() == "NetworkUDPSource" ) {
 	    return 0;
     }
     */ 
@@ -531,7 +531,7 @@ int NetworkSocket :: accept( void )
 {
 	
   // make sure its a TCP server
-  if ( ! ( type_ == "NetworkSocket" || type_ == "NetworkTCPSource" ) ) 
+  if ( ! ( getType() == "NetworkSocket" || getType() == "NetworkTCPSource" ) ) 
     {
       return -1;
     }
@@ -548,7 +548,7 @@ int NetworkSocket :: accept( void )
     {
       
       // if its Messager, we're done.
-      if ( type_ == "NetworkSocket" ) 
+      if ( getType() == "NetworkSocket" ) 
 	return client_d;
       
       cout << "Client connected on data port: " << 
@@ -556,7 +556,7 @@ int NetworkSocket :: accept( void )
       
       
       // if we're a MarSystem, accept a connection for controls also
-      if ( type_ == "NetworkTCPSource" ) 
+      if ( getType() == "NetworkTCPSource" ) 
 	{
 	  
 	  int cliLen = sizeof( cliCont );
