@@ -317,17 +317,17 @@ MarSystem::localActivate(bool state)
 }
 
 MarControlValue
-MarSystem::getctrl(string cname)
+MarSystem::getctrl(const string& cname)
 {
   MRSDIAG("MarSystem::getctrl");
-	string ctrl = "/";
-	ctrl.append(type_);
-	ctrl.append("/");
-	ctrl.append(name_);
-	ctrl.append("/");
-	ctrl.append(cname);
-  
-	return ncontrols_.getControl(ctrl);
+  string ctrl("/");
+  ctrl.reserve(type_.size() + name_.size() + cname.size() + 3);
+  ctrl.append(type_);
+  ctrl.append("/");
+  ctrl.append(name_);
+  ctrl.append("/");
+  ctrl.append(cname);
+  return ncontrols_.getControl(ctrl);
 }
 
 void
@@ -359,7 +359,7 @@ MarSystem::getControl(string cname)
 	map<string, vector<string> >::iterator ei;
 
 	// remove prefix for synonyms
-	string prefix = "/" + type_ + "/" + name_ + "/";
+	const string prefix = "/" + type_ + "/" + name_ + "/";
 	string::size_type pos = cname.find(prefix, 0);
 	string shortcname;
 
@@ -370,11 +370,11 @@ MarSystem::getControl(string cname)
 	ei = synonyms_.find(shortcname);
 	if (ei != synonyms_.end())
 	{
-		vector<string> synonymList = synonyms_[shortcname];
-		vector<string>::iterator si;
+		const vector<string>& synonymList = ei->second;
+		vector<string>::const_iterator si;
 		for (si = synonymList.begin(); si != synonymList.end(); ++si)
 		{
-			getControl(prefix + *si);
+			return getControl(prefix + *si);
 		}
 	}
 
@@ -478,7 +478,7 @@ MarSystem::inSamples() const
 }
 
 bool 
-MarSystem::hasControl(string cname) 
+MarSystem::hasControl(const string& cname) 
 {
 	// check for synonyms - call recursively to resolve them 
 	map<string, vector<string> >::iterator ei;

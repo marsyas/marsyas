@@ -42,9 +42,9 @@ MarControls::setState(string cname, bool st)
 }
 
 MarControlValue
-MarControls::getControl(string cname)
+MarControls::getControl(const string& cname) const
 {
-	std::map<std::string, MarControlValue>::iterator it = controls_.find(cname);
+  std::map<std::string, MarControlValue>::const_iterator it = controls_.find(cname);
   if (it == controls_.end())
   {
     MRSWARN("MarControls::getctrl Unsupported control name = " + cname);
@@ -123,7 +123,7 @@ MarControls::updControl(string cname, mrs_natural value)
 }
 
 bool 
-MarControls::hasControl(string cname) 
+MarControls::hasControl(const string& cname) 
 {
   iter_ = controls_.find(cname);
   return (iter_ != controls_.end());

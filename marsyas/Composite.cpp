@@ -176,7 +176,7 @@ Composite::hasControlState(string cname)
 
 // check for controls only in composite object not children
 bool
-Composite::hasControlLocal(string cname) 
+Composite::hasControlLocal(const string& cname) 
 {
   if (ncontrols_.hasControl(cname))
     return true;
@@ -185,7 +185,7 @@ Composite::hasControlLocal(string cname)
 }
 
 bool 
-Composite::hasControl(string cname)
+Composite::hasControl(const string& cname)
 {
   // check first composite then children
   if (ncontrols_.hasControl(cname))
@@ -409,18 +409,24 @@ Composite::updControl(string cname, MarControlValue value)
 }
 
 MarControlValue
-Composite::getctrl(string cname)
+Composite::getctrl(const string& cname)
 {
-  MarControlValue v = getControl("/" + getType() + "/" + getName() + "/" + cname);  
-  return v;
+  string ctrl("/");
+  ctrl.reserve(getType().size() + getName().size() + cname.size() + 3);
+  ctrl.append(getType());
+  ctrl.append("/");
+  ctrl.append(getName());
+  ctrl.append("/");
+  ctrl.append(cname);
+  return getControl(ctrl);
 }
 
 
 MarControlValue
-Composite::getControl(string cname)
+Composite::getControl(const string& cname)
 {
   // check for synonyms - call recursively to resolve them 
-  map<string, vector<string> >::iterator ei;
+  map<string, vector<string> >::const_iterator ei;
   
   // remove prefix for synonyms
   string prefix = "/" + getType() + "/" + getName() + "/";
@@ -434,8 +440,8 @@ Composite::getControl(string cname)
   
   if (ei != synonyms_.end())
     {
-      vector<string> synonymList = synonyms_[shortcname];
-      vector<string>::iterator si;
+      const vector<string>& synonymList = ei->second;
+      vector<string>::const_iterator si;
       for (si = synonymList.begin(); si != synonymList.end(); ++si)
 			{
 				return getControl(prefix + *si);
@@ -443,9 +449,9 @@ Composite::getControl(string cname)
     }
   else 
     {
-      string prefix = "/" + getType() + "/" + getName();
-      string childcontrol = cname.substr(prefix.length(), cname.length()-prefix.length());
-      string nchildcontrol = childcontrol.substr(1, childcontrol.length());
+      //string prefix = "/" + getType() + "/" + getName();
+      string childcontrol = cname.substr(prefix.length() - 1, cname.length() - prefix.length() + 1);
+      //string nchildcontrol = childcontrol.substr(1, childcontrol.length());
       bool controlFound = false;      
     
       if (hasControlLocal(cname))

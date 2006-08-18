@@ -69,11 +69,11 @@ public:
   
   bool hasControlState(std::string cname);
   
-	bool hasControl(std::string cname);
-  bool hasControlLocal(std::string cname);
+  bool hasControl(const std::string& cname);
+  bool hasControlLocal(const std::string& cname);
    
-  MarControlValue getctrl(std::string cname);
-  MarControlValue getControl(std::string cname);
+  MarControlValue getctrl(const std::string& cname);
+  MarControlValue getControl(const std::string& cname);
   
   void addMarSystem(MarSystem *marsystem);
   

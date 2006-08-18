@@ -149,10 +149,10 @@ public:
   void setctrl(std::string cname, mrs_real value);
   void setctrl(std::string cname, mrs_natural value);
   
-  virtual MarControlValue getctrl(std::string cname);
+  virtual MarControlValue getctrl(const std::string& cname);
   virtual MarControlValue getControl(std::string cname);
 
-	virtual bool hasControl(std::string cname);
+	virtual bool hasControl(const std::string& cname);
 
   void setControlState(std::string cname, bool val);
 	virtual bool hasControlState(std::string cname);

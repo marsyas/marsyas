@@ -61,10 +61,10 @@ public:
   bool updControl(std::string cname, mrs_natural);
   bool updControl(std::string cname, mrs_real);
   bool updControl(std::string cname, bool);
-  bool hasControl(std::string cname);
+  bool hasControl(const std::string& cname);
   
 
-  MarControlValue getControl(std::string cname);
+  MarControlValue getControl(const std::string& cname) const;
   std::map<std::string, MarControlValue> getControls();
   void clear();
   int size();
