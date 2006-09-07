@@ -54,6 +54,7 @@ realvec::~realvec()
     data_ = NULL;
 
   delete [] data_;
+  data_ = NULL;
 }
 
 realvec::realvec(mrs_natural size)
@@ -226,6 +227,7 @@ void
 realvec::create(mrs_natural size)
 {
   delete [] data_;
+  data_ = NULL;
   size_ = size;
   if (size_ > 0) 
     data_ = new mrs_real[size_];
@@ -257,6 +259,7 @@ realvec::stretch(mrs_natural size)
 	ndata[i] = 0.0;
     }
   delete [] data_;
+  data_ = NULL;
   data_ = ndata;
   size_ = size;
   rows_ = 1;
@@ -289,7 +292,10 @@ realvec::stretch(mrs_natural rows, mrs_natural cols)
 	  ndata[c * rows + r] = 0.0;
       }
   if (data_) 
+  {
     delete [] data_;
+    data_ = NULL;
+  }
   data_ = ndata;
   size_ = size;
   rows_ = rows;
@@ -300,6 +306,7 @@ void
 realvec::create(mrs_natural rows, mrs_natural cols)
 {
   delete [] data_;
+  data_ = NULL;
   size_ = rows * cols;
   rows_ = rows;
   cols_ = cols;
@@ -316,6 +323,7 @@ realvec::create(mrs_real val, mrs_natural rows, mrs_natural cols)
   rows_ = rows;
   cols_ = cols;
   delete [] data_;
+  data_ = NULL;
   if (size_ > 0) 
     data_ = new mrs_real[size_];
   for (mrs_natural i=0; i<size_; i++)
@@ -326,6 +334,7 @@ void
 realvec::allocate(mrs_natural size)
 {
   delete [] data_;
+  data_ = NULL;
   size_ = size;
   if (size_ > 0) 
     data_ = new mrs_real[size_];
