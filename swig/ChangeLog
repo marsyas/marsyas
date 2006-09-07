@@ -1,3 +1,7 @@
+2006-09-07	<carlosc@uvic.ca>
+	* marsyas-swig/README : For some reason, my C++ rant has returned. Therefore I have removed it
+	(again) and also fixed a few typos.
+
 2006-08-03	<carlosc@uvic.ca>
 
 	* marsyas-swig : Version bump (0.3.11)

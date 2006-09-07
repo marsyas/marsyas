@@ -31,11 +31,10 @@ INSTALATION
 		$ make [install]
 	
 	You may need to pass various {CXX,LD}FLAGS to ./configure if
-	marsyas was installed to a non-standard location. I may eventually
-	create a --with-marsyas-prefix option to make this easier.
+	marsyas was installed to a non-standard location.
 	
 	* AS PART OF MARSYAS *
-	If this package in inside the MARSYAS build tree at the root level
+	If this package is inside the MARSYAS build tree at the root level
 	(folder with Marsyas' ./configure), then running this package's
 	configure with the --enable-bindings option will cause the
 	configure script to assume the containing folder has the marsyas
@@ -131,11 +130,11 @@ FEATURES
 
 	* MarControlValue
 		- Most of the languages supported by SWIG (at least
-		the ones that I'm lookin at first) support some form of
+		the ones that I'm looking at first) support some form of
 		run-time dynamic typing (usually duck typing). And so
 		as a result MarControlValues are unnecessary.
-		- Languages that don't support this feature (Java, OCAML,
-		etc...) will need to support this type themselves.
+		- Languages that do not support this feature (Java, OCAML,
+		etc...) are not supported (yet..).
 	
 	The Ruby version also has the following additional features:
 	* The generation of MarSystem subclasses
@@ -191,37 +190,6 @@ FAQ
 	(or at least it should.), but besides the problems with this
 	scheme, you still have the rest of your program to worry about.
 
-	For example:
-	<SoundFileSource instance>.updControl("mrs_string/filename","foo")
-
-	Now this may seem harmless enough, but thanks to C++
-	"magic"/CRUFT, the code that gets called is actually this:
-	<SoundFileSource instance>.updControl(string("mrs_string/filename"),MarControlValue(string("foo")));
-
-	Those 3 extra objects (2 strings, 1 MarControlValue), are placed
-	on the stack, and are therefore not freed until the calling
-	function returns. Now although this may seem like pocket-change,
-	consider this code in a loop, or (gasp!) an infinite loop. The
-	memory for these objects will not be freed until sometime *after*
-	the loop finishes, which may be too late.
-
-	Consider the simple way to check to see if we should continue to
-	process a sound file:
-
-	pipe = <Series containing sfs>
-	sfs = <SoundFileSource>
-	while (sfs.getControl("/SoundFileSource/sfs/mrs_bool/notEmpty").toBool())
-		pipe.tick();
-
-	If the soundfile is sufficiently long enough, or is a line in
-	(microphone) your program will continuously eat up stack space
-	(and possibly heap space) for all the strings created by C++.
-
-	Languages that support automatic memory management, do not have
-	this problem (in most cases) and whenever they call C++ functions,
-	there are intermediate C++ functions involved, so all temporary
-	stack values are reclaimed in short order.
-
 	Q: What about MSL (Marsyas Scripting Language)? 
 	A: From what I can see, MSL will provide a way to describe
 	networks of MarSystems and make it easy to do things specifically
@@ -230,7 +198,7 @@ FAQ
 	features in the Marsyas API as well as the support libraries
 	of the language. They are not an alternative/competitor to MSL,
 	whose purpose is to provide an easier/better alternative to the
-	Marsyas API. In fact, the MSL classes can and may eventually be
+	Marsyas C++ API. In fact, the MSL classes can and may eventually be
 	added to the SWIG interface file, and thus MSL could be used
 	from within one of the wrapper's supported languages.
 
@@ -254,8 +222,6 @@ FUTURE
 	into new revisions.
 
 	Currently my high-priority concerns include:
-		- Adding the Time-Based updControl methods to the
-		MarSystem class
 		- Fixing the Ruby code so all generated MarSystems
 		have properties for their controls, as well as a way of
 		accessing contained MarSystems.
