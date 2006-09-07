@@ -102,10 +102,11 @@ AudioSink::localUpdate()
 	#endif	
  
 	//setup RtAudio (may change bufferSize_ !!)
-	initRtAudio(); 
-	
-	//Resize reservoir if necessary
-	inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
+  
+  
+  
+  //Resize reservoir if necessary
+  inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
   if (inSamples_ < bufferSize_) 
     reservoirSize_ = 2 * bufferSize_;
   else 
@@ -180,6 +181,15 @@ AudioSink::localActivate(bool state)
 void 
 AudioSink::process(realvec& in, realvec& out)
 {
+  if (!isInitialized_)
+    {
+      initRtAudio(); 
+      isInitialized_ = true;
+    }
+  
+  
+  
+
   checkFlow(in,out);
 	
  // copy to output and into reservoir
