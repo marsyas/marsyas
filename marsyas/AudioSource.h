@@ -45,7 +45,7 @@ private:
   mrs_natural reservoirSize_;
   mrs_natural preservoirSize_;
 
-	mrs_real gain_;
+  mrs_real gain_;
 
 	bool isInitialized_;
 	bool stopped_;

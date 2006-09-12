@@ -62,7 +62,7 @@ AudioSource::addControls()
 	setctrlState("mrs_natural/nChannels", true);
 
 	#ifdef __OS_MACOSX__
-	addctrl("mrs_natural/bufferSize", 2048);
+	addctrl("mrs_natural/bufferSize", 6144);
 	#else
 	addctrl("mrs_natural/bufferSize", 256);
 	#endif
@@ -74,6 +74,7 @@ AudioSource::addControls()
 void 
 AudioSource::localUpdate()
 {
+  cout << "AudioSource::localUpdate called" << endl;
   MRSDIAG("AudioSource::localUpdate");
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
@@ -82,18 +83,15 @@ AudioSource::localUpdate()
   setctrl("mrs_natural/inObservations", nChannels_);
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 
-	bufferSize_ = (mrs_natural)getctrl("mrs_natural/bufferSize").toNatural();
-	#ifdef __OS_MACOSX__
-	bufferSize_ = 8 * bufferSize_; //[!]
-	#endif	
+  bufferSize_ = (mrs_natural)getctrl("mrs_natural/bufferSize").toNatural();
+  
+  
+  //resize reservoir if necessary
+  inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+  inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
+  gain_ = getctrl("mrs_real/gain").toReal();
 
-	initRtAudio(); 
-	
-	//resize reservoir if necessary
-	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
-	inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
- 	
-	if (inSamples_ * inObservations_ < bufferSize_) 
+  if (inSamples_ * inObservations_ < bufferSize_) 
     reservoirSize_ = 2 * inObservations_ * bufferSize_;
   else 
     reservoirSize_ = 2 * inSamples_ * inObservations_;
@@ -108,6 +106,7 @@ AudioSource::localUpdate()
 void 
 AudioSource::initRtAudio()
 {
+  cout << "INIT RTAUDIO::AUDIOSOURCE" << endl;
 	//marsyas represents audio data as float numbers
 	RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
 
@@ -117,9 +116,10 @@ AudioSource::initRtAudio()
 	//create new RtAudio object (delete any existing one)
 	delete audio_;
 	try {
+	  cout << "bufferSize_ = " << bufferSize_ << endl;
 		audio_ = new RtAudio(0, 0, 0, rtChannels, rtFormat,
 			rtSrate, &bufferSize_, 4);
-
+		cout << "bufferSize_ = " << bufferSize_ << endl;
 		data_ = (mrs_real *) audio_->getStreamBuffer();
 	}
 	catch (RtError &error) 
@@ -131,6 +131,27 @@ AudioSource::initRtAudio()
 	//by RtAudio (see RtAudio documentation)
 	setctrl("mrs_natural/bufferSize", (mrs_natural)bufferSize_);
 
+
+	bufferSize_ = (mrs_natural)getctrl("mrs_natural/bufferSize").toNatural();
+  
+  
+	//resize reservoir if necessary
+	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+	inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
+	
+	if (inSamples_ * inObservations_ < bufferSize_) 
+	  reservoirSize_ = 2 * inObservations_ * bufferSize_;
+	else 
+	  reservoirSize_ = 2 * inSamples_ * inObservations_;
+	
+	if (reservoirSize_ > preservoirSize_)
+	  {
+	    reservoir_.stretch(reservoirSize_);
+	  }
+	preservoirSize_ = reservoirSize_;
+	
+
+	
 	isInitialized_ = true;
 	//stopped_ = true;
 }
@@ -168,44 +189,57 @@ AudioSource::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 	
-	//check if RtAudio is initialized
-	if (!isInitialized_)
-    return;
+  //check if RtAudio is initialized
+  if (!isInitialized_)
+    {
+      initRtAudio(); 
+      isInitialized_ = true;
+    }
+
   
   //check MUTE
-	if(getctrl("mrs_bool/mute").toBool()) return;
+  if(getctrl("mrs_bool/mute").toBool()) return;
 
-	//assure that RtAudio thread is running
-	//(this may be needed by if an explicit call to start()
-	//is not done before ticking or calling process() )
-	if ( stopped_ )
-	  start();
-
+  //assure that RtAudio thread is running
+  //(this may be needed by if an explicit call to start()
+  //is not done before ticking or calling process() )
+  if ( stopped_ )
+    start();
+  
   //send audio to output
-	while (ri_ < inSamples_ * inObservations_)
+
+  /* cout << "ri = " << ri_ << endl;
+  cout << "inSamples_ = " << inSamples_ << endl;
+  cout << "inObservations_ = " << inObservations_ << endl;
+  cout << "bufferSize_ = " << bufferSize_ << endl;
+  */ 
+
+  while (ri_ < inSamples_ * inObservations_)
   {
     try 
-		{
-			audio_->tickStream();
-    }
+      {
+	audio_->tickStream();
+      }
     catch (RtError &error) 
-		{
-			error.printMessage();
-		}
+      {
+	error.printMessage();
+      }
+    
 
     for (t=0; t < inObservations_ * bufferSize_; t++)
-		{
-			reservoir_(ri_) = data_[t];
-			ri_++;
-		}
+      {
+	reservoir_(ri_) = data_[t];
+	ri_++;
+      }
   }
+
   
   for (o=0; o < inObservations_; o++)
     for (t=0; t < inSamples_; t++)
       {
-				out(o,t) = getctrl("mrs_real/gain").toReal() * reservoir_(inObservations_ * t + o);
+	out(o,t) = gain_ * reservoir_(inObservations_ * t + o);
       }
-
+  
   for (t=inSamples_*inObservations_; t < ri_; t++)
     reservoir_(t-inSamples_ * inObservations_) = reservoir_(t);
   
