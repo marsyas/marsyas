@@ -74,7 +74,6 @@ AudioSource::addControls()
 void 
 AudioSource::localUpdate()
 {
-  cout << "AudioSource::localUpdate called" << endl;
   MRSDIAG("AudioSource::localUpdate");
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
@@ -106,8 +105,7 @@ AudioSource::localUpdate()
 void 
 AudioSource::initRtAudio()
 {
-  cout << "INIT RTAUDIO::AUDIOSOURCE" << endl;
-	//marsyas represents audio data as float numbers
+  //marsyas represents audio data as float numbers
 	RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
 
 	int rtSrate = (int)getctrl("mrs_real/israte").toReal();
@@ -116,11 +114,9 @@ AudioSource::initRtAudio()
 	//create new RtAudio object (delete any existing one)
 	delete audio_;
 	try {
-	  cout << "bufferSize_ = " << bufferSize_ << endl;
-		audio_ = new RtAudio(0, 0, 0, rtChannels, rtFormat,
-			rtSrate, &bufferSize_, 4);
-		cout << "bufferSize_ = " << bufferSize_ << endl;
-		data_ = (mrs_real *) audio_->getStreamBuffer();
+	  audio_ = new RtAudio(0, 0, 0, rtChannels, rtFormat,
+			       rtSrate, &bufferSize_, 4);
+	  data_ = (mrs_real *) audio_->getStreamBuffer();
 	}
 	catch (RtError &error) 
 	{

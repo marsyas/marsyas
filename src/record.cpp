@@ -39,7 +39,7 @@ mrs_real lengthopt;
 mrs_real gopt;
 mrs_real sropt;
 mrs_natural copt;
-
+mrs_natural yearopt;
 
 #define EMPTYSTRING "MARSYAS_EMPTY" 
 
@@ -86,10 +86,11 @@ initOptions()
   cmd_options.addBoolOption("help", "h", false);
   cmd_options.addBoolOption("usage", "u", false);
   cmd_options.addBoolOption("verbose", "v", false);
-  cmd_options.addRealOption("length", "l", 3.0);
+  cmd_options.addRealOption("length", "l", 48.0);
   cmd_options.addRealOption("gain", "g", 1.0);
   cmd_options.addRealOption("srate", "s", 44100.0);
   cmd_options.addNaturalOption("channels", "c", 1);
+  cmd_options.addNaturalOption("year", "y", 2005);
 }
 
 
@@ -99,6 +100,7 @@ loadOptions()
   helpopt = cmd_options.getBoolOption("help");
   usageopt = cmd_options.getBoolOption("usage");
   lengthopt = cmd_options.getRealOption("length");
+  yearopt = cmd_options.getNaturalOption("year");
   gopt = cmd_options.getRealOption("gain");
   sropt = cmd_options.getRealOption("srate"); 
   copt = cmd_options.getNaturalOption("channels");
@@ -148,7 +150,8 @@ record(mrs_real length, mrs_real gain, string filename)
 
 
 void 
-record_orcas(mrs_real length) 
+record_orcas(mrs_real length, mrs_natural year, 
+	     string id1, string id2, string id3, string id4) 
 {
   copt = 8;
   sropt = 44100.0;
@@ -162,29 +165,45 @@ record_orcas(mrs_real length)
   MarSystem* dest2 = mng.create("SoundFileSink", "dest2");
   MarSystem* dest3 = mng.create("SoundFileSink", "dest3");
   MarSystem* dest4 = mng.create("SoundFileSink", "dest4");
+
+
+  ostringstream oss1;
+  oss1 << "/Users/orcalab/orcaArchive/" << year << "/" << id1 << ".wav";
+  ostringstream oss2;
+  oss2 << "/Users/orcalab/orcaArchive/" << year << "/" << id2 << ".wav";
+  ostringstream oss3;
+  oss3 << "/Users/orcalab/orcaArchive/" << year << "/" << id3 << ".wav";
+  ostringstream oss4;
+  oss4 << "/Users/orcalab/orcaArchive/" << year << "/" << id4 << ".wav";
+  
+  string fname1 = oss1.str();
+  string fname2 = oss2.str();
+  string fname3 = oss3.str();
+  string fname4 = oss4.str();
+
   
   dest1->updctrl("mrs_natural/inObservations", 2);
   dest1->updctrl("mrs_natural/inSamples", bufferSize);
   dest1->updctrl("mrs_real/israte", sropt);
-  dest1->updctrl("mrs_string/filename", "orca1.au");
+  dest1->updctrl("mrs_string/filename", fname1);
 
   
   dest2->updctrl("mrs_natural/inObservations", 2);
   dest2->updctrl("mrs_natural/inSamples", bufferSize);
   dest2->updctrl("mrs_real/israte", sropt);
   dest2->updctrl("mrs_string/filename", "orca2.au");
-
+  dest2->updctrl("mrs_string/filename", fname2);
   
   dest3->updctrl("mrs_natural/inObservations", 2);
   dest3->updctrl("mrs_natural/inSamples", bufferSize);
   dest3->updctrl("mrs_real/israte", sropt);
-  dest3->updctrl("mrs_string/filename", "orca3.au");
+  dest3->updctrl("mrs_string/filename", fname3);
 
   
   dest4->updctrl("mrs_natural/inObservations", 2);
   dest4->updctrl("mrs_natural/inSamples", bufferSize);
   dest4->updctrl("mrs_real/israte", sropt);
-  dest4->updctrl("mrs_string/filename", "orca4.au");
+  dest4->updctrl("mrs_string/filename", fname4);
 
 
   asrc->updctrl("mrs_natural/inSamples", bufferSize);
@@ -214,9 +233,23 @@ record_orcas(mrs_real length)
 
   cout << *asrc << endl;
   mrs_natural t;
+
+  cout << "Recording " << length << " minutes to files: " << endl;
+  cout << fname1 << endl;
+  cout << fname2 << endl;
+  cout << fname3 << endl;
+  cout << fname4 << endl;
+  
+  mrs_natural minutes =0;
+  
+
   for (mrs_natural i = 0; i < iterations; i++) 
     {
-      cout << i << ":" << iterations << endl;
+      if (((i % 430)==0)&&(i != 0))
+	{
+	  minutes ++;
+	  cout << minutes << ":" << lengthopt << endl;
+	}
       asrc->process(rin,rout);
       for (t=0; t < bufferSize; t++)
 	{ 
@@ -233,8 +266,15 @@ record_orcas(mrs_real length)
       dest2->process(orca2, orca2);
       dest3->process(orca3, orca3);
       dest4->process(orca4, orca4);
+      
     }
 
+  cout << "Recording complete" << endl;
+  cout << "Recorded to files: " << endl;
+  cout << fname1 << endl;
+  cout << fname2 << endl;
+  cout << fname3 << endl;
+  cout << fname4 << endl;
   delete dest1;
   delete dest2;
   delete dest3;
@@ -374,15 +414,28 @@ main(int argc, const char **argv)
   vector<string> soundfiles = cmd_options.getRemaining();
   vector<string>::iterator sfi;
 
-  record_orcas(lengthopt);
+  
+
+  cout << "Recording to year" << yearopt << endl;
+  string id1;
+  string id2;
+  string id3;
+  string id4;
+  id1 = soundfiles[0];
+  id2 = soundfiles[1];
+  id3 = soundfiles[2];
+  id4 = soundfiles[3];
+
+  // record_orcas(lengthopt, yearopt, id1, id2, id3, id4);
 
   for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
     {	
       cout << "Recording " << lengthopt << " seconds to file " << *sfi << endl;
-      // recordVirtualSensor(lengthopt,gopt,  *sfi);
-      // record(lengthopt,gopt,  *sfi);
-
+      recordVirtualSensor(lengthopt,gopt,  *sfi);
+      record(lengthopt,gopt,  *sfi);
     }
+   
+
   
   exit(0);
 }
