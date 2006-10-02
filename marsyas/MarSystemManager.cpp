@@ -78,7 +78,7 @@ MarSystemManager::MarSystemManager()
   registerPrototype("PlotSink", new PlotSink("plotsp"));
   registerPrototype("GaussianClassifier", new GaussianClassifier("gaussp"));
 
-  registerPrototype("Confidence", new Confidence("conf"));
+  registerPrototype("Confidence", new Confidence("confp"));
   registerPrototype("Rms", new Rms("rms"));
   registerPrototype("WekaSink", new WekaSink("wsink"));
   registerPrototype("MFCC", new MFCC("mfcc"));
@@ -260,11 +260,15 @@ MarSystemManager::getMarSystem(istream& is)
   string mtype;
   is >> mtype;
 
+  cout << "mtype = " << mtype << endl;
+  
   
   
   is >> skipstr >> skipstr >> skipstr;
   string mname;
   is >> mname;
+
+  cout << "mname = " << mname << endl;
   
   
 

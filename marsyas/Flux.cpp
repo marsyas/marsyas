@@ -58,6 +58,7 @@ Flux::localUpdate()
   
   prevWindow_.create(getctrl("mrs_natural/inObservations").toNatural(),
 		     getctrl("mrs_natural/inSamples").toNatural());
+  prevWindow_.setval(0.0);
 }
 
 void 
@@ -66,23 +67,42 @@ Flux::process(realvec& in, realvec& out)
   checkFlow(in,out);
   
   // computer flux of observations for each time sample 
-  prevWindow_.setval(0.0);
+
 
   for (t = 0; t < inSamples_; t++)
     {
       flux_ = 0.0;
       max_ = 0.0;
+
       for (o=0; o < inObservations_; o++)
 	{
-	  diff_ = in(o,t) - prevWindow_(o,t);
+	  diff_ = in(o,t)*in(o,t) - prevWindow_(o,t)*prevWindow_(o,t); // classic
+	  // diff_ = log(in(o,t) + 0.000001) - log(prevWindow_(o,t) + 0.000001); log
+	  // diff_ = in(o,t) - prevWindow_(o,t);
+	  
 	  if (in(o,t) > max_) 
 	    max_ = in(o,t);
-	  flux_ += (diff_ * diff_);
+	  // flux_ += sqrt(fabs(diff_));
+	  // flux_ += fabs(diff_); log 
+	  
+	  flux_ += (diff_ * diff_); // classic
+	  
 	  prevWindow_(o,t) = in(o,t);
 	}
+      
+      if (flux_ != 0.0) // classic
+	flux_ = sqrt(flux_); // classic
+      
+      
+      if (max_ != 0.0)
+	// flux_ = flux_ / (max_ * inObservations_);
+	flux_ = flux_ / (sqrt(1.0 * inObservations_) * max_); // classic
+     
 
-      if (flux_ != 0.0)
-		flux_ = flux_ / (max_ * max_ * inObservations_);
+	// flux_ = flux_ / inObservations_;   logflux 
+      
+      
+      
       out(0,t) = flux_;
     }
 
