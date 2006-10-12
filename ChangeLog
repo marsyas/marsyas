@@ -1,3 +1,9 @@
+2006-10-12  Graham Percival  <gpermus@gmail.com>
+
+	* doc/marsyas.texi: begin splitting into individual chapter files.
+
+	* doc/ {intro, install}.texi: chapters split from marsyas.texi
+
 2006-06-29  George Tzanetakis  <gtzan@orfeas.cs.UVic.CA>
 
 	* src/record.cpp (main): Add record_orcalab for multiple soundfile recording from 4 simultaneous playing tapes 
