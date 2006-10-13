@@ -22,6 +22,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tutorial", "Tutorial\Tutori
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "marsyasTests", "marsyasTests\marsyasTests.vcproj", "{F9F2F873-792E-4CD5-AB49-8172B8424A91}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "peakClustering", "peakClustering\peakClustering.vcproj", "{F62F0374-482B-4119-8966-2371A620B28A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_MATLABengine|Win32 = Debug_MATLABengine|Win32
@@ -95,6 +97,12 @@ Global
 		{F9F2F873-792E-4CD5-AB49-8172B8424A91}.Debug|Win32.Build.0 = Debug|Win32
 		{F9F2F873-792E-4CD5-AB49-8172B8424A91}.Release|Win32.ActiveCfg = Release|Win32
 		{F9F2F873-792E-4CD5-AB49-8172B8424A91}.Release|Win32.Build.0 = Release|Win32
+		{F62F0374-482B-4119-8966-2371A620B28A}.Debug_MATLABengine|Win32.ActiveCfg = Debug_MATLABengine|Win32
+		{F62F0374-482B-4119-8966-2371A620B28A}.Debug_MATLABengine|Win32.Build.0 = Debug_MATLABengine|Win32
+		{F62F0374-482B-4119-8966-2371A620B28A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F62F0374-482B-4119-8966-2371A620B28A}.Debug|Win32.Build.0 = Debug|Win32
+		{F62F0374-482B-4119-8966-2371A620B28A}.Release|Win32.ActiveCfg = Release|Win32
+		{F62F0374-482B-4119-8966-2371A620B28A}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

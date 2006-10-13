@@ -167,7 +167,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(MATLAB)\extern\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MATLAB_ENGINE_"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MATLAB_ENGINE_ "
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -668,6 +668,10 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\ShiftOutput.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\Shredder.cpp"
 				>
 			</File>
 			<File
@@ -1306,6 +1310,10 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\ShiftOutput.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\Shredder.h"
 				>
 			</File>
 			<File
