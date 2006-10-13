@@ -79,6 +79,7 @@
 #include "SCF.h"
 #include "SFM.h"
 #include "Accumulator.h"
+#include "Shredder.h"
 #include "WaveletPyramid.h"
 #include "WaveletBands.h"
 #include "FullWaveRectifier.h"

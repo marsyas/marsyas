@@ -85,6 +85,7 @@ MarSystemManager::MarSystemManager()
   registerPrototype("SCF", new SCF("scf"));
   registerPrototype("SFM", new SFM("sfm"));
   registerPrototype("Accumulator", new Accumulator("acc"));
+  registerPrototype("Shredder", new Shredder("shred"));
   
   registerPrototype("WaveletPyramid", new WaveletPyramid("wvpyramid"));
   registerPrototype("WaveletBands",   new WaveletBands("wvbands"));

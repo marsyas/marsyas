@@ -68,16 +68,25 @@ FileName::fullname()
 string 
 FileName::name()
 {
-  const char *str = filename_.c_str();
-  const char *tmp = rindex(str, '/');
-  if (tmp==NULL) 
-    return filename_;
-  else
-    {
-      string res(tmp+1);
-      return res;
-    }
-  
+	const char *str = filename_.c_str();
+	const char *tmp = rindex(str, '/'); 
+	// [!] may not work with gcc <- convert with stl
+	const char *tmp2 = rindex(str, '\\');
+
+	if(tmp2 && !tmp)
+		tmp = tmp2;
+	else
+	if(tmp2 && strlen(tmp2) < strlen(tmp))
+		tmp = tmp2;
+	
+	if (tmp==NULL) 
+		return filename_;
+	else
+	{
+		string res(tmp+1);
+		return res;
+	}
+
 }
 
 
