@@ -89,7 +89,7 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	MarFileSink.$(OBJEXT) WekaSink.$(OBJEXT) MFCC.$(OBJEXT) \
 	SCF.$(OBJEXT) SFM.$(OBJEXT) WaveletPyramid.$(OBJEXT) \
 	WaveletStep.$(OBJEXT) Daub4.$(OBJEXT) OnePole.$(OBJEXT) \
-	RtAudio.$(OBJEXT) Accumulator.$(OBJEXT) \
+	RtAudio.$(OBJEXT) Accumulator.$(OBJEXT) Shredder.$(OBJEXT) \
 	NetworkSocket.$(OBJEXT) NetworkTCPSource.$(OBJEXT) \
 	NetworkTCPSink.$(OBJEXT) NetworkUDPSource.$(OBJEXT) \
 	NetworkUDPSink.$(OBJEXT) Messager.$(OBJEXT) Talk.$(OBJEXT) \
@@ -100,11 +100,11 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	BeatHistoFeatures.$(OBJEXT) MslModel.$(OBJEXT) \
 	CommandLineOptions.$(OBJEXT) RawFileSource.$(OBJEXT) \
 	FM.$(OBJEXT) ANN_node.$(OBJEXT) Annotator.$(OBJEXT) \
-	ZeroRClassifier.$(OBJEXT) KNNClassifier.$(OBJEXT) \
-	Filter.$(OBJEXT) Kurtosis.$(OBJEXT) Skewness.$(OBJEXT) \
-	AMDF.$(OBJEXT) SMO.$(OBJEXT) SOM.$(OBJEXT) LPC.$(OBJEXT) \
-	LPCwarped.$(OBJEXT) LPCResyn.$(OBJEXT) LSP.$(OBJEXT) \
-	ERB.$(OBJEXT) CollectionFileSource.$(OBJEXT) \
+	Summary.$(OBJEXT) ZeroRClassifier.$(OBJEXT) \
+	KNNClassifier.$(OBJEXT) Filter.$(OBJEXT) Kurtosis.$(OBJEXT) \
+	Skewness.$(OBJEXT) AMDF.$(OBJEXT) SMO.$(OBJEXT) SOM.$(OBJEXT) \
+	LPC.$(OBJEXT) LPCwarped.$(OBJEXT) LPCResyn.$(OBJEXT) \
+	LSP.$(OBJEXT) ERB.$(OBJEXT) CollectionFileSource.$(OBJEXT) \
 	MeddisHairCell.$(OBJEXT) ViconFileSource.$(OBJEXT) \
 	Cascade.$(OBJEXT) Parallel.$(OBJEXT) SeneffEar.$(OBJEXT) \
 	MP3FileSource.$(OBJEXT) OggFileSource.$(OBJEXT) \
@@ -205,7 +205,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Scheduler.Po ./$(DEPDIR)/SeneffEar.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Series.Po ./$(DEPDIR)/Server.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ShiftInput.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/ShiftOutput.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ShiftOutput.Po ./$(DEPDIR)/Shredder.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SilenceRemove.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SineSource.Po ./$(DEPDIR)/Skewness.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Socket.Po ./$(DEPDIR)/SoundFileSink.Po \
@@ -213,8 +213,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Spectrum.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/StandardDeviation.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Stk.Po ./$(DEPDIR)/Sum.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Talk.Po ./$(DEPDIR)/Thread.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/TimeLine.Po ./$(DEPDIR)/TimeStretch.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Summary.Po ./$(DEPDIR)/Talk.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Thread.Po ./$(DEPDIR)/TimeLine.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/TimeStretch.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TmGetTime.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TmSampleCount.Po ./$(DEPDIR)/TmTime.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TmTimer.Po ./$(DEPDIR)/VScheduler.Po \
@@ -365,14 +366,14 @@ PowerSpectrum.h Centroid.h Rolloff.h \
 Flux.h Memory.h Mean.h StandardDeviation.h ZeroCrossings.h \
 Socket.h Thread.h GaussianClassifier.h AbsSoundFileSink.h AbsSoundFileSource.h \
 Confidence.h MarFileSink.h WekaSink.h MFCC.h SCF.h SFM.h \
-WaveletPyramid.h WaveletStep.h Daub4.h OnePole.h RtAudio.h RtError.h Accumulator.h \
+WaveletPyramid.h WaveletStep.h Daub4.h OnePole.h RtAudio.h RtError.h Accumulator.h Shredder.h \
 NetworkSocket.h NetworkTCPSource.h NetworkTCPSink.h NetworkUDPSource.h NetworkUDPSink.h Messager.h \
 SocketException.h Talk.h \
 TimeLine.h Color.h Communicator.h Server.h AbsMax.h FullWaveRectifier.h \
 Norm.h DownSampler.h WaveletBands.h Sum.h \
 PeakPeriods2BPM.h Histogram.h BeatHistoFeatures.h MslModel.h \
 CommandLineOptions.h RawFileSource.h FM.h \
-ANN_node.h Annotator.h ZeroRClassifier.h KNNClassifier.h Filter.h \
+ANN_node.h Annotator.h ZeroRClassifier.h Summary.h KNNClassifier.h Filter.h \
 Kurtosis.h Skewness.h ERB.h CollectionFileSource.h MeddisHairCell.h ViconFileSource.h Cascade.h Parallel.h SeneffEar.h MP3FileSource.h OggFileSource.h ClassOutputSink.h ClipAudioRange.h SilenceRemove.h RtMidi.h Stk.h Limiter.h CompExp.h NoiseGate.h NoiseSource.h Plucked.h ADSR.h Envelope.h Delay.h NormMaxMin.h HarmonicEnhancer.h Reassign.h Normalize.h AMDF.h SMO.h SOM.h LPC.h LPCwarped.h LPCResyn.h LSP.h WekaSource.h MemorySource.h config.h MidiInput.h MATLABengine.h NumericLib.h vmblock.h lu.h basis.h dsound.h 
 
 lib_LIBRARIES = libmarsyas.a
@@ -398,14 +399,14 @@ PowerSpectrum.cpp Centroid.cpp Rolloff.cpp \
 Flux.cpp Memory.cpp Mean.cpp StandardDeviation.cpp ZeroCrossings.cpp \
 Thread.cpp Socket.cpp GaussianClassifier.cpp AbsSoundFileSink.cpp AbsSoundFileSource.cpp \
 Confidence.cpp MarFileSink.cpp WekaSink.cpp MFCC.cpp SCF.cpp SFM.cpp \
-WaveletPyramid.cpp WaveletStep.cpp Daub4.cpp OnePole.cpp RtAudio.cpp Accumulator.cpp \
+WaveletPyramid.cpp WaveletStep.cpp Daub4.cpp OnePole.cpp RtAudio.cpp Accumulator.cpp Shredder.cpp \
 NetworkSocket.cpp NetworkTCPSource.cpp NetworkTCPSink.cpp NetworkUDPSource.cpp NetworkUDPSink.cpp Messager.cpp \
 Talk.cpp \
 TimeLine.cpp Color.cpp Communicator.cpp Server.cpp AbsMax.cpp FullWaveRectifier.cpp \
 Norm.cpp DownSampler.cpp WaveletBands.cpp Sum.cpp \
 PeakPeriods2BPM.cpp Histogram.cpp BeatHistoFeatures.cpp MslModel.cpp \
 CommandLineOptions.cpp RawFileSource.cpp FM.cpp \
-ANN_node.cpp Annotator.cpp ZeroRClassifier.cpp KNNClassifier.cpp Filter.cpp \
+ANN_node.cpp Annotator.cpp Summary.cpp ZeroRClassifier.cpp KNNClassifier.cpp Filter.cpp \
 Kurtosis.cpp Skewness.cpp AMDF.cpp SMO.cpp SOM.cpp LPC.cpp LPCwarped.cpp LPCResyn.cpp LSP.cpp ERB.cpp CollectionFileSource.cpp MeddisHairCell.cpp ViconFileSource.cpp Cascade.cpp Parallel.cpp SeneffEar.cpp MP3FileSource.cpp OggFileSource.cpp ClassOutputSink.cpp ClipAudioRange.cpp SilenceRemove.cpp \
 RtMidi.cpp Stk.cpp Limiter.cpp NoiseSource.cpp CompExp.cpp NoiseGate.cpp Plucked.cpp ADSR.cpp Envelope.cpp Delay.cpp NormMaxMin.cpp HarmonicEnhancer.cpp Reassign.cpp Normalize.cpp WekaSource.cpp MemorySource.cpp MidiInput.cpp NumericLib.cpp vmblock.cpp lu.cpp basis.cpp MATLABengine.cpp
 
@@ -622,6 +623,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Server.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShiftInput.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShiftOutput.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Shredder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SilenceRemove.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SineSource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Skewness.Po@am__quote@
@@ -632,6 +634,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StandardDeviation.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Stk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Sum.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Summary.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Talk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Thread.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeLine.Po@am__quote@

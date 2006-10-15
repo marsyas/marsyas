@@ -46,7 +46,7 @@ PowerSpectrum.h Centroid.h Rolloff.h \
 Flux.h Memory.h Mean.h StandardDeviation.h ZeroCrossings.h \
 Socket.h Thread.h GaussianClassifier.h AbsSoundFileSink.h AbsSoundFileSource.h \
 Confidence.h MarFileSink.h WekaSink.h MFCC.h SCF.h SFM.h \
-WaveletPyramid.h WaveletStep.h Daub4.h OnePole.h RtAudio.h RtError.h Accumulator.h \
+WaveletPyramid.h WaveletStep.h Daub4.h OnePole.h RtAudio.h RtError.h Accumulator.h Shredder.h \
 NetworkSocket.h NetworkTCPSource.h NetworkTCPSink.h NetworkUDPSource.h NetworkUDPSink.h Messager.h \
 SocketException.h Talk.h \
 TimeLine.h Color.h Communicator.h Server.h AbsMax.h FullWaveRectifier.h \
@@ -80,7 +80,7 @@ PowerSpectrum.cpp Centroid.cpp Rolloff.cpp \
 Flux.cpp Memory.cpp Mean.cpp StandardDeviation.cpp ZeroCrossings.cpp \
 Thread.cpp Socket.cpp GaussianClassifier.cpp AbsSoundFileSink.cpp AbsSoundFileSource.cpp \
 Confidence.cpp MarFileSink.cpp WekaSink.cpp MFCC.cpp SCF.cpp SFM.cpp \
-WaveletPyramid.cpp WaveletStep.cpp Daub4.cpp OnePole.cpp RtAudio.cpp Accumulator.cpp \
+WaveletPyramid.cpp WaveletStep.cpp Daub4.cpp OnePole.cpp RtAudio.cpp Accumulator.cpp Shredder.cpp \
 NetworkSocket.cpp NetworkTCPSource.cpp NetworkTCPSink.cpp NetworkUDPSource.cpp NetworkUDPSink.cpp Messager.cpp \
 Talk.cpp \
 TimeLine.cpp Color.cpp Communicator.cpp Server.cpp AbsMax.cpp FullWaveRectifier.cpp \
