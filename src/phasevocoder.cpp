@@ -114,7 +114,7 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
   else
     {
       dest = new SoundFileSink("dest");
-      dest->updctrl("mrs_string/filename", outsfname);
+      //dest->updctrl("mrs_string/filename", outsfname);
     }
   pvseries->addMarSystem(dest);
 
@@ -191,6 +191,8 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
   // midi message 
   std::vector<unsigned char> message;
   int nBytes;
+
+	dest->updctrl("mrs_string/filename", outsfname);
 
 
   while(1)
