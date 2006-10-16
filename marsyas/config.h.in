@@ -9,10 +9,16 @@
 /* Enable Marsyas Assertions */
 #undef MRSASSERTE
 
+/* Enable Audio IO */
+#undef MRSAUDIO
+
 /* Enable Marsyas Diagnostics */
 #undef MRSDIAGNOSTIC
 
-/* Enable Audio IO */
+/* Enable MIDI IO */
+#undef MRSMIDI
+
+/* Enable Marsyas Warnings */
 #undef MRSWARNING
 
 /* Enable ogg vorbis decoding */

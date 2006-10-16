@@ -1,6 +1,11 @@
 #include <cstdio>
 
+
+#ifdef MRSMIDI
 #include "RtMidi.h"
+#else
+
+#endif
 #include "MarSystemManager.h"
 #include "Messager.h"
 #include "Conversions.h"
@@ -153,11 +158,14 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
   pvseries->updctrl("Gain/gain/mrs_real/gain", gopt_);
 
   int type;
-  RtMidiIn *midiin = NULL;
-
   int byte2, byte3;
   double stamp;
   mrs_real diff;
+
+#ifdef MRSMIDI
+  RtMidiIn *midiin = NULL;
+
+
   
   // open midi if midiPort is specified 
   if (midi_ != -1) 
@@ -178,7 +186,8 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 	
       }
     }
-  
+#endif  
+
   // midi message 
   std::vector<unsigned char> message;
   int nBytes;
@@ -188,8 +197,10 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
     {
       if (midi_ != -1) 
 	{
+#ifdef MRSMIDI
 	  stamp = midiin->getMessage( &message );
 	  nBytes = message.size();
+#endif
 	  if (nBytes >2)
 	    {
 	      byte3 = message[2];
@@ -329,8 +340,11 @@ phasevocPoly(string sfName, mrs_natural N, mrs_natural Nw,
   int type;
   string cname;
 
-
+#ifdef MRSMIDI
   RtMidiIn *midiin = NULL;
+#endif
+
+  
   int byte2, byte3;
   double stamp;
   mrs_real diff;
@@ -343,7 +357,7 @@ phasevocPoly(string sfName, mrs_natural N, mrs_natural Nw,
       voices.push_back(60);
     }
 
-  
+#ifdef MRSMIDI  
   if (midi_ != -1) 
     {
       
@@ -365,7 +379,7 @@ phasevocPoly(string sfName, mrs_natural N, mrs_natural Nw,
 	
       }
     }
-  
+#endif
 
 
   
@@ -387,7 +401,9 @@ phasevocPoly(string sfName, mrs_natural N, mrs_natural Nw,
 
 	  if (midi_ != -1) 
 	    {
+#ifdef MRSMIDI
 	      stamp = midiin->getMessage( &message );
+#endif
 	      nBytes = message.size();
 	      if (nBytes >2)
 		{
@@ -864,7 +880,9 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
   cout << "Ready to start processing " << endl;
 
 
+#ifdef MRSMIDI
   RtMidiIn *midiin = NULL;
+
 
 
   // open midi if midiPort is specified 
@@ -886,6 +904,7 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
 	
       }
     }
+#endif 
 
   // midi message 
   std::vector<unsigned char> message;
@@ -908,10 +927,13 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
 
 	  // for (int nm = 0; nm < 6; nm++) 
 	  // {
-	      stamp = midiin->getMessage( &message );
-	      nBytes = message.size();
-	      if (nBytes >2)
-		{
+
+#ifdef MRSMIDI
+	  stamp = midiin->getMessage( &message );
+#endif 
+	  nBytes = message.size();
+	  if (nBytes >2)
+	    {
 		  byte3 = message[2];
 		  byte2 = message[1];
 		  type = message[0];

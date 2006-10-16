@@ -1,4 +1,11 @@
+
+
+#ifdef MRSMIDI
 #include "RtMidi.h"
+#else
+
+#endif
+
 #include "MarSystemManager.h" 
 #include "Conversions.h"
 #include "CommandLineOptions.h"
@@ -30,13 +37,14 @@ void
 midiInfo()
 {
   cout << "MIDI INFO port = " << portopt << endl;
-  RtMidiIn *midiin = NULL;
+
   std::vector<unsigned char> message;
   double stamp;
   int nBytes;
   int i;
   
-  
+#ifdef MRSMIDI  
+  RtMidiIn *midiin = NULL;  
   try {
     midiin = new RtMidiIn();
   }
@@ -78,7 +86,7 @@ midiInfo()
       
     }
   
-      
+#endif
 
 }
 
@@ -89,7 +97,7 @@ void PluckLive(string deviceopt, mrs_real pos, mrs_real fre, mrs_real loz, mrs_r
 
 
 
-  
+#ifdef MRSMIDI  
   RtMidiIn *midiin = 0;
   std::vector<unsigned char> message;
   double stamp;
@@ -310,6 +318,8 @@ void PluckLive(string deviceopt, mrs_real pos, mrs_real fre, mrs_real loz, mrs_r
       t++;
     }
   
+
+#endif
   
  
 }

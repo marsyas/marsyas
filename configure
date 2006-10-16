@@ -827,6 +827,7 @@ Optional Features:
   --enable-diagnostics    Turn diagnostics on
   --enable-warnings       Turn warnings on
   --enable-audio          Enable Audio IO
+  --enable-midi           Enable MIDI IO
   --enable-debug          Compile for debugging with gdb
   --enable-distributed    Compile code for distributed audio processing
                           (experimental)
@@ -3539,15 +3540,35 @@ case "$enable_audio" in
        yes)
 
 cat >>confdefs.h <<\_ACEOF
-#define MRSWARNING 1
+#define MRSAUDIO 1
 _ACEOF
 
                echo Audio enabled
        ;;
-       *) echo Audio disabled ;;
+       *) echo Audio disabled
+	;;
 esac
 
 
+# Check whether --enable-midi or --disable-midi was given.
+if test "${enable_midi+set}" = set; then
+  enableval="$enable_midi"
+  enable_midi=$enableval
+else
+  enable_midi=yes
+fi;
+case "$enable_midi" in
+       yes)
+
+cat >>confdefs.h <<\_ACEOF
+#define MRSMIDI 1
+_ACEOF
+
+               echo MIDI enabled
+       ;;
+       *) echo MIDI disabled
+	;;
+esac
 
 # Check whether --enable-debug or --disable-debug was given.
 if test "${enable_debug+set}" = set; then
@@ -3730,6 +3751,8 @@ _ACEOF
 	Libs="-lpthread ${MADLIB} ${OGGLIB}"
 	echo "Using OSS audio"
 else
+	case "$enable_audio" in
+	yes)
 
 cat >>confdefs.h <<\_ACEOF
 #define __LINUX_ALSA__ 1
@@ -3740,15 +3763,24 @@ cat >>confdefs.h <<\_ACEOF
 #define __LINUX_ALSASEQ__ 1
 _ACEOF
 
-	Libs="-lpthread -lasound ${MADLIB} ${OGGLIB}"
+	   Libs="-lpthread -lasound ${MADLIB} ${OGGLIB}"
+	   echo "Using ALSA audio"
+
+	;;
+	*)
+	           Libs="-lpthread ${MADLIB} ${OGGLIB}"
+	;;
+	esac
 fi
 
 cat >>confdefs.h <<\_ACEOF
 #define __OS_LINUX__ 1
 _ACEOF
 
-	echo "Using ALSA audio"
 	;;
+
+
+
 	powerpc-*-darwin*)
 	Libs="-lpthread ${MADLIB} ${OGGLIB} -framework CoreAudio -framework CoreMidi -framework CoreFoundation"
 

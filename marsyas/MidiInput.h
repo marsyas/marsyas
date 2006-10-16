@@ -25,7 +25,10 @@
 #define MARSYAS_MIDIINPUT_H
 
 #include "MarSystem.h"	
+
+#ifdef MRSMIDI
 #include "RtMidi.h"
+#endif 
 
 namespace Marsyas
 {
@@ -37,7 +40,9 @@ private:
 
   static void mycallback(double deltatime, std::vector< unsigned char> * message, void *userData);
   
-	RtMidiIn* midiin;
+#ifdef MRSMIDI
+  RtMidiIn* midiin;
+#endif 
   int byte3, byte2, type;  
 
 public:

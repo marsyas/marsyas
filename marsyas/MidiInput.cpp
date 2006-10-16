@@ -31,13 +31,17 @@ MidiInput::MidiInput(string name):MarSystem("MidiInput",name)
   //type_ = "MidiInput";
   //name_ = name;
   
-	midiin = NULL;
+#ifdef MRSMIDI
+  midiin = NULL;
+#endif 
 }
 
 
 MidiInput::~MidiInput()
 {
+#ifdef MRSMIDI
   delete midiin;
+#endif
 }
 
 
@@ -58,6 +62,7 @@ MidiInput::localUpdate()
 //   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
 	MarSystem::localUpdate();
 
+#ifdef MRSMIDI
   try { 
     midiin = new RtMidiIn();
   } 
@@ -76,6 +81,7 @@ MidiInput::localUpdate()
     } 
   midiin->setCallback(&MidiInput::mycallback, this);
   midiin->ignoreTypes(false, false, false); 
+#endif
 }
 
 
