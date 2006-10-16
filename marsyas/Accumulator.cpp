@@ -78,14 +78,16 @@ Accumulator::localUpdate()
 	      marsystems_[0]->getctrl("mrs_natural/inObservations"));
       setctrl("mrs_real/israte", 
 	      marsystems_[0]->getctrl("mrs_real/israte"));
+			setctrl("mrs_string/inObsNames", 
+				marsystems_[0]->getctrl("mrs_string/inObsNames"));
     
       // set output characteristics 
       setctrl("mrs_natural/onSamples", 
 	      nTimes_ * marsystems_[0]->getctrl("mrs_natural/onSamples").toNatural());
       setctrl("mrs_natural/onObservations", 
 	      marsystems_[0]->getctrl("mrs_natural/onObservations").toNatural());
-      setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-      setctrl("mrs_string/inObsNames", marsystems_[0]->getctrl("mrs_string/inObsNames"));
+      setctrl("mrs_real/osrate", 
+				marsystems_[0]->getctrl("mrs_real/osrate"));
 
       onObsNames = marsystems_[0]->getctrl("mrs_string/onObsNames").toString();
     }
