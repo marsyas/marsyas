@@ -43,8 +43,6 @@ ShiftOutput::ShiftOutput(string name):MarSystem("ShiftOutput",name)
   //name_ = name;
 
 	addControls();
-
-	n_=0;
 }
 
 
@@ -64,7 +62,6 @@ ShiftOutput::addControls()
   addctrl("mrs_natural/Interpolation", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES / 2);
   setctrlState("mrs_natural/Interpolation", true);
   addctrl("mrs_natural/WindowSize", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES);
-  addctrl("mrs_natural/Decimation", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES/2);
 }
 
 void
@@ -76,44 +73,21 @@ ShiftOutput::localUpdate()
   
   setctrl("mrs_natural/WindowSize",getctrl("mrs_natural/inSamples"));
 
-  //defaultUpdate(); [!]
 	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
 	inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
   
-  tmpSlice_.stretch(inObservations_, inSamples_);
-  
   I_ = getctrl("mrs_natural/onSamples").toNatural();
-  N_ = getctrl("mrs_natural/inSamples").toNatural();
-  Nw_ = getctrl("mrs_natural/WindowSize").toNatural();
-  D_ = getctrl("mrs_natural/Decimation").toNatural();
 }
 
 void 
 ShiftOutput::process(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
-  
-  
-  n_ += 2*D_ + Nw_ / 2;
-  
-  
-  for (o=0; o < inObservations_; o++)
-    for (t =0; t < inSamples_; t++)
-      {
-	tmpSlice_(o,t) = in(o,t);
-      }
+	checkFlow(in,out);
 
-  if (n_ >= 0.0)
-    for (t = 0; t < I_; t++)
-      {
-	out(t) = in(t);
-      }
-		/*
-  MATLAB->putVariable(in, "Schredder_in");
-	MATLAB->putVariable(out, "Schredder_out");
-	MATLAB->evalString("figure(1);plot(Schredder_in(1:2:end, :))");
-	MATLAB->evalString("figure(2);plot(Schredder_out)");
-   */
+	for (t = 0; t < I_; t++)
+	{
+		out(t) = in(t);
+	}
 }
 
 
