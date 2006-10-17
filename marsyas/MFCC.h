@@ -62,7 +62,8 @@ private:
   realvec fmagnitude_;
 
   bool init_;
-
+  // NEIL's filter weight speedup
+  int* mfcc_offsets;
 public:
   MFCC(std::string name);
   ~MFCC();

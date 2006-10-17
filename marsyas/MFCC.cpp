@@ -37,11 +37,13 @@ MFCC::MFCC(string name):MarSystem("MFCC",name)
   
 	pfftSize_ = 0;
   psamplingRate_ = 0;
+  mfcc_offsets = NULL;
 }
 
 
 MFCC::~MFCC()
 {
+    if (mfcc_offsets!=NULL) free(mfcc_offsets);
 }
 
 
@@ -127,21 +129,36 @@ MFCC::localUpdate()
     
     mrs_natural chan;
     
+    // NEIL's filter weight speedup
+    if (pfftSize_!=fftSize_) {
+        if (mfcc_offsets!=NULL) free(mfcc_offsets);
+        mfcc_offsets = (int*)malloc(sizeof(int)*(totalFilters_*fftSize_*2));
+    }
     // Initialize mfccFilterWeights
-    for (chan = 0; chan < totalFilters_; chan++)
-			for (i=0; i< fftSize_; i++)
-			{
-				if ((fftFreqs_(i) > lower_(chan))&& (fftFreqs_(i) <= center_(chan)))
-				{
-					mfccFilterWeights_(chan, i) = triangle_heights_(chan) *
-						((fftFreqs_(i) - lower_(chan))/(center_(chan) - lower_(chan)));
-				}
-				if ((fftFreqs_(i) > center_(chan)) && (fftFreqs_(i) <= upper_(chan)))
-				{
-					mfccFilterWeights_(chan, i) = triangle_heights_(chan) *
-						((upper_(chan) - fftFreqs_(i))/(upper_(chan) - center_(chan)));
-				}
-			}
+    for (chan = 0; chan < totalFilters_; chan++) {
+        // NEIL's filter weight speedup
+        int len=0; int pos=0;
+        for (i=0; i< fftSize_; i++)
+        {
+            if ((fftFreqs_(i) > lower_(chan))&& (fftFreqs_(i) <= center_(chan)))
+            {
+                mfccFilterWeights_(chan, i) = triangle_heights_(chan) *
+                    ((fftFreqs_(i) - lower_(chan))/(center_(chan) - lower_(chan)));
+                // NEIL's filter weight speedup
+                if (len==-1) { pos=i; } len=i;
+            }
+            if ((fftFreqs_(i) > center_(chan)) && (fftFreqs_(i) <= upper_(chan)))
+            {
+                mfccFilterWeights_(chan, i) = triangle_heights_(chan) *
+                    ((upper_(chan) - fftFreqs_(i))/(upper_(chan) - center_(chan)));
+                // NEIL's filter weight speedup
+                if (len==-1) { pos=i; } len=i;
+            }
+        }
+        // NEIL's filter weight speedup
+        mfcc_offsets[chan] = pos;
+        mfcc_offsets[chan+totalFilters_] = len;
+    }
     
     // Initialize MFCC_DCT
     mrs_real scale_fac = (mrs_real)(1.0/ sqrt((mrs_real)(totalFilters_/2)));
@@ -181,19 +198,29 @@ MFCC::process(realvec& in, realvec& out)
   
   mrs_real sum =0.0;
   // Calculate the filterbank responce
-  for (i=0; i<totalFilters_; i++)
-    { 
+  for (i=0; i<totalFilters_; i++) {
       sum = 0.0;
-      for (k=0; k<fftSize_; k++)
-	{
-	  sum += (mfccFilterWeights_(i, k) * fmagnitude_(k));
-	}
+      // NEIL's filter weight speedup
+      for (k=mfcc_offsets[i]; k<=mfcc_offsets[i+totalFilters_]; k++) {
+          sum += (mfccFilterWeights_(i, k) * fmagnitude_(k));
+      }
       if (sum != 0.0)
-	earMagnitude_(i) = log10(sum);
-      else 
-	earMagnitude_(i) = 0.0;
-    }
-  
+          earMagnitude_(i) = log10(sum);
+      else
+          earMagnitude_(i) = 0.0;
+  }
+  /* The way it used to be : NEIL
+  for (i=0; i<totalFilters_; i++) {
+      sum = 0.0;
+      for (k=0; k<fftSize_; k++) {
+          sum += (mfccFilterWeights_(i, k) * fmagnitude_(k));
+      }
+      if (sum != 0.0)
+          earMagnitude_(i) = log10(sum);
+      else
+          earMagnitude_(i) = 0.0;
+  }
+*/
   // Take the DCT 
   for (o=0; o < cepstralCoefs_; o++)
     {
