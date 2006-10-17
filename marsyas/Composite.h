@@ -61,7 +61,7 @@ public:
   virtual ~Composite();
 
   //void updctrl(std::string cname, MarControlValue value); //clash with inherited method from MarSystem[!][?]
-  void updControl(std::string cname, MarControlValue value);
+  virtual void updControl(std::string cname, MarControlValue value);
   
 	void setControl(std::string cname, MarControlValue value);
   void setControl(std::string cname, mrs_real value);
