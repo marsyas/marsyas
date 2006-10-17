@@ -48,7 +48,9 @@ private:
 public:
 	Shredder(std::string name);
   ~Shredder();
-  MarSystem* clone() const;  
+  MarSystem* clone() const; 
+
+	void updControl(std::string cname, MarControlValue value);
 
   void process(realvec& in, realvec& out);
 };
