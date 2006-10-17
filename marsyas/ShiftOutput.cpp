@@ -31,12 +31,20 @@ with gain and put them in the output vector.
 using namespace std;
 using namespace Marsyas;
 
+
+
+#ifdef _MATLAB_ENGINE_
+#include "MATLABengine.h"
+#endif 
+
 ShiftOutput::ShiftOutput(string name):MarSystem("ShiftOutput",name)
 {
   //type_ = "ShiftOutput";
   //name_ = name;
 
 	addControls();
+
+	n_=0;
 }
 
 
@@ -100,7 +108,12 @@ ShiftOutput::process(realvec& in, realvec& out)
       {
 	out(t) = in(t);
       }
-  
+		/*
+  MATLAB->putVariable(in, "Schredder_in");
+	MATLAB->putVariable(out, "Schredder_out");
+	MATLAB->evalString("figure(1);plot(Schredder_in(1:2:end, :))");
+	MATLAB->evalString("figure(2);plot(Schredder_out)");
+   */
 }
 
 
