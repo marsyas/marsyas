@@ -57,6 +57,9 @@
 #include "NoiseSource.h"
 #include "AudioSink.h"
 
+#include "PeConvert.h"
+#include "PeClust.h"
+
 #include "AuFileSink.h"
 #include "WavFileSink.h"
 #include "Hamming.h"

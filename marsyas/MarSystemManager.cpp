@@ -51,13 +51,16 @@ MarSystemManager::MarSystemManager()
   registerPrototype("InvSpectrum", new InvSpectrum("ispkp"));
   registerPrototype("Negative", new Negative("negp"));
   registerPrototype("PvConvert", new PvConvert("pvconvp"));
-  registerPrototype("PvUnconvert", new PvUnconvert("pvuconvp"));
+	registerPrototype("PvUnconvert", new PvUnconvert("pvuconvp"));
   registerPrototype("PvFold", new PvFold("pvfp"));
   registerPrototype("PvOverlapadd", new PvOverlapadd("pvovlfp"));
   registerPrototype("PvOscBank", new PvOscBank("pvoscp"));
   registerPrototype("ShiftInput", new ShiftInput("sip"));
   registerPrototype("ShiftOutput", new ShiftOutput("sop"));
   registerPrototype("PvConvolve", new PvConvolve("pvconvpr"));
+
+	registerPrototype("PeConvert", new PeConvert("peconvp"));
+	registerPrototype("PeClust", new PeClust("peclust"));
 
   registerPrototype("AuFileSource", new AuFileSource("aufp"));
   registerPrototype("WavFileSource", new WavFileSource("wavfp"));
