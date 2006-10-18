@@ -1,4 +1,4 @@
-
+#include <config.h> 
 
 #ifdef MRSMIDI
 #include "RtMidi.h"

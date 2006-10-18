@@ -60,7 +60,7 @@ MarSystemManager::MarSystemManager()
   registerPrototype("PvConvolve", new PvConvolve("pvconvpr"));
 
 	registerPrototype("PeConvert", new PeConvert("peconvp"));
-	registerPrototype("PeClust", new PeClust("peclust"));
+//	registerPrototype("PeClust", new PeClust("peclust"));
 
   registerPrototype("AuFileSource", new AuFileSource("aufp"));
   registerPrototype("WavFileSource", new WavFileSource("wavfp"));

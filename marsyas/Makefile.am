@@ -39,7 +39,7 @@ Collection.h fft.h Rms.h PlotSink.h \
 AutoCorrelation.h Peaker.h Peaker1.h HalfWaveRectifier.h \
 TimeStretch.h Conversions.h MaxArgMax.h MinArgMin.h \
 Composite.h Series.h \
-ShiftInput.h ShiftOutput.h PvFold.h PvConvert.h PeConvert.h \
+ ShiftInput.h ShiftOutput.h PvFold.h PvConvert.h PeConvert.h \
 PvConvolve.h PvOscBank.h PvUnconvert.h PvOverlapadd.h Hamming.h \
 Fanout.h Fanin.h Negative.h SineSource.h MarSystemManager.h \
 PowerSpectrum.h Centroid.h Rolloff.h \
