@@ -76,8 +76,8 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	TimeStretch.$(OBJEXT) Conversions.$(OBJEXT) \
 	MaxArgMax.$(OBJEXT) MinArgMin.$(OBJEXT) Composite.$(OBJEXT) \
 	Series.$(OBJEXT) ShiftInput.$(OBJEXT) ShiftOutput.$(OBJEXT) \
-	PvFold.$(OBJEXT) PvConvert.$(OBJEXT) PvConvolve.$(OBJEXT) \
-	PvOscBank.$(OBJEXT) PvUnconvert.$(OBJEXT) \
+	PvFold.$(OBJEXT) PvConvert.$(OBJEXT) PeConvert.$(OBJEXT) \
+	PvConvolve.$(OBJEXT) PvOscBank.$(OBJEXT) PvUnconvert.$(OBJEXT) \
 	PvOverlapadd.$(OBJEXT) Hamming.$(OBJEXT) Fanout.$(OBJEXT) \
 	Fanin.$(OBJEXT) Negative.$(OBJEXT) SineSource.$(OBJEXT) \
 	MarSystemManager.$(OBJEXT) PowerSpectrum.$(OBJEXT) \
@@ -187,6 +187,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/NumericLib.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/OggFileSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/OnePole.Po ./$(DEPDIR)/Parallel.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/PeConvert.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PeakPeriods2BPM.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Peaker.Po ./$(DEPDIR)/Peaker1.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PlotSink.Po ./$(DEPDIR)/Plucked.Po \
@@ -359,7 +360,7 @@ Collection.h fft.h Rms.h PlotSink.h \
 AutoCorrelation.h Peaker.h Peaker1.h HalfWaveRectifier.h \
 TimeStretch.h Conversions.h MaxArgMax.h MinArgMin.h \
 Composite.h Series.h \
-ShiftInput.h ShiftOutput.h PvFold.h PvConvert.h \
+ShiftInput.h ShiftOutput.h PvFold.h PvConvert.h PeConvert.h \
 PvConvolve.h PvOscBank.h PvUnconvert.h PvOverlapadd.h Hamming.h \
 Fanout.h Fanin.h Negative.h SineSource.h MarSystemManager.h \
 PowerSpectrum.h Centroid.h Rolloff.h \
@@ -392,7 +393,7 @@ Collection.cpp fft.cpp Rms.cpp PlotSink.cpp \
 AutoCorrelation.cpp Peaker.cpp Peaker1.cpp HalfWaveRectifier.cpp \
 TimeStretch.cpp Conversions.cpp MaxArgMax.cpp MinArgMin.cpp \
 Composite.cpp Series.cpp \
-ShiftInput.cpp ShiftOutput.cpp PvFold.cpp PvConvert.cpp \
+ShiftInput.cpp ShiftOutput.cpp PvFold.cpp PvConvert.cpp PeConvert.cpp \
 PvConvolve.cpp PvOscBank.cpp PvUnconvert.cpp PvOverlapadd.cpp Hamming.cpp \
 Fanout.cpp Fanin.cpp Negative.cpp SineSource.cpp MarSystemManager.cpp \
 PowerSpectrum.cpp Centroid.cpp Rolloff.cpp \
@@ -593,6 +594,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OggFileSource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OnePole.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parallel.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeConvert.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeakPeriods2BPM.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peaker.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peaker1.Po@am__quote@

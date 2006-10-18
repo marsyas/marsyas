@@ -176,10 +176,12 @@ PeConvert::process(realvec& in, realvec& out)
 	max.update();
   max.process(peaks_, index_);
 
+#ifdef _MATLAB_ENGINE_
   MATLAB->putVariable(peaks_, "mag");
 	MATLAB->putVariable(index_, "peaks");
 	MATLAB->evalString("figure(1);plot(mag)");
 	MATLAB->evalString("figure(2);plot(peaks(1:2:end))");
+#endif
 
 	// fill output with peaks data
 	int i ;
