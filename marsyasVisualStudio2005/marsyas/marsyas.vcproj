@@ -663,6 +663,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\marsyas\Shifter.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\marsyas\ShiftInput.cpp"
 				>
 			</File>
@@ -1302,6 +1306,10 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\SFM.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\Shifter.h"
 				>
 			</File>
 			<File
