@@ -48,7 +48,7 @@ Shifter::clone() const
 void 
 Shifter::addControls()
 {
-	addctrl("mrs_natural/shift", 0.0);
+	addctrl("mrs_natural/shift", 0);
 	setctrlState("mrs_natural/shift", true);
 }
 
