@@ -184,7 +184,7 @@ AC_ARG_ENABLE([bindings],
               ]
 )
 
-AC_CONFIG_SUBDIRS([swig])
+# AC_CONFIG_SUBDIRS([swig])
 MRSSWIG=
 case "$enable_bindings" in
        yes)
@@ -194,7 +194,7 @@ case "$enable_bindings" in
        *) echo SWIG bindings disabled ;;
 esac
 
-AC_SUBST([MRSSWIG])
+# AC_SUBST([MRSSWIG])
 
 
 

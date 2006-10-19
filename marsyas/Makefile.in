@@ -76,27 +76,28 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	TimeStretch.$(OBJEXT) Conversions.$(OBJEXT) \
 	MaxArgMax.$(OBJEXT) MinArgMin.$(OBJEXT) Composite.$(OBJEXT) \
 	Series.$(OBJEXT) ShiftInput.$(OBJEXT) ShiftOutput.$(OBJEXT) \
-	PvFold.$(OBJEXT) PvConvert.$(OBJEXT) PeConvert.$(OBJEXT) \
-	PvConvolve.$(OBJEXT) PvOscBank.$(OBJEXT) PvUnconvert.$(OBJEXT) \
-	PvOverlapadd.$(OBJEXT) Hamming.$(OBJEXT) Fanout.$(OBJEXT) \
-	Fanin.$(OBJEXT) Negative.$(OBJEXT) SineSource.$(OBJEXT) \
-	MarSystemManager.$(OBJEXT) PowerSpectrum.$(OBJEXT) \
-	Centroid.$(OBJEXT) Rolloff.$(OBJEXT) Flux.$(OBJEXT) \
-	Memory.$(OBJEXT) Mean.$(OBJEXT) StandardDeviation.$(OBJEXT) \
-	ZeroCrossings.$(OBJEXT) Thread.$(OBJEXT) Socket.$(OBJEXT) \
-	GaussianClassifier.$(OBJEXT) AbsSoundFileSink.$(OBJEXT) \
-	AbsSoundFileSource.$(OBJEXT) Confidence.$(OBJEXT) \
-	MarFileSink.$(OBJEXT) WekaSink.$(OBJEXT) MFCC.$(OBJEXT) \
-	SCF.$(OBJEXT) SFM.$(OBJEXT) WaveletPyramid.$(OBJEXT) \
-	WaveletStep.$(OBJEXT) Daub4.$(OBJEXT) OnePole.$(OBJEXT) \
-	RtAudio.$(OBJEXT) Accumulator.$(OBJEXT) Shredder.$(OBJEXT) \
-	NetworkSocket.$(OBJEXT) NetworkTCPSource.$(OBJEXT) \
-	NetworkTCPSink.$(OBJEXT) NetworkUDPSource.$(OBJEXT) \
-	NetworkUDPSink.$(OBJEXT) Messager.$(OBJEXT) Talk.$(OBJEXT) \
-	TimeLine.$(OBJEXT) Color.$(OBJEXT) Communicator.$(OBJEXT) \
-	Server.$(OBJEXT) AbsMax.$(OBJEXT) FullWaveRectifier.$(OBJEXT) \
-	Norm.$(OBJEXT) DownSampler.$(OBJEXT) WaveletBands.$(OBJEXT) \
-	Sum.$(OBJEXT) PeakPeriods2BPM.$(OBJEXT) Histogram.$(OBJEXT) \
+	Shifter.$(OBJEXT) PvFold.$(OBJEXT) PvConvert.$(OBJEXT) \
+	PeConvert.$(OBJEXT) PvConvolve.$(OBJEXT) PvOscBank.$(OBJEXT) \
+	PvUnconvert.$(OBJEXT) PvOverlapadd.$(OBJEXT) Hamming.$(OBJEXT) \
+	Fanout.$(OBJEXT) Fanin.$(OBJEXT) Negative.$(OBJEXT) \
+	SineSource.$(OBJEXT) MarSystemManager.$(OBJEXT) \
+	PowerSpectrum.$(OBJEXT) Centroid.$(OBJEXT) Rolloff.$(OBJEXT) \
+	Flux.$(OBJEXT) Memory.$(OBJEXT) Mean.$(OBJEXT) \
+	StandardDeviation.$(OBJEXT) ZeroCrossings.$(OBJEXT) \
+	Thread.$(OBJEXT) Socket.$(OBJEXT) GaussianClassifier.$(OBJEXT) \
+	AbsSoundFileSink.$(OBJEXT) AbsSoundFileSource.$(OBJEXT) \
+	Confidence.$(OBJEXT) MarFileSink.$(OBJEXT) WekaSink.$(OBJEXT) \
+	MFCC.$(OBJEXT) SCF.$(OBJEXT) SFM.$(OBJEXT) \
+	WaveletPyramid.$(OBJEXT) WaveletStep.$(OBJEXT) Daub4.$(OBJEXT) \
+	OnePole.$(OBJEXT) RtAudio.$(OBJEXT) Accumulator.$(OBJEXT) \
+	Shredder.$(OBJEXT) NetworkSocket.$(OBJEXT) \
+	NetworkTCPSource.$(OBJEXT) NetworkTCPSink.$(OBJEXT) \
+	NetworkUDPSource.$(OBJEXT) NetworkUDPSink.$(OBJEXT) \
+	Messager.$(OBJEXT) Talk.$(OBJEXT) TimeLine.$(OBJEXT) \
+	Color.$(OBJEXT) Communicator.$(OBJEXT) Server.$(OBJEXT) \
+	AbsMax.$(OBJEXT) FullWaveRectifier.$(OBJEXT) Norm.$(OBJEXT) \
+	DownSampler.$(OBJEXT) WaveletBands.$(OBJEXT) Sum.$(OBJEXT) \
+	PeakPeriods2BPM.$(OBJEXT) Histogram.$(OBJEXT) \
 	BeatHistoFeatures.$(OBJEXT) MslModel.$(OBJEXT) \
 	CommandLineOptions.$(OBJEXT) RawFileSource.$(OBJEXT) \
 	FM.$(OBJEXT) ANN_node.$(OBJEXT) Annotator.$(OBJEXT) \
@@ -207,7 +208,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Scheduler.Po ./$(DEPDIR)/SeneffEar.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Series.Po ./$(DEPDIR)/Server.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ShiftInput.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/ShiftOutput.Po ./$(DEPDIR)/Shredder.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ShiftOutput.Po ./$(DEPDIR)/Shifter.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Shredder.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SilenceRemove.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SineSource.Po ./$(DEPDIR)/Skewness.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Socket.Po ./$(DEPDIR)/SoundFileSink.Po \
@@ -281,7 +283,6 @@ LTLIBOBJS = @LTLIBOBJS@
 Libs = @Libs@
 MADLIB = @MADLIB@
 MAKEINFO = @MAKEINFO@
-MRSSWIG = @MRSSWIG@
 MslLibs = @MslLibs@
 OBJEXT = @OBJEXT@
 OGGLIB = @OGGLIB@
@@ -335,7 +336,6 @@ prefix = @prefix@
 program_transform_name = @program_transform_name@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
-subdirs = @subdirs@
 sysconfdir = @sysconfdir@
 target = @target@
 target_alias = @target_alias@
@@ -361,7 +361,7 @@ Collection.h fft.h Rms.h PlotSink.h \
 AutoCorrelation.h Peaker.h Peaker1.h HalfWaveRectifier.h \
 TimeStretch.h Conversions.h MaxArgMax.h MinArgMin.h \
 Composite.h Series.h \
- ShiftInput.h ShiftOutput.h PvFold.h PvConvert.h PeConvert.h \
+ ShiftInput.h ShiftOutput.h Shifter.h PvFold.h PvConvert.h PeConvert.h \
 PvConvolve.h PvOscBank.h PvUnconvert.h PvOverlapadd.h Hamming.h \
 Fanout.h Fanin.h Negative.h SineSource.h MarSystemManager.h \
 PowerSpectrum.h Centroid.h Rolloff.h \
@@ -394,7 +394,7 @@ Collection.cpp fft.cpp Rms.cpp PlotSink.cpp \
 AutoCorrelation.cpp Peaker.cpp Peaker1.cpp HalfWaveRectifier.cpp \
 TimeStretch.cpp Conversions.cpp MaxArgMax.cpp MinArgMin.cpp \
 Composite.cpp Series.cpp \
-ShiftInput.cpp ShiftOutput.cpp PvFold.cpp PvConvert.cpp PeConvert.cpp \
+ShiftInput.cpp ShiftOutput.cpp Shifter.cpp PvFold.cpp PvConvert.cpp PeConvert.cpp \
 PvConvolve.cpp PvOscBank.cpp PvUnconvert.cpp PvOverlapadd.cpp Hamming.cpp \
 Fanout.cpp Fanin.cpp Negative.cpp SineSource.cpp MarSystemManager.cpp \
 PowerSpectrum.cpp Centroid.cpp Rolloff.cpp \
@@ -627,6 +627,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Server.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShiftInput.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShiftOutput.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Shifter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Shredder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SilenceRemove.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SineSource.Po@am__quote@
