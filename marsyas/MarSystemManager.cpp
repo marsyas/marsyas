@@ -57,6 +57,7 @@ MarSystemManager::MarSystemManager()
   registerPrototype("PvOscBank", new PvOscBank("pvoscp"));
   registerPrototype("ShiftInput", new ShiftInput("sip"));
   registerPrototype("ShiftOutput", new ShiftOutput("sop"));
+	registerPrototype("Shifter", new Shifter("sp"));
   registerPrototype("PvConvolve", new PvConvolve("pvconvpr"));
 
 	registerPrototype("PeConvert", new PeConvert("peconvp"));
