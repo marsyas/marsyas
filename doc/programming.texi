@@ -1,0 +1,23 @@
+@c much more info to come soon.  -gp
+@node Programming
+@chapter Programming
+
+@menu
+* Writing your own MarSystems::  
+@end menu
+
+@node Writing your own MarSystems
+@section Writing your own MarSystems
+
+It's relatively straightforward to extend Marsyas by writing your own
+Marsystems. As mentioned before each MarSystems must basically support
+the process method that handles the dataflow and the update method
+that handles the control messages.  There are certain conventions that
+need to be followed so typically it is a better idea to copy and
+modify an existing Marsystem rather than writing one from scratch. The
+simple canonical example of a MarSystem that is what I use as a
+template when I write a new Marsystem is Gain.h and Gain.cpp
+
+
+
+

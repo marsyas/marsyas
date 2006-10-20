@@ -1,0 +1,71 @@
+@c much more info to come soon.  -gp
+@node Architecture
+@chapter Architecture
+
+In order to fully take advantage of the capabilities of Marsyas it is
+important to understand how it works internally. The architecture of
+Marsyas reflects an underlying dataflow model that I find useful in
+implementing real and non-real time audio analysis and synthesis
+systems. In marsyas 0.2 a lot of things can be accomplished by
+assembling complex networks of basic building blocks called MarSystems
+that process data. This is the so called ``Black-Box'' functionality
+of the framework. In addition the programmer can also write directly
+her/his own building blocks directly in C++ following a certain API
+and coding conventions offering the so called ``White-Box''
+functionality. The next two sections describe building networks and
+writing new MarSystems respectively.
+
+
+@menu
+* Building the dataflow network::  
+@end menu
+
+@node Building the dataflow network
+@section Building the dataflow network 
+
+
+The basic idea behind the design of Marsyas is that any audio
+analysis/synthesis computation can be expressed as some type of
+processing object, which we call MarSystem, that reads an input slice
+of floating point numbers, performs some computation/transformation on
+it, and writes it as another slice of floating point numbers.
+Networks of MarSystems can be combined and encapsulated as one
+MarSystem. For example consider an audio processing series of
+computations consisting of reading samples from a soundfile,
+performing an short-time fourier transform (STFT) to calculate the
+complex spectrum, performing an inverse STFT to convert back from the
+frequency domain to time domain, then applying a gain to the amplitude
+of the samples and writing the result to a soundfile.
+
+As is very frequently the case with audio processing networks objects
+the input of each stage is the output of the previous stage.  This way
+of assembling MarSystems is called a Series composite.  Once a Series
+Composite is formed it can basically be used as one MarSystem that
+does the whole thing. A figure showing a block diagram-like
+presentation of this network is shown in the figure bellow.
+
+The main method that each MarSystem must support is @b{process} which
+takes two arguments both arrays of floating point numbers used to
+represent slices (matrices where one dimension is samples in time and
+the other is observations which are interpreted as happening at the
+same time). When the @b{process} method is called it reads data from
+the input slice, performs some computation/transformation and writes
+the results to the output slice. Both slices have to be preallocated
+when process is called.  One of the main advantages of Marsyas is that
+a lot of the necessary buffer allocation/reallocation and memory
+management happens behind the scene without the programmer having to
+do anything explicitly.
+
+
+
+
+
+(NOTES TO MYSELF: talk about slices, distinction between samples and
+observations)
+
+@page
+
+@image{marsyasArchitecture1,22cm}
+
+
+
