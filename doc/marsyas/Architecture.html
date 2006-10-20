@@ -1,12 +1,12 @@
 <html lang="en">
 <head>
-<title>Future Work - Marsyas 0.2</title>
+<title>Architecture - Marsyas 0.2</title>
 <meta http-equiv="Content-Type" content="text/html">
 <meta name="description" content="Marsyas 0.2">
 <meta name="generator" content="makeinfo 4.7">
 <link title="Top" rel="start" href="index.html#Top">
-<link rel="prev" href="Programming.html#Programming" title="Programming">
-<link rel="next" href="Users-and-Projects.html#Users-and-Projects" title="Users and Projects">
+<link rel="prev" href="Tools.html#Tools" title="Tools">
+<link rel="next" href="Programming.html#Programming" title="Programming">
 <link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
 <!--
 Copyright 1998-2006 George Tzanetakis
@@ -44,27 +44,30 @@ translation approved by the Free Software Foundation.-->
 <body>
 <div class="node">
 <p>
-<a name="Future-Work"></a>Next:&nbsp;<a rel="next" accesskey="n" href="Users-and-Projects.html#Users-and-Projects">Users and Projects</a>,
-Previous:&nbsp;<a rel="previous" accesskey="p" href="Programming.html#Programming">Programming</a>,
+<a name="Architecture"></a>Next:&nbsp;<a rel="next" accesskey="n" href="Programming.html#Programming">Programming</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Tools.html#Tools">Tools</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
 <hr><br>
 </div>
 
-<h2 class="chapter">6 Future Work</h2>
+<h2 class="chapter">4 Architecture</h2>
 
-<p>As is the case with most software projects, there is a lot of future
-work that I would like to do and I welcome any assistance, feedback,
-requests for features you might have. Most of my plans can be found in
-the TODO file of the distribution. However it is not clearly written
-and intended for my own personal use.
+<p>In order to fully take advantage of the capabilities of Marsyas it is
+important to understand how it works internally. The architecture of
+Marsyas reflects an underlying dataflow model that I find useful in
+implementing real and non-real time audio analysis and synthesis
+systems. In marsyas 0.2 a lot of things can be accomplished by
+assembling complex networks of basic building blocks called MarSystems
+that process data. This is the so called &ldquo;Black-Box&rdquo; functionality
+of the framework. In addition the programmer can also write directly
+her/his own building blocks directly in C++ following a certain API
+and coding conventions offering the so called &ldquo;White-Box&rdquo;
+functionality. The next two sections describe building networks and
+writing new MarSystems respectively.
 
-   <p>Some of the more long-term and ambitious plans for the future will be
-described in this section. If you would like to contribute some code
-to the project and you don't know where to start this section might
-give you some ideas.
-
-   <p>python bindings msl interpreter with vertical syntax msl interpreter
-with chuck-like syntax SDIFF IO Open Sound Control (OSC)
+<ul class="menu">
+<li><a accesskey="1" href="Building-the-dataflow-network.html#Building-the-dataflow-network">Building the dataflow network</a>
+</ul>
 
    </body></html>
 

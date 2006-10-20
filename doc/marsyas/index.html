@@ -61,17 +61,41 @@ translation approved by the Free Software Foundation.-->
 </li></ul>
 <li><a name="toc_Tools" href="Tools.html#Tools">3 Tools</a>
 <ul>
-<li><a href="Audio-Feature-Extraction_002fClassification.html#Audio-Feature-Extraction_002fClassification">3.1 Audio Feature Extraction/Classification</a>
-<li><a href="Synthesis.html#Synthesis">3.2 Synthesis</a>
-<li><a href="Utilities.html#Utilities">3.3 Utilities</a>
-<li><a href="Misc.html#Misc">3.4 Misc</a>
+<li><a href="Collections-and-input-files.html#Collections-and-input-files">3.1 Collections and input files</a>
+<ul>
+<li><a href="Creating-collections-manually.html#Creating-collections-manually">3.1.1 Creating collections manually</a>
+<li><a href="mkcollection.html#mkcollection">3.1.2 <code>mkcollection</code></a>
+</li></ul>
+<li><a href="Simple-Soundfile-Interaction.html#Simple-Soundfile-Interaction">3.2 Simple Soundfile Interaction</a>
+<ul>
+<li><a href="sfinfo.html#sfinfo">3.2.1 <code>sfinfo</code></a>
+<li><a href="sfplay.html#sfplay">3.2.2 <code>sfplay</code></a>
+</li></ul>
+<li><a href="Feature-Extraction.html#Feature-Extraction">3.3 Feature Extraction</a>
+<ul>
+<li><a href="pitchextract.html#pitchextract">3.3.1 <code>pitchextract</code></a>
+<li><a href="extract.html#extract">3.3.2 <code>extract</code></a>
+<li><a href="bextract.html#bextract">3.3.3 <code>bextract</code></a>
+</li></ul>
+<li><a href="Synthesis.html#Synthesis">3.4 Synthesis</a>
+<ul>
+<li><a href="phasevocoder.html#phasevocoder">3.4.1 <code>phasevocoder</code></a>
+<li><a href="sftransform.html#sftransform">3.4.2 <code>sftransform</code></a>
+</li></ul>
+<li><a href="Marsystem-Interaction.html#Marsystem-Interaction">3.5 Marsystem Interaction</a>
+<ul>
+<li><a href="sfplugin.html#sfplugin">3.5.1 <code>sfplugin</code></a>
+<li><a href="msl.html#msl">3.5.2 <code>msl</code></a>
+</li></ul>
 </li></ul>
 <li><a name="toc_Architecture" href="Architecture.html#Architecture">4 Architecture</a>
 <ul>
 <li><a href="Building-the-dataflow-network.html#Building-the-dataflow-network">4.1 Building the dataflow network</a>
-<li><a href="Writing-your-own-MarSystems.html#Writing-your-own-MarSystems">4.2 Writing your own MarSystems</a>
 </li></ul>
-<li><a name="toc_Tutorial" href="Tutorial.html#Tutorial">5 Tutorial</a>
+<li><a name="toc_Programming" href="Programming.html#Programming">5 Programming</a>
+<ul>
+<li><a href="Writing-your-own-MarSystems.html#Writing-your-own-MarSystems">5.1 Writing your own MarSystems</a>
+</li></ul>
 <li><a name="toc_Future-Work" href="Future-Work.html#Future-Work">6 Future Work</a>
 <li><a name="toc_Users-and-Projects" href="Users-and-Projects.html#Users-and-Projects">7 Users and Projects</a>
 <li><a name="toc_The-Index" href="The-Index.html#The-Index">The Index</a>
@@ -84,7 +108,6 @@ translation approved by the Free Software Foundation.-->
 <div class="node">
 <p>
 <a name="Top"></a>Next:&nbsp;<a rel="next" accesskey="n" href="Introduction.html#Introduction">Introduction</a>,
-Previous:&nbsp;<a rel="previous" accesskey="p" href="../index.html#dir">(dir)</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="../index.html#dir">(dir)</a>
 <hr><br>
 </div>
@@ -92,57 +115,16 @@ Up:&nbsp;<a rel="up" accesskey="u" href="../index.html#dir">(dir)</a>
 <h2 class="unnumbered">Marsyas Manual</h2>
 
 <ul class="menu">
-<li><a accesskey="1" href="Introduction.html#Introduction">Introduction </a>
-<li><a accesskey="2" href="Installation.html#Installation">Installation</a>:                 Installation instructions for different operating systems
+<li><a accesskey="1" href="Introduction.html#Introduction">Introduction</a>:                 History, related work, and goals. 
+<li><a accesskey="2" href="Installation.html#Installation">Installation</a>:                 Installation instructions for different operating systems. 
 <li><a accesskey="3" href="Tools.html#Tools">Tools</a>:                        Various sample tools built using marsyas
-components
-<li><a accesskey="4" href="Architecture.html#Architecture">Architecture</a>:                 Software architecture and concepts
-<li><a accesskey="5" href="Tutorial.html#Tutorial">Tutorial </a>
-<li><a accesskey="6" href="Future-Work.html#Future-Work">Future Work </a>:                 Where Marsyas is going
-<li><a accesskey="7" href="Users-and-Projects.html#Users-and-Projects">Users and Projects</a>:           Past and current users/projects
-<li><a accesskey="8" href="The-Index.html#The-Index">The Index</a>:  The Index .
-
-</li></ul>
-<p>--- The Detailed Node Listing ---
-
-<p>Introduction
-
-</p>
-<ul class="menu">
-<li><a accesskey="9" href="History.html#History">History </a>
-<li><a href="Context-and-Related-Work.html#Context-and-Related-Work">Context and Related Work</a>
-
-</li></ul>
-<p>Installation
-
-</p>
-<ul class="menu">
-<li><a href="Linux-Installation.html#Linux-Installation">Linux Installation</a>
-<li><a href="Mac-OSX-Installation.html#Mac-OSX-Installation">Mac OSX Installation</a>
-<li><a href="Windows-_0028cygwin_0029.html#Windows-_0028cygwin_0029">Windows (cygwin)</a>
-<li><a href="Windows-_0028Visual-Studio_0029.html#Windows-_0028Visual-Studio_0029">Windows (Visual Studio) </a>
-<li><a href="Configure-Options.html#Configure-Options">Configure Options</a>
-<li><a href="Structure-of-distribution.html#Structure-of-distribution">Structure of distribution</a>
-
-</li></ul>
-<p>Tools
-
-</p>
-<ul class="menu">
-<li><a href="Audio-Feature-Extraction_002fClassification.html#Audio-Feature-Extraction_002fClassification">Audio Feature Extraction/Classification </a>
-<li><a href="Synthesis.html#Synthesis">Synthesis </a>
-<li><a href="Utilities.html#Utilities">Utilities</a>
-<li><a href="Misc.html#Misc">Misc</a>
-
-</li></ul>
-<p>Architecture
-
-</p>
-<ul class="menu">
-<li><a href="Building-the-dataflow-network.html#Building-the-dataflow-network">Building the dataflow network</a>
-<li><a href="Writing-your-own-MarSystems.html#Writing-your-own-MarSystems">Writing your own MarSystems </a>
-
-   </ul>
+components. 
+<li><a accesskey="4" href="Architecture.html#Architecture">Architecture</a>:                 Software architecture, concepts, and assembling new MarSystems. 
+<li><a accesskey="5" href="Programming.html#Programming">Programming</a>:                  Writing new basic MarSystem blocks. 
+<li><a accesskey="6" href="Future-Work.html#Future-Work">Future Work</a>:                  Where Marsyas is going. 
+<li><a accesskey="7" href="Users-and-Projects.html#Users-and-Projects">Users and Projects</a>:           Past and current users/projects. 
+<li><a accesskey="8" href="The-Index.html#The-Index">The Index</a>:                    The Index. 
+</ul>
 
    </body></html>
 

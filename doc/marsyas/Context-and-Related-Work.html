@@ -1,0 +1,135 @@
+<html lang="en">
+<head>
+<title>Context and Related Work - Marsyas 0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Marsyas 0.2">
+<meta name="generator" content="makeinfo 4.7">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Introduction.html#Introduction" title="Introduction">
+<link rel="prev" href="History.html#History" title="History">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+Copyright 1998-2006 George Tzanetakis
+
+Permission is granted to make and distribute verbatim
+copies of this manual provided the copyright notice and
+this permission notice are preserved on all copies.
+
+Permission is granted to copy and distribute modified
+versions of this manual under the conditions for
+verbatim copying, provided also that the sections
+entitled "Copying" and "GNU General Public License"
+are included exactly as in the original, and provided
+that the entire resulting derived work is distributed
+under the terms of a permission notice identical to this
+one.
+
+Permission is granted to copy and distribute
+translations of this manual into another language,
+under the above conditions for modified versions,
+except that this permission notice may be stated in a
+translation approved by the Free Software Foundation.-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Context-and-Related-Work"></a>Previous:&nbsp;<a rel="previous" accesskey="p" href="History.html#History">History</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Introduction.html#Introduction">Introduction</a>
+<hr><br>
+</div>
+
+<h3 class="section">1.2 Context and Related Work</h3>
+
+<p>There is a lot of interesting related work and inspiration behind the
+design of this framework. As the goal of this introduction is to
+provide a quick overview of the system I will just briefly mention
+some of the key ideas that strongly influenced the design of the
+system without getting into details. Probably the most central
+inspiration has been the huge legacy of computer music synthesis
+languages such as the Music V family, Csound etc. More recent work
+that has been influential to the design of the system has been the
+architecture of the Synthesis Toolkit (STK) and the hierarchical
+control naming scheme of Open Sound Control (OSC). Other influences
+include the use of Design Patterns for creating the object oriented
+architecture of the system, kernel stream architectures as well as
+data flow simulation software systems such as SimuLink by Matlab and
+the FilterGraph by Microsoft.  Finally many of the ideas of functional
+programming such as the clear separation of mutable and immutable
+data and the use of composition to build complicated systems have been
+another major source of inspiration.
+
+   <p>There is a plethora of programming languages, frameworks and
+environments for the analysis and synthesis of audio signals. The
+processing of audio signals requires extensive numerical calculations
+over large amounts of data especially when real-time performance is
+desired. Therefore efficiency has always been a major concern in the
+design of audio analysis and synthesis systems. Dataflow programming
+is based on the idea of expressing computation as a network of
+processing nodes/components connected by a number of communication
+channels/arcs. Computer Music is possibly one of the most successful
+application areas for the dataflow programming paradigm. The origins
+of this idea can possibly be traced to the physical re-wiring
+(patching) employed for changing sound characteristics in early
+modular analog synthesizers. From the pioneering work on unit
+generators in the Music N family of language to currently popular
+visual programming environments such as Max/Msp and Pure Data (PD),
+the idea of patching components to build systems is familiar to most
+computer music practitioners.
+
+   <p>Expressing audio processing systems as dataflow networks has several
+advantages. The programmer can provide a declarative specification of
+what needs to be computed without having to worry about the low level
+implementation details. The resulting code can be very efficient and
+have low memory requirements as data just &ldquo;flows&rdquo; through the
+network without having complicated dependencies. In addition, dataflow
+approaches are particularly suited for visual programming. One of the
+initial motivation for dataflow ideas was the exploitation of parallel
+hardware and therefore dataflow systems are particularly suited for
+parallel and distributed computation.
+
+   <p>Despite these advantages, dataflow programming has not managed to
+become part of mainstream programming and replace existing imperative,
+object-oriented and functional languages. Some of the traditional
+criticisms aimed at dataflow programming include: the difficulty of
+expressing complicated control information, the restrictions on using
+assignment and global state information, the difficulty of expressing
+iteration and complicated data structures, and the challenge of
+synchronization.
+
+   <p>There are two main ways that existing successful dataflow systems
+overcome these limitations. The first is to embed dataflow ideas into
+an existing programming language. This is called coarse-grained
+dataflow in contrast to fine-grained dataflow where the entire
+computation is expressed as a flow graph. With coarse-grained
+dataflow, complicated data structures, iteration, and state
+information are handled in the host language while using dataflow for
+structured modularity. The second way is to work on a domain whose
+nature and specific constraints are a good fit to a dataflow
+approach. For example, audio and multimedia processing typically deals
+with fixed-rate calculation of large buffers of numerical data.
+
+   <p>Computer music has been one of the most successful cases of dataflow
+applications even though the academic dataflow community doesn't seem
+to be particularly aware of this fact. Existing audio processing
+dataflow frameworks have difficulty handling spectral and filterbank
+data in an conceptually clear manner. Another problem is the
+restriction of using fixed buffer sizes and therefore fixed audio and
+control rates. Both of these limitations can be traced to the
+restricted semantics of patching as well as the need to explicitly
+specify connections. Implicit Patching the technique used in
+Marsyas-0.2 is an attempt to overcome these problems while maintaining
+the advantages of dataflow computation.
+
+   </body></html>
+

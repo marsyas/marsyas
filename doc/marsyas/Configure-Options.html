@@ -1,0 +1,107 @@
+<html lang="en">
+<head>
+<title>Configure Options - Marsyas 0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Marsyas 0.2">
+<meta name="generator" content="makeinfo 4.7">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Installation.html#Installation" title="Installation">
+<link rel="prev" href="Windows-_0028Visual-Studio_0029.html#Windows-_0028Visual-Studio_0029" title="Windows (Visual Studio)">
+<link rel="next" href="Structure-of-distribution.html#Structure-of-distribution" title="Structure of distribution">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+Copyright 1998-2006 George Tzanetakis
+
+Permission is granted to make and distribute verbatim
+copies of this manual provided the copyright notice and
+this permission notice are preserved on all copies.
+
+Permission is granted to copy and distribute modified
+versions of this manual under the conditions for
+verbatim copying, provided also that the sections
+entitled "Copying" and "GNU General Public License"
+are included exactly as in the original, and provided
+that the entire resulting derived work is distributed
+under the terms of a permission notice identical to this
+one.
+
+Permission is granted to copy and distribute
+translations of this manual into another language,
+under the above conditions for modified versions,
+except that this permission notice may be stated in a
+translation approved by the Free Software Foundation.-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Configure-Options"></a>Next:&nbsp;<a rel="next" accesskey="n" href="Structure-of-distribution.html#Structure-of-distribution">Structure of distribution</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Windows-_0028Visual-Studio_0029.html#Windows-_0028Visual-Studio_0029">Windows (Visual Studio)</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Installation.html#Installation">Installation</a>
+<hr><br>
+</div>
+
+<h3 class="section">2.5 Configure Options</h3>
+
+<p>Marsyas can be customized using various configuration
+options. In autoconf systems (Linux, OSX, Cygwin)
+this done in the standard way through the .configure
+script. For example to compile Marsyas with assertions
+enabled and with mp3 support through libmad one would do:
+
+<pre class="example">     &gt; ./configure --enable-assert --enable-mad
+     &gt; make
+     &gt; make install                         (as root user)
+</pre>
+   <p class="noindent">The list of available options can be viewed by:
+
+<pre class="example">     &gt; ./configure --help
+</pre>
+   <p class="noindent">The following options are supported:
+
+     <ul>
+<li><b>&ndash;enable-assert</b>       turns assertions on (small performance penatly)
+<li><b>&ndash;enable-debug</b>        compiles Marsyas in debug mode generating
+the necessary files for gdb (large performance penalty)
+<li><b>&ndash;enable-mad</b>          enables support for reading mp3 files using
+libmad (which must be installed)
+<li><b>&ndash;enable-distributed</b>  compiles code for distributed audio
+feature extraction (experimental)
+<li><b>&ndash;enable-readline</b>     realine support for the Marsyas Scripting
+Language (msl)
+<li><b>&ndash;enable-oss</b>          use the OSS sound system
+</ul>
+
+   <p>A set of optional graphical user interfaces written in QT 4
+<a name="index-QT4-7"></a>are also included in the distribution in the qt4GUIs subdirectory. 
+If Qt4 is installed on your machine and you have installed
+Marsyas on your system you can compile the various GUIs
+by doing (replace MarPlayer with the specific GUI you want compiled)
+(these GUIs have only been tested under Linux and are currently under
+major development so use at your own risk):
+
+<pre class="example">     &gt; cd qt4GUIs/MarPlayer
+     &gt; qmake
+     &gt; make
+</pre>
+   <p class="noindent">A frequent variation (if you don't have root priviledges)
+is to install Marsyas in your home directory (replace /home/gtzan with
+the appropriate path for your home directory). 
+This can be accomplished by doing:
+
+<pre class="example">     &gt; ./configure --prefix=/home/gtzan
+     &gt; make
+     &gt; make install
+</pre>
+   </body></html>
+

@@ -63,24 +63,10 @@ command-line prompt you have on your system.
      &gt; make
      &gt; make install                 (as root user)
 </pre>
-   <p>By default Marsyas assumes that the ALSA sound system
-and corresponding library and headers are installed. 
-Most new Linux distribution are using ALSA. 
-<a name="index-ALSA-Sound-System-4"></a><a name="index-OSS-Sound-System-5"></a>
-If you want to install Marsyas using the older OSS sound system you
-can do:
+   <p>By default Marsyas assumes that in Linux systems the ALSA sound system
+and corresponding library and headers are installed.  Most new Linux
+distribution are using ALSA.
 
-<pre class="example">     &gt; ./configure --enable-oss
-</pre>
-   <p class="noindent">A frequent variation (if you don't have root priviledges)
-is to install Marsyas in your home directory (replace /home/gtzan with
-the appropriate path for your home directory). 
-This can be accomplished by doing:
-
-<pre class="example">     &gt; ./configure --prefix=/home/gtzan
-     &gt; make
-     &gt; make install
-</pre>
    <p>In addition there are several configure options that
 can be used to enable/disable assertions, enable/disable debugging
 and include optional packages such as support for reading mp3s. 
