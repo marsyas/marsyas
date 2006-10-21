@@ -194,7 +194,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
+				Optimization="0"
 				AdditionalIncludeDirectories="..\..\marsyas;&quot;$(MATLAB)\extern\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_MATLAB_ENGINE_"
 				MinimalRebuild="false"

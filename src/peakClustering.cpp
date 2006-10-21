@@ -1,6 +1,5 @@
 #include <cstdio>
 
-#include "RtMidi.h"
 #include "MarSystemManager.h"
 #include "Messager.h"
 #include "Conversions.h"
@@ -20,13 +19,15 @@ string fileName = EMPTYSTRING;
 // Global variables for command-line options 
 bool helpopt_ = 0;
 bool usageopt_ =0;
-int fftSize_ = 512;
-int winSize_ = 512;
+int fftSize_ = 2048;
+int winSize_ = 2048;
 // if kept the same no time expansion
-int dopt = 64;
-int iopt = 64;
+int dopt = 360;
+int iopt = 360;
 // nb Sines
 int sopt = 80;
+// nbClusters
+int copt = 4;
 // output buffer Size
 int bopt = 128;
 mrs_real gopt_ = 1.0;
@@ -94,17 +95,26 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 		preNet->addMarSystem(mng.create("AudioSource", "src"));
 	else 
 		preNet->addMarSystem(mng.create("SoundFileSource", "src"));
+	
 	preNet->addMarSystem(mng.create("ShiftInput", "si"));
-	preNet->addMarSystem(mng.create("PvFold", "fo"));
-	preNet->addMarSystem(mng.create("Spectrum", "spk"));
-	preNet->addMarSystem(mng.create("PvConvert", "conv"));
+	preNet->addMarSystem(mng.create("Shifter", "sh"));
+	preNet->addMarSystem(mng.create("Windowing", "wi"));
+
+	MarSystem *parallel = mng.create("Parallel", "par");
+	parallel->addMarSystem(mng.create("Spectrum", "spk1"));
+	parallel->addMarSystem(mng.create("Spectrum", "spk2"));
+  preNet->addMarSystem(parallel);
+
+	preNet->addMarSystem(mng.create("PeConvert", "conv"));
 	//create accumulator
 	MarSystem* accumNet = mng.create("Accumulator", "accumNet");
 	accumNet->addMarSystem(preNet);
 
+  MarSystem* peClust = mng.create("PeClust", "peClust");
+
 	//create Shredder series
 	MarSystem* postNet = mng.create("Series", "postNet");
-	postNet->addMarSystem(mng.create("PvOscBank", "ob"));
+	postNet->addMarSystem(mng.create("PeOverlapadd", "ob"));
 	postNet->addMarSystem(mng.create("ShiftOutput", "so"));
 	postNet->addMarSystem(mng.create("Gain", "gain"));
 	MarSystem *dest;
@@ -122,13 +132,14 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 
 	//create the main network
 	pvseries->addMarSystem(accumNet);
+	pvseries->addMarSystem(peClust);
 	pvseries->addMarSystem(shredNet);
 
 	////////////////////////////////////////////////////////////////
 	// update the controls
 	////////////////////////////////////////////////////////////////
-	pvseries->updctrl("Accumulator/accumNet/mrs_natural/nTimes", 1);
-	pvseries->updctrl("Shredder/shredNet/mrs_natural/nTimes", 1);
+	pvseries->updctrl("Accumulator/accumNet/mrs_natural/nTimes", accSize);
+	pvseries->updctrl("Shredder/shredNet/mrs_natural/nTimes", accSize);
 
 	if (outsfname == EMPTYSTRING) 
 		pvseries->updctrl("Shredder/shredNet/Series/postNet/AudioSink/dest/mrs_natural/bufferSize", bopt);
@@ -150,15 +161,20 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 	}
 
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/ShiftInput/si/mrs_natural/Decimation", D);
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/ShiftInput/si/mrs_natural/WindowSize", Nw);
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PvFold/fo/mrs_natural/FFTSize", N);
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PvFold/fo/mrs_natural/WindowSize", Nw);
+	pvseries->updctrl("Accumulator/accumNet/Series/preNet/ShiftInput/si/mrs_natural/WindowSize", Nw+1);
+	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Windowing/wi/mrs_natural/size", N);
+	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Windowing/wi/mrs_string/type", "Hanning");
+	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Windowing/wi/mrs_natural/zeroPhasing", 1);
+	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Shifter/sh/mrs_natural/shift", 1);
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PvFold/fo/mrs_natural/Decimation", D);
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PvConvert/conv/mrs_natural/Decimation",D);      
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PvConvert/conv/mrs_natural/Sinusoids", (mrs_natural) sopt);  
+	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Decimation", (mrs_natural) dopt);      
+	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Sinusoids", (mrs_natural) sopt);  
 
-	pvseries->updctrl("Shredder/shredNet/Series/postNet/PvOscBank/ob/mrs_natural/Interpolation", I);
-	pvseries->updctrl("Shredder/shredNet/Series/postNet/PvOscBank/ob/mrs_real/PitchShift", P);
+  pvseries->updctrl("PeClust/peClust/mrs_natural/Sinusoids", (mrs_natural) sopt);  
+  pvseries->updctrl("PeClust/peClust/mrs_natural/Clusters", (mrs_natural) copt);  
+
+	pvseries->updctrl("Shredder/shredNet/Series/postNet/PeOverlapadd/ob/mrs_natural/hopSize", D);
+	pvseries->updctrl("Shredder/shredNet/Series/postNet/PeOverlapadd/ob/mrs_natural/nbSinusoids", sopt);
 	pvseries->updctrl("Shredder/shredNet/Series/postNet/ShiftOutput/so/mrs_natural/Interpolation", I);
 	pvseries->updctrl("Shredder/shredNet/Series/postNet/ShiftOutput/so/mrs_natural/WindowSize", Nw);      
 	pvseries->updctrl("Shredder/shredNet/Series/postNet/ShiftOutput/so/mrs_natural/Decimation", D);
@@ -166,7 +182,7 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 
 	dest->updctrl("mrs_string/filename", outsfname);//[!]
 
-	cout << *pvseries;
+//	cout << *pvseries;
 
 	while(1)
 	{
@@ -252,7 +268,7 @@ main(int argc, const char **argv)
   cerr << "win size (-w)      = " << winSize_ << endl;
   cerr << "sinusoids (-s)     = " << sopt << endl;
   cerr << "outFile  (-f)      = " << fileName << endl;
-	cerr << "outputDirectory  (-o) = " << outputDirectoryName << endl;
+ 	cerr << "outputDirectory  (-o) = " << outputDirectoryName << endl;
 	cerr << "inputDirectory  (-i) = " << inputDirectoryName << endl;
 
   // soundfile input 

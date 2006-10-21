@@ -116,7 +116,7 @@ SoundFileSource::localUpdate()
 		  
 			setctrl("mrs_natural/nChannels", src_->getctrl("mrs_natural/nChannels"));
 			setctrl("mrs_real/israte", src_->getctrl("mrs_real/israte"));
-			setctrl("mrs_real/osrate", src_->getctrl("mrs_real/israte"));
+			setctrl("mrs_real/osrate", src_->getctrl("mrs_real/osrate"));
 		  
 			setctrl("mrs_bool/notEmpty", (MarControlValue)true);
 		  
@@ -151,7 +151,10 @@ SoundFileSource::localUpdate()
     //sync local controls with the controls from the audio source object 
 		setctrl("mrs_natural/onSamples", src_->getctrl("mrs_natural/onSamples"));
     setctrl("mrs_natural/onObservations", src_->getctrl("mrs_natural/onObservations"));
-    setctrl("mrs_real/osrate", src_->getctrl("mrs_real/israte")); //israte[?]
+    
+		mrs_real temp = src_->getctrl("mrs_real/osrate").toReal();
+		setctrl("mrs_real/osrate",temp ); //israte[?]
+
     setctrl("mrs_natural/pos", src_->pos_);//[!]
     setctrl("mrs_natural/loopPos", src_->rewindpos_);//[!]
     setctrl("mrs_bool/notEmpty", (MarControlValue)src_->notEmpty_);//[!]

@@ -252,13 +252,14 @@ WavFileSource::localUpdate()
   inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
   inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
   israte_ = getctrl("mrs_real/israte").toReal();
+	osrate_ = getctrl("mrs_real/osrate").toReal();
   
   nChannels_ = getctrl("mrs_natural/nChannels").toNatural();
 
   setctrl("mrs_natural/onSamples", inSamples_);
   setctrl("mrs_natural/onObservations", nChannels_);
-  setctrl("mrs_real/osrate", israte_);
-  
+  //setctrl("mrs_real/osrate", osrate_);
+  //osrate_ = getctrl("mrs_real/osrate").toReal();
   pos_ = getctrl("mrs_natural/pos").toNatural();
   rewindpos_ = getctrl("mrs_natural/loopPos").toNatural();
   

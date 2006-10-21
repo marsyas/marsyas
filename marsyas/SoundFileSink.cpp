@@ -34,6 +34,8 @@ using namespace Marsyas;
 #define UnsignedToFloat(u) (((double)((long)(u - 2147483647L - 1))) + 2147483648.0)
 #define FloatToUnsigned(f)      ((unsigned long)(((long)(f - 2147483648.0)) + 2147483647L) + 1)
 	
+
+
 SoundFileSink::SoundFileSink(string name):MarSystem("SoundFileSink",name)
 {
   //type_ = "SoundFileSink";
@@ -238,6 +240,7 @@ SoundFileSink::process(realvec& in, realvec& out)
       dest_->process(in,out);
     }
  
+
 }
 
 
