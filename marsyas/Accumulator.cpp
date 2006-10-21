@@ -115,18 +115,18 @@ Accumulator::localUpdate()
 void 
 Accumulator::process(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
-  
-  for (c = 0; c < nTimes_; c++) 
-    {
-      marsystems_[0]->recvControls(); // HACK STU
-      marsystems_[0]->process(in, tout_);
-      for (o=0; o < onObservations_; o++)
-	for (t = 0; t < onSamples_/nTimes_; t++)
-	  {
-	    out(o, t + c * (onSamples_/nTimes_)) = tout_(o,t);
-	  }
-    }
+	checkFlow(in,out);
+
+	for (c = 0; c < nTimes_; c++) 
+	{
+		marsystems_[0]->recvControls(); // HACK STU
+		marsystems_[0]->process(in, tout_);
+		for (o=0; o < onObservations_; o++)
+			for (t = 0; t < onSamples_/nTimes_; t++)
+			{
+				out(o, t + c * (onSamples_/nTimes_)) = tout_(o,t);
+			}
+	}
 }
 
 

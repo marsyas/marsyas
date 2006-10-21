@@ -30,6 +30,9 @@ with gain and put them in the output vector.
 using namespace std;
 using namespace Marsyas;
 
+	
+
+
 ShiftInput::ShiftInput(string name):MarSystem("ShiftInput",name)
 {
   //type_ = "ShiftInput";
@@ -109,6 +112,8 @@ ShiftInput::process(realvec& in, realvec& out)
     }
   for (t = 0; t < N_; t++) 
     pout_(t) = out(t);
+
+	
 }
 
 

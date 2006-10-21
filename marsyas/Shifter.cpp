@@ -29,6 +29,10 @@
 using namespace std;
 using namespace Marsyas;
 
+#ifdef _MATLAB_ENGINE_
+#include "MATLABengine.h"
+#endif 
+
 Shifter::Shifter(string name):MarSystem("Shifter", name)
 {
 	addControls();
@@ -57,7 +61,7 @@ Shifter::localUpdate()
 {
   MRSDIAG("Shifter.cpp - Shifter:localUpdate");
 
-	shift_ = getctrl("mrs_real/shift").toNatural();
+	shift_ = getctrl("mrs_natural/shift").toNatural();
 
 	mrs_natural onsamples = getctrl("mrs_natural/inSamples").toNatural()- shift_;
 	//for too big shifts (> inSamples), do a zero shift
@@ -74,13 +78,24 @@ void
 Shifter::process(realvec& in, realvec& out)
 {
 	checkFlow(in,out);
-
-	for (o=0; o < inObservations_; o++)
+int delta = 0;
+	for (o=0; o < onObservations_; o++) 
+	{
 		for (t = 0; t < onSamples_; t++)
 		{
-			out(o*2,t) =  in(o,t);
-			out(o*2+1,t) = in(o, t + shift_);
+			out(o,t) =  in(0,t+delta);
 		}
+delta +=shift_;
+	}
+
+	//#ifdef _MATLAB_ENGINE_
+  //MATLAB->putVariable(out, "in");
+
+//
+//	MATLAB->evalString("figure(1);plot(mag)");
+//	MATLAB->evalString("figure(2);plot(peaks(1:2:end))");
+// #endif
+
 }
 
 

@@ -26,7 +26,9 @@ as a prototype template for building more complicated MarSystems.
 */
 
 #include "Gain.h"
-
+#ifdef _MATLAB_ENGINE_
+#include "MATLABengine.h"
+#endif 
 using namespace std;
 using namespace Marsyas;
 
@@ -100,6 +102,7 @@ Gain::process(realvec& in, realvec& out)
     {
 			out(o,t) =  gain * in(o,t);
     }
+
 }
 
 

@@ -80,7 +80,7 @@ MaxArgMax::process(realvec& in, realvec& out)
   mrs_natural k = getctrl("mrs_natural/nMaximums").toNatural();
 
   
-
+// ML should replace 0 by o [?]
     for (o=0; o < inObservations_; o++)
       for (t=0; t < inSamples_; t++)
 	{
@@ -99,9 +99,6 @@ MaxArgMax::process(realvec& in, realvec& out)
 		}
 	    }
 	}
-    
-  
-  
 }
 
 

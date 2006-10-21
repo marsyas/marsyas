@@ -207,13 +207,14 @@ Shredder::process(realvec& in, realvec& out)
 		marsystems_[0]->process(tin_, out);
 		
 	}
-
+/*
 #ifdef _MATLAB_ENGINE_
 	MATLAB->putVariable(in, "Schredder_in");
 	MATLAB->putVariable(out, "Schredder_out");
 	MATLAB->evalString("figure(1);imagesc(Schredder_in(1:2:end, :))");
 	MATLAB->evalString("figure(2);plot(Schredder_out)");
-#endif 
+#endif
+	*/
 }
 
 
