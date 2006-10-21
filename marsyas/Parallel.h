@@ -40,7 +40,9 @@ public:
   //Parallel(const Parallel& a);
   
   ~Parallel();
-  MarSystem* clone() const;    
+  MarSystem* clone() const; 
+
+	void updControl(std::string cname, MarControlValue value);
 
   void process(realvec& in, realvec& out);
 };
