@@ -61,7 +61,8 @@ MarSystemManager::MarSystemManager()
   registerPrototype("PvConvolve", new PvConvolve("pvconvpr"));
 
 	registerPrototype("PeConvert", new PeConvert("peconvp"));
-//	registerPrototype("PeClust", new PeClust("peclust"));
+  registerPrototype("PeClust", new PeClust("peclust"));
+ registerPrototype("PeOverlapadd", new PeOverlapadd("peovlfp"));
 
   registerPrototype("AuFileSource", new AuFileSource("aufp"));
   registerPrototype("WavFileSource", new WavFileSource("wavfp"));
@@ -70,7 +71,8 @@ MarSystemManager::MarSystemManager()
   registerPrototype("AuFileSink", new AuFileSink("ausinkp"));
   registerPrototype("WavFileSink", new WavFileSink("wavsinkp"));
 
-  registerPrototype("Hamming", new Hamming("hmp"));
+  registerPrototype("Hamming", new Hamming("hmp"));  
+	registerPrototype("Windowing", new Windowing("win"));
   registerPrototype("PowerSpectrum", new PowerSpectrum("pspkp"));
   registerPrototype("Centroid", new Centroid("cntrp"));
   registerPrototype("Rolloff", new Rolloff("rlfp"));

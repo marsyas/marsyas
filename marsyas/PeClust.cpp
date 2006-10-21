@@ -36,6 +36,8 @@ PeClust::PeClust(string name):MarSystem("PeClust", name)
 {
  
 	addControls();
+
+	nbParameters_ = 7;
 }
 
 
@@ -53,58 +55,100 @@ void
 PeClust::addControls()
 {
   //Add specific controls needed by this MarSystem.
-  addctrl("mrs_numerical/nbClust", 2);
+  addctrl("mrs_natural/Clusters", 2);
+	addctrl("mrs_natural/Sinusoids", 1);
 }
 
-// void
-// PeClust::localUpdate()
-// {
-//   
-// lmartins: since this is the default MarSystem::localUpdate()
-// (i.e. does not alters input data format) it's not needed to
-// override it here!
-// see also Limiter.cpp for another example
-//   
-//   MRSDIAG("PeClust.cpp - PeClust:localUpdate");
-//   
-//   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-//   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-//   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-//   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
-//   
-// 	//defaultUpdate(); no longer needed here. Done at MarSystem::update()  
-//}
+ void
+ PeClust::localUpdate()
+ {
+	 setctrl("mrs_natural/onSamples", 
+		 getctrl("mrs_natural/inSamples"));
+	 setctrl("mrs_natural/onObservations", 
+		 getctrl("mrs_natural/inObservations"));
+	 setctrl("mrs_real/osrate", 
+		 getctrl("mrs_real/israte"));
+ setctrl("mrs_string/onObsNames", 
+	 getctrl("mrs_string/inObsNames"));
 
+	 kmax_ = getctrl("mrs_natural/Sinusoids").toNatural();
+	 nbClusters_ = getctrl("mrs_natural/Clusters").toNatural();
 
+	 // add a string with the observations to consider for similarity computing
 
-void PeClust::peaks2M (realvec in, realvec out)
-{
-int i,j;
+	 nbParameters_ = inObservations_/kmax_;
 
-for (i=0 ; i<inObservations_ ; i++)
-for (j=0 ; j<inSamples_ ; j++)
-{
-
-}
+	 data_.stretch(kmax_*inSamples_, nbParameters_);
 }
 
-void PeClust::peaks2V (realvec in, realvec out)
-	{
-
-	}
 
 
-void 
-PeClust::process(realvec& in, realvec& out)
-{
-  checkFlow(in,out);
+ void PeClust::peaks2M (realvec& in, realvec& out)
+ {
+	 int i,j,k,l=0;
 
-  mrs_natural nbClusters_ = getctrl("mrs_natural/nbClusters").toNatural();
-  
-  peaks2M(in, data_);
+	 for (j=0 ; j<in.getCols() ; j++)
+		 for (i=0 ; i<kmax_ ; i++)
+		 {
+			 if(in(i, j) != 0.0) 
+			 {
+				 for(k=0;k<nbParameters_;k++)
+					 out(l, k) = in(k*kmax_+i, j);
+				 l++;
+			 }
+		 }
+		 out.stretch(l, nbParameters_);
+		 nbPeaks_ = l;
+ }
 
-	peaks2V(data_, out);
-}
+ void PeClust::peaks2V (realvec& in, realvec& out)
+ {
+	 int i, j, k=0;
+	 int frameIndex=-1, startIndex = in(0, 5);
+
+	 for (i=0 ; i<in.getRows() ; i++, k++)
+	 {
+		 if(frameIndex != in(i, 5))
+		 {
+			 frameIndex = in(i, 5);
+			 k=0;
+		 }
+		 for (j=0 ; j<in.getCols() ; j++)
+		 {
+			 out(j*kmax_+k, frameIndex-startIndex) = in(i, j);
+		 }
+	 }
+ }
+
+
+ void 
+	 PeClust::process(realvec& in, realvec& out)
+ {
+	 checkFlow(in,out);
+
+	 // add last clustered frame
+	 data_.stretch(kmax_*(inSamples_+1), nbParameters_);
+	 peaks2M(in, data_);
+	 
+// similarity matrix calculation
+
+// Ncut
+
+// align labeling
+
+// make it progressive plotting
+#ifdef _MATLAB_ENGINE_
+	 MATLAB->putVariable(data_, "peaks");
+	 MATLAB->evalString("plotPeaks(peaks)");
+#endif 
+
+	 peaks2V(data_, out);
+out=in;
+	 // remove first out frame
+
+	 // store last out frame
+
+ }
 
 
 

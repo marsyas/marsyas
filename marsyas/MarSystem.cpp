@@ -268,6 +268,9 @@ MarSystem::update()
 	onObservations_ = getctrl("mrs_natural/onObservations").toNatural();
 	onSamples_ = getctrl("mrs_natural/onSamples").toNatural();
 
+	israte_ = getctrl("mrs_real/israte").toReal();
+	osrate_ = getctrl("mrs_real/osrate").toReal();
+
 	//dbg_ = getctrl("mrs_bool/debug").toBool();
 	//mute_ = getctrl("mrs_bool/mute").toBool();
 	

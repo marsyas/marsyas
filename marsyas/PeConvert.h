@@ -44,12 +44,15 @@ private:
   realvec phase_;
   realvec mag_;
 	realvec frequency_;
+  realvec lastmag_;
+	realvec lastfrequency_;
+  realvec deltamag_;
+	realvec deltafrequency_;
 
   mrs_real fundamental_;
   mrs_real factor_;
-  realvec sortedmags_;
-  realvec sortedpos_;
 
+	mrs_natural time_;
 	mrs_natural nbParameters_;
 	mrs_natural nbPeaks_;
 	mrs_natural kmax_;

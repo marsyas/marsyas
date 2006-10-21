@@ -27,6 +27,12 @@ according to current input time (t)
 
 #include "PvFold.h"
 
+
+#ifdef _MATLAB_ENGINE_
+#include "MATLABengine.h"
+#endif 
+
+
 using namespace std;
 using namespace Marsyas;
 
@@ -138,6 +144,12 @@ PvFold::process(realvec& in, realvec& out)
       if (++n_ == N_)
 	n_ = 0;
     }
+	
+//#ifdef _MATLAB_ENGINE_
+//	MATLAB->putVariable(out, "peaks");
+//	MATLAB->evalString("plot(peaks)");
+//#endif 
+
 }
 
 

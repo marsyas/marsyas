@@ -17,44 +17,54 @@
 */
 
 /** 
-    \class PeClust
-    \brief cluster peaks
+    \class PeOverlapadd
+    \brief PeOverlapadd
 
-  
+    Multiply with window (both length Nw) using modulus arithmetic;
+fold and rotate windowed input into output array (FFT) (length N) 
+according to current input time (t)
 */
 
-#ifndef MARSYAS_PECLUST_H
-#define MARSYAS_PECLUST_H
+#ifndef MARSYAS_PEOVERLAPADD_H
+#define MARSYAS_PEOVERLAPADD_H
 
 #include "MarSystem.h"	
 
 namespace Marsyas
 {
 
-class PeClust: public MarSystem
+class PeOverlapadd: public MarSystem
 {
-private: 
-
-	realvec data_;
-	mrs_natural nbParameters_;
-	mrs_natural kmax_;
-	mrs_natural nbClusters_;
-	mrs_natural nbPeaks_;
-  //Add specific controls needed by this MarSystem.
-	void addControls();
-	
-	void localUpdate();
-	void peaks2M (realvec&, realvec&);
-	void peaks2V (realvec&, realvec&);
-
-public:
-  PeClust(std::string name);
-  ~PeClust();
-  MarSystem* clone() const;  
+private:
+	mrs_real factor_;
+  realvec win_;
+	realvec back_;
+	realvec tmp_;
   
+  void addControls();
+	void localUpdate();
+
+	void sine(realvec& out, mrs_real f, mrs_real a, mrs_real p);
+ 
+public:
+  PeOverlapadd(std::string name);
+  ~PeOverlapadd();
+  MarSystem* clone() const;    
+
   void process(realvec& in, realvec& out);
+  
 };
 
-}//namespace Marsyas
+}//namespace Marsyas;
 
 #endif
+
+	
+
+	
+
+	
+
+	
+
+	

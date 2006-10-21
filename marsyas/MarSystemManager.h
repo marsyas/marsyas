@@ -59,11 +59,13 @@
 #include "AudioSink.h"
 
 #include "PeConvert.h"
-// #include "PeClust.h"
+#include "PeClust.h"
+#include "PeOverlapadd.h"
 
 #include "AuFileSink.h"
 #include "WavFileSink.h"
 #include "Hamming.h"
+#include "Windowing.h"
 #include "PowerSpectrum.h"
 #include "Centroid.h"
 #include "Rolloff.h" 
