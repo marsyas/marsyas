@@ -49,7 +49,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="Installation.html#Installation">Install
 <hr><br>
 </div>
 
-<h3 class="section">2.6 Structure of distribution</h3>
+<h3 class="section">2.7 Structure of distribution</h3>
 
 <p>Marsyas is primarily targeted to researchers and software
 developers who want to build new systems and applications
@@ -61,7 +61,7 @@ is important for any serious work with the framework.
 important files:
 
      <ul>
-<li><b>INSTALL, COPYING, THANKS, README, AUTHORS, TODO:</b> are text
+<li><b>INSTALL, COPYING, THANKS, README, AUTHORS, TODO:</b> text
 files with important information. 
 <li><b>ChangeLog:</b> the change log is not maintained as consistently
 as it should be but it still provides useful information about the
@@ -84,22 +84,36 @@ programs can use to access Marsyas functionality.
 sample executables that do various interesting things
 using the Marsyas software framework. Some of them are intended
 to be used as actual research tools others are more demonstration. 
-See <a href="Tools.html#Tools">Tools</a>.
+All new Marsyas users should browse at least some of the source
+code here.
 
-     <li><b>doc:</b> contains both the user manual (which you are
-reading) as well as the source code documentation that is generated
-using doxygen. To regenerate the manual in pdf or html type
-(in the doc subdirectory):
+     <!-- We use doxygen?  Really!?  check.  -gp -->
+<li><b>doc:</b> contains both the user manual (which you are
+currently reading) as well as the source code documentation
+that is generated using doxygen. To regenerate the manual in pdf
+or html type (in the doc subdirectory)
      <pre class="example">          &gt;make pdf
           &gt;make html
      </pre>
-     <li><b>rawwaves:</b> contains some raw sound files that can be used
-to test the sample executables in src/.
-
-     <li><b>qt4GUIs:</b> provides GUI interfaces using QT4. These will not
+     <!-- @item @b{rawwaves:} contains some raw sound files that can be used -->
+<!-- to test the sample executables in src/. -->
+<li><b>qt4GUIs:</b> provides GUI interfaces using QT4. These will not
 work with earlier versions of QT. You must have QT4 installed in order
-to use or comppile these applications. A README file is supplied with
+to use or compile these applications. A README file is supplied with
 each one that has instructions on how to compile and run it.
+
+     <li><b>config:</b> configuration files used by autotools.
+
+     <li><b>distributed:</b> Experimental Marsyas classes for
+distributed processing.
+
+     <li><b>marsyasMATLAB:</b> User MATLAB scripts (mfiles).
+
+     <li><b>marsyasVisualStudio2003:</b>
+Project and Solution files for Visual Studio 2003
+
+     <li><b>marsyasVisualStudio2005:</b>
+Project and Solution files for Visual Studio 2005
 
    </ul>
 

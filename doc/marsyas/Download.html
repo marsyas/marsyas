@@ -1,13 +1,12 @@
 <html lang="en">
 <head>
-<title>Mac OSX Installation - Marsyas 0.2</title>
+<title>Download - Marsyas 0.2</title>
 <meta http-equiv="Content-Type" content="text/html">
 <meta name="description" content="Marsyas 0.2">
 <meta name="generator" content="makeinfo 4.7">
 <link title="Top" rel="start" href="index.html#Top">
 <link rel="up" href="Installation.html#Installation" title="Installation">
-<link rel="prev" href="Linux-Installation.html#Linux-Installation" title="Linux Installation">
-<link rel="next" href="Windows-_0028cygwin_0029.html#Windows-_0028cygwin_0029" title="Windows (cygwin)">
+<link rel="next" href="Linux-Installation.html#Linux-Installation" title="Linux Installation">
 <link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
 <!--
 Copyright 1998-2006 George Tzanetakis
@@ -45,30 +44,50 @@ translation approved by the Free Software Foundation.-->
 <body>
 <div class="node">
 <p>
-<a name="Mac-OSX-Installation"></a>Next:&nbsp;<a rel="next" accesskey="n" href="Windows-_0028cygwin_0029.html#Windows-_0028cygwin_0029">Windows (cygwin)</a>,
-Previous:&nbsp;<a rel="previous" accesskey="p" href="Linux-Installation.html#Linux-Installation">Linux Installation</a>,
+<a name="Download"></a>Next:&nbsp;<a rel="next" accesskey="n" href="Linux-Installation.html#Linux-Installation">Linux Installation</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="Installation.html#Installation">Installation</a>
 <hr><br>
 </div>
 
-<h3 class="section">2.3 Mac OSX Installation</h3>
+<h3 class="section">2.1 Download</h3>
 
-<p><a name="index-Mac-OSX-4"></a>
-Installation under OS X is almost identical to Linux. The developer
-tools are not installed by default so you will need to install them. 
-You can download XCode from the Apple Developer website. You can
-check whether they are installed or not by checking that you
-can run gcc on a terminal. Once gcc is installed then you can compile
-using the standard autoconf procedure:
+<h4 class="subsection">2.1.1 Stable(-ish) Version</h4>
 
-<pre class="example">     &gt; ./configure
-     &gt; make
-     &gt; make install                         (as root user)
+<p>Marsyas is hosted at SourceForge :
+(<i>Important Note: Marsyas does not use CVS and therefore the CVS repository
+is out of date</i>)
+
+   <p><a href=''http://www.sourceforge.net/projects/marsyas''>
+http://www.sourceforget.net/projects/marsyas </a>
+
+   <p><a href=''http://marsyas.sourceforge.net''>
+http://marsyas.sourceforge.net </a>
+
+   <p>Marsyas is open source software and is distributed
+as a tar ball (something like marsyas-0.2.8.tar.gz).
+
+   <p>To extract the source file type:
+
+<pre class="example">     &gt;tar -zxvf marsyas-0.2.8.tar.gz
 </pre>
-   <p>In addition there are several configure options that
-can be used to enable/disable assertions, enable/disable debugging
-and include optional packages such as support for reading mp3s. 
-See <a href="Configure-Options.html#Configure-Options">Configure Options</a>.
+   <p>This will create a subdirectory of the current
+directory called marsyas-0.2.8 that contains
+all the source files needed for compiling Marsyas.
 
-   </body></html>
+<h4 class="subsection">2.1.2 Development Version</h4>
+
+<p>For the brave, the latest (possibly unstable!) version can be
+obtained from the subversion repository stored at the sourceforge website. 
+To check out a working copy do:
+
+<pre class="example">     &gt;svn co https://svn.sourceforge.net/svnroot/marsyas/trunk marsyas-0.2.8
+</pre>
+   <p>You can replace marsyas-0.2.8 with any directory you want. The
+version/release (version 0.2 release 8) is independently assigned
+from subversion revisions and the latest can be found by checking
+the sourceforge website.
+
+<!-- this info isn't necessary -->
+<!-- This is good info, but not at this place in the docs. -->
+</body></html>
 
