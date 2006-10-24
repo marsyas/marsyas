@@ -275,6 +275,10 @@ phasevocoder implementation described by F.R.Moore in his book
 MarSystems in a modular way and can be used for real-time
 pitch-shifting and time-scaling.
  
+@example
+> phasevocoder -p 1.4 -s 100
+@end example
+
 
 @node sftransform
 @subsection @code{sftransform}

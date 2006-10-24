@@ -1,6 +1,21 @@
-@node Installation, Tools, Introduction , Top
+@node Installation
 @chapter Installation
 
+@menu
+* Download::                    
+* Linux Installation::          
+* Mac OSX Installation::        
+* Windows (cygwin)::            
+* Windows (Visual Studio)::     
+* Configure Options::           
+* Structure of distribution::   
+@end menu
+
+
+@node Download
+@section Download
+
+@subsection Stable(-ish) Version
 
 Marsyas is hosted at SourceForge : 
 (@i{Important Note: Marsyas does not use CVS and therefore the CVS repository 
@@ -18,15 +33,31 @@ http://www.sourceforge.net/projects/marsyas
 <a href=''http://www.sourceforge.net/projects/marsyas''>
 http://www.sourceforget.net/projects/marsyas </a> 
 @end html
+
 @html 
 <a href=''http://marsyas.sourceforge.net''>
 http://marsyas.sourceforge.net </a> 
 @end html
 
+Marsyas is open source software and is distributed 
+as a tar ball (something like marsyas-0.2.8.tar.gz). 
 
-@noindent For the brave the latest possibly unstable copy can be
-obtained from the subversion repository stored at the sourceforge website:
-To check out a working copy do: 
+To extract the source file type: 
+
+@example 
+>tar -zxvf marsyas-0.2.8.tar.gz 
+@end example
+
+This will create a subdirectory of the current 
+directory called marsyas-0.2.8 that contains 
+all the source files needed for compiling Marsyas. 
+
+
+@subsection Development Version
+
+For the brave, the latest (possibly unstable!) version can be
+obtained from the subversion repository stored at the sourceforge website.
+To check out a working copy do:
 
 @example 
 >svn co https://svn.sourceforge.net/svnroot/marsyas/trunk marsyas-0.2.8 
@@ -37,6 +68,8 @@ version/release (version 0.2 release 8) is independently assigned
 from subversion revisions and the latest can be found by checking 
 the sourceforge website. 
 
+@c  this info isn't necessary
+@ignore
 Installation is the biggest source of grief for first time users of
 Marsyas and the main source of email questions. Significant
 improvements in the installation process have been made 
@@ -46,35 +79,19 @@ more complete support to less): Linux, MacOS X, Windows (cygwin),
 Windows (Visual Studio). If you want to use the full functionality 
 of Marsyas and have frequent updates and support you are strongly 
 encouraged to use Linux. 
+@end ignore
 
-Marsyas is open source software and is distributed 
-as a tar ball (something like marsyas-0.2.8.tar.gz). 
-
-To extract the source file type: 
-@example 
->tar -zxvf marsyas-0.2.8.tar.gz 
-@end example
-
-This will create a subdirectory of the current 
-directory called marsyas-0.2.8 that contains 
-all the source files needed for compiling Marsyas. 
-
+@c  This is good info, but not at this place in the docs.
+@ignore
 There is a lot of work behind the development of Marsyas. Although
 Marsyas is and will remain free software, any form of financial or
 hardware support is more than welcome.  The sourceforge page contains
 a link for people to donate money to the project and any contribution
 is welcome and will help further improve the framework. 
+@end ignore
 
-@menu
-* Linux Installation::          
-* Mac OSX Installation::        
-* Windows (cygwin)::            
-* Windows (Visual Studio) ::    
-* Configure Options::           
-* Structure of distribution::   
-@end menu
 
-@node  Linux Installation, Mac OSX Installation, Installation, Installation
+@node Linux Installation
 @section Linux Installation 
 
 @cindex Linux
@@ -101,7 +118,7 @@ and include optional packages such as support for reading mp3s.
 @xref{Configure Options}.  
 
 
-@node  Mac OSX Installation, Windows (cygwin), Linux Installation, Installation
+@node Mac OSX Installation
 @section Mac OSX Installation
 
 @cindex Mac OSX
@@ -124,7 +141,7 @@ can be used to enable/disable assertions, enable/disable debugging
 and include optional packages such as support for reading mp3s. 
 @xref{Configure Options}.  
 
-@node  Windows (cygwin), Windows (Visual Studio) , Mac OSX Installation, Installation
+@node Windows (cygwin)
 @section Windows (cygwin)
 @cindex Cygwin
 
@@ -143,7 +160,7 @@ installation procedure is used:
 In general, cygwin is not supported as well as Linux and OS X. 
 
 
-@node  Windows (Visual Studio) , Configure Options, Windows (cygwin), Installation
+@node Windows (Visual Studio)
 @section Windows (Visual Studio)
 @cindex Windows
 
@@ -156,7 +173,7 @@ Marsyas under Visual Studio. I have only tested this using Visual
 Studio 7.0 under Windows XP. Older version of Visual Studio might not
 work. Support of the Windows port is not as good as Linux and OS X.
 
-@node Configure Options, Structure of distribution, Windows (Visual Studio) , Installation
+@node Configure Options
 @section Configure Options
 
 Marsyas can be customized using various configuration 
@@ -224,9 +241,8 @@ This can be accomplished by doing:
 @end example
 
 
-@node Structure of distribution,  , Configure Options, Installation
+@node Structure of distribution
 @section Structure of distribution 
-
 
 Marsyas is primarily targeted to researchers and software 
 developers who want to build new systems and applications 
@@ -238,7 +254,7 @@ The main marsyas directory consists of the following
 important files: 
 
 @itemize
-@item @b{INSTALL, COPYING, THANKS, README, AUTHORS, TODO:} are text
+@item @b{INSTALL, COPYING, THANKS, README, AUTHORS, TODO:} text
 files with important information. 
 @item @b{ChangeLog:} the change log is not maintained as consistently 
 as it should be but it still provides useful information about the 
@@ -250,7 +266,8 @@ or configuration options to the distribution.
 @end itemize 
 
 
-@noindent In addition there are the following subdirectories: 
+@noindent
+In addition there are the following subdirectories: 
 
 @itemize 
 @item @b{marsyas:} the main directory containing all the 
@@ -261,26 +278,40 @@ programs can use to access Marsyas functionality.
 @item @b{src:} this subdirectory contains several 
 sample executables that do various interesting things 
 using the Marsyas software framework. Some of them are intended 
-to be used as actual research tools others are more demonstration. 
-@xref{Tools}.
+to be used as actual research tools others are more demonstration.
+All new Marsyas users should browse at least some of the source
+code here.
 
+@c  We use doxygen?  Really!?  check.  -gp
 @item @b{doc:} contains both the user manual (which you are 
-reading) as well as the source code documentation that is generated 
-using doxygen. To regenerate the manual in pdf or html type 
-(in the doc subdirectory): 
+currently reading) as well as the source code documentation
+that is generated using doxygen. To regenerate the manual in pdf
+or html type (in the doc subdirectory)
 @example 
 >make pdf 
 >make html 
 @end example 
 
-@item @b{rawwaves:} contains some raw sound files that can be used
-to test the sample executables in src/.
+@c @item @b{rawwaves:} contains some raw sound files that can be used
+@c to test the sample executables in src/.
 
 @item @b{qt4GUIs:} provides GUI interfaces using QT4. These will not
 work with earlier versions of QT. You must have QT4 installed in order
-to use or comppile these applications. A README file is supplied with
+to use or compile these applications. A README file is supplied with
 each one that has instructions on how to compile and run it.
 
+@item @b{config:} configuration files used by autotools.
+
+@item @b{distributed:} Experimental Marsyas classes for
+distributed processing.
+
+@item @b{marsyasMATLAB:} User MATLAB scripts (mfiles).
+
+@item @b{marsyasVisualStudio2003:}
+Project and Solution files for Visual Studio 2003
+
+@item @b{marsyasVisualStudio2005:}
+Project and Solution files for Visual Studio 2005
 
 @end itemize 
 
