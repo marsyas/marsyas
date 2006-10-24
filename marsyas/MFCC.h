@@ -63,9 +63,10 @@ private:
 
   bool init_;
   // NEIL's filter weight speedup
-  int* mfcc_offsets;
+  int* mfcc_offsets_;
 public:
   MFCC(std::string name);
+  MFCC::MFCC(const MFCC& a);
   ~MFCC();
   MarSystem* clone() const;  
 
@@ -76,4 +77,7 @@ public:
 
 #endif
 
-	
+
+
+
+

@@ -1,3 +1,9 @@
+2006-10-23    <gtzan@epikouros.cs.uvic.ca>
+
+	* marsyas/MFCC.cpp (MFCC): fixed bugs in Neil's speedup version
+	and added copy constructor to avoid memory leak 
+
+
 2006-10-12  Graham Percival  <gpermus@gmail.com>
 
 	* doc/marsyas.texi: begin splitting into individual chapter files.
