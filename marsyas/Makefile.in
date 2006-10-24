@@ -77,8 +77,9 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	MaxArgMax.$(OBJEXT) MinArgMin.$(OBJEXT) Composite.$(OBJEXT) \
 	Series.$(OBJEXT) ShiftInput.$(OBJEXT) ShiftOutput.$(OBJEXT) \
 	Shifter.$(OBJEXT) PvFold.$(OBJEXT) PvConvert.$(OBJEXT) \
-	PeConvert.$(OBJEXT) PvConvolve.$(OBJEXT) PvOscBank.$(OBJEXT) \
-	PvUnconvert.$(OBJEXT) PvOverlapadd.$(OBJEXT) Hamming.$(OBJEXT) \
+	PeConvert.$(OBJEXT) PeClust.$(OBJEXT) PeOverlapadd.$(OBJEXT) \
+	PvConvolve.$(OBJEXT) PvOscBank.$(OBJEXT) PvUnconvert.$(OBJEXT) \
+	PvOverlapadd.$(OBJEXT) Windowing.$(OBJEXT) Hamming.$(OBJEXT) \
 	Fanout.$(OBJEXT) Fanin.$(OBJEXT) Negative.$(OBJEXT) \
 	SineSource.$(OBJEXT) MarSystemManager.$(OBJEXT) \
 	PowerSpectrum.$(OBJEXT) Centroid.$(OBJEXT) Rolloff.$(OBJEXT) \
@@ -189,7 +190,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/NumericLib.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/OggFileSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/OnePole.Po ./$(DEPDIR)/Parallel.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/PeConvert.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/PeClust.Po ./$(DEPDIR)/PeConvert.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/PeOverlapadd.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PeakPeriods2BPM.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Peaker.Po ./$(DEPDIR)/Peaker1.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PlotSink.Po ./$(DEPDIR)/Plucked.Po \
@@ -229,7 +231,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/WaveletBands.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/WaveletPyramid.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/WaveletStep.Po ./$(DEPDIR)/WekaSink.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/WekaSource.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/WekaSource.Po ./$(DEPDIR)/Windowing.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ZeroCrossings.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ZeroRClassifier.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/basis.Po ./$(DEPDIR)/fft.Po \
@@ -283,6 +285,7 @@ LTLIBOBJS = @LTLIBOBJS@
 Libs = @Libs@
 MADLIB = @MADLIB@
 MAKEINFO = @MAKEINFO@
+MRSSWIG = @MRSSWIG@
 MslLibs = @MslLibs@
 OBJEXT = @OBJEXT@
 OGGLIB = @OGGLIB@
@@ -336,6 +339,7 @@ prefix = @prefix@
 program_transform_name = @program_transform_name@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
+subdirs = @subdirs@
 sysconfdir = @sysconfdir@
 target = @target@
 target_alias = @target_alias@
@@ -361,8 +365,8 @@ Collection.h fft.h Rms.h PlotSink.h \
 AutoCorrelation.h Peaker.h Peaker1.h HalfWaveRectifier.h \
 TimeStretch.h Conversions.h MaxArgMax.h MinArgMin.h \
 Composite.h Series.h \
- ShiftInput.h ShiftOutput.h Shifter.h PvFold.h PvConvert.h PeConvert.h \
-PvConvolve.h PvOscBank.h PvUnconvert.h PvOverlapadd.h Hamming.h \
+ ShiftInput.h ShiftOutput.h Shifter.h PvFold.h PvConvert.h PeConvert.h PeClust.h PeOverlapadd.h \
+PvConvolve.h PvOscBank.h PvUnconvert.h PvOverlapadd.h Windowing.h Hamming.h \
 Fanout.h Fanin.h Negative.h SineSource.h MarSystemManager.h \
 PowerSpectrum.h Centroid.h Rolloff.h \
 Flux.h Memory.h Mean.h StandardDeviation.h ZeroCrossings.h \
@@ -394,8 +398,8 @@ Collection.cpp fft.cpp Rms.cpp PlotSink.cpp \
 AutoCorrelation.cpp Peaker.cpp Peaker1.cpp HalfWaveRectifier.cpp \
 TimeStretch.cpp Conversions.cpp MaxArgMax.cpp MinArgMin.cpp \
 Composite.cpp Series.cpp \
-ShiftInput.cpp ShiftOutput.cpp Shifter.cpp PvFold.cpp PvConvert.cpp PeConvert.cpp \
-PvConvolve.cpp PvOscBank.cpp PvUnconvert.cpp PvOverlapadd.cpp Hamming.cpp \
+ShiftInput.cpp ShiftOutput.cpp Shifter.cpp PvFold.cpp PvConvert.cpp PeConvert.cpp PeClust.cpp PeOverlapadd.cpp \
+PvConvolve.cpp PvOscBank.cpp PvUnconvert.cpp PvOverlapadd.cpp Windowing.cpp Hamming.cpp \
 Fanout.cpp Fanin.cpp Negative.cpp SineSource.cpp MarSystemManager.cpp \
 PowerSpectrum.cpp Centroid.cpp Rolloff.cpp \
 Flux.cpp Memory.cpp Mean.cpp StandardDeviation.cpp ZeroCrossings.cpp \
@@ -596,7 +600,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OggFileSource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OnePole.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parallel.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeClust.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeConvert.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeOverlapadd.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeakPeriods2BPM.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peaker.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peaker1.Po@am__quote@
@@ -657,6 +663,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WaveletStep.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WekaSink.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WekaSource.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Windowing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZeroCrossings.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZeroRClassifier.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/basis.Po@am__quote@
