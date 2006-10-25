@@ -3799,7 +3799,20 @@ cat >>confdefs.h <<\_ACEOF
 _ACEOF
 
 	;;
-	i*-*-darwin*)
+	i386-*-darwin*)
+	Libs="-lpthread ${MADLIB} ${OGGLIB} -framework CoreAudio -framework CoreMidi -framework CoreFoundation"
+
+cat >>confdefs.h <<\_ACEOF
+#define __MACOSX_CORE__ 1
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define __OS_MACOSX__ 1
+_ACEOF
+
+	;;
+	i686-*-darwin*)
 	Libs="-lpthread ${MADLIB} ${OGGLIB} -framework CoreAudio -framework CoreMidi -framework CoreFoundation"
 
 cat >>confdefs.h <<\_ACEOF
