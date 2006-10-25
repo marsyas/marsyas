@@ -3799,7 +3799,7 @@ cat >>confdefs.h <<\_ACEOF
 _ACEOF
 
 	;;
-	i386-*-darwin*)
+	i*-*-darwin*)
 	Libs="-lpthread ${MADLIB} ${OGGLIB} -framework CoreAudio -framework CoreMidi -framework CoreFoundation"
 
 cat >>confdefs.h <<\_ACEOF
