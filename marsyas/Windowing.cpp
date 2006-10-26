@@ -53,7 +53,7 @@ void
 Windowing::addcontrols()
 {
 	addctrl("mrs_string/type", "Hamming");
-	addctrl("mrs_bool/zeroPhasing", 0);
+	addctrl("mrs_natural/zeroPhasing", 0);
 	addctrl("mrs_natural/size", 0);
 }
 
@@ -80,8 +80,8 @@ Windowing::localUpdate()
 
 	string type = getctrl("mrs_string/type").toString();
 	// should be boolean [!]
-	int zeroPhase = getctrl("mrs_natural/zeroPhasing").toNatural();
-	if(zeroPhase)
+	mrs_natural zeroPhase = getctrl("mrs_natural/zeroPhasing").toNatural();
+	if(zeroPhase == 1)
 		delta_ = inSamples/2+1;
 	else
 		delta_=0;
@@ -98,11 +98,13 @@ Windowing::localUpdate()
 	// you can here add other window type for convenience
 
 	mrs_real i;
+
 	for (t=0; t < inSamples; t++)
 	{
 		i = 2*PI*t / (inSamples-1);
 		envelope_(t) = A - B * cos(i);
 	}
+	norm_ = envelope_.mean();
 }
 
 void 
@@ -116,18 +118,18 @@ Windowing::process(realvec& in, realvec& out)
 	{
 		for (t = 0; t < inSamples_; t++)
 		{
-			tmp_(t) = envelope_(t)* in(o,t);     
+			tmp_(t) = envelope_(t)* in(o,t)/(2*norm_);     
 		}
 		for (t = 0; t < inSamples_/2; t++)
 			out(o,t)=tmp_((t+delta_)%inSamples_);
-		for (t = inSamples_/2+1; t < inSamples_; t++)
+		for (t = inSamples_/2; t < inSamples_; t++)
 			out(o,t+(onSamples_-inSamples_))=tmp_((t+delta_)%inSamples_);
 	}
 
-//#ifdef _MATLAB_ENGINE_
-//	MATLAB->putVariable(out, "peaks");
-//	MATLAB->evalString("plot(peaks)");
-//#endif 
+#ifdef _MATLAB_ENGINE_
+	MATLAB->putVariable(out, "peaks");
+	// MATLAB->evalString("plot(peaks(1,:))");
+#endif 
 }
 
 

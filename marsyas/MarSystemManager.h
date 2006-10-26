@@ -61,6 +61,7 @@
 #include "PeConvert.h"
 #include "PeClust.h"
 #include "PeOverlapadd.h"
+#include "PeResidual.h"
 
 #include "AuFileSink.h"
 #include "WavFileSink.h"

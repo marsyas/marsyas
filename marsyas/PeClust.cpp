@@ -139,7 +139,7 @@ PeClust::addControls()
 // make it progressive plotting
 #ifdef _MATLAB_ENGINE_
 	 MATLAB->putVariable(data_, "peaks");
-	 MATLAB->evalString("plotPeaks(peaks)");
+//	 MATLAB->evalString("plotPeaks(peaks)");
 #endif 
 
 	 peaks2V(data_, out);

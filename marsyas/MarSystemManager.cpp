@@ -62,7 +62,8 @@ MarSystemManager::MarSystemManager()
 
 	registerPrototype("PeConvert", new PeConvert("peconvp"));
   registerPrototype("PeClust", new PeClust("peclust"));
- registerPrototype("PeOverlapadd", new PeOverlapadd("peovlfp"));
+  registerPrototype("PeOverlapadd", new PeOverlapadd("peovlfp"));
+  registerPrototype("PeResidual", new PeResidual("peres"));
 
   registerPrototype("AuFileSource", new AuFileSource("aufp"));
   registerPrototype("WavFileSource", new WavFileSource("wavfp"));

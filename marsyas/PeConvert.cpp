@@ -106,6 +106,33 @@ PeConvert::localUpdate()
 }
 
 
+double lobe_value_compute (double f, int type, int size)
+{
+  double re ;
+ 
+  // size par size-2 !!!
+  switch (type)
+    {
+    case 1 :
+      {
+        re= fabs (0.5*lobe_value_compute(f, 0, size)+
+          0.25*lobe_value_compute(f-2.*PI/size, 0, size)+
+          0.25*lobe_value_compute(f+2.*PI/size, 0, size))/size ;
+        return fabs(re);
+      }
+    case 0 :
+      return (double) (f == 0) ? size : (sin(f*0.5*(size))/sin(f*0.5));
+
+    default :
+                {
+    //  assert (0) ;
+        return 0 ;
+  }
+}
+}
+
+
+
 void 
 PeConvert::process(realvec& in, realvec& out)
 {
@@ -142,7 +169,8 @@ PeConvert::process(realvec& in, realvec& out)
 		}
 
 		// computer magnitude value 
-		mag_(t) = sqrt(a*a + b*b);
+		//mrs_real par = lobe_value_compute (0, 1, 2048);
+		mag_(t) = sqrt((a*a + b*b))*4/0.884624;//*50/3); // [!!!!!!!!!!!]
 		// compute phase
 		phase_(t) = atan2(b,a);
 
@@ -161,7 +189,7 @@ PeConvert::process(realvec& in, realvec& out)
 		f *= (getctrl("mrs_real/osrate").toReal())/PI;
 		*/
 		// rough frequency
-		//	frequency_(t) = t * fundamental_;
+	// 	frequency_(t) = t * fundamental_;
 
 
 		if(lastfrequency_(t) != 0.0)
@@ -178,7 +206,7 @@ PeConvert::process(realvec& in, realvec& out)
 	// select local maxima
 	realvec peaks_=mag_;
 	Peaker peaker("Peaker");
-	peaker.updctrl("mrs_real/peakStrength", 0.4);
+	peaker.updctrl("mrs_real/peakStrength", 0.2);
 	peaker.updctrl("mrs_natural/peakStart", 0);
 	peaker.updctrl("mrs_natural/peakEnd", size_);
 	peaker.process(mag_, peaks_);
@@ -213,7 +241,7 @@ PeConvert::process(realvec& in, realvec& out)
 	}
 	for (i=0;i<nbPeaks_;i++)
 	{
-		out(i+2*kmax_) = phase_(index_(2*i+1));
+		out(i+2*kmax_) = -phase_(index_(2*i+1));
 	}
 	for (i=0;i<nbPeaks_;i++)
 	{

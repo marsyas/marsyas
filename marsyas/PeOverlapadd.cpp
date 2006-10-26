@@ -60,6 +60,7 @@ void
 PeOverlapadd::addControls()
 {
   addctrl("mrs_natural/hopSize", MRS_DEFAULT_SLICE_NSAMPLES /2);
+	addctrl("mrs_natural/delay", MRS_DEFAULT_SLICE_NSAMPLES /2);
 	addctrl("mrs_natural/nbSinusoids", 0);
 }
 
@@ -72,8 +73,10 @@ PeOverlapadd::localUpdate()
 
 	mrs_natural N;
 	N = getctrl("mrs_natural/onSamples").toNatural();
+	delay_ = getctrl("mrs_natural/delay").toNatural();
 
-	factor_ = TWOPI/getctrl("mrs_real/osrate").toReal();
+	mrs_real fs = getctrl("mrs_real/osrate").toReal();
+	factor_ = TWOPI/fs;
 
 	tmp_.stretch(N*2);
 	back_.stretch(N);
@@ -83,7 +86,7 @@ PeOverlapadd::localUpdate()
 
 	for (t=0; t < win_.getSize(); t++)
     {
-			mrs_real i = 2*PI*t / (win_.getSize()-1);
+			mrs_real i = 2*PI*t / (win_.getSize());
       win_(t) = .5 - .5 * cos(i);
     }
 }
@@ -93,10 +96,13 @@ PeOverlapadd::sine(realvec& out, mrs_real f, mrs_real a, mrs_real p)
 {
 	int i;
 	int N2 = out.getSize()/2;
-	if(a != 0.0)
+	if(f != 0.0)
+	{
 		for (i=0 ; i<2*N2 ; i++)
-			out(i) += a*cos(factor_*f*(i-N2)+p); // consider -N/2 for synth in phase
-}
+			out(i) += a*cos(factor_*f*(i-delay_)+p); // consider -fftSize/2 for synth in phase
+	// cout << f << " " << a << " " << p << endl;
+	}
+	}
 
 void 
 PeOverlapadd::process(realvec& in, realvec& out)
@@ -113,19 +119,22 @@ PeOverlapadd::process(realvec& in, realvec& out)
 	{
 		sine(tmp_, in(i), in(i+Nb), in(i+2*Nb));
 	}
-
+//	tmp_.setval(1);
 	tmp_*=win_;
 
 	for(i=0;i<N;i++)
 		out(i) = back_(i)+tmp_(i);
-	for(i=0;i<N;i++)
-		back_(i) = tmp_(i+N);
 
 		#ifdef _MATLAB_ENGINE_
-	 MATLAB->putVariable(in, "vec");
-
-	// MATLAB->evalString("figure(1);clf;plot(vec);");
+	 MATLAB->putVariable(tmp_, "vec");
+MATLAB->putVariable(back_, "vec1");
+MATLAB->putVariable(out, "vec2");
+//	 MATLAB->evalString("figure(1);clf;plot(vec1, 'r'); hold ; plot(vec) ; hold");
 	#endif
+
+	 	for(i=0;i<N;i++)
+		back_(i) = tmp_(i+N);
+
 }
 
 

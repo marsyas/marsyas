@@ -31,6 +31,11 @@ using namespace std;
 using namespace Marsyas;
 
 
+#ifdef _MATLAB_ENGINE_
+#include "MATLABengine.h"
+#endif 
+
+
 Spectrum::Spectrum(string name):MarSystem("Spectrum",name)
 {
   //type_ = "Spectrum";
@@ -125,8 +130,15 @@ Spectrum::process(realvec& in, realvec& out)
 	}
     }
   
-      
+   // [!!] compare with matlab fft   
 
+
+//#ifdef _MATLAB_ENGINE_
+//	 MATLAB->putVariable(in, "vec");
+//   MATLAB->putVariable(in, "vec");
+//	 MATLAB->evalString("out=fft(vec);");
+//   MATLAB->getVariable("vec", out);
+//#endif
   
   return;
 }

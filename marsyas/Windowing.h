@@ -36,6 +36,7 @@ class Windowing: public MarSystem
 private: 
   realvec envelope_;
 realvec tmp_;
+	mrs_real norm_;
 	mrs_natural delta_;
 void addcontrols();
 	void localUpdate();

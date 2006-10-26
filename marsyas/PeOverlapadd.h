@@ -37,7 +37,8 @@ class PeOverlapadd: public MarSystem
 {
 private:
 	mrs_real factor_;
-  realvec win_;
+	mrs_natural delay_;
+	realvec win_;
 	realvec back_;
 	realvec tmp_;
   

@@ -88,6 +88,12 @@ ShiftOutput::process(realvec& in, realvec& out)
 	{
 		out(t) = in(t);
 	}
+
+	/*	#ifdef _MATLAB_ENGINE_
+	 MATLAB->putVariable(out, "vec");
+
+	 MATLAB->evalString("figure(1);clf;plot(vec);");
+	#endif*/
 }
 
 

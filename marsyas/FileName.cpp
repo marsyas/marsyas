@@ -89,6 +89,17 @@ FileName::name()
 
 }
 
+string
+FileName::nameNoExt()
+{
+	string str = name();
+const	char *tmp = str.c_str();
+		 
+	char *tmp2 = rindex(tmp, '.');
+	*tmp2 = '\0';
+	string res(tmp);
+return res;
+}
 
 string
 FileName::ext()
