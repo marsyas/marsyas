@@ -55,9 +55,9 @@ Delay::clone() const
 void 
 Delay::addControls()
 {
-  addctrl("mrs_real/gain", 1.0);
-  addctrl("mrs_real/feedback", 0.3);
-  addctrl("mrs_real/delay", 0.2);
+  addctrl("mrs_real/gain", 0);   // direct gain
+  addctrl("mrs_real/feedback", 0); // feedback gain
+  addctrl("mrs_natural/delay", 0); // delay in samples
   setctrlState("mrs_real/gain", true);
   setctrlState("mrs_real/feedback", true);
   setctrlState("mrs_real/delay", true);
@@ -72,14 +72,13 @@ Delay::localUpdate()
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-  gain = getctrl("mrs_real/gain").toReal();
-  feedback = getctrl("mrs_real/feedback").toReal();
-  delay = getctrl("mrs_real/delay").toReal();
+  gain_ = getctrl("mrs_real/gain").toReal();
+  feedback_ = getctrl("mrs_real/feedback").toReal();
+  delay_ = getctrl("mrs_natural/delay").toNatural();
   
-  bufferSize_ = 22050;
-  cursor_ = (mrs_natural)floor(bufferSize_*delay+0.5);
-  buffer_.create((mrs_natural)bufferSize_);
-  
+  cursor_ = 0;
+  buffer_.stretch(delay_);
+	buffer_.setval(0);
   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
 }
 
@@ -88,15 +87,25 @@ void
 Delay::process(realvec& in, realvec& out)
 {
   checkFlow(in,out);
-  for (o=0; o < inObservations_; o++)
-    for (t = 0; t < inSamples_; t++)
-    {
-			if (cursor_ >= bufferSize_)
-				cursor_ = 0; 
-			delay_ = buffer_(cursor_);
-			buffer_(cursor_++) = in(o,t) + delay_*feedback;
-			out(o,t) =  gain*delay_;
-    }
+
+	if(delay_ < onSamples_)
+	{
+		for (t = 0; t < delay_ ; t++)
+			out(t) = buffer_(t);
+		for (t = 0; t < onSamples_-delay_ ; t++)
+			out(t+delay_) = in(t);
+		for (t = 0; t < delay_ ; t++)
+			buffer_(t) = in(t+onSamples_-delay_);
+	}
+	else
+	{
+		for (t = 0; t < onSamples_ ; t++)
+			out(t) = buffer_(t);
+		for (t = 0; t < delay_-onSamples_ ; t++)
+			buffer_(t) = buffer_(t+onSamples_);
+		for (t = 0; t < onSamples_ ; t++)
+			buffer_(t+delay_-onSamples_) = in(t);
+	}
 }
 
 

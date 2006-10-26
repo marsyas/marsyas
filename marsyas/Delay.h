@@ -38,13 +38,11 @@ private:
 	void localUpdate();
 	
 	realvec buffer_;
-	mrs_real delay_;
-	mrs_real gain;
-	mrs_real feedback;
-	mrs_real delay;
-	int i_;
+	mrs_natural delay_;
+	mrs_real gain_;
+	mrs_real feedback_;
+
 	mrs_natural cursor_;
-	mrs_natural bufferSize_;
 	
 public:
   Delay(std::string name);
