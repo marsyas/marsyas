@@ -282,12 +282,7 @@ series->getctrl("Plucked/src/mrs_real/osrate"));
 
    while (src->getctrl("mrs_bool/notEmpty").toBool())
      {
-       // call process seperately for each MarSystem 
        src->process(in,out);
-       // multiply window with gain 
-       /* gain->updctrl("mrs_real/gain", 
-	  gain->getctrl("mrs_real/gain").toReal() + 0.1); */ 
-
        gain->process(out, gout);
        dest->process(gout, gout); 	
      }
@@ -344,133 +339,133 @@ series->getctrl("Plucked/src/mrs_real/osrate"));
 
 
  // use Composite 
- void 
- sfplay2(string sfName)
- {
-   cout << "sfplay2: Playing " << sfName << endl;
-
-   // Create a series Composite 
-   MarSystem* series = new Series("series");
-
-   // create a soundfilesource for reading samples 
-   // from the file 
-   MarSystem* src = new SoundFileSource("src");
-   src->updctrl("mrs_string/filename", sfName);
-   src->updctrl("mrs_natural/inSamples", 2048);
-
-   // simple MarSystem a gain control 
-   MarSystem* gain = new Gain("gain");
-   gain->updctrl("mrs_real/gain", 2.0);
-   gain->updctrl("mrs_natural/inSamples", 2048);  
-
-   // SoundFileSink writes to a file 
-   MarSystem* dest = new SoundFileSink("dest");
-   dest->updctrl("mrs_natural/inSamples", 2048);  
-   dest->updctrl("mrs_string/filename", "ajay.au");
-
-   // add MarSystems to series Composite 
-   series->addMarSystem(src);
-   series->addMarSystem(gain);
-   series->addMarSystem(dest);
-
-
-   cout << (*series) << endl;
-
-   // create two matrices for input/output
-   realvec in; 
-   realvec out;
-
-   in.create(series->getctrl("mrs_natural/inObservations").toNatural(), 
-	     series->getctrl("mrs_natural/inSamples").toNatural());
-
-   out.create(series->getctrl("mrs_natural/onObservations").toNatural(), 
-	      series->getctrl("mrs_natural/onSamples").toNatural());
-
-   // nothing happens until process is called 
-   // usually for MarSystems the in matrix is processed 
-   // and the result is written in the out matrix. 
-   // For SoundFileSources the input is ignored 
-   // and the out matrix is updated from 
-   // reading the samples 
-   // from the file 
-
-   // when using a Composite you need to call 
-   // process only once without having to 
-   // provide buffers for the intermediate steps 
-
-   // when using a composite controls of internal 
-   // MarSystems can be updated using a OSC-inspired 
-   // path notation 
-
-   series->updctrl("Gain/gain/mrs_real/gain", 0.0);
-
-   for (int i=0; i<20; i++)
-     {
-       series->updctrl("Gain/gain/mrs_real/gain", 
-		       series->getctrl("Gain/gain/mrs_real/gain").toReal() + 0.1);      
-       series->process(in,out);  
-
-     }
-
-   // Composite deletes the added MarSystems 
-   // so you must not delete them 
-   delete series;
- }
-
-
- // take advantage of Composite 
- void 
- sfplay3(string sfName)
- {
-   cout << "sfplay3: Playing " << sfName << endl;
-
-   // get rid of some stuff taking advantage of 
-   // composite 
-
-   // Create a series Composite 
-   MarSystem* series = new Series("series");
-
-   // create a soundfilesource for reading samples 
-   // from the file 
-   MarSystem* src = new SoundFileSource("src");
-   src->updctrl("mrs_string/filename", sfName);
-
-   // simple MarSystem a gain control 
-   MarSystem* gain = new Gain("gain");
-   gain->updctrl("mrs_real/gain", 2.0);
-
-   // SoundFileSink writes to a file 
-   MarSystem* dest = new SoundFileSink("dest");
-   dest->updctrl("mrs_string/filename", "ajay.au");
-
-   // add MarSystems to series Composite 
-   series->addMarSystem(src);
-   series->addMarSystem(gain);
-   series->addMarSystem(dest);
-
-   // we only need to change window size at the composite level
-   series->updctrl("mrs_natural/inSamples", 4096);
-
-   cout << (*series) << endl;
-
-   // tick method basically calls process 
-   // with an empty input buffer and an empty output buffer 
-   // because soundfilesource/sink read/write to files 
-   // as sideeffects this works 
+void 
+sfplay2(string sfName)
+{
+  cout << "sfplay2: Playing " << sfName << endl;
+  
+  // Create a series Composite 
+  MarSystem* series = new Series("series");
+  
+  // create a soundfilesource for reading samples 
+  // from the file 
+  MarSystem* src = new SoundFileSource("src");
+  src->updctrl("mrs_string/filename", sfName);
+  src->updctrl("mrs_natural/inSamples", 2048);
+  
+  // simple MarSystem a gain control 
+  MarSystem* gain = new Gain("gain");
+  gain->updctrl("mrs_real/gain", 2.0);
+  gain->updctrl("mrs_natural/inSamples", 2048);  
+  
+  // SoundFileSink writes to a file 
+  MarSystem* dest = new SoundFileSink("dest");
+  dest->updctrl("mrs_natural/inSamples", 2048);  
+  dest->updctrl("mrs_string/filename", "ajay.au");
+  
+  // add MarSystems to series Composite 
+  series->addMarSystem(src);
+  series->addMarSystem(gain);
+  series->addMarSystem(dest);
+  
+  
+  cout << (*series) << endl;
+  
+  // create two matrices for input/output
+  realvec in; 
+  realvec out;
+  
+  in.create(series->getctrl("mrs_natural/inObservations").toNatural(), 
+	    series->getctrl("mrs_natural/inSamples").toNatural());
+  
+  out.create(series->getctrl("mrs_natural/onObservations").toNatural(), 
+	     series->getctrl("mrs_natural/onSamples").toNatural());
+  
+  // nothing happens until process is called 
+  // usually for MarSystems the in matrix is processed 
+  // and the result is written in the out matrix. 
+  // For SoundFileSources the input is ignored 
+  // and the out matrix is updated from 
+  // reading the samples 
+  // from the file 
+  
+  // when using a Composite you need to call 
+  // process only once without having to 
+  // provide buffers for the intermediate steps 
+  
+  // when using a composite controls of internal 
+  // MarSystems can be updated using a OSC-inspired 
+  // path notation 
+  
+  series->updctrl("Gain/gain/mrs_real/gain", 0.0);
+  
+  for (int i=0; i<20; i++)
+    {
+      series->updctrl("Gain/gain/mrs_real/gain", 
+		      series->getctrl("Gain/gain/mrs_real/gain").toReal() + 0.1);      
+      series->process(in,out);  
+      
+    }
+  
+  // Composite deletes the added MarSystems 
+  // so you must not delete them 
+  delete series;
+}
 
 
-   series->updctrl("Gain/gain/mrs_real/gain", 0.0);
-   for (int i=0; i<20; i++)
-     {
-       series->tick();
-       series->updctrl("Gain/gain/mrs_real/gain", 
-		       series->getctrl("Gain/gain/mrs_real/gain").toReal() + 0.1);
-     }
-
-   // Composite deletes the added MarSystems 
-   // so you must not delete them 
-   delete series;
- }
+// take advantage of Composite 
+void 
+sfplay3(string sfName)
+{
+  cout << "sfplay3: Playing " << sfName << endl;
+  
+  // get rid of some stuff taking advantage of 
+  // composite 
+  
+  // Create a series Composite 
+  MarSystem* series = new Series("series");
+  
+  // create a soundfilesource for reading samples 
+  // from the file 
+  MarSystem* src = new SoundFileSource("src");
+  src->updctrl("mrs_string/filename", sfName);
+  
+  // simple MarSystem a gain control 
+  MarSystem* gain = new Gain("gain");
+  gain->updctrl("mrs_real/gain", 2.0);
+  
+  // SoundFileSink writes to a file 
+  MarSystem* dest = new SoundFileSink("dest");
+  dest->updctrl("mrs_string/filename", "ajay.au");
+  
+  // add MarSystems to series Composite 
+  series->addMarSystem(src);
+  series->addMarSystem(gain);
+  series->addMarSystem(dest);
+  
+  // we only need to change window size at the composite level
+  series->updctrl("mrs_natural/inSamples", 4096);
+  
+  cout << (*series) << endl;
+  
+  // tick method basically calls process 
+  // with an empty input buffer and an empty output buffer 
+  // because soundfilesource/sink read/write to files 
+  // as sideeffects this works 
+  
+  
+  series->updctrl("Gain/gain/mrs_real/gain", 0.0);
+  for (int i=0; i<20; i++)
+    {
+      series->tick();
+      series->updctrl("Gain/gain/mrs_real/gain", 
+		      series->getctrl("Gain/gain/mrs_real/gain").toReal() + 0.1);
+    }
+  
+  // Composite deletes the added MarSystems 
+  // so you must not delete them 
+  delete series;
+}
 
 
 
@@ -485,78 +480,19 @@ series->getctrl("Plucked/src/mrs_real/osrate"));
    // Create a series Composite 
    MarSystem* series = mng.create("Series", "series");
    series->addMarSystem(mng.create("SoundFileSource", "src"));
-   series->addMarSystem(mng.create("Spectrum", "spk"));
-   //series->updctrl("Spectrum/spk/mrs_real/cutoff", 0.02721);
-   //series->updctrl("Spectrum/spk/mrs_real/lowcutoff", 0.0136);
-    series->updctrl("Spectrum/spk/mrs_real/cutoff", 0.2494331);
-    series->updctrl("Spectrum/spk/mrs_real/lowcutoff", 0.1524);  //0.1224 --> 2700 Hz
-
-   series->addMarSystem(mng.create("InvSpectrum", "ispk"));  
-   // series->addMarSystem(mng.create("Filter", "fillher"));
    series->addMarSystem(mng.create("Gain", "gain"));
-
-   // various outputs 
-   // series->addMarSystem(mng.create("PlotSink", "psink"));
-   // series->addMarSystem(mng.create("AudioSink", "dest"));
    series->addMarSystem(mng.create("SoundFileSink", "dest"));
-
-
-
 
    // only update controls from Composite level 
    series->updctrl("mrs_natural/inSamples", 128);
    series->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
    series->updctrl("SoundFileSink/dest/mrs_string/filename", "ajay.wav"); 
-
-   /* realvec a(5),b(5);
-   a(0) = 1.0;
-   a(1) = -1.7216;
-   a(2) = 1.1958f;
-   a(3) = -0.5530;
-   a(4) = 0.1958;
-
-   b(0) = 0.2066f;
-   b(1) = 0;
-   b(2) = -0.4131f;
-   b(3) = 0;
-   b(4) = 0.2066f;
-   */ 
-
-
-   /* realvec al(5),bl(5);
-   al(0) = 1.0;
-   al(1) = -3.9265;
-   al(2) = 5.785;
-   al(3) = -3.7904;
-   al(4) = 0.9319;
-
-   bl(0) = 0.0006;
-   bl(1) = 0.0;
-   bl(2) = -0.0012;
-   bl(3) = 0.0;
-   bl(4) = 0.0006;
-
-
-   series->updctrl("Filter/fillher/mrs_realvec/ncoeffs", bl);
-   series->updctrl("Filter/fillher/mrs_realvec/dcoeffs", al);
-   */ 
-
-   // series->updctrl("Gain/gain/mrs_real/gain", 10000.0);
-
-
+   
    series->linkctrl("mrs_natural/gain", "Gain/gain/mrs_real/gain");
-
-   realvec in;
-
    while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool())
      {
+       series->updctrl("mrs_natural/gain", 2.0);
        series->tick();
-
-       series->updctrl("mrs_bool/probe", (MarControlValue)true);
-       series->getctrl("mrs_realvec/input0").toVec().write("nin0.plot");
-       series->getctrl("mrs_realvec/input1").toVec().write("nin1.plot");
-       series->getctrl("mrs_realvec/input2").toVec().write("nin2.plot");
-       series->getctrl("mrs_realvec/input3").toVec().write("nin3.plot");
      }
   
   
@@ -596,7 +532,7 @@ sfplay5(string sfName)
 {
   cout << "sfplay5: Playing " << sfName << endl;
   MarSystemManager mng;
-
+  
   // Create a series Composite 
   MarSystem* series = mng.create("Series", "series");
   series->addMarSystem(mng.create("SoundFileSource", "src"));
@@ -628,7 +564,6 @@ sfplay5(string sfName)
     {
       series->process(in,out);
       cout << "centroid = " << out(0,0) << endl;
-      
     }
   
 }
@@ -661,7 +596,6 @@ sfplay6(string sfName)
   
   // add the fanout to the series network 
   series->addMarSystem(fanout);
-  
 		       
   // only update controls from Composite level 
   series->updctrl("mrs_natural/inSamples", 4096);
@@ -675,8 +609,6 @@ sfplay6(string sfName)
   realvec out(series->getctrl("mrs_natural/onObservations").toNatural(), 
 	      series->getctrl("mrs_natural/onSamples").toNatural());
   
-	     
-
   // play all the file 
   while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool())
     {

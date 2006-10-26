@@ -26,14 +26,6 @@
 #endif
 
 #include <cstdio>
-
-#ifndef WIN32
-#include <dirent.h>
-#else 
-#include <io.h> 
-#endif
-
-
 #include <sys/stat.h>
 #include <assert.h>
 
@@ -46,9 +38,78 @@
 using namespace std;
 using namespace Marsyas;
 
+#ifndef WIN32
+#include <dirent.h>
 
+#define SEPERATOR_CHAR	'/'
 
+#else 
+//needed for fileinfo and _findfirst/_findnext functions
+#include <io.h>
 
+//simulate some structures and data types that do not exist in WIN32
+typedef unsigned short mode_t;
+#define lstat _stat
+typedef void DIR;
+#define stat _stat
+
+//this is needed to use the proper directory
+//seperator character for windows/non windows
+#define SEPERATOR_CHAR	'\\'
+
+//disable the strcpy deprecated warning
+#pragma warning( disable : 4996)
+
+//simulate these macros testing for file or directory attributes
+#define S_ISDIR(x) (x & _S_IFDIR)
+#define S_ISREG(x) (x & _S_IFREG)
+
+//simulate this data structure for the opendir/readdir functions
+struct dirent
+{
+	char d_name[_MAX_PATH+1];
+};
+
+//Function to simulate the opendir function call.
+//returns a handle(typedef'd as a void *) that is used in subsequent
+//calls to readdir.
+// NULL return means failure to open dir.
+DIR *opendir(string dir)
+{
+	string filespec = dir;
+	filespec += "*.*";
+
+	struct _finddata_t fileinfo;
+	intptr_t result = _findfirst( filespec.c_str(), &fileinfo);
+	if(result==-1)
+	{
+		return NULL;
+	}
+	return (void *)result;
+}
+
+//Function to simulate the readdir function call.
+//Returns a pointer to a static structure where the name of the dir/file
+//can be retrieved.
+//Takes a handle to the return of opendir call defined above.
+//Returns NULL when no more files to read.
+struct dirent *readdir(DIR *dirp)
+{
+	static struct dirent localDirent;
+
+	struct _finddata_t fileinfo;
+	int result = _findnext( (intptr_t)dirp, &fileinfo);
+
+	if(result==-1)
+	{
+		_findclose((intptr_t)dirp);
+		return NULL;
+	}
+
+	strcpy((char *)&localDirent.d_name,(const char *)&fileinfo.name);
+	return &localDirent;
+}
+#endif
 
 mode_t File_Mode(string fileName) 
 {
@@ -99,17 +160,22 @@ void read(Collection& cl, string dir, int recursive)
     cerr << "We are already in a" << levels << "of subdirectories " << dir << "exiting\n";
   }
   // add backslash, only if necessary
+  //Added reference to defined constant - dale
   if (dir.size() > 0 &&
-      dir[dir.size()-1] != '/')
-    dir += "/";
+      dir[dir.size()-1] != SEPERATOR_CHAR)
+    dir += SEPERATOR_CHAR;
   cout << "Adding Contents of Directory = " << dir << "\n to collection " << 
     cl.name() << ".mf" << endl;
   DIR* dirp;
   struct dirent *dp;
   dirp = opendir(dir.c_str());
-  if (dirp == NULL)
-    cout << "Problem with opening directory " << dir << endl;
 
+  //added code to bail if diropen fails - dale
+  if (dirp == NULL)
+  {
+    cout << "Problem with opening directory " << dir << endl;
+	return;
+  }
   
   while ((dp = readdir(dirp))) {
     string fullPath;
@@ -157,6 +223,7 @@ void read(Collection& cl, string dir, int recursive)
 int 
 main(int argc, char **argv)
 {
+
   if (argc ==1)
     {
       cerr << "Usage :" << argv[0] << " collectionName directory(ies) \n";
