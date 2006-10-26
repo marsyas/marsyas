@@ -15,6 +15,7 @@ string pluginName = EMPTYSTRING;
 string inputDirectoryName = EMPTYSTRING;
 string outputDirectoryName = EMPTYSTRING;
 string fileName = EMPTYSTRING;
+string fileResName = EMPTYSTRING;
 
 // Global variables for command-line options 
 bool helpopt_ = 0;
@@ -33,7 +34,7 @@ int bopt = 128;
 mrs_real gopt_ = 1.0;
 mrs_natural eopt_ = 0;
 
-mrs_natural accSize = 20;
+mrs_natural accSize = 2;
 
 float popt = 1.0;
 bool auto_ = false;
@@ -117,6 +118,7 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 	postNet->addMarSystem(mng.create("PeOverlapadd", "ob"));
 	postNet->addMarSystem(mng.create("ShiftOutput", "so"));
 	postNet->addMarSystem(mng.create("Gain", "gain"));
+
 	MarSystem *dest;
 	if (outsfname == EMPTYSTRING) 
 		dest = new AudioSink("dest");
@@ -125,14 +127,38 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 		dest = new SoundFileSink("dest");
 		//dest->updctrl("mrs_string/filename", outsfname);
 	}
-	postNet->addMarSystem(dest);
+	//postNet->addMarSystem(dest);
+	MarSystem* fanout = mng.create("Fanout", "fano");
+	fanout->addMarSystem(dest);
+	MarSystem* fanSeries = mng.create("Series", "fanSeries");
+	if (microphone_) 
+		fanSeries->addMarSystem(mng.create("AudioSource", "src2"));
+	else 
+		fanSeries->addMarSystem(mng.create("SoundFileSource", "src2"));
+	fanSeries->addMarSystem(mng.create("Delay", "delay"));
+	fanout->addMarSystem(fanSeries);
+	//fanout->addMarSystem(mng.create("Gain", "g1"));
+	//fanout->addMarSystem(mng.create("Gain", "g2"));
+	postNet->addMarSystem(fanout);
+	postNet->addMarSystem(mng.create("PeResidual", "res"));
+
+	MarSystem *destRes;
+	if (outsfname == EMPTYSTRING) 
+		destRes = new AudioSink("destRes");
+	else
+	{
+		destRes = new SoundFileSink("destRes");
+		//dest->updctrl("mrs_string/filename", outsfname);
+	}
+postNet->addMarSystem(destRes);
+
 	//create shredder
 	MarSystem* shredNet = mng.create("Shredder", "shredNet");
 	shredNet->addMarSystem(postNet);
 
 	//create the main network
 	pvseries->addMarSystem(accumNet);
-	pvseries->addMarSystem(peClust);
+//	pvseries->addMarSystem(peClust);
 	pvseries->addMarSystem(shredNet);
 
 	////////////////////////////////////////////////////////////////
@@ -148,6 +174,9 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 	{
 		pvseries->updctrl("Accumulator/accumNet/Series/preNet/AudioSource/src/mrs_natural/inSamples", D);
 		pvseries->updctrl("Accumulator/accumNet/Series/preNet/AudioSource/src/mrs_natural/inObservations", 1);
+
+		pvseries->updctrl("Shredder/shredNet/Series/postNet/Fanout/fano/Series/fanSeries/AudioSource/src2/mrs_natural/inSamples", D);
+		pvseries->updctrl("Shredder/shredNet/Series/postNet/Fanout/fano/Series/fanSeries/AudioSource/src2/mrs_natural/inObservations", 1);
 	}
 	else
 	{
@@ -155,9 +184,9 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 		pvseries->updctrl("Accumulator/accumNet/Series/preNet/SoundFileSource/src/mrs_natural/inSamples", D);
 		pvseries->updctrl("Accumulator/accumNet/Series/preNet/SoundFileSource/src/mrs_natural/inObservations", 1);
 
-		// if audio output loop to infinity and beyond 
-		if (outsfname == EMPTYSTRING) 
-			pvseries->updctrl("Accumulator/accumNet/Series/preNet/SoundFileSource/src/mrs_real/repetitions", -1.0);
+		pvseries->updctrl("Shredder/shredNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_string/filename", sfName);
+		pvseries->updctrl("Shredder/shredNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/inSamples", D);
+		pvseries->updctrl("Shredder/shredNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/inObservations", 1);
 	}
 
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/ShiftInput/si/mrs_natural/Decimation", D);
@@ -175,18 +204,28 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 
 	pvseries->updctrl("Shredder/shredNet/Series/postNet/PeOverlapadd/ob/mrs_natural/hopSize", D);
 	pvseries->updctrl("Shredder/shredNet/Series/postNet/PeOverlapadd/ob/mrs_natural/nbSinusoids", sopt);
+	pvseries->updctrl("Shredder/shredNet/Series/postNet/PeOverlapadd/ob/mrs_natural/delay", Nw/2+1);
 	pvseries->updctrl("Shredder/shredNet/Series/postNet/ShiftOutput/so/mrs_natural/Interpolation", I);
 	pvseries->updctrl("Shredder/shredNet/Series/postNet/ShiftOutput/so/mrs_natural/WindowSize", Nw);      
 	pvseries->updctrl("Shredder/shredNet/Series/postNet/ShiftOutput/so/mrs_natural/Decimation", D);
 	pvseries->updctrl("Shredder/shredNet/Series/postNet/Gain/gain/mrs_real/gain", gopt_);
 
-	dest->updctrl("mrs_string/filename", outsfname);//[!]
+	pvseries->updctrl("Shredder/shredNet/Series/postNet/Fanout/fano/Series/fanSeries/Delay/delay/mrs_natural/delay", Nw+1-D);
+	pvseries->updctrl("Shredder/shredNet/Series/postNet/Fanout/fano/SoundFileSink/dest/mrs_string/filename", outsfname);//[!]
+  pvseries->updctrl("Shredder/shredNet/Series/postNet/SoundFileSink/destRes/mrs_string/filename", fileResName);//[!]
 
 //	cout << *pvseries;
-
+mrs_real globalSnr = 0;
+mrs_natural nb=0;
 	while(1)
 	{
 		pvseries->tick();
+
+		// ouput the seg snr
+		mrs_real snr = postNet->getctrl("PeResidual/res/mrs_real/snr").toReal();
+		globalSnr+=snr;
+		nb++;
+		cout << "Frame " << nb << " SNR : "<< snr << endl;
 
 		if (!microphone_)
 		{
@@ -200,6 +239,7 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 				break;
 		}
 	}
+	cout << "Global SNR : " << globalSnr << endl;
 }
 
 void 
@@ -283,6 +323,8 @@ main(int argc, const char **argv)
 			{
 			
 				fileName = outputDirectoryName + "/" + Sfname.name() ;
+				fileResName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Res." + Sfname.ext() ;
+					cout << fileResName << endl;
 			}
 			cout << "Phasevocoding " << Sfname.name() << endl; 
 			phasevocSeries(*sfi, fftSize_, winSize_, dopt, iopt, popt, fileName, accSize);
