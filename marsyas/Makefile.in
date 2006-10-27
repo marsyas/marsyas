@@ -78,27 +78,27 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	Series.$(OBJEXT) ShiftInput.$(OBJEXT) ShiftOutput.$(OBJEXT) \
 	Shifter.$(OBJEXT) PvFold.$(OBJEXT) PvConvert.$(OBJEXT) \
 	PeConvert.$(OBJEXT) PeClust.$(OBJEXT) PeOverlapadd.$(OBJEXT) \
-	PvConvolve.$(OBJEXT) PvOscBank.$(OBJEXT) PvUnconvert.$(OBJEXT) \
-	PvOverlapadd.$(OBJEXT) Windowing.$(OBJEXT) Hamming.$(OBJEXT) \
-	Fanout.$(OBJEXT) Fanin.$(OBJEXT) Negative.$(OBJEXT) \
-	SineSource.$(OBJEXT) MarSystemManager.$(OBJEXT) \
-	PowerSpectrum.$(OBJEXT) Centroid.$(OBJEXT) Rolloff.$(OBJEXT) \
-	Flux.$(OBJEXT) Memory.$(OBJEXT) Mean.$(OBJEXT) \
-	StandardDeviation.$(OBJEXT) ZeroCrossings.$(OBJEXT) \
-	Thread.$(OBJEXT) Socket.$(OBJEXT) GaussianClassifier.$(OBJEXT) \
-	AbsSoundFileSink.$(OBJEXT) AbsSoundFileSource.$(OBJEXT) \
-	Confidence.$(OBJEXT) MarFileSink.$(OBJEXT) WekaSink.$(OBJEXT) \
-	MFCC.$(OBJEXT) SCF.$(OBJEXT) SFM.$(OBJEXT) \
-	WaveletPyramid.$(OBJEXT) WaveletStep.$(OBJEXT) Daub4.$(OBJEXT) \
-	OnePole.$(OBJEXT) RtAudio.$(OBJEXT) Accumulator.$(OBJEXT) \
-	Shredder.$(OBJEXT) NetworkSocket.$(OBJEXT) \
-	NetworkTCPSource.$(OBJEXT) NetworkTCPSink.$(OBJEXT) \
-	NetworkUDPSource.$(OBJEXT) NetworkUDPSink.$(OBJEXT) \
-	Messager.$(OBJEXT) Talk.$(OBJEXT) TimeLine.$(OBJEXT) \
-	Color.$(OBJEXT) Communicator.$(OBJEXT) Server.$(OBJEXT) \
-	AbsMax.$(OBJEXT) FullWaveRectifier.$(OBJEXT) Norm.$(OBJEXT) \
-	DownSampler.$(OBJEXT) WaveletBands.$(OBJEXT) Sum.$(OBJEXT) \
-	PeakPeriods2BPM.$(OBJEXT) Histogram.$(OBJEXT) \
+	PeResidual.$(OBJEXT) PvConvolve.$(OBJEXT) PvOscBank.$(OBJEXT) \
+	PvUnconvert.$(OBJEXT) PvOverlapadd.$(OBJEXT) \
+	Windowing.$(OBJEXT) Hamming.$(OBJEXT) Fanout.$(OBJEXT) \
+	Fanin.$(OBJEXT) Negative.$(OBJEXT) SineSource.$(OBJEXT) \
+	MarSystemManager.$(OBJEXT) PowerSpectrum.$(OBJEXT) \
+	Centroid.$(OBJEXT) Rolloff.$(OBJEXT) Flux.$(OBJEXT) \
+	Memory.$(OBJEXT) Mean.$(OBJEXT) StandardDeviation.$(OBJEXT) \
+	ZeroCrossings.$(OBJEXT) Thread.$(OBJEXT) Socket.$(OBJEXT) \
+	GaussianClassifier.$(OBJEXT) AbsSoundFileSink.$(OBJEXT) \
+	AbsSoundFileSource.$(OBJEXT) Confidence.$(OBJEXT) \
+	MarFileSink.$(OBJEXT) WekaSink.$(OBJEXT) MFCC.$(OBJEXT) \
+	SCF.$(OBJEXT) SFM.$(OBJEXT) WaveletPyramid.$(OBJEXT) \
+	WaveletStep.$(OBJEXT) Daub4.$(OBJEXT) OnePole.$(OBJEXT) \
+	RtAudio.$(OBJEXT) Accumulator.$(OBJEXT) Shredder.$(OBJEXT) \
+	NetworkSocket.$(OBJEXT) NetworkTCPSource.$(OBJEXT) \
+	NetworkTCPSink.$(OBJEXT) NetworkUDPSource.$(OBJEXT) \
+	NetworkUDPSink.$(OBJEXT) Messager.$(OBJEXT) Talk.$(OBJEXT) \
+	TimeLine.$(OBJEXT) Color.$(OBJEXT) Communicator.$(OBJEXT) \
+	Server.$(OBJEXT) AbsMax.$(OBJEXT) FullWaveRectifier.$(OBJEXT) \
+	Norm.$(OBJEXT) DownSampler.$(OBJEXT) WaveletBands.$(OBJEXT) \
+	Sum.$(OBJEXT) PeakPeriods2BPM.$(OBJEXT) Histogram.$(OBJEXT) \
 	BeatHistoFeatures.$(OBJEXT) MslModel.$(OBJEXT) \
 	CommandLineOptions.$(OBJEXT) RawFileSource.$(OBJEXT) \
 	FM.$(OBJEXT) ANN_node.$(OBJEXT) Annotator.$(OBJEXT) \
@@ -192,6 +192,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/OnePole.Po ./$(DEPDIR)/Parallel.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PeClust.Po ./$(DEPDIR)/PeConvert.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PeOverlapadd.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/PeResidual.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PeakPeriods2BPM.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Peaker.Po ./$(DEPDIR)/Peaker1.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PlotSink.Po ./$(DEPDIR)/Plucked.Po \
@@ -365,7 +366,7 @@ Collection.h fft.h Rms.h PlotSink.h \
 AutoCorrelation.h Peaker.h Peaker1.h HalfWaveRectifier.h \
 TimeStretch.h Conversions.h MaxArgMax.h MinArgMin.h \
 Composite.h Series.h \
- ShiftInput.h ShiftOutput.h Shifter.h PvFold.h PvConvert.h PeConvert.h PeClust.h PeOverlapadd.h \
+ ShiftInput.h ShiftOutput.h Shifter.h PvFold.h PvConvert.h PeConvert.h PeClust.h PeOverlapadd.h PeResidual.h \
 PvConvolve.h PvOscBank.h PvUnconvert.h PvOverlapadd.h Windowing.h Hamming.h \
 Fanout.h Fanin.h Negative.h SineSource.h MarSystemManager.h \
 PowerSpectrum.h Centroid.h Rolloff.h \
@@ -398,7 +399,7 @@ Collection.cpp fft.cpp Rms.cpp PlotSink.cpp \
 AutoCorrelation.cpp Peaker.cpp Peaker1.cpp HalfWaveRectifier.cpp \
 TimeStretch.cpp Conversions.cpp MaxArgMax.cpp MinArgMin.cpp \
 Composite.cpp Series.cpp \
-ShiftInput.cpp ShiftOutput.cpp Shifter.cpp PvFold.cpp PvConvert.cpp PeConvert.cpp PeClust.cpp PeOverlapadd.cpp \
+ShiftInput.cpp ShiftOutput.cpp Shifter.cpp PvFold.cpp PvConvert.cpp PeConvert.cpp PeClust.cpp PeOverlapadd.cpp PeResidual.cpp \
 PvConvolve.cpp PvOscBank.cpp PvUnconvert.cpp PvOverlapadd.cpp Windowing.cpp Hamming.cpp \
 Fanout.cpp Fanin.cpp Negative.cpp SineSource.cpp MarSystemManager.cpp \
 PowerSpectrum.cpp Centroid.cpp Rolloff.cpp \
@@ -603,6 +604,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeClust.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeConvert.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeOverlapadd.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeResidual.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeakPeriods2BPM.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peaker.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peaker1.Po@am__quote@
