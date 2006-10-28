@@ -3782,7 +3782,7 @@ _ACEOF
 
 
 	powerpc-*-darwin*)
-	Libs="-lpthread ${MADLIB} ${OGGLIB} -framework CoreAudio -framework CoreMidi -framework CoreFoundation"
+	Libs="-lpthread -lobjc ${MADLIB} ${OGGLIB} -framework CoreAudio -framework CoreMidi -framework CoreFoundation"
 
 cat >>confdefs.h <<\_ACEOF
 #define __MACOSX_CORE__ 1

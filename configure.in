@@ -232,7 +232,7 @@ fi
 
 
 	powerpc-*-darwin*) 
-	Libs="-lpthread ${MADLIB} ${OGGLIB} -framework CoreAudio -framework CoreMidi -framework CoreFoundation"
+	Libs="-lpthread -lobjc ${MADLIB} ${OGGLIB} -framework CoreAudio -framework CoreMidi -framework CoreFoundation"
 	AC_DEFINE([__MACOSX_CORE__],[1], [MACOSX SYSTEM FOR RTAUDIO])		
 	AC_DEFINE([__BIG_ENDIAN__], [1], [IS BIG ENDINA])
 	AC_DEFINE([__OS_MACOSX__],[1], [MACOSX STUFF])
