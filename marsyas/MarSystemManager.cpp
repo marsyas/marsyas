@@ -268,7 +268,6 @@ MarSystemManager::getMarSystem(istream& is)
   string mtype;
   is >> mtype;
 
-  cout << "mtype = " << mtype << endl;
   
   
   
@@ -276,7 +275,6 @@ MarSystemManager::getMarSystem(istream& is)
   string mname;
   is >> mname;
 
-  cout << "mname = " << mname << endl;
   
   
 

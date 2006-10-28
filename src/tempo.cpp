@@ -5,6 +5,9 @@
 #include "MarSystemManager.h" 
 #include "CommandLineOptions.h"
 #include <string> 
+#include <fstream>
+#include <iostream>
+#include <iomanip> 
 
 using namespace std;
 using namespace Marsyas;
@@ -124,7 +127,7 @@ void tempo_medianMultiBands(string sfName, string resName)
   total->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
 
   // wavelt filterbank envelope extraction controls 
-  total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", (MarControlValue)true);
+  total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", true);
   total->updctrl("OnePole/lpf/mrs_real/alpha", 0.99f);
   mrs_natural factor = 32;
   total->updctrl("DownSampler/ds/mrs_natural/factor", factor);  
@@ -309,7 +312,7 @@ tempo_new(string sfName, string resName)
 
 
   // wavelt filterbank envelope extraction controls 
-  total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", (MarControlValue)true);
+  total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", true);
   total->updctrl("OnePole/lpf/mrs_real/alpha", 0.99f);
   mrs_natural factor = 32;
   total->updctrl("DownSampler/ds/mrs_natural/factor", factor);  
@@ -579,7 +582,7 @@ tempo_histoSumBands(string sfName, string resName)
   total->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
 
   // wavelt filterbank envelope extraction controls 
-  total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", (MarControlValue)true);
+  total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", true);
   total->updctrl("OnePole/lpf/mrs_real/alpha", 0.99f);
   mrs_natural factor = 32;
   total->updctrl("DownSampler/ds/mrs_natural/factor", factor);  
@@ -700,7 +703,7 @@ tempo_medianSumBands(string sfName, string resName)
   total->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
 
   // wavelt filterbank envelope extraction controls 
-  total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", (MarControlValue)true);
+  total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", true);
   total->updctrl("OnePole/lpf/mrs_real/alpha", 0.99f);
   mrs_natural factor = 32;
   total->updctrl("DownSampler/ds/mrs_natural/factor", factor);  
@@ -813,7 +816,7 @@ tempo_bcWavelet(string sfName, string resName)
   total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
   
   // wavelt filterbank envelope extraction controls 
-  total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", (MarControlValue)true);
+  total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", true);
   total->updctrl("OnePole/lpf/mrs_real/alpha", 0.99f);
 
   // prepare vectors for processing 
@@ -1105,7 +1108,7 @@ tempo_bcFilter(string sfName, string resName)
   total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
   
   // wavelt filterbank envelope extraction controls 
-  // total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", (MarControlValue)true);
+  // total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", true);
   // total->updctrl("OnePole/lpf/mrs_real/alpha", 0.99f);
 
   // prepare vectors for processing 

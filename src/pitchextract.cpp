@@ -5,6 +5,7 @@
 
 #include "Collection.h"
 #include "MarSystemManager.h"
+
 #include "CommandLineOptions.h" 
 #include "Conversions.h"
 
@@ -142,10 +143,10 @@ void pitchextract1(string sfName, mrs_natural winSize, mrs_natural hopSize,
    mrs_real lowFreq = pitch2hertz(lowPitch);
    mrs_real highFreq = pitch2hertz(highPitch);
    mrs_natural lowSamples = 
-     // hertz2samples(highFreq, pitchExtractor->getctrl("AudioSource/src/mrs_real/osrate").toReal());
+     // hertz2samples(highFreq, pitchExtractor->getctrl("AudioSource/src/mrs_real/osrate")->toReal());
      hertz2samples(highFreq, pitchExtractor->getctrl("SoundFileSource/src/mrs_real/osrate").toReal());
    mrs_natural highSamples = 
-     //     hertz2samples(lowFreq, pitchExtractor->getctrl("AudioSource/src/mrs_real/osrate").toReal());
+     //     hertz2samples(lowFreq, pitchExtractor->getctrl("AudioSource/src/mrs_real/osrate")->toReal());
      hertz2samples(lowFreq, pitchExtractor->getctrl("SoundFileSource/src/mrs_real/osrate").toReal());
    pitchExtractor->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.00);
    pitchExtractor->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.4);
@@ -186,7 +187,7 @@ void pitchextract1(string sfName, mrs_natural winSize, mrs_natural hopSize,
       playback->tick();
       pitchExtractor->process(win, pitchres);
       
-      // pitch = samples2hertz((mrs_natural)pitchres(1), pitchExtractor->getctrl("AudioSource/src/mrs_real/osrate").toReal());
+      // pitch = samples2hertz((mrs_natural)pitchres(1), pitchExtractor->getctrl("AudioSource/src/mrs_real/osrate")->toReal());
 
       pitch = samples2hertz((mrs_natural)pitchres(1), pitchExtractor->getctrl("SoundFileSource/src/mrs_real/osrate").toReal());
       
@@ -215,6 +216,7 @@ void pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 		  mrs_natural lowPitch, mrs_natural highPitch, 
 		  bool playback, mrs_real threshold)
 {
+	/* 
   MRSDIAG("pitchextract.cpp - pitchextract");
   
   SoundFileSource* src = new SoundFileSource("src");
@@ -238,11 +240,11 @@ void pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
       mrs_real lowFreq =  pitch2hertz(lowPitch);
       mrs_real highFreq = pitch2hertz(highPitch);
 
-      mrs_natural lowSamples = hertz2samples(highFreq, src->getctrl("mrs_real/osrate").toReal());
-      mrs_natural highSamples = hertz2samples(lowFreq, src->getctrl("mrs_real/osrate").toReal());
+      mrs_natural lowSamples = hertz2samples(highFreq, src->getctrl("mrs_real/osrate")->toReal());
+      mrs_natural highSamples = hertz2samples(lowFreq, src->getctrl("mrs_real/osrate")->toReal());
 
-      realvec win(src->getctrl("mrs_natural/onObservations").toNatural(), 
-		  src->getctrl("mrs_natural/onSamples").toNatural());
+      realvec win(src->getctrl("mrs_natural/onObservations")->toNatural(), 
+		  src->getctrl("mrs_natural/onSamples")->toNatural());
 	
       
 	  
@@ -297,14 +299,14 @@ void pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
       pitchExtractor->addMarSystem(mxr);
      
       
-      pitchExtractor->updctrl("mrs_natural/inObservations", src->getctrl("mrs_natural/onObservations").toNatural());
-      pitchExtractor->updctrl("mrs_natural/inSamples", src->getctrl("mrs_natural/inSamples").toNatural());
-      pitchExtractor->updctrl("mrs_real/israte", src->getctrl("mrs_real/israte").toReal());
+      pitchExtractor->updctrl("mrs_natural/inObservations", src->getctrl("mrs_natural/onObservations")->toNatural());
+      pitchExtractor->updctrl("mrs_natural/inSamples", src->getctrl("mrs_natural/inSamples")->toNatural());
+      pitchExtractor->updctrl("mrs_real/israte", src->getctrl("mrs_real/israte")->toReal());
 
       cout << (*pitchExtractor) << endl;
 
       
-      realvec pitchres(pitchExtractor->getctrl("mrs_natural/onObservations").toNatural(), pitchExtractor->getctrl("mrs_natural/onSamples").toNatural());
+      realvec pitchres(pitchExtractor->getctrl("mrs_natural/onObservations")->toNatural(), pitchExtractor->getctrl("mrs_natural/onSamples")->toNatural());
       
 
 
@@ -315,7 +317,7 @@ void pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
       
       // mrs_natural resSize = src->getHops(hopSize, winSize);
       // mrs_natural resSize = 5000;
-      mrs_real size = src->getctrl("mrs_natural/size").toNatural();
+      mrs_real size = src->getctrl("mrs_natural/size")->toNatural();
       mrs_natural resSize = (mrs_natural) ((mrs_real)size / hopSize) + 1;
       cout << "size = " << size << endl;
       cout << "hopSize = " << hopSize << endl;
@@ -332,7 +334,7 @@ void pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	  src->updctrl("mrs_natural/pos", pos);
 	  src->process(win,win);
 	  pitchExtractor->process(win, pitchres);
-	  pitch = samples2hertz((mrs_natural)pitchres(1), src->getctrl("mrs_real/osrate").toReal());
+	  pitch = samples2hertz((mrs_natural)pitchres(1), src->getctrl("mrs_real/osrate")->toReal());
 	  pitch = hertz2pitch(pitch);
 	  counter++;
 	}
@@ -340,7 +342,7 @@ void pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
       
       
     }
-  
+ */  
 }
 
   

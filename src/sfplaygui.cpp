@@ -69,19 +69,17 @@ printHelp(string progName)
 
 void sfplaygui(Collection l, mrs_natural offset, mrs_natural duration, mrs_real start, mrs_real length, mrs_real gain, string outName)
 {
-
-  string sfName = l.entry(0);
-  
-  SoundFileSource* src = new SoundFileSource("src");
+  MarSystemManager mng;
+  string sfName = l.entry(0);  
+  MarSystem* src = mng.create("SoundFileSource", "src"); 
   src->updctrl("mrs_string/filename", sfName);
 
   Messager* messager =0;
   messager = new Messager(2,2001);  
 
       
-  MarSystemManager mn;
   MarSystem *dest;
-  Series playbacknet("playbacknet");
+  MarSystem *playbacknet = mng.create("Series", "playbacknet");
 
   if (src == NULL) 
     {
@@ -91,24 +89,24 @@ void sfplaygui(Collection l, mrs_natural offset, mrs_natural duration, mrs_real 
   else
     {
       if (outName == EMPTYSTRING)		// audio output
-	dest = new AudioSink("dest");
+	dest = mng.create("AudioSink", "dest");
       else 				// filename output
 	{
-	  dest = new SoundFileSink("dest");
+	  dest = mng.create("SoundFileSink", "dest");
 	  dest->updctrl("mrs_string/filename", outName);      
 	}
       // create playback network 
-      playbacknet.addMarSystem(src);
-      playbacknet.addMarSystem(mn.create("Gain", "gt"));
-      playbacknet.addMarSystem(dest);
+      playbacknet->addMarSystem(src);
+      playbacknet->addMarSystem(mng.create("Gain", "gt"));
+      playbacknet->addMarSystem(dest);
       
       
 
       int type;
       mrs_natural i;
       
-      mrs_natural nChannels = playbacknet.getctrl("SoundFileSource/src/mrs_natural/nChannels").toNatural();
-      mrs_real srate = playbacknet.getctrl("SoundFileSource/src/mrs_real/israte").toReal();
+      mrs_natural nChannels = playbacknet->getctrl("SoundFileSource/src/mrs_natural/nChannels").toNatural();
+      mrs_real srate = playbacknet->getctrl("SoundFileSource/src/mrs_real/israte").toReal();
       
       
       // playback offset & duration
@@ -121,7 +119,7 @@ void sfplaygui(Collection l, mrs_natural offset, mrs_natural duration, mrs_real 
 	  sfName = l.entry(i);
 	  cerr << "[" << start << ":" << (start + length) << "] - [" << offset << ":" << (offset + duration) << "] - " <<  sfName << "-" << endl;      
 	  
-	  playbacknet.updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+		  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 
 	  mrs_natural nChannels = src->getctrl("mrs_natural/nChannels").toNatural();
 	  mrs_real srate = src->getctrl("mrs_real/israte").toReal();
@@ -132,20 +130,20 @@ void sfplaygui(Collection l, mrs_natural offset, mrs_natural duration, mrs_real 
 	  
 	  // udpate controls
 	  // playbacknet.updctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES/64);
-	  playbacknet.updctrl("mrs_natural/inSamples", 256);
-	  playbacknet.updctrl("Gain/gt/mrs_real/gain", gain);
+	  playbacknet->updctrl("mrs_natural/inSamples", 256);
+	  playbacknet->updctrl("Gain/gt/mrs_real/gain", gain);
 	  
-	  playbacknet.updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
-	  playbacknet.updctrl(dest->getType() + "/dest/mrs_natural/nChannels", 
+	  playbacknet->updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
+	  playbacknet->updctrl(dest->getType() + "/dest/mrs_natural/nChannels", 
 			      src->getctrl("mrs_natural/nChannels").toNatural());
 	  
 	  mrs_natural wc=0;
 	  mrs_natural samplesPlayed = 0;
-	  mrs_natural onSamples = playbacknet.getctrl("mrs_natural/onSamples").toNatural();
+	  mrs_natural onSamples = playbacknet->getctrl("mrs_natural/onSamples").toNatural();
 	  string message;
 	  bool done = false;
 	  
-	  while ((playbacknet.getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool()) && (duration > samplesPlayed) && !done)
+	  while ((playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool()) && (duration > samplesPlayed) && !done)
 	    {
 
 	      
@@ -162,9 +160,9 @@ void sfplaygui(Collection l, mrs_natural offset, mrs_natural duration, mrs_real 
 		  inss >> cname >> dur >> val;
 		  val = val / 100.0;
 		  if (cname != "") 
-		    playbacknet.updctrl(cname,val);
+		    playbacknet->updctrl(cname,val);
 		}
-	      playbacknet.tick();
+	      playbacknet->tick();
 	      wc ++;
 	      samplesPlayed += onSamples;
 	    }

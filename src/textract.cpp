@@ -105,6 +105,8 @@ printHelp(string progName)
 void textract_trainAccumulator(string sfName, mrs_natural offset, mrs_natural duration, mrs_real start, mrs_real length, mrs_real gain, mrs_natural label, string pluginName, string wekafname, mrs_natural memSize, string extractorStr, TimeLine& tline)
 {
   
+  MarSystemManager mng;
+  
   MRSDIAG("sfplay.cpp - sfplay");
   
 
@@ -113,7 +115,8 @@ void textract_trainAccumulator(string sfName, mrs_natural offset, mrs_natural du
     extractorStr = "STFT";
   
   // Find proper soundfile format and create SignalSource 
-  SoundFileSource *src = new SoundFileSource("src");
+  MarSystem *src = mng.create("SoundFileSource", "src");
+  
   src->updctrl("mrs_string/filename", sfName);
   src->updctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
 
@@ -126,10 +129,10 @@ void textract_trainAccumulator(string sfName, mrs_natural offset, mrs_natural du
   
 
 
-  AudioSink *dest_;
-  dest_ = new AudioSink("dest");  
+  MarSystem *dest_;
+  dest_ = mng.create("AudioSink", "dest");
   
-  Series *series = new Series("playbacknet");
+  MarSystem *series = mng.create("Series", "playbacknet");
   series->addMarSystem(src);
   series->addMarSystem(dest_);
   
@@ -148,23 +151,24 @@ void textract_trainAccumulator(string sfName, mrs_natural offset, mrs_natural du
     duration = (mrs_natural) (length 
 			  * src->getctrl("mrs_real/israte").toReal() 
 			  * src->getctrl("mrs_natural/nChannels").toNatural());
-  MarSystemManager mng;
 
   // accumulate feature vectors over 30 seconds 
-  Accumulator* acc = new Accumulator("acc");
+  MarSystem* acc = mng.create("Accumulator", "acc");
+  
   acc->updctrl("mrs_natural/nTimes", 100);
   
   // Calculate windowed power spectrum and then 
   // calculate specific feature sets 
 
-  Series* spectralShape = new Series("spectralShape");
+  MarSystem* spectralShape = mng.create("Series", "spectralShape");
   spectralShape->addMarSystem(mng.create("Hamming", "hamming"));
   spectralShape->addMarSystem(mng.create("Spectrum","spk"));
   spectralShape->addMarSystem(mng.create("PowerSpectrum", "pspk"));
   spectralShape->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","power");  
 
   // Spectrum Shape descriptors
-  Fanout* spectrumFeatures = new Fanout("spectrumFeatures");
+  MarSystem* spectrumFeatures = mng.create("Fanout", "spectrumFeatures");
+  
   
   if (extractorStr == "STFT") 
     {
@@ -193,14 +197,15 @@ void textract_trainAccumulator(string sfName, mrs_natural offset, mrs_natural du
 
   
   //  add time-domain zerocrossings
-  Fanout* features = new Fanout("features");
+  MarSystem* features = mng.create("Fanout", "features");
   features->addMarSystem(mng.create("SpectralShape", "SpectralShape"));
   if (extractorStr == "STFT")
     features->addMarSystem(mng.create("ZeroCrossings", "zcrs"));      
   mng.registerPrototype("Features", features->clone());
   
   // Means and standard deviation (statistics) for texture analysis 
-  Fanout* statistics = new Fanout("statistics");
+  MarSystem* statistics = mng.create("Fanout","statistics");
+  
   statistics->addMarSystem(mng.create("Mean", "mn"));
   statistics->addMarSystem(mng.create("StandardDeviation", "std"));
   mng.registerPrototype("Statistics", statistics->clone());
@@ -210,10 +215,11 @@ void textract_trainAccumulator(string sfName, mrs_natural offset, mrs_natural du
 
 
   // weka output 
-  WekaSink *wsink = new WekaSink("wsink");
+  MarSystem *wsink = mng.create("WekaSink","wsink");
   
   // Build the overall feature calculation network 
-  Series* featureNetwork = new Series("featureNetwork");
+  MarSystem* featureNetwork = mng.create("Series", "featureNetwork");
+  
   featureNetwork->addMarSystem(src->clone());
   featureNetwork->addMarSystem(mng.create("Features", "features"));
   featureNetwork->addMarSystem(mng.create("Memory", "memory"));
@@ -226,7 +232,7 @@ void textract_trainAccumulator(string sfName, mrs_natural offset, mrs_natural du
   acc->addMarSystem(featureNetwork->clone());
   
   // Final network compute 30-second statistics 
-  Series* total = new Series("total");
+  MarSystem* total = mng.create("Series", "total");
   total->addMarSystem(acc->clone());
   total->addMarSystem(mng.create("Statistics", "statistics2"));
   // total->addMarSystem(mng.create("Mean", "mn2"));
