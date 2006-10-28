@@ -31,6 +31,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "phasevocoder", "phasevocode
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mkcollection", "mkcollection\mkcollection.vcproj", "{A388A648-7A42-4271-9629-7FDD4B9F8863}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -69,6 +73,10 @@ Global
 		{2F46C442-03C8-4065-A387-7ED9C9F9480A}.Debug.Build.0 = Release|Win32
 		{2F46C442-03C8-4065-A387-7ED9C9F9480A}.Release.ActiveCfg = Release|Win32
 		{2F46C442-03C8-4065-A387-7ED9C9F9480A}.Release.Build.0 = Release|Win32
+		{A388A648-7A42-4271-9629-7FDD4B9F8863}.Debug.ActiveCfg = Release|Win32
+		{A388A648-7A42-4271-9629-7FDD4B9F8863}.Debug.Build.0 = Release|Win32
+		{A388A648-7A42-4271-9629-7FDD4B9F8863}.Release.ActiveCfg = Release|Win32
+		{A388A648-7A42-4271-9629-7FDD4B9F8863}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

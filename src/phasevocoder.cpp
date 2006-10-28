@@ -1,6 +1,10 @@
 #include <cstdio>
-#include <config.h>  
 
+#ifndef WIN32
+#include <config.h>
+#else 
+#include <win_config.h> 
+#endif
 
 #ifdef MRSMIDI
 #include "RtMidi.h"

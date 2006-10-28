@@ -345,6 +345,18 @@
 				RelativePath="..\..\marsyas\PeakPeriods2BPM.cpp">
 			</File>
 			<File
+				RelativePath="..\..\marsyas\PeClust.cpp">
+			</File>
+			<File
+				RelativePath="..\..\marsyas\PeConvert.cpp">
+			</File>
+			<File
+				RelativePath="..\..\marsyas\PeOverlapadd.cpp">
+			</File>
+			<File
+				RelativePath="..\..\marsyas\PeResidual.cpp">
+			</File>
+			<File
 				RelativePath="..\..\marsyas\PlotSink.cpp">
 			</File>
 			<File
@@ -414,10 +426,16 @@
 				RelativePath="..\..\marsyas\SFM.cpp">
 			</File>
 			<File
+				RelativePath="..\..\marsyas\Shifter.cpp">
+			</File>
+			<File
 				RelativePath="..\..\marsyas\ShiftInput.cpp">
 			</File>
 			<File
 				RelativePath="..\..\marsyas\ShiftOutput.cpp">
+			</File>
+			<File
+				RelativePath="..\..\marsyas\Shredder.cpp">
 			</File>
 			<File
 				RelativePath="..\..\marsyas\SilenceRemove.cpp">
@@ -502,6 +520,9 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\WekaSource.cpp">
+			</File>
+			<File
+				RelativePath="..\..\marsyas\Windowing.cpp">
 			</File>
 			<File
 				RelativePath="..\..\marsyas\ZeroCrossings.cpp">
@@ -764,6 +785,18 @@
 				RelativePath="..\..\marsyas\PeakPeriods2BPM.h">
 			</File>
 			<File
+				RelativePath="..\..\marsyas\PeClust.h">
+			</File>
+			<File
+				RelativePath="..\..\marsyas\PeConvert.h">
+			</File>
+			<File
+				RelativePath="..\..\marsyas\PeOverlapadd.h">
+			</File>
+			<File
+				RelativePath="..\..\marsyas\PeResidual.h">
+			</File>
+			<File
 				RelativePath="..\..\marsyas\PlotSink.h">
 			</File>
 			<File
@@ -833,10 +866,16 @@
 				RelativePath="..\..\marsyas\SFM.h">
 			</File>
 			<File
+				RelativePath="..\..\marsyas\Shifter.h">
+			</File>
+			<File
 				RelativePath="..\..\marsyas\ShiftInput.h">
 			</File>
 			<File
 				RelativePath="..\..\marsyas\ShiftOutput.h">
+			</File>
+			<File
+				RelativePath="..\..\marsyas\Shredder.h">
 			</File>
 			<File
 				RelativePath="..\..\marsyas\SilenceRemove.h">
@@ -918,6 +957,9 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\win_config.h">
+			</File>
+			<File
+				RelativePath="..\..\marsyas\Windowing.h">
 			</File>
 			<File
 				RelativePath="..\..\marsyas\ZeroCrossings.h">

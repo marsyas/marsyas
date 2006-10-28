@@ -175,7 +175,7 @@ SOM::find_grid_location(realvec& in, int t)
   realvec grid_pos;
   grid_pos.create(2);
   
-  int temp;
+  
   mrs_real ival;				// input value
   mrs_real pval;				// prototype value 
   mrs_real minDist = INF;
