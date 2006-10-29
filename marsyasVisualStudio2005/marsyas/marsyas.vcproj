@@ -616,10 +616,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\marsyas\PCA.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\marsyas\Peaker.cpp"
 				>
 			</File>
@@ -1271,10 +1267,6 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\Parallel.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\marsyas\PCA.h"
 				>
 			</File>
 			<File

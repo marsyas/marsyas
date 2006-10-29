@@ -3872,7 +3872,7 @@ fi
 
 
 
-                                                                                                                                                                                                                                                                                                                                                                                                      ac_config_files="$ac_config_files Makefile marsyas/Makefile src/Makefile src/plugins/Makefile src/tcl/Makefile distributed/Makefile doc/Makefile doc/marsyas/Makefile marsyasVisualStudio2003/Makefile marsyasVisualStudio2003/sfplay/Makefile marsyasVisualStudio2003/sfinfo/Makefile marsyasVisualStudio2003/phasevocoder/Makefile marsyasVisualStudio2003/marsyas/Makefile marsyasVisualStudio2003/sfplugin/Makefile marsyasVisualStudio2003/bextract/Makefile marsyasVisualStudio2003/extract/Makefile marsyasVisualStudio2003/classifyFile/Makefile marsyasVisualStudio2005/Makefile marsyasVisualStudio2005/marsyas/Makefile marsyasVisualStudio2005/sfplay/Makefile marsyasVisualStudio2005/sfinfo/Makefile marsyasVisualStudio2005/sfplugin/Makefile marsyasVisualStudio2005/phasevocoder/Makefile marsyasVisualStudio2005/bextract/Makefile marsyasVisualStudio2005/extract/Makefile marsyasVisualStudio2005/classifyFile/Makefile marsyasVisualStudio2005/Tutorial/Makefile marsyasVisualStudio2005/marsyasTests/Makefile marsyasVisualStudio2005/LPCExample/Makefile qt4GUIs/Makefile qt4GUIs/MarPlayer/Makefile qt4GUIs/MarPlayer/images/Makefile qt4GUIs/MarGrid/Makefile qt4GUIs/Marx2DGraph/Makefile qt4GUIs/MarxGLMultiBufferGraph/Makefile qt4GUIs/Marx2DGraphStacked/Makefile qt4GUIs/MarxGL2Din3DSpaceGraph/Makefile qt4GUIs/MarxGLGraph/Makefile marsyasMATLAB/Makefile"
+                                                                                                                                                                                                                                                                                                                                                                                                                          ac_config_files="$ac_config_files Makefile marsyas/Makefile src/Makefile src/plugins/Makefile src/tcl/Makefile distributed/Makefile doc/Makefile doc/marsyas/Makefile marsyasVisualStudio2003/Makefile marsyasVisualStudio2003/sfplay/Makefile marsyasVisualStudio2003/sfinfo/Makefile marsyasVisualStudio2003/phasevocoder/Makefile marsyasVisualStudio2003/marsyas/Makefile marsyasVisualStudio2003/sfplugin/Makefile marsyasVisualStudio2003/mkcollection/Makefile marsyasVisualStudio2003/bextract/Makefile marsyasVisualStudio2003/extract/Makefile marsyasVisualStudio2003/classifyFile/Makefile marsyasVisualStudio2005/Makefile marsyasVisualStudio2005/marsyas/Makefile marsyasVisualStudio2005/sfplay/Makefile marsyasVisualStudio2005/sfinfo/Makefile marsyasVisualStudio2005/sfplugin/Makefile marsyasVisualStudio2005/mkcollection/Makefile marsyasVisualStudio2005/phasevocoder/Makefile marsyasVisualStudio2005/bextract/Makefile marsyasVisualStudio2005/extract/Makefile marsyasVisualStudio2005/classifyFile/Makefile marsyasVisualStudio2005/Tutorial/Makefile marsyasVisualStudio2005/marsyasTests/Makefile marsyasVisualStudio2005/LPCExample/Makefile qt4GUIs/Makefile qt4GUIs/MarPlayer/Makefile qt4GUIs/MarPlayer/images/Makefile qt4GUIs/MarGrid/Makefile qt4GUIs/Marx2DGraph/Makefile qt4GUIs/MarxGLMultiBufferGraph/Makefile qt4GUIs/Marx2DGraphStacked/Makefile qt4GUIs/MarxGL2Din3DSpaceGraph/Makefile qt4GUIs/MarxGLGraph/Makefile marsyasMATLAB/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -4445,6 +4445,7 @@ do
   "marsyasVisualStudio2003/phasevocoder/Makefile" ) CONFIG_FILES="$CONFIG_FILES marsyasVisualStudio2003/phasevocoder/Makefile" ;;
   "marsyasVisualStudio2003/marsyas/Makefile" ) CONFIG_FILES="$CONFIG_FILES marsyasVisualStudio2003/marsyas/Makefile" ;;
   "marsyasVisualStudio2003/sfplugin/Makefile" ) CONFIG_FILES="$CONFIG_FILES marsyasVisualStudio2003/sfplugin/Makefile" ;;
+  "marsyasVisualStudio2003/mkcollection/Makefile" ) CONFIG_FILES="$CONFIG_FILES marsyasVisualStudio2003/mkcollection/Makefile" ;;
   "marsyasVisualStudio2003/bextract/Makefile" ) CONFIG_FILES="$CONFIG_FILES marsyasVisualStudio2003/bextract/Makefile" ;;
   "marsyasVisualStudio2003/extract/Makefile" ) CONFIG_FILES="$CONFIG_FILES marsyasVisualStudio2003/extract/Makefile" ;;
   "marsyasVisualStudio2003/classifyFile/Makefile" ) CONFIG_FILES="$CONFIG_FILES marsyasVisualStudio2003/classifyFile/Makefile" ;;
@@ -4453,6 +4454,7 @@ do
   "marsyasVisualStudio2005/sfplay/Makefile" ) CONFIG_FILES="$CONFIG_FILES marsyasVisualStudio2005/sfplay/Makefile" ;;
   "marsyasVisualStudio2005/sfinfo/Makefile" ) CONFIG_FILES="$CONFIG_FILES marsyasVisualStudio2005/sfinfo/Makefile" ;;
   "marsyasVisualStudio2005/sfplugin/Makefile" ) CONFIG_FILES="$CONFIG_FILES marsyasVisualStudio2005/sfplugin/Makefile" ;;
+  "marsyasVisualStudio2005/mkcollection/Makefile" ) CONFIG_FILES="$CONFIG_FILES marsyasVisualStudio2005/mkcollection/Makefile" ;;
   "marsyasVisualStudio2005/phasevocoder/Makefile" ) CONFIG_FILES="$CONFIG_FILES marsyasVisualStudio2005/phasevocoder/Makefile" ;;
   "marsyasVisualStudio2005/bextract/Makefile" ) CONFIG_FILES="$CONFIG_FILES marsyasVisualStudio2005/bextract/Makefile" ;;
   "marsyasVisualStudio2005/extract/Makefile" ) CONFIG_FILES="$CONFIG_FILES marsyasVisualStudio2005/extract/Makefile" ;;
@@ -4877,6 +4879,7 @@ s,@INSTALL@,$ac_INSTALL,;t t
     marsyasVisualStudio2003/phasevocoder/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
     marsyasVisualStudio2003/marsyas/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
     marsyasVisualStudio2003/sfplugin/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
+    marsyasVisualStudio2003/mkcollection/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
     marsyasVisualStudio2003/bextract/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
     marsyasVisualStudio2003/extract/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
     marsyasVisualStudio2003/classifyFile/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
@@ -4885,6 +4888,7 @@ s,@INSTALL@,$ac_INSTALL,;t t
     marsyasVisualStudio2005/sfplay/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
     marsyasVisualStudio2005/sfinfo/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
     marsyasVisualStudio2005/sfplugin/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
+    marsyasVisualStudio2005/mkcollection/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
     marsyasVisualStudio2005/phasevocoder/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
     marsyasVisualStudio2005/bextract/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;
     marsyasVisualStudio2005/extract/Makefile ) test -z "$CONFIG_HEADERS" || echo timestamp > marsyas/stamp-h.in ;;

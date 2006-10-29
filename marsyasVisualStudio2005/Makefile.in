@@ -155,7 +155,7 @@ target_alias = @target_alias@
 target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
-SUBDIRS = sfplay sfinfo sfplugin bextract extract classifyFile phasevocoder marsyas Tutorial LPCExample marsyasTests
+SUBDIRS = sfplay sfinfo sfplugin bextract extract classifyFile phasevocoder marsyas Tutorial LPCExample marsyasTests mkcollection
 EXTRA_DIST = marsyasVisualStudio.sln  
 all: all-recursive
 
@@ -169,9 +169,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  marsyasVisualStudio2005/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  marsyasVisualStudio2005/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  marsyasVisualStudio2005/Makefile
+	  $(AUTOMAKE) --foreign  marsyasVisualStudio2005/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
