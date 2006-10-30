@@ -197,7 +197,7 @@ MP3FileSource::getHeader(string filename)
   }
   
   // decode some frames until we find the samplerate and bitrate
-  while ( frame.header.samplerate == 0 && frame.header.bitrate == 0 ) 
+  while ( frame.header.samplerate == 0 ||  frame.header.bitrate == 0 ) 
     {
       pos_ += bufferSize_;
       currentPos_ = pos_;
