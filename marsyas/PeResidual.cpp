@@ -89,11 +89,11 @@ PeResidual::process(realvec& in, realvec& out)
  
  setctrl("mrs_real/snr", snr);
 
- 	#ifdef _MATLAB_ENGINE_
+ /*	#ifdef _MATLAB_ENGINE_
 	 MATLAB->putVariable(in, "vec");
 
-//	 MATLAB->evalString("figure(1);clf;plot(vec');");
-	#endif
+	 MATLAB->evalString("figure(1);clf;plot(vec');");
+	#endif*/
 }
 
 

@@ -27,6 +27,7 @@
 #define MARSYAS_PECLUST_H
 
 #include "MarSystem.h"	
+#include <string>
 
 namespace Marsyas
 {
@@ -36,16 +37,23 @@ class PeClust: public MarSystem
 private: 
 
 	realvec data_;
+	realvec m_;
+	realvec lastFrame_;
+	mrs_real maxLabel_;
 	mrs_natural nbParameters_;
 	mrs_natural kmax_;
 	mrs_natural nbClusters_;
 	mrs_natural nbPeaks_;
+	std::string similarityType_;
   //Add specific controls needed by this MarSystem.
 	void addControls();
 	
 	void localUpdate();
-	void peaks2M (realvec&, realvec&);
-	void peaks2V (realvec&, realvec&);
+	void peaks2M (realvec&, realvec&, realvec&);
+	void peaks2V (realvec&, realvec&, realvec&);
+	void similarityCompute(realvec&, realvec&);
+void similarityMatrix(realvec&, realvec&, std::string type);
+void labeling(realvec& , realvec&);
 
 public:
   PeClust(std::string name);

@@ -89,6 +89,7 @@ PeConvert::localUpdate()
 		lastphase_.stretch(size_);
 		phase_.stretch(size_);
 		mag_.stretch(size_);
+		magCorr_.stretch(size_);
 		frequency_.stretch(size_);
 		lastmag_.stretch(size_);
 		lastfrequency_.stretch(size_);
@@ -170,7 +171,6 @@ PeConvert::process(realvec& in, realvec& out)
 
 		// computer magnitude value 
 		//mrs_real par = lobe_value_compute (0, 1, 2048);
-		mag_(t) = sqrt((a*a + b*b))*4/0.884624;//*50/3); // [!!!!!!!!!!!]
 		// compute phase
 		phase_(t) = atan2(b,a);
 
@@ -181,6 +181,12 @@ PeConvert::process(realvec& in, realvec& out)
 		else
 			phasediff = phase_(t) - lastphase_(t)+TWOPI;
 		frequency_(t) = phasediff * factor_ ;
+
+		// compute precise amplitude
+		mag_(t) = sqrt((a*a + b*b))*2;//*4/0.884624;//*50/3); // [!!!!!!!!!!!]
+		mrs_real mag = lobe_value_compute ((t * fundamental_-frequency_(t))/factor_, 1, N2*2);
+    magCorr_(t) = mag_(t)/mag;
+
 
 		// computing precise frequency using the derivative method // use at your own risk	
 		/*	mrs_real lastmag = sqrt(c*c + d*d);
@@ -206,10 +212,16 @@ PeConvert::process(realvec& in, realvec& out)
 	// select local maxima
 	realvec peaks_=mag_;
 	Peaker peaker("Peaker");
-	peaker.updctrl("mrs_real/peakStrength", 0.2);
+	peaker.updctrl("mrs_real/peakStrength", 0.02);
 	peaker.updctrl("mrs_natural/peakStart", 0);
 	peaker.updctrl("mrs_natural/peakEnd", size_);
 	peaker.process(mag_, peaks_);
+
+	/*	#ifdef _MATLAB_ENGINE_
+	 MATLAB->putVariable(mag_, "peaks");
+	 MATLAB->putVariable(peaks_, "k");
+	 MATLAB->evalString("figure(1);clf;plot(peaks);");
+	#endif*/
 
 	realvec index_(kmax_*2);
 	for(t=0 ; t<N2 ; t++)
@@ -237,7 +249,7 @@ PeConvert::process(realvec& in, realvec& out)
 	}
 	for (i=0;i<nbPeaks_;i++)
 	{
-		out(i+kmax_) = mag_(index_(2*i+1));
+		out(i+kmax_) = magCorr_(index_(2*i+1));
 	}
 	for (i=0;i<nbPeaks_;i++)
 	{
@@ -258,11 +270,7 @@ PeConvert::process(realvec& in, realvec& out)
 
 	time_++;
 
-	//	#ifdef _MATLAB_ENGINE_
-	// MATLAB->putVariable(out, "peaks");
-	// MATLAB->putVariable(kmax_, "k");
-	// MATLAB->evalString("figure(1);clf;plot(peaks(6*k+1:7*k));");
-	//#endif
+	
 }
 
 
