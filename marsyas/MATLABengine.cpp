@@ -48,10 +48,16 @@ MATLABengine::MATLABengine()
       return;
     }
   instance_ = this;
+
+	/*int BUFSIZE=200;
+	buffer_ = new char[BUFSIZE];
+	buffer_[BUFSIZE] = '\0';
+	engOutputBuffer(engine_, buffer_, BUFSIZE);*/
 }
 
 MATLABengine::~MATLABengine()
 {
+//	delete [] buffer_;
   engClose(engine_);
 }
 
@@ -71,6 +77,7 @@ void
 MATLABengine::evalString(string MATLABcmd)
 {
   engEvalString(engine_, MATLABcmd.c_str());
+  // cout << buffer_ << endl;
 }
 
 void
@@ -83,7 +90,7 @@ MATLABengine::putVariable(const long *const value, unsigned int size, string MAT
   dims[0] = 1; //row vector
   dims[1] = size;
   
-  mxArray *mxVector = mxCreateNumericArray(2, dims, mxINT32_CLASS, mxREAL);
+  mxArray *mxVector = mxCreateNumericArray(2, (const mwSize*) dims, mxINT32_CLASS, mxREAL);
   memcpy(mxGetData(mxVector), (void *)value, size*mxGetElementSize(mxVector));
   engPutVariable(engine_, MATLABname.c_str(), mxVector);
   
@@ -104,7 +111,7 @@ MATLABengine::putVariable(const float *const value, unsigned int size, string MA
   dims[0] = 1; //row vector
   dims[1] = size;
   
-  mxArray *mxVector = mxCreateNumericArray(2, dims, mxSINGLE_CLASS, mxREAL);
+  mxArray *mxVector = mxCreateNumericArray(2, (const mwSize*) dims, mxSINGLE_CLASS, mxREAL);
   memcpy(mxGetData(mxVector), (void *)value, size*mxGetElementSize(mxVector));
   engPutVariable(engine_, MATLABname.c_str(), mxVector);
   
@@ -126,7 +133,7 @@ MATLABengine::putVariable(const double *const value, unsigned int size, string M
   dims[0] = 1; //row vector
   dims[1] = size;
   
-  mxArray *mxVector = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxREAL);
+  mxArray *mxVector = mxCreateNumericArray(2, (const mwSize*) dims, mxDOUBLE_CLASS, mxREAL);
   memcpy(mxGetData(mxVector), (void *)value, size*mxGetElementSize(mxVector));
   engPutVariable(engine_, MATLABname.c_str(), mxVector);
   
@@ -154,7 +161,7 @@ MATLABengine::putVariable(mrs_complex value, string MATLABname)
   dims[0] = 1; 
   dims[1] = 1;
   
-  mxArray *mxVector = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxCOMPLEX);
+  mxArray *mxVector = mxCreateNumericArray(2, (const mwSize*) dims, mxDOUBLE_CLASS, mxCOMPLEX);
   double *xr = mxGetPr(mxVector);
   double *xi = mxGetPi(mxVector);
   
@@ -179,7 +186,7 @@ MATLABengine::putVariable(realvec value, string MATLABname)
   dims[1] = value.getCols(); 
   
   //realvec are by default double precision matrices => mxDOUBLE_CLASS
-  mxArray *mxMatrix = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxREAL);
+  mxArray *mxMatrix = mxCreateNumericArray(2, (const mwSize*) dims, mxDOUBLE_CLASS, mxREAL);
   mrs_real *data = value.getData();
   memcpy((void *)mxGetPr(mxMatrix), (void *)(data), dims[0]*dims[1]*mxGetElementSize(mxMatrix));
   engPutVariable(engine_, MATLABname.c_str(), mxMatrix);
@@ -194,7 +201,7 @@ MATLABengine::putVariable(vector<mrs_natural> value, string MATLABname)
   dims[0] = 1; //row vector
   dims[1] = value.size();
   
-  mxArray *mxVector = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxREAL);
+  mxArray *mxVector = mxCreateNumericArray(2, (const mwSize*) dims, mxDOUBLE_CLASS, mxREAL);
   double *x = mxGetPr(mxVector);
   
   for(unsigned int i = 0; i < value.size(); i++)
@@ -215,7 +222,7 @@ MATLABengine::putVariable(vector<mrs_real> value, string MATLABname)
   dims[0] = 1; //row vector
   dims[1] = value.size();
   
-  mxArray *mxVector = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxREAL);
+  mxArray *mxVector = mxCreateNumericArray(2, (const mwSize*) dims, mxDOUBLE_CLASS, mxREAL);
   double *x = mxGetPr(mxVector);
   
   for(unsigned int i = 0; i < value.size(); i++)
@@ -235,7 +242,7 @@ MATLABengine::putVariable(vector<mrs_complex> value, string MATLABname)
   dims[0] = 1; //row vector
   dims[1] = value.size();
   
-  mxArray *mxVector = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxCOMPLEX);
+  mxArray *mxVector = mxCreateNumericArray(2,  (const mwSize*) dims, mxDOUBLE_CLASS, mxCOMPLEX);
   double *xr = mxGetPr(mxVector);
   double *xi = mxGetPi(mxVector);
   

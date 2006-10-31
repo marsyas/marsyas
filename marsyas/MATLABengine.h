@@ -54,7 +54,7 @@ class MATLABengine
 private:
   Engine *engine_;
   static MATLABengine *instance_;
-  
+  // char *buffer_;
   MATLABengine();
   
 public:
