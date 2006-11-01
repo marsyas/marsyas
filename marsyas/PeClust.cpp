@@ -200,9 +200,9 @@ PeClust::addControls()
 			 break;
 		 case 'l':
 			 if(type[i] == 'f')
-				 vec.apply(hz2bk);
+				 vec.apply(hertz2bark);
 			 else if (type[i] == 'a')
-				 vec.apply(a2dB);
+				 vec.apply(amplitude2dB);
 			 else
 			 {
 				 cout << "unrecognized parameter normalization : " << type[i] << endl;

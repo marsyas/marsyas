@@ -118,7 +118,7 @@ Windowing::process(realvec& in, realvec& out)
 	{
 		for (t = 0; t < inSamples_; t++)
 		{
-			tmp_(t) = envelope_(t)* in(o,t)/(2*norm_);     
+			tmp_(t) =  in(o,t)*envelope_(t); // /(norm_);     
 		}
 		for (t = 0; t < inSamples_/2; t++)
 			out(o,t)=tmp_((t+delta_)%inSamples_);
