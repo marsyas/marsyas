@@ -222,7 +222,7 @@ CollectionFileSource::process(realvec& in, realvec &out)
   }
   else
   {
-    if (israte_ == 44100)
+    if (israte_ == 44100) //this assumes that israte_ is not updated in MarSystem::update()!! Bad Hack!! [?][!]
 		{
 			isrc_->process(tempi_,temp_);
 			setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
