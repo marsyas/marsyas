@@ -20,21 +20,22 @@ string fileResName = EMPTYSTRING;
 // Global variables for command-line options 
 bool helpopt_ = 0;
 bool usageopt_ =0;
-int fftSize_ = 2048;
-int winSize_ = 2048;
+int fftSize_ = 1024;
+int winSize_ = 1024;
 // if kept the same no time expansion
 int dopt = 360;
 int iopt = 360;
 // nb Sines
 int sopt = 80;
 // nbClusters
-int copt = 4;
+int copt = 5;
 // output buffer Size
 int bopt = 128;
 mrs_real gopt_ = 1.0;
 mrs_natural eopt_ = 0;
 
-mrs_natural accSize = 2;
+mrs_natural accSize = 6;
+string similarityType = "fn";
 
 float popt = 1.0;
 bool auto_ = false;
@@ -158,7 +159,7 @@ postNet->addMarSystem(destRes);
 
 	//create the main network
 	pvseries->addMarSystem(accumNet);
-//	pvseries->addMarSystem(peClust);
+	pvseries->addMarSystem(peClust);
 	pvseries->addMarSystem(shredNet);
 
 	////////////////////////////////////////////////////////////////
@@ -200,7 +201,8 @@ postNet->addMarSystem(destRes);
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Sinusoids", (mrs_natural) sopt);  
 
   pvseries->updctrl("PeClust/peClust/mrs_natural/Sinusoids", (mrs_natural) sopt);  
-  pvseries->updctrl("PeClust/peClust/mrs_natural/Clusters", (mrs_natural) copt);  
+  pvseries->updctrl("PeClust/peClust/mrs_natural/Clusters", (mrs_natural) copt); 
+	pvseries->updctrl("PeClust/peClust/mrs_string/similarityType", similarityType);  
 
 	pvseries->updctrl("Shredder/shredNet/Series/postNet/PeOverlapadd/ob/mrs_natural/hopSize", D);
 	pvseries->updctrl("Shredder/shredNet/Series/postNet/PeOverlapadd/ob/mrs_natural/nbSinusoids", sopt);
@@ -239,7 +241,7 @@ mrs_natural nb=0;
 				break;
 		}
 	}
-	cout << "Global SNR : " << globalSnr << endl;
+	cout << "Global SNR : " << globalSnr/nb << endl;
 }
 
 void 

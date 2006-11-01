@@ -640,7 +640,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\marsyas\peResidual.cpp"
+				RelativePath="..\..\marsyas\PeResidual.cpp"
 				>
 			</File>
 			<File
@@ -1294,7 +1294,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\marsyas\peResidual.h"
+				RelativePath="..\..\marsyas\PeResidual.h"
 				>
 			</File>
 			<File
