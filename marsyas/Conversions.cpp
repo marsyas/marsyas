@@ -152,3 +152,26 @@ Marsyas::time2usecs(string time) {
     return (mrs_natural)usecs;
 }
 
+mrs_real Marsyas::amplitude2dB(mrs_real a)
+{
+return 20*log10(a);
+}
+
+mrs_real Marsyas::dB2amplitude(mrs_real a)
+{
+return pow(10, a/20);
+}
+
+
+
+
+mrs_real Marsyas::hertz2bark(mrs_real f)
+{
+return  6 * log(f/600 + sqrt(1+ (pow(f/600,2)))); // 6*asinh(f/600);
+}
+
+mrs_real Marsyas::bark2hertz(mrs_real f)
+{
+return 600*sinh(f/6);
+}
+

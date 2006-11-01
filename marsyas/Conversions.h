@@ -40,6 +40,12 @@ mrs_real hertz2pitch(mrs_real hz);
 mrs_natural time2samples(std::string time, mrs_real srate);
 mrs_natural time2usecs(std::string time);
 
+mrs_real amplitude2dB(mrs_real a);
+mrs_real dB2amplitude(mrs_real a);
+
+mrs_real hertz2bark(mrs_real f);
+mrs_real bark2hertz(mrs_real f);
+
 }//namespace Marsyas
 
 #endif
