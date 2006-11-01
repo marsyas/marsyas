@@ -33,7 +33,7 @@ namespace Marsyas
 class Mean: public MarSystem
 {
 private: 
-	void localUpdate();
+	void myUpdate();
 
   realvec obsrow_;
   
@@ -43,7 +43,7 @@ public:
   ~Mean();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 
 };
 

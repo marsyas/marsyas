@@ -80,10 +80,10 @@ WaveletPyramid::addControls()
 }
 
 void
-WaveletPyramid::localUpdate()
+WaveletPyramid::myUpdate()
 {
   
-  MRSDIAG("WaveletPyramid.cpp - WaveletPyramid:localUpdate");
+  MRSDIAG("WaveletPyramid.cpp - WaveletPyramid:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
@@ -97,7 +97,7 @@ WaveletPyramid::localUpdate()
 
 
 void 
-WaveletPyramid::process(realvec& in, realvec& out) 
+WaveletPyramid::myProcess(realvec& in, realvec& out) 
 {
   checkFlow(in,out);
   
@@ -106,7 +106,7 @@ WaveletPyramid::process(realvec& in, realvec& out)
   bool forward;
   
   
-  n = getctrl("mrs_natural/inSamples").toNatural();
+  n = getctrl("mrs_natural/inSamples")->toNatural();
   if (n < 4) return;
 
 
@@ -116,8 +116,8 @@ WaveletPyramid::process(realvec& in, realvec& out)
 	out(o,t) = in(o,t);
       }  
 
-  forward = getctrl("mrs_bool/forward").toBool();
-  waveletStep_->setctrl("mrs_bool/forward", (MarControlValue)forward);
+  forward = getctrl("mrs_bool/forward")->toBool();
+  waveletStep_->setctrl("mrs_bool/forward", forward);
   if (forward) 
     {
       for (nn= n; nn >=4; nn >>=1) 

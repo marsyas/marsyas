@@ -28,16 +28,12 @@ Peaks have several fields interlieved: frequency, amplitude, phase, vf, va
 
 #include "PeConvert.h"
 #include "Peaker.h"
-#include "MaxArgMax.h";
+#include "MaxArgMax.h"
 
 #include <algorithm>
 
 using namespace std;
 using namespace Marsyas;
-
-#ifdef _MATLAB_ENGINE_
-#include "MATLABengine.h"
-#endif 
 
 PeConvert::PeConvert(string name):MarSystem("PeConvert",name)
 {
@@ -73,14 +69,14 @@ PeConvert::addControls()
 }
 
 void
-PeConvert::localUpdate()
+PeConvert::myUpdate()
 {
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/Sinusoids").toNatural()*nbParameters_);
-	setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal() * getctrl("mrs_natural/inObservations").toNatural()/2);  
+	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/Sinusoids")->toNatural()*nbParameters_);
+	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal() * getctrl("mrs_natural/inObservations")->toNatural()/2);  
 
 	//defaultUpdate(); [!]
-	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
 
 	size_ = inObservations_ /4 +1;
 
@@ -99,10 +95,10 @@ PeConvert::localUpdate()
 
 	psize_ = size_;
 
-	factor_ = getctrl("mrs_real/osrate").toReal();
+	factor_ = getctrl("mrs_real/osrate")->toReal();
 	factor_ /= TWOPI;
-	fundamental_ = (mrs_real) (getctrl("mrs_real/osrate").toReal() / (mrs_real)getctrl("mrs_natural/inObservations").toNatural()*2);
-	kmax_ = getctrl("mrs_natural/Sinusoids").toNatural();
+	fundamental_ = (mrs_real) (getctrl("mrs_real/osrate")->toReal() / (mrs_real)getctrl("mrs_natural/inObservations")->toNatural()*2);
+	kmax_ = getctrl("mrs_natural/Sinusoids")->toNatural();
 
 }
 
@@ -135,7 +131,7 @@ double lobe_value_compute (double f, int type, int size)
 
 
 void 
-PeConvert::process(realvec& in, realvec& out)
+PeConvert::myProcess(realvec& in, realvec& out)
 {
 	checkFlow(in,out); 
 
@@ -192,7 +188,7 @@ PeConvert::process(realvec& in, realvec& out)
 		/*	mrs_real lastmag = sqrt(c*c + d*d);
 		mrs_real rap = (mag_(t)-lastmag)/(lastmag*2);
 		f=asin(rap);
-		f *= (getctrl("mrs_real/osrate").toReal())/PI;
+		f *= (getctrl("mrs_real/osrate")->toReal())/PI;
 		*/
 		// rough frequency
 	// 	frequency_(t) = t * fundamental_;
@@ -270,7 +266,9 @@ PeConvert::process(realvec& in, realvec& out)
 
 	time_++;
 
-	
+	// MATLAB_PUT(out, "peaks");
+	// MATLAB_PUT(kmax_, "k");
+	// MATLAB_EVAL("figure(1);clf;plot(peaks(6*k+1:7*k));");
 }
 
 

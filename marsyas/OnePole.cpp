@@ -59,21 +59,21 @@ OnePole::addControls()
 
 
 void
-OnePole::localUpdate()
+OnePole::myUpdate()
 {
-  MRSDIAG("OnePole.cpp - OnePole:localUpdate");
+  MRSDIAG("OnePole.cpp - OnePole:myUpdate");
   
 //   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 //   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 //   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-	MarSystem::localUpdate();
+	MarSystem::myUpdate();
   
-  alpha_ = getctrl("mrs_real/alpha").toReal();
+  alpha_ = getctrl("mrs_real/alpha")->toReal();
   gain_ = (mrs_real)(1.0 - alpha_);
 }
 
 void 
-OnePole::process(realvec& in, realvec& out)
+OnePole::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 

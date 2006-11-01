@@ -45,7 +45,7 @@ HalfWaveRectifier::clone() const
 }
 
 void 
-HalfWaveRectifier::localUpdate()
+HalfWaveRectifier::myUpdate()
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
@@ -53,10 +53,10 @@ HalfWaveRectifier::localUpdate()
 }
 
 void 
-HalfWaveRectifier::process(realvec& in, realvec& out)
+HalfWaveRectifier::myProcess(realvec& in, realvec& out)
 {
   
-  mrs_natural inSamples = getctrl("mrs_natural/inSamples").toNatural();
+  mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
   
   
   for (t=0; t < inSamples; t++)

@@ -38,7 +38,7 @@ class WekaSink: public MarSystem
 {
 private:
   void addControls();
-  void localUpdate();
+  void myUpdate();
   
   std::string filename_;
   std::ofstream* mos_;
@@ -56,7 +56,7 @@ public:
   MarSystem* clone() const;  
   void putHeader(std::string inObsNames);
  
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 
   // Jen's hack for MIREX 05 to annotate produced weka file
   std::ofstream* getOfstream(){ return mos_; }

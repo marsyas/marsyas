@@ -58,21 +58,21 @@ Rolloff::addControls()
 }
 
 void
-Rolloff::localUpdate()
+Rolloff::myUpdate()
 {
-  MRSDIAG("Rolloff.cpp - Rolloff:localUpdate");
+  MRSDIAG("Rolloff.cpp - Rolloff:myUpdate");
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal());
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
   setctrl("mrs_string/onObsNames", "Rolloff,");
-  sumWindow_.create(getctrl("mrs_natural/inObservations").toNatural());
+  sumWindow_.create(getctrl("mrs_natural/inObservations")->toNatural());
 
-  perc_ = getctrl("mrs_real/percentage").toReal();
+  perc_ = getctrl("mrs_real/percentage")->toReal();
 }
 
 void 
-Rolloff::process(realvec& in, realvec& out)
+Rolloff::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   

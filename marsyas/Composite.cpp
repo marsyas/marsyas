@@ -35,8 +35,8 @@ using namespace Marsyas;
 
 // Composite::Composite()//lmartins: this should be deprecated... [!]
 // {
-//   getType() = "Composite";
-// 	getName() = "CompositePrototype";
+//   type_ = "Composite";
+// 	name_ = "CompositePrototype";
 //   
 // 	marsystemsSize_ = 0;
 // 
@@ -49,8 +49,8 @@ using namespace Marsyas;
 
 Composite::Composite(string type, string name):MarSystem(type, name)
 {
-  //getType() = "Composite";
-  //getName() = name;
+  //type_ = "Composite";
+  //name_ = name;
 
   marsystemsSize_ = 0;
 
@@ -66,8 +66,8 @@ Composite::Composite(const Composite& a):MarSystem(a)
 {
   //Now done by MarSystem copy constructor
   //
-  //   getType() = a.getType();
-  //   getName() = a.getName();
+  //   type_ = a.type_;
+  //   name_ = a.name_;
   //   ncontrols_ = a.ncontrols_; 		
   //   synonyms_ = a.synonyms_;
   //   
@@ -106,32 +106,76 @@ void
 Composite::addMarSystem(MarSystem *marsystem)
 {
   marsystems_.push_back(marsystem);
-  marsystemsSize_ = marsystems_.size();
-  marsystem->update();
-  update();
+  marsystemsSize_ = (mrs_natural)marsystems_.size();
+  
+	//update new children path
+	marsystem->addFatherPath(getPath());
+	marsystem->update();
+
+	update();
 }
 
-//clash with inherited method from MarSystem[!][?]
-// void 
-// Composite::updctrl(string cname, MarControlValue value)
-// {
-//   updControl("/" + getType() + "/" + getName() + "/" + cname, value);
-// }
+void
+Composite::addFatherPath(string fpath)
+{
+	//update local composite path...
+	//e.g. if path_ was "/Gain/g/" it will become 
+	//"/Series/s" + "/Gain/g/" = "/Series/s/Gain/g/"
+	path_ = fpath.substr(0, fpath.length()-1) + path_; //[!]
+
+	//...and propagate path update on all children
+	for (mrs_natural i=0; i< marsystemsSize_; i++)
+	{
+		marsystems_[i]->addFatherPath(fpath);
+	}
+}
+
+MarSystem*
+Composite::getMarSystem(std::string path) //thread-safe?!? [?]
+{
+	if(path == getPrefix())//use getPath() instead?! [?]
+		return this;
+	else
+	{
+		string childPath;
+		//if using getPath() above and in MarSystem::getmarSystem
+		//there would be no need to have this childPath string... [!]
+		if(path.length() > prefix_.length())
+			childPath = path.substr(prefix_.length()-1, path.length()); //includes leading "/" [!]
+		else
+			return NULL;
+
+		//std::vector<MarSystem*> marsystems_;
+		vector<MarSystem*>::const_iterator iter;
+		for(iter = marsystems_.begin(); iter != marsystems_.end(); ++iter)
+		{
+			 MarSystem* msys = (*iter)->getMarSystem(childPath);
+			 if (msys)
+				 return msys;
+		}
+		MRSWARN("Composite::getMarsystem(): " + path + " not found!");
+		return NULL;
+	}
+}
+
+std::vector<MarSystem*>
+Composite::getChildren()
+{
+	return marsystems_;
+}
 
 bool
 Composite::hasControlState(string cname)
 {
   bool controlFound = false;
   
-  string prefix = "/" + getType() + "/" + getName();
-  string childcontrol = cname.substr(prefix.length(), cname.length()-prefix.length());
-  string nchildcontrol = childcontrol.substr(1, childcontrol.length());  
+	string childcontrol = cname.substr(prefix_.length()-1, cname.length());//includes leading "/" [!]
 
   // local controls
   if (hasControlLocal(cname))
     {
       controlFound = true;
-      return ncontrols_.hasState(cname);
+      return hasctrlState(cname);
     }
 
 	//lmartins: [!]
@@ -151,12 +195,12 @@ Composite::hasControlState(string cname)
 //       (nchildcontrol == "mrs_string/inObsNames")||
 //       (nchildcontrol == "mrs_string/onObsNames"))    
 //     {
-//       return ncontrols_.hasState(cname);
+//       return ncontrols_->hasState(cname);
 //     }  
 
-  string cprefix = cname.substr(0, prefix.length());
-  if (cprefix != prefix) //lmartins: this should be the first thing to check when entering this function! [!]
-    return false;
+  string cprefix = cname.substr(0, prefix_.length());
+  if (cprefix != prefix_) //lmartins: this should be the first thing to check when entering this function! [!]
+    return false;//if cprefix is not equal to this composite prefix, return (no point looking for anything in its children)
   else 
     {
       for (mrs_natural i=0; i< marsystemsSize_; i++)
@@ -169,46 +213,41 @@ Composite::hasControlState(string cname)
 			}
     }
 
-  if (!controlFound) 
+  if (!controlFound)
+	{
     MRSWARN("Composite::hasControlState - Unsupported control name = " + cname);
+	}
   return false;
 }
 
 // check for controls only in composite object not children
 bool
-Composite::hasControlLocal(const string& cname) 
+Composite::hasControlLocal(string cname) 
 {
-  if (ncontrols_.hasControl(cname))
-    return true;
-  else 
-    return false;
+	return(controls_.find(cname) != controls_.end());
 }
 
 bool 
-Composite::hasControl(const string& cname)
+Composite::hasControl(string cname)
 {
-  // check first composite then children
-  if (ncontrols_.hasControl(cname))
-    {
-      return true;
-    }
+  // check composite first, then search in children
+  if (controls_.find(cname)!= controls_.end())
+  {
+    return true;
+  }
   
-  string prefix = "/" + getType() + "/" + getName();
+  size_t cname_l = cname.length();
+  size_t prefix_l = prefix_.length();
 
-  //Jen
-  mrs_natural cname_l = cname.length();
-  mrs_natural prefix_l = prefix.length();
-
-  if ( cname_l <= prefix_l )
+  if ( cname_l <= prefix_l ) //cname should include prefix, so it must always be longer in order to be valid
     return false;
 
-  string childcontrol = cname.substr(prefix_l, cname_l-prefix_l);  
+  string childcontrol = cname.substr(prefix_l-1, cname_l-(prefix_l-1));//includes leading "/" [!]  
   string cprefix = cname.substr(0, prefix_l);
-  //end Jen
   
   // wrong type 
-  if (cprefix != prefix) 
-    return false;
+  if (cprefix != prefix_) //lmartins: this should be the first thing to check when entering this function! [!]
+    return false;//if cprefix is not equal to this composite prefix, return (no point looking for anything in its children)
   else
     {
       for (mrs_natural i=0; i < marsystemsSize_; i++)
@@ -222,22 +261,21 @@ Composite::hasControl(const string& cname)
   return false;
 }
 
-void
+bool
 Composite::setControl(string cname, mrs_real value)
 {
   bool controlFound = false;
   
-  string prefix = "/" + getType() + "/" + getName();
-  string childcontrol = cname.substr(prefix.length(), cname.length()-prefix.length());
-  //string nchildcontrol = childcontrol.substr(1, childcontrol.length());
+  string childcontrol = cname.substr(prefix_.length()-1, cname.length()-(prefix_.length()-1));//includes leading "/" [!]
 
   if (hasControlLocal(cname))
     {
       controlFound = true;
-      ncontrols_.updControl(cname,value);
-      return; 
+      updControl(cname,value);
+      return true; 
     }
-  for (mrs_natural i=0; i< marsystemsSize_; i++)
+  
+	for (mrs_natural i=0; i< marsystemsSize_; i++)
     {
       if (marsystems_[i]->hasControl(childcontrol))
 			{
@@ -246,53 +284,26 @@ Composite::setControl(string cname, mrs_real value)
 			}
     }
   if (!controlFound)
+	{
     MRSWARN("Composite::setctrl - Unsupported control name = " + cname);
+		return false;
+	}
+	return true;
 }
 
-void
+bool
 Composite::setControl(string cname, mrs_natural value)
 {
   bool controlFound = false;
+  string childcontrol = cname.substr(prefix_.length()-1, cname.length()-(prefix_.length()-1));//includes leading "/" [!]
   
-  string prefix = "/" + getType() + "/" + getName();
-  string childcontrol = cname.substr(prefix.length(), cname.length()-prefix.length());
-  //string nchildcontrol = childcontrol.substr(1, childcontrol.length());
-  
-  if (hasControlLocal(cname))
-    {
-      controlFound = true;
-      ncontrols_.updControl(cname,value);
-      return;
-    }
-
-  for (mrs_natural i=0; i< marsystemsSize_; i++)
-    {
-      if (marsystems_[i]->hasControl(childcontrol))
-			{
-				controlFound = true;
-				marsystems_[i]->setControl(childcontrol,value);
-			}
-    }
-  
-  if (!controlFound)
-    MRSWARN("Composite::setctrl - Unsupported control name = " + cname);
-}
-
-void
-Composite::setControl(string cname, MarControlValue value)
-{
-  bool controlFound = false;
-  
-  string prefix = "/" + getType() + "/" + getName();
-  string childcontrol = cname.substr(prefix.length(), cname.length()-prefix.length());
-  //string nchildcontrol = childcontrol.substr(1, childcontrol.length());
- 
   if (hasControlLocal(cname))
   {
     controlFound = true;
-    ncontrols_.updControl(cname,value);
-    return;
+    updControl(cname,value);
+    return true;
   }
+
   for (mrs_natural i=0; i< marsystemsSize_; i++)
   {
     if (marsystems_[i]->hasControl(childcontrol))
@@ -301,24 +312,55 @@ Composite::setControl(string cname, MarControlValue value)
 			marsystems_[i]->setControl(childcontrol,value);
 		}
   }
+  
   if (!controlFound)
+	{
     MRSWARN("Composite::setctrl - Unsupported control name = " + cname);
+		return false;
+	}
+	return true;
+}
+
+bool
+Composite::setControl(string cname, MarControlPtr value)
+{
+  bool controlFound = false;
+
+  if (hasControlLocal(cname))
+  {
+    controlFound = true;
+		controls_[cname]->setValue(value,NOUPDATE);
+    return true;
+  }
+
+	string childcontrol = cname.substr(prefix_.length()-1, cname.length()-(prefix_.length()-1));//includes leading "/" [!]
+	for (mrs_natural i=0; i< marsystemsSize_; i++)
+  {
+    if (marsystems_[i]->hasControl(childcontrol))
+		{
+			controlFound = true;
+			marsystems_[i]->setControl(childcontrol,value);
+		}
+  }
+
+  if (!controlFound)
+	{
+    MRSWARN("Composite::setctrl - Unsupported control name = " + cname);
+		return false;
+	}
+	return true;
 }
 
 void 
-Composite::updControl(string cname, MarControlValue value)
+Composite::updControl(string cname, MarControlPtr control)
 { 
-  // check for synonyms - call recursively to resolve them 
-  map<string, vector<string> >::iterator ei;
-
   // remove prefix for synonyms
-  string prefix = "/" + getType() + "/" + getName() + "/";
-  string::size_type pos = cname.find(prefix, 0);
+  string::size_type pos = cname.find(prefix_, 0);
   string shortcname;
-  
-  if (pos == 0) 
-    shortcname = cname.substr(prefix.length(), cname.length());
-  
+  if (pos == 0)
+    shortcname = cname.substr(prefix_.length(), cname.length());//no leading "/", as expected for links [!]
+	// check for synonyms - call recursively to resolve them 
+	map<string, vector<string> >::iterator ei;
   ei = synonyms_.find(shortcname);
   if (ei != synonyms_.end())
   {
@@ -326,46 +368,29 @@ Composite::updControl(string cname, MarControlValue value)
     vector<string>::iterator si;
     for (si = synonymList.begin(); si != synonymList.end(); ++si)
 		{
-			updControl(prefix + *si, value);
+			updControl(prefix_ + *si, control);
 		}
   }
-  else
+  else //no link found...
   {
-    string prefix = "/" + getType() + "/" + getName();
-    string childcontrol = cname.substr(prefix.length(), cname.length()-prefix.length());
-    string nchildcontrol = childcontrol.substr(1, childcontrol.length());  
-    
+    string childcontrol = cname.substr(prefix_.length()-1, cname.length()-(prefix_.length()-1));//includes leading "/" [!]
+		string nchildcontrol = childcontrol.substr(1, childcontrol.length()); //no leading "/" [!]  
     bool controlFound = false;
     
     // check local controls 
     if (hasControlLocal(cname))
 		{
 			controlFound = true;
-			oldval_ = getControl(cname);
-			setControl(cname, value);
-			
-			if (hasControlState(cname) && (value != oldval_)) 
+			MarControlPtr oldval = getControl(cname);
+			setControl(cname, control);
+			if (hasControlState(cname) && (control != oldval)) 
 			{
 				update(); //update composite
-				// commented out by gtzan - probably redundant
-				//lmartins: AGREE! => code already executed by update()... [!]
-				/* 
-				dbg_ = getctrl("mrs_bool/debug").toBool();
-				mute_ = getctrl("mrs_bool/mute").toBool();
-				if ((inObservations_ != inTick_.getRows()) ||
-						(inSamples_ != inTick_.getCols())      ||
-						(onObservations_ != outTick_.getRows()) ||
-						(onSamples_ != outTick_.getCols()))
-				{
-					inTick_.create(inObservations_, inSamples_);
-					outTick_.create(onObservations_, onSamples_);
-				}
-				*/ 
 			}
 		}
     // lmartins: should find a way to avoid this hard-coded check... [!]
     // default controls - semantics of composites 
-    if ((nchildcontrol == "mrs_natural/inSamples")||
+		if ((nchildcontrol == "mrs_natural/inSamples")|| 
 				(nchildcontrol == "mrs_natural/inObservations")||
 				(nchildcontrol == "mrs_real/israte")||
 				//(nchildcontrol == "mrs_natural/onSamples")|| //lmartins: does it make any sense to check for this control?![?]
@@ -375,24 +400,24 @@ Composite::updControl(string cname, MarControlValue value)
 				(nchildcontrol == "mrs_string/inObsNames"))//||
 				//(nchildcontrol == "mrs_string/onObsNames")) //lmartins: does it make any sense to check for this control?![?]
 		{
-			marsystems_[0]->updctrl(nchildcontrol, value);
+			if (marsystemsSize_ > 0)
+			{
+				marsystems_[0]->updctrl(nchildcontrol, control);
+			}
 			update();
 			return;
 		}
- 		else//if(!hasControlLocal(cname)) 
+ 		else//if(!hasControlLocal(cname)) => no local controls!
 		{
-			//if control control is not from composite,
+			//if control is not from composite,
 			//check if it exists among the children composites and update them
 			for (mrs_natural i=0; i< marsystemsSize_; i++)
 			{
 				if (marsystems_[i]->hasControl(childcontrol))
 				{
 					controlFound = true;
-					MarControlValue oldval;
-					oldval = marsystems_[i]->getControl(childcontrol);
-					marsystems_[i]->updControl(childcontrol, value); //updcontrol or setcontrol?! [!]
-					if (marsystems_[i]->hasControlState(childcontrol) && 
-						 (value != oldval))
+					marsystems_[i]->updControl(childcontrol, control); //updcontrol or setcontrol?! [!]
+					if (marsystems_[i]->hasControlState(childcontrol))
 					{
 						update();
 					}
@@ -403,128 +428,154 @@ Composite::updControl(string cname, MarControlValue value)
     if (!controlFound) 
 		{
 			MRSWARN("Composite::updControl - Unsupported control name = " + cname);
-			MRSWARN("Composite::updControl - Composite name = " + getName());
+			MRSWARN("Composite::updControl - Composite name = " + name_);
 		}
   }
 }
 
-MarControlValue
-Composite::getctrl(const string& cname)
+void
+Composite::controlUpdate(MarControlPtr cvalue)
 {
-  string ctrl("/");
-  ctrl.reserve(getType().size() + getName().size() + cname.size() + 3);
-  ctrl.append(getType());
-  ctrl.append("/");
-  ctrl.append(getName());
-  ctrl.append("/");
-  ctrl.append(cname);
-  return getControl(ctrl);
+	//this method is called by MarControl each time the value of
+	//the control (if it has state) is modified
+
+	//check if this object owns the control //is this really needed? [!]
+	//if(cvalue.getMarSystem() != this || getControl(cvalue.getName())->getType() == 0)
+	//	return;
+
+	//if(!cvalue.hasState()) //[!] this check is already performed at MarControlValue.cpp... [!]
+	//	 return;
+
+	string cname = cvalue->getName();
+	string shortcname = cname.substr(prefix_.length(), cname.length()-prefix_.length()); //no leading "/" [!]
+
+	// check local controls 
+	if (hasControlLocal(cname))
+	{
+		update(); //update composite
+	}
+	
+	// lmartins: should find a way to avoid this hard-coded check... [!]
+	// default controls - semantics of composites 
+	if ((shortcname == "mrs_natural/inSamples")||
+			(shortcname == "mrs_natural/inObservations")||
+			(shortcname == "mrs_real/israte")||
+			(shortcname == "mrs_string/inObsNames"))
+	{
+		//marsystems_[0]->updctrl(childcontrol, cvalue);
+		marsystems_[0]->getctrl(shortcname)->setValue(cvalue, true);
+		update();
+		return;
+	}
 }
 
-
-MarControlValue
-Composite::getControl(const string& cname)
+MarControlPtr
+Composite::getctrl(string cname)
 {
-  // check for synonyms - call recursively to resolve them 
-  map<string, vector<string> >::const_iterator ei;
-  
-  // remove prefix for synonyms
-  string prefix = "/" + getType() + "/" + getName() + "/";
-  string::size_type pos = cname.find(prefix, 0);
-  string shortcname;
-  
-  if (pos == 0) 
-    shortcname = cname.substr(prefix.length(), cname.length());
+  //MarControlValue v = getControl(type_ + "/" + name_ + "/" + cname);
+	return getControl(prefix_ + cname);  
+}
 
-  ei = synonyms_.find(shortcname);
-  
-  if (ei != synonyms_.end())
-    {
-      const vector<string>& synonymList = ei->second;
-      vector<string>::const_iterator si;
-      for (si = synonymList.begin(); si != synonymList.end(); ++si)
+MarControlPtr
+Composite::getControl(string cname)
+{
+	// check for synonyms - call recursively to resolve them 
+	map<string, vector<string> >::iterator ei;
+
+	// remove prefix for synonyms
+	string::size_type pos = cname.find(prefix_, 0);
+	string shortcname;
+
+	if (pos == 0) 
+		shortcname = cname.substr(prefix_.length(), cname.length());//no leading "/", as expected for links [!] 
+
+	ei = synonyms_.find(shortcname);
+	if (ei != synonyms_.end())
+	{
+		vector<string> synonymList = synonyms_[shortcname];
+		vector<string>::iterator si;
+		for (si = synonymList.begin(); si != synonymList.end(); ++si)
+		{
+			return getControl(prefix_ + *si);
+		}
+	}
+	else 
+	{
+		string childcontrol = cname.substr(prefix_.length()-1, cname.length()-(prefix_.length()-1));//includes leading "/" [!]
+
+		bool controlFound = false;      
+
+		if (hasControlLocal(cname))
+		{
+			controlFound = true;
+			return controls_[cname];
+		}
+
+		//lmartins: [!]
+		//Contrary to the similar code block in updControl(),
+		//this code does not seem to be doing anything here! 
+		//(if check is true, it was also true before and so it 
+		//already returned to calling code on the previous "if"!) => commenting out!
+		//
+		// default composite controls 
+		//       if ((nchildcontrol == "mrs_natural/inSamples")||
+		// 					(nchildcontrol == "mrs_natural/inObservations")||
+		// 					(nchildcontrol == "mrs_real/israte")||
+		// 					(nchildcontrol == "mrs_natural/onSamples")||
+		// 					(nchildcontrol == "mrs_natural/onObservations")||
+		// 					(nchildcontrol == "mrs_real/osrate")||
+		// 					(nchildcontrol == "mrs_bool/debug") ||
+		// 					(nchildcontrol == "mrs_string/inObsNames")||
+		// 					(nchildcontrol == "mrs_string/onObsNames"))
+		// 				{
+		// 					return ncontrols_->getControl(cname);
+		// 				}
+
+		for (mrs_natural i=0; i< marsystemsSize_; i++)
+		{
+			if (marsystems_[i]->hasControl(childcontrol))
 			{
-				return getControl(prefix + *si);
-			}
-    }
-  else 
-    {
-      //string prefix = "/" + getType() + "/" + getName();
-      string childcontrol = cname.substr(prefix.length() - 1, cname.length() - prefix.length() + 1);
-      //string nchildcontrol = childcontrol.substr(1, childcontrol.length());
-      bool controlFound = false;      
-    
-      if (hasControlLocal(cname))
-			{
+				MarControlPtr v =  marsystems_[i]->getControl(childcontrol);
 				controlFound = true;
-				return ncontrols_.getControl(cname);
+				return v;
 			}
-        
-      //lmartins: [!]
-			//Contrary to the similar code block in updControl(),
-			//this code does not seem to be doing anything here! 
-			//(if check is true, it was also true before and so it 
-			//already returned to calling code on the previous "if"!) => commenting out!
-      //
-			// default composite controls 
-//       if ((nchildcontrol == "mrs_natural/inSamples")||
-// 					(nchildcontrol == "mrs_natural/inObservations")||
-// 					(nchildcontrol == "mrs_real/israte")||
-// 					(nchildcontrol == "mrs_natural/onSamples")||
-// 					(nchildcontrol == "mrs_natural/onObservations")||
-// 					(nchildcontrol == "mrs_real/osrate")||
-// 					(nchildcontrol == "mrs_bool/debug") ||
-// 					(nchildcontrol == "mrs_string/inObsNames")||
-// 					(nchildcontrol == "mrs_string/onObsNames"))
-// 				{
-// 					return ncontrols_.getControl(cname);
-// 				}
+		}
 
-      for (mrs_natural i=0; i< marsystemsSize_; i++)
-			{
-				if (marsystems_[i]->hasControl(childcontrol))
-					{
-						MarControlValue v;
-						v =  marsystems_[i]->getControl(childcontrol);
-						controlFound = true;
-						return v;
-					}
-			}
-    
-      if (!controlFound)
-			{
-				MRSWARN("Composite::getctrl - Unsupported control name = " + cname);
-				return (mrs_natural)0;
-			}
-    }
+		if (!controlFound)
+		{
+			MRSWARN("Composite::getctrl - Unsupported control name = " + cname);
+			//return (mrs_natural)0;
+			return MarControlPtr();
+		}
+	}
 
-  return (mrs_natural)0;
+	//return (mrs_natural)0;
+	return MarControlPtr();
 }
 
 ostream& 
 Composite::put(ostream& o) 
 {
   o << "# MarSystemComposite" << endl;
-  o << "# Type = " << getType() << endl;
-  o << "# Name = " << getName() << endl;
+  o << "# Type = " << type_ << endl;
+  o << "# Name = " << name_ << endl;
   
   o << endl;
-  o << ncontrols_ << endl;
+  o << controls_ << endl;
 
   map<string,vector<string> >::iterator mi;
   o << "# Number of links = " << synonyms_.size() << endl;
 
   for (mi = synonyms_.begin(); mi != synonyms_.end(); ++mi)
-    {
-      vector<string> syns = mi->second;
-      vector<string>::iterator vi;
-      string prefix = "/" + getType() + "/" + getName() + "/";
-      o << "# Synonyms of " << prefix + mi->first << " = " << endl;
-      o << "# Number of synonyms = " << syns.size() << endl;
-    
-      for (vi = syns.begin(); vi != syns.end(); ++vi) 
-	o << "# " << prefix + *vi << endl;
-    }
+  {
+    vector<string> syns = mi->second;
+    vector<string>::iterator vi;
+    o << "# Synonyms of " << prefix_ + mi->first << " = " << endl;
+    o << "# Number of synonyms = " << syns.size() << endl;
+  
+    for (vi = syns.begin(); vi != syns.end(); ++vi) 
+			o << "# " << prefix_ + *vi << endl;
+  }
   
   o << endl;
   o << "# nComponents = " << marsystemsSize_ << endl;
@@ -541,7 +592,8 @@ Composite::localActivate(bool state)
   //call activate for all Composite's components
   for (mrs_natural i=0; i< marsystemsSize_; i++)
     {
-      marsystems_[i]->activate(state);
+      //marsystems_[i]->activate(state);
+			marsystems_[i]->updctrl("mrs_bool/active", state); //thread-safe
     }
 }
 

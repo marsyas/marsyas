@@ -59,17 +59,17 @@ PlotSink::addControls()
 }
 
 void 
-PlotSink::process(realvec& in, realvec& out)
+PlotSink::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   
   
-  mrs_natural nObservations = getctrl("mrs_natural/inObservations").toNatural();
-  mrs_natural nSamples = getctrl("mrs_natural/inSamples").toNatural();
+  mrs_natural nObservations = getctrl("mrs_natural/inObservations")->toNatural();
+  mrs_natural nSamples = getctrl("mrs_natural/inSamples")->toNatural();
 
-  string sep = getctrl("mrs_string/separator").toString();
-  bool seq = getctrl("mrs_bool/sequence").toBool();
-  string outName = getctrl("mrs_string/outputFilename").toString();
+  string sep = getctrl("mrs_string/separator")->toString();
+  bool seq = getctrl("mrs_bool/sequence")->toBool();
+  string outName = getctrl("mrs_string/outputFilename")->toString();
   counter_++;
   
   if (!seq) 

@@ -47,21 +47,21 @@ StandardDeviation::clone() const
 }
 
 void
-StandardDeviation::localUpdate()
+StandardDeviation::myUpdate()
 {
-  MRSDIAG("StandardDeviation.cpp - StandardDeviation:localUpdate");
+  MRSDIAG("StandardDeviation.cpp - StandardDeviation:myUpdate");
   
 	setctrl("mrs_natural/onSamples", (mrs_natural)1);
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations").toNatural());
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal());
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural());
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
 
-  obsrow_.create(getctrl("mrs_natural/inSamples").toNatural());
+  obsrow_.create(getctrl("mrs_natural/inSamples")->toNatural());
   
 	//defaultUpdate();
-	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
 
 	ostringstream oss;
-  string inObsNames = getctrl("mrs_string/inObsNames").toString();
+  string inObsNames = getctrl("mrs_string/inObsNames")->toString();
   for (int i = 0; i < inObservations_; i++)
   {
     string inObsName;
@@ -76,7 +76,7 @@ StandardDeviation::localUpdate()
 }
 
 void 
-StandardDeviation::process(realvec& in, realvec& out)
+StandardDeviation::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   

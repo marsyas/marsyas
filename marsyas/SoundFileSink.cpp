@@ -94,7 +94,7 @@ SoundFileSink::addControls()
 void
 SoundFileSink::putHeader()
 {
-  string filename = getctrl("mrs_string/filename").toString();
+  string filename = getctrl("mrs_string/filename")->toString();
   dest_->putHeader(filename);
 }
 
@@ -141,7 +141,7 @@ SoundFileSink::putHeader()
 bool 
 SoundFileSink::checkType()
 {
-  string filename = getctrl("mrs_string/filename").toString();
+  string filename = getctrl("mrs_string/filename")->toString();
   // check if file exists
   if (filename != "defaultfile")
     {
@@ -193,10 +193,10 @@ SoundFileSink::checkType()
 }
 
 void 
-SoundFileSink::localUpdate()
+SoundFileSink::myUpdate()
 {
   
-  if (filename_ != getctrl("mrs_string/filename").toString())
+  if (filename_ != getctrl("mrs_string/filename")->toString())
     {
       if (checkType() == true)
 	{
@@ -206,7 +206,7 @@ SoundFileSink::localUpdate()
 	  dest_->update();
 
 	  putHeader();
-	  filename_ = getctrl("mrs_string/filename").toString();
+	  filename_ = getctrl("mrs_string/filename")->toString();
 	  
 	  setctrl("mrs_natural/nChannels", dest_->getctrl("mrs_natural/nChannels"));
 	  setctrl("mrs_real/israte", dest_->getctrl("mrs_real/israte"));
@@ -233,7 +233,7 @@ SoundFileSink::localUpdate()
   
 
 void 
-SoundFileSink::process(realvec& in, realvec& out)
+SoundFileSink::myProcess(realvec& in, realvec& out)
 {
   if (dest_ != NULL) 
     {
@@ -380,8 +380,8 @@ SoundFileSink::putFloat(mrs_natural c, realvec& win)
 /* void 
 SoundFileSink::putLinear16(mrs_natural c, realvec& slice)
 {
-  mrs_natural nChannels = getctrl("mrs_natural/nChannels").toNatural();
-  mrs_natural nSamples = getctrl("mrs_natural/inSamples").toNatural();
+  mrs_natural nChannels = getctrl("mrs_natural/nChannels")->toNatural();
+  mrs_natural nSamples = getctrl("mrs_natural/inSamples")->toNatural();
 
   for (t=0; t < nSamples; t++)
     {
@@ -407,8 +407,8 @@ SoundFileSink::putLinear16Swap(mrs_natural c, realvec& slice)
 {
 
   
-  mrs_natural nChannels = getctrl("mrs_natural/nChannels").toNatural();
-  mrs_natural nSamples = getctrl("mrs_natural/inSamples").toNatural();
+  mrs_natural nChannels = getctrl("mrs_natural/nChannels")->toNatural();
+  mrs_natural nSamples = getctrl("mrs_natural/inSamples")->toNatural();
   
   for (t=0; t < nSamples; t++)
     {

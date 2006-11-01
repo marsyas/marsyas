@@ -44,7 +44,7 @@ private:
   mrs_natural size_;  
   mrs_natural fileObs_;
   void addControls();
-	void localUpdate();
+	void myUpdate();
       
 public:
   ViconFileSource(std::string name);
@@ -52,7 +52,7 @@ public:
   MarSystem* clone() const;  
   
   void getHeader(std::string filename);
-  void process(realvec& in, realvec &out);
+  void myProcess(realvec& in, realvec &out);
 };
 
 }//namespace Marsyas

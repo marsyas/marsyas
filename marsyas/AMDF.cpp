@@ -49,9 +49,9 @@ AMDF::clone() const
 }
 
 void
-AMDF::localUpdate()
+AMDF::myUpdate()
 {
-  MRSDIAG("AMDF.cpp - AMDF:localUpdate");
+  MRSDIAG("AMDF.cpp - AMDF:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
@@ -61,11 +61,11 @@ AMDF::localUpdate()
 }
 
 void 
-AMDF::process(realvec& in, realvec& out)
+AMDF::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   
-  mrs_real gain = getctrl("mrs_real/gain").toReal();
+  mrs_real gain = getctrl("mrs_real/gain")->toReal();
   mrs_natural i,k;
   mrs_real temp;
   

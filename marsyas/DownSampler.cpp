@@ -56,22 +56,22 @@ DownSampler::addControls()
 }
 
 void
-DownSampler::localUpdate()
+DownSampler::myUpdate()
 {
-  MRSDIAG("DownSampler.cpp - DownSampler:localUpdate");
+  MRSDIAG("DownSampler.cpp - DownSampler:myUpdate");
   
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples").toNatural() / getctrl("mrs_natural/factor").toNatural());
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples")->toNatural() / getctrl("mrs_natural/factor")->toNatural());
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  mrs_natural factor = getctrl("mrs_natural/factor").toNatural();
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal() / factor);
+  mrs_natural factor = getctrl("mrs_natural/factor")->toNatural();
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal() / factor);
 }
 
 void 
-DownSampler::process(realvec& in, realvec& out)
+DownSampler::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 
-  mrs_natural factor = getctrl("mrs_natural/factor").toNatural();
+  mrs_natural factor = getctrl("mrs_natural/factor")->toNatural();
   for (o=0; o < inObservations_; o++)
     for (t = 0; t < inSamples_ / factor; t++)
     {

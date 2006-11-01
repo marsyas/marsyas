@@ -60,22 +60,22 @@ MemorySource::addControls()
 
 
 void
-MemorySource::localUpdate()
+MemorySource::myUpdate()
 {
-  MRSDIAG("MemorySource.cpp - MemorySource:localUpdate");
+  MRSDIAG("MemorySource.cpp - MemorySource:myUpdate");
   
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")  );
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal());
-  samplesToUse_ = getctrl("mrs_natural/samplesToUse").toNatural();
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
+  samplesToUse_ = getctrl("mrs_natural/samplesToUse")->toNatural();
   
-  if( getctrl("mrs_bool/done").toBool() ){
+  if( getctrl("mrs_bool/done")->isTrue()){
     count_ = 0;
-    setctrl("mrs_bool/done", (MarControlValue) false);
+    setctrl("mrs_bool/done", false);
   }
 }
 
 void 
-MemorySource::process(realvec& in, realvec& out)
+MemorySource::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 
@@ -96,7 +96,7 @@ MemorySource::process(realvec& in, realvec& out)
   }
   
   if( count_ >= 1 + (samplesToUse_ -1) / onSamples_ )
-    setctrl("mrs_bool/done", (MarControlValue) true);  
+    setctrl("mrs_bool/done", true);  
 }
 
 

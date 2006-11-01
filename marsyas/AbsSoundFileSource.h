@@ -37,7 +37,7 @@ public:
   virtual ~AbsSoundFileSource();
 
   virtual void getHeader(std::string filename) = 0;
-  virtual void process(realvec& in,realvec &out) = 0;
+  virtual void myProcess(realvec& in,realvec &out) = 0;
 
   // public for efficiency [!]
   mrs_natural pos_;

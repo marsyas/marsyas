@@ -39,14 +39,14 @@ private:
   //Add specific controls needed by this MarSystem.
 	void addControls();
 	
-	void localUpdate();
+	void myUpdate();
 
 public:
   PeResidual(std::string name);
   ~PeResidual();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

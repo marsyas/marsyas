@@ -58,7 +58,7 @@ AudioSource::clone() const
 void 
 AudioSource::addControls()
 {
-  addctrl("mrs_natural/nChannels",1);
+  addctrl("mrs_natural/nChannels", 1);
 	setctrlState("mrs_natural/nChannels", true);
 
 	#ifdef __OS_MACOSX__
@@ -72,23 +72,24 @@ AudioSource::addControls()
 }
 
 void 
-AudioSource::localUpdate()
+AudioSource::myUpdate()
 {
-  MRSDIAG("AudioSource::localUpdate");
+  MRSDIAG("AudioSource::myUpdate");
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-	nChannels_ = getctrl("mrs_natural/nChannels").toNatural();
+	nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();
   setctrl("mrs_natural/inObservations", nChannels_);
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 
-  bufferSize_ = (mrs_natural)getctrl("mrs_natural/bufferSize").toNatural();
+  bufferSize_ = (mrs_natural)getctrl("mrs_natural/bufferSize")->toNatural();
   
-  
+  initRtAudio();//[!]
+
   //resize reservoir if necessary
-  inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
-  inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
-  gain_ = getctrl("mrs_real/gain").toReal();
+  inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
+  inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
+  gain_ = getctrl("mrs_real/gain")->toReal();
 
   if (inSamples_ * inObservations_ < bufferSize_) 
     reservoirSize_ = 2 * inObservations_ * bufferSize_;
@@ -108,8 +109,8 @@ AudioSource::initRtAudio()
   //marsyas represents audio data as float numbers
 	RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
 
-	int rtSrate = (int)getctrl("mrs_real/israte").toReal();
-	int rtChannels = (int)getctrl("mrs_natural/nChannels").toNatural();
+	int rtSrate = (int)getctrl("mrs_real/israte")->toReal();
+	int rtChannels = (int)getctrl("mrs_natural/nChannels")->toNatural();
 
 	//create new RtAudio object (delete any existing one)
 	delete audio_;
@@ -127,27 +128,6 @@ AudioSource::initRtAudio()
 	//by RtAudio (see RtAudio documentation)
 	setctrl("mrs_natural/bufferSize", (mrs_natural)bufferSize_);
 
-
-	bufferSize_ = (mrs_natural)getctrl("mrs_natural/bufferSize").toNatural();
-  
-  
-	//resize reservoir if necessary
-	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
-	inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
-	
-	if (inSamples_ * inObservations_ < bufferSize_) 
-	  reservoirSize_ = 2 * inObservations_ * bufferSize_;
-	else 
-	  reservoirSize_ = 2 * inSamples_ * inObservations_;
-	
-	if (reservoirSize_ > preservoirSize_)
-	  {
-	    reservoir_.stretch(reservoirSize_);
-	  }
-	preservoirSize_ = reservoirSize_;
-	
-
-	
 	isInitialized_ = true;
 	//stopped_ = true;
 }
@@ -181,20 +161,16 @@ AudioSource::localActivate(bool state)
 }
 
 void 
-AudioSource::process(realvec& in, realvec& out)
+AudioSource::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 	
-  //check if RtAudio is initialized
-  if (!isInitialized_)
-    {
-      initRtAudio(); 
-      isInitialized_ = true;
-    }
-
+	//check if RtAudio is initialized
+	if (!isInitialized_)
+    return;
   
   //check MUTE
-  if(getctrl("mrs_bool/mute").toBool()) return;
+  if(getctrl("mrs_bool/mute")->isTrue()) return;
 
   //assure that RtAudio thread is running
   //(this may be needed by if an explicit call to start()

@@ -64,23 +64,23 @@ Memory::addControls()
 }
 
 void
-Memory::localUpdate()
+Memory::myUpdate()
 {
-  MRSDIAG("Memory.cpp - Memory:localUpdate");
+  MRSDIAG("Memory.cpp - Memory:myUpdate");
   
-  mrs_natural memSize = getctrl("mrs_natural/memSize").toNatural();
+  mrs_natural memSize = getctrl("mrs_natural/memSize")->toNatural();
   
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples").toNatural() * memSize);
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples")->toNatural() * memSize);
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal());
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
 
-  reset_ = getctrl("mrs_bool/reset").toBool();
+  reset_ = getctrl("mrs_bool/reset")->toBool();
 
   //defaultUpdate(); [!]
-	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
   
   ostringstream oss;
-  string inObsNames = getctrl("mrs_string/inObsNames").toString();
+  string inObsNames = getctrl("mrs_string/inObsNames")->toString();
   for (int i = 0; i < inObservations_; i++)
     {
       string inObsName;
@@ -98,19 +98,19 @@ Memory::localUpdate()
 
 
 void 
-Memory::process(realvec& in, realvec& out)
+Memory::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 
 
 
-  mrs_natural memSize = getctrl("mrs_natural/memSize").toNatural();
+  mrs_natural memSize = getctrl("mrs_natural/memSize")->toNatural();
 
   if (reset_) 
     {
       out.setval(0.0);
       reset_ = false;
-      setctrl("mrs_bool/reset", (MarControlValue)false);
+      setctrl("mrs_bool/reset", false);
       end_ = 0;
     }
   
@@ -123,8 +123,7 @@ Memory::process(realvec& in, realvec& out)
 	  out(o, end_ * inSamples_) = in(o,t);
 	}
     }
-  end_ = (end_ + 1) % memSize; 		// circular buffer index 
-  
+  end_ = (end_ + 1) % memSize; 		// circular buffer index  
 }
 
       

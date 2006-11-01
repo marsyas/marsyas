@@ -37,7 +37,7 @@ class ERB: public MarSystem
 {
 private: 
   void addControls();
-	void localUpdate();
+	void myUpdate();
   
   mrs_real lowFreq;
   mrs_real highFreq;
@@ -72,7 +72,7 @@ public:
   
   MarSystem* clone() const;
 
-  void process(realvec& in, realvec& out); 
+  void myProcess(realvec& in, realvec& out); 
 };
 
 }//namespace Marsyas

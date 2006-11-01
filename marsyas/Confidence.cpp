@@ -68,22 +68,22 @@ Confidence::addControls()
 }
 
 void
-Confidence::localUpdate()
+Confidence::myUpdate()
 {
-  MRSDIAG("Confidence.cpp - Confidence:localUpdate");
+  MRSDIAG("Confidence.cpp - Confidence:myUpdate");
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-  confidences_.stretch(getctrl("mrs_natural/nLabels").toNatural());
-  string labelNames = getctrl("mrs_string/labelNames").toString();
+  confidences_.stretch(getctrl("mrs_natural/nLabels")->toNatural());
+  string labelNames = getctrl("mrs_string/labelNames")->toString();
   
   labelNames_.clear();
 
-  print_ = getctrl("mrs_bool/print").toBool();
-  forcePrint_ = getctrl("mrs_bool/forcePrint").toBool();
+  print_ = getctrl("mrs_bool/print")->toBool();
+  forcePrint_ = getctrl("mrs_bool/forcePrint")->toBool();
     
-  for (mrs_natural i = 0; i < getctrl("mrs_natural/nLabels").toNatural(); i++)
+  for (mrs_natural i = 0; i < getctrl("mrs_natural/nLabels")->toNatural(); i++)
     {
       string labelName;
       string temp;
@@ -96,13 +96,13 @@ Confidence::localUpdate()
 }
 
 void 
-Confidence::process(realvec& in, realvec& out)
+Confidence::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
-  bool mute = getctrl("mrs_bool/mute").toBool();  
+  bool mute = getctrl("mrs_bool/mute")->toBool();  
   
-  mrs_natural memSize = getctrl("mrs_natural/memSize").toNatural();
-  mrs_natural nLabels = getctrl("mrs_natural/nLabels").toNatural();
+  mrs_natural memSize = getctrl("mrs_natural/memSize")->toNatural();
+  mrs_natural nLabels = getctrl("mrs_natural/nLabels")->toNatural();
   
   mrs_natural label;
   mrs_natural l;

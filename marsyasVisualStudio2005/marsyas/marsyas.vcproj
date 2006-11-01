@@ -167,7 +167,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(MATLAB)\extern\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MATLAB_ENGINE_ "
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;MARSYAS_MATLAB "
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -231,7 +231,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="&quot;$(MATLAB)\extern\include&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MATLAB_ENGINE_ "
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;MARSYAS_MATLAB "
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -508,7 +508,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\marsyas\MarControls.cpp"
+				RelativePath="..\..\marsyas\MarControl.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\MarControlManager.cpp"
 				>
 			</File>
 			<File
@@ -1134,7 +1138,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\marsyas\MarControls.h"
+				RelativePath="..\..\marsyas\MarControl.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\MarControlManager.h"
 				>
 			</File>
 			<File

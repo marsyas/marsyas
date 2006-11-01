@@ -48,7 +48,7 @@ WaveletStep::clone() const
 }
 
 void 
-WaveletStep::process(realvec& in, realvec& out) 
+WaveletStep::myProcess(realvec& in, realvec& out) 
 {
   checkFlow(in,out);
   

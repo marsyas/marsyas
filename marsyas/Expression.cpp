@@ -313,9 +313,9 @@ Val eval(bool* fail, MarSystem* target_, struct Expr* tree) {
             if (target_!=NULL) {
                 string s = "/"+target_->getType()+"/"+target_->getName()+"/"+tree->val;
                 if (target_->hasControl(s)) {
-                    MarControlValue v = target_->getctrl(tree->val);
-                    if (v.getType()==mar_real) { return (mrs_real)v.toReal(); }
-                    else if (v.getType()==mar_natural) { return (mrs_natural)v.toNatural(); }
+                    MarControlPtr v = target_->getctrl(tree->val);
+                    if (v->getType()==mar_real) { return (mrs_real)v->toReal(); }
+                    else if (v->getType()==mar_natural) { return (mrs_natural)v->toNatural(); }
                     COUGH("Expr (Eval): Controls must have mrs_real/mrs_natural values.");
                 } else { COUGH("Expr (Eval): Control does not exist."); }
             }

@@ -38,13 +38,13 @@ private:
   mrs_real b_;
   mrs_real q_;
 
-	void localUpdate();
+	void myUpdate();
 public:
   Skewness(std::string name);
   ~Skewness();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

@@ -100,23 +100,23 @@ CollectionFileSource::getHeader(string filename)
   updctrl("mrs_natural/numFiles", col_.getSize());  
 
   cindex_ = 0;
-  setctrl("mrs_natural/cindex", (mrs_natural)0);
-  setctrl("mrs_bool/notEmpty", (MarControlValue)true);
-  addctrl("mrs_natural/size", (mrs_natural)1); // just so it's not zero 
-  setctrl("mrs_natural/pos", (mrs_natural)0);
+  setctrl("mrs_natural/cindex", 0);
+  setctrl("mrs_bool/notEmpty", true);
+  addctrl("mrs_natural/size", 1); // just so it's not zero 
+  setctrl("mrs_natural/pos", 0);
   pos_ = 0;
 }
 
 void
-CollectionFileSource::localUpdate()
+CollectionFileSource::myUpdate()
 {
-	nChannels_ = getctrl("mrs_natural/nChannels").toNatural();  
-  inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
-  inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+	nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();  
+  inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
+  inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
   
-  nChannels_ = getctrl("mrs_natural/nChannels").toNatural();
-  filename_ = getctrl("mrs_string/filename").toString();    
-  pos_ = getctrl("mrs_natural/pos").toNatural();
+  nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();
+  filename_ = getctrl("mrs_string/filename")->toString();    
+  pos_ = getctrl("mrs_natural/pos")->toNatural();
   
   if (mngCreated_ == false) 
   {
@@ -125,16 +125,16 @@ CollectionFileSource::localUpdate()
     downsampler_ = new DownSampler("downsampler_"); 
   }
   
-  repetitions_ = getctrl("mrs_real/repetitions").toReal();
-  duration_ = getctrl("mrs_real/duration").toReal();
-  advance_ = getctrl("mrs_bool/advance").toBool();
-  cindex_ = getctrl("mrs_natural/cindex").toNatural();
+  repetitions_ = getctrl("mrs_real/repetitions")->toReal();
+  duration_ = getctrl("mrs_real/duration")->toReal();
+  advance_ = getctrl("mrs_bool/advance")->toBool();
+  cindex_ = getctrl("mrs_natural/cindex")->toNatural();
 
-  if (getctrl("mrs_bool/shuffle").toBool())
+  if (getctrl("mrs_bool/shuffle")->isTrue())
   {
     cout << "SHUFFLING" << endl;
     col_.shuffle();
-    setctrl("mrs_bool/shuffle", (MarControlValue)false);
+    setctrl("mrs_bool/shuffle", false);
   }
   
   if (cindex_ < col_.size()) 
@@ -143,7 +143,7 @@ CollectionFileSource::localUpdate()
     setctrl("mrs_string/currentlyPlaying", col_.entry(cindex_));
   }
   
-  israte_ = isrc_->getctrl("mrs_real/israte").toReal();
+  israte_ = isrc_->getctrl("mrs_real/israte")->toReal();
   setctrl("mrs_real/israte", israte_);
   setctrl("mrs_real/osrate", israte_);
 
@@ -176,11 +176,11 @@ CollectionFileSource::localUpdate()
   isrc_->updctrl("mrs_bool/advance", advance_);
   isrc_->updctrl("mrs_natural/cindex", cindex_);
   
-  cindex_ = getctrl("mrs_natural/cindex").toNatural();  
+  cindex_ = getctrl("mrs_natural/cindex")->toNatural();  
 }
 
 void
-CollectionFileSource::process(realvec& in, realvec &out)
+CollectionFileSource::myProcess(realvec& in, realvec &out)
 {
 	checkFlow(in,out);
   
@@ -189,7 +189,7 @@ CollectionFileSource::process(realvec& in, realvec &out)
     cindex_ = cindex_ + 1;
     if (cindex_ >= col_.size() -1)  
 		{
-			setctrl("mrs_bool/notEmpty", (MarControlValue)false);
+			setctrl("mrs_bool/notEmpty", false);
 			notEmpty_ = false;      
 			advance_ = false;
 		}
@@ -198,7 +198,7 @@ CollectionFileSource::process(realvec& in, realvec &out)
 
 		isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));   
 		updctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));   
-		israte_ = isrc_->getctrl("mrs_real/israte").toReal();
+		israte_ = isrc_->getctrl("mrs_real/israte")->toReal();
 
 		setctrl("mrs_real/israte", israte_);
 		setctrl("mrs_real/osrate", israte_);
@@ -207,14 +207,14 @@ CollectionFileSource::process(realvec& in, realvec &out)
 		{
 		 isrc_->process(tempi_,temp_);
 		 setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
-		 setctrl("mrs_bool/notEmpty", (MarControlValue)isrc_->getctrl("mrs_bool/notEmpty"));
+		 setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
 		 downsampler_->process(temp_,out);
 		}
 		else 
 		{
 		 isrc_->process(in,out);
 		 setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
-		 setctrl("mrs_bool/notEmpty", (MarControlValue)isrc_->getctrl("mrs_bool/notEmpty"));
+		 setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
 		}
     
 		update();      
@@ -226,17 +226,17 @@ CollectionFileSource::process(realvec& in, realvec &out)
 		{
 			isrc_->process(tempi_,temp_);
 			setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
-			setctrl("mrs_bool/notEmpty", (MarControlValue)isrc_->getctrl("mrs_bool/notEmpty"));
+			setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
 			downsampler_->process(temp_,out);
 		}
     else 
 		{
 			isrc_->process(in,out);
 			setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
-			setctrl("mrs_bool/notEmpty", (MarControlValue)isrc_->getctrl("mrs_bool/notEmpty"));
+			setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
 		}
 
-    if (isrc_->getctrl("mrs_bool/notEmpty").toBool() == false)
+    if (!isrc_->getctrl("mrs_bool/notEmpty")->isTrue())
 		{
 			if (cindex_ < col_.size() -1)
 			{
@@ -245,13 +245,13 @@ CollectionFileSource::process(realvec& in, realvec &out)
 				 isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));      
 				 isrc_->updctrl("mrs_natural/pos", 0);     
 				 pos_ = 0;
-				 israte_ = isrc_->getctrl("mrs_real/israte").toReal();
+				 israte_ = isrc_->getctrl("mrs_real/israte")->toReal();
 				 setctrl("mrs_real/israte", israte_);
 				 setctrl("mrs_real/osrate", israte_);
 			}
 			else 
 			{
-				setctrl("mrs_bool/notEmpty", (MarControlValue)false);
+				setctrl("mrs_bool/notEmpty", false);
 				notEmpty_ = false;
 			}
 		}

@@ -34,14 +34,14 @@ class Reassign: public MarSystem
 {
 private: 
   realvec flag_;
-	void localUpdate();
+	void myUpdate();
 
 public:
   Reassign(std::string name);
   ~Reassign();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

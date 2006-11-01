@@ -68,18 +68,18 @@ PCA::addControls()
 }
 
 void
-PCA::localUpdate()
+PCA::myUpdate()
 {
-  MRSDIAG("PCA.cpp - PCA:localUpdate");
+  MRSDIAG("PCA.cpp - PCA:myUpdate");
    
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/npc"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
-  onObservations_ = getctrl("mrs_natural/onObservations").toNatural();
+  inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
+  onObservations_ = getctrl("mrs_natural/onObservations")->toNatural();
   
-  npc_ = getctrl("mrs_natural/npc").toNatural();
+  npc_ = getctrl("mrs_natural/npc")->toNatural();
     
   if( npcs_.getRows() != inObservations_ || npcs_.getCols() != npc_ )
       npcs_.create(inObservations_,npc_);
@@ -105,7 +105,7 @@ PCA::localUpdate()
 }
 
 void 
-PCA::process(realvec& in, realvec& out)
+PCA::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
       

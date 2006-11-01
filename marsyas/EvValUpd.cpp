@@ -28,10 +28,10 @@
 using namespace std;
 using namespace Marsyas;
 
-EvValUpd::EvValUpd(string cname, MarControlValue val) {
+EvValUpd::EvValUpd(string cname, MarControlPtr val) {
     event_type_ = "UpdateValue"; set(NULL,cname,val);
 }
-EvValUpd::EvValUpd(MarSystem* ms, string cname, MarControlValue val) {
+EvValUpd::EvValUpd(MarSystem* ms, string cname, MarControlPtr val) {
     event_type_ = "UpdateValue"; set(ms,cname,val);
 }
 EvValUpd::EvValUpd(EvValUpd& e) {
@@ -41,13 +41,13 @@ EvValUpd::EvValUpd(EvValUpd& e) {
 EvValUpd::~EvValUpd() { }
 
 string EvValUpd::getCName() const { return cname_; }
-MarControlValue EvValUpd::getValue() const { return value_; }
+MarControlPtr EvValUpd::getValue() const { return value_; }
 MarSystem* EvValUpd::getTarget() const { return target_; }
 
 void EvValUpd::setCName(string cname) { cname_=cname; }
-void EvValUpd::setValue(MarControlValue value) { value_=value; }
+void EvValUpd::setValue(MarControlPtr value) { value_=value; }
 void EvValUpd::setTarget(MarSystem* ms) { target_=ms; }
-void EvValUpd::set(MarSystem* ms, string cname, MarControlValue value) {
+void EvValUpd::set(MarSystem* ms, string cname, MarControlPtr value) {
     target_=ms; cname_=cname; value_=value; event_type_ = "UpdateValue";
 }
 

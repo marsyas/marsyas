@@ -27,12 +27,6 @@ according to current input time (t)
 
 #include "PvFold.h"
 
-
-#ifdef _MATLAB_ENGINE_
-#include "MATLABengine.h"
-#endif 
-
-
 using namespace std;
 using namespace Marsyas;
 
@@ -75,15 +69,15 @@ PvFold::addControls()
 
 
 void
-PvFold::localUpdate()
+PvFold::myUpdate()
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/FFTSize"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
   
-  N_ = getctrl("mrs_natural/onSamples").toNatural();
-  Nw_ = getctrl("mrs_natural/inSamples").toNatural();
-  D_ = getctrl("mrs_natural/Decimation").toNatural();
+  N_ = getctrl("mrs_natural/onSamples")->toNatural();
+  Nw_ = getctrl("mrs_natural/inSamples")->toNatural();
+  D_ = getctrl("mrs_natural/Decimation")->toNatural();
 
   // create analysis window if necessary
   if (Nw_ != PNw_)
@@ -125,7 +119,7 @@ PvFold::localUpdate()
 }
 
 void 
-PvFold::process(realvec& in, realvec& out)
+PvFold::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   
@@ -145,11 +139,8 @@ PvFold::process(realvec& in, realvec& out)
 	n_ = 0;
     }
 	
-//#ifdef _MATLAB_ENGINE_
-//	MATLAB->putVariable(out, "peaks");
-//	MATLAB->evalString("plot(peaks)");
-//#endif 
-
+//	MATLAB_PUT(out, "peaks");
+//	MATLAB_EVAL("plot(peaks)");
 }
 
 

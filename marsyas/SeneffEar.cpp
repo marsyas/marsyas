@@ -62,9 +62,9 @@ SeneffEar::addControls()
 }
 
 void 
-SeneffEar::localUpdate()
+SeneffEar::myUpdate()
 {
-  MRSDIAG("SeneffEar.cpp - SeneffEar:localUpdate");
+  MRSDIAG("SeneffEar.cpp - SeneffEar:myUpdate");
 
   ostringstream name;
 
@@ -274,12 +274,12 @@ SeneffEar::localUpdate()
 
     //reset the state vector of each filter
     realvec state;
-    state.create(SeneffPreemphasisFilter->getctrl("mrs_realvec/state").toVec().getRows(),SeneffPreemphasisFilter->getctrl("mrs_realvec/state").toVec().getCols());
+    state.create(SeneffPreemphasisFilter->getctrl("mrs_realvec/state")->toVec().getRows(),SeneffPreemphasisFilter->getctrl("mrs_realvec/state")->toVec().getCols());
     SeneffPreemphasisFilter->setctrl("mrs_natural/stateUpdate", mrs_natural(1));
     SeneffPreemphasisFilter->updctrl("mrs_realvec/state", state);
     SeneffPreemphasisFilter->setctrl("mrs_natural/stateUpdate", mrs_natural(0));
 
-    state.create(SeneffFilterBank->getctrl("Filter/filter_0/mrs_realvec/state").toVec().getRows(),SeneffFilterBank->getctrl("Filter/filter_0/mrs_realvec/state").toVec().getCols());
+    state.create(SeneffFilterBank->getctrl("Filter/filter_0/mrs_realvec/state")->toVec().getRows(),SeneffFilterBank->getctrl("Filter/filter_0/mrs_realvec/state")->toVec().getCols());
     for (mrs_natural i = 0; i < channels; i++) {
       name.clear();
       name.str("");
@@ -295,7 +295,7 @@ SeneffEar::localUpdate()
       SeneffFilterBank->setctrl(name.str(), mrs_natural(0));
     }
 
-    state.create(resonatorFilter->getctrl("Filter/filter_0/mrs_realvec/state").toVec().getRows(),resonatorFilter->getctrl("Filter/filter_0/mrs_realvec/state").toVec().getCols());
+    state.create(resonatorFilter->getctrl("Filter/filter_0/mrs_realvec/state")->toVec().getRows(),resonatorFilter->getctrl("Filter/filter_0/mrs_realvec/state")->toVec().getCols());
     for (mrs_natural i = 0; i < channels; i++) {
       name.clear();
       name.str("");
@@ -355,8 +355,8 @@ SeneffEar::localUpdate()
 
   //--------------------------------------------------------------------------------
   //compute the FFT then find the gain peak then divide each forward polynomial by the maximum gain (to normalize) and then multiply by the desired low frequency roll-off.
-  if (fs != getctrl("mrs_real/israte").toReal()) {
-    fs = getctrl("mrs_real/israte").toReal();
+  if (fs != getctrl("mrs_real/israte")->toReal()) {
+    fs = getctrl("mrs_real/israte")->toReal();
     fft fft;
     realvec Y(y.getCols());
     mrs_real *Yd = Y.getData();
@@ -394,8 +394,8 @@ SeneffEar::localUpdate()
   SeneffPreemphasisFilter->setctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
   SeneffPreemphasisFilter->setctrl("mrs_real/israte", getctrl("mrs_real/israte"));
   SeneffPreemphasisFilter->update();
-  if (slice_0.getSize() != SeneffPreemphasisFilter->getctrl("mrs_natural/onObservations").toNatural() * SeneffPreemphasisFilter->getctrl("mrs_natural/onSamples").toNatural()) {
-    slice_0.create(SeneffPreemphasisFilter->getctrl("mrs_natural/onObservations").toNatural(), SeneffPreemphasisFilter->getctrl("mrs_natural/onSamples").toNatural());
+  if (slice_0.getSize() != SeneffPreemphasisFilter->getctrl("mrs_natural/onObservations")->toNatural() * SeneffPreemphasisFilter->getctrl("mrs_natural/onSamples")->toNatural()) {
+    slice_0.create(SeneffPreemphasisFilter->getctrl("mrs_natural/onObservations")->toNatural(), SeneffPreemphasisFilter->getctrl("mrs_natural/onSamples")->toNatural());
   }
 
   //SeneffFilterBank filters cascade update
@@ -403,8 +403,8 @@ SeneffEar::localUpdate()
   SeneffFilterBank->setctrl("Filter/filter_0/mrs_natural/inObservations", SeneffPreemphasisFilter->getctrl("mrs_natural/onObservations"));
   SeneffFilterBank->setctrl("Filter/filter_0/mrs_real/israte", SeneffPreemphasisFilter->getctrl("mrs_real/osrate"));
   SeneffFilterBank->update();
-  if (slice_1.getSize() != SeneffFilterBank->getctrl("mrs_natural/onObservations").toNatural() * SeneffFilterBank->getctrl("mrs_natural/onSamples").toNatural()) {
-    slice_1.create(SeneffFilterBank->getctrl("mrs_natural/onObservations").toNatural(), SeneffFilterBank->getctrl("mrs_natural/onSamples").toNatural());
+  if (slice_1.getSize() != SeneffFilterBank->getctrl("mrs_natural/onObservations")->toNatural() * SeneffFilterBank->getctrl("mrs_natural/onSamples")->toNatural()) {
+    slice_1.create(SeneffFilterBank->getctrl("mrs_natural/onObservations")->toNatural(), SeneffFilterBank->getctrl("mrs_natural/onSamples")->toNatural());
   }
 
   //resonatorFilter update
@@ -417,8 +417,8 @@ SeneffEar::localUpdate()
   }
   resonatorFilter->setctrl("Filter/filter_0/mrs_real/israte", SeneffFilterBank->getctrl("mrs_real/osrate"));
   resonatorFilter->update();
-  if (slice_2.getSize() != resonatorFilter->getctrl("mrs_natural/onObservations").toNatural() * resonatorFilter->getctrl("mrs_natural/onSamples").toNatural()) {
-    slice_2.create(resonatorFilter->getctrl("mrs_natural/onObservations").toNatural(), resonatorFilter->getctrl("mrs_natural/onSamples").toNatural());
+  if (slice_2.getSize() != resonatorFilter->getctrl("mrs_natural/onObservations")->toNatural() * resonatorFilter->getctrl("mrs_natural/onSamples")->toNatural()) {
+    slice_2.create(resonatorFilter->getctrl("mrs_natural/onObservations")->toNatural(), resonatorFilter->getctrl("mrs_natural/onSamples")->toNatural());
   }
 
   //lowPassFilter update
@@ -426,8 +426,8 @@ SeneffEar::localUpdate()
   lowPassFilter->setctrl("mrs_natural/inObservations", resonatorFilter->getctrl("mrs_natural/onObservations"));
   lowPassFilter->setctrl("mrs_real/israte", resonatorFilter->getctrl("mrs_real/osrate"));
   lowPassFilter->update();
-  if (slice_3.getSize() != lowPassFilter->getctrl("mrs_natural/onObservations").toNatural() * lowPassFilter->getctrl("mrs_natural/onSamples").toNatural()) {
-    slice_3.create(lowPassFilter->getctrl("mrs_natural/onObservations").toNatural(), lowPassFilter->getctrl("mrs_natural/onSamples").toNatural());
+  if (slice_3.getSize() != lowPassFilter->getctrl("mrs_natural/onObservations")->toNatural() * lowPassFilter->getctrl("mrs_natural/onSamples")->toNatural()) {
+    slice_3.create(lowPassFilter->getctrl("mrs_natural/onObservations")->toNatural(), lowPassFilter->getctrl("mrs_natural/onSamples")->toNatural());
   }
 
   //AGCfilter update
@@ -438,7 +438,7 @@ SeneffEar::localUpdate()
 
   //this update
   setctrl("mrs_natural/onSamples", AGCfilter->getctrl("mrs_natural/onSamples"));
-  setctrl("mrs_natural/onObservations", AGCfilter->getctrl("mrs_natural/onObservations").toNatural());
+  setctrl("mrs_natural/onObservations", AGCfilter->getctrl("mrs_natural/onObservations")->toNatural());
   setctrl("mrs_real/osrate", AGCfilter->getctrl("mrs_real/osrate"));
 }
 
@@ -475,14 +475,14 @@ SeneffEar::polyFlip(realvec& a)
 
 
 void 
-SeneffEar::process(realvec& in, realvec& out)
+SeneffEar::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in, out);
   //lmartins: if (mute_) return;
-	if(getctrl("mrs_bool/mute").toBool()) return;
+	if(getctrl("mrs_bool/mute")->toBool()) return;
 
   mrs_natural s = 0;
-  stage = getctrl("mrs_natural/stage").toNatural();
+  stage = getctrl("mrs_natural/stage")->toNatural();
 
   SeneffPreemphasisFilter->process(in, slice_0);
   SeneffFilterBank->process(slice_0, slice_1);

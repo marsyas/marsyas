@@ -36,7 +36,7 @@ class Fanin: public Composite
 {
 private:
   // vector<realvec*> slices_;
-	void localUpdate();
+	void myUpdate();
   void deleteSlices();
   
 public:
@@ -45,7 +45,7 @@ public:
   ~Fanin();
   MarSystem* clone() const;  
 
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

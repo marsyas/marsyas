@@ -55,13 +55,13 @@ SineSource::addControls()
 }
 
 void
-SineSource::localUpdate()
+SineSource::myUpdate()
 {
 
 //   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 //   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 //   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-	MarSystem::localUpdate();
+	MarSystem::myUpdate();
 
   wavetableSize_ = 8192;
   wavetable_.create((mrs_natural)wavetableSize_);
@@ -76,12 +76,12 @@ SineSource::localUpdate()
 
 
 void 
-SineSource::process(realvec &in, realvec &out)
+SineSource::myProcess(realvec &in, realvec &out)
 {
   checkFlow(in,out);
 
   //lmartins: if (mute_)
-	if(getctrl("mrs_bool/mute").toBool())
+	if(getctrl("mrs_bool/mute")->toBool())
     {
       out.setval(0.0);
       return;
@@ -90,12 +90,12 @@ SineSource::process(realvec &in, realvec &out)
 
 
   
-  mrs_real incr = (getctrl("mrs_real/frequency").toReal() * wavetableSize_) / (getctrl("mrs_real/israte").toReal());
+  mrs_real incr = (getctrl("mrs_real/frequency")->toReal() * wavetableSize_) / (getctrl("mrs_real/israte")->toReal());
 
   
   
   
-  mrs_natural inSamples = getctrl("mrs_natural/inSamples").toNatural();
+  mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
   
   for (t=0; t < inSamples; t++)
     {

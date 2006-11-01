@@ -53,7 +53,7 @@ private:
   mrs_natural size_, psize_;
 
   void addControls();
-	void localUpdate();
+	void myUpdate();
 
 public:
   PvConvert(std::string name);
@@ -61,7 +61,7 @@ public:
   ~PvConvert();
   MarSystem* clone() const;    
 
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
   void process1(realvec& in, realvec& out);
   
 };

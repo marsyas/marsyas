@@ -39,7 +39,7 @@ private:
   fft myfft_;
   realvec tempVec_;
 
-	void localUpdate();
+	void myUpdate();
   
 public:
   InvSpectrum(std::string name);
@@ -47,7 +47,7 @@ public:
   
   MarSystem* clone() const;
 
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

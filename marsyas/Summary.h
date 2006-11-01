@@ -40,7 +40,7 @@ class Summary: public MarSystem
 {
 private: 
   void addControls();
-	void localUpdate();
+	void myUpdate();
   realvec confusionMatrix;
   std::string labelNames;
 public:
@@ -48,7 +48,7 @@ public:
   ~Summary();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

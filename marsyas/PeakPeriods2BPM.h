@@ -36,14 +36,14 @@ private:
   mrs_real srate_;
   mrs_real factor_;
 
-	void localUpdate();
+	void myUpdate();
 
 public:
   PeakPeriods2BPM(std::string name);
   ~PeakPeriods2BPM();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

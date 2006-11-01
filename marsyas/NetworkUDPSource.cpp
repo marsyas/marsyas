@@ -62,7 +62,7 @@ string NetworkUDPSource::getClientAddr()
   return NetworkSocket::inet_ntoa();
 }
 
-void NetworkUDPSource::process( realvec& in, realvec& out )
+void NetworkUDPSource::myProcess( realvec& in, realvec& out )
 {  
   checkFlow(in,out);
  
@@ -93,8 +93,8 @@ void NetworkUDPSource::refresh()
 
   cout << "Waiting for data on port: " << getctrl("mrs_natural/dataPort") << endl;
 
-  mrs_natural dataPort = getctrl("mrs_natural/dataPort").toNatural();
-  mrs_natural controlsPort = getctrl("mrs_natural/controlsPort").toNatural();
+  mrs_natural dataPort = getctrl("mrs_natural/dataPort")->toNatural();
+  mrs_natural controlsPort = getctrl("mrs_natural/controlsPort")->toNatural();
 
   if ( ! NetworkSocket::setupSource ( dataPort, controlsPort ) ) {
     throw SocketException ( "Could not bind to port." );

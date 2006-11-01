@@ -38,12 +38,12 @@ NoiseSource::clone() const
 }
 
 void
-NoiseSource::localUpdate()
+NoiseSource::myUpdate()
 {
 //   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 //   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 //   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-	MarSystem::localUpdate();
+	MarSystem::myUpdate();
 
   wavetableSize_ = 8*8192;  // 8192
   wavetable_.create((mrs_natural)wavetableSize_);
@@ -56,14 +56,14 @@ NoiseSource::localUpdate()
 }
 
 void 
-NoiseSource::process(realvec &in, realvec &out)
+NoiseSource::myProcess(realvec &in, realvec &out)
 {
   checkFlow(in,out);
   
-  mrs_real incr = (440.0 * wavetableSize_) / (getctrl("mrs_real/israte").toReal());
+  mrs_real incr = (440.0 * wavetableSize_) / (getctrl("mrs_real/israte")->toReal());
   
   
-  mrs_natural inSamples = getctrl("mrs_natural/inSamples").toNatural();
+  mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
   
   for (t=0; t < inSamples; t++)
     {

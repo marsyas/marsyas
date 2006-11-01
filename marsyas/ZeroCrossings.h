@@ -37,7 +37,7 @@ class ZeroCrossings: public MarSystem
 private: 
   mrs_real zcrs_;
 
-	void localUpdate();
+	void myUpdate();
   
 public:
   ZeroCrossings(std::string name);
@@ -45,7 +45,7 @@ public:
   ~ZeroCrossings();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace marsyas

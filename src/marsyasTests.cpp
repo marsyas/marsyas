@@ -4,12 +4,16 @@
 #include <cstdio>
 #include <string> 
 
-#include "MarSystemManager.h" 
+#include "common.h"
+#include "MarSystemManager.h"
 #include "Cascade.h" 
 #include "Parallel.h" 
 #include "CommandLineOptions.h"
 #include "FileName.h"
-#include "MATLABengine.h"
+#include "Filter.h"
+#include "Gain.h"
+#include "RtAudio.h"
+
 
 using namespace std;
 using namespace Marsyas;
@@ -279,7 +283,7 @@ test_rmsilence(string sfName)
   FileName fname(sfName);  
   rmnet->updctrl("SoundFileSink/dest/mrs_string/filename", "srm" + fname.name() + ".wav");
 
-  while (rmnet->getctrl("SilenceRemove/srm/SoundFileSource/src/mrs_bool/notEmpty").toBool())
+  while (rmnet->getctrl("SilenceRemove/srm/SoundFileSource/src/mrs_bool/notEmpty")->toBool())
     {
       rmnet->tick();
     }
@@ -374,7 +378,7 @@ test_fft(string sfName)
 
   mrs_natural i =0;
   
-  while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool())
+  while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
     {
       series->tick();
       i++; 
@@ -513,7 +517,7 @@ test_knn()
   knn->updctrl("mrs_natural/inSamples", inS);
   knn->updctrl("mrs_natural/inObservations", inO);
   
-  realvec output(knn->getctrl("mrs_natural/onObservations").toNatural(), knn->getctrl("mrs_natural/onSamples").toNatural());
+  realvec output(knn->getctrl("mrs_natural/onObservations")->toNatural(), knn->getctrl("mrs_natural/onSamples")->toNatural());
  
   cout << "INPUT: " << input << endl;
   
@@ -540,7 +544,7 @@ test_knn()
   knn->updctrl("mrs_natural/inSamples", inS);
   knn->updctrl("mrs_natural/inObservations", inO);
  
-  realvec output2(knn->getctrl("mrs_natural/onObservations").toNatural(), knn->getctrl("mrs_natural/onSamples").toNatural());
+  realvec output2(knn->getctrl("mrs_natural/onObservations")->toNatural(), knn->getctrl("mrs_natural/onSamples")->toNatural());
 
   cout << "Predict" << endl; 
   knn->process(input2, output2);
@@ -672,10 +676,10 @@ test_vicon(string vfName)
   playbacknet->addMarSystem(mng.create("Sum", "sum"));
   playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
 
-  realvec in(viconNet->getctrl("mrs_natural/inObservations").toNatural(), 
-	     viconNet->getctrl("mrs_natural/inSamples").toNatural());
-  realvec out(viconNet->getctrl("mrs_natural/onObservations").toNatural(), 
-	      viconNet->getctrl("mrs_natural/onSamples").toNatural());
+  realvec in(viconNet->getctrl("mrs_natural/inObservations")->toNatural(), 
+	     viconNet->getctrl("mrs_natural/inSamples")->toNatural());
+  realvec out(viconNet->getctrl("mrs_natural/onObservations")->toNatural(), 
+	      viconNet->getctrl("mrs_natural/onSamples")->toNatural());
   
   playbacknet->updctrl("mrs_natural/inSamples", 184);
 
@@ -691,7 +695,7 @@ test_vicon(string vfName)
      cout << "NoteOn           0.0 1 64.000000 64.000000" << endl;
   */ 
 
-  while (viconNet->getctrl("ViconFileSource/vsrc/mrs_bool/notEmpty").toBool()) 
+  while (viconNet->getctrl("ViconFileSource/vsrc/mrs_bool/notEmpty")->toBool()) 
     {
       viconNet->process(in,out);
       
@@ -759,7 +763,7 @@ test_MATLABengine()
 {
   //In order to test the MATLABengine class
   // the following define must be set:
-  //	  _MATLAB_ENGINE_
+  //	  MARSYAS_MATLAB
   //
   // To build this test with MATLAB engine support, please consult the following site 
   // for detailed info:
@@ -768,7 +772,7 @@ test_MATLABengine()
   //
   // <lmartins@inescporto.pt> - 17.06.2006
 
-#ifdef _MATLAB_ENGINE_
+#ifdef MARSYAS_MATLAB
 	
   cout << endl;
 
@@ -1011,7 +1015,7 @@ test_LPC_LSP(string sfName)
   // for numeric validation of the routines and graphical plots of the results,
   // the following defines must be set:
   //
-  //	  _MATLAB_ENGINE_
+  //	  MARSYAS_MATLAB
   //    _MATLAB_LPC_ (in LPCwarped.cpp) 
   //    _MATLAB_LSP_ (in LSP.cpp)
   //
@@ -1055,7 +1059,7 @@ test_LPC_LSP(string sfName)
 
 
   int i = 0;
-  while(input->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool())
+  while(input->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
     {
       input->tick();
       cout << "Processed frame " << i << endl;
@@ -1088,7 +1092,7 @@ test_LPC_LSP(string sfName)
 // 	input->updctrl("Series/lspS/LSP/lsp/mrs_real/gamma",1.0);
 
 	int i = 0;
-	while(input->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool())
+	while(input->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
 	{
 		input->tick();
 		cout << "Processed frame " << i << endl;
@@ -1128,7 +1132,7 @@ test_realvec()
 
   getchar();
 
-#ifdef _MATLAB_ENGINE_
+#ifdef MARSYAS_MATLAB
 
   realvec matrixA, matrixB;
   realvec meanobs;
@@ -1157,13 +1161,13 @@ test_realvec()
   getchar();
 	
   cout << ">>>>>>>> Sending matrix to MATLAB..." << endl;
-  MATLAB->putVariable(matrixA, "matrixA");
+  MATLAB_PUT(matrixA, "matrixA");
   cout << ">>>>>>>> ...complete! Press a key to continue." << endl;
   getchar();
 	
   cout << endl<< ">>>>>>>> calculate means of each row using MATLAB:" << endl << endl;
-  MATLAB->evalString("meanobs = mean(matrixA')'");
-  MATLAB->getVariable("meanobs", meanobs);
+  MATLAB_EVAL("meanobs = mean(matrixA')'");
+  MATLAB_GET("meanobs", meanobs);
   cout << meanobs << endl;
   getchar();
   cout << ">>>>>>>> compare with realvec::meanObs(): " << endl << endl;
@@ -1172,8 +1176,8 @@ test_realvec()
 
   cout << endl<< ">>>>>>>> calculate stdev of each row using MATLAB:" << endl << endl;
   //marsyas uses the biased estimator for the stdev calculation
-  MATLAB->evalString("stdobs = std(matrixA',1)'");
-  MATLAB->getVariable("stdobs", stdobs);
+  MATLAB_EVAL("stdobs = std(matrixA',1)'");
+  MATLAB_GET("stdobs", stdobs);
   cout << stdobs << endl;
   getchar();
   cout << ">>>>>>>> compare with realvec::stdObs(): " << endl << endl;
@@ -1182,8 +1186,8 @@ test_realvec()
 
   cout << endl<< ">>>>>>>> calculate variance of each row using MATLAB:" << endl << endl;
   //marsyas uses the biased estimator for the var calculation
-  MATLAB->evalString("varobs = var(matrixA',1)'");
-  MATLAB->getVariable("varobs", varobs);
+  MATLAB_EVAL("varobs = var(matrixA',1)'");
+  MATLAB_GET("varobs", varobs);
   cout << varobs << endl;
   getchar();
   cout << ">>>>>>>> compare with realvec::varObs(): " << endl << endl;
@@ -1191,16 +1195,16 @@ test_realvec()
   getchar();
 
   cout << endl<< ">>>>>>>> Standardize observation's matrix using MATLAB:" << endl << endl;
-  MATLAB->evalString("matrixA = matrixA'");
-  MATLAB->evalString("clear normobs");
-  MATLAB->evalString("normobs(1,:) = matrixA(1,:) - mean(matrixA)");
-  MATLAB->evalString("normobs(1,:) = normobs(1,:) / std(matrixA,1)");
-  MATLAB->evalString("normobs(2,:) = matrixA(2,:) - mean(matrixA)");
-  MATLAB->evalString("normobs(2,:) = normobs(2,:) / std(matrixA,1)");
-  MATLAB->evalString("normobs(3,:) = matrixA(3,:) - mean(matrixA)");
-  MATLAB->evalString("normobs(3,:) = normobs(3,:) / std(matrixA,1)");
-  MATLAB->evalString("normobs = normobs'");
-  MATLAB->getVariable("normobs", normobs);
+  MATLAB_EVAL("matrixA = matrixA'");
+  MATLAB_EVAL("clear normobs");
+  MATLAB_EVAL("normobs(1,:) = matrixA(1,:) - mean(matrixA)");
+  MATLAB_EVAL("normobs(1,:) = normobs(1,:) / std(matrixA,1)");
+  MATLAB_EVAL("normobs(2,:) = matrixA(2,:) - mean(matrixA)");
+  MATLAB_EVAL("normobs(2,:) = normobs(2,:) / std(matrixA,1)");
+  MATLAB_EVAL("normobs(3,:) = matrixA(3,:) - mean(matrixA)");
+  MATLAB_EVAL("normobs(3,:) = normobs(3,:) / std(matrixA,1)");
+  MATLAB_EVAL("normobs = normobs'");
+  MATLAB_GET("normobs", normobs);
   cout << normobs << endl;
   getchar();
   cout << ">>>>>>>> compare with realvec::normObs(): " << endl << endl;
@@ -1211,14 +1215,14 @@ test_realvec()
 
   cout << ">>>>>>>> Creating a new random matrix in MATLAB..." << endl;
   cout << ">>>>>>>> ... and get it into a realvec: " << endl << endl; 
-  MATLAB->evalString("matrixA = rand(2,30)");
-  MATLAB->getVariable("matrixA", matrixA);
+  MATLAB_EVAL("matrixA = rand(2,30)");
+  MATLAB_GET("matrixA", matrixA);
   cout << matrixA << endl;
   getchar();
 
   cout << endl<< ">>>>>>>> calculate COVARIANCE matrix using MATLAB (unbiased estimator):" << endl << endl;
-  MATLAB->evalString("covmatrix = cov(matrixA')'");
-  MATLAB->getVariable("covmatrix", covmatrix);
+  MATLAB_EVAL("covmatrix = cov(matrixA')'");
+  MATLAB_GET("covmatrix", covmatrix);
   cout << covmatrix << endl;
   getchar();
   cout << ">>>>>>>> compare with realvec::covariance(): " << endl << endl;
@@ -1229,8 +1233,8 @@ test_realvec()
   getchar();
 
   cout << endl<< ">>>>>>>> calculate COVARIANCE matrix using MATLAB (biased estimator):" << endl << endl;
-  MATLAB->evalString("covmatrix = cov(matrixA',1)'");
-  MATLAB->getVariable("covmatrix", covmatrix);
+  MATLAB_EVAL("covmatrix = cov(matrixA',1)'");
+  MATLAB_GET("covmatrix", covmatrix);
   cout << covmatrix << endl;
   getchar();
   cout << ">>>>>>>> compare with realvec::covariance2(): " << endl << endl;
@@ -1243,8 +1247,8 @@ test_realvec()
 
 
   cout << endl<< ">>>>>>>> calculate CORRELATION matrix using MATLAB:" << endl << endl;
-  MATLAB->evalString("corrmatrix = corrcoef(matrixA')'");
-  MATLAB->getVariable("corrmatrix", corrmatrix);
+  MATLAB_EVAL("corrmatrix = corrcoef(matrixA')'");
+  MATLAB_GET("corrmatrix", corrmatrix);
   cout << corrmatrix << endl;
   getchar();
   cout << ">>>>>>>> compare with realvec::correlation(): " << endl << endl;
@@ -1256,15 +1260,15 @@ test_realvec()
 	
   cout << ">>>>>>>> Creating a random matrix in MATLAB..." << endl;
   cout << ">>>>>>>> ... and get it into a realvec: " << endl << endl; 
-  MATLAB->evalString("matrixA = rand(4)");
-  MATLAB->getVariable("matrixA", matrixA);
+  MATLAB_EVAL("matrixA = rand(4)");
+  MATLAB_GET("matrixA", matrixA);
   cout << matrixA << endl;
   getchar();
 
   cout << endl << ">>>>>>>> Calculate TRACE using MATLAB: " << endl;
-  MATLAB->evalString("traceval = trace(matrixA)");
+  MATLAB_EVAL("traceval = trace(matrixA)");
   mrs_real traceval;
-  MATLAB->getVariable("traceval", traceval);
+  MATLAB_GET("traceval", traceval);
   cout << traceval << endl << endl;
   cout << endl << ">>>>>>>> Calculate TRACE using realvec::trace(): " << endl;
   cout << matrixA.trace() << endl << endl;
@@ -1272,9 +1276,9 @@ test_realvec()
 
   cout << endl << ">>>>>>>> Calculate matrix DETERMINANT using: " << endl;
   cout << "realvec::det() = " << matrixA.det() << endl;
-  MATLAB->evalString("determinant = det(matrixA)");
+  MATLAB_EVAL("determinant = det(matrixA)");
   mrs_real determinant;
-  MATLAB->getVariable("determinant", determinant);
+  MATLAB_GET("determinant", determinant);
   cout << "MATLAB det() = " << determinant << endl << endl;
   getchar();
 		
@@ -1285,11 +1289,11 @@ test_realvec()
   cout << invMatrix << endl;
   getchar();
   cout << ">>>>>>>> Invert the matrix using MATLAB... " << endl;
-  MATLAB->evalString("invMatrix = inv(matrixA)");
+  MATLAB_EVAL("invMatrix = inv(matrixA)");
   cout << ">>>>>>>> ...done! Get it to a realvec." << endl;
   getchar();
   matrixA.setval(0.0);
-  MATLAB->getVariable("invMatrix", matrixA);
+  MATLAB_GET	("invMatrix", matrixA);
   cout << matrixA << endl;
   getchar();
   cout << "Compare results: difference should be a zero (or infinitesimal) valued matrix: " << endl << endl;
@@ -1301,10 +1305,10 @@ test_realvec()
   //test DivergenceShape metrics
   cout << ">>>>>>>> Creating two random matrices in MATLAB..." << endl;
   cout << ">>>>>>>> ... and get them into realvecs: " << endl << endl; 
-  MATLAB->evalString("matrixA = cov(rand(40,4))");
-  MATLAB->evalString("matrixB = cov(rand(40,4))");
-  MATLAB->getVariable("matrixA", matrixA);
-  MATLAB->getVariable("matrixB", matrixB);
+  MATLAB_EVAL("matrixA = cov(rand(40,4))");
+  MATLAB_EVAL("matrixB = cov(rand(40,4))");
+  MATLAB_GET("matrixA", matrixA);
+  MATLAB_GET("matrixB", matrixB);
   cout << ">>>>>>>> Done!" << endl << endl;
   getchar();
   cout << ">>>>>>>> Calculate Divergence Shape between the two matrices:" << endl;

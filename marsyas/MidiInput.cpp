@@ -52,15 +52,15 @@ MidiInput::clone() const
 }
 
 void
-MidiInput::localUpdate()
+MidiInput::myUpdate()
 {
-  MRSDIAG("MidiInput.cpp - MidiInput:localUpdate");
+  MRSDIAG("MidiInput.cpp - MidiInput:myUpdate");
   
 // 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 //   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 //   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 //   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
-	MarSystem::localUpdate();
+	MarSystem::myUpdate();
 
 #ifdef MRSMIDI
   try { 
@@ -112,7 +112,7 @@ MidiInput::mycallback(double deltatime, std::vector< unsigned char > * message, 
 }
 
 void 
-MidiInput::process(realvec& in, realvec& out)
+MidiInput::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 

@@ -48,7 +48,7 @@ private:
   //Add specific controls needed by this MarSystem.
 	void addControls();
 	
-	void localUpdate();
+	void myUpdate();
 	void peaks2M (realvec&, realvec&, realvec&);
 	void peaks2V (realvec&, realvec&, realvec&);
 	void similarityCompute(realvec&, realvec&);
@@ -60,7 +60,7 @@ public:
   ~PeClust();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

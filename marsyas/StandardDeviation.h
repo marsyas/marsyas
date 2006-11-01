@@ -38,7 +38,7 @@ class StandardDeviation: public MarSystem
 private: 
   realvec obsrow_;
 
-	void localUpdate();
+	void myUpdate();
   
 public:
   StandardDeviation(std::string name);
@@ -46,7 +46,7 @@ public:
   ~StandardDeviation();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 
 };
 

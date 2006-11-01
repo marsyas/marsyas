@@ -47,15 +47,15 @@ HarmonicEnhancer::clone() const
 
 
 void
-HarmonicEnhancer::localUpdate()
+HarmonicEnhancer::myUpdate()
 {
-  MRSDIAG("HarmonicEnhancer.cpp - HarmonicEnhancer:localUpdate");
+  MRSDIAG("HarmonicEnhancer.cpp - HarmonicEnhancer:myUpdate");
    
   setctrl("mrs_natural/onSamples", (mrs_natural)1);
   setctrl("mrs_natural/onObservations", (mrs_natural)4);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  flag_.create(getctrl("mrs_natural/inSamples").toNatural());
+  flag_.create(getctrl("mrs_natural/inSamples")->toNatural());
     
   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
 }
@@ -221,7 +221,7 @@ HarmonicEnhancer::harm_prob(mrs_real& pmax, mrs_real factor,
 
 
 void 
-HarmonicEnhancer::process(realvec& in, realvec& out)
+HarmonicEnhancer::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 

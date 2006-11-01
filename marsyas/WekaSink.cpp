@@ -81,7 +81,7 @@ WekaSink::addControls()
 void 
 WekaSink::putHeader(string inObsNames)
 {
-  if ((filename_ != getctrl("mrs_string/filename").toString()))
+  if ((filename_ != getctrl("mrs_string/filename")->toString()))
   {
     if (mos_ != NULL) 
       {
@@ -90,14 +90,14 @@ WekaSink::putHeader(string inObsNames)
 	if (filename_ == "weka.arff")
 	  remove(filename_.c_str());
       }
-    filename_ = getctrl("mrs_string/filename").toString();
+    filename_ = getctrl("mrs_string/filename")->toString();
     
     mos_ = new ofstream;
     mos_->open(filename_.c_str());
     
     (*mos_) << "@relation marsyas" << endl;
-    mrs_natural nAttributes = getctrl("mrs_natural/inObservations").toNatural()-1;
-    mrs_natural nLabels = getctrl("mrs_natural/nLabels").toNatural();
+    mrs_natural nAttributes = getctrl("mrs_natural/inObservations")->toNatural()-1;
+    mrs_natural nLabels = getctrl("mrs_natural/nLabels")->toNatural();
     
     mrs_natural i;
     for (i =0; i < nAttributes; i++)
@@ -131,9 +131,9 @@ WekaSink::putHeader(string inObsNames)
 
 
 void
-WekaSink::localUpdate()
+WekaSink::myUpdate()
 {
-  MRSDIAG("WekaSink.cpp - WekaSink:localUpdate");
+  MRSDIAG("WekaSink.cpp - WekaSink:myUpdate");
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
@@ -141,11 +141,11 @@ WekaSink::localUpdate()
 
   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
 
-  string labelNames = getctrl("mrs_string/labelNames").toString();
+  string labelNames = getctrl("mrs_string/labelNames")->toString();
   
   labelNames_.clear();
   
-  for (int i = 0; i < getctrl("mrs_natural/nLabels").toNatural(); i++)
+  for (int i = 0; i < getctrl("mrs_natural/nLabels")->toNatural(); i++)
     {
       string labelName;
       string temp;
@@ -157,23 +157,23 @@ WekaSink::localUpdate()
     }
 
 
-  string onObsNames = getctrl("mrs_string/inObsNames").toString();
+  string onObsNames = getctrl("mrs_string/inObsNames")->toString();
 
-  //mute_ = getctrl("mrs_bool/mute").toBool();
+  //mute_ = getctrl("mrs_bool/mute")->toBool();
   
   //lmartins:if (!mute_)
-	if(!(getctrl("mrs_bool/mute").toBool()))
+	if(!(getctrl("mrs_bool/mute")->toBool()))
     putHeader(onObsNames);
 
-  precision_ = getctrl("mrs_natural/precision").toNatural();
-  downsample_ = getctrl("mrs_natural/downsample").toNatural();
+  precision_ = getctrl("mrs_natural/precision")->toNatural();
+  downsample_ = getctrl("mrs_natural/downsample")->toNatural();
 }
 
 void 
-WekaSink::process(realvec& in, realvec& out)
+WekaSink::myProcess(realvec& in, realvec& out)
 {
   //lmartins: if (mute_) 				// copy input to output
-	if(getctrl("mrs_bool/mute").toBool())
+	if(getctrl("mrs_bool/mute")->toBool())
     {
       for (o=0; o < inObservations_; o++)
 				for (t = 0; t < inSamples_; t++)

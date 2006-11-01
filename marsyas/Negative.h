@@ -38,7 +38,7 @@ public:
   
   MarSystem* clone() const;
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
   
 };
 

@@ -43,16 +43,16 @@ private:
 	realvec tin_;
 
 	void addControls();
-	void localUpdate();
+	void myUpdate();
   
 public:
 	Shredder(std::string name);
   ~Shredder();
   MarSystem* clone() const; 
 
-	void updControl(std::string cname, MarControlValue value);
+	void updControl(std::string cname, MarControlPtr value);
 
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

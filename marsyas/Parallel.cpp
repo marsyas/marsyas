@@ -61,14 +61,14 @@ MarSystem* Parallel::clone() const
   return new Parallel(*this);
 }
 
-void Parallel::localUpdate()
+void Parallel::myUpdate()
 {
   if (marsystemsSize_ != 0) 
 	{
     marsystems_[0]->update();
     
-    mrs_natural inObservations = marsystems_[0]->getctrl("mrs_natural/inObservations").toNatural();
-    mrs_natural onObservations = marsystems_[0]->getctrl("mrs_natural/onObservations").toNatural();
+    mrs_natural inObservations = marsystems_[0]->getctrl("mrs_natural/inObservations")->toNatural();
+    mrs_natural onObservations = marsystems_[0]->getctrl("mrs_natural/onObservations")->toNatural();
     
     for (mrs_natural i=1; i < marsystemsSize_; i++) 
 		{
@@ -76,8 +76,8 @@ void Parallel::localUpdate()
 			marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
       marsystems_[i]->setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte")); //[!] israte
       marsystems_[i]->update();
-      inObservations += marsystems_[i]->getctrl("mrs_natural/inObservations").toNatural();
-      onObservations += marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural();
+      inObservations += marsystems_[i]->getctrl("mrs_natural/inObservations")->toNatural();
+      onObservations += marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural();
     }
     
     setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
@@ -98,30 +98,30 @@ void Parallel::localUpdate()
 		{
       if (slices_[2*i] != NULL) 
 			{
-				if ((slices_[2*i])->getRows() != marsystems_[i]->getctrl("mrs_natural/inObservations").toNatural() || (slices_[2*i])->getCols() != marsystems_[i]->getctrl("mrs_natural/inSamples").toNatural()) 
+				if ((slices_[2*i])->getRows() != marsystems_[i]->getctrl("mrs_natural/inObservations")->toNatural() || (slices_[2*i])->getCols() != marsystems_[i]->getctrl("mrs_natural/inSamples")->toNatural()) 
 				{
 				delete slices_[2*i];
-				slices_[2*i] = new realvec(marsystems_[i]->getctrl("mrs_natural/inObservations").toNatural(), marsystems_[i]->getctrl("mrs_natural/inSamples").toNatural());
+				slices_[2*i] = new realvec(marsystems_[i]->getctrl("mrs_natural/inObservations")->toNatural(), marsystems_[i]->getctrl("mrs_natural/inSamples")->toNatural());
 				}
       }
       else 
 			{
-				slices_[2*i] = new realvec(marsystems_[i]->getctrl("mrs_natural/inObservations").toNatural(), marsystems_[i]->getctrl("mrs_natural/inSamples").toNatural());
+				slices_[2*i] = new realvec(marsystems_[i]->getctrl("mrs_natural/inObservations")->toNatural(), marsystems_[i]->getctrl("mrs_natural/inSamples")->toNatural());
       }
       
 			(slices_[2*i])->setval(0.0);
       
 			if (slices_[2*i+1] != NULL) 
 			{
-				if ((slices_[2*i+1])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural() || (slices_[2*i+1])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural()) 
+				if ((slices_[2*i+1])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural() || (slices_[2*i+1])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural()) 
 				{
 					delete slices_[2*i+1];
-					slices_[2*i+1] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural(), marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural());
+					slices_[2*i+1] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
 				}
       }
       else 
 			{
-				slices_[2*i+1] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural(), marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural());
+				slices_[2*i+1] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
       }
       
 			(slices_[2*i+1])->setval(0.0);
@@ -131,7 +131,7 @@ void Parallel::localUpdate()
 }
 
 void 
-Parallel::updControl(string cname, MarControlValue value)
+Parallel::updControl(string cname, MarControlPtr control)
 { 
   // check for synonyms - call recursively to resolve them 
   map<string, vector<string> >::iterator ei;
@@ -151,7 +151,7 @@ Parallel::updControl(string cname, MarControlValue value)
     vector<string>::iterator si;
     for (si = synonymList.begin(); si != synonymList.end(); ++si)
 		{
-			updControl(prefix + *si, value);
+			updControl(prefix + *si, control);
 		}
   }
   else
@@ -166,33 +166,22 @@ Parallel::updControl(string cname, MarControlValue value)
     if (hasControlLocal(cname))
 		{
 			controlFound = true;
-			oldval_ = getControl(cname);
-			setControl(cname, value);
+			MarControlPtr oldval = getControl(cname);
+			setControl(cname, control);
 			
-			if (hasControlState(cname) && (value != oldval_)) 
+			if (hasControlState(cname) && (control != oldval)) 
 			{
 				update(); //update composite
-				// commented out by gtzan - probably redundant
-				//lmartins: AGREE! => code already executed by update()... [!]
-				/* 
-				dbg_ = getctrl("mrs_bool/debug").toBool();
-				mute_ = getctrl("mrs_bool/mute").toBool();
-				if ((inObservations_ != inTick_.getRows()) ||
-						(inSamples_ != inTick_.getCols())      ||
-						(onObservations_ != outTick_.getRows()) ||
-						(onSamples_ != outTick_.getCols()))
-				{
-					inTick_.create(inObservations_, inSamples_);
-					outTick_.create(onObservations_, onSamples_);
-				}
-				*/ 
 			}
 		}
 		//Parallel Specific [?]
     if(nchildcontrol == "mrs_natural/inObservations")
 		{
-			mrs_natural v = value.toNatural()/marsystemsSize_;
-			marsystems_[0]->updctrl(nchildcontrol, v);
+			if (marsystemsSize_ > 0)
+			{
+				mrs_natural val = control->toNatural() / marsystemsSize_;
+				marsystems_[0]->updctrl(nchildcontrol, val); 
+			}			
 			update();
 			return;
 		}
@@ -208,7 +197,10 @@ Parallel::updControl(string cname, MarControlValue value)
 				(nchildcontrol == "mrs_string/inObsNames"))//||
 				//(nchildcontrol == "mrs_string/onObsNames")) //lmartins: does it make any sense to check for this control?![?]
 		{
-			marsystems_[0]->updctrl(nchildcontrol, value);
+			if (marsystemsSize_ > 0)
+			{
+				marsystems_[0]->updctrl(nchildcontrol, control);
+			}
 			update();
 			return;
 		}
@@ -221,11 +213,8 @@ Parallel::updControl(string cname, MarControlValue value)
 				if (marsystems_[i]->hasControl(childcontrol))
 				{
 					controlFound = true;
-					MarControlValue oldval;
-					oldval = marsystems_[i]->getControl(childcontrol);
-					marsystems_[i]->updControl(childcontrol, value); //updcontrol or setcontrol?! [!]
-					if (marsystems_[i]->hasControlState(childcontrol) && 
-						 (value != oldval))
+					marsystems_[i]->updControl(childcontrol, control); //updcontrol or setcontrol?! [!]
+					if (marsystems_[i]->hasControlState(childcontrol))
 					{
 						update();
 					}
@@ -242,7 +231,7 @@ Parallel::updControl(string cname, MarControlValue value)
 }
 
 
-void Parallel::process(realvec& in, realvec& out)
+void Parallel::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in, out);
   
@@ -258,7 +247,7 @@ void Parallel::process(realvec& in, realvec& out)
 	{
     for (mrs_natural i = 0; i < marsystemsSize_; i++) 
 		{
-      localIndex = marsystems_[i]->getctrl("mrs_natural/inObservations").toNatural();
+      localIndex = marsystems_[i]->getctrl("mrs_natural/inObservations")->toNatural();
       for (o = 0; o < localIndex; o++) 
 			{
 				for (t = 0; t < inSamples_; t++) //lmartins: was t < onSamples [!]
@@ -268,7 +257,7 @@ void Parallel::process(realvec& in, realvec& out)
       }
       inIndex += localIndex;
       marsystems_[i]->process(*(slices_[2*i]), *(slices_[2*i+1]));
-      localIndex = marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural();
+      localIndex = marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural();
       for (o = 0; o < localIndex; o++) 
 			{
 				for (t = 0; t < onSamples_; t++) 

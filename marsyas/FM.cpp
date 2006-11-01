@@ -82,24 +82,24 @@ FM::addControls()
 }	
 
 
-void FM::localUpdate() 
+void FM::myUpdate() 
 {
-  MRSDIAG("FM.cpp - FM:localUpdate");
+  MRSDIAG("FM.cpp - FM:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
   // update the controls for the FM  
-  cFrequency_ = getctrl("mrs_real/cFrequency").toReal();
-  isRate_ = getctrl("mrs_real/israte").toReal();
-  mSpeed_ = getctrl("mrs_real/mSpeed").toReal();
-  mDepth_ = getctrl("mrs_real/mDepth").toReal();
-  mRate_ = (mSpeed_ * wavetableSize_) / getctrl("mrs_real/israte").toReal();
-  inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
+  cFrequency_ = getctrl("mrs_real/cFrequency")->toReal();
+  isRate_ = getctrl("mrs_real/israte")->toReal();
+  mSpeed_ = getctrl("mrs_real/mSpeed")->toReal();
+  mDepth_ = getctrl("mrs_real/mDepth")->toReal();
+  mRate_ = (mSpeed_ * wavetableSize_) / getctrl("mrs_real/israte")->toReal();
+  inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
 }	
 
-void FM::process( realvec& in, realvec& out ) 
+void FM::myProcess( realvec& in, realvec& out ) 
 {
   checkFlow(in,out);
   
@@ -107,7 +107,7 @@ void FM::process( realvec& in, realvec& out )
   register mrs_real mSample_;
   register mrs_real oFrequency_;								
 											
-  if (getctrl("mrs_bool/noteon").toBool() == false) {
+  if (getctrl("mrs_bool/noteon")->toBool() == false) {
   	return;
   }
   

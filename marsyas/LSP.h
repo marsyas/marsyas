@@ -44,7 +44,7 @@ private:
 	//mrs_real gamma_;
 
 	void addControls();
-	void localUpdate();
+	void myUpdate();
 	
 public:
 	LSP(std::string name);
@@ -52,7 +52,7 @@ public:
 
 	MarSystem* clone() const;  
 
-	void process(realvec& in, realvec& out);
+	void myProcess(realvec& in, realvec& out);
 };
 
 }

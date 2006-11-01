@@ -44,7 +44,7 @@ Normalize::clone() const
 }
 
 void 
-Normalize::process(realvec& in, realvec& out)
+Normalize::myProcess(realvec& in, realvec& out)
 {
   
   checkFlow(in,out);

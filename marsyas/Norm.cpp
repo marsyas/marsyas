@@ -47,7 +47,7 @@ Norm::clone() const
 }
 
 void 
-Norm::process(realvec& in, realvec& out)
+Norm::myProcess(realvec& in, realvec& out)
 {
   
   checkFlow(in,out);

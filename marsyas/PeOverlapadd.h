@@ -43,7 +43,7 @@ private:
 	realvec tmp_;
   
   void addControls();
-	void localUpdate();
+	void myUpdate();
 
 	void sine(realvec& out, mrs_real f, mrs_real a, mrs_real p);
  
@@ -52,7 +52,7 @@ public:
   ~PeOverlapadd();
   MarSystem* clone() const;    
 
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
   
 };
 

@@ -132,7 +132,7 @@ protected:
   int recvUDP ( realvec& out ) ;
   
   //! stub function so this object can be instantiated
-  void process( realvec& in, realvec& out ); //[!]
+  void myProcess( realvec& in, realvec& out ); //[!]
   
   //! ensures we have a valid server when recvControls or process is called
   virtual void refresh(){}

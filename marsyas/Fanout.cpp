@@ -80,16 +80,16 @@ Fanout::addControls()
 }
 
 void 
-Fanout::localUpdate()
+Fanout::myUpdate()
 {
-  probe_ = getctrl("mrs_bool/probe").toBool();
+  probe_ = getctrl("mrs_bool/probe")->toBool();
   if (enabled_.getSize() != marsystemsSize_)
   {
     enabled_.create(marsystemsSize_);
     enabled_.setval(1.0);
   }
 
-  disable_ = getctrl("mrs_natural/disable").toNatural();
+  disable_ = getctrl("mrs_natural/disable")->toNatural();
   if (disable_ != -1) 
     enabled_(disable_) = 0.0;
   
@@ -106,7 +106,7 @@ Fanout::localUpdate()
     oss << marsystems_[0]->getctrl("mrs_string/onObsNames");
  
     if (enabled_(0))
-			onObservations += marsystems_[0]->getctrl("mrs_natural/onObservations").toNatural();
+			onObservations += marsystems_[0]->getctrl("mrs_natural/onObservations")->toNatural();
 
     for (mrs_natural i=1; i < marsystemsSize_; i++)
 		{
@@ -120,12 +120,12 @@ Fanout::localUpdate()
 		  marsystems_[i]->update();
 		  
 			if (enabled_(i))
-				onObservations += (marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural());
+				onObservations += (marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural());
 		}
 
-    setctrl("mrs_natural/onSamples", marsystems_[0]->getctrl("mrs_natural/onSamples").toNatural());
+    setctrl("mrs_natural/onSamples", marsystems_[0]->getctrl("mrs_natural/onSamples")->toNatural());
     setctrl("mrs_natural/onObservations", onObservations);
-    setctrl("mrs_real/osrate", marsystems_[0]->getctrl("mrs_real/osrate").toReal());
+    setctrl("mrs_real/osrate", marsystems_[0]->getctrl("mrs_real/osrate")->toReal());
     setctrl("mrs_string/onObsNames", oss.str());
 
     // update buffers between components 
@@ -136,18 +136,18 @@ Fanout::localUpdate()
 		{
 			if (slices_[i] != NULL) 
 			{
-				if ((slices_[i])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural()  ||
-						(slices_[i])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural())
+				if ((slices_[i])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural()  ||
+						(slices_[i])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural())
 				{
 					delete slices_[i];
-					slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural(), 
-						 marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural());
+					slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
+						 marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
 				}
 			}
 			else 
 			{
-				slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural(), 
-							 marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural());
+				slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
+							 marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
 			}
 			(slices_[i])->setval(0.0);
 		}
@@ -156,7 +156,7 @@ Fanout::localUpdate()
 }
      
 void
-Fanout::process(realvec& in, realvec& out)
+Fanout::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in, out);
   mrs_natural outIndex = 0;
@@ -167,7 +167,7 @@ Fanout::process(realvec& in, realvec& out)
     if (enabled_(i))
 		{
 			marsystems_[i]->process(in, *(slices_[i]));
-			localIndex = marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural();
+			localIndex = marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural();
 	  
 			for (o=0; o < localIndex; o++)
 				for (t=0; t < onSamples_; t++)

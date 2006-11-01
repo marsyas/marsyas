@@ -37,7 +37,7 @@ namespace Marsyas
 class Centroid: public MarSystem
 {
 private: 
-	void localUpdate();
+	void myUpdate();
   
   mrs_real m0_;
   mrs_real m1_;
@@ -48,7 +48,7 @@ public:
   ~Centroid();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

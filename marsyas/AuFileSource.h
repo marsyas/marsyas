@@ -98,7 +98,7 @@ private:
 	unsigned short ByteSwapShort (unsigned short nValue);
 
 	void addControls();
-	void localUpdate();
+	void myUpdate();
  
 public:
   AuFileSource(std::string name);
@@ -108,7 +108,7 @@ public:
   void getHeader(std::string filename);
 	mrs_natural getLinear16(realvec& win);
 
-	void process(realvec& in,realvec &out);
+	void myProcess(realvec& in,realvec &out);
 
 };
 

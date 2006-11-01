@@ -85,18 +85,18 @@ Limiter::addControls()
 
 
 void
-Limiter::localUpdate()
+Limiter::myUpdate()
 {
-  MRSDIAG("Limiter.cpp - Limiter:localUpdate");
+  MRSDIAG("Limiter.cpp - Limiter:myUpdate");
   
 //   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 //   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 //   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 // 	setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
-	MarSystem::localUpdate(); //default localUpdate as defined at parent MarSystem class...
+	MarSystem::myUpdate(); //default myUpdate as defined at parent MarSystem class...
   
 	//defaultUpdate(); [!]
-	inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
+	inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
 
   xd_.create(inSamples_);
   gains_.create(inSamples_);
@@ -104,14 +104,14 @@ Limiter::localUpdate()
 
 
 void 
-Limiter::process(realvec& in, realvec& out)
+Limiter::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   
-  mrs_real thresh = getctrl("mrs_real/thresh").toReal();
-  mrs_real at = getctrl("mrs_real/at").toReal();
-  mrs_real rt = getctrl("mrs_real/rt").toReal();
-  mrs_real slope = getctrl("mrs_real/slope").toReal();
+  mrs_real thresh = getctrl("mrs_real/thresh")->toReal();
+  mrs_real at = getctrl("mrs_real/at")->toReal();
+  mrs_real rt = getctrl("mrs_real/rt")->toReal();
+  mrs_real slope = getctrl("mrs_real/slope")->toReal();
   
   // calculate at and rt time
   at = 1 - exp(-2.2/(22050*at));

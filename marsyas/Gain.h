@@ -39,19 +39,21 @@ private:
   //Add specific controls needed by this MarSystem.
 	void addControls();
 	
-	// lmartins: since this is the default MarSystem::localUpdate()
+	// lmartins: since this is the default MarSystem::myUpdate()
 	// (i.e. does not alters input data format) it's not needed to
 	// override it here! Use the default implementation defined in 
-	// MarSystem::localUpdate().
+	// MarSystem::myUpdate().
 	//
-	//void localUpdate();
+	//void myUpdate();
+	 MarControlPtr ctrl_gain_;
 
 public:
   Gain(std::string name);
+	Gain(const Gain& a);
   ~Gain();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

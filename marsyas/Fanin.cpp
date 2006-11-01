@@ -69,7 +69,7 @@ Fanin::clone() const
 }
 
 void 
-Fanin::localUpdate()
+Fanin::myUpdate()
 {
   if (marsystemsSize_ != 0) 
   {
@@ -77,7 +77,7 @@ Fanin::localUpdate()
     mrs_natural obs = 0;
     for (mrs_natural i=0; i < marsystemsSize_; i++)
 		{
-			obs += marsystems_[i]->getctrl("mrs_natural/inObservations").toNatural();//[?]
+			obs += marsystems_[i]->getctrl("mrs_natural/inObservations")->toNatural();//[?]
 		}
     setctrl("mrs_natural/inObservations", obs); //[?] 
     setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte"));  
@@ -94,9 +94,9 @@ Fanin::localUpdate()
 			marsystems_[i]->updctrl("mrs_real/israte", getctrl("mrs_real/israte"));
 			marsystems_[i]->update();
 		}
-    setctrl("mrs_natural/onSamples", marsystems_[0]->getctrl("mrs_natural/onSamples").toNatural());
+    setctrl("mrs_natural/onSamples", marsystems_[0]->getctrl("mrs_natural/onSamples")->toNatural());
     setctrl("mrs_natural/onObservations", (mrs_natural)1);
-    setctrl("mrs_real/osrate", marsystems_[0]->getctrl("mrs_real/osrate").toReal());
+    setctrl("mrs_real/osrate", marsystems_[0]->getctrl("mrs_real/osrate")->toReal());
 
     deleteSlices();
     
@@ -104,7 +104,7 @@ Fanin::localUpdate()
     // ALL THE MARSYSTEMS IS THE SAME 
     for (mrs_natural i=0; i< marsystemsSize_; i++)
 		{
-			slices_.push_back(new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural() , marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural()));			
+			slices_.push_back(new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural() , marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural()));			
 			(slices_[i])->setval(0.0);
 		}
 		//defaultUpdate();
@@ -112,7 +112,7 @@ Fanin::localUpdate()
 }
 
 void
-Fanin::process(realvec& in, realvec& out)
+Fanin::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   

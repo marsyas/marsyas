@@ -44,7 +44,7 @@ class NetworkUDPSource: public NetworkSocket
   MarSystem* clone() const;  
   std::string getClientAddr();
 	  
-  void process( realvec& in, realvec& out );
+  void myProcess( realvec& in, realvec& out );
   void refresh();
 };
 

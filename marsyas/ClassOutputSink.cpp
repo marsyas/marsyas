@@ -67,7 +67,7 @@ ClassOutputSink::addControls()
 void 
 ClassOutputSink::putHeader()
 {
-  if ((filename_ != getctrl("mrs_string/filename").toString()))
+  if ((filename_ != getctrl("mrs_string/filename")->toString()))
     {
       if (mos_ != NULL) 
 	{
@@ -78,7 +78,7 @@ ClassOutputSink::putHeader()
 	}
 
       
-      filename_ = getctrl("mrs_string/filename").toString();
+      filename_ = getctrl("mrs_string/filename")->toString();
   
       mos_ = new ofstream;
       mos_->open(filename_.c_str());
@@ -88,21 +88,21 @@ ClassOutputSink::putHeader()
 
 
 void
-ClassOutputSink::localUpdate()
+ClassOutputSink::myUpdate()
 {
-  MRSDIAG("ClassOutputSink.cpp - ClassOutputSink:localUpdate");
+  MRSDIAG("ClassOutputSink.cpp - ClassOutputSink:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-  string labelNames = getctrl("mrs_string/labelNames").toString();
+  string labelNames = getctrl("mrs_string/labelNames")->toString();
   
   labelNames_.clear();
 
   string temp;  
 
-  for (int i = 0; i < getctrl("mrs_natural/nLabels").toNatural(); i++)
+  for (int i = 0; i < getctrl("mrs_natural/nLabels")->toNatural(); i++)
     {
       string labelName;
 
@@ -119,7 +119,7 @@ ClassOutputSink::localUpdate()
 
 
 void 
-ClassOutputSink::process(realvec& in, realvec& out)
+ClassOutputSink::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   
@@ -133,7 +133,7 @@ ClassOutputSink::process(realvec& in, realvec& out)
 	out(o,t) = in(o,t);
       }
   
-  if (!getctrl("mrs_bool/silent").toBool())
+  if (!getctrl("mrs_bool/silent")->isTrue())
     {
       for (o = 0; o < inObservations_; o++)
 	for (t = 0; t < inSamples_; t++)	

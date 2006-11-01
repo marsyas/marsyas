@@ -103,7 +103,7 @@ void play(mrs_real gain, string outName)
 	
   mrs_natural wc=0;
   mrs_natural samplesPlayed = 0;
-  mrs_natural onSamples = playbacknet.getctrl("mrs_natural/onSamples").toNatural();
+  mrs_natural onSamples = playbacknet.getctrl("mrs_natural/onSamples")->toNatural();
   // mrs_natural repeatId = 1;
  
   mrs_real* controls = 0;
@@ -116,9 +116,9 @@ void play(mrs_real gain, string outName)
       		if ( controls != 0 ) {
 			
 			// get some reference controls, so if they have changed we update them
-			mrs_natural inSamples = playbacknet.getctrl("mrs_natural/inSamples").toNatural();
-			mrs_natural inObservations = playbacknet.getctrl("mrs_natural/inObservations").toNatural();
-			mrs_real israte = playbacknet.getctrl("mrs_real/israte").toReal();
+			mrs_natural inSamples = playbacknet.getctrl("mrs_natural/inSamples")->toNatural();
+			mrs_natural inObservations = playbacknet.getctrl("mrs_natural/inObservations")->toNatural();
+			mrs_real israte = playbacknet.getctrl("mrs_real/israte")->toReal();
 			
 			if ( (mrs_natural)controls[1] != inSamples || (mrs_natural)controls[2] != inObservations 
 					|| controls[3] != israte ) {

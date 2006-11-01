@@ -58,22 +58,22 @@ ANN_node::addControls()
 }
 
 void
-ANN_node::localUpdate()
+ANN_node::myUpdate()
 {
-  MRSDIAG("ANN_node.cpp - ANN_node:localUpdate");
+  MRSDIAG("ANN_node.cpp - ANN_node:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
  
-  weights_.create(getctrl("mrs_realvec/weights").toVec().getSize());
-  weights_ = getctrl("mrs_realvec/weights").toVec(); 
+  weights_.create(getctrl("mrs_realvec/weights")->toVec().getSize());
+  weights_ = getctrl("mrs_realvec/weights")->toVec(); 
 
-  bias_ = getctrl("mrs_real/bias").toReal(); 
+  bias_ = getctrl("mrs_real/bias")->toReal(); 
 }
 
 void 
-ANN_node::process(realvec& in, realvec& out)
+ANN_node::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   

@@ -1,6 +1,10 @@
 #include <cstdio>
 
 #include "MarSystemManager.h"
+#include "AudioSink.h"
+#include "SoundFileSink.h"
+#include "SoundFileSource.h"
+#include "Gain.h"
 #include "Messager.h"
 #include "Conversions.h"
 #include "CommandLineOptions.h"
@@ -224,19 +228,19 @@ mrs_natural nb=0;
 		pvseries->tick();
 
 		// ouput the seg snr
-		mrs_real snr = postNet->getctrl("PeResidual/res/mrs_real/snr").toReal();
+		mrs_real snr = postNet->getctrl("PeResidual/res/mrs_real/snr")->toReal();
 		globalSnr+=snr;
 		nb++;
 		cout << "Frame " << nb << " SNR : "<< snr << endl;
 
 		if (!microphone_)
 		{
-			bool temp = pvseries->getctrl("Accumulator/accumNet/Series/preNet/SoundFileSource/src/mrs_bool/notEmpty").toBool();
-			bool temp1 = accumNet->getctrl("Series/preNet/SoundFileSource/src/mrs_bool/notEmpty").toBool();
-			bool temp2 = preNet->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool();
-			string fname = pvseries->getctrl("Accumulator/accumNet/Series/preNet/SoundFileSource/src/mrs_string/filename").toString();
+			bool temp = pvseries->getctrl("Accumulator/accumNet/Series/preNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
+			bool temp1 = accumNet->getctrl("Series/preNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
+			bool temp2 = preNet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool();
+			string fname = pvseries->getctrl("Accumulator/accumNet/Series/preNet/SoundFileSource/src/mrs_string/filename")->toString();
 
-			///*bool*/ temp = pvseries->getctrl("Accumulator/accumNet/Series/preNet/SoundFileSource/src/mrs_bool/notEmpty").toBool();
+			///*bool*/ temp = pvseries->getctrl("Accumulator/accumNet/Series/preNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
 			if (temp2 == false)
 				break;
 		}

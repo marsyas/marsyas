@@ -48,9 +48,9 @@ FullWaveRectifier::clone() const
 }
 
 void
-FullWaveRectifier::localUpdate()
+FullWaveRectifier::myUpdate()
 {
-  MRSDIAG("FullWaveRectifier.cpp - FullWaveRectifier:localUpdate");
+  MRSDIAG("FullWaveRectifier.cpp - FullWaveRectifier:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
@@ -59,7 +59,7 @@ FullWaveRectifier::localUpdate()
 
 
 void 
-FullWaveRectifier::process(realvec& in, realvec& out)
+FullWaveRectifier::myProcess(realvec& in, realvec& out)
 {
   
   checkFlow(in,out);

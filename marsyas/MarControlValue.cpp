@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -17,12 +17,9 @@
 */
 
 /** 
-    \class MarControlValue
-    \brief MarControlValue 
-    
- Created by Ari Lazier on Aug 2003.
- Modified by George Tzanetakis 
-
+	\class MarControlValue
+	\brief Generic class for Marsyas control values
+	Created by lfpt@inescporto.pt and lmartins@inescporto.pt
 */
 
 #include "MarControlValue.h"
@@ -30,317 +27,107 @@
 using namespace std;
 using namespace Marsyas;
 
-
-MarControlValue::MarControlValue()
-{
-  type_ = mar_null;
-}
-
-MarControlValue::MarControlValue(const MarControlValue& val)
-{
-  if (val.type_ == mar_vec)
-    {
-      v.create(val.v.getSize());
-      v = val.v;
-      desc_ = val.desc_;
-      type_ = val.type_;
-    }
-  else
-    {
-      r = val.r;
-      n = val.n;
-      
-      b = val.b;
-      if (val.type_ == mar_string)
-	s = val.s;
-      desc_ = val.desc_;
-      type_ = val.type_;
-    }
-  
-}
-
-
-MarControlValue& 
-MarControlValue::operator=(const MarControlValue& a)
-{
-  if (this != &a)
-    {
-      if (a.type_ == mar_vec)
-	{
-	  v.create(a.v.getSize());
-	  v = a.v;
-	}
-      r = a.r;
-      n = a.n;
-
-      
-      b = a.b;
-      if (a.type_ == mar_string)
-	s = a.s;
-      desc_ = a.desc_;
-      type_ = a.type_;
-    }
-
-
-  return *this;
-}
-
-  
-
-MarControlValue::MarControlValue(double re)
-{
-  r = (mrs_real)re;
-  type_ = mar_real;
-}
- 
-
-MarControlValue::MarControlValue(float re)
-{
-  r = (mrs_real)re;
-  type_ = mar_real;
-}
-
-
-
-
-
-MarControlValue::MarControlValue(int ne)
-{
-  n = ne;
-  type_ = mar_natural;
-}
-
-MarControlValue::MarControlValue(long int ne)
-{
-  n = ne;
-  type_ = mar_natural;
-}
-
-MarControlValue::MarControlValue(realvec& ve)
-{
-  v.create(ve.getSize());
-  v = ve;
-  type_ = mar_vec;
-}
-  
-MarControlValue::MarControlValue(string st)
-{
-  s = st;
-  type_ = mar_string;
-}
-
-
-MarControlValue::MarControlValue(const char *c)
-{
-  s = c;
-  type_ = mar_string;
-}
-
-
-MarControlValue::MarControlValue(bool be)
-{
-  b = be;
-  type_ = mar_bool;
-}
-
-
-  
-
- 
-bool
-MarControlValue::update(MarControlValue &val)
-{
-  if(val.getType() == mar_real) 
-    return update(val.toReal());
-  else if(val.getType() == mar_string) 
-    return update(val.toString());
-  else if(val.getType() == mar_bool) 
-    return update(val.toBool());
-  else if(val.getType() == mar_natural) 
-    return update(val.toNatural());
-  else if(val.getType() == mar_vec) 
-    return update(val.toVec());
-  else
-  {
-    MRSWARN("MarControlValue::update MarControlValue with invalid type was specified");
-    return false;
-  }
-}
-   
-
-bool
-MarControlValue::update(mrs_natural ne)
-{
-  if(type_ != mar_natural)
-  {
-    MRSWARN("MarControlValue::update(mrs_natural) Incorrect type");
-    return false;
-  }
-  n = ne;
-  return true;
-}
-
-bool
-MarControlValue::update(mrs_real re)
-{
-  if(type_ != mar_real)
-  {
-    MRSWARN("MarControlValue::update(mrs_natural) Incorrect type");
-    return false;
-  }
-  r = re;
-  return true;
-}
-
-  
-bool
-MarControlValue::update(string st)
-{
-  if(type_ != mar_string)
-  {
-    MRSWARN("MarControlValue::update(string) Incorrect type");
-    return false;
-  }
-  s = st;
-  return true;
-}
-  
-bool
-MarControlValue::update(bool be)
-{
-  if(type_ != mar_bool)
-  {
-    MRSWARN("MarControlValue::update(bool) Incorrect type");
-    return false;
-  }
-  b = be;
-  return true;
-}
-  
-bool
-MarControlValue::update(realvec ve) 
-{
-  if(type_ != mar_vec)
-  {
-    MRSWARN("MarControlValue::update vec Incorrect type");
-    return false;
-  }
-  if(v.getSize() != ve.getSize()) 
-    {
-      v.create(ve.getSize());
-    }
-  v = ve;
-  return true;
-}
-  
-/* 
-bool
-MarControlValue::update(mrs_natural n) 
-{
-  if(type_ != mar_natural)
-  {
-    MRSWARN("MarControlValue::update(mrs_real) Incorrect type");
-    return false;
-  }
-  i = n;
-  return true;
-}
-*/ 
-  
-
-  
-mrs_real
-MarControlValue::toReal() 
-{
-
-  
-  if(type_ != mar_real) 
-    {
-      MRSWARN("MarControlValue::toReal Incorrect type");
-    }
-  
-  return r;
-} 
-
-
-bool
-MarControlValue::toBool() 
-{
-  if(type_ != mar_bool) 
-    MRSWARN("MarControlValue::toBool Incorrect type");
-  return b;
-}
-
-
-mrs_natural
-MarControlValue::toNatural() 
-{
-  if(type_ != mar_natural) 
-    MRSWARN("MarControlValue::toNatural Incorrect type");
-  return n;
-}
-  
-string
-MarControlValue::toString() 
-{
-  if(type_ != mar_string) MRSWARN("MarControlValue::toString Incorrect type");
-  return s;
-}
-  
-realvec
-MarControlValue::toVec() 
-{
-  if(type_ != mar_vec) MRSWARN("MarControlValue::toVec Incorrect type");
-  return v;
-}
-
-
-
+/************************************************************************/
+/* MarControlValue implementation                                       */
+/************************************************************************/
 int
-MarControlValue::getType() 
+MarControlValue::getType() const
 {
-  return type_;
+	return type_;
 }
 
 string 
-MarControlValue::getSType()
+MarControlValue::getSType() const
 {
-  string res;
-  
-  if(getType() == mar_string) res = "mrs_string";
-  if(getType() == mar_real) res = "mrs_real";
-  if(getType() == mar_vec) res = "mrs_realvec";
-  if(getType() == mar_natural) res = "mrs_natural";
-  if(getType() == mar_bool) res = "mrs_bool";
-  return res;
-  
+	string res;
+	if(getType() == mar_null) res = "mrs_null";
+	if(getType() == mar_string) res = "mrs_string";
+	if(getType() == mar_real) res = "mrs_real";
+	if(getType() == mar_vec) res = "mrs_realvec";
+	if(getType() == mar_natural) res = "mrs_natural";
+	if(getType() == mar_bool) res = "mrs_bool";
+	return res; 
 }
 
-bool 
-Marsyas::operator!=(MarControlValue& v1, MarControlValue& v2)
+/************************************************************************/
+/* MarControlValueT realvec specialization                              */
+/************************************************************************/
+realvec MarControlValueT<realvec>::invalidValue;
+
+// constructor specialization for realvec
+MarControlValueT<realvec>::MarControlValueT(realvec value)
 {
-  if (v1.getType() != v2.getType())
-    MRSWARN("Types of MarControlValue are different");
-  
-  if (v1.getType() == mar_string) return (v1.toString() != v2.toString());
-  if (v1.getType() == mar_real) return (v1.toReal() != v2.toReal());
-  if (v1.getType() == mar_natural) return (v1.toNatural() != v2.toNatural());
-  if (v1.getType() == mar_bool) return (v1.toBool() != v2.toBool());
-  
-  
-  return true;
+	value_.create(value.getSize());
+	value_ = value;
+	type_ = mar_vec;
 }
 
-
-ostream&
-Marsyas::operator<<(ostream& o, const MarControlValue& m)
+MarControlValueT<realvec>::MarControlValueT(const MarControlValueT& val)
 {
-  if(m.type_ == mar_string) o << m.s;
-  if(m.type_ == mar_real) o << m.r;
-  if(m.type_ == mar_natural) o << m.n;
-  if(m.type_ == mar_vec) o << m.v;
-  if(m.type_ == mar_bool) o << m.b;
-  return o;
+	value_.create(val.value_.getSize());
+	value_ = val.value_;
+	type_ = mar_vec;
 }
- 
- 
+
+MarControlValueT<realvec>& 
+MarControlValueT<realvec>::operator=(const MarControlValueT& a)
+{
+	if (this != &a)
+	{
+		value_.create(a.value_.getSize());
+		value_ = a.value_;
+		type_ = a.type_;
+	}
+	return *this;
+}
+
+MarControlValue*
+MarControlValueT<realvec>::clone()
+{
+	return new MarControlValueT<realvec>(*this);
+}
+
+MarControlValue*
+MarControlValueT<realvec>::create()
+{
+	return new MarControlValueT<realvec>(realvec());
+}
+
+void
+MarControlValueT<realvec>::set(realvec &val)
+{
+	if(value_.getSize() != val.getSize()) 
+	{
+		value_.create(val.getSize());
+	}
+	value_ = val;
+}
+
+const realvec&
+MarControlValueT<realvec>::get() const
+{
+	return value_;
+}
+
+bool
+MarControlValueT<realvec>::isNotEqual(MarControlValue *v)
+{
+	if(this != v)//if referring to different objects, check if their contents is different...
+	{
+		if (type_ != mar_vec)
+		{
+			MRSWARN("Types of MarControlValue are different");
+		}
+
+		return value_ != dynamic_cast<MarControlValueT<realvec>*>(v)->get();
+	}
+	else //if v1 and v2 refer to the same object, they must be equal (=> return false)
+		return false;
+}
+
+std::ostream&
+MarControlValueT<realvec>::serialize(std::ostream& os)
+{
+	os << value_;
+	return os;
+}

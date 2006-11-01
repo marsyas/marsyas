@@ -144,10 +144,10 @@ void pitchextract1(string sfName, mrs_natural winSize, mrs_natural hopSize,
    mrs_real highFreq = pitch2hertz(highPitch);
    mrs_natural lowSamples = 
      // hertz2samples(highFreq, pitchExtractor->getctrl("AudioSource/src/mrs_real/osrate")->toReal());
-     hertz2samples(highFreq, pitchExtractor->getctrl("SoundFileSource/src/mrs_real/osrate").toReal());
+     hertz2samples(highFreq, pitchExtractor->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
    mrs_natural highSamples = 
      //     hertz2samples(lowFreq, pitchExtractor->getctrl("AudioSource/src/mrs_real/osrate")->toReal());
-     hertz2samples(lowFreq, pitchExtractor->getctrl("SoundFileSource/src/mrs_real/osrate").toReal());
+     hertz2samples(lowFreq, pitchExtractor->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
    pitchExtractor->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.00);
    pitchExtractor->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.4);
    pitchExtractor->updctrl("Peaker/pkr/mrs_natural/peakStart", lowSamples);
@@ -158,11 +158,11 @@ void pitchextract1(string sfName, mrs_natural winSize, mrs_natural hopSize,
    
    cout << (*pitchExtractor) << endl;
    
-   realvec pitchres(pitchExtractor->getctrl("mrs_natural/onObservations").toNatural(), pitchExtractor->getctrl("mrs_natural/onSamples").toNatural());
+   realvec pitchres(pitchExtractor->getctrl("mrs_natural/onObservations")->toNatural(), pitchExtractor->getctrl("mrs_natural/onSamples")->toNatural());
    
   
-  realvec win(pitchExtractor->getctrl("mrs_natural/inObservations").toNatural(), 
-	      pitchExtractor->getctrl("mrs_natural/inSamples").toNatural());
+  realvec win(pitchExtractor->getctrl("mrs_natural/inObservations")->toNatural(), 
+	      pitchExtractor->getctrl("mrs_natural/inSamples")->toNatural());
   
   
   
@@ -189,7 +189,7 @@ void pitchextract1(string sfName, mrs_natural winSize, mrs_natural hopSize,
       
       // pitch = samples2hertz((mrs_natural)pitchres(1), pitchExtractor->getctrl("AudioSource/src/mrs_real/osrate")->toReal());
 
-      pitch = samples2hertz((mrs_natural)pitchres(1), pitchExtractor->getctrl("SoundFileSource/src/mrs_real/osrate").toReal());
+      pitch = samples2hertz((mrs_natural)pitchres(1), pitchExtractor->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
       
       
       // cout << pitch << "---" << pitchres(0) << endl;

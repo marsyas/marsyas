@@ -29,10 +29,6 @@
 using namespace std;
 using namespace Marsyas;
 
-#ifdef _MATLAB_ENGINE_
-#include "MATLABengine.h"
-#endif 
-
 Shifter::Shifter(string name):MarSystem("Shifter", name)
 {
 	addControls();
@@ -57,25 +53,25 @@ Shifter::addControls()
 }
 
 void
-Shifter::localUpdate()
+Shifter::myUpdate()
 {
-  MRSDIAG("Shifter.cpp - Shifter:localUpdate");
+  MRSDIAG("Shifter.cpp - Shifter:myUpdate");
 
-	shift_ = getctrl("mrs_natural/shift").toNatural();
+	shift_ = getctrl("mrs_natural/shift")->toNatural();
 
-	mrs_natural onsamples = getctrl("mrs_natural/inSamples").toNatural()- shift_;
+	mrs_natural onsamples = getctrl("mrs_natural/inSamples")->toNatural()- shift_;
 	//for too big shifts (> inSamples), do a zero shift
 	if(onsamples < 0)
 		onsamples = inSamples_;
   
 	setctrl("mrs_natural/onSamples", onsamples);
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations").toNatural()*2);
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural()*2);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
 }
 
 void 
-Shifter::process(realvec& in, realvec& out)
+Shifter::myProcess(realvec& in, realvec& out)
 {
 	checkFlow(in,out);
 int delta = 0;
@@ -85,17 +81,12 @@ int delta = 0;
 		{
 			out(o,t) =  in(0,t+delta);
 		}
-delta +=shift_;
+		delta +=shift_;
 	}
 
-	//#ifdef _MATLAB_ENGINE_
-  //MATLAB->putVariable(out, "in");
-
-//
-//	MATLAB->evalString("figure(1);plot(mag)");
-//	MATLAB->evalString("figure(2);plot(peaks(1:2:end))");
-// #endif
-
+	//MATLAB_PUT(out, "in");
+	//MATLAB_EVAL("figure(1);plot(mag)");
+	//MATLAB_EAVL("figure(2);plot(peaks(1:2:end))");
 }
 
 

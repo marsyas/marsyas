@@ -51,7 +51,7 @@ Peaker1::addControls()
 }
 
 void 
-Peaker1::process(realvec& in, realvec& out)
+Peaker1::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
    
@@ -62,11 +62,11 @@ Peaker1::process(realvec& in, realvec& out)
   mrs_natural peakStart;
   mrs_natural peakEnd;
 
-  peakSpacing = getctrl("mrs_real/peakSpacing").toReal();
-  peakStrength = getctrl("mrs_real/peakStrength").toReal();
-  peakStart = getctrl("mrs_natural/peakStart").toNatural();
-  peakEnd = getctrl("mrs_natural/peakEnd").toNatural();
-  peakGain = getctrl("mrs_real/peakGain").toReal();
+  peakSpacing = getctrl("mrs_real/peakSpacing")->toReal();
+  peakStrength = getctrl("mrs_real/peakStrength")->toReal();
+  peakStart = getctrl("mrs_natural/peakStart")->toNatural();
+  peakEnd = getctrl("mrs_natural/peakEnd")->toNatural();
+  peakGain = getctrl("mrs_real/peakGain")->toReal();
 
   out.setval(0.0);
 

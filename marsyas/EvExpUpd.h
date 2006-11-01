@@ -29,7 +29,7 @@
 #include <string>
 #include <iostream>
 
-#include "MarControlValue.h"
+#include "MarControl.h"
 #include "MarEvent.h"
 
 namespace Marsyas

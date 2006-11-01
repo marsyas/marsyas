@@ -36,7 +36,7 @@ class Hamming: public MarSystem
 private: 
   realvec envelope_;
 
-	void localUpdate();
+	void myUpdate();
   
 public:
   Hamming(std::string name);
@@ -44,7 +44,7 @@ public:
   
   MarSystem* clone() const;
 
-	void process(realvec& in, realvec& out);
+	void myProcess(realvec& in, realvec& out);
   
 };
 

@@ -617,7 +617,7 @@ tempotest_sfplay(string sfName)
   series->updctrl("mrs_natural/inSamples", 128);
   series->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
   
-  while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool())
+  while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
     series->tick();
 
   delete series;

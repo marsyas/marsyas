@@ -81,7 +81,7 @@ public:
   Talk();
   ~Talk();
   void init(Communicator* communicator);
-  void process(char *message);
+  void myProcess(char *message);
 };
 
 }//namespace Marsyas

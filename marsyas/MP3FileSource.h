@@ -66,7 +66,7 @@ class MP3FileSource: public AbsSoundFileSource
 private:
  
   void addControls();
-	void localUpdate();
+	void myUpdate();
   mrs_natural getLinear16(realvec& slice);
 
 #ifdef MAD_MP3
@@ -121,7 +121,7 @@ public:
   ~MP3FileSource();
   MarSystem* clone() const;  
 
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
   void getHeader(std::string filename);
   
 };

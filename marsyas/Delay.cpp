@@ -34,7 +34,7 @@ Delay::Delay(string name):MarSystem("Delay",name)
   //type_ = "Delay";
   //name_ = name;
   
-	delay_ = 0.0;
+	delay_ = 0;
   cursor_ = 0;
 
 	addControls();
@@ -64,17 +64,17 @@ Delay::addControls()
 }
 
 void
-Delay::localUpdate()
+Delay::myUpdate()
 {
-  MRSDIAG("Delay.cpp - Delay:localUpdate");
+  MRSDIAG("Delay.cpp - Delay:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-  gain_ = getctrl("mrs_real/gain").toReal();
-  feedback_ = getctrl("mrs_real/feedback").toReal();
-  delay_ = getctrl("mrs_natural/delay").toNatural();
+  gain_ = getctrl("mrs_real/gain")->toReal();
+  feedback_ = getctrl("mrs_real/feedback")->toReal();
+  delay_ = getctrl("mrs_natural/delay")->toNatural();
   
   cursor_ = 0;
   buffer_.stretch(delay_);
@@ -84,7 +84,7 @@ Delay::localUpdate()
 
 
 void 
-Delay::process(realvec& in, realvec& out)
+Delay::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 

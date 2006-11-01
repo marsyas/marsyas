@@ -37,14 +37,14 @@ private:
   mrs_natural ki;			
   realvec maximums_;
   void addControls();
-	void localUpdate();
+	void myUpdate();
   
 public:
   MinArgMin(std::string name);
   ~MinArgMin();
   MarSystem* clone() const;  
 
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

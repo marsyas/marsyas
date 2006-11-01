@@ -37,14 +37,14 @@ class AbsMax: public MarSystem
 private:
   mrs_real max_;
 
-	void localUpdate();
+	void myUpdate();
   
 public:
   AbsMax(std::string name);
   ~AbsMax();
   
   MarSystem* clone() const;
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
  
 };
 

@@ -35,14 +35,14 @@ namespace Marsyas
 class Rms: public MarSystem
 {
 private:
-	void localUpdate();
+	void myUpdate();
   
 public:
   Rms(std::string name);
   ~Rms();
   MarSystem* clone() const;    
 
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 
 };
 

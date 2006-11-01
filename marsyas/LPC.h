@@ -46,7 +46,7 @@ class LPC: public MarSystem
 {
 private: 
   void addControls();
-	void localUpdate();
+	void myUpdate();
   
   mrs_natural inSize_;
   mrs_natural outSize_;
@@ -84,7 +84,7 @@ public:
   MarSystem* clone() const;  
   
   void predict(realvec& data, realvec& coeffs);
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

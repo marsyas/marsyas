@@ -50,7 +50,7 @@ private:
 					realvec& in);
 
 	//void addControls();
-	void localUpdate();
+	void myUpdate();
   
 public:
   BeatHistoFeatures(std::string name);
@@ -59,7 +59,7 @@ public:
   ~BeatHistoFeatures();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

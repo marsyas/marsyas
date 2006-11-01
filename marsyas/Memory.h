@@ -39,7 +39,7 @@ class Memory: public MarSystem
 {
 private: 
   void addControls();
-	void localUpdate();
+	void myUpdate();
 
   mrs_natural end_;
   bool reset_;
@@ -49,7 +49,7 @@ public:
   ~Memory();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 
 };
 

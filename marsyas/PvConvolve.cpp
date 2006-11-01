@@ -47,15 +47,15 @@ PvConvolve::clone() const
 
 
 void
-PvConvolve::localUpdate()
+PvConvolve::myUpdate()
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations").toNatural() / 2);
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal());
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural() / 2);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
 }
 
 void 
-PvConvolve::process(realvec& in, realvec& out)
+PvConvolve::myProcess(realvec& in, realvec& out)
 {
   
   checkFlow(in,out); 

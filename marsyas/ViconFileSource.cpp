@@ -90,15 +90,15 @@ ViconFileSource::getHeader(string filename)
 
 
 void
-ViconFileSource::localUpdate()
+ViconFileSource::myUpdate()
 {
-  inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
-  israte_ = getctrl("mrs_real/israte").toReal();
+  inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
+  israte_ = getctrl("mrs_real/israte")->toReal();
 
 
-  if (filename_ != getctrl("mrs_string/filename").toString())
+  if (filename_ != getctrl("mrs_string/filename")->toString())
     {
-      filename_ = getctrl("mrs_string/filename").toString();
+      filename_ = getctrl("mrs_string/filename")->toString();
       getHeader(filename_);
       
     }
@@ -111,7 +111,7 @@ ViconFileSource::localUpdate()
 }
  
 void
-ViconFileSource::process(realvec& in, realvec& out)
+ViconFileSource::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 
@@ -126,7 +126,7 @@ ViconFileSource::process(realvec& in, realvec& out)
 	  res = fgets(buffer, 4096, vfp_);
 	  if (res == NULL) 
 	    {
-	      setctrl("mrs_bool/notEmpty",(MarControlValue)false);
+	      setctrl("mrs_bool/notEmpty",false);
 	      return;
 	    }
 	  

@@ -46,7 +46,7 @@ private:
   mrs_natural N2_;
   
   void addControls();
-	void localUpdate();
+	void myUpdate();
   
 public:
   PvUnconvert(std::string name);
@@ -54,7 +54,7 @@ public:
   ~PvUnconvert();
   MarSystem* clone() const;    
 
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
   
 };
 

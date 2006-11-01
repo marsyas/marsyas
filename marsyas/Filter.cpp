@@ -74,45 +74,45 @@ Filter::addControls()
 }
 
 
-void Filter::localUpdate()
+void Filter::myUpdate()
 {
-  MRSDIAG("Filter.cpp - Filter:localUpdate");
+  MRSDIAG("Filter.cpp - Filter:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-  if (getctrl("mrs_realvec/ncoeffs").toVec().getSize() != norder_)
+  if (getctrl("mrs_realvec/ncoeffs")->toVec().getSize() != norder_)
     {
-      ncoeffs_.create(getctrl("mrs_realvec/ncoeffs").toVec().getSize());
+      ncoeffs_.create(getctrl("mrs_realvec/ncoeffs")->toVec().getSize());
       norder_ = ncoeffs_.getSize();
       order_ = (norder_ > dorder_) ? norder_ : dorder_;
-      channels_ = getctrl("mrs_natural/inObservations").toNatural();
+      channels_ = getctrl("mrs_natural/inObservations")->toNatural();
       state_.create(channels_,order_-1);
       setctrl("mrs_realvec/state", state_);
     }
   
-  if (getctrl("mrs_realvec/dcoeffs").toVec().getSize() != dorder_)
+  if (getctrl("mrs_realvec/dcoeffs")->toVec().getSize() != dorder_)
     {
 
-      dcoeffs_.create(getctrl("mrs_realvec/dcoeffs").toVec().getSize());
+      dcoeffs_.create(getctrl("mrs_realvec/dcoeffs")->toVec().getSize());
       dorder_ = dcoeffs_.getSize();
       order_ = (norder_ > dorder_) ? norder_ : dorder_;
-      channels_ = getctrl("mrs_natural/inObservations").toNatural();
+      channels_ = getctrl("mrs_natural/inObservations")->toNatural();
       state_.create(channels_,order_-1);
       setctrl("mrs_realvec/state", state_);
     }
   
-  if (getctrl("mrs_natural/inObservations").toNatural() != channels_)
+  if (getctrl("mrs_natural/inObservations")->toNatural() != channels_)
     {
-      channels_ = getctrl("mrs_natural/inObservations").toNatural();
+      channels_ = getctrl("mrs_natural/inObservations")->toNatural();
       state_.create(channels_,order_-1);
     }
   
-  ncoeffs_ = getctrl("mrs_realvec/ncoeffs").toVec();
-  dcoeffs_ = getctrl("mrs_realvec/dcoeffs").toVec();
-  if (getctrl("mrs_natural/stateUpdate").toNatural()) 
-    state_ = getctrl("mrs_realvec/state").toVec();
+  ncoeffs_ = getctrl("mrs_realvec/ncoeffs")->toVec();
+  dcoeffs_ = getctrl("mrs_realvec/dcoeffs")->toVec();
+  if (getctrl("mrs_natural/stateUpdate")->toNatural()) 
+    state_ = getctrl("mrs_realvec/state")->toVec();
   
   mrs_real d0 = dcoeffs_(0);
   if (d0 != 1.0) {
@@ -137,7 +137,7 @@ Filter::write(string filename)
 }
 
 void 
-Filter::process(realvec& in, realvec& out)
+Filter::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   
@@ -146,7 +146,7 @@ Filter::process(realvec& in, realvec& out)
   mrs_natural stateSize = state_.getCols();
   mrs_natural channels = in.getRows();
   
-  mrs_real gain = getctrl("mrs_real/fgain").toReal();
+  mrs_real gain = getctrl("mrs_real/fgain")->toReal();
   
   // State array holds the various delays for the difference equation 
   // of the filter. Similar implementation as described in the manual

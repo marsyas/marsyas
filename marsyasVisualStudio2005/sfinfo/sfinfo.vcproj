@@ -196,7 +196,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\marsyas;&quot;$(MATLAB)\extern\include&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_MATLAB_ENGINE_"
+				PreprocessorDefinitions="WIN32;_DEBUG;MARSYAS_MATLAB"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
@@ -273,8 +273,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\marsyas"
-				PreprocessorDefinitions="WIN32;NDEBUG"
+				AdditionalIncludeDirectories="..\..\marsyas;&quot;$(MATLAB)\extern\include&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;MARSYAS_MATLAB"
 				MinimalRebuild="false"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -292,9 +292,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dsound.lib"
+				AdditionalDependencies="dsound.lib libeng.lib libmx.lib libut.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="&quot;$(MATLAB)\extern\lib\win32\microsoft&quot;"
 				GenerateDebugInformation="true"
 			/>
 			<Tool

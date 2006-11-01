@@ -69,20 +69,20 @@ SMO::addControls()
 
 
 void
-SMO::localUpdate()
+SMO::myUpdate()
 {
-  MRSDIAG("SMO.cpp - SMO:localUpdate");
+  MRSDIAG("SMO.cpp - SMO:myUpdate");
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", (mrs_natural)2);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
   
-  mrs_natural inObservations = getctrl("mrs_natural/inObservations").toNatural();
-  mrs_natural nlabels = getctrl("mrs_natural/nLabels").toNatural();
+  mrs_natural inObservations = getctrl("mrs_natural/inObservations")->toNatural();
+  mrs_natural nlabels = getctrl("mrs_natural/nLabels")->toNatural();
 
 
-  mrs_natural mcols = (getctrl("mrs_realvec/weights").toVec()).getCols();
+  mrs_natural mcols = (getctrl("mrs_realvec/weights")->toVec()).getCols();
   mrs_natural ncols = weights_.getCols();
   
   
@@ -99,31 +99,31 @@ SMO::localUpdate()
       weights_.create(inObservations);
     }
   
-  string mode = getctrl("mrs_string/mode").toString();
+  string mode = getctrl("mrs_string/mode")->toString();
   if (mode == "predict")
     {
-      weights_ = getctrl("mrs_realvec/weights").toVec();
+      weights_ = getctrl("mrs_realvec/weights")->toVec();
     }
 }
 
 
 void 
-SMO::process(realvec& in, realvec& out)
+SMO::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
-  mrs_real v;
-  string mode = getctrl("mrs_string/mode").toString();
+//  mrs_real v;
+  string mode = getctrl("mrs_string/mode")->toString();
 
   
 
 
-  mrs_natural nlabels = getctrl("mrs_natural/nLabels").toNatural();
-  mrs_natural l;
+  mrs_natural nlabels = getctrl("mrs_natural/nLabels")->toNatural();
+//  mrs_natural l;
   mrs_natural prediction = 0;
   mrs_real label;
   
 
-  mrs_real diff;
+//  mrs_real diff;
   mrs_real sq_sum=0.0;
 
   mrs_real thres;
@@ -276,7 +276,7 @@ SMO::process(realvec& in, realvec& out)
       
     }
   
-  if (getctrl("mrs_bool/done").toBool())
+  if (getctrl("mrs_bool/done")->toBool())
     {
       updctrl("mrs_realvec/weights", weights_);
     }

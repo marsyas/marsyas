@@ -26,9 +26,7 @@ as a prototype template for building more complicated MarSystems.
 */
 
 #include "Gain.h"
-#ifdef _MATLAB_ENGINE_
-#include "MATLABengine.h"
-#endif 
+
 using namespace std;
 using namespace Marsyas;
 
@@ -53,6 +51,11 @@ Gain::Gain(string name):MarSystem("Gain", name)
 	addControls();
 }
 
+Gain::Gain(const Gain& a) : MarSystem(a)
+{
+	ctrl_gain_ = getctrl("mrs_real/gain");
+}
+
 
 Gain::~Gain()
 {
@@ -68,19 +71,19 @@ void
 Gain::addControls()
 {
   //Add specific controls needed by this MarSystem.
-  addctrl("mrs_real/gain", 1.0);
+  addctrl("mrs_real/gain", 1.0, ctrl_gain_);
 }
 
 // void
-// Gain::localUpdate()
+// Gain::myUpdate()
 // {
 //   
-// lmartins: since this is the default MarSystem::localUpdate()
+// lmartins: since this is the default MarSystem::myUpdate()
 // (i.e. does not alters input data format) it's not needed to
 // override it here!
 // see also Limiter.cpp for another example
 //   
-//   MRSDIAG("Gain.cpp - Gain:localUpdate");
+//   MRSDIAG("Gain.cpp - Gain:myUpdate");
 //   
 //   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 //   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
@@ -91,16 +94,19 @@ Gain::addControls()
 //}
 
 void 
-Gain::process(realvec& in, realvec& out)
+Gain::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 
-  mrs_real gain = getctrl("mrs_real/gain").toReal();
-  
+	//get a local copy of the current gain control value
+	//(it will be used for this entire processing, even if it's
+	//changed by someone else, e.g. by a different thread)
+	mrs_real gain = ctrl_gain_->to<mrs_real>();
+
   for (o=0; o < inObservations_; o++)
     for (t = 0; t < inSamples_; t++)
     {
-			out(o,t) =  gain * in(o,t);
+			out(o,t) = gain * in(o,t);
     }
 
 }

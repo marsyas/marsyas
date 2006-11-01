@@ -49,7 +49,7 @@ void NetworkTCPSink::addControls() {
   addctrl("mrs_natural/controlsPort", 5010);
 }
 
-void NetworkTCPSink::process( realvec& in, realvec& out ) {
+void NetworkTCPSink::myProcess( realvec& in, realvec& out ) {
   
   checkFlow(in,out);
   
@@ -57,9 +57,9 @@ void NetworkTCPSink::process( realvec& in, realvec& out ) {
 	  refresh();
   }
   
-  if ( !NetworkSocket::sendTCP( in, getctrl("mrs_natural/inSamples").toNatural(), 
-			     getctrl("mrs_natural/inObservations").toNatural(),
-			     getctrl("mrs_real/israte").toReal() ) ) {
+  if ( !NetworkSocket::sendTCP( in, getctrl("mrs_natural/inSamples")->toNatural(), 
+			     getctrl("mrs_natural/inObservations")->toNatural(),
+			     getctrl("mrs_real/israte")->toReal() ) ) {
     throw SocketException ( "Could not write to socket." );
   }
 
@@ -80,10 +80,10 @@ void NetworkTCPSink::refresh() {
   }
   
 
-  mrs_natural dataPort = getctrl("mrs_natural/dataPort").toNatural();
-  mrs_natural controlsPort = getctrl("mrs_natural/controlsPort").toNatural();
+  mrs_natural dataPort = getctrl("mrs_natural/dataPort")->toNatural();
+  mrs_natural controlsPort = getctrl("mrs_natural/controlsPort")->toNatural();
 
-  if ( !NetworkSocket::setupSink( getctrl("mrs_string/host").toString(), 
+  if ( !NetworkSocket::setupSink( getctrl("mrs_string/host")->toString(), 
   					dataPort, controlsPort) ) {
     throw SocketException( "Could not setup TCP Sink" );
     exit(1);

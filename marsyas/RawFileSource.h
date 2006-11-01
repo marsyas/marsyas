@@ -53,7 +53,7 @@ private:
   mrs_natural ch_, pos_, nChannels_;
 
   void addControls();
-	void localUpdate();
+	void myUpdate();
   void swap16(unsigned char *ptr);
   
   void readData( unsigned long index );
@@ -65,7 +65,7 @@ public:
   ~RawFileSource();
   
   MarSystem* clone() const;
-  void process(realvec& in,realvec &out);
+  void myProcess(realvec& in,realvec &out);
   
   
   // helpers for synthesis routines

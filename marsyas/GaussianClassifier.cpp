@@ -79,138 +79,128 @@ GaussianClassifier::addControls()
 
 
 void
-GaussianClassifier::localUpdate()
+GaussianClassifier::myUpdate()
 {
-  MRSDIAG("GaussianClassifier.cpp - GaussianClassifier:localUpdate");
+	MRSDIAG("GaussianClassifier.cpp - GaussianClassifier:myUpdate");
 
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", (mrs_natural)2);
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  
-  mrs_natural inObservations = getctrl("mrs_natural/inObservations").toNatural();
-  mrs_natural nlabels = getctrl("mrs_natural/nLabels").toNatural();
+	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+	setctrl("mrs_natural/onObservations", (mrs_natural)2);
+	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  mrs_natural mrows = (getctrl("mrs_realvec/means").toVec()).getRows();
-  mrs_natural mcols = (getctrl("mrs_realvec/means").toVec()).getCols();
-  mrs_natural nrows = means_.getRows();
-  mrs_natural ncols = means_.getCols();
-  
-  if ((nlabels != mrows) || 
-      (inObservations != mcols))
-    {
-      means_.create(nlabels, inObservations);
-      covars_.create(nlabels, inObservations);
-      updctrl("mrs_realvec/means", means_);//[?]
-      updctrl("mrs_realvec/covars", covars_);//[?]      
-      labelSizes_.create(nlabels);  
-    }
-  
-  if ((nlabels != nrows) || 
-      (inObservations != ncols))
-    {
-      means_.create(nlabels, inObservations);
-      covars_.create(nlabels, inObservations);
-    }
-  
-  string mode = getctrl("mrs_string/mode").toString();
-  if (mode == "predict")
-    {
-      means_ = getctrl("mrs_realvec/means").toVec();
-      covars_ = getctrl("mrs_realvec/covars").toVec();
-    }
+	mrs_natural inObservations = getctrl("mrs_natural/inObservations")->toNatural();
+	mrs_natural nlabels = getctrl("mrs_natural/nLabels")->toNatural();
+
+	mrs_natural mrows = (getctrl("mrs_realvec/means")->toVec()).getRows();
+	mrs_natural mcols = (getctrl("mrs_realvec/means")->toVec()).getCols();
+	mrs_natural nrows = means_.getRows();
+	mrs_natural ncols = means_.getCols();
+
+	if ((nlabels != mrows) || 
+		(inObservations != mcols))
+	{
+		means_.create(nlabels, inObservations);
+		covars_.create(nlabels, inObservations);
+		updctrl("mrs_realvec/means", means_);//[?]
+		updctrl("mrs_realvec/covars", covars_);//[?]      
+		labelSizes_.create(nlabels);  
+	}
+
+	if ((nlabels != nrows) || 
+		(inObservations != ncols))
+	{
+		means_.create(nlabels, inObservations);
+		covars_.create(nlabels, inObservations);
+	}
+
+	string mode = getctrl("mrs_string/mode")->toString();
+	if (mode == "predict")
+	{
+		means_ = getctrl("mrs_realvec/means")->toVec();
+		covars_ = getctrl("mrs_realvec/covars")->toVec();
+	}
 }
 
 void 
-GaussianClassifier::process(realvec& in, realvec& out)
+GaussianClassifier::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
-  mrs_real v;
-  string mode = getctrl("mrs_string/mode").toString();
+	checkFlow(in,out);
+	mrs_real v;
+	string mode = getctrl("mrs_string/mode")->toString();
 
-  
+	mrs_natural nlabels = getctrl("mrs_natural/nLabels")->toNatural();
+	mrs_natural l;
+	mrs_natural prediction = 0;
+	mrs_real label;
 
+	mrs_real diff;
+	mrs_real sq_sum=0.0;
 
-  mrs_natural nlabels = getctrl("mrs_natural/nLabels").toNatural();
-  mrs_natural l;
-  mrs_natural prediction = 0;
-  mrs_real label;
-  
-
-  mrs_real diff;
-  mrs_real sq_sum=0.0;
-
-  if (mode == "train")  
-    {
-      for (t = 0; t < inSamples_; t++)  
+	if (mode == "train")  
 	{
-	  label = in(inObservations_-1, t);
-	  
-	  for (o=0; o < inObservations_-1; o++)
-	    {
-	      v = in(o,t);
-	      
-	      means_((mrs_natural)label,o) = means_((mrs_natural)label,o) + v;
-	      covars_((mrs_natural)label,o) = covars_((mrs_natural)label,o) + v*v;
-	      out(0,t) = (mrs_real)label;	      
-	      out(1,t) = (mrs_real)label;
-	      
-	    }
-	  labelSizes_((mrs_natural)label) = labelSizes_((mrs_natural)label) + 1;
-	  
+		for (t = 0; t < inSamples_; t++)  
+		{
+			label = in(inObservations_-1, t);
+
+			for (o=0; o < inObservations_-1; o++)
+			{
+				v = in(o,t);
+
+				means_((mrs_natural)label,o) = means_((mrs_natural)label,o) + v;
+				covars_((mrs_natural)label,o) = covars_((mrs_natural)label,o) + v*v;
+				out(0,t) = (mrs_real)label;	      
+				out(1,t) = (mrs_real)label;
+
+			}
+			labelSizes_((mrs_natural)label) = labelSizes_((mrs_natural)label) + 1;
+
+		}
 	}
-    }
 
-
-
-  if (mode == "predict")
-    {
-      mrs_real min = 10000000.0;
-      for (t = 0; t < inSamples_; t++)  
+	if (mode == "predict")
 	{
-	  label = in(inObservations_-1, t);
+		mrs_real min = 10000000.0;
+		for (t = 0; t < inSamples_; t++)  
+		{
+			label = in(inObservations_-1, t);
 
-	  for (l=0; l < nlabels; l++)
-	    {
-	      sq_sum = 0.0;
-	      
-	      for (o=0; o < inObservations_-1; o++)
-		{
-		  v = in(o,t);
-		  diff = (v - means_(l,o));
-		  sq_sum += (diff * covars_(l,o) * diff);
+			for (l=0; l < nlabels; l++)
+			{
+				sq_sum = 0.0;
+
+				for (o=0; o < inObservations_-1; o++)
+				{
+					v = in(o,t);
+					diff = (v - means_(l,o));
+					sq_sum += (diff * covars_(l,o) * diff);
+				}
+				if (sq_sum < min)
+				{
+					min = sq_sum;
+					prediction = l;
+				}
+			}
+			out(0,t) = (mrs_real)prediction;
+			out(1,t) = (mrs_real)label;
 		}
-	      if (sq_sum < min)
-		{
-		  min = sq_sum;
-		  prediction = l;
-		}
-	    }
-	  
-	  out(0,t) = (mrs_real)prediction;
-	  out(1,t) = (mrs_real)label;
 	}
-    }
-  
-  if (getctrl("mrs_bool/done").toBool())
-    {
-      
-      for (l=0; l < nlabels; l++)
-	for (o=0; o < inObservations_; o++)
-	  {
-	    means_(l,o) = means_(l,o) / labelSizes_(l);
-	    covars_(l,o) = covars_(l,o) / labelSizes_(l);
-	    covars_(l, o) = covars_(l,o) - 
-	      (means_(l,o) * means_(l,o));
-	    if (covars_(l,o) != 0.0)
-	      {
-		covars_(l,o) = (mrs_real)(1.0 / covars_(l,o));
-	      }
-	  }
-      updctrl("mrs_realvec/means", means_);
-      updctrl("mrs_realvec/covars", covars_);
-    }
 
-  
+	if (getctrl("mrs_bool/done")->toBool())
+	{
+		for (l=0; l < nlabels; l++)
+			for (o=0; o < inObservations_; o++)
+			{
+				means_(l,o) = means_(l,o) / labelSizes_(l);
+				covars_(l,o) = covars_(l,o) / labelSizes_(l);
+				covars_(l, o) = covars_(l,o) - 
+					(means_(l,o) * means_(l,o));
+				if (covars_(l,o) != 0.0)
+				{
+					covars_(l,o) = (mrs_real)(1.0 / covars_(l,o));
+				}
+			}
+			updctrl("mrs_realvec/means", means_);
+			updctrl("mrs_realvec/covars", covars_);
+	}
 }
 
 

@@ -46,15 +46,15 @@ Rms::clone() const
 }
 
 void 
-Rms::localUpdate()
+Rms::myUpdate()
 {
   setctrl("mrs_natural/onSamples", (mrs_natural)1);
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal() / getctrl("mrs_natural/inSamples").toNatural());
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal() / getctrl("mrs_natural/inSamples")->toNatural());
 }
 
 void 
-Rms::process(realvec& in, realvec& out)
+Rms::myProcess(realvec& in, realvec& out)
 {
   mrs_real val;
   mrs_real rmsEnergy = 0.0;

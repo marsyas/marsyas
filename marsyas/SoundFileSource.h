@@ -75,7 +75,7 @@ private:
 	bool advance_;
 
 	void addControls();
-	void localUpdate();
+	void myUpdate();
   
 public:
   SoundFileSource(std::string name);
@@ -84,7 +84,7 @@ public:
   ~SoundFileSource();
   MarSystem* clone() const;    
  
-  virtual void process(realvec& in,realvec& out);
+  virtual void myProcess(realvec& in,realvec& out);
   virtual bool checkType();
   virtual void getHeader();
 

@@ -60,16 +60,16 @@ PowerSpectrum::clone() const
 
 
 void 
-PowerSpectrum::localUpdate()
+PowerSpectrum::myUpdate()
 {
   setctrl("mrs_natural/onSamples", (mrs_natural)1);
-  // setctrl("mrs_natural/onObservations", (getctrl("mrs_natural/inObservations").toNatural() / 2) + 1);
-  setctrl("mrs_natural/onObservations", (getctrl("mrs_natural/inObservations").toNatural() / 2));
+  // setctrl("mrs_natural/onObservations", (getctrl("mrs_natural/inObservations")->toNatural() / 2) + 1);
+  setctrl("mrs_natural/onObservations", (getctrl("mrs_natural/inObservations")->toNatural() / 2));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));  
 
-  stype_ = getctrl("mrs_string/spectrumType").toString();
+  stype_ = getctrl("mrs_string/spectrumType")->toString();
   if (stype_ == "power")
     ntype_ = PSD_POWER;
   else if (stype_ == "magnitude") 
@@ -80,7 +80,7 @@ PowerSpectrum::localUpdate()
     ntype_ = PSD_PD;
   
   //defaultUpdate(); [!]
-	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
 
   N2_ = inObservations_ / 2;
   ostringstream oss;
@@ -91,7 +91,7 @@ PowerSpectrum::localUpdate()
 }
 
 void 
-PowerSpectrum::process(realvec& in, realvec& out)
+PowerSpectrum::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   
@@ -132,8 +132,7 @@ PowerSpectrum::process(realvec& in, realvec& out)
 	  out(t,0) = (mrs_real)(2.0 * pwr_) / N2_;	  
 	  break;
 	}
-    }
-  
+    } 
 }
 
 

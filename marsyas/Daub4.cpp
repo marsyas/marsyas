@@ -56,9 +56,9 @@ Daub4::addControls()
 }
 
 void
-Daub4::localUpdate()
+Daub4::myUpdate()
 {
-  MRSDIAG("Daub4.cpp - Daub4:localUpdate");
+  MRSDIAG("Daub4.cpp - Daub4:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
@@ -67,17 +67,17 @@ Daub4::localUpdate()
   c1_ = 0.8365163037378079f;
   c2_ = 0.2241438680420143f;
   c3_ = -0.1294095225512604f;
-  workspace_.create(getctrl("mrs_natural/inSamples").toNatural());
+  workspace_.create(getctrl("mrs_natural/inSamples")->toNatural());
 }
 
 void 
-Daub4::process(realvec& in, realvec& out) 
+Daub4::myProcess(realvec& in, realvec& out) 
 {
   checkFlow(in,out);
 
   mrs_natural nh, nh1, i, j;
-  mrs_natural n = getctrl("mrs_natural/processSize").toNatural();
-  bool forward = getctrl("mrs_bool/forward").toBool();
+  mrs_natural n = getctrl("mrs_natural/processSize")->toNatural();
+  bool forward = getctrl("mrs_bool/forward")->toBool();
   
   if (n < 4) return;
   nh = n >> 1;

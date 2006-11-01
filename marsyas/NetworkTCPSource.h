@@ -47,7 +47,7 @@ class NetworkTCPSource: public NetworkSocket
   
   std::string getClientAddr();
 
-  void process( realvec& in, realvec& out );
+  void myProcess( realvec& in, realvec& out );
   void refresh();
   
 };

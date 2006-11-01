@@ -30,9 +30,11 @@
 
 #include "MslModel.h"
 #include "SocketException.h"
+#include "MarSystem.h"
 
 #include <vector> 
 #include <string> 
+#include <iomanip>
 #include <algorithm> 
 #include <functional> 
 
@@ -151,7 +153,7 @@ MslModel::input( const string& inputString )
 // Parameters: name of the marsystem to get controls
 // Return: map of controls for a specified marsystem
 //
-map<string, MarControlValue> 
+map<string, MarControlPtr> 
 MslModel::getControls( const string& name ) 
 {
   return workingSet[name]->getControls();
@@ -448,7 +450,7 @@ bool MslCommandUpdateControl::execute()
   if ( control.rfind( "mrs_real", control.length()) != string::npos ) 
     {
       if ( workingSet.find(name) != workingSet.end() ) {
-	mrs_real val = (mrs_real)atof( value.toString().c_str() );
+	mrs_real val = (mrs_real)atof( value->toString().c_str() );
 	
 	workingSet[name]->updctrl( control, val );
 	return true;
@@ -460,7 +462,7 @@ bool MslCommandUpdateControl::execute()
   else if ( control.rfind( "mrs_string", control.length() ) != string::npos ) {
     
     if ( workingSet.find(name) != workingSet.end() ) {
-      workingSet[name]->updctrl( control, value.toString() );
+      workingSet[name]->updctrl( control, value->toString() );
       return true;
     } else {
       
@@ -469,7 +471,7 @@ bool MslCommandUpdateControl::execute()
   } 
   else if ( control.rfind( "mrs_natural", control.length()) != string::npos ) {
     if ( workingSet.find(name) != workingSet.end() ) {
-      mrs_natural val = atoi( value.toString().c_str() );
+      mrs_natural val = atoi( value->toString().c_str() );
       workingSet[name]->updctrl( control, val );
       return true;
     } else {
@@ -480,7 +482,7 @@ bool MslCommandUpdateControl::execute()
   else if ( control.rfind( "mrs_bool", control.length()) != string::npos ) {
 		
     if( workingSet.find(name) != workingSet.end() ) {
-      mrs_natural val = atoi( value.toString().c_str() );
+      mrs_natural val = atoi( value->toString().c_str() );
       if ( val == 0 ) {
 	workingSet[name]->updctrl( control, false );
       }
@@ -532,7 +534,7 @@ bool MslCommandRun::execute()
   
   mrs_natural wc=0;
   mrs_natural samplesPlayed = 0;
-  mrs_natural onSamples = msys->getctrl("mrs_natural/onSamples").toNatural();
+  mrs_natural onSamples = msys->getctrl("mrs_natural/onSamples")->toNatural();
   
   mrs_real* controls = 0;
   
@@ -545,9 +547,9 @@ bool MslCommandRun::execute()
 	if ( controls != 0 ) {
 			
 			// get some reference controls, so if they have changed we update them
-		mrs_natural inSamples = msys->getctrl("mrs_natural/inSamples").toNatural();
-		mrs_natural inObservations = msys->getctrl("mrs_natural/inObservations").toNatural();
-		mrs_real israte = msys->getctrl("mrs_real/israte").toReal();
+		mrs_natural inSamples = msys->getctrl("mrs_natural/inSamples")->toNatural();
+		mrs_natural inObservations = msys->getctrl("mrs_natural/inObservations")->toNatural();
+		mrs_real israte = msys->getctrl("mrs_real/israte")->toReal();
 			
 		if ( (mrs_natural)controls[1] != inSamples || (mrs_natural)controls[2] != inObservations 
 				|| controls[3] != israte ) {
@@ -567,7 +569,7 @@ bool MslCommandRun::execute()
         
     wc ++;
 					
-    if ( msys->getctrl("mrs_bool/notEmpty").toBool() == false ) {
+    if ( !msys->getctrl("mrs_bool/notEmpty")->isTrue() ) {
       	break;
     }
     samplesPlayed += onSamples;  

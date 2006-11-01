@@ -24,6 +24,7 @@
 #include "Collection.h"
 #include "MarSystemManager.h"
 #include "Accumulator.h"
+#include "Fanout.h"
 #include "CommandLineOptions.h"
 
 #include <string> 
@@ -34,13 +35,13 @@ int helpopt;
 int usageopt;
 int normopt;
 
-long offset = 0;
-long duration = 1000 * 44100;
-long memSize = 40;
+mrs_natural offset = 0;
+mrs_natural duration = 1000 * 44100;
+mrs_natural memSize = 40;
 mrs_natural winSize = 512;
-float start = 0.0f;
-float length = 30.0f;
-float gain = 1.0f;
+mrs_real start = 0.0f;
+mrs_real length = 30.0f;
+mrs_real gain = 1.0f;
 
 #define EMPTYSTRING "MARSYAS_EMPTY" 
 string pluginName = EMPTYSTRING;
@@ -119,8 +120,8 @@ tempo_histoSumBands(MarSystem* total1, string sfName, realvec& beatfeatures,
 
   total1->updctrl("SoundFileSource/src1/mrs_string/filename", sfName);
 
-  nChannels = total1->getctrl("SoundFileSource/src1/mrs_natural/nChannels").toNatural();
-  srate = total1->getctrl("SoundFileSource/src1/mrs_real/israte").toReal();
+  nChannels = total1->getctrl("SoundFileSource/src1/mrs_natural/nChannels")->toNatural();
+  srate = total1->getctrl("SoundFileSource/src1/mrs_real/israte")->toReal();
 
   mrs_natural ifactor = 8;
   total1->updctrl("DownSampler/initds/mrs_natural/factor", ifactor);  
@@ -145,18 +146,18 @@ tempo_histoSumBands(MarSystem* total1, string sfName, realvec& beatfeatures,
   total1->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 3);  
 
   // wavelt filterbank envelope extraction controls 
-  total1->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", (MarControlValue)true);
+  total1->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", true);
   total1->updctrl("OnePole/lpf/mrs_real/alpha", 0.99f);
   mrs_natural factor = 32;
   total1->updctrl("DownSampler/ds/mrs_natural/factor", factor);  
   
-  srate = total1->getctrl("DownSampler/initds/mrs_real/osrate").toReal();  
+  srate = total1->getctrl("DownSampler/initds/mrs_real/osrate")->toReal();  
 
 
 
 
   // Peak picker 4BPMs at 60BPM resolution from 50 BPM to 250 BPM 
-  mrs_natural pkinS = total1->getctrl("Peaker/pkr/mrs_natural/onSamples").toNatural();
+  mrs_natural pkinS = total1->getctrl("Peaker/pkr/mrs_natural/onSamples")->toNatural();
   mrs_real peakSpacing = ((mrs_natural)(srate * 60.0 / (factor *60.0)) - 
 		      (mrs_natural)(srate * 60.0 / (factor *62.0))) / (pkinS * 1.0);
   mrs_natural peakStart = (mrs_natural)(srate * 60.0 / (factor * 200.0));
@@ -168,17 +169,17 @@ tempo_histoSumBands(MarSystem* total1, string sfName, realvec& beatfeatures,
   total1->updctrl("Peaker/pkr/mrs_real/peakGain", 2.0);
 
 
-  total1->updctrl("Histogram/histo/mrs_natural/startBin", (MarControlValue)0);
+  total1->updctrl("Histogram/histo/mrs_natural/startBin", 0);
 
   total1->updctrl("Histogram/histo/mrs_natural/endBin", 250);
   total1->updctrl("Histogram/histo/mrs_bool/reset", true);
 
   
   // prepare vectors for processing 
-  /* realvec iwin(total->getctrl("mrs_natural/inObservations").toNatural(), 
-	       total->getctrl("mrs_natural/inSamples").toNatural());
-  realvec estimate(total->getctrl("mrs_natural/onObservations").toNatural(), 
-		   total->getctrl("mrs_natural/onSamples").toNatural());
+  /* realvec iwin(total->getctrl("mrs_natural/inObservations")->toNatural(), 
+	       total->getctrl("mrs_natural/inSamples")->toNatural());
+  realvec estimate(total->getctrl("mrs_natural/onObservations")->toNatural(), 
+		   total->getctrl("mrs_natural/onSamples")->toNatural());
   */ 
   
   mrs_natural onSamples;
@@ -189,14 +190,14 @@ tempo_histoSumBands(MarSystem* total1, string sfName, realvec& beatfeatures,
   mrs_natural repeatId = 1;
 
   // vector of bpm estimate used to calculate median 
-  onSamples = total1->getctrl("ShiftInput/si/mrs_natural/onSamples").toNatural();
+  onSamples = total1->getctrl("ShiftInput/si/mrs_natural/onSamples")->toNatural();
 
   
-  total1->updctrl("SoundFileSource/src1/mrs_natural/pos", (MarControlValue)0);
+  total1->updctrl("SoundFileSource/src1/mrs_natural/pos", 0);
 
   
 
-  while (total1->getctrl("SoundFileSource/src1/mrs_bool/notEmpty").toBool())
+  while (total1->getctrl("SoundFileSource/src1/mrs_bool/notEmpty")->toBool())
     {
       total1->process(iwin, estimate);
       numPlayed++;
@@ -337,8 +338,8 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
   
   
 
-  mrs_real srate = src->getctrl("mrs_real/osrate").toReal();
-  mrs_natural nChannels = src->getctrl("mrs_natural/nChannels").toNatural();
+  mrs_real srate = src->getctrl("mrs_real/osrate")->toReal();
+  mrs_natural nChannels = src->getctrl("mrs_natural/nChannels")->toNatural();
   
   
   // update controls 
@@ -371,30 +372,30 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
   
   
   
-  in.create(total->getctrl("mrs_natural/inObservations").toNatural(), 
-	    total->getctrl("mrs_natural/inSamples").toNatural());
-  timbreres.create(total->getctrl("mrs_natural/onObservations").toNatural(), 
-		   total->getctrl("mrs_natural/onSamples").toNatural());
+  in.create(total->getctrl("mrs_natural/inObservations")->toNatural(), 
+	    total->getctrl("mrs_natural/inSamples")->toNatural());
+  timbreres.create(total->getctrl("mrs_natural/onObservations")->toNatural(), 
+		   total->getctrl("mrs_natural/onSamples")->toNatural());
   
   if (withBeatFeatures)
     {
-      fullres.create(total->getctrl("mrs_natural/onObservations").toNatural() + 
+      fullres.create(total->getctrl("mrs_natural/onObservations")->toNatural() + 
 		     8, 
-		     total->getctrl("mrs_natural/onSamples").toNatural());
+		     total->getctrl("mrs_natural/onSamples")->toNatural());
       
-      afullres.create(total->getctrl("mrs_natural/onObservations").toNatural() + 
+      afullres.create(total->getctrl("mrs_natural/onObservations")->toNatural() + 
 		      8 + 1, 
-		      total->getctrl("mrs_natural/onSamples").toNatural());
-      annotator->updctrl("mrs_natural/inObservations", total->getctrl("mrs_natural/onObservations").toNatural()+8);      
+		      total->getctrl("mrs_natural/onSamples")->toNatural());
+      annotator->updctrl("mrs_natural/inObservations", total->getctrl("mrs_natural/onObservations")->toNatural()+8);      
     }
   else
     {
-      fullres.create(total->getctrl("mrs_natural/onObservations").toNatural(), 
-		     total->getctrl("mrs_natural/onSamples").toNatural());
+      fullres.create(total->getctrl("mrs_natural/onObservations")->toNatural(), 
+		     total->getctrl("mrs_natural/onSamples")->toNatural());
 
-      afullres.create(total->getctrl("mrs_natural/onObservations").toNatural() + 1,
-		      total->getctrl("mrs_natural/onSamples").toNatural());  
-      annotator->updctrl("mrs_natural/inObservations", total->getctrl("mrs_natural/onObservations").toNatural());      
+      afullres.create(total->getctrl("mrs_natural/onObservations")->toNatural() + 1,
+		      total->getctrl("mrs_natural/onSamples")->toNatural());  
+      annotator->updctrl("mrs_natural/inObservations", total->getctrl("mrs_natural/onObservations")->toNatural());      
     }
   
   annotator->updctrl("mrs_natural/inSamples", total->getctrl("mrs_natural/onSamples"));
@@ -404,13 +405,13 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 
 
   wsink->updctrl("mrs_natural/inSamples", annotator->getctrl("mrs_natural/onSamples"));
-  wsink->updctrl("mrs_natural/inObservations", annotator->getctrl("mrs_natural/onObservations").toNatural());
+  wsink->updctrl("mrs_natural/inObservations", annotator->getctrl("mrs_natural/onObservations")->toNatural());
   wsink->updctrl("mrs_real/israte", annotator->getctrl("mrs_real/israte"));
 
 
   wsink->updctrl("mrs_string/labelNames",classNames);
 
-  mrs_natural timbreSize = total->getctrl("mrs_natural/onObservations").toNatural();
+  mrs_natural timbreSize = total->getctrl("mrs_natural/onObservations")->toNatural();
   mrs_natural beatSize = 8;
   
 
@@ -443,7 +444,7 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
       // total1->addMarSystem(mng.create("Reassign", "reassign"));
       
       total1->addMarSystem(mng.create("BeatHistoFeatures", "bhf"));
-      annotator->updctrl("mrs_string/inObsNames", total->getctrl("mrs_string/onObsNames").toString() + total1->getctrl("mrs_string/onObsNames").toString());
+      annotator->updctrl("mrs_string/inObsNames", total->getctrl("mrs_string/onObsNames")->toString() + total1->getctrl("mrs_string/onObsNames")->toString());
 
     }
   else
@@ -475,7 +476,7 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 
 	  if (withBeatFeatures) 
 	    {
-	      srate = total->getctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_real/osrate").toReal();
+	      srate = total->getctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_real/osrate")->toReal();
 	      iwin.create((mrs_natural)1, (mrs_natural)(((srate / 22050.0) * 2 * 65536) / 16));
 	      tempo_histoSumBands(total1, l.entry(i), beatfeatures, 
 				  iwin, estimate);
@@ -523,12 +524,6 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
     }
 }
 
-
-
-
-
-
-
 // train with multiple feature vectors/file 
 void bextract_train(vector<Collection> cls, mrs_natural label, 
 		    string pluginName, string classNames, 
@@ -536,9 +531,6 @@ void bextract_train(vector<Collection> cls, mrs_natural label,
 		    string extractorStr,
 		    string classifierName)
 {
-
-  
-  
   if (classifierName == EMPTYSTRING) 
     classifierName = "GS";
   
@@ -561,19 +553,16 @@ void bextract_train(vector<Collection> cls, mrs_natural label,
   // src->updctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
   // src->updctrl("mrs_natural/inSamples", 2048);
 
-
-  
-  
-  // Calculate duration, offest parameters if necessary 
+  // Calculate duration, offset parameters if necessary 
   if (start > 0.0f) 
     offset = (mrs_natural) (start 
-			* src->getctrl("mrs_real/israte").toReal() 
-			* src->getctrl("mrs_natural/nChannels").toNatural());
+			* src->getctrl("mrs_real/israte")->toReal() 
+			* src->getctrl("mrs_natural/nChannels")->toNatural());
   
   if (length != 30.0f) 
     duration = (mrs_natural) (length 
-			  * src->getctrl("mrs_real/israte").toReal() 
-			  * src->getctrl("mrs_natural/nChannels").toNatural());
+			  * src->getctrl("mrs_real/israte")->toReal() 
+			  * src->getctrl("mrs_natural/nChannels")->toNatural());
   
   // create audio sink and mute it 
   // it is stored in the output plugin 
@@ -744,7 +733,7 @@ void bextract_train(vector<Collection> cls, mrs_natural label,
   
   mrs_natural wc = 0;
   mrs_natural samplesPlayed =0;
-  mrs_natural onSamples = featureNetwork->getctrl("mrs_natural/onSamples").toNatural();
+  mrs_natural onSamples = featureNetwork->getctrl("mrs_natural/onSamples")->toNatural();
   
   
   
@@ -774,7 +763,7 @@ void bextract_train(vector<Collection> cls, mrs_natural label,
 	  wc = 0;  	  
 	  samplesPlayed = 0;
 	  
-	  while ((featureNetwork->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool()) && (duration > samplesPlayed))
+	  while ((featureNetwork->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool()) && (duration > samplesPlayed))
 	    {
 	      featureNetwork->tick();
 	      wc++;
@@ -874,13 +863,13 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
   // Calculate duration, offest parameters if necessary 
   if (start > 0.0f) 
     offset = (mrs_natural) (start 
-			* src->getctrl("mrs_real/israte").toReal() 
-			* src->getctrl("mrs_natural/nChannels").toNatural());
+			* src->getctrl("mrs_real/israte")->toReal() 
+			* src->getctrl("mrs_natural/nChannels")->toNatural());
   
   if (length != 30.0f) 
     duration = (mrs_natural) (length 
-			  * src->getctrl("mrs_real/israte").toReal() 
-			  * src->getctrl("mrs_natural/nChannels").toNatural());
+			  * src->getctrl("mrs_real/israte")->toReal() 
+			  * src->getctrl("mrs_natural/nChannels")->toNatural());
   
   // create audio sink and mute it 
   // it is stored in the output plugin 
@@ -1062,7 +1051,7 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
   
   mrs_natural wc = 0;
   mrs_natural samplesPlayed =0;
-  mrs_natural onSamples = featureNetwork->getctrl("mrs_natural/onSamples").toNatural();
+  mrs_natural onSamples = featureNetwork->getctrl("mrs_natural/onSamples")->toNatural();
   
   
   // main loop for extracting the features 
@@ -1091,7 +1080,7 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
 	  wc = 0;  	  
 	  samplesPlayed = 0;
 	  
-	  while ((featureNetwork->getctrl("SilenceRemove/srm/SoundFileSource/src/mrs_bool/notEmpty").toBool()) && (duration > samplesPlayed))
+	  while ((featureNetwork->getctrl("SilenceRemove/srm/SoundFileSource/src/mrs_bool/notEmpty")->toBool()) && (duration > samplesPlayed))
 	    {
 	      featureNetwork->tick();
 	      wc++;
@@ -1342,7 +1331,7 @@ void bextract(vector<string> soundfiles, mrs_natural label,
       classCount ++;
       
 
-      while(spectralShape->getctrl("mrs_bool/notEmpty").toBool()) 
+      while(spectralShape->getctrl("mrs_bool/notEmpty")->toBool()) 
       {
 	spectralShape->tick();
       }

@@ -48,17 +48,17 @@ InvSpectrum::clone() const
 
 
 void 
-InvSpectrum::localUpdate()
+InvSpectrum::myUpdate()
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal() * getctrl("mrs_natural/inObservations").toNatural());
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal() * getctrl("mrs_natural/inObservations")->toNatural());
   
-  tempVec_.create(getctrl("mrs_natural/onSamples").toNatural());
+  tempVec_.create(getctrl("mrs_natural/onSamples")->toNatural());
 }
 
 void 
-InvSpectrum::process(realvec& in, realvec& out)
+InvSpectrum::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   

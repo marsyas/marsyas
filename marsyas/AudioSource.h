@@ -51,7 +51,7 @@ private:
 	bool stopped_;
   
   void addControls();
-	void localUpdate();
+	void myUpdate();
 
 	void initRtAudio();
 
@@ -65,7 +65,7 @@ public:
   ~AudioSource();
   MarSystem* clone() const;  
 
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

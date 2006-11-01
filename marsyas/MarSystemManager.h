@@ -19,126 +19,21 @@
 /** 
     \class MarSystemManager
     \brief MarSystemManager 
-    
-
 */
 
 #ifndef MARSYAS_MARSYSTEMMANAGER_H
 #define MARSYAS_MARSYSTEMMANAGER_H
 
+#include <string>
+#include <map>
+#include <vector>
+
 #include "MarSystem.h"
-#include "Gain.h"
-#include "HalfWaveRectifier.h"
-#include "common.h"
-#include "Series.h"
-#include "Parallel.h"
-#include "Fanin.h" 
-#include "Fanout.h" 
-#include "TimeStretch.h" 
-#include "Peaker.h"
-#include "Peaker1.h"
-#include "MaxArgMax.h"
-#include "MinArgMin.h"
-#include "AutoCorrelation.h"
-#include "Spectrum.h"
-#include "InvSpectrum.h"
-#include "Negative.h"
-#include "PvConvert.h"
-#include "PvFold.h" 
-#include "PvOscBank.h" 
-#include "ShiftInput.h" 
-#include "ShiftOutput.h"
-#include "Shifter.h"
-#include "PvUnconvert.h"
-#include "PvOverlapadd.h"
-#include "PvConvolve.h"
-#include "AuFileSource.h" 
-#include "WavFileSource.h" 
-#include "SineSource.h"
-#include "NoiseSource.h"
-#include "AudioSink.h"
-
-#include "PeConvert.h"
-#include "PeClust.h"
-#include "PeOverlapadd.h"
-#include "PeResidual.h"
-
-#include "AuFileSink.h"
-#include "WavFileSink.h"
-#include "Hamming.h"
-#include "Windowing.h"
-#include "PowerSpectrum.h"
-#include "Centroid.h"
-#include "Rolloff.h" 
-#include "Flux.h" 
-#include "ZeroCrossings.h"
-#include "Memory.h"
-#include "Mean.h" 
-#include "StandardDeviation.h"
-#include "PlotSink.h"
-#include "GaussianClassifier.h"
-#include "SoundFileSource.h"
-#include "SoundFileSink.h" 
-#include "Confidence.h"
-#include "Rms.h"
-#include "WekaSink.h" 
-#include "MFCC.h"
-#include "SCF.h"
-#include "SFM.h"
-#include "Accumulator.h"
-#include "Shredder.h"
-#include "WaveletPyramid.h"
-#include "WaveletBands.h"
-#include "FullWaveRectifier.h"
-#include "OnePole.h"
-#include "Norm.h"
-#include "Sum.h"
-#include "DownSampler.h"
-#include "PeakPeriods2BPM.h"
-#include "Histogram.h"
-#include "BeatHistoFeatures.h"
-#include "FM.h"
-#include "Annotator.h" 
-#include "ZeroRClassifier.h"
-#include "KNNClassifier.h"
-#include "Kurtosis.h"
-#include "Skewness.h"
-#include "ViconFileSource.h"
-#include "AudioSource.h"
-#include "ClassOutputSink.h"
-#include "Filter.h" 
-#include "ERB.h"
-#include "ClipAudioRange.h"
-#include "HarmonicEnhancer.h"
-#include "Reassign.h"
-#include "SilenceRemove.h"
-#include "NormMaxMin.h" 
-#include "Normalize.h"
-#include "SMO.h"
-#include "Plucked.h" 
-#include "Delay.h"
-#include "LPC.h"
-#include "LPCwarped.h"
-#include "LPCResyn.h"
-#include "LSP.h"
-#include "SOM.h"
-
-#ifndef WIN32 
-#include "NetworkTCPSink.h"
-#include "NetworkTCPSource.h"
-#include "NetworkUDPSink.h"
-#include "NetworkUDPSource.h"
-#endif
-
-#ifdef CYGWIN
-#include "NetworkTCPSink.h"
-#include "NetworkTCPSource.h"
-#include "NetworkUDPSink.h"
-#include "NetworkUDPSource.h"
-#endif 
 
 namespace Marsyas
 {
+
+class MarSystem;
 
 class MarSystemManager
 {

@@ -67,32 +67,32 @@ SilenceRemove::addControls()
 }
 
 void
-SilenceRemove::localUpdate()
+SilenceRemove::myUpdate()
 {
-  MRSDIAG("SilenceRemove.cpp - SilenceRemove:localUpdate");
+  MRSDIAG("SilenceRemove.cpp - SilenceRemove:myUpdate");
   
-  threshold_ = getctrl("mrs_real/threshold").toReal();
+  threshold_ = getctrl("mrs_real/threshold")->toReal();
   
   if (marsystemsSize_ > 0)
   {
     // set input characteristics 
     setctrl("mrs_natural/inSamples", 
-      marsystems_[0]->getctrl("mrs_natural/inSamples").toNatural());
+      marsystems_[0]->getctrl("mrs_natural/inSamples")->toNatural());
     setctrl("mrs_natural/inObservations", 
       marsystems_[0]->getctrl("mrs_natural/inObservations"));
     setctrl("mrs_real/israte", 
       marsystems_[0]->getctrl("mrs_real/israte"));
     
     // set output characteristics
-    setctrl("mrs_natural/onSamples", marsystems_[0]->getctrl("mrs_natural/onSamples").toNatural());
-    setctrl("mrs_natural/onObservations", marsystems_[0]->getctrl("mrs_natural/onObservations").toNatural());
+    setctrl("mrs_natural/onSamples", marsystems_[0]->getctrl("mrs_natural/onSamples")->toNatural());
+    setctrl("mrs_natural/onObservations", marsystems_[0]->getctrl("mrs_natural/onObservations")->toNatural());
     setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
     marsystems_[0]->update(); //lmartins: shouldn't this have already been called?! [?]
   }
 }
 
 void 
-SilenceRemove::process(realvec& in, realvec& out)
+SilenceRemove::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   mrs_real rms = 0.0;
@@ -113,7 +113,7 @@ SilenceRemove::process(realvec& in, realvec& out)
     rms /= count;
     rms = sqrt(rms);
     count = 0;
-  } while (rms < threshold_ && (marsystems_[0]->getctrl("mrs_bool/notEmpty").toBool())); 
+  } while (rms < threshold_ && (marsystems_[0]->getctrl("mrs_bool/notEmpty")->toBool())); 
 }
 
 

@@ -44,7 +44,7 @@ Negative::clone() const
 }
 
 void 
-Negative::process(realvec& in, realvec& out)
+Negative::myProcess(realvec& in, realvec& out)
 {
   for (t = 0; t < inSamples_; t++)
     out(t) = - in(t);

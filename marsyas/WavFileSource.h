@@ -51,7 +51,7 @@ private:
   unsigned short bits_;
 
   void addControls();
-	void localUpdate();
+	void myUpdate();
   unsigned long ByteSwapLong(unsigned long nLongNumber);
   unsigned short ByteSwapShort (unsigned short nValue);
   
@@ -75,7 +75,7 @@ public:
   mrs_natural getLinear8(mrs_natural c, realvec& win); //private [?]
 
   void getHeader(std::string filename);
-  void process(realvec& in, realvec &out);
+  void myProcess(realvec& in, realvec &out);
 };
 
 }//namespace Marsyas

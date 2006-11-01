@@ -48,13 +48,13 @@ ZeroCrossings::clone() const
 }
 
 void
-ZeroCrossings::localUpdate()
+ZeroCrossings::myUpdate()
 {
-  MRSDIAG("ZeroCrossings.cpp - ZeroCrossings:localUpdate");
+  MRSDIAG("ZeroCrossings.cpp - ZeroCrossings:myUpdate");
   
   setctrl("mrs_natural/onSamples", (mrs_natural)1);
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal() / getctrl("mrs_natural/inSamples").toNatural());
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal() / getctrl("mrs_natural/inSamples")->toNatural());
 
   setctrl("mrs_string/onObsNames", "ZeroCrossings,");  
 }
@@ -63,7 +63,7 @@ ZeroCrossings::localUpdate()
 
  
 void 
-ZeroCrossings::process(realvec& in, realvec& out)
+ZeroCrossings::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   zcrs_ = 1.0;

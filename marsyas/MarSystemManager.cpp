@@ -26,6 +26,118 @@ in sequence.
 */
 
 #include "MarSystemManager.h"
+#include "MarSystem.h"
+
+#include "Gain.h"
+#include "HalfWaveRectifier.h"
+#include "common.h"
+#include "Series.h"
+#include "Parallel.h"
+#include "Fanin.h" 
+#include "Fanout.h" 
+#include "TimeStretch.h" 
+#include "Peaker.h"
+#include "Peaker1.h"
+#include "MaxArgMax.h"
+#include "MinArgMin.h"
+#include "AutoCorrelation.h"
+#include "Spectrum.h"
+#include "InvSpectrum.h"
+#include "Negative.h"
+#include "PvConvert.h"
+#include "PvFold.h" 
+#include "PvOscBank.h" 
+#include "ShiftInput.h" 
+#include "ShiftOutput.h"
+#include "Shifter.h"
+#include "PvUnconvert.h"
+#include "PvOverlapadd.h"
+#include "PvConvolve.h"
+#include "AuFileSource.h" 
+#include "WavFileSource.h" 
+#include "SineSource.h"
+#include "NoiseSource.h"
+#include "AudioSink.h"
+
+#include "PeConvert.h"
+#include "PeClust.h"
+#include "PeOverlapadd.h"
+#include "PeResidual.h"
+
+#include "Windowing.h"
+
+#include "AuFileSink.h"
+#include "WavFileSink.h"
+#include "Hamming.h"
+#include "PowerSpectrum.h"
+#include "Centroid.h"
+#include "Rolloff.h" 
+#include "Flux.h" 
+#include "ZeroCrossings.h"
+#include "Memory.h"
+#include "Mean.h" 
+#include "StandardDeviation.h"
+#include "PlotSink.h"
+#include "GaussianClassifier.h"
+#include "SoundFileSource.h"
+#include "SoundFileSink.h" 
+#include "Confidence.h"
+#include "Rms.h"
+#include "WekaSink.h" 
+#include "MFCC.h"
+#include "SCF.h"
+#include "SFM.h"
+#include "Accumulator.h"
+#include "Shredder.h"
+#include "WaveletPyramid.h"
+#include "WaveletBands.h"
+#include "FullWaveRectifier.h"
+#include "OnePole.h"
+#include "Norm.h"
+#include "Sum.h"
+#include "DownSampler.h"
+#include "PeakPeriods2BPM.h"
+#include "Histogram.h"
+#include "BeatHistoFeatures.h"
+#include "FM.h"
+#include "Annotator.h" 
+#include "ZeroRClassifier.h"
+#include "KNNClassifier.h"
+#include "Kurtosis.h"
+#include "Skewness.h"
+#include "ViconFileSource.h"
+#include "AudioSource.h"
+#include "ClassOutputSink.h"
+#include "Filter.h" 
+#include "ERB.h"
+#include "ClipAudioRange.h"
+#include "HarmonicEnhancer.h"
+#include "Reassign.h"
+#include "SilenceRemove.h"
+#include "NormMaxMin.h" 
+#include "Normalize.h"
+#include "SMO.h"
+#include "Plucked.h" 
+#include "Delay.h"
+#include "LPC.h"
+#include "LPCwarped.h"
+#include "LPCResyn.h"
+#include "LSP.h"
+#include "SOM.h"
+
+#ifndef WIN32 
+#include "NetworkTCPSink.h"
+#include "NetworkTCPSource.h"
+#include "NetworkUDPSink.h"
+#include "NetworkUDPSource.h"
+#endif
+
+#ifdef CYGWIN
+#include "NetworkTCPSink.h"
+#include "NetworkTCPSource.h"
+#include "NetworkUDPSink.h"
+#include "NetworkUDPSource.h"
+#endif 
 
 using namespace std;
 using namespace Marsyas;
@@ -268,130 +380,122 @@ MarSystemManager::getMarSystem(istream& is)
   string mtype;
   is >> mtype;
 
-  
-  
-  
   is >> skipstr >> skipstr >> skipstr;
   string mname;
   is >> mname;
-
   
-  
-
   MarSystem* msys = getPrototype(mtype);
   
   if (msys == 0)
-    {
-      MRSWARN("MarSystem::getMarSystem - MarSystem not supported");
-      return 0;
-    }
+  {
+    MRSWARN("MarSystem::getMarSystem - MarSystem not supported");
+    return 0;
+  }
   else
-    {
-      msys->setName(mname);
-      is >> (msys->ncontrols_);
-      
-      msys->update();
-      
-      workingSet[msys->getName()] = msys; // add to workingSet
+  {
+    msys->setName(mname);
+    is >> *msys; //read controls into MarSystem [!]
+    
+    msys->update();
+    
+    workingSet[msys->getName()] = msys; // add to workingSet
+    
+    is >> skipstr;
+    is >> skipstr;
+    is >> skipstr;
+    is >> skipstr;
+    
+    if (skipstr != "links") 
+		{
+			MRSWARN("Problem with reading links");
+			MRSWARN("mtype = " << mtype);
+			MRSWARN("mname = " << mname);
+			MRSWARN("skipstr = " << skipstr);
+		}
+    
+    is >> skipstr;
 
-      
-      is >> skipstr;
-      is >> skipstr;
-      is >> skipstr;
-      
-      is >> skipstr;
-      
-      if (skipstr != "links") 
-	{
-	  MRSWARN("Problem with reading links");
-	  MRSWARN("mtype = " << mtype);
-	  MRSWARN("mname = " << mname);
-	  MRSWARN("skipstr = " << skipstr);
+    mrs_natural nLinks;
+    is >> nLinks;
+     
+    for (i=0; i < nLinks; i++)
+		{
+			is >> skipstr;
+			is >> skipstr;
+			is >> skipstr;
+			string visible;
+			string vshortcname;
+		
+			is >> visible;
 
+			string prefix = "/" + mtype + "/" + mname + "/";
+			string::size_type pos = visible.find(prefix, 0);
 
-	  
-	}
-      
-      is >> skipstr;
+			if (pos == 0) 
+				vshortcname = visible.substr(prefix.length(), visible.length());
 
-      
-      mrs_natural nLinks;
-      is >> nLinks;
-       
-      for (i=0; i < nLinks; i++)
-	{
-	  is >> skipstr;
-	  is >> skipstr;
-	  is >> skipstr;
-	  string visible;
-	  string vshortcname;
-	  
-	  
-	  
-	  is >> visible;
+			//[?] and what happens if this is not a composite?!?
+			//if not a composite, the visible link does not include prefix...
+			//e.g.:
+			// instead of
+			//
+			//# Synonyms of /Series/s1/mrs_bool/notEmpty =
+			//
+			// we only have (see MarSystem::put())
+			//
+			//# Synonyms of mrs_bool/notEmpty =
+			//
+			//in this case vshortcname should be "mrs_bool/notEmpty", shouldn't it?
+			//but it is kept uninitialized... [?][!]
+			//
+			// unless simple MarSystems are not supposed to have links...
+		
+			is >> skipstr;
+			is >> skipstr;
+			is >> skipstr;
+			is >> skipstr;
+			is >> skipstr;
+			is >> skipstr;
+		  
+			mrs_natural nSynonyms = 0;
+			is >> nSynonyms;
+		
+			vector<string> synonymList;
+			synonymList = msys->synonyms_[vshortcname]; //vshortcname[!]
+		 
+			for (int j=0; j < nSynonyms; j++)
+			{
+				string inside;
+				is >> skipstr;
+				is >> inside;
 
-	  string prefix = "/" + mtype + "/" + mname + "/";
-	  string::size_type pos = visible.find(prefix, 0);
-
-	  if (pos == 0) 
-	    vshortcname = visible.substr(prefix.length(), visible.length());
-	  
-	  
-
-	  is >> skipstr;
-	  
-	  is >> skipstr;
-	  is >> skipstr;
-	  is >> skipstr;
-	  is >> skipstr;
-	  is >> skipstr;
-	  
-	  mrs_natural nSynonyms = 0;
-	  is >> nSynonyms;
-	  
-
-	  vector<string> synonymList;
-	  synonymList = msys->synonyms_[vshortcname];
-	  
-
-	  for (int j=0; j < nSynonyms; j++)
-	    {
-	      string inside;
-	      is >> skipstr;
-	      is >> inside;
-
-	      prefix = "/" + mtype + "/" + mname + "/";
-	      pos = inside.find(prefix, 0);
-	      string shortcname;
+				prefix = "/" + mtype + "/" + mname + "/";
+				pos = inside.find(prefix, 0);
+				string shortcname;
 	      
-	      if (pos == 0) 
-		shortcname = inside.substr(prefix.length(), inside.length());
+				if (pos == 0) //and what happens if the prefix is not found?!? [?][!]
+					shortcname = inside.substr(prefix.length(), inside.length());
 	      
-
-	      
-
-	      synonymList.push_back(shortcname);
-	      msys->synonyms_[vshortcname] = synonymList;
-	    }
-	}
-      
-      
-      
-      if (isComposite == true)
-	{
-	  is >> skipstr >> skipstr >> skipstr;
-	  mrs_natural nComponents;
-	  is >> nComponents;
-	  for (i=0; i < nComponents; i++)
-	    {
-	      MarSystem* cmsys = getMarSystem(is);
-	      if (cmsys == 0)
-		return 0;
-	      msys->addMarSystem(cmsys);
-	    }
-	  msys->update();
-	}
-    }
+				synonymList.push_back(shortcname);
+				msys->synonyms_[vshortcname] = synonymList;
+			}
+		}
+    
+    if (isComposite == true)
+		{
+			is >> skipstr >> skipstr >> skipstr;
+			mrs_natural nComponents;
+			is >> nComponents;
+			for (i=0; i < nComponents; i++)
+			{
+				MarSystem* cmsys = getMarSystem(is);
+				if (cmsys == 0)
+					return 0;
+				msys->addMarSystem(cmsys);
+			}
+			msys->update();
+		}
+  }
   
   return msys;
 }

@@ -78,9 +78,9 @@ BeatHistoFeatures::clone() const
 //}
 
 void
-BeatHistoFeatures::localUpdate()
+BeatHistoFeatures::myUpdate()
 {
-  MRSDIAG("BeatHistoFeatures.cpp - BeatHistoFeatures:localUpdate");
+  MRSDIAG("BeatHistoFeatures.cpp - BeatHistoFeatures:myUpdate");
   
 	delete mxr_;//[!]
 	mxr_ = new MaxArgMax("mxr");//[!]
@@ -89,14 +89,14 @@ BeatHistoFeatures::localUpdate()
   setctrl("mrs_natural/onObservations", (mrs_natural)8);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  flag_.create(getctrl("mrs_natural/inSamples").toNatural());
+  flag_.create(getctrl("mrs_natural/inSamples")->toNatural());
   mxr_->updctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
   mxr_->updctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
   mxr_->updctrl("mrs_real/israte", getctrl("mrs_real/israte"));
   mxr_->updctrl("mrs_natural/nMaximums", 3);
   
-  mxres_.create(mxr_->getctrl("mrs_natural/onObservations").toNatural(),
-	mxr_->getctrl("mrs_natural/onSamples").toNatural());
+  mxres_.create(mxr_->getctrl("mrs_natural/onObservations")->toNatural(),
+	mxr_->getctrl("mrs_natural/onSamples")->toNatural());
     
   // setctrl("mrs_string/onObsNames", "BH_Sum, BH_MaxAmp1divSum, BH_MaxAmp2divSum, BH_MaxAmp3divSum, BH_MaxPos1, BH_MAXPos2, BH_MAXPos3, BH_MaAmp2divMaxAmp2");
   
@@ -264,7 +264,7 @@ BeatHistoFeatures::harm_prob(mrs_real& pmax, mrs_real factor,
 
 
 void 
-BeatHistoFeatures::process(realvec& in, realvec& out)
+BeatHistoFeatures::myProcess(realvec& in, realvec& out)
 {
   // in.write("histo.plot");
   
@@ -365,7 +365,7 @@ BeatHistoFeatures::process(realvec& in, realvec& out)
 
 /* 
 void 
-BeatHistoFeatures::process(realvec& in, realvec& out)
+BeatHistoFeatures::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 

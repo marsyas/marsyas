@@ -70,32 +70,32 @@ WekaSource::addControls()
   
   addctrl("mrs_natural/nLabels", 2);
   addctrl("mrs_string/labelNames", "");
-  addctrl("mrs_bool/notEmpty", (MarControlValue)false); 	
+  addctrl("mrs_bool/notEmpty", false); 	
 }
 
 void
-WekaSource::localUpdate()
+WekaSource::myUpdate()
 {
-  MRSDIAG("WekaSource.cpp - WekaSource:localUpdate");
+  MRSDIAG("WekaSource.cpp - WekaSource:myUpdate");
   
   char token_  [2000];
   char token2_ [2000];	
   
   
   // If 'inSamples' was updated ...
-  if( inSamples_ != getctrl("mrs_natural/inSamples").toNatural() ){
+  if( inSamples_ != getctrl("mrs_natural/inSamples")->toNatural() ){
     
-    inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
+    inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
     setctrl("mrs_natural/onSamples", inSamples_ );	
   }
     
   // If 'filename' was updated, or the attributes desired from the Weka file has changed,
   // parse the header portion of the file to get the required attribute names and possible output labels (if any)...
-  if( filename_ != getctrl("mrs_string/filename").toString() || obsToExtract_ != getctrl("mrs_string/obsToExtract").toString() ){
+  if( filename_ != getctrl("mrs_string/filename")->toString() || obsToExtract_ != getctrl("mrs_string/obsToExtract")->toString() ){
     
-    setctrl("mrs_bool/notEmpty", (MarControlValue)true);
+    setctrl("mrs_bool/notEmpty", true);
     
-    filename_ = getctrl("mrs_string/filename").toString();
+    filename_ = getctrl("mrs_string/filename")->toString();
     inObservations_ = 0;
     string inObsNames = "";
     
@@ -103,7 +103,7 @@ WekaSource::localUpdate()
     // the required attributes from the Weka file.
     // Store this information in the 'bool extract []' for 
     // simple querying
-    obsToExtract_ = getctrl("mrs_string/obsToExtract").toString();
+    obsToExtract_ = getctrl("mrs_string/obsToExtract")->toString();
     parseObsToExtract();
     
     if( mis_->is_open() ){
@@ -180,7 +180,7 @@ WekaSource::localUpdate()
     if( !mis_->eof() )
       data_ = string(token_);
     else{
-      setctrl("mrs_bool/notEmpty", (MarControlValue)false);
+      setctrl("mrs_bool/notEmpty", false);
       return;		
     }		
     
@@ -195,9 +195,9 @@ WekaSource::localUpdate()
 
 
 void 
-WekaSource::process(realvec& in,realvec &out)
+WekaSource::myProcess(realvec& in,realvec &out)
 {
-	if( getctrl("mrs_bool/notEmpty").toBool() == false )
+	if( getctrl("mrs_bool/notEmpty")->toBool() == false )
 		return;
 
   	checkFlow(in,out);
@@ -218,7 +218,7 @@ WekaSource::process(realvec& in,realvec &out)
 		curIndex = 0;
 		nObs = 0;
 		
-		for (o=0; o < totalObs_ && getctrl("mrs_bool/notEmpty").toBool() ; o++)
+		for (o=0; o < totalObs_ && getctrl("mrs_bool/notEmpty")->toBool() ; o++)
 		{		
 			// Get the next attributes from the current sample of data...
 			curIndexF = data_.find(",", curIndex);
@@ -232,11 +232,11 @@ WekaSource::process(realvec& in,realvec &out)
 			
 			// ... and ignore it if it is not selected specifically by the obsToExtract_ ctrl
 			// (but we always extract the last attribute IF it holds the output labeling)
-			if( !extract[o] && ( o<totalObs_-1 || getctrl("mrs_string/inObsNames").toString().find("Label") == string::npos ) )
+			if( !extract[o] && ( o<totalObs_-1 || getctrl("mrs_string/inObsNames")->toString().find("Label") == string::npos ) )
 				continue;
 			
 			
-			if( o < totalObs_-1 || getctrl("mrs_string/inObsNames").toString().find("Label") == string::npos ){
+			if( o < totalObs_-1 || getctrl("mrs_string/inObsNames")->toString().find("Label") == string::npos ){
 			  
 			  parsedVal = (mrs_real) atof( ob.c_str() );
 				
@@ -276,7 +276,7 @@ WekaSource::process(realvec& in,realvec &out)
 			if( !mis_->eof() )
 				data_ = string(token_);
 			else{
-				setctrl("mrs_bool/notEmpty", (MarControlValue)false);
+				setctrl("mrs_bool/notEmpty", false);
 				return;
 			}				
 		}					

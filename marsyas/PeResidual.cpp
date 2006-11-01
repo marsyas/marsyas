@@ -53,20 +53,20 @@ PeResidual::addControls()
 }
 
  void
-PeResidual::localUpdate()
+PeResidual::myUpdate()
 {
-		 setctrl("mrs_natural/onSamples", 
-		 getctrl("mrs_natural/inSamples"));
-	 setctrl("mrs_natural/onObservations", 
-		 getctrl("mrs_natural/inObservations").toNatural()/2);
-	 setctrl("mrs_real/osrate", 
-		 getctrl("mrs_real/israte"));
- setctrl("mrs_string/onObsNames", 
-	 getctrl("mrs_string/inObsNames"));
+	setctrl("mrs_natural/onSamples", 
+		getctrl("mrs_natural/inSamples"));
+	setctrl("mrs_natural/onObservations", 
+		getctrl("mrs_natural/inObservations")->toNatural()/2);
+	setctrl("mrs_real/osrate", 
+		getctrl("mrs_real/israte"));
+	setctrl("mrs_string/onObsNames", 
+		getctrl("mrs_string/inObsNames"));
 }
 
 void 
-PeResidual::process(realvec& in, realvec& out)
+PeResidual::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 

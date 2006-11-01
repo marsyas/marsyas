@@ -35,13 +35,13 @@ class DownSampler: public MarSystem
 {
 private: 
   void addControls();
-	void localUpdate();
+	void myUpdate();
 public:
   DownSampler(std::string name);
   ~DownSampler();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

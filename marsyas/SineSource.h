@@ -43,14 +43,14 @@ private:
   mrs_real index_;
   
   void addControls();
-	void localUpdate();
+	void myUpdate();
   
 public:
   SineSource(std::string name);
   ~SineSource();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
   
 };
 

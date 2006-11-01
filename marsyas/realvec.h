@@ -90,6 +90,7 @@ public:
 
   friend realvec operator+(const realvec& vec1, const realvec& vec2);
   friend realvec operator-(const realvec& vec1, const realvec& vec2);
+	friend bool operator!=(const realvec& v1, const realvec& v2) { return true; } //not yet implemented... [!][?]
    
   // item access
   mrs_real& operator()(const mrs_natural i);
@@ -105,7 +106,7 @@ public:
 
   // output functions 
   void debug_info();
-  void write(std::string filename);
+  void write(std::string filename) const;
 	void dump();
   void read(std::string filename);
   friend std::ostream& operator<<(std::ostream&, const realvec&);
@@ -257,5 +258,4 @@ mrs_real& realvec::operator()(const mrs_natural i)
 }//namespace Marsyas
 
 #endif /* !MARSYAS_REALVEC_H */
-
 

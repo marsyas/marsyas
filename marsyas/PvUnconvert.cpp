@@ -63,21 +63,21 @@ PvUnconvert::addControls()
 }
 
 void
-PvUnconvert::localUpdate()
+PvUnconvert::myUpdate()
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations").toNatural() - 2);
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural() - 2);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
   
-  mrs_natural inObservations = getctrl("mrs_natural/inObservations").toNatural();
-  mrs_natural onObservations = getctrl("mrs_natural/onObservations").toNatural();
-  mrs_real israte = getctrl("mrs_real/israte").toReal();
+  mrs_natural inObservations = getctrl("mrs_natural/inObservations")->toNatural();
+  mrs_natural onObservations = getctrl("mrs_natural/onObservations")->toNatural();
+  mrs_real israte = getctrl("mrs_real/israte")->toReal();
   
   N2_ = onObservations/2;
   lastphase_.create(N2_+1);
   
   fundamental_ = (mrs_real) (israte  / inObservations);
-  factor_ = (((getctrl("mrs_natural/Interpolation").toNatural()* TWOPI)/(israte * onObservations)));
+  factor_ = (((getctrl("mrs_natural/Interpolation")->toNatural()* TWOPI)/(israte * onObservations)));
   
 	//lmartins: This was missing the defaultUpdate() call which could be havoc!! [!]
 	//with the MarSystem refactoring the chances for such a issue are greatly reduced now!
@@ -85,7 +85,7 @@ PvUnconvert::localUpdate()
 }
 
 void 
-PvUnconvert::process(realvec& in, realvec& out)
+PvUnconvert::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   

@@ -82,8 +82,8 @@ void sfplayFile(MarSystem* msys, string sfName)
   msys->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
   
   // get channels and sampling rate 
-  mrs_natural nChannels = msys->getctrl("SoundFileSource/src/mrs_natural/nChannels").toNatural();
-  mrs_real srate = msys->getctrl("SoundFileSource/src/mrs_real/israte").toReal();
+  mrs_natural nChannels = msys->getctrl("SoundFileSource/src/mrs_natural/nChannels")->toNatural();
+  mrs_real srate = msys->getctrl("SoundFileSource/src/mrs_real/israte")->toReal();
   
   // playback offset & duration
   offset = (mrs_natural) (start * srate * nChannels);
@@ -99,7 +99,7 @@ void sfplayFile(MarSystem* msys, string sfName)
   
   mrs_natural wc=0;
   mrs_natural samplesPlayed = 0;
-  mrs_natural onSamples = msys->getctrl("mrs_natural/onSamples").toNatural();
+  mrs_natural onSamples = msys->getctrl("mrs_natural/onSamples")->toNatural();
   mrs_natural repeatId = 1;
 
   // play the sound 
@@ -115,7 +115,7 @@ void sfplayFile(MarSystem* msys, string sfName)
       samplesPlayed += onSamples;
       
       // no duration specified so use all of source input 
-      if (!(msys->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool()) && (repeatId == 1))
+      if (!(msys->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool()) && (repeatId == 1))
 	{
 	  duration = samplesPlayed-onSamples;
 	}

@@ -27,16 +27,13 @@ Luís Gustavo Martins - lmartins@inescporto.pt
 May 2006
 */
 
+#include "LSP.h"
+#include "NumericLib.h"
+
 #include <algorithm>
 #include <vector>
 
-#include "LSP.h"
-#include "NumericLib.h"
-#include "MATLABengine.h"
-
-#ifdef _MATLAB_ENGINE_
 //#define _MATLAB_LSP_
-#endif
 
 using namespace std;
 using namespace Marsyas;
@@ -68,11 +65,11 @@ LSP::addControls()
 }
 
 void
-LSP::localUpdate()
+LSP::myUpdate()
 { 
-	MRSDIAG("LSP.cpp - LSP:localUpdate");
+	MRSDIAG("LSP.cpp - LSP:myUpdate");
 
-	order_ = getctrl("mrs_natural/order").toNatural();
+	order_ = getctrl("mrs_natural/order")->toNatural();
 
 	setctrl("mrs_natural/onObservations", order_);
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
@@ -86,13 +83,13 @@ LSP::localUpdate()
 }
 
 void 
-LSP::process(realvec& in, realvec& out)
+LSP::myProcess(realvec& in, realvec& out)
 {
 	NumericLib numLib;
 	
 	checkFlow(in,out);
 
-	mrs_real gamma = getctrl("mrs_real/gamma").toReal();
+	mrs_real gamma = getctrl("mrs_real/gamma")->toReal();
 	vector<mrs_real> ak(order_);
 
 	if( gamma != 1.0)
@@ -122,9 +119,9 @@ LSP::process(realvec& in, realvec& out)
 		Q[0] = polar(-1.0, 0.0);
 
 		if (!numLib.polyRoots(P, false, order_+1, Proots))//P has only real coefs => complexCoefs = false
-			MRSERR("LSP::process() - numerical error in polynomial root calculation!");
+			MRSERR("LSP::myProcess() - numerical error in polynomial root calculation!");
 		if(!numLib.polyRoots(Q, false, order_+1, Qroots))//Q has only real coefs => complexCoefs = false
-			MRSERR("LSP::process() - numerical error in polynomial root calculation!")
+			MRSERR("LSP::myProcess() - numerical error in polynomial root calculation!")
 
 		mrs_real phase;
 		vector<mrs_real> out_vec;
@@ -151,15 +148,15 @@ LSP::process(realvec& in, realvec& out)
 			out(i) = out_vec[i];
 
 #ifdef _MATLAB_LSP_
-		MATLABengine::getMatlabEng()->putVariable(order_, "LSP_order");
-		MATLABengine::getMatlabEng()->putVariable(in, "LSP_in");
-		MATLABengine::getMatlabEng()->putVariable(P, "LSP_P");
-		MATLABengine::getMatlabEng()->putVariable(Q, "LSP_Q");
-		MATLABengine::getMatlabEng()->putVariable(Proots, "LSP_Proots");
-		MATLABengine::getMatlabEng()->putVariable(Qroots, "LSP_Qroots");
-		MATLABengine::getMatlabEng()->putVariable(out_vec, "LSP_out1");
-		MATLABengine::getMatlabEng()->putVariable(out, "LSP_out2");
-		MATLABengine::getMatlabEng()->evalString("LSP_test(LSP_order, LSP_in, LSP_P, LSP_Q, LSP_Proots, LSP_Qroots, LSP_out1, LSP_out2);");
+		MATLAB_PUT(order_, "LSP_order");
+		MATLAB_PUT(in, "LSP_in");
+		MATLAB_PUT(P, "LSP_P");
+		MATLAB_PUT(Q, "LSP_Q");
+		MATLAB_PUT(Proots, "LSP_Proots");
+		MATLAB_PUT(Qroots, "LSP_Qroots");
+		MATLAB_PUT(out_vec, "LSP_out1");
+		MATLAB_PUT(out, "LSP_out2");
+		MATLAB_EVAL("LSP_test(LSP_order, LSP_in, LSP_P, LSP_Q, LSP_Proots, LSP_Qroots, LSP_out1, LSP_out2);");
 #endif
 }
 

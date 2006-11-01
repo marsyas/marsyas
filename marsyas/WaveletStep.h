@@ -46,7 +46,7 @@ public:
 
   virtual MarSystem* clone() const;
 
-  virtual void process(realvec& in, realvec& out);
+  virtual void myProcess(realvec& in, realvec& out);
   
 };
 

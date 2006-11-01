@@ -83,8 +83,8 @@ void sfplay(vector<string> soundfiles)
   playbacknet->addMarSystem(dest);
   playbacknet->update();
   
-  mrs_natural nChannels = playbacknet->getctrl("SoundFileSource/src/mrs_natural/nChannels").toNatural();
-  mrs_real srate = playbacknet->getctrl("SoundFileSource/src/mrs_real/israte").toReal();
+  mrs_natural nChannels = playbacknet->getctrl("SoundFileSource/src/mrs_natural/nChannels")->toNatural();
+  mrs_real srate = playbacknet->getctrl("SoundFileSource/src/mrs_real/israte")->toReal();
   // playback offset 
   offset = (mrs_natural) (start * srate * nChannels);
 
@@ -123,7 +123,7 @@ void sfplay(vector<string> soundfiles)
       if (fileName != EMPTYSTRING) // soundfile output instead of audio output
 	playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", fileName);
       
-      while (playbacknet->getctrl("mrs_bool/notEmpty").toBool())	
+      while (playbacknet->getctrl("mrs_bool/notEmpty")->toBool())	
 	{
 	  playbacknet->tick();
 	}

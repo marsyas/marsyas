@@ -47,9 +47,9 @@ ClipAudioRange::clone() const
 }
 
 void
-ClipAudioRange::localUpdate()
+ClipAudioRange::myUpdate()
 {
-  MRSDIAG("ClipAudioRange.cpp - ClipAudioRange:localUpdate");
+  MRSDIAG("ClipAudioRange.cpp - ClipAudioRange:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
@@ -57,7 +57,7 @@ ClipAudioRange::localUpdate()
 }
 
 void 
-ClipAudioRange::process(realvec& in, realvec& out)
+ClipAudioRange::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   

@@ -174,22 +174,22 @@ MarGrid::extract()
   
   realvec som_fmatrix;
   
-  som_in.create(total_->getctrl("mrs_natural/inObservations").toNatural(), 
-		total_->getctrl("mrs_natural/inSamples").toNatural());
+  som_in.create(total_->getctrl("mrs_natural/inObservations")->toNatural(), 
+		total_->getctrl("mrs_natural/inSamples")->toNatural());
   
-  som_res.create(total_->getctrl("mrs_natural/onObservations").toNatural(), 
-		 total_->getctrl("mrs_natural/onSamples").toNatural());
+  som_res.create(total_->getctrl("mrs_natural/onObservations")->toNatural(), 
+		 total_->getctrl("mrs_natural/onSamples")->toNatural());
 
-  norm_som_res.create(total_->getctrl("mrs_natural/onObservations").toNatural(), 
-		      total_->getctrl("mrs_natural/onSamples").toNatural());
+  norm_som_res.create(total_->getctrl("mrs_natural/onObservations")->toNatural(), 
+		      total_->getctrl("mrs_natural/onSamples")->toNatural());
 
-  som_fmatrix.create(total_->getctrl("mrs_natural/onObservations").toNatural(), 
+  som_fmatrix.create(total_->getctrl("mrs_natural/onObservations")->toNatural(), 
 		     l.size());
 
-  norm_som_fmatrix.create(total_->getctrl("mrs_natural/onObservations").toNatural(), 
+  norm_som_fmatrix.create(total_->getctrl("mrs_natural/onObservations")->toNatural(), 
 		     l.size());
   
-  mrs_natural total_onObservations = total_->getctrl("mrs_natural/onObservations").toNatural();
+  mrs_natural total_onObservations = total_->getctrl("mrs_natural/onObservations")->toNatural();
   
 
   
@@ -202,7 +202,7 @@ MarGrid::extract()
       total_->updctrl("mrs_bool/memReset", true);
       total_->updctrl("mrs_natural/cindex", index);
       
-      string current = total_->getctrl("mrs_string/currentlyPlaying").toString();
+      string current = total_->getctrl("mrs_string/currentlyPlaying")->toString();
       cout << current  << " - ";
       
       cout << "Processed " << index << " files " << endl;	  
@@ -217,7 +217,7 @@ MarGrid::extract()
   norm_ = mng.create("NormMaxMin", "norm");
   norm_->updctrl("mrs_natural/inSamples", l.size());
   norm_->updctrl("mrs_natural/inObservations", 
-		total_->getctrl("mrs_natural/onObservations").toNatural());
+		total_->getctrl("mrs_natural/onObservations")->toNatural());
   norm_->updctrl("mrs_bool/train", true);
   norm_->process(som_fmatrix, norm_som_fmatrix);
   norm_->updctrl("mrs_bool/train", false);  
@@ -243,8 +243,8 @@ MarGrid::train()
 
 
   realvec som_fmatrixres;
-  som_fmatrixres.create(som_->getctrl("mrs_natural/onObservations").toNatural(), 
-			som_->getctrl("mrs_natural/onSamples").toNatural());
+  som_fmatrixres.create(som_->getctrl("mrs_natural/onObservations")->toNatural(), 
+			som_->getctrl("mrs_natural/onSamples")->toNatural());
   
   cout << "Starting training" << endl;
   // cout << "som = " << *som_ << endl;
@@ -290,8 +290,8 @@ MarGrid::predict()
   
   som_->updctrl("mrs_natural/inSamples", 1);
   
-  realvec predict_res(som_->getctrl("mrs_natural/onObservations").toNatural(), 
-		      som_->getctrl("mrs_natural/onSamples").toNatural());
+  realvec predict_res(som_->getctrl("mrs_natural/onObservations")->toNatural(), 
+		      som_->getctrl("mrs_natural/onSamples")->toNatural());
   
 
   norm_->updctrl("mrs_natural/inSamples", 1);
@@ -302,14 +302,14 @@ MarGrid::predict()
   realvec norm_som_res;
   
   
-  som_in.create(total_->getctrl("mrs_natural/inObservations").toNatural(), 
-		total_->getctrl("mrs_natural/inSamples").toNatural());
+  som_in.create(total_->getctrl("mrs_natural/inObservations")->toNatural(), 
+		total_->getctrl("mrs_natural/inSamples")->toNatural());
   
-  som_res.create(total_->getctrl("mrs_natural/onObservations").toNatural(), 
-		 total_->getctrl("mrs_natural/onSamples").toNatural());
+  som_res.create(total_->getctrl("mrs_natural/onObservations")->toNatural(), 
+		 total_->getctrl("mrs_natural/onSamples")->toNatural());
 
-  norm_som_res.create(total_->getctrl("mrs_natural/onObservations").toNatural(), 
-		      total_->getctrl("mrs_natural/onSamples").toNatural());
+  norm_som_res.create(total_->getctrl("mrs_natural/onObservations")->toNatural(), 
+		      total_->getctrl("mrs_natural/onSamples")->toNatural());
 
   int grid_x, grid_y;
   
@@ -318,7 +318,7 @@ MarGrid::predict()
       total_->updctrl("mrs_natural/label", index);
       total_->updctrl("mrs_bool/memReset", true);
       total_->updctrl("mrs_natural/cindex", index);
-      string current = total_->getctrl("mrs_string/currentlyPlaying").toString();
+      string current = total_->getctrl("mrs_string/currentlyPlaying")->toString();
       
       total_->process(som_in, som_res);
       norm_->process(som_res, norm_som_res);

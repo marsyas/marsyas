@@ -37,7 +37,7 @@ class NoiseGate: public MarSystem
 {
 private: 
   void addControls();
-	void localUpdate();
+	void myUpdate();
   
 	mrs_real state_;
   mrs_real xdprev_;
@@ -51,7 +51,7 @@ public:
   ~NoiseGate();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

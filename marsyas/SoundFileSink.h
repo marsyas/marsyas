@@ -39,7 +39,7 @@ class SoundFileSink: public MarSystem
 {
 private: 
   virtual void addControls();
-	virtual void localUpdate();
+	virtual void myUpdate();
   
 protected:
   short *sdata_;
@@ -61,7 +61,7 @@ public:
   MarSystem* clone() const;    
   bool checkType();
 
-  virtual void process(realvec& in, realvec& out);
+  virtual void myProcess(realvec& in, realvec& out);
 
   virtual void putHeader();
 

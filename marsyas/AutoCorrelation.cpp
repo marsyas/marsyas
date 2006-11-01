@@ -75,7 +75,7 @@ AutoCorrelation::clone() const
 }
 
 void
-AutoCorrelation::localUpdate()
+AutoCorrelation::myUpdate()
 {
 	delete myfft_; //[!]
 	myfft_ = new fft();//[!]
@@ -84,17 +84,17 @@ AutoCorrelation::localUpdate()
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
   
-  scratch_.create(2*getctrl("mrs_natural/onSamples").toNatural());
+  scratch_.create(2*getctrl("mrs_natural/onSamples")->toNatural());
 }
 
 void 
-AutoCorrelation::process(realvec& in, realvec& out)
+AutoCorrelation::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   mrs_real re,im,am;
   mrs_real k;
   
-  k = getctrl("mrs_real/magcompress").toReal();
+  k = getctrl("mrs_real/magcompress")->toReal();
   
   // Copy to output to perform inplace fft and zeropad to double size
 

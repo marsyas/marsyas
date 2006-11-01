@@ -36,13 +36,13 @@ namespace Marsyas
 class AMDF: public MarSystem
 {
 private: 
-	void localUpdate();
+	void myUpdate();
 public:
   AMDF(std::string name);
   ~AMDF();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

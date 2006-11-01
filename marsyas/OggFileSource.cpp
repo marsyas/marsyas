@@ -142,7 +142,7 @@ OggFileSource::getHeader(string filename)
   setctrl("mrs_natural/nChannels", nChannels);
   setctrl("mrs_real/israte", israte);
   setctrl("mrs_natural/size", size);
-  setctrl("mrs_bool/notEmpty", (MarControlValue)notEmpty_);
+  setctrl("mrs_bool/notEmpty", notEmpty_);
   setctrl("mrs_natural/bitRate", bitRate);
   updctrl("mrs_real/duration", duration);
 }
@@ -158,16 +158,16 @@ OggFileSource::getHeader(string filename)
  *
  */
 void
-OggFileSource::localUpdate()
+OggFileSource::myUpdate()
 {
-  MRSDIAG("OggFileSource::localUpdate");
+  MRSDIAG("OggFileSource::myUpdate");
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  mrs_natural pos = getctrl("mrs_natural/pos").toNatural();
-  mrs_natural size = getctrl("mrs_natural/size").toNatural();
+  mrs_natural pos = getctrl("mrs_natural/pos")->toNatural();
+  mrs_natural size = getctrl("mrs_natural/size")->toNatural();
 
 #ifdef OGG_VORBIS
   // if the user has seeked somewhere in the file
@@ -184,19 +184,19 @@ OggFileSource::localUpdate()
  * Description: Fills an output vector with samples.  In this case,
  *   getLinear16 does all the work.
  */
-void OggFileSource::process(realvec& in, realvec& out)
+void OggFileSource::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 
   if (notEmpty_)
   {
 #ifdef OGG_VORBIS
-    /*mrs_real duration = getctrl("mrs_real/duration").toReal();
-    mrs_real rate = getctrl("mrs_real/israte").toReal();
+    /*mrs_real duration = getctrl("mrs_real/duration")->toReal();
+    mrs_real rate = getctrl("mrs_real/israte")->toReal();
     */
-    mrs_natural observations = getctrl("mrs_natural/inObservations").toNatural();
-    mrs_natural samples = getctrl("mrs_natural/inSamples").toNatural();
-    mrs_natural israte = (mrs_natural)getctrl("mrs_real/israte").toReal();
+    mrs_natural observations = getctrl("mrs_natural/inObservations")->toNatural();
+    mrs_natural samples = getctrl("mrs_natural/inSamples")->toNatural();
+    mrs_natural israte = (mrs_natural)getctrl("mrs_real/israte")->toReal();
 
     //size_t size = (size_t)(duration * rate);
     size_t size = vi->channels*sizeof(short int)*((size_t)(observations * samples));

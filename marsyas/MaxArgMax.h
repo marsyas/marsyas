@@ -36,7 +36,7 @@ class MaxArgMax: public MarSystem
 private:
   mrs_natural ki;			
   void addControls();
-	void localUpdate();
+	void myUpdate();
   
 public:
   MaxArgMax(std::string name);
@@ -44,7 +44,7 @@ public:
   
   MarSystem* clone() const;
 
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

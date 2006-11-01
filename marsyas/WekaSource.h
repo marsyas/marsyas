@@ -21,7 +21,7 @@ class WekaSource:public MarSystem
 {
 private:
   void addControls();
-	void localUpdate();
+	void myUpdate();
 
   void parseObsToExtract();
   
@@ -45,7 +45,7 @@ public:
   
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

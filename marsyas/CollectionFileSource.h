@@ -40,7 +40,7 @@ class CollectionFileSource: public AbsSoundFileSource
 {
 private:
   void addControls();
-	void localUpdate();
+	void myUpdate();
   void getHeader(std::string filename);
   
   mrs_natural nChannels_;
@@ -64,7 +64,7 @@ public:
   ~CollectionFileSource();
   MarSystem* clone() const;    
 
-  void process(realvec& in,realvec &out);
+  void myProcess(realvec& in,realvec &out);
 };
 
 }//namespace Marsyas

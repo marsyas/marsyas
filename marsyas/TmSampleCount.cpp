@@ -51,13 +51,13 @@ void TmSampleCount::setReadCtrl(MarSystem* ms, string cname) {
     read_src_=ms; read_cname_=cname;
 }
 mrs_natural TmSampleCount::readTimeSrc() {
-    return (read_src_->getctrl(read_cname_)).toNatural();
+    return (read_src_->getctrl(read_cname_))->toNatural();
 }
 void TmSampleCount::trigger() {
     scheduler->dispatch();
 }
 mrs_natural TmSampleCount::intervalsize(string interval) {
     return (read_src_==NULL) ? 0 :
-        time2samples(interval,read_src_->getctrl("mrs_real/israte").toReal());
+        time2samples(interval,read_src_->getctrl("mrs_real/israte")->toReal());
 }
 

@@ -72,7 +72,7 @@ private:
   unsigned short ByteSwapShort (unsigned short nValue);
 
 	void addControls();
-	void localUpdate();
+	void myUpdate();
 
 public:
   WavFileSink(std::string name);
@@ -82,7 +82,7 @@ public:
   void putLinear16Swap(mrs_natural c, realvec& slice);
   void putHeader(std::string filename);
   bool checkExtension(std::string filename);
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

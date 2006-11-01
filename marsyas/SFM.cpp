@@ -48,9 +48,9 @@ SFM::clone() const
 }
 
 void
-SFM::localUpdate()
+SFM::myUpdate()
 {
-  MRSDIAG("SFM.cpp - SFM:localUpdate");
+  MRSDIAG("SFM.cpp - SFM:myUpdate");
 
 	//MPEG-7 audio standard:
   //assumes an 1/4 octave frequency resolution,
@@ -87,11 +87,11 @@ SFM::localUpdate()
 	 bandHiEdge_(i) = edge_(i+1) * 1.05f; //band overlapping (MPEG7)
   }
   
-  fftSize_ = getctrl("mrs_natural/inObservations").toNatural();
+  fftSize_ = getctrl("mrs_natural/inObservations")->toNatural();
   //fftBinFreqs_.create(fftSize_);
   
   // spectrum sampling rate - not audio 
-  df_ = getctrl("mrs_real/israte").toReal();
+  df_ = getctrl("mrs_real/israte")->toReal();
 
   //calculate the frequency (Hz) of each FFT bin
   //for (mrs_natural k=0; k < fftSize_ ; k++)
@@ -120,7 +120,7 @@ SFM::localUpdate()
 }
 
 void 
-SFM::process(realvec& in, realvec& out)
+SFM::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 

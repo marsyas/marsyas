@@ -108,8 +108,8 @@ void classifyFile(vector<string> soundfiles, string pluginName)
       
       
 
-      mrs_natural size = msys->getctrl("SilenceRemove/srm/SoundFileSource/src/mrs_natural/size").toNatural();
-      mrs_natural inSamples = msys->getctrl("SilenceRemove/srm/SoundFileSource/src/mrs_natural/inSamples").toNatural();
+      mrs_natural size = msys->getctrl("SilenceRemove/srm/SoundFileSource/src/mrs_natural/size")->toNatural();
+      mrs_natural inSamples = msys->getctrl("SilenceRemove/srm/SoundFileSource/src/mrs_natural/inSamples")->toNatural();
 
       mrs_natural memSize = (size / inSamples);
       memSize /= 2;
@@ -125,11 +125,11 @@ void classifyFile(vector<string> soundfiles, string pluginName)
       
       
       
-      srate = msys->getctrl("mrs_real/israte").toReal();
+      srate = msys->getctrl("mrs_real/israte")->toReal();
       
       
       mrs_natural samplesPlayed = 0;
-      mrs_natural onSamples = msys->getctrl("mrs_natural/onSamples").toNatural();
+      mrs_natural onSamples = msys->getctrl("mrs_natural/onSamples")->toNatural();
       mrs_natural wc = 0;
       int i;
       
@@ -146,10 +146,10 @@ void classifyFile(vector<string> soundfiles, string pluginName)
 	    cout << sfName << " ";
 	  // 
 	  
-	    // while (msys->getctrl("mrs_bool/notEmpty").toBool())
+	    // while (msys->getctrl("mrs_bool/notEmpty")->toBool())
 	    for (i=0; i < memSize-1; i++) 
 	      {
-		if (msys->getctrl("mrs_bool/notEmpty").toBool() == false) 
+		if (msys->getctrl("mrs_bool/notEmpty")->toBool() == false) 
 		  {
 		    break;
 		  }

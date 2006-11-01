@@ -28,6 +28,7 @@
 #define MARSYAS_MSLMODEL_H
 
 #include "MarSystemManager.h"
+#include "MarControl.h"
 #include "common.h"
 
 namespace Marsyas
@@ -59,7 +60,7 @@ public:
   bool input( const std::string& inputString);
 
   // returns the controls to the GUI for a specific marsystem
-  std::map<std::string, MarControlValue> getControls( const std::string& name );
+  std::map<std::string, MarControlPtr> getControls( const std::string& name );
   std::vector<std::string> getCmds();
   
 private:
@@ -195,7 +196,7 @@ public:
 private:
 	std::string name;
 	std::string control;
-	MarControlValue value;
+	MarControlPtr value;
 protected:
 
 };

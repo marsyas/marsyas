@@ -100,9 +100,9 @@ const Series::recvControls()
 }
 
 void 
-Series::localUpdate()
+Series::myUpdate()
 {
-  probe_ = getctrl("mrs_bool/probe").toBool();
+  probe_ = getctrl("mrs_bool/probe")->toBool();
   
   if (marsystemsSize_ != 0) 
   {
@@ -126,9 +126,9 @@ Series::localUpdate()
     setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte"));
     
     setctrl("mrs_string/onObsNames", marsystems_[marsystemsSize_-1]->getctrl("mrs_string/onObsNames"));
-    setctrl("mrs_natural/onSamples", marsystems_[marsystemsSize_-1]->getctrl("mrs_natural/onSamples").toNatural());
-    setctrl("mrs_natural/onObservations", marsystems_[marsystemsSize_-1]->getctrl("mrs_natural/onObservations").toNatural());
-    setctrl("mrs_real/osrate", marsystems_[marsystemsSize_-1]->getctrl("mrs_real/osrate").toReal());
+    setctrl("mrs_natural/onSamples", marsystems_[marsystemsSize_-1]->getctrl("mrs_natural/onSamples")->toNatural());
+    setctrl("mrs_natural/onObservations", marsystems_[marsystemsSize_-1]->getctrl("mrs_natural/onObservations")->toNatural());
+    setctrl("mrs_real/osrate", marsystems_[marsystemsSize_-1]->getctrl("mrs_real/osrate")->toReal());
     
     // update buffers (aka slices) between components 
     if ((mrs_natural)slices_.size() < marsystemsSize_-1) 
@@ -138,12 +138,12 @@ Series::localUpdate()
 		{
 			if (slices_[i] != NULL) 
 			{
-				if ((slices_[i])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural()  ||
-						(slices_[i])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural())
+				if ((slices_[i])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural()  ||
+						(slices_[i])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural())
 				{
 					delete slices_[i];
-					slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural(), 
-								 marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural());
+					slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
+								 marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
 					(slices_[i])->setval(0.0);
 				}
 			}
@@ -153,8 +153,8 @@ Series::localUpdate()
 				oss << "mrs_realvec/input" << i;
 				addctrl(oss.str(), empty_);      
       
-				slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural(), 
-							 marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural());
+				slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
+							 marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
 				(slices_[i])->setval(0.0);
 			}
 		}
@@ -173,7 +173,7 @@ Series::localUpdate()
 }
 
 void
-Series::process(realvec& in, realvec& out)
+Series::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   

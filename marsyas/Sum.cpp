@@ -46,18 +46,18 @@ Sum::clone() const
 }
 
 void
-Sum::localUpdate()
+Sum::myUpdate()
 {
-  MRSDIAG("Sum.cpp - Sum:localUpdate");
+  MRSDIAG("Sum.cpp - Sum:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", (MarControlValue)1);
+  setctrl("mrs_natural/onObservations", 1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 }
 
 
 void 
-Sum::process(realvec& in, realvec& out)
+Sum::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 

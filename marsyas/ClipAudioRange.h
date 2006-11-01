@@ -34,13 +34,13 @@ namespace Marsyas
 class ClipAudioRange: public MarSystem
 {
 private: 
-	void localUpdate();
+	void myUpdate();
 public:
   ClipAudioRange(std::string name);
   ~ClipAudioRange();
   MarSystem* clone() const;  
  
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

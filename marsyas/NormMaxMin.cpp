@@ -71,22 +71,22 @@ NormMaxMin::addControls()
 
 
 void
-NormMaxMin::localUpdate()
+NormMaxMin::myUpdate()
 {
-  MRSDIAG("NormMaxMin.cpp - NormMaxMin:localUpdate");
+  MRSDIAG("NormMaxMin.cpp - NormMaxMin:myUpdate");
   
 //   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 //   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 //   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 //   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
-	MarSystem::localUpdate();
+	MarSystem::myUpdate();
   	
 	//defaultUpdate();  [!]
-	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
   
-  init_ = getctrl("mrs_bool/init").toBool();
+  init_ = getctrl("mrs_bool/init")->toBool();
 
-  mrs_natural msize = (getctrl("mrs_realvec/maximums").toVec().getSize());
+  mrs_natural msize = (getctrl("mrs_realvec/maximums")->toVec().getSize());
   mrs_natural nsize = maximums_.getSize();
     
   if (msize != nsize) 
@@ -105,28 +105,28 @@ NormMaxMin::localUpdate()
       setctrl("mrs_realvec/maximums", maximums_);
       setctrl("mrs_realvec/minimums", minimums_);  
     }
-  train_ = getctrl("mrs_bool/train").toBool();
+  train_ = getctrl("mrs_bool/train")->toBool();
   
   if (!train_)
     {
-      maximums_ = getctrl("mrs_realvec/maximums").toVec();
-      minimums_ = getctrl("mrs_realvec/minimums").toVec();
+      maximums_ = getctrl("mrs_realvec/maximums")->toVec();
+      minimums_ = getctrl("mrs_realvec/minimums")->toVec();
     } 
 }
 
 
 void 
-NormMaxMin::process(realvec& in, realvec& out)
+NormMaxMin::myProcess(realvec& in, realvec& out)
 {
   init_ = true;
-  setctrl("mrs_bool/init", (MarControlValue)init_);
+  setctrl("mrs_bool/init", init_);
   
   checkFlow(in,out);
 
 
-  lower_ = getctrl("mrs_real/lower").toReal();
-  upper_ = getctrl("mrs_real/upper").toReal();
-  train_ = getctrl("mrs_bool/train").toBool();
+  lower_ = getctrl("mrs_real/lower")->toReal();
+  upper_ = getctrl("mrs_real/upper")->toReal();
+  train_ = getctrl("mrs_bool/train")->toBool();
   
   if (lower_ > upper_) 
     {

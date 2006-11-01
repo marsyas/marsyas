@@ -72,14 +72,14 @@ Plucked::addControls()
 }
 
 void
-Plucked::localUpdate()
+Plucked::myUpdate()
 {
   MRSDIAG("Plucked.cpp - Plucked:localuUpdate");
   
 //   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 //   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 //   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-	MarSystem::localUpdate();
+	MarSystem::myUpdate();
 
   gain_ = new Gain("pluckedGain");
   gain_->updctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
@@ -87,16 +87,16 @@ Plucked::localUpdate()
   gain_->updctrl("mrs_real/israte", getctrl("mrs_real/israte"));
   gain_->updctrl("mrs_real/gain", 2.0);
    
-  gout_.create(gain_->getctrl("mrs_natural/inObservations").toNatural(), 
-	       gain_->getctrl("mrs_natural/inSamples").toNatural());
+  gout_.create(gain_->getctrl("mrs_natural/inObservations")->toNatural(), 
+	       gain_->getctrl("mrs_natural/inSamples")->toNatural());
    
-  mrs_real freq = getctrl("mrs_real/frequency").toReal();
-  mrs_real pos = getctrl("mrs_real/pluckpos").toReal();
-  noteon_ = getctrl("mrs_real/nton").toReal();
+  mrs_real freq = getctrl("mrs_real/frequency")->toReal();
+  mrs_real pos = getctrl("mrs_real/pluckpos")->toReal();
+  noteon_ = getctrl("mrs_real/nton")->toReal();
 
-  loss_ = getctrl("mrs_real/loss").toReal();  
+  loss_ = getctrl("mrs_real/loss")->toReal();  
   
-  s_ = getctrl("mrs_real/stretch").toReal();
+  s_ = getctrl("mrs_real/stretch")->toReal();
 
   // loweset frequency on a piano is 27.5Hz ... 22050/27.5 ~= 802*2 for commuted
   // this is the longest delay line required
@@ -140,7 +140,7 @@ Plucked::localUpdate()
 
 
 void 
-Plucked::process(realvec &in, realvec &out)
+Plucked::myProcess(realvec &in, realvec &out)
 {
   checkFlow(in,out);
 

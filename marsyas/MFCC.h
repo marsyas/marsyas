@@ -36,7 +36,7 @@ namespace Marsyas
 class MFCC: public MarSystem
 {
 private: 
-	void localUpdate();
+	void myUpdate();
   
   mrs_real lowestFrequency_;
   mrs_natural linearFilters_;
@@ -62,15 +62,17 @@ private:
   realvec fmagnitude_;
 
   bool init_;
-  // NEIL's filter weight speedup
+  
+	// NEIL's filter weight speedup
   int* mfcc_offsets_;
+
 public:
   MFCC(std::string name);
-  MFCC::MFCC(const MFCC& a);
+	MFCC(const MFCC& a);
   ~MFCC();
   MarSystem* clone() const;  
 
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

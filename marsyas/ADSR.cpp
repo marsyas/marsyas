@@ -86,16 +86,16 @@ ADSR::update()
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte")); 
   setctrl("string/onObsNames", getctrl("string/inObsNames"));
 
-  //aRate_ = getctrl("mrs_real/aRate").toReal();
-  aTime_ = getctrl("mrs_real/aTime").toReal();
-  aTarget_ = getctrl("mrs_real/aTarget").toReal();
-  //dRate_ = getctrl("mrs_real/dRate").toReal();
-  dTime_ = getctrl("mrs_real/dTime").toReal();
-  susLevel_ = getctrl("mrs_real/susLevel").toReal();
-  //rRate_ = getctrl("mrs_real/rRate").toReal();
-  rTime_ = getctrl("mrs_real/rTime").toReal();
+  //aRate_ = getctrl("mrs_real/aRate")->toReal();
+  aTime_ = getctrl("mrs_real/aTime")->toReal();
+  aTarget_ = getctrl("mrs_real/aTarget")->toReal();
+  //dRate_ = getctrl("mrs_real/dRate")->toReal();
+  dTime_ = getctrl("mrs_real/dTime")->toReal();
+  susLevel_ = getctrl("mrs_real/susLevel")->toReal();
+  //rRate_ = getctrl("mrs_real/rRate")->toReal();
+  rTime_ = getctrl("mrs_real/rTime")->toReal();
 
-  sampleRate_= getctrl("mrs_real/israte").toReal();
+  sampleRate_= getctrl("mrs_real/israte")->toReal();
 
   aRate_ = 1.0 / (aTime_ * sampleRate_);
   dRate_ = 1.0 / (dTime_ * sampleRate_);
@@ -103,8 +103,8 @@ ADSR::update()
   //cout << "attack decay release rates:"<< aRate_ <<" "<< dRate_<<" "<< rRate_<< endl;
  
   //cout << "attack decay release times:"<< aTime_ <<" "<< dTime_<<" "<< rTime_<< endl;
-  noteon_ = getctrl("mrs_real/nton").toReal();
-  noteoff_ = getctrl("mrs_real/ntoff").toReal();
+  noteon_ = getctrl("mrs_real/nton")->toReal();
+  noteoff_ = getctrl("mrs_real/ntoff")->toReal();
 
   if(noteon_){
     
@@ -126,7 +126,7 @@ ADSR::update()
 
 
 void 
-ADSR::process(realvec& in, realvec& out)
+ADSR::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   

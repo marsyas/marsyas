@@ -47,9 +47,9 @@ Skewness::clone() const
 
 
 void
-Skewness::localUpdate()
+Skewness::myUpdate()
 {
-  MRSDIAG("Skewness.cpp - Skewness:localUpdate");
+  MRSDIAG("Skewness.cpp - Skewness:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
@@ -57,14 +57,14 @@ Skewness::localUpdate()
   setctrl("mrs_string/onObsNames", "Skewness,");
   
 	//defaultUpdate();[!]
-	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
 
   obsrow_.create(inObservations_);
 }
 
 
 void 
-Skewness::process(realvec& in, realvec& out)
+Skewness::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 

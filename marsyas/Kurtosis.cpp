@@ -50,9 +50,9 @@ Kurtosis::clone() const
 }
 
 void
-Kurtosis::localUpdate()
+Kurtosis::myUpdate()
 {
-  MRSDIAG("Kurtosis.cpp - Kurtosis:localUpdate");
+  MRSDIAG("Kurtosis.cpp - Kurtosis:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
@@ -60,14 +60,14 @@ Kurtosis::localUpdate()
   setctrl("mrs_string/onObsNames", "Kurtosis,");
 
   //defaultUpdate(); [!]
-	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
 
 	obsrow_.create(inObservations_);
 }
 
 
 void 
-Kurtosis::process(realvec& in, realvec& out)
+Kurtosis::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 

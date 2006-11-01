@@ -128,7 +128,7 @@ void MarSystemWrapper::run()
 		msys_->tick();
     
     //check for EOF
-		if (msys_->getctrl("mrs_bool/notEmpty").toBool() == false) 
+		if (msys_->getctrl("mrs_bool/notEmpty")->toBool() == false) 
 		{
 			pause();
 		}

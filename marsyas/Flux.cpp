@@ -48,21 +48,21 @@ Flux::clone() const
 }
 
 void
-Flux::localUpdate()
+Flux::myUpdate()
 {
-  MRSDIAG("Flux.cpp - Flux:localUpdate");
+  MRSDIAG("Flux.cpp - Flux:myUpdate");
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal());
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
   setctrl("mrs_string/onObsNames", "Flux,");
   
-  prevWindow_.create(getctrl("mrs_natural/inObservations").toNatural(),
-		     getctrl("mrs_natural/inSamples").toNatural());
+  prevWindow_.create(getctrl("mrs_natural/inObservations")->toNatural(),
+		     getctrl("mrs_natural/inSamples")->toNatural());
   prevWindow_.setval(0.0);
 }
 
 void 
-Flux::process(realvec& in, realvec& out)
+Flux::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   

@@ -50,7 +50,7 @@ class KNNClassifier: public MarSystem
 {
 private: 
   void addControls();
-	void localUpdate();
+	void myUpdate();
   
 	mrs_natural k_;
   realvec trainSet_;
@@ -64,7 +64,7 @@ public:
   ~KNNClassifier();
   MarSystem* clone() const;  
 
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

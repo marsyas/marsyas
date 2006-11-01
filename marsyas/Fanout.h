@@ -37,7 +37,7 @@ class Fanout: public Composite
 {
 private:
   void addControls();
-	void localUpdate();
+	void myUpdate();
   void deleteSlices();  
 
   mrs_natural enable_;
@@ -52,7 +52,7 @@ public:
   ~Fanout();
   MarSystem* clone() const;    
  
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

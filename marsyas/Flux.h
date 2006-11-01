@@ -35,7 +35,7 @@ namespace Marsyas
 class Flux: public MarSystem
 {
 private: 
-	void localUpdate();
+	void myUpdate();
   
 	realvec prevWindow_;
   mrs_real diff_,flux_, max_;
@@ -45,7 +45,7 @@ public:
   ~Flux();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

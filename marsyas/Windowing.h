@@ -39,7 +39,7 @@ realvec tmp_;
 	mrs_real norm_;
 	mrs_natural delta_;
 void addcontrols();
-	void localUpdate();
+	void myUpdate();
   
 public:
   Windowing(std::string name);
@@ -47,7 +47,7 @@ public:
   
   MarSystem* clone() const;
 
-	void process(realvec& in, realvec& out);
+	void myProcess(realvec& in, realvec& out);
   
 };
 

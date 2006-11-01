@@ -46,7 +46,7 @@ private:
 	realvec dcoeffs_;
 
 	void addControls();
-	void localUpdate();
+	void myUpdate();
 
 public:
 	Filter(std::string name);
@@ -54,7 +54,7 @@ public:
 	
 	MarSystem* clone() const;
 
-	void process(realvec& in, realvec& out);
+	void myProcess(realvec& in, realvec& out);
 	void write(std::string filename);
 };
 

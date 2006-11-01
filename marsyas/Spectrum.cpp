@@ -30,12 +30,6 @@ using the Fast Fourier Transform (FFT).
 using namespace std;
 using namespace Marsyas;
 
-
-#ifdef _MATLAB_ENGINE_
-#include "MATLABengine.h"
-#endif 
-
-
 Spectrum::Spectrum(string name):MarSystem("Spectrum",name)
 {
   //type_ = "Spectrum";
@@ -66,17 +60,17 @@ Spectrum::clone() const
 }
 
 void 
-Spectrum::localUpdate()
+Spectrum::myUpdate()
 {
   setctrl("mrs_natural/onSamples", (mrs_natural)1);
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal() / getctrl("mrs_natural/inSamples").toNatural());
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal() / getctrl("mrs_natural/inSamples")->toNatural());
   
-  cutoff_ = getctrl("mrs_real/cutoff").toReal();
-  lowcutoff_ = getctrl("mrs_real/lowcutoff").toReal();
+  cutoff_ = getctrl("mrs_real/cutoff")->toReal();
+  lowcutoff_ = getctrl("mrs_real/lowcutoff")->toReal();
 
   //defaultUpdate();
-	onObservations_ = getctrl("mrs_natural/onObservations").toNatural();
+	onObservations_ = getctrl("mrs_natural/onObservations")->toNatural();
 
   if (ponObservations_ != onObservations_)
   {
@@ -94,7 +88,7 @@ Spectrum::localUpdate()
 }
 
 void 
-Spectrum::process(realvec& in, realvec& out)
+Spectrum::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   
@@ -130,15 +124,10 @@ Spectrum::process(realvec& in, realvec& out)
 	}
     }
   
-   // [!!] compare with matlab fft   
-
-
-//#ifdef _MATLAB_ENGINE_
-//	 MATLAB->putVariable(in, "vec");
-//   MATLAB->putVariable(in, "vec");
-//	 MATLAB->evalString("out=fft(vec);");
-//   MATLAB->getVariable("vec", out);
-//#endif
+	// [!] compare with matlab fft   
+//	 MATLAB_PUT(in, "vec");
+//	 MATLAB_EVAL("out=fft(vec);");
+//   MATLAB_GET("vec", out);
   
   return;
 }

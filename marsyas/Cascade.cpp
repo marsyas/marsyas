@@ -64,7 +64,7 @@ Cascade::clone() const
 }
 
 void 
-Cascade::localUpdate()
+Cascade::myUpdate()
 {
   if (marsystemsSize_ != 0) 
 	{
@@ -74,7 +74,7 @@ Cascade::localUpdate()
     setctrl("mrs_natural/inObservations", marsystems_[0]->getctrl("mrs_natural/inObservations"));
     setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte"));  
     
-    mrs_natural onObservations = marsystems_[0]->getctrl("mrs_natural/onObservations").toNatural();
+    mrs_natural onObservations = marsystems_[0]->getctrl("mrs_natural/onObservations")->toNatural();
     
     for (mrs_natural i=1; i < marsystemsSize_; i++) 
 		{
@@ -83,7 +83,7 @@ Cascade::localUpdate()
       marsystems_[i]->setctrl("mrs_natural/inObservations", marsystems_[i-1]->getctrl("mrs_natural/onObservations"));
       marsystems_[i]->setctrl("mrs_real/israte", marsystems_[i-1]->getctrl("mrs_real/osrate"));
       marsystems_[i]->update();
-      onObservations += marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural();
+      onObservations += marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural();
     }
     
     setctrl("mrs_natural/onSamples", marsystems_[0]->getctrl("mrs_natural/onSamples"));
@@ -100,16 +100,16 @@ Cascade::localUpdate()
 		{
       if (slices_[i] != NULL) 
 			{
-				if ((slices_[i])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural() || 
-						(slices_[i])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural()) 
+				if ((slices_[i])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural() || 
+						(slices_[i])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural()) 
 				{
 					delete slices_[i];
-					slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural(), marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural());
+					slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
 				}
       }
       else 
 			{
-				slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural(), marsystems_[i]->getctrl("mrs_natural/onSamples").toNatural());
+				slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
       }
 
       (slices_[i])->setval(0.0);
@@ -119,7 +119,7 @@ Cascade::localUpdate()
 }
       
 void 
-Cascade::process(realvec& in, realvec& out)
+Cascade::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in, out);
   
@@ -133,7 +133,7 @@ Cascade::process(realvec& in, realvec& out)
   else if (marsystemsSize_ > 1) 
 	{
     marsystems_[0]->process(in, *(slices_[0]));
-    localIndex = marsystems_[0]->getctrl("mrs_natural/onObservations").toNatural();
+    localIndex = marsystems_[0]->getctrl("mrs_natural/onObservations")->toNatural();
     for (o = 0; o < localIndex; o++) 
 		{
       for (t = 0; t < onSamples_; t++) 
@@ -145,7 +145,7 @@ Cascade::process(realvec& in, realvec& out)
     for (mrs_natural i = 1; i < marsystemsSize_; i++) 
 		{
       marsystems_[i]->process(*(slices_[i-1]), *(slices_[i]));
-      localIndex = marsystems_[i]->getctrl("mrs_natural/onObservations").toNatural();
+      localIndex = marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural();
       for (o = 0; o < localIndex; o++) 
 			{
 				for (t = 0; t < onSamples_; t++) 

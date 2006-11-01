@@ -35,7 +35,7 @@ class LPCResyn: public MarSystem
 {
 private: 
   void addControls();
-	void localUpdate();
+	void myUpdate();
   
   mrs_natural inSize_;
   mrs_natural outSize_;
@@ -53,7 +53,7 @@ public:
   ~LPCResyn();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

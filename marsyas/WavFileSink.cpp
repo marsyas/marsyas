@@ -73,30 +73,30 @@ WavFileSink::checkExtension(string filename)
 }
 
 void 
-WavFileSink::localUpdate()
+WavFileSink::myUpdate()
 {
-  MRSDIAG("WavFileSink::localUpdate");
+  MRSDIAG("WavFileSink::myUpdate");
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  nChannels_ = getctrl("mrs_natural/inObservations").toNatural();      
+  nChannels_ = getctrl("mrs_natural/inObservations")->toNatural();      
   setctrl("mrs_natural/nChannels", nChannels_);
   
   delete [] sdata_;
   delete [] cdata_;
   
-  sdata_ = new short[getctrl("mrs_natural/inSamples").toNatural() * nChannels_];
-  cdata_ = new unsigned char[getctrl("mrs_natural/inSamples").toNatural() * nChannels_];
+  sdata_ = new short[getctrl("mrs_natural/inSamples")->toNatural() * nChannels_];
+  cdata_ = new unsigned char[getctrl("mrs_natural/inSamples")->toNatural() * nChannels_];
   
-  filename_ = getctrl("mrs_string/filename").toString();
+  filename_ = getctrl("mrs_string/filename")->toString();
 }
   
 void 
 WavFileSink::putHeader(string filename)
 {
-  mrs_natural nChannels = (mrs_natural)getctrl("mrs_natural/nChannels").toNatural();
+  mrs_natural nChannels = (mrs_natural)getctrl("mrs_natural/nChannels")->toNatural();
   sfp_ = fopen(filename.c_str(), "wb");
   
   written_ = 0;
@@ -123,7 +123,7 @@ WavFileSink::putHeader(string filename)
   hdr_.chunk_size = ByteSwapLong(16);
   hdr_.format_tag = ByteSwapShort(1);
   hdr_.num_chans = ByteSwapShort((signed short)nChannels);
-  hdr_.sample_rate = ByteSwapLong((mrs_natural)getctrl("mrs_real/israte").toReal());
+  hdr_.sample_rate = ByteSwapLong((mrs_natural)getctrl("mrs_real/israte")->toReal());
   hdr_.bytes_per_sec = ByteSwapLong(hdr_.sample_rate * 2);
   hdr_.bytes_per_samp = ByteSwapShort(2);
   hdr_.bits_per_samp = ByteSwapShort(16);
@@ -132,7 +132,7 @@ WavFileSink::putHeader(string filename)
   hdr_.chunk_size = 16;
   hdr_.format_tag = 1;
   hdr_.num_chans = (signed short)nChannels;
-  hdr_.sample_rate = (mrs_natural)getctrl("mrs_real/israte").toReal();
+  hdr_.sample_rate = (mrs_natural)getctrl("mrs_real/israte")->toReal();
   hdr_.bytes_per_sec = hdr_.sample_rate * 2;
   hdr_.bytes_per_samp = 2;
   hdr_.bits_per_samp = 16;
@@ -182,7 +182,7 @@ WavFileSink::putLinear16Swap(mrs_natural c, realvec& slice)
 }
 
 void 
-WavFileSink::process(realvec& in, realvec& out)
+WavFileSink::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   

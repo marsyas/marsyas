@@ -16,7 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /** 
 \class MATLABengine
 \brief Utility class for exchanging data between Marsyas and MATLAB
@@ -30,19 +29,24 @@ http://www.mathworks.com/access/helpdesk/help/techdoc/matlab_external/f39903.htm
 Code by Luís Gustavo Martins <lmartins@inescporto.pt>
 */
 
-#ifdef _MATLAB_ENGINE_ 
+#ifdef MARSYAS_MATLAB 
 
 #if !defined(__MATLABENGINE_H__)
 #define __MATLABENGINE_H__
 
-#include "engine.h" //$(MATLAB)\extern\include
-
 #include <string>
 #include <vector>
 
-#include "common.h"
+#include "engine.h" //$(MATLAB)\extern\include
 
-#define MATLAB MATLABengine::getMatlabEng()
+//starting from MATLAB R2006b (version 7.3.0)
+//mwSize and mwIndex are defined and must be used. 
+//However, these typedefs are not defined in previous
+//MATLAB versions and must be defined 
+#if MX_API_VER <= 0x07020000 /* Version 7.2.0 */
+typedef int mwSize;
+typedef int mwIndex;
+#endif 
 
 namespace Marsyas
 {

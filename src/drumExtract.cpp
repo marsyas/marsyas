@@ -101,8 +101,8 @@ drumExtract(vector<Collection> cls, string classNames)
   src->updctrl("mrs_natural/inSamples", 4096);
   
   
-  mrs_natural inObservations = src->getctrl("mrs_natural/inObservations").toNatural();
-  mrs_natural inSamples = src->getctrl("mrs_natural/inSamples").toNatural();  
+  mrs_natural inObservations = src->getctrl("mrs_natural/inObservations")->toNatural();
+  mrs_natural inSamples = src->getctrl("mrs_natural/inSamples")->toNatural();  
   
   realvec in(inObservations, inSamples);
   realvec out(inObservations, inSamples);
@@ -167,7 +167,7 @@ drumExtract(vector<Collection> cls, string classNames)
 	  
 	  src->updctrl("mrs_natural/inSamples", 4096);
 	  
-	  while(src->getctrl("mrs_bool/notEmpty").toBool()) 
+	  while(src->getctrl("mrs_bool/notEmpty")->toBool()) 
 	    {
 	      src->process(in,out);
 	      
@@ -201,14 +201,14 @@ drumExtract(vector<Collection> cls, string classNames)
     }
   
   
-  extractNet->updctrl("GaussianClassifier/classifier/mrs_bool/done", (MarControlValue)true);
+  extractNet->updctrl("GaussianClassifier/classifier/mrs_bool/done", true);
   extractNet->updctrl("GaussianClassifier/classifier/mrs_string/mode","predict");   	  
   extractNet->tick();  
   
   cout << (*extractNet) << endl;
   
 
-  cout << "Wrote " << extractNet->getctrl("WekaSink/wsink/mrs_string/filename").toString() << endl;
+  cout << "Wrote " << extractNet->getctrl("WekaSink/wsink/mrs_string/filename")->toString() << endl;
 
   
   return;

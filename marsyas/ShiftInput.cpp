@@ -68,30 +68,30 @@ ShiftInput::addControls()
 }
 
 void
-ShiftInput::localUpdate()
+ShiftInput::myUpdate()
 {
   
-  reset_ = getctrl("mrs_bool/reset").toBool();  
+  reset_ = getctrl("mrs_bool/reset")->toBool();  
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/WindowSize"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
   setctrl("mrs_natural/Decimation", getctrl("mrs_natural/inSamples"));
   
-  W_ = getctrl("mrs_natural/WindowSize").toNatural();
+  W_ = getctrl("mrs_natural/WindowSize")->toNatural();
 
   
   if (PW_ != W_) 
     pout_.stretch(W_);
   
   PW_ = W_;  
-  N_ = getctrl("mrs_natural/onSamples").toNatural();
-  D_ = getctrl("mrs_natural/inSamples").toNatural();
+  N_ = getctrl("mrs_natural/onSamples")->toNatural();
+  D_ = getctrl("mrs_natural/inSamples")->toNatural();
 
 }
 
 void 
-ShiftInput::process(realvec& in, realvec& out)
+ShiftInput::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 
@@ -99,7 +99,7 @@ ShiftInput::process(realvec& in, realvec& out)
     {
       pout_.setval(0.0);
       reset_ = false;
-      setctrl("mrs_bool/reset", (MarControlValue)false);
+      setctrl("mrs_bool/reset", false);
     }
   
   

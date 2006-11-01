@@ -73,9 +73,9 @@ AudioSink::addControls()
 }
 
 void 
-AudioSink::localUpdate()
+AudioSink::myUpdate()
 {
-  MRSDIAG("AudioSink::localUpdate");
+  MRSDIAG("AudioSink::myUpdate");
 
 	//bypass audio from input to output
 	/*
@@ -84,29 +84,31 @@ AudioSink::localUpdate()
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 	*/
-	MarSystem::localUpdate();
+	MarSystem::myUpdate();
  
-	rtSrate_ = (int)getctrl("mrs_real/israte").toReal();
-  srate_ = rtSrate_;
+	if(rtSrate_ != (int)getctrl("mrs_real/israte")->toReal() ||
+		bufferSize_ != (int)getctrl("mrs_natural/bufferSize")->toNatural())
+	{
+		rtSrate_ = (int)getctrl("mrs_real/israte")->toReal();
+		srate_ = rtSrate_;
+		bufferSize_ = (int)getctrl("mrs_natural/bufferSize")->toNatural();
 
-	nChannels_ = getctrl("mrs_natural/nChannels").toNatural();
+#ifdef __OS_MACOSX__
+		if (rtSrate_ == 22050) 
+		{
+			rtSrate_ = 44100;
+			bufferSize_ = 2 * bufferSize_;
+		}
+#endif	
 
-	bufferSize_ = (int)getctrl("mrs_natural/bufferSize").toNatural();
+		//setup RtAudio (may change bufferSize_ !!)
+		initRtAudio(); 
+	}
+	
+	nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();//does nothing... [?]
 
-	#ifdef __OS_MACOSX__
-  if (rtSrate_ == 22050) 
-    {
-      rtSrate_ = 44100;
-      bufferSize_ = 2 * bufferSize_;
-    }
-	#endif	
- 
-	//setup RtAudio (may change bufferSize_ !!)
-  
-  
-  
   //Resize reservoir if necessary
-  inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
+  inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
   if (inSamples_ < bufferSize_) 
     reservoirSize_ = 2 * bufferSize_;
   else 
@@ -179,17 +181,8 @@ AudioSink::localActivate(bool state)
 }
 
 void 
-AudioSink::process(realvec& in, realvec& out)
+AudioSink::myProcess(realvec& in, realvec& out)
 {
-  if (!isInitialized_)
-    {
-      initRtAudio(); 
-      isInitialized_ = true;
-    }
-  
-  
-  
-
   checkFlow(in,out);
 	
  // copy to output and into reservoir
@@ -207,16 +200,16 @@ AudioSink::process(realvec& in, realvec& out)
 		return;
 
   //check MUTE
-	if(getctrl("mrs_bool/mute").toBool())
+	if(getctrl("mrs_bool/mute")->isTrue())
 		return;
 
   //assure that RtAudio thread is running
 	//(this may be needed by if an explicit call to start()
 	//is not done before ticking or calling process() )
-	if ( stopped_ )
-  {
-    start();
-  }
+// 	if ( stopped_ )
+//   {
+//     start();
+//   }
  
   //update reservoir pointers 
 	rsize_ = bufferSize_;

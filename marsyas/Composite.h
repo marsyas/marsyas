@@ -53,33 +53,40 @@ protected:
   std::vector<realvec*> slices_;
   mrs_natural marsystemsSize_;
   std::vector<MarSystem*> marsystems_;
-  
+
+	void controlUpdate(MarControlPtr cvalue);
+
+	virtual void myProcess(realvec& in, realvec& out) = 0;
+
 public:
   //Composite();
   Composite(std::string type, std::string name);
   Composite(const Composite& a);
   virtual ~Composite();
 
-  //void updctrl(std::string cname, MarControlValue value); //clash with inherited method from MarSystem[!][?]
-  virtual void updControl(std::string cname, MarControlValue value);
+	void addFatherPath(std::string fpath);
+
+  //void updctrl(std::string cname, MarControlPtr value); //clash with inherited method from MarSystem[!][?]
+  virtual void updControl(std::string cname, MarControlPtr value);
   
-	void setControl(std::string cname, MarControlValue value);
-  void setControl(std::string cname, mrs_real value);
-  void setControl(std::string cname, mrs_natural value);
+	bool setControl(std::string cname, MarControlPtr value);
+  bool setControl(std::string cname, mrs_real value);
+  bool setControl(std::string cname, mrs_natural value);
   
   bool hasControlState(std::string cname);
-  
-  bool hasControl(const std::string& cname);
-  bool hasControlLocal(const std::string& cname);
+  bool hasControl(std::string cname);
+  bool hasControlLocal(std::string cname);
    
-  MarControlValue getctrl(const std::string& cname);
-  MarControlValue getControl(const std::string& cname);
+  MarControlPtr getctrl(std::string cname);
+  MarControlPtr getControl(std::string cname);
   
   void addMarSystem(MarSystem *marsystem);
+	MarSystem* getMarSystem(std::string path);
+
+	virtual std::vector<MarSystem*> getChildren();
   
   std::ostream& put(std::ostream& o);	  
-  
-	virtual void process(realvec& in, realvec& out) = 0;
+
 };
 
 }//namespace Marsyas

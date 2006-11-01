@@ -47,22 +47,22 @@ Reassign::clone() const
 }
 
 void
-Reassign::localUpdate()
+Reassign::myUpdate()
 {
-  MRSDIAG("Reassign.cpp - Reassign:localUpdate");
+  MRSDIAG("Reassign.cpp - Reassign:myUpdate");
    
 //   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 //   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 //   setctrl("mrs_real/osrate", getctrl("mrs_real/israte")); 
-	MarSystem::localUpdate();
+	MarSystem::myUpdate();
 
-  flag_.create(getctrl("mrs_natural/inSamples").toNatural());
+  flag_.create(getctrl("mrs_natural/inSamples")->toNatural());
 
   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
 }
 
 void 
-Reassign::process(realvec& in, realvec& out)
+Reassign::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 
@@ -72,10 +72,10 @@ Reassign::process(realvec& in, realvec& out)
 
   
   mrs_real pmax = DBL_MIN;
-  mrs_natural t1;
-  mrs_natural t2;
-  mrs_real s1;
-  mrs_real s2;
+//  mrs_natural t1;
+//  mrs_natural t2;
+//  mrs_real s1;
+//  mrs_real s2;
 
   flag_.setval(0.0);
   

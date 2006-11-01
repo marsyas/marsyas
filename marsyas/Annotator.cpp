@@ -57,19 +57,19 @@ Annotator::addControls()
 
 
 void
-Annotator::localUpdate()
+Annotator::myUpdate()
 {
-  MRSDIAG("Annotator.cpp - Annotator:localUpdate");
+  MRSDIAG("Annotator.cpp - Annotator:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations").toNatural()+1);
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural()+1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
 
-  /* if( labels_str_.compare( getctrl("mrs_string/labels").toString() ) != 0 )
+  /* if( labels_str_.compare( getctrl("mrs_string/labels")->toString() ) != 0 )
   {     
-  labels_str_ = getctrl("mrs_string/labels").toString();
+  labels_str_ = getctrl("mrs_string/labels")->toString();
   labels_.clear();
 	  
 	  while( labels_str_.length() != 0 )
@@ -86,11 +86,11 @@ Annotator::localUpdate()
 
 
 void 
-Annotator::process(realvec& in, realvec& out)
+Annotator::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 
-  mrs_natural label = getctrl("mrs_natural/label").toNatural();  
+  mrs_natural label = getctrl("mrs_natural/label")->toNatural();  
   
   for (o=0; o < inObservations_; o++)
 	for (t = 0; t < inSamples_; t++)
@@ -110,7 +110,6 @@ Annotator::process(realvec& in, realvec& out)
 	// 	labels_index_ = (labels_index_+1) % labels_.size();
 	//}
   } 
-
 }
 
 

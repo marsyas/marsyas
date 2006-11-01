@@ -61,11 +61,11 @@ Accumulator::addControls()
 }
 
 void
-Accumulator::localUpdate()
+Accumulator::myUpdate()
 {
-  MRSDIAG("Accumulator.cpp - Accumulator:localUpdate");
+  MRSDIAG("Accumulator.cpp - Accumulator:myUpdate");
   
-  nTimes_ = getctrl("mrs_natural/nTimes").toNatural();
+  nTimes_ = getctrl("mrs_natural/nTimes")->toNatural();
 
   string onObsNames;
   
@@ -73,7 +73,7 @@ Accumulator::localUpdate()
     {
       // set input characteristics 
       setctrl("mrs_natural/inSamples", 
-	      marsystems_[0]->getctrl("mrs_natural/inSamples").toNatural());
+	      marsystems_[0]->getctrl("mrs_natural/inSamples")->toNatural());
       setctrl("mrs_natural/inObservations", 
 	      marsystems_[0]->getctrl("mrs_natural/inObservations"));
       setctrl("mrs_real/israte", 
@@ -83,18 +83,18 @@ Accumulator::localUpdate()
     
       // set output characteristics 
       setctrl("mrs_natural/onSamples", 
-	      nTimes_ * marsystems_[0]->getctrl("mrs_natural/onSamples").toNatural());
+	      nTimes_ * marsystems_[0]->getctrl("mrs_natural/onSamples")->toNatural());
       setctrl("mrs_natural/onObservations", 
-	      marsystems_[0]->getctrl("mrs_natural/onObservations").toNatural());
+	      marsystems_[0]->getctrl("mrs_natural/onObservations")->toNatural());
       setctrl("mrs_real/osrate", 
 				marsystems_[0]->getctrl("mrs_real/osrate"));
 
-      onObsNames = marsystems_[0]->getctrl("mrs_string/onObsNames").toString();
+      onObsNames = marsystems_[0]->getctrl("mrs_string/onObsNames")->toString();
     }
 
   //defaultUpdate();
-  onObservations_ = getctrl("mrs_natural/onObservations").toNatural();
-  onSamples_ = getctrl("mrs_natural/onSamples").toNatural();
+  onObservations_ = getctrl("mrs_natural/onObservations")->toNatural();
+  onSamples_ = getctrl("mrs_natural/onSamples")->toNatural();
 
   ostringstream oss;
 
@@ -113,7 +113,7 @@ Accumulator::localUpdate()
 }
 
 void 
-Accumulator::process(realvec& in, realvec& out)
+Accumulator::myProcess(realvec& in, realvec& out)
 {
 	checkFlow(in,out);
 

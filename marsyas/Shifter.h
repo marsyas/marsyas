@@ -38,14 +38,14 @@ namespace Marsyas
 		mrs_natural shift_;
 
 		void addControls();
-		void localUpdate();
+		void myUpdate();
 
 	public:
 		Shifter(std::string name);
 		~Shifter();
 		MarSystem* clone() const;  
 
-		void process(realvec& in, realvec& out);
+		void myProcess(realvec& in, realvec& out);
 	};
 
 }//namespace Marsyas

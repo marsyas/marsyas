@@ -139,7 +139,7 @@ AuFileSource::getHeader(string filename)
   sfp_ = fopen(filename.c_str(), "rb");
   if (sfp_)
   {
-    int n = fread(&hdr_, sizeof(snd_header), 1, sfp_);  
+    size_t n = fread(&hdr_, sizeof(snd_header), 1, sfp_);  
     if ((n != 1) ||((hdr_.pref[0] != '.') &&(hdr_.pref[1] != 's')))
 		{
 			MRSWARN("Filename " + filename + " is not correct .au file \n or has settings that are not supported in Marsyas");
@@ -147,7 +147,7 @@ AuFileSource::getHeader(string filename)
 			setctrl("mrs_real/israte", (mrs_real)22050.0);
 			setctrl("mrs_natural/size", (mrs_natural)0);
 			notEmpty_ = false;
-			setctrl("mrs_bool/notEmpty", (MarControlValue)false);
+			setctrl("mrs_bool/notEmpty", false);
 		}
     else 
 		{ 
@@ -178,11 +178,11 @@ AuFileSource::getHeader(string filename)
 		    
 			setctrl("mrs_real/israte", (mrs_real)hdr_.srate);
 			setctrl("mrs_natural/size", size_);
-			setctrl("mrs_bool/notEmpty", (MarControlValue)true);
+			setctrl("mrs_bool/notEmpty", true);
 			notEmpty_ = true;
 			samplesOut_ = 0;
 			pos_ = 0;
-			setctrl("mrs_natural/pos", (MarControlValue)0);
+			setctrl("mrs_natural/pos", 0);
 		}
 	}
   else
@@ -191,10 +191,10 @@ AuFileSource::getHeader(string filename)
     setctrl("mrs_real/israte", (mrs_real)22050.0);
     setctrl("mrs_natural/size", (mrs_natural)0);
     notEmpty_ = false;
-    setctrl("mrs_bool/notEmpty", (MarControlValue)false);
+    setctrl("mrs_bool/notEmpty", false);
     pos_ = 0;
   }
-  nChannels_ = getctrl("mrs_natural/nChannels").toNatural();
+  nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();
   samplesRead_ = 0;
 }
 
@@ -204,7 +204,7 @@ AuFileSource::getLinear16(realvec& slice)
   mrs_natural c = 0;
   fseek(sfp_, 2 * pos_ * nChannels_ + sfp_begin_, SEEK_SET);
   
-  samplesRead_ = fread(sdata_, sizeof(short), samplesToRead_, sfp_);
+  samplesRead_ = (mrs_natural)fread(sdata_, sizeof(short), samplesToRead_, sfp_);
 
   // pad with zeros if necessary 
   if (samplesRead_ != samplesToRead_)
@@ -241,22 +241,22 @@ AuFileSource::getLinear16(realvec& slice)
 }
 
 void
-AuFileSource::localUpdate()
+AuFileSource::myUpdate()
 {
-  nChannels_ = getctrl("mrs_natural/nChannels").toNatural();  
-  inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
-  inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
-  israte_ = getctrl("mrs_real/israte").toReal();
-  nChannels_ = getctrl("mrs_natural/nChannels").toNatural();
+  nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();  
+  inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
+  inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
+  israte_ = getctrl("mrs_real/israte")->toReal();
+  nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();
   
   setctrl("mrs_natural/onSamples", inSamples_);
   setctrl("mrs_natural/onObservations", nChannels_);
   
   setctrl("mrs_real/osrate", israte_);
    
-  filename_ = getctrl("mrs_string/filename").toString();    
-  pos_ = getctrl("mrs_natural/pos").toNatural();
-  rewindpos_ = getctrl("mrs_natural/loopPos").toNatural();
+  filename_ = getctrl("mrs_string/filename")->toString();    
+  pos_ = getctrl("mrs_natural/pos")->toNatural();
+  rewindpos_ = getctrl("mrs_natural/loopPos")->toNatural();
   
   delete [] sdata_;
   delete [] cdata_;
@@ -264,11 +264,11 @@ AuFileSource::localUpdate()
   sdata_ = new short[inSamples_ * nChannels_];
   cdata_ = new unsigned char[inSamples_ * nChannels_];   
 
-  repetitions_ = getctrl("mrs_real/repetitions").toReal();
+  repetitions_ = getctrl("mrs_real/repetitions")->toReal();
 
-  duration_ = getctrl("mrs_real/duration").toReal();
-  advance_ = getctrl("mrs_bool/advance").toBool();
-  cindex_ = getctrl("mrs_natural/cindex").toNatural();
+  duration_ = getctrl("mrs_real/duration")->toReal();
+  advance_ = getctrl("mrs_bool/advance")->toBool();
+  cindex_ = getctrl("mrs_natural/cindex")->toNatural();
  
   if (duration_ != -1.0)
   {
@@ -281,9 +281,9 @@ AuFileSource::localUpdate()
 }
 
 void
-AuFileSource::process(realvec& in, realvec &out)
+AuFileSource::myProcess(realvec& in, realvec &out)
 {
-	if (getctrl("mrs_natural/size").toNatural() != 0)
+	if (getctrl("mrs_natural/size")->toNatural() != 0)
   {
 		checkFlow(in,out);
     
@@ -307,7 +307,7 @@ AuFileSource::process(realvec& in, realvec &out)
 			{
 				// pos_ = getLinear8(c, out);
 				setctrl("mrs_natural/pos", pos_);
-				setctrl("mrs_bool/notEmpty", (MarControlValue)(pos_ < size_ * nChannels_));
+				setctrl("mrs_bool/notEmpty", pos_ < size_ * nChannels_);
 				break;
 			}
 			case SND_FORMAT_LINEAR_16:

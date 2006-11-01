@@ -56,7 +56,7 @@ private:
   mrs_natural rsize_;
   
   void addControls();
-	void localUpdate();
+	void myUpdate();
 
 	void initRtAudio();
 	
@@ -70,7 +70,7 @@ public:
   ~AudioSink();
   MarSystem* clone() const;  
 
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

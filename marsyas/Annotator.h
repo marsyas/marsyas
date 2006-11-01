@@ -36,7 +36,7 @@ class Annotator: public MarSystem
 {
 private: 
   void addControls();
-	void localUpdate();
+	void myUpdate();
   std::vector<mrs_natural> labels_;
   std::string labels_str_;
   mrs_natural labels_index_;
@@ -46,7 +46,7 @@ public:
   ~Annotator();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

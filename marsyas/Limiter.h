@@ -37,19 +37,19 @@ class Limiter: public MarSystem
 {
 private: 
   void addControls();
-	void localUpdate();
+	void myUpdate();
 
   mrs_real xdprev_;
   realvec xd_;
   realvec gains_;
-  float alpha_;
+  mrs_real alpha_;
   
 public:
   Limiter(std::string name);
   ~Limiter();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

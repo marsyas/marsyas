@@ -46,21 +46,21 @@ PeakPeriods2BPM::clone() const
 }
 
 void
-PeakPeriods2BPM::localUpdate()
+PeakPeriods2BPM::myUpdate()
 {
-  MRSDIAG("PeakPeriods2BPM.cpp - PeakPeriods2BPM:localUpdate");
+  MRSDIAG("PeakPeriods2BPM.cpp - PeakPeriods2BPM:myUpdate");
   
 //   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 //   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 //   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-	MarSystem::localUpdate();
+	MarSystem::myUpdate();
 
-  srate_ = getctrl("mrs_real/israte").toReal();
+  srate_ = getctrl("mrs_real/israte")->toReal();
 
 }
 
 void 
-PeakPeriods2BPM::process(realvec& in, realvec& out)
+PeakPeriods2BPM::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
       

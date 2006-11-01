@@ -40,14 +40,14 @@ private:
   mrs_real gain_;
   
   void addControls();
-	void localUpdate();
+	void myUpdate();
 
 public:
   OnePole(std::string name);
   ~OnePole();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

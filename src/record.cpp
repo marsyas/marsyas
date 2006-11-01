@@ -126,11 +126,11 @@ record(mrs_real length, mrs_real gain, string filename)
   recordNet->updctrl("AudioSource/asrc/mrs_real/gain", gain);
   recordNet->updctrl("SoundFileSink/dest/mrs_string/filename", filename);
   
-  mrs_real srate = recordNet->getctrl("AudioSource/asrc/mrs_real/israte").toReal();
-  mrs_natural nChannels = recordNet->getctrl("AudioSource/asrc/mrs_natural/nChannels").toNatural();
+  mrs_real srate = recordNet->getctrl("AudioSource/asrc/mrs_real/israte")->toReal();
+  mrs_natural nChannels = recordNet->getctrl("AudioSource/asrc/mrs_natural/nChannels")->toNatural();
   cout << "AudioSource srate =  " << srate << endl; 
   cout << "AudioSource nChannels = " << nChannels << endl;
-  mrs_natural inSamples = recordNet->getctrl("AudioSource/asrc/mrs_natural/inSamples").toNatural();
+  mrs_natural inSamples = recordNet->getctrl("AudioSource/asrc/mrs_natural/inSamples")->toNatural();
   
 
   mrs_natural iterations = (mrs_natural)((srate * length) / inSamples);
@@ -211,8 +211,8 @@ record_orcas(mrs_real length, mrs_natural year,
   asrc->updctrl("mrs_natural/nChannels", copt);
   // asrc->updctrl("mrs_real/gain", gain);
   
-  mrs_real srate = asrc->getctrl("mrs_real/israte").toReal();
-  mrs_natural inSamples = asrc->getctrl("mrs_natural/inSamples").toNatural();
+  mrs_real srate = asrc->getctrl("mrs_real/israte")->toReal();
+  mrs_natural inSamples = asrc->getctrl("mrs_natural/inSamples")->toNatural();
   mrs_natural iterations = (mrs_natural)((srate * length * 60.0) / inSamples);
 
   realvec rin;
@@ -342,9 +342,9 @@ recordVirtualSensor(mrs_real length, mrs_real gain, string filename)
 
 
 
-  mrs_real srate = recordNet->getctrl("AudioSource/asrc/mrs_real/israte").toReal();
+  mrs_real srate = recordNet->getctrl("AudioSource/asrc/mrs_real/israte")->toReal();
   
-  mrs_natural inSamples = recordNet->getctrl("AudioSource/asrc/mrs_natural/inSamples").toNatural();
+  mrs_natural inSamples = recordNet->getctrl("AudioSource/asrc/mrs_natural/inSamples")->toNatural();
   cout << *recordNet << endl; 
 
   mrs_natural iterations = (mrs_natural)((srate * length) / inSamples);
@@ -360,17 +360,17 @@ recordVirtualSensor(mrs_real length, mrs_real gain, string filename)
        if (r > 61)
 	 {
 	   cout << "middle" << endl;
-	   pnet->setctrl("Annotator/ann/mrs_natural/label", (MarControlValue)1);
+	   pnet->setctrl("Annotator/ann/mrs_natural/label", 1);
 	 }
        /* else if (r > 61) 
 	 {
 	   cout << "middle" << endl;
-	   pnet->setctrl("Annotator/ann/mrs_natural/label", (MarControlValue)1);
+	   pnet->setctrl("Annotator/ann/mrs_natural/label", 1);
 	 }
        */ 
        else
 	 {
-	   pnet->setctrl("Annotator/ann/mrs_natural/label", (MarControlValue)0);
+	   pnet->setctrl("Annotator/ann/mrs_natural/label", 0);
 	   cout << "edge" << endl;
 	 }
 

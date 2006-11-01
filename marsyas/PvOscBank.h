@@ -55,7 +55,7 @@ private:
   mrs_real tableval_;
 
   void addControls();
-	void localUpdate();
+	void myUpdate();
   
 public:
   PvOscBank(std::string name);
@@ -64,7 +64,7 @@ public:
   MarSystem* clone() const;    
   
   void process1(realvec& in, realvec& out);
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
   
 };
 

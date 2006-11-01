@@ -35,7 +35,7 @@ class ANN_node: public MarSystem
 {
 private: 
   void addControls();
-	void localUpdate();
+	void myUpdate();
   realvec weights_;
   mrs_real bias_;
 
@@ -44,7 +44,7 @@ public:
   ~ANN_node();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

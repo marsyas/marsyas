@@ -43,7 +43,7 @@ private:
   bool init_;
   
   void addControls();
-	void localUpdate();
+	void myUpdate();
 
   realvec maximums_;
   realvec minimums_;
@@ -53,7 +53,7 @@ public:
   ~NormMaxMin();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

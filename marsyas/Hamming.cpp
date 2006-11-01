@@ -46,14 +46,14 @@ Hamming::clone() const
 }
 
 void
-Hamming::localUpdate()
+Hamming::myUpdate()
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));  
-  mrs_natural inSamples = getctrl("mrs_natural/inSamples").toNatural();
+  mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
   envelope_.create(inSamples);
   
   mrs_real A = (mrs_real)0.54;
@@ -67,11 +67,11 @@ Hamming::localUpdate()
 }
 
 void 
-Hamming::process(realvec& in, realvec& out)
+Hamming::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   //lmartins: if (mute_) return;
-	if(getctrl("mrs_bool/mute").toBool()) return;
+	if(getctrl("mrs_bool/mute")->toBool()) return;
   
   for (o=0; o < inObservations_; o++)
     for (t = 0; t < inSamples_; t++)

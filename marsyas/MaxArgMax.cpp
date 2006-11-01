@@ -58,9 +58,9 @@ MaxArgMax::addControls()
 
 
 void
-MaxArgMax::localUpdate()
+MaxArgMax::myUpdate()
 {
-  mrs_natural k = getctrl("mrs_natural/nMaximums").toNatural();
+  mrs_natural k = getctrl("mrs_natural/nMaximums")->toNatural();
   
   setctrl("mrs_natural/onSamples",  2 * k);
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
@@ -70,14 +70,14 @@ MaxArgMax::localUpdate()
 
 
 void 
-MaxArgMax::process(realvec& in, realvec& out)
+MaxArgMax::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 
 
   
   out.setval(0.0);
-  mrs_natural k = getctrl("mrs_natural/nMaximums").toNatural();
+  mrs_natural k = getctrl("mrs_natural/nMaximums")->toNatural();
 
   
 // ML should replace 0 by o [?]

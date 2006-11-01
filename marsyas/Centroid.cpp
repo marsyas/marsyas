@@ -50,18 +50,18 @@ Centroid::clone() const
 }
 
 void
-Centroid::localUpdate()
+Centroid::myUpdate()
 {
   
-  MRSDIAG("Centroid.cpp - Centroid:localUpdate");
+  MRSDIAG("Centroid.cpp - Centroid:myUpdate");
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal());
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
   setctrl("mrs_string/onObsNames", "Centroid,");
 }
 
 void 
-Centroid::process(realvec& in, realvec& out)
+Centroid::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   

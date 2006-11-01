@@ -69,14 +69,14 @@ PvConvert::addControls()
 }
 
 void
-PvConvert::localUpdate()
+PvConvert::myUpdate()
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations").toNatural() + 2);
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal() * getctrl("mrs_natural/inObservations").toNatural());  
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural() + 2);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal() * getctrl("mrs_natural/inObservations")->toNatural());  
 
   //defaultUpdate(); [!]
-	onObservations_ = getctrl("mrs_natural/onObservations").toNatural();
+	onObservations_ = getctrl("mrs_natural/onObservations")->toNatural();
   
   size_ = onObservations_ /2 +1;
   
@@ -91,10 +91,10 @@ PvConvert::localUpdate()
   
   psize_ = size_;
   
-  factor_ = ((getctrl("mrs_real/osrate").toReal()) / 
-	     (mrs_real)( getctrl("mrs_natural/Decimation").toNatural()* TWOPI));
-  fundamental_ = (mrs_real) (getctrl("mrs_real/osrate").toReal() / (mrs_real)getctrl("mrs_natural/inObservations").toNatural());
-  kmax_ = getctrl("mrs_natural/Sinusoids").toNatural();
+  factor_ = ((getctrl("mrs_real/osrate")->toReal()) / 
+	     (mrs_real)( getctrl("mrs_natural/Decimation")->toNatural()* TWOPI));
+  fundamental_ = (mrs_real) (getctrl("mrs_real/osrate")->toReal() / (mrs_real)getctrl("mrs_natural/inObservations")->toNatural());
+  kmax_ = getctrl("mrs_natural/Sinusoids")->toNatural();
 
 }
 
@@ -184,7 +184,7 @@ PvConvert::process1(realvec& in, realvec& out)
 
 
 void 
-PvConvert::process(realvec& in, realvec& out)
+PvConvert::myProcess(realvec& in, realvec& out)
 {
 
 	checkFlow(in,out); 

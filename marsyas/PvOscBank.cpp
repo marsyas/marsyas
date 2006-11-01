@@ -63,16 +63,16 @@ PvOscBank::addControls()
 }
 
 void
-PvOscBank::localUpdate()
+PvOscBank::myUpdate()
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/Interpolation"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
 
-  // mrs_natural inObservations = getctrl("mrs_natural/inObservations").toNatural();
+  // mrs_natural inObservations = getctrl("mrs_natural/inObservations")->toNatural();
 
   //defaultUpdate();
-	inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
+	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
 
   size_ = inObservations_/2 + 1;
   
@@ -94,14 +94,14 @@ PvOscBank::localUpdate()
   
   psize_ = size_;
   
-  P_ = getctrl("mrs_real/PitchShift").toReal();
-  I_ = getctrl("mrs_natural/Interpolation").toNatural();
-  S_ = getctrl("mrs_real/SynthesisThreshold").toReal();
-  R_ = getctrl("mrs_real/osrate").toReal();
+  P_ = getctrl("mrs_real/PitchShift")->toReal();
+  I_ = getctrl("mrs_natural/Interpolation")->toNatural();
+  S_ = getctrl("mrs_real/SynthesisThreshold")->toReal();
+  R_ = getctrl("mrs_real/osrate")->toReal();
 }
 	
 void 
-PvOscBank::process(realvec& in, realvec& out)
+PvOscBank::myProcess(realvec& in, realvec& out)
 {
   
   checkFlow(in,out);

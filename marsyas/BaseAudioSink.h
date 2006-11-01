@@ -39,7 +39,7 @@ protected:
 public:
 	BaseAudioSink(std::string name);
   virtual ~BaseAudioSink();
-  virtual void process(realvec& in, realvec& out) = 0;
+  virtual void myProcess(realvec& in, realvec& out) = 0;
 };
 
 }//namespace Marsyas

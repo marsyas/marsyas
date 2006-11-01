@@ -36,7 +36,7 @@ namespace Marsyas
 class Esitar: public MarSystem
 {
 private: 
-	void localUpdate();
+	void myUpdate();
 
   static void mycallback(double deltatime, std::vector< unsigned char> * message, void *userData);
   

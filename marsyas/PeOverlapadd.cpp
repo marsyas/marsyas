@@ -27,12 +27,6 @@ according to current input time (t)
 
 #include "PeOverlapadd.h"
 
-
-#ifdef _MATLAB_ENGINE_
-#include "MATLABengine.h"
-#endif 
-
-
 using namespace std;
 using namespace Marsyas;
 
@@ -65,17 +59,17 @@ PeOverlapadd::addControls()
 }
 
 void
-PeOverlapadd::localUpdate()
+PeOverlapadd::myUpdate()
 {
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/hopSize"));
 	setctrl("mrs_natural/onObservations", (mrs_natural)1);
-	setctrl("mrs_real/osrate", getctrl("mrs_real/israte").toReal());    
+	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());    
 
 	mrs_natural N;
-	N = getctrl("mrs_natural/onSamples").toNatural();
-	delay_ = getctrl("mrs_natural/delay").toNatural();
+	N = getctrl("mrs_natural/onSamples")->toNatural();
+	delay_ = getctrl("mrs_natural/delay")->toNatural();
 
-	mrs_real fs = getctrl("mrs_real/osrate").toReal();
+	mrs_real fs = getctrl("mrs_real/osrate")->toReal();
 	factor_ = TWOPI/fs;
 
 	tmp_.stretch(N*2);
@@ -105,12 +99,12 @@ PeOverlapadd::sine(realvec& out, mrs_real f, mrs_real a, mrs_real p)
 	}
 
 void 
-PeOverlapadd::process(realvec& in, realvec& out)
+PeOverlapadd::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural N, Nb;
 	int i;
 
-	Nb = getctrl("mrs_natural/nbSinusoids").toNatural();
+	Nb = getctrl("mrs_natural/nbSinusoids")->toNatural();
 	N= out.getSize();
 
 	tmp_.setval(0);
@@ -125,14 +119,12 @@ PeOverlapadd::process(realvec& in, realvec& out)
 	for(i=0;i<N;i++)
 		out(i) = back_(i)+tmp_(i);
 
-		#ifdef _MATLAB_ENGINE_
-	 MATLAB->putVariable(tmp_, "vec");
-MATLAB->putVariable(back_, "vec1");
-MATLAB->putVariable(out, "vec2");
-//	 MATLAB->evalString("figure(1);clf;plot(vec1, 'r'); hold ; plot(vec) ; hold");
-	#endif
+	MATLAB_PUT(tmp_, "vec");
+	MATLAB_PUT(back_, "vec1");
+	MATLAB_PUT(out, "vec2");
+	//MATLAB_EVAL("figure(1);clf;plot(vec1, 'r'); hold ; plot(vec) ; hold");
 
-	 	for(i=0;i<N;i++)
+	for(i=0;i<N;i++)
 		back_(i) = tmp_(i+N);
 
 }

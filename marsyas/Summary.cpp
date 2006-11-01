@@ -63,31 +63,31 @@ Summary::addControls()
 }
 
 void
-Summary::localUpdate()
+Summary::myUpdate()
 {
-  MRSDIAG("Summary.cpp - Summary:localUpdate");
+  MRSDIAG("Summary.cpp - Summary:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", (mrs_natural)2);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
    
-  mrs_natural nlabels = getctrl("mrs_natural/nLabels").toNatural();
+  mrs_natural nlabels = getctrl("mrs_natural/nLabels")->toNatural();
 
   if (confusionMatrix.getRows() != nlabels)
   {
 	  //cout << "nlabels =" << nlabels<<endl;
 	  confusionMatrix.create(nlabels, nlabels);  
   }
-  labelNames = getctrl("mrs_string/labelNames").toString();
+  labelNames = getctrl("mrs_string/labelNames")->toString();
 
 }
 
 void 
-Summary::process(realvec& in, realvec& out)
+Summary::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
-  string mode = getctrl("mrs_string/mode").toString();
-  mrs_natural nlabels = getctrl("mrs_natural/nLabels").toNatural();
+  string mode = getctrl("mrs_string/mode")->toString();
+  mrs_natural nlabels = getctrl("mrs_natural/nLabels")->toNatural();
   mrs_natural l;
   mrs_natural prediction = 0;
   
@@ -121,7 +121,7 @@ Summary::process(realvec& in, realvec& out)
 
     }
   
-  if (getctrl("mrs_bool/done").toBool())
+  if (getctrl("mrs_bool/done")->toBool())
     {
 		if(!labelNames.size())
 			labelNames = ",";

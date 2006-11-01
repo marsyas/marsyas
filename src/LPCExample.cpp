@@ -99,7 +99,7 @@ void LPCTestSoundFile(string sfName,mrs_natural winSize, mrs_natural hoSize,
 
   input ->addMarSystem(mng.create("LPCResyn", "lpcResyn"));
   input->updctrl("LPCResyn/lpcResyn/mrs_natural/order",lpcOrder);
-  input->updctrl("LPCResyn/lpcResyn/mrs_natural/onSamples",input->getctrl("LPC/lpc/mrs_natural/hopSize").toNatural());
+  input->updctrl("LPCResyn/lpcResyn/mrs_natural/onSamples",input->getctrl("LPC/lpc/mrs_natural/hopSize")->toNatural());
   
   
 
@@ -110,13 +110,13 @@ void LPCTestSoundFile(string sfName,mrs_natural winSize, mrs_natural hoSize,
 
 
   input->addMarSystem(mng.create("AudioSink","sink"));
-  // input->updctrl("AudioSink/sink/mrs_natural/inSamples",input->getctrl("LPC/lpc/mrs_natural/hopSize").toNatural());
+  // input->updctrl("AudioSink/sink/mrs_natural/inSamples",input->getctrl("LPC/lpc/mrs_natural/hopSize")->toNatural());
   input->updctrl("AudioSink/sink/mrs_natural/inSamples", hoSize);
   
   //input->updctrl("SoundFileSink/sink/mrs_string/filename", "LPCResynthed.wav");
 
   //cout << (*input) <<endl;
-  while(input->getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool()){
+  while(input->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool()){
    input->tick();
   }
 
@@ -149,10 +149,10 @@ void LPCTestLive(mrs_natural winSize, mrs_natural hoSize,mrs_real lowFrek, mrs_r
 
   input ->addMarSystem(mng.create("LPCResyn", "lpcResyn"));
   input->updctrl("LPCResyn/lpcResyn/mrs_natural/order",lpcOrder);
-  input->updctrl("LPCResyn/lpcResyn/mrs_natural/onSamples",input->getctrl("LPC/lpc/mrs_natural/hopSize").toNatural());
+  input->updctrl("LPCResyn/lpcResyn/mrs_natural/onSamples",input->getctrl("LPC/lpc/mrs_natural/hopSize")->toNatural());
 
   input->addMarSystem(mng.create("AudioSink","sink"));
-  input->updctrl("AudioSink/sink/mrs_natural/inSamples",input->getctrl("LPC/lpc/mrs_natural/hopSize").toNatural());
+  input->updctrl("AudioSink/sink/mrs_natural/inSamples",input->getctrl("LPC/lpc/mrs_natural/hopSize")->toNatural());
   
 
   //cout << (*input) <<endl;

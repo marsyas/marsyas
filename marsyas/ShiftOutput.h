@@ -37,16 +37,19 @@ namespace Marsyas
 class ShiftOutput: public MarSystem
 {
 private:
-	 mrs_natural I_; 
   void addControls();
-	void localUpdate();
+	void myUpdate();
+  realvec tmpSlice_;
+  mrs_natural N_,Nw_,I_,D_;  
+  mrs_natural n_;
+  
 
 public:
   ShiftOutput(std::string name);
   ~ShiftOutput();
   MarSystem* clone() const;  
 
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
   
 };
 

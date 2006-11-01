@@ -113,7 +113,7 @@ void play(mrs_real gain, string outName)
 	
   mrs_natural wc=0;
   mrs_natural samplesPlayed = 0;
-  mrs_natural onSamples = playbacknet.getctrl("mrs_natural/onSamples").toNatural();
+  mrs_natural onSamples = playbacknet.getctrl("mrs_natural/onSamples")->toNatural();
   // mrs_natural repeatId = 1;
   
   netSrc->refresh();

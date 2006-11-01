@@ -234,7 +234,7 @@ void Talk::cmd_play(mrs_natural start, mrs_natural end, mrs_natural lineSize)
   
 
   series->updctrl("AudioSink/dest/mrs_natural/nChannels", 
-		  series->getctrl("SoundFileSource/src/mrs_natural/nChannels").toNatural());  
+		  series->getctrl("SoundFileSource/src/mrs_natural/nChannels")->toNatural());  
   for (int i=0; i < end-start; i++)
     {
       series->tick();
@@ -260,7 +260,7 @@ Talk::cmd_load(string fname, mrs_natural lineSize)
   series->addMarSystem(absmax);
   
 
-  mrs_natural hops = src_->getctrl("mrs_natural/size").toNatural() * src_->getctrl("mrs_natural/nChannels").toNatural() / src_->getctrl("mrs_natural/inSamples").toNatural() + 1;
+  mrs_natural hops = src_->getctrl("mrs_natural/size")->toNatural() * src_->getctrl("mrs_natural/nChannels")->toNatural() / src_->getctrl("mrs_natural/inSamples")->toNatural() + 1;
   
   
   Accumulator* acc = new Accumulator("acc");
@@ -269,11 +269,11 @@ Talk::cmd_load(string fname, mrs_natural lineSize)
 
   
 
-  realvec in(acc->getctrl("mrs_natural/inObservations").toNatural(), 
-	     acc->getctrl("mrs_natural/inSamples").toNatural());
+  realvec in(acc->getctrl("mrs_natural/inObservations")->toNatural(), 
+	     acc->getctrl("mrs_natural/inSamples")->toNatural());
   
-  realvec out(acc->getctrl("mrs_natural/onObservations").toNatural(), 
-	      acc->getctrl("mrs_natural/onSamples").toNatural());
+  realvec out(acc->getctrl("mrs_natural/onObservations")->toNatural(), 
+	      acc->getctrl("mrs_natural/onSamples")->toNatural());
   
 	      
   
@@ -369,7 +369,7 @@ Talk::cmd_segment(string systemName, unsigned int memSize, unsigned int numPeaks
 
   TimeLine tline;
   
-  mrs_natural hops = src_->getctrl("mrs_natural/size").toNatural() * src_->getctrl("mrs_natural/nChannels").toNatural() / src_->getctrl("mrs_natural/inSamples").toNatural() + 1;
+  mrs_natural hops = src_->getctrl("mrs_natural/size")->toNatural() * src_->getctrl("mrs_natural/nChannels")->toNatural() / src_->getctrl("mrs_natural/inSamples")->toNatural() + 1;
 
   if(!strcmp(systemName.c_str(), "REG"))
     tline.regular(100, hops);
@@ -678,7 +678,7 @@ Talk::cmd_classify(string systemName, string classifierName, unsigned int start,
 
 
 void
-Talk::process(char *message)
+Talk::myProcess(char *message)
 {
   printf("Talk process called\n");
   cerr << "Message = " << message << endl;

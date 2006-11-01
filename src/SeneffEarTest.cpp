@@ -28,8 +28,8 @@ int main(int argc, const char **argv)
 	seneffEar->update();
 
 	realvec in, out;
-	in.create(seneffEar->getctrl("mrs_natural/inObservations").toNatural(), seneffEar->getctrl("mrs_natural/inSamples").toNatural());
-	out.create(seneffEar->getctrl("mrs_natural/onObservations").toNatural(), seneffEar->getctrl("mrs_natural/onSamples").toNatural());
+	in.create(seneffEar->getctrl("mrs_natural/inObservations")->toNatural(), seneffEar->getctrl("mrs_natural/inSamples")->toNatural());
+	out.create(seneffEar->getctrl("mrs_natural/onObservations")->toNatural(), seneffEar->getctrl("mrs_natural/onSamples")->toNatural());
 
 	in(0) = 1.0f;
 
@@ -55,18 +55,18 @@ int main(int argc, const char **argv)
 	realvec src_in, dest_in;
 	realvec src_out, seneffEar_out, dest_out;
 
-	src_in.create(src->getctrl("mrs_natural/inObservations").toNatural(), src->getctrl("mrs_natural/inSamples").toNatural());
-	src_out.create(src->getctrl("mrs_natural/onObservations").toNatural(), src->getctrl("mrs_natural/onSamples").toNatural());
+	src_in.create(src->getctrl("mrs_natural/inObservations")->toNatural(), src->getctrl("mrs_natural/inSamples")->toNatural());
+	src_out.create(src->getctrl("mrs_natural/onObservations")->toNatural(), src->getctrl("mrs_natural/onSamples")->toNatural());
 
-	seneffEar_out.create(seneffEar->getctrl("mrs_natural/onObservations").toNatural(), seneffEar->getctrl("mrs_natural/onSamples").toNatural());
+	seneffEar_out.create(seneffEar->getctrl("mrs_natural/onObservations")->toNatural(), seneffEar->getctrl("mrs_natural/onSamples")->toNatural());
 
-	dest_in.create(dest->getctrl("mrs_natural/inObservations").toNatural(), dest->getctrl("mrs_natural/inSamples").toNatural());
-	dest_out.create(dest->getctrl("mrs_natural/onObservations").toNatural(), dest->getctrl("mrs_natural/onSamples").toNatural());
+	dest_in.create(dest->getctrl("mrs_natural/inObservations")->toNatural(), dest->getctrl("mrs_natural/inSamples")->toNatural());
+	dest_out.create(dest->getctrl("mrs_natural/onObservations")->toNatural(), dest->getctrl("mrs_natural/onSamples")->toNatural());
 
-	while (src->getctrl("mrs_bool/notEmpty").toBool()){
+	while (src->getctrl("mrs_bool/notEmpty")->toBool()){
 		src->process(src_in, src_out);
 		seneffEar->process(src_out, seneffEar_out);
-		for (mrs_natural i = 0; i < seneffEar->getctrl("mrs_natural/onSamples").toNatural(); i++){
+		for (mrs_natural i = 0; i < seneffEar->getctrl("mrs_natural/onSamples")->toNatural(); i++){
 			dest_in(i) = gain*seneffEar_out(channel,i);
 		}
 		dest->process(dest_in, dest_out);

@@ -377,8 +377,8 @@ int NetworkSocket::recvUDP ( realvec& out )  {
     int status = 0; 
 	  	
     // assume a size 512 vector
-    mrs_natural inSamples = getctrl("mrs_natural/inSamples").toNatural();
-    mrs_natural inObservations = getctrl("mrs_natural/inObservations").toNatural();
+    mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
+    mrs_natural inObservations = getctrl("mrs_natural/inObservations")->toNatural();
     
     
     mrs_real* buffer = new mrs_real[(inSamples*inObservations)+3];
@@ -461,9 +461,9 @@ mrs_real* const NetworkSocket::recvControls() {
         updctrl("mrs_real/israte", swap(controls[3]));
 	
 	// return proper values
-	controls[1] = getctrl("mrs_natural/inSamples").toNatural();
-	controls[2] = getctrl("mrs_natural/inObservations").toNatural();
-	controls[3] = getctrl("mrs_real/israte").toReal();
+	controls[1] = getctrl("mrs_natural/inSamples")->toNatural();
+	controls[2] = getctrl("mrs_natural/inObservations")->toNatural();
+	controls[3] = getctrl("mrs_real/israte")->toReal();
       
     } else 
       {
@@ -483,8 +483,8 @@ int NetworkSocket::recvTCP ( realvec& out )
 {
   
   // create our slice with updated controls
-  mrs_natural inSamples = getctrl("mrs_natural/inSamples").toNatural();
-  mrs_natural inObservations = getctrl("mrs_natural/inObservations").toNatural();
+  mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
+  mrs_natural inObservations = getctrl("mrs_natural/inObservations")->toNatural();
   
   out.create(inObservations, inSamples);  
   mrs_real* data = out.getData();
@@ -552,7 +552,7 @@ int NetworkSocket :: accept( void )
 	return client_d;
       
       cout << "Client connected on data port: " << 
-	getctrl("mrs_natural/dataPort").toNatural() << endl;
+	getctrl("mrs_natural/dataPort")->toNatural() << endl;
       
       
       // if we're a MarSystem, accept a connection for controls also
@@ -568,7 +568,7 @@ int NetworkSocket :: accept( void )
 	  }
 	  
 	  cout << "Client connected on controls port: " << 
-	    getctrl("mrs_natural/controlsPort").toNatural() << endl;
+	    getctrl("mrs_natural/controlsPort")->toNatural() << endl;
 	  
 	}
     } 
@@ -668,4 +668,4 @@ mrs_real NetworkSocket::swap ( mrs_real argument ) {
 }
 
 //! stub function so we can use an object of this type
-void NetworkSocket::process( realvec& in, realvec& out ){}
+void NetworkSocket::myProcess( realvec& in, realvec& out ){}

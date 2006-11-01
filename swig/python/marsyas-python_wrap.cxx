@@ -2583,10 +2583,10 @@ static PyObject *STR2PY (string s) { return PyString_FromStringAndSize(s.c_str()
 
 static PyObject *MCV2PY (MarControlValue mcv) {
         switch(mcv.getType()) {
-        case mar_real: return PyFloat_FromDouble(mcv.toReal());
-        case mar_bool: if ( mcv.toBool() ) { Py_RETURN_TRUE; } else { Py_RETURN_FALSE; }
-        case mar_natural: return PyLong_FromLong(mcv.toNatural());
-        case mar_string: return STR2PY(mcv.toString());
+        case mar_real: return PyFloat_FromDouble(mcv->toReal());
+        case mar_bool: if ( mcv->toBool() ) { Py_RETURN_TRUE; } else { Py_RETURN_FALSE; }
+        case mar_natural: return PyLong_FromLong(mcv->toNatural());
+        case mar_string: return STR2PY(mcv->toString());
         case mar_vec:
         default:
         case mar_null: Py_RETURN_NONE;

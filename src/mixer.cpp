@@ -184,49 +184,49 @@ sfmixer(string sfName1)
       //  mixer1->tick();
       mixMaster->tick();
       // mixMaster->tick();
-      if (Channel_1_1->getctrl("SoundFileSource/src/mrs_natural/size").toNatural() < Channel_1_1->getctrl("SoundFileSource/src/mrs_natural/pos").toNatural() + mixer1->getctrl("mrs_natural/inSamples").toNatural())
+      if (Channel_1_1->getctrl("SoundFileSource/src/mrs_natural/size")->toNatural() < Channel_1_1->getctrl("SoundFileSource/src/mrs_natural/pos")->toNatural() + mixer1->getctrl("mrs_natural/inSamples")->toNatural())
       	{
       	  // reset to 0 for looping
       	  Channel_1_1->updctrl("SoundFileSource/src/mrs_natural/pos", 0);
       	} 
       
-      if (Channel_2_1->getctrl("SoundFileSource/src/mrs_natural/size").toNatural() < Channel_2_1->getctrl("SoundFileSource/src/mrs_natural/pos").toNatural() + mixer1->getctrl("mrs_natural/inSamples").toNatural())
+      if (Channel_2_1->getctrl("SoundFileSource/src/mrs_natural/size")->toNatural() < Channel_2_1->getctrl("SoundFileSource/src/mrs_natural/pos")->toNatural() + mixer1->getctrl("mrs_natural/inSamples")->toNatural())
       	{
       	  // reset to 0 for looping
       	  Channel_2_1->updctrl("SoundFileSource/src/mrs_natural/pos", 0);
       	}
       
-      if (Channel_3_1->getctrl("SoundFileSource/src/mrs_natural/size").toNatural() < Channel_3_1->getctrl("SoundFileSource/src/mrs_natural/pos").toNatural() + mixer1->getctrl("mrs_natural/inSamples").toNatural())
+      if (Channel_3_1->getctrl("SoundFileSource/src/mrs_natural/size")->toNatural() < Channel_3_1->getctrl("SoundFileSource/src/mrs_natural/pos")->toNatural() + mixer1->getctrl("mrs_natural/inSamples")->toNatural())
       	{
       	  // reset to 0 for looping
       	  Channel_3_1->updctrl("SoundFileSource/src/mrs_natural/pos", 0);
       	} 
       
-      if (Channel_4_1->getctrl("SoundFileSource/src/mrs_natural/size").toNatural() < Channel_4_1->getctrl("SoundFileSource/src/mrs_natural/pos").toNatural() + mixer1->getctrl("mrs_natural/inSamples").toNatural())
+      if (Channel_4_1->getctrl("SoundFileSource/src/mrs_natural/size")->toNatural() < Channel_4_1->getctrl("SoundFileSource/src/mrs_natural/pos")->toNatural() + mixer1->getctrl("mrs_natural/inSamples")->toNatural())
       	{
       	  // reset to 0 for looping
       	  Channel_4_1->updctrl("SoundFileSource/src/mrs_natural/pos", 0);
       	}
 
-      if (Channel_1_2->getctrl("SoundFileSource/src/mrs_natural/size").toNatural() < Channel_1_2->getctrl("SoundFileSource/src/mrs_natural/pos").toNatural() + mixer2->getctrl("mrs_natural/inSamples").toNatural())
+      if (Channel_1_2->getctrl("SoundFileSource/src/mrs_natural/size")->toNatural() < Channel_1_2->getctrl("SoundFileSource/src/mrs_natural/pos")->toNatural() + mixer2->getctrl("mrs_natural/inSamples")->toNatural())
       	{
       	  // reset to 0 for looping
       	  Channel_1_2->updctrl("SoundFileSource/src/mrs_natural/pos", 0);
       	} 
       
-      if (Channel_2_2->getctrl("SoundFileSource/src/mrs_natural/size").toNatural() < Channel_2_2->getctrl("SoundFileSource/src/mrs_natural/pos").toNatural() + mixer2->getctrl("mrs_natural/inSamples").toNatural())
+      if (Channel_2_2->getctrl("SoundFileSource/src/mrs_natural/size")->toNatural() < Channel_2_2->getctrl("SoundFileSource/src/mrs_natural/pos")->toNatural() + mixer2->getctrl("mrs_natural/inSamples")->toNatural())
       	{
       	  // reset to 0 for looping
       	  Channel_2_2->updctrl("SoundFileSource/src/mrs_natural/pos", 0);
       	}
       
-      if (Channel_3_2->getctrl("SoundFileSource/src/mrs_natural/size").toNatural() < Channel_3_2->getctrl("SoundFileSource/src/mrs_natural/pos").toNatural() + mixer2->getctrl("mrs_natural/inSamples").toNatural())
+      if (Channel_3_2->getctrl("SoundFileSource/src/mrs_natural/size")->toNatural() < Channel_3_2->getctrl("SoundFileSource/src/mrs_natural/pos")->toNatural() + mixer2->getctrl("mrs_natural/inSamples")->toNatural())
       	{
       	  // reset to 0 for looping
       	  Channel_3_2->updctrl("SoundFileSource/src/mrs_natural/pos", 0);
       	} 
       
-      if (Channel_4_2->getctrl("SoundFileSource/src/mrs_natural/size").toNatural() < Channel_4_2->getctrl("SoundFileSource/src/mrs_natural/pos").toNatural() + mixer2->getctrl("mrs_natural/inSamples").toNatural())
+      if (Channel_4_2->getctrl("SoundFileSource/src/mrs_natural/size")->toNatural() < Channel_4_2->getctrl("SoundFileSource/src/mrs_natural/pos")->toNatural() + mixer2->getctrl("mrs_natural/inSamples")->toNatural())
       	{
       	  // reset to 0 for looping
       	  Channel_4_2->updctrl("SoundFileSource/src/mrs_natural/pos", 0);

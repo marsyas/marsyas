@@ -126,7 +126,7 @@ void MarSystemWrapper::run()
       
       if (empty_ == false) 
 	{	 
-	  if (msys_->getctrl("mrs_bool/notEmpty").toBool() == false) 
+	  if (msys_->getctrl("mrs_bool/notEmpty")->toBool() == false) 
 	    {
 	      empty_ = true;
 	      pause();

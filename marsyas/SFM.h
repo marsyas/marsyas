@@ -50,14 +50,14 @@ private:
   std::vector<mrs_natural> il_;
   std::vector<mrs_natural> ih_;
 
-	void localUpdate();
+	void myUpdate();
 
 public:
   SFM(std::string name);
   ~SFM();
   MarSystem* clone() const;  
  
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

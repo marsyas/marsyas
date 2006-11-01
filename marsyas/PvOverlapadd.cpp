@@ -61,16 +61,16 @@ PvOverlapadd::addControls()
 }
 
 void
-PvOverlapadd::localUpdate()
+PvOverlapadd::myUpdate()
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/WindowSize"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));    
 
   mrs_natural N,Nw,I;
-  N = getctrl("mrs_natural/inSamples").toNatural();
-  Nw = getctrl("mrs_natural/onSamples").toNatural();
-  I = getctrl("mrs_natural/Interpolation").toNatural();
+  N = getctrl("mrs_natural/inSamples")->toNatural();
+  Nw = getctrl("mrs_natural/onSamples")->toNatural();
+  I = getctrl("mrs_natural/Interpolation")->toNatural();
   // create synthesis window 
   
   swin_.create(Nw);
@@ -131,7 +131,7 @@ PvOverlapadd::localUpdate()
 
 
 void 
-PvOverlapadd::process(realvec& in, realvec& out)
+PvOverlapadd::myProcess(realvec& in, realvec& out)
 {
 
   
@@ -139,9 +139,9 @@ PvOverlapadd::process(realvec& in, realvec& out)
   mrs_natural N,Nw;
   int n;
   
-  N = getctrl("mrs_natural/inSamples").toNatural();
-  Nw = getctrl("mrs_natural/onSamples").toNatural();
-  n  = getctrl("mrs_natural/Time").toNatural();
+  N = getctrl("mrs_natural/inSamples")->toNatural();
+  Nw = getctrl("mrs_natural/onSamples")->toNatural();
+  n  = getctrl("mrs_natural/Time")->toNatural();
   
   while (n < 0) 
     n += N;

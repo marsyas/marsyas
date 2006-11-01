@@ -35,7 +35,7 @@ class Delay: public MarSystem
 {
 private: 
   void addControls();
-	void localUpdate();
+	void myUpdate();
 	
 	realvec buffer_;
 	mrs_natural delay_;
@@ -49,7 +49,7 @@ public:
   ~Delay();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

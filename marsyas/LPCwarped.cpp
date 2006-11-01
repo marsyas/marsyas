@@ -1,4 +1,3 @@
-
 /*
 ** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
@@ -33,14 +32,11 @@ May 2006
 */
 
 #include "LPCwarped.h"
-#include "MATLABengine.h"
+
+//#define _MATLAB_LPCwarped_
 
 using namespace std;
 using namespace Marsyas;
-
-#ifdef _MATLAB_ENGINE_
-//#define _MATLAB_LPCwarped_
-#endif
 
 LPCwarped::LPCwarped(string name):MarSystem("LPCwarped",name)
 {
@@ -70,11 +66,11 @@ LPCwarped::addControls()
 }
 
 void
-LPCwarped::localUpdate()
+LPCwarped::myUpdate()
 { 
-	MRSDIAG("LPCwarped.cpp - LPCwarped:localUpdate");
+	MRSDIAG("LPCwarped.cpp - LPCwarped:myUpdate");
 
-	order_ = getctrl("mrs_natural/order").toNatural();
+	order_ = getctrl("mrs_natural/order")->toNatural();
 
 	setctrl("mrs_natural/onObservations", (mrs_natural)(order_+2)); // <order_> coefs + pitch value + power value
 	setctrl("mrs_natural/onSamples", (mrs_natural)1);
@@ -92,7 +88,7 @@ LPCwarped::localUpdate()
 
 	//MATLAB engine stuff - for testing and validation purposes only!
 #ifdef _MATLAB_LPCwarped_
-	MATLABengine::getMatlabEng()->evalString("LPCwarped_pitch = [];");
+	MATLAB_EVAL("LPCwarped_pitch = [];");
 #endif
 
 }
@@ -195,8 +191,8 @@ LPCwarped::autocorrelationWarped(realvec& in, realvec& r, mrs_real lambda)
 
 //MATLAB engine stuff - for testing and validation purposes only!
 #ifdef _MATLAB_LPCwarped_
-	MATLABengine::getMatlabEng()->putVariable(pitch_, "pitch");
-	MATLABengine::getMatlabEng()->evalString("LPCwarped_pitch = [LPCwarped_pitch pitch];");
+	MATLAB_PUT(pitch_, "pitch");
+	MATLAB_EVAL("LPCwarped_pitch = [LPCwarped_pitch pitch];");
 #endif
 }
 
@@ -284,7 +280,7 @@ LPCwarped::predictionError(realvec& data, realvec& coeffs)
 }
 
 void 
-LPCwarped::process(realvec& in, realvec& out)
+LPCwarped::myProcess(realvec& in, realvec& out)
 {
 	checkFlow(in,out); 
 
@@ -292,9 +288,9 @@ LPCwarped::process(realvec& in, realvec& out)
 
 //MATLAB engine stuff - for testing and validation purposes only!
 #ifdef _MATLAB_LPCwarped_
-	MATLABengine::getMatlabEng()->putVariable(in, "LPC_in");
-	MATLABengine::getMatlabEng()->putVariable(order_, "LPC_order");
-	MATLABengine::getMatlabEng()->putVariable(getctrl("mrs_real/gamma").toReal(), "LPC_gamma");
+	MATLAB_PUT(in, "LPC_in");
+	MATLAB_PUT(order_, "LPC_order");
+	MATLAB_PUT(getctrl("mrs_real/gamma")->toReal(), "LPC_gamma");
 #endif
 
 	//-------------------------
@@ -303,7 +299,7 @@ LPCwarped::process(realvec& in, realvec& out)
 	//calculate warped autocorrelation coefs
 	realvec r(in.getSize());
 	//this also estimates the pitch_ - does it work if lambda != 0 [?]
-	autocorrelationWarped(in, r, getctrl("mrs_real/lambda").toReal()); 
+	autocorrelationWarped(in, r, getctrl("mrs_real/lambda")->toReal()); 
 
 	//--------------------------
 	// Levison-Durbin recursion
@@ -328,7 +324,7 @@ LPCwarped::process(realvec& in, realvec& out)
 	// LPC Pole-shifting
 	//--------------------------
 	//verify if Z-Plane pole-shifting should be performed...
-	mrs_real gamma = getctrl("mrs_real/gamma").toReal();
+	mrs_real gamma = getctrl("mrs_real/gamma")->toReal();
 	if(gamma != 1.0)
 		for(mrs_natural j = 0; j < order_; j++)
 			out(j) = (out(j) * pow(gamma, (double)j+1));
@@ -347,8 +343,8 @@ LPCwarped::process(realvec& in, realvec& out)
 
 //MATLAB engine stuff - for testing and validation purposes only!
 #ifdef _MATLAB_LPCwarped_
-	MATLABengine::getMatlabEng()->putVariable(out, "LPC_out");
-	MATLABengine::getMatlabEng()->evalString("LPC_test");
+	MATLAB_PUT(out, "LPC_out");
+	MATLAB_EVAL("LPC_test");
 #endif
 
 }

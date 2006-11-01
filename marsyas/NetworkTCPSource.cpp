@@ -59,11 +59,11 @@ string NetworkTCPSource::getClientAddr()
   return NetworkSocket::inet_ntoa();
 }
 
-void NetworkTCPSource::process( realvec& in, realvec& out )
+void NetworkTCPSource::myProcess( realvec& in, realvec& out )
 {
 
-  mrs_natural inSamples = getctrl("mrs_natural/inSamples").toNatural();
-  mrs_natural inObservations = getctrl("mrs_natural/inObservations").toNatural();
+  mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
+  mrs_natural inObservations = getctrl("mrs_natural/inObservations")->toNatural();
   
   checkFlow(in,out);
  
@@ -110,8 +110,8 @@ void NetworkTCPSource::refresh()
     exit(1);
   }
 
-  mrs_natural dataPort = getctrl("mrs_natural/dataPort").toNatural();
-  mrs_natural controlsPort = getctrl("mrs_natural/controlsPort").toNatural();
+  mrs_natural dataPort = getctrl("mrs_natural/dataPort")->toNatural();
+  mrs_natural controlsPort = getctrl("mrs_natural/controlsPort")->toNatural();
 
   if ( ! NetworkSocket::setupSource ( dataPort, controlsPort ) ) {
     throw SocketException ( "Could not setup TCP source." );

@@ -104,33 +104,33 @@ AuFileSink::checkExtension(string filename)
 }
 
 void 
-AuFileSink::localUpdate()
+AuFileSink::myUpdate()
 {
-  MRSDIAG("AudioFileSink::localUpdate");
+  MRSDIAG("AudioFileSink::myUpdate");
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  nChannels_ = getctrl("mrs_natural/inObservations").toNatural();      
+  nChannels_ = getctrl("mrs_natural/inObservations")->toNatural();      
   setctrl("mrs_natural/nChannels", nChannels_);
     
   delete [] sdata_;
   delete [] cdata_;
   
-  sdata_ = new short[getctrl("mrs_natural/inSamples").toNatural() * nChannels_];
-  cdata_ = new unsigned char[getctrl("mrs_natural/inSamples").toNatural() * nChannels_];
+  sdata_ = new short[getctrl("mrs_natural/inSamples")->toNatural() * nChannels_];
+  cdata_ = new unsigned char[getctrl("mrs_natural/inSamples")->toNatural() * nChannels_];
 
-  filename_ = getctrl("mrs_string/filename").toString();
+  filename_ = getctrl("mrs_string/filename")->toString();
 }
   
 void 
 AuFileSink::putHeader(string filename)
 {
-  mrs_natural nChannels = (mrs_natural)getctrl("mrs_natural/nChannels").toNatural();
+  mrs_natural nChannels = (mrs_natural)getctrl("mrs_natural/nChannels")->toNatural();
   
   written_ = 0;
   char *comment = "MARSYAS 2001, George Tzanetakis.\n";
-  int commentSize = strlen(comment);
+  size_t commentSize = strlen(comment);
   sfp_ = fopen(filename.c_str(), "wb");
   hdr_.pref[0] = '.';
   hdr_.pref[1] = 's';
@@ -141,13 +141,13 @@ AuFileSink::putHeader(string filename)
 	  hdr_.hdrLength = 24 + commentSize;
 	  hdr_.fileLength = 0;
 	  hdr_.mode = SND_FORMAT_LINEAR_16;                           
-	  hdr_.srate = (mrs_natural)getctrl("mrs_real/israte").toReal();
+	  hdr_.srate = (mrs_natural)getctrl("mrs_real/israte")->toReal();
 	  hdr_.channels = nChannels;
 #else
-	  hdr_.hdrLength = ByteSwapLong(24 + commentSize);
+	  hdr_.hdrLength = ByteSwapLong(24 + (unsigned long)commentSize);
 	  hdr_.fileLength = ByteSwapLong(0);
 	  hdr_.mode = ByteSwapLong(SND_FORMAT_LINEAR_16);                           
-	  hdr_.srate = ByteSwapLong((mrs_natural)getctrl("mrs_real/israte").toReal());
+	  hdr_.srate = ByteSwapLong((mrs_natural)getctrl("mrs_real/israte")->toReal());
 	  hdr_.channels = ByteSwapLong(nChannels);
 #endif 
 
@@ -190,7 +190,7 @@ AuFileSink::putLinear16(realvec& slice)
 }
 
 void 
-AuFileSink::process(realvec& in, realvec& out)
+AuFileSink::myProcess(realvec& in, realvec& out)
 {
 	checkFlow(in,out);
   
@@ -199,9 +199,13 @@ AuFileSink::process(realvec& in, realvec& out)
     for (t=0; t < inSamples_; t++)
     {
 			if (in(o,t) > 1.0)
+			{
 				MRSWARN("AuFileSink::Value out of range > 1.0");
+			}
 			if (in(o,t) < -1.0)
+			{
 				MRSWARN("AuFileSink::Value out of range < -1.0"); 
+			}
 			out(o,t) = in(o,t);
     }
 

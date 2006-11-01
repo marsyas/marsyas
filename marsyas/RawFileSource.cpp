@@ -80,7 +80,7 @@ RawFileSource::addControls()
 void RawFileSource::openFile(string filename) 
 {
   getHeader(filename);
-  rate_ = fileSize_ * getctrl("mrs_real/frequency").toReal() / getctrl("mrs_real/israte").toReal();
+  rate_ = fileSize_ * getctrl("mrs_real/frequency")->toReal() / getctrl("mrs_real/israte")->toReal();
 }
 
 
@@ -122,7 +122,7 @@ void RawFileSource::getHeader(string fileName)
   }
   
   // allocate storage for the buffer
-  mrs_natural samples = (bufferSize_+1)* getctrl("mrs_natural/nChannels").toNatural();
+  mrs_natural samples = (bufferSize_+1)* getctrl("mrs_natural/nChannels")->toNatural();
   data_.create(samples);
 
 	if(buffer_)
@@ -197,33 +197,33 @@ void RawFileSource::readData(unsigned long index)//[!]
   
 }
 
-void RawFileSource::localUpdate() 
+void RawFileSource::myUpdate() 
 {
  
-  nChannels_ = getctrl("mrs_natural/nChannels").toNatural();  
-  inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
-  inObservations_ = getctrl("mrs_natural/inObservations").toNatural();
-  israte_ = getctrl("mrs_real/israte").toReal();
+  nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();  
+  inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
+  inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
+  israte_ = getctrl("mrs_real/israte")->toReal();
   
   setctrl("mrs_natural/onSamples", inSamples_);
   setctrl("mrs_natural/onObservations", inObservations_);
   setctrl("mrs_real/osrate", israte_);
   
-  filename_ = getctrl("mrs_string/filename").toString();    
-  pos_ = getctrl("mrs_natural/pos").toNatural();
+  filename_ = getctrl("mrs_string/filename")->toString();    
+  pos_ = getctrl("mrs_natural/pos")->toNatural();
 
-  rate_ = fileSize_ * getctrl("mrs_real/frequency").toReal() / israte_;
+  rate_ = fileSize_ * getctrl("mrs_real/frequency")->toReal() / israte_;
 }	
 
 
-void RawFileSource::process(realvec& in,realvec &out)
+void RawFileSource::myProcess(realvec& in,realvec &out)
 {
   checkFlow(in,out);
 
   mrs_real alpha;
   mrs_natural i, index;
   
-  if (getctrl("mrs_bool/noteon").toBool() == false) {
+  if (!getctrl("mrs_bool/noteon")->isTrue()) {
     return;
   }
   

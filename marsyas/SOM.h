@@ -35,7 +35,7 @@ class SOM: public MarSystem
 {
 private: 
   void addControls();
-	void localUpdate();
+	void myUpdate();
 
   realvec grid_map_;
   mrs_natural grid_width_;
@@ -50,7 +50,7 @@ public:
   MarSystem* clone() const;  
   
 
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 
 private: 
   double randD(double max);

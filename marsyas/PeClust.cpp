@@ -25,10 +25,6 @@
 
 #include "PeClust.h"
 
-#ifdef _MATLAB_ENGINE_
-#include "MATLABengine.h"
-#endif 
-
 using namespace std;
 using namespace Marsyas;
 
@@ -61,7 +57,7 @@ PeClust::addControls()
 }
 
  void
- PeClust::localUpdate()
+ PeClust::myUpdate()
  {
 	 setctrl("mrs_natural/onSamples", 
 		 getctrl("mrs_natural/inSamples"));
@@ -72,11 +68,11 @@ PeClust::addControls()
  setctrl("mrs_string/onObsNames", 
 	 getctrl("mrs_string/inObsNames"));
 
-	 kmax_ = getctrl("mrs_natural/Sinusoids").toNatural();
-	 nbClusters_ = getctrl("mrs_natural/Clusters").toNatural();
+	 kmax_ = getctrl("mrs_natural/Sinusoids")->toNatural();
+	 nbClusters_ = getctrl("mrs_natural/Clusters")->toNatural();
 
 	 // string with the observations to consider for similarity computing
-   similarityType_ = getctrl("mrs_string/similarityType").toString();
+   similarityType_ = getctrl("mrs_string/similarityType")->toString();
 
 	 nbParameters_ = inObservations_/kmax_;
 
@@ -341,7 +337,7 @@ oldLabels.dump();
  }
 
  void 
-	 PeClust::process(realvec& in, realvec& out)
+	 PeClust::myProcess(realvec& in, realvec& out)
  {
 	 checkFlow(in,out);
 
@@ -365,10 +361,8 @@ oldLabels.dump();
 	 labeling(data_, labels);
 
 
-#ifdef _MATLAB_ENGINE_
-	 MATLAB->putVariable(data_, "peaks");
-	 MATLAB->evalString("plotPeaks(peaks)");
-#endif 
+	 MATLAB_PUT(data_, "peaks");
+	 //MATLAB_EVAL("plotPeaks(peaks)");
 
 	peaks2V(data_, lastFrame_, out);
 

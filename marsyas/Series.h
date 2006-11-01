@@ -40,7 +40,7 @@ private:
   bool probe_;
 
 	void addControls();
-	void localUpdate();
+	void myUpdate();
 	void deleteSlices();
 
 public:
@@ -52,7 +52,7 @@ public:
   
   mrs_real* const recvControls();
 
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

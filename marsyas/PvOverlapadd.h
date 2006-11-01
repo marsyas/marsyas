@@ -40,14 +40,14 @@ private:
   realvec awin_;
   
   void addControls();
-	void localUpdate();
+	void myUpdate();
  
 public:
   PvOverlapadd(std::string name);
   ~PvOverlapadd();
   MarSystem* clone() const;    
 
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
   
 };
 

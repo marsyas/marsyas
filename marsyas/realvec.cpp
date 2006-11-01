@@ -27,12 +27,11 @@
 
 #include "realvec.h"
 #include "NumericLib.h"
-#include "MATLABengine.h"
 
 #include <limits>
 
-#ifdef _MATLAB_ENGINE_
-#define _MATLAB_REALVEC_
+#ifdef MARSYAS_MATLAB
+//#define _MATLAB_REALVEC_
 #endif
 
 using namespace std;
@@ -593,7 +592,7 @@ realvec::shuffle()
 
 
 void 
-realvec::write(string filename)
+realvec::write(string filename) const
 {
   ofstream os(filename.c_str());
   os << (*this) << endl;
@@ -605,7 +604,6 @@ realvec::dump()
 		cout << data_[i] << " " ;
 	cout << endl;
 }
-
 
 
 ostream& 
@@ -1144,10 +1142,10 @@ realvec::divergenceShape(realvec Ci, realvec Cj)
   realvec invCj(Cj);
 
 #ifdef _MATLAB_REALVEC_
-  MATLAB->putVariable(Ci, "Ci");
-  MATLAB->putVariable(Cj, "Cj");
-  MATLAB->putVariable(Citemp, "Citemp");
-  MATLAB->putVariable(Cjtemp, "Cjtemp");
+  MATLAB_PUT(Ci, "Ci");
+  MATLAB_PUT(Cj, "Cj");
+  MATLAB_PUT(Citemp, "Citemp");
+  MATLAB_PUT(Cjtemp, "Cjtemp");
 #endif
 
 	
@@ -1155,24 +1153,24 @@ realvec::divergenceShape(realvec Ci, realvec Cj)
   invCj.invert(Cjtemp);
 
 #ifdef _MATLAB_REALVEC_
-  MATLAB->putVariable(Citemp, "Citemp2");
-  MATLAB->putVariable(Cjtemp, "Cjtemp2");
-  MATLAB->putVariable(invCi, "invCi");
-  MATLAB->putVariable(invCj, "invCj");
+  MATLAB_PUT(Citemp, "Citemp2");
+  MATLAB_PUT(Cjtemp, "Cjtemp2");
+  MATLAB_PUT(invCi, "invCi");
+  MATLAB_PUT(invCj, "invCj");
 #endif
 
   Cj *= (-1.0);
   Ci += Cj;
 
 #ifdef _MATLAB_REALVEC_
-  MATLAB->putVariable(Ci, "Ci_minus_Cj");
+  MATLAB_PUT(Ci, "Ci_minus_Cj");
 #endif
 
   invCi *= (-1.0);
   invCj += invCi;
 
 #ifdef _MATLAB_REALVEC_
-  MATLAB->putVariable(invCj, "invCj_minus_invCi");
+  MATLAB_PUT(invCj, "invCj_minus_invCi");
 #endif
 
   Ci *= invCj;
@@ -1180,8 +1178,8 @@ realvec::divergenceShape(realvec Ci, realvec Cj)
   res = Ci.trace() / 2.0;
 
 #ifdef _MATLAB_REALVEC_
-  MATLAB->putVariable(Ci, "divergenceMatrix");
-  MATLAB->putVariable(res, "divergence");
+  MATLAB_PUT(Ci, "divergenceMatrix");
+  MATLAB_PUT(res, "divergence");
 #endif
 
   return res;
@@ -1203,14 +1201,13 @@ realvec::bhattacharyyaShape(realvec Ci, realvec Cj)
   mrs_real sqrtdetCj = sqrt(Cj.det());
   mrs_real den = sqrtdetCi * sqrtdetCj;
 #ifdef _MATLAB_REALVEC_
-  MATLAB->putVariable(Ci, "Ci");
-  MATLAB->putVariable(Cj, "Cj");
-  MATLAB->putVariable(sqrtdetCi, "sqrtdetCi");
-  MATLAB->putVariable(sqrtdetCj, "sqrtdetCj");
-  MATLAB->putVariable(den, "den");
+  MATLAB_PUT(Ci, "Ci");
+  MATLAB_PUT(Cj, "Cj");
+  MATLAB_PUT(sqrtdetCi, "sqrtdetCi");
+  MATLAB_PUT(sqrtdetCj, "sqrtdetCj");
+  MATLAB_PUT(den, "den");
 #endif
-  
-  
+    
   //numerator
   Ci += Cj;
   Ci /= 2.0;

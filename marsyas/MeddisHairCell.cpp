@@ -54,14 +54,14 @@ void MeddisHairCell::addControls()
 }
 
 void 
-MeddisHairCell::localUpdate()
+MeddisHairCell::myUpdate()
 {
-  MRSDIAG("MeddisHairCell.cpp - MeddisHairCell:localUpdate");
+  MRSDIAG("MeddisHairCell.cpp - MeddisHairCell:myUpdate");
   
 //   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 //   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 //   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-	MarSystem::localUpdate(); //lmartins: what about the feature names?!? [?]
+	MarSystem::myUpdate(); //lmartins: what about the feature names?!? [?]
   
   //parameters
   M = 1;
@@ -75,7 +75,7 @@ MeddisHairCell::localUpdate()
   h = 50000;
 
   //internal constants
-  dt = 1/getctrl("mrs_real/israte").toReal();
+  dt = 1/getctrl("mrs_real/israte")->toReal();
   gdt = g*dt;
   ydt = y*dt;
   ldt = l*dt;
@@ -86,8 +86,8 @@ MeddisHairCell::localUpdate()
   kt = g*A/(A + B);
   spont = M*y*kt/(l*kt+y*(l + r));
   
-  if (numChannels != getctrl("mrs_natural/inSamples").toNatural()){
-    numChannels = getctrl("mrs_natural/inSamples").toNatural();
+  if (numChannels != getctrl("mrs_natural/inSamples")->toNatural()){
+    numChannels = getctrl("mrs_natural/inSamples")->toNatural();
     c.create(numChannels);
     q.create(numChannels);
     w.create(numChannels);
@@ -100,11 +100,11 @@ MeddisHairCell::localUpdate()
 }
 
 void 
-MeddisHairCell::process(realvec& in, realvec& out)
+MeddisHairCell::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in, out);
   //lmartins: if (mute_) return;
-	if(getctrl("mrs_bool/mute").toBool()) return;
+	if(getctrl("mrs_bool/mute")->toBool()) return;
   
   mrs_real limitedSt;
   mrs_real replenish;
@@ -112,9 +112,9 @@ MeddisHairCell::process(realvec& in, realvec& out)
   mrs_real loss;
   mrs_real reuptake;
   mrs_real reprocess;
-  bool subtractSpont = getctrl("mrs_bool/subtractSpont").toBool();
-  for (mrs_natural j = 0; j < getctrl("mrs_natural/inSamples").toNatural(); j++){
-    for (mrs_natural i = 0; i < getctrl("mrs_natural/inObservations").toNatural(); i++){
+  bool subtractSpont = getctrl("mrs_bool/subtractSpont")->toBool();
+  for (mrs_natural j = 0; j < getctrl("mrs_natural/inSamples")->toNatural(); j++){
+    for (mrs_natural i = 0; i < getctrl("mrs_natural/inObservations")->toNatural(); i++){
       limitedSt = max(in(i,j) + A, (mrs_real)0.0);
       kt = gdt*limitedSt/(limitedSt + B);
       replenish = max(ydt*(M - q(i)), (mrs_real)0.0);

@@ -24,11 +24,6 @@
 
 #include "Windowing.h"
 
-
-#ifdef _MATLAB_ENGINE_
-#include "MATLABengine.h"
-#endif 
-
 using namespace std;
 using namespace Marsyas;
 
@@ -48,7 +43,6 @@ Windowing::clone() const
   return new Windowing(*this);
 }
 
-
 void
 Windowing::addcontrols()
 {
@@ -58,16 +52,16 @@ Windowing::addcontrols()
 }
 
 void
-Windowing::localUpdate()
+Windowing::myUpdate()
 {
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
 	setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));  
-	mrs_natural inSamples = getctrl("mrs_natural/inSamples").toNatural();
+	mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
 
-	mrs_natural size = getctrl("mrs_natural/size").toNatural();
+	mrs_natural size = getctrl("mrs_natural/size")->toNatural();
 	if(size)
 	{
 		setctrl("mrs_natural/onSamples", size);
@@ -78,9 +72,9 @@ Windowing::localUpdate()
 	envelope_.create(inSamples);
 
 
-	string type = getctrl("mrs_string/type").toString();
+	string type = getctrl("mrs_string/type")->toString();
 	// should be boolean [!]
-	mrs_natural zeroPhase = getctrl("mrs_natural/zeroPhasing").toNatural();
+	mrs_natural zeroPhase = getctrl("mrs_natural/zeroPhasing")->toNatural();
 	if(zeroPhase == 1)
 		delta_ = inSamples/2+1;
 	else
@@ -108,11 +102,11 @@ Windowing::localUpdate()
 }
 
 void 
-Windowing::process(realvec& in, realvec& out)
+Windowing::myProcess(realvec& in, realvec& out)
 {
 	checkFlow(in,out);
 	//lmartins: if (mute_) return;
-	if(getctrl("mrs_bool/mute").toBool()) return;
+	if(getctrl("mrs_bool/mute")->toBool()) return;
 
 	for (o=0; o < inObservations_; o++)
 	{
@@ -126,10 +120,8 @@ Windowing::process(realvec& in, realvec& out)
 			out(o,t+(onSamples_-inSamples_))=tmp_((t+delta_)%inSamples_);
 	}
 
-#ifdef _MATLAB_ENGINE_
-	MATLAB->putVariable(out, "peaks");
-	// MATLAB->evalString("plot(peaks(1,:))");
-#endif 
+	MATLAB_PUT(out, "peaks");
+	//MATLAB_EVAL("plot(peaks(1,:))");
 }
 
 

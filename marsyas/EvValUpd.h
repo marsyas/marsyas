@@ -28,7 +28,7 @@
 #include <string>
 #include <iostream>
 
-#include "MarControlValue.h"
+#include "MarControl.h"
 #include "MarEvent.h"
 
 namespace Marsyas
@@ -40,24 +40,24 @@ class EvValUpd : public MarEvent {
 protected:
     MarSystem* target_;
     std::string cname_;
-    MarControlValue value_;
+    MarControlPtr value_;
 
 public:
     // Constructors
-    EvValUpd(std::string cname, MarControlValue);
-    EvValUpd(MarSystem*, std::string cname, MarControlValue);
+    EvValUpd(std::string cname, MarControlPtr);
+    EvValUpd(MarSystem*, std::string cname, MarControlPtr);
     EvValUpd(EvValUpd& e);
     virtual ~EvValUpd();
 
     // Set/Get methods
     std::string getCName() const;
-    MarControlValue getValue() const;
+    MarControlPtr getValue() const;
     MarSystem* getTarget() const;
 
     void setCName(std::string cname);
-    void setValue(MarControlValue value);
+    void setValue(MarControlPtr value);
     void setTarget(MarSystem* ms);
-    void set(MarSystem* ms, std::string cname, MarControlValue);
+    void set(MarSystem* ms, std::string cname, MarControlPtr);
 
     // Event dispatch
     void dispatch();

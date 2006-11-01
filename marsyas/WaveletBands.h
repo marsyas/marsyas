@@ -42,7 +42,7 @@ private:
   realvec tband_;
 
   void addControls();
-	void localUpdate();
+	void myUpdate();
   WaveletPyramid *iwvpt_;
 
 public:
@@ -52,7 +52,7 @@ public:
 
   MarSystem* clone() const;
 
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
   
 };
 

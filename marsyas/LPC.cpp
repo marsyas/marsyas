@@ -74,17 +74,17 @@ LPC::addControls()
 }
 
 void
-LPC::localUpdate()
+LPC::myUpdate()
 { 
-  MRSDIAG("LPC.cpp - LPC:localUpdate");
+  MRSDIAG("LPC.cpp - LPC:myUpdate");
   //cout <<" LPC UPDATE**********" << endl;
-  inSize_ = getctrl("mrs_natural/inSamples").toNatural();
-  hopSize_ = getctrl("mrs_natural/hopSize").toNatural();
-  order_ =  getctrl("mrs_natural/order").toNatural();
-  minPitchRes_= getctrl("mrs_real/minPitchRes").toReal();
+  inSize_ = getctrl("mrs_natural/inSamples")->toNatural();
+  hopSize_ = getctrl("mrs_natural/hopSize")->toNatural();
+  order_ =  getctrl("mrs_natural/order")->toNatural();
+  minPitchRes_= getctrl("mrs_real/minPitchRes")->toReal();
   outSize_ = order_+1;  
-  highFreq_=getctrl("mrs_real/highFreq").toReal();
-  lowFreq_=getctrl("mrs_real/lowFreq").toReal();
+  highFreq_=getctrl("mrs_real/highFreq")->toReal();
+  lowFreq_=getctrl("mrs_real/lowFreq")->toReal();
   //cout <<"hopSize_:"<<hopSize_<<endl;
   setctrl("mrs_natural/onSamples", outSize_);
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
@@ -135,13 +135,13 @@ LPC::localUpdate()
 
   pitchExtractor_->updctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
   pitchExtractor_->updctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
-  pitchExtractor_->updctrl("mrs_real/israte", getctrl("mrs_real/israte").toReal());
+  pitchExtractor_->updctrl("mrs_real/israte", getctrl("mrs_real/israte")->toReal());
 
   pitchExtractor_->updctrl("Fanout/fanout/TimeStretch/tsc/mrs_real/factor", 0.5); 
     
    
-   lowSamples_ = hertz2samples(highFreq_,getctrl("mrs_real/israte").toReal());
-   highSamples_ = hertz2samples(lowFreq_,getctrl("mrs_real/israte").toReal());
+   lowSamples_ = hertz2samples(highFreq_,getctrl("mrs_real/israte")->toReal());
+   highSamples_ = hertz2samples(lowFreq_,getctrl("mrs_real/israte")->toReal());
 
    //cout << "LPC update lowSamples: "<<lowSamples_ <<"highSamples: "<<highSamples_<< endl;
    pitchExtractor_->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.00);
@@ -150,7 +150,7 @@ LPC::localUpdate()
    pitchExtractor_->updctrl("Peaker/pkr/mrs_natural/peakEnd", highSamples_);
    pitchExtractor_->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 1);
    //cout <<" before pitch res" << endl;
-   pitchres_.create(getctrl("mrs_natural/onObservations").toNatural(),pitchExtractor_->getctrl("mrs_natural/onSamples").toNatural());
+   pitchres_.create(getctrl("mrs_natural/onObservations")->toNatural(),pitchExtractor_->getctrl("mrs_natural/onSamples")->toNatural());
   
    // cout << (*pitchExtractor_) << endl;
   //-----------------------------------------------------------------------
@@ -201,7 +201,7 @@ LPC::predict(realvec& data, realvec& coeffs)
 
 
 void 
-LPC::process(realvec& in, realvec& out)
+LPC::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out); 
   mrs_natural i,j; 
@@ -215,7 +215,7 @@ LPC::process(realvec& in, realvec& out)
   //-----------------------------------
   
   //cout << "after pitchEx process "<< endl;
-  // pitch_ = samples2hertz((mrs_natural)pitchres_(1), getctrl("mrs_real/israte").toReal());
+  // pitch_ = samples2hertz((mrs_natural)pitchres_(1), getctrl("mrs_real/israte")->toReal());
 
   pitch_ = (mrs_natural)pitchres_(1);
   cout << "pitch_ = " << pitch_ << endl;

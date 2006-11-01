@@ -44,13 +44,13 @@ private:
   mrs_real c3_;
 
 	void addControls();
-	void localUpdate();
+	void myUpdate();
 
 public:
   Daub4(std::string name);
   ~Daub4();
   MarSystem* clone() const;
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
   
 };
 

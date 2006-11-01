@@ -151,11 +151,11 @@ MP3FileSource::getHeader(string filename)
 
   if (myStat.st_size == 0 ) {
     MRSWARN("Error reading file: " + filename);
-    setctrl("mrs_natural/nChannels", (mrs_natural)1);
-    setctrl("mrs_real/israte", (mrs_real)22050.0);
-    setctrl("mrs_natural/size", (mrs_natural)0);
+    setctrl("mrs_natural/nChannels", 1);
+    setctrl("mrs_real/israte", 22050.0);
+    setctrl("mrs_natural/size", 0);
     notEmpty_ = 0;
-    setctrl("mrs_bool/notEmpty", (MarControlValue)false);	  
+    setctrl("mrs_bool/notEmpty", false);	  
     return;
   }
   
@@ -173,11 +173,11 @@ MP3FileSource::getHeader(string filename)
   if (numRead != myStat.st_size) 
     {
       MRSWARN("Error reading: " + filename + " to memory.");
-      setctrl("mrs_natural/nChannels", (mrs_natural)1);
-      setctrl("mrs_real/israte", (mrs_real)22050.0);
-      setctrl("mrs_natural/size", (mrs_natural)0);
+      setctrl("mrs_natural/nChannels", 1);
+      setctrl("mrs_real/israte", 22050.0);
+      setctrl("mrs_natural/size", 0);
       notEmpty_ = 0;
-      setctrl("mrs_bool/notEmpty", (MarControlValue)false);	  
+      setctrl("mrs_bool/notEmpty", false);	  
       return;
     }
   
@@ -190,7 +190,7 @@ MP3FileSource::getHeader(string filename)
  
 
   // if there is nothing in the stream...
-  notEmpty_ = getctrl("mrs_bool/notEmpty").toBool(); 
+  notEmpty_ = getctrl("mrs_bool/notEmpty")->toBool(); 
   if (!notEmpty_) {
     pos_ = 0;
     return;
@@ -249,8 +249,8 @@ MP3FileSource::getHeader(string filename)
   
   // only works for a constant bitrate, duration is (bits in file / bitrate)
   mrs_real duration_ = 2 * (fileSize_ * 8) / bitRate;
-  advance_ = getctrl("mrs_bool/advance").toBool();
-  cindex_ = getctrl("mrs_natural/cindex").toNatural();
+  advance_ = getctrl("mrs_bool/advance")->toBool();
+  cindex_ = getctrl("mrs_natural/cindex")->toNatural();
   
   
   size_ = (mrs_natural) ((duration_ * sampleRate) / MAD_NCHANNELS(&frame.header));
@@ -287,18 +287,18 @@ MP3FileSource::getHeader(string filename)
  *
  */
 void 
-MP3FileSource::localUpdate()
+MP3FileSource::myUpdate()
 {
-  MRSDIAG("MP3FileSource::localUpdate");
+  MRSDIAG("MP3FileSource::myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
  
-  israte_ = getctrl("mrs_real/israte").toReal();
-  inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
+  israte_ = getctrl("mrs_real/israte")->toReal();
+  inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
 
-  pos_ = getctrl("mrs_natural/pos").toNatural();
+  pos_ = getctrl("mrs_natural/pos")->toNatural();
   
   // if the user has seeked somewhere in the file
   if ( (currentPos_ != pos_) && (pos_ < size_)) 
@@ -322,12 +322,12 @@ MP3FileSource::localUpdate()
       currentPos_ = pos_;
     }
   
-  filename_ = getctrl("mrs_string/filename").toString();    
-  duration_ = getctrl("mrs_real/duration").toReal();
-  advance_ = getctrl("mrs_bool/advance").toBool();
+  filename_ = getctrl("mrs_string/filename")->toString();    
+  duration_ = getctrl("mrs_real/duration")->toReal();
+  advance_ = getctrl("mrs_bool/advance")->toBool();
   //rewindpos_ = pos_;
   
-  repetitions_ = getctrl("mrs_real/repetitions").toReal();
+  repetitions_ = getctrl("mrs_real/repetitions")->toReal();
   
   if (duration_ != -1.0)
     {
@@ -335,7 +335,7 @@ MP3FileSource::localUpdate()
     }
 	
   //defaultUpdate(); [!]
-	inSamples_ = getctrl("mrs_natural/inSamples").toNatural();
+	inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
   	
   if (inSamples_ < bufferSize_/2) {
     reservoirSize_ = 2 * bufferSize_;
@@ -456,7 +456,7 @@ MP3FileSource::getLinear16(realvec& slice) {
   }
 	
   // keep track of where we are
-  pos_ += inSamples_; // (inSamples_ * getctrl("mrs_natural/nChannels").toNatural());
+  pos_ += inSamples_; // (inSamples_ * getctrl("mrs_natural/nChannels")->toNatural());
   currentPos_ = pos_;	
 	
 	
@@ -482,7 +482,7 @@ MP3FileSource::getLinear16(realvec& slice) {
  * Description: Fills an output vector with samples.  In this case,
  * 		getLinear16 does all the work.
  */
-void MP3FileSource::process(realvec& in, realvec& out)
+void MP3FileSource::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 

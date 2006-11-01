@@ -33,7 +33,7 @@ class Cascade: public Composite
 {
 private:
   void deleteSlices();
-	void localUpdate();
+	void myUpdate();
   
 public:
 	Cascade(std::string name);
@@ -42,7 +42,7 @@ public:
   ~Cascade();
   MarSystem* clone() const;    
 
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

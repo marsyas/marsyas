@@ -118,11 +118,11 @@ void MarSystemWrapper::step()
       msys_->updctrl("Fanout/mixer/Series/sbr/mrs_bool/probe", true);
       msys_->updctrl("Fanout/mixer/Series/nbr/mrs_bool/probe", true);
       
-      vec_ = msys_->getctrl("Fanout/mixer/Series/sbr/mrs_realvec/input1").toVec();
+      vec_ = msys_->getctrl("Fanout/mixer/Series/sbr/mrs_realvec/input1")->toVec();
       
       emit ctrlChanged("Fanout/mixer/Series/sbr/mrs_realvec/input1", vec_);
       
-      vec_ = msys_->getctrl("Fanout/mixer/Series/nbr/mrs_realvec/input1").toVec();
+      vec_ = msys_->getctrl("Fanout/mixer/Series/nbr/mrs_realvec/input1")->toVec();
       emit ctrlChanged("Fanout/mixer/Series/nbr/mrs_realvec/input1", vec_);
       
       
@@ -185,7 +185,7 @@ void MarSystemWrapper::run()
       
       if (empty_ == false) 
 	{	 
-	  if (msys_->getctrl("mrs_bool/notEmpty").toBool() == false) 
+	  if (msys_->getctrl("mrs_bool/notEmpty")->toBool() == false) 
 	    {
 	      cout << "PAUSING FOR EMPTY " << endl;
 	      empty_ = true;
@@ -202,11 +202,11 @@ void MarSystemWrapper::run()
 	  msys_->updctrl("Fanout/mixer/Series/sbr/mrs_bool/probe", true);
 	  msys_->updctrl("Fanout/mixer/Series/nbr/mrs_bool/probe", true);
 	  
-	  vec_ = msys_->getctrl("Fanout/mixer/Series/sbr/mrs_realvec/input1").toVec();
+	  vec_ = msys_->getctrl("Fanout/mixer/Series/sbr/mrs_realvec/input1")->toVec();
 	  
 	  emit ctrlChanged("Fanout/mixer/Series/sbr/mrs_realvec/input1", vec_);
 
-	  vec_ = msys_->getctrl("Fanout/mixer/Series/nbr/mrs_realvec/input1").toVec();
+	  vec_ = msys_->getctrl("Fanout/mixer/Series/nbr/mrs_realvec/input1")->toVec();
 	  emit ctrlChanged("Fanout/mixer/Series/nbr/mrs_realvec/input1", vec_);
 	  
 	  

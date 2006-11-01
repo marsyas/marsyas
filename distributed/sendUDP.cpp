@@ -85,8 +85,8 @@ void sfplayFile(MarSystem& msys, mrs_natural offset, mrs_natural duration,
 mrs_real start, mrs_real length, mrs_real gain, mrs_real repetitions, string sfName )
 {
   msys.updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-  mrs_natural nChannels = msys.getctrl("SoundFileSource/src/mrs_natural/nChannels").toNatural();
-  mrs_real srate = msys.getctrl("SoundFileSource/src/mrs_real/israte").toReal();
+  mrs_natural nChannels = msys.getctrl("SoundFileSource/src/mrs_natural/nChannels")->toNatural();
+  mrs_real srate = msys.getctrl("SoundFileSource/src/mrs_real/israte")->toReal();
   
   // playback offset & duration
   offset = (mrs_natural) (start * srate * nChannels);
@@ -99,10 +99,10 @@ mrs_real start, mrs_real length, mrs_real gain, mrs_real repetitions, string sfN
   
   mrs_natural wc=0;
   mrs_natural samplesPlayed = 0;
-  mrs_natural onSamples = msys.getctrl("mrs_natural/onSamples").toNatural();
+  mrs_natural onSamples = msys.getctrl("mrs_natural/onSamples")->toNatural();
   // mrs_natural repeatId = 1;
   
-  while (msys.getctrl("SoundFileSource/src/mrs_bool/notEmpty").toBool())
+  while (msys.getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
     {
       msys.tick();
       wc ++;

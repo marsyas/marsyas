@@ -39,7 +39,7 @@ class Rolloff: public MarSystem
 {
 private: 
   void addControls();
-	void localUpdate();
+	void myUpdate();
   realvec sumWindow_;
   mrs_real perc_;
   mrs_real sum_;
@@ -51,7 +51,7 @@ public:
   ~Rolloff();
   MarSystem* clone() const;  
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

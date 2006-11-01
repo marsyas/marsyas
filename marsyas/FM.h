@@ -39,13 +39,13 @@ public:
   FM(std::string name);
   ~FM();
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
   MarSystem* clone() const; 
   
 private: 
 
   void addControls();
-	void localUpdate();
+	void myUpdate();
 
   mrs_real mDepth_;	
   mrs_real mSpeed_;

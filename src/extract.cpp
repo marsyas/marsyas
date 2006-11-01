@@ -20,12 +20,11 @@
     extract: feature extraction for a single file
 */
 
-
-
 #include <cstdio>
 #include "Collection.h"
 #include "MarSystemManager.h"
 #include "Accumulator.h"
+#include "Fanout.h"
 #include "CommandLineOptions.h"
 
 #include <iostream> 
@@ -38,12 +37,12 @@ int helpopt;
 int usageopt;
 int normopt;
 
-long offset = 0;
-long duration = 1000 * 44100;
-long memSize = 40;
-float start = 0.0f;
-float length = 30.0f;
-float gain = 1.0f;
+mrs_natural offset = 0;
+mrs_natural duration = 1000 * 44100;
+mrs_natural memSize = 40;
+mrs_real start = 0.0f;
+mrs_real length = 30.0f;
+mrs_real gain = 1.0f;
 
 #define EMPTYSTRING "MARSYAS_EMPTY" 
 string pluginName = EMPTYSTRING;
@@ -134,11 +133,11 @@ void simple_extract(string sfName)
   
 
   
-  realvec in(fnet->getctrl("mrs_natural/inObservations").toNatural(),
-             fnet->getctrl("mrs_natural/inSamples").toNatural());
+  realvec in(fnet->getctrl("mrs_natural/inObservations")->toNatural(),
+             fnet->getctrl("mrs_natural/inSamples")->toNatural());
 
-  realvec out(fnet->getctrl("mrs_natural/onObservations").toNatural(),
-              fnet->getctrl("mrs_natural/onSamples").toNatural());
+  realvec out(fnet->getctrl("mrs_natural/onObservations")->toNatural(),
+              fnet->getctrl("mrs_natural/onSamples")->toNatural());
 
   for (mrs_natural i=0; i < 400; i++) 
     {
@@ -195,7 +194,7 @@ newExtract(string sfName, mrs_natural memSize, string extractorStr)
   fnet->addMarSystem(wsink);
   
   fnet->updctrl("WekaSink/wsink/mrs_string/filename", "newextract.arff");
-  // fnet->updctrl("Series/spectralShape/Fanout/spectrumFeatures/mrs_natural/disable", (MarControlValue)0);    
+  // fnet->updctrl("Series/spectralShape/Fanout/spectrumFeatures/mrs_natural/disable", 0);    
   cout << *fnet << endl;
   
 
@@ -329,20 +328,20 @@ void extract_trainAccumulator(string sfName, mrs_natural memSize,
 
   // Calculate duration, offest parameters if necessary 
   offset = (mrs_natural) (start 
-		      * src->getctrl("mrs_real/israte").toReal() 
-		      * src->getctrl("mrs_natural/nChannels").toNatural());
+		      * src->getctrl("mrs_real/israte")->toReal() 
+		      * src->getctrl("mrs_natural/nChannels")->toNatural());
   duration = (mrs_natural) (length 
-			* src->getctrl("mrs_real/israte").toReal() 
-			* src->getctrl("mrs_natural/nChannels").toNatural());
+			* src->getctrl("mrs_real/israte")->toReal() 
+			* src->getctrl("mrs_natural/nChannels")->toNatural());
   
 
   realvec in;
   realvec featureRes;
   
-  in.create(total->getctrl("mrs_natural/inObservations").toNatural(), 
-	    total->getctrl("mrs_natural/inSamples").toNatural());
-  featureRes.create(total->getctrl("mrs_natural/onObservations").toNatural(), 
-		    total->getctrl("mrs_natural/onSamples").toNatural());
+  in.create(total->getctrl("mrs_natural/inObservations")->toNatural(), 
+	    total->getctrl("mrs_natural/inSamples")->toNatural());
+  featureRes.create(total->getctrl("mrs_natural/onObservations")->toNatural(), 
+		    total->getctrl("mrs_natural/onSamples")->toNatural());
 
   
 

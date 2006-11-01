@@ -52,15 +52,15 @@ Esitar::clone() const
 }
 
 void
-Esitar::localUpdate()
+Esitar::myUpdate()
 {
-  MRSDIAG("Esitar.cpp - Esitar:localUpdate");
+  MRSDIAG("Esitar.cpp - Esitar:myUpdate");
   
 // 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 //   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 //   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 //   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
-	MarSystem::localUpdate();
+	MarSystem::myUpdate();
 
 #ifdef MRSMIDI
   try { 

@@ -76,16 +76,16 @@ Envelope::update()
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte")); 
   setctrl("string/onObsNames", getctrl("string/inObsNames"));
 
-  sampleRate_= getctrl("mrs_real/israte").toReal();
-  target_ = getctrl("mrs_real/target").toReal();
-  //rate_ = getctrl("mrs_real/rate").toReal();
-  time_ = getctrl("mrs_real/time").toReal();
+  sampleRate_= getctrl("mrs_real/israte")->toReal();
+  target_ = getctrl("mrs_real/target")->toReal();
+  //rate_ = getctrl("mrs_real/rate")->toReal();
+  time_ = getctrl("mrs_real/time")->toReal();
   
   rate_ = 1.0 / (time_ * sampleRate_);
   
 
-  noteon_ = getctrl("mrs_real/nton").toReal();
-  noteoff_ = getctrl("mrs_real/ntoff").toReal();
+  noteon_ = getctrl("mrs_real/nton")->toReal();
+  noteoff_ = getctrl("mrs_real/ntoff")->toReal();
 
   if(noteon_){
     value_=0.0;
@@ -105,7 +105,7 @@ Envelope::update()
 
 
 void 
-Envelope::process(realvec& in, realvec& out)
+Envelope::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
   

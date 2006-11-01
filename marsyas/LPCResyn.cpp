@@ -63,24 +63,24 @@ LPCResyn::addControls()
 
 
 void
-LPCResyn::localUpdate()
+LPCResyn::myUpdate()
 {
-  MRSDIAG("LPCResyn.cpp - LPCResyn:localUpdate");
+  MRSDIAG("LPCResyn.cpp - LPCResyn:myUpdate");
   
   //setctrl("mrs_natural/onSamples", 512);//default may need to override when using this marsystem element.
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-  order_ =  getctrl("mrs_natural/order").toNatural();
+  order_ =  getctrl("mrs_natural/order")->toNatural();
   inSize_ = order_+1;
-  outSize_ = getctrl("mrs_natural/onSamples").toNatural()-order_;
+  outSize_ = getctrl("mrs_natural/onSamples")->toNatural()-order_;
   
   Zs_.create((mrs_natural)order_);
 }
 
 
 void 
-LPCResyn::process(realvec& in, realvec& out)
+LPCResyn::myProcess(realvec& in, realvec& out)
 {
   //cout<<"LPCResyn Process--------------------"<< endl;
   checkFlow(in,out); 
