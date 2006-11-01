@@ -353,6 +353,16 @@ realvec::setval(mrs_natural start, mrs_natural end, mrs_real val)
 }
 
 
+
+void realvec::apply(mrs_real (*func) (mrs_real))
+{
+
+  for (mrs_natural i=0; i<size_; i++)
+    {
+      data_[i] = func(data_[i]);
+    }
+}
+
 void 
 realvec::setval(mrs_real val)
 {
@@ -587,6 +597,13 @@ realvec::write(string filename)
 {
   ofstream os(filename.c_str());
   os << (*this) << endl;
+}
+void 
+realvec::dump()
+{
+	for(int i =0 ; i< size_ ; i++)
+		cout << data_[i] << " " ;
+	cout << endl;
 }
 
 

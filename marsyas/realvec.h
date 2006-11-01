@@ -68,6 +68,8 @@ public:
   void setval(mrs_natural start, mrs_natural end, mrs_real val);// set all entries to val 
   void setval(mrs_real val);// set all entries to val 
   
+	void apply(mrs_real (*func) (mrs_real));// apply a given function to all the elts
+
   mrs_natural getSize() const;
   mrs_natural getCols() const;
   mrs_natural getRows() const;
@@ -104,6 +106,7 @@ public:
   // output functions 
   void debug_info();
   void write(std::string filename);
+	void dump();
   void read(std::string filename);
   friend std::ostream& operator<<(std::ostream&, const realvec&);
   friend std::istream& operator>>(std::istream&, realvec&);
