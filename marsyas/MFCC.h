@@ -63,7 +63,7 @@ private:
 
   bool init_;
   // NEIL's filter weight speedup
-  int* mfcc_offsets_;
+  int* mfcc_offsets;
 public:
   MFCC(std::string name);
 	MFCC(const MFCC& a);

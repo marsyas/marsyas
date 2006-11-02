@@ -37,15 +37,19 @@ MFCC::MFCC(string name):MarSystem("MFCC",name)
   
 	pfftSize_ = 0;
   psamplingRate_ = 0;
-  mfcc_offsets_ = NULL;
+  mfcc_offsets = NULL;
 }
 
+MFCC::MFCC(const MFCC& a) : MarSystem(a)
+{
+	pfftSize_ = 0;
+	psamplingRate_ = 0;
+	mfcc_offsets = NULL;
+}
 
 MFCC::~MFCC()
 {
-  if (mfcc_offsets_!=NULL) 
-    delete [] mfcc_offsets_;
-  
+    if (mfcc_offsets!=NULL) free(mfcc_offsets);
 }
 
 
@@ -55,12 +59,6 @@ MFCC::clone() const
   return new MFCC(*this);
 }
 
-MFCC::MFCC(const MFCC& a):MarSystem(a)
-{
-  pfftSize_ = 0;
-  psamplingRate_ = 0;
-  mfcc_offsets_ = NULL;
-}
 
 void
 MFCC::myUpdate()
@@ -139,13 +137,10 @@ MFCC::myUpdate()
     
     // NEIL's filter weight speedup
     if (pfftSize_!=fftSize_) {
-        if (mfcc_offsets_ != NULL) delete [] mfcc_offsets_;
-        mfcc_offsets_ = new int[(totalFilters_*fftSize_*2)];
+        if (mfcc_offsets!=NULL) free(mfcc_offsets);
+        mfcc_offsets = (int*)malloc(sizeof(int)*(totalFilters_*fftSize_*2));
     }
-    
-
-
-	// Initialize mfccFilterWeights
+    // Initialize mfccFilterWeights
     for (chan = 0; chan < totalFilters_; chan++) {
         // NEIL's filter weight speedup
         int len=0; int pos=0;
@@ -167,8 +162,8 @@ MFCC::myUpdate()
             }
         }
         // NEIL's filter weight speedup
-        mfcc_offsets_[chan] = pos;
-        mfcc_offsets_[chan+totalFilters_] = len;
+        mfcc_offsets[chan] = pos;
+        mfcc_offsets[chan+totalFilters_] = len;
     }
     
     // Initialize MFCC_DCT
@@ -212,7 +207,7 @@ MFCC::myProcess(realvec& in, realvec& out)
   for (i=0; i<totalFilters_; i++) {
       sum = 0.0;
       // NEIL's filter weight speedup
-      for (k=mfcc_offsets_[i]; k<=mfcc_offsets_[i+totalFilters_]; k++) {
+      for (k=mfcc_offsets[i]; k<=mfcc_offsets[i+totalFilters_]; k++) {
           sum += (mfccFilterWeights_(i, k) * fmagnitude_(k));
       }
       if (sum != 0.0)
