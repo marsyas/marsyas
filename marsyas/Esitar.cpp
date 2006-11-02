@@ -209,7 +209,7 @@ Esitar::mycallback(double deltatime, std::vector< unsigned char > * message, voi
 }
 
 void 
-Esitar::process(realvec& in, realvec& out)
+Esitar::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in,out);
 

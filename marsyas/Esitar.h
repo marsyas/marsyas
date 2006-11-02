@@ -77,7 +77,7 @@ public:
   int switch9;
   int switch10;
   
-  void process(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

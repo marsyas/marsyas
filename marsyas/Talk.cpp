@@ -678,7 +678,7 @@ Talk::cmd_classify(string systemName, string classifierName, unsigned int start,
 
 
 void
-Talk::myProcess(char *message)
+Talk::process(char *message)
 {
   printf("Talk process called\n");
   cerr << "Message = " << message << endl;

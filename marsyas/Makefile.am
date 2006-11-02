@@ -33,7 +33,7 @@ SoundFileSource.h AuFileSource.h \
 WavFileSource.h BaseAudioSink.h \
 AudioSource.h AudioSink.h SoundFileSink.h \
 AuFileSink.h WavFileSink.h FileName.h MarSystem.h \
-MarControls.h MarControlValue.h \
+MarControlManager.h MarControl.h MarControlValue.h \
 Gain.h Spectrum.h InvSpectrum.h \
 Collection.h fft.h Rms.h PlotSink.h \
 AutoCorrelation.h Peaker.h Peaker1.h HalfWaveRectifier.h \
@@ -67,7 +67,7 @@ SoundFileSource.cpp AuFileSource.cpp \
 WavFileSource.cpp BaseAudioSink.cpp \
 AudioSource.cpp AudioSink.cpp SoundFileSink.cpp \
 AuFileSink.cpp WavFileSink.cpp FileName.cpp MarSystem.cpp \
-MarControls.cpp MarControlValue.cpp \
+MarControlManager.cpp MarControl.cpp MarControlValue.cpp \
 Gain.cpp Spectrum.cpp InvSpectrum.cpp \
 Collection.cpp fft.cpp Rms.cpp PlotSink.cpp \
 AutoCorrelation.cpp Peaker.cpp Peaker1.cpp HalfWaveRectifier.cpp \
