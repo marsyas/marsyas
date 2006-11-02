@@ -285,17 +285,17 @@ inline bool operator!=(const MarControlPtr& v1, const MarControlPtr& v2)
 	return (*v1.control_) != (*v2.control_);
 }
 
-inline mrs_real Marsyas::operator+(const MarControlPtr& v1, const mrs_real& v2)
+inline mrs_real operator+(const MarControlPtr& v1, const mrs_real& v2)
 { 
 	return (*v1.control_)+v2; 
 }
 
-inline mrs_real Marsyas::operator+(const mrs_real& v1, const MarControlPtr& v2)
+inline mrs_real operator+(const mrs_real& v1, const MarControlPtr& v2)
 {
 	return v1+(*v2.control_); 
 }
 
-inline mrs_real Marsyas::operator-(const MarControlPtr& v1, const mrs_real& v2) 
+inline mrs_real operator-(const MarControlPtr& v1, const mrs_real& v2) 
 {
 	return (*v1.control_)-v2; 
 }
@@ -683,7 +683,7 @@ MarControl::isTrue()
 
 inline
 std::ostream&
-Marsyas::operator<<(std::ostream& os, const MarControl& ctrl)
+operator<<(std::ostream& os, const MarControl& ctrl)
 {
 #ifdef MARSYAS_QT
 	QReadLocker locker(&(m.rwLock_));
@@ -693,7 +693,7 @@ Marsyas::operator<<(std::ostream& os, const MarControl& ctrl)
 
 inline
 bool
-Marsyas::operator==(const MarControl& v1, const MarControl& v2)
+operator==(const MarControl& v1, const MarControl& v2)
 {
 #ifdef MARSYAS_QT
 	QReadLocker locker1(&(v1.rwLock_));
@@ -704,7 +704,7 @@ Marsyas::operator==(const MarControl& v1, const MarControl& v2)
 
 inline
 bool
-Marsyas::operator!=(const MarControl& v1, const MarControl& v2)
+operator!=(const MarControl& v1, const MarControl& v2)
 {
 #ifdef MARSYAS_QT
 	QReadLocker locker1(&(v1.rwLock_));
@@ -715,7 +715,7 @@ Marsyas::operator!=(const MarControl& v1, const MarControl& v2)
 
 inline
 mrs_real
-Marsyas::operator+(const MarControl& v1, const mrs_real& v2)
+operator+(const MarControl& v1, const mrs_real& v2)
 {
 	mrs_real r1;
 	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v1.value_);
@@ -736,7 +736,7 @@ Marsyas::operator+(const MarControl& v1, const mrs_real& v2)
 
 inline
 mrs_real
-Marsyas::operator+(const mrs_real& v1, const MarControl& v2)
+operator+(const mrs_real& v1, const MarControl& v2)
 {
 	mrs_real r2;
 	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v2.value_);
@@ -757,7 +757,7 @@ Marsyas::operator+(const mrs_real& v1, const MarControl& v2)
 
 inline
 mrs_real
-Marsyas::operator-(const MarControl& v1, const mrs_real& v2)
+operator-(const MarControl& v1, const mrs_real& v2)
 {
 	mrs_real r1;
 	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v1.value_);
@@ -778,7 +778,7 @@ Marsyas::operator-(const MarControl& v1, const mrs_real& v2)
 
 inline
 mrs_real
-Marsyas::operator-(const mrs_real& v1, const MarControl& v2)
+operator-(const mrs_real& v1, const MarControl& v2)
 {
 	mrs_real r2;
 	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v2.value_);
@@ -799,7 +799,7 @@ Marsyas::operator-(const mrs_real& v1, const MarControl& v2)
 
 inline
 mrs_real
-Marsyas::operator*(const MarControl& v1, const mrs_real& v2)
+operator*(const MarControl& v1, const mrs_real& v2)
 {
 	mrs_real r1;
 	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v1.value_);
@@ -820,7 +820,7 @@ Marsyas::operator*(const MarControl& v1, const mrs_real& v2)
 
 inline
 mrs_real
-Marsyas::operator*(const mrs_real& v1, const MarControl& v2)
+operator*(const mrs_real& v1, const MarControl& v2)
 {
 	mrs_real r2;
 	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v2.value_);
@@ -841,7 +841,7 @@ Marsyas::operator*(const mrs_real& v1, const MarControl& v2)
 
 inline
 mrs_real
-Marsyas::operator/(const MarControl& v1, const mrs_real& v2)
+operator/(const MarControl& v1, const mrs_real& v2)
 {
 	mrs_real r1;
 	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v1.value_);
@@ -862,7 +862,7 @@ Marsyas::operator/(const MarControl& v1, const mrs_real& v2)
 
 inline
 mrs_real
-Marsyas::operator/(const mrs_real& v1, const MarControl& v2)
+operator/(const mrs_real& v1, const MarControl& v2)
 {
 	mrs_real r2;
 	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v2.value_);
