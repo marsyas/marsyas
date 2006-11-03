@@ -119,7 +119,7 @@ NoiseGate::myUpdate()
 void 
 NoiseGate::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
   mrs_real thresh = getctrl("mrs_real/thresh")->toReal();
   mrs_real release = getctrl("mrs_real/release")->toReal();

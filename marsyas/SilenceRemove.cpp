@@ -94,7 +94,7 @@ SilenceRemove::myUpdate()
 void 
 SilenceRemove::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   mrs_real rms = 0.0;
   mrs_natural count = 0;
 

@@ -96,7 +96,7 @@ Gain::addControls()
 void 
 Gain::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
 
 	//get a local copy of the current gain control value
 	//(it will be used for this entire processing, even if it's

@@ -92,7 +92,7 @@ MarSystem::MarSystem(const MarSystem& a)
 			controls_[ctrlIter_->first] = ctrlIter_->second->clone();
 			controls_[ctrlIter_->first]->setMarSystem(this);
 		}
-		//update the "references" to the controls //[!] try to find a more elegant way to do it...
+		//update the "references" to the controls
 		ctrl_inSamples_ = getctrl("mrs_natural/inSamples");
 		ctrl_inObservations_ = getctrl("mrs_natural/inObservations");
 		ctrl_israte_ = getctrl("mrs_real/israte");
@@ -327,7 +327,8 @@ MarSystem::process(realvec& in, realvec& out)
 	processMutex_->lock();
 #endif
 
-	//checkFlow(in, out);
+	checkFlow(in, out);
+	
 	myProcess(in, out);
 
 #ifdef MARSYAS_MATLAB
@@ -387,18 +388,18 @@ MarSystem::update()
 
 	MRSDIAG("MarSystem.cpp - MarSystem:Update");
 
-	myUpdate();
-
+	//set input member variables
 	inObservations_ = ctrl_inObservations_->to<mrs_natural>();
 	inSamples_ = ctrl_inSamples_->to<mrs_natural>();
+	israte_ = ctrl_israte_->to<mrs_natural>();
+
+	//call derived class specific update
+	myUpdate();
+
+	//set output member variables
 	onObservations_ = ctrl_onObservations_->to<mrs_natural>();
 	onSamples_ = ctrl_onSamples_->to<mrs_natural>();
-	
-  //israte_ = getctrl("mrs_real/israte")->toReal();//these lines ruin CollectionFileSource!(because thei're kinda hacked!) [!][?] 
-	//osrate_ = getctrl("mrs_real/osrate")->toReal();//these lines ruin CollectionFileSource!(because thei're kinda hacked!) [!][?]
-
-	//dbg_ = getctrl("mrs_bool/debug")->toBool();
-	//mute_ = getctrl("mrs_bool/mute")->toBool();
+	osrate_ = ctrl_osrate_->to<mrs_natural>();
 	
 	//check active status
 	bool active = ctrl_active_->isTrue();

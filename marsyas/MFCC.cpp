@@ -189,7 +189,7 @@ MFCC::myUpdate()
 void 
 MFCC::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
 
   mrs_natural i,k;
   

@@ -113,7 +113,7 @@ ViconFileSource::myUpdate()
 void
 ViconFileSource::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
 
   
   for (t = 0; t < inSamples_; t++)

@@ -104,7 +104,7 @@ CompExp::myUpdate()
 void 
 CompExp::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
   mrs_real thresh = getctrl("mrs_real/thresh")->toReal();
   mrs_real at = getctrl("mrs_real/at")->toReal();

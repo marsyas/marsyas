@@ -73,7 +73,7 @@ Daub4::myUpdate()
 void 
 Daub4::myProcess(realvec& in, realvec& out) 
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
 
   mrs_natural nh, nh1, i, j;
   mrs_natural n = getctrl("mrs_natural/processSize")->toNatural();

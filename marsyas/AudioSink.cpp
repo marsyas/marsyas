@@ -187,7 +187,7 @@ AudioSink::localActivate(bool state)
 void 
 AudioSink::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
 	
  // copy to output and into reservoir
   for (t=0; t < inSamples_; t++)

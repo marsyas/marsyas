@@ -143,16 +143,16 @@ CollectionFileSource::myUpdate()
     setctrl("mrs_string/currentlyPlaying", col_.entry(cindex_));
   }
   
-  israte_ = isrc_->getctrl("mrs_real/israte")->toReal();
-  setctrl("mrs_real/israte", israte_);
-  setctrl("mrs_real/osrate", israte_);
+  myIsrate_ = isrc_->getctrl("mrs_real/israte")->toReal();
+  setctrl("mrs_real/israte", myIsrate_);
+  setctrl("mrs_real/osrate", myIsrate_);
 
-  if (israte_ == 44100.0) 
+  if (myIsrate_ == 44100.0) 
   {
     downsampler_->updctrl("mrs_natural/inSamples", 2* inSamples_);
     setctrl("mrs_natural/onSamples", inSamples_);
-    setctrl("mrs_real/israte", israte_/2);
-    setctrl("mrs_real/osrate", israte_/2);
+    setctrl("mrs_real/israte", myIsrate_/2);
+    setctrl("mrs_real/osrate", myIsrate_/2);
     temp_.create(inObservations_, 2 * inSamples_);
     tempi_.create(inObservations_, 2 * inSamples_);
     isrc_->updctrl("mrs_natural/inSamples", 2 * inSamples_);
@@ -161,8 +161,8 @@ CollectionFileSource::myUpdate()
   {
     isrc_->updctrl("mrs_natural/inSamples", inSamples_);
     setctrl("mrs_natural/onSamples", inSamples_);
-    setctrl("mrs_real/israte", israte_);
-    setctrl("mrs_real/osrate", israte_);
+    setctrl("mrs_real/israte", myIsrate_);
+    setctrl("mrs_real/osrate", myIsrate_);
     temp_.create(inObservations_, inSamples_);
   }
   
@@ -182,7 +182,7 @@ CollectionFileSource::myUpdate()
 void
 CollectionFileSource::myProcess(realvec& in, realvec &out)
 {
-	checkFlow(in,out);
+	//checkFlow(in,out);
   
   if (advance_) 
   {
@@ -198,12 +198,12 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 
 		isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));   
 		updctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));   
-		israte_ = isrc_->getctrl("mrs_real/israte")->toReal();
+		myIsrate_ = isrc_->getctrl("mrs_real/israte")->toReal();
 
-		setctrl("mrs_real/israte", israte_);
-		setctrl("mrs_real/osrate", israte_);
+		setctrl("mrs_real/israte", myIsrate_);
+		setctrl("mrs_real/osrate", myIsrate_);
 
-		if (israte_ == 44100)
+		if (myIsrate_ == 44100)
 		{
 		 isrc_->process(tempi_,temp_);
 		 setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
@@ -222,7 +222,7 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
   }
   else
   {
-    if (israte_ == 44100) //this assumes that israte_ is not updated in MarSystem::update()!! Bad Hack!! [?][!]
+    if (myIsrate_ == 44100)
 		{
 			isrc_->process(tempi_,temp_);
 			setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
@@ -245,9 +245,9 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 				 isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));      
 				 isrc_->updctrl("mrs_natural/pos", 0);     
 				 pos_ = 0;
-				 israte_ = isrc_->getctrl("mrs_real/israte")->toReal();
-				 setctrl("mrs_real/israte", israte_);
-				 setctrl("mrs_real/osrate", israte_);
+				 myIsrate_ = isrc_->getctrl("mrs_real/israte")->toReal();
+				 setctrl("mrs_real/israte", myIsrate_);
+				 setctrl("mrs_real/osrate", myIsrate_);
 			}
 			else 
 			{

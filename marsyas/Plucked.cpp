@@ -142,7 +142,7 @@ Plucked::myUpdate()
 void 
 Plucked::myProcess(realvec &in, realvec &out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
 
 
   if (noteon_ > 0)

@@ -308,7 +308,7 @@ ERB::abs(mrs_real r1, mrs_real r2)
 void 
 ERB::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   //lmartins: if (mute_) return;
 	if(getctrl("mrs_bool/mute")->toBool()) return;
   

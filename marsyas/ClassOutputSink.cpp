@@ -121,7 +121,7 @@ ClassOutputSink::myUpdate()
 void 
 ClassOutputSink::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
   mrs_natural p;
   mrs_natural g;

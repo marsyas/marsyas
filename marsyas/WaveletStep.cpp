@@ -50,7 +50,7 @@ WaveletStep::clone() const
 void 
 WaveletStep::myProcess(realvec& in, realvec& out) 
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
   // copy to output 
   for (o=0; o < inObservations_; o++)

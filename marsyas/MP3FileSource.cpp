@@ -484,7 +484,7 @@ MP3FileSource::getLinear16(realvec& slice) {
  */
 void MP3FileSource::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
 
   if (notEmpty_) 
     getLinear16(out);

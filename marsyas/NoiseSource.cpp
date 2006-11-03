@@ -58,7 +58,7 @@ NoiseSource::myUpdate()
 void 
 NoiseSource::myProcess(realvec &in, realvec &out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
   mrs_real incr = (440.0 * wavetableSize_) / (getctrl("mrs_real/israte")->toReal());
   

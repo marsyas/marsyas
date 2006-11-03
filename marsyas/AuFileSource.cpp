@@ -285,7 +285,7 @@ AuFileSource::myProcess(realvec& in, realvec &out)
 {
 	if (getctrl("mrs_natural/size")->toNatural() != 0)
   {
-		checkFlow(in,out);
+		//checkFlow(in,out);
     
 		switch (hdr_.mode)
 		{

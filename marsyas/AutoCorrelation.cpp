@@ -90,7 +90,7 @@ AutoCorrelation::myUpdate()
 void 
 AutoCorrelation::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   mrs_real re,im,am;
   mrs_real k;
   

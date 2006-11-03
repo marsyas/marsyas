@@ -86,7 +86,7 @@ Delay::myUpdate()
 void 
 Delay::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
 
 	if(delay_ < onSamples_)
 	{

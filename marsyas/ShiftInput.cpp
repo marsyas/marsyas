@@ -93,7 +93,7 @@ ShiftInput::myUpdate()
 void 
 ShiftInput::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
 
   if (reset_) 
     {

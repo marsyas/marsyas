@@ -62,7 +62,7 @@ void
 FullWaveRectifier::myProcess(realvec& in, realvec& out)
 {
   
-  checkFlow(in,out);
+  //checkFlow(in,out);
 
   for (o=0; o < inObservations_; o++)
     for (t = 0; t < inSamples_; t++)

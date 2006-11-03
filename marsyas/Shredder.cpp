@@ -186,7 +186,7 @@ Shredder::updControl(std::string cname, MarControlPtr control)
 void 
 Shredder::myProcess(realvec& in, realvec& out)
 {
-	checkFlow(in,out);
+	//checkFlow(in,out);
 
 	for (c = 0; c < nTimes_; c++) 
 	{

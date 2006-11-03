@@ -64,7 +64,7 @@ Reassign::myUpdate()
 void 
 Reassign::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
 
   mrs_real mx = DBL_MIN;
   mrs_natural tmx  = 0;

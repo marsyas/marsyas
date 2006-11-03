@@ -85,7 +85,7 @@ ZeroRClassifier::myUpdate()
 void 
 ZeroRClassifier::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   string mode = getctrl("mrs_string/mode")->toString();
   mrs_natural nlabels = getctrl("mrs_natural/nLabels")->toNatural();
   mrs_natural l;

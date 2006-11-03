@@ -50,7 +50,7 @@ void
 Norm::myProcess(realvec& in, realvec& out)
 {
   
-  checkFlow(in,out);
+  //checkFlow(in,out);
   realvec row(inSamples_);
   mrs_real mean;
   mrs_real std;

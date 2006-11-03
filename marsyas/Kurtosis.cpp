@@ -69,7 +69,7 @@ Kurtosis::myUpdate()
 void 
 Kurtosis::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
 
   for (t = 0; t < inSamples_; t++)
     {

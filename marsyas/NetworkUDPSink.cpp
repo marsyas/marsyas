@@ -52,7 +52,7 @@ void NetworkUDPSink::addControls() {
 
 void NetworkUDPSink::myProcess( realvec& in, realvec& out ) {
 	
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
   if ( !valid(s_sock) )
 	  refresh();

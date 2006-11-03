@@ -57,7 +57,7 @@ AbsMax::myUpdate()
 void 
 AbsMax::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   for (o=0; o < inObservations_; o++)
   {
     max_ = 0.0;

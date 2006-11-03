@@ -77,7 +77,7 @@ MemorySource::myUpdate()
 void 
 MemorySource::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
 
   if( count_ < 1 + (samplesToUse_ -1) / onSamples_ ){
     

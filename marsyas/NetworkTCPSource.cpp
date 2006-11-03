@@ -65,7 +65,7 @@ void NetworkTCPSource::myProcess( realvec& in, realvec& out )
   mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
   mrs_natural inObservations = getctrl("mrs_natural/inObservations")->toNatural();
   
-  checkFlow(in,out);
+  //checkFlow(in,out);
  
   if (!valid( s_sock)) {
 	  refresh();

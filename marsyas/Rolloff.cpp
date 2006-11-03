@@ -74,7 +74,7 @@ Rolloff::myUpdate()
 void 
 Rolloff::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
 
   

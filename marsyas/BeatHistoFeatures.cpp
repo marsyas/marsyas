@@ -268,7 +268,7 @@ BeatHistoFeatures::myProcess(realvec& in, realvec& out)
 {
   // in.write("histo.plot");
   
-  checkFlow(in,out);
+  //checkFlow(in,out);
 
   mrs_real mx = DBL_MIN;
   mrs_natural tmx  = 0;
@@ -367,7 +367,7 @@ BeatHistoFeatures::myProcess(realvec& in, realvec& out)
 void 
 BeatHistoFeatures::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
 
   mrs_real sum = 0;
 

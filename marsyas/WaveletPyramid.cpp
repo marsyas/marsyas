@@ -99,7 +99,7 @@ WaveletPyramid::myUpdate()
 void 
 WaveletPyramid::myProcess(realvec& in, realvec& out) 
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
   mrs_natural nn;
   mrs_natural n;

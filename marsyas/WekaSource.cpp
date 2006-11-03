@@ -200,7 +200,7 @@ WekaSource::myProcess(realvec& in,realvec &out)
 	if( getctrl("mrs_bool/notEmpty")->toBool() == false )
 		return;
 
-  	checkFlow(in,out);
+  	//checkFlow(in,out);
 	
   	string ob;
 	string::size_type curIndex;

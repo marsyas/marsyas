@@ -127,7 +127,7 @@ SCF::myUpdate()
 void 
 SCF::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
   mrs_natural i, k, bandwidth;
   double c, maxc;

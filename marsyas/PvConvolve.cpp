@@ -58,7 +58,7 @@ void
 PvConvolve::myProcess(realvec& in, realvec& out)
 {
   
-  checkFlow(in,out); 
+  //checkFlow(in,out); 
 
 
   mrs_natural N2 = onObservations_ / 2;

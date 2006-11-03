@@ -87,7 +87,7 @@ PvUnconvert::myUpdate()
 void 
 PvUnconvert::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
   mrs_real phase;
   mrs_natural re, amp, im, freq;

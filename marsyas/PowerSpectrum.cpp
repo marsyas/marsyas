@@ -93,7 +93,7 @@ PowerSpectrum::myUpdate()
 void 
 PowerSpectrum::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
   
   for (t=0; t < N2_; t++)

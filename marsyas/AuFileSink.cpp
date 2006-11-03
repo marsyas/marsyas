@@ -192,7 +192,7 @@ AuFileSink::putLinear16(realvec& slice)
 void 
 AuFileSink::myProcess(realvec& in, realvec& out)
 {
-	checkFlow(in,out);
+	//checkFlow(in,out);
   
   // copy input to output 
   for (o=0; o < inObservations_; o++)

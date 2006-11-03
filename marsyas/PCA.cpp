@@ -107,7 +107,7 @@ PCA::myUpdate()
 void 
 PCA::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
       
   mrs_natural o1,o2;
    

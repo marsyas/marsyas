@@ -39,7 +39,9 @@ AudioSource::AudioSource(string name):MarSystem("AudioSource", name)
 	isInitialized_ = false;
 	stopped_ = true;
 
+	rtSrate_ = 0;
 	bufferSize_ = 0;
+	rtChannels_ = 0;
 	nChannels_ = 0;
 
 	addControls();
@@ -71,7 +73,7 @@ AudioSource::addControls()
 	#endif
 	setctrlState("mrs_natural/bufferSize", true);
   
-	addctrl("mrs_real/gain", 1.0); // 1.05) [!];
+	addctrl("mrs_real/gain", 1.0); 
 }
 
 void 
@@ -80,13 +82,10 @@ AudioSource::myUpdate()
   MRSDIAG("AudioSource::myUpdate");
 
   //init RtAudio first time myUpdate is called and whenever some config changes apply
-	if(bufferSize_ != (mrs_natural)getctrl("mrs_natural/bufferSize")->toNatural() ||
+	if(bufferSize_ != (int)getctrl("mrs_natural/bufferSize")->toNatural() ||
 		 nChannels_ != getctrl("mrs_natural/nChannels")->toNatural() ||
-		 israte_ != getctrl("mrs_real/israte")->toReal())
+		 rtSrate_ != (int)getctrl("mrs_real/israte")->toReal())
 	{
-		israte_ = getctrl("mrs_real/israte")->toReal();
-		bufferSize_ = (mrs_natural)getctrl("mrs_natural/bufferSize")->toNatural();
-		nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();
 		initRtAudio();
 	}
 	
@@ -96,8 +95,6 @@ AudioSource::myUpdate()
 	setctrl("mrs_natural/inObservations", nChannels_);
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 
-	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
-	inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
 	gain_ = getctrl("mrs_real/gain")->toReal();
 	
 	//resize reservoir if necessary
@@ -116,18 +113,20 @@ AudioSource::myUpdate()
 void 
 AudioSource::initRtAudio()
 {
-  //marsyas represents audio data as float numbers
-	RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
+ 	bufferSize_ = (int)getctrl("mrs_natural/bufferSize")->toNatural();
+	nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();
+	rtSrate_ = (int)getctrl("mrs_real/israte")->toReal();
+	rtChannels_ = (int)getctrl("mrs_natural/nChannels")->toNatural();
 
-	int rtSrate = (int)getctrl("mrs_real/israte")->toReal();
-	int rtChannels = (int)getctrl("mrs_natural/nChannels")->toNatural();
+	//marsyas represents audio data as float numbers
+	RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
 
 	//create new RtAudio object (delete any existing one)
 	delete audio_;
 	try 
 	{
-	  audio_ = new RtAudio(0, 0, 0, rtChannels, rtFormat,
-			       rtSrate, &bufferSize_, 4);
+	  audio_ = new RtAudio(0, 0, 0, rtChannels_, rtFormat,
+			       rtSrate_, &bufferSize_, 4);
 	  data_ = (mrs_real *) audio_->getStreamBuffer();
 	}
 	catch (RtError &error) 
@@ -172,7 +171,7 @@ AudioSource::localActivate(bool state)
 void 
 AudioSource::myProcess(realvec& in, realvec& out)
 {
-	checkFlow(in,out);
+	//checkFlow(in,out);
 
 	//check if RtAudio is initialized
 	if (!isInitialized_)

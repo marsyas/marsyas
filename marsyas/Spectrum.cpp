@@ -90,7 +90,7 @@ Spectrum::myUpdate()
 void 
 Spectrum::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
   // copy to output to perform inplace fft 
   // notice transposition of matrix 

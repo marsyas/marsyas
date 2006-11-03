@@ -78,7 +78,7 @@ SineSource::myUpdate()
 void 
 SineSource::myProcess(realvec &in, realvec &out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
 
   //lmartins: if (mute_)
 	if(getctrl("mrs_bool/mute")->toBool())

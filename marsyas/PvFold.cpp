@@ -121,7 +121,7 @@ PvFold::myUpdate()
 void 
 PvFold::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
   n_ += D_;
 

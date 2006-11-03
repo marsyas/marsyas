@@ -115,7 +115,7 @@ WaveletBands::myUpdate()
 void 
 WaveletBands::myProcess(realvec& in, realvec& out) 
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
 
   mrs_natural level;

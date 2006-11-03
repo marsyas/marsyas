@@ -73,7 +73,7 @@ Shifter::myUpdate()
 void 
 Shifter::myProcess(realvec& in, realvec& out)
 {
-	checkFlow(in,out);
+	//checkFlow(in,out);
 int delta = 0;
 	for (o=0; o < onObservations_; o++) 
 	{

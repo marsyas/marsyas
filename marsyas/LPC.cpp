@@ -203,7 +203,7 @@ LPC::predict(realvec& data, realvec& coeffs)
 void 
 LPC::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out); 
+  //checkFlow(in,out); 
   mrs_natural i,j; 
   autocorr_->process(in, corr_);
   //cout << "begin process lpc"<< endl;

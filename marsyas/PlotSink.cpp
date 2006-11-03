@@ -61,7 +61,7 @@ PlotSink::addControls()
 void 
 PlotSink::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
   
   mrs_natural nObservations = getctrl("mrs_natural/inObservations")->toNatural();

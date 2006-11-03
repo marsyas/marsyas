@@ -185,7 +185,7 @@ WekaSink::myProcess(realvec& in, realvec& out)
   
   static int count = 0;
   
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
   mrs_natural label = 0;
 

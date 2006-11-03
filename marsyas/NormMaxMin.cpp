@@ -121,7 +121,7 @@ NormMaxMin::myProcess(realvec& in, realvec& out)
   init_ = true;
   setctrl("mrs_bool/init", init_);
   
-  checkFlow(in,out);
+  //checkFlow(in,out);
 
 
   lower_ = getctrl("mrs_real/lower")->toReal();

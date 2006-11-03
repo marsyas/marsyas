@@ -85,7 +85,7 @@ ShiftOutput::myUpdate()
 void 
 ShiftOutput::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
     
   n_ += 2*D_ + Nw_ / 2;
     

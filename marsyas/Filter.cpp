@@ -139,7 +139,7 @@ Filter::write(string filename)
 void 
 Filter::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
   mrs_natural i,j,c;
   mrs_natural size = in.getCols();

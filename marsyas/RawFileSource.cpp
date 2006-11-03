@@ -218,7 +218,7 @@ void RawFileSource::myUpdate()
 
 void RawFileSource::myProcess(realvec& in,realvec &out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
 
   mrs_real alpha;
   mrs_natural i, index;

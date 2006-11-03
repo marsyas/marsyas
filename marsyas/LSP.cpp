@@ -87,7 +87,7 @@ LSP::myProcess(realvec& in, realvec& out)
 {
 	NumericLib numLib;
 	
-	checkFlow(in,out);
+	//checkFlow(in,out);
 
 	mrs_real gamma = getctrl("mrs_real/gamma")->toReal();
 	vector<mrs_real> ak(order_);

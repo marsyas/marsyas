@@ -133,7 +133,7 @@ double lobe_value_compute (double f, int type, int size)
 void 
 PeConvert::myProcess(realvec& in, realvec& out)
 {
-	checkFlow(in,out); 
+	//checkFlow(in,out); 
 
 	mrs_natural N2 = inObservations_/4;
 	mrs_real a, c;

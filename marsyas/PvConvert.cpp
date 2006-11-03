@@ -107,7 +107,7 @@ PvConvert::process1(realvec& in, realvec& out)
 {
 
   
-  checkFlow(in,out); 
+  //checkFlow(in,out); 
   
   mrs_natural N2 = inObservations_/2;
   mrs_real a;
@@ -187,7 +187,7 @@ void
 PvConvert::myProcess(realvec& in, realvec& out)
 {
 
-	checkFlow(in,out); 
+	//checkFlow(in,out); 
 
 
 	mrs_natural N2 = inObservations_/2;

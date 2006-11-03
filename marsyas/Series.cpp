@@ -175,7 +175,7 @@ Series::myUpdate()
 void
 Series::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
   // Add assertions about sizes [!]
   

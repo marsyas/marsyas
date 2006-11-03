@@ -63,7 +63,7 @@ Centroid::myUpdate()
 void 
 Centroid::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
   
   // computer centroid of observations for each time sample 

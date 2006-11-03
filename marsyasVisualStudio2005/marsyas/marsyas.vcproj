@@ -536,6 +536,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\marsyas\MarTemplateAdvanced.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\MarTemplateBasic.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\marsyas\MATLABengine.cpp"
 				>
 			</File>
@@ -1163,6 +1171,14 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\MarSystemManager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\MarTemplateAdvanced.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\MarTemplateBasic.h"
 				>
 			</File>
 			<File

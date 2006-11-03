@@ -98,7 +98,7 @@ Confidence::myUpdate()
 void 
 Confidence::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   bool mute = getctrl("mrs_bool/mute")->toBool();  
   
   mrs_natural memSize = getctrl("mrs_natural/memSize")->toNatural();

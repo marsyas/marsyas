@@ -68,7 +68,7 @@ PeResidual::myUpdate()
 void 
 PeResidual::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
 
   mrs_real snr=0; 
   

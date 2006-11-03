@@ -55,7 +55,7 @@ TimeStretch::addControls()
 void 
 TimeStretch::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   mrs_real factor = getctrl("mrs_real/factor")->toReal();
   mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
   

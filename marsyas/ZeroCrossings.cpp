@@ -65,7 +65,7 @@ ZeroCrossings::myUpdate()
 void 
 ZeroCrossings::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   zcrs_ = 1.0;
   
   for (o=0; o < inObservations_; o++)

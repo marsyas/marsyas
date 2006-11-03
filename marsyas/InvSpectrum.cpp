@@ -60,7 +60,7 @@ InvSpectrum::myUpdate()
 void 
 InvSpectrum::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
   for (t=0; t < onSamples_; t++)
     out(0,t) = in(t,0);

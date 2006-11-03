@@ -78,7 +78,7 @@ StandardDeviation::myUpdate()
 void 
 StandardDeviation::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
   /*
   out.setval(0.0);

@@ -69,7 +69,7 @@ Hamming::myUpdate()
 void 
 Hamming::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   //lmartins: if (mute_) return;
 	if(getctrl("mrs_bool/mute")->toBool()) return;
   

@@ -100,7 +100,7 @@ Memory::myUpdate()
 void 
 Memory::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
 
 
 

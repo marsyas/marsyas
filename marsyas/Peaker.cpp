@@ -62,7 +62,7 @@ Peaker::addControls()
 void 
 Peaker::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
   
   mrs_real peakSpacing;

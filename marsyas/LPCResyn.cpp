@@ -83,7 +83,7 @@ void
 LPCResyn::myProcess(realvec& in, realvec& out)
 {
   //cout<<"LPCResyn Process--------------------"<< endl;
-  checkFlow(in,out); 
+  //checkFlow(in,out); 
   //cout<<"resyn in vector:"<<in<<endl;
   mrs_real input;
   mrs_real pitch;

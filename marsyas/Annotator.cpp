@@ -88,7 +88,7 @@ Annotator::myUpdate()
 void 
 Annotator::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
 
   mrs_natural label = getctrl("mrs_natural/label")->toNatural();  
   

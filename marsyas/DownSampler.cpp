@@ -69,7 +69,7 @@ DownSampler::myUpdate()
 void 
 DownSampler::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
 
   mrs_natural factor = getctrl("mrs_natural/factor")->toNatural();
   for (o=0; o < inObservations_; o++)

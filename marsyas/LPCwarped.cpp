@@ -282,7 +282,7 @@ LPCwarped::predictionError(realvec& data, realvec& coeffs)
 void 
 LPCwarped::myProcess(realvec& in, realvec& out)
 {
-	checkFlow(in,out); 
+	//checkFlow(in,out); 
 
 	mrs_natural i;
 

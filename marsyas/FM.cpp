@@ -101,7 +101,7 @@ void FM::myUpdate()
 
 void FM::myProcess( realvec& in, realvec& out ) 
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
 
   register mrs_real mSample_;

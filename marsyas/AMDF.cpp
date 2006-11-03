@@ -63,7 +63,7 @@ AMDF::myUpdate()
 void 
 AMDF::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
   mrs_real gain = getctrl("mrs_real/gain")->toReal();
   mrs_natural i,k;

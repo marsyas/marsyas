@@ -339,7 +339,7 @@ oldLabels.dump();
  void 
 	 PeClust::myProcess(realvec& in, realvec& out)
  {
-	 checkFlow(in,out);
+	 //checkFlow(in,out);
 
 	 data_.stretch(kmax_*(inSamples_+1), nbParameters_);
 	 peaks2M(in, lastFrame_, data_);

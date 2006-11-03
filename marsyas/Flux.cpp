@@ -63,7 +63,7 @@ Flux::myUpdate()
 void 
 Flux::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
+  //checkFlow(in,out);
   
   // computer flux of observations for each time sample 
   prevWindow_.setval(0.0);
