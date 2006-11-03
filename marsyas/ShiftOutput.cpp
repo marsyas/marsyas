@@ -106,8 +106,8 @@ ShiftOutput::myProcess(realvec& in, realvec& out)
 	MATLAB_EVAL("figure(1);plot(Schredder_in(1:2:end, :))");
 	MATLAB_EVAL("figure(2);plot(Schredder_out)");
 	*/
-	MATLAB_PUT(out, "vec");
-	MATLAB_EVAL("figure(1);clf;plot(vec);");
+	//MATLAB_PUT(out, "vec");
+	//MATLAB_EVAL("figure(1);clf;plot(vec);");
 }
 
 

@@ -120,7 +120,7 @@ Windowing::myProcess(realvec& in, realvec& out)
 			out(o,t+(onSamples_-inSamples_))=tmp_((t+delta_)%inSamples_);
 	}
 
-	MATLAB_PUT(out, "peaks");
+	// MATLAB_PUT(out, "peaks");
 	//MATLAB_EVAL("plot(peaks(1,:))");
 }
 

@@ -290,7 +290,7 @@ SoundFileSource::myProcess(realvec& in, realvec &out)
     updctrl("mrs_bool/advance", false);
   }
 
-	MATLAB_PUT(out, "SoundFileSource_out");
-	MATLAB_EVAL("plot(SoundFileSource_out)");
+	//MATLAB_PUT(out, "SoundFileSource_out");
+	//MATLAB_EVAL("plot(SoundFileSource_out)");
 }
 
