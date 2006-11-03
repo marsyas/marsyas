@@ -42,7 +42,7 @@ realvec::realvec()
 {
   size_ = 0;
   data_ = NULL;
-  rows_ = 1;
+  rows_ = 0;  // [!! 0]
   cols_ = size_;
 }
 
@@ -245,7 +245,8 @@ realvec::stretch(mrs_natural size)
 {
   if (size_ == size) 
     return;
-  
+// if(size > 10000000 || size < 0)
+//cout << size << endl; 
   mrs_real *ndata = NULL;
   if (size > 0) 
     ndata = new mrs_real[size];
@@ -276,6 +277,9 @@ realvec::stretch(mrs_natural rows, mrs_natural cols)
   
   mrs_real *ndata = NULL;
   int size = rows * cols;
+//cout << size << endl;
+//if(size > 10000000 || size < 0)
+//cout << size << endl;
   if (size > 0) 
     ndata = new mrs_real[size];
 
@@ -975,6 +979,8 @@ realvec::normObs()
 	}
     }
 }
+
+
 
 realvec
 realvec::correlation() const
