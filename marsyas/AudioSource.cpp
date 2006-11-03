@@ -39,13 +39,16 @@ AudioSource::AudioSource(string name):MarSystem("AudioSource", name)
 	isInitialized_ = false;
 	stopped_ = true;
 
+	bufferSize_ = 0;
+	nChannels_ = 0;
+
 	addControls();
 }
 
 AudioSource::~AudioSource()
 {
   delete audio_;
-  data_ = 0; // RtAudio deletes the buffer itself.
+  data_ = NULL; // RtAudio deletes the buffer itself.
 }
 
 
@@ -76,31 +79,38 @@ AudioSource::myUpdate()
 {
   MRSDIAG("AudioSource::myUpdate");
 
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-	nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();
-  setctrl("mrs_natural/inObservations", nChannels_);
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  //init RtAudio first time myUpdate is called and whenever some config changes apply
+	if(bufferSize_ != (mrs_natural)getctrl("mrs_natural/bufferSize")->toNatural() ||
+		 nChannels_ != getctrl("mrs_natural/nChannels")->toNatural() ||
+		 israte_ != getctrl("mrs_real/israte")->toReal())
+	{
+		israte_ = getctrl("mrs_real/israte")->toReal();
+		bufferSize_ = (mrs_natural)getctrl("mrs_natural/bufferSize")->toNatural();
+		nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();
+		initRtAudio();
+	}
+	
+	//set output controls
+	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+	setctrl("mrs_natural/inObservations", nChannels_);
+	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 
-  bufferSize_ = (mrs_natural)getctrl("mrs_natural/bufferSize")->toNatural();
-  
-  initRtAudio();//[!]
+	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
+	inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
+	gain_ = getctrl("mrs_real/gain")->toReal();
+	
+	//resize reservoir if necessary
+	if (inSamples_ * inObservations_ < bufferSize_) 
+		reservoirSize_ = 2 * inObservations_ * bufferSize_;
+	else 
+		reservoirSize_ = 2 * inSamples_ * inObservations_;
 
-  //resize reservoir if necessary
-  inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
-  inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
-  gain_ = getctrl("mrs_real/gain")->toReal();
-
-  if (inSamples_ * inObservations_ < bufferSize_) 
-    reservoirSize_ = 2 * inObservations_ * bufferSize_;
-  else 
-    reservoirSize_ = 2 * inSamples_ * inObservations_;
-  
-  if (reservoirSize_ > preservoirSize_)
-    {
-      reservoir_.stretch(reservoirSize_);
-    }
-  preservoirSize_ = reservoirSize_;
+	if (reservoirSize_ > preservoirSize_)
+	{
+		reservoir_.stretch(reservoirSize_);
+	}
+	preservoirSize_ = reservoirSize_;
 }
 
 void 
@@ -114,7 +124,8 @@ AudioSource::initRtAudio()
 
 	//create new RtAudio object (delete any existing one)
 	delete audio_;
-	try {
+	try 
+	{
 	  audio_ = new RtAudio(0, 0, 0, rtChannels, rtFormat,
 			       rtSrate, &bufferSize_, 4);
 	  data_ = (mrs_real *) audio_->getStreamBuffer();
@@ -129,7 +140,6 @@ AudioSource::initRtAudio()
 	setctrl("mrs_natural/bufferSize", (mrs_natural)bufferSize_);
 
 	isInitialized_ = true;
-	//stopped_ = true;
 }
 
 void 
@@ -140,7 +150,6 @@ AudioSource::start()
     stopped_ = false;
   }
 }
-
 
 void 
 AudioSource::stop()
@@ -163,59 +172,59 @@ AudioSource::localActivate(bool state)
 void 
 AudioSource::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in,out);
-	
+	checkFlow(in,out);
+
 	//check if RtAudio is initialized
 	if (!isInitialized_)
-    return;
-  
-  //check MUTE
-  if(getctrl("mrs_bool/mute")->isTrue()) return;
+		return;
 
-  //assure that RtAudio thread is running
-  //(this may be needed by if an explicit call to start()
-  //is not done before ticking or calling process() )
-  if ( stopped_ )
-    start();
-  
-  //send audio to output
+	//check MUTE
+	if(getctrl("mrs_bool/mute")->isTrue()) return;
 
-  /* cout << "ri = " << ri_ << endl;
-  cout << "inSamples_ = " << inSamples_ << endl;
-  cout << "inObservations_ = " << inObservations_ << endl;
-  cout << "bufferSize_ = " << bufferSize_ << endl;
-  */ 
+	//assure that RtAudio thread is running
+	//(this may be needed by if an explicit call to start()
+	//is not done before ticking or calling process() )
+	if ( stopped_ )
+		start();
 
-  while (ri_ < inSamples_ * inObservations_)
-  {
-    try 
-      {
-	audio_->tickStream();
-      }
-    catch (RtError &error) 
-      {
-	error.printMessage();
-      }
-    
+	/* cout << "ri = " << ri_ << endl;
+	cout << "inSamples_ = " << inSamples_ << endl;
+	cout << "inObservations_ = " << inObservations_ << endl;
+	cout << "bufferSize_ = " << bufferSize_ << endl;
+	*/ 
 
-    for (t=0; t < inObservations_ * bufferSize_; t++)
-      {
-	reservoir_(ri_) = data_[t];
-	ri_++;
-      }
-  }
+	//send audio to output
+	while (ri_ < inSamples_ * inObservations_)
+	{
+		try 
+		{
+			audio_->tickStream();
+		}
+		catch (RtError &error) 
+		{
+			error.printMessage();
+		}
 
-  
-  for (o=0; o < inObservations_; o++)
-    for (t=0; t < inSamples_; t++)
-      {
-	out(o,t) = gain_ * reservoir_(inObservations_ * t + o);
-      }
-  
-  for (t=inSamples_*inObservations_; t < ri_; t++)
-    reservoir_(t-inSamples_ * inObservations_) = reservoir_(t);
-  
-  ri_ = ri_ - inSamples_ * inObservations_;
+		for (t=0; t < inObservations_ * bufferSize_; t++)
+		{
+			reservoir_(ri_) = data_[t];
+			ri_++;
+		}
+	}
+
+	for (o=0; o < inObservations_; o++)
+		for (t=0; t < inSamples_; t++)
+		{
+			out(o,t) = gain_ * reservoir_(inObservations_ * t + o);
+		}
+
+		for (t=inSamples_*inObservations_; t < ri_; t++)
+			reservoir_(t-inSamples_ * inObservations_) = reservoir_(t);
+
+		ri_ = ri_ - inSamples_ * inObservations_;
+
+		MATLAB_PUT(out, "AudioSource_out");
+		MATLAB_EVAL("plot(AudioSource_out)");
 }
 
 

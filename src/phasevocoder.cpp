@@ -1377,31 +1377,36 @@ main(int argc, const char **argv)
 
 	cout << "Phasevocoding " << sfname << endl;
 
-	if (vopt_ == 1) 
+	if(i == 1)//sound file input
 	{
-		phasevocSeries(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);
-	}
-	else
-	{
-		if (eopt_ == 0)
-			phasevocPoly(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);
-		else if (eopt_ == 1) 
-			phasevocHeterophonics(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);      	  	    
-		else if (eopt_ == 2) 
-			phasevocConvolve(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);
-		else if (eopt_ == 3) 
-			phasevocCrossSynth(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);
-		else if (eopt_ == 4) 
+		cout << "Using sound file input" << endl;
+		microphone_ = false;
+		if (vopt_ == 1) 
 		{
-			string sfname1 = soundfiles[0];
-			string sfname2 = soundfiles[1];
-			phasevocHeterophonicsRadioDrum(sfname1, sfname2, fftSize_, winSize_, dopt, iopt, popt, fileName);      	  	    
+			phasevocSeries(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);
 		}
-		else 
-			cout << "Not supported heterophonics epoch" << endl;
-	}
+		else
+		{
+			if (eopt_ == 0)
+				phasevocPoly(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);
+			else if (eopt_ == 1) 
+				phasevocHeterophonics(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);      	  	    
+			else if (eopt_ == 2) 
+				phasevocConvolve(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);
+			else if (eopt_ == 3) 
+				phasevocCrossSynth(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);
+			else if (eopt_ == 4) 
+			{
+				string sfname1 = soundfiles[0];
+				string sfname2 = soundfiles[1];
+				phasevocHeterophonicsRadioDrum(sfname1, sfname2, fftSize_, winSize_, dopt, iopt, popt, fileName);      	  	    
+			}
+			else 
+				cout << "Not supported heterophonics epoch" << endl;
+		}
 
-	if (i==0) 
+	}
+	if (i == 0) //micophone input
 	{
 		cout << "Using live microphone input" << endl;
 		microphone_ = true;
