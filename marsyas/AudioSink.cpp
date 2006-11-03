@@ -40,6 +40,9 @@ AudioSink::AudioSink(string name):MarSystem("AudioSink", name)
   data_ = NULL;
   audio_ = NULL;
 
+	rtSrate_ = 0;
+	bufferSize_ = 0;
+
 	isInitialized_ = false;
 	stopped_ = true;//lmartins
   
@@ -120,7 +123,8 @@ AudioSink::myUpdate()
   preservoirSize_ = reservoirSize_;
 
 	//if audio was playing (i.e.this was a re-init), keep it playing
-	if (!stopped_ && audio_) audio_->startStream();
+	if (!stopped_ && audio_) 
+		audio_->startStream();
 }
 
 void 
@@ -206,10 +210,10 @@ AudioSink::myProcess(realvec& in, realvec& out)
   //assure that RtAudio thread is running
 	//(this may be needed by if an explicit call to start()
 	//is not done before ticking or calling process() )
-// 	if ( stopped_ )
-//   {
-//     start();
-//   }
+	if ( stopped_ )
+  {
+    start();
+  }
  
   //update reservoir pointers 
 	rsize_ = bufferSize_;

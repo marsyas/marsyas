@@ -41,7 +41,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
+				Optimization="0"
 				AdditionalIncludeDirectories="..\..\marsyas"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				MinimalRebuild="false"
