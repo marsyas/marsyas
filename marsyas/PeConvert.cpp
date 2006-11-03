@@ -208,16 +208,16 @@ PeConvert::myProcess(realvec& in, realvec& out)
 	// select local maxima
 	realvec peaks_=mag_;
 	Peaker peaker("Peaker");
-	peaker.updctrl("mrs_real/peakStrength", 0.02);
+	peaker.updctrl("mrs_real/peakStrength", 0.2);
 	peaker.updctrl("mrs_natural/peakStart", 0);
 	peaker.updctrl("mrs_natural/peakEnd", size_);
 	peaker.process(mag_, peaks_);
 
-	/*	#ifdef _MATLAB_ENGINE_
-	 MATLAB->putVariable(mag_, "peaks");
-	 MATLAB->putVariable(peaks_, "k");
-	 MATLAB->evalString("figure(1);clf;plot(peaks);");
-	#endif*/
+	/*
+	 MATLAB_PUT(mag_, "peaks");
+	 MATLAB_PUT(peaks_, "k");
+	 MATLAB_EVAL("figure(1);clf;plot(peaks);");
+	*/
 
 	realvec index_(kmax_*2);
 	for(t=0 ; t<N2 ; t++)

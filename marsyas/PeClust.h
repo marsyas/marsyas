@@ -38,7 +38,10 @@ private:
 
 	realvec data_;
 	realvec m_;
+	realvec peakSet_;
 	realvec lastFrame_;
+	realvec frequencySet_;
+	realvec amplitudeSet_;
 	mrs_real maxLabel_;
 	mrs_natural nbParameters_;
 	mrs_natural kmax_;
@@ -49,10 +52,10 @@ private:
 	void addControls();
 	
 	void myUpdate();
-	void peaks2M (realvec&, realvec&, realvec&);
-	void peaks2V (realvec&, realvec&, realvec&);
+
 	void similarityCompute(realvec&, realvec&);
 void similarityMatrix(realvec&, realvec&, std::string type);
+ void harmonicitySimilarityCompute(realvec&, realvec&, realvec&, realvec& m);
 void labeling(realvec& , realvec&);
 
 public:

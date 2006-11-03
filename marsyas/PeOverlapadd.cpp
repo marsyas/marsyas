@@ -119,9 +119,9 @@ PeOverlapadd::myProcess(realvec& in, realvec& out)
 	for(i=0;i<N;i++)
 		out(i) = back_(i)+tmp_(i);
 
-	MATLAB_PUT(tmp_, "vec");
-	MATLAB_PUT(back_, "vec1");
-	MATLAB_PUT(out, "vec2");
+	//MATLAB_PUT(tmp_, "vec");
+	//MATLAB_PUT(back_, "vec1");
+	//MATLAB_PUT(out, "vec2");
 	//MATLAB_EVAL("figure(1);clf;plot(vec1, 'r'); hold ; plot(vec) ; hold");
 
 	for(i=0;i<N;i++)

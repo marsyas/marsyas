@@ -24,6 +24,7 @@
 */
 
 #include "PeClust.h"
+#include "PeUtilities.h"
 
 using namespace std;
 using namespace Marsyas;
@@ -32,8 +33,8 @@ PeClust::PeClust(string name):MarSystem("PeClust", name)
 {
  
 	addControls();
-
-	nbParameters_ = 7;
+kmax_ = 0;
+	nbParameters_ = nbPeaksParameters; // 7
 }
 
 
@@ -54,6 +55,8 @@ PeClust::addControls()
   addctrl("mrs_natural/Clusters", 2);
 	addctrl("mrs_natural/Sinusoids", 1);
 	addctrl("mrs_string/similarityType", "");
+	addctrl("mrs_realvec/peakSet", peakSet_);
+  addctrl("mrs_natural/hopSize", 512);
 }
 
  void
@@ -73,82 +76,20 @@ PeClust::addControls()
 
 	 // string with the observations to consider for similarity computing
    similarityType_ = getctrl("mrs_string/similarityType")->toString();
+	/* inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
+	 inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();*/
 
 	 nbParameters_ = inObservations_/kmax_;
 
-	 data_.stretch(kmax_*inSamples_, nbParameters_);
+	 data_.stretch(kmax_*inSamples_, nbParameters_);	 
 	 lastFrame_.stretch(kmax_*nbParameters_);
 	 lastFrame_.setval(0);
+	 amplitudeSet_.stretch(kmax_, inSamples_);
+	 frequencySet_.stretch(kmax_, inSamples_);
 	 maxLabel_=0;
  }
 
 
-
- void PeClust::peaks2M (realvec& in, realvec& first, realvec& out)
- {
-	 int i,j,k,l=0;
-
-	 if(&first != NULL  && first(0))
-	 	 for (i=0 ; i<kmax_ ; i++)
-		 {
-			 if(first(i) != 0.0) 
-			 {
-				 for(k=0;k<nbParameters_;k++)
-					 out(l, k) = first(k*kmax_+i);
-				 l++;
-			 }
-		 }
-	 
-
-	 for (j=0 ; j<in.getCols() ; j++)
-		 for (i=0 ; i<kmax_ ; i++)
-		 {
-			 if(in(i, j) != 0.0) 
-			 {
-				 for(k=0;k<nbParameters_;k++)
-					 out(l, k) = in(k*kmax_+i, j);
-				 l++;
-			 }
-		 }
-		 out.stretch(l, nbParameters_);
-		 nbPeaks_ = l;
- }
-
- void PeClust::peaks2V (realvec& in, realvec& last, realvec& out)
- {
-	 int i, j, k=0, start=0;
-	 int frameIndex=-1, startIndex = in(0, 5);
-
-	  out.setval(0);
-	 if(&last && last(0))
-	 {
-		 start=1;
-		 startIndex +=1;
-
-	 }
-
-	 for (i=0 ; i<in.getRows() ; i++, k++)
-	 {
-		 if(frameIndex != in(i, 5))
-		 {
-			 frameIndex = in(i, 5);
-			 k=0;
-		 }
-		 if(!start || (start && in(i, 5) >= startIndex))
-			 for (j=0 ; j<in.getCols() ; j++)
-			 {
-				 out(j*kmax_+k, frameIndex-startIndex) = in(i, j);
-			 }
-	 }
-
-	 if(&last)
-	 {
-		 for (j=0 ; j<out.getRows() ; j++)
-		 {
-			 last(j) = out(j, out.getCols()-1);
-		 }
-	 }
- }
 
  void
 	 PeClust::similarityMatrix(realvec &data, realvec& m, string type)
@@ -175,7 +116,7 @@ PeClust::addControls()
 			 j=3;
 			 break;
 		 case 'h':
-			 j=0;
+			 j=-1;
 			 break;
 		 case 't':
 			 j=5;
@@ -185,6 +126,8 @@ PeClust::addControls()
 			 exit(1);
 			 break;
 		 }
+		 if(j>=0)
+		 {
 		 // select the parameter
 		 for(int k=0 ; k<data.getRows() ; k++)
 			 vec(k) = data(k, j);
@@ -218,6 +161,15 @@ PeClust::addControls()
 		 }
 // do the job
 similarityCompute(vec, m);
+		 }
+	 else
+	 {// specific similarity computation
+
+		 // build frequency and amplitude matrices
+	extractParameter(data, frequencySet_, frequency);
+	extractParameter(data, amplitudeSet_, amplitude);
+	harmonicitySimilarityCompute(data, frequencySet_, amplitudeSet_, m);	
+	 }
 	 }
  }
 
@@ -238,6 +190,56 @@ similarityCompute(vec, m);
 	 }
  }
 
+ void
+	 PeClust::harmonicitySimilarityCompute(realvec& data, realvec& fSet, realvec& aSet, realvec& m)
+ {
+   int i, j, k, startIndex = data(0, 5);
+
+	 // similarity computing
+	 for(i=0 ; i<nbPeaks_ ; i++)
+	 {
+		 for(j=0 ; j<i ; j++)
+		 {
+			 mrs_real fDiff = data(i, frequency)-data(j, frequency), val=0;
+			 mrs_natural nbFirst=0, nbSecond=0, indexFirst = data(i, 5)-startIndex, indexSecond = data(j, 5)-startIndex;
+
+			while(fSet(nbFirst++, indexFirst));
+			while(fSet(nbSecond++, indexSecond));
+
+			 realvec firstF(nbFirst, 1);
+			 realvec firstA(nbFirst, 1);
+			 realvec secondF(nbSecond, 1);
+			 realvec secondA(nbSecond, 1);
+
+			 // select the frame of the first peak
+			 for (k=0 ; k<nbFirst ; k++)
+			 {
+firstF(k) = fSet(k, indexFirst);
+firstA(k) = aSet(k, indexFirst);
+			 }
+
+			 // select the frame of the second and align the frequency
+			 for (k=0 ; k<nbFirst ; k++)
+			 {
+secondF(k) = fSet(k, indexSecond)-fDiff;
+secondA(k) = aSet(k, indexSecond);
+			 }
+
+			 // compare the two
+			 /*MATLAB_PUT(firstF, "f1");
+			 MATLAB_PUT(firstA, "a1");
+			 MATLAB_PUT(secondF, "f2");
+			 MATLAB_PUT(secondA, "a2");
+			 MATLAB_EVAL("res=harmonicDistance(f1, a1, f2, a2);");
+			 MATLAB_GET("res", val);*/
+
+			 val = compareTwoPeakSets(firstF,firstA,secondF,secondA);
+			 m(i, j) *= val;
+			 m(j, i) *= val;
+		 }
+	 }
+ }
+
  
  void
 	 PeClust::labeling(realvec& data, realvec& labels)
@@ -245,95 +247,97 @@ similarityCompute(vec, m);
 	 int i, j;
 
 
-// align labeling
-	if(lastFrame_(0))
+	 // align labeling
+	 if(lastFrame_(0))
 	 {
-     realvec conversion_(nbClusters_);
-	   mrs_natural lastIndex = lastFrame_(5*kmax_);	
+		 realvec conversion_(nbClusters_);
+		 mrs_natural lastIndex = lastFrame_(5*kmax_);	
 		 realvec oldLabels(kmax_);
-	   realvec newLabels(kmax_);
-	
-		 conversion_.setval(0);
-	
-	 for(i=0 ; i<kmax_ ; i++)
-		oldLabels(i) = lastFrame_(6*kmax_+i);
-	 newLabels.setval(0);
-	 for(i=0 ; i<nbPeaks_ ; i++)
-		if(data(i, 5) == lastIndex)
-			newLabels(i) = labels(i);
-oldLabels.dump();
-	 newLabels.dump(); 
+		 realvec newLabels(kmax_);
 
-	 while(1){
-		 mrs_natural nbMax=0, nb, iMax=0, jMax=0;
-		 // look for the biggest cluster in old		
-		 for(i=1 ; i<= (mrs_natural) oldLabels.maxval() ; i++)
-			{
-				nb=0;
-				for(j=0 ; j<oldLabels.getSize() ; j++)
-					if(oldLabels(j) == i)
-						nb++;
-				if(nb>nbMax)
-				{
-					nbMax = nb;
-					iMax = i;
-				}
-		 }
-		 if(iMax)
-		 {
-			 nbMax=0;
-			 // look for the cluster in new with the highest intersection
-			 for(i=1 ; i<= (mrs_natural) newLabels.maxval() ; i++)
+		 conversion_.setval(0);
+
+		 for(i=0 ; i<kmax_ ; i++)
+			 oldLabels(i) = lastFrame_(6*kmax_+i);
+		 newLabels.setval(0);
+		 for(i=0 ; i<nbPeaks_ ; i++)
+			 if(data(i, 5) == lastIndex)
+				 newLabels(i) = labels(i);
+	 /*	 oldLabels.dump();
+		 newLabels.dump(); 
+	*/	 while(1){
+			 mrs_natural nbMax=0, nb, iMax=0, jMax=0;
+			 // look for the biggest cluster in old		
+			 for(i=1 ; i<= (mrs_natural) oldLabels.maxval() ; i++)
 			 {
 				 nb=0;
-				 for(j=0 ; j<newLabels.getSize() ; j++)
-					 if(oldLabels(j) == iMax && newLabels(j) == i)
+				 for(j=0 ; j<oldLabels.getSize() ; j++)
+					 if(oldLabels(j) == i)
 						 nb++;
 				 if(nb>nbMax)
 				 {
 					 nbMax = nb;
-					 jMax = i;
+					 iMax = i;
 				 }
 			 }
-			 if(!jMax)
-			 cout <<jMax << newLabels.maxval() << endl;
-			 newLabels.dump();
-			 // fill conversion table with oldLabel
-			 conversion_(jMax-1) = iMax;
-			 // remove old and new clusters
-			 for(i=0 ; i<oldLabels.getSize() ; i++)
-				 if(oldLabels(i) == iMax)
-					 oldLabels(i) = 0;
-			 for(i=0 ; i<newLabels.getSize() ; i++)
-				 if(newLabels(i) == jMax)
-					 newLabels(i) = 0;
-			 newLabels.dump();
+			 if(iMax)
+			 {
+	
+
+				 nbMax=0;
+				 // look for the cluster in new with the highest intersection
+				 for(i=1 ; i<= (mrs_natural) newLabels.maxval() ; i++)
+				 {
+					 nb=0;
+					 for(j=0 ; j<newLabels.getSize() ; j++)
+						 if(oldLabels(j) == iMax && newLabels(j) == i)
+							 nb++;
+					 if(nb>nbMax)
+					 {
+						 nbMax = nb;
+						 jMax = i;
+					 }
+				 }
+				 if(!jMax)
+					 break;
+					// cout << iMax << " " << jMax << " " << newLabels.maxval() << endl;
+				 //newLabels.dump();
+				 // fill conversion table with oldLabel
+				 conversion_(jMax-1) = iMax;
+				 // remove old and new clusters
+				 for(i=0 ; i<oldLabels.getSize() ; i++)
+					 if(oldLabels(i) == iMax)
+						 oldLabels(i) = 0;
+				 for(i=0 ; i<newLabels.getSize() ; i++)
+					 if(newLabels(i) == jMax)
+						 newLabels(i) = 0;
+			//	 newLabels.dump();
+			 }
+			 else
+				 break;
 		 }
-		 else
-			 break;
+		 // fill conversion table with new labels
+		 mrs_real k = maxLabel_+1;
+		 for (i=0 ; i<conversion_.getSize(); i++)
+		 {
+			 if(conversion_(i) == 0.0)
+				 conversion_(i) = k++;
+		 }
+		// conversion_.dump();
+		 //labels.dump();
+		 // convert labels
+		 for(i=0 ; i<labels.getSize() ; i++)
+			 if(labels(i) != 0.0 && conversion_(labels(i)) != 0.0)
+				 labels(i) = conversion_(labels(i)-1);
+		 // labels.dump();
 	 }
-	// fill conversion table with new labels
-	 mrs_real k = maxLabel_+1;
-	 for (i=0 ; i<conversion_.getSize(); i++)
+	 // fill peaks data with clusters labels
+	 for (i=0 ; i<nbPeaks_ ; i++)
 	 {
-		 if(conversion_(i) == 0.0)
-			 conversion_(i) = k++;
-	 }
-	 conversion_.dump();
-	 //labels.dump();
-	 // convert labels
-	 for(i=0 ; i<labels.getSize() ; i++)
-		 if(labels(i) != 0.0 && conversion_(labels(i)) != 0.0)
-			 labels(i) = conversion_(labels(i)-1);
-	// labels.dump();
-	}
-	// fill peaks data with clusters labels
-	for (i=0 ; i<nbPeaks_ ; i++)
-	{
 		 data(i, 6) = labels(i);
-	if(labels(i) > maxLabel_)
-		maxLabel_ = labels(i);
-	}
+		 if(labels(i) > maxLabel_)
+			 maxLabel_ = labels(i);
+	 }
  }
 
  void 
@@ -342,7 +346,7 @@ oldLabels.dump();
 	 //checkFlow(in,out);
 
 	 data_.stretch(kmax_*(inSamples_+1), nbParameters_);
-	 peaks2M(in, lastFrame_, data_);
+	 nbPeaks_ = peaks2M(in, lastFrame_, data_, kmax_);
 	
 	 m_.stretch(nbPeaks_, nbPeaks_);
   // similarity matrix calculation
@@ -350,21 +354,41 @@ oldLabels.dump();
 
 	// Ncut
 	realvec labels(nbPeaks_);
-#ifdef _MATLAB_ENGINE_
-	 MATLAB->putVariable(m_, "m");
-	 MATLAB->putVariable(nbClusters_, "nb");
-	 MATLAB->evalString("[d, vec, val] = ncutW(m, nb);");
-	 MATLAB->evalString("d=d*(1:size(d, 2))';");
-	 MATLAB->getVariable("d", labels);
-#endif 
 
-	 labeling(data_, labels);
+	 MATLAB_PUT(m_, "m");
+	 MATLAB_PUT(nbClusters_, "nb");
+	 MATLAB_EVAL("[d, vec, val] = ncutW(m, nb);");
+	 MATLAB_EVAL("d=d*(1:size(d, 2))';");
+	 MATLAB_GET("d", labels);
 
+ labeling(data_, labels);
 
-	 MATLAB_PUT(data_, "peaks");
-	 //MATLAB_EVAL("plotPeaks(peaks)");
+	//  MATLAB_PUT(data_, "peaks");
+	// MATLAB_EVAL("plotPeaks(peaks)");
 
-	peaks2V(data_, lastFrame_, out);
+	peaks2V(data_, lastFrame_, out, kmax_);
+
+	// peaks storing
+	int peaksSetSize = peakSet_.getRows(), start;
+	if(!peaksSetSize)
+	{
+// add synth infos
+		peakSet_.stretch(nbPeaks_+1, nbPeaksParameters);
+		peakSet_(0,0) = -1;
+		peakSet_(0,1) = getctrl("mrs_real/israte")->toReal();
+		peakSet_(0,2) = getctrl("mrs_natural/hopSize")->toNatural();
+	start=1;
+	}
+	else
+	{
+		start=0;
+	peakSet_.stretch(peaksSetSize+nbPeaks_, nbPeaksParameters);
+	}
+	for (int i=0 ; i<nbPeaks_ ; i++)
+		for (int j=0 ; j<nbPeaksParameters ; j++)
+			peakSet_(peaksSetSize+i+start, j) = data_(i, j);
+
+	setctrl("mrs_realvec/peakSet", peakSet_);
 
 } 
 

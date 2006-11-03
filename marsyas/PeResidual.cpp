@@ -22,9 +22,7 @@
 */
 
 #include "PeResidual.h"
-#ifdef _MATLAB_ENGINE_
-#include "MATLABengine.h"
-#endif 
+
 using namespace std;
 using namespace Marsyas;
 
@@ -89,11 +87,8 @@ PeResidual::myProcess(realvec& in, realvec& out)
  
  setctrl("mrs_real/snr", snr);
 
- 	#ifdef _MATLAB_ENGINE_
-	 MATLAB->putVariable(in, "vec");
-
-//	 MATLAB->evalString("figure(1);clf;plot(vec');");
-	#endif
+  // MATLAB_PUT(in, "vec");
+  // MATLAB_EVAL("figure(1);clf;plot(vec');");
 }
 
 
