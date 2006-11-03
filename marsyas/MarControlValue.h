@@ -212,7 +212,11 @@ MarControlValueT<T>::isNotEqual(MarControlValue *v)
 	{
 		if (type_ != v->getType())
 		{
-			MRSWARN("Types of MarControlValue are different");
+			std::ostringstream sstr;
+			sstr << "[MarControlValueT::isNotEqual] Trying to compare different types of MarControlValue. "
+				<< "(" << this->getSType() << " with " << v->getSType() << ")";
+			MRSWARN(sstr.str());
+			return false;
 		}
 
 		return value_ != dynamic_cast<MarControlValueT<T>*>(v)->get();
