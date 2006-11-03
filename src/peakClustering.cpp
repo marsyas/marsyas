@@ -1,5 +1,8 @@
 #include <cstdio>
 
+
+
+
 #include "MarSystemManager.h"
 #include "AudioSink.h"
 #include "SoundFileSink.h"
@@ -19,31 +22,33 @@ string pluginName = EMPTYSTRING;
 string inputDirectoryName = EMPTYSTRING;
 string outputDirectoryName = EMPTYSTRING;
 string fileName = EMPTYSTRING;
+string noiseName = EMPTYSTRING;
 string fileResName = EMPTYSTRING;
+string filePeakName = EMPTYSTRING;
 
 // Global variables for command-line options 
 bool helpopt_ = 0;
 bool usageopt_ =0;
-int fftSize_ = 1024;
-int winSize_ = 1024;
+int fftSize_ = 2048;
+int winSize_ = 2048;
 // if kept the same no time expansion
-int dopt = 360;
-int iopt = 360;
+int hopSize_ = 360;
 // nb Sines
-int sopt = 80;
+int nbSines_ = 80;
 // nbClusters
-int copt = 5;
+int nbClusters_ = 5;
 // output buffer Size
 int bopt = 128;
+// output gain
 mrs_real gopt_ = 1.0;
-mrs_natural eopt_ = 0;
+// number of accumulated frames
+mrs_natural accSize_ = 6;
+// type of similarity Metrics
+string similarityType_ = "hn";
+// store for clustered peaks
+realvec peakSet_;
 
-mrs_natural accSize = 6;
-string similarityType = "fn";
-
-float popt = 1.0;
 bool auto_ = false;
-
 bool microphone_ = false;
 
 CommandLineOptions cmd_options;
@@ -82,14 +87,13 @@ printHelp(string progName)
 }
 
 
-
 // original monophonic peakClustering 
-void 
-phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw, 
-							 mrs_natural D, mrs_natural I, mrs_real P, 
-							 string outsfname, mrs_natural accSize)
+void
+clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseName, string T, mrs_natural N, mrs_natural Nw, 
+							 mrs_natural D, mrs_natural S, mrs_natural C,
+							  mrs_natural accSize)
 {
-	cout << "phasevocSeries2" << endl;
+	cout << "Extracting Peaks and Clusters" << endl;
 	MarSystemManager mng;
 
 	// create the phasevocoder network
@@ -97,11 +101,24 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 
 	//create accumulator series
 	MarSystem* preNet = mng.create("Series", "preNet");
-	if (microphone_) 
-		preNet->addMarSystem(mng.create("AudioSource", "src"));
+	//create fanout for mixing
+		MarSystem* fanin = mng.create("Fanin", "fanin");
+		// add original source in the fanout
+		if (microphone_) 
+		fanin->addMarSystem(mng.create("AudioSource", "src"));
 	else 
-		preNet->addMarSystem(mng.create("SoundFileSource", "src"));
-	
+		fanin->addMarSystem(mng.create("SoundFileSource", "src"));
+	// create a series for the noiseSource
+  MarSystem* mixseries = mng.create("Series", "mixseries");
+	mixseries->addMarSystem(mng.create("SoundFileSource", "noise"));
+	mixseries->addMarSystem(mng.create("Delay", "noiseDelay"));
+	mixseries->addMarSystem(mng.create("Gain", "noiseGain"));
+// add this series in the fanout
+    fanin->addMarSystem(mixseries);
+
+	preNet->addMarSystem(fanin);
+
+
 	preNet->addMarSystem(mng.create("ShiftInput", "si"));
 	preNet->addMarSystem(mng.create("Shifter", "sh"));
 	preNet->addMarSystem(mng.create("Windowing", "wi"));
@@ -122,7 +139,6 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 	MarSystem* postNet = mng.create("Series", "postNet");
 	postNet->addMarSystem(mng.create("PeOverlapadd", "ob"));
 	postNet->addMarSystem(mng.create("ShiftOutput", "so"));
-	postNet->addMarSystem(mng.create("Gain", "gain"));
 
 	MarSystem *dest;
 	if (outsfname == EMPTYSTRING) 
@@ -177,45 +193,51 @@ postNet->addMarSystem(destRes);
 
 	if (microphone_) 
 	{
-		pvseries->updctrl("Accumulator/accumNet/Series/preNet/AudioSource/src/mrs_natural/inSamples", D);
-		pvseries->updctrl("Accumulator/accumNet/Series/preNet/AudioSource/src/mrs_natural/inObservations", 1);
+		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/AudioSource/src/mrs_natural/inSamples", D);
+		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/AudioSource/src/mrs_natural/inObservations", 1);
 
 		pvseries->updctrl("Shredder/shredNet/Series/postNet/Fanout/fano/Series/fanSeries/AudioSource/src2/mrs_natural/inSamples", D);
 		pvseries->updctrl("Shredder/shredNet/Series/postNet/Fanout/fano/Series/fanSeries/AudioSource/src2/mrs_natural/inObservations", 1);
 	}
 	else
 	{
-		pvseries->updctrl("Accumulator/accumNet/Series/preNet/SoundFileSource/src/mrs_string/filename", sfName);
-		pvseries->updctrl("Accumulator/accumNet/Series/preNet/SoundFileSource/src/mrs_natural/inSamples", D);
-		pvseries->updctrl("Accumulator/accumNet/Series/preNet/SoundFileSource/src/mrs_natural/inObservations", 1);
+		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_string/filename", sfName);
+		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_natural/inSamples", D);
+		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_natural/inObservations", 1);
 
 		pvseries->updctrl("Shredder/shredNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_string/filename", sfName);
 		pvseries->updctrl("Shredder/shredNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/inSamples", D);
 		pvseries->updctrl("Shredder/shredNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/inObservations", 1);
 	}
 
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/ShiftInput/si/mrs_natural/Decimation", D);
+pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/SoundFileSource/noise/mrs_string/filename", noiseName);
+pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/SoundFileSource/noise/mrs_natural/inSamples", D);
+pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/Delay/noiseDelay/mrs_real/delay", 1.0);
+pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/Gain/noisegain/mrs_real/gain", .5);
+
+
+pvseries->updctrl("Accumulator/accumNet/Series/preNet/ShiftInput/si/mrs_natural/Decimation", D);
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/ShiftInput/si/mrs_natural/WindowSize", Nw+1);
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Windowing/wi/mrs_natural/size", N);
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Windowing/wi/mrs_string/type", "Hanning");
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Windowing/wi/mrs_natural/zeroPhasing", 1);
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Shifter/sh/mrs_natural/shift", 1);
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PvFold/fo/mrs_natural/Decimation", D);
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Decimation", (mrs_natural) dopt);      
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Sinusoids", (mrs_natural) sopt);  
+	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Decimation", D);      
+	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Sinusoids", S);  
 
-  pvseries->updctrl("PeClust/peClust/mrs_natural/Sinusoids", (mrs_natural) sopt);  
-  pvseries->updctrl("PeClust/peClust/mrs_natural/Clusters", (mrs_natural) copt); 
-	pvseries->updctrl("PeClust/peClust/mrs_string/similarityType", similarityType);  
+  pvseries->updctrl("PeClust/peClust/mrs_natural/Sinusoids", S);  
+  pvseries->updctrl("PeClust/peClust/mrs_natural/Clusters", C); 
+	pvseries->updctrl("PeClust/peClust/mrs_natural/hopSize", D); 
+	pvseries->updctrl("PeClust/peClust/mrs_string/similarityType", T);  
 
 	pvseries->updctrl("Shredder/shredNet/Series/postNet/PeOverlapadd/ob/mrs_natural/hopSize", D);
-	pvseries->updctrl("Shredder/shredNet/Series/postNet/PeOverlapadd/ob/mrs_natural/nbSinusoids", sopt);
+	pvseries->updctrl("Shredder/shredNet/Series/postNet/PeOverlapadd/ob/mrs_natural/nbSinusoids", S);
 	pvseries->updctrl("Shredder/shredNet/Series/postNet/PeOverlapadd/ob/mrs_natural/delay", Nw/2+1);
-	pvseries->updctrl("Shredder/shredNet/Series/postNet/ShiftOutput/so/mrs_natural/Interpolation", I);
+	pvseries->updctrl("Shredder/shredNet/Series/postNet/ShiftOutput/so/mrs_natural/Interpolation", D);
 	pvseries->updctrl("Shredder/shredNet/Series/postNet/ShiftOutput/so/mrs_natural/WindowSize", Nw);      
 	pvseries->updctrl("Shredder/shredNet/Series/postNet/ShiftOutput/so/mrs_natural/Decimation", D);
-	pvseries->updctrl("Shredder/shredNet/Series/postNet/Gain/gain/mrs_real/gain", gopt_);
-
+	
 	pvseries->updctrl("Shredder/shredNet/Series/postNet/Fanout/fano/Series/fanSeries/Delay/delay/mrs_natural/delay", Nw+1-D);
 	pvseries->updctrl("Shredder/shredNet/Series/postNet/Fanout/fano/SoundFileSink/dest/mrs_string/filename", outsfname);//[!]
   pvseries->updctrl("Shredder/shredNet/Series/postNet/SoundFileSink/destRes/mrs_string/filename", fileResName);//[!]
@@ -235,17 +257,38 @@ mrs_natural nb=0;
 
 		if (!microphone_)
 		{
-			bool temp = pvseries->getctrl("Accumulator/accumNet/Series/preNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
-			bool temp1 = accumNet->getctrl("Series/preNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
-			bool temp2 = preNet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool();
-			string fname = pvseries->getctrl("Accumulator/accumNet/Series/preNet/SoundFileSource/src/mrs_string/filename")->toString();
+			bool temp = pvseries->getctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
+			bool temp1 = accumNet->getctrl("Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
+			bool temp2 = preNet->getctrl("Fanin/fanin/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
+			string fname = pvseries->getctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_string/filename")->toString();
 
 			///*bool*/ temp = pvseries->getctrl("Accumulator/accumNet/Series/preNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
 			if (temp2 == false)
 				break;
 		}
 	}
+
 	cout << "Global SNR : " << globalSnr/nb << endl;
+
+	// plot and save peak data
+	peakSet = pvseries->getctrl("PeClust/peClust/mrs_realvec/peakSet")->toVec();
+
+	 MATLAB_PUT(peakSet, "peaks");
+	 MATLAB_EVAL("plotPeaks(peaks)");
+
+	ofstream peakFile;
+	peakFile.open(filePeakName.c_str());
+	if(!peakFile)
+		cout << "Unable to open output Peaks File " << filePeakName << endl;
+	peakFile << peakSet;
+	peakFile.close();
+}
+
+
+
+void clusterAttributes()
+{
+
 }
 
 void 
@@ -255,12 +298,13 @@ initOptions()
   cmd_options.addBoolOption("usage", "u", false);
   cmd_options.addNaturalOption("voices", "v", 1);
   cmd_options.addStringOption("filename", "f", EMPTYSTRING);
+	cmd_options.addStringOption("noisename", "N", EMPTYSTRING);
 	cmd_options.addStringOption("outputdirectoryname", "o", EMPTYSTRING);
 	cmd_options.addStringOption("inputdirectoryname", "i", EMPTYSTRING);
   cmd_options.addStringOption("plugin", "p", EMPTYSTRING);
   cmd_options.addNaturalOption("winsize", "w", winSize_);
   cmd_options.addNaturalOption("fftsize", "n", fftSize_);
-  cmd_options.addNaturalOption("sinusoids", "s", sopt);
+  cmd_options.addNaturalOption("sinusoids", "s", nbSines_);
   cmd_options.addNaturalOption("bufferSize", "b", bopt);
   cmd_options.addRealOption("gain", "g", 1.0);
   cmd_options.addBoolOption("auto", "a", auto_);
@@ -276,9 +320,10 @@ loadOptions()
   fileName   = cmd_options.getStringOption("filename");
   inputDirectoryName = cmd_options.getStringOption("inputdirectoryname");
   outputDirectoryName = cmd_options.getStringOption("outputdirectoryname");
+	 noiseName = cmd_options.getStringOption("noisename");
   winSize_ = cmd_options.getNaturalOption("winsize");
   fftSize_ = cmd_options.getNaturalOption("fftsize");
-  sopt = cmd_options.getNaturalOption("sinusoids");
+  nbSines_ = cmd_options.getNaturalOption("sinusoids");
   bopt = cmd_options.getNaturalOption("bufferSize");
   auto_ = cmd_options.getBoolOption("auto");
   gopt_ = cmd_options.getRealOption("gain");
@@ -312,7 +357,7 @@ main(int argc, const char **argv)
   cerr << "peakClustering configuration (-h show the options): " << endl;
   cerr << "fft size (-n)      = " << fftSize_ << endl;
   cerr << "win size (-w)      = " << winSize_ << endl;
-  cerr << "sinusoids (-s)     = " << sopt << endl;
+  cerr << "sinusoids (-s)     = " << nbSines_ << endl;
   cerr << "outFile  (-f)      = " << fileName << endl;
  	cerr << "outputDirectory  (-o) = " << outputDirectoryName << endl;
 	cerr << "inputDirectory  (-i) = " << inputDirectoryName << endl;
@@ -330,17 +375,18 @@ main(int argc, const char **argv)
 			
 				fileName = outputDirectoryName + "/" + Sfname.name() ;
 				fileResName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Res." + Sfname.ext() ;
+				filePeakName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Peak.txt" ;
 					cout << fileResName << endl;
 			}
 			cout << "Phasevocoding " << Sfname.name() << endl; 
-			phasevocSeries(*sfi, fftSize_, winSize_, dopt, iopt, popt, fileName, accSize);
+			clusterExtract(peakSet_, *sfi, fileName, noiseName, similarityType_, fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_);
 		}
 	}
 	else
 	{
 		cout << "Using live microphone input" << endl;
 		microphone_ = true;
-		phasevocSeries("microphone", fftSize_, winSize_, dopt, iopt, popt, fileName, accSize);
+		clusterExtract(peakSet_, "microphone", fileName, noiseName, similarityType_, fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_);
 	}
 
 	exit(0);

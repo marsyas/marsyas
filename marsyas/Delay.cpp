@@ -58,10 +58,13 @@ Delay::addControls()
   addctrl("mrs_real/gain", 0);   // direct gain
   addctrl("mrs_real/feedback", 0); // feedback gain
   addctrl("mrs_natural/delay", 0); // delay in samples
+  addctrl("mrs_real/delay", 0.0); // delay in samples
   setctrlState("mrs_real/gain", true);
   setctrlState("mrs_real/feedback", true);
   setctrlState("mrs_real/delay", true);
+	setctrlState("mrs_natural/delay", true);
 }
+
 
 void
 Delay::myUpdate()
@@ -74,9 +77,16 @@ Delay::myUpdate()
   
   gain_ = getctrl("mrs_real/gain")->toReal();
   feedback_ = getctrl("mrs_real/feedback")->toReal();
+
+	if(getctrl("mrs_natural/delay")->toNatural())
   delay_ = getctrl("mrs_natural/delay")->toNatural();
-  
+
+	// cout << getctrl("mrs_real/delay")->toReal() << " " << endl;
+  if(getctrl("mrs_real/delay")->toReal() != 0.0)
+		delay_ = ceil(getctrl("mrs_real/delay")->toReal()*getctrl("mrs_real/osrate")->toReal());
+ 
   cursor_ = 0;
+
   buffer_.stretch(delay_);
 	buffer_.setval(0);
   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));

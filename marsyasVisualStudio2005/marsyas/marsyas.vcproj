@@ -656,6 +656,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\marsyas\PeUtilities.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\marsyas\PlotSink.cpp"
 				>
 			</File>
@@ -1319,6 +1323,10 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\PeResidual.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\PeUtilities.h"
 				>
 			</File>
 			<File
