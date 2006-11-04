@@ -57,7 +57,7 @@ public:
 	virtual MarControlValue* clone() = 0;
 	virtual MarControlValue* create() = 0;
 
-	virtual int	MarControlValue::getType() const;
+	virtual int	MarControlValue::getType() const ;
 	std::string MarControlValue::getSType() const;
 
 	// workaround - virtual member functions to overload friend operators
@@ -65,6 +65,11 @@ public:
 	virtual std::ostream& serialize(std::ostream& os) = 0;
 	// for:	friend bool operator!=(MarControlValue& v1, MarControlValue& v2)
 	virtual bool isNotEqual(MarControlValue *v) = 0;
+
+	virtual MarControlValue* sum(MarControlValue *v) = 0;
+	virtual MarControlValue* subtract(MarControlValue *v) = 0;
+	virtual MarControlValue* multiply(MarControlValue *v) = 0;
+	virtual MarControlValue* divide(MarControlValue *v) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -98,6 +103,10 @@ public:
   
 	virtual std::ostream& serialize(std::ostream& os);
 	virtual bool isNotEqual(MarControlValue *v);
+	virtual MarControlValue* sum(MarControlValue *v);
+	virtual MarControlValue* subtract(MarControlValue *v);
+	virtual MarControlValue* multiply(MarControlValue *v);
+	virtual MarControlValue* divide(MarControlValue *v);
 	bool isInvalid() { return &value_ == &invalidValue; }
 };
 
@@ -130,8 +139,54 @@ public:
 
 	virtual std::ostream& serialize(std::ostream& os);
 	virtual bool isNotEqual(MarControlValue *v);
+	virtual MarControlValue* sum(MarControlValue *v);
+	virtual MarControlValue* subtract(MarControlValue *v);
+	virtual MarControlValue* multiply(MarControlValue *v);
+	virtual MarControlValue* divide(MarControlValue *v);
 	bool isInvalid() { return &value_ == &invalidValue; }
 };
+
+// To avoid the compiler complaints
+template<>
+class MarControlValueT<bool> : public MarControlValue
+{
+protected:
+	bool value_;
+
+public:
+	static bool invalidValue;
+
+public:
+	MarControlValueT(bool value);
+	MarControlValueT(const MarControlValueT& a);
+
+	virtual ~MarControlValueT() {}
+
+	MarControlValueT& operator=(const MarControlValueT& a);
+
+	virtual MarControlValue* clone();
+	virtual MarControlValue* create();
+
+	//setters
+	inline void set(MarControlValue *val);
+	inline void set(bool &re);
+
+	//getters
+	const bool& get() const;
+
+	virtual std::ostream& serialize(std::ostream& os);
+	virtual bool isNotEqual(MarControlValue *v);
+	virtual MarControlValue* sum(MarControlValue *v);
+	virtual MarControlValue* subtract(MarControlValue *v);
+	virtual MarControlValue* multiply(MarControlValue *v);
+	virtual MarControlValue* divide(MarControlValue *v);
+	bool isInvalid() { return &value_ == &invalidValue; }
+};
+
+// To avoid the compiler complaints
+inline std::string operator-(std::string& , std::string&) { return ""; }
+inline std::string operator*(std::string& , std::string&) { return ""; }
+inline std::string operator/(std::string& , std::string&) { return ""; }
 
 /************************************************************************/
 /* MarControlValueT template implementation                             */
@@ -197,6 +252,13 @@ MarControlValueT<T>::set(T &val)
 	value_ = val;
 }
 
+inline
+void
+MarControlValueT<bool>::set(bool &val)
+{
+	value_ = val;
+}
+
 template<class T>
 const T&
 MarControlValueT<T>::get() const
@@ -223,6 +285,74 @@ MarControlValueT<T>::isNotEqual(MarControlValue *v)
 	}
 	else //if v1 and v2 refer to the same object, they must be equal (=> return false)
 		return false;
+}
+
+template<class T>
+MarControlValue*
+MarControlValueT<T>::sum(MarControlValue *v)
+{
+	MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(v);
+	if(ptr)
+	{
+		std::ostringstream sstr;
+		sstr << "[MarControlValueT::sum] Trying to sum different types of MarControlValue. "
+			<< "(" << this->getSType() << " with " << v->getSType() << ")";
+		MRSWARN(sstr.str());
+		return false;
+	}
+
+	return new MarControlValueT<T>(value_+ptr->value_);
+}
+
+template<class T>
+MarControlValue*
+MarControlValueT<T>::subtract(MarControlValue *v)
+{
+	MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(v);
+	if(ptr)
+	{
+		std::ostringstream sstr;
+		sstr << "[MarControlValueT::subtract] Trying to subtract different types of MarControlValue. "
+			<< "(" << this->getSType() << " with " << v->getSType() << ")";
+		MRSWARN(sstr.str());
+		return false;
+	}
+
+	return new MarControlValueT<T>(value_+ptr->value_);
+}
+
+template<class T>
+MarControlValue*
+MarControlValueT<T>::multiply(MarControlValue *v)
+{
+	MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(v);
+	if(ptr)
+	{
+		std::ostringstream sstr;
+		sstr << "[MarControlValueT::multiply] Trying to multiply different types of MarControlValue. "
+			<< "(" << this->getSType() << " with " << v->getSType() << ")";
+		MRSWARN(sstr.str());
+		return false;
+	}
+
+	return new MarControlValueT<T>(value_*ptr->value_);
+}
+
+template<class T>
+MarControlValue*
+MarControlValueT<T>::divide(MarControlValue *v)
+{
+	MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(v);
+	if(ptr)
+	{
+		std::ostringstream sstr;
+		sstr << "[MarControlValueT::divide] Trying to divide different types of MarControlValue. "
+			<< "(" << this->getSType() << " with " << v->getSType() << ")";
+		MRSWARN(sstr.str());
+		return false;
+	}
+
+	return new MarControlValueT<T>(value_/ptr->value_);
 }
 
 template<class T>

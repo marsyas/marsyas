@@ -94,6 +94,11 @@ public:
 	friend inline mrs_real operator*(const mrs_real& v1, const MarControlPtr& v2);
 	friend inline mrs_real operator/(const MarControlPtr& v1, const mrs_real& v2);
 	friend inline mrs_real operator/(const mrs_real& v1, const MarControlPtr& v2);
+
+	friend inline MarControlPtr operator+(const MarControlPtr& v1, const MarControlPtr& v2);
+	friend inline MarControlPtr operator-(const MarControlPtr& v1, const MarControlPtr& v2);
+	friend inline MarControlPtr operator*(const MarControlPtr& v1, const MarControlPtr& v2);
+	friend inline MarControlPtr operator/(const MarControlPtr& v1, const MarControlPtr& v2);
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -203,6 +208,11 @@ public:
 	friend inline mrs_real operator*(const mrs_real& v1, const MarControl& v2);
 	friend inline mrs_real operator/(const MarControl& v1, const mrs_real& v2);
 	friend inline mrs_real operator/(const mrs_real& v1, const MarControl& v2);
+
+	friend inline MarControl operator+(const MarControl& v1, const MarControl& v2);
+	friend inline MarControl operator-(const MarControl& v1, const MarControl& v2);
+	friend inline MarControl operator*(const MarControl& v1, const MarControl& v2);
+	friend inline MarControl operator/(const MarControl& v1, const MarControl& v2);
 
 #ifdef MARSYAS_QT
 protected:
@@ -322,6 +332,26 @@ inline mrs_real operator/(const MarControlPtr& v1, const mrs_real& v2)
 inline mrs_real operator/(const mrs_real& v1, const MarControlPtr& v2)
 {
 	return v1/(*v2.control_);
+}
+
+inline MarControlPtr operator+(const MarControlPtr& v1, const MarControlPtr& v2)
+{ 
+	return (*v1.control_)+(*v2.control_); 
+}
+
+inline MarControlPtr operator-(const MarControlPtr& v1, const MarControlPtr& v2) 
+{
+	return (*v1.control_)-(*v2.control_); 
+}
+
+inline MarControlPtr operator*(const MarControlPtr& v1, const MarControlPtr& v2)
+{ 
+	return (*v1.control_)*(*v2.control_); 
+}
+
+inline MarControlPtr operator/(const MarControlPtr& v1, const MarControlPtr& v2)
+{
+	return (*v1.control_)/(*v2.control_);
 }
 
 /************************************************************************/
@@ -879,6 +909,46 @@ operator/(const mrs_real& v1, const MarControl& v2)
 		return false;
 	}
 	return v1 / r2;
+}
+
+inline
+MarControl
+operator+(const MarControl& v1, const MarControl& v2)
+{
+	MarControlValue *val = v1.value_->sum(v2.value_);
+	MarControl ret(val);
+	delete val;
+	return ret;
+}
+
+inline
+MarControl
+operator-(const MarControl& v1, const MarControl& v2)
+{
+	MarControlValue *val = v1.value_->subtract(v2.value_);
+	MarControl ret(val);
+	delete val;
+	return ret;
+}
+
+inline
+MarControl
+operator*(const MarControl& v1, const MarControl& v2)
+{
+	MarControlValue *val = v1.value_->multiply(v2.value_);
+	MarControl ret(val);
+	delete val;
+	return ret;
+}
+
+inline
+MarControl
+operator/(const MarControl& v1, const MarControl& v2)
+{
+	MarControlValue *val = v1.value_->divide(v2.value_);
+	MarControl ret(val);
+	delete val;
+	return ret;
 }
 
 // #ifdef MARSYAS_QT

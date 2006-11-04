@@ -40,8 +40,8 @@ namespace Marsyas
 		//(for clarity sake, we use the ctrl_ prefix so these "pointers"
 		//can be easly identified through out the code.. but this is not
 		//mandatory, just recommended)
-		MarControlPtr ctrl_myCtrl1_;
-		MarControlPtr ctrl_myCtrl2_;
+		MarControlPtr ctrl_gain_;
+		MarControlPtr ctrl_repeats_;
 
 		void myUpdate();
 

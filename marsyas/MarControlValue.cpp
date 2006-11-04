@@ -131,3 +131,130 @@ MarControlValueT<realvec>::serialize(std::ostream& os)
 	os << value_;
 	return os;
 }
+
+MarControlValue*
+MarControlValueT<realvec>::sum(MarControlValue *v)
+{
+	MRSASSERT(0); //not implemented
+	return 0;
+}
+
+MarControlValue*
+MarControlValueT<realvec>::subtract(MarControlValue *v)
+{
+	MRSASSERT(0); //not implemented
+	return 0;
+}
+
+MarControlValue*
+MarControlValueT<realvec>::multiply(MarControlValue *v)
+{
+	MRSASSERT(0); //not implemented
+	return 0;
+}
+
+MarControlValue*
+MarControlValueT<realvec>::divide(MarControlValue *v)
+{
+	MRSASSERT(0); //not implemented
+	return 0;
+}
+
+/************************************************************************/
+/* MarControlValueT bool specialization                                 */
+/************************************************************************/
+bool MarControlValueT<bool>::invalidValue;
+
+// constructor specialization for realvec
+MarControlValueT<bool>::MarControlValueT(bool value)
+{
+	value_ = value;
+	type_ = mar_bool;
+}
+
+MarControlValueT<bool>::MarControlValueT(const MarControlValueT& val)
+{
+	value_ = val.value_;
+	type_ = mar_bool;
+}
+
+MarControlValueT<bool>& 
+MarControlValueT<bool>::operator=(const MarControlValueT& a)
+{
+	if (this != &a)
+	{
+		value_ = a.value_;
+		type_ = a.type_;
+	}
+	return *this;
+}
+
+MarControlValue*
+MarControlValueT<bool>::clone()
+{
+	return new MarControlValueT<bool>(*this);
+}
+
+MarControlValue*
+MarControlValueT<bool>::create()
+{
+	return new MarControlValueT<bool>(false);
+}
+
+const bool&
+MarControlValueT<bool>::get() const
+{
+	return value_;
+}
+
+bool
+MarControlValueT<bool>::isNotEqual(MarControlValue *v)
+{
+	if(this != v)//if referring to different objects, check if their contents is different...
+	{
+		if (type_ != mar_bool)
+		{
+			MRSWARN("Types of MarControlValue are different");
+		}
+
+		return value_ != dynamic_cast<MarControlValueT<bool>*>(v)->get();
+	}
+	else //if v1 and v2 refer to the same object, they must be equal (=> return false)
+		return false;
+}
+
+std::ostream&
+MarControlValueT<bool>::serialize(std::ostream& os)
+{
+	os << value_;
+	return os;
+}
+
+MarControlValue*
+MarControlValueT<bool>::sum(MarControlValue *v)
+{
+	MRSASSERT(0); //not implemented
+	return 0;
+}
+
+MarControlValue*
+MarControlValueT<bool>::subtract(MarControlValue *v)
+{
+	MRSASSERT(0); //not implemented
+	return 0;
+}
+
+MarControlValue*
+MarControlValueT<bool>::multiply(MarControlValue *v)
+{
+	MRSASSERT(0); //not implemented
+	return 0;
+}
+
+MarControlValue*
+MarControlValueT<bool>::divide(MarControlValue *v)
+{
+	MRSASSERT(0); //not implemented
+	return 0;
+}
+
