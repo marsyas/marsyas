@@ -68,7 +68,8 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	BaseAudioSink.$(OBJEXT) AudioSource.$(OBJEXT) \
 	AudioSink.$(OBJEXT) SoundFileSink.$(OBJEXT) \
 	AuFileSink.$(OBJEXT) WavFileSink.$(OBJEXT) FileName.$(OBJEXT) \
-	MarSystem.$(OBJEXT) MarControlManager.$(OBJEXT) \
+	MarSystem.$(OBJEXT) MarSystemTemplateAdvanced.$(OBJEXT) \
+	MarSystemTemplateBasic.$(OBJEXT) MarControlManager.$(OBJEXT) \
 	MarControl.$(OBJEXT) MarControlValue.$(OBJEXT) Gain.$(OBJEXT) \
 	Spectrum.$(OBJEXT) InvSpectrum.$(OBJEXT) Collection.$(OBJEXT) \
 	fft.$(OBJEXT) Rms.$(OBJEXT) PlotSink.$(OBJEXT) \
@@ -79,27 +80,27 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	ShiftOutput.$(OBJEXT) Shifter.$(OBJEXT) PvFold.$(OBJEXT) \
 	PvConvert.$(OBJEXT) PeConvert.$(OBJEXT) PeClust.$(OBJEXT) \
 	PeOverlapadd.$(OBJEXT) PeResidual.$(OBJEXT) \
-	PvConvolve.$(OBJEXT) PvOscBank.$(OBJEXT) PvUnconvert.$(OBJEXT) \
-	PvOverlapadd.$(OBJEXT) Windowing.$(OBJEXT) Hamming.$(OBJEXT) \
-	Fanout.$(OBJEXT) Fanin.$(OBJEXT) Negative.$(OBJEXT) \
-	SineSource.$(OBJEXT) MarSystemManager.$(OBJEXT) \
-	PowerSpectrum.$(OBJEXT) Centroid.$(OBJEXT) Rolloff.$(OBJEXT) \
-	Flux.$(OBJEXT) Memory.$(OBJEXT) Mean.$(OBJEXT) \
-	StandardDeviation.$(OBJEXT) ZeroCrossings.$(OBJEXT) \
-	Thread.$(OBJEXT) Socket.$(OBJEXT) GaussianClassifier.$(OBJEXT) \
-	AbsSoundFileSink.$(OBJEXT) AbsSoundFileSource.$(OBJEXT) \
-	Confidence.$(OBJEXT) MarFileSink.$(OBJEXT) WekaSink.$(OBJEXT) \
-	MFCC.$(OBJEXT) SCF.$(OBJEXT) SFM.$(OBJEXT) \
-	WaveletPyramid.$(OBJEXT) WaveletStep.$(OBJEXT) Daub4.$(OBJEXT) \
-	OnePole.$(OBJEXT) RtAudio.$(OBJEXT) Accumulator.$(OBJEXT) \
-	Shredder.$(OBJEXT) NetworkSocket.$(OBJEXT) \
-	NetworkTCPSource.$(OBJEXT) NetworkTCPSink.$(OBJEXT) \
-	NetworkUDPSource.$(OBJEXT) NetworkUDPSink.$(OBJEXT) \
-	Messager.$(OBJEXT) Talk.$(OBJEXT) TimeLine.$(OBJEXT) \
-	Color.$(OBJEXT) Communicator.$(OBJEXT) Server.$(OBJEXT) \
-	AbsMax.$(OBJEXT) FullWaveRectifier.$(OBJEXT) Norm.$(OBJEXT) \
-	DownSampler.$(OBJEXT) WaveletBands.$(OBJEXT) Sum.$(OBJEXT) \
-	PeakPeriods2BPM.$(OBJEXT) Histogram.$(OBJEXT) \
+	PeUtilities.$(OBJEXT) PvConvolve.$(OBJEXT) PvOscBank.$(OBJEXT) \
+	PvUnconvert.$(OBJEXT) PvOverlapadd.$(OBJEXT) \
+	Windowing.$(OBJEXT) Hamming.$(OBJEXT) Fanout.$(OBJEXT) \
+	Fanin.$(OBJEXT) Negative.$(OBJEXT) SineSource.$(OBJEXT) \
+	MarSystemManager.$(OBJEXT) PowerSpectrum.$(OBJEXT) \
+	Centroid.$(OBJEXT) Rolloff.$(OBJEXT) Flux.$(OBJEXT) \
+	Memory.$(OBJEXT) Mean.$(OBJEXT) StandardDeviation.$(OBJEXT) \
+	ZeroCrossings.$(OBJEXT) Thread.$(OBJEXT) Socket.$(OBJEXT) \
+	GaussianClassifier.$(OBJEXT) AbsSoundFileSink.$(OBJEXT) \
+	AbsSoundFileSource.$(OBJEXT) Confidence.$(OBJEXT) \
+	MarFileSink.$(OBJEXT) WekaSink.$(OBJEXT) MFCC.$(OBJEXT) \
+	SCF.$(OBJEXT) SFM.$(OBJEXT) WaveletPyramid.$(OBJEXT) \
+	WaveletStep.$(OBJEXT) Daub4.$(OBJEXT) OnePole.$(OBJEXT) \
+	RtAudio.$(OBJEXT) Accumulator.$(OBJEXT) Shredder.$(OBJEXT) \
+	NetworkSocket.$(OBJEXT) NetworkTCPSource.$(OBJEXT) \
+	NetworkTCPSink.$(OBJEXT) NetworkUDPSource.$(OBJEXT) \
+	NetworkUDPSink.$(OBJEXT) Messager.$(OBJEXT) Talk.$(OBJEXT) \
+	TimeLine.$(OBJEXT) Color.$(OBJEXT) Communicator.$(OBJEXT) \
+	Server.$(OBJEXT) AbsMax.$(OBJEXT) FullWaveRectifier.$(OBJEXT) \
+	Norm.$(OBJEXT) DownSampler.$(OBJEXT) WaveletBands.$(OBJEXT) \
+	Sum.$(OBJEXT) PeakPeriods2BPM.$(OBJEXT) Histogram.$(OBJEXT) \
 	BeatHistoFeatures.$(OBJEXT) MslModel.$(OBJEXT) \
 	CommandLineOptions.$(OBJEXT) RawFileSource.$(OBJEXT) \
 	FM.$(OBJEXT) ANN_node.$(OBJEXT) Annotator.$(OBJEXT) \
@@ -175,6 +176,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/MarEvent.Po ./$(DEPDIR)/MarFileSink.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MarSystem.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MarSystemManager.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/MarSystemTemplateAdvanced.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/MarSystemTemplateBasic.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MaxArgMax.Po ./$(DEPDIR)/Mean.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MeddisHairCell.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Memory.Po ./$(DEPDIR)/MemorySource.Po \
@@ -195,6 +198,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/PeClust.Po ./$(DEPDIR)/PeConvert.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PeOverlapadd.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PeResidual.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/PeUtilities.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PeakPeriods2BPM.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Peaker.Po ./$(DEPDIR)/Peaker1.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PlotSink.Po ./$(DEPDIR)/Plucked.Po \
@@ -307,8 +311,6 @@ VERSION = @VERSION@
 ac_aux_dir = @ac_aux_dir@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
-ac_ct_RANLIB = @ac_ct_RANLIB@
-ac_ct_STRIP = @ac_ct_STRIP@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
@@ -323,23 +325,30 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
+datarootdir = @datarootdir@
+docdir = @docdir@
+dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
+htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
+localedir = @localedir@
 localstatedir = @localstatedir@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
+pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
+psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 subdirs = @subdirs@
@@ -362,13 +371,14 @@ SoundFileSource.h AuFileSource.h \
 WavFileSource.h BaseAudioSink.h \
 AudioSource.h AudioSink.h SoundFileSink.h \
 AuFileSink.h WavFileSink.h FileName.h MarSystem.h \
+MarSystemTemplateAdvanced.h MarSystemTemplateBasic.h \
 MarControlManager.h MarControl.h MarControlValue.h \
 Gain.h Spectrum.h InvSpectrum.h \
 Collection.h fft.h Rms.h PlotSink.h \
 AutoCorrelation.h Peaker.h Peaker1.h HalfWaveRectifier.h \
 TimeStretch.h Conversions.h MaxArgMax.h MinArgMin.h \
 Composite.h Series.h \
- ShiftInput.h ShiftOutput.h Shifter.h PvFold.h PvConvert.h PeConvert.h PeClust.h PeOverlapadd.h PeResidual.h \
+ ShiftInput.h ShiftOutput.h Shifter.h PvFold.h PvConvert.h PeConvert.h PeClust.h PeOverlapadd.h PeResidual.h PeUtilities.h \
 PvConvolve.h PvOscBank.h PvUnconvert.h PvOverlapadd.h Windowing.h Hamming.h \
 Fanout.h Fanin.h Negative.h SineSource.h MarSystemManager.h \
 PowerSpectrum.h Centroid.h Rolloff.h \
@@ -395,13 +405,14 @@ SoundFileSource.cpp AuFileSource.cpp \
 WavFileSource.cpp BaseAudioSink.cpp \
 AudioSource.cpp AudioSink.cpp SoundFileSink.cpp \
 AuFileSink.cpp WavFileSink.cpp FileName.cpp MarSystem.cpp \
+MarSystemTemplateAdvanced.cpp MarSystemTemplateBasic.cpp \
 MarControlManager.cpp MarControl.cpp MarControlValue.cpp \
 Gain.cpp Spectrum.cpp InvSpectrum.cpp \
 Collection.cpp fft.cpp Rms.cpp PlotSink.cpp \
 AutoCorrelation.cpp Peaker.cpp Peaker1.cpp HalfWaveRectifier.cpp \
 TimeStretch.cpp Conversions.cpp MaxArgMax.cpp MinArgMin.cpp \
 Composite.cpp Series.cpp \
-ShiftInput.cpp ShiftOutput.cpp Shifter.cpp PvFold.cpp PvConvert.cpp PeConvert.cpp PeClust.cpp PeOverlapadd.cpp PeResidual.cpp \
+ShiftInput.cpp ShiftOutput.cpp Shifter.cpp PvFold.cpp PvConvert.cpp PeConvert.cpp PeClust.cpp PeOverlapadd.cpp PeResidual.cpp PeUtilities.cpp\
 PvConvolve.cpp PvOscBank.cpp PvUnconvert.cpp PvOverlapadd.cpp Windowing.cpp Hamming.cpp \
 Fanout.cpp Fanin.cpp Negative.cpp SineSource.cpp MarSystemManager.cpp \
 PowerSpectrum.cpp Centroid.cpp Rolloff.cpp \
@@ -579,6 +590,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MarFileSink.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MarSystem.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MarSystemManager.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MarSystemTemplateAdvanced.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MarSystemTemplateBasic.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MaxArgMax.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Mean.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeddisHairCell.Po@am__quote@
@@ -608,6 +621,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeConvert.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeOverlapadd.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeResidual.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeUtilities.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeakPeriods2BPM.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peaker.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peaker1.Po@am__quote@

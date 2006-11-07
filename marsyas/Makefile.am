@@ -33,13 +33,14 @@ SoundFileSource.h AuFileSource.h \
 WavFileSource.h BaseAudioSink.h \
 AudioSource.h AudioSink.h SoundFileSink.h \
 AuFileSink.h WavFileSink.h FileName.h MarSystem.h \
+MarSystemTemplateAdvanced.h MarSystemTemplateBasic.h \
 MarControlManager.h MarControl.h MarControlValue.h \
 Gain.h Spectrum.h InvSpectrum.h \
 Collection.h fft.h Rms.h PlotSink.h \
 AutoCorrelation.h Peaker.h Peaker1.h HalfWaveRectifier.h \
 TimeStretch.h Conversions.h MaxArgMax.h MinArgMin.h \
 Composite.h Series.h \
- ShiftInput.h ShiftOutput.h Shifter.h PvFold.h PvConvert.h PeConvert.h PeClust.h PeOverlapadd.h PeResidual.h \
+ ShiftInput.h ShiftOutput.h Shifter.h PvFold.h PvConvert.h PeConvert.h PeClust.h PeOverlapadd.h PeResidual.h PeUtilities.h \
 PvConvolve.h PvOscBank.h PvUnconvert.h PvOverlapadd.h Windowing.h Hamming.h \
 Fanout.h Fanin.h Negative.h SineSource.h MarSystemManager.h \
 PowerSpectrum.h Centroid.h Rolloff.h \
@@ -67,13 +68,14 @@ SoundFileSource.cpp AuFileSource.cpp \
 WavFileSource.cpp BaseAudioSink.cpp \
 AudioSource.cpp AudioSink.cpp SoundFileSink.cpp \
 AuFileSink.cpp WavFileSink.cpp FileName.cpp MarSystem.cpp \
+MarSystemTemplateAdvanced.cpp MarSystemTemplateBasic.cpp \
 MarControlManager.cpp MarControl.cpp MarControlValue.cpp \
 Gain.cpp Spectrum.cpp InvSpectrum.cpp \
 Collection.cpp fft.cpp Rms.cpp PlotSink.cpp \
 AutoCorrelation.cpp Peaker.cpp Peaker1.cpp HalfWaveRectifier.cpp \
 TimeStretch.cpp Conversions.cpp MaxArgMax.cpp MinArgMin.cpp \
 Composite.cpp Series.cpp \
-ShiftInput.cpp ShiftOutput.cpp Shifter.cpp PvFold.cpp PvConvert.cpp PeConvert.cpp PeClust.cpp PeOverlapadd.cpp PeResidual.cpp \
+ShiftInput.cpp ShiftOutput.cpp Shifter.cpp PvFold.cpp PvConvert.cpp PeConvert.cpp PeClust.cpp PeOverlapadd.cpp PeResidual.cpp PeUtilities.cpp\
 PvConvolve.cpp PvOscBank.cpp PvUnconvert.cpp PvOverlapadd.cpp Windowing.cpp Hamming.cpp \
 Fanout.cpp Fanin.cpp Negative.cpp SineSource.cpp MarSystemManager.cpp \
 PowerSpectrum.cpp Centroid.cpp Rolloff.cpp \
