@@ -67,7 +67,6 @@ namespace Marsyas
 		return instance_;
 	}
 
-
 }
 
 #endif /* MARSYAS_MARCONTROLMANAGER_H	*/

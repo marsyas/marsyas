@@ -1357,7 +1357,7 @@ test_MarControls(string sfName)
 	MarSystem* pnet = mng.create("Series", "net");
 
 	pnet->addMarSystem(mng.create("SoundFileSource", "src"));
-	//pnet->addMarSystem(mng.create("MarSystemTemplateBasic", "basic"));
+	pnet->addMarSystem(mng.create("MarSystemTemplateBasic", "basic"));
 	pnet->addMarSystem(mng.create("MarSystemTemplateAdvanced", "advanced"));
 	pnet->addMarSystem(mng.create("AudioSink", "dest"));
 
@@ -1369,7 +1369,7 @@ test_MarControls(string sfName)
 	//control is to be accessed intensively (e.g. in a for loop), as is this case.
 	//(this control pointer can be somehow seen as an "efficient" link!)
 	MarControlPtr ctrl_notEmpty = pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty");
-	//MarControlPtr ctrl_repeats = pnet->getctrl("MarSystemTemplateBasic/basic/mrs_natural/repeats");
+	MarControlPtr ctrl_repeats = pnet->getctrl("MarSystemTemplateBasic/basic/mrs_natural/repeats");
 
 	//Custom Controls
 	MarControlPtr ctrl_hdr = pnet->getctrl("MarSystemTemplateAdvanced/advanced/mrs_myheader/hdrname");
@@ -1386,8 +1386,14 @@ test_MarControls(string sfName)
 	while(ctrl_notEmpty->isTrue())
 	{
 		pnet->tick();
-		//tmp = (ctrl_repeats->to<mrs_natural>() + 1) % 10;
-		//ctrl_repeats->setValue(tmp); //[!!]
+		// just as an example, let's update the number of repeats in
+		// a cyclic manner (1,2,3,4,5,1,2,3,...)
+		tmp = (ctrl_repeats->to<mrs_natural>() % 5) +1;
+		ctrl_repeats->setValue(tmp);
+		// Since this changes the onSamples of MarSystemTemplateBasic/basic
+		// we must call the Composite update() method, so the size of the 
+		// corresponding slice can be updated accordingly! 
+		pnet->update();
 	}
 
 	cout << "Finished MarControls test!";

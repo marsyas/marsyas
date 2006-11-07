@@ -18,7 +18,7 @@
 
 /** 
 \class MarSystemTemplateAdvanced
-\brief Basic example on how to use controls efficiently in MarSystems
+\brief Advanced example on how to use composite ad custom controls efficiently in MarSystems
 
 */
 
@@ -39,7 +39,7 @@ namespace Marsyas
 		realvec someVec;
 		
 		// some operators are mandatory for all controls!
-		// so we must declare and define them
+		// so we must declare and define them for our custom controls
 		friend bool operator!=(const MyHeader& hdr1, const MyHeader& hdr2);
 		friend MyHeader operator+(MyHeader& hdr1, MyHeader& hdr2);
 		friend MyHeader operator-(MyHeader& hdr1, MyHeader& hdr2);
@@ -55,12 +55,14 @@ namespace Marsyas
 	class MarSystemTemplateAdvanced: public MarSystem
 	{
 	private:
+		std::string someString_;
+
 		//Add specific controls needed by this MarSystem.
 		void addControls();
 
 		//"Pointers" to controls allow efficient access to their values.
 		//(for clarity sake, we use the ctrl_ prefix so these "pointers"
-		//can be easly identified through out the code.. but this is not
+		//can be easily identified through out the code.. but this is not
 		//mandatory, just recommended)
 		MarControlPtr ctrl_header_;
 

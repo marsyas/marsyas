@@ -18,8 +18,7 @@
 
 /** 
 \class MarSystemTemplateAdvanced
-\brief Basic example on how to use controls efficiently in MarSystems
-
+\brief Advanced example on how to use composite ad custom controls efficiently in MarSystems
 */
 
 #include "MarSystemTemplateAdvanced.h"
@@ -49,7 +48,6 @@ MarSystemTemplateAdvanced::MarSystemTemplateAdvanced(const MarSystemTemplateAdva
 	ctrl_header_ = getctrl("mrs_myheader/hdrname");
 }
 
-
 MarSystemTemplateAdvanced::~MarSystemTemplateAdvanced()
 {
 }
@@ -63,6 +61,8 @@ MarSystemTemplateAdvanced::clone() const
 void 
 MarSystemTemplateAdvanced::addControls()
 {
+	someString_ = "";
+
 	// register new custom control in MarControlManager
 	MarControlManager *mcm = MarControlManager::getManager();
 	if (!mcm->isRegistered("mrs_myheader"))
@@ -119,10 +119,12 @@ MarSystemTemplateAdvanced::myUpdate()
 	const MyHeader& hdr = ctrl_header_->to<MyHeader>();
 
 	//e.g. write header to some place (e.g. a file)
-	//(rewrites any file with the same name)
-	ofstream out(hdr.someString.c_str());
-	assert(out.is_open());
-	out << hdr;
+	if(someString_ != hdr.someString)
+	{
+		ofstream out(hdr.someString.c_str());
+		out << hdr;
+		someString_ = hdr.someString;
+	}
 }
 
 void 
@@ -145,9 +147,11 @@ MarSystemTemplateAdvanced::myProcess(realvec& in, realvec& out)
 				outfile << in(o,t) << endl;
 		}
 }
-
-// some operators are mandatory so any control can be compared, etc
-// so we must declare and define them
+/************************************************************************/
+/* Custom Control Operators                                                                     */
+/************************************************************************/
+// some operators are mandatory for all controls!
+// so we must declare and define them for our custom controls
 bool
 Marsyas::operator!=(const MyHeader& hdr1, const MyHeader& hdr2)
 {

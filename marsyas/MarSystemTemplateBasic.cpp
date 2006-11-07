@@ -118,6 +118,13 @@ MarSystemTemplateBasic::myUpdate()
 	
 	// here it's possible to see how the "repeats" control
 	// affects the onSamples control (i.e. output number of samples)
+	//
+	// IMPORTANT: Since this changes the onSamples control, if this 
+	// MarSystem is inside a Composite, the Composite::update() must be
+	// called afterwards in the main code, otherwise the size of the 
+	// corresponding slice will not be updated accordingly! 
+	// (see marsyasTests.cpp >> test_MarControls() )
+	//
 	ctrl_onSamples_->setValue(ctrl_inSamples_ * ctrl_repeats_, NOUPDATE);
 
 	// NOTE:
