@@ -14,6 +14,9 @@
 #include "Gain.h"
 #include "RtAudio.h"
 
+#include "MarSystemTemplateBasic.h"
+#include "MarSystemTemplateAdvanced.h"
+
 
 using namespace std;
 using namespace Marsyas;
@@ -190,14 +193,11 @@ test_audiodevices()
   std::cout << std::endl;
 
   delete audio;
-
 }
-
 
 void 
 test_schedulerExpr()
 {
-  
   MarSystemManager mng;
   
   // Create a series Composite
@@ -262,6 +262,8 @@ test_fanoutswitch()
   // tick to check the result 
   // PlotSinks are used for output 
   pnet->tick();
+
+	delete pnet;
 }
 
 void 
@@ -289,6 +291,8 @@ test_rmsilence(string sfName)
     }
   
   cout << "Finished removing silences. Output is " << "srm" + fname.name() + ".wav" << endl;
+
+	delete rmnet;
 }
 
 void
@@ -318,7 +322,7 @@ test_marsystemIO()
   
   cout << *rsrc << endl;
   
-  
+  delete pnet;
 }
 
 
@@ -358,6 +362,8 @@ test_mixer(string sfName0, string sfName1)
     {
       pnet->tick();
     }
+
+	delete pnet;
 }
 
 void 
@@ -385,7 +391,8 @@ test_fft(string sfName)
     }
 
   cout << (*series) << endl;
-  delete series;
+  
+	delete series;
 }
 
 void 
@@ -425,6 +432,8 @@ test_parallel()
   parallel->process(in, out);
   
   cout << out << endl;
+
+	delete parallel;
 }
 
 void 
@@ -467,6 +476,8 @@ test_cascade()
   cascade->process(in, out);
   
   cout << out << endl;
+
+	delete cascade;
 }
 
 void 
@@ -550,6 +561,8 @@ test_knn()
   knn->process(input2, output2);
 
   cout << "PREDICT: " << output2 << endl;
+
+	delete knn;
 }
 
 // test filter 
@@ -630,6 +643,8 @@ test_filter()
 
   f->process(in, out);
   cout << out << endl;
+
+	delete f;
 }
 
 // test input,processing and sonification 
@@ -756,6 +771,9 @@ test_vicon(string vfName)
       
   // cout << viconNet->getctrl("ViconFileSource/vsrc/mrs_string/markers") << endl;
   // cout << "Sample Rate: " << viconNet->getctrl("ViconFileSource/vsrc/mrs_real/israte") << endl;
+
+	delete viconNet;
+	delete playbacknet;
 }
 
 void
@@ -1067,6 +1085,8 @@ test_LPC_LSP(string sfName)
     }
 
   cout << endl << "LPCwarped and LSP processing finished!";
+
+	delete input;
 	*/
 
 	MarSystemManager mng;
@@ -1100,6 +1120,8 @@ test_LPC_LSP(string sfName)
 	}
 
 	cout << endl << "LPCwarped and LSP processing finished!";
+
+	delete input;
 }
 
 void
@@ -1318,7 +1340,59 @@ test_realvec()
   getchar();
 
 #endif
+}
 
+void
+test_MarControls(string sfName)
+{
+	cout << "TEST: new MarControl API" << endl;
+	cout << "Using input audio file: " << sfName << endl;
+
+	MarSystemManager mng;
+
+	//register control example/template MarSystems
+	mng.registerPrototype("MarSystemTemplateBasic", new MarSystemTemplateBasic("mtbp"));
+	mng.registerPrototype("MarSystemTemplateAdvanced", new MarSystemTemplateAdvanced("mtap"));
+	
+	MarSystem* pnet = mng.create("Series", "net");
+
+	pnet->addMarSystem(mng.create("SoundFileSource", "src"));
+	//pnet->addMarSystem(mng.create("MarSystemTemplateBasic", "basic"));
+	pnet->addMarSystem(mng.create("MarSystemTemplateAdvanced", "advanced"));
+	pnet->addMarSystem(mng.create("AudioSink", "dest"));
+
+	//set sound file to be opened
+	pnet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+
+	//the new way to use controls (using a "smart" pointer MarControlPtr object)
+	//in fact only makes sense to use this new form of controls' access if the
+	//control is to be accessed intensively (e.g. in a for loop), as is this case.
+	//(this control pointer can be somehow seen as an "efficient" link!)
+	MarControlPtr ctrl_notEmpty = pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty");
+	//MarControlPtr ctrl_repeats = pnet->getctrl("MarSystemTemplateBasic/basic/mrs_natural/repeats");
+
+	//Custom Controls
+	MarControlPtr ctrl_hdr = pnet->getctrl("MarSystemTemplateAdvanced/advanced/mrs_myheader/hdrname");
+	MyHeader hdr;
+	hdr.someString = "myHeader.txt";
+	hdr.someFlag = true;
+	hdr.someValue = 666;
+	hdr.someVec = realvec(2);
+	ctrl_hdr->setValue(hdr);
+
+	pnet->updctrl("MarSystemTemplateBasic/basic/mrs_natural/repeats", 2);
+
+	mrs_natural tmp;
+	while(ctrl_notEmpty->isTrue())
+	{
+		pnet->tick();
+		//tmp = (ctrl_repeats->to<mrs_natural>() + 1) % 10;
+		//ctrl_repeats->setValue(tmp); //[!!]
+	}
+
+	cout << "Finished MarControls test!";
+
+	delete pnet;
 }
 
 int
@@ -1380,6 +1454,8 @@ main(int argc, const char **argv)
     test_MATLABengine();
   else if (testName == "LPC_LSP")
     test_LPC_LSP(fname0);
+	else if (testName == "MarControls")
+		test_MarControls(fname0);
   else 
     {
       cout << "Unsupported test " << endl;

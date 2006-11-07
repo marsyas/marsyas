@@ -23,6 +23,7 @@
 */
 
 #include "MarControlValue.h"
+#include "MarControlManager.h"
 
 using namespace std;
 using namespace Marsyas;
@@ -30,23 +31,16 @@ using namespace Marsyas;
 /************************************************************************/
 /* MarControlValue implementation                                       */
 /************************************************************************/
-int
+string
 MarControlValue::getType() const
 {
 	return type_;
 }
 
-string 
-MarControlValue::getSType() const
+string
+MarControlValue::getRegisteredType()
 {
-	string res;
-	if(getType() == mar_null) res = "mrs_null";
-	if(getType() == mar_string) res = "mrs_string";
-	if(getType() == mar_real) res = "mrs_real";
-	if(getType() == mar_vec) res = "mrs_realvec";
-	if(getType() == mar_natural) res = "mrs_natural";
-	if(getType() == mar_bool) res = "mrs_bool";
-	return res; 
+	return MarControlManager::getManager()->getRegisteredType(this->getTypeID());
 }
 
 /************************************************************************/
@@ -59,14 +53,14 @@ MarControlValueT<realvec>::MarControlValueT(realvec value)
 {
 	value_.create(value.getSize());
 	value_ = value;
-	type_ = mar_vec;
+	type_ = "mrs_realvec";
 }
 
 MarControlValueT<realvec>::MarControlValueT(const MarControlValueT& val)
 {
 	value_.create(val.value_.getSize());
 	value_ = val.value_;
-	type_ = mar_vec;
+	type_ = "mrs_realvec";
 }
 
 MarControlValueT<realvec>& 
@@ -93,16 +87,6 @@ MarControlValueT<realvec>::create()
 	return new MarControlValueT<realvec>(realvec());
 }
 
-void
-MarControlValueT<realvec>::set(realvec &val)
-{
-	if(value_.getSize() != val.getSize()) 
-	{
-		value_.create(val.getSize());
-	}
-	value_ = val;
-}
-
 const realvec&
 MarControlValueT<realvec>::get() const
 {
@@ -114,7 +98,7 @@ MarControlValueT<realvec>::isNotEqual(MarControlValue *v)
 {
 	if(this != v)//if referring to different objects, check if their contents is different...
 	{
-		if (type_ != mar_vec)
+		if (type_ != "mrs_realvec")
 		{
 			MRSWARN("Types of MarControlValue are different");
 		}
@@ -123,6 +107,12 @@ MarControlValueT<realvec>::isNotEqual(MarControlValue *v)
 	}
 	else //if v1 and v2 refer to the same object, they must be equal (=> return false)
 		return false;
+}
+
+void
+MarControlValueT<realvec>::createFromStream(std::istream& in)
+{
+	in >> value_;
 }
 
 std::ostream&
@@ -169,13 +159,13 @@ bool MarControlValueT<bool>::invalidValue;
 MarControlValueT<bool>::MarControlValueT(bool value)
 {
 	value_ = value;
-	type_ = mar_bool;
+	type_ = "mrs_bool";
 }
 
 MarControlValueT<bool>::MarControlValueT(const MarControlValueT& val)
 {
 	value_ = val.value_;
-	type_ = mar_bool;
+	type_ = "mrs_bool";
 }
 
 MarControlValueT<bool>& 
@@ -207,12 +197,18 @@ MarControlValueT<bool>::get() const
 	return value_;
 }
 
+void
+MarControlValueT<bool>::createFromStream(std::istream& in)
+{
+	in >> value_;
+}
+
 bool
 MarControlValueT<bool>::isNotEqual(MarControlValue *v)
 {
 	if(this != v)//if referring to different objects, check if their contents is different...
 	{
-		if (type_ != mar_bool)
+		if (type_ != "mrs_bool")
 		{
 			MRSWARN("Types of MarControlValue are different");
 		}

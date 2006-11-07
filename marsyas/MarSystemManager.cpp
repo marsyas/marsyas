@@ -314,25 +314,25 @@ MarSystemManager::~MarSystemManager()
 {
   map<string, MarSystem *>::const_iterator iter;
   
-  for (iter=registry.begin(); iter != registry.end(); ++iter)
+  for (iter=registry_.begin(); iter != registry_.end(); ++iter)
     {
       delete iter->second;
     }
-  registry.clear();
+  registry_.clear();
 }
 
 void 
-MarSystemManager::registerPrototype(string name, MarSystem *marsystem)
+MarSystemManager::registerPrototype(string type, MarSystem *marsystem)
 {
-  registry[name] = marsystem;
+  registry_[type] = marsystem;
 }
 
 MarSystem* 
 MarSystemManager::getPrototype(string type) 
 {
   
-  if (registry.find(type) != registry.end())
-    return (MarSystem *)(registry[type])->clone();
+  if (registry_.find(type) != registry_.end())
+    return (MarSystem *)(registry_[type])->clone();
   else 
     {
       MRSWARN("MarSystemManager::getPrototype No prototype found for " + type);
@@ -343,9 +343,9 @@ MarSystemManager::getPrototype(string type)
 MarSystem* 
 MarSystemManager::create(string type, string name) 
 {
-  if (registry.find(type) != registry.end())
+  if (registry_.find(type) != registry_.end())
     {
-      MarSystem* m = (MarSystem *)(registry[type])->clone();
+      MarSystem* m = (MarSystem *)(registry_[type])->clone();
       m->setName(name);
       return m;
     }
@@ -398,7 +398,7 @@ MarSystemManager::getMarSystem(istream& is)
     
     msys->update();
     
-    workingSet[msys->getName()] = msys; // add to workingSet
+    workingSet_[msys->getName()] = msys; // add to workingSet
     
     is >> skipstr;
     is >> skipstr;
@@ -513,7 +513,7 @@ vector <string> MarSystemManager::registeredPrototypes()
 
     map<string, MarSystem *>::const_iterator iter;
 
-    for (iter=registry.begin(); iter != registry.end(); ++iter)
+    for (iter=registry_.begin(); iter != registry_.end(); ++iter)
     {
         retVal.push_back (iter->first);
     }
@@ -526,7 +526,7 @@ vector <string> MarSystemManager::registeredPrototypes()
 // Added by Stuart Bray Dec 2004. invoked by MslModel
 map<string, MarSystem*> MarSystemManager::getWorkingSet(istream& is) {
   getMarSystem(is);
-  return workingSet;
+  return workingSet_;
 }
 
 //
@@ -538,5 +538,5 @@ map<string, MarSystem*> MarSystemManager::getWorkingSet(istream& is) {
 //
 bool MarSystemManager::isRegistered (string name)
 {
-   return (registry.find(name) != registry.end());
+   return (registry_.find(name) != registry_.end());
 }

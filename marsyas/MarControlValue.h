@@ -32,21 +32,10 @@
 namespace Marsyas
 {
 
-enum types_
-{
-    mar_null = 0,
-    mar_real,
-    mar_bool,
-    mar_natural,
-    mar_string,
-    mar_vec,
-		mar_custom
-};
-
 class MarControlValue
 {
 protected:
-	int type_;
+	std::string type_;
 
 protected:
 	MarControlValue() {} // can't be directly created (use MarControl or MarControlValueT)
@@ -57,10 +46,16 @@ public:
 	virtual MarControlValue* clone() = 0;
 	virtual MarControlValue* create() = 0;
 
-	virtual int	MarControlValue::getType() const ;
-	std::string MarControlValue::getSType() const;
+	virtual std::string getTypeID() = 0;
+	// workaround method to avoid circular dependencies
+	std::string getRegisteredType();
+
+	virtual std::string	MarControlValue::getType() const ;
+
+	//virtual MarControlValue*(*)(std::istream&) getStreamCreationFunc() = 0;
 
 	// workaround - virtual member functions to overload friend operators
+	virtual void createFromStream(std::istream&) = 0;
 	// for:	friend std::ostream& operator<<(std::ostream&, const MarControl& ctrl);
 	virtual std::ostream& serialize(std::ostream& os) = 0;
 	// for:	friend bool operator!=(MarControlValue& v1, MarControlValue& v2)
@@ -84,6 +79,7 @@ public:
 	static T invalidValue;
 
 public:
+	MarControlValueT();
 	MarControlValueT(T value);
   MarControlValueT(const MarControlValueT& a);
 
@@ -94,6 +90,8 @@ public:
 	virtual MarControlValue* clone();
 	virtual MarControlValue* create();
 	
+	virtual std::string getTypeID();
+
 	//setters
 	void set(MarControlValue *val);
 	void set(T &re);
@@ -101,6 +99,7 @@ public:
 	//getters
 	const T& get() const;
   
+	virtual void createFromStream(std::istream&);
 	virtual std::ostream& serialize(std::ostream& os);
 	virtual bool isNotEqual(MarControlValue *v);
 	virtual MarControlValue* sum(MarControlValue *v);
@@ -130,6 +129,8 @@ public:
 	virtual MarControlValue* clone();
 	virtual MarControlValue* create();
 
+	virtual std::string getTypeID();
+
 	//setters
 	inline void set(MarControlValue *val);
 	inline void set(realvec &re);
@@ -137,6 +138,7 @@ public:
 	//getters
 	const realvec& get() const;
 
+	virtual void createFromStream(std::istream&);
 	virtual std::ostream& serialize(std::ostream& os);
 	virtual bool isNotEqual(MarControlValue *v);
 	virtual MarControlValue* sum(MarControlValue *v);
@@ -164,6 +166,8 @@ public:
 
 	MarControlValueT& operator=(const MarControlValueT& a);
 
+	virtual std::string getTypeID();
+
 	virtual MarControlValue* clone();
 	virtual MarControlValue* create();
 
@@ -174,6 +178,7 @@ public:
 	//getters
 	const bool& get() const;
 
+	virtual void createFromStream(std::istream&);
 	virtual std::ostream& serialize(std::ostream& os);
 	virtual bool isNotEqual(MarControlValue *v);
 	virtual MarControlValue* sum(MarControlValue *v);
@@ -195,21 +200,47 @@ template<class T>
 T MarControlValueT<T>::invalidValue;
 
 template<class T>
+MarControlValueT<T>::MarControlValueT()
+{
+	value_ = T();
+
+	// simple tests are used for basic types for efficiency purposes
+	if (typeid(T) == typeid(mrs_real))
+		type_ = "mrs_real";
+	else if (typeid(T) == typeid(mrs_natural))
+		type_ = "mrs_natural";
+	else if (typeid(T) == typeid(std::string))
+		type_ = "mrs_string";
+	else if (typeid(T) == typeid(realvec))
+		type_ = "mrs_realvec";
+	else if (typeid(T) == typeid(bool))
+		type_ = "mrs_bool";
+	else
+	{
+		type_ = this->getRegisteredType();		
+	}
+}
+
+template<class T>
 MarControlValueT<T>::MarControlValueT(T value)
 {
 	value_ = value;
+
+	// simple tests are used for basic types for efficiency purposes
 	if (typeid(T) == typeid(mrs_real))
-		type_ = mar_real;
+		type_ = "mrs_real";
 	else if (typeid(T) == typeid(mrs_natural))
-		type_ = mar_natural;
+		type_ = "mrs_natural";
 	else if (typeid(T) == typeid(std::string))
-		type_ = mar_string;
+		type_ = "mrs_string";
 	else if (typeid(T) == typeid(realvec))
-		type_ = mar_vec;
+		type_ = "mrs_realvec";
 	else if (typeid(T) == typeid(bool))
-		type_ = mar_bool;
+		type_ = "mrs_bool";
 	else
-		type_ = mar_custom;
+	{
+		type_ = this->getRegisteredType();		
+	}
 }
 
 template<class T>
@@ -246,9 +277,41 @@ MarControlValueT<T>::create()
 }
 
 template<class T>
+std::string
+MarControlValueT<T>::getTypeID()
+{
+	return typeid(T).name();
+}
+
+inline
+std::string
+MarControlValueT<realvec>::getTypeID()
+{
+	return typeid(realvec).name();
+}
+
+inline
+std::string
+MarControlValueT<bool>::getTypeID()
+{
+	return typeid(bool).name();
+}
+
+template<class T>
 void
 MarControlValueT<T>::set(T &val)
 {
+	value_ = val;
+}
+
+inline
+void
+MarControlValueT<realvec>::set(realvec &val)
+{
+	if(value_.getSize() != val.getSize()) 
+	{
+		value_.create(val.getSize());
+	}
 	value_ = val;
 }
 
@@ -267,6 +330,13 @@ MarControlValueT<T>::get() const
 }
 
 template<class T>
+void
+MarControlValueT<T>::createFromStream(std::istream& in)
+{
+	in >> value_;
+}
+
+template<class T>
 bool
 MarControlValueT<T>::isNotEqual(MarControlValue *v)
 {
@@ -276,7 +346,7 @@ MarControlValueT<T>::isNotEqual(MarControlValue *v)
 		{
 			std::ostringstream sstr;
 			sstr << "[MarControlValueT::isNotEqual] Trying to compare different types of MarControlValue. "
-				<< "(" << this->getSType() << " with " << v->getSType() << ")";
+				<< "(" << this->getType() << " with " << v->getType() << ")";
 			MRSWARN(sstr.str());
 			return false;
 		}
@@ -292,11 +362,11 @@ MarControlValue*
 MarControlValueT<T>::sum(MarControlValue *v)
 {
 	MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(v);
-	if(ptr)
+	if(!ptr)
 	{
 		std::ostringstream sstr;
 		sstr << "[MarControlValueT::sum] Trying to sum different types of MarControlValue. "
-			<< "(" << this->getSType() << " with " << v->getSType() << ")";
+			<< "(" << this->getType() << " with " << v->getType() << ")";
 		MRSWARN(sstr.str());
 		return false;
 	}
@@ -309,11 +379,11 @@ MarControlValue*
 MarControlValueT<T>::subtract(MarControlValue *v)
 {
 	MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(v);
-	if(ptr)
+	if(!ptr)
 	{
 		std::ostringstream sstr;
 		sstr << "[MarControlValueT::subtract] Trying to subtract different types of MarControlValue. "
-			<< "(" << this->getSType() << " with " << v->getSType() << ")";
+			<< "(" << this->getType() << " with " << v->getType() << ")";
 		MRSWARN(sstr.str());
 		return false;
 	}
@@ -326,11 +396,11 @@ MarControlValue*
 MarControlValueT<T>::multiply(MarControlValue *v)
 {
 	MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(v);
-	if(ptr)
+	if(!ptr)
 	{
 		std::ostringstream sstr;
 		sstr << "[MarControlValueT::multiply] Trying to multiply different types of MarControlValue. "
-			<< "(" << this->getSType() << " with " << v->getSType() << ")";
+			<< "(" << this->getType() << " with " << v->getType() << ")";
 		MRSWARN(sstr.str());
 		return false;
 	}
@@ -343,11 +413,11 @@ MarControlValue*
 MarControlValueT<T>::divide(MarControlValue *v)
 {
 	MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(v);
-	if(ptr)
+	if(!ptr)
 	{
 		std::ostringstream sstr;
 		sstr << "[MarControlValueT::divide] Trying to divide different types of MarControlValue. "
-			<< "(" << this->getSType() << " with " << v->getSType() << ")";
+			<< "(" << this->getType() << " with " << v->getType() << ")";
 		MRSWARN(sstr.str());
 		return false;
 	}

@@ -1572,15 +1572,25 @@ static VALUE STR2VAL (string s) { return rb_str_new(s.c_str(),s.size()); }
 
 /* Convert MarControlValue to Ruby VALUE */
 static VALUE MCV2VAL (MarControlValue mcv) {
-        switch(mcv.getType()) {
-        case mar_real: return rb_float_new(mcv->toReal());
-        case mar_bool: return ( mcv->toBool() ? Qtrue : Qfalse );
-        case mar_natural: return INT2NUM(mcv->toNatural());
-        case mar_string: return STR2VAL(mcv->toString());
-        case mar_vec:
-        default:
-        case mar_null: return Qnil;
-        }
+        
+// 	switch(mcv.getType()) {
+// 				case mar_real: return rb_float_new(mcv->toReal());
+// 				case mar_bool: return ( mcv->toBool() ? Qtrue : Qfalse );
+// 				case mar_natural: return INT2NUM(mcv->toNatural());
+// 				case mar_string: return STR2VAL(mcv->toString());
+// 				case mar_vec:
+// 				default:
+// 				case mar_null: return Qnil;
+// 	}
+
+	string type = mcv.getType();
+	if(type == "mrs_real") return rb_float_new(mcv->toReal());
+	if(type == "mrs_bool") return ( mcv->toBool() ? Qtrue : Qfalse );
+	if(type == "mrs_natural") return INT2NUM(mcv->toNatural());
+	if(type == "mrs_string") return STR2VAL(mcv->toString());
+	
+	return Qnil;
+
 }
 
 /* Convert Ruby VALUE to string */

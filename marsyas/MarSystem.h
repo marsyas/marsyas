@@ -33,6 +33,7 @@ extractors like Spectral Centroid.
 #define MARSYAS_MARSYSTEM_H
 
 #include "common.h"
+#include "MarControl.h"
 #include "realvec.h"
 #include "TmSampleCount.h" 
 #include "EvValUpd.h" 
@@ -170,7 +171,7 @@ public:
 	std::string getPath() const;
 	virtual void addFatherPath(std::string fpath);
 
-  void update();
+  void update(MarControlPtr sender = MarControlPtr());
   
   const std::map<std::string, MarControlPtr>& getControls();
 	virtual std::vector<MarSystem*> getChildren();

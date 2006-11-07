@@ -38,13 +38,13 @@ class MarSystem;
 class MarSystemManager
 {
 protected:
-  std::map<std::string, MarSystem*> registry;
-  std::map<std::string, MarSystem*> workingSet; 
+  std::map<std::string, MarSystem*> registry_;
+  std::map<std::string, MarSystem*> workingSet_; 
   
 public:
   MarSystemManager();
   ~MarSystemManager();
-  void registerPrototype(std::string name, MarSystem *);
+  void registerPrototype(std::string type, MarSystem *);
   MarSystem* getPrototype(std::string type);
   MarSystem* create(std::string type, std::string name);
   MarSystem* getMarSystem(std::istream& is);

@@ -19,7 +19,7 @@
 /** 
 \class MarControlManager
 \brief MarControlManager handle controls creation
-\author lmartins@inescporto.pt, lfpt@inescporto.pt
+\author lfpt@inescporto.pt, lmartins@inescporto.pt 
 **/
 
 #ifndef MARSYAS_MARCONTROLMANAGER_H
@@ -36,23 +36,37 @@ namespace Marsyas
 	class MarControlManager
 	{
 	protected:
-		std::map<std::string, MarControlPtr> registry;
-		//std::map<std::string, MarControlValue*> workingSet; 
+		static MarControlManager *instance_;
+
+		std::map<std::string, MarControlPtr> registry_;
+		std::map<std::string, std::string> typeRegistry_;
+		MarControlManager();
 
 	public:
-		MarControlManager();
 		~MarControlManager();
-		void registerPrototype(std::string name, MarControlPtr);
-		MarControlPtr getPrototype(std::string type);
-		MarControlPtr create(std::string type, std::string name, MarSystem *msys, bool state);
-		MarControlPtr getMarSystem(std::istream& is);
 
-		//std::map<std::string, MarSystem*> getWorkingSet(std::istream& is);
+		static inline MarControlManager* getManager();
+
+		void registerPrototype(std::string type, MarControlPtr);
+		MarControlPtr create(std::string type);
+		MarControlPtr createFromStream(std::string type, std::istream& in);
 
 		bool isRegistered (std::string name);
+		std::string getRegisteredType(std::string typeIdName);
 
 		std::vector <std::string> registeredPrototypes(); 
 	};
+
+	inline
+	MarControlManager* MarControlManager::getManager()
+	{
+		if (!instance_)
+		{
+			instance_ = new MarControlManager();
+		}
+		return instance_;
+	}
+
 
 }
 

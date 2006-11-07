@@ -44,6 +44,7 @@ namespace Marsyas
 		
 	class MarSystem;
 	class MarControl;
+	class MarControlManager;
 
 class MarControlPtr
 {
@@ -59,6 +60,7 @@ public:
 
 	// basic types constructors / for compatibility purposes
 	inline MarControlPtr(MarControl control);
+	inline MarControlPtr(MarControlValue *value);
 	inline MarControlPtr(int ne);
 	inline MarControlPtr(float ne);
 	inline MarControlPtr(mrs_natural ne);
@@ -111,6 +113,8 @@ class MarControl
 #endif
 {
 
+	friend MarControlManager;
+
 #ifdef MARSYAS_QT
 	Q_OBJECT
 #endif
@@ -162,8 +166,7 @@ public:
 	std::string getName() const;
 	void setState(bool state);
 	bool hasState() const;
-	int getType() const { return value_->getType(); }
-	std::string getSType() const { return value_->getSType(); }
+	std::string getType() const { return value_->getType(); }
 
 	//////////////////////////////////////////////////////////////////////////
 	// helper functions for basic types
@@ -229,6 +232,12 @@ protected:
 inline MarControlPtr::MarControlPtr(MarControl control)
 {
 	control_ = new MarControl(control);
+	control_->ref();
+}
+
+inline MarControlPtr::MarControlPtr(MarControlValue *value)
+{
+	control_ = new MarControl(value);
 	control_->ref();
 }
 
@@ -357,40 +366,6 @@ inline MarControlPtr operator/(const MarControlPtr& v1, const MarControlPtr& v2)
 /************************************************************************/
 /* MarControl template implementation                                   */
 /************************************************************************/
-// setters
-template<class T>
-bool
-MarControl::setValue(T& t, bool update)
-{
-	MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(value_);
-	if(ptr)
-	{
-#ifdef MARSYAS_QT
-		rwLock_.lockForWrite();
-#endif
-		ptr->set(t);
-#ifdef MARSYAS_QT
-		rwLock_.unlock();
-#endif
-		//if(state_ && msys_ && update)
-		//	msys_->controlUpdate(*this); //thread-safe? [!]
-
-#ifdef MARSYAS_QT
-		//emit controlChanged(this);
-		emitControlChanged(this);
-#endif
-		return true;
-	}
-	else
-	{
-		std::ostringstream sstr;
-		sstr << "[MarControl::setValue] Trying to set value of incompatible type "
-			<< "(expected " << value_->getSType() << ", given " << typeid(T).name() << ")";
-		MRSWARN(sstr.str());
-		return false;
-	}
-}
-
 // getters by parameter (same interface for all types)
 // note: returned value will be a copy
 template<class T>
@@ -410,7 +385,7 @@ MarControl::getValue(T& t) const
 	{
 		std::ostringstream sstr;
 		sstr << "[MarControl::getValue] Trying to set value of incompatible type "
-			<< "(expected " << value_->getSType() << ", given " << typeid(T).name() << ")";
+			<< "(expected " << value_->getType() << ", given " << typeid(T).name() << ")";
 		MRSWARN(sstr.str());
 		return false;
 	}
@@ -432,7 +407,7 @@ MarControl::to() const
 	{
 		std::ostringstream sstr;
 		sstr << "[MarControlValue::to] Trying to set value of incompatible type "
-			<< "(expected " << value_->getSType() << ", given " << typeid(T).name() << ")";
+			<< "(expected " << value_->getType() << ", given " << typeid(T).name() << ")";
 		MRSWARN(sstr.str());
 		return MarControlValueT<T>::invalidValue;
 	}
@@ -596,6 +571,41 @@ MarControl::operator=(const MarControl& a)
 	return *this;
 }
 
+// setters
+template<class T>
+inline
+bool
+MarControl::setValue(T& t, bool update)
+{
+	MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(value_);
+	if(ptr)
+	{
+#ifdef MARSYAS_QT
+		rwLock_.lockForWrite();
+#endif
+		ptr->set(t);
+#ifdef MARSYAS_QT
+		rwLock_.unlock();
+#endif
+		
+		if(update) this->callMarSystemUpdate();
+
+#ifdef MARSYAS_QT
+		//emit controlChanged(this);
+		emitControlChanged(this);
+#endif
+		return true;
+	}
+	else
+	{
+		std::ostringstream sstr;
+		sstr << "[MarControl::setValue] Trying to set value of incompatible type "
+			<< "(expected " << value_->getType() << ", given " << typeid(T).name() << ")";
+		MRSWARN(sstr.str());
+		return false;
+	}
+}
+
 inline
 bool
 MarControl::setValue(MarControlPtr mc, bool update)
@@ -607,7 +617,7 @@ MarControl::setValue(MarControlPtr mc, bool update)
 	{
 		std::ostringstream sstr;
 		sstr << "[MarControl::setValue] Trying to set value of incompatible type "
-			<< "(expected " << value_->getSType() << ", given " << mc->value_->getSType() << ")";
+			<< "(expected " << value_->getType() << ", given " << mc->value_->getType() << ")";
 		MRSWARN(sstr.str());
 		return false;
 	}
@@ -634,7 +644,7 @@ MarControl::setValue(MarControlValue *mcv, bool update)
 	{
 		std::ostringstream sstr;
 		sstr << "[MarControl::setValue] Trying to set value of incompatible type "
-			<< "(expected " << value_->getSType() << ", given " << mcv->getSType() << ")";
+			<< "(expected " << value_->getType() << ", given " << mcv->getType() << ")";
 		MRSWARN(sstr.str());
 		return false;
 	}
@@ -705,7 +715,7 @@ MarControl::isTrue()
 	{
 		std::ostringstream sstr;
 		sstr << "[MarControl::setValue] Trying to get value of incompatible type "
-			<< "(expected " << value_->getSType() << ", given " << typeid(bool).name() << ")";
+			<< "(expected " << value_->getType() << ", given " << typeid(bool).name() << ")";
 		MRSWARN(sstr.str());
 		return false;
 	}
@@ -757,7 +767,7 @@ operator+(const MarControl& v1, const mrs_real& v2)
 	{
 		std::ostringstream sstr;
 		sstr << "[MarControl::setValue] Trying to get value of incompatible type "
-			<< "(expected " << v1.getSType() << ", given " << typeid(mrs_real).name() << ")";
+			<< "(expected " << v1.getType() << ", given " << typeid(mrs_real).name() << ")";
 		MRSWARN(sstr.str());
 		return false;
 	}
@@ -778,7 +788,7 @@ operator+(const mrs_real& v1, const MarControl& v2)
 	{
 		std::ostringstream sstr;
 		sstr << "[MarControl::setValue] Trying to get value of incompatible type "
-			<< "(expected " << v2.getSType() << ", given " << typeid(mrs_real).name() << ")";
+			<< "(expected " << v2.getType() << ", given " << typeid(mrs_real).name() << ")";
 		MRSWARN(sstr.str());
 		return false;
 	}
@@ -799,7 +809,7 @@ operator-(const MarControl& v1, const mrs_real& v2)
 	{
 		std::ostringstream sstr;
 		sstr << "[MarControl::setValue] Trying to get value of incompatible type "
-			<< "(expected " << v1.getSType() << ", given " << typeid(mrs_real).name() << ")";
+			<< "(expected " << v1.getType() << ", given " << typeid(mrs_real).name() << ")";
 		MRSWARN(sstr.str());
 		return false;
 	}
@@ -820,7 +830,7 @@ operator-(const mrs_real& v1, const MarControl& v2)
 	{
 		std::ostringstream sstr;
 		sstr << "[MarControl::setValue] Trying to get value of incompatible type "
-			<< "(expected " << v2.getSType() << ", given " << typeid(mrs_real).name() << ")";
+			<< "(expected " << v2.getType() << ", given " << typeid(mrs_real).name() << ")";
 		MRSWARN(sstr.str());
 		return false;
 	}
@@ -841,7 +851,7 @@ operator*(const MarControl& v1, const mrs_real& v2)
 	{
 		std::ostringstream sstr;
 		sstr << "[MarControl::setValue] Trying to get value of incompatible type "
-			<< "(expected " << v1.getSType() << ", given " << typeid(mrs_real).name() << ")";
+			<< "(expected " << v1.getType() << ", given " << typeid(mrs_real).name() << ")";
 		MRSWARN(sstr.str());
 		return false;
 	}
@@ -862,7 +872,7 @@ operator*(const mrs_real& v1, const MarControl& v2)
 	{
 		std::ostringstream sstr;
 		sstr << "[MarControl::setValue] Trying to get value of incompatible type "
-			<< "(expected " << v2.getSType() << ", given " << typeid(mrs_real).name() << ")";
+			<< "(expected " << v2.getType() << ", given " << typeid(mrs_real).name() << ")";
 		MRSWARN(sstr.str());
 		return false;
 	}
@@ -883,7 +893,7 @@ operator/(const MarControl& v1, const mrs_real& v2)
 	{
 		std::ostringstream sstr;
 		sstr << "[MarControl::setValue] Trying to get value of incompatible type "
-			<< "(expected " << v1.getSType() << ", given " << typeid(mrs_real).name() << ")";
+			<< "(expected " << v1.getType() << ", given " << typeid(mrs_real).name() << ")";
 		MRSWARN(sstr.str());
 		return false;
 	}
@@ -904,7 +914,7 @@ operator/(const mrs_real& v1, const MarControl& v2)
 	{
 		std::ostringstream sstr;
 		sstr << "[MarControl::setValue] Trying to get value of incompatible type "
-			<< "(expected " << v2.getSType() << ", given " << typeid(mrs_real).name() << ")";
+			<< "(expected " << v2.getType() << ", given " << typeid(mrs_real).name() << ")";
 		MRSWARN(sstr.str());
 		return false;
 	}

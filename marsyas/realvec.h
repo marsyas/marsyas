@@ -90,7 +90,7 @@ public:
 
   friend realvec operator+(const realvec& vec1, const realvec& vec2);
   friend realvec operator-(const realvec& vec1, const realvec& vec2);
-	friend bool operator!=(const realvec& v1, const realvec& v2) { return true; } //not yet implemented... [!][?]
+	friend bool operator!=(const realvec& v1, const realvec& v2);
    
   // item access
   mrs_real& operator()(const mrs_natural i);

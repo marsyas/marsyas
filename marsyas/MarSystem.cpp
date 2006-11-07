@@ -29,6 +29,7 @@ extractors like Spectral Centroid.
 */
 
 #include "MarSystem.h"
+#include "MarControlManager.h"
 
 #ifdef MARSYAS_QT
 #include "MarGUIManager.h"
@@ -380,7 +381,7 @@ MarSystem::myUpdate()
 }
 
 void 
-MarSystem::update()
+MarSystem::update(MarControlPtr sender)
 {
 #ifdef MARSYAS_QT
 	processMutex_->lock();
@@ -692,7 +693,7 @@ MarSystem::controlUpdate(MarControlPtr ctrl)
 	//if(ctrl.getMarSystem() != this || ctrl.isInvalid())
 	//	return;
 	
-	update();
+	update(ctrl);
 
 	//it is possible to define specialized "update" functions for
 	//different controls, if needed...
@@ -745,7 +746,7 @@ MarSystem::addControl(string cname, MarControlPtr control)
 	string shortcname = cname.substr(prefix_.length(), cname.length());
 	string::size_type pos = shortcname.find("/", 0);
 	string ctype = shortcname.substr(0,pos);
-	assert(ctype!= control->getSType());
+	MRSASSERT(ctype!= control->getSType());
 #endif 
 
 #ifdef MARSYAS_QT
@@ -754,7 +755,6 @@ MarSystem::addControl(string cname, MarControlPtr control)
 	controls_[cname] = control;
 	controls_[cname]->setMarSystem(this);
 	controls_[cname]->setName(cname);
-
 }
 
 void
@@ -949,7 +949,7 @@ Marsyas::operator>> (istream& is, MarSystem& msys) //[!] "c" object is not locke
 			else
 				msys.updControl(cname, rcvalue);//deadlocks if using mutexes for object "c"![!]
 		}
-		if (ctype == sstr)
+		else if (ctype == sstr)
 		{
 			is >> skipstr >> scvalue;
 
@@ -958,7 +958,7 @@ Marsyas::operator>> (istream& is, MarSystem& msys) //[!] "c" object is not locke
 			else
 				msys.updControl(cname, scvalue);//deadlocks if using mutexes for object "c"![!]
 		}
-		if (ctype == nstr)
+		else if (ctype == nstr)
 		{
 			is >> skipstr >> ncvalue;
 			if (iter == msys.controls_.end())
@@ -966,7 +966,7 @@ Marsyas::operator>> (istream& is, MarSystem& msys) //[!] "c" object is not locke
 			else
 				msys.updControl(cname, ncvalue);//deadlocks if using mutexes for object "c"![!]
 		}
-		if (ctype == bstr)
+		else if (ctype == bstr)
 		{
 			is >> skipstr >> bcvalue;
 
@@ -975,7 +975,7 @@ Marsyas::operator>> (istream& is, MarSystem& msys) //[!] "c" object is not locke
 			else
 				msys.updControl(cname, bcvalue);//deadlocks if using mutexes for object "c"![!]
 		}
-		if (ctype == vstr)
+		else if (ctype == vstr)
 		{
 			realvec vcvalue;
 			is >> skipstr >> vcvalue;
@@ -984,6 +984,15 @@ Marsyas::operator>> (istream& is, MarSystem& msys) //[!] "c" object is not locke
 				msys.addControl(cname, vcvalue);//deadlocks if using mutexes for object "c"![!]
 			else
 				msys.updControl(cname, vcvalue);//deadlocks if using mutexes for object "c"![!]
+		}
+		else
+		{
+			is >> skipstr;
+			MarControlPtr ctrl = MarControlManager::getManager()->createFromStream(ctype, is);
+			if (iter == msys.controls_.end())
+				msys.addControl(cname, ctrl);//deadlocks if using mutexes for object "c"![!]
+			else
+				msys.updControl(cname, ctrl);//deadlocks if using mutexes for object "c"![!]
 		}
 	}
 	return is;

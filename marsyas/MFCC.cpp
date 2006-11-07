@@ -105,7 +105,7 @@ MFCC::myUpdate()
 			freqs_(i) = lowestFrequency_ + i * linearSpacing_;
     
     // Logarithmic filter boundaries  
-    float first_log = freqs_(linearFilters_-1);
+    mrs_real first_log = freqs_(linearFilters_-1);
     for (i=1; i<=logFilters_+2; i++)
 		{
 			freqs_(linearFilters_-1+i) = first_log * pow(logSpacing_, (mrs_real)i);

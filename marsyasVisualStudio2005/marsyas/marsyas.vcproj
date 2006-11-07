@@ -536,11 +536,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\marsyas\MarTemplateAdvanced.cpp"
+				RelativePath="..\..\marsyas\MarSystemTemplateAdvanced.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\marsyas\MarTemplateBasic.cpp"
+				RelativePath="..\..\marsyas\MarSystemTemplateBasic.cpp"
 				>
 			</File>
 			<File
@@ -1178,11 +1178,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\marsyas\MarTemplateAdvanced.h"
+				RelativePath="..\..\marsyas\MarSystemTemplateAdvanced.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\marsyas\MarTemplateBasic.h"
+				RelativePath="..\..\marsyas\MarSystemTemplateBasic.h"
 				>
 			</File>
 			<File

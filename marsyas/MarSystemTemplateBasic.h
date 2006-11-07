@@ -17,20 +17,20 @@
 */
 
 /** 
-\class MarTemplateBasic
+\class MarSystemTemplateBasic
 \brief Basic example on how to use controls efficiently in MarSystems
 
 */
 
-#ifndef MARSYAS_MARTEMPLATEBASIC_H
-#define MARSYAS_MARTEMPLATEBASIC_H
+#ifndef MARSYAS_MARSYSTEMTEMPLATEBASIC_H
+#define MARSYAS_MARSYSTEMTEMPLATEBASIC_H
 
 #include "MarSystem.h"	
 
 namespace Marsyas
 {
 
-	class MarTemplateBasic: public MarSystem
+	class MarSystemTemplateBasic: public MarSystem
 	{
 	private:
 		//Add specific controls needed by this MarSystem.
@@ -46,9 +46,9 @@ namespace Marsyas
 		void myUpdate();
 
 	public:
-		MarTemplateBasic(std::string name);
-		MarTemplateBasic(const MarTemplateBasic& a);//copy ctor
-		~MarTemplateBasic();
+		MarSystemTemplateBasic(std::string name);
+		MarSystemTemplateBasic(const MarSystemTemplateBasic& a);//copy ctor
+		~MarSystemTemplateBasic();
 		MarSystem* clone() const;  
 
 		void myProcess(realvec& in, realvec& out);
@@ -56,4 +56,4 @@ namespace Marsyas
 
 }//namespace Marsyas
 
-#endif //MARSYAS_MARTEMPLATEBASIC_H
+#endif //MARSYAS_MARSYSTEMTEMPLATEBASIC_H
