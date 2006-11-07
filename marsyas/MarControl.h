@@ -113,7 +113,8 @@ class MarControl
 #endif
 {
 
-	friend MarControlManager;
+	friend class MarControlManager;
+	
 
 #ifdef MARSYAS_QT
 	Q_OBJECT
