@@ -75,7 +75,7 @@ Collection.cpp fft.cpp Rms.cpp PlotSink.cpp \
 AutoCorrelation.cpp Peaker.cpp Peaker1.cpp HalfWaveRectifier.cpp \
 TimeStretch.cpp Conversions.cpp MaxArgMax.cpp MinArgMin.cpp \
 Composite.cpp Series.cpp \
-ShiftInput.cpp ShiftOutput.cpp Shifter.cpp PvFold.cpp PvConvert.cpp PeConvert.cpp PeClust.cpp PeOverlapadd.cpp PeResidual.cpp PeUtilities.cpp\
+ShiftInput.cpp ShiftOutput.cpp Shifter.cpp PvFold.cpp PvConvert.cpp PeConvert.cpp PeClust.cpp PeOverlapadd.cpp PeResidual.cpp PeUtilities.cpp \
 PvConvolve.cpp PvOscBank.cpp PvUnconvert.cpp PvOverlapadd.cpp Windowing.cpp Hamming.cpp \
 Fanout.cpp Fanin.cpp Negative.cpp SineSource.cpp MarSystemManager.cpp \
 PowerSpectrum.cpp Centroid.cpp Rolloff.cpp \
