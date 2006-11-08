@@ -74,7 +74,6 @@ Spectrum::myUpdate()
 
   if (ponObservations_ != onObservations_)
   {
-    tempVec_.stretch(inSamples_);
     ostringstream oss;
     for (mrs_natural n=0; n < onObservations_/2; n++)
 		{
@@ -100,8 +99,7 @@ Spectrum::myProcess(realvec& in, realvec& out)
       out(t,0) = in(0,t);	
     }
 
-  mrs_real *tmp = tempVec_.getData();
-  tmp = out.getData();
+  mrs_real *tmp = out.getData();
   myfft_.rfft(tmp, inSamples_/2, FFT_FORWARD);
 
 

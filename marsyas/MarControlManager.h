@@ -70,3 +70,4 @@ namespace Marsyas
 }
 
 #endif /* MARSYAS_MARCONTROLMANAGER_H	*/
+

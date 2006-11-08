@@ -67,7 +67,7 @@ public:
 	inline MarControlPtr(mrs_real re);
 	inline MarControlPtr(char *c);
 	inline MarControlPtr(std::string st);
-	inline MarControlPtr(bool be);
+	inline MarControlPtr(mrs_bool be);
 	inline MarControlPtr(realvec& ve);
 
 	// generic type constructor
@@ -148,7 +148,7 @@ public:
 	inline MarControl(mrs_real re, std::string cname = "", MarSystem* msys = 0, bool state = false);
 	inline MarControl(mrs_natural ne, std::string cname = "", MarSystem* msys = 0, bool state = false);
 	inline MarControl(std::string st, std::string cname = "", MarSystem* msys = 0, bool state = false);
-	inline MarControl(bool be, std::string cname = "", MarSystem* msys = 0, bool state = false);
+  inline MarControl(mrs_bool be, std::string cname = "", MarSystem* msys = 0, bool state = false);
 	inline MarControl(realvec& ve, std::string cname = "", MarSystem* msys = 0, bool state = false);
 
 	// destructor
@@ -278,10 +278,10 @@ inline MarControlPtr::MarControlPtr(std::string st)
 	control_->ref();
 }
 
-inline MarControlPtr::MarControlPtr(bool be)
-	{
-	control_ = new MarControl(be);
-	control_->ref();
+inline MarControlPtr::MarControlPtr(mrs_bool be)
+{
+  control_ = new MarControl(be);
+  control_->ref();
 }
 
 inline MarControlPtr::MarControlPtr(realvec& ve)
@@ -302,7 +302,7 @@ inline bool operator==(const MarControlPtr& v1, const MarControlPtr& v2)
 
 inline bool operator!=(const MarControlPtr& v1, const MarControlPtr& v2)
 {
-	return (*v1.control_) != (*v2.control_);
+  return (*v1.control_) != (*v2.control_);
 }
 
 inline mrs_real operator+(const MarControlPtr& v1, const mrs_real& v2)
@@ -521,7 +521,7 @@ MarControl::MarControl(std::string st, std::string cname, MarSystem* msys, bool 
 }
 
 inline
-MarControl::MarControl(bool be, std::string cname, MarSystem* msys, bool state)
+MarControl::MarControl(mrs_bool be, std::string cname, MarSystem* msys, bool state)
 {
 	refCount_ = 0;
 	msys_			= msys;

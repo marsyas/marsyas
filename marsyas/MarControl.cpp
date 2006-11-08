@@ -63,74 +63,74 @@ void
 MarControl::setMarSystem(MarSystem* msys) 
 {
 #ifdef MARSYAS_QT
-	QWriteLocker locker(&rwLock_);
+  QWriteLocker locker(&rwLock_);
 #endif
-
-	if(msys_) //[!]
-	{
-		//if this is a change in the parent MarSystem, 
-		//then the control name must be updated accordingly
-		string oldPrefix = msys_->getPrefix();
-		string shortcname = cname_.substr(oldPrefix.length(), cname_.length());
-		cname_ = msys->getPrefix() + shortcname;
-	}
-	msys_ = msys;
+  
+  if(msys_) //[!]
+    {
+      //if this is a change in the parent MarSystem, 
+      //then the control name must be updated accordingly
+      string oldPrefix = msys_->getPrefix();
+      string shortcname = cname_.substr(oldPrefix.length(), cname_.length());
+      cname_ = msys->getPrefix() + shortcname;
+    }
+  msys_ = msys;
 }
 
 MarSystem*
 MarControl::getMarSystem() 
 {
 #ifdef MARSYAS_QT
-	QReadLocker locker(&rwLock_);
+  QReadLocker locker(&rwLock_);
 #endif
-
-	return msys_;
+  
+  return msys_;
 }
 
 void
 MarControl::setName(std::string cname) //[!] should check if is in sync with current msys_ prefix...
 {
 #ifdef MARSYAS_QT
-	QWriteLocker locker(&rwLock_);
+  QWriteLocker locker(&rwLock_);
 #endif
 
-	cname_ = cname; 
+  cname_ = cname; 
 }
 
 std::string 
 MarControl::getName() const
 {
 #ifdef MARSYAS_QT
-	QReadLocker locker(&rwLock_);
+  QReadLocker locker(&rwLock_);
 #endif
 
-	return cname_;
+  return cname_;
 }
 
 void 
 MarControl::setState(bool state) 
 {
 #ifdef MARSYAS_QT
-	QWriteLocker locker(&rwLock_);
+  QWriteLocker locker(&rwLock_);
 #endif
-
-	state_ = state;
+  
+  state_ = state;
 }
 
 bool 
 MarControl::hasState() const
 {
 #ifdef MARSYAS_QT
-	QReadLocker locker(&rwLock_);
+  QReadLocker locker(&rwLock_);
 #endif
-
-	return state_;
+  
+  return state_;
 }
 
 void MarControl::callMarSystemUpdate()
 {
-	if (state_ && msys_)
-		msys_->controlUpdate(this); //thread-safe? [!]
+  if (state_ && msys_)
+    msys_->controlUpdate(this); //thread-safe? [!]
 }
 
 
@@ -138,18 +138,18 @@ void MarControl::callMarSystemUpdate()
 void
 MarControlValue::emitControlChanged(MarControlValue* cvalue)
 {
-	//only bother calling MarSystem's controlChanged signal
-	//if there is a GUI currently active(i.e. being displayed)
-	//=> more efficient! [!]
-	if(msys_)
+  //only bother calling MarSystem's controlChanged signal
+  //if there is a GUI currently active(i.e. being displayed)
+  //=> more efficient! [!]
+  if(msys_)
+    {
+      if(msys_->activeControlsGUIs_.size() != 0 ||
+	 msys_->activeDataGUIs_.size() != 0)//this class is friend of MarSystem //[!]
 	{
-		if(msys_->activeControlsGUIs_.size() != 0 ||
-			msys_->activeDataGUIs_.size() != 0)//this class is friend of MarSystem //[!]
-		{
-			QMetaObject::invokeMethod(msys_, "controlChanged", Qt::AutoConnection,
-				Q_ARG(MarControlValue*, cvalue));
-		}
-
+	  QMetaObject::invokeMethod(msys_, "controlChanged", Qt::AutoConnection,
+				    Q_ARG(MarControlValue*, cvalue));
 	}
+      
+    }
 }
 #endif //MARSYAS_QT

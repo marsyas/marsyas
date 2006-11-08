@@ -29,31 +29,34 @@
 
 namespace Marsyas
 {
-
-	class MarSystemTemplateBasic: public MarSystem
-	{
-	private:
-		//Add specific controls needed by this MarSystem.
-		void addControls();
-
-		//"Pointers" to controls allow efficient access to their values.
-		//(for clarity sake, we use the ctrl_ prefix so these "pointers"
-		//can be easly identified through out the code.. but this is not
-		//mandatory, just recommended)
-		MarControlPtr ctrl_gain_;
-		MarControlPtr ctrl_repeats_;
-
-		void myUpdate();
-
-	public:
-		MarSystemTemplateBasic(std::string name);
-		MarSystemTemplateBasic(const MarSystemTemplateBasic& a);//copy ctor
-		~MarSystemTemplateBasic();
-		MarSystem* clone() const;  
-
-		void myProcess(realvec& in, realvec& out);
-	};
-
+  
+  class MarSystemTemplateBasic: public MarSystem
+  {
+  private:
+    //Add specific controls needed by this MarSystem.
+    void addControls();
+    
+    //"Pointers" to controls allow efficient access to their values.
+    //(for clarity sake, we use the ctrl_ prefix so these "pointers"
+    //can be easly identified through out the code.. but this is not
+    //mandatory, just recommended)
+    MarControlPtr ctrl_gain_;
+    MarControlPtr ctrl_repeats_;
+    
+    void myUpdate();
+    
+  public:
+    MarSystemTemplateBasic(std::string name);
+    MarSystemTemplateBasic(const MarSystemTemplateBasic& a);//copy ctor
+    ~MarSystemTemplateBasic();
+    MarSystem* clone() const;  
+    
+    void myProcess(realvec& in, realvec& out);
+  };
+  
 }//namespace Marsyas
 
 #endif //MARSYAS_MARSYSTEMTEMPLATEBASIC_H
+
+
+

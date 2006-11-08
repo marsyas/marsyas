@@ -5,18 +5,18 @@
 MARSYAS (@b{M}usic @b{A}nalysis @b{R}etrieval and @b{S}ynthesis for
 @b{A}udio @b{S}ignals) is a free software framework for audio
 analysis, synthesis and retrieval written by George Tzanetakis. Please
-direct any questions/comments about Marsyas to (gtzan@@cs.uvic.ca)
+direct any questions/comments about Marsyas to (gtzan@@cs.uvic.ca). 
 @cindex Tzanetakis, George
 
-The major theme underlying the design of Marsyas has been to provide an
-efficient and extensible framework for building audio analysis (and
-synthesis) applications with specific emphasis on Music Information
-Retrieval (MIR). A variety of building blocks for performing
-common audio tasks are provided. Some representative examples are:
-soundfile IO, audio IO, signal processing and machine learning modules.
-These blocks can be combined into data flow networks that can be
-modified and controlled dynamically while they process data in soft
-real-time.
+The major underlying theme under the design of Marsyas has been to
+provide an efficient and extensible framework for building audio
+analysis (and synthesis) applications with specific emphasis on Music
+Information Retrieval (MIR). A variety of building blocks for
+performing common audio tasks are provided. Some representative
+examples are: soundfile IO, audio IO, signal processing and machine
+learning modules.  These blocks can be combined into data flow
+networks that can be modified and controlled dynamically while they
+process data in soft real-time.
 
 Another goal has been to accomodate two different types of users:
 naive and expert (of course in many cases the same person can operate
@@ -33,13 +33,12 @@ holy grail is to provide maximum automatic support for the tasks that
 can be automated while retaining expressiveness and the ability to
 program complex systems for the particular domain of interest.
 
-
 This framework has been created mainly to support George Tzanetakis's
 research mainly in the emerging area of Music Information Retrieval
 (MIR). Anyone who finds the framework useful is welcome to use it and
 contribute to it. If you would like specific features to be developed
-feel free to contact the author or support the project by donnating money
-through the sourceforge page.
+feel free to contact the author or support the project by donnating
+money through the sourceforge page.
 
 
 
@@ -75,13 +74,13 @@ conversations with Roger made me rethink the design used by Marsyas.
 The result was to move to a dataflow model of audio computation with
 general matrices instead of 1-D arrays as data and an Open Sound
 Control (OSC) inspired hierarchical messaging system used to control
-the dataflow network. Marsyas 0.2 is almost to the point of supporting
-the full functionality of Marsyas 0.1. Hopefully the writing of this
-manual will help users migrate from version 0.1.  If you are a user
-that has done work in 0.1 it should be relatively straightforward to
-figure out how to recode your algorithms in version 0.2. Also if you
-have code in 0.1 that you would like help porting in 0.2 I would be
-more than happy to help - just drop me an email.
+the dataflow network. Marsyas 0.2 is now almost to the point of
+supporting the full functionality of Marsyas 0.1. Hopefully the
+writing of this manual will help users migrate from version 0.1. If
+you are a user that has done work in 0.1 it should be relatively
+straightforward to figure out how to recode your algorithms in version
+0.2. Also if you have code in 0.1 that you would like help porting in
+0.2 I would be more than happy to help - just drop me an email.
 
 
 

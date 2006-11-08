@@ -33,6 +33,7 @@ namespace Marsyas
 	// #define natural long
 	typedef double mrs_real;
 	typedef long mrs_natural;
+        typedef bool mrs_bool;
 	typedef std::complex<mrs_real> mrs_complex;
 
 } //namespace Marsyas

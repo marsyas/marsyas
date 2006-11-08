@@ -245,6 +245,4 @@ MFCC::myProcess(realvec& in, realvec& out)
 
 
 
-	
-
-	
+     

@@ -3,6 +3,9 @@
 
 #include "Marx2DGraph.h"
 #include "MarSystemManager.h" 
+#include "MarSystemWrapper.h"
+#include "MarSystem.h"
+#include "MarControl.h" 
 #include <QPushButton> 
 #include <QSpinBox>
 
@@ -16,16 +19,21 @@ public:
 public slots: 
   void tick();
   void setTicks(int);
+  void graph();
   
 
 
 private: 
-  Marx2DGraph* graph2;
+  QVector<Marx2DGraph*> graphs;
   Marx2DGraph* graph3;
-  Marsyas::MarSystem* pnet;
+  Marsyas::MarSystem* pnet_;
+  MarSystemWrapper* mwr_;
+  QGridLayout *gridLayout_;
   
-  int nTicks;
 
+  int nTicks;
+  int nGraphs_;
+  
   std::string audio_file;
   
 };

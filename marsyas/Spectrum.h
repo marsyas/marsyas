@@ -37,7 +37,6 @@ class Spectrum: public MarSystem
 {
 private:
   fft myfft_;
-  realvec tempVec_;
   mrs_real cutoff_;
   mrs_real lowcutoff_;
   

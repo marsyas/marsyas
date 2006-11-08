@@ -77,11 +77,11 @@ MarPlayer::createConnections()
   connect(mapper_, SIGNAL(posChanged(int)), 
 	  this, SLOT(positionSlider(int)));
 
-  connect(mapper_, SIGNAL(durationChanged(mrs_real)), 
-	  this, SLOT(setDuration(mrs_real)));
+  connect(mapper_, SIGNAL(durationChanged(Marsyas::mrs_real)), 
+	  this, SLOT(setDuration(Marsyas::mrs_real)));
 
-  connect(mapper_, SIGNAL(timeChanged(mrs_real)), 
-	  this, SLOT(setTime(mrs_real)));
+  connect(mapper_, SIGNAL(timeChanged(Marsyas::mrs_real)), 
+	  this, SLOT(setTime(Marsyas::mrs_real)));
 
   connect(ui.gainSlider, SIGNAL(valueChanged(int)), 
 	  mapper_,SLOT(setGain(int)));
@@ -114,7 +114,7 @@ MarPlayer::positionSlider(int val)
 
 // set duration of song on corresponding slider
 void 
-MarPlayer::setDuration(mrs_real val) 
+MarPlayer::setDuration(Marsyas::mrs_real val) 
 {
   
   QTime dur;
@@ -124,7 +124,7 @@ MarPlayer::setDuration(mrs_real val)
 
 // set current time of soundfile on corresponding slider 
 void 
-MarPlayer::setTime(mrs_real val) 
+MarPlayer::setTime(Marsyas::mrs_real val) 
 {
   
   QTime dur;

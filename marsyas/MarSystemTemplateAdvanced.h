@@ -80,3 +80,4 @@ namespace Marsyas
 }//namespace Marsyas
 
 #endif //MARSYAS_MARSYSTEMTEMPLATEADVANCED_H
+

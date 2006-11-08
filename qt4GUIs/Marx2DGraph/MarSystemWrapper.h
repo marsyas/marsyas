@@ -1,81 +1,70 @@
-/*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
-** This program is free software; you can redistribute it and/or modify
-** it under the terms of the GNU General Public License as published by
-** the Free Software Foundation; either version 2 of the License, or
-** (at your option) any later version.
-** 
-** This program is distributed in the hope that it will be useful,
-** but WITHOUT ANY WARRANTY; without even the implied warranty of
-** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-** GNU General Public License for more details.
-** 
-** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
-** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-*/
-
-
-/** 
-    \class MarSystemWrapper
-    \brief Wraps a MarSystem network into a Qt-like object with signals/slots
-
-    The MarSystemWrapper is the generic way of interfacing a GUI written 
-in Qt 4 with Marsyas. It creates a separate thread for running sound 
-through the MarSystem dataflow network. The network is communicates 
-with the Qt code through the standard signal/slot mechanism 
-adjusted to reflect Marsyas controls. 
-*/
+/* Filename: MarSystemWrapper.h
+ * Purpose: Wrapper around MarSystem framework.  This is a modified version
+ * of the MarPlayer application's MarSystemWrapper.h file by Dr. George Tzanetakis.
+ */
 
 #ifndef MARSYSTEMWRAPPER_H
 #define MARSYSTEMWRAPPER_H
 
-#include <QObject>
-#include <QCheckBox>
+#ifndef QTHREAD
 #include <QThread>
-#include <QString> 
+#endif
 
+#ifndef QSTRING
+#include <QString>
+#endif
+
+#ifndef QSEMAPHORE
+#include <QSemaphore>
+#endif
+
+#ifndef COMMON_H
 #include "common.h"
+#endif
+
+// include the MARSYAS system
+#ifndef MARSYSTEMMANAGER_H
 #include "MarSystemManager.h"
-#include <string> 
+#endif
+
+using namespace std;
+using namespace Marsyas;
 
 class MarSystemWrapper: public QThread
 {
-  Q_OBJECT
-  
-public:
-  MarSystemWrapper(Marsyas::MarSystem* msys);
-  
-  
-public slots:
+	Q_OBJECT
 
-  void updctrl(QString cname, Marsyas::MarControlValue value);
-  Marsyas::MarControlValue getctrl(std::string cname);
+public:
+	MarSystemWrapper(MarSystem* msys);
+
+public slots:
+  void updctrl(string cname, MarControlPtr cvalue);
+  MarControlPtr getctrl(string cname);
   
   void play();
   void pause();
   void run();
-  
-signals: 
-  void ctrlChanged(QString cname, Marsyas::MarControlValue value);
+
+signals:
+  void ctrlChanged(string cname, MarControlPtr cvalue);
   void posChanged(int val);
   
 private:
-  QString cur_cname;
-  Marsyas::MarControlValue cur_value;
-
-  Marsyas::MarSystem* msys_;			// the underlying MarSystem
+  QSemaphore* pnet_sema_;
   
-  std::vector<QString> cnames_;
-  std::vector<Marsyas::MarControlValue> cvalues_;
+  // the underlying MarSystem
+  MarSystem* main_pnet_;
+  
+  // Vectors for pushing in events that cannot be
+  // processes while the main MarSystem is ticking
+  vector<QString> control_names_;
+  vector<MarControlPtr> control_values_;
   
   bool guard_;
   bool pause_;
   bool empty_;
   
-  bool running_;  
-  
+  bool running_;
 };
 
 #endif // MARSYSTEMWRAPPER_H

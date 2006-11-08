@@ -45,16 +45,16 @@ using namespace Marsyas;
 MarSystem::MarSystem(string type, string name)
 {
 #ifdef MARSYAS_QT
-	processMutex_ = new QMutex(QMutex::Recursive);
-	msysNetGUI_ = NULL;
-	MATLABeditorGUI_ = NULL;
+  processMutex_ = new QMutex(QMutex::Recursive);
+  msysNetGUI_ = NULL;
+  MATLABeditorGUI_ = NULL;
 #endif
-	
-	name_ = name;
+  
+  name_ = name;
   type_ = type;
-	prefix_ = "/" + type_ + "/" + name_ + "/";
-	path_ = prefix_;
-	MATLABscript_ = "";
+  prefix_ = "/" + type_ + "/" + name_ + "/";
+  path_ = prefix_;
+  MATLABscript_ = "";
 
   scheduler_.removeAll();
   TmTimer* t = new TmSampleCount(NULL, this, "mrs_natural/inSamples");
@@ -63,53 +63,53 @@ MarSystem::MarSystem(string type, string name)
 
   //add default controls that 
   //all MarSystems should have
-	addControls();
+  addControls();
 }
 
 // copy constructor 
 MarSystem::MarSystem(const MarSystem& a)
 {
 #ifdef MARSYAS_QT
-	processMutex_ = new QMutex(QMutex::Recursive);
-	msysNetGUI_ = NULL;
-	MATLABeditorGUI_ = NULL;
+  processMutex_ = new QMutex(QMutex::Recursive);
+  msysNetGUI_ = NULL;
+  MATLABeditorGUI_ = NULL;
 #endif
 	
-	type_ = a.type_;
+  type_ = a.type_;
   name_ = a.name_;
-	prefix_ = a.prefix_;
-	path_ = a.path_;
-	MATLABscript_ = a.MATLABscript_;
+  prefix_ = a.prefix_;
+  path_ = a.path_;
+  MATLABscript_ = a.MATLABscript_;
   
-	//clone controls
-	{
-		#ifdef MARSYAS_QT
-		QWriteLocker locker_w(&rwLock_);
-		QReadLocker locker_r(&(a.rwLock_));
-		#endif
-		controls_.clear();
-		for(ctrlIter_ = a.controls_.begin(); ctrlIter_ != a.controls_.end(); ++ctrlIter_)
-		{
-			controls_[ctrlIter_->first] = ctrlIter_->second->clone();
-			controls_[ctrlIter_->first]->setMarSystem(this);
-		}
-		//update the "references" to the controls
-		ctrl_inSamples_ = getctrl("mrs_natural/inSamples");
-		ctrl_inObservations_ = getctrl("mrs_natural/inObservations");
-		ctrl_israte_ = getctrl("mrs_real/israte");
-		ctrl_inObsNames_ = getctrl("mrs_string/inObsNames");
-		ctrl_onSamples_ = getctrl("mrs_natural/onSamples");
-		ctrl_onObservations_ = getctrl("mrs_natural/onObservations");
-		ctrl_osrate_ = getctrl("mrs_real/osrate");
-		ctrl_onObsNames_ = getctrl("mrs_string/onObsNames");
-		ctrl_debug_ = getctrl("mrs_bool/debug"); 
-		ctrl_mute_ = getctrl("mrs_bool/mute");
-		ctrl_active_ = getctrl("mrs_bool/active");
-	}
-
-	synonyms_ = a.synonyms_;
-	
-	//recreate schedule objects
+  //clone controls
+  {
+#ifdef MARSYAS_QT
+    QWriteLocker locker_w(&rwLock_);
+    QReadLocker locker_r(&(a.rwLock_));
+#endif
+    controls_.clear();
+    for(ctrlIter_ = a.controls_.begin(); ctrlIter_ != a.controls_.end(); ++ctrlIter_)
+      {
+	controls_[ctrlIter_->first] = ctrlIter_->second->clone();
+	controls_[ctrlIter_->first]->setMarSystem(this);
+      }
+    //update the "references" to the controls
+    ctrl_inSamples_ = getctrl("mrs_natural/inSamples");
+    ctrl_inObservations_ = getctrl("mrs_natural/inObservations");
+    ctrl_israte_ = getctrl("mrs_real/israte");
+    ctrl_inObsNames_ = getctrl("mrs_string/inObsNames");
+    ctrl_onSamples_ = getctrl("mrs_natural/onSamples");
+    ctrl_onObservations_ = getctrl("mrs_natural/onObservations");
+    ctrl_osrate_ = getctrl("mrs_real/osrate");
+    ctrl_onObsNames_ = getctrl("mrs_string/onObsNames");
+    ctrl_debug_ = getctrl("mrs_bool/debug"); 
+    ctrl_mute_ = getctrl("mrs_bool/mute");
+    ctrl_active_ = getctrl("mrs_bool/active");
+  }
+  
+  synonyms_ = a.synonyms_;
+  
+  //recreate schedule objects
   scheduler_.removeAll();
   TmTimer* t = new TmSampleCount(NULL, this, "mrs_natural/inSamples");
   scheduler_.addTimer(t);
@@ -119,21 +119,21 @@ MarSystem::MarSystem(const MarSystem& a)
 MarSystem::~MarSystem()
 {
 #ifdef MARSYAS_QT
-	delete processMutex_;
-	delete msysNetGUI_;
-	delete MATLABeditorGUI_;
-	//this closes all opened GUIs when the MarSystem is destroyed
-	//and clears the internal hash table used to store its pointers
-	QList<MarSystemControlsGUI*> controlsGUIs = activeControlsGUIs_.values();
-	for(int i = 0; i < controlsGUIs.size(); ++i) 
-	{
-		delete controlsGUIs[i];
-	}
-	QList<QWidget*> dataGUIs = activeDataGUIs_.values();
-	for(int i = 0; i < dataGUIs.size(); ++i) 
-	{
+  delete processMutex_;
+  delete msysNetGUI_;
+  delete MATLABeditorGUI_;
+  //this closes all opened GUIs when the MarSystem is destroyed
+  //and clears the internal hash table used to store its pointers
+  QList<MarSystemControlsGUI*> controlsGUIs = activeControlsGUIs_.values();
+  for(int i = 0; i < controlsGUIs.size(); ++i) 
+    {
+      delete controlsGUIs[i];
+    }
+  QList<QWidget*> dataGUIs = activeDataGUIs_.values();
+  for(int i = 0; i < dataGUIs.size(); ++i) 
+    {
 		delete dataGUIs[i];
-	}
+    }
 #endif
 }
 
@@ -169,33 +169,33 @@ void
 MarSystem::addControls()
 {
   //input pin controls (with state)
-	addctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES, ctrl_inSamples_);
-	ctrl_inSamples_->setState(true);
-	addctrl("mrs_natural/inObservations", MRS_DEFAULT_SLICE_NOBSERVATIONS, ctrl_inObservations_);
-	ctrl_inObservations_->setState(true);
+  addctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES, ctrl_inSamples_);
+  ctrl_inSamples_->setState(true);
+  addctrl("mrs_natural/inObservations", MRS_DEFAULT_SLICE_NOBSERVATIONS, ctrl_inObservations_);
+  ctrl_inObservations_->setState(true);
   addctrl("mrs_real/israte", MRS_DEFAULT_SLICE_SRATE, ctrl_israte_);
-	ctrl_israte_->setState(true);
-	addctrl("mrs_string/inObsNames", ",", ctrl_inObsNames_);
-	ctrl_inObsNames_->setState(true);
-
+  ctrl_israte_->setState(true);
+  addctrl("mrs_string/inObsNames", ",", ctrl_inObsNames_);
+  ctrl_inObsNames_->setState(true);
+  
   //output pin controls (stateless)
-	addctrl("mrs_natural/onSamples", MRS_DEFAULT_SLICE_NSAMPLES, ctrl_onSamples_);
+  addctrl("mrs_natural/onSamples", MRS_DEFAULT_SLICE_NSAMPLES, ctrl_onSamples_);
   addctrl("mrs_natural/onObservations", MRS_DEFAULT_SLICE_NOBSERVATIONS, ctrl_onObservations_);
   addctrl("mrs_real/osrate", MRS_DEFAULT_SLICE_SRATE, ctrl_osrate_);
-	addctrl("mrs_string/onObsNames", ",", ctrl_onObsNames_);
-
-	inObservations_ = ctrl_inObservations_->to<mrs_natural>();
-	inSamples_ = ctrl_inSamples_->to<mrs_natural>();
-	onObservations_ = ctrl_onObservations_->to<mrs_natural>();
-	onSamples_ = ctrl_onSamples_->to<mrs_natural>();
-
-	//other controls:
+  addctrl("mrs_string/onObsNames", ",", ctrl_onObsNames_);
+  
+  inObservations_ = ctrl_inObservations_->to<mrs_natural>();
+  inSamples_ = ctrl_inSamples_->to<mrs_natural>();
+  onObservations_ = ctrl_onObservations_->to<mrs_natural>();
+  onSamples_ = ctrl_onSamples_->to<mrs_natural>();
+  
+  //other controls:
   addctrl("mrs_bool/debug", false, ctrl_debug_);		//no debug by default
   addctrl("mrs_bool/mute", false, ctrl_mute_);			//unmuted by default
   addctrl("mrs_bool/active",true, ctrl_active_);		//active by default
   ctrl_active_->setState(true);
- 
-	active_ = ctrl_active_->to<bool>();
+  
+  active_ = ctrl_active_->to<bool>();
 }
 
 void 
@@ -207,57 +207,57 @@ MarSystem::addMarSystem(MarSystem *marsystem)
 MarSystem*
 MarSystem::getMarSystem(std::string path)
 {
-	if(path == path_) //use path_ () instead?! [?] see Composite::getMarSystem()
-		return this;
-	else
-	{
-		MRSWARN("MarSystem::getMarsystem(): " + prefix_ + " not found!");
-		return NULL;
-	}
+  if(path == path_) //use path_ () instead?! [?] see Composite::getMarSystem()
+    return this;
+  else
+    {
+      MRSWARN("MarSystem::getMarsystem(): " + prefix_ + " not found!");
+      return NULL;
+    }
 }
 
 void
 MarSystem::setName(string name)
 {
-	if (name == name_)
-		return;
-
-	string oldPrefix = prefix_;
-	prefix_ = "/" + type_ + "/" + name + "/";
-	name_ = name;
-
-	//renames all controls accordingly
-	map<std::string, MarControlPtr> renamedControls;
-
+  if (name == name_)
+    return;
+  
+  string oldPrefix = prefix_;
+  prefix_ = "/" + type_ + "/" + name + "/";
+  name_ = name;
+  
+  //renames all controls accordingly
+  map<std::string, MarControlPtr> renamedControls;
+  
 #ifdef MARSYAS_QT
-	rwLock_.lockForRead(); //reading controls_
+  rwLock_.lockForRead(); //reading controls_
 #endif
-
-	for(ctrlIter_ = controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
-	{
-		string key = ctrlIter_->first;
-		key = key.substr(oldPrefix.length(),key.length()-oldPrefix.length());
-		key = prefix_ + key;
-
-		ctrlIter_->second->setName(key);
-		renamedControls[key] = ctrlIter_->second;
-	}
+  
+  for(ctrlIter_ = controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
+    {
+      string key = ctrlIter_->first;
+      key = key.substr(oldPrefix.length(),key.length()-oldPrefix.length());
+      key = prefix_ + key;
+      
+      ctrlIter_->second->setName(key);
+      renamedControls[key] = ctrlIter_->second;
+    }
 #ifdef MARSYAS_QT
-	rwLock_.unlock();//unlock reading mutex
-	rwLock_.lockForWrite();//lock controls_ for writing
+  rwLock_.unlock();//unlock reading mutex
+  rwLock_.lockForWrite();//lock controls_ for writing
 #endif
-
-	controls_ = renamedControls;
-
+  
+  controls_ = renamedControls;
+  
 #ifdef MARSYAS_QT
-	rwLock_.unlock();//unlock writing mutex
+  rwLock_.unlock();//unlock writing mutex
 #endif
-
-	//update path accordingly
-	string::size_type pos = path_.find(oldPrefix, 0);
-	string uppath = path_.substr(0, pos);
-	string downpath = path_.substr(oldPrefix.length()+pos, path_.length()-(oldPrefix.length()+pos));
-	path_ = uppath + prefix_ + downpath;
+  
+  //update path accordingly
+  string::size_type pos = path_.find(oldPrefix, 0);
+  string uppath = path_.substr(0, pos);
+  string downpath = path_.substr(oldPrefix.length()+pos, path_.length()-(oldPrefix.length()+pos));
+  path_ = uppath + prefix_ + downpath;
 }
 
 string 
@@ -287,68 +287,68 @@ MarSystem::getPath() const
 void
 MarSystem::addFatherPath(std::string fpath)
 {
-	//e.g. if path_ was "/Gain/g/" it will become 
-	//"/Series/s" + "/Gain/g/" = "/Series/s/Gain/g/"
-	path_ = fpath.substr(0, fpath.length()-1) + path_; //[!]
+  //e.g. if path_ was "/Gain/g/" it will become 
+  //"/Series/s" + "/Gain/g/" = "/Series/s/Gain/g/"
+  path_ = fpath.substr(0, fpath.length()-1) + path_; //[!]
 }
 
 void 
 MarSystem::checkFlow(realvec& in, realvec& out)
 {
-	mrs_natural irows = in.getRows();
-	mrs_natural icols = in.getCols();
-	mrs_natural orows = out.getRows();
-	mrs_natural ocols = out.getCols();
-
-	if(getctrl("mrs_bool/debug")->isTrue())
-	{
-		MRSWARN("Debug CheckFlow Information");
-		MRSWARN("MarSystem Type    = " << type_); 
-		MRSWARN("MarSystem Name    = " << name_);
-		MRSWARN("inObservations_ = " << inObservations_);
-		MRSWARN("inSamples_ = " << inSamples_);
-		MRSWARN("onObservations_ = " << onObservations_);
-		MRSWARN("onSamples_ = " << onSamples_);      
-		MRSWARN("Input  Slice Rows = " << irows ); 
-		MRSWARN("Input  Slice Cols = " << icols ); 
-		MRSWARN("Output Slice Rows = " << orows );
-		MRSWARN("Output Slice Cols = " << ocols );      
-	}
-
-	MRSASSERT(irows == inObservations_);
-	MRSASSERT(icols == inSamples_);
-	MRSASSERT(orows == onObservations_);
-	MRSASSERT(ocols == onSamples_);
+  mrs_natural irows = in.getRows();
+  mrs_natural icols = in.getCols();
+  mrs_natural orows = out.getRows();
+  mrs_natural ocols = out.getCols();
+  
+  if(getctrl("mrs_bool/debug")->isTrue())
+    {
+      MRSWARN("Debug CheckFlow Information");
+      MRSWARN("MarSystem Type    = " << type_); 
+      MRSWARN("MarSystem Name    = " << name_);
+      MRSWARN("inObservations_ = " << inObservations_);
+      MRSWARN("inSamples_ = " << inSamples_);
+      MRSWARN("onObservations_ = " << onObservations_);
+      MRSWARN("onSamples_ = " << onSamples_);      
+      MRSWARN("Input  Slice Rows = " << irows ); 
+      MRSWARN("Input  Slice Cols = " << icols ); 
+      MRSWARN("Output Slice Rows = " << orows );
+      MRSWARN("Output Slice Cols = " << ocols );      
+    }
+  
+  MRSASSERT(irows == inObservations_);
+  MRSASSERT(icols == inSamples_);
+  MRSASSERT(orows == onObservations_);
+  MRSASSERT(ocols == onSamples_);
 }
 
 void
 MarSystem::process(realvec& in, realvec& out)
 {
 #ifdef MARSYAS_QT
-	processMutex_->lock();
+  processMutex_->lock();
 #endif
-
-	checkFlow(in, out);
-	
-	myProcess(in, out);
-
+  
+  checkFlow(in, out);
+  
+  myProcess(in, out);
+  
 #ifdef MARSYAS_MATLAB
-	if(!MATLABscript_.empty())
-	{
-		MATLAB_PUT(in, name_ + "_in");
-		MATLAB_PUT(out, name_ + "_out");
-		MATLAB_EVAL(MATLABscript_);
-		MATLAB_GET(name_+"_out", out);
-
-		//check if out realvec was shortened by MATLAB script... //[!]
-		if((out.getRows() < onObservations_)||(out.getCols() < onSamples_))
-			out.stretch(onObservations_, onSamples_);
-	}
+  if(!MATLABscript_.empty())
+    {
+      MATLAB_PUT(in, name_ + "_in");
+      MATLAB_PUT(out, name_ + "_out");
+      MATLAB_EVAL(MATLABscript_);
+      MATLAB_GET(name_+"_out", out);
+      
+      //check if out realvec was shortened by MATLAB script... //[!]
+      if((out.getRows() < onObservations_)||(out.getCols() < onSamples_))
+	out.stretch(onObservations_, onSamples_);
+    }
 #endif
-
+  
 #ifdef MARSYAS_QT
-	processMutex_->unlock();
-	//emit processed();
+  processMutex_->unlock();
+  //emit processed();
 #endif
 }
 
@@ -356,36 +356,37 @@ void
 MarSystem::tick()
 {
   //if MarSystem is not active, ignore ticks
-	if(ctrl_active_->isTrue())
-	{
-		scheduler_.tick();
-		process(inTick_,outTick_);
-	}
-	else
-		MRSDIAG("MarSystem::tick() : MarSystem is not active! Ignoring tick command.");
+  if(ctrl_active_->isTrue())
+    {
+      scheduler_.tick();
+      process(inTick_,outTick_);
+    }
+  else
+    MRSDIAG("MarSystem::tick() : MarSystem is not active! Ignoring tick command.");
 }
 
 void 
 MarSystem::myUpdate()
 {
-	MRSDIAG("MarSystem.cpp - MarSystem:myUpdate");
-
-	//lmartins:
-	//By default, a MarSystem does not modify the input data stream format.
-	//Override this method on a derived MarSystem if data format changes
-	//should take place...
-	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
-	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
-	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
-	ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
+  MRSDIAG("MarSystem.cpp - MarSystem:myUpdate");
+  
+  //lmartins:
+  //By default, a MarSystem does not modify the input data stream format.
+  //Override this method on a derived MarSystem if data format changes
+  //should take place...
+  ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
+  ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
+  ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
 }
 
 void 
 MarSystem::update(MarControlPtr sender)
 {
 #ifdef MARSYAS_QT
-	processMutex_->lock();
+  processMutex_->lock();
 #endif
+
 
 	MRSDIAG("MarSystem.cpp - MarSystem:Update");
 
@@ -421,8 +422,9 @@ MarSystem::update(MarControlPtr sender)
 		outTick_.create(onObservations_, onSamples_);
 	}
 
+
 #ifdef MARSYAS_QT
-	processMutex_->unlock();
+  processMutex_->unlock();
 #endif
 }
 
@@ -547,20 +549,20 @@ MarSystem::getMATLABscript()
 bool 
 MarSystem::hasctrlState(string cname)
 {
-	return hasControlState(prefix_ + cname);
+  return hasControlState(prefix_ + cname);
 }
 
 bool 
 MarSystem::hasControlState(string cname)
 {
-	MarControlPtr control = getControl(cname);
-	if(control.isInvalid())
-	{
-		MRSWARN("MarControls::hasState Unsupported control name = " + cname);
-		return false;
-	}
-	else
-		return control->hasState();
+  MarControlPtr control = getControl(cname);
+  if(control.isInvalid())
+    {
+      MRSWARN("MarControls::hasState Unsupported control name = " + cname);
+      return false;
+    }
+  else
+    return control->hasState();
 }
 
 void 
@@ -654,33 +656,37 @@ MarSystem::hasControl(string cname)
 void 
 MarSystem::updControl(string cname, MarControlPtr newcontrol)
 {
-	// remove prefix for synonyms
-	string::size_type pos = cname.find(prefix_, 0);
-	string shortcname;
-	if (pos == 0) 
-	 shortcname = cname.substr(prefix_.length(), cname.length());
-	// check for synonyms - call recursively to resolve them 
-	map<string, vector<string> >::iterator ei;
-	ei = synonyms_.find(shortcname);
-	if (ei != synonyms_.end())
+
+  
+  // remove prefix for synonyms
+  string::size_type pos = cname.find(prefix_, 0);
+  string shortcname;
+  if (pos == 0) 
+    shortcname = cname.substr(prefix_.length(), cname.length());
+  // check for synonyms - call recursively to resolve them 
+  map<string, vector<string> >::iterator ei;
+  ei = synonyms_.find(shortcname);
+  if (ei != synonyms_.end())
+    {
+      vector<string> synonymList = synonyms_[shortcname];
+      vector<string>::iterator si;
+      for (si = synonymList.begin(); si != synonymList.end(); ++si)
 	{
-		 vector<string> synonymList = synonyms_[shortcname];
-		 vector<string>::iterator si;
-		 for (si = synonymList.begin(); si != synonymList.end(); ++si)
-		 {
-			 updControl(prefix_ + *si, newcontrol);
-		 }
+	  updControl(prefix_ + *si, newcontrol);
 	}
-	//if no links found, look for controls (if any)
-	else
+    }
+  //if no links found, look for controls (if any)
+  else
+    {
+      MarControlPtr control = getControl(cname);
+      // if the control exists, and if its value is in fact different, 
+      // update it!
+      if(!control.isInvalid() && control != newcontrol)
 	{
-		MarControlPtr control = getControl(cname);
-		//if the control exists, and if its value is in fact different, update it!
-		if(!control.isInvalid() && control != newcontrol)
-		{
-			control->setValue(newcontrol);//calls MarSystem::update() if the control has state
-		}
+	  //calls MarSystem::update() if the control has state
+	  control->setValue(newcontrol);
 	}
+    }
 }
 
 void

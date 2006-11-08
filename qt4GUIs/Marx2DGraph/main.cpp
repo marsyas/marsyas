@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 
   TopPanelNew* panel = new TopPanelNew( audioFile );
   
-  panel->setGeometry(100, 100, 400, 300);
+  panel->setGeometry(50, 50, 800, 500);
   panel->show();
 
   return app.exec();

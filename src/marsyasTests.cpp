@@ -58,6 +58,7 @@ printHelp(string progName)
   cerr << "marsystemIO     : test marsystem IO " << endl;
   cerr << "mixer           : test fanout for mixing " << endl;
   cerr << "parallel        : test Parallel composite " << endl;
+  cerr << "probe            : test Probe functionality " << endl;
   cerr << "realvec         : test realvec functions " << endl;
   cerr << "rmsilence  	   : test removing silences " << endl;
   cerr << "scheduler       : test scheduler " << endl;
@@ -395,6 +396,8 @@ test_fft(string sfName)
 	delete series;
 }
 
+
+
 void 
 test_parallel()
 {
@@ -435,6 +438,34 @@ test_parallel()
 
 	delete parallel;
 }
+
+
+void 
+test_probe()
+{
+  cout << "Testing probe functionality" << endl;
+  
+  // create the Marsyas 
+  MarSystemManager mng;
+  MarSystem* pnet = mng.create("Series", "pnet");
+  pnet->addMarSystem(mng.create("SoundFileSource", "src"));
+  pnet->addMarSystem(mng.create("Gain", "gain"));
+  pnet->addMarSystem(mng.create("Gain", "gain2"));
+  
+  // pnet->addMarSystem(mng.create("AudioSink", "dest"));
+  // pnet->updctrl("SoundFileSource/src/mrs_string/filename", "vlobos.au");
+  // pnet->updctrl("Gain/gain/mrs_real/gain", 2.0);
+  cout << "pnet = " << *pnet << endl;
+  cout << "BEFORE PROBE SET TO TRUE" << endl;
+  pnet->updctrl("mrs_bool/probe", true);
+  cout << "AFTER PROBE SET TO TRUE" << endl;
+  
+  cout << "pnet = " << *pnet << endl;
+  
+
+}
+
+
 
 void 
 test_cascade()
@@ -1345,12 +1376,9 @@ test_realvec()
 void
 test_MarControls(string sfName)
 {
-	cout << "TEST: new MarControl API" << endl;
-	cout << "Using input audio file: " << sfName << endl;
-
-	MarSystemManager mng;
-
-	//register control example/template MarSystems
+  cout << "TEST: new MarControl API" << endl;
+  cout << "Using input audio file: " << sfName << endl;
+  MarSystemManager mng; 
 	mng.registerPrototype("MarSystemTemplateBasic", new MarSystemTemplateBasic("mtbp"));
 	mng.registerPrototype("MarSystemTemplateAdvanced", new MarSystemTemplateAdvanced("mtap"));
 	
@@ -1446,6 +1474,8 @@ main(int argc, const char **argv)
     test_mixer(fname0, fname1);
   else if (testName == "parallel") 
     test_parallel();
+  else if (testName == "probe")
+    test_probe();
   else if (testName == "vicon") 
     test_vicon(fname0);   
   else if (testName == "realvec")

@@ -1,137 +1,162 @@
-/*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
-** This program is free software; you can redistribute it and/or modify
-** it under the terms of the GNU General Public License as published by
-** the Free Software Foundation; either version 2 of the License, or
-** (at your option) any later version.
-** 
-** This program is distributed in the hope that it will be useful,
-** but WITHOUT ANY WARRANTY; without even the implied warranty of
-** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-** GNU General Public License for more details.
-** 
-** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
-** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-*/
-
-/** 
-    \class MarSystemWrapper
-    \brief Wraps a MarSystem network into a Qt-like object with signals/slots
-
-    The MarSystemWrapper is the generic way of interfacing a GUI written 
-in Qt 4 with Marsyas. It creates a separate thread for running sound 
-through the MarSystem dataflow network. The network is communicates 
-with the Qt code through the standard signal/slot mechanism 
-adjusted to reflect Marsyas controls. 
-*/
+/* Filename: MarSystemWrapper.h
+ * Purpose: Wrapper around MarSystem framework.  This is a modified version
+ * of the MarPlayer application's MarSystemWrapper.cpp file by Dr. George Tzanetakis.
+ *
+ * Some differences between MarPlayer's MarSystemWrapper (from marsyas-0.2.7)
+ * and MCI's MarSystemWrapper:
+ * 1) MCI's MarSystemWrapper uses a semaphores to protect the main_pnet_ MarSystem.
+ * 2) updatectrl methods take in strings instead of QStrings
+ */
 
 #include "MarSystemWrapper.h"
 
-#include <QMutexLocker>
-
-using namespace std;
-using namespace Marsyas;
-
+/* Function: MarSystemWrapper constructor
+   Parameters: MarSystem
+   Returns: nothing
+   Initializes the MarSystemWrapper by creating the pnet_ and mix_ MarSystem.
+*/
 MarSystemWrapper::MarSystemWrapper(MarSystem* msys)
 {
-  msys_ = msys;
-	stopped_ = false;
-	updctrl("mrs_bool/active",false);
+	main_pnet_ = msys;
+	pnet_sema_ = new QSemaphore(1);
+
+	guard_ = false;
+	running_ = false;
+
+	pause_ = false;
+	empty_ = false;
 }
 
-MarControlValue 
-MarSystemWrapper::getctrl(string cname)
+/* Function: getctrl
+   Parameters: name of the control
+   Returns: control value
+   Wrapper around MarSystem getctrl.
+*/
+MarControlValue MarSystemWrapper::getctrl(string cname)
 {
-  MarControlValue v;
-  
-	ctrlMutex_.lock();
-	v = msys_->getctrl(cname);
-  ctrlMutex_.unlock();
-	
-	return v;
-}
+	MarControlValue value;
+	value = main_pnet_->getctrl(cname);
+	return value;
+} // end function
 
-void 
-MarSystemWrapper::updctrl(QString cname, MarControlValue value) 
+/* Function: updctrl
+   Parameters: name of the control
+	       control value
+   Returns: nothing
+   Checks flags then updates the control in pnet or
+   pushes them into a vector to process when pnet is
+   not ticking.
+*/
+void MarSystemWrapper::updctrl(string cname, MarControlValue cvalue)
 {
-  // controls can not be updated at any point in Marsyas 
-  // so if the thread is running they are stored 
-  // and then the actual updates happen in between 
-  // calls to tick 
-	if (!isRunning()) 
-  {
-    msys_->updctrl(cname.toStdString(), value);
-    emit ctrlChanged(cname, value);
-  }
-  else    
-  {
-    ctrlMutex_.lock();
-		cnames_.push_back(cname);
-    cvalues_.push_back(value);
-		ctrlMutex_.unlock();
-    emit ctrlChanged(cname, value);
-  }
-}
+	//cout << "Attempting to lock ... ";
 
-void MarSystemWrapper::stopThread()
-{
-	stopMutex_.lock();
-	stopped_ = true;
-	stopMutex_.unlock();
-}
+	// if tryAcquire returns true, the semaphore is acquired
+	if (pnet_sema_->tryAcquire(1)) {
+		//cout << "locked with " << pnet_sema_->available() << " avail." << endl;
 
+		if ( !running_ )
+		{
+			main_pnet_->updctrl(cname, cvalue);
+
+ 			//emit ctrlChanged(cname, cvalue);
+		} else {
+			// tr(cname.c_str()) means convert string to a cstring
+			// tr converts the cstring to a QString
+			// using the tr in QObject (not the other one)
+			control_names_.push_back(tr(cname.c_str()));
+			control_values_.push_back(cvalue);
+			guard_ = true;
+
+ 			//emit ctrlChanged(cname, cvalue);
+		} // end if else
+
+		// check to make sure available is 0
+		// otherwise release will create 1 more semaphore
+		if ( pnet_sema_->available() == 0) {
+			pnet_sema_->release(1);
+		} // end if
+	} // end if
+} // end function
+
+/* Function: pause
+   Parameters: nothing
+   Returns: nothing
+   Handy function for changing pause variable.
+*/
 void MarSystemWrapper::pause()
 {
-	updctrl("mrs_bool/active", false);
-}
+	pause_ = true;
+} // end function
 
-
+/* Function: play
+   Parameters: nothing
+   Returns: nothing
+   Handy function for changing pause variable.
+*/
 void MarSystemWrapper::play()
 {
-	updctrl("mrs_bool/active", true);
-}
+	pause_ = false;
+} // end function
 
+/* Function: run
+   Parameters: none
+   Returns: nothing
+   One of the required thread methods to implement.
+   Note: it runs forever.
+*/
 void MarSystemWrapper::run() 
 {
-	while(1)//forever
-  {
-		{
-			QMutexLocker stopLocker(&stopMutex_);
-				if(stopped_)
-				{
-					stopped_ = false;
-					break; //break from while(1) and exit run() => stops thread!
-				}
-		}
-				
-		//update stored controls atomically 
-    if(ctrlMutex_.tryLock())
-		{
-			vector<QString>::iterator  vsi;
-			vector<MarControlValue>::iterator vvi;
-	    
-			for (vsi = cnames_.begin(), vvi = cvalues_.begin(); 
-					vsi != cnames_.end(); ++vsi, ++vvi)
-			{
-				msys_->updctrl(vsi->toStdString(), *vvi);
-			}
-			cnames_.clear();
-			cvalues_.clear();
-	    
-			ctrlMutex_.unlock();
-		}
-    
-		//if MarSystem is not active (i.e. paused)
-		//this tick is ignored
-		msys_->tick();
-    
-    //check for EOF
-		if (msys_->getctrl("mrs_bool/notEmpty")->toBool() == false) 
-		{
-			pause();
-		}
+	while(1) {
+		running_ = true;
 
-	}
-}
+		// if tryAcquire returns true, the semaphore is acquired
+		// if tryAcquire returns false, the controls waiting to be
+		// updated remain in the vectors.
+		if (pnet_sema_->tryAcquire(1)) {
+		 if (guard_ == true)
+		 {
+			//cout << "Locked update control with ";
+			//cout << pnet_sema_->available() << " avail." << endl;
+			
+			// udpate stored controls
+			vector<QString>::iterator vsi;
+			vector<MarControlValue>::iterator vvi;
+
+			for (vsi = control_names_.begin(),
+			vvi = control_values_.begin();
+			vsi != control_names_.end(); ++vsi, ++vvi)
+			{
+				main_pnet_->updctrl(vsi->toStdString(), *vvi);
+
+				//cout << vsi->toStdString() << " " << *vvi << endl;
+			} // end for
+			
+			control_names_.clear();
+			control_values_.clear();
+			guard_ = false;
+		 } // end if
+
+		 // check to make sure available is 0
+		 // otherwise release will create 1 more semaphore
+		 if ( pnet_sema_->available() == 0) {
+			pnet_sema_->release(1);
+		 } // end inner if
+		} // end outer if
+
+		if (!pause_)
+		{
+			main_pnet_->tick();	
+			//empty_ = false;
+		} // end if else
+	/* No need for this in MCI for now
+		if (empty_ == false) 
+		{
+		 if (main_pnet_->getctrl("mrs_bool/notEmpty").toBool() == false) 
+		 {
+			empty_ = true;
+		 } // end if
+		} // end if
+	*/
+	} // end while loop
+} // end function

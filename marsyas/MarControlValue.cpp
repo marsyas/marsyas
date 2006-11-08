@@ -208,15 +208,10 @@ MarControlValueT<bool>::isNotEqual(MarControlValue *v)
 {
 	if(this != v)//if referring to different objects, check if their contents is different...
 	{
-		if (type_ != "mrs_bool")
-		{
-			MRSWARN("Types of MarControlValue are different");
-		}
-
-		return value_ != dynamic_cast<MarControlValueT<bool>*>(v)->get();
+	  return value_ != dynamic_cast<MarControlValueT<bool>*>(v)->get();
 	}
 	else //if v1 and v2 refer to the same object, they must be equal (=> return false)
-		return false;
+	  return false;
 }
 
 std::ostream&
