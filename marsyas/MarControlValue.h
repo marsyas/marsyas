@@ -137,6 +137,7 @@ public:
 
 	//getters
 	const realvec& get() const;
+	realvec& getRef() const;
 
 	virtual void createFromStream(std::istream&);
 	virtual std::ostream& serialize(std::ostream& os);
@@ -204,7 +205,7 @@ MarControlValueT<T>::MarControlValueT()
 {
 	value_ = T();
 
-	// simple tests are used for basic types for efficiency purposes
+	// simple tests are previously done for basic types for efficiency purposes
 	if (typeid(T) == typeid(mrs_real))
 		type_ = "mrs_real";
 	else if (typeid(T) == typeid(mrs_natural))

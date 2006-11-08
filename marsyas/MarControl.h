@@ -67,7 +67,7 @@ public:
 	inline MarControlPtr(mrs_real re);
 	inline MarControlPtr(char *c);
 	inline MarControlPtr(std::string st);
-	inline MarControlPtr(mrs_bool be);
+	inline MarControlPtr(bool be);
 	inline MarControlPtr(realvec& ve);
 
 	// generic type constructor
@@ -112,7 +112,6 @@ class MarControl : public QObject
 class MarControl
 #endif
 {
-
 	friend class MarControlManager;
 	
 
@@ -148,7 +147,7 @@ public:
 	inline MarControl(mrs_real re, std::string cname = "", MarSystem* msys = 0, bool state = false);
 	inline MarControl(mrs_natural ne, std::string cname = "", MarSystem* msys = 0, bool state = false);
 	inline MarControl(std::string st, std::string cname = "", MarSystem* msys = 0, bool state = false);
-  inline MarControl(mrs_bool be, std::string cname = "", MarSystem* msys = 0, bool state = false);
+  inline MarControl(bool be, std::string cname = "", MarSystem* msys = 0, bool state = false);
 	inline MarControl(realvec& ve, std::string cname = "", MarSystem* msys = 0, bool state = false);
 
 	// destructor
@@ -195,8 +194,21 @@ public:
 	inline const std::string& toString() const;
 	inline const realvec& toVec() const;
 
-	// another helper to ease code reading
+	// bool-specific helper
 	bool isTrue();
+
+	// realvec-specific helpers (TODO: cleaner way to do this?)
+	void create(mrs_natural size);
+	void create(mrs_natural rows, mrs_natural cols); 
+	void create(mrs_real val, mrs_natural rows, mrs_natural cols);	
+	void stretch(mrs_natural rows, mrs_natural cols);
+	void stretch(mrs_natural size);
+	void setval(mrs_natural start, mrs_natural end, mrs_real val);
+	void setval(mrs_real val);
+	mrs_real& operator()(const mrs_natural i);
+	mrs_real operator()(const mrs_natural i) const;
+	mrs_real& operator()(const long r, const long c);
+	mrs_real operator()(const long r, const long c) const;
 
 	friend inline std::ostream& operator<<(std::ostream& os, const MarControl& ctrl);
 	friend inline bool operator==(const MarControl& v1, const MarControl& v2);
@@ -715,10 +727,173 @@ MarControl::isTrue()
 	else
 	{
 		std::ostringstream sstr;
-		sstr << "[MarControl::setValue] Trying to get value of incompatible type "
-			<< "(expected " << value_->getType() << ", given " << typeid(bool).name() << ")";
+		sstr << "[MarControl::setValue] Trying to get use bool-specific method with " << value_->getType(); 
 		MRSWARN(sstr.str());
 		return false;
+	}
+}
+
+inline
+void
+MarControl::create(mrs_natural size)
+{
+	// TODO: this changes the realvec so we need to signal it
+	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
+	if(ptr)
+	{
+		ptr->getRef().create(size);
+	}
+	else
+	{
+		std::ostringstream sstr;
+		sstr << "[MarControl::create] Trying to get use realvec-specific method with " << value_->getType();
+		MRSWARN(sstr.str());
+	}
+}
+
+inline
+void
+MarControl::create(mrs_natural rows, mrs_natural cols)
+{
+	// TODO: this changes the realvec so we need to signal it
+	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
+	if(ptr)
+	{
+		ptr->getRef().create(rows, cols);
+	}
+	else
+	{
+		std::ostringstream sstr;
+		sstr << "[MarControl::create] Trying to get use realvec-specific method with " << value_->getType();
+		MRSWARN(sstr.str());
+	}
+}
+
+inline
+void
+MarControl::create(mrs_real val, mrs_natural rows, mrs_natural cols)
+{
+	// TODO: this changes the realvec so we need to signal it
+	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
+	if(ptr)
+	{
+		ptr->getRef().create(val, rows, cols);
+	}
+	else
+	{
+		std::ostringstream sstr;
+		sstr << "[MarControl::create] Trying to get use realvec-specific method with " << value_->getType();
+		MRSWARN(sstr.str());
+	}
+}
+
+inline
+void
+MarControl::stretch(mrs_natural rows, mrs_natural cols)
+{
+	// TODO: this changes the realvec so we need to signal it
+	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
+	if(ptr)
+	{
+		ptr->getRef().stretch(rows, cols);
+	}
+	else
+	{
+		std::ostringstream sstr;
+		sstr << "[MarControl::create] Trying to get use realvec-specific method with " << value_->getType();
+		MRSWARN(sstr.str());
+	}
+}
+
+inline
+void
+MarControl::stretch(mrs_natural size)
+{
+	// TODO: this changes the realvec so we need to signal it
+	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
+	if(ptr)
+	{
+		ptr->getRef().stretch(size);
+	}
+	else
+	{
+		std::ostringstream sstr;
+		sstr << "[MarControl::create] Trying to get use realvec-specific method with " << value_->getType();
+		MRSWARN(sstr.str());
+	}
+}
+
+inline
+void
+MarControl::setval(mrs_natural start, mrs_natural end, mrs_real val)
+{
+	// TODO: this changes the realvec so we need to signal it
+	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
+	if(ptr)
+	{
+		ptr->getRef().setval(start, end, val);
+	}
+	else
+	{
+		std::ostringstream sstr;
+		sstr << "[MarControl::setval] Trying to get use realvec-specific method with " << value_->getType();
+		MRSWARN(sstr.str());
+	}
+}
+
+inline
+void
+MarControl::setval(mrs_real val)
+{
+	// TODO: this changes the realvec so we need to signal it
+	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
+	if(ptr)
+	{
+		ptr->getRef().setval(val);
+	}
+	else
+	{
+		std::ostringstream sstr;
+		sstr << "[MarControl::setval] Trying to get use realvec-specific method with " << value_->getType();
+		MRSWARN(sstr.str());
+	}
+}
+
+inline
+mrs_real&
+MarControl::operator()(const mrs_natural i)
+{
+	// TODO: this changes the realvec so we need to signal it
+	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
+	if(ptr)
+	{
+		return ptr->getRef()(i);
+	}
+	else
+	{
+		std::ostringstream sstr;
+		sstr << "[MarControl::operator()] Trying to get use realvec-specific method with " << value_->getType();
+		MRSWARN(sstr.str());
+		return MarControlValueT<mrs_real>::invalidValue;
+	}
+}
+
+inline
+mrs_real&
+MarControl::operator()(const long r, const long c)
+{
+	// TODO: this changes the realvec so we need to signal it
+	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
+	if(ptr)
+	{
+		return ptr->getRef()(r, c);
+	}
+	else
+	{
+		std::ostringstream sstr;
+		sstr << "[MarControl::operator()] Trying to get use realvec-specific method with " << value_->getType();
+		MRSWARN(sstr.str());
+		return MarControlValueT<mrs_real>::invalidValue;
 	}
 }
 
