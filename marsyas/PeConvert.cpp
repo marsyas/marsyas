@@ -64,6 +64,7 @@ void
 PeConvert::addControls()
 {
 	addctrl("mrs_natural/Decimation",MRS_DEFAULT_SLICE_NSAMPLES/4);
+	setctrlState("mrs_natural/Decimation", true);
 	addctrl("mrs_natural/Sinusoids", 1);
 	setctrlState("mrs_natural/Sinusoids", true);
 }
@@ -241,23 +242,23 @@ PeConvert::myProcess(realvec& in, realvec& out)
 	out.setval(0);
 	for (i=0;i<nbPeaks_;i++)
 	{
-		out(i) = frequency_(index_(2*i+1));
+		out(i) = frequency_((mrs_natural) index_(2*i+1));
 	}
 	for (i=0;i<nbPeaks_;i++)
 	{
-		out(i+kmax_) = magCorr_(index_(2*i+1));
+		out(i+kmax_) = magCorr_((mrs_natural) index_(2*i+1));
 	}
 	for (i=0;i<nbPeaks_;i++)
 	{
-		out(i+2*kmax_) = -phase_(index_(2*i+1));
+		out(i+2*kmax_) = -phase_((mrs_natural) index_(2*i+1));
 	}
 	for (i=0;i<nbPeaks_;i++)
 	{
-		out(i+3*kmax_) = deltafrequency_(index_(2*i+1));
+		out(i+3*kmax_) = deltafrequency_((mrs_natural) index_(2*i+1));
 	}
 	for (i=0;i<nbPeaks_;i++)
 	{
-		out(i+4*kmax_) = deltamag_(index_(2*i+1));
+		out(i+4*kmax_) = deltamag_((mrs_natural) index_(2*i+1));
 	}
 	for (i=0;i<nbPeaks_;i++)
 	{

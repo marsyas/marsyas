@@ -63,8 +63,8 @@ using namespace Marsyas;
  void 
 	 Marsyas::peaks2V (realvec& in, realvec& last, realvec& out, int maxNbPeaks)
  {
-	 int i, j, k=0, start=0;
-	 int frameIndex=-1, startIndex = in(0, 5);
+	 mrs_natural i, j, k=0, start=0;
+	 mrs_natural frameIndex=-1, startIndex = (mrs_natural) in(0, 5);
 
 	  out.setval(0);
 	 if(&last && last(0))
@@ -78,7 +78,7 @@ using namespace Marsyas;
 	 {
 		 if(frameIndex != in(i, 5))
 		 {
-			 frameIndex = in(i, 5);
+			 frameIndex = (mrs_natural) in(i, 5);
 			 k=0;
 		 }
 		 if(!start || (start && in(i, 5) >= startIndex))
@@ -103,14 +103,14 @@ using namespace Marsyas;
 
  void Marsyas::extractParameter(realvec&in, realvec&out, pkParameter type)
 {
- int i, j, k=0, start=0;
- int frameIndex=-1, startIndex = in(0, 5);
+ mrs_natural i, k=0, start=0;
+ mrs_natural frameIndex=-1, startIndex = (mrs_natural) in(0, 5);
 
  for (i=0 ; i<in.getRows() ; i++, k++)
  {
    if(frameIndex != in(i, 5))
 		 {
-			 frameIndex = in(i, 5);
+			 frameIndex = (mrs_natural) in(i, 5);
 			 k=0;
 		 }
 		 if(!start || (start && in(i, 5) >= startIndex))
@@ -119,11 +119,6 @@ using namespace Marsyas;
 			 }
  }
 }
-
-
-
-
-
 
 
 mrs_real

@@ -36,9 +36,10 @@ class PeClust: public MarSystem
 {
 private: 
 
+	MarControlPtr ctrl_peakSet_;
+
 	realvec data_;
 	realvec m_;
-	realvec peakSet_;
 	realvec lastFrame_;
 	realvec frequencySet_;
 	realvec amplitudeSet_;
@@ -60,6 +61,7 @@ void labeling(realvec& , realvec&);
 
 public:
   PeClust(std::string name);
+	PeClust(const PeClust& a);
   ~PeClust();
   MarSystem* clone() const;  
   

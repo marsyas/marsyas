@@ -37,6 +37,10 @@ kmax_ = 0;
 	nbParameters_ = nbPeaksParameters; // 7
 }
 
+PeClust::PeClust(const PeClust& a) : MarSystem(a)
+{
+	ctrl_peakSet_ = getctrl("mrs_realvec/peakSet");
+}
 
 PeClust::~PeClust()
 {
@@ -53,10 +57,15 @@ PeClust::addControls()
 {
   //Add specific controls needed by this MarSystem.
   addctrl("mrs_natural/Clusters", 2);
+	setctrlState("mrs_natural/Clusters", true);
 	addctrl("mrs_natural/Sinusoids", 1);
+  setctrlState("mrs_natural/Sinusoids", true);
 	addctrl("mrs_string/similarityType", "");
-	addctrl("mrs_realvec/peakSet", peakSet_);
+  setctrlState("mrs_string/similarityType", true);
+	addctrl("mrs_realvec/peakSet", realvec(), ctrl_peakSet_);
+  setctrlState("mrs_realvec/peakSet", true);
   addctrl("mrs_natural/hopSize", 512);
+  setctrlState("mrs_natural/hopSize", true);
 }
 
  void
@@ -94,7 +103,7 @@ PeClust::addControls()
  void
 	 PeClust::similarityMatrix(realvec &data, realvec& m, string type)
  {
-	 int i, j;
+	 mrs_natural i, j;
 	 realvec vec(nbPeaks_);
 
 	 m.setval(1);
@@ -193,7 +202,7 @@ similarityCompute(vec, m);
  void
 	 PeClust::harmonicitySimilarityCompute(realvec& data, realvec& fSet, realvec& aSet, realvec& m)
  {
-   int i, j, k, startIndex = data(0, 5);
+   mrs_natural i, j, k, startIndex = (mrs_natural) data(0, 5);
 
 	 // similarity computing
 	 for(i=0 ; i<nbPeaks_ ; i++)
@@ -201,7 +210,7 @@ similarityCompute(vec, m);
 		 for(j=0 ; j<i ; j++)
 		 {
 			 mrs_real fDiff = data(i, frequency)-data(j, frequency), val=0;
-			 mrs_natural nbFirst=0, nbSecond=0, indexFirst = data(i, 5)-startIndex, indexSecond = data(j, 5)-startIndex;
+			 mrs_natural nbFirst=0, nbSecond=0, indexFirst = (mrs_natural) (data(i, 5)-startIndex), indexSecond = (mrs_natural) (data(j, 5)-startIndex);
 
 			while(fSet(nbFirst++, indexFirst));
 			while(fSet(nbSecond++, indexSecond));
@@ -251,7 +260,7 @@ secondA(k) = aSet(k, indexSecond);
 	 if(lastFrame_(0))
 	 {
 		 realvec conversion_(nbClusters_);
-		 mrs_natural lastIndex = lastFrame_(5*kmax_);	
+		 mrs_natural lastIndex = (mrs_natural) lastFrame_(5*kmax_);	
 		 realvec oldLabels(kmax_);
 		 realvec newLabels(kmax_);
 
@@ -327,8 +336,8 @@ secondA(k) = aSet(k, indexSecond);
 		 //labels.dump();
 		 // convert labels
 		 for(i=0 ; i<labels.getSize() ; i++)
-			 if(labels(i) != 0.0 && conversion_(labels(i)) != 0.0)
-				 labels(i) = conversion_(labels(i)-1);
+			 if(labels(i) != 0.0 && conversion_( (mrs_natural) labels(i)) != 0.0)
+				 labels(i) = conversion_((mrs_natural) labels(i)-1);
 		 // labels.dump();
 	 }
 	 // fill peaks data with clusters labels
@@ -369,27 +378,26 @@ secondA(k) = aSet(k, indexSecond);
 	peaks2V(data_, lastFrame_, out, kmax_);
 
 	// peaks storing
-	int peaksSetSize = peakSet_.getRows(), start;
+	const realvec& peakSet = ctrl_peakSet_->to<realvec> (); 
+	int peaksSetSize = peakSet.getRows(), start;
 	if(!peaksSetSize)
 	{
 // add synth infos
-		peakSet_.stretch(nbPeaks_+1, nbPeaksParameters);
-		peakSet_(0,0) = -1;
-		peakSet_(0,1) = getctrl("mrs_real/israte")->toReal();
-		peakSet_(0,2) = getctrl("mrs_natural/hopSize")->toNatural();
+		ctrl_peakSet_->stretch(nbPeaks_+1, nbPeaksParameters);
+		(**ctrl_peakSet_)(0,0) = -1;
+		(**ctrl_peakSet_)(0,1) = ctrl_israte_->to<mrs_real>();
+		(**ctrl_peakSet_)(0,2) = getctrl("mrs_natural/hopSize")->toNatural();
 	start=1;
 	}
 	else
 	{
 		start=0;
-	peakSet_.stretch(peaksSetSize+nbPeaks_, nbPeaksParameters);
+	ctrl_peakSet_->stretch(peaksSetSize+nbPeaks_, nbPeaksParameters);
 	}
+
 	for (int i=0 ; i<nbPeaks_ ; i++)
 		for (int j=0 ; j<nbPeaksParameters ; j++)
-			peakSet_(peaksSetSize+i+start, j) = data_(i, j);
-
-	setctrl("mrs_realvec/peakSet", peakSet_);
-
+			(**ctrl_peakSet_)(peaksSetSize+i+start, j) = data_(i, j);
 } 
 
 
