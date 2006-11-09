@@ -81,9 +81,9 @@ public:
   MarControlPtr getControl(std::string cname);
   
   void addMarSystem(MarSystem *marsystem);
-	MarSystem* getMarSystem(std::string path);
-
-	virtual std::vector<MarSystem*> getChildren();
+  MarSystem* getMarSystem(std::string path);
+  
+  virtual std::vector<MarSystem*> getChildren();
   
   std::ostream& put(std::ostream& o);	  
 

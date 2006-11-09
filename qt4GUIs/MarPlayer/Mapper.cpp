@@ -69,10 +69,10 @@ Mapper::open(QString fileName, int pos)
   mwr_->updctrl("SoundFileSource/src/mrs_real/repetitions", -1.0); 
   
   mrs_natural size = 
-    mwr_->getctrl("SoundFileSource/src/mrs_natural/size").toNatural();
+    mwr_->getctrl("SoundFileSource/src/mrs_natural/size")->to<mrs_natural>();
   
   mrs_real srate = 
-    mwr_->getctrl("SoundFileSource/src/mrs_real/osrate").toReal();    
+    mwr_->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();    
   
   Marsyas::mrs_real duration = (size / srate);
   emit durationChanged(duration);
@@ -93,10 +93,10 @@ Mapper::open(QString fileName, int pos)
 void 
 Mapper::setPos() 
 {
-  mrs_natural pos = mwr_->getctrl("SoundFileSource/src/mrs_natural/pos").toNatural();
-  mrs_natural size = mwr_->getctrl("SoundFileSource/src/mrs_natural/size").toNatural();
+  mrs_natural pos = mwr_->getctrl("SoundFileSource/src/mrs_natural/pos")->to<mrs_natural>();
+  mrs_natural size = mwr_->getctrl("SoundFileSource/src/mrs_natural/size")->to<mrs_natural>();
   mrs_real srate = 
-    mwr_->getctrl("SoundFileSource/src/mrs_real/osrate").toReal();    
+    mwr_->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();    
   
   mrs_real duration = (pos / srate);
   emit timeChanged(duration);
@@ -112,7 +112,7 @@ Mapper::setPos(int val)
   float fval = val / 100.0f;
   
   float fsize = 
-    mwr_->getctrl("SoundFileSource/src/mrs_natural/size").toNatural();
+    mwr_->getctrl("SoundFileSource/src/mrs_natural/size")->to<mrs_natural>();
   fsize *= fval;
   
   int size = (int) fsize;

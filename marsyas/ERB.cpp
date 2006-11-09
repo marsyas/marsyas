@@ -71,7 +71,7 @@ void
 ERB::myUpdate()
 {
   MRSDIAG("ERB.cpp - ERB:myUpdate");
-  
+
   //FilterBank creation
   if (numChannels != getctrl("mrs_natural/numChannels")->toNatural()){
     numChannels = getctrl("mrs_natural/numChannels")->toNatural();

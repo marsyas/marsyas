@@ -30,11 +30,11 @@ MarSystemWrapper::MarSystemWrapper(MarSystem* msys)
 /* Function: getctrl
    Parameters: name of the control
    Returns: control value
-   Wrapper around MarSystem getctrl.
+   Wrapper around MarSystem getctrl. 
 */
-MarControlValue MarSystemWrapper::getctrl(string cname)
+MarControlPtr MarSystemWrapper::getctrl(string cname)
 {
-	MarControlValue value;
+	MarControlPtr value;
 	value = main_pnet_->getctrl(cname);
 	return value;
 } // end function
@@ -47,7 +47,7 @@ MarControlValue MarSystemWrapper::getctrl(string cname)
    pushes them into a vector to process when pnet is
    not ticking.
 */
-void MarSystemWrapper::updctrl(string cname, MarControlValue cvalue)
+void MarSystemWrapper::updctrl(string cname, MarControlPtr cvalue)
 {
 	//cout << "Attempting to lock ... ";
 
@@ -121,7 +121,7 @@ void MarSystemWrapper::run()
 			
 			// udpate stored controls
 			vector<QString>::iterator vsi;
-			vector<MarControlValue>::iterator vvi;
+			vector<MarControlPtr>::iterator vvi;
 
 			for (vsi = control_names_.begin(),
 			vvi = control_values_.begin();

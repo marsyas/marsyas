@@ -13,17 +13,33 @@ main(int argc, const char **argv)
   string name = argv[1];
   mrs_natural channel(atoi(argv[2]));
   mrs_natural window(atoi(argv[3]));
-  mrs_real gain(atoi(argv[4]));
-  
+  mrs_real gain(atof(argv[4]));
+
+
   MarSystemManager mng;
   MarSystem* src = mng.create("SoundFileSource", "src");
   MarSystem* erb = mng.create("ERB","ERBfilterBank");
   MarSystem* dest = mng.create("AudioSink", "dest");
   
+
+
+
+  
   src->updctrl("mrs_natural/inSamples", window);
   src->updctrl("mrs_string/filename", name);
+
+
+  // This core dumps. Need to check it out. 
+  // erb->setctrl("mrs_natural/inObservations", src->getctrl("mrs_natural/onObservations"));
   
-  erb->updctrl("mrs_natural/inObservations", src->getctrl("mrs_natural/onObservations"));
+  cout << *src << endl;
+  
+  cout << src->getctrl("mrs_natural/onObservations") << endl;
+  cout << src->getctrl("mrs_natural/onSamples") << endl;  
+  erb->updctrl("mrs_natural/inObservations", 1);
+  
+  return 1;    
+
   erb->updctrl("mrs_natural/inSamples", src->getctrl("mrs_natural/onSamples"));
   erb->updctrl("mrs_real/israte",src->getctrl("mrs_real/osrate"));
   erb->updctrl("mrs_natural/numChannels",24);
@@ -33,6 +49,9 @@ main(int argc, const char **argv)
   dest->updctrl("mrs_natural/inSamples", src->getctrl("mrs_natural/onSamples"));
   dest->updctrl("mrs_real/israte", src->getctrl("mrs_real/osrate"));
   dest->updctrl("mrs_natural/nChannels", 1);
+
+
+
   
   realvec src_in, dest_in;
   realvec src_out, erb_out, dest_out;

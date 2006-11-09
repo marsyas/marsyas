@@ -38,15 +38,15 @@ public:
 	MarSystemWrapper(MarSystem* msys);
 
 public slots:
-	void updctrl(string cname, MarControlValue cvalue);
-	MarControlValue getctrl(string cname);
+  void updctrl(string cname, MarControlPtr cvalue);
+  MarControlPtr getctrl(string cname);
 
 	void play();
 	void pause();
 	void run();
 
 signals:
-	void ctrlChanged(string cname, MarControlValue cvalue);
+	void ctrlChanged(string cname, MarControlPtr cvalue);
 	void posChanged(int val);
 	
 private:
@@ -58,7 +58,7 @@ private:
 	// Vectors for pushing in events that cannot be
 	// processes while the main MarSystem is ticking
 	vector<QString> control_names_;
-	vector<MarControlValue> control_values_;
+	vector<MarControlPtr> control_values_;
 	
 	bool guard_;
 	bool pause_;

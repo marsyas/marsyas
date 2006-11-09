@@ -1,223 +1,162 @@
+/* Filename: MarSystemWrapper.h
+ * Purpose: Wrapper around MarSystem framework.  This is a modified version
+ * of the MarPlayer application's MarSystemWrapper.cpp file by Dr. George Tzanetakis.
+ *
+ * Some differences between MarPlayer's MarSystemWrapper (from marsyas-0.2.7)
+ * and MCI's MarSystemWrapper:
+ * 1) MCI's MarSystemWrapper uses a semaphores to protect the main_pnet_ MarSystem.
+ * 2) updatectrl methods take in strings instead of QStrings
+ */
+
 #include "MarSystemWrapper.h"
 
-using namespace std;
-using namespace Marsyas;
-
+/* Function: MarSystemWrapper constructor
+   Parameters: MarSystem
+   Returns: nothing
+   Initializes the MarSystemWrapper by creating the pnet_ and mix_ MarSystem.
+*/
 MarSystemWrapper::MarSystemWrapper(MarSystem* msys)
 {
+	main_pnet_ = msys;
+	pnet_sema_ = new QSemaphore(1);
 
-  msys_ = msys;
-  running_ = false;
-  guard_ = false;
-  probing_ = false;
-  pause_ = true;
-  empty_ = false;
-  
+	guard_ = false;
+	running_ = false;
 
-  vec_.create(512);
-  
-  
+	pause_ = false;
+	empty_ = false;
 }
 
-
-void MarSystemWrapper::probe(int state)
+/* Function: getctrl
+   Parameters: name of the control
+   Returns: control value
+   Wrapper around MarSystem getctrl. 
+*/
+MarControlPtr MarSystemWrapper::getctrl(string cname)
 {
-  /* 
-  if (state == Qt::Checked) 
-    {
-      cout << "** PROBING *** " << endl;
-      updctrl("Fanout/mixer/Series/sbr/mrs_bool/probe", true);
-      updctrl("Fanout/mixer/Series/nbr/mrs_bool/probe", true);
-      probing_ = true;
-    }
-  else
-    {
-      
-      updctrl("Fanout/mixer/Series/sbr/mrs_bool/probe", false);
-      updctrl("Fanout/mixer/Series/nbr/mrs_bool/probe", false);
-      probing_ = false;
-    }
-  */ 
-  
-}
+	MarControlPtr value;
+	value = main_pnet_->getctrl(cname);
+	return value;
+} // end function
 
-
-
-
-MarControlValue MarSystemWrapper::getctrl(string cname)
+/* Function: updctrl
+   Parameters: name of the control
+	       control value
+   Returns: nothing
+   Checks flags then updates the control in pnet or
+   pushes them into a vector to process when pnet is
+   not ticking.
+*/
+void MarSystemWrapper::updctrl(string cname, MarControlPtr cvalue)
 {
-  MarControlValue v;
-  v = msys_->getctrl(cname);
-  
-  cout << "getctrl ::" << cname << v << endl;
-  return v;
-}
+	//cout << "Attempting to lock ... ";
 
+	// if tryAcquire returns true, the semaphore is acquired
+	if (pnet_sema_->tryAcquire(1)) {
+		//cout << "locked with " << pnet_sema_->available() << " avail." << endl;
 
-void MarSystemWrapper::updctrl(QString cname, MarControlValue value) 
-{
+		if ( !running_ )
+		{
+			main_pnet_->updctrl(cname, cvalue);
 
-  cout << "Updctrl called" << endl;
-  cout << "cname = " << cname.toStdString() << " -- " ;  
-  cout << "value = " << value << endl;
-  cur_cname = cname;
-  cur_value = value;
-  
-  cnames_.push_back(cname);
-  cvalues_.push_back(value);
-  
-  if (!running_) 
-    {
-      msys_->updctrl(cname.toStdString(), value);
-      emit ctrlChanged(cname, value);
-    }
-  else 
-    {
-      guard_ = true;
-      emit ctrlChanged(cname, value);
-    }
-  
+ 			//emit ctrlChanged(cname, cvalue);
+		} else {
+			// tr(cname.c_str()) means convert string to a cstring
+			// tr converts the cstring to a QString
+			// using the tr in QObject (not the other one)
+			control_names_.push_back(tr(cname.c_str()));
+			control_values_.push_back(cvalue);
+			guard_ = true;
 
-  
+ 			//emit ctrlChanged(cname, cvalue);
+		} // end if else
 
-}
+		// check to make sure available is 0
+		// otherwise release will create 1 more semaphore
+		if ( pnet_sema_->available() == 0) {
+			pnet_sema_->release(1);
+		} // end if
+	} // end if
+} // end function
 
-
-
-void MarSystemWrapper::step() 
-{
-  cout << "STEPPING " << endl;
-  
-  
-  running_ = true;
-  
-  msys_->tick();
-  if (guard_ == true) 
-    {
-      
-      vector<QString>::iterator  vsi;
-      vector<MarControlValue>::iterator vvi;
-      
-      for (vsi = cnames_.begin(), vvi = cvalues_.begin(); 
-	   vsi != cnames_.end();
-	   ++vsi, ++vvi)
-	{
-	  msys_->updctrl(vsi->toStdString(), *vvi);
-	}
-      
-      cnames_.clear();
-      cvalues_.clear();
-      guard_ = false;
-    }
-  
-  
-  
-  
-  if (probing_) 
-    {
-      msys_->updctrl("Fanout/mixer/Series/sbr/mrs_bool/probe", true);
-      msys_->updctrl("Fanout/mixer/Series/nbr/mrs_bool/probe", true);
-      
-      vec_ = msys_->getctrl("Fanout/mixer/Series/sbr/mrs_realvec/input1")->toVec();
-      
-      emit ctrlChanged("Fanout/mixer/Series/sbr/mrs_realvec/input1", vec_);
-      
-      vec_ = msys_->getctrl("Fanout/mixer/Series/nbr/mrs_realvec/input1")->toVec();
-      emit ctrlChanged("Fanout/mixer/Series/nbr/mrs_realvec/input1", vec_);
-      
-      
-    }
-  
-  
-  
-}
-
+/* Function: pause
+   Parameters: nothing
+   Returns: nothing
+   Handy function for changing pause variable.
+*/
 void MarSystemWrapper::pause()
 {
-  pause_ = true;
-}
+	pause_ = true;
+} // end function
 
-
-
+/* Function: play
+   Parameters: nothing
+   Returns: nothing
+   Handy function for changing pause variable.
+*/
 void MarSystemWrapper::play()
 {
-  pause_ = false;
-}
+	pause_ = false;
+} // end function
 
-
-
+/* Function: run
+   Parameters: none
+   Returns: nothing
+   One of the required thread methods to implement.
+   Note: it runs forever.
+*/
 void MarSystemWrapper::run() 
 {
-  cout << "RUNNING " << endl;
-  
-  while(1)
-    {
-      running_ = true;
+	while(1) {
+		running_ = true;
 
-      
+		// if tryAcquire returns true, the semaphore is acquired
+		// if tryAcquire returns false, the controls waiting to be
+		// updated remain in the vectors.
+		if (pnet_sema_->tryAcquire(1)) {
+		 if (guard_ == true)
+		 {
+			//cout << "Locked update control with ";
+			//cout << pnet_sema_->available() << " avail." << endl;
+			
+			// udpate stored controls
+			vector<QString>::iterator vsi;
+			vector<MarControlPtr>::iterator vvi;
 
-      if (guard_ == true)
-	{
-	  
-	  vector<QString>::iterator  vsi;
-	  vector<MarControlValue>::iterator vvi;
-	  
-	  for (vsi = cnames_.begin(), vvi = cvalues_.begin(); 
-	       vsi != cnames_.end();
-	       ++vsi, ++vvi)
-	    {
-	      cout << "in run " << vsi->toStdString() << "-" << *vvi << endl;
-	      
-	      msys_->updctrl(vsi->toStdString(), *vvi);
-	    }
-	  
-	  cnames_.clear();
-	  cvalues_.clear();
-	  guard_ = false;
-	}
-      
-      if (!pause_)
-	{
-	  msys_->tick();	
-	  empty_ = false;
-	}
-      
-      
-      if (empty_ == false) 
-	{	 
-	  if (msys_->getctrl("mrs_bool/notEmpty")->toBool() == false) 
-	    {
-	      cout << "PAUSING FOR EMPTY " << endl;
-	      empty_ = true;
-	      pause();
-	    }
-	  
-	  
-	}
-      
-      
-      
-      /* if (probing_) 
-	{
-	  msys_->updctrl("Fanout/mixer/Series/sbr/mrs_bool/probe", true);
-	  msys_->updctrl("Fanout/mixer/Series/nbr/mrs_bool/probe", true);
-	  
-	  vec_ = msys_->getctrl("Fanout/mixer/Series/sbr/mrs_realvec/input1")->toVec();
-	  
-	  emit ctrlChanged("Fanout/mixer/Series/sbr/mrs_realvec/input1", vec_);
+			for (vsi = control_names_.begin(),
+			vvi = control_values_.begin();
+			vsi != control_names_.end(); ++vsi, ++vvi)
+			{
+				main_pnet_->updctrl(vsi->toStdString(), *vvi);
 
-	  vec_ = msys_->getctrl("Fanout/mixer/Series/nbr/mrs_realvec/input1")->toVec();
-	  emit ctrlChanged("Fanout/mixer/Series/nbr/mrs_realvec/input1", vec_);
-	  
-	  
-	}
-      */ 
-      
-      
+				//cout << vsi->toStdString() << " " << *vvi << endl;
+			} // end for
+			
+			control_names_.clear();
+			control_values_.clear();
+			guard_ = false;
+		 } // end if
 
-    }
-  
+		 // check to make sure available is 0
+		 // otherwise release will create 1 more semaphore
+		 if ( pnet_sema_->available() == 0) {
+			pnet_sema_->release(1);
+		 } // end inner if
+		} // end outer if
 
-  cout << "FINISHED RUNNING" << endl;
-  
-}
+		if (!pause_)
+		{
+			main_pnet_->tick();	
+			//empty_ = false;
+		} // end if else
+	/* No need for this in MCI for now
+		if (empty_ == false) 
+		{
+		 if (main_pnet_->getctrl("mrs_bool/notEmpty").toBool() == false) 
+		 {
+			empty_ = true;
+		 } // end if
+		} // end if
+	*/
+	} // end while loop
+} // end function

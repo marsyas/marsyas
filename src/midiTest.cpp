@@ -122,11 +122,11 @@ void PluckLive(string deviceopt, mrs_real pos, mrs_real fre, mrs_real loz, mrs_r
     exit(1);
     
   }
-  
-  // create 16 plucked Karplus-Strong strings
   MarSystemManager mng;
   MarSystem* series = mng.create("Series", "series");
   
+  
+  // create 16 plucked Karplus-Strong strings
   MarSystem* mix  = mng.create("Fanout", "mix");
   for (mrs_natural i = 0; i < 16; i++) 
     {

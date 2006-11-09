@@ -452,15 +452,16 @@ test_probe()
   pnet->addMarSystem(mng.create("Gain", "gain"));
   pnet->addMarSystem(mng.create("Gain", "gain2"));
   
-  // pnet->addMarSystem(mng.create("AudioSink", "dest"));
-  // pnet->updctrl("SoundFileSource/src/mrs_string/filename", "vlobos.au");
-  // pnet->updctrl("Gain/gain/mrs_real/gain", 2.0);
+
+  cout << "BEFORE PROBE " << endl;  
   cout << "pnet = " << *pnet << endl;
-  cout << "BEFORE PROBE SET TO TRUE" << endl;
   pnet->updctrl("mrs_bool/probe", true);
-  cout << "AFTER PROBE SET TO TRUE" << endl;
-  
+  cout << "AFTER PROBE" << endl;
+
+  cout << "AFTER ONE TICK" << endl;
+  pnet->tick();  
   cout << "pnet = " << *pnet << endl;
+
   
 
 }

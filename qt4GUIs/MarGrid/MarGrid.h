@@ -29,6 +29,7 @@
 #include <QPoint>
 #include <QPixmap>
 #include <QWidget>
+#include "Collection.h"
 
 class QDragEnterEvent;
 class QDropEvent;

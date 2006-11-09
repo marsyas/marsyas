@@ -32,9 +32,6 @@ using namespace Marsyas;
 
 Plucked::Plucked(string name):MarSystem("Plucked",name)
 {
-  //type_ = "Plucked";
-  //name_ = name;
-
   pointer1_ = 0;
   pointer2_ = 0;
   pointer3_ = 0;
@@ -44,7 +41,7 @@ Plucked::Plucked(string name):MarSystem("Plucked",name)
   delaylineSize_ = 0;
   gain_ = NULL;
 
-	addControls();
+  addControls();
 }
 
 Plucked::~Plucked()
@@ -76,10 +73,7 @@ Plucked::myUpdate()
 {
   MRSDIAG("Plucked.cpp - Plucked:localuUpdate");
   
-//   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-//   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-//   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-	MarSystem::myUpdate();
+  MarSystem::myUpdate();
 
   gain_ = new Gain("pluckedGain");
   gain_->updctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
@@ -98,53 +92,51 @@ Plucked::myUpdate()
   
   s_ = getctrl("mrs_real/stretch")->toReal();
 
-  // loweset frequency on a piano is 27.5Hz ... 22050/27.5 ~= 802*2 for commuted
+  // loweset frequency on a piano is 27.5Hz ... 22050/27.5 ~= 802*2 for commute
   // this is the longest delay line required
   
   if (delaylineSize_ == 0) 
-  {
-    delaylineSize_ = 2048;
-    noise_.create((mrs_natural)delaylineSize_);
-    delayline1_.create((mrs_natural)delaylineSize_);
-    pickDelayLine_.create((mrs_natural)delaylineSize_);
-    
-    for (t = 0; t < delaylineSize_; t++)
     {
-			noise_(t) = (mrs_real)(rand() / (RAND_MAX + 1.0) -0.5);
+      delaylineSize_ = 2048;
+      noise_.create((mrs_natural)delaylineSize_);
+      delayline1_.create((mrs_natural)delaylineSize_);
+      pickDelayLine_.create((mrs_natural)delaylineSize_);
+      
+      for (t = 0; t < delaylineSize_; t++)
+	{
+	  noise_(t) = (mrs_real)(rand() / (RAND_MAX + 1.0) -0.5);
+	}
     }
-  }
   
   if (noteon_ > 0)
-  {		
-    a_ = 0;
-    d_ = 2*22050/freq;
-    N_ = (mrs_natural)floor(d_);
-    g_=-(-1+d_)/(-d_-1);//for all pass implementation 
-    picklength_= (mrs_natural)floor(N_*pos);//for inverse comb implementation
-    
-    for (t = 0; t < N_; t++)
-		{
-			pickDelayLine_(0)=noise_(t);
-			delayline1_(t) = noise_(t)+ (mrs_real)0.1 * pickDelayLine_(picklength_-1);
-		  
-		  
-			//shift the pick delayline to the right 1 cell
-			for(p=0; p<=picklength_-2; p++)
-				pickDelayLine_(picklength_-1-p) = pickDelayLine_(picklength_-1-p-1);
-		}
-    wp_ = 1;
-    wpp_ = 0;
-    rp_ = N_-1;
-  }
+    {		
+      a_ = 0;
+      d_ = 2*22050/freq;
+      N_ = (mrs_natural)floor(d_);
+      g_=-(-1+d_)/(-d_-1);//for all pass implementation 
+      picklength_= (mrs_natural)floor(N_*pos);//for inverse comb implementation
+      
+      for (t = 0; t < N_; t++)
+	{
+	  pickDelayLine_(0)=noise_(t);
+	  delayline1_(t) = noise_(t)+ (mrs_real)0.1 * pickDelayLine_(picklength_-1);
+	  
+	  
+	  //shift the pick delayline to the right 1 cell
+	  for(p=0; p<=picklength_-2; p++)
+	    pickDelayLine_(picklength_-1-p) = pickDelayLine_(picklength_-1-p-1);
+	}
+      wp_ = 1;
+      wpp_ = 0;
+      rp_ = N_-1;
+    }
 }
 
 
 void 
 Plucked::myProcess(realvec &in, realvec &out)
 {
-  //checkFlow(in,out);
-
-
+  
   if (noteon_ > 0)
     {
       for (t = 0; t < inSamples_; t++)
@@ -160,17 +152,12 @@ Plucked::myProcess(realvec &in, realvec &out)
 	  rp_ = (rp_ + +1)  %N_;
 	  wp_ = (wp_ + 1)   %N_;
 	  wpp_ = (wpp_ + 1) %N_;
-	  
-
-	  
 	  gout_(0,t) = a_;
 	  
 	}
     }
   
   gain_->process(gout_, out);
-  
-
 }
 
 

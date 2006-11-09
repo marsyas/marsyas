@@ -34,8 +34,8 @@ MarGrid::MarGrid(QWidget *parent)
   setAcceptDrops(true);
   setMinimumSize(400, 400);
 
-  som_width = 40;
-  som_height = 40;
+  som_width = 10;
+  som_height = 10;
   cell_size = 400 / som_width;
   
   for (int i=0; i < som_width; i++)
@@ -91,6 +91,8 @@ MarGrid::extract()
   MarSystem* featureFanout = mng.create("Fanout", "featureFanout");
   featureFanout->addMarSystem(mng.create("Centroid", "centroid"));
   featureFanout->addMarSystem(mng.create("Rolloff", "rolloff"));
+  featureFanout->addMarSystem(mng.create("MFCC", "mfcc"));
+  
   
   spectralNet->addMarSystem(featureFanout);
   extractNet->addMarSystem(spectralNet);
@@ -504,7 +506,7 @@ void MarGrid::paintEvent(QPaintEvent *event)
 	  labels[k] = majority_label +1;
 	
 	
-	if (labels[k] == 0) 
+	/* if (labels[k] == 0) 
 	  painter.setBrush(QColor("#ffffff"));
 	else if (labels[k] == 1) 
 	  painter.setBrush(QColor("#ffcccc"));
@@ -516,7 +518,12 @@ void MarGrid::paintEvent(QPaintEvent *event)
 	  painter.setBrush(QColor("#ccaacc"));	  
 	else  
 	  painter.setBrush(QColor("#fcaaac"));	  
+	*/ 
 
+	if (posFiles.size() > 0) 
+	  painter.setBrush(QColor("#000000"));	  
+	else
+	  painter.setBrush(QColor("#ffffff"));	  
 	
 	painter.setPen(Qt::NoPen);
 	painter.drawRect(myr);
