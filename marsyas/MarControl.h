@@ -68,7 +68,7 @@ public:
 	inline MarControlPtr(char *c);
 	inline MarControlPtr(std::string st);
 	inline MarControlPtr(bool be);
-	inline MarControlPtr(realvec& ve);
+	inline MarControlPtr(realvec ve);
 
 	// generic type constructor
 	inline MarControlPtr(MarControl *control);
@@ -296,7 +296,7 @@ inline MarControlPtr::MarControlPtr(mrs_bool be)
   control_->ref();
 }
 
-inline MarControlPtr::MarControlPtr(realvec& ve)
+inline MarControlPtr::MarControlPtr(realvec ve)
 {
 	control_ = new MarControl(ve);
 	control_->ref();
