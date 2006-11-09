@@ -93,6 +93,12 @@ MarControlValueT<realvec>::get() const
 	return value_;
 }
 
+realvec&
+MarControlValueT<realvec>::getRef()
+{
+	return value_;
+}
+
 bool
 MarControlValueT<realvec>::isNotEqual(MarControlValue *v)
 {

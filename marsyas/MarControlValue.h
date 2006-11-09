@@ -137,7 +137,7 @@ public:
 
 	//getters
 	const realvec& get() const;
-	realvec& getRef() const;
+	realvec& getRef();
 
 	virtual void createFromStream(std::istream&);
 	virtual std::ostream& serialize(std::ostream& os);
