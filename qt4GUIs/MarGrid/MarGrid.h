@@ -46,6 +46,7 @@ public:
     void clear();
 
 public slots: 
+  void setup();
   void extract();
   void predict();
   void train();
@@ -53,15 +54,14 @@ public slots:
   
 protected:
   void mousePressEvent(QMouseEvent *event);
+  void mouseMoveEvent(QMouseEvent *event);
+  
   void paintEvent(QPaintEvent *event);
   void addFile(int grid_x, int grid_y, std::string filename);
   void resetPredict();
   
   
 private:
-    int findPiece(const QRect &pieceRect) const;
-    const QRect targetSquare(const QPoint &position) const;
-
 
   Marsyas::MarSystemManager mng;  
   QVector<QList <std::string> > files;
@@ -84,6 +84,9 @@ private:
   int som_height;
   int som_width;
   int cell_size;
+  int grid_x;
+  int grid_y;
+  
 
   Marsyas::realvec norm_som_fmatrix;
   Marsyas::MarSystem* som_;
