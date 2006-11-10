@@ -122,6 +122,7 @@ in sequence.
 #include "LPC.h"
 #include "LPCwarped.h"
 #include "LPCResyn.h"
+#include "LPC2Cepstrum.h"
 #include "LSP.h"
 #include "SOM.h"
 
@@ -235,8 +236,8 @@ MarSystemManager::MarSystemManager()
   
   registerPrototype("AudioSource", new AudioSource("audiosourcep"));
   registerPrototype("ClassOutputSink", new ClassOutputSink("classoutputsinkp"));
-  // registerPrototype("Filter", new Filter("filterp"));
-  // registerPrototype("ERB", new ERB("erbp"));
+  registerPrototype("Filter", new Filter("filterp"));
+  registerPrototype("ERB", new ERB("erbp"));
 
   registerPrototype("ClipAudioRange", new ClipAudioRange("clpr"));
   registerPrototype("HarmonicEnhancer", new HarmonicEnhancer("hepr"));
@@ -248,6 +249,7 @@ MarSystemManager::MarSystemManager()
   registerPrototype("LPC", new LPC("lpcpr"));
   registerPrototype("LPCwarped", new LPCwarped("lpcwarppr"));
   registerPrototype("LPCResyn", new LPCResyn("lpcresynpr"));
+	registerPrototype("LPC2Cepstrum", new LPC2Cepstrum("lpc2cepstrumpr"));
   registerPrototype("LSP", new LSP("lsppr"));
 
 

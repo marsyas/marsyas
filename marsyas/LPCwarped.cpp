@@ -346,7 +346,6 @@ LPCwarped::myProcess(realvec& in, realvec& out)
 	MATLAB_PUT(out, "LPC_out");
 	MATLAB_EVAL("LPC_test");
 #endif
-
 }
 
 

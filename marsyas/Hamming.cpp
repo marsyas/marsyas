@@ -17,10 +17,10 @@
 */
 
 /** 
-    \class Hamming
-    \brief Multiply input realvec with gain
+\class Hamming
+\brief Multiply input realvec with gain
 
-   Simple MarSystem example. Just multiply the values of the input realvec
+Simple MarSystem example. Just multiply the values of the input realvec
 with gain and put them in the output vector. 
 */
 
@@ -31,8 +31,8 @@ using namespace Marsyas;
 
 Hamming::Hamming(string name):MarSystem("Hamming",name)
 {
-  //type_ = "Hamming";
-  //name_ = name;
+	//type_ = "Hamming";
+	//name_ = name;
 }
 
 Hamming::~Hamming()
@@ -42,43 +42,49 @@ Hamming::~Hamming()
 MarSystem* 
 Hamming::clone() const 
 {
-  return new Hamming(*this);
+	return new Hamming(*this);
 }
 
 void
 Hamming::myUpdate()
 {
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  
-  setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));  
-  mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
-  envelope_.create(inSamples);
-  
-  mrs_real A = (mrs_real)0.54;
-  mrs_real B = (mrs_real)0.46;
-  mrs_real i;
-  for (t=0; t < inSamples; t++)
-    {
-      i = 2*PI*t / (inSamples-1);
-      envelope_(t) = A - B * cos(i);
-    }
+	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+
+	setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));  
+	mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
+	envelope_.create(inSamples);
+
+	mrs_real A = (mrs_real)0.54;
+	mrs_real B = (mrs_real)0.46;
+	mrs_real i;
+	for (t=0; t < inSamples; t++)
+	{
+		i = 2*PI*t / (inSamples-1);
+		envelope_(t) = A - B * cos(i);
+	}
 }
 
 void 
 Hamming::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
-  //lmartins: if (mute_) return;
+	//checkFlow(in,out);
+	//lmartins: if (mute_) return;
 	if(getctrl("mrs_bool/mute")->toBool()) return;
-  
-  for (o=0; o < inObservations_; o++)
-    for (t = 0; t < inSamples_; t++)
-      {
-	out(o,t) = envelope_(t) * in(o,t);
-      }
-  
+
+	for (o=0; o < inObservations_; o++)
+		for (t = 0; t < inSamples_; t++)
+		{
+			out(o,t) = envelope_(t) * in(o,t);
+		}
+/*
+	MATLAB_PUT(in, "Hamming_in");
+	MATLAB_PUT(out, "Hamming_out");
+	MATLAB_PUT(envelope_, "Hamming_envelope");
+	MATLAB_EVAL("plot(hamming(length(Hamming_envelope)), 'g')");
+	MATLAB_EVAL("hold on; plot(Hamming_envelope,'r'); hold off");
+*/
 }
 
 
@@ -86,5 +92,5 @@ Hamming::myProcess(realvec& in, realvec& out)
 
 
 
-	
-	
+
+

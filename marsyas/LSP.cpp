@@ -59,8 +59,7 @@ LSP::clone() const
 void 
 LSP::addControls()
 {
-	addctrl("mrs_natural/order", (mrs_natural)10);
-	setctrlState("mrs_natural/order", true); 
+	addctrl("mrs_natural/order", (mrs_natural)10);//read-only control
 	addctrl("mrs_real/gamma", (mrs_real)1.0);
 }
 
@@ -69,7 +68,8 @@ LSP::myUpdate()
 { 
 	MRSDIAG("LSP.cpp - LSP:myUpdate");
 
-	order_ = getctrl("mrs_natural/order")->toNatural();
+	order_ = getctrl("mrs_natural/inObservations")->toNatural() - 2;
+	setctrl("mrs_natural/order", order_);//read-only control
 
 	setctrl("mrs_natural/onObservations", order_);
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
