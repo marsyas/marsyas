@@ -175,8 +175,8 @@ similarityCompute(vec, m);
 	 {// specific similarity computation
 
 		 // build frequency and amplitude matrices
-	extractParameter(data, frequencySet_, frequency);
-	extractParameter(data, amplitudeSet_, amplitude);
+	extractParameter(data, frequencySet_, pkFrequency);
+	extractParameter(data, amplitudeSet_, pkAmplitude);
 	harmonicitySimilarityCompute(data, frequencySet_, amplitudeSet_, m);	
 	 }
 	 }
@@ -209,7 +209,7 @@ similarityCompute(vec, m);
 	 {
 		 for(j=0 ; j<i ; j++)
 		 {
-			 mrs_real fDiff = data(i, frequency)-data(j, frequency), val=0;
+			 mrs_real fDiff = data(i, pkFrequency)-data(j, pkFrequency), val=0;
 			 mrs_natural nbFirst=0, nbSecond=0, indexFirst = (mrs_natural) (data(i, 5)-startIndex), indexSecond = (mrs_natural) (data(j, 5)-startIndex);
 
 			while(fSet(nbFirst++, indexFirst));
@@ -264,20 +264,26 @@ secondA(k) = aSet(k, indexSecond);
 		 realvec oldLabels(kmax_);
 		 realvec newLabels(kmax_);
 
-		 conversion_.setval(0);
-
-		 for(i=0 ; i<kmax_ ; i++)
-			 oldLabels(i) = lastFrame_(6*kmax_+i);
-		 newLabels.setval(0);
+		 conversion_.setval(-1);
+		 newLabels.setval(-1);
+		 mrs_natural nbInFrames=0;
 		 for(i=0 ; i<nbPeaks_ ; i++)
 			 if(data(i, 5) == lastIndex)
+			 {
 				 newLabels(i) = labels(i);
-	 /*	 oldLabels.dump();
-		 newLabels.dump(); 
-	*/	 while(1){
-			 mrs_natural nbMax=0, nb, iMax=0, jMax=0;
+nbInFrames++;
+			 }
+oldLabels.setval(-1);
+		 for(i=0 ; i<nbInFrames ; i++)
+			 oldLabels(i) = lastFrame_(6*kmax_+i);
+
+	 // oldLabels.dump();
+	//	 newLabels.dump(); 
+		 
+		 while(1){
+			 mrs_natural nbMax=0, nb, iMax=-1, jMax=-1;
 			 // look for the biggest cluster in old		
-			 for(i=1 ; i<= (mrs_natural) oldLabels.maxval() ; i++)
+			 for(i=0 ; i<= (mrs_natural) oldLabels.maxval() ; i++)
 			 {
 				 nb=0;
 				 for(j=0 ; j<oldLabels.getSize() ; j++)
@@ -289,13 +295,13 @@ secondA(k) = aSet(k, indexSecond);
 					 iMax = i;
 				 }
 			 }
-			 if(iMax)
+			 if(iMax > -1)
 			 {
 	
 
 				 nbMax=0;
 				 // look for the cluster in new with the highest intersection
-				 for(i=1 ; i<= (mrs_natural) newLabels.maxval() ; i++)
+				 for(i=0 ; i<= (mrs_natural) newLabels.maxval() ; i++)
 				 {
 					 nb=0;
 					 for(j=0 ; j<newLabels.getSize() ; j++)
@@ -307,19 +313,19 @@ secondA(k) = aSet(k, indexSecond);
 						 jMax = i;
 					 }
 				 }
-				 if(!jMax)
+				 if(jMax == -1)
 					 break;
 					// cout << iMax << " " << jMax << " " << newLabels.maxval() << endl;
 				 //newLabels.dump();
 				 // fill conversion table with oldLabel
-				 conversion_(jMax-1) = iMax;
+				 conversion_(jMax) = iMax;
 				 // remove old and new clusters
 				 for(i=0 ; i<oldLabels.getSize() ; i++)
 					 if(oldLabels(i) == iMax)
-						 oldLabels(i) = 0;
+						 oldLabels(i) = -1;
 				 for(i=0 ; i<newLabels.getSize() ; i++)
 					 if(newLabels(i) == jMax)
-						 newLabels(i) = 0;
+						 newLabels(i) = -1;
 			//	 newLabels.dump();
 			 }
 			 else
@@ -329,16 +335,16 @@ secondA(k) = aSet(k, indexSecond);
 		 mrs_real k = maxLabel_+1;
 		 for (i=0 ; i<conversion_.getSize(); i++)
 		 {
-			 if(conversion_(i) == 0.0)
+			 if(conversion_(i) == -1.0)
 				 conversion_(i) = k++;
 		 }
-		// conversion_.dump();
+		 //conversion_.dump();
 		 //labels.dump();
 		 // convert labels
 		 for(i=0 ; i<labels.getSize() ; i++)
-			 if(labels(i) != 0.0 && conversion_( (mrs_natural) labels(i)) != 0.0)
-				 labels(i) = conversion_((mrs_natural) labels(i)-1);
-		 // labels.dump();
+			 if(labels(i) != -1.0 && conversion_( (mrs_natural) labels(i)) != -1.0)
+				 labels(i) = conversion_((mrs_natural) labels(i));
+		  labels.dump();
 	 }
 	 // fill peaks data with clusters labels
 	 for (i=0 ; i<nbPeaks_ ; i++)
@@ -367,7 +373,7 @@ secondA(k) = aSet(k, indexSecond);
 	 MATLAB_PUT(m_, "m");
 	 MATLAB_PUT(nbClusters_, "nb");
 	 MATLAB_EVAL("[d, vec, val] = ncutW(m, nb);");
-	 MATLAB_EVAL("d=d*(1:size(d, 2))';");
+	 MATLAB_EVAL("d=d*(1:size(d, 2))';d=d-1;");
 	 MATLAB_GET("d", labels);
 
  labeling(data_, labels);

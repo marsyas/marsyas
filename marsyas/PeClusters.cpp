@@ -135,7 +135,6 @@ PeClusters::PeClusters(realvec &peakSet)
 	{
 		set[i].init(peakSet, i);
 	}
-
 	conversion.stretch(nbClusters);
 }
 
