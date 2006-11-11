@@ -100,6 +100,11 @@ using namespace Marsyas;
  }
 
 
+ void Marsyas::updateLabels(realvec& peakSet, realvec& conversion)
+ {
+for (mrs_natural i=0 ; i<peakSet.getRows() ; i++)
+peakSet(i, pkGroup) = conversion((mrs_natural) peakSet(i, pkGroup));
+ }
 
  void Marsyas::extractParameter(realvec&in, realvec&out, pkParameter type)
 {

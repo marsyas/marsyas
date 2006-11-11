@@ -29,18 +29,19 @@
 #include "realvec.h"
 #include <fstream>
 using std::ofstream;
+#include "PeClusters.h"
 
 namespace Marsyas
 {
 
 	typedef enum {
-	frequency,
-	amplitude,
-	phase,
-	deltaFrequency,
-	deltaAmplitude,
-	time,
-	group,
+	pkFrequency,
+	pkAmplitude,
+	pkPhase,
+	pkDeltaFrequency,
+	pkDeltaAmplitude,
+	pkTime,
+	pkGroup,
 	nbPeaksParameters
 	} pkParameter;
 
@@ -52,8 +53,11 @@ namespace Marsyas
 
 	void selectPeaks (realvec&, realvec&, pkParameter type, int value, int maxNbPeaks);
 
+	void updateLabels(realvec&, realvec&);
+
 	mrs_real compareTwoPeakSets(realvec&, realvec&, realvec&, realvec&);
 
 }
 
 #endif
+

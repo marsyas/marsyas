@@ -1,8 +1,5 @@
 #include <cstdio>
 
-
-
-
 #include "MarSystemManager.h"
 #include "AudioSink.h"
 #include "SoundFileSink.h"
@@ -11,6 +8,8 @@
 #include "Messager.h"
 #include "Conversions.h"
 #include "CommandLineOptions.h"
+#include "PeClusters.h"
+#include "PeUtilities.h"
 
 #include <string>
 
@@ -47,6 +46,8 @@ mrs_natural accSize_ = 6;
 string similarityType_ = "fn";
 // store for clustered peaks
 realvec peakSet_;
+// delay for noise insertion
+mrs_real noiseDelay_=44100;
 
 
 bool microphone_ = false;
@@ -133,7 +134,7 @@ void synthNetCreate(MarSystemManager *mng, string outsfname)
 	}
 
 	MarSystem* shredNet = mng->create("Shredder", "shredNet");
-  shredNet->addMarSystem(postNet);
+	shredNet->addMarSystem(postNet);
 
 	mng->registerPrototype("PeSynthetize", shredNet);
 }
@@ -171,7 +172,7 @@ synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname, mrs_natu
 }
 
 void
-clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseName, string T, mrs_natural N, mrs_natural Nw, 
+clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseName, mrs_real noiseDelay, string T, mrs_natural N, mrs_natural Nw, 
 							 mrs_natural D, mrs_natural S, mrs_natural C,
 							 mrs_natural accSize, bool synthetize)
 {
@@ -254,7 +255,7 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/SoundFileSource/noise/mrs_string/filename", noiseName);
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/SoundFileSource/noise/mrs_natural/inSamples", D);
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/Delay/noiseDelay/mrs_real/delay", 1.0);
+	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/Delay/noiseDelay/mrs_natural/delay", (mrs_natural) noiseDelay);
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/Gain/noisegain/mrs_real/gain", .5);
 
 
@@ -308,13 +309,13 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 				break;
 		}
 	}
-if(synthetize_)
-	cout << "Global SNR : " << globalSnr/nb << endl;
+	if(synthetize_)
+		cout << "Global SNR : " << globalSnr/nb << endl;
 
 	// plot and save peak data
 	peakSet = pvseries->getctrl("PeClust/peClust/mrs_realvec/peakSet")->toVec();
 
-	
+
 	ofstream peakFile;
 	peakFile.open(filePeakName.c_str());
 	if(!peakFile)
@@ -326,18 +327,13 @@ if(synthetize_)
 
 
 
-void clusterAttributes(realvec &peakSet)
-{
-MATLAB_PUT(peakSet, "peaks");
-	MATLAB_EVAL("plotPeaks(peaks)");
-}
 
-void clusterGroundThruth()
+void clusterGroundThruth(realvec& peakSet, PeClusters& clusters, string fileName)
 {
 
 }
 
-void clusterSynthetize()
+void clusterSynthetize(realvec& peakSet, string fileName)
 {
 
 }
@@ -441,7 +437,7 @@ main(int argc, const char **argv)
 			if(analyse_)
 			{
 				cout << "Phasevocoding " << Sfname.name() << endl; 
-				clusterExtract(peakSet_, *sfi, fileName, noiseName, similarityType_, fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_, synthetize_);
+				clusterExtract(peakSet_, *sfi, fileName, noiseName, noiseDelay_, similarityType_, fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_, synthetize_);
 			}	
 			// if ! peak data read from file
 			if(peakSet_.getSize() == 0)
@@ -451,17 +447,31 @@ main(int argc, const char **argv)
 				cout << "unable to load " << filePeakName << endl;
 				exit(1);
 			}
+
+			MATLAB_PUT(peakSet_, "peaks");
+			MATLAB_EVAL("plotPeaks(peaks)");
+
+
 			// computes the cluster attributes
+
 			if(attributes_)
-				clusterAttributes(peakSet_);
+			{
+				PeClusters clusters(peakSet_);
+				mrs_natural nbClusters=0;
 
-			// compute ground truth
-			if(ground_)
-				clusterGroundThruth();
+				// compute ground truth
+				if(ground_)
+					clusterGroundThruth(peakSet_, clusters, fileName);
 
+				clusters.selectBefore(noiseDelay_/hopSize_);
+				updateLabels(peakSet_, clusters.getConversionTable());
+			}
 			// synthetize remaining clusters
 			if(clusterSynthetize_)
-				clusterSynthetize();
+				clusterSynthetize(peakSet_, fileResName);
+
+			MATLAB_PUT(peakSet_, "peaks");
+			MATLAB_EVAL("plotPeaks(peaks)");
 
 		}
 	}
@@ -469,7 +479,7 @@ main(int argc, const char **argv)
 	{
 		cout << "Using live microphone input" << endl;
 		microphone_ = true;
-		clusterExtract(peakSet_, "microphone", fileName, noiseName, similarityType_, fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_, synthetize_);
+		clusterExtract(peakSet_, "microphone", fileName, noiseName, noiseDelay_, similarityType_, fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_, synthetize_);
 	}
 
 

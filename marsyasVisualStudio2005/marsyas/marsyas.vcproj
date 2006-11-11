@@ -648,6 +648,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\marsyas\PeClusters.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\marsyas\PeConvert.cpp"
 				>
 			</File>
@@ -1319,6 +1323,10 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\PeClust.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\PeClusters.h"
 				>
 			</File>
 			<File
