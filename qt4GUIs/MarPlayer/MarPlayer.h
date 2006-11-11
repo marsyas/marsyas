@@ -39,7 +39,7 @@ class MarPlayer : public QMainWindow
 
 public:
     MarPlayer();
-		~MarPlayer();
+  ~MarPlayer();
 
 private slots:
   void open();

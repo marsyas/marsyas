@@ -25,15 +25,26 @@
 
 #include "MarGridWindow.h"
 
-MarGridWindow::MarGridWindow(QWidget *parent)
-  : QWidget(parent)
+
+
+
+MarGridWindow::MarGridWindow()
 {
+  QWidget *w = new QWidget;
+  setCentralWidget(w);
+
+  createActions();
+  createMenus();  
+
+  
+
   
   QPushButton *extract  = new QPushButton(tr("Extract"));
   QPushButton *train = new QPushButton(tr("Train"));
   QPushButton *predict = new QPushButton(tr("Predict"));
   
   QWidget *margrid = new MarGrid();
+
   QGridLayout *gridLayout = new QGridLayout;
   gridLayout->addWidget(extract, 0, 0);
   gridLayout->addWidget(train, 0, 1);
@@ -46,12 +57,45 @@ MarGridWindow::MarGridWindow(QWidget *parent)
   
 
 
-  setLayout(gridLayout);
-  
+  w->setLayout(gridLayout);
+
 }
 
 
   
 
+void
+MarGridWindow::createMenus()
+{
+  fileMenu = menuBar()->addMenu(tr("&File"));
+  fileMenu->addAction(openAct);
+  menuBar()->addSeparator();
+  helpMenu = menuBar()->addMenu(tr("&Help"));
+  helpMenu->addAction(aboutAct);
+}
+
+
+
+void 
+MarGridWindow::createActions()
+{
+  
+  openAct = new QAction(tr("&Open..."), this);
+  openAct->setShortcut(tr("Ctrl+O"));
+  openAct->setStatusTip(tr("Open an existing file"));
+  // connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
+  aboutAct = new QAction(tr("&About"), this);
+  aboutAct->setStatusTip(tr("Show the application's About box"));
+  connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
+}
+
 
 	
+
+
+void 
+MarGridWindow::about()
+{
+  QMessageBox::about(this, tr("Marsyas MarGrid"),  tr("Marsyas MarGrid: Demonstrates continuous-feedback \n content-based music browsing using Self Organizing Maps"));
+  
+}

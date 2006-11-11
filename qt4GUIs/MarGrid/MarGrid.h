@@ -31,6 +31,7 @@
 #include <QWidget>
 #include "Collection.h"
 
+
 class QDragEnterEvent;
 class QDropEvent;
 class QMouseEvent;
@@ -63,6 +64,8 @@ protected:
   
 private:
 
+
+  
   Marsyas::MarSystemManager mng;  
   QVector<QList <std::string> > files;
   QVector<int> counters;

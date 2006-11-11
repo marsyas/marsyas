@@ -29,15 +29,30 @@
 #include <QFont>
 #include <QGridLayout>
 #include <QPushButton>
+#include <QMainWindow>
 
 #include "MarGrid.h"
 
-class MarGridWindow : public QWidget
+class MarGridWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    MarGridWindow(QWidget *parent = 0);
+    MarGridWindow();
+
+public slots: 
+   void about();
+  
+
+
+private:
+  void createMenus();
+  void createActions();
+  
+  QMenu*   fileMenu;  
+  QMenu*   helpMenu;
+  QAction* openAct;
+  QAction* aboutAct;
   
   
   

@@ -33,6 +33,9 @@ MarGrid::MarGrid(QWidget *parent)
 {
   setAcceptDrops(true);
   setMouseTracking(true);
+
+
+
   
   
   int winSize;

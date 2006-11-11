@@ -155,7 +155,7 @@ target_alias = @target_alias@
 target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
-SUBDIRS = MarPlayer MarGrid Marx2DGraph Marx2DGraphStacked MarxGL2Din3DSpaceGraph MarxGLGraph MarxGLMultiBufferGraph
+SUBDIRS = MarPlayer MarGrid Marx2DGraph Marx2DGraphStacked MarxGL2Din3DSpaceGraph MarxGLGraph MarxGLMultiBufferGraph MarPhasevocoder
 all: all-recursive
 
 .SUFFIXES:
