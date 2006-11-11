@@ -1,0 +1,352 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		562B79A40B065BBA000082F7 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 562B79A10B065BBA000082F7 /* CoreAudio.framework */; };
+		562B79A50B065BBA000082F7 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 562B79A20B065BBA000082F7 /* CoreFoundation.framework */; };
+		562B79A60B065BBA000082F7 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 562B79A30B065BBA000082F7 /* CoreMIDI.framework */; };
+		562B79A80B065BD4000082F7 /* phasevocoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 562B79A70B065BD4000082F7 /* phasevocoder.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		562B799A0B065BAC000082F7 /* phasevocoder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = phasevocoder; sourceTree = BUILT_PRODUCTS_DIR; };
+		562B79A10B065BBA000082F7 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/CoreAudio.framework; sourceTree = "<absolute>"; };
+		562B79A20B065BBA000082F7 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		562B79A30B065BBA000082F7 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/CoreMIDI.framework; sourceTree = "<absolute>"; };
+		562B79A70B065BD4000082F7 /* phasevocoder.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = phasevocoder.cpp; path = ../../src/phasevocoder.cpp; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		562B79970B065BAC000082F7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				562B79A40B065BBA000082F7 /* CoreAudio.framework in Frameworks */,
+				562B79A50B065BBA000082F7 /* CoreFoundation.framework in Frameworks */,
+				562B79A60B065BBA000082F7 /* CoreMIDI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		562B798B0B065B9E000082F7 = {
+			isa = PBXGroup;
+			children = (
+				562B79A70B065BD4000082F7 /* phasevocoder.cpp */,
+				562B79A10B065BBA000082F7 /* CoreAudio.framework */,
+				562B79A20B065BBA000082F7 /* CoreFoundation.framework */,
+				562B79A30B065BBA000082F7 /* CoreMIDI.framework */,
+				562B799B0B065BAC000082F7 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		562B799B0B065BAC000082F7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				562B799A0B065BAC000082F7 /* phasevocoder */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		562B79950B065BAC000082F7 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXProject section */
+		562B798D0B065B9E000082F7 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 562B798E0B065B9E000082F7 /* Build configuration list for PBXProject "phasevocoder" */;
+			buildStyles = (
+			);
+			hasScannedForEncodings = 0;
+			mainGroup = 562B798B0B065B9E000082F7;
+			productRefGroup = 562B799B0B065BAC000082F7 /* Products */;
+			projectDirPath = "";
+			targets = (
+				562B79990B065BAC000082F7 /* phasevocoder */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXRezBuildPhase section */
+		562B79980B065BAC000082F7 /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXRezBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		562B79960B065BAC000082F7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				562B79A80B065BD4000082F7 /* phasevocoder.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXToolTarget section */
+		562B79990B065BAC000082F7 /* phasevocoder */ = {
+			isa = PBXToolTarget;
+			buildConfigurationList = 562B799D0B065BAC000082F7 /* Build configuration list for PBXToolTarget "phasevocoder" */;
+			buildPhases = (
+				562B79950B065BAC000082F7 /* Headers */,
+				562B79960B065BAC000082F7 /* Sources */,
+				562B79970B065BAC000082F7 /* Frameworks */,
+				562B79980B065BAC000082F7 /* Rez */,
+			);
+			buildSettings = {
+				OPTIMIZATION_CFLAGS = "";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = phasevocoder;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			dependencies = (
+			);
+			name = phasevocoder;
+			productInstallPath = /usr/local/bin;
+			productName = phasevocoder;
+			productReference = 562B799A0B065BAC000082F7 /* phasevocoder */;
+		};
+/* End PBXToolTarget section */
+
+/* Begin XCBuildConfiguration section */
+		562B798F0B065B9E000082F7 /* Debug_MRSAUDIO_MRSMIDI */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				HEADER_SEARCH_PATHS = (
+					../../marsyas,
+					/usr/local/include,
+					/usr/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					../marsyas/Debug_MRSAUDIO_MRSMIDI,
+					/usr/local/lib,
+					/usr/lib,
+				);
+				PRELINK_LIBS = "-lmarsyas -lpthread -lcurses";
+				SYMROOT = .;
+			};
+			name = Debug_MRSAUDIO_MRSMIDI;
+		};
+		562B79900B065B9E000082F7 /* Release_MRSAUDIO_MRSMIDI */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				HEADER_SEARCH_PATHS = (
+					../../marsyas,
+					/usr/local/include,
+					/usr/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					../marsyas/Release_MRSAUDIO_MRSMIDI,
+					/usr/local/lib,
+					/usr/lib,
+				);
+				PRELINK_LIBS = "-lmarsyas -lpthread -lcurses";
+				SYMROOT = .;
+			};
+			name = Release_MRSAUDIO_MRSMIDI;
+		};
+		562B799E0B065BAC000082F7 /* Debug_MRSAUDIO_MRSMIDI */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					"$(SYSTEM_DEVELOPER_DIR)/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OPTIMIZATION_CFLAGS = "";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = phasevocoder;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Debug_MRSAUDIO_MRSMIDI;
+		};
+		562B799F0B065BAC000082F7 /* Release_MRSAUDIO_MRSMIDI */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					"$(SYSTEM_DEVELOPER_DIR)/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks",
+				);
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				OPTIMIZATION_CFLAGS = "";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = phasevocoder;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = NO;
+			};
+			name = Release_MRSAUDIO_MRSMIDI;
+		};
+		562B79B40B065CC2000082F7 /* Debug_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					"$(SYSTEM_DEVELOPER_DIR)/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OPTIMIZATION_CFLAGS = "";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = phasevocoder;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Debug_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE;
+		};
+		562B79B50B065CC2000082F7 /* Release_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					"$(SYSTEM_DEVELOPER_DIR)/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks",
+				);
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				OPTIMIZATION_CFLAGS = "";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = phasevocoder;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = NO;
+			};
+			name = Release_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE;
+		};
+		562B79B60B065CC2000082F7 /* Debug_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				HEADER_SEARCH_PATHS = (
+					../../marsyas,
+					/Applications/MATLAB7/extern/include,
+					/usr/local/include,
+					/usr/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					../marsyas/Debug_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE,
+					/Applications/MATLAB7/bin/mac,
+					/usr/local/lib,
+					/usr/lib,
+				);
+				PRELINK_LIBS = "-lmarsyas -lpthread -lobjc -leng -lut -lmx -lmat -licudata.24 -licui18n.24 -licuuc.24 -lustdio.24 -lz -lmad -lreadline -lcurses";
+				SYMROOT = .;
+			};
+			name = Debug_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE;
+		};
+		562B79B70B065CC2000082F7 /* Release_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				HEADER_SEARCH_PATHS = (
+					../../marsyas,
+					/Applications/MATLAB7/extern/include,
+					/usr/local/include,
+					/usr/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					../marsyas/Release_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE,
+					/Applications/MATLAB7/bin/mac/,
+					/usr/local/lib,
+					/usr/lib,
+				);
+				PRELINK_LIBS = "-lmarsyas -lpthread -lobjc -leng -lut -lmx -lmat -licudata.24 -licui18n.24 -licuuc.24 -lustdio.24 -lz -lmad -lreadline -lcurses";
+				SYMROOT = .;
+			};
+			name = Release_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		562B798E0B065B9E000082F7 /* Build configuration list for PBXProject "phasevocoder" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				562B798F0B065B9E000082F7 /* Debug_MRSAUDIO_MRSMIDI */,
+				562B79B60B065CC2000082F7 /* Debug_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE */,
+				562B79900B065B9E000082F7 /* Release_MRSAUDIO_MRSMIDI */,
+				562B79B70B065CC2000082F7 /* Release_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release_MRSAUDIO_MRSMIDI;
+		};
+		562B799D0B065BAC000082F7 /* Build configuration list for PBXToolTarget "phasevocoder" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				562B799E0B065BAC000082F7 /* Debug_MRSAUDIO_MRSMIDI */,
+				562B79B40B065CC2000082F7 /* Debug_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE */,
+				562B799F0B065BAC000082F7 /* Release_MRSAUDIO_MRSMIDI */,
+				562B79B50B065CC2000082F7 /* Release_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release_MRSAUDIO_MRSMIDI;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 562B798D0B065B9E000082F7 /* Project object */;
+}
