@@ -17,7 +17,7 @@
 */
 
 /** 
-\class LPC2Cepstrum
+\class LPCC
 \brief Convert LPC coefficients to Cepstrum coefficients.
 
 This MarSystem is expecting to receive at its input LPC coefficients + Pitch + Power,
@@ -30,42 +30,42 @@ Luís Gustavo Martins - lmartins@inescporto.pt
 November 2006
 */
 
-#include "LPC2Cepstrum.h"
+#include "LPCC.h"
 
 using namespace std;
 using namespace Marsyas;
 
-LPC2Cepstrum::LPC2Cepstrum(string name):MarSystem("LPC2Cepstrum",name)
+LPCC::LPCC(string name):MarSystem("LPCC",name)
 {
 	addControls();
 }
 
-LPC2Cepstrum::LPC2Cepstrum(const LPC2Cepstrum& a) : MarSystem(a)
+LPCC::LPCC(const LPCC& a) : MarSystem(a)
 {
 	ctrl_order_ = getctrl("mrs_natural/order");
 }
 
-LPC2Cepstrum::~LPC2Cepstrum()
+LPCC::~LPCC()
 {
 }
 
 MarSystem* 
-LPC2Cepstrum::clone() const 
+LPCC::clone() const 
 {
-	return new LPC2Cepstrum(*this);
+	return new LPCC(*this);
 }
 
 void 
-LPC2Cepstrum::addControls()
+LPCC::addControls()
 {
 	//read-only
 	addctrl("mrs_natural/order", 1, ctrl_order_);
 }
 
 void
-LPC2Cepstrum::myUpdate()
+LPCC::myUpdate()
 { 
-	MRSDIAG("LPC2Cepstrum.cpp - LPC2Cepstrum:myUpdate");
+	MRSDIAG("LPCC.cpp - LPCC:myUpdate");
 
 	ctrl_onSamples_->setValue(ctrl_inSamples_);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
@@ -77,7 +77,7 @@ LPC2Cepstrum::myUpdate()
 	ctrl_order_->setValue(order, NOUPDATE);
 	ctrl_onObservations_->setValue(order+1, NOUPDATE);
 
-	//LPC2Cepstrum features names
+	//LPCC features names
 	ostringstream oss;
 	for (mrs_natural i = 0; i < ctrl_order_->to<mrs_natural>(); i++)
 		oss << "LPCC_" << i+1 << ",";
@@ -85,7 +85,7 @@ LPC2Cepstrum::myUpdate()
 }
 
 void 
-LPC2Cepstrum::myProcess(realvec& in, realvec& out)
+LPCC::myProcess(realvec& in, realvec& out)
 {
 	mrs_real sum;
 	mrs_natural order = ctrl_order_->to<mrs_natural>();

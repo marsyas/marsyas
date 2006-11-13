@@ -17,7 +17,7 @@
 */
 
 /** 
-\class LPC2Cepstrum
+\class LPCC
 \brief Convert LPC coefficients to Cepstrum coefficients.
 
 This MarSystem is expecting to receive at its input LPC coefficients + Pitch + Power,
@@ -30,15 +30,15 @@ Luís Gustavo Martins - lmartins@inescporto.pt
 November 2006
 */
 
-#ifndef MARSYAS_LPC2CEPSTRUM_H
-#define MARSYAS_LPC2CEPSTRUM_H
+#ifndef MARSYAS_LPCC_H
+#define MARSYAS_LPCC_H
 
 #include "MarSystem.h"
 
 namespace Marsyas
 {
 
-	class LPC2Cepstrum: public MarSystem
+	class LPCC: public MarSystem
 	{
 	private:
 		MarControlPtr ctrl_order_;
@@ -47,9 +47,9 @@ namespace Marsyas
 		void myUpdate();
 
 	public:
-		LPC2Cepstrum(std::string name);
-		LPC2Cepstrum(const LPC2Cepstrum& a);
-		~LPC2Cepstrum();
+		LPCC(std::string name);
+		LPCC(const LPCC& a);
+		~LPCC();
 
 		MarSystem* clone() const;  
 

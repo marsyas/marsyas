@@ -122,7 +122,7 @@ in sequence.
 #include "LPC.h"
 #include "LPCwarped.h"
 #include "LPCResyn.h"
-#include "LPC2Cepstrum.h"
+#include "LPCC.h"
 #include "LSP.h"
 #include "SOM.h"
 
@@ -249,7 +249,7 @@ MarSystemManager::MarSystemManager()
   registerPrototype("LPC", new LPC("lpcpr"));
   registerPrototype("LPCwarped", new LPCwarped("lpcwarppr"));
   registerPrototype("LPCResyn", new LPCResyn("lpcresynpr"));
-	registerPrototype("LPC2Cepstrum", new LPC2Cepstrum("lpc2cepstrumpr"));
+	registerPrototype("LPCC", new LPCC("lpccpr"));
   registerPrototype("LSP", new LSP("lsppr"));
 
 

@@ -492,7 +492,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\marsyas\LPC2Cepstrum.cpp"
+				RelativePath="..\..\marsyas\LPCC.cpp"
 				>
 			</File>
 			<File
@@ -1142,7 +1142,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\marsyas\LPC2Cepstrum.h"
+				RelativePath="..\..\marsyas\LPCC.h"
 				>
 			</File>
 			<File
