@@ -50,8 +50,6 @@ private:
 
 	realvec Zs_;
 	realvec temp_;
-	mrs_real pitch_;
-	mrs_real power_;
 	
 	/**Warped autocorrelation for LPC calculation
 	*Based on the code from: http://www.musicdsp.org/showone.php?id=137
@@ -60,22 +58,23 @@ private:
 	*@param r autocorrelation output vector size (LPCorder + 1)
 	*@param lambda frequency resolution (warp)
 	*/
-	void autocorrelationWarped(realvec& in, realvec& r, mrs_real lambda);
+	void autocorrelationWarped(const realvec& in, realvec& r, mrs_real& pitch, mrs_real lambda);
 
 	/**Levinson-Durbin Recursion Algorithm
 	*Based on the code from: http://www.musicdsp.org/showone.php?id=137
 	*@param r input vector of autocorrelation coeffs
-	*@param a output vector with the alpha LPC coeffs
+	*@param a output vector with the alpha LPC coeffs => a = [1 a(1) a(2) ... a(order_-1)]
 	*@param k output vector with the reflection coeffs
+	*@param e prediction error
 	*/
-	void LevinsonDurbin(realvec& r, realvec& a, realvec& k);
+	void LevinsonDurbin(const realvec& r, realvec& a, realvec& k, mrs_real& e);
 
 	/**LPC RMS Prediction Error
 	*Updates the power_ member variable with the calculated value of the RMS perdiction error
 	*@param data audio frame
 	*@param coeffs LPC alpha coeffs
 	*/
-	void predictionError(realvec& data, realvec& coeffs);
+	mrs_real predictionError(const realvec& data, const realvec& coeffs);
 
 public:
 	LPCwarped(std::string name);

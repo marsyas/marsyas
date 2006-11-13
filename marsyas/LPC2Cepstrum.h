@@ -41,8 +41,7 @@ namespace Marsyas
 	class LPC2Cepstrum: public MarSystem
 	{
 	private:
-		MarControlPtr ctrl_cepstralOrder_;
-		mrs_natural LPCorder_;
+		MarControlPtr ctrl_order_;
 
 		void addControls();
 		void myUpdate();

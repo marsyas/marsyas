@@ -42,7 +42,7 @@ LPC2Cepstrum::LPC2Cepstrum(string name):MarSystem("LPC2Cepstrum",name)
 
 LPC2Cepstrum::LPC2Cepstrum(const LPC2Cepstrum& a) : MarSystem(a)
 {
-	ctrl_cepstralOrder_ = getctrl("mrs_natural/cepstralOrder");
+	ctrl_order_ = getctrl("mrs_natural/order");
 }
 
 LPC2Cepstrum::~LPC2Cepstrum()
@@ -58,10 +58,8 @@ LPC2Cepstrum::clone() const
 void 
 LPC2Cepstrum::addControls()
 {
-	addctrl("mrs_natural/cepstralOrder", 10, ctrl_cepstralOrder_); 
-	ctrl_cepstralOrder_->setState(true);
-
-	LPCorder_ = 10; //just a default value equal to the default cepstralOrder
+	//read-only
+	addctrl("mrs_natural/order", 1, ctrl_order_);
 }
 
 void
@@ -72,37 +70,45 @@ LPC2Cepstrum::myUpdate()
 	ctrl_onSamples_->setValue(ctrl_inSamples_);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 	ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
-	// output nr of observations (i.e. coefficients) is the 
-	// number of cepstral coeffs
-	ctrl_onObservations_->setValue(ctrl_cepstralOrder_, NOUPDATE);
+	
+	// output nr of observations (i.e. LPCC coefficients) is equal
+	// to the number of LPC coefs (LPC coeffs - 1 pitch coeff - 1 power)
+	mrs_natural order = ctrl_inObservations_->to<mrs_natural>() - 2;
+	ctrl_order_->setValue(order, NOUPDATE);
+	ctrl_onObservations_->setValue(order+1, NOUPDATE);
 
 	//LPC2Cepstrum features names
 	ostringstream oss;
-	for (mrs_natural i = 0; i < ctrl_cepstralOrder_->to<mrs_natural>(); i++)
-		oss << "Cepstrum_" << i+1 << ",";
-
+	for (mrs_natural i = 0; i < ctrl_order_->to<mrs_natural>(); i++)
+		oss << "LPCC_" << i+1 << ",";
 	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
-	
-	//input LPC order (LPC coefs - 1 pitch coeff - 1 power coeff)
-	LPCorder_ = ctrl_inObservations_->to<mrs_natural>() - 2;
 }
 
 void 
 LPC2Cepstrum::myProcess(realvec& in, realvec& out)
 {
 	mrs_real sum;
-	mrs_natural cepstralOrder = ctrl_cepstralOrder_->to<mrs_natural>();
+	mrs_natural order = ctrl_order_->to<mrs_natural>();
 
-	/**************************************************************************/
-	/*from HTK LPC2Cepstrum()                                                                    */
-	/**************************************************************************/
-	for (mrs_natural n = 0; n < cepstralOrder; n++)  
+/************************************************************************/
+/* Based on:
+/* http://www.mathworks.com/access/helpdesk/
+// help/toolbox/dspblks/index.html?/access/helpdesk/help/toolbox/dspblks/
+/* lpctofromcepstralcoefficients.html
+/************************************************************************/
+	out.setval(0.0);
+	out(0) = -log(in(order+1)); //[?]
+	for (mrs_natural m = 1; m <= order; m++)  
 	{
 		sum = 0.0;
-		for (mrs_natural i=0; i < n; i++)
-			sum = sum + (n-i-1) * in(i) * out(n-i-1);
-		out(n) = -(in(n) + sum / (n+1));
+		for (mrs_natural k=1; k <= m-1; k++)
+			sum = sum + (mrs_real)(m-k) * in(k-1) * out(m-k);
+		out(m) = +in(m-1) + sum / (mrs_real)m;
 	}
+
+	MATLAB_PUT(in, "LPCC_in");
+	MATLAB_PUT(out, "LPCC_out");
+	MATLAB_EVAL("LPCC_test");
 }
 
 

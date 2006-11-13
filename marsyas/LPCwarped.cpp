@@ -33,7 +33,7 @@ May 2006
 
 #include "LPCwarped.h"
 
-//#define _MATLAB_LPCwarped_
+#define _MATLAB_LPCwarped_
 
 using namespace std;
 using namespace Marsyas;
@@ -95,7 +95,7 @@ LPCwarped::myUpdate()
 
 //perhaps this method could become an independent MarSystem in the future...
 void
-LPCwarped::autocorrelationWarped(realvec& in, realvec& r, mrs_real lambda) 
+LPCwarped::autocorrelationWarped(const realvec& in, realvec& r, mrs_real& pitch, mrs_real lambda) 
 {
 	//*Based on the code from: http://www.musicdsp.org/showone.php?id=137
 
@@ -183,22 +183,22 @@ LPCwarped::autocorrelationWarped(realvec& in, realvec& r, mrs_real lambda)
 	//avoid detection of too high fundamental freqs (e.g. harmonics)?
 	if (j > in.getSize()/4) j = 0;
 	
-	//pitch_ gets in fact the period (i.e. autocorr lag)
+	//pitch gets in fact the period (i.e. autocorr lag)
 	//measured in time samples... maybe this should be converted
 	//to a more convenient representation (e.g. pitch in Hz).
 	//Such a conversion would have to depend on the warp factor lambda... [!]
-	pitch_  = (mrs_real)j;
+	pitch  = (mrs_real)j;
 
 //MATLAB engine stuff - for testing and validation purposes only!
 #ifdef _MATLAB_LPCwarped_
-	MATLAB_PUT(pitch_, "pitch");
+	MATLAB_PUT(pitch, "pitch");
 	MATLAB_EVAL("LPCwarped_pitch = [LPCwarped_pitch pitch];");
 #endif
 }
 
 //Perhaps this method could become a member of realvec...
 void
-LPCwarped::LevinsonDurbin(realvec& r, realvec& a, realvec& k)
+LPCwarped::LevinsonDurbin(const realvec& r, realvec& a, realvec& k, mrs_real& e)
 {
 	//*Based on the code from: http://www.musicdsp.org/showone.php?id=137
 	
@@ -206,16 +206,20 @@ LPCwarped::LevinsonDurbin(realvec& r, realvec& a, realvec& k)
 	mrs_real* R = r.getData();
 	mrs_real* A = a.getData();
 	mrs_real* K = k.getData();
+	e = 0.0; //prediction error;
 
 	mrs_real Am1[62];
 
-	if(R[0]==0.0) {
+	if(R[0]==0.0) 
+	{
 		for(mrs_natural i=1; i<=P; i++)
 		{
 			K[i]=0.0;
 			A[i]=0.0;
-		}}
-	else {
+		}
+	}
+	else 
+	{
 		mrs_real km,Em1,Em;
 		mrs_natural k,s,m;
 
@@ -248,12 +252,15 @@ LPCwarped::LevinsonDurbin(realvec& r, realvec& a, realvec& k)
 				Am1[s] = A[s];            // am1(s) = am(s)
 
 			Em1 = Em;                     //Em1 = Em;
+			e = Em1; //prediction error
+			//e = Em1*Em1; //RMS prediction error
 		}
+		//e = sqrt(e/(mrs_real)m); //RMS prediction error
 	}
 }
 
-void 
-LPCwarped::predictionError(realvec& data, realvec& coeffs)
+mrs_real
+LPCwarped::predictionError(const realvec& data, const realvec& coeffs)
 {
 	mrs_natural i,j;
 	mrs_real power = 0.0;
@@ -276,15 +283,16 @@ LPCwarped::predictionError(realvec& data, realvec& coeffs)
 		power += error * error;
 		count ++;
 	}
-	power_ = sqrt(power/(mrs_real)count);//=~LPC Gain
+	return sqrt(power/(mrs_real)count);//=~ RMS LPC Gain
 }
 
 void 
 LPCwarped::myProcess(realvec& in, realvec& out)
 {
-	//checkFlow(in,out); 
-
 	mrs_natural i;
+	mrs_real LevinsonError = 0.0;
+	mrs_real PredictionError = 0.0;
+	mrs_real pitch = 0.0;
 
 //MATLAB engine stuff - for testing and validation purposes only!
 #ifdef _MATLAB_LPCwarped_
@@ -296,24 +304,27 @@ LPCwarped::myProcess(realvec& in, realvec& out)
 	//-------------------------
 	// warped autocorrelation
 	//-------------------------
-	//calculate warped autocorrelation coefs
+	//calculate warped autocorrelation coeffs
 	realvec r(in.getSize());
-	//this also estimates the pitch_ - does it work if lambda != 0 [?]
-	autocorrelationWarped(in, r, getctrl("mrs_real/lambda")->toReal()); 
+	//this also estimates the pitch - does it work if lambda != 0 [?]
+	autocorrelationWarped(in, r, pitch, getctrl("mrs_real/lambda")->toReal()); 
 
 	//--------------------------
 	// Levison-Durbin recursion
 	//--------------------------
-	//Calculate LPC alpha and reflections coefs
+	//Calculate LPC alpha and reflections coeffs
 	//using Levison-Durbin recursion
+	//output format for LPC coeffs:
+	// y(n) = x(n) - a(1)x(n-1) - ... - a(order_-1)x(n-order_-1)
+	// a = [1 a(1) a(2) ... a(order_-1)]
 	realvec a(order_+1);
-	realvec k(order_+1); //reflection coefs
-	LevinsonDurbin(r, a, k);
+	realvec k(order_+1); //reflection coeffs
+	LevinsonDurbin(r, a, k, LevinsonError);
 
 	//--------------------------
 	// LPC coeffs
 	//--------------------------
-	//output LPC coefs
+	//output LPC coeffs
 	// y(n) = x(n) - a(1)x(n-1) - ... - a(order_-1)x(n-order_-1)
 	// a = [1 a(1) a(2) ... a(order_-1)]
 	// out = [a(1) a(2) ... a(order_-1)]
@@ -333,13 +344,13 @@ LPCwarped::myProcess(realvec& in, realvec& out)
 	// RMS Prediction Error
 	//---------------------------
 	//calculate RMS prediction error of LPC model (=> power_)
-	predictionError(in, out);
+	//PredictionError = predictionError(in, out);
 
 	//------------------------------
 	//output pitch and power values
 	//------------------------------
-	out(order_) = pitch_; // lag in samples <= from ::autocorrelationWarped(...) - does it work if lambda != 0 [?]
-	out(order_+1) = power_; // RMS prediction error <= from ::predictionError(...)
+	out(order_) = pitch; // lag in samples <= from ::autocorrelationWarped(...) - does it work if lambda != 0 [?]
+	out(order_+1) = LevinsonError; //prediction error (= gain? [?])
 
 //MATLAB engine stuff - for testing and validation purposes only!
 #ifdef _MATLAB_LPCwarped_
