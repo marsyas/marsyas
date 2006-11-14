@@ -22,8 +22,7 @@
 
 This MarSystem is expecting to receive at its input LPC coefficients + Pitch + Power,
 as output by the LPCWarped MarSystem (see LPCWarped.cpp/.h). It only converts the LPC
-coefficients to cepstral coefficients and ignores the pitch and power values received 
-from LPCwarped.
+coefficients to cepstral coefficients and ignores the pitch value received from LPCwarped.
 
 Code by:
 Luís Gustavo Martins - lmartins@inescporto.pt
@@ -106,9 +105,9 @@ LPCC::myProcess(realvec& in, realvec& out)
 		out(m) = +in(m-1) + sum / (mrs_real)m;
 	}
 
-	MATLAB_PUT(in, "LPCC_in");
-	MATLAB_PUT(out, "LPCC_out");
-	MATLAB_EVAL("LPCC_test");
+// 	MATLAB_PUT(in, "LPCC_in");
+// 	MATLAB_PUT(out, "LPCC_out");
+// 	MATLAB_EVAL("LPCC_test");
 }
 
 

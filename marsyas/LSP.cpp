@@ -23,7 +23,7 @@
 Takes the output of ::LPCwarped() and calculates the corresponding LSP values.
 See the LPCwarped class implementation.
 
-Luís Gustavo Martins - lmartins@inescporto.pt
+Cobe by Luís Gustavo Martins - lmartins@inescporto.pt
 May 2006
 */
 

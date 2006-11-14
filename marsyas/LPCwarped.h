@@ -28,7 +28,7 @@ Marsyas0.1 LPC class. The following differences apply:
 - It is possible to define a pole-shifting parameter (gamma - default value = 1.0)
 - It is possible to define a warping factor, lambda (defualt value = 0 => no warping)
 
-Luís Gustavo Martins - lmartins@inescporto.pt
+Code by Luís Gustavo Martins - lmartins@inescporto.pt
 May 2006
 */
 

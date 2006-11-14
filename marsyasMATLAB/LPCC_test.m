@@ -19,13 +19,13 @@ subplot(212);
 plot(Omega, 20*log10(lpccEnv)+10*log10(g_MARS),'k','Linewidth',1.5); %LPCC Spectrum envelope
 hold off
 
-% figure(22);
-% subplot(3,1,1)
-% plot(LPCC_in); %LPC coefs
-% subplot(3,1,2)
-% plot(c, 'r'); %Marsyas LPCC
-% subplot(3,1,3)
-% plot(w,lpccEnv,'k','Linewidth',1.5); %LPCC Spectrum envelope
+figure(22);
+subplot(3,1,1)
+plot(LPCC_in); %LPC coefs
+subplot(3,1,2)
+plot(c, 'r'); %Marsyas LPCC
+subplot(3,1,3)
+plot(w,lpccEnv,'k','Linewidth',1.5); %LPCC Spectrum envelope
 
 
 

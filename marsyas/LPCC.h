@@ -22,8 +22,7 @@
 
 This MarSystem is expecting to receive at its input LPC coefficients + Pitch + Power,
 as output by the LPCWarped MarSystem (see LPCWarped.cpp/.h). It only converts the LPC
-coefficients to cepstral coefficients and ignores the pitch and power values received 
-from LPCwarped.
+coefficients to cepstral coefficients and ignores the pitch value received from LPCwarped.
 
 Code by:
 Luís Gustavo Martins - lmartins@inescporto.pt
