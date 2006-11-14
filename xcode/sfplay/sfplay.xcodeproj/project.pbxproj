@@ -30,12 +30,30 @@
 		};
 /* End PBXBuildStyle section */
 
+/* Begin PBXContainerItemProxy section */
+		5679A0C00B09919900742B62 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5679A0BC0B09919900742B62 /* marsyas.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 56FB6A650B0545AD0098B8DC /* libmarsyas.a */;
+			remoteInfo = marsyas;
+		};
+		5679A0C30B0991B600742B62 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5679A0BC0B09919900742B62 /* marsyas.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 56FB6A640B0545AD0098B8DC /* marsyas */;
+			remoteInfo = marsyas;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		562B78710B064FAC000082F7 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/CoreAudio.framework; sourceTree = "<absolute>"; };
 		562B78720B064FAC000082F7 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		562B78730B064FAC000082F7 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/CoreMIDI.framework; sourceTree = "<absolute>"; };
 		562B78740B064FC1000082F7 /* sfplay.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = sfplay.cpp; path = ../../src/sfplay.cpp; sourceTree = SOURCE_ROOT; };
 		562B787C0B065175000082F7 /* sfplay */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sfplay; sourceTree = BUILT_PRODUCTS_DIR; };
+		5679A0BC0B09919900742B62 /* marsyas.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = marsyas.xcodeproj; path = ../marsyas/marsyas.xcodeproj; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +73,7 @@
 		562B78660B064F8B000082F7 = {
 			isa = PBXGroup;
 			children = (
+				5679A0BC0B09919900742B62 /* marsyas.xcodeproj */,
 				562B78740B064FC1000082F7 /* sfplay.cpp */,
 				562B78710B064FAC000082F7 /* CoreAudio.framework */,
 				562B78720B064FAC000082F7 /* CoreFoundation.framework */,
@@ -67,6 +86,14 @@
 			isa = PBXGroup;
 			children = (
 				562B787C0B065175000082F7 /* sfplay */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5679A0BD0B09919900742B62 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5679A0C10B09919900742B62 /* libmarsyas.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -97,11 +124,27 @@
 			mainGroup = 562B78660B064F8B000082F7;
 			productRefGroup = 562B787D0B065175000082F7 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 5679A0BD0B09919900742B62 /* Products */;
+					ProjectRef = 5679A0BC0B09919900742B62 /* marsyas.xcodeproj */;
+				},
+			);
 			targets = (
 				562B787B0B065175000082F7 /* sfplay */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		5679A0C10B09919900742B62 /* libmarsyas.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libmarsyas.a;
+			remoteRef = 5679A0C00B09919900742B62 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXRezBuildPhase section */
 		562B787A0B065175000082F7 /* Rez */ = {
@@ -123,6 +166,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		5679A0C40B0991B600742B62 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = marsyas;
+			targetProxy = 5679A0C30B0991B600742B62 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXToolTarget section */
 		562B787B0B065175000082F7 /* sfplay */ = {
@@ -149,6 +200,7 @@
 				);
 			};
 			dependencies = (
+				5679A0C40B0991B600742B62 /* PBXTargetDependency */,
 			);
 			name = sfplay;
 			productInstallPath = /usr/local/bin;

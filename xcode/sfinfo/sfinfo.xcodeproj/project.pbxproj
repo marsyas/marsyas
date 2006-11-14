@@ -30,7 +30,25 @@
 		};
 /* End PBXBuildStyle section */
 
+/* Begin PBXContainerItemProxy section */
+		5679A0CE0B0991CF00742B62 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5679A0CA0B0991CF00742B62 /* marsyas.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 56FB6A650B0545AD0098B8DC /* libmarsyas.a */;
+			remoteInfo = marsyas;
+		};
+		5679A0D10B0991D800742B62 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5679A0CA0B0991CF00742B62 /* marsyas.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 56FB6A640B0545AD0098B8DC /* marsyas */;
+			remoteInfo = marsyas;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		5679A0CA0B0991CF00742B62 /* marsyas.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = marsyas.xcodeproj; path = ../marsyas/marsyas.xcodeproj; sourceTree = SOURCE_ROOT; };
 		56FB70EC0B0568B40098B8DC /* sfinfo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sfinfo; sourceTree = BUILT_PRODUCTS_DIR; };
 		56FB70F30B0568D90098B8DC /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/CoreAudio.framework; sourceTree = "<absolute>"; };
 		56FB70F40B0568D90098B8DC /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
@@ -52,9 +70,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5679A0CB0B0991CF00742B62 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5679A0CF0B0991CF00742B62 /* libmarsyas.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		56FB70DD0B0568A20098B8DC = {
 			isa = PBXGroup;
 			children = (
+				5679A0CA0B0991CF00742B62 /* marsyas.xcodeproj */,
 				56FB70F90B0568F00098B8DC /* sfinfo.cpp */,
 				56FB70F30B0568D90098B8DC /* CoreAudio.framework */,
 				56FB70F40B0568D90098B8DC /* CoreFoundation.framework */,
@@ -97,11 +124,27 @@
 			mainGroup = 56FB70DD0B0568A20098B8DC;
 			productRefGroup = 56FB70ED0B0568B40098B8DC /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 5679A0CB0B0991CF00742B62 /* Products */;
+					ProjectRef = 5679A0CA0B0991CF00742B62 /* marsyas.xcodeproj */;
+				},
+			);
 			targets = (
 				56FB70EB0B0568B40098B8DC /* sfinfo */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		5679A0CF0B0991CF00742B62 /* libmarsyas.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libmarsyas.a;
+			remoteRef = 5679A0CE0B0991CF00742B62 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXRezBuildPhase section */
 		56FB70EA0B0568B40098B8DC /* Rez */ = {
@@ -123,6 +166,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		5679A0D20B0991D800742B62 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = marsyas;
+			targetProxy = 5679A0D10B0991D800742B62 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXToolTarget section */
 		56FB70EB0B0568B40098B8DC /* sfinfo */ = {
@@ -149,6 +200,7 @@
 				);
 			};
 			dependencies = (
+				5679A0D20B0991D800742B62 /* PBXTargetDependency */,
 			);
 			name = sfinfo;
 			productInstallPath = /usr/local/bin;

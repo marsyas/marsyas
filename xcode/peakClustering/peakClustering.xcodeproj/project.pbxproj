@@ -11,6 +11,7 @@
 		562B79290B0656C2000082F7 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 562B79260B0656C2000082F7 /* CoreFoundation.framework */; };
 		562B792A0B0656C2000082F7 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 562B79270B0656C2000082F7 /* CoreMIDI.framework */; };
 		562B792C0B0656D7000082F7 /* peakClustering.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 562B792B0B0656D7000082F7 /* peakClustering.cpp */; };
+		562B7AB40B090F30000082F7 /* PeClusters.h in Headers */ = {isa = PBXBuildFile; fileRef = 562B7AB30B090F30000082F7 /* PeClusters.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildStyle section */
@@ -30,12 +31,31 @@
 		};
 /* End PBXBuildStyle section */
 
+/* Begin PBXContainerItemProxy section */
+		5679A01D0B0947F700742B62 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5679A0190B0947F700742B62 /* marsyas.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 56FB6A650B0545AD0098B8DC;
+			remoteInfo = marsyas;
+		};
+		5679A0380B094A1A00742B62 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5679A0190B0947F700742B62 /* marsyas.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 56FB6A640B0545AD0098B8DC;
+			remoteInfo = marsyas;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		562B791B0B065682000082F7 /* peakClustering */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = peakClustering; sourceTree = BUILT_PRODUCTS_DIR; };
 		562B79250B0656C2000082F7 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/CoreAudio.framework; sourceTree = "<absolute>"; };
 		562B79260B0656C2000082F7 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		562B79270B0656C2000082F7 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/CoreMIDI.framework; sourceTree = "<absolute>"; };
 		562B792B0B0656D7000082F7 /* peakClustering.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = peakClustering.cpp; path = ../../src/peakClustering.cpp; sourceTree = SOURCE_ROOT; };
+		562B7AB30B090F30000082F7 /* PeClusters.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PeClusters.h; path = ../../marsyas/PeClusters.h; sourceTree = SOURCE_ROOT; };
+		5679A0190B0947F700742B62 /* marsyas.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = marsyas.xcodeproj; path = ../marsyas/marsyas.xcodeproj; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +75,8 @@
 		562B790C0B065678000082F7 = {
 			isa = PBXGroup;
 			children = (
+				5679A0190B0947F700742B62 /* marsyas.xcodeproj */,
+				562B7AB30B090F30000082F7 /* PeClusters.h */,
 				562B792B0B0656D7000082F7 /* peakClustering.cpp */,
 				562B79250B0656C2000082F7 /* CoreAudio.framework */,
 				562B79260B0656C2000082F7 /* CoreFoundation.framework */,
@@ -71,6 +93,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		5679A01A0B0947F700742B62 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5679A01E0B0947F700742B62 /* libmarsyas.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -78,6 +108,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				562B7AB40B090F30000082F7 /* PeClusters.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,11 +128,27 @@
 			mainGroup = 562B790C0B065678000082F7;
 			productRefGroup = 562B791C0B065682000082F7 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 5679A01A0B0947F700742B62 /* Products */;
+					ProjectRef = 5679A0190B0947F700742B62 /* marsyas.xcodeproj */;
+				},
+			);
 			targets = (
 				562B791A0B065682000082F7 /* peakClustering */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		5679A01E0B0947F700742B62 /* libmarsyas.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libmarsyas.a;
+			remoteRef = 5679A01D0B0947F700742B62 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXRezBuildPhase section */
 		562B79190B065682000082F7 /* Rez */ = {
@@ -123,6 +170,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		5679A0390B094A1A00742B62 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = marsyas;
+			targetProxy = 5679A0380B094A1A00742B62 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXToolTarget section */
 		562B791A0B065682000082F7 /* peakClustering */ = {
@@ -149,6 +204,7 @@
 				);
 			};
 			dependencies = (
+				5679A0390B094A1A00742B62 /* PBXTargetDependency */,
 			);
 			name = peakClustering;
 			productInstallPath = /usr/local/bin;
@@ -304,6 +360,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "";
 				HEADER_SEARCH_PATHS = (
 					../../marsyas,
 					/Applications/MATLAB7/extern/include,
@@ -316,6 +373,7 @@
 					/usr/local/lib,
 					/usr/lib,
 				);
+				OTHER_LDFLAGS = "";
 				PRELINK_LIBS = "-lmarsyas -lpthread -lobjc -leng -lut -lmx -lmat -licudata.24 -licui18n.24 -licuuc.24 -lustdio.24 -lz -lmad -lreadline -lcurses";
 				SYMROOT = .;
 			};

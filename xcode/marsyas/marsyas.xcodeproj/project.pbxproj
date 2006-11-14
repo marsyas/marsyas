@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		562B7AB90B090F80000082F7 /* PeClusters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 562B7AB70B090F80000082F7 /* PeClusters.cpp */; };
+		562B7ABA0B090F80000082F7 /* PeClusters.h in Headers */ = {isa = PBXBuildFile; fileRef = 562B7AB80B090F80000082F7 /* PeClusters.h */; };
 		56FB6A660B0545BB0098B8DC /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 56FB699F0B052EEB0098B8DC /* CoreAudio.framework */; };
 		56FB6A6E0B0545C40098B8DC /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 56FB699E0B052EEB0098B8DC /* CoreFoundation.framework */; };
 		56FB6A970B0545CA0098B8DC /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 56FB699D0B052EEB0098B8DC /* CoreMIDI.framework */; };
@@ -379,6 +381,8 @@
 /* End PBXBuildStyle section */
 
 /* Begin PBXFileReference section */
+		562B7AB70B090F80000082F7 /* PeClusters.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PeClusters.cpp; path = ../../marsyas/PeClusters.cpp; sourceTree = SOURCE_ROOT; };
+		562B7AB80B090F80000082F7 /* PeClusters.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PeClusters.h; path = ../../marsyas/PeClusters.h; sourceTree = SOURCE_ROOT; };
 		56FB657F0B052B5A0098B8DC /* ZeroRClassifier.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ZeroRClassifier.h; path = ../../marsyas/ZeroRClassifier.h; sourceTree = SOURCE_ROOT; };
 		56FB65800B052B5A0098B8DC /* ZeroRClassifier.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = ZeroRClassifier.cpp; path = ../../marsyas/ZeroRClassifier.cpp; sourceTree = SOURCE_ROOT; };
 		56FB65820B052B5A0098B8DC /* ZeroCrossings.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ZeroCrossings.h; path = ../../marsyas/ZeroCrossings.h; sourceTree = SOURCE_ROOT; };
@@ -752,6 +756,8 @@
 		56FB65660B052A970098B8DC = {
 			isa = PBXGroup;
 			children = (
+				562B7AB70B090F80000082F7 /* PeClusters.cpp */,
+				562B7AB80B090F80000082F7 /* PeClusters.h */,
 				56FB711B0B056E0C0098B8DC /* libmarsyas.a */,
 				56FB699D0B052EEB0098B8DC /* CoreMIDI.framework */,
 				56FB699E0B052EEB0098B8DC /* CoreFoundation.framework */,
@@ -1302,6 +1308,7 @@
 				56FB702D0B0548000098B8DC /* AbsSoundFileSource.h in Headers */,
 				56FB70300B0548000098B8DC /* AbsSoundFileSink.h in Headers */,
 				56FB70320B0548000098B8DC /* AbsMax.h in Headers */,
+				562B7ABA0B090F80000082F7 /* PeClusters.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1531,6 +1538,7 @@
 				56FB6F3A0B0548000098B8DC /* Rms.cpp in Sources */,
 				56FB701C0B0548000098B8DC /* AuFileSource.cpp in Sources */,
 				56FB70200B0548000098B8DC /* AudioSource.cpp in Sources */,
+				562B7AB90B090F80000082F7 /* PeClusters.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

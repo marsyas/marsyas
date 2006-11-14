@@ -30,12 +30,30 @@
 		};
 /* End PBXBuildStyle section */
 
+/* Begin PBXContainerItemProxy section */
+		5679A0EE0B09922100742B62 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5679A0EA0B09922100742B62 /* marsyas.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 56FB6A650B0545AD0098B8DC /* libmarsyas.a */;
+			remoteInfo = marsyas;
+		};
+		5679A0F10B09922A00742B62 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5679A0EA0B09922100742B62 /* marsyas.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 56FB6A640B0545AD0098B8DC /* marsyas */;
+			remoteInfo = marsyas;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		562B78E70B0654F4000082F7 /* mkcollection */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = mkcollection; sourceTree = BUILT_PRODUCTS_DIR; };
 		562B78EE0B065507000082F7 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/CoreAudio.framework; sourceTree = "<absolute>"; };
 		562B78EF0B065507000082F7 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		562B78F00B065507000082F7 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/CoreMIDI.framework; sourceTree = "<absolute>"; };
 		562B78F40B06551B000082F7 /* mkcollection.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mkcollection.cpp; path = ../../src/mkcollection.cpp; sourceTree = SOURCE_ROOT; };
+		5679A0EA0B09922100742B62 /* marsyas.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = marsyas.xcodeproj; path = ../marsyas/marsyas.xcodeproj; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +73,7 @@
 		562B78D80B0654E9000082F7 = {
 			isa = PBXGroup;
 			children = (
+				5679A0EA0B09922100742B62 /* marsyas.xcodeproj */,
 				562B78F40B06551B000082F7 /* mkcollection.cpp */,
 				562B78EE0B065507000082F7 /* CoreAudio.framework */,
 				562B78EF0B065507000082F7 /* CoreFoundation.framework */,
@@ -67,6 +86,14 @@
 			isa = PBXGroup;
 			children = (
 				562B78E70B0654F4000082F7 /* mkcollection */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5679A0EB0B09922100742B62 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5679A0EF0B09922100742B62 /* libmarsyas.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -97,11 +124,27 @@
 			mainGroup = 562B78D80B0654E9000082F7;
 			productRefGroup = 562B78E80B0654F4000082F7 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 5679A0EB0B09922100742B62 /* Products */;
+					ProjectRef = 5679A0EA0B09922100742B62 /* marsyas.xcodeproj */;
+				},
+			);
 			targets = (
 				562B78E60B0654F4000082F7 /* mkcollection */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		5679A0EF0B09922100742B62 /* libmarsyas.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libmarsyas.a;
+			remoteRef = 5679A0EE0B09922100742B62 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXRezBuildPhase section */
 		562B78E50B0654F4000082F7 /* Rez */ = {
@@ -123,6 +166,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		5679A0F20B09922A00742B62 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = marsyas;
+			targetProxy = 5679A0F10B09922A00742B62 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXToolTarget section */
 		562B78E60B0654F4000082F7 /* mkcollection */ = {
@@ -149,6 +200,7 @@
 				);
 			};
 			dependencies = (
+				5679A0F20B09922A00742B62 /* PBXTargetDependency */,
 			);
 			name = mkcollection;
 			productInstallPath = /usr/local/bin;
