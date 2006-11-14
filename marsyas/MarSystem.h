@@ -151,7 +151,7 @@ protected:
 
 	virtual void myProcess(realvec& in, realvec& out) = 0;
 
-	MarSystem& operator=(const MarSystem& a) { assert(0); } // copy assignment
+	MarSystem& operator=(const MarSystem&) { assert(0); } // copy assignment
 
 public:
 	virtual void controlUpdate(MarControlPtr ctrl);
