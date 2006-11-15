@@ -90,7 +90,6 @@ AudioSource::myUpdate()
 	}
 	
 
-	cout << "nChannels" << nChannels_ << endl;
 	//set output controls
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
@@ -191,10 +190,6 @@ AudioSource::myProcess(realvec& in, realvec& out)
 	if ( stopped_ )
 		start();
 
-	cout << "ri = " << ri_ << endl;
-	cout << "inSamples_ = " << inSamples_ << endl;
-	cout << "inObservations_ = " << inObservations_ << endl;
-	cout << "bufferSize_ = " << bufferSize_ << endl;
 	 
 
 	//send audio to output
