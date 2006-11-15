@@ -48,9 +48,9 @@ FileName::~FileName()
 
 char* 
 FileName::rindex(const char *s, int c) {
-  int len = strlen(s);
+  size_t len = strlen(s);
   int i;
-  for (i=len-1; i >=0; i--) {
+  for (i= (int) len-1; i >=0; i--) {
     if (s[i] == c)
       break;
   }
@@ -118,8 +118,30 @@ FileName::ext()
 string
 FileName::path()
 {
-  string res("path");
-  return res;
+  const char *str = filename_.c_str();
+	 char *tmp = rindex(str, '/'); 
+	// [!] may not work with gcc <- convert with stl
+	char *tmp2 = rindex(str, '\\');
+
+	if(tmp2 && !tmp)
+		tmp = tmp2;
+	else
+	if(tmp2 && strlen(tmp2) < strlen(tmp))
+		tmp = tmp2;
+	
+	if (tmp==NULL) 
+		return filename_;
+	else
+	{
+		char tmpChar = *(tmp+1);
+		*(tmp+1) = '\0';
+		string res(str);
+*(tmp+1) = tmpChar;
+		return res;
+	}
+	
+	//string res("path"); [????]
+  //return res;
 }
 	
       
