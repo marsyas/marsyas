@@ -1,7 +1,7 @@
 AC_INIT([marsyas-swig],[0.3.10],[carlosc@uvic.ca])
 AM_INIT_AUTOMAKE
 
-AC_CONFIG_HEADER([config.h])
+AM_CONFIG_HEADER([config.h])
 
 AC_PROG_CXX
 

@@ -152,7 +152,10 @@ record(mrs_real length, mrs_real gain, string filename)
 void 
 record_orcas(mrs_real length, mrs_natural year, 
 	     string id1, string id2, string id3, string id4) 
-{
+{ 
+
+  cout << "Record orcas 1" << endl;
+
   copt = 8;
   sropt = 44100.0;
   int bufferSize = 6144;
@@ -166,6 +169,7 @@ record_orcas(mrs_real length, mrs_natural year,
   MarSystem* dest3 = mng.create("SoundFileSink", "dest3");
   MarSystem* dest4 = mng.create("SoundFileSink", "dest4");
 
+  cout << "Record orcas 2" << endl;
 
   ostringstream oss1;
   oss1 << "/Users/orcalab/orcaArchive/" << year << "/" << id1 << ".wav";
@@ -176,12 +180,14 @@ record_orcas(mrs_real length, mrs_natural year,
   ostringstream oss4;
   oss4 << "/Users/orcalab/orcaArchive/" << year << "/" << id4 << ".wav";
   
+  cout << "Record orcas 3" << endl;
   string fname1 = oss1.str();
   string fname2 = oss2.str();
   string fname3 = oss3.str();
   string fname4 = oss4.str();
 
   
+  cout << "Record orcas 4" << endl;
   dest1->updctrl("mrs_natural/inObservations", 2);
   dest1->updctrl("mrs_natural/inSamples", bufferSize);
   dest1->updctrl("mrs_real/israte", sropt);
@@ -205,12 +211,18 @@ record_orcas(mrs_real length, mrs_natural year,
   dest4->updctrl("mrs_real/israte", sropt);
   dest4->updctrl("mrs_string/filename", fname4);
 
-
-  asrc->updctrl("mrs_natural/inSamples", bufferSize);
-  asrc->updctrl("mrs_real/israte", sropt);
-  asrc->updctrl("mrs_natural/nChannels", copt);
+  cout << "bufferSize = " << bufferSize  << endl;
+  cout << "sropt = " << sropt << endl;
+  cout << "copt = " << copt << endl;
+  asrc->setctrl("mrs_natural/nChannels", copt);
+  asrc->setctrl("mrs_natural/inSamples", bufferSize);
+  asrc->setctrl("mrs_real/israte", sropt);
+  asrc->update();
   // asrc->updctrl("mrs_real/gain", gain);
   
+  cout << "Record orcas 5" << endl;
+
+
   mrs_real srate = asrc->getctrl("mrs_real/israte")->toReal();
   mrs_natural inSamples = asrc->getctrl("mrs_natural/inSamples")->toNatural();
   mrs_natural iterations = (mrs_natural)((srate * length * 60.0) / inSamples);
@@ -431,9 +443,10 @@ main(int argc, const char **argv)
   for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
     {	
       cout << "Recording " << lengthopt << " seconds to file " << *sfi << endl;
-      recordVirtualSensor(lengthopt,gopt,  *sfi);
+     //  recordVirtualSensor(lengthopt,gopt,  *sfi);
       record(lengthopt,gopt,  *sfi);
     }
+   
    
 
   
