@@ -72,6 +72,8 @@ Marsyas::peaks2V (realvec& in, realvec& last, realvec& out, mrs_natural maxNbPea
 	mrs_natural frameIndex=-1, startIndex = (mrs_natural) in(0, 5);
 
 	out.setval(0);
+
+	// on-line case with first init
 	if(label == -1 && last(0))
 	{
 		start=1;
@@ -99,7 +101,7 @@ Marsyas::peaks2V (realvec& in, realvec& last, realvec& out, mrs_natural maxNbPea
 				peakFile << in(i, j);*/
 			}
 	}
-
+//on-line case
 	if(label == -1)
 	{
 		for (j=0 ; j<out.getRows() ; j++)

@@ -255,7 +255,7 @@ secondA(k) = aSet(k, indexSecond);
  {
 	 int i, j;
 
-
+// !! do the labeling with amplitude priority
 	 // align labeling
 	 if(lastFrame_(0))
 	 {
@@ -263,9 +263,11 @@ secondA(k) = aSet(k, indexSecond);
 		 mrs_natural lastIndex = (mrs_natural) lastFrame_(5*kmax_);	
 		 realvec oldLabels(kmax_);
 		 realvec newLabels(kmax_);
+		 realvec amps(kmax_);
 
 		 conversion_.setval(-1);
 		 newLabels.setval(-1);
+		 amps.setval(0);
 		 mrs_natural nbInFrames=0;
 		 for(i=0 ; i<nbPeaks_ ; i++)
 			 if(data(i, 5) == lastIndex)
@@ -275,20 +277,24 @@ nbInFrames++;
 			 }
 oldLabels.setval(-1);
 		 for(i=0 ; i<nbInFrames ; i++)
-			 oldLabels(i) = lastFrame_(6*kmax_+i);
-
+		 {
+			 oldLabels(i) = lastFrame_(pkGroup*kmax_+i);
+				amps(i) = lastFrame_(pkAmplitude*kmax_+i);
+		 }
+	//	 amps.dump();
 	 // oldLabels.dump();
 	//	 newLabels.dump(); 
 		 
 		 while(1){
-			 mrs_natural nbMax=0, nb, iMax=-1, jMax=-1;
+			 mrs_natural  iMax=-1, jMax=-1;
+			 mrs_real nbMax=0, nb;
 			 // look for the biggest cluster in old		
 			 for(i=0 ; i<= (mrs_natural) oldLabels.maxval() ; i++)
 			 {
 				 nb=0;
 				 for(j=0 ; j<oldLabels.getSize() ; j++)
 					 if(oldLabels(j) == i)
-						 nb++;
+						 nb+=amps(j);
 				 if(nb>nbMax)
 				 {
 					 nbMax = nb;
@@ -379,7 +385,7 @@ mrs_natural nbPeaksLastFrame;
 
  labeling(data_, labels);
 
-	  MATLAB_PUT(data_, "peaks");
+	 MATLAB_PUT(data_, "peaks");
 	 MATLAB_EVAL("plotPeaks(peaks)");
 
 	peaks2V(data_, lastFrame_, out, kmax_);

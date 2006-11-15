@@ -207,7 +207,6 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 			pvseries->setctrl("RealvecSource/peSource/mrs_real/israte", peakSet(0, 1));
 
 			// configure synthesis
-			char tmp[10];
 			FileName FileName(outFileName);
 			string path = FileName.path();
 			string name = FileName.nameNoExt();
