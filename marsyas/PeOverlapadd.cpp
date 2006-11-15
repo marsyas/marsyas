@@ -90,11 +90,11 @@ PeOverlapadd::sine(realvec& out, mrs_real f, mrs_real a, mrs_real p)
 {
 	int i;
 	int N2 = out.getSize()/2;
-	if(f != 0.0)
+	if(f > 0.0)
 	{
 		for (i=0 ; i<2*N2 ; i++)
 			out(i) += a*cos(factor_*f*(i-delay_)+p); // consider -fftSize/2 for synth in phase
-	// cout << f << " " << a << " " << p << endl;
+//	 cout << f << " " << a << " " << p << endl;
 	}
 	}
 

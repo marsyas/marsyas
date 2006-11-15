@@ -28,6 +28,7 @@
 
 #include "realvec.h"
 #include <fstream>
+#include <string>
 using std::ofstream;
 
 namespace Marsyas
@@ -89,6 +90,7 @@ realvec harmonicityDistribution;
 		realvec conversion;
 PeCluster *set;
 mrs_natural nbClusters;
+mrs_natural nbFrames;
 
 public:
 		PeClusters(realvec &peakSet);
@@ -96,7 +98,9 @@ public:
 
 		realvec &getConversionTable();
 		void selectBefore(mrs_real val);
-	} ;
+
+		void synthetize(realvec &peakSet, std::string fileName, std::string outFileName, mrs_natural Nw, mrs_natural D, mrs_natural S, mrs_natural bopt, mrs_natural residual=0);
+	};
 
 
 }

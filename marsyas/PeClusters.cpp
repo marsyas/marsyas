@@ -24,6 +24,7 @@
 
 #include "PeClusters.h"
 #include "PeUtilities.h"
+#include "FileName.h"
 
 using namespace std;
 using namespace Marsyas;
@@ -66,6 +67,7 @@ PeCluster::init(realvec& peakSet, mrs_natural l)
 
 		length = end-start;
 		oriLabel = l;
+		label = l;
 
 		// compute envelopes
 
@@ -123,12 +125,16 @@ PeClusters::PeClusters(realvec &peakSet)
 {
 	// determine the number of clusters
 	nbClusters=0;
+	nbFrames=0;
 	for (int i=0 ; i<peakSet.getRows() ; i++)
 	{
 		if(peakSet(i, pkGroup) > nbClusters)
 			nbClusters = (mrs_natural) peakSet(i, pkGroup);
+		if(peakSet(i, pkTime) > nbFrames)
+			nbFrames = (mrs_natural) peakSet(i, pkTime);
 	}
-
+	nbClusters++;
+	nbFrames++;
 	// build the vector of clusters
 	set = new PeCluster[nbClusters];
 	for (int i=0 ; i<nbClusters ; i++)
@@ -162,4 +168,78 @@ PeClusters::selectBefore(mrs_real val)
 		else
 			set[i].label = -1;
 	}
+}
+
+void
+PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mrs_natural Nw, mrs_natural D, mrs_natural S, mrs_natural bopt, mrs_natural residual)
+{
+	cout << "Synthetizing Clusters" << endl;
+	MarSystemManager mng;
+
+	synthNetCreate(&mng, fileName, 0);
+	MarSystem* pvseries = mng.create("Series", "pvseries");
+	MarSystem *peSynth = mng.create("PeSynthetize", "synthNet");
+	MarSystem *peSource = mng.create("RealvecSource", "peSource");
+
+	pvseries->addMarSystem(peSource);
+	pvseries->addMarSystem(peSynth);
+
+	// convert peakSet in frame form
+	realvec pkV(S*nbPkParameters, nbFrames);
+
+	// for all clusters
+	for (int i=0 ; i<nbClusters ; i++)
+		if(set[i].label != -1)
+		{
+			// label peak set
+			pkV.setval(0);
+			peaks2V(peakSet, (realvec) NULL, pkV, S, i);
+			pvseries->setctrl("RealvecSource/peSource/mrs_realvec/data", pkV);
+			pvseries->setctrl("RealvecSource/peSource/mrs_real/israte", peakSet(0, 1));
+
+			// configure synthesis
+			char tmp[10];
+			FileName FileName(outFileName);
+			string path = FileName.path();
+			string name = FileName.nameNoExt();
+			string ext = FileName.ext();
+
+			string outsfname = path + name + "_" +  itoa(i, tmp, 10) + "." + ext;
+			string fileResName = path + name + "Res_" + itoa(i, tmp, 10) + "." + ext;
+
+
+			synthNetConfigure (pvseries, fileName, outsfname, fileResName, Nw, D, S, 1, 0, bopt, Nw+1-D); //  nbFrames
+
+			mrs_natural nbActiveFrames=0;
+			mrs_real Snr=0;
+			while(1)
+			{
+				// launch synthesis
+				pvseries->tick();
+
+				// get snr and decide ground thruth
+				if(residual)
+				{
+					const mrs_real snr = pvseries->getctrl("Shredder/synthNet/Series/postNet/PeResidual/res/mrs_real/snr")->toReal();
+					//	cout << " SNR : "<< snr << endl;
+					if(snr)
+					{
+						nbActiveFrames++;
+						Snr+=snr;
+					}
+				}
+				if(pvseries->getctrl("RealvecSource/peSource/mrs_bool/done")->toBool())
+					break;
+			}
+			if(residual)
+			{
+				Snr/=nbActiveFrames;
+				cout << " SNR : "<< Snr << endl;
+				if(Snr> 0)
+					set[i].groundLabel = 1;
+				else
+					set[i].groundLabel = 0;
+
+			}	
+		}
 }

@@ -34,7 +34,7 @@ PeClust::PeClust(string name):MarSystem("PeClust", name)
  
 	addControls();
 kmax_ = 0;
-	nbParameters_ = nbPeaksParameters; // 7
+	nbParameters_ = nbPkParameters; // 7
 }
 
 PeClust::PeClust(const PeClust& a) : MarSystem(a)
@@ -108,7 +108,7 @@ PeClust::addControls()
 
 	 m.setval(1);
 
-	 for (i=0 ; i<type.length() ; i+=2)
+	 for (i=0 ; i< (mrs_natural) type.length() ; i+=2)
 	 {
 		 switch(type[i])
 		 {
@@ -344,7 +344,7 @@ oldLabels.setval(-1);
 		 for(i=0 ; i<labels.getSize() ; i++)
 			 if(labels(i) != -1.0 && conversion_( (mrs_natural) labels(i)) != -1.0)
 				 labels(i) = conversion_((mrs_natural) labels(i));
-		  labels.dump();
+		  //labels.dump();
 	 }
 	 // fill peaks data with clusters labels
 	 for (i=0 ; i<nbPeaks_ ; i++)
@@ -359,9 +359,10 @@ oldLabels.setval(-1);
 	 PeClust::myProcess(realvec& in, realvec& out)
  {
 	 //checkFlow(in,out);
+mrs_natural nbPeaksLastFrame;
 
 	 data_.stretch(kmax_*(inSamples_+1), nbParameters_);
-	 nbPeaks_ = peaks2M(in, lastFrame_, data_, kmax_);
+	 nbPeaks_ = peaks2M(in, lastFrame_, data_, kmax_, &nbPeaksLastFrame);
 	
 	 m_.stretch(nbPeaks_, nbPeaks_);
   // similarity matrix calculation
@@ -378,8 +379,8 @@ oldLabels.setval(-1);
 
  labeling(data_, labels);
 
-	//  MATLAB_PUT(data_, "peaks");
-	// MATLAB_EVAL("plotPeaks(peaks)");
+	  MATLAB_PUT(data_, "peaks");
+	 MATLAB_EVAL("plotPeaks(peaks)");
 
 	peaks2V(data_, lastFrame_, out, kmax_);
 
@@ -389,21 +390,26 @@ oldLabels.setval(-1);
 	if(!peaksSetSize)
 	{
 // add synth infos
-		ctrl_peakSet_->stretch(nbPeaks_+1, nbPeaksParameters);
+		ctrl_peakSet_->stretch(nbPeaks_+1, nbPkParameters);
 		(**ctrl_peakSet_)(0,0) = -1;
 		(**ctrl_peakSet_)(0,1) = ctrl_israte_->to<mrs_real>();
 		(**ctrl_peakSet_)(0,2) = getctrl("mrs_natural/hopSize")->toNatural();
 	start=1;
+
+	for (int i=0 ; i<nbPeaks_ ; i++)
+		for (int j=0 ; j<nbPkParameters ; j++)
+			(**ctrl_peakSet_)(peaksSetSize+i+start, j) = data_(i, j);
 	}
 	else
 	{
-		start=0;
-	ctrl_peakSet_->stretch(peaksSetSize+nbPeaks_, nbPeaksParameters);
-	}
+		start=nbPeaksLastFrame;
+	ctrl_peakSet_->stretch(peaksSetSize+nbPeaks_-start, nbPkParameters);
 
-	for (int i=0 ; i<nbPeaks_ ; i++)
-		for (int j=0 ; j<nbPeaksParameters ; j++)
-			(**ctrl_peakSet_)(peaksSetSize+i+start, j) = data_(i, j);
+	for (int i=0 ; i<nbPeaks_-nbPeaksLastFrame ; i++)
+		// do not put peaks from the first frame
+		for (int j=0 ; j<nbPkParameters ; j++)
+			(**ctrl_peakSet_)(peaksSetSize+i, j) = data_(i+start, j);
+	}
 } 
 
 

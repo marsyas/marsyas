@@ -83,7 +83,7 @@ Delay::myUpdate()
 
 	// cout << getctrl("mrs_real/delay")->toReal() << " " << endl;
   if(getctrl("mrs_real/delay")->toReal() != 0.0)
-		delay_ = ceil(getctrl("mrs_real/delay")->toReal()*getctrl("mrs_real/osrate")->toReal());
+		delay_ = (mrs_natural) ceil(getctrl("mrs_real/delay")->toReal()*getctrl("mrs_real/osrate")->toReal());
  
   cursor_ = 0;
 

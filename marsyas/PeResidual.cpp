@@ -32,6 +32,11 @@ PeResidual::PeResidual(string name):MarSystem("PeResidual", name)
 	addControls();
 }
 
+PeResidual::PeResidual(const PeResidual& a) : MarSystem(a)
+{
+//	ctrl_resVec_ = getctrl("mrs_realvec/resVec");
+}
+
 
 PeResidual::~PeResidual()
 {
@@ -48,6 +53,8 @@ PeResidual::addControls()
 {
   //Add specific controls needed by this MarSystem.
   addctrl("mrs_real/snr", 0.0);
+//	addctrl("mrs_realvec/resVec", realvec(), ctrl_resVec_);
+//  setctrlState("mrs_realvec/peakSet", true);
 }
 
  void
@@ -73,22 +80,32 @@ PeResidual::myProcess(realvec& in, realvec& out)
   for (o=0; o < inObservations_/2; o++)
 	{
 		mrs_real tmpOri=0;
-    mrs_real tmpSyn=0;
-    for (t = 0; t < inSamples_; t++)
-    {
+		mrs_real tmpSyn=0;
+		mrs_real tmpDiff=0;
+		for (t = 0; t < inSamples_; t++)
+		{
 			out(o,t) =  in(o,t)-in(o+1, t);
-			tmpOri += in(o, t)*in(o, t);
-			tmpSyn += out(o, t)*out(o, t);
-    }
+			tmpSyn += in(o, t)*in(o, t);
+			tmpDiff += out(o, t)*out(o, t);
+			tmpOri += in(o+1, t)*in(o+1, t);
+		}
+		if(tmpDiff && tmpSyn)
+		{
 			tmpOri/=inSamples_;
 			tmpSyn/=inSamples_;
-			snr+= 10*log10 (tmpOri/tmpSyn);
+			tmpDiff/=inSamples_;
+			snr+= 10*log10 ((tmpOri+MINREAL)/tmpDiff);
+		}
 	}
- 
+
  setctrl("mrs_real/snr", snr);
 
-  // MATLAB_PUT(in, "vec");
-  // MATLAB_EVAL("figure(1);clf;plot(vec');");
+ /*mrs_natural resVecSize = ctrl_resVec_->to<realvec> ().getSize();
+ctrl_resVec_->stretch(resVecSize+1);
+(**ctrl_resVec_)(resVecSize) = snr;*/
+
+ //   MATLAB_PUT(in, "vec");
+ // MATLAB_EVAL("figure(1);clf;plot(vec');");
 }
 
 

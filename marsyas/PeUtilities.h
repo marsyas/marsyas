@@ -30,6 +30,10 @@
 #include <fstream>
 using std::ofstream;
 #include "PeClusters.h"
+#include "MarSystemManager.h"
+#include <string>
+
+#define EMPTYSTRING "MARSYAS_EMPTY"
 
 namespace Marsyas
 {
@@ -42,12 +46,12 @@ namespace Marsyas
 	pkDeltaAmplitude,
 	pkTime,
 	pkGroup,
-	nbPeaksParameters
+	nbPkParameters
 	} pkParameter;
 
 
-	int peaks2M (realvec&, realvec&, realvec&, int maxNbPeaks);
-	void peaks2V (realvec&, realvec&, realvec&, int maxNbPeaks);
+	int peaks2M (realvec&, realvec&, realvec&, mrs_natural maxNbPeaks, mrs_natural *nbPkFrame);
+	void peaks2V (realvec&, realvec&, realvec&, mrs_natural maxNbPeaks, mrs_natural label=-1);
 
 	void extractParameter(realvec&, realvec&, pkParameter);
 
@@ -56,6 +60,12 @@ namespace Marsyas
 	void updateLabels(realvec&, realvec&);
 
 	mrs_real compareTwoPeakSets(realvec&, realvec&, realvec&, realvec&);
+
+	void synthNetCreate(MarSystemManager *mng, std::string outsfname, bool microphone);
+
+void
+synthNetConfigure(MarSystem *pvseries, std::string sfName, std::string outsfname, std::string ressfname, mrs_natural Nw, 
+									mrs_natural D, mrs_natural S, mrs_natural accSize, bool microphone, mrs_natural bopt, mrs_natural delay);
 
 }
 

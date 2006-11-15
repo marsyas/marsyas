@@ -16,7 +16,7 @@
 using namespace std;
 using namespace Marsyas;
 
-#define EMPTYSTRING "MARSYAS_EMPTY"
+
 string pluginName = EMPTYSTRING;
 string inputDirectoryName = EMPTYSTRING;
 string outputDirectoryName = EMPTYSTRING;
@@ -37,7 +37,7 @@ int nbSines_ = 80;
 // nbClusters
 int nbClusters_ = 5;
 // output buffer Size
-int bopt = 128;
+int bopt_ = 128;
 // output gain
 mrs_real gopt_ = 1.0;
 // number of accumulated frames
@@ -96,80 +96,6 @@ printHelp(string progName)
 // original monophonic peakClustering 
 
 
-void synthNetCreate(MarSystemManager *mng, string outsfname)
-{
-	//create Shredder series
-	MarSystem* postNet = mng->create("Series", "postNet");
-	postNet->addMarSystem(mng->create("PeOverlapadd", "ob"));
-	postNet->addMarSystem(mng->create("ShiftOutput", "so"));
-
-	MarSystem *dest;
-	if (outsfname == EMPTYSTRING) 
-		dest = new AudioSink("dest");
-	else
-	{
-		dest = new SoundFileSink("dest");
-		//dest->updctrl("mrs_string/filename", outsfname);
-	}
-	MarSystem* fanout = mng->create("Fanout", "fano");
-	fanout->addMarSystem(dest);
-	MarSystem* fanSeries = mng->create("Series", "fanSeries");
-	if (microphone_) 
-		fanSeries->addMarSystem(mng->create("AudioSource", "src2"));
-	else 
-		fanSeries->addMarSystem(mng->create("SoundFileSource", "src2"));
-	fanSeries->addMarSystem(mng->create("Delay", "delay"));
-	fanout->addMarSystem(fanSeries);
-
-	postNet->addMarSystem(fanout);
-	postNet->addMarSystem(mng->create("PeResidual", "res"));
-
-	MarSystem *destRes;
-	if (outsfname == EMPTYSTRING) 
-		destRes = new AudioSink("destRes");
-	else
-	{
-		destRes = new SoundFileSink("destRes");
-		//dest->updctrl("mrs_string/filename", outsfname);
-	}
-
-	MarSystem* shredNet = mng->create("Shredder", "shredNet");
-	shredNet->addMarSystem(postNet);
-
-	mng->registerPrototype("PeSynthetize", shredNet);
-}
-
-void
-synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname, mrs_natural Nw, 
-									mrs_natural D, mrs_natural S, mrs_natural accSize)
-{
-	pvseries->updctrl("Shredder/synthNet/mrs_natural/nTimes", accSize);
-	pvseries->updctrl("Shredder/synthNet/Series/postNet/PeOverlapadd/ob/mrs_natural/hopSize", D);
-	pvseries->updctrl("Shredder/synthNet/Series/postNet/PeOverlapadd/ob/mrs_natural/nbSinusoids", S);
-	pvseries->updctrl("Shredder/synthNet/Series/postNet/PeOverlapadd/ob/mrs_natural/delay", Nw/2+1);
-	pvseries->updctrl("Shredder/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Interpolation", D);
-	pvseries->updctrl("Shredder/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/WindowSize", Nw);      
-	pvseries->updctrl("Shredder/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Decimation", D);
-
-	if (microphone_) 
-	{
-		pvseries->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/AudioSource/src2/mrs_natural/inSamples", D);
-		pvseries->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/AudioSource/src2/mrs_natural/inObservations", 1);
-	}
-	else
-	{
-		pvseries->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_string/filename", sfName);
-		pvseries->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/inSamples", D);
-		pvseries->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/inObservations", 1);
-	}
-	if (outsfname == EMPTYSTRING) 
-		pvseries->updctrl("Shredder/synthNet/Series/postNet/AudioSink/dest/mrs_natural/bufferSize", bopt);
-
-
-	pvseries->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/Delay/delay/mrs_natural/delay", Nw+1-D);
-	pvseries->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/SoundFileSink/dest/mrs_string/filename", outsfname);//[!]
-	pvseries->updctrl("Shredder/synthNet/Series/postNet/SoundFileSink/destRes/mrs_string/filename", fileResName);//[!]
-}
 
 void
 clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseName, mrs_real noiseDelay, string T, mrs_natural N, mrs_natural Nw, 
@@ -231,7 +157,7 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	if(synthetize) 
 	{
 		//create shredder
-		synthNetCreate(&mng, outsfname);
+		synthNetCreate(&mng, outsfname, microphone_);
 		MarSystem *peSynth = mng.create("PeSynthetize", "synthNet");
 		pvseries->addMarSystem(peSynth);
 	}
@@ -278,7 +204,7 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 
 	if(synthetize)
 	{
-		synthNetConfigure (pvseries, sfName, outsfname, Nw, D, S, accSize);
+		synthNetConfigure (pvseries, sfName, outsfname, fileResName, Nw, D, S, accSize, microphone_, bopt_, Nw+1-D);
 	}
 
 	//	cout << *pvseries;
@@ -351,7 +277,7 @@ initOptions()
 	cmd_options.addNaturalOption("winsize", "w", winSize_);
 	cmd_options.addNaturalOption("fftsize", "n", fftSize_);
 	cmd_options.addNaturalOption("sinusoids", "s", nbSines_);
-	cmd_options.addNaturalOption("bufferSize", "b", bopt);
+	cmd_options.addNaturalOption("bufferSize", "b", bopt_);
 
 	cmd_options.addBoolOption("analyse", "a", analyse_);
 	cmd_options.addBoolOption("attributes", "A", attributes_);
@@ -374,7 +300,7 @@ loadOptions()
 	winSize_ = cmd_options.getNaturalOption("winsize");
 	fftSize_ = cmd_options.getNaturalOption("fftsize");
 	nbSines_ = cmd_options.getNaturalOption("sinusoids");
-	bopt = cmd_options.getNaturalOption("bufferSize");
+	bopt_ = cmd_options.getNaturalOption("bufferSize");
 
 	analyse_ = cmd_options.getBoolOption("analyse");
 	attributes_ = cmd_options.getBoolOption("attributes");
@@ -448,8 +374,8 @@ main(int argc, const char **argv)
 				exit(1);
 			}
 
-			MATLAB_PUT(peakSet_, "peaks");
-			MATLAB_EVAL("plotPeaks(peaks)");
+	//		MATLAB_PUT(peakSet_, "peaks");
+	//		MATLAB_EVAL("plotPeaks(peaks)");
 
 
 			// computes the cluster attributes
@@ -461,17 +387,22 @@ main(int argc, const char **argv)
 
 				// compute ground truth
 				if(ground_)
-					clusterGroundThruth(peakSet_, clusters, fileName);
+					clusters.synthetize(peakSet_, *sfi, fileName, winSize_, hopSize_, nbSines_, bopt_, 1);
+
 
 				clusters.selectBefore(noiseDelay_/hopSize_);
 				updateLabels(peakSet_, clusters.getConversionTable());
-			}
-			// synthetize remaining clusters
-			if(clusterSynthetize_)
-				clusterSynthetize(peakSet_, fileResName);
 
-			MATLAB_PUT(peakSet_, "peaks");
-			MATLAB_EVAL("plotPeaks(peaks)");
+			}
+		//	MATLAB_PUT(peakSet_, "peaks");
+		//	MATLAB_EVAL("plotPeaks(peaks)");
+
+			if(clusterSynthetize_)
+			{
+        PeClusters clusters(peakSet_);
+				// synthetize remaining clusters
+				clusters.synthetize(peakSet_, *sfi, fileName, winSize_, hopSize_, nbSines_, bopt_);
+			}
 
 		}
 	}

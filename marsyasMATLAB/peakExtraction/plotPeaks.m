@@ -1,14 +1,13 @@
 function [] = plotPeaks(P)
 P=P';
+
 if(P(1, 1) == -1)
      timeInterval = P(3, 1)/P(2, 1)*1000;
-       start=2;
+     P=P(:, 2:end);
  else
      timeInterval=1;
-     start = 1;
     end
 
-P=P(:, 2:end);
 maxA = max(P(2,:)) ;
 
 cm = colormap ;
@@ -23,7 +22,7 @@ inc_y = 1 ;
  
 clf
 hold on
-for i=start:length(P(1,:))
+for i=1:length(P(1,:))
    if(P(7, i)>-1)
   amp_plot = 20*log10(P(2, i))+80;
   amp_plot = 20*log10(P(2, i)/maxA)+80;

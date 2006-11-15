@@ -712,6 +712,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\marsyas\RealvecSource.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\marsyas\Reassign.cpp"
 				>
 			</File>
@@ -1387,6 +1391,10 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\realvec.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\RealvecSource.h"
 				>
 			</File>
 			<File

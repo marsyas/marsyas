@@ -36,6 +36,8 @@ namespace Marsyas
 class PeResidual: public MarSystem
 {
 private: 
+	MarControlPtr ctrl_resVec_ ;
+
   //Add specific controls needed by this MarSystem.
 	void addControls();
 	
@@ -43,6 +45,7 @@ private:
 
 public:
   PeResidual(std::string name);
+	PeResidual(const PeResidual& a);
   ~PeResidual();
   MarSystem* clone() const;  
   
