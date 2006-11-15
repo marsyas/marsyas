@@ -179,9 +179,14 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 	synthNetCreate(&mng, fileName, 0);
 	MarSystem* pvseries = mng.create("Series", "pvseries");
 	MarSystem *peSynth = mng.create("PeSynthetize", "synthNet");
-	MarSystem *peSource = mng.create("RealvecSource", "peSource");
+
+	/* Commented out in order to compile under Linux/ OS X */ 
+	/* MarSystem *peSource = mng.create("RealvecSource", "peSource");
 
 	pvseries->addMarSystem(peSource);
+	*/ 
+
+
 	pvseries->addMarSystem(peSynth);
 
 	// convert peakSet in frame form
@@ -193,7 +198,11 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 		{
 			// label peak set
 			pkV.setval(0);
-			peaks2V(peakSet, (realvec) NULL, pkV, S, i);
+			// peaks2V(peakSet, NULL, pkV, S, i);
+			// Changed by gtzan in order to compile trunk in Linux/OS X 
+			// NULL CAN NOT BE A realvec& 
+			peaks2V(peakSet, peakSet, pkV, S, i);
+
 			pvseries->setctrl("RealvecSource/peSource/mrs_realvec/data", pkV);
 			pvseries->setctrl("RealvecSource/peSource/mrs_real/israte", peakSet(0, 1));
 
@@ -204,8 +213,15 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 			string name = FileName.nameNoExt();
 			string ext = FileName.ext();
 
-			string outsfname = path + name + "_" +  itoa(i, tmp, 10) + "." + ext;
-			string fileResName = path + name + "Res_" + itoa(i, tmp, 10) + "." + ext;
+			ostringstream ossi;
+			ossi << i;
+
+			// string outsfname = path + name + "_" +  itoa(i, tmp, 10) + "." + ext;
+			// string fileResName = path + name + "Res_" + itoa(i, tmp, 10) + "." + ext;
+
+			// Changed by gtzan to compile trunk under Linux 
+			string outsfname = path + name + "_" +  ossi.str() + "." + ext;
+			string fileResName = path + name + "Res_" + ossi.str() + "." + ext;
 
 
 			synthNetConfigure (pvseries, fileName, outsfname, fileResName, Nw, D, S, 1, 0, bopt, Nw+1-D); //  nbFrames

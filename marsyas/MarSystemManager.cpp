@@ -63,7 +63,8 @@ in sequence.
 #include "PeClust.h"
 #include "PeOverlapadd.h"
 #include "PeResidual.h"
-#include "RealvecSource.h"
+// Commented out because RealvecSource is not added to trunk 
+// #include "RealvecSource.h"
 
 #include "Windowing.h"
 
@@ -178,7 +179,8 @@ MarSystemManager::MarSystemManager()
   registerPrototype("PeClust", new PeClust("peclust"));
   registerPrototype("PeOverlapadd", new PeOverlapadd("peovlfp"));
   registerPrototype("PeResidual", new PeResidual("peres"));
-	registerPrototype("RealvecSource", new RealvecSource("realvecSrc"));
+  // commented out in order to compile under Linux/OS X by gtzan 
+// 	registerPrototype("RealvecSource", new RealvecSource("realvecSrc"));
 
   registerPrototype("AuFileSource", new AuFileSource("aufp"));
   registerPrototype("WavFileSource", new WavFileSource("wavfp"));
