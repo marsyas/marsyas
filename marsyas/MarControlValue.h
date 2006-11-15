@@ -50,7 +50,7 @@ public:
 	// workaround method to avoid circular dependencies
 	std::string getRegisteredType();
 
-	virtual std::string	MarControlValue::getType() const ;
+	virtual std::string	getType() const ;
 
 	//virtual MarControlValue*(*)(std::istream&) getStreamCreationFunc() = 0;
 
