@@ -224,7 +224,7 @@ AuFileSource::getLinear16(realvec& slice)
     
 		#if defined(__BIG_ENDIAN__)
     for (c=0; c < nChannels_; c++)
-			slice(c, t) = ((mrs_real) sdata_[nChannels_*t + c] / (FMAXSHRT));
+			slice(c, t) = ((mrs_real) sdata_[nChannels_*t + c] / (PCM_FMAXSHRT));
 		#else
     for (c=0; c < nChannels_; c++)
 		{
@@ -232,7 +232,7 @@ AuFileSource::getLinear16(realvec& slice)
 			usval_ = ((usval_ >> 8) | (usval_ << 8));
 			sval_ = usval_;
 		  
-			slice(c, t) = (mrs_real) sval_ / (FMAXSHRT);
+			slice(c, t) = (mrs_real) sval_ / (PCM_FMAXSHRT);
 		}
 		#endif 
   }

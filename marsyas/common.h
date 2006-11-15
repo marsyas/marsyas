@@ -20,7 +20,7 @@
 #include <cstdio> 
 #include <sys/types.h> 
 #include <complex>
-#include <limits> //lmartins: why not use this STL include for defining numerical bounds? [!]
+#include <limits>
 
 #include "MrsLog.h"
 
@@ -41,14 +41,18 @@ namespace Marsyas
 /************************************************************************/
 /*              common defines                                          */
 /************************************************************************/
+#define MAXREAL std::numeric_limits<mrs_real>::max()
+#define MINREAL std::numeric_limits<mrs_real>::min()
+#define MAXNATURAL std::numeric_limits<mrs_natural>::max()
+#define MINNATURAL std::numeric_limits<mrs_natural>::min()
+
 #define MRS_DEFAULT_SLICE_NSAMPLES 512
 #define MRS_DEFAULT_SLICE_NOBSERVATIONS 1
 #define MRS_DEFAULT_SLICE_SRATE   22050.0
 
-#define MAXSHRT 32767 //lmartins: std::numeric_limits<short int>::max() //[!]
-#define FMAXSHRT 32767.0f //lmartins: (float)(MAXSHRT) //[!]
-#define MAXREAL 10000000.0 //lmartins: std::numeric_limits<mrs_real>::max() //[!]
-#define MINREAL std::numeric_limits<mrs_real>::min()
+//used for PCM audio => should not be changed!
+#define PCM_MAXSHRT 32767 
+#define PCM_FMAXSHRT 32767.0f 
 
 #define MRSERR(x) {std::ostringstream oss; MrsLog::mrsErr((std::ostringstream&)(oss << x));}
 

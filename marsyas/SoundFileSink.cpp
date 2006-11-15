@@ -385,7 +385,7 @@ SoundFileSink::putLinear16(mrs_natural c, realvec& slice)
 
   for (t=0; t < nSamples; t++)
     {
-      sdata_[t*nChannels + c] = htons((short)(slice(0,t) * MAXSHRT));
+      sdata_[t*nChannels + c] = htons((short)(slice(0,t) * PCM_MAXSHRT));
     }
   
   
@@ -412,7 +412,7 @@ SoundFileSink::putLinear16Swap(mrs_natural c, realvec& slice)
   
   for (t=0; t < nSamples; t++)
     {
-      sdata_[t*nChannels + c] = (short)(slice(0,t) * MAXSHRT);
+      sdata_[t*nChannels + c] = (short)(slice(0,t) * PCM_MAXSHRT);
     }
 
   if (c == nChannels -1) 

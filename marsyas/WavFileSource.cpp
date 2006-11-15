@@ -352,13 +352,13 @@ WavFileSource::getLinear16(realvec& slice)
       for (c=0; c < nChannels_; c++)
 			{
 				sval_ = ByteSwapShort(sdata_[nChannels_*t + c]);
-				slice(c, t) = (mrs_real) sval_ / (FMAXSHRT);
+				slice(c, t) = (mrs_real) sval_ / (PCM_FMAXSHRT);
 			}
       #else
       for (c=0; c < nChannels_; c++)
 			{
 				sval_ = sdata_[nChannels_ *t + c];
-				slice(c, t) = ((mrs_real) sval_ / (FMAXSHRT));
+				slice(c, t) = ((mrs_real) sval_ / (PCM_FMAXSHRT));
 			}
 			#endif  
     }

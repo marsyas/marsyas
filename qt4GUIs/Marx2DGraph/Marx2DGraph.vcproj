@@ -45,7 +45,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-Zm200 -EHsc -w34100 -w34189 -Zm200 -EHsc -w34100 -w34189 -w34100 -w34189"
 				Optimization="2"
-				AdditionalIncludeDirectories="&quot;$(QTDIR)\include\QtCore&quot;;&quot;$(QTDIR)\include\QtGui&quot;;&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\ActiveQt&quot;;&quot;$(QTDIR)/mkspecs/win32-msvc2005&quot;;..\..\marsyas;release;."
+				AdditionalIncludeDirectories="&quot;$(QTDIR)\include\QtCore&quot;,&quot;$(QTDIR)\include\QtCore&quot;,&quot;$(QTDIR)\include\QtGui&quot;,&quot;$(QTDIR)\include\QtGui&quot;,&quot;$(QTDIR)\include&quot;,&quot;\usr\local\include\marsyas&quot;,&quot;$(QTDIR)\include\ActiveQt&quot;,&quot;release&quot;,&quot;.&quot;,$(QTDIR)\mkspecs\win32-msvc2005"
 				PreprocessorDefinitions="QT_NO_DEBUG,NDEBUG,_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,QT_DLL,QT_NO_DEBUG,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT,NDEBUG"
 				GeneratePreprocessedFile="0"
 				RuntimeLibrary="2"
@@ -72,7 +72,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="$(QTDIR)\lib\qtmain.lib $(QTDIR)\lib\QtGui4.lib $(QTDIR)\lib\QtCore4.lib ..\..\marsyasVisualStudio2005\marsyas\Release\marsyas.lib dsound.lib"
+				AdditionalDependencies="$(QTDIR)\lib\qtmain.lib asound.lib m.lib $(QTDIR)\lib\QtGui4.lib $(QTDIR)\lib\QtCore4.lib"
 				OutputFile="release\Marx2DGraph.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -80,7 +80,6 @@
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile=""
 				SubSystem="2"
-				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -137,7 +136,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-Zm200 -EHsc -w34100 -w34189 -Zm200 -EHsc -w34100 -w34189 -w34100 -w34189"
 				Optimization="4"
-				AdditionalIncludeDirectories="&quot;$(QTDIR)\include\QtCore&quot;;&quot;$(QTDIR)\include\QtGui&quot;;&quot;$(QTDIR)\include\ActiveQt&quot;;&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)/mkspecs/win32-msvc2005&quot;;..\..\marsyas;debug;."
+				AdditionalIncludeDirectories="&quot;$(QTDIR)\include\QtCore&quot;;&quot;$(QTDIR)\include\QtGui&quot;;&quot;$(QTDIR)\include&quot;;..\..\marsyas;&quot;$(QTDIR)\include\ActiveQt&quot;;debug;.;&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot;"
 				PreprocessorDefinitions="_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,QT_DLL,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT"
 				GeneratePreprocessedFile="0"
 				RuntimeLibrary="3"
@@ -164,15 +163,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="$(QTDIR)\lib\qtmaind.lib $(QTDIR)\lib\QtGuid4.lib $(QTDIR)\lib\QtCored4.lib ..\..\marsyasVisualStudio2005\marsyas\Debug\marsyas.lib dsound.lib"
+				AdditionalDependencies="$(QTDIR)\lib\qtmaind.lib dsound.lib $(QTDIR)\lib\QtGuid4.lib $(QTDIR)\lib\QtCored4.lib"
 				OutputFile="debug\Marx2DGraph.exe"
-				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(QTDIR)\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=""
 				SubSystem="2"
-				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -238,10 +235,10 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing MarSystemWrapper.h..."
-						CommandLine="$(QTDIR)\bin\moc.exe  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DNDEBUG -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; -I&quot;.\..\..\marsyas&quot; -I&quot;.\release&quot; -I&quot;.&quot; &quot;MarSystemWrapper.h&quot; -o &quot;$(ConfigurationName)\moc_MarSystemWrapper.cpp&quot;&#x0D;&#x0A;"
-						AdditionalDependencies="$(QTDIR)\bin\moc.exe;MarSystemWrapper.h"
-						Outputs="&quot;$(ConfigurationName)\moc_MarSystemWrapper.cpp&quot;"
+						Description="MOC MarSystemWrapper.h"
+						CommandLine="$(QTDIR)\bin\moc.exe  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DNDEBUG -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;\usr\local\include\marsyas&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;.\release&quot; -I&quot;.&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; &quot;MarSystemWrapper.h&quot; -o &quot;release\moc_MarSystemWrapper.cpp&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="$(QTDIR)\bin\moc.exe"
+						Outputs="release\moc_MarSystemWrapper.cpp"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -249,38 +246,16 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing MarSystemWrapper.h..."
-						CommandLine="$(QTDIR)\bin\moc.exe  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; -I&quot;.\..\..\marsyas&quot; -I&quot;.\debug&quot; -I&quot;.&quot; &quot;MarSystemWrapper.h&quot; -o &quot;$(ConfigurationName)\moc_MarSystemWrapper.cpp&quot;&#x0D;&#x0A;"
-						AdditionalDependencies="$(QTDIR)\bin\moc.exe;MarSystemWrapper.h"
-						Outputs="&quot;$(ConfigurationName)\moc_MarSystemWrapper.cpp&quot;"
+						Description="MOC MarSystemWrapper.h"
+						CommandLine="$(QTDIR)\bin\moc.exe  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;.\..\..\marsyas&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;.\debug&quot; -I&quot;.&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; &quot;MarSystemWrapper.h&quot; -o &quot;debug\moc_MarSystemWrapper.cpp&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="$(QTDIR)\bin\moc.exe"
+						Outputs="debug\moc_MarSystemWrapper.cpp"
 					/>
 				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="Marx2DGraph.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description=""
-						CommandLine=""
-						AdditionalDependencies=""
-						Outputs=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description=""
-						CommandLine=""
-						AdditionalDependencies=""
-						Outputs=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="TopPanelNew.h"
@@ -290,10 +265,10 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing TopPanelNew.h..."
-						CommandLine="$(QTDIR)\bin\moc.exe  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DNDEBUG -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; -I&quot;.\..\..\marsyas&quot; -I&quot;.\release&quot; -I&quot;.&quot; &quot;TopPanelNew.h&quot; -o &quot;$(ConfigurationName)\moc_TopPanelNew.cpp&quot;&#x0D;&#x0A;"
-						AdditionalDependencies="$(QTDIR)\bin\moc.exe;TopPanelNew.h"
-						Outputs="&quot;$(ConfigurationName)\moc_TopPanelNew.cpp&quot;"
+						Description="MOC TopPanelNew.h"
+						CommandLine="$(QTDIR)\bin\moc.exe  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DNDEBUG -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;\usr\local\include\marsyas&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;.\release&quot; -I&quot;.&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; &quot;TopPanelNew.h&quot; -o &quot;release\moc_TopPanelNew.cpp&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="$(QTDIR)\bin\moc.exe"
+						Outputs="release\moc_TopPanelNew.cpp"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -301,10 +276,10 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing TopPanelNew.h..."
-						CommandLine="$(QTDIR)\bin\moc.exe  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; -I&quot;.\..\..\marsyas&quot; -I&quot;.\debug&quot; -I&quot;.&quot; &quot;TopPanelNew.h&quot; -o &quot;$(ConfigurationName)\moc_TopPanelNew.cpp&quot;&#x0D;&#x0A;"
-						AdditionalDependencies="$(QTDIR)\bin\moc.exe;TopPanelNew.h"
-						Outputs="&quot;$(ConfigurationName)\moc_TopPanelNew.cpp&quot;"
+						Description="MOC TopPanelNew.h"
+						CommandLine="$(QTDIR)\bin\moc.exe  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;.\..\..\marsyas&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;.\debug&quot; -I&quot;.&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; &quot;TopPanelNew.h&quot; -o &quot;debug\moc_TopPanelNew.cpp&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="$(QTDIR)\bin\moc.exe"
+						Outputs="debug\moc_TopPanelNew.cpp"
 					/>
 				</FileConfiguration>
 			</File>
@@ -317,13 +292,6 @@
 			<File
 				RelativePath="release\moc_MarSystemWrapper.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32"
 					ExcludedFromBuild="true"
@@ -344,24 +312,10 @@
 						Name="VCCLCompilerTool"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="release\moc_TopPanelNew.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32"
 					ExcludedFromBuild="true"
@@ -377,13 +331,6 @@
 				<FileConfiguration
 					Name="Release|Win32"
 					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
