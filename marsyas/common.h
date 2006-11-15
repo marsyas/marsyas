@@ -20,7 +20,7 @@
 #include <cstdio> 
 #include <sys/types.h> 
 #include <complex>
-//#include <limits> //lmartins: why not use this STL include for defining numerical bounds? [!]
+#include <limits> //lmartins: why not use this STL include for defining numerical bounds? [!]
 
 #include "MrsLog.h"
 
@@ -48,6 +48,7 @@ namespace Marsyas
 #define MAXSHRT 32767 //lmartins: std::numeric_limits<short int>::max() //[!]
 #define FMAXSHRT 32767.0f //lmartins: (float)(MAXSHRT) //[!]
 #define MAXREAL 10000000.0 //lmartins: std::numeric_limits<mrs_real>::max() //[!]
+#define MINREAL std::numeric_limits<mrs_real>::min()
 
 #define MRSERR(x) {std::ostringstream oss; MrsLog::mrsErr((std::ostringstream&)(oss << x));}
 
