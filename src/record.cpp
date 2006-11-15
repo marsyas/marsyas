@@ -197,7 +197,6 @@ record_orcas(mrs_real length, mrs_natural year,
   dest2->updctrl("mrs_natural/inObservations", 2);
   dest2->updctrl("mrs_natural/inSamples", bufferSize);
   dest2->updctrl("mrs_real/israte", sropt);
-  dest2->updctrl("mrs_string/filename", "orca2.au");
   dest2->updctrl("mrs_string/filename", fname2);
   
   dest3->updctrl("mrs_natural/inObservations", 2);
@@ -438,14 +437,15 @@ main(int argc, const char **argv)
   id3 = soundfiles[2];
   id4 = soundfiles[3];
 
-  // record_orcas(lengthopt, yearopt, id1, id2, id3, id4);
+  record_orcas(lengthopt, yearopt, id1, id2, id3, id4);
 
-  for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
+  /* for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
     {	
       cout << "Recording " << lengthopt << " seconds to file " << *sfi << endl;
-     //  recordVirtualSensor(lengthopt,gopt,  *sfi);
+      recordVirtualSensor(lengthopt,gopt,  *sfi);
       record(lengthopt,gopt,  *sfi);
     }
+  */ 
    
    
 

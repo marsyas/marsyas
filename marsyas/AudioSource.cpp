@@ -89,11 +89,16 @@ AudioSource::myUpdate()
 		initRtAudio();
 	}
 	
+
+	cout << "nChannels" << nChannels_ << endl;
 	//set output controls
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 	setctrl("mrs_natural/inObservations", nChannels_);
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+
+
+	inObservations_ = ctrl_inObservations_->to<mrs_natural>();
 
 	gain_ = getctrl("mrs_real/gain")->toReal();
 	
@@ -186,11 +191,11 @@ AudioSource::myProcess(realvec& in, realvec& out)
 	if ( stopped_ )
 		start();
 
-	/* cout << "ri = " << ri_ << endl;
+	cout << "ri = " << ri_ << endl;
 	cout << "inSamples_ = " << inSamples_ << endl;
 	cout << "inObservations_ = " << inObservations_ << endl;
 	cout << "bufferSize_ = " << bufferSize_ << endl;
-	*/ 
+	 
 
 	//send audio to output
 	while (ri_ < inSamples_ * inObservations_)
