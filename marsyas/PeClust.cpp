@@ -161,6 +161,15 @@ PeClust::addControls()
 			 vec.normObs();
 			 break;
 		 case 'b':
+			  if(type[i] == 'f')
+				 vec.apply(hertz2bark);
+			 else if (type[i] == 'a')
+				 vec.apply(amplitude2dB);
+			 else
+			 {
+				 cout << "unrecognized parameter normalization : " << type[i] << endl;
+			 exit(1);
+			 }
 			 vec.normObs();
 			 break;
 		 default:
@@ -385,8 +394,8 @@ mrs_natural nbPeaksLastFrame;
 
  labeling(data_, labels);
 
-	 MATLAB_PUT(data_, "peaks");
-	 MATLAB_EVAL("plotPeaks(peaks)");
+//	  MATLAB_PUT(data_, "peaks");
+//	 MATLAB_EVAL("plotPeaks(peaks)");
 
 	peaks2V(data_, lastFrame_, out, kmax_);
 
