@@ -196,8 +196,8 @@ PeConvert::myProcess(realvec& in, realvec& out)
 
 
 		if(lastfrequency_(t) != 0.0)
-			deltafrequency_(t) = frequency_(t)-lastfrequency_(t);
-		deltamag_(t) = mag_(t)-lastmag_(t);
+			deltafrequency_(t) = (frequency_(t)-lastfrequency_(t))/(frequency_(t)+lastfrequency_(t));
+		deltamag_(t) = (mag_(t)-lastmag_(t))/(mag_(t)+lastmag_(t));
 
 		// remove potential peak if frequency too irrelevant
 		if(abs(frequency_(t) -t*fundamental_)>.5*fundamental_)
@@ -212,6 +212,11 @@ PeConvert::myProcess(realvec& in, realvec& out)
 	peaker.updctrl("mrs_real/peakStrength", 0.2);
 	peaker.updctrl("mrs_natural/peakStart", 0);
 	peaker.updctrl("mrs_natural/peakEnd", size_);
+	peaker.updctrl("mrs_natural/inSamples", mag_.getCols());
+peaker.updctrl("mrs_natural/inObservations", mag_.getRows());
+	peaker.updctrl("mrs_natural/onSamples", peaks_.getCols());
+peaker.updctrl("mrs_natural/onObservations", peaks_.getRows());
+
 	peaker.process(mag_, peaks_);
 
 	/*
