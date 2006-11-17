@@ -68,19 +68,20 @@ LPCC::myUpdate()
 
 	ctrl_onSamples_->setValue(ctrl_inSamples_);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
-	ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
 	
 	// output nr of observations (i.e. LPCC coefficients) is equal
 	// to the number of LPC coefs (LPC coeffs - 1 pitch coeff - 1 power)
 	mrs_natural order = ctrl_inObservations_->to<mrs_natural>() - 2;
 	ctrl_order_->setValue(order, NOUPDATE);
-	ctrl_onObservations_->setValue(order+1, NOUPDATE);
+	ctrl_onObservations_->setValue(order, NOUPDATE);
 
 	//LPCC features names
 	ostringstream oss;
 	for (mrs_natural i = 0; i < ctrl_order_->to<mrs_natural>(); i++)
 		oss << "LPCC_" << i+1 << ",";
 	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
+
+	tmp_.create(ctrl_onObservations_->to<mrs_natural>()+1, ctrl_onSamples_->to<mrs_natural>());
 }
 
 void 
@@ -95,19 +96,21 @@ LPCC::myProcess(realvec& in, realvec& out)
 // help/toolbox/dspblks/index.html?/access/helpdesk/help/toolbox/dspblks/
 /* lpctofromcepstralcoefficients.html
 /************************************************************************/
-	out.setval(0.0);
-	out(0) = -log(in(order+1)); //[?]
+	tmp_.setval(0.0);
+	tmp_(0) = -log(in(order+1)); //[!][?]
 	for (mrs_natural m = 1; m <= order; m++)  
 	{
 		sum = 0.0;
 		for (mrs_natural k=1; k <= m-1; k++)
-			sum = sum + (mrs_real)(m-k) * in(k-1) * out(m-k);
-		out(m) = +in(m-1) + sum / (mrs_real)m;
+			sum = sum + (mrs_real)(m-k) * in(k-1) * tmp_(m-k);
+		tmp_(m) = +in(m-1) + sum / (mrs_real)m;
+		
+		out(m-1) = tmp_(m);//drop c0 => output only [c1 c2 c3 ... cp]
 	}
 
-// 	MATLAB_PUT(in, "LPCC_in");
-// 	MATLAB_PUT(out, "LPCC_out");
-// 	MATLAB_EVAL("LPCC_test");
+ 	//MATLAB_PUT(in, "LPCC_in");
+ 	//MATLAB_PUT(out, "LPCC_out");
+ 	//MATLAB_EVAL("LPCC_test");
 }
 
 

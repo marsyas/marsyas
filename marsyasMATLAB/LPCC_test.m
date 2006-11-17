@@ -1,6 +1,6 @@
 w = Omega*2*pi/length(Omega);
 
-c = LPCC_out(2:end);
+c = LPCC_out(1:end);
 
 lpccEnv = zeros(size(w));%g_MARS_dB*ones(size(Omega));
 

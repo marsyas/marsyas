@@ -33,6 +33,7 @@ November 2006
 #define MARSYAS_LPCC_H
 
 #include "MarSystem.h"
+#include "realvec.h"
 
 namespace Marsyas
 {
@@ -41,6 +42,7 @@ namespace Marsyas
 	{
 	private:
 		MarControlPtr ctrl_order_;
+		realvec tmp_;
 
 		void addControls();
 		void myUpdate();
