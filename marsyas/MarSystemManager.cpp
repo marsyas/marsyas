@@ -376,6 +376,9 @@ MarSystemManager::~MarSystemManager()
 void 
 MarSystemManager::registerPrototype(string type, MarSystem *marsystem)
 {
+	//change type_ of composite to the user specified one
+	marsystem->setType(type);
+	//and register it
 	registry_[type] = marsystem;
 }
 
@@ -532,7 +535,6 @@ MarSystemManager::getMarSystem(istream& is)
 				msys->synonyms_[vshortcname] = synonymList;
 			}
 		}
-
 		if (isComposite == true)
 		{
 			is >> skipstr >> skipstr >> skipstr;

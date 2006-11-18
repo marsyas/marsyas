@@ -165,6 +165,7 @@ public:
   
   // Naming methods 
   virtual void setName(std::string name);
+	virtual void setType(std::string type); //only used by MarSystemManager => make it protected? [?][!]
   std::string getType() const;
   std::string getName() const;
   std::string getPrefix() const;

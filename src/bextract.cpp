@@ -103,6 +103,8 @@ MarSystem* createSTFTextractor()
 
 	extractor->addMarSystem(spectralShape);
 
+	extractor->linkctrl("mrs_natural/windowSize", "PowerSpectrumNet/powerSpect/mrs_natural/windowSize");
+
 	return extractor;
 }
 
@@ -113,6 +115,8 @@ MarSystem* createMFCCextractor()
 	MarSystem* extractor = mng.create("Series", "MFCCextractor");
 	extractor->addMarSystem(mng.create("PowerSpectrumNet","powerSpect"));
 	extractor->addMarSystem(mng.create("MFCC", "mfcc"));
+
+	extractor->linkctrl("mrs_natural/windowSize", "PowerSpectrumNet/powerSpect/mrs_natural/windowSize");
 
 	return extractor;
 }
@@ -133,6 +137,8 @@ MarSystem* createSTFTMFCCextractor()
 	spectrumFeatures->addMarSystem(mng.create("MFCC", "mfcc"));
 	extractor->addMarSystem(spectrumFeatures);
 
+	extractor->linkctrl("mrs_natural/windowSize", "PowerSpectrumNet/powerSpect/mrs_natural/windowSize");
+
 	return extractor;
 }
 
@@ -144,6 +150,8 @@ MarSystem* createSCFextractor()
 	extractor->addMarSystem(mng.create("PowerSpectrumNet","powerSpect"));
 	extractor->addMarSystem(mng.create("SCF", "scf"));
 
+	extractor->linkctrl("mrs_natural/windowSize", "PowerSpectrumNet/powerSpect/mrs_natural/windowSize");
+
 	return extractor;
 }
 
@@ -154,6 +162,8 @@ MarSystem* createSFMextractor()
 	MarSystem* extractor = mng.create("Series", "SFMextractor");
 	extractor->addMarSystem(mng.create("PowerSpectrumNet","powerSpect"));
 	extractor->addMarSystem(mng.create("SFM", "sfm"));
+
+	extractor->linkctrl("mrs_natural/windowSize", "PowerSpectrumNet/powerSpect/mrs_natural/windowSize");
 
 	return extractor;
 }
@@ -172,12 +182,17 @@ MarSystem* createSFMSCFextractor()
 
 	extractor->addMarSystem(spectrumFeatures);
 
+	extractor->linkctrl("mrs_natural/windowSize", "PowerSpectrumNet/powerSpect/mrs_natural/windowSize");
+
 	return extractor;
 }
 
 MarSystem* createLSPextractor()
 {
 	MarSystemManager mng;
+
+	mrs_natural order = 18; //12 order LSP
+	cout << "LSP order = " << order << endl;
 
 	MarSystem* extractor = mng.create("Series","LSPextractor");
 
@@ -186,7 +201,13 @@ MarSystem* createLSPextractor()
 	//add the LSP calculation
 	extractor->addMarSystem(mng.create("LSP", "lsp"));
 
-	extractor->updctrl("LPCnet/lpcNet/mrs_natural/order", 12); //12 order LSP
+	//must create a link otherwise the outmost composite will know nothing
+	//about this order change (which affects output nr of observations) and
+	//consequently will not update the network accordingly!
+	extractor->linkctrl("mrs_natural/order", "LPCnet/lpcNet/mrs_natural/order");
+	extractor->updctrl("mrs_natural/order", order); 
+
+	extractor->linkctrl("mrs_natural/windowSize", "LPCnet/lpcNet/mrs_natural/windowSize");
 
 	return extractor;
 }
@@ -195,6 +216,9 @@ MarSystem* createLPCCextractor()
 {
 	MarSystemManager mng;
 
+	mrs_natural order = 12; //12 order LPCC
+	cout << "LPCC order = " << order << endl;
+
 	MarSystem* extractor = mng.create("Series","LPCCextractor");
 
 	//first add a LPC calculation net
@@ -202,7 +226,13 @@ MarSystem* createLPCCextractor()
 	//add the LPCC calculation
 	extractor->addMarSystem(mng.create("LPCC", "lpcc"));
 
-	extractor->updctrl("LPCnet/lpcNet/mrs_natural/order", 12); //12 order LPCC
+	//must create a link otherwise the outmost composite will know nothing
+	//about this order change (which affects output nr of observations) and
+	//consequently will not update the network accordingly!
+	extractor->linkctrl("mrs_natural/order", "LPCnet/lpcNet/mrs_natural/order");
+	extractor->updctrl("mrs_natural/order", order);
+
+	extractor->linkctrl("mrs_natural/windowSize", "LPCnet/lpcNet/mrs_natural/windowSize");
 
 	return extractor;
 }
@@ -674,8 +704,6 @@ void bextract_train(vector<Collection> cls, mrs_natural label,
 	
 	featExtractor->updctrl("mrs_natural/WindowSize", winSize);
 
-	//mng.registerPrototype("FeatureExtractor", featExtractor);
-		
 	//////////////////////////////////////////////////////////////////////////
 	// Build the overall feature calculation network 
 	//////////////////////////////////////////////////////////////////////////
@@ -696,14 +724,17 @@ void bextract_train(vector<Collection> cls, mrs_natural label,
 	featureNetwork->addMarSystem(featExtractor);//mng.create("FeatureExtractor", "featExtractor"));
 
 	//////////////////////////////////////////////////////////////////////////
-	//texture window statistics
+	//texture window statistics (optional)
 	//////////////////////////////////////////////////////////////////////////
-	featureNetwork->addMarSystem(mng.create("TextureStats", "tStats"));
+	if(memSize != 0)
+	{
+		featureNetwork->addMarSystem(mng.create("TextureStats", "tStats"));
+		featureNetwork->updctrl("TextureStats/tStats/mrs_natural/memSize", memSize);
+	}
 	
 	//////////////////////////////////////////////////////////////////////////
 	// update controls I
 	//////////////////////////////////////////////////////////////////////////
-	featureNetwork->updctrl("TextureStats/tStats/mrs_natural/memSize", memSize);
 	// src has to be configured with hopSize frame length in case a ShiftInput
 	// is used in the feature extraction network
 	featureNetwork->updctrl(src->getType() + "/src/mrs_natural/inSamples", hopSize);
@@ -770,25 +801,28 @@ void bextract_train(vector<Collection> cls, mrs_natural label,
 	featureNetwork->updctrl("Confidence/confidence/mrs_natural/nLabels", (int)cls.size());
 	featureNetwork->updctrl("Confidence/confidence/mrs_bool/print",true); 
 	string className = "";
+
+	//iterate over collections (i.e. classes)
 	for (cj=0; cj < (mrs_natural)cls.size(); cj++)
 	{
 		Collection l = cls[cj];
 		featureNetwork->updctrl("Annotator/annotator/mrs_natural/label", cj);
 		featureNetwork->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
-		featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 40);
+		featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 40);//memSize?!? [?]
 		
 		if (wekafname == EMPTYSTRING) 
 			featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", "weka.arff");
 		else 
 			featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  
-
 		// featureNetwork->updctrl("WekaSink/wsink/mrs_natural/label", cj);
 
 		cout << "Class " << cj << " is " << l.name() << endl;
 
-		//reset texture analysis stats
-		featureNetwork->updctrl("TextureStats/tStats/mrs_bool/reset", true);
+		//reset texture analysis stats (if any)
+		if(memSize != 0)
+			featureNetwork->updctrl("TextureStats/tStats/mrs_bool/reset", true);
 		
+		//iterate over audio files (in each collection) and extract features
 		for (mrs_natural i=0; i < l.size(); i++)
 		{
 			featureNetwork->updctrl("SoundFileSource/src/mrs_string/filename", l.entry(i));
