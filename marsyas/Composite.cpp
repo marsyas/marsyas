@@ -105,24 +105,38 @@ Composite::addControls()
 void 
 Composite::addMarSystem(MarSystem *marsystem)
 {
-	// do not allow adding MarSystem with a name and type 
-	// equal to any existing child! [!]
 	vector<MarSystem*>::iterator it;
-	vector<MarSystem*> children = this->getChildren();
-	for(it = children.begin(); it != children.end(); ++it)
+	bool replaced = false;
+
+	//check if a child MarSystem with the same type/name
+	//exists. If it does, replace it with the new one.
+	for(it = marsystems_.begin(); it != marsystems_.end(); ++it)
 	{
 		if((*it)->getName() == marsystem->getName() &&
 			 (*it)->getType() == marsystem->getType())
-			return;
+		{
+			//delete current child MarSystem
+			delete (*it);
+			//and replace it with the new one
+			(*it) = marsystem;
+			replaced = true;
+			break;
+		}
+	}
+
+	//if no replacement took place, then add the
+	//new MarSystem as a new child
+	if (!replaced)
+	{
+		marsystems_.push_back(marsystem);
+		marsystemsSize_ = (mrs_natural)marsystems_.size();
 	}
 	
-	marsystems_.push_back(marsystem);
-	marsystemsSize_ = (mrs_natural)marsystems_.size();
-
-	//update new children path
+	//update new child's path
 	marsystem->addFatherPath(getPath());
 	marsystem->update();
 
+	//update parent MarSystem
 	update();
 }
 
