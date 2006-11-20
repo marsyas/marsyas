@@ -918,7 +918,6 @@ const MarSystem::recvControls()
 ostream&
 MarSystem::put(ostream &o) 
 {
-
 	o << "# MarSystem" << endl;
 	o << "# Type = " << type_ << endl;
 	o << "# Name = " << name_ << endl;
@@ -933,11 +932,11 @@ MarSystem::put(ostream &o)
 	{
 		vector<string> syns = mi->second;
 		vector<string>::iterator vi;
-		o << "# Synonyms of " << mi->first << " = " << endl;//shouldn't prefix be also included as in Composite::put()?!? [?]
+		o << "# Synonyms of " << prefix_ + mi->first << " = " << endl;
 		o << "# Number of synonyms = " << syns.size() << endl;
 
 		for (vi = syns.begin(); vi != syns.end(); ++vi) 
-			o << "# " << (*vi) << endl; //shouldn't prefix be also included as in Composite::put()?!? [?]
+			o << "# " << prefix_ + (*vi) << endl;
 	}
 
 	return o;

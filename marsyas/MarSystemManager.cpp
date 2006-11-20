@@ -489,22 +489,6 @@ MarSystemManager::getMarSystem(istream& is)
 			if (pos == 0) 
 				vshortcname = visible.substr(prefix.length(), visible.length());
 
-			//[?] and what happens if this is not a composite?!?
-			//if not a composite, the visible link does not include prefix...
-			//e.g.:
-			// instead of
-			//
-			//# Synonyms of /Series/s1/mrs_bool/notEmpty =
-			//
-			// we only have (see MarSystem::put())
-			//
-			//# Synonyms of mrs_bool/notEmpty =
-			//
-			//in this case vshortcname should be "mrs_bool/notEmpty", shouldn't it?
-			//but it is kept uninitialized... [?][!]
-			//
-			// unless simple MarSystems are not supposed to have links...
-
 			is >> skipstr;
 			is >> skipstr;
 			is >> skipstr;
@@ -516,7 +500,7 @@ MarSystemManager::getMarSystem(istream& is)
 			is >> nSynonyms;
 
 			vector<string> synonymList;
-			synonymList = msys->synonyms_[vshortcname]; //vshortcname[!]
+			synonymList = msys->synonyms_[vshortcname];
 
 			for (int j=0; j < nSynonyms; j++)
 			{
