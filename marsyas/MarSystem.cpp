@@ -539,7 +539,7 @@ MarSystem::getControl(string cname)
 		vector<string>::iterator si;
 		for (si = synonymList.begin(); si != synonymList.end(); ++si)
 		{
-			getControl(prefix_ + *si);
+			return getControl(prefix_ + *si);
 		}
 	}
 
