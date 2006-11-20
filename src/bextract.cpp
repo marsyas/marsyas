@@ -80,6 +80,33 @@ MarSystem* createExtractorFromFile()
 	return mng.getMarSystem(mplFile);
 }
 
+MarSystem* createBEATextrator()
+{
+	MarSystemManager mng;
+
+	MarSystem* extractor = mng.create("Series", "beatExtrator");  
+	extractor->addMarSystem(mng.create("SoundFileSource", "src1"));
+	extractor->addMarSystem(mng.create("ShiftInput", "si"));
+	extractor->addMarSystem(mng.create("DownSampler", "initds"));
+	extractor->addMarSystem(mng.create("WaveletPyramid", "wvpt"));
+	extractor->addMarSystem(mng.create("WaveletBands", "wvbnds"));
+	extractor->addMarSystem(mng.create("FullWaveRectifier", "fwr"));
+	extractor->addMarSystem(mng.create("OnePole", "lpf"));
+	extractor->addMarSystem(mng.create("Norm", "norm"));
+	extractor->addMarSystem(mng.create("Sum", "sum"));
+	extractor->addMarSystem(mng.create("DownSampler", "ds"));
+	extractor->addMarSystem(mng.create("AutoCorrelation", "acr"));
+	extractor->addMarSystem(mng.create("Peaker", "pkr"));
+	extractor->addMarSystem(mng.create("MaxArgMax", "mxr"));
+	extractor->addMarSystem(mng.create("PeakPeriods2BPM", "p2bpm"));
+	extractor->addMarSystem(mng.create("Histogram", "histo"));
+	// extractor->addMarSystem(mng.create("PlotSink", "psink"));
+	// extractor->addMarSystem(mng.create("Reassign", "reassign"));
+	extractor->addMarSystem(mng.create("BeatHistoFeatures", "bhf"));
+	
+	return extractor;
+}
+
 MarSystem* createSTFTextractor()
 {
 	MarSystemManager mng;
@@ -391,7 +418,7 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 	if (withBeatFeatures)
 		cout << "with beat features" << endl;
 
-	MRSDIAG("sfplay.cpp - sfplay");
+	MRSDIAG("bextract.cpp - bextract_trainAccumulator");
 	mrs_natural i;
 	mrs_natural cj;
 
@@ -402,117 +429,99 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 		cout << "NORMALIZE ENABLED" << endl;
 
 	MarSystemManager mng;  
+		
+	//////////////////////////////////////////////////////////////////////////
+	// create the file source
+	//////////////////////////////////////////////////////////////////////////
 	MarSystem* src = mng.create("SoundFileSource", "src");
 
-	// Calculate windowed power spectrum 
-	MarSystem* spectralShape = mng.create("Series", "spectralShape");
-	spectralShape->addMarSystem(mng.create("Hamming", "hamming"));
-	spectralShape->addMarSystem(mng.create("Spectrum","spk"));
-	spectralShape->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-	spectralShape->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","power");  
-
-	// Spectrum Shape descriptors
-	MarSystem* spectrumFeatures = mng.create("Fanout", "spectrumFeatures");
-	if (extractorStr == "STFT") 
-	{
-		spectrumFeatures->addMarSystem(mng.create("Centroid", "cntrd"));
-		// spectrumFeatures->addMarSystem(mng.create("Kurtosis", "krt"));
-		spectrumFeatures->addMarSystem(mng.create("Rolloff", "rlf"));      
-		spectrumFeatures->addMarSystem(mng.create("Flux", "flux"));
-	}
-	else if (extractorStr == "STFTMFCC")
-	{
-		spectrumFeatures->addMarSystem(mng.create("Centroid", "cntrd"));
-		// spectrumFeatures->addMarSystem(mng.create("Kurtosis", "krt"));
-		spectrumFeatures->addMarSystem(mng.create("Rolloff", "rlf"));      
-		spectrumFeatures->addMarSystem(mng.create("Flux", "flux"));
-		spectrumFeatures->addMarSystem(mng.create("MFCC", "mfcc"));
-	}
-	else if (extractorStr == "MFCC")
-	{
-		spectrumFeatures->addMarSystem(mng.create("MFCC", "mfcc"));
-	}
-
-	else if (extractorStr == "SCF")
-		spectrumFeatures->addMarSystem(mng.create("SCF", "scf"));
-	else if (extractorStr == "SFM") 
-		spectrumFeatures->addMarSystem(mng.create("SFM", "sfm"));
-	else 
-	{
-		cerr << "Unsupported extractor " << extractorStr << endl;
-		return;
-	}
-
-	// Register the spectrum features in manager 
-	mng.registerPrototype("SpectrumFeatures", spectrumFeatures->clone());
-
-	// add the descriptors to the spectralShape series
-	spectralShape->addMarSystem(mng.create("SpectrumFeatures", "spectrumFeatures"));
-	// Register the spectralShape
-	mng.registerPrototype("SpectralShape", spectralShape->clone());
-
-	//  add time-domain zerocrossings
-	MarSystem* features = mng.create("Fanout", "features");
-	features->addMarSystem(mng.create("SpectralShape", "SpectralShape"));
-	if (extractorStr == "STFT")
-		features->addMarSystem(mng.create("ZeroCrossings", "zcrs"));      
-	mng.registerPrototype("Features", features->clone());
-
-	// Means and standard deviation (statistics) for texture analysis 
-	MarSystem* statistics = mng.create("Fanout", "statistics");
-	statistics->addMarSystem(mng.create("Mean", "mn"));
-	statistics->addMarSystem(mng.create("StandardDeviation", "std"));
-	mng.registerPrototype("Statistics", statistics->clone());
-
-	// Build the overall feature calculation network 
+	//////////////////////////////////////////////////////////////////////////
+	// Feature Extractor
+	//////////////////////////////////////////////////////////////////////////
+	// create the correct feature extractor using the table of known
+	// feature extractors:
+	MarSystem* featExtractor = (*featExtractors[extractorStr])();
+	featExtractor->updctrl("mrs_natural/WindowSize", winSize);
+	
+	//////////////////////////////////////////////////////////////////////////
+	// Build the overall feature calculation network
+	//////////////////////////////////////////////////////////////////////////
 	MarSystem* featureNetwork = mng.create("Series", "featureNetwork");
-	featureNetwork->addMarSystem(src->clone());
-	featureNetwork->addMarSystem(mng.create("Features", "features"));
-	featureNetwork->addMarSystem(mng.create("Memory", "memory"));
-	featureNetwork->addMarSystem(mng.create("Statistics", "statistics"));  
+	featureNetwork->addMarSystem(src);
+	featureNetwork->addMarSystem(featExtractor);
 
-	// update controls 
-	featureNetwork->updctrl("Memory/memory/mrs_natural/memSize", memSize);
+	//////////////////////////////////////////////////////////////////////////
+	// Texture Window Statistics (if any)
+	//////////////////////////////////////////////////////////////////////////
+	if(memSize != 0)
+	{
+		featureNetwork->addMarSystem(mng.create("TextureStats", "tStats"));
+		featureNetwork->updctrl("TextureStats/tStats/mrs_natural/memSize", memSize);
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	// update controls
+	//////////////////////////////////////////////////////////////////////////
 	featureNetwork->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 	featureNetwork->updctrl("SoundFileSource/src/mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
 
+	//////////////////////////////////////////////////////////////////////////
 	// accumulate feature vectors over 30 seconds 
+	//////////////////////////////////////////////////////////////////////////
 	MarSystem* acc = mng.create("Accumulator", "acc");
 	acc->updctrl("mrs_natural/nTimes", 1298);
+	
+	//////////////////////////////////////////////////////////////////////////
 	// add network to accumulator
+	//////////////////////////////////////////////////////////////////////////
 	acc->addMarSystem(featureNetwork->clone());
 
-	// weka output 
+	//////////////////////////////////////////////////////////////////////////
+	// WEKA output
+	//////////////////////////////////////////////////////////////////////////
 	MarSystem* wsink = mng.create("WekaSink", "wsink");
+
+	//////////////////////////////////////////////////////////////////////////
+	// Annotator
+	//////////////////////////////////////////////////////////////////////////
 	MarSystem* annotator = mng.create("Annotator", "annotator");
 
+	//////////////////////////////////////////////////////////////////////////
+	// 30-second statistics 
+	//////////////////////////////////////////////////////////////////////////
+	MarSystem* statistics = mng.create("Fanout", "statistics2");
+	statistics->addMarSystem(mng.create("Mean", "mn"));
+	statistics->addMarSystem(mng.create("StandardDeviation", "std"));
+	
+	//////////////////////////////////////////////////////////////////////////
 	// Final network compute 30-second statistics 
+	//////////////////////////////////////////////////////////////////////////
 	MarSystem* total = mng.create("Series", "total");
-	total->addMarSystem(acc->clone());
-	total->addMarSystem(mng.create("Statistics", "statistics2"));
+	total->addMarSystem(acc);
+	total->addMarSystem(statistics);
 
+	// get parameters
 	mrs_real srate = src->getctrl("mrs_real/osrate")->toReal();
 	mrs_natural nChannels = src->getctrl("mrs_natural/nChannels")->toNatural();
 
 	// update controls 
-	total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/mrs_natural/inSamples", (mrs_natural) (srate / 22050.0) * MRS_DEFAULT_SLICE_NSAMPLES);
+	total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/mrs_natural/inSamples", (mrs_natural) (srate / 22050.0) * MRS_DEFAULT_SLICE_NSAMPLES);//[?] 22050?
 	total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/mrs_natural/pos", offset);      
 
-	// Calculate duration, offest parameters if necessary 
+	// Calculate duration, offset parameters if necessary 
 	offset = (mrs_natural) (start * srate * nChannels);
 	duration = (mrs_natural) (length * srate * nChannels);
 
+	//////////////////////////////////////////////////////////////////////////
+	// main loop for extracting the features 
+	//////////////////////////////////////////////////////////////////////////
 	mrs_natural wc = 0;
 	mrs_natural samplesPlayed =0;
-
-	// main loop for extracting the features 
 	string className = "";
 	realvec beatfeatures;
 	beatfeatures.create((mrs_natural)8,(mrs_natural)1);
-
 	realvec estimate;
 	estimate.create((mrs_natural)8,(mrs_natural)1);
-
 	realvec in;
 	realvec timbreres;
 	realvec fullres;
@@ -525,12 +534,9 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 
 	if (withBeatFeatures)
 	{
-		fullres.create(total->getctrl("mrs_natural/onObservations")->toNatural() + 
-			8, 
+		fullres.create(total->getctrl("mrs_natural/onObservations")->toNatural() + 8, 
 			total->getctrl("mrs_natural/onSamples")->toNatural());
-
-		afullres.create(total->getctrl("mrs_natural/onObservations")->toNatural() + 
-			8 + 1, 
+		afullres.create(total->getctrl("mrs_natural/onObservations")->toNatural() + 8 + 1, 
 			total->getctrl("mrs_natural/onSamples")->toNatural());
 		annotator->updctrl("mrs_natural/inObservations", total->getctrl("mrs_natural/onObservations")->toNatural()+8);      
 	}
@@ -561,25 +567,7 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 
 	if (withBeatFeatures) 
 	{
-		total1 = mng.create("Series", "src");  
-		total1->addMarSystem(mng.create("SoundFileSource", "src1"));
-		total1->addMarSystem(mng.create("ShiftInput", "si"));
-		total1->addMarSystem(mng.create("DownSampler", "initds"));
-		total1->addMarSystem(mng.create("WaveletPyramid", "wvpt"));
-		total1->addMarSystem(mng.create("WaveletBands", "wvbnds"));
-		total1->addMarSystem(mng.create("FullWaveRectifier", "fwr"));
-		total1->addMarSystem(mng.create("OnePole", "lpf"));
-		total1->addMarSystem(mng.create("Norm", "norm"));
-		total1->addMarSystem(mng.create("Sum", "sum"));
-		total1->addMarSystem(mng.create("DownSampler", "ds"));
-		total1->addMarSystem(mng.create("AutoCorrelation", "acr"));
-		total1->addMarSystem(mng.create("Peaker", "pkr"));
-		total1->addMarSystem(mng.create("MaxArgMax", "mxr"));
-		total1->addMarSystem(mng.create("PeakPeriods2BPM", "p2bpm"));
-		total1->addMarSystem(mng.create("Histogram", "histo"));
-		// total1->addMarSystem(mng.create("PlotSink", "psink"));
-		// total1->addMarSystem(mng.create("Reassign", "reassign"));
-		total1->addMarSystem(mng.create("BeatHistoFeatures", "bhf"));
+		total1 = createBEATextrator();
 		annotator->updctrl("mrs_string/inObsNames", total->getctrl("mrs_string/onObsNames")->toString() + total1->getctrl("mrs_string/onObsNames")->toString());
 	}
 	else
@@ -595,17 +583,18 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 	else 
 		wsink->updctrl("mrs_string/filename", wekafname);
 
+	//iterate over collections
 	for (cj=0; cj < (mrs_natural)cls.size(); cj++)
 	{
 		Collection l = cls[cj];
-		for (i=0; i < l.size(); i++)
+		for (i=0; i < l.size(); i++)//iterate over collection files
 		{
 			// cout << beatfeatures << endl;
 			total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", l.entry(i));
 			if (withBeatFeatures) 
 			{
 				srate = total->getctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_real/osrate")->toReal();
-				iwin.create((mrs_natural)1, (mrs_natural)(((srate / 22050.0) * 2 * 65536) / 16));
+				iwin.create((mrs_natural)1, (mrs_natural)(((srate / 22050.0) * 2 * 65536) / 16)); // [!] hardcoded!
 				tempo_histoSumBands(total1, l.entry(i), beatfeatures, 
 					iwin, estimate);
 			}
@@ -1372,6 +1361,7 @@ main(int argc, const char **argv)
 	featExtractors["SFMSCF"] = &createSFMSCFextractor;
 	featExtractors["LSP"] = &createLSPextractor;
 	featExtractors["LPCC"] = &createLPCCextractor;
+	featExtractors["BEAT"] = &createBEATextrator;
 	// short description of each extractor
 	featExtractorDesc["MPL_FILE"] = "not yet implemented...";
 	featExtractorDesc["STFT"] = "Centroid, Rolloff, Flux, ZeroCrossings ";
@@ -1382,6 +1372,7 @@ main(int argc, const char **argv)
 	featExtractorDesc["SFMSCF"] = "SCF and SFM features";
 	featExtractorDesc["LSP"] = "Linear Spectral Pairs";
 	featExtractorDesc["LPCC"] = "LPC derived Cepstral coefficients ";
+	featExtractorDesc["BEAT"] = "Beat histogram features";
 	//////////////////////////////////////////////////////////////////////////
 
 	string progName = argv[0];  
