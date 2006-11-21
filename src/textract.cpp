@@ -185,7 +185,6 @@ void textract_trainAccumulator(string sfName, mrs_natural offset, mrs_natural du
 
 	// Means and standard deviation (statistics) for texture analysis 
 	MarSystem* statistics = mng.create("Fanout","statistics");
-
 	statistics->addMarSystem(mng.create("Mean", "mn"));
 	statistics->addMarSystem(mng.create("StandardDeviation", "std"));
 	mng.registerPrototype("Statistics", statistics->clone());
@@ -243,7 +242,7 @@ void textract_trainAccumulator(string sfName, mrs_natural offset, mrs_natural du
 		total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/inSamples", tline.lineSize_);
 		if (tlineName == EMPTYSTRING)
 		{
-			if ((tline.getRClassId(r) > 0) && (tline.getRClassId(r) != 4))
+			if ((tline.getRClassId(r) > 0) && (tline.getRClassId(r) != 4))//[?]
 			{
 				total->updctrl("WekaSink/wsink/mrs_natural/label", tline.getRClassId(r)-1);
 			}

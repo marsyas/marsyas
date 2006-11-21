@@ -44,7 +44,8 @@ of one sample and are defined by lineSize.
 using namespace std;
 using namespace Marsyas;
 
-#define SEPCHARS " \t\n"
+//#define SEPCHARS " \t\n"
+#define SEPCHARS " \r\n"
 
 TimeLine::TimeLine()
 {
@@ -173,7 +174,7 @@ TimeLine::scan(realvec segmentation)
 			peakCount++;
 	}
 	numRegions_ = peakCount-1;
-	lineSize_ = 512;			// must change to argument
+	lineSize_ = 512;			// must change to argument [!]
 
 	for (i=0; i < numRegions_; i++)
 	{
@@ -205,6 +206,32 @@ TimeLine::numRegions()
 	return numRegions_;
 }
 
+unsigned int
+TimeLine::numClasses()
+{
+	vector<int> classes;
+	bool found = false;
+	
+	for(mrs_natural i = 0; i < numRegions_; ++i)
+	{
+		found = false;
+		//check if this region's class Id was already counted
+		for(unsigned int c = 0; c < (unsigned int)classes.size(); ++c)
+		{
+			if(classes[c] == regions_[i].classId)
+			{
+				found = true;
+				break;
+			}
+		}
+		//if this is a new classId, count it
+		if(!found)
+			classes.push_back(regions_[i].classId);
+	}
+
+	return (unsigned int)classes.size();
+}
+
 
 int 
 TimeLine::start(int regionNum)
@@ -233,7 +260,9 @@ void
 TimeLine::setClassId(int regionNum, int classId)
 {
 	if (regionNum < numRegions_)
+	{
 		regions_[regionNum].classId = classId;
+	}
 }
 
 int 
@@ -325,49 +354,40 @@ Load a TimeLine from a file.
 void
 TimeLine::load(string filename)
 {
-	FILE *fp;
-	int i;
-
-	static char *line = new char[256];
+	ifstream in;
 	filename_ = filename;
 
-	if (((fp = fopen(filename.c_str(), "r"))== NULL))
-	{
+	in.open(filename.c_str());
+	if(!in.is_open())
 		cerr << "Problem opening file " << filename_;
-	}
-	fgets(line, 256,fp);			// read size_
-	numRegions_ = atoi(line);
+
+	in >> numRegions_; // read numRegions
 	cerr << "Number of regions is " << numRegions_ << endl;
 
-	fgets(line, 256,fp);			// read size_
-	lineSize_ = atoi(line);
+	in >> lineSize_; //read lineSize
 	cerr << "Skip size is " << lineSize_ << endl;
 
-	fgets(line, 256,fp);			// read size_
-	size_ = atoi(line);
+	in >> size_; //read size
 	cerr << "Size is " << size_ << endl;
 
-	char *word;
-
-	for (i=0; i < numRegions_; i++)
+	for (int i=0; i < numRegions_; i++)
 	{
 		TimeRegion region;
 		regions_.push_back(region);
 	}
 
-	for (i=0; i<numRegions_; i++)
+	for (int i=0; i<numRegions_; i++)
 	{
-		fgets(line,256, fp);
-		word = strtok(line, SEPCHARS);
-		regions_[i].start = atoi(word);
-
-		word = strtok(NULL, SEPCHARS);
-		regions_[i].classId = atoi(word);
-
-		word = strtok(NULL, SEPCHARS);
-		regions_[i].end = atoi(word);
-		fgets(line,256, fp);
-		regions_[i].name = line;
+		unsigned int token;
+		string stoken1, stoken2;
+		in >> token;
+		regions_[i].start = token;
+		in >> token;
+		regions_[i].classId = token;
+		in >> token;
+		regions_[i].end = token;
+		in >> stoken1 >> stoken2;
+		regions_[i].name = stoken1 +" "+stoken2;
 	}
 }
 

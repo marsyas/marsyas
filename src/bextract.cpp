@@ -26,6 +26,7 @@ bextract: batch feature extraction
 #include "Accumulator.h"
 #include "Fanout.h"
 #include "CommandLineOptions.h"
+#include "TimeLine.h"
 
 #include <string> 
 using namespace std;
@@ -34,6 +35,8 @@ using namespace Marsyas;
 int helpopt;
 int usageopt;
 int normopt;
+
+bool tline;
 
 mrs_natural offset = 0;
 mrs_natural duration = 1000 * 44100;
@@ -297,6 +300,7 @@ printHelp(string progName)
 	cerr << "-w --weka        : weka .arff filename " << endl;
 	cerr << "-ws --nwinsamples: analysis window size in samples " << endl;
 	cerr << "-hp --nhopsamples: analysis hop size in samples " << endl;
+	cerr << "-t --timeline    : flag 2nd input collection as timelines for the 1st collection";
 	cerr << endl;
 	
 	cerr << "Available extractors: " << endl;
@@ -636,7 +640,8 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 }
 
 // train with multiple feature vectors/file 
-void bextract_train(vector<Collection> cls, mrs_natural label, 
+void bextract_train(vector<Collection> cls, 
+										mrs_natural label, 
 										string pluginName, string classNames, 
 										string wekafname,  mrs_natural memSize, 
 										string extractorStr,
@@ -645,6 +650,8 @@ void bextract_train(vector<Collection> cls, mrs_natural label,
 	MRSDIAG("bextract.cpp - bextract_train");
 
 	MarSystemManager mng;
+
+	vector<TimeLine> timeLines;
 
 	if (classifierName == EMPTYSTRING) 
 		classifierName = DEFAULT_CLASSIFIER;
@@ -729,21 +736,23 @@ void bextract_train(vector<Collection> cls, mrs_natural label,
 	featureNetwork->updctrl(src->getType() + "/src/mrs_natural/inSamples", hopSize);
 	featureNetwork->updctrl(src->getType() + "/src/mrs_natural/pos", offset);      
 	
+	//////////////////////////////////////////////////////////////////////////
+	// add the Annotator
+	//////////////////////////////////////////////////////////////////////////
 	featureNetwork->addMarSystem(mng.create("Annotator", "annotator"));
 	
 	//////////////////////////////////////////////////////////////////////////
-	//add WEKA sink
+	// add WEKA sink
 	//////////////////////////////////////////////////////////////////////////
-	featureNetwork->addMarSystem(mng.create("WekaSink", "wsink"));
+	if (wekafname != EMPTYSTRING)
+		featureNetwork->addMarSystem(mng.create("WekaSink", "wsink"));
 	
 	//////////////////////////////////////////////////////////////////////////
 	// add classifier and confidence majority calculation 
 	//////////////////////////////////////////////////////////////////////////
 	cout << "classifierName = " << classifierName << endl;
 	if (classifierName == "GS")
-	{
 		featureNetwork->addMarSystem(mng.create("GaussianClassifier", "gaussian"));
-	}
 	else if (classifierName == "ZeroR")
 		featureNetwork->addMarSystem(mng.create("ZeroRClassifier", "zeror"));
 	else if (classifierName == "KNN")
@@ -753,20 +762,8 @@ void bextract_train(vector<Collection> cls, mrs_natural label,
 		cerr << "Unsuported classifier : " << classifierName << endl;
 		return;
 	}
-	featureNetwork->addMarSystem(mng.create("Confidence", "confidence"));
 
-	//////////////////////////////////////////////////////////////////////////
-	// update controls II 
-	//////////////////////////////////////////////////////////////////////////
-	if (classifierName == "GS")
-		featureNetwork->updctrl("GaussianClassifier/gaussian/mrs_natural/nLabels", (mrs_natural)cls.size());
-	else if (classifierName == "ZeroR")
-		featureNetwork->updctrl("ZeroRClassifier/zeror/mrs_natural/nLabels", (mrs_natural)cls.size());
-	else if (classifierName == "KNN")
-		featureNetwork->updctrl("KNNClassifier/knn/mrs_natural/nLabels", (mrs_natural)cls.size());
-	featureNetwork->updctrl("Confidence/confidence/mrs_bool/mute", true);
-	featureNetwork->updctrl("Confidence/confidence/mrs_string/labelNames",classNames);
-	featureNetwork->updctrl("WekaSink/wsink/mrs_string/labelNames",classNames);
+	featureNetwork->addMarSystem(mng.create("Confidence", "confidence"));
 
 	//////////////////////////////////////////////////////////////////////////
 	// link controls
@@ -778,58 +775,182 @@ void bextract_train(vector<Collection> cls, mrs_natural label,
 	if (pluginName != EMPTYSTRING) 
 		featureNetwork->linkctrl("mrs_natural/nChannels",	"AudioSink/dest/mrs_natural/nChannels");
 	featureNetwork->linkctrl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
-	
+
 	//////////////////////////////////////////////////////////////////////////
 	// main loop for extracting features 
 	//////////////////////////////////////////////////////////////////////////
-	mrs_natural cj;
-	mrs_natural wc = 0;
-	mrs_natural samplesPlayed =0;
-	mrs_natural onSamples = featureNetwork->getctrl("mrs_natural/onSamples")->toNatural();
-
-	featureNetwork->updctrl("Confidence/confidence/mrs_natural/nLabels", (int)cls.size());
-	featureNetwork->updctrl("Confidence/confidence/mrs_bool/print",true); 
-	string className = "";
-
-	//iterate over collections (i.e. classes)
-	for (cj=0; cj < (mrs_natural)cls.size(); cj++)
+	//***********************************
+	// if no timelines are being used...
+	//***********************************
+	if(!tline)
 	{
-		Collection l = cls[cj];
-		featureNetwork->updctrl("Annotator/annotator/mrs_natural/label", cj);
-		featureNetwork->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
-		featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 40);//memSize?!? [?]
-		
-		if (wekafname == EMPTYSTRING) 
-			featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", "weka.arff");
-		else 
-			featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  
-		// featureNetwork->updctrl("WekaSink/wsink/mrs_natural/label", cj);
+		mrs_natural cj;
+		mrs_natural wc = 0;
+		mrs_natural samplesPlayed =0;
+		mrs_natural onSamples = featureNetwork->getctrl("mrs_natural/onSamples")->toNatural();
 
-		cout << "Class " << cj << " is " << l.name() << endl;
+		if (classifierName == "GS")
+			featureNetwork->updctrl("GaussianClassifier/gaussian/mrs_natural/nLabels", (mrs_natural)cls.size());
+		else if (classifierName == "ZeroR")
+			featureNetwork->updctrl("ZeroRClassifier/zeror/mrs_natural/nLabels", (mrs_natural)cls.size());
+		else if (classifierName == "KNN")
+			featureNetwork->updctrl("KNNClassifier/knn/mrs_natural/nLabels", (mrs_natural)cls.size());
 
-		//reset texture analysis stats (if any)
-		if(memSize != 0)
-			featureNetwork->updctrl("TextureStats/tStats/mrs_bool/reset", true);
-		
-		//iterate over audio files (in each collection) and extract features
-		for (mrs_natural i=0; i < l.size(); i++)
+		//configure Confidence
+		featureNetwork->updctrl("Confidence/confidence/mrs_natural/nLabels", (int)cls.size());
+		featureNetwork->updctrl("Confidence/confidence/mrs_bool/mute", true);
+		featureNetwork->updctrl("Confidence/confidence/mrs_string/labelNames",classNames);
+		featureNetwork->updctrl("Confidence/confidence/mrs_bool/print",true); 
+
+		//configure WEKA sink
+		if (wekafname != EMPTYSTRING)
+			featureNetwork->updctrl("WekaSink/wsink/mrs_string/labelNames",classNames);
+
+		//iterate over collections (i.e. classes)
+		for (cj=0; cj < (mrs_natural)cls.size(); cj++)
 		{
-			featureNetwork->updctrl("SoundFileSource/src/mrs_string/filename", l.entry(i));
-			wc = 0;  	  
-			samplesPlayed = 0;
-			while ((featureNetwork->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool()) && (duration > samplesPlayed))
+			Collection l = cls[cj];
+			featureNetwork->updctrl("Annotator/annotator/mrs_natural/label", cj);
+
+			if (wekafname != EMPTYSTRING)
 			{
-				featureNetwork->tick();
-				wc++;
-				samplesPlayed = wc * onSamples;
+				featureNetwork->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
+				featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 40);
+				featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  
 			}
-			featureNetwork->tick();
-			cerr << "Processed " << l.entry(i) << endl;
+
+			cout << "Class " << cj << " is " << l.name() << endl;
+
+			//reset texture analysis stats between (i.e. classes)
+			if(memSize != 0)
+				featureNetwork->updctrl("TextureStats/tStats/mrs_bool/reset", true);
+
+			//iterate over audio files (in each collection) and extract features
+			for (mrs_natural i=0; i < l.size(); i++)
+			{
+				featureNetwork->updctrl("SoundFileSource/src/mrs_string/filename", l.entry(i));
+				wc = 0;  	  
+				samplesPlayed = 0;
+				while ((featureNetwork->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool()) && (duration > samplesPlayed))
+				{
+					featureNetwork->tick();
+					wc++;
+					samplesPlayed = wc * onSamples;
+				}
+				featureNetwork->tick();
+				cerr << "Processed " << l.entry(i) << endl;
+			}
+		}
+	}
+	//**********************
+	// if using timelines
+	//**********************
+	else 	
+	{
+		TimeLine tline;
+		mrs_natural numClasses;
+		//1st collection is the audio file collection
+		Collection audioColl = cls[0];
+		//2nd collection  is a collection of timeline files
+		//(should be in the same order as the audio files)
+		Collection tlColl = cls[1];
+		
+		// for each audiofile/timeline pair in collection
+		// (and ignore all audio files that have no timeline file)
+		// run feature extraction and train classifiers
+		for(mrs_natural i=0; i <(mrs_natural)tlColl.size(); ++i)
+		{
+			//load timeline for i-th audio file
+			tline.load(tlColl.entry(i));
+			
+			//get number of classes in the timeline
+			numClasses = (mrs_natural)tline.numClasses();
+			
+			// create a label for each class
+			classNames = "";
+			ostringstream sstr;
+			for(mrs_natural c=0; c < numClasses; c++)
+				sstr << "class_" << c << ",";
+			classNames = sstr.str();
+
+			//configure classifiers
+			if (classifierName == "GS")
+				featureNetwork->updctrl("GaussianClassifier/gaussian/mrs_natural/nLabels", numClasses);
+			else if (classifierName == "ZeroR")
+				featureNetwork->updctrl("ZeroRClassifier/zeror/mrs_natural/nLabels", numClasses);
+			else if (classifierName == "KNN")
+				featureNetwork->updctrl("KNNClassifier/knn/mrs_natural/nLabels", numClasses);
+
+			//configure Confidence
+			featureNetwork->updctrl("Confidence/confidence/mrs_natural/nLabels", numClasses);
+			featureNetwork->updctrl("Confidence/confidence/mrs_bool/mute", true);
+			featureNetwork->updctrl("Confidence/confidence/mrs_string/labelNames",classNames);
+			featureNetwork->updctrl("Confidence/confidence/mrs_bool/print",true); 
+
+			//configure WEKA sink
+			if (wekafname != EMPTYSTRING)
+			{
+				featureNetwork->updctrl("WekaSink/wsink/mrs_natural/nLabels", numClasses);
+				featureNetwork->updctrl("WekaSink/wsink/mrs_string/labelNames",classNames);
+				featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 40);
+				string name = audioColl.entry(i).substr(0, audioColl.entry(i).length()-4) + "_" + extractorStr + "_.arff";
+				featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", name);
+			}
+
+			//iterate over timeline regions
+			for (mrs_natural r = 0; r < tline.numRegions(); r++)
+			{
+				cout << "---------------------------" << endl;
+				cout << "Region " << r << "/" << tline.numRegions() << endl;
+				cout << "Region start   = " << tline.start(r) << endl;
+				cout << "Region classID = " << tline.getRClassId(r) << endl; 
+				cout << "Region end     = " << tline.end(r) << endl;
+
+				// set current region class in Annotator
+				featureNetwork->updctrl("Annotator/annotator/mrs_natural/label", tline.getRClassId(r));
+
+				// set current region class in WEKA sink 
+				if (wekafname != EMPTYSTRING)
+				{
+					featureNetwork->updctrl("WekaSink/wsink/mrs_natural/label", tline.getRClassId(r)); //[?]
+				}
+
+				// reset texture analysis stats between regions
+				if(memSize != 0)
+					featureNetwork->updctrl("TextureStats/tStats/mrs_bool/reset", true);
+
+				//define audio region boundaries
+				mrs_natural start = (mrs_natural)(tline.start(r) * tline.lineSize_); //region start sample
+				mrs_natural end = (mrs_natural)(tline.end(r) * tline.lineSize_); //region end sample
+
+				featureNetwork->updctrl(src->getType() + "/src/mrs_natural/pos", start);
+				//featureNetwork->updctrl(src->getType() + "/src/mrs_natural/inSamples", hopSize); //[?]
+				//featureNetwork->updctrl(src->getType() + "/src/mrs_natural/inSamples", tline.lineSize_);//[?]
+				
+				//iterate over audio region
+				//(using the winSize and hopSize defined by the user)
+				mrs_natural numWindows = 0;
+				while(featureNetwork->getctrl(src->getType() + "/src/mrs_natural/pos")->to<mrs_natural>() + winSize <= end)
+				{
+					featureNetwork->tick();
+					numWindows++;
+				}
+
+				mrs_natural lastpos = featureNetwork->getctrl(src->getType() + "/src/mrs_natural/pos")->to<mrs_natural>();
+				if((end - lastpos) > 0)
+				{
+					cout << "Dropped last frame: " << endl;
+					cout << "Dropped " << end - lastpos << " samples from current segment." << endl;
+					cout << "Dropped " <<(lastpos + winSize) - end << " samples from next segment." << endl;
+				}
+				
+				cout << "Processed " << numWindows << " frames!"  << endl;
+			}
 		}
 	}
 
 	//////////////////////////////////////////////////////////////////////////
-	// update and train classifier after feature extration is complete
+	// update and train classifier after feature extraction is complete
 	//////////////////////////////////////////////////////////////////////////
 	if (classifierName == "GS")
 		featureNetwork->updctrl("GaussianClassifier/gaussian/mrs_bool/done",true);
@@ -858,7 +979,7 @@ void bextract_train(vector<Collection> cls, mrs_natural label,
 	{
 		featureNetwork->updctrl("KNNClassifier/knn/mrs_bool/done",false);  
 		featureNetwork->updctrl("KNNClassifier/knn/mrs_string/mode","predict");
-		featureNetwork->updctrl("KNNClassifier/knn/mrs_natural/k",3);
+		featureNetwork->updctrl("KNNClassifier/knn/mrs_natural/k",3); //[!] hardcoded!!!
 	}  
 
 	if (pluginName != EMPTYSTRING) 
@@ -866,7 +987,10 @@ void bextract_train(vector<Collection> cls, mrs_natural label,
 		featureNetwork->updctrl("AudioSink/dest/mrs_bool/mute", false);
 		featureNetwork->updctrl("AudioSink/dest/mrs_bool/init", false);
 	}
-	featureNetwork->updctrl("WekaSink/wsink/mrs_bool/mute", true);  
+	
+	if (wekafname != EMPTYSTRING)
+		featureNetwork->updctrl("WekaSink/wsink/mrs_bool/mute", true);  
+	
 	featureNetwork->updctrl("Confidence/confidence/mrs_bool/mute", false);
 
 	//////////////////////////////////////////////////////////////////////////
@@ -1215,6 +1339,7 @@ initOptions()
 	cmd_options.addNaturalOption("nwinsamples", "ws", 512);
 	cmd_options.addNaturalOption("nhopsamples", "hp", 512);
 	cmd_options.addStringOption("classifier", "c", EMPTYSTRING);
+	cmd_options.addBoolOption("tline", "t", false);
 }
 
 void 
@@ -1234,6 +1359,7 @@ loadOptions()
 	memSize = cmd_options.getNaturalOption("memory");
 	winSize = cmd_options.getNaturalOption("nwinsamples");
 	hopSize = cmd_options.getNaturalOption("nhopsamples");
+	tline = cmd_options.getBoolOption("tline");
 }
 
 void bextract(vector<string> soundfiles, mrs_natural label, 
@@ -1458,9 +1584,8 @@ main(int argc, const char **argv)
 			exit(1);
 		}
 		
-		bextract_train(cls, i, pluginName, classNames, wekafname, memSize, extractorName, classifierName);
-		// bextract(soundfiles, i, pluginName, classNames, wekafname, memSize, 
-		// extractorName, classifierName);
+		bextract_train(cls, i, pluginName, classNames, wekafname, memSize, 
+			extractorName, classifierName);
 	}
 
 	exit(0);

@@ -65,17 +65,16 @@ struct TimeRegion
 class TimeLine
 {
 protected:
-
   int srate_;
   std::vector<std::string> classNames_;
-
   std::string filename_;
-public:
-  std::vector<TimeRegion> regions_;
-  int numRegions_;
-  int lineSize_;
+	std::vector<TimeRegion> regions_;
 
-  int size_;
+public:
+	int numRegions_;
+	int lineSize_;
+	int size_;
+
   TimeLine();
   ~TimeLine();
   void scan(realvec segmentation);
@@ -97,6 +96,7 @@ public:
   void info();
 
   unsigned int getClassId(unsigned int index);
+	unsigned int numClasses();
  
   //void lengths_info();
   void print(FILE *fp);
