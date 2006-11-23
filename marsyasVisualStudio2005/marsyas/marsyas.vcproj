@@ -141,7 +141,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug_MATLABengine|Win32"
+			Name="Debug_MATLAB|Win32"
 			OutputDirectory="$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="4"
@@ -206,7 +206,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release_MATLABengine|Win32"
+			Name="Release_MATLAB|Win32"
 			OutputDirectory="$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="4"

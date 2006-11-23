@@ -169,7 +169,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug_MATLABengine|Win32"
+			Name="Debug_MATLAB|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
@@ -218,7 +218,7 @@
 				AdditionalDependencies="marsyas.lib Wsock32.lib dsound.lib libeng.lib libmx.lib libut.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\marsyas\Debug_MATLABengine;&quot;$(MATLAB)\extern\lib\win32\microsoft&quot;"
+				AdditionalLibraryDirectories="..\marsyas\Debug_MATLAB;&quot;$(MATLAB)\extern\lib\win32\microsoft&quot;"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 			/>
@@ -248,7 +248,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release_MATLABengine|Win32"
+			Name="Release_MATLAB|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"

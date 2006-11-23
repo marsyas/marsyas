@@ -44,9 +44,6 @@ of one sample and are defined by lineSize.
 using namespace std;
 using namespace Marsyas;
 
-//#define SEPCHARS " \t\n"
-#define SEPCHARS " \r\n"
-
 TimeLine::TimeLine()
 {
 	srate_ = 0;
