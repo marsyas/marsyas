@@ -18,17 +18,16 @@ inc_y = 1 ;
 
 % seuil = 30;
 % P(7, :) = P(7,:)-min(P(7, :));
-
- 
+maxGp = max(P(7, :))+1;
 clf
 hold on
 for i=1:length(P(1,:))
    if(P(7, i)>-1)
   amp_plot = 20*log10(P(2, i))+80;
   amp_plot = 20*log10(P(2, i)/maxA)+80;
-  amp_plot = amp_plot-20*log10(maxA)+80;
+ amp_plot = amp_plot-20*log10(maxA)+80;
 % amp_plot=100;
-  value_color = ceil((nb_coul)*P(7, i)/(max(P(7, :))+1))+1;
+  value_color = floor((nb_coul)*(P(7, i))/maxGp)+1;
   color = cm(value_color, :) ;
   plot (P(6, i)*inc_x*timeInterval, inc_y*P(1, i), 'go', 'LineWidth', 1, ...
         'MarkerEdgeColor', 'k', ...
