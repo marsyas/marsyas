@@ -1,6 +1,7 @@
-function harmo()
+function m = harmo()
 
-w = 0.1;
+l=25;
+w = 0.01;
 %   f=(1:100);
 %    plot(hFunction(f, 10, w));
 %   return
@@ -16,19 +17,17 @@ a=[1, 1, .8, .8, .6, .6, .4, .4, .4];
 % a=[a ones(1, 4)];
 % 
 % add noise to the parameters estimates
-f=f+rand(1, length(f))*5;
-a=a+rand(1, length(f))*0.1;
+  f=f+rand(1, length(f))*5;
+  a=a+rand(1, length(f))*0.1;
 
 % f = (f-mean(f))/std(f);
 % a = (a-mean(a))/std(a);
 
-debug=1;
-m = ones(length(f));
+debug=0;
+m = zeros(length(f));
 
 for i=1:length(f)
     for j=1:i-1
-        f(i)
-        f(j)
         %         weighting
         f1=f;f2=f;
         % fundamental frequency estimate for modulus
@@ -49,13 +48,13 @@ hF = min([f(i), f(j)]);
         % plotting
         if(debug)
             clf
-            subplot(2, 1, 1);
+            subplot(3, 1, 1);
             hold on
             text(f, a+.3, num2str((1:length(f))'-1));
             stem(f, a);
             stem(f(i), a(i), 'rd');
             stem(f(j), a(j), 'rd');
-            subplot(2, 1, 2);
+            subplot(3, 1, 2);
             hold on
             text(f1, (A1.*a)*1.2, num2str((1:length(f))'-1), 'Color', 'r');
             stem(f1, (A1.*a), 'r*');
@@ -63,14 +62,41 @@ hF = min([f(i), f(j)]);
             stem(f2, (A2.*a), 'kd');
         end
         % compute spectra correlation
-        val = computeCorrelation(f1, f2, A1.*a, A2.*a)
+        val = correlate(f1, f2, A1.*a, A2.*a, l);
+        [f(i) f(j)]
+        val
         % fill similarity matrix
         m(i,j)=val;
         m(j,i)=val;
     end
 end
 
+if(debug)
+clf
 imagesc(m);
+end
+
+function res = correlate(f1, f2, a1, a2, l)
+
+x1=zeros(1,l);
+x2=zeros(1,l);
+
+i1=mod(ceil(f1*l), l)+1;
+i2=mod(ceil(f2*l), l)+1;
+
+for i=1:length(a1)
+x1(i1(i)) = x1(i1(i))+a1(i);
+end
+for i=1:length(a2)
+x2(i2(i)) = x2(i2(i))+a2(i);
+end
+t = (0:1/l:1-1/l);
+
+subplot(3, 1, 3);
+bar(t, [x1; x2]', 'stack');
+
+res = (x1*x2')/(sqrt(x1*x1')*sqrt(x2*x2'));
+
 
 function res = computeCorrelation(f1, f2, a1, a2)
 
