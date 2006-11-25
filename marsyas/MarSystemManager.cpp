@@ -330,7 +330,7 @@ MarSystemManager::MarSystemManager()
 	pvocpr->addMarSystem(new Gain("gt"));
 
 	pvocpr->linkctrl("mrs_natural/Decimation", 
-		"ShiftInput/si/mrs_natural/Decimation");
+		"ShiftInput/si/mrs_natural/Decimation"); // [?] missing WindowSize initialization ?
 	pvocpr->linkctrl("mrs_natural/Decimation", 
 		"PvFold/fo/mrs_natural/Decimation");
 	pvocpr->linkctrl("mrs_natural/Decimation", 
@@ -360,6 +360,38 @@ MarSystemManager::MarSystemManager()
 		"Gain/gt/mrs_real/gain");
 
 	registerPrototype("PhaseVocoder", pvocpr);
+
+	// prototype for Peak Extraction stuff
+	MarSystem* peAnalysePr = new Series("peAnalysePr");
+	peAnalysePr->addMarSystem(create("ShiftInput", "si"));
+	peAnalysePr->addMarSystem(create("Shifter", "sh"));
+	peAnalysePr->addMarSystem(create("Windowing", "wi"));
+  MarSystem *parallel = create("Parallel", "par");
+	parallel->addMarSystem(create("Spectrum", "spk1"));
+	parallel->addMarSystem(create("Spectrum", "spk2"));
+	peAnalysePr->addMarSystem(parallel);
+	peAnalysePr->addMarSystem(create("PeConvert", "conv"));
+
+	peAnalysePr->linkctrl("mrs_natural/Decimation", 
+		"ShiftInput/si/mrs_natural/Decimation");
+	peAnalysePr->linkctrl("mrs_natural/WindowSize", 
+		"ShiftInput/si/mrs_natural/WindowSize");
+	peAnalysePr->linkctrl("mrs_natural/FFTSize", 
+		"Windowing/wi/mrs_natural/size");
+	peAnalysePr->linkctrl("mrs_string/WindowType", 
+		"Windowing/wi/mrs_string/type");
+	peAnalysePr->linkctrl("mrs_natural/zeroPhasing", 
+		"Windowing/wi/mrs_natural/zeroPhasing");
+	peAnalysePr->linkctrl("mrs_natural/Sinusoids", 
+		"PeConvert/conv/mrs_natural/Sinusoids");
+	peAnalysePr->linkctrl("mrs_natural/Decimation", 
+		"PeConvert/conv/mrs_natural/Decimation");
+	peAnalysePr->linkctrl("mrs_natural/FFTSize", 
+		"PvFold/fo/mrs_natural/FFTSize");
+
+	peAnalysePr->updctrl("Shifter/sh/mrs_natural/shift", 1);
+
+	registerPrototype("PeAnalyse", pvocpr);
 }
 
 MarSystemManager::~MarSystemManager()
