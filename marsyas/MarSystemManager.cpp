@@ -391,7 +391,7 @@ MarSystemManager::MarSystemManager()
 
 	peAnalysePr->updctrl("Shifter/sh/mrs_natural/shift", 1);
 
-	registerPrototype("PeAnalyse", pvocpr);
+	registerPrototype("PeAnalyse", peAnalysePr);
 }
 
 MarSystemManager::~MarSystemManager()
