@@ -895,15 +895,21 @@ realvec::getCol(const mrs_natural c) const
 }
 
 mrs_real 
-realvec::maxval() const
+realvec::maxval(mrs_natural* index) const
 {
-  mrs_real max = numeric_limits<mrs_real>::max() * -1.0;
-  for (mrs_natural i=0; i < size_; i++)
-    {
-      if(data_[i] > max)
-	max = data_[i];
-    }
-  return max;
+	mrs_real max = numeric_limits<mrs_real>::max() * -1.0;
+	mrs_natural ind = 0;
+	for (mrs_natural i=0; i < size_; i++)
+	{
+		if(data_[i] > max)
+		{
+			max = data_[i];
+			ind = i;
+		}
+	}
+	if(index)
+		*index = ind;
+	return max;
 }
 
 mrs_real 
@@ -998,6 +1004,29 @@ realvec::normObs()
     }
 }
 
+void
+realvec::normSpl(mrs_natural index)
+{
+	//normalize (aka standardize) matrix
+	//using observations means and standard deviations 
+if(!index)
+index=cols_;
+	for (mrs_natural r=0; r < index; r++)
+	{
+		//for (mrs_natural c=0; c < cols_; c++)
+		//{
+		//	obsrow(c) = (*this)(r,c); //get observation row
+		//}
+		mrs_real mean = getCol(r).mean();
+		mrs_real std = getCol(r).std();
+		if(std)
+			for (mrs_natural c=0; c < rows_; c++)
+			{
+				(*this)(c, r) -= mean;
+				(*this)(c, r) /= std;
+			}
+	}
+}
 
 
 realvec
