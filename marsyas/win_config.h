@@ -11,7 +11,7 @@
 #define MARSYAS_MFDIR "/usr/local/share/marsyas/mf"
 
 /* Enable Marsyas Assertions */
-// #define MRSASSERTE 1
+ #define MRSASSERTE 1
 
 /* Enable Marsyas Diagnostics */
 /* #undef MRSDIAGNOSTIC */
