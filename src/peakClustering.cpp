@@ -31,24 +31,29 @@ bool usageopt_ =0;
 int fftSize_ = 2048;
 int winSize_ = 2048;
 // if kept the same no time expansion
-int hopSize_ = 360;
+int hopSize_ = 512;
 // nb Sines
-int nbSines_ = 80;
+int nbSines_ = 15;
 // nbClusters
-int nbClusters_ = 5;
+int nbClusters_ = 3;
 // output buffer Size
 int bopt_ = 128;
 // output gain
 mrs_real gopt_ = 1.0;
 // number of accumulated frames
-mrs_natural accSize_ = 6;
+mrs_natural accSize_ = 1;
 // type of similarity Metrics
-string similarityType_ = "fn";
+string similarityType_ = "ho";
 // store for clustered peaks
 realvec peakSet_;
 // delay for noise insertion
-mrs_real noiseDelay_=44100;
-
+mrs_real noiseDelay_=0;
+// gain for noise insertion
+mrs_real noiseGain_=.1;
+// duration for noise insertion
+mrs_real noiseDuration_=0;
+// sampling frequency
+mrs_real samplingFrequency_=1;
 
 bool microphone_ = false;
 bool analyse_ = false;
@@ -119,7 +124,11 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		fanin->addMarSystem(mng.create("SoundFileSource", "src"));
 	// create a series for the noiseSource
 	MarSystem* mixseries = mng.create("Series", "mixseries");
+	if(noiseName == "white")
+mixseries->addMarSystem(mng.create("NoiseSource", "noise"));
+	else
 	mixseries->addMarSystem(mng.create("SoundFileSource", "noise"));
+
 	mixseries->addMarSystem(mng.create("Delay", "noiseDelay"));
 	mixseries->addMarSystem(mng.create("Gain", "noiseGain"));
 	// add this series in the fanout
@@ -177,12 +186,14 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_string/filename", sfName);
 		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_natural/inSamples", D);
 		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_natural/inObservations", 1);
+		samplingFrequency_ = pvseries->getctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_real/osrate")->toReal();
 	}
 
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/SoundFileSource/noise/mrs_string/filename", noiseName);
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/SoundFileSource/noise/mrs_natural/inSamples", D);
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/Delay/noiseDelay/mrs_natural/delay", (mrs_natural) noiseDelay);
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/Gain/noisegain/mrs_real/gain", .5);
+	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/NoiseSource/noise/mrs_string/mode", "rand");
+	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/Delay/noiseDelay/mrs_real/delay",  noiseDelay);
+	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/Gain/noiseGain/mrs_real/gain", noiseGain_);
 
 
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/ShiftInput/si/mrs_natural/Decimation", D);
@@ -191,9 +202,10 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Windowing/wi/mrs_string/type", "Hanning");
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Windowing/wi/mrs_natural/zeroPhasing", 1);
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Shifter/sh/mrs_natural/shift", 1);
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PvFold/fo/mrs_natural/Decimation", D);
+	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PvFold/fo/mrs_natural/Decimation", D); // useless ?
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Decimation", D);      
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Sinusoids", S);  
+pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
 
 	pvseries->setctrl("PeClust/peClust/mrs_natural/Sinusoids", S);  
 	pvseries->setctrl("PeClust/peClust/mrs_natural/Clusters", C); 
@@ -207,13 +219,28 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		synthNetConfigure (pvseries, sfName, outsfname, fileResName, Nw, D, S, accSize, microphone_, bopt_, Nw+1-D);
 	}
 
+	if(noiseDuration_)
+	{
+	ostringstream ossi;
+	ossi << ((noiseDelay_+noiseDuration_)*0.1) << "s";
+	cout << ossi.str() << endl;
+	// touch the gain directly
+	// pvseries->updctrl(ossi.str(), Repeat(), new EvValUpd(pvseries,"Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/Gain/noiseGain/mrs_real/gain", 0.0));
 	//	cout << *pvseries;
+	}
 	mrs_real globalSnr = 0;
 	mrs_natural nb=0;
+	//	mrs_real time=0;
 	while(1)
 	{
 		pvseries->tick();
 
+	/*	if(time > (noiseDelay_+noiseDuration_))
+		{
+	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/Gain/noiseGain/mrs_real/gain", (mrs_real) 0);
+		}
+    time+=accSize_*hopSize_/samplingFrequency_;*/
+// cout << time << " " << noiseDelay_+noiseDuration_ << endl;
 		// ouput the seg snr
 		if(synthetize)
 		{
@@ -374,8 +401,8 @@ main(int argc, const char **argv)
 				exit(1);
 			}
 
-	//		MATLAB_PUT(peakSet_, "peaks");
-	//		MATLAB_EVAL("plotPeaks(peaks)");
+			MATLAB_PUT(peakSet_, "peaks");
+			MATLAB_EVAL("plotPeaks(peaks)");
 
 
 			// computes the cluster attributes
@@ -390,20 +417,21 @@ main(int argc, const char **argv)
 					clusters.synthetize(peakSet_, *sfi, fileName, winSize_, hopSize_, nbSines_, bopt_, 1);
 
 
-				clusters.selectBefore(noiseDelay_/hopSize_);
+				clusters.selectGround();
 				updateLabels(peakSet_, clusters.getConversionTable());
 
+						MATLAB_PUT(peakSet_, "peaksGp");
+			MATLAB_EVAL("plotPeaks(peaksGp)");
 			}
-		//	MATLAB_PUT(peakSet_, "peaks");
-		//	MATLAB_EVAL("plotPeaks(peaks)");
-
+	
 			if(clusterSynthetize_)
 			{
         PeClusters clusters(peakSet_);
 				// synthetize remaining clusters
 				clusters.synthetize(peakSet_, *sfi, fileName, winSize_, hopSize_, nbSines_, bopt_);
 			}
-
+			MATLAB_PUT(peakSet_, "peaks");
+			MATLAB_EVAL("plotPeaks(peaks)");
 		}
 	}
 	else

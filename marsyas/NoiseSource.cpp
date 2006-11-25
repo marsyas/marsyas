@@ -25,6 +25,7 @@ NoiseSource::NoiseSource(string name):MarSystem("NoiseSource",name)
 {
   //type_ = "NoiseSource";
   //name_ = name;
+	addControls();
 }
 
 NoiseSource::~NoiseSource()
@@ -37,6 +38,16 @@ NoiseSource::clone() const
   return new NoiseSource(*this);
 }
 
+void 
+NoiseSource::addControls()
+{
+  //Add specific controls needed by this MarSystem.
+  addctrl("mrs_string/mode", "wavetable");
+	setctrlState("mrs_string/mode", true);
+}
+
+
+
 void
 NoiseSource::myUpdate()
 {
@@ -45,6 +56,10 @@ NoiseSource::myUpdate()
 //   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 	MarSystem::myUpdate();
 
+	string mode = getctrl("mrs_string/mode")->toString();
+
+	if(mode == "wavetable")
+	{
   wavetableSize_ = 8*8192;  // 8192
   wavetable_.create((mrs_natural)wavetableSize_);
   
@@ -53,27 +68,37 @@ NoiseSource::myUpdate()
 	// Random Generator
     wavetable_(t) = (mrs_real)(2.0 * rand() / (RAND_MAX + 1.0) );
     index_ = 0;
+		mode_=0;
+	}
+	else
+		mode_ = 1;
 }
 
 void 
 NoiseSource::myProcess(realvec &in, realvec &out)
 {
-  //checkFlow(in,out);
-  
-  mrs_real incr = (440.0 * wavetableSize_) / (getctrl("mrs_real/israte")->toReal());
-  
-  
-  mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
-  
-  for (t=0; t < inSamples; t++)
-    {
-      out(0,t) = wavetable_((mrs_natural)index_);
-      index_ += incr;
-      while (index_ >= wavetableSize_)
-	index_ -= wavetableSize_;
-      while (index_ < 0)
-	index_ += wavetableSize_;
-    }
+	//checkFlow(in,out);
+
+	mrs_real incr = (440.0 * wavetableSize_) / (getctrl("mrs_real/israte")->toReal());
+
+
+	mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
+
+	if(mode_ == 1)
+	{
+		for (t=0; t < inSamples; t++)
+			out(t) = (mrs_real)(2.0 * rand() / (RAND_MAX + 1.0) );
+	}
+	else
+		for (t=0; t < inSamples; t++)
+		{
+			out(0,t) = wavetable_((mrs_natural)index_);
+			index_ += incr;
+			while (index_ >= wavetableSize_)
+				index_ -= wavetableSize_;
+			while (index_ < 0)
+				index_ += wavetableSize_;
+		}
 }
 
 

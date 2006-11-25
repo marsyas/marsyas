@@ -30,7 +30,9 @@ private:
   realvec wavetable_;
   mrs_real wavetableSize_;
   mrs_real index_;
- 
+ mrs_real mode_;
+
+ void addControls();
 	void myUpdate();
   
 public:

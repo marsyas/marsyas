@@ -75,7 +75,7 @@ PeResidual::myProcess(realvec& in, realvec& out)
 {
   //checkFlow(in,out);
 
-  mrs_real snr=0; 
+  mrs_real snr=-80; 
   
   for (o=0; o < inObservations_/2; o++)
 	{
@@ -89,12 +89,15 @@ PeResidual::myProcess(realvec& in, realvec& out)
 			tmpDiff += out(o, t)*out(o, t);
 			tmpOri += in(o+1, t)*in(o+1, t);
 		}
-		if(tmpDiff && tmpSyn)
+
+			//	tmpOri/=inSamples_;
+			//tmpSyn/=inSamples_;
+			//tmpDiff/=inSamples_;
+		
+			if(tmpSyn > .001)
 		{
-			tmpOri/=inSamples_;
-			tmpSyn/=inSamples_;
-			tmpDiff/=inSamples_;
-			snr+= 10*log10 ((tmpOri+MINREAL)/tmpDiff);
+
+			snr= log10 (1+(tmpSyn+tmpOri)/(2*(tmpDiff+MINREAL)));
 		}
 	}
 

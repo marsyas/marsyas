@@ -57,7 +57,7 @@ private:
 	mrs_natural nbParameters_;
 	mrs_natural nbPeaks_;
 	mrs_natural kmax_;
-	mrs_natural size_, psize_;
+	mrs_natural size_, psize_, skip_;
 
 	void addControls();
 	void myUpdate();

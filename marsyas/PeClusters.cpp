@@ -171,6 +171,15 @@ PeClusters::selectBefore(mrs_real val)
 }
 
 void
+PeClusters::selectGround()
+{
+	for (int i=0 ; i<nbClusters ; i++)
+	{
+			set[i].label = set[i].groundLabel;
+	}
+}
+
+void
 PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mrs_natural Nw, mrs_natural D, mrs_natural S, mrs_natural bopt, mrs_natural residual)
 {
 	cout << "Synthetizing Clusters" << endl;
@@ -180,11 +189,8 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 	MarSystem* pvseries = mng.create("Series", "pvseries");
 	MarSystem *peSynth = mng.create("PeSynthetize", "synthNet");
 
-	/* Commented out in order to compile under Linux/ OS X */ 
-	/* MarSystem *peSource = mng.create("RealvecSource", "peSource");
-
+  MarSystem *peSource = mng.create("RealvecSource", "peSource");
 	pvseries->addMarSystem(peSource);
-	*/ 
 
 
 	pvseries->addMarSystem(peSynth);
@@ -214,14 +220,16 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 
 			ostringstream ossi;
 			ossi << i;
+	string ground = "";
+			if(residual)
+				ground = "Grd";
 
 			// string outsfname = path + name + "_" +  itoa(i, tmp, 10) + "." + ext;
 			// string fileResName = path + name + "Res_" + itoa(i, tmp, 10) + "." + ext;
 
 			// Changed by gtzan to compile trunk under Linux 
-			string outsfname = path + name + "_" +  ossi.str() + "." + ext;
-			string fileResName = path + name + "Res_" + ossi.str() + "." + ext;
-
+			string outsfname = path + name + ground + "_" +  ossi.str() + "." + ext;
+			string fileResName = path + name + ground + "Res_" + ossi.str() + "." + ext;
 
 			synthNetConfigure (pvseries, fileName, outsfname, fileResName, Nw, D, S, 1, 0, bopt, Nw+1-D); //  nbFrames
 
@@ -237,7 +245,7 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 				{
 					const mrs_real snr = pvseries->getctrl("Shredder/synthNet/Series/postNet/PeResidual/res/mrs_real/snr")->toReal();
 					//	cout << " SNR : "<< snr << endl;
-					if(snr)
+					if(snr != -80)
 					{
 						nbActiveFrames++;
 						Snr+=snr;
@@ -249,11 +257,15 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 			if(residual)
 			{
 				Snr/=nbActiveFrames;
-				cout << " SNR : "<< Snr << endl;
-				if(Snr> 0)
-					set[i].groundLabel = 1;
+				if(Snr)
+				Snr = 10*log10(pow(10, Snr)-1);
 				else
+					Snr = -80;
+				cout << " SNR for cluster " << i << " : "<< Snr << " " << nbActiveFrames << endl;
+				if(Snr > -3)
 					set[i].groundLabel = 0;
+				else
+					set[i].groundLabel = -1;
 
 			}	
 		}

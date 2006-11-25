@@ -44,7 +44,7 @@ PeConvert::PeConvert(string name):MarSystem("PeConvert",name)
 	size_ = 0;
 	nbParameters_ = 7; // f, a, p, df, da, t, g  // should be set as a control [!]
 	time_ = 0;
-
+skip_=0;
 	addControls();
 }
 
@@ -67,6 +67,8 @@ PeConvert::addControls()
 	setctrlState("mrs_natural/Decimation", true);
 	addctrl("mrs_natural/Sinusoids", 1);
 	setctrlState("mrs_natural/Sinusoids", true);
+	addctrl("mrs_natural/nbFramesSkipped", 0);
+	setctrlState("mrs_natural/nbFramesSkipped", true);
 }
 
 void
@@ -100,33 +102,33 @@ PeConvert::myUpdate()
 	factor_ /= TWOPI;
 	fundamental_ = (mrs_real) (getctrl("mrs_real/osrate")->toReal() / (mrs_real)getctrl("mrs_natural/inObservations")->toNatural()*2);
 	kmax_ = getctrl("mrs_natural/Sinusoids")->toNatural();
-
+	skip_ = getctrl("mrs_natural/nbFramesSkipped")->toNatural();
 }
 
 
 double lobe_value_compute (double f, int type, int size)
 {
-  double re ;
- 
-  // size par size-2 !!!
-  switch (type)
-    {
-    case 1 :
-      {
-        re= fabs (0.5*lobe_value_compute(f, 0, size)+
-          0.25*lobe_value_compute(f-2.*PI/size, 0, size)+
-          0.25*lobe_value_compute(f+2.*PI/size, 0, size))/size ;
-        return fabs(re);
-      }
-    case 0 :
-      return (double) (f == 0) ? size : (sin(f*0.5*(size))/sin(f*0.5));
+	double re ;
 
-    default :
-                {
-    //  assert (0) ;
-        return 0 ;
-  }
-}
+	// size par size-2 !!!
+	switch (type)
+	{
+	case 1 :
+		{
+			re= fabs (0.5*lobe_value_compute(f, 0, size)+
+				0.25*lobe_value_compute(f-2.*PI/size, 0, size)+
+				0.25*lobe_value_compute(f+2.*PI/size, 0, size))/size ;
+			return fabs(re);
+		}
+	case 0 :
+		return (double) (f == 0) ? size : (sin(f*0.5*(size))/sin(f*0.5));
+
+	default :
+		{
+			//  assert (0) ;
+			return 0 ;
+		}
+	}
 }
 
 
@@ -141,134 +143,139 @@ PeConvert::myProcess(realvec& in, realvec& out)
 	mrs_real b, d;
 	mrs_real phasediff;
 
-	// handle amplitudes
-	for (t=0; t <= N2; t++)
+	if(skip_<=time_)
 	{
-		if (t==0)
+		// handle amplitudes
+		for (t=0; t <= N2; t++)
 		{
-			a = in(2*t,0);
-			b = 0.0;
-			c = in(2*N2+2*t, 0);
-			d = 0.0;
+			if (t==0)
+			{
+				a = in(2*t,0);
+				b = 0.0;
+				c = in(2*N2+2*t, 0);
+				d = 0.0;
+			}
+			else if (t == N2)
+			{
+				a = in(1, 0);
+				b = 0.0;
+				c = in(2*N2+1, 0);
+				d = 0.0;
+			}
+			else
+			{
+				a = in(2*t, 0);
+				b = in(2*t+1, 0);
+				c = in(2*N2+2*t, 0);
+				d = in(2*N2+2*t+1, 0);
+			}
+
+			// computer magnitude value 
+			//mrs_real par = lobe_value_compute (0, 1, 2048);
+			// compute phase
+			phase_(t) = atan2(b,a);
+
+			// compute precise frequency using the phase difference
+			lastphase_(t)= atan2(d,c);
+			if(phase_(t) >= lastphase_(t))
+				phasediff = phase_(t) - lastphase_(t);
+			else
+				phasediff = phase_(t) - lastphase_(t)+TWOPI;
+			frequency_(t) = phasediff * factor_ ;
+
+			// compute precise amplitude
+			mag_(t) = sqrt((a*a + b*b))*2;//*4/0.884624;//*50/3); // [!!!!!!!!!!!]
+			mrs_real mag = lobe_value_compute ((t * fundamental_-frequency_(t))/factor_, 1, N2*2);
+			magCorr_(t) = mag_(t)/mag;
+
+
+			// computing precise frequency using the derivative method // use at your own risk	
+			/*	mrs_real lastmag = sqrt(c*c + d*d);
+			mrs_real rap = (mag_(t)-lastmag)/(lastmag*2);
+			f=asin(rap);
+			f *= (getctrl("mrs_real/osrate")->toReal())/PI;
+			*/
+			// rough frequency
+			// 	frequency_(t) = t * fundamental_;
+
+
+			if(lastfrequency_(t) != 0.0)
+				deltafrequency_(t) = (frequency_(t)-lastfrequency_(t))/(frequency_(t)+lastfrequency_(t));
+			deltamag_(t) = (mag_(t)-lastmag_(t))/(mag_(t)+lastmag_(t));
+
+			// remove potential peak if frequency too irrelevant
+			if(abs(frequency_(t) -t*fundamental_)>.5*fundamental_)
+				frequency_(t)=0;
+
+			lastfrequency_(t) = frequency_(t);
+			lastmag_(t) = mag_(t);
 		}
-		else if (t == N2)
-		{
-			a = in(1, 0);
-			b = 0.0;
-			c = in(2*N2+1, 0);
-			d = 0.0;
-		}
-		else
-		{
-			a = in(2*t, 0);
-			b = in(2*t+1, 0);
-			c = in(2*N2+2*t, 0);
-			d = in(2*N2+2*t+1, 0);
-		}
+		// select local maxima
+		realvec peaks_=mag_;
+		Peaker peaker("Peaker");
+		peaker.updctrl("mrs_real/peakStrength", 0.2);
+		peaker.updctrl("mrs_natural/peakStart", 0);
+		peaker.updctrl("mrs_natural/peakEnd", size_);
+		peaker.updctrl("mrs_natural/inSamples", mag_.getCols());
+		peaker.updctrl("mrs_natural/inObservations", mag_.getRows());
+		peaker.updctrl("mrs_natural/onSamples", peaks_.getCols());
+		peaker.updctrl("mrs_natural/onObservations", peaks_.getRows());
 
-		// computer magnitude value 
-		//mrs_real par = lobe_value_compute (0, 1, 2048);
-		// compute phase
-		phase_(t) = atan2(b,a);
+		peaker.process(mag_, peaks_);
 
-		// compute precise frequency using the phase difference
-		lastphase_(t)= atan2(d,c);
-		if(phase_(t) >= lastphase_(t))
-			phasediff = phase_(t) - lastphase_(t);
-		else
-			phasediff = phase_(t) - lastphase_(t)+TWOPI;
-		frequency_(t) = phasediff * factor_ ;
-
-		// compute precise amplitude
-		mag_(t) = sqrt((a*a + b*b))*2;//*4/0.884624;//*50/3); // [!!!!!!!!!!!]
-		mrs_real mag = lobe_value_compute ((t * fundamental_-frequency_(t))/factor_, 1, N2*2);
-    magCorr_(t) = mag_(t)/mag;
-
-
-		// computing precise frequency using the derivative method // use at your own risk	
-		/*	mrs_real lastmag = sqrt(c*c + d*d);
-		mrs_real rap = (mag_(t)-lastmag)/(lastmag*2);
-		f=asin(rap);
-		f *= (getctrl("mrs_real/osrate")->toReal())/PI;
+		/*
+		MATLAB_PUT(mag_, "peaks");
+		MATLAB_PUT(peaks_, "k");
+		MATLAB_EVAL("figure(1);clf;plot(peaks);");
 		*/
-		// rough frequency
-	// 	frequency_(t) = t * fundamental_;
 
+		realvec index_(kmax_*2);
+		for(t=0 ; t<N2 ; t++)
+		{
+			if(!frequency_(t))
+				peaks_(t) = 0;
+		}
 
-		if(lastfrequency_(t) != 0.0)
-			deltafrequency_(t) = (frequency_(t)-lastfrequency_(t))/(frequency_(t)+lastfrequency_(t));
-		deltamag_(t) = (mag_(t)-lastmag_(t))/(mag_(t)+lastmag_(t));
+		// keep only the kmax_ highest amplitude local maxima
+		MaxArgMax max("MaxArgMax");
+		max.updctrl("mrs_natural/nMaximums", kmax_);
+		max.updctrl("mrs_natural/inSamples", size_);
+		max.updctrl("mrs_natural/inObservations", 1);
+		max.update();
+		max.process(peaks_, index_);
 
-		// remove potential peak if frequency too irrelevant
-		if(abs(frequency_(t) -t*fundamental_)>.5*fundamental_)
-			frequency_(t)=0;
+		nbPeaks_=index_.getSize()/2;
 
-		lastfrequency_(t) = frequency_(t);
-		lastmag_(t) = mag_(t);
+		// fill output with peaks data
+		int i ;
+		out.setval(0);
+		for (i=0;i<nbPeaks_;i++)
+		{
+			out(i) = frequency_((mrs_natural) index_(2*i+1));
+		}
+		for (i=0;i<nbPeaks_;i++)
+		{
+			out(i+kmax_) = magCorr_((mrs_natural) index_(2*i+1));
+		}
+		for (i=0;i<nbPeaks_;i++)
+		{
+			out(i+2*kmax_) = -phase_((mrs_natural) index_(2*i+1));
+		}
+		for (i=0;i<nbPeaks_;i++)
+		{
+			out(i+3*kmax_) = deltafrequency_((mrs_natural) index_(2*i+1));
+		}
+		for (i=0;i<nbPeaks_;i++)
+		{
+			out(i+4*kmax_) = deltamag_((mrs_natural) index_(2*i+1));
+		}
+		for (i=0;i<nbPeaks_;i++)
+		{
+			out(i+5*kmax_) = time_;
+		}
 	}
-	// select local maxima
-	realvec peaks_=mag_;
-	Peaker peaker("Peaker");
-	peaker.updctrl("mrs_real/peakStrength", 0.2);
-	peaker.updctrl("mrs_natural/peakStart", 0);
-	peaker.updctrl("mrs_natural/peakEnd", size_);
-	peaker.updctrl("mrs_natural/inSamples", mag_.getCols());
-peaker.updctrl("mrs_natural/inObservations", mag_.getRows());
-	peaker.updctrl("mrs_natural/onSamples", peaks_.getCols());
-peaker.updctrl("mrs_natural/onObservations", peaks_.getRows());
-
-	peaker.process(mag_, peaks_);
-
-	/*
-	 MATLAB_PUT(mag_, "peaks");
-	 MATLAB_PUT(peaks_, "k");
-	 MATLAB_EVAL("figure(1);clf;plot(peaks);");
-	*/
-
-	realvec index_(kmax_*2);
-	for(t=0 ; t<N2 ; t++)
-	{
-		if(!frequency_(t))
-			peaks_(t) = 0;
-	}
-
-	// keep only the kmax_ highest amplitude local maxima
-	MaxArgMax max("MaxArgMax");
-	max.updctrl("mrs_natural/nMaximums", kmax_);
-	max.updctrl("mrs_natural/inSamples", size_);
-	max.updctrl("mrs_natural/inObservations", 1);
-	max.update();
-	max.process(peaks_, index_);
-
-	nbPeaks_=index_.getSize()/2;
-
-	// fill output with peaks data
-	int i ;
-	out.setval(0);
-	for (i=0;i<nbPeaks_;i++)
-	{
-		out(i) = frequency_((mrs_natural) index_(2*i+1));
-	}
-	for (i=0;i<nbPeaks_;i++)
-	{
-		out(i+kmax_) = magCorr_((mrs_natural) index_(2*i+1));
-	}
-	for (i=0;i<nbPeaks_;i++)
-	{
-		out(i+2*kmax_) = -phase_((mrs_natural) index_(2*i+1));
-	}
-	for (i=0;i<nbPeaks_;i++)
-	{
-		out(i+3*kmax_) = deltafrequency_((mrs_natural) index_(2*i+1));
-	}
-	for (i=0;i<nbPeaks_;i++)
-	{
-		out(i+4*kmax_) = deltamag_((mrs_natural) index_(2*i+1));
-	}
-	for (i=0;i<nbPeaks_;i++)
-	{
-		out(i+5*kmax_) = time_;
-	}
+	else
+		out.setval(0);
 
 	time_++;
 
@@ -282,10 +289,10 @@ peaker.updctrl("mrs_natural/onObservations", peaks_.getRows());
 
 
 
-	
 
-	
 
-	
-	
-      
+
+
+
+
+

@@ -1,29 +1,29 @@
 function m = harmo()
 
-l=25;
+l=10;
 w = 0.01;
 %   f=(1:100);
 %    plot(hFunction(f, 10, w));
 %   return
 
 % first set with four harmonics and two noisy peaks
-f=[440, 511, 880, 1320, 1760, 2173];
-a=[1, .2, .8, .6, .4, .9];
+f=[440, 880, 1320, 1760, 2173, 511];
+a=[1, .8, .6, .4, .9, .2];
 % second set with two sets of harmonics
-f=[440, 550, 880, 1100, 1320, 1650, 1760, 2200, 2750];
-a=[1, 1, .8, .8, .6, .6, .4, .4, .4];
-
-% f=[f (1:4)*445];
-% a=[a ones(1, 4)];
+  f=[440, 880, 1320, 1760, 2200, 550, 1100, 1650, 2750];
+  a=[.8, .8, .6, .4, .4, 1, .8, .6, .4];
+% 
+   f=[f (1:4)*445];
+   a=[a ones(1, 4)];
 % 
 % add noise to the parameters estimates
-  f=f+rand(1, length(f))*5;
-  a=a+rand(1, length(f))*0.1;
+     f=f+rand(1, length(f))*5;
+     a=a+rand(1, length(f))*0.1;
 
 % f = (f-mean(f))/std(f);
 % a = (a-mean(a))/std(a);
 
-debug=0;
+debug=1;
 m = zeros(length(f));
 
 for i=1:length(f)
@@ -36,14 +36,16 @@ for i=1:length(f)
         % weighting function considering minimal ff estimate
         A1=hFunction(f1, hF, w);
         A2=hFunction(f2, hF, w);
+         A1=ones(1, length(a));
+         A2=A1;
         % aligning the spectra of the two peaks
         f1 = f-f(i);
         f2 = f-(f(j));
 hF = min([f(i), f(j)]);
         % modulus apply (core idea to correlate spectra relevantly)
-        f1 = f1./f(j);
-        f2 = f2./f(i);
-        f1=mod(f1, 1);
+        f1 = f1./hF;
+         f2 = f2./hF;
+         f1=mod(f1, 1);
         f2= mod(f2, 1);
         % plotting
         if(debug)
@@ -62,12 +64,12 @@ hF = min([f(i), f(j)]);
             stem(f2, (A2.*a), 'kd');
         end
         % compute spectra correlation
-        val = correlate(f1, f2, A1.*a, A2.*a, l);
+        val = correlate(f1, f2, A1.*a, A2.*a, l, a);
         [f(i) f(j)]
         val
         % fill similarity matrix
         m(i,j)=val;
-        m(j,i)=val;
+        m(j,i)=val; 
     end
 end
 
@@ -76,26 +78,30 @@ clf
 imagesc(m);
 end
 
-function res = correlate(f1, f2, a1, a2, l)
+function res = correlate(f1, f2, a1, a2, l, a)
 
 x1=zeros(1,l);
 x2=zeros(1,l);
+x3=zeros(1,l);
+x4=zeros(1,l);
 
-i1=mod(ceil(f1*l), l)+1;
-i2=mod(ceil(f2*l), l)+1;
+i1=mod(round(f1*l), l)+1;
+i2=mod(round(f2*l), l)+1;
 
 for i=1:length(a1)
 x1(i1(i)) = x1(i1(i))+a1(i);
-end
-for i=1:length(a2)
 x2(i2(i)) = x2(i2(i))+a2(i);
+
+x3(i1(i)) = x3(i1(i))+a(i);
+x4(i2(i)) = x3(i2(i))+a(i);
 end
+
 t = (0:1/l:1-1/l);
 
 subplot(3, 1, 3);
-bar(t, [x1; x2]', 'stack');
+bar(t, [x1; x2]');
 
-res = (x1*x2')/(sqrt(x1*x1')*sqrt(x2*x2'));
+res = (x1*x2')/(sqrt(x3*x3')*sqrt(x4*x4'));
 
 
 function res = computeCorrelation(f1, f2, a1, a2)

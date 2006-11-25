@@ -28,6 +28,7 @@
 
 #include "MarSystem.h"	
 #include <string>
+#include <vector>
 
 namespace Marsyas
 {
@@ -41,14 +42,16 @@ private:
 	realvec data_;
 	realvec m_;
 	realvec lastFrame_;
-	realvec frequencySet_;
-	realvec amplitudeSet_;
+
 	mrs_real maxLabel_;
 	mrs_natural nbParameters_;
 	mrs_natural kmax_;
 	mrs_natural nbClusters_;
 	mrs_natural nbPeaks_;
 	std::string similarityType_;
+
+	mrs_real harmonicityWeight_;
+	mrs_natural harmonicitySize_;
   //Add specific controls needed by this MarSystem.
 	void addControls();
 	
@@ -56,7 +59,7 @@ private:
 
 	void similarityCompute(realvec&, realvec&);
 void similarityMatrix(realvec&, realvec&, std::string type);
- void harmonicitySimilarityCompute(realvec&, realvec&, realvec&, realvec& m);
+ void harmonicitySimilarityCompute(realvec&, std::vector<realvec>&, std::vector<realvec>&, realvec& m);
 void labeling(realvec& , realvec&);
 
 public:

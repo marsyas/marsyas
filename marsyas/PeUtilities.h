@@ -53,13 +53,18 @@ namespace Marsyas
 	int peaks2M (realvec&, realvec&, realvec&, mrs_natural maxNbPeaks, mrs_natural *nbPkFrame);
 	void peaks2V (realvec&, realvec&, realvec&, mrs_natural maxNbPeaks, mrs_natural label=-1);
 
-	void extractParameter(realvec&, realvec&, pkParameter);
+	void extractParameter(realvec&, std::vector<realvec>&, pkParameter, mrs_natural);
 
 	void selectPeaks (realvec&, realvec&, pkParameter type, int value, int maxNbPeaks);
 
 	void updateLabels(realvec&, realvec&);
 
+	mrs_real correlatePeakSets(realvec&, realvec&, realvec&, realvec&);
+mrs_real cosinePeakSets(realvec&, realvec&, realvec&, realvec&, realvec&, realvec&, mrs_natural);
+
 	mrs_real compareTwoPeakSets(realvec&, realvec&, realvec&, realvec&);
+	mrs_real compareTwoPeakSets2(realvec&, realvec&, realvec&, realvec&);
+	mrs_real compareTwoPeakSets3(realvec&, realvec&, realvec&, realvec&);
 
 	void synthNetCreate(MarSystemManager *mng, std::string outsfname, bool microphone);
 
@@ -67,6 +72,8 @@ void
 synthNetConfigure(MarSystem *pvseries, std::string sfName, std::string outsfname, std::string ressfname, mrs_natural Nw, 
 									mrs_natural D, mrs_natural S, mrs_natural accSize, bool microphone, mrs_natural bopt, mrs_natural delay);
 
+mrs_real harmonicWeighting(mrs_real, mrs_real, mrs_real);
+mrs_real harmonicWeightingBasic(mrs_real, mrs_real);
 }
 
 #endif

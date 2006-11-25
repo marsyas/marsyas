@@ -98,6 +98,7 @@ public:
 
 		realvec &getConversionTable();
 		void selectBefore(mrs_real val);
+		void selectGround();
 
 		void synthetize(realvec &peakSet, std::string fileName, std::string outFileName, mrs_natural Nw, mrs_natural D, mrs_natural S, mrs_natural bopt, mrs_natural residual=0);
 	};
