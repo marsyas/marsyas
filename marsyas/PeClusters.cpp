@@ -220,7 +220,7 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 
 			ostringstream ossi;
 			ossi << i;
-	string ground = "";
+			string ground = "";
 			if(residual)
 				ground = "Grd";
 
@@ -243,7 +243,7 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 				// get snr and decide ground thruth
 				if(residual)
 				{
-					const mrs_real snr = pvseries->getctrl("Shredder/synthNet/Series/postNet/PeResidual/res/mrs_real/snr")->toReal();
+					const mrs_real snr = pvseries->getctrl("PeSynthetize/synthNet/Series/postNet/PeResidual/res/mrs_real/snr")->toReal();
 					//	cout << " SNR : "<< snr << endl;
 					if(snr != -80)
 					{

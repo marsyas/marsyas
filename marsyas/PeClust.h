@@ -49,6 +49,7 @@ private:
 	mrs_natural nbClusters_;
 	mrs_natural nbPeaks_;
 	std::string similarityType_;
+  realvec similarityWeight_;
 
 	mrs_real harmonicityWeight_;
 	mrs_natural harmonicitySize_;

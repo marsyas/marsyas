@@ -93,15 +93,15 @@ Marsyas::peaks2V (realvec& in, realvec& last, realvec& out, mrs_natural maxNbPea
 			k=0;
 		}
 		if((!start || (start && in(i, 5) >= startIndex)))
-		 if(label < 0 || label == in(i, pkGroup))
-			for (j=0 ; j<in.getCols() ; j++)
-			{
-				out(j*maxNbPeaks+k, frameIndex-startIndex) = in(i, j);
-				/*	 if(peakFile)
-				peakFile << in(i, j);*/
-			}
+			if(label < 0 || label == in(i, pkGroup))
+				for (j=0 ; j<in.getCols() ; j++)
+				{
+					out(j*maxNbPeaks+k, frameIndex-startIndex) = in(i, j);
+					/*	 if(peakFile)
+					peakFile << in(i, j);*/
+				}
 	}
-//on-line case
+	//on-line case
 	if(label == -1)
 	{
 		for (j=0 ; j<out.getRows() ; j++)
@@ -166,8 +166,8 @@ Marsyas::compareTwoPeakSets(realvec&f1, realvec&a1, realvec&f2, realvec&a2)
 	MATLAB_EVAL("Acc=[];");
 	while (1)
 	{
-	
-   
+
+
 		//cout << i1<<i2;
 		mrs_natural ind1=-1, ind2=0;
 		mrs_real A1, A2, F1, F2, minDiff = 10000000000000, maxVal = -100000000000000; // minDiff = MAXREAL, maxVal = MINREAL;
@@ -203,14 +203,14 @@ Marsyas::compareTwoPeakSets(realvec&f1, realvec&a1, realvec&f2, realvec&a2)
 		i1(ind1) = 0;
 		i2(ind2) = 0;
 
-				MATLAB_PUT(f1, "f1");
-			MATLAB_PUT(a1, "a1");
-			MATLAB_PUT(i1, "i1");
-			MATLAB_PUT(i2, "i2");
-			MATLAB_PUT(f2, "f2");
-			MATLAB_PUT(a2, "a2");
-			MATLAB_PUT(abs(A1-A2)*abs(F1-F2), "acc");
-			MATLAB_EVAL("Acc=[Acc acc] ;subplot(2, 1, 1) ; plot(f1, a1.*i1, '*r', f2, a2.*i2, 'k+'); subplot(2, 1, 2); plot(Acc)");
+		MATLAB_PUT(f1, "f1");
+		MATLAB_PUT(a1, "a1");
+		MATLAB_PUT(i1, "i1");
+		MATLAB_PUT(i2, "i2");
+		MATLAB_PUT(f2, "f2");
+		MATLAB_PUT(a2, "a2");
+		MATLAB_PUT(abs(A1-A2)*abs(F1-F2), "acc");
+		MATLAB_EVAL("Acc=[Acc acc] ;subplot(2, 1, 1) ; plot(f1, a1.*i1, '*r', f2, a2.*i2, 'k+'); subplot(2, 1, 2); plot(Acc)");
 
 	}
 	return res/nb;
@@ -220,12 +220,12 @@ mrs_real
 Marsyas::compareTwoPeakSets2(realvec&f1, realvec&a1, realvec&f2, realvec&a2)
 {
 	mrs_real res = 0;
-for (mrs_natural i = 0 ; i < f1.getSize() ; i++)
-for (mrs_natural j = 0 ; j < f2.getSize() ; j++)
-{
-res += abs(f1(i)-f2(j))* abs(a1(i)-a2(j));
-}
-return res/(f1.getSize()*f2.getSize());
+	for (mrs_natural i = 0 ; i < f1.getSize() ; i++)
+		for (mrs_natural j = 0 ; j < f2.getSize() ; j++)
+		{
+			res += abs(f1(i)-f2(j))* abs(a1(i)-a2(j));
+		}
+		return res/(f1.getSize()*f2.getSize());
 }
 
 mrs_real
@@ -240,12 +240,11 @@ Marsyas::compareTwoPeakSets3(realvec&f1, realvec&a1, realvec&f2, realvec&a2)
 
 	//cout << f1 << a1 << f2 << a2 ;
 	// while the smallest set is not empty
-	MATLAB_EVAL("Acc=[];");
 	while (1)
 	{
 		//cout << i1<<i2;
 		mrs_natural ind1=-1, ind2=0;
-		mrs_real A1, A2, F1, F2, minDiff = 10000000000000, minVal = 100000000000000; // minDiff = MAXREAL, maxVal = MINREAL;
+		mrs_real minDiff = 10000000000000, minVal = 100000000000000; // minDiff = MAXREAL, maxVal = MINREAL;
 		// look for the smallest couple
 		for (mrs_natural i=0 ; i<a1.getSize() ; i++)
 			for (mrs_natural j=0 ; j<a2.getSize() ; j++)
@@ -259,23 +258,22 @@ Marsyas::compareTwoPeakSets3(realvec&f1, realvec&a1, realvec&f2, realvec&a2)
 				}
 			}
 
-		if(ind1 == -1 || ind2 == -1) break;
+			if(ind1 == -1 || ind2 == -1) break;
 
-mrs_real val = abs(a1(ind1)-a2(ind2))*abs(f1(ind1)-f2(ind2));
-		res += val; // or product of fDiff and aDiff
-		nb++;
-		// remove the two peaks
-		i1(ind1) = 0;
-		i2(ind2) = 0;
+			mrs_real val = abs(a1(ind1)-a2(ind2))*abs(f1(ind1)-f2(ind2));
+			res += val; // or product of fDiff and aDiff
+			nb++;
+			// remove the two peaks
+			i1(ind1) = 0;
+			i2(ind2) = 0;
 
-				MATLAB_PUT(f1, "f1");
+			MATLAB_PUT(f1, "f1");
 			MATLAB_PUT(a1, "a1");
 			MATLAB_PUT(i1, "i1");
 			MATLAB_PUT(i2, "i2");
 			MATLAB_PUT(f2, "f2");
 			MATLAB_PUT(a2, "a2");
-			MATLAB_PUT(val, "acc");
-			MATLAB_EVAL("Acc=[Acc acc] ;subplot(2, 1, 1) ; plot(f1, a1.*i1, '*r', f2, a2.*i2, 'k+'); subplot(2, 1, 2); plot(Acc)");
+			MATLAB_EVAL("subplot(2, 1, 1) ; plot(f1, a1.*i1, '*r', f2, a2.*i2, 'k+'); subplot(2, 1, 2); plot(Acc)");
 
 	}
 	return res/nb;
@@ -319,28 +317,28 @@ Marsyas::correlatePeakSets(realvec&f1, realvec&a1, realvec&f2, realvec&a2)
 					}
 				}
 
-								
-				
-					
-					cout << i1;
+
+
+
+				cout << i1;
 				cout << i2;
-			
+
 
 
 				mrs_real val = a1(ind1)*a2(ind2)/(minDiff*minDiff+0.0000000000000001);
-  cout << ind1 << " " << ind2 << " " << val << endl;	
+				cout << ind1 << " " << ind2 << " " << val << endl;	
 				res += val; // or product of fDiff and aDiff
 				// remove the two peaks	
-			if(ind1 != -1)
-			{
-				i1(ind1) = 0;
-				i2(ind2) = 0;
-			}
-			else
-			{
-				cout << i1 << i2;
-			}
-		/*		MATLAB_PUT(f1, "f1");
+				if(ind1 != -1)
+				{
+					i1(ind1) = 0;
+					i2(ind2) = 0;
+				}
+				else
+				{
+					cout << i1 << i2;
+				}
+				/*		MATLAB_PUT(f1, "f1");
 				MATLAB_PUT(a1, "a1");
 				MATLAB_PUT(i1, "i1");
 				MATLAB_PUT(i2, "i2");
@@ -348,7 +346,7 @@ Marsyas::correlatePeakSets(realvec&f1, realvec&a1, realvec&f2, realvec&a2)
 				MATLAB_PUT(a2, "a2");
 				MATLAB_PUT(val, "acc");
 				MATLAB_EVAL("plotHarmo");*/
-			//	cout << ind1 <<" " << ind2<<endl;
+				//	cout << ind1 <<" " << ind2<<endl;
 	}
 	return res/f1.getSize();
 }
@@ -364,33 +362,39 @@ Marsyas::cosinePeakSets(realvec&f1, realvec&a1, realvec&f2, realvec&a2, realvec&
 	realvec x4(length);
 
 	x1.setval(0);
-x2.setval(0);
-x3.setval(0);
-x4.setval(0);
-// first discrete Harmonically Wrapped Spectrum 
+	x2.setval(0);
+	x3.setval(0);
+	x4.setval(0);
+	// first discrete Harmonically Wrapped Spectrum 
 	for (mrs_natural i=0 ; i<f1.getSize() ; i++)
 	{
-index= fmod(floor(f1(i)+.5), 1);
-x1(index) += a1(i);
-x3(index) += a3(i);
+		index= (mrs_natural) fmod(floor(f1(i)*length+.5), length);
+		x1(index) += a1(i);
+		x3(index) += a3(i);
 	}
 	// second discrete Harmonically Wrapped Spectrum 
 	for (mrs_natural i=0 ; i<f2.getSize()  ; i++)
 	{
-index= fmod(floor(f2(i)+.5), 1);
-x2(index) += a2(i);
-x4(index) += a4(i);
+		index= (mrs_natural) fmod(floor(f2(i)*length+.5), length);
+		x2(index) += a2(i);
+		x4(index) += a4(i);
 	}
-// cosine metric
-for (mrs_natural i=0 ; i<x1.getSize()  ; i++)
+	// cosine metric
+	for (mrs_natural i=0 ; i<x1.getSize()  ; i++)
 	{
-res1 += x1(i)*x2(i);
-res2 += x3(i)*x3(i);
-res3 += x4(i)*x4(i);
-}
+		res1 += x1(i)*x2(i);
+		res2 += x3(i)*x3(i);
+		res3 += x4(i)*x4(i);
+	}
 
-res = res1/(sqrt(res2)*sqrt(res3));
-return res;
+	res = res1/(sqrt(res2)*sqrt(res3));
+
+
+	/*MATLAB_PUT(x1, "x1");
+	MATLAB_PUT(x2, "x2");
+	MATLAB_EVAL("plotHarmo");*/
+
+	return res;
 }
 
 void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool microphone)
@@ -443,33 +447,33 @@ void
 Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname, string ressfname, mrs_natural Nw, 
 													 mrs_natural D, mrs_natural S, mrs_natural accSize, bool microphone, mrs_natural bopt, mrs_natural delay)
 {
-	pvseries->updctrl("Shredder/synthNet/mrs_natural/nTimes", accSize);
-	pvseries->updctrl("Shredder/synthNet/Series/postNet/PeOverlapadd/ob/mrs_natural/hopSize", D);
-	pvseries->updctrl("Shredder/synthNet/Series/postNet/PeOverlapadd/ob/mrs_natural/nbSinusoids", S);
-	pvseries->updctrl("Shredder/synthNet/Series/postNet/PeOverlapadd/ob/mrs_natural/delay", Nw/2+1);
-	pvseries->updctrl("Shredder/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Interpolation", D);
-	pvseries->updctrl("Shredder/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/WindowSize", Nw);      
-	pvseries->updctrl("Shredder/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Decimation", D);
+	pvseries->updctrl("PeSynthetize/synthNet/mrs_natural/nTimes", accSize);
+	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeOverlapadd/ob/mrs_natural/hopSize", D);
+	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeOverlapadd/ob/mrs_natural/nbSinusoids", S);
+	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeOverlapadd/ob/mrs_natural/delay", Nw/2+1);
+	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Interpolation", D);
+	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/WindowSize", Nw);      
+	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Decimation", D);
 
 	if (microphone) 
 	{
-		pvseries->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/AudioSource/src2/mrs_natural/inSamples", D);
-		pvseries->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/AudioSource/src2/mrs_natural/inObservations", 1);
+		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/AudioSource/src2/mrs_natural/inSamples", D);
+		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/AudioSource/src2/mrs_natural/inObservations", 1);
 	}
 	else
 	{
-		pvseries->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_string/filename", sfName);
-		pvseries->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/pos", 0);
-		pvseries->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/inSamples", D);
-		pvseries->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/inObservations", 1);
+		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_string/filename", sfName);
+		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/pos", 0);
+		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/inSamples", D);
+		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/inObservations", 1);
 	}
 	if (outsfname == EMPTYSTRING) 
-		pvseries->updctrl("Shredder/synthNet/Series/postNet/AudioSink/dest/mrs_natural/bufferSize", bopt);
+		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/AudioSink/dest/mrs_natural/bufferSize", bopt);
 
 
-	pvseries->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/Delay/delay/mrs_natural/delay", delay); // Nw+1-D
-	pvseries->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/SoundFileSink/dest/mrs_string/filename", outsfname);//[!]
-	pvseries->updctrl("Shredder/synthNet/Series/postNet/SoundFileSink/destRes/mrs_string/filename", ressfname);//[!]
+	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/Delay/delay/mrs_natural/delay", delay); // Nw+1-D
+	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/SoundFileSink/dest/mrs_string/filename", outsfname);//[!]
+	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/SoundFileSink/destRes/mrs_string/filename", ressfname);//[!]
 }
 
 
@@ -478,13 +482,13 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 mrs_real Marsyas::harmonicWeighting(mrs_real f, mrs_real h, mrs_real w)
 {
 	if(f < h)
-return 1;
+		return 1;
 	else
-return pow(harmonicWeightingBasic(f, h), -w/log(harmonicWeightingBasic(1,h)));
+		return pow(harmonicWeightingBasic(f, h), -w/log(harmonicWeightingBasic(1,h)));
 }
 
 
 mrs_real Marsyas::harmonicWeightingBasic(mrs_real f, mrs_real h)
 {
-return (1+cos(2*PI*f/h))/2;
+	return (1+cos(2*PI*f/h))/2;
 }

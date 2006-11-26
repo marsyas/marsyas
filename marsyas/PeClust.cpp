@@ -62,6 +62,8 @@ PeClust::addControls()
 	setctrlState("mrs_natural/Sinusoids", true);
 	addctrl("mrs_string/similarityType", "");
 	setctrlState("mrs_string/similarityType", true);
+	addctrl("mrs_realvec/similarityWeight", realvec());
+	setctrlState("mrs_realvec/similarityWeight", true);
 	addctrl("mrs_realvec/peakSet", realvec(), ctrl_peakSet_);
 	setctrlState("mrs_realvec/peakSet", true);
 	addctrl("mrs_natural/hopSize", 512);
@@ -85,6 +87,7 @@ PeClust::myUpdate()
 
 	// string with the observations to consider for similarity computing
 	similarityType_ = getctrl("mrs_string/similarityType")->toString();
+	similarityWeight_ = getctrl("mrs_realvec/similarityWeight")->toVec();
 	/* inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
 	inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();*/
 
@@ -97,7 +100,7 @@ PeClust::myUpdate()
 	//frequencySet_.stretch(kmax_, inSamples_+1);
 	maxLabel_=0;
 
-	harmonicityWeight_=0.1;
+	harmonicityWeight_=0.01;
 	harmonicitySize_=10;
 }
 
@@ -161,7 +164,7 @@ PeClust::similarityMatrix(realvec &data, realvec& m, string type)
 			 }
 				break;
 			case 'n':
-				vec.normObs();
+				vec.normObsMinMax();
 				break;
 			case 'b':
 				if(type[i] == 'f')
@@ -173,7 +176,7 @@ PeClust::similarityMatrix(realvec &data, realvec& m, string type)
 				 cout << "unrecognized parameter normalization : " << type[i] << endl;
 				 exit(1);
 			 }
-				vec.normObs();
+				vec.normObsMinMax();
 				break;
 			default:
 				cout << "unrecognized peak processing: " << type[i] << endl;
@@ -192,10 +195,11 @@ PeClust::similarityMatrix(realvec &data, realvec& m, string type)
 			for(int j =0 ; j<normData.getRows() ; j++)
 				//normData(j, pkAmplitude) = amplitude2dB(normData(j, pkAmplitude));
 
-				//	normData.normSpl(2);
+				
 
 				// build frequency and amplitude matrices
 				extractParameter(normData, frequencySet_, pkFrequency, kmax_);
+			//	normData.normSplMinMax(2);
 			extractParameter(normData, amplitudeSet_, pkAmplitude, kmax_);
 
 			harmonicitySimilarityCompute(normData, frequencySet_, amplitudeSet_, m);	
@@ -207,6 +211,7 @@ void
 PeClust::similarityCompute(realvec &d, realvec& m)
 {
 	int i, j;
+
 	// d.dump();
 	// similarity computing
 	for(i=0 ; i<nbPeaks_ ; i++)
@@ -223,7 +228,7 @@ PeClust::similarityCompute(realvec &d, realvec& m)
 void
 PeClust::harmonicitySimilarityCompute(realvec& data, std::vector<realvec>& fSet, std::vector<realvec>& aSet, realvec& m)
 {
-	mrs_natural i, j, k, startIndex = (mrs_natural) data(0, 5);
+	mrs_natural i, j, startIndex = (mrs_natural) data(0, 5);
 
 	// similarity computing
 	for(i=0 ; i<nbPeaks_ ; i++)
@@ -249,11 +254,12 @@ PeClust::harmonicitySimilarityCompute(realvec& data, std::vector<realvec>& fSet,
 			// fundamentqal frequency estimates
 			hF = min(data(i, pkFrequency), data(j, pkFrequency));
 			// mrs_real mhF = min(hF, abs(data(i, pkFrequency)-data(j, pkFrequency)));
+		
 			// weight the amplitudes
-			for (mrs_natural k=0 ; k<firstF.getSize() ; k++)
-				firstA(k)*=harmonicWeighting(firstF(k), hF, harmonicityWeight_);
-			for (mrs_natural k=0 ; k<secondF.getSize() ; k++)
-				secondA(k)*=harmonicWeighting(secondF(k), hF, harmonicityWeight_);
+			//for (mrs_natural k=0 ; k<firstF.getSize() ; k++)
+			//	firstA(k)*=harmonicWeighting(firstF(k), hF, harmonicityWeight_);
+			//for (mrs_natural k=0 ; k<secondF.getSize() ; k++)
+			//	secondA(k)*=harmonicWeighting(secondF(k), hF, harmonicityWeight_);
 
 
 			//cout << firstF;
@@ -286,11 +292,11 @@ PeClust::harmonicitySimilarityCompute(realvec& data, std::vector<realvec>& fSet,
 			// compare the two
 			// cout <<firstF<<secondF;
 
-			MATLAB_PUT(firstF, "F1");
+	/*		MATLAB_PUT(firstF, "F1");
 			MATLAB_PUT(firstA, "A1");
 			MATLAB_PUT(secondF, "F2");
-			MATLAB_PUT(secondA, "A2");
-			MATLAB_EVAL("plotHarmo");
+			MATLAB_PUT(secondA, "A2");*/
+		//	MATLAB_EVAL("plotHarmo");
 
 			// cout << data(i, pkFrequency) << " " <<data(j, pkFrequency) <<endl;
 			/*if(firstF.getSize() < secondF.getSize())
@@ -301,9 +307,9 @@ PeClust::harmonicitySimilarityCompute(realvec& data, std::vector<realvec>& fSet,
 			val = cosinePeakSets(firstF,firstA, secondF,secondA, aSet[indexFirst], aSet[indexSecond], harmonicitySize_);
 
 			//	val=exp(-val);
-			cout << data(i, pkFrequency) << " " <<data(j, pkFrequency) << " value: "<< val <<endl;
-			m(i, j) *= val;
-			m(j, i) *= val;
+	//		cout << data(i, pkFrequency) << " " <<data(j, pkFrequency) << " value: "<< val <<endl;
+			m(i, j) *= exp(val*val);
+			m(j, i) *= exp(val*val);
 		}
 	}
 }
@@ -322,23 +328,26 @@ PeClust::labeling(realvec& data, realvec& labels)
 		mrs_natural lastIndex = (mrs_natural) lastFrame_(5*kmax_);	
 		realvec oldLabels(kmax_);
 		realvec newLabels(kmax_);
-		realvec amps(kmax_);
+		realvec oldAmps(kmax_);
+    realvec newAmps(kmax_);
 
 		conversion_.setval(-1);
 		newLabels.setval(-1);
-		amps.setval(0);
+		oldAmps.setval(0);
+		newAmps.setval(0);
 		mrs_natural nbInFrames=0;
 		for(i=0 ; i<nbPeaks_ ; i++)
 			if(data(i, 5) == lastIndex)
 			{
 				newLabels(i) = labels(i);
+				newAmps(i) = data(i, pkAmplitude);
 				nbInFrames++;
 			}
 			oldLabels.setval(-1);
 			for(i=0 ; i<nbInFrames ; i++)
 		 {
 			 oldLabels(i) = lastFrame_(pkGroup*kmax_+i);
-			 amps(i) = lastFrame_(pkAmplitude*kmax_+i);
+			 oldAmps(i) = lastFrame_(pkAmplitude*kmax_+i);
 		 }
 			//	 amps.dump();
 			// oldLabels.dump();
@@ -353,7 +362,7 @@ PeClust::labeling(realvec& data, realvec& labels)
 				 nb=0;
 				 for(j=0 ; j<oldLabels.getSize() ; j++)
 					 if(oldLabels(j) == i)
-						 nb+=amps(j);
+						 nb+=oldAmps(j);
 				 if(nb>nbMax)
 				 {
 					 nbMax = nb;
@@ -369,7 +378,7 @@ PeClust::labeling(realvec& data, realvec& labels)
 					 nb=0;
 					 for(j=0 ; j<newLabels.getSize() ; j++)
 						 if(oldLabels(j) == iMax && newLabels(j) == i)
-							 nb++;
+							 nb+=newAmps(j);
 					 if(nb>nbMax)
 					 {
 						 nbMax = nb;

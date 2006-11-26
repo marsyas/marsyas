@@ -23,6 +23,7 @@ string outputDirectoryName = EMPTYSTRING;
 string fileName = EMPTYSTRING;
 string noiseName = EMPTYSTRING;
 string fileResName = EMPTYSTRING;
+string mixName = EMPTYSTRING;
 string filePeakName = EMPTYSTRING;
 
 // Global variables for command-line options 
@@ -35,21 +36,23 @@ int hopSize_ = 512;
 // nb Sines
 int nbSines_ = 15;
 // nbClusters
-int nbClusters_ = 3;
+int nbClusters_ = 2;
 // output buffer Size
 int bopt_ = 128;
 // output gain
 mrs_real gopt_ = 1.0;
 // number of accumulated frames
-mrs_natural accSize_ = 1;
+mrs_natural accSize_ = 8;
 // type of similarity Metrics
-string similarityType_ = "ho";
+string similarityType_ = "hofb";
+// weight for similarity Metrics
+realvec similarityWeight_;
 // store for clustered peaks
 realvec peakSet_;
 // delay for noise insertion
 mrs_real noiseDelay_=0;
 // gain for noise insertion
-mrs_real noiseGain_=.1;
+mrs_real noiseGain_=.2;
 // duration for noise insertion
 mrs_real noiseDuration_=0;
 // sampling frequency
@@ -103,7 +106,7 @@ printHelp(string progName)
 
 
 void
-clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseName, mrs_real noiseDelay, string T, mrs_natural N, mrs_natural Nw, 
+clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseName, string mixName, mrs_real noiseDelay, string T, mrs_natural N, mrs_natural Nw, 
 							 mrs_natural D, mrs_natural S, mrs_natural C,
 							 mrs_natural accSize, bool synthetize)
 {
@@ -130,13 +133,14 @@ mixseries->addMarSystem(mng.create("NoiseSource", "noise"));
 	mixseries->addMarSystem(mng.create("SoundFileSource", "noise"));
 
 	mixseries->addMarSystem(mng.create("Delay", "noiseDelay"));
-	mixseries->addMarSystem(mng.create("Gain", "noiseGain"));
+	MarSystem* noiseGain = mng.create("Gain", "noiseGain");
+	mixseries->addMarSystem(noiseGain);
 	// add this series in the fanout
 	fanin->addMarSystem(mixseries);
 
 	preNet->addMarSystem(fanin);
 
-
+  preNet->addMarSystem(mng.create("SoundFileSink", "mixSink"));
 	preNet->addMarSystem(mng.create("ShiftInput", "si"));
 	preNet->addMarSystem(mng.create("Shifter", "sh"));
 	preNet->addMarSystem(mng.create("Windowing", "wi"));
@@ -195,6 +199,7 @@ mixseries->addMarSystem(mng.create("NoiseSource", "noise"));
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/Delay/noiseDelay/mrs_real/delay",  noiseDelay);
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/Gain/noiseGain/mrs_real/gain", noiseGain_);
 
+	pvseries->updctrl("Accumulator/accumNet/Series/preNet/SoundFileSink/mixSink/mrs_string/filename", mixName);//[!]
 
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/ShiftInput/si/mrs_natural/Decimation", D);
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/ShiftInput/si/mrs_natural/WindowSize", Nw+1);
@@ -205,12 +210,19 @@ mixseries->addMarSystem(mng.create("NoiseSource", "noise"));
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PvFold/fo/mrs_natural/Decimation", D); // useless ?
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Decimation", D);      
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Sinusoids", S);  
-pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
+  pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
 
 	pvseries->setctrl("PeClust/peClust/mrs_natural/Sinusoids", S);  
 	pvseries->setctrl("PeClust/peClust/mrs_natural/Clusters", C); 
 	pvseries->setctrl("PeClust/peClust/mrs_natural/hopSize", D); 
 	pvseries->updctrl("PeClust/peClust/mrs_string/similarityType", T); 
+
+	similarityWeight_.stretch(3);
+similarityWeight_(0) = 1;
+similarityWeight_(1) = 10;
+similarityWeight_(2) = 1;
+
+	pvseries->updctrl("PeClust/peClust/mrs_realvec/similarityWeight", similarityWeight_); 
 
 	//pvseries->update();
 
@@ -222,10 +234,10 @@ pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural
 	if(noiseDuration_)
 	{
 	ostringstream ossi;
-	ossi << ((noiseDelay_+noiseDuration_)*0.1) << "s";
+	ossi << ((noiseDelay_+noiseDuration_)) << "s";
 	cout << ossi.str() << endl;
 	// touch the gain directly
-	// pvseries->updctrl(ossi.str(), Repeat(), new EvValUpd(pvseries,"Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/Gain/noiseGain/mrs_real/gain", 0.0));
+	noiseGain->updctrl("0.1s", Repeat("0.1s", 1), new EvValUpd(noiseGain,"mrs_real/gain", 0.0));
 	//	cout << *pvseries;
 	}
 	mrs_real globalSnr = 0;
@@ -244,7 +256,7 @@ pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural
 		// ouput the seg snr
 		if(synthetize)
 		{
-			mrs_real snr = pvseries->getctrl("Shredder/synthNet/Series/postNet/PeResidual/res/mrs_real/snr")->toReal();
+			mrs_real snr = pvseries->getctrl("PeSynthetize/synthNet/Series/postNet/PeResidual/res/mrs_real/snr")->toReal();
 			globalSnr+=snr;
 			nb++;
 			cout << "Frame " << nb << " SNR : "<< snr << endl;
@@ -384,13 +396,14 @@ main(int argc, const char **argv)
 
 				fileName = outputDirectoryName + "/" + Sfname.name() ;
 				fileResName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Res." + Sfname.ext() ;
+				mixName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Mix." + Sfname.ext() ;
 				filePeakName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Peak.txt" ;
 				cout << fileResName << endl;
 			}
 			if(analyse_)
 			{
 				cout << "Phasevocoding " << Sfname.name() << endl; 
-				clusterExtract(peakSet_, *sfi, fileName, noiseName, noiseDelay_, similarityType_, fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_, synthetize_);
+				clusterExtract(peakSet_, *sfi, fileName, noiseName, mixName, noiseDelay_, similarityType_, fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_, synthetize_);
 			}	
 			// if ! peak data read from file
 			if(peakSet_.getSize() == 0)
@@ -438,7 +451,7 @@ main(int argc, const char **argv)
 	{
 		cout << "Using live microphone input" << endl;
 		microphone_ = true;
-		clusterExtract(peakSet_, "microphone", fileName, noiseName, noiseDelay_, similarityType_, fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_, synthetize_);
+		clusterExtract(peakSet_, "microphone", fileName, noiseName, mixName, noiseDelay_, similarityType_, fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_, synthetize_);
 	}
 
 

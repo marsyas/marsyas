@@ -1005,6 +1005,30 @@ realvec::normObs()
 }
 
 void
+realvec::normObsMinMax()
+{
+  //normalize (aka standardize) matrix
+  //using observations means and standard deviations 
+
+  realvec obsrow(cols_);
+
+  for (mrs_natural r=0; r < rows_; r++)
+    {
+      //for (mrs_natural c=0; c < cols_; c++)
+      //{
+      //	obsrow(c) = (*this)(r,c); //get observation row
+      //}
+      obsrow = getRow(r);
+      for (mrs_natural c=0; c < cols_; c++)
+	{
+	  (*this)(r,c) -= obsrow.minval();
+	  (*this)(r,c) /= obsrow.maxval();
+	}
+    }
+}
+
+
+void
 realvec::normSpl(mrs_natural index)
 {
 	//normalize (aka standardize) matrix
@@ -1024,6 +1048,30 @@ index=cols_;
 			{
 				(*this)(c, r) -= mean;
 				(*this)(c, r) /= std;
+			}
+	}
+}
+
+void
+realvec::normSplMinMax(mrs_natural index)
+{
+	//normalize (aka standardize) matrix
+	//using observations means and standard deviations 
+if(!index)
+index=cols_;
+	for (mrs_natural r=0; r < index; r++)
+	{
+		//for (mrs_natural c=0; c < cols_; c++)
+		//{
+		//	obsrow(c) = (*this)(r,c); //get observation row
+		//}
+		mrs_real min = getCol(r).minval();
+		mrs_real max = getCol(r).maxval();
+		if(max)
+			for (mrs_natural c=0; c < rows_; c++)
+			{
+				(*this)(c, r) -= min;
+				(*this)(c, r) /= max;
 			}
 	}
 }
