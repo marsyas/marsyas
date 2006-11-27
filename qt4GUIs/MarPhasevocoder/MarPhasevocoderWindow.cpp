@@ -7,7 +7,7 @@
 
 int dopt = 64;
 int iopt = 64;
-int sopt = 30;
+int sopt = 80;
 int bopt = 128;
 int vopt_ = 1;
 mrs_real gopt_ = 1.0;
@@ -91,12 +91,12 @@ MarPhasevocoderWindow::timeChanged(int value)
   
   float nval = iopt * (value / 100.0);
   
-  cout << "(int) nval" << nval << endl;
+  cout << "(int) nval = " << (mrs_natural) nval << endl;
   
 
-  mwr_->updctrl("PvOscBank/ob/natural/Interpolation", (mrs_natural) nval);
-  mwr_->updctrl("ShiftOutput/so/natural/Interpolation", (mrs_natural)nval);
-
+  mwr_->updctrl("PvOscBank/ob/mrs_natural/Interpolation", (mrs_natural) nval);
+  mwr_->updctrl("ShiftOutput/so/mrs_natural/Interpolation", (mrs_natural)nval);
+  
 
 
 }
@@ -138,8 +138,8 @@ MarPhasevocoderWindow::createNetwork()
 {
   cout << "CreateNetwork" << endl;
   
-  mrs_natural N = 1024;
-  mrs_natural Nw = 1024;
+  mrs_natural N = 512;
+  mrs_natural Nw = 512;
   mrs_natural I = iopt;
   mrs_natural P = popt;
   mrs_natural D = dopt;

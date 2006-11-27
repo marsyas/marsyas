@@ -191,85 +191,94 @@ AudioSink::myProcess(realvec& in, realvec& out)
 	
  // copy to output and into reservoir
   for (t=0; t < inSamples_; t++)
-  {
-    reservoir_(end_) = in(0,t);
-    end_ = (end_ + 1) % reservoirSize_;
-    
-    for (o=0; o < inObservations_; o++)
-			out(o,t) = in(o,t);
-  }
+    {
+      reservoir_(end_) = in(0,t);
+      end_ = (end_ + 1) % reservoirSize_;
+      
+      for (o=0; o < inObservations_; o++)
+	out(o,t) = in(o,t);
+    }
   
-	//check if RtAudio is initialized
-	if (!isInitialized_)
-		return;
-
+  //check if RtAudio is initialized
+  if (!isInitialized_)
+    return;
+  
   //check MUTE
-	if(getctrl("mrs_bool/mute")->isTrue())
-		return;
-
+  if(getctrl("mrs_bool/mute")->isTrue())
+    {
+      for (t=0; t < rsize_; t++) 
+	{
+	  data_[2*t] = 0.0;
+	  data_[2*t+1] = 0.0;
+	}
+      
+      return;
+    }
+  
+  
   //assure that RtAudio thread is running
-	//(this may be needed by if an explicit call to start()
-	//is not done before ticking or calling process() )
-	if ( stopped_ )
-  {
-    start();
-  }
- 
+  //(this may be needed by if an explicit call to start()
+  //is not done before ticking or calling process() )
+  if ( stopped_ )
+    {
+      start();
+    }
+  
   //update reservoir pointers 
-	rsize_ = bufferSize_;
-	#ifdef __OS_MACOSX__ 
+  rsize_ = bufferSize_;
+#ifdef __OS_MACOSX__ 
   if (srate_ == 22050)
     rsize_ = bufferSize_/2;		// upsample to 44100
   else 
     rsize_ = bufferSize_;
-	#endif 
+#endif 
   
   if (end_ >= start_) 
     diff_ = end_ - start_;
   else 
     diff_ = reservoirSize_ - (start_ - end_);
-
-  //send audio data in reservoir to RtAudio
-	while (diff_ >= rsize_)  
-  {
-    for (t=0; t < rsize_; t++) 
-		{
-			#ifndef __OS_MACOSX__
-			data_[2*t] = reservoir_((start_+t)%reservoirSize_);
-			data_[2*t+1] = reservoir_((start_+t)%reservoirSize_);
-			#else
-			if (srate_ == 22050)
-				{
-					data_[4*t] = reservoir_((start_+t) % reservoirSize_);
-					data_[4*t+1] = reservoir_((start_+t)%reservoirSize_);
-					data_[4*t+2] = reservoir_((start_+t) % reservoirSize_);
-					data_[4*t+3] = reservoir_((start_+t) % reservoirSize_);
-				}
-			else
-				{
-					data_[2*t] = reservoir_((start_+t)%reservoirSize_);
-					data_[2*t+1] = reservoir_((start_+t)%reservoirSize_);
-				}
-		  #endif 
-		}
-
-		//tick RtAudio
-		try 
-		{
-			audio_->tickStream();
-    }
-    catch (RtError &error) 
-		{
-			error.printMessage();
-		}
   
-		//update reservoir pointers
-    start_ = (start_ + rsize_) % reservoirSize_;
-    if (end_ >= start_) 
-			diff_ = end_ - start_;
-    else 
-			diff_ = reservoirSize_ - (start_ - end_);
-  }
+  //send audio data in reservoir to RtAudio
+  while (diff_ >= rsize_)  
+    {
+      for (t=0; t < rsize_; t++) 
+	{
+#ifndef __OS_MACOSX__
+	  data_[2*t] = reservoir_((start_+t)%reservoirSize_);
+	  data_[2*t+1] = reservoir_((start_+t)%reservoirSize_);
+#else
+	  if (srate_ == 22050)
+	    {
+	      data_[4*t] = reservoir_((start_+t) % reservoirSize_);
+	      data_[4*t+1] = reservoir_((start_+t)%reservoirSize_);
+	      data_[4*t+2] = reservoir_((start_+t) % reservoirSize_);
+	      data_[4*t+3] = reservoir_((start_+t) % reservoirSize_);
+	    }
+	  else
+	    {
+	      data_[2*t] = reservoir_((start_+t)%reservoirSize_);
+	      data_[2*t+1] = reservoir_((start_+t)%reservoirSize_);
+	    }
+#endif 
+	}
+      
+      //tick RtAudio
+      try 
+	{
+	  audio_->tickStream();
+	}
+      catch (RtError &error) 
+	{
+	  error.printMessage();
+	}
+      
+      //update reservoir pointers
+      start_ = (start_ + rsize_) % reservoirSize_;
+      if (end_ >= start_) 
+	diff_ = end_ - start_;
+      else 
+	diff_ = reservoirSize_ - (start_ - end_);
+    }
 }
 
  

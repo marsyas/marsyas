@@ -66,7 +66,7 @@ private:
   int* mfcc_offsets;
 public:
   MFCC(std::string name);
-	MFCC(const MFCC& a);
+  MFCC(const MFCC& a);
   ~MFCC();
   MarSystem* clone() const;  
 

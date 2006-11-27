@@ -277,8 +277,8 @@ SoundFileSource::myProcess(realvec& in, realvec &out)
   {
     src_->process(in,out);
 
-		if(getctrl("mrs_bool/mute")->isTrue())
-			out.setval(0.0);      
+    if(getctrl("mrs_bool/mute")->isTrue())
+      out.setval(0.0);      
 
     setctrl("mrs_natural/pos", src_->pos_); //[!]
     setctrl("mrs_natural/loopPos", src_->rewindpos_);//[!]

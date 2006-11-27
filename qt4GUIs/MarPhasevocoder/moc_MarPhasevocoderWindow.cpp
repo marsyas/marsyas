@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'MarPhasevocoderWindow.h'
 **
-** Created: Sat Nov 11 10:17:55 2006
+** Created: Tue Nov 14 23:25:05 2006
 **      by: The Qt Meta Object Compiler version 58 (Qt 4.0.1)
 **
 ** WARNING! All changes made in this file will be lost!

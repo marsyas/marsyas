@@ -17,14 +17,14 @@
 */
 MarSystemWrapper::MarSystemWrapper(MarSystem* msys)
 {
-	main_pnet_ = msys;
-	pnet_sema_ = new QSemaphore(1);
-
-	guard_ = false;
-	running_ = false;
-
-	pause_ = false;
-	empty_ = false;
+  main_pnet_ = msys;
+  pnet_sema_ = new QSemaphore(1);
+  
+  guard_ = false;
+  running_ = false;
+  
+  pause_ = false;
+  empty_ = false;
 }
 
 /* Function: getctrl
@@ -34,9 +34,9 @@ MarSystemWrapper::MarSystemWrapper(MarSystem* msys)
 */
 MarControlPtr MarSystemWrapper::getctrl(string cname)
 {
-	MarControlPtr value;
-	value = main_pnet_->getctrl(cname);
-	return value;
+  MarControlPtr value;
+  value = main_pnet_->getctrl(cname);
+  return value;
 } // end function
 
 /* Function: updctrl
@@ -86,7 +86,8 @@ void MarSystemWrapper::updctrl(string cname, MarControlPtr cvalue)
 */
 void MarSystemWrapper::pause()
 {
-	pause_ = true;
+  pause_ = true;
+
 } // end function
 
 /* Function: play
@@ -118,7 +119,7 @@ void MarSystemWrapper::run()
 		 {
 			//cout << "Locked update control with ";
 			//cout << pnet_sema_->available() << " avail." << endl;
-			
+		   
 			// udpate stored controls
 			vector<QString>::iterator vsi;
 			vector<MarControlPtr>::iterator vvi;
@@ -149,6 +150,15 @@ void MarSystemWrapper::run()
 			main_pnet_->tick();	
 			//empty_ = false;
 		} // end if else
+		else
+		  {
+		    cout << "PAUSED " << endl;
+		    
+		    // main_pnet_->updctrl("mrs_bool/mute", true);
+		  }
+		
+
+
 	/* No need for this in MCI for now
 		if (empty_ == false) 
 		{

@@ -170,7 +170,9 @@ Marsyas::compareTwoPeakSets(realvec&f1, realvec&a1, realvec&f2, realvec&a2)
 
 		//cout << i1<<i2;
 		mrs_natural ind1=-1, ind2=0;
-		mrs_real A1, A2, F1, F2, minDiff = 10000000000000, maxVal = -100000000000000; // minDiff = MAXREAL, maxVal = MINREAL;
+		mrs_real A1, A2, F1, F2;
+ // minDiff = 10000000000000, maxVal = -100000000000000; 
+       mrs_real minDiff = MAXREAL, maxVal = MINREAL;
 		// take the highest amplitude peak
 		for (mrs_natural i=0 ; i<a1.getSize() ; i++)
 		{
@@ -244,7 +246,11 @@ Marsyas::compareTwoPeakSets3(realvec&f1, realvec&a1, realvec&f2, realvec&a2)
 	{
 		//cout << i1<<i2;
 		mrs_natural ind1=-1, ind2=0;
-		mrs_real minDiff = 10000000000000, minVal = 100000000000000; // minDiff = MAXREAL, maxVal = MINREAL;
+		// mrs_real minDiff = 10000000000000, minVal = 100000000000000;
+		 
+		mrs_real minDiff = MAXREAL, minVal = MINREAL;
+		// 
+		// 
 		// look for the smallest couple
 		for (mrs_natural i=0 ; i<a1.getSize() ; i++)
 			for (mrs_natural j=0 ; j<a2.getSize() ; j++)
@@ -293,7 +299,8 @@ Marsyas::correlatePeakSets(realvec&f1, realvec&a1, realvec&f2, realvec&a2)
 	{
 		//cout << i1<<i2;
 		mrs_natural ind1=-1, ind2=-1;
-		mrs_real minDiff = 10000000000000; // minDiff = MAXREAL
+		// mrs_real minDiff = 10000000000000; 
+		mrs_real minDiff = MAXREAL; 
 		// look for the couple closest in frequency
 		for (mrs_natural i=0 ; i<f1.getSize() ; i++)
 			for (mrs_natural j=0 ; j<f2.getSize() ; j++)
