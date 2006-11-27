@@ -27,13 +27,13 @@
 #define MARSYAS_PESIMILARITY_H
 
 #include "realvec.h"
-
+#include <vector>
 
 namespace Marsyas
 {
 
 	void similarityCompute(realvec&, realvec&);
-void similarityMatrix(realvec&, realvec&, std::string type, mrs_natural, mrs_natural);
+void similarityMatrix(realvec&, realvec&, std::string type, mrs_natural, mrs_natural );
  void harmonicitySimilarityCompute(realvec&, std::vector<realvec>&, std::vector<realvec>&, realvec& m, mrs_natural);
 
 }
