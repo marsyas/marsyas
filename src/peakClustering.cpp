@@ -36,15 +36,15 @@ int hopSize_ = 512;
 // nb Sines
 int nbSines_ = 15;
 // nbClusters
-int nbClusters_ = 2;
+int nbClusters_ = 3;
 // output buffer Size
 int bopt_ = 128;
 // output gain
 mrs_real gopt_ = 1.0;
 // number of accumulated frames
 mrs_natural accSize_ = 8;
-// type of similarity Metrics
-string similarityType_ = "hofb";
+// type of similarity Metrics // test amplitude normamlise gtzan
+string similarityType_ = "hofban";
 // weight for similarity Metrics
 realvec similarityWeight_;
 // store for clustered peaks

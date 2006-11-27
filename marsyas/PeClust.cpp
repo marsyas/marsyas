@@ -199,10 +199,10 @@ PeClust::similarityMatrix(realvec &data, realvec& m, string type)
 
 				// build frequency and amplitude matrices
 				extractParameter(normData, frequencySet_, pkFrequency, kmax_);
-			//	normData.normSplMinMax(2);
+				normData.normSplMinMax(2);
 			extractParameter(normData, amplitudeSet_, pkAmplitude, kmax_);
 
-			harmonicitySimilarityCompute(normData, frequencySet_, amplitudeSet_, m);	
+			harmonicitySimilarityCompute(data, frequencySet_, amplitudeSet_, m);	
 		}
 	}
 }
@@ -329,20 +329,22 @@ PeClust::labeling(realvec& data, realvec& labels)
 		realvec oldLabels(kmax_);
 		realvec newLabels(kmax_);
 		realvec oldAmps(kmax_);
-    realvec newAmps(kmax_);
+		realvec newAmps(kmax_);
 
 		conversion_.setval(-1);
 		newLabels.setval(-1);
 		oldAmps.setval(0);
 		newAmps.setval(0);
 		mrs_natural nbInFrames=0;
+		// labels sets for new
 		for(i=0 ; i<nbPeaks_ ; i++)
 			if(data(i, 5) == lastIndex)
 			{
-				newLabels(i) = labels(i);
-				newAmps(i) = data(i, pkAmplitude);
+				newLabels(nbInFrames) = labels(i);
+				newAmps(nbInFrames) = data(i, pkAmplitude);
 				nbInFrames++;
 			}
+			// labels sets for old
 			oldLabels.setval(-1);
 			for(i=0 ; i<nbInFrames ; i++)
 		 {
@@ -350,55 +352,118 @@ PeClust::labeling(realvec& data, realvec& labels)
 			 oldAmps(i) = lastFrame_(pkAmplitude*kmax_+i);
 		 }
 			//	 amps.dump();
-			// oldLabels.dump();
-			//	 newLabels.dump(); 
+			cout  << lastIndex << " " ;
+			/* oldLabels.dump();
+				 newLabels.dump(); */
 
 			while(1){
-				mrs_natural  iMax=-1, jMax=-1;
-				mrs_real nbMax=0, nb;
-				// look for the biggest cluster in old		
+				mrs_natural  iMax=-1, jMax=-1, i2Max=-1, nbMax1=0,nbMax2=0,nbMax3=0, nb, nb2=0;
+				mrs_real ampMax1=0, ampMax2=0, ampMax3=0, amp, a2=0;
+				// look for the highest amplitude cluster in old		
 				for(i=0 ; i<= (mrs_natural) oldLabels.maxval() ; i++)
-			 {
-				 nb=0;
-				 for(j=0 ; j<oldLabels.getSize() ; j++)
-					 if(oldLabels(j) == i)
-						 nb+=oldAmps(j);
-				 if(nb>nbMax)
+				{
+					nb=0;
+					amp=0;
+					for(j=0 ; j<oldLabels.getSize() ; j++)
+						if(oldLabels(j) == i)
+						{
+							nb++;
+							amp+=oldAmps(j);
+						}
+					if(amp>ampMax1)
 				 {
-					 nbMax = nb;
+					 nbMax1 = nb;
+					 ampMax1 = amp;
 					 iMax = i;
 				 }
-			 }
+				}
 				if(iMax > -1)
-			 {
-				 nbMax=0;
-				 // look for the cluster in new with the highest intersection
-				 for(i=0 ; i<= (mrs_natural) newLabels.maxval() ; i++)
+				{
+					// look for the cluster in new with the highest intersection
+					for(i=0 ; i<= (mrs_natural) newLabels.maxval() ; i++)
 				 {
+					 mrs_natural n=0;
+					 mrs_real a=0;
 					 nb=0;
+					 amp=0;
 					 for(j=0 ; j<newLabels.getSize() ; j++)
-						 if(oldLabels(j) == iMax && newLabels(j) == i)
-							 nb+=newAmps(j);
-					 if(nb>nbMax)
+						 if(newLabels(j) == i)
+						 {
+							 n++;
+							 a+=newAmps(j);
+						 if(oldLabels(j) == iMax)
+						 {
+							 nb++;
+							 amp+=newAmps(j);
+						 }
+						 }
+					 if(amp>ampMax2)
 					 {
-						 nbMax = nb;
+						 nb2=n;
+						 a2=a;
+						 nbMax2 = nb;
+						 ampMax2 = amp;
 						 jMax = i;
 					 }
 				 }
-				 if(jMax == -1)
-					 break;
-				 // cout << iMax << " " << jMax << " " << newLabels.maxval() << endl;
-				 //newLabels.dump();
-				 // fill conversion table with oldLabel
-				 conversion_(jMax) = iMax;
-				 // remove old and new clusters
-				 for(i=0 ; i<oldLabels.getSize() ; i++)
-					 if(oldLabels(i) == iMax)
-						 oldLabels(i) = -1;
-				 for(i=0 ; i<newLabels.getSize() ; i++)
-					 if(newLabels(i) == jMax)
-						 newLabels(i) = -1;
-				 //	 newLabels.dump();
+					if(jMax == -1)
+						break;
+					mrs_real av,nv,gv;
+					if(ampMax1<a2)
+						av = a2/ampMax1;
+					else
+						av = ampMax1/a2;
+					if(nbMax1<nb2)
+						nv = nb2/((mrs_real) nbMax1);
+					else
+						nv = nbMax1/((mrs_real) nb2);
+					if(ampMax1/nbMax1<a2/nb2)
+						gv = (a2/nb2)/(ampMax1/nbMax1);
+					else
+						gv = (ampMax1/nbMax1)/(a2/nb2);
+					mrs_real diff = (abs(ampMax1-ampMax2)+abs(a2-ampMax2))/(ampMax1+a2);
+					cout << diff << " " <<  2*ampMax2/(ampMax1+a2) << endl;
+					
+
+					
+					// check if not used better elsewhere
+					// or if two do not correspond put old to -1
+					for(i=0 ; i<= (mrs_natural) oldLabels.maxval() ; i++)
+				 {
+					 nb=0;
+					 amp=0;
+					 for(j=0 ; j<oldLabels.getSize() ; j++)
+						 if(newLabels(j) == jMax && oldLabels(j) == i)
+						 {
+							 nb++;
+							 amp+=newAmps(j);
+						 }
+						 if(amp>ampMax3)
+						 {
+							 nbMax3 = nb;
+							 ampMax3 = amp;
+							 i2Max = i;
+						 }
+				 }
+					
+cout << iMax << " " << i2Max << endl << endl;
+					if(iMax == i2Max && diff<0.4)
+						{
+					// if two correspond well
+					// fill conversion table with oldLabel
+					conversion_(jMax) = iMax;
+					// remove new clusters
+					for(i=0 ; i<newLabels.getSize() ; i++)
+						if(newLabels(i) == jMax)
+							newLabels(i) = -1;
+						}
+					// else only remove old  clusters
+					for(i=0 ; i<oldLabels.getSize() ; i++)
+						if(oldLabels(i) == iMax)
+							oldLabels(i) = -1;
+					// cout << iMax << " " << jMax << " " << newLabels.maxval() << endl;
+					//newLabels.dump();
+					//	 newLabels.dump();
 			 }
 				else
 					break;

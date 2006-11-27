@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="peakClustering"
 	ProjectGUID="{F62F0374-482B-4119-8966-2371A620B28A}"
 	RootNamespace="peakClustering"
@@ -215,7 +215,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="marsyas.lib Wsock32.lib dsound.lib libeng.lib libmx.lib libut.lib"
+				AdditionalDependencies="marsyas.lib Wsock32.lib dsound.lib libeng.lib libmx.lib libut.lib  user32.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\marsyas\Debug_MATLAB;&quot;$(MATLAB)\extern\lib\win32\microsoft&quot;"
@@ -292,7 +292,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dsound.lib libeng.lib libmx.lib libut.lib"
+				AdditionalDependencies="dsound.lib libeng.lib libmx.lib libut.lib user32.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(MATLAB)\extern\lib\win32\microsoft&quot;"
