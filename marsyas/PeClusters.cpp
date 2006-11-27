@@ -49,9 +49,9 @@ PeCluster::init(realvec& peakSet, mrs_natural l)
 	mrs_natural i;
 
 	// set general informations
-	start = MAXREAL;
+	start = MAXNATURAL;
 	end=0;
-
+	nbPeaks=0;
 	for (i=0 ; i< peakSet.getRows() ; i++)
 		if (peakSet(i, pkGroup) == l)
 		{
@@ -63,22 +63,89 @@ PeCluster::init(realvec& peakSet, mrs_natural l)
 			{
 				end= peakSet(i, pkTime);
 			}
+			nbPeaks++;
 		}
 
 		length = end-start;
+		envSize = (mrs_natural) length;
 		oriLabel = l;
 		label = l;
-
-		// compute envelopes
-
-		// compute histograms
-
 }
 
-
-void PeCluster::toVec(realvec&, string type)
+void 
+PeCluster::computeAttributes(realvec& peakSet, mrs_natural l, string type)
 {
+		mrs_natural i, j, k;
+	realvec set;
+	set.stretch(nbPeaks, nbPkParameters);
+	for (i=0, k=0 ; i< peakSet.getRows() ; i++)
+		if (peakSet(i, pkGroup) == l)
+		{
+			for(j=0 ; j<nbPkParameters ; j++)
+				set(k, j) = peakSet(i, j);
+			k++;
+		}
 
+		// compute stats
+		freqMean = set.getCol(pkFrequency).mean();
+		freqStd = set.getCol(pkFrequency).std();
+		ampMean = set.getCol(pkAmplitude).mean();
+		ampStd = set.getCol(pkAmplitude).std();
+
+		// compute envelopes
+		frequencyEvolution.stretch(envSize);
+		frequencyEvolution.setval(0);
+		amplitudeEvolution.stretch(envSize);
+		amplitudeEvolution.setval(0);
+
+
+		for(i=0 ; i<nbPeaks ; i++)
+			{ 
+				frequencyEvolution(((mrs_natural) set(i, pkTime)-start)) += 
+					set(i, pkFrequency)*set(i, pkAmplitude);
+
+				amplitudeEvolution(((mrs_natural) set(i, pkTime)-start)) += 
+					set(i, pkAmplitude);
+			}
+
+			amplitudeHistogram.stretch(histSize);
+			amplitudeHistogram.setval(0);
+			frequencyHistogram.stretch(histSize);
+			frequencyHistogram.setval(0);
+			harmonicityHistogram.stretch(histSize);
+			harmonicityHistogram.setval(0);
+			// compute histograms
+			for(i=0 ; i<histSize ; i++)
+			{
+				amplitudeHistogram((mrs_natural) floor(set(i, pkAmplitude)*histSize)) += 1;
+				frequencyHistogram((mrs_natural) floor(set(i, pkFrequency)*histSize/22050)) += 1;
+			}
+
+			// compute similarities within cluster
+}
+
+mrs_natural 
+PeCluster::getVecSize()
+{
+	return 6+2*envSize;
+}
+
+void 
+PeCluster::toVec(realvec& vec)
+{
+	mrs_natural i=0, j;
+
+	vec(i++) = start;
+	vec(i++) = length;	
+	vec(i++) = freqMean;
+	vec(i++) = freqStd;
+	vec(i++) = ampMean;
+	vec(i++) = ampStd;
+
+	for (j=0;j<envSize ; j++)
+		vec(i++) = frequencyEvolution(j);
+	for (j=0;j<envSize ; j++)
+		vec(i++) = amplitudeEvolution(j);
 }
 
 mrs_natural 
@@ -147,6 +214,27 @@ PeClusters::PeClusters(realvec &peakSet)
 PeClusters::~PeClusters(){
 	delete [] set;
 }
+void 
+PeClusters::attributes(realvec &peakSet)
+{
+for (int i=0 ; i<nbClusters ; i++)
+		set[i].computeAttributes(peakSet, i, "");
+}
+
+void
+PeClusters::getVecs(realvec& vecs)
+{
+	realvec vec(set[0].getVecSize());
+	vecs.stretch(nbClusters, vec.getSize());
+
+	for (int i=0 ; i<nbClusters ; i++)
+	{
+		set[i].toVec(vec);
+		for (int j=0 ; j<vec.getSize() ; j++)
+			vecs(i, j) = vec(j);
+	}
+}
+
 
 realvec&
 PeClusters::getConversionTable()
@@ -175,7 +263,7 @@ PeClusters::selectGround()
 {
 	for (int i=0 ; i<nbClusters ; i++)
 	{
-			set[i].label = set[i].groundLabel;
+		set[i].label = set[i].groundLabel;
 	}
 }
 
@@ -189,7 +277,7 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 	MarSystem* pvseries = mng.create("Series", "pvseries");
 	MarSystem *peSynth = mng.create("PeSynthetize", "synthNet");
 
-  MarSystem *peSource = mng.create("RealvecSource", "peSource");
+	MarSystem *peSource = mng.create("RealvecSource", "peSource");
 	pvseries->addMarSystem(peSource);
 
 
@@ -258,7 +346,7 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 			{
 				Snr/=nbActiveFrames;
 				if(Snr)
-				Snr = 10*log10(pow(10, Snr)-1);
+					Snr = 10*log10(pow(10, Snr)-1);
 				else
 					Snr = -80;
 				cout << " SNR for cluster " << i << " : "<< Snr << " " << nbActiveFrames << endl;

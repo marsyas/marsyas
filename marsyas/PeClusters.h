@@ -50,6 +50,7 @@ namespace Marsyas
 	private :
 	mrs_natural envSize;
 	mrs_natural histSize;
+	mrs_natural nbPeaks;
 
 	mrs_real start;
 	mrs_real end;
@@ -58,20 +59,33 @@ mrs_natural oriLabel;
 mrs_natural groundLabel;
 mrs_natural label;
 
-realvec temporalEnvelope;
+mrs_real ampMean;
+mrs_real ampStd;
+mrs_real freqMean;
+mrs_real freqStd;
+
 realvec spectralEnvelope;
+realvec amplitudeEvolution;
+realvec frequencyEvolution;
 
 realvec frequencyDistribution;
 realvec amplitudeDistribution;
 realvec harmonicityDistribution;
+
+realvec frequencyHistogram;
+realvec amplitudeHistogram;
+realvec harmonicityHistogram;
 
 	public :
  PeCluster();
   ~PeCluster();
 
 	void init(realvec& peakSet, mrs_natural l);
-	 
-	void toVec(realvec&, std::string type);
+	
+	void computeAttributes(realvec& peakSet, mrs_natural l, std::string type);
+
+	mrs_natural getVecSize();
+	void toVec(realvec&);
 
 	mrs_natural getGroundThruth ();
 	void setGroundThruth (mrs_natural);
@@ -96,10 +110,11 @@ public:
 		PeClusters(realvec &peakSet);
 		~PeClusters();
 
+		void getVecs(realvec& vecs);
 		realvec &getConversionTable();
 		void selectBefore(mrs_real val);
 		void selectGround();
-
+void attributes(realvec &peakSet);
 		void synthetize(realvec &peakSet, std::string fileName, std::string outFileName, mrs_natural Nw, mrs_natural D, mrs_natural S, mrs_natural bopt, mrs_natural residual=0);
 	};
 

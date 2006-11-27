@@ -664,6 +664,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\marsyas\PeSimilarity.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\marsyas\PeUtilities.cpp"
 				>
 			</File>
@@ -1343,6 +1347,10 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\PeResidual.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\PeSimilarity.h"
 				>
 			</File>
 			<File

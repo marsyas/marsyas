@@ -17,59 +17,26 @@
 */
 
 /** 
-    \class PeClust
-    \brief cluster peaks
+    \class PeSimilarity
+    \brief similarities computation routines for peaks extraction project
 
   
 */
 
-#ifndef MARSYAS_PECLUST_H
-#define MARSYAS_PECLUST_H
+#ifndef MARSYAS_PESIMILARITY_H
+#define MARSYAS_PESIMILARITY_H
 
-#include "MarSystem.h"	
-#include <string>
-#include <vector>
+#include "realvec.h"
+
 
 namespace Marsyas
 {
 
-class PeClust: public MarSystem
-{
-private: 
+	void similarityCompute(realvec&, realvec&);
+void similarityMatrix(realvec&, realvec&, std::string type, mrs_natural, mrs_natural);
+ void harmonicitySimilarityCompute(realvec&, std::vector<realvec>&, std::vector<realvec>&, realvec& m, mrs_natural);
 
-	MarControlPtr ctrl_peakSet_;
-
-	realvec data_;
-	realvec m_;
-	realvec lastFrame_;
-
-	mrs_real maxLabel_;
-	mrs_natural nbParameters_;
-	mrs_natural kmax_;
-	mrs_natural nbClusters_;
-	mrs_natural nbPeaks_;
-	std::string similarityType_;
-  realvec similarityWeight_;
-
-	mrs_real harmonicityWeight_;
-	mrs_natural harmonicitySize_;
-  //Add specific controls needed by this MarSystem.
-	void addControls();
-	
-	void myUpdate();
-
-	
-void labeling(realvec& , realvec&);
-
-public:
-  PeClust(std::string name);
-	PeClust(const PeClust& a);
-  ~PeClust();
-  MarSystem* clone() const;  
-  
-  void myProcess(realvec& in, realvec& out);
-};
-
-}//namespace Marsyas
+}
 
 #endif
+

@@ -28,7 +28,7 @@
 
 #include "realvec.h"
 #include <fstream>
-using std::ofstream;
+//using std::ofstream;
 #include "PeClusters.h"
 #include "MarSystemManager.h"
 #include <string>

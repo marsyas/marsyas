@@ -25,6 +25,7 @@ string noiseName = EMPTYSTRING;
 string fileResName = EMPTYSTRING;
 string mixName = EMPTYSTRING;
 string filePeakName = EMPTYSTRING;
+string fileClustName = EMPTYSTRING;
 
 // Global variables for command-line options 
 bool helpopt_ = 0;
@@ -291,18 +292,6 @@ similarityWeight_(2) = 1;
 
 
 
-
-
-void clusterGroundThruth(realvec& peakSet, PeClusters& clusters, string fileName)
-{
-
-}
-
-void clusterSynthetize(realvec& peakSet, string fileName)
-{
-
-}
-
 void 
 initOptions()
 {
@@ -398,6 +387,7 @@ main(int argc, const char **argv)
 				fileResName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Res." + Sfname.ext() ;
 				mixName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Mix." + Sfname.ext() ;
 				filePeakName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Peak.txt" ;
+				fileClustName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Clust.txt" ;
 				cout << fileResName << endl;
 			}
 			if(analyse_)
@@ -418,28 +408,41 @@ main(int argc, const char **argv)
 			MATLAB_EVAL("plotPeaks(peaks)");
 
 
+			// create data for clusters
+			PeClusters clusters(peakSet_);
+			mrs_natural nbClusters=0;
 			// computes the cluster attributes
-
 			if(attributes_)
 			{
-				PeClusters clusters(peakSet_);
-				mrs_natural nbClusters=0;
+				realvec vecs;
+				clusters.attributes(peakSet_);
+				clusters.getVecs(vecs);
 
-				// compute ground truth
-				if(ground_)
-					clusters.synthetize(peakSet_, *sfi, fileName, winSize_, hopSize_, nbSines_, bopt_, 1);
+				cout << vecs;
+				// MATLAB_PUT(fileName.c_str(), "filePath");
+				MATLAB_PUT(vecs, "clusters");
+				MATLAB_EVAL("plotClusters(clusters)");
 
-
-				clusters.selectGround();
-				updateLabels(peakSet_, clusters.getConversionTable());
-
-						MATLAB_PUT(peakSet_, "peaksGp");
-			MATLAB_EVAL("plotPeaks(peaksGp)");
+				ofstream clustFile;
+				clustFile.open(fileClustName.c_str());
+				if(!clustFile)
+					cout << "Unable to open output Clusters File " << fileClustName << endl;
+				clustFile << vecs;
+				clustFile.close();
 			}
-	
+			// compute ground truth
+			if(ground_)
+				clusters.synthetize(peakSet_, *sfi, fileName, winSize_, hopSize_, nbSines_, bopt_, 1);
+
+			clusters.selectGround();
+			updateLabels(peakSet_, clusters.getConversionTable());
+
+			MATLAB_PUT(peakSet_, "peaksGp");
+			MATLAB_EVAL("plotPeaks(peaksGp)");
+
 			if(clusterSynthetize_)
 			{
-        PeClusters clusters(peakSet_);
+				PeClusters clusters(peakSet_);
 				// synthetize remaining clusters
 				clusters.synthetize(peakSet_, *sfi, fileName, winSize_, hopSize_, nbSines_, bopt_);
 			}
