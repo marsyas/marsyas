@@ -91,46 +91,46 @@ realvec::realvec(const realvec& a) : size_(a.size_),
 realvec& 
 realvec::operator=(const realvec& a)
 {
-  if (this != &a)
-    {
-      if (size_ != a.size_)
+	if (this != &a)
 	{
-	  //lmartins: [!]
-	  //Why doesn't this delete all data and creates a new realvec?
-	  //it would be then easier to use this operator in client code 
-	  //(i.e. no need to assure that the realvec implicated in the 
-	  // =  operation are equal sized)
-	  /*
-	    MRSERR("realvec::operator= : Different realvec sizes\n");
-	    MRSERR("realvec left unchanged\n");
+		if (size_ != a.size_)
+		{
+			//lmartins: [!]
+			//Why doesn't this delete all data and creates a new realvec?
+			//it would be then easier to use this operator in client code 
+			//(i.e. no need to assure that the realvec implicated in the 
+			// =  operation are equal sized)
+			/*
+			MRSERR("realvec::operator= : Different realvec sizes\n");
+			MRSERR("realvec left unchanged\n");
 
-	    MRSERR("Left size = " + size_);
-	    MRSERR("Right size = " + a.size_);
-	    return *this;
-	  */
-	  //Replacing above code by the following one (which still maintains backward compatibility
-	  // with any previous code in Marsyas that resizes l.h. realvec before using the = operator).
-	  MRSWARN("realvec::operator= : Different realvec sizes! l.h. realvec will be deleted and then recreated during attribution.");
-	  delete [] data_;
-	  data_ = NULL;
-	  if( a.size_ > 0 )
-	    data_ = new mrs_real[a.size_];
-	  for (mrs_natural i=0; i<a.size_; i++)
-	    data_[i] = a.data_[i];
-	  size_ = a.size_;
-	  rows_ = a.rows_;
-	  cols_ = a.cols_;
+			MRSERR("Left size = " + size_);
+			MRSERR("Right size = " + a.size_);
+			return *this;
+			*/
+			//Replacing above code by the following one (which still maintains backward compatibility
+			// with any previous code in Marsyas that resizes l.h. realvec before using the = operator).
+			MRSWARN("realvec::operator= : Different realvec sizes! l.h. realvec will be deleted and then recreated during attribution.");
+			delete [] data_;
+			data_ = NULL;
+			if( a.size_ > 0 )
+				data_ = new mrs_real[a.size_];
+			for (mrs_natural i=0; i<a.size_; i++)
+				data_[i] = a.data_[i];
+			size_ = a.size_;
+			rows_ = a.rows_;
+			cols_ = a.cols_;
+		}
+		else
+		{
+			for (mrs_natural i=0; i < size_; i++)
+				data_[i] = a.data_[i];
+			rows_ = a.rows_;
+			cols_ = a.cols_;
+		}
 	}
-      else
-	{
-	  for (mrs_natural i=0; i < size_; i++)
-	    data_[i] = a.data_[i];
-	  rows_ = a.rows_;
-	  cols_ = a.cols_;
-	}
-    }
 
-  return *this;
+	return *this;
 }
 
 mrs_real *
@@ -243,66 +243,77 @@ realvec::create(mrs_natural size)
 void 
 realvec::stretch(mrs_natural size) 
 {
-  if (size_ == size) 
-    return;
-// if(size > 10000000 || size < 0)
-//cout << size << endl; 
-  mrs_real *ndata = NULL;
-  if (size > 0) 
-    ndata = new mrs_real[size];
-  // zero new data 
-  for (mrs_natural i=0; i < size; i++)
-    {
-      if (i < size_) 
-	ndata[i] = data_[i];
-      else 
-	ndata[i] = 0.0;
-    }
-  delete [] data_;
-  data_ = NULL;
-  data_ = ndata;
-  size_ = size;
-  rows_ = 1;
-  cols_ = size;
-  
-}
+	if (size_ == size) 
+		return;
 
+	if(size < size_)
+	{
+		size_ = size;
+		rows_ = 1;
+		cols_ = size_;
+		return;
+	}
+
+	mrs_real *ndata = NULL;
+	if (size > 0) 
+		ndata = new mrs_real[size];
+	// zero new data 
+	for (mrs_natural i=0; i < size; i++)
+	{
+		if (i < size_) 
+			ndata[i] = data_[i];
+		else 
+			ndata[i] = 0.0;
+	}
+	delete [] data_;
+	data_ = NULL;
+	data_ = ndata;
+	size_ = size;
+	rows_ = 1;
+	cols_ = size;
+
+}
 
 /* keep the old data and possibly extend */ 
 void 
 realvec::stretch(mrs_natural rows, mrs_natural cols) 
 {
-  if ((rows == rows_)&&(cols == cols_))
+  int size = rows * cols;
+
+	if ((rows == rows_)&&(cols == cols_))
     return;
+
+	if(size < size_)
+	{
+		size_ = size;
+		rows_ = rows;
+		cols_ = cols;
+		return;
+	}
   
   mrs_real *ndata = NULL;
-  int size = rows * cols;
-//cout << size << endl;
-//if(size > 10000000 || size < 0)
-//cout << size << endl;
+  
   if (size > 0) 
     ndata = new mrs_real[size];
-
   
-  
-  // copy and zero new data 
-  for (mrs_natural r=0; r < rows; r++)
-    for (mrs_natural c = 0; c < cols; c++) 
-      {
-	if ((r < rows_)&&(c < cols_)) 
-	  ndata[c * rows + r] = data_[c * rows_ + r];
-	else 
-	  ndata[c * rows + r] = 0.0;
-      }
-  if (data_) 
-  {
-    delete [] data_;
-    data_ = NULL;
-  }
-  data_ = ndata;
-  size_ = size;
-  rows_ = rows;
-  cols_ = cols;
+	// copy and zero new data 
+	for (mrs_natural r=0; r < rows; r++)
+		for (mrs_natural c = 0; c < cols; c++) 
+		{
+			if ((r < rows_)&&(c < cols_)) 
+				ndata[c * rows + r] = data_[c * rows_ + r];
+			else 
+				ndata[c * rows + r] = 0.0;
+		}
+		if (data_) 
+		{
+			delete [] data_;
+			data_ = NULL;
+		}
+		data_ = ndata;
+		size_ = size;
+		rows_ = rows;
+		cols_ = cols;
 }
 
 void 
