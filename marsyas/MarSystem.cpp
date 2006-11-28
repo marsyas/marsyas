@@ -923,7 +923,12 @@ MarSystem::put(ostream &o)
 	o << "# Name = " << name_ << endl;
 
 	o << endl;
-	o << controls_ << endl; //[!]
+
+	o << "# MarControls = " << controls_.size() << endl;
+	for (ctrlIter_=controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
+	{
+		o << "# " << ctrlIter_->first << " = " << ctrlIter_->second << endl;
+	}
 
 	map<string,vector<string> >::iterator mi;
 	o << "# Number of links = " << synonyms_.size() << endl;
