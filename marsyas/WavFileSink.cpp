@@ -33,6 +33,7 @@ WavFileSink::WavFileSink(string name):AbsSoundFileSink("WavFileSink",name)
   //type_ = "WavFileSink";
   //name_ = name;
   
+	sfp_ = NULL;
 	sdata_ = NULL;
   cdata_ = NULL;
 
@@ -43,6 +44,7 @@ WavFileSink::~WavFileSink()
 {
    delete [] sdata_;
    delete [] cdata_;
+	 if (sfp_) fclose(sfp_);
 }
 
 MarSystem* 

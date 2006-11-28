@@ -63,6 +63,7 @@ AuFileSink::AuFileSink(string name):AbsSoundFileSink("AuFileSink",name)
   //type_ = "AuFileSink";
   //name_ = name;
   
+	sfp_ = NULL;
 	cdata_ = NULL;
   sdata_ = NULL;
 
@@ -73,6 +74,7 @@ AuFileSink::~AuFileSink()
 {
   delete sdata_;
   delete cdata_;
+	if (sfp_) fclose(sfp_);
 }
 
 MarSystem* 
