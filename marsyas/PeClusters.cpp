@@ -67,7 +67,7 @@ PeCluster::init(realvec& peakSet, mrs_natural l)
 		}
 
 		length = end-start;
-		envSize = (mrs_natural) length;
+		envSize = (mrs_natural) length+1;
 		oriLabel = l;
 		label = l;
 }
@@ -102,7 +102,7 @@ PeCluster::computeAttributes(realvec& peakSet, mrs_natural l, string type)
 		for(i=0 ; i<nbPeaks ; i++)
 			{ 
 				frequencyEvolution(((mrs_natural) set(i, pkTime)-start)) += 
-					set(i, pkFrequency)*set(i, pkAmplitude);
+					set(i, pkFrequency);//*set(i, pkAmplitude);
 
 				amplitudeEvolution(((mrs_natural) set(i, pkTime)-start)) += 
 					set(i, pkAmplitude);
@@ -115,11 +115,11 @@ PeCluster::computeAttributes(realvec& peakSet, mrs_natural l, string type)
 			harmonicityHistogram.stretch(histSize);
 			harmonicityHistogram.setval(0);
 			// compute histograms
-			for(i=0 ; i<histSize ; i++)
+			/*for(i=0 ; i<histSize ; i++)
 			{
 				amplitudeHistogram((mrs_natural) floor(set(i, pkAmplitude)*histSize)) += 1;
 				frequencyHistogram((mrs_natural) floor(set(i, pkFrequency)*histSize/22050)) += 1;
-			}
+			}*/
 
 			// compute similarities within cluster
 }
@@ -224,11 +224,18 @@ for (int i=0 ; i<nbClusters ; i++)
 void
 PeClusters::getVecs(realvec& vecs)
 {
-	realvec vec(set[0].getVecSize());
-	vecs.stretch(nbClusters, vec.getSize());
+	mrs_natural maxSize=0;
+	for (int i=0 ; i<nbClusters ; i++)
+	if(set[i].getVecSize()>maxSize)
+	{
+maxSize = set[i].getVecSize();
+	}
+	vecs.stretch(nbClusters, maxSize);
+	vecs.setval(0);
 
 	for (int i=0 ; i<nbClusters ; i++)
 	{
+		realvec vec(set[i].getVecSize());
 		set[i].toVec(vec);
 		for (int j=0 ; j<vec.getSize() ; j++)
 			vecs(i, j) = vec(j);

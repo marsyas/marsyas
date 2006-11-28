@@ -418,7 +418,7 @@ main(int argc, const char **argv)
 				clusters.attributes(peakSet_);
 				clusters.getVecs(vecs);
 
-				cout << vecs;
+				// cout << vecs;
 				// MATLAB_PUT(fileName.c_str(), "filePath");
 				MATLAB_PUT(vecs, "clusters");
 				MATLAB_EVAL("plotClusters(clusters)");
@@ -437,8 +437,8 @@ main(int argc, const char **argv)
 			clusters.selectGround();
 			updateLabels(peakSet_, clusters.getConversionTable());
 
-			MATLAB_PUT(peakSet_, "peaksGp");
-			MATLAB_EVAL("plotPeaks(peaksGp)");
+			/*MATLAB_PUT(peakSet_, "peaksGp");
+			MATLAB_EVAL("plotPeaks(peaksGp)");*/
 
 			if(clusterSynthetize_)
 			{
@@ -446,8 +446,8 @@ main(int argc, const char **argv)
 				// synthetize remaining clusters
 				clusters.synthetize(peakSet_, *sfi, fileName, winSize_, hopSize_, nbSines_, bopt_);
 			}
-			MATLAB_PUT(peakSet_, "peaks");
-			MATLAB_EVAL("plotPeaks(peaks)");
+			/*MATLAB_PUT(peakSet_, "peaks");
+			MATLAB_EVAL("plotPeaks(peaks)");*/
 		}
 	}
 	else

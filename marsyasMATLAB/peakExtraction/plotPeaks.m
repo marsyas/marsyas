@@ -23,8 +23,6 @@ inc_y = 1 ;
 % seuil = 30;
 % P(7, :) = P(7,:)-min(P(7, :));
 
-
-clf
 hold on
 for i=1:length(P(1,:))
    if(P(7, i)>-1)

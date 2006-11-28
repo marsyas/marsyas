@@ -7,6 +7,7 @@ if(l==-2)
         M=P;
         index = find(P(:, 7) ~= i);
         M(index, 7) = -1;
+        cla
     plotPeaks(M);
     i
     pause(1);
