@@ -67,7 +67,7 @@ AudioSource::addControls()
 	setctrlState("mrs_natural/nChannels", true);
 
 	#ifdef __OS_MACOSX__
-	addctrl("mrs_natural/bufferSize", 6144);
+	addctrl("mrs_natural/bufferSize", 512);
 	#else
 	addctrl("mrs_natural/bufferSize", 256);
 	#endif
