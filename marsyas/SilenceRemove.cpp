@@ -62,7 +62,7 @@ SilenceRemove::clone() const
 void 
 SilenceRemove::addControls()
 {
-  addctrl("mrs_real/threshold", 0.0);
+  addctrl("mrs_real/threshold", 0.01);
   setctrlState("mrs_real/threshold", true);
 }
 
@@ -94,35 +94,22 @@ SilenceRemove::myUpdate()
 void 
 SilenceRemove::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
-  mrs_real rms = 0.0;
-  mrs_natural count = 0;
+    //checkFlow(in,out);
+    mrs_real rms = 0.0;
+    mrs_natural count = 0;
 
-  threshold_ = (mrs_real)0.01;
+    do 
+    {
+        marsystems_[0]->process(in, out);
 
-  do 
-  {
-    marsystems_[0]->process(in, out);
-    
-    for (o=0; o < onObservations_; o++)
-			for (t = 0; t < onSamples_; t++)
-			{
-				rms += (out(o,t) * out(o,t));
-				count++;
-			}
-    rms /= count;
-    rms = sqrt(rms);
-    count = 0;
-  } while (rms < threshold_ && (marsystems_[0]->getctrl("mrs_bool/notEmpty")->toBool())); 
+        for (o=0; o < onObservations_; o++)
+            for (t = 0; t < onSamples_; t++)
+            {
+                rms += (out(o,t) * out(o,t));
+                count++;
+            }
+        rms /= count;
+        rms = sqrt(rms);
+        count = 0;
+    } while (rms < threshold_ && (marsystems_[0]->getctrl("mrs_bool/notEmpty")->toBool())); 
 }
-
-
-
-
-
-
-
-	
-
-	
-	
