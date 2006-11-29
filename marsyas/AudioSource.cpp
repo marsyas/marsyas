@@ -72,7 +72,8 @@ AudioSource::addControls()
 	addctrl("mrs_natural/bufferSize", 256);
 	#endif
 	setctrlState("mrs_natural/bufferSize", true);
-  
+    
+    addctrl("mrs_bool/notEmpty", true);
 	addctrl("mrs_real/gain", 1.0); 
 }
 
