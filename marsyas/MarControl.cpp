@@ -127,29 +127,63 @@ MarControl::hasState() const
   return state_;
 }
 
+string
+MarControl::getType() const
+{ 
+#ifdef MARSYAS_QT
+	QReadLocker locker(&rwLock_);
+#endif
+
+	return value_->getType(); 
+}
+
 void MarControl::callMarSystemUpdate()
 {
   if (state_ && msys_)
     msys_->controlUpdate(this); //thread-safe? [!]
 }
 
+bool
+MarControl::linkTo(MarControlPtr ctrl)
+{
+	if (ctrl.isInvalid())
+	{
+		ostringstream oss;
+		oss << "[MarControl::linkTo] Linking to an invalid control ";
+		oss << "(" << ctrl->getName() << " with " << this->getName() << ").";
+		MRSWARN(oss.str());
+		return false;
+	}
+	if (ctrl->getType() != this->getType())
+	{
+		ostringstream oss;
+		oss << "[MarControl::linkTo] Linking to controls of different types ";
+		oss << "(" << ctrl->getName() << " with " << this->getName() << ").";
+		MRSWARN(oss.str());
+		return false;
+	}
+	linkedTo_.push_back(ctrl);
+	return true;
+}
+
 
 #ifdef MARSYAS_QT
 void
-MarControlValue::emitControlChanged(MarControlValue* cvalue)
+MarControl::emitControlChanged(MarControl* control)
 {
-  //only bother calling MarSystem's controlChanged signal
-  //if there is a GUI currently active(i.e. being displayed)
-  //=> more efficient! [!]
-  if(msys_)
-    {
-      if(msys_->activeControlsGUIs_.size() != 0 ||
-	 msys_->activeDataGUIs_.size() != 0)//this class is friend of MarSystem //[!]
+	//only bother calling MarSystem's controlChanged signal
+	//if there is a GUI currently active(i.e. being displayed)
+	//=> more efficient! [!]
+	if(msys_)
 	{
-	  QMetaObject::invokeMethod(msys_, "controlChanged", Qt::AutoConnection,
-				    Q_ARG(MarControlValue*, cvalue));
+		if(msys_->activeControlsGUIs_.size() != 0 ||
+			msys_->activeDataGUIs_.size() != 0)//this class is friend of MarSystem //[!]
+		{
+			bool registered = QMetaType::isRegistered(QMetaType::type ("MarControl*"));
+			QMetaObject::invokeMethod(msys_, "controlChanged", 
+				Qt::AutoConnection,
+				Q_ARG(MarControl*, control));
+		}
 	}
-      
-    }
 }
 #endif //MARSYAS_QT

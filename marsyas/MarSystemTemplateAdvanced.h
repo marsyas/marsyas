@@ -40,6 +40,7 @@ namespace Marsyas
 		
 		// some operators are mandatory for all controls!
 		// so we must declare and define them for our custom controls
+		friend bool operator==(const MyHeader& hdr1, const MyHeader& hdr2);
 		friend bool operator!=(const MyHeader& hdr1, const MyHeader& hdr2);
 		friend MyHeader operator+(MyHeader& hdr1, MyHeader& hdr2);
 		friend MyHeader operator-(MyHeader& hdr1, MyHeader& hdr2);

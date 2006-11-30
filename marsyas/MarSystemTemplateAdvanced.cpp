@@ -153,6 +153,17 @@ MarSystemTemplateAdvanced::myProcess(realvec& in, realvec& out)
 // some operators are mandatory for all controls!
 // so we must declare and define them for our custom controls
 bool
+Marsyas::operator==(const MyHeader& hdr1, const MyHeader& hdr2)
+{
+	// here we consider that two headers are equal if all their
+	// parameter values are equal
+	return (hdr1.someString == hdr2.someString &&
+		hdr1.someValue == hdr2.someValue &&
+		hdr1.someFlag == hdr2.someFlag &&
+		hdr1.someVec == hdr2.someVec)	;	
+}
+
+bool
 Marsyas::operator!=(const MyHeader& hdr1, const MyHeader& hdr2)
 {
 	// here we consider that two headers are equal if all their
