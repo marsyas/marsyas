@@ -28,7 +28,7 @@ using namespace std;
 using namespace Marsyas;
 
 void
-Marsyas::similarityMatrix(realvec &data, realvec& m, string type, mrs_natural nbMaxSines, mrs_natural hSize)
+Marsyas::similarityMatrix(realvec &data, realvec& m, string type, mrs_natural nbMaxSines, mrs_natural hSize, realvec& firstF, realvec& firstA, realvec& secondF, realvec& secondA)
 {
 	mrs_natural i, j;
 	realvec vec(data.getRows());
@@ -123,7 +123,7 @@ Marsyas::similarityMatrix(realvec &data, realvec& m, string type, mrs_natural nb
 				normData.normSplMinMax(2);
 			extractParameter(normData, amplitudeSet_, pkAmplitude, nbMaxSines);
 
-			harmonicitySimilarityCompute(data, frequencySet_, amplitudeSet_, m, hSize);	
+			harmonicitySimilarityCompute(data, frequencySet_, amplitudeSet_, m, hSize, firstF, firstA, secondF, secondA);	
 		}
 	}
 }
@@ -147,9 +147,15 @@ Marsyas::similarityCompute(realvec &d, realvec& m)
 }
 
 void
-Marsyas::harmonicitySimilarityCompute(realvec& data, std::vector<realvec>& fSet, std::vector<realvec>& aSet, realvec& m, mrs_natural hSize)
+Marsyas::harmonicitySimilarityCompute(realvec& data, std::vector<realvec>& fSet, std::vector<realvec>& aSet, realvec& m, mrs_natural hSize, 
+																			realvec& firstF, realvec& firstA, realvec& secondF, realvec& secondA)
 {
 	mrs_natural i, j, startIndex = (mrs_natural) data(0, 5);
+
+  realvec x1(hSize);
+	realvec x2(hSize);
+	realvec x3(hSize);
+	realvec x4(hSize);
 
 	// similarity computing
 	for(i=0 ; i<data.getRows() ; i++)
@@ -159,18 +165,22 @@ Marsyas::harmonicitySimilarityCompute(realvec& data, std::vector<realvec>& fSet,
 			mrs_real val=0, hF;
 			mrs_natural indexFirst = (mrs_natural) (data(i, 5)-startIndex), indexSecond = (mrs_natural) (data(j, 5)-startIndex);
 
-			realvec firstF = fSet[indexFirst];
-			realvec firstA = aSet[indexFirst];
-			realvec secondF = fSet[indexSecond];
-			realvec secondA = aSet[indexSecond];
+			firstF.stretch(fSet[indexFirst].getSize());
+			firstA.stretch(aSet[indexFirst].getSize());
+    	secondF.stretch(fSet[indexSecond].getSize());
+			secondA.stretch(aSet[indexSecond].getSize());
 
+			firstF = fSet[indexFirst];
+			firstA = aSet[indexFirst];
+			secondF = fSet[indexSecond];
+			secondA = aSet[indexSecond];
 
-			MATLAB_PUT(data(i, pkFrequency), "sf1");
+			/*MATLAB_PUT(data(i, pkFrequency), "sf1");
 			MATLAB_PUT(data(j, pkFrequency), "sf2");
 			MATLAB_PUT(firstF, "f1");
 			MATLAB_PUT(firstA, "a1");
 			MATLAB_PUT(secondF, "f2");
-			MATLAB_PUT(secondA, "a2");
+			MATLAB_PUT(secondA, "a2");*/
 
 			// fundamentqal frequency estimates
 			hF = min(data(i, pkFrequency), data(j, pkFrequency));
@@ -225,7 +235,7 @@ Marsyas::harmonicitySimilarityCompute(realvec& data, std::vector<realvec>& fSet,
 			else
 				val = correlatePeakSets(secondF,secondA,firstF,firstA);*/
 
-			val = cosinePeakSets(firstF,firstA, secondF,secondA, aSet[indexFirst], aSet[indexSecond], hSize);
+			val = cosinePeakSets(firstF,firstA, secondF,secondA, aSet[indexFirst], aSet[indexSecond], x1, x2, x3, x4, hSize);
 
 			//	val=exp(-val);
 	//		cout << data(i, pkFrequency) << " " <<data(j, pkFrequency) << " value: "<< val <<endl;

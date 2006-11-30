@@ -358,14 +358,10 @@ Marsyas::correlatePeakSets(realvec&f1, realvec&a1, realvec&f2, realvec&a2)
 }
 
 mrs_real
-Marsyas::cosinePeakSets(realvec&f1, realvec&a1, realvec&f2, realvec&a2, realvec&a3, realvec&a4, mrs_natural length)
+Marsyas::cosinePeakSets(realvec&f1, realvec&a1, realvec&f2, realvec&a2, realvec&a3, realvec&a4, realvec&x1, realvec&x2, realvec&x3, realvec&x4, mrs_natural length)
 {
 	mrs_natural index;
 	mrs_real res1=0, res2=0, res3=0, res;
-	realvec x1(length);
-	realvec x2(length);
-	realvec x3(length);
-	realvec x4(length);
 
 	x1.setval(0);
 	x2.setval(0);
@@ -396,9 +392,9 @@ Marsyas::cosinePeakSets(realvec&f1, realvec&a1, realvec&f2, realvec&a2, realvec&
 	res = res1/(sqrt(res2)*sqrt(res3));
 
 
-	/*MATLAB_PUT(x1, "x1");
-	MATLAB_PUT(x2, "x2");
-	MATLAB_EVAL("plotHarmo");*/
+	//MATLAB_PUT(x1, "x1");
+	//MATLAB_PUT(x2, "x2");
+	//MATLAB_EVAL("plotHarmo");
 
 	return res;
 }

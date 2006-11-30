@@ -36,6 +36,7 @@ PeCluster::PeCluster()
 	groundLabel = -1;
 	oriLabel=-1;
 	label=-1;
+	histSize = 20;
 }
 
 PeCluster::~PeCluster()
@@ -77,7 +78,9 @@ PeCluster::computeAttributes(realvec& peakSet, mrs_natural l, string type)
 {
 		mrs_natural i, j, k;
 	realvec set;
+ 
 	set.stretch(nbPeaks, nbPkParameters);
+
 	for (i=0, k=0 ; i< peakSet.getRows() ; i++)
 		if (peakSet(i, pkGroup) == l)
 		{
@@ -97,8 +100,7 @@ PeCluster::computeAttributes(realvec& peakSet, mrs_natural l, string type)
 		frequencyEvolution.setval(0);
 		amplitudeEvolution.stretch(envSize);
 		amplitudeEvolution.setval(0);
-
-
+	
 		for(i=0 ; i<nbPeaks ; i++)
 			{ 
 				frequencyEvolution(((mrs_natural) set(i, pkTime)-start)) += 
@@ -107,7 +109,7 @@ PeCluster::computeAttributes(realvec& peakSet, mrs_natural l, string type)
 				amplitudeEvolution(((mrs_natural) set(i, pkTime)-start)) += 
 					set(i, pkAmplitude);
 			}
-
+	
 			amplitudeHistogram.stretch(histSize);
 			amplitudeHistogram.setval(0);
 			frequencyHistogram.stretch(histSize);
@@ -120,20 +122,24 @@ PeCluster::computeAttributes(realvec& peakSet, mrs_natural l, string type)
 				amplitudeHistogram((mrs_natural) floor(set(i, pkAmplitude)*histSize)) += 1;
 				frequencyHistogram((mrs_natural) floor(set(i, pkFrequency)*histSize/22050)) += 1;
 			}*/
-
+	
 			// compute similarities within cluster
 }
 
 mrs_natural 
 PeCluster::getVecSize()
 {
-	return 6+2*envSize;
+	return 3+6+2*envSize;
 }
 
 void 
 PeCluster::toVec(realvec& vec)
 {
 	mrs_natural i=0, j;
+
+	vec(i++) = oriLabel;
+	vec(i++) = groundLabel;	
+	vec(i++) = label;
 
 	vec(i++) = start;
 	vec(i++) = length;	
@@ -297,6 +303,7 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 	for (int i=0 ; i<nbClusters ; i++)
 		if(set[i].label != -1)
 		{
+			// cout << set[i].label << endl;
 			// label peak set
 			pkV.setval(0);
 			// peaks2V(peakSet, NULL, pkV, S, i);

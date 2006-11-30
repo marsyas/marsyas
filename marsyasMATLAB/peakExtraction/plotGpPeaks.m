@@ -17,6 +17,7 @@ else
        M=P;
         index = find(P(:, 7) ~= l);
         M(index, 7) = -1;
+        M(1:2,:)
     plotPeaks(M); 
 end
 

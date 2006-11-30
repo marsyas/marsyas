@@ -33,8 +33,8 @@ namespace Marsyas
 {
 
 	void similarityCompute(realvec&, realvec&);
-void similarityMatrix(realvec&, realvec&, std::string type, mrs_natural, mrs_natural );
- void harmonicitySimilarityCompute(realvec&, std::vector<realvec>&, std::vector<realvec>&, realvec& m, mrs_natural);
+void similarityMatrix(realvec&, realvec&, std::string type, mrs_natural, mrs_natural , realvec& firstF, realvec& firstA, realvec& secondF, realvec& secondA);
+ void harmonicitySimilarityCompute(realvec&, std::vector<realvec>&, std::vector<realvec>&, realvec& m, mrs_natural, realvec& firstF, realvec& firstA, realvec& secondF, realvec& secondA);
 
 }
 

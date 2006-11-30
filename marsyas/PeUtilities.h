@@ -60,7 +60,7 @@ namespace Marsyas
 	void updateLabels(realvec&, realvec&);
 
 	mrs_real correlatePeakSets(realvec&, realvec&, realvec&, realvec&);
-mrs_real cosinePeakSets(realvec&, realvec&, realvec&, realvec&, realvec&, realvec&, mrs_natural);
+mrs_real cosinePeakSets(realvec&, realvec&, realvec&, realvec&, realvec&, realvec&, realvec&, realvec&, realvec&, realvec&, mrs_natural);
 
 	mrs_real compareTwoPeakSets(realvec&, realvec&, realvec&, realvec&);
 	mrs_real compareTwoPeakSets2(realvec&, realvec&, realvec&, realvec&);

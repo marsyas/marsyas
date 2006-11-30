@@ -103,11 +103,12 @@ PeClust::myUpdate()
 
 	harmonicityWeight_=0.01;
 	harmonicitySize_=10;
+
+	firstF_.stretch(kmax_);
+	firstA_.stretch(kmax_);
+	secondF_.stretch(kmax_);
+	secondA_.stretch(kmax_);
 }
-
-
-
-
 
 void
 PeClust::labeling(realvec& data, realvec& labels)
@@ -146,8 +147,8 @@ PeClust::labeling(realvec& data, realvec& labels)
 			 oldAmps(i) = lastFrame_(pkAmplitude*kmax_+i);
 		 }
 			//	 amps.dump();
-			cout  << lastIndex << " " ;
-			/* oldLabels.dump();
+	/*		cout  << lastIndex << endl ;
+			 oldLabels.dump();
 				 newLabels.dump(); */
 
 			while(1){
@@ -216,7 +217,7 @@ PeClust::labeling(realvec& data, realvec& labels)
 					else
 						gv = (ampMax1/nbMax1)/(a2/nb2);
 					mrs_real diff = (abs(ampMax1-ampMax2)+abs(a2-ampMax2))/(ampMax1+a2);
-					cout << diff << " " <<  2*ampMax2/(ampMax1+a2) << endl;
+				//	cout << diff << " " <<  2*ampMax2/(ampMax1+a2) << endl;
 					
 
 					
@@ -240,12 +241,13 @@ PeClust::labeling(realvec& data, realvec& labels)
 						 }
 				 }
 					
-cout << iMax << " " << i2Max << endl << endl;
-					if(iMax == i2Max && diff<0.4)
+ // cout << iMax << " " << i2Max << " " << jMax << endl << endl;
+			//		if(iMax == i2Max && diff<0.45)
 						{
 					// if two correspond well
 					// fill conversion table with oldLabel
 					conversion_(jMax) = iMax;
+				//	cout << "done"<<endl;
 					// remove new clusters
 					for(i=0 ; i<newLabels.getSize() ; i++)
 						if(newLabels(i) == jMax)
@@ -269,13 +271,13 @@ cout << iMax << " " << i2Max << endl << endl;
 			 if(conversion_(i) == -1.0)
 				 conversion_(i) = k++;
 		 }
-			//conversion_.dump();
+		// conversion_.dump();
 			//labels.dump();
 			// convert labels
 			for(i=0 ; i<labels.getSize() ; i++)
 				if(labels(i) != -1.0 && conversion_( (mrs_natural) labels(i)) != -1.0)
 					labels(i) = conversion_((mrs_natural) labels(i));
-			//labels.dump();
+		//	labels.dump();
 	}
 	// fill peaks data with clusters labels
 	for (i=0 ; i<nbPeaks_ ; i++)
@@ -298,7 +300,7 @@ PeClust::myProcess(realvec& in, realvec& out)
 	{
 		m_.stretch(nbPeaks_, nbPeaks_);
 		// similarity matrix calculation
-		similarityMatrix(data_, m_, similarityType_, kmax_, harmonicitySize_);
+		similarityMatrix(data_, m_, similarityType_, kmax_, harmonicitySize_, firstF_, firstA_, secondF_, secondA_);
 
 		// Ncut
 		realvec labels(nbPeaks_);
@@ -311,8 +313,8 @@ PeClust::myProcess(realvec& in, realvec& out)
 
 		labeling(data_, labels);
 
-		MATLAB_PUT(data_, "peaks");
-		MATLAB_EVAL("plotPeaks(peaks)");
+	/*	MATLAB_PUT(data_, "peaks");
+		MATLAB_EVAL("plotPeaks(peaks)");*/
 
 		peaks2V(data_, lastFrame_, out, kmax_);
 
