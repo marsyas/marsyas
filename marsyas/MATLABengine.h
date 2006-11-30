@@ -71,6 +71,7 @@ public:
   //------------------------------------------------
   //					setters
   //------------------------------------------------
+	void putVariable(const std::string value, std::string MATLABname);
   void putVariable(const long *const value, unsigned int size, std::string MATLABname);	
   void putVariable(const float *const value, unsigned int size, std::string MATLABname);
   void putVariable(const double *const value, unsigned int size, std::string MATLABname);

@@ -82,6 +82,19 @@ MATLABengine::evalString(string MATLABcmd)
 }
 
 void
+MATLABengine::putVariable(const string value, string MATLABname)
+{
+  //-----------------------------------
+  //send C/C++ string to MATLAB string
+  //-----------------------------------
+  
+	mxArray *mxVector = mxCreateString(value.c_str());
+  engPutVariable(engine_, MATLABname.c_str(), mxVector);
+  
+	mxDestroyArray(mxVector);
+}
+
+void
 MATLABengine::putVariable(const long *const value, unsigned int size, string MATLABname)
 {
   //-----------------------------------
