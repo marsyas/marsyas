@@ -44,6 +44,7 @@ class realvec
 private:
   mrs_real *data_;
   mrs_natural size_;
+	mrs_natural allocatedSize_;
   mrs_natural rows_;
   mrs_natural cols_;
   

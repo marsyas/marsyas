@@ -41,6 +41,7 @@ using namespace Marsyas;
 realvec::realvec()
 {
   size_ = 0;
+	allocatedSize_ = 0;
   data_ = NULL;
   rows_ = 0;  // [!! 0]
   cols_ = size_;
@@ -60,6 +61,7 @@ realvec::realvec(mrs_natural size)
 {
   
   size_ = size;
+	allocatedSize_ = size;
   if (size_ > 0) 
     data_ = new mrs_real[size_];
   rows_ = 1;
@@ -71,6 +73,7 @@ realvec::realvec(mrs_natural rows, mrs_natural cols)
 {
   
   size_ = rows * cols;
+  allocatedSize_ = size_;
   if (size_ > 0) 
     data_ = new mrs_real[size_];
   rows_ = rows;
@@ -78,7 +81,7 @@ realvec::realvec(mrs_natural rows, mrs_natural cols)
 }
 
 
-realvec::realvec(const realvec& a) : size_(a.size_), 
+realvec::realvec(const realvec& a) : size_(a.size_),allocatedSize_(a.size_), 
 				     rows_(a.rows_), cols_(a.cols_)
 {
   data_ = NULL; 
@@ -228,6 +231,7 @@ realvec::create(mrs_natural size)
   delete [] data_;
   data_ = NULL;
   size_ = size;
+	allocatedSize_ = size;
   if (size_ > 0) 
     data_ = new mrs_real[size_];
   rows_ = 1;
@@ -246,7 +250,7 @@ realvec::stretch(mrs_natural size)
 	if (size_ == size) 
 		return;
 
-	if(size < size_)
+	if(size < allocatedSize_)
 	{
 		size_ = size;
 		rows_ = 1;
@@ -269,6 +273,7 @@ realvec::stretch(mrs_natural size)
 	data_ = NULL;
 	data_ = ndata;
 	size_ = size;
+	allocatedSize_ = size;
 	rows_ = 1;
 	cols_ = size;
 
@@ -283,13 +288,13 @@ realvec::stretch(mrs_natural rows, mrs_natural cols)
 	if ((rows == rows_)&&(cols == cols_))
     return;
 
-	if(size < size_)
+	/*if(size < size_)  [!] should be improved as the simpler stretch function
 	{
 		size_ = size;
 		rows_ = rows;
 		cols_ = cols;
 		return;
-	}
+	}*/
   
   mrs_real *ndata = NULL;
   
@@ -312,6 +317,7 @@ realvec::stretch(mrs_natural rows, mrs_natural cols)
 		}
 		data_ = ndata;
 		size_ = size;
+		allocatedSize_ = size;
 		rows_ = rows;
 		cols_ = cols;
 }
@@ -350,6 +356,7 @@ realvec::allocate(mrs_natural size)
   delete [] data_;
   data_ = NULL;
   size_ = size;
+	allocatedSize_ = size;
   if (size_ > 0) 
     data_ = new mrs_real[size_];
 }
