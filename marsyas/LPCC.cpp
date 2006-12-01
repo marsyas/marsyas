@@ -90,12 +90,12 @@ LPCC::myProcess(realvec& in, realvec& out)
 	mrs_real sum;
 	mrs_natural order = ctrl_order_->to<mrs_natural>();
 
-/************************************************************************/
-/* Based on:
-/* http://www.mathworks.com/access/helpdesk/
+//************************************************************************
+// Based on:
+// http://www.mathworks.com/access/helpdesk/
 // help/toolbox/dspblks/index.html?/access/helpdesk/help/toolbox/dspblks/
-/* lpctofromcepstralcoefficients.html
-/************************************************************************/
+// lpctofromcepstralcoefficients.html
+//************************************************************************
 	tmp_.setval(0.0);
 	tmp_(0) = -log(in(order+1)); //[!][?]
 	for (mrs_natural m = 1; m <= order; m++)  
