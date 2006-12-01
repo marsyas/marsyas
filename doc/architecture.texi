@@ -19,6 +19,7 @@ networks and writing new MarSystems respectively.
 * Architecture overview::       
 * Implicit patching::           
 * MarSystem Composites::        
+* Assembling a network ::       
 @end menu
 
 
@@ -89,8 +90,8 @@ slices to be semantically correct.
 
 @menu
 * Implicit patching vs. explicit patching::  
-* Patching example: Neural networks::  
-* Patching example: Feature extraction::  
+* Implicit patching advantages::  
+* Patching example of Feature extraction::  
 @end menu
 
 
@@ -156,8 +157,8 @@ the number of bands in a filter bank without changing any code.
 
 
 
-@node Patching example: Feature extraction
-@subsection Patching example: Feature extraction
+@node Patching example of Feature extraction
+@subsection Patching example of Feature extraction
 
 Suppose we wish to create a typical feature extraction program:
 
@@ -230,6 +231,7 @@ Series1->addMarSystem(mng.create("classifier", "Classifier"));
 @section Assembling a network
 
 @menu
+* Including libraries and linking::  
 @end menu
 
 @node Including libraries and linking
