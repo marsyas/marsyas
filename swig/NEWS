@@ -1,5 +1,8 @@
 Newest towards the top.
 
+--- 11 / 30 / 06 --
+To catch up to the latest trunk version of Marsyas (post 0.2.9) with the new API (MarControlPtr mostly), the source has been rewritten and moved to src. The old folders (common/ruby/python) have been merged together into a single directory. Some features have been removed as they haven't been ported yet, and documentation is no longer up-to date. Will try to fix soon. README is mostly correct, but again needs to be updated.
+
 --- 8 / 03 / 06 ---
 After almost two months, I have gotten back to make a few small changes (mostly to compile against marsyas-0.2.8). See ChangeLog
 

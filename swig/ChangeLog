@@ -1,3 +1,10 @@
+2006-11-30	<carlosc@uvic.ca>
+	* marsyas-swig : Rebuilt to support new Marsyas trunk API (MarControlPtr)
+	* marsyas-swig/ruby : Moved to src.
+	* marsyas-swig/python : Moved to src.
+	* marsyas-swig/common : Moved to src.
+	* marsyas-swig/src : New location for all source files.
+
 2006-09-07	<carlosc@uvic.ca>
 	* marsyas-swig/README : For some reason, my C++ rant has returned. Therefore I have removed it
 	(again) and also fixed a few typos.

@@ -33,8 +33,6 @@ LDFLAGS="$LDFLAGS -L${libdir}"
 AC_PATH_PROG([SWIG],[swig])
 AM_CONDITIONAL([SWIG],[test -x $SWIG])
 
-AC_SUBST([SWIG_SUBDIRS])
-
 AC_DEFUN([MRS_PROG_RUBY],
 	 [AC_ARG_WITH([ruby], [AS_HELP_STRING([--with-ruby],[Creates Ruby Module.])])
 	 function get_ruby_var
@@ -42,6 +40,7 @@ AC_DEFUN([MRS_PROG_RUBY],
 		 echo "puts Config::CONFIG[['${1}']]" | $RUBY -r rbconfig
 	 }
 	 if test "x$with_ruby" == "xyes" ; then 
+		 AM_CONDITIONAL([RUBY],[true])
 		 AC_PATH_PROGS([RUBY],[ruby],[AC_MSG_ERROR([You need Ruby to create Ruby module])])
 		 AC_SUBST([SWIG_SUBDIRS],["$SWIG_SUBDIRS ruby"])
 		 AC_MSG_CHECKING([for ruby site dir])
@@ -56,6 +55,8 @@ AC_DEFUN([MRS_PROG_RUBY],
 		 AC_MSG_CHECKING([for how to use ruby headers])
 		 AC_SUBST([RUBY_INCLUDE],["-I`get_ruby_var archdir`"])
 		 AC_MSG_RESULT([${RUBY_INCLUDE}])
+	 else
+		 AM_CONDITIONAL([RUBY],[false])
 	 fi
 	 ])
 
@@ -71,11 +72,13 @@ print distutils.sysconfig.get_python_inc()
 END`
 		       AC_MSG_RESULT([$pyincdir])
 		       AC_SUBST([PYTHON_INCLUDE],["$pyincdir"])
-		       ])
+		       AM_CONDITIONAL([PYTHON],[true])
+		       ],
+		      [AM_CONDITIONAL([PYTHON],[false])])
 	 ])
 
 MRS_PROG_RUBY
 MRS_PROG_PYTHON
 
-AC_CONFIG_FILES([Makefile ruby/Makefile python/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile])
 AC_OUTPUT
