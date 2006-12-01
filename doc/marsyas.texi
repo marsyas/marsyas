@@ -63,6 +63,7 @@ translation approved by the Free Software Foundation.
 components.
 * Architecture::                Software architecture, concepts, and assembling new MarSystems.
 * Programming::                 Writing new basic MarSystem blocks.
+* Interoperability::            Using Marsyas with other projects.
 * Future Work::                 Where Marsyas is going.
 * Users and Projects::          Past and current users/projects.
 * The Index::                   The Index.
@@ -79,6 +80,7 @@ components.
 
 @include programming.texi
 
+@include interoperability.texi
 
 @c to be scrapped soon.   -gp
 @include unsorted.texi

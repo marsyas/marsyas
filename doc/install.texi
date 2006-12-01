@@ -17,9 +17,10 @@
 
 @subsection Stable(-ish) Version
 
-Marsyas is hosted at SourceForge : 
 (@i{Important Note: Marsyas does not use CVS and therefore the CVS repository 
 is out of date})
+
+Marsyas is hosted at SourceForge:
 
 @ifnothtml
 http://marsyas.sourceforge.net/

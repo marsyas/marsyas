@@ -15,14 +15,25 @@ certain API and coding conventions offering the so called
 ``White-Box'' functionality. The next two sections describe building
 networks and writing new MarSystems respectively.
 
-
 @menu
-* Building the dataflow network::  
+* Architecture overview::       
+* Implicit patching::           
+* MarSystem Composites::        
 @end menu
 
-@node Building the dataflow network
-@section Building the dataflow network 
 
+
+@node Architecture overview
+@section Architecture overview
+
+@menu
+* Building MarSystems::         
+* Dataflow model::              
+@end menu
+
+
+@node Building MarSystems
+@subsection Building MarSystems
 
 The basic idea behind the design of Marsyas is that any audio
 analysis/synthesis computation can be expressed as some type of
@@ -30,7 +41,9 @@ processing object, which we call MarSystem, that reads data from an
 input slice of floating point numbers, performs some
 computation/transformation based on data, and writes the results to
 another slice of floating point numbers.  Networks of MarSystems can
-be combined and encapsulated as one MarSystem. For example consider an
+be combined and encapsulated as one MarSystem.
+
+For example consider an
 audio processing series of computations consisting of reading samples
 from a soundfile, performing an short-time fourier transform (STFT) to
 calculate the complex spectrum, performing an inverse STFT to convert
@@ -57,15 +70,175 @@ management happens behind the scene without the programmer having to
 do anything explicitly.
 
 
+@node Dataflow model
+@subsection Dataflow model
+
+Marsyas follows a dataflow model of audio computation.
+
+@image{images/dataflow,,5cm}
+
+Marsyas uses general matrices instead of 1-D arrays.  This allows
+slices to be semantically correct.
+
+@image{images/slices,,5cm}
 
 
 
-(NOTES TO MYSELF: talk about slices, distinction between samples and
-observations)
+@node Implicit patching
+@section Implicit patching
 
-@page
+@menu
+* Implicit patching vs. explicit patching::  
+* Patching example: Neural networks::  
+* Patching example: Feature extraction::  
+@end menu
 
-@image{marsyasArchitecture1,22cm}
 
+@node Implicit patching vs. explicit patching
+@subsection Implicit patching vs. explicit patching
+
+Many audio analysis programs require the user to explicitly (manually)
+connect every processing block,
+
+@example
+# EXPLICIT PATCHING: block definitions
+source, F1, F2, F3, destination;
+# connect the in/out ports of the blocks
+connect(source, F1);
+connect(source, F2);
+connect(source, F3);
+connect(F1, destination);
+connect(F2, destination);
+connect(F3, destination);
+@end example
+
+@image{images/explicit-patching,,4cm}
+
+Marsyas uses @emph{implicit patching}: connections are made
+automagically when blocks are created,
+
+@example
+# IMPLICIT PATCHING
+source, F1, F2, F3, destination;
+Fanout(F1, F2, F3);
+Series(source, Fanout, destination);
+@end example
+
+@image{images/implicit-patching,,5cm}
+
+
+@node Implicit patching advantages
+@subsection Implicit patching advantages 
+
+Creating a neural network with explicit patching soon becomes
+a mess,
+
+@image{images/neural-explicit,,5cm}
+
+With implicit patching, this is much more manageable.
+
+@example
+# IMPLICIT PATCHING
+fanoutLayer1(ANN_Node11, ..., ANN_Node1N);
+...
+fanoutLayerM(ANN_NodeM1, ..., ANN_NodeMN);
+ANN_Series(fanoutLayer1, ..., fanoutLayerM);
+@end example
+
+@image{images/neural-implicit,,5cm}
+
+
+Implicit patching can automagically adjust the connections without
+requiring any code recompiliation.  For example, we can change
+the number of bands in a filter bank without changing any code.
+
+@image{images/implicit-filter-bank,,4cm}
+
+
+
+@node Patching example: Feature extraction
+@subsection Patching example: Feature extraction
+
+Suppose we wish to create a typical feature extraction program:
+
+@image{images/feature-extraction,,5cm}
+
+@example
+MarSystemManager mng; 
+MarSystem* Series1 = mng.create("Series", "Series1"); 
+MarSystem* Fanout1 = mng.create("Fanout", "Fanout1"); 
+MarSystem* Series2 = mng.create("Series", "Series2"); 
+MarSystem* Fanout2 = mng.create("Fanout", "Fanout2"); 
+MarSystem* Fanout3 = mng.create("Fanout", "Fanout3"); 
+Fanout3->addMarSystem(mng.create("Mean", "Mean")); 
+Fanout3->addMarSystem(mng.create("Variance", "Variance")); 
+Fanout2->addMarSystem(mng.create("Centroid", "Centroid")); 
+Fanout2->addMarSystem(mng.create("RollOff", "Rolloff")); 
+Fanout2->addMarSystem(mng.create("Flux", "Flux");
+Series2->addMarSystem(mng.create("Spectrum, "Spectrum"); 
+Series2->addMarSystem(Fanout2); 
+Fanout1->addMarSystem(mng.create("ZeroCrossings", "ZeroCrossings"); 
+Fanout1->addMarSystem(Series2); 
+Series1->addMarSystem(mng.create("SoundFileSource", "Source")); 
+Series1->addMarSystem(Fanout1); 
+Series1->addMarSystem(mng.create("Memory", "TextureMemory")); 
+Series1->addMarSystem(Fanout3); 
+Series1->addMarSystem(mng.create("classifier", "Classifier"));
+@end example
+
+
+
+@node MarSystem Composites
+@section MarSystem Composites
+
+
+@menu
+* Series::                      
+* Parallel::                    
+* Fanout::                      
+* Accumulator::                 
+@end menu
+
+
+@node Series
+@subsection Series
+
+@image{images/composite-series}
+
+
+@node Parallel
+@subsection Parallel
+
+@image{images/composite-parallel}
+
+
+@node Fanout
+@subsection Fanout
+
+@image{images/composite-fanout}
+
+
+@node Accumulator
+@subsection Accumulator
+
+@image{images/composite-accumulator}
+
+
+
+
+@node Assembling a network 
+@section Assembling a network
+
+@menu
+@end menu
+
+@node Including libraries and linking
+@subsection Including libraries and linking
+
+Unless you write your program inside the @file{marsyas/src} directory,
+you need to include the Marsyas libraries in your project.
+
+@c  I will explain this WHEN I CAN DO IT MYSELF.  BLOODY MAO, I HATE
+@c  LINKING!!!.  -gp
 
 

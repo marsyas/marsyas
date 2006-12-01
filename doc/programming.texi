@@ -20,4 +20,3 @@ template when I write a new Marsystem is Gain.h and Gain.cpp
 
 
 
-
