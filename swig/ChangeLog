@@ -1,5 +1,6 @@
 2006-11-30	<carlosc@uvic.ca>
-	* marsyas-swig : Rebuilt to support new Marsyas trunk API (MarControlPtr)
+	* marsyas-swig : Version Bump (0.4.0).
+	* marsyas-swig : Rebuilt to support new Marsyas trunk API (MarControlPtr).
 	* marsyas-swig/ruby : Moved to src.
 	* marsyas-swig/python : Moved to src.
 	* marsyas-swig/common : Moved to src.

@@ -1,4 +1,4 @@
-AC_INIT([marsyas-swig],[0.3.10],[carlosc@uvic.ca])
+AC_INIT([marsyas-swig],[0.4.0],[carlosc@uvic.ca])
 AM_INIT_AUTOMAKE
 
 AM_CONFIG_HEADER([config.h])
