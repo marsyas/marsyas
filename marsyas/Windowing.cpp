@@ -49,6 +49,13 @@ Windowing::addcontrols()
     addctrl("mrs_string/type", "Hamming");
     addctrl("mrs_natural/zeroPhasing", 0);
     addctrl("mrs_natural/size", 0);
+    // used for the gaussian window
+    addctrl("mrs_natural/variance", 0.4);
+    
+    setctrlState("mrs_string/type", true);
+    setctrlState("mrs_natural/zeroPhasing", true);
+    setctrlState("mrs_natural/size", true);
+    setctrlState("mrs_natural/variance", true);
 }
 
 void
@@ -60,6 +67,8 @@ Windowing::myUpdate()
 
     setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));  
     mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
+
+    mrs_real variance = getctrl("mrs_real/variance")->toReal();
 
     mrs_natural size = getctrl("mrs_natural/size")->toNatural();
     if(size)
@@ -125,6 +134,17 @@ Windowing::myUpdate()
                 envelope_(t) = 2 / (inSamples-1) * temp;
             }
         }
+
+        if (type == "Gaussian")
+        {
+            for (t=0;t< inSamples; t++)
+            {
+                temp = ( t - (inSamples-1)/2 ) / ( variance*(inSamples-1)/2 );
+                temp = temp * temp;
+                envelope_(t) = exp(-0.5*temp);
+            }
+        }
+        
     }
 
     // not currently used
