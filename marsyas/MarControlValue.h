@@ -157,7 +157,6 @@ public:
 template<>
 class MarControlValueT<bool> : public MarControlValue
 {
-	friend class MarControl;
 
 protected:
 	bool value_;

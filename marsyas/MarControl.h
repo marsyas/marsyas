@@ -629,9 +629,10 @@ MarControl::setValue(T& t, bool update)
 #endif
 
 	MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(value_);
+	const T& pv = ptr->get();
 	if(ptr)
 	{
-		if (ptr->value_ == t)
+		if (pv == t)
 		{
 			#ifdef MARSYAS_QT
 			rwLock_.unlock();
