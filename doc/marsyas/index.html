@@ -3,7 +3,7 @@
 <title>Marsyas 0.2</title>
 <meta http-equiv="Content-Type" content="text/html">
 <meta name="description" content="Marsyas 0.2">
-<meta name="generator" content="makeinfo 4.7">
+<meta name="generator" content="makeinfo 4.8">
 <link title="Top" rel="start" href="#Top">
 <link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
 <!--
@@ -35,8 +35,9 @@ translation approved by the Free Software Foundation.-->
   pre.smallformat  { font-family:inherit; font-size:smaller }
   pre.smallexample { font-size:smaller }
   pre.smalllisp    { font-size:smaller }
-  span.sc { font-variant:small-caps }
-  span.roman { font-family: serif; font-weight: normal; } 
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
 --></style>
 </head>
 <body>
@@ -95,14 +96,44 @@ translation approved by the Free Software Foundation.-->
 </li></ul>
 <li><a name="toc_Architecture" href="Architecture.html#Architecture">4 Architecture</a>
 <ul>
-<li><a href="Building-the-dataflow-network.html#Building-the-dataflow-network">4.1 Building the dataflow network</a>
+<li><a href="Architecture-overview.html#Architecture-overview">4.1 Architecture overview</a>
+<ul>
+<li><a href="Building-MarSystems.html#Building-MarSystems">4.1.1 Building MarSystems</a>
+<li><a href="Dataflow-model.html#Dataflow-model">4.1.2 Dataflow model</a>
+</li></ul>
+<li><a href="Implicit-patching.html#Implicit-patching">4.2 Implicit patching</a>
+<ul>
+<li><a href="Implicit-patching-vs_002e-explicit-patching.html#Implicit-patching-vs_002e-explicit-patching">4.2.1 Implicit patching vs. explicit patching</a>
+<li><a href="Implicit-patching-advantages.html#Implicit-patching-advantages">4.2.2 Implicit patching advantages</a>
+<li><a href="Patching-example-of-Feature-extraction.html#Patching-example-of-Feature-extraction">4.2.3 Patching example of Feature extraction</a>
+</li></ul>
+<li><a href="MarSystem-Composites.html#MarSystem-Composites">4.3 MarSystem Composites</a>
+<ul>
+<li><a href="Series.html#Series">4.3.1 Series</a>
+<li><a href="Parallel.html#Parallel">4.3.2 Parallel</a>
+<li><a href="Fanout.html#Fanout">4.3.3 Fanout</a>
+<li><a href="Accumulator.html#Accumulator">4.3.4 Accumulator</a>
+</li></ul>
+<li><a href="Assembling-a-network.html#Assembling-a-network">4.4 Assembling a network</a>
+<ul>
+<li><a href="Including-libraries-and-linking.html#Including-libraries-and-linking">4.4.1 Including libraries and linking</a>
+</li></ul>
 </li></ul>
 <li><a name="toc_Programming" href="Programming.html#Programming">5 Programming</a>
 <ul>
 <li><a href="Writing-your-own-MarSystems.html#Writing-your-own-MarSystems">5.1 Writing your own MarSystems</a>
 </li></ul>
-<li><a name="toc_Future-Work" href="Future-Work.html#Future-Work">6 Future Work</a>
-<li><a name="toc_Users-and-Projects" href="Users-and-Projects.html#Users-and-Projects">7 Users and Projects</a>
+<li><a name="toc_Interoperability" href="Interoperability.html#Interoperability">6 Interoperability</a>
+<ul>
+<li><a href="Audio-and-MIDI.html#Audio-and-MIDI">6.1 Audio and MIDI</a>
+<li><a href="Open-Sound-Control-_0028OSC_0029.html#Open-Sound-Control-_0028OSC_0029">6.2 Open Sound Control (OSC)</a>
+<li><a href="WEKA.html#WEKA">6.3 WEKA</a>
+<li><a href="MATLAB.html#MATLAB">6.4 MATLAB</a>
+<li><a href="Python.html#Python">6.5 Python</a>
+<li><a href="Trolltech-Qt4.html#Trolltech-Qt4">6.6 Trolltech Qt4</a>
+</li></ul>
+<li><a name="toc_Future-Work" href="Future-Work.html#Future-Work">7 Future Work</a>
+<li><a name="toc_Users-and-Projects" href="Users-and-Projects.html#Users-and-Projects">8 Users and Projects</a>
 <li><a name="toc_The-Index" href="The-Index.html#The-Index">The Index</a>
 </li></ul>
 </div>
@@ -112,9 +143,10 @@ translation approved by the Free Software Foundation.-->
 <!-- So the toc is printed in the right place. -->
 <div class="node">
 <p>
-<a name="Top"></a>Next:&nbsp;<a rel="next" accesskey="n" href="Introduction.html#Introduction">Introduction</a>,
+<a name="Top"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Introduction.html#Introduction">Introduction</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="../index.html#dir">(dir)</a>
-<hr><br>
+<hr>
 </div>
 
 <h2 class="unnumbered">Marsyas Manual</h2>
@@ -126,9 +158,10 @@ Up:&nbsp;<a rel="up" accesskey="u" href="../index.html#dir">(dir)</a>
 components. 
 <li><a accesskey="4" href="Architecture.html#Architecture">Architecture</a>:                 Software architecture, concepts, and assembling new MarSystems. 
 <li><a accesskey="5" href="Programming.html#Programming">Programming</a>:                  Writing new basic MarSystem blocks. 
-<li><a accesskey="6" href="Future-Work.html#Future-Work">Future Work</a>:                  Where Marsyas is going. 
-<li><a accesskey="7" href="Users-and-Projects.html#Users-and-Projects">Users and Projects</a>:           Past and current users/projects. 
-<li><a accesskey="8" href="The-Index.html#The-Index">The Index</a>:                    The Index. 
+<li><a accesskey="6" href="Interoperability.html#Interoperability">Interoperability</a>:             Using Marsyas with other projects. 
+<li><a accesskey="7" href="Future-Work.html#Future-Work">Future Work</a>:                  Where Marsyas is going. 
+<li><a accesskey="8" href="Users-and-Projects.html#Users-and-Projects">Users and Projects</a>:           Past and current users/projects. 
+<li><a accesskey="9" href="The-Index.html#The-Index">The Index</a>:                    The Index. 
 </ul>
 
    </body></html>
