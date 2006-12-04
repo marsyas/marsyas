@@ -50,7 +50,7 @@ Windowing::addcontrols()
     addctrl("mrs_natural/zeroPhasing", 0);
     addctrl("mrs_natural/size", 0);
     // used for the gaussian window
-    addctrl("mrs_natural/variance", 0.4);
+    addctrl("mrs_real/variance", 0.4);
     
     setctrlState("mrs_string/type", true);
     setctrlState("mrs_natural/zeroPhasing", true);
