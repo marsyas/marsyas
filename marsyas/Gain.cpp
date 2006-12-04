@@ -45,6 +45,9 @@ Gain::Gain(string name):MarSystem("Gain", name)
 Gain::Gain(const Gain& a) : MarSystem(a)
 {
   ctrl_gain_ = getctrl("mrs_real/gain");
+	ctrl_RMScalc_ = getctrl("mrs_bool/RMScalc");
+	ctrl_inRMS_ = getctrl("mrs_realvec/inRMS");
+	ctrl_outRMS_ = getctrl("mrs_realvec/outRMS");
 }
 
 Gain::~Gain()
@@ -62,22 +65,69 @@ Gain::addControls()
 {
   //Add specific controls needed by this MarSystem.
   addctrl("mrs_real/gain", 1.0, ctrl_gain_);
+	addctrl("mrs_bool/RMScalc", false, ctrl_RMScalc_);
+	addctrl("mrs_realvec/inRMS", inRMS_, ctrl_inRMS_);
+	addctrl("mrs_realvec/outRMS", outRMS_, ctrl_outRMS_);
+}
+
+void
+Gain::myUpdate()
+{
+	MarSystem::myUpdate();
+
+	inRMS_.create(ctrl_inObservations_->to<mrs_natural>());
+	outRMS_.create(ctrl_onObservations_->to<mrs_natural>()); 
 }
 
 
 void 
 Gain::myProcess(realvec& in, realvec& out)
 {
-  //get a local copy of the current gain control value
-  //(it will be used for this entire processing, even if it's
-  //changed by someone else, e.g. by a different thread)
-  mrs_real gainValue = ctrl_gain_->to<mrs_real>();
-  
-  for (o=0; o < inObservations_; o++)
-    for (t = 0; t < inSamples_; t++)
-      {
-	out(o,t) = gainValue * in(o,t);
-      }
+	//get a local copy of the current gain control value
+	//(it will be used for this entire processing, even if it's
+	//changed by someone else, e.g. by a different thread)
+	mrs_real gainValue = ctrl_gain_->to<mrs_real>();
+
+	inRMS_.setval(0.0);
+	outRMS_.setval(0.0);
+
+	bool calcRMS = ctrl_RMScalc_->isTrue();
+
+	for (o=0; o < inObservations_; o++)
+	{
+		for (t = 0; t < inSamples_; t++)
+		{
+			//apply gain to all channels
+			out(o,t) = gainValue * in(o,t);
+			
+			//calculate first part of RMS values for each in/out channel
+			if(calcRMS)
+			{
+				inRMS_(o) += in(o,t)*in(o,t);
+				outRMS_(o) += out(o,t)*out(o,t);
+			}
+		}
+		//calculate second part of RMS values for each in/out channel
+		if(calcRMS)
+		{
+			inRMS_(o)/=(mrs_real)inSamples_;
+			inRMS_(o)=sqrt(inRMS_(o));
+
+			outRMS_(o)/=(mrs_real)onSamples_;
+			outRMS_(o)=sqrt(outRMS_(o));
+		}
+	}
+
+	if(calcRMS)
+	{
+		//ctrl_inRMS_->setValue(inRMS_, NOUPDATE);
+		updctrl(ctrl_inRMS_, inRMS_, NOUPDATE);
+		//setctrl(ctrl_inRMS_, inRMS_);
+	
+		//ctrl_outRMS_->setValue(outRMS_, NOUPDATE);
+		updctrl(ctrl_outRMS_, outRMS_, NOUPDATE);
+	  //setctrl(ctrl_outRMS_, outRMS_);
+	}
 }
 
 

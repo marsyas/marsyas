@@ -45,7 +45,17 @@ private:
 	// MarSystem::myUpdate().
 	//
 	//void myUpdate();
-	 MarControlPtr ctrl_gain_;
+	 
+	MarControlPtr ctrl_gain_;
+	MarControlPtr ctrl_RMScalc_;
+	MarControlPtr ctrl_inRMS_;
+	MarControlPtr ctrl_outRMS_;
+
+	//RMS value for each in/out channel
+	realvec inRMS_;
+	realvec outRMS_;
+
+	void myUpdate();
 
 public:
   Gain(std::string name);

@@ -93,21 +93,20 @@ MarSystem::MarSystem(const MarSystem& a)
 			controls_[ctrlIter_->first] = ctrlIter_->second->clone();
 			controls_[ctrlIter_->first]->setMarSystem(this);
 		}
-		//update the "references" to the controls
-		ctrl_inSamples_ = getctrl("mrs_natural/inSamples");
-		ctrl_inObservations_ = getctrl("mrs_natural/inObservations");
-		ctrl_israte_ = getctrl("mrs_real/israte");
-		ctrl_inObsNames_ = getctrl("mrs_string/inObsNames");
-		ctrl_onSamples_ = getctrl("mrs_natural/onSamples");
-		ctrl_onObservations_ = getctrl("mrs_natural/onObservations");
-		ctrl_osrate_ = getctrl("mrs_real/osrate");
-		ctrl_onObsNames_ = getctrl("mrs_string/onObsNames");
-		ctrl_debug_ = getctrl("mrs_bool/debug"); 
-		ctrl_mute_ = getctrl("mrs_bool/mute");
-		ctrl_active_ = getctrl("mrs_bool/active");
 	}
 
-	synonyms_ = a.synonyms_;
+	//update the "references" to the controls
+	ctrl_inSamples_ = getctrl("mrs_natural/inSamples");
+	ctrl_inObservations_ = getctrl("mrs_natural/inObservations");
+	ctrl_israte_ = getctrl("mrs_real/israte");
+	ctrl_inObsNames_ = getctrl("mrs_string/inObsNames");
+	ctrl_onSamples_ = getctrl("mrs_natural/onSamples");
+	ctrl_onObservations_ = getctrl("mrs_natural/onObservations");
+	ctrl_osrate_ = getctrl("mrs_real/osrate");
+	ctrl_onObsNames_ = getctrl("mrs_string/onObsNames");
+	ctrl_debug_ = getctrl("mrs_bool/debug"); 
+	ctrl_mute_ = getctrl("mrs_bool/mute");
+	ctrl_active_ = getctrl("mrs_bool/active");
 
 	//recreate schedule objects
 	scheduler_.removeAll();
@@ -122,6 +121,7 @@ MarSystem::~MarSystem()
 	delete processMutex_;
 	delete msysNetGUI_;
 	delete MATLABeditorGUI_;
+	
 	//this closes all opened GUIs when the MarSystem is destroyed
 	//and clears the internal hash table used to store its pointers
 	QList<MarSystemControlsGUI*> controlsGUIs = activeControlsGUIs_.values();
@@ -170,13 +170,13 @@ MarSystem::addControls()
 {
 	//input pin controls (with state)
 	addctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES, ctrl_inSamples_);
-	ctrl_inSamples_->setState(true);
+	setctrlState(ctrl_inSamples_, true);
 	addctrl("mrs_natural/inObservations", MRS_DEFAULT_SLICE_NOBSERVATIONS, ctrl_inObservations_);
-	ctrl_inObservations_->setState(true);
+	setctrlState(ctrl_inObservations_, true);
 	addctrl("mrs_real/israte", MRS_DEFAULT_SLICE_SRATE, ctrl_israte_);
-	ctrl_israte_->setState(true);
+	setctrlState(ctrl_israte_, true);
 	addctrl("mrs_string/inObsNames", ",", ctrl_inObsNames_);
-	ctrl_inObsNames_->setState(true);
+	setctrlState(ctrl_inObsNames_, true);
 
 	//output pin controls (stateless)
 	addctrl("mrs_natural/onSamples", MRS_DEFAULT_SLICE_NSAMPLES, ctrl_onSamples_);
@@ -207,11 +207,11 @@ MarSystem::addMarSystem(MarSystem *marsystem)
 MarSystem*
 MarSystem::getMarSystem(std::string path)
 {
-	if(path == path_) //use path_ () instead?! [?] see Composite::getMarSystem()
+	if(path == prefix_) //use path_ () instead?! [?] see Composite::getMarSystem()
 		return this;
 	else
 	{
-		MRSWARN("MarSystem::getMarsystem(): " + prefix_ + " not found!");
+		MRSWARN("MarSystem::getMarsystem(): " + path + " not found!");
 		return NULL;
 	}
 }
@@ -497,69 +497,92 @@ MarSystem::localActivate(bool state)
 	// default: do nothing
 }
 
-void
-MarSystem::linkctrl(string visible, string inside)
+bool
+MarSystem::linkControl(string cname1, string cname2) 
 {
-	linkControl(visible, inside);   
-}
+	//a control is inherently connected to itself! ;-)
+	if(cname1 == cname2)
+	  return true;
 
-void
-MarSystem::linkControl(string visible, string inside) //mutexes?!? [?]
-{
-	map<string, vector<string> >::iterator iter; //[!]
-	iter = synonyms_.find(visible); //[!]
+	MarControlPtr ctrl1 = this->getControl(cname1);
+	MarControlPtr ctrl2 = this->getControl(cname2);
+	bool ctrl1Valid = !ctrl1.isInvalid();
+	bool ctrl2Valid = !ctrl2.isInvalid();
 
-	vector<string> synonymList; 
+	//make sure at least one control exists in this MarSystem
+	if(!ctrl1Valid && !ctrl2Valid)
+	{
+		MRSWARN("MarSystem::linkControl: at least one control must exist: "+cname1+" and "+cname2+" are both invalid controls!");
+		return false;
+	}
 
-	// extend list of synonyms
-	synonymList = synonyms_[visible];
-	synonymList.push_back(inside);
-	synonyms_[visible] = synonymList;
+	//if both controls exist (i.e. are valid), 
+	//just check their types, and link them
+	if(ctrl1Valid && ctrl2Valid)
+	{
+		//check for type mismatch
+		if(ctrl1->getType() == ctrl2->getType())
+		{
+		  //and just link the controls
+		  return ctrl1->linkTo(ctrl2);
+		}
+		else
+		{
+			MRSWARN("MarSystem::linkControl control type mismatch (" + ctrl1->getName() + "!=" + ctrl2->getName() + ")");
+			return false;
+		}
+	}
+	
+	// if just one of the controls exists, just clone the invalid 
+	// from the valid one, and link them
+	MarControlPtr newCtrl, existingCtrl;
+	string newCtrlName;
+	if(ctrl1Valid)
+	{
+		existingCtrl = ctrl1;
+		newCtrl = ctrl2;
+		newCtrlName = cname2;
+	}
+	else
+	{
+		existingCtrl = ctrl2;
+		newCtrl = ctrl1;
+		newCtrlName = cname1; 
+	}
+	
+	//clone the existing control
+	newCtrl = existingCtrl->clone();
+	
+	//try to add the newly created control to this MarSystem
+	if(!this->addControl(newCtrlName, newCtrl))
+		return false; //some error occurred when trying to add the new control (e.g. type mismatch)
+
+	//now try to link the newly created control with the existing one
+	if (newCtrl->linkTo(existingCtrl))
+	  return false; //some error occurred when linking controls
+	
+	//success!
+	return true;
 }
 
 MarControlPtr
 MarSystem::getControl(string cname)
 {
-	MRSDIAG("MarSystem::getControl");
-
-	// check for synonyms - call recursively to resolve them 
-	map<string, vector<string> >::iterator ei;
-
-	// remove prefix for synonyms
-	string::size_type pos = cname.find(prefix_, 0);
-	string shortcname;
-
-	if (pos == 0) 
-		shortcname = cname.substr(prefix_.length(), cname.length());
-
-	ei = synonyms_.find(shortcname);
-	if (ei != synonyms_.end())
-	{
-		vector<string> synonymList = synonyms_[shortcname];
-		vector<string>::iterator si;
-		for (si = synonymList.begin(); si != synonymList.end(); ++si)
-		{
-			return getControl(prefix_ + *si);
-		}
-	}
-
 #ifdef MARSYAS_QT
 	QReadLocker locker(&rwLock_); //reading controls_ [!]
 #endif
+
+	//USE A CACHE FOR MORE EFFICIENT LOOK-UP?? [!]
 
 	if (controls_.find(cname) == controls_.end())
 	{
 		MRSWARN("MarSystem::getControl Unsupported control name = " + cname);
 		return MarControlPtr();
 	}
-	return controls_[cname];
-}
 
-MarControlPtr
-MarSystem::getctrl(string cname)
-{
-	MRSDIAG("MarSystem::getctrl");
-	return getControl(prefix_ + cname);
+	
+
+	return controls_[cname];
 }
 
 void
@@ -591,28 +614,16 @@ MarSystem::getMATLABscript()
 }
 
 bool 
-MarSystem::hasctrlState(string cname)
-{
-	return hasControlState(prefix_ + cname);
-}
-
-bool 
 MarSystem::hasControlState(string cname)
 {
 	MarControlPtr control = getControl(cname);
 	if(control.isInvalid())
 	{
-		MRSWARN("MarControls::hasState Unsupported control name = " + cname);
+		MRSWARN("MarSystem::hasControlState Unsupported control name = " + cname);
 		return false;
 	}
 	else
 		return control->hasState();
-}
-
-void 
-MarSystem::setctrlState(string cname, bool state)
-{
-	setControlState(prefix_ + cname, state);
 }
 
 void
@@ -627,110 +638,27 @@ MarSystem::setControlState(string cname, bool state)
 		control->setState(state);
 }
 
-bool MarSystem::setControl(string cname, MarControlPtr control)
-{
-#ifdef MARSYAS_QT
-	QReadLocker locker(&rwLock_);//reading controls_ [!]
-#endif
-
-	ctrlIter_ = controls_.find(cname);
-	if (ctrlIter_ == controls_.end())
-	{
-		MRSWARN("MarSystem::setControl Unsupported control name = " + cname);
-		return false;
-	}
-	ctrlIter_->second->setValue(control, NOUPDATE);//should not call MarSystem::update()
-
-#ifdef MARSYAS_QT
-	//emitControlChanged(cname, control);//[!]
-#endif
-
-	return true;
-}
-
-bool MarSystem::setctrl(string cname, MarControlPtr control)
-{
-	return setControl(prefix_ + cname, control);
-}
-
-mrs_natural 
-MarSystem::inObservations() const
-{
-	return inObservations_;
-}
-
-mrs_natural 
-MarSystem::inSamples() const
-{
-	return inSamples_;
-}
-
 bool 
 MarSystem::hasControl(string cname) 
 {
-	//this block seems to be doing nothing here!!! [!][?]
-	//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-	// remove prefix for synonyms
-	string::size_type pos = cname.find(prefix_, 0);
-	string shortcname;
-	if (pos == 0) 
-		shortcname = cname.substr(prefix_.length(), cname.length());
-	// check for synonyms - call recursively to resolve them
-	map<string, vector<string> >::iterator ei;
-	ei = synonyms_.find(shortcname);
-	if (ei != synonyms_.end())
-	{
-		vector<string> synonymList = synonyms_[shortcname];
-		vector<string>::iterator si;
-		for (si = synonymList.begin(); si != synonymList.end(); ++si)
-		{
-			hasControl(prefix_ + *si);//[?]
-		}
-	}
-	//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 #ifdef MARSYAS_QT
 	QReadLocker locker(&rwLock_);//reading controls_ [!]
 #endif
 
-	ctrlIter_ = controls_.find(cname);
-	return (ctrlIter_ != controls_.end());
+	return (controls_.find(cname) != controls_.end());
 }
 
-void 
-MarSystem::updControl(string cname, MarControlPtr newcontrol)
+bool 
+MarSystem::updControl(string cname, MarControlPtr newcontrol, bool upd)
 {
+	MarControlPtr control = getControl(cname);
 
-
-	// remove prefix for synonyms
-	string::size_type pos = cname.find(prefix_, 0);
-	string shortcname;
-	if (pos == 0) 
-		shortcname = cname.substr(prefix_.length(), cname.length());
-	// check for synonyms - call recursively to resolve them 
-	map<string, vector<string> >::iterator ei;
-	ei = synonyms_.find(shortcname);
-	if (ei != synonyms_.end())
+	if(!control.isInvalid())
 	{
-		vector<string> synonymList = synonyms_[shortcname];
-		vector<string>::iterator si;
-		for (si = synonymList.begin(); si != synonymList.end(); ++si)
-		{
-			updControl(prefix_ + *si, newcontrol);
-		}
+		return control->setValue(newcontrol, upd);
 	}
-	//if no links found, look for controls (if any)
 	else
-	{
-		MarControlPtr control = getControl(cname);
-		// if the control exists, and if its value is in fact different, 
-		// update it!
-		if(!control.isInvalid() && control != newcontrol)
-		{
-			//calls MarSystem::update() if the control has state
-			control->setValue(newcontrol);
-		}
-	}
+		return false;
 }
 
 void
@@ -777,48 +705,52 @@ MarSystem::getChildren()
 //    return 0;
 //  }
 
-void
-MarSystem::addctrl(string cname, MarControlPtr control)
+
+bool
+MarSystem::addControl(string cname, MarControlPtr v, MarControlPtr& ptr)
 {
-	addControl(prefix_ + cname, control); 
+	if(addControl(cname, v))
+	{
+		ptr = controls_[cname];
+		return true;
+	}
+	else
+	{
+		ptr = MarControlPtr();//return invalid control
+		return false;
+	}
 }
 
-void
-MarSystem::addctrl(string cname, MarControlPtr control, MarControlPtr& ptr)
+bool
+MarSystem::addControl(string cname, MarControlPtr v)
 {
-	addControl(prefix_ + cname, control, ptr);
-}
-
-void
-MarSystem::addControl(string cname, MarControlPtr control)
-{
-#ifdef MRSDEBUGG
+	//check for type mismatch between cname string (which include type information)
+	//and the actual control type passed as an argument
 	string shortcname = cname.substr(prefix_.length(), cname.length());
 	string::size_type pos = shortcname.find("/", 0);
 	string ctype = shortcname.substr(0,pos);
-	MRSASSERT(ctype!= control->getSType());
-#endif 
+	if(ctype!= v->getType())
+	{
+		// MRSWARN("MarSystem::addControl control type mismatch (" + ctype + "!=" + v->getSType() + ")");
+		return false;
+	}
+
+	//check  there is not a control with the same type/name already
+	if(!this->getControl(cname).isInvalid())
+	{
+		MRSWARN("MarSystem::addControl: control already exists (" + cname + ")");
+		return false;
+	}
 
 #ifdef MARSYAS_QT
-	QWriteLocker locker(&rwLock_); //writting controls_
+	QWriteLocker locker(&rwLock_); //writing controls_
 #endif
-	controls_[cname] = control;
+	controls_[cname] = v;
 	controls_[cname]->setMarSystem(this);
 	controls_[cname]->setName(cname);
-}
 
-void
-MarSystem::addControl(string cname, MarControlPtr control, MarControlPtr& ptr)
-{
-	addControl(cname, control);
-	ptr = controls_[cname];
-}
-
-void
-MarSystem::updctrl(string cname, MarControlPtr control)
-{
-	MRSDIAG("MarSystem::upctrl");
-	updControl(prefix_ + cname, control); 
+	//success!
+	return true;
 }
 
 void 
@@ -923,26 +855,22 @@ MarSystem::put(ostream &o)
 	o << "# Name = " << name_ << endl;
 
 	o << endl;
+	o << controls_ << endl; //[!]
 
-	o << "# MarControls = " << controls_.size() << endl;
-	for (ctrlIter_=controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
-	{
-		o << "# " << ctrlIter_->first << " = " << ctrlIter_->second << endl;
-	}
-
-	map<string,vector<string> >::iterator mi;
-	o << "# Number of links = " << synonyms_.size() << endl;
-
-	for (mi = synonyms_.begin(); mi != synonyms_.end(); ++mi)
-	{
-		vector<string> syns = mi->second;
-		vector<string>::iterator vi;
-		o << "# Synonyms of " << prefix_ + mi->first << " = " << endl;
-		o << "# Number of synonyms = " << syns.size() << endl;
-
-		for (vi = syns.begin(); vi != syns.end(); ++vi) 
-			o << "# " << prefix_ + (*vi) << endl;
-	}
+	// SYNONYMS!!!
+// 	map<string,vector<string> >::iterator mi;
+// 	o << "# Number of links = " << synonyms_.size() << endl;
+// 
+// 	for (mi = synonyms_.begin(); mi != synonyms_.end(); ++mi)
+// 	{
+// 		vector<string> syns = mi->second;
+// 		vector<string>::iterator vi;
+// 		o << "# Synonyms of " << prefix_ + mi->first << " = " << endl;
+// 		o << "# Number of synonyms = " << syns.size() << endl;
+// 
+// 		for (vi = syns.begin(); vi != syns.end(); ++vi) 
+// 			o << "# " << prefix_ + (*vi) << endl;
+// 	}
 
 	return o;
 }
@@ -1055,10 +983,7 @@ Marsyas::operator>> (istream& is, MarSystem& msys) //[!] "c" object is not locke
 ostream&
 Marsyas::operator<< (ostream& o, const map<string,MarControlPtr>& c) 
 {
-#ifdef MARSYAS_QT
-	QReadLocker locker(&(c.rwLock_));
-#endif 
-
+	//lock map<string,MarControlPtr>& c for read? [?]
 	o << "# MarControls = " << c.size() << endl;
 	map<string, MarControlPtr>::const_iterator iter;
 	for (iter=c.begin(); iter != c.end(); ++iter)
@@ -1159,7 +1084,7 @@ MarSystem::getControlsGUI(QWidget* parent, Qt::WFlags f)
 	//create a MarControls editor GUI for this MarSystem
 	MarSystemControlsGUI* controlsGUI = MarGUIManager::getControlsGUI(this, parent, f);
 	controlsGUI->setWindowTitle(QString::fromStdString(path_));
-	controlsGUI->setObjectName("controlsGUI_" + QDateTime::currentDateTime()->toString(Qt::ISODate));
+	controlsGUI->setObjectName("controlsGUI_" + QDateTime::currentDateTime().toString(Qt::ISODate));
 
 	//store this control in the active GUIs list
 	activeControlsGUIs_[controlsGUI->objectName()] = controlsGUI;
@@ -1176,8 +1101,8 @@ MarSystem::getControlsGUI(QWidget* parent, Qt::WFlags f)
 	//This would in theory create an infinite loop anytime a control was changed
 	//using the GUI, but the MarSystemControlsGUI class provides a mechanism for
 	//avoiding that (See MarSystemControlsGUI.cpp).
-	connect(this, SIGNAL(controlChanged(MarControlPtr)),
-		controlsGUI, SLOT(updControl(MarControlPtr)));
+	connect(this, SIGNAL(controlChanged(MarControl*)),
+		controlsGUI, SLOT(updControl(MarControl*)));
 
 	//connect the controlsGUI destroyed signal to a slot so we can detect
 	//when the controls editor was closed/destroyed

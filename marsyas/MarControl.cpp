@@ -163,6 +163,11 @@ MarControl::linkTo(MarControlPtr ctrl)
 		return false;
 	}
 	linkedTo_.push_back(ctrl);
+	isLinked_ = true;
+	ctrl->linkedTo_.push_back(this);
+	ctrl->isLinked_ = true;
+	
+
 	return true;
 }
 

@@ -466,8 +466,13 @@ MarControlPtr::operator=(const MarControlPtr& a)//mutexes? [?]
 	{
 		control_->unref();
 	}
+	
 	control_ = a.control_;
-	control_->ref();
+	if (control_) 
+	  {
+	    control_->ref();
+	  }
+	
 	return *this;
 }
 
@@ -617,13 +622,17 @@ MarControl::operator=(const MarControl& a)
 	}
 	return *this;
 }
-
+ 
 // setters
 template<class T>
 inline
 bool
 MarControl::setValue(T& t, bool update)
 {
+
+  cout << "MarControl::setValue called"  << endl;
+  
+
 #ifdef MARSYAS_QT
 	rwLock_.lockForWrite();
 #endif
@@ -648,10 +657,13 @@ MarControl::setValue(T& t, bool update)
 
 		if(isLinked_)
 		{
-			for(size_t i=0; i<linkedTo_.size(); i++)
-			{
-				linkedTo_[i]->setValue(t, update);
-			}
+		  cout << "IS LINKED CALLED" << endl;
+		  
+		  
+		  for(size_t i=0; i<linkedTo_.size(); i++)
+		    {
+		      linkedTo_[i]->setValue(t, update);
+		    }
 		}
 
 		if(update) this->callMarSystemUpdate(); //[?] lock?!?

@@ -130,106 +130,67 @@ void Parallel::myUpdate()
   }
 }
 
-void 
-Parallel::updControl(string cname, MarControlPtr control)
+bool 
+Parallel::updControl(string cname, MarControlPtr newcontrol, bool upd)
 { 
-  // check for synonyms - call recursively to resolve them 
-  map<string, vector<string> >::iterator ei;
+  // get the control (local or from children)...
+	MarControlPtr control = getControl(cname);
 
-  // remove prefix for synonyms
-  string prefix = "/" + getType() + "/" + getName() + "/";
-  string::size_type pos = cname.find(prefix, 0);
-  string shortcname;
-  
-  if (pos == 0) 
-    shortcname = cname.substr(prefix.length(), cname.length());
-  
-  ei = synonyms_.find(shortcname);
-  if (ei != synonyms_.end())
-  {
-    vector<string> synonymList = synonyms_[shortcname];
-    vector<string>::iterator si;
-    for (si = synonymList.begin(); si != synonymList.end(); ++si)
+	// ...and check if the control really exists locally or among children
+	if(control.isInvalid())
+	{
+		MRSWARN("Composite::updControl - Unsupported control name = " + cname);
+		MRSWARN("Composite::updControl - Composite name = " + name_);
+		return false;
+	}
+
+	// since the control exists somewhere, set its value...
+	if(!control->setValue(newcontrol, upd))
+		return false; //some error occurred in setValue()
+
+	// call the composite update (only if the control has state,
+	// upd is true, and if it's not a local control (otherwise update 
+	// was already called by control->setValue())).
+	if(upd && control->hasState() && !hasControlLocal(cname))
+		update();
+
+	// TODO: USE LINKED CONTROLS TO AVOID THIS CODE BLOCK! [!]
+	// certain controls must also be propagated inside the composite
+	// (must find a way to avoid this hard-coded control list! [!] )
+	string childcontrol = cname.substr(prefix_.length()-1, cname.length()-(prefix_.length()-1));//includes leading "/"
+	string nchildcontrol = childcontrol.substr(1, childcontrol.length()); //no leading "/"
+	//////////////////////////////////////////////////////////////////////////
+	//Parallel Specific [!]
+	//////////////////////////////////////////////////////////////////////////
+	if(nchildcontrol == "mrs_natural/inObservations")
+	{
+		if (marsystemsSize_ > 0)
 		{
-			updControl(prefix + *si, control);
-		}
-  }
-  else
-  {
-    string prefix = "/" + getType() + "/" + getName();
-    string childcontrol = cname.substr(prefix.length(), cname.length()-prefix.length());
-    string nchildcontrol = childcontrol.substr(1, childcontrol.length());  
-    
-    bool controlFound = false;
-    
-    // check local controls 
-    if (hasControlLocal(cname))
-		{
-			controlFound = true;
-			MarControlPtr oldval = getControl(cname);
-			setControl(cname, control);
-			
-			if (hasControlState(cname) && (control != oldval)) 
-			{
-				update(); //update composite
-			}
-		}
-		//Parallel Specific [?]
-    if(nchildcontrol == "mrs_natural/inObservations")
-		{
-			if (marsystemsSize_ > 0)
-			{
-				mrs_natural val = control->toNatural() / marsystemsSize_;
-				marsystems_[0]->updctrl(nchildcontrol, val); 
-			}			
+			mrs_natural val = newcontrol->toNatural() / marsystemsSize_;
+			marsystems_[0]->updctrl(nchildcontrol, val, upd); 
+		}			
+		if(upd && marsystems_[0]->hasControlState(nchildcontrol))
 			update();
-			return;
-		}
-		// lmartins: should find a way to avoid this hard-coded check... [!]
-    // default controls - semantics of composites 
-    if ((nchildcontrol == "mrs_natural/inSamples")||
-				//(nchildcontrol == "mrs_natural/inObservations")||
-				(nchildcontrol == "mrs_real/israte")||
-				//(nchildcontrol == "mrs_natural/onSamples")|| //lmartins: does it make any sense to check for this control?![?]
-				//(nchildcontrol == "mrs_natural/onObservations")|| //lmartins: does it make any sense to check for this control?![?]
-				//(nchildcontrol == "mrs_real/osrate")|| //lmartins: does it make any sense to check for this control?![?]
-				//(nchildcontrol == "mrs_bool/debug")|| //lmartins: does it make any sense to check for this control?![?]
-				(nchildcontrol == "mrs_string/inObsNames"))//||
-				//(nchildcontrol == "mrs_string/onObsNames")) //lmartins: does it make any sense to check for this control?![?]
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	if ((nchildcontrol == "mrs_natural/inSamples")|| 
+		//(nchildcontrol == "mrs_natural/inObservations")||
+		(nchildcontrol == "mrs_real/israte")||
+		(nchildcontrol == "mrs_string/inObsNames"))
+	{
+		//if there is at least a child MarSystem in this composite...
+		if (marsystemsSize_ > 0)
 		{
-			if (marsystemsSize_ > 0)
-			{
-				marsystems_[0]->updctrl(nchildcontrol, control);
-			}
-			update();
-			return;
+			if(!marsystems_[0]->updctrl(nchildcontrol, control, upd))
+				return false;//some error occurred in updctrl()
+			if(upd && marsystems_[0]->hasControlState(nchildcontrol))
+				update();
 		}
- 		else//if(!hasControlLocal(cname)) 
-		{
-			//if control control is not from composite,
-			//check if it exists among the children composites and update them
-			for (mrs_natural i=0; i< marsystemsSize_; i++)
-			{
-				if (marsystems_[i]->hasControl(childcontrol))
-				{
-					controlFound = true;
-					marsystems_[i]->updControl(childcontrol, control); //updcontrol or setcontrol?! [!]
-					if (marsystems_[i]->hasControlState(childcontrol))
-					{
-						update();
-					}
-				}
-			}
-		}
-    
-    if (!controlFound) 
-		{
-			MRSWARN("Composite::updControl - Unsupported control name = " + cname);
-			MRSWARN("Composite::updControl - Composite name = " + getName());
-		}
-  }
+	}
+
+	return true;
 }
-
 
 void Parallel::myProcess(realvec& in, realvec& out)
 {

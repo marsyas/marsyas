@@ -531,25 +531,26 @@ MarSystemManager::getMarSystem(istream& is)
 			mrs_natural nSynonyms = 0;
 			is >> nSynonyms;
 
-			vector<string> synonymList;
-			synonymList = msys->synonyms_[vshortcname];
-
-			for (int j=0; j < nSynonyms; j++)
-			{
-				string inside;
-				is >> skipstr;
-				is >> inside;
-
-				prefix = "/" + mtype + "/" + mname + "/";
-				pos = inside.find(prefix, 0);
-				string shortcname;
-
-				if (pos == 0) //and what happens if the prefix is not found?!? [?][!]
-					shortcname = inside.substr(prefix.length(), inside.length());
-
-				synonymList.push_back(shortcname);
-				msys->synonyms_[vshortcname] = synonymList;
-			}
+			// SYNONYMS!!
+// 			vector<string> synonymList;
+// 			synonymList = msys->synonyms_[vshortcname];
+// 
+// 			for (int j=0; j < nSynonyms; j++)
+// 			{
+// 				string inside;
+// 				is >> skipstr;
+// 				is >> inside;
+// 
+// 				prefix = "/" + mtype + "/" + mname + "/";
+// 				pos = inside.find(prefix, 0);
+// 				string shortcname;
+// 
+// 				if (pos == 0) //and what happens if the prefix is not found?!? [?][!]
+// 					shortcname = inside.substr(prefix.length(), inside.length());
+// 
+// 				synonymList.push_back(shortcname);
+// 				msys->synonyms_[vshortcname] = synonymList;
+// 			}
 		}
 		if (isComposite == true)
 		{

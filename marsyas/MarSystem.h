@@ -58,12 +58,12 @@ extractors like Spectral Centroid.
 namespace Marsyas
 {
 
+#ifdef MARSYAS_QT
 //forward declarations
 class MarSystemControlsGUI;
 class MATLABeditorGUI;
 class MarSystemNetworkGUI;
 
-#ifdef MARSYAS_QT
 	class MarSystem : public QObject
 #else
 class MarSystem
@@ -72,6 +72,7 @@ class MarSystem
 
 //friend classes
 friend class MarSystemManager;
+friend class MarControl;
 
 #ifdef MARSYAS_QT
 	Q_OBJECT
@@ -86,12 +87,18 @@ private:
 	QMutex* processMutex_;
 	//Qt GUIs
 	MarSystemNetworkGUI* msysNetGUI_;
-	MATLABeditorGUI* MATLABeditorGUI_;
+	QMainWindow* MATLABeditorGUI_;
+
 	QHash<QString, MarSystemControlsGUI*> activeControlsGUIs_;
 	QHash<QString, QWidget*> activeDataGUIs_; //[!]
 #endif
 
 protected:
+
+#ifdef MARSYAS_QT
+	mutable QReadWriteLock rwLock_;
+#endif
+
 	std::string type_;		// Type of MarSystem
 	std::string name_;		// Name of instance
 	std::string prefix_;	// /type_/name_/
@@ -138,25 +145,22 @@ protected:
 	//Controls 
 	mutable std::map<std::string, MarControlPtr> controls_;
 	std::map<std::string, MarControlPtr>::iterator ctrlIter_;
-	std::map<std::string,std::vector<std::string> > synonyms_;
 
-	void addctrl(std::string cname, MarControlPtr v);
-	void addctrl(std::string cname, MarControlPtr v, MarControlPtr& ptr);
-	void addControl(std::string cname, MarControlPtr v);
-	void addControl(std::string cname, MarControlPtr v, MarControlPtr& ptr);
+	//add controls
+	bool addControl(std::string cname, MarControlPtr v);
+	bool addControl(std::string cname, MarControlPtr v, MarControlPtr& ptr);
+	bool addctrl(std::string cname, MarControlPtr v) {return addControl(prefix_ + cname, v);}
+	bool addctrl(std::string cname, MarControlPtr v, MarControlPtr& ptr) {return addControl(prefix_ + cname, v, ptr);}
 
-	virtual void myUpdate();
-
-	virtual void localActivate(bool state);
-
-	virtual void myProcess(realvec& in, realvec& out) = 0;
-
-	MarSystem& operator=(const MarSystem&) { assert(0); } // copy assignment
-
-public:
 	virtual void controlUpdate(MarControlPtr ctrl);
 
+	virtual void myUpdate();
+	virtual void localActivate(bool state);
+	virtual void myProcess(realvec& in, realvec& out) = 0;
 
+	MarSystem& operator=(const MarSystem&) { assert(0); } // copy assignment (should never be called!) [!]
+
+public:
 	MarSystem(std::string type, std::string name);
   MarSystem(const MarSystem& a);	// copy constructor
   virtual ~MarSystem();
@@ -165,75 +169,58 @@ public:
   
   // Naming methods 
   virtual void setName(std::string name);
-	virtual void setType(std::string type); //only used by MarSystemManager => make it protected? [?][!]
+	virtual void setType(std::string type);
   std::string getType() const;
   std::string getName() const;
   std::string getPrefix() const;
 	std::string getPath() const;
 	virtual void addFatherPath(std::string fpath);
 
-  void update(MarControlPtr sender = MarControlPtr());
+	// link controls
+	bool linkControl(std::string cname1, std::string cname2);
+	bool linkctrl(std::string cname1, std::string cname2) {return linkControl(prefix_ + cname1, prefix_ + cname2);}
   
-  const std::map<std::string, MarControlPtr>& getControls();
-	virtual std::vector<MarSystem*> getChildren();
+	// update controls
+	virtual bool updControl(std::string cname, MarControlPtr newcontrol, bool upd = true);
+	bool updctrl(char *cname, MarControlPtr newcontrol, bool upd = true) {return updControl(prefix_ + std::string(cname), newcontrol, upd);}
+	bool updctrl(std::string cname, MarControlPtr newcontrol, bool upd = true) {return updControl(prefix_ + cname, newcontrol, upd);}
+	bool updctrl(MarControlPtr control, MarControlPtr newcontrol, bool upd = true) {return control->setValue(newcontrol, upd);}
+
+	// set controls
+	bool setControl(std::string cname, MarControlPtr newcontrol) {return updControl(cname, newcontrol, NOUPDATE);}
+	bool setctrl(char *cname, MarControlPtr newcontrol) {return updControl(prefix_ + std::string(cname), newcontrol, NOUPDATE);}
+	bool setctrl(std::string cname, MarControlPtr newcontrol) {return updControl(prefix_ + cname, newcontrol, NOUPDATE);}
+	bool setctrl(MarControlPtr control, MarControlPtr newcontrol) {return updctrl(control, newcontrol, NOUPDATE);}
   
-#ifdef MARSYAS_QT
-public slots: //[!]
-#endif
-  
-	virtual void updControl(std::string cname, MarControlPtr control);
-	void updctrl(std::string cname, MarControlPtr control);
-  void updctrl(MarEvent* me);
-	//void updctrl(std::string time, MarEvent* ev); //clashes with void upctrl(std::string cname, 0);
-  void updctrl(std::string time, Repeat rep, MarEvent* ev);
-	//void updctrl(Repeat rep, MarEvent* ev);
-  void updctrl(std::string time, std::string cname, MarControlPtr control);
-  void updctrl(std::string time, Repeat rep, std::string cname, MarControlPtr control);
-	//void updctrl(Repeat rep, std::string cname, MarControlPtr control);
-  void updctrl(TmTime t, MarEvent* ev);
-  void updctrl(TmTime t, Repeat rep, MarEvent* ev);
-  void updctrl(TmTime t, std::string cname, MarControlPtr control);
-  void updctrl(TmTime t, Repeat rep, std::string cname, MarControlPtr control);
-
-	virtual bool setControl(std::string cname, MarControlPtr control);
-	bool setctrl(std::string cname, MarControlPtr control);
-
-  virtual MarControlPtr getControl(std::string cname);
-	virtual MarControlPtr getctrl(std::string cname);
-
-	void setMATLABscript(std::string script);
-	std::string getMATLABscript();
-
-public: //[!]
+	// get controls
 	virtual bool hasControl(std::string cname);
+  virtual MarControlPtr getControl(std::string cname);
+	MarControlPtr getctrl(std::string cname) {return getControl(prefix_ + cname);}
+	const std::map<std::string, MarControlPtr>& getControls();
 
-	void setControlState(std::string cname, bool val);
-	void setctrlState(std::string cname, bool val);
-	
+	// set control state
+	void setControlState(std::string cname, bool state); //should this be virtual? [?]
+	void setctrlState(std::string cname, bool state) {setControlState(prefix_ + cname, state);}
+	void setctrlState(char * cname, bool state){setControlState(prefix_ + std::string(cname), state);}
+	void setctrlState(MarControlPtr control, bool state) {control->setState(state);}
+
+	// get control state
 	virtual bool hasControlState(std::string cname);
-	bool hasctrlState(std::string cname);
+	bool hasctrlState(std::string cname) {return hasControlState(prefix_ + cname);}
+	bool hasctrlState(char* cname) {return hasControlState(prefix_ + std::string(cname));}
+	bool hasctrlState(MarControlPtr control) {return control->hasState();}
   
-	virtual void linkControl(std::string visible, std::string inside);
-	virtual void linkctrl(std::string visible, std::string inside);
-
-	// method to receive controls from a network connection
-	virtual mrs_real* const recvControls();
-
-  mrs_natural inObservations() const;
-  mrs_natural inSamples() const;
- 
-	void addTimer(TmTimer* t);
-	void removeTimer(std::string name);
-
-	void checkFlow(realvec&in, realvec& out);
-  
+	// Composite interface
   virtual void addMarSystem(MarSystem *marsystem);
 	virtual MarSystem* getMarSystem(std::string path);
+	virtual std::vector<MarSystem*> getChildren();
   
-  // methods that actually do something 
-  void tick();
+  // Processing and update methods 
+  void checkFlow(realvec&in, realvec& out);
+	void update(MarControlPtr sender = MarControlPtr());
   void process(realvec& in, realvec& out);   
- 
+	void tick();
+
   // derived class such as Composite can override put 
   // essentially overriding operator<< 
   virtual std::ostream& put(std::ostream& o);
@@ -244,6 +231,32 @@ public: //[!]
 	// controls serialization methods
   friend std::istream& operator>>(std::istream&, MarSystem&); //[!]
 	friend std::ostream& operator<<(std::ostream&, const std::map<std::string,MarControlPtr>&); 
+
+	// method to receive controls from a network connection
+	virtual mrs_real* const recvControls();
+
+	// MATLAB scripting
+	void setMATLABscript(std::string script);
+	std::string getMATLABscript();
+
+	//////////////////////////////////////////////////////////////////////////
+	// MarEvent methods
+	//////////////////////////////////////////////////////////////////////////
+	void updctrl(MarEvent* me);
+	//void updctrl(std::string time, MarEvent* ev); //clashes with void upctrl(std::string cname, 0);
+	void updctrl(std::string time, Repeat rep, MarEvent* ev);
+	//void updctrl(Repeat rep, MarEvent* ev);
+	void updctrl(std::string time, std::string cname, MarControlPtr control);
+	void updctrl(std::string time, Repeat rep, std::string cname, MarControlPtr control);
+	//void updctrl(Repeat rep, std::string cname, MarControlPtr control);
+	void updctrl(TmTime t, MarEvent* ev);
+	void updctrl(TmTime t, Repeat rep, MarEvent* ev);
+	void updctrl(TmTime t, std::string cname, MarControlPtr control);
+	void updctrl(TmTime t, Repeat rep, std::string cname, MarControlPtr control);
+
+	void addTimer(TmTimer* t);
+	void removeTimer(std::string name);
+	//////////////////////////////////////////////////////////////////////////
 	
 #ifdef MARSYAS_QT
 
@@ -257,7 +270,7 @@ public slots:
 	virtual QMainWindow* getMATLABeditorGUI(QWidget* parent = 0, Qt::WFlags f = 0);
 
 signals:
-	void controlChanged(MarControlPtr control);
+	void controlChanged(MarControl* control);
 	//void processed();
 
 #endif //MARSYAS_QT

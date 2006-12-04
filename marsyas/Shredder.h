@@ -50,7 +50,7 @@ public:
   ~Shredder();
   MarSystem* clone() const; 
 
-	void updControl(std::string cname, MarControlPtr value);
+	bool updControl(std::string cname, MarControlPtr newcontrol, bool upd=true);
 
   void myProcess(realvec& in, realvec& out);
 };

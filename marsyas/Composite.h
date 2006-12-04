@@ -59,31 +59,25 @@ protected:
 	virtual void myProcess(realvec& in, realvec& out) = 0;
 
 public:
-  //Composite();
   Composite(std::string type, std::string name);
   Composite(const Composite& a);
   virtual ~Composite();
 
 	void addFatherPath(std::string fpath);
 
-  //void updctrl(std::string cname, MarControlPtr value); //clash with inherited method from MarSystem[!][?]
-  virtual void updControl(std::string cname, MarControlPtr value);
+	virtual bool updControl(std::string cname, MarControlPtr newcontrol, bool upd = true);
   
-	bool setControl(std::string cname, MarControlPtr value);
-  bool setControl(std::string cname, mrs_real value);
-  bool setControl(std::string cname, mrs_natural value);
-  
-  bool hasControlState(std::string cname);
-  bool hasControl(std::string cname);
-  bool hasControlLocal(std::string cname);
-   
-  MarControlPtr getctrl(std::string cname);
+	// check for controls only in composite object not children
+	bool hasControlLocal(std::string cname) {return MarSystem::hasControl(cname);}
+	// check for controls in composite object and in its children
+	bool hasControl(std::string cname);
   MarControlPtr getControl(std::string cname);
+
+	bool hasControlState(std::string cname);
   
   void addMarSystem(MarSystem *marsystem);
   MarSystem* getMarSystem(std::string path);
-  
-  virtual std::vector<MarSystem*> getChildren();
+  std::vector<MarSystem*> getChildren();
   
   std::ostream& put(std::ostream& o);	  
 

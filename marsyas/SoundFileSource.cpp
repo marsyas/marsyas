@@ -59,7 +59,7 @@ SoundFileSource::addControls()
   addctrl("mrs_natural/nChannels", 1);
   addctrl("mrs_bool/notEmpty", true);  
   
-	addctrl("mrs_natural/pos", 0);
+  addctrl("mrs_natural/pos", 0);
   setctrlState("mrs_natural/pos", true);
 
   addctrl("mrs_natural/loopPos", 0);
