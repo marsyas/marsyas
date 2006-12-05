@@ -376,10 +376,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\marsyas\Composite.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\marsyas\Confidence.cpp"
 				>
 			</File>
@@ -1015,10 +1011,6 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\CompExp.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\marsyas\Composite.h"
 				>
 			</File>
 			<File
