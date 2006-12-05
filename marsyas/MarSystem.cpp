@@ -612,7 +612,7 @@ MarSystem::linkControl(string cname1, string cname2)
 	string localPath = this->getControlLocalPath(cname1);
 	if(localPath == "")
 	{
-		MRSWARN("MarSystem::linkControl first control has to be a local control (" + ctrl1->getName() + ")");
+		MRSWARN("MarSystem::linkControl first control has to be a local control (" + cname1 + ")");
 		return false;
 	}
 	
@@ -918,7 +918,7 @@ MarSystem::addControl(string cname, MarControlPtr v)
 	string ctype = cname.substr(0,pos);
 	if(ctype!= v->getType())
 	{
-		MRSWARN("MarSystem::addControl control type mismatch (" + ctype + "!=" + v->getSType() + ")");
+		MRSWARN("MarSystem::addControl control type mismatch (" + ctype + "!=" + v->getType() + ")");
 		return false;
 	}
 

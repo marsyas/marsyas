@@ -76,13 +76,12 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	AutoCorrelation.$(OBJEXT) Peaker.$(OBJEXT) Peaker1.$(OBJEXT) \
 	HalfWaveRectifier.$(OBJEXT) TimeStretch.$(OBJEXT) \
 	Conversions.$(OBJEXT) MaxArgMax.$(OBJEXT) MinArgMin.$(OBJEXT) \
-	Composite.$(OBJEXT) Series.$(OBJEXT) ShiftInput.$(OBJEXT) \
-	ShiftOutput.$(OBJEXT) Shifter.$(OBJEXT) PvFold.$(OBJEXT) \
-	PvConvert.$(OBJEXT) PeConvert.$(OBJEXT) PeClust.$(OBJEXT) \
-	PeOverlapadd.$(OBJEXT) PeResidual.$(OBJEXT) \
-	PeUtilities.$(OBJEXT) PeClusters.$(OBJEXT) \
-	PeSimilarity.$(OBJEXT) PvConvolve.$(OBJEXT) \
-	PvOscBank.$(OBJEXT) PvUnconvert.$(OBJEXT) \
+	Series.$(OBJEXT) ShiftInput.$(OBJEXT) ShiftOutput.$(OBJEXT) \
+	Shifter.$(OBJEXT) PvFold.$(OBJEXT) PvConvert.$(OBJEXT) \
+	PeConvert.$(OBJEXT) PeClust.$(OBJEXT) PeOverlapadd.$(OBJEXT) \
+	PeResidual.$(OBJEXT) PeUtilities.$(OBJEXT) \
+	PeClusters.$(OBJEXT) PeSimilarity.$(OBJEXT) \
+	PvConvolve.$(OBJEXT) PvOscBank.$(OBJEXT) PvUnconvert.$(OBJEXT) \
 	PvOverlapadd.$(OBJEXT) Windowing.$(OBJEXT) Hamming.$(OBJEXT) \
 	Fanout.$(OBJEXT) Fanin.$(OBJEXT) Negative.$(OBJEXT) \
 	SineSource.$(OBJEXT) MarSystemManager.$(OBJEXT) \
@@ -150,7 +149,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Color.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/CommandLineOptions.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Communicator.Po ./$(DEPDIR)/CompExp.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Composite.Po ./$(DEPDIR)/Confidence.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Confidence.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Conversions.Po ./$(DEPDIR)/Daub4.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Delay.Po ./$(DEPDIR)/DownSampler.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ERB.Po ./$(DEPDIR)/Envelope.Po \
@@ -379,7 +378,7 @@ Gain.h Spectrum.h InvSpectrum.h \
 Collection.h fft.h Rms.h PlotSink.h \
 AutoCorrelation.h Peaker.h Peaker1.h HalfWaveRectifier.h \
 TimeStretch.h Conversions.h MaxArgMax.h MinArgMin.h \
-Composite.h Series.h \
+Series.h \
  ShiftInput.h ShiftOutput.h Shifter.h PvFold.h PvConvert.h PeConvert.h PeClust.h PeOverlapadd.h PeResidual.h PeUtilities.h PeClusters.h PeSimilarity.h \
 PvConvolve.h PvOscBank.h PvUnconvert.h PvOverlapadd.h Windowing.h Hamming.h \
 Fanout.h Fanin.h Negative.h SineSource.h MarSystemManager.h \
@@ -413,7 +412,7 @@ Gain.cpp Spectrum.cpp InvSpectrum.cpp \
 Collection.cpp fft.cpp Rms.cpp PlotSink.cpp \
 AutoCorrelation.cpp Peaker.cpp Peaker1.cpp HalfWaveRectifier.cpp \
 TimeStretch.cpp Conversions.cpp MaxArgMax.cpp MinArgMin.cpp \
-Composite.cpp Series.cpp \
+Series.cpp \
 ShiftInput.cpp ShiftOutput.cpp Shifter.cpp PvFold.cpp PvConvert.cpp PeConvert.cpp PeClust.cpp PeOverlapadd.cpp PeResidual.cpp PeUtilities.cpp PeClusters.cpp PeSimilarity.cpp \
 PvConvolve.cpp PvOscBank.cpp PvUnconvert.cpp PvOverlapadd.cpp Windowing.cpp Hamming.cpp \
 Fanout.cpp Fanin.cpp Negative.cpp SineSource.cpp MarSystemManager.cpp \
@@ -548,7 +547,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CommandLineOptions.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Communicator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CompExp.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Composite.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Confidence.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Conversions.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Daub4.Po@am__quote@
