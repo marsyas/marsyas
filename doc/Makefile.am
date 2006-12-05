@@ -20,8 +20,8 @@ TEXI2HTML = makeinfo --html
 ## TEXI2PDF  = texi2pdf
 info_TEXINFOS   = marsyas.texi 
 
-SUBDIRS = marsyas 
-EXTRA_DIST = marsyas.pdf marsyasArchitecture1.png marsyasArchitecture1.pdf marsyasArchitecture1.txt marsyasArchitecture1.eps intro.texi tools.texi architecture.texi programming.texi install.texi unsorted.texi 
+SUBDIRS = marsyas images
+EXTRA_DIST = marsyas.pdf intro.texi tools.texi architecture.texi programming.texi install.texi unsorted.texi interoperability.texi
 
 CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
              marsyas.ats  marsyas.evs  marsyas.fns  marsyas.ovs \
@@ -31,6 +31,7 @@ CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
 
 html: marsyas.texi
 	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas.texi 
+	cp images/*.png marsyas/images/
 
 pdf: marsyas.texi
 	$(TEXI2PDF) $(TEXI2PDF_FLAGS) $(srcdir)/marsyas.texi
