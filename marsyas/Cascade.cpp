@@ -26,21 +26,10 @@
 using namespace std;
 using namespace Marsyas;
 
-Cascade::Cascade(string name):Composite("Cascade", name)
+Cascade::Cascade(string name):MarSystem("Cascade", name)
 {
-  //type_ = "Cascade";
-  //name_ = name;
+	isComposite_ = true;
 }
-
-// Cascade::Cascade(const Cascade& a):Composite(a)
-// {
-// 	//lmartins: now done at Composite copy cnstructor
-// 	/*
-// 	for (mrs_natural i=0; i< a.marsystemsSize_; i++) 
-// 	{
-// 		addMarSystem((*a.marsystems_[i]).clone());
-// 	}*/
-// }
 
 Cascade::~Cascade()
 {

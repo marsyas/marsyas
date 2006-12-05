@@ -31,12 +31,11 @@
 #define MARSYAS_SHREDDER_H
 
 #include "MarSystem.h"	
-#include "Composite.h" 
 
 namespace Marsyas
 {
 
-class Shredder: public Composite
+class Shredder: public MarSystem
 {
 private: 
 	mrs_natural nTimes_;
@@ -44,13 +43,12 @@ private:
 
 	void addControls();
 	void myUpdate();
+	bool updControl(std::string cname, MarControlPtr newcontrol, bool upd=true);
   
 public:
 	Shredder(std::string name);
   ~Shredder();
   MarSystem* clone() const; 
-
-	bool updControl(std::string cname, MarControlPtr newcontrol, bool upd=true);
 
   void myProcess(realvec& in, realvec& out);
 };

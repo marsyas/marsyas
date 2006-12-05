@@ -24,25 +24,23 @@
 #ifndef MARSYAS_PARALLEL_H
 #define MARSYAS_PARALLEL_H
 
-#include "Composite.h"
+#include "MarSystem.h"
 
 namespace Marsyas
 {
 
-class Parallel: public Composite
+class Parallel: public MarSystem
 {
 private:
 	void myUpdate();
-  void deleteSlices();  
+  void deleteSlices();
+	bool updControl(std::string cname, MarControlPtr newcontrol, bool upd=true);
   
 public:
   Parallel(std::string name);
-  //Parallel(const Parallel& a);
   
   ~Parallel();
   MarSystem* clone() const; 
-
-	bool updControl(std::string cname, MarControlPtr newcontrol, bool upd=true);
 
   void myProcess(realvec& in, realvec& out);
 };

@@ -114,7 +114,7 @@ public:
 template<>
 class MarControlValueT<realvec> : public MarControlValue
 {
-friend class MarControl;
+	friend class MarControl;
 
 protected:
 	realvec value_;
@@ -157,7 +157,7 @@ public:
 template<>
 class MarControlValueT<bool> : public MarControlValue
 {
-friend class MarControl;
+	friend class MarControl;
 
 protected:
 	bool value_;

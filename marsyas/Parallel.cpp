@@ -26,26 +26,15 @@
 using namespace std;
 using namespace Marsyas;
 
-Parallel::Parallel(string name):Composite("Parallel",name)
+Parallel::Parallel(string name):MarSystem("Parallel",name)
 {
-  //type_ = "Parallel";
-  //name_ = name;
+	isComposite_ = true;
 }
 
 Parallel::~Parallel()
 {
   deleteSlices();
 }
-
-// Parallel::Parallel(const Parallel& a):Composite(a)
-// {
-// 	//lmartins: this is now done at Composite copy constructor
-// 	//
-// 	//   for (mrs_natural i=0; i< a.marsystemsSize_; i++)
-// 	//     {
-// 	//       addMarSystem((*a.marsystems_[i]).clone());
-// 	//     }
-// }
 
 void Parallel::deleteSlices()
 {
@@ -133,14 +122,14 @@ void Parallel::myUpdate()
 bool 
 Parallel::updControl(string cname, MarControlPtr newcontrol, bool upd)
 { 
-  // get the control (local or from children)...
+	// get the control (local or from children)...
 	MarControlPtr control = getControl(cname);
 
 	// ...and check if the control really exists locally or among children
 	if(control.isInvalid())
 	{
-		MRSWARN("Composite::updControl - Unsupported control name = " + cname);
-		MRSWARN("Composite::updControl - Composite name = " + name_);
+		MRSWARN("MarSystem::updControl - Unsupported control name = " + cname);
+		MRSWARN("MarSystem::updControl - Composite name = " + name_);
 		return false;
 	}
 
@@ -148,47 +137,49 @@ Parallel::updControl(string cname, MarControlPtr newcontrol, bool upd)
 	if(!control->setValue(newcontrol, upd))
 		return false; //some error occurred in setValue()
 
-	// call the composite update (only if the control has state,
-	// upd is true, and if it's not a local control (otherwise update 
-	// was already called by control->setValue())).
-	if(upd && control->hasState() && !hasControlLocal(cname))
-		update();
-
-	// TODO: USE LINKED CONTROLS TO AVOID THIS CODE BLOCK! [!]
-	// certain controls must also be propagated inside the composite
-	// (must find a way to avoid this hard-coded control list! [!] )
-	string childcontrol = cname.substr(prefix_.length()-1, cname.length()-(prefix_.length()-1));//includes leading "/"
-	string nchildcontrol = childcontrol.substr(1, childcontrol.length()); //no leading "/"
-	//////////////////////////////////////////////////////////////////////////
-	//Parallel Specific [!]
-	//////////////////////////////////////////////////////////////////////////
-	if(nchildcontrol == "mrs_natural/inObservations")
+	//in case this is a composite Marsystem,
+	if(isComposite_)
 	{
-		if (marsystemsSize_ > 0)
-		{
-			mrs_natural val = newcontrol->toNatural() / marsystemsSize_;
-			marsystems_[0]->updctrl(nchildcontrol, val, upd); 
-		}			
-		if(upd && marsystems_[0]->hasControlState(nchildcontrol))
+		// call update (only if the control has state,
+		// upd is true, and if it's not a local control (otherwise update 
+		// was already called by control->setValue())).
+		if(upd && control->hasState() && !hasControlLocal(cname))
 			update();
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	if ((nchildcontrol == "mrs_natural/inSamples")|| 
-		//(nchildcontrol == "mrs_natural/inObservations")||
-		(nchildcontrol == "mrs_real/israte")||
-		(nchildcontrol == "mrs_string/inObsNames"))
-	{
-		//if there is at least a child MarSystem in this composite...
-		if (marsystemsSize_ > 0)
+
+		// certain controls must also be propagated to its children
+		// (must find a way to avoid this hard-coded control list, though! [!] )
+		
+		//Parallel Specific [!]
+		if(cname == "mrs_natural/inObservations")
 		{
-			if(!marsystems_[0]->updctrl(nchildcontrol, control, upd))
-				return false;//some error occurred in updctrl()
-			if(upd && marsystems_[0]->hasControlState(nchildcontrol))
-				update();
+			if (marsystemsSize_ > 0)
+			{
+				//Parallel Specific [!]
+				mrs_natural val = newcontrol->toNatural() / marsystemsSize_;
+				
+				if(!marsystems_[0]->updctrl(cname, val, upd))
+					return false;//some error occurred in updctrl()
+				if(upd && marsystems_[0]->hasControlState(cname))
+					update();
+			}
+		}
+		if ((cname == "mrs_natural/inSamples")|| 
+			//(cname == "mrs_natural/inObservations")||
+			(cname == "mrs_real/israte")||
+			(cname == "mrs_string/inObsNames"))
+		{
+			//if there is at least a child MarSystem in this composite...
+			if (marsystemsSize_ > 0)
+			{
+				if(!marsystems_[0]->updctrl(cname, control, upd))
+					return false;//some error occurred in updctrl()
+				if(upd && marsystems_[0]->hasControlState(cname))
+					update();
+			}
 		}
 	}
 
+	//success!
 	return true;
 }
 

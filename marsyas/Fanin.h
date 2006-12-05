@@ -27,21 +27,19 @@ observation stream and sums the results.
 #ifndef MARSYAS_FANIN_H
 #define MARSYAS_FANIN_H
 
-#include "Composite.h"
+#include "MarSystem.h"
 
 namespace Marsyas
 {
 
-class Fanin: public Composite
+class Fanin: public MarSystem
 {
 private:
-  // vector<realvec*> slices_;
 	void myUpdate();
   void deleteSlices();
   
 public:
   Fanin(std::string name);
-  //Fanin(const Fanin& a);  
   ~Fanin();
   MarSystem* clone() const;  
 

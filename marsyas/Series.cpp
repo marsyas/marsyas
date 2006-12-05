@@ -17,10 +17,10 @@
 */
 
 /** 
-    \class Series
-    \brief Series of MarSystem objects
-    
-    Combines a series of MarSystem objects to a single MarSystem 
+\class Series
+\brief Series of MarSystem objects
+
+Combines a series of MarSystem objects to a single MarSystem 
 corresponding to executing the System objects one after the other 
 in sequence. 
 */
@@ -30,61 +30,39 @@ in sequence.
 using namespace std;
 using namespace Marsyas;
 
-Series::Series(string name):Composite("Series",name)
+Series::Series(string name):MarSystem("Series",name)
 {
-  //type_ = "Series";
-  //name_ = name;
-
+	isComposite_ = true;
 	addControls();
 }
 
-//Series::Series(const Series& a):Composite(a)
-//{
-// lmartins: This is now done at MarSystem copy Constructor
-//
-//   type_ = a.type_;
-//   name_ = a.name_;
-//   ncontrols_ = a.ncontrols_; 		
-//   synonyms_ = a.synonyms_;
-// 	dbg_ = a.dbg_;
-// 	mute_ = a.mute_;
-// 	active_ = a.active_;
-  
-//lmartins: this is now done at Composite copy constructor
-//
-//   for (mrs_natural i=0; i< a.marsystemsSize_; i++)
-//     {
-//       addMarSystem((*a.marsystems_[i]).clone());
-//     }
-//}
-
 Series::~Series()
 {
-  deleteSlices();
+	deleteSlices();
 }
 
 MarSystem* 
 Series::clone() const 
 {
-  return new Series(*this);
+	return new Series(*this);
 }
 
 void 
 Series::addControls()
 {
-  addctrl("mrs_bool/probe", false);
-  setctrlState("mrs_bool/probe", true);
+	addctrl("mrs_bool/probe", false);
+	setctrlState("mrs_bool/probe", true);
 }
 
 void 
 Series::deleteSlices()
 {
-  vector<realvec *>::const_iterator iter;
-  for (iter= slices_.begin(); iter != slices_.end(); ++iter)
-  {
-    delete *(iter);
-  }
-  slices_.clear();
+	vector<realvec *>::const_iterator iter;
+	for (iter= slices_.begin(); iter != slices_.end(); ++iter)
+	{
+		delete *(iter);
+	}
+	slices_.clear();
 }
 
 // STU
@@ -102,113 +80,112 @@ const Series::recvControls()
 void 
 Series::myUpdate()
 {
-  probe_ = getctrl("mrs_bool/probe")->toBool();
-  
-  if (marsystemsSize_ != 0) 
-  {
-		// update dataflow component MarSystems in order 
-    marsystems_[0]->update();      
+	probe_ = getctrl("mrs_bool/probe")->toBool();
 
-    for (mrs_natural i=1; i < marsystemsSize_; i++)
+	if (marsystemsSize_ != 0) 
+	{
+		// update dataflow component MarSystems in order 
+		marsystems_[0]->update();      
+
+		for (mrs_natural i=1; i < marsystemsSize_; i++)
 		{
-		  //lmartins: replace updctrl() calls by setctrl()? ==> more efficient![?]
-		  marsystems_[i]->updctrl("mrs_string/inObsNames", marsystems_[i-1]->getctrl("mrs_string/onObsNames"));
-		  marsystems_[i]->updctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/onSamples"));
-		  marsystems_[i]->updctrl("mrs_natural/inObservations", marsystems_[i-1]->getctrl("mrs_natural/onObservations"));
-		  marsystems_[i]->updctrl("mrs_real/israte", marsystems_[i-1]->getctrl("mrs_real/osrate"));
-		  marsystems_[i]->update();
+			//lmartins: replace updctrl() calls by setctrl()? ==> more efficient![?]
+			marsystems_[i]->updctrl("mrs_string/inObsNames", marsystems_[i-1]->getctrl("mrs_string/onObsNames"));
+			marsystems_[i]->updctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/onSamples"));
+			marsystems_[i]->updctrl("mrs_natural/inObservations", marsystems_[i-1]->getctrl("mrs_natural/onObservations"));
+			marsystems_[i]->updctrl("mrs_real/israte", marsystems_[i-1]->getctrl("mrs_real/osrate"));
+			marsystems_[i]->update();
 		}
 
-    // set controls based on first and last marsystem 
-    setctrl("mrs_string/inObsNames", marsystems_[0]->getctrl("mrs_string/inObsNames"));
-    setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
-    setctrl("mrs_natural/inObservations", marsystems_[0]->getctrl("mrs_natural/inObservations"));
-    setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte"));
-    
-    setctrl("mrs_string/onObsNames", marsystems_[marsystemsSize_-1]->getctrl("mrs_string/onObsNames"));
-    setctrl("mrs_natural/onSamples", marsystems_[marsystemsSize_-1]->getctrl("mrs_natural/onSamples")->toNatural());
-    setctrl("mrs_natural/onObservations", marsystems_[marsystemsSize_-1]->getctrl("mrs_natural/onObservations")->toNatural());
-    setctrl("mrs_real/osrate", marsystems_[marsystemsSize_-1]->getctrl("mrs_real/osrate")->toReal());
-    
-    // update buffers (aka slices) between components 
-    if ((mrs_natural)slices_.size() < marsystemsSize_-1) 
-      slices_.resize(marsystemsSize_-1, NULL);
-    
-    for (mrs_natural i=0; i< marsystemsSize_-1; i++)
-      {
-	if (slices_[i] != NULL) 
-	  {
-	    if ((slices_[i])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural()  ||
-		(slices_[i])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural())
-	      {
-		delete slices_[i];
-		slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
-					 marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
-		(slices_[i])->setval(0.0);
-	      }
-	  }
-	else 
-	  {
-	    ostringstream oss;
-	    oss << "mrs_realvec/input" << i;
-	    addctrl(oss.str(), empty_);      
-	    
-	    slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
-				     marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
-	    (slices_[i])->setval(0.0);
-	  }
-      }
-    
-    if ((probe_)&&(marsystemsSize_ > 1))
-      {
-	for (mrs_natural i=0; i< marsystemsSize_-1; i++)
-	  {
-	    ostringstream oss;
-	    oss << "mrs_realvec/input" << i;
-	    setctrl(oss.str(), *(slices_[i]));
-	  }
-      }
-    //defaultUpdate();      
-  }
-  
+		// set controls based on first and last marsystem 
+		setctrl("mrs_string/inObsNames", marsystems_[0]->getctrl("mrs_string/inObsNames"));
+		setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
+		setctrl("mrs_natural/inObservations", marsystems_[0]->getctrl("mrs_natural/inObservations"));
+		setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte"));
+
+		setctrl("mrs_string/onObsNames", marsystems_[marsystemsSize_-1]->getctrl("mrs_string/onObsNames"));
+		setctrl("mrs_natural/onSamples", marsystems_[marsystemsSize_-1]->getctrl("mrs_natural/onSamples")->toNatural());
+		setctrl("mrs_natural/onObservations", marsystems_[marsystemsSize_-1]->getctrl("mrs_natural/onObservations")->toNatural());
+		setctrl("mrs_real/osrate", marsystems_[marsystemsSize_-1]->getctrl("mrs_real/osrate")->toReal());
+
+		// update buffers (aka slices) between components 
+		if ((mrs_natural)slices_.size() < marsystemsSize_-1) 
+			slices_.resize(marsystemsSize_-1, NULL);
+
+		for (mrs_natural i=0; i< marsystemsSize_-1; i++)
+		{
+			if (slices_[i] != NULL) 
+			{
+				if ((slices_[i])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural()  ||
+					(slices_[i])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural())
+				{
+					delete slices_[i];
+					slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
+						marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
+					(slices_[i])->setval(0.0);
+				}
+			}
+			else 
+			{
+				ostringstream oss;
+				oss << "mrs_realvec/input" << i;
+				addctrl(oss.str(), empty_);      
+
+				slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
+					marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
+				(slices_[i])->setval(0.0);
+			}
+		}
+
+		if ((probe_)&&(marsystemsSize_ > 1))
+		{
+			for (mrs_natural i=0; i< marsystemsSize_-1; i++)
+			{
+				ostringstream oss;
+				oss << "mrs_realvec/input" << i;
+				setctrl(oss.str(), *(slices_[i]));
+			}
+		}
+		//defaultUpdate();      
+	} 
 }
 
 void
 Series::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
-  
-  // Add assertions about sizes [!]
-  
-  if (marsystemsSize_ == 1)
-    marsystems_[0]->process(in,out);
-  else
-    {
-      for (mrs_natural i = 0; i < marsystemsSize_; i++)
+	//checkFlow(in,out);
+
+	// Add assertions about sizes [!]
+
+	if (marsystemsSize_ == 1)
+		marsystems_[0]->process(in,out);
+	else
 	{
-	  if (i==0)
-	    {
-	      marsystems_[i]->process(in, *(slices_[i]));
-	    }
-	  else if (i == marsystemsSize_-1)
-	    {
-	      marsystems_[i]->process(*(slices_[i-1]), out);	  
-	    }
-	  else
-	    marsystems_[i]->process(*(slices_[i-1]), *(slices_[i]));
+		for (mrs_natural i = 0; i < marsystemsSize_; i++)
+		{
+			if (i==0)
+			{
+				marsystems_[i]->process(in, *(slices_[i]));
+			}
+			else if (i == marsystemsSize_-1)
+			{
+				marsystems_[i]->process(*(slices_[i-1]), out);	  
+			}
+			else
+				marsystems_[i]->process(*(slices_[i-1]), *(slices_[i]));
+		}
 	}
-    }
-  
-  if ((probe_)&&(marsystemsSize_ > 1))
-    {
-      for (mrs_natural i=0; i< marsystemsSize_-1; i++)
+
+	if ((probe_)&&(marsystemsSize_ > 1))
 	{
-	  ostringstream oss;
-	  oss << "mrs_realvec/input" << i;
-	  setctrl(oss.str(), *(slices_[i]));
+		for (mrs_natural i=0; i< marsystemsSize_-1; i++)
+		{
+			ostringstream oss;
+			oss << "mrs_realvec/input" << i;
+			setctrl(oss.str(), *(slices_[i]));
+		}
 	}
-    }
 }
 
 
-  
+

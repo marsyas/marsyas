@@ -99,15 +99,27 @@ protected:
 	mutable QReadWriteLock rwLock_;
 #endif
 
+	MarSystem* parent_;		// Parent MarSystem (if in a composite, otherwise it's NULL)
 	std::string type_;		// Type of MarSystem
 	std::string name_;		// Name of instance
 	std::string prefix_;	// /type_/name_/
-	std::string path_;		// /fatherType/fatherName/type_/name_/
+	std::string absPath_;	// parent0Type/parent0Name/.../parentNType/parentNName/type_/name_/
 												// in case this MarSystem is part of a composite
-												// this is the complete path to it
+												// this is the absolute path to it
 
 	mrs_natural c,o,t;    // observation and time index //[!]
 
+	//children
+	bool isComposite_;
+	mrs_natural marsystemsSize_;
+	std::vector<MarSystem*> marsystems_;
+	std::vector<realvec*> slices_;
+
+	//Controls 
+	mutable std::map<std::string, MarControlPtr> controls_;
+	std::map<std::string, MarControlPtr>::iterator ctrlIter_;
+
+	//control pointers
 	MarControlPtr ctrl_inSamples_;
 	MarControlPtr ctrl_inObservations_; 
 	MarControlPtr ctrl_israte_;
@@ -142,15 +154,15 @@ protected:
 
 	std::string MATLABscript_;
 
-	//Controls 
-	mutable std::map<std::string, MarControlPtr> controls_;
-	std::map<std::string, MarControlPtr>::iterator ctrlIter_;
-
 	//add controls
 	bool addControl(std::string cname, MarControlPtr v);
 	bool addControl(std::string cname, MarControlPtr v, MarControlPtr& ptr);
-	bool addctrl(std::string cname, MarControlPtr v) {return addControl(prefix_ + cname, v);}
-	bool addctrl(std::string cname, MarControlPtr v, MarControlPtr& ptr) {return addControl(prefix_ + cname, v, ptr);}
+	bool addctrl(std::string cname, MarControlPtr v) {return addControl(cname, v);}
+	bool addctrl(std::string cname, MarControlPtr v, MarControlPtr& ptr) {return addControl(cname, v, ptr);}
+
+	//control paths
+	std::string getControlRelativePath(std::string cname) const;
+	std::string getControlLocalPath(std::string cname) const;
 
 	virtual void controlUpdate(MarControlPtr ctrl);
 
@@ -166,53 +178,56 @@ public:
   virtual ~MarSystem();
 
 	virtual MarSystem* clone() const = 0;
-  
+	
   // Naming methods 
   virtual void setName(std::string name);
 	virtual void setType(std::string type);
   std::string getType() const;
   std::string getName() const;
   std::string getPrefix() const;
-	std::string getPath() const;
-	virtual void addFatherPath(std::string fpath);
+	std::string getAbsPath() const;
 
 	// link controls
 	bool linkControl(std::string cname1, std::string cname2);
-	bool linkctrl(std::string cname1, std::string cname2) {return linkControl(prefix_ + cname1, prefix_ + cname2);}
+	bool linkctrl(std::string cname1, std::string cname2) {return linkControl(cname1, cname2);}
   
 	// update controls
 	virtual bool updControl(std::string cname, MarControlPtr newcontrol, bool upd = true);
-	bool updctrl(char *cname, MarControlPtr newcontrol, bool upd = true) {return updControl(prefix_ + std::string(cname), newcontrol, upd);}
-	bool updctrl(std::string cname, MarControlPtr newcontrol, bool upd = true) {return updControl(prefix_ + cname, newcontrol, upd);}
+	bool updctrl(char *cname, MarControlPtr newcontrol, bool upd = true) {return updControl(std::string(cname), newcontrol, upd);}
+	bool updctrl(std::string cname, MarControlPtr newcontrol, bool upd = true) {return updControl(cname, newcontrol, upd);}
 	bool updctrl(MarControlPtr control, MarControlPtr newcontrol, bool upd = true) {return control->setValue(newcontrol, upd);}
 
 	// set controls
 	bool setControl(std::string cname, MarControlPtr newcontrol) {return updControl(cname, newcontrol, NOUPDATE);}
-	bool setctrl(char *cname, MarControlPtr newcontrol) {return updControl(prefix_ + std::string(cname), newcontrol, NOUPDATE);}
-	bool setctrl(std::string cname, MarControlPtr newcontrol) {return updControl(prefix_ + cname, newcontrol, NOUPDATE);}
+	bool setctrl(char *cname, MarControlPtr newcontrol) {return updControl(std::string(cname), newcontrol, NOUPDATE);}
+	bool setctrl(std::string cname, MarControlPtr newcontrol) {return updControl(cname, newcontrol, NOUPDATE);}
 	bool setctrl(MarControlPtr control, MarControlPtr newcontrol) {return updctrl(control, newcontrol, NOUPDATE);}
   
 	// get controls
-	virtual bool hasControl(std::string cname);
-  virtual MarControlPtr getControl(std::string cname);
-	MarControlPtr getctrl(std::string cname) {return getControl(prefix_ + cname);}
+	bool hasControl(std::string cname);
+	bool hasControlLocal(std::string cname);
+  MarControlPtr getControl(std::string cname, bool searchParent = false, MarSystem* excluded = NULL);
+	MarControlPtr getControlLocal(std::string cname);
+	MarControlPtr getctrl(std::string cname) {return getControl(cname);}
 	const std::map<std::string, MarControlPtr>& getControls();
 
 	// set control state
 	void setControlState(std::string cname, bool state); //should this be virtual? [?]
-	void setctrlState(std::string cname, bool state) {setControlState(prefix_ + cname, state);}
-	void setctrlState(char * cname, bool state){setControlState(prefix_ + std::string(cname), state);}
+	void setctrlState(std::string cname, bool state) {setControlState(cname, state);}
+	void setctrlState(char * cname, bool state){setControlState(std::string(cname), state);}
 	void setctrlState(MarControlPtr control, bool state) {control->setState(state);}
 
 	// get control state
-	virtual bool hasControlState(std::string cname);
-	bool hasctrlState(std::string cname) {return hasControlState(prefix_ + cname);}
-	bool hasctrlState(char* cname) {return hasControlState(prefix_ + std::string(cname));}
+	bool hasControlState(std::string cname);
+	bool hasctrlState(std::string cname) {return hasControlState(cname);}
+	bool hasctrlState(char* cname) {return hasControlState(std::string(cname));}
 	bool hasctrlState(MarControlPtr control) {return control->hasState();}
   
 	// Composite interface
-  virtual void addMarSystem(MarSystem *marsystem);
-	virtual MarSystem* getMarSystem(std::string path);
+  virtual bool addMarSystem(MarSystem *marsystem);
+	virtual MarSystem* getMarSystem(std::string absPath);
+	virtual void setParent(const MarSystem* parent);
+	MarSystem* getParent() const {return parent_;}
 	virtual std::vector<MarSystem*> getChildren();
   
   // Processing and update methods 

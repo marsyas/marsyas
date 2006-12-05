@@ -24,12 +24,12 @@
 #ifndef MARSYAS_CASCADE_H
 #define MARSYAS_CASCADE_H
 
-#include "Composite.h"
+#include "MarSystem.h"
 
 namespace Marsyas
 {
 
-class Cascade: public Composite
+class Cascade: public MarSystem
 {
 private:
   void deleteSlices();
@@ -37,8 +37,6 @@ private:
   
 public:
 	Cascade(std::string name);
-  //Cascade(const Cascade& a);
-  
   ~Cascade();
   MarSystem* clone() const;    
 

@@ -29,22 +29,20 @@ silences removed.
 #define MARSYAS_SILENCEREMOVE_H
 
 #include "MarSystem.h"	
-#include "Composite.h" 
 
 namespace Marsyas
 {
 
-class SilenceRemove: public Composite
+class SilenceRemove: public MarSystem
 {
 private: 
-  void addControls();
-	void myUpdate();
   mrs_real threshold_;
+
+	void addControls();
+	void myUpdate();
   
 public:
 	SilenceRemove(std::string name);
-  //SilenceRemove(const SilenceRemove& a);
-  
   ~SilenceRemove();
   MarSystem* clone() const;  
 

@@ -28,12 +28,12 @@ make each of their outputs a separate observation
 #ifndef MARSYAS_FANOUT_H
 #define MARSYAS_FANOUT_H
 
-#include "Composite.h"
+#include "MarSystem.h"
 
 namespace Marsyas
 {
 
-class Fanout: public Composite
+class Fanout: public MarSystem
 {
 private:
   void addControls();
@@ -47,8 +47,6 @@ private:
   
 public:
   Fanout(std::string name);
-  //Fanout(const Fanout& a);
-  
   ~Fanout();
   MarSystem* clone() const;    
  

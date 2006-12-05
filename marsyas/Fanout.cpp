@@ -30,11 +30,9 @@ in sequence.
 using namespace std;
 using namespace Marsyas;
 
-Fanout::Fanout(string name):Composite("Fanout", name)
+Fanout::Fanout(string name):MarSystem("Fanout", name)
 {
-  //type_ = "Fanout";
-  //name_ = name;
-
+	isComposite_ = true;
 	addControls();
 }
 
@@ -42,16 +40,6 @@ Fanout::~Fanout()
 {
   deleteSlices();
 }
-
-// Fanout::Fanout(const Fanout& a):Composite(a)
-// {
-// 	//lmartins: this is now done at Composite copy constructor
-// 	//
-// 	//   for (mrs_natural i=0; i< a.marsystemsSize_; i++)
-// 	//     {
-// 	//       addMarSystem((*a.marsystems_[i]).clone());
-// 	//     }
-// }
 
 void 
 Fanout::deleteSlices()

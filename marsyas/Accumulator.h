@@ -32,12 +32,11 @@
 #define MARSYAS_ACCUMULATOR_H
 
 #include "MarSystem.h"	
-#include "Composite.h" 
 
 namespace Marsyas
 {
 
-class Accumulator: public Composite
+class Accumulator: public MarSystem
 {
 private: 
 	mrs_natural nTimes_;

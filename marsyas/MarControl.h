@@ -436,7 +436,7 @@ MarControl::to() const
 }
 
 /************************************************************************/
-/* MarControlPtr inline implementation                                     */
+/* MarControlPtr inline implementation                                  */
 /************************************************************************/
 inline
 MarControlPtr::MarControlPtr(const MarControlPtr& a) //mutexes? [?]
@@ -466,13 +466,11 @@ MarControlPtr::operator=(const MarControlPtr& a)//mutexes? [?]
 	{
 		control_->unref();
 	}
-	
 	control_ = a.control_;
 	if (control_) 
-	  {
-	    control_->ref();
-	  }
-	
+  {
+    control_->ref();
+  }
 	return *this;
 }
 
@@ -500,7 +498,7 @@ MarControl::MarControl(const MarControl& a)
 	state_		= a.state_;
 	desc_			= a.desc_;
 	value_		= a.value_->clone();
-	isLinked_ = a.isLinked_;
+	isLinked_ = false;
 }
 
 inline
@@ -629,19 +627,14 @@ inline
 bool
 MarControl::setValue(T& t, bool update)
 {
-
-  cout << "MarControl::setValue called"  << endl;
-  
-
 #ifdef MARSYAS_QT
 	rwLock_.lockForWrite();
 #endif
 
 	MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(value_);
-	const T& pv = ptr->get();
 	if(ptr)
 	{
-		if (pv == t)
+		if (ptr->get() == t)
 		{
 			#ifdef MARSYAS_QT
 			rwLock_.unlock();
@@ -651,19 +644,16 @@ MarControl::setValue(T& t, bool update)
 
 		ptr->set(t);
 
-#ifdef MARSYAS_QT
+		#ifdef MARSYAS_QT
 		rwLock_.unlock();
-#endif
+		#endif
 
 		if(isLinked_)
 		{
-		  cout << "IS LINKED CALLED" << endl;
-		  
-		  
-		  for(size_t i=0; i<linkedTo_.size(); i++)
-		    {
-		      linkedTo_[i]->setValue(t, update);
-		    }
+			for(size_t i=0; i<linkedTo_.size(); i++)
+			{
+				linkedTo_[i]->setValue(t, update);
+			}
 		}
 
 		if(update) this->callMarSystemUpdate(); //[?] lock?!?

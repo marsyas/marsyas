@@ -121,12 +121,12 @@ Gain::myProcess(realvec& in, realvec& out)
 	if(calcRMS)
 	{
 		//ctrl_inRMS_->setValue(inRMS_, NOUPDATE);
-		updctrl(ctrl_inRMS_, inRMS_, NOUPDATE);
-		//setctrl(ctrl_inRMS_, inRMS_);
+		//updctrl(ctrl_inRMS_, inRMS_, NOUPDATE);
+		setctrl(ctrl_inRMS_, inRMS_);
 	
 		//ctrl_outRMS_->setValue(outRMS_, NOUPDATE);
-		updctrl(ctrl_outRMS_, outRMS_, NOUPDATE);
-	  //setctrl(ctrl_outRMS_, outRMS_);
+		//updctrl(ctrl_outRMS_, outRMS_, NOUPDATE);
+	  setctrl(ctrl_outRMS_, outRMS_);
 	}
 }
 

@@ -28,12 +28,12 @@ in sequence.
 #ifndef MARSYAS_SERIES_H
 #define MARSYAS_SERIES_H
 
-#include "Composite.h" 
+#include "MarSystem.h" 
 
 namespace Marsyas
 {
 
-class Series: public Composite
+class Series: public MarSystem
 {
 private:
   realvec empty_;

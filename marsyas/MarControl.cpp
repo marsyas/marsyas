@@ -66,14 +66,14 @@ MarControl::setMarSystem(MarSystem* msys)
   QWriteLocker locker(&rwLock_);
 #endif
   
-  if(msys_) //[!]
-    {
-      //if this is a change in the parent MarSystem, 
-      //then the control name must be updated accordingly
-      string oldPrefix = msys_->getPrefix();
-      string shortcname = cname_.substr(oldPrefix.length(), cname_.length());
-      cname_ = msys->getPrefix() + shortcname;
-    }
+//   if(msys_) //[!]
+//     {
+//       //if this is a change in the parent MarSystem, 
+//       //then the control name must be updated accordingly
+//       string oldPrefix = msys_->getPrefix();
+//       string shortcname = cname_.substr(oldPrefix.length(), cname_.length());
+//       cname_ = msys->getPrefix() + shortcname;
+//     }
   msys_ = msys;
 }
 
@@ -88,7 +88,7 @@ MarControl::getMarSystem()
 }
 
 void
-MarControl::setName(std::string cname) //[!] should check if is in sync with current msys_ prefix...
+MarControl::setName(std::string cname)
 {
 #ifdef MARSYAS_QT
   QWriteLocker locker(&rwLock_);
@@ -154,6 +154,16 @@ MarControl::linkTo(MarControlPtr ctrl)
 		MRSWARN(oss.str());
 		return false;
 	}
+
+	//check if these controls are already linked
+	vector<MarControlPtr>::const_iterator ci;
+	for(ci = linkedTo_.begin(); ci != linkedTo_.end(); ++ci)
+	{
+		//compare MarControl* (the actual pointer and not its value)
+		if((*ci)() == ctrl())
+			return true;//already linked! :-)
+	}
+	
 	if (ctrl->getType() != this->getType())
 	{
 		ostringstream oss;
@@ -164,13 +174,12 @@ MarControl::linkTo(MarControlPtr ctrl)
 	}
 	linkedTo_.push_back(ctrl);
 	isLinked_ = true;
+	//the linked control should also be linked to this one!
 	ctrl->linkedTo_.push_back(this);
 	ctrl->isLinked_ = true;
-	
 
 	return true;
 }
-
 
 #ifdef MARSYAS_QT
 void
