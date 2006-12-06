@@ -184,7 +184,7 @@ MarControl::linkTo(MarControlPtr ctrl)
 void
 MarControl::clearLinks()
 {
-	for (int i=0; i<linkedTo_.size(); i++)
+	for (size_t i=0; i<linkedTo_.size(); i++)
 	{
 		linkedTo_[i]->removeLink(this);
 	}
@@ -195,7 +195,7 @@ void
 MarControl::removeLink(MarControlPtr link)
 {
 	std::vector<MarControlPtr> temp;
-	for (int i=0; i<linkedTo_.size(); i++)
+	for (size_t i=0; i<linkedTo_.size(); i++)
 	{
 		if (linkedTo_[i]() != link()) // same pointer?
 		{

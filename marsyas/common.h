@@ -2,7 +2,7 @@
 #define MARSYAS_COMMON_H
 
 /************************************************************************/
-/*			Platform defines  ?                                             */
+/*			Platform defines  [?]                                             */
 /************************************************************************/
 //__OS_LINUX__
 //__OS_MACOSX__
@@ -29,30 +29,43 @@
 /************************************************************************/
 namespace Marsyas
 {
-	// #define real double   
-	// #define natural long
 	typedef double mrs_real;
 	typedef long mrs_natural;
-        typedef bool mrs_bool;
+  typedef bool mrs_bool;
 	typedef std::complex<mrs_real> mrs_complex;
 
 } //namespace Marsyas
 
 /************************************************************************/
-/*              common defines                                          */
+/*  common defines                                                      */
+/************************************************************************/
+#define MRS_DEFAULT_SLICE_NSAMPLES 512
+#define MRS_DEFAULT_SLICE_NOBSERVATIONS 1
+#define MRS_DEFAULT_SLICE_SRATE   22050.0
+
+#define FFT_FORWARD 1
+#define FFT_INVERSE 0
+
+/************************************************************************/
+/*  Numerical defines                                                   */
 /************************************************************************/
 #define MAXREAL std::numeric_limits<mrs_real>::max()
 #define MINREAL std::numeric_limits<mrs_real>::min()
 #define MAXNATURAL std::numeric_limits<mrs_natural>::max()
 #define MINNATURAL std::numeric_limits<mrs_natural>::min()
 
-#define MRS_DEFAULT_SLICE_NSAMPLES 512
-#define MRS_DEFAULT_SLICE_NOBSERVATIONS 1
-#define MRS_DEFAULT_SLICE_SRATE   22050.0
-
 //used for PCM audio => should not be changed!
 #define PCM_MAXSHRT 32767 
 #define PCM_FMAXSHRT 32767.0f 
+
+#define PI 3.14159265358979323846 //double precision instead of 3.14159265359f
+#define TWOPI 6.28318530717958647692 //double precision instead of 6.28318530718f
+
+/************************************************************************/
+/* LOGGING MACROS                                                                   */
+/************************************************************************/
+
+//#define LOG_TO_COUT
 
 #define MRSERR(x) {std::ostringstream oss; MrsLog::mrsErr((std::ostringstream&)(oss << x));}
 
@@ -70,7 +83,7 @@ namespace Marsyas
 
 #ifdef MRSDEBUGG
 	#define MRSDEBUG(x) MrsLog::mrsDebug(x)
-#elseif
+#else
 	#define MRSDEBUG(x)
 #endif 
 
@@ -83,12 +96,6 @@ namespace Marsyas
 #else 
   #define MRSASSERT(x) 
 #endif 
-
-#define PI 3.14159265358979323846 //double precision instead of 3.14159265359f
-#define TWOPI 6.28318530717958647692 //double precision instead of 6.28318530718f
-
-#define FFT_FORWARD 1
-#define FFT_INVERSE 0
 
 /************************************************************************/
 /*  MATLAB engine macros                                                */

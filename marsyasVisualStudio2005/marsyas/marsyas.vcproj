@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=""
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;LOG_TO_COUT;MRSWARNING;MRSDEBUGG;MRSASSERTE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -628,6 +628,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\marsyas\Peak2Rms.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\marsyas\Peaker.cpp"
 				>
 			</File>
@@ -677,6 +681,10 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\PowerSpectrum.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\Product.cpp"
 				>
 			</File>
 			<File
@@ -1310,6 +1318,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\marsyas\Peak2Rms.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\marsyas\Peaker.h"
 				>
 			</File>
@@ -1359,6 +1371,10 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\PowerSpectrum.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\Product.h"
 				>
 			</File>
 			<File
