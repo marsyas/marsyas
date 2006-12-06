@@ -491,12 +491,14 @@ MarSystemManager::getMarSystem(istream& is)
 
 		workingSet_[msys->getName()] = msys; // add to workingSet
 
-		is >> skipstr;
-		is >> skipstr;
-		is >> skipstr;
-		is >> skipstr;
+		//is >> skipstr;
+		//is >> skipstr;
+		//is >> skipstr;
+		//is >> skipstr;
 
-		if (skipstr != "links") 
+
+
+	/*	if (skipstr != "links") 
 		{
 			MRSWARN("Problem with reading links");
 			MRSWARN("mtype = " << mtype);
@@ -530,10 +532,10 @@ MarSystemManager::getMarSystem(istream& is)
 			is >> skipstr;
 			is >> skipstr;
 			is >> skipstr;
-			is >> skipstr;
+			is >> skipstr;*/
 
-			mrs_natural nSynonyms = 0;
-			is >> nSynonyms;
+			//mrs_natural nSynonyms = 0;
+			//is >> nSynonyms;
 
 			// SYNONYMS!!
 // 			vector<string> synonymList;
@@ -555,7 +557,7 @@ MarSystemManager::getMarSystem(istream& is)
 // 				synonymList.push_back(shortcname);
 // 				msys->synonyms_[vshortcname] = synonymList;
 // 			}
-		}
+	//	}
 		if (isComposite == true)
 		{
 			is >> skipstr >> skipstr >> skipstr;

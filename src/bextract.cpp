@@ -860,6 +860,9 @@ void bextract_train(vector<Collection> cls,
 		// run feature extraction and train classifiers
 		for(mrs_natural i=0; i <(mrs_natural)tlColl.size(); ++i)
 		{
+			//load Audio file from the collection
+			featureNetwork->updctrl("SoundFileSource/src/mrs_string/filename", audioColl.entry(i));
+			
 			//load timeline for i-th audio file
 			tline.load(tlColl.entry(i));
 			
@@ -893,15 +896,21 @@ void bextract_train(vector<Collection> cls,
 				featureNetwork->updctrl("WekaSink/wsink/mrs_natural/nLabels", numClasses);
 				featureNetwork->updctrl("WekaSink/wsink/mrs_string/labelNames",classNames);
 				featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 40);
-				string name = audioColl.entry(i).substr(0, audioColl.entry(i).length()-4) + "_" + extractorStr + "_.arff";
+				string name = audioColl.entry(i).substr(0, audioColl.entry(i).length()-4) + "_" + extractorStr + ".arff";
 				featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", name);
 			}
+
+			cout << endl;
+			cout << "**************************************" << endl;
+			cout << "AudioFile: " << audioColl.entry(i) << endl;
+			cout << "TimeLine : " << tlColl.entry(i) << endl;
+			cout << "**************************************" << endl;
 
 			//iterate over timeline regions
 			for (mrs_natural r = 0; r < tline.numRegions(); r++)
 			{
-				cout << "---------------------------" << endl;
-				cout << "Region " << r << "/" << tline.numRegions() << endl;
+				cout << "-----------------------------------------------" << endl;
+				cout << "Region " << r+1 << "/" << tline.numRegions() << endl;
 				cout << "Region start   = " << tline.start(r) << endl;
 				cout << "Region classID = " << tline.getRClassId(r) << endl; 
 				cout << "Region end     = " << tline.end(r) << endl;
@@ -923,6 +932,15 @@ void bextract_train(vector<Collection> cls,
 				mrs_natural start = (mrs_natural)(tline.start(r) * tline.lineSize_); //region start sample
 				mrs_natural end = (mrs_natural)(tline.end(r) * tline.lineSize_); //region end sample
 
+				mrs_natural fileSize = featureNetwork->getctrl(src->getType() + "/src/mrs_natural/size")->to<mrs_natural>();
+				if(end > fileSize)
+				{
+					end = fileSize;
+					cout << "WARNING:" << endl;
+					cout << "Region end sample behind EOF!" << endl;
+					cout << "Setting region end sample to EOF." << endl;
+				}
+
 				featureNetwork->updctrl(src->getType() + "/src/mrs_natural/pos", start);
 				//featureNetwork->updctrl(src->getType() + "/src/mrs_natural/inSamples", hopSize); //[?]
 				//featureNetwork->updctrl(src->getType() + "/src/mrs_natural/inSamples", tline.lineSize_);//[?]
@@ -932,9 +950,12 @@ void bextract_train(vector<Collection> cls,
 				mrs_natural numWindows = 0;
 				while(featureNetwork->getctrl(src->getType() + "/src/mrs_natural/pos")->to<mrs_natural>() + winSize <= end)
 				{
+					//cout << "pos = " << featureNetwork->getctrl(src->getType() + "/src/mrs_natural/pos")->to<mrs_natural>() << endl;
 					featureNetwork->tick();
 					numWindows++;
+					cout << '.';
 				}
+				cout << endl;
 
 				mrs_natural lastpos = featureNetwork->getctrl(src->getType() + "/src/mrs_natural/pos")->to<mrs_natural>();
 				if((end - lastpos) > 0)

@@ -897,7 +897,7 @@ MarSystem::controlUpdate(MarControlPtr ctrl)
 		}
 	}
 	
-	if(isComposite_)
+	if(isComposite_ && marsystemsSize_ > 0)
 	{
 		string cname = ctrl->getName();
 		// (should find a way to avoid this hard-coded check...) [!]
@@ -1103,27 +1103,29 @@ const MarSystem::recvControls()
 ostream&
 MarSystem::put(ostream &o) 
 {
-	o << "# MarSystem" << endl;
+	if(isComposite_)
+	{
+		o << "# MarSystemComposite" << endl;
+	}
+	else
+	{
+		o << "# MarSystem" << endl;
+	}
 	o << "# Type = " << type_ << endl;
 	o << "# Name = " << name_ << endl;
 
 	o << endl;
-	o << controls_ << endl; //[!]
-
-	// SYNONYMS!!!
-// 	map<string,vector<string> >::iterator mi;
-// 	o << "# Number of links = " << synonyms_.size() << endl;
-// 
-// 	for (mi = synonyms_.begin(); mi != synonyms_.end(); ++mi)
-// 	{
-// 		vector<string> syns = mi->second;
-// 		vector<string>::iterator vi;
-// 		o << "# Synonyms of " << prefix_ + mi->first << " = " << endl;
-// 		o << "# Number of synonyms = " << syns.size() << endl;
-// 
-// 		for (vi = syns.begin(); vi != syns.end(); ++vi) 
-// 			o << "# " << prefix_ + (*vi) << endl;
-// 	}
+	o << "# MarControls = " << controls_.size() << endl;
+	for (ctrlIter_=controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
+	{
+		o << "# " << ctrlIter_->first << " = " << ctrlIter_->second << endl;
+		std::vector<MarControlPtr> links = ctrlIter_->second->getLinks();
+		o << "# Links = " << links.size() << endl;
+		for (size_t i=0; i<links.size(); i++)
+		{
+			o << "# " << links[i]->getMarSystem()->getAbsPath() << links[i]->getName() << endl;
+		}
+	}
 
 	if(isComposite_)
 	{
@@ -1179,7 +1181,7 @@ Marsyas::operator>> (istream& is, MarSystem& msys)
 		is >> cname;
 
 		string ctype;
-		ctype = cname.substr(cname.rfind("/", cname.length())+1, cname.length());
+		ctype = cname.substr(0, cname.rfind("/", cname.length()));
 
 		iter = msys.controls_.find(cname);
 
@@ -1235,6 +1237,26 @@ Marsyas::operator>> (istream& is, MarSystem& msys)
 				msys.addControl(cname, ctrl);//deadlocks if using mutexes for object "c"![!]
 			else
 				msys.updControl(cname, ctrl);//deadlocks if using mutexes for object "c"![!]
+		}
+
+		// read links
+		int nLinks;
+		string linkto;
+		is >> skipstr >> skipstr >> skipstr;
+		is >> nLinks;
+		
+		//clean all links
+		map<string,MarControlPtr> controls = msys.getControls();
+		map<string,MarControlPtr>::iterator it;
+		for (it = controls.begin(); it != controls.end(); ++it)
+		{
+			it->second->getLinks().clear();
+		}
+
+		for (int i=0; i<nLinks; i++)
+		{
+			is >> skipstr >> linkto;
+			msys.linkControl(cname, linkto);
 		}
 	}
 	return is;

@@ -143,7 +143,7 @@ Shredder::updControl(std::string cname, MarControlPtr newcontrol, bool upd)
 			//if there is at least a child MarSystem in this composite...
 			if (marsystemsSize_ > 0)
 			{
-				if(!marsystems_[0]->updctrl(cname, control, upd))
+				if(!marsystems_[0]->updctrl(cname, newcontrol, upd))
 					return false;//some error occurred in updctrl()
 				if(upd && marsystems_[0]->hasControlState(cname))
 					update();
