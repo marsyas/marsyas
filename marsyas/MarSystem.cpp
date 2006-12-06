@@ -88,17 +88,6 @@ MarSystem::MarSystem(const MarSystem& a)
 
 	MATLABscript_ = a.MATLABscript_;
 
-	//clone children (if any)
-	isComposite_ = a.isComposite_;
-	marsystemsSize_ = 0;
-	if(isComposite_)
-	{
-		for (mrs_natural i=0; i< a.marsystemsSize_; i++)
-		{
-			addMarSystem((*a.marsystems_[i]).clone());
-		}
-	}
-
 	//clone controls
 	{
 		#ifdef MARSYAS_QT
@@ -110,19 +99,9 @@ MarSystem::MarSystem(const MarSystem& a)
 		for(ctrlIter_ = a.controls_.begin(); ctrlIter_ != a.controls_.end(); ++ctrlIter_)
 		{
 			//clone all controls
-			controls_[ctrlIter_->first] = ctrlIter_->second->clone();
-			
+			controls_[ctrlIter_->first] = ctrlIter_->second->clone();		
 			//set new MarSystem parent
 			controls_[ctrlIter_->first]->setMarSystem(this);
-			
-			//get original links...
-			vector<MarControlPtr> protolinks = ctrlIter_->second->getLinks();
-			//... and re-establish links between the new cloned controls
-			vector<MarControlPtr>::const_iterator ci;
-			for (ci = protolinks.begin(); ci != protolinks.end(); ++ci)
-			{
-				controls_[ctrlIter_->first]->linkTo(this->getctrl((*ci)->getName()));
-			}
 		}
 	}
 
@@ -138,6 +117,35 @@ MarSystem::MarSystem(const MarSystem& a)
 	ctrl_debug_ = getctrl("mrs_bool/debug"); 
 	ctrl_mute_ = getctrl("mrs_bool/mute");
 	ctrl_active_ = getctrl("mrs_bool/active");
+
+	//clone children (if any)
+	isComposite_ = a.isComposite_;
+	marsystemsSize_ = 0;
+	if(isComposite_)
+	{
+		for (mrs_natural i=0; i< a.marsystemsSize_; i++)
+		{
+			addMarSystem((*a.marsystems_[i]).clone());
+		}
+	}
+
+	// "re-link" controls
+	for(ctrlIter_ = a.controls_.begin(); ctrlIter_ != a.controls_.end(); ++ctrlIter_)
+	{
+		// get original links...
+		vector<MarControlPtr> protolinks = ctrlIter_->second->getLinks();
+		//... and re-establish links between the new cloned controls
+		vector<MarControlPtr>::const_iterator ci;
+		for (ci = protolinks.begin(); ci != protolinks.end(); ++ci)
+		{
+			controls_[ctrlIter_->first]->getLinks().clear(); // clear clone's links table
+			MarControlPtr ctrl = this->getControl((*ci)->getMarSystem()->getAbsPath() + (*ci)->getName(), true);
+			if (!ctrl.isInvalid())
+			{
+				controls_[ctrlIter_->first]->linkTo(ctrl);
+			}
+		}
+	}
 
 	//recreate schedule objects
 	scheduler_.removeAll();
@@ -347,6 +355,14 @@ MarSystem::setName(string name)
 	string uppath = absPath_.substr(0, pos);
 	string downpath = absPath_.substr(oldPrefix.length()+pos, absPath_.length()-(oldPrefix.length()+pos));
 	absPath_ = uppath + prefix_ + downpath;
+
+	if (isComposite_)
+	{
+		for (int i=0; i<marsystemsSize_; i++)
+		{
+			marsystems_[i]->updatePath();
+		}
+	}
 }
 
 void
@@ -360,10 +376,18 @@ MarSystem::setType(string type)
 	type_ = type;
 
 	//update path accordingly
-	string::size_type pos = absPath_.find(oldPrefix, 0);
+	string::size_type pos = absPath_.find_last_of(oldPrefix, 0);
 	string uppath = absPath_.substr(0, pos);
 	string downpath = absPath_.substr(oldPrefix.length()+pos, absPath_.length()-(oldPrefix.length()+pos));
 	absPath_ = uppath + prefix_ + downpath;
+
+	if (isComposite_)
+	{
+		for (int i=0; i<marsystemsSize_; i++)
+		{
+			marsystems_[i]->updatePath();
+		}
+	}
 }
 
 string 
@@ -388,6 +412,19 @@ string
 MarSystem::getAbsPath() const
 {
 	return absPath_;
+}
+
+void
+MarSystem::updatePath()
+{
+	if (parent_)
+	{
+		absPath_ = parent_->getAbsPath() + type_ + '/' + name_ + '/';
+	}
+	else
+	{
+		absPath_ = prefix_;
+	}
 }
 
 void 
@@ -637,7 +674,7 @@ MarSystem::linkControl(string cname1, string cname2)
 	// to add it to this MarSystem
 	if(ctrl1.isInvalid())
 	{
-		if(!addControl(cname1, localPath, ctrl1))
+		if(!addControl(localPath, ctrl2->clone(), ctrl1))
 			return false; //some error occurred...
 	}
 
@@ -665,7 +702,7 @@ MarSystem::getControl(string cname, bool searchParent, MarSystem* excludedFromSe
 		{
 			//just remove the path and look for it internally
 			//or among children
-			cname = cname.substr(0, absPath_.length());
+			cname = cname.substr(absPath_.length(), cname.length());
 		}
 		//not a control from this MarSystem or its children
 		//If allowed, ask parent for searching for it on the 
@@ -829,7 +866,7 @@ MarSystem::updControl(string cname, MarControlPtr newcontrol, bool upd)
 			//if there is at least a child MarSystem in this composite...
 			if (marsystemsSize_ > 0)
 			{
-				if(!marsystems_[0]->updctrl(cname, control, upd))
+				if(!marsystems_[0]->updctrl(cname, newcontrol, upd))
 					return false;//some error occurred in updctrl()
 				if(upd && marsystems_[0]->hasControlState(cname))
 					update();
@@ -924,7 +961,7 @@ MarSystem::addControl(string cname, MarControlPtr v)
 
 	//check  there is not a control with the same type/name already
 	//if(!this->getControl(cname).isInvalid())
-	if(this->hasControl(cname))
+	if(this->hasControlLocal(cname))
 	{
 		MRSWARN("MarSystem::addControl: control already exists (" + cname + ")");
 		return false;

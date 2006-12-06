@@ -175,7 +175,9 @@ public:
 	// for link controls
 	bool isLinked() const { return isLinked_; }
 	bool linkTo(MarControlPtr ctrl);
-	const std::vector<MarControlPtr>& getLinks() const { return linkedTo_; }
+	std::vector<MarControlPtr>& getLinks() { return linkedTo_; }
+	void clearLinks();
+	void removeLink(MarControlPtr link);
 
 	//////////////////////////////////////////////////////////////////////////
 	// helper functions for basic types
@@ -420,7 +422,7 @@ MarControl::to() const
 #ifdef MARSYAS_QT
 	QReadLocker locker(&rwLock_);
 #endif 
-	const MarControlValueT<T> *ptr = dynamic_cast<const MarControlValueT<T>*>(value_);
+		const MarControlValueT<T> *ptr = dynamic_cast<const MarControlValueT<T>*>(value_);
 	if(ptr)
 	{
 		return ptr->get();
@@ -698,7 +700,7 @@ MarControl::setValue(MarControlPtr mc, bool update)
 		return false;
 	}
 
-	if (*this == mc)
+	if (MarControlPtr(this) == mc)
 	{
 #ifdef MARSYAS_QT
 		rwLock_.unlock();

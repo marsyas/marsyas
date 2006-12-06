@@ -186,6 +186,7 @@ public:
   std::string getName() const;
   std::string getPrefix() const;
 	std::string getAbsPath() const;
+	void updatePath();
 
 	// link controls
 	bool linkControl(std::string cname1, std::string cname2);

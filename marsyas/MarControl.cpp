@@ -181,6 +181,31 @@ MarControl::linkTo(MarControlPtr ctrl)
 	return true;
 }
 
+void
+MarControl::clearLinks()
+{
+	for (int i=0; i<linkedTo_.size(); i++)
+	{
+		linkedTo_[i]->removeLink(this);
+	}
+	linkedTo_.clear();
+}
+
+void
+MarControl::removeLink(MarControlPtr link)
+{
+	std::vector<MarControlPtr> temp;
+	for (int i=0; i<linkedTo_.size(); i++)
+	{
+		if (linkedTo_[i]() != link()) // same pointer?
+		{
+			temp.push_back(linkedTo_[i]);
+		}
+	}
+	linkedTo_=temp;
+}
+
+
 #ifdef MARSYAS_QT
 void
 MarControl::emitControlChanged(MarControl* control)
