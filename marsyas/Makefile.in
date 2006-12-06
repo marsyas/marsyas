@@ -101,24 +101,24 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	Color.$(OBJEXT) Communicator.$(OBJEXT) Server.$(OBJEXT) \
 	AbsMax.$(OBJEXT) FullWaveRectifier.$(OBJEXT) Norm.$(OBJEXT) \
 	DownSampler.$(OBJEXT) WaveletBands.$(OBJEXT) Sum.$(OBJEXT) \
-	PeakPeriods2BPM.$(OBJEXT) Histogram.$(OBJEXT) \
-	BeatHistoFeatures.$(OBJEXT) MslModel.$(OBJEXT) \
-	CommandLineOptions.$(OBJEXT) RawFileSource.$(OBJEXT) \
-	FM.$(OBJEXT) ANN_node.$(OBJEXT) Annotator.$(OBJEXT) \
-	Summary.$(OBJEXT) ZeroRClassifier.$(OBJEXT) \
-	KNNClassifier.$(OBJEXT) Filter.$(OBJEXT) Kurtosis.$(OBJEXT) \
-	Skewness.$(OBJEXT) AMDF.$(OBJEXT) SMO.$(OBJEXT) SOM.$(OBJEXT) \
-	LPC.$(OBJEXT) LPCwarped.$(OBJEXT) LPCResyn.$(OBJEXT) \
-	LSP.$(OBJEXT) LPCC.$(OBJEXT) ERB.$(OBJEXT) \
-	CollectionFileSource.$(OBJEXT) MeddisHairCell.$(OBJEXT) \
-	ViconFileSource.$(OBJEXT) Cascade.$(OBJEXT) Parallel.$(OBJEXT) \
-	SeneffEar.$(OBJEXT) MP3FileSource.$(OBJEXT) \
-	OggFileSource.$(OBJEXT) ClassOutputSink.$(OBJEXT) \
-	ClipAudioRange.$(OBJEXT) SilenceRemove.$(OBJEXT) \
-	RtMidi.$(OBJEXT) Stk.$(OBJEXT) Limiter.$(OBJEXT) \
-	NoiseSource.$(OBJEXT) CompExp.$(OBJEXT) NoiseGate.$(OBJEXT) \
-	Plucked.$(OBJEXT) ADSR.$(OBJEXT) Envelope.$(OBJEXT) \
-	Delay.$(OBJEXT) NormMaxMin.$(OBJEXT) \
+	Product.$(OBJEXT) PeakPeriods2BPM.$(OBJEXT) \
+	Histogram.$(OBJEXT) BeatHistoFeatures.$(OBJEXT) \
+	MslModel.$(OBJEXT) CommandLineOptions.$(OBJEXT) \
+	RawFileSource.$(OBJEXT) FM.$(OBJEXT) ANN_node.$(OBJEXT) \
+	Annotator.$(OBJEXT) Summary.$(OBJEXT) \
+	ZeroRClassifier.$(OBJEXT) KNNClassifier.$(OBJEXT) \
+	Filter.$(OBJEXT) Kurtosis.$(OBJEXT) Skewness.$(OBJEXT) \
+	AMDF.$(OBJEXT) SMO.$(OBJEXT) SOM.$(OBJEXT) LPC.$(OBJEXT) \
+	LPCwarped.$(OBJEXT) LPCResyn.$(OBJEXT) LSP.$(OBJEXT) \
+	LPCC.$(OBJEXT) ERB.$(OBJEXT) CollectionFileSource.$(OBJEXT) \
+	MeddisHairCell.$(OBJEXT) ViconFileSource.$(OBJEXT) \
+	Cascade.$(OBJEXT) Parallel.$(OBJEXT) SeneffEar.$(OBJEXT) \
+	MP3FileSource.$(OBJEXT) OggFileSource.$(OBJEXT) \
+	ClassOutputSink.$(OBJEXT) ClipAudioRange.$(OBJEXT) \
+	SilenceRemove.$(OBJEXT) RtMidi.$(OBJEXT) Stk.$(OBJEXT) \
+	Limiter.$(OBJEXT) NoiseSource.$(OBJEXT) CompExp.$(OBJEXT) \
+	NoiseGate.$(OBJEXT) Plucked.$(OBJEXT) ADSR.$(OBJEXT) \
+	Envelope.$(OBJEXT) Delay.$(OBJEXT) NormMaxMin.$(OBJEXT) \
 	HarmonicEnhancer.$(OBJEXT) Reassign.$(OBJEXT) \
 	Normalize.$(OBJEXT) WekaSource.$(OBJEXT) \
 	RealvecSource.$(OBJEXT) MemorySource.$(OBJEXT) \
@@ -208,8 +208,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Peaker.Po ./$(DEPDIR)/Peaker1.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PlotSink.Po ./$(DEPDIR)/Plucked.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PowerSpectrum.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/PvConvert.Po ./$(DEPDIR)/PvConvolve.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/PvFold.Po ./$(DEPDIR)/PvOscBank.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Product.Po ./$(DEPDIR)/PvConvert.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/PvConvolve.Po ./$(DEPDIR)/PvFold.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/PvOscBank.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PvOverlapadd.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PvUnconvert.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RawFileSource.Po \
@@ -390,7 +391,7 @@ WaveletPyramid.h WaveletStep.h Daub4.h OnePole.h RtAudio.h RtError.h Accumulator
 NetworkSocket.h NetworkTCPSource.h NetworkTCPSink.h NetworkUDPSource.h NetworkUDPSink.h Messager.h \
 SocketException.h Talk.h \
 TimeLine.h Color.h Communicator.h Server.h AbsMax.h FullWaveRectifier.h \
-Norm.h DownSampler.h WaveletBands.h Sum.h \
+Norm.h DownSampler.h WaveletBands.h Sum.h Product.h\
 PeakPeriods2BPM.h Histogram.h BeatHistoFeatures.h MslModel.h \
 CommandLineOptions.h RawFileSource.h FM.h \
 ANN_node.h Annotator.h ZeroRClassifier.h Summary.h KNNClassifier.h Filter.h \
@@ -424,7 +425,7 @@ WaveletPyramid.cpp WaveletStep.cpp Daub4.cpp OnePole.cpp RtAudio.cpp Accumulator
 NetworkSocket.cpp NetworkTCPSource.cpp NetworkTCPSink.cpp NetworkUDPSource.cpp NetworkUDPSink.cpp Messager.cpp \
 Talk.cpp \
 TimeLine.cpp Color.cpp Communicator.cpp Server.cpp AbsMax.cpp FullWaveRectifier.cpp \
-Norm.cpp DownSampler.cpp WaveletBands.cpp Sum.cpp \
+Norm.cpp DownSampler.cpp WaveletBands.cpp Sum.cpp Product.cpp\
 PeakPeriods2BPM.cpp Histogram.cpp BeatHistoFeatures.cpp MslModel.cpp \
 CommandLineOptions.cpp RawFileSource.cpp FM.cpp \
 ANN_node.cpp Annotator.cpp Summary.cpp ZeroRClassifier.cpp KNNClassifier.cpp Filter.cpp \
@@ -631,6 +632,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PlotSink.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Plucked.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PowerSpectrum.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Product.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PvConvert.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PvConvolve.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PvFold.Po@am__quote@
