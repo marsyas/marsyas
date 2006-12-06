@@ -65,8 +65,8 @@ Windowing::myUpdate()
     setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
     setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
+    // needed?
     setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));  
-    mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
 
     mrs_real variance = getctrl("mrs_real/variance")->toReal();
 
@@ -76,14 +76,14 @@ Windowing::myUpdate()
         setctrl("mrs_natural/onSamples", size);
     }
 
-    tmp_.create(inSamples);
-    envelope_.create(inSamples);
+    tmp_.create(inSamples_);
+    envelope_.create(inSamples_);
 
     string type = getctrl("mrs_string/type")->toString();
     // should be boolean [!]
     mrs_natural zeroPhase = getctrl("mrs_natural/zeroPhasing")->toNatural();
     if(zeroPhase == 1)
-        delta_ = inSamples/2+1;
+        delta_ = inSamples_/2+1;
     else
         delta_=0;
 
@@ -94,9 +94,9 @@ Windowing::myUpdate()
             mrs_real A = (mrs_real)0.54;
             mrs_real B = (mrs_real)0.46;
 
-            for (t=0; t < inSamples; t++)
+            for (t=0; t < inSamples_; t++)
             {
-                temp = 2*PI*t / (inSamples-1);
+                temp = 2*PI*t / (inSamples_-1);
                 envelope_(t) = A - B * cos(temp);
             }
     }
@@ -107,44 +107,61 @@ Windowing::myUpdate()
             mrs_real A = (mrs_real)0.5;
             mrs_real B = (mrs_real)0.5;
 
-            for (t=0; t < inSamples; t++)
+            for (t=0; t < inSamples_; t++)
             {
-                temp = 2*PI*t / (inSamples-1);
+                temp = 2*PI*t / (inSamples_-1);
                 envelope_(t) = A - B * cos(temp);
             }
         }
         
         if (type == "Triangle")
         {
-            for (t=0; t < inSamples;t++)
+            for (t=0; t < inSamples_;t++)
             {
-                temp = abs( t - (inSamples-1)/2 );
-                temp = inSamples /2 - temp;
-                envelope_(t) = 2/inSamples * temp;
+                temp = abs( t - (inSamples_-1)/2 );
+                temp = inSamples_ /2 - temp;
+                envelope_(t) = 2/inSamples_ * temp;
             }
         }
        
         // zero padded triangle function
         if (type == "Bartlett")
         {
-            for (t=0;t<inSamples;t++)
+            for (t=0;t<inSamples_;t++)
             {
-                temp = abs(t - (inSamples-1)/2);
-                temp  = (inSamples -1 )/2 - temp;
-                envelope_(t) = 2 / (inSamples-1) * temp;
+                temp = abs(t - (inSamples_-1)/2);
+                temp  = (inSamples_ -1 )/2 - temp;
+                envelope_(t) = 2 / (inSamples_-1) * temp;
             }
         }
 
         if (type == "Gaussian")
         {
-            for (t=0;t< inSamples; t++)
+            for (t=0;t< inSamples_; t++)
             {
-                temp = ( t - (inSamples-1)/2 ) / ( variance*(inSamples-1)/2 );
+                temp = ( t - (inSamples_-1)/2 ) / ( variance*(inSamples_-1)/2 );
                 temp = temp * temp;
                 envelope_(t) = exp(-0.5*temp);
             }
         }
         
+
+        if (type == "Blackman"){
+            
+            for (t=0;t<inSamples_;t++){
+                temp = (PI * t) / inSamples_ -1 ;
+                envelope_(t) = 0.42 - 0.5*cos(2*temp) + 0.08*cos(4*temp);
+            }
+        }
+        
+        if (type == "Blackman-Harris"){
+            
+            for (t=0;t<inSamples_;t++){
+                temp = (PI * t) / inSamples_ -1 ;
+                envelope_(t) = 0.35875 - 0.48829*cos(2*temp) + 0.14128*cos(4*temp) - 0.01168*cos(6*temp);
+            }
+        }
+
     }
 
     // not currently used
