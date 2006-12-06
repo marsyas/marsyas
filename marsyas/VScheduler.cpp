@@ -35,31 +35,90 @@ VScheduler::VScheduler() {
     schedulers_count=0;
 }
 VScheduler::~VScheduler() { removeAll(); }
-void VScheduler::tick() {
-  for (int i=0;i<schedulers_count;i++) { schedulers[i]->tick(); }
+void VScheduler::tick()
+{
+    for (int i=0;i<schedulers_count;i++) { schedulers[i]->tick(); }
 }
-bool VScheduler::eventPending() {
-  for (int i=0;i<schedulers_count;i++) {
-    if (schedulers[i]->eventPending()) { return true; }
-  }
-  return false;
+bool VScheduler::eventPending()
+{
+    for (int i=0;i<schedulers_count;i++) {
+        if (schedulers[i]->eventPending()) { return true; }
+    }
+    return false;
 }
 
 void VScheduler::addTimer(TmTimer* t) {
-    if (t == NULL) 
-	    return; 
+    if (t == NULL) return;
     // look for schedulers with same name to ensure only one of each name
-    for (int i=0;i<schedulers_count;i++) {
-        if (schedulers[i]->getTimerName()==t->getName()) { return; }
+    if (findScheduler(t->getPrefix())!=NULL)
+        MRSWARN("VScheduler::addTimer(TmTimer)  refusing to add timer with name already in use");
+    appendScheduler(new Scheduler(t));
+}
+void
+VScheduler::addTimer(string class_name, string given_name)
+{
+    // look for schedulers with same name to ensure only one of each name
+    if (findScheduler(class_name+"/"+given_name)!=NULL)
+        MRSWARN("VScheduler::addTimer(string,string)  refusing to add timer with name already in use");
+    appendScheduler(new Scheduler(class_name,given_name));
+}
+
+void
+VScheduler::split_cname(std::string cname, std::string* head, std::string* tail)
+{
+    bool second=false;
+    for (unsigned int i=0;i<cname.length();i++) {
+        if (cname[i]=='/') {
+            if (!second) {
+//                scheduler_type = cname.substr(0,i);
+                second=true;
+            } else {
+                *head = cname.substr(0,i);
+                *tail = cname.substr(i+1,cname.length());
+                break;
+            }
+        }
     }
+}
+
+void
+VScheduler::updtimer(std::string cname, TmControlValue value)
+{
+    string timer_ident="";
+    string timer_control="";
+    split_cname(cname,&timer_ident,&timer_control);
+    Scheduler* s = findScheduler(timer_ident);
+    if (s==NULL) {
+        MRSWARN("VScheduler::updtimer(std::string,TmControlValue)  no timer: "+timer_ident);
+    } else {
+        s->updtimer(timer_control,value);
+    }
+}
+
+void
+VScheduler::appendScheduler(Scheduler* s)
+{
     schedulers = (Scheduler**)realloc(schedulers,sizeof(Scheduler*)*(schedulers_count+1));
-    schedulers[schedulers_count] = new Scheduler(t);
+    schedulers[schedulers_count] = s;
     schedulers_count = schedulers_count + 1;
 }
 
-bool VScheduler::removeTimer(string name) {
+Scheduler*
+VScheduler::findScheduler(std::string name)
+{
+    for (int i=0;i<schedulers_count;i++) {
+        Scheduler* s = schedulers[i];
+        if (s->getPrefix()==name) {
+            return s;
+        }
+    }
+    return NULL;
+}
+
+bool VScheduler::removeTimer(string name)
+{
     for (int i=0; i<schedulers_count;i++) {
-        if (schedulers[i]->getTimerName()==name) {
+        if (schedulers[i]->getPrefix()==name) {
             delete(schedulers[i]);
             for (int j=i+1;j<schedulers_count;j++) {
                 schedulers[j-1]=schedulers[j];
@@ -71,21 +130,21 @@ bool VScheduler::removeTimer(string name) {
     }
     return false;
 }
-void VScheduler::removeAll() {
-  if (schedulers_count>0) {
-    for (int i=0;i<schedulers_count;i++) { delete schedulers[i]; }
-    free(schedulers);
-  }
+void VScheduler::removeAll()
+{
+    if (schedulers_count>0) {
+        for (int i=0;i<schedulers_count;i++) { delete schedulers[i]; }
+        free(schedulers);
+        schedulers=NULL;
+        schedulers_count=0;
+    }
 }
 void
 VScheduler::post(string time, string tmname, Repeat r, MarEvent* me)
 {
-    for (int i=0;i<schedulers_count;i++) {
-        if (schedulers[i]->getTimerName()==tmname) {
-            schedulers[i]->post(time,r,me);
-            return;
-        }
-    }
+    Scheduler* s = findScheduler(tmname);
+    if (s!=NULL) s->post(time,r,me);
+    else MRSWARN("VScheduler::post(string,string,Repeat,MarEvent*)  unknown timer name: "+tmname);
 }
 void
 VScheduler::post(TmTime t, Repeat r, MarEvent* me)
@@ -108,6 +167,12 @@ void VScheduler::post(ScheduledEvent* e) {
     if (schedulers[0]!=NULL) {
         schedulers[0]->post(e);
     }
+}
+mrs_natural VScheduler::getTime(std::string timer) {
+    Scheduler* s = findScheduler(timer);
+    if (s!=NULL) return s->getTime();
+    MRSWARN("VScheduler::getTime(string)  unknown timer '"+timer+"'");
+    return 0;
 }
 
 //ostream&

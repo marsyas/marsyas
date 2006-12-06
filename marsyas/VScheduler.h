@@ -32,7 +32,7 @@
 #include "ScheduledEvent.h"
 #include "TmTime.h"
 #include "Scheduler.h"
-
+#include "TmControlValue.h"
 #include <string> 
 
 namespace Marsyas
@@ -62,9 +62,15 @@ public:
     bool eventPending();
 
     void addTimer(TmTimer* t);
+    void addTimer(std::string class_name, std::string identifier);
+    void updtimer(std::string cname, TmControlValue value);
+    static void split_cname(std::string cname, std::string* head, std::string* tail);
     bool removeTimer(std::string name);
     void removeAll();
-
+private:
+    void appendScheduler(Scheduler* s);
+    Scheduler* findScheduler(std::string name);
+public:
     // post to default timer
     void post(std::string event_time, Repeat rep, MarEvent* me);
     void post(std::string event_time, MarEvent* me);
@@ -73,6 +79,8 @@ public:
     // post to user defined timer
     void post(TmTime t, Repeat r, MarEvent* me);
     void post(std::string time, std::string timer_name, Repeat r, MarEvent* me);
+
+    mrs_natural getTime(std::string timer);
 
     // the usual stream IO 
 //    friend ostream& operator<<(ostream&, Scheduler&);

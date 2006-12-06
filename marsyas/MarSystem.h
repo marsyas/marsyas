@@ -35,14 +35,15 @@ extractors like Spectral Centroid.
 #include "common.h"
 #include "MarControl.h"
 #include "realvec.h"
+#include "Conversions.h"
+
 #include "TmSampleCount.h" 
 #include "EvValUpd.h" 
 #include "EvExpUpd.h"
 #include "MarEvent.h"
 #include "TmTime.h"
-#include "Conversions.h"
-//#include "Scheduler.h"
 #include "VScheduler.h"
+#include "TmControlValue.h"
 
 #include <vector>
 #include <iostream>
@@ -258,6 +259,12 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	// MarEvent methods
 	//////////////////////////////////////////////////////////////////////////
+	mrs_natural getTime(std::string timer_name);
+	void updtimer(std::string cname, TmControlValue value);
+	void addTimer(std::string class_name, std::string identifier);
+	void addTimer(TmTimer* t);
+	void removeTimer(std::string name);
+
 	void updctrl(MarEvent* me);
 	//void updctrl(std::string time, MarEvent* ev); //clashes with void upctrl(std::string cname, 0);
 	void updctrl(std::string time, Repeat rep, MarEvent* ev);
@@ -269,9 +276,6 @@ public:
 	void updctrl(TmTime t, Repeat rep, MarEvent* ev);
 	void updctrl(TmTime t, std::string cname, MarControlPtr control);
 	void updctrl(TmTime t, Repeat rep, std::string cname, MarControlPtr control);
-
-	void addTimer(TmTimer* t);
-	void removeTimer(std::string name);
 	//////////////////////////////////////////////////////////////////////////
 	
 #ifdef MARSYAS_QT

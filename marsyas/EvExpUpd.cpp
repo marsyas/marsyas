@@ -29,16 +29,24 @@
 using namespace std;
 using namespace Marsyas;
 
-EvExpUpd::EvExpUpd(string cname, string expr) { exp_list=NULL; set(NULL,cname,expr); }
-EvExpUpd::EvExpUpd(MarSystem* target, string cname, string expr) { 
-    exp_list=NULL; set(target,cname,expr);
+EvExpUpd::EvExpUpd(string cname, string expr) : MarEvent("EvExpUpd","ExpUpd")
+{
+    exp_list=NULL;
+    set(NULL,cname,expr);
 }
-EvExpUpd::EvExpUpd(EvExpUpd& e) {
+EvExpUpd::EvExpUpd(MarSystem* target, string cname, string expr) : MarEvent("EvExpUpd","ExpUpd")
+{
+    exp_list=NULL;
+    set(target,cname,expr);
+}
+EvExpUpd::EvExpUpd(EvExpUpd& e) : MarEvent("EvExpUpd","ExpUpd")
+{
     if (e.exp_list!=NULL) { exp_list=e.exp_list; e.exp_list->usage_count++; }
     else { setExpr(e.expression_); }
 }
 
-EvExpUpd::~EvExpUpd() {
+EvExpUpd::~EvExpUpd()
+{
     if (exp_list!=NULL) { clear_expr_list(exp_list); }
 }
 
@@ -64,11 +72,15 @@ void EvExpUpd::setExpr(string expr) {
 }
 
 void EvExpUpd::setTarget(MarSystem* ms) { target_=ms; }
-void EvExpUpd::set(MarSystem* ms, string cname, string expr) {
-    target_=ms; cname_=cname; setExpr(expr); event_type_="blah";
+void EvExpUpd::set(MarSystem* ms, string cname, string expr)
+{
+    target_=ms;
+    cname_=cname;
+    setExpr(expr);
 }
 
-void EvExpUpd::dispatch() {
+void EvExpUpd::dispatch()
+{
     // don't dispatch if no MarSystem or the expression failed
     if (target_ !=NULL && !fail) {
         Val v = eval(&fail,target_,exp_tree);

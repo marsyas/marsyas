@@ -28,63 +28,84 @@
 // and allow calling calling of get in samples from parent 
 #include "MarSystem.h"
 #include "TmGetTime.h"
-
+///A NEXT LINE ADDED
+#include "SchedulerManager.h"
 using namespace std;
 using namespace Marsyas;
 
 
-Scheduler::Scheduler() {
-    name_ = "SchedulerInterface";
-    type_ = "Scheduler";
+Scheduler::Scheduler()
+{
     timer=NULL;
-    setTimer(new TmGetTime(this));
+    setTimer(new TmSampleCount());
 }
-Scheduler::Scheduler(TmTimer* t) {
-    name_ = "SchedulerInterface";
-    type_ = "Scheduler";
+Scheduler::Scheduler(TmTimer* t)
+{
     timer=NULL;
     setTimer(t->clone());
 }
-Scheduler::Scheduler(string name) {
-    type_ = "Scheduler";
-    name_ = name;
-    timer=NULL;
-    setTimer(new TmGetTime(this));
+Scheduler::Scheduler(std::string class_name, std::string identifier)
+{
+    timer = NULL;
+    setTimer(SchedulerManager::makeTimer(class_name,identifier));
 }
-Scheduler::Scheduler(const Scheduler& s) {
+Scheduler::Scheduler(const Scheduler& s)
+{
     timer=NULL;
     setTimer(s.timer->clone());
-    setName(s.name_);
 }
-Scheduler::~Scheduler() {
+Scheduler::~Scheduler()
+{
     if (timer != NULL) { delete(timer); }
 }
-void Scheduler::copy(const Scheduler& s) {
+void Scheduler::copy(const Scheduler& s)
+{
+    timer=NULL;
     setTimer(s.timer->clone());
-    setName(s.name_);
 }
-
-void Scheduler::setName(string name) { name_ = name; }
 string Scheduler::getType() { return type_; }
 string Scheduler::getName() { return name_; }
-string Scheduler::getTimerName() { return timer->getName(); }
-string Scheduler::getPrefix() {
-    string prefix = type_ + "/" + name_ + "/";
-    return prefix;
+//string Scheduler::getTimerName() { return timer->getName(); }
+string Scheduler::getPrefix() { return type_ + "/" + name_; }
+
+void Scheduler::setTimer(TmTimer* c)
+{
+    if (c==NULL) {
+        MRSWARN("Scheduler::setTimer(TmTimer*)  refusing to set timer to NULL");
+    } else {
+        if (timer != NULL) { delete(timer); }
+        timer=c;
+        timer->setScheduler(this);
+        name_=timer->getName();
+        type_=timer->getType();
+    }
 }
-void Scheduler::setTimer(TmTimer* c) {
-    if (timer != NULL) { delete(timer); }
-    timer=c;
-    timer->setScheduler(this);
+void
+Scheduler::updtimer(std::string cname, TmControlValue value)
+{
+    string head="";
+    string tail="";
+    VScheduler::split_cname(cname,&head,&tail);
+    if (tail=="") timer->updtimer(cname,value);
+    else {
+        events_iter_ = events_.find(head);
+        if (events_iter_ != events_.end()) {
+            ScheduledEvent* se = events_[head];
+            MarEvent* me = se->getEvent();
+            me->updctrl(tail,value);
+        }
+    }
 }
 
 void Scheduler::tick() { timer->tick(); }
 
-bool Scheduler::eventPending() {
+bool Scheduler::eventPending()
+{
     return (!pq.empty() && pq.top()->getTime()<timer->getTime());
 }
 
-void Scheduler::dispatch() {
+void Scheduler::dispatch()
+{
     while (eventPending()) {
 // This is the old way when using the STL priority_queue
 //        ScheduledEvent* se = pq.top();
@@ -101,27 +122,39 @@ void Scheduler::dispatch() {
             se->doRepeat();
             post(se);
         } else {
+            // delete handle to event
+            MarEvent* m = se->getEvent();
+            events_iter_ = events_.find(m->getPrefix());
+            if (events_iter_ != events_.end()) { events_.erase(events_iter_); }
+            // delete event
             delete(se);
         }
     }
 }
 
-void Scheduler::post(string event_time, Repeat rep, MarEvent* me) {
+void Scheduler::post(string event_time, Repeat rep, MarEvent* me)
+{
     rep.count--;
     // should probably check if rep.count==0
     mrs_natural stime = timer->getTime() + timer->intervalsize(event_time);
     post(new ScheduledEvent(stime,rep,me));
 }
-
-void Scheduler::post(string event_time, MarEvent* me) {
+void Scheduler::post(string event_time, MarEvent* me)
+{
     mrs_natural stime = timer->getTime() + timer->intervalsize(event_time);
     post(new ScheduledEvent(stime,Repeat("", 0),me));
 }
 void
-Scheduler::post(ScheduledEvent* e) {
+Scheduler::post(ScheduledEvent* e)
+{
     e->setTimer(timer);
+    // add pointer to map
+    MarEvent* m = e->getEvent();
+    events_[m->getPrefix()] = e;
+    // add to heap
     pq.push(e);
 }
+mrs_natural Scheduler::getTime() { return timer->getTime(); }
 
 //ostream&
 //Marsyas::operator<< (ostream& o, Scheduler& sys) {

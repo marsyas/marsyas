@@ -19,6 +19,7 @@
 /**
    \class Scheduler
    \brief Scheduler schedules things
+   Modified: Neil Burroughs, Dec 4, 2006
 
 */
 
@@ -32,7 +33,7 @@
 #include "ScheduledEvent.h"
 #include "MarEvent.h"
 #include "TmTimer.h"
-
+#include "TmControlValue.h"
 #include <string>
 //#include <queue>
 //#include <functional> // for priority queue comparator
@@ -40,7 +41,7 @@
 
 
 #include "Heap.h"
-//#include <map> 
+#include <map> 
 
 namespace Marsyas
 {
@@ -53,11 +54,14 @@ protected:
 //    priority_queue<ScheduledEvent, vector<ScheduledEvent>, greater<ScheduledEvent> > pq; // this is supposed to be equivalent to ^^^
     Heap<ScheduledEvent, ScheduledEventComparator> pq;
     TmTimer* timer;
+    // map for events to allow modifying events while in the heap
+    std::map<std::string, ScheduledEvent*> events_;
+    std::map<std::string, ScheduledEvent*>::iterator events_iter_;
 
 public:
     // Constructors 
     Scheduler();
-    Scheduler(std::string name);
+    Scheduler(std::string class_name, std::string identifier);
     Scheduler(TmTimer* t);
     Scheduler(const Scheduler& s);
     virtual ~Scheduler();
@@ -66,16 +70,16 @@ public:
     void dispatch();
 
     // Naming methods 
-    void   setName(std::string name);
     std::string getType();
     std::string getName();
     std::string getPrefix();
-    std::string getTimerName();
 
     void setTimer(TmTimer* c);
+    void updtimer(std::string cname, TmControlValue value);
     void tick();
     void addScheduler(std::string name);
     bool eventPending();
+    mrs_natural getTime();
 
     void post(std::string event_time, Repeat rep, MarEvent* me);
     void post(std::string event_time, MarEvent* me);

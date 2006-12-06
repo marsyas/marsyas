@@ -25,6 +25,8 @@
 #ifndef MARSYAS_MAREVENT_H
 #define MARSYAS_MAREVENT_H
 
+#include "Repeat.h"
+#include "TmControlValue.h"
 #include <iostream>
 
 namespace Marsyas
@@ -34,20 +36,35 @@ class MarSystem; // forward declaration
 
 class MarEvent {
 protected:
-    std::string event_type_;
+    std::string type_;
+    std::string name_;
+
+    Repeat repeat_;
 
 public:
-  MarEvent();
-  
-  virtual ~MarEvent();
+    MarEvent();
+    MarEvent(std::string t, std::string n);
 
-    std::string getType() const;
+    virtual ~MarEvent();
+
+    std::string getType() const { return type_; }
+    std::string getName() const { return name_; }
+    std::string getPrefix() const { return type_ + "/" + name_; }
+    void setName(std::string n) { name_=n; }
 
     // Event dispatch
     virtual void dispatch()=0;
 
     // copy must be implemented for copying of ScheduledEvents
     virtual MarEvent* clone()=0;
+
+    virtual bool repeat() { return repeat_.repeat(); };
+    virtual void set_repeat(Repeat r) { repeat_=r; }
+    virtual std::string repeat_interval(std::string interval) { return interval; };
+    virtual std::string repeat_interval() { return repeat_.interval; };
+
+    virtual void updctrl(std::string cname, TmControlValue value);
+    bool checkupd(std::string c1, std::string c2, TmControlValue v, mrs_natural t);
 
     // the usual stream IO 
     friend std::ostream& operator<<(std::ostream&, MarEvent&);

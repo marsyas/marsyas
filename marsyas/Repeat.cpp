@@ -31,6 +31,8 @@ Repeat::Repeat(string time_interval) { set(true,time_interval,0); }
 Repeat::Repeat(string time_interval, mrs_natural rep_count) {
     set(false,time_interval,rep_count);
 }
+bool Repeat::repeat() { return infinite || count>0; }
+Repeat::~Repeat() { }
 void Repeat::set(bool inf, string time_interval, mrs_natural rep_count) {
     infinite=inf;
     interval=time_interval;

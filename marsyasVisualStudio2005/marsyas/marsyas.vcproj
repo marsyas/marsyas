@@ -760,6 +760,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\marsyas\SchedulerManager.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\marsyas\SeneffEar.cpp"
 				>
 			</File>
@@ -840,7 +844,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\marsyas\TimerFactory.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\marsyas\TimeStretch.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\TmControlValue.cpp"
 				>
 			</File>
 			<File
@@ -1454,6 +1466,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\marsyas\SchedulerManager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\marsyas\SeneffEar.h"
 				>
 			</File>
@@ -1550,7 +1566,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\marsyas\TimerFactory.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\marsyas\TimeStretch.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\TmControlValue.h"
 				>
 			</File>
 			<File

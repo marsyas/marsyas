@@ -30,10 +30,24 @@ using namespace Marsyas;
 MarEvent::MarEvent()
 {
 }
-
-
-MarEvent::~MarEvent() { }
-string MarEvent::getType() const { return event_type_; }
+MarEvent::MarEvent(std::string t, std::string n)
+{
+    name_=n;
+    type_=t;
+}
+MarEvent::~MarEvent()
+{
+}
+void
+MarEvent::updctrl(std::string cname, TmControlValue value)
+{
+    MRSWARN("MarEvent::updctrl(string,TmControlValue)  not supported by this event");
+}
+bool
+MarEvent::checkupd(std::string c1, std::string c2, TmControlValue v, mrs_natural t)
+{
+    return (c1==c2 && v.getType()==t);
+}
 /*
 ostream& Marsyas::operator<< (ostream& o, MarEvent& e) {
 //    sys.put(o);

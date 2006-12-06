@@ -30,6 +30,7 @@
 
 #include "MarControl.h"
 #include "MarEvent.h"
+#include "TmControlValue.h"
 
 namespace Marsyas
 {
@@ -58,6 +59,7 @@ public:
     void setValue(MarControlPtr value);
     void setTarget(MarSystem* ms);
     void set(MarSystem* ms, std::string cname, MarControlPtr);
+    void updctrl(std::string cname, TmControlValue value);
 
     // Event dispatch
     void dispatch();

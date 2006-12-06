@@ -28,13 +28,16 @@
 using namespace std;
 using namespace Marsyas;
 
-EvValUpd::EvValUpd(string cname, MarControlPtr val) {
-    event_type_ = "UpdateValue"; set(NULL,cname,val);
+EvValUpd::EvValUpd(string cname, MarControlPtr val) : MarEvent("EvValUpd","vu")
+{
+    set(NULL,cname,val);
 }
-EvValUpd::EvValUpd(MarSystem* ms, string cname, MarControlPtr val) {
-    event_type_ = "UpdateValue"; set(ms,cname,val);
+EvValUpd::EvValUpd(MarSystem* ms, string cname, MarControlPtr val) : MarEvent("EvValUpd","vu")
+{
+    set(ms,cname,val);
 }
-EvValUpd::EvValUpd(EvValUpd& e) {
+EvValUpd::EvValUpd(EvValUpd& e) : MarEvent("EvValUpd","vu")
+{
     set(e.target_,e.cname_,e.value_);
 }
 
@@ -47,16 +50,28 @@ MarSystem* EvValUpd::getTarget() const { return target_; }
 void EvValUpd::setCName(string cname) { cname_=cname; }
 void EvValUpd::setValue(MarControlPtr value) { value_=value; }
 void EvValUpd::setTarget(MarSystem* ms) { target_=ms; }
-void EvValUpd::set(MarSystem* ms, string cname, MarControlPtr value) {
-    target_=ms; cname_=cname; value_=value; event_type_ = "UpdateValue";
+void EvValUpd::set(MarSystem* ms, string cname, MarControlPtr value)
+{
+    target_=ms;
+    cname_=cname;
+    value_=value;
 }
 
-void EvValUpd::dispatch() {
+void EvValUpd::dispatch()
+{
     if (target_ !=NULL) { target_->updctrl(cname_,value_); }
 }
 
 EvValUpd* EvValUpd::clone() { return new EvValUpd(*this); }
 
+void
+EvValUpd::updctrl(std::string cname, TmControlValue value)
+{
+    if (checkupd(cname,"mrs_string/control",value,tmcv_string)) { setCName(value.toString()); }
+    else if (checkupd(cname,"MarSystem/target",value,tmcv_marsystem)) { setTarget(value.toMarSystem()); }
+// Note that setValue(type) depends on the setting of mrs_string/control
+//    else if (checktype(cname,"MarSystem/target",value,mar_marsystem)) { setValue(value.toMarSystem()); }
+}
 
 /*
 ostream& Marsyas::operator<< (ostream& o, EvValUpd& e) {

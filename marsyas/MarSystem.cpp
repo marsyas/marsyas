@@ -1066,6 +1066,21 @@ MarSystem::removeTimer(string name)
 }
 
 void
+MarSystem::addTimer(std::string class_name, std::string identifier)
+{
+	scheduler_.addTimer(class_name,identifier);
+}
+void
+MarSystem::updtimer(std::string cname, TmControlValue value)
+{
+	scheduler_.updtimer(cname,value);
+}
+mrs_natural
+MarSystem::getTime(string timer_name) {
+	return scheduler_.getTime(timer_name);
+}
+
+void
 MarSystem::setMATLABscript(std::string script) 
 {
 #ifdef MARSYAS_QT

@@ -25,7 +25,9 @@
 #ifndef MARSYAS_TM_TIMER_H
 #define MARSYAS_TM_TIMER_H
 
-#include "MarControlValue.h"
+//#include "MarControlValue.h"
+#include "common.h"
+#include "TmControlValue.h"
 
 #include <iostream>
 #include <string> 
@@ -45,6 +47,7 @@ protected:
     mrs_natural granularity_;
     mrs_natural next_trigger_;
 
+    Scheduler* scheduler;
 protected:
     void init();
 
@@ -52,10 +55,14 @@ public:
     // Constructors 
     TmTimer();
     TmTimer(std::string name);
+    TmTimer(std::string type, std::string name);
+    TmTimer(const TmTimer&);
     virtual ~TmTimer();
 
-    virtual std::string getName();
     virtual void setName(std::string name);
+    virtual std::string getName();
+    virtual std::string getType();
+    virtual std::string getPrefix();
     virtual TmTimer* clone()=0;
 
     virtual void setScheduler(Scheduler* s)=0;
@@ -66,6 +73,7 @@ public:
     virtual mrs_natural readTimeSrc()=0;
     virtual void trigger()=0;
     virtual mrs_natural intervalsize(std::string interval)=0;
+    virtual void updtimer(std::string cname, TmControlValue value);
 
     // the usual stream IO 
 //    friend ostream& operator<<(ostream&, Scheduler&);

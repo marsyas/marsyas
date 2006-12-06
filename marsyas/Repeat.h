@@ -43,9 +43,11 @@ public:
     Repeat(); // no repetition
     Repeat(std::string time_interval); // infinite
     Repeat(std::string time_interval, mrs_natural rep_count);
+    virtual ~Repeat();
 
     void set(bool inf, std::string time_interval, mrs_natural rep_count);
     mrs_natural interval2samples(mrs_real srate);
+    virtual bool repeat();
 
     void operator++() { ++count; }
     void operator++(int) { count++; };

@@ -27,29 +27,77 @@
 using namespace std;
 using namespace Marsyas;
 
-TmTimer::TmTimer() { init(); }
-TmTimer::TmTimer(string name) { name_=name; init(); }
-TmTimer::~TmTimer(){ }
+TmTimer::TmTimer()
+{
+    init();
+}
+TmTimer::TmTimer(string name)
+{
+    init();
+    name_=name;
+}
+TmTimer::TmTimer(string type, string name)
+{
+    init();
+    type_=type;
+    name_=name;
+}
+TmTimer::TmTimer(const TmTimer& t)
+{
+    name_=t.name_;
+    granularity_=t.granularity_;
+    type_=t.type_;		// Type of MarSystem
+    name_=t.name_;		// Name of instance
+    next_trigger_=t.next_trigger_;
+    cur_time_=t.cur_time_;
+    scheduler=t.scheduler;
+}
 
-void TmTimer::init() { cur_time_=0; granularity_=0; next_trigger_=0; }
-string TmTimer::getName() { return name_; }
-void TmTimer::setName(string name) { name_=name; }
+TmTimer::~TmTimer() { }
 
-void TmTimer::setGranularity(mrs_natural g) { granularity_=g; }
+void
+TmTimer::init() { cur_time_=0; granularity_=0; next_trigger_=0; scheduler=NULL; }
 
-mrs_natural TmTimer::getTime() { return cur_time_; }
+string
+TmTimer::getName() { return name_; }
+
+void
+TmTimer::setName(string name) { name_=name; }
+
+string
+TmTimer::getType() { return type_; }
+
+string
+TmTimer::getPrefix() { return type_ + "/" + name_; }
+
+void
+TmTimer::setGranularity(mrs_natural g) { granularity_=g; }
+
+void
+TmTimer::setScheduler(Scheduler* s) { scheduler=s; }
+
+mrs_natural 
+TmTimer::getTime() { return cur_time_; }
+
 /* this is a very simple implementation of granularity. What if we want it to
    be every 1 second of real time. Could be done by reading a control for
    a specific value. What if the size of the sample buffer changes during
    processing. Might have to have a size relative to certain parameters like
    sample buffer size. So many questions. */
 void TmTimer::tick() {
-    mrs_natural chunk = readTimeSrc();
+    mrs_natural adj_time = readTimeSrc();
+    if (adj_time<1) return;
+    cur_time_ += adj_time;
+
     if (next_trigger_<1) {
         if (granularity_>0) { next_trigger_=granularity_; }
         trigger();
-    } else { next_trigger_ -= chunk; }
-    cur_time_ += chunk;
+    } else { next_trigger_ -= adj_time; }
+}
+void
+TmTimer::updtimer(std::string cname, TmControlValue value)
+{
+    MRSWARN("TmTimer::updtimer(string,TmControlValue)  updtimer not supported for this timer");
 }
 
 /*
