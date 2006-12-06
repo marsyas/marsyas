@@ -96,6 +96,7 @@ in sequence.
 #include "OnePole.h"
 #include "Norm.h"
 #include "Sum.h"
+#include "Product.h"
 #include "DownSampler.h"
 #include "PeakPeriods2BPM.h"
 #include "Histogram.h"
@@ -215,6 +216,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("OnePole", new OnePole("lpf"));
 	registerPrototype("Norm", new Norm("norm"));
 	registerPrototype("Sum", new Sum("sum"));
+	registerPrototype("Product", new Product("product"));
 	registerPrototype("DownSampler", new DownSampler("ds"));
 
 	registerPrototype("PeakPeriods2BPM", new PeakPeriods2BPM("p2bpm"));

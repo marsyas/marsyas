@@ -51,7 +51,7 @@ WaveletPyramid.h WaveletStep.h Daub4.h OnePole.h RtAudio.h RtError.h Accumulator
 NetworkSocket.h NetworkTCPSource.h NetworkTCPSink.h NetworkUDPSource.h NetworkUDPSink.h Messager.h \
 SocketException.h Talk.h \
 TimeLine.h Color.h Communicator.h Server.h AbsMax.h FullWaveRectifier.h \
-Norm.h DownSampler.h WaveletBands.h Sum.h \
+Norm.h DownSampler.h WaveletBands.h Sum.h Product.h\
 PeakPeriods2BPM.h Histogram.h BeatHistoFeatures.h MslModel.h \
 CommandLineOptions.h RawFileSource.h FM.h \
 ANN_node.h Annotator.h ZeroRClassifier.h Summary.h KNNClassifier.h Filter.h \
@@ -86,7 +86,7 @@ WaveletPyramid.cpp WaveletStep.cpp Daub4.cpp OnePole.cpp RtAudio.cpp Accumulator
 NetworkSocket.cpp NetworkTCPSource.cpp NetworkTCPSink.cpp NetworkUDPSource.cpp NetworkUDPSink.cpp Messager.cpp \
 Talk.cpp \
 TimeLine.cpp Color.cpp Communicator.cpp Server.cpp AbsMax.cpp FullWaveRectifier.cpp \
-Norm.cpp DownSampler.cpp WaveletBands.cpp Sum.cpp \
+Norm.cpp DownSampler.cpp WaveletBands.cpp Sum.cpp Product.cpp\
 PeakPeriods2BPM.cpp Histogram.cpp BeatHistoFeatures.cpp MslModel.cpp \
 CommandLineOptions.cpp RawFileSource.cpp FM.cpp \
 ANN_node.cpp Annotator.cpp Summary.cpp ZeroRClassifier.cpp KNNClassifier.cpp Filter.cpp \
