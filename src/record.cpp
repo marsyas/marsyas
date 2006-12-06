@@ -124,6 +124,10 @@ record(mrs_real length, mrs_real gain, string filename)
   recordNet->updctrl("AudioSource/asrc/mrs_real/israte", sropt);
   recordNet->updctrl("AudioSource/asrc/mrs_natural/nChannels", copt);
   recordNet->updctrl("AudioSource/asrc/mrs_real/gain", gain);
+  
+  // Ready to initialize audio device 
+  recordNet->updctrl("AudioSource/asrc/mrs_bool/initAudio", true);
+  
   recordNet->updctrl("SoundFileSink/dest/mrs_string/filename", filename);
   
   mrs_real srate = recordNet->getctrl("AudioSource/asrc/mrs_real/israte")->toReal();
@@ -135,7 +139,7 @@ record(mrs_real length, mrs_real gain, string filename)
 
   mrs_natural iterations = (mrs_natural)((srate * length) / inSamples);
 
-
+  cout << "Iterations = " << iterations << endl;
 
   
   for (mrs_natural t = 0; t < iterations; t++) 
@@ -417,7 +421,7 @@ main(int argc, const char **argv)
   vector<string>::iterator sfi;
 
   
-
+/* 
   cout << "Recording to year" << yearopt << endl;
   string id1;
   string id2;
@@ -428,7 +432,8 @@ main(int argc, const char **argv)
   id3 = soundfiles[2];
   id4 = soundfiles[3];
 
-  // record_orcas(lengthopt, yearopt, id1, id2, id3, id4);
+  xrecord_orcas(lengthopt, yearopt, id1, id2, id3, id4);
+  */ 
 
   for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
     {	
