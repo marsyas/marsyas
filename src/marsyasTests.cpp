@@ -67,6 +67,7 @@ printHelp(string progName)
   cerr << "SOM		   : test support vector machine " << endl;
   cerr << "tempo	   : test tempo estimation " << endl;
   cerr << "vicon           : test processing of vicon motion capture data" << endl;
+  cerr << "Windowing       : test different window functions of Windowing marsystem" << endl;
 
 
   
@@ -1675,6 +1676,39 @@ void test_SOM(string collectionName)
   
 }
 
+void test_Windowing()
+{
+
+    MarSystemManager mng; 
+    MarSystem* series = mng.create("Series","series");
+    series->addMarSystem(mng.create("Windowing","win"));
+    series->addMarSystem(mng.create("PlotSink","plot"));
+
+    realvec in;
+    realvec out;
+
+    in.create(series->getctrl("mrs_natural/inSamples")->toNatural());
+    out.create(series->getctrl("mrs_natural/inSamples")->toNatural());
+    in.setval(1.0);
+    
+    vector<string> winname;
+    winname.push_back("Hamming");
+    winname.push_back("Hanning");
+    winname.push_back("Triangle");
+    winname.push_back("Bartlett");
+    winname.push_back("Gaussian");
+    winname.push_back("Blackman");
+    winname.push_back("Blackman-Harris");
+
+    for (int i = 0 ; i < winname.size(); i++)
+    {
+        series->updctrl("Windowing/win/mrs_string/type", winname[i]);                    
+        series->updctrl("PlotSink/plot/mrs_string/outputFilename", "marsyas" + winname[i]);    
+       
+        series->process(in,out); 
+    }
+}
+
 
 // Pluck(0,100,1.0,0.5,"TestPluckedRich0_100hz.wav");
 //Pluck Karplus Strong Model Kastro.cpp output to wavfile
@@ -2073,8 +2107,10 @@ main(int argc, const char **argv)
     test_MATLABengine();
   else if (testName == "LPC_LSP")
     test_LPC_LSP(fname0);
-	else if (testName == "MarControls")
-		test_MarControls(fname0);
+  else if (testName == "MarControls")
+    test_MarControls(fname0);
+  else if (testName == "Windowing")
+    test_Windowing();
   else 
     {
       cout << "Unsupported test " << endl;
