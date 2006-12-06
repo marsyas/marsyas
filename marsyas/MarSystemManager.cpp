@@ -84,6 +84,7 @@ in sequence.
 #include "SoundFileSink.h" 
 #include "Confidence.h"
 #include "Rms.h"
+#include "Peak2Rms.h"
 #include "WekaSink.h" 
 #include "MFCC.h"
 #include "SCF.h"
@@ -203,6 +204,7 @@ MarSystemManager::MarSystemManager()
 
 	registerPrototype("Confidence", new Confidence("confp"));
 	registerPrototype("Rms", new Rms("rms"));
+    registerPrototype("Peak2Rms", new Peak2Rms("peakrms"));
 	registerPrototype("WekaSink", new WekaSink("wsink"));
 	registerPrototype("MFCC", new MFCC("mfcc"));
 	registerPrototype("SCF", new SCF("scf"));
