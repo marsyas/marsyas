@@ -39,23 +39,11 @@ namespace Marsyas
 	public:   
 		static void setLogFile(std::string fname);
 		static void getLogFile();
-	  
+		
 		static void mrsErr(const std::ostringstream& oss);
-		static void mrsErr(const char* c) {mrsErr(std::ostringstream(c));}
-		static void mrsErr(std::string c) {mrsErr(std::ostringstream(c));}
-		
 		static void mrsWarning(const std::ostringstream& oss);
-		static void mrsWarning(const char* c) {mrsWarning(std::ostringstream(c));}
-		static void mrsWarning(std::string c) {mrsWarning(std::ostringstream(c));}
-		
 		static void mrsDiagnostic(const std::ostringstream& oss);
-		static void mrsDiagnostic(const char* c) {mrsDiagnostic(std::ostringstream(c));}
-		static void mrsDiagnostic(std::string c) {mrsDiagnostic(std::ostringstream(c));}
-		
 		static void mrsDebug(const std::ostringstream& oss);
-		static void mrsDebug(const char* c) {mrsDebug(std::ostringstream(c));}
-		static void mrsDebug(std::string c) {mrsDebug(std::ostringstream(c));}
-		
 		static void mrsAssert(char *strFile, unsigned uLine);
 	};
 } //namespec Marsyas

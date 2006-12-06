@@ -70,7 +70,7 @@ namespace Marsyas
 #define MRSERR(x) {std::ostringstream oss; MrsLog::mrsErr((std::ostringstream&)(oss << x));}
 
 #if MRSDIAGNOSTIC
-#define MRSDIAG(x) MrsLog::mrsDiagnostic(x)
+#define MRSDIAG(x) {std::ostringstream oss; MrsLog::mrsDiagnostic((std::ostringstream&)(oss << x));}
 #else
 #define MRSDIAG(x)
 #endif
@@ -82,7 +82,7 @@ namespace Marsyas
 #endif 
 
 #ifdef MRSDEBUGG
-	#define MRSDEBUG(x) MrsLog::mrsDebug(x)
+	#define MRSDEBUG(x) {std::ostringstream oss; MrsLog::mrsDebug((std::ostringstream&)(oss << x));}
 #else
 	#define MRSDEBUG(x)
 #endif 

@@ -41,6 +41,8 @@ MrsLog::setLogFile(string fname)
 	fname_ = fname;
 }
 
+
+
 void 
 MrsLog::mrsErr(const ostringstream& oss)
 {
@@ -59,6 +61,11 @@ MrsLog::mrsErr(const ostringstream& oss)
 	ofs.close();
 	return;
 }
+
+
+
+
+
 
 void 
 MrsLog::mrsWarning(const ostringstream& oss)
@@ -79,6 +86,9 @@ MrsLog::mrsWarning(const ostringstream& oss)
 	return;
 }
 
+
+
+
 void 
 MrsLog::mrsDiagnostic(const ostringstream& oss)
 {
@@ -97,6 +107,9 @@ MrsLog::mrsDiagnostic(const ostringstream& oss)
 	ofs.close();
 	return;
 }
+
+
+
 
 void 
 MrsLog::mrsDebug(const ostringstream& oss)
