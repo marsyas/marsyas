@@ -92,7 +92,10 @@ void sfplay(vector<string> soundfiles)
   playbacknet->updctrl("mrs_natural/inSamples", 100);
   
   if (fileName == EMPTYSTRING)	// audio output
-    playbacknet->updctrl("AudioSink/dest/mrs_natural/bufferSize", 256); 
+    {
+      playbacknet->updctrl("AudioSink/dest/mrs_natural/bufferSize", 256); 
+      playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+    }
 
   playbacknet->updctrl("SoundFileSource/src/mrs_real/repetitions", repetitions);
   playbacknet->updctrl("SoundFileSource/src/mrs_real/duration", length);

@@ -39,6 +39,7 @@ private:
   RtAudio *audio_;
   int bufferSize_;
   int rtSrate_;
+  int rtChannels_;
   int srate_;
 
 	bool isInitialized_;

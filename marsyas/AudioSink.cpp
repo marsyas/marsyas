@@ -46,13 +46,19 @@ AudioSink::AudioSink(string name):MarSystem("AudioSink", name)
   isInitialized_ = false;
   stopped_ = true;//lmartins
   
+  rtSrate_ = 0;
+  bufferSize_ = 0;
+  rtChannels_ = 0;
+  
+
+
   addControls();
 }
 
 AudioSink::~AudioSink()
 {
   delete audio_;
-  data_ = 0; // RtAudio deletes the buffer itself.
+  data_ = NULL; // RtAudio deletes the buffer itself.
 }
 
 MarSystem* 
@@ -65,48 +71,30 @@ void
 AudioSink::addControls()
 {
   addctrl("mrs_natural/nChannels",1);
-  setctrlState("mrs_natural/nChannels", true);
   
 #ifdef __OS_MACOSX__
   addctrl("mrs_natural/bufferSize", 1024);
 #else
   addctrl("mrs_natural/bufferSize", 512);
 #endif
-  setctrlState("mrs_natural/bufferSize", true);
+
+  addctrl("mrs_bool/initAudio", false);
+  setctrlState("mrs_bool/initAudio", true);
+  
+
 }
 
 void 
 AudioSink::myUpdate()
 {
   MRSDIAG("AudioSink::myUpdate");
+
+
+  if (getctrl("mrs_bool/initAudio")->to<mrs_bool>())
+    initRtAudio();
   
-  //bypass audio from input to output
-  /*
-    setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));  
-    setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-    setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-    setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  */
-  MarSystem::myUpdate();
-  
-  if(rtSrate_ != (int)getctrl("mrs_real/israte")->toReal() ||
-     bufferSize_ != (int)getctrl("mrs_natural/bufferSize")->toNatural())
-    {
-      rtSrate_ = (int)getctrl("mrs_real/israte")->toReal();
-      srate_ = rtSrate_;
-      bufferSize_ = (int)getctrl("mrs_natural/bufferSize")->toNatural();
-      
-#ifdef __OS_MACOSX__
-      if (rtSrate_ == 22050) 
-	{
-	  rtSrate_ = 44100;
-	  bufferSize_ = 2 * bufferSize_;
-	}
-#endif	
-      
-      //setup RtAudio (may change bufferSize_ !!)
-      initRtAudio(); 
-    }
+
+
   
   nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();//does nothing... [?]
   
@@ -122,14 +110,28 @@ AudioSink::myUpdate()
   
   preservoirSize_ = reservoirSize_;
   
-  //if audio was playing (i.e.this was a re-init), keep it playing
-  if (!stopped_ && audio_) 
-    audio_->startStream();
 }
 
 void 
 AudioSink::initRtAudio()
 {
+  cout << "initRtAudio" << endl;
+
+  rtSrate_ = (int)getctrl("mrs_real/israte")->toReal();
+  srate_ = rtSrate_;
+  bufferSize_ = (int)getctrl("mrs_natural/bufferSize")->toNatural();
+
+#ifdef __OS_MACOSX__
+  if (rtSrate_ == 22050) 
+    {
+      rtSrate_ = 44100;
+      bufferSize_ = 2 * bufferSize_;
+    }
+#endif	
+
+
+
+
   //marsyas represents audio data as float numbers
   RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
   
@@ -155,12 +157,13 @@ AudioSink::initRtAudio()
   setctrl("mrs_natural/bufferSize", (mrs_natural)bufferSize_);
   
   isInitialized_ = true;
+  setctrl("mrs_bool/initAudio", false);
 }
 
 void 
 AudioSink::start()
 {
-  if ( stopped_ ) {
+  if ( stopped_ && audio_) {
     audio_->startStream();
     stopped_ = false;
   }
@@ -169,7 +172,7 @@ AudioSink::start()
 void 
 AudioSink::stop()
 {
-  if ( !stopped_ ) {
+  if ( !stopped_ && audio_) {
     audio_->stopStream();
     stopped_ = true;
   }
@@ -187,9 +190,7 @@ AudioSink::localActivate(bool state)
 void 
 AudioSink::myProcess(realvec& in, realvec& out)
 {
-
   
-  //checkFlow(in,out);
   
   // copy to output and into reservoir
   for (t=0; t < inSamples_; t++)

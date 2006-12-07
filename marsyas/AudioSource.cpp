@@ -64,6 +64,7 @@ void
 AudioSource::addControls()
 {
   addctrl("mrs_natural/nChannels", 1);
+
   
 #ifdef __OS_MACOSX__
   addctrl("mrs_natural/bufferSize", 512);
@@ -82,15 +83,6 @@ void
 AudioSource::myUpdate()
 {
   MRSDIAG("AudioSource::myUpdate");
-
-  //init RtAudio first time myUpdate is called and whenever some config changes apply
-  /* if(bufferSize_ != (int)getctrl("mrs_natural/bufferSize")->toNatural() ||
-     nChannels_ != getctrl("mrs_natural/nChannels")->toNatural() ||
-     rtSrate_ != (int)getctrl("mrs_real/israte")->toReal())
-     {
-     initRtAudio();
-     }
-  */ 
 
 
   if (getctrl("mrs_bool/initAudio")->to<mrs_bool>()) 
@@ -156,6 +148,7 @@ AudioSource::initRtAudio()
   setctrl("mrs_natural/bufferSize", (mrs_natural)bufferSize_);
   
   isInitialized_ = true;
+  setctrl("mrs_bool/initAudio", false);
 }
 
 void 
@@ -189,10 +182,6 @@ void
 AudioSource::myProcess(realvec& in, realvec& out)
 {
 
-  
-
-  //checkFlow(in,out);
-  
   //check if RtAudio is initialized
   if (!isInitialized_)
     return;
