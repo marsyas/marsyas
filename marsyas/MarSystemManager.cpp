@@ -449,7 +449,7 @@ MarSystemManager::create(string type, string name)
 }
 
 MarSystem* 
-MarSystemManager::getMarSystem(istream& is)
+MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 {
 	string skipstr;
 	mrs_natural i;
@@ -485,79 +485,13 @@ MarSystemManager::getMarSystem(istream& is)
 	else
 	{
 		msys->setName(mname);
+		msys->setParent(parent);
 		is >> *msys; //read controls into MarSystem [!]
 
 		msys->update();
 
 		workingSet_[msys->getName()] = msys; // add to workingSet
 
-		//is >> skipstr;
-		//is >> skipstr;
-		//is >> skipstr;
-		//is >> skipstr;
-
-
-
-	/*	if (skipstr != "links") 
-		{
-			MRSWARN("Problem with reading links");
-			MRSWARN("mtype = " << mtype);
-			MRSWARN("mname = " << mname);
-			MRSWARN("skipstr = " << skipstr);
-		}
-
-		is >> skipstr;
-
-		mrs_natural nLinks;
-		is >> nLinks;
-
-		for (i=0; i < nLinks; i++)
-		{
-			is >> skipstr;
-			is >> skipstr;
-			is >> skipstr;
-			string visible;
-			string vshortcname;
-
-			is >> visible;
-
-			string prefix = "/" + mtype + "/" + mname + "/";
-			string::size_type pos = visible.find(prefix, 0);
-
-			if (pos == 0) 
-				vshortcname = visible.substr(prefix.length(), visible.length());
-
-			is >> skipstr;
-			is >> skipstr;
-			is >> skipstr;
-			is >> skipstr;
-			is >> skipstr;
-			is >> skipstr;*/
-
-			//mrs_natural nSynonyms = 0;
-			//is >> nSynonyms;
-
-			// SYNONYMS!!
-// 			vector<string> synonymList;
-// 			synonymList = msys->synonyms_[vshortcname];
-// 
-// 			for (int j=0; j < nSynonyms; j++)
-// 			{
-// 				string inside;
-// 				is >> skipstr;
-// 				is >> inside;
-// 
-// 				prefix = "/" + mtype + "/" + mname + "/";
-// 				pos = inside.find(prefix, 0);
-// 				string shortcname;
-// 
-// 				if (pos == 0) //and what happens if the prefix is not found?!? [?][!]
-// 					shortcname = inside.substr(prefix.length(), inside.length());
-// 
-// 				synonymList.push_back(shortcname);
-// 				msys->synonyms_[vshortcname] = synonymList;
-// 			}
-	//	}
 		if (isComposite == true)
 		{
 			is >> skipstr >> skipstr >> skipstr;
@@ -565,7 +499,7 @@ MarSystemManager::getMarSystem(istream& is)
 			is >> nComponents;
 			for (i=0; i < nComponents; i++)
 			{
-				MarSystem* cmsys = getMarSystem(is);
+				MarSystem* cmsys = getMarSystem(is, msys);
 				if (cmsys == 0)
 					return 0;
 				msys->addMarSystem(cmsys);

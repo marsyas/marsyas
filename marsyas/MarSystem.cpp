@@ -1270,15 +1270,10 @@ Marsyas::operator>> (istream& is, MarSystem& msys)
 		string linkto;
 		is >> skipstr >> skipstr >> skipstr;
 		is >> nLinks;
-		
-		//clean all links
-		map<string,MarControlPtr> controls = msys.getControls();
-		map<string,MarControlPtr>::iterator it;
-		for (it = controls.begin(); it != controls.end(); ++it)
-		{
-			it->second->getLinks().clear();
-		}
-
+		//clean all links for current control
+		MarControlPtr curCtrl = msys.getControlLocal(cname);
+		curCtrl->getLinks().clear();
+		//remake all links
 		for (int i=0; i<nLinks; i++)
 		{
 			is >> skipstr >> linkto;
