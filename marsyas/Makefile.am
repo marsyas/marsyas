@@ -25,8 +25,8 @@ EXTRA_DIST 		= config.h.in win_config.h Doxyfile
 INCLUDES                = -I$(top_builddir) -I$(top_srcdir) -I$(Includes) 
 
 pkginclude_HEADERS      = MrsLog.h \
-VScheduler.h Scheduler.h ScheduledEvent.h \
-TmTimer.h TmTime.h TmSampleCount.h TmGetTime.h \
+VScheduler.h Scheduler.h ScheduledEvent.h SchedulerManager.h \
+TmTimer.h TmTime.h TmSampleCount.h TmGetTime.h TmControlValue.h TimerFactory.h \
 MarEvent.h EvGetUpd.h EvValUpd.h EvExpUpd.h Expression.h Repeat.h Heap.h \
 realvec.h common.h \
 SoundFileSource.h AuFileSource.h \
@@ -60,8 +60,8 @@ Kurtosis.h Skewness.h ERB.h CollectionFileSource.h MeddisHairCell.h ViconFileSou
 lib_LIBRARIES         = libmarsyas.a
 
 libmarsyas_a_SOURCES    = MrsLog.cpp \
-VScheduler.cpp Scheduler.cpp ScheduledEvent.cpp \
-TmTimer.cpp TmTime.cpp TmSampleCount.cpp TmGetTime.cpp \
+VScheduler.cpp Scheduler.cpp ScheduledEvent.cpp SchedulerManager.cpp \
+TmTimer.cpp TmTime.cpp TmSampleCount.cpp TmGetTime.cpp TmControlValue.cpp TimerFactory.cpp \
 MarEvent.cpp EvGetUpd.cpp EvValUpd.cpp EvExpUpd.cpp Expression.cpp Repeat.cpp \
 realvec.cpp \
 SoundFileSource.cpp AuFileSource.cpp \

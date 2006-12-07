@@ -59,8 +59,10 @@ ARFLAGS = cru
 libmarsyas_a_AR = $(AR) $(ARFLAGS)
 libmarsyas_a_LIBADD =
 am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
-	Scheduler.$(OBJEXT) ScheduledEvent.$(OBJEXT) TmTimer.$(OBJEXT) \
-	TmTime.$(OBJEXT) TmSampleCount.$(OBJEXT) TmGetTime.$(OBJEXT) \
+	Scheduler.$(OBJEXT) ScheduledEvent.$(OBJEXT) \
+	SchedulerManager.$(OBJEXT) TmTimer.$(OBJEXT) TmTime.$(OBJEXT) \
+	TmSampleCount.$(OBJEXT) TmGetTime.$(OBJEXT) \
+	TmControlValue.$(OBJEXT) TimerFactory.$(OBJEXT) \
 	MarEvent.$(OBJEXT) EvGetUpd.$(OBJEXT) EvValUpd.$(OBJEXT) \
 	EvExpUpd.$(OBJEXT) Expression.$(OBJEXT) Repeat.$(OBJEXT) \
 	realvec.$(OBJEXT) SoundFileSource.$(OBJEXT) \
@@ -222,9 +224,10 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/SCF.Po ./$(DEPDIR)/SFM.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SMO.Po ./$(DEPDIR)/SOM.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ScheduledEvent.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Scheduler.Po ./$(DEPDIR)/SeneffEar.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Series.Po ./$(DEPDIR)/Server.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/ShiftInput.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Scheduler.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/SchedulerManager.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/SeneffEar.Po ./$(DEPDIR)/Series.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Server.Po ./$(DEPDIR)/ShiftInput.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ShiftOutput.Po ./$(DEPDIR)/Shifter.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Shredder.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SilenceRemove.Po \
@@ -237,6 +240,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Summary.Po ./$(DEPDIR)/Talk.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Thread.Po ./$(DEPDIR)/TimeLine.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TimeStretch.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/TimerFactory.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/TmControlValue.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TmGetTime.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TmSampleCount.Po ./$(DEPDIR)/TmTime.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TmTimer.Po ./$(DEPDIR)/VScheduler.Po \
@@ -366,8 +371,8 @@ DISTCLEANFILES = stamp-h.in
 EXTRA_DIST = config.h.in win_config.h Doxyfile
 INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(Includes) 
 pkginclude_HEADERS = MrsLog.h \
-VScheduler.h Scheduler.h ScheduledEvent.h \
-TmTimer.h TmTime.h TmSampleCount.h TmGetTime.h \
+VScheduler.h Scheduler.h ScheduledEvent.h SchedulerManager.h \
+TmTimer.h TmTime.h TmSampleCount.h TmGetTime.h TmControlValue.h TimerFactory.h \
 MarEvent.h EvGetUpd.h EvValUpd.h EvExpUpd.h Expression.h Repeat.h Heap.h \
 realvec.h common.h \
 SoundFileSource.h AuFileSource.h \
@@ -400,8 +405,8 @@ Kurtosis.h Skewness.h ERB.h CollectionFileSource.h MeddisHairCell.h ViconFileSou
 
 lib_LIBRARIES = libmarsyas.a
 libmarsyas_a_SOURCES = MrsLog.cpp \
-VScheduler.cpp Scheduler.cpp ScheduledEvent.cpp \
-TmTimer.cpp TmTime.cpp TmSampleCount.cpp TmGetTime.cpp \
+VScheduler.cpp Scheduler.cpp ScheduledEvent.cpp SchedulerManager.cpp \
+TmTimer.cpp TmTime.cpp TmSampleCount.cpp TmGetTime.cpp TmControlValue.cpp TimerFactory.cpp \
 MarEvent.cpp EvGetUpd.cpp EvValUpd.cpp EvExpUpd.cpp Expression.cpp Repeat.cpp \
 realvec.cpp \
 SoundFileSource.cpp AuFileSource.cpp \
@@ -655,6 +660,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SOM.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ScheduledEvent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Scheduler.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SchedulerManager.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SeneffEar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Series.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Server.Po@am__quote@
@@ -677,6 +683,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Thread.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeLine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeStretch.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimerFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TmControlValue.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TmGetTime.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TmSampleCount.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TmTime.Po@am__quote@
