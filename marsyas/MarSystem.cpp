@@ -886,6 +886,9 @@ MarSystem::controlUpdate(MarControlPtr ctrl)
 	//It is possible to define specialized "update" functions for
 	//different controls, if needed...
 
+	// TODO: simple fix, but this method needs to be recoded
+	MarControlPtr ctrlcpy = ctrl->clone();
+
 	// check local controls 
 	for (ctrlIter_ = controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
 	{
@@ -908,7 +911,7 @@ MarSystem::controlUpdate(MarControlPtr ctrl)
 			(cname == "mrs_string/inObsNames"))
 		{
 			//marsystems_[0]->updctrl(cname, ctrl);
-			marsystems_[0]->getctrl(cname)->setValue(ctrl, true);
+			marsystems_[0]->getctrl(cname)->setValue(ctrlcpy, true);
 			update();
 			return;
 		}
