@@ -51,14 +51,12 @@ Histogram::addControls()
 {
   addctrl("mrs_real/gain", 1.0);
   addctrl("mrs_bool/reset", false);
+	setctrlState("mrs_bool/reset", true);
   addctrl("mrs_natural/startBin", 0);
   setctrlState("mrs_natural/startBin", true);
   addctrl("mrs_natural/endBin", 100);
   setctrlState("mrs_natural/endBin", true);
-  addctrl("mrs_bool/reset", true);
-  setctrlState("mrs_bool/reset", true);
 }
-
 
 void
 Histogram::myUpdate()

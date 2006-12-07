@@ -82,9 +82,9 @@ namespace Marsyas
 #endif 
 
 #ifdef MRSDEBUGG
-	#define MRSDEBUG(x) {std::ostringstream oss; MrsLog::mrsDebug((std::ostringstream&)(oss << x));}
+#define MRSDEBUG(x) {std::ostringstream oss; MrsLog::mrsDebug((std::ostringstream&)(oss << x));}
 #else
-	#define MRSDEBUG(x)
+#define MRSDEBUG(x)
 #endif 
 
 #if MRSASSERTE
@@ -94,7 +94,7 @@ namespace Marsyas
         else         \
            MrsLog::mrsAssert(__FILE__, __LINE__)
 #else 
-  #define MRSASSERT(x) 
+#define MRSASSERT(x) 
 #endif 
 
 /************************************************************************/

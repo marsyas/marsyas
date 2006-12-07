@@ -55,7 +55,7 @@ Windowing::addcontrols()
     setctrlState("mrs_string/type", true);
     setctrlState("mrs_natural/zeroPhasing", true);
     setctrlState("mrs_natural/size", true);
-    setctrlState("mrs_natural/variance", true);
+    setctrlState("mrs_real/variance", true);
 }
 
 void

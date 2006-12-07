@@ -645,13 +645,10 @@ MarSystem::getControlLocalPath(string cname) const
 bool
 MarSystem::linkControl(string cname1, string cname2) 
 {
-	//MRSLOGSENABLE(false);
-
 	//first control has to be a local control
 	string localPath = this->getControlLocalPath(cname1);
 	if(localPath == "")
 	{
-		//MRSLOGSENABLE(true);
 		MRSWARN("MarSystem::linkControl first control has to be a local control (" + cname1 + ")");
 		return false;
 	}
@@ -659,7 +656,6 @@ MarSystem::linkControl(string cname1, string cname2)
 	//a control is inherently connected to itself!
 	if(localPath == getControlLocalPath(cname2))
 	{
-		//MRSLOGSENABLE(true);
 		return true;
 	}
 
@@ -670,8 +666,7 @@ MarSystem::linkControl(string cname1, string cname2)
 	//make sure 2nd control exists somewhere in the network
 	if(ctrl2.isInvalid())
 	{
-		//MRSLOGSENABLE(true);
-		MRSWARN("MarSystem::linkControl - control does not exist anywhere: " + cname2);
+		//MRSWARN("MarSystem::linkControl - control does not exist anywhere: " + cname2);
 		return false;
 	}
 	
@@ -679,10 +674,8 @@ MarSystem::linkControl(string cname1, string cname2)
 	// to add it to this MarSystem
 	if(ctrl1.isInvalid())
 	{
-		//MRSLOGSENABLE(true);
 		if(!addControl(localPath, ctrl2->clone(), ctrl1))
 			return false; //some error occurred...
-		//MRSLOGSENABLE(false);
 	}
 
 	//now both controls exist 
@@ -691,7 +684,6 @@ MarSystem::linkControl(string cname1, string cname2)
 		return ctrl1->linkTo(ctrl2);
 	else
 	{
-		//MRSLOGSENABLE(true);
 		MRSWARN("MarSystem::linkControl control type mismatch (" + ctrl1->getName() + "!=" + ctrl2->getName() + ")");
 		return false;
 	}
@@ -723,7 +715,7 @@ MarSystem::getControl(string cname, bool searchParent, MarSystem* excludedFromSe
 				return parent_->getControl(cname, true, this);
 			else
 			{
-				MRSWARN("MarSystem::getControl - Unsupported control name: " + cname);
+				//MRSWARN("MarSystem::getControl - Unsupported control name: " + cname);
 				return MarControlPtr();
 			}
 		}
@@ -762,7 +754,7 @@ MarSystem::getControl(string cname, bool searchParent, MarSystem* excludedFromSe
 	}
 
 	//if no control found anywhere, this is an unsupported control!
-	MRSWARN("MarSystem::getControl - Unsupported control name = " + cname);
+	//MRSWARN("MarSystem::getControl - Unsupported control name = " + cname);
 	return MarControlPtr();
 }
 
@@ -967,14 +959,6 @@ MarSystem::addControl(string cname, MarControlPtr v)
 	if(ctype!= v->getType())
 	{
 		MRSWARN("MarSystem::addControl control type mismatch (" + ctype + "!=" + v->getType() + ")");
-		return false;
-	}
-
-	//check  there is not a control with the same type/name already
-	//if(!this->getControl(cname).isInvalid())
-	if(this->hasControlLocal(cname))
-	{
-		MRSWARN("MarSystem::addControl: control already exists (" + cname + ")");
 		return false;
 	}
 
@@ -1199,7 +1183,18 @@ Marsyas::operator>> (istream& is, MarSystem& msys)
 	mrs_natural ncvalue;
 	bool bcvalue;
 	string cname;
-	map<string, MarControlPtr>::iterator iter;  
+	map<string, MarControlPtr>::iterator iter;
+
+	// if composite, clear all children to avoid bad links to prototype children
+	if (msys.isComposite_)
+	{
+		for (mrs_natural i=0; i< msys.marsystemsSize_; i++)  
+		{
+			delete msys.marsystems_[i];
+		} 
+		msys.marsystems_.clear();
+		msys.marsystemsSize_ = 0;
+	}
 
 	for (i=0; i < nControls; i++)
 	{
