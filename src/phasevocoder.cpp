@@ -152,6 +152,9 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
   pvseries->updctrl("ShiftOutput/so/mrs_natural/Decimation", D);
   pvseries->updctrl("Gain/gain/mrs_real/gain", gopt_);
 
+  if (outsfname == EMPTYSTRING) 
+	pvseries->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
 	int type;
 	int byte2, byte3;
 	double stamp;

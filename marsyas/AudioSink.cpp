@@ -115,7 +115,6 @@ AudioSink::myUpdate()
 void 
 AudioSink::initRtAudio()
 {
-  cout << "initRtAudio" << endl;
 
   rtSrate_ = (int)getctrl("mrs_real/israte")->toReal();
   srate_ = rtSrate_;

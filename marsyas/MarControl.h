@@ -422,20 +422,20 @@ MarControl::to() const
 #ifdef MARSYAS_QT
 	QReadLocker locker(&rwLock_);
 #endif 
-		const MarControlValueT<T> *ptr = dynamic_cast<const MarControlValueT<T>*>(value_);
+	const MarControlValueT<T> *ptr = dynamic_cast<const MarControlValueT<T>*>(value_);
 	if(ptr)
-	{
-		return ptr->get();
-	}
+	  {
+	    return ptr->get();
+	  }
 	else
-	{
-		std::ostringstream sstr;
-		sstr << "[MarControlValue::to] Trying to set value of incompatible type "
-			<< "(expected " << value_->getType() << ", given " << typeid(T).name() << ")";
-		MRSWARN(sstr.str());
-		return MarControlValueT<T>::invalidValue;
-	}
-}
+	  {
+	    std::ostringstream sstr;
+	    sstr << "[MarControlValue::to] Trying to set value of incompatible type "
+		 << "(expected " << value_->getType() << ", given " << typeid(T).name() << ")";
+	    MRSWARN(sstr.str());
+	    return MarControlValueT<T>::invalidValue;
+	  }
+ }
 
 /************************************************************************/
 /* MarControlPtr inline implementation                                  */

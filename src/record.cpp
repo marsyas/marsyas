@@ -323,7 +323,7 @@ recordVirtualSensor(mrs_real length, mrs_real gain, string filename)
   pnet->addMarSystem(srm);
   pnet->addMarSystem(dest);
 
-  pnet->addMarSystem(mng.create("PlotSink", "psink"));
+  // pnet->addMarSystem(mng.create("PlotSink", "psink"));
   pnet->addMarSystem(mng.create("Hamming", "ham"));
   pnet->addMarSystem(mng.create("Spectrum", "spk"));
   pnet->addMarSystem(mng.create("PowerSpectrum", "pspk"));
@@ -438,7 +438,7 @@ main(int argc, const char **argv)
   for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
     {	
       cout << "Recording " << lengthopt << " seconds to file " << *sfi << endl;
-  //     recordVirtualSensor(lengthopt,gopt,  *sfi);
+      // recordVirtualSensor(lengthopt,gopt,  *sfi);
       record(lengthopt,gopt,  *sfi);
     }
    

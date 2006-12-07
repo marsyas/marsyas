@@ -747,7 +747,14 @@ MarSystem::getControl(string cname, bool searchParent, MarSystem* excludedFromSe
 				continue;//skip this child!
 
 			//search for controls in children
+
+			 /***** THIS WAS THE PORTUGESE VERSION *****/ 
 			childCtrl = marsystems_[i]->getControl(cname);
+			// changed by gtzan to 
+
+			// childCtrl = marsystems_[i]->getControl(localcname);
+
+
 			if(!childCtrl.isInvalid())
 				return childCtrl;
 		}

@@ -103,8 +103,6 @@ void sfplay(vector<string> soundfiles)
   
   // link top-level controls 
   playbacknet->linkctrl("mrs_string/filename","SoundFileSource/src/mrs_string/filename");
-
-  playbacknet->linkctrl("SoundFileSource/src/mrs_string/filename", "mrs_string/filename");
   playbacknet->linkctrl("mrs_natural/nChannels","SoundFileSource/src/mrs_natural/nChannels");
   playbacknet->linkctrl("mrs_real/israte", "SoundFileSource/src/mrs_real/israte");
   playbacknet->linkctrl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
