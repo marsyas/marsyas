@@ -45,44 +45,49 @@ Mapper::Mapper()
   
   // make a Qt-like thread object wrapped around the MarSystem
   mwr_ = new MarSystemWrapper(pnet_);
+  
+  //start the MarSystemWrapper thread
+  mwr_->start();
 
-	//lmartins:
-	//start the MarSystemWrapper thread
-	mwr_->start();
+  // Create MarControlPtr handles for all the controls 
+  filePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_string/filename");
+  gainPtr_ = pnet_->getctrl("Gain/gain/mrs_real/gain");
+  repPtr_ = mwr_->getctrl("SoundFileSource/src/mrs_real/repetitions");
+  posPtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/pos");  
+  sizePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/size");  
+  osratePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_real/osrate");  
+
+
 }
 
 Mapper::~Mapper()
 {
-	// mwr_->stopThread();
-	mwr_->wait();
-	delete mwr_;
-	
-	delete pnet_;
+  // mwr_->stopThread();
+  mwr_->wait();
+  delete mwr_;
+  delete pnet_;
 }
 
 void 
 Mapper::open(QString fileName, int pos)
 {
-  mwr_->updctrl("SoundFileSource/src/mrs_string/filename", fileName.toStdString());  
+
+  // update filename
+  mwr_->updctrl(filePtr_, fileName.toStdString());
   
-	// loop forever the piece [!]
-  mwr_->updctrl("SoundFileSource/src/mrs_real/repetitions", -1.0); 
+  //  loop forever the piece [!]
+  mwr_->updctrl(repPtr_, -1.0); 
   
-  mrs_natural size = 
-    mwr_->getctrl("SoundFileSource/src/mrs_natural/size")->to<mrs_natural>();
+
+  mrs_natural size = sizePtr_->to<mrs_natural>();
   
-  mrs_real srate = 
-    mwr_->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();    
+  mrs_real srate = osratePtr_->to<mrs_real>();
   
   Marsyas::mrs_real duration = (size / srate);
   emit durationChanged(duration);
   
   setPos(pos);
-
-  //lmartins:
-	//thread already started at constructor
-	//mwr_->start();
-
+  
   // timer is used to update the position slider "automatically" 
   // as the sound is playing 
   QTimer *timer = new QTimer(this);
@@ -90,13 +95,14 @@ Mapper::open(QString fileName, int pos)
   timer->start(250);
 }
 
+
+/* "automatic" advancement of position */ 
 void 
 Mapper::setPos() 
 {
-  mrs_natural pos = mwr_->getctrl("SoundFileSource/src/mrs_natural/pos")->to<mrs_natural>();
-  mrs_natural size = mwr_->getctrl("SoundFileSource/src/mrs_natural/size")->to<mrs_natural>();
-  mrs_real srate = 
-    mwr_->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();    
+  mrs_natural pos = posPtr_->to<mrs_natural>();
+  mrs_natural size = sizePtr_->to<mrs_natural>();
+  mrs_real srate = osratePtr_->to<mrs_real>();
   
   mrs_real duration = (pos / srate);
   emit timeChanged(duration);
@@ -106,24 +112,27 @@ Mapper::setPos()
   emit posChanged(sliderPos);
 }
 
+
+/* "manual" advancement of position */ 
 void 
 Mapper::setPos(int val)
 {
   float fval = val / 100.0f;
   
   float fsize = 
-    mwr_->getctrl("SoundFileSource/src/mrs_natural/size")->to<mrs_natural>();
+    sizePtr_->to<mrs_natural>();
   fsize *= fval;
   
   int size = (int) fsize;
-  mwr_->updctrl("SoundFileSource/src/mrs_natural/pos", size);
+  mwr_->updctrl(posPtr_, size);
+  
 }
 
 void 
 Mapper::setGain(int val)
 {
   float fval = val / 100.0f;
-  mwr_->updctrl("Gain/gain/mrs_real/gain", fval);
+  mwr_->updctrl(gainPtr_, fval);
 }
 
 void 

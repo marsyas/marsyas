@@ -42,15 +42,15 @@ class Mapper: public QObject
 
 public:
     Mapper();
-		~Mapper();
-
+  ~Mapper();
+  
 public slots: 
-    void open(QString fileName, int val);
-    void setPos(int value);
-    void setPos(); 
-    void setGain(int value);
-    void play();
-    void pause();
+   void open(QString fileName, int val);
+  void setPos(int value);
+  void setPos(); 
+  void setGain(int value);
+  void play();
+  void pause();
   
 signals: 
     void posChanged(int val);
@@ -60,7 +60,18 @@ signals:
 private:
   Marsyas::mrs_real duration_;
   
-  MarSystemWrapper* mwr_;		// the wrapper that turns 
+
+  MarControlPtr filePtr_;
+  MarControlPtr gainPtr_;
+  MarControlPtr repPtr_;
+  MarControlPtr posPtr_;
+  MarControlPtr sizePtr_;
+  MarControlPtr osratePtr_;
+  
+  
+  
+  
+  MarSystemWrapper* mwr_;   // the wrapper that turns 
                             // any MarSystem into 
                             // Qt-like object with 
                             // signals and slots 
