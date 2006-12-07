@@ -322,7 +322,7 @@ MarSystem::setParent(const MarSystem* parent)
 	{
 		//if absPath_ was "/Gain/g/" it will become 
 		//"/Series/s" + "/Gain/g/" = "/Series/s/Gain/g/"
-		absPath_ = parent_->absPath_.substr(0, parent_->absPath_.length()-1) + absPath_;
+		absPath_ = parent_->absPath_.substr(0, parent_->absPath_.length()-1) + prefix_;
 
 		if(isComposite_)
 		{
@@ -645,10 +645,13 @@ MarSystem::getControlLocalPath(string cname) const
 bool
 MarSystem::linkControl(string cname1, string cname2) 
 {
+	//MRSLOGSENABLE(false);
+
 	//first control has to be a local control
 	string localPath = this->getControlLocalPath(cname1);
 	if(localPath == "")
 	{
+		//MRSLOGSENABLE(true);
 		MRSWARN("MarSystem::linkControl first control has to be a local control (" + cname1 + ")");
 		return false;
 	}
@@ -656,6 +659,7 @@ MarSystem::linkControl(string cname1, string cname2)
 	//a control is inherently connected to itself!
 	if(localPath == getControlLocalPath(cname2))
 	{
+		//MRSLOGSENABLE(true);
 		return true;
 	}
 
@@ -666,6 +670,7 @@ MarSystem::linkControl(string cname1, string cname2)
 	//make sure 2nd control exists somewhere in the network
 	if(ctrl2.isInvalid())
 	{
+		//MRSLOGSENABLE(true);
 		MRSWARN("MarSystem::linkControl - control does not exist anywhere: " + cname2);
 		return false;
 	}
@@ -674,8 +679,10 @@ MarSystem::linkControl(string cname1, string cname2)
 	// to add it to this MarSystem
 	if(ctrl1.isInvalid())
 	{
+		//MRSLOGSENABLE(true);
 		if(!addControl(localPath, ctrl2->clone(), ctrl1))
 			return false; //some error occurred...
+		//MRSLOGSENABLE(false);
 	}
 
 	//now both controls exist 
@@ -684,6 +691,7 @@ MarSystem::linkControl(string cname1, string cname2)
 		return ctrl1->linkTo(ctrl2);
 	else
 	{
+		//MRSLOGSENABLE(true);
 		MRSWARN("MarSystem::linkControl control type mismatch (" + ctrl1->getName() + "!=" + ctrl2->getName() + ")");
 		return false;
 	}
