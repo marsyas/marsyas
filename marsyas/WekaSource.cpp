@@ -13,12 +13,9 @@ using namespace Marsyas;
 
 WekaSource::WekaSource(string name):MarSystem("WekaSource",name)
 {
-  //type_ = "WekaSource";
-  //name_ = name;
-  
   mis_ = new ifstream;
-
-	addControls();
+  
+  addControls();
 }
 
 WekaSource::~WekaSource()
@@ -30,8 +27,8 @@ WekaSource::~WekaSource()
 
 WekaSource::WekaSource(const WekaSource& a):MarSystem(a)
 {
-// 	type_ = a.type_;
-// 	name_ = a.name_;
+  // 	type_ = a.type_;
+  // 	name_ = a.name_;
 // 	ncontrols_ = a.ncontrols_; 		
 // 	inSamples_ = a.inSamples_;
 // 	inObservations_ = a.inObservations_;

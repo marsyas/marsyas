@@ -46,6 +46,8 @@ private:
   std::vector<std::string> labelNames_;
   mrs_natural precision_;
   mrs_natural downsample_;
+  mrs_bool regression_;
+  
 
 public:
   WekaSink(std::string name);

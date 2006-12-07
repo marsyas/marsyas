@@ -44,17 +44,6 @@ WekaSink::~WekaSink()
 
 WekaSink::WekaSink(const WekaSink& a):MarSystem(a)
 {
-// 	type_ = a.type_;
-// 	name_ = a.name_;
-// 	ncontrols_ = a.ncontrols_; 		
-// 
-// 	inSamples_ = a.inSamples_;
-// 	inObservations_ = a.inObservations_;
-// 	onSamples_ = a.onSamples_;
-// 	onObservations_ = a.onObservations_;
-// 	dbg_ = a.dbg_;
-// 	mute_ = a.mute_;
-	
 	mos_ = NULL;
 }
 
@@ -76,6 +65,10 @@ WekaSink::addControls()
   setctrlState("mrs_natural/downsample", true);
   addctrl("mrs_string/labelNames", "Music,Speech");
   setctrlState("mrs_string/labelNames", true);
+
+  addctrl("mrs_bool/regression", false);
+  setctrlState("mrs_bool/regression", true);
+  
 }
 
 void 
@@ -113,18 +106,33 @@ WekaSink::putHeader(string inObsNames)
 	oss << inObsName;
 	(*mos_) << "@attribute " << oss.str() << " real" << endl;
       }
-    (*mos_) << "@attribute output {";
-    for (i=0; i < nLabels; i++) 
+
+    regression_ = getctrl("mrs_bool/regression")->to<mrs_bool>();
+    
+    if (!regression_) 
       {
-	ostringstream oss;
-	// oss << "label" << i;
-	oss << labelNames_[i];
-	(*mos_) << oss.str();
-	if (i < nLabels-1)
-	  (*mos_) << ",";
-	// (*mos_) << "@attribute output {music,speech}" << endl;
+	(*mos_) << "@attribute output {";
+	for (i=0; i < nLabels; i++) 
+	  {
+	    ostringstream oss;
+	    // oss << "label" << i;
+	    oss << labelNames_[i];
+	    (*mos_) << oss.str();
+	    if (i < nLabels-1)
+	      (*mos_) << ",";
+	    // (*mos_) << "@attribute output {music,speech}" << endl;
+	  }
+	(*mos_) << "}" << endl;
       }
-    (*mos_) << "}" << endl;
+    else 
+      {
+	cout << "REGRESSION" << endl;
+	
+      }
+    
+    
+
+
     (*mos_) << "\n\n@data" << endl;
   }
 }

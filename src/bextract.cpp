@@ -641,11 +641,11 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 
 // train with multiple feature vectors/file 
 void bextract_train(vector<Collection> cls, 
-										mrs_natural label, 
-										string pluginName, string classNames, 
-										string wekafname,  mrs_natural memSize, 
-										string extractorStr,
-										string classifierName)
+		    mrs_natural label, 
+		    string pluginName, string classNames, 
+		    string wekafname,  mrs_natural memSize, 
+		    string extractorStr,
+		    string classifierName)
 {
 	MRSDIAG("bextract.cpp - bextract_train");
 
@@ -817,6 +817,10 @@ void bextract_train(vector<Collection> cls,
 				featureNetwork->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
 				featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 40);
 				featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  
+				
+				// testing by gtzan must be removed 
+				featureNetwork->updctrl("WekaSink/wsink/mrs_bool/regression", true);
+				
 			}
 
 			cout << "Class " << cj << " is " << l.name() << endl;
