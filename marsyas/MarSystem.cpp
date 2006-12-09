@@ -635,11 +635,13 @@ MarSystem::getControlLocalPath(string cname) const
 			cname = cname.substr(prefix_.length()-1, cname.length());
 			return cname;
 		}
+		else
+			return cname;
 
 	}
 
 	//if not a local control path, return empty string
-	return "";
+	//return "";
 }
 
 bool
@@ -749,10 +751,10 @@ MarSystem::getControl(string cname, bool searchParent, MarSystem* excludedFromSe
 			//search for controls in children
 
 			 /***** THIS WAS THE PORTUGESE VERSION *****/ 
-			childCtrl = marsystems_[i]->getControl(cname);
+			//childCtrl = marsystems_[i]->getControl(cname);
 			// changed by gtzan to 
 
-			// childCtrl = marsystems_[i]->getControl(localcname);
+			childCtrl = marsystems_[i]->getControl(localcname);
 
 
 			if(!childCtrl.isInvalid())
