@@ -45,7 +45,7 @@ public:
   ~FileName();  
   std::string fullname();			// full filename (path+file)
   std::string name();			// returns just the file (no path)
-	std::string nameNoExt(); // returns just the file (no path, no ext)
+  std::string nameNoExt(); // returns just the file (no path, no ext)
   std::string path();	// returns the filename path 
   std::string ext();				// returns the filename extension
 };

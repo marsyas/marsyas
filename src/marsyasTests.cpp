@@ -289,7 +289,7 @@ test_rmsilence(string sfName)
   rmnet->addMarSystem(mng.create("SoundFileSink", "dest"));
   
   FileName fname(sfName);  
-  rmnet->updctrl("SoundFileSink/dest/mrs_string/filename", "srm" + fname.name() + ".wav");
+  rmnet->updctrl("SoundFileSink/dest/mrs_string/filename", "srm.wav");
   
   cout << *rmnet << endl;
   while (rmnet->getctrl("SilenceRemove/srm/SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
@@ -297,7 +297,7 @@ test_rmsilence(string sfName)
       rmnet->tick();
     }
   
-  cout << "Finished removing silences. Output is " << "srm" + fname.name() + ".wav" << endl;
+  cout << "Finished removing silences. Output is " << "srm.wav" << endl;
 
   delete rmnet;
 }

@@ -66,35 +66,6 @@ printHelp(string progName)
 
 
 
-void testLPC()
-{
-
-  MarSystemManager mng;
-  
-  // LPC network 
-  MarSystem* input = mng.create("Series", "input");
-  input->addMarSystem(mng.create("AudioSource","src1"));
-
-
-  
-  MarSystem* featExtract = mng.create("Fanout", "featExtract");
-  featExtract->addMarSystem(mng.create("LPC", "lpc"));
-
-  input->addMarSystem(featExtract);
-  
-  
-  cout << (*input) << endl;
-  
-  int counter = 0;
-  
-  // Main processing loop 
-  while (1)
-    {
-      
-      input->tick();
-      
-    }
-}
 
 
 
@@ -176,27 +147,32 @@ void pitchextract1(string sfName, mrs_natural winSize, mrs_natural hopSize,
   playback->addMarSystem(mng.create("SineSource", "ss"));
   playback->addMarSystem(mng.create("AudioSink", "dest"));
   playback->updctrl("mrs_natural/inSamples", 512);
+  playback->updctrl("mrs_bool/initAudio", true);
   
   
   
   counter = 0;
   
   // Main processing loop 
-  while (1)
-    {
+  // while (1)
+
+  while (pitchExtractor->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+  {
+    if (plopt) 
       playback->tick();
-      pitchExtractor->process(win, pitchres);
+    
+    pitchExtractor->process(win, pitchres);
       
       // pitch = samples2hertz((mrs_natural)pitchres(1), pitchExtractor->getctrl("AudioSource/src/mrs_real/osrate")->toReal());
 
       pitch = samples2hertz((mrs_natural)pitchres(1), pitchExtractor->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
       
-      
-      // cout << pitch << "---" << pitchres(0) << endl;
-      // cout << "midi" << "---" << hertz2pitch(pitch) << endl; 
+      cout <<  pitchres(0) << endl;
+
+      // cout << "pitch" << "---" << pitchres(0) << endl;
+      // cout << "midi" << "---" << hertz2pitch(pitch) << endl ;
       if (pitchres(0) > 0.05) 
 	playback->updctrl("SineSource/ss/mrs_real/frequency", pitch);
-      pitch = hertz2pitch(pitch);
       
       
       
@@ -415,10 +391,7 @@ main(int argc, const char **argv)
   cout << "PitchExtract playback   = " << plopt << endl;
 
 
-  testLPC();
-  exit(1);
   
-
 
   // pitchextract1("patata", wopt, hopt, lpopt, upopt, topt);
 
