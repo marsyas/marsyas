@@ -816,11 +816,7 @@ void bextract_train(vector<Collection> cls,
 			{
 				featureNetwork->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
 				featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 40);
-				featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  
-				
-				// testing by gtzan must be removed 
-				featureNetwork->updctrl("WekaSink/wsink/mrs_bool/regression", true);
-				
+				featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  			
 			}
 
 			cout << "Class " << cj << " is " << l.name() << endl;
@@ -1010,7 +1006,7 @@ void bextract_train(vector<Collection> cls,
 	if (pluginName != EMPTYSTRING) 
 	{
 		featureNetwork->updctrl("AudioSink/dest/mrs_bool/mute", false);
-		featureNetwork->updctrl("AudioSink/dest/mrs_bool/init", false);
+		featureNetwork->updctrl("AudioSink/dest/mrs_bool/initAudio", true);//[!][?] this still does not solves the problem of sfplugin being unable to play audio... 
 	}
 	
 	if (wekafname != EMPTYSTRING)

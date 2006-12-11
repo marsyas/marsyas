@@ -46,9 +46,10 @@ private:
   std::vector<std::string> labelNames_;
   mrs_natural precision_;
   mrs_natural downsample_;
-  mrs_bool regression_;
   
-
+	MarControlPtr ctrl_regression_;
+	MarControlPtr ctrl_putHeader_;
+ 
 public:
   WekaSink(std::string name);
   WekaSink(const WekaSink& a);
