@@ -31,7 +31,7 @@ INCLUDES        = -I$(top_builddir) -I$(top_builddir)/marsyas \
 bin_PROGRAMS    = sfinfo sfplugin sfplay extract bextract \
 		  mkcollection phasevocoder \
 		  pitchextract sfplaygui tempo \
-		  server textract msl tutorial \
+		  server msl tutorial \
 		  ERBTest marsyasTests \
 		  SeneffEarTest record \
 		  drumExtract mixer mugle classifyFile midiTest \
@@ -84,12 +84,6 @@ mkcollection_LDADD       = $(top_builddir)/marsyas/libmarsyas.a \
 server_SOURCES     = server_main.cpp 
 server_LDADD       = $(top_builddir)/marsyas/libmarsyas.a \
 			$(Libs)
-
-
-textract_SOURCES     = textract.cpp 
-textract_LDADD       = $(top_builddir)/marsyas/libmarsyas.a \
-			$(Libs)
-
 
 msl_SOURCES     = msl.cpp 
 msl_LDADD       = $(top_builddir)/marsyas/libmarsyas.a \

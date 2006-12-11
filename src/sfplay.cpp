@@ -91,11 +91,6 @@ void sfplay(vector<string> soundfiles)
   // update controls 
   playbacknet->updctrl("mrs_natural/inSamples", 100);
   
-  if (fileName == EMPTYSTRING)	// audio output
-    {
-      playbacknet->updctrl("AudioSink/dest/mrs_natural/bufferSize", 256); 
-      playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-    }
 
   playbacknet->updctrl("SoundFileSource/src/mrs_real/repetitions", repetitions);
   playbacknet->updctrl("SoundFileSource/src/mrs_real/duration", length);
@@ -124,6 +119,15 @@ void sfplay(vector<string> soundfiles)
       if (fileName != EMPTYSTRING) // soundfile output instead of audio output
 	playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", fileName);
   
+
+      if (fileName == EMPTYSTRING)	// audio output
+	{
+	  playbacknet->updctrl("AudioSink/dest/mrs_natural/bufferSize", 256); 
+	  playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	}
+
+      
+
       
       while (playbacknet->getctrl("mrs_bool/notEmpty")->toBool())	
 	{

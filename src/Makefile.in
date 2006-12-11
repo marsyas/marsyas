@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-SOURCES = $(ERBTest_SOURCES) $(LPCExample_SOURCES) $(SeneffEarTest_SOURCES) $(bextract_SOURCES) $(classifyFile_SOURCES) $(drumExtract_SOURCES) $(extract_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mixer_SOURCES) $(mkcollection_SOURCES) $(msl_SOURCES) $(mugle_SOURCES) $(peVocoder_SOURCES) $(peakClustering_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(server_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplaygui_SOURCES) $(sfplugin_SOURCES) $(tempo_SOURCES) $(textract_SOURCES) $(tutorial_SOURCES)
+SOURCES = $(ERBTest_SOURCES) $(LPCExample_SOURCES) $(SeneffEarTest_SOURCES) $(bextract_SOURCES) $(classifyFile_SOURCES) $(drumExtract_SOURCES) $(extract_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mixer_SOURCES) $(mkcollection_SOURCES) $(msl_SOURCES) $(mugle_SOURCES) $(peVocoder_SOURCES) $(peakClustering_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(server_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplaygui_SOURCES) $(sfplugin_SOURCES) $(tempo_SOURCES) $(tutorial_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -42,12 +42,11 @@ target_triplet = @target@
 bin_PROGRAMS = sfinfo$(EXEEXT) sfplugin$(EXEEXT) sfplay$(EXEEXT) \
 	extract$(EXEEXT) bextract$(EXEEXT) mkcollection$(EXEEXT) \
 	phasevocoder$(EXEEXT) pitchextract$(EXEEXT) sfplaygui$(EXEEXT) \
-	tempo$(EXEEXT) server$(EXEEXT) textract$(EXEEXT) msl$(EXEEXT) \
-	tutorial$(EXEEXT) ERBTest$(EXEEXT) marsyasTests$(EXEEXT) \
-	SeneffEarTest$(EXEEXT) record$(EXEEXT) drumExtract$(EXEEXT) \
-	mixer$(EXEEXT) mugle$(EXEEXT) classifyFile$(EXEEXT) \
-	midiTest$(EXEEXT) LPCExample$(EXEEXT) peakClustering$(EXEEXT) \
-	peVocoder$(EXEEXT)
+	tempo$(EXEEXT) server$(EXEEXT) msl$(EXEEXT) tutorial$(EXEEXT) \
+	ERBTest$(EXEEXT) marsyasTests$(EXEEXT) SeneffEarTest$(EXEEXT) \
+	record$(EXEEXT) drumExtract$(EXEEXT) mixer$(EXEEXT) \
+	mugle$(EXEEXT) classifyFile$(EXEEXT) midiTest$(EXEEXT) \
+	LPCExample$(EXEEXT) peakClustering$(EXEEXT) peVocoder$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in ChangeLog
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -158,10 +157,6 @@ am_tempo_OBJECTS = tempo.$(OBJEXT)
 tempo_OBJECTS = $(am_tempo_OBJECTS)
 tempo_DEPENDENCIES = $(top_builddir)/marsyas/libmarsyas.a \
 	$(am__DEPENDENCIES_1)
-am_textract_OBJECTS = textract.$(OBJEXT)
-textract_OBJECTS = $(am_textract_OBJECTS)
-textract_DEPENDENCIES = $(top_builddir)/marsyas/libmarsyas.a \
-	$(am__DEPENDENCIES_1)
 am_tutorial_OBJECTS = tutorial.$(OBJEXT)
 tutorial_OBJECTS = $(am_tutorial_OBJECTS)
 tutorial_DEPENDENCIES = $(top_builddir)/marsyas/libmarsyas.a \
@@ -185,7 +180,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/server_main.Po ./$(DEPDIR)/sfinfo.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sfplay.Po ./$(DEPDIR)/sfplaygui.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sfplugin.Po ./$(DEPDIR)/tempo.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/textract.Po ./$(DEPDIR)/tutorial.Po
+@AMDEP_TRUE@	./$(DEPDIR)/tutorial.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -200,8 +195,7 @@ SOURCES = $(ERBTest_SOURCES) $(LPCExample_SOURCES) \
 	$(peakClustering_SOURCES) $(phasevocoder_SOURCES) \
 	$(pitchextract_SOURCES) $(record_SOURCES) $(server_SOURCES) \
 	$(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplaygui_SOURCES) \
-	$(sfplugin_SOURCES) $(tempo_SOURCES) $(textract_SOURCES) \
-	$(tutorial_SOURCES)
+	$(sfplugin_SOURCES) $(tempo_SOURCES) $(tutorial_SOURCES)
 DIST_SOURCES = $(ERBTest_SOURCES) $(LPCExample_SOURCES) \
 	$(SeneffEarTest_SOURCES) $(bextract_SOURCES) \
 	$(classifyFile_SOURCES) $(drumExtract_SOURCES) \
@@ -211,8 +205,7 @@ DIST_SOURCES = $(ERBTest_SOURCES) $(LPCExample_SOURCES) \
 	$(peakClustering_SOURCES) $(phasevocoder_SOURCES) \
 	$(pitchextract_SOURCES) $(record_SOURCES) $(server_SOURCES) \
 	$(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplaygui_SOURCES) \
-	$(sfplugin_SOURCES) $(tempo_SOURCES) $(textract_SOURCES) \
-	$(tutorial_SOURCES)
+	$(sfplugin_SOURCES) $(tempo_SOURCES) $(tutorial_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-exec-recursive install-info-recursive \
@@ -372,10 +365,6 @@ mkcollection_LDADD = $(top_builddir)/marsyas/libmarsyas.a \
 
 server_SOURCES = server_main.cpp 
 server_LDADD = $(top_builddir)/marsyas/libmarsyas.a \
-			$(Libs)
-
-textract_SOURCES = textract.cpp 
-textract_LDADD = $(top_builddir)/marsyas/libmarsyas.a \
 			$(Libs)
 
 msl_SOURCES = msl.cpp 
@@ -558,9 +547,6 @@ sfplugin$(EXEEXT): $(sfplugin_OBJECTS) $(sfplugin_DEPENDENCIES)
 tempo$(EXEEXT): $(tempo_OBJECTS) $(tempo_DEPENDENCIES) 
 	@rm -f tempo$(EXEEXT)
 	$(CXXLINK) $(tempo_LDFLAGS) $(tempo_OBJECTS) $(tempo_LDADD) $(LIBS)
-textract$(EXEEXT): $(textract_OBJECTS) $(textract_DEPENDENCIES) 
-	@rm -f textract$(EXEEXT)
-	$(CXXLINK) $(textract_LDFLAGS) $(textract_OBJECTS) $(textract_LDADD) $(LIBS)
 tutorial$(EXEEXT): $(tutorial_OBJECTS) $(tutorial_DEPENDENCIES) 
 	@rm -f tutorial$(EXEEXT)
 	$(CXXLINK) $(tutorial_LDFLAGS) $(tutorial_OBJECTS) $(tutorial_LDADD) $(LIBS)
@@ -595,7 +581,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sfplaygui.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sfplugin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tempo.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/textract.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tutorial.Po@am__quote@
 
 .cpp.o:
