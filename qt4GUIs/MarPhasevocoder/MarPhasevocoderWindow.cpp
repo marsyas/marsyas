@@ -183,7 +183,8 @@ MarPhasevocoderWindow::createNetwork()
   pvoc_->updctrl("ShiftOutput/so/mrs_natural/WindowSize", Nw);      
   pvoc_->updctrl("ShiftOutput/so/mrs_natural/Decimation", D);
   pvoc_->updctrl("Gain/gain/mrs_real/gain", gopt_);
-  
+ 
+  pvoc_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
   mwr_ = new MarSystemWrapper(pvoc_);
   mwr_->start();  

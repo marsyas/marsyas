@@ -67,7 +67,7 @@ private:
   MarControlPtr posPtr_;
   MarControlPtr sizePtr_;
   MarControlPtr osratePtr_;
-  
+  MarControlPtr initPtr_; 
   
   
   

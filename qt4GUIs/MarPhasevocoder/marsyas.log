@@ -4666,3 +4666,5 @@
 [MRS_WARNING] Composite::updControl - Composite name = pvoc_
 [MRS_WARNING] Composite::updControl - Unsupported control name = /Series/pvoc_/ShiftOutput/so/natural/Interpolation
 [MRS_WARNING] Composite::updControl - Composite name = pvoc_
+[MRS_WARNING] [MarControl::setValue] Trying to set value of incompatible type (expected mrs_real, given mrs_natural)
+[MRS_WARNING] [MarControl::setValue] Trying to set value of incompatible type (expected mrs_real, given mrs_natural)

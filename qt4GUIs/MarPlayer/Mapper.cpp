@@ -43,6 +43,7 @@ Mapper::Mapper()
   pnet_->addMarSystem(mng.create("AudioSink", "dest"));
   pnet_->linkctrl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
   
+  
   // make a Qt-like thread object wrapped around the MarSystem
   mwr_ = new MarSystemWrapper(pnet_);
   
@@ -56,6 +57,7 @@ Mapper::Mapper()
   posPtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/pos");  
   sizePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/size");  
   osratePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_real/osrate");  
+  initPtr_ = mwr_->getctrl("AudioSink/dest/mrs_bool/initAudio");
 
 
 }
@@ -74,7 +76,7 @@ Mapper::open(QString fileName, int pos)
 
   // update filename
   mwr_->updctrl(filePtr_, fileName.toStdString());
-  
+  mwr_->updctrl(initPtr_, true);
   //  loop forever the piece [!]
   mwr_->updctrl(repPtr_, -1.0); 
   

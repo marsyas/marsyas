@@ -1,8 +1,8 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'MarPhasevocoderWindow.h'
 **
-** Created: Tue Nov 14 23:25:05 2006
-**      by: The Qt Meta Object Compiler version 58 (Qt 4.0.1)
+** Created: Sun Dec 10 19:22:35 2006
+**      by: The Qt Meta Object Compiler version 59 (Qt 4.1.4)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -10,8 +10,8 @@
 #include "MarPhasevocoderWindow.h"
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'MarPhasevocoderWindow.h' doesn't include <QObject>."
-#elif Q_MOC_OUTPUT_REVISION != 58
-#error "This file was generated using the moc from 4.0.1. It"
+#elif Q_MOC_OUTPUT_REVISION != 59
+#error "This file was generated using the moc from 4.1.4. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -68,10 +68,10 @@ int MarPhasevocoderWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
         case 0: about(); break;
-        case 1: timeChanged(*(int*)_a[1]); break;
-        case 2: volumeChanged(*(int*)_a[1]); break;
-        case 3: freqChanged(*(int*)_a[1]); break;
-        case 4: sinusoidsChanged(*(int*)_a[1]); break;
+        case 1: timeChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 2: volumeChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 3: freqChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 4: sinusoidsChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 5: open(); break;
         }
         _id -= 6;
