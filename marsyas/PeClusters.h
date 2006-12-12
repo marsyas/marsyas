@@ -101,7 +101,6 @@ realvec harmonicityHistogram;
 	class PeClusters
 	{
 		private:
-		realvec conversion;
 PeCluster *set;
 mrs_natural nbClusters;
 mrs_natural nbFrames;
@@ -111,7 +110,7 @@ public:
 		~PeClusters();
 
 		void getVecs(realvec& vecs);
-		realvec &getConversionTable();
+		void getConversionTable(realvec &);
 		void selectBefore(mrs_real val);
 		void selectGround();
 void attributes(realvec &peakSet);

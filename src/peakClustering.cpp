@@ -1,6 +1,8 @@
 // #include <vld.h>
 
 #include <cstdio>
+#include<iostream>
+#include<iomanip>
 
 #include "MarSystemManager.h"
 #include "AudioSink.h"
@@ -43,7 +45,7 @@ int winSize_ = 2048;
 // if kept the same no time expansion
 int hopSize_ = 512;
 // nb Sines
-int nbSines_ = 15;
+int nbSines_ = 20;
 // nbClusters
 int nbClusters_ = 3;
 // output buffer Size
@@ -51,9 +53,12 @@ int bopt_ = 128;
 // output gain
 mrs_real gopt_ = 1.0;
 // number of accumulated frames
-mrs_natural accSize_ = 12;
+mrs_natural accSize_ = 40;
+// number of seconds for analysing process
+mrs_natural stopAnalyse_=0;
 // type of similarity Metrics // test amplitude normamlise gtzan
-string similarityType_ = "hofbab";
+string defaultSimilarityType_ = "hofbab";
+string similarityType_ = EMPTYSTRING;
 // weight for similarity Metrics
 realvec similarityWeight_;	
 // store for clustered peaks
@@ -61,7 +66,7 @@ realvec peakSet_;
 // delay for noise insertion
 mrs_real noiseDelay_=0;
 // gain for noise insertion
-mrs_real noiseGain_=.2;
+mrs_real noiseGain_=.8;
 // duration for noise insertion
 mrs_real noiseDuration_=0;
 // sampling frequency
@@ -140,6 +145,7 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		fanin->addMarSystem(mng.create("SoundFileSource", "src"));
 	// create a series for the noiseSource
 	MarSystem* mixseries = mng.create("Series", "mixseries");
+	
 	if(noiseName == "white")
 mixseries->addMarSystem(mng.create("NoiseSource", "noise"));
 	else
@@ -207,6 +213,7 @@ mixseries->addMarSystem(mng.create("NoiseSource", "noise"));
 		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_natural/inObservations", 1);
 		samplingFrequency_ = pvseries->getctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_real/osrate")->toReal();
 	}
+
 
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/SoundFileSource/noise/mrs_string/filename", noiseName);
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/SoundFileSource/noise/mrs_natural/inSamples", D);
@@ -286,10 +293,18 @@ similarityWeight_(2) = 1;
 			bool temp = pvseries->getctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
 			bool temp1 = accumNet->getctrl("Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
 			bool temp2 = preNet->getctrl("Fanin/fanin/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
-			string fname = pvseries->getctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_string/filename")->toString();
-
+			
+			mrs_real timeRead =  preNet->getctrl("Fanin/fanin/SoundFileSource/src/mrs_natural/pos")->toNatural()/samplingFrequency_;
+			mrs_real timeLeft;
+			if(!stopAnalyse_)
+				timeLeft =  preNet->getctrl("Fanin/fanin/SoundFileSource/src/mrs_natural/size")->toNatural()/samplingFrequency_;
+			else
+				timeLeft = stopAnalyse_;
+			// string fname = pvseries->getctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_string/filename")->toString();
+			printf("%.2f / %.2f \r", timeRead, timeLeft);
+			//cout << fixed << setprecision(2) << timeRead << "/" <<  setprecision(2) << timeLeft;
 			///*bool*/ temp = pvseries->getctrl("Accumulator/accumNet/Series/preNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
-			if (temp2 == false)
+			if (temp2 == false || (stopAnalyse_ !=0 && stopAnalyse_<timeRead))
 				break;
 		}
 	}
@@ -320,10 +335,12 @@ initOptions()
 	cmd_options.addStringOption("noisename", "N", EMPTYSTRING);
 	cmd_options.addStringOption("outputdirectoryname", "o", EMPTYSTRING);
 	cmd_options.addStringOption("inputdirectoryname", "i", EMPTYSTRING);
+	cmd_options.addStringOption("typeSimilarity", "t", defaultSimilarityType_);
 	cmd_options.addNaturalOption("winsize", "w", winSize_);
 	cmd_options.addNaturalOption("fftsize", "n", fftSize_);
 	cmd_options.addNaturalOption("sinusoids", "s", nbSines_);
 	cmd_options.addNaturalOption("bufferSize", "b", bopt_);
+  cmd_options.addNaturalOption("quitAnalyse", "q", stopAnalyse_);
 
 	cmd_options.addBoolOption("analyse", "a", analyse_);
 	cmd_options.addBoolOption("attributes", "A", attributes_);
@@ -342,11 +359,13 @@ loadOptions()
 	fileName   = cmd_options.getStringOption("filename");
 	inputDirectoryName = cmd_options.getStringOption("inputdirectoryname");
 	outputDirectoryName = cmd_options.getStringOption("outputdirectoryname");
+	similarityType_ = cmd_options.getStringOption("typeSimilarity");
 	noiseName = cmd_options.getStringOption("noisename");
 	winSize_ = cmd_options.getNaturalOption("winsize");
 	fftSize_ = cmd_options.getNaturalOption("fftsize");
 	nbSines_ = cmd_options.getNaturalOption("sinusoids");
 	bopt_ = cmd_options.getNaturalOption("bufferSize");
+	stopAnalyse_ = cmd_options.getNaturalOption("quitAnalyse");
 
 	analyse_ = cmd_options.getBoolOption("analyse");
 	attributes_ = cmd_options.getBoolOption("attributes");
@@ -407,7 +426,14 @@ main(int argc, const char **argv)
 				mixName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Mix." + Sfname.ext() ;
 				filePeakName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Peak.txt" ;
 				fileClustName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Clust.txt" ;
-				cout << fileResName << endl;
+
+				if(noiseName == "music")
+				{
+					string tmp = Sfname.nameNoExt();
+					tmp.replace(tmp.length()-1, 1, 1, 'M');
+					noiseName = Sfname.path() +tmp + "." +  Sfname.ext();
+				}
+				cout << noiseName << endl;
 			}
 			if(analyse_)
 			{
@@ -424,7 +450,7 @@ main(int argc, const char **argv)
 			}
 
 			MATLAB_PUT(peakSet_, "peaks");
-			//MATLAB_EVAL("plotPeaks(peaks)");
+			MATLAB_EVAL("figure(1); clf ; plotPeaks(peaks, -1)");
 
 
 			// create data for clusters
@@ -440,24 +466,35 @@ main(int argc, const char **argv)
 				// cout << vecs;
 				MATLAB_PUT(getcwd(NULL, 0), "path");
 			  MATLAB_PUT(fileName, "fileName");
-				MATLAB_PUT(vecs, "clusters");
-				MATLAB_EVAL("plotClusters");
-
+				
+        MATLAB_PUT(vecs, "clusters");
 				ofstream clustFile;
 				clustFile.open(fileClustName.c_str());
 				if(!clustFile)
 					cout << "Unable to open output Clusters File " << fileClustName << endl;
-				clustFile << vecs;
+			//	clustFile << vecs;
 				clustFile.close();
 			}
-			// compute ground truth
+			
+			// compute ground truth 
 			if(ground_)
+			{
+				realvec vecs;
 				clusters.synthetize(peakSet_, *sfi, fileName, winSize_, hopSize_, nbSines_, bopt_, 1);
+				clusters.getVecs(vecs);
+				MATLAB_PUT(vecs, "clusters");
+				clusters.selectGround();
+				realvec ct;
+				
+				
 
-			clusters.selectGround();
-			updateLabels(peakSet_, clusters.getConversionTable());
-
-			/*MATLAB_PUT(peakSet_, "peaksGp");
+				clusters.getConversionTable(ct);
+				updateLabels(peakSet_, ct);
+			//	cout << ct;
+			}
+			if(ground_ || attributes_)
+				MATLAB_EVAL("figure(2) ; plotClusters");
+			/*	MATLAB_PUT(peakSet_, "peaksGp");
 			MATLAB_EVAL("plotPeaks(peaksGp)");*/
 
 			if(clusterSynthetize_)

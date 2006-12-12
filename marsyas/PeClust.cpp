@@ -26,6 +26,7 @@
 #include "PeClust.h"
 #include "PeUtilities.h"
 #include "PeSimilarity.h"
+#include "NormCut.h"
 
 using namespace std;
 using namespace Marsyas;
@@ -102,7 +103,7 @@ PeClust::myUpdate()
 	maxLabel_=0;
 
 	harmonicityWeight_=0.01;
-	harmonicitySize_=10;
+	harmonicitySize_=20;
 
 	firstF_.stretch(kmax_);
 	firstA_.stretch(kmax_);
@@ -111,7 +112,7 @@ PeClust::myUpdate()
 }
 
 void
-PeClust::labeling(realvec& data, realvec& labels)
+PeClust::labeling(realvec& data, realvec& labels, mrs_natural cut)
 {
 	int i, j;
 
@@ -242,7 +243,8 @@ PeClust::labeling(realvec& data, realvec& labels)
 				 }
 					
  // cout << iMax << " " << i2Max << " " << jMax << endl << endl;
-			//		if(iMax == i2Max && diff<0.45)
+			//	if(iMax == i2Max && diff<0.35)
+				//	if(0)
 						{
 					// if two correspond well
 					// fill conversion table with oldLabel
@@ -264,11 +266,12 @@ PeClust::labeling(realvec& data, realvec& labels)
 				else
 					break;
 		 }
+	//	 cout << maxLabel_<< endl;
 			// fill conversion table with new labels
 			mrs_real k = maxLabel_+1;
 			for (i=0 ; i<conversion_.getSize(); i++)
 		 {
-			 if(conversion_(i) == -1.0)
+			 if(cut || conversion_(i) == -1.0)
 				 conversion_(i) = k++;
 		 }
 		// conversion_.dump();
@@ -288,6 +291,20 @@ PeClust::labeling(realvec& data, realvec& labels)
 	}
 }
 
+
+void
+PeClust::simpleLabeling(realvec& data, realvec& labels)
+{
+
+  // fill peaks data with clusters labels
+	for (mrs_natural i=0 ; i<nbPeaks_ ; i++)
+	{
+		data(i, 6) = labels(i);
+		if(labels(i) > maxLabel_)
+			maxLabel_ = labels(i);
+	}
+	}
+
 void 
 PeClust::myProcess(realvec& in, realvec& out)
 {
@@ -304,19 +321,71 @@ PeClust::myProcess(realvec& in, realvec& out)
 
 		// Ncut
 		realvec labels(nbPeaks_);
+labels.setval(-1);
+//#ifdef MARSYAS_MATLAB
+		//MATLAB_PUT(m_, "m");
+		//MATLAB_PUT(nbClusters_, "nb");
+		//MATLAB_EVAL("[d, vec, val] = ncutW(m, nb);");
+		//MATLAB_EVAL("d=d*(1:size(d, 2))';d=d-1;");
+		//MATLAB_GET("d", labels);
+//#else
+//cout << labels;
+//
+realvec nCutDiscrete(nbPeaks_*nbClusters_);
+realvec nCutEigVectors(nbPeaks_*nbClusters_);
+realvec nCutEigValues(nbClusters_);
+realvec labels2(nbPeaks_);
+ncutW(&nbPeaks_, m_, &nbClusters_, nCutDiscrete, nCutEigVectors, nCutEigValues);
+discrete2labels(labels, nCutDiscrete, nbClusters_, nbPeaks_);
 
-		MATLAB_PUT(m_, "m");
-		MATLAB_PUT(nbClusters_, "nb");
-		MATLAB_EVAL("[d, vec, val] = ncutW(m, nb);");
-		MATLAB_EVAL("d=d*(1:size(d, 2))';d=d-1;");
-		MATLAB_GET("d", labels);
+//cout << endl;
+//cout << nCutDiscrete << endl;
+//realvec labels3(2, nbPeaks_);
+//int nb=0;
+//for(int i =0 ; i<nbPeaks_; i++)
+//{
+//labels3(0, i) = labels(i);
+//labels3(1, i) = labels2(i);
+//
+//
+//}
+//for(int i =0 ; i<nbPeaks_; i++)
+//for(int j =0 ; j<nbPeaks_; j++)
+//if(labels3(0, i) == labels3(0, j) && labels3(1, i) != labels3(1, j))
+//nb++;
+//cout << labels3;
+//if(nb)
+//{
+//cout << endl << nb << endl;
+////#endif
+//mrs_natural r=0;
+//}
 
-		labeling(data_, labels);
+	
 
-	/*	MATLAB_PUT(data_, "peaks");
-		MATLAB_EVAL("plotPeaks(peaks)");*/
+	//simpleLabeling(data_, labels);
+
+	//	MATLAB_PUT(data_, "peaks");
+	//	// MATLAB_EVAL("plotPeaks(peaks)");
+ //   PeClusters clusters(data_);
+	//	realvec vecs;
+	//	clusters.attributes(data_);	
+	//	clusters.getVecs(vecs);
+	//
+	//// cout << vecs;
+	//  MATLAB_PUT(vecs, "clusters");
+	//	MATLAB_EVAL("plotClusters");
 
 		peaks2V(data_, lastFrame_, out, kmax_);
+
+		/*mrs_natural wantedNbClusters = 1, back;
+		selectClusters(m_, labels, wantedNbClusters, nbClusters_);
+		back = nbClusters_;
+		nbClusters_ = wantedNbClusters;*/
+		
+		labeling(data_, labels, 1);
+    
+		//nbClusters_ = back;
 
 		// peaks storing
 		const realvec& peakSet = ctrl_peakSet_->to<realvec> (); 

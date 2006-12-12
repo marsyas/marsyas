@@ -51,7 +51,7 @@ Code adapted by <lmartins@inescporto.pt> - 16.06.2006
 /* Copyright:                                                     */
 /* Lehrstuhl fuer Nachrichtentechnik Erlangen                     */
 /* Cauerstr. 7, 8520 Erlangen, FRG, 1993                          */
-/* e-mail: int@nt.e-technik.uni-erlangen.de                       */
+/* e-mail: mrs_natural@nt.e-technik.uni-erlangen.de                       */
 /*                                                                */
 /******************************************************************/
 
@@ -65,7 +65,7 @@ Code adapted by <lmartins@inescporto.pt> - 16.06.2006
 namespace Marsyas
 {
 
-class NumericLib
+static class NumericLib
 {
 private:
 	
@@ -104,7 +104,7 @@ private:
 	/* Copyright:                                                     */
 	/* Lehrstuhl fuer Nachrichtentechnik Erlangen                     */
 	/* Cauerstr. 7, 8520 Erlangen, FRG, 1993                          */
-	/* e-mail: int@nt.e-technik.uni-erlangen.de                       */
+	/* e-mail: mrs_natural@nt.e-technik.uni-erlangen.de                       */
 	/*                                                                */
 	/******************************************************************/
 	unsigned char null(mrs_complex *p,mrs_complex *pred,mrs_natural *n,mrs_complex *root,
@@ -147,12 +147,12 @@ private:
 	/* Copyright:                                                     */
 	/* Lehrstuhl fuer Nachrichtentechnik Erlangen                     */
 	/* Cauerstr. 7, 91054 Erlangen, FRG, 1993                         */
-	/* e-mail: int@nt.e-technik.uni-erlangen.de                       */
+	/* e-mail: mrs_natural@nt.e-technik.uni-erlangen.de                       */
 	/*                                                                */
 	/******************************************************************/
 	mrs_complex muller(mrs_complex *pred,mrs_natural nred);
 
-	mrs_complex x0MULLER_,x1MULLER_,x2MULLER_,	/* common points [x0,f(x0)=P(x0)], ... [x2,f(x2)]  */
+	mrs_complex x0MULLER_,x1MULLER_,x2MULLER_,	/* common pomrs_naturals [x0,f(x0)=P(x0)], ... [x2,f(x2)]  */
 		f0MULLER_,f1MULLER_,f2MULLER_,			/* of parabola and polynomial                      */
 		h1MULLER_,h2MULLER_,					/* distance between x2 and x1                      */
 		q2MULLER_;							/* smaller root of parabola                        */
@@ -205,7 +205,7 @@ private:
 	/* Copyright:                                                     */
 	/* Lehrstuhl fuer Nachrichtentechnik Erlangen                     */
 	/* Cauerstr. 7, 8520 Erlangen, FRG, 1993                          */
-	/* e-mail: int@nt.e-technik.uni-erlangen.de                       */
+	/* e-mail: mrs_natural@nt.e-technik.uni-erlangen.de                       */
 	/*                                                                */
 	/******************************************************************/
 	mrs_complex newton(mrs_complex *p,mrs_natural n,mrs_complex ns,mrs_real *dxabs,
@@ -240,7 +240,7 @@ private:
 	/* Copyright:                                                     */
 	/* Lehrstuhl fuer Nachrichtentechnik Erlangen                     */
 	/* Cauerstr. 7, 8520 Erlangen, FRG, 1993                          */
-	/* e-mail: int@nt.e-technik.uni-erlangen.de                       */
+	/* e-mail: mrs_natural@nt.e-technik.uni-erlangen.de                       */
 	/*                                                                */
 	/******************************************************************/
 	void hornc(mrs_complex *pred,mrs_natural nred,mrs_complex x0,unsigned char flag);
@@ -249,6 +249,9 @@ private:
 	void fdvalue(mrs_complex *p,mrs_natural n,mrs_complex *f,mrs_complex *df,mrs_complex x0,
 		unsigned char flag) ;
 
+	static mrs_real add(mrs_real *a, mrs_real *b);
+	static mrs_real pow_di(mrs_real *ap, mrs_natural *bp);
+
 public:
 
 	NumericLib();
@@ -256,8 +259,44 @@ public:
 
 	bool polyRoots(std::vector<mrs_complex> coefs, bool complexCoefs, mrs_natural order, std::vector<mrs_complex> &roots);
 	mrs_real determinant(realvec matrix);
-	
 
+
+	// A is m x n
+	// U is m x m
+	// V is n x n
+	// s is max(m,n)+1 x 1
+	static void svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realvec &V, realvec &s);
+
+	/* 
+	Householder reduction of matrix a to tridiagonal form.
+	Algorithm: Martin et al., Num. Math. 11, 181-195, 1968.
+	Ref: Smith et al., Matrix Eigensystem Routines -- EISPACK Guide
+	Springer-Verlag, 1976, pp. 489-494.
+	W H Press et al., Numerical Recipes in C, Cambridge U P,
+	1988, pp. 373-374.  
+
+	Source code adapted from F. Murtagh, Munich, 6 June 1989
+	http://astro.u-strasbg.fr/~fmurtagh/mda-sw/pca.c
+	*/
+	//void tred2(realvec &**a, mrs_natural n, realvec &*d, realvec &*e);
+	static void tred2(realvec &a, mrs_natural n, realvec &d, realvec &e);
+
+	/*  
+	Tridiagonal QL algorithm -- Implicit  
+
+	Source code adapted from F. Murtagh, Munich, 6 June 1989
+	http://astro.u-strasbg.fr/~fmurtagh/mda-sw/pca.c
+	*/
+	//void tqli(double d[], double e[], mrs_natural n, realvec &*z);
+	static void tqli(realvec &d, realvec &e, mrs_natural n, realvec &z);
+
+	// Machine parameters
+	// cmach :
+	//    'B' | 'b' --> base
+	//    'M' | 'm' --> digits in the mantissa
+	//    'R' | 'r' --> approximation method : 1=rounding 0=chopping
+	//    'E' | 'e' --> eps
+	static double machp(char *cmach);
 };
 
 }//namespace Marsyas

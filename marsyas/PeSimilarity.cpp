@@ -245,3 +245,61 @@ Marsyas::harmonicitySimilarityCompute(realvec& data, std::vector<realvec>& fSet,
 	}
 }
 
+
+void Marsyas::selectClusters(realvec &m, realvec &labels, mrs_natural wantedNbClusters, mrs_natural nbClusters)
+{
+	mrs_natural i, j, nbFound=0;
+	realvec sValue(nbClusters);
+	//cout << labels;
+	sValue.setval(0);
+	realvec sNb(nbClusters);
+	//cout << labels;
+	sNb.setval(0);
+	realvec newLabels(nbClusters);
+	//cout << labels;
+	newLabels.setval(0);
+
+	for(i=0 ; i<m.getRows() ; i++)
+	{
+		for(j=0 ; j<i ; j++)
+		{		
+			if(labels(i)==labels(j))
+			{
+				sValue((mrs_natural) labels(i))+= m(i, j);
+			sNb((mrs_natural) labels(i))++;
+			}	
+			}
+	}
+	//for(i=0; i<nbClusters ;i++)
+	//sValue(i) /= sNb(i);
+	//cout << sValue;
+
+	while(nbFound<nbClusters-wantedNbClusters)
+	{
+		mrs_natural index=0;
+		mrs_real value=MAXREAL;
+		for(i=0; i<nbClusters ;i++)
+		{
+			if(sValue(i) != -1 && value>sValue(i))
+			{
+				value=sValue(i);
+				index = i;
+			}
+		}
+		sValue(index) = -1;
+		nbFound++;
+	}
+
+  // cout << sValue;
+	mrs_natural k=0;
+	for(i=0; i<nbClusters ;i++)
+		if(sValue(i) == -1)
+			newLabels(i) =-1;
+		else
+			newLabels(i) = k++;
+
+	// cout << newLabels;
+	for(i=0 ; i<m.getRows() ; i++)
+		labels(i) = newLabels(labels(i));
+	//cout << labels;
+}

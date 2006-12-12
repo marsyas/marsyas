@@ -36,7 +36,7 @@ PeCluster::PeCluster()
 	groundLabel = -1;
 	oriLabel=-1;
 	label=-1;
-	histSize = 20;
+	histSize = 4000;
 }
 
 PeCluster::~PeCluster()
@@ -117,19 +117,23 @@ PeCluster::computeAttributes(realvec& peakSet, mrs_natural l, string type)
 			harmonicityHistogram.stretch(histSize);
 			harmonicityHistogram.setval(0);
 			// compute histograms
-			/*for(i=0 ; i<histSize ; i++)
+			mrs_real norm = 0;
+			for(i=0 ; i<nbPeaks ; i++)
 			{
 				amplitudeHistogram((mrs_natural) floor(set(i, pkAmplitude)*histSize)) += 1;
-				frequencyHistogram((mrs_natural) floor(set(i, pkFrequency)*histSize/22050)) += 1;
-			}*/
-	
+				frequencyHistogram((mrs_natural) floor(set(i, pkFrequency)*histSize/2500)) += set(i, pkAmplitude);
+			  norm+= set(i,pkAmplitude);
+			}
+	    //normalize them
+      amplitudeHistogram/=norm;
+      frequencyHistogram/=norm;
 			// compute similarities within cluster
 }
 
 mrs_natural 
 PeCluster::getVecSize()
 {
-	return 3+6+2*envSize;
+	return 3+6+2*(envSize+histSize);
 }
 
 void 
@@ -152,6 +156,10 @@ PeCluster::toVec(realvec& vec)
 		vec(i++) = frequencyEvolution(j);
 	for (j=0;j<envSize ; j++)
 		vec(i++) = amplitudeEvolution(j);
+for (j=0;j<histSize ; j++)
+		vec(i++) = frequencyHistogram(j);
+	for (j=0;j<histSize ; j++)
+		vec(i++) = amplitudeHistogram(j);
 }
 
 mrs_natural 
@@ -201,6 +209,7 @@ PeClusters::PeClusters(realvec &peakSet)
 	nbFrames=0;
 	for (int i=0 ; i<peakSet.getRows() ; i++)
 	{
+	  //  cout << peakSet(i, pkGroup) << " ";
 		if(peakSet(i, pkGroup) > nbClusters)
 			nbClusters = (mrs_natural) peakSet(i, pkGroup);
 		if(peakSet(i, pkTime) > nbFrames)
@@ -214,7 +223,6 @@ PeClusters::PeClusters(realvec &peakSet)
 	{
 		set[i].init(peakSet, i);
 	}
-	conversion.stretch(nbClusters);
 }
 
 PeClusters::~PeClusters(){
@@ -249,14 +257,16 @@ maxSize = set[i].getVecSize();
 }
 
 
-realvec&
-PeClusters::getConversionTable()
+void
+PeClusters::getConversionTable(realvec& conversion)
 {
-	for (int i=0 ; i<nbClusters ; i++)
+	conversion.stretch(nbClusters+2);
+	conversion(0) = -2;
+	conversion(1) = -1;
+	for (int i= 0; i<nbClusters ; i++)
 	{
-		conversion(i) = set[i].label;
+		conversion(i+2) = set[i].label;
 	}
-	return conversion;
 }
 
 void
@@ -300,6 +310,7 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 	realvec pkV(S*nbPkParameters, nbFrames);
 
 	// for all clusters
+	cout << "number of Clusters: " << nbClusters << endl;
 	for (int i=0 ; i<nbClusters ; i++)
 		if(set[i].label != -1)
 		{
@@ -322,16 +333,18 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 
 			ostringstream ossi;
 			ossi << i;
-			string ground = "";
-			if(residual)
-				ground = "Grd";
-
-			// string outsfname = path + name + "_" +  itoa(i, tmp, 10) + "." + ext;
-			// string fileResName = path + name + "Res_" + itoa(i, tmp, 10) + "." + ext;
-
-			// Changed by gtzan to compile trunk under Linux 
-			string outsfname = path + name + ground + "_" +  ossi.str() + "." + ext;
-			string fileResName = path + name + ground + "Res_" + ossi.str() + "." + ext;
+			string outsfname;
+			string fileResName;
+			if(!residual)
+			{
+				outsfname = path + name +  "_" +  ossi.str() + "." + ext;
+				fileResName = path + name +  "Res_" + ossi.str() + "." + ext;
+			}
+			else
+			{
+		/*		outsfname = path + name + "Grd_" +  ossi.str() + "." + ext;
+				fileResName = path + name + "GrdRes_" + ossi.str() + "." + ext;*/
+			}
 
 			synthNetConfigure (pvseries, fileName, outsfname, fileResName, Nw, D, S, 1, 0, bopt, Nw+1-D); //  nbFrames
 
@@ -343,7 +356,7 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 				pvseries->tick();
 
 				// get snr and decide ground thruth
-				if(residual)
+				//if(residual)
 				{
 					const mrs_real snr = pvseries->getctrl("PeSynthetize/synthNet/Series/postNet/PeResidual/res/mrs_real/snr")->toReal();
 					//	cout << " SNR : "<< snr << endl;
@@ -356,19 +369,20 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 				if(pvseries->getctrl("RealvecSource/peSource/mrs_bool/done")->toBool())
 					break;
 			}
-			if(residual)
+	
+			if(Snr)
 			{
 				Snr/=nbActiveFrames;
-				if(Snr)
-					Snr = 10*log10(pow(10, Snr)-1);
-				else
-					Snr = -80;
-				cout << " SNR for cluster " << i << " : "<< Snr << " " << nbActiveFrames << endl;
+				Snr = 10*log10(pow(10, Snr)-1);
+			}
+			else
+				Snr = -80;
+			cout << " SNR for cluster " << i << " : "<< Snr << " " << nbActiveFrames << endl;
+
+			if(residual)
 				if(Snr > -3)
 					set[i].groundLabel = 0;
 				else
-					set[i].groundLabel = -1;
-
-			}	
+					set[i].groundLabel = 1;
 		}
 }

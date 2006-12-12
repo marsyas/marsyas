@@ -64,7 +64,8 @@ private:
 	void myUpdate();
 
 	
-void labeling(realvec& , realvec&);
+void labeling(realvec& , realvec&, mrs_natural cut=0);
+void simpleLabeling(realvec& , realvec&);
 
 public:
   PeClust(std::string name);

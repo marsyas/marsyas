@@ -214,8 +214,8 @@ PeConvert::myProcess(realvec& in, realvec& out)
 		realvec peaks_=mag_;
 		Peaker peaker("Peaker");
 		peaker.updctrl("mrs_real/peakStrength", 0.2);
-		peaker.updctrl("mrs_natural/peakStart", 0);
-		peaker.updctrl("mrs_natural/peakEnd", size_);
+		peaker.updctrl("mrs_natural/peakStart", (mrs_natural) floor(250/osrate_*size_*2));   // 0
+		peaker.updctrl("mrs_natural/peakEnd", (mrs_natural) floor(5000/osrate_*size_*2));  // size_
 		peaker.updctrl("mrs_natural/inSamples", mag_.getCols());
 		peaker.updctrl("mrs_natural/inObservations", mag_.getRows());
 		peaker.updctrl("mrs_natural/onSamples", peaks_.getCols());
@@ -232,7 +232,7 @@ PeConvert::myProcess(realvec& in, realvec& out)
 		realvec index_(kmax_*2);
 		for(t=0 ; t<N2 ; t++)
 		{
-			if(!frequency_(t))
+			if(!frequency_(t))// || frequency_(t)>500)  // 250 2500
 				peaks_(t) = 0;
 		}
 

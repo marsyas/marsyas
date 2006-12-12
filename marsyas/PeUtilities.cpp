@@ -115,7 +115,7 @@ Marsyas::peaks2V (realvec& in, realvec& last, realvec& out, mrs_natural maxNbPea
 void Marsyas::updateLabels(realvec& peakSet, realvec& conversion)
 {
 	for (mrs_natural i=0 ; i<peakSet.getRows() ; i++)
-		peakSet(i, pkGroup) = conversion((mrs_natural) peakSet(i, pkGroup));
+		peakSet(i, pkGroup) = conversion((mrs_natural) peakSet(i, pkGroup)+2);
 }
 
 
@@ -493,4 +493,12 @@ mrs_real Marsyas::harmonicWeighting(mrs_real f, mrs_real h, mrs_real w)
 mrs_real Marsyas::harmonicWeightingBasic(mrs_real f, mrs_real h)
 {
 	return (1+cos(2*PI*f/h))/2;
+}
+
+void Marsyas::discrete2labels(realvec &labels, realvec& n, mrs_natural nbClusters, mrs_natural nbPeaks)
+{
+		for(mrs_natural i=0 ; i<nbPeaks ; i++)
+		for(mrs_natural j=0 ; j<nbClusters ; j++)
+			if(n(i*nbClusters+j) == 1)
+				labels(i) = j;
 }

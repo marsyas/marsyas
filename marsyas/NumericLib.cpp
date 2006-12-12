@@ -1039,5 +1039,794 @@ NumericLib::fdvalue(mrs_complex *p,mrs_natural n,mrs_complex *f,mrs_complex *df,
 		}
 }
 
+
 //**********************************************************************************************************
 
+
+// Used to force A and B to be stored prior to
+// doing the addition of A and B, for use in
+// situations where optimizers might hold one
+// of these in a register
+mrs_real NumericLib::add(mrs_real *a, mrs_real *b)
+{
+   mrs_real ret;
+   ret = *a + *b;
+   return ret;
+}
+
+mrs_real NumericLib::pow_di(mrs_real *ap, mrs_natural *bp)
+{
+   mrs_real pow, x;
+   mrs_natural n;
+   unsigned long u;
+   
+   pow = 1;
+   x = *ap;
+   n = *bp;
+   
+   if(n != 0)
+   {
+      if(n < 0)
+      {
+         n = -n;
+         x = 1/x;
+      }
+      for(u = n; ; )
+      {
+         if(u & 01)
+            pow *= x;
+         if(u >>= 1)
+            x *= x;
+         else
+            break;
+      }
+   }
+   return(pow);
+}
+
+// Machine parameters
+// cmach :
+//    'B' | 'b' --> base
+//    'M' | 'm' --> digits in the mantissa
+//    'R' | 'r' --> approximation method : 1=rounding 0=chopping
+//    'E' | 'e' --> eps
+mrs_real NumericLib::machp(char *cmach)
+{
+   mrs_real zero, one, two, half, sixth, third, a, b, c, f, d__1, d__2, d__3, d__4, d__5, qtr, eps;
+   mrs_real base;
+   mrs_natural lt, rnd, i__1;
+   
+   one = 1.;
+   a = 1.;
+   c = 1.;
+   
+
+   while( c == one ){
+      a *= 2;
+      c = add(&a, &one);
+      d__1 = -a;
+      c = add(&c, &d__1);
+   }
+   
+   b = 1.;   
+   c = add( &a, &b );
+   
+   while( c == a )
+   {
+      b *= 2;
+      c = add( &a, &b );
+   }
+   
+   qtr = one / 4;
+   d__1 = -a;
+   c = add(&c, &d__1);
+   base = (mrs_natural)(c+qtr);
+
+   
+   if( *cmach == 'M' || *cmach == 'm' || *cmach == 'E' || *cmach == 'e' )
+   {      
+      lt = 0;
+      a = 1.;
+      c = 1.;
+      
+      while( c == one ){
+         ++lt;
+         a *= base;
+         c = add( &a, &one );
+         d__1 = -a;
+         c = add( &c, &d__1 );
+      } 
+   }
+   
+   if( *cmach == 'R' || *cmach == 'r' || *cmach == 'E' || *cmach == 'e' )
+   {       
+      b = (mrs_real) base;
+      d__1 = b / 2;
+      d__2 = -b / 100;
+      f = add( &d__1, &d__2 );
+      c = add( &f, &a );
+      if( c == a ) {
+         rnd = 1; // true
+      } else {
+         rnd = 0; // false
+      }
+      d__1 = b / 2;
+      d__2 = b / 100;
+      f = add( &d__1 , &d__2 );
+      c = add( &f, &a );
+      if( rnd && c == a ) {
+         rnd = 0; // false
+      } 
+   }
+   
+   if( *cmach == 'E' || *cmach == 'e' )
+   {
+      zero = 0.;
+      two = 2.;
+      
+      i__1 = -lt;
+      a = pow_di( &base, &i__1);
+      eps = a;
+      
+      b = two / 3;
+      half = one / 2;
+      d__1 = -half;
+      sixth = add( &b, &d__1 );
+      third = add( &sixth, &sixth );
+      d__1 = -half;
+      b = add( &third, &d__1 );
+      b = add( &b, &sixth );
+      b = fabs(b);
+      if( b < eps )
+         b = eps;
+      
+      eps = 1.;
+      
+      while( eps > b && b > zero )
+      {
+         eps = b;
+         d__1 = half * eps;
+         /* Computing 5th power */
+         d__3 = two, d__4 = d__3, d__3 *= d__3;
+         /* Computing 2nd power */
+         d__5 = eps;
+         d__2 = d__4 * (d__3 * d__3) * (d__5 * d__5);
+         c = add(&d__1, &d__2);
+         d__1 = -c;
+         c = add(&half, &d__1);
+         b = add(&half, &c);
+         d__1 = -b;
+         c = add(&half, &d__1);
+         b = add(&half, &c);
+      }
+      
+      if( a < eps )
+         eps = a;
+      
+      if( rnd == 1 ){
+         i__1 = 1 - lt;
+         eps = pow_di(&base, &i__1) / 2;
+      } else {
+         i__1 = 1 - lt;
+         eps = pow_di( &base, &i__1 );
+      }
+      
+   }
+   
+   switch(*cmach){
+      case 'B' :
+      case 'b' : return base; break;
+         
+      case 'M' :
+      case 'm' : return lt; break;
+         
+      case 'R' :
+      case 'r' : return rnd; break;
+         
+      case 'E' :
+      case 'e' : return eps; break;
+         
+      default  : return -1;
+   }
+}
+
+
+/*  Reduce a real, symmetric matrix to a symmetric, tridiag. matrix. */
+void 
+NumericLib::tred2(realvec &a, mrs_natural m, realvec &d, realvec &e)
+/* Householder reductiom of matrix a to tridiagomal form.
+Algorithm: Martim et al., Num. Math. 11, 181-195, 1968.
+Ref: Smith et al., Matrix Eigemsystem Routimes -- EISPACK Guide
+Sprimger-Verlag, 1976, pp. 489-494.
+W H Press et al., Numerical Recipes im C, Cambridge U P,
+1988, pp. 373-374.  
+
+Source code adapted from F. Murtagh, Munich, 6 June 1989
+http://astro.u-strasbg.fr/~fmurtagh/mda-sw/pca.c
+*/
+{
+   mrs_natural l, k, j, i;
+   mrs_real scale, hh, h, g, f;
+   
+   for (i = m-1; i > 0; i--)
+   {
+      l = i - 1;
+      h = scale = 0.0;
+      if (l > 0)
+      {
+         for (k = 0; k <= l; k++)
+            scale += fabs(a(k*m+i)); 
+         if (scale == 0.0)
+            e(i) = a(l*m+i); 
+         else
+         {
+            for (k = 0; k <= l; k++)
+            {
+               a(k*m+i) /= scale; 
+               h += a(k*m+i) * a(k*m+i); 
+            }
+            f = a(l*m+i); 
+            g = f>0 ? -sqrt(h) : sqrt(h);
+            e(i) = scale * g;
+            
+            h -= f * g;
+            a(l*m+i) = f - g ; 
+            f = 0.0;
+            for (j = 0; j <= l; j++)
+            {
+               a(i*m+j) = a(j*m+i)/h; 
+               g = 0.0;
+               for (k = 0; k <= j; k++)
+                  g += a(k*m+j) * a(k*m+i) ; 
+               for (k = j+1; k <= l; k++)
+                  g += a(j*m+k) * a(k*m+i); 
+               e(j) = g / h;
+               f += e(j) * a(j*m+i); 
+            }
+            hh = f / (h + h);
+            for (j = 0; j <= l; j++)
+            {
+               f = a(j*m+i); 
+               e(j) = g = e(j) - hh * f;
+               for (k = 0; k <= j; k++)
+                  a(k*m+j) -= (f * e(k) + g * a(k*m+i));  
+            }
+         }
+      }
+      else
+         e(i) = a(l*m+i);
+      d(i) = h;
+   }
+   d(0) = 0.0;
+   e(0) = 0.0;
+   for (i = 0; i < m; i++)
+   {
+      l = i - 1;
+      if (d(i))
+      {
+         for (j = 0; j <= l; j++)
+         {
+            g = 0.0;
+            for (k = 0; k <= l; k++)
+               g += a(k*m+i) * a(j*m+k); 
+            for (k = 0; k <= l; k++)
+               a(j*m+k) -= g * a(i*m+k); 
+         }
+      }
+      d(i) = a(i*m+i); 
+      a(i*m+i) = 1.0 ; 
+      
+      for (j = 0; j <= l; j++)
+         a(i*m+j) = a(j*m+i) = 0.0;
+   }
+}
+
+/*  Tridiagonal QL algorithm -- Implicit  */
+void 
+NumericLib::tqli(realvec &d, realvec &e, mrs_natural m, realvec &z)
+/*
+ Source code adapted from F. Murtagh, Munich, 6 June 1989
+ http://astro.u-strasbg.fr/~fmurtagh/mda-sw/pca.c
+ */
+{
+   mrs_natural n, l, iter, i, j, k;
+   mrs_real s, r, p, g, f, dd, c, b, tmp;
+   
+   for (i = 1; i < m; i++)
+      e(i-1) = e(i);
+   e(m-1) = 0.0;
+   for (l = 0; l < m; l++)
+   {
+      iter = 0;
+      do
+      {
+         for (n = l; n < m-1; n++)
+         {
+            dd = fabs(d(n)) + fabs(d(n+1));
+            if (fabs(e(n)) + dd == dd) break;
+         }
+         if (n != l)
+         {
+            //MRSASSERT( iter++ != 30 ); // No convergence
+            if( iter++ == 30 )
+            {
+               cerr << "tqli did not converge!" << endl;
+               exit(EXIT_SUCCESS);
+            }
+            
+            g = (d(l+1) - d(l)) / (2.0 * e(l));
+            r = sqrt((g * g) + 1.0);
+            g = d(n) - d(l) + e(l) / (g + SIGN(r, g));
+            s = c = 1.0;
+            p = 0.0;
+            for (i = n-1; i >= l; i--) 
+            {
+               f = s * e(i);
+               b = c * e(i);
+               if (fabs(f) >= fabs(g))
+               {
+                  c = g / f;
+                  r = sqrt((c * c) + 1.0);
+                  e(i+1) = f * r;
+                  c *= (s = 1.0/r);
+               }
+               else
+               {
+                  s = f / g;
+                  r = sqrt((s * s) + 1.0);
+                  e(i+1) = g * r;
+                  s *= (c = 1.0/r);
+               }
+               g = d(i+1) - p;
+               r = (d(i) - g) * s + 2.0 * c * b;
+               p = s * r;
+               d(i+1) = g + p;
+               g = c * r - b;
+               for (k = 0; k < m; k++)
+               {
+                  f = z((i+1)*m+k);
+                  z((i+1)*m+k) = s * z(i*m+k) + c * f;
+                  z(i*m+k) = c * z(i*m+k) - s * f;
+               }
+            }
+            d(l) = d(l) - p;
+            e(l) = g;
+            e(n) = 0.0;
+         }
+      }  while (n != l);            
+      
+   }
+   
+   for (i = 0; i < m-1; i++) {
+      k = i;
+      tmp = d(i);
+      for (j = i+1; j < m; j++) {
+         if (d(j) < tmp) {
+            k = j;
+            tmp = d(j);
+         }
+      }
+      if (k != i) {
+         d(k) = d(i);
+         d(i) = tmp;
+         for (j = 0; j < m; j++) {
+            tmp = z(i*m+j); 
+            z(i*m+j) = z(k*m+j);            
+            z(k*m+j) = tmp;
+         }
+      }
+   }   
+   
+}
+
+// A is m x n
+// U is m x m
+// V is n x n
+// s is max(m,n)+1 x 1
+void NumericLib::svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realvec &V, realvec &s) {   
+   
+   mrs_natural nu = min(m,n);
+   realvec e(n);
+   realvec work(m);
+   mrs_natural wantu = 1;  					/* boolean */
+   mrs_natural wantv = 1;  					/* boolean */
+	 mrs_natural i=0, j=0, k=0;
+     
+     // Reduce A to bidiagonal form, storing the diagonal elements
+     // in s and the super-diagonal elements in e.
+     mrs_natural nct = min(m-1,n);
+     mrs_natural nrt = max((mrs_natural) 0,min(n-2,m));
+     for (k = 0; k < max(nct,nrt); k++) {
+        if (k < nct) {
+           
+           // Compute the transformation for the k-th column and
+           // place the k-th diagonal in s(k).
+           // Compute 2-norm of k-th column without under/overflow.
+           s(k) = 0;
+           for (i = k; i < m; i++) {
+              s(k) = hypot(s(k),A(k*m+i));
+           }
+           if (s(k) != 0.0) {
+              if (A(k*m+k) < 0.0) {
+                 s(k) = -s(k);
+              }
+              for (i = k; i < m; i++) {
+                 A(k*m+i) /= s(k);
+              }
+              A(k*m+k) += 1.0;
+           }
+           s(k) = -s(k);
+        }
+        for (j = k+1; j < n; j++) {
+           if ((k < nct) && (s(k) != 0.0))  {
+              
+              // Apply the transformation.
+              
+              mrs_real t = 0;
+              for (i = k; i < m; i++) {
+                 t += A(k*m+i)*A(j*m+i); 
+              }
+              t = -t/A(k*m+k);
+              for (i = k; i < m; i++) {
+                 A(j*m+i) += t*A(k*m+i); 
+              }
+           }
+           
+           // Place the k-th row of A into e for the
+           // subsequent calculation of the row transformation.
+           
+           e(j) = A(j*m+k); 
+        }
+        if (wantu & (k < nct)) {
+           
+           // Place the transformation in U for subsequent back
+           // multiplication.
+           
+           for (i = k; i < m; i++) {
+              U(k*m+i) = A(k*m+i);
+           }
+        }
+        if (k < nrt) {
+           
+           // Compute the k-th row transformation and place the
+           // k-th super-diagonal in e(k).
+           // Compute 2-norm without under/overflow.
+           e(k) = 0;
+           for (i = k+1; i < n; i++) {
+              e(k) = hypot(e(k),e(i));
+           }
+           if (e(k) != 0.0) {
+              if (e(k+1) < 0.0) {
+                 e(k) = -e(k);
+              }
+              for (i = k+1; i < n; i++) {
+                 e(i) /= e(k);
+              }
+              e(k+1) += 1.0;
+           }
+           e(k) = -e(k);
+           if ((k+1 < m) & (e(k) != 0.0)) {
+              
+              // Apply the transformation.
+              
+              for (i = k+1; i < m; i++) {
+                 work(i) = 0.0;
+              }
+              for (j = k+1; j < n; j++) {
+                 for (i = k+1; i < m; i++) {
+                    work(i) += e(j)*A(j*m+i); 
+                 }
+              }
+              for (j = k+1; j < n; j++) {
+                 mrs_real t = -e(j)/e(k+1);
+                 for (i = k+1; i < m; i++) {
+                    A(j*m+i) += t*work(i);
+                 }
+              }
+           }
+           if (wantv) {
+              
+              // Place the transformation in V for subsequent
+              // back multiplication.
+              
+              for (i = k+1; i < n; i++) {
+                 V(k*n+i) = e(i);
+              }
+           }
+        }
+     }
+     
+     // Set up the final bidiagonal matrix or order p.
+     
+     mrs_natural p = min(n,m+1);
+     if (nct < n) {
+        s(nct) = A(nct*m+nct); 
+     }
+     if (m < p) {
+        s(p-1) = 0.0;
+     }
+     if (nrt+1 < p) {
+        e(nrt) = A((p-1)*m+nrt); 
+     }
+     e(p-1) = 0.0;
+     
+     // If required, generate U.
+     
+     if (wantu) {
+        for (j = nct; j < nu; j++) {
+           for (i = 0; i < m; i++) {
+              U(j*m+i) = 0.0;
+           }
+           U(j*m+j) = 1.0;
+        }
+        for (k = nct-1; k >= 0; k--) {
+           if (s(k) != 0.0) {
+              for (j = k+1; j < nu; j++) {
+                 mrs_real t = 0;
+                 for (i = k; i < m; i++) {
+                    t += U(k*m+i)*U(j*m+i); 
+                 }
+                 t = -t/U(k*m+k); 
+                 for (i = k; i < m; i++) {
+                    U(j*m+i) += t*U(k*m+i);
+                 }
+              }
+              for (i = k; i < m; i++ ) {
+                 U(k*m+i) = -U(k*m+i);
+              }
+              U(k*m+k) = 1.0 + U(k*m+k);
+              for (i = 0; i < k-1; i++) {
+                 U(k*m+i) = 0.0;
+              }
+           } else {
+              for (i = 0; i < m; i++) {
+                 U(k*m+i) = 0.0;
+              }
+              U(k*m+k) = 1.0;
+           }
+        }
+     }
+     
+     // If required, generate V.
+     
+     if (wantv) {
+        for (k = n-1; k >= 0; k--) {
+           if ((k < nrt) & (e(k) != 0.0)) {
+              for (j = k+1; j < nu; j++) {
+                 mrs_real t = 0;
+                 for (i = k+1; i < n; i++) {
+                    t += V(k*n+i)*V(j*n+i); 
+                 }
+                 t = -t/V(k*n+(k+1)); 
+                 for (i = k+1; i < n; i++) {
+                    V(j*n+i) += t*V(k*n+i);
+                 }
+              }
+           }
+           for (i = 0; i < n; i++) {
+              V(k*n+i) = 0.0;
+           }
+           V(k*n+k) = 1.0;
+        }
+     }
+     
+     // Main iteration loop for the singular values.
+     
+     mrs_natural pp = p-1;
+     mrs_natural iter = 0;
+     mrs_real eps = machp("E"); //pow(2.0,-52.0);
+
+     while (p > 0) {
+        mrs_natural k=0;
+        mrs_natural kase=0;
+        
+        // Here is where a test for too many iterations would go.
+        
+        // This section of the program inspects for
+        // negligible elements in the s and e arrays.  On
+        // completion the variables kase and k are set as follows.
+        
+        // kase = 1     if s(p) and e(k-1) are negligible and k<p
+        // kase = 2     if s(k) is negligible and k<p
+        // kase = 3     if e(k-1) is negligible, k<p, and
+        //              s(k), ..., s(p) are not negligible (qr step).
+        // kase = 4     if e(p-1) is negligible (convergence).
+        
+        for (k = p-2; k >= -1; k--) {
+           if (k == -1) {
+              break;
+           }
+           if (fabs(e(k)) <= eps*(fabs(s(k)) + fabs(s(k+1)))) {
+              e(k) = 0.0;
+              break;
+           }
+        }
+        if (k == p-2) {
+           kase = 4;
+        } else {
+           mrs_natural ks;
+           for (ks = p-1; ks >= k; ks--) {
+              if (ks == k) {
+                 break;
+              }
+              mrs_real t = (ks != p ? fabs(e(ks)) : 0.) + 
+              (ks != k+1 ? fabs(e(ks-1)) : 0.);
+              if (fabs(s(ks)) <= eps*t)  {
+                 s(ks) = 0.0;
+                 break;
+              }
+           }
+           if (ks == k) {
+              kase = 3;
+           } else if (ks == p-1) {
+              kase = 1;
+           } else {
+              kase = 2;
+              k = ks;
+           }
+        }
+        k++;
+        
+        // Perform the task indicated by kase.
+        
+        switch (kase) {
+           
+           // Deflate negligible s(p).
+           
+           case 1: {
+              mrs_real f = e(p-2);
+              e(p-2) = 0.0;
+              for (j = p-2; j >= k; j--) {
+                 mrs_real t = hypot(s(j),f);
+                 mrs_real cs = s(j)/t;
+                 mrs_real sn = f/t;
+                 s(j) = t;
+                 if (j != k) {
+                    f = -sn*e(j-1);
+                    e(j-1) = cs*e(j-1);
+                 }
+                 if (wantv) {
+                    for (i = 0; i < n; i++) {
+                       t = cs*V(j*n+i) + sn*V((p-1)*n+i);
+                       V((p-1)*n+i) = -sn*V(j*n+i) + cs*V((p-1)*n+i);
+                       V(j*n+i) = t;                       
+                    }
+                 }
+              }
+           }
+              break;
+              
+              // Split at negligible s(k).
+              
+           case 2: {
+              mrs_real f = e(k-1);
+              e(k-1) = 0.0;
+              for (j = k; j < p; j++) {
+                 mrs_real t = hypot(s(j),f);
+                 mrs_real cs = s(j)/t;
+                 mrs_real sn = f/t;
+                 s(j) = t;
+                 f = -sn*e(j);
+                 e(j) = cs*e(j);
+                 if (wantu) {
+                    for (i = 0; i < m; i++) {
+                       t = cs*U(j*m+i) + sn*U((k-1)*m+i);
+                       U((k-1)*m+i) = -sn*U(j*m+i) + cs*U((k-1)*m+i);
+                       U(j*m+i) = t;                         
+                    }
+                 }
+              }
+           }
+              break;
+              
+              // Perform one qr step.
+              
+           case 3: {
+              
+              // Calculate the shift.
+              
+              mrs_real scale = max(max(max(max(
+                                             fabs(s(p-1)),fabs(s(p-2))),fabs(e(p-2))), 
+                                     fabs(s(k))),fabs(e(k)));
+              mrs_real sp = s(p-1)/scale;
+              mrs_real spm1 = s(p-2)/scale;
+              mrs_real epm1 = e(p-2)/scale;
+              mrs_real sk = s(k)/scale;
+              mrs_real ek = e(k)/scale;
+              mrs_real b = ((spm1 + sp)*(spm1 - sp) + epm1*epm1)/2.0;
+              mrs_real c = (sp*epm1)*(sp*epm1);
+              mrs_real shift = 0.0;
+              if ((b != 0.0) || (c != 0.0)) {
+                 shift = sqrt(b*b + c);
+                 if (b < 0.0) {
+                    shift = -shift;
+                 }
+                 shift = c/(b + shift);
+              }
+              mrs_real f = (sk + sp)*(sk - sp) + shift;
+              mrs_real g = sk*ek;
+              
+              // Chase zeros.
+              
+              for (j = k; j < p-1; j++) {
+                 mrs_real t = hypot(f,g);
+                 mrs_real cs = f/t;
+                 mrs_real sn = g/t;
+                 if (j != k) {
+                    e(j-1) = t;
+                 }
+                 f = cs*s(j) + sn*e(j);
+                 e(j) = cs*e(j) - sn*s(j);
+                 g = sn*s(j+1);
+                 s(j+1) = cs*s(j+1);
+                 if (wantv) {
+                    for (i = 0; i < n; i++) {
+                       t = cs*V(j*n+i) + sn*V((j+1)*n+i);
+                       V((j+1)*n+i) = -sn*V(j*n+i) + cs*V((j+1)*n+i);
+                       V(j*n+i) = t;                         
+                    }
+                 }
+                 t = hypot(f,g);
+                 cs = f/t;
+                 sn = g/t;
+                 s(j) = t;
+                 f = cs*e(j) + sn*s(j+1);
+                 s(j+1) = -sn*e(j) + cs*s(j+1);
+                 g = sn*e(j+1);
+                 e(j+1) = cs*e(j+1);
+                 if (wantu && (j < m-1)) {
+                    for (i = 0; i < m; i++) {
+                       t = cs*U(j*m+i) + sn*U((j+1)*m+i);
+                       U((j+1)*m+i) = -sn*U(j*m+i) + cs*U((j+1)*m+i);
+                       U(j*m+i) = t;                       
+                    }
+                 }
+              }
+              e(p-2) = f;
+              iter = iter + 1;
+           }
+              break;
+              
+              // Convergence.
+              
+           case 4: {
+              
+              // Make the singular values positive.
+              
+              if (s(k) <= 0.0) {
+                 s(k) = (s(k) < 0.0 ? -s(k) : 0.0);
+                 if (wantv) {
+                    for (i = 0; i <= pp; i++) {
+                       V(k*n+i) = -V(k*n+i);
+                    }
+                 }
+              }
+              
+              // Order the singular values.
+              
+              while (k < pp) {
+                 if (s(k) >= s(k+1)) {
+                    break;
+                 }
+                 mrs_real t = s(k);
+                 s(k) = s(k+1);
+                 s(k+1) = t;
+                 if (wantv && (k < n-1)) {
+                    for (i = 0; i < n; i++) {
+                       t = V((k+1)*n+i); V((k+1)*n+i) = V(k*n+i); V(k*n+i) = t;
+                    }
+                 }
+                 if (wantu && (k < m-1)) {
+                    for (i = 0; i < m; i++) {
+                       t = U((k+1)*m+i); U((k+1)*m+i) = U(k*m+i); U(k*m+i) = t;
+                    }
+                 }
+                 k++;
+              }
+              iter = 0;
+              p--;
+           }
+              break;
+        }
+     }
+}
