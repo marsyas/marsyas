@@ -68,6 +68,8 @@ Accumulator::myUpdate()
 
 	if (marsystemsSize_ > 0)
 	{
+		marsystems_[0]->update();
+
 		// set input characteristics 
 		setctrl("mrs_natural/inSamples", 
 			marsystems_[0]->getctrl("mrs_natural/inSamples")->toNatural());

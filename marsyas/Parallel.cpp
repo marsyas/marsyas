@@ -77,7 +77,6 @@ void Parallel::myUpdate()
     setctrl("mrs_real/osrate", marsystems_[0]->getctrl("mrs_real/osrate"));
     
     // update buffers for components
-    
     if ((mrs_natural)slices_.size() < 2*marsystemsSize_) 
 		{
       slices_.resize(2*marsystemsSize_, NULL);
@@ -115,7 +114,6 @@ void Parallel::myUpdate()
       
 			(slices_[2*i+1])->setval(0.0);
     }
-		//defaultUpdate();
   }
 }
 

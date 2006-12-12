@@ -62,42 +62,114 @@ Fanin::myUpdate()
 {
 	if (marsystemsSize_ != 0) 
 	{
-		setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
-		mrs_natural obs = 0;
-		for (mrs_natural i=0; i < marsystemsSize_; i++)
-		{
-			obs += marsystems_[i]->getctrl("mrs_natural/inObservations")->toNatural();//[?]
-		}
-		setctrl("mrs_natural/inObservations", obs); //[?] 
-		setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte"));  
+		marsystems_[0]->update();
 
-		// setctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
-		// setctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
-		// setctrl("mrs_real/israte", getctrl("mrs_real/israte"));  
+		mrs_natural inObservations = marsystems_[0]->getctrl("mrs_natural/inObservations")->toNatural();
 
-		for (mrs_natural i=0; i < marsystemsSize_; i++) //i=0 [?]
+		for (mrs_natural i=1; i < marsystemsSize_; i++) 
 		{
-			//lmartins: replace updctrl() calls by setctrl()? ==> more efficient! [?]
-			marsystems_[i]->updctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
-			marsystems_[i]->updctrl("mrs_natural/inObservations", (mrs_natural)1); //[?]
-			marsystems_[i]->updctrl("mrs_real/israte", getctrl("mrs_real/israte"));
+			//lmartins: setctrl or updctrl?!? [?]
+			marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
+			marsystems_[i]->setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte")); //[!] israte
 			marsystems_[i]->update();
+			inObservations += marsystems_[i]->getctrl("mrs_natural/inObservations")->toNatural();
 		}
-		setctrl("mrs_natural/onSamples", marsystems_[0]->getctrl("mrs_natural/onSamples")->toNatural());
-		setctrl("mrs_natural/onObservations", (mrs_natural)1);
-		setctrl("mrs_real/osrate", marsystems_[0]->getctrl("mrs_real/osrate")->toReal());
 
-		deleteSlices();
+		setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
+		setctrl("mrs_natural/onSamples", marsystems_[0]->getctrl("mrs_natural/onSamples"));
+		setctrl("mrs_natural/inObservations", inObservations);
+		setctrl("mrs_natural/onObservations", 1);//sum the outputs of each child into  single observation!
+		setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte"));
+		setctrl("mrs_real/osrate", marsystems_[0]->getctrl("mrs_real/osrate"));
 
-		// SHOULD ADD CHECK THAT THE OUTSLICEINF OF 
-		// ALL THE MARSYSTEMS IS THE SAME 
+		// update slices for child MarSystems
+		if ((mrs_natural)slices_.size() < marsystemsSize_) 
+			slices_.resize(marsystemsSize_, NULL);
+
 		for (mrs_natural i=0; i< marsystemsSize_; i++)
 		{
-			slices_.push_back(new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural() , marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural()));			
+			if (slices_[i] != NULL) 
+			{
+				if ((slices_[i])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural()  ||
+					(slices_[i])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural())
+				{
+					delete slices_[i];
+					slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
+						marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
+				}
+			}
+			else 
+			{
+				slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
+					marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
+			}
 			(slices_[i])->setval(0.0);
 		}
-		//defaultUpdate();
 	}
+}
+
+bool 
+Fanin::updControl(string cname, MarControlPtr newcontrol, bool upd)
+{ 
+	// get the control (local or from children)...
+	MarControlPtr control = getControl(cname);
+
+	// ...and check if the control really exists locally or among children
+	if(control.isInvalid())
+	{
+		MRSWARN("MarSystem::updControl - Unsupported control name = " + cname);
+		MRSWARN("MarSystem::updControl - Composite name = " + name_);
+		return false;
+	}
+
+	// since the control exists somewhere, set its value...
+	if(!control->setValue(newcontrol, upd))
+		return false; //some error occurred in setValue()
+
+	//in case this is a composite Marsystem,
+	if(isComposite_)
+	{
+		// call update (only if the control has state,
+		// upd is true, and if it's not a local control (otherwise update 
+		// was already called by control->setValue())).
+		if(upd && control->hasState() && !hasControlLocal(cname))
+			update();
+
+		// certain controls must also be propagated to its children
+		// (must find a way to avoid this hard-coded control list, though! [!] )
+
+		//Fanin Specific [!]
+		if(cname == "mrs_natural/inObservations")
+		{
+			if (marsystemsSize_ > 0)
+			{
+				//Fanin Specific [!]
+				mrs_natural val = newcontrol->toNatural() / marsystemsSize_;
+
+				if(!marsystems_[0]->updctrl(cname, val, upd))
+					return false;//some error occurred in updctrl()
+				if(upd && marsystems_[0]->hasControlState(cname))
+					update();
+			}
+		}
+		if ((cname == "mrs_natural/inSamples")|| 
+			//(cname == "mrs_natural/inObservations")||
+			(cname == "mrs_real/israte")||
+			(cname == "mrs_string/inObsNames"))
+		{
+			//if there is at least a child MarSystem in this composite...
+			if (marsystemsSize_ > 0)
+			{
+				if(!marsystems_[0]->updctrl(cname, newcontrol, upd))
+					return false;//some error occurred in updctrl()
+				if(upd && marsystems_[0]->hasControlState(cname))
+					update();
+			}
+		}
+	}
+
+	//success!
+	return true;
 }
 
 void

@@ -139,7 +139,6 @@ Fanout::myUpdate()
 			}
 			(slices_[i])->setval(0.0);
 		}
-		//defaultUpdate();
 	}
 }
      
