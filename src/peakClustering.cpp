@@ -48,6 +48,8 @@ int hopSize_ = 512;
 int nbSines_ = 20;
 // nbClusters
 int nbClusters_ = 3;
+// nbClusters
+int nbSelectedClusters_ = 1;
 // output buffer Size
 int bopt_ = 128;
 // output gain
@@ -82,6 +84,7 @@ bool attributes_ = false;
 bool ground_ = false;
 bool synthetize_ = false;
 bool clusterSynthetize_ = false;
+bool peakStore_= false;
 
 CommandLineOptions cmd_options;
 
@@ -234,13 +237,15 @@ mixseries->addMarSystem(mng.create("NoiseSource", "noise"));
 
 	pvseries->setctrl("PeClust/peClust/mrs_natural/Sinusoids", S);  
 	pvseries->setctrl("PeClust/peClust/mrs_natural/Clusters", C); 
+	pvseries->setctrl("PeClust/peClust/mrs_natural/selectedClusters", nbSelectedClusters_); 
 	pvseries->setctrl("PeClust/peClust/mrs_natural/hopSize", D); 
+	pvseries->setctrl("PeClust/peClust/mrs_natural/storePeaks", (mrs_natural) peakStore_); 
 	pvseries->updctrl("PeClust/peClust/mrs_string/similarityType", T); 
 
 	similarityWeight_.stretch(3);
-similarityWeight_(0) = 1;
-similarityWeight_(1) = 10;
-similarityWeight_(2) = 1;
+  similarityWeight_(0) = 1;
+  similarityWeight_(1) = 10;
+  similarityWeight_(2) = 1;
 
 	pvseries->updctrl("PeClust/peClust/mrs_realvec/similarityWeight", similarityWeight_); 
 
@@ -285,7 +290,7 @@ similarityWeight_(2) = 1;
 			mrs_real snr = pvseries->getctrl("PeSynthetize/synthNet/Series/postNet/PeResidual/res/mrs_real/snr")->toReal();
 			globalSnr+=snr;
 			nb++;
-			cout << "Frame " << nb << " SNR : "<< snr << endl;
+			 // cout << "Frame " << nb << " SNR : "<< snr << endl;
 		}
 
 		if (!microphone_)
@@ -341,12 +346,15 @@ initOptions()
 	cmd_options.addNaturalOption("sinusoids", "s", nbSines_);
 	cmd_options.addNaturalOption("bufferSize", "b", bopt_);
   cmd_options.addNaturalOption("quitAnalyse", "q", stopAnalyse_);
+	cmd_options.addNaturalOption("clustering", "c", nbClusters_);
+	cmd_options.addNaturalOption("pruning", "p", nbSelectedClusters_);
 
 	cmd_options.addBoolOption("analyse", "a", analyse_);
 	cmd_options.addBoolOption("attributes", "A", attributes_);
 	cmd_options.addBoolOption("ground", "g", ground_);
 	cmd_options.addBoolOption("synthetize", "s", synthetize_);
 	cmd_options.addBoolOption("clusterSynthetize", "S", clusterSynthetize_);
+  cmd_options.addBoolOption("peakStore", "P", peakStore_);
 }
 
 
@@ -366,13 +374,15 @@ loadOptions()
 	nbSines_ = cmd_options.getNaturalOption("sinusoids");
 	bopt_ = cmd_options.getNaturalOption("bufferSize");
 	stopAnalyse_ = cmd_options.getNaturalOption("quitAnalyse");
+  nbClusters_ = cmd_options.getNaturalOption("clustering");
+  nbSelectedClusters_ = cmd_options.getNaturalOption("pruning");
 
 	analyse_ = cmd_options.getBoolOption("analyse");
 	attributes_ = cmd_options.getBoolOption("attributes");
 	ground_ = cmd_options.getBoolOption("ground");
 	synthetize_ = cmd_options.getBoolOption("synthetize");
 	clusterSynthetize_ = cmd_options.getBoolOption("clusterSynthetize");
-
+  peakStore_ = cmd_options.getBoolOption("peakStore"); 
 }
 
 

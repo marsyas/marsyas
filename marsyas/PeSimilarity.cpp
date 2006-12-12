@@ -252,9 +252,15 @@ void Marsyas::selectClusters(realvec &m, realvec &labels, mrs_natural wantedNbCl
 	realvec sValue(nbClusters);
 	//cout << labels;
 	sValue.setval(0);
+		realvec sNValue(nbClusters);
+	//cout << labels;
+	sNValue.setval(0);
 	realvec sNb(nbClusters);
 	//cout << labels;
 	sNb.setval(0);
+realvec sNNb(nbClusters);
+	//cout << labels;
+	sNNb.setval(0);
 	realvec newLabels(nbClusters);
 	//cout << labels;
 	newLabels.setval(0);
@@ -268,11 +274,22 @@ void Marsyas::selectClusters(realvec &m, realvec &labels, mrs_natural wantedNbCl
 				sValue((mrs_natural) labels(i))+= m(i, j);
 			sNb((mrs_natural) labels(i))++;
 			}	
+			else
+			{
+	sNValue((mrs_natural) labels(i))+= m(i, j);
+	sNNb((mrs_natural) labels(i))++;
+			}
 			}
 	}
-	//for(i=0; i<nbClusters ;i++)
-	//sValue(i) /= sNb(i);
-	//cout << sValue;
+ for(i=0; i<nbClusters ;i++)
+	sValue(i) /= sNb(i);
+
+ for(i=0; i<nbClusters ;i++)
+	sNValue(i) /= sNNb(i);
+
+ for(i=0; i<nbClusters ;i++)
+	sValue(i) /= sNValue(i);
+//	cout << sValue;
 
 	while(nbFound<nbClusters-wantedNbClusters)
 	{

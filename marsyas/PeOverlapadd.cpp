@@ -113,6 +113,8 @@ PeOverlapadd::myProcess(realvec& in, realvec& out)
 	{
 		if(in(i+6*Nb) > -1)
 		sine(tmp_, in(i), in(i+Nb), in(i+2*Nb));
+	/*	else
+			cout << "truc" << endl;*/
 	}
 //	tmp_.setval(1);
 	tmp_*=win_;

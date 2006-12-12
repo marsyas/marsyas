@@ -60,6 +60,8 @@ PeClust::addControls()
 	//Add specific controls needed by this MarSystem.
 	addctrl("mrs_natural/Clusters", 2);
 	setctrlState("mrs_natural/Clusters", true);
+	addctrl("mrs_natural/selectedClusters", 0);
+	setctrlState("mrs_natural/selectedClusters", true);
 	addctrl("mrs_natural/Sinusoids", 1);
 	setctrlState("mrs_natural/Sinusoids", true);
 	addctrl("mrs_string/similarityType", "");
@@ -70,6 +72,8 @@ PeClust::addControls()
 	setctrlState("mrs_realvec/peakSet", true);
 	addctrl("mrs_natural/hopSize", 512);
 	setctrlState("mrs_natural/hopSize", true);
+	addctrl("mrs_natural/storePeaks", 0);
+	setctrlState("mrs_natural/storePeaks", true);
 }
 
 void
@@ -148,9 +152,9 @@ PeClust::labeling(realvec& data, realvec& labels, mrs_natural cut)
 			 oldAmps(i) = lastFrame_(pkAmplitude*kmax_+i);
 		 }
 			//	 amps.dump();
-	/*		cout  << lastIndex << endl ;
-			 oldLabels.dump();
-				 newLabels.dump(); */
+			/*		cout  << lastIndex << endl ;
+			oldLabels.dump();
+			newLabels.dump(); */
 
 			while(1){
 				mrs_natural  iMax=-1, jMax=-1, i2Max=-1, nbMax1=0,nbMax2=0,nbMax3=0, nb, nb2=0;
@@ -166,12 +170,12 @@ PeClust::labeling(realvec& data, realvec& labels, mrs_natural cut)
 							nb++;
 							amp+=oldAmps(j);
 						}
-					if(amp>ampMax1)
-				 {
-					 nbMax1 = nb;
-					 ampMax1 = amp;
-					 iMax = i;
-				 }
+						if(amp>ampMax1)
+						{
+							nbMax1 = nb;
+							ampMax1 = amp;
+							iMax = i;
+						}
 				}
 				if(iMax > -1)
 				{
@@ -187,20 +191,20 @@ PeClust::labeling(realvec& data, realvec& labels, mrs_natural cut)
 						 {
 							 n++;
 							 a+=newAmps(j);
-						 if(oldLabels(j) == iMax)
+							 if(oldLabels(j) == iMax)
+							 {
+								 nb++;
+								 amp+=newAmps(j);
+							 }
+						 }
+						 if(amp>ampMax2)
 						 {
-							 nb++;
-							 amp+=newAmps(j);
+							 nb2=n;
+							 a2=a;
+							 nbMax2 = nb;
+							 ampMax2 = amp;
+							 jMax = i;
 						 }
-						 }
-					 if(amp>ampMax2)
-					 {
-						 nb2=n;
-						 a2=a;
-						 nbMax2 = nb;
-						 ampMax2 = amp;
-						 jMax = i;
-					 }
 				 }
 					if(jMax == -1)
 						break;
@@ -218,10 +222,10 @@ PeClust::labeling(realvec& data, realvec& labels, mrs_natural cut)
 					else
 						gv = (ampMax1/nbMax1)/(a2/nb2);
 					mrs_real diff = (abs(ampMax1-ampMax2)+abs(a2-ampMax2))/(ampMax1+a2);
-				//	cout << diff << " " <<  2*ampMax2/(ampMax1+a2) << endl;
-					
+					//	cout << diff << " " <<  2*ampMax2/(ampMax1+a2) << endl;
 
-					
+
+
 					// check if not used better elsewhere
 					// or if two do not correspond put old to -1
 					for(i=0 ; i<= (mrs_natural) oldLabels.maxval() ; i++)
@@ -241,20 +245,20 @@ PeClust::labeling(realvec& data, realvec& labels, mrs_natural cut)
 							 i2Max = i;
 						 }
 				 }
-					
- // cout << iMax << " " << i2Max << " " << jMax << endl << endl;
-			//	if(iMax == i2Max && diff<0.35)
-				//	if(0)
-						{
-					// if two correspond well
-					// fill conversion table with oldLabel
-					conversion_(jMax) = iMax;
-				//	cout << "done"<<endl;
-					// remove new clusters
-					for(i=0 ; i<newLabels.getSize() ; i++)
-						if(newLabels(i) == jMax)
-							newLabels(i) = -1;
-						}
+
+					// cout << iMax << " " << i2Max << " " << jMax << endl << endl;
+					//	if(iMax == i2Max && diff<0.35)
+					//	if(0)
+					{
+						// if two correspond well
+						// fill conversion table with oldLabel
+						conversion_(jMax) = iMax;
+						//	cout << "done"<<endl;
+						// remove new clusters
+						for(i=0 ; i<newLabels.getSize() ; i++)
+							if(newLabels(i) == jMax)
+								newLabels(i) = -1;
+					}
 					// else only remove old  clusters
 					for(i=0 ; i<oldLabels.getSize() ; i++)
 						if(oldLabels(i) == iMax)
@@ -266,7 +270,7 @@ PeClust::labeling(realvec& data, realvec& labels, mrs_natural cut)
 				else
 					break;
 		 }
-	//	 cout << maxLabel_<< endl;
+			//	 cout << maxLabel_<< endl;
 			// fill conversion table with new labels
 			mrs_real k = maxLabel_+1;
 			for (i=0 ; i<conversion_.getSize(); i++)
@@ -274,13 +278,13 @@ PeClust::labeling(realvec& data, realvec& labels, mrs_natural cut)
 			 if(cut || conversion_(i) == -1.0)
 				 conversion_(i) = k++;
 		 }
-		// conversion_.dump();
+			// conversion_.dump();
 			//labels.dump();
 			// convert labels
 			for(i=0 ; i<labels.getSize() ; i++)
 				if(labels(i) != -1.0 && conversion_( (mrs_natural) labels(i)) != -1.0)
 					labels(i) = conversion_((mrs_natural) labels(i));
-		//	labels.dump();
+			//	labels.dump();
 	}
 	// fill peaks data with clusters labels
 	for (i=0 ; i<nbPeaks_ ; i++)
@@ -296,14 +300,14 @@ void
 PeClust::simpleLabeling(realvec& data, realvec& labels)
 {
 
-  // fill peaks data with clusters labels
+	// fill peaks data with clusters labels
 	for (mrs_natural i=0 ; i<nbPeaks_ ; i++)
 	{
 		data(i, 6) = labels(i);
 		if(labels(i) > maxLabel_)
 			maxLabel_ = labels(i);
 	}
-	}
+}
 
 void 
 PeClust::myProcess(realvec& in, realvec& out)
@@ -321,102 +325,113 @@ PeClust::myProcess(realvec& in, realvec& out)
 
 		// Ncut
 		realvec labels(nbPeaks_);
-labels.setval(-1);
-//#ifdef MARSYAS_MATLAB
+		labels.setval(-1);
+		//#ifdef MARSYAS_MATLAB
 		//MATLAB_PUT(m_, "m");
 		//MATLAB_PUT(nbClusters_, "nb");
 		//MATLAB_EVAL("[d, vec, val] = ncutW(m, nb);");
 		//MATLAB_EVAL("d=d*(1:size(d, 2))';d=d-1;");
 		//MATLAB_GET("d", labels);
-//#else
-//cout << labels;
-//
-realvec nCutDiscrete(nbPeaks_*nbClusters_);
-realvec nCutEigVectors(nbPeaks_*nbClusters_);
-realvec nCutEigValues(nbClusters_);
-realvec labels2(nbPeaks_);
-ncutW(&nbPeaks_, m_, &nbClusters_, nCutDiscrete, nCutEigVectors, nCutEigValues);
-discrete2labels(labels, nCutDiscrete, nbClusters_, nbPeaks_);
+		//#else
+		//cout << labels;
+		//
 
-//cout << endl;
-//cout << nCutDiscrete << endl;
-//realvec labels3(2, nbPeaks_);
-//int nb=0;
-//for(int i =0 ; i<nbPeaks_; i++)
-//{
-//labels3(0, i) = labels(i);
-//labels3(1, i) = labels2(i);
-//
-//
-//}
-//for(int i =0 ; i<nbPeaks_; i++)
-//for(int j =0 ; j<nbPeaks_; j++)
-//if(labels3(0, i) == labels3(0, j) && labels3(1, i) != labels3(1, j))
-//nb++;
-//cout << labels3;
-//if(nb)
-//{
-//cout << endl << nb << endl;
-////#endif
-//mrs_natural r=0;
-//}
+		realvec nCutDiscrete(nbPeaks_*nbClusters_);
+		realvec nCutEigVectors(nbPeaks_*nbClusters_);
+		realvec nCutEigValues(nbClusters_);
+		realvec labels2(nbPeaks_);
+		ncutW(&nbPeaks_, m_, &nbClusters_, nCutDiscrete, nCutEigVectors, nCutEigValues);
+		discrete2labels(labels, nCutDiscrete, nbClusters_, nbPeaks_);
 
+		//cout << endl;
+		//cout << nCutDiscrete << endl;
+		//realvec labels3(2, nbPeaks_);
+		//int nb=0;
+		//for(int i =0 ; i<nbPeaks_; i++)
+		//{
+		//labels3(0, i) = labels(i);
+		//labels3(1, i) = labels2(i);
+		//
+		//
+		//}
+		//for(int i =0 ; i<nbPeaks_; i++)
+		//for(int j =0 ; j<nbPeaks_; j++)
+		//if(labels3(0, i) == labels3(0, j) && labels3(1, i) != labels3(1, j))
+		//nb++;
+		//cout << labels3;
+		//if(nb)
+		//{
+		//cout << endl << nb << endl;
+		////#endif
+		//mrs_natural r=0;
+		//}
+
+
+
+		//simpleLabeling(data_, labels);
+
+		//   PeClusters clusters(data_);
+		//	realvec vecs;
+		//	clusters.attributes(data_);	
+		//	clusters.getVecs(vecs);
+		//
+		//// cout << vecs;
+		//  MATLAB_PUT(vecs, "clusters");
+		//	MATLAB_EVAL("plotClusters");
+
+		mrs_natural back = nbClusters_;
 	
+		mrs_natural nbSelected = getctrl("mrs_natural/selectedClusters")->toNatural();
+		if(nbSelected)
+		{
+			selectClusters(m_, labels, nbSelected, nbClusters_);
+			// back = nbClusters_;
+			nbClusters_ = nbSelected;
+		}
+		//cout << labels << endl;
+		//labeling(data_, labels, 1);
+    simpleLabeling(data_, labels);
 
-	//simpleLabeling(data_, labels);
+		nbClusters_ = back;
 
-	//	MATLAB_PUT(data_, "peaks");
-	//	// MATLAB_EVAL("plotPeaks(peaks)");
- //   PeClusters clusters(data_);
-	//	realvec vecs;
-	//	clusters.attributes(data_);	
-	//	clusters.getVecs(vecs);
-	//
-	//// cout << vecs;
-	//  MATLAB_PUT(vecs, "clusters");
-	//	MATLAB_EVAL("plotClusters");
+		/*	MATLAB_PUT(data_, "peaks");
+		  MATLAB_EVAL("plotPeaks(peaks)");*/
 
-		peaks2V(data_, lastFrame_, out, kmax_);
-
-		/*mrs_natural wantedNbClusters = 1, back;
-		selectClusters(m_, labels, wantedNbClusters, nbClusters_);
-		back = nbClusters_;
-		nbClusters_ = wantedNbClusters;*/
-		
-		labeling(data_, labels, 1);
-    
-		//nbClusters_ = back;
+	peaks2V(data_, lastFrame_, out, kmax_);
 
 		// peaks storing
-		const realvec& peakSet = ctrl_peakSet_->to<realvec> (); 
-		int peaksSetSize = peakSet.getRows(), start;
-		if(!peaksSetSize)
+		mrs_natural storing = getctrl("mrs_natural/storePeaks")->toNatural();
+		if(storing)
 		{
-			// add synth infos
-			ctrl_peakSet_->stretch(nbPeaks_+1, nbPkParameters);
-			(**ctrl_peakSet_)(0,0) = -1;
-			(**ctrl_peakSet_)(0,1) = ctrl_israte_->to<mrs_real>();
-			(**ctrl_peakSet_)(0,2) = getctrl("mrs_natural/hopSize")->toNatural();
-			(**ctrl_peakSet_)(0,pkGroup) = -2;
-			start=1;
+			const realvec& peakSet = ctrl_peakSet_->to<realvec> (); 
+			int peaksSetSize = peakSet.getRows(), start;
+			if(!peaksSetSize)
+			{
+				// add synth infos
+				ctrl_peakSet_->stretch(nbPeaks_+1, nbPkParameters);
+				(**ctrl_peakSet_)(0,0) = -1;
+				(**ctrl_peakSet_)(0,1) = ctrl_israte_->to<mrs_real>();
+				(**ctrl_peakSet_)(0,2) = getctrl("mrs_natural/hopSize")->toNatural();
+				(**ctrl_peakSet_)(0,pkGroup) = -2;
+				start=1;
 
-			for (int i=0 ; i<nbPeaks_ ; i++)
-				for (int j=0 ; j<nbPkParameters ; j++)
-					(**ctrl_peakSet_)(peaksSetSize+i+start, j) = data_(i, j);
+				for (int i=0 ; i<nbPeaks_ ; i++)
+					for (int j=0 ; j<nbPkParameters ; j++)
+						(**ctrl_peakSet_)(peaksSetSize+i+start, j) = data_(i, j);
+			}
+			else
+			{
+				start=nbPeaksLastFrame;
+				ctrl_peakSet_->stretch(peaksSetSize+nbPeaks_-start, nbPkParameters);
+
+				for (int i=0 ; i<nbPeaks_-nbPeaksLastFrame ; i++)
+					// do not put peaks from the first frame
+					for (int j=0 ; j<nbPkParameters ; j++)
+						(**ctrl_peakSet_)(peaksSetSize+i, j) = data_(i+start, j);
+			}
 		}
-		else
-		{
-			start=nbPeaksLastFrame;
-			ctrl_peakSet_->stretch(peaksSetSize+nbPeaks_-start, nbPkParameters);
-
-			for (int i=0 ; i<nbPeaks_-nbPeaksLastFrame ; i++)
-				// do not put peaks from the first frame
-				for (int j=0 ; j<nbPkParameters ; j++)
-					(**ctrl_peakSet_)(peaksSetSize+i, j) = data_(i+start, j);
-		}
-	}
-} 
-
+	} 
+}
 
 
 
