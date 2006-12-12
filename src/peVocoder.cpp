@@ -303,7 +303,8 @@ main(int argc, const char **argv)
 
 
 				clusters.selectGround();
-				updateLabels(peakSet_, clusters.getConversionTable());
+				// commented out by gtzan because getConversionTable needs a realvec argument 
+				// updateLabels(peakSet_, clusters.getConversionTable());
 
 						MATLAB_PUT(peakSet_, "peaksGp");
 			MATLAB_EVAL("plotPeaks(peaksGp)");

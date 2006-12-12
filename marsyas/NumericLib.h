@@ -65,7 +65,7 @@ Code adapted by <lmartins@inescporto.pt> - 16.06.2006
 namespace Marsyas
 {
 
-static class NumericLib
+class NumericLib
 {
 private:
 	

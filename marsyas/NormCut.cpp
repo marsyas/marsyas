@@ -221,7 +221,7 @@ void Marsyas::discretisation(mrs_natural *n,  mrs_natural *nbcluster, realvec &N
    
    for( j=1 ; j<*nbcluster ; j++ )
    {
-      minval = DBL_MAX;
+      minval = MAXREAL;
    
       for( i=0 ; i<*n ; i++ )
       {
@@ -364,7 +364,7 @@ void Marsyas::discretisation(mrs_natural *n,  mrs_natural *nbcluster, realvec &N
 //   
 //   for( j=1 ; j<*nbcluster ; j++ )
 //   {
-//      minval = DBL_MAX;
+//      minval = MAXREAL;
 //   
 //      for( i=0 ; i<*n ; i++ )
 //      {
@@ -453,7 +453,7 @@ Marsyas::discretisationEigenvectorData(mrs_natural *n,  mrs_natural *nbcluster, 
    mrs_natural i,j;
    
    for( i=0 ; i<*n ; i++ ){
-      maxval = -DBL_MAX; // (Mathieu ??)      
+      maxval = -MAXREAL; // (Mathieu ??)      
       
       // Find largest value in the ith row of the eigenvectors
       for( j=0 ; j<*nbcluster ; j++ )
