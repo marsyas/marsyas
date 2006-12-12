@@ -251,7 +251,7 @@ MarControlValueT<T>::MarControlValueT(T value)
 }
 
 template<class T>
-MarControlValueT<T>::MarControlValueT(const MarControlValueT& a)
+MarControlValueT<T>::MarControlValueT(const MarControlValueT& a):MarControlValue(a)
 {
 	value_ = a.value_;
 	type_ = a.type_;
