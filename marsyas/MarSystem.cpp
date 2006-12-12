@@ -524,15 +524,23 @@ MarSystem::update(MarControlPtr sender)
 
 	MRSDIAG("MarSystem.cpp - MarSystem:Update");
 
-	//set input member variables
+	//sync input member variables
 	inObservations_ = ctrl_inObservations_->to<mrs_natural>();
 	inSamples_ = ctrl_inSamples_->to<mrs_natural>();
 	israte_ = ctrl_israte_->to<mrs_real>();
+	//sync output member variables
+	onObservations_ = ctrl_onObservations_->to<mrs_natural>();
+	onSamples_ = ctrl_onSamples_->to<mrs_natural>();
+	osrate_ = ctrl_osrate_->to<mrs_real>();
 
 	//call derived class specific update
 	myUpdate();
 
-	//set output member variables
+	//sync input member variables
+	inObservations_ = ctrl_inObservations_->to<mrs_natural>();
+	inSamples_ = ctrl_inSamples_->to<mrs_natural>();
+	israte_ = ctrl_israte_->to<mrs_real>();
+	//sync output member variables
 	onObservations_ = ctrl_onObservations_->to<mrs_natural>();
 	onSamples_ = ctrl_onSamples_->to<mrs_natural>();
 	osrate_ = ctrl_osrate_->to<mrs_real>();
