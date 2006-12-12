@@ -68,8 +68,8 @@ printHelp(string progName)
   cerr << "tempo	   : test tempo estimation " << endl;
   cerr << "vicon           : test processing of vicon motion capture data" << endl;
   cerr << "Windowing       : test different window functions of Windowing marsystem" << endl;
-
-
+  cerr << "updctrl         : test updating control with pointers " << endl;
+  
   
   exit(1);
 }
@@ -1712,6 +1712,28 @@ void test_Windowing()
 }
 
 
+void 
+test_updctrl(string fname) 
+{
+  
+  MarSystemManager mng;  
+  MarSystem* pnet_;
+  
+  pnet_ = mng.create("Series", "pnet_");
+  pnet_->addMarSystem(mng.create("SoundFileSource", "src"));
+  pnet_->addMarSystem(mng.create("Gain", "gain"));
+  pnet_->addMarSystem(mng.create("AudioSink", "dest"));
+  
+  MarControlPtr filePtr = pnet_->getctrl("SoundFileSource/src/mrs_string/filename");
+  pnet_->updctrl(filePtr, fname);
+  
+  cout << *pnet_ << endl;
+  
+  
+}
+
+
+
 // Pluck(0,100,1.0,0.5,"TestPluckedRich0_100hz.wav");
 //Pluck Karplus Strong Model Kastro.cpp output to wavfile
 void 
@@ -2113,6 +2135,9 @@ main(int argc, const char **argv)
     test_MarControls(fname0);
   else if (testName == "Windowing")
     test_Windowing();
+  else if (testName == "updctrl") 
+    test_updctrl(fname0);
+  
   else 
     {
       cout << "Unsupported test " << endl;
