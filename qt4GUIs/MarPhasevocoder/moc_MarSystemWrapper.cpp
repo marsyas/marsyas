@@ -1,8 +1,8 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'MarSystemWrapper.h'
 **
-** Created: Sun Dec 10 19:22:34 2006
-**      by: The Qt Meta Object Compiler version 59 (Qt 4.1.4)
+** Created: Tue Dec 12 10:06:54 2006
+**      by: The Qt Meta Object Compiler version 59 (Qt 4.2.2)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -11,7 +11,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'MarSystemWrapper.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 59
-#error "This file was generated using the moc from 4.1.4. It"
+#error "This file was generated using the moc from 4.2.2. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -41,9 +41,11 @@ static const uint qt_meta_data_MarSystemWrapper[] = {
 };
 
 static const char qt_meta_stringdata_MarSystemWrapper[] = {
-    "MarSystemWrapper\0\0cname,cvalue\0ctrlChanged(string,MarControlPtr)\0"
-    "val\0posChanged(int)\0updctrl(string,MarControlPtr)\0MarControlPtr\0"
-    "cname\0getctrl(string)\0play()\0pause()\0run()\0"
+    "MarSystemWrapper\0\0cname,cvalue\0"
+    "ctrlChanged(string,MarControlPtr)\0val\0"
+    "posChanged(int)\0updctrl(string,MarControlPtr)\0"
+    "MarControlPtr\0cname\0getctrl(string)\0"
+    "play()\0pause()\0run()\0"
 };
 
 const QMetaObject MarSystemWrapper::staticMetaObject = {

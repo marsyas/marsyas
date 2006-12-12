@@ -4668,3 +4668,15 @@
 [MRS_WARNING] Composite::updControl - Composite name = pvoc_
 [MRS_WARNING] [MarControl::setValue] Trying to set value of incompatible type (expected mrs_real, given mrs_natural)
 [MRS_WARNING] [MarControl::setValue] Trying to set value of incompatible type (expected mrs_real, given mrs_natural)
+[MRS_WARNING] SoundFileSource::Problem opening file vlobos.au
+[MRS_WARNING] [MarControl::setValue] Trying to set value of incompatible type (expected mrs_real, given mrs_natural)
+[MRS_WARNING] SoundFileSource::Problem opening file vlobos.au
+[MRS_WARNING] [MarControl::setValue] Trying to set value of incompatible type (expected mrs_real, given mrs_natural)
+[MRS_WARNING] SoundFileSource::Problem opening file vlobos.au
+[MRS_WARNING] [MarControl::setValue] Trying to set value of incompatible type (expected mrs_real, given mrs_natural)
+[MRS_WARNING] SoundFileSource::Problem opening file vlobos.au
+[MRS_WARNING] [MarControl::setValue] Trying to set value of incompatible type (expected mrs_real, given mrs_natural)
+[MRS_WARNING] SoundFileSource::Problem opening file vlobos.au
+[MRS_WARNING] [MarControl::setValue] Trying to set value of incompatible type (expected mrs_real, given mrs_natural)
+[MRS_WARNING] SoundFileSource::Problem opening file vlobos.au
+[MRS_WARNING] [MarControl::setValue] Trying to set value of incompatible type (expected mrs_real, given mrs_natural)

@@ -89,7 +89,7 @@ MarPhasevocoderWindow::timeChanged(int value)
   cout << "Time Stretching Changed" << endl;
   cout << "value " << value << endl;
   
-  float nval = iopt * (value / 100.0);
+  float nval = iopt * ((50.0 + (100.0 - value)) / 100.0);
   
   cout << "(int) nval = " << (mrs_natural) nval << endl;
   
