@@ -64,6 +64,8 @@ MarGrid::MarGrid(QWidget *parent)
   pnet_->addMarSystem(mng.create("AudioSink", "dest"));
   pnet_->linkctrl("mrs_bool/notEmpty","SoundFileSource/src/mrs_bool/notEmpty");
 
+  pnet_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
   mwr_ = new MarSystemWrapper(pnet_);
   mwr_->start();
 
@@ -278,7 +280,7 @@ MarGrid::train()
 
 
   
-  for (int i=0; i < 2000; i ++) 
+  for (int i=0; i < 100; i ++) 
     {
       cout << "Training iteration" << i << endl;
       

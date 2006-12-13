@@ -92,6 +92,8 @@ void sfplugin(vector<string> soundfiles, string pluginName)
 	cout << *msys << endl;
 
 	vector<string>::iterator sfi;  
+
+
 	for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
 	{
 		// udpate source filename 
@@ -99,6 +101,7 @@ void sfplugin(vector<string> soundfiles, string pluginName)
 		cout << "sfName = " << sfName << endl;
 
 		msys->updctrl("mrs_string/filename", sfName);
+		msys->updctrl("mrs_bool/initAudio", true);     
 
 		// hack for teligence 
 		//    mrs_natural size = msys->getctrl("SoundFileSource/src/mrs_natural/size")->toNatural();

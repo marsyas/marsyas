@@ -775,6 +775,9 @@ void bextract_train(vector<Collection> cls,
 	if (pluginName != EMPTYSTRING) 
 		featureNetwork->linkctrl("mrs_natural/nChannels",	"AudioSink/dest/mrs_natural/nChannels");
 	featureNetwork->linkctrl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+	featureNetwork->linkctrl("mrs_bool/initAudio", "AudioSink/dest/mrs_bool/initAudio");
+	
+
 
 	//////////////////////////////////////////////////////////////////////////
 	// main loop for extracting features 
