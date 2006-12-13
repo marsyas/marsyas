@@ -92,26 +92,33 @@ Shredder::myUpdate()
 }
 
 bool
-Shredder::updControl(std::string cname, MarControlPtr newcontrol, bool upd)
+Shredder::updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd)
 {
-	// get the control (local or from children)...
-	MarControlPtr control = getControl(cname);
-
-	// ...and check if the control really exists locally or among children
+	// check if the control is valid
 	if(control.isInvalid())
 	{
-		MRSWARN("MarSystem::updControl - Unsupported control name = " + cname);
-		MRSWARN("MarSystem::updControl - Composite name = " + name_);
+		MRSWARN("MarSystem::updControl - Invalid control ptr");
+		MRSWARN("MarSystem::updControl - MarSystem name = " + name_);
 		return false;
 	}
 
-	// since the control exists somewhere, set its value...
+	//check if control is local or in children
+	if(!hasControl(control->getName()))
+	{
+		MRSWARN("MarSystem::updControl -" + control->getName() + " does not exist locally or in children!");
+		MRSWARN("MarSystem::updControl - MarSystem name = " + name_);
+		return false;
+	}
+
 	if(!control->setValue(newcontrol, upd))
 		return false; //some error occurred in setValue()
 
 	//in case this is a composite Marsystem,
 	if(isComposite_)
 	{
+		// get the control name
+		string cname = control->getName();
+
 		// call update (only if the control has state,
 		// upd is true, and if it's not a local control (otherwise update 
 		// was already called by control->setValue())).

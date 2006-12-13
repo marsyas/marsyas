@@ -194,7 +194,13 @@ public:
 	bool linkctrl(std::string cname1, std::string cname2) {return linkControl(cname1, cname2);}
   
 	// update controls
-  bool updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd = true);
+  virtual bool updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd = true);
+	bool updctrl(MarControlPtr control, MarControlPtr newcontrol, bool upd = true) {return updControl(control, newcontrol, upd);}
+	bool updControl(std::string cname, MarControlPtr newcontrol, bool upd = true)
+	{
+		MarControlPtr control = getControl(cname);
+		return updControl(control, newcontrol, upd);
+	}
   bool updctrl(char *cname, MarControlPtr newcontrol, bool upd = true) 
   {
     MarControlPtr control = getControl(cname);
@@ -205,7 +211,6 @@ public:
     MarControlPtr control = getControl(cname);
     return updControl(control, newcontrol, upd);
   }
-  bool updctrl(MarControlPtr control, MarControlPtr newcontrol, bool upd = true) {return updControl(control, newcontrol, upd);}
 
 	// set controls
 	bool setControl(std::string cname, MarControlPtr newcontrol) {return updctrl(cname, newcontrol, NOUPDATE);}

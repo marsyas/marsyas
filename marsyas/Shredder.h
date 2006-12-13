@@ -43,7 +43,7 @@ private:
 
 	void addControls();
 	void myUpdate();
-	bool updControl(std::string cname, MarControlPtr newcontrol, bool upd=true);
+	bool updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd=true);
   
 public:
 	Shredder(std::string name);
