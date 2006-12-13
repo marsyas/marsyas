@@ -424,7 +424,7 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 
 
 void 
-PeClusters::voicingLine(string fileName){
+PeClusters::voicingLine(string fileName, mrs_natural hopSize){
 
 	ofstream lineFile;
 	lineFile.open(fileName.c_str());
@@ -432,7 +432,7 @@ PeClusters::voicingLine(string fileName){
 	for (mrs_natural i=0 ; i<nbClusters ; i++)
 	{
 
-		lineFile << set[i].start << " " << set[i].getVoicingFactor() << endl;
+		lineFile << set[i].start*hopSize << " " << set[i].getVoicingFactor() << endl;
 	}
 	lineFile.close();
 }

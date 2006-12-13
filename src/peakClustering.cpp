@@ -488,7 +488,7 @@ main(int argc, const char **argv)
 				clustFile.close();
 
 				// store voicingLine
-				clusters.voicingLine(fileVoicingName);
+				clusters.voicingLine(fileVoicingName, hopSize_);
 			}
 			
 			// compute ground truth 
