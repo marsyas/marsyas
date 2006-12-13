@@ -37,6 +37,7 @@ PeClust::PeClust(string name):MarSystem("PeClust", name)
 	addControls();
 	kmax_ = 0;
 	nbParameters_ = nbPkParameters; // 7
+	maxLabel_=0;
 }
 
 PeClust::PeClust(const PeClust& a) : MarSystem(a)
@@ -107,7 +108,7 @@ PeClust::myUpdate()
 	maxLabel_=0;
 
 	harmonicityWeight_=0.01;
-	harmonicitySize_=20;
+	harmonicitySize_=10;
 
 	firstF_.stretch(kmax_);
 	firstA_.stretch(kmax_);
@@ -299,13 +300,17 @@ PeClust::labeling(realvec& data, realvec& labels, mrs_natural cut)
 void
 PeClust::simpleLabeling(realvec& data, realvec& labels)
 {
-
+mrs_natural max = maxLabel_+1;
+//cout << endl << max << endl;
 	// fill peaks data with clusters labels
 	for (mrs_natural i=0 ; i<nbPeaks_ ; i++)
 	{
-		data(i, 6) = labels(i);
-		if(labels(i) > maxLabel_)
-			maxLabel_ = labels(i);
+		if(labels(i) == -1)
+      data(i, pkGroup) = -1;
+		else
+		data(i, pkGroup) = max+labels(i);
+		if(max+labels(i) > maxLabel_)
+			maxLabel_ = max+labels(i);
 	}
 }
 
@@ -379,18 +384,20 @@ PeClust::myProcess(realvec& in, realvec& out)
 		//  MATLAB_PUT(vecs, "clusters");
 		//	MATLAB_EVAL("plotClusters");
 
+		 // MATLAB_PUT(data_(0, pkTime), "x");
+
 		mrs_natural back = nbClusters_;
 	
 		mrs_natural nbSelected = getctrl("mrs_natural/selectedClusters")->toNatural();
 		if(nbSelected)
 		{
-			selectClusters(m_, labels, nbSelected, nbClusters_);
+			selectClusters(m_, data_, labels, nbSelected, nbClusters_);
 			// back = nbClusters_;
 			nbClusters_ = nbSelected;
 		}
 		//cout << labels << endl;
-		//labeling(data_, labels, 1);
-    simpleLabeling(data_, labels);
+		labeling(data_, labels, 1);
+   // simpleLabeling(data_, labels);
 
 		nbClusters_ = back;
 

@@ -92,7 +92,7 @@ realvec harmonicityHistogram;
 
 	mrs_natural getOriLabel ();
 	void setOriLabel (mrs_natural);
-	
+	mrs_real getVoicingFactor();
 	mrs_natural getLabel ();
 	void setLabel (mrs_natural);
 	} ;
@@ -115,6 +115,8 @@ public:
 		void selectGround();
 void attributes(realvec &peakSet);
 		void synthetize(realvec &peakSet, std::string fileName, std::string outFileName, mrs_natural Nw, mrs_natural D, mrs_natural S, mrs_natural bopt, mrs_natural residual=0);
+
+		void voicingLine(std::string fileName);
 	};
 
 

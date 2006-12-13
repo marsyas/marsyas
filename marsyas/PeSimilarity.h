@@ -35,7 +35,7 @@ namespace Marsyas
 	void similarityCompute(realvec&, realvec&);
 void similarityMatrix(realvec&, realvec&, std::string type, mrs_natural, mrs_natural , realvec& firstF, realvec& firstA, realvec& secondF, realvec& secondA);
  void harmonicitySimilarityCompute(realvec&, std::vector<realvec>&, std::vector<realvec>&, realvec& m, mrs_natural, realvec& firstF, realvec& firstA, realvec& secondF, realvec& secondA);
-void selectClusters(realvec &m, realvec &labels, mrs_natural removedNbClusters, mrs_natural);
+void selectClusters(realvec &m, realvec &data, realvec &labels, mrs_natural removedNbClusters, mrs_natural);
 }
 
 #endif

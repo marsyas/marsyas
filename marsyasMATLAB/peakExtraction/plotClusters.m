@@ -24,9 +24,10 @@ for i=1:nbClusters
     freqStd = clusters(i, 7);
     ampMean = clusters(i, 8)/maxA;
     ampStd = clusters(i, 9)/maxAstd;
+    voicing = clusters(i, 10)
 
-    frequencyEvolution = clusters(i, 10:10+length);
-    amplitudeEvolution = clusters(i, 10+length+1:10+length*2+1);
+    frequencyEvolution = clusters(i, 11:11+length);
+    amplitudeEvolution = clusters(i, 11+length+1:11+length*2+1);
 
     value_color = coul(i);
     color = cm(value_color, :) ;
@@ -40,8 +41,8 @@ for i=1:nbClusters
         'Color', color, 'LineWidth', ampMean*3, ...
     'ButtonDownFcn', 'plotCluster', 'UserData', iPeaks);
     line([start+length/2 start+length/2], [freqMean-freqStd/2 freqMean+freqStd/2], ...
-        'Color', color, 'LineWidth', ampStd*10, ...
-        'ButtonDownFcn', 'playCluster', 'UserData', [name num2str(oriLabel) '.wav']);
+        'Color', color, 'LineWidth', 1+voicing*10, ...
+        'ButtonDownFcn', 'plotCluster', 'UserData', iPeaks); % , 'playCluster', 'UserData', [name num2str(oriLabel) '.wav']);
 
 ylabel('Frequency (Hz)');
 xlabel('Time (ms)');

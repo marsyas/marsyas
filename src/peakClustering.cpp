@@ -36,6 +36,7 @@ string fileResName = EMPTYSTRING;
 string mixName = EMPTYSTRING;
 string filePeakName = EMPTYSTRING;
 string fileClustName = EMPTYSTRING;
+string fileVoicingName = EMPTYSTRING;
 
 // Global variables for command-line options 
 bool helpopt_ = 0;
@@ -49,13 +50,13 @@ int nbSines_ = 20;
 // nbClusters
 int nbClusters_ = 3;
 // nbClusters
-int nbSelectedClusters_ = 1;
+int nbSelectedClusters_ = 0;
 // output buffer Size
 int bopt_ = 128;
 // output gain
 mrs_real gopt_ = 1.0;
 // number of accumulated frames
-mrs_natural accSize_ = 40;
+mrs_natural accSize_ = 20;
 // number of seconds for analysing process
 mrs_natural stopAnalyse_=0;
 // type of similarity Metrics // test amplitude normamlise gtzan
@@ -233,7 +234,7 @@ mixseries->addMarSystem(mng.create("NoiseSource", "noise"));
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PvFold/fo/mrs_natural/Decimation", D); // useless ?
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Decimation", D);      
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Sinusoids", S);  
-  pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
+  // pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
 
 	pvseries->setctrl("PeClust/peClust/mrs_natural/Sinusoids", S);  
 	pvseries->setctrl("PeClust/peClust/mrs_natural/Clusters", C); 
@@ -436,6 +437,7 @@ main(int argc, const char **argv)
 				mixName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Mix." + Sfname.ext() ;
 				filePeakName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Peak.txt" ;
 				fileClustName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Clust.txt" ;
+        fileVoicingName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Voicing.txt" ;
 
 				if(noiseName == "music")
 				{
@@ -484,6 +486,9 @@ main(int argc, const char **argv)
 					cout << "Unable to open output Clusters File " << fileClustName << endl;
 			//	clustFile << vecs;
 				clustFile.close();
+
+				// store voicingLine
+				clusters.voicingLine(fileVoicingName);
 			}
 			
 			// compute ground truth 

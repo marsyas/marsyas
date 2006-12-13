@@ -246,7 +246,7 @@ Marsyas::harmonicitySimilarityCompute(realvec& data, std::vector<realvec>& fSet,
 }
 
 
-void Marsyas::selectClusters(realvec &m, realvec &labels, mrs_natural wantedNbClusters, mrs_natural nbClusters)
+void Marsyas::selectClusters(realvec &m, realvec &data, realvec &labels, mrs_natural wantedNbClusters, mrs_natural nbClusters)
 {
 	mrs_natural i, j, nbFound=0;
 	realvec sValue(nbClusters);
@@ -287,11 +287,23 @@ realvec sNNb(nbClusters);
  for(i=0; i<nbClusters ;i++)
 	sNValue(i) /= sNNb(i);
 
- for(i=0; i<nbClusters ;i++)
-	sValue(i) /= sNValue(i);
-//	cout << sValue;
+ //for(i=0; i<nbClusters ;i++)
+	//sValue(i) /= sNValue(i);
 
-	while(nbFound<nbClusters-wantedNbClusters)
+ /*MATLAB_PUT(sValue.maxval(), "val");
+ MATLAB_EVAL("hold on ; plot(x, val, 'ko');");*/
+
+ // create the clusters set
+ //realvec vecs;
+ //clusters.attributes(peakSet_);	
+ //clusters.getVecs(vecs);
+
+ // get infos
+
+ // weight sValues
+
+
+ while(nbFound<nbClusters-wantedNbClusters)
 	{
 		mrs_natural index=0;
 		mrs_real value=MAXREAL;
@@ -313,7 +325,7 @@ realvec sNNb(nbClusters);
 		if(sValue(i) == -1)
 			newLabels(i) =-1;
 		else
-			newLabels(i) = k++;
+			newLabels(i) = k;  // put k++ for unmerging the clusters in the same frame
 
 	// cout << newLabels;
 	for(i=0 ; i<m.getRows() ; i++)

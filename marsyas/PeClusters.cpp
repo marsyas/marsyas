@@ -133,7 +133,7 @@ PeCluster::computeAttributes(realvec& peakSet, mrs_natural l, string type)
 mrs_natural 
 PeCluster::getVecSize()
 {
-	return 3+6+2*(envSize+histSize);
+	return 3+6+1+2*(envSize+histSize);
 }
 
 void 
@@ -151,6 +151,7 @@ PeCluster::toVec(realvec& vec)
 	vec(i++) = freqStd;
 	vec(i++) = ampMean;
 	vec(i++) = ampStd;
+	vec(i++) = getVoicingFactor();
 
 	for (j=0;j<envSize ; j++)
 		vec(i++) = frequencyEvolution(j);
@@ -195,6 +196,39 @@ void PeCluster::setLabel (mrs_natural l)
 	label = l;
 }
 
+mrs_real 
+PeCluster::getVoicingFactor()
+{
+	//	return frequencyHistogram.maxval();
+
+	mrs_natural i, index=0, indexStart=0, indexEnd=histSize, interval= (mrs_natural) ceil(histSize/400.0);
+	mrs_real maxVal=0, sum=0;
+	// look for the maximum
+	for (i=0 ; i<histSize ; i++)
+		if (maxVal < frequencyHistogram(i))
+		{
+			index = i;
+			maxVal = frequencyHistogram(i);
+		}
+
+		if (index-interval<0)
+			indexStart = 0;
+		else
+			indexStart = index-interval;
+
+		if (index+interval>histSize)
+			indexStart = histSize;
+		else
+			indexStart = index+interval;
+
+		// seek the neighbors
+		for (i = indexStart ; i< indexEnd ; i++)
+		{
+			sum+= frequencyHistogram(i);
+		}
+		//
+		return log10(1+sum/(maxVal*2*interval));
+}
 
 ///////////////////////////////////////////////////////////
 
@@ -385,4 +419,20 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 				else
 					set[i].groundLabel = 1;
 		}
+}
+
+
+
+void 
+PeClusters::voicingLine(string fileName){
+
+	ofstream lineFile;
+	lineFile.open(fileName.c_str());
+	
+	for (mrs_natural i=0 ; i<nbClusters ; i++)
+	{
+
+		lineFile << set[i].start << " " << set[i].getVoicingFactor() << endl;
+	}
+	lineFile.close();
 }
