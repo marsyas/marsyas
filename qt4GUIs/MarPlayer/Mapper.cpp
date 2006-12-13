@@ -52,7 +52,7 @@ Mapper::Mapper()
 
   // Create MarControlPtr handles for all the controls 
   filePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_string/filename");
-  gainPtr_ = pnet_->getctrl("Gain/gain/mrs_real/gain");
+  gainPtr_ = mwr_->getctrl("Gain/gain/mrs_real/gain");
   repPtr_ = mwr_->getctrl("SoundFileSource/src/mrs_real/repetitions");
   posPtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/pos");  
   sizePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/size");  
@@ -76,7 +76,12 @@ Mapper::open(QString fileName, int pos)
 
   // update filename
   mwr_->updctrl(filePtr_, fileName.toStdString());
+  pnet_ ->updctrl(filePtr_, fileName.toStdString());
+  
+  
   mwr_->updctrl(initPtr_, true);
+
+
   //  loop forever the piece [!]
   mwr_->updctrl(repPtr_, -1.0); 
   

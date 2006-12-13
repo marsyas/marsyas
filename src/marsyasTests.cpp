@@ -1725,7 +1725,12 @@ test_updctrl(string fname)
   pnet_->addMarSystem(mng.create("AudioSink", "dest"));
   
   MarControlPtr filePtr = pnet_->getctrl("SoundFileSource/src/mrs_string/filename");
+  
+  cout << filePtr->hasState() << endl;
+  
   pnet_->updctrl(filePtr, fname);
+  // pnet_->updctrl("SoundFileSource/src/mrs_string/filename", fname);
+  
   
   cout << *pnet_ << endl;
   

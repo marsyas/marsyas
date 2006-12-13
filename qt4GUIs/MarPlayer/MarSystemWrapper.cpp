@@ -35,7 +35,7 @@ MarSystemWrapper::getctrl(string cname)
 
 void 
 MarSystemWrapper::updctrl(MarControlPtr cname, 
-			       MarControlPtr cvalue)
+			  MarControlPtr cvalue)
 {
   if ( !running_ )
     {

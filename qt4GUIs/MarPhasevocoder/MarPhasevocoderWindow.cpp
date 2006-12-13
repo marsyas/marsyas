@@ -86,12 +86,9 @@ MarPhasevocoderWindow::MarPhasevocoderWindow()
 void 
 MarPhasevocoderWindow::timeChanged(int value)
 {
-  cout << "Time Stretching Changed" << endl;
-  cout << "value " << value << endl;
   
   float nval = iopt * ((50.0 + (100.0 - value)) / 100.0);
   
-  cout << "(int) nval = " << (mrs_natural) nval << endl;
   
 
   mwr_->updctrl("PvOscBank/ob/mrs_natural/Interpolation", (mrs_natural) nval);
@@ -112,19 +109,14 @@ MarPhasevocoderWindow::sinusoidsChanged(int value)
 void 
 MarPhasevocoderWindow::volumeChanged(int value)
 {
-  cout << "Volume Changed" << endl;
-  cout << "value " << value << endl;
 
 }
 
 void 
 MarPhasevocoderWindow::freqChanged(int value)
 {
-  // cout << "Frequency Changed" << endl;
-  // cout << "value " << value << endl;
   
   float pitchShift = value * 1.0 / 50.0;
-  cout << "pitchShift" << pitchShift << endl;
   
   mwr_->updctrl("PvOscBank/ob/mrs_real/PitchShift", pitchShift);  
 
@@ -136,7 +128,6 @@ MarPhasevocoderWindow::freqChanged(int value)
 void 
 MarPhasevocoderWindow::createNetwork()
 {
-  cout << "CreateNetwork" << endl;
   
   mrs_natural N = 512;
   mrs_natural Nw = 512;
