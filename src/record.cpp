@@ -305,16 +305,17 @@ recordVirtualSensor(mrs_real length, mrs_real gain, string filename)
   MarSystem* asrc = mng.create("AudioSource", "asrc");
   MarSystem* dest = mng.create("SoundFileSink", "dest");
 
+  asrc->updctrl("mrs_real/israte", 44100.0); 
+  asrc->updctrl("mrs_real/osrate", 44100.0); 
+  recordNet->linkctrl("mrs_bool/notEmpty", "AudioSource/asrc/mrs_bool/notEmpty");
   recordNet->addMarSystem(asrc);
   MidiInput* midiin = new MidiInput("midiin");
   recordNet->addMarSystem(midiin);
+
   // recordNet->addMarSystem(dest); 
-  recordNet->updctrl("AudioSource/asrc/mrs_natural/inSamples", 4096);
+  recordNet->updctrl("AudioSource/asrc/mrs_natural/bufferSize",6144);
+  recordNet->updctrl("AudioSource/asrc/mrs_bool/initAudio", true);
   recordNet->updctrl("AudioSource/asrc/mrs_real/gain", gain);
-  recordNet->updctrl("AudioSource/asrc/mrs_real/israte", 44100.0); 
-  recordNet->updctrl("AudioSource/asrc/mrs_real/osrate", 44100.0); 
-  
-  recordNet->linkctrl("mrs_bool/notEmpty", "AudioSource/asrc/mrs_bool/notEmpty");
 
 
 
@@ -438,8 +439,8 @@ main(int argc, const char **argv)
   for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
     {	
       cout << "Recording " << lengthopt << " seconds to file " << *sfi << endl;
-      // recordVirtualSensor(lengthopt,gopt,  *sfi);
-      record(lengthopt,gopt,  *sfi);
+       recordVirtualSensor(lengthopt,gopt,  *sfi);
+   //   record(lengthopt,gopt,  *sfi);
     }
    
    
