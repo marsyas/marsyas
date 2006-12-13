@@ -849,14 +849,10 @@ MarSystem::hasControlLocal(string cname)
 bool 
 MarSystem::updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd)
 {
-	// get the control (local or from children)...
-  string cname = control->getName();
-  
-
-	// ...and check if the control really exists locally or among children
+	// check if the control really exists locally or among children
 	if(control.isInvalid())
 	{
-	  MRSWARN("MarSystem::updControl - Unsupported control name = " + cname);
+	  MRSWARN("MarSystem::updControl - Invalid control ptr");
 		MRSWARN("MarSystem::updControl - Composite name = " + name_);
 		return false;
 	}
@@ -868,6 +864,9 @@ MarSystem::updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd)
 	//in case this is a composite Marsystem,
 	if(isComposite_)
 	{
+		// get the control name
+		string cname = control->getName();
+
 		// call update (only if the control has state,
 		// upd is true, and if it's not a local control (otherwise update 
 		// was already called by control->setValue())).
