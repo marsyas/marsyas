@@ -76,7 +76,8 @@ WekaSink::addControls()
 void 
 WekaSink::putHeader(string inObsNames)
 {
-	updctrl(ctrl_putHeader_, false);
+	//updctrl(ctrl_putHeader_, false);
+	ctrl_putHeader_->setValue(true);
 
 	if ((filename_ != getctrl("mrs_string/filename")->toString()))
 	{

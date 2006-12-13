@@ -188,6 +188,7 @@ public:
 	template<class T> inline bool setValue(T& t, bool update = true);
 
 	inline bool setValue(const char *t, bool update = true);
+	inline bool setValue(bool t, bool update = true);
 
 	// to avoid circular dependencies
 	void callMarSystemUpdate();
@@ -788,6 +789,13 @@ bool
 MarControl::setValue(const char *t, bool update)
 {
 	return this->setValue(std::string(t), update);
+}
+
+inline
+bool
+MarControl::setValue(bool t, bool update)
+{
+	return this->setValue<bool>(t, update);
 }
 
 inline
