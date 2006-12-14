@@ -69,6 +69,8 @@ printHelp(string progName)
   cerr << "vicon           : test processing of vicon motion capture data" << endl;
   cerr << "Windowing       : test different window functions of Windowing marsystem" << endl;
   cerr << "updctrl         : test updating control with pointers " << endl;
+  cerr << "duplex          : test duplex audio input/output" << endl;
+  
   
   
   exit(1);
@@ -1162,6 +1164,9 @@ test_LPC_LSP(string sfName)
 	delete input;
 }
 
+
+
+
 void
 test_realvec()
 {
@@ -1739,6 +1744,44 @@ test_updctrl(string fname)
 
 
 
+void 
+test_duplex()
+{
+  cout << "Testing duplex audio input and output" << endl;
+  MarSystemManager mng;  
+  
+  MarSystem* dnet;
+  dnet = mng.create("Series", "dnet");
+
+  dnet->addMarSystem(mng.create("AudioSource", "src"));
+  dnet->addMarSystem(mng.create("Gain", "gain"));
+  dnet->addMarSystem(mng.create("AudioSink", "dest"));
+
+
+  dnet->updctrl("AudioSource/src/mrs_natural/nChannels", 2);
+  dnet->updctrl("AudioSource/src/mrs_natural/inSamples", 1024);
+  dnet->updctrl("AudioSource/src/mrs_real/israte", 44100.0);
+  
+  
+  dnet->updctrl("AudioSource/src/mrs_bool/initAudio", true);
+  dnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+  
+
+  cout << *dnet << endl;
+  
+  while(1) 
+    {
+      dnet->tick();
+    }
+  
+  
+  
+}
+
+  
+
+
+
 // Pluck(0,100,1.0,0.5,"TestPluckedRich0_100hz.wav");
 //Pluck Karplus Strong Model Kastro.cpp output to wavfile
 void 
@@ -2142,7 +2185,8 @@ main(int argc, const char **argv)
     test_Windowing();
   else if (testName == "updctrl") 
     test_updctrl(fname0);
-  
+  else if (testName == "duplex") 
+    test_duplex();
   else 
     {
       cout << "Unsupported test " << endl;

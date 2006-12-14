@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-SOURCES = $(ERBTest_SOURCES) $(LPCExample_SOURCES) $(SeneffEarTest_SOURCES) $(bextract_SOURCES) $(classifyFile_SOURCES) $(drumExtract_SOURCES) $(extract_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mixer_SOURCES) $(mkcollection_SOURCES) $(msl_SOURCES) $(mugle_SOURCES) $(peVocoder_SOURCES) $(peakClustering_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(server_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplaygui_SOURCES) $(sfplugin_SOURCES) $(tempo_SOURCES) $(tutorial_SOURCES)
+SOURCES = $(ERBTest_SOURCES) $(LPCExample_SOURCES) $(SeneffEarTest_SOURCES) $(bextract_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mixer_SOURCES) $(mkcollection_SOURCES) $(msl_SOURCES) $(mugle_SOURCES) $(peVocoder_SOURCES) $(peakClustering_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(server_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplaygui_SOURCES) $(sfplugin_SOURCES) $(tempo_SOURCES) $(tutorial_SOURCES) $(virtualsensor_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -44,7 +44,7 @@ bin_PROGRAMS = sfinfo$(EXEEXT) sfplugin$(EXEEXT) sfplay$(EXEEXT) \
 	phasevocoder$(EXEEXT) pitchextract$(EXEEXT) sfplaygui$(EXEEXT) \
 	tempo$(EXEEXT) server$(EXEEXT) msl$(EXEEXT) tutorial$(EXEEXT) \
 	ERBTest$(EXEEXT) marsyasTests$(EXEEXT) SeneffEarTest$(EXEEXT) \
-	record$(EXEEXT) drumExtract$(EXEEXT) mixer$(EXEEXT) \
+	record$(EXEEXT) virtualsensor$(EXEEXT) mixer$(EXEEXT) \
 	mugle$(EXEEXT) classifyFile$(EXEEXT) midiTest$(EXEEXT) \
 	LPCExample$(EXEEXT) peakClustering$(EXEEXT) peVocoder$(EXEEXT)
 subdir = src
@@ -80,10 +80,6 @@ bextract_DEPENDENCIES = $(top_builddir)/marsyas/libmarsyas.a \
 am_classifyFile_OBJECTS = classifyFile.$(OBJEXT)
 classifyFile_OBJECTS = $(am_classifyFile_OBJECTS)
 classifyFile_DEPENDENCIES = $(top_builddir)/marsyas/libmarsyas.a \
-	$(am__DEPENDENCIES_1)
-am_drumExtract_OBJECTS = drumExtract.$(OBJEXT)
-drumExtract_OBJECTS = $(am_drumExtract_OBJECTS)
-drumExtract_DEPENDENCIES = $(top_builddir)/marsyas/libmarsyas.a \
 	$(am__DEPENDENCIES_1)
 am_extract_OBJECTS = extract.$(OBJEXT)
 extract_OBJECTS = $(am_extract_OBJECTS)
@@ -161,6 +157,10 @@ am_tutorial_OBJECTS = tutorial.$(OBJEXT)
 tutorial_OBJECTS = $(am_tutorial_OBJECTS)
 tutorial_DEPENDENCIES = $(top_builddir)/marsyas/libmarsyas.a \
 	$(am__DEPENDENCIES_1)
+am_virtualsensor_OBJECTS = virtualsensor.$(OBJEXT)
+virtualsensor_OBJECTS = $(am_virtualsensor_OBJECTS)
+virtualsensor_DEPENDENCIES = $(top_builddir)/marsyas/libmarsyas.a \
+	$(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)/marsyas
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
@@ -168,8 +168,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/LPCExample.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SeneffEarTest.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/bextract.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/classifyFile.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/drumExtract.Po ./$(DEPDIR)/extract.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/classifyFile.Po ./$(DEPDIR)/extract.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/marsyasTests.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/midiTest.Po ./$(DEPDIR)/mixer.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/mkcollection.Po ./$(DEPDIR)/msl.Po \
@@ -180,7 +179,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/server_main.Po ./$(DEPDIR)/sfinfo.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sfplay.Po ./$(DEPDIR)/sfplaygui.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sfplugin.Po ./$(DEPDIR)/tempo.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/tutorial.Po
+@AMDEP_TRUE@	./$(DEPDIR)/tutorial.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/virtualsensor.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -188,24 +188,24 @@ CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 SOURCES = $(ERBTest_SOURCES) $(LPCExample_SOURCES) \
 	$(SeneffEarTest_SOURCES) $(bextract_SOURCES) \
-	$(classifyFile_SOURCES) $(drumExtract_SOURCES) \
-	$(extract_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) \
-	$(mixer_SOURCES) $(mkcollection_SOURCES) $(msl_SOURCES) \
-	$(mugle_SOURCES) $(peVocoder_SOURCES) \
-	$(peakClustering_SOURCES) $(phasevocoder_SOURCES) \
-	$(pitchextract_SOURCES) $(record_SOURCES) $(server_SOURCES) \
-	$(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplaygui_SOURCES) \
-	$(sfplugin_SOURCES) $(tempo_SOURCES) $(tutorial_SOURCES)
+	$(classifyFile_SOURCES) $(extract_SOURCES) \
+	$(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mixer_SOURCES) \
+	$(mkcollection_SOURCES) $(msl_SOURCES) $(mugle_SOURCES) \
+	$(peVocoder_SOURCES) $(peakClustering_SOURCES) \
+	$(phasevocoder_SOURCES) $(pitchextract_SOURCES) \
+	$(record_SOURCES) $(server_SOURCES) $(sfinfo_SOURCES) \
+	$(sfplay_SOURCES) $(sfplaygui_SOURCES) $(sfplugin_SOURCES) \
+	$(tempo_SOURCES) $(tutorial_SOURCES) $(virtualsensor_SOURCES)
 DIST_SOURCES = $(ERBTest_SOURCES) $(LPCExample_SOURCES) \
 	$(SeneffEarTest_SOURCES) $(bextract_SOURCES) \
-	$(classifyFile_SOURCES) $(drumExtract_SOURCES) \
-	$(extract_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) \
-	$(mixer_SOURCES) $(mkcollection_SOURCES) $(msl_SOURCES) \
-	$(mugle_SOURCES) $(peVocoder_SOURCES) \
-	$(peakClustering_SOURCES) $(phasevocoder_SOURCES) \
-	$(pitchextract_SOURCES) $(record_SOURCES) $(server_SOURCES) \
-	$(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplaygui_SOURCES) \
-	$(sfplugin_SOURCES) $(tempo_SOURCES) $(tutorial_SOURCES)
+	$(classifyFile_SOURCES) $(extract_SOURCES) \
+	$(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mixer_SOURCES) \
+	$(mkcollection_SOURCES) $(msl_SOURCES) $(mugle_SOURCES) \
+	$(peVocoder_SOURCES) $(peakClustering_SOURCES) \
+	$(phasevocoder_SOURCES) $(pitchextract_SOURCES) \
+	$(record_SOURCES) $(server_SOURCES) $(sfinfo_SOURCES) \
+	$(sfplay_SOURCES) $(sfplaygui_SOURCES) $(sfplugin_SOURCES) \
+	$(tempo_SOURCES) $(tutorial_SOURCES) $(virtualsensor_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-exec-recursive install-info-recursive \
@@ -387,8 +387,8 @@ record_SOURCES = record.cpp
 record_LDADD = $(top_builddir)/marsyas/libmarsyas.a \
 		     $(Libs)
 
-drumExtract_SOURCES = drumExtract.cpp 
-drumExtract_LDADD = $(top_builddir)/marsyas/libmarsyas.a \
+virtualsensor_SOURCES = virtualsensor.cpp 
+virtualsensor_LDADD = $(top_builddir)/marsyas/libmarsyas.a \
 		     $(Libs)
 
 mixer_SOURCES = mixer.cpp 
@@ -432,9 +432,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  src/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  src/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  src/Makefile
+	  $(AUTOMAKE) --foreign  src/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -490,9 +490,6 @@ bextract$(EXEEXT): $(bextract_OBJECTS) $(bextract_DEPENDENCIES)
 classifyFile$(EXEEXT): $(classifyFile_OBJECTS) $(classifyFile_DEPENDENCIES) 
 	@rm -f classifyFile$(EXEEXT)
 	$(CXXLINK) $(classifyFile_LDFLAGS) $(classifyFile_OBJECTS) $(classifyFile_LDADD) $(LIBS)
-drumExtract$(EXEEXT): $(drumExtract_OBJECTS) $(drumExtract_DEPENDENCIES) 
-	@rm -f drumExtract$(EXEEXT)
-	$(CXXLINK) $(drumExtract_LDFLAGS) $(drumExtract_OBJECTS) $(drumExtract_LDADD) $(LIBS)
 extract$(EXEEXT): $(extract_OBJECTS) $(extract_DEPENDENCIES) 
 	@rm -f extract$(EXEEXT)
 	$(CXXLINK) $(extract_LDFLAGS) $(extract_OBJECTS) $(extract_LDADD) $(LIBS)
@@ -550,6 +547,9 @@ tempo$(EXEEXT): $(tempo_OBJECTS) $(tempo_DEPENDENCIES)
 tutorial$(EXEEXT): $(tutorial_OBJECTS) $(tutorial_DEPENDENCIES) 
 	@rm -f tutorial$(EXEEXT)
 	$(CXXLINK) $(tutorial_LDFLAGS) $(tutorial_OBJECTS) $(tutorial_LDADD) $(LIBS)
+virtualsensor$(EXEEXT): $(virtualsensor_OBJECTS) $(virtualsensor_DEPENDENCIES) 
+	@rm -f virtualsensor$(EXEEXT)
+	$(CXXLINK) $(virtualsensor_LDFLAGS) $(virtualsensor_OBJECTS) $(virtualsensor_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -562,7 +562,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SeneffEarTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bextract.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/classifyFile.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drumExtract.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/extract.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/marsyasTests.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/midiTest.Po@am__quote@
@@ -582,6 +581,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sfplugin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tempo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tutorial.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/virtualsensor.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \

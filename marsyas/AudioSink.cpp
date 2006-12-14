@@ -89,14 +89,13 @@ AudioSink::myUpdate()
 {
   MRSDIAG("AudioSink::myUpdate");
 
+  MarSystem::myUpdate();
+  
+  
+  nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();//does nothing... [?]
 
   if (getctrl("mrs_bool/initAudio")->to<mrs_bool>())
     initRtAudio();
-  
-
-
-  
-  nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();//does nothing... [?]
   
   //Resize reservoir if necessary
   inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
