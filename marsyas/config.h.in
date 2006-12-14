@@ -12,6 +12,9 @@
 /* Enable Audio IO */
 #undef MRSAUDIO
 
+/* Enable DEBUG MESSAGES */
+#undef MRSDEBUGGING
+
 /* Enable Marsyas Diagnostics */
 #undef MRSDIAGNOSTIC
 

@@ -81,7 +81,7 @@ namespace Marsyas
 #define MRSWARN(x) 
 #endif 
 
-#ifdef MRSDEBUGG
+#ifdef MRSDEBUGGING
 #define MRSDEBUG(x) {std::ostringstream oss; MrsLog::mrsDebug((std::ostringstream&)(oss << x));}
 #else
 #define MRSDEBUG(x)

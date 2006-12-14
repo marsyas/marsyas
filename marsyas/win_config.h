@@ -5,16 +5,28 @@
 /* #undef CYGWIN */
 
 /* Enable mad mp3 decoding */
-/* #define MAD_MP3 1 */ 
-
-/* Root directory of Marsyas files */
-#define MARSYAS_MFDIR "/usr/local/share/marsyas/mf"
+/* #undef MAD_MP3 */
 
 /* Enable Marsyas Assertions */
- #define MRSASSERTE 1
+/* #undef MRSASSERTE */
+
+/* Enable Audio IO */
+#define MRSAUDIO 1
+
+/* Enable DEBUG MESSAGES */
+/* #undef MRSDEBUGGING */
 
 /* Enable Marsyas Diagnostics */
 /* #undef MRSDIAGNOSTIC */
+
+/* Enable MIDI IO */
+#define MRSMIDI 1
+
+/* Enable Marsyas Warnings */
+#define MRSWARNING 1
+
+/* Enable ogg vorbis decoding */
+/* #undef OGG_VORBIS */
 
 /* Name of package */
 #define PACKAGE "marsyas"
@@ -26,19 +38,16 @@
 #define PACKAGE_NAME "marsyas"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "marsyas 0.2"
+#define PACKAGE_STRING "marsyas 0.2.9"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "marsyas"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "0.2"
+#define PACKAGE_VERSION "0.2.9"
 
 /* Version number of package */
-#define VERSION "0.2"
-
-/* Defined if on Win32 platform */
-/* #undef WIN32 */
+#define VERSION "0.2.9"
 
 /* IS BIG ENDINA */
 /* #undef __BIG_ENDIAN__ */
@@ -47,25 +56,31 @@
 /* #undef __CYGWIN__ */
 
 /* LINUX SYSTEM FOR RTAUDIO */
-/* #undef __LINUX_OSS__ 1 */ 
+#define __LINUX_ALSASEQ__ 1
+
+/* LINUX SYSTEM FOR RTAUDIO */
+#define __LINUX_ALSA__ 1
+
+/* LINUX SYSTEM FOR RTAUDIO */
+/* #undef __LINUX_OSS__ */
 
 /* MACOSX SYSTEM FOR RTAUDIO */
 /* #undef __MACOSX_CORE__ */
 
 /* LINUX STUFF */
-/* #define __OS_LINUX__ 1 */ 
+#define __OS_LINUX__ 1
 
 /* MACOSX STUFF */
 /* #undef __OS_MACOSX__ */
 
-/* WINDOWS DIRECTSHOW SYSTEM FOR RTAUDIO */
-#define __WINDOWS_DS__ 
+/* WINDOWS SYSTEM FOR RTMIDI */
+/* #undef __OS_WINDOWS__RTMIDI__ */
 
-/* WINDOWS ASIO SYSTEM FOR RTAUDIO */
-//#define __WINDOWS_ASIO__ 
+/* WINDOWS SYSTEM FOR RTAUDIO */
+/* #undef __WINDOWS_DS__ */
 
-/* WINDOWS SYSTEM FOR RTMIDI  */  
-#define __WINDOWS_MM__
+/* WINDOWS SYSTEM FOR RTAUDIO */
+/* #undef __WINDOWS_MM__ */
 
-/* READLINE SUPPORT */
-#define __WITHREADLINE__ 1
+/* Enable readline */
+/* #undef __WITHREADLINE__ */

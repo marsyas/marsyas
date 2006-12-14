@@ -159,9 +159,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  qt4GUIs/Marx2DGraph/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  qt4GUIs/Marx2DGraph/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  qt4GUIs/Marx2DGraph/Makefile
+	  $(AUTOMAKE) --gnu  qt4GUIs/Marx2DGraph/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

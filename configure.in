@@ -95,6 +95,7 @@ esac
 AC_ARG_ENABLE([debug],[AC_HELP_STRING([--enable-debug],[Compile for debugging with gdb])])
 case "$enable_debug" in
        yes)
+               AC_DEFINE([MRSDEBUGGING],[1], [Enable DEBUG MESSAGES])
                CXXFLAGS="-O0 -g -ggdb"
                echo Debugging enabled
        ;;
