@@ -23,7 +23,7 @@
 #define MRSMIDI 1
 
 /* Enable Marsyas Warnings */
-#define MRSWARNING 1
+/* #define MRSWARNING 1 */
 
 /* Enable ogg vorbis decoding */
 /* #undef OGG_VORBIS */
@@ -56,10 +56,10 @@
 /* #undef __CYGWIN__ */
 
 /* LINUX SYSTEM FOR RTAUDIO */
-#define __LINUX_ALSASEQ__ 1
+/* #define __LINUX_ALSASEQ__ 1 */
 
 /* LINUX SYSTEM FOR RTAUDIO */
-#define __LINUX_ALSA__ 1
+/* #define __LINUX_ALSA__ 1 */
 
 /* LINUX SYSTEM FOR RTAUDIO */
 /* #undef __LINUX_OSS__ */
@@ -68,19 +68,19 @@
 /* #undef __MACOSX_CORE__ */
 
 /* LINUX STUFF */
-#define __OS_LINUX__ 1
+/* #define __OS_LINUX__ 1 */
 
 /* MACOSX STUFF */
 /* #undef __OS_MACOSX__ */
 
 /* WINDOWS SYSTEM FOR RTMIDI */
-/* #undef __OS_WINDOWS__RTMIDI__ */
+#define __OS_WINDOWS__RTMIDI__
 
 /* WINDOWS SYSTEM FOR RTAUDIO */
-/* #undef __WINDOWS_DS__ */
+#define __WINDOWS_DS__ 
 
 /* WINDOWS SYSTEM FOR RTAUDIO */
-/* #undef __WINDOWS_MM__ */
+#define __WINDOWS_MM__
 
 /* Enable readline */
 /* #undef __WITHREADLINE__ */

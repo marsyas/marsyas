@@ -35,6 +35,10 @@ Created by lfpt@inescporto.pt and lmartins@inescporto.pt
 #include "MarControlValue.h"
 #include "realvec.h"
 
+#ifdef MRSDEBUGGING
+#include <sstream>
+#endif
+
 #ifdef MARSYAS_QT
 #include <QtCore>
 #endif
@@ -132,6 +136,10 @@ protected:
 	std::string cname_;
 	bool state_;
 	std::string desc_;
+
+#ifdef MRSDEBUGGING
+	std::string value_debug_;
+#endif
 
 	// for link controls
 	bool isLinked_;
@@ -501,6 +509,11 @@ MarControl::MarControl(const MarControl& a)
 	state_		= a.state_;
 	desc_			= a.desc_;
 	value_		= a.value_->clone();
+#ifdef MRSDEBUGGING
+	std::ostringstream oss;
+	value_->serialize(oss);
+	value_debug_ = oss.str();
+#endif
 	isLinked_ = false;
 }
 
@@ -516,6 +529,11 @@ MarControl::MarControl(MarControlValue *value, std::string cname, MarSystem* msy
 	state_		= state;
 	desc_			= "";
 	value_		= value->clone();
+#ifdef MRSDEBUGGING
+	std::ostringstream oss;
+	value_->serialize(oss);
+	value_debug_ = oss.str();
+#endif
 	isLinked_ = false;
 }
 
@@ -531,6 +549,11 @@ MarControl::MarControl(mrs_real re, std::string cname, MarSystem* msys, bool sta
 	state_		= state;
 	desc_			= "";
 	value_		= new MarControlValueT<mrs_real>(re);
+#ifdef MRSDEBUGGING
+	std::ostringstream oss;
+	value_->serialize(oss);
+	value_debug_ = oss.str();
+#endif
 	isLinked_ = false;
 }
 
@@ -546,6 +569,11 @@ MarControl::MarControl(mrs_natural ne, std::string cname, MarSystem* msys, bool 
 	state_		= state;
 	desc_			= "";
 	value_		= new MarControlValueT<mrs_natural>(ne);
+#ifdef MRSDEBUGGING
+	std::ostringstream oss;
+	value_->serialize(oss);
+	value_debug_ = oss.str();
+#endif
 	isLinked_ = false;
 }
 
@@ -561,6 +589,11 @@ MarControl::MarControl(std::string st, std::string cname, MarSystem* msys, bool 
 	state_		= state;
 	desc_			= "";
 	value_		= new MarControlValueT<std::string>(st);
+#ifdef MRSDEBUGGING
+	std::ostringstream oss;
+	value_->serialize(oss);
+	value_debug_ = oss.str();
+#endif
 	isLinked_ = false;
 }
 
@@ -576,6 +609,11 @@ MarControl::MarControl(mrs_bool be, std::string cname, MarSystem* msys, bool sta
 	state_		= state;
 	desc_			= "";
 	value_		= new MarControlValueT<bool>(be);
+#ifdef MRSDEBUGGING
+	std::ostringstream oss;
+	value_->serialize(oss);
+	value_debug_ = oss.str();
+#endif
 	isLinked_ = false;
 }
 
@@ -591,6 +629,11 @@ MarControl::MarControl(realvec& ve, std::string cname, MarSystem* msys, bool sta
 	state_		= state;
 	desc_			= "";
 	value_		= new MarControlValueT<realvec>(ve);
+#ifdef MRSDEBUGGING
+	std::ostringstream oss;
+	value_->serialize(oss);
+	value_debug_ = oss.str();
+#endif
 	isLinked_ = false;
 }
 
@@ -646,6 +689,12 @@ MarControl::setValue(T& t, bool update)
 		}
 
 		ptr->set(t);
+
+#ifdef MRSDEBUGGING
+		std::ostringstream oss;
+		value_->serialize(oss);
+		value_debug_ = oss.str();
+#endif
 
 		#ifdef MARSYAS_QT
 		rwLock_.unlock();
@@ -712,6 +761,12 @@ MarControl::setValue(MarControlPtr mc, bool update)
 	delete value_;
 	value_ = mc->value_->clone();
 
+#ifdef MRSDEBUGGING
+	std::ostringstream oss;
+	value_->serialize(oss);
+	value_debug_ = oss.str();
+#endif
+
 #ifdef MARSYAS_QT
 	rwLock_.unlock();
 #endif
@@ -762,6 +817,12 @@ MarControl::setValue(MarControlValue *mcv, bool update)
 
 	delete value_;
 	value_ = mcv->clone();
+
+#ifdef MRSDEBUGGING
+	std::ostringstream oss;
+	value_->serialize(oss);
+	value_debug_ = oss.str();
+#endif
 
 	if(isLinked_)
 	{
