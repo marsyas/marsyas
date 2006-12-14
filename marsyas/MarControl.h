@@ -439,7 +439,7 @@ MarControl::to() const
 	else
 	  {
 	    std::ostringstream sstr;
-	    sstr << "[MarControlValue::to] Trying to set value of incompatible type "
+	    sstr << "[MarControl::to] Trying to set value of incompatible type "
 		 << "(expected " << value_->getType() << ", given " << typeid(T).name() << ")";
 	    MRSWARN(sstr.str());
 	    return MarControlValueT<T>::invalidValue;

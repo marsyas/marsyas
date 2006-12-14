@@ -43,7 +43,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\marsyas"
-				PreprocessorDefinitions="WIN32;_DEBUG;MRSDEBUGGING"
+				PreprocessorDefinitions="WIN32;_DEBUG;LOG_TO_COUT;MRSWARNING;MRSDEBUGGING;MRSASSERTE"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"

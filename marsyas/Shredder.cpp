@@ -74,7 +74,7 @@ Shredder::myUpdate()
 		setctrl("mrs_natural/inObservations", 
 			marsystems_[0]->getctrl("mrs_natural/inObservations"));
 		setctrl("mrs_real/israte", 
-			marsystems_[0]->getctrl("mrs_real/israte")->toNatural());
+			marsystems_[0]->getctrl("mrs_real/israte")->toReal());
 
 		// set output characteristics 
 		setctrl("mrs_natural/onSamples", 
