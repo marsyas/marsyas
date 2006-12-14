@@ -106,7 +106,7 @@ PeConvert::myUpdate()
 	fundamental_ = (mrs_real) (getctrl("mrs_real/osrate")->toReal() / (mrs_real)getctrl("mrs_natural/inObservations")->toNatural()*2);
 	kmax_ = getctrl("mrs_natural/Sinusoids")->toNatural();
 	skip_ = getctrl("mrs_natural/nbFramesSkipped")->toNatural();
-	//cuttingFrequency_ = getctrl("mrs_real/cuttingFrequency")->toReal();
+	cuttingFrequency_ = getctrl("mrs_real/cuttingFrequency")->toReal();
 }
 
 

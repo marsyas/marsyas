@@ -239,7 +239,7 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PvFold/fo/mrs_natural/Decimation", D); // useless ?
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Decimation", D);      
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Sinusoids", S); 
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_real/cuttingFrequency_", cuttingFrequency_);  
+	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_real/cuttingFrequency", cuttingFrequency_);  
 	// pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
 
 	pvseries->setctrl("PeClust/peClust/mrs_natural/Sinusoids", S);  
@@ -523,13 +523,19 @@ main(int argc, const char **argv)
 			MATLAB_EVAL("plotPeaks(peaksGp)");*/
 
 			if(clusterFilteringType_)
+			{
+					realvec ct;
         clusters.selectBefore(clusterFilteringType_);
+clusters.getConversionTable(ct);
+				updateLabels(peakSet_, ct);
+			}
 
+			mrs_real snr0=0;
 			if(clusterSynthetize_)
 			{
 				PeClusters sclusters(peakSet_);
 				// synthetize remaining clusters
-				sclusters.synthetize(peakSet_, *sfi, fileName, winSize_, hopSize_, nbSines_, bopt_);
+				snr0 = sclusters.synthetize(peakSet_, *sfi, fileName, winSize_, hopSize_, nbSines_, bopt_);
 			}
 			/*MATLAB_PUT(peakSet_, "peaks");
 			MATLAB_EVAL("plotPeaks(peaks)");*/
@@ -537,9 +543,10 @@ main(int argc, const char **argv)
 			FileName oriFileName(*sfi);
 			FileName noiseFileName(noiseName);
 			ofstream resFile;
-			resFile.open("similaritySnrResults.txt", ios::out | ios::app);
-			cout << oriFileName.name() << " " << noiseFileName.name() << " " << similarityType_ << endl;
-			resFile << oriFileName.name() << " " << noiseFileName.name() << " " << similarityType_ << endl;
+			string snrName(outputDirectoryName + "/similaritySnrResults.txt");
+			resFile.open( snrName.c_str(), ios::out | ios::app);
+			cout << oriFileName.name() << " " << noiseFileName.name() << " " << similarityType_ << " " << snr0 << endl;
+			resFile << oriFileName.name() << " " << noiseFileName.name() << " " << similarityType_ << " " << snr0 << endl;
 			resFile.close();
 
 		}
