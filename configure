@@ -828,6 +828,7 @@ Optional Features:
   --enable-warnings       Turn warnings on
   --enable-audio          Enable Audio IO
   --enable-midi           Enable MIDI IO
+  --enable-profiling      Compile for profiling
   --enable-debug          Compile for debugging with gdb
   --enable-distributed    Compile code for distributed audio processing
                           (experimental)
@@ -3569,6 +3570,24 @@ _ACEOF
        *) echo MIDI disabled
 	;;
 esac
+
+
+
+# Check whether --enable-profiling or --disable-profiling was given.
+if test "${enable_profiling+set}" = set; then
+  enableval="$enable_profiling"
+
+fi;
+case "$enable_profiling" in
+       yes)
+               CXXFLAGS="-O3 -Wall -pg"
+               echo Profiling enabled
+       ;;
+       *) echo Profiling disabled ;;
+esac
+
+
+
 
 # Check whether --enable-debug or --disable-debug was given.
 if test "${enable_debug+set}" = set; then

@@ -92,6 +92,20 @@ case "$enable_midi" in
 	;;
 esac
 
+
+
+AC_ARG_ENABLE([profiling],[AC_HELP_STRING([--enable-profiling],[Compile for profiling])])
+case "$enable_profiling" in
+       yes)
+               CXXFLAGS="-O3 -Wall -pg"
+               echo Profiling enabled
+       ;;
+       *) echo Profiling disabled ;;
+esac
+
+
+
+
 AC_ARG_ENABLE([debug],[AC_HELP_STRING([--enable-debug],[Compile for debugging with gdb])])
 case "$enable_debug" in
        yes)
