@@ -51,6 +51,7 @@ namespace Marsyas
 	mrs_natural envSize;
 	mrs_natural histSize;
 	mrs_natural nbPeaks;
+	mrs_real cuttingFrequency_;
 
 	mrs_real start;
 	mrs_real end;
@@ -82,7 +83,7 @@ realvec harmonicityHistogram;
 
 	void init(realvec& peakSet, mrs_natural l);
 	
-	void computeAttributes(realvec& peakSet, mrs_natural l, std::string type);
+	void computeAttributes(realvec& peakSet, mrs_natural l, std::string type, mrs_real cuttingFrequency);
 
 	mrs_natural getVecSize();
 	void toVec(realvec&);
@@ -93,6 +94,7 @@ realvec harmonicityHistogram;
 	mrs_natural getOriLabel ();
 	void setOriLabel (mrs_natural);
 	mrs_real getVoicingFactor();
+	mrs_real getF0(mrs_natural);
 	mrs_natural getLabel ();
 	void setLabel (mrs_natural);
 	} ;
@@ -113,10 +115,11 @@ public:
 		void getConversionTable(realvec &);
 		void selectBefore(mrs_real val);
 		void selectGround();
-void attributes(realvec &peakSet);
-		void synthetize(realvec &peakSet, std::string fileName, std::string outFileName, mrs_natural Nw, mrs_natural D, mrs_natural S, mrs_natural bopt, mrs_natural residual=0);
+void attributes(realvec &peakSet, mrs_real);
+		mrs_real synthetize(realvec &peakSet, std::string fileName, std::string outFileName, mrs_natural Nw, mrs_natural D, mrs_natural S, mrs_natural bopt, mrs_natural residual=0);
 
 		void voicingLine(std::string fileName, mrs_natural);
+		void f0Line(std::string fileName, mrs_natural, mrs_real, mrs_natural);
 	};
 
 

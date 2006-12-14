@@ -74,11 +74,11 @@ PeCluster::init(realvec& peakSet, mrs_natural l)
 }
 
 void 
-PeCluster::computeAttributes(realvec& peakSet, mrs_natural l, string type)
+PeCluster::computeAttributes(realvec& peakSet, mrs_natural l, string type, mrs_real cuttingFrequency)
 {
-		mrs_natural i, j, k;
+	mrs_natural i, j, k;
 	realvec set;
- 
+
 	set.stretch(nbPeaks, nbPkParameters);
 
 	for (i=0, k=0 ; i< peakSet.getRows() ; i++)
@@ -100,34 +100,36 @@ PeCluster::computeAttributes(realvec& peakSet, mrs_natural l, string type)
 		frequencyEvolution.setval(0);
 		amplitudeEvolution.stretch(envSize);
 		amplitudeEvolution.setval(0);
-	
-		for(i=0 ; i<nbPeaks ; i++)
-			{ 
-				frequencyEvolution(((mrs_natural) set(i, pkTime)-start)) += 
-					set(i, pkFrequency);//*set(i, pkAmplitude);
 
-				amplitudeEvolution(((mrs_natural) set(i, pkTime)-start)) += 
-					set(i, pkAmplitude);
-			}
-	
-			amplitudeHistogram.stretch(histSize);
-			amplitudeHistogram.setval(0);
-			frequencyHistogram.stretch(histSize);
-			frequencyHistogram.setval(0);
-			harmonicityHistogram.stretch(histSize);
-			harmonicityHistogram.setval(0);
-			// compute histograms
-			mrs_real norm = 0;
-			for(i=0 ; i<nbPeaks ; i++)
-			{
-				amplitudeHistogram((mrs_natural) floor(set(i, pkAmplitude)*histSize)) += 1;
-				frequencyHistogram((mrs_natural) floor(set(i, pkFrequency)*histSize/2500)) += set(i, pkAmplitude);
-			  norm+= set(i,pkAmplitude);
-			}
-	    //normalize them
-      amplitudeHistogram/=norm;
-      frequencyHistogram/=norm;
-			// compute similarities within cluster
+		for(i=0 ; i<nbPeaks ; i++)
+		{ 
+			frequencyEvolution(((mrs_natural) set(i, pkTime)-start)) += 
+				set(i, pkFrequency);//*set(i, pkAmplitude);
+
+			amplitudeEvolution(((mrs_natural) set(i, pkTime)-start)) += 
+				set(i, pkAmplitude);
+		}
+
+		amplitudeHistogram.stretch(histSize);
+		amplitudeHistogram.setval(0);
+		frequencyHistogram.stretch(histSize);
+		frequencyHistogram.setval(0);
+		harmonicityHistogram.stretch(histSize);
+		harmonicityHistogram.setval(0);
+		// compute histograms
+		mrs_real norm = 0;
+		for(i=0 ; i<nbPeaks ; i++)
+		{
+			amplitudeHistogram((mrs_natural) floor(set(i, pkAmplitude)*histSize)) += 1;
+			frequencyHistogram((mrs_natural) floor(set(i, pkFrequency)*histSize/cuttingFrequency)) += set(i, pkAmplitude);
+			norm+= set(i,pkAmplitude);
+		}
+		//normalize them
+		amplitudeHistogram/=norm;
+		frequencyHistogram/=norm;
+		// compute similarities within cluster
+
+		cuttingFrequency_ = cuttingFrequency;
 }
 
 mrs_natural 
@@ -157,7 +159,7 @@ PeCluster::toVec(realvec& vec)
 		vec(i++) = frequencyEvolution(j);
 	for (j=0;j<envSize ; j++)
 		vec(i++) = amplitudeEvolution(j);
-for (j=0;j<histSize ; j++)
+	for (j=0;j<histSize ; j++)
 		vec(i++) = frequencyHistogram(j);
 	for (j=0;j<histSize ; j++)
 		vec(i++) = amplitudeHistogram(j);
@@ -224,10 +226,30 @@ PeCluster::getVoicingFactor()
 		// seek the neighbors
 		for (i = indexStart ; i< indexEnd ; i++)
 		{
-			sum+= frequencyHistogram(i);
+			sum += frequencyHistogram(i);
 		}
 		//
 		return log10(1+sum/(maxVal*2*interval));
+}
+
+mrs_real PeCluster::getF0(mrs_natural fIndex){
+
+	// get max from frequencyHistogram
+	mrs_natural i, index=0, indexStart=0, indexEnd=histSize, interval= (mrs_natural) ceil(histSize/400.0);
+	mrs_real maxVal=0, sum=0;
+	// look for the maximum
+	for (i=0 ; i<histSize ; i++)
+		if (maxVal < frequencyHistogram(i))
+		{
+			index = i;
+			maxVal = frequencyHistogram(i);
+		}
+		return index/(histSize+.0)*cuttingFrequency_;
+
+		// get the frequency of the closest peaks or use histValue if too far
+
+		// look for better candidate using HWPS
+
 }
 
 ///////////////////////////////////////////////////////////
@@ -243,7 +265,7 @@ PeClusters::PeClusters(realvec &peakSet)
 	nbFrames=0;
 	for (int i=0 ; i<peakSet.getRows() ; i++)
 	{
-	  //  cout << peakSet(i, pkGroup) << " ";
+		//  cout << peakSet(i, pkGroup) << " ";
 		if(peakSet(i, pkGroup) > nbClusters)
 			nbClusters = (mrs_natural) peakSet(i, pkGroup);
 		if(peakSet(i, pkTime) > nbFrames)
@@ -263,10 +285,10 @@ PeClusters::~PeClusters(){
 	delete [] set;
 }
 void 
-PeClusters::attributes(realvec &peakSet)
+PeClusters::attributes(realvec &peakSet, mrs_real cuttingFrequency)
 {
-for (int i=0 ; i<nbClusters ; i++)
-		set[i].computeAttributes(peakSet, i, "");
+	for (int i=0 ; i<nbClusters ; i++)
+		set[i].computeAttributes(peakSet, i, "", cuttingFrequency);
 }
 
 void
@@ -274,20 +296,20 @@ PeClusters::getVecs(realvec& vecs)
 {
 	mrs_natural maxSize=0;
 	for (int i=0 ; i<nbClusters ; i++)
-	if(set[i].getVecSize()>maxSize)
-	{
-maxSize = set[i].getVecSize();
-	}
-	vecs.stretch(nbClusters, maxSize);
-	vecs.setval(0);
+		if(set[i].getVecSize()>maxSize)
+		{
+			maxSize = set[i].getVecSize();
+		}
+		vecs.stretch(nbClusters, maxSize);
+		vecs.setval(0);
 
-	for (int i=0 ; i<nbClusters ; i++)
-	{
-		realvec vec(set[i].getVecSize());
-		set[i].toVec(vec);
-		for (int j=0 ; j<vec.getSize() ; j++)
-			vecs(i, j) = vec(j);
-	}
+		for (int i=0 ; i<nbClusters ; i++)
+		{
+			realvec vec(set[i].getVecSize());
+			set[i].toVec(vec);
+			for (int j=0 ; j<vec.getSize() ; j++)
+				vecs(i, j) = vec(j);
+		}
 }
 
 
@@ -324,9 +346,11 @@ PeClusters::selectGround()
 	}
 }
 
-void
+
+mrs_real
 PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mrs_natural Nw, mrs_natural D, mrs_natural S, mrs_natural bopt, mrs_natural residual)
 {
+	mrs_real snrVal=0;
 	cout << "Synthetizing Clusters" << endl;
 	MarSystemManager mng;
 
@@ -376,7 +400,7 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 			}
 			else
 			{
-		/*		outsfname = path + name + "Grd_" +  ossi.str() + "." + ext;
+				/*		outsfname = path + name + "Grd_" +  ossi.str() + "." + ext;
 				fileResName = path + name + "GrdRes_" + ossi.str() + "." + ext;*/
 			}
 
@@ -403,7 +427,7 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 				if(pvseries->getctrl("RealvecSource/peSource/mrs_bool/done")->toBool())
 					break;
 			}
-	
+
 			if(Snr)
 			{
 				Snr/=nbActiveFrames;
@@ -412,13 +436,15 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 			else
 				Snr = -80;
 			cout << " SNR for cluster " << i << " : "<< Snr << " " << nbActiveFrames << endl;
-
+			if(!i)
+				snrVal = Snr;
 			if(residual)
 				if(Snr > -3)
 					set[i].groundLabel = 0;
 				else
 					set[i].groundLabel = 1;
 		}
+		return snrVal;
 }
 
 
@@ -428,11 +454,25 @@ PeClusters::voicingLine(string fileName, mrs_natural hopSize){
 
 	ofstream lineFile;
 	lineFile.open(fileName.c_str());
-	
+
 	for (mrs_natural i=0 ; i<nbClusters ; i++)
 	{
-
 		lineFile << set[i].start*hopSize << " " << set[i].getVoicingFactor() << endl;
 	}
 	lineFile.close();
+}
+
+void 
+PeClusters::f0Line(string fileName, mrs_natural hopSize, mrs_real samplingFrequency, mrs_natural twLength){
+
+	ofstream lineFile;
+	lineFile.open(fileName.c_str());
+
+	for (mrs_natural i=0 ; i<nbClusters ; i++)
+		for(mrs_natural j=0 ; j<twLength ; j++)
+		{
+			cout << (set[i].start+j)*hopSize/samplingFrequency << " " << set[i].getF0(j)*samplingFrequency << endl;
+			lineFile << (set[i].start+j)*hopSize/samplingFrequency << " " << set[i].getF0(j)*samplingFrequency << endl;
+		}
+		lineFile.close();
 }

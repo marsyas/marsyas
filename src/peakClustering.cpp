@@ -37,6 +37,7 @@ string mixName = EMPTYSTRING;
 string filePeakName = EMPTYSTRING;
 string fileClustName = EMPTYSTRING;
 string fileVoicingName = EMPTYSTRING;
+string fileF0Name = EMPTYSTRING;
 
 // Global variables for command-line options 
 bool helpopt_ = 0;
@@ -74,10 +75,14 @@ mrs_real noiseGain_=.8;
 mrs_real noiseDuration_=0;
 // sampling frequency
 mrs_real samplingFrequency_=1;
+// cutting frequency
+mrs_real cuttingFrequency_=2500;
 //
 mrs_real timeElapsed;
 //
 mrs_natural nbTicks=0;
+//
+mrs_natural clusterFilteringType_ = 0;
 
 bool microphone_ = false;
 bool analyse_ = false;
@@ -149,11 +154,11 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		fanin->addMarSystem(mng.create("SoundFileSource", "src"));
 	// create a series for the noiseSource
 	MarSystem* mixseries = mng.create("Series", "mixseries");
-	
+
 	if(noiseName == "white")
-mixseries->addMarSystem(mng.create("NoiseSource", "noise"));
+		mixseries->addMarSystem(mng.create("NoiseSource", "noise"));
 	else
-	mixseries->addMarSystem(mng.create("SoundFileSource", "noise"));
+		mixseries->addMarSystem(mng.create("SoundFileSource", "noise"));
 
 	mixseries->addMarSystem(mng.create("Delay", "noiseDelay"));
 	MarSystem* noiseGain = mng.create("Gain", "noiseGain");
@@ -163,8 +168,8 @@ mixseries->addMarSystem(mng.create("NoiseSource", "noise"));
 
 	preNet->addMarSystem(fanin);
 	//////////////////////////////////////////////////////
-  // should be removed for weird command line problems
-  preNet->addMarSystem(mng.create("SoundFileSink", "mixSink"));
+	// should be removed for weird command line problems
+	preNet->addMarSystem(mng.create("SoundFileSink", "mixSink"));
 	////////////////////////////////////////
 	preNet->addMarSystem(mng.create("ShiftInput", "si"));
 	preNet->addMarSystem(mng.create("Shifter", "sh"));
@@ -233,8 +238,9 @@ mixseries->addMarSystem(mng.create("NoiseSource", "noise"));
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Shifter/sh/mrs_natural/shift", 1);
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PvFold/fo/mrs_natural/Decimation", D); // useless ?
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Decimation", D);      
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Sinusoids", S);  
-  // pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
+	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Sinusoids", S); 
+	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_real/cuttingFrequency_", cuttingFrequency_);  
+	// pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
 
 	pvseries->setctrl("PeClust/peClust/mrs_natural/Sinusoids", S);  
 	pvseries->setctrl("PeClust/peClust/mrs_natural/Clusters", C); 
@@ -244,54 +250,54 @@ mixseries->addMarSystem(mng.create("NoiseSource", "noise"));
 	pvseries->updctrl("PeClust/peClust/mrs_string/similarityType", T); 
 
 	similarityWeight_.stretch(3);
-  similarityWeight_(0) = 1;
-  similarityWeight_(1) = 10;
-  similarityWeight_(2) = 1;
+	similarityWeight_(0) = 1;
+	similarityWeight_(1) = 10;
+	similarityWeight_(2) = 1;
 
 	pvseries->updctrl("PeClust/peClust/mrs_realvec/similarityWeight", similarityWeight_); 
 
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/SoundFileSink/mixSink/mrs_string/filename", mixName);//[!]
 
 	//pvseries->update();
-							
+
 	if(synthetize)
 	{
-		 synthNetConfigure (pvseries, sfName, outsfname, fileResName, Nw, D, S, accSize, microphone_, bopt_, Nw+1-D);
+		synthNetConfigure (pvseries, sfName, outsfname, fileResName, Nw, D, S, accSize, microphone_, bopt_, Nw+1-D);
 	}
 
 	if(noiseDuration_)
 	{
-	ostringstream ossi;
-	ossi << ((noiseDelay_+noiseDuration_)) << "s";
-	cout << ossi.str() << endl;
-	// touch the gain directly
-//	noiseGain->updctrl("0.1s", Repeat("0.1s", 1), new EvValUpd(noiseGain,"mrs_real/gain", 0.0));
+		ostringstream ossi;
+		ossi << ((noiseDelay_+noiseDuration_)) << "s";
+		cout << ossi.str() << endl;
+		// touch the gain directly
+		//	noiseGain->updctrl("0.1s", Repeat("0.1s", 1), new EvValUpd(noiseGain,"mrs_real/gain", 0.0));
 
 	}
 
-//	cout << *pvseries << endl;
-	
+	//	cout << *pvseries << endl;
+
 	mrs_real globalSnr = 0;
 	mrs_natural nb=0;
 	//	mrs_real time=0;
 	while(1)
 	{	
-//		cout << "tick"<<endl;
+		//		cout << "tick"<<endl;
 		pvseries->tick();
-//	cout << "tick"<<endl;
-	/*	if(time > (noiseDelay_+noiseDuration_))
+		//	cout << "tick"<<endl;
+		/*	if(time > (noiseDelay_+noiseDuration_))
 		{
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/Gain/noiseGain/mrs_real/gain", (mrs_real) 0);
+		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/Gain/noiseGain/mrs_real/gain", (mrs_real) 0);
 		}
-    time+=accSize_*hopSize_/samplingFrequency_;*/
-// cout << time << " " << noiseDelay_+noiseDuration_ << endl;
+		time+=accSize_*hopSize_/samplingFrequency_;*/
+		// cout << time << " " << noiseDelay_+noiseDuration_ << endl;
 		// ouput the seg snr
 		if(synthetize)
 		{
 			mrs_real snr = pvseries->getctrl("PeSynthetize/synthNet/Series/postNet/PeResidual/res/mrs_real/snr")->toReal();
 			globalSnr+=snr;
 			nb++;
-			 // cout << "Frame " << nb << " SNR : "<< snr << endl;
+			// cout << "Frame " << nb << " SNR : "<< snr << endl;
 		}
 
 		if (!microphone_)
@@ -299,7 +305,7 @@ mixseries->addMarSystem(mng.create("NoiseSource", "noise"));
 			bool temp = pvseries->getctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
 			bool temp1 = accumNet->getctrl("Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
 			bool temp2 = preNet->getctrl("Fanin/fanin/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
-			
+
 			mrs_real timeRead =  preNet->getctrl("Fanin/fanin/SoundFileSource/src/mrs_natural/pos")->toNatural()/samplingFrequency_;
 			mrs_real timeLeft;
 			if(!stopAnalyse_)
@@ -346,16 +352,18 @@ initOptions()
 	cmd_options.addNaturalOption("fftsize", "n", fftSize_);
 	cmd_options.addNaturalOption("sinusoids", "s", nbSines_);
 	cmd_options.addNaturalOption("bufferSize", "b", bopt_);
-  cmd_options.addNaturalOption("quitAnalyse", "q", stopAnalyse_);
+	cmd_options.addNaturalOption("quitAnalyse", "q", stopAnalyse_);
 	cmd_options.addNaturalOption("clustering", "c", nbClusters_);
 	cmd_options.addNaturalOption("pruning", "p", nbSelectedClusters_);
+  cmd_options.addNaturalOption("clusterFiltering", "F", clusterFilteringType_);
+
 
 	cmd_options.addBoolOption("analyse", "a", analyse_);
 	cmd_options.addBoolOption("attributes", "A", attributes_);
 	cmd_options.addBoolOption("ground", "g", ground_);
 	cmd_options.addBoolOption("synthetize", "s", synthetize_);
 	cmd_options.addBoolOption("clusterSynthetize", "S", clusterSynthetize_);
-  cmd_options.addBoolOption("peakStore", "P", peakStore_);
+	cmd_options.addBoolOption("peakStore", "P", peakStore_);
 }
 
 
@@ -375,15 +383,15 @@ loadOptions()
 	nbSines_ = cmd_options.getNaturalOption("sinusoids");
 	bopt_ = cmd_options.getNaturalOption("bufferSize");
 	stopAnalyse_ = cmd_options.getNaturalOption("quitAnalyse");
-  nbClusters_ = cmd_options.getNaturalOption("clustering");
-  nbSelectedClusters_ = cmd_options.getNaturalOption("pruning");
-
+	nbClusters_ = cmd_options.getNaturalOption("clustering");
+	nbSelectedClusters_ = cmd_options.getNaturalOption("pruning");
+clusterFilteringType_ = cmd_options.getNaturalOption("clusterFiltering");
 	analyse_ = cmd_options.getBoolOption("analyse");
 	attributes_ = cmd_options.getBoolOption("attributes");
 	ground_ = cmd_options.getBoolOption("ground");
 	synthetize_ = cmd_options.getBoolOption("synthetize");
 	clusterSynthetize_ = cmd_options.getBoolOption("clusterSynthetize");
-  peakStore_ = cmd_options.getBoolOption("peakStore"); 
+	peakStore_ = cmd_options.getBoolOption("peakStore"); 
 }
 
 
@@ -437,7 +445,8 @@ main(int argc, const char **argv)
 				mixName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Mix." + Sfname.ext() ;
 				filePeakName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Peak.txt" ;
 				fileClustName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Clust.txt" ;
-        fileVoicingName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Voicing.txt" ;
+				fileVoicingName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Voicing.txt" ;
+				fileF0Name = outputDirectoryName + "/" + Sfname.nameNoExt() + "F0.txt" ;
 
 				if(noiseName == "music")
 				{
@@ -458,7 +467,7 @@ main(int argc, const char **argv)
 			if(peakSet_.getSize() == 0)
 			{
 				cout << "unable to load peak file: " << filePeakName << endl;
-				exit(1);
+			//	exit(1);
 			}
 
 			MATLAB_PUT(peakSet_, "peaks");
@@ -472,25 +481,26 @@ main(int argc, const char **argv)
 			if(attributes_)
 			{
 				realvec vecs;
-				clusters.attributes(peakSet_);	
+				clusters.attributes(peakSet_, cuttingFrequency_);	
 				clusters.getVecs(vecs);
-	
+
 				// cout << vecs;
 				MATLAB_PUT(getcwd(NULL, 0), "path");
-			  MATLAB_PUT(fileName, "fileName");
-				
-        MATLAB_PUT(vecs, "clusters");
+				MATLAB_PUT(fileName, "fileName");
+
+				MATLAB_PUT(vecs, "clusters");
 				ofstream clustFile;
 				clustFile.open(fileClustName.c_str());
 				if(!clustFile)
 					cout << "Unable to open output Clusters File " << fileClustName << endl;
-			//	clustFile << vecs;
+				//	clustFile << vecs;
 				clustFile.close();
 
 				// store voicingLine
 				clusters.voicingLine(fileVoicingName, hopSize_);
+				clusters.f0Line(fileF0Name, hopSize_, samplingFrequency_, accSize_);
 			}
-			
+
 			// compute ground truth 
 			if(ground_)
 			{
@@ -500,17 +510,20 @@ main(int argc, const char **argv)
 				MATLAB_PUT(vecs, "clusters");
 				clusters.selectGround();
 				realvec ct;
-				
-				
+
+
 
 				clusters.getConversionTable(ct);
 				updateLabels(peakSet_, ct);
-			//	cout << ct;
+				//	cout << ct;
 			}
 			if(ground_ || attributes_)
 				MATLAB_EVAL("figure(2) ; plotClusters");
 			/*	MATLAB_PUT(peakSet_, "peaksGp");
 			MATLAB_EVAL("plotPeaks(peaksGp)");*/
+
+			if(clusterFilteringType_)
+        clusters.selectBefore(clusterFilteringType_);
 
 			if(clusterSynthetize_)
 			{
@@ -520,6 +533,15 @@ main(int argc, const char **argv)
 			}
 			/*MATLAB_PUT(peakSet_, "peaks");
 			MATLAB_EVAL("plotPeaks(peaks)");*/
+
+			FileName oriFileName(*sfi);
+			FileName noiseFileName(noiseName);
+			ofstream resFile;
+			resFile.open("similaritySnrResults.txt", ios::out | ios::app);
+			cout << oriFileName.name() << " " << noiseFileName.name() << " " << similarityType_ << endl;
+			resFile << oriFileName.name() << " " << noiseFileName.name() << " " << similarityType_ << endl;
+			resFile.close();
+
 		}
 	}
 	else
@@ -529,10 +551,10 @@ main(int argc, const char **argv)
 		clusterExtract(peakSet_, "microphone", fileName, noiseName, mixName, noiseDelay_, similarityType_, fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_, synthetize_);
 	}
 
- timeElapsed = (clock()-nbTicks)/((mrs_real) CLOCKS_PER_SEC );
- cout << "Time elapsed: " << timeElapsed << endl;
-	
- exit(0);
+	timeElapsed = (clock()-nbTicks)/((mrs_real) CLOCKS_PER_SEC );
+	cout << "Time elapsed: " << timeElapsed << endl;
+
+	exit(0);
 }
 
 

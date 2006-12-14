@@ -52,7 +52,7 @@ private:
 
   mrs_real fundamental_;
   mrs_real factor_;
-
+mrs_real cuttingFrequency_;
 	mrs_natural time_;
 	mrs_natural nbParameters_;
 	mrs_natural nbPeaks_;

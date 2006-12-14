@@ -318,7 +318,6 @@ realvec sNNb(nbClusters);
 		sValue(index) = -1;
 		nbFound++;
 	}
-
   // cout << sValue;
 	mrs_natural k=0;
 	for(i=0; i<nbClusters ;i++)

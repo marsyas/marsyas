@@ -46,6 +46,7 @@ PeConvert::PeConvert(string name):MarSystem("PeConvert",name)
 	time_ = 0;
 skip_=0;
 	addControls();
+	cuttingFrequency_=0;
 }
 
 
@@ -67,6 +68,8 @@ PeConvert::addControls()
 	setctrlState("mrs_natural/Decimation", true);
 	addctrl("mrs_natural/Sinusoids", 1);
 	setctrlState("mrs_natural/Sinusoids", true);
+	addctrl("mrs_real/cuttingFrequency", 0.0);
+	setctrlState("mrs_real/cuttingFrequency", true);
 	addctrl("mrs_natural/nbFramesSkipped", 0);
 	setctrlState("mrs_natural/nbFramesSkipped", true);
 }
@@ -103,6 +106,7 @@ PeConvert::myUpdate()
 	fundamental_ = (mrs_real) (getctrl("mrs_real/osrate")->toReal() / (mrs_real)getctrl("mrs_natural/inObservations")->toNatural()*2);
 	kmax_ = getctrl("mrs_natural/Sinusoids")->toNatural();
 	skip_ = getctrl("mrs_natural/nbFramesSkipped")->toNatural();
+	//cuttingFrequency_ = getctrl("mrs_real/cuttingFrequency")->toReal();
 }
 
 
@@ -215,7 +219,7 @@ PeConvert::myProcess(realvec& in, realvec& out)
 		Peaker peaker("Peaker");
 		peaker.updctrl("mrs_real/peakStrength", 0.2);
 		peaker.updctrl("mrs_natural/peakStart", (mrs_natural) floor(250/osrate_*size_*2));   // 0
-		peaker.updctrl("mrs_natural/peakEnd", (mrs_natural) floor(2500/osrate_*size_*2));  // size_
+		peaker.updctrl("mrs_natural/peakEnd", (mrs_natural) floor(cuttingFrequency_/osrate_*size_*2));  // size_
 		peaker.updctrl("mrs_natural/inSamples", mag_.getCols());
 		peaker.updctrl("mrs_natural/inObservations", mag_.getRows());
 		peaker.updctrl("mrs_natural/onSamples", peaks_.getCols());
