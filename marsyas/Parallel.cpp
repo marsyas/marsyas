@@ -61,7 +61,6 @@ void Parallel::myUpdate()
     
     for (mrs_natural i=1; i < marsystemsSize_; i++) 
 		{
-      //lmartins: setctrl or updctrl?!? [?]
 			marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
       marsystems_[i]->setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte")); //[!] israte
       marsystems_[i]->update();
@@ -155,20 +154,20 @@ Parallel::updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd)
 		// certain controls must also be propagated to its children
 		// (must find a way to avoid this hard-coded control list, though! [!] )
 		
-		//Parallel Specific [!]
-		if(cname == "mrs_natural/inObservations")
-		{
-			if (marsystemsSize_ > 0)
-			{
-				//Parallel Specific [!]
-				mrs_natural val = newcontrol->toNatural() / marsystemsSize_;
-				
-				if(!marsystems_[0]->updctrl(cname, val, upd))
-					return false;//some error occurred in updctrl()
-				if(upd && marsystems_[0]->hasControlState(cname))
-					update();
-			}
-		}
+// 		//Parallel Specific [!]
+// 		if(cname == "mrs_natural/inObservations")
+// 		{
+// 			if (marsystemsSize_ > 0)
+// 			{
+// 				//Parallel Specific [!]
+// // 				mrs_natural val = newcontrol->toNatural() / marsystemsSize_;
+// // 				if(!marsystems_[0]->updctrl(cname, val, upd))
+// // 					return false;//some error occurred in updctrl()
+// 				
+// 				if(upd && marsystems_[0]->hasControlState(cname))
+// 					update();
+// 			}
+// 		}
 		if ((cname == "mrs_natural/inSamples")|| 
 			//(cname == "mrs_natural/inObservations")||
 			(cname == "mrs_real/israte")||

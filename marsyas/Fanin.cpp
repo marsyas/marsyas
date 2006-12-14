@@ -146,20 +146,20 @@ Fanin::updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd)
 		// certain controls must also be propagated to its children
 		// (must find a way to avoid this hard-coded control list, though! [!] )
 
-		//Fanin Specific [!]
-		if(cname == "mrs_natural/inObservations")
-		{
-			if (marsystemsSize_ > 0)
-			{
-				//Fanin Specific [!]
-				mrs_natural val = newcontrol->toNatural() / marsystemsSize_;
-
-				if(!marsystems_[0]->updctrl(cname, val, upd))
-					return false;//some error occurred in updctrl()
-				if(upd && marsystems_[0]->hasControlState(cname))
-					update();
-			}
-		}
+// 		//Fanin Specific [!]
+// 		if(cname == "mrs_natural/inObservations")
+// 		{
+// 			if (marsystemsSize_ > 0)
+// 			{
+// 				//Fanin Specific [!]
+// // 				mrs_natural val = newcontrol->toNatural() / marsystemsSize_;
+// // 				if(!marsystems_[0]->updctrl(cname, val, upd))
+// // 					return false;//some error occurred in updctrl()
+// 				
+// 				if(upd && marsystems_[0]->hasControlState(cname))
+// 					update();
+// 			}
+// 		}
 		if ((cname == "mrs_natural/inSamples")|| 
 			//(cname == "mrs_natural/inObservations")||
 			(cname == "mrs_real/israte")||
