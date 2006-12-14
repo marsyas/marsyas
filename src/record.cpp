@@ -439,8 +439,8 @@ main(int argc, const char **argv)
   for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
     {	
       cout << "Recording " << lengthopt << " seconds to file " << *sfi << endl;
-       recordVirtualSensor(lengthopt,gopt,  *sfi);
-   //   record(lengthopt,gopt,  *sfi);
+       // recordVirtualSensor(lengthopt,gopt,  *sfi);
+      record(lengthopt,gopt,  *sfi);
     }
    
    
