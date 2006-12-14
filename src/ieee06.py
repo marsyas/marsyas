@@ -15,7 +15,9 @@ beginCommand = bin_path + "peakClustering "
 
 type = ['a','f','h']
 norm = ['o','n','b','l']
-wav = ["noise.wav","saxo.wav","sweep.wav","violin.wav"]
+#wav_primary = ["noise.wav","saxo.wav","sweep.wav","violin.wav"]
+wav_primary = ["saxo.wav","violin.wav","blah.wav"]
+wav_interfere = ["noise.wav","sweep.wav"]
 
 n = len(type)
 
@@ -65,21 +67,24 @@ for j in range(len(type_params)):
       params_full.append(copy(cur));
       
 # Compute all possible pairs of sound files
-n = len(wav)
+n = len(wav_primary)+len(wav_interfere)
 wav_params = [];
 k=2
 
-t = range(0,k)    # t = [ 1...k ]   
-wav_params.append(copy(t));   
+t = range(0,k)    # t = [ 0...(k-1) ] 
+if t[0] < len(wav_primary) and t[1] >= len(wav_primary):  
+   wav_params.append(copy(t));   
 while k < n:
-   t[k-1] += 1;     # t = t + 1      
-   wav_params.append(copy(t));      
+   t[k-1] += 1;     # t = t + 1     
+   if t[0] < len(wav_primary) and t[1] >= len(wav_primary): 
+      wav_params.append(copy(t));      
    r = k-1
    while t[r] == n - (k-r) and r>0 and t[r-1] < n-r:
       t[r-1] += 1
       for c in range(r,k):
-         t[c] = t[c-1] + 1;            
-      wav_params.append(copy(t));            
+         t[c] = t[c-1] + 1;     
+      if t[0] < len(wav_primary) and t[1] >= len(wav_primary):
+         wav_params.append(copy(t));            
       r = r-1;
    if t[0]==n-k:
       break    
@@ -87,7 +92,7 @@ while k < n:
 print wav_params
 wav_full = [];
 for i in range(len(wav_params)):
-   t = [ wav[wav_params[i][0]] , wav[wav_params[i][1]] ]
+   t = [ wav_primary[wav_params[i][0]] , wav_interfere[wav_params[i][1]-len(wav_primary)] ]
    wav_full.append(copy( t ))
 print wav_full
       
