@@ -159,9 +159,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  marsyasVisualStudio2003/sfplay/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  marsyasVisualStudio2003/sfplay/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  marsyasVisualStudio2003/sfplay/Makefile
+	  $(AUTOMAKE) --foreign  marsyasVisualStudio2003/sfplay/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
