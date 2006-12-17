@@ -55,10 +55,16 @@ private:
   realvec means_;
   realvec covars_;
   realvec labelSizes_;
-  
+  MarControlPtr ctrl_mode_;
+  MarControlPtr ctrl_nLabels_;
+  MarControlPtr ctrl_done_;
+  MarControlPtr ctrl_means_;
+  MarControlPtr ctrl_covars_;
 
 public:
   GaussianClassifier(std::string name);
+  GaussianClassifier(const GaussianClassifier& a);
+  
   ~GaussianClassifier();
   MarSystem* clone() const;  
   

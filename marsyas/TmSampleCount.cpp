@@ -28,36 +28,71 @@
 using namespace std;
 using namespace Marsyas;
 
-TmSampleCount::TmSampleCount() { name_="Virtual"; init(); }
-TmSampleCount::TmSampleCount(string name) { name_=name; init(); }
-TmSampleCount::TmSampleCount(MarSystem* ms, string cname) {
-    name_="Virtual"; scheduler=NULL;
-    read_src_=ms; read_cname_=cname; init();
+TmSampleCount::TmSampleCount() 
+{ 
+  name_="Virtual"; 
+  init(); 
 }
-TmSampleCount::TmSampleCount(Scheduler* s, MarSystem* ms, string cname) {
-    name_="Virtual"; scheduler=s; read_src_=ms; read_cname_=cname; init();
+
+TmSampleCount::TmSampleCount(string name) 
+{ name_=name; 
+ init(); 
 }
-TmSampleCount::TmSampleCount(const TmSampleCount& s) {
-    setScheduler(s.scheduler);
-    setReadCtrl(s.read_src_,s.read_cname_);
-    setName(s.name_);
+
+TmSampleCount::TmSampleCount(MarSystem* ms, string cname) 
+{
+  name_="Virtual"; scheduler=NULL;
+  read_src_=ms; 
+  read_cname_ = read_src_->getctrl(cname);
+  init();
 }
+
+
+TmSampleCount::TmSampleCount(Scheduler* s, MarSystem* ms, string cname) 
+{
+  name_="Virtual"; 
+  scheduler=s; 
+  read_src_=ms; 
+  read_cname_= read_src_->getctrl(cname); 
+  init();
+}
+
+TmSampleCount::TmSampleCount(const TmSampleCount& s) 
+{
+  setScheduler(s.scheduler);
+  setReadCtrl(s.read_src_,s.read_cname_);
+  setName(s.name_);
+}
+
 TmSampleCount::~TmSampleCount(){ }
 
-TmTimer* TmSampleCount::clone() { return new TmSampleCount(*this); }
+TmTimer* TmSampleCount::clone() 
+{ 
+  return new TmSampleCount(*this); 
+}
 
-void TmSampleCount::setScheduler(Scheduler* s) { scheduler=s; }
-void TmSampleCount::setReadCtrl(MarSystem* ms, string cname) {
-    read_src_=ms; read_cname_=cname;
+void TmSampleCount::setScheduler(Scheduler* s) 
+{ scheduler=s; }
+
+void TmSampleCount::setReadCtrl(MarSystem* ms, MarControlPtr cname) 
+{
+  read_src_=ms; 
+  read_cname_=cname;
 }
+
 mrs_natural TmSampleCount::readTimeSrc() {
-    return (read_src_->getctrl(read_cname_))->toNatural();
+    return read_cname_->to<mrs_natural>();
 }
-void TmSampleCount::trigger() {
-    scheduler->dispatch();
+
+void TmSampleCount::trigger() 
+{
+  scheduler->dispatch();
 }
-mrs_natural TmSampleCount::intervalsize(string interval) {
-    return (read_src_==NULL) ? 0 :
-        time2samples(interval,read_src_->getctrl("mrs_real/israte")->toReal());
+
+
+mrs_natural 
+TmSampleCount::intervalsize(string interval) {
+  return (read_src_==NULL) ? 0 :
+    time2samples(interval,read_src_->getctrl("mrs_real/israte")->toReal());
 }
 

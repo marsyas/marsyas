@@ -30,6 +30,12 @@ AbsSoundFileSource::AbsSoundFileSource(string type, string name):MarSystem(type,
 {
 }
 
+AbsSoundFileSource::AbsSoundFileSource(const AbsSoundFileSource& a):MarSystem(a) 
+{
+  
+}
+
+
 AbsSoundFileSource::~AbsSoundFileSource()
 {
 }

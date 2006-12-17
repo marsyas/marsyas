@@ -27,6 +27,7 @@
 
 #include "TmTimer.h"
 #include "MarControlValue.h"
+#include "MarSystem.h" 
 
 namespace Marsyas
 {
@@ -39,7 +40,8 @@ class Scheduler; // forward declaration
 class TmSampleCount : public TmTimer {
 protected:
     MarSystem* read_src_;
-    std::string read_cname_;
+    MarControlPtr read_cname_;
+  
     
     Scheduler* scheduler;
 
@@ -53,7 +55,7 @@ public:
     virtual ~TmSampleCount();
     TmTimer* clone();
 
-    void setReadCtrl(MarSystem* ms, std::string cname); // where to read time info
+    void setReadCtrl(MarSystem* ms, MarControlPtr cname); // where to read time info
     void setScheduler(Scheduler* s);
     mrs_natural readTimeSrc();
     void trigger();

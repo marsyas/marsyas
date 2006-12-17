@@ -35,6 +35,14 @@ Annotator::Annotator(string name):MarSystem("Annotator", name)
 	addControls();
 }
 
+
+Annotator::Annotator(const Annotator& a):MarSystem(a) 
+{
+  ctrl_label_ = getctrl("mrs_natural/label");
+}
+
+
+
 Annotator::~Annotator()
 {
 }
@@ -48,7 +56,7 @@ Annotator::clone() const
 void 
 Annotator::addControls()
 {
-  addctrl("mrs_natural/label", 0);
+  addctrl("mrs_natural/label", 0, ctrl_label_);
   // addctrl("mrs_string/labels","");
   // setctrlState("mrs_string/labels",true);
   labels_str_ = "";
@@ -88,9 +96,8 @@ Annotator::myUpdate()
 void 
 Annotator::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
 
-  mrs_natural label = getctrl("mrs_natural/label")->toNatural();  
+  const mrs_natural& label = ctrl_label_->to<mrs_natural>();
   
   for (o=0; o < inObservations_; o++)
 	for (t = 0; t < inSamples_; t++)

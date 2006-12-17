@@ -35,7 +35,7 @@ class Confidence: public MarSystem
 {
 private: 
   void addControls();
-	void myUpdate();
+  void myUpdate();
 
   realvec confidences_;
   mrs_natural count_;
@@ -45,8 +45,14 @@ private:
   
   mrs_natural predictions_;
 
+  MarControlPtr ctrl_memSize_;
+  MarControlPtr ctrl_nLabels_;
+  
+
 public:
   Confidence(std::string name);
+  Confidence(const Confidence& a);
+  
   ~Confidence();
   MarSystem* clone() const;  
   

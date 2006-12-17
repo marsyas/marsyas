@@ -99,9 +99,14 @@ private:
 
 	void addControls();
 	void myUpdate();
+
+  MarControlPtr ctrl_size_;
+  MarControlPtr ctrl_pos_;
+  
  
 public:
   AuFileSource(std::string name);
+  AuFileSource(const AuFileSource& a);
   ~AuFileSource();
   MarSystem* clone() const;    
 

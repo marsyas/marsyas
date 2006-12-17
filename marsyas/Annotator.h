@@ -40,9 +40,12 @@ private:
   std::vector<mrs_natural> labels_;
   std::string labels_str_;
   mrs_natural labels_index_;
+  
+  MarControlPtr ctrl_label_;
 
 public:
   Annotator(std::string name);
+  Annotator(const Annotator& a);
   ~Annotator();
   MarSystem* clone() const;  
   

@@ -69,6 +69,12 @@ private:
   mrs_natural samplesRead_;
   mrs_natural samplesToRead_;
   mrs_natural nChannels_;
+
+  MarControlPtr ctrl_pos_;
+  MarControlPtr ctrl_loop_;
+  MarControlPtr ctrl_notEmpty_;
+  MarControlPtr ctrl_mute_;
+  
   
   AbsSoundFileSource* src_;
 

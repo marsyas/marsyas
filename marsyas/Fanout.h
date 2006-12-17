@@ -42,6 +42,8 @@ private:
 
   mrs_natural enable_;
   realvec enabled_;
+  realvec localIndices_;
+  
   bool probe_;
   mrs_natural disable_;
   

@@ -50,19 +50,27 @@ SoundFileSource::clone() const
 
 SoundFileSource::SoundFileSource(const SoundFileSource& a):MarSystem(a)
 {
-	src_ = NULL;
+  src_ = NULL;
+  
+  ctrl_pos_ = getctrl("mrs_natural/pos");
+  ctrl_loop_ = getctrl("mrs_natural/loopPos");
+  ctrl_notEmpty_ = getctrl("mrs_bool/notEmpty");
+  ctrl_mute_ = getctrl("mrs_bool/mute");
+  
+
+
 }
 
 void
 SoundFileSource::addControls()
 {
   addctrl("mrs_natural/nChannels", 1);
-  addctrl("mrs_bool/notEmpty", true);  
+  addctrl("mrs_bool/notEmpty", true, ctrl_notEmpty_);  
   
-  addctrl("mrs_natural/pos", 0);
+  addctrl("mrs_natural/pos", 0, ctrl_pos_);
   setctrlState("mrs_natural/pos", true);
 
-  addctrl("mrs_natural/loopPos", 0);
+  addctrl("mrs_natural/loopPos", 0, ctrl_loop_);
   setctrlState("mrs_natural/loopPos", true);
 
   addctrl("mrs_string/filename", "defaultfile");
@@ -97,6 +105,11 @@ SoundFileSource::addControls()
   setctrlState("mrs_natural/cindex", true);
   
   addctrl("mrs_string/currentlyPlaying", "daufile");
+
+
+  ctrl_mute_ = getctrl("mrs_bool/mute");
+  
+
 }
 
 void
@@ -106,6 +119,10 @@ SoundFileSource::myUpdate()
 
 	setctrl("mrs_string/onObsNames", "audio,");
   setctrl("mrs_string/inObsNames", "audio,");
+
+
+
+
 
   if (filename_ != getctrl("mrs_string/filename")->toString())
   {
@@ -238,9 +255,8 @@ SoundFileSource::checkType()
 	#ifdef OGG_VORBIS
   else if (ext == ".ogg")
   {
-	  cout << "OGG" << endl;
-	  delete src_;
-	  src_ = new OggFileSource(getName());
+    delete src_;
+    src_ = new OggFileSource(getName());
   }
 	#endif 
   else 
@@ -277,12 +293,22 @@ SoundFileSource::myProcess(realvec& in, realvec &out)
   {
     src_->process(in,out);
 
-    if(getctrl("mrs_bool/mute")->isTrue())
+    if(ctrl_mute_->isTrue())
       out.setval(0.0);      
 
-    setctrl("mrs_natural/pos", src_->pos_); //[!]
+    /* setctrl("mrs_natural/pos", src_->pos_); //[!]
     setctrl("mrs_natural/loopPos", src_->rewindpos_);//[!]
     setctrl("mrs_bool/notEmpty", src_->notEmpty_);//[!]
+    */ 
+    // replaced by gtzan 
+
+    
+    
+    ctrl_pos_->setValue(src_->pos_, NOUPDATE);
+    ctrl_loop_->setValue(src_->rewindpos_, NOUPDATE);
+    ctrl_notEmpty_->setValue(src_->notEmpty_, NOUPDATE);
+    
+
   }
   
   if (advance_) 

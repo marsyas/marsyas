@@ -35,6 +35,7 @@ class AbsSoundFileSource: public MarSystem
 public:
   AbsSoundFileSource(std::string type, std::string name);
   virtual ~AbsSoundFileSource();
+  AbsSoundFileSource(const AbsSoundFileSource& a);
 
   virtual void getHeader(std::string filename) = 0;
   virtual void myProcess(realvec& in,realvec &out) = 0;

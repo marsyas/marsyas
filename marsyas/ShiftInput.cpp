@@ -46,11 +46,21 @@ ShiftInput::~ShiftInput()
 {
 }
 
+ShiftInput::ShiftInput(const ShiftInput& a):MarSystem(a)
+{
+  ctrl_reset_ = getctrl("mrs_bool/reset");
+  
+}
+
+
 MarSystem* 
 ShiftInput::clone() const 
 {
 	return new ShiftInput(*this);
 }
+
+
+
 
 void
 ShiftInput::addControls()
@@ -59,7 +69,7 @@ ShiftInput::addControls()
 	addctrl("mrs_natural/WindowSize", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES);
 	setctrlState("mrs_natural/WindowSize", true);
 
-	addctrl("mrs_bool/reset", true);
+	addctrl("mrs_bool/reset", true, ctrl_reset_);
 	setctrlState("mrs_bool/reset", true);
 }
 
@@ -92,7 +102,7 @@ ShiftInput::myProcess(realvec& in, realvec& out)
 	{
 		pout_.setval(0.0);
 		reset_ = false;
-		setctrl("mrs_bool/reset", false);
+		ctrl_reset_->setValue(false, NOUPDATE);
 	}
 
 	for (t = 0; t < N_-D_; t++)

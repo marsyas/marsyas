@@ -84,18 +84,32 @@ AuFileSource::clone() const
   return new AuFileSource(*this);
 }
 
+
+AuFileSource::AuFileSource(const AuFileSource& a): AbsSoundFileSource(a) 
+{
+  ctrl_pos_ = getctrl("mrs_natural/pos");
+  ctrl_size_ = getctrl("mrs_natural/size");
+  
+}
+
+
+
+
 void
 AuFileSource::addControls()
 {
   addctrl("mrs_natural/nChannels",(mrs_natural)1);
   addctrl("mrs_bool/notEmpty", true);  
-  addctrl("mrs_natural/pos", (mrs_natural)0);
+  
+  addctrl("mrs_natural/pos", (mrs_natural)0, ctrl_pos_);
   setctrlState("mrs_natural/pos", true);
+  
   addctrl("mrs_natural/loopPos", (mrs_natural)0);
-  setctrlState("mrs_natural/pos", true);
+  setctrlState("mrs_natural/loopPos", true);
+  
   addctrl("mrs_string/filename", "daufile");
   setctrlState("mrs_string/filename", true);
-  addctrl("mrs_natural/size", (mrs_natural)0);
+  addctrl("mrs_natural/size", (mrs_natural)0, ctrl_size_);
   addctrl("mrs_string/filetype", "au");
 
   addctrl("mrs_real/repetitions", 1.0);
@@ -283,64 +297,65 @@ AuFileSource::myUpdate()
 void
 AuFileSource::myProcess(realvec& in, realvec &out)
 {
-	if (getctrl("mrs_natural/size")->toNatural() != 0)
-  {
-		//checkFlow(in,out);
-    
-		switch (hdr_.mode)
-		{
-			case SND_FORMAT_UNSPECIFIED:
-			{
-				MRSWARN("AuFileSource::Unspecified format");
-				updctrl("mrs_natural/pos", pos_);
-				updctrl("mrs_bool/notEmpty", (pos_ < size_ * nChannels_));
-				break;
-			}
-			case SND_FORMAT_MULAW_8:
-			{
-				MRSWARN("MU_LAW for now not supported");
-				updctrl("mrs_natural/pos", pos_);
-				updctrl("mrs_bool/notEmpty", (pos_ < size_ * nChannels_));
-				break;
-			}
-			case SND_FORMAT_LINEAR_8:
-			{
-				// pos_ = getLinear8(c, out);
-				setctrl("mrs_natural/pos", pos_);
-				setctrl("mrs_bool/notEmpty", pos_ < size_ * nChannels_);
-				break;
-			}
-			case SND_FORMAT_LINEAR_16:
-			{
-				getLinear16(out);
-				setctrl("mrs_natural/pos", pos_);	    
-				if (pos_ >= rewindpos_ + csize_) 
-				{
-					if (repetitions_ != 1)
-					pos_ = rewindpos_;
-				}
-				samplesOut_ += onSamples_;
-				notEmpty_ = samplesOut_ < repetitions_ * csize_;
-				if (repetitions_ == -1) 
-					notEmpty_ = true;
-				break;
-			}
-			case SND_FORMAT_FLOAT:
-			{
-				// getfloat(win);
-				break;
-			}
-			default:
-			{
-				string warn = "File mode";
-				warn += sndFormats_[hdr_.mode];
-				warn += "(";
-				warn += hdr_.mode;
-				warn += ") is not supported for now";
-				MRSWARN(warn);
-			}
-		}
-  }
+  if (ctrl_size_->to<mrs_natural>() != 0)
+    {
+      //checkFlow(in,out);
+      
+      switch (hdr_.mode)
+	{
+	case SND_FORMAT_UNSPECIFIED:
+	  {
+	    MRSWARN("AuFileSource::Unspecified format");
+	    updctrl("mrs_natural/pos", pos_);
+	    updctrl("mrs_bool/notEmpty", (pos_ < size_ * nChannels_));
+	    break;
+	  }
+	case SND_FORMAT_MULAW_8:
+	  {
+	    MRSWARN("MU_LAW for now not supported");
+	    updctrl("mrs_natural/pos", pos_);
+	    updctrl("mrs_bool/notEmpty", (pos_ < size_ * nChannels_));
+	    break;
+	  }
+	case SND_FORMAT_LINEAR_8:
+	  {
+	    // pos_ = getLinear8(c, out);
+	    setctrl("mrs_natural/pos", pos_);
+	    setctrl("mrs_bool/notEmpty", pos_ < size_ * nChannels_);
+	    break;
+	  }
+	case SND_FORMAT_LINEAR_16:
+	  {
+	    getLinear16(out);
+	    ctrl_pos_->setValue(pos_, NOUPDATE);
+	    
+	    if (pos_ >= rewindpos_ + csize_) 
+	      {
+		if (repetitions_ != 1)
+		  pos_ = rewindpos_;
+	      }
+	    samplesOut_ += onSamples_;
+	    notEmpty_ = samplesOut_ < repetitions_ * csize_;
+	    if (repetitions_ == -1) 
+	      notEmpty_ = true;
+	    break;
+	  }
+	case SND_FORMAT_FLOAT:
+	  {
+	    // getfloat(win);
+	    break;
+	  }
+	default:
+	  {
+	    string warn = "File mode";
+	    warn += sndFormats_[hdr_.mode];
+	    warn += "(";
+	    warn += hdr_.mode;
+	    warn += ") is not supported for now";
+	    MRSWARN(warn);
+	  }
+	}
+    }
 }
 
 

@@ -42,9 +42,11 @@ private:
   mrs_natural N_, D_, W_, PW_;
 
   bool reset_;
-
+  MarControlPtr ctrl_reset_;
+  
 public:
   ShiftInput(std::string name);
+  ShiftInput(const ShiftInput& a);
   ~ShiftInput();
   MarSystem* clone() const;    
 

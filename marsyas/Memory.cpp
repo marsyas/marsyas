@@ -48,6 +48,14 @@ Memory::~Memory()
 }
 
 
+Memory::Memory(const Memory& a):MarSystem(a)
+{
+  end_ = 0;
+  ctrl_reset_ = getctrl("mrs_bool/reset");
+  ctrl_memSize_ = getctrl("mrs_natural/memSize");
+}
+
+
 MarSystem* 
 Memory::clone() const 
 {
@@ -57,9 +65,9 @@ Memory::clone() const
 void 
 Memory::addControls()
 {
-  addctrl("mrs_natural/memSize", 40);
+  addctrl("mrs_natural/memSize", 40, ctrl_memSize_);
   setctrlState("mrs_natural/memSize", true);
-  addctrl("mrs_bool/reset", false);
+  addctrl("mrs_bool/reset", false, ctrl_reset_);
   setctrlState("mrs_bool/reset", true);
 }
 
@@ -104,13 +112,16 @@ Memory::myProcess(realvec& in, realvec& out)
 
 
 
-  mrs_natural memSize = getctrl("mrs_natural/memSize")->toNatural();
+  
+  mrs_natural memSize = ctrl_memSize_->to<mrs_natural>();
+  
+
 
   if (reset_) 
     {
       out.setval(0.0);
       reset_ = false;
-      setctrl("mrs_bool/reset", false);
+      ctrl_reset_->setValue(false, NOUPDATE);
       end_ = 0;
     }
   

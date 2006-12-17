@@ -435,7 +435,7 @@ MarSystem::checkFlow(realvec& in, realvec& out)
 	mrs_natural orows = out.getRows();
 	mrs_natural ocols = out.getCols();
 
-	if(getctrl("mrs_bool/debug")->isTrue())
+	if(ctrl_debug_->isTrue())
 	{
 		MRSWARN("Debug CheckFlow Information");
 		MRSWARN("MarSystem Type    = " << type_); 

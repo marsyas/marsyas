@@ -43,9 +43,13 @@ private:
 
   mrs_natural end_;
   bool reset_;
+  MarControlPtr ctrl_reset_;
+  MarControlPtr ctrl_memSize_;
+  
 
 public:
   Memory(std::string name);
+  Memory(const Memory& a);
   ~Memory();
   MarSystem* clone() const;  
   
