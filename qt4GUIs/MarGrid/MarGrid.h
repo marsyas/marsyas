@@ -64,7 +64,7 @@ protected:
   
 private:
 
-
+  MarControlPtr filePtr_;
   
   Marsyas::MarSystemManager mng;  
   QVector<QList <std::string> > files;

@@ -37,6 +37,9 @@ void
 MarSystemWrapper::updctrl(MarControlPtr cname, 
 			  MarControlPtr cvalue)
 {
+
+  cout << "mrw::updctrl called" << endl;
+  
   if ( !running_ )
     {
       main_pnet_->updctrl(cname, cvalue);

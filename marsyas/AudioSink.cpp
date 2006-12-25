@@ -115,6 +115,7 @@ void
 AudioSink::initRtAudio()
 {
 
+  cout << "AUDIOSINK::INIT CALLED" << endl;
   rtSrate_ = (int)getctrl("mrs_real/israte")->toReal();
   srate_ = rtSrate_;
   bufferSize_ = (int)getctrl("mrs_natural/bufferSize")->toNatural();

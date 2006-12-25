@@ -68,7 +68,11 @@ MarGrid::MarGrid(QWidget *parent)
 
   mwr_ = new MarSystemWrapper(pnet_);
   mwr_->start();
+  
+  filePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_string/filename");
 
+  mwr_->updctrl(filePtr_, "u2.au");
+      mwr_->play();
 
   setup();
 }
@@ -280,7 +284,7 @@ MarGrid::train()
 
 
   
-  for (int i=0; i < 100; i ++) 
+  for (int i=0; i < 2000; i ++) 
     {
       cout << "Training iteration" << i << endl;
       
@@ -453,20 +457,19 @@ void MarGrid::mousePressEvent(QMouseEvent *event)
   int k = grid_x * som_height + grid_y;
   QList<string> posFiles = files[k];
   
-  int counter = counters[k];
+
   int counterSize = counterSizes[k];
   if (counterSize > 0) 
-    counters[k] = (counters[k] + 1) % counterSize;
-  
+    counters[k] = (counters[k] + 1) % counterSize;  
+  int counter = counters[k];
   
      cout << "*********" << endl;
   if (posFiles.size() != 0) 
     {
       cout << "Playing:" << posFiles[counter] << endl;
-      
-      mwr_->updctrl("SoundFileSource/src/mrs_string/filename", 
-		    posFiles[counter]);
+      mwr_->updctrl(filePtr_, posFiles[counter]);
       mwr_->play();
+      
     }
   
   cout << "Playlist: " << endl;
@@ -489,6 +492,7 @@ MarGrid::mouseMoveEvent(QMouseEvent* event)
     {
       return;
     }
+  
 
   grid_x = event->pos().x() / cell_size;
   grid_y = event->pos().y() / cell_size;
@@ -498,16 +502,16 @@ MarGrid::mouseMoveEvent(QMouseEvent* event)
   QList<string> posFiles = files[k];
   
   int counter = counters[k];
+
   
 
   if (posFiles.size() != 0) 
     {
       cout << "*********" << endl;
       cout << "Playing: " << posFiles[counter] << endl;
-      
-      mwr_->updctrl("SoundFileSource/src/mrs_string/filename", 
-		    posFiles[counter]);
+      mwr_->updctrl(filePtr_, posFiles[counter]);
       mwr_->play();
+      
     }
   
   cout << "Playlist: " << endl;
