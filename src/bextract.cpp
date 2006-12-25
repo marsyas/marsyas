@@ -823,7 +823,7 @@ void bextract_train(vector<Collection> cls,
 	  if (wekafname != EMPTYSTRING)
 	    {
 	      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
-	      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
+	      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 40);
 	      featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  			
 	    }
 
