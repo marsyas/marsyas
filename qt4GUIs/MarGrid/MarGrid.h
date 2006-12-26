@@ -51,6 +51,8 @@ public slots:
   void extract();
   void predict();
   void train();
+signals: 
+  void playingFile(QString str);
   
   
 protected:

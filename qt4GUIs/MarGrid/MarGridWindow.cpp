@@ -42,6 +42,7 @@ MarGridWindow::MarGridWindow()
   QPushButton *extract  = new QPushButton(tr("Extract"));
   QPushButton *train = new QPushButton(tr("Train"));
   QPushButton *predict = new QPushButton(tr("Predict"));
+  playLabel = new QLabel("Hello");
   
   QWidget *margrid = new MarGrid();
 
@@ -49,12 +50,13 @@ MarGridWindow::MarGridWindow()
   gridLayout->addWidget(extract, 0, 0);
   gridLayout->addWidget(train, 0, 1);
   gridLayout->addWidget(predict, 0, 2);
-  gridLayout->addWidget(margrid, 1, 0, 1, 3);
+  gridLayout->addWidget(playLabel, 1, 0, 1, 3);
+  gridLayout->addWidget(margrid, 2, 0, 1, 3);
 
   connect(extract, SIGNAL(clicked()), margrid, SLOT(extract()));
   connect(train, SIGNAL(clicked()), margrid, SLOT(train()));
   connect(predict, SIGNAL(clicked()), margrid, SLOT(predict()));
-  
+  connect(margrid, SIGNAL(playingFile(QString)), this, SLOT(playingFile(QString))); 
 
 
   w->setLayout(gridLayout);
@@ -62,7 +64,11 @@ MarGridWindow::MarGridWindow()
 }
 
 
-  
+void
+MarGridWindow::playingFile(QString s) 
+{
+  playLabel->setText(s);
+}
 
 void
 MarGridWindow::createMenus()

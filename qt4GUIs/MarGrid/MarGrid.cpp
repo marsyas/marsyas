@@ -284,7 +284,7 @@ MarGrid::train()
 
 
   
-  for (int i=0; i < 2000; i ++) 
+  for (int i=0; i < 10000; i ++) 
     {
       cout << "Training iteration" << i << endl;
       
@@ -463,10 +463,12 @@ void MarGrid::mousePressEvent(QMouseEvent *event)
     counters[k] = (counters[k] + 1) % counterSize;  
   int counter = counters[k];
   
-     cout << "*********" << endl;
+  cout << "*********" << endl;
   if (posFiles.size() != 0) 
     {
       cout << "Playing:" << posFiles[counter] << endl;
+      emit playingFile(posFiles[counter].c_str());
+      
       mwr_->updctrl(filePtr_, posFiles[counter]);
       mwr_->play();
       
@@ -509,6 +511,7 @@ MarGrid::mouseMoveEvent(QMouseEvent* event)
     {
       cout << "*********" << endl;
       cout << "Playing: " << posFiles[counter] << endl;
+      emit playingFile(posFiles[counter].c_str());
       mwr_->updctrl(filePtr_, posFiles[counter]);
       mwr_->play();
       

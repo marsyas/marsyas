@@ -30,6 +30,7 @@
 #include <QGridLayout>
 #include <QPushButton>
 #include <QMainWindow>
+#include <QLabel>
 
 #include "MarGrid.h"
 
@@ -42,6 +43,7 @@ public:
 
 public slots: 
    void about();
+   void playingFile(QString);
   
 
 
@@ -53,7 +55,7 @@ private:
   QMenu*   helpMenu;
   QAction* openAct;
   QAction* aboutAct;
-  
+  QLabel*  playLabel;  
   
   
 };
