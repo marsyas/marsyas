@@ -193,10 +193,10 @@ public:
 	// setters
 	inline bool setValue(MarControlPtr mc, bool update = true);	
 	inline bool setValue(MarControlValue *mcv, bool update = true);	
+	template<class T> inline bool setValue(const T& t, bool update = true);
 	template<class T> inline bool setValue(T& t, bool update = true);
 
 	inline bool setValue(const char *t, bool update = true);
-	inline bool setValue(bool t, bool update = true);
 
 	// to avoid circular dependencies
 	void callMarSystemUpdate();
@@ -731,6 +731,69 @@ MarControl::setValue(T& t, bool update)
 	}
 }
 
+template<class T>
+inline
+bool
+MarControl::setValue(const T& t, bool update)
+{
+#ifdef MARSYAS_QT
+	rwLock_.lockForWrite();
+#endif
+
+	MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(value_);
+	if(ptr)
+	{
+		if (ptr->get() == t)
+		{
+#ifdef MARSYAS_QT
+			rwLock_.unlock();
+#endif	
+			return true;
+		}
+
+		ptr->set(const_cast<T&>(t));
+
+#ifdef MRSDEBUGGING
+		std::ostringstream oss;
+		value_->serialize(oss);
+		value_debug_ = oss.str();
+#endif
+
+#ifdef MARSYAS_QT
+		rwLock_.unlock();
+#endif
+
+		if(isLinked_)
+		{
+			for(size_t i=0; i<linkedTo_.size(); i++)
+			{
+				linkedTo_[i]->setValue(t, update);
+			}
+		}
+
+		if(update) this->callMarSystemUpdate(); //[?] lock?!?
+
+#ifdef MARSYAS_QT
+		//emit controlChanged(this);
+		emitControlChanged(this);
+#endif
+		return true;
+	}
+	else
+	{
+		std::ostringstream sstr;
+		sstr << "[MarControl::setValue] Trying to set value of incompatible type "
+			<< "(expected " << value_->getType() << ", given " << typeid(T).name() << ")";
+		MRSWARN(sstr.str());
+
+#ifdef MARSYAS_QT
+		rwLock_.unlock();
+#endif
+
+		return false;
+	}
+}
+
 inline
 bool
 MarControl::setValue(MarControlPtr mc, bool update)
@@ -850,13 +913,6 @@ bool
 MarControl::setValue(const char *t, bool update)
 {
 	return this->setValue(std::string(t), update);
-}
-
-inline
-bool
-MarControl::setValue(bool t, bool update)
-{
-	return this->setValue<bool>(t, update);
 }
 
 inline
