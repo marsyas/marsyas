@@ -3601,7 +3601,7 @@ cat >>confdefs.h <<\_ACEOF
 #define MRSDEBUGGING 1
 _ACEOF
 
-               CXXFLAGS="-O0 -g -ggdb -pg"
+               CXXFLAGS="-O0 -g -ggdb "
                echo Debugging enabled
        ;;
        *) echo Debugging disabled ;;
