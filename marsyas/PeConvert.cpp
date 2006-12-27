@@ -37,16 +37,21 @@ using namespace Marsyas;
 
 PeConvert::PeConvert(string name):MarSystem("PeConvert",name)
 {
-	//type_ = "PeConvert";
-	//name_ = name;
+  psize_ = 0;
+  size_ = 0;
+  nbParameters_ = 7; // f, a, p, df, da, t, g  // should be set as a control [!]
+  time_ = 0;
+  skip_=0;
+  
+  fundamental_ = 0.0;
+  factor_ = 0.0;
+  cuttingFrequency_ = 0.0;
+  nbPeaks_ = 0;
+  kmax_  = 0;
 
-	psize_ = 0;
-	size_ = 0;
-	nbParameters_ = 7; // f, a, p, df, da, t, g  // should be set as a control [!]
-	time_ = 0;
-skip_=0;
-	addControls();
-	cuttingFrequency_=0;
+  
+  addControls();
+	
 }
 
 

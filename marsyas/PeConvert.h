@@ -52,16 +52,16 @@ private:
 
   mrs_real fundamental_;
   mrs_real factor_;
-mrs_real cuttingFrequency_;
-	mrs_natural time_;
-	mrs_natural nbParameters_;
-	mrs_natural nbPeaks_;
-	mrs_natural kmax_;
-	mrs_natural size_, psize_, skip_;
-
-	void addControls();
-	void myUpdate();
-
+  mrs_real cuttingFrequency_;
+  mrs_natural time_;
+  mrs_natural nbParameters_;
+  mrs_natural nbPeaks_;
+  mrs_natural kmax_;
+  mrs_natural size_, psize_, skip_;
+  
+  void addControls();
+  void myUpdate();
+  
 public:
   PeConvert(std::string name);
   

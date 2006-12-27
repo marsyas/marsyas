@@ -288,6 +288,7 @@ MarSystemManager::MarSystemManager()
 	textureStatspr->linkctrl("mrs_natural/memSize", "Memory/mempr/mrs_natural/memSize");
 	textureStatspr->linkctrl("mrs_bool/reset", "Memory/mempr/mrs_bool/reset");
 	registerPrototype("TextureStats", textureStatspr);
+	
 
 	// Power spectrum composite prototype
 	MarSystem* pspectpr = new Series("pspectpr");

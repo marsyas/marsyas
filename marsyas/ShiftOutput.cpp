@@ -33,12 +33,15 @@ using namespace Marsyas;
 
 ShiftOutput::ShiftOutput(string name):MarSystem("ShiftOutput",name)
 {
-  //type_ = "ShiftOutput";
-  //name_ = name;
+  
+  N_ = 0;
+  Nw_ =0;
+  I_ = 0;
+  D_ = 0;
+  n_ = 0;
+  addControls();
+  
 
-	addControls();
-
-	n_=0;
 }
 
 

@@ -22,7 +22,7 @@
     \brief Compute the complex spectrum of input window 
 
     Computes the complex spectrum of the input window 
-using the Fast Fourier Transform (FFT). 
+    using the Fast Fourier Transform (FFT). 
 */
 
 #include "Spectrum.h"
@@ -32,12 +32,13 @@ using namespace Marsyas;
 
 Spectrum::Spectrum(string name):MarSystem("Spectrum",name)
 {
-  //type_ = "Spectrum";
-  //name_ = name;
+  ponObservations_ = 0;
   
-	ponObservations_ = 0;
-
-	addControls();
+  cutoff_ = 1.0;
+  lowcutoff_ = 0.0;
+  re_ = 0.0;
+  im_ = 0.0;
+  addControls();
 }
 
 Spectrum::~Spectrum()
@@ -70,18 +71,18 @@ Spectrum::myUpdate()
   lowcutoff_ = getctrl("mrs_real/lowcutoff")->toReal();
 
   //defaultUpdate();
-	onObservations_ = getctrl("mrs_natural/onObservations")->toNatural();
+  onObservations_ = getctrl("mrs_natural/onObservations")->toNatural();
 
   if (ponObservations_ != onObservations_)
-  {
-    ostringstream oss;
-    for (mrs_natural n=0; n < onObservations_/2; n++)
-		{
-			oss << "rbin_" << n << ",";
-			oss << "ibin_" << n << ",";
-		}
-    setctrl("mrs_string/onObsNames", oss.str());
-  }
+    {
+      ostringstream oss;
+      for (mrs_natural n=0; n < onObservations_/2; n++)
+	{
+	  oss << "rbin_" << n << ",";
+	  oss << "ibin_" << n << ",";
+	}
+      setctrl("mrs_string/onObsNames", oss.str());
+    }
   
   ponObservations_ = onObservations_;
 }
@@ -122,10 +123,10 @@ Spectrum::myProcess(realvec& in, realvec& out)
 	}
     }
   
-	// [!] compare with matlab fft   
-//	 MATLAB_PUT(in, "vec");
-//	 MATLAB_EVAL("out=fft(vec);");
-//   MATLAB_GET("vec", out);
+  // [!] compare with matlab fft   
+  //	 MATLAB_PUT(in, "vec");
+  //	 MATLAB_EVAL("out=fft(vec);");
+  //   MATLAB_GET("vec", out);
   
   return;
 }

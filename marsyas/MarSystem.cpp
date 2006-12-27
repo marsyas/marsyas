@@ -53,6 +53,7 @@ MarSystem::MarSystem(string type, string name)
 	parent_ = NULL;
 	name_ = name;
 	type_ = type;
+	active_ = true;
 	prefix_ = "/" + type_ + "/" + name_ + "/";
 	absPath_ = prefix_;
 
@@ -85,6 +86,8 @@ MarSystem::MarSystem(const MarSystem& a)
 	name_ = a.name_;
 	prefix_ = a.prefix_;
 	absPath_ = a.absPath_;
+	active_ = true;
+	
 
 	MATLABscript_ = a.MATLABscript_;
 

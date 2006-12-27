@@ -35,10 +35,14 @@ using namespace Marsyas;
 
 PowerSpectrum::PowerSpectrum(string name):MarSystem("PowerSpectrum",name)
 {
-  //type_ = "PowerSpectrum";
-  //name_ = name;
+  ntype_ = PSD_POWER;
+  N2_ = 0;
+  re_ = 0.0;
+  im_ = 0.0;
+  dB_ = 0.0;
+  pwr_ = 0.0;
 
-	addControls();
+  addControls();
 }
 
 PowerSpectrum::~PowerSpectrum()

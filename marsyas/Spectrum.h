@@ -37,13 +37,14 @@ class Spectrum: public MarSystem
 {
 private:
   fft myfft_;
+  
   mrs_real cutoff_;
   mrs_real lowcutoff_;
-  
-  void addControls();
-	void myUpdate();
   mrs_real re_,im_;
   mrs_natural ponObservations_;
+
+  void addControls();
+  void myUpdate();
  
 public:
   Spectrum(std::string name);

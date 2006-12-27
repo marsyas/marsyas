@@ -35,15 +35,17 @@ namespace Marsyas
 class PowerSpectrum: public MarSystem
 {
 private:
-  void addControls();
-	void myUpdate();
-  
   std::string stype_;
+  
   mrs_natural ntype_;
-
   mrs_natural N2_;
   mrs_real re_, im_;
   mrs_real dB_, pwr_;
+
+  void addControls();
+  void myUpdate();
+  
+
 
 public:
   PowerSpectrum(std::string name);
