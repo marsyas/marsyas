@@ -35,7 +35,7 @@ bin_PROGRAMS    = sfinfo sfplugin sfplay extract bextract \
 		  ERBTest marsyasTests \
 		  SeneffEarTest record \
 		  virtualsensor mixer mugle classifyFile midiTest \
-		  LPCExample peakClustering peVocoder
+		  peakClustering peVocoder
 
 sfinfo_SOURCES     = sfinfo.cpp 
 sfinfo_LDADD       = $(top_builddir)/marsyas/libmarsyas.a \
@@ -128,10 +128,6 @@ midiTest_LDADD       = $(top_builddir)/marsyas/libmarsyas.a \
 		    $(Libs)
 
 
-
-LPCExample_SOURCES     = LPCExample.cpp 
-LPCExample_LDADD       = $(top_builddir)/marsyas/libmarsyas.a \
-		    $(Libs)
 
 
 peakClustering_SOURCES = peakClustering.cpp 

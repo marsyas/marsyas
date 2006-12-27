@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-SOURCES = $(ERBTest_SOURCES) $(LPCExample_SOURCES) $(SeneffEarTest_SOURCES) $(bextract_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mixer_SOURCES) $(mkcollection_SOURCES) $(msl_SOURCES) $(mugle_SOURCES) $(peVocoder_SOURCES) $(peakClustering_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(server_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplaygui_SOURCES) $(sfplugin_SOURCES) $(tempo_SOURCES) $(tutorial_SOURCES) $(virtualsensor_SOURCES)
+SOURCES = $(ERBTest_SOURCES) $(SeneffEarTest_SOURCES) $(bextract_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mixer_SOURCES) $(mkcollection_SOURCES) $(msl_SOURCES) $(mugle_SOURCES) $(peVocoder_SOURCES) $(peakClustering_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(server_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplaygui_SOURCES) $(sfplugin_SOURCES) $(tempo_SOURCES) $(tutorial_SOURCES) $(virtualsensor_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -46,7 +46,7 @@ bin_PROGRAMS = sfinfo$(EXEEXT) sfplugin$(EXEEXT) sfplay$(EXEEXT) \
 	ERBTest$(EXEEXT) marsyasTests$(EXEEXT) SeneffEarTest$(EXEEXT) \
 	record$(EXEEXT) virtualsensor$(EXEEXT) mixer$(EXEEXT) \
 	mugle$(EXEEXT) classifyFile$(EXEEXT) midiTest$(EXEEXT) \
-	LPCExample$(EXEEXT) peakClustering$(EXEEXT) peVocoder$(EXEEXT)
+	peakClustering$(EXEEXT) peVocoder$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in ChangeLog
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -64,10 +64,6 @@ am_ERBTest_OBJECTS = ERBTest.$(OBJEXT)
 ERBTest_OBJECTS = $(am_ERBTest_OBJECTS)
 am__DEPENDENCIES_1 =
 ERBTest_DEPENDENCIES = $(top_builddir)/marsyas/libmarsyas.a \
-	$(am__DEPENDENCIES_1)
-am_LPCExample_OBJECTS = LPCExample.$(OBJEXT)
-LPCExample_OBJECTS = $(am_LPCExample_OBJECTS)
-LPCExample_DEPENDENCIES = $(top_builddir)/marsyas/libmarsyas.a \
 	$(am__DEPENDENCIES_1)
 am_SeneffEarTest_OBJECTS = SeneffEarTest.$(OBJEXT)
 SeneffEarTest_OBJECTS = $(am_SeneffEarTest_OBJECTS)
@@ -165,7 +161,6 @@ DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)/marsyas
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/ERBTest.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/LPCExample.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SeneffEarTest.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/bextract.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/classifyFile.Po ./$(DEPDIR)/extract.Po \
@@ -186,9 +181,8 @@ CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-SOURCES = $(ERBTest_SOURCES) $(LPCExample_SOURCES) \
-	$(SeneffEarTest_SOURCES) $(bextract_SOURCES) \
-	$(classifyFile_SOURCES) $(extract_SOURCES) \
+SOURCES = $(ERBTest_SOURCES) $(SeneffEarTest_SOURCES) \
+	$(bextract_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) \
 	$(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mixer_SOURCES) \
 	$(mkcollection_SOURCES) $(msl_SOURCES) $(mugle_SOURCES) \
 	$(peVocoder_SOURCES) $(peakClustering_SOURCES) \
@@ -196,9 +190,8 @@ SOURCES = $(ERBTest_SOURCES) $(LPCExample_SOURCES) \
 	$(record_SOURCES) $(server_SOURCES) $(sfinfo_SOURCES) \
 	$(sfplay_SOURCES) $(sfplaygui_SOURCES) $(sfplugin_SOURCES) \
 	$(tempo_SOURCES) $(tutorial_SOURCES) $(virtualsensor_SOURCES)
-DIST_SOURCES = $(ERBTest_SOURCES) $(LPCExample_SOURCES) \
-	$(SeneffEarTest_SOURCES) $(bextract_SOURCES) \
-	$(classifyFile_SOURCES) $(extract_SOURCES) \
+DIST_SOURCES = $(ERBTest_SOURCES) $(SeneffEarTest_SOURCES) \
+	$(bextract_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) \
 	$(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mixer_SOURCES) \
 	$(mkcollection_SOURCES) $(msl_SOURCES) $(mugle_SOURCES) \
 	$(peVocoder_SOURCES) $(peakClustering_SOURCES) \
@@ -407,10 +400,6 @@ midiTest_SOURCES = midiTest.cpp
 midiTest_LDADD = $(top_builddir)/marsyas/libmarsyas.a \
 		    $(Libs)
 
-LPCExample_SOURCES = LPCExample.cpp 
-LPCExample_LDADD = $(top_builddir)/marsyas/libmarsyas.a \
-		    $(Libs)
-
 peakClustering_SOURCES = peakClustering.cpp 
 peakClustering_LDADD = $(top_builddir)/marsyas/libmarsyas.a \
 		     $(Libs)
@@ -478,9 +467,6 @@ clean-binPROGRAMS:
 ERBTest$(EXEEXT): $(ERBTest_OBJECTS) $(ERBTest_DEPENDENCIES) 
 	@rm -f ERBTest$(EXEEXT)
 	$(CXXLINK) $(ERBTest_LDFLAGS) $(ERBTest_OBJECTS) $(ERBTest_LDADD) $(LIBS)
-LPCExample$(EXEEXT): $(LPCExample_OBJECTS) $(LPCExample_DEPENDENCIES) 
-	@rm -f LPCExample$(EXEEXT)
-	$(CXXLINK) $(LPCExample_LDFLAGS) $(LPCExample_OBJECTS) $(LPCExample_LDADD) $(LIBS)
 SeneffEarTest$(EXEEXT): $(SeneffEarTest_OBJECTS) $(SeneffEarTest_DEPENDENCIES) 
 	@rm -f SeneffEarTest$(EXEEXT)
 	$(CXXLINK) $(SeneffEarTest_LDFLAGS) $(SeneffEarTest_OBJECTS) $(SeneffEarTest_LDADD) $(LIBS)
@@ -558,7 +544,6 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ERBTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LPCExample.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SeneffEarTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bextract.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/classifyFile.Po@am__quote@
