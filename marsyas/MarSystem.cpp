@@ -165,6 +165,12 @@ MarSystem::~MarSystem()
 		delete marsystems_[i];
 	} 
 
+	// disconnect all links
+	for (ctrlIter_ = controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
+	{
+		ctrlIter_->second->clearLinks();
+	}
+
 #ifdef MARSYAS_QT
 	delete processMutex_;
 	delete msysNetGUI_;
