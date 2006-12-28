@@ -34,10 +34,11 @@ using namespace Marsyas;
 
 Rolloff::Rolloff(string name):MarSystem("Rolloff",name)
 {
-  //type_ = "Rolloff";
-  //name_ = name;
-
-	addControls();
+  perc_ = 0.0;
+  sum_ = 0.0;
+  total_ = 0.0;
+  
+  addControls();
 }
 
 Rolloff::~Rolloff()

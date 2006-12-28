@@ -17,11 +17,11 @@
 */
 
 /** 
-\class Flux
-\brief Flux calculate the flux between the current and prev. vector
+    \class Flux
+    \brief Flux calculate the flux between the current and prev. vector
 
-The flux is defined as the norm of the difference vector between 
-two succesive spectra. 
+    The flux is defined as the norm of the difference vector between 
+    two succesive spectra. 
 */
 
 #include "Flux.h"
@@ -31,8 +31,9 @@ using namespace Marsyas;
 
 Flux::Flux(string name):MarSystem("Flux",name)
 {
-	//type_ = "Flux";
-	//name_ = name;
+  diff_ = 0.0;
+  flux_ = 0.0;
+  max_ = 0.0;
 }
 
 
@@ -44,47 +45,47 @@ Flux::~Flux()
 MarSystem* 
 Flux::clone() const 
 {
-	return new Flux(*this);
+  return new Flux(*this);
 }
 
 void
 Flux::myUpdate()
 {
-	MRSDIAG("Flux.cpp - Flux:localUpdate");
-	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-	setctrl("mrs_natural/onObservations", (mrs_natural)1);
-	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
-	setctrl("mrs_string/onObsNames", "Flux,");
+  MRSDIAG("Flux.cpp - Flux:localUpdate");
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", (mrs_natural)1);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
+  setctrl("mrs_string/onObsNames", "Flux,");
 
-	prevWindow_.create(getctrl("mrs_natural/inObservations")->toNatural(),
-		getctrl("mrs_natural/inSamples")->toNatural());
+  prevWindow_.create(getctrl("mrs_natural/inObservations")->toNatural(),
+		     getctrl("mrs_natural/inSamples")->toNatural());
 }
 
 void 
 Flux::myProcess(realvec& in, realvec& out)
 {
-	for (t = 0; t < inSamples_; t++)
+  for (t = 0; t < inSamples_; t++)
+    {
+      flux_ = 0.0;
+      diff_ = 0.0;
+      max_ = 0.0;
+      for(o = 1; o < inObservations_; ++o)
 	{
-		flux_ = 0.0;
-		diff_ = 0.0;
-		max_ = 0.0;
-		for(o = 1; o < inObservations_; ++o)
-		{
-			diff_ = pow(log(in(o,t)+MINREAL) - log(prevWindow_(o,t)+MINREAL), 2.0);
-			if(diff_ > max_)
-				max_ = diff_;
-			flux_ += diff_;
+	  diff_ = pow(log(in(o,t)+MINREAL) - log(prevWindow_(o,t)+MINREAL), 2.0);
+	  if(diff_ > max_)
+	    max_ = diff_;
+	  flux_ += diff_;
 
-			prevWindow_(o,t) = in(o,t);
-		}
-		
-		if(max_ != 0.0)
-			flux_ /= (max_ * inObservations_);
-		else
-			flux_ = 0.0;
-
-		out(0,t) = flux_;
+	  prevWindow_(o,t) = in(o,t);
 	}
+		
+      if(max_ != 0.0)
+	flux_ /= (max_ * inObservations_);
+      else
+	flux_ = 0.0;
+
+      out(0,t) = flux_;
+    }
 }
 
 

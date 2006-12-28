@@ -33,8 +33,8 @@ using namespace Marsyas;
 
 Centroid::Centroid(string name):MarSystem("Centroid", name)
 {
-  //type_ = "Centroid";
-  //name_ = name;
+  m0_ = 0.0;
+  m1_ = 0.0;
 }
 
 

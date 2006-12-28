@@ -33,8 +33,9 @@ using namespace Marsyas;
 
 Kurtosis::Kurtosis(string name):MarSystem("Kurtosis",name)
 {
-  //type_ = "Kurtosis";
-  //name_ = name;
+  z_ = 0.0;
+  b_ = 0.0;
+  q_ = 0.0;
 }
 
 

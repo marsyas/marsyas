@@ -1722,6 +1722,7 @@ test_updctrl(string fname)
 {
   
   MarSystemManager mng;  
+  
   MarSystem* pnet_;
   
   pnet_ = mng.create("Series", "pnet_");

@@ -35,12 +35,10 @@ using namespace Marsyas;
 
 Memory::Memory(string name):MarSystem("Memory",name)
 {
-  //type_ = "Memory";
-  //name_ = name;
   
-	end_ = 0;
-
-	addControls();
+  end_ = 0;
+  
+  addControls();
 }
 
 Memory::~Memory()
@@ -85,7 +83,7 @@ Memory::myUpdate()
   reset_ = getctrl("mrs_bool/reset")->toBool();
 
   //defaultUpdate(); [!]
-	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
+  inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
   
   ostringstream oss;
   string inObsNames = getctrl("mrs_string/inObsNames")->toString();

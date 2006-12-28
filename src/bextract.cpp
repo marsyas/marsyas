@@ -273,7 +273,6 @@ printUsage(string progName)
   MRSDIAG("bextract.cpp - printUsage");
   cerr << "Usage : " << progName << " [-e extractor] [-h help] [-o offset(samples)] [-d duration(samples)] [-s start(seconds)] [-l length(seconds)] [-m memory]  [-u usage] collection1 collection2 ... collectionN" << endl;
   cerr << endl;
-  exit(1);
 }
 
 void 
@@ -315,7 +314,7 @@ printHelp(string progName)
   cerr << "All extractors calculate means and variances over a memory size window" << endl;
   cerr << "SV can be appended in front of any extractor to extract a single vector (mean, variances) over a 30-second clip (for example SVSTF) " << endl;
 
-  exit(1);
+
 }
 
 void 
@@ -1533,7 +1532,11 @@ main(int argc, const char **argv)
 
   string progName = argv[0];  
   if (argc == 1)
-    printUsage(progName);
+    {
+      printUsage(progName);
+      return 0;
+    }
+  
 
   initOptions();
   cmd_options.readOptions(argc, argv);
@@ -1586,7 +1589,7 @@ main(int argc, const char **argv)
       if(featExtractors.find(extrName)== featExtractors.end())
 	{
 	  cout << extractorStr << ": Unsupported extractor!" << endl;
-	  exit(1);
+	  return 1;
 	}
 
       bextract_trainAccumulator(cls, i, pluginName, classNames, wekafname, filefeaturename, memSize, extrName,
@@ -1600,7 +1603,7 @@ main(int argc, const char **argv)
       if(featExtractors.find(extrName)== featExtractors.end())
 	{
 	  cout << extractorStr << ": Unsupported extractor!" << endl;
-	  exit(1);
+	  return 1;
 	}
 
       bextract_train_rmsilence(cls, i, pluginName, classNames, wekafname, memSize, extrName, classifierName);      
@@ -1611,14 +1614,14 @@ main(int argc, const char **argv)
       if(featExtractors.find(extractorStr)== featExtractors.end())
 	{
 	  cout << extractorStr << ": Unsupported extractor!" << endl;
-	  exit(1);
+	  return 1;
 	}
 		
       bextract_train(cls, i, pluginName, classNames, wekafname, memSize, 
 		     extractorName, classifierName);
     }
 
-  exit(0);
+  return 0;
 }
 
 

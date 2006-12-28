@@ -101,10 +101,10 @@ MarSystem::MarSystem(const MarSystem& a)
 		controls_.clear();
 		for(ctrlIter_ = a.controls_.begin(); ctrlIter_ != a.controls_.end(); ++ctrlIter_)
 		{
-			//clone all controls
-			controls_[ctrlIter_->first] = ctrlIter_->second->clone();		
-			//set new MarSystem parent
-			controls_[ctrlIter_->first]->setMarSystem(this);
+		  //clone all controls
+		  controls_[ctrlIter_->first] = ctrlIter_->second->clone();		
+		  //set new MarSystem parent
+		  controls_[ctrlIter_->first]->setMarSystem(this);
 		}
 	}
 

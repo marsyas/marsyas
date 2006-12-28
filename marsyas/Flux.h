@@ -21,7 +21,7 @@
     \brief Flux calculate the flux between the current and prev. vector
 
     The flux is defined as the norm of the difference vector between 
-two succesive spectra. 
+    two succesive spectra. 
 */
 
 #ifndef MARSYAS_FLUX_H
@@ -32,21 +32,21 @@ two succesive spectra.
 namespace Marsyas
 {
 
-class Flux: public MarSystem
-{
-private: 
-	void myUpdate();
+  class Flux: public MarSystem
+  {
+  private: 
+    void myUpdate();
+    
+    realvec prevWindow_;
+    mrs_real diff_,flux_, max_;
+  public:
+    Flux(std::string name);
   
-	realvec prevWindow_;
-  mrs_real diff_,flux_, max_;
-public:
-  Flux(std::string name);
+    ~Flux();
+    MarSystem* clone() const;  
   
-  ~Flux();
-  MarSystem* clone() const;  
-  
-  void myProcess(realvec& in, realvec& out);
-};
+    void myProcess(realvec& in, realvec& out);
+  };
 
 }//namespace Marsyas
 
