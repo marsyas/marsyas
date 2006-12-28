@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="bextract"
 	ProjectGUID="{C306F14F-FE52-43A9-A331-E77824E8257B}"
 	RootNamespace="bextract"
@@ -43,7 +43,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\marsyas"
-				PreprocessorDefinitions="WIN32;_DEBUG; LOG_TO_COUT;MRSWARNING;MRSDEBUGG;MRSASSERTE"
+				PreprocessorDefinitions="WIN32;_DEBUG; LOG_TO_COUT;MRSWARNING;MRSDEBUGGING;MRSASSERTE"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
