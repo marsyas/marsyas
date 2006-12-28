@@ -116,10 +116,12 @@ MarPlayer::positionSlider(int val)
 void 
 MarPlayer::setDuration(Marsyas::mrs_real val) 
 {
-  
   QTime dur;
   dur = dur.addSecs((int)val);
   ui.durTimeEdit->setTime(dur);
+   
+   
+  
 }
 
 // set current time of soundfile on corresponding slider 

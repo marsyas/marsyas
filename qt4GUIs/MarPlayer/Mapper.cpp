@@ -76,22 +76,21 @@ Mapper::open(QString fileName, int pos)
 
   // update filename
   mwr_->updctrl(filePtr_, fileName.toStdString());
-  pnet_ ->updctrl(filePtr_, fileName.toStdString());
   
-  
-  mwr_->updctrl(initPtr_, true);
-
 
   //  loop forever the piece [!]
   mwr_->updctrl(repPtr_, -1.0); 
   
+  mwr_->updctrl(initPtr_, (mrs_bool)true);
 
   mrs_natural size = sizePtr_->to<mrs_natural>();
   
   mrs_real srate = osratePtr_->to<mrs_real>();
   
   Marsyas::mrs_real duration = (size / srate);
+  cout << duration << endl;
   emit durationChanged(duration);
+
   
   setPos(pos);
   
