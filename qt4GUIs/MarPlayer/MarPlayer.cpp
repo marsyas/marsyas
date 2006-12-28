@@ -29,7 +29,6 @@ MarPlayer::MarPlayer()
 
 MarPlayer::~MarPlayer()
 {
-	delete mapper_;
 }
 
 void
@@ -88,6 +87,7 @@ MarPlayer::createConnections()
 
   connect(ui.fileComboBox, SIGNAL(activated(const QString&)), 
 	  this, SLOT(open(const QString&)));
+  
 }
 
 void 
