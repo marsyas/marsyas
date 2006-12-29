@@ -636,6 +636,8 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
       ofstream oss(pluginName.c_str());
       oss << (*total) << endl;
     }
+  
+  delete featureNetwork;
 }
 
 // train with multiple feature vectors/file 
@@ -1032,6 +1034,8 @@ void bextract_train(vector<Collection> cls,
       ofstream oss(pluginName.c_str());
       oss << (*featureNetwork) << endl;
     }
+
+  delete featureNetwork;
 }
 
 // train with multiple feature vectors/file 
@@ -1320,6 +1324,8 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
       ofstream oss(pluginName.c_str());
       oss << (*featureNetwork) << endl;
     }
+
+  delete featureNetwork;
 }
 
 void
