@@ -37,6 +37,16 @@ Created by lfpt@inescporto.pt and lmartins@inescporto.pt
 
 #ifdef MRSDEBUGGING
 #include <sstream>
+
+//#define TRACECONTROLS
+#ifdef TRACECONTROLS
+#include <set>
+#define TRACE_ADDCONTROL MarControlPtr::controlTracer.insert(control_);;
+#define TRACE_REMCONTROL if(control_->getRefCount() == 1) controlTracer.erase(control_);
+#else
+#define TRACE_ADDCONTROL
+#define TRACE_REMCONTROL
+#endif
 #endif
 
 #ifdef MARSYAS_QT
@@ -53,6 +63,12 @@ namespace Marsyas
 
 class MarControlPtr
 {
+#ifdef TRACECONTROLS
+public:
+	static std::set<MarControl*> controlTracer;
+	static void printControlTracer();
+#endif
+
 protected:
 	MarControl *control_;
 
@@ -171,6 +187,7 @@ public:
 
 	inline void ref() { refCount_++; }
 	inline void unref() {	if (--refCount_ <= 0) delete this; }
+	int getRefCount() const { return refCount_; }
 
 	void setMarSystem(MarSystem* msys);
 	MarSystem* getMarSystem();
@@ -266,60 +283,70 @@ inline MarControlPtr::MarControlPtr(MarControl control)
 {
 	control_ = new MarControl(control);
 	control_->ref();
+	TRACE_ADDCONTROL;
 }
 
 inline MarControlPtr::MarControlPtr(MarControlValue *value)
 {
 	control_ = new MarControl(value);
 	control_->ref();
+	TRACE_ADDCONTROL;
 }
 
 inline MarControlPtr::MarControlPtr(int ne)
 {
 	control_ = new MarControl((mrs_natural)ne);
 	control_->ref();
+	TRACE_ADDCONTROL;
 }
 
 inline MarControlPtr::MarControlPtr(float ne)
 {
 	control_ = new MarControl(ne);
 	control_->ref();
+	TRACE_ADDCONTROL;
 }
 
 inline MarControlPtr::MarControlPtr(mrs_natural ne)
 {
 	control_ = new MarControl(ne);
 	control_->ref();
+	TRACE_ADDCONTROL;
 }
 
 inline MarControlPtr::MarControlPtr(mrs_real re)
 {
 	control_ = new MarControl(re);
 	control_->ref();
+	TRACE_ADDCONTROL;
 }
 
 inline MarControlPtr::MarControlPtr(char *c)
 {
 	control_ = new MarControl(std::string(c));
 	control_->ref();
+	TRACE_ADDCONTROL;
 }
 
 inline MarControlPtr::MarControlPtr(std::string st)
 {
 	control_ = new MarControl(st);
 	control_->ref();
+	TRACE_ADDCONTROL;
 }
 
 inline MarControlPtr::MarControlPtr(mrs_bool be)
 {
   control_ = new MarControl(be);
   control_->ref();
+	TRACE_ADDCONTROL;
 }
 
 inline MarControlPtr::MarControlPtr(realvec ve)
 {
 	control_ = new MarControl(ve);
 	control_->ref();
+	TRACE_ADDCONTROL;
 }
 
 inline std::ostream& operator<<(std::ostream& os, const MarControlPtr& ctrl)
@@ -456,6 +483,7 @@ MarControlPtr::MarControlPtr(const MarControlPtr& a) //mutexes? [?]
 	if (control_)
 	{
 		control_->ref();
+		TRACE_ADDCONTROL;
 	}
 }
 
@@ -466,6 +494,7 @@ MarControlPtr::MarControlPtr(MarControl *control)//mutexes? [?]
 	if (control_)
 	{
 		control_->ref(); 
+		TRACE_ADDCONTROL;
 	}	
 }
 
@@ -475,13 +504,15 @@ MarControlPtr::operator=(const MarControlPtr& a)//mutexes? [?]
 {
 	if (control_)
 	{
+		TRACE_REMCONTROL;
 		control_->unref();
 	}
 	control_ = a.control_;
 	if (control_) 
-  {
-    control_->ref();
-  }
+	{
+		control_->ref();
+		TRACE_ADDCONTROL;
+	}
 	return *this;
 }
 

@@ -36,6 +36,27 @@
 using namespace std;
 using namespace Marsyas;
 
+#ifdef TRACECONTROLS
+std::set<MarControl*> MarControlPtr::controlTracer;
+
+void
+MarControlPtr::printControlTracer()
+{
+	std::set<MarControl*>::iterator it;
+	if (MarControlPtr::controlTracer.size() > 0)
+	{
+		cout << "#############################################################" << endl;
+		cout << "++ Existing MarControls: " << MarControlPtr::controlTracer.size() << endl;
+		for (it=MarControlPtr::controlTracer.begin(); it!=MarControlPtr::controlTracer.end(); it++)
+		{
+			cout << (*it)->getMarSystem()->getPrefix() << (*it)->getName() 
+				<< " | ref.count: " << (*it)->getRefCount() << endl;
+		}
+		cout << "#############################################################" << endl;
+	}
+}
+#endif
+
 MarControlPtr::MarControlPtr()
 {
 	control_ = NULL;
@@ -45,6 +66,7 @@ MarControlPtr::~MarControlPtr()
 {
 	if (control_)
 	{
+		TRACE_REMCONTROL;
 		control_->unref();
 	}
 }
