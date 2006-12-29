@@ -126,7 +126,8 @@ AudioSink::initRtAudio()
       bufferSize_ = 2 * bufferSize_;
     }
 #endif	
-
+  
+  
 
 
 
@@ -137,7 +138,12 @@ AudioSink::initRtAudio()
   int rtChannels = 2;
   
   //create new RtAudio object (delete any existing one)
-  delete audio_;
+  if (audio_ != NULL) 
+    {
+      audio_->stopStream();
+      delete audio_;
+    }
+  
   try 
     {
       audio_ = new RtAudio(0, rtChannels, 0, 0, rtFormat,
@@ -150,6 +156,12 @@ AudioSink::initRtAudio()
       error.printMessage();
     }
   
+  if (audio_ != NULL) 
+    {
+      audio_->startStream();
+    }
+
+
   //update bufferSize control which may have been changed
   //by RtAudio (see RtAudio documentation)
   setctrl("mrs_natural/bufferSize", (mrs_natural)bufferSize_);
