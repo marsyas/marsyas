@@ -34,6 +34,7 @@ MarPlayer::~MarPlayer()
 void
 MarPlayer::init()
 {
+  setWindowIcon(QIcon("MarPlayer.icns"));
   createActions();
   createMenus();
   mapper_ = new Mapper();		// mapper communicates with Marsyas 
