@@ -37,6 +37,7 @@ Created by lfpt@inescporto.pt and lmartins@inescporto.pt
 
 #ifdef MRSDEBUGGING
 #include <sstream>
+#endif
 
 //#define TRACECONTROLS
 #ifdef TRACECONTROLS
@@ -46,7 +47,6 @@ Created by lfpt@inescporto.pt and lmartins@inescporto.pt
 #else
 #define TRACE_ADDCONTROL
 #define TRACE_REMCONTROL
-#endif
 #endif
 
 #define TRACE_ADDCONTROL
