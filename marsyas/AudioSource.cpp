@@ -129,9 +129,18 @@ AudioSource::initRtAudio()
   
   //marsyas represents audio data as float numbers
   RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
+
+
+
   
-  //create new RtAudio object (delete any existing one)
-  delete audio_;
+  //Create new RtAudio object (delete any existing one)
+
+
+  if (audio_ != NULL) 
+    {
+      audio_->stopStream(); 
+      delete audio_;
+    } 
   try 
     {
       audio_ = new RtAudio(0, 0, 0, rtChannels_, rtFormat,
@@ -146,6 +155,10 @@ AudioSource::initRtAudio()
   //update bufferSize control which may have been changed
   //by RtAudio (see RtAudio documentation)
   setctrl("mrs_natural/bufferSize", (mrs_natural)bufferSize_);
+
+  if (audio_ != NULL)
+      audio_->stopStream(); 
+
   
   isInitialized_ = true;
   setctrl("mrs_bool/initAudio", false);

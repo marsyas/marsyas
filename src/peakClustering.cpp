@@ -16,11 +16,6 @@
 #include "PeUtilities.h"
 #include <time.h>
 
-#ifdef WIN32
-#include <direct.h>
-#else
-#include <unistd.h>
-#endif
 
 #include <string>
 
