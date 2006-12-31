@@ -159,7 +159,7 @@ return 20*log10(a);
 
 mrs_real Marsyas::dB2amplitude(mrs_real a)
 {
-return pow(10, a/20);
+return pow(10.0, a/20);
 }
 
 
