@@ -961,6 +961,28 @@ MarSystem::getControls()
 	return controls_;
 }
 
+
+// get all the controls (including controls of children) 
+// for a particular MarSystem - not yet implemented 
+// needs to be recursive 
+
+map<string, MarControlPtr>
+MarSystem::getAllControls()
+{
+  map<string, MarControlPtr> res;
+  
+  map<string, MarControlPtr>::iterator iter;
+  
+  for (iter=controls_.begin(); iter != controls_.end(); ++iter) 
+    {
+      res[iter->first] = iter->second;
+    }
+  return res;
+  
+}
+
+
+
 vector<MarSystem*>
 MarSystem::getChildren()
 {

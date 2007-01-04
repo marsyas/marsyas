@@ -86,13 +86,16 @@ Mapper::open(QString fileName, int pos)
   mrs_natural size = sizePtr_->to<mrs_natural>();
   
   mrs_real srate = osratePtr_->to<mrs_real>();
+
+
+  setPos(pos);
   
   Marsyas::mrs_real duration = (size / srate);
   cout << duration << endl;
   emit durationChanged(duration);
 
   
-  setPos(pos);
+
   
   // timer is used to update the position slider "automatically" 
   // as the sound is playing 

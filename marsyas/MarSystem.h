@@ -224,6 +224,8 @@ public:
   MarControlPtr getControl(std::string cname, bool searchParent = false, MarSystem* excluded = NULL);
 	MarControlPtr getControlLocal(std::string cname);
 	MarControlPtr getctrl(std::string cname) {return getControl(cname);}
+
+        std::map<std::string, MarControlPtr> getAllControls();
 	const std::map<std::string, MarControlPtr>& getControls();
 
 	// set control state
