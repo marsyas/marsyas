@@ -19,10 +19,11 @@
 /**
    \class Scheduler
    \brief Scheduler schedules things
-
+   \author inb@cs.uvic.ca
 */
 
 #include "VScheduler.h"
+#include "EvExpr.h"
 
 using namespace std;
 //using namespace Marsyas;
@@ -30,7 +31,8 @@ using namespace std;
 namespace Marsyas //lmartins: hack: should work without this [?][!]
 {
 
-VScheduler::VScheduler() {
+VScheduler::VScheduler()
+{
     schedulers=NULL;
     schedulers_count=0;
 }
@@ -143,8 +145,16 @@ void
 VScheduler::post(string time, string tmname, Repeat r, MarEvent* me)
 {
     Scheduler* s = findScheduler(tmname);
-    if (s!=NULL) s->post(time,r,me);
-    else MRSWARN("VScheduler::post(string,string,Repeat,MarEvent*)  unknown timer name: "+tmname);
+    if (s!=NULL) {
+        if (me!=NULL) {
+            // EvExpr supports querying of the scheduler environment in expressions
+            EvExpr* e=dynamic_cast<EvExpr*>(me);
+            if (e!=NULL) { e->getExpression()->setVScheduler(this); }
+            s->post(time,r,me);
+        }
+        else MRSWARN("VScheduler::post(string,string,Repeat,MarEvent*)  NULL event");
+    }
+    else { MRSWARN("VScheduler::post(string,string,Repeat,MarEvent*)  unknown timer name: "+tmname); }
 }
 void
 VScheduler::post(TmTime t, Repeat r, MarEvent* me)
@@ -155,17 +165,12 @@ VScheduler::post(TmTime t, Repeat r, MarEvent* me)
 
 void VScheduler::post(string event_time, Repeat rep, MarEvent* me) {
     if (schedulers[0]!=NULL) {
-        schedulers[0]->post(event_time,rep,me);
+        post(event_time,schedulers[0]->getPrefix(),rep,me);
     }
 }
 void VScheduler::post(string event_time, MarEvent* me) {
     if (schedulers[0]!=NULL) {
-        schedulers[0]->post(event_time,me);
-    }
-}
-void VScheduler::post(ScheduledEvent* e) {
-    if (schedulers[0]!=NULL) {
-        schedulers[0]->post(e);
+        post(event_time,Repeat(),me);
     }
 }
 mrs_natural VScheduler::getTime(std::string timer) {

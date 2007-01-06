@@ -19,7 +19,7 @@
 /**
    \class Scheduler
    \brief Scheduler schedules things
-
+   \author inb@cs.uvic.ca
 */
 
 #ifndef MARSYAS_VSCHEDULER_H
@@ -74,7 +74,6 @@ public:
     // post to default timer
     void post(std::string event_time, Repeat rep, MarEvent* me);
     void post(std::string event_time, MarEvent* me);
-    void post(ScheduledEvent* e);
 
     // post to user defined timer
     void post(TmTime t, Repeat r, MarEvent* me);
