@@ -13,9 +13,9 @@
 #include "Filter.h"
 #include "Gain.h"
 #include "RtAudio.h"
-
 #include "MarSystemTemplateBasic.h"
 #include "MarSystemTemplateAdvanced.h"
+#include "EvValUpd.h"
 
 
 using namespace std;
@@ -205,6 +205,7 @@ test_audiodevices()
 void 
 test_schedulerExpr()
 {
+#if 0
   MarSystemManager mng;
   
   // Create a series Composite
@@ -226,6 +227,7 @@ test_schedulerExpr()
   // Composite deletes the added MarSystems
   // so you must not delete them
   delete series;
+#endif
 }
 
 void 
