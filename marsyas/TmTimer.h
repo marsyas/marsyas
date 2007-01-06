@@ -65,7 +65,7 @@ public:
     virtual std::string getPrefix();
     virtual TmTimer* clone()=0;
 
-    virtual void setScheduler(Scheduler* s)=0;
+    virtual void setScheduler(Scheduler* s);
     void setGranularity(mrs_natural g);
     mrs_natural getTime();
     void tick();

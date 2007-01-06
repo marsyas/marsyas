@@ -20,13 +20,14 @@
 /**
    \class TmTimer
    \brief Abstract TmTimer
+   \author inb@cs.uvic.ca
 */
 
 #include "TmTimer.h"
 
 using namespace std;
 using namespace Marsyas;
- 
+
 TmTimer::TmTimer()
 {
     init();
@@ -84,7 +85,8 @@ TmTimer::getTime() { return cur_time_; }
    a specific value. What if the size of the sample buffer changes during
    processing. Might have to have a size relative to certain parameters like
    sample buffer size. So many questions. */
-void TmTimer::tick() {
+void TmTimer::tick()
+{
     mrs_natural adj_time = readTimeSrc();
     if (adj_time<1) return;
     cur_time_ += adj_time;
