@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-SOURCES = $(ERBTest_SOURCES) $(SeneffEarTest_SOURCES) $(bextract_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mixer_SOURCES) $(mkcollection_SOURCES) $(msl_SOURCES) $(mugle_SOURCES) $(peVocoder_SOURCES) $(peakClustering_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(server_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplaygui_SOURCES) $(sfplugin_SOURCES) $(tempo_SOURCES) $(tutorial_SOURCES) $(virtualsensor_SOURCES)
+SOURCES = $(ERBTest_SOURCES) $(SeneffEarTest_SOURCES) $(bextract_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mixer_SOURCES) $(mkcollection_SOURCES) $(msl_SOURCES) $(mugle_SOURCES) $(peVocoder_SOURCES) $(peakClustering_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(scheduler_SOURCES) $(server_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplaygui_SOURCES) $(sfplugin_SOURCES) $(tempo_SOURCES) $(tutorial_SOURCES) $(virtualsensor_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -46,7 +46,7 @@ bin_PROGRAMS = sfinfo$(EXEEXT) sfplugin$(EXEEXT) sfplay$(EXEEXT) \
 	ERBTest$(EXEEXT) marsyasTests$(EXEEXT) SeneffEarTest$(EXEEXT) \
 	record$(EXEEXT) virtualsensor$(EXEEXT) mixer$(EXEEXT) \
 	mugle$(EXEEXT) classifyFile$(EXEEXT) midiTest$(EXEEXT) \
-	peakClustering$(EXEEXT) peVocoder$(EXEEXT)
+	peakClustering$(EXEEXT) peVocoder$(EXEEXT) scheduler$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in ChangeLog
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -125,6 +125,10 @@ am_record_OBJECTS = record.$(OBJEXT)
 record_OBJECTS = $(am_record_OBJECTS)
 record_DEPENDENCIES = $(top_builddir)/marsyas/libmarsyas.a \
 	$(am__DEPENDENCIES_1)
+am_scheduler_OBJECTS = scheduler.$(OBJEXT)
+scheduler_OBJECTS = $(am_scheduler_OBJECTS)
+scheduler_DEPENDENCIES = $(top_builddir)/marsyas/libmarsyas.a \
+	$(am__DEPENDENCIES_1)
 am_server_OBJECTS = server_main.$(OBJEXT)
 server_OBJECTS = $(am_server_OBJECTS)
 server_DEPENDENCIES = $(top_builddir)/marsyas/libmarsyas.a \
@@ -171,6 +175,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/peakClustering.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/phasevocoder.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/pitchextract.Po ./$(DEPDIR)/record.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/scheduler.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/server_main.Po ./$(DEPDIR)/sfinfo.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sfplay.Po ./$(DEPDIR)/sfplaygui.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sfplugin.Po ./$(DEPDIR)/tempo.Po \
@@ -187,18 +192,20 @@ SOURCES = $(ERBTest_SOURCES) $(SeneffEarTest_SOURCES) \
 	$(mkcollection_SOURCES) $(msl_SOURCES) $(mugle_SOURCES) \
 	$(peVocoder_SOURCES) $(peakClustering_SOURCES) \
 	$(phasevocoder_SOURCES) $(pitchextract_SOURCES) \
-	$(record_SOURCES) $(server_SOURCES) $(sfinfo_SOURCES) \
-	$(sfplay_SOURCES) $(sfplaygui_SOURCES) $(sfplugin_SOURCES) \
-	$(tempo_SOURCES) $(tutorial_SOURCES) $(virtualsensor_SOURCES)
+	$(record_SOURCES) $(scheduler_SOURCES) $(server_SOURCES) \
+	$(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplaygui_SOURCES) \
+	$(sfplugin_SOURCES) $(tempo_SOURCES) $(tutorial_SOURCES) \
+	$(virtualsensor_SOURCES)
 DIST_SOURCES = $(ERBTest_SOURCES) $(SeneffEarTest_SOURCES) \
 	$(bextract_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) \
 	$(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mixer_SOURCES) \
 	$(mkcollection_SOURCES) $(msl_SOURCES) $(mugle_SOURCES) \
 	$(peVocoder_SOURCES) $(peakClustering_SOURCES) \
 	$(phasevocoder_SOURCES) $(pitchextract_SOURCES) \
-	$(record_SOURCES) $(server_SOURCES) $(sfinfo_SOURCES) \
-	$(sfplay_SOURCES) $(sfplaygui_SOURCES) $(sfplugin_SOURCES) \
-	$(tempo_SOURCES) $(tutorial_SOURCES) $(virtualsensor_SOURCES)
+	$(record_SOURCES) $(scheduler_SOURCES) $(server_SOURCES) \
+	$(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplaygui_SOURCES) \
+	$(sfplugin_SOURCES) $(tempo_SOURCES) $(tutorial_SOURCES) \
+	$(virtualsensor_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-exec-recursive install-info-recursive \
@@ -408,6 +415,10 @@ peVocoder_SOURCES = peVocoder.cpp
 peVocoder_LDADD = $(top_builddir)/marsyas/libmarsyas.a \
 		     $(Libs)
 
+scheduler_SOURCES = scheduler.cpp
+scheduler_LDADD = $(top_builddir)/marsyas/libmarsyas.a \
+		                         $(Libs)
+
 all: all-recursive
 
 .SUFFIXES:
@@ -512,6 +523,9 @@ pitchextract$(EXEEXT): $(pitchextract_OBJECTS) $(pitchextract_DEPENDENCIES)
 record$(EXEEXT): $(record_OBJECTS) $(record_DEPENDENCIES) 
 	@rm -f record$(EXEEXT)
 	$(CXXLINK) $(record_LDFLAGS) $(record_OBJECTS) $(record_LDADD) $(LIBS)
+scheduler$(EXEEXT): $(scheduler_OBJECTS) $(scheduler_DEPENDENCIES) 
+	@rm -f scheduler$(EXEEXT)
+	$(CXXLINK) $(scheduler_LDFLAGS) $(scheduler_OBJECTS) $(scheduler_LDADD) $(LIBS)
 server$(EXEEXT): $(server_OBJECTS) $(server_DEPENDENCIES) 
 	@rm -f server$(EXEEXT)
 	$(CXXLINK) $(server_LDFLAGS) $(server_OBJECTS) $(server_LDADD) $(LIBS)
@@ -559,6 +573,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/phasevocoder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pitchextract.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/record.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/server_main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sfinfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sfplay.Po@am__quote@
