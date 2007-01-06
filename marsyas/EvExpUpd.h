@@ -22,7 +22,7 @@
    \brief EvExpUpd is a sample of an expression that can be evaluated then
           used to update a control
 */
-
+#if 0
 #ifndef MARSYAS_EV_EXPUPD_H
 #define MARSYAS_EV_EXPUPD_H
 
@@ -75,5 +75,7 @@ public:
 };
 
 }//namespace Marsyas
+
+#endif
 
 #endif
