@@ -38,8 +38,6 @@ extractors like Spectral Centroid.
 #include "Conversions.h"
 
 #include "TmSampleCount.h" 
-#include "EvValUpd.h" 
-#include "EvExpUpd.h"
 #include "MarEvent.h"
 #include "TmTime.h"
 #include "VScheduler.h"
