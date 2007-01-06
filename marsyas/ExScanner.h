@@ -96,7 +96,7 @@ public:
 	static const int EoF = COCO_WCHAR_MAX + 1;
 
 	Buffer(FILE* s, bool isUserStream);
-    Buffer::Buffer(const char* s);
+        Buffer(const char* s);
 	Buffer(Buffer *b);
 	virtual ~Buffer();
 	
