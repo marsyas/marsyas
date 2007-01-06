@@ -19,7 +19,7 @@
 /**
    \class Timer
    \brief Abstract Timer
-
+   \author inb@cs.uvic.ca
 */
 
 #ifndef MARSYAS_TM_TIME_H

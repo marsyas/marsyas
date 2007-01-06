@@ -20,6 +20,7 @@
 /**
    \class TmTime
    \brief TmTime
+   \author inb@cs.uvic.ca
 */
 
 #include "TmTime.h"
