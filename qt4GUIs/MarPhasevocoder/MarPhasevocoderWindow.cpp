@@ -175,7 +175,6 @@ MarPhasevocoderWindow::createNetwork()
   pvoc_->updctrl("ShiftOutput/so/mrs_natural/Decimation", D);
   pvoc_->updctrl("Gain/gain/mrs_real/gain", gopt_);
  
-  pvoc_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
   mwr_ = new MarSystemWrapper(pvoc_);
   mwr_->start();  
@@ -220,6 +219,7 @@ MarPhasevocoderWindow::open()
   QString fileName = QFileDialog::getOpenFileName(this);
   
   mwr_->updctrl("SoundFileSource/src/mrs_string/filename", fileName.toStdString());
+  mwr_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 }
 
 
