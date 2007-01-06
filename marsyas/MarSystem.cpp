@@ -30,6 +30,7 @@ extractors like Spectral Centroid.
 
 #include "MarSystem.h"
 #include "MarControlManager.h"
+#include "EvValUpd.h"
 
 #ifdef MARSYAS_QT
 #include "MarGUIManager.h"
