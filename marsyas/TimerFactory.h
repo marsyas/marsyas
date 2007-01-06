@@ -17,9 +17,9 @@
 */
 
 /**
-   \class Scheduler
-   \brief Scheduler schedules things
-
+   \class TimerFactory
+   \brief TimerFactory
+   \author inb@cs.uvic.ca
 */
 
 #ifndef MARSYAS_TIMER_FACTORY_H
