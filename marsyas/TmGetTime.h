@@ -20,7 +20,7 @@
    \class TmGetTime
    \brief TmGetTime reads the getlocaltime() function, system clock to get the
           current number of microseconds
-
+   \author inb@cs.uvic.ca
 */
 
 #ifndef MARSYAS_TM_GETTIME_H
