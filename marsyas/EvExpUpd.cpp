@@ -21,6 +21,7 @@
    \brief EvExpUpd is a sample of an expression that can be evaluated then
           used to update a control
 */
+#if 0
 
 #include "EvExpUpd.h"
 #include "MarSystem.h"
@@ -97,4 +98,4 @@ EvExpUpd& EvExpUpd::operator=(EvExpUpd& e) {
     setExpr(e.expression_);
     return *this;
 }
-
+#endif
