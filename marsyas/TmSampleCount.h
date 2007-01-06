@@ -19,7 +19,7 @@
 /**
    \class TmSampleCount
    \brief TmSampleCount reads the insamples information to advance the timer
-
+   \author inb@cs.uvic.ca
 */
 
 #ifndef MARSYAS_TM_SAMPLECOUNT_H
@@ -40,11 +40,8 @@ class Scheduler; // forward declaration
 class TmSampleCount : public TmTimer {
 protected:
     MarSystem* read_src_;
-    MarControlPtr read_cname_;
-  
-    
-    Scheduler* scheduler;
-
+    MarControlPtr read_ctrl_;
+    std::string read_cname_;
 public:
     // Constructors 
     TmSampleCount();
@@ -55,11 +52,13 @@ public:
     virtual ~TmSampleCount();
     TmTimer* clone();
 
-    void setReadCtrl(MarSystem* ms, MarControlPtr cname); // where to read time info
-    void setScheduler(Scheduler* s);
+    void setReadCtrl(MarSystem* ms, std::string cname); // where to read time info
+    void setSource(MarSystem* ms);
+    void setSourceCtrl(std::string cname);
     mrs_natural readTimeSrc();
     void trigger();
     mrs_natural intervalsize(std::string interval);
+    virtual void updtimer(std::string cname, TmControlValue value);
 };
 
 }//namespace Marsyas

@@ -20,6 +20,7 @@
 /**
    \class TmSampleCount
    \brief TmSampleCount reads the insamples information to advance the timer
+   \author inb@cs.uvic.ca
 */
 #include "TmSampleCount.h"
 #include "MarSystem.h"
@@ -28,42 +29,28 @@
 using namespace std;
 using namespace Marsyas;
 
-TmSampleCount::TmSampleCount() 
-{ 
-  name_="Virtual"; 
-  init(); 
-}
-
-TmSampleCount::TmSampleCount(string name) 
-{ name_=name; 
- init(); 
-}
-
-TmSampleCount::TmSampleCount(MarSystem* ms, string cname) 
+TmSampleCount::TmSampleCount() : TmTimer("TmSampleCount","Virtual")
 {
-  name_="Virtual"; scheduler=NULL;
-  read_src_=ms; 
-  read_cname_ = read_src_->getctrl(cname);
-  init();
+    setReadCtrl(NULL,"mrs_natural/inSamples");
 }
-
-
-TmSampleCount::TmSampleCount(Scheduler* s, MarSystem* ms, string cname) 
+TmSampleCount::TmSampleCount(string name) : TmTimer("TmSampleCount",name)
 {
-  name_="Virtual"; 
-  scheduler=s; 
-  read_src_=ms; 
-  read_cname_= read_src_->getctrl(cname); 
-  init();
+    setReadCtrl(NULL,"mrs_natural/inSamples");
 }
-
-TmSampleCount::TmSampleCount(const TmSampleCount& s) 
+TmSampleCount::TmSampleCount(MarSystem* ms, string cname) : TmTimer("TmSampleCount","Virtual")
 {
-  setScheduler(s.scheduler);
-  setReadCtrl(s.read_src_,s.read_cname_);
-  setName(s.name_);
+    setReadCtrl(ms,cname);
 }
-
+TmSampleCount::TmSampleCount(Scheduler* s, MarSystem* ms, string cname) : TmTimer("TmSampleCount","Virtual")
+{
+    setScheduler(s);
+    setReadCtrl(ms,cname);
+}
+TmSampleCount::TmSampleCount(const TmSampleCount& s) : TmTimer(s)
+{
+//    setScheduler(s.scheduler);
+    setReadCtrl(s.read_src_,s.read_cname_);
+}
 TmSampleCount::~TmSampleCount(){ }
 
 TmTimer* TmSampleCount::clone() 
@@ -71,28 +58,50 @@ TmTimer* TmSampleCount::clone()
   return new TmSampleCount(*this); 
 }
 
-void TmSampleCount::setScheduler(Scheduler* s) 
-{ scheduler=s; }
-
-void TmSampleCount::setReadCtrl(MarSystem* ms, MarControlPtr cname) 
+void TmSampleCount::setReadCtrl(MarSystem* ms, string cname)
 {
-  read_src_=ms; 
-  read_cname_=cname;
+    read_src_=ms;
+    read_cname_=cname;
+    if (read_src_!=NULL) read_ctrl_=read_src_->getctrl(cname);
 }
+void TmSampleCount::setSource(MarSystem* ms) { setReadCtrl(ms,read_cname_); }
+void TmSampleCount::setSourceCtrl(string cname) { setReadCtrl(read_src_,cname); }
 
-mrs_natural TmSampleCount::readTimeSrc() {
-    return read_cname_->to<mrs_natural>();
-}
-
-void TmSampleCount::trigger() 
+mrs_natural TmSampleCount::readTimeSrc()
 {
-  scheduler->dispatch();
+    if (read_src_==NULL) {
+        MRSWARN("TmSampleCount::readTimeSrc()  time source is NULL");
+        return 0;
+    }
+//    mrs_natural m = (read_src_->getctrl(read_cname_)).toNatural();
+    mrs_natural m = read_ctrl_->toNatural();
+    return m;
+//    return (read_src_->getctrl(read_cname_)).toNatural() + getTime();
 }
-
-
-mrs_natural 
-TmSampleCount::intervalsize(string interval) {
-  return (read_src_==NULL) ? 0 :
-    time2samples(interval,read_src_->getctrl("mrs_real/israte")->toReal());
+void TmSampleCount::trigger()
+{
+    scheduler->dispatch();
+}
+mrs_natural TmSampleCount::intervalsize(string interval)
+{
+    return (read_src_==NULL) ? 0 :
+        time2samples(interval,read_src_->getctrl("mrs_real/israte")->toReal());
+}
+void
+TmSampleCount::updtimer(std::string cname, TmControlValue value)
+{
+    bool type_error=false;
+    if (cname=="MarSystem/source") {
+        if (value.getType()==tmcv_marsystem) { setSource(value.toMarSystem()); }
+        else type_error=true;
+    }
+    else if (cname=="mrs_string/control") {
+        if (value.getType()==tmcv_string) { setSourceCtrl(value.toString()); }
+        else type_error=true;
+    }
+    else
+        MRSWARN("TmSampleCount::updtimer(string,TmControlValue)  unsupported control");
+    if (type_error)
+        MRSWARN("TmSampleCount::updtimer(string,TmControlValue)  wrong type to "+cname);
 }
 
