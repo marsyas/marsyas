@@ -22,7 +22,6 @@
 
 */
 #if 0
-
 #include "Expression.h"
 #include "MarSystem.h"
 
@@ -65,7 +64,7 @@ void clear_expr_list(struct Expr* e) {
     }
 }
 
-/*
+
 ostream& operator<< (ostream& o, EvValUpd& e) {
 //    sys.put(o);
     o << "EvValUpd<" << e.getCName() << "," << e.getValue() << ">";
@@ -331,5 +330,4 @@ Val eval(bool* fail, MarSystem* target_, struct Expr* tree) {
 
 
 
-#endif
-
+#endif // if 0
