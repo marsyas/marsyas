@@ -17,9 +17,9 @@
 */
 
 /**
-   \class Scheduler
-   \brief Scheduler schedules things
-
+   \class SchedulerManager
+   \brief SchedulerManager
+   \author inb@cs.uvic.ca
 */
 
 #ifndef MARSYAS_SCHEDULER_MANAGER_H

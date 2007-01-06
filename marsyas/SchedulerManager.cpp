@@ -19,7 +19,7 @@
 /**
    \class SchedulerManager
    \brief SchedulerManager schedules things
-
+   \author inb@cs.uvic.ca
 */
 
 #include "SchedulerManager.h"
