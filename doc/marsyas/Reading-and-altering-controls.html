@@ -1,0 +1,114 @@
+<html lang="en">
+<head>
+<title>Reading and altering controls - Marsyas 0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Marsyas 0.2">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Assembling-a-network.html#Assembling-a-network" title="Assembling a network">
+<link rel="prev" href="Hello-World-_0028playing-an-audio-file_0029.html#Hello-World-_0028playing-an-audio-file_0029" title="Hello World (playing an audio file)">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+Copyright 1998-2006 George Tzanetakis
+
+Permission is granted to make and distribute verbatim
+copies of this manual provided the copyright notice and
+this permission notice are preserved on all copies.
+
+Permission is granted to copy and distribute modified
+versions of this manual under the conditions for
+verbatim copying, provided also that the sections
+entitled "Copying" and "GNU General Public License"
+are included exactly as in the original, and provided
+that the entire resulting derived work is distributed
+under the terms of a permission notice identical to this
+one.
+
+Permission is granted to copy and distribute
+translations of this manual into another language,
+under the above conditions for modified versions,
+except that this permission notice may be stated in a
+translation approved by the Free Software Foundation.-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Reading-and-altering-controls"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Hello-World-_0028playing-an-audio-file_0029.html#Hello-World-_0028playing-an-audio-file_0029">Hello World (playing an audio file)</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Assembling-a-network.html#Assembling-a-network">Assembling a network</a>
+<hr>
+</div>
+
+<h4 class="subsection">5.1.3 Reading and altering controls</h4>
+
+<p>Here we have modified the example from the previous section: we have added
+the ability to start at an arbitrary position (time) inside the audio file. 
+To calculate the starting position in the file, we must know the sample rate
+and number of channels.  We get this information from the
+<code>SoundFileSource</code> with <code>getctrl</code>.
+
+<pre class="verbatim">
+#include "MarSystemManager.h"
+using namespace std;
+using namespace Marsyas;
+
+void sfplay(string sfName, float gain, float start) {
+  MarSystemManager mng;
+
+  MarSystem* playbacknet = mng.create("Series", "playbacknet");
+
+  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+  playbacknet->addMarSystem(mng.create("Gain", "gt"));
+  playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
+
+// calculate the starting position.
+  mrs_natural nChannels = playbacknet->getctrl("SoundFileSource/src/mrs_natural/nChannels")->toNatural();
+  mrs_real srate = playbacknet->getctrl("SoundFileSource/src/mrs_real/israte")->toReal();
+  mrs_natural startPosition = (mrs_natural) (start * srate * nChannels);
+
+  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  playbacknet->updctrl("Gain/gt/mrs_real/gain", gain);
+  playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+// set the starting position of the source
+  playbacknet->updctrl("SoundFileSource/src/mrs_natural/pos", startPosition);
+
+  while ( playbacknet->getctrl("mrs_bool/notEmpty")->toBool() ) {
+    playbacknet->tick();
+  }
+
+  delete playbacknet;
+}
+
+
+int main(int argc, const char **argv) {
+  string fileName;
+  float gain, start;
+  if (argc&lt;2) { cout&lt;&lt;"Please enter filename."&lt;&lt;endl; exit(1); } else 
+    { fileName = argv[1]; }
+  if (argc&lt;3) { gain = 1; } else
+    { gain = atof(argv[2]); }
+  if (argc&lt;4) { start = 0; } else
+    { start = atof(argv[3]); }
+  cout &lt;&lt; "Playing file " &lt;&lt; fileName &lt;&lt; " at volume " &lt;&lt;
+    gain &lt;&lt; " starting at " &lt;&lt; start &lt;&lt; " seconds" &lt;&lt; endl;
+
+  sfplay(fileName,gain,start);
+  exit(0);
+}
+</pre>
+
+   </body></html>
+
