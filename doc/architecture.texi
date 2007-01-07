@@ -19,7 +19,6 @@ networks and writing new MarSystems respectively.
 * Architecture overview::       
 * Implicit patching::           
 * MarSystem Composites::        
-* Assembling a network ::       
 @end menu
 
 
@@ -226,21 +225,5 @@ Series1->addMarSystem(mng.create("classifier", "Classifier"));
 
 
 
-
-@node Assembling a network 
-@section Assembling a network
-
-@menu
-* Including libraries and linking::  
-@end menu
-
-@node Including libraries and linking
-@subsection Including libraries and linking
-
-Unless you write your program inside the @file{marsyas/src} directory,
-you need to include the Marsyas libraries in your project.
-
-@c  I will explain this WHEN I CAN DO IT MYSELF.  BLOODY MAO, I HATE
-@c  LINKING!!!.  -gp
 
 

@@ -1,10 +1,187 @@
-@c much more info to come soon.  -gp
 @node Programming
 @chapter Programming
 
 @menu
+* Assembling a network::        
 * Writing your own MarSystems::  
 @end menu
+
+
+@node Assembling a network
+@section Assembling a network
+
+@menu
+* Including libraries and linking::  
+* Hello World (playing an audio file)::  
+* Reading and altering controls::  
+@end menu
+
+
+
+@node Including libraries and linking
+@subsection Including libraries and linking
+
+@cindex Compiling
+@cindex Linking
+Unless you write your program inside the @file{marsyas/src} directory,
+you need to include the Marsyas libraries in your project.
+
+
+@unnumberedsubsubsec Linux and other *nixes
+
+The easiest way to compile Marsyas projects is to use a makefile.  In your
+working directory, create a file called @file{Makefile} which contains
+
+@example
+all:
+	rm -f *.o
+	g++ -Wall -O2 -I./ -I/usr/local/include/marsyas -c -o myfile.o myfile.cpp
+	g++ -Lusr/local/lib -o myfile myfile.o -lmarsyas -lasound
+@end example
+
+@noindent
+(place a tab in front of the three lower lines instead of spaces)
+
+If you installed marsyas in a location other than @file{/usr/local/}, then
+change the @code{-I} and @code{-L} directories accordingly.  For example,
+if you installed marsyas in @file{$@{HOME@}/usr/}, then you would use
+@code{-I$@{HOME@}/usr/include/marsyas} and @code{-L$@{HOME@}/usr/lib}.  Once
+the @file{Makefile} is written, simply type @code{make} to compile
+your file.
+
+
+
+
+@unnumberedsubsubsec OSX
+
+To compile Marsyas projects in OSX, use the same @file{Makefile} as is used
+in other *nixes, but replace the final line with
+
+@example
+	g++ -Lusr/local/lib -o myfile myfile.o -lmarsyas -framework CoreAudio \
+		-framework CoreMidi -framework CoreFoundation
+@end example
+
+
+@unnumberedsubsubsec Windows Visual Studio
+
+Please see the documentation for your compiler / development environment.
+@c alternately, Gustavo could write something here.  :)
+
+
+@node Hello World (playing an audio file)
+@subsection Hello World (playing an audio file)
+
+@cindex Hello world
+@cindex Playing an audio file
+
+Instead of printing ``Hello World!'', we shall play a sound file.  This is
+relatively straightforward: we create a @code{MarSystem} which is a
+series of @code{SoundFileSource}, @code{Gain}, and @code{AudioSink}.  Once
+the network is created and the controls are given, we call @code{tick()} to
+make time pass until we have finished playing the file.
+
+
+@verbatim
+#include "MarSystemManager.h"
+using namespace std;
+using namespace Marsyas;
+
+void sfplay(string sfName, float gain) {
+  MarSystemManager mng;
+
+  MarSystem* playbacknet = mng.create("Series", "playbacknet");
+
+  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+  playbacknet->addMarSystem(mng.create("Gain", "gt"));
+  playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
+
+  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  playbacknet->updctrl("Gain/gt/mrs_real/gain", gain);
+  playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+  while ( playbacknet->getctrl("mrs_bool/notEmpty")->toBool() ) {
+    playbacknet->tick();
+  }
+  delete playbacknet;
+}
+
+int main(int argc, const char **argv) {
+  string fileName;
+  float gain;
+  if (argc<2) { cout<<"Please enter filename."<<endl; exit(1); } else 
+    { fileName = argv[1]; }
+  if (argc<3) { gain = 1; } else
+    { gain = atof(argv[2]); }
+  cout << "Playing file " << fileName << " at volume " <<
+    gain << endl;
+
+  sfplay(fileName,gain);
+  exit(0);
+}
+@end verbatim
+
+
+
+@node Reading and altering controls
+@subsection Reading and altering controls
+
+Here we have modified the example from the previous section: we have added
+the ability to start at an arbitrary position (time) inside the audio file.
+To calculate the starting position in the file, we must know the sample rate
+and number of channels.  We get this information from the
+@code{SoundFileSource} with @code{getctrl}.
+
+
+@verbatim
+#include "MarSystemManager.h"
+using namespace std;
+using namespace Marsyas;
+
+void sfplay(string sfName, float gain, float start) {
+  MarSystemManager mng;
+
+  MarSystem* playbacknet = mng.create("Series", "playbacknet");
+
+  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+  playbacknet->addMarSystem(mng.create("Gain", "gt"));
+  playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
+
+// calculate the starting position.
+  mrs_natural nChannels = playbacknet->getctrl("SoundFileSource/src/mrs_natural/nChannels")->toNatural();
+  mrs_real srate = playbacknet->getctrl("SoundFileSource/src/mrs_real/israte")->toReal();
+  mrs_natural startPosition = (mrs_natural) (start * srate * nChannels);
+
+  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  playbacknet->updctrl("Gain/gt/mrs_real/gain", gain);
+  playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+// set the starting position of the source
+  playbacknet->updctrl("SoundFileSource/src/mrs_natural/pos", startPosition);
+
+  while ( playbacknet->getctrl("mrs_bool/notEmpty")->toBool() ) {
+    playbacknet->tick();
+  }
+  delete playbacknet;
+}
+
+int main(int argc, const char **argv) {
+  string fileName;
+  float gain, start;
+  if (argc<2) { cout<<"Please enter filename."<<endl; exit(1); } else 
+    { fileName = argv[1]; }
+  if (argc<3) { gain = 1; } else
+    { gain = atof(argv[2]); }
+  if (argc<4) { start = 0; } else
+    { start = atof(argv[3]); }
+  cout << "Playing file " << fileName << " at volume " <<
+    gain << " starting at " << start << " seconds" << endl;
+
+  sfplay(fileName,gain,start);
+  exit(0);
+}
+@end verbatim
+
 
 @node Writing your own MarSystems
 @section Writing your own MarSystems
