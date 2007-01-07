@@ -50,7 +50,7 @@ A simple way to create a collection is the unix ls command.
 For example: 
 
 @example
-> ls /home/gtzan/data/sound/reggae/*.wav > reggae.mf
+ls /home/gtzan/data/sound/reggae/*.wav > reggae.mf
 @end example
 
 @noindent
@@ -78,7 +78,7 @@ files. To create a collection of all the audio files residing
 in a directory the following command can be used: 
 
 @example 
-> mkcollection reggae.mf /home/gtzan/data/sound/ 
+mkcollection reggae.mf /home/gtzan/data/sound/ 
 @end example
 
 All the soundfiles residing in that directory or any subdirectories
@@ -112,7 +112,7 @@ example of how printing out the controls can show
 information like channels, sampling rate etc.  
 
 @example 
-> sfinfo foo.wav 
+sfinfo foo.wav 
 @end example 
 
 
@@ -141,10 +141,10 @@ the network is created at run time.
 
 
 @example
-> sfplay foo.wav 
-> sfplay -s 10.0 -l 3.2 -r 2.5 -g 0.5 foo.wav bar.au -f output.wav
-> sfplay -l 3.0 reggae.mf
-> sfplay foo.wav -p playback.mpl 
+sfplay foo.wav 
+sfplay -s 10.0 -l 3.2 -r 2.5 -g 0.5 foo.wav bar.au -f output.wav
+sfplay -l 3.0 reggae.mf
+sfplay foo.wav -p playback.mpl 
 @end example
 
 
@@ -188,8 +188,8 @@ the means and variances of Mel-Frequency Cepstral
 Coefficients. 
 
 @example 
-> extract foo.wav 
-> extract -e SVMFCC foo.wav
+extract foo.wav 
+extract -e SVMFCC foo.wav
 @end example 
 
 
@@ -237,8 +237,8 @@ into Marsyas but it will be some time until that happens.
 
 
 @example 
-> bextract -e STFT music.mf speech.mf -w wekaOut.arff -p musp_classify.mpl
-> sfplugin -p musp_classify.mpl new.wav 
+bextract -e STFT music.mf speech.mf -w wekaOut.arff -p musp_classify.mpl
+sfplugin -p musp_classify.mpl new.wav 
 @end example
 
 Feature extractors that start with SV produce one value 
@@ -247,7 +247,7 @@ such as genre classification. The following command can
 be used to generate a weka file for genre classification. 
 
 @example 
-> bextract -e SVSTFT classical.mf jazz.mf rock.mf -w genre.arff
+bextract -e SVSTFT classical.mf jazz.mf rock.mf -w genre.arff
 @end example 
 
 Currently no classifier is generated for the SV feature extractors 
@@ -276,7 +276,7 @@ MarSystems in a modular way and can be used for real-time
 pitch-shifting and time-scaling.
  
 @example
-> phasevocoder -p 1.4 -s 100
+phasevocoder -p 1.4 -s 100
 @end example
 
 
@@ -310,8 +310,8 @@ will peform playback of foo.wav and playback with real time music
 speech classification of foo.wav. 
 
 @example 
-> sfplugin -p plugins/playback.mpl foo.wav
-> sfplugin -p musp_classify.mpl foo.wav
+sfplugin -p plugins/playback.mpl foo.wav
+sfplugin -p musp_classify.mpl foo.wav
 @end example 
 
 
@@ -331,7 +331,7 @@ Here is an example of creating a simple network in msl and
 playing a sound file: 
 
 @example 
->msl 
+msl 
 [ msl ] create Series playbacknet
 [ msl ] create SoundFileSource src
 [ msl ] create Gain g

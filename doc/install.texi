@@ -46,7 +46,7 @@ as a tar ball (something like marsyas-0.2.8.tar.gz).
 To extract the source file type: 
 
 @example 
->tar -zxvf marsyas-0.2.8.tar.gz 
+tar -zxvf marsyas-0.2.8.tar.gz 
 @end example
 
 This will create a subdirectory of the current 
@@ -61,7 +61,7 @@ obtained from the subversion repository stored at the sourceforge website.
 To check out a working copy do:
 
 @example 
->svn co https://svn.sourceforge.net/svnroot/marsyas/trunk marsyas-0.2.8 
+svn co https://svn.sourceforge.net/svnroot/marsyas/trunk marsyas-0.2.8 
 @end example
 
 You can replace marsyas-0.2.8 with any directory you want. The 
@@ -103,9 +103,9 @@ the standard autoconf installation steps where > is whatever
 command-line prompt you have on your system. 
 
 @example
-> ./configure 
-> make 
-> make install                 (as root user)
+./configure 
+make 
+make install                 (as root user)
 @end example
 
 By default Marsyas assumes that in Linux systems the ALSA sound system
@@ -132,9 +132,9 @@ can run gcc on a terminal. Once gcc is installed then you can compile
 using the standard autoconf procedure:
 
 @example 
-> ./configure 
-> make 
-> make install                         (as root user)
+./configure 
+make 
+make install                         (as root user)
 @end example 
 
 In addition there are several configure options that 
@@ -153,9 +153,9 @@ need to have the DirectX SDk installed. The standard autoconf
 installation procedure is used:
 
 @example 
-> ./configure 
-> make 
-> make install                         (as root user)
+./configure 
+make 
+make install                         (as root user)
 @end example 
 
 In general, cygwin is not supported as well as Linux and OS X. 
@@ -184,16 +184,16 @@ script. For example to compile Marsyas with assertions
 enabled and with mp3 support through libmad one would do: 
 
 @example 
-> ./configure --enable-assert --enable-mad
-> make 
-> make install                         (as root user)
+./configure --enable-assert --enable-mad
+make 
+make install                         (as root user)
 @end example 
 
 
 @noindent The list of available options can be viewed by: 
 
 @example 
-> ./configure --help 
+./configure --help 
 @end example
 
 
@@ -223,9 +223,9 @@ by doing (replace MarPlayer with the specific GUI you want compiled)
 major development so use at your own risk): 
 
 @example
-> cd qt4GUIs/MarPlayer
-> qmake 
-> make 
+cd qt4GUIs/MarPlayer
+qmake 
+make 
 @end example
 
 
@@ -236,9 +236,9 @@ This can be accomplished by doing:
 
 
 @example
-> ./configure --prefix=/home/gtzan 
-> make 
-> make install 
+./configure --prefix=/home/gtzan 
+make 
+make install 
 @end example
 
 
@@ -288,9 +288,10 @@ code here.
 currently reading) as well as the source code documentation
 that is generated using doxygen. To regenerate the manual in pdf
 or html type (in the doc subdirectory)
+
 @example 
->make pdf 
->make html 
+make pdf 
+make html 
 @end example 
 
 @c @item @b{rawwaves:} contains some raw sound files that can be used
