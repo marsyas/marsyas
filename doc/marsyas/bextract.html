@@ -91,15 +91,15 @@ they can be integrated and most of the necessary components and APIs
 are already in place. Eventually I would like to port most of Weka
 into Marsyas but it will be some time until that happens.
 
-<pre class="example">     &gt; bextract -e STFT music.mf speech.mf -w wekaOut.arff -p musp_classify.mpl
-     &gt; sfplugin -p musp_classify.mpl new.wav
+<pre class="example">     bextract -e STFT music.mf speech.mf -w wekaOut.arff -p musp_classify.mpl
+     sfplugin -p musp_classify.mpl new.wav
 </pre>
    <p>Feature extractors that start with SV produce one value
 for each value and can be used for non-realtime classification
 such as genre classification. The following command can
 be used to generate a weka file for genre classification.
 
-<pre class="example">     &gt; bextract -e SVSTFT classical.mf jazz.mf rock.mf -w genre.arff
+<pre class="example">     bextract -e SVSTFT classical.mf jazz.mf rock.mf -w genre.arff
 </pre>
    <p>Currently no classifier is generated for the SV feature extractors
 but it's only a matter of time before this feature is added. 

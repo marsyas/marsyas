@@ -6,6 +6,7 @@
 <meta name="generator" content="makeinfo 4.8">
 <link title="Top" rel="start" href="index.html#Top">
 <link rel="up" href="Assembling-a-network.html#Assembling-a-network" title="Assembling a network">
+<link rel="next" href="Hello-World-_0028playing-an-audio-file_0029.html#Hello-World-_0028playing-an-audio-file_0029" title="Hello World (playing an audio file)">
 <link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
 <!--
 Copyright 1998-2006 George Tzanetakis
@@ -45,17 +46,47 @@ translation approved by the Free Software Foundation.-->
 <div class="node">
 <p>
 <a name="Including-libraries-and-linking"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Hello-World-_0028playing-an-audio-file_0029.html#Hello-World-_0028playing-an-audio-file_0029">Hello World (playing an audio file)</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="Assembling-a-network.html#Assembling-a-network">Assembling a network</a>
 <hr>
 </div>
 
-<h4 class="subsection">4.4.1 Including libraries and linking</h4>
+<h4 class="subsection">5.1.1 Including libraries and linking</h4>
 
-<p>Unless you write your program inside the <samp><span class="file">marsyas/src</span></samp> directory,
+<p><a name="index-Compiling-18"></a><a name="index-Linking-19"></a>Unless you write your program inside the <samp><span class="file">marsyas/src</span></samp> directory,
 you need to include the Marsyas libraries in your project.
 
-<!-- I will explain this WHEN I CAN DO IT MYSELF.  BLOODY MAO, I HATE -->
-<!-- LINKING!!!.  -gp -->
-<!-- much more info to come soon.  -gp -->
-</body></html>
+<h5 class="unnumberedsubsubsec">Linux and other *nixes</h5>
+
+<p>The easiest way to compile Marsyas projects is to use a makefile.  In your
+working directory, create a file called <samp><span class="file">Makefile</span></samp> which contains
+
+<pre class="example">     all:
+     	rm -f *.o
+     	g++ -Wall -O2 -I./ -I/usr/local/include/marsyas -c -o myfile.o myfile.cpp
+     	g++ -Lusr/local/lib -o myfile myfile.o -lmarsyas -lasound
+</pre>
+   <p class="noindent">(place a tab in front of the three lower lines instead of spaces)
+
+   <p>If you installed marsyas in a location other than <samp><span class="file">/usr/local/</span></samp>, then
+change the <code>-I</code> and <code>-L</code> directories accordingly.  For example,
+if you installed marsyas in <samp><span class="file">${HOME}/usr/</span></samp>, then you would use
+<code>-I${HOME}/usr/include/marsyas</code> and <code>-L${HOME}/usr/lib</code>.  Once
+the <samp><span class="file">Makefile</span></samp> is written, simply type <code>make</code> to compile
+your file.
+
+<h5 class="unnumberedsubsubsec">OSX</h5>
+
+<p>To compile Marsyas projects in OSX, use the same <samp><span class="file">Makefile</span></samp> as is used
+in other *nixes, but replace the final line with
+
+<pre class="example">     	g++ -Lusr/local/lib -o myfile myfile.o -lmarsyas -framework CoreAudio \
+     		-framework CoreMidi -framework CoreFoundation
+</pre>
+   <h5 class="unnumberedsubsubsec">Windows Visual Studio</h5>
+
+<p>Please see the documentation for your compiler / development environment. 
+<!-- alternately, Gustavo could write something here.  :) -->
+
+   </body></html>
 

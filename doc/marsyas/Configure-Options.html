@@ -61,13 +61,13 @@ this done in the standard way through the .configure
 script. For example to compile Marsyas with assertions
 enabled and with mp3 support through libmad one would do:
 
-<pre class="example">     &gt; ./configure --enable-assert --enable-mad
-     &gt; make
-     &gt; make install                         (as root user)
+<pre class="example">     ./configure --enable-assert --enable-mad
+     make
+     make install                         (as root user)
 </pre>
    <p class="noindent">The list of available options can be viewed by:
 
-<pre class="example">     &gt; ./configure --help
+<pre class="example">     ./configure --help
 </pre>
    <p class="noindent">The following options are supported:
 
@@ -92,18 +92,18 @@ by doing (replace MarPlayer with the specific GUI you want compiled)
 (these GUIs have only been tested under Linux and are currently under
 major development so use at your own risk):
 
-<pre class="example">     &gt; cd qt4GUIs/MarPlayer
-     &gt; qmake
-     &gt; make
+<pre class="example">     cd qt4GUIs/MarPlayer
+     qmake
+     make
 </pre>
    <p class="noindent">A frequent variation (if you don't have root priviledges)
 is to install Marsyas in your home directory (replace /home/gtzan with
 the appropriate path for your home directory). 
 This can be accomplished by doing:
 
-<pre class="example">     &gt; ./configure --prefix=/home/gtzan
-     &gt; make
-     &gt; make install
+<pre class="example">     ./configure --prefix=/home/gtzan
+     make
+     make install
 </pre>
    </body></html>
 
