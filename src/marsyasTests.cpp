@@ -70,6 +70,7 @@ printHelp(string progName)
   cerr << "Windowing       : test different window functions of Windowing marsystem" << endl;
   cerr << "updctrl         : test updating control with pointers " << endl;
   cerr << "duplex          : test duplex audio input/output" << endl;
+  cerr << "simpleSFPlay    : plays a sound file" << endl;
   
   
   
@@ -130,6 +131,29 @@ test_scheduler(string sfName)
   // Composite deletes the added MarSystems
   // so you must not delete them
   delete series1;
+}
+
+void
+test_simpleSFPlay(string sfName)
+{
+  MarSystemManager mng;
+
+  MarSystem* playbacknet = mng.create("Series", "playbacknet");
+
+  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+  playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
+
+  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+  mrs_bool isEmpty;
+  cout << *playbacknet << endl;
+  while ( isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->toBool() ) {
+    cout << "tick " << isEmpty << endl;
+    playbacknet->tick();
+  }
+  cout << "tick " << isEmpty << endl;
+  delete playbacknet;
 }
 
 void 
@@ -2190,6 +2214,8 @@ main(int argc, const char **argv)
     test_updctrl(fname0);
   else if (testName == "duplex") 
     test_duplex();
+  else if (testName == "simpleSFPlay") 
+    test_simpleSFPlay(fname0);
   else 
     {
       cout << "Unsupported test " << endl;
