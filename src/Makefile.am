@@ -33,7 +33,7 @@ bin_PROGRAMS    = sfinfo sfplugin sfplay extract bextract \
 		  pitchextract sfplaygui tempo \
 		  server msl tutorial \
 		  ERBTest marsyasTests \
-		  SeneffEarTest record \
+		  SeneffEarTest record orcarecord \
 		  virtualsensor mixer mugle classifyFile midiTest \
 		  peakClustering peVocoder scheduler
 
@@ -104,6 +104,10 @@ SeneffEarTest_LDADD       = $(top_builddir)/marsyas/libmarsyas.a \
 
 record_SOURCES     = record.cpp 
 record_LDADD       = $(top_builddir)/marsyas/libmarsyas.a \
+		     $(Libs)
+
+orcarecord_SOURCES     = orcarecord.cpp 
+orcarecord_LDADD       = $(top_builddir)/marsyas/libmarsyas.a \
 		     $(Libs)
 
 virtualsensor_SOURCES     = virtualsensor.cpp 
