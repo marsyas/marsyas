@@ -7,6 +7,7 @@
 <link title="Top" rel="start" href="index.html#Top">
 <link rel="up" href="Assembling-a-network.html#Assembling-a-network" title="Assembling a network">
 <link rel="prev" href="Hello-World-_0028playing-an-audio-file_0029.html#Hello-World-_0028playing-an-audio-file_0029" title="Hello World (playing an audio file)">
+<link rel="next" href="Writing-data-to-text-files.html#Writing-data-to-text-files" title="Writing data to text files">
 <link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
 <!--
 Copyright 1998-2006 George Tzanetakis
@@ -46,6 +47,7 @@ translation approved by the Free Software Foundation.-->
 <div class="node">
 <p>
 <a name="Reading-and-altering-controls"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Writing-data-to-text-files.html#Writing-data-to-text-files">Writing data to text files</a>,
 Previous:&nbsp;<a rel="previous" accesskey="p" href="Hello-World-_0028playing-an-audio-file_0029.html#Hello-World-_0028playing-an-audio-file_0029">Hello World (playing an audio file)</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="Assembling-a-network.html#Assembling-a-network">Assembling a network</a>
 <hr>
@@ -88,10 +90,8 @@ void sfplay(string sfName, float gain, float start) {
   while ( playbacknet->getctrl("mrs_bool/notEmpty")->toBool() ) {
     playbacknet->tick();
   }
-
   delete playbacknet;
 }
-
 
 int main(int argc, const char **argv) {
   string fileName;

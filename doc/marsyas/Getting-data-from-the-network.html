@@ -1,13 +1,12 @@
 <html lang="en">
 <head>
-<title>Hello World (playing an audio file) - Marsyas 0.2</title>
+<title>Getting data from the network - Marsyas 0.2</title>
 <meta http-equiv="Content-Type" content="text/html">
 <meta name="description" content="Marsyas 0.2">
 <meta name="generator" content="makeinfo 4.8">
 <link title="Top" rel="start" href="index.html#Top">
 <link rel="up" href="Assembling-a-network.html#Assembling-a-network" title="Assembling a network">
-<link rel="prev" href="Including-libraries-and-linking.html#Including-libraries-and-linking" title="Including libraries and linking">
-<link rel="next" href="Reading-and-altering-controls.html#Reading-and-altering-controls" title="Reading and altering controls">
+<link rel="prev" href="Writing-data-to-text-files.html#Writing-data-to-text-files" title="Writing data to text files">
 <link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
 <!--
 Copyright 1998-2006 George Tzanetakis
@@ -46,60 +45,67 @@ translation approved by the Free Software Foundation.-->
 <body>
 <div class="node">
 <p>
-<a name="Hello-World-(playing-an-audio-file)"></a>
-<a name="Hello-World-_0028playing-an-audio-file_0029"></a>
-Next:&nbsp;<a rel="next" accesskey="n" href="Reading-and-altering-controls.html#Reading-and-altering-controls">Reading and altering controls</a>,
-Previous:&nbsp;<a rel="previous" accesskey="p" href="Including-libraries-and-linking.html#Including-libraries-and-linking">Including libraries and linking</a>,
+<a name="Getting-data-from-the-network"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Writing-data-to-text-files.html#Writing-data-to-text-files">Writing data to text files</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="Assembling-a-network.html#Assembling-a-network">Assembling a network</a>
 <hr>
 </div>
 
-<h4 class="subsection">5.1.2 Hello World (playing an audio file)</h4>
+<h4 class="subsection">5.1.5 Getting data from the network</h4>
 
-<p><a name="index-Hello-world-20"></a><a name="index-Playing-an-audio-file-21"></a>
-Instead of printing &ldquo;Hello World!&rdquo;, we shall play a sound file.  This is
-relatively straightforward: we create a <code>MarSystem</code> which is a
-series of <code>SoundFileSource</code>, <code>Gain</code>, and <code>AudioSink</code>.  Once
-the network is created and the controls are given, we call <code>tick()</code> to
-make time pass until we have finished playing the file.
+<p>Putting together a network of MarSystems is all well and good,
+but you probably want to do something with that data.  In this
+example we simply print it to the screen, but the important
+thing to note is that we have the data at the level of C programming.
 
 <pre class="verbatim">
 #include "MarSystemManager.h"
 using namespace std;
 using namespace Marsyas;
 
-void sfplay(string sfName, float gain) {
+void recognize(string sfName) {
   MarSystemManager mng;
+  MarSystem* pnet = mng.create("Series", "pnet");
+// standard network
+  pnet->addMarSystem(mng.create("SoundFileSource", "src"));
+  pnet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+	pnet->addMarSystem(mng.create("Spectrum","spk"));
 
-  MarSystem* playbacknet = mng.create("Series", "playbacknet");
+// variables to get data from network
+  realvec in(pnet->getctrl("mrs_natural/inObservations")->toNatural(), pnet->getctrl("mrs_natural/inSamples")->toNatural());
+	realvec out(pnet->getctrl("mrs_natural/onObservations")->toNatural(), pnet->getctrl("mrs_natural/onSamples")->toNatural());
 
-  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
-  playbacknet->addMarSystem(mng.create("Gain", "gt"));
-  playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
+// counter variables
+	int i,j;
+	mrs_natural numberObservations = pnet->getctrl("mrs_natural/onObservations")->toNatural();
+	mrs_natural numberSamples = pnet->getctrl("mrs_natural/onSamples")->toNatural();
 
-  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-  playbacknet->updctrl("Gain/gt/mrs_real/gain", gain);
-  playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+  while ( pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() ) {
+    pnet->tick();
+// get data from network
+		pnet->process(in,out);
 
-  while ( playbacknet->getctrl("mrs_bool/notEmpty")->toBool() ) {
-    playbacknet->tick();
+// display data
+		for (i=0; i&lt;numberObservations; i++) {
+			for (j=0; j&lt;numberSamples; j++) {
+				cout&lt;&lt;out(i)(j)&lt;&lt;" ";
+			}
+		}
+		cout&lt;&lt;endl;
   }
-  delete playbacknet;
+  delete pnet;
 }
 
 int main(int argc, const char **argv) {
   string fileName;
-  float gain;
   if (argc&lt;2) { cout&lt;&lt;"Please enter filename."&lt;&lt;endl; exit(1); } else 
     { fileName = argv[1]; }
-  if (argc&lt;3) { gain = 1; } else
-    { gain = atof(argv[2]); }
-  cout &lt;&lt; "Playing file " &lt;&lt; fileName &lt;&lt; " at volume " &lt;&lt;
-    gain &lt;&lt; endl;
+  cout &lt;&lt; "Processing file " &lt;&lt; fileName &lt;&lt; endl;
 
-  sfplay(fileName,gain);
+  recognize(fileName);
   exit(0);
 }
+
 </pre>
 
    </body></html>
