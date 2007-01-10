@@ -25,6 +25,8 @@ record: record a clip using AudioSource
 #include "MarSystemManager.h"
 #include "Accumulator.h"
 #include "MidiInput.h"
+#include "Esitar.h"
+#include "DeviBot.h"
 #include "CommandLineOptions.h"
 
 #include <string> 
@@ -36,6 +38,7 @@ using namespace Marsyas;
 int helpopt;
 int usageopt;
 int trainopt;
+mrs_natural instrumentopt;
 mrs_real lengthopt;
 mrs_real sropt;
 mrs_natural copt;
@@ -70,6 +73,7 @@ void printHelp(string progName)
     cerr << "-l --length     : record length in seconds " << endl;
     cerr << "-s --srate      : samping rate " << endl;
     cerr << "-c --channels   : number of channels to record " << endl;
+    cerr << "-i --instrument : 0: drum or 1: sitar " << endl;
     cerr << endl;
     exit(1);
 }
@@ -86,6 +90,7 @@ void initOptions()
     cmd_options.addRealOption("length", "l", 48.0);
     cmd_options.addRealOption("srate", "s", 44100.0);
     cmd_options.addNaturalOption("channels", "c", 1);
+    cmd_options.addNaturalOption("instrument", "i", 1);
 }
 
 
@@ -97,6 +102,7 @@ void loadOptions()
     sropt = cmd_options.getRealOption("srate"); 
     copt = cmd_options.getNaturalOption("channels");
     trainopt = cmd_options.getBoolOption("trainopt");
+    instrumentopt = cmd_options.getNaturalOption("instrument");
 }
 
 
@@ -348,10 +354,100 @@ void recordVirtualSensor(mrs_real length)
     //       std::cout << endl;
 }
 
+void recordVirtualThumbSensor(mrs_real length) 
+{
+    cout << "Thumb" << endl;
+    MarSystemManager mng;
+
+    MarSystem* pnet = mng.create("Series", "pnet");
+
+    //    MarSystem* srm = mng.create("SilenceRemove", "src"); 
+
+    MarSystem* recordNet = mng.create("Series", "recordNet");
+    MarSystem* asrc = mng.create("AudioSource", "asrc");
+    MarSystem* dest = mng.create("SoundFileSink", "dest");
+    Esitar* esitar = new Esitar("esitar");
+    DeviBot* devibot = new DeviBot("devibot"); 
+
+    recordNet->addMarSystem(asrc);
+    recordNet->addMarSystem(esitar);
+    recordNet->addMarSystem(devibot);
+    // srm->addMarSystem(recordNet);
+
+    // recordNet->addMarSystem(dest); 
+    recordNet->updctrl("mrs_real/israte", 44100.0); 
+    recordNet->updctrl("mrs_real/osrate", 44100.0); 
+    recordNet->linkctrl("mrs_bool/notEmpty", "AudioSource/asrc/mrs_bool/notEmpty");
+    // this buffer size is needed for the Tascam FW 1804
+    //recordNet->updctrl("AudioSource/asrc/mrs_natural/bufferSize",6144);
+    recordNet->updctrl("AudioSource/asrc/mrs_bool/initAudio", true);
+
+    pnet->addMarSystem(recordNet);
+    
+    pnet->addMarSystem(dest);
+    
+    // pnet->addMarSystem(mng.create("PlotSink", "psink"));
+    pnet->addMarSystem(mng.create("Hamming", "ham"));
+    pnet->addMarSystem(mng.create("Spectrum", "spk"));
+    pnet->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+    MarSystem* features = mng.create("Fanout", "features");
+    features->addMarSystem(mng.create("Centroid", "cntrd"));
+    features->addMarSystem(mng.create("Rolloff", "rolloff"));
+    features->addMarSystem(mng.create("MFCC", "mfcc"));
+    pnet->addMarSystem(features);
+
+    pnet->addMarSystem(mng.create("Annotator", "ann"));
+    pnet->addMarSystem(mng.create("WekaSink", "wsink"));
+
+    pnet->updctrl("WekaSink/wsink/mrs_bool/regression", true);
+    pnet->updctrl("WekaSink/wsink/mrs_bool/putHeader", true);    
+    pnet->updctrl("WekaSink/wsink/mrs_string/filename", "vsensor.arff");
+
+    pnet->updctrl("SoundFileSink/dest/mrs_real/israte", 44100.0); 
+    pnet->updctrl("SoundFileSink/dest/mrs_real/osrate", 44100.0); 
+    pnet->updctrl("SoundFileSink/dest/mrs_string/filename", "vsens.au");   
+
+    mrs_real srate = recordNet->getctrl("AudioSource/asrc/mrs_real/israte")->toReal();
+    mrs_natural inSamples = recordNet->getctrl("AudioSource/asrc/mrs_natural/inSamples")->toNatural();
+    mrs_natural iterations = (mrs_natural)((srate * length) / inSamples);
+
+    int r;
+
+    cout << *recordNet << endl; 
+    for (mrs_natural t = 0; t < iterations; t++)
+    {
+
+      if (t % 100 == 0) 
+	{
+	  pnet->setctrl("DeviBot/devibot/mrs_string/velocity", 50);
+	  pnet->setctrl("DeviBot/devibot/mrs_string/arm", "Ga");
+	  pnet->updctrl("DeviBot/devibot/mrs_bool/strike", true);
+	}
+
+
+      if (t % 100 == 50) 
+	{
+	  pnet->setctrl("DeviBot/devibot/mrs_string/velocity", 50);
+	  pnet->setctrl("DeviBot/devibot/mrs_string/arm", "Na");
+	  pnet->updctrl("DeviBot/devibot/mrs_bool/strike", true);
+	}
+      
+
+      
+        r = esitar->thumb; 
+        cout << "thumb: " << r << endl;       
+
+
+        pnet->setctrl("Annotator/ann/mrs_natural/label", r);
+        pnet->tick();
+    }
+
+}
+
 
 int main(int argc, const char **argv)
 {
-    MRSDIAG("drumExtract.cpp - main");
+    MRSDIAG("VirtualSensor.cpp - main");
 
     string progName = argv[0];  
 
@@ -385,10 +481,17 @@ int main(int argc, const char **argv)
     if (usageopt)
         printUsage(progName);
     
-    if (trainopt)
+    /*    if (trainopt)
         drumExtract(cls, classNames);
     else
+        recordVirtualThumbSensor( lengthopt );
+    */
+    cout << "INSTRUMENTO OPT"<< instrumentopt << endl;
+
+    if (instrumentopt == 0)
         recordVirtualSensor( lengthopt );
+    else if (instrumentopt == 1)
+        recordVirtualThumbSensor( lengthopt );
 
     exit(0);
 }
