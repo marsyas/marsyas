@@ -29,24 +29,25 @@ using namespace Marsyas;
 
 void Marsyas::loadlib_Real(ExRecord* st)
 {
-    st->addReserved("Real|R.cos(mrs_real)|(mrs_natural)",new ExFun_RealCos("mrs_real","Real.cos(mrs_real)"));
-    st->addReserved("Real|R.acos(mrs_real)",new ExFun_RealACos("mrs_real","Real.acos(mrs_real)"));
-    st->addReserved("Real|R.cosh(mrs_real)",new ExFun_RealCosH("mrs_real","Real.cosh(mrs_real)"));
+    st->addReserved("Real|R.cos(mrs_real)|(mrs_natural)",new ExFun_RealCos());
+    st->addReserved("Real|R.acos(mrs_real)",new ExFun_RealACos());
+    st->addReserved("Real|R.cosh(mrs_real)",new ExFun_RealCosH());
 
-    st->addReserved("Real|R.sin(mrs_real)",new ExFun_RealSin("mrs_real","Real.sin(mrs_real)"));
-    st->addReserved("Real|R.asin(mrs_real)",new ExFun_RealASin("mrs_real","Real.asin(mrs_real)"));
-    st->addReserved("Real|R.sinh(mrs_real)",new ExFun_RealSinH("mrs_real","Real.sinh(mrs_real)"));
+    st->addReserved("Real|R.sin(mrs_real)",new ExFun_RealSin());
+    st->addReserved("Real|R.asin(mrs_real)",new ExFun_RealASin());
+    st->addReserved("Real|R.sinh(mrs_real)",new ExFun_RealSinH());
 
-    st->addReserved("Real|R.tan(mrs_real)",new ExFun_RealTan("mrs_real","Real.tan(mrs_real)"));
-    st->addReserved("Real|R.atan(mrs_real)",new ExFun_RealATan("mrs_real","Real.atan(mrs_real)"));
+    st->addReserved("Real|R.tan(mrs_real)",new ExFun_RealTan());
+    st->addReserved("Real|R.atan(mrs_real)",new ExFun_RealATan());
 
-    st->addReserved("Real|R.log|ln(mrs_real)",new ExFun_RealLog("mrs_real","Real.log(mrs_real)"));
-    st->addReserved("Real|R.log2(mrs_real)",new ExFun_RealLog2("mrs_real","Real.log2(mrs_real)"));
-    st->addReserved("Real|R.log10(mrs_real)",new ExFun_RealLog10("mrs_real","Real.log10(mrs_real)"));
+    st->addReserved("Real|R.log|ln(mrs_real)",new ExFun_RealLog());
+    st->addReserved("Real|R.log2(mrs_real)",new ExFun_RealLog2());
+    st->addReserved("Real|R.log10(mrs_real)",new ExFun_RealLog10());
 
-    st->addReserved("Real|R.rand()",new ExFun_RealRand("mrs_real","Real.rand()"));
+    st->addReserved("Real|R.rand()",new ExFun_RealRand());
 
-    st->addReserved("Real|R.sqrt(mrs_real)",new ExFun_RealSqrt("mrs_real","Real.sqrt(mrs_real)"));
+    st->addReserved("Real|R.sqrt(mrs_real)",new ExFun_RealSqrt());
+    st->addReserved("Real|R.abs(mrs_real)",new ExFun_RealAbs());
 #define _PI_VAL_ 3.14159265358979323846264338327950288419716939937510
 #define _E_VAL_  2.7182818284590452353602874713526624977572470936999595749669676277240766303535
     st->addReserved("Real|R.e",(mrs_real)_E_VAL_);
@@ -58,30 +59,30 @@ void Marsyas::loadlib_Real(ExRecord* st)
 }
 void Marsyas::loadlib_Natural(ExRecord* st)
 {
-    st->addReserved("Natural|N.abs(mrs_natural)",new ExFun_NaturalAbs("mrs_real","Natural.abs(mrs_real)"));
-    st->addReserved("Natural|N.rand()",new ExFun_NaturalRand("mrs_natural","Natural.rand()"));
-    st->addReserved("Natural|N.min(mrs_natural,mrs_natural)",new ExFun_NaturalMin("mrs_natural","Natural.min(mrs_natural,mrs_natural)"));
-    st->addReserved("Natural|N.max(mrs_natural,mrs_natural)",new ExFun_NaturalMax("mrs_natural","Natural.max(mrs_natural,mrs_natural)"));
-    st->addReserved("Natural|N.srand(mrs_natural)",new ExFun_NaturalSRand("mrs_natural","Natural.srand(mrs_natural)"));
+    st->addReserved("Natural|N.abs(mrs_natural)",new ExFun_NaturalAbs());
+    st->addReserved("Natural|N.rand()",new ExFun_NaturalRand());
+    st->addReserved("Natural|N.min(mrs_natural,mrs_natural)",new ExFun_NaturalMin());
+    st->addReserved("Natural|N.max(mrs_natural,mrs_natural)",new ExFun_NaturalMax());
+    st->addReserved("Natural|N.srand(mrs_natural)",new ExFun_NaturalSRand());
     st->addReserved("Natural|N.randmax",(mrs_natural)RAND_MAX);
 }
 void Marsyas::loadlib_String(ExRecord* st)
 {
-    st->addReserved("String|S.len(mrs_string)",new ExFun_StrLen("mrs_natural","String.len(mrs_string)"));
-    st->addReserved("String|S.sub(mrs_string,mrs_natural,mrs_natural)",new ExFun_StrSub("mrs_string","String.sub(mrs_string,mrs_natural,mrs_natural)"));
+    st->addReserved("String|S.len(mrs_string)",new ExFun_StrLen());
+    st->addReserved("String|S.sub(mrs_string,mrs_natural,mrs_natural)",new ExFun_StrSub());
 }
 void Marsyas::loadlib_Stream(ExRecord* st)
 {
 //    st->addReserved("Stream.op",new ExFun_StreamOutString("_fun","Stream.op")); // for lookup
-    st->addReserved("Stream.op(mrs_string)",new ExFun_StreamOutString("mrs_string","Stream.op(mrs_string)"));
-    st->addReserved("Stream.op(mrs_real)",new ExFun_StreamOutReal("mrs_real","Stream.op(mrs_real)"));
-    st->addReserved("Stream.op(mrs_natural)",new ExFun_StreamOutNatural("mrs_natural","Stream.op(mrs_natural)"));
-    st->addReserved("Stream.op(mrs_bool)",new ExFun_StreamOutBool("mrs_bool","Stream.op(mrs_bool)"));
+    st->addReserved("Stream.op(mrs_string)",new ExFun_StreamOutString());
+    st->addReserved("Stream.op(mrs_real)",new ExFun_StreamOutReal());
+    st->addReserved("Stream.op(mrs_natural)",new ExFun_StreamOutNatural());
+    st->addReserved("Stream.op(mrs_bool)",new ExFun_StreamOutBool());
 
-    st->addReserved("Stream.opn(mrs_string)",new ExFun_StreamOutNString("mrs_string","Stream.opn(mrs_string)"));
-    st->addReserved("Stream.opn(mrs_real)",new ExFun_StreamOutNReal("mrs_real","Stream.opn(mrs_real)"));
-    st->addReserved("Stream.opn(mrs_natural)",new ExFun_StreamOutNNatural("mrs_natural","Stream.opn(mrs_natural)"));
-    st->addReserved("Stream.opn(mrs_bool)",new ExFun_StreamOutNBool("mrs_bool","Stream.opn(mrs_bool)"));
+    st->addReserved("Stream.opn(mrs_string)",new ExFun_StreamOutNString());
+    st->addReserved("Stream.opn(mrs_real)",new ExFun_StreamOutNReal());
+    st->addReserved("Stream.opn(mrs_natural)",new ExFun_StreamOutNNatural());
+    st->addReserved("Stream.opn(mrs_bool)",new ExFun_StreamOutNBool());
 }
 void Marsyas::load_symbols(ExRecord* st)
 {
@@ -93,15 +94,15 @@ void Marsyas::load_symbols(ExRecord* st)
 void Marsyas::loadlib_timer(ExRecord* st, TmTimer** tmr)
 {
     st->addReserved("Timer|Tmr.cur",(TmTimer**)tmr,"Timer.cur",T_VAR);
-    st->addReserved("Timer|Tmr.prefix(mrs_timer)",new ExFun_TimerGetPrefix("mrs_string","Timer.prefix(mrs_timer)"));
-    st->addReserved("Timer|Tmr.name(mrs_timer)",new ExFun_TimerGetName("mrs_string","Timer.name(mrs_timer)"));
-    st->addReserved("Timer|Tmr.type(mrs_timer)",new ExFun_TimerGetType("mrs_string","Timer.type(mrs_timer)"));
-    st->addReserved("Timer|Tmr.time(mrs_timer)",new ExFun_TimerGetTime("mrs_natural","Timer.time(mrs_timer)"));
-    st->addReserved("Timer|Tmr.upd(mrs_timer,mrs_string,mrs_real)",new ExFun_TimerUpdReal("mrs_bool","Timer.upd(mrs_timer,mrs_string,mrs_real)"));
-    st->addReserved("Timer|Tmr.upd(mrs_timer,mrs_string,mrs_natural)",new ExFun_TimerUpdNatural("mrs_bool","Timer.upd(mrs_timer,mrs_string,mrs_natural)"));
-    st->addReserved("Timer|Tmr.upd(mrs_timer,mrs_string,mrs_string)",new ExFun_TimerUpdString("mrs_bool","Timer.upd(mrs_timer,mrs_string,mrs_string)"));
-    st->addReserved("Timer|Tmr.upd(mrs_timer,mrs_string,mrs_bool)",new ExFun_TimerUpdBool("mrs_bool","Timer.upd(mrs_timer,mrs_string,mrs_bool)"));
-    st->addReserved("Timer|Tmr.ival(mrs_timer,mrs_string)",new ExFun_TimerIntrvlSize("mrs_natural","Timer.ival(mrs_timer,mrs_string)"));
+    st->addReserved("Timer|Tmr.prefix(mrs_timer)",new ExFun_TimerGetPrefix());
+    st->addReserved("Timer|Tmr.name(mrs_timer)",new ExFun_TimerGetName());
+    st->addReserved("Timer|Tmr.type(mrs_timer)",new ExFun_TimerGetType());
+    st->addReserved("Timer|Tmr.time(mrs_timer)",new ExFun_TimerGetTime());
+    st->addReserved("Timer|Tmr.upd(mrs_timer,mrs_string,mrs_real)",new ExFun_TimerUpdReal());
+    st->addReserved("Timer|Tmr.upd(mrs_timer,mrs_string,mrs_natural)",new ExFun_TimerUpdNatural());
+    st->addReserved("Timer|Tmr.upd(mrs_timer,mrs_string,mrs_string)",new ExFun_TimerUpdString());
+    st->addReserved("Timer|Tmr.upd(mrs_timer,mrs_string,mrs_bool)",new ExFun_TimerUpdBool());
+    st->addReserved("Timer|Tmr.ival(mrs_timer,mrs_string)",new ExFun_TimerIntrvlSize());
 }
 
 ExNode::ExNode()
