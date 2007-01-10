@@ -264,8 +264,7 @@ void recognize(string sfName) {
 // display data
 		for (i=0; i<numberObservations; i++) {
 			for (j=0; j<numberSamples; j++) {
-// how do we iterate through samples (j) ?
-				cout<<out(i)<<" ";
+				cout<<out(i,j)<<" ";
 			}
 		}
 		cout<<endl;
