@@ -21,8 +21,8 @@
     \brief Update midi inpput using controls. Just through for dataflow. 
 */
 
-#ifndef MARSYAS_MIDIINPUT_H
-#define MARSYAS_MIDIINPUT_H
+#ifndef MARSYAS_ESITAR_H
+#define MARSYAS_ESITAR_H
 
 #include "MarSystem.h"	
 
