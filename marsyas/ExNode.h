@@ -237,11 +237,11 @@ class ExFun_##_NM : public ExFun { public: \
     ExFun* copy() { return new ExFun_##_NM (getType(),getSignature()); } \
 };
 
-#define LibExFun1(_NM,_FUN,_T1) \
+#define LibExFun1(_NM,_FUN,_T1,t,r) \
 class ExFun_##_NM : public ExFun { public: \
-    ExFun_##_NM(std::string t, std::string r) : ExFun(t,r,true) { } \
+    ExFun_##_NM() : ExFun(t,r,true) { } \
     virtual ExVal calc() { return _FUN((params[0]->eval())._T1); } \
-    ExFun* copy() { return new ExFun_##_NM (getType(),getSignature()); } \
+    ExFun* copy() { return new ExFun_##_NM (); } \
 };
 #define LibExFun2(_NM,_FUN,_T1,_T2) \
 class ExFun_##_NM : public ExFun { public: \
@@ -251,75 +251,75 @@ class ExFun_##_NM : public ExFun { public: \
 };
 /*** Natural Library *********************************************************/
 class ExFun_NaturalMin : public ExFun { public:
-    ExFun_NaturalMin(std::string t, std::string r) : ExFun(t,r,true) { }
+    ExFun_NaturalMin() : ExFun("mrs_natural","Natural.min(mrs_natural,mrs_natural)",true) { }
     virtual ExVal calc() {
         mrs_natural n1=(params[0]->eval()).toNatural();
         mrs_natural n2=(params[1]->eval()).toNatural();
         return (n2<n1) ? n2 : n1;
     }
-    ExFun* copy() { return new ExFun_NaturalMin(getType(),getSignature()); }
+    ExFun* copy() { return new ExFun_NaturalMin(); }
 };
 class ExFun_NaturalMax : public ExFun { public:
-    ExFun_NaturalMax(std::string t, std::string r) : ExFun(t,r,true) { }
+    ExFun_NaturalMax() : ExFun("mrs_natural","Natural.max(mrs_natural,mrs_natural)",true) { }
     virtual ExVal calc() {
         mrs_natural n1=(params[0]->eval()).toNatural();
         mrs_natural n2=(params[1]->eval()).toNatural();
         return (n2>n1) ? n2 : n1;
     }
-    ExFun* copy() { return new ExFun_NaturalMax(getType(),getSignature()); }
+    ExFun* copy() { return new ExFun_NaturalMax(); }
 };
 class ExFun_NaturalRand : public ExFun { public:
-    ExFun_NaturalRand(std::string t, std::string r) : ExFun(t,r,true) { }
+    ExFun_NaturalRand() : ExFun("mrs_natural","Natural.rand()",true) { }
     virtual ExVal calc() { return (mrs_natural)rand(); }
-    ExFun* copy() { return new ExFun_NaturalRand(getType(),getSignature()); }
+    ExFun* copy() { return new ExFun_NaturalRand(); }
 };
 class ExFun_NaturalSRand : public ExFun { public:
-    ExFun_NaturalSRand(std::string t, std::string r) : ExFun(t,r,true) { }
+    ExFun_NaturalSRand() : ExFun("mrs_natural","Natural.srand(mrs_natural)",true) { }
     virtual ExVal calc() { return (mrs_natural)0; }
-    ExFun* copy() { return new ExFun_NaturalSRand(getType(),getSignature()); }
+    ExFun* copy() { return new ExFun_NaturalSRand(); }
 };
 class ExFun_NaturalAbs : public ExFun { public:
-    ExFun_NaturalAbs(std::string t, std::string r) : ExFun(t,r,true) { }
+    ExFun_NaturalAbs() : ExFun("mrs_real","Natural.abs(mrs_real)",true) { }
     virtual ExVal calc() { mrs_natural d = (params[0]->eval()).toNatural(); return (d<0) ? -d : d; }
-    ExFun* copy() { return new ExFun_NaturalAbs(getType(),getSignature()); }
+    ExFun* copy() { return new ExFun_NaturalAbs(); }
 };
 /*** Real Library ************************************************************/
-LibExFun1(RealCos,cos,toReal());
-LibExFun1(RealSqrt,sqrt,toReal());
-LibExFun1(RealSin,sin,toReal());
-LibExFun1(RealACos,acos,toReal());
-LibExFun1(RealASin,asin,toReal());
-LibExFun1(RealATan,atan,toReal());
-LibExFun1(RealCosH,cosh,toReal());
-LibExFun1(RealSinH,sinh,toReal());
-LibExFun1(RealTan,tan,toReal());
-LibExFun1(RealLog,log,toReal());
-LibExFun1(RealLog10,log10,toReal());
+LibExFun1(RealCos,cos,toReal(),"mrs_real","Real.cos(mrs_real)");
+LibExFun1(RealSqrt,sqrt,toReal(),"mrs_real","Real.sqrt(mrs_real)");
+LibExFun1(RealSin,sin,toReal(),"mrs_real","Real.sin(mrs_real)");
+LibExFun1(RealACos,acos,toReal(),"mrs_real","Real.acos(mrs_real)");
+LibExFun1(RealASin,asin,toReal(),"mrs_real","Real.asin(mrs_real)");
+LibExFun1(RealATan,atan,toReal(),"mrs_real","Real.atan(mrs_real)");
+LibExFun1(RealCosH,cosh,toReal(),"mrs_real","Real.cosh(mrs_real)");
+LibExFun1(RealSinH,sinh,toReal(),"mrs_real","Real.sinh(mrs_real)");
+LibExFun1(RealTan,tan,toReal(),"mrs_real","Real.tan(mrs_real)");
+LibExFun1(RealLog,log,toReal(),"mrs_real","Real.log(mrs_real)");
+LibExFun1(RealLog10,log10,toReal(),"mrs_real","Real.log10(mrs_real)");
 
 class ExFun_RealAbs : public ExFun { public:
-    ExFun_RealAbs(std::string t, std::string r) : ExFun(t,r,true) { }
+    ExFun_RealAbs() : ExFun("mrs_real","Real.abs(mrs_real)",true) { }
     virtual ExVal calc() { mrs_real d = (params[0]->eval()).toReal(); return (d<0.0) ? -d : d; }
-    ExFun* copy() { return new ExFun_RealAbs(getType(),getSignature()); }
+    ExFun* copy() { return new ExFun_RealAbs(); }
 };
 class ExFun_RealLog2 : public ExFun { public:
-    ExFun_RealLog2(std::string t, std::string r) : ExFun(t,r,true) { }
+    ExFun_RealLog2() : ExFun("mrs_real","Real.log2(mrs_real)",true) { }
     virtual ExVal calc() { return log10((params[0]->eval()).toReal())/log10(2.0); }
-    ExFun* copy() { return new ExFun_RealLog2(getType(),getSignature()); }
+    ExFun* copy() { return new ExFun_RealLog2(); }
 };
 class ExFun_RealRand : public ExFun { public:
-    ExFun_RealRand(std::string t, std::string r) : ExFun(t,"mrs_real",false) { }
+    ExFun_RealRand() : ExFun("mrs_real","Real.rand()",false) { }
     virtual ExVal calc() { return ((mrs_real)rand())/((mrs_real)RAND_MAX); }
-    ExFun* copy() { return new ExFun_RealRand(getType(),getSignature()); }
+    ExFun* copy() { return new ExFun_RealRand(); }
 };
 
 /*** String Library **********************************************************/
 class ExFun_StrLen : public ExFun { public:
-    ExFun_StrLen(std::string t, std::string r) : ExFun(t,r,true) { }
+    ExFun_StrLen() : ExFun("mrs_natural","String.len(mrs_string)",true) { }
     virtual ExVal calc() { return (mrs_natural)((params[0]->eval()).toString()).length(); }
-    ExFun* copy() { return new ExFun_StrLen(getType(),getSignature()); }
+    ExFun* copy() { return new ExFun_StrLen(); }
 };
 class ExFun_StrSub : public ExFun { public:
-    ExFun_StrSub(std::string t, std::string n) : ExFun(t,n,true) { }
+    ExFun_StrSub() : ExFun("mrs_string","String.sub(mrs_string,mrs_natural,mrs_natural)",true) { }
     virtual ExVal calc() {
         std::string str = params[0]->eval().toString();
         mrs_natural s = params[1]->eval().toNatural();
@@ -328,73 +328,74 @@ class ExFun_StrSub : public ExFun { public:
         if (e>((mrs_natural)str.length()-s)) { e=(mrs_natural)str.length()-s; }
         return str.substr(s,e);
     }
-    ExFun* copy() { return new ExFun_StrSub(getType(),getSignature()); }
+    ExFun* copy() { return new ExFun_StrSub(); }
 };
 /*** Stream Library **********************************************************/
-#define ExFun_StreamOutType(_TYPE,_CONVERSION,_METHOD) \
+#define ExFun_StreamOutType(_TYPE,_CONVERSION,_METHOD,t,n) \
 class ExFun_StreamOut##_TYPE : public ExFun { public: \
-    ExFun_StreamOut##_TYPE(std::string t, std::string n) : ExFun(t,n,false) { } \
+    ExFun_StreamOut##_TYPE() : ExFun(t,n,false) { } \
     virtual ExVal calc() { ExVal x = params[0]->eval(); std::cout << _CONVERSION(x._METHOD()); return x; } \
-    ExFun* copy() { return new ExFun_StreamOut##_TYPE(getType(),getSignature()); } \
+    ExFun* copy() { return new ExFun_StreamOut##_TYPE(); } \
 };
-ExFun_StreamOutType(String, ,toString);
-ExFun_StreamOutType(Real,dtos,toReal);
-ExFun_StreamOutType(Natural,ltos,toNatural);
-ExFun_StreamOutType(Bool,btos,toBool);
+ExFun_StreamOutType(String, ,toString,"mrs_string","Stream.op(mrs_string)");
+ExFun_StreamOutType(Real,dtos,toReal,"mrs_real","Stream.op(mrs_real)");
+ExFun_StreamOutType(Natural,ltos,toNatural,"mrs_natural","Stream.op(mrs_natural)");
+ExFun_StreamOutType(Bool,btos,toBool,"mrs_bool","Stream.op(mrs_bool)");
 
-#define ExFun_StreamOutNType(_TYPE,_CONVERSION,_METHOD) \
+#define ExFun_StreamOutNType(_TYPE,_CONVERSION,_METHOD,t,n) \
 class ExFun_StreamOutN##_TYPE : public ExFun { public: \
-    ExFun_StreamOutN##_TYPE(std::string t, std::string n) : ExFun(t,n,false) { } \
+    ExFun_StreamOutN##_TYPE() : ExFun(t,n,false) { } \
     virtual ExVal calc() { ExVal x = params[0]->eval(); std::cout << _CONVERSION(x._METHOD()) << std::endl; return x; } \
-    ExFun* copy() { return new ExFun_StreamOutN##_TYPE(getType(),getSignature()); } \
+    ExFun* copy() { return new ExFun_StreamOutN##_TYPE(); } \
 };
-ExFun_StreamOutNType(String, ,toString);
-ExFun_StreamOutNType(Real,dtos,toReal);
-ExFun_StreamOutNType(Natural,ltos,toNatural);
-ExFun_StreamOutNType(Bool,btos,toBool);
+ExFun_StreamOutNType(String, ,toString,"mrs_string","Stream.opn(mrs_string)");
+ExFun_StreamOutNType(Real,dtos,toReal,"mrs_real","Stream.opn(mrs_real)");
+ExFun_StreamOutNType(Natural,ltos,toNatural,"mrs_natural","Stream.opn(mrs_natural)");
+ExFun_StreamOutNType(Bool,btos,toBool,"mrs_bool","Stream.opn(mrs_bool)");
 /*** Timer Library ***********************************************************/
-#define TIMER_GET(_NM,_ZERO,_METHOD) \
+#define TIMER_GET(_NM,_ZERO,_METHOD,t,n) \
 class ExFun_TimerGet##_NM : public ExFun { \
     ExFun* child; public: \
-    ExFun_TimerGet##_NM(std::string t, std::string n) : ExFun(t,n,false) {} \
-    virtual ExVal calc() { TmTimer** t=params[0]->eval().toTimer(); return (t==NULL||*t==NULL) ? _ZERO : (*t)->_METHOD; } \
-    ExFun* copy() { return new ExFun_TimerGet##_NM(getType(),getSignature()); } \
+    ExFun_TimerGet##_NM() : ExFun(t,n,false) {} \
+    virtual ExVal calc() { TmTimer** x=params[0]->eval().toTimer(); return (x==NULL||*x==NULL) ? _ZERO : (*x)->_METHOD; } \
+    ExFun* copy() { return new ExFun_TimerGet##_NM(); } \
 };
-TIMER_GET(Prefix,"",getPrefix());
-TIMER_GET(Name,"",getName());
-TIMER_GET(Type,"",getType());
-TIMER_GET(Time,0,getTime());
-
+TIMER_GET(Prefix,"",getPrefix(),"mrs_string","Timer.prefix(mrs_timer)");
+TIMER_GET(Name,"",getName(),"mrs_string","Timer.name(mrs_timer)");
+TIMER_GET(Type,"",getType(),"mrs_string","Timer.type(mrs_timer)");
+TIMER_GET(Time,0,getTime(),"mrs_natural","Timer.time(mrs_timer)");
+/*
 class ExFun_TimerGetTimer : public ExFun {
     TmTimer** tmr; public:
-    ExFun_TimerGetTimer(std::string t, std::string n, TmTimer** tm) : ExFun(t,n,false) { tmr=tm; }
+    ExFun_TimerGetTimer(TmTimer** tm) : ExFun(t,n,false) { tmr=tm; }
     virtual ExVal calc() { return tmr; }
-    ExFun* copy() { return new ExFun_TimerGetTimer(getType(),getSignature(),tmr); }
+    ExFun* copy() { return new ExFun_TimerGetTimer(tmr); }
 };
+*/
 class ExFun_TimerIntrvlSize : public ExFun { public:
-    ExFun_TimerIntrvlSize(std::string t, std::string n) : ExFun(t,n,false) {}
+    ExFun_TimerIntrvlSize() : ExFun("mrs_natural","Timer.ival(mrs_timer,mrs_string)",false) {}
     virtual ExVal calc() {
-        TmTimer** t=params[0]->eval().toTimer();
+        TmTimer** x=params[0]->eval().toTimer();
         std::string ts=params[1]->eval().toString();
-        return (t==NULL||*t==NULL) ? 0 : (*t)->intervalsize(ts);
+        return (x==NULL||*x==NULL) ? 0 : (*x)->intervalsize(ts);
     }
-    ExFun* copy() { return new ExFun_TimerIntrvlSize(getType(),getSignature()); }
+    ExFun* copy() { return new ExFun_TimerIntrvlSize(); }
 };
-#define TIMER_UPD(_NM,_ZERO,_METHOD) \
+#define TIMER_UPD(_NM,_ZERO,_METHOD,t,n) \
 class ExFun_TimerUpd##_NM : public ExFun { public: \
-    ExFun_TimerUpd##_NM(std::string t, std::string n) : ExFun(t,n,false) {} \
+    ExFun_TimerUpd##_NM() : ExFun(t,n,false) {} \
     virtual ExVal calc() { \
-        TmTimer** t=params[0]->eval().toTimer(); \
+        TmTimer** x=params[0]->eval().toTimer(); \
         ExVal s=params[1]->eval(); \
         ExVal v=params[2]->eval(); \
-        if (t==NULL||*t==NULL) { (*t)->updtimer(s.toString(),v._METHOD); return true; } return false; \
+        if (x==NULL||*x==NULL) { (*x)->updtimer(s.toString(),v._METHOD); return true; } return false; \
     } \
-    ExFun* copy() { return new ExFun_TimerUpd##_NM(getType(),getSignature()); } \
+    ExFun* copy() { return new ExFun_TimerUpd##_NM(); } \
 };
-TIMER_UPD(Real,0.0,toReal());
-TIMER_UPD(Natural,0,toNatural());
-TIMER_UPD(String,"",toString());
-TIMER_UPD(Bool,false,toBool());
+TIMER_UPD(Real,0.0,toReal(),"mrs_bool","Timer.upd(mrs_timer,mrs_string,mrs_real)");
+TIMER_UPD(Natural,0,toNatural(),"mrs_bool","Timer.upd(mrs_timer,mrs_string,mrs_natural)");
+TIMER_UPD(String,"",toString(),"mrs_bool","Timer.upd(mrs_timer,mrs_string,mrs_string)");
+TIMER_UPD(Bool,false,toBool(),"mrs_bool","Timer.upd(mrs_timer,mrs_string,mrs_bool)");
 /*** Done ********************************************************************/
 
 }//namespace Marsyas
