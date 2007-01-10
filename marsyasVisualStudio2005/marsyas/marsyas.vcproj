@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="marsyas"
 	ProjectGUID="{7ABC801D-6288-47B6-853B-A07F93404686}"
 	RootNamespace="marsyas"
@@ -400,7 +400,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\marsyas\EvExpUpd.cpp"
+				RelativePath="..\..\marsyas\EvExpr.cpp"
 				>
 			</File>
 			<File
@@ -408,7 +408,27 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\marsyas\Expression.cpp"
+				RelativePath="..\..\marsyas\ExNode.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\ExParser.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\Expr.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\ExScanner.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\ExSymTbl.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\ExVal.cpp"
 				>
 			</File>
 			<File
@@ -1070,7 +1090,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\marsyas\EvExpUpd.h"
+				RelativePath="..\..\marsyas\EvExpr.h"
 				>
 			</File>
 			<File
@@ -1082,7 +1102,31 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\marsyas\Expression.h"
+				RelativePath="..\..\marsyas\ExCommon.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\ExNode.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\ExParser.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\Expr.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\ExScanner.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\ExSymTbl.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\ExVal.h"
 				>
 			</File>
 			<File
