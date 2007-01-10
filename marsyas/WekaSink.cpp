@@ -217,6 +217,7 @@ WekaSink::myProcess(realvec& in, realvec& out)
 			else
 			{
 				(*mos_) << in(inObservations_-1, t);
+				(*mos_) << endl;
 			}
 		}
 	}
