@@ -34,6 +34,8 @@
 #include "VScheduler.h"
 #include "TmTimer.h"
 
+#include <fstream>
+
 using namespace std;
 using namespace Marsyas;
 
@@ -85,6 +87,18 @@ Expr::Expr(MarSystem* msym, Ex e, Rp r)
     e.parse(this,&init_expr_,&expr_);
     r.parse(this,&init_rept_,&rept_);
 }
+Expr::Expr(MarSystem* msym, ExFile ef)
+{
+    Ex e=ef.getEx();
+    Rp r=ef.getRp();
+    marsym_=msym;
+    timer_=NULL;
+    vsched_=NULL;
+    symbol_table_=new ExRecord();
+    symbol_table_->inc_ref();
+    e.parse(this,&init_expr_,&expr_);
+    r.parse(this,&init_rept_,&rept_);
+}
 Expr::~Expr()
 {
     symbol_table_->deref();
@@ -114,4 +128,66 @@ void Expr::post()
     if (init_expr_) init_expr_->eval();
     if (init_rept_) init_rept_->eval();
 }
+void ExFile::read(std::string fname)
+{
+    std::ifstream from(fname.c_str());
+    if (!from) { MRSWARN("ExFile::read  Cannot open file: "+fname); return; }
+    std::string data;
+    char buffer[256];
+    // flags correspond to the 5 possible blocks, no block can be declared more than once
+    bool flags[5] = { false };
+    int pos=-1;
+    std::string line;
+    while (from.getline(buffer,256)) {
+        if (buffer[0]=='#') {
+            if (buffer[1]=='E'&&buffer[2]=='x') { // #ExInit: | #ExExpr:
+                if (buffer[3]=='I'&&buffer[4]=='n'&&buffer[5]=='i'&&buffer[6]=='t'&&buffer[7]==':') {
+                    store(pos,data); data=""; pos=1;
+                    if (flags[pos]) { MRSWARN("ExFile::read  Double declaration of #ExInit: block"); }
+                }
+                else if (buffer[3]=='E'&&buffer[4]=='x'&&buffer[5]=='p'&&buffer[6]=='r'&&buffer[7]==':') {
+                    store(pos,data); data=""; pos=2;
+                    if (flags[pos]) { MRSWARN("ExFile::read  Double declaration of #ExExpr: block"); }
+                }
+            }
+            else if (buffer[1]=='R'&&buffer[2]=='p') {
+                if (buffer[3]=='I'&&buffer[4]=='n'&&buffer[5]=='i'&&buffer[6]=='t'&&buffer[7]==':') {
+                    // #RpInit:
+                    store(pos,data); data=""; pos=3;
+                    if (flags[pos]) { MRSWARN("ExFile::read  Double declaration of #RpInit: block"); }
+                }
+                else if (buffer[3]=='E'&&buffer[4]=='x'&&buffer[5]=='p'&&buffer[6]=='r'&&buffer[7]==':') {
+                    // #RpExpr:
+                    store(pos,data); data=""; pos=4;
+                    if (flags[pos]) { MRSWARN("ExFile::read  Double declaration of #RpExpr: block"); }
+                }
+                else if (buffer[3]=='R'&&buffer[4]=='a'&&buffer[5]=='t'&&buffer[6]=='e'&&buffer[7]==':') {
+                    // #RpRate:
+                    store(pos,data); data=""; pos=5;
+                    if (flags[pos]) { MRSWARN("ExFile::read  Double declaration of #RpRate: block"); }
+                }
+            }
+            else {
+                MRSWARN("ExFile::read  Unknown macro #");
+            }
+            flags[pos]=true;
+        }
+        else { data=data+buffer; }
+    }
+    if (!data.empty()) { store(pos,data); }
+    from.close();
+    file_read_=true;
+}
+void ExFile::store(int pos, std::string data)
+{
+    switch(pos) {
+    case 1: iex_=data; break;
+    case 2: ex_=data; break;
+    case 3: irp_=data; break;
+    case 4: rp_=data; break;
+    case 5: rr_=data; break;
+    }
+}
+
+
 

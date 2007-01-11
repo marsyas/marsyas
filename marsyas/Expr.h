@@ -54,6 +54,27 @@ public:
     Rp(std::string e) : Ex(e) {};
     Rp(std::string i, std::string e) : Ex(i,e) {};
 };
+/**
+   \class ExFile
+   \brief Convenience class for placing Ex and Rp expressions in a separate file
+          to be read at parse time. Expressions are separated by declaring block
+          headers:
+            #ExInit:
+            #ExExpr:
+            #RpInit:
+            #RpExpr:
+            #RpRate:
+*/
+class ExFile {
+    std::string iex_, ex_, irp_, rp_, rr_;
+    bool file_read_;
+    void read(std::string fname);
+    void store(int pos, std::string data);
+public:
+    ExFile(std::string n) { file_read_=false; read(n); }
+    Ex getEx() { return Ex(iex_,ex_); }
+    Rp getRp() { return Rp(irp_,rp_); }
+};
 
 /**
    \class Expr
@@ -78,6 +99,7 @@ public:
     Expr();
     Expr(MarSystem* msym, Ex e); // repeat_ evaluates to false
     Expr(MarSystem* msym, Ex e, Rp r);
+    Expr(MarSystem* msym, ExFile e);
 
     virtual ~Expr();
 

@@ -39,6 +39,10 @@ EvExpr::EvExpr(MarSystem* target, Ex e, Rp r, std::string nm) : MarEvent("EvExpr
 {
     expr_=new Expr(target,e,r);
 }
+EvExpr::EvExpr(MarSystem* target, ExFile ef, std::string nm) : MarEvent("EvExpr",nm)
+{
+    expr_=new Expr(target,ef);
+}
 EvExpr::~EvExpr()
 {
     delete expr_;
@@ -51,6 +55,11 @@ EvExpr* EvExpr::clone()
 {
     return new EvExpr(*this);
 }
+bool EvExpr::repeat()
+{
+    return expr_->repeat();
+}
+
 void EvExpr::updctrl(std::string cname, TmControlValue value)
 {
     MRSWARN("EvExpr:updctrl(string,TmControlValue)  updctrl not supported");

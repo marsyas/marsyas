@@ -50,6 +50,7 @@ protected:
 public:
     EvExpr(MarSystem* target, std::string e, std::string nm="Expr");
     EvExpr(MarSystem* target, Ex e, Rp r, std::string nm="Expr");
+    EvExpr(MarSystem* target, ExFile ef, std::string nm="Expr");
     virtual ~EvExpr();
 
     // Event dispatch
@@ -58,6 +59,10 @@ public:
 
     virtual EvExpr* clone();
     Expr* getExpression() { return expr_; }
+
+    virtual bool repeat();
+    virtual std::string repeat_interval() { return repeat_.interval; };
+    virtual void set_repeat(Repeat r) { repeat_=r; }
 
     // the usual stream IO
     friend std::ostream& operator<<(std::ostream&, MarEvent&);
