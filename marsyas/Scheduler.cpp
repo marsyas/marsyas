@@ -101,7 +101,7 @@ void Scheduler::tick() { timer->tick(); }
 
 bool Scheduler::eventPending()
 {
-    return (!pq.empty() && pq.top()->getTime()<=timer->getTime());
+    return (!pq.empty() && pq.top()->getTime()<timer->getTime());
 }
 
 void Scheduler::dispatch()

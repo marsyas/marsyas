@@ -129,6 +129,9 @@ in sequence.
 #include "LSP.h"
 #include "SOM.h"
 
+#include "MidiOutput.h"
+
+
 #ifndef WIN32 
 #include "NetworkTCPSink.h"
 #include "NetworkTCPSource.h"
@@ -260,6 +263,8 @@ MarSystemManager::MarSystemManager()
 
 	registerPrototype("SOM", new SOM("sompr"));
 
+	registerPrototype("MidiOutput", new MidiOutput("midioutpr"));
+
 #ifndef WIN32
 	registerPrototype("NetworkTCPSink", new NetworkTCPSink("tcpsink"));
 	registerPrototype("NetworkTCPSource", new NetworkTCPSource("tcpsource"));
@@ -277,6 +282,18 @@ MarSystemManager::MarSystemManager()
 	//////////////////////////////////////////////////////////////////////////
 	// Composite MarSystem prototypes
 	//////////////////////////////////////////////////////////////////////////
+
+
+	// Making a prototype for a specific MidiOutput device 
+
+	MarSystem* devibotpr = new MidiOutput("devibotpr");
+
+	devibotpr->linkctrl("mrs_natural/arm", "mrs_natural/byte2");
+	devibotpr->linkctrl("mrs_natural/velocity", "mrs_natural/byte3");
+	devibotpr->linkctrl("mrs_bool/strike", "mrs_bool/sendMessage");
+	devibotpr->updctrl("mrs_natural/byte1", 144);
+	registerPrototype("DeviBot", devibotpr);
+
 
 	// texture window analysis composite prototype
 	MarSystem* textureStatspr = new Series("tstatspr");

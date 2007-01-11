@@ -26,8 +26,9 @@ record: record a clip using AudioSource
 #include "Accumulator.h"
 #include "MidiInput.h"
 #include "Esitar.h"
-#include "DeviBot.h"
+#include "MidiOutput.h"
 #include "CommandLineOptions.h"
+#include "mididevices.h"
 
 #include <string> 
 #include <iostream>
@@ -367,7 +368,7 @@ void recordVirtualThumbSensor(mrs_real length)
     MarSystem* asrc = mng.create("AudioSource", "asrc");
     MarSystem* dest = mng.create("SoundFileSink", "dest");
     Esitar* esitar = new Esitar("esitar");
-    DeviBot* devibot = new DeviBot("devibot"); 
+    MarSystem* devibot = mng.create("DeviBot", "devibot");
 
     recordNet->addMarSystem(asrc);
     recordNet->addMarSystem(esitar);
@@ -414,22 +415,25 @@ void recordVirtualThumbSensor(mrs_real length)
     int r;
 
     cout << *recordNet << endl; 
+
+    
     for (mrs_natural t = 0; t < iterations; t++)
     {
 
       if (t % 100 == 0) 
 	{
-	  pnet->setctrl("DeviBot/devibot/mrs_string/velocity", 50);
-	  pnet->setctrl("DeviBot/devibot/mrs_string/arm", "Ga");
+	  pnet->updctrl("DeviBot/devibot/mrs_natural/arm", DEVIBOT_GE);
+	  pnet->updctrl("DeviBot/devibot/mrs_natural/velocity", 50);
 	  pnet->updctrl("DeviBot/devibot/mrs_bool/strike", true);
 	}
 
 
       if (t % 100 == 50) 
 	{
-	  pnet->setctrl("DeviBot/devibot/mrs_string/velocity", 50);
-	  pnet->setctrl("DeviBot/devibot/mrs_string/arm", "Na");
+	  pnet->updctrl("DeviBot/devibot/mrs_natural/arm", DEVIBOT_NA);
+	  pnet->updctrl("DeviBot/devibot/mrs_natural/velocity", 50);
 	  pnet->updctrl("DeviBot/devibot/mrs_bool/strike", true);
+	  
 	}
       
 
