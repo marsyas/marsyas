@@ -957,13 +957,13 @@ tempo_bcWavelet(string sfName, string resName)
 
   if (srate == 22050.0) 
     {
-      sdname = "../rawwaves/sd22k.wav";
-      bdname = "../rawwaves/bd22k.wav";
+      sdname = "./sd22k.wav";
+      bdname = ".,/bd22k.wav";
     }
   else 				// assume everything is either 22k or 44.1k 
     {
-      sdname = "../rawwaves/sd.wav";
-      bdname = "../rawwaves/bd.wav";
+      sdname = "./sd.wav";
+      bdname = "./bd.wav";
     }
 
   
@@ -1233,6 +1233,7 @@ tempo_bcFilter(string sfName, string resName)
   playback->addMarSystem(mix);
   playback->addMarSystem(mng.create("Sum", "sum"));
   playback->addMarSystem(mng.create("SoundFileSink", "adest"));
+  playback->addMarSystem(mng.create("AudioSink", "dest"));
   cout << "SOUNDFILESINK srate = " << srate << endl;
 
 
@@ -1246,13 +1247,13 @@ tempo_bcFilter(string sfName, string resName)
 
   if (srate == 22050.0) 
     {
-      sdname = "../rawwaves/sd22k.wav";
-      bdname = "../rawwaves/bd22k.wav";
+      sdname = "./sd22k.wav";
+      bdname = "./bd22k.wav";
     }
   else 				// assume everything is either 22k or 44.1k 
     {
-      sdname = "../rawwaves/sd.wav";
-      bdname = "../rawwaves/bd.wav";
+      sdname = "./sd.wav";
+      bdname = "./bd.wav";
     }
 
   
@@ -1264,11 +1265,15 @@ tempo_bcFilter(string sfName, string resName)
 
   playback->updctrl("SoundFileSink/adest/mrs_real/israte", srate);
   playback->updctrl("SoundFileSink/adest/mrs_string/filename", "boomchick.wav");
-
   
+  playback->updctrl("Fanout/mix/SoundFileSource/bdsrc/mrs_string/filename", bdname);
+  playback->updctrl("Fanout/mix/SoundFileSource/bdsrc/mrs_natural/pos", 0);
+
+
+  playback->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
   while(playback->getctrl("Fanout/mix/SoundFileSource/orsrc/mrs_bool/notEmpty")->toBool()) 
     {
-      if (lowtimes[lowtindex] < samplesPlayed) 
+       if (lowtimes[lowtindex] < samplesPlayed) 
 	{
 	  lowtindex++;
 
