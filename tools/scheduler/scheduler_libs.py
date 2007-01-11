@@ -68,6 +68,8 @@
 #     stol(v) - converts v from a std::string value to a mrs_natural
 #
 import re
+import getopt
+import sys
 
 natural_t=['char','unsigned char','signed char',
            'short','unsigned short','signed short',
@@ -401,7 +403,10 @@ class Gen:
         s+='    virtual ExVal calc() {\n'
         px=0
         for p in f6:
-            s+='        '+p[0]+' '+p[1]+'=(params['+str(px)+']->eval()).'+p[2]+'();\n' # fix this to_method error
+            t=p[0]
+            if t in ('mrs_string','string'): t='std::string'
+            elif t=='mrs_bool': t='bool'
+            s+='        '+t+' '+p[1]+'=(params['+str(px)+']->eval()).'+p[2]+'();\n' # fix this to_method error
             px+=1
         for x in f8: s+=x+'\n'
         s+='    }\n'
@@ -442,30 +447,52 @@ class Gen:
                 libs.append(self.gen_lib(lib,b))
         return (self.format_libs(libs),self.format_funs(funs))
 
+def usage():
+    print "Generate Scheduler Expression Functions"
+    print "Usage: python scheduler_libs.py infile"
 
-
-r=Reader()
-s=r.rd('fun_new')
-print s
-print '\n'
-g=Gen()
-
-((v,l),f)=g.gen(s)
-v="""/**
+loadsym_h="""/**
  * The load_symbols function is the master function called by the parser to load
  * all libraries. It already exists in ExNode.cpp. Therefore, you need to copy
  * the lines within it into the Marsyas::load_symbols(..) function in ExNode.cpp
- */"""+v
-l="""/***
- * These are the new library functions you defined and should be placed in their
- * own header file, ie "NewLibs.h". You will need to add the line 
+ */"""
+loadlibs_h="""/***
+ * These are the new library functions you defined and should be placed in
+ * their own header file, ie "NewLibs.h". You will need to add the line
  * #include "NewLibs.h" at the top of ExNode.cpp so that the load_symbols
  * function can find your header.
- */"""+l
-f="""/***
+ */"""
+funs_h="""/***
  * These functions may be placed in their own header file, ie "Fun.h". That
  * header file must be included prior to the definition of the loadlib functions
  * that use these functions, so if the loadlib functions are in "NewLibs.h" then
- * add the lib '#include "Fun.h"' at the top of "NewLibs.h"
- */"""+f
-print v,l,f
+ * add the lib \'#include "Fun.h"\' at the top of "NewLibs.h"
+ */"""
+
+def main():
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "o", ["output="])
+    except getopt.GetoptError:
+        # print help information and exit:
+        usage()
+        sys.exit(2)
+    xs=[]
+    r=Reader()
+    if len(args)==0:
+        usage()
+        sys.exit(0)
+    for a in args: xs.extend(r.rd(a))
+    g=Gen()
+    ((loadsym,loadlibs),funs)=g.gen(xs)
+    loadsym=loadsym_h+loadsym
+    loadlibs=loadlibs_h+loadlibs
+    funs=funs_h+funs
+    fh = open('Append_to_ExLibs.h', 'w')
+    fh.write(loadlibs)
+    fh.write(loadsym)
+    fh.close()
+    fh = open('Append_to_ExFuns.h', 'w')
+    fh.write(funs)
+    fh.close()
+
+main()
