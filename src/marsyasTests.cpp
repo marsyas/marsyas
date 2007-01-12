@@ -227,34 +227,6 @@ test_audiodevices()
 }
 
 void 
-test_schedulerExpr()
-{
-#if 0
-  MarSystemManager mng;
-  
-  // Create a series Composite
-  MarSystem* series = mng.create("Series", "series");
-  series->addMarSystem(mng.create("SineSource", "src"));
-  series->addMarSystem(mng.create("AudioSink", "dest"));
-  
-  // only update controls from Composite level
-  series->updctrl("mrs_natural/inSamples", 256);
-  
-  series->updctrl("0s",Repeat("0.15s"), new EvExpUpd(series,
-						     "SineSource/src/mrs_real/frequency", "(120+3000*(Math.rand() / Math.RAND_MAX))"));
-  
-  for (int i=0; i<10000; i++) 
-    {
-      series->tick();
-    }
-  
-  // Composite deletes the added MarSystems
-  // so you must not delete them
-  delete series;
-#endif
-}
-
-void 
 test_fanoutswitch()
 {
   cout << "Testing fanout switch" << endl;
@@ -2196,8 +2168,6 @@ main(int argc, const char **argv)
     test_rmsilence(fname0);
   else if (testName == "scheduler") 
     test_scheduler(fname0);
-  else if (testName == "schedulerExpr") 
-    test_schedulerExpr();
   else if (testName == "SOM") 
     test_SOM("music.mf");
   else if (testName == "tempo") 
