@@ -592,6 +592,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\marsyas\MidiInput.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\MidiOutput.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\marsyas\MinArgMin.cpp"
 				>
 			</File>
@@ -1298,7 +1306,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\marsyas\mididevices.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\marsyas\MidiInput.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\MidiOutput.h"
 				>
 			</File>
 			<File

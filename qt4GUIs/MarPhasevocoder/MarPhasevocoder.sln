@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MarPhasevocoder", "MarPhasevocoder.vcproj", "{3AE20D47-20F6-3654-807E-0E111C952EC9}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
+EndProject
+Global
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3AE20D47-20F6-3654-807E-0E111C952EC9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3AE20D47-20F6-3654-807E-0E111C952EC9}.Debug|Win32.Build.0 = Debug|Win32
+		{3AE20D47-20F6-3654-807E-0E111C952EC9}.Release|Win32.ActiveCfg = Release|Win32
+		{3AE20D47-20F6-3654-807E-0E111C952EC9}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
