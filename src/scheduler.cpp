@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "MarSystemManager.h"
 #include "EvExpr.h"
+#include "Expr.h"
 
 using namespace std;
 using namespace Marsyas;
@@ -22,6 +23,7 @@ void sched1()
   series->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
 #if 0
+
   // using aliases makes this a little more readable, see the next bit
   EvExpr* e = new EvExpr(series,
     Ex((std::string)
@@ -30,16 +32,19 @@ void sched1()
       +"'src1='+Fanin/fanin/SineSource/src1/mrs_real/frequency+"
       +"' src2='+Fanin/fanin/SineSource/src2/mrs_real/frequency+'\n'>>Stream.op"),
     Rp("true"));
+
 #else
+
   EvExpr* e = new EvExpr(series,
     Ex((std::string)
-       "Fanin/fanin/SineSource/src1/mrs_real/frequency >> @freq1,"
-      +"Fanin/fanin/SineSource/src2/mrs_real/frequency >> @freq2 "
-      ,(std::string)
-       "freq1 << 120. + 3000. * R.rand(),"
-      +"freq2 << 120. + 800. * R.rand(),"
-      +"'src1=' + freq1 + ' src2=' + freq2 + '\n' >> Stream.op"),
+        "Fanin/fanin/SineSource/src1/mrs_real/frequency >> @freq1,"
+       +"Fanin/fanin/SineSource/src2/mrs_real/frequency >> @freq2",
+       (std::string)
+        "freq1 << 120. + 3000. * R.rand(),"
+       +"freq2 << 120. + 800. * R.rand(),"
+       +"'src1=' + freq1 + ' src2=' + freq2 + '\n' >> Stream.op"),
     Rp("true"));
+
 #endif
 
   e->set_repeat(Repeat("0.25s"));
@@ -50,7 +55,68 @@ void sched1()
   for (int i=1;i<100;i++) series->tick();
   delete series;
 }
-void sched2()
+void sched2(std::string s)
+{
+  if (s=="") {
+    std::cout << "Save the following lines to a file then rerun using that file name" << std::endl;
+    std::cout << "#ExInit:" << std::endl
+              << "Fanin/fanin/SineSource/src1/mrs_real/frequency >> @freq1," << std::endl
+              << "Fanin/fanin/SineSource/src2/mrs_real/frequency >> @freq2" << std::endl
+              << std::endl
+              << "#ExExpr:" << std::endl
+              << "freq1 << 120. + 3000. * R.rand()," << std::endl
+              << "freq2 << 120. + 800. * R.rand()," << std::endl
+              << "'src1=' + freq1 + ' src2=' + freq2 + '\\n' >> Stream.op" << std::endl
+              << std::endl
+              << "#RpExpr:" << std::endl
+              << "true" << std::endl;
+    return;
+  }
+
+  MarSystemManager mng;
+
+  MarSystem* fanin = mng.create("Fanin", "fanin");
+  fanin->addMarSystem(mng.create("SineSource", "src1"));
+  fanin->addMarSystem(mng.create("SineSource", "src2"));
+  fanin->updctrl("SineSource/src1/mrs_real/frequency",3000.0);
+  fanin->updctrl("SineSource/src2/mrs_real/frequency",1000.0);
+
+  MarSystem* series = mng.create("Series", "series");
+  series->addMarSystem(fanin);
+
+  series->addMarSystem(mng.create("AudioSink", "dest"));
+  series->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+  EvExpr* e = new EvExpr(series,ExFile(s));
+
+
+/** Save these following lines into a file "__SchedulerTest_3__"
+#ExInit:
+
+Fanin/fanin/SineSource/src1/mrs_real/frequency >> @freq1,
+Fanin/fanin/SineSource/src2/mrs_real/frequency >> @freq2
+
+#ExExpr:
+
+freq1 << 120. + 3000. * R.rand(),
+freq2 << 120. + 800. * R.rand(),
+'src1=' + freq1 + ' src2=' + freq2 + '\n' >> Stream.op
+
+#RpExpr:
+
+true
+*******/
+
+  e->set_repeat(Repeat("0.25s"));
+
+  series->updctrl(TmTime("TmSampleCount/Virtual","0s"), e);
+
+  //while (2) { series->tick(); }
+  for (int i=1;i<100;i++) series->tick();
+  delete series;
+}
+
+void sched3()
 {
   MarSystemManager mng;
 
@@ -81,13 +147,48 @@ void sched2()
 
   delete series;
 }
+/*
+void robot1()
+{
+  MarSystemManager mng;
+
+  MarSystem* pnet = mng.create("Series", "pnet");
+printf("4\n");
+  pnet->addMarSystem(mng.create("DeviBot","dbot"));
+
+printf("5\n");
+  EvExpr* e =
+    new EvExpr(pnet,
+        Ex((std::string)
+          +"DeviBot/dbot/mrs_string/arm >> @arm"
+          +"DeviBot/dbot/mrs_natural/velocity >> @vel"
+          +"DeviBot/dbot/mrs_bool/strike >> @strike",
+           (std::string)
+           "vel << 50, arm << 'Ga', strike << true, Stream.opn << strike"),
+      Rp("true"));
+printf("6\n");
+
+  e->set_repeat(Repeat("0.25s"));
+printf("7\n");
+
+  pnet->updctrl(TmTime("TmSampleCount/Virtual","0s"), e);
+printf("8\n");
+//  while (2) { series->tick(); }
+  for (int i=1;i<100;i++) pnet->tick();
+
+  delete pnet;
+}
+
+
+*/
 
 void usage() {
     printf("Scheduler Test-o-rama\n");
     printf("Usage: ./scheduler [test [options]]\n");
     printf("Test:\n");
-    printf("  1    ~ EvExpr : Double fun-time random sine waves\n");
-    printf("  2    ~ EvExpr : Read and print the Timer's time\n");
+    printf("  1         ~ EvExpr : Double fun-time random sine waves\n");
+    printf("  2 [fname] ~ EvExpr : Double fun-time random sine waves, expression read from file\n");
+    printf("  3         ~ EvExpr : Read and print the Timer's time\n");
 }
 bool match(const char* s1, const char* s2) {
     if (s1==NULL&&s2==NULL) return true;
@@ -102,10 +203,16 @@ bool match(const char* s1, const char* s2) {
 int main(int argc, char** argv) {
     switch(argc) {
     case 2:
-        if (match(argv[1],"1")) sched1();
-        if (match(argv[1],"2")) sched2();
-        break;
-    default: usage(); break;
+        if (match(argv[1],"1")) { sched1(); break; }
+        if (match(argv[1],"2")) { sched2(""); break; }
+        if (match(argv[1],"3")) { sched3(); break; }
+//        if (match(argv[1],"3")) robot1();
+        usage(); break;
+    case 3:
+        if (match(argv[1],"2")) { sched2(argv[2]); break; }
+        usage(); break;
+    default:
+        usage(); break;
     }
     return 0;
 }
