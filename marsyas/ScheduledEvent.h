@@ -61,6 +61,7 @@ public:
     friend class ScheduledEventOrdering;
     // Naming methods
     mrs_natural    getTime() const;
+    void setTime(mrs_natural t) { time_=t; }
 
     MarEvent* getEvent();
     mrs_natural getRepetitionCount();
