@@ -66,3 +66,7 @@ This is coming soon, right George?  It had better be soon...
 @node Trolltech Qt4
 @section Trolltech Qt4
 
+See @file{qtGUIs/tutorial/} to get started.  After examining that project,
+see @file{qtGUIs/MarPlayer/}, followed by the other examples in the
+@file{qtGUIs/} directory.
+
