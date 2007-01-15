@@ -33,12 +33,9 @@ using namespace Marsyas;
 
 WaveletBands::WaveletBands(string name):MarSystem("WaveletBands",name)
 {
-  //type_ = "WaveletBands";
-  //name_ = name;
+  iwvpt_ = NULL;
   
-	iwvpt_ = NULL;
-
-	addControls();
+  addControls();
 }
 
 WaveletBands::~WaveletBands()
@@ -50,18 +47,7 @@ WaveletBands::~WaveletBands()
 // copy constructor 
 WaveletBands::WaveletBands(const WaveletBands& a):MarSystem(a)
 {
-// 	type_ = a.type_;
-// 	name_ = a.name_;
-// 	ncontrols_ = a.ncontrols_; 		
-// 
-// 	inSamples_ = a.inSamples_;
-// 	inObservations_ = a.inObservations_;
-// 	onSamples_ = a.onSamples_;
-// 	onObservations_ = a.onObservations_;
-// 	dbg_ = a.dbg_;
-// 	mute_ = a.mute_;
-
-	iwvpt_ = NULL;
+  iwvpt_ = NULL;
 }
 
 
@@ -79,9 +65,7 @@ WaveletBands::addControls()
   setctrlState("mrs_natural/nBands", true);
   addctrl("mrs_natural/startBand", 5);
   setctrlState("mrs_natural/startBand", true);
-
-  delete iwvpt_;
-  iwvpt_ = new WaveletPyramid("iwvpt");
+  
 
 }
 
@@ -96,9 +80,11 @@ WaveletBands::myUpdate()
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural() * nBands);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
+  if (!iwvpt_) 
+    iwvpt_ = new WaveletPyramid("iwvpt");    
+  
 
   iwvpt_->setctrl("mrs_bool/forward", false);
-  
   iwvpt_->updctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
   iwvpt_->updctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
   iwvpt_->updctrl("mrs_real/israte", getctrl("mrs_real/israte"));
@@ -115,7 +101,6 @@ WaveletBands::myUpdate()
 void 
 WaveletBands::myProcess(realvec& in, realvec& out) 
 {
-  //checkFlow(in,out);
   
 
   mrs_natural level;

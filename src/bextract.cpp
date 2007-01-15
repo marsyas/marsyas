@@ -1592,6 +1592,10 @@ main(int argc, const char **argv)
       else 
 	extrName = extractorName.substr(2, extractorName.length());
 
+
+      cout << "extrName = " << extrName << endl;
+      
+
       if(featExtractors.find(extrName)== featExtractors.end())
 	{
 	  cout << extractorStr << ": Unsupported extractor!" << endl;

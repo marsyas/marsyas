@@ -32,10 +32,7 @@ using namespace Marsyas;
 
 Daub4::Daub4(string name):MarSystem("Daub4",name)
 {
-  //type_ = "Daub4";
-  //name_ = name;
-
-	addControls();
+  addControls();
 }
 
 Daub4::~Daub4()

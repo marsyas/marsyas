@@ -11,8 +11,8 @@ SOURCES += MarSystemWrapper.cpp
 
 #  basic system variables
 TARGET = runme
-INCLUDEPATH += ${HOME}/usr/include/marsyas
-unix:LIBS += -lmarsyas -L${HOME}/usr/lib 
+INCLUDEPATH += /usr/local/include/marsyas
+unix:LIBS += -lmarsyas -L/usr/local/lib # -lmad -lvorbis -lvorbisfile
 !macx:LIBS += -lasound
 macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
 

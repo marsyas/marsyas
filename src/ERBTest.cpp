@@ -30,7 +30,7 @@ main(int argc, const char **argv)
 
 
   // This core dumps. Need to check it out. 
-  // erb->setctrl("mrs_natural/inObservations", src->getctrl("mrs_natural/onObservations"));
+  erb->setctrl("mrs_natural/inObservations", src->getctrl("mrs_natural/onObservations"));
   
   cout << *src << endl;
   
@@ -38,18 +38,17 @@ main(int argc, const char **argv)
   cout << src->getctrl("mrs_natural/onSamples") << endl;  
   erb->updctrl("mrs_natural/inObservations", 1);
   
-  return 1;    
 
   erb->updctrl("mrs_natural/inSamples", src->getctrl("mrs_natural/onSamples"));
   erb->updctrl("mrs_real/israte",src->getctrl("mrs_real/osrate"));
-  erb->updctrl("mrs_natural/numChannels",24);
+  erb->updctrl("mrs_natural/numChannels",64);
   erb->updctrl("mrs_real/lowFreq",100.0f);
   
   dest->updctrl("mrs_natural/inObservations", src->getctrl("mrs_natural/onObservations"));
   dest->updctrl("mrs_natural/inSamples", src->getctrl("mrs_natural/onSamples"));
   dest->updctrl("mrs_real/israte", src->getctrl("mrs_real/osrate"));
   dest->updctrl("mrs_natural/nChannels", 1);
-
+  dest->updctrl("mrs_bool/initAudio", true);
 
 
   
@@ -67,6 +66,7 @@ main(int argc, const char **argv)
   while (src->getctrl("mrs_bool/notEmpty")->toBool()){
     src->process(src_in, src_out);
     erb->process(src_out, erb_out);
+    
     for (mrs_natural i = 0; i < erb->getctrl("mrs_natural/onSamples")->toNatural(); i++){
       dest_in(i) = gain*erb_out(channel,i);
     }

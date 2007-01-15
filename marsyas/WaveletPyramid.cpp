@@ -31,13 +31,11 @@ using namespace Marsyas;
 
 WaveletPyramid::WaveletPyramid(string name):MarSystem("WaveletPyramid",name)
 {
-  //type_ = "WaveletPyramid";
-  //name_ = name;
   
-	waveletStep_ = NULL;
-
-	addControls();
-
+  waveletStep_ = NULL;
+  
+  addControls();
+  
 }
 
 WaveletPyramid::~WaveletPyramid()
@@ -49,17 +47,7 @@ WaveletPyramid::~WaveletPyramid()
 // copy constructor 
 WaveletPyramid::WaveletPyramid(const WaveletPyramid& a):MarSystem(a)
 {
-// 	type_ = a.type_;
-// 	name_ = a.name_;
-// 	ncontrols_ = a.ncontrols_; 		
-// 
-// 	inSamples_ = a.inSamples_;
-// 	inObservations_ = a.inObservations_;
-// 	onSamples_ = a.onSamples_;
-// 	onObservations_ = a.onObservations_;
-// 	dbg_ = a.dbg_;
-// 	mute_ = a.mute_;
-	waveletStep_ = NULL;
+  waveletStep_ = NULL;
 }
 
 
@@ -74,14 +62,19 @@ void
 WaveletPyramid::addControls()
 {
   addctrl("mrs_bool/forward", true);
-
-  delete waveletStep_;
-  waveletStep_ = new Daub4("daub4");
 }
 
 void
 WaveletPyramid::myUpdate()
 {
+ 
+  if (!waveletStep_) 
+    {
+      waveletStep_ = new Daub4("daub4");
+    }
+
+  
+  
   
   MRSDIAG("WaveletPyramid.cpp - WaveletPyramid:myUpdate");
   
@@ -99,25 +92,29 @@ WaveletPyramid::myUpdate()
 void 
 WaveletPyramid::myProcess(realvec& in, realvec& out) 
 {
-  //checkFlow(in,out);
-  
   mrs_natural nn;
   mrs_natural n;
-  bool forward;
+  mrs_bool forward;
   
   
   n = getctrl("mrs_natural/inSamples")->toNatural();
+  
+
+
   if (n < 4) return;
 
-
+  
   for (o=0; o < inObservations_; o++)
     for (t = 0; t < inSamples_; t++)
       {
 	out(o,t) = in(o,t);
       }  
 
-  forward = getctrl("mrs_bool/forward")->toBool();
-  waveletStep_->setctrl("mrs_bool/forward", forward);
+
+
+  forward = getctrl("mrs_bool/forward")->to<mrs_bool>();
+  
+  waveletStep_->updctrl("mrs_bool/forward", forward);
   if (forward) 
     {
       for (nn= n; nn >=4; nn >>=1) 
