@@ -1,1 +1,1 @@
-SUBDIRS = MarPlayer MarGrid Marx2DGraph Marx2DGraphStacked MarxGL2Din3DSpaceGraph MarxGLGraph MarxGLMultiBufferGraph MarPhasevocoder
+SUBDIRS = MarPlayer MarGrid Marx2DGraph Marx2DGraphStacked MarxGL2Din3DSpaceGraph MarxGLGraph MarxGLMultiBufferGraph MarPhasevocoder tutorial
