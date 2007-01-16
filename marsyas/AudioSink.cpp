@@ -92,7 +92,7 @@ AudioSink::myUpdate()
   MarSystem::myUpdate();
   
   
-  nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();//does nothing... [?]
+  nChannels_ = getctrl("mrs_natural/inObservations")->toNatural();//does nothing... [?]
 
   if (getctrl("mrs_bool/initAudio")->to<mrs_bool>())
     initRtAudio();
@@ -105,7 +105,7 @@ AudioSink::myUpdate()
     reservoirSize_ = 2 * inSamples_;
   
   if (reservoirSize_ > preservoirSize_)
-    reservoir_.stretch(reservoirSize_);
+    reservoir_.stretch(nChannels_, reservoirSize_);
   
   preservoirSize_ = reservoirSize_;
   
@@ -203,15 +203,21 @@ AudioSink::myProcess(realvec& in, realvec& out)
   
   
   // copy to output and into reservoir
+
+
+
   for (t=0; t < inSamples_; t++)
     {
-      reservoir_(end_) = in(0,t);
-      end_ = (end_ + 1) % reservoirSize_;
-      
       for (o=0; o < inObservations_; o++)
-	out(o,t) = in(o,t);
+	{
+	  reservoir_(o, end_) = in(o,t);
+	  out(o,t) = in(o,t);
+	}
+      end_ = (end_ + 1) % reservoirSize_;	  	  
     }
   
+  
+      
   //check if RtAudio is initialized
   if (!isInitialized_)
     return;
@@ -257,8 +263,18 @@ AudioSink::myProcess(realvec& in, realvec& out)
       for (t=0; t < rsize_; t++) 
 	{
 #ifndef __OS_MACOSX__
-	  data_[2*t] = reservoir_((start_+t)%reservoirSize_);
-	  data_[2*t+1] = reservoir_((start_+t)%reservoirSize_);
+	  if (inObservations_ == 1) 
+	    {
+	      data_[2*t] = reservoir_(0, (start_+t)%reservoirSize_);
+	      data_[2*t+1] = reservoir_(0, (start_+t)%reservoirSize_);
+	    }
+	  else 
+	    {
+	      data_[2*t] = reservoir_(0,   (start_+t)%reservoirSize_);
+	      data_[2*t+1] = reservoir_(1, (start_+t)%reservoirSize_);
+	    }
+	  
+	    
 #else
 	  if (srate_ == 22050)
 	    {
