@@ -102,7 +102,7 @@ void sfplay(string sfName, float gain) {
   playbacknet->updctrl("Gain/gt/mrs_real/gain", gain);
   playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
-  while ( playbacknet->getctrl("mrs_bool/notEmpty")->toBool() ) {
+  while ( playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() ) {
     playbacknet->tick();
   }
   delete playbacknet;
@@ -161,7 +161,7 @@ void sfplay(string sfName, float gain, float start) {
 // set the starting position of the source
   playbacknet->updctrl("SoundFileSource/src/mrs_natural/pos", startPosition);
 
-  while ( playbacknet->getctrl("mrs_bool/notEmpty")->toBool() ) {
+  while ( playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() ) {
     playbacknet->tick();
   }
   delete playbacknet;
