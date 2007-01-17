@@ -1104,53 +1104,47 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
   spectralShape->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","power");  
 
   // Spectrum Shape descriptors
-  Fanout spectrumFeatures("spectrumFeatures");
+  MarSystem *spectrumFeatures = mng.create("Fanout",  "spectrumFeatures");
   if (extractorStr == "STFT") 
     {
-      spectrumFeatures.addMarSystem(mng.create("Centroid", "cntrd"));
-      // spectrumFeatures.addMarSystem(mng.create("Kurtosis", "krt"));
-      spectrumFeatures.addMarSystem(mng.create("Rolloff", "rlf"));      
-      spectrumFeatures.addMarSystem(mng.create("Flux", "flux"));
+      spectrumFeatures->addMarSystem(mng.create("Centroid", "cntrd"));
+      spectrumFeatures->addMarSystem(mng.create("Rolloff", "rlf"));      
+      spectrumFeatures->addMarSystem(mng.create("Flux", "flux"));
     }
   else if (extractorStr == "STFTMFCC")
     {
-      spectrumFeatures.addMarSystem(mng.create("Centroid", "cntrd"));
-      // spectrumFeatures.addMarSystem(mng.create("Kurtosis", "krt"));
-      spectrumFeatures.addMarSystem(mng.create("Rolloff", "rlf"));      
-      spectrumFeatures.addMarSystem(mng.create("Flux", "flux"));
-      spectrumFeatures.addMarSystem(mng.create("MFCC", "mfcc"));
+      spectrumFeatures->addMarSystem(mng.create("Centroid", "cntrd"));
+      spectrumFeatures->addMarSystem(mng.create("Rolloff", "rlf"));      
+      spectrumFeatures->addMarSystem(mng.create("Flux", "flux"));
+      spectrumFeatures->addMarSystem(mng.create("MFCC", "mfcc"));
     }
   else if (extractorStr == "MFCC")
-    spectrumFeatures.addMarSystem(mng.create("MFCC", "mfcc"));
+    spectrumFeatures->addMarSystem(mng.create("MFCC", "mfcc"));
   else if (extractorStr == "SCF")
-    spectrumFeatures.addMarSystem(mng.create("SCF", "scf"));
+    spectrumFeatures->addMarSystem(mng.create("SCF", "scf"));
   else if (extractorStr == "SFM")
-    spectrumFeatures.addMarSystem(mng.create("SFM", "sfm"));
+    spectrumFeatures->addMarSystem(mng.create("SFM", "sfm"));
   else 
     {
       cerr << "Extractor " << extractorStr << " is not supported " << endl;
       return;
     }
 
-  mng.registerPrototype("SpectrumFeatures", spectrumFeatures.clone());
 
   // add the feature to spectral shape
-  spectralShape->addMarSystem(mng.create("SpectrumFeatures", "spectrumFeatures"));
-  mng.registerPrototype("SpectralShape", spectralShape->clone());
+  spectralShape->addMarSystem(spectrumFeatures);
 
   //  add time-domain zerocrossings
-  MarSystem* features = mng.create("Fanout", "featuresp");
-  features->addMarSystem(mng.create("SpectralShape", "SpectralShape"));
+  MarSystem* features = mng.create("Fanout", "features");
+  features->addMarSystem(spectralShape);
 
   if (extractorStr == "STFT")
     features->addMarSystem(mng.create("ZeroCrossings", "zcrs"));      
-  mng.registerPrototype("Features", features->clone());
 
   // Means and standard deviation (statistics) for texture analysis 
   MarSystem* statistics = mng.create("Fanout", "statistics");
   statistics->addMarSystem(mng.create("Mean", "mn"));
   statistics->addMarSystem(mng.create("StandardDeviation", "std"));
-  mng.registerPrototype("Statistics", statistics->clone());
 
   // Weka output 
   MarSystem* wsink = mng.create("WekaSink", "wsink");
@@ -1164,9 +1158,9 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
 
   cout << "featureNetwork = " << (*featureNetwork) << endl;
 
-  featureNetwork->addMarSystem(mng.create("Features", "features"));
+  featureNetwork->addMarSystem(features);
   featureNetwork->addMarSystem(mng.create("Memory", "memory"));
-  featureNetwork->addMarSystem(mng.create("Statistics", "statistics"));  
+  featureNetwork->addMarSystem(statistics);  
   if (classifierName == "SMO")
     featureNetwork->addMarSystem(mng.create("NormMaxMin", "norm"));
 
