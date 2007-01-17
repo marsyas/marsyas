@@ -146,7 +146,7 @@ TopPanelNew::setup()
 
 
 
-  std::map<std::string, MarControlPtr> mycontrols = pnet_->getAllControls();
+  std::map<std::string, MarControlPtr> mycontrols = pnet_->getControls();
   std::map<std::string, MarControlPtr>::iterator myc;
 
   listWidget = new QListWidget();  
