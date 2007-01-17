@@ -99,6 +99,7 @@ am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
 SUBDIRS = MarPlayer MarGrid Marx2DGraph Marx2DGraphStacked MarxGL2Din3DSpaceGraph MarxGLGraph MarxGLMultiBufferGraph MarPhasevocoder tutorial
+EXTRA_DIST = README MarSystemQtWrapper.h MarSystemQtWrapper.cpp
 subdir = qt4GUIs
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/marsyas/config.h
@@ -109,7 +110,7 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	uninstall-info-recursive all-recursive install-data-recursive \
 	install-exec-recursive installdirs-recursive install-recursive \
 	uninstall-recursive check-recursive installcheck-recursive
-DIST_COMMON = Makefile.am Makefile.in
+DIST_COMMON = README Makefile.am Makefile.in
 DIST_SUBDIRS = $(SUBDIRS)
 all: all-recursive
 

@@ -1,1 +1,2 @@
-SUBDIRS = MarPlayer MarGrid Marx2DGraph Marx2DGraphStacked MarxGL2Din3DSpaceGraph MarxGLGraph MarxGLMultiBufferGraph MarPhasevocoder tutorial README MarSystemQtWrapper.h MarSystemQtWrapper.cpp
+SUBDIRS = MarPlayer MarGrid Marx2DGraph Marx2DGraphStacked MarxGL2Din3DSpaceGraph MarxGLGraph MarxGLMultiBufferGraph MarPhasevocoder tutorial
+EXTRA_DIST = README MarSystemQtWrapper.h MarSystemQtWrapper.cpp
