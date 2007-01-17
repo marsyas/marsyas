@@ -133,7 +133,7 @@ MarSystem* createSTFTextractor()
 
   extractor->addMarSystem(spectralShape);
 
-  extractor->linkctrl("mrs_natural/windowSize", "PowerSpectrumNet/powerSpect/mrs_natural/windowSize");
+  extractor->linkctrl("mrs_natural/WindowSize", "PowerSpectrumNet/powerSpect/mrs_natural/WindowSize");
 
   return extractor;
 }
@@ -146,7 +146,7 @@ MarSystem* createMFCCextractor()
   extractor->addMarSystem(mng.create("PowerSpectrumNet","powerSpect"));
   extractor->addMarSystem(mng.create("MFCC", "mfcc"));
 
-  extractor->linkctrl("mrs_natural/windowSize", "PowerSpectrumNet/powerSpect/mrs_natural/windowSize");
+  extractor->linkctrl("mrs_natural/WindowSize", "PowerSpectrumNet/powerSpect/mrs_natural/WindowSize");
 
   return extractor;
 }
@@ -167,7 +167,7 @@ MarSystem* createSTFTMFCCextractor()
   spectrumFeatures->addMarSystem(mng.create("MFCC", "mfcc"));
   extractor->addMarSystem(spectrumFeatures);
 
-  extractor->linkctrl("mrs_natural/windowSize", "PowerSpectrumNet/powerSpect/mrs_natural/windowSize");
+  extractor->linkctrl("mrs_natural/WindowSize", "PowerSpectrumNet/powerSpect/mrs_natural/WindowSize");
 
   return extractor;
 }
@@ -180,7 +180,7 @@ MarSystem* createSCFextractor()
   extractor->addMarSystem(mng.create("PowerSpectrumNet","powerSpect"));
   extractor->addMarSystem(mng.create("SCF", "scf"));
 
-  extractor->linkctrl("mrs_natural/windowSize", "PowerSpectrumNet/powerSpect/mrs_natural/windowSize");
+  extractor->linkctrl("mrs_natural/WindowSize", "PowerSpectrumNet/powerSpect/mrs_natural/WindowSize");
 
   return extractor;
 }
@@ -193,7 +193,7 @@ MarSystem* createSFMextractor()
   extractor->addMarSystem(mng.create("PowerSpectrumNet","powerSpect"));
   extractor->addMarSystem(mng.create("SFM", "sfm"));
 
-  extractor->linkctrl("mrs_natural/windowSize", "PowerSpectrumNet/powerSpect/mrs_natural/windowSize");
+  extractor->linkctrl("mrs_natural/WindowSize", "PowerSpectrumNet/powerSpect/mrs_natural/WindowSize");
 
   return extractor;
 }
@@ -212,7 +212,7 @@ MarSystem* createSFMSCFextractor()
 
   extractor->addMarSystem(spectrumFeatures);
 
-  extractor->linkctrl("mrs_natural/windowSize", "PowerSpectrumNet/powerSpect/mrs_natural/windowSize");
+  extractor->linkctrl("mrs_natural/WindowSize", "PowerSpectrumNet/powerSpect/mrs_natural/WindowSize");
 
   return extractor;
 }
@@ -237,7 +237,7 @@ MarSystem* createLSPextractor()
   extractor->linkctrl("mrs_natural/order", "LPCnet/lpcNet/mrs_natural/order");
   extractor->updctrl("mrs_natural/order", order); 
 
-  extractor->linkctrl("mrs_natural/windowSize", "LPCnet/lpcNet/mrs_natural/windowSize");
+  extractor->linkctrl("mrs_natural/WindowSize", "LPCnet/lpcNet/mrs_natural/WindowSize");
 
   return extractor;
 }
@@ -262,7 +262,7 @@ MarSystem* createLPCCextractor()
   extractor->linkctrl("mrs_natural/order", "LPCnet/lpcNet/mrs_natural/order");
   extractor->updctrl("mrs_natural/order", order);
 
-  extractor->linkctrl("mrs_natural/windowSize", "LPCnet/lpcNet/mrs_natural/windowSize");
+  extractor->linkctrl("mrs_natural/WindowSize", "LPCnet/lpcNet/mrs_natural/WindowSize");
 
   return extractor;
 }

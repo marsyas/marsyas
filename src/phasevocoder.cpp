@@ -156,7 +156,7 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
   cout << *pvseries << endl;
 
   if (outsfname == EMPTYSTRING) 
-	pvseries->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+		pvseries->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
 	int type;
 	int byte2, byte3;
@@ -191,7 +191,8 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 	std::vector<unsigned char> message;
 	int nBytes;
 
-	dest->updctrl("mrs_string/filename", outsfname);
+	if (outsfname != EMPTYSTRING)
+		dest->updctrl("mrs_string/filename", outsfname);
 
 	while(1)
 	{
@@ -953,7 +954,6 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
   
   pin.create((long)1, (long)512);
 
-  int type;
   string cname;
   mrs_real diff;
   mrs_natural fc = 0;
