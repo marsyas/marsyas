@@ -25,11 +25,13 @@ MarPlayer.h MarPlayer.cpp : loads the designer created forms and
 
 Mapper.h Mapper.cpp       : Maps the various signals generated 
 			    by the GUI widgets to corresponding 
-			    calls to a MarSystemWrapper that 
+			    calls to a MarSystemQtWrapper that 
 			    contains a MarSystem network 
 			    that plays files 
 
-MarSystemWrapper.h MarSystemWrapper.cpp: 
+MarSystemQtWrapper.h MarSystemQtWrapper.cpp: in parent directory.  These
+   files are common to every Qt/Marsyas application; you don't need to
+   understand these files.
 
 
 Any comments/feedback/questions: 
