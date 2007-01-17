@@ -1,0 +1,3 @@
+MarSystemQtWrapper .h .cpp: these files must be included in every
+  Qt/Marsyas application.
+
