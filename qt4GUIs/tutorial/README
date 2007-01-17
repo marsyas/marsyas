@@ -24,6 +24,7 @@ mainwindow .h .cpp: defines the user interface; mostly simple Qt code.
 
 backend .h .cpp: sets up the MarSystem and the Qt/MarSystem information flow.
 
-MarSystemWrapper .h .cpp: files common to every Marsyas/Qt application; you
-     don't need to understand these.
+MarSystemWrapper .h .cpp: these files are located in the parent
+  directory and must be included.  These files are common to every
+  Marsyas/Qt application; you don't need to understand them.
 
