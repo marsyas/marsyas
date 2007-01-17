@@ -63,14 +63,14 @@ MarSystem::MarSystem(string type, string name)
 
 	MATLABscript_ = "";
 
+	//add default controls that 
+	//all MarSystems should have
+	addControls();
+
 	scheduler_.removeAll();
 	TmTimer* t = new TmSampleCount(NULL, this, "mrs_natural/inSamples");
 	scheduler_.addTimer(t);
 	delete t;
-
-	//add default controls that 
-	//all MarSystems should have
-	addControls();
 }
 
 // copy constructor 
@@ -610,7 +610,6 @@ MarSystem::localActivate(bool state)
 	}
 }
 
-
 string
 MarSystem::getControlRelativePath(string cname) const
 {
@@ -620,69 +619,56 @@ MarSystem::getControlRelativePath(string cname) const
 		//is this absolute path pointing to this MarSystem?
 		if(cname.substr(0, absPath_.length()) == absPath_)
 		{
-			//just remove the absolute path
-			cname = cname.substr(0, absPath_.length());
+			//return control path without the absolute path
+			//(i.e. return the relative path)
+			return cname.substr(absPath_.length(), cname.length());
 		}
 		else
 			return "";
 	}
-	
-	//if cname is already a relative path
-	//just return it (do nothing)
-	return cname;
+	else
+		//cname is already a relative path
+		return cname;
 }
 
 string
 MarSystem::getControlLocalPath(string cname) const
 {
+	//convert cname to the canonical relative format
 	cname = getControlRelativePath(cname);
-
-	//a local path should only have one '/' (e.g. type/name), 
+	if(cname == "")
+		return ""; //not a control from this MarSystem or its children
+	
+	//a local path should have only one '/' (e.g. "mrs_xxx/nnnn"), 
 	//otherwise it's probably a control from a child MarSystem
 	if(cname.find_first_of('/') == cname.find_last_of('/') && 
 		cname.find_first_of('/') != -1)
 	{
+		//this is a relative and local path, so just return it
 		return cname;
 	}
-	else
-	{
-		string prefix = type_ + "/" + name_;
-		string::size_type pos = cname.find(prefix, 0);
-		if(pos != -1)
-		{
-			cname = cname.substr(prefix_.length()-1, cname.length());
-			return cname;
-		}
-		else
-			return cname;
-
-	}
-
-	//if not a local control path, return empty string
-	//return "";
+	else //this is not a local control => return invalid name
+		return "";
 }
 
 bool
 MarSystem::linkControl(string cname1, string cname2) 
 {
-	//first control has to be a local control
-	string localPath = this->getControlLocalPath(cname1);
-	if(localPath == "")
-	{
-		MRSWARN("MarSystem::linkControl first control has to be a local control (" + cname1 + ")");
-		return false;
-	}
-	
-	//a control is inherently connected to itself!
-	if(localPath == getControlLocalPath(cname2))
-	{
-		return true;
-	}
-
+	//links the control cname1 (which must be local) with the control  
+	//cname2 (which must exist somewhere). cname1 must be a valid absolute 
+	//control pathname or a local control pathname: if the cname1 control 
+	//does not exist, it will be created and added to this MarSystem.
+	//cname 2 must be a valid absolute, relative or local control pathname
+	//to an EXISTING control.
+		
 	//try to get the controls
-	MarControlPtr ctrl1 = this->getControlLocal(localPath);//search only local controls
-	MarControlPtr ctrl2 = this->getControl(cname2, true);//search everywhere in the network
+	MarControlPtr ctrl1 = this->getControlLocal(cname1);//search only local controls (equivalent to getControl(localPath, false, false))
+	MarControlPtr ctrl2 = this->getControl(cname2, true, true);//search everywhere in the network (including locally, at parent and among children)
 
+	//a control is inherently connected to itself!
+	if(ctrl1() == ctrl2())
+		return true;
+	
 	//make sure 2nd control exists somewhere in the network
 	if(ctrl2.isInvalid())
 	{
@@ -694,8 +680,12 @@ MarSystem::linkControl(string cname1, string cname2)
 	// to add it to this MarSystem
 	if(ctrl1.isInvalid())
 	{
-		if(!addControl(localPath, ctrl2->clone(), ctrl1))
-			return false; //some error occurred...
+		if(!addControl(cname1, ctrl2->clone(), ctrl1))
+		{
+			MRSWARN("MarSystem::linkControl - Error creating new link control: " + cname1);
+			MRSWARN("MarSystem::linkControl - absolute path: " + absPath_);
+			return false;
+		}
 	}
 
 	//now both controls exist 
@@ -710,93 +700,62 @@ MarSystem::linkControl(string cname1, string cname2)
 }
 
 MarControlPtr
-MarSystem::getControl(string cname, bool searchParent, MarSystem* excludedFromSearch)
+MarSystem::getControl(string cname, bool searchParent, bool searchChildren)
 {
 	//USE A CACHE FOR MORE EFFICIENT LOOK-UP?? [!]
 
-	//check if this is an absolute control pathname
-	if(cname[0] == '/')
-	{
-		//check for this MarSystem's own path
-		if(cname.substr(0, absPath_.length()) == absPath_)
+	//convert cname to the canonical relative format
+	string relativecname = getControlRelativePath(cname);
+
+	//if this is not a control from this MarSystem or its children
+	//ask parent (if allowed) to search for it on the remaining of the network
+	if(relativecname == "")
+		if(searchParent && parent_)
+			return parent_->getControl(cname, true, true);//parent will also ask its parent if necessary
+		else //parent search not allowed, so the control was not found => return invalid control
 		{
-			//just remove the path and look for it internally
-			//or among children
-			cname = cname.substr(absPath_.length(), cname.length());
+			//MRSWARN("MarSystem::getControl - Unsupported control name: " + cname);
+			return MarControlPtr();
 		}
-		//not a control from this MarSystem or its children
-		//If allowed, ask parent for searching for it on the 
-		//remaining of the network
+
+	//check if this relative control path points to a possible local control
+	string localcname = getControlLocalPath(relativecname);
+	if(localcname != "")
+	{
+		//This may be a local control, so look for it
+		#ifdef MARSYAS_QT
+		QReadLocker locker(&rwLock_); //reading controls_ [!]
+		#endif
+		if(controls_.find(localcname) != controls_.end())
+			return controls_[localcname]; //control found
 		else
+			return MarControlPtr(); //no control found with this name => return invalid control 
+	}
+	//definitely not a local control pathname. It can only be a relative control path.
+	//So search in children (if allowed).
+	else 
+	{
+		if(searchChildren)
 		{
-			//exclude this MarSystem when asking parent to search for the control
-			//since it's known that it does not belong to here or any of the children
-			if(searchParent && parent_)
-				return parent_->getControl(cname, true, this);
-			else
+			//search for a child that has a corresponding prefix
+			vector<MarSystem*>::const_iterator msysIter;
+			for(msysIter = marsystems_.begin(); msysIter != marsystems_.end(); ++msysIter)
 			{
-				//MRSWARN("MarSystem::getControl - Unsupported control name: " + cname);
-				return MarControlPtr();
+				string prefix = (*msysIter)->getPrefix();
+				prefix = prefix.substr(1, prefix.length()); //ignore leading "/"
+				if(relativecname.substr(0, prefix.length()) == prefix)
+				{
+					//a matching child was found!
+					//check if the control exists in the child
+					string childcname = relativecname.substr(prefix.length(),relativecname.length());
+					return (*msysIter)->getControl(childcname);
+				}
 			}
+			return MarControlPtr();//no child found with corresponding prefix...
 		}
+		else
+			return MarControlPtr();
 	}
-	
-	// This is a relative path, so now get the local path
-	string localcname = getControlLocalPath(cname);
-
-	// start by checking if it is a local control
-	//(i.e. owned by the MarSystem itself and not its children)
-	if(controls_.find(localcname) != controls_.end())
-	{
-		#ifdef MARSYAS_QT
-		QReadLocker locker(&rwLock_); //reading controls_ [!]
-		#endif
-		return controls_[localcname];
-	}
-	else if(isComposite_) //if not a local control, then search it among children
-	{
-		MarControlPtr childCtrl;
-		//iterate recursively over children and just
-		//return the first control that matches the requested one
-		for (mrs_natural i=0; i< marsystemsSize_; i++)
-		{
-			//skip the child MarSystem where this search originated at
-			//(already looked for controls at that child, so no point
-			//doing it all over again)
-			if(marsystems_[i] == excludedFromSearch)
-				continue;//skip this child!
-
-			//search for controls in children
-
-			 /***** THIS WAS THE PORTUGESE VERSION *****/ 
-			//childCtrl = marsystems_[i]->getControl(cname);
-			// changed by gtzan to 
-
-			childCtrl = marsystems_[i]->getControl(localcname);
-
-
-			if(!childCtrl.isInvalid())
-				return childCtrl;
-		}
-	}
-
-	//if no control found anywhere, this is an unsupported control!
-	//MRSWARN("MarSystem::getControl - Unsupported control name = " + cname);
-	return MarControlPtr();
-}
-
-MarControlPtr
-MarSystem::getControlLocal(string cname)
-{
-	if(controls_.find(cname) != controls_.end())
-	{
-		#ifdef MARSYAS_QT
-		QReadLocker locker(&rwLock_); //reading controls_ [!]
-		#endif
-		return controls_[cname];
-	}
-	else
-		return MarControlPtr();
 }
 
 bool 
@@ -825,35 +784,33 @@ MarSystem::setControlState(string cname, bool state)
 }
 
 bool 
-MarSystem::hasControl(string cname) 
+MarSystem::hasControl(string cname, bool searchChildren) 
 {
-#ifdef MARSYAS_QT
-	QReadLocker locker(&rwLock_);//reading controls_ [!]
-#endif
-
-	//look for local and child controls only!
-	MarControlPtr control = this->getControl(cname);
+	//look for local and (optionally) children controls
+	MarControlPtr control = this->getControl(cname, false, searchChildren);
 	return !control.isInvalid();
 }
 
 bool
-MarSystem::hasControlLocal(string cname)
+MarSystem::hasControl(MarControlPtr control, bool searchChildren)
 {
-	//get the local control pathname (if it exists!)
-	cname = getControlLocalPath(cname);
-	
-	//if the local path is inexistent, then the control does not exist
-	//in this MarSystem!
-	if(cname == "")
-		return false;
-
-	#ifdef MARSYAS_QT
-	QReadLocker locker(&rwLock_); //reading controls_ [!]
-	#endif
-	
-	//if the local path exists, then see if the control itself really exists
-	return(controls_.find(cname)!=controls_.end());
-
+	//search local controls
+	for(ctrlIter_=controls_.begin(); ctrlIter_!=controls_.end();++ctrlIter_)
+	{
+		if((ctrlIter_->second)() == control())
+			return true;
+	}
+	//search control among children (if allowed)
+	if(searchChildren)
+	{
+		vector<MarSystem*>::const_iterator msysIter;
+		for(msysIter=marsystems_.begin(); msysIter!=marsystems_.end(); ++msysIter)
+		{
+			if((*msysIter)->hasControl(control, true))
+				return true;
+		}
+	}
+	return false;
 }
 
 bool 
@@ -867,31 +824,29 @@ MarSystem::updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd)
 		return false;
 	}
 
-	//check if control is local or in children
-	if(!hasControl(control->getName()))
+	//check if control exists locally or among children
+	if(!hasControl(control))
 	{
-		MRSWARN("MarSystem::updControl -" + control->getName() + " does not exist locally or in children!");
+		MRSWARN("MarSystem::updControl - " + control->getName() + " does not exist locally or in children!");
 		MRSWARN("MarSystem::updControl - MarSystem name = " + name_);
 		return false;
 	}
 
 	if(!control->setValue(newcontrol, upd))
-		return false; //some error occurred in setValue() (e.g. control does not exist locally or in chil
+		return false; //some error occurred in setValue()
 
 	//in case this is a composite Marsystem,
 	if(isComposite_)
 	{
-		// get the control name
-		string cname = control->getName();
-
 		// call update (only if the control has state,
 		// upd is true, and if it's not a local control (otherwise update 
 		// was already called by control->setValue())).
-		if(upd && control->hasState() && !hasControlLocal(cname))
+		if(upd && control->hasState() && !hasControlLocal(control))
 			update();
 
 		// certain controls must also be propagated to its children
 		// (must find a way to avoid this hard-coded control list, though! [!] )
+		string cname = control->getName();
 		if ((cname == "mrs_natural/inSamples")|| 
 			(cname == "mrs_natural/inObservations")||
 			(cname == "mrs_real/israte")||
@@ -952,8 +907,9 @@ MarSystem::controlUpdate(MarControlPtr ctrl)
 	}
 }
 
+//get local controls only (i.e. no child controls included)
 const map<string, MarControlPtr>&
-MarSystem::getControls()
+MarSystem::getLocalControls()
 {
 #ifdef MARSYAS_QT
 	QReadLocker locker(&rwLock_); //reading controls_ [!] 
@@ -962,27 +918,33 @@ MarSystem::getControls()
 	return controls_;
 }
 
-
 // get all the controls (including controls of children) 
-// for a particular MarSystem - not yet implemented 
-// needs to be recursive 
-
+// for a particular MarSystem 
 map<string, MarControlPtr>
-MarSystem::getAllControls()
+MarSystem::getControls(map<string, MarControlPtr>* cmap)
 {
-  map<string, MarControlPtr> res;
-  
-  map<string, MarControlPtr>::iterator iter;
-  
-  for (iter=controls_.begin(); iter != controls_.end(); ++iter) 
-    {
-      res[iter->first] = iter->second;
-    }
-  return res;
-  
+	if(!cmap)
+	{
+		map<string, MarControlPtr> controlsmap;
+		cmap = &controlsmap;
+	}
+
+	//fill list with local controls
+	for (ctrlIter_=controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_) 
+	{
+		(*cmap)[absPath_+ctrlIter_->first] = ctrlIter_->second;
+	}
+
+	//iterate over children, recursively,
+	//and fill the list with their controls
+	vector<MarSystem*>::const_iterator msysIter;
+	for(msysIter = marsystems_.begin(); msysIter != marsystems_.end(); ++msysIter)
+	{
+		(*msysIter)->getControls(cmap);
+	}
+	
+	return (*cmap);
 }
-
-
 
 vector<MarSystem*>
 MarSystem::getChildren()
@@ -1008,6 +970,17 @@ MarSystem::addControl(string cname, MarControlPtr v, MarControlPtr& ptr)
 bool
 MarSystem::addControl(string cname, MarControlPtr v)
 {
+	//convert cname to the canonical local control pathname format
+	string pcname = cname;
+	cname = getControlLocalPath(cname);
+	if(cname == "")
+	{
+		//cname is an invalid control pathname!
+		MRSWARN("MarSystem::addControl - invalid control pathname: " + pcname);
+		MRSWARN("MarSystem::addControl - absolute path: " + absPath_);
+		return false; 
+	}
+	
 	//check for type mismatch between cname string (which include type information)
 	//and the actual control type passed as an argument
 	string::size_type pos = cname.find("/", 0);

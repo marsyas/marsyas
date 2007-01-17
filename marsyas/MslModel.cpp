@@ -156,7 +156,7 @@ MslModel::input( const string& inputString )
 map<string, MarControlPtr> 
 MslModel::getControls( const string& name ) 
 {
-  return workingSet[name]->getControls();
+  return workingSet[name]->getLocalControls();
 }
 
 //

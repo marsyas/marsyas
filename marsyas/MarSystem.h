@@ -102,7 +102,7 @@ protected:
 	std::string type_;		// Type of MarSystem
 	std::string name_;		// Name of instance
 	std::string prefix_;	// /type_/name_/
-	std::string absPath_;	// parent0Type/parent0Name/.../parentNType/parentNName/type_/name_/
+	std::string absPath_;	// /parent0Type/parent0Name/.../parentNType/parentNName/type_/name_/
 												// in case this MarSystem is part of a composite
 												// this is the absolute path to it
 
@@ -210,6 +210,12 @@ public:
     return updControl(control, newcontrol, upd);
   }
 
+	// query controls
+	bool hasControl(MarControlPtr control, bool searchChildren = true);
+	bool hasControlLocal(MarControlPtr control) {return hasControl(control, false);}
+	bool hasControl(std::string cname, bool searchChildren = true);
+	bool hasControlLocal(std::string cname) {return hasControl(cname, false);}
+
 	// set controls
 	bool setControl(std::string cname, MarControlPtr newcontrol) {return updctrl(cname, newcontrol, NOUPDATE);}
 	bool setctrl(char *cname, MarControlPtr newcontrol) {return updctrl(std::string(cname), newcontrol, NOUPDATE);}
@@ -217,17 +223,15 @@ public:
 	bool setctrl(MarControlPtr control, MarControlPtr newcontrol) {return updctrl(control, newcontrol, NOUPDATE);}
   
 	// get controls
-	bool hasControl(std::string cname);
-	bool hasControlLocal(std::string cname);
-  MarControlPtr getControl(std::string cname, bool searchParent = false, MarSystem* excluded = NULL);
-	MarControlPtr getControlLocal(std::string cname);
+  MarControlPtr getControl(std::string cname, bool searchParent = false, bool searchChildren = true);
+	MarControlPtr getControlLocal(std::string cname) {return getControl(cname, false, false);}
 	MarControlPtr getctrl(std::string cname) {return getControl(cname);}
 
-        std::map<std::string, MarControlPtr> getAllControls();
-	const std::map<std::string, MarControlPtr>& getControls();
+  std::map<std::string, MarControlPtr> getControls(std::map<std::string, MarControlPtr>* cmap = NULL);
+	const std::map<std::string, MarControlPtr>& getLocalControls();
 
 	// set control state
-	void setControlState(std::string cname, bool state); //should this be virtual? [?]
+	void setControlState(std::string cname, bool state);
 	void setctrlState(std::string cname, bool state) {setControlState(cname, state);}
 	void setctrlState(char * cname, bool state){setControlState(std::string(cname), state);}
 	void setctrlState(MarControlPtr control, bool state) {control->setState(state);}

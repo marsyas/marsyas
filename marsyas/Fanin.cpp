@@ -120,7 +120,7 @@ Fanin::updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd)
 	}
 
 	//check if control is local or in children
-	if(!hasControl(control->getName()))
+	if(!hasControl(control))
 	{
 		MRSWARN("MarSystem::updControl -" + control->getName() + " does not exist locally or in children!");
 		MRSWARN("MarSystem::updControl - MarSystem name = " + name_);
@@ -134,17 +134,15 @@ Fanin::updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd)
 	//in case this is a composite Marsystem,
 	if(isComposite_)
 	{
-		// get the control name
-		string cname = control->getName();
-
 		// call update (only if the control has state,
 		// upd is true, and if it's not a local control (otherwise update 
 		// was already called by control->setValue())).
-		if(upd && control->hasState() && !hasControlLocal(cname))
+		if(upd && control->hasState() && !hasControlLocal(control))
 			update();
 
 		// certain controls must also be propagated to its children
 		// (must find a way to avoid this hard-coded control list, though! [!] )
+	  string cname = control->getName();
 
 // 		//Fanin Specific [!]
 // 		if(cname == "mrs_natural/inObservations")
