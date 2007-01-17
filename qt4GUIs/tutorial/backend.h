@@ -19,7 +19,7 @@
 #include <QObject>
 #include <QTimer>
 #include "MarSystemManager.h"
-#include "MarSystemWrapper.h"
+#include "../MarSystemQtWrapper.h"
 
 #include <iostream>
 using namespace std;
@@ -43,7 +43,7 @@ signals:
 private:
 // in order to make the MarSystem act like a Qt object,
 // we use this wrapper:
-	MarSystemWrapper *mrsWrapper;
+	MarSystemQtWrapper *mrsWrapper;
 // ... and these pointers:
   MarControlPtr filenamePtr;
   MarControlPtr gainPtr;

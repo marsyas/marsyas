@@ -29,7 +29,7 @@ MarBackend::MarBackend() {
   playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
 // wrap it up to make it pretend to be a Qt object:
-	mrsWrapper = new MarSystemWrapper(playbacknet);
+	mrsWrapper = new MarSystemQtWrapper(playbacknet);
 	mrsWrapper->start();
 
 // make these pointers so that we can interface with the network
