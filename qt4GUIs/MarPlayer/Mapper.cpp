@@ -18,13 +18,13 @@
 
 /** 
     \class Mapper
-    \brief Mapper maps the state of the GUI to MarSystemWrapper 
+    \brief Mapper maps the state of the GUI to MarSystemQtWrapper 
 
     MainWindow connects various signals to slots of Mapper 
 and Mapper converts and maps the corresponding values to 
-the appropriate slots of MarSystemWrapper. Also 
+the appropriate slots of MarSystemQtWrapper. Also 
 Mapper creates the playback network of MarSystems 
-and also receives updates from the MarSystemWrapper 
+and also receives updates from the MarSystemQtWrapper 
 which it signals to MainWindow to update the GUI. 
 */
 
@@ -45,9 +45,9 @@ Mapper::Mapper()
   
   
   // make a Qt-like thread object wrapped around the MarSystem
-  mwr_ = new MarSystemWrapper(pnet_);
+  mwr_ = new MarSystemQtWrapper(pnet_);
   
-  //start the MarSystemWrapper thread
+  //start the MarSystemQtWrapper thread
   mwr_->start();
 
   // Create MarControlPtr handles for all the controls 

@@ -18,13 +18,13 @@
 
 /** 
     \class Mapper
-    \brief Mapper maps the state of the GUI to MarSystemWrapper 
+    \brief Mapper maps the state of the GUI to MarSystemQtWrapper 
 
     MainWindow connects various signals to slots of Mapper 
 and Mapper converts and maps the corresponding values to 
-the appropriate slots of MarSystemWrapper. Also 
+the appropriate slots of MarSystemQtWrapper. Also 
 Mapper creates the playback network of MarSystems 
-and also receives updates from the MarSystemWrapper 
+and also receives updates from the MarSystemQtWrapper 
 which it signals to MainWindow to update the GUI. 
 */
 
@@ -34,7 +34,7 @@ which it signals to MainWindow to update the GUI.
 #include <QObject> 
 #include <QTimer>
 #include "MarSystemManager.h" 
-#include "MarSystemWrapper.h"
+#include "../MarSystemQtWrapper.h"
 
 class Mapper: public QObject
 {
@@ -71,7 +71,7 @@ private:
   
   
   
-  MarSystemWrapper* mwr_;   // the wrapper that turns 
+  MarSystemQtWrapper* mwr_;   // the wrapper that turns 
                             // any MarSystem into 
                             // Qt-like object with 
                             // signals and slots 
