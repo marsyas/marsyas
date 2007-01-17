@@ -45,7 +45,7 @@ private:
   
   mrs_natural nChannels_;
   std::string filename_;
-	mrs_natural myIsrate_;
+	mrs_real myIsrate_;
   MarSystem* isrc_;
   MarSystem* downsampler_;
   

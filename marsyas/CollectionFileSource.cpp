@@ -151,8 +151,8 @@ CollectionFileSource::myUpdate()
   {
     downsampler_->updctrl("mrs_natural/inSamples", 2* inSamples_);
     setctrl("mrs_natural/onSamples", inSamples_);
-    setctrl("mrs_real/israte", myIsrate_/2);
-    setctrl("mrs_real/osrate", myIsrate_/2);
+    setctrl("mrs_real/israte", myIsrate_/2.0);
+    setctrl("mrs_real/osrate", myIsrate_/2.0);
     temp_.create(inObservations_, 2 * inSamples_);
     tempi_.create(inObservations_, 2 * inSamples_);
     isrc_->updctrl("mrs_natural/inSamples", 2 * inSamples_);
@@ -203,7 +203,7 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 		setctrl("mrs_real/israte", myIsrate_);
 		setctrl("mrs_real/osrate", myIsrate_);
 
-		if (myIsrate_ == 44100)
+		if (myIsrate_ == 44100.0)
 		{
 		 isrc_->process(tempi_,temp_);
 		 setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
@@ -222,7 +222,7 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
   }
   else
   {
-    if (myIsrate_ == 44100)
+    if (myIsrate_ == 44100.0)
 		{
 			isrc_->process(tempi_,temp_);
 			setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
