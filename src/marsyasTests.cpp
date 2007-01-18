@@ -146,20 +146,24 @@ test_simpleSFPlay(string sfName)
   playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
 	playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+	playbacknet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
 
   mrs_bool isEmpty;
-  cout << *playbacknet << endl;
-  while ( isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->toBool() ) {
+  //cout << *playbacknet << endl;
+  while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->toBool()) 
+	{
     cout << "tick " << isEmpty << endl;
-    playbacknet->tick();
+		//cout << "pos " << playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() << endl;
+    
+		playbacknet->tick();
+
+		//test if setting "mrs_natural/pos" to 0 for rewinding is working
+		//if(playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() > 100000)
+		//	playbacknet->updctrl("mrs_natural/pos", 0);
   }
   cout << "tick " << isEmpty << endl;
   delete playbacknet;
 }
-
-
-
-
 
 void
 test_getControls(string sfName)
@@ -1684,7 +1688,7 @@ void test_Windowing()
     winname.push_back("Blackman");
     winname.push_back("Blackman-Harris");
 
-    for (int i = 0 ; i < winname.size(); i++)
+    for (unsigned int i = 0 ; i < winname.size(); i++)
     {
         series->updctrl("Windowing/win/mrs_string/type", winname[i]);                    
         series->updctrl("PlotSink/plot/mrs_string/outputFilename", "marsyas" + winname[i]);    
