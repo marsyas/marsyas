@@ -71,6 +71,7 @@ printHelp(string progName)
   cerr << "updctrl         : test updating control with pointers " << endl;
   cerr << "duplex          : test duplex audio input/output" << endl;
   cerr << "simpleSFPlay    : plays a sound file" << endl;
+  cerr << "getControls     : test getControls functionality " << endl;
   
   exit(1);
 }
@@ -155,6 +156,49 @@ test_simpleSFPlay(string sfName)
   cout << "tick " << isEmpty << endl;
   delete playbacknet;
 }
+
+
+
+
+
+void
+test_getControls(string sfName)
+{
+  MarSystemManager mng;
+  
+  MarSystem* playbacknet = mng.create("Series", "playbacknet");
+  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+  playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
+
+
+  MarSystem* newseries = mng.create("Series", "newseries");
+  newseries->addMarSystem(mng.create("Gain", "g1"));
+  newseries->addMarSystem(mng.create("Gain", "g2"));
+
+  playbacknet->addMarSystem(newseries);
+  
+
+  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+  playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+
+  
+  cout << *playbacknet << endl;
+
+  std::map<std::string, MarControlPtr> mycontrols = playbacknet->getControls();
+  std::map<std::string, MarControlPtr>::iterator myc;
+  
+  for (myc = mycontrols.begin(); myc != mycontrols.end(); ++myc)
+    cout << myc->first << endl;
+  
+  
+  delete playbacknet;
+}
+
+
+
+
 
 void 
 test_audiodevices()
@@ -2080,6 +2124,9 @@ main(int argc, const char **argv)
     test_duplex();
   else if (testName == "simpleSFPlay") 
     test_simpleSFPlay(fname0);
+  else if (testName == "getControls") 
+    test_getControls(fname0);
+  
   else 
     {
       cout << "Unsupported test " << endl;

@@ -925,8 +925,8 @@ MarSystem::getControls(map<string, MarControlPtr>* cmap)
 {
 	if(!cmap)
 	{
-		map<string, MarControlPtr> controlsmap;
-		cmap = &controlsmap;
+	  cmap = new map<string, MarControlPtr>;
+	  // cmap = &controlsmap;
 	}
 
 	//fill list with local controls
