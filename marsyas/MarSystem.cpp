@@ -923,9 +923,10 @@ MarSystem::getLocalControls()
 map<string, MarControlPtr>
 MarSystem::getControls(map<string, MarControlPtr>* cmap)
 {
+	map<string, MarControlPtr> controlsmap;
+	
 	if(!cmap)
 	{
-	  map<string, MarControlPtr> controlsmap;
 	  cmap = &controlsmap;
 	}
 
