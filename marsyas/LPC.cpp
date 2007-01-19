@@ -1,4 +1,3 @@
-
 /*
 ** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
@@ -18,240 +17,346 @@
 */
 
 /** 
-    \class LPC
-    \brief Compute LPC coefficients, Pitch and Power of window.
+\class LPC
+\brief Compute Warped LPC coefficients, Pitch and Power [STILL UNDER TESTING!].
 
+Linear Prediction Coefficients (LPC). Features commonly used 
+in Speech Recognition research. This class is a modification of the original
+Marsyas0.1 LPC class.  The following differences apply: 
+- order now reflects the LPC order (and returns <order> coefficients plus pitch and gain)
+- It is possible to define a pole-shifting parameter, gamma (default value = 1.0 => no shifting)
+- It is possible to define a warping factor, lambda (defualt value = 0.0 => no warping)
+
+Code by Luís Gustavo Martins - lmartins@inescporto.pt
+May 2006
 */
 
 #include "LPC.h"
+
+//#define _MATLAB_LPC_
 
 using namespace std;
 using namespace Marsyas;
 
 LPC::LPC(string name):MarSystem("LPC",name)
 {
-  //type_ = "LPC";
+	//type_ = "LPC";
 	//name_ = name;
-
-  inSize_ = 512;//How do we add definitions? DEFAULTINSIZE
-  hopSize_= 256;
-  outSize_ = 10-1;
-  order_ = 10;
-  minPitchRes_ = 0.01;
-  autocorr_ = NULL;
-  highFreq_ = 5000;
-  lowFreq_ = 2000;
-  firstTime_=1;
-  networkCreated_ = false;
 
 	addControls();
 }
 
 LPC::~LPC()
 {
-  delete autocorr_;
 }
 
 MarSystem* 
 LPC::clone() const 
 {
-  return new LPC(*this);
+	return new LPC(*this);
 }
 
 void 
 LPC::addControls()
 {
-  addctrl("mrs_natural/order", order_);
-  setctrlState("mrs_natural/order", true);
-  addctrl("mrs_real/minPitchRes",minPitchRes_);
-  setctrlState("mrs_real/minPitchRes", true);
-  addctrl("mrs_natural/hopSize",hopSize_);
-  setctrlState("mrs_natural/hopSize", true);
-  addctrl("mrs_real/lowFreq", lowFreq_);
-  addctrl("mrs_real/highFreq", highFreq_);
-  setctrlState("mrs_real/lowFreq", true);
-  setctrlState("mrs_real/highFreq", true);
+	addctrl("mrs_natural/order", (mrs_natural)10); 
+	setctrlState("mrs_natural/order", true); 
+	addctrl("mrs_real/lambda", (mrs_real)0.0);	
+	addctrl("mrs_real/gamma", (mrs_real)1.0);
 }
 
 void
 LPC::myUpdate()
 { 
-  MRSDIAG("LPC.cpp - LPC:myUpdate");
-  //cout <<" LPC UPDATE**********" << endl;
-  inSize_ = getctrl("mrs_natural/inSamples")->toNatural();
-  hopSize_ = getctrl("mrs_natural/hopSize")->toNatural();
-  order_ =  getctrl("mrs_natural/order")->toNatural();
-  minPitchRes_= getctrl("mrs_real/minPitchRes")->toReal();
-  outSize_ = order_+1;  
-  highFreq_=getctrl("mrs_real/highFreq")->toReal();
-  lowFreq_=getctrl("mrs_real/lowFreq")->toReal();
-  //cout <<"hopSize_:"<<hopSize_<<endl;
-  setctrl("mrs_natural/onSamples", outSize_);
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+	MRSDIAG("LPC.cpp - LPC:myUpdate");
 
-	// Build the pitch extractor network 
+	order_ = getctrl("mrs_natural/order")->toNatural();
 
-  if (networkCreated_ == false) 
-    {
-      pitchExtractor_ = new Series("pitchExtractor");
-      pitchExtractor_->addMarSystem(new AutoCorrelation("acr"));
-      pitchExtractor_->updctrl("AutoCorrelation/acr/mrs_real/magcompress", 0.67);
-      pitchExtractor_->addMarSystem(new HalfWaveRectifier("hwr"));
-      
-      fanout_ = new Fanout("fanout");
-      fanout_->addMarSystem(new Gain("id1"));
-      fanout_->addMarSystem(new TimeStretch("tsc"));
-      
-      pitchExtractor_->addMarSystem(fanout_);
-      
-      fanin_ = new Fanin("fanin");
-      fanin_->addMarSystem(new Gain("id2"));
-      fanin_->addMarSystem(new Negative("nid"));
-      
-      pitchExtractor_->addMarSystem(fanin_);
-      pitchExtractor_->addMarSystem(new HalfWaveRectifier("hwr"));
-      pitchExtractor_->addMarSystem(new Peaker("pkr"));
-      pitchExtractor_->addMarSystem(new MaxArgMax("mxr"));
-      networkCreated_ = true;
-    }
- 
-  /* ---------------------
-//Not sure what to do with this.
-     unsigned int i;
-  // Prepare feature names
-  featSize_ = outSize_;
-  for (i=0; i < featSize_; i++)
-   featNames_.push_back("LPC");
-  */
+	setctrl("mrs_natural/onObservations", (mrs_natural)(order_+2)); // <order_> coefs + pitch value + power value
+	setctrl("mrs_natural/onSamples", (mrs_natural)1);
+	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-    // if(firstTime_){
-    //firstTime_=0;
-    //}
-  
+	//LPC features names
+	ostringstream oss;
+	for (mrs_natural i = 0; i < order_; i++)
+		oss << "LPC_" << i+1 << ",";
+	oss << "LPC_Pitch," << "LPC_Gain,";
+	setctrl("mrs_string/onObsNames", oss.str());
 
+	temp_.create(order_ ,order_);
+	Zs_.create(order_);
 
-  // update controls for pitchextract network------------------------------
+	//MATLAB engine stuff - for testing and validation purposes only!
+#ifdef _MATLAB_LPC_
+	MATLAB_EVAL("LPC_pitch = [];");
+#endif
 
-  pitchExtractor_->updctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
-  pitchExtractor_->updctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
-  pitchExtractor_->updctrl("mrs_real/israte", getctrl("mrs_real/israte")->toReal());
-
-  pitchExtractor_->updctrl("Fanout/fanout/TimeStretch/tsc/mrs_real/factor", 0.5); 
-    
-   
-   lowSamples_ = hertz2samples(highFreq_,getctrl("mrs_real/israte")->toReal());
-   highSamples_ = hertz2samples(lowFreq_,getctrl("mrs_real/israte")->toReal());
-
-   //cout << "LPC update lowSamples: "<<lowSamples_ <<"highSamples: "<<highSamples_<< endl;
-   pitchExtractor_->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.00);
-   pitchExtractor_->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.4);
-   pitchExtractor_->updctrl("Peaker/pkr/mrs_natural/peakStart", lowSamples_);
-   pitchExtractor_->updctrl("Peaker/pkr/mrs_natural/peakEnd", highSamples_);
-   pitchExtractor_->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 1);
-   //cout <<" before pitch res" << endl;
-   pitchres_.create(getctrl("mrs_natural/onObservations")->toNatural(),pitchExtractor_->getctrl("mrs_natural/onSamples")->toNatural());
-  
-   // cout << (*pitchExtractor_) << endl;
-  //-----------------------------------------------------------------------
-
-  //update controls for LPC Autocorrelation 
-  autocorr_ = new AutoCorrelation("autoCorr");
-  autocorr_->updctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
-  autocorr_->updctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
-  autocorr_->updctrl("mrs_real/israte", getctrl("mrs_real/israte"));
-  autocorr_->update();
-  //cout << *autocorr_ << endl;   
-
-  rmat_.create((mrs_natural)order_ - 1,(mrs_natural)order_ - 1);
-  temp_.create((mrs_natural)order_ - 1,(mrs_natural)order_ - 1);
-  corr_.create((mrs_natural)inSize_);
-  Zs_.create((mrs_natural)order_-1);
-  pitchExtractor_->update();
 }
 
-void 
-LPC::predict(realvec& data, realvec& coeffs)
+//perhaps this method could become an independent MarSystem in the future...
+void
+LPC::autocorrelationWarped(const realvec& in, realvec& r, mrs_real& pitch, mrs_real lambda) 
 {
-  mrs_natural i,j;
-  mrs_real power = 0.0;
-  mrs_real error, tmp;
-  for (i=0; i< order_-1; i++) 
-    {
-      Zs_(i) = data(order_-1-i-1);
-    }
-  //cout << "hopeSize_ predict: "<<hopSize_<< endl;
-  for (i=order_-1; i<= hopSize_ + order_-1; i++)
-    {
-      
-      tmp = 0.0;
-      for (j=0; j< order_-1; j++) tmp += Zs_(j) * coeffs(j);
-      // cout << "After 1st for loop in LPC predict"<< endl;
-      for (j=order_-1-1; j>0; j--) Zs_(j) = Zs_(j-1);
-      // cout << "After 2nd for loop in LPC predict"<< endl;
-      Zs_(0) = data(i);
-      //cout << "After zs(0)=data(i) in LPC predict"<< endl;
-      error = data(i) - tmp;
-      //cout << "i="<<i<< endl;
-      power += error * error;
-    }
-  //cout << "end of LPC predict power= "<<power_<< endl;
-  power_ = sqrt(power) / hopSize_;
+	//*Based on the code from: http://www.musicdsp.org/showone.php?id=137
+
+	//find the order-P autocorrelation array, R, for the sequence x 
+	//of length L and using a warping factor of lambda
+
+	mrs_real* x = in.getData();
+	mrs_natural L = in.getSize();
+	mrs_real* R = r.getData();
+	mrs_natural P = in.getSize()/2;//order_;
+
+	mrs_real* dl = new mrs_real[L];
+	mrs_real* Rt = new mrs_real[L];
+	mrs_real r1,r2,r1t;
+	R[0]=0;
+	Rt[0]=0;
+	r1=0;
+	r2=0;
+	r1t=0;
+	for(mrs_natural k=0; k<L;k++)
+	{
+		Rt[0]+=x[k]*x[k];
+
+		dl[k]=r1-lambda*(x[k]-r2);
+		r1 = x[k];
+		r2 = dl[k];
+	}
+	for(mrs_natural i=1; i<=P; i++)
+	{
+		Rt[i]=0;
+		r1=0;
+		r2=0;
+		for(mrs_natural k=0; k<L;k++)
+		{
+			Rt[i]+=dl[k]*x[k];
+
+			r1t = dl[k];
+			dl[k]=r1-lambda*(r1t-r2);
+			r1 = r1t;
+			r2 = dl[k];
+		}
+	}
+
+	for(long i=0; i<=P; i++)
+		R[i]=Rt[i];
+
+	delete[] dl;
+	delete[] Rt;
+
+	//----------------------------------------------------
+	// estimate pitch 
+	//----------------------------------------------------
+	mrs_real temp = r(0);
+	//set peak searching start point to 2% of total window size [?]
+	mrs_natural j = (mrs_natural)(in.getSize() * 0.02); 
+	//detect first local minimum...
+	while (r(j) < temp && j < in.getSize()/2)
+	{
+		temp = r(j);
+		j++;
+	}
+	//... and then from there, detect higher peak => period estimate!
+	temp = 0.0;
+	for (mrs_natural i=j; i < in.getSize() * 0.5; i++)
+	{
+		if (r(i) > temp) 
+		{
+			j = i;
+			temp = r(i);
+		}
+	}
+
+	// This code is from the original Marsyas0.1 AutoCorrelation class
+	//this seems like some sort of Narrowed Autocorrelation (NAC)... [?][!]
+	//however, it does not seem to fit the NAC definition...
+	//so, what is this for??
+// 	mrs_real norm = 1.0 / (mrs_real)in.getSize();
+// 	mrs_natural k = in.getSize()/2;
+// 	for (mrs_natural i=0; i < in.getSize()/2; i++) 
+// 	r(i) *= (k-i) * norm;
+
+	//if autocorr peak not very prominent => not a good period estimate
+	//so discard it...
+	if ((r(j) / r(0)) < 0.4) j=0;
+	//avoid detection of too high fundamental freqs (e.g. harmonics)?
+	if (j > in.getSize()/4) j = 0;
+	
+	//pitch gets in fact the period (i.e. autocorr lag)
+	//measured in time samples... maybe this should be converted
+	//to a more convenient representation (e.g. pitch in Hz).
+	//Such a conversion would have to depend on the warp factor lambda... [!]
+	pitch  = (mrs_real)j;
+
+//MATLAB engine stuff - for testing and validation purposes only!
+#ifdef _MATLAB_LPC_
+	MATLAB_PUT(pitch, "pitch");
+	MATLAB_EVAL("LPC_pitch = [LPC_pitch pitch];");
+#endif
 }
 
+//Perhaps this method could become a member of realvec...
+void
+LPC::LevinsonDurbin(const realvec& r, realvec& a, realvec& k, mrs_real& e)
+{
+	//*Based on the code from: http://www.musicdsp.org/showone.php?id=137
+	
+	mrs_natural P = order_;
+	mrs_real* R = r.getData();
+	mrs_real* A = a.getData();
+	mrs_real* K = k.getData();
+	e = 0.0; //prediction error;
+
+	mrs_real Am1[62];
+
+	if(R[0]==0.0) 
+	{
+		for(mrs_natural i=1; i<=P; i++)
+		{
+			K[i]=0.0;
+			A[i]=0.0;
+		}
+	}
+	else 
+	{
+		mrs_real km,Em1,Em;
+		mrs_natural k,s,m;
+
+		for (k=0;k<=P;k++){
+			A[k]=0;
+			Am1[k]=0; }
+
+		A[0]=1;
+		Am1[0]=1;
+		km=0;
+		Em1=R[0];
+
+		for (m=1;m<=P;m++)                //m=2:N+1
+		{
+			mrs_real err=0.0f;                //err = 0;
+
+			for (k=1;k<=m-1;k++)          //for k=2:m-1
+				err += Am1[k]*R[m-k];     // err = err + am1(k)*R(m-k+1);
+
+			km = (R[m]-err)/Em1;          //km=(R(m)-err)/Em1;
+			K[m-1] = -km;
+			A[m]=km;                      //am(m)=km;
+
+			for (k=1;k<=m-1;k++)          //for k=2:m-1
+				A[k]=Am1[k]-km*Am1[m-k];  // am(k)=am1(k)-km*am1(m-k+1);
+
+			Em=(1-km*km)*Em1;             //Em=(1-km*km)*Em1;
+
+			for(s=0;s<=P;s++)             //for s=1:N+1
+				Am1[s] = A[s];            // am1(s) = am(s)
+
+			Em1 = Em;                     //Em1 = Em;
+			e = Em1; //prediction error
+			//e = Em1*Em1; //RMS prediction error
+		}
+		//e = sqrt(e/(mrs_real)m); //RMS prediction error
+	}
+}
+
+mrs_real
+LPC::predictionError(const realvec& data, const realvec& coeffs)
+{
+	mrs_natural i,j;
+	mrs_real power = 0.0;
+	mrs_real error, tmp;
+
+	//load delay line with input data...
+	for (i=0; i< order_; i++) 
+	{
+		Zs_(i) = data(order_-i-1);
+	}
+	//apply LPC filter and estimate RMS of the error (=~ LPC Gain)
+	mrs_natural count = 0;
+	for (i=order_; i<data.getSize() ; i++)
+	{
+		tmp = 0.0;
+		for (j=0; j< order_; j++) tmp += Zs_(j) * coeffs(j);
+		for (j=order_-1; j>0; j--) Zs_(j) = Zs_(j-1);
+		Zs_(0) = data(i);
+		error = data(i) - tmp;
+		power += error * error;
+		count ++;
+	}
+	return sqrt(power/(mrs_real)count);//=~ RMS LPC Gain
+}
 
 void 
 LPC::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out); 
-  mrs_natural i,j; 
-  autocorr_->process(in, corr_);
-  //cout << "begin process lpc"<< endl;
-  //cout << "in size "<<in.getSize()<<" pitchres_ size "<<pitchres_.getSize()<< endl;
-  //------------------------------------
+	mrs_natural i;
+	mrs_real LevinsonError = 0.0;
+	mrs_real PredictionError = 0.0;
+	mrs_real pitch = 0.0;
 
-  pitchExtractor_->process(in, pitchres_);
+//MATLAB engine stuff - for testing and validation purposes only!
+#ifdef _MATLAB_LPC_
+	MATLAB_PUT(in, "LPC_in");
+	MATLAB_PUT(order_, "LPC_order");
+	MATLAB_PUT(getctrl("mrs_real/gamma")->toReal(), "LPC_gamma");
+#endif
 
-  //-----------------------------------
-  
-  //cout << "after pitchEx process "<< endl;
-  // pitch_ = samples2hertz((mrs_natural)pitchres_(1), getctrl("mrs_real/israte")->toReal());
+	//-------------------------
+	// warped autocorrelation
+	//-------------------------
+	//calculate warped autocorrelation coeffs
+	realvec r(in.getSize());
+	//this also estimates the pitch - does it work if lambda != 0 [?]
+	autocorrelationWarped(in, r, pitch, getctrl("mrs_real/lambda")->toReal()); 
 
-  pitch_ = (mrs_natural)pitchres_(1);
-  cout << "pitch_ = " << pitch_ << endl;
-  
-  for (i=1; i<order_; i++)
-    for (j=1; j<order_; j++)
-      {
-	rmat_(i-1,j-1) = corr_(abs((i-j)));
-      }
-  rmat_.invert(temp_);
-  //cout << "After rmat.invert in LPC process"<< endl;
-  for (i=0; i < order_-1; i++)
-    {
-      out(i) = 0.0;
-      for (j=0; j < order_-1; j++)
-	{
-	  out(i) += (rmat_(i,j) * corr_(1+j));
-	}
-    }
-  predict(in, out);
-  //cout << "After predict in LPC process"<< endl;
-  if ((mrs_real)pitchres_(0)> minPitchRes_)
-    out(order_-1) = pitch_;
-  else 
-    out(order_-1) = 0.0;
-  out(order_) = power_;
- 
-  
-  //cout << "After everyting in LPC process------"<<out<< endl;
- 
+	//--------------------------
+	// Levison-Durbin recursion
+	//--------------------------
+	//Calculate LPC alpha and reflections coeffs
+	//using Levison-Durbin recursion
+	//output format for LPC coeffs:
+	// y(n) = x(n) - a(1)x(n-1) - ... - a(order_-1)x(n-order_-1)
+	// a = [1 a(1) a(2) ... a(order_-1)]
+	realvec a(order_+1);
+	realvec k(order_+1); //reflection coeffs
+	LevinsonDurbin(r, a, k, LevinsonError);
 
+	//--------------------------
+	// LPC coeffs
+	//--------------------------
+	//output LPC coeffs
+	// y(n) = x(n) - a(1)x(n-1) - ... - a(order_-1)x(n-order_-1)
+	// a = [1 a(1) a(2) ... a(order_-1)]
+	// out = [a(1) a(2) ... a(order_-1)]
+	for(i=0; i < order_; i++)
+		out(i) = a(i+1);
 
-    
-  
-  
+	//--------------------------
+	// LPC Pole-shifting
+	//--------------------------
+	//verify if Z-Plane pole-shifting should be performed...
+	mrs_real gamma = getctrl("mrs_real/gamma")->toReal();
+	if(gamma != 1.0)
+		for(mrs_natural j = 0; j < order_; j++)
+			out(j) = (out(j) * pow(gamma, (double)j+1));
 
+	//---------------------------
+	// RMS Prediction Error
+	//---------------------------
+	//calculate RMS prediction error of LPC model (=> power_)
+	//PredictionError = predictionError(in, out);
+
+	//------------------------------
+	//output pitch and power values
+	//------------------------------
+	out(order_) = pitch; // lag in samples <= from ::autocorrelationWarped(...) - does it work if lambda != 0 [?]
+	out(order_+1) = LevinsonError; //prediction error (= gain? [?])
+
+//MATLAB engine stuff - for testing and validation purposes only!
+#ifdef _MATLAB_LPC_
+	MATLAB_PUT(out, "LPC_out");
+	MATLAB_EVAL("LPC_test");
+#endif
 }
 
 
