@@ -21,8 +21,8 @@
 \brief Convert LPC coefficients to Cepstrum coefficients.
 
 This MarSystem is expecting to receive at its input LPC coefficients + Pitch + Power,
-as output by the LPCWarped MarSystem (see LPCWarped.cpp/.h). It only converts the LPC
-coefficients to cepstral coefficients and ignores the pitch value received from LPCwarped.
+as output by the LPC MarSystem (see LPC.cpp/.h). It only converts the LPC
+coefficients to cepstral coefficients and ignores the pitch value received from LPC.
 
 Code by:
 Luís Gustavo Martins - lmartins@inescporto.pt

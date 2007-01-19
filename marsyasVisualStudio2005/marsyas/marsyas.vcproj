@@ -512,14 +512,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\marsyas\LPCResyn.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\marsyas\LPCwarped.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\marsyas\LSP.cpp"
 				>
 			</File>
@@ -1219,14 +1211,6 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\LPCC.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\marsyas\LPCResyn.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\marsyas\LPCwarped.h"
 				>
 			</File>
 			<File

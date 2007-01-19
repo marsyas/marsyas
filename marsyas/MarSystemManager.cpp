@@ -123,8 +123,6 @@ in sequence.
 #include "Plucked.h" 
 #include "Delay.h"
 #include "LPC.h"
-#include "LPCwarped.h"
-#include "LPCResyn.h"
 #include "LPCC.h"
 #include "LSP.h"
 #include "SOM.h"
@@ -255,9 +253,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("NormMaxMin", new NormMaxMin("normmaxminpr"));
 	registerPrototype("Normalize", new Normalize("normalizepr"));
 
-	registerPrototype("LPC", new LPC("lpcpr"));
-	registerPrototype("LPCwarped", new LPCwarped("lpcwarppr"));
-	registerPrototype("LPCResyn", new LPCResyn("lpcresynpr"));
+	registerPrototype("LPC", new LPC("lpcwarppr"));
 	registerPrototype("LPCC", new LPCC("lpccpr"));
 	registerPrototype("LSP", new LSP("lsppr"));
 
@@ -333,12 +329,12 @@ MarSystemManager::MarSystemManager()
 	LPCnetpr->updctrl("Filter/preEmph/mrs_realvec/dcoeffs", dcoeffs);
 	LPCnetpr->addMarSystem(create("ShiftInput", "si"));
 	LPCnetpr->addMarSystem(create("Hamming", "ham"));
-	LPCnetpr->addMarSystem(create("LPCwarped", "lpc"));
+	LPCnetpr->addMarSystem(create("LPC", "lpc"));
 	LPCnetpr->linkctrl("mrs_realvec/preEmphFIR","Filter/preEmph/mrs_realvec/ncoeffs");
 	LPCnetpr->linkctrl("mrs_natural/WindowSize","ShiftInput/si/mrs_natural/WindowSize");
-	LPCnetpr->linkctrl("mrs_natural/order","LPCwarped/lpc/mrs_natural/order");
-	LPCnetpr->linkctrl("mrs_real/lambda","LPCwarped/lpc/mrs_real/lambda");
-	LPCnetpr->linkctrl("mrs_real/gamma","LPCwarped/lpc/mrs_real/gamma");
+	LPCnetpr->linkctrl("mrs_natural/order","LPC/lpc/mrs_natural/order");
+	LPCnetpr->linkctrl("mrs_real/lambda","LPC/lpc/mrs_real/lambda");
+	LPCnetpr->linkctrl("mrs_real/gamma","LPC/lpc/mrs_real/gamma");
 	registerPrototype("LPCnet", LPCnetpr);
 
 	// Phase Vocoder composite prototype 
