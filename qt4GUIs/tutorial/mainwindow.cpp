@@ -40,7 +40,7 @@ MarQTwindow::MarQTwindow(string fileName) {
 	setLayout(layout);
 
 // make the Marsyas backend
-	MarBackend *marBackend = new MarBackend();
+	marBackend = new MarBackend();
 	marBackend->openBackendSoundfile(fileName);
 
 // make connections between the Qt front-end and the Marsyas backend:
