@@ -1,4 +1,3 @@
-
 Think about disable/enable MFCC coefficients 
 Fix up and incorporate MarSystemBuilder
 Port eigenvector/eigenvalue calculation from 
