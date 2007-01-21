@@ -1,6 +1,6 @@
 /*
 ** Copyright (C) 2007 Graham Percival <gperciva@uvic.ca>
-**  
+**	
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
@@ -21,12 +21,12 @@ using namespace Marsyas;
 
 MarBackend::MarBackend() {
 // make a typical Marsyas network:
-  MarSystemManager mng;
-  playbacknet = mng.create("Series", "playbacknet");
-  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
-  playbacknet->addMarSystem(mng.create("Gain", "gain"));
-  playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
-  playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	MarSystemManager mng;
+	playbacknet = mng.create("Series", "playbacknet");
+	playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+	playbacknet->addMarSystem(mng.create("Gain", "gain"));
+	playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
+	playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
 // wrap it up to make it pretend to be a Qt object:
 	mrsWrapper = new MarSystemQtWrapper(playbacknet);
@@ -34,19 +34,22 @@ MarBackend::MarBackend() {
 
 // make these pointers so that we can interface with the network
 // in a thread-safe manner:
-  filenamePtr = mrsWrapper->getctrl("SoundFileSource/src/mrs_string/filename");
-  gainPtr = mrsWrapper->getctrl("Gain/gain/mrs_real/gain");
-  positionPtr = mrsWrapper->getctrl("SoundFileSource/src/mrs_natural/pos");
+	filenamePtr = mrsWrapper->getctrl("SoundFileSource/src/mrs_string/filename");
+	gainPtr = mrsWrapper->getctrl("Gain/gain/mrs_real/gain");
+	positionPtr = mrsWrapper->getctrl("SoundFileSource/src/mrs_natural/pos");
 
 // demonstrates information flow:  Marsyas->Qt.
-  QTimer *timer = new QTimer(this);
-  connect(timer, SIGNAL(timeout()), this, SLOT(getBackendPosition()));
-  timer->start(1000);
+	QTimer *timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), this, SLOT(getBackendPosition()));
+	timer->start(1000);
 }
 
 MarBackend::~MarBackend() {
+	cout<<"shutting down"<<endl;
 	mrsWrapper->wait();
+	cout<<"DONE WAIT"<<endl;
 	delete mrsWrapper;
+	cout<<"DONE "<<endl;
 	delete playbacknet;
 }
 

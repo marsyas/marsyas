@@ -1,6 +1,6 @@
 /*
 ** Copyright (C) 2007 Graham Percival <gperciva@uvic.ca>
-**  
+**	
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
@@ -20,9 +20,9 @@
 int main(int argc, char *argv[]) {
 // to keep this example as simple as possible, we only take the
 // filename from the command-line.
-  string fileName; 
-  if (argc<2) { cout<<"Please enter filename."<<endl; exit(1); } else
-    { fileName = argv[1]; }
+	string fileName; 
+	if (argc<2) { cout<<"Please enter filename."<<endl; exit(1); } else
+		{ fileName = argv[1]; }
 
 	QApplication app(argc, argv);
 	MarQTwindow marqt(fileName);

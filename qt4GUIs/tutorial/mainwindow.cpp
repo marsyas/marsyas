@@ -1,6 +1,6 @@
 /*
 ** Copyright (C) 2007 Graham Percival <gperciva@uvic.ca>
-**  
+**	
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
@@ -45,20 +45,22 @@ MarQTwindow::MarQTwindow(string fileName) {
 
 // make connections between the Qt front-end and the Marsyas backend:
 
-//    Qt -> Marsyas
+//		Qt -> Marsyas
 	connect(volume, SIGNAL(valueChanged(int)),
 			marBackend, SLOT(setBackendVolume(int)));
 
-//    Marsyas -> Qt
+//		Marsyas -> Qt
 	connect(marBackend, SIGNAL(changedBackendPosition(int)),
 			this, SLOT(setMainPosition(int)));
 
-//    Qt -> Marsyas (getBackendPosition) -> Qt (changedBackendPosition)
+//		Qt -> Marsyas (getBackendPosition) -> Qt (changedBackendPosition)
 	connect(updatePos, SIGNAL(clicked()),
 			marBackend, SLOT(getBackendPosition()));
 }
 
 MarQTwindow::~MarQTwindow() {
+//  FIXME:  uncommenting this results in a crash.  -gp
+//	delete marBackend;
 }
 
 void MarQTwindow::setMainPosition(int newPos) {
