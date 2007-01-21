@@ -36,5 +36,11 @@ html: marsyas.texi
 pdf: marsyas.texi
 	$(TEXI2PDF) $(TEXI2PDF_FLAGS) $(srcdir)/marsyas.texi
 
+sources:
+	source-highlight ../qt4GUIs/tutorial/*.h
+	source-highlight ../qt4GUIs/tutorial/*.cpp
+	source-highlight --src-lang=perl ../qt4GUIs/tutorial/tutorial.pro --output marsyas/tutorial.pro
+	mv ../qt4GUIs/tutorial/*.html marsyas/
+
 .PHONY: html pdf
 
