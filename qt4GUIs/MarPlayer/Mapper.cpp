@@ -64,8 +64,10 @@ Mapper::Mapper()
 
 Mapper::~Mapper()
 {
+	cout<<"DEBUG: started ~Mapper()"<<endl;
   // mwr_->stopThread();
   mwr_->wait();
+	cout<<"DEBUG: finished mwr_->wait()"<<endl;
   delete mwr_;
   delete pnet_;
 }
