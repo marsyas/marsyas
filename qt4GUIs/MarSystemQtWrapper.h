@@ -24,6 +24,7 @@ class MarSystemQtWrapper: public QThread
 
 public:
 	MarSystemQtWrapper(MarSystem* msys);
+	~MarSystemQtWrapper();
 
 public slots:
   void updctrl(MarControlPtr control, MarControlPtr cval);
@@ -39,6 +40,7 @@ signals:
 	
 private:
   QMutex mutex_;
+  bool abort_;
   
   // the underlying MarSystem
   MarSystem* main_pnet_;

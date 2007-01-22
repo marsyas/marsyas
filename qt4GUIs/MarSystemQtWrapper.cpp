@@ -17,6 +17,14 @@ MarSystemQtWrapper::MarSystemQtWrapper(MarSystem* msys)
   running_ = false;
   pause_ = false;
   empty_ = false;
+  abort_ = false;
+}
+
+
+MarSystemQtWrapper::~MarSystemQtWrapper()
+{
+ abort_ = true;
+ wait();
 }
 
 MarControlPtr 
@@ -80,6 +88,9 @@ MarSystemQtWrapper::run()
       mutex_.lock();
       vector<MarControlPtr>::iterator vsi;
       vector<MarControlPtr>::iterator vvi;
+
+      if (abort_) 
+	    return;
       
       for (vsi = control_names_.begin(),
 	     vvi = control_values_.begin();
