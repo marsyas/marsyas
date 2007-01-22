@@ -59,8 +59,7 @@ MarQTwindow::MarQTwindow(string fileName) {
 }
 
 MarQTwindow::~MarQTwindow() {
-//  FIXME:  uncommenting this results in a crash.  -gp
-//	delete marBackend;
+	delete marBackend;
 }
 
 void MarQTwindow::setMainPosition(int newPos) {

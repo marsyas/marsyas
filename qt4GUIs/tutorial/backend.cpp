@@ -45,11 +45,7 @@ MarBackend::MarBackend() {
 }
 
 MarBackend::~MarBackend() {
-	cout<<"shutting down"<<endl;
-	mrsWrapper->wait();
-	cout<<"DONE WAIT"<<endl;
 	delete mrsWrapper;
-	cout<<"DONE "<<endl;
 	delete playbacknet;
 }
 
