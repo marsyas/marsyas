@@ -72,6 +72,7 @@ printHelp(string progName)
   cerr << "duplex          : test duplex audio input/output" << endl;
   cerr << "simpleSFPlay    : plays a sound file" << endl;
   cerr << "getControls     : test getControls functionality " << endl;
+  cerr << "mono2stereo     : test mono2stereo MarSystem " << endl;
   
   exit(1);
 }
@@ -199,6 +200,37 @@ test_getControls(string sfName)
   
   delete playbacknet;
 }
+
+
+
+
+void
+test_mono2stereo(string sfName)
+{
+  cout << "Mono2Stereo test" << endl;
+  
+  MarSystemManager mng;
+
+  MarSystem* playbacknet = mng.create("Series", "playbacknet");
+
+  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+  playbacknet->addMarSystem(mng.create("Mono2Stereo", "m2s"));
+  playbacknet->addMarSystem(mng.create("SoundFileSink", "dest"));
+
+  string outName = "m2s.wav";
+  
+  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", outName);
+
+  
+  while (playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>()) 
+    {
+      playbacknet->tick();
+    }
+  
+  delete playbacknet;
+}
+
 
 
 
@@ -2130,7 +2162,8 @@ main(int argc, const char **argv)
     test_simpleSFPlay(fname0);
   else if (testName == "getControls") 
     test_getControls(fname0);
-  
+  else if (testName == "mono2stereo")
+    test_mono2stereo(fname0);
   else 
     {
       cout << "Unsupported test " << endl;

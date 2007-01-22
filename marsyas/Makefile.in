@@ -114,7 +114,7 @@ MarEvent.h EvGetUpd.h EvValUpd.h Repeat.h Heap.h \
 EvExpr.h ExScanner.h ExParser.h ExSymTbl.h ExNode.h ExVal.h Expr.h \
 realvec.h common.h \
 SoundFileSource.h AuFileSource.h \
-WavFileSource.h BaseAudioSink.h \
+WavFileSource.h BaseAudioSink.h Mono2Stereo.h \
 AudioSource.h AudioSink.h SoundFileSink.h \
 AuFileSink.h WavFileSink.h FileName.h MarSystem.h \
 MarSystemTemplateAdvanced.h MarSystemTemplateBasic.h \
@@ -139,7 +139,7 @@ Norm.h DownSampler.h WaveletBands.h Sum.h Product.h\
 PeakPeriods2BPM.h Histogram.h BeatHistoFeatures.h MslModel.h \
 CommandLineOptions.h RawFileSource.h FM.h \
 ANN_node.h Annotator.h ZeroRClassifier.h Summary.h KNNClassifier.h Filter.h \
-Kurtosis.h Skewness.h ERB.h CollectionFileSource.h MeddisHairCell.h ViconFileSource.h Cascade.h Parallel.h SeneffEar.h MP3FileSource.h OggFileSource.h ClassOutputSink.h ClipAudioRange.h SilenceRemove.h RtMidi.h Stk.h Limiter.h CompExp.h NoiseGate.h NoiseSource.h Plucked.h ADSR.h Envelope.h Delay.h NormMaxMin.h HarmonicEnhancer.h Reassign.h Normalize.h AMDF.h SMO.h SOM.h LPC.h LPCwarped.h LPCResyn.h LSP.h LPCC.h WekaSource.h RealvecSource.h MemorySource.h config.h MidiInput.h Esitar.h MidiOutput.h mididevices.h MATLABengine.h NumericLib.h NormCut.h vmblock.h lu.h basis.h dsound.h 
+Kurtosis.h Skewness.h ERB.h CollectionFileSource.h MeddisHairCell.h ViconFileSource.h Cascade.h Parallel.h SeneffEar.h MP3FileSource.h OggFileSource.h ClassOutputSink.h ClipAudioRange.h SilenceRemove.h RtMidi.h Stk.h Limiter.h CompExp.h NoiseGate.h NoiseSource.h Plucked.h ADSR.h Envelope.h Delay.h NormMaxMin.h HarmonicEnhancer.h Reassign.h Normalize.h AMDF.h SMO.h SOM.h LPC.h LSP.h LPCC.h WekaSource.h RealvecSource.h MemorySource.h config.h MidiInput.h Esitar.h MidiOutput.h mididevices.h MATLABengine.h NumericLib.h NormCut.h vmblock.h lu.h basis.h dsound.h 
 
 
 lib_LIBRARIES = libmarsyas.a
@@ -151,7 +151,7 @@ MarEvent.cpp EvGetUpd.cpp EvValUpd.cpp Repeat.cpp \
 EvExpr.cpp ExScanner.cpp ExParser.cpp ExSymTbl.cpp ExNode.cpp ExVal.cpp Expr.cpp \
 realvec.cpp \
 SoundFileSource.cpp AuFileSource.cpp \
-WavFileSource.cpp BaseAudioSink.cpp \
+WavFileSource.cpp BaseAudioSink.cpp Mono2Stereo.cpp \
 AudioSource.cpp AudioSink.cpp SoundFileSink.cpp \
 AuFileSink.cpp WavFileSink.cpp FileName.cpp MarSystem.cpp \
 MarSystemTemplateAdvanced.cpp MarSystemTemplateBasic.cpp \
@@ -176,7 +176,7 @@ Norm.cpp DownSampler.cpp WaveletBands.cpp Sum.cpp Product.cpp\
 PeakPeriods2BPM.cpp Histogram.cpp BeatHistoFeatures.cpp MslModel.cpp \
 CommandLineOptions.cpp RawFileSource.cpp FM.cpp \
 ANN_node.cpp Annotator.cpp Summary.cpp ZeroRClassifier.cpp KNNClassifier.cpp Filter.cpp \
-Kurtosis.cpp Skewness.cpp AMDF.cpp SMO.cpp SOM.cpp LPC.cpp LPCwarped.cpp LPCResyn.cpp LSP.cpp LPCC.cpp ERB.cpp CollectionFileSource.cpp MeddisHairCell.cpp ViconFileSource.cpp Cascade.cpp Parallel.cpp SeneffEar.cpp MP3FileSource.cpp OggFileSource.cpp ClassOutputSink.cpp ClipAudioRange.cpp SilenceRemove.cpp \
+Kurtosis.cpp Skewness.cpp AMDF.cpp SMO.cpp SOM.cpp LPC.cpp LSP.cpp LPCC.cpp ERB.cpp CollectionFileSource.cpp MeddisHairCell.cpp ViconFileSource.cpp Cascade.cpp Parallel.cpp SeneffEar.cpp MP3FileSource.cpp OggFileSource.cpp ClassOutputSink.cpp ClipAudioRange.cpp SilenceRemove.cpp \
 RtMidi.cpp Stk.cpp Limiter.cpp NoiseSource.cpp CompExp.cpp NoiseGate.cpp Plucked.cpp ADSR.cpp Envelope.cpp Delay.cpp NormMaxMin.cpp HarmonicEnhancer.cpp Reassign.cpp Normalize.cpp WekaSource.cpp RealvecSource.cpp MemorySource.cpp MidiInput.cpp Esitar.cpp MidiOutput.cpp NumericLib.cpp NormCut.cpp vmblock.cpp lu.cpp basis.cpp MATLABengine.cpp
 
 subdir = marsyas
@@ -198,7 +198,7 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	ExVal.$(OBJEXT) Expr.$(OBJEXT) realvec.$(OBJEXT) \
 	SoundFileSource.$(OBJEXT) AuFileSource.$(OBJEXT) \
 	WavFileSource.$(OBJEXT) BaseAudioSink.$(OBJEXT) \
-	AudioSource.$(OBJEXT) AudioSink.$(OBJEXT) \
+	Mono2Stereo.$(OBJEXT) AudioSource.$(OBJEXT) AudioSink.$(OBJEXT) \
 	SoundFileSink.$(OBJEXT) AuFileSink.$(OBJEXT) \
 	WavFileSink.$(OBJEXT) FileName.$(OBJEXT) MarSystem.$(OBJEXT) \
 	MarSystemTemplateAdvanced.$(OBJEXT) \
@@ -241,8 +241,7 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	Annotator.$(OBJEXT) Summary.$(OBJEXT) ZeroRClassifier.$(OBJEXT) \
 	KNNClassifier.$(OBJEXT) Filter.$(OBJEXT) Kurtosis.$(OBJEXT) \
 	Skewness.$(OBJEXT) AMDF.$(OBJEXT) SMO.$(OBJEXT) SOM.$(OBJEXT) \
-	LPC.$(OBJEXT) LPCwarped.$(OBJEXT) LPCResyn.$(OBJEXT) \
-	LSP.$(OBJEXT) LPCC.$(OBJEXT) ERB.$(OBJEXT) \
+	LPC.$(OBJEXT) LSP.$(OBJEXT) LPCC.$(OBJEXT) ERB.$(OBJEXT) \
 	CollectionFileSource.$(OBJEXT) MeddisHairCell.$(OBJEXT) \
 	ViconFileSource.$(OBJEXT) Cascade.$(OBJEXT) Parallel.$(OBJEXT) \
 	SeneffEar.$(OBJEXT) MP3FileSource.$(OBJEXT) \
@@ -306,8 +305,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Histogram.Po ./$(DEPDIR)/InvSpectrum.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/KNNClassifier.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Kurtosis.Po ./$(DEPDIR)/LPC.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/LPCC.Po ./$(DEPDIR)/LPCResyn.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/LPCwarped.Po ./$(DEPDIR)/LSP.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/LPCC.Po ./$(DEPDIR)/LSP.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Limiter.Po ./$(DEPDIR)/MATLABengine.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MFCC.Po ./$(DEPDIR)/MP3FileSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MarControl.Po \
@@ -322,8 +320,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/MeddisHairCell.Po ./$(DEPDIR)/Memory.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MemorySource.Po ./$(DEPDIR)/Messager.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MidiInput.Po ./$(DEPDIR)/MidiOutput.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/MinArgMin.Po ./$(DEPDIR)/MrsLog.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/MslModel.Po ./$(DEPDIR)/Negative.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/MinArgMin.Po ./$(DEPDIR)/Mono2Stereo.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/MrsLog.Po ./$(DEPDIR)/MslModel.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Negative.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/NetworkSocket.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/NetworkTCPSink.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/NetworkTCPSource.Po \
@@ -529,8 +528,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Kurtosis.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LPC.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LPCC.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LPCResyn.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LPCwarped.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LSP.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Limiter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MATLABengine.Po@am__quote@
@@ -554,6 +551,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MidiInput.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MidiOutput.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MinArgMin.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Mono2Stereo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MrsLog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MslModel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Negative.Po@am__quote@

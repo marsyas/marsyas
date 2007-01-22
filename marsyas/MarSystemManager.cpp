@@ -58,6 +58,7 @@ in sequence.
 #include "SineSource.h"
 #include "NoiseSource.h"
 #include "AudioSink.h"
+#include "Mono2Stereo.h"
 
 #include "PeConvert.h"
 #include "PeClust.h"
@@ -190,6 +191,8 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("AuFileSink", new AuFileSink("ausinkp"));
 	registerPrototype("WavFileSink", new WavFileSink("wavsinkp"));
 
+	registerPrototype("Mono2Stereo", new Mono2Stereo("mono2stereop"));
+	
 	registerPrototype("Hamming", new Hamming("hmp"));  
 	registerPrototype("Windowing", new Windowing("win"));
 	registerPrototype("PowerSpectrum", new PowerSpectrum("pspkp"));

@@ -31,7 +31,7 @@ MarEvent.h EvGetUpd.h EvValUpd.h Repeat.h Heap.h \
 EvExpr.h ExScanner.h ExParser.h ExSymTbl.h ExNode.h ExVal.h Expr.h \
 realvec.h common.h \
 SoundFileSource.h AuFileSource.h \
-WavFileSource.h BaseAudioSink.h \
+WavFileSource.h BaseAudioSink.h Mono2Stereo.h \
 AudioSource.h AudioSink.h SoundFileSink.h \
 AuFileSink.h WavFileSink.h FileName.h MarSystem.h \
 MarSystemTemplateAdvanced.h MarSystemTemplateBasic.h \
@@ -67,7 +67,7 @@ MarEvent.cpp EvGetUpd.cpp EvValUpd.cpp Repeat.cpp \
 EvExpr.cpp ExScanner.cpp ExParser.cpp ExSymTbl.cpp ExNode.cpp ExVal.cpp Expr.cpp \
 realvec.cpp \
 SoundFileSource.cpp AuFileSource.cpp \
-WavFileSource.cpp BaseAudioSink.cpp \
+WavFileSource.cpp BaseAudioSink.cpp Mono2Stereo.cpp \
 AudioSource.cpp AudioSink.cpp SoundFileSink.cpp \
 AuFileSink.cpp WavFileSink.cpp FileName.cpp MarSystem.cpp \
 MarSystemTemplateAdvanced.cpp MarSystemTemplateBasic.cpp \
