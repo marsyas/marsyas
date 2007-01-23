@@ -596,6 +596,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\marsyas\Mono2Stereo.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\marsyas\MP3FileSource.cpp"
 				>
 			</File>
@@ -1303,6 +1307,10 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\MinArgMin.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\Mono2Stereo.h"
 				>
 			</File>
 			<File
