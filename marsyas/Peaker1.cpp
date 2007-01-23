@@ -23,10 +23,10 @@ using namespace Marsyas;
 
 Peaker1::Peaker1(string name):MarSystem("Peaker1",name)
 {
-  //type_ = "Peaker1";
-  //name_ = name;
-
-	addControls();
+  rms_ = 0.0;
+  winCount_ = 1;
+  peakHysterisis_ = 0;
+  addControls();
 }
 
 
@@ -44,16 +44,20 @@ void
 Peaker1::addControls()
 {
   addctrl("mrs_real/peakSpacing", 0.0);
-  addctrl("mrs_real/peakStrength", 0.0);
+  addctrl("mrs_real/peakStrength", 0.7);
   addctrl("mrs_natural/peakStart", (mrs_natural)0);
   addctrl("mrs_natural/peakEnd", (mrs_natural)0);
   addctrl("mrs_real/peakGain", 1.0);
+  addctrl("mrs_natural/peakStrengthReset", 4);
+  addctrl("mrs_real/peakDecay", 0.9);
 }
+
+
+
 
 void 
 Peaker1::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
    
   mrs_real peakSpacing;
   mrs_real peakStrength;
@@ -61,76 +65,81 @@ Peaker1::myProcess(realvec& in, realvec& out)
   
   mrs_natural peakStart;
   mrs_natural peakEnd;
+  mrs_natural peakStrengthReset;
+  mrs_real    peakDecay;
+  
 
   peakSpacing = getctrl("mrs_real/peakSpacing")->toReal();
   peakStrength = getctrl("mrs_real/peakStrength")->toReal();
   peakStart = getctrl("mrs_natural/peakStart")->toNatural();
   peakEnd = getctrl("mrs_natural/peakEnd")->toNatural();
   peakGain = getctrl("mrs_real/peakGain")->toReal();
+  peakStrengthReset = getctrl("mrs_natural/peakStrengthReset")->to<mrs_natural>();
+  peakDecay = getctrl("mrs_real/peakDecay")->to<mrs_real>();
+  
 
   out.setval(0.0);
 
-
+  
   for (o = 0; o < inObservations_; o++)
     {
-      rms_ = 0.0;
       peakSpacing = (mrs_real)(peakSpacing * inSamples_);
+      mrs_real max;
+      mrs_natural maxIndex = 0;
+      
+      bool peakFound = false;
+
+
       for (t=peakStart+1; t < peakEnd-1; t++)
 	{
-	  if (fabs(in(o,t)) > rms_)
+	  if (fabs(in(o,t)) > rms_) 
 	    rms_ = fabs(in(o,t));
 	}
       
-      
-      // (rms_ != 0.0) 
-      // rms_ /= (peakEnd - peakStart);
-      // rms_ = sqrt(rms_);
-      
-      mrs_real max;
-      mrs_natural maxIndex;
-      
-      bool peakFound = false;
-      
-
       for (t=peakStart+1; t < peakEnd-1; t++)
 	{
+	  
+	  
 	  // peak has to be larger than neighbors 
-	  if ((in(o,t-1) < in(o,t)) 
+	  if ((in(o,t -1) < in(o,t)) 
 	      && (in(o,t+1) < in(o,t))
-	      && (in(o,t) > peakStrength * rms_)
+	      && (fabs(in(o,t)) > peakStrength * rms_)
 	      )
 	    {
-	      // check for another peak in the peakSpacing area
 	      max = in(o,t);
 	      maxIndex = t;
+	      
+	      
 	      for (int j=0; j < (mrs_natural)peakSpacing; j++)
 		{
-		  if (t+j < peakEnd-1) 
+		  if (t+j < peakEnd-1)
 		    if (in(o,t+j) > max)
 		      {
 			max = in(o,t+j);
 			maxIndex = t+j;
 		      }
 		}
-	      out(o,maxIndex) = in(o,maxIndex) / rms_;
+	      
 	      t += (mrs_natural)peakSpacing;
-	      if (t > peakEnd-1) 
-		t = peakEnd-1;
+	      if ((peakHysterisis_ > peakStrengthReset) ||
+		  (peakHysterisis_ == 0)
+		  ) 
+		{
+		  out(o,maxIndex) = fabs(in(o,maxIndex));	      
+		  peakHysterisis_ = 1;
+		}
+	      
+	      rms_ = fabs(in(o,maxIndex));
 	      peakFound = true;
 	    }
-
-	  out(o,t) = peakGain * out(o,t);
 	}
       
+
+      if (!peakFound) 
+	rms_ *= peakDecay;
+      peakHysterisis_ ++;
     }
   
+  
+      
 }
-
-
-
-
-
-
-	
-
-	

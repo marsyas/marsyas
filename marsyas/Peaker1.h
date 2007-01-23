@@ -36,6 +36,9 @@ class Peaker1: public MarSystem
 {
 private:
   mrs_real rms_;
+  mrs_natural winCount_;
+  mrs_natural peakHysterisis_;
+  
   void addControls();
   
 public:
