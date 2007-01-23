@@ -78,7 +78,7 @@ PeClust::addControls()
 }
 
 void
-PeClust::myUpdate()
+PeClust::myUpdate(MarControlPtr sender)
 {
 	setctrl("mrs_natural/onSamples", 
 		getctrl("mrs_natural/inSamples"));

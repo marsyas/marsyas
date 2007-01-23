@@ -58,7 +58,7 @@ Accumulator::addControls()
 }
 
 void
-Accumulator::myUpdate()
+Accumulator::myUpdate(MarControlPtr sender)
 {
 	MRSDIAG("Accumulator.cpp - Accumulator:myUpdate");
 

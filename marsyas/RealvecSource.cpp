@@ -68,7 +68,7 @@ RealvecSource::addControls()
 
 
 void
-RealvecSource::myUpdate()
+RealvecSource::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("RealvecSource.cpp - RealvecSource:myUpdate");
   

@@ -66,7 +66,7 @@ class MP3FileSource: public AbsSoundFileSource
 private:
  
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   mrs_natural getLinear16(realvec& slice);
 
 #ifdef MAD_MP3

@@ -42,7 +42,7 @@ private:
   realvec tband_;
 
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   WaveletPyramid *iwvpt_;
 
 public:

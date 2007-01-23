@@ -37,7 +37,7 @@ class Fanout: public MarSystem
 {
 private:
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   void deleteSlices();  
 
   mrs_natural enable_;

@@ -36,7 +36,7 @@ namespace Marsyas
   class DeviBot: public MarSystem
     {
     private: 
-      void myUpdate();
+      void myUpdate(MarControlPtr sender);
       
       std::vector<unsigned char> message;
       

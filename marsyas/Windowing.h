@@ -39,7 +39,7 @@ namespace Marsyas
             //mrs_real norm_;
             mrs_natural delta_;
             void addcontrols();
-            void myUpdate();
+            void myUpdate(MarControlPtr sender);
 
         public:
             Windowing(std::string name);

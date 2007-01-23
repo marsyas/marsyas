@@ -50,7 +50,7 @@ class KNNClassifier: public MarSystem
 {
 private: 
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
 	mrs_natural k_;
   realvec trainSet_;

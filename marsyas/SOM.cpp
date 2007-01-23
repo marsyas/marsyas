@@ -112,7 +112,7 @@ SOM::randD(double max)
 }
 
 void
-SOM::myUpdate()
+SOM::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("SOM.cpp - SOM:myUpdate");
 

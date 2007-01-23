@@ -34,7 +34,7 @@ class ClassOutputSink: public MarSystem
 {
 private: 
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
   std::ofstream* mos_;
 

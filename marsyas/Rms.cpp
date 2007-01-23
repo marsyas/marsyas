@@ -46,7 +46,7 @@ Rms::clone() const
 }
 
 void 
-Rms::myUpdate()
+Rms::myUpdate(MarControlPtr sender)
 {
   setctrl("mrs_natural/onSamples", (mrs_natural)1);
   setctrl("mrs_natural/onObservations", (mrs_natural)1);

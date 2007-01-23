@@ -48,7 +48,7 @@ ZeroCrossings::clone() const
 }
 
 void
-ZeroCrossings::myUpdate()
+ZeroCrossings::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("ZeroCrossings.cpp - ZeroCrossings:myUpdate");
   

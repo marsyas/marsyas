@@ -35,7 +35,7 @@ namespace Marsyas
 class Sum: public MarSystem
 {
 private: 
-  void myUpdate();
+  void myUpdate(MarControlPtr sender);
 public:
   Sum(std::string name);
   ~Sum();

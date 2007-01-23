@@ -36,7 +36,7 @@ private:
   mrs_real srate_;
   mrs_real factor_;
 
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
 public:
   PeakPeriods2BPM(std::string name);

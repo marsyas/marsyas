@@ -53,7 +53,7 @@ Daub4::addControls()
 }
 
 void
-Daub4::myUpdate()
+Daub4::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("Daub4.cpp - Daub4:myUpdate");
   

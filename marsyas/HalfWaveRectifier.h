@@ -33,7 +33,7 @@ namespace Marsyas
 class HalfWaveRectifier: public MarSystem
 {
 private:
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
 public:
   HalfWaveRectifier(std::string name);

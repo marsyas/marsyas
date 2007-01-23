@@ -48,7 +48,7 @@ SFM::clone() const
 }
 
 void
-SFM::myUpdate()
+SFM::myUpdate(MarControlPtr sender)
 {
 	MRSDIAG("SFM.cpp - SFM:myUpdate");
 

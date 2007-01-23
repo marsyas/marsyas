@@ -36,7 +36,7 @@ class MaxArgMax: public MarSystem
 private:
   mrs_natural ki;			
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
 public:
   MaxArgMax(std::string name);

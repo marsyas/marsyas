@@ -51,7 +51,7 @@ SCF::clone() const
 }
 
 void
-SCF::myUpdate()
+SCF::myUpdate(MarControlPtr sender)
 {
 	MRSDIAG("SCF.cpp - SCF:myUpdate");
 

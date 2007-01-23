@@ -90,7 +90,7 @@ ViconFileSource::getHeader(string filename)
 
 
 void
-ViconFileSource::myUpdate()
+ViconFileSource::myUpdate(MarControlPtr sender)
 {
   inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
   israte_ = getctrl("mrs_real/israte")->toReal();

@@ -21,7 +21,7 @@ class WekaSource:public MarSystem
 {
 private:
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
   void parseObsToExtract();
   

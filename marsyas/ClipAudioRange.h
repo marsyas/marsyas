@@ -34,7 +34,7 @@ namespace Marsyas
 class ClipAudioRange: public MarSystem
 {
 private: 
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 public:
   ClipAudioRange(std::string name);
   ~ClipAudioRange();

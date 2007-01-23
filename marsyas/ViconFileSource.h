@@ -44,7 +44,7 @@ private:
   mrs_natural size_;  
   mrs_natural fileObs_;
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
       
 public:
   ViconFileSource(std::string name);

@@ -47,7 +47,7 @@ HarmonicEnhancer::clone() const
 
 
 void
-HarmonicEnhancer::myUpdate()
+HarmonicEnhancer::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("HarmonicEnhancer.cpp - HarmonicEnhancer:myUpdate");
    

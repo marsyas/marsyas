@@ -135,7 +135,7 @@ WekaSink::putHeader(string inObsNames)
 }
 
 void
-WekaSink::myUpdate()
+WekaSink::myUpdate(MarControlPtr sender)
 {
 	MRSDIAG("WekaSink.cpp - WekaSink:myUpdate");
 

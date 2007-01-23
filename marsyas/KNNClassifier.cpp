@@ -83,7 +83,7 @@ KNNClassifier::addControls()
 
 
 void
-KNNClassifier::myUpdate()
+KNNClassifier::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("KNNClassifier.cpp - KNNClassifier:myUpdate");
   

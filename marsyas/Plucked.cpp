@@ -69,11 +69,11 @@ Plucked::addControls()
 }
 
 void
-Plucked::myUpdate()
+Plucked::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("Plucked.cpp - Plucked:localuUpdate");
   
-  MarSystem::myUpdate();
+  MarSystem::myUpdate(sender);
 
   gain_ = new Gain("pluckedGain");
   gain_->updctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));

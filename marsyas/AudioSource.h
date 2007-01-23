@@ -53,7 +53,7 @@ private:
 	bool stopped_;
   
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
 	void initRtAudio();
 

@@ -62,7 +62,7 @@ SeneffEar::addControls()
 }
 
 void 
-SeneffEar::myUpdate()
+SeneffEar::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("SeneffEar.cpp - SeneffEar:myUpdate");
 

@@ -35,7 +35,7 @@ class SOM: public MarSystem
 {
 private: 
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
   realvec grid_map_;
   mrs_natural grid_width_;

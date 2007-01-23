@@ -47,14 +47,14 @@ Reassign::clone() const
 }
 
 void
-Reassign::myUpdate()
+Reassign::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("Reassign.cpp - Reassign:myUpdate");
    
 //   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 //   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 //   setctrl("mrs_real/osrate", getctrl("mrs_real/israte")); 
-	MarSystem::myUpdate();
+	MarSystem::myUpdate(sender);
 
   flag_.create(getctrl("mrs_natural/inSamples")->toNatural());
 

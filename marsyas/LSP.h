@@ -44,7 +44,7 @@ private:
 	//mrs_real gamma_;
 
 	void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 	
 public:
 	LSP(std::string name);

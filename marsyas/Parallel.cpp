@@ -50,7 +50,7 @@ MarSystem* Parallel::clone() const
   return new Parallel(*this);
 }
 
-void Parallel::myUpdate()
+void Parallel::myUpdate(MarControlPtr sender)
 {
   if (marsystemsSize_ != 0) 
 	{

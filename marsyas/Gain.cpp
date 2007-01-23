@@ -71,9 +71,9 @@ Gain::addControls()
 }
 
 void
-Gain::myUpdate()
+Gain::myUpdate(MarControlPtr sender)
 {
-	MarSystem::myUpdate();
+	MarSystem::myUpdate(sender);
 
 	inRMS_.create(ctrl_inObservations_->to<mrs_natural>());
 	outRMS_.create(ctrl_onObservations_->to<mrs_natural>()); 

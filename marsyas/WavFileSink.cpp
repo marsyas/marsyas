@@ -75,7 +75,7 @@ WavFileSink::checkExtension(string filename)
 }
 
 void 
-WavFileSink::myUpdate()
+WavFileSink::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("WavFileSink::myUpdate");
 

@@ -50,7 +50,7 @@ private:
 					realvec& in);
 
 	//void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
 public:
   BeatHistoFeatures(std::string name);

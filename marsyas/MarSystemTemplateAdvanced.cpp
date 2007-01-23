@@ -109,11 +109,11 @@ MarSystemTemplateAdvanced::addControls()
 }
 
 void
-MarSystemTemplateAdvanced::myUpdate()
+MarSystemTemplateAdvanced::myUpdate(MarControlPtr sender)
 {
 	MRSDIAG("MarSystemTemplateAdvanced.cpp - MarSystemTemplateAdvanced:myUpdate");
 
-	MarSystem::myUpdate();
+	MarSystem::myUpdate(sender);
 	
 	//get a reference to our custom control
 	const MyHeader& hdr = ctrl_header_->to<MyHeader>();

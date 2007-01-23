@@ -53,7 +53,7 @@ Cascade::clone() const
 }
 
 void 
-Cascade::myUpdate()
+Cascade::myUpdate(MarControlPtr sender)
 {
   if (marsystemsSize_ != 0) 
 	{

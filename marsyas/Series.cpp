@@ -78,7 +78,7 @@ const Series::recvControls()
 }
 
 void 
-Series::myUpdate()
+Series::myUpdate(MarControlPtr sender)
 {
 	probe_ = getctrl("mrs_bool/probe")->toBool();
 

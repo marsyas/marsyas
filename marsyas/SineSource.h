@@ -43,7 +43,7 @@ private:
   mrs_real index_;
   
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
 public:
   SineSource(std::string name);

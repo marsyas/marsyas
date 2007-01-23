@@ -57,7 +57,7 @@ private:
   mrs_natural rsize_;
   
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
 	void initRtAudio();
 	

@@ -35,7 +35,7 @@ namespace Marsyas
 class Rms: public MarSystem
 {
 private:
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
 public:
   Rms(std::string name);

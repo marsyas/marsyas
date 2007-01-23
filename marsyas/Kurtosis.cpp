@@ -51,7 +51,7 @@ Kurtosis::clone() const
 }
 
 void
-Kurtosis::myUpdate()
+Kurtosis::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("Kurtosis.cpp - Kurtosis:myUpdate");
   

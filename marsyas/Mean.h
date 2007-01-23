@@ -33,7 +33,7 @@ namespace Marsyas
 class Mean: public MarSystem
 {
 private: 
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
   realvec obsrow_;
   

@@ -46,7 +46,7 @@ Mean::clone() const
 }
 
 void
-Mean::myUpdate()
+Mean::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("Mean.cpp - Mean:myUpdate");
   

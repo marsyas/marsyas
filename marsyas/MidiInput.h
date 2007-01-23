@@ -36,7 +36,7 @@ namespace Marsyas
 class MidiInput: public MarSystem
 {
 private: 
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
   static void mycallback(double deltatime, std::vector< unsigned char> * message, void *userData);
   

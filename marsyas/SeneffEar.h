@@ -41,7 +41,7 @@ class SeneffEar: public MarSystem
 {
 private: 
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
   mrs_natural stage;
   

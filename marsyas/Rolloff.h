@@ -39,7 +39,7 @@ class Rolloff: public MarSystem
 {
 private: 
   void addControls();
-  void myUpdate();
+  void myUpdate(MarControlPtr sender);
   realvec sumWindow_;
 
   mrs_real perc_;

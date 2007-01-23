@@ -50,7 +50,7 @@ Centroid::clone() const
 }
 
 void
-Centroid::myUpdate()
+Centroid::myUpdate(MarControlPtr sender)
 {
   
   MRSDIAG("Centroid.cpp - Centroid:myUpdate");

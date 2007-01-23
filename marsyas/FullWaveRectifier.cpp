@@ -48,7 +48,7 @@ FullWaveRectifier::clone() const
 }
 
 void
-FullWaveRectifier::myUpdate()
+FullWaveRectifier::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("FullWaveRectifier.cpp - FullWaveRectifier:myUpdate");
   

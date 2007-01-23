@@ -72,7 +72,7 @@ private:
   unsigned short ByteSwapShort (unsigned short nValue);
 
 	void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
 public:
   WavFileSink(std::string name);

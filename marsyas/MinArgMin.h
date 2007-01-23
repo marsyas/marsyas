@@ -37,7 +37,7 @@ private:
   mrs_natural ki;			
   realvec maximums_;
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
 public:
   MinArgMin(std::string name);

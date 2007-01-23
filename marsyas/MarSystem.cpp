@@ -511,7 +511,7 @@ MarSystem::tick()
 }
 
 void 
-MarSystem::myUpdate()
+MarSystem::myUpdate(MarControlPtr sender)
 {
 	MRSDIAG("MarSystem.cpp - MarSystem:myUpdate");
 
@@ -544,7 +544,7 @@ MarSystem::update(MarControlPtr sender)
 	osrate_ = ctrl_osrate_->to<mrs_real>();
 
 	//call derived class specific update
-	myUpdate();
+	myUpdate(sender);
 
 	//sync input member variables
 	inObservations_ = ctrl_inObservations_->to<mrs_natural>();

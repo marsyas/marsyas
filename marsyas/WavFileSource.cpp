@@ -247,7 +247,7 @@ WavFileSource::getHeader(string filename)
 }
 
 void
-WavFileSource::myUpdate()
+WavFileSource::myUpdate(MarControlPtr sender)
 {
   inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
   inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();

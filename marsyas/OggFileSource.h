@@ -64,7 +64,7 @@ class OggFileSource: public AbsSoundFileSource
 private:
  
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   void closeFile(); 
   
 #ifdef OGG_VORBIS

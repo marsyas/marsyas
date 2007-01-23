@@ -40,7 +40,7 @@ private:
   mrs_real gain_;
   
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
 public:
   OnePole(std::string name);

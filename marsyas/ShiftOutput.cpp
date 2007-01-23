@@ -65,7 +65,7 @@ ShiftOutput::addControls()
 }
 
 void
-ShiftOutput::myUpdate()
+ShiftOutput::myUpdate(MarControlPtr sender)
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/Interpolation"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);

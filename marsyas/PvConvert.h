@@ -53,7 +53,7 @@ private:
   mrs_natural size_, psize_;
 
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
 public:
   PvConvert(std::string name);

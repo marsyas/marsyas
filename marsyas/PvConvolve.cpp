@@ -47,7 +47,7 @@ PvConvolve::clone() const
 
 
 void
-PvConvolve::myUpdate()
+PvConvolve::myUpdate(MarControlPtr sender)
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural() / 2);

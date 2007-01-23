@@ -71,7 +71,7 @@ WekaSource::addControls()
 }
 
 void
-WekaSource::myUpdate()
+WekaSource::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("WekaSource.cpp - WekaSource:myUpdate");
   

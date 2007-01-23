@@ -35,7 +35,7 @@ namespace Marsyas
   class Flux: public MarSystem
   {
   private: 
-    void myUpdate();
+    void myUpdate(MarControlPtr sender);
     
     realvec prevWindow_;
     mrs_real diff_,flux_, max_;

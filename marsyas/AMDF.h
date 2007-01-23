@@ -36,7 +36,7 @@ namespace Marsyas
 class AMDF: public MarSystem
 {
 private: 
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 public:
   AMDF(std::string name);
   ~AMDF();

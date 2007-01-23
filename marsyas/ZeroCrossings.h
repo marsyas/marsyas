@@ -37,7 +37,7 @@ class ZeroCrossings: public MarSystem
 private: 
   mrs_real zcrs_;
 
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
 public:
   ZeroCrossings(std::string name);

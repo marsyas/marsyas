@@ -98,7 +98,7 @@ private:
 	unsigned short ByteSwapShort (unsigned short nValue);
 
 	void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
   MarControlPtr ctrl_size_;
   MarControlPtr ctrl_pos_;

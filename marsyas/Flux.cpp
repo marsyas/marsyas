@@ -49,7 +49,7 @@ Flux::clone() const
 }
 
 void
-Flux::myUpdate()
+Flux::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("Flux.cpp - Flux:localUpdate");
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

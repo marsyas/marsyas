@@ -65,7 +65,7 @@ Annotator::addControls()
 
 
 void
-Annotator::myUpdate()
+Annotator::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("Annotator.cpp - Annotator:myUpdate");
   

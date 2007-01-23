@@ -78,7 +78,7 @@ BeatHistoFeatures::clone() const
 //}
 
 void
-BeatHistoFeatures::myUpdate()
+BeatHistoFeatures::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("BeatHistoFeatures.cpp - BeatHistoFeatures:myUpdate");
   

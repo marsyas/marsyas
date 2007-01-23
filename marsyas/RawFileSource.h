@@ -53,7 +53,7 @@ private:
   mrs_natural ch_, pos_, nChannels_;
 
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   void swap16(unsigned char *ptr);
   
   void readData( unsigned long index );

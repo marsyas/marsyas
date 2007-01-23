@@ -35,7 +35,7 @@ namespace Marsyas
 class Product: public MarSystem
 {
 private: 
-  void myUpdate();
+  void myUpdate(MarControlPtr sender);
 public:
   Product(std::string name);
   ~Product();

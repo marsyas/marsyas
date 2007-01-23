@@ -56,7 +56,7 @@ DownSampler::addControls()
 }
 
 void
-DownSampler::myUpdate()
+DownSampler::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("DownSampler.cpp - DownSampler:myUpdate");
   

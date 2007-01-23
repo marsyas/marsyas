@@ -88,7 +88,7 @@ ClassOutputSink::putHeader()
 
 
 void
-ClassOutputSink::myUpdate()
+ClassOutputSink::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("ClassOutputSink.cpp - ClassOutputSink:myUpdate");
   

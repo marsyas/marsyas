@@ -61,7 +61,7 @@ PvOverlapadd::addControls()
 }
 
 void
-PvOverlapadd::myUpdate()
+PvOverlapadd::myUpdate(MarControlPtr sender)
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/WindowSize"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);

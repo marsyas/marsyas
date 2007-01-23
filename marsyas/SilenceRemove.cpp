@@ -55,7 +55,7 @@ SilenceRemove::addControls()
 }
 
 void
-SilenceRemove::myUpdate()
+SilenceRemove::myUpdate(MarControlPtr sender)
 {
 	MRSDIAG("SilenceRemove.cpp - SilenceRemove:myUpdate");
 

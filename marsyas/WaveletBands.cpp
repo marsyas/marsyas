@@ -70,7 +70,7 @@ WaveletBands::addControls()
 }
 
 void
-WaveletBands::myUpdate()
+WaveletBands::myUpdate(MarControlPtr sender)
 {
   
   MRSDIAG("WaveletBands.cpp - WaveletBands:myUpdate");

@@ -66,7 +66,7 @@ LPC::addControls()
 }
 
 void
-LPC::myUpdate()
+LPC::myUpdate(MarControlPtr sender)
 { 
 	MRSDIAG("LPC.cpp - LPC:myUpdate");
 

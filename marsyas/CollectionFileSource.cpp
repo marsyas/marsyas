@@ -108,7 +108,7 @@ CollectionFileSource::getHeader(string filename)
 }
 
 void
-CollectionFileSource::myUpdate()
+CollectionFileSource::myUpdate(MarControlPtr sender)
 {
 	nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();  
   inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();

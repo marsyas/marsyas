@@ -40,7 +40,7 @@ private:
   bool probe_;
 
 	void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 	void deleteSlices();
 
 public:

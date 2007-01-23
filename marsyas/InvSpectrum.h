@@ -39,7 +39,7 @@ private:
   fft myfft_;
   realvec tempVec_;
 
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
 public:
   InvSpectrum(std::string name);

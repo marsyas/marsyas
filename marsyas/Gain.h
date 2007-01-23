@@ -39,12 +39,12 @@ private:
   //Add specific controls needed by this MarSystem.
 	void addControls();
 	
-	// lmartins: since this is the default MarSystem::myUpdate()
+	// lmartins: since this is the default MarSystem::myUpdate(MarControlPtr sender)
 	// (i.e. does not alters input data format) it's not needed to
 	// override it here! Use the default implementation defined in 
-	// MarSystem::myUpdate().
+	// MarSystem::myUpdate(MarControlPtr sender).
 	//
-	//void myUpdate();
+	//void myUpdate(MarControlPtr sender);
 	 
 	MarControlPtr ctrl_gain_;
 	MarControlPtr ctrl_RMScalc_;
@@ -55,7 +55,7 @@ private:
 	realvec inRMS_;
 	realvec outRMS_;
 
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
 public:
   Gain(std::string name);

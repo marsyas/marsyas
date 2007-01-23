@@ -197,7 +197,7 @@ void RawFileSource::readData(unsigned long index)//[!]
   
 }
 
-void RawFileSource::myUpdate() 
+void RawFileSource::myUpdate(MarControlPtr sender) 
 {
  
   nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();  

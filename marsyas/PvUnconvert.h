@@ -46,7 +46,7 @@ private:
   mrs_natural N2_;
   
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
 public:
   PvUnconvert(std::string name);

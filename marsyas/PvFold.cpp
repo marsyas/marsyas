@@ -69,7 +69,7 @@ PvFold::addControls()
 
 
 void
-PvFold::myUpdate()
+PvFold::myUpdate(MarControlPtr sender)
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/FFTSize"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);

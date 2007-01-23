@@ -158,7 +158,7 @@ OggFileSource::getHeader(string filename)
  *
  */
 void
-OggFileSource::myUpdate()
+OggFileSource::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("OggFileSource::myUpdate");
 

@@ -38,7 +38,7 @@ class PvFold: public MarSystem
 private:
   realvec awin_;
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   mrs_natural N_, Nw_, D_, PNw_;
   int n_;
   

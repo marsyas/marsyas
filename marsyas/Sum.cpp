@@ -46,7 +46,7 @@ Sum::clone() const
 }
 
 void
-Sum::myUpdate()
+Sum::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("Sum.cpp - Sum:myUpdate");
   

@@ -79,7 +79,7 @@ ShiftInput::addControls()
 }
 
 void
-ShiftInput::myUpdate()
+ShiftInput::myUpdate(MarControlPtr sender)
 {
   reset_ = getctrl("mrs_bool/reset")->toBool();  
 

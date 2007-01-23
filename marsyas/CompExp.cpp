@@ -85,7 +85,7 @@ CompExp::addControls()
 }
 
 void
-CompExp::myUpdate()
+CompExp::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("CompExp.cpp - CompExp:myUpdate");
   

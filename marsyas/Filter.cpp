@@ -72,7 +72,7 @@ Filter::addControls()
   setctrlState("mrs_realvec/state", true);
 }
 
-void Filter::myUpdate()
+void Filter::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("Filter.cpp - Filter:myUpdate");
 

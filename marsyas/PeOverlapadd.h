@@ -43,7 +43,7 @@ private:
 	realvec tmp_;
   
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
 	void sine(realvec& out, mrs_real f, mrs_real a, mrs_real p);
  

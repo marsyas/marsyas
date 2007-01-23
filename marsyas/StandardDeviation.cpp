@@ -47,7 +47,7 @@ StandardDeviation::clone() const
 }
 
 void
-StandardDeviation::myUpdate()
+StandardDeviation::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("StandardDeviation.cpp - StandardDeviation:myUpdate");
   

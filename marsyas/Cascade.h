@@ -33,7 +33,7 @@ class Cascade: public MarSystem
 {
 private:
   void deleteSlices();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
 public:
 	Cascade(std::string name);

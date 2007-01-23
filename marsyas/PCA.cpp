@@ -68,7 +68,7 @@ PCA::addControls()
 }
 
 void
-PCA::myUpdate()
+PCA::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("PCA.cpp - PCA:myUpdate");
    

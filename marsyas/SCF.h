@@ -40,7 +40,7 @@ namespace Marsyas
 class SCF: public MarSystem
 {
 private: 
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
   mrs_natural nrBands_;
   mrs_natural nrValidBands_;

@@ -39,7 +39,7 @@ class Memory: public MarSystem
 {
 private: 
   void addControls();
-  void myUpdate();
+  void myUpdate(MarControlPtr sender);
 
   mrs_natural end_;
   bool reset_;

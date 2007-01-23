@@ -38,7 +38,7 @@ namespace Marsyas
 		mrs_natural shift_;
 
 		void addControls();
-		void myUpdate();
+		void myUpdate(MarControlPtr sender);
 
 	public:
 		Shifter(std::string name);

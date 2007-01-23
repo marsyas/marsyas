@@ -85,11 +85,11 @@ AudioSink::addControls()
 }
 
 void 
-AudioSink::myUpdate()
+AudioSink::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("AudioSink::myUpdate");
 
-  MarSystem::myUpdate();
+  MarSystem::myUpdate(sender);
   
   
   nChannels_ = getctrl("mrs_natural/inObservations")->toNatural();//does nothing... [?]

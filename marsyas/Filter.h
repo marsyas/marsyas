@@ -46,7 +46,7 @@ private:
 	realvec dcoeffs_;
 
 	void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
 public:
 	Filter(std::string name);

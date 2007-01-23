@@ -50,7 +50,7 @@ Peak2Rms::clone() const
 }
 
 void 
-Peak2Rms::myUpdate()
+Peak2Rms::myUpdate(MarControlPtr sender)
 {
     setctrl("mrs_natural/onObservations",1);
     setctrl("mrs_natural/onSamples",1);

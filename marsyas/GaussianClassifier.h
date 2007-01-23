@@ -50,7 +50,7 @@ class GaussianClassifier: public MarSystem
 {
 private: 
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
   realvec means_;
   realvec covars_;

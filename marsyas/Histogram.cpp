@@ -59,7 +59,7 @@ Histogram::addControls()
 }
 
 void
-Histogram::myUpdate()
+Histogram::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("Histogram.cpp - Histogram:myUpdate");
 

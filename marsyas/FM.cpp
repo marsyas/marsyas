@@ -82,7 +82,7 @@ FM::addControls()
 }	
 
 
-void FM::myUpdate() 
+void FM::myUpdate(MarControlPtr sender) 
 {
   MRSDIAG("FM.cpp - FM:myUpdate");
   

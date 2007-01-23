@@ -49,7 +49,7 @@ AMDF::clone() const
 }
 
 void
-AMDF::myUpdate()
+AMDF::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("AMDF.cpp - AMDF:myUpdate");
   

@@ -55,7 +55,7 @@ private:
   mrs_real tableval_;
 
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
 public:
   PvOscBank(std::string name);

@@ -74,11 +74,11 @@ MidiOutput::addControls()
 
 
 void
-MidiOutput::myUpdate()
+MidiOutput::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("MidiOutput.cpp - MidiOutput:myUpdate");
   
-  MarSystem::myUpdate();
+  MarSystem::myUpdate(sender);
   
 
 #ifdef MRSMIDI

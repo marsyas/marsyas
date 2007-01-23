@@ -43,7 +43,7 @@ private:
 	realvec tout_;
 
 	void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
 public:
 	Accumulator(std::string name);

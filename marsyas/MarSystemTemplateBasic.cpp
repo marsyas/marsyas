@@ -72,7 +72,7 @@ MarSystemTemplateBasic::addControls()
 	// in this case this control should have state, since
 	// other controls will depend on it.
 	// (i.e. any change to it will call MarSystem::update()
-	// which then calls myUpdate())
+	// which then calls myUpdate(MarControlPtr sender))
 	setctrlState("mrs_bool/dummy", true);
 
 	// if a "pointer" to a control is to be used (for efficiency purposes 
@@ -93,7 +93,7 @@ MarSystemTemplateBasic::addControls()
 }
 
 void
-MarSystemTemplateBasic::myUpdate()
+MarSystemTemplateBasic::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("MarSystemTemplateBasic.cpp - MarSystemTemplateBasic:myUpdate");
   
@@ -110,7 +110,7 @@ MarSystemTemplateBasic::myUpdate()
 	// (if we have a "pointer" to it - see addControls(), above).
 	// setValue() always calls update() if the control in cause has state.
 	// To avoid calling update() (and avoid recursion since we are already
-	// inside update()/myUpdate()), setValue() should be called with the
+	// inside update()/myUpdate(MarControlPtr sender)), setValue() should be called with the
 	// NOUPDATE flag, as bellow:
 	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);

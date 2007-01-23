@@ -35,7 +35,7 @@ class ANN_node: public MarSystem
 {
 private: 
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   realvec weights_;
   mrs_real bias_;
 

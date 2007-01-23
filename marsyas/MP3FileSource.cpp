@@ -287,7 +287,7 @@ MP3FileSource::getHeader(string filename)
  *
  */
 void 
-MP3FileSource::myUpdate()
+MP3FileSource::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("MP3FileSource::myUpdate");
   

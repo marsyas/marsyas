@@ -70,7 +70,7 @@ Memory::addControls()
 }
 
 void
-Memory::myUpdate()
+Memory::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("Memory.cpp - Memory:myUpdate");
   

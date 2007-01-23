@@ -58,7 +58,7 @@ ANN_node::addControls()
 }
 
 void
-ANN_node::myUpdate()
+ANN_node::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("ANN_node.cpp - ANN_node:myUpdate");
   

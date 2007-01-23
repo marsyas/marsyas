@@ -36,7 +36,7 @@ class Hamming: public MarSystem
 private: 
   realvec envelope_;
 
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
 public:
   Hamming(std::string name);

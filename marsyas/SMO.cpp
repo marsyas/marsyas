@@ -69,7 +69,7 @@ SMO::addControls()
 
 
 void
-SMO::myUpdate()
+SMO::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("SMO.cpp - SMO:myUpdate");
 

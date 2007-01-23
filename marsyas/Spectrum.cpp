@@ -61,7 +61,7 @@ Spectrum::clone() const
 }
 
 void 
-Spectrum::myUpdate()
+Spectrum::myUpdate(MarControlPtr sender)
 {
   setctrl("mrs_natural/onSamples", (mrs_natural)1);
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inSamples"));

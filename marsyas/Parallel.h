@@ -32,7 +32,7 @@ namespace Marsyas
 class Parallel: public MarSystem
 {
 private:
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   void deleteSlices();
 	bool updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd=true);
   

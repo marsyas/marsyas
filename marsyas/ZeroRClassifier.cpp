@@ -63,7 +63,7 @@ ZeroRClassifier::addControls()
 }
 
 void
-ZeroRClassifier::myUpdate()
+ZeroRClassifier::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("ZeroRClassifier.cpp - ZeroRClassifier:myUpdate");
   

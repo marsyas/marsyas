@@ -39,7 +39,7 @@ class Plucked: public MarSystem
 {
 private: 
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
   realvec delayline1_;
   realvec pickDelayLine_;

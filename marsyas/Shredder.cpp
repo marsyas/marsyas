@@ -57,7 +57,7 @@ Shredder::addControls()
 }
 
 void
-Shredder::myUpdate()
+Shredder::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("Shredder.cpp - Shredder:myUpdate");
   

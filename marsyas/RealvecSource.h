@@ -35,7 +35,7 @@ private:
 	MarControlPtr ctrl_data_;
 
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
   mrs_natural count_;
   mrs_natural samplesToUse_;

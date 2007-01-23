@@ -44,7 +44,7 @@ private:
 
 
   void addControls();
-  void myUpdate();  
+  void myUpdate(MarControlPtr sender);  
 
 public:
   ShiftOutput(std::string name);

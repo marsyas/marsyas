@@ -56,7 +56,7 @@ MinArgMin::addControls()
 }
 
 void
-MinArgMin::myUpdate()
+MinArgMin::myUpdate(MarControlPtr sender)
 {
   mrs_natural k = getctrl("mrs_natural/nMinimums")->toNatural();
 

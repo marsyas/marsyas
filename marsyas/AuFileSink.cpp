@@ -106,7 +106,7 @@ AuFileSink::checkExtension(string filename)
 }
 
 void 
-AuFileSink::myUpdate()
+AuFileSink::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("AudioFileSink::myUpdate");
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

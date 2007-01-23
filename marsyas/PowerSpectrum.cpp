@@ -64,7 +64,7 @@ PowerSpectrum::clone() const
 
 
 void 
-PowerSpectrum::myUpdate()
+PowerSpectrum::myUpdate(MarControlPtr sender)
 {
   setctrl("mrs_natural/onSamples", (mrs_natural)1);
   // setctrl("mrs_natural/onObservations", (getctrl("mrs_natural/inObservations")->toNatural() / 2) + 1);

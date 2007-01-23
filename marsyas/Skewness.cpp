@@ -47,7 +47,7 @@ Skewness::clone() const
 
 
 void
-Skewness::myUpdate()
+Skewness::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("Skewness.cpp - Skewness:myUpdate");
   

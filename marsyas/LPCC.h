@@ -45,7 +45,7 @@ namespace Marsyas
 		realvec tmp_;
 
 		void addControls();
-		void myUpdate();
+		void myUpdate(MarControlPtr sender);
 
 	public:
 		LPCC(std::string name);

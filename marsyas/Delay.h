@@ -35,7 +35,7 @@ class Delay: public MarSystem
 {
 private: 
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 	
 	realvec buffer_;
 	mrs_natural delay_;

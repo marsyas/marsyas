@@ -39,7 +39,7 @@ class SoundFileSink: public MarSystem
 {
 private: 
   virtual void addControls();
-	virtual void myUpdate();
+	virtual void myUpdate(MarControlPtr sender);
   
 protected:
   short *sdata_;

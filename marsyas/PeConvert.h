@@ -60,7 +60,7 @@ private:
   mrs_natural size_, psize_, skip_;
   
   void addControls();
-  void myUpdate();
+  void myUpdate(MarControlPtr sender);
   
 public:
   PeConvert(std::string name);

@@ -90,7 +90,7 @@ GaussianClassifier::addControls()
 
 
 void
-GaussianClassifier::myUpdate()
+GaussianClassifier::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("GaussianClassifier.cpp - GaussianClassifier:myUpdate");
 

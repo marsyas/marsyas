@@ -52,7 +52,7 @@ Esitar::clone() const
 }
 
 void
-Esitar::myUpdate()
+Esitar::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("Esitar.cpp - Esitar:myUpdate");
   
@@ -60,7 +60,7 @@ Esitar::myUpdate()
 //   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 //   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 //   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
-	MarSystem::myUpdate();
+	MarSystem::myUpdate(MarControlPtr sender);
 
 #ifdef MRSMIDI
   try { 

@@ -34,7 +34,7 @@ namespace Marsyas
 class PvConvolve: public MarSystem
 {
 private:
-  void myUpdate();
+  void myUpdate(MarControlPtr sender);
   
 public:
   PvConvolve(std::string name);

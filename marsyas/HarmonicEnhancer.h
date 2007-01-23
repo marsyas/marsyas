@@ -34,7 +34,7 @@ namespace Marsyas
 class HarmonicEnhancer: public MarSystem
 {
 private: 
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
   void harm_prob(mrs_real& pmax, mrs_real factor, 
 			    mrs_real& s1, mrs_natural& t1, 

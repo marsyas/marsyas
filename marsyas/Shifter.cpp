@@ -53,7 +53,7 @@ Shifter::addControls()
 }
 
 void
-Shifter::myUpdate()
+Shifter::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("Shifter.cpp - Shifter:myUpdate");
 

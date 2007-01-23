@@ -41,7 +41,7 @@ private:
   //Add specific controls needed by this MarSystem.
 	void addControls();
 	
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
 public:
   PeResidual(std::string name);

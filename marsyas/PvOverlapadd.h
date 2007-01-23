@@ -40,7 +40,7 @@ private:
   realvec awin_;
   
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
  
 public:
   PvOverlapadd(std::string name);

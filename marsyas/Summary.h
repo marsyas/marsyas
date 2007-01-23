@@ -40,7 +40,7 @@ class Summary: public MarSystem
 {
 private: 
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   realvec confusionMatrix;
   std::string labelNames;
 public:

@@ -35,7 +35,7 @@ class Confidence: public MarSystem
 {
 private: 
   void addControls();
-  void myUpdate();
+  void myUpdate(MarControlPtr sender);
 
   realvec confidences_;
   mrs_natural count_;

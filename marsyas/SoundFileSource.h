@@ -81,7 +81,7 @@ private:
 	bool advance_;
 
 	void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
 public:
   SoundFileSource(std::string name);

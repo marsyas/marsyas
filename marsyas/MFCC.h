@@ -36,7 +36,7 @@ namespace Marsyas
 class MFCC: public MarSystem
 {
 private: 
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
   mrs_real lowestFrequency_;
   mrs_natural linearFilters_;

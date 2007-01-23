@@ -37,7 +37,7 @@ class NoiseGate: public MarSystem
 {
 private: 
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
 	mrs_real state_;
   mrs_real xdprev_;

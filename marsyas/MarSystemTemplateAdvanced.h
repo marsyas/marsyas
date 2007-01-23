@@ -67,7 +67,7 @@ namespace Marsyas
 		//mandatory, just recommended)
 		MarControlPtr ctrl_header_;
 
-		void myUpdate();
+		void myUpdate(MarControlPtr sender);
 
 	public:
 		MarSystemTemplateAdvanced(std::string name);

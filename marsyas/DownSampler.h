@@ -35,7 +35,7 @@ class DownSampler: public MarSystem
 {
 private: 
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 public:
   DownSampler(std::string name);
   ~DownSampler();

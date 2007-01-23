@@ -58,7 +58,7 @@ PeResidual::addControls()
 }
 
  void
-PeResidual::myUpdate()
+PeResidual::myUpdate(MarControlPtr sender)
 {
 	setctrl("mrs_natural/onSamples", 
 		getctrl("mrs_natural/inSamples"));

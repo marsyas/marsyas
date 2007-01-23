@@ -80,7 +80,7 @@ PeConvert::addControls()
 }
 
 void
-PeConvert::myUpdate()
+PeConvert::myUpdate(MarControlPtr sender)
 {
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/Sinusoids")->toNatural()*nbParameters_);

@@ -35,7 +35,7 @@ namespace Marsyas
 class Kurtosis: public MarSystem
 {
 private: 
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
   realvec obsrow_;
   mrs_real z_;

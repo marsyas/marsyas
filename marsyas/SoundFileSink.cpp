@@ -193,7 +193,7 @@ SoundFileSink::checkType()
 }
 
 void 
-SoundFileSink::myUpdate()
+SoundFileSink::myUpdate(MarControlPtr sender)
 {
   
   if (filename_ != getctrl("mrs_string/filename")->toString())

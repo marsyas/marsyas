@@ -54,14 +54,14 @@ void MeddisHairCell::addControls()
 }
 
 void 
-MeddisHairCell::myUpdate()
+MeddisHairCell::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("MeddisHairCell.cpp - MeddisHairCell:myUpdate");
   
 //   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 //   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 //   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-	MarSystem::myUpdate(); //lmartins: what about the feature names?!? [?]
+	MarSystem::myUpdate(sender); //lmartins: what about the feature names?!? [?]
   
   //parameters
   M = 1;

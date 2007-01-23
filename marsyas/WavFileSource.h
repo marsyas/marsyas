@@ -51,7 +51,7 @@ private:
   unsigned short bits_;
 
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   unsigned long ByteSwapLong(unsigned long nLongNumber);
   unsigned short ByteSwapShort (unsigned short nValue);
   

@@ -37,7 +37,7 @@ namespace Marsyas
 class Centroid: public MarSystem
 {
 private: 
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
   mrs_real m0_;
   mrs_real m1_;

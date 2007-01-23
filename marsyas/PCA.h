@@ -44,7 +44,7 @@ class PCA: public MarSystem
 {
 private: 
    void addControls();
-	 void myUpdate();
+	 void myUpdate(MarControlPtr sender);
    
    realvec in_data_;
    realvec corr_matrix_;

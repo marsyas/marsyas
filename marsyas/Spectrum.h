@@ -44,7 +44,7 @@ private:
   mrs_natural ponObservations_;
 
   void addControls();
-  void myUpdate();
+  void myUpdate(MarControlPtr sender);
  
 public:
   Spectrum(std::string name);

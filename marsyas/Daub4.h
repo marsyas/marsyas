@@ -44,7 +44,7 @@ private:
   mrs_real c3_;
 
 	void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
 public:
   Daub4(std::string name);

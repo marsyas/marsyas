@@ -60,7 +60,7 @@ MemorySource::addControls()
 
 
 void
-MemorySource::myUpdate()
+MemorySource::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("MemorySource.cpp - MemorySource:myUpdate");
   

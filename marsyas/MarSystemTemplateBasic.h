@@ -43,7 +43,7 @@ namespace Marsyas
     MarControlPtr ctrl_gain_;
     MarControlPtr ctrl_repeats_;
     
-    void myUpdate();
+    void myUpdate(MarControlPtr sender);
     
   public:
     MarSystemTemplateBasic(std::string name);

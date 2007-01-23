@@ -59,7 +59,7 @@ PeOverlapadd::addControls()
 }
 
 void
-PeOverlapadd::myUpdate()
+PeOverlapadd::myUpdate(MarControlPtr sender)
 {
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/hopSize"));
 	setctrl("mrs_natural/onObservations", (mrs_natural)1);

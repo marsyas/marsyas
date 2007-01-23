@@ -71,7 +71,7 @@ NormMaxMin::addControls()
 
 
 void
-NormMaxMin::myUpdate()
+NormMaxMin::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("NormMaxMin.cpp - NormMaxMin:myUpdate");
   
@@ -79,7 +79,7 @@ NormMaxMin::myUpdate()
 //   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 //   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 //   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
-	MarSystem::myUpdate();
+	MarSystem::myUpdate(sender);
   	
 	//defaultUpdate();  [!]
 	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();

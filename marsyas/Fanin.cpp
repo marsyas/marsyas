@@ -58,7 +58,7 @@ Fanin::clone() const
 }
 
 void 
-Fanin::myUpdate()
+Fanin::myUpdate(MarControlPtr sender)
 {
 	if (marsystemsSize_ != 0) 
 	{

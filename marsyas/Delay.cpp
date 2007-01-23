@@ -67,7 +67,7 @@ Delay::addControls()
 
 
 void
-Delay::myUpdate()
+Delay::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("Delay.cpp - Delay:myUpdate");
   

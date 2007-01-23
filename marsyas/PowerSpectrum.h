@@ -43,7 +43,7 @@ private:
   mrs_real dB_, pwr_;
 
   void addControls();
-  void myUpdate();
+  void myUpdate(MarControlPtr sender);
   
 
 

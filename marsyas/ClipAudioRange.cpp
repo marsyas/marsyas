@@ -47,7 +47,7 @@ ClipAudioRange::clone() const
 }
 
 void
-ClipAudioRange::myUpdate()
+ClipAudioRange::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("ClipAudioRange.cpp - ClipAudioRange:myUpdate");
   

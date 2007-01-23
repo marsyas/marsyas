@@ -45,7 +45,7 @@ public:
 private: 
 
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
   mrs_real mDepth_;	
   mrs_real mSpeed_;

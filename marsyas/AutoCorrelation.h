@@ -39,7 +39,7 @@ private:
   fft *myfft_;
   realvec scratch_;
   virtual void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
 public:
   AutoCorrelation(std::string name);

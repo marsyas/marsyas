@@ -46,14 +46,14 @@ PeakPeriods2BPM::clone() const
 }
 
 void
-PeakPeriods2BPM::myUpdate()
+PeakPeriods2BPM::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("PeakPeriods2BPM.cpp - PeakPeriods2BPM:myUpdate");
   
 //   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 //   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 //   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-	MarSystem::myUpdate();
+	MarSystem::myUpdate(sender);
 
   srate_ = getctrl("mrs_real/israte")->toReal();
 

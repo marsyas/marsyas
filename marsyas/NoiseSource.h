@@ -33,7 +33,7 @@ private:
  mrs_real mode_;
 
  void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
 public:
   NoiseSource(std::string name);

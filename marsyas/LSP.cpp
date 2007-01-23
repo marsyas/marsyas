@@ -64,7 +64,7 @@ LSP::addControls()
 }
 
 void
-LSP::myUpdate()
+LSP::myUpdate(MarControlPtr sender)
 { 
 	MRSDIAG("LSP.cpp - LSP:myUpdate");
 

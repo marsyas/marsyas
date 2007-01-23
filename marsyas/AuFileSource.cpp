@@ -255,7 +255,7 @@ AuFileSource::getLinear16(realvec& slice)
 }
 
 void
-AuFileSource::myUpdate()
+AuFileSource::myUpdate(MarControlPtr sender)
 {
   nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();  
   inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();

@@ -37,7 +37,7 @@ class AbsMax: public MarSystem
 private:
   mrs_real max_;
 
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
 public:
   AbsMax(std::string name);

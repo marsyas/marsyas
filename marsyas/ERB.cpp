@@ -68,7 +68,7 @@ ERB::addControls()
 }
 
 void 
-ERB::myUpdate()
+ERB::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("ERB.cpp - ERB:myUpdate");
 

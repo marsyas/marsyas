@@ -48,7 +48,7 @@ InvSpectrum::clone() const
 
 
 void 
-InvSpectrum::myUpdate()
+InvSpectrum::myUpdate(MarControlPtr sender)
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);

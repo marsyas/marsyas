@@ -38,7 +38,7 @@ private:
   mrs_real b_;
   mrs_real q_;
 
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 public:
   Skewness(std::string name);
   ~Skewness();

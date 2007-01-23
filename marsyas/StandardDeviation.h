@@ -38,7 +38,7 @@ class StandardDeviation: public MarSystem
 private: 
   realvec obsrow_;
 
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
 public:
   StandardDeviation(std::string name);

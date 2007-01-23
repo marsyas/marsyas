@@ -34,7 +34,7 @@ namespace Marsyas
 class FullWaveRectifier: public MarSystem
 {
 private: 
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 public:
   FullWaveRectifier(std::string name);
   ~FullWaveRectifier();

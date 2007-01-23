@@ -50,7 +50,7 @@ private:
   std::vector<mrs_natural> il_;
   std::vector<mrs_natural> ih_;
 
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
 public:
   SFM(std::string name);

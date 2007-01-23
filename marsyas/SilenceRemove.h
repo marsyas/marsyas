@@ -39,7 +39,7 @@ private:
   mrs_real threshold_;
 
 	void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
 public:
 	SilenceRemove(std::string name);

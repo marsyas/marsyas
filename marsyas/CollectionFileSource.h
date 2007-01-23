@@ -40,7 +40,7 @@ class CollectionFileSource: public AbsSoundFileSource
 {
 private:
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   void getHeader(std::string filename);
   
   mrs_natural nChannels_;

@@ -38,7 +38,7 @@ class ShiftInput: public MarSystem
 private:
   realvec pout_;
   void addControls();
-  void myUpdate();
+  void myUpdate(MarControlPtr sender);
   
   mrs_natural N_, D_, W_, PW_;
   bool reset_;

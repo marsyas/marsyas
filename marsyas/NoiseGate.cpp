@@ -100,7 +100,7 @@ NoiseGate::addControls()
 }
 
 void
-NoiseGate::myUpdate()
+NoiseGate::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("NoiseGate.cpp - NoiseGate:myUpdate");
   

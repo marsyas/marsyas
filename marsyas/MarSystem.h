@@ -165,7 +165,7 @@ protected:
 
 	virtual void controlUpdate(MarControlPtr ctrl);
 
-	virtual void myUpdate();
+	virtual void myUpdate(MarControlPtr sender);
 	virtual void localActivate(bool state);
 	virtual void myProcess(realvec& in, realvec& out) = 0;
 

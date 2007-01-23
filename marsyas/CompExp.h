@@ -37,7 +37,7 @@ class CompExp: public MarSystem
 {
 private: 
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
   mrs_real xdprev_;
   realvec xd_;

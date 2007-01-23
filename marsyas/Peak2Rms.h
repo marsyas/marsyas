@@ -42,7 +42,7 @@ class Peak2Rms: public MarSystem
         ~Peak2Rms();
         MarSystem* clone() const;  
 
-        void myUpdate();
+        void myUpdate(MarControlPtr sender);
         void myProcess(realvec& in, realvec& out);
 };
 

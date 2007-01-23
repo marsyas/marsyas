@@ -61,7 +61,7 @@ private:
   //Add specific controls needed by this MarSystem.
 	void addControls();
 	
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
 	
 void labeling(realvec& , realvec&, mrs_natural cut=0);

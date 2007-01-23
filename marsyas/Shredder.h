@@ -42,7 +42,7 @@ private:
 	realvec tin_;
 
 	void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 	bool updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd=true);
   
 public:

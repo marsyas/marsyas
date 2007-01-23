@@ -34,7 +34,7 @@ class Reassign: public MarSystem
 {
 private: 
   realvec flag_;
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
 public:
   Reassign(std::string name);

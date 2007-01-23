@@ -38,7 +38,7 @@ class WaveletPyramid: public MarSystem
 private:
   Daub4* waveletStep_;
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   
 public:
   WaveletPyramid(std::string name);

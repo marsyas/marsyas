@@ -63,7 +63,7 @@ Summary::addControls()
 }
 
 void
-Summary::myUpdate()
+Summary::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("Summary.cpp - Summary:myUpdate");
   

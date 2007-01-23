@@ -36,7 +36,7 @@ class Annotator: public MarSystem
 {
 private: 
   void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
   std::vector<mrs_natural> labels_;
   std::string labels_str_;
   mrs_natural labels_index_;
