@@ -36,7 +36,7 @@ class Mono2Stereo: public MarSystem
 {
 private: 
   void addControls();
-  void myUpdate();
+  void myUpdate(MarControlPtr sender);
 
 public:
   Mono2Stereo(std::string name);

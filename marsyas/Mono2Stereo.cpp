@@ -62,7 +62,7 @@ Mono2Stereo::addControls()
 }
 
 void
-Mono2Stereo::myUpdate()
+Mono2Stereo::myUpdate(MarControlPtr sender)
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/onSamples"));
   

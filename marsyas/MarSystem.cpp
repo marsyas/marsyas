@@ -884,7 +884,7 @@ MarSystem::controlUpdate(MarControlPtr ctrl)
 		//compare MarControl* (the actual pointer and not its value)
 		if((ctrlIter_->second)() == ctrl())
 		{
-			update();
+			update(ctrl);
 			break;
 		}
 	}
