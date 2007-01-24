@@ -4,10 +4,13 @@
 #include "Collection.h"
 #include "MarSystemManager.h" 
 #include "CommandLineOptions.h"
+#include "Esitar.h"
+#include "mididevices.h"
 #include <string> 
 #include <fstream>
 #include <iostream>
 #include <iomanip> 
+
 
 using namespace std;
 using namespace Marsyas;
@@ -1026,6 +1029,12 @@ tempo_bcFilter(string sfName, string resName)
   total->addMarSystem(mng.create("SoundFileSource", "src"));
   total->addMarSystem(mng.create("Sum", "sum"));
   total->addMarSystem(mng.create("Gain", "tgain"));
+  // total->addMarSystem(mng.create("AudioSink", "dest"));
+  total->addMarSystem(mng.create("MidiOutput", "devibot"));
+
+  Esitar* esitar = new Esitar("esitar");
+  total->addMarSystem(esitar);
+
 
   // high and low bandpass filters 
   MarSystem *filters = mng.create("Fanout", "filters");
@@ -1071,9 +1080,10 @@ tempo_bcFilter(string sfName, string resName)
   
   total->addMarSystem(filters);
   
-
   // prepare filename for reading 
   total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  // total->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
   srate = total->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
   mrs_natural ch = total->getctrl("SoundFileSource/src/mrs_natural/onObservations")->to<mrs_natural>();
   mrs_real tg = 1.0 / ch;
@@ -1097,16 +1107,15 @@ tempo_bcFilter(string sfName, string resName)
 		total->getctrl("mrs_natural/inSamples")->toNatural());
   realvec plowwin(1,
 		  total->getctrl("mrs_natural/inSamples")->toNatural());
-
+  
   realvec phiwin(1,
 		 total->getctrl("mrs_natural/inSamples")->toNatural());
-
+  
   realvec bands(total->getctrl("mrs_natural/onObservations")->toNatural(), 
 		total->getctrl("mrs_natural/onSamples")->toNatural());
 
   
   mrs_natural samplesPlayed = 0;
-
   
   // MarSystem* dest = mng.create("AudioSink", "dest");
   MarSystem* lowdest = mng.create("SoundFileSink", "lowdest");
@@ -1139,9 +1148,6 @@ tempo_bcFilter(string sfName, string resName)
   hipkr->updctrl("mrs_natural/peakStrengthReset", 4);
   hipkr->updctrl("mrs_real/peakDecay", 0.9);
   
-  
-  
-  
   lowdest->updctrl("mrs_natural/inSamples", 
 		   total->getctrl("mrs_natural/onSamples"));
   hidest->updctrl("mrs_natural/inSamples", 
@@ -1166,7 +1172,13 @@ tempo_bcFilter(string sfName, string resName)
   cout << "BOOM-CHICK PROCESSING" << endl;
   vector<mrs_natural> lowtimes;
   vector<mrs_natural> hitimes;
-  
+
+  // Initialize vectors for file writing    
+  //int r;
+  //int len;
+  //len = 5500;
+  //realvec thumb(len);
+
   while (total->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
     {
       total->process(iwin, bands);
@@ -1176,8 +1188,12 @@ tempo_bcFilter(string sfName, string resName)
       
       for (mrs_natural t=0; t < onSamples; t++)
 	hiwin(0,t) = bands(1, t);
-      
 
+      //  for (mrs_natural t=0; t < onSamples; t++)
+      //	{
+      //	  r = esitar->thumb;
+      //	  thumb(samplesPlayed+t) = r;
+      //	}
       lowpkr->process(lowwin, plowwin);
       hipkr->process(hiwin, phiwin);
       
@@ -1187,20 +1203,45 @@ tempo_bcFilter(string sfName, string resName)
       plowdest->process(plowwin, plowwin);
       phidest->process(phiwin, phiwin);
 
-
       for (mrs_natural t=0; t < onSamples; t++) 
-	if (plowwin(0,t) > 0.0) 
-	  lowtimes.push_back(samplesPlayed+t);
-
+	{
+	  if (plowwin(0,t) > 0.0) 
+	    {
+	      lowtimes.push_back(samplesPlayed+t);
+	      total->updctrl("MidiOutput/devibot/mrs_natural/byte2", DEVIBOT_NA);
+	      total->updctrl("MidiOutput/devibot/mrs_natural/byte3", 50);
+	      total->updctrl("MidiOutput/devibot/mrs_natural/byte1", 144);
+	      total->updctrl("MidiOutput/devibot/mrs_bool/sendMessage", true);
+	    }
+	}
       for (mrs_natural t=0; t < onSamples; t++) 
-	if (phiwin(0,t) > 0.0) 
-	  hitimes.push_back(samplesPlayed+t);
-
+	{
+	  if (phiwin(0,t) > 0.0)
+	    {
+	      hitimes.push_back(samplesPlayed+t);
+	      total->updctrl("MidiOutput/devibot/mrs_natural/byte2", DEVIBOT_GE);
+	      total->updctrl("MidiOutput/devibot/mrs_natural/byte3", 50);
+	      total->updctrl("MidiOutput/devibot/mrs_natural/byte1", 144);
+	      total->updctrl("MidiOutput/devibot/mrs_bool/sendMessage", true);
+	    }
+	}
       samplesPlayed += onSamples;
+
+     
+
     } 
   
-  vector<mrs_natural>::iterator vi;
+  // Write Thumb data
+  //  thumb.write("boomchickthumb.plot");
+
+  // Write IOI files 
+  //  lowtimes.write("lowIOI.txt");
+  // hitimes.write("hiIOI.txt");
   
+  vector<mrs_natural>::iterator vi;
+
+  //  return;  
+
   MarSystem* playback = mng.create("Series", "playback");
   MarSystem* mix = mng.create("Fanout", "mix");
   mix->addMarSystem(mng.create("SoundFileSource", "orsrc"));
@@ -1212,10 +1253,11 @@ tempo_bcFilter(string sfName, string resName)
   playback->addMarSystem(mng.create("Sum", "sum"));
   playback->addMarSystem(mng.create("SoundFileSink", "adest"));
   playback->addMarSystem(mng.create("AudioSink", "dest"));
+  playback->addMarSystem(mng.create("MidiOutput", "devibot"));
+
   cout << "SOUNDFILESINK srate = " << srate << endl;
 
   playback->updctrl("Fanout/mix/SoundFileSource/orsrc/mrs_string/filename", sfName);  
-
   
   string sdname;
   string bdname;
@@ -1251,9 +1293,17 @@ tempo_bcFilter(string sfName, string resName)
        if (lowtimes[lowtindex] < samplesPlayed) 
 	{
 	  lowtindex++;
-
+	  
 	  if (lowtindex > 1) 
+	    
 	    cout << "IOI = " << lowtimes[lowtindex] - lowtimes[lowtindex-1] << endl;
+	  // Robot Control
+	  playback->updctrl("MidiOutput/devibot/mrs_natural/byte2", DEVIBOT_GE);
+	  playback->updctrl("MidiOutput/devibot/mrs_natural/byte3", 50);
+	  playback->updctrl("MidiOutput/devibot/mrs_natural/byte1", 144);
+	  playback->updctrl("MidiOutput/devibot/mrs_bool/sendMessage", true);
+	  
+	  // Bass Drum Play back
 	  playback->updctrl("Fanout/mix/SoundFileSource/bdsrc/mrs_string/filename", bdname);
 	  playback->updctrl("Fanout/mix/SoundFileSource/bdsrc/mrs_natural/pos", 0);
 	}
@@ -1261,14 +1311,20 @@ tempo_bcFilter(string sfName, string resName)
       if (hitimes[hitindex] < samplesPlayed) 
 	{
 	  hitindex++;
+	  
+	  // Robot Control
+	  playback->updctrl("MidiOutput/devibot/mrs_natural/byte2", DEVIBOT_NA);
+	  playback->updctrl("MidiOutput/devibot/mrs_natural/byte3", 50);
+	  playback->updctrl("MidiOutput/devibot/mrs_natural/byte1", 144);
+	  playback->updctrl("MidiOutput/devibot/mrs_bool/sendMessage", true);
+
+	  // Snare Drum PlayBack
 	  playback->updctrl("Fanout/mix/SoundFileSource/sdsrc/mrs_string/filename", sdname);
 	  playback->updctrl("Fanout/mix/SoundFileSource/sdsrc/mrs_natural/pos", 0);
 	}
       playback->tick();
       samplesPlayed += onSamples;
     }
-
-
 
   cout << "FINISHED PROCESSING " << endl;
   cout << "audacity " << sfName << " lowband.wav plowband.wav hiband.wav phiband.wav" << endl;
