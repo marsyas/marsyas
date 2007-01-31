@@ -515,54 +515,102 @@ realvec::sqroot()
 realvec 
 Marsyas::operator+(const realvec& vec1, const realvec& vec2)
 {
-  mrs_natural size;
-  mrs_natural i;
-  if (vec1.size_ != vec2.size_)
-    MRSERR("Size of realvecs does not match");
-  if (vec1.size_ >= vec2.size_)
-    size = vec1.size_;
-  else 
-    size = vec2.size_;
-  realvec sum;
-  sum.create(size);    
-  
-  for (i=0; i<vec1.size_; i++)
-    {
-      sum.data_[i] = vec1.data_[i];
-    }
-  for (i=0; i<vec2.size_; i++)
-    {
-      sum.data_[i] += vec2.data_[i];
-    }
-      
-  return sum;
+	mrs_natural i;
+	if (vec1.cols_ != vec2.cols_ || vec1.rows_ != vec2.rows_)
+	{
+		MRSERR("Size of realvecs does not match");
+		return realvec();
+	}
+
+	realvec sum;
+	sum.create(vec1.rows_,vec1.cols_);    
+
+	for (i=0; i<vec1.size_; i++)
+	{
+		sum.data_[i] = vec1.data_[i];
+	}
+	for (i=0; i<vec2.size_; i++)
+	{
+		sum.data_[i] += vec2.data_[i];
+	}
+
+	return sum;
 }
 
 
 realvec 
 Marsyas::operator-(const realvec& vec1, const realvec& vec2)
 {
-  mrs_natural size;
-  mrs_natural i;
-  if (vec1.size_ != vec2.size_)
-    MRSERR("Size of realvecs does not match");
-  if (vec1.size_ >= vec2.size_)
-    size = vec1.size_;
-  else 
-    size = vec2.size_;
-  realvec diff;
-  diff.create(size);    
-  
-  for (i=0; i<vec1.size_; i++)
-    {
-      diff.data_[i] = vec1.data_[i];
-    }
-  for (i=0; i<vec2.size_; i++)
-    {
-      diff.data_[i] -= vec2.data_[i];
-    }
-      
-  return diff;
+	mrs_natural i;
+	if (vec1.cols_ != vec2.cols_ || vec1.rows_ != vec2.rows_)
+	{
+		MRSERR("Size of realvecs does not match");
+		return realvec();
+	}
+
+	realvec sum;
+	sum.create(vec1.rows_,vec1.cols_);    
+
+	for (i=0; i<vec1.size_; i++)
+	{
+		sum.data_[i] = vec1.data_[i];
+	}
+	for (i=0; i<vec2.size_; i++)
+	{
+		sum.data_[i] -= vec2.data_[i];
+	}
+
+	return sum;
+}
+
+realvec 
+Marsyas::operator*(const realvec& vec1, const realvec& vec2)
+{
+	mrs_natural i;
+	if (vec1.cols_ != vec2.cols_ || vec1.rows_ != vec2.rows_)
+	{
+		MRSERR("Size of realvecs does not match");
+		return realvec();
+	}
+
+	realvec sum;
+	sum.create(vec1.rows_,vec1.cols_);    
+
+	for (i=0; i<vec1.size_; i++)
+	{
+		sum.data_[i] = vec1.data_[i];
+	}
+	for (i=0; i<vec2.size_; i++)
+	{
+		sum.data_[i] *= vec2.data_[i];
+	}
+
+	return sum;
+}
+
+realvec 
+Marsyas::operator/(const realvec& vec1, const realvec& vec2)
+{
+	mrs_natural i;
+	if (vec1.cols_ != vec2.cols_ || vec1.rows_ != vec2.rows_)
+	{
+		MRSERR("Size of realvecs does not match");
+		return realvec();
+	}
+
+	realvec sum;
+	sum.create(vec1.rows_,vec1.cols_);    
+
+	for (i=0; i<vec1.size_; i++)
+	{
+		sum.data_[i] = vec1.data_[i];
+	}
+	for (i=0; i<vec2.size_; i++)
+	{
+		sum.data_[i] /= vec2.data_[i];
+	}
+
+	return sum;
 }
 
 bool
