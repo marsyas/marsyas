@@ -17,7 +17,7 @@
 
 
 TEXI2HTML = makeinfo --html
-## TEXI2PDF  = texi2pdf
+TEXI2PDF  = texi2pdf
 info_TEXINFOS   = marsyas.texi 
 
 SUBDIRS = marsyas images

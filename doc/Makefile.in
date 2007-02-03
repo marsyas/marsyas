@@ -100,6 +100,7 @@ am__quote = @am__quote@
 install_sh = @install_sh@
 
 TEXI2HTML = makeinfo --html
+TEXI2PDF = texi2pdf
 info_TEXINFOS = marsyas.texi 
 
 SUBDIRS = marsyas images
