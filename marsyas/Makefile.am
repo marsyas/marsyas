@@ -28,7 +28,7 @@ pkginclude_HEADERS      = MrsLog.h \
 VScheduler.h Scheduler.h ScheduledEvent.h SchedulerManager.h \
 TmTimer.h TmTime.h TmSampleCount.h TmGetTime.h TmControlValue.h TimerFactory.h \
 MarEvent.h EvGetUpd.h EvValUpd.h Repeat.h Heap.h \
-EvExpr.h ExScanner.h ExParser.h ExSymTbl.h ExNode.h ExVal.h Expr.h \
+EvExpr.h ExScanner.h ExParser.h ExSymTbl.h ExNode.h ExVal.h Expr.h ExCommon.h \
 realvec.h common.h \
 SoundFileSource.h AuFileSource.h \
 WavFileSource.h BaseAudioSink.h Mono2Stereo.h \
@@ -64,7 +64,7 @@ libmarsyas_a_SOURCES    = MrsLog.cpp \
 VScheduler.cpp Scheduler.cpp ScheduledEvent.cpp SchedulerManager.cpp \
 TmTimer.cpp TmTime.cpp TmSampleCount.cpp TmGetTime.cpp TmControlValue.cpp TimerFactory.cpp \
 MarEvent.cpp EvGetUpd.cpp EvValUpd.cpp Repeat.cpp \
-EvExpr.cpp ExScanner.cpp ExParser.cpp ExSymTbl.cpp ExNode.cpp ExVal.cpp Expr.cpp \
+EvExpr.cpp ExScanner.cpp ExParser.cpp ExSymTbl.cpp ExNode.cpp ExVal.cpp Expr.cpp ExCommon.cpp \
 realvec.cpp \
 SoundFileSource.cpp AuFileSource.cpp \
 WavFileSource.cpp BaseAudioSink.cpp Mono2Stereo.cpp \

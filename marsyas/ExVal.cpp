@@ -30,45 +30,28 @@
 using namespace std;
 using namespace Marsyas;
 
-std::string Marsyas::dtos(mrs_real d) { char nn[256]; sprintf(nn,"%f",d); return std::string(nn); }
-std::string Marsyas::ltos(mrs_natural l) { char nn[256]; sprintf(nn,"%ld",l); return std::string(nn); }
-std::string Marsyas::btos(mrs_bool b) { return (b) ? "true" : "false"; }
-mrs_natural Marsyas::stol(std::string n)
-{
-    long num=0; unsigned int i=0; bool neg=false;
-    if (n[0]=='-') { neg=true; i=1; }
-    for (;i<n.length();i++) {
-        num = (num*10) + (n[i] - '0');
-    }
-    return (neg) ? -num : num;
-}
-std::string Marsyas::prep_string(std::string s)
-{
-    s=s.substr(1,s.length()-2); // remove quotes
-    int c=0; bool f=false;
-    for (unsigned int i=0;i<s.length();i++,c++) {
-        if (f) {
-            if (s[i]=='n') { c--; s[c]='\n'; }
-            if (s[i]=='t') { c--; s[c]='\t'; }
-            f=false;
-        } else s[c]=s[i];
-        if (s[i]==92) { f=true; }
-    }
-    s=s.substr(0,c);
-    return s;
-}
 /******************************************************************/
+void ExVal::clear_list()
+{
+    if (list_) {
+        for (int i=0;i<natural_;i++) { list_[i]->deref(); }
+        delete [] list_;
+        list_=NULL;
+    }
+}
 void ExVal::clear()
 {
+    clear_list();
     type_      ="";
     string_    ="";
     bool_      =false;
     natural_   =0;
     real_      =0.0;
-    if (fun_) delete fun_;
+    if (fun_) fun_->deref();
     fun_       =NULL;
     timer_     =NULL;
     scheduler_ =NULL;
+    list_      =NULL;
 }
 void ExVal::set(ExFun* x)       { clear(); type_=(x==NULL) ? "" : x->getType(); fun_=x; }
 void ExVal::set(const string x) { clear(); type_="mrs_string";    string_=x; }
@@ -77,8 +60,20 @@ void ExVal::set(mrs_natural x)  { clear(); type_="mrs_natural";   natural_=x; }
 void ExVal::set(mrs_bool x)     { clear(); type_="mrs_bool";      bool_=x; }
 void ExVal::set(TmTimer** t)    { clear(); type_="mrs_timer";     timer_=t; }
 void ExVal::set(VScheduler** t) { clear(); type_="mrs_scheduler"; scheduler_=t; }
+void ExVal::set(mrs_natural len, ExNode** xs, std::string t)
+{
+    clear();
+    if (xs!=NULL) { list_=xs; if((*xs)!=NULL&&len>0) { t=(*xs)->getType(); } }
+    else { len=0; list_=new ExNode*[len]; }
+    type_=t+" list"; natural_=len;
+}
+void ExVal::set(mrs_natural len, std::string t) // what is this ??
+{
+    clear(); type_=t; natural_=0; list_=NULL;
+}
 void ExVal::set(const ExVal& v)
 {
+    clear();
     kind_      =v.kind_;
     type_      =v.type_;
     string_    =v.string_;
@@ -88,10 +83,18 @@ void ExVal::set(const ExVal& v)
     fun_       =(v.fun_==NULL) ? NULL : v.fun_->copy();
     timer_     =v.timer_;
     scheduler_ =v.scheduler_;
+    if (is_list()) { // can do this now that type_=v.type_
+        list_=new ExNode*[natural_];
+        for (int i=0;i<natural_;i++) {
+            list_[i]=v.list_[i];
+            list_[i]->inc_ref();
+        }
+    } else list_=NULL;
 }
 ExVal::~ExVal()
 {
-    if (fun_!=NULL) delete fun_;
+    if (fun_!=NULL) fun_->deref();
+    clear_list();
 }
 std::string ExVal::toString() const
 {
@@ -102,16 +105,150 @@ std::string ExVal::toString() const
     else if (type_=="mrs_fun") { return "<mrs_fun>"; }
     else if (type_=="mrs_timer") { return "<mrs_timer>"; }
     else if (type_=="mrs_scheduler") { return "<mrs_scheduler>"; }
-    return "unknown value";
+    else if (type_=="") { return "unknown value"; }
+    return type_;
 }
 ExVal ExVal::defaultExValue(std::string type)//{{{
 {
-    if (type=="mrs_string") return "";
-    if (type=="mrs_bool") return false;
+    if (type=="mrs_string") return (std::string)"";
+    if (type=="mrs_bool") return (bool)false;
     if (type=="mrs_natural") return (long)0;
     if (type=="mrs_real") return (double)0.0;
     if (type=="mrs_timer") { ExVal v((TmTimer**)NULL); return v; }
     if (type=="mrs_scheduler") { ExVal v((VScheduler**)NULL); return v; }
-    return false;
+    return ExVal();
 }//}}}
+std::string ExVal::getBaseType() const
+{
+    mrs_natural p=type_.find(' ');
+    if (p<0) return type_;
+    return type_.substr(0,p);
+}
+std::string ExVal::getElemType() const
+{
+    if (type_=="mrs_string") {
+        return "mrs_string";
+    } else if (is_list()) {
+        return type_.substr(0,type_.length()-5);
+    }
+    return "";
+}
+bool ExVal::is_list() const
+{   // whoa! that's crazy man..
+    unsigned int len=(unsigned int)type_.length();
+    return (len>3)
+        && (type_[len-4]=='l')
+        && (type_[len-3]=='i')
+        && (type_[len-2]=='s')
+        && (type_[len-1]=='t');
+}
+bool ExVal::is_seq() const
+{
+    return type_=="mrs_string"||is_list();
+}
+ExVal ExVal::getSeqRange(int lidx, int ridx)
+{
+    if (!is_seq()) {
+        return defaultExValue(getBaseType()); // obviously an error, but what to do?
+    }
+    if (lidx<0) lidx=0;
+
+    mrs_natural len;
+    if (is_list()) {
+        len=natural_;
+        if (len<=0||lidx>=len) { return ExVal(0,getType()); }
+
+        if (ridx<lidx) ridx=lidx;
+        else if (ridx>=len) ridx=len-1;
+        mrs_natural new_len=ridx-lidx;
+
+        ExNode** new_list=new ExNode*[new_len];
+        int p=0;
+        for (int i=lidx;i<ridx;i++) {
+            ExNode* e=list_[i];
+            new_list[p]=e; p++;
+            e->inc_ref();
+        }
+        return ExVal(new_len,(ExNode**)new_list);
+    }
+    else { // mrs_string
+        len=string_.length();
+        if (len<=0||lidx>=len) { return (std::string)""; }
+
+        if (ridx<lidx) ridx=lidx;
+        else if (ridx>=len) ridx=len-1;
+
+        return (std::string)string_.substr(lidx,ridx-1);
+    }
+
+}
+ExVal ExVal::getSeqElem(int idx)
+{
+    if (is_list()) {
+        if (idx>=natural_||idx<0) {
+            MRSWARN("ExVal::getSeqElem  index exceeds list length");
+            return defaultExValue(getBaseType());
+        }
+        return list_[idx]->eval();
+    } else if (type_=="mrs_string") {
+        if (idx>=0&&idx<=(int)string_.length())
+            return (std::string)string_.substr(idx,1);
+        return (std::string)"";
+    } else {
+        MRSWARN("ExVal::getSeqElem  element access on non-sequence type: "+type_);
+        return defaultExValue(getBaseType());
+    }
+}
+void ExVal::setSeqElem(int idx, ExVal v)
+{
+    if (idx<0||idx>=natural_) {
+        MRSWARN("ExVal::set[]  Index out of bounds");
+        return;
+    }
+    list_[idx]->deref();
+    list_[idx]=new ExNode(v);
+}
+std::ostream& Marsyas::operator<<(std::ostream& o, ExVal& v)
+{
+    bool i_am_a_list = v.is_list();
+    if (i_am_a_list) {
+        o<<"[";
+        for (int i=0;i<v.natural_;i++) {
+            ExVal x=v.list_[i]->eval();
+            o<<x;
+            if (i<v.natural_-1) { o<<", "; }
+        }
+        o<<"]";
+    }
+    else if (v.type_=="mrs_string") o<<"'"<<v.string_<<"'";
+    else if (v.type_=="mrs_natural") o<<ltos(v.natural_);
+    else if (v.type_=="mrs_real") o<<dtos(v.real_);
+    else if (v.type_=="mrs_bool") o<<btos(v.bool_);
+    return o;
+}
+ExVal ExVal::append(const ExVal v) const {
+    if (!is_list()||!v.is_list()) {
+        MRSWARN("ExVal::append  only sequence types may be appended: "+getType()+", "+v.getType());
+        return this;
+    }
+    if (getType()==" list"||v.getType()==" list"||getType()==v.getType()) {
+        mrs_natural len=natural_+v.toNatural(); ExNode** elems=new ExNode*[len];
+        int l=0;
+        if (natural_>0) {
+            for (int i=0;i<natural_;i++,l++) {
+                elems[l]=list_[i];
+                elems[l]->inc_ref();
+            }
+        }
+        if (v.toNatural()>0) {
+            for (int i=0;i<v.toNatural();i++,l++) {
+                elems[l]=v.list_[i];
+                elems[l]->inc_ref();
+            }
+        }
+        return ExVal(len,elems);
+    }
+    MRSWARN("ExVal::append  type mismatch in list concat: "+getType()+","+v.getType());
+    return this;
+}
 

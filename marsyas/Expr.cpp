@@ -39,7 +39,7 @@
 using namespace std;
 using namespace Marsyas;
 
-void Ex::parse(Expr* e, ExNode** init, ExNode** expr)
+void Ex::parse(Expr* e, ExNode*& init, ExNode*& expr)
 {
     ExScanner s;
     ExParser p(&(e->timer_),&s);
@@ -48,20 +48,20 @@ void Ex::parse(Expr* e, ExNode** init, ExNode** expr)
     if (init_!="") {
         s.setString(init_.c_str());
         p.Parse(e->vsched_,e->marsym_,e->symbol_table_);
-        *init=p.getTree();
-    } else *init=NULL;
+        init=p.getTree();
+    } else init=NULL;
 
     if (expr_!="") {
         s.setString(expr_.c_str());
         p.Parse(e->vsched_,e->marsym_,e->symbol_table_);
-        *expr=p.getTree();
-    } else *expr=NULL;
+        expr=p.getTree();
+    } else expr=NULL;
 }
 Expr::Expr()
 {
     symbol_table_=NULL;
     init_expr_=NULL; expr_=NULL;
-    init_rept_=NULL; rept_=NULL;
+    rept_=NULL; rate_=NULL;
     marsym_=NULL;
     vsched_=NULL;
     timer_=NULL;
@@ -73,31 +73,38 @@ Expr::Expr(MarSystem* msym, Ex e)
     vsched_=NULL;
     symbol_table_=new ExRecord();
     symbol_table_->inc_ref();
-    e.parse(this,&init_expr_,&expr_);
-    rept_=new ExNode(false); // so that a call to Expr::repeat() works
-    init_rept_=NULL;
+    e.parse(this,init_expr_,expr_);
+    rept_=NULL;
+    rate_=NULL;
 }
 Expr::Expr(MarSystem* msym, Ex e, Rp r)
 {
-    marsym_=msym;
-    timer_=NULL;
-    vsched_=NULL;
-    symbol_table_=new ExRecord();
-    symbol_table_->inc_ref();
-    e.parse(this,&init_expr_,&expr_);
-    r.parse(this,&init_rept_,&rept_);
+    set(msym,e,r);
 }
 Expr::Expr(MarSystem* msym, ExFile ef)
 {
     Ex e=ef.getEx();
     Rp r=ef.getRp();
-    marsym_=msym;
+    set(msym,e,r);
+}
+void Expr::set(MarSystem* m, Ex& e, Rp& r)
+{
+    marsym_=m;
     timer_=NULL;
     vsched_=NULL;
     symbol_table_=new ExRecord();
     symbol_table_->inc_ref();
-    e.parse(this,&init_expr_,&expr_);
-    r.parse(this,&init_rept_,&rept_);
+    e.parse(this,init_expr_,expr_);
+    r.parse(this,rept_,rate_);
+    if (rept_&&rept_->getEvalType()!="mrs_bool") {
+        MRSWARN("Expr::  Repetition expression must evaluate to bool: "+rept_->getEvalType());
+        rept_->deref(); rept_=NULL;
+        if (rate_) rate_->deref(); rate_=NULL;
+    } else if (rate_&&rate_->getEvalType()!="mrs_string") {
+        MRSWARN("Expr::  Repetition rate expression must evaluate to string: "+rate_->getEvalType());
+        if (rept_) rept_->deref(); rept_=NULL;
+        if (rate_) rate_->deref(); rate_=NULL;
+    }
 }
 Expr::~Expr()
 {
@@ -105,7 +112,7 @@ Expr::~Expr()
     delete expr_;
     delete init_expr_;
     delete rept_;
-    delete init_rept_;
+    delete rate_;
 }
 void Expr::eval()
 {
@@ -113,7 +120,12 @@ void Expr::eval()
 }
 bool Expr::repeat()
 {
-    return (rept_->eval()).toBool();
+    return (rept_)&&(rept_->eval()).toBool();
+}
+std::string Expr::repeat_interval()
+{
+    if (rate_) return (rate_->eval()).toString();
+    return "__NULL";
 }
 void Expr::setVScheduler(VScheduler* v)
 {
@@ -126,7 +138,6 @@ void Expr::setTimer(TmTimer* t)
 void Expr::post()
 {
     if (init_expr_) init_expr_->eval();
-    if (init_rept_) init_rept_->eval();
 }
 void ExFile::read(std::string fname)
 {
@@ -135,7 +146,7 @@ void ExFile::read(std::string fname)
     std::string data;
     char buffer[256];
     // flags correspond to the 5 possible blocks, no block can be declared more than once
-    bool flags[5] = { false };
+    bool flags[6] = { false };
     int pos=-1;
     std::string line;
     while (from.getline(buffer,256)) {
@@ -151,24 +162,19 @@ void ExFile::read(std::string fname)
                 }
             }
             else if (buffer[1]=='R'&&buffer[2]=='p') {
-                if (buffer[3]=='I'&&buffer[4]=='n'&&buffer[5]=='i'&&buffer[6]=='t'&&buffer[7]==':') {
-                    // #RpInit:
-                    store(pos,data); data=""; pos=3;
-                    if (flags[pos]) { MRSWARN("ExFile::read  Double declaration of #RpInit: block"); }
-                }
-                else if (buffer[3]=='E'&&buffer[4]=='x'&&buffer[5]=='p'&&buffer[6]=='r'&&buffer[7]==':') {
+                if (buffer[3]=='E'&&buffer[4]=='x'&&buffer[5]=='p'&&buffer[6]=='r'&&buffer[7]==':') {
                     // #RpExpr:
-                    store(pos,data); data=""; pos=4;
+                    store(pos,data); data=""; pos=3;
                     if (flags[pos]) { MRSWARN("ExFile::read  Double declaration of #RpExpr: block"); }
                 }
                 else if (buffer[3]=='R'&&buffer[4]=='a'&&buffer[5]=='t'&&buffer[6]=='e'&&buffer[7]==':') {
                     // #RpRate:
-                    store(pos,data); data=""; pos=5;
+                    store(pos,data); data=""; pos=4;
                     if (flags[pos]) { MRSWARN("ExFile::read  Double declaration of #RpRate: block"); }
                 }
             }
             else {
-                MRSWARN("ExFile::read  Unknown macro #");
+                MRSWARN("ExFile::read  Unknown macro # in ExFile");
             }
             flags[pos]=true;
         }
@@ -183,11 +189,9 @@ void ExFile::store(int pos, std::string data)
     switch(pos) {
     case 1: iex_=data; break;
     case 2: ex_=data; break;
-    case 3: irp_=data; break;
-    case 4: rp_=data; break;
-    case 5: rr_=data; break;
+    case 3: rp_=data; break;
+    case 4: rr_=data; break;
     }
 }
-
 
 

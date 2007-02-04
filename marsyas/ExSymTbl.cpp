@@ -27,14 +27,27 @@
 using namespace std;
 using namespace Marsyas;
 
-ExRecord::ExRecord(int kind, ExFun* fun, bool reserved)
+ExRecord::ExRecord() : ExRefCount()
+{
+    kind_=0;
+    name_="";
+    reserved_=false;
+}
+ExRecord::ExRecord(int kind) : ExRefCount()
+{
+    kind_=kind;
+    name_="";
+    reserved_=false;
+}
+
+ExRecord::ExRecord(int kind, ExFun* fun, bool reserved) : ExRefCount()
 {
     kind_=kind;
     name_=fun->getSignature(); // fully qualified name
     value_.set(fun);
     reserved_=reserved;
 }
-ExRecord::ExRecord(int kind, std::string name, ExVal& value, bool reserved)
+ExRecord::ExRecord(int kind, std::string name, ExVal& value, bool reserved) : ExRefCount()
 {
     kind_=kind;
     name_=name;
@@ -59,6 +72,12 @@ std::string ExRecord::getType(std::string path)
     ExRecord* r=getRecord(path);
     return (r==NULL) ? "" : r->getType();
 }
+std::string ExRecord::getElemType(std::string path)
+{
+    if (path=="") return value_.getElemType();
+    ExRecord* r=getRecord(path);
+    return (r==NULL) ? "" : r->getElemType();
+}
 //
 int ExRecord::getKind(std::string path)
 {
@@ -73,6 +92,14 @@ bool ExRecord::is_reserved(std::string path)
     ExRecord* r=getRecord(path);
     return (r==NULL) ? false : r->is_reserved();
 }
+bool ExRecord::is_list()
+{
+    return value_.is_list();
+}
+bool ExRecord::is_seq()
+{
+    return value_.is_seq();
+}
 //
 ExRecord* ExRecord::getRecord(std::string path)
 {
@@ -85,6 +112,50 @@ ExRecord* ExRecord::getRecord(std::string path)
     }
     return r;
 }
+bool ExRecord::params_compare(std::string a, std::string b) {
+    int p1=0;
+    int p2=0;
+    int len1=a.length();
+    int len2=b.length();
+    int start=1;
+
+    while (p1<len1&&p2<len2) {
+        if (a[p1]!=b[p2]) {
+            if (a[p1]==','&&b[p2]=='|') {
+                while (p2<len2) {
+                    if (b[p2]==',') break;
+                    if (b[p2]==')') return false;
+                    p2++;
+                }
+                p1++;
+                p2++;
+            } else if (a[p1]==')'&&b[p2]=='|') {
+                while (p2<len2) {
+                    if (b[p2]==',') return false;
+                    if (b[p2]==')') return true;
+                    p2++;
+                }
+                return false;
+            } else {
+                while(p2<len2) {
+                    if (b[p2]=='|') break;
+                    if (b[p2]==','||b[p2]==')') return false;
+                    p2++;
+                }
+                p1=start; p2++;
+            }
+        } else {
+            if (a[p1]==',') start=p1+1;
+            p1++; p2++;
+        }
+        if (a[p1]==')'&&b[p2]==')') return true;
+    }
+    return false;
+}
+
+
+
+
 ExFun* ExRecord::getFunctionCopy(std::string path)
 {
     if (path=="") {
@@ -105,7 +176,7 @@ void ExRecord::split_on(std::string p, char c, std::string& hd, std::string& tl,
 //
 void ExRecord::rsplit_on(std::string p, char c, std::string& hd, std::string& tl)
 {
-    size_t i; for(i=p.length()-1;i>=0&&p[i]!=c;i++);
+    int i; for(i=p.length()-1;i>=0&&p[i]!=c;i++);
     if (p[i]==c) { hd=p.substr(0,i); tl=p.substr(i+1,p.length()-i-1); }
     else { hd=""; tl=p; }
 }
@@ -128,6 +199,22 @@ ExRecord* ExRecord::find_sym(std::string path)
         }
         return (gi->second)->find_sym(gtl);
     }
+    if (path[0]=='(') {
+        ExRecord* answer=NULL;
+        std::map<std::string,ExRecord*>::iterator is=syms_.begin();
+        while (is!=syms_.end()&&!answer) {
+            if (params_compare((is->first),path)) { answer=is->second; }
+            else is++;
+        }
+        if (!answer) {
+            std::map<std::string,std::string>::iterator ni=syms_aliases_.begin();
+            while (ni!=syms_aliases_.end()&&!answer) {
+                if (params_compare((ni->first),path)) { answer=syms_[ni->second]; }
+                else ni++;
+            }
+        }
+        return answer;
+    }
     std::map<std::string,ExRecord*>::iterator gi=syms_.find(ghd);
     if (gi==syms_.end()) {
         // name not found, so see if it is an alias
@@ -137,6 +224,7 @@ ExRecord* ExRecord::find_sym(std::string path)
     }
     return (gi->second);
 }
+
 void ExRecord::addAliases(std::string path, std::string name)
 {
     std::string nhd, ntl;
@@ -194,7 +282,47 @@ void ExRecord::addRecord(std::string path, ExRecord* sym)
         addAliases(ntl,nhd);
     }
 }
+ExRecord* ExRecord::rmvRecord(std::string path)
+{
+    // get leading name in group: a|b|c.d|e|f.g|h|i => a|b|c d|e|f.g|h|i
+    std::string ghd, gtl; split_on(path,'.',ghd,gtl);
+    std::map<std::string, ExRecord*>::iterator rec_i;
+    std::map<std::string,std::string>::iterator alias_i;
 
+    if (gtl==""&&ghd[0]!='(') {
+        split_on(ghd,'(',ghd,gtl,true);
+    }
+    rec_i=syms_.find(ghd);
+    if (rec_i==syms_.end()) {
+        alias_i=syms_aliases_.find(ghd);
+        // a possible error condition since the path given diverges from the possible paths
+        if (alias_i==syms_aliases_.end()) { return NULL; }
+        ghd=alias_i->second;
+        rec_i=syms_.find(ghd); // let's assume that gi is valid
+    }
+    ExRecord* r;
+    bool del_rec=false;
+    if (gtl!="") r=(rec_i->second)->rmvRecord(gtl);
+    else { r=rec_i->second; del_rec=true; }
+    if (r!=NULL) {
+        std::vector<std::string> names_;
+        // eliminate aliases to r by first getting their names
+        for (alias_i=syms_aliases_.begin();alias_i!=syms_aliases_.end();alias_i++) {
+            if (alias_i->second==ghd) names_.push_back(alias_i->first);
+        }
+        if (names_.size()>0) {
+            // delete aliases from syms_aliases_
+            std::vector<std::string>::iterator nmi;
+            for (nmi=names_.begin();nmi!=names_.end();nmi++) {
+                syms_aliases_.erase(*nmi);
+            }
+        }
+        // eliminate the record from syms_
+        syms_.erase(rec_i);
+        if (del_rec&&r->size()>0) r->deref();
+    }
+    return r;
+}
 void ExRecord::addReserved(std::string path, ExFun* fun)
 {
     addRecord(path,new ExRecord(T_FUN,fun,true));
@@ -204,7 +332,7 @@ void ExRecord::addReserved(std::string path, ExVal v, std::string nm, int kind)
     addRecord(path,new ExRecord(kind,nm,v,true));
 }
 //
-void ExRecord::setValue(std::string path, ExVal& v)
+void ExRecord::setValue(ExVal& v, std::string path, int elem_pos)
 {
     if (path!="") {
         // get leading name in group: a|b|c.d|e|f.g|h|i => a|b|c d|e|f.g|h|i
@@ -215,8 +343,7 @@ void ExRecord::setValue(std::string path, ExVal& v)
             ExRecord* syms=NULL;
             if (iter==syms_.end()) { syms=new ExRecord(); syms_[name]=syms; syms->inc_ref(); }
             else { syms=iter->second; }
-    
-            syms->setValue(path,v);
+            syms->setValue(v,path);
             return;
         } else {
             // get leading name in name: a|b|c => a b|c
@@ -227,18 +354,20 @@ void ExRecord::setValue(std::string path, ExVal& v)
                 return;
             }
             else {
-                (iter->second)->setValue("",v);
+                (iter->second)->setValue(v);
                 return;
             }
         }
     }
     if (getKind()!=T_VAR) {
         MRSWARN("ExRecord::setValue   Attempting assignment to non-variable");
+    } else if (elem_pos>=0) {
+        if (getElemType()!=v.getType()) {
+            MRSWARN("ExRecord::setValue   Type mismatch in assignment of element: "+getElemType()+" << "+v.getType());
+        } else value_.setSeqElem(elem_pos, v);
     } else if (getType()!=v.getType()) {
-        MRSWARN("ExRecord::setValue   Type mismatch in assignment");
-    } else {
-        value_=v;
-    }
+        MRSWARN("ExRecord::setValue   Type mismatch in assignment: "+getType()+" << "+v.getType());
+    } else value_=v;
 }
 
 // These are pathed names, with no | symbols
@@ -264,5 +393,91 @@ void ExRecord::rmv_import(std::string a)
     for (p=imports_.begin();p!=imports_.end();++p) {
         if ((*p)==a) { imports_.erase(p); break; }
     }
+}
+
+/******************************************************************************/
+ExSymTbl::~ExSymTbl()
+{
+    while (rho_.size()>0) {
+        ExRecord* r=rho_.back();
+        rho_.pop_back();
+        r->deref();
+    }
+}
+void ExSymTbl::block_open()
+{
+    env_id++;
+    ExRecord* r=new ExRecord();
+    rho_.push_back(r);
+    curr_=r;
+    r->inc_ref();
+}
+void ExSymTbl::block_close()
+{
+    if (rho_.size()>0) {
+        ExRecord* r=rho_.back();
+        rho_.pop_back();
+        r->deref();
+        if (rho_.size()>0) curr_=rho_.back();
+        else curr_=NULL;
+    }
+}
+void ExSymTbl::addTable(ExRecord* r)
+{
+    if (r) {
+        env_id++;
+        rho_.push_back(r);
+        curr_=r;
+        r->inc_ref();
+    }
+}
+ExRecord* ExSymTbl::getRecord(std::string nm)
+{
+    if (rho_.size()>0) {
+        std::vector<ExRecord*>::reverse_iterator i;
+        for(i=rho_.rbegin(); i!=rho_.rend(); i++) {
+           ExRecord* r=(*i)->getRecord(nm);
+           if (r!=NULL) return r;
+        }
+    }
+    return NULL;
+}
+ExVal ExSymTbl::getValue(std::string path)
+{
+    ExRecord* r=getRecord(path);
+    return (r) ? r->getValue() : ExVal();
+}
+ExFun* ExSymTbl::getFunctionCopy(std::string path)
+{
+    ExRecord* r=getRecord(path);
+    return (r) ? r->getFunctionCopy() : NULL;
+}
+void ExSymTbl::import(std::string n)
+{
+    if (curr_) curr_->import(n);
+}
+void ExSymTbl::rmv_import(std::string n)
+{
+    if (curr_) curr_->rmv_import(n);
+}
+void ExSymTbl::addRecord(std::string path, ExRecord* sym)
+{
+    if (curr_) curr_->addRecord(path,sym);
+}
+ExRecord* ExSymTbl::rmvRecord(std::string path)
+{
+    return (curr_) ? curr_->rmvRecord(path) : NULL;
+}
+void ExSymTbl::addReserved(std::string path, ExFun* f)
+{
+    if (curr_) curr_->addReserved(path,f);
+}
+void ExSymTbl::addReserved(std::string path, ExVal v, std::string nm, int kind)
+{
+    if (curr_) curr_->addReserved(path,v,nm,kind);
+}
+void ExSymTbl::setValue(ExVal& v, std::string path)
+{
+    if (curr_) curr_->setValue(v,path);
 }
 

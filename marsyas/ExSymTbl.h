@@ -19,7 +19,7 @@
     \class ExRecord.cpp
     \brief classes for managing the symbol table - functions and variables
     \author Neil Burroughs  inb@cs.uvic.ca
-    \date Jan 1, 2007
+    \date Jan 4, 2007
 */
 #ifndef __SYM_TBL_H__
 #define __SYM_TBL_H__
@@ -37,25 +37,6 @@ namespace Marsyas
 class ExNode;
 class ExNode_Fun;
 
-/**
-   \class ExRefCount
-   \brief convenient parent class for reference counted objects.
-   \author Neil Burroughs  inb@cs.uvic.ca
-   \version 1.0
-   \date    Jan 01, 2007
-*/
-class ExRefCount {
-private:
-    int ref_count;
-protected:
-    ExRefCount() { ref_count=0; }
-public:
-    virtual ~ExRefCount() { }
-    // reference counting
-    void inc_ref() { ref_count++; }
-    void deref() { --ref_count; if(ref_count<1) delete this; }
-    int get_ref_count() { return ref_count; }
-};
 /**
    \class ExRecord
    \brief a symbol table node that symbolises a path component to a record.
@@ -86,22 +67,26 @@ private:
     ExRecord* find_sym(std::string nm);
 
 public:
-    ExRecord() : ExRefCount() {kind_=0;name_="";reserved_=false;}
-    ExRecord(int kind) : ExRefCount() {kind_=kind;name_="";reserved_=false;}
+    ExRecord();
+    ExRecord(int kind);
     ExRecord(int kind, ExFun* fun, bool reserved);
     ExRecord(int kind, std::string name, ExVal& value, bool reserved);
 
     virtual ~ExRecord();
 
     std::string getType(std::string nm="");
+    std::string getElemType(std::string nm="");
     int getKind(std::string nm="");
     bool is_reserved(std::string nm="");
+    size_t size() {return syms_.size();}
 
-    void setValue(std::string path, ExVal& v);
+    void setValue(ExVal& v, std::string path="", int elem_pos=-1);
     ExVal getValue(std::string path="");
     ExRecord* getRecord(std::string nm);
     ExFun* getFunctionCopy(std::string nm="");
-
+    bool is_list();
+    bool is_seq();
+    bool params_compare(std::string a, std::string b);
     // addRecord expects the name of the symbol, for functions this includes
     // parameter type information used to differentiate it from other functions
     // aliases may be specified using the | symbol as so:
@@ -119,6 +104,38 @@ public:
     // must appear at the end as in the above examples.
     void addAliases(std::string path, std::string name);
     void addRecord(std::string path, ExRecord* sym);
+    ExRecord* rmvRecord(std::string path);
+    void addReserved(std::string path, ExFun* f);
+    void addReserved(std::string path, ExVal v, std::string nm="", int kind=T_CONST);
+
+    void import(std::string);
+    void rmv_import(std::string);
+
+};
+
+class ExSymTbl : public ExRefCount {
+    /*** setup a naming scheme that prefixes an id for each variable name
+         so that outputting bytecode is easier with variable names ***/
+    std::vector<ExRecord*> rho_;
+    ExRecord* curr_;
+    unsigned int env_id;
+public:
+    ExSymTbl() : ExRefCount() {env_id=0;curr_=NULL;}
+    virtual ~ExSymTbl();
+
+    void block_open();
+    void block_close();
+    void addTable(ExRecord* r);
+
+    size_t size() {return rho_.size();}
+    void setValue(ExVal& v, std::string path);
+
+    ExVal getValue(std::string path);
+    ExRecord* getRecord(std::string nm);
+    ExFun* getFunctionCopy(std::string nm);
+
+    void addRecord(std::string path, ExRecord* sym);
+    ExRecord* rmvRecord(std::string path);
     void addReserved(std::string path, ExFun* f);
     void addReserved(std::string path, ExVal v, std::string nm="", int kind=T_CONST);
 

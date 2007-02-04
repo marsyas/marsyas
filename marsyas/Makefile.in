@@ -111,7 +111,7 @@ pkginclude_HEADERS = MrsLog.h \
 VScheduler.h Scheduler.h ScheduledEvent.h SchedulerManager.h \
 TmTimer.h TmTime.h TmSampleCount.h TmGetTime.h TmControlValue.h TimerFactory.h \
 MarEvent.h EvGetUpd.h EvValUpd.h Repeat.h Heap.h \
-EvExpr.h ExScanner.h ExParser.h ExSymTbl.h ExNode.h ExVal.h Expr.h \
+EvExpr.h ExScanner.h ExParser.h ExSymTbl.h ExNode.h ExVal.h Expr.h ExCommon.h \
 realvec.h common.h \
 SoundFileSource.h AuFileSource.h \
 WavFileSource.h BaseAudioSink.h Mono2Stereo.h \
@@ -148,7 +148,7 @@ libmarsyas_a_SOURCES = MrsLog.cpp \
 VScheduler.cpp Scheduler.cpp ScheduledEvent.cpp SchedulerManager.cpp \
 TmTimer.cpp TmTime.cpp TmSampleCount.cpp TmGetTime.cpp TmControlValue.cpp TimerFactory.cpp \
 MarEvent.cpp EvGetUpd.cpp EvValUpd.cpp Repeat.cpp \
-EvExpr.cpp ExScanner.cpp ExParser.cpp ExSymTbl.cpp ExNode.cpp ExVal.cpp Expr.cpp \
+EvExpr.cpp ExScanner.cpp ExParser.cpp ExSymTbl.cpp ExNode.cpp ExVal.cpp Expr.cpp ExCommon.cpp \
 realvec.cpp \
 SoundFileSource.cpp AuFileSource.cpp \
 WavFileSource.cpp BaseAudioSink.cpp Mono2Stereo.cpp \
@@ -195,10 +195,11 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	MarEvent.$(OBJEXT) EvGetUpd.$(OBJEXT) EvValUpd.$(OBJEXT) \
 	Repeat.$(OBJEXT) EvExpr.$(OBJEXT) ExScanner.$(OBJEXT) \
 	ExParser.$(OBJEXT) ExSymTbl.$(OBJEXT) ExNode.$(OBJEXT) \
-	ExVal.$(OBJEXT) Expr.$(OBJEXT) realvec.$(OBJEXT) \
-	SoundFileSource.$(OBJEXT) AuFileSource.$(OBJEXT) \
-	WavFileSource.$(OBJEXT) BaseAudioSink.$(OBJEXT) \
-	Mono2Stereo.$(OBJEXT) AudioSource.$(OBJEXT) AudioSink.$(OBJEXT) \
+	ExVal.$(OBJEXT) Expr.$(OBJEXT) ExCommon.$(OBJEXT) \
+	realvec.$(OBJEXT) SoundFileSource.$(OBJEXT) \
+	AuFileSource.$(OBJEXT) WavFileSource.$(OBJEXT) \
+	BaseAudioSink.$(OBJEXT) Mono2Stereo.$(OBJEXT) \
+	AudioSource.$(OBJEXT) AudioSink.$(OBJEXT) \
 	SoundFileSink.$(OBJEXT) AuFileSink.$(OBJEXT) \
 	WavFileSink.$(OBJEXT) FileName.$(OBJEXT) MarSystem.$(OBJEXT) \
 	MarSystemTemplateAdvanced.$(OBJEXT) \
@@ -290,12 +291,13 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/ERB.Po ./$(DEPDIR)/Envelope.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Esitar.Po ./$(DEPDIR)/EvExpr.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/EvGetUpd.Po ./$(DEPDIR)/EvValUpd.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/ExNode.Po ./$(DEPDIR)/ExParser.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/ExScanner.Po ./$(DEPDIR)/ExSymTbl.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/ExVal.Po ./$(DEPDIR)/Expr.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/FM.Po ./$(DEPDIR)/Fanin.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Fanout.Po ./$(DEPDIR)/FileName.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Filter.Po ./$(DEPDIR)/Flux.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ExCommon.Po ./$(DEPDIR)/ExNode.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ExParser.Po ./$(DEPDIR)/ExScanner.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ExSymTbl.Po ./$(DEPDIR)/ExVal.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Expr.Po ./$(DEPDIR)/FM.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Fanin.Po ./$(DEPDIR)/Fanout.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/FileName.Po ./$(DEPDIR)/Filter.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Flux.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/FullWaveRectifier.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Gain.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/GaussianClassifier.Po \
@@ -504,6 +506,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/EvExpr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/EvGetUpd.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/EvValUpd.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ExCommon.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ExNode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ExParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ExScanner.Po@am__quote@

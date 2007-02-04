@@ -42,17 +42,22 @@ class Ex {
 public:
     Ex(std::string e) { init_=""; expr_=e; };
     Ex(std::string i, std::string e) { init_=i; expr_=e; };
-    void parse(Expr* e, ExNode** init, ExNode** expr);
+    void parse(Expr* e, ExNode*& init, ExNode*& expr);
 };
 /**
    \class Rp
-   \brief Rp is the same as Ex but is interpreted as an expression for
-          deciding on repetition.
+   \brief Rp works in a similar way to Ex except that the single parameter
+          constructor is an expression that must evaluate to a boolean that
+          determines if the event is to repeat while the two parameter
+          constructor must be a boolean expression (if true then repeat)
+          and an expression that evaluates to a string that specifies when
+          the event is to repeat with respect to the current time and in a
+          representation of time that is known to the timer (ie '1s' on sample count timer).
 */
 class Rp : public Ex {
 public:
-    Rp(std::string e) : Ex(e) {};
-    Rp(std::string i, std::string e) : Ex(i,e) {};
+    Rp(std::string e) : Ex(e,"") {};
+    Rp(std::string e, std::string r) : Ex(e,r) {};
 };
 /**
    \class ExFile
@@ -66,19 +71,19 @@ public:
             #RpRate:
 */
 class ExFile {
-    std::string iex_, ex_, irp_, rp_, rr_;
+    std::string iex_, ex_, rp_, rr_;
     bool file_read_;
     void read(std::string fname);
     void store(int pos, std::string data);
 public:
     ExFile(std::string n) { file_read_=false; read(n); }
     Ex getEx() { return Ex(iex_,ex_); }
-    Rp getRp() { return Rp(irp_,rp_); }
+    Rp getRp() { return Rp(rp_,rr_); }
 };
 
 /**
    \class Expr
-   \brief Expr encapsulates an evaluatable expression. 
+   \brief Expr encapsulates an evaluatable expression.
 */
 class ExRecord;
 class MarSystem;
@@ -88,12 +93,11 @@ class Expr {
     friend class Ex;
     ExRecord* symbol_table_;
     ExNode* init_expr_; ExNode* expr_;
-    ExNode* init_rept_;     ExNode* rept_;
+    ExNode* rept_; ExNode* rate_;
 
     MarSystem* marsym_;  VScheduler* vsched_;  TmTimer* timer_;
 
-protected:
-    ExNode* parse(TmTimer** t, MarSystem* m, std::string expr);
+    void set(MarSystem* m, Ex& e, Rp& r);
 
 public:
     Expr();
@@ -105,6 +109,8 @@ public:
 
     virtual void eval();   // evaluate expression_ for side effects
     virtual bool repeat(); // evaluate repeat_ expression, return result
+    std::string repeat_interval();
+    bool has_rate() { return rate_!=NULL; }
 
     void setVScheduler(VScheduler* v);
     void setTimer(TmTimer* t);

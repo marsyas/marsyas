@@ -25,12 +25,20 @@
 #ifndef __EX_COMMON_H__
 #define __EX_COMMON_H__
 
+#include <string>
+#include <iostream>
+#include "common.h"
+
+namespace Marsyas
+{
+    
 enum {
     NONE=0,
     T_CONST,
     T_LIB,
     T_FUN, // a function call
     T_VAR,
+    T_LIST,
 
     T_REAL,
     T_NATURAL,
@@ -61,5 +69,43 @@ enum {
     OP_CONV
 };
 
+#define ExT_mrs_unit 1
+#define ExT_mrs_bool 2
+#define ExT_mrs_natural 4
+#define ExT_mrs_real 8
+#define ExT_mrs_string 16
+#define ExT_mrs_timer 32
+#define ExT_mrs_scheduler 64
+
+unsigned int ex_string_to_typeid(std::string tp);
+std::string ex_typeid_to_string(unsigned int tp);
+
+std::string dtos(double d);
+std::string ltos(long l);
+std::string btos(bool b);
+long stol(std::string n);
+
+/**
+   \class ExRefCount
+   \brief convenient parent class for reference counted objects.
+   \author Neil Burroughs  inb@cs.uvic.ca
+   \version 1.0
+   \date    Jan 01, 2007
+*/
+class ExRefCount {
+private:
+    int ref_count;
+protected:
+    ExRefCount() { ref_count=0; }
+public:
+    virtual ~ExRefCount() { }
+    // reference counting
+    void inc_ref() { ref_count++; }
+    void deref() { --ref_count; if(ref_count<1) delete this; }
+    int get_ref_count() { return ref_count; }
+    void op_ref() { std::cout<<"Obj<"<<((unsigned int)this)<<":"<<ref_count<<">\n"; }
+};
+
+};
 #endif
 

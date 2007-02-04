@@ -20,7 +20,7 @@
    \brief ExNode is the base class for an expression tree node.
    \author Neil Burroughs  inb@cs.uvic.ca
    \version 1.0
-   \date    Jan 4, 2007
+   \date    Jan 04, 2007
 */
 #include "ExNode.h"
 
@@ -29,7 +29,8 @@ using namespace Marsyas;
 
 void Marsyas::loadlib_Real(ExRecord* st)
 {
-    st->addReserved("Real|R.cos(mrs_real)|(mrs_natural)",new ExFun_RealCos());
+    st->addReserved("Real|R.abs(mrs_real)",new ExFun_RealAbs());
+    st->addReserved("Real|R.cos(mrs_real)",new ExFun_RealCos());
     st->addReserved("Real|R.acos(mrs_real)",new ExFun_RealACos());
     st->addReserved("Real|R.cosh(mrs_real)",new ExFun_RealCosH());
 
@@ -47,7 +48,6 @@ void Marsyas::loadlib_Real(ExRecord* st)
     st->addReserved("Real|R.rand()",new ExFun_RealRand());
 
     st->addReserved("Real|R.sqrt(mrs_real)",new ExFun_RealSqrt());
-    st->addReserved("Real|R.abs(mrs_real)",new ExFun_RealAbs());
 #define _PI_VAL_ 3.14159265358979323846264338327950288419716939937510
 #define _E_VAL_  2.7182818284590452353602874713526624977572470936999595749669676277240766303535
     st->addReserved("Real|R.e",(mrs_real)_E_VAL_);
@@ -61,6 +61,8 @@ void Marsyas::loadlib_Natural(ExRecord* st)
 {
     st->addReserved("Natural|N.abs(mrs_natural)",new ExFun_NaturalAbs());
     st->addReserved("Natural|N.rand()",new ExFun_NaturalRand());
+    st->addReserved("Natural|N.rand(mrs_natural)",new ExFun_NaturalRandRange1());
+    st->addReserved("Natural|N.rand(mrs_natural,mrs_natural)",new ExFun_NaturalRandRange2());
     st->addReserved("Natural|N.min(mrs_natural,mrs_natural)",new ExFun_NaturalMin());
     st->addReserved("Natural|N.max(mrs_natural,mrs_natural)",new ExFun_NaturalMax());
     st->addReserved("Natural|N.srand(mrs_natural)",new ExFun_NaturalSRand());
@@ -84,12 +86,17 @@ void Marsyas::loadlib_Stream(ExRecord* st)
     st->addReserved("Stream.opn(mrs_natural)",new ExFun_StreamOutNNatural());
     st->addReserved("Stream.opn(mrs_bool)",new ExFun_StreamOutNBool());
 }
+void Marsyas::loadlib_List(ExRecord* st)
+{
+    st->addReserved("List.len(mrs_list)",new ExFun_ListLen());
+}
 void Marsyas::load_symbols(ExRecord* st)
 {
     loadlib_Real(st);
     loadlib_Natural(st);
     loadlib_String(st);
     loadlib_Stream(st);
+    loadlib_List(st);
 }
 void Marsyas::loadlib_timer(ExRecord* st, TmTimer** tmr)
 {
@@ -104,32 +111,42 @@ void Marsyas::loadlib_timer(ExRecord* st, TmTimer** tmr)
     st->addReserved("Timer|Tmr.upd(mrs_timer,mrs_string,mrs_bool)",new ExFun_TimerUpdBool());
     st->addReserved("Timer|Tmr.ival(mrs_timer,mrs_string)",new ExFun_TimerIntrvlSize());
 }
-
-ExNode::ExNode()
+/*
+void Marsyas::loadlib_timer(ExRecord* st, VScheduler** tmr)
+{
+    st->addReserved("Scheduler|Sched.tmr(mrs_scheduler,mrs_string)",new ExFun_SchedulerFind("mrs_timer","Scheduler.tmr(mrs_scheduler,mrs_string)"));
+//    st->addReserved("Scheduler|Sched.addtmr(mrs_scheduler,mrs_string,mrs_string)",new ExFun_SchedulerAddTimer("mrs_bool","Scheduler.addtmr(mrs_scheduler,mrs_string,mrs_string)"));
+//    st->addReserved("Scheduler|Sched.post(mrs_scheduler,mrs_timer,mrs_event)",new ExFun_
+}
+*/
+ExNode::ExNode() : ExRefCount()
 {
     init();
 }
-ExNode::ExNode(int k, std::string t)
+ExNode::ExNode(int k, std::string t) : ExRefCount()
 {
     init();
     setKind(k);
     setType(t);
 }
-ExNode::ExNode(int k, std::string t, ExVal v)
+ExNode::ExNode(int k, std::string t, ExVal v) : ExRefCount()
 {
     init();
     setKind(k);
     setType(t);
     value=v;
 }
-ExNode::ExNode(ExVal v)
+ExNode::ExNode(ExVal v) : ExRefCount()
 {
     init();
-    setKind(T_CONST);
+    setKind(T_CONST); // what about list types
+    setType(v.getType());
+//    std::cout<<"ExNode<"<<getType()<<">\n";
     value=v;
 }
-ExNode::ExNode(const ExNode& v)
+ExNode::ExNode(const ExNode& v) : ExRefCount()
 {
+    init();
     setType(v.getType());
     setKind(v.getKind());
     val_str=v.val_str;
@@ -139,14 +156,31 @@ ExNode::ExNode(const ExNode& v)
 void ExNode::init()
 {
     next=NULL;
+    inc_ref();
 }
 bool ExNode::is_const()
 {
     return (getKind()==T_CONST);
 }
+bool ExNode::is_list() const
+{   
+    std::string humuhumunukunukuapuaa=getType();
+    // whoa! that's crazy man..
+    unsigned int len=(unsigned int)humuhumunukunukuapuaa.length();
+    return (len>3)
+        && (humuhumunukunukuapuaa[len-4]=='l')
+        && (humuhumunukunukuapuaa[len-3]=='i')
+        && (humuhumunukunukuapuaa[len-2]=='s')
+        && (humuhumunukunukuapuaa[len-1]=='t');
+}
+bool ExNode::is_seq() const
+{
+    return getType()=="mrs_string"||is_list();
+}
+
 ExNode::~ExNode()
 {
-    delete next;
+    if (next) next->deref();
 }
 ExNode* ExNode::copy()
 {
@@ -154,12 +188,25 @@ ExNode* ExNode::copy()
 }
 std::string ExNode::getType() const
 {
-    return (getKind()==T_CONST) ? value.getType() : type;
+//    return (getKind()==T_CONST) ? value.getType() : type;
+    return type;
+}
+std::string ExNode::getEvalType() const
+{
+    if (next==NULL) return getType();
+    ExNode* e=next; while (e->next!=NULL) { e=e->next; }
+    return e->getType();
 }
 void ExNode::setType(const std::string t)
 {
     type=t;
 }
+std::string ExNode::getElemType() const
+{
+    int r=type.rfind(' ');
+    return type.substr(0,r);
+}
+
 void ExNode::setKind(const int k)
 {
     kind=k;
@@ -180,6 +227,20 @@ ExVal ExNode::eval()
     if (next!=NULL) { return next->eval(); }
     return v;
 }
+
+ExVal ExNode::getSeqRange(int lidx, int ridx)
+{
+    return value.getSeqRange(lidx,ridx);
+}
+ExVal ExNode::getSeqElem(int idx)
+{
+    return value.getSeqElem(idx);
+}
+void ExNode::setSeqElem(int idx, ExVal v)
+{
+    value.setSeqElem(idx, v);
+}
+
 /*** ExFun **************************************************************/
 void ExFun::setParams(ExNode* ps)
 {
@@ -197,13 +258,10 @@ void ExFun::setParams(ExNode* ps)
             if (pt_i!=pst) {
                 if (pt_i=="mrs_real") {
                     if (pst=="mrs_natural") { param=new ExNode_NaturalToReal(param); }
-                    else { MRSWARN("ExNode::setParams(ExNode*)  Cannot convert types"); }
                 }
                 else if (pt_i=="mrs_natural") {
                     if (pst=="mrs_real") { param=new ExNode_RealToNatural(param); }
-                    else { MRSWARN("ExNode::setParams(ExNode*)  Cannot convert types"); }
                 }
-                else { MRSWARN("ExNode::setParams(ExNode*)  Cannot convert types"); }
             }
             params[i]=param;
             if (param->getKind()!=T_CONST) { evaluatable=false; }
@@ -233,7 +291,7 @@ void ExFun::setParamTypes(std::string t)
 
 ExFun::~ExFun()
 {
-    for (int i=0;i<num_params;i++) { delete params[i]; }
+    for (int i=0;i<num_params;i++) { params[i]->deref(); }
     delete [] params;
 }
 bool ExFun::is_const()

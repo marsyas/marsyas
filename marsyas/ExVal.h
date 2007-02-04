@@ -37,14 +37,9 @@
 namespace Marsyas
 {
 
-std::string dtos(double d);
-std::string ltos(long l);
-std::string btos(bool b);
-long stol(std::string n);
-std::string prep_string(std::string s);
-
 class ExNode;
 class ExFun;
+class ExNode_List;
 
 class ExVal {
 private:
@@ -54,24 +49,35 @@ private:
     mrs_natural natural_;
     mrs_real real_;
     mrs_bool bool_;
+
     ExFun* fun_;
     TmTimer** timer_;
     VScheduler** scheduler_;
+    ExNode** list_; // use natural_ as length
+protected:
     void clear();
+    void clear_list();
+    void setKindType(int k, std::string t) { kind_=k; type_=t; }
 public:
-    ExVal(){fun_=NULL;clear();};
-    ExVal(const std::string x){fun_=NULL;set(x);};
-    ExVal(mrs_real x){fun_=NULL;set(x);};
-    ExVal(mrs_natural x){fun_=NULL;set(x);};
-    ExVal(mrs_bool x){fun_=NULL;set(x);};
-    ExVal(ExFun* x){fun_=NULL;set(x);};
-    ExVal(TmTimer** x){fun_=NULL;set(x);};
-    ExVal(VScheduler** x){fun_=NULL;set(x);};
-    ExVal(const ExVal& x){fun_=NULL;set(x);};
+    ExVal()                               {list_=NULL;fun_=NULL;clear();};
+    ExVal(const std::string x)            {list_=NULL;fun_=NULL;set(x);};
+    ExVal(mrs_real x)                     {list_=NULL;fun_=NULL;set(x);};
+    ExVal(mrs_natural x)                  {list_=NULL;fun_=NULL;set(x);};
+    ExVal(mrs_bool x)                     {list_=NULL;fun_=NULL;set(x);};
+    ExVal(ExFun* x)                       {list_=NULL;fun_=NULL;set((ExFun*)x);};
+    ExVal(TmTimer** x)                    {list_=NULL;fun_=NULL;set((TmTimer**)x);};
+    ExVal(VScheduler** x)                 {list_=NULL;fun_=NULL;set((VScheduler**)x);};
+    ExVal(mrs_natural len, ExNode** xs, std::string t="")   {list_=NULL;fun_=NULL;set(len,(ExNode**)xs,t);}; // list
+    ExVal(mrs_natural len, std::string t) {list_=NULL;fun_=NULL;set(len,(std::string)t);}; // empty list
+    ExVal(const ExVal& x)                 {list_=NULL;fun_=NULL;set((ExVal&)x);};
     ExVal& operator=(const ExVal& x){set(x);return*this;}
     virtual ~ExVal();
 
     std::string getType() const {return type_;};
+    std::string getBaseType() const;
+    std::string getElemType() const;
+    bool is_list() const;
+    bool is_seq() const;
     mrs_natural toNatural() const {return natural_;}
     mrs_real toReal() const {return real_;}
     mrs_bool toBool() const {return bool_;}
@@ -79,6 +85,11 @@ public:
     std::string toString() const;
     TmTimer** toTimer() const {return timer_;}
     VScheduler** toVScheduler() const {return scheduler_;}
+
+    ExVal getSeqRange(int lidx, int ridx);
+    ExVal getSeqElem(int idx);
+    void setSeqElem(int idx, ExVal v);
+    ExVal append(const ExVal v) const;
 
     void set(ExFun* x);
     void set(const std::string x);
@@ -88,38 +99,53 @@ public:
     void set(const ExVal& v);
     void set(TmTimer** t);
     void set(VScheduler** t);
+    void set(mrs_natural len, ExNode** xs, std::string t="");
+    void set(mrs_natural len, std::string t); // empty list
     static ExVal defaultExValue(std::string type);
 
-#define T_BINOP(_T,_VAL,_OP) if (v1.type_==_T) { return v1._VAL _OP v2._VAL; }
-#define S_BOP(_OP) T_BINOP("mrs_string",string_,_OP)
-#define N_BOP(_OP) T_BINOP("mrs_natural",natural_,_OP)
-#define R_BOP(_OP) T_BINOP("mrs_real",real_,_OP)
+#define LIST_CONCAT \
+    if (v1.is_list()&&v2.is_list()) { return v1.append(v2); }
+
+#define T_BINOP(_T,_VAL,_OP,_CAST) if (v1.type_==_T) { return _CAST(v1._VAL _OP v2._VAL); }
+#define S_BOP(_OP,_CAST) T_BINOP("mrs_string",string_,_OP,_CAST)
+#define N_BOP(_OP,_CAST) T_BINOP("mrs_natural",natural_,_OP,_CAST)
+#define R_BOP(_OP,_CAST) T_BINOP("mrs_real",real_,_OP,_CAST)
 #define RMOD_BOP() if (v1.type_=="mrs_real") { return fmod(v1.real_,v2.real_); }
-#define B_BOP(_OP) T_BINOP("mrs_bool",bool_,_OP)
+#define B_BOP(_OP,_CAST) T_BINOP("mrs_bool",bool_,_OP,_CAST)
+
 #define VAL_BINOP(_NAME,_WARN,_TESTS) \
-friend inline ExVal _NAME(const ExVal& v1, const ExVal& v2) { \
+friend inline ExVal _NAME(const ExVal& v1, const ExVal& v2) \
+{ \
     _TESTS; \
     MRSWARN(((std::string)_WARN+"  Invalid types ~"+v1.getType()+","+v2.getType())); \
     return v1; \
 };
 
-VAL_BINOP(operator==, "ExVal::op==", R_BOP(==); N_BOP(==); S_BOP(==);B_BOP(==));
-VAL_BINOP(operator!=, "ExVal::op!=", R_BOP(!=); N_BOP(!=); S_BOP(!=);B_BOP(!=));
-VAL_BINOP(operator<=, "ExVal::op<=", R_BOP(<=); N_BOP(<=); S_BOP(<=);B_BOP(<=));
-VAL_BINOP(operator< , "ExVal::op<" , R_BOP(< ); N_BOP(< ); S_BOP(< );B_BOP(< ));
-VAL_BINOP(operator>=, "ExVal::op>=", R_BOP(>=); N_BOP(>=); S_BOP(>=);B_BOP(>=));
-VAL_BINOP(operator> , "ExVal::op>" , R_BOP(> ); N_BOP(> ); S_BOP(> );B_BOP(> ));
+VAL_BINOP(operator==, "ExVal::op==", R_BOP(==,(bool)); N_BOP(==,(bool)); S_BOP(==,(bool));B_BOP(==,(bool)));
+VAL_BINOP(operator!=, "ExVal::op!=", R_BOP(!=,(bool)); N_BOP(!=,(bool)); S_BOP(!=,(bool));B_BOP(!=,(bool)));
+VAL_BINOP(operator<=, "ExVal::op<=", R_BOP(<=,(bool)); N_BOP(<=,(bool)); S_BOP(<=,(bool));B_BOP(<=,(bool)));
+VAL_BINOP(operator< , "ExVal::op<" , R_BOP(< ,(bool)); N_BOP(< ,(bool)); S_BOP(< ,(bool));B_BOP(< ,(bool)));
+VAL_BINOP(operator>=, "ExVal::op>=", R_BOP(>=,(bool)); N_BOP(>=,(bool)); S_BOP(>=,(bool));B_BOP(>=,(bool)));
+VAL_BINOP(operator> , "ExVal::op>" , R_BOP(> ,(bool)); N_BOP(> ,(bool)); S_BOP(> ,(bool));B_BOP(> ,(bool)));
 
-VAL_BINOP(operator+, "ExVal::op+", R_BOP(+);   N_BOP(+); S_BOP(+));
-VAL_BINOP(operator-, "ExVal::op-", R_BOP(-);   N_BOP(-)          );
-VAL_BINOP(operator*, "ExVal::op*", R_BOP(*);   N_BOP(*)          );
-VAL_BINOP(operator/, "ExVal::op/", R_BOP(/);   N_BOP(/)          );
-VAL_BINOP(operator%, "ExVal::op%", RMOD_BOP(); N_BOP(%)          );
+VAL_BINOP(operator+, "ExVal::op+", R_BOP(+,(mrs_real)); N_BOP(+,(mrs_natural)); S_BOP(+,(std::string)); LIST_CONCAT;);
+VAL_BINOP(operator-, "ExVal::op-", R_BOP(-,(mrs_real)); N_BOP(-,(mrs_natural))          );
+VAL_BINOP(operator*, "ExVal::op*", R_BOP(*,(mrs_real)); N_BOP(*,(mrs_natural))          );
+VAL_BINOP(operator/, "ExVal::op/", R_BOP(/,(mrs_real)); N_BOP(/,(mrs_natural))          );
+VAL_BINOP(operator%, "ExVal::op%", RMOD_BOP();          N_BOP(%,(mrs_natural))          );
 
 friend inline ExVal operator||(const ExVal& v1, const ExVal& v2) { return v1.bool_ || v2.bool_; };
 friend inline ExVal operator&&(const ExVal& v1, const ExVal& v2) { return v1.bool_ && v2.bool_; };
+friend std::ostream& operator<<(std::ostream& o, ExVal& v);
 
 }; //class ExVal
+
+class ExValTyped : public ExVal {
+    public:
+    ExValTyped(int k, std::string t) : ExVal() { setKindType(k,t); };
+    virtual ~ExValTyped(){}
+};
+
 }//namespace Marsyas
 
 #endif

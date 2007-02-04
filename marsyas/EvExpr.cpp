@@ -59,6 +59,11 @@ bool EvExpr::repeat()
 {
     return expr_->repeat();
 }
+std::string EvExpr::repeat_interval()
+{
+    if (expr_->has_rate()) return expr_->repeat_interval();
+    return repeat_.interval;
+}
 
 void EvExpr::updctrl(std::string cname, TmControlValue value)
 {

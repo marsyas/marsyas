@@ -61,7 +61,7 @@ public:
     Expr* getExpression() { return expr_; }
 
     virtual bool repeat();
-    virtual std::string repeat_interval() { return repeat_.interval; };
+    virtual std::string repeat_interval();
     virtual void set_repeat(Repeat r) { repeat_=r; }
 
     // the usual stream IO
