@@ -91,6 +91,7 @@ class VScheduler;
 class TmTimer;
 class Expr {
     friend class Ex;
+    bool initialized_;
     ExRecord* symbol_table_;
     ExNode* init_expr_; ExNode* expr_;
     ExNode* rept_; ExNode* rate_;

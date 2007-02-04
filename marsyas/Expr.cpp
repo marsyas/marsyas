@@ -65,6 +65,7 @@ Expr::Expr()
     marsym_=NULL;
     vsched_=NULL;
     timer_=NULL;
+    initialized_=false;
 }
 Expr::Expr(MarSystem* msym, Ex e)
 {
@@ -76,6 +77,7 @@ Expr::Expr(MarSystem* msym, Ex e)
     e.parse(this,init_expr_,expr_);
     rept_=NULL;
     rate_=NULL;
+    initialized_=false;
 }
 Expr::Expr(MarSystem* msym, Ex e, Rp r)
 {
@@ -105,6 +107,7 @@ void Expr::set(MarSystem* m, Ex& e, Rp& r)
         if (rept_) rept_->deref(); rept_=NULL;
         if (rate_) rate_->deref(); rate_=NULL;
     }
+    initialized_=false;
 }
 Expr::~Expr()
 {
@@ -137,7 +140,8 @@ void Expr::setTimer(TmTimer* t)
 }
 void Expr::post()
 {
-    if (init_expr_) init_expr_->eval();
+    if (init_expr_&&!initialized_) init_expr_->eval();
+    initialized_=true;
 }
 void ExFile::read(std::string fname)
 {
