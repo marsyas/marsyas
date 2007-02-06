@@ -408,6 +408,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\marsyas\ExCommon.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\marsyas\ExNode.cpp"
 				>
 			</File>

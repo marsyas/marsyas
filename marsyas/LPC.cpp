@@ -46,6 +46,11 @@ LPC::LPC(string name):MarSystem("LPC",name)
 	addControls();
 }
 
+LPC::LPC(const LPC& a):MarSystem(a)
+		{
+			ctrl_coeffs_ = getctrl("mrs_realvec/coeffs");
+		}
+
 LPC::~LPC()
 {
 }
@@ -63,6 +68,9 @@ LPC::addControls()
 	setctrlState("mrs_natural/order", true); 
 	addctrl("mrs_real/lambda", (mrs_real)0.0);	
 	addctrl("mrs_real/gamma", (mrs_real)1.0);
+	addctrl("mrs_realvec/coeffs", realvec(), ctrl_coeffs_);
+	addctrl("mrs_natural/featureMode", (mrs_natural) 1);
+	setctrlState("mrs_natural/featureMode", true); 
 }
 
 void
@@ -85,6 +93,16 @@ LPC::myUpdate(MarControlPtr sender)
 
 	temp_.create(order_ ,order_);
 	Zs_.create(order_);
+
+	if(getctrl("mrs_natural/featureMode")->toNatural() != 1)
+	{
+		featureMode_ = 0;
+	  ctrl_coeffs_->stretch(order_);
+	   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural());
+		  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples")->toNatural());
+   }
+	else
+		featureMode_ = 1;
 
 	//MATLAB engine stuff - for testing and validation purposes only!
 #ifdef _MATLAB_LPC_
@@ -328,18 +346,28 @@ LPC::myProcess(realvec& in, realvec& out)
 	// y(n) = x(n) - a(1)x(n-1) - ... - a(order_-1)x(n-order_-1)
 	// a = [1 a(1) a(2) ... a(order_-1)]
 	// out = [a(1) a(2) ... a(order_-1)]
-	for(i=0; i < order_; i++)
-		out(i) = a(i+1);
-
+	
+	// coeffs as output
+	if(featureMode_)
+		for(i=0; i < order_; i++)
+			out(i) = a(i+1);
+	else{ // coefs as control
+		for(i=0; i < order_; i++)
+			(**ctrl_coeffs_)(i) = a(i+1);
+     out = in;
+	  }
 	//--------------------------
 	// LPC Pole-shifting
 	//--------------------------
 	//verify if Z-Plane pole-shifting should be performed...
 	mrs_real gamma = getctrl("mrs_real/gamma")->toReal();
 	if(gamma != 1.0)
-		for(mrs_natural j = 0; j < order_; j++)
-			out(j) = (out(j) * pow(gamma, (double)j+1));
-
+		if(featureMode_)
+			for(mrs_natural j = 0; j < order_; j++)
+				out(j) = (out(j) * pow(gamma, (double)j+1));
+		else
+			for(mrs_natural j = 0; j < order_; j++)
+				(**ctrl_coeffs_)(j) = ((**ctrl_coeffs_)(j) * pow(gamma, (double)j+1));
 	//---------------------------
 	// RMS Prediction Error
 	//---------------------------
@@ -353,10 +381,10 @@ LPC::myProcess(realvec& in, realvec& out)
 	out(order_+1) = LevinsonError; //prediction error (= gain? [?])
 
 //MATLAB engine stuff - for testing and validation purposes only!
-#ifdef _MATLAB_LPC_
+//#ifdef _MATLAB_LPC_
 	MATLAB_PUT(out, "LPC_out");
 	MATLAB_EVAL("LPC_test");
-#endif
+//#endif
 }
 
 

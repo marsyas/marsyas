@@ -46,7 +46,9 @@ private:
 	void addControls();
 	void myUpdate(MarControlPtr sender);
 
+	MarControlPtr ctrl_coeffs_;
 	mrs_natural order_;
+	mrs_natural featureMode_;
 
 	realvec Zs_;
 	realvec temp_;
@@ -78,6 +80,7 @@ private:
 
 public:
 	LPC(std::string name);
+	LPC(const LPC&);
 	~LPC();
 
 	MarSystem* clone() const;  
