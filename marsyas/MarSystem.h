@@ -244,7 +244,7 @@ public:
   
 	// Composite interface
   virtual bool addMarSystem(MarSystem *marsystem);
-	virtual MarSystem* getMarSystem(std::string absPath);
+	virtual MarSystem* getChildMarSystem(std::string childPath);
 	virtual void setParent(const MarSystem* parent);
 	MarSystem* getParent() const {return parent_;}
 	virtual std::vector<MarSystem*> getChildren();

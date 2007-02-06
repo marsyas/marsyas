@@ -290,35 +290,63 @@ MarSystem::addMarSystem(MarSystem *marsystem)
 }
 
 MarSystem*
-MarSystem::getMarSystem(std::string absPath)
+MarSystem::getChildMarSystem(std::string childPath)
 {
-	if(absPath == prefix_)
-		return this;
-	else if(isComposite_)
+	//check for an absolute path, and if necessary convert it 
+	//to a relative path
+	if(childPath[0] == '/')
 	{
-		string childPath;
-		if(absPath.length() > prefix_.length())
-			childPath = absPath.substr(prefix_.length()-1, absPath.length()); //includes leading "/" [!]
+		//is this absolute path pointing to this MarSystem?
+		if(childPath.substr(0, absPath_.length()) == absPath_)
+		{
+			//return control path without the absolute path
+			//(i.e. return the relative path)
+			childPath = childPath.substr(absPath_.length(), childPath.length());
+		}
 		else
 		{
-			MRSWARN("MarSystem::getMarsystem(): " + absPath + " not found!");
+			//this absolute path does not point to this MarSystem or any of its
+			//children...
+			MRSWARN("MarSystem::getChildMarSystem: " + childPath + " is an invalid path @ " + absPath_);
 			return NULL;
 		}
-
-		vector<MarSystem*>::const_iterator iter;
-		for(iter = marsystems_.begin(); iter != marsystems_.end(); ++iter)
+	}
+	//from this point, childPath is for sure a relative path.
+	
+	//start by checking if childPath is not empty (or resulted from an absolute
+	//path pointing to this MarSystem itself and not to any of its children)
+	if(childPath == "")
+	{
+		MRSWARN("MarSystem::getChildMarSystem: path does not point to a child MarSystem");
+		return NULL;
+	}
+	//...otherwise, search among its children...
+	else if(isComposite_)
+	{
+		vector<MarSystem*>::const_iterator msysIter;
+		for(msysIter = marsystems_.begin(); msysIter != marsystems_.end(); ++msysIter)
 		{
-			MarSystem* msys = (*iter)->getMarSystem(childPath);
-			if (msys)
-				return msys;
+			string prefix = (*msysIter)->getPrefix();
+			prefix = prefix.substr(1, prefix.length()-2); //ignore leading and trailing "/"
+			if(childPath.substr(0, prefix.length()) == prefix)
+			{
+				//a matching child was found!
+				if(childPath.length() == prefix.length())
+					return (*msysIter);
+				else
+				{
+					//remove parent prefix from childPath, and continue searching recursively in children
+					childPath = childPath.substr(prefix.length()+1,childPath.length());
+					return (*msysIter)->getChildMarSystem(childPath);
+				}
+			}
 		}
-
-		MRSWARN("MarSystem::getMarsystem(): " + absPath + " not found!");
+		MRSWARN("MarSystem::getChildMarsystem(): " + childPath + " not found!");
 		return NULL;
 	}
 	else
 	{
-		MRSWARN("MarSystem::getMarsystem(): " + absPath + " not found!");
+		MRSWARN("MarSystem::getChildMarsystem(): " + childPath + " not found!");
 		return NULL;
 	}
 }
@@ -654,16 +682,17 @@ MarSystem::getControlLocalPath(string cname) const
 bool
 MarSystem::linkControl(string cname1, string cname2) 
 {
-	//links the control cname1 (which must be local) with the control  
-	//cname2 (which must exist somewhere). cname1 must be a valid absolute 
-	//control pathname or a local control pathname: if the cname1 control 
-	//does not exist, it will be created and added to this MarSystem.
+	//links the control cname1 (which must be local or from a child) with the   
+	//control cname2 (which must exist somewhere). cname1 must be a valid absolute 
+	//control pathname, a local control pathname, or a path to a child control:  
+	//if the cname1 control does not exist, it will be created and added to 
+	//the MarSystem in question.
 	//cname 2 must be a valid absolute, relative or local control pathname
 	//to an EXISTING control.
 		
 	//try to get the controls
-	MarControlPtr ctrl1 = this->getControlLocal(cname1);//search only local controls (equivalent to getControl(localPath, false, false))
-	MarControlPtr ctrl2 = this->getControl(cname2, true, true);//search everywhere in the network (including locally, at parent and among children)
+	MarControlPtr ctrl1 = getControl(cname1, false, true);//search local and child controls
+	MarControlPtr ctrl2 = getControl(cname2, true, true);//search everywhere in the network (including locally, at parent and among children)
 
 	//a control is inherently connected to itself!
 	if(ctrl1() == ctrl2())
@@ -675,15 +704,52 @@ MarSystem::linkControl(string cname1, string cname2)
 		//MRSWARN("MarSystem::linkControl - control does not exist anywhere: " + cname2);
 		return false;
 	}
-	
-	//now check if the first control already exists or if we have
-	// to add it to this MarSystem
+
+	//check if the first control already exists or if we have
+	// to create and add it to the corresponding MarSystem
 	if(ctrl1.isInvalid())
 	{
-		if(!addControl(cname1, ctrl2->clone(), ctrl1))
+		string relativecname = getControlRelativePath(cname1);
+		string localcname = getControlLocalPath(cname1);
+
+		//if cname1 is a local control path, add it to this MarSystem
+		if(localcname != "")
 		{
-			MRSWARN("MarSystem::linkControl - Error creating new link control: " + cname1);
-			MRSWARN("MarSystem::linkControl - absolute path: " + absPath_);
+			if(!addControl(cname1, ctrl2->clone(), ctrl1))
+			{
+				MRSWARN("MarSystem::linkControl - Error creating new link control " + cname1 + " @ " + absPath_);
+				return false;
+			}
+		}
+		//if cname1 is a relative path, check among children for a matching MarSystem
+		//where to add the new link control
+		else if(relativecname != "")
+		{
+			//get the MarSystem path from relativecname
+			string::size_type pos = relativecname.find("/mrs_", 0);
+			string relativepath = relativecname.substr(0, pos);
+			
+			MarSystem* msys = getChildMarSystem(relativepath);
+			if(msys)
+			{
+				string cname = relativecname.substr(pos+1, relativecname.length());
+				if(!msys->addControl(cname, ctrl2->clone(), ctrl1))
+				{
+					MRSWARN("MarSystem::linkControl - Error creating new link control " + cname1 + " @ " + msys->getAbsPath());
+					return false;
+				}
+			}
+			else
+			{
+				MRSWARN("MarSystem::linkControl - Error creating new link control: " + cname1 + "is an invalid path");
+				return false;
+			}
+		}
+		//if cname1 path is not a valid path, nor a path pointing to any of the children
+		//it is not possible to add the new link control...
+		else
+		{
+			MRSWARN("MarSystem::linkControl - Error creating new link control: " + cname1 + "is an invalid path");
 			return false;
 		}
 	}

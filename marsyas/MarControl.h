@@ -52,9 +52,6 @@ Created by lfpt@inescporto.pt and lmartins@inescporto.pt
 #define TRACE_ADDCONTROL
 #define TRACE_REMCONTROL
 
-
-
-
 #ifdef MARSYAS_QT
 #include <QtCore>
 #endif
