@@ -103,7 +103,7 @@ public:
     void inc_ref() { ref_count++; }
     void deref() { --ref_count; if(ref_count<1) delete this; }
     int get_ref_count() { return ref_count; }
-    void op_ref() { std::cout<<"Obj<"<<((unsigned int)this)<<":"<<ref_count<<">\n"; }
+    void op_ref() { std::cout<<"Obj<"<<this<<":"<<ref_count<<">\n"; }
 };
 
 };
