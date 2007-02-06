@@ -923,28 +923,46 @@ MarSystem::getLocalControls()
 map<string, MarControlPtr>
 MarSystem::getControls(map<string, MarControlPtr>* cmap)
 {
-	map<string, MarControlPtr> controlsmap;
-	
 	if(!cmap)
 	{
-	  cmap = &controlsmap;
-	}
+	  map<string, MarControlPtr> controlsmap;
 
-	//fill list with local controls
-	for (ctrlIter_=controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_) 
-	{
-		(*cmap)[absPath_+ctrlIter_->first] = ctrlIter_->second;
-	}
+		cmap = &controlsmap;
 
-	//iterate over children, recursively,
-	//and fill the list with their controls
-	vector<MarSystem*>::const_iterator msysIter;
-	for(msysIter = marsystems_.begin(); msysIter != marsystems_.end(); ++msysIter)
-	{
-		(*msysIter)->getControls(cmap);
+		//fill list with local controls
+		for (ctrlIter_=controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_) 
+		{
+			(*cmap)[absPath_+ctrlIter_->first] = ctrlIter_->second;
+		}
+
+		//iterate over children, recursively,
+		//and fill the list with their controls
+		vector<MarSystem*>::const_iterator msysIter;
+		for(msysIter = marsystems_.begin(); msysIter != marsystems_.end(); ++msysIter)
+		{
+			(*msysIter)->getControls(cmap);
+		}
+
+		return (*cmap);
 	}
-	
-	return (*cmap);
+	else
+	{
+		//fill list with local controls
+		for (ctrlIter_=controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_) 
+		{
+			(*cmap)[absPath_+ctrlIter_->first] = ctrlIter_->second;
+		}
+
+		//iterate over children, recursively,
+		//and fill the list with their controls
+		vector<MarSystem*>::const_iterator msysIter;
+		for(msysIter = marsystems_.begin(); msysIter != marsystems_.end(); ++msysIter)
+		{
+			(*msysIter)->getControls(cmap);
+		}
+
+		return (*cmap);
+	}
 }
 
 vector<MarSystem*>
