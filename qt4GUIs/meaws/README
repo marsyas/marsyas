@@ -1,0 +1,29 @@
+MEAWS 0.4:  Music Evaluation and Audition for Winds and Strings
+----------
+
+This is a project by Graham Percival and Mathieu Lagrange.  Not intended
+for public consumption yet.  We're just storing it here because it's
+convenient.
+
+
+FILES:
+start.cpp: int main()
+
+mainwindow .h .cpp: the main QT interface.  A lot of stuff is still
+    left over from the QT "mainwindow" tutorial example file.  I haven't
+    finished cleaning it up; that'll take another day or two.
+
+backend .h .cpp: the Marsyas backend audio stuff.
+    We might want to split this up, see below.
+
+pitchBackend .cpp: the beginnings of integrating the pitch detection
+    into this project, but I stopped near the beginning.  I was originally
+    going to have two distinct MarSystems (ie one for the metronome and
+    one for the pitch), but then I decided they should be in the same
+    MarSystem.  We should discuss this design.
+
+images/ : icons for the QT app.
+exercises/ : data for the different exercises for the students.
+
+sd.wav: sound file for the metronome noises.
+
