@@ -98,22 +98,7 @@ realvec::operator=(const realvec& a)
 	{
 		if (size_ != a.size_)
 		{
-			//lmartins: [!]
-			//Why doesn't this delete all data and creates a new realvec?
-			//it would be then easier to use this operator in client code 
-			//(i.e. no need to assure that the realvec implicated in the 
-			// =  operation are equal sized)
-			/*
-			MRSERR("realvec::operator= : Different realvec sizes\n");
-			MRSERR("realvec left unchanged\n");
-
-			MRSERR("Left size = " + size_);
-			MRSERR("Right size = " + a.size_);
-			return *this;
-			*/
-			//Replacing above code by the following one (which still maintains backward compatibility
-			// with any previous code in Marsyas that resizes l.h. realvec before using the = operator).
-			MRSWARN("realvec::operator= : Different realvec sizes! l.h. realvec will be deleted and then recreated during attribution.");
+			MRSDIAG("realvec::operator= : Different realvec sizes! l.h. realvec will be deleted and then recreated during attribution.");
 			delete [] data_;
 			data_ = NULL;
 			if( a.size_ > 0 )

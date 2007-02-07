@@ -189,16 +189,20 @@ MarControl::linkTo(MarControlPtr ctrl)
 	if (ctrl->getType() != this->getType())
 	{
 		ostringstream oss;
-		oss << "[MarControl::linkTo] Linking to controls of different types ";
+		oss << "[MarControl::linkTo] Linking two controls of different types ";
 		oss << "(" << ctrl->getName() << " with " << this->getName() << ").";
 		MRSWARN(oss.str());
 		return false;
 	}
+
 	linkedTo_.push_back(ctrl);
 	isLinked_ = true;
 	//the linked control should also be linked to this one!
 	ctrl->linkedTo_.push_back(this);
 	ctrl->isLinked_ = true;
+
+	//sync control values (and sizes in case of mrs_vector controls)
+	*this = **ctrl;
 
 	return true;
 }

@@ -315,10 +315,6 @@ inline
 void
 MarControlValueT<realvec>::set(realvec &val)
 {
-	if(value_.getSize() != val.getSize()) 
-	{
-		value_.create(val.getSize());
-	}
 	value_ = val;
 }
 

@@ -51,14 +51,12 @@ realvec MarControlValueT<realvec>::invalidValue;
 // constructor specialization for realvec
 MarControlValueT<realvec>::MarControlValueT(realvec value)
 {
-	value_.create(value.getSize());
 	value_ = value;
 	type_ = "mrs_realvec";
 }
 
 MarControlValueT<realvec>::MarControlValueT(const MarControlValueT& val)
 {
-	value_.create(val.value_.getSize());
 	value_ = val.value_;
 	type_ = "mrs_realvec";
 }
@@ -68,7 +66,6 @@ MarControlValueT<realvec>::operator=(const MarControlValueT& a)
 {
 	if (this != &a)
 	{
-		value_.create(a.value_.getSize());
 		value_ = a.value_;
 		type_ = a.type_;
 	}
