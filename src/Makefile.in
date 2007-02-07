@@ -111,7 +111,7 @@ INCLUDES = -I$(top_builddir) -I$(top_builddir)/marsyas \
 
 bin_PROGRAMS = sfinfo sfplugin sfplay extract bextract \
 		  mkcollection phasevocoder \
-		  pitchextract sfplaygui tempo \
+		  pitchextract sfplaygui tempo boomchick \
 		  server msl tutorial \
 		  ERBTest marsyasTests \
 		  SeneffEarTest record orcarecord \
@@ -136,6 +136,11 @@ tutorial_LDADD = $(top_builddir)/marsyas/libmarsyas.a \
 
 tempo_SOURCES = tempo.cpp 
 tempo_LDADD = $(top_builddir)/marsyas/libmarsyas.a \
+		     $(Libs)
+
+
+boomchick_SOURCES = boomchick.cpp 
+boomchick_LDADD = $(top_builddir)/marsyas/libmarsyas.a \
 		     $(Libs)
 
 
@@ -260,12 +265,12 @@ CONFIG_CLEAN_FILES =
 bin_PROGRAMS = sfinfo$(EXEEXT) sfplugin$(EXEEXT) sfplay$(EXEEXT) \
 	extract$(EXEEXT) bextract$(EXEEXT) mkcollection$(EXEEXT) \
 	phasevocoder$(EXEEXT) pitchextract$(EXEEXT) sfplaygui$(EXEEXT) \
-	tempo$(EXEEXT) server$(EXEEXT) msl$(EXEEXT) tutorial$(EXEEXT) \
-	ERBTest$(EXEEXT) marsyasTests$(EXEEXT) SeneffEarTest$(EXEEXT) \
-	record$(EXEEXT) orcarecord$(EXEEXT) virtualsensor$(EXEEXT) \
-	mixer$(EXEEXT) mugle$(EXEEXT) classifyFile$(EXEEXT) \
-	midiTest$(EXEEXT) peakClustering$(EXEEXT) peVocoder$(EXEEXT) \
-	scheduler$(EXEEXT) vocalEffort$(EXEEXT)
+	tempo$(EXEEXT) boomchick$(EXEEXT) server$(EXEEXT) msl$(EXEEXT) \
+	tutorial$(EXEEXT) ERBTest$(EXEEXT) marsyasTests$(EXEEXT) \
+	SeneffEarTest$(EXEEXT) record$(EXEEXT) orcarecord$(EXEEXT) \
+	virtualsensor$(EXEEXT) mixer$(EXEEXT) mugle$(EXEEXT) \
+	classifyFile$(EXEEXT) midiTest$(EXEEXT) peakClustering$(EXEEXT) \
+	peVocoder$(EXEEXT) scheduler$(EXEEXT) vocalEffort$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 
 am_ERBTest_OBJECTS = ERBTest.$(OBJEXT)
@@ -280,6 +285,10 @@ am_bextract_OBJECTS = bextract.$(OBJEXT)
 bextract_OBJECTS = $(am_bextract_OBJECTS)
 bextract_DEPENDENCIES = $(top_builddir)/marsyas/libmarsyas.a
 bextract_LDFLAGS =
+am_boomchick_OBJECTS = boomchick.$(OBJEXT)
+boomchick_OBJECTS = $(am_boomchick_OBJECTS)
+boomchick_DEPENDENCIES = $(top_builddir)/marsyas/libmarsyas.a
+boomchick_LDFLAGS =
 am_classifyFile_OBJECTS = classifyFile.$(OBJEXT)
 classifyFile_OBJECTS = $(am_classifyFile_OBJECTS)
 classifyFile_DEPENDENCIES = $(top_builddir)/marsyas/libmarsyas.a
@@ -386,12 +395,12 @@ depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/ERBTest.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SeneffEarTest.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/bextract.Po ./$(DEPDIR)/classifyFile.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/extract.Po ./$(DEPDIR)/marsyasTests.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/midiTest.Po ./$(DEPDIR)/mixer.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/mkcollection.Po ./$(DEPDIR)/msl.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/mugle.Po ./$(DEPDIR)/orcarecord.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/peVocoder.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/bextract.Po ./$(DEPDIR)/boomchick.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/classifyFile.Po ./$(DEPDIR)/extract.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/marsyasTests.Po ./$(DEPDIR)/midiTest.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/mixer.Po ./$(DEPDIR)/mkcollection.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/msl.Po ./$(DEPDIR)/mugle.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/orcarecord.Po ./$(DEPDIR)/peVocoder.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/peakClustering.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/phasevocoder.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/pitchextract.Po ./$(DEPDIR)/record.Po \
@@ -408,7 +417,8 @@ CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 CXXFLAGS = @CXXFLAGS@
 DIST_SOURCES = $(ERBTest_SOURCES) $(SeneffEarTest_SOURCES) \
-	$(bextract_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) \
+	$(bextract_SOURCES) $(boomchick_SOURCES) \
+	$(classifyFile_SOURCES) $(extract_SOURCES) \
 	$(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mixer_SOURCES) \
 	$(mkcollection_SOURCES) $(msl_SOURCES) $(mugle_SOURCES) \
 	$(orcarecord_SOURCES) $(peVocoder_SOURCES) \
@@ -425,7 +435,7 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	uninstall-recursive check-recursive installcheck-recursive
 DIST_COMMON = ChangeLog Makefile.am Makefile.in
 DIST_SUBDIRS = $(SUBDIRS)
-SOURCES = $(ERBTest_SOURCES) $(SeneffEarTest_SOURCES) $(bextract_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mixer_SOURCES) $(mkcollection_SOURCES) $(msl_SOURCES) $(mugle_SOURCES) $(orcarecord_SOURCES) $(peVocoder_SOURCES) $(peakClustering_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(scheduler_SOURCES) $(server_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplaygui_SOURCES) $(sfplugin_SOURCES) $(tempo_SOURCES) $(tutorial_SOURCES) $(virtualsensor_SOURCES) $(vocalEffort_SOURCES)
+SOURCES = $(ERBTest_SOURCES) $(SeneffEarTest_SOURCES) $(bextract_SOURCES) $(boomchick_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mixer_SOURCES) $(mkcollection_SOURCES) $(msl_SOURCES) $(mugle_SOURCES) $(orcarecord_SOURCES) $(peVocoder_SOURCES) $(peakClustering_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(scheduler_SOURCES) $(server_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplaygui_SOURCES) $(sfplugin_SOURCES) $(tempo_SOURCES) $(tutorial_SOURCES) $(virtualsensor_SOURCES) $(vocalEffort_SOURCES)
 
 all: all-recursive
 
@@ -469,6 +479,9 @@ SeneffEarTest$(EXEEXT): $(SeneffEarTest_OBJECTS) $(SeneffEarTest_DEPENDENCIES)
 bextract$(EXEEXT): $(bextract_OBJECTS) $(bextract_DEPENDENCIES) 
 	@rm -f bextract$(EXEEXT)
 	$(CXXLINK) $(bextract_LDFLAGS) $(bextract_OBJECTS) $(bextract_LDADD) $(LIBS)
+boomchick$(EXEEXT): $(boomchick_OBJECTS) $(boomchick_DEPENDENCIES) 
+	@rm -f boomchick$(EXEEXT)
+	$(CXXLINK) $(boomchick_LDFLAGS) $(boomchick_OBJECTS) $(boomchick_LDADD) $(LIBS)
 classifyFile$(EXEEXT): $(classifyFile_OBJECTS) $(classifyFile_DEPENDENCIES) 
 	@rm -f classifyFile$(EXEEXT)
 	$(CXXLINK) $(classifyFile_LDFLAGS) $(classifyFile_OBJECTS) $(classifyFile_LDADD) $(LIBS)
@@ -551,6 +564,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ERBTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SeneffEarTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bextract.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/boomchick.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/classifyFile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/extract.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/marsyasTests.Po@am__quote@

@@ -30,7 +30,7 @@ INCLUDES        = -I$(top_builddir) -I$(top_builddir)/marsyas \
 
 bin_PROGRAMS    = sfinfo sfplugin sfplay extract bextract \
 		  mkcollection phasevocoder \
-		  pitchextract sfplaygui tempo \
+		  pitchextract sfplaygui tempo boomchick \
 		  server msl tutorial \
 		  ERBTest marsyasTests \
 		  SeneffEarTest record orcarecord \
@@ -51,6 +51,10 @@ tutorial_LDADD       = $(top_builddir)/marsyas/libmarsyas.a \
 
 tempo_SOURCES     = tempo.cpp 
 tempo_LDADD       = $(top_builddir)/marsyas/libmarsyas.a \
+		     $(Libs)
+
+boomchick_SOURCES = boomchick.cpp 
+boomchick_LDADD       = $(top_builddir)/marsyas/libmarsyas.a \
 		     $(Libs)
 
 sfplugin_SOURCES     = sfplugin.cpp 
