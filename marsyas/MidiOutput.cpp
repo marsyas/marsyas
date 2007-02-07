@@ -85,7 +85,7 @@ MidiOutput::myUpdate(MarControlPtr sender)
 
   if (midiout == NULL) 
     {
-      try { 
+/*      try { 
 	midiout = new RtMidiOut();
       } 
       catch (RtError &error) { 
@@ -104,6 +104,7 @@ MidiOutput::myUpdate(MarControlPtr sender)
       message.push_back(0);
       message.push_back(0);
       message.push_back(0);
+      */ 
     }
   
 
@@ -115,7 +116,8 @@ MidiOutput::myUpdate(MarControlPtr sender)
       message[0] = ctrl_byte1_->to<mrs_natural>();
       message[1] = ctrl_byte2_->to<mrs_natural>();
       message[2] = ctrl_byte3_->to<mrs_natural>();
-      midiout->sendMessage( &message );
+      // midiout->sendMessage( &message );
+      cout << "SENDING MESSAGE" << endl; 
       updctrl(ctrl_sendMessage_, false);
     }
 

@@ -116,7 +116,7 @@ bin_PROGRAMS = sfinfo sfplugin sfplay extract bextract \
 		  ERBTest marsyasTests \
 		  SeneffEarTest record orcarecord \
 		  virtualsensor mixer mugle classifyFile midiTest \
-		  peakClustering peVocoder scheduler
+		  peakClustering peVocoder scheduler vocalEffort
 
 
 sfinfo_SOURCES = sfinfo.cpp 
@@ -248,6 +248,11 @@ scheduler_SOURCES = scheduler.cpp
 scheduler_LDADD = $(top_builddir)/marsyas/libmarsyas.a \
 		                         $(Libs)
 
+
+vocalEffort_SOURCES = vocalEffort.cpp
+vocalEffort_LDADD = $(top_builddir)/marsyas/libmarsyas.a \
+		                         $(Libs)
+
 subdir = src
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/marsyas/config.h
@@ -260,7 +265,7 @@ bin_PROGRAMS = sfinfo$(EXEEXT) sfplugin$(EXEEXT) sfplay$(EXEEXT) \
 	record$(EXEEXT) orcarecord$(EXEEXT) virtualsensor$(EXEEXT) \
 	mixer$(EXEEXT) mugle$(EXEEXT) classifyFile$(EXEEXT) \
 	midiTest$(EXEEXT) peakClustering$(EXEEXT) peVocoder$(EXEEXT) \
-	scheduler$(EXEEXT)
+	scheduler$(EXEEXT) vocalEffort$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 
 am_ERBTest_OBJECTS = ERBTest.$(OBJEXT)
@@ -367,6 +372,10 @@ am_virtualsensor_OBJECTS = virtualsensor.$(OBJEXT)
 virtualsensor_OBJECTS = $(am_virtualsensor_OBJECTS)
 virtualsensor_DEPENDENCIES = $(top_builddir)/marsyas/libmarsyas.a
 virtualsensor_LDFLAGS =
+am_vocalEffort_OBJECTS = vocalEffort.$(OBJEXT)
+vocalEffort_OBJECTS = $(am_vocalEffort_OBJECTS)
+vocalEffort_DEPENDENCIES = $(top_builddir)/marsyas/libmarsyas.a
+vocalEffort_LDFLAGS =
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/marsyas
@@ -390,7 +399,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/sfinfo.Po ./$(DEPDIR)/sfplay.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sfplaygui.Po ./$(DEPDIR)/sfplugin.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/tempo.Po ./$(DEPDIR)/tutorial.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/virtualsensor.Po
+@AMDEP_TRUE@	./$(DEPDIR)/virtualsensor.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/vocalEffort.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -406,7 +416,8 @@ DIST_SOURCES = $(ERBTest_SOURCES) $(SeneffEarTest_SOURCES) \
 	$(pitchextract_SOURCES) $(record_SOURCES) $(scheduler_SOURCES) \
 	$(server_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) \
 	$(sfplaygui_SOURCES) $(sfplugin_SOURCES) $(tempo_SOURCES) \
-	$(tutorial_SOURCES) $(virtualsensor_SOURCES)
+	$(tutorial_SOURCES) $(virtualsensor_SOURCES) \
+	$(vocalEffort_SOURCES)
 
 RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	uninstall-info-recursive all-recursive install-data-recursive \
@@ -414,7 +425,7 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	uninstall-recursive check-recursive installcheck-recursive
 DIST_COMMON = ChangeLog Makefile.am Makefile.in
 DIST_SUBDIRS = $(SUBDIRS)
-SOURCES = $(ERBTest_SOURCES) $(SeneffEarTest_SOURCES) $(bextract_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mixer_SOURCES) $(mkcollection_SOURCES) $(msl_SOURCES) $(mugle_SOURCES) $(orcarecord_SOURCES) $(peVocoder_SOURCES) $(peakClustering_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(scheduler_SOURCES) $(server_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplaygui_SOURCES) $(sfplugin_SOURCES) $(tempo_SOURCES) $(tutorial_SOURCES) $(virtualsensor_SOURCES)
+SOURCES = $(ERBTest_SOURCES) $(SeneffEarTest_SOURCES) $(bextract_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mixer_SOURCES) $(mkcollection_SOURCES) $(msl_SOURCES) $(mugle_SOURCES) $(orcarecord_SOURCES) $(peVocoder_SOURCES) $(peakClustering_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(scheduler_SOURCES) $(server_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplaygui_SOURCES) $(sfplugin_SOURCES) $(tempo_SOURCES) $(tutorial_SOURCES) $(virtualsensor_SOURCES) $(vocalEffort_SOURCES)
 
 all: all-recursive
 
@@ -527,6 +538,9 @@ tutorial$(EXEEXT): $(tutorial_OBJECTS) $(tutorial_DEPENDENCIES)
 virtualsensor$(EXEEXT): $(virtualsensor_OBJECTS) $(virtualsensor_DEPENDENCIES) 
 	@rm -f virtualsensor$(EXEEXT)
 	$(CXXLINK) $(virtualsensor_LDFLAGS) $(virtualsensor_OBJECTS) $(virtualsensor_LDADD) $(LIBS)
+vocalEffort$(EXEEXT): $(vocalEffort_OBJECTS) $(vocalEffort_DEPENDENCIES) 
+	@rm -f vocalEffort$(EXEEXT)
+	$(CXXLINK) $(vocalEffort_LDFLAGS) $(vocalEffort_OBJECTS) $(vocalEffort_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -560,6 +574,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tempo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tutorial.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/virtualsensor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vocalEffort.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
