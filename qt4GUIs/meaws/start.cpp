@@ -2,7 +2,9 @@
 #include "mainwindow.h"
 
 int main(int argc, char *argv[]) {
-	Q_INIT_RESOURCE(icons);
+
+	// linking troubles in MSVC
+ // Q_INIT_RESOURCE(icons);
 	QApplication app(argc, argv);
 	MainWindow mainWin;
 	mainWin.show();
