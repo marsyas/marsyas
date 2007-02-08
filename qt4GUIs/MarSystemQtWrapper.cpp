@@ -15,7 +15,7 @@ MarSystemQtWrapper::MarSystemQtWrapper(MarSystem* msys)
 {
   main_pnet_ = msys;
   running_ = false;
-  pause_ = false;
+  pause_ = true;
   empty_ = false;
   abort_ = false;
 }
@@ -67,6 +67,7 @@ MarSystemQtWrapper::pause()
 { 
   mutex_.lock();
   main_pnet_->updctrl("mrs_bool/active", false);
+  pause_ = true;
   mutex_.unlock();
 } 
 
@@ -75,6 +76,7 @@ MarSystemQtWrapper::play()
 {
   mutex_.lock();
   main_pnet_->updctrl("mrs_bool/active", true);
+  pause_ = false;
   mutex_.unlock();
 } 
 
@@ -106,6 +108,8 @@ MarSystemQtWrapper::run()
       
       // now we are ready to tick the network
       main_pnet_->tick();	
+      if (pause_) 
+         msleep(300);	
       
 
     }

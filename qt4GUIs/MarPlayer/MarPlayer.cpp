@@ -29,7 +29,6 @@ MarPlayer::MarPlayer()
 
 MarPlayer::~MarPlayer()
 {
-//  FIXME: uncommenting this results in a crash.  -gp
   delete mapper_;
 }
 

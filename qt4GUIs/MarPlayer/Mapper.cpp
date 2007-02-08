@@ -58,7 +58,7 @@ Mapper::Mapper()
   sizePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/size");  
   osratePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_real/osrate");  
   initPtr_ = mwr_->getctrl("AudioSink/dest/mrs_bool/initAudio");
-
+ 
 
 }
 
@@ -71,7 +71,7 @@ Mapper::~Mapper()
 void 
 Mapper::open(QString fileName, int pos)
 {
-
+  mwr_->play();
   // update filename
   mwr_->updctrl(filePtr_, fileName.toStdString());
   
