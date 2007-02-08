@@ -202,7 +202,7 @@ MarControl::linkTo(MarControlPtr ctrl)
 	ctrl->isLinked_ = true;
 
 	//sync control values (and sizes in case of mrs_vector controls)
-	*this = **ctrl;
+	*this = *ctrl;
 
 	return true;
 }

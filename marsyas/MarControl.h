@@ -103,7 +103,7 @@ public:
 	~MarControlPtr();
 
 	MarControl* operator()() const { return control_; }
-	MarControl* operator*() const  { return control_; }
+	MarControl& operator*() const  { return *control_; }
 	MarControl* operator->() const { return control_; }
 
 	inline bool isInvalid() const;
@@ -237,18 +237,14 @@ public:
 	// bool-specific helper
 	bool isTrue();
 
-	// realvec-specific helpers (TODO: cleaner way to do this?)
-	void create(mrs_natural size);
-	void create(mrs_natural rows, mrs_natural cols); 
-	void create(mrs_real val, mrs_natural rows, mrs_natural cols);	
+	// realvec-specific helpers
 	void stretch(mrs_natural rows, mrs_natural cols);
 	void stretch(mrs_natural size);
-	void setval(mrs_natural start, mrs_natural end, mrs_real val);
-	void setval(mrs_real val);
 	mrs_real& operator()(const mrs_natural i);
-	mrs_real operator()(const mrs_natural i) const;
+	//mrs_real operator()(const mrs_natural i) const;
 	mrs_real& operator()(const long r, const long c);
-	mrs_real operator()(const long r, const long c) const;
+	//mrs_real operator()(const long r, const long c) const;
+	//~
 
 	friend inline std::ostream& operator<<(std::ostream& os, const MarControl& ctrl);
 	friend inline bool operator==(const MarControl& v1, const MarControl& v2);
@@ -1007,128 +1003,117 @@ MarControl::isTrue()
 
 inline
 void
-MarControl::create(mrs_natural size) //[?] lock?!?
-{
-	// TODO: this changes the realvec so we need to signal it
-	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
-	if(ptr)
-	{
-		ptr->getRef().create(size);
-	}
-	else
-	{
-		std::ostringstream sstr;
-		sstr << "[MarControl::create] Trying to get use realvec-specific method with " << value_->getType();
-		MRSWARN(sstr.str());
-	}
-}
-
-inline
-void
-MarControl::create(mrs_natural rows, mrs_natural cols) //[?] lock?!?
-{
-	// TODO: this changes the realvec so we need to signal it
-	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
-	if(ptr)
-	{
-		ptr->getRef().create(rows, cols);
-	}
-	else
-	{
-		std::ostringstream sstr;
-		sstr << "[MarControl::create] Trying to get use realvec-specific method with " << value_->getType();
-		MRSWARN(sstr.str());
-	}
-}
-
-inline
-void
-MarControl::create(mrs_real val, mrs_natural rows, mrs_natural cols) //lock?!!? [?]
-{
-	// TODO: this changes the realvec so we need to signal it
-	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
-	if(ptr)
-	{
-		ptr->getRef().create(val, rows, cols);
-	}
-	else
-	{
-		std::ostringstream sstr;
-		sstr << "[MarControl::create] Trying to get use realvec-specific method with " << value_->getType();
-		MRSWARN(sstr.str());
-	}
-}
-
-inline
-void
 MarControl::stretch(mrs_natural rows, mrs_natural cols) //[?] lock??
 {
-	// TODO: this changes the realvec so we need to signal it
+#ifdef MARSYAS_QT
+	rwLock_.lockForWrite();
+#endif
+
 	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
 	if(ptr)
 	{
+		if (ptr->getRef().getRows() == rows && ptr->getRef().getCols() == cols)
+		{
+			#ifdef MARSYAS_QT
+			rwLock_.unlock();
+			#endif
+			return; // assuming all linked controls are synced we can return immediately 
+		}
 		ptr->getRef().stretch(rows, cols);
 	}
 	else
 	{
+		#ifdef MARSYAS_QT
+		rwLock_.unlock();
+		#endif
 		std::ostringstream sstr;
-		sstr << "[MarControl::create] Trying to get use realvec-specific method with " << value_->getType();
+		sstr << "[MarControl::create] Trying to use realvec-specific method with " << value_->getType();
 		MRSWARN(sstr.str());
+		return;
 	}
+
+	#ifdef MRSDEBUGGING
+	std::ostringstream oss;
+	value_->serialize(oss);
+	value_debug_ = oss.str();
+	#endif
+
+	#ifdef MARSYAS_QT
+	rwLock_.unlock();
+	#endif
+
+	if(isLinked_)
+	{
+		for(size_t i=0; i<linkedTo_.size(); i++)
+		{
+			linkedTo_[i]->stretch(rows, cols);
+		}
+	}
+
+	this->callMarSystemUpdate(); //[?] lock?!?
+
+	#ifdef MARSYAS_QT
+	//emit controlChanged(this);
+	emitControlChanged(this);
+	#endif
+
 }
 
 inline
 void
 MarControl::stretch(mrs_natural size) // [?]lock??
 {
-	// TODO: this changes the realvec so we need to signal it
+#ifdef MARSYAS_QT
+	rwLock_.lockForWrite();
+#endif
+
 	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
 	if(ptr)
 	{
+		if (ptr->getRef().getSize() == size)
+		{
+			#ifdef MARSYAS_QT
+			rwLock_.unlock();
+			#endif
+			return;  // assuming all linked controls are synced we can return immediately 
+		}
 		ptr->getRef().stretch(size);
 	}
 	else
 	{
+		#ifdef MARSYAS_QT
+		rwLock_.unlock();
+		#endif
 		std::ostringstream sstr;
-		sstr << "[MarControl::create] Trying to get use realvec-specific method with " << value_->getType();
+		sstr << "[MarControl::create] Trying to use realvec-specific method with " << value_->getType();
 		MRSWARN(sstr.str());
+		return;
 	}
-}
 
-inline
-void
-MarControl::setval(mrs_natural start, mrs_natural end, mrs_real val) //lock?!? [?]
-{
-	// TODO: this changes the realvec so we need to signal it
-	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
-	if(ptr)
-	{
-		ptr->getRef().setval(start, end, val);
-	}
-	else
-	{
-		std::ostringstream sstr;
-		sstr << "[MarControl::setval] Trying to get use realvec-specific method with " << value_->getType();
-		MRSWARN(sstr.str());
-	}
-}
+	#ifdef MRSDEBUGGING
+	std::ostringstream oss;
+	value_->serialize(oss);
+	value_debug_ = oss.str();
+	#endif
 
-inline
-void
-MarControl::setval(mrs_real val) //lock?!? [?]
-{
-	// TODO: this changes the realvec so we need to signal it
-	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
-	if(ptr)
+	#ifdef MARSYAS_QT
+	rwLock_.unlock();
+	#endif
+
+	if(isLinked_)
 	{
-		ptr->getRef().setval(val);
+		for(size_t i=0; i<linkedTo_.size(); i++)
+		{
+			linkedTo_[i]->stretch(size);
+		}
 	}
-	else
-	{
-		std::ostringstream sstr;
-		sstr << "[MarControl::setval] Trying to get use realvec-specific method with " << value_->getType();
-		MRSWARN(sstr.str());
-	}
+
+	this->callMarSystemUpdate(); //[?] lock?!?
+
+	#ifdef MARSYAS_QT
+	//emit controlChanged(this);
+	emitControlChanged(this);
+	#endif
 }
 
 inline

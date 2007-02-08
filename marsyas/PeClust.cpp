@@ -416,15 +416,15 @@ PeClust::myProcess(realvec& in, realvec& out)
 			{
 				// add synth infos
 				ctrl_peakSet_->stretch(nbPeaks_+1, nbPkParameters);
-				(**ctrl_peakSet_)(0,0) = -1;
-				(**ctrl_peakSet_)(0,1) = ctrl_israte_->to<mrs_real>();
-				(**ctrl_peakSet_)(0,2) = getctrl("mrs_natural/hopSize")->toNatural();
-				(**ctrl_peakSet_)(0,pkGroup) = -2;
+				(*ctrl_peakSet_)(0,0) = -1;
+				(*ctrl_peakSet_)(0,1) = ctrl_israte_->to<mrs_real>();
+				(*ctrl_peakSet_)(0,2) = getctrl("mrs_natural/hopSize")->toNatural();
+				(*ctrl_peakSet_)(0,pkGroup) = -2;
 				start=1;
 
 				for (int i=0 ; i<nbPeaks_ ; i++)
 					for (int j=0 ; j<nbPkParameters ; j++)
-						(**ctrl_peakSet_)(peaksSetSize+i+start, j) = data_(i, j);
+						(*ctrl_peakSet_)(peaksSetSize+i+start, j) = data_(i, j);
 			}
 			else
 			{
@@ -434,7 +434,7 @@ PeClust::myProcess(realvec& in, realvec& out)
 				for (int i=0 ; i<nbPeaks_-nbPeaksLastFrame ; i++)
 					// do not put peaks from the first frame
 					for (int j=0 ; j<nbPkParameters ; j++)
-						(**ctrl_peakSet_)(peaksSetSize+i, j) = data_(i+start, j);
+						(*ctrl_peakSet_)(peaksSetSize+i, j) = data_(i+start, j);
 			}
 		}
 	} 
