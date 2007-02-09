@@ -81,7 +81,6 @@ void sfplay(vector<string> soundfiles)
   playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
   playbacknet->addMarSystem(mng.create("Gain", "gt"));
   playbacknet->addMarSystem(dest);
-  playbacknet->update();
   
   mrs_natural nChannels = playbacknet->getctrl("SoundFileSource/src/mrs_natural/nChannels")->toNatural();
   mrs_real srate = playbacknet->getctrl("SoundFileSource/src/mrs_real/israte")->toReal();
@@ -102,7 +101,7 @@ void sfplay(vector<string> soundfiles)
   playbacknet->linkctrl("mrs_natural/loopPos", "SoundFileSource/src/mrs_natural/loopPos");
   playbacknet->linkctrl("mrs_natural/nChannels", "AudioSink/dest/mrs_natural/nChannels");
   playbacknet->linkctrl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
-    
+
 	// play each collection or soundfile 
 	vector<string>::iterator sfi;  
 	for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 

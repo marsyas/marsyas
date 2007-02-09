@@ -222,6 +222,7 @@ public:
 	inline bool setValue(int r, int c, mrs_real value, bool update = true)	{ return setValue((mrs_natural)r, (mrs_natural)c, value, update); }
 
 	inline bool setValue(const char *t, bool update = true);
+	inline bool setValue(int t, bool update = true);
 
 	// to avoid circular dependencies
 	void callMarSystemUpdate();
@@ -733,14 +734,6 @@ MarControl::setValue(T& t, bool update)
 		rwLock_.unlock();
 		#endif
 
-		if(update) this->callMarSystemUpdate();
-
-		#ifdef MARSYAS_QT
-		//emit controlChanged(this);
-		emitControlChanged(this);
-		#endif
-		return true;
-
 		if(isLinked_)
 		{
 			for(size_t i=0; i<linkedTo_.size(); i++)
@@ -748,6 +741,14 @@ MarControl::setValue(T& t, bool update)
 				linkedTo_[i]->setValue(t, update);
 			}
 		}
+
+		if(update) this->callMarSystemUpdate();
+
+		#ifdef MARSYAS_QT
+		//emit controlChanged(this);
+		emitControlChanged(this);
+		#endif
+		return true;
 	}
 	else
 	{
@@ -796,13 +797,6 @@ MarControl::setValue(const T& t, bool update)
 		rwLock_.unlock();
 		#endif
 
-		if(update) this->callMarSystemUpdate();
-
-		#ifdef MARSYAS_QT
-		//emit controlChanged(this);
-		emitControlChanged(this);
-		#endif
-
 		if(isLinked_)
 		{
 			for(size_t i=0; i<linkedTo_.size(); i++)
@@ -810,6 +804,13 @@ MarControl::setValue(const T& t, bool update)
 				linkedTo_[i]->setValue(t, update);
 			}
 		}
+
+		if(update) this->callMarSystemUpdate();
+
+		#ifdef MARSYAS_QT
+		//emit controlChanged(this);
+		emitControlChanged(this);
+		#endif
 
 		return true;
 	}
@@ -868,13 +869,6 @@ MarControl::setValue(MarControlPtr mc, bool update)
 	rwLock_.unlock();
 	#endif
 
-	if(update) this->callMarSystemUpdate();
-
-	#ifdef MARSYAS_QT
-	//emit controlChanged(this);
-	emitControlChanged(this);
-	#endif
-
 	if(isLinked_)
 	{
 		for(size_t i=0; i<linkedTo_.size(); i++)
@@ -882,6 +876,13 @@ MarControl::setValue(MarControlPtr mc, bool update)
 			linkedTo_[i]->setValue(value_, update);
 		}
 	}
+
+	if(update) this->callMarSystemUpdate();
+
+	#ifdef MARSYAS_QT
+	//emit controlChanged(this);
+	emitControlChanged(this);
+	#endif
 
 	return true;
 }
@@ -926,13 +927,6 @@ MarControl::setValue(MarControlValue *mcv, bool update)
 	rwLock_.unlock();
 	#endif
 
-	if(update) this->callMarSystemUpdate();
-
-	#ifdef MARSYAS_QT
-	//emit controlChanged(this);
-	emitControlChanged(this);
-	#endif
-
 	if(isLinked_)
 	{
 		for(size_t i=0; i<linkedTo_.size(); i++)
@@ -940,6 +934,13 @@ MarControl::setValue(MarControlValue *mcv, bool update)
 			linkedTo_[i]->setValue(value_, update);
 		}
 	}
+
+	if(update) this->callMarSystemUpdate();
+
+	#ifdef MARSYAS_QT
+	//emit controlChanged(this);
+	emitControlChanged(this);
+	#endif
 
 	return true;
 }
@@ -985,13 +986,6 @@ MarControl::setValue(mrs_natural i, mrs_real value, bool update)
 	rwLock_.unlock();
 	#endif
 
-	if (update) this->callMarSystemUpdate();
-
-	#ifdef MARSYAS_QT
-	//emit controlChanged(this);
-	emitControlChanged(this);
-	#endif
-
 	if(isLinked_)
 	{
 		for(mrs_natural i=0; i<(mrs_natural)linkedTo_.size(); i++)
@@ -999,6 +993,13 @@ MarControl::setValue(mrs_natural i, mrs_real value, bool update)
 			linkedTo_[i]->setValue(i, value, update);
 		}
 	}
+
+	if (update) this->callMarSystemUpdate();
+
+	#ifdef MARSYAS_QT
+	//emit controlChanged(this);
+	emitControlChanged(this);
+	#endif
 
 	return true;
 }
@@ -1043,13 +1044,6 @@ MarControl::setValue(mrs_natural r, mrs_natural c, mrs_real value, bool update)
 	rwLock_.unlock();
 	#endif
 
-	if (update) this->callMarSystemUpdate();
-
-	#ifdef MARSYAS_QT
-	//emit controlChanged(this);
-	emitControlChanged(this);
-	#endif
-
 	if(isLinked_)
 	{
 		for(size_t i=0; i<linkedTo_.size(); i++)
@@ -1057,6 +1051,13 @@ MarControl::setValue(mrs_natural r, mrs_natural c, mrs_real value, bool update)
 			linkedTo_[i]->setValue(r, c, value, update);
 		}
 	}
+
+	if (update) this->callMarSystemUpdate();
+
+	#ifdef MARSYAS_QT
+	//emit controlChanged(this);
+	emitControlChanged(this);
+	#endif
 
 	return true;
 }
@@ -1066,6 +1067,13 @@ bool
 MarControl::setValue(const char *t, bool update)
 {
 	return this->setValue(std::string(t), update);
+}
+
+inline
+bool
+MarControl::setValue(int t, bool update)
+{
+	return this->setValue((mrs_natural)t, update);
 }
 
 inline
@@ -1165,13 +1173,6 @@ MarControl::stretch(mrs_natural rows, mrs_natural cols)
 	rwLock_.unlock();
 	#endif
 
-	this->callMarSystemUpdate();
-
-	#ifdef MARSYAS_QT
-	//emit controlChanged(this);
-	emitControlChanged(this);
-	#endif
-
 	if(isLinked_)
 	{
 		for(size_t i=0; i<linkedTo_.size(); i++)
@@ -1179,6 +1180,13 @@ MarControl::stretch(mrs_natural rows, mrs_natural cols)
 			linkedTo_[i]->stretch(rows, cols);
 		}
 	}
+
+	this->callMarSystemUpdate();
+
+	#ifdef MARSYAS_QT
+	//emit controlChanged(this);
+	emitControlChanged(this);
+	#endif
 }
 
 inline
@@ -1222,13 +1230,6 @@ MarControl::stretch(mrs_natural size)
 	rwLock_.unlock();
 	#endif
 
-	this->callMarSystemUpdate();
-
-	#ifdef MARSYAS_QT
-	//emit controlChanged(this);
-	emitControlChanged(this);
-	#endif
-
 	if(isLinked_)
 	{
 		for(size_t i=0; i<linkedTo_.size(); i++)
@@ -1236,6 +1237,13 @@ MarControl::stretch(mrs_natural size)
 			linkedTo_[i]->stretch(size);
 		}
 	}
+
+	this->callMarSystemUpdate();
+
+	#ifdef MARSYAS_QT
+	//emit controlChanged(this);
+	emitControlChanged(this);
+	#endif
 }
 
 inline

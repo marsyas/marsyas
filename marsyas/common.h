@@ -33,6 +33,10 @@ namespace Marsyas
 	typedef long mrs_natural;
   typedef bool mrs_bool;
 	typedef std::complex<mrs_real> mrs_complex;
+	typedef std::string mrs_string;
+	
+	class realvec;
+	typedef realvec mrs_realvec; //done at realvec.h
 
 } //namespace Marsyas
 

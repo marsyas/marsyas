@@ -120,9 +120,9 @@ public:
   realvec stdObs() const;//lmartins
   realvec varObs() const;//lmartins
   void normObs();//lmartins
-	 void normSpl(mrs_natural=0);//lmartins
- void normObsMinMax();//lmartins
-	 void normSplMinMax(mrs_natural=0);//lmartins
+	void normSpl(mrs_natural=0);//lmartins
+  void normObsMinMax();//lmartins
+	void normSplMinMax(mrs_natural=0);//lmartins
 
   // Vector/Matrix Algebra and Statistics
   mrs_real maxval(mrs_natural *index=NULL) const;//lmartins
