@@ -326,7 +326,8 @@ tempo_bcFilter(string sfName, string resName)
   total->addMarSystem(mng.create("Sum", "sum"));
   total->addMarSystem(mng.create("Gain", "tgain"));
   // total->addMarSystem(mng.create("AudioSink", "dest"));
-  total->addMarSystem(mng.create("MidiOutput", "devibot"));
+  
+  total->addMarSystem(mng.create("DeviBot", "devibot"));
 
   /* Esitar* esitar = new Esitar("esitar");
   total->addMarSystem(esitar);
@@ -508,11 +509,13 @@ tempo_bcFilter(string sfName, string resName)
 	  if (plowwin(0,t) > 0.0) 
 	    {
 	      lowtimes.push_back(samplesPlayed+t);
-	      /* total->updctrl("MidiOutput/devibot/mrs_natural/byte2", DEVIBOT_NA);
-	      total->updctrl("MidiOutput/devibot/mrs_natural/byte3", 50);
-	      total->updctrl("MidiOutput/devibot/mrs_natural/byte1", 144);
-	      total->updctrl("MidiOutput/devibot/mrs_bool/sendMessage", true);
-	      */ 
+	      total->updctrl("DeviBot/devibot/mrs_natural/arm", DEVIBOT_NA);
+	       
+	      total->updctrl("DeviBot/devibot/mrs_velocity/byte3", 50);
+
+	      total->updctrl("DeviBot/devibot/mrs_bool/strike", true);
+	       
+	       
 	    }
 
 	  for (mrs_natural t=0; t < onSamples; t++) 
@@ -520,11 +523,16 @@ tempo_bcFilter(string sfName, string resName)
 	      if (phiwin(0,t) > 0.0)
 		{
 		  hitimes.push_back(samplesPlayed+t);
-		  /*   total->updctrl("MidiOutput/devibot/mrs_natural/byte2", DEVIBOT_GE);
-		  total->updctrl("MidiOutput/devibot/mrs_natural/byte3", 50);
-		  total->updctrl("MidiOutput/devibot/mrs_natural/byte1", 144);
-		  total->updctrl("MidiOutput/devibot/mrs_bool/sendMessage", true);
-		  */ 
+
+
+	      total->updctrl("DeviBot/devibot/mrs_natural/arm", DEVIBOT_GE);
+	       
+	      total->updctrl("DeviBot/devibot/mrs_velocity/byte3", 50);
+
+	      total->updctrl("DeviBot/devibot/mrs_bool/strike", true);
+
+
+		   
 		}
 	    }
 	  samplesPlayed += onSamples;
