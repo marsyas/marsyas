@@ -353,7 +353,7 @@ LPC::myProcess(realvec& in, realvec& out)
 			out(i) = a(i+1);
 	else{ // coefs as control
 		for(i=0; i < order_; i++)
-			(*ctrl_coeffs_)(i) = a(i+1);
+			ctrl_coeffs_->setValue(i, a(i+1));
      out = in;
 	  }
 	//--------------------------
@@ -367,7 +367,7 @@ LPC::myProcess(realvec& in, realvec& out)
 				out(j) = (out(j) * pow(gamma, (double)j+1));
 		else
 			for(mrs_natural j = 0; j < order_; j++)
-				(*ctrl_coeffs_)(j) = ((*ctrl_coeffs_)(j) * pow(gamma, (double)j+1));
+				ctrl_coeffs_->setValue(j, (*ctrl_coeffs_)(j) * pow(gamma, (double)j+1));
 	//---------------------------
 	// RMS Prediction Error
 	//---------------------------

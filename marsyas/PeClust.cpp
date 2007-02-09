@@ -300,8 +300,8 @@ PeClust::labeling(realvec& data, realvec& labels, mrs_natural cut)
 void
 PeClust::simpleLabeling(realvec& data, realvec& labels)
 {
-mrs_natural max = maxLabel_+1;
-//cout << endl << max << endl;
+	mrs_natural max = (mrs_natural)(maxLabel_+1);
+	//cout << endl << max << endl;
 	// fill peaks data with clusters labels
 	for (mrs_natural i=0 ; i<nbPeaks_ ; i++)
 	{
@@ -416,15 +416,15 @@ PeClust::myProcess(realvec& in, realvec& out)
 			{
 				// add synth infos
 				ctrl_peakSet_->stretch(nbPeaks_+1, nbPkParameters);
-				(*ctrl_peakSet_)(0,0) = -1;
-				(*ctrl_peakSet_)(0,1) = ctrl_israte_->to<mrs_real>();
-				(*ctrl_peakSet_)(0,2) = getctrl("mrs_natural/hopSize")->toNatural();
-				(*ctrl_peakSet_)(0,pkGroup) = -2;
+				ctrl_peakSet_->setValue(0, 0, -1);
+				ctrl_peakSet_->setValue(0, 1, ctrl_israte_->to<mrs_real>());
+				ctrl_peakSet_->setValue(0, 2, getctrl("mrs_natural/hopSize")->to<mrs_natural>());
+				ctrl_peakSet_->setValue(0, pkGroup, -2);
 				start=1;
 
 				for (int i=0 ; i<nbPeaks_ ; i++)
 					for (int j=0 ; j<nbPkParameters ; j++)
-						(*ctrl_peakSet_)(peaksSetSize+i+start, j) = data_(i, j);
+						ctrl_peakSet_->setValue(peaksSetSize+i+start, j, data_(i, j));
 			}
 			else
 			{
@@ -434,7 +434,7 @@ PeClust::myProcess(realvec& in, realvec& out)
 				for (int i=0 ; i<nbPeaks_-nbPeaksLastFrame ; i++)
 					// do not put peaks from the first frame
 					for (int j=0 ; j<nbPkParameters ; j++)
-						(*ctrl_peakSet_)(peaksSetSize+i, j) = data_(i+start, j);
+						ctrl_peakSet_->setValue(peaksSetSize+i, j, data_(i+start, j));
 			}
 		}
 	} 
