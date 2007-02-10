@@ -46,6 +46,14 @@ private:
 	void createToolBars();
 	void readSettings();
 	void writeSettings();
+
+// program = 0  not chosen
+//         = 1  strings (Graham's stuff)
+//         = 2  winds (Mathieu's stuff)
+	int program;
+	bool maybeProgram();
+	bool chooseProgram();
+	void updateProgram();
 /*
 	void createStatusBar();
 	bool maybeSave();

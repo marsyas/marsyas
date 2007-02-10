@@ -2,6 +2,7 @@
 
 MainWindow::MainWindow() {
   marBackend = new MarBackend();
+	program=0;
 
 	createMain();
 	createActions();
@@ -105,7 +106,7 @@ void MainWindow::createMain() {
 	// this is what displays our testing text.  Later on we would
 	// remove textLable and make a QT painting area or make it a picture.
 	textLabel = new QLabel;
-	textLabel->setText("Initial");
+	updateProgram();
 
 	// we want to display the above two QLabels within our main window.
 	mainLayout = new QVBoxLayout;
@@ -178,7 +179,44 @@ void MainWindow::openExercise() {
 	// eventually we probably want a file Open dialogue box here
 	// and we would set some exercise data (expected pitches, what kind of
 	// audio analysis to perform, etc) here instead of just loading a png.
-	QImage image("exercises/scale.png");
-	imageLabel->setPixmap(QPixmap::fromImage(image));
+	if (maybeProgram()) {
+		QImage image("exercises/scale.png");
+		imageLabel->setPixmap(QPixmap::fromImage(image));
+	}
 }
 
+bool MainWindow::maybeProgram() {
+//	if (program>0) {
+//		return true;
+//	} else {
+		return chooseProgram();
+//	}
+}
+
+bool MainWindow::chooseProgram() {
+	QStringList items;
+	items << tr("Graham") << tr("Mathieu");
+	bool ok;
+	QString item = QInputDialog::getItem(this, tr("QInputDialog::getItem()"),
+                                          tr("Program:"), items, 0, false, &ok);
+	if (ok && !item.isEmpty()) {
+		if (item=="Graham") program=1;
+		if (item=="Mathieu") program=2;
+		updateProgram();
+		return true;
+	} else {
+		return false;
+	}
+}
+
+void MainWindow::updateProgram() {
+	if (program==0) textLabel->setText("No program selected");
+	if (program==1) {
+		textLabel->setText("Graham's string testing");
+		marBackend->startGraham();
+	}
+	if (program==2) {
+		textLabel->setText("Mathieu's wind testing");
+		marBackend->startMathieu();
+	}
+}

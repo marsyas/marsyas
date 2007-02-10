@@ -23,8 +23,6 @@
 #include "ExVal.h"
 #include "ExCommon.h"
 
-#include <iostream>
-using namespace std;
 using namespace Marsyas;
 
 class MarBackend: public QObject {
@@ -33,6 +31,9 @@ class MarBackend: public QObject {
 public:
 	MarBackend();
 	~MarBackend();
+// "constructor"
+	void startGraham();
+	void startMathieu();
 
 // communication with the QT front-end
 public slots:
@@ -42,6 +43,9 @@ public slots:
 
 private:
 	MarSystemQtWrapper *mrsWrapper;
+
+// "constructor"
+	void startCommon();
 
 // metronome stuff
   EvExpr *e;

@@ -18,10 +18,26 @@
 
 #include "backend.h";
 //using namespace Marsyas;
+#include <iostream>
+using namespace std;
 
 MarBackend::MarBackend() {
-//	startPitchNet("data/440-22050.wav");
+}
 
+MarBackend::~MarBackend() {
+	delete mrsWrapper;
+	delete metroNet;
+}
+
+void MarBackend::startCommon() {
+	if (mrsWrapper != NULL) delete mrsWrapper;
+	if (metroNet != NULL) delete metroNet;
+}
+void MarBackend::startGraham() {
+	startCommon();
+	cout<<"Setting up Graham's String stuff"<<endl;
+
+/*
   MarSystemManager mng;
   metroNet = mng.create("Series", "metroNet");
   metroNet->addMarSystem(mng.create("SoundFileSource", "src"));
@@ -43,12 +59,13 @@ MarBackend::MarBackend() {
   metroNet->updctrl(TmTime("TmSampleCount/Virtual","0s"), e);
 
 	mrsWrapper->pause();
+*/
 }
 
-MarBackend::~MarBackend() {
-	delete mrsWrapper;
-//	stopPitchNet();
-	delete metroNet;
+void MarBackend::startMathieu() {
+	startCommon();
+	cout<<"Setting up Mathieu's Wind stuff"<<endl;
+
 }
 
 void MarBackend::setTempo(int tempo) {
