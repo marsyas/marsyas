@@ -2,12 +2,34 @@
 
 @macro examplefile{FILENAME}
 @ifhtml
-@uref{\FILENAME\.html, \FILENAME\}
+@html
+@verbatiminclude marsyas/\FILENAME\.html
+@end html
 @end ifhtml
-
 @ifnothtml
 @subsubheading \FILENAME\
 @include marsyas/\FILENAME\.texinfo
+@end ifnothtml
+@end macro
+
+@macro examplefilenewpage{FILENAME}
+@ifhtml
+@uref{\FILENAME\.html, \FILENAME\}
+@end ifhtml
+@ifnothtml
+@subsubheading \FILENAME\
+@include marsyas/\FILENAME\.texinfo
+@end ifnothtml
+@end macro
+
+@macro qq{TEXT}
+@ifhtml
+@html
+&ldquo;\TEXT\&rdquo;
+@end html
+@end ifhtml
+@ifnothtml
+``\TEXT\''
 @end ifnothtml
 @end macro
 

@@ -1,0 +1,9 @@
+Here are a few useful macros:
+- @qq{text}: adds ``double quotes'' around text.  @qq looks better in HTML
+   than using `` and ''.
+- @examplefile{}: includes an example file from examples/.  This file
+   must also be added to EXAMPLES in Makefile.am.
+- @examplefilenewpage{}: include the example on a new HTML page (ie the
+   manual just has a link to that page).  Use this if you have multiple
+   files that are part of the same project (such as a qt4GUI).
+
