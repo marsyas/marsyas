@@ -1,0 +1,13 @@
+@c -*- coding: latin-1; mode: texinfo; -*-
+
+@macro examplefile{FILENAME}
+@ifhtml
+@uref{\FILENAME\.html, \FILENAME\}
+@end ifhtml
+
+@ifnothtml
+@subsubheading \FILENAME\
+@include marsyas/\FILENAME\.texinfo
+@end ifnothtml
+@end macro
+

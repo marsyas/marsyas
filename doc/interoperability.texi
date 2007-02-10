@@ -68,14 +68,12 @@ This is coming soon, right George?  It had better be soon...
 
 To get started, look at the tutorial files:
 
-@itemize
-@item @uref{tutorial.pro.html, tutorial.pro}
-@item @uref{main.cpp.html, main.cpp}
-@item @uref{mainwindow.h.html, mainwindow.h}
-@item @uref{mainwindow.cpp.html, mainwindow.cpp}
-@item @uref{backend.h.html, backend.h}
-@item @uref{backend.cpp.html, backend.cpp}
-@end itemize
+@examplefile{tutorial.pro}
+@examplefile{main.cpp}
+@examplefile{mainwindow.h}
+@examplefile{mainwindow.cpp}
+@examplefile{backend.h}
+@examplefile{backend.cpp}
 
 After examining that project, see @file{qtGUIs/MarPlayer/}, followed by
 the other examples in the @file{qtGUIs/} directory.
