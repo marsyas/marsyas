@@ -83,46 +83,7 @@ series of @code{SoundFileSource}, @code{Gain}, and @code{AudioSink}.  Once
 the network is created and the controls are given, we call @code{tick()} to
 make time pass until we have finished playing the file.
 
-
-@verbatim
-#include "MarSystemManager.h"
-using namespace std;
-using namespace Marsyas;
-
-void sfplay(string sfName, float gain) {
-  MarSystemManager mng;
-
-  MarSystem* playbacknet = mng.create("Series", "playbacknet");
-
-  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
-  playbacknet->addMarSystem(mng.create("Gain", "gt"));
-  playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
-
-  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-  playbacknet->updctrl("Gain/gt/mrs_real/gain", gain);
-  playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-
-  while ( playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() ) {
-    playbacknet->tick();
-  }
-  delete playbacknet;
-}
-
-int main(int argc, const char **argv) {
-  string fileName;
-  float gain;
-  if (argc<2) { cout<<"Please enter filename."<<endl; exit(1); } else 
-    { fileName = argv[1]; }
-  if (argc<3) { gain = 1; } else
-    { gain = atof(argv[2]); }
-  cout << "Playing file " << fileName << " at volume " <<
-    gain << endl;
-
-  sfplay(fileName,gain);
-  exit(0);
-}
-@end verbatim
-
+@examplefile{helloworld.cpp}
 
 
 @node Reading and altering controls
@@ -134,55 +95,7 @@ To calculate the starting position in the file, we must know the sample rate
 and number of channels.  We get this information from the
 @code{SoundFileSource} with @code{getctrl}.
 
-
-@verbatim
-#include "MarSystemManager.h"
-using namespace std;
-using namespace Marsyas;
-
-void sfplay(string sfName, float gain, float start) {
-  MarSystemManager mng;
-
-  MarSystem* playbacknet = mng.create("Series", "playbacknet");
-
-  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
-  playbacknet->addMarSystem(mng.create("Gain", "gt"));
-  playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
-
-// calculate the starting position.
-  mrs_natural nChannels = playbacknet->getctrl("SoundFileSource/src/mrs_natural/nChannels")->toNatural();
-  mrs_real srate = playbacknet->getctrl("SoundFileSource/src/mrs_real/israte")->toReal();
-  mrs_natural startPosition = (mrs_natural) (start * srate * nChannels);
-
-  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-  playbacknet->updctrl("Gain/gt/mrs_real/gain", gain);
-  playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-
-// set the starting position of the source
-  playbacknet->updctrl("SoundFileSource/src/mrs_natural/pos", startPosition);
-
-  while ( playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() ) {
-    playbacknet->tick();
-  }
-  delete playbacknet;
-}
-
-int main(int argc, const char **argv) {
-  string fileName;
-  float gain, start;
-  if (argc<2) { cout<<"Please enter filename."<<endl; exit(1); } else 
-    { fileName = argv[1]; }
-  if (argc<3) { gain = 1; } else
-    { gain = atof(argv[2]); }
-  if (argc<4) { start = 0; } else
-    { start = atof(argv[3]); }
-  cout << "Playing file " << fileName << " at volume " <<
-    gain << " starting at " << start << " seconds" << endl;
-
-  sfplay(fileName,gain,start);
-  exit(0);
-}
-@end verbatim
+@examplefile{controls.cpp}
 
 
 @node Writing data to text files
@@ -191,39 +104,7 @@ int main(int argc, const char **argv) {
 Extract data from a network for further analysis (plotting,
 other programs, etc) is fairly easy to do with @code{PlotSink}.
 
-@verbatim
-#include "MarSystemManager.h"
-using namespace std;
-using namespace Marsyas;
-
-void recognize(string sfName) {
-  MarSystemManager mng;
-  MarSystem* pnet = mng.create("Series", "pnet");
-// standard network
-  pnet->addMarSystem(mng.create("SoundFileSource", "src"));
-  pnet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-	pnet->addMarSystem(mng.create("Spectrum","spk"));
-
-// add a PlotSink wherever we want to get data from
-	pnet->addMarSystem(mng.create("PlotSink","plot"));
-  pnet->updctrl("PlotSink/plot/mrs_string/outputFilename", "out");
-
-  while ( pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() ) {
-    pnet->tick();
-  }
-  delete pnet;
-}
-
-int main(int argc, const char **argv) {
-  string fileName;
-  if (argc<2) { cout<<"Please enter filename."<<endl; exit(1); } else 
-    { fileName = argv[1]; }
-  cout << "Processing file " << fileName << endl;
-
-  recognize(fileName);
-  exit(0);
-}
-@end verbatim
+@examplefile{writefile.cpp}
 
 
 @node Getting data from the network
@@ -234,57 +115,7 @@ but you probably want to do something with that data.  In this
 example we simply print it to the screen, but the important
 thing to note is that we have the data at the level of C programming.
 
-@verbatim
-#include "MarSystemManager.h"
-using namespace std;
-using namespace Marsyas;
-
-void recognize(string sfName) {
-  MarSystemManager mng;
-  MarSystem* pnet = mng.create("Series", "pnet");
-// standard network
-  pnet->addMarSystem(mng.create("SoundFileSource", "src"));
-  pnet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-	pnet->addMarSystem(mng.create("Spectrum","spk"));
-
-// variables to get data from network
-  realvec in(pnet->getctrl("mrs_natural/inObservations")->toNatural(), pnet->getctrl("mrs_natural/inSamples")->toNatural());
-	realvec out(pnet->getctrl("mrs_natural/onObservations")->toNatural(), pnet->getctrl("mrs_natural/onSamples")->toNatural());
-
-// counter variables
-	int i,j;
-	mrs_natural numberObservations = pnet->getctrl("mrs_natural/onObservations")->toNatural();
-	mrs_natural numberSamples = pnet->getctrl("mrs_natural/onSamples")->toNatural();
-
-  while ( pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() ) {
-    pnet->tick();
-// get data from network
-		pnet->process(in,out);
-
-// display data
-		for (i=0; i<numberObservations; i++) {
-			for (j=0; j<numberSamples; j++) {
-				cout<<out(i,j)<<" ";
-			}
-		}
-		cout<<endl;
-  }
-  delete pnet;
-}
-
-int main(int argc, const char **argv) {
-  string fileName;
-  if (argc<2) { cout<<"Please enter filename."<<endl; exit(1); } else 
-    { fileName = argv[1]; }
-  cout << "Processing file " << fileName << endl;
-
-  recognize(fileName);
-  exit(0);
-}
-
-@end verbatim
-
-
+@examplefile{gettingdata.cpp}
 
 
 @node Writing your own MarSystems

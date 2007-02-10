@@ -1,0 +1,5 @@
+Place useful example files in this directory so they may be easily
+added to the docs.  Unlike the src/ directory, these files are
+intended only to help new programmers.  They have little or no useful
+purpose as executables.
+

@@ -30,6 +30,7 @@ CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
 
 QT_EXAMPLES = ../qt4GUIs/tutorial/*.h ../qt4GUIs/tutorial/*.cpp
 QT_EXAMPLES_AS_PERL = ../qt4GUIs/tutorial/*.pro
+EXAMPLES = ../examples/*.cpp
 
 html: marsyas.texi
 	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas.texi 
@@ -39,8 +40,8 @@ pdf: marsyas.texi
 	$(TEXI2PDF) $(TEXI2PDF_FLAGS) $(srcdir)/marsyas.texi
 
 sources:
-	source-highlight --output-dir=marsyas/ -f html $(QT_EXAMPLES)
-	source-highlight --output-dir=marsyas/ -f texinfo $(QT_EXAMPLES)
+	source-highlight --output-dir=marsyas/ -f html $(QT_EXAMPLES) $(EXAMPLES)
+	source-highlight --output-dir=marsyas/ -f texinfo $(QT_EXAMPLES) $(EXAMPLES)
 	source-highlight --output-dir=marsyas/ -f html --src-lang=perl $(QT_EXAMPLES_AS_PERL)
 	source-highlight --output-dir=marsyas/ -f texinfo --src-lang=perl $(QT_EXAMPLES_AS_PERL)
 
