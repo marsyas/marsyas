@@ -120,7 +120,7 @@ ExVal ExVal::defaultExValue(std::string type)//{{{
 }//}}}
 std::string ExVal::getBaseType() const
 {
-    mrs_natural p=type_.find(' ');
+    mrs_natural p=(mrs_natural)type_.find(' ');
     if (p<0) return type_;
     return type_.substr(0,p);
 }
@@ -172,7 +172,7 @@ ExVal ExVal::getSeqRange(int lidx, int ridx)
         return ExVal(new_len,(ExNode**)new_list);
     }
     else { // mrs_string
-        len=string_.length();
+        len=(mrs_natural)string_.length();
         if (len<=0||lidx>=len) { return (std::string)""; }
 
         if (ridx<lidx) ridx=lidx;
@@ -229,7 +229,7 @@ std::ostream& Marsyas::operator<<(std::ostream& o, ExVal& v)
 ExVal ExVal::append(const ExVal v) const {
     if (!is_list()||!v.is_list()) {
         MRSWARN("ExVal::append  only sequence types may be appended: "+getType()+", "+v.getType());
-        return this;
+        return *this;
     }
     if (getType()==" list"||v.getType()==" list"||getType()==v.getType()) {
         mrs_natural len=natural_+v.toNatural(); ExNode** elems=new ExNode*[len];
@@ -249,6 +249,6 @@ ExVal ExVal::append(const ExVal v) const {
         return ExVal(len,elems);
     }
     MRSWARN("ExVal::append  type mismatch in list concat: "+getType()+","+v.getType());
-    return this;
+    return *this;
 }
 
