@@ -49,11 +49,7 @@ MarBackend<font color="#990000">::</font><b><font color="#000000">MarBackend</fo
 <font color="#FF0000">}</font>
 
 MarBackend<font color="#990000">::~</font><b><font color="#000000">MarBackend</font></b><font color="#990000">()</font> <font color="#FF0000">{</font>
-	cout<font color="#990000">&lt;&lt;</font><font color="#FF0000">"shutting down"</font><font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font>
-	mrsWrapper<font color="#990000">-&gt;</font><b><font color="#000000">wait</font></b><font color="#990000">();</font>
-	cout<font color="#990000">&lt;&lt;</font><font color="#FF0000">"DONE WAIT"</font><font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font>
 	<b><font color="#0000FF">delete</font></b> mrsWrapper<font color="#990000">;</font>
-	cout<font color="#990000">&lt;&lt;</font><font color="#FF0000">"DONE "</font><font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font>
 	<b><font color="#0000FF">delete</font></b> playbacknet<font color="#990000">;</font>
 <font color="#FF0000">}</font>
 

@@ -1,0 +1,22 @@
+@c Generator: GNU source-highlight, by Lorenzo Bettini, http://www.gnu.org/software/src-highlite
+@example
+@i{#  your files}
+SOURCES = main.cpp
+HEADERS = mainwindow.h
+SOURCES += mainwindow.cpp
+HEADERS += backend.h
+SOURCES += backend.cpp
+
+@i{#  these files are common to every Marsyas/QT app }
+HEADERS += ../MarSystemQtWrapper.h
+SOURCES += ../MarSystemQtWrapper.cpp
+
+@i{#  basic system variables}
+TARGET = runme
+INCLUDEPATH += $@{HOME@}@t{/usr/include/marsyas}
+unix:LIBS += -lmarsyas -@t{L/usr/local/lib} @i{# -lmad -lvorbis -lvorbisfile}
+!macx:LIBS += -lasound
+macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
+
+
+@end example

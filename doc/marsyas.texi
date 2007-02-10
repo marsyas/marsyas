@@ -70,16 +70,12 @@ components.
 @end menu
 
 
+@include macros.itexi 
 @include intro.texi
-
 @include install.texi
-
 @include tools.texi
-
 @include architecture.texi
-
 @include programming.texi
-
 @include interoperability.texi
 
 @c to be scrapped soon.   -gp
