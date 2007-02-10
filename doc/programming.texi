@@ -77,7 +77,7 @@ Please see the documentation for your compiler / development environment.
 @cindex Hello world
 @cindex Playing an audio file
 
-Instead of printing ``Hello World!'', we shall play a sound file.  This is
+Instead of printing @qq{Hello World!}, we shall play a sound file.  This is
 relatively straightforward: we create a @code{MarSystem} which is a
 series of @code{SoundFileSource}, @code{Gain}, and @code{AudioSink}.  Once
 the network is created and the controls are given, we call @code{tick()} to

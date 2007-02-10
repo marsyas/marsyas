@@ -271,7 +271,7 @@ where classification experiments can be conducted.
 phasevocoder is probably the most powerful and canonical example of
 sound synthesis provided currently by Marsyas. It is based on the
 phasevocoder implementation described by F.R.Moore in his book
-``Elements of Computer Music''. It is broken into individual
+@qq{Elements of Computer Music}. It is broken into individual
 MarSystems in a modular way and can be used for real-time
 pitch-shifting and time-scaling.
  

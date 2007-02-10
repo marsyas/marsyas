@@ -31,7 +31,7 @@ http://www.sourceforge.net/projects/marsyas
 @end ifnothtml
 
 @html 
-<a href=''http://www.sourceforge.net/projects/marsyas''>
+<a href=``http://www.sourceforge.net/projects/marsyas''>
 http://www.sourceforget.net/projects/marsyas </a> 
 @end html
 

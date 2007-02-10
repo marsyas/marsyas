@@ -104,7 +104,7 @@ TEXI2PDF = texi2pdf
 info_TEXINFOS = marsyas.texi 
 
 SUBDIRS = marsyas images
-EXTRA_DIST = marsyas.pdf intro.texi tools.texi architecture.texi programming.texi install.texi unsorted.texi interoperability.texi
+EXTRA_DIST = marsyas.pdf intro.texi tools.texi architecture.texi programming.texi install.texi unsorted.texi interoperability.texi README
 
 CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
              marsyas.ats  marsyas.evs  marsyas.fns  marsyas.ovs \
@@ -129,7 +129,7 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	uninstall-info-recursive all-recursive install-data-recursive \
 	install-exec-recursive installdirs-recursive install-recursive \
 	uninstall-recursive check-recursive installcheck-recursive
-DIST_COMMON = Makefile.am Makefile.in texinfo.tex
+DIST_COMMON = README Makefile.am Makefile.in texinfo.tex
 DIST_SUBDIRS = $(SUBDIRS)
 all: all-recursive
 
