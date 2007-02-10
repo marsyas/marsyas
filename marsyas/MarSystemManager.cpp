@@ -65,6 +65,8 @@ in sequence.
 #include "PeOverlapadd.h"
 #include "PeResidual.h"
 #include "RealvecSource.h"
+#include "RealvecSink.h"
+#include "Power.h"
 
 #include "Windowing.h"
 
@@ -183,6 +185,8 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PeOverlapadd", new PeOverlapadd("peovlfp"));
 	registerPrototype("PeResidual", new PeResidual("peres"));
 	registerPrototype("RealvecSource", new RealvecSource("realvecSrc"));
+  registerPrototype("RealvecSink", new RealvecSource("realvecSink"));
+  registerPrototype("Power", new RealvecSource("pow"));
 
 	registerPrototype("AuFileSource", new AuFileSource("aufp"));
 	registerPrototype("WavFileSource", new WavFileSource("wavfp"));
