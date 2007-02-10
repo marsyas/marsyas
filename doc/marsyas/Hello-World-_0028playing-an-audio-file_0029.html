@@ -63,44 +63,7 @@ series of <code>SoundFileSource</code>, <code>Gain</code>, and <code>AudioSink</
 the network is created and the controls are given, we call <code>tick()</code> to
 make time pass until we have finished playing the file.
 
-<pre class="verbatim">
-#include "MarSystemManager.h"
-using namespace std;
-using namespace Marsyas;
-
-void sfplay(string sfName, float gain) {
-  MarSystemManager mng;
-
-  MarSystem* playbacknet = mng.create("Series", "playbacknet");
-
-  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
-  playbacknet->addMarSystem(mng.create("Gain", "gt"));
-  playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
-
-  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-  playbacknet->updctrl("Gain/gt/mrs_real/gain", gain);
-  playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-
-  while ( playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() ) {
-    playbacknet->tick();
-  }
-  delete playbacknet;
-}
-
-int main(int argc, const char **argv) {
-  string fileName;
-  float gain;
-  if (argc&lt;2) { cout&lt;&lt;"Please enter filename."&lt;&lt;endl; exit(1); } else 
-    { fileName = argv[1]; }
-  if (argc&lt;3) { gain = 1; } else
-    { gain = atof(argv[2]); }
-  cout &lt;&lt; "Playing file " &lt;&lt; fileName &lt;&lt; " at volume " &lt;&lt;
-    gain &lt;&lt; endl;
-
-  sfplay(fileName,gain);
-  exit(0);
-}
-</pre>
+   <p><a href="helloworld.cpp.html">helloworld.cpp</a>
 
    </body></html>
 

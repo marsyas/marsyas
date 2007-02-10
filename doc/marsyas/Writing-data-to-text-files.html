@@ -58,39 +58,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="Assembling-a-network.html#Assembling-a-
 <p>Extract data from a network for further analysis (plotting,
 other programs, etc) is fairly easy to do with <code>PlotSink</code>.
 
-<pre class="verbatim">
-#include "MarSystemManager.h"
-using namespace std;
-using namespace Marsyas;
-
-void recognize(string sfName) {
-  MarSystemManager mng;
-  MarSystem* pnet = mng.create("Series", "pnet");
-// standard network
-  pnet->addMarSystem(mng.create("SoundFileSource", "src"));
-  pnet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-	pnet->addMarSystem(mng.create("Spectrum","spk"));
-
-// add a PlotSink wherever we want to get data from
-	pnet->addMarSystem(mng.create("PlotSink","plot"));
-  pnet->updctrl("PlotSink/plot/mrs_string/outputFilename", "out");
-
-  while ( pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() ) {
-    pnet->tick();
-  }
-  delete pnet;
-}
-
-int main(int argc, const char **argv) {
-  string fileName;
-  if (argc&lt;2) { cout&lt;&lt;"Please enter filename."&lt;&lt;endl; exit(1); } else 
-    { fileName = argv[1]; }
-  cout &lt;&lt; "Processing file " &lt;&lt; fileName &lt;&lt; endl;
-
-  recognize(fileName);
-  exit(0);
-}
-</pre>
+   <p><a href="writefile.cpp.html">writefile.cpp</a>
 
    </body></html>
 

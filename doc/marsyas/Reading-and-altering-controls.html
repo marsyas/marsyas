@@ -61,54 +61,7 @@ To calculate the starting position in the file, we must know the sample rate
 and number of channels.  We get this information from the
 <code>SoundFileSource</code> with <code>getctrl</code>.
 
-<pre class="verbatim">
-#include "MarSystemManager.h"
-using namespace std;
-using namespace Marsyas;
-
-void sfplay(string sfName, float gain, float start) {
-  MarSystemManager mng;
-
-  MarSystem* playbacknet = mng.create("Series", "playbacknet");
-
-  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
-  playbacknet->addMarSystem(mng.create("Gain", "gt"));
-  playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
-
-// calculate the starting position.
-  mrs_natural nChannels = playbacknet->getctrl("SoundFileSource/src/mrs_natural/nChannels")->toNatural();
-  mrs_real srate = playbacknet->getctrl("SoundFileSource/src/mrs_real/israte")->toReal();
-  mrs_natural startPosition = (mrs_natural) (start * srate * nChannels);
-
-  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-  playbacknet->updctrl("Gain/gt/mrs_real/gain", gain);
-  playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-
-// set the starting position of the source
-  playbacknet->updctrl("SoundFileSource/src/mrs_natural/pos", startPosition);
-
-  while ( playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() ) {
-    playbacknet->tick();
-  }
-  delete playbacknet;
-}
-
-int main(int argc, const char **argv) {
-  string fileName;
-  float gain, start;
-  if (argc&lt;2) { cout&lt;&lt;"Please enter filename."&lt;&lt;endl; exit(1); } else 
-    { fileName = argv[1]; }
-  if (argc&lt;3) { gain = 1; } else
-    { gain = atof(argv[2]); }
-  if (argc&lt;4) { start = 0; } else
-    { start = atof(argv[3]); }
-  cout &lt;&lt; "Playing file " &lt;&lt; fileName &lt;&lt; " at volume " &lt;&lt;
-    gain &lt;&lt; " starting at " &lt;&lt; start &lt;&lt; " seconds" &lt;&lt; endl;
-
-  sfplay(fileName,gain,start);
-  exit(0);
-}
-</pre>
+   <p><a href="controls.cpp.html">controls.cpp</a>
 
    </body></html>
 

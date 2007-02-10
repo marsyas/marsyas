@@ -58,55 +58,7 @@ but you probably want to do something with that data.  In this
 example we simply print it to the screen, but the important
 thing to note is that we have the data at the level of C programming.
 
-<pre class="verbatim">
-#include "MarSystemManager.h"
-using namespace std;
-using namespace Marsyas;
-
-void recognize(string sfName) {
-  MarSystemManager mng;
-  MarSystem* pnet = mng.create("Series", "pnet");
-// standard network
-  pnet->addMarSystem(mng.create("SoundFileSource", "src"));
-  pnet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-	pnet->addMarSystem(mng.create("Spectrum","spk"));
-
-// variables to get data from network
-  realvec in(pnet->getctrl("mrs_natural/inObservations")->toNatural(), pnet->getctrl("mrs_natural/inSamples")->toNatural());
-	realvec out(pnet->getctrl("mrs_natural/onObservations")->toNatural(), pnet->getctrl("mrs_natural/onSamples")->toNatural());
-
-// counter variables
-	int i,j;
-	mrs_natural numberObservations = pnet->getctrl("mrs_natural/onObservations")->toNatural();
-	mrs_natural numberSamples = pnet->getctrl("mrs_natural/onSamples")->toNatural();
-
-  while ( pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() ) {
-    pnet->tick();
-// get data from network
-		pnet->process(in,out);
-
-// display data
-		for (i=0; i&lt;numberObservations; i++) {
-			for (j=0; j&lt;numberSamples; j++) {
-				cout&lt;&lt;out(i,j)&lt;&lt;" ";
-			}
-		}
-		cout&lt;&lt;endl;
-  }
-  delete pnet;
-}
-
-int main(int argc, const char **argv) {
-  string fileName;
-  if (argc&lt;2) { cout&lt;&lt;"Please enter filename."&lt;&lt;endl; exit(1); } else 
-    { fileName = argv[1]; }
-  cout &lt;&lt; "Processing file " &lt;&lt; fileName &lt;&lt; endl;
-
-  recognize(fileName);
-  exit(0);
-}
-
-</pre>
+   <p><a href="gettingdata.cpp.html">gettingdata.cpp</a>
 
    </body></html>
 
