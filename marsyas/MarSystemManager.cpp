@@ -377,6 +377,39 @@ MarSystemManager::MarSystemManager()
 
 	registerPrototype("PhaseVocoder", pvocpr);
 
+
+	//protoptype for pitch Extraction using SACF
+
+	MarSystem* pitchSACF = new Series("pitchSACF");
+  pitchSACF->addMarSystem(create("AutoCorrelation", "acr"));
+  pitchSACF->updctrl("AutoCorrelation/acr/mrs_real/magcompress", 0.67);
+  pitchSACF->addMarSystem(create("HalfWaveRectifier", "hwr"));
+  MarSystem* fanout = create("Fanout", "fanout");
+  fanout->addMarSystem(create("Gain", "id1"));
+  fanout->addMarSystem(create("TimeStretch", "tsc"));
+  pitchSACF->addMarSystem(fanout);
+  MarSystem* fanin = create("Fanin", "fanin");
+  fanin->addMarSystem(create("Gain", "id2"));
+  fanin->addMarSystem(create("Negative", "nid"));
+  pitchSACF->addMarSystem(fanin);
+  pitchSACF->addMarSystem(create("HalfWaveRectifier", "hwr"));
+	pitchSACF->addMarSystem(create("PlotSink", "psink0"));
+  pitchSACF->addMarSystem(create("Peaker", "pkr"));
+  pitchSACF->addMarSystem(create("MaxArgMax", "mxr"));
+
+	// should be adapted to the sampling frequency !!
+	pitchSACF->updctrl("mrs_natural/inSamples", 1024);
+  pitchSACF->updctrl("Fanout/fanout/TimeStretch/tsc/mrs_real/factor", 0.5);  
+
+	pitchSACF->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.00);
+  pitchSACF->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.4);
+  pitchSACF->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 1);
+
+	pitchSACF->linkctrl("mrs_natural/lowSamples", "Peaker/pkr/mrs_natural/peakStart");
+  pitchSACF->linkctrl("mrs_natural/highSamples", "Peaker/pkr/mrs_natural/peakEnd");
+
+	registerPrototype("pitchSACF", pitchSACF);
+
 	// prototype for Peak Extraction stuff
 	MarSystem* peAnalysePr = new Series("peAnalysePr");
 	peAnalysePr->addMarSystem(create("ShiftInput", "si"));
