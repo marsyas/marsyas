@@ -60,12 +60,12 @@ Marsyas::time2samples(string time, mrs_real srate) {
     // calculate time value
     mrs_real samples=0;
     int i=0;
-    int len=time.length();
+    int len=(int)time.length();
     bool decimal_point=false;
     mrs_real divisor = 10.0;
     for (i=0;i<len && (time[i]=='.' || (time[i]>='0' && time[i]<='9'));i++) {
         if (decimal_point) {
-            if (time[i]=='.') { return -1.0; }
+            if (time[i]=='.') { return -1; }
             samples = samples + ((mrs_real)(time[i]-'0'))/divisor;
             divisor = divisor * 10.0;
         } else if (time[i]=='.') {
@@ -85,7 +85,7 @@ Marsyas::time2samples(string time, mrs_real srate) {
             } else if (a=='s') { // seconds
                 samples=       samples*srate;
             } else {
-                return -1.0;
+                return -1;
             }
         } else {
             char b=time[i];
@@ -95,7 +95,7 @@ Marsyas::time2samples(string time, mrs_real srate) {
                 } else if (a=='m' && b=='s') { // milli-seconds
                     samples= samples/1000.0*srate;
                 } else {
-                    return -1.0;
+                    return -1;
                 }
             }
         }
@@ -109,12 +109,12 @@ Marsyas::time2usecs(string time) {
     // calculate time value
     mrs_real usecs=0;
     int i=0;
-    int len=time.length();
+    int len=(int)time.length();
     bool decimal_point=false;
     mrs_real divisor = 10.0;
     for (i=0;i<len && (time[i]=='.' || (time[i]>='0' && time[i]<='9'));i++) {
         if (decimal_point) {
-            if (time[i]=='.') { return -1.0; }
+            if (time[i]=='.') { return -1; }
             usecs = usecs + ((mrs_real)(time[i]-'0'))/divisor;
             divisor = divisor * 10.0;
         } else if (time[i]=='.') {
@@ -134,7 +134,7 @@ Marsyas::time2usecs(string time) {
             } else if (a=='s') { // seconds
                 usecs *= 1000.0 * 1000.0;
             } else {
-                return -1.0;
+                return -1;
             }
         } else {
             char b=time[i];
@@ -144,7 +144,7 @@ Marsyas::time2usecs(string time) {
                 } else if (a=='m' && b=='s') { // milli-seconds
                     usecs *= 1000.0;
                 } else {
-                    return -1.0;
+                    return -1;
                 }
             }
         }
