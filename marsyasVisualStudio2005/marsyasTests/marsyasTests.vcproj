@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Wsock32.lib dsound.lib"
+				AdditionalDependencies="dsound.lib Wsock32.lib user32.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories=""
@@ -140,7 +140,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dsound.lib"
+				AdditionalDependencies="dsound.lib Wsock32.lib user32.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
@@ -216,7 +216,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="marsyas.lib Wsock32.lib dsound.lib libeng.lib libmx.lib libut.lib"
+				AdditionalDependencies="dsound.lib Wsock32.lib user32.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\marsyas\Debug_MATLAB;&quot;$(MATLAB)\extern\lib\win32\microsoft&quot;"
@@ -294,7 +294,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dsound.lib libeng.lib libmx.lib libut.lib"
+				AdditionalDependencies="dsound.lib Wsock32.lib user32.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(MATLAB)\extern\lib\win32\microsoft&quot;"

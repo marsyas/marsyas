@@ -56,13 +56,11 @@ RealvecSink::clone() const
 void 
 RealvecSink::addControls()
 {
-  addctrl("mrs_natural/samplesToUse", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES);
-  setctrlState("mrs_natural/samplesToUse", true);
   addctrl("mrs_bool/done", false);
   setctrlState("mrs_bool/done", true);
   addctrl("mrs_realvec/data", realvec(), ctrl_data_);
-  setctrlState("mrs_realvec/data", true);
-	setctrlState("mrs_real/israte", true);
+  //setctrlState("mrs_realvec/data", true);
+  setctrlState("mrs_real/israte", true);
 }
 
 
@@ -88,10 +86,9 @@ void
 RealvecSink::myProcess(realvec& in, realvec& out)
 {
 	//checkFlow(in,out);
-
 	ctrl_data_->stretch(inObservations_, count_+inSamples_);
 		for (o=0; o < inObservations_; o++)
-	  	for (t=0; t < inSamples_; o++)
+	  	for (t=0; t < inSamples_; t++)
 			{
 				out(o, t) = in(o, t);
 			  ctrl_data_->setValue(o, count_+t, in(o, t));

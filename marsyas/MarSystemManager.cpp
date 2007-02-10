@@ -185,8 +185,8 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PeOverlapadd", new PeOverlapadd("peovlfp"));
 	registerPrototype("PeResidual", new PeResidual("peres"));
 	registerPrototype("RealvecSource", new RealvecSource("realvecSrc"));
-  registerPrototype("RealvecSink", new RealvecSource("realvecSink"));
-  registerPrototype("Power", new RealvecSource("pow"));
+  registerPrototype("RealvecSink", new RealvecSink("realvecSink"));
+  registerPrototype("Power", new Power("pow"));
 
 	registerPrototype("AuFileSource", new AuFileSource("aufp"));
 	registerPrototype("WavFileSource", new WavFileSource("wavfp"));
@@ -397,22 +397,33 @@ MarSystemManager::MarSystemManager()
   fanin->addMarSystem(create("Negative", "nid"));
   pitchSACF->addMarSystem(fanin);
   pitchSACF->addMarSystem(create("HalfWaveRectifier", "hwr"));
-	pitchSACF->addMarSystem(create("PlotSink", "psink0"));
   pitchSACF->addMarSystem(create("Peaker", "pkr"));
   pitchSACF->addMarSystem(create("MaxArgMax", "mxr"));
 
-	// should be adapted to the sampling frequency !!
-	pitchSACF->updctrl("mrs_natural/inSamples", 1024);
+  // should be adapted to the sampling frequency !!
+  pitchSACF->updctrl("mrs_natural/inSamples", 1024);
   pitchSACF->updctrl("Fanout/fanout/TimeStretch/tsc/mrs_real/factor", 0.5);  
 
-	pitchSACF->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.00);
+  pitchSACF->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.00);
   pitchSACF->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.4);
   pitchSACF->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 1);
-
-	pitchSACF->linkctrl("mrs_natural/lowSamples", "Peaker/pkr/mrs_natural/peakStart");
+  pitchSACF->linkctrl("mrs_natural/lowSamples", "Peaker/pkr/mrs_natural/peakStart");
   pitchSACF->linkctrl("mrs_natural/highSamples", "Peaker/pkr/mrs_natural/peakEnd");
+// set default values
+  mrs_real lowPitch = 36;
+  mrs_real highPitch = 79;
+  mrs_real lowFreq = pitch2hertz(lowPitch);
+  mrs_real highFreq = pitch2hertz(highPitch);
 
-	registerPrototype("pitchSACF", pitchSACF);
+  mrs_natural lowSamples = 
+     hertz2samples(highFreq, pitchSACF->getctrl("mrs_real/osrate")->toReal());
+  mrs_natural highSamples = 
+     hertz2samples(lowFreq, pitchSACF->getctrl("mrs_real/osrate")->toReal());
+ 
+  pitchSACF->updctrl("mrs_natural/lowSamples", lowSamples);
+  pitchSACF->updctrl("mrs_natural/highSamples", highSamples);
+
+  registerPrototype("PitchSACF", pitchSACF);
 
 	// prototype for Peak Extraction stuff
 	MarSystem* peAnalysePr = new Series("peAnalysePr");

@@ -98,7 +98,25 @@ realvec::operator=(const realvec& a)
 	{
 		if (size_ != a.size_)
 		{
-			MRSDIAG("realvec::operator= : Different realvec sizes! l.h. realvec will be deleted and then recreated during attribution.");
+			//lmartins: [!]
+			//Why doesn't this delete all data and creates a new realvec?
+			//it would be then easier to use this operator in client code 
+			//(i.e. no need to assure that the realvec implicated in the 
+			// =  operation are equal sized)
+			/*
+			MRSERR("realvec::operator= : Different realvec sizes\n");
+			MRSERR("realvec left unchanged\n");
+
+			MRSERR("Left size = " + size_);
+			MRSERR("Right size = " + a.size_);
+			return *this;
+			*/
+			//Replacing above code by the following one (which still maintains backward compatibility
+			// with any previous code in Marsyas that resizes l.h. realvec before using the = operator).
+
+			//			MRSWARN("realvec::operator= : Different realvec sizes! l.h. realvec will be deleted and then recreated during attribution.");
+			// [ML] this code is used by stretch on realvec_ctrl, removed warning until sloved issue
+
 			delete [] data_;
 			data_ = NULL;
 			if( a.size_ > 0 )
@@ -500,102 +518,54 @@ realvec::sqroot()
 realvec 
 Marsyas::operator+(const realvec& vec1, const realvec& vec2)
 {
-	mrs_natural i;
-	if (vec1.cols_ != vec2.cols_ || vec1.rows_ != vec2.rows_)
-	{
-		MRSERR("Size of realvecs does not match");
-		return realvec();
-	}
-
-	realvec sum;
-	sum.create(vec1.rows_,vec1.cols_);    
-
-	for (i=0; i<vec1.size_; i++)
-	{
-		sum.data_[i] = vec1.data_[i];
-	}
-	for (i=0; i<vec2.size_; i++)
-	{
-		sum.data_[i] += vec2.data_[i];
-	}
-
-	return sum;
+  mrs_natural size;
+  mrs_natural i;
+  if (vec1.size_ != vec2.size_)
+    MRSERR("Size of realvecs does not match");
+  if (vec1.size_ >= vec2.size_)
+    size = vec1.size_;
+  else 
+    size = vec2.size_;
+  realvec sum;
+  sum.create(size);    
+  
+  for (i=0; i<vec1.size_; i++)
+    {
+      sum.data_[i] = vec1.data_[i];
+    }
+  for (i=0; i<vec2.size_; i++)
+    {
+      sum.data_[i] += vec2.data_[i];
+    }
+      
+  return sum;
 }
 
 
 realvec 
 Marsyas::operator-(const realvec& vec1, const realvec& vec2)
 {
-	mrs_natural i;
-	if (vec1.cols_ != vec2.cols_ || vec1.rows_ != vec2.rows_)
-	{
-		MRSERR("Size of realvecs does not match");
-		return realvec();
-	}
-
-	realvec sum;
-	sum.create(vec1.rows_,vec1.cols_);    
-
-	for (i=0; i<vec1.size_; i++)
-	{
-		sum.data_[i] = vec1.data_[i];
-	}
-	for (i=0; i<vec2.size_; i++)
-	{
-		sum.data_[i] -= vec2.data_[i];
-	}
-
-	return sum;
-}
-
-realvec 
-Marsyas::operator*(const realvec& vec1, const realvec& vec2)
-{
-	mrs_natural i;
-	if (vec1.cols_ != vec2.cols_ || vec1.rows_ != vec2.rows_)
-	{
-		MRSERR("Size of realvecs does not match");
-		return realvec();
-	}
-
-	realvec sum;
-	sum.create(vec1.rows_,vec1.cols_);    
-
-	for (i=0; i<vec1.size_; i++)
-	{
-		sum.data_[i] = vec1.data_[i];
-	}
-	for (i=0; i<vec2.size_; i++)
-	{
-		sum.data_[i] *= vec2.data_[i];
-	}
-
-	return sum;
-}
-
-realvec 
-Marsyas::operator/(const realvec& vec1, const realvec& vec2)
-{
-	mrs_natural i;
-	if (vec1.cols_ != vec2.cols_ || vec1.rows_ != vec2.rows_)
-	{
-		MRSERR("Size of realvecs does not match");
-		return realvec();
-	}
-
-	realvec sum;
-	sum.create(vec1.rows_,vec1.cols_);    
-
-	for (i=0; i<vec1.size_; i++)
-	{
-		sum.data_[i] = vec1.data_[i];
-	}
-	for (i=0; i<vec2.size_; i++)
-	{
-		sum.data_[i] /= vec2.data_[i];
-	}
-
-	return sum;
+  mrs_natural size;
+  mrs_natural i;
+  if (vec1.size_ != vec2.size_)
+    MRSERR("Size of realvecs does not match");
+  if (vec1.size_ >= vec2.size_)
+    size = vec1.size_;
+  else 
+    size = vec2.size_;
+  realvec diff;
+  diff.create(size);    
+  
+  for (i=0; i<vec1.size_; i++)
+    {
+      diff.data_[i] = vec1.data_[i];
+    }
+  for (i=0; i<vec2.size_; i++)
+    {
+      diff.data_[i] -= vec2.data_[i];
+    }
+      
+  return diff;
 }
 
 bool

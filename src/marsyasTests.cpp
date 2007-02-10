@@ -2085,6 +2085,47 @@ test_tempo(string fname, mrs_natural tempo, mrs_natural rank)
 
 
 
+
+void
+test_pitch(string sfName) 
+{
+
+  MarSystemManager mng;
+  MarSystem* pnet = mng.create("Series", "pnet");
+
+  pnet->addMarSystem(mng.create("SoundFileSource", "src"));
+  pnet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  pnet->addMarSystem(mng.create("PitchSACF", "sacf")); 
+  pnet->addMarSystem(mng.create("RealvecSink", "rvSink")); 
+
+  mrs_real lowPitch = 36;
+  mrs_real highPitch = 79;
+  mrs_real lowFreq = pitch2hertz(lowPitch);
+  mrs_real highFreq = pitch2hertz(highPitch);
+
+  mrs_natural lowSamples = 
+     hertz2samples(highFreq, pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
+  mrs_natural highSamples = 
+     hertz2samples(lowFreq, pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
+ 
+  pnet->updctrl("PitchSACF/sacf/mrs_natural/lowSamples", lowSamples);
+  pnet->updctrl("PitchSACF/sacf/mrs_natural/highSamples", highSamples);
+  pnet->updctrl("mrs_natural/inSamples", 1024);
+
+    while (pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
+        pnet->tick();
+
+	realvec data = pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->toVec();
+	cout << data ;
+	// to output to a file
+	ofstream dataFile;
+	dataFile.open("data.txt");
+	dataFile << data;
+    //////////////////////////
+    
+	delete pnet;
+}
+
 int
 main(int argc, const char **argv)
 {
@@ -2164,6 +2205,8 @@ main(int argc, const char **argv)
     test_getControls(fname0);
   else if (testName == "mono2stereo")
     test_mono2stereo(fname0);
+ else if (testName == "pitch")
+    test_pitch(fname0);
   else 
     {
       cout << "Unsupported test " << endl;
