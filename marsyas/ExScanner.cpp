@@ -9,7 +9,7 @@
 char* coco_string_create(const char* value) {
 	char* data;
 	int len = 0;
-	if (value) { len = strlen(value); }
+	if (value) { len =(int)strlen(value); }
 	data = new char[len + 1];
 	strncpy(data, value, len);
 	data[len] = 0;
@@ -32,7 +32,7 @@ char* coco_string_create_upper(char* data) {
 	if (!data) { return NULL; }
 
 	int dataLen = 0;
-	if (data) { dataLen = strlen(data); }
+	if (data) { dataLen =(int)strlen(data); }
 
 	char* newData = new char[dataLen + 1];
 
@@ -51,7 +51,7 @@ char* coco_string_create_lower(char* data) {
 	if (!data) { return NULL; }
 
 	int dataLen = 0;
-	if (data) { dataLen = strlen(data); }
+	if (data) { dataLen =(int)strlen(data); }
 
 	char* newData = new char[dataLen + 1];
 
@@ -70,8 +70,8 @@ char* coco_string_create_append(const char* data1, const char* data2) {
 	int data1Len = 0;
 	int data2Len = 0;
 
-	if (data1) { data1Len = strlen(data1); }
-	if (data2) {data2Len = strlen(data2); }
+	if (data1) { data1Len =(int)strlen(data1); }
+	if (data2) {data2Len =(int)strlen(data2); }
 
 	data = new char[data1Len + data2Len + 1];
 
@@ -98,27 +98,27 @@ void coco_string_delete(char* &data) {
 }
 
 int coco_string_length(const char* data) {
-	if (data) { return strlen(data); }
+	if (data) { return (int)strlen(data); }
 	return 0;
 }
 
 bool coco_string_endswith(char* data, char* end) {
-	int dataLen = strlen(data);
-	int endLen = strlen(end);
+	int dataLen =(int)strlen(data);
+	int endLen =(int)strlen(end);
 	return (endLen <= dataLen) && (strcmp(data + dataLen - endLen, end) == 0);
 }
 
 int coco_string_indexof(char* data, char value) {
 	char* chr = strchr(data, value);
 
-	if (chr) { return (chr-data); }
+	if (chr) { return (int)(chr-data); }
 	return -1;
 }
 
 int coco_string_lastindexof(char* data, char value) {
 	char* chr = strrchr(data, value);
 
-	if (chr) { return (chr-data); }
+	if (chr) { return (int)(chr-data); }
 	return -1;
 }
 
@@ -255,7 +255,7 @@ void Buffer::SetPos(int value) {
 		pos = value - bufStart;
 	} else if (stream != NULL) { // must be swapped in
 		fseek(stream, value, SEEK_SET);
-		bufLen = fread(buf, sizeof(char), MAX_BUFFER_LENGTH, stream);
+		bufLen = (int)fread(buf, sizeof(char), MAX_BUFFER_LENGTH, stream);
 		bufStart = value; pos = 0;
 	} else {
 		pos = fileLen - bufStart; // make Pos return fileLen

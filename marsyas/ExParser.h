@@ -221,7 +221,7 @@ ExNode* tree;
         if (typ=="mrs_natural") return "Natural";
         if (typ=="mrs_bool") return "Bool";
         if (typ=="mrs_timer") return "Timer";
-        int len=typ.length();
+        int len=(int)typ.length();
         if ((len>4)&&typ[len-1]=='t'&&typ[len-2]=='s'&&typ[len-3]=='i'&&typ[len-4]=='l'&&typ[len-5]==' ') return "List";
         return "";
     }//}}}

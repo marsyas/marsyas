@@ -52,16 +52,18 @@ bool VScheduler::eventPending()
 void VScheduler::addTimer(TmTimer* t) {
     if (t == NULL) return;
     // look for schedulers with same name to ensure only one of each name
-    if (findScheduler(t->getPrefix())!=NULL)
+	if (findScheduler(t->getPrefix())!=NULL){
         MRSWARN("VScheduler::addTimer(TmTimer)  refusing to add timer with name already in use");
+	}
     appendScheduler(new Scheduler(t));
 }
 void
 VScheduler::addTimer(string class_name, string given_name)
 {
     // look for schedulers with same name to ensure only one of each name
-    if (findScheduler(class_name+"/"+given_name)!=NULL)
+	if (findScheduler(class_name+"/"+given_name)!=NULL){
         MRSWARN("VScheduler::addTimer(string,string)  refusing to add timer with name already in use");
+	}
     appendScheduler(new Scheduler(class_name,given_name));
 }
 

@@ -203,7 +203,7 @@ void ExNode::setType(const std::string t)
 }
 std::string ExNode::getElemType() const
 {
-    int r=type.rfind(' ');
+    int r=(int)type.rfind(' ');
     return type.substr(0,r);
 }
 
@@ -272,11 +272,11 @@ void ExFun::setParams(ExNode* ps)
 }
 void ExFun::setParamTypes(std::string t)
 {
-    int s=t.find('('); if (s<0) return;
-    int e=t.rfind(')');
+    int s=(int)t.find('('); if (s<0) return;
+    int e=(int)t.rfind(')');
     t=t.substr(s+1,e-s-1);
     while (t!="") {
-        int x=t.find(',');
+        int x=(int)t.find(',');
         if (x>=0) {
             std::string p=t.substr(0,x);
             param_types.push_back(p);

@@ -276,7 +276,7 @@ class ExNode_StringMap : public ExNode//{{{
     virtual ExVal calc() {
         std::string str=(xs->eval()).toString();
         std::string result="";
-        mrs_natural len=str.length();
+        mrs_natural len=(mrs_natural)str.length();
         if (len>0) {
             for (int i=0;i<len;i++) {
                 ExVal v=ExVal(((std::string)"")+str[i]);
@@ -300,7 +300,7 @@ class ExNode_StringIter : public ExNode//{{{
         std::cout << "ITER:"<<std::endl;
         std::string str=(xs->getValue()).toString();
         std::string result="";
-        mrs_natural len=str.length();
+        mrs_natural len=(mrs_natural)str.length();
         if (len>0) {
             for (int i=0;i<len;i++) {
                 ExVal v=ExVal(((std::string)"")+str[i]);
@@ -324,7 +324,7 @@ class ExNode_StringFor : public ExNode//{{{
     virtual ExVal calc() {
         std::string str=(xs->eval()).toString();
         std::string result="";
-        mrs_natural len=str.length();
+        mrs_natural len=(mrs_natural)str.length();
         if (len>0) {
             for (int i=0;i<len;i++) {
                 ExVal v=ExVal(((std::string)"")+str[i]);
@@ -345,7 +345,7 @@ class ExNode_StringRFor : public ExNode//{{{
     virtual ExVal calc() {
         std::string str=(xs->eval()).toString();
         std::string result="";
-        mrs_natural len=str.length();
+        mrs_natural len=(mrs_natural)str.length();
         if (len>0) {
             for (int i=len-1;i>=0;i--) {
                 ExVal v=ExVal(((std::string)"")+str[i]);
@@ -618,7 +618,7 @@ class ExFun_StrSub : public ExFun//{{{
         int s = params[1]->eval().toNatural();
         int e = params[2]->eval().toNatural();
         if (s<0) { s=0; }
-        if (e>(int)(str.length()-s)) { e=str.length()-s; }
+        if (e>(int)(str.length()-s)) { e=((mrs_natural)str.length())-s; }
         return str.substr(s,e);
     }
     ExFun* copy() { return new ExFun_StrSub(); }

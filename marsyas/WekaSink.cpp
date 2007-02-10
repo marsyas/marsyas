@@ -186,7 +186,7 @@ WekaSink::myProcess(realvec& in, realvec& out)
 
 	static int count = 0;
 	mrs_natural label = 0;
-
+printf("** %d %d\n",inSamples_,inObservations_);
 	for (t = 0; t < inSamples_; t++)
 	{
 		for (o=0; o < inObservations_; o++)
