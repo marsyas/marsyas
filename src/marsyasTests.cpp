@@ -2112,10 +2112,15 @@ test_pitch(string sfName)
   pnet->updctrl("PitchSACF/sacf/mrs_natural/highSamples", highSamples);
   pnet->updctrl("mrs_natural/inSamples", 1024);
 
-    while (pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
-        pnet->tick();
+  while (pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
+   pnet->tick();
 
 	realvec data = pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->toVec();
+   for (mrs_natural i=1; i<data.getSize();i+=2)
+	   data(i) = samples2hertz((mrs_natural) data(i), pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
+   
+   pnet->updctrl("RealvecSink/rvSink/mrs_bool/done", 1); 
+	
 	cout << data ;
 	// to output to a file
 	ofstream dataFile;
