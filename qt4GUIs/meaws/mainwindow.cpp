@@ -2,7 +2,7 @@
 
 MainWindow::MainWindow() {
   marBackend = new MarBackend();
-	program=0;
+	testingMethod=0;
 
 	createMain();
 	createActions();
@@ -47,10 +47,10 @@ void MainWindow::writeSettings() {
 }
 
 void MainWindow::createActions() {
-	newAct = new QAction(QIcon(":/images/new.png"), tr("&New"), this);
-	newAct->setShortcut(tr("Ctrl+N"));
-	newAct->setStatusTip(tr("Create a new session"));
-//	connect(newAct, SIGNAL(triggered()), this, SLOT(newFile()));
+	newUserAct = new QAction(QIcon(":/images/new.png"), tr("&New"), this);
+	newUserAct->setShortcut(tr("Ctrl+N"));
+	newUserAct->setStatusTip(tr("Create a new session"));
+	connect(newUserAct, SIGNAL(triggered()), this, SLOT(newUser()));
 
 	openAct = new QAction(QIcon(":/images/open.png"), tr("&Open..."), this);
 	openAct->setShortcut(tr("Ctrl+O"));
@@ -106,7 +106,7 @@ void MainWindow::createMain() {
 	// this is what displays our testing text.  Later on we would
 	// remove textLable and make a QT painting area or make it a picture.
 	textLabel = new QLabel;
-	updateProgram();
+	updateTestingMethod();
 
 	// we want to display the above two QLabels within our main window.
 	mainLayout = new QVBoxLayout;
@@ -117,13 +117,13 @@ void MainWindow::createMain() {
 
 void MainWindow::createMenus()
 {
-	fileMenu = menuBar()->addMenu(tr("&File"));
-	fileMenu->addAction(newAct);
-	fileMenu->addAction(openAct);
-	fileMenu->addAction(saveAct);
-	fileMenu->addAction(saveAsAct);
-	fileMenu->addSeparator();
-	fileMenu->addAction(exitAct);
+	userMenu = menuBar()->addMenu(tr("&User"));
+	userMenu->addAction(newUserAct);
+	userMenu->addAction(openAct);
+	userMenu->addAction(saveAct);
+	userMenu->addAction(saveAsAct);
+	userMenu->addSeparator();
+	userMenu->addAction(exitAct);
 
 	helpMenu = menuBar()->addMenu(tr("&Help"));
 	helpMenu->addAction(aboutAct);
@@ -134,15 +134,15 @@ void MainWindow::createMenus()
 	exerMenu->addAction(openExerciseAct);
 }
 
-void MainWindow::createToolBars()
-{
-	fileToolBar = addToolBar(tr("File"));
-	fileToolBar->addAction(newAct);
-	fileToolBar->addAction(openAct);
-	fileToolBar->addAction(saveAct);
+void MainWindow::createToolBars() {
+	userToolBar = addToolBar(tr("User"));
+	userToolBar->addAction(newUserAct);
+	userToolBar->addAction(openAct);
+	userToolBar->addAction(saveAct);
+}
 
+void MainWindow::createExtraToolBars() {
 	tempoToolBar = addToolBar(tr("Tempo"));
-
 	QSpinBox *tempoBox = new QSpinBox();
 	tempoBox->setRange(30,240);
 	tempoBox->setValue(60);
@@ -159,6 +159,12 @@ void MainWindow::createToolBars()
 	QLabel *pieceTitle = new QLabel();
 	pieceTitle->setText("Title of piece");
 	infoBar->addWidget(pieceTitle);
+
+	QLabel *userNameLabel = new QLabel();
+	userNameLabel->setText(userName);
+	infoBar->addWidget(userNameLabel);
+
+
 	tempoToolBar->addAction(openExerciseAct);
 	tempoToolBar->addAction(startMetroAct);
 	tempoToolBar->addAction(stopMetroAct);
@@ -176,47 +182,69 @@ void MainWindow::createToolBars()
 
 void MainWindow::openExercise() {
 	// this is how you would show your own exercises
-	// eventually we probably want a file Open dialogue box here
+	// eventually we probably want a user Open dialogue box here
 	// and we would set some exercise data (expected pitches, what kind of
 	// audio analysis to perform, etc) here instead of just loading a png.
-	if (maybeProgram()) {
+	if (maybeTestingMethod()) {
 		QImage image("exercises/scale.png");
 		imageLabel->setPixmap(QPixmap::fromImage(image));
 	}
 }
 
-bool MainWindow::maybeProgram() {
-//	if (program>0) {
-//		return true;
-//	} else {
-		return chooseProgram();
-//	}
+bool MainWindow::maybeTestingMethod() {
+	if (testingMethod>0) {
+		return true;
+	} else {
+		return chooseTestingMethod();
+	}
 }
 
-bool MainWindow::chooseProgram() {
+bool MainWindow::chooseTestingMethod() {
 	QStringList items;
-	items << tr("Graham") << tr("Mathieu");
+	items << tr("String intonation test") << tr("Wind air control test");
 	bool ok;
-	QString item = QInputDialog::getItem(this, tr("QInputDialog::getItem()"),
-                                          tr("Program:"), items, 0, false, &ok);
+	QString item = QInputDialog::getItem(this, tr("Choose testing method"),
+		tr("TestingMethod:"), items, 0, false, &ok);
 	if (ok && !item.isEmpty()) {
-		if (item=="Graham") program=1;
-		if (item=="Mathieu") program=2;
-		updateProgram();
+		if (item=="String intonation test") testingMethod=1;
+		if (item=="Wind air control test") testingMethod=2;
+		updateTestingMethod();
 		return true;
 	} else {
 		return false;
 	}
 }
 
-void MainWindow::updateProgram() {
-	if (program==0) textLabel->setText("No program selected");
-	if (program==1) {
-		textLabel->setText("Graham's string testing");
+void MainWindow::updateTestingMethod() {
+	if (testingMethod==0) textLabel->setText("No testing method selected");
+	if (testingMethod==1) {
+		textLabel->setText("String intonation test");
 		marBackend->startGraham();
 	}
-	if (program==2) {
-		textLabel->setText("Mathieu's wind testing");
+	if (testingMethod==2) {
+		textLabel->setText("Wind air control test");
 		marBackend->startMathieu();
 	}
 }
+
+bool MainWindow::chooseUserInfo() {
+	bool ok;
+	QString text = QInputDialog::getText(this, tr("User info"),
+		tr("User name:"), QLineEdit::Normal,
+		QDir::home().dirName(), &ok);
+	if (ok && !text.isEmpty()) {
+		userName = text;
+		return true;
+	} else {
+		return false;
+	}
+}
+
+void MainWindow::newUser() {
+	if (chooseTestingMethod()) {  // force a choice here; no `maybe'
+		if (chooseUserInfo()) {
+			createExtraToolBars();
+		}
+	}
+}
+

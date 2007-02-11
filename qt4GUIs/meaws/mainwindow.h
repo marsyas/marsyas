@@ -30,8 +30,8 @@ protected:
 
 private slots:
 	void about();
+	void newUser();
 /*
-	void newFile();
 	void open();
 	bool save();
 	bool saveAs();
@@ -46,20 +46,30 @@ private:
 	void createToolBars();
 	void readSettings();
 	void writeSettings();
+	void createExtraToolBars();
 
-// program = 0  not chosen
-//         = 1  strings (Graham's stuff)
-//         = 2  winds (Mathieu's stuff)
-	int program;
-	bool maybeProgram();
-	bool chooseProgram();
-	void updateProgram();
+// testingMethod = 0  not chosen
+//               = 1  strings (Graham's stuff)
+//               = 2  winds (Mathieu's stuff)
+	int testingMethod;
+	bool maybeTestingMethod();
+	bool chooseTestingMethod();
+	void updateTestingMethod();
+
+	QString userName;
+	bool chooseUserInfo();
+
+	QMenu *userMenu;
+	QToolBar *userToolBar;
+	QAction *newUserAct;
+
+
 /*
 	void createStatusBar();
 	bool maybeSave();
-	void loadFile(const QString &fileName);
-	bool saveFile(const QString &fileName);
-	void setCurrentFile(const QString &fileName);
+	void loadFile(const QString &userName);
+	bool saveFile(const QString &userName);
+	void setCurrentFile(const QString &userName);
 	QString strippedName(const QString &fullFileName);
 */
 
@@ -72,13 +82,10 @@ private:
 
 	QString curFile;
 
-	QMenu *fileMenu;
 	QMenu *helpMenu;
 	QMenu *exerMenu;
-	QToolBar *fileToolBar;
 	QToolBar *tempoToolBar;
 	QToolBar *infoBar;
-	QAction *newAct;
 	QAction *openAct;
 	QAction *saveAct;
 	QAction *saveAsAct;
