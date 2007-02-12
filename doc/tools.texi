@@ -68,6 +68,10 @@ collections file must have a @code{.mf} extension such as
 line starting with the @code{#} character is ignored.  For Windows Visual
 Studio, change the slash character separating directories appropriately.
 
+Collections cannot contain directories names with spaces.  Please either
+rename directories to use @samp{_} instead of spaces, or move files
+to another directory such as @file{/tmp/}.
+
 
 @node mkcollection
 @subsection @code{mkcollection}
