@@ -103,7 +103,12 @@ private:
 
 	QLabel *exerciseTitle;
 
-  //MarBackend *marBackend;
+	QSlider *slider;
+	QSpinBox *tempoBox;
+
+
+  MarBackend *marBackend;
+	void setupMarBackend();
 };
 
 #endif

@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 
 MainWindow::MainWindow() {
-//  marBackend = new MarBackend();
+	marBackend=NULL;
 	testingMethod=0;
 
 	createMain();
@@ -14,9 +14,9 @@ MainWindow::MainWindow() {
 }
 
 MainWindow::~MainWindow() {
-//	if (marBackend != NULL) {
-//		delete marBackend;
-//	}
+	if (marBackend != NULL) {
+		delete marBackend;
+	}
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
@@ -95,10 +95,8 @@ void MainWindow::createActions() {
 	connect(openExerciseAct, SIGNAL(triggered()), this, SLOT(openExercise()));
 
 	startMetroAct = new QAction(QIcon(":/images/player_play.png"), tr("Start..."), this);
-//	connect(startMetroAct, SIGNAL(triggered()), marBackend, SLOT(startMetro()));
 
 	stopMetroAct = new QAction(QIcon(":/images/player_stop.png"), tr("Stop..."), this);
-//	connect(stopMetroAct, SIGNAL(triggered()), marBackend, SLOT(stopMetro()));
 }
 
 // main window area
@@ -155,12 +153,12 @@ void MainWindow::createToolBars() {
 	userToolBar->addAction(openExerciseAct);
 
 	tempoToolBar = addToolBar(tr("Tempo"));
-	QSpinBox *tempoBox = new QSpinBox();
+	tempoBox = new QSpinBox();
 	tempoBox->setRange(30,240);
 	tempoBox->setValue(60);
 	tempoToolBar->addWidget(tempoBox);
 
-	QSlider *slider = new QSlider(Qt::Horizontal);
+	slider = new QSlider(Qt::Horizontal);
 	slider->setRange(30, 240);
 	slider->setValue(60);
 //		slider->setMinimumWidth(60);
@@ -173,14 +171,6 @@ void MainWindow::createToolBars() {
 		tempoBox, SLOT(setValue(int)));
 	connect(tempoBox, SIGNAL(valueChanged(int)),
 		slider, SLOT(setValue(int)));
-
-	// communication with Marsyas backend
-/*
-	connect(slider, SIGNAL(valueChanged(int)),
-		marBackend, SLOT(setTempo(int)));
-	connect(tempoBox, SIGNAL(valueChanged(int)),
-		marBackend, SLOT(setTempo(int)));
-		*/
 
 	infoBar = addToolBar(tr("Info"));
 	exerciseTitle = new QLabel();
@@ -232,11 +222,9 @@ void MainWindow::updateTestingMethod() {
 	if (testingMethod==0) textLabel->setText("No testing method selected");
 	if (testingMethod==1) {
 		textLabel->setText("String intonation test");
-//		marBackend->startGraham();
 	}
 	if (testingMethod==2) {
 		textLabel->setText("Wind air control test");
-//		marBackend->startMathieu();
 	}
 }
 
@@ -256,8 +244,8 @@ bool MainWindow::chooseUserInfo() {
 
 
 void MainWindow::newUser() {
-	if (chooseTestingMethod()) {  // force a choice here; no `maybe'
-		if (chooseUserInfo()) {
+	if (chooseUserInfo()) {
+		if (chooseTestingMethod()) {  // force a choice here; no `maybe'
 			enableActions(2);
 		}
 	}
@@ -291,12 +279,37 @@ void MainWindow::enableActions(int state) {
 		tempoToolBar ->setEnabled(false);
 	}
 	if (state==3) {
+		setupMarBackend();
 		tempoToolBar ->setEnabled(true);
 
 	}
 }
 
+void MainWindow::setupMarBackend() {
+	if (marBackend != NULL) {
+		delete marBackend;
+		marBackend = NULL;
+	}
+	marBackend = new MarBackend(testingMethod);
+
+	// communication with Marsyas backend
+	connect(startMetroAct, SIGNAL(triggered()), marBackend, SLOT(startMetro()));
+	connect(stopMetroAct, SIGNAL(triggered()), marBackend, SLOT(stopMetro()));
+
+	connect(slider, SIGNAL(valueChanged(int)),
+		marBackend, SLOT(setTempo(int)));
+	connect(tempoBox, SIGNAL(valueChanged(int)),
+		marBackend, SLOT(setTempo(int)));
+
+}
+
 void MainWindow::closeUser() {
+	if (marBackend != NULL) {
+		delete marBackend;
+		marBackend = NULL;
+	}
+
+	imageLabel->clear();
 	userName="No user";
 	testingMethod=0;
 	updateTestingMethod();

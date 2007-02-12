@@ -29,11 +29,8 @@ class MarBackend: public QObject {
 	Q_OBJECT
 
 public:
-	MarBackend();
+	MarBackend(int testingMethod);
 	~MarBackend();
-// "constructor"
-	void startGraham();
-	void startMathieu();
 
 // communication with the QT front-end
 public slots:
@@ -44,8 +41,10 @@ public slots:
 private:
 	MarSystemQtWrapper *mrsWrapper;
 
+	int method;
 // "constructor"
-	void startCommon();
+	void startGraham();
+	void startMathieu();
 
 // metronome stuff
   EvExpr *e;

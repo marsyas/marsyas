@@ -21,24 +21,35 @@
 #include <iostream>
 using namespace std;
 
-MarBackend::MarBackend() {
+MarBackend::MarBackend(int testingMethod) {
+	method=testingMethod;
+	if (method==1) {
+		cout<<"Setting up Graham's String stuff"<<endl;
+		startGraham();
+	}
+	if (method==2) {
+		cout<<"Setting up Mathieu's Wind stuff"<<endl;
+		startMathieu();
+	}
 }
 
 MarBackend::~MarBackend() {
-	delete mrsWrapper;
-	delete metroNet;
+	cout<<"deleting"<<endl;
+	if (method==1) {
+		cout<<"doing Graham stuff"<<endl;
+// something bad happens here.  :(
+		mrsWrapper->pause();
+		cout<<"mrsWrapper paused"<<endl;
+		delete mrsWrapper;
+		cout<<"mrsWrapper deleted"<<endl;
+		delete metroNet;
+		cout<<"metroNet deleted"<<endl;
+	}
 }
 
-void MarBackend::startCommon() {
-	if (mrsWrapper != NULL) delete mrsWrapper;
-	if (metroNet != NULL) delete metroNet;
-}
 void MarBackend::startGraham() {
-	startCommon();
-	cout<<"Setting up Graham's String stuff"<<endl;
-
-/*
   MarSystemManager mng;
+
   metroNet = mng.create("Series", "metroNet");
   metroNet->addMarSystem(mng.create("SoundFileSource", "src"));
   metroNet->addMarSystem(mng.create("AudioSink", "dest"));
@@ -59,12 +70,9 @@ void MarBackend::startGraham() {
   metroNet->updctrl(TmTime("TmSampleCount/Virtual","0s"), e);
 
 	mrsWrapper->pause();
-*/
 }
 
 void MarBackend::startMathieu() {
-	startCommon();
-	cout<<"Setting up Mathieu's Wind stuff"<<endl;
 
 }
 
