@@ -1,11 +1,4 @@
 /* Filename: MarSystemQtWrapper.h
- * Purpose: Wrapper around MarSystem framework.  This is a modified version
- * of the MarPlayer application's MarSystemQtWrapper.cpp file by Dr. George Tzanetakis.
- *
- * Some differences between MarPlayer's MarSystemQtWrapper (from marsyas-0.2.7)
- * and MCI's MarSystemQtWrapper:
- * 1) MCI's MarSystemQtWrapper uses a semaphores to protect the main_pnet_ MarSystem.
- * 2) updatectrl methods take in strings instead of QStrings
  */
 
 #include "MarSystemQtWrapper.h"
@@ -107,9 +100,10 @@ MarSystemQtWrapper::run()
       mutex_.unlock();
       
       // now we are ready to tick the network
-      main_pnet_->tick();	
       if (pause_) 
          msleep(300);	
+      else 
+         main_pnet_->tick();	
       
 
     }
