@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 2007 Graham Percival <gperciva@uvic.ca>
+** Copyright (C) 2007 Intonation Percival <gperciva@uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -24,22 +24,23 @@ using namespace std;
 MarBackend::MarBackend(int testingMethod) {
 	method=testingMethod;
 	if (method==1) {
-		cout<<"Setting up Graham's String stuff"<<endl;
-		startGraham();
+		cout<<"Setting up Intonation's String stuff"<<endl;
+		startIntonation();
 	}
 	if (method==2) {
-		cout<<"Setting up Mathieu's Wind stuff"<<endl;
-		startMathieu();
+		cout<<"Setting up Control's Wind stuff"<<endl;
+		startControl();
 	}
 }
 
 MarBackend::~MarBackend() {
 	cout<<"deleting"<<endl;
 	if (method==1) {
-		cout<<"doing Graham stuff"<<endl;
+		cout<<"doing Intonation stuff"<<endl;
+//		mrsWrapper->pause();
+//		cout<<"mrsWrapper paused"<<endl;
+
 // something bad happens here.  :(
-		mrsWrapper->pause();
-		cout<<"mrsWrapper paused"<<endl;
 		delete mrsWrapper;
 		cout<<"mrsWrapper deleted"<<endl;
 		delete metroNet;
@@ -47,7 +48,7 @@ MarBackend::~MarBackend() {
 	}
 }
 
-void MarBackend::startGraham() {
+void MarBackend::startIntonation() {
   MarSystemManager mng;
 
   metroNet = mng.create("Series", "metroNet");
@@ -72,7 +73,7 @@ void MarBackend::startGraham() {
 	mrsWrapper->pause();
 }
 
-void MarBackend::startMathieu() {
+void MarBackend::startControl() {
 
 }
 

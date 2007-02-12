@@ -49,8 +49,8 @@ private:
 	void writeSettings();
 
 // testingMethod = 0  not chosen
-//               = 1  strings (Graham's stuff)
-//               = 2  winds (Mathieu's stuff)
+//               = 1  Intonation
+//               = 2  Sound control
 	int testingMethod;
 	bool maybeTestingMethod();
 	bool chooseTestingMethod();

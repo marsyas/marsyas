@@ -72,6 +72,7 @@ void MainWindow::createActions() {
 //	connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
 
 	closeAct = new QAction(QIcon(":/images/save.png"), tr("&Close user"), this);
+	closeAct = new QAction(tr("&Close user"), this);
 	closeAct->setShortcut(tr("Ctrl+W"));
 	closeAct->setStatusTip(tr("Close user"));
 	connect(closeAct, SIGNAL(triggered()), this, SLOT(closeUser()));
@@ -204,13 +205,13 @@ bool MainWindow::maybeTestingMethod() {
 
 bool MainWindow::chooseTestingMethod() {
 	QStringList items;
-	items << tr("String intonation test") << tr("Wind air control test");
+	items << tr("Intonation test") << tr("Sound control test");
 	bool ok;
 	QString item = QInputDialog::getItem(this, tr("Choose testing method"),
 		tr("TestingMethod:"), items, 0, false, &ok);
 	if (ok && !item.isEmpty()) {
-		if (item=="String intonation test") testingMethod=1;
-		if (item=="Wind air control test") testingMethod=2;
+		if (item=="Intonation test") testingMethod=1;
+		if (item=="Sound control test") testingMethod=2;
 		updateTestingMethod();
 		return true;
 	} else {
@@ -221,10 +222,10 @@ bool MainWindow::chooseTestingMethod() {
 void MainWindow::updateTestingMethod() {
 	if (testingMethod==0) textLabel->setText("No testing method selected");
 	if (testingMethod==1) {
-		textLabel->setText("String intonation test");
+		textLabel->setText("Intonation test");
 	}
 	if (testingMethod==2) {
-		textLabel->setText("Wind air control test");
+		textLabel->setText("Sound control test");
 	}
 }
 
