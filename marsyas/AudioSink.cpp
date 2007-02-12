@@ -183,8 +183,11 @@ void
 AudioSink::stop()
 {
   if ( !stopped_ && audio_) {
-    audio_->stopStream();
+
+		audio_->abortStream();
     stopped_ = true;
+
+
   }
 }
 
