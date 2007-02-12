@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 
 MainWindow::MainWindow() {
-  marBackend = new MarBackend();
+//  marBackend = new MarBackend();
 	testingMethod=0;
 
 	createMain();
@@ -9,10 +9,14 @@ MainWindow::MainWindow() {
 	createMenus();
 	createToolBars();
 	readSettings();
+
+	enableActions(1);
 }
 
 MainWindow::~MainWindow() {
-	delete marBackend;
+//	if (marBackend != NULL) {
+//		delete marBackend;
+//	}
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
@@ -26,8 +30,9 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 }
 
 void MainWindow::about() {
-	QMessageBox::about(this, tr("About AudMetro"),
-		tr("Metrosyas is a metronome that listens to a musician and "
+	QMessageBox::about(this, tr("About Meaws"),
+		tr("Meaws (Musician Evaulation and Audition for Winds and Strings) "
+		"is a learning tool for musicians.  It listens to a musician and "
 		"displays the music with notes coloured based on their intonation."
 		));
 }
@@ -47,32 +52,36 @@ void MainWindow::writeSettings() {
 }
 
 void MainWindow::createActions() {
-	newUserAct = new QAction(QIcon(":/images/new.png"), tr("&New"), this);
+	newUserAct = new QAction(QIcon(":/images/new.png"), tr("&New user"), this);
 	newUserAct->setShortcut(tr("Ctrl+N"));
 	newUserAct->setStatusTip(tr("Create a new session"));
 	connect(newUserAct, SIGNAL(triggered()), this, SLOT(newUser()));
 
-	openAct = new QAction(QIcon(":/images/open.png"), tr("&Open..."), this);
+	openAct = new QAction(QIcon(":/images/open.png"), tr("&Open user..."), this);
 	openAct->setShortcut(tr("Ctrl+O"));
 	openAct->setStatusTip(tr("Open an existing session"));
 //	connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
 
-	saveAct = new QAction(QIcon(":/images/save.png"), tr("&Save"), this);
+	saveAct = new QAction(QIcon(":/images/save.png"), tr("&Save user"), this);
 	saveAct->setShortcut(tr("Ctrl+S"));
 	saveAct->setStatusTip(tr("Save the session to disk"));
 //	connect(saveAct, SIGNAL(triggered()), this, SLOT(save()));
 
-	saveAsAct = new QAction(tr("Save &As..."), this);
+	saveAsAct = new QAction(tr("Save user &As..."), this);
 	saveAsAct->setStatusTip(tr("Save the session under a new name"));
 //	connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
+
+	closeAct = new QAction(QIcon(":/images/save.png"), tr("&Close user"), this);
+	closeAct->setShortcut(tr("Ctrl+W"));
+	closeAct->setStatusTip(tr("Close user"));
+	connect(closeAct, SIGNAL(triggered()), this, SLOT(closeUser()));
 
 	exitAct = new QAction(tr("E&xit"), this);
 	exitAct->setShortcut(tr("Ctrl+Q"));
 	exitAct->setStatusTip(tr("Exit the application"));
 	connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
-	aboutAct = new QAction(tr("&About"), this);
-	aboutAct->setStatusTip(tr("Show the application's About box"));
+	aboutAct = new QAction(tr("&About Meaws"), this);
 	connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 
 	aboutQtAct = new QAction(tr("About &Qt"), this);
@@ -86,10 +95,10 @@ void MainWindow::createActions() {
 	connect(openExerciseAct, SIGNAL(triggered()), this, SLOT(openExercise()));
 
 	startMetroAct = new QAction(QIcon(":/images/player_play.png"), tr("Start..."), this);
-	connect(startMetroAct, SIGNAL(triggered()), marBackend, SLOT(startMetro()));
+//	connect(startMetroAct, SIGNAL(triggered()), marBackend, SLOT(startMetro()));
 
 	stopMetroAct = new QAction(QIcon(":/images/player_stop.png"), tr("Stop..."), this);
-	connect(stopMetroAct, SIGNAL(triggered()), marBackend, SLOT(stopMetro()));
+//	connect(stopMetroAct, SIGNAL(triggered()), marBackend, SLOT(stopMetro()));
 }
 
 // main window area
@@ -117,21 +126,24 @@ void MainWindow::createMain() {
 
 void MainWindow::createMenus()
 {
-	userMenu = menuBar()->addMenu(tr("&User"));
-	userMenu->addAction(newUserAct);
-	userMenu->addAction(openAct);
-	userMenu->addAction(saveAct);
-	userMenu->addAction(saveAsAct);
-	userMenu->addSeparator();
-	userMenu->addAction(exitAct);
-
-	helpMenu = menuBar()->addMenu(tr("&Help"));
-	helpMenu->addAction(aboutAct);
-	helpMenu->addAction(aboutQtAct);
+	fileMenu = menuBar()->addMenu(tr("&File"));
+	fileMenu->addAction(newUserAct);
+	fileMenu->addAction(openAct);
+	fileMenu->addAction(saveAct);
+	fileMenu->addAction(saveAsAct);
+	fileMenu->addSeparator();
+	fileMenu->addAction(closeAct);
+	fileMenu->addAction(exitAct);
 
 	// exercise menu
 	exerMenu = menuBar()->addMenu(tr("Exercise"));
 	exerMenu->addAction(openExerciseAct);
+	exerMenu->setEnabled(false);
+
+	menuBar()->addSeparator();
+	helpMenu = menuBar()->addMenu(tr("&Help"));
+	helpMenu->addAction(aboutAct);
+	helpMenu->addAction(aboutQtAct);
 }
 
 void MainWindow::createToolBars() {
@@ -139,9 +151,9 @@ void MainWindow::createToolBars() {
 	userToolBar->addAction(newUserAct);
 	userToolBar->addAction(openAct);
 	userToolBar->addAction(saveAct);
-}
+	userToolBar->addAction(closeAct);
+	userToolBar->addAction(openExerciseAct);
 
-void MainWindow::createExtraToolBars() {
 	tempoToolBar = addToolBar(tr("Tempo"));
 	QSpinBox *tempoBox = new QSpinBox();
 	tempoBox->setRange(30,240);
@@ -154,40 +166,41 @@ void MainWindow::createExtraToolBars() {
 //		slider->setMinimumWidth(60);
 	tempoToolBar->addWidget(slider);
 
+	tempoToolBar->addAction(startMetroAct);
+	tempoToolBar->addAction(stopMetroAct);
+
+	connect(slider, SIGNAL(valueChanged(int)),
+		tempoBox, SLOT(setValue(int)));
+	connect(tempoBox, SIGNAL(valueChanged(int)),
+		slider, SLOT(setValue(int)));
+
+	// communication with Marsyas backend
+/*
+	connect(slider, SIGNAL(valueChanged(int)),
+		marBackend, SLOT(setTempo(int)));
+	connect(tempoBox, SIGNAL(valueChanged(int)),
+		marBackend, SLOT(setTempo(int)));
+		*/
 
 	infoBar = addToolBar(tr("Info"));
-	QLabel *pieceTitle = new QLabel();
-	pieceTitle->setText("Title of piece");
-	infoBar->addWidget(pieceTitle);
+	exerciseTitle = new QLabel();
+	exerciseTitle->setText("");
+	infoBar->addWidget(exerciseTitle);
 
 	QLabel *userNameLabel = new QLabel();
 	userNameLabel->setText(userName);
 	infoBar->addWidget(userNameLabel);
-
-
-	tempoToolBar->addAction(openExerciseAct);
-	tempoToolBar->addAction(startMetroAct);
-	tempoToolBar->addAction(stopMetroAct);
-
-	// communication with Marsyas backend
-	connect(slider, SIGNAL(valueChanged(int)),
-		tempoBox, SLOT(setValue(int)));
-	connect(slider, SIGNAL(valueChanged(int)),
-		marBackend, SLOT(setTempo(int)));
-	connect(tempoBox, SIGNAL(valueChanged(int)),
-		slider, SLOT(setValue(int)));
-	connect(tempoBox, SIGNAL(valueChanged(int)),
-		marBackend, SLOT(setTempo(int)));
 }
 
 void MainWindow::openExercise() {
-	// this is how you would show your own exercises
-	// eventually we probably want a user Open dialogue box here
-	// and we would set some exercise data (expected pitches, what kind of
-	// audio analysis to perform, etc) here instead of just loading a png.
-	if (maybeTestingMethod()) {
-		QImage image("exercises/scale.png");
+	QString exerciseName = QFileDialog::getOpenFileName(this,
+		tr("Open Exercise"),"exercises/",tr("Exercises (*.png)"));
+	if (!exerciseName.isEmpty()) {
+		QImage image(exerciseName);
 		imageLabel->setPixmap(QPixmap::fromImage(image));
+		
+		exerciseTitle->setText( tr("Exercise: %1").arg(QFileInfo(exerciseName).baseName()) );
+		enableActions(3);
 	}
 }
 
@@ -219,11 +232,11 @@ void MainWindow::updateTestingMethod() {
 	if (testingMethod==0) textLabel->setText("No testing method selected");
 	if (testingMethod==1) {
 		textLabel->setText("String intonation test");
-		marBackend->startGraham();
+//		marBackend->startGraham();
 	}
 	if (testingMethod==2) {
 		textLabel->setText("Wind air control test");
-		marBackend->startMathieu();
+//		marBackend->startMathieu();
 	}
 }
 
@@ -240,11 +253,54 @@ bool MainWindow::chooseUserInfo() {
 	}
 }
 
+
+
 void MainWindow::newUser() {
 	if (chooseTestingMethod()) {  // force a choice here; no `maybe'
 		if (chooseUserInfo()) {
-			createExtraToolBars();
+			enableActions(2);
 		}
 	}
 }
+
+void MainWindow::enableActions(int state) {
+	if (state==1) {
+		setWindowTitle(tr("Meaws"));
+
+		saveAct   ->setEnabled(false);
+		saveAsAct ->setEnabled(false);
+		closeAct  ->setEnabled(false);
+
+		infoBar     ->setEnabled(false);
+		exerMenu    ->setEnabled(false);
+		openExerciseAct ->setEnabled(false);
+
+		tempoToolBar ->setEnabled(false);
+	}
+	if (state==2) {
+		setWindowTitle(tr("Meaws - %1").arg(userName));
+
+		saveAct   ->setEnabled(true);
+		saveAsAct ->setEnabled(true);
+		closeAct  ->setEnabled(true);
+
+		infoBar     ->setEnabled(true);
+		exerMenu    ->setEnabled(true);
+		openExerciseAct ->setEnabled(true);
+
+		tempoToolBar ->setEnabled(false);
+	}
+	if (state==3) {
+		tempoToolBar ->setEnabled(true);
+
+	}
+}
+
+void MainWindow::closeUser() {
+	userName="No user";
+	testingMethod=0;
+	updateTestingMethod();
+	enableActions(1);
+}
+
 

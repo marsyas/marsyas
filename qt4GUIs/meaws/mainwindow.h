@@ -31,6 +31,7 @@ protected:
 private slots:
 	void about();
 	void newUser();
+	void closeUser();
 /*
 	void open();
 	bool save();
@@ -46,7 +47,6 @@ private:
 	void createToolBars();
 	void readSettings();
 	void writeSettings();
-	void createExtraToolBars();
 
 // testingMethod = 0  not chosen
 //               = 1  strings (Graham's stuff)
@@ -59,10 +59,13 @@ private:
 	QString userName;
 	bool chooseUserInfo();
 
-	QMenu *userMenu;
+	QMenu *fileMenu;
 	QToolBar *userToolBar;
 	QAction *newUserAct;
 
+	QString exerciseName;
+
+	void enableActions(int state);
 
 /*
 	void createStatusBar();
@@ -89,6 +92,7 @@ private:
 	QAction *openAct;
 	QAction *saveAct;
 	QAction *saveAsAct;
+	QAction *closeAct;
 	QAction *exitAct;
 	QAction *aboutAct;
 	QAction *aboutQtAct;
@@ -97,7 +101,9 @@ private:
 	QAction *startMetroAct;
 	QAction *stopMetroAct;
 
-  MarBackend *marBackend;
+	QLabel *exerciseTitle;
+
+  //MarBackend *marBackend;
 };
 
 #endif
