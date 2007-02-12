@@ -40,16 +40,13 @@ using namespace Marsyas;
 
 LPC::LPC(string name):MarSystem("LPC",name)
 {
-	//type_ = "LPC";
-	//name_ = name;
-
 	addControls();
 }
 
 LPC::LPC(const LPC& a):MarSystem(a)
-		{
-			ctrl_coeffs_ = getctrl("mrs_realvec/coeffs");
-		}
+{
+	ctrl_coeffs_ = getctrl("mrs_realvec/coeffs");
+}
 
 LPC::~LPC()
 {
@@ -64,11 +61,11 @@ LPC::clone() const
 void 
 LPC::addControls()
 {
-	addctrl("mrs_natural/order", (mrs_natural)10); 
+	addctrl("mrs_natural/order", (mrs_natural)10);
+	addctrl("mrs_realvec/coeffs", realvec(), ctrl_coeffs_);
 	setctrlState("mrs_natural/order", true); 
 	addctrl("mrs_real/lambda", (mrs_real)0.0);	
 	addctrl("mrs_real/gamma", (mrs_real)1.0);
-	addctrl("mrs_realvec/coeffs", realvec(), ctrl_coeffs_);
 	addctrl("mrs_natural/featureMode", (mrs_natural) 1);
 	setctrlState("mrs_natural/featureMode", true); 
 }
@@ -98,9 +95,9 @@ LPC::myUpdate(MarControlPtr sender)
 	{
 		featureMode_ = 0;
 	  ctrl_coeffs_->stretch(order_);
-	   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural());
-		  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples")->toNatural());
-   }
+	  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural());
+		setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples")->toNatural());
+  }
 	else
 		featureMode_ = 1;
 

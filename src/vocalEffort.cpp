@@ -53,16 +53,18 @@ int process(string inName, string outName)
 
 	input->updctrl("SoundFileSource/src/mrs_string/filename", inName);
 	input->updctrl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
-	input->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
-	input->updctrl("ShiftInput/si/mrs_natural/WindowSize", windowSize);
+	//input->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
+	//input->updctrl("ShiftInput/si/mrs_natural/WindowSize", windowSize);
 
  	input->updctrl("Fanout/fanout/Series/lspS/LPC/lpc/mrs_natural/order",lpcOrder);
  	input->updctrl("Fanout/fanout/Series/lspS/LPC/lpc/mrs_real/lambda",0.0);
  	input->updctrl("Fanout/fanout/Series/lspS/LPC/lpc/mrs_real/gamma",1.0);
   input->updctrl("Fanout/fanout/Series/lspS/LPC/lpc/mrs_natural/featureMode", 0);
 
-	input->linkctrl("Fanout/fanout/Series/lspS/LPC/lpc/mrs_realvec/coeffs", "Fanout/fanout/Series/lspF/Filter/residual/mrs_realvec/ncoeffs") ;
-  input->linkctrl("Fanout/fanout/Series/lspS/LPC/lpc/mrs_realvec/coeffs", "Fanout/fanout/Series/lspF/Filter/inverse/mrs_realvec/dcoeffs") ;
+	input->linkctrl("Fanout/fanout/Series/lspF/Filter/residual/mrs_realvec/ncoeffs",
+									"Fanout/fanout/Series/lspS/LPC/lpc/mrs_realvec/coeffs");
+  input->linkctrl("Fanout/fanout/Series/lspF/Filter/inverse/mrs_realvec/dcoeffs",
+									"Fanout/fanout/Series/lspS/LPC/lpc/mrs_realvec/coeffs");
 
 	realvec one(lpcOrder);
 	one.setval(0);
@@ -79,9 +81,9 @@ int process(string inName, string outName)
 		input->tick();
 
 		realvec toto = input->getctrl("Fanout/fanout/Series/lspS/LPC/lpc/mrs_realvec/coeffs")->toVec();
-		cout << toto << endl;
+		cout << "toto " << endl << toto << endl;
 		realvec titi = input->getctrl("Fanout/fanout/Series/lspF/Filter/residual/mrs_realvec/ncoeffs")->toVec();
-		cout << titi << endl;
+		cout << "titi " << endl << titi << endl;
 		cout << "Processed frame " << i << endl;
 		i++;
 	}
@@ -113,18 +115,18 @@ main(int argc, const char **argv)
 	vector<string> soundfiles = cmd_options.getRemaining();
 	vector<string>::iterator sfi;
 
-  cout << "vocalEffort Marsys implementation" << endl;
+  cout << "vocalEffort Marsyas implementation" << endl;
  
   cout<<"LPC and LSP order: " <<lpcOrder <<endl;
   cout<<"hopeSize: " <<hopSize <<endl;
 	
-		for (sfi=soundfiles.begin() ; sfi!=soundfiles.end() ; sfi++)
-		{
-	 cout << "Sound to analyze: " << *sfi << endl;
+	for (sfi=soundfiles.begin() ; sfi!=soundfiles.end() ; sfi++)
+	{
+		cout << "Sound to analyze: " << *sfi << endl;
 		FileName Sfname(*sfi);
-outName = outputDirectory + "/" + Sfname.name();
-			process(*sfi, outName);
-		}
+		outName = outputDirectory + "/" + Sfname.name();
+		process(*sfi, outName);
+	}
 
-	cout << endl << "LPCwarped and LSP processing finished!";
+	cout << endl << "LPC and LSP processing finished!";
 }

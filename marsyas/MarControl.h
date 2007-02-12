@@ -988,9 +988,9 @@ MarControl::setValue(mrs_natural i, mrs_real value, bool update)
 
 	if(isLinked_)
 	{
-		for(mrs_natural i=0; i<(mrs_natural)linkedTo_.size(); i++)
+		for(mrs_natural l=0; l<(mrs_natural)linkedTo_.size(); l++)
 		{
-			linkedTo_[i]->setValue(i, value, update);
+			linkedTo_[l]->setValue(i, value, update);
 		}
 	}
 

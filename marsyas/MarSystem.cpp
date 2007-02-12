@@ -755,14 +755,8 @@ MarSystem::linkControl(string cname1, string cname2)
 	}
 
 	//now both controls exist 
-	//just check their types, and link them
-	if(ctrl1->getType() == ctrl2->getType())
-		return ctrl1->linkTo(ctrl2);
-	else
-	{
-		MRSWARN("MarSystem::linkControl control type mismatch (" + ctrl1->getName() + "!=" + ctrl2->getName() + ")");
-		return false;
-	}
+	//just link them
+	return ctrl1->linkTo(ctrl2);
 }
 
 MarControlPtr

@@ -47,7 +47,6 @@ realvec::realvec()
   cols_ = size_;
 }
 
-
 realvec::~realvec()
 {
   if (size_ == 0)
@@ -59,7 +58,6 @@ realvec::~realvec()
 
 realvec::realvec(mrs_natural size)
 {
-  
   size_ = size;
 	allocatedSize_ = size;
   if (size_ > 0) 
@@ -67,7 +65,6 @@ realvec::realvec(mrs_natural size)
   rows_ = 1;
   cols_ = size_;
 }
-
 
 realvec::realvec(mrs_natural rows, mrs_natural cols)
 {
