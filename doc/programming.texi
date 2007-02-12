@@ -16,6 +16,7 @@
 * Reading and altering controls::  
 * Writing data to text files::  
 * Getting data from the network::  
+* Scheduler::                   
 @end menu
 
 
@@ -116,6 +117,14 @@ example we simply print it to the screen, but the important
 thing to note is that we have the data at the level of C programming.
 
 @examplefile{gettingdata.cpp}
+
+
+@node Scheduler
+@subsection Scheduler
+
+To schedule events using the new scheduler code, see the
+Marsyas Expression Syntax documentation at
+@uref{http://www.cs.uvic.ca/~inb/work/expr.html}
 
 
 @node Writing your own MarSystems

@@ -10,6 +10,7 @@ Intro text
 * MATLAB::                      
 * Python::                      
 * Trolltech Qt4::               
+* OCaml::                       
 @end menu
 
 
@@ -78,5 +79,11 @@ To get started, look at the tutorial files:
 After examining that project, see @file{qtGUIs/MarPlayer/}, followed by
 the other examples in the @file{qtGUIs/} directory.
 
+
+@node OCaml
+@section OCaml
+
+To combine Marsyas and OCaml, see the MarsyasOCaml documentation at
+@uref{http://www.cs.uvic.ca/~inb/work/marsyasOCaml/}
 
 
