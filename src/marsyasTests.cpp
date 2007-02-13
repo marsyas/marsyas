@@ -2,7 +2,7 @@
 // to put code that is still at testing/debugging phase. 
 
 #include <cstdio>
-#include <string> 
+#include <string>
 
 #include "common.h"
 #include "MarSystemManager.h"
@@ -1138,7 +1138,7 @@ test_LPC_LSP(string sfName)
   // the following defines must be set:
   //
   //	  MARSYAS_MATLAB
-  //    _MATLAB_LPC_ (in LPCwarped.cpp) 
+  //    _MATLAB_LPC_ (in LPC.cpp) 
   //    _MATLAB_LSP_ (in LSP.cpp)
   //
   // Additionally, inside MATLAB, the /marsyasMATLAB directory should be in the path
@@ -1147,7 +1147,7 @@ test_LPC_LSP(string sfName)
   //
   // <lmartins@inescporto.pt> - 17.06.2006
 
-  cout << "TEST: LPCwarped and LSP calculation and validation using MATLAB (engine)" << endl;
+  cout << "TEST: LPC and LSP calculation and validation using MATLAB (engine)" << endl;
   cout << "Sound to analyze: " << sfName << endl;
 	
   mrs_natural lpcOrder = 10;
@@ -1170,10 +1170,10 @@ test_LPC_LSP(string sfName)
   input->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
   input->updctrl("ShiftInput/si/mrs_natural/WindowSize", hopSize);
 
-  input->addMarSystem(mng.create("LPCwarped", "lpcwarped"));
-  input->updctrl("LPCwarped/lpcwarped/mrs_natural/order",lpcOrder);
-  input->updctrl("LPCwarped/lpcwarped/mrs_real/lambda",0.0);
-  input->updctrl("LPCwarped/lpcwarped/mrs_real/gamma",1.0);
+  input->addMarSystem(mng.create("LPC", "LPC"));
+  input->updctrl("LPC/LPC/mrs_natural/order",lpcOrder);
+  input->updctrl("LPC/LPC/mrs_real/lambda",0.0);
+  input->updctrl("LPC/LPC/mrs_real/gamma",1.0);
 
   input->addMarSystem(mng.create("LSP", "lsp"));
   input->updctrl("LSP/lsp/mrs_natural/order",lpcOrder);
@@ -1188,7 +1188,7 @@ test_LPC_LSP(string sfName)
       i++;
     }
 
-  cout << endl << "LPCwarped and LSP processing finished!";
+  cout << endl << "LPC and LSP processing finished!";
 
 	delete input;
 	*/
@@ -1206,12 +1206,12 @@ test_LPC_LSP(string sfName)
 	//input->updctrl("ShiftInput/si/mrs_natural/WindowSize", hopSize);
 
 	MarSystem* lspS = mng.create("Series","lspS");
-	lspS->addMarSystem(mng.create("LPCwarped", "lpcwarped"));
+	lspS->addMarSystem(mng.create("LPC", "LPC"));
 	lspS->addMarSystem(mng.create("LSP", "lsp"));
 	input->addMarSystem(lspS);
-// 	input->updctrl("Series/lspS/LPCwarped/lpcwarped/mrs_natural/order",lpcOrder);
-// 	input->updctrl("Series/lspS/LPCwarped/lpcwarped/mrs_real/lambda",0.0);
-// 	input->updctrl("Series/lspS/LPCwarped/lpcwarped/mrs_real/gamma",1.0);
+// 	input->updctrl("Series/lspS/LPC/LPC/mrs_natural/order",lpcOrder);
+// 	input->updctrl("Series/lspS/LPC/LPC/mrs_real/lambda",0.0);
+// 	input->updctrl("Series/lspS/LPC/LPC/mrs_real/gamma",1.0);
 // 	input->updctrl("Series/lspS/LSP/lsp/mrs_natural/order",lpcOrder);
 // 	input->updctrl("Series/lspS/LSP/lsp/mrs_real/gamma",1.0);
 
@@ -1223,7 +1223,7 @@ test_LPC_LSP(string sfName)
 		i++;
 	}
 
-	cout << endl << "LPCwarped and LSP processing finished!";
+	cout << endl << "LPC and LSP processing finished!";
 
 	delete input;
 }
