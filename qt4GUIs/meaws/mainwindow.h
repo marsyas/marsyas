@@ -40,6 +40,7 @@ private slots:
 	void documentWasModified();
 */
 	void openExercise();
+	void setMetroIntro();
 
 private:
 	void createActions();
@@ -57,7 +58,6 @@ private:
 	bool chooseTestingMethod();
 	void updateTestingMethod();
 
-	QString userName;
 	User *user;
 	bool chooseUserInfo();
 
@@ -99,15 +99,18 @@ private:
 	QAction *aboutAct;
 	QAction *aboutQtAct;
 
+
 	QAction *openExerciseAct;
 	QAction *startMetroAct;
 	QAction *stopMetroAct;
+	QAction *setMetroIntroAct;
+	QAction *setUserInfoAct;
 
 	QLabel *exerciseTitle;
 
 	QSlider *slider;
 	QSpinBox *tempoBox;
-
+	int metroIntroBeats;
 
   MarBackend *marBackend;
 	void setupMarBackend();

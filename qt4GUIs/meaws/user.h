@@ -14,7 +14,10 @@ class User : public QDialog {
 public:
 	User();
 	~User();
-	void dataDialogue();
+	QString getName();
+
+public slots:
+	void setUserInfo();
 
 private:
 	QString name;

@@ -77,6 +77,9 @@ void MainWindow::createActions() {
 	closeAct->setStatusTip(tr("Close user"));
 	connect(closeAct, SIGNAL(triggered()), this, SLOT(closeUser()));
 
+	setUserInfoAct = new QAction(QIcon(":/images/new.png"), tr("&User info"), this);
+	setUserInfoAct->setShortcut(tr("Ctrl+U"));
+
 	exitAct = new QAction(tr("E&xit"), this);
 	exitAct->setShortcut(tr("Ctrl+Q"));
 	exitAct->setStatusTip(tr("Exit the application"));
@@ -94,6 +97,9 @@ void MainWindow::createActions() {
 	openExerciseAct->setShortcut(tr("Ctrl+R"));
 	openExerciseAct->setStatusTip(tr("Open a new exercise"));
 	connect(openExerciseAct, SIGNAL(triggered()), this, SLOT(openExercise()));
+
+	setMetroIntroAct = new QAction(QIcon(":/images/player_play.png"), tr("Start..."), this);
+	connect(setMetroIntroAct, SIGNAL(triggered()), this, SLOT(setMetroIntro()));
 
 	startMetroAct = new QAction(QIcon(":/images/player_play.png"), tr("Start..."), this);
 
@@ -131,6 +137,8 @@ void MainWindow::createMenus()
 	fileMenu->addAction(saveAct);
 	fileMenu->addAction(saveAsAct);
 	fileMenu->addSeparator();
+	fileMenu->addAction(setUserInfoAct);
+	fileMenu->addSeparator();
 	fileMenu->addAction(closeAct);
 	fileMenu->addAction(exitAct);
 
@@ -154,6 +162,8 @@ void MainWindow::createToolBars() {
 	userToolBar->addAction(openExerciseAct);
 
 	tempoToolBar = addToolBar(tr("Tempo"));
+	tempoToolBar->addAction(setMetroIntroAct);
+
 	tempoBox = new QSpinBox();
 	tempoBox->setRange(30,240);
 	tempoBox->setValue(60);
@@ -178,9 +188,9 @@ void MainWindow::createToolBars() {
 	exerciseTitle->setText("");
 	infoBar->addWidget(exerciseTitle);
 
-	QLabel *userNameLabel = new QLabel();
-	userNameLabel->setText(userName);
-	infoBar->addWidget(userNameLabel);
+//	QLabel *userNameLabel = new QLabel();
+//	userNameLabel->setText(user->getName());
+//	infoBar->addWidget(userNameLabel);
 }
 
 void MainWindow::openExercise() {
@@ -230,6 +240,7 @@ void MainWindow::updateTestingMethod() {
 }
 
 bool MainWindow::chooseUserInfo() {
+/*
 	bool ok;
 	QString text = QInputDialog::getText(this, tr("User info"),
 		tr("User name:"), QLineEdit::Normal,
@@ -240,17 +251,22 @@ bool MainWindow::chooseUserInfo() {
 	} else {
 		return false;
 	}
+*/
+	return true;
 }
 
 
 
 void MainWindow::newUser() {
-	user = new User();
-	if (chooseUserInfo()) {
-		if (chooseTestingMethod()) {  // force a choice here; no `maybe'
-			user->dataDialogue();
-			enableActions(2);
-		}
+	try {
+		user = new User();
+	}
+	catch (bool failed) {
+		return;
+	}
+	if ( chooseTestingMethod() ) {
+		connect(setUserInfoAct, SIGNAL(triggered()), user, SLOT(setUserInfo()));
+		enableActions(2);
 	}
 }
 
@@ -261,6 +277,7 @@ void MainWindow::enableActions(int state) {
 		saveAct   ->setEnabled(false);
 		saveAsAct ->setEnabled(false);
 		closeAct  ->setEnabled(false);
+		setUserInfoAct->setEnabled(false);
 
 		infoBar     ->setEnabled(false);
 		exerMenu    ->setEnabled(false);
@@ -269,11 +286,12 @@ void MainWindow::enableActions(int state) {
 		tempoToolBar ->setEnabled(false);
 	}
 	if (state==2) {
-		setWindowTitle(tr("Meaws - %1").arg(userName));
+		setWindowTitle(tr("Meaws - %1").arg(user->getName()));
 
 		saveAct   ->setEnabled(true);
 		saveAsAct ->setEnabled(true);
 		closeAct  ->setEnabled(true);
+		setUserInfoAct->setEnabled(true);
 
 		infoBar     ->setEnabled(true);
 		exerMenu    ->setEnabled(true);
@@ -312,11 +330,20 @@ void MainWindow::closeUser() {
 		marBackend = NULL;
 	}
 
+	delete user;
 	imageLabel->clear();
-	userName="No user";
 	testingMethod=0;
 	updateTestingMethod();
 	enableActions(1);
 }
 
+void MainWindow::setMetroIntro() {
+	bool ok;
+	int i = QInputDialog::getInteger(this, tr("Extra beats"),
+		tr("How many beats do you want \nto hear before beginning?"),
+		4, 0, 32, 1, &ok);
+	if (ok)
+		metroIntroBeats=i;
+
+}
 
