@@ -136,7 +136,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-Zm200 -EHsc -w34100 -w34189 -Zm200 -EHsc -w34100 -w34189 -w34100 -w34189"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:/Qt/4.2.2/include/QtCore&quot;,&quot;C:/Qt/4.2.2/include/QtCore&quot;,&quot;C:/Qt/4.2.2/include/QtGui&quot;,&quot;C:/Qt/4.2.2/include/QtGui&quot;,&quot;C:/Qt/4.2.2/include&quot;,&quot;..\..\marsyas&quot;,&quot;C:/Qt/4.2.2/include/ActiveQt&quot;,&quot;debug&quot;,&quot;.&quot;,c:\Qt\4.2.2\mkspecs\win32-msvc2005"
+				AdditionalIncludeDirectories="&quot;$(QTDIR)\include\QtCore&quot;;&quot;$(QTDIR)\include\QtGui&quot;;&quot;$(QTDIR)\include\ActiveQt&quot;;&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)/mkspecs/win32-msvc2005&quot;;..\..\marsyas;debug;."
 				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;QT_LARGEFILE_SUPPORT;QT_DLL;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;MRSDEBUGGING"
 				GeneratePreprocessedFile="0"
 				RuntimeLibrary="3"
@@ -163,11 +163,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="c:\Qt\4.2.2\lib\qtmaind.lib marsyas.lib /LIBPATH:..\..\marsyasVisualStudio2005\marsyas\Debug user32.lib dsound.lib /LIBPATH:&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Lib\x86&quot; c:\Qt\4.2.2\lib\QtGuid4.lib c:\Qt\4.2.2\lib\QtCored4.lib"
+				AdditionalDependencies="$(QTDIR)\lib\qtmaind.lib $(QTDIR)\lib\QtGuid4.lib $(QTDIR)\lib\QtCored4.lib ..\..\marsyasVisualStudio2005\marsyas\Debug\marsyas.lib dsound.lib"
 				OutputFile="debug\MarPhasevocoder.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="c:\Qt\4.2.2\lib"
+				AdditionalLibraryDirectories="$(QTDIR)\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=""
 				SubSystem="2"
@@ -283,18 +283,6 @@
 			UniqueIdentifier="{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}"
 			>
 			<File
-				RelativePath="release\moc_MarPhasevocoderWindow.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="debug\moc_MarPhasevocoderWindow.cpp"
 				>
 				<FileConfiguration
@@ -307,7 +295,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="release\moc_MarSystemWrapper.cpp"
+				RelativePath="release\moc_MarPhasevocoderWindow.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -323,6 +311,18 @@
 				>
 				<FileConfiguration
 					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="release\moc_MarSystemWrapper.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool

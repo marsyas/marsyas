@@ -1454,6 +1454,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\marsyas\Power.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\marsyas\PowerSpectrum.h"
 				>
 			</File>
@@ -1491,6 +1495,10 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\realvec.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\RealvecSink.h"
 				>
 			</File>
 			<File

@@ -310,11 +310,10 @@ LPC::myProcess(realvec& in, realvec& out)
 	mrs_real pitch = 0.0;
 
 //MATLAB engine stuff - for testing and validation purposes only!
-#ifdef _MATLAB_LPC_
+
 	MATLAB_PUT(in, "LPC_in");
 	MATLAB_PUT(order_, "LPC_order");
 	MATLAB_PUT(getctrl("mrs_real/gamma")->toReal(), "LPC_gamma");
-#endif
 
 	//-------------------------
 	// warped autocorrelation
@@ -356,8 +355,10 @@ LPC::myProcess(realvec& in, realvec& out)
 	out(order_+1) = LevinsonError; //prediction error (= gain? [?])
 	}
 	else{ // coefs as control
-		for(i=0; i < order_+1; i++)
-			ctrl_coeffs_->setValue(i, a(i));
+		ctrl_coeffs_->setValue(0, 1.0);
+		for(i=1; i < order_+1; i++) {
+			ctrl_coeffs_->setValue(i, -a(i));
+		}
      out = in;
 	  }
 	//--------------------------
@@ -384,6 +385,8 @@ LPC::myProcess(realvec& in, realvec& out)
 //	MATLAB_PUT(out, "LPC_out");
 //	MATLAB_EVAL("LPC_test");
 //#endif
+
+
 }
 
 

@@ -32,7 +32,7 @@ using namespace Marsyas;
 
 Filter::Filter(string name):MarSystem("Filter",name)
 {
-	norder_ = 2;
+	norder_ = 1;
 	dorder_ = 1;
 	channels_ = 1;
 	order_ = 2;
@@ -152,9 +152,11 @@ Filter::myProcess(realvec& in, realvec& out)
 	// the z, num_coefs to the b and denom_coefs to the a vector respectively
 	// in_window is the input x(n) and out_window is the output y(n)
 
-	cout << ncoeffs_;
-  cout << dcoeffs_;
+	//dcoeffs_/=10;
 
+	/*cout << ncoeffs_;
+  cout << dcoeffs_;
+  cout << state_;*/
 if (norder_ == dorder_){
 		for (c = 0; c < channels; c++) {
 			for (i = 0; i < size; i++){
@@ -170,7 +172,7 @@ if (norder_ == dorder_){
 	else if (norder_ < dorder_){
 		for (c = 0; c < channels; c++) {
 			for (i = 0; i < size; i++){
-				out(c,i) = ncoeffs_(0) * in(c,i) + state_(c,0);	
+				out(c,i) = ncoeffs_(0) * in(c,i) + state_(c,0);
 				for (j = 0; j < norder_ - 1; j++)
 				{
 					state_(c,j) = ncoeffs_(j+1) * in(c,i) + state_(c,j+1) - dcoeffs_(j+1) * out(c,i);
@@ -200,7 +202,7 @@ if (norder_ == dorder_){
 		}
 	}
 	out *= gain;
-
+// cout << out;
 	// 	MATLAB_PUT(in, "Filter_in");
 	// 	MATLAB_PUT(out, "Filter_out");
 	// 	MATLAB_EVAL("MAT_out = filter([1 -.97], 1, Filter_in)");

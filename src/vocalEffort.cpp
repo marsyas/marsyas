@@ -43,11 +43,12 @@ int process(string inName, string outName)
 	fanout->addMarSystem(lspS);
 	// second branch of the fanout with the filtering
 	MarSystem* lspF = mng.create("Series","lspF");
+ MarSystem* audioSink = mng.create("SoundFileSink", "audioSink");
 	lspF->addMarSystem(mng.create("Filter", "residual"));
-	lspF->addMarSystem(mng.create("Filter", "inverse"));
-  MarSystem* audioSink = mng.create("SoundFileSink", "audioSink");
-	lspF->addMarSystem(audioSink);
-	fanout->addMarSystem(lspF);
+		lspF->addMarSystem(mng.create("Filter", "inverse"));
+ lspF->addMarSystem(audioSink);
+
+fanout->addMarSystem(lspF);
   // third branch of the fanout
 	fanout->addMarSystem(mng.create("Gain", "gain1"));
 
@@ -66,25 +67,12 @@ int process(string inName, string outName)
   input->linkctrl("Fanout/fanout/Series/lspF/Filter/inverse/mrs_realvec/dcoeffs",
 									"Fanout/fanout/Series/lspS/LPC/lpc/mrs_realvec/coeffs");
 
-	realvec one(lpcOrder);
-	one.setval(0);
-	one(1) = 1;
-
-	input->updctrl("Fanout/fanout/Series/lspF/Filter/residual/mrs_realvec/dcoeffs", one);
-  input->updctrl("Fanout/fanout/Series/lspF/Filter/inverse/mrs_realvec/ncoeffs", one);
-
 	input->updctrl("Fanout/fanout/Series/lspF/SoundFileSink/audioSink/mrs_string/filename", outName);
 
 	int i = 0;
 	while(input->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
 	{
 		input->tick();
-
-		realvec toto = input->getctrl("Fanout/fanout/Series/lspS/LPC/lpc/mrs_realvec/coeffs")->toVec();
-		cout << "toto " << endl << toto << endl;
-		realvec titi = input->getctrl("Fanout/fanout/Series/lspF/Filter/residual/mrs_realvec/ncoeffs")->toVec();
-		cout << "titi " << endl << titi << endl;
-		cout << "Processed frame " << i << endl;
 		i++;
 	}
 
