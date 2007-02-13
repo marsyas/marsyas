@@ -152,7 +152,10 @@ Filter::myProcess(realvec& in, realvec& out)
 	// the z, num_coefs to the b and denom_coefs to the a vector respectively
 	// in_window is the input x(n) and out_window is the output y(n)
 
-	if (norder_ == dorder_){
+	cout << ncoeffs_;
+  cout << dcoeffs_;
+
+if (norder_ == dorder_){
 		for (c = 0; c < channels; c++) {
 			for (i = 0; i < size; i++){
 				out(c,i) = ncoeffs_(0) * in(c,i) + state_(c,0);	

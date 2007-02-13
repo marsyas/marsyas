@@ -94,7 +94,7 @@ LPC::myUpdate(MarControlPtr sender)
 	if(getctrl("mrs_natural/featureMode")->toNatural() != 1)
 	{
 		featureMode_ = 0;
-	  ctrl_coeffs_->stretch(order_);
+	  ctrl_coeffs_->stretch(order_+1);
 	  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural());
 		setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples")->toNatural());
   }
@@ -346,11 +346,18 @@ LPC::myProcess(realvec& in, realvec& out)
 	
 	// coeffs as output
 	if(featureMode_)
+	{
 		for(i=0; i < order_; i++)
 			out(i) = a(i+1);
+		//------------------------------
+	//output pitch and power values
+	//------------------------------
+	out(order_) = pitch; // lag in samples <= from ::autocorrelationWarped(...) - does it work if lambda != 0 [?]
+	out(order_+1) = LevinsonError; //prediction error (= gain? [?])
+	}
 	else{ // coefs as control
-		for(i=0; i < order_; i++)
-			ctrl_coeffs_->setValue(i, a(i+1));
+		for(i=0; i < order_+1; i++)
+			ctrl_coeffs_->setValue(i, a(i));
      out = in;
 	  }
 	//--------------------------
@@ -364,23 +371,18 @@ LPC::myProcess(realvec& in, realvec& out)
 				out(j) = (out(j) * pow(gamma, (double)j+1));
 		else
 			for(mrs_natural j = 0; j < order_; j++)
-				ctrl_coeffs_->setValue(j, (*ctrl_coeffs_)(j) * pow(gamma, (double)j+1));
+				ctrl_coeffs_->setValue(j+1, (*ctrl_coeffs_)(j+1) * pow(gamma, (double)j+1));
 	//---------------------------
 	// RMS Prediction Error
 	//---------------------------
 	//calculate RMS prediction error of LPC model (=> power_)
 	//PredictionError = predictionError(in, out);
 
-	//------------------------------
-	//output pitch and power values
-	//------------------------------
-	out(order_) = pitch; // lag in samples <= from ::autocorrelationWarped(...) - does it work if lambda != 0 [?]
-	out(order_+1) = LevinsonError; //prediction error (= gain? [?])
 
 //MATLAB engine stuff - for testing and validation purposes only!
 //#ifdef _MATLAB_LPC_
-	MATLAB_PUT(out, "LPC_out");
-	MATLAB_EVAL("LPC_test");
+//	MATLAB_PUT(out, "LPC_out");
+//	MATLAB_EVAL("LPC_test");
 //#endif
 }
 
