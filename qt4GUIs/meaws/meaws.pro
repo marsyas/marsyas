@@ -1,7 +1,6 @@
 SOURCES = start.cpp
-HEADERS = mainwindow.h backend.h
-SOURCES += mainwindow.cpp backend.cpp
-SOURCES += pitchBackend.cpp
+HEADERS = mainwindow.h backend.h user.h
+SOURCES += mainwindow.cpp backend.cpp user.cpp
 HEADERS += ../MarSystemQtWrapper.h
 SOURCES += ../MarSystemQtWrapper.cpp 
 RESOURCES = icons.qrc

@@ -245,8 +245,10 @@ bool MainWindow::chooseUserInfo() {
 
 
 void MainWindow::newUser() {
+	user = new User();
 	if (chooseUserInfo()) {
 		if (chooseTestingMethod()) {  // force a choice here; no `maybe'
+			user->dataDialogue();
 			enableActions(2);
 		}
 	}

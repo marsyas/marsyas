@@ -11,6 +11,7 @@
 using namespace std;
 
 #include "backend.h"
+#include "user.h"
 
 class QAction;
 class QMenu;
@@ -57,6 +58,7 @@ private:
 	void updateTestingMethod();
 
 	QString userName;
+	User *user;
 	bool chooseUserInfo();
 
 	QMenu *fileMenu;
