@@ -2211,7 +2211,7 @@ main(int argc, const char **argv)
     test_audiodevices();
   else if (testName == "cascade") 
     test_cascade();
-  else if (testName == "CollectionFileSource")
+  else if (testName == "collection")
     test_collection(fname0);
   else if (testName == "fanoutswitch")
     test_fanoutswitch();
