@@ -170,7 +170,7 @@ Marsyas::operator>>(istream& i, Collection& l)
 	  iss >> fname;
 	  if (c != '#') 
 	    {
-	      l.collectionList_.push_back(fname);
+	      l.collectionList_.push_back(fileEntry);
 	    }
 	}
     }

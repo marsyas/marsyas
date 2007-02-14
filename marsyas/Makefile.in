@@ -124,7 +124,7 @@ Collection.h fft.h Rms.h Peak2Rms.h PlotSink.h \
 AutoCorrelation.h Peaker.h Peaker1.h HalfWaveRectifier.h \
 TimeStretch.h Conversions.h MaxArgMax.h MinArgMin.h \
 Series.h \
- ShiftInput.h ShiftOutput.h Shifter.h PvFold.h PvConvert.h PeConvert.h PeClust.h PeOverlapadd.h PeResidual.h PeUtilities.h PeClusters.h PeSimilarity.h \
+ ShiftInput.h ShiftOutput.h Shifter.h PvFold.h PvConvert.h PeConvert.h PeClust.h PeSynOsc.h OverlapAdd.h PeResidual.h PeUtilities.h PeClusters.h PeSimilarity.h \
 PvConvolve.h PvOscBank.h PvUnconvert.h PvOverlapadd.h Windowing.h Hamming.h \
 Fanout.h Fanin.h Negative.h SineSource.h MarSystemManager.h \
 PowerSpectrum.h Centroid.h Rolloff.h \
@@ -161,7 +161,7 @@ Collection.cpp fft.cpp Rms.cpp Peak2Rms.cpp PlotSink.cpp \
 AutoCorrelation.cpp Peaker.cpp Peaker1.cpp HalfWaveRectifier.cpp \
 TimeStretch.cpp Conversions.cpp MaxArgMax.cpp MinArgMin.cpp \
 Series.cpp \
-ShiftInput.cpp ShiftOutput.cpp Shifter.cpp PvFold.cpp PvConvert.cpp PeConvert.cpp PeClust.cpp PeOverlapadd.cpp PeResidual.cpp PeUtilities.cpp PeClusters.cpp PeSimilarity.cpp \
+ShiftInput.cpp ShiftOutput.cpp Shifter.cpp PvFold.cpp PvConvert.cpp PeConvert.cpp PeClust.cpp PeSynOsc.cpp  OverlapAdd.cpp PeResidual.cpp PeUtilities.cpp PeClusters.cpp PeSimilarity.cpp \
 PvConvolve.cpp PvOscBank.cpp PvUnconvert.cpp PvOverlapadd.cpp Windowing.cpp Hamming.cpp \
 Fanout.cpp Fanin.cpp Negative.cpp SineSource.cpp MarSystemManager.cpp \
 PowerSpectrum.cpp Centroid.cpp Rolloff.cpp \
@@ -213,7 +213,7 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	MinArgMin.$(OBJEXT) Series.$(OBJEXT) ShiftInput.$(OBJEXT) \
 	ShiftOutput.$(OBJEXT) Shifter.$(OBJEXT) PvFold.$(OBJEXT) \
 	PvConvert.$(OBJEXT) PeConvert.$(OBJEXT) PeClust.$(OBJEXT) \
-	PeOverlapadd.$(OBJEXT) PeResidual.$(OBJEXT) \
+	PeSynOsc.$(OBJEXT) OverlapAdd.$(OBJEXT) PeResidual.$(OBJEXT) \
 	PeUtilities.$(OBJEXT) PeClusters.$(OBJEXT) \
 	PeSimilarity.$(OBJEXT) PvConvolve.$(OBJEXT) PvOscBank.$(OBJEXT) \
 	PvUnconvert.$(OBJEXT) PvOverlapadd.$(OBJEXT) \
@@ -336,11 +336,10 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/NormMaxMin.Po ./$(DEPDIR)/Normalize.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/NumericLib.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/OggFileSource.Po ./$(DEPDIR)/OnePole.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Parallel.Po ./$(DEPDIR)/PeClust.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/PeClusters.Po ./$(DEPDIR)/PeConvert.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/PeOverlapadd.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/PeResidual.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/PeSimilarity.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/OverlapAdd.Po ./$(DEPDIR)/Parallel.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/PeClust.Po ./$(DEPDIR)/PeClusters.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/PeConvert.Po ./$(DEPDIR)/PeResidual.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/PeSimilarity.Po ./$(DEPDIR)/PeSynOsc.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PeUtilities.Po ./$(DEPDIR)/Peak2Rms.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PeakPeriods2BPM.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Peaker.Po ./$(DEPDIR)/Peaker1.Po \
@@ -575,13 +574,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NumericLib.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OggFileSource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OnePole.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OverlapAdd.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parallel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeClust.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeClusters.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeConvert.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeOverlapadd.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeResidual.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeSimilarity.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeSynOsc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeUtilities.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peak2Rms.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeakPeriods2BPM.Po@am__quote@
