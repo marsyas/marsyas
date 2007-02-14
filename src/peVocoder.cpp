@@ -156,7 +156,7 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 
 	if(synthetize)
 	{
-		synthNetConfigure (pvseries, sfName, outsfname, fileResName, Nw, D, S, accSize, microphone_, bopt_, Nw+1-D);
+		synthNetConfigure (pvseries, sfName, outsfname, fileResName, Nw, D, S, accSize, microphone_, 0, bopt_, Nw+1-D);
 	}
 
 	mrs_real globalSnr = 0;
@@ -314,7 +314,7 @@ main(int argc, const char **argv)
 			{
         PeClusters clusters(peakSet_);
 				// synthetize remaining clusters
-				clusters.synthetize(peakSet_, *sfi, fileName, winSize_, hopSize_, nbSines_, bopt_);
+				clusters.synthetize(peakSet_, *sfi, fileName, winSize_, hopSize_, nbSines_, bopt_, 0);
 			}
 			MATLAB_PUT(peakSet_, "peaks");
 			MATLAB_EVAL("plotPeaks(peaks)");
