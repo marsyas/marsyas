@@ -37,9 +37,6 @@ MarBackend::~MarBackend() {
 	cout<<"deleting"<<endl;
 	if (method==1) {
 		cout<<"doing Intonation stuff"<<endl;
-//		mrsWrapper->pause();
-//		cout<<"mrsWrapper paused"<<endl;
-
 // something bad happens here.  :(
 		delete mrsWrapper;
 		cout<<"mrsWrapper deleted"<<endl;
@@ -55,9 +52,9 @@ void MarBackend::makeRecNet() {
   recNet->addMarSystem(mng.create("AudioSource", "srcRec"));
 	recNet->addMarSystem(mng.create("SoundFileSink","destRec"));
 
-	recNet->updctrl("AudioSource/src/mrs_real/israte", 44100.0);
-  recNet->updctrl("AudioSource/src/mrs_bool/initAudio", true);
-	recNet->updctrl("SoundFileSink/dest/mrs_string/filename","test-rec.wav");
+	recNet->updctrl("AudioSource/srcRec/mrs_real/israte", 44100.0);
+  recNet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
+	recNet->updctrl("SoundFileSink/destRec/mrs_string/filename","test-rec.wav");
 }
 
 void MarBackend::startIntonation() {
@@ -87,16 +84,17 @@ void MarBackend::setTempo(float timeBetweenBeats) {
 	cout<<"setTempo "<<timeBetweenBeats<<endl;
 //  e->set_repeat(Repeat( dtos(timeBetweenBeats)+"s" ));
 }
-void MarBackend::startMarBackend() {
+*/
+void MarBackend::start() {
 	cout<<"play"<<endl;
 	mrsWrapper->play();
 }
 
-void MarBackend::stopMarBackend() {
+void MarBackend::stop() {
 	cout<<"stop"<<endl;
 	mrsWrapper->pause();
 }
-
+/*
 void MarBackend::setIntro(int beats) {
 	cout<<beats<<" beats intro"<<endl;
 	introBeats = beats;

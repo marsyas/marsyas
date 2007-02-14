@@ -31,8 +31,10 @@ class MarBackend: public QObject {
 public:
 	MarBackend(int testingMethod);
 	~MarBackend();
-	void setIntro(int beats);
-	void playBeat();
+//	void setIntro(int beats);
+//	void playBeat();
+	void start();
+	void stop();
 
 private:
 	MarSystemQtWrapper *mrsWrapper;

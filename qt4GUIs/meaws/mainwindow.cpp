@@ -317,11 +317,13 @@ void MainWindow::enableActions(int state) {
 
 void MainWindow::toggleExercise() {
 	if (exerciseRunning) {   // stop it
+		marBackend->stop();
 		metro->stopMetro();
 		toggleMetroAct->setStatusTip(tr("Start"));
 		toggleMetroAct->setIcon(QIcon(":/images/player_play.png"));
 		exerciseRunning = !exerciseRunning;
 	} else {   // start it
+		marBackend->start();
 		metro->startMetro();
 		toggleMetroAct->setStatusTip(tr("Stop"));
 		toggleMetroAct->setIcon(QIcon(":/images/player_pause.png"));
@@ -334,7 +336,7 @@ void MainWindow::setupMarBackend() {
 		delete marBackend;
 		marBackend = NULL;
 	}
-	//marBackend = new MarBackend(testingMethod);
+	marBackend = new MarBackend(testingMethod);
 
 	// communication with Marsyas backend
 }
