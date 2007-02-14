@@ -48,27 +48,32 @@ MarBackend::~MarBackend() {
 	}
 }
 
-void MarBackend::startIntonation() {
+void MarBackend::makeRecNet() {
   MarSystemManager mng;
 
-  metroNet = mng.create("Series", "metroNet");
-  metroNet->addMarSystem(mng.create("SoundFileSource", "src"));
-  metroNet->addMarSystem(mng.create("AudioSink", "dest"));
-  metroNet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+  recNet = mng.create("Series", "recNet");
+  recNet->addMarSystem(mng.create("AudioSource", "srcRec"));
+	recNet->addMarSystem(mng.create("SoundFileSink","destRec"));
 
-	mrsWrapper = new MarSystemQtWrapper(metroNet);
+	recNet->updctrl("AudioSource/src/mrs_real/israte", 44100.0);
+  recNet->updctrl("AudioSource/src/mrs_bool/initAudio", true);
+	recNet->updctrl("SoundFileSink/dest/mrs_string/filename","test-rec.wav");
+}
+
+void MarBackend::startIntonation() {
+	makeRecNet();
+
+ // MarSystemManager mng;
+
+ // allNet = mng.create("Series", "all");
+
+//	MarSystem *parallel = mng.create("Parallel", "para");
+//	parallel->addMarSystem(recNet);
+//	parallel->addMarSystem(metroNet);
+//	allNet->addMarSystem(parallel);
+
+	mrsWrapper = new MarSystemQtWrapper(recNet);
 	mrsWrapper->start();
-
-  filenamePtr = mrsWrapper->getctrl("SoundFileSource/src/mrs_string/filename");
-
-
-  e = new EvExpr(metroNet,
-//    Ex("","'time =' + Timer.time(Timer.cur) >> Stream.opn"),
-      Ex( "SoundFileSource/src/mrs_string/filename >> @file", // init
-         "file<<'', file<<'sd.wav'" ),  // do this stuff
-      Rp("true"));    // every time
-  e->set_repeat(Repeat("0.5s"));
-  metroNet->updctrl(TmTime("TmSampleCount/Virtual","0s"), e);
 
 	mrsWrapper->pause();
 }
@@ -77,20 +82,28 @@ void MarBackend::startControl() {
 
 }
 
-void MarBackend::setTempo(int tempo) {
-  float timeBetweenBeats = 60.0f/tempo;
+void MarBackend::setTempo(float timeBetweenBeats) {
 	cout<<"setTempo "<<timeBetweenBeats<<endl;
-  e->set_repeat(Repeat( dtos(timeBetweenBeats)+"s" ));
+//  e->set_repeat(Repeat( dtos(timeBetweenBeats)+"s" ));
 }
-
-void MarBackend::startMetro() {
+/*
+void MarBackend::startMarBackend() {
 	cout<<"play"<<endl;
 	mrsWrapper->play();
 }
 
-void MarBackend::stopMetro() {
+void MarBackend::stopMarBackend() {
 	cout<<"stop"<<endl;
 	mrsWrapper->pause();
 }
 
+void MarBackend::setIntro(int beats) {
+	cout<<beats<<" beats intro"<<endl;
+	introBeats = beats;
+}
 
+void MarBackend::playBeat() {
+	cout<<"BEAT"<<endl;
+//	metroNet->updctrl("SoundFileSource/src/mrs_natural/pos",0);
+}
+*/

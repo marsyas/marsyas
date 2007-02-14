@@ -17,47 +17,37 @@
 */
 
 #include <QObject>
+#include <QTimer>
 #include "MarSystemManager.h"
 #include "../MarSystemQtWrapper.h"
-#include "EvExpr.h"
-#include "ExVal.h"
-#include "ExCommon.h"
 
 using namespace Marsyas;
 
-class MarBackend: public QObject {
+class Metro: public QObject {
 	Q_OBJECT
 
 public:
-	MarBackend(int testingMethod);
-	~MarBackend();
-	void setIntro(int beats);
-	void playBeat();
+	Metro();
+	~Metro();
 
 // communication with the QT front-end
 public slots:
-  void setTempo(float timeBetweenBeats);
+  void setTempo(int tempo);
+	void setIntro(int beats);
+	void stopMetro();
+	void startMetro();
+	void beat();
 
 private:
-	MarSystemQtWrapper *mrsWrapper;
-
-	int method;
+	int tempo;
 	int introBeats;
-// "constructor"
-	void makeRecNet();
-	void startIntonation();
-	void startControl();
 
-// metronome stuff
-  EvExpr *e;
+	QTimer *timer;
+
+
+// audio stuff
+	MarSystemQtWrapper *mrsWrapper;
   MarSystem *metroNet;
-	MarSystem *recNet;
-	MarSystem *allNet;
-  MarControlPtr filenamePtr;
-
-// pitch extracting stuff  (INCOMPLETE)
-	void startPitchNet(string sfName);
-	void stopPitchNet();
-	MarSystem *pitchExtractor;
+  MarControlPtr posPtr;
 };
 

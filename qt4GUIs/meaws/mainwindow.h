@@ -12,6 +12,7 @@ using namespace std;
 
 #include "backend.h"
 #include "user.h"
+#include "metro.h"
 
 class QAction;
 class QMenu;
@@ -41,6 +42,8 @@ private slots:
 */
 	void openExercise();
 	void setMetroIntro();
+	void setMetroTempo(int tempo);
+	void beat();
 
 private:
 	void createActions();
@@ -114,6 +117,8 @@ private:
 
   MarBackend *marBackend;
 	void setupMarBackend();
+
+	Metro *metro;
 };
 
 #endif

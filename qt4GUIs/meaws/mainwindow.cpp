@@ -38,7 +38,7 @@ void MainWindow::about() {
 }
 
 void MainWindow::readSettings() {
-	QSettings settings("Metrosyas", "Metrosyas");
+	QSettings settings("Meaws", "Meaws");
 	QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
 	QSize size = settings.value("size", QSize(700, 400)).toSize();
 	resize(size);
@@ -46,7 +46,7 @@ void MainWindow::readSettings() {
 }
 
 void MainWindow::writeSettings() {
-	QSettings settings("Metrosyas", "Metrosyas");
+	QSettings settings("Meaws", "Meaws");
 	settings.setValue("pos", pos());
 	settings.setValue("size", size());
 }
@@ -180,8 +180,12 @@ void MainWindow::createToolBars() {
 
 	connect(slider, SIGNAL(valueChanged(int)),
 		tempoBox, SLOT(setValue(int)));
+	connect(slider, SIGNAL(valueChanged(int)),
+		this, SLOT(setMetroTempo(int)));
 	connect(tempoBox, SIGNAL(valueChanged(int)),
 		slider, SLOT(setValue(int)));
+	connect(tempoBox, SIGNAL(valueChanged(int)),
+		this, SLOT(setMetroTempo(int)));
 
 	infoBar = addToolBar(tr("Info"));
 	exerciseTitle = new QLabel();
@@ -271,7 +275,7 @@ void MainWindow::newUser() {
 }
 
 void MainWindow::enableActions(int state) {
-	if (state==1) {
+	if (state==1) {   // just opened app
 		setWindowTitle(tr("Meaws"));
 
 		saveAct   ->setEnabled(false);
@@ -285,7 +289,7 @@ void MainWindow::enableActions(int state) {
 
 		tempoToolBar ->setEnabled(false);
 	}
-	if (state==2) {
+	if (state==2) {   // user created or loaded
 		setWindowTitle(tr("Meaws - %1").arg(user->getName()));
 
 		saveAct   ->setEnabled(true);
@@ -299,8 +303,12 @@ void MainWindow::enableActions(int state) {
 
 		tempoToolBar ->setEnabled(false);
 	}
-	if (state==3) {
+	if (state==3) {   // exercise picked
 		setupMarBackend();
+		metro = new Metro();
+		connect(startMetroAct, SIGNAL(triggered()), metro, SLOT(startMetro()));
+		connect(stopMetroAct, SIGNAL(triggered()), metro, SLOT(stopMetro()));
+
 		tempoToolBar ->setEnabled(true);
 
 	}
@@ -311,16 +319,12 @@ void MainWindow::setupMarBackend() {
 		delete marBackend;
 		marBackend = NULL;
 	}
-	marBackend = new MarBackend(testingMethod);
+//	marBackend = new MarBackend(testingMethod);
 
 	// communication with Marsyas backend
-	connect(startMetroAct, SIGNAL(triggered()), marBackend, SLOT(startMetro()));
-	connect(stopMetroAct, SIGNAL(triggered()), marBackend, SLOT(stopMetro()));
+}
 
-	connect(slider, SIGNAL(valueChanged(int)),
-		marBackend, SLOT(setTempo(int)));
-	connect(tempoBox, SIGNAL(valueChanged(int)),
-		marBackend, SLOT(setTempo(int)));
+void MainWindow::beat() {
 
 }
 
@@ -342,8 +346,13 @@ void MainWindow::setMetroIntro() {
 	int i = QInputDialog::getInteger(this, tr("Extra beats"),
 		tr("How many beats do you want \nto hear before beginning?"),
 		4, 0, 32, 1, &ok);
-	if (ok)
+	if (ok) {
 		metroIntroBeats=i;
+		metro->setIntro(metroIntroBeats);
+	}
+}
 
+void MainWindow::setMetroTempo(int tempo) {
+	metro->setTempo(tempo);
 }
 
