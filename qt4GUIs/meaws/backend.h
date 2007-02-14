@@ -35,6 +35,7 @@ public:
 //	void playBeat();
 	void start();
 	void stop();
+	void calculate();
 
 private:
 	MarSystemQtWrapper *mrsWrapper;
@@ -50,6 +51,8 @@ private:
   EvExpr *e;
   MarSystem *metroNet;
 	MarSystem *recNet;
+	MarSystem *pitchNet;
+
 	MarSystem *allNet;
   MarControlPtr filenamePtr;
 

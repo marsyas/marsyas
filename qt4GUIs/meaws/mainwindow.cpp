@@ -367,6 +367,8 @@ void MainWindow::setMetroIntro() {
 		metroIntroBeats=i;
 		metro->setIntro(metroIntroBeats);
 	}
+// FIXME
+	marBackend->calculate();
 }
 
 void MainWindow::setMetroTempo(int tempo) {

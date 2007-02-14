@@ -30,7 +30,6 @@ Metro::Metro() {
   metroNet->addMarSystem(mng.create("SoundFileSource", "srcMetro"));
   metroNet->addMarSystem(mng.create("AudioSink", "dest"));
 	metroNet->updctrl("SoundFileSource/srcMetro/mrs_string/filename", "sd.wav");
-//	metroNet->updctrl("AudioSink/src/mrs_real/israte", 44100.0);
   metroNet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
 	mrsWrapper = new MarSystemQtWrapper(metroNet);

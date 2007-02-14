@@ -59,16 +59,36 @@ void MarBackend::makeRecNet() {
 
 void MarBackend::startIntonation() {
 	makeRecNet();
+/*
+  MarSystemManager mng;
+  pitchNet = mng.create("Series", "pitchNet");
+  pitchNet->addMarSystem(mng.create("AudioSource", "src"));
+//	pitchNet->addMarSystem(mng.create("SoundFileSink","destRec"));
 
- // MarSystemManager mng;
+	pitchNet->updctrl("AudioSource/src/mrs_real/israte", 44100.0);
+  pitchNet->updctrl("AudioSource/src/mrs_bool/initAudio", true);
 
- // allNet = mng.create("Series", "all");
+  pitchNet->addMarSystem(mng.create("PitchSACF", "sacf"));
+  pitchNet->addMarSystem(mng.create("RealvecSink", "rvSink"));
 
-//	MarSystem *parallel = mng.create("Parallel", "para");
-//	parallel->addMarSystem(recNet);
-//	parallel->addMarSystem(metroNet);
-//	allNet->addMarSystem(parallel);
+  mrs_real lowPitch = 36;
+  mrs_real highPitch = 79;
+  mrs_real lowFreq = pitch2hertz(lowPitch);
+  mrs_real highFreq = pitch2hertz(highPitch);
 
+  mrs_natural lowSamples =
+     hertz2samples(highFreq, pitchNet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
+  mrs_natural highSamples =
+     hertz2samples(lowFreq, pitchNet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
+
+  pitchNet->updctrl("PitchSACF/sacf/mrs_natural/lowSamples", lowSamples);
+  pitchNet->updctrl("PitchSACF/sacf/mrs_natural/highSamples", highSamples);
+  pitchNet->updctrl("mrs_natural/inSamples", 1024);
+
+//	allNet = mng.create("Series", "all");
+//	allNet->addMarSystem(recNet);
+//	allNet->addMarSystem(pitchNet);
+*/
 	mrsWrapper = new MarSystemQtWrapper(recNet);
 	mrsWrapper->start();
 
@@ -78,8 +98,43 @@ void MarBackend::startIntonation() {
 void MarBackend::startControl() {
 
 }
-/*
 
+void MarBackend::calculate() {
+  MarSystemManager mng;
+  MarSystem* pnet = mng.create("Series", "pnet");
+
+  pnet->addMarSystem(mng.create("SoundFileSource", "src"));
+  pnet->updctrl("SoundFileSource/src/mrs_string/filename", "test-rec.wav");
+  pnet->addMarSystem(mng.create("PitchSACF", "sacf")); 
+  pnet->addMarSystem(mng.create("RealvecSink", "rvSink")); 
+
+  mrs_real lowPitch = 36;
+  mrs_real highPitch = 79;
+  mrs_real lowFreq = pitch2hertz(lowPitch);
+  mrs_real highFreq = pitch2hertz(highPitch);
+
+  mrs_natural lowSamples = 
+     hertz2samples(highFreq, pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
+  mrs_natural highSamples = 
+     hertz2samples(lowFreq, pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
+ 
+  pnet->updctrl("PitchSACF/sacf/mrs_natural/lowSamples", lowSamples);
+  pnet->updctrl("PitchSACF/sacf/mrs_natural/highSamples", highSamples);
+  pnet->updctrl("mrs_natural/inSamples", 1024);
+
+  while (pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
+   pnet->tick();
+
+	realvec data = pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->toVec();
+   for (mrs_natural i=1; i<data.getSize();i+=2)
+	   data(i) = samples2hertz((mrs_natural) data(i), pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
+   
+   pnet->updctrl("RealvecSink/rvSink/mrs_bool/done", 1); 
+	
+	cout << data ;
+	
+}
+/*
 void MarBackend::setTempo(float timeBetweenBeats) {
 	cout<<"setTempo "<<timeBetweenBeats<<endl;
 //  e->set_repeat(Repeat( dtos(timeBetweenBeats)+"s" ));

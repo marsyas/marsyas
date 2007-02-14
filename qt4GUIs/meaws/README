@@ -16,11 +16,9 @@ mainwindow .h .cpp: the main QT interface.  A lot of stuff is still
 backend .h .cpp: the Marsyas backend audio stuff.
     We might want to split this up, see below.
 
-pitchBackend .cpp: the beginnings of integrating the pitch detection
-    into this project, but I stopped near the beginning.  I was originally
-    going to have two distinct MarSystems (ie one for the metronome and
-    one for the pitch), but then I decided they should be in the same
-    MarSystem.  We should discuss this design.
+metro .h .cpp: the metronome object.
+
+user .h .cpp: the User object.  (records previous tests, user info, etc)
 
 images/ : icons for the QT app.
 exercises/ : data for the different exercises for the students.
