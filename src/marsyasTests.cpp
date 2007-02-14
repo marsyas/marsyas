@@ -590,6 +590,55 @@ test_cascade()
 	delete cascade;
 }
 
+
+
+void 
+test_collection(string sfName) 
+{
+  
+  MarSystemManager mng;
+  
+  MarSystem* playbacknet = mng.create("Series", "playbacknet");
+  
+  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+  playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
+  
+  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+  
+  playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+  playbacknet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
+  
+  mrs_bool isEmpty;
+  //cout << *playbacknet << endl;
+  int cindex = 0;
+  while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->toBool()) 
+    {
+      cout << "tick " << isEmpty << endl;
+      //cout << "pos " << playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() << endl;
+      
+      for (int i=0; i<100; i++)
+	playbacknet->tick();
+
+      
+      playbacknet->updctrl("SoundFileSource/src/mrs_natural/cindex", cindex);
+      
+      cindex++;
+      
+
+      //test if setting "mrs_natural/pos" to 0 for rewinding is working
+      //if(playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() > 100000)
+      //	playbacknet->updctrl("mrs_natural/pos", 0);
+    }
+  cout << "tick " << isEmpty << endl;
+  delete playbacknet;
+  
+  
+  
+  
+}
+
+
 void 
 test_knn()
 {
@@ -2162,6 +2211,8 @@ main(int argc, const char **argv)
     test_audiodevices();
   else if (testName == "cascade") 
     test_cascade();
+  else if (testName == "CollectionFileSource")
+    test_collection(fname0);
   else if (testName == "fanoutswitch")
     test_fanoutswitch();
   else if (testName == "filter") 
