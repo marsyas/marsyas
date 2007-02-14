@@ -31,6 +31,7 @@ for i=1:length(P(1,:))
   amp_plot = amp_plot-20*log10(maxA)+80;
 % amp_plot=100;
 %   value_color = floor((nb_coul)*(P(7, i))/maxGp)+1;
+P(7, i)
 value_color = coul(P(7, i)+1);
 
 color = cm(value_color, :) ;

@@ -128,6 +128,7 @@ public:
   mrs_real maxval(mrs_natural *index=NULL) const;//lmartins
   mrs_real minval() const;//lmartins
   mrs_real mean() const;
+  mrs_real median() const;
   mrs_real sum() const;
   mrs_real std() const;
   mrs_real var() const;

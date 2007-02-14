@@ -27,7 +27,7 @@
 
 #include "realvec.h"
 #include "NumericLib.h"
-
+#include <algorithm>
 #include <limits>
 
 #ifdef MARSYAS_MATLAB
@@ -140,6 +140,15 @@ mrs_real *
 realvec::getData() const
 {
   return data_;
+}
+
+mrs_real 
+realvec::median() const
+{
+  realvec tmp(*this);
+	mrs_real *tmpData = tmp.data_;
+	sort(tmpData, tmpData+size_);
+	return tmpData[size_/2];
 }
 
 mrs_real 

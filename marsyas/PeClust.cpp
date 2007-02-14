@@ -108,7 +108,7 @@ PeClust::myUpdate(MarControlPtr sender)
 	maxLabel_=0;
 
 	harmonicityWeight_=0.01;
-	harmonicitySize_=10;
+	harmonicitySize_=20;
 
 	firstF_.stretch(kmax_);
 	firstA_.stretch(kmax_);
@@ -388,6 +388,9 @@ PeClust::myProcess(realvec& in, realvec& out)
 
 		mrs_natural back = nbClusters_;
 	
+			MATLAB_PUT(data_, "peaks");
+		  MATLAB_EVAL("plotPeaks(peaks)");
+
 		mrs_natural nbSelected = getctrl("mrs_natural/selectedClusters")->toNatural();
 		if(nbSelected)
 		{
@@ -401,9 +404,7 @@ PeClust::myProcess(realvec& in, realvec& out)
 
 		nbClusters_ = back;
 
-		/*	MATLAB_PUT(data_, "peaks");
-		  MATLAB_EVAL("plotPeaks(peaks)");*/
-
+		
 	peaks2V(data_, lastFrame_, out, kmax_);
 
 		// peaks storing
