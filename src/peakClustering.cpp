@@ -78,6 +78,8 @@ mrs_real timeElapsed;
 mrs_natural nbTicks=0;
 //
 mrs_natural clusterFilteringType_ = 0;
+//
+mrs_natural synthesisType_ = 1;
 
 bool microphone_ = false;
 bool analyse_ = false;
@@ -130,7 +132,7 @@ printHelp(string progName)
 void
 clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseName, string mixName, mrs_real noiseDelay, string T, mrs_natural N, mrs_natural Nw, 
 							 mrs_natural D, mrs_natural S, mrs_natural C,
-							 mrs_natural accSize, bool synthetize)
+							 mrs_natural accSize, bool synthetize, mrs_real *snr0)
 {
 	cout << "Extracting Peaks and Clusters" << endl;
 	MarSystemManager mng;
@@ -195,11 +197,10 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	if(synthetize) 
 	{
 		//create shredder
-		synthNetCreate(&mng, outsfname, microphone_);
+		synthNetCreate(&mng, outsfname, microphone_, synthesisType_);
 		MarSystem *peSynth = mng.create("PeSynthetize", "synthNet");
 		pvseries->addMarSystem(peSynth);
 	}
-
 	////////////////////////////////////////////////////////////////
 	// update the controls
 	////////////////////////////////////////////////////////////////
@@ -257,7 +258,7 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 
 	if(synthetize)
 	{
-		synthNetConfigure (pvseries, sfName, outsfname, fileResName, Nw, D, S, accSize, microphone_, bopt_, Nw+1-D);
+		synthNetConfigure (pvseries, sfName, outsfname, fileResName, Nw, D, S, accSize, microphone_, synthesisType_, bopt_, Nw+1-D);
 	}
 
 	if(noiseDuration_)
@@ -316,8 +317,10 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		}
 	}
 	if(synthetize_)
+	{
 		cout << "Global SNR : " << globalSnr/nb << endl;
-
+	*snr0 = globalSnr/nb;
+	}
 	// plot and save peak data
 	peakSet = pvseries->getctrl("PeClust/peClust/mrs_realvec/peakSet")->toVec();
 
@@ -396,6 +399,7 @@ main(int argc, const char **argv)
 {
 	MRSDIAG("sftransform.cpp - main");
 
+	mrs_real snr0=0;
 	initOptions();
 	cmd_options.readOptions(argc, argv);
 	loadOptions();  
@@ -454,7 +458,7 @@ main(int argc, const char **argv)
 			if(analyse_)
 			{
 				cout << "Phasevocoding " << Sfname.name() << endl; 
-				clusterExtract(peakSet_, *sfi, fileName, noiseName, mixName, noiseDelay_, similarityType_, fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_, synthetize_);
+				clusterExtract(peakSet_, *sfi, fileName, noiseName, mixName, noiseDelay_, similarityType_, fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_, synthetize_, &snr0);
 			}	
 			// if ! peak data read from file
 			if(peakSet_.getSize() == 0)
@@ -465,8 +469,8 @@ main(int argc, const char **argv)
 			//	exit(1);
 			}
 
-			MATLAB_PUT(peakSet_, "peaks");
-			MATLAB_EVAL("figure(1); clf ; plotPeaks(peaks, -1)");
+			//MATLAB_PUT(peakSet_, "peaks");
+			//MATLAB_EVAL("figure(1); clf ; plotPeaks(peaks)");
 
 
 			// create data for clusters
@@ -492,7 +496,7 @@ main(int argc, const char **argv)
 				clustFile.close();
 
 				// store voicingLine
-				clusters.voicingLine(fileVoicingName, hopSize_);
+				clusters.voicingLine(fileVoicingName, hopSize_, accSize_);
 				clusters.f0Line(fileF0Name, hopSize_, samplingFrequency_, accSize_);
 			}
 
@@ -525,17 +529,20 @@ clusters.getConversionTable(ct);
 				updateLabels(peakSet_, ct);
 			}
 
-			mrs_real snr0=0;
 			if(clusterSynthetize_)
 			{
 				PeClusters sclusters(peakSet_);
 				// synthetize remaining clusters
-				snr0 = sclusters.synthetize(peakSet_, *sfi, fileName, winSize_, hopSize_, nbSines_, bopt_);
+				snr0 = sclusters.synthetize(peakSet_, *sfi, fileName, winSize_, hopSize_, nbSines_, bopt_, synthesisType_);
 			}
 			/*MATLAB_PUT(peakSet_, "peaks");
 			MATLAB_EVAL("plotPeaks(peaks)");*/
 
-			FileName oriFileName(*sfi);
+			
+
+		/*	MATLAB_PUT(peakSet_, "peaks");
+			MATLAB_EVAL("figure(1); clf ; plotPeaks(peaks)");*/
+ FileName oriFileName(*sfi);
 			FileName noiseFileName(noiseName);
 			ofstream resFile;
 			string snrName(outputDirectoryName + "/similaritySnrResults.txt");
@@ -543,15 +550,17 @@ clusters.getConversionTable(ct);
 			cout << oriFileName.name() << " " << noiseFileName.name() << " " << similarityType_ << " " << snr0 << endl;
 			resFile << oriFileName.name() << " " << noiseFileName.name() << " " << similarityType_ << " " << snr0 << endl;
 			resFile.close();
-
 		}
+		
+	   
 	}
 	else
 	{
 		cout << "Using live microphone input" << endl;
 		microphone_ = true;
-		clusterExtract(peakSet_, "microphone", fileName, noiseName, mixName, noiseDelay_, similarityType_, fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_, synthetize_);
+		clusterExtract(peakSet_, "microphone", fileName, noiseName, mixName, noiseDelay_, similarityType_, fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_, synthetize_, &snr0);
 	}
+
 
 	timeElapsed = (clock()-nbTicks)/((mrs_real) CLOCKS_PER_SEC );
 	cout << "Time elapsed: " << timeElapsed << endl;

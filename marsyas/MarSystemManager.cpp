@@ -62,7 +62,8 @@ in sequence.
 
 #include "PeConvert.h"
 #include "PeClust.h"
-#include "PeOverlapadd.h"
+#include "OverlapAdd.h"
+#include "PeSynOsc.h"
 #include "PeResidual.h"
 #include "RealvecSource.h"
 #include "RealvecSink.h"
@@ -182,7 +183,8 @@ MarSystemManager::MarSystemManager()
 
 	registerPrototype("PeConvert", new PeConvert("peconvp"));
 	registerPrototype("PeClust", new PeClust("peclust"));
-	registerPrototype("PeOverlapadd", new PeOverlapadd("peovlfp"));
+ registerPrototype("OverlapAdd", new OverlapAdd("oa"));
+	registerPrototype("PeSynOsc", new PeSynOsc("pso"));
 	registerPrototype("PeResidual", new PeResidual("peres"));
 	registerPrototype("RealvecSource", new RealvecSource("realvecSrc"));
   registerPrototype("RealvecSink", new RealvecSink("realvecSink"));
@@ -456,6 +458,8 @@ MarSystemManager::MarSystemManager()
 	peAnalysePr->updctrl("Shifter/sh/mrs_natural/shift", 1);
 
 	registerPrototype("PeAnalyse", peAnalysePr);
+
+ // registerPrototype("PeSynFFT", peSynFFT);
 }
 
 MarSystemManager::~MarSystemManager()

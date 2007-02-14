@@ -136,6 +136,9 @@ void Marsyas::extractParameter(realvec&in, std::vector<realvec>& out, pkParamete
 				out.push_back(vec);
 				vec.stretch(kmax);
 			}
+			// fix this [ML]
+			/*else
+				out.push_back(realvec());*/
 			frameIndex = (mrs_natural) in(i, 5);
 			k=0;
 		}
@@ -399,11 +402,22 @@ Marsyas::cosinePeakSets(realvec&f1, realvec&a1, realvec&f2, realvec&a2, realvec&
 	return res;
 }
 
-void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool microphone)
+void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool microphone, mrs_natural synType)
 {
 	//create Shredder series
 	MarSystem* postNet = mng->create("Series", "postNet");
-	postNet->addMarSystem(mng->create("PeOverlapadd", "ob"));
+//	postNet->addMarSystem(mng->create("PeOverlapadd", "ob"));
+
+	 if(synType == 0)
+	 {
+	postNet->addMarSystem(mng->create("PeSynOsc", "pso"));
+	 }
+	 else
+	 {
+
+	 }
+
+	postNet->addMarSystem(mng->create("OverlapAdd", "ov"));
 	postNet->addMarSystem(mng->create("ShiftOutput", "so"));
 
 	MarSystem *dest;
@@ -447,12 +461,19 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
 
 void
 Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname, string ressfname, mrs_natural Nw, 
-													 mrs_natural D, mrs_natural S, mrs_natural accSize, bool microphone, mrs_natural bopt, mrs_natural delay)
+													 mrs_natural D, mrs_natural S, mrs_natural accSize, bool microphone, mrs_natural synType, mrs_natural bopt, mrs_natural delay)
 {
 	pvseries->updctrl("PeSynthetize/synthNet/mrs_natural/nTimes", accSize);
-	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeOverlapadd/ob/mrs_natural/hopSize", D);
-	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeOverlapadd/ob/mrs_natural/nbSinusoids", S);
-	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeOverlapadd/ob/mrs_natural/delay", Nw/2+1);
+  if(synType==0)
+	{
+	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynOsc/pso/mrs_natural/nbSinusoids", S);
+	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynOsc/pso/mrs_natural/delay", Nw/2+1);
+	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynOsc/pso/mrs_natural/synSize", D*2);
+	}
+	else
+	{
+
+	}
 	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Interpolation", D);
 	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/WindowSize", Nw);      
 	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Decimation", D);

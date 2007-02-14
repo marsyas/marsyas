@@ -29,6 +29,7 @@
 #include "realvec.h"
 #include <fstream>
 #include <string>
+#include <vector>
 using std::ofstream;
 
 namespace Marsyas
@@ -77,6 +78,11 @@ realvec frequencyHistogram;
 realvec amplitudeHistogram;
 realvec harmonicityHistogram;
 
+
+std::vector<realvec> frequencySet_;
+std::vector<realvec> amplitudeSet_;
+
+
 	public :
  PeCluster();
   ~PeCluster();
@@ -93,7 +99,7 @@ realvec harmonicityHistogram;
 
 	mrs_natural getOriLabel ();
 	void setOriLabel (mrs_natural);
-	mrs_real getVoicingFactor();
+	mrs_real getVoicingFactor1(mrs_natural); mrs_real getVoicingFactor2(mrs_natural); mrs_real getVoicingFactor3(mrs_natural);
 	mrs_real getF0(mrs_natural);
 	mrs_natural getLabel ();
 	void setLabel (mrs_natural);
@@ -116,9 +122,9 @@ public:
 		void selectBefore(mrs_real val);
 		void selectGround();
 void attributes(realvec &peakSet, mrs_real);
-		mrs_real synthetize(realvec &peakSet, std::string fileName, std::string outFileName, mrs_natural Nw, mrs_natural D, mrs_natural S, mrs_natural bopt, mrs_natural residual=0);
+		mrs_real synthetize(realvec &peakSet, std::string fileName, std::string outFileName, mrs_natural Nw, mrs_natural D, mrs_natural S, mrs_natural bopt, mrs_natural synType, mrs_natural residual=0);
 
-		void voicingLine(std::string fileName, mrs_natural);
+		void voicingLine(std::string fileName, mrs_natural, mrs_natural twLength);
 		void f0Line(std::string fileName, mrs_natural, mrs_real, mrs_natural);
 	};
 

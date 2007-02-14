@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="marsyas"
 	ProjectGUID="{7ABC801D-6288-47B6-853B-A07F93404686}"
 	RootNamespace="marsyas"
@@ -656,6 +656,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\marsyas\OverlapAdd.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\marsyas\Parallel.cpp"
 				>
 			</File>
@@ -697,6 +701,10 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\PeSimilarity.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\PeSynOsc.cpp"
 				>
 			</File>
 			<File
@@ -1398,6 +1406,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\marsyas\OverlapAdd.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\marsyas\Parallel.h"
 				>
 			</File>
@@ -1439,6 +1451,10 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\PeSimilarity.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\PeSynOsc.h"
 				>
 			</File>
 			<File

@@ -36,7 +36,7 @@ PeCluster::PeCluster()
 	groundLabel = -1;
 	oriLabel=-1;
 	label=-1;
-	histSize = 4000;
+	histSize = 100;
 }
 
 PeCluster::~PeCluster()
@@ -126,10 +126,13 @@ PeCluster::computeAttributes(realvec& peakSet, mrs_natural l, string type, mrs_r
 		}
 		//normalize them
 		amplitudeHistogram/=norm;
-		frequencyHistogram/=norm;
+		// frequencyHistogram/=norm;
 		// compute similarities within cluster
 
 		cuttingFrequency_ = cuttingFrequency;
+
+		extractParameter(set, frequencySet_, pkFrequency, 60);
+	  extractParameter(set, amplitudeSet_, pkAmplitude, 60);
 }
 
 mrs_natural 
@@ -153,7 +156,7 @@ PeCluster::toVec(realvec& vec)
 	vec(i++) = freqStd;
 	vec(i++) = ampMean;
 	vec(i++) = ampStd;
-	vec(i++) = getVoicingFactor();
+	vec(i++) = getVoicingFactor1(0);
 
 	for (j=0;j<envSize ; j++)
 		vec(i++) = frequencyEvolution(j);
@@ -198,8 +201,9 @@ void PeCluster::setLabel (mrs_natural l)
 	label = l;
 }
 
+
 mrs_real 
-PeCluster::getVoicingFactor()
+PeCluster::getVoicingFactor3(mrs_natural fg)
 {
 	//	return frequencyHistogram.maxval();
 
@@ -229,29 +233,93 @@ PeCluster::getVoicingFactor()
 			sum += frequencyHistogram(i);
 		}
 		//
-		return log10(1+sum/(maxVal*2*interval));
+		return sum/(2*interval);
+}
+//
+//mrs_real PeCluster::getF0(mrs_natural fIndex){
+//
+//	// get max from frequencyHistogram
+//	mrs_natural i, index=0, indexStart=0, indexEnd=histSize, interval= (mrs_natural) ceil(histSize/400.0);
+//	mrs_real maxVal=0, sum=0;
+//	// look for the maximum
+//	for (i=0 ; i<histSize ; i++)
+//		if (maxVal < frequencyHistogram(i))
+//		{
+//			index = i;
+//			maxVal = frequencyHistogram(i);
+//		}
+//		return index/(histSize+.0)*cuttingFrequency_;
+//
+//		// get the frequency of the closest peaks or use histValue if too far
+//
+//		// look for better candidate using HWPS
+//
+//}
+//
+
+mrs_real PeCluster::getVoicingFactor2(mrs_natural fIndex)
+{
+	mrs_natural i;
+realvec vFactor(amplitudeSet_.size());
+
+for (i=0 ; i<amplitudeSet_.size() ; i++)
+{
+
+	// fix this !!!!!
+	realvec vec = amplitudeSet_[i];
+  // seek for the highest amplitude peak in the frame
+  mrs_real maxA = vec.maxval();
+  // normalize all data
+  vec/=maxA;
+	// compute the ratio
+	vFactor(i) = maxA/vec.median();
+}
+return vFactor.mean();
 }
 
-mrs_real PeCluster::getF0(mrs_natural fIndex){
 
-	// get max from frequencyHistogram
-	mrs_natural i, index=0, indexStart=0, indexEnd=histSize, interval= (mrs_natural) ceil(histSize/400.0);
-	mrs_real maxVal=0, sum=0;
-	// look for the maximum
-	for (i=0 ; i<histSize ; i++)
-		if (maxVal < frequencyHistogram(i))
-		{
-			index = i;
-			maxVal = frequencyHistogram(i);
-		}
-		return index/(histSize+.0)*cuttingFrequency_;
 
-		// get the frequency of the closest peaks or use histValue if too far
 
-		// look for better candidate using HWPS
 
+
+mrs_real PeCluster::getVoicingFactor1(mrs_natural fIndex)
+{
+	mrs_natural i;
+realvec vFactor(amplitudeSet_.size());
+
+for (i=0 ; i<amplitudeSet_.size() ; i++)
+{
+
+	// fix this !!!!!
+	realvec vec = amplitudeSet_[i];
+  // seek for the highest amplitude peak in the frame
+  mrs_real maxA = vec.maxval();
+  // normalize all data
+  vec/=maxA;
+	// compute the ratio
+	vFactor(i) = maxA/vec.mean();
+}
+return vFactor.mean();
 }
 
+mrs_real PeCluster::getF0(mrs_natural fIndex)
+{
+	mrs_natural i, indexMax;
+realvec f0(amplitudeSet_.size());
+
+for (i=0 ; i<amplitudeSet_.size() ; i++)
+{
+	realvec vec = frequencySet_[i];
+  // seek for the highest amplitude peak in the frame
+  mrs_real maxA = amplitudeSet_[i].maxval(&indexMax);
+ 
+	f0(i) = vec(indexMax);
+	// compute HWPS for every couple with this peak
+}
+
+
+return f0.mean();
+}
 ///////////////////////////////////////////////////////////
 
 //////// Clusters STUFF
@@ -348,13 +416,13 @@ PeClusters::selectGround()
 
 
 mrs_real
-PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mrs_natural Nw, mrs_natural D, mrs_natural S, mrs_natural bopt, mrs_natural residual)
+PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mrs_natural Nw, mrs_natural D, mrs_natural S, mrs_natural bopt, mrs_natural synType, mrs_natural residual)
 {
 	mrs_real snrVal=0;
 	cout << "Synthetizing Clusters" << endl;
 	MarSystemManager mng;
 
-	synthNetCreate(&mng, fileName, 0);
+	synthNetCreate(&mng, fileName, 0, 1);
 	MarSystem* pvseries = mng.create("Series", "pvseries");
 	MarSystem *peSynth = mng.create("PeSynthetize", "synthNet");
 
@@ -404,7 +472,7 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 				fileResName = path + name + "GrdRes_" + ossi.str() + "." + ext;*/
 			}
 
-			synthNetConfigure (pvseries, fileName, outsfname, fileResName, Nw, D, S, 1, 0, bopt, Nw+1-D); //  nbFrames
+			synthNetConfigure (pvseries, fileName, outsfname, fileResName, Nw, D, S, 1, 0, 0, bopt, Nw+1-D); //  nbFrames
 
 			mrs_natural nbActiveFrames=0;
 			mrs_real Snr=0;
@@ -450,14 +518,17 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 
 
 void 
-PeClusters::voicingLine(string fileName, mrs_natural hopSize){
+PeClusters::voicingLine(string fileName, mrs_natural hopSize, mrs_natural twLength){
 
 	ofstream lineFile;
 	lineFile.open(fileName.c_str());
 
 	for (mrs_natural i=0 ; i<nbClusters ; i++)
 	{
-		lineFile << set[i].start*hopSize << " " << set[i].getVoicingFactor() << endl;
+			for(mrs_natural j=0 ; j<twLength ; j++)
+		{
+		lineFile << set[i].start*hopSize << " " << set[i].getVoicingFactor1(j)<< " " << set[i].getVoicingFactor2(j)<< " " << set[i].getVoicingFactor3(j) << endl;
+			}
 	}
 	lineFile.close();
 }

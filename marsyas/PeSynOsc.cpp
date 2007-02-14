@@ -17,89 +17,75 @@
 */
 
 /** 
-    \class PeOverlapadd
-    \brief PeOverlapadd
+    \class PeSynOsc
+    \brief PeSynOsc
 
     Multiply with window (both length Nw) using modulus arithmetic;
 fold and rotate windowed input into output array (FFT) (length N) 
 according to current input time (t)
 */
 
-#include "PeOverlapadd.h"
+#include "PeSynOsc.h"
 
 using namespace std;
 using namespace Marsyas;
 
-PeOverlapadd::PeOverlapadd(string name):MarSystem("PeOverlapadd",name)
+PeSynOsc::PeSynOsc(string name):MarSystem("PeSynOsc",name)
 {
-  //type_ = "PeOverlapadd";
+  //type_ = "PeSynOsc";
   //name_ = name;
 
 	addControls();
 }
 
 
-PeOverlapadd::~PeOverlapadd()
+PeSynOsc::~PeSynOsc()
 {
 }
 
 MarSystem* 
-PeOverlapadd::clone() const 
+PeSynOsc::clone() const 
 {
-  return new PeOverlapadd(*this);
+  return new PeSynOsc(*this);
 }
 
 
 void 
-PeOverlapadd::addControls()
+PeSynOsc::addControls()
 {
-  addctrl("mrs_natural/hopSize", MRS_DEFAULT_SLICE_NSAMPLES /2);
+  addctrl("mrs_natural/synSize", MRS_DEFAULT_SLICE_NSAMPLES);
 	addctrl("mrs_natural/delay", MRS_DEFAULT_SLICE_NSAMPLES /2);
 	addctrl("mrs_natural/nbSinusoids", 0);
 }
 
 void
-PeOverlapadd::myUpdate(MarControlPtr sender)
+PeSynOsc::myUpdate(MarControlPtr sender)
 {
-	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/hopSize"));
+	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/synSize"));
 	setctrl("mrs_natural/onObservations", (mrs_natural)1);
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());    
 
-	mrs_natural N;
-	N = getctrl("mrs_natural/onSamples")->toNatural();
 	delay_ = getctrl("mrs_natural/delay")->toNatural();
 
 	mrs_real fs = getctrl("mrs_real/osrate")->toReal();
 	factor_ = TWOPI/fs;
-
-	tmp_.stretch(N*2);
-	back_.stretch(N);
-	back_.setval(0);
-	// create synthesis window 
-	win_.stretch(N*2);
-
-	for (t=0; t < win_.getSize(); t++)
-    {
-			mrs_real i = 2*PI*t / (win_.getSize());
-      win_(t) = .5 - .5 * cos(i);
-    }
 }
 
 void 
-PeOverlapadd::sine(realvec& out, mrs_real f, mrs_real a, mrs_real p)
+PeSynOsc::sine(realvec& out, mrs_real f, mrs_real a, mrs_real p)
 {
 	int i;
-	int N2 = out.getSize()/2;
+	int N = out.getSize();
 	if(f > 0.0)
 	{
-		for (i=0 ; i<2*N2 ; i++)
+		for (i=0 ; i<N ; i++)
 			out(i) += a*cos(factor_*f*(i-delay_)+p); // consider -fftSize/2 for synth in phase
 //	 cout << f << " " << a << " " << p << endl;
 	}
 	}
 
 void 
-PeOverlapadd::myProcess(realvec& in, realvec& out)
+PeSynOsc::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural N, Nb;
 	int i;
@@ -107,28 +93,15 @@ PeOverlapadd::myProcess(realvec& in, realvec& out)
 	Nb = getctrl("mrs_natural/nbSinusoids")->toNatural();
 	N= out.getSize();
 
-	tmp_.setval(0);
-//cout << in;
+	out.setval(0);
+  //cout << in;
 	for (i=0; i < Nb; i++)
 	{
 		if(in(i+6*Nb) > -1)
-		sine(tmp_, in(i), in(i+Nb), in(i+2*Nb));
+		sine(out, in(i), in(i+Nb), in(i+2*Nb));
 	/*	else
 			cout << "truc" << endl;*/
 	}
-//	tmp_.setval(1);
-	tmp_*=win_;
-
-	for(i=0;i<N;i++)
-		out(i) = back_(i)+tmp_(i);
-
-	//MATLAB_PUT(tmp_, "vec");
-	//MATLAB_PUT(back_, "vec1");
-	//MATLAB_PUT(out, "vec2");
-	//MATLAB_EVAL("figure(1);clf;plot(vec1, 'r'); hold ; plot(vec) ; hold");
-
-	for(i=0;i<N;i++)
-		back_(i) = tmp_(i+N);
 }
 
 
