@@ -29,13 +29,13 @@ class Metro: public QObject {
 public:
 	Metro();
 	~Metro();
+	void stopMetro();
+	void startMetro();
 
 // communication with the QT front-end
 public slots:
   void setTempo(int tempo);
 	void setIntro(int beats);
-	void stopMetro();
-	void startMetro();
 	void beat();
 
 private:

@@ -44,6 +44,7 @@ private slots:
 	void setMetroIntro();
 	void setMetroTempo(int tempo);
 	void beat();
+	void toggleExercise();
 
 private:
 	void createActions();
@@ -102,10 +103,9 @@ private:
 	QAction *aboutAct;
 	QAction *aboutQtAct;
 
-
 	QAction *openExerciseAct;
-	QAction *startMetroAct;
-	QAction *stopMetroAct;
+
+	QAction *toggleMetroAct;
 	QAction *setMetroIntroAct;
 	QAction *setUserInfoAct;
 
@@ -117,6 +117,8 @@ private:
 
   MarBackend *marBackend;
 	void setupMarBackend();
+
+	bool exerciseRunning;
 
 	Metro *metro;
 };

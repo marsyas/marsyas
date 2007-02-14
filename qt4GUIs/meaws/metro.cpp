@@ -23,7 +23,6 @@ using namespace std;
 
 Metro::Metro() {
 	introBeats=0;
-	tempo=60;
 
   MarSystemManager mng;
 
@@ -38,11 +37,9 @@ Metro::Metro() {
 	mrsWrapper->start();
 	positionPtr = mrsWrapper->getctrl("SoundFileSource/srcMetro/mrs_natural/pos");
 
-	int timeBetweenBeats = 60000/tempo;
 	timer = new QTimer();
 	connect(timer, SIGNAL(timeout()), this, SLOT(beat()));
-	timer->start(timeBetweenBeats);
-	timer->stop();
+	setTempo(60);
 }
 
 Metro::~Metro() {
@@ -52,29 +49,26 @@ Metro::~Metro() {
 
 void Metro::setTempo(int getTempo) {
 	tempo = getTempo;
-	float timeBetweenBeats = 60000.0f/tempo;
+	int timeBetweenBeats = 60000/tempo;
 	cout<<"setTempo "<<timeBetweenBeats<<endl;
+	timer->setInterval(timeBetweenBeats);
 }
 
 void Metro::startMetro() {
-	cout<<"play"<<endl;
 	timer->start();
-//	mrsWrapper->play();
+	mrsWrapper->updctrl(positionPtr, 0);
+	mrsWrapper->play();
 }
 
 void Metro::stopMetro() {
-	cout<<"stop"<<endl;
 	timer->stop();
-//	mrsWrapper->pause();
 }
 
 void Metro::setIntro(int beats) {
-	cout<<beats<<" beats intro"<<endl;
 	introBeats = beats;
 }
 
 void Metro::beat() {
-	cout<<"BEAT"<<endl;
 	mrsWrapper->updctrl(positionPtr, 0);
 	mrsWrapper->play();
 }

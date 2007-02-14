@@ -81,12 +81,12 @@ void MarBackend::startIntonation() {
 void MarBackend::startControl() {
 
 }
+/*
 
 void MarBackend::setTempo(float timeBetweenBeats) {
 	cout<<"setTempo "<<timeBetweenBeats<<endl;
 //  e->set_repeat(Repeat( dtos(timeBetweenBeats)+"s" ));
 }
-/*
 void MarBackend::startMarBackend() {
 	cout<<"play"<<endl;
 	mrsWrapper->play();

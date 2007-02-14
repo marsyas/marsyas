@@ -34,10 +34,6 @@ public:
 	void setIntro(int beats);
 	void playBeat();
 
-// communication with the QT front-end
-public slots:
-  void setTempo(float timeBetweenBeats);
-
 private:
 	MarSystemQtWrapper *mrsWrapper;
 

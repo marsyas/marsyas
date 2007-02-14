@@ -101,9 +101,11 @@ void MainWindow::createActions() {
 	setMetroIntroAct = new QAction(QIcon(":/images/player_play.png"), tr("Start..."), this);
 	connect(setMetroIntroAct, SIGNAL(triggered()), this, SLOT(setMetroIntro()));
 
-	startMetroAct = new QAction(QIcon(":/images/player_play.png"), tr("Start..."), this);
+	toggleMetroAct = new QAction(this);
+	toggleMetroAct->setShortcut(tr("Space"));
+	toggleMetroAct->setStatusTip(tr("Start"));
+	toggleMetroAct->setIcon(QIcon(":/images/player_play.png"));
 
-	stopMetroAct = new QAction(QIcon(":/images/player_stop.png"), tr("Stop..."), this);
 }
 
 // main window area
@@ -175,8 +177,7 @@ void MainWindow::createToolBars() {
 //		slider->setMinimumWidth(60);
 	tempoToolBar->addWidget(slider);
 
-	tempoToolBar->addAction(startMetroAct);
-	tempoToolBar->addAction(stopMetroAct);
+	tempoToolBar->addAction(toggleMetroAct);
 
 	connect(slider, SIGNAL(valueChanged(int)),
 		tempoBox, SLOT(setValue(int)));
@@ -305,12 +306,26 @@ void MainWindow::enableActions(int state) {
 	}
 	if (state==3) {   // exercise picked
 		setupMarBackend();
+		exerciseRunning=false;
 		metro = new Metro();
-		connect(startMetroAct, SIGNAL(triggered()), metro, SLOT(startMetro()));
-		connect(stopMetroAct, SIGNAL(triggered()), metro, SLOT(stopMetro()));
+
+		connect(toggleMetroAct, SIGNAL(triggered()), this, SLOT(toggleExercise()));
 
 		tempoToolBar ->setEnabled(true);
+	}
+}
 
+void MainWindow::toggleExercise() {
+	if (exerciseRunning) {   // stop it
+		metro->stopMetro();
+		toggleMetroAct->setStatusTip(tr("Start"));
+		toggleMetroAct->setIcon(QIcon(":/images/player_play.png"));
+		exerciseRunning = !exerciseRunning;
+	} else {   // start it
+		metro->startMetro();
+		toggleMetroAct->setStatusTip(tr("Stop"));
+		toggleMetroAct->setIcon(QIcon(":/images/player_pause.png"));
+		exerciseRunning = !exerciseRunning;
 	}
 }
 
@@ -319,7 +334,7 @@ void MainWindow::setupMarBackend() {
 		delete marBackend;
 		marBackend = NULL;
 	}
-//	marBackend = new MarBackend(testingMethod);
+	//marBackend = new MarBackend(testingMethod);
 
 	// communication with Marsyas backend
 }
