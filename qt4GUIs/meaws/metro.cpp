@@ -30,13 +30,13 @@ Metro::Metro() {
   metroNet = mng.create("Series", "metroNet");
   metroNet->addMarSystem(mng.create("SoundFileSource", "srcMetro"));
   metroNet->addMarSystem(mng.create("AudioSink", "dest"));
-	metroNet->updctrl("SoundFileSource", "sd.wav");
+	metroNet->updctrl("SoundFileSource/srcMetro/mrs_string/filename", "sd.wav");
 //	metroNet->updctrl("AudioSink/src/mrs_real/israte", 44100.0);
   metroNet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
 	mrsWrapper = new MarSystemQtWrapper(metroNet);
 	mrsWrapper->start();
-	posPtr = mrsWrapper->getctrl("SoundFileSource/srcMetro/mrs_natural/pos");
+	positionPtr = mrsWrapper->getctrl("SoundFileSource/srcMetro/mrs_natural/pos");
 
 	int timeBetweenBeats = 60000/tempo;
 	timer = new QTimer();
@@ -75,6 +75,7 @@ void Metro::setIntro(int beats) {
 
 void Metro::beat() {
 	cout<<"BEAT"<<endl;
-  mrsWrapper->updctrl(posPtr, 0);
+	mrsWrapper->updctrl(positionPtr, 0);
+	mrsWrapper->play();
 }
 

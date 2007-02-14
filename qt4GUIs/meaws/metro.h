@@ -48,6 +48,6 @@ private:
 // audio stuff
 	MarSystemQtWrapper *mrsWrapper;
   MarSystem *metroNet;
-  MarControlPtr posPtr;
+  MarControlPtr positionPtr;
 };
 
