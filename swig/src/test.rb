@@ -10,7 +10,7 @@ pipe = Series.new "pipe"
 file = SoundFileSource.new "file"
 gain = Gain.new "gain"
 down = DownSampler.new "down"
-sink = AudioSink.new "sink"
+sink = SoundFileSink.new "sink"
 
 # Attach all the MarSystems together
 [file,gain,down,sink].each {|x| pipe.addMarSystem x }
@@ -55,11 +55,13 @@ if not File.file? arg_file then fail "#{arg_file} must be a file!" end
 file.filename = arg_file
 down.factor = arg_down
 gain.gain = arg_gain
+sink.filename = "output.wav"
 
 # Update all MarSystems to handle changes
 pipe.update
 
 # Loop untill file is finished
 while file.notEmpty
+        puts "hello"
 	pipe.tick()
 end

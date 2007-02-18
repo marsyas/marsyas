@@ -122,6 +122,9 @@ Series::myUpdate(MarControlPtr sender)
 					delete slices_[i];
 					slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
 						marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
+					ostringstream oss;
+					oss << "mrs_realvec/input" << i;
+					setctrl(oss.str(), *(slices_[i]));
 					(slices_[i])->setval(0.0);
 				}
 			}
@@ -129,10 +132,12 @@ Series::myUpdate(MarControlPtr sender)
 			{
 				ostringstream oss;
 				oss << "mrs_realvec/input" << i;
-				addctrl(oss.str(), empty_);      
+
 
 				slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
-					marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
+							 marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
+
+				addctrl(oss.str(), *(slices_[i]));      				
 				(slices_[i])->setval(0.0);
 			}
 		}
@@ -141,9 +146,9 @@ Series::myUpdate(MarControlPtr sender)
 		{
 			for (mrs_natural i=0; i< marsystemsSize_-1; i++)
 			{
-				ostringstream oss;
-				oss << "mrs_realvec/input" << i;
-				setctrl(oss.str(), *(slices_[i]));
+			  ostringstream oss;
+			  oss << "mrs_realvec/input" << i;
+			  setctrl(oss.str(), *(slices_[i]));
 			}
 		}
 		//defaultUpdate();      

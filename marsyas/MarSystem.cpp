@@ -220,6 +220,11 @@ MarSystem::addControls()
 	addctrl("mrs_bool/debug", false, ctrl_debug_);		//no debug by default
 	addctrl("mrs_bool/mute", false, ctrl_mute_);			//unmuted by default
 	addctrl("mrs_bool/active",true, ctrl_active_);		//active by default
+
+
+	addctrl("mrs_realvec/inTick", inTick_, ctrl_inTick_);
+	addctrl("mrs_realvec/outTick", outTick_, ctrl_outTick_);
+
 	ctrl_active_->setState(true);
 
 	active_ = ctrl_active_->to<bool>();
@@ -582,7 +587,7 @@ MarSystem::update(MarControlPtr sender)
 	onObservations_ = ctrl_onObservations_->to<mrs_natural>();
 	onSamples_ = ctrl_onSamples_->to<mrs_natural>();
 	osrate_ = ctrl_osrate_->to<mrs_real>();
-
+	
 	//check active status
 	bool active = ctrl_active_->isTrue();
 	//if active status changed...
@@ -592,14 +597,16 @@ MarSystem::update(MarControlPtr sender)
 		activate(active);
 	}
 
+	
 	//resize input and output realvec if necessary
 	if ((inObservations_ != inTick_.getRows()) ||
 		(inSamples_ != inTick_.getCols())      ||
 		(onObservations_ != outTick_.getRows()) ||
 		(onSamples_ != outTick_.getCols()))
 	{
-		inTick_.create(inObservations_, inSamples_);
-		outTick_.create(onObservations_, onSamples_);
+	  
+	  inTick_.create(inObservations_, inSamples_);
+	  outTick_.create(onObservations_, onSamples_);
 	}
 
 #ifdef MARSYAS_QT
