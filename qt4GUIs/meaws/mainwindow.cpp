@@ -102,7 +102,7 @@ void MainWindow::createActions() {
 	connect(setMetroIntroAct, SIGNAL(triggered()), this, SLOT(setMetroIntro()));
 
 	calcExerciseAct = new QAction(QIcon(":/images/circle.png"), tr("Calculate exercise results"), this);
-	connect(calcExerciseAct, SIGNAL(triggered()), this, SLOT(calExercise()));
+	connect(calcExerciseAct, SIGNAL(triggered()), this, SLOT(calcExercise()));
 
 	toggleMetroAct = new QAction(this);
 	toggleMetroAct->setShortcut(tr("Space"));
