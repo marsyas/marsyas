@@ -130,9 +130,19 @@ void MarBackend::calculate() {
 	   data(i) = samples2hertz((mrs_natural) data(i), pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
    
    pnet->updctrl("RealvecSink/rvSink/mrs_bool/done", 1); 
-	
-	cout << data ;
-	
+
+  int samps = 40;
+  int totsamps, j;
+  totsamps=0;
+  while ( true ) {
+    if (totsamps >= data.getSize()) break;
+    for (j=1; j<samps; j+=2) {
+      totsamps+=2; 
+      if (totsamps >= data.getSize()) break;
+      cout<<data(totsamps+1)<<" ";
+    }
+    cout<<endl<<"-----"<<endl;
+  }
 }
 /*
 void MarBackend::setTempo(float timeBetweenBeats) {

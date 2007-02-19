@@ -45,6 +45,7 @@ private slots:
 	void setMetroTempo(int tempo);
 	void beat();
 	void toggleExercise();
+	void calcExercise();
 
 private:
 	void createActions();
@@ -108,6 +109,7 @@ private:
 	QAction *toggleMetroAct;
 	QAction *setMetroIntroAct;
 	QAction *setUserInfoAct;
+	QAction *calcExerciseAct;
 
 	QLabel *exerciseTitle;
 

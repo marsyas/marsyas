@@ -98,8 +98,11 @@ void MainWindow::createActions() {
 	openExerciseAct->setStatusTip(tr("Open a new exercise"));
 	connect(openExerciseAct, SIGNAL(triggered()), this, SLOT(openExercise()));
 
-	setMetroIntroAct = new QAction(QIcon(":/images/player_play.png"), tr("Start..."), this);
+	setMetroIntroAct = new QAction(QIcon(":/images/triangle.png"), tr("Set metronome introduction"), this);
 	connect(setMetroIntroAct, SIGNAL(triggered()), this, SLOT(setMetroIntro()));
+
+	calcExerciseAct = new QAction(QIcon(":/images/circle.png"), tr("Calculate exercise results"), this);
+	connect(calcExerciseAct, SIGNAL(triggered()), this, SLOT(calExercise()));
 
 	toggleMetroAct = new QAction(this);
 	toggleMetroAct->setShortcut(tr("Space"));
@@ -178,6 +181,7 @@ void MainWindow::createToolBars() {
 	tempoToolBar->addWidget(slider);
 
 	tempoToolBar->addAction(toggleMetroAct);
+	tempoToolBar->addAction(calcExerciseAct);
 
 	connect(slider, SIGNAL(valueChanged(int)),
 		tempoBox, SLOT(setValue(int)));
@@ -313,6 +317,9 @@ void MainWindow::enableActions(int state) {
 
 		tempoToolBar ->setEnabled(true);
 	}
+	if (state==4) {   // exercise results
+
+	}
 }
 
 void MainWindow::toggleExercise() {
@@ -367,11 +374,13 @@ void MainWindow::setMetroIntro() {
 		metroIntroBeats=i;
 		metro->setIntro(metroIntroBeats);
 	}
-// FIXME
-	marBackend->calculate();
 }
 
 void MainWindow::setMetroTempo(int tempo) {
 	metro->setTempo(tempo);
+}
+
+void MainWindow::calcExercise() {
+	marBackend->calculate();
 }
 
