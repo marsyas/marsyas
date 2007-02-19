@@ -7,8 +7,15 @@ RESOURCES = icons.qrc
 TARGET = runme
 VERSION = 0.4
 #CONFIG = qt
-INCLUDEPATH += ${HOME}/usr/include/marsyas
+unix:INCLUDEPATH += ${HOME}/usr/include/marsyas
+win32:INCLUDEPATH += ../../marsyas
+
 unix:LIBS += -lmarsyas -L${HOME}/usr/lib 
-!macx:LIBS += -lasound
+unix:LIBS += -lasound
+
 macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
+ 
+win32:DEFINES += __WINDOWS_DS__
+win32:LIBS += -ldsound -L\"$$(DXSDK_DIR)Lib\x86\" #DXSDK_DIR must be defined as an environment variable in windows!
+win32:INCLUDEPATH += "$$(DXSDK_DIR)"Include\ #include path for dsound.h
 
