@@ -26,7 +26,8 @@ unix:LIBS += -lm
 macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
 
 # Input
-HEADERS += MarSystemWrapper.h MarPhasevocoderWindow.h  
+HEADERS += ../MarSystemQtWrapper.h MarPhasevocoderWindow.h MarControlGUI.h 
 SOURCES += main.cpp \
-           MarSystemWrapper.cpp \
-	       MarPhasevocoderWindow.cpp 
+           ../MarSystemQtWrapper.cpp \
+	       MarPhasevocoderWindow.cpp \
+	       MarControlGUI.cpp

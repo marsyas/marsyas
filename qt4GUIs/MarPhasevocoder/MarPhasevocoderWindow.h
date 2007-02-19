@@ -9,10 +9,12 @@
 #include <QPushButton>
 #include <QMainWindow>
 
+#include "common.h"
 #include "MarSystem.h"
 #include "MarSystemManager.h" 
-#include "MarSystemWrapper.h" 
-#include "common.h"
+#include "MarControlGUI.h"
+#include "../MarSystemQtWrapper.h" 
+
 
 class MarPhasevocoderWindow : public QMainWindow
 {
@@ -34,12 +36,19 @@ private:
   void createMenus();
   void createActions();
   void createNetwork();
-
+  void startNetwork();
+  
   
   
   MarSystem* pvoc_;
-  MarSystemWrapper* mwr_;
+  MarSystemQtWrapper* mwr_;
   
+  MarControlPtr freqPtr_;
+  MarControlPtr initPtr_;
+  MarControlPtr fnamePtr_;
+  MarControlGUI* freqControl_;
+  
+
   QMenu*   fileMenu;  
   QMenu*   helpMenu;
   QAction* openAct;

@@ -11,6 +11,7 @@
 #include <QString>
 #include <QMutex>
 #include <QSemaphore>
+#include <QWaitCondition>
 #include "common.h"
 #include "MarSystemManager.h"
 
@@ -28,6 +29,19 @@ public:
 
 public slots:
   void updctrl(MarControlPtr control, MarControlPtr cval);
+  void updctrl(std::string cname, MarControlPtr newcontrol) 
+	      {
+	          MarControlPtr control = main_pnet_->getControl(cname);
+		  return updctrl(control, newcontrol);
+	      }
+  void updctrl(char *cname, MarControlPtr newcontrol) 
+	  	{
+		  MarControlPtr control = main_pnet_->getControl(cname);
+		  return updctrl(control, newcontrol);
+		}
+
+
+
   MarControlPtr getctrl(string cname);
   
   void play();
@@ -41,6 +55,7 @@ signals:
 private:
   QMutex mutex_;
   bool abort_;
+  QWaitCondition condition_; 
   
   // the underlying MarSystem
   MarSystem* main_pnet_;

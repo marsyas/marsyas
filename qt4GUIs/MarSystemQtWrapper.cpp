@@ -16,8 +16,11 @@ MarSystemQtWrapper::MarSystemQtWrapper(MarSystem* msys)
 
 MarSystemQtWrapper::~MarSystemQtWrapper()
 {
- abort_ = true;
- wait();
+  mutex_.lock();
+  abort_ = true;
+  condition_.wakeOne();
+  mutex_.unlock();
+  wait();
 }
 
 MarControlPtr 
@@ -70,6 +73,7 @@ MarSystemQtWrapper::play()
   mutex_.lock();
   main_pnet_->updctrl("mrs_bool/active", true);
   pause_ = false;
+  condition_.wakeAll();
   mutex_.unlock();
 } 
 
@@ -87,6 +91,13 @@ MarSystemQtWrapper::run()
       if (abort_) 
 	    return;
       
+      if (pause_) 
+       {
+	      condition_.wait(&mutex_);
+	      pause_ = false;
+       }
+
+      	
       for (vsi = control_names_.begin(),
 	     vvi = control_values_.begin();
 	   vsi != control_names_.end(); ++vsi, ++vvi)
@@ -103,7 +114,9 @@ MarSystemQtWrapper::run()
       if (pause_) 
          msleep(300);	
       else 
-         main_pnet_->tick();	
+	{
+	  main_pnet_->tick();	
+	}
       
 
     }

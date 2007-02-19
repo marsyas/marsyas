@@ -36,7 +36,8 @@ MarPhasevocoderWindow::MarPhasevocoderWindow()
   QLabel  *volumeLabel  = new QLabel("Volume");
   QSlider *volumeSlider = new QSlider(Qt::Horizontal);
 
-  QLabel  *freqLabel  = new QLabel("Frequency");
+  QLabel  *freqLabel1  = new QLabel("Frequency");
+  QLabel  *freqLabel2  = new QLabel("Frequency");
   QSlider *freqSlider = new QSlider(Qt::Horizontal);
 
   QLabel  *timeLabel  = new QLabel("Time");
@@ -51,6 +52,9 @@ MarPhasevocoderWindow::MarPhasevocoderWindow()
   
 
 
+  createNetwork();
+
+
   QGridLayout *gridLayout = new QGridLayout;
 
   gridLayout->addWidget(sinusoidsLabel, 0, 0);
@@ -59,16 +63,20 @@ MarPhasevocoderWindow::MarPhasevocoderWindow()
   gridLayout->addWidget(volumeLabel, 0, 1);
   gridLayout->addWidget(volumeSlider, 1, 1);
 
-  gridLayout->addWidget(freqLabel, 2, 0);
+  gridLayout->addWidget(freqLabel1, 2, 0);
   gridLayout->addWidget(freqSlider, 3, 0);
 
   gridLayout->addWidget(timeLabel, 2, 1);
   gridLayout->addWidget(timeSlider, 3, 1);
 
+  gridLayout->addWidget(freqLabel2, 4, 0);
+  gridLayout->addWidget(freqControl_, 5, 0);
+  
 
   connect(timeSlider, SIGNAL(valueChanged(int)), this, SLOT(timeChanged(int)));
   connect(volumeSlider, SIGNAL(valueChanged(int)), this, SLOT(volumeChanged(int)));
   connect(freqSlider, SIGNAL(valueChanged(int)), this, SLOT(freqChanged(int)));
+  
   connect(sinusoidsSlider, SIGNAL(valueChanged(int)), this, SLOT(sinusoidsChanged(int)));
   
   
@@ -77,7 +85,9 @@ MarPhasevocoderWindow::MarPhasevocoderWindow()
   
   w->setLayout(gridLayout);
 
-  createNetwork();
+
+  
+  startNetwork();
   
 
 }
@@ -117,9 +127,7 @@ MarPhasevocoderWindow::freqChanged(int value)
 {
   
   float pitchShift = value * 1.0 / 50.0;
-  
-  mwr_->updctrl("PvOscBank/ob/mrs_real/PitchShift", pitchShift);  
-
+  mwr_->updctrl(freqPtr_, pitchShift);
 }
 
 
@@ -132,7 +140,7 @@ MarPhasevocoderWindow::createNetwork()
   mrs_natural N = 512;
   mrs_natural Nw = 512;
   mrs_natural I = iopt;
-  mrs_natural P = popt;
+  mrs_real P = popt;
   mrs_natural D = dopt;
   string sfName("vlobos.au");
   
@@ -174,14 +182,25 @@ MarPhasevocoderWindow::createNetwork()
   pvoc_->updctrl("ShiftOutput/so/mrs_natural/WindowSize", Nw);      
   pvoc_->updctrl("ShiftOutput/so/mrs_natural/Decimation", D);
   pvoc_->updctrl("Gain/gain/mrs_real/gain", gopt_);
- 
 
-  mwr_ = new MarSystemWrapper(pvoc_);
-  mwr_->start();  
 
-  mwr_->play();
+  mwr_ = new MarSystemQtWrapper(pvoc_);
+  freqPtr_ = mwr_->getctrl("PvOscBank/ob/mrs_real/PitchShift");
+  initPtr_ = mwr_->getctrl("AudioSink/dest/mrs_bool/initAudio");
+  fnamePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_string/filename");
+  
+  freqControl_ = new MarControlGUI(freqPtr_, mwr_, this);
+  
+
 
 }
+
+void 
+MarPhasevocoderWindow::startNetwork()
+{
+  mwr_->start();
+}
+
 
 
   
@@ -216,10 +235,13 @@ MarPhasevocoderWindow::createActions()
 void 
 MarPhasevocoderWindow::open()
 {
-  QString fileName = QFileDialog::getOpenFileName(this);
+  cout << "open called" << endl;
   
-  mwr_->updctrl("SoundFileSource/src/mrs_string/filename", fileName.toStdString());
-  mwr_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+  QString fileName = QFileDialog::getOpenFileName(this);
+  mwr_->play();
+  
+  mwr_->updctrl(fnamePtr_, fileName.toStdString());
+  mwr_->updctrl(initPtr_, true);
 }
 
 
