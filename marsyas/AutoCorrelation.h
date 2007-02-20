@@ -38,6 +38,8 @@ class AutoCorrelation: public MarSystem
 private:
   fft *myfft_;
   realvec scratch_;
+  realvec norm_;
+  mrs_natural normalize_;
   virtual void addControls();
 	void myUpdate(MarControlPtr sender);
   

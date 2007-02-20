@@ -26,6 +26,7 @@ Fast Fourier Transform (FFT).
 */
 
 #include "AutoCorrelation.h"
+#include "Windowing.h"
 
 using namespace std;
 using namespace Marsyas;
@@ -63,7 +64,8 @@ void
 AutoCorrelation::addControls()
 {
   addctrl("mrs_real/magcompress", 2.0);
-  
+   addctrl("mrs_natural/normalize", 0);
+    setctrlState("mrs_natural/normalize", true);
 	//delete myfft_; //[?]
   //myfft_ = new fft();//[?]
 }
@@ -85,6 +87,27 @@ AutoCorrelation::myUpdate(MarControlPtr sender)
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
   
   scratch_.create(2*getctrl("mrs_natural/onSamples")->toNatural());
+  
+  // only working for hanning window
+  normalize_ = 0;
+  if(getctrl("mrs_natural/normalize")->toNatural())
+  {
+	  normalize_ = 1;
+  norm_.create(getctrl("mrs_natural/onSamples")->toNatural());
+  norm_.setval(1);
+  Windowing win("Windowing");
+  win.updctrl("mrs_string/type", "Hanning");
+  win.updctrl("mrs_natural/inSamples", norm_.getCols());
+  win.updctrl("mrs_natural/inObservations", norm_.getRows());
+  win.process(norm_, norm_);
+  AutoCorrelation autocorr("Autocorrelation");
+  autocorr.updctrl("mrs_natural/inSamples", norm_.getCols());
+  autocorr.updctrl("mrs_natural/inObservations", norm_.getRows());
+  autocorr.update();
+  autocorr.process(norm_, norm_);
+  for (mrs_natural i = 0 ; i < norm_.getSize() ; i++)
+	  norm_(i) = 1/norm_(i);
+  }
 }
 
 void 
@@ -145,7 +168,11 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
       myfft_->rfft(tmp, inSamples_/2, FFT_INVERSE);
       
       // Copy to output 
+	  if(normalize_)
       for (t=0; t < inSamples_; t++)  
+	out(o,t) = scratch_(t)*norm_(t);
+	  else
+		  for (t=0; t < inSamples_; t++)  
 	out(o,t) = scratch_(t);
     }
 
