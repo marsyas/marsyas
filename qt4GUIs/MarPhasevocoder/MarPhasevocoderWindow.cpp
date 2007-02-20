@@ -38,7 +38,7 @@ MarPhasevocoderWindow::MarPhasevocoderWindow()
 
   QLabel  *freqLabel1  = new QLabel("Frequency");
   QLabel  *freqLabel2  = new QLabel("Frequency");
-  QSlider *freqSlider = new QSlider(Qt::Horizontal);
+  freqSlider_ = new QSlider(Qt::Horizontal);
 
   QLabel  *timeLabel  = new QLabel("Time");
   QSlider *timeSlider = new QSlider(Qt::Horizontal);
@@ -46,7 +46,7 @@ MarPhasevocoderWindow::MarPhasevocoderWindow()
   sinusoidsLabel->setMinimumWidth(150);
   volumeLabel->setMinimumWidth(150);
   
-  freqSlider->setValue(50);
+  freqSlider_->setValue(50);
   timeSlider->setValue(50);
   sinusoidsSlider->setValue(10);
   
@@ -64,7 +64,7 @@ MarPhasevocoderWindow::MarPhasevocoderWindow()
   gridLayout->addWidget(volumeSlider, 1, 1);
 
   gridLayout->addWidget(freqLabel1, 2, 0);
-  gridLayout->addWidget(freqSlider, 3, 0);
+  gridLayout->addWidget(freqSlider_, 3, 0);
 
   gridLayout->addWidget(timeLabel, 2, 1);
   gridLayout->addWidget(timeSlider, 3, 1);
@@ -75,12 +75,16 @@ MarPhasevocoderWindow::MarPhasevocoderWindow()
 
   connect(timeSlider, SIGNAL(valueChanged(int)), this, SLOT(timeChanged(int)));
   connect(volumeSlider, SIGNAL(valueChanged(int)), this, SLOT(volumeChanged(int)));
-  connect(freqSlider, SIGNAL(valueChanged(int)), this, SLOT(freqChanged(int)));
+  connect(freqSlider_, SIGNAL(valueChanged(int)), this, SLOT(freqChanged(int)));
   
   connect(sinusoidsSlider, SIGNAL(valueChanged(int)), this, SLOT(sinusoidsChanged(int)));
   
+
+  connect(mwr_, SIGNAL(ctrlChanged(MarControlPtr,MarControlPtr)), 
+	  this, SLOT(ctrlChanged(MarControlPtr, MarControlPtr)));
   
-  
+		      
+		      
 
   
   w->setLayout(gridLayout);
@@ -123,10 +127,32 @@ MarPhasevocoderWindow::volumeChanged(int value)
 }
 
 void 
+MarPhasevocoderWindow::ctrlChanged(MarControlPtr cname, MarControlPtr cvalue)
+{
+  string name = cname->getName();
+  
+  if (name == "mrs_real/PitchShift") 
+    {
+      freqSlider_->blockSignals(true);
+      mrs_real fval = cvalue->to<mrs_real>();
+      int val = (int)(fval * 50.0);
+      freqSlider_->setValue(val);
+      freqSlider_->blockSignals(false);
+      freqControl_->updControl(cname);
+    }
+  else 
+    cout << "something else" << endl;
+  
+}
+
+
+void 
 MarPhasevocoderWindow::freqChanged(int value)
 {
   
   float pitchShift = value * 1.0 / 50.0;
+  cout << "slider value " << value << endl;
+  cout << "pitchShift = " << pitchShift << endl;
   mwr_->updctrl(freqPtr_, pitchShift);
 }
 
@@ -235,7 +261,6 @@ MarPhasevocoderWindow::createActions()
 void 
 MarPhasevocoderWindow::open()
 {
-  cout << "open called" << endl;
   
   QString fileName = QFileDialog::getOpenFileName(this);
   mwr_->play();

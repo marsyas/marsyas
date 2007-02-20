@@ -50,7 +50,6 @@ public slots:
 
 signals:
   void ctrlChanged(MarControlPtr cname, MarControlPtr cvalue);
-  void posChanged(int val);
 	
 private:
   QMutex mutex_;

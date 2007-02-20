@@ -30,7 +30,7 @@ public slots:
    void freqChanged(int value);
    void sinusoidsChanged(int value);
    void open();  
-
+   void ctrlChanged(MarControlPtr cname, MarControlPtr cvalue);
 
 private:
   void createMenus();
@@ -47,6 +47,8 @@ private:
   MarControlPtr initPtr_;
   MarControlPtr fnamePtr_;
   MarControlGUI* freqControl_;
+  
+  QSlider* freqSlider_;
   
 
   QMenu*   fileMenu;  
