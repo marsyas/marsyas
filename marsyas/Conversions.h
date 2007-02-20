@@ -35,6 +35,7 @@ namespace Marsyas
 mrs_real pitch2hertz(mrs_real pitch);
 mrs_natural hertz2samples(mrs_real hz, mrs_real srate);
 mrs_real samples2hertz(mrs_natural samples, mrs_real srate);
+mrs_real samples2hertz(mrs_real samples, mrs_real srate);
 mrs_real hertz2pitch(mrs_real hz);
 
 mrs_natural time2samples(std::string time, mrs_real srate);
@@ -45,6 +46,8 @@ mrs_real dB2amplitude(mrs_real a);
 
 mrs_real hertz2bark(mrs_real f);
 mrs_real bark2hertz(mrs_real f);
+
+mrs_natural powerOfTwo(mrs_real v);
 
 }//namespace Marsyas
 

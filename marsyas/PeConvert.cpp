@@ -287,7 +287,6 @@ PeConvert::myProcess(realvec& in, realvec& out)
 		out.setval(0);
 
 	time_++;
-
 	// MATLAB_PUT(out, "peaks");
 	// MATLAB_PUT(kmax_, "k");
 	// MATLAB_EVAL("figure(1);clf;plot(peaks(6*k+1:7*k));");

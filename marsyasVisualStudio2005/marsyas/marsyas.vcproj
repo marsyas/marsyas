@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="marsyas"
 	ProjectGUID="{7ABC801D-6288-47B6-853B-A07F93404686}"
 	RootNamespace="marsyas"
@@ -689,10 +689,6 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\PeConvert.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\marsyas\PeOverlapadd.cpp"
 				>
 			</File>
 			<File

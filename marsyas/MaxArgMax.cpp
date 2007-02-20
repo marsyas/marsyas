@@ -17,10 +17,10 @@
 */
 
 /** 
-    \class MaxArgMax
-    \brief Calculate k maximums and their positions
+\class MaxArgMax
+\brief Calculate k maximums and their positions
 
-    The output is : max1, argmax1, max2, argmax2, .... 
+The output is : max1, argmax1, max2, argmax2, .... 
 */
 
 #include "MaxArgMax.h"
@@ -30,8 +30,8 @@ using namespace Marsyas;
 
 MaxArgMax::MaxArgMax(string name):MarSystem("MaxArgMax",name)
 {
-  //type_ = "MaxArgMax";
-  //name_ = name;
+	//type_ = "MaxArgMax";
+	//name_ = name;
 
 	addControls();
 }
@@ -45,59 +45,78 @@ MaxArgMax::~MaxArgMax()
 MarSystem* 
 MaxArgMax::clone() const 
 {
-  return new MaxArgMax(*this);
+	return new MaxArgMax(*this);
 }
 
 
 void 
 MaxArgMax::addControls()
 {
-  addctrl("mrs_natural/nMaximums", (mrs_natural)1);
-  setctrlState("mrs_natural/nMaximums", true);
+	addctrl("mrs_natural/nMaximums", (mrs_natural)1);
+	addctrl("mrs_natural/interpolation", (mrs_natural)0);
+	setctrlState("mrs_natural/nMaximums", true);
 }
 
 
 void
 MaxArgMax::myUpdate(MarControlPtr sender)
 {
-  mrs_natural k = getctrl("mrs_natural/nMaximums")->toNatural();
-  
-  setctrl("mrs_natural/onSamples",  2 * k);
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
+	mrs_natural k = getctrl("mrs_natural/nMaximums")->toNatural();
+
+	setctrl("mrs_natural/onSamples",  2 * k);
+	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
 }
 
+void quadraticInterpolation(mrs_real *ix, mrs_real *iy, realvec& data)
+{
+	mrs_natural index = (mrs_natural) *ix;
+    mrs_real d = (data(index-1)-data(index+1))/(2*(-2*data(index)+data(index-1)+data(index+1))); 
+	*ix += d;
+	*iy -= d*(data(index-1)-data(index+1))/4;
+}
 
 
 void 
 MaxArgMax::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
+	//checkFlow(in,out);
+
+	//cout << in;
+
+	out.setval(0.0);
+	mrs_natural k = getctrl("mrs_natural/nMaximums")->toNatural();
+	mrs_natural interpolationMode = getctrl("mrs_natural/interpolation")->toNatural();
 
 
-  
-  out.setval(0.0);
-  mrs_natural k = getctrl("mrs_natural/nMaximums")->toNatural();
-
-  
-// ML should replace 0 by o [?]
-    for (o=0; o < inObservations_; o++)
-      for (t=0; t < inSamples_; t++)
+	// ML should replace 0 by o [?]
+	for (o=0; o < inObservations_; o++)
 	{
-	  mrs_real newmax = in(0,t);
-	  mrs_real newmax_i = t;
-	  for (ki=0; ki < k; ki++)
-	    {
-	      if (newmax > out(0, 2*ki))
+		for (t=0; t < inSamples_; t++)
 		{
-		  mrs_real oldmax = out(0, 2*ki);
-		  mrs_real oldmax_i = out(0,2*ki+1);
-		  out(0,2*ki) = newmax;
-		  out(0,2*ki+1) = newmax_i;
-		  newmax = oldmax;
-		  newmax_i = oldmax_i;
+			mrs_real newmax = in(0,t);
+			mrs_real newmax_i = t;
+			for (ki=0; ki < k; ki++)
+			{
+				if (newmax > out(0, 2*ki))
+				{
+					mrs_real oldmax = out(0, 2*ki);
+					mrs_real oldmax_i = out(0,2*ki+1);
+					out(0,2*ki) = newmax;
+					out(0,2*ki+1) = newmax_i;
+					newmax = oldmax;
+					newmax_i = oldmax_i;
+				}
+			}
 		}
-	    }
+		if(interpolationMode)
+			for (ki=0; ki < k; ki++)
+			{
+				mrs_real ix =  out(0,2*ki+1), iy =  out(0,2*ki);
+				quadraticInterpolation(&ix, &iy, in);
+				out(0,2*ki) = iy;
+				out(0,2*ki+1) = ix;
+			}
 	}
 }
 
@@ -107,8 +126,8 @@ MaxArgMax::myProcess(realvec& in, realvec& out)
 
 
 
-	
 
-	
 
-	
+
+
+

@@ -41,6 +41,12 @@ Marsyas::samples2hertz(mrs_natural samples, mrs_real srate) {
     return (samples == 0.0)  ? (mrs_real)0.0 : (mrs_real) (srate * 1.0) / (samples);
 }
 
+mrs_real
+Marsyas::samples2hertz(mrs_real samples, mrs_real srate) {
+    return (samples == 0.0)  ? (mrs_real)0.0 : (mrs_real) (srate * 1.0) / (samples);
+}
+
+
 mrs_natural
 Marsyas::hertz2samples(mrs_real hz, mrs_real srate) {
   return (hz == 0.0) ? (mrs_natural)0 : (mrs_natural) (srate / hz);
@@ -163,8 +169,6 @@ return pow(10.0, a/20);
 }
 
 
-
-
 mrs_real Marsyas::hertz2bark(mrs_real f)
 {
 return  6 * log(f/600 + sqrt(1+ (pow(f/600,2)))); // 6*asinh(f/600);
@@ -175,3 +179,13 @@ mrs_real Marsyas::bark2hertz(mrs_real f)
 return 600*sinh(f/6);
 }
 
+mrs_natural Marsyas::powerOfTwo(mrs_real v)
+{
+	mrs_natural n=1, res=0;
+	while(res < v)
+	{
+		res = pow(2.0, n);
+		n++;
+	}
+	return res;
+}

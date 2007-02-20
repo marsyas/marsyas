@@ -125,7 +125,7 @@ void Marsyas::extractParameter(realvec&in, std::vector<realvec>& out, pkParamete
 	mrs_natural frameIndex=-1, startIndex = (mrs_natural) in(0, 5);
 	realvec vec(kmax);
 	//out.setval(0);
-	for (i=0 ; i<in.getRows() ; i++, k++)
+	for (i=0 ; i<in.getRows() ; i++)
 	{
 		if(frameIndex != in(i, 5))
 		{
@@ -142,9 +142,11 @@ void Marsyas::extractParameter(realvec&in, std::vector<realvec>& out, pkParamete
 			frameIndex = (mrs_natural) in(i, 5);
 			k=0;
 		}
-		if(in(i, 5) >= startIndex)
-			vec(k) = in(i, type);
-	}
+		if(in(i, 5) == frameIndex)
+		{
+			vec(k++) = in(i, type);
+		}
+		}
 	if(k)
 	{
 		vec.stretch(k);

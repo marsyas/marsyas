@@ -183,12 +183,12 @@ MarSystemManager::MarSystemManager()
 
 	registerPrototype("PeConvert", new PeConvert("peconvp"));
 	registerPrototype("PeClust", new PeClust("peclust"));
- registerPrototype("OverlapAdd", new OverlapAdd("oa"));
+	registerPrototype("OverlapAdd", new OverlapAdd("oa"));
 	registerPrototype("PeSynOsc", new PeSynOsc("pso"));
 	registerPrototype("PeResidual", new PeResidual("peres"));
 	registerPrototype("RealvecSource", new RealvecSource("realvecSrc"));
-  registerPrototype("RealvecSink", new RealvecSink("realvecSink"));
-  registerPrototype("Power", new Power("pow"));
+	registerPrototype("RealvecSink", new RealvecSink("realvecSink"));
+	registerPrototype("Power", new Power("pow"));
 
 	registerPrototype("AuFileSource", new AuFileSource("aufp"));
 	registerPrototype("WavFileSource", new WavFileSource("wavfp"));
@@ -198,7 +198,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("WavFileSink", new WavFileSink("wavsinkp"));
 
 	registerPrototype("Mono2Stereo", new Mono2Stereo("mono2stereop"));
-	
+
 	registerPrototype("Hamming", new Hamming("hmp"));  
 	registerPrototype("Windowing", new Windowing("win"));
 	registerPrototype("PowerSpectrum", new PowerSpectrum("pspkp"));
@@ -214,7 +214,7 @@ MarSystemManager::MarSystemManager()
 
 	registerPrototype("Confidence", new Confidence("confp"));
 	registerPrototype("Rms", new Rms("rms"));
-    registerPrototype("Peak2Rms", new Peak2Rms("peakrms"));
+	registerPrototype("Peak2Rms", new Peak2Rms("peakrms"));
 	registerPrototype("WekaSink", new WekaSink("wsink"));
 	registerPrototype("MFCC", new MFCC("mfcc"));
 	registerPrototype("SCF", new SCF("scf"));
@@ -318,7 +318,7 @@ MarSystemManager::MarSystemManager()
 	pspectpr->linkctrl("mrs_real/cutoff","Spectrum/spk/mrs_real/cutoff");
 	pspectpr->linkctrl("mrs_natural/WindowSize","ShiftInput/si/mrs_natural/WindowSize");
 	registerPrototype("PowerSpectrumNet", pspectpr);
-	
+
 	// LPC composite prototype
 	MarSystem* LPCnetpr = new Series("lpcnetpr");
 	// create and configure the pre-emphasis filter as a FIR:
@@ -387,52 +387,97 @@ MarSystemManager::MarSystemManager()
 	//protoptype for pitch Extraction using SACF
 
 	MarSystem* pitchSACF = new Series("pitchSACF");
-  pitchSACF->addMarSystem(create("AutoCorrelation", "acr"));
-  pitchSACF->updctrl("AutoCorrelation/acr/mrs_real/magcompress", 0.67);
-  pitchSACF->addMarSystem(create("HalfWaveRectifier", "hwr"));
-  MarSystem* fanout = create("Fanout", "fanout");
-  fanout->addMarSystem(create("Gain", "id1"));
-  fanout->addMarSystem(create("TimeStretch", "tsc"));
-  pitchSACF->addMarSystem(fanout);
-  MarSystem* fanin = create("Fanin", "fanin");
-  fanin->addMarSystem(create("Gain", "id2"));
-  fanin->addMarSystem(create("Negative", "nid"));
-  pitchSACF->addMarSystem(fanin);
-  pitchSACF->addMarSystem(create("HalfWaveRectifier", "hwr"));
-  pitchSACF->addMarSystem(create("Peaker", "pkr"));
-  pitchSACF->addMarSystem(create("MaxArgMax", "mxr"));
+	//pitchSACF->addMarSystem(create("Windowing", "wi"));
+	pitchSACF->addMarSystem(create("AutoCorrelation", "acr"));
+    pitchSACF->updctrl("AutoCorrelation/acr/mrs_real/magcompress", .67);
+	// pitchSACF->updctrl("AutoCorrelation/acr/mrs_natural/normalize", 1);
+	pitchSACF->addMarSystem(create("HalfWaveRectifier", "hwr"));
+	MarSystem* fanout = create("Fanout", "fanout");
+	fanout->addMarSystem(create("Gain", "id1"));
+	fanout->addMarSystem(create("TimeStretch", "tsc"));
+	pitchSACF->addMarSystem(fanout);
+	MarSystem* fanin = create("Fanin", "fanin");
+	fanin->addMarSystem(create("Gain", "id2"));
+	fanin->addMarSystem(create("Negative", "nid"));
+	pitchSACF->addMarSystem(fanin);
+	pitchSACF->addMarSystem(create("HalfWaveRectifier", "hwr"));
+	pitchSACF->addMarSystem(create("Peaker", "pkr"));
+	pitchSACF->addMarSystem(create("MaxArgMax", "mxr"));
 
-  // should be adapted to the sampling frequency !!
-  pitchSACF->updctrl("mrs_natural/inSamples", 1024);
-  pitchSACF->updctrl("Fanout/fanout/TimeStretch/tsc/mrs_real/factor", 0.5);  
+	// should be adapted to the sampling frequency !!
+	pitchSACF->updctrl("mrs_natural/inSamples", 512);
+	pitchSACF->updctrl("Fanout/fanout/TimeStretch/tsc/mrs_real/factor", 0.5);  
+	// pitchSACF->updctrl("Windowing/wi/mrs_string/type", "Hanning");
+	pitchSACF->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.00);
+	// pitchSACF->updctrl("Peaker/pkr/mrs_natural/interpolation", 1);
+	pitchSACF->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.4);
+	pitchSACF->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 1);
+	// pitchSACF->updctrl("MaxArgMax/mxr/mrs_natural/interpolation", 1);
+	pitchSACF->linkctrl("mrs_natural/lowSamples", "Peaker/pkr/mrs_natural/peakStart");
+	pitchSACF->linkctrl("mrs_natural/highSamples", "Peaker/pkr/mrs_natural/peakEnd");
+	// set default values
+	mrs_real lowPitch = 36;
+	mrs_real highPitch = 79;
+	mrs_real lowFreq = pitch2hertz(lowPitch);
+	mrs_real highFreq = pitch2hertz(highPitch);
 
-  pitchSACF->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.00);
-  pitchSACF->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.4);
-  pitchSACF->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 1);
-  pitchSACF->linkctrl("mrs_natural/lowSamples", "Peaker/pkr/mrs_natural/peakStart");
-  pitchSACF->linkctrl("mrs_natural/highSamples", "Peaker/pkr/mrs_natural/peakEnd");
-// set default values
-  mrs_real lowPitch = 36;
-  mrs_real highPitch = 79;
-  mrs_real lowFreq = pitch2hertz(lowPitch);
-  mrs_real highFreq = pitch2hertz(highPitch);
+	mrs_natural lowSamples = 
+		hertz2samples(highFreq, pitchSACF->getctrl("mrs_real/osrate")->toReal());
+	mrs_natural highSamples = 
+		hertz2samples(lowFreq, pitchSACF->getctrl("mrs_real/osrate")->toReal());
 
-  mrs_natural lowSamples = 
-     hertz2samples(highFreq, pitchSACF->getctrl("mrs_real/osrate")->toReal());
-  mrs_natural highSamples = 
-     hertz2samples(lowFreq, pitchSACF->getctrl("mrs_real/osrate")->toReal());
- 
-  pitchSACF->updctrl("mrs_natural/lowSamples", lowSamples);
-  pitchSACF->updctrl("mrs_natural/highSamples", highSamples);
+	pitchSACF->updctrl("mrs_natural/lowSamples", lowSamples);
+	pitchSACF->updctrl("mrs_natural/highSamples", highSamples);
 
-  registerPrototype("PitchSACF", pitchSACF);
+	registerPrototype("PitchSACF", pitchSACF);
+
+	//protoptype for pitch Extraction using Praat-Like implementation
+    // see details and discussion in
+	// http://www.fon.hum.uva.nl/paul/papers/Proceedings_1993.pdf
+
+	MarSystem* pitchPraat = new Series("pitchPraat");
+	pitchPraat->addMarSystem(create("Windowing", "wi"));
+	pitchPraat->addMarSystem(create("AutoCorrelation", "acr"));
+    pitchPraat->updctrl("AutoCorrelation/acr/mrs_natural/normalize", 1);
+	pitchPraat->addMarSystem(create("Peaker", "pkr"));
+	pitchPraat->addMarSystem(create("MaxArgMax", "mxr"));
+
+    // should be adapted to the sampling frequency !!
+    //	The window should be just long
+    //  enough to contain three periods (for pitch detection) 
+    //  of MinimumPitch. E.g. if MinimumPitch is 75 Hz, the window length
+    //  is 40 ms  and padded with zeros to reach a power of two.
+	pitchPraat->updctrl("mrs_natural/inSamples", 1024);
+	pitchPraat->updctrl("Windowing/wi/mrs_string/type", "Hanning");
+	pitchPraat->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.00);
+	pitchPraat->updctrl("Peaker/pkr/mrs_natural/interpolation", 1);
+	pitchPraat->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.4);
+	pitchPraat->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 1);
+	pitchPraat->updctrl("MaxArgMax/mxr/mrs_natural/interpolation", 1);
+	pitchPraat->linkctrl("mrs_natural/lowSamples", "Peaker/pkr/mrs_natural/peakStart");
+	pitchPraat->linkctrl("mrs_natural/highSamples", "Peaker/pkr/mrs_natural/peakEnd");
+	// set default values
+	lowPitch = 36;
+	highPitch = 79;
+	lowFreq = pitch2hertz(lowPitch);
+	highFreq = pitch2hertz(highPitch);
+
+	 lowSamples = 
+		hertz2samples(highFreq, pitchPraat->getctrl("mrs_real/osrate")->toReal());
+	 highSamples = 
+		hertz2samples(lowFreq, pitchPraat->getctrl("mrs_real/osrate")->toReal());
+
+	pitchPraat->updctrl("mrs_natural/lowSamples", lowSamples);
+	pitchPraat->updctrl("mrs_natural/highSamples", highSamples);
+
+	registerPrototype("PitchPraat", pitchPraat);
 
 	// prototype for Peak Extraction stuff
 	MarSystem* peAnalysePr = new Series("peAnalysePr");
 	peAnalysePr->addMarSystem(create("ShiftInput", "si"));
 	peAnalysePr->addMarSystem(create("Shifter", "sh"));
 	peAnalysePr->addMarSystem(create("Windowing", "wi"));
-  MarSystem *parallel = create("Parallel", "par");
+	MarSystem *parallel = create("Parallel", "par");
 	parallel->addMarSystem(create("Spectrum", "spk1"));
 	parallel->addMarSystem(create("Spectrum", "spk2"));
 	peAnalysePr->addMarSystem(parallel);
@@ -458,8 +503,6 @@ MarSystemManager::MarSystemManager()
 	peAnalysePr->updctrl("Shifter/sh/mrs_natural/shift", 1);
 
 	registerPrototype("PeAnalyse", peAnalysePr);
-
- // registerPrototype("PeSynFFT", peSynFFT);
 }
 
 MarSystemManager::~MarSystemManager()

@@ -2144,7 +2144,8 @@ test_pitch(string sfName)
 
   pnet->addMarSystem(mng.create("SoundFileSource", "src"));
   pnet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-  pnet->addMarSystem(mng.create("PitchSACF", "sacf")); 
+  pnet->addMarSystem(mng.create("PitchPraat", "pitch")); 
+  // pnet->addMarSystem(mng.create("PitchSACF", "pitch")); 
   pnet->addMarSystem(mng.create("RealvecSink", "rvSink")); 
 
   mrs_real lowPitch = 36;
@@ -2157,18 +2158,24 @@ test_pitch(string sfName)
   mrs_natural highSamples = 
      hertz2samples(lowFreq, pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
  
-  pnet->updctrl("PitchSACF/sacf/mrs_natural/lowSamples", lowSamples);
-  pnet->updctrl("PitchSACF/sacf/mrs_natural/highSamples", highSamples);
-  pnet->updctrl("mrs_natural/inSamples", 1024);
+  pnet->updctrl("PitchPraat/pitch/mrs_natural/lowSamples", lowSamples);
+  pnet->updctrl("PitchPraat/pitch/mrs_natural/highSamples", highSamples);
+  
+  //  The window should be just long
+  //  enough to contain three periods (for pitch detection) 
+  //  of MinimumPitch. E.g. if MinimumPitch is 75 Hz, the window length
+  //  is 40 ms and padded with zeros to reach a power of two.
+  mrs_real windowSize = 3/lowPitch*pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
+  pnet->updctrl("mrs_natural/inSamples", powerOfTwo(windowSize));
 
   while (pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
    pnet->tick();
 
 	realvec data = pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->toVec();
    for (mrs_natural i=1; i<data.getSize();i+=2)
-	   data(i) = samples2hertz((mrs_natural) data(i), pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
+	   data(i) = samples2hertz(data(i), pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
    
-   pnet->updctrl("RealvecSink/rvSink/mrs_bool/done", 1); 
+   pnet->updctrl("RealvecSink/rvSink/mrs_bool/done", true); 
 	
 	cout << data ;
 	// to output to a file
@@ -2176,7 +2183,6 @@ test_pitch(string sfName)
 	dataFile.open("data.txt");
 	dataFile << data;
     //////////////////////////
-    
 	delete pnet;
 }
 
