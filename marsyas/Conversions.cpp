@@ -184,7 +184,7 @@ mrs_natural Marsyas::powerOfTwo(mrs_real v)
 	mrs_natural n=1, res=0;
 	while(res < v)
 	{
-		res = pow(2.0, n);
+		res = (mrs_natural) pow(2.0, n+.0);
 		n++;
 	}
 	return res;
