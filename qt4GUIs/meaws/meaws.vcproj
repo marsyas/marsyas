@@ -4,8 +4,6 @@
 	Version="8.00"
 	Name="meaws"
 	ProjectGUID="{3AE20D47-20F6-3654-807E-0E111C952EC9}"
-	RootNamespace="meaws"
-	Keyword="Qt4VSv1.0"
 	>
 	<Platforms>
 		<Platform
@@ -16,9 +14,9 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="Release|Win32"
+			Name="Debug|Win32"
 			OutputDirectory="."
-			IntermediateDirectory="release\"
+			IntermediateDirectory="debug\"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -43,28 +41,29 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="-Zm200 -EHsc -w34100 -w34189 -Zm200 -EHsc -w34100 -w34189 -w34100 -w34189"
-				Optimization="2"
-				AdditionalIncludeDirectories="&quot;$(QTDIR)\include\QtCore&quot;;&quot;$(QTDIR)\include\QtGui&quot;;&quot;$(QTDIR)\include\ActiveQt&quot;;&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)/mkspecs/win32-msvc2005&quot;;..\..\marsyas;release;."
-				PreprocessorDefinitions="QT_NO_DEBUG,NDEBUG,_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,QT_DLL,QT_NO_DEBUG,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT,NDEBUG"
+				AdditionalOptions="-Zm200 -EHsc"
+				Optimization="0"
+				AdditionalIncludeDirectories="C:\qt\qt-win-opensource-src-4.1.1\include\QtCore,C:\qt\qt-win-opensource-src-4.1.1\include\QtGui,C:\qt\qt-win-opensource-src-4.1.1\include,..\..\marsyas,C:\Program Files\Microsoft DirectX SDK (August 2006)\Include C:\qt\qt-win-opensource-src-4.1.1\include\ActiveQt,debug,.,C:\qt\qt-win-opensource-src-4.1.1\mkspecs\win32-msvc2005"
+				PreprocessorDefinitions="_WINDOWS,UNICODE,QT_LARGEFILE_SUPPORT,__WINDOWS_DS__,QT_DLL,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT,WIN32"
 				GeneratePreprocessedFile="0"
-				RuntimeLibrary="2"
-				BufferSecurityCheck="false"
-				TreatWChar_tAsBuiltInType="false"
+				MinimalRebuild="true"
+				RuntimeLibrary="3"
+				BufferSecurityCheck="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation="release\"
-				ObjectFile="release\"
+				AssemblerListingLocation="debug\"
+				ObjectFile="debug\"
 				ProgramDataBaseFileName=".\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				DebugInformationFormat="0"
+				DebugInformationFormat="4"
+				DisableSpecificWarnings="4996"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="QT_NO_DEBUG,NDEBUG,_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,QT_DLL,QT_NO_DEBUG,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT"
+				PreprocessorDefinitions="NDEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -72,12 +71,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="$(QTDIR)\lib\qtmaind.lib marsyas.lib /LIBPATH:..\..\marsyasVisualStudio2005\marsyas\Release user32.lib dsound.lib /LIBPATH:&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Lib\x86&quot; $(QTDIR)\lib\QtGui4.lib $(QTDIR)\lib\QtCore4.lib"
-				OutputFile="release\meaws.exe"
-				LinkIncremental="2"
+				AdditionalDependencies="qtmaind.lib marsyas.lib dsound.lib QtGuid4.lib QtCored4.lib"
+				OutputFile="debug\meaws.exe"
+				Version="0.4"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(QTDIR)\lib"
-				GenerateDebugInformation="false"
+				AdditionalLibraryDirectories="..\..\marsyasVisualStudio2005\marsyas\Release,C:\Program Files\Microsoft DirectX SDK (August 2006)\Lib\x86\,C:\qt\qt-win-opensource-src-4.1.1\lib"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile=""
 				SubSystem="2"
 			/>
@@ -107,9 +106,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug|Win32"
+			Name="Release|Win32"
 			OutputDirectory="."
-			IntermediateDirectory="debug\"
+			IntermediateDirectory="release\"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -134,28 +133,28 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="-Zm200 -EHsc -w34100 -w34189 -Zm200 -EHsc -w34100 -w34189 -w34100 -w34189"
-				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(QTDIR)\include\QtCore&quot;;&quot;$(QTDIR)\include\QtGui&quot;;&quot;$(QTDIR)\include\ActiveQt&quot;;&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)/mkspecs/win32-msvc2005&quot;;..\..\marsyas;debug;."
-				PreprocessorDefinitions="_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,QT_DLL,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT"
+				AdditionalOptions="-Zm200 -EHsc"
+				Optimization="2"
+				AdditionalIncludeDirectories="C:\qt\qt-win-opensource-src-4.1.1\include\QtCore,C:\qt\qt-win-opensource-src-4.1.1\include\QtGui,C:\qt\qt-win-opensource-src-4.1.1\include,..\..\marsyas,C:\Program Files\Microsoft DirectX SDK (August 2006)\Include C:\qt\qt-win-opensource-src-4.1.1\include\ActiveQt,release,.,C:\qt\qt-win-opensource-src-4.1.1\mkspecs\win32-msvc2005"
+				PreprocessorDefinitions="QT_NO_DEBUG,NDEBUG,_WINDOWS,UNICODE,QT_LARGEFILE_SUPPORT,__WINDOWS_DS__,QT_DLL,QT_NO_DEBUG,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT,WIN32,NDEBUG"
 				GeneratePreprocessedFile="0"
-				RuntimeLibrary="3"
-				BufferSecurityCheck="false"
-				TreatWChar_tAsBuiltInType="false"
+				RuntimeLibrary="2"
+				BufferSecurityCheck="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation="debug\"
-				ObjectFile="debug\"
+				AssemblerListingLocation="release\"
+				ObjectFile="release\"
 				ProgramDataBaseFileName=".\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="0"
+				DisableSpecificWarnings="4996"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,QT_DLL,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT"
+				PreprocessorDefinitions="NDEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -163,12 +162,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="$(QTDIR)\lib\qtmaind.lib $(QTDIR)\lib\QtGuid4.lib $(QTDIR)\lib\QtCored4.lib ..\..\marsyasVisualStudio2005\marsyas\Debug\marsyas.lib dsound.lib"
-				OutputFile="debug\meaws.exe"
-				LinkIncremental="2"
+				AdditionalDependencies="qtmain.lib marsyas.lib dsound.lib QtGui4.lib QtCore4.lib"
+				OutputFile="release\meaws.exe"
+				Version="0.4"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(QTDIR)\lib"
-				GenerateDebugInformation="true"
+				AdditionalLibraryDirectories="..\..\marsyasVisualStudio2005\marsyas\Release,C:\Program Files\Microsoft DirectX SDK (August 2006)\Lib\x86\,C:\qt\qt-win-opensource-src-4.1.1\lib"
+				GenerateDebugInformation="false"
 				ProgramDatabaseFile=""
 				SubSystem="2"
 			/>
@@ -204,14 +203,13 @@
 		<Filter
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\backend.cpp"
+				RelativePath="backend.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\mainwindow.cpp"
+				RelativePath="mainwindow.cpp"
 				>
 			</File>
 			<File
@@ -219,68 +217,215 @@
 				>
 			</File>
 			<File
-				RelativePath=".\pitchBackend.cpp"
+				RelativePath="metro.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\start.cpp"
+				RelativePath="debug\moc_backend.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="release\moc_backend.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="debug\moc_mainwindow.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="release\moc_mainwindow.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="debug\moc_MarSystemQtWrapper.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="release\moc_MarSystemQtWrapper.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="release\moc_metro.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="debug\moc_metro.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="debug\moc_user.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="release\moc_user.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="release\qrc_icons.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="debug\qrc_icons.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="start.cpp"
+				>
+			</File>
+			<File
+				RelativePath="user.cpp"
 				>
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\backend.h"
+				RelativePath="backend.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing backend.cpp..."
-						CommandLine="$(QTDIR)\bin\moc.exe  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; -I&quot;.\..\..\marsyas&quot; -I&quot;.\debug&quot; -I&quot;.&quot; &quot;backend.h&quot; -o &quot;$(ConfigurationName)\moc_backend.cpp&quot;"
-						AdditionalDependencies="$(QTDIR)\bin\moc.exe;backen.h"
-						Outputs="&quot;$(ConfigurationName)\moc_backend.cpp&quot;"
-					/>
-				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing backend.cpp..."
-						CommandLine="$(QTDIR)\bin\moc.exe  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; -I&quot;.\..\..\marsyas&quot; -I&quot;.\debug&quot; -I&quot;.&quot; &quot;backend.h&quot; -o &quot;$(ConfigurationName)\moc_backend.cpp&quot;"
-						AdditionalDependencies="$(QTDIR)\bin\moc.exe;backen.h"
-						Outputs="&quot;$(ConfigurationName)\moc_backend.cpp&quot;"
+						Description="MOC backend.h"
+						CommandLine="C:\qt\qt-win-opensource-src-4.1.1\bin\moc.exe -D_WINDOWS -DUNICODE -DQT_LARGEFILE_SUPPORT -D__WINDOWS_DS__ -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DWIN32  -I &quot;C:\qt\qt-win-opensource-src-4.1.1\include\QtCore&quot; -I &quot;C:\qt\qt-win-opensource-src-4.1.1\include\QtGui&quot; -I &quot;C:\qt\qt-win-opensource-src-4.1.1\marsyas&quot; -I &quot;C:\Program Files\Microsoft DirectX SDK (August 2006)\Include C:\qt\qt-win-opensource-src-4.1.1\include\ActiveQt&quot; -I &quot;debug&quot; -I &quot;.&quot; -I&quot;C:\qt\qt-win-opensource-src-4.1.1\mkspecs\win32-msvc2005&quot; -DWIN32 backend.h -o debug\moc_backend.cpp&#x0D;&#x0A;"
+						AdditionalDependencies="C:\qt\qt-win-opensource-src-4.1.1\bin\moc.exe"
+						Outputs="debug\moc_backend.cpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC backend.h"
+						CommandLine="C:\qt\qt-win-opensource-src-4.1.1\bin\moc.exe -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DQT_LARGEFILE_SUPPORT -D__WINDOWS_DS__ -DQT_DLL -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DWIN32 -DNDEBUG  -I &quot;C:\qt\qt-win-opensource-src-4.1.1\include\QtCore&quot; -I &quot;C:\qt\qt-win-opensource-src-4.1.1\include\QtGui&quot; -I &quot;C:\qt\qt-win-opensource-src-4.1.1\marsyas&quot; -I &quot;C:\Program Files\Microsoft DirectX SDK (August 2006)\Include C:\qt\qt-win-opensource-src-4.1.1\include\ActiveQt&quot; -I &quot;release&quot; -I &quot;.&quot; -I&quot;C:\qt\qt-win-opensource-src-4.1.1\mkspecs\win32-msvc2005&quot; -DWIN32 backend.h -o release\moc_backend.cpp&#x0D;&#x0A;"
+						AdditionalDependencies="C:\qt\qt-win-opensource-src-4.1.1\bin\moc.exe"
+						Outputs="release\moc_backend.cpp"
 					/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\mainwindow.h"
+				RelativePath="mainwindow.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing mainwindow"
-						CommandLine="$(QTDIR)\bin\moc.exe  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; -I&quot;.\..\..\marsyas&quot; -I&quot;.\debug&quot; -I&quot;.&quot; &quot;mainwindow.h&quot; -o &quot;$(ConfigurationName)\moc_mainwindow.cpp&quot;"
-						AdditionalDependencies="$(QTDIR)\bin\moc.exe;mainwindow.h"
-						Outputs="&quot;$(ConfigurationName)\moc_mainwindow.cpp&quot;"
-					/>
-				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing mainwindow"
-						CommandLine="$(QTDIR)\bin\moc.exe  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; -I&quot;.\..\..\marsyas&quot; -I&quot;.\debug&quot; -I&quot;.&quot; &quot;mainwindow.h&quot; -o &quot;$(ConfigurationName)\moc_mainwindow.cpp&quot;"
-						AdditionalDependencies="$(QTDIR)\bin\moc.exe;mainwindow.h"
-						Outputs="&quot;$(ConfigurationName)\moc_mainwindow.cpp&quot;"
+						Description="MOC mainwindow.h"
+						CommandLine="C:\qt\qt-win-opensource-src-4.1.1\bin\moc.exe -D_WINDOWS -DUNICODE -DQT_LARGEFILE_SUPPORT -D__WINDOWS_DS__ -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DWIN32  -I &quot;C:\qt\qt-win-opensource-src-4.1.1\include\QtCore&quot; -I &quot;C:\qt\qt-win-opensource-src-4.1.1\include\QtGui&quot; -I &quot;C:\qt\qt-win-opensource-src-4.1.1\marsyas&quot; -I &quot;C:\Program Files\Microsoft DirectX SDK (August 2006)\Include C:\qt\qt-win-opensource-src-4.1.1\include\ActiveQt&quot; -I &quot;debug&quot; -I &quot;.&quot; -I&quot;C:\qt\qt-win-opensource-src-4.1.1\mkspecs\win32-msvc2005&quot; -DWIN32 mainwindow.h -o debug\moc_mainwindow.cpp&#x0D;&#x0A;"
+						AdditionalDependencies="C:\qt\qt-win-opensource-src-4.1.1\bin\moc.exe"
+						Outputs="debug\moc_mainwindow.cpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC mainwindow.h"
+						CommandLine="C:\qt\qt-win-opensource-src-4.1.1\bin\moc.exe -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DQT_LARGEFILE_SUPPORT -D__WINDOWS_DS__ -DQT_DLL -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DWIN32 -DNDEBUG  -I &quot;C:\qt\qt-win-opensource-src-4.1.1\include\QtCore&quot; -I &quot;C:\qt\qt-win-opensource-src-4.1.1\include\QtGui&quot; -I &quot;C:\qt\qt-win-opensource-src-4.1.1\marsyas&quot; -I &quot;C:\Program Files\Microsoft DirectX SDK (August 2006)\Include C:\qt\qt-win-opensource-src-4.1.1\include\ActiveQt&quot; -I &quot;release&quot; -I &quot;.&quot; -I&quot;C:\qt\qt-win-opensource-src-4.1.1\mkspecs\win32-msvc2005&quot; -DWIN32 mainwindow.h -o release\moc_mainwindow.cpp&#x0D;&#x0A;"
+						AdditionalDependencies="C:\qt\qt-win-opensource-src-4.1.1\bin\moc.exe"
+						Outputs="release\moc_mainwindow.cpp"
 					/>
 				</FileConfiguration>
 			</File>
@@ -288,138 +433,162 @@
 				RelativePath="..\MarSystemQtWrapper.h"
 				>
 				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC ..\MarSystemQtWrapper.h"
+						CommandLine="C:\qt\qt-win-opensource-src-4.1.1\bin\moc.exe -D_WINDOWS -DUNICODE -DQT_LARGEFILE_SUPPORT -D__WINDOWS_DS__ -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DWIN32  -I &quot;C:\qt\qt-win-opensource-src-4.1.1\include\QtCore&quot; -I &quot;C:\qt\qt-win-opensource-src-4.1.1\include\QtGui&quot; -I &quot;C:\qt\qt-win-opensource-src-4.1.1\marsyas&quot; -I &quot;C:\Program Files\Microsoft DirectX SDK (August 2006)\Include C:\qt\qt-win-opensource-src-4.1.1\include\ActiveQt&quot; -I &quot;debug&quot; -I &quot;.&quot; -I&quot;C:\qt\qt-win-opensource-src-4.1.1\mkspecs\win32-msvc2005&quot; -DWIN32 ..\MarSystemQtWrapper.h -o debug\moc_MarSystemQtWrapper.cpp&#x0D;&#x0A;"
+						AdditionalDependencies="C:\qt\qt-win-opensource-src-4.1.1\bin\moc.exe"
+						Outputs="debug\moc_MarSystemQtWrapper.cpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing MarSystemQtWrapper.h..."
-						CommandLine="$(QTDIR)\bin\moc.exe  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; -I&quot;.\..\..\marsyas&quot; -I&quot;.\debug&quot; -I&quot;.&quot; &quot;..\MarSystemQtWrapper.h&quot; -o &quot;$(ConfigurationName)\moc_MarSystemQtWrapper.cpp&quot;"
-						AdditionalDependencies="$(QTDIR)\bin\moc.exe;MarSystemQtWrapper.h"
-						Outputs="&quot;$(ConfigurationName)\moc_MarSystemQtWrapper.cpp&quot;"
+						Description="MOC ..\MarSystemQtWrapper.h"
+						CommandLine="C:\qt\qt-win-opensource-src-4.1.1\bin\moc.exe -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DQT_LARGEFILE_SUPPORT -D__WINDOWS_DS__ -DQT_DLL -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DWIN32 -DNDEBUG  -I &quot;C:\qt\qt-win-opensource-src-4.1.1\include\QtCore&quot; -I &quot;C:\qt\qt-win-opensource-src-4.1.1\include\QtGui&quot; -I &quot;C:\qt\qt-win-opensource-src-4.1.1\marsyas&quot; -I &quot;C:\Program Files\Microsoft DirectX SDK (August 2006)\Include C:\qt\qt-win-opensource-src-4.1.1\include\ActiveQt&quot; -I &quot;release&quot; -I &quot;.&quot; -I&quot;C:\qt\qt-win-opensource-src-4.1.1\mkspecs\win32-msvc2005&quot; -DWIN32 ..\MarSystemQtWrapper.h -o release\moc_MarSystemQtWrapper.cpp&#x0D;&#x0A;"
+						AdditionalDependencies="C:\qt\qt-win-opensource-src-4.1.1\bin\moc.exe"
+						Outputs="release\moc_MarSystemQtWrapper.cpp"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="metro.h"
+				>
 				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing MarSystemQtWrapper.h..."
-						CommandLine="$(QTDIR)\bin\moc.exe  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;$(QTDIR)\mkspecs\win32-msvc2005&quot; -I&quot;.\..\..\marsyas&quot; -I&quot;.\debug&quot; -I&quot;.&quot; &quot;..\MarSystemQtWrapper.h&quot; -o &quot;$(ConfigurationName)\moc_MarSystemQtWrapper.cpp&quot;"
-						AdditionalDependencies="$(QTDIR)\bin\moc.exe;MarSystemQtWrapper.h"
-						Outputs="&quot;$(ConfigurationName)\moc_MarSystemQtWrapper.cpp&quot;"
+						Description="MOC metro.h"
+						CommandLine="C:\qt\qt-win-opensource-src-4.1.1\bin\moc.exe -D_WINDOWS -DUNICODE -DQT_LARGEFILE_SUPPORT -D__WINDOWS_DS__ -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DWIN32  -I &quot;C:\qt\qt-win-opensource-src-4.1.1\include\QtCore&quot; -I &quot;C:\qt\qt-win-opensource-src-4.1.1\include\QtGui&quot; -I &quot;C:\qt\qt-win-opensource-src-4.1.1\marsyas&quot; -I &quot;C:\Program Files\Microsoft DirectX SDK (August 2006)\Include C:\qt\qt-win-opensource-src-4.1.1\include\ActiveQt&quot; -I &quot;debug&quot; -I &quot;.&quot; -I&quot;C:\qt\qt-win-opensource-src-4.1.1\mkspecs\win32-msvc2005&quot; -DWIN32 metro.h -o debug\moc_metro.cpp&#x0D;&#x0A;"
+						AdditionalDependencies="C:\qt\qt-win-opensource-src-4.1.1\bin\moc.exe"
+						Outputs="debug\moc_metro.cpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC metro.h"
+						CommandLine="C:\qt\qt-win-opensource-src-4.1.1\bin\moc.exe -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DQT_LARGEFILE_SUPPORT -D__WINDOWS_DS__ -DQT_DLL -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DWIN32 -DNDEBUG  -I &quot;C:\qt\qt-win-opensource-src-4.1.1\include\QtCore&quot; -I &quot;C:\qt\qt-win-opensource-src-4.1.1\include\QtGui&quot; -I &quot;C:\qt\qt-win-opensource-src-4.1.1\marsyas&quot; -I &quot;C:\Program Files\Microsoft DirectX SDK (August 2006)\Include C:\qt\qt-win-opensource-src-4.1.1\include\ActiveQt&quot; -I &quot;release&quot; -I &quot;.&quot; -I&quot;C:\qt\qt-win-opensource-src-4.1.1\mkspecs\win32-msvc2005&quot; -DWIN32 metro.h -o release\moc_metro.cpp&#x0D;&#x0A;"
+						AdditionalDependencies="C:\qt\qt-win-opensource-src-4.1.1\bin\moc.exe"
+						Outputs="release\moc_metro.cpp"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="user.h"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC user.h"
+						CommandLine="C:\qt\qt-win-opensource-src-4.1.1\bin\moc.exe -D_WINDOWS -DUNICODE -DQT_LARGEFILE_SUPPORT -D__WINDOWS_DS__ -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DWIN32  -I &quot;C:\qt\qt-win-opensource-src-4.1.1\include\QtCore&quot; -I &quot;C:\qt\qt-win-opensource-src-4.1.1\include\QtGui&quot; -I &quot;C:\qt\qt-win-opensource-src-4.1.1\marsyas&quot; -I &quot;C:\Program Files\Microsoft DirectX SDK (August 2006)\Include C:\qt\qt-win-opensource-src-4.1.1\include\ActiveQt&quot; -I &quot;debug&quot; -I &quot;.&quot; -I&quot;C:\qt\qt-win-opensource-src-4.1.1\mkspecs\win32-msvc2005&quot; -DWIN32 user.h -o debug\moc_user.cpp&#x0D;&#x0A;"
+						AdditionalDependencies="C:\qt\qt-win-opensource-src-4.1.1\bin\moc.exe"
+						Outputs="debug\moc_user.cpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC user.h"
+						CommandLine="C:\qt\qt-win-opensource-src-4.1.1\bin\moc.exe -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DQT_LARGEFILE_SUPPORT -D__WINDOWS_DS__ -DQT_DLL -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DWIN32 -DNDEBUG  -I &quot;C:\qt\qt-win-opensource-src-4.1.1\include\QtCore&quot; -I &quot;C:\qt\qt-win-opensource-src-4.1.1\include\QtGui&quot; -I &quot;C:\qt\qt-win-opensource-src-4.1.1\marsyas&quot; -I &quot;C:\Program Files\Microsoft DirectX SDK (August 2006)\Include C:\qt\qt-win-opensource-src-4.1.1\include\ActiveQt&quot; -I &quot;release&quot; -I &quot;.&quot; -I&quot;C:\qt\qt-win-opensource-src-4.1.1\mkspecs\win32-msvc2005&quot; -DWIN32 user.h -o release\moc_user.cpp&#x0D;&#x0A;"
+						AdditionalDependencies="C:\qt\qt-win-opensource-src-4.1.1\bin\moc.exe"
+						Outputs="release\moc_user.cpp"
 					/>
 				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
 			Name="Generated Files"
-			Filter="cpp;c;cxx;moc;h;def;odl;idl;res;"
-			UniqueIdentifier="{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}"
+			Filter="cpp;c;cxx;moc;h;qrc;def;odl;idl;res"
 			>
 			<File
-				RelativePath=".\release\moc_backend.cpp"
+				RelativePath="icons.qrc"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32"
-					ExcludedFromBuild="true"
 					>
 					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						Name="VCCustomBuildTool"
+						Description="RCC icons.qrc"
+						CommandLine="C:\qt\qt-win-opensource-src-4.1.1\bin\rcc.exe -name icons icons.qrc -o debug\qrc_icons.cpp&#x0D;&#x0A;"
+						AdditionalDependencies="C:\qt\qt-win-opensource-src-4.1.1\bin\rcc.exe;images\new.png;images\triangle.png;images\player_pause.png;images\copy.png;images\cut.png;images\save.png;images\paste.png;images\circle.png;images\player_stop.png;images\open.png;images\player_play.png"
+						Outputs="debug\qrc_icons.cpp"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\debug\moc_backend.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\release\moc_mainwindow.cpp"
-				>
 				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						Name="VCCustomBuildTool"
+						Description="RCC icons.qrc"
+						CommandLine="C:\qt\qt-win-opensource-src-4.1.1\bin\rcc.exe -name icons icons.qrc -o release\qrc_icons.cpp&#x0D;&#x0A;"
+						AdditionalDependencies="C:\qt\qt-win-opensource-src-4.1.1\bin\rcc.exe;images\new.png;images\triangle.png;images\player_pause.png;images\copy.png;images\cut.png;images\save.png;images\paste.png;images\circle.png;images\player_stop.png;images\open.png;images\player_play.png"
+						Outputs="release\qrc_icons.cpp"
 					/>
 				</FileConfiguration>
 			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			>
 			<File
-				RelativePath=".\debug\moc_mainwindow.cpp"
+				RelativePath="images\circle.png"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\release\moc_MarSystemQtWrapper.cpp"
+				RelativePath="images\copy.png"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\debug\moc_MarSystemQtWrapper.cpp"
+				RelativePath="images\cut.png"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="meaws_resource.rc"
+				>
+			</File>
+			<File
+				RelativePath="images\new.png"
+				>
+			</File>
+			<File
+				RelativePath="images\open.png"
+				>
+			</File>
+			<File
+				RelativePath="images\paste.png"
+				>
+			</File>
+			<File
+				RelativePath="images\player_pause.png"
+				>
+			</File>
+			<File
+				RelativePath="images\player_play.png"
+				>
+			</File>
+			<File
+				RelativePath="images\player_stop.png"
+				>
+			</File>
+			<File
+				RelativePath="images\save.png"
+				>
+			</File>
+			<File
+				RelativePath="images\triangle.png"
+				>
 			</File>
 		</Filter>
 	</Files>
