@@ -64,11 +64,13 @@ in sequence.
 #include "PeClust.h"
 #include "OverlapAdd.h"
 #include "PeSynOsc.h"
+#include "PeSynFFT.h"
 #include "PeResidual.h"
 #include "RealvecSource.h"
 #include "RealvecSink.h"
 #include "Power.h"
-
+#include "Cartesian2Polar.h"
+#include "Polar2Cartesian.h"
 #include "Windowing.h"
 
 #include "AuFileSink.h"
@@ -130,6 +132,7 @@ in sequence.
 #include "LPCC.h"
 #include "LSP.h"
 #include "SOM.h"
+#include "FlowCutSource.h"
 
 #include "MidiOutput.h"
 
@@ -176,6 +179,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PvFold", new PvFold("pvfp"));
 	registerPrototype("PvOverlapadd", new PvOverlapadd("pvovlfp"));
 	registerPrototype("PvOscBank", new PvOscBank("pvoscp"));
+	registerPrototype("PeSynFFT", new PeSynFFT("pvfft"));
 	registerPrototype("ShiftInput", new ShiftInput("sip"));
 	registerPrototype("ShiftOutput", new ShiftOutput("sop"));
 	registerPrototype("Shifter", new Shifter("sp"));
@@ -189,6 +193,9 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("RealvecSource", new RealvecSource("realvecSrc"));
 	registerPrototype("RealvecSink", new RealvecSink("realvecSink"));
 	registerPrototype("Power", new Power("pow"));
+  registerPrototype("Cartesian2Polar", new Cartesian2Polar("c2p"));
+	registerPrototype("Polar2Cartesian", new Polar2Cartesian("p2c"));
+  registerPrototype("FlowCutSource", new FlowCutSource("fcs"));
 
 	registerPrototype("AuFileSource", new AuFileSource("aufp"));
 	registerPrototype("WavFileSource", new WavFileSource("wavfp"));

@@ -60,7 +60,10 @@ private:
   mrs_natural size_, psize_, skip_;
   
   void addControls();
-  void myUpdate(MarControlPtr sender);
+	void getBinInterval(realvec& interval, realvec& index, realvec& mag);
+	void getShortBinInterval(realvec& interval, realvec& index, realvec& mag);
+  void getLargeBinInterval(realvec& interval, realvec& index, realvec& mag);
+	void myUpdate(MarControlPtr sender);
   
 public:
   PeConvert(std::string name);

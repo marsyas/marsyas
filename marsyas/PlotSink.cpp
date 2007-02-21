@@ -61,11 +61,21 @@ PlotSink::addControls()
 void 
 PlotSink::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
-  
-  
-  mrs_natural nObservations = getctrl("mrs_natural/inObservations")->toNatural();
+	//checkFlow(in,out);
+	
+	mrs_natural nObservations = getctrl("mrs_natural/inObservations")->toNatural();
   mrs_natural nSamples = getctrl("mrs_natural/inSamples")->toNatural();
+
+#ifdef MARSYAS_MATLAB
+	for (t = 0; t < nSamples; t++)
+		for (o=0; o < nObservations; o++)
+			out(o,t) = in(o,t);
+	// create in the matlab variable containg the data
+	MATLAB_PUT(in, "data")
+		// tentatively plot it
+		MATLAB_EVAL("plot(data);");
+	return;
+#endif
 
   string sep = getctrl("mrs_string/separator")->toString();
   bool seq = getctrl("mrs_bool/sequence")->toBool();

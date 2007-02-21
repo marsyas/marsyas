@@ -132,6 +132,7 @@ public:
   mrs_real sum() const;
   mrs_real std() const;
   mrs_real var() const;
+	void sort();
   void abs();
   void sqr();
   void sqroot();

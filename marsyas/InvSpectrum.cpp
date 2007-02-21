@@ -51,24 +51,27 @@ void
 InvSpectrum::myUpdate(MarControlPtr sender)
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_natural/onObservations", (mrs_natural)1);
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal() * getctrl("mrs_natural/inObservations")->toNatural());
   
-  tempVec_.create(getctrl("mrs_natural/onSamples")->toNatural());
+ tempVec_.create(getctrl("mrs_natural/onSamples")->toNatural());
 }
 
 void 
 InvSpectrum::myProcess(realvec& in, realvec& out)
 {
   //checkFlow(in,out);
-  
+  for(o=0 ; o<onObservations_; o++)
+	{
   for (t=0; t < onSamples_; t++)
-    out(0,t) = in(t,0);
+    tempVec_(t) = in(t,o);
 
-  mrs_real *tmp = out.getData();
-  myfft_.rfft(tmp, onSamples_/2, FFT_INVERSE);  
-  
-  
+    mrs_real *tmp = tempVec_.getData();
+    myfft_.rfft(tmp, onSamples_/2, FFT_INVERSE);  
+  for (t=0; t < onSamples_; t++)
+    out(o,t) = tempVec_(t);
+
+	}
 }
 
 

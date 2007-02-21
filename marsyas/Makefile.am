@@ -41,7 +41,7 @@ Collection.h fft.h Rms.h Peak2Rms.h PlotSink.h \
 AutoCorrelation.h Peaker.h Peaker1.h HalfWaveRectifier.h \
 TimeStretch.h Conversions.h MaxArgMax.h MinArgMin.h \
 Series.h \
- ShiftInput.h ShiftOutput.h Shifter.h PvFold.h PvConvert.h PeConvert.h PeClust.h PeSynOsc.h OverlapAdd.h PeResidual.h PeUtilities.h PeClusters.h PeSimilarity.h \
+ ShiftInput.h ShiftOutput.h Shifter.h PvFold.h PvConvert.h PeConvert.h PeClust.h FlowCutSource.h PeSynOsc.h Polar2Cartesian.h Cartesian2Polar.h OverlapAdd.h PeResidual.h PeUtilities.h PeClusters.h PeSimilarity.h \
 PvConvolve.h PvOscBank.h PvUnconvert.h PvOverlapadd.h Windowing.h Hamming.h \
 Fanout.h Fanin.h Negative.h SineSource.h MarSystemManager.h \
 PowerSpectrum.h Centroid.h Rolloff.h \
@@ -77,7 +77,7 @@ Collection.cpp fft.cpp Rms.cpp Peak2Rms.cpp PlotSink.cpp \
 AutoCorrelation.cpp Peaker.cpp Peaker1.cpp HalfWaveRectifier.cpp \
 TimeStretch.cpp Conversions.cpp MaxArgMax.cpp MinArgMin.cpp \
 Series.cpp \
-ShiftInput.cpp ShiftOutput.cpp Shifter.cpp PvFold.cpp PvConvert.cpp PeConvert.cpp PeClust.cpp PeSynOsc.cpp  OverlapAdd.cpp PeResidual.cpp PeUtilities.cpp PeClusters.cpp PeSimilarity.cpp \
+ShiftInput.cpp ShiftOutput.cpp Shifter.cpp PvFold.cpp PvConvert.cpp PeConvert.cpp PeClust.cpp FlowCutSource.cpp PeSynOsc.cpp  Polar2Cartesian.cpp Cartesian2Polar.cpp OverlapAdd.cpp PeResidual.cpp PeUtilities.cpp PeClusters.cpp PeSimilarity.cpp \
 PvConvolve.cpp PvOscBank.cpp PvUnconvert.cpp PvOverlapadd.cpp Windowing.cpp Hamming.cpp \
 Fanout.cpp Fanin.cpp Negative.cpp SineSource.cpp MarSystemManager.cpp \
 PowerSpectrum.cpp Centroid.cpp Rolloff.cpp \

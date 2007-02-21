@@ -29,6 +29,7 @@ Peaks have several fields interlieved: frequency, amplitude, phase, vf, va
 #include "PeConvert.h"
 #include "Peaker.h"
 #include "MaxArgMax.h"
+#include "PeUtilities.h"
 
 #include <algorithm>
 
@@ -37,21 +38,21 @@ using namespace Marsyas;
 
 PeConvert::PeConvert(string name):MarSystem("PeConvert",name)
 {
-  psize_ = 0;
-  size_ = 0;
-  nbParameters_ = 7; // f, a, p, df, da, t, g  // should be set as a control [!]
-  time_ = 0;
-  skip_=0;
-  
-  fundamental_ = 0.0;
-  factor_ = 0.0;
-  cuttingFrequency_ = 0.0;
-  nbPeaks_ = 0;
-  kmax_  = 0;
+	psize_ = 0;
+	size_ = 0;
+	nbParameters_ = nbPkParameters; // f, a, p, df, da, t, g  // should be set as a control [!]
+	time_ = 0;
+	skip_=0;
 
-  
-  addControls();
-	
+	fundamental_ = 0.0;
+	factor_ = 0.0;
+	cuttingFrequency_ = 0.0;
+	nbPeaks_ = 0;
+	kmax_  = 0;
+
+
+	addControls();
+
 }
 
 
@@ -140,7 +141,135 @@ double lobe_value_compute (double f, int type, int size)
 	}
 }
 
+void
+PeConvert::getBinInterval(realvec& interval, realvec& index, realvec& mag)
+{
+	mrs_natural i, k=0, start=0, nbP = index.getSize();
+	mrs_natural minIndex = 0;
 
+	//cout << index;
+	// getting rid of padding zeros
+	while(start<index.getSize() && !index(start)){start++;}
+
+	for(i=start ; i<nbP ; i++, k++)
+	{
+		interval(2*k) = index(i)-1;
+		interval(2*k+1) = index(i);
+	}
+	//cout << interval;
+}
+
+
+void
+PeConvert::getShortBinInterval(realvec& interval, realvec& index, realvec& mag)
+{
+	mrs_natural i, j, k=0, start=0, nbP = index.getSize();
+	mrs_natural minIndex = 0;
+
+	//cout << index;
+	// getting rid of padding zeros
+	while(start<index.getSize() && !index(start)){start++;}
+
+	for(i=start ; i<nbP ; i++, k++)
+	{
+		minIndex = 0;
+		// look for the next valley location upward
+		for (j= (mrs_natural) index(i) ; j<mag.getSize()-1 ; j++)
+		{
+			if(mag(j) < mag(j+1))
+			{
+				minIndex = j;
+				break;
+			}
+		}
+		if(!minIndex)
+		{
+			cout << "pb while looking for bin intervals" << endl;
+		}
+		interval(2*k+1) = minIndex;
+		// look for the next valley location downward
+		for (j= (mrs_natural) index(i) ; j>1 ; j--)
+		{
+			if(mag(j) < mag(j-1))
+			{
+				minIndex = j;
+				break;
+			}
+		}
+		if(!minIndex)
+		{
+			cout << "pb while looking for bin intervals" << endl;
+		}
+		interval(2*k) = minIndex;
+	}
+	//cout << interval;
+}
+
+
+void
+PeConvert::getLargeBinInterval(realvec& interval, realvec& index, realvec& mag)
+{
+	mrs_natural i, j, k=0, start=0, nbP = index.getSize();
+
+	// handling the first case
+	mrs_real minVal = HUGE_VAL;
+	mrs_natural minIndex = 0;
+	//cout << index;
+	// getting rid of padding zeros
+	while(!index(start)){start++;}
+
+	for (j= 0 ; j<index(start) ; j++)
+		if(minVal > mag(j))
+		{
+			minVal = mag(j);
+			minIndex = j;
+		}
+		if(!minIndex)
+		{
+			cout << "pb while looking for minimal bin intervals" << endl;
+		}
+		interval(0) = minIndex;
+
+		for(i=start ; i<nbP-1 ; i++, k++)
+		{
+			minVal = HUGE_VAL;
+			minIndex = 0;
+			// look for the minimal value among successive peaks
+			for (j= (mrs_natural) index(i) ; j<index(i+1) ; j++)
+				if(minVal > mag(j))
+				{
+					minVal = mag(j);
+					minIndex = j;
+				}
+
+				if(!minIndex)
+				{
+					cout << "pb while looking for bin intervals" << endl;
+				}
+				interval(2*k+1) = minIndex-1;
+				interval(2*(k+1)) = minIndex;
+		}
+		// handling the last case
+		minVal = HUGE_VAL;
+		minIndex = 0;
+		for (j= (mrs_natural) index(nbP-1) ; j<mag.getSize()-1 ; j++)
+		{
+			if(minVal > mag(j))
+			{
+				minVal = mag(j);
+				minIndex = j;
+			}
+			// consider stopping the search at the first valley
+			if(minVal<mag(j+1))
+				break;
+		}
+		if(!minIndex)
+		{
+			cout << "pb while looking for maximal bin intervals" << endl;
+		}
+		interval(2*(k)+1) = minIndex;
+	//	cout << interval;
+}
 
 void 
 PeConvert::myProcess(realvec& in, realvec& out)
@@ -222,7 +351,8 @@ PeConvert::myProcess(realvec& in, realvec& out)
 		// select local maxima
 		realvec peaks_=mag_;
 		Peaker peaker("Peaker");
-		peaker.updctrl("mrs_real/peakStrength", 0.2);
+	//	peaker.updctrl("mrs_real/peakStrength", 0.2);
+		// to be set as a control
 		peaker.updctrl("mrs_natural/peakStart", (mrs_natural) floor(250/osrate_*size_*2));   // 0
 		peaker.updctrl("mrs_natural/peakEnd", (mrs_natural) floor(cuttingFrequency_/osrate_*size_*2));  // size_
 		peaker.updctrl("mrs_natural/inSamples", mag_.getCols());
@@ -232,13 +362,10 @@ PeConvert::myProcess(realvec& in, realvec& out)
 
 		peaker.process(mag_, peaks_);
 
-		/*
-		MATLAB_PUT(mag_, "peaks");
-		MATLAB_PUT(peaks_, "k");
-		MATLAB_EVAL("figure(1);clf;plot(peaks);");
-		*/
+		
+			
 
-		realvec index_(kmax_*2);
+		realvec tmp_(kmax_*2);
 		for(t=0 ; t<N2 ; t++)
 		{
 			if(!frequency_(t))// || frequency_(t)>500)  // 250 2500
@@ -251,36 +378,52 @@ PeConvert::myProcess(realvec& in, realvec& out)
 		max.updctrl("mrs_natural/inSamples", size_);
 		max.updctrl("mrs_natural/inObservations", 1);
 		max.update();
-		max.process(peaks_, index_);
+		max.process(peaks_, tmp_);
 
-		nbPeaks_=index_.getSize()/2;
+		nbPeaks_=tmp_.getSize()/2;
+		realvec index_(nbPeaks_);
+		mrs_natural i;
+		for (i=0 ; i<nbPeaks_ ; i++)
+			index_(i) = tmp_(2*i+1);
+		realvec index2_ = index_;
+		index2_.sort();
+
+		// search for bins interval
+		realvec interval_(nbPeaks_*2);
+		interval_.setval(0);
+		getShortBinInterval(interval_, index2_, mag_);
 
 		// fill output with peaks data
-		int i ;
+
+	/*	MATLAB_PUT(mag_, "peaks");
+		MATLAB_PUT(peaks_, "k");
+		MATLAB_PUT(tmp_, "tmp");
+	  MATLAB_PUT(interval_, "int");	
+		MATLAB_EVAL("figure(1);clf;hold on ;plot(peaks);stem(k);stem(tmp(2:2:end)+1, peaks(tmp(2:2:end)+1), 'r')");
+		MATLAB_EVAL("stem(int+1, peaks(int+1), 'k')");*/
+	
+    interval_ /= N2*2;
 		out.setval(0);
 		for (i=0;i<nbPeaks_;i++)
 		{
-			out(i) = frequency_((mrs_natural) index_(2*i+1));
-		}
-		for (i=0;i<nbPeaks_;i++)
-		{
-			out(i+kmax_) = magCorr_((mrs_natural) index_(2*i+1));
-		}
-		for (i=0;i<nbPeaks_;i++)
-		{
-			out(i+2*kmax_) = -phase_((mrs_natural) index_(2*i+1));
-		}
-		for (i=0;i<nbPeaks_;i++)
-		{
-			out(i+3*kmax_) = deltafrequency_((mrs_natural) index_(2*i+1));
-		}
-		for (i=0;i<nbPeaks_;i++)
-		{
-			out(i+4*kmax_) = deltamag_((mrs_natural) index_(2*i+1));
-		}
-		for (i=0;i<nbPeaks_;i++)
-		{
-			out(i+5*kmax_) = time_;
+			out(i+pkFrequency*kmax_) = frequency_((mrs_natural) index_(i));
+
+			out(i+pkAmplitude*kmax_) = magCorr_((mrs_natural) index_(i));
+
+			out(i+pkPhase*kmax_) = -phase_((mrs_natural) index_(i));
+
+			out(i+pkDeltaFrequency*kmax_) = deltafrequency_((mrs_natural) index_(i));
+
+			out(i+pkDeltaAmplitude*kmax_) = deltamag_((mrs_natural) index_(i));
+
+			out(i+pkTime*kmax_) = time_;
+
+			out(i+pkGroup*kmax_) = 0;
+			out(i+pkVolume*kmax_) = 1;
+			out(i+pkPan*kmax_) = 0;
+
+			out(i+pkBinLow*kmax_) = interval_(2*i);
+			out(i+pkBinHigh*kmax_) = interval_(2*i+1);
 		}
 	}
 	else
@@ -290,6 +433,7 @@ PeConvert::myProcess(realvec& in, realvec& out)
 	// MATLAB_PUT(out, "peaks");
 	// MATLAB_PUT(kmax_, "k");
 	// MATLAB_EVAL("figure(1);clf;plot(peaks(6*k+1:7*k));");
+	// cout << out;
 }
 
 

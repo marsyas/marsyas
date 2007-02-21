@@ -42,9 +42,9 @@ int winSize_ = 2048;
 // if kept the same no time expansion
 int hopSize_ = 512;
 // nb Sines
-int nbSines_ = 20;
+int nbSines_ = 5;
 // nbClusters
-int nbClusters_ = 3;
+int nbClusters_ = 1;
 // nbClusters
 int nbSelectedClusters_ = 0;
 // output buffer Size
@@ -52,7 +52,7 @@ int bopt_ = 128;
 // output gain
 mrs_real gopt_ = 1.0;
 // number of accumulated frames
-mrs_natural accSize_ = 20;
+mrs_natural accSize_ = 3;
 // number of seconds for analysing process
 mrs_natural stopAnalyse_=0;
 // type of similarity Metrics // test amplitude normamlise gtzan
@@ -78,16 +78,16 @@ mrs_real timeElapsed;
 mrs_natural nbTicks=0;
 //
 mrs_natural clusterFilteringType_ = 0;
-//
-mrs_natural synthesisType_ = 1;
+
 
 bool microphone_ = false;
 bool analyse_ = false;
 bool attributes_ = false;
 bool ground_ = false;
-bool synthetize_ = false;
-bool clusterSynthetize_ = false;
+mrs_natural synthetize_ = -1;
+mrs_natural clusterSynthetize_ = -1;
 bool peakStore_= false;
+bool residual_ = 0;
 
 CommandLineOptions cmd_options;
 
@@ -194,10 +194,10 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 
 	/*************************************************************/
 
-	if(synthetize) 
+	if(synthetize >-1) 
 	{
 		//create shredder
-		synthNetCreate(&mng, outsfname, microphone_, synthesisType_);
+		synthNetCreate(&mng, outsfname, microphone_, synthetize);
 		MarSystem *peSynth = mng.create("PeSynthetize", "synthNet");
 		pvseries->addMarSystem(peSynth);
 	}
@@ -232,7 +232,7 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Windowing/wi/mrs_string/type", "Hanning");
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Windowing/wi/mrs_natural/zeroPhasing", 1);
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Shifter/sh/mrs_natural/shift", 1);
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PvFold/fo/mrs_natural/Decimation", D); // useless ?
+	//pvseries->updctrl("Accumulator/accumNet/Series/preNet/PvFold/fo/mrs_natural/Decimation", D); // useless ?
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Decimation", D);      
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Sinusoids", S); 
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_real/cuttingFrequency", cuttingFrequency_);  
@@ -256,9 +256,9 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 
 	//pvseries->update();
 
-	if(synthetize)
+	if(synthetize>-1)
 	{
-		synthNetConfigure (pvseries, sfName, outsfname, fileResName, Nw, D, S, accSize, microphone_, synthesisType_, bopt_, Nw+1-D);
+		synthNetConfigure (pvseries, sfName, outsfname, fileResName, 1, Nw, D, S, accSize, microphone_, synthetize_, bopt_, Nw+1-D);
 	}
 
 	if(noiseDuration_)
@@ -288,8 +288,8 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		time+=accSize_*hopSize_/samplingFrequency_;*/
 		// cout << time << " " << noiseDelay_+noiseDuration_ << endl;
 		// ouput the seg snr
-		if(synthetize)
-		{
+		if(synthetize > -1 && residual_)
+			{
 			mrs_real snr = pvseries->getctrl("PeSynthetize/synthNet/Series/postNet/PeResidual/res/mrs_real/snr")->toReal();
 			globalSnr+=snr;
 			nb++;
@@ -316,7 +316,7 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 				break;
 		}
 	}
-	if(synthetize_)
+	if(synthetize_ > -1)
 	{
 		cout << "Global SNR : " << globalSnr/nb << endl;
 	*snr0 = globalSnr/nb;
@@ -359,8 +359,8 @@ initOptions()
 	cmd_options.addBoolOption("analyse", "a", analyse_);
 	cmd_options.addBoolOption("attributes", "A", attributes_);
 	cmd_options.addBoolOption("ground", "g", ground_);
-	cmd_options.addBoolOption("synthetize", "s", synthetize_);
-	cmd_options.addBoolOption("clusterSynthetize", "S", clusterSynthetize_);
+	cmd_options.addNaturalOption("synthetize", "s", synthetize_);
+	cmd_options.addNaturalOption("clusterSynthetize", "S", clusterSynthetize_);
 	cmd_options.addBoolOption("peakStore", "P", peakStore_);
 }
 
@@ -387,8 +387,8 @@ clusterFilteringType_ = cmd_options.getNaturalOption("clusterFiltering");
 	analyse_ = cmd_options.getBoolOption("analyse");
 	attributes_ = cmd_options.getBoolOption("attributes");
 	ground_ = cmd_options.getBoolOption("ground");
-	synthetize_ = cmd_options.getBoolOption("synthetize");
-	clusterSynthetize_ = cmd_options.getBoolOption("clusterSynthetize");
+	synthetize_ = cmd_options.getNaturalOption("synthetize");
+	clusterSynthetize_ = cmd_options.getNaturalOption("clusterSynthetize");
 	peakStore_ = cmd_options.getBoolOption("peakStore"); 
 }
 
@@ -484,8 +484,8 @@ main(int argc, const char **argv)
 				clusters.getVecs(vecs);
 
 				// cout << vecs;
-				MATLAB_PUT(getcwd(NULL, 0), "path");
-				MATLAB_PUT(fileName, "fileName");
+//				MATLAB_PUT(getcwd(NULL, 0), "path");
+//				MATLAB_PUT(fileName, "fileName");
 
 				MATLAB_PUT(vecs, "clusters");
 				ofstream clustFile;
@@ -529,14 +529,14 @@ clusters.getConversionTable(ct);
 				updateLabels(peakSet_, ct);
 			}
 
-			if(clusterSynthetize_)
+			if(clusterSynthetize_ > -1)
 			{
 				PeClusters sclusters(peakSet_);
 				// synthetize remaining clusters
-				snr0 = sclusters.synthetize(peakSet_, *sfi, fileName, winSize_, hopSize_, nbSines_, bopt_, synthesisType_);
+				snr0 = sclusters.synthetize(peakSet_, *sfi, fileName, winSize_, hopSize_, nbSines_, bopt_, clusterSynthetize_);
 			}
 			/*MATLAB_PUT(peakSet_, "peaks");
-			MATLAB_EVAL("plotPeaks(peaks)");*/
+			MATLAB_EVAL("plotPeaks(peaks)");*/ 
 
 			
 

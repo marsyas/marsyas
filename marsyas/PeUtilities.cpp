@@ -69,7 +69,7 @@ void
 Marsyas::peaks2V (realvec& in, realvec& last, realvec& out, mrs_natural maxNbPeaks, mrs_natural label)
 {
 	mrs_natural i, j, k=0, start=0, iStart=0;
-	mrs_natural frameIndex=-1, startIndex = (mrs_natural) in(0, 5);
+	mrs_natural frameIndex=-1, startIndex = (mrs_natural) in(0, pkTime);
 
 	out.setval(0);
 
@@ -404,7 +404,7 @@ Marsyas::cosinePeakSets(realvec&f1, realvec&a1, realvec&f2, realvec&a2, realvec&
 	return res;
 }
 
-void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool microphone, mrs_natural synType)
+void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool microphone, mrs_natural synType, bool residual)
 {
 	//create Shredder series
 	MarSystem* postNet = mng->create("Series", "postNet");
@@ -416,11 +416,39 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
 	 }
 	 else
 	 {
+		 // put a fake object for probing the series
+		 postNet->addMarSystem(mng->create("Gain", "fakeGain"));
+		 postNet->addMarSystem(mng->create("FlowCutSource", "fcs"));
+		 // put the original source
+		 if (microphone) 
+			 postNet->addMarSystem(mng->create("AudioSource", "srcSyn"));
+		 else 
+			 postNet->addMarSystem(mng->create("SoundFileSource", "srcSyn"));
+		 // set the correct buffer size
+     postNet->addMarSystem(mng->create("ShiftInput", "siSyn"));
+		 // perform an FFT
+		 postNet->addMarSystem(mng->create("Windowing", "wiSyn"));
 
+     postNet->addMarSystem(mng->create("Spectrum", "specSyn"));
+		 // convert to polar
+		 postNet->addMarSystem(mng->create("Cartesian2Polar", "c2p"));
+
+	
+		 // perform amplitude and panning change
+		  postNet->addMarSystem(mng->create("PeSynFFT", "psf"));
+		 // convert back to cartesian
+
+	
+		 postNet->addMarSystem(mng->create("Polar2Cartesian", "p2c"));	
+		 // perform an IFFT
+	//	 postNet->addMarSystem(mng->create("PlotSink", "plot"));
+		 postNet->addMarSystem(mng->create("InvSpectrum", "invSpecSyn"));
+		// postNet->addMarSystem(mng->create("PlotSink", "plot2"));
 	 }
 
-	postNet->addMarSystem(mng->create("OverlapAdd", "ov"));
-	postNet->addMarSystem(mng->create("ShiftOutput", "so"));
+	 postNet->addMarSystem(mng->create("OverlapAdd", "ov"));
+
+	// postNet->addMarSystem(mng->create("ShiftOutput", "so"));
 
 	MarSystem *dest;
 	if (outsfname == EMPTYSTRING) 
@@ -430,6 +458,9 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
 		dest = new SoundFileSink("dest");
 		//dest->updctrl("mrs_string/filename", outsfname);
 	}
+
+	if(residual)
+	{
 	MarSystem* fanout = mng->create("Fanout", "fano");
 	fanout->addMarSystem(dest);
 	MarSystem* fanSeries = mng->create("Series", "fanSeries");
@@ -454,6 +485,9 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
 		//dest->updctrl("mrs_string/filename", outsfname);
 	}
 	postNet->addMarSystem(destRes);
+	}
+	else
+		postNet->addMarSystem(dest);
 
 	MarSystem* shredNet = mng->create("Shredder", "shredNet");
 	shredNet->addMarSystem(postNet);
@@ -462,8 +496,8 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
 }
 
 void
-Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname, string ressfname, mrs_natural Nw, 
-													 mrs_natural D, mrs_natural S, mrs_natural accSize, bool microphone, mrs_natural synType, mrs_natural bopt, mrs_natural delay)
+Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname, string ressfname, mrs_natural nbChannels, mrs_natural Nw, 
+													 mrs_natural D, mrs_natural S, mrs_natural accSize, bool microphone, mrs_natural synType, mrs_natural bopt, mrs_natural delay, bool residual)
 {
 	pvseries->updctrl("PeSynthetize/synthNet/mrs_natural/nTimes", accSize);
   if(synType==0)
@@ -474,12 +508,47 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 	}
 	else
 	{
+		// probing the postNet series
+		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/mrs_bool/probe", true);
+		// linking between the first slice and the psf
+		pvseries->linkControl("PeSynthetize/synthNet/Series/postNet/mrs_realvec/input0", "PeSynthetize/synthNet/Series/postNet/PeSynFFT/psf/mrs_realvec/peaks");
+		//
+		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Windowing/wiSyn/mrs_string/type", "Hanning");
+	  pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/FlowCutSource/fcs/mrs_natural/setSamples", D);	
+		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/FlowCutSource/fcs/mrs_natural/setObservations", 1);	
+		// setting the panning mode mono/stereo
+		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynFFT/psf/mrs_natural/nbChannels", synType);
+		// setting the FFT size
+		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftInput/siSyn/mrs_natural/WindowSize", D*2);
+		// setting the name of the original file
+		if (microphone) 
+		{
+			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/AudioSource/srcSyn/mrs_natural/inSamples", D);
+			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/AudioSource/srcSyn/mrs_natural/inObservations", 1);
+		}
+		else
+		{
+			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/SoundFileSource/srcSyn/mrs_string/filename", sfName);
+			// pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/SoundFileSource/srcSyn/mrs_natural/pos", 0);
+			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/SoundFileSource/srcSyn/mrs_natural/onSamples", D);
+			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/SoundFileSource/srcSyn/mrs_natural/onObservations", 1);
+		}
+		// setting the synthesis starting time (default 0)
 
 	}
 	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Interpolation", D);
 	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/WindowSize", Nw);      
 	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Decimation", D);
 
+	if (outsfname == EMPTYSTRING) 
+		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/AudioSink/dest/mrs_natural/bufferSize", bopt);
+	
+
+ if(residual)
+ {
+	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/Delay/delay/mrs_natural/delay", delay); // Nw+1-D
+
+	
 	if (microphone) 
 	{
 		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/AudioSource/src2/mrs_natural/inSamples", D);
@@ -492,13 +561,13 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/inSamples", D);
 		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/inObservations", 1);
 	}
-	if (outsfname == EMPTYSTRING) 
-		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/AudioSink/dest/mrs_natural/bufferSize", bopt);
 
-
-	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/Delay/delay/mrs_natural/delay", delay); // Nw+1-D
-	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/SoundFileSink/dest/mrs_string/filename", outsfname);//[!]
 	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/SoundFileSink/destRes/mrs_string/filename", ressfname);//[!]
+ pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/SoundFileSink/dest/mrs_string/filename", outsfname);//[!]
+ }
+ else
+	 pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/SoundFileSink/dest/mrs_string/filename", outsfname);//[!]
+ 
 }
 
 

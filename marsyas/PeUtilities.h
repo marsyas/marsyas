@@ -46,6 +46,10 @@ namespace Marsyas
 	pkDeltaAmplitude,
 	pkTime,
 	pkGroup,
+	pkVolume,
+	pkPan,
+	pkBinLow,
+	pkBinHigh,
 	nbPkParameters
 	} pkParameter;
 
@@ -66,11 +70,11 @@ mrs_real cosinePeakSets(realvec&, realvec&, realvec&, realvec&, realvec&, realve
 	mrs_real compareTwoPeakSets2(realvec&, realvec&, realvec&, realvec&);
 	mrs_real compareTwoPeakSets3(realvec&, realvec&, realvec&, realvec&);
 
-	void synthNetCreate(MarSystemManager *mng, std::string outsfname, bool microphone, mrs_natural synType);
+	void synthNetCreate(MarSystemManager *mng, std::string outsfname, bool microphone, mrs_natural synType, bool residual=0);
 
 void
-synthNetConfigure(MarSystem *pvseries, std::string sfName, std::string outsfname, std::string ressfname, mrs_natural Nw, 
-									mrs_natural D, mrs_natural S, mrs_natural accSize, bool microphone, mrs_natural synType, mrs_natural bopt, mrs_natural delay);
+synthNetConfigure(MarSystem *pvseries, std::string sfName, std::string outsfname, std::string ressfname, mrs_natural nbChannels, mrs_natural Nw, 
+									mrs_natural D, mrs_natural S, mrs_natural accSize, bool microphone, mrs_natural synType, mrs_natural bopt, mrs_natural delay, bool residual=0);
 
 mrs_real harmonicWeighting(mrs_real, mrs_real, mrs_real);
 mrs_real harmonicWeightingBasic(mrs_real, mrs_real);

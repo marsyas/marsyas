@@ -147,7 +147,7 @@ realvec::median() const
 {
   realvec tmp(*this);
 	mrs_real *tmpData = tmp.data_;
-	sort(tmpData, tmpData+size_);
+	std::sort(tmpData, tmpData+size_);
 	return tmpData[size_/2];
 }
 
@@ -163,6 +163,12 @@ realvec::mean() const
   return sum;
 }
 
+// [ML] assumes one dimesional vector !!
+void
+realvec::sort()
+{
+	std::sort(data_, data_+size_);
+}
 
 mrs_real 
 realvec::sum() const

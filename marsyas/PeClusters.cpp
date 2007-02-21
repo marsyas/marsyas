@@ -440,12 +440,9 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 	for (int i=0 ; i<nbClusters ; i++)
 		if(set[i].label != -1)
 		{
-			// cout << set[i].label << endl;
 			// label peak set
 			pkV.setval(0);
-			// peaks2V(peakSet, NULL, pkV, S, i);
-			// Changed by gtzan in order to compile trunk in Linux/OS X 
-			// NULL CAN NOT BE A realvec& 
+		
 			peaks2V(peakSet, peakSet, pkV, S, i);
 
 			pvseries->setctrl("RealvecSource/peSource/mrs_realvec/data", pkV);
@@ -472,7 +469,7 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 				fileResName = path + name + "GrdRes_" + ossi.str() + "." + ext;*/
 			}
 
-			synthNetConfigure (pvseries, fileName, outsfname, fileResName, Nw, D, S, 1, 0, 0, bopt, Nw+1-D); //  nbFrames
+			synthNetConfigure (pvseries, fileName, outsfname, fileResName, 1, Nw, D, S, 1, 0, 0, bopt, Nw+1-D); //  nbFrames
 
 			mrs_natural nbActiveFrames=0;
 			mrs_real Snr=0;
@@ -482,7 +479,7 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 				pvseries->tick();
 
 				// get snr and decide ground thruth
-				//if(residual)
+				if(residual)
 				{
 					const mrs_real snr = pvseries->getctrl("PeSynthetize/synthNet/Series/postNet/PeResidual/res/mrs_real/snr")->toReal();
 					//	cout << " SNR : "<< snr << endl;

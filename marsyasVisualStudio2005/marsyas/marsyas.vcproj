@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="marsyas"
 	ProjectGUID="{7ABC801D-6288-47B6-853B-A07F93404686}"
 	RootNamespace="marsyas"
@@ -336,6 +336,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\marsyas\Cartesian2Polar.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\marsyas\Cascade.cpp"
 				>
 			</File>
@@ -453,6 +457,10 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\Filter.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\FlowCutSource.cpp"
 				>
 			</File>
 			<File
@@ -700,6 +708,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\marsyas\PeSynFFT.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\marsyas\PeSynOsc.cpp"
 				>
 			</File>
@@ -713,6 +725,10 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\Plucked.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\Polar2Cartesian.cpp"
 				>
 			</File>
 			<File
@@ -1034,6 +1050,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\marsyas\Cartesian2Polar.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\marsyas\Cascade.h"
 				>
 			</File>
@@ -1167,6 +1187,10 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\Filter.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\FlowCutSource.h"
 				>
 			</File>
 			<File
@@ -1450,6 +1474,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\marsyas\PeSynFFT.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\marsyas\PeSynOsc.h"
 				>
 			</File>
@@ -1463,6 +1491,10 @@
 			</File>
 			<File
 				RelativePath="..\..\marsyas\Plucked.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\marsyas\Polar2Cartesian.h"
 				>
 			</File>
 			<File

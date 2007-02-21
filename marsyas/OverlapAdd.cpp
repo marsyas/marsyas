@@ -54,41 +54,30 @@ OverlapAdd::myUpdate(MarControlPtr sender)
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural());
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());    
 
-	mrs_natural N;
-	N = getctrl("mrs_natural/onSamples")->toNatural();
-
-	back_.stretch(N);
+	back_.stretch(onObservations_, onSamples_);
 	back_.setval(0);
-	// create synthesis window 
-	win_.stretch(N*2);
-
-	for (t=0; t < win_.getSize(); t++)
-    {
-			mrs_real i = 2*PI*t / (win_.getSize());
-      win_(t) = .5 - .5 * cos(i);
-    }
 }
 
 void 
 OverlapAdd::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural N;
-	int i;
 
-	N= out.getSize();
 
-	in*=win_;
+	// in*=win_;
+	for(o=0 ; o<onObservations_; o++)
+	{
 
-	for(i=0;i<N;i++)
-		out(i) = back_(i)+in(i);
+		for(t=0;t<onSamples_;t++)
+			out(o, t) = back_(o, t)+in(o, t);
 
-	//MATLAB_PUT(tmp_, "vec");
-	//MATLAB_PUT(back_, "vec1");
-	//MATLAB_PUT(out, "vec2");
-	//MATLAB_EVAL("figure(1);clf;plot(vec1, 'r'); hold ; plot(vec) ; hold");
+		//MATLAB_PUT(tmp_, "vec");
+		//MATLAB_PUT(back_, "vec1");
+		//MATLAB_PUT(out, "vec2");
+		//MATLAB_EVAL("figure(1);clf;plot(vec1, 'r'); hold ; plot(vec) ; hold");
 
-	for(i=0;i<N;i++)
-		back_(i) = in(i+N);
+		for(t=0;t<onSamples_;t++)
+			back_(o, t) = in(o, t+onSamples_);
+	}
 }
 
 
