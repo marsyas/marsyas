@@ -10,6 +10,8 @@
      <file>images/player_play.png</file>
      <file>images/player_stop.png</file>
      <file>images/circle.png</file>
+     <file>images/circle-beat.png</file>
      <file>images/triangle.png</file>
+     <file>images/square.png</file>
 </qresource>
 </RCC>

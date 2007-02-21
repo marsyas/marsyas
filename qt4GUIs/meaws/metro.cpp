@@ -21,8 +21,13 @@
 #include <iostream>
 using namespace std;
 
-Metro::Metro() {
+Metro::Metro(QAction *getVisualMetroBeat) {
+	visualMetroBeat = getVisualMetroBeat;
+  connect(visualMetroBeat, SIGNAL(triggered()), this, SLOT(toggleBigMetro()));
+
 	introBeats=0;
+	bigDisplay=false;
+	audio=true;   // for testing only
 
   MarSystemManager mng;
 
@@ -39,6 +44,9 @@ Metro::Metro() {
 	timer = new QTimer();
 	connect(timer, SIGNAL(timeout()), this, SLOT(beat()));
 	setTempo(60);
+	flashSpeed = new QTimer();
+	connect(flashSpeed, SIGNAL(timeout()), this, SLOT(beatFinished()));
+	flashSpeed->setInterval(100);
 }
 
 Metro::~Metro() {
@@ -67,8 +75,29 @@ void Metro::setIntro(int beats) {
 	introBeats = beats;
 }
 
+void Metro::beatFinished() {
+	if (!bigDisplay) {
+		visualMetroBeat->setIcon(QIcon(":/images/circle.png"));
+	}
+}
+
 void Metro::beat() {
-	mrsWrapper->updctrl(positionPtr, 0);
-	mrsWrapper->play();
+	if (audio) {
+		mrsWrapper->updctrl(positionPtr, 0);
+		mrsWrapper->play();
+	}
+	if (!bigDisplay) {
+		visualMetroBeat->setIcon(QIcon(":/images/circle-beat.png"));
+		flashSpeed->start();
+	}
+}
+
+void Metro::toggleBigMetro() {
+	bigDisplay=!bigDisplay;
+	if (bigDisplay) {
+// pop up a new window, draw big circle, etc
+	} else {
+// kill big window
+	}
 }
 

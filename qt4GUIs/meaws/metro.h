@@ -18,6 +18,7 @@
 
 #include <QObject>
 #include <QTimer>
+#include <QAction>
 #include "MarSystemManager.h"
 #include "../MarSystemQtWrapper.h"
 
@@ -27,7 +28,7 @@ class Metro: public QObject {
 	Q_OBJECT
 
 public:
-	Metro();
+	Metro(QAction *getVisualMetroBeat);
 	~Metro();
 	void stopMetro();
 	void startMetro();
@@ -37,13 +38,18 @@ public slots:
   void setTempo(int tempo);
 	void setIntro(int beats);
 	void beat();
+	void beatFinished();
+	void toggleBigMetro();
 
 private:
 	int tempo;
 	int introBeats;
 
 	QTimer *timer;
-
+	QAction *visualMetroBeat;
+	QTimer *flashSpeed;
+	bool bigDisplay;
+	bool audio;
 
 // audio stuff
 	MarSystemQtWrapper *mrsWrapper;

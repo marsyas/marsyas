@@ -101,7 +101,10 @@ void MainWindow::createActions() {
 	setMetroIntroAct = new QAction(QIcon(":/images/triangle.png"), tr("Set metronome introduction"), this);
 	connect(setMetroIntroAct, SIGNAL(triggered()), this, SLOT(setMetroIntro()));
 
-	calcExerciseAct = new QAction(QIcon(":/images/circle.png"), tr("Calculate exercise results"), this);
+	visualMetroBeat = new QAction(QIcon(":/images/circle.png"), tr("Visual metronome"), this);
+	visualMetroBeat->setStatusTip(tr("Shows the beat"));
+
+	calcExerciseAct = new QAction(QIcon(":/images/square.png"), tr("Calculate exercise results"), this);
 	connect(calcExerciseAct, SIGNAL(triggered()), this, SLOT(calcExercise()));
 
 	toggleMetroAct = new QAction(this);
@@ -182,6 +185,7 @@ void MainWindow::createToolBars() {
 
 	tempoToolBar->addAction(toggleMetroAct);
 	tempoToolBar->addAction(calcExerciseAct);
+	tempoToolBar->addAction(visualMetroBeat);
 
 	connect(slider, SIGNAL(valueChanged(int)),
 		tempoBox, SLOT(setValue(int)));
@@ -311,7 +315,7 @@ void MainWindow::enableActions(int state) {
 	if (state==3) {   // exercise picked
 		setupMarBackend();
 		exerciseRunning=false;
-		metro = new Metro();
+		metro = new Metro(visualMetroBeat);
 
 		connect(toggleMetroAct, SIGNAL(triggered()), this, SLOT(toggleExercise()));
 

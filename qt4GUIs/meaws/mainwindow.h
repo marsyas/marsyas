@@ -110,6 +110,7 @@ private:
 	QAction *setMetroIntroAct;
 	QAction *setUserInfoAct;
 	QAction *calcExerciseAct;
+	QAction *visualMetroBeat;
 
 	QLabel *exerciseTitle;
 

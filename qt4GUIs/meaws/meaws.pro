@@ -12,7 +12,7 @@ INCLUDEPATH += ../../marsyas
 
 !win32:LIBS += -lmarsyas -L../../marsyas
 
-unix:LIBS += -lasound
+#unix:LIBS += -lasound
 macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
  
 win32:DEFINES += __WINDOWS_DS__
