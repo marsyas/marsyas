@@ -43,12 +43,17 @@ int process(string inName, string outName)
 	fanout->addMarSystem(lspS);
 	// second branch of the fanout with the filtering
 	MarSystem* lspF = mng.create("Series","lspF");
- MarSystem* audioSink = mng.create("SoundFileSink", "audioSink");
-	lspF->addMarSystem(mng.create("Filter", "residual"));
-		lspF->addMarSystem(mng.create("Filter", "inverse"));
- lspF->addMarSystem(audioSink);
+  MarSystem* audioSink = mng.create("SoundFileSink", "audioSink");
 
-fanout->addMarSystem(lspF);
+	// replace the input with a noise source
+	lspF->addMarSystem(mng.create("NoiseSource", "ns"));
+  lspF->addMarSystem(mng.create("Gain", "g1"));
+
+	lspF->addMarSystem(mng.create("Filter", "residual"));
+	lspF->addMarSystem(audioSink);
+	lspF->addMarSystem(mng.create("Filter", "inverse"));
+
+  fanout->addMarSystem(lspF);
   // third branch of the fanout
 	fanout->addMarSystem(mng.create("Gain", "gain1"));
 
@@ -65,6 +70,9 @@ fanout->addMarSystem(lspF);
 	input->linkctrl("Fanout/fanout/Series/lspF/Filter/residual/mrs_realvec/ncoeffs",
 									"Fanout/fanout/Series/lspS/LPC/lpc/mrs_realvec/coeffs");
   input->linkctrl("Fanout/fanout/Series/lspF/Filter/inverse/mrs_realvec/dcoeffs",
+									"Fanout/fanout/Series/lspS/LPC/lpc/mrs_realvec/coeffs");
+  // link the power of the error with a gain
+	input->linkctrl("Fanout/fanout/Series/lspF/Filter/inverse/mrs_realvec/dcoeffs",
 									"Fanout/fanout/Series/lspS/LPC/lpc/mrs_realvec/coeffs");
 
 	input->updctrl("Fanout/fanout/Series/lspF/SoundFileSink/audioSink/mrs_string/filename", outName);

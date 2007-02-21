@@ -47,6 +47,8 @@ private:
 	void myUpdate(MarControlPtr sender);
 
 	MarControlPtr ctrl_coeffs_;
+  MarControlPtr ctrl_power_;
+  MarControlPtr ctrl_pitch_;
 	mrs_natural order_;
 	mrs_natural featureMode_;
 

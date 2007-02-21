@@ -63,6 +63,8 @@ LPC::addControls()
 {
 	addctrl("mrs_natural/order", (mrs_natural)10);
 	addctrl("mrs_realvec/coeffs", realvec(), ctrl_coeffs_);
+	addctrl("mrs_real/pitch", 0.0, ctrl_pitch_);
+	addctrl("mrs_real/power", 0.0, ctrl_power_);
 	setctrlState("mrs_natural/order", true); 
 	addctrl("mrs_real/lambda", (mrs_real)0.0);	
 	addctrl("mrs_real/gamma", (mrs_real)1.0);
@@ -358,6 +360,8 @@ LPC::myProcess(realvec& in, realvec& out)
 		ctrl_coeffs_->setValue(0, 1.0);
 		for(i=1; i < order_+1; i++) {
 			ctrl_coeffs_->setValue(i, -a(i));
+		ctrl_pitch_->setValue(pitch);
+		ctrl_power_->setValue(LevinsonError);
 		}
      out = in;
 	  }
