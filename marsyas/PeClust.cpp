@@ -36,7 +36,6 @@ PeClust::PeClust(string name):MarSystem("PeClust", name)
 
 	addControls();
 	kmax_ = 0;
-	nbParameters_ = nbPkParameters; // 7
 	maxLabel_=0;
 }
 
@@ -98,10 +97,10 @@ PeClust::myUpdate(MarControlPtr sender)
 	/* inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
 	inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();*/
 
-	nbParameters_ = inObservations_/kmax_;
+	//nbPkParameters = inObservations_/kmax_;
 
-	data_.stretch(kmax_*inSamples_, nbParameters_);	 
-	lastFrame_.stretch(kmax_*nbParameters_);
+	data_.stretch(kmax_*inSamples_, nbPkParameters);	 
+	lastFrame_.stretch(kmax_*nbPkParameters);
 	lastFrame_.setval(0);
 	//amplitudeSet_.stretch(kmax_, inSamples_+1);
 	//frequencySet_.stretch(kmax_, inSamples_+1);
@@ -320,7 +319,7 @@ PeClust::myProcess(realvec& in, realvec& out)
 	//checkFlow(in,out);
 	mrs_natural nbPeaksLastFrame;
 
-	data_.stretch(kmax_*(inSamples_+1), nbParameters_);
+	data_.stretch(kmax_*(inSamples_+1), nbPkParameters);
 	nbPeaks_ = peaks2M(in, lastFrame_, data_, kmax_, &nbPeaksLastFrame);
 	if(nbPeaks_)
 	{
@@ -401,12 +400,12 @@ PeClust::myProcess(realvec& in, realvec& out)
 		//cout << labels << endl;
 		labeling(data_, labels, 1);
    // simpleLabeling(data_, labels);
-
+//cout << in ;
 		nbClusters_ = back;
-
+//cout << data_;
 		
 	peaks2V(data_, lastFrame_, out, kmax_);
-
+//cout << data_;
 		// peaks storing
 		mrs_natural storing = getctrl("mrs_natural/storePeaks")->toNatural();
 		if(storing)

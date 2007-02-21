@@ -44,7 +44,6 @@ private:
 	realvec lastFrame_;
 
 	mrs_real maxLabel_;
-	mrs_natural nbParameters_;
 	mrs_natural kmax_;
 	mrs_natural nbClusters_;
 	mrs_natural nbPeaks_;
