@@ -52,7 +52,8 @@ private:
 
   mrs_real fundamental_;
   mrs_real factor_;
-  mrs_real cuttingFrequency_;
+  mrs_natural downFrequency_;
+  mrs_natural upFrequency_;
   mrs_natural time_;
   mrs_natural nbParameters_;
   mrs_natural nbPeaks_;
@@ -71,8 +72,7 @@ public:
   ~PeConvert();
   MarSystem* clone() const;    
 
-  void myProcess(realvec& in, realvec& out);
-  
+  void myProcess(realvec& in, realvec& out); 
 };
 
 }//namespace Marsyas

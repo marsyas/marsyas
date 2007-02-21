@@ -33,6 +33,8 @@ string filePeakName = EMPTYSTRING;
 string fileClustName = EMPTYSTRING;
 string fileVoicingName = EMPTYSTRING;
 string fileF0Name = EMPTYSTRING;
+string panningInfo = EMPTYSTRING;
+string intervalFrequency = EMPTYSTRING;
 
 // Global variables for command-line options 
 bool helpopt_ = 0;
@@ -42,9 +44,9 @@ int winSize_ = 2048;
 // if kept the same no time expansion
 int hopSize_ = 512;
 // nb Sines
-int nbSines_ = 5;
+int nbSines_ = 20;
 // nbClusters
-int nbClusters_ = 1;
+int nbClusters_ = 3;
 // nbClusters
 int nbSelectedClusters_ = 0;
 // output buffer Size
@@ -52,7 +54,7 @@ int bopt_ = 128;
 // output gain
 mrs_real gopt_ = 1.0;
 // number of accumulated frames
-mrs_natural accSize_ = 3;
+mrs_natural accSize_ = 20;
 // number of seconds for analysing process
 mrs_natural stopAnalyse_=0;
 // type of similarity Metrics // test amplitude normamlise gtzan
@@ -130,7 +132,7 @@ printHelp(string progName)
 
 
 void
-clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseName, string mixName, mrs_real noiseDelay, string T, mrs_natural N, mrs_natural Nw, 
+clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseName, string mixName, string intervalFrequency, string panningInfo, mrs_real noiseDelay, string T, mrs_natural N, mrs_natural Nw, 
 							 mrs_natural D, mrs_natural S, mrs_natural C,
 							 mrs_natural accSize, bool synthetize, mrs_real *snr0)
 {
@@ -235,7 +237,7 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	//pvseries->updctrl("Accumulator/accumNet/Series/preNet/PvFold/fo/mrs_natural/Decimation", D); // useless ?
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Decimation", D);      
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Sinusoids", S); 
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_real/cuttingFrequency", cuttingFrequency_);  
+	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_string/frequencyInterval", intervalFrequency);  
 	// pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
 
 	pvseries->setctrl("PeClust/peClust/mrs_natural/Sinusoids", S);  
@@ -258,7 +260,7 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 
 	if(synthetize>-1)
 	{
-		synthNetConfigure (pvseries, sfName, outsfname, fileResName, 1, Nw, D, S, accSize, microphone_, synthetize_, bopt_, Nw+1-D);
+		synthNetConfigure (pvseries, sfName, outsfname, fileResName, panningInfo, 1, Nw, D, S, accSize, microphone_, synthetize_, bopt_, Nw+1-D);
 	}
 
 	if(noiseDuration_)
@@ -344,7 +346,8 @@ initOptions()
 	cmd_options.addStringOption("filename", "f", EMPTYSTRING);
 	cmd_options.addStringOption("noisename", "N", EMPTYSTRING);
 	cmd_options.addStringOption("outputdirectoryname", "o", EMPTYSTRING);
-	cmd_options.addStringOption("inputdirectoryname", "i", EMPTYSTRING);
+  cmd_options.addStringOption("intervalFrequency", "i", EMPTYSTRING);
+  cmd_options.addStringOption("panning", "p", EMPTYSTRING);
 	cmd_options.addStringOption("typeSimilarity", "t", defaultSimilarityType_);
 	cmd_options.addNaturalOption("winsize", "w", winSize_);
 	cmd_options.addNaturalOption("fftsize", "n", fftSize_);
@@ -352,7 +355,7 @@ initOptions()
 	cmd_options.addNaturalOption("bufferSize", "b", bopt_);
 	cmd_options.addNaturalOption("quitAnalyse", "q", stopAnalyse_);
 	cmd_options.addNaturalOption("clustering", "c", nbClusters_);
-	cmd_options.addNaturalOption("pruning", "p", nbSelectedClusters_);
+	cmd_options.addNaturalOption("keep", "k", nbSelectedClusters_);
   cmd_options.addNaturalOption("clusterFiltering", "F", clusterFilteringType_);
 
 
@@ -372,7 +375,8 @@ loadOptions()
 	usageopt_ = cmd_options.getBoolOption("usage");
 	pluginName = cmd_options.getStringOption("plugin");
 	fileName   = cmd_options.getStringOption("filename");
-	inputDirectoryName = cmd_options.getStringOption("inputdirectoryname");
+	intervalFrequency = cmd_options.getStringOption("intervalFrequency");
+	panningInfo = cmd_options.getStringOption("panning");
 	outputDirectoryName = cmd_options.getStringOption("outputdirectoryname");
 	similarityType_ = cmd_options.getStringOption("typeSimilarity");
 	noiseName = cmd_options.getStringOption("noisename");
@@ -382,8 +386,8 @@ loadOptions()
 	bopt_ = cmd_options.getNaturalOption("bufferSize");
 	stopAnalyse_ = cmd_options.getNaturalOption("quitAnalyse");
 	nbClusters_ = cmd_options.getNaturalOption("clustering");
-	nbSelectedClusters_ = cmd_options.getNaturalOption("pruning");
-clusterFilteringType_ = cmd_options.getNaturalOption("clusterFiltering");
+	nbSelectedClusters_ = cmd_options.getNaturalOption("keep");
+  clusterFilteringType_ = cmd_options.getNaturalOption("clusterFiltering");
 	analyse_ = cmd_options.getBoolOption("analyse");
 	attributes_ = cmd_options.getBoolOption("attributes");
 	ground_ = cmd_options.getBoolOption("ground");
@@ -458,7 +462,7 @@ main(int argc, const char **argv)
 			if(analyse_)
 			{
 				cout << "Phasevocoding " << Sfname.name() << endl; 
-				clusterExtract(peakSet_, *sfi, fileName, noiseName, mixName, noiseDelay_, similarityType_, fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_, synthetize_, &snr0);
+				clusterExtract(peakSet_, *sfi, fileName, noiseName, mixName, intervalFrequency, panningInfo, noiseDelay_, similarityType_, fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_, synthetize_, &snr0);
 			}	
 			// if ! peak data read from file
 			if(peakSet_.getSize() == 0)
@@ -558,7 +562,7 @@ clusters.getConversionTable(ct);
 	{
 		cout << "Using live microphone input" << endl;
 		microphone_ = true;
-		clusterExtract(peakSet_, "microphone", fileName, noiseName, mixName, noiseDelay_, similarityType_, fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_, synthetize_, &snr0);
+		clusterExtract(peakSet_, "microphone", fileName, noiseName, mixName, intervalFrequency, panningInfo, noiseDelay_, similarityType_, fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_, synthetize_, &snr0);
 	}
 
 

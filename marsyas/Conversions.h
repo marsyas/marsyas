@@ -49,6 +49,8 @@ mrs_real bark2hertz(mrs_real f);
 
 mrs_natural powerOfTwo(mrs_real v);
 
+void string2parameters(std::string s, realvec &v, char d);
+
 }//namespace Marsyas
 
 #endif

@@ -496,7 +496,7 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
 }
 
 void
-Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname, string ressfname, mrs_natural nbChannels, mrs_natural Nw, 
+Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname, string ressfname, std::string panningInfo, mrs_natural nbChannels, mrs_natural Nw, 
 													 mrs_natural D, mrs_natural S, mrs_natural accSize, bool microphone, mrs_natural synType, mrs_natural bopt, mrs_natural delay, bool residual)
 {
 	pvseries->updctrl("PeSynthetize/synthNet/mrs_natural/nTimes", accSize);
@@ -518,6 +518,7 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/FlowCutSource/fcs/mrs_natural/setObservations", 1);	
 		// setting the panning mode mono/stereo
 		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynFFT/psf/mrs_natural/nbChannels", synType);
+	  pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynFFT/psf/mrs_string/panning", panningInfo);
 		// setting the FFT size
 		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftInput/siSyn/mrs_natural/WindowSize", D*2);
 		// setting the name of the original file

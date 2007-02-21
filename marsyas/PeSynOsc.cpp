@@ -26,6 +26,7 @@ according to current input time (t)
 */
 
 #include "PeSynOsc.h"
+#include "PeUtilities.h"
 
 using namespace std;
 using namespace Marsyas;
@@ -97,7 +98,7 @@ PeSynOsc::myProcess(realvec& in, realvec& out)
   //cout << in;
 	for (i=0; i < Nb; i++)
 	{
-		if(in(i+6*Nb) > -1)
+		if(in(i+pkGroup*Nb) > -1)
 		sine(out, in(i), in(i+Nb), in(i+2*Nb));
 	/*	else
 			cout << "truc" << endl;*/

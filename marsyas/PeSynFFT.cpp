@@ -56,6 +56,8 @@ PeSynFFT::addControls()
 	addctrl("mrs_realvec/peaks", realvec(), ctrl_Peaks_);
 	addctrl("mrs_natural/nbChannels", 1, ctrl_NbChannels_);
 	setctrlState("mrs_natural/nbChannels", true);
+	addctrl("mrs_string/panning", EMPTYSTRING);
+	setctrlState("mrs_string/panning", true);
 }
 
 void
@@ -64,6 +66,17 @@ PeSynFFT::myUpdate(MarControlPtr sender)
 	MarSystem::myUpdate(sender);
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples")->toNatural()*getctrl("mrs_natural/nbChannels")->toNatural());
 
+	realvec conv(4);
+	conv.setval(-1);
+	if(getctrl("mrs_string/panning")->toString() != EMPTYSTRING)
+	{
+	string2parameters(getctrl("mrs_string/panning")->toString(), conv, '_');
+	}
+	fgVolume_ = conv(0); 
+  fgPanning_ = conv(1);
+	bgVolume_ = conv(2); 
+  bgPanning_ = conv(3);
+
 	mask_ = realvec(getctrl("mrs_natural/inObservations")->toNatural()/2);
 }
 
@@ -71,24 +84,52 @@ void
 PeSynFFT::generateMask(mrs_natural type)
 {
 	mrs_natural i, j;
-  realvec peaks = ctrl_Peaks_->toVec();
+	realvec peaks = ctrl_Peaks_->toVec();
 
 	//cout << peaks;
 	mrs_natural nbPeaks = peaks.getSize()/nbPkParameters;
-  mask_.setval(0);
+
+	// intialize background
+	if(bgVolume_ != -1)
+	{
+		mask_.setval(bgVolume_);
+		if(type == 1)
+			mask_*=(1-bgPanning_)/2;
+		if(type == 2)
+			mask_*=(1+bgPanning_)/2;
+	}
+	else
+		mask_.setval(0);
+
+	// set level info for foreground clusters
 	for (i=0 ; i<onObservations_/2; i++)
 	{
 		for(j=0 ; j<nbPeaks; j++)
 		{
-			if(i>=peaks(j+nbPeaks*pkBinLow)*onObservations_ && i<peaks(j+nbPeaks*pkBinHigh)*onObservations_)
+			if(peaks(j+pkGroup*nbPeaks) > -1 &&
+				 i>=peaks(j+nbPeaks*pkBinLow)*onObservations_ && i<peaks(j+nbPeaks*pkBinHigh)*onObservations_)
 			{
-			  mask_(i) = peaks(j+nbPeaks*pkVolume);
+				mrs_real vol, pan;
+				if(fgVolume_ != -1)
+				{
+					// use global info
+					vol = fgVolume_;
+					pan = fgPanning_;
+				}
+				else
+				{
+					// use peaks info
+					vol = peaks(j+nbPeaks*pkVolume);
+					pan = peaks(j+nbPeaks*pkPan);
+				}
+
+				mask_(i) = vol;
 				// left
 				if(type == 1)
-					mask_(i) *= (1-peaks(j+nbPeaks*pkPan))/2;
+					mask_(i) *= (1-pan)/2;
 				// right
 				if(type == 2)
-					mask_(i) *= (1+peaks(j+nbPeaks*pkPan))/2;
+					mask_(i) *= (1+pan)/2;
 				break;
 			}
 		}

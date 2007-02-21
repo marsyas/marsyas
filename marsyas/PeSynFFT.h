@@ -36,6 +36,10 @@ private:
 	MarControlPtr ctrl_Peaks_;
 	MarControlPtr ctrl_NbChannels_;
 
+	mrs_real fgVolume_ ; 
+  mrs_real fgPanning_ ;
+	mrs_real bgVolume_ ; 
+  mrs_real bgPanning_; 
 	realvec mask_;
 
 	void addControls(); 

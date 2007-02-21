@@ -403,6 +403,8 @@ PeClust::myProcess(realvec& in, realvec& out)
 //cout << in ;
 		nbClusters_ = back;
 //cout << data_;
+			MATLAB_PUT(data_, "peaks");
+		  MATLAB_EVAL("plotPeaks(peaks)");
 		
 	peaks2V(data_, lastFrame_, out, kmax_);
 //cout << data_;

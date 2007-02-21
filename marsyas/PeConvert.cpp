@@ -46,7 +46,6 @@ PeConvert::PeConvert(string name):MarSystem("PeConvert",name)
 
 	fundamental_ = 0.0;
 	factor_ = 0.0;
-	cuttingFrequency_ = 0.0;
 	nbPeaks_ = 0;
 	kmax_  = 0;
 
@@ -74,8 +73,8 @@ PeConvert::addControls()
 	setctrlState("mrs_natural/Decimation", true);
 	addctrl("mrs_natural/Sinusoids", 1);
 	setctrlState("mrs_natural/Sinusoids", true);
-	addctrl("mrs_real/cuttingFrequency", 0.0);
-	setctrlState("mrs_real/cuttingFrequency", true);
+	addctrl("mrs_string/frequencyInterval", EMPTYSTRING);
+	setctrlState("mrs_string/frequencyInterval", true);
 	addctrl("mrs_natural/nbFramesSkipped", 0);
 	setctrlState("mrs_natural/nbFramesSkipped", true);
 }
@@ -112,7 +111,19 @@ PeConvert::myUpdate(MarControlPtr sender)
 	fundamental_ = (mrs_real) (getctrl("mrs_real/osrate")->toReal() / (mrs_real)getctrl("mrs_natural/inObservations")->toNatural()*2);
 	kmax_ = getctrl("mrs_natural/Sinusoids")->toNatural();
 	skip_ = getctrl("mrs_natural/nbFramesSkipped")->toNatural();
-	cuttingFrequency_ = getctrl("mrs_real/cuttingFrequency")->toReal();
+
+	if(getctrl("mrs_string/frequencyInterval")->toString() != EMPTYSTRING)
+	{
+	realvec conv(2);
+	string2parameters(getctrl("mrs_string/frequencyInterval")->toString(), conv, '-');
+	downFrequency_ = (mrs_natural) floor(conv(0)/getctrl("mrs_real/osrate")->toReal()*size_*2) ;
+	upFrequency_ = (mrs_natural) floor(conv(1)/getctrl("mrs_real/osrate")->toReal()*size_*2);
+	}
+	else
+	{
+	downFrequency_ = 0;
+	upFrequency_ = size_;
+	}
 }
 
 
@@ -353,8 +364,8 @@ PeConvert::myProcess(realvec& in, realvec& out)
 		Peaker peaker("Peaker");
 	//	peaker.updctrl("mrs_real/peakStrength", 0.2);
 		// to be set as a control
-		peaker.updctrl("mrs_natural/peakStart", (mrs_natural) floor(250/osrate_*size_*2));   // 0
-		peaker.updctrl("mrs_natural/peakEnd", (mrs_natural) floor(cuttingFrequency_/osrate_*size_*2));  // size_
+		peaker.updctrl("mrs_natural/peakStart", downFrequency_);   // 0
+		peaker.updctrl("mrs_natural/peakEnd", upFrequency_);  // size_
 		peaker.updctrl("mrs_natural/inSamples", mag_.getCols());
 		peaker.updctrl("mrs_natural/inObservations", mag_.getRows());
 		peaker.updctrl("mrs_natural/onSamples", peaks_.getCols());

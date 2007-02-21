@@ -22,6 +22,7 @@
 */
 
 #include "Conversions.h"
+#include "realvec.h"
 
 using namespace std;
 using namespace Marsyas;
@@ -188,4 +189,18 @@ mrs_natural Marsyas::powerOfTwo(mrs_real v)
 		n++;
 	}
 	return res;
+}
+
+void
+Marsyas::string2parameters(string s, realvec &v, char d)
+{
+	mrs_natural i =0, pos=0, newPos=0;
+	string tmp;
+	while(newPos != -1 )
+	{
+		newPos = (mrs_natural) s.find_first_of(&d, pos, 1);
+		tmp = s.substr(pos, newPos);
+		v(i++) = atof(tmp.c_str());
+		pos = newPos+1;
+	}
 }
