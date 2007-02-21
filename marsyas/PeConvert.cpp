@@ -322,7 +322,7 @@ PeConvert::myProcess(realvec& in, realvec& out)
 			frequency_(t) = phasediff * factor_ ;
 
 			// compute precise amplitude
-			mag_(t) = sqrt((a*a + b*b))*2;//*4/0.884624;//*50/3); // [!!!!!!!!!!!]
+			mag_(t) = sqrt((a*a + b*b))*2; //*4/0.884624;//*50/3); // [!!!!!!!!!!!]
 			mrs_real mag = lobe_value_compute ((t * fundamental_-frequency_(t))/factor_, 1, N2*2);
 			magCorr_(t) = mag_(t)/mag;
 
@@ -333,9 +333,9 @@ PeConvert::myProcess(realvec& in, realvec& out)
 			f=asin(rap);
 			f *= (getctrl("mrs_real/osrate")->toReal())/PI;
 			*/
-			// rough frequency
-			// 	frequency_(t) = t * fundamental_;
-
+			// rough frequency and amplitude
+			//frequency_(t) = t * fundamental_;
+			//magCorr_(t) = mag_(t);
 
 			if(lastfrequency_(t) != 0.0)
 				deltafrequency_(t) = (frequency_(t)-lastfrequency_(t))/(frequency_(t)+lastfrequency_(t));

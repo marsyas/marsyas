@@ -94,10 +94,10 @@ PeResidual::myProcess(realvec& in, realvec& out)
 			//tmpSyn/=inSamples_;
 			//tmpDiff/=inSamples_;
 		
-			if(tmpSyn > .001)
+			if(tmpSyn > .001 && tmpOri > .01)
 		{
 
-			snr= log10 (1+(tmpOri)/(tmpDiff+MINREAL)); // +tmpSyn
+			snr= log10((tmpOri)/(tmpDiff+MINREAL)); // +tmpSyn
 		}
 	}
 

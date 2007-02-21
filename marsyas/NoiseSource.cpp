@@ -99,6 +99,7 @@ NoiseSource::myProcess(realvec &in, realvec &out)
 			while (index_ < 0)
 				index_ += wavetableSize_;
 		}
+
 }
 
 
