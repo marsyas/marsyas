@@ -11,6 +11,7 @@ MarSystemQtWrapper::MarSystemQtWrapper(MarSystem* msys)
   pause_ = true;
   empty_ = false;
   abort_ = false;
+  counter_ = 0;
 }
 
 
@@ -18,7 +19,8 @@ MarSystemQtWrapper::~MarSystemQtWrapper()
 {
   mutex_.lock();
   abort_ = true;
-  condition_.wakeOne();
+  pause_ = false;
+  condition_.wakeAll();
   mutex_.unlock();
   wait();
 }
@@ -85,17 +87,11 @@ MarSystemQtWrapper::run()
       running_ = true;
       // udpate stored controls
       mutex_.lock();
+      counter_ ++;
       vector<MarControlPtr>::iterator vsi;
       vector<MarControlPtr>::iterator vvi;
 
-      if (abort_) 
-	    return;
       
-      if (pause_) 
-       {
-	      condition_.wait(&mutex_);
-	      pause_ = false;
-       }
 
       	
       for (vsi = control_names_.begin(),
@@ -109,16 +105,18 @@ MarSystemQtWrapper::run()
       control_names_.clear();
       control_values_.clear();
       mutex_.unlock();
-      
-      // now we are ready to tick the network
-      if (pause_) 
-         msleep(300);	
-      else 
-	{
-	  main_pnet_->tick();	
-	}
-      
 
+
+     if (!pause_) 
+	main_pnet_->tick();
+
+     mutex_.lock();
+     if (pause_) 
+	condition_.wait(&mutex_);
+     mutex_.unlock();
+
+    if (abort_) 
+	    return;
     }
 }
 

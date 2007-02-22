@@ -46,7 +46,6 @@ Mapper::Mapper()
   
   // make a Qt-like thread object wrapped around the MarSystem
   mwr_ = new MarSystemQtWrapper(pnet_);
-  
   //start the MarSystemQtWrapper thread
   mwr_->start();
 

@@ -55,6 +55,7 @@ private:
   QMutex mutex_;
   bool abort_;
   QWaitCondition condition_; 
+  int counter_;
   
   // the underlying MarSystem
   MarSystem* main_pnet_;
