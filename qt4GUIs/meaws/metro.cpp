@@ -25,12 +25,36 @@ Metro::Metro(QAction *getVisualMetroBeat) {
 	visualMetroBeat = getVisualMetroBeat;
   connect(visualMetroBeat, SIGNAL(triggered()), this, SLOT(toggleBigMetro()));
 
+	resize(200, 200);
+	setWindowTitle("Visual metronome");
+
+	normalBeatColor=Qt::cyan;
+	activeBeatColor=Qt::red;
+
 	introBeats=0;
 	bigDisplay=false;
-	audio=true;   // for testing only
+	audio=false;   // for testing
 
+	if (audio) {
+		setupAudio();
+	}
+
+	timer = new QTimer();
+	connect(timer, SIGNAL(timeout()), this, SLOT(beat()));
+	setTempo(60);
+
+	flashSpeed = new QTimer();
+	connect(flashSpeed, SIGNAL(timeout()), this, SLOT(beatFinished()));
+	flashSpeed->setInterval(100);
+}
+
+Metro::~Metro() {
+	delete mrsWrapper;
+	delete metroNet;
+}
+
+void Metro::setupAudio() {
   MarSystemManager mng;
-
   metroNet = mng.create("Series", "metroNet");
   metroNet->addMarSystem(mng.create("SoundFileSource", "srcMetro"));
   metroNet->addMarSystem(mng.create("AudioSink", "dest"));
@@ -40,18 +64,6 @@ Metro::Metro(QAction *getVisualMetroBeat) {
 	mrsWrapper = new MarSystemQtWrapper(metroNet);
 	mrsWrapper->start();
 	positionPtr = mrsWrapper->getctrl("SoundFileSource/srcMetro/mrs_natural/pos");
-
-	timer = new QTimer();
-	connect(timer, SIGNAL(timeout()), this, SLOT(beat()));
-	setTempo(60);
-	flashSpeed = new QTimer();
-	connect(flashSpeed, SIGNAL(timeout()), this, SLOT(beatFinished()));
-	flashSpeed->setInterval(100);
-}
-
-Metro::~Metro() {
-	delete mrsWrapper;
-	delete metroNet;
 }
 
 void Metro::setTempo(int getTempo) {
@@ -63,12 +75,16 @@ void Metro::setTempo(int getTempo) {
 
 void Metro::startMetro() {
 	timer->start();
-	mrsWrapper->updctrl(positionPtr, 0);
-	mrsWrapper->play();
+	beat();
+	if (audio) {
+		mrsWrapper->updctrl(positionPtr, 0);
+		mrsWrapper->play();
+	}
 }
 
 void Metro::stopMetro() {
 	timer->stop();
+	flashSpeed->stop();
 }
 
 void Metro::setIntro(int beats) {
@@ -76,7 +92,10 @@ void Metro::setIntro(int beats) {
 }
 
 void Metro::beatFinished() {
-	if (!bigDisplay) {
+	if (bigDisplay) {
+		drawBeatColor = normalBeatColor;
+		update();
+	} else {
 		visualMetroBeat->setIcon(QIcon(":/images/circle.png"));
 	}
 }
@@ -86,7 +105,11 @@ void Metro::beat() {
 		mrsWrapper->updctrl(positionPtr, 0);
 		mrsWrapper->play();
 	}
-	if (!bigDisplay) {
+	if (bigDisplay) {
+		drawBeatColor = activeBeatColor;
+		update();
+		flashSpeed->start();
+	} else {
 		visualMetroBeat->setIcon(QIcon(":/images/circle-beat.png"));
 		flashSpeed->start();
 	}
@@ -95,9 +118,22 @@ void Metro::beat() {
 void Metro::toggleBigMetro() {
 	bigDisplay=!bigDisplay;
 	if (bigDisplay) {
-// pop up a new window, draw big circle, etc
+// pop up the window, draw big circle, etc
+		show();
+		drawBeatColor = normalBeatColor;
+		update();
 	} else {
 // kill big window
+		hide();
 	}
+}
+
+void Metro::paintEvent(QPaintEvent *) {
+	QPainter painter(this);
+	painter.setRenderHint(QPainter::Antialiasing);
+
+	QRectF area(5, 5, width()-10, height()-10);
+	painter.setBrush(drawBeatColor);
+	painter.drawEllipse(area);
 }
 

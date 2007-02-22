@@ -16,15 +16,17 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include <QObject>
+#include <QWidget>
 #include <QTimer>
 #include <QAction>
+#include <QDialog>
+#include <QPainter>
 #include "MarSystemManager.h"
 #include "../MarSystemQtWrapper.h"
 
 using namespace Marsyas;
 
-class Metro: public QObject {
+class Metro: public QWidget {
 	Q_OBJECT
 
 public:
@@ -41,6 +43,9 @@ public slots:
 	void beatFinished();
 	void toggleBigMetro();
 
+protected:
+  void paintEvent(QPaintEvent *);
+
 private:
 	int tempo;
 	int introBeats;
@@ -49,9 +54,14 @@ private:
 	QAction *visualMetroBeat;
 	QTimer *flashSpeed;
 	bool bigDisplay;
-	bool audio;
+
+	QColor normalBeatColor;
+	QColor activeBeatColor;
+	QColor drawBeatColor;
 
 // audio stuff
+	bool audio;
+	void setupAudio();
 	MarSystemQtWrapper *mrsWrapper;
   MarSystem *metroNet;
   MarControlPtr positionPtr;

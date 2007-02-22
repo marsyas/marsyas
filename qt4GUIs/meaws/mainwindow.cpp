@@ -313,7 +313,7 @@ void MainWindow::enableActions(int state) {
 		tempoToolBar ->setEnabled(false);
 	}
 	if (state==3) {   // exercise picked
-		setupMarBackend();
+		//setupMarBackend();
 		exerciseRunning=false;
 		metro = new Metro(visualMetroBeat);
 
@@ -328,13 +328,13 @@ void MainWindow::enableActions(int state) {
 
 void MainWindow::toggleExercise() {
 	if (exerciseRunning) {   // stop it
-		marBackend->stop();
+	//	marBackend->stop();
 		metro->stopMetro();
 		toggleMetroAct->setStatusTip(tr("Start"));
 		toggleMetroAct->setIcon(QIcon(":/images/player_play.png"));
 		exerciseRunning = !exerciseRunning;
 	} else {   // start it
-		marBackend->start();
+//		marBackend->start();
 		metro->startMetro();
 		toggleMetroAct->setStatusTip(tr("Stop"));
 		toggleMetroAct->setIcon(QIcon(":/images/player_pause.png"));
