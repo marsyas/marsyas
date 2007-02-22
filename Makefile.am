@@ -26,11 +26,11 @@ EXTRA_DIST              = bootstrap TODO
 AUTOMAKE_OPTIONS        = foreign
 
 
-SUBDIRS			= marsyas src $(DISTRIBUTED) doc marsyasVisualStudio2003 marsyasVisualStudio2005 marsyasMATLAB qt4GUIs $(MRSSWIG) 
+SUBDIRS			= marsyas src $(DISTRIBUTED) doc marsyasVisualStudio2003 marsyasVisualStudio2005 marsyasMATLAB qt4GUIs examples $(MRSSWIG) 
  
 # we must now explicitly define subdirs to be included in the dist
 DIST_SUBDIRS		= marsyas src distributed doc marsyasVisualStudio2003 marsyasVisualStudio2005 marsyasMATLAB\
-			  qt4GUIs swig
+			  qt4GUIs swig examples
 			  
 MAINTAINERCLEANFILES    = Makefile.in aclocal.m4 configure marsyas/config-h.in \
 			  marsyas/stamp-h.in 
