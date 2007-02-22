@@ -50,7 +50,7 @@ Socket.h Thread.h GaussianClassifier.h AbsSoundFileSink.h AbsSoundFileSource.h \
 Confidence.h MarFileSink.h WekaSink.h MFCC.h SCF.h SFM.h \
 WaveletPyramid.h WaveletStep.h Daub4.h OnePole.h RtAudio.h RtError.h Accumulator.h Shredder.h \
 NetworkSocket.h NetworkTCPSource.h NetworkTCPSink.h NetworkUDPSource.h NetworkUDPSink.h Messager.h \
-SocketException.h Talk.h \
+SocketException.h Talk.h FlowCutSource.h \
 TimeLine.h Color.h Communicator.h Server.h AbsMax.h FullWaveRectifier.h \
 Norm.h DownSampler.h WaveletBands.h Sum.h Product.h\
 PeakPeriods2BPM.h Histogram.h BeatHistoFeatures.h MslModel.h \
@@ -77,7 +77,7 @@ Collection.cpp fft.cpp Rms.cpp Peak2Rms.cpp PlotSink.cpp \
 AutoCorrelation.cpp Peaker.cpp Peaker1.cpp HalfWaveRectifier.cpp \
 TimeStretch.cpp Conversions.cpp MaxArgMax.cpp MinArgMin.cpp \
 Series.cpp \
-ShiftInput.cpp ShiftOutput.cpp Shifter.cpp PvFold.cpp PvConvert.cpp PeSynFFT.cpp PeConvert.cpp PeClust.cpp FlowCutSource.cpp PeSynOsc.cpp  Polar2Cartesian.cpp Cartesian2Polar.cpp OverlapAdd.cpp PeResidual.cpp PeUtilities.cpp PeClusters.cpp PeSimilarity.cpp \
+FlowCutSource.cpp ShiftInput.cpp ShiftOutput.cpp Shifter.cpp PvFold.cpp PvConvert.cpp PeSynFFT.cpp PeConvert.cpp PeClust.cpp FlowCutSource.cpp PeSynOsc.cpp  Polar2Cartesian.cpp Cartesian2Polar.cpp OverlapAdd.cpp PeResidual.cpp PeUtilities.cpp PeClusters.cpp PeSimilarity.cpp \
 PvConvolve.cpp PvOscBank.cpp PvUnconvert.cpp PvOverlapadd.cpp Windowing.cpp Hamming.cpp \
 Fanout.cpp Fanin.cpp Negative.cpp SineSource.cpp MarSystemManager.cpp \
 PowerSpectrum.cpp Centroid.cpp Rolloff.cpp \
