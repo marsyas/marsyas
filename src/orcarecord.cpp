@@ -161,7 +161,9 @@ void record_orcas(mrs_real length, mrs_natural year,
 
     asrc->setctrl("mrs_natural/nChannels", copt);
     asrc->setctrl("mrs_natural/inSamples", bufferSize);
+    asrc->setctrl("mrs_natural/bufferSize", bufferSize);
     asrc->setctrl("mrs_real/israte", sropt);
+    asrc->updctrl("mrs_book/initAudio", true);
     asrc->update();
 
 

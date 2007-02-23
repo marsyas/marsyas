@@ -5,8 +5,8 @@
 TEMPLATE = app
 TARGET += 
 DEPENDPATH += .
-INCLUDEPATH += /usr/local/include/marsyas
-unix:LIBS += -lmarsyas -L/usr/local/lib
+INCLUDEPATH += ../../marsyas
+unix:LIBS += -lmarsyas -L../../marsyas
 !macx:LIBS += -lasound
 macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
 LIBS += -lm
