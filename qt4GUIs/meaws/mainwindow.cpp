@@ -354,8 +354,7 @@ void MainWindow::setupMarBackend() {
 	filename.append("-");
 	filename.append( QDateTime::currentDateTime().toString("hhmmss") );
 	filename.append(".wav");
-	cout<<qPrintable(filename)<<endl;
-//	marBackend->setFileName( filename );
+	marBackend->setFileName( qPrintable(filename) );
 
 	// communication with Marsyas backend
 }

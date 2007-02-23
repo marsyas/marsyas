@@ -40,7 +40,7 @@ MarBackend::~MarBackend() {
 // something bad happens here.  :(
 		delete mrsWrapper;
 		cout<<"mrsWrapper deleted"<<endl;
-		delete metroNet;
+		delete recNet;
 		cout<<"metroNet deleted"<<endl;
 	}
 }
@@ -118,12 +118,7 @@ void MarBackend::calculate() {
     cout<<endl<<"-----"<<endl;
   }
 }
-/*
-void MarBackend::setTempo(float timeBetweenBeats) {
-	cout<<"setTempo "<<timeBetweenBeats<<endl;
-//  e->set_repeat(Repeat( dtos(timeBetweenBeats)+"s" ));
-}
-*/
+
 void MarBackend::start() {
 	cout<<"play"<<endl;
 	mrsWrapper->play();
@@ -133,14 +128,4 @@ void MarBackend::stop() {
 	cout<<"stop"<<endl;
 	mrsWrapper->pause();
 }
-/*
-void MarBackend::setIntro(int beats) {
-	cout<<beats<<" beats intro"<<endl;
-	introBeats = beats;
-}
 
-void MarBackend::playBeat() {
-	cout<<"BEAT"<<endl;
-//	metroNet->updctrl("SoundFileSource/src/mrs_natural/pos",0);
-}
-*/
