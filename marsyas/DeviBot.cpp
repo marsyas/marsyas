@@ -75,12 +75,8 @@ void
 DeviBot::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("DeviBot.cpp - Esitar:myUpdate");
-
-
-
   
-  MarSystem::myUpdate(MarControlPtr sender);
-  
+  MarSystem::myUpdate(sender);
 
 #ifdef MRSMIDI
 
