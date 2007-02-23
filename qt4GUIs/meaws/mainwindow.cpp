@@ -2,6 +2,7 @@
 
 MainWindow::MainWindow() {
 	marBackend=NULL;
+	metro=NULL;
 	testingMethod=0;
 
 	createMain();
@@ -206,9 +207,23 @@ void MainWindow::createToolBars() {
 //	infoBar->addWidget(userNameLabel);
 }
 
+void MainWindow::closeExercise() {
+	cout<<"closeExercise()"<<endl;
+	if (marBackend != NULL) {
+		delete marBackend;
+		marBackend = NULL;
+	}
+	if (metro != NULL) {
+		delete metro;
+		metro = NULL;
+	}
+	
+}
+
 void MainWindow::openExercise() {
-	QString exerciseName = QFileDialog::getOpenFileName(this,
-		tr("Open Exercise"),"exercises/",tr("Exercises (*.png)"));
+//	QString exerciseName = QFileDialog::getOpenFileName(this,
+//		tr("Open Exercise"),"exercises/",tr("Exercises (*.png)"));
+	QString exerciseName("exercises/scale.png");
 	if (!exerciseName.isEmpty()) {
 		QImage image(exerciseName);
 		imageLabel->setPixmap(QPixmap::fromImage(image));
@@ -281,6 +296,7 @@ void MainWindow::newUser() {
 		connect(setUserInfoAct, SIGNAL(triggered()), user, SLOT(setUserInfo()));
 		enableActions(2);
 	}
+	openExercise();
 }
 
 void MainWindow::enableActions(int state) {
@@ -297,6 +313,7 @@ void MainWindow::enableActions(int state) {
 		openExerciseAct ->setEnabled(false);
 
 		tempoToolBar ->setEnabled(false);
+		closeExercise();
 	}
 	if (state==2) {   // user created or loaded
 		setWindowTitle(tr("Meaws - %1").arg(user->getName()));
@@ -311,11 +328,13 @@ void MainWindow::enableActions(int state) {
 		openExerciseAct ->setEnabled(true);
 
 		tempoToolBar ->setEnabled(false);
+
+		closeExercise();
 	}
 	if (state==3) {   // exercise picked
 		setupMarBackend();
 		exerciseRunning=false;
-		metro = new Metro(visualMetroBeat);
+		metro = new Metro(visualMetroBeat, this);
 
 		connect(toggleMetroAct, SIGNAL(triggered()), this, SLOT(toggleExercise()));
 

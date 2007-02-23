@@ -33,7 +33,7 @@ Metro::Metro(QAction *getVisualMetroBeat) {
 
 	introBeats=0;
 	bigDisplay=false;
-	audio=false;   // for testing
+	audio=true;   // for testing
 
 	if (audio) {
 		setupAudio();
@@ -49,8 +49,11 @@ Metro::Metro(QAction *getVisualMetroBeat) {
 }
 
 Metro::~Metro() {
+	cout<<"deleting Metro"<<endl;
 	delete mrsWrapper;
 	delete metroNet;
+	delete flashSpeed;
+	delete timer;
 }
 
 void Metro::setupAudio() {

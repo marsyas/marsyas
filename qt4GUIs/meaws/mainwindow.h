@@ -41,6 +41,7 @@ private slots:
 	void documentWasModified();
 */
 	void openExercise();
+	void closeExercise();
 	void setMetroIntro();
 	void setMetroTempo(int tempo);
 	void beat();
