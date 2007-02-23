@@ -54,44 +54,18 @@ void MarBackend::makeRecNet() {
 
 	recNet->updctrl("AudioSource/srcRec/mrs_real/israte", 44100.0);
   recNet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
-	recNet->updctrl("SoundFileSink/destRec/mrs_string/filename","test-rec.wav");
+}
+
+void MarBackend::setFileName(string filename) {
+	mrsWrapper->updctrl(filenamePtr, filename);
 }
 
 void MarBackend::startIntonation() {
 	makeRecNet();
-/*
-  MarSystemManager mng;
-  pitchNet = mng.create("Series", "pitchNet");
-  pitchNet->addMarSystem(mng.create("AudioSource", "src"));
-//	pitchNet->addMarSystem(mng.create("SoundFileSink","destRec"));
 
-	pitchNet->updctrl("AudioSource/src/mrs_real/israte", 44100.0);
-  pitchNet->updctrl("AudioSource/src/mrs_bool/initAudio", true);
-
-  pitchNet->addMarSystem(mng.create("PitchSACF", "sacf"));
-  pitchNet->addMarSystem(mng.create("RealvecSink", "rvSink"));
-
-  mrs_real lowPitch = 36;
-  mrs_real highPitch = 79;
-  mrs_real lowFreq = pitch2hertz(lowPitch);
-  mrs_real highFreq = pitch2hertz(highPitch);
-
-  mrs_natural lowSamples =
-     hertz2samples(highFreq, pitchNet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
-  mrs_natural highSamples =
-     hertz2samples(lowFreq, pitchNet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
-
-  pitchNet->updctrl("PitchSACF/sacf/mrs_natural/lowSamples", lowSamples);
-  pitchNet->updctrl("PitchSACF/sacf/mrs_natural/highSamples", highSamples);
-  pitchNet->updctrl("mrs_natural/inSamples", 1024);
-
-//	allNet = mng.create("Series", "all");
-//	allNet->addMarSystem(recNet);
-//	allNet->addMarSystem(pitchNet);
-*/
 	mrsWrapper = new MarSystemQtWrapper(recNet);
 	mrsWrapper->start();
-
+	filenamePtr = mrsWrapper->getctrl("SoundFileSink/destRec/mrs_string/filename");
 	mrsWrapper->pause();
 }
 

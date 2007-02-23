@@ -36,6 +36,7 @@ public:
 	void start();
 	void stop();
 	void calculate();
+	void setFileName(string filename);
 
 private:
 	MarSystemQtWrapper *mrsWrapper;
