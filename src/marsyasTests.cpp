@@ -146,22 +146,21 @@ test_simpleSFPlay(string sfName)
   playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
   playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
-	playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
-	playbacknet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
-
+  playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+  playbacknet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
+  
   mrs_bool isEmpty;
   //cout << *playbacknet << endl;
   while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->toBool()) 
-	{
-    cout << "tick " << isEmpty << endl;
-		//cout << "pos " << playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() << endl;
-    
-		playbacknet->tick();
-
-		//test if setting "mrs_natural/pos" to 0 for rewinding is working
-		//if(playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() > 100000)
-		//	playbacknet->updctrl("mrs_natural/pos", 0);
-  }
+    {
+      //cout << "pos " << playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() << endl;
+      
+      playbacknet->tick();
+      
+      //test if setting "mrs_natural/pos" to 0 for rewinding is working
+      //if(playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() > 100000)
+      //	playbacknet->updctrl("mrs_natural/pos", 0);
+    }
   cout << "tick " << isEmpty << endl;
   delete playbacknet;
 }

@@ -29,8 +29,9 @@ public slots:
    void volumeChanged(int value);
    void freqChanged(int value);
    void sinusoidsChanged(int value);
+   void posChanged();
    void open();  
-   void ctrlChanged(MarControlPtr cname, MarControlPtr cvalue);
+   void ctrlChanged(MarControlPtr cname);
 
 private:
   void createMenus();
@@ -44,11 +45,14 @@ private:
   MarSystemQtWrapper* mwr_;
   
   MarControlPtr freqPtr_;
+  MarControlPtr posPtr_;
   MarControlPtr initPtr_;
   MarControlPtr fnamePtr_;
   MarControlGUI* freqControl_;
+  MarControlGUI* posControl_;
   
   QSlider* freqSlider_;
+  QSlider* posSlider_;
   
 
   QMenu*   fileMenu;  

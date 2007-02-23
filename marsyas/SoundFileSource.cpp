@@ -115,14 +115,13 @@ SoundFileSource::addControls()
 void
 SoundFileSource::myUpdate(MarControlPtr sender)
 {
-	MRSDIAG("SoundFileSource::myUpdate");
-
-	setctrl("mrs_string/onObsNames", "audio,");
+  MRSDIAG("SoundFileSource::myUpdate");
+  
+  setctrl("mrs_string/onObsNames", "audio,");
   setctrl("mrs_string/inObsNames", "audio,");
-
-
-
-
+  
+  
+  
 
   if (filename_ != getctrl("mrs_string/filename")->toString())
   {

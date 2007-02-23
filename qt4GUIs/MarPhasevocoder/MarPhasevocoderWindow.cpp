@@ -43,6 +43,10 @@ MarPhasevocoderWindow::MarPhasevocoderWindow()
   QLabel  *timeLabel  = new QLabel("Time");
   QSlider *timeSlider = new QSlider(Qt::Horizontal);
 
+  QLabel *posLabel = new QLabel("Pos");
+  posSlider_ = new QSlider(Qt::Horizontal);
+  
+
   sinusoidsLabel->setMinimumWidth(150);
   volumeLabel->setMinimumWidth(150);
   
@@ -71,6 +75,11 @@ MarPhasevocoderWindow::MarPhasevocoderWindow()
 
   gridLayout->addWidget(freqLabel2, 4, 0);
   gridLayout->addWidget(freqControl_, 5, 0);
+
+  gridLayout->addWidget(posLabel, 4, 1);
+  gridLayout->addWidget(posSlider_, 5, 1);
+
+  gridLayout->addWidget(posControl_, 6, 0);
   
 
   connect(timeSlider, SIGNAL(valueChanged(int)), this, SLOT(timeChanged(int)));
@@ -78,10 +87,12 @@ MarPhasevocoderWindow::MarPhasevocoderWindow()
   connect(freqSlider_, SIGNAL(valueChanged(int)), this, SLOT(freqChanged(int)));
   
   connect(sinusoidsSlider, SIGNAL(valueChanged(int)), this, SLOT(sinusoidsChanged(int)));
+
+  connect(posSlider_, SIGNAL(sliderReleased()), this, SLOT(posChanged()));
   
 
-  connect(mwr_, SIGNAL(ctrlChanged(MarControlPtr,MarControlPtr)), 
-	  this, SLOT(ctrlChanged(MarControlPtr, MarControlPtr)));
+  connect(mwr_, SIGNAL(ctrlChanged(MarControlPtr)), 
+	  this, SLOT(ctrlChanged(MarControlPtr)));
   
 		      
 		      
@@ -112,6 +123,13 @@ MarPhasevocoderWindow::timeChanged(int value)
 
 }
 
+void 
+MarPhasevocoderWindow::posChanged() 
+{
+  int value = posSlider_->sliderPosition();
+  mwr_->updctrl(posPtr_, (mrs_natural) value * 512 * 40);    
+}
+
 
 void 
 MarPhasevocoderWindow::sinusoidsChanged(int value)
@@ -127,22 +145,32 @@ MarPhasevocoderWindow::volumeChanged(int value)
 }
 
 void 
-MarPhasevocoderWindow::ctrlChanged(MarControlPtr cname, MarControlPtr cvalue)
+MarPhasevocoderWindow::ctrlChanged(MarControlPtr cname)
 {
   string name = cname->getName();
+  if (cname.isEqual(posPtr_))
+    {
+      mrs_real fval = cname->to<mrs_natural>()  / (512.0 * 40.0);
+      if (posSlider_->isSliderDown() == false)
+	{
+	  posSlider_->blockSignals(true);
+	  posSlider_->setValue((int)fval);
+	  posSlider_->blockSignals(false);
+	}
+      
+      posControl_->updControl(cname); 
+    }
   
+
   if (name == "mrs_real/PitchShift") 
     {
       freqSlider_->blockSignals(true);
-      mrs_real fval = cvalue->to<mrs_real>();
+      mrs_real fval = cname->to<mrs_real>();
       int val = (int)(fval * 50.0);
       freqSlider_->setValue(val);
       freqSlider_->blockSignals(false);
       freqControl_->updControl(cname);
     }
-  else 
-    cout << "something else" << endl;
-  
 }
 
 
@@ -151,8 +179,6 @@ MarPhasevocoderWindow::freqChanged(int value)
 {
   
   float pitchShift = value * 1.0 / 50.0;
-  cout << "slider value " << value << endl;
-  cout << "pitchShift = " << pitchShift << endl;
   mwr_->updctrl(freqPtr_, pitchShift);
 }
 
@@ -168,7 +194,6 @@ MarPhasevocoderWindow::createNetwork()
   mrs_natural I = iopt;
   mrs_real P = popt;
   mrs_natural D = dopt;
-  string sfName("vlobos.au");
   
 
 
@@ -190,7 +215,6 @@ MarPhasevocoderWindow::createNetwork()
   
   pvoc_->addMarSystem(dest);
 
-  pvoc_->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
   pvoc_->updctrl("SoundFileSource/src/mrs_natural/inSamples", D);
   pvoc_->updctrl("SoundFileSource/src/mrs_natural/inObservations", 1);
 
@@ -212,10 +236,11 @@ MarPhasevocoderWindow::createNetwork()
 
   mwr_ = new MarSystemQtWrapper(pvoc_);
   freqPtr_ = mwr_->getctrl("PvOscBank/ob/mrs_real/PitchShift");
+  posPtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/pos");
   initPtr_ = mwr_->getctrl("AudioSink/dest/mrs_bool/initAudio");
   fnamePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_string/filename");
-  
   freqControl_ = new MarControlGUI(freqPtr_, mwr_, this);
+  posControl_ = new MarControlGUI(posPtr_, mwr_, this);
   
 
 
@@ -225,6 +250,7 @@ void
 MarPhasevocoderWindow::startNetwork()
 {
   mwr_->start();
+  mwr_->pause();
 }
 
 
@@ -264,6 +290,9 @@ MarPhasevocoderWindow::open()
   
   QString fileName = QFileDialog::getOpenFileName(this);
   mwr_->play();
+  
+  mwr_->trackctrl(freqPtr_); 
+  mwr_->trackctrl(posPtr_);
   
   mwr_->updctrl(fnamePtr_, fileName.toStdString());
   mwr_->updctrl(initPtr_, true);

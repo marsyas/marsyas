@@ -12,6 +12,10 @@ MarSystemQtWrapper::MarSystemQtWrapper(MarSystem* msys)
   empty_ = false;
   abort_ = false;
   counter_ = 0;
+  qRegisterMetaType<MarControlPtr>("MarControlPtr");
+  QTimer *timer = new QTimer(this);
+  connect(timer, SIGNAL(timeout()), this, SLOT(emitTrackedControls()));
+  timer->start(250);
 }
 
 
@@ -46,14 +50,12 @@ MarSystemQtWrapper::updctrl(MarControlPtr cname,
   if ( !running_ )
     {
       main_pnet_->updctrl(cname, cvalue);
-      emit ctrlChanged(cname, cvalue);
     } 
   else 
     {
       mutex_.lock();
       control_names_.push_back(cname);
       control_values_.push_back(cvalue);
-      emit ctrlChanged(cname, cvalue);
       mutex_.unlock();
     } 
   
@@ -64,10 +66,24 @@ void
 MarSystemQtWrapper::pause()
 { 
   mutex_.lock();
+  if (abort_) 
+    return;
+  
   main_pnet_->updctrl("mrs_bool/active", false);
   pause_ = true;
+
   mutex_.unlock();
 } 
+
+void 
+MarSystemQtWrapper::trackctrl(MarControlPtr control) 
+{
+  mutex_.lock();
+  tracked_controls_.push_back(control);
+  mutex_.unlock();
+  
+}
+
 
 void 
 MarSystemQtWrapper::play()
@@ -79,20 +95,39 @@ MarSystemQtWrapper::play()
   mutex_.unlock();
 } 
 
+
+
+
+void 
+MarSystemQtWrapper::emitTrackedControls()
+{
+  mutex_.lock();
+  vector<MarControlPtr>::iterator vsi;
+  for (vsi = tracked_controls_.begin();
+       vsi != tracked_controls_.end(); ++vsi)
+    {
+      emit ctrlChanged(*vsi);
+    }
+  mutex_.unlock();
+}
+
+  
+
 void 
 MarSystemQtWrapper::run() 
 {
   while(1) 
     {
+      if (abort_) 
+	return;
+
+      
       running_ = true;
       // udpate stored controls
       mutex_.lock();
       counter_ ++;
       vector<MarControlPtr>::iterator vsi;
       vector<MarControlPtr>::iterator vvi;
-
-      
-
       	
       for (vsi = control_names_.begin(),
 	     vvi = control_values_.begin();
@@ -106,17 +141,19 @@ MarSystemQtWrapper::run()
       control_values_.clear();
       mutex_.unlock();
 
+      // emitTrackedControls();
 
-     if (!pause_) 
+      if (!pause_) 
 	main_pnet_->tick();
 
-     mutex_.lock();
-     if (pause_) 
+      mutex_.lock();
+      if (pause_) 
 	condition_.wait(&mutex_);
-     mutex_.unlock();
+      mutex_.unlock();
+      
+      
+      
 
-    if (abort_) 
-	    return;
     }
 }
 

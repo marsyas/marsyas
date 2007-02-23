@@ -107,7 +107,9 @@ public:
 	MarControl* operator->() const { return control_; }
 
 	inline bool isInvalid() const;
-
+        inline bool isEqual(const MarControlPtr& v1);
+  
+	  
 	friend inline std::ostream& operator<<(std::ostream& os, const MarControlPtr& ctrl);
 	friend inline bool operator==(const MarControlPtr& v1, const MarControlPtr& v2);
 	friend inline bool operator!=(const MarControlPtr& v1, const MarControlPtr& v2);
@@ -357,6 +359,7 @@ inline std::ostream& operator<<(std::ostream& os, const MarControlPtr& ctrl)
 	return (os << (*ctrl.control_)); 
 }
 
+
 inline bool operator==(const MarControlPtr& v1, const MarControlPtr& v2)
 {
 	return (*v1.control_) == (*v2.control_);
@@ -525,6 +528,14 @@ MarControlPtr::isInvalid() const
 {
 	return (control_== NULL);
 }
+
+inline 
+bool 
+MarControlPtr::isEqual(const MarControlPtr& p) 
+{
+  return (control_ == p.control_);
+}
+
 
 /************************************************************************/
 /* MarControl inline implementation                                     */

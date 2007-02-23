@@ -12,6 +12,8 @@
 #include <QMutex>
 #include <QSemaphore>
 #include <QWaitCondition>
+#include <QTimer> 
+#include <QMetaType>
 #include "common.h"
 #include "MarSystemManager.h"
 
@@ -41,7 +43,9 @@ public slots:
 		}
 
 
-
+  void trackctrl(MarControlPtr control);
+  void emitTrackedControls();
+  
   MarControlPtr getctrl(string cname);
   
   void play();
@@ -49,7 +53,7 @@ public slots:
   void run();
 
 signals:
-  void ctrlChanged(MarControlPtr cname, MarControlPtr cvalue);
+  void ctrlChanged(MarControlPtr cname);
 	
 private:
   QMutex mutex_;
@@ -64,6 +68,7 @@ private:
   // processes while the main MarSystem is ticking
   vector<MarControlPtr> control_names_;
   vector<MarControlPtr> control_values_;
+  vector<MarControlPtr> tracked_controls_;
   
   bool guard_;
   bool pause_;

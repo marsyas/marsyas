@@ -18,8 +18,8 @@ win32:LIBS += -luser32
 #win32:LIBS += -ldsound -L\"C:\Program Files\Microsoft DirectX SDK (February 2006)\Lib\x86\"
 win32:LIBS += -ldsound -L\"$$(DXSDK_DIR)Lib\x86\"
 
-unix:INCLUDEPATH += /usr/local/include/marsyas
-unix:LIBS += -lmarsyas -L/usr/local/lib -lmad
+unix:INCLUDEPATH += ../../marsyas
+unix:LIBS += -lmarsyas -L../../marsyas -lmad
 unix:LIBS += -lasound
 unix:LIBS += -lm
 
