@@ -15,7 +15,7 @@ MarSystemQtWrapper::MarSystemQtWrapper(MarSystem* msys)
   qRegisterMetaType<MarControlPtr>("MarControlPtr");
   QTimer *timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(emitTrackedControls()));
-  timer->start(100);
+  timer->start(250);
 }
 
 
