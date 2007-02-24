@@ -312,7 +312,8 @@ void MainWindow::enableActions(int state) {
 		exerMenu    ->setEnabled(false);
 		openExerciseAct ->setEnabled(false);
 
-		tempoToolBar ->setEnabled(false);
+		//tempoToolBar ->setEnabled(false);
+		tempoToolBar ->setEnabled(true);
 		closeExercise();
 	}
 	if (state==2) {   // user created or loaded
@@ -411,6 +412,6 @@ void MainWindow::setMetroTempo(int tempo) {
 }
 
 void MainWindow::calcExercise() {
-	marBackend->calculate();
+	marBackend->calculate("~/data/exer-1.wav");
 }
 

@@ -21,12 +21,13 @@
 #include <iostream>
 using namespace std;
 
-Metro::Metro(QAction *getVisualMetroBeat) {
+Metro::Metro(QAction *getVisualMetroBeat, QWidget *parent) {
 	visualMetroBeat = getVisualMetroBeat;
   connect(visualMetroBeat, SIGNAL(triggered()), this, SLOT(toggleBigMetro()));
 
 	resize(200, 200);
 	setWindowTitle("Visual metronome");
+	setParent(parent);
 
 	normalBeatColor=Qt::cyan;
 	activeBeatColor=Qt::red;

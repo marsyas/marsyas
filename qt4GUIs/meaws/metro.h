@@ -30,7 +30,7 @@ class Metro: public QWidget {
 	Q_OBJECT
 
 public:
-	Metro(QAction *getVisualMetroBeat);
+	Metro(QAction *getVisualMetroBeat, QWidget *parent);
 	~Metro();
 	void stopMetro();
 	void startMetro();

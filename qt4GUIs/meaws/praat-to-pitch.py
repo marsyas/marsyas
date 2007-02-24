@@ -33,6 +33,8 @@ notes=0
 file = open('pitchList.txt','r')
 filelines=file.readlines()
 file.close()
+
+file = open('notepitches.txt','w')
 for line in filelines:
 	pitch = float(line)
 	if (pitch==0):
@@ -48,9 +50,10 @@ for line in filelines:
 		else:
 			avgPitch = float( pitchSum / actualSamps )
 	#	if (notes>5):
-		print avgPitch
+		file.write( str(avgPitch) + '\n')
 		sampCount = sampCount - numSamples  ## yes, we want a float   # maybe
 		pitchSum=0
 		notes = notes + 1
 		skipped=0
+file.close()
 

@@ -35,7 +35,7 @@ public:
 //	void playBeat();
 	void start();
 	void stop();
-	void calculate();
+	void calculate(string filename);
 	void setFileName(string filename);
 
 private:

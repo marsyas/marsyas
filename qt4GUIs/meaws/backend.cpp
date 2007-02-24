@@ -74,50 +74,24 @@ void MarBackend::startControl() {
 
 }
 
-void MarBackend::calculate() {
-  MarSystemManager mng;
-  MarSystem* pnet = mng.create("Series", "pnet");
+void MarBackend::calculate(string filename) {
+	string command;
+	command = "python2.4 praat-to-pitch.py ";
+	command.append(filename);
+	command.append(" 60");  // tempo
+	system(command.c_str());
 
-  pnet->addMarSystem(mng.create("SoundFileSource", "src"));
-  pnet->updctrl("SoundFileSource/src/mrs_string/filename", "test-rec.wav");
-  pnet->addMarSystem(mng.create("PitchSACF", "sacf")); 
-  pnet->addMarSystem(mng.create("RealvecSink", "rvSink")); 
+	float notepitch;
+	ifstream inFile;
+	inFile.open("notepitches.txt");
+	while (inFile >> notepitch) {
+		if (notepitch>0) {
+// do whatever I want with the note data.
+			cout<<notepitch<<endl;
+		}
+	}
+	inFile.close();
 
-  mrs_real lowPitch = 36;
-  mrs_real highPitch = 79;
-  mrs_real lowFreq = pitch2hertz(lowPitch);
-  mrs_real highFreq = pitch2hertz(highPitch);
-
-  mrs_natural lowSamples = 
-     hertz2samples(highFreq, pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
-  mrs_natural highSamples = 
-     hertz2samples(lowFreq, pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
- 
-  pnet->updctrl("PitchSACF/sacf/mrs_natural/lowSamples", lowSamples);
-  pnet->updctrl("PitchSACF/sacf/mrs_natural/highSamples", highSamples);
-  pnet->updctrl("mrs_natural/inSamples", 1024);
-
-  while (pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
-   pnet->tick();
-
-	realvec data = pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->toVec();
-   for (mrs_natural i=1; i<data.getSize();i+=2)
-	   data(i) = samples2hertz((mrs_natural) data(i), pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
-   
-   pnet->updctrl("RealvecSink/rvSink/mrs_bool/done", 1); 
-
-  int samps = 40;
-  int totsamps, j;
-  totsamps=0;
-  while ( true ) {
-    if (totsamps >= data.getSize()) break;
-    for (j=1; j<samps; j+=2) {
-      totsamps+=2; 
-      if (totsamps >= data.getSize()) break;
-      cout<<data(totsamps+1)<<" ";
-    }
-    cout<<endl<<"-----"<<endl;
-  }
 }
 
 void MarBackend::start() {
