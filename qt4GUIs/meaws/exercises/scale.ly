@@ -1,8 +1,19 @@
+colorNote = #(define-music-function (parser location color) (string?)
+  #{
+    \once \override Stem #'color = #(x11-color $color)
+    \once \override NoteHead #'color = #(x11-color $color)
+  #}) 
+\version "2.10.0"
 \score{
-\relative {
-c4 d8 e f4 g a4. b8 c2
+{
+c'4
+d'8
+e'
+f'4
+g'
+a'4.
+b'8
+c''2
 }
-
-\midi{}
 \layout{}
 }

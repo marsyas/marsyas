@@ -78,7 +78,7 @@ void MarBackend::calculate(string filename) {
 	string command;
 	command = "python2.4 praat-to-pitch.py ";
 	command.append(filename);
-	command.append(" 60");  // tempo
+	command.append(" 120");  // tempo
 	system(command.c_str());
 
 	float notepitch;
