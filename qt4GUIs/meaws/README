@@ -6,6 +6,15 @@ for public consumption yet.  We're just storing it here because it's
 convenient.
 
 
+DEFINITIONS:
+tactus: the tempo you would conduct (or listen to a metronome).  Regardless
+of the piece, this will generally be in the range of 30-180 BPM.
+
+tatum: the smallest unit of time.  You could call this the least common
+multiple of every note- (or rest-) length.  Watch out for triplet rhythms;
+you cannot simply take the shortest duration in every case.
+
+
 FILES:
 start.cpp: int main()
 

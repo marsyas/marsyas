@@ -13,5 +13,6 @@
      <file>images/circle-beat.png</file>
      <file>images/triangle.png</file>
      <file>images/square.png</file>
+     <file>images/play.png</file>
 </qresource>
 </RCC>

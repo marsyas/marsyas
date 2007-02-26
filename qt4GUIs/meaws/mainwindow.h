@@ -47,6 +47,8 @@ private slots:
 	void beat();
 	void toggleExercise();
 	void calcExercise();
+	void testingFile();
+	void playFile();
 
 private:
 	void createActions();
@@ -113,11 +115,16 @@ private:
 	QAction *calcExerciseAct;
 	QAction *visualMetroBeat;
 
+	QAction *testingFileAct;
+	QAction *playFileAct;
+
 	QLabel *exerciseTitle;
 
 	QSlider *slider;
 	QSpinBox *tempoBox;
 	int metroIntroBeats;
+
+	QString audioFileName;
 
   MarBackend *marBackend;
 	void setupMarBackend();

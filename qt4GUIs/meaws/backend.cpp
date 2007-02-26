@@ -81,17 +81,48 @@ void MarBackend::calculate(string filename) {
 	command.append(" 120");  // tempo
 	system(command.c_str());
 
+// please don't look at this code.  I feel embarrassed for having
+// written it, and it will be rewritten next weekend.
 	float notepitch;
+	int note;
+	int tatum;
+	float sumPitch;
+	float avgPitch;
+	float pitchError;
+	int expected_pitch[8] = {60,62,64,65,67,69,71,72};
+	int expected_duration[8] = {2,1,1,2,2,3,1,4};
+	note=0;
 	ifstream inFile;
 	inFile.open("notepitches.txt");
+	sumPitch=0;
+	tatum=0;
 	while (inFile >> notepitch) {
-		if (notepitch>0) {
 // do whatever I want with the note data.
-			cout<<notepitch<<endl;
+		tatum++;
+
+// I feel so dirty... AND RIGHTLY SO!
+		if ((note==0) && (tatum==4)) { tatum=0; } else
+		if (notepitch>0) {
+		//if (tatum > (2*2-1)) {  // intro beats.  DOESN'T WORK!
+			sumPitch += notepitch;
+		//	cout<<notepitch<<"   "<<note<<"  "<<tatum<<endl;
+			if (tatum>=expected_duration[note]) {
+				avgPitch = (sumPitch / tatum);
+				pitchError = avgPitch - expected_pitch[note];
+				cout<<note<<"  "<<pitchError;
+				cout<<"   "<<avgPitch<<"  "<<expected_pitch[note]<<endl;
+				sumPitch=0;
+				tatum=0;
+				note++;
+				if (note>=8) break;
+			}
 		}
 	}
 	inFile.close();
+}
 
+void MarBackend::playFile() {
+	cout<<"playing file now.   (not really, but it will in a few days)"<<endl;
 }
 
 void MarBackend::start() {

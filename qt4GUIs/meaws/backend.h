@@ -37,6 +37,7 @@ public:
 	void stop();
 	void calculate(string filename);
 	void setFileName(string filename);
+	void playFile();
 
 private:
 	MarSystemQtWrapper *mrsWrapper;
@@ -56,6 +57,7 @@ private:
 
 	MarSystem *allNet;
   MarControlPtr filenamePtr;
+	int *pitchError;
 
 // pitch extracting stuff  (INCOMPLETE)
 	void startPitchNet(string sfName);

@@ -113,6 +113,19 @@ void MainWindow::createActions() {
 	toggleMetroAct->setStatusTip(tr("Start"));
 	toggleMetroAct->setIcon(QIcon(":/images/player_play.png"));
 
+	testingFileAct = new QAction(QIcon(":/images/open.png"), tr("&Open test audio file..."), this);
+	testingFileAct->setShortcut(tr("Ctrl+T"));
+	testingFileAct->setStatusTip(tr("Open test audio file"));
+	connect(testingFileAct, SIGNAL(triggered()), this, SLOT(testingFile()));
+
+	playFileAct = new QAction(QIcon(":/images/open.png"), tr("&Play test audio file..."), this);
+	playFileAct->setIcon(QIcon(":/images/play.png"));
+	playFileAct->setStatusTip(tr("Play test audio file"));
+	connect(playFileAct, SIGNAL(triggered()), this, SLOT(playFile()));
+}
+
+void MainWindow::playFile() {
+	marBackend->playFile();
 }
 
 // main window area
@@ -200,6 +213,8 @@ void MainWindow::createToolBars() {
 	infoBar = addToolBar(tr("Info"));
 	exerciseTitle = new QLabel();
 	exerciseTitle->setText("");
+	infoBar->addAction(testingFileAct);
+	infoBar->addAction(playFileAct);
 	infoBar->addWidget(exerciseTitle);
 
 //	QLabel *userNameLabel = new QLabel();
@@ -227,12 +242,16 @@ void MainWindow::openExercise() {
 	if (!exerciseName.isEmpty()) {
 		QImage image(exerciseName);
 		imageLabel->setPixmap(QPixmap::fromImage(image));
-		
 		exerciseTitle->setText( tr("Exercise: %1").arg(QFileInfo(exerciseName).baseName()) );
 		enableActions(3);
 	}
 }
 
+void MainWindow::testingFile() {
+	audioFileName = QFileDialog::getOpenFileName(this,
+		tr("Open test audio file"),"~/",tr("Audio files (*.wav)"));
+}
+	
 bool MainWindow::maybeTestingMethod() {
 	if (testingMethod>0) {
 		return true;
@@ -374,7 +393,8 @@ void MainWindow::setupMarBackend() {
 	filename.append("-");
 	filename.append( QDateTime::currentDateTime().toString("hhmmss") );
 	filename.append(".wav");
-	marBackend->setFileName( qPrintable(filename) );
+	audioFileName = filename;
+	marBackend->setFileName( qPrintable(audioFileName) );
 
 	// communication with Marsyas backend
 }
