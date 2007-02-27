@@ -95,7 +95,7 @@ void MarBackend::calculate(string filename) {
 	note=0;
 	ifstream inFile;
 	inFile.open("notepitches.txt");
-	ofstream outFile("toperl.txt",ios::out);
+//	ofstream outFile("toperl.txt",ios::out);
 	sumPitch=0;
 	tatum=0;
 	while (inFile >> notepitch) {
@@ -113,7 +113,8 @@ void MarBackend::calculate(string filename) {
 				pitchError = avgPitch - expected_pitch[note];
 	//			cout<<note<<"  "<<pitchError;
 	//			cout<<"   "<<avgPitch<<"  "<<expected_pitch[note]<<endl;
-				outFile<<pitchError<<endl;
+//				outFile<<pitchError<<endl;
+				emit nextNoteError(pitchError,1);
 				sumPitch=0;
 				tatum=0;
 				note++;
@@ -122,9 +123,9 @@ void MarBackend::calculate(string filename) {
 		}
 	}
 	inFile.close();
-	outFile.close();
-	command = "perl color-aud-output.pl toperl.txt ";
-	system(command.c_str());
+//	outFile.close();
+//	command = "perl color-aud-output.pl toperl.txt ";
+//	system(command.c_str());
 }
 
 void MarBackend::playFile() {

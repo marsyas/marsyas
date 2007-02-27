@@ -11,8 +11,9 @@
 using namespace std;
 
 #include "backend.h"
-#include "user.h"
 #include "metro.h"
+#include "user.h"
+#include "exercise.h"
 
 class QAction;
 class QMenu;
@@ -132,6 +133,7 @@ private:
 	bool exerciseRunning;
 
 	Metro *metro;
+	Exercise *exercise;
 };
 
 #endif

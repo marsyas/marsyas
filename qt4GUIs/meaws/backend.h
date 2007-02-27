@@ -35,9 +35,12 @@ public:
 //	void playBeat();
 	void start();
 	void stop();
-	void calculate(string filename);
 	void setFileName(string filename);
 	void playFile();
+	void calculate(string filename);
+
+signals:
+	void nextNoteError(float error, int direction);
 
 private:
 	MarSystemQtWrapper *mrsWrapper;

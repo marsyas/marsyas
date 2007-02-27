@@ -30,7 +30,7 @@ metro .h .cpp: the metronome object.
 user .h .cpp: the User object.  (records previous tests, user info, etc)
 
 images/ : icons for the QT app.
-exercises/ : data for the different exercises for the students.
+music/ : data for the different music for the students.
 
 sd.wav: sound file for the metronome noises.
 

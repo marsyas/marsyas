@@ -5,6 +5,8 @@ MainWindow::MainWindow() {
 	metro=NULL;
 	testingMethod=0;
 
+	exercise = new Exercise();
+
 	createMain();
 	createActions();
 	createMenus();
@@ -237,8 +239,8 @@ void MainWindow::closeExercise() {
 
 void MainWindow::openExercise() {
 //	QString exerciseName = QFileDialog::getOpenFileName(this,
-//		tr("Open Exercise"),"exercises/",tr("Exercises (*.png)"));
-	QString exerciseName("exercises/scale.png");
+//		tr("Open Exercise"),"music/",tr("Exercises (*.png)"));
+	QString exerciseName("music/scale.png");
 	if (!exerciseName.isEmpty()) {
 		QImage image(exerciseName);
 		imageLabel->setPixmap(QPixmap::fromImage(image));
@@ -399,6 +401,7 @@ void MainWindow::setupMarBackend() {
 	marBackend->setFileName( qPrintable(audioFileName) );
 
 	// communication with Marsyas backend
+	connect(marBackend, SIGNAL(nextNoteError(float, int)), exercise, SLOT(nextNoteError(float, int)));
 }
 
 void MainWindow::beat() {
@@ -435,8 +438,13 @@ void MainWindow::setMetroTempo(int tempo) {
 
 void MainWindow::calcExercise() {
 	marBackend->calculate(qPrintable(audioFileName));
+
+	exercise->getLily();
+	string command = "cd /Users/gperciva/tmp/ ; lilypond -dpreview out.ly";
+	system(command.c_str());
 	QString imageFileName="/Users/gperciva/tmp/out.preview.png";
 	QImage image(imageFileName);
 	displayResults->setPixmap(QPixmap::fromImage(image));
+
 }
 
