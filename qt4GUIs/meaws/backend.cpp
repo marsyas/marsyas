@@ -79,6 +79,7 @@ void MarBackend::calculate(string filename) {
 	command = "python2.4 praat-to-pitch.py ";
 	command.append(filename);
 	command.append(" 120");  // tempo
+	cout<<"DOING: "<<command.c_str()<<endl;
 	system(command.c_str());
 
 // please don't look at this code.  I feel embarrassed for having
@@ -94,6 +95,7 @@ void MarBackend::calculate(string filename) {
 	note=0;
 	ifstream inFile;
 	inFile.open("notepitches.txt");
+	ofstream outFile("toperl.txt",ios::out);
 	sumPitch=0;
 	tatum=0;
 	while (inFile >> notepitch) {
@@ -109,8 +111,9 @@ void MarBackend::calculate(string filename) {
 			if (tatum>=expected_duration[note]) {
 				avgPitch = (sumPitch / tatum);
 				pitchError = avgPitch - expected_pitch[note];
-				cout<<note<<"  "<<pitchError;
-				cout<<"   "<<avgPitch<<"  "<<expected_pitch[note]<<endl;
+	//			cout<<note<<"  "<<pitchError;
+	//			cout<<"   "<<avgPitch<<"  "<<expected_pitch[note]<<endl;
+				outFile<<pitchError<<endl;
 				sumPitch=0;
 				tatum=0;
 				note++;
@@ -119,6 +122,9 @@ void MarBackend::calculate(string filename) {
 		}
 	}
 	inFile.close();
+	outFile.close();
+	command = "perl color-aud-output.pl toperl.txt ";
+	system(command.c_str());
 }
 
 void MarBackend::playFile() {

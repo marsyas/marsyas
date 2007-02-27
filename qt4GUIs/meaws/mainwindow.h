@@ -88,7 +88,7 @@ private:
 
 	QTextEdit *textEdit;
 	QLabel *imageLabel;
-	QLabel *textLabel;
+	QLabel *displayResults;
 	QGridLayout *mainGrid;
 	QVBoxLayout *mainLayout;
 	QFrame* centralFrame;

@@ -141,13 +141,13 @@ void MainWindow::createMain() {
 
 	// this is what displays our testing text.  Later on we would
 	// remove textLable and make a QT painting area or make it a picture.
-	textLabel = new QLabel;
+	displayResults = new QLabel;
 	updateTestingMethod();
 
 	// we want to display the above two QLabels within our main window.
 	mainLayout = new QVBoxLayout;
 	mainLayout->addWidget(imageLabel,0,Qt::AlignTop);
-	mainLayout->addWidget(textLabel);
+	mainLayout->addWidget(displayResults,0,Qt::AlignTop);
 	centralFrame->setLayout(mainLayout);
 }
 
@@ -277,6 +277,7 @@ bool MainWindow::chooseTestingMethod() {
 }
 
 void MainWindow::updateTestingMethod() {
+/*
 	if (testingMethod==0) textLabel->setText("No testing method selected");
 	if (testingMethod==1) {
 		textLabel->setText("Intonation test");
@@ -284,6 +285,7 @@ void MainWindow::updateTestingMethod() {
 	if (testingMethod==2) {
 		textLabel->setText("Sound control test");
 	}
+*/
 }
 
 bool MainWindow::chooseUserInfo() {
@@ -432,6 +434,9 @@ void MainWindow::setMetroTempo(int tempo) {
 }
 
 void MainWindow::calcExercise() {
-	marBackend->calculate("~/data/exer-1.wav");
+	marBackend->calculate(qPrintable(audioFileName));
+	QString imageFileName="/Users/gperciva/tmp/out.preview.png";
+	QImage image(imageFileName);
+	displayResults->setPixmap(QPixmap::fromImage(image));
 }
 
