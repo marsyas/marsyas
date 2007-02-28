@@ -122,37 +122,60 @@ void Marsyas::updateLabels(realvec& peakSet, realvec& conversion)
 void Marsyas::extractParameter(realvec&in, std::vector<realvec>& out, pkParameter type, mrs_natural kmax)
 {
 	mrs_natural i, k=0;
-	mrs_natural frameIndex=-1, startIndex = (mrs_natural) in(0, 5);
+	mrs_natural frameIndex=-1, startIndex = (mrs_natural) in(0, pkTime), endIndex = (mrs_natural) in(in.getRows()-1, pkTime), index;
+	mrs_natural nbFrames = endIndex-startIndex+1;
+	mrs_natural* l = new mrs_natural[nbFrames];
 	realvec vec(kmax);
-	//out.setval(0);
+vec.setval(0);
+ // allocate vector of realvec
+for (i=0 ; i < nbFrames ; i++)
+{
+out.push_back(vec);
+l[i]=0;
+}
+
+ // fill vector
 	for (i=0 ; i<in.getRows() ; i++)
 	{
-		if(frameIndex != in(i, 5))
-		{
-			if(k)
-			{
-				vec.stretch(k);
-				// put inside vector
-				out.push_back(vec);
-				vec.stretch(kmax);
-			}
-			// fix this [ML]
-			/*else
-				out.push_back(realvec());*/
-			frameIndex = (mrs_natural) in(i, 5);
-			k=0;
-		}
-		if(in(i, 5) == frameIndex)
-		{
-			vec(k++) = in(i, type);
-		}
-		}
-	if(k)
-	{
-		vec.stretch(k);
-		// put inside vector
-		out.push_back(vec);
+   index = (mrs_natural) in(i, pkTime) - startIndex;
+		out[index](l[index]) = in(i, type);
+		l[index]++;
 	}
+	// stretch realvecs
+for (i=0 ; i < nbFrames ; i++)
+{
+out[i].stretch(l[i]);
+}
+
+delete [] l;
+	////out.setval(0);
+	//for (i=0 ; i<in.getRows() ; i++)
+	//{
+	//	if(frameIndex != in(i, pkTime))
+	//	{
+	//		if(k)
+	//		{
+	//			vec.stretch(k);
+	//			// put inside vector
+	//			out.push_back(vec);
+	//			vec.stretch(kmax);
+	//		}
+	//		else
+	//			out.push_back(realvec());
+	//		frameIndex = (mrs_natural) in(i, pkTime);
+	//		k=0;
+	//	}
+	//	if(in(i, pkTime) == frameIndex)
+	//	{
+	//		vec(k++) = in(i, type);
+	//	}
+	//}
+	//if(k)
+	//{
+	//	vec.stretch(k);
+	//	// put inside vector
+	//	out.push_back(vec);
+	//}
 }
 
 
@@ -376,14 +399,15 @@ Marsyas::cosinePeakSets(realvec&f1, realvec&a1, realvec&f2, realvec&a2, realvec&
 	for (mrs_natural i=0 ; i<f1.getSize() ; i++)
 	{
 		index= (mrs_natural) fmod(floor(f1(i)*length+.5), length);
-		x1(index) += a1(i);
+			x1(index) += a1(i);
 		x3(index) += a3(i);
 	}
 	// second discrete Harmonically Wrapped Spectrum 
 	for (mrs_natural i=0 ; i<f2.getSize()  ; i++)
 	{
 		index= (mrs_natural) fmod(floor(f2(i)*length+.5), length);
-		x2(index) += a2(i);
+	//	cout << endl << "index " << index << endl;
+	x2(index) += a2(i);
 		x4(index) += a4(i);
 	}
 	// cosine metric
@@ -393,9 +417,14 @@ Marsyas::cosinePeakSets(realvec&f1, realvec&a1, realvec&f2, realvec&a2, realvec&
 		res2 += x3(i)*x3(i);
 		res3 += x4(i)*x4(i);
 	}
+ 	res = res1/(sqrt(res2)*sqrt(res3));
 
-	res = res1/(sqrt(res2)*sqrt(res3));
+	/*if(res3==0)
+	{
+		cout << a4 ;
+ cout << res1 << " " << res2 << " " << res3 << " " << x1.getSize() << endl;
 
+	}*/
 
 	//MATLAB_PUT(x1, "x1");
 	//MATLAB_PUT(x2, "x2");
@@ -413,6 +442,7 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
 	 if(synType == 0)
 	 {
 	postNet->addMarSystem(mng->create("PeSynOsc", "pso"));
+	   postNet->addMarSystem(mng->create("Windowing", "wiSyn"));
 	 }
 	 else
 	 {

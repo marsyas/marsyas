@@ -46,7 +46,7 @@ int hopSize_ = 512;
 // nb Sines
 int nbSines_ = 20;
 // nbClusters
-int nbClusters_ = 3;
+int nbClusters_ = 2;
 // nbClusters
 int nbSelectedClusters_ = 0;
 // output buffer Size
@@ -58,11 +58,11 @@ mrs_natural accSize_ = 20;
 // number of seconds for analysing process
 mrs_natural stopAnalyse_=0;
 // type of similarity Metrics // test amplitude normamlise gtzan
-string defaultSimilarityType_ = "hofbab";
+string defaultSimilarityType_ = "hoabfb";
 string similarityType_ = EMPTYSTRING;
 // weight for similarity Metrics
 realvec similarityWeight_;	
-// store for clustered peaks
+// store for clustered peaks 
 realvec peakSet_;
 // delay for noise insertion
 mrs_real noiseDelay_=0;
@@ -134,7 +134,7 @@ printHelp(string progName)
 void
 clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseName, string mixName, string intervalFrequency, string panningInfo, mrs_real noiseDelay, string T, mrs_natural N, mrs_natural Nw, 
 							 mrs_natural D, mrs_natural S, mrs_natural C,
-							 mrs_natural accSize, bool synthetize, mrs_real *snr0)
+							 mrs_natural accSize, mrs_natural synthetize, mrs_real *snr0)
 {
 	cout << "Extracting Peaks and Clusters" << endl;
 	MarSystemManager mng;

@@ -115,7 +115,8 @@ PeConvert::myUpdate(MarControlPtr sender)
 	if(getctrl("mrs_string/frequencyInterval")->toString() != EMPTYSTRING)
 	{
 	realvec conv(2);
-	string2parameters(getctrl("mrs_string/frequencyInterval")->toString(), conv, '-');
+	string2parameters(getctrl("mrs_string/frequencyInterval")->toString(), conv, '_');
+	//cout << conv;
 	downFrequency_ = (mrs_natural) floor(conv(0)/getctrl("mrs_real/osrate")->toReal()*size_*2) ;
 	upFrequency_ = (mrs_natural) floor(conv(1)/getctrl("mrs_real/osrate")->toReal()*size_*2);
 	}
@@ -362,7 +363,7 @@ PeConvert::myProcess(realvec& in, realvec& out)
 		// select local maxima
 		realvec peaks_=mag_;
 		Peaker peaker("Peaker");
-	//	peaker.updctrl("mrs_real/peakStrength", 0.2);
+		peaker.updctrl("mrs_real/peakStrength", 0.2);
 		// to be set as a control
 		peaker.updctrl("mrs_natural/peakStart", downFrequency_);   // 0
 		peaker.updctrl("mrs_natural/peakEnd", upFrequency_);  // size_
@@ -444,7 +445,7 @@ PeConvert::myProcess(realvec& in, realvec& out)
 	// MATLAB_PUT(out, "peaks");
 	// MATLAB_PUT(kmax_, "k");
 	// MATLAB_EVAL("figure(1);clf;plot(peaks(6*k+1:7*k));");
-	// cout << out;
+ //cout << out;
 }
 
 

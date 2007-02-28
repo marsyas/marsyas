@@ -73,8 +73,11 @@ Marsyas::ncut(mrs_natural *n, realvec &W, mrs_natural *nbcluster, realvec &NcutE
    for( i=0 ; i<*n ; i++ )
       for( j=0 ; j<*n ; j++ ){
          if( W(i*(*n)+j) != W(j*(*n)+i) )
-            ERROR("W is not symmetric");
-         P(i*(*n)+j)=0.; 
+				 {
+						cout << W;         
+				ERROR("W is not symmetric");
+				 }
+				 P(i*(*n)+j)=0.; 
       }           
          
 			ulp = NumericLib::machp("Epsilon") * NumericLib::machp("Base"); // unit in last place            
