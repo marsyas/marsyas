@@ -41,11 +41,12 @@ private:
 	mrs_real bgVolume_ ; 
   mrs_real bgPanning_; 
 	realvec mask_;
+	realvec lastMask_;
 
 	void addControls(); 
 	void myUpdate(MarControlPtr sender);
   void generateMask(mrs_natural type);
-
+  void lpfMask();
 public:
   PeSynFFT(std::string name);
 	PeSynFFT(const PeSynFFT& a);

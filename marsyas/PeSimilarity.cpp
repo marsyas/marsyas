@@ -134,7 +134,8 @@ void
 Marsyas::similarityCompute(realvec &d, realvec& m)
 {
 	int i, j;
-
+ 
+	// getSize ?? [ML]
 	for(i=0 ; i<d.getCols() ; i++)
 	{
 		for(j=0 ; j<i ; j++)

@@ -78,6 +78,8 @@ PeSynFFT::myUpdate(MarControlPtr sender)
   bgPanning_ = conv(3);
 
 	mask_ = realvec(getctrl("mrs_natural/inObservations")->toNatural()/2);
+	lastMask_ = realvec(getctrl("mrs_natural/inObservations")->toNatural()/2);
+	lastMask_.setval(0);
 }
 
 void
@@ -137,6 +139,20 @@ PeSynFFT::generateMask(mrs_natural type)
 //	cout << mask_;
 }
 
+void
+PeSynFFT::lpfMask()
+{
+	mrs_natural i;
+	mrs_real gain = 0.8, deltaGain=.3;
+
+	for (i=0 ; i<mask_.getSize() ; i++)
+	{
+		mrs_real g=gain-deltaGain*(mask_.getSize()-i)/mask_.getSize();
+    mask_(i) = g*mask_(i)+(1-g)*lastMask_(i);
+	}
+	lastMask_ = mask_;
+}
+
 void 
 PeSynFFT::myProcess(realvec& in, realvec& out)
 {	
@@ -145,6 +161,7 @@ PeSynFFT::myProcess(realvec& in, realvec& out)
 	for (t = 0; t < onSamples_; t++)
 	{
 		generateMask(t+(nbChannels-1));
+		lpfMask();
 		for (o=0; o < onObservations_/2; o++)
 		{
 			//apply PeSynFFT to all channels
