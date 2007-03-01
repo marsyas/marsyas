@@ -457,7 +457,7 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
 		 // set the correct buffer size
      postNet->addMarSystem(mng->create("ShiftInput", "siSyn"));
 		 // perform an FFT
-		 postNet->addMarSystem(mng->create("Windowing", "wiSyn"));
+		
 
      postNet->addMarSystem(mng->create("Spectrum", "specSyn"));
 		 // convert to polar
@@ -474,6 +474,7 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
 	//	 postNet->addMarSystem(mng->create("PlotSink", "plot"));
 		 postNet->addMarSystem(mng->create("InvSpectrum", "invSpecSyn"));
 		// postNet->addMarSystem(mng->create("PlotSink", "plot2"));
+		  postNet->addMarSystem(mng->create("Windowing", "wiSyn"));
 	 }
 
 	 postNet->addMarSystem(mng->create("OverlapAdd", "ov"));
