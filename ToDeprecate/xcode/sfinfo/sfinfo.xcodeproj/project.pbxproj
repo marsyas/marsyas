@@ -1,0 +1,425 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		56FB70F60B0568DA0098B8DC /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 56FB70F30B0568D90098B8DC /* CoreAudio.framework */; };
+		56FB70F70B0568DA0098B8DC /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 56FB70F40B0568D90098B8DC /* CoreFoundation.framework */; };
+		56FB70F80B0568DA0098B8DC /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 56FB70F50B0568D90098B8DC /* CoreMIDI.framework */; };
+		56FB70FA0B0568F00098B8DC /* sfinfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56FB70F90B0568F00098B8DC /* sfinfo.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildStyle section */
+		562B78570B064EB3000082F7 /* Development */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Development;
+		};
+		562B78580B064EB3000082F7 /* Deployment */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			name = Deployment;
+		};
+/* End PBXBuildStyle section */
+
+/* Begin PBXContainerItemProxy section */
+		5679A0CE0B0991CF00742B62 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5679A0CA0B0991CF00742B62 /* marsyas.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 56FB6A650B0545AD0098B8DC /* libmarsyas.a */;
+			remoteInfo = marsyas;
+		};
+		5679A0D10B0991D800742B62 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5679A0CA0B0991CF00742B62 /* marsyas.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 56FB6A640B0545AD0098B8DC /* marsyas */;
+			remoteInfo = marsyas;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		5679A0CA0B0991CF00742B62 /* marsyas.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = marsyas.xcodeproj; path = ../marsyas/marsyas.xcodeproj; sourceTree = SOURCE_ROOT; };
+		56FB70EC0B0568B40098B8DC /* sfinfo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sfinfo; sourceTree = BUILT_PRODUCTS_DIR; };
+		56FB70F30B0568D90098B8DC /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/CoreAudio.framework; sourceTree = "<absolute>"; };
+		56FB70F40B0568D90098B8DC /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		56FB70F50B0568D90098B8DC /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/CoreMIDI.framework; sourceTree = "<absolute>"; };
+		56FB70F90B0568F00098B8DC /* sfinfo.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = sfinfo.cpp; path = ../../src/sfinfo.cpp; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		56FB70E90B0568B40098B8DC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				56FB70F60B0568DA0098B8DC /* CoreAudio.framework in Frameworks */,
+				56FB70F70B0568DA0098B8DC /* CoreFoundation.framework in Frameworks */,
+				56FB70F80B0568DA0098B8DC /* CoreMIDI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5679A0CB0B0991CF00742B62 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5679A0CF0B0991CF00742B62 /* libmarsyas.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		56FB70DD0B0568A20098B8DC = {
+			isa = PBXGroup;
+			children = (
+				5679A0CA0B0991CF00742B62 /* marsyas.xcodeproj */,
+				56FB70F90B0568F00098B8DC /* sfinfo.cpp */,
+				56FB70F30B0568D90098B8DC /* CoreAudio.framework */,
+				56FB70F40B0568D90098B8DC /* CoreFoundation.framework */,
+				56FB70F50B0568D90098B8DC /* CoreMIDI.framework */,
+				56FB70ED0B0568B40098B8DC /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		56FB70ED0B0568B40098B8DC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				56FB70EC0B0568B40098B8DC /* sfinfo */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		56FB70E70B0568B40098B8DC /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXProject section */
+		56FB70DF0B0568A20098B8DC /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 56FB70E00B0568A20098B8DC /* Build configuration list for PBXProject "sfinfo" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				562B78570B064EB3000082F7 /* Development */,
+				562B78580B064EB3000082F7 /* Deployment */,
+			);
+			hasScannedForEncodings = 0;
+			mainGroup = 56FB70DD0B0568A20098B8DC;
+			productRefGroup = 56FB70ED0B0568B40098B8DC /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 5679A0CB0B0991CF00742B62 /* Products */;
+					ProjectRef = 5679A0CA0B0991CF00742B62 /* marsyas.xcodeproj */;
+				},
+			);
+			targets = (
+				56FB70EB0B0568B40098B8DC /* sfinfo */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		5679A0CF0B0991CF00742B62 /* libmarsyas.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libmarsyas.a;
+			remoteRef = 5679A0CE0B0991CF00742B62 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXRezBuildPhase section */
+		56FB70EA0B0568B40098B8DC /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXRezBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		56FB70E80B0568B40098B8DC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				56FB70FA0B0568F00098B8DC /* sfinfo.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		5679A0D20B0991D800742B62 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = marsyas;
+			targetProxy = 5679A0D10B0991D800742B62 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXToolTarget section */
+		56FB70EB0B0568B40098B8DC /* sfinfo */ = {
+			isa = PBXToolTarget;
+			buildConfigurationList = 56FB70EF0B0568B50098B8DC /* Build configuration list for PBXToolTarget "sfinfo" */;
+			buildPhases = (
+				56FB70E70B0568B40098B8DC /* Headers */,
+				56FB70E80B0568B40098B8DC /* Sources */,
+				56FB70E90B0568B40098B8DC /* Frameworks */,
+				56FB70EA0B0568B40098B8DC /* Rez */,
+			);
+			buildSettings = {
+				OPTIMIZATION_CFLAGS = "";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = sfinfo;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			dependencies = (
+				5679A0D20B0991D800742B62 /* PBXTargetDependency */,
+			);
+			name = sfinfo;
+			productInstallPath = /usr/local/bin;
+			productName = sfinfo;
+			productReference = 56FB70EC0B0568B40098B8DC /* sfinfo */;
+		};
+/* End PBXToolTarget section */
+
+/* Begin XCBuildConfiguration section */
+		56FB70E10B0568A20098B8DC /* Debug_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				HEADER_SEARCH_PATHS = (
+					../../marsyas,
+					/Applications/MATLAB7/extern/include,
+					/usr/local/include,
+					/usr/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					../marsyas/Debug_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE,
+					/Applications/MATLAB7/bin/mac,
+					/usr/local/lib,
+					/usr/lib,
+				);
+				PRELINK_LIBS = "-lmarsyas -lpthread -lobjc -leng -lut -lmx -lmat -licudata.24 -licui18n.24 -licuuc.24 -lustdio.24 -lz -lmad -lreadline -lcurses";
+				SYMROOT = .;
+			};
+			name = Debug_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE;
+		};
+		56FB70E20B0568A20098B8DC /* Release_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				HEADER_SEARCH_PATHS = (
+					../../marsyas,
+					/Applications/MATLAB7/extern/include,
+					/usr/local/include,
+					/usr/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					../marsyas/Release_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE,
+					/Applications/MATLAB7/bin/mac/,
+					/usr/local/lib,
+					/usr/lib,
+				);
+				PRELINK_LIBS = "-lmarsyas -lpthread -lobjc -leng -lut -lmx -lmat -licudata.24 -licui18n.24 -licuuc.24 -lustdio.24 -lz -lmad -lreadline -lcurses";
+				SYMROOT = .;
+			};
+			name = Release_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE;
+		};
+		56FB70F00B0568B50098B8DC /* Debug_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					"$(SYSTEM_DEVELOPER_DIR)/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = sfinfo;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Debug_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE;
+		};
+		56FB70F10B0568B50098B8DC /* Release_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					"$(SYSTEM_DEVELOPER_DIR)/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks",
+				);
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = sfinfo;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = NO;
+			};
+			name = Release_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE;
+		};
+		56FB70FB0B0569830098B8DC /* Debug_MRSAUDIO_MRSMIDI */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					"$(SYSTEM_DEVELOPER_DIR)/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = sfinfo;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Debug_MRSAUDIO_MRSMIDI;
+		};
+		56FB70FC0B0569830098B8DC /* Release_MRSAUDIO_MRSMIDI */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					"$(SYSTEM_DEVELOPER_DIR)/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks",
+				);
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = sfinfo;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = NO;
+			};
+			name = Release_MRSAUDIO_MRSMIDI;
+		};
+		56FB70FD0B0569830098B8DC /* Debug_MRSAUDIO_MRSMIDI */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				HEADER_SEARCH_PATHS = (
+					../../marsyas,
+					/usr/local/include,
+					/usr/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					../marsyas/Debug_MRSAUDIO_MRSMIDI,
+					/usr/local/lib,
+					/usr/lib,
+				);
+				PRELINK_LIBS = "-lmarsyas -lpthread -lcurses";
+				SYMROOT = .;
+			};
+			name = Debug_MRSAUDIO_MRSMIDI;
+		};
+		56FB70FE0B0569830098B8DC /* Release_MRSAUDIO_MRSMIDI */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				HEADER_SEARCH_PATHS = (
+					../../marsyas,
+					/usr/local/include,
+					/usr/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					../marsyas/Release_MRSAUDIO_MRSMIDI,
+					/usr/local/lib,
+					/usr/lib,
+				);
+				PRELINK_LIBS = "-lmarsyas -lpthread -lcurses";
+				SYMROOT = .;
+			};
+			name = Release_MRSAUDIO_MRSMIDI;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		56FB70E00B0568A20098B8DC /* Build configuration list for PBXProject "sfinfo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				56FB70E10B0568A20098B8DC /* Debug_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE */,
+				56FB70FD0B0569830098B8DC /* Debug_MRSAUDIO_MRSMIDI */,
+				56FB70E20B0568A20098B8DC /* Release_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE */,
+				56FB70FE0B0569830098B8DC /* Release_MRSAUDIO_MRSMIDI */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE;
+		};
+		56FB70EF0B0568B50098B8DC /* Build configuration list for PBXToolTarget "sfinfo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				56FB70F00B0568B50098B8DC /* Debug_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE */,
+				56FB70FB0B0569830098B8DC /* Debug_MRSAUDIO_MRSMIDI */,
+				56FB70F10B0568B50098B8DC /* Release_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE */,
+				56FB70FC0B0569830098B8DC /* Release_MRSAUDIO_MRSMIDI */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release_MAD_MATLAB_MRSASSERT_MRSAUDIO_MRSMIDI_MRSWARNING_READLINE;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 56FB70DF0B0568A20098B8DC /* Project object */;
+}

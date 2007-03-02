@@ -1,0 +1,70 @@
+<!-- Generator: GNU source-highlight 2.4
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">** Copyright (C) 2007 Graham Percival </font></i><u><font color="#0000FF">&lt;gperciva@uvic.ca&gt;</font></u>
+<i><font color="#9A1900">**	</font></i>
+<i><font color="#9A1900">** This program is free software; you can redistribute it and/or modify</font></i>
+<i><font color="#9A1900">** it under the terms of the GNU General Public License as published by</font></i>
+<i><font color="#9A1900">** the Free Software Foundation; either version 2 of the License, or</font></i>
+<i><font color="#9A1900">** (at your option) any later version.</font></i>
+<i><font color="#9A1900">** </font></i>
+<i><font color="#9A1900">** This program is distributed in the hope that it will be useful,</font></i>
+<i><font color="#9A1900">** but WITHOUT ANY WARRANTY; without even the implied warranty of</font></i>
+<i><font color="#9A1900">** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</font></i>
+<i><font color="#9A1900">** GNU General Public License for more details.</font></i>
+<i><font color="#9A1900">** </font></i>
+<i><font color="#9A1900">** You should have received a copy of the GNU General Public License</font></i>
+<i><font color="#9A1900">** along with this program; if not, write to the Free Software </font></i>
+<i><font color="#9A1900">** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.</font></i>
+<i><font color="#9A1900">*/</font></i>
+
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"backend.h"</font>
+<b><font color="#0000FF">using</font></b> <b><font color="#0000FF">namespace</font></b> Marsyas<font color="#990000">;</font>
+
+MarBackend<font color="#990000">::</font><b><font color="#000000">MarBackend</font></b><font color="#990000">()</font> <font color="#FF0000">{</font>
+<i><font color="#9A1900">// make a typical Marsyas network:</font></i>
+	MarSystemManager mng<font color="#990000">;</font>
+	playbacknet <font color="#990000">=</font> mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"Series"</font><font color="#990000">,</font> <font color="#FF0000">"playbacknet"</font><font color="#990000">);</font>
+	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">addMarSystem</font></b><font color="#990000">(</font>mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource"</font><font color="#990000">,</font> <font color="#FF0000">"src"</font><font color="#990000">));</font>
+	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">addMarSystem</font></b><font color="#990000">(</font>mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"Gain"</font><font color="#990000">,</font> <font color="#FF0000">"gain"</font><font color="#990000">));</font>
+	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">addMarSystem</font></b><font color="#990000">(</font>mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"AudioSink"</font><font color="#990000">,</font> <font color="#FF0000">"dest"</font><font color="#990000">));</font>
+	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"AudioSink/dest/mrs_bool/initAudio"</font><font color="#990000">,</font> <b><font color="#0000FF">true</font></b><font color="#990000">);</font>
+
+<i><font color="#9A1900">// wrap it up to make it pretend to be a Qt object:</font></i>
+	mrsWrapper <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> <b><font color="#000000">MarSystemQtWrapper</font></b><font color="#990000">(</font>playbacknet<font color="#990000">);</font>
+	mrsWrapper<font color="#990000">-&gt;</font><b><font color="#000000">start</font></b><font color="#990000">();</font>
+
+<i><font color="#9A1900">// make these pointers so that we can interface with the network</font></i>
+<i><font color="#9A1900">// in a thread-safe manner:</font></i>
+	filenamePtr <font color="#990000">=</font> mrsWrapper<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_string/filename"</font><font color="#990000">);</font>
+	gainPtr <font color="#990000">=</font> mrsWrapper<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"Gain/gain/mrs_real/gain"</font><font color="#990000">);</font>
+	positionPtr <font color="#990000">=</font> mrsWrapper<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_natural/pos"</font><font color="#990000">);</font>
+
+<i><font color="#9A1900">// demonstrates information flow:  Marsyas-&gt;Qt.</font></i>
+	QTimer <font color="#990000">*</font>timer <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> <b><font color="#000000">QTimer</font></b><font color="#990000">(</font><b><font color="#0000FF">this</font></b><font color="#990000">);</font>
+	<b><font color="#000000">connect</font></b><font color="#990000">(</font>timer<font color="#990000">,</font> <b><font color="#000000">SIGNAL</font></b><font color="#990000">(</font><b><font color="#000000">timeout</font></b><font color="#990000">()),</font> <b><font color="#0000FF">this</font></b><font color="#990000">,</font> <b><font color="#000000">SLOT</font></b><font color="#990000">(</font><b><font color="#000000">getBackendPosition</font></b><font color="#990000">()));</font>
+	timer<font color="#990000">-&gt;</font><b><font color="#000000">start</font></b><font color="#990000">(</font><font color="#993399">1000</font><font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+MarBackend<font color="#990000">::~</font><b><font color="#000000">MarBackend</font></b><font color="#990000">()</font> <font color="#FF0000">{</font>
+	<b><font color="#0000FF">delete</font></b> mrsWrapper<font color="#990000">;</font>
+	<b><font color="#0000FF">delete</font></b> playbacknet<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font> MarBackend<font color="#990000">::</font><b><font color="#000000">openBackendSoundfile</font></b><font color="#990000">(</font>string fileName<font color="#990000">)</font> <font color="#FF0000">{</font>
+	mrsWrapper<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font>filenamePtr<font color="#990000">,</font>fileName<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font> MarBackend<font color="#990000">::</font><b><font color="#000000">setBackendVolume</font></b><font color="#990000">(</font><font color="#009900">int</font> vol<font color="#990000">)</font> <font color="#FF0000">{</font>
+	<font color="#009900">float</font> newGain <font color="#990000">=</font> vol<font color="#990000">/</font><font color="#993399">100</font><font color="#990000">.</font>0f<font color="#990000">;</font>
+	mrsWrapper<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font>gainPtr<font color="#990000">,</font> newGain<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font> MarBackend<font color="#990000">::</font><b><font color="#000000">getBackendPosition</font></b><font color="#990000">()</font> <font color="#FF0000">{</font>
+	<font color="#009900">int</font> newPos <font color="#990000">=</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font> positionPtr<font color="#990000">-&gt;</font>to<font color="#990000">&lt;</font>mrs_natural<font color="#990000">&gt;();</font>
+	emit <b><font color="#000000">changedBackendPosition</font></b><font color="#990000">(</font>newPos<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+</tt></pre>

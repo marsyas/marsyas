@@ -1,0 +1,74 @@
+<html lang="en">
+<head>
+<title>Creating collections manually - Marsyas 0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Marsyas 0.2">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Collections-and-input-files.html#Collections-and-input-files" title="Collections and input files">
+<link rel="next" href="mkcollection.html#mkcollection" title="mkcollection">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+Copyright 1998-2006 George Tzanetakis
+
+Permission is granted to make and distribute verbatim
+copies of this manual provided the copyright notice and
+this permission notice are preserved on all copies.
+
+Permission is granted to copy and distribute modified
+versions of this manual under the conditions for
+verbatim copying, provided also that the sections
+entitled "Copying" and "GNU General Public License"
+are included exactly as in the original, and provided
+that the entire resulting derived work is distributed
+under the terms of a permission notice identical to this
+one.
+
+Permission is granted to copy and distribute
+translations of this manual into another language,
+under the above conditions for modified versions,
+except that this permission notice may be stated in a
+translation approved by the Free Software Foundation.-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Creating-collections-manually"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="mkcollection.html#mkcollection">mkcollection</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Collections-and-input-files.html#Collections-and-input-files">Collections and input files</a>
+<hr>
+</div>
+
+<h4 class="subsection">3.1.1 Creating collections manually</h4>
+
+<p>A simple way to create a collection is the unix ls command. 
+For example:
+
+<pre class="example">     ls /home/gtzan/data/sound/reggae/*.wav &gt; reggae.mf
+</pre>
+   <p class="noindent"><code>reggae.mf</code> will look like this:
+
+<pre class="example">     /home/gtzan/data/sound/reggae/foo.wav
+     /home/gtzan/data/sound/reggae/bar.wav
+</pre>
+   <p>Any text editor can be used to create collection files. The only
+constraint is that the name of the
+collections file must have a <code>.mf</code> extension such as
+<code>reggae.mf</code>.   In addition, any
+line starting with the <code>#</code> character is ignored.  For Windows Visual
+Studio, change the slash character separating directories appropriately.
+
+   </body></html>
+

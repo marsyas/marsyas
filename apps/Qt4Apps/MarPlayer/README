@@ -1,0 +1,41 @@
+
+MarPlayer 
+--------
+
+Simple soundfile player that can be used as a template 
+for building GUIs in Qt 4 that connect to the Marsyas 
+audio processing framework. The code requires 
+that Qt 4.0 or later is installed in your system 
+and has only been tested on Linux systems. Of course 
+Marsyas 0.2.1 or later must also installed. 
+
+
+To compile: 
+
+qmake 
+make 
+MarPlayer 
+
+
+
+Files: 
+MarPlayer.h MarPlayer.cpp : loads the designer created forms and 
+			    connects the GUI widgets to appropriate 
+			    slots of Mapper 
+
+Mapper.h Mapper.cpp       : Maps the various signals generated 
+			    by the GUI widgets to corresponding 
+			    calls to a MarSystemQtWrapper that 
+			    contains a MarSystem network 
+			    that plays files 
+
+MarSystemQtWrapper.h MarSystemQtWrapper.cpp: in parent directory.  These
+   files are common to every Qt/Marsyas application; you don't need to
+   understand these files.
+
+
+Any comments/feedback/questions: 
+George Tzanetakis 
+http://www.cs.uvic.ca/~gtzan
+gtzan@cs.uvic.ca 
+

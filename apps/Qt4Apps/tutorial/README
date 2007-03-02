@@ -1,0 +1,30 @@
+MARSYAS / QT TUTORIAL
+--------------------
+
+This is a simple example of a Qt application that uses Marsyas.  It is
+a simplified version of MarPlayer, containing only a volume control
+and position display.  It demonstrates passing information from the Qt
+application to Marsyas, and getting information from Marsyas back to Qt.
+
+To compile:
+
+qmake
+make
+./runme file.wav
+(the file to play must be specified on the command line;
+ this program is as simple as I could make it!)
+
+
+Files:
+marqt.pro: project definition file for qmake.
+
+main.cpp: contains a small "int main()".
+
+mainwindow .h .cpp: defines the user interface; mostly simple Qt code.
+
+backend .h .cpp: sets up the MarSystem and the Qt/MarSystem information flow.
+
+MarSystemWrapper .h .cpp: these files are located in the parent
+  directory and must be included.  These files are common to every
+  Marsyas/Qt application; you don't need to understand them.
+

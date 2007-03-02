@@ -1,0 +1,243 @@
+
+@node Introduction
+@chapter Introduction 
+
+
+MARSYAS (@b{M}usic @b{A}nalysis @b{R}etrieval and @b{S}ynthesis for
+@b{A}udio @b{S}ignals) is a free software framework for audio
+analysis, synthesis and retrieval written by George Tzanetakis. Please
+direct any questions/comments about Marsyas to (gtzan@@cs.uvic.ca). 
+@cindex Tzanetakis, George
+
+The major underlying theme under the design of Marsyas has been to
+provide an efficient and extensible framework for building audio
+analysis (and synthesis) applications with specific emphasis on Music
+Information Retrieval (MIR). A variety of building blocks for
+performing common audio tasks are provided. Some representative
+examples are: soundfile IO, audio IO, signal processing and machine
+learning modules.  These blocks can be combined into data flow
+networks that can be modified and controlled dynamically while they
+process data in soft real-time.
+
+Another goal has been to accomodate two different types of users:
+naive and expert (of course in many cases the same person can operate
+in both modes). Naive users are able to construct networks of
+primitive objects and experiment with them through the use of
+controls. They can interact with the system through the use of graphical
+user interfaces or high level scripts without actually having to
+compile any code. Marsyas provides a high-level of control at runtime
+without sacrificing performance. Expert users can create new primitive
+objects and create more complex applications by writing code and
+compiling. These two modes of operation will become clearer in the
+following sections of the manual. As with any piece of software the
+holy grail is to provide maximum automatic support for the tasks that
+can be automated while retaining expressiveness and the ability to
+program complex systems for the particular domain of interest.
+
+This framework has been created mainly to support George Tzanetakis's
+research mainly in the emerging area of Music Information Retrieval
+(MIR). Anyone who finds the framework useful is welcome to use it and
+contribute to it. If you would like specific features to be developed
+feel free to contact the author or support the project by donnating
+money through the sourceforge page.
+
+
+
+@menu
+* History::                     
+* Context and Related Work::    
+* About the documentation::     
+@end menu
+
+@node History
+@section History
+
+Work on Marsyas started in 1998 during my second year of graduate
+studies in Computer Science at Princeton University under the
+supervision of Dr. Perry Cook.
+@cindex Perry Cook
+The main motivation behind the design and development of the toolkit
+was and still is to personally code the majority of the tools I need
+for my research in order to have understanding and control of how they
+work. Marsyas has been used for every paper I have published since
+that time. I continued to add code to Marsyas until 2000 when it was
+clear that certain major design decisions needed to be revised.  That
+made me start a major rewrite/redesign of the framework and that was
+the start of the first @qq{real} Marsyas version which was numbered
+0.1. Soon after Sourceforge was used to host Marsyas. Version 0.1 is
+still widely used by a variety of academic groups and industry around
+the world.
+
+In 2002 while being a PostDoctoral Fellow at Carnegie Mellon
+University working with Roger Dannenberg I decided to start porting
+algorithms from the Synthesis Toolkit (STK) by Perry Cook and Gary
+Scavone into Marsyas.  This effort as well as many interesting
+conversations with Roger made me rethink the design used by Marsyas.
+The result was to move to a dataflow model of audio computation with
+general matrices instead of 1-D arrays as data and an Open Sound
+Control (OSC) inspired hierarchical messaging system used to control
+the dataflow network. Marsyas 0.2 is now almost to the point of
+supporting the full functionality of Marsyas 0.1. Hopefully the
+writing of this manual will help users migrate from version 0.1. If
+you are a user that has done work in 0.1 it should be relatively
+straightforward to figure out how to recode your algorithms in version
+0.2. Also if you have code in 0.1 that you would like help porting in
+0.2 I would be more than happy to help - just drop me an email.
+
+
+
+@node Context and Related Work
+@section Context and Related Work
+
+
+There is a lot of interesting related work and inspiration behind the
+design of this framework. As the goal of this introduction is to
+provide a quick overview of the system I will just briefly mention
+some of the key ideas that strongly influenced the design of the
+system without getting into details. Probably the most central
+inspiration has been the huge legacy of computer music synthesis
+languages such as the Music V family, Csound etc. More recent work
+that has been influential to the design of the system has been the
+architecture of the Synthesis Toolkit (STK) and the hierarchical
+control naming scheme of Open Sound Control (OSC). Other influences
+include the use of Design Patterns for creating the object oriented
+architecture of the system, kernel stream architectures as well as
+data flow simulation software systems such as SimuLink by Matlab and
+the FilterGraph by Microsoft.  Finally many of the ideas of functional
+programming such as the clear separation of mutable and immutable
+data and the use of composition to build complicated systems have been
+another major source of inspiration.
+
+There is a plethora of programming languages, frameworks and
+environments for the analysis and synthesis of audio signals. The
+processing of audio signals requires extensive numerical calculations
+over large amounts of data especially when real-time performance is
+desired. Therefore efficiency has always been a major concern in the
+design of audio analysis and synthesis systems. Dataflow programming
+is based on the idea of expressing computation as a network of
+processing nodes/components connected by a number of communication
+channels/arcs. Computer Music is possibly one of the most successful
+application areas for the dataflow programming paradigm. The origins
+of this idea can possibly be traced to the physical re-wiring
+(patching) employed for changing sound characteristics in early
+modular analog synthesizers. From the pioneering work on unit
+generators in the Music N family of language to currently popular
+visual programming environments such as Max/Msp and Pure Data (PD),
+the idea of patching components to build systems is familiar to most
+computer music practitioners.
+
+Expressing audio processing systems as dataflow networks has several
+advantages. The programmer can provide a declarative specification of
+what needs to be computed without having to worry about the low level
+implementation details. The resulting code can be very efficient and
+have low memory requirements as data just @qq{flows} through the
+network without having complicated dependencies. In addition, dataflow
+approaches are particularly suited for visual programming. One of the
+initial motivation for dataflow ideas was the exploitation of parallel
+hardware and therefore dataflow systems are particularly suited for
+parallel and distributed computation.
+
+Despite these advantages, dataflow programming has not managed to
+become part of mainstream programming and replace existing imperative,
+object-oriented and functional languages. Some of the traditional
+criticisms aimed at dataflow programming include: the difficulty of
+expressing complicated control information, the restrictions on using
+assignment and global state information, the difficulty of expressing
+iteration and complicated data structures, and the challenge of
+synchronization.
+
+There are two main ways that existing successful dataflow systems
+overcome these limitations. The first is to embed dataflow ideas into
+an existing programming language. This is called coarse-grained
+dataflow in contrast to fine-grained dataflow where the entire
+computation is expressed as a flow graph. With coarse-grained
+dataflow, complicated data structures, iteration, and state
+information are handled in the host language while using dataflow for
+structured modularity. The second way is to work on a domain whose
+nature and specific constraints are a good fit to a dataflow
+approach. For example, audio and multimedia processing typically deals
+with fixed-rate calculation of large buffers of numerical data.
+
+Computer music has been one of the most successful cases of dataflow
+applications even though the academic dataflow community doesn't seem
+to be particularly aware of this fact. Existing audio processing
+dataflow frameworks have difficulty handling spectral and filterbank
+data in an conceptually clear manner. Another problem is the
+restriction of using fixed buffer sizes and therefore fixed audio and
+control rates. Both of these limitations can be traced to the
+restricted semantics of patching as well as the need to explicitly
+specify connections. Implicit Patching the technique used in
+Marsyas-0.2 is an attempt to overcome these problems while maintaining
+the advantages of dataflow computation. 
+
+
+@node About the documentation
+@section About the documentation
+
+In addition to this manual, there are example files included in the
+Marsyas source tree.  Many of these files are also included in the
+manual, but you may prefer to examine these files in your favorite
+text editor with your own syntax highlighting.
+
+@itemize
+@item @file{examples/}: the simplest examples are here.  These files
+are provided only for learning; they have little purpose as actual programs.
+@item @file{qt4GUIs/tutorial}: a simple QT4/Marsyas program.  Just like
+the files in @file{examples/}, it has little value as a standalone program.
+@end itemize
+
+Once you are familiar with everything covered in this manual and those
+examples, you should examine the source code:
+
+@itemize
+@item @file{src/}: the source code for real Marsyas executables.  These
+are real, working programs.  This means that they have poor comments,
+bad variable names, and are difficult to read.  :)
+@item @file{marsyas/}: the source code for MarSystems.  These are the
+basic building blocks of Marsyas, and are even more difficult to read.
+@end itemize
+
+
+@subsection Help!
+
+The documentation for Marsyas is still a work in progress; we can use
+all the help we can get.  Don't
+say @qq{oh, I don't know enough} or @qq{I'm not good at writing English.}  The
+question is
+not @qq{could anybody create something
+better than my suggestion?}  -- the question is @qq{is this better than
+nothing?}  Remember the most important thing about documentation:
+
+@quotation
+Documentation is like sex: when it is good, it is very, very good; and
+when it is bad, it is better than nothing.   (Dick Brandon)
+@end quotation
+
+
+@unnumberedsubsubsec Manual
+
+If you can add something to the docs, please send an email to
+@code{<marsyas-developers@@lists.sourceforge.net>}.  A formal patch for
+the texidoc is not required; we can take care of the technical
+details.  Here is an example of a perfect documentation suggestion:
+
+@verbatim
+To: marsyas-developers@lists.sourceforge.net
+From: helpful-user@example.net
+Subject: doc addition
+
+In 4.2.1 Implicit patching vs. explicit patching, please add
+----
+It could be helpful to think of this like blah blah blah.
+----
+to the second paragraph.
+@end verbatim
+
+
+@unnumberedsubsubsec Examples
+
+Small, easy-to-understand examples are also great.  If you have some
+source code that illustrates something, we can add it to
+@file{examples/}.  You don't have to write any English at all!
+
+

@@ -1,0 +1,72 @@
+@c Generator: GNU source-highlight, by Lorenzo Bettini, http://www.gnu.org/software/src-highlite
+@example
+@i{/*}
+@i{** Copyright (C) 2007 Graham Percival }@t{<gperciva@@uvic.ca>}
+@i{**       }
+@i{** This program is free software; you can redistribute it and/or modify}
+@i{** it under the terms of the GNU General Public License as published by}
+@i{** the Free Software Foundation; either version 2 of the License, or}
+@i{** (at your option) any later version.}
+@i{** }
+@i{** This program is distributed in the hope that it will be useful,}
+@i{** but WITHOUT ANY WARRANTY; without even the implied warranty of}
+@i{** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the}
+@i{** GNU General Public License for more details.}
+@i{** }
+@i{** You should have received a copy of the GNU General Public License}
+@i{** along with this program; if not, write to the Free Software }
+@i{** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.}
+@i{*/}
+
+@b{#include} @t{"mainwindow.h"}
+
+MarQTwindow::@b{MarQTwindow}(string fileName) @{
+@i{// typical Qt front-end}
+       QPushButton *quit = @b{new} @b{QPushButton}(@b{tr}(@t{"Quit"}));
+       @b{connect}(quit, @b{SIGNAL}(@b{clicked}()), qApp, @b{SLOT}(@b{quit}()));
+
+       QPushButton *updatePos = @b{new} @b{QPushButton}(@b{tr}(@t{"Update position"}));
+
+       QSlider *volume = @b{new} @b{QSlider }(Qt::Horizontal);
+       volume->@b{setRange}(0,100);
+       volume->@b{setValue}(50);
+
+       lcd = @b{new} @b{QLCDNumber}();
+       lcd->@b{setNumDigits}(10);
+
+       QVBoxLayout *layout = @b{new} QVBoxLayout;
+       layout->@b{addWidget}(volume);
+       layout->@b{addWidget}(updatePos);
+       layout->@b{addWidget}(lcd);
+       layout->@b{addWidget}(quit);
+       @b{setLayout}(layout);
+
+@i{// make the Marsyas backend}
+       marBackend = @b{new} @b{MarBackend}();
+       marBackend->@b{openBackendSoundfile}(fileName);
+
+@i{// make connections between the Qt front-end and the Marsyas backend:}
+
+@i{//              Qt -> Marsyas}
+       @b{connect}(volume, @b{SIGNAL}(@b{valueChanged}(int)),
+                     marBackend, @b{SLOT}(@b{setBackendVolume}(int)));
+
+@i{//              Marsyas -> Qt}
+       @b{connect}(marBackend, @b{SIGNAL}(@b{changedBackendPosition}(int)),
+                     @b{this}, @b{SLOT}(@b{setMainPosition}(int)));
+
+@i{//              Qt -> Marsyas (getBackendPosition) -> Qt (changedBackendPosition)}
+       @b{connect}(updatePos, @b{SIGNAL}(@b{clicked}()),
+                     marBackend, @b{SLOT}(@b{getBackendPosition}()));
+@}
+
+MarQTwindow::~@b{MarQTwindow}() @{
+       @b{delete} marBackend;
+@}
+
+void MarQTwindow::@b{setMainPosition}(int newPos) @{
+       lcd->@b{display}(newPos);
+@}
+
+
+@end example

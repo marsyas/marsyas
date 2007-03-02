@@ -1,0 +1,27 @@
+Qwt 5.x TODO list
+
+A) Planned (5.0)
+   -------
+
+B) Wish List ( >= 5.1 )
+   -------
+
+2) MathML texts, using another (L)GPL Qt/MathML render engine 
+3) Grid of QwtPlots
+4) QwtPolarPlot
+5) Adding error bars
+6) Adding candle sticks
+7) Adding box plots
+8) Time/Date scale engine
+9) OpenGL plot canvas
+10) Histograms
+11) Using doubles in QwtPainter
+12) Interval scale labels
+
+C) Open Tasks (5.0)
+   ----------
+2) QwtScaleWidget: Aligned/Opposite modes for the title
+4) QwtPlotDict, performance of z sorting
+5) setAlignCanvasToScales(true) + 2 X-Axes layout bug
+6) Alignment of left axis, without title. Layout init of round scales too late.
+7) Printing with Qt4 in HighResolution cuts off tick labels

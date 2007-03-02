@@ -1,0 +1,89 @@
+@node Interoperability
+@chapter Interoperability
+
+Intro text
+
+@menu
+* Audio and MIDI::              
+* Open Sound Control (OSC)::    
+* WEKA::                        
+* MATLAB::                      
+* Python::                      
+* Trolltech Qt4::               
+* OCaml::                       
+@end menu
+
+
+@node Audio and MIDI
+@section Audio and MIDI
+
+@itemize @bullet
+@item
+@strong{RtAudio}: Multiplatform C++ API for realtime audio input/output 
+
+@itemize @minus
+@item Linux (native ALSA, JACK, and OSS) 
+@item MacOSX@copyright{}
+@item Windows@copyright{} (DirectSound@copyright{} and ASIO@copyright{}) 
+@item SGI@copyright{} 
+@end itemize
+
+@item
+@strong{RtMIDI}: Multiplatform C++ API for realtime MIDI input/output 
+
+@itemize @minus
+@item Linux (ALSA) 
+@item MacOSX@copyright{} 
+@item Windows@copyright{}
+@item SGI@copyright{}
+@end itemize
+
+@end itemize
+
+@uref{http://www.music.mcgill.ca/~gary/rtaudio/}
+
+@uref{http://www.music.mcgill.ca/~gary/rtmidi/}
+
+
+
+@node Open Sound Control (OSC)
+@section Open Sound Control (OSC)
+
+This is coming soon, right George?  It had better be soon...
+
+
+@node WEKA
+@section WEKA
+
+
+@node MATLAB
+@section MATLAB
+
+
+@node Python
+@section Python
+
+
+@node Trolltech Qt4
+@section Trolltech Qt4
+
+To get started, look at the tutorial files:
+
+@examplefile{tutorial.pro}
+@examplefile{main.cpp}
+@examplefile{mainwindow.h}
+@examplefile{mainwindow.cpp}
+@examplefile{backend.h}
+@examplefile{backend.cpp}
+
+After examining that project, see @file{qtGUIs/MarPlayer/}, followed by
+the other examples in the @file{qtGUIs/} directory.
+
+
+@node OCaml
+@section OCaml
+
+To combine Marsyas and OCaml, see the MarsyasOCaml documentation at
+@uref{http://www.cs.uvic.ca/~inb/work/marsyasOCaml/}
+
+

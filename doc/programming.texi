@@ -1,0 +1,143 @@
+@node Programming
+@chapter Programming
+
+@menu
+* Assembling a network::        
+* Writing your own MarSystems::  
+@end menu
+
+
+@node Assembling a network
+@section Assembling a network
+
+@menu
+* Including libraries and linking::  
+* Hello World (playing an audio file)::  
+* Reading and altering controls::  
+* Writing data to text files::  
+* Getting data from the network::  
+* Scheduler::                   
+@end menu
+
+
+
+@node Including libraries and linking
+@subsection Including libraries and linking
+
+@cindex Compiling
+@cindex Linking
+Unless you write your program inside the @file{marsyas/src} directory,
+you need to include the Marsyas libraries in your project.
+
+
+@unnumberedsubsubsec Linux and other *nixes
+
+The easiest way to compile Marsyas projects is to use a makefile.  In your
+working directory, create a file called @file{Makefile} which contains
+
+@example
+all:
+	rm -f *.o
+	g++ -Wall -O2 -I./ -I/usr/local/include/marsyas -c -o myfile.o myfile.cpp
+	g++ -Lusr/local/lib -o myfile myfile.o -lmarsyas -lasound
+@end example
+
+@noindent
+(place a tab in front of the three lower lines instead of spaces)
+
+If you installed marsyas in a location other than @file{/usr/local/}, then
+change the @code{-I} and @code{-L} directories accordingly.  For example,
+if you installed marsyas in @file{$@{HOME@}/usr/}, then you would use
+@code{-I$@{HOME@}/usr/include/marsyas} and @code{-L$@{HOME@}/usr/lib}.  Once
+the @file{Makefile} is written, simply type @code{make} to compile
+your file.
+
+
+
+
+@unnumberedsubsubsec OSX
+
+To compile Marsyas projects in OSX, use the same @file{Makefile} as is used
+in other *nixes, but replace the final line with
+
+@example
+	g++ -Lusr/local/lib -o myfile myfile.o -lmarsyas -framework CoreAudio \
+		-framework CoreMidi -framework CoreFoundation
+@end example
+
+
+@unnumberedsubsubsec Windows Visual Studio
+
+Please see the documentation for your compiler / development environment.
+@c alternately, Gustavo could write something here.  :)
+
+
+@node Hello World (playing an audio file)
+@subsection Hello World (playing an audio file)
+
+@cindex Hello world
+@cindex Playing an audio file
+
+Instead of printing @qq{Hello World!}, we shall play a sound file.  This is
+relatively straightforward: we create a @code{MarSystem} which is a
+series of @code{SoundFileSource}, @code{Gain}, and @code{AudioSink}.  Once
+the network is created and the controls are given, we call @code{tick()} to
+make time pass until we have finished playing the file.
+
+@examplefile{helloworld.cpp}
+
+
+@node Reading and altering controls
+@subsection Reading and altering controls
+
+Here we have modified the example from the previous section: we have added
+the ability to start at an arbitrary position (time) inside the audio file.
+To calculate the starting position in the file, we must know the sample rate
+and number of channels.  We get this information from the
+@code{SoundFileSource} with @code{getctrl}.
+
+@examplefile{controls.cpp}
+
+
+@node Writing data to text files
+@subsection Writing data to text files
+
+Extract data from a network for further analysis (plotting,
+other programs, etc) is fairly easy to do with @code{PlotSink}.
+
+@examplefile{writefile.cpp}
+
+
+@node Getting data from the network
+@subsection Getting data from the network
+
+Putting together a network of MarSystems is all well and good,
+but you probably want to do something with that data.  In this
+example we simply print it to the screen, but the important
+thing to note is that we have the data at the level of C programming.
+
+@examplefile{gettingdata.cpp}
+
+
+@node Scheduler
+@subsection Scheduler
+
+To schedule events using the new scheduler code, see the
+Marsyas Expression Syntax documentation at
+@uref{http://www.cs.uvic.ca/~inb/work/expr.html}
+
+
+@node Writing your own MarSystems
+@section Writing your own MarSystems
+
+It's relatively straightforward to extend Marsyas by writing your own
+Marsystems. As mentioned before each MarSystems must basically support
+the process method that handles the dataflow and the update method
+that handles the control messages.  There are certain conventions that
+need to be followed so typically it is a better idea to copy and
+modify an existing Marsystem rather than writing one from scratch. The
+simple canonical example of a MarSystem that is what I use as a
+template when I write a new Marsystem is Gain.h and Gain.cpp
+
+
+

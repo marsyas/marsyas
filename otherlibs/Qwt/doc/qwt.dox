@@ -1,0 +1,148 @@
+/* -*- mode: C++ ; c-file-style: "stroustrup" -*- *****************************
+ * Qwt Widget Library
+ * Copyright (C) 1997   Josef Wilgen
+ * Copyright (C) 2002   Uwe Rathmann
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the Qwt License, Version 1.0
+ *****************************************************************************/
+
+/*
+  This file contains NO source code, just some documentation for doxygen to
+  parse.
+*/
+
+/*!
+  \mainpage Qwt - Qt Widgets for Technical Applications
+
+The Qwt library contains GUI Components and utility classes which are primarily
+useful for programs with a technical background. Beside a 2D plot widget
+it provides scales, sliders, dials, compasses, thermometers, wheels and knobs 
+to control or display values, arrays, or ranges of type double.
+
+  \image html plot.png
+
+  \section homepage Project page
+  The official project page is hosted at 
+	<a href="http://qwt.sourceforge.net">sourceforge</a>
+
+  \section license License
+
+  Qwt is distributed under the terms of the \ref qwtlicense.
+
+  \section mailinglist Mailing list 
+  For all kind of Qwt related questions there is a Qwt <a href="http://sourceforge.net/mail/?group_id=13693">mailing list</a>.
+
+  \section supportedplatforms Supported platforms
+
+  Qwt 5.x might be usable in all environments where you find a
+  <a href="http://www.trolltech.com/products/qt">Qt</a>.
+  It is compatible with Qt 3.x and Qt 4.x, but the documentation
+  is generated for Qt 4.x.\n
+
+  \section screenshotsonmainpage Screenshots
+  - \ref curvescreenshots\n
+  - \ref scatterscreenshots\n
+  - \ref spectrogramscreenshots\n
+  - \ref histogramscreenshots\n
+  - \ref controlscreenshots\n
+
+  \latexonly Screenshots are only available in the HTML docs.\endlatexonly
+
+  \section downloads Downloads
+  Stable releases, prereleases and snapshots are available at the Qwt <a href="http://sourceforge.net/projects/qwt">project page</a>.
+
+  Qwt doesn´t distribute binary packages, but below is a incomplete list
+  of packagers :
+<a href="http://packages.qa.debian.org/libq/libqwt.html">Debian</a>,
+  <a href="http://packman.links2linux.de/package/qwt">S.u.S.E</a>,
+  <a href="http://packages.gentoo.org/packages/?category=x11-libs;name=qwt">Gentoo</a>. 
+  <a href="http://pdb.finkproject.org/pdb/package.php/qwt">Fink</a>. 
+  <a href="http://packages.ubuntu.com/cgi-bin/search_packages.pl?searchon=sourcenames&version=all&exact=1&keywords=libqwt">Ubuntu</a>. 
+
+  For getting a 5.1 development snapshot from the SVN repository: 
+  \code svn co https://qwt.svn.sourceforge.net/svnroot/qwt/trunk/qwt \endcode
+
+  For getting a snapshot with all bugfixes for the latest 5.0 release:
+  \code svn co https://qwt.svn.sourceforge.net/svnroot/qwt/branches/qwt-5.0 \endcode
+
+  \section installonmainpage Installation
+ 
+  Have a look at the qwt.pro project file. It is prepared for building
+  dynamic libraries in Win32 and Unix/X11 environments. 
+  If you don't know what to do with it, read the file \ref qwtinstall and/or 
+  Trolltechs 
+  <a href="http://www.trolltech.com/developer/documentation/index.html">qmake</a> documentation. Once you have build the library you have to install 
+  all files from the lib, include and doc directories.
+
+  \section relatedprojects Related Projects
+
+  <a href="http://qwtplot3d.sourceforge.net">QwtPlot3D</a>, an OpenGL 3D plot widget.\n
+  <a href="http://soft.proindependent.com/qtiplot.html">QtiPlot</a>, 
+  data analysis and scientific plotting tool, using QwtPlot.
+
+  \section languagebindings Language Bindings
+
+  <a href="http://pyqwt.sourceforge.net">PyQwt</a>, a set of Qwt Python bindings.\n
+  <a href="http://rubyforge.org/projects/korundum/">Korundum/QtRuby</a>, including a set of Qwt Ruby bindings.\n
+
+  \section credits Credits:
+  \par Authors: 
+    Uwe Rathmann, Josef Wilgen ( <= Qwt 0.2 )
+  \par Project admin:
+    Uwe Rathmann \<rathmann@users.sourceforge.net\>
+*/
+
+/*!
+  \page qwtlicense Qwt License, Version 1.0
+  \include "COPYING"
+*/
+
+/*!
+  \page qwtinstall INSTALL
+  \include "INSTALL"
+*/
+
+/*!
+  \page curvescreenshots Curve Plots
+  \image html plot.png 
+
+  \image html sinus.png 
+
+  \image html cpuplot.png 
+
+  \image html graph.png 
+
+  \image html curves.png 
+*/
+
+/*!
+  \page scatterscreenshots Scatter Plot
+  \image html scatterplot.png 
+*/
+
+/*!
+  \page spectrogramscreenshots Spectrogram, Contour Plot
+  \image html spectrogram1.png 
+
+  \image html spectrogram2.png 
+
+  \image html spectrogram3.png 
+
+/*!
+  \page histogramscreenshots Histogram
+  \image html histogram.png 
+*/
+
+/*!
+  \page controlscreenshots Dials, Compasses, Knobs, Wheels, Sliders, Thermos
+  \image html radio.png
+
+  \image html sliders.png
+
+  \image html dials1.png
+
+  \image html dials2.png
+
+  \image html sysinfo.png
+*/

@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MarPlayer", "MarPlayer.vcproj", "{3CFF37B3-11D9-3DD5-8E2A-D249189C3234}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
+	ProjectSection(ProjectDependencies) = postProject
+		{39E73FC2-03E4-325E-AEBC-812F566191C4} = {39E73FC2-03E4-325E-AEBC-812F566191C4}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "marsyas", "..\..\..\marsyas\marsyas.vcproj", "{39E73FC2-03E4-325E-AEBC-812F566191C4}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
+EndProject
+Global
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3CFF37B3-11D9-3DD5-8E2A-D249189C3234}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3CFF37B3-11D9-3DD5-8E2A-D249189C3234}.Debug|Win32.Build.0 = Debug|Win32
+		{3CFF37B3-11D9-3DD5-8E2A-D249189C3234}.Release|Win32.ActiveCfg = Release|Win32
+		{3CFF37B3-11D9-3DD5-8E2A-D249189C3234}.Release|Win32.Build.0 = Release|Win32
+		{39E73FC2-03E4-325E-AEBC-812F566191C4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{39E73FC2-03E4-325E-AEBC-812F566191C4}.Debug|Win32.Build.0 = Debug|Win32
+		{39E73FC2-03E4-325E-AEBC-812F566191C4}.Release|Win32.ActiveCfg = Release|Win32
+		{39E73FC2-03E4-325E-AEBC-812F566191C4}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

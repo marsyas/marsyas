@@ -1,0 +1,4 @@
+EXTRA_DIST = README-devel README-users \
+  helloworld.cpp controls.cpp writefile.cpp gettingdata.cpp 
+
+

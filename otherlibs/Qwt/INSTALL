@@ -1,0 +1,102 @@
+Introduction
+============
+
+Qwt uses qmake to build all its components and examples. 
+qmake is part of a Qt distribution. 
+
+qmake reads project files, that contain the options and rules how to 
+build a certain project. A project file ends with the suffix "*.pro". 
+Files that end with the suffix "*.pri" are included by the project 
+files and contain definitions, that are common for several project files.
+
+qwtconfig.pri is read by all project files of the Qwt package.
+So the first step is to edit qwtconfig.pri to adjust it to your
+needs.
+
+MathML Extension
+================
+
+Qwt/Qt4 supports the MathML render engine from the Qt solutions package,
+that is only available with a commercial Qt license.
+
+You need a release of qtmmlwidget >= 2.1.
+Copy the files qtmmlwidget.[cpp|h] to textengines/mathml.
+
+A) Unix (+ MacOSX) Qt3/Qt4
+==========================
+
+qmake
+make
+make install
+
+If you didn't enable autobuilding of the examples in qwtconfig.pri
+you have to build the examples this way:
+
+cd examples
+qmake 
+make
+
+If you like to run the examples, don't forget to install the 
+Qwt library/plugins or set the LD_LIBRARY_PATH to the lib directory 
+of your local build. ( On some systems LIBPATH is used instead, on MacOSX
+it is called DYLD_LIBRARY_PATH. )
+
+B) Win32/MSVC Qt3/Qt4
+=====================
+
+Please read the qmake documentation how to convert 
+your *.pro files into your development environment.
+
+F.e MSVC with nmake:
+qmake qwt.pro
+nmake
+
+If you didn't enable autobuilding of the examples in qwtconfig.pri
+you have to build the examples this way:
+
+cd examples
+nmake examples.pro
+nmake
+
+admin/msvc-qmake.bat helps users of Visual Studio users to
+generate makefiles or project files (.dsp for MSVC-6.0 or vcproj for 
+MSVC.NET) for Qwt.
+
+To generate makefiles, type: "admin\msvc-qmake"
+To generate project files, type: "admin\msvc-qmake vc"
+
+C) Win32/MinGW Qt4
+==================
+
+If you use the MinGW compiler from the MSYS shell do:
+
+export MINGW_IN_SHELL=1;
+
+qmake 
+make -i
+make install
+
+If you didn't enable autobuilding of the examples in qwtconfig.pri
+you have to build the examples this way:
+
+D) MacOSX
+
+Well, the Mac is only another Unix system. So read the instructions in A).
+
+
+D) Qtopia Core
+
+I only tested Qwt with Qtopia Core in qvfb (Virtual Framebuffer Devivce)
+Emulator on my Linux box. To build Qwt for the emulator was as simple as 
+for a regular Unix build.
+
+qmake
+make
+
+E) Qtopia (!= Qtopia Core)
+
+I once compiled the Qwt library against Qtopia 4.2.0 successfully - but
+not more. It should be possible to build and install Qwt, but it's
+not done yet.
+
+Good luck !

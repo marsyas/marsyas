@@ -1,0 +1,18 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+     <file>images/copy.png</file>
+     <file>images/cut.png</file>
+     <file>images/new.png</file>
+     <file>images/open.png</file>
+     <file>images/paste.png</file>
+     <file>images/save.png</file>
+     <file>images/player_pause.png</file>
+     <file>images/player_play.png</file>
+     <file>images/player_stop.png</file>
+     <file>images/circle.png</file>
+     <file>images/circle-beat.png</file>
+     <file>images/triangle.png</file>
+     <file>images/square.png</file>
+     <file>images/play.png</file>
+</qresource>
+</RCC>

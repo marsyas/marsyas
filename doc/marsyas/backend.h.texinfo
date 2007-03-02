@@ -1,0 +1,59 @@
+@c Generator: GNU source-highlight, by Lorenzo Bettini, http://www.gnu.org/software/src-highlite
+@example
+@i{/*}
+@i{** Copyright (C) 2007 Graham Percival }@t{<gperciva@@uvic.ca>}
+@i{**       }
+@i{** This program is free software; you can redistribute it and/or modify}
+@i{** it under the terms of the GNU General Public License as published by}
+@i{** the Free Software Foundation; either version 2 of the License, or}
+@i{** (at your option) any later version.}
+@i{** }
+@i{** This program is distributed in the hope that it will be useful,}
+@i{** but WITHOUT ANY WARRANTY; without even the implied warranty of}
+@i{** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the}
+@i{** GNU General Public License for more details.}
+@i{** }
+@i{** You should have received a copy of the GNU General Public License}
+@i{** along with this program; if not, write to the Free Software }
+@i{** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.}
+@i{*/}
+
+@b{#include} @t{<QObject>}
+@b{#include} @t{<QTimer>}
+@b{#include} @t{"MarSystemManager.h"}
+@b{#include} @t{"../MarSystemQtWrapper.h"}
+
+@b{#include} @t{<iostream>}
+@b{using} @b{namespace} std;
+@b{using} @b{namespace} Marsyas;
+
+@b{class} MarBackend: @b{public} QObject @{
+       Q_OBJECT
+
+@b{public}:
+       @b{MarBackend}();
+       ~@b{MarBackend}();
+       void @b{openBackendSoundfile}(string fileName);
+
+@b{public} slots:
+       void @b{setBackendVolume}(int value);
+       void @b{getBackendPosition}();
+
+signals:
+       void @b{changedBackendPosition}(int value);
+
+@b{private}:
+@i{// in order to make the MarSystem act like a Qt object,}
+@i{// we use this wrapper:}
+       MarSystemQtWrapper *mrsWrapper;
+@i{// ... and these pointers:}
+       MarControlPtr filenamePtr;
+       MarControlPtr gainPtr;
+       MarControlPtr positionPtr;
+
+@i{// typical Marsyas network:}
+       MarSystem *playbacknet;
+@};
+
+
+@end example

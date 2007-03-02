@@ -1,0 +1,50 @@
+@c Generator: GNU source-highlight, by Lorenzo Bettini, http://www.gnu.org/software/src-highlite
+@example
+@b{#include} @t{"MarSystemManager.h"}
+@b{using} @b{namespace} std;
+@b{using} @b{namespace} Marsyas;
+
+void @b{sfplay}(string sfName, float gain, float start) @{
+       MarSystemManager mng;
+
+       MarSystem* playbacknet = mng.@b{create}(@t{"Series"}, @t{"playbacknet"});
+
+       playbacknet->@b{addMarSystem}(mng.@b{create}(@t{"SoundFileSource"}, @t{"src"}));
+       playbacknet->@b{addMarSystem}(mng.@b{create}(@t{"Gain"}, @t{"gt"}));
+       playbacknet->@b{addMarSystem}(mng.@b{create}(@t{"AudioSink"}, @t{"dest"}));
+
+@i{// calculate the starting position.}
+       mrs_natural nChannels = playbacknet->@b{getctrl}(@t{"SoundFileSource/src/mrs_natural/nChannels"})->@b{toNatural}();
+       mrs_real srate = playbacknet->@b{getctrl}(@t{"SoundFileSource/src/mrs_real/israte"})->@b{toReal}();
+       mrs_natural startPosition = (mrs_natural) (start * srate * nChannels);
+
+       playbacknet->@b{updctrl}(@t{"SoundFileSource/src/mrs_string/filename"}, sfName);
+       playbacknet->@b{updctrl}(@t{"Gain/gt/mrs_real/gain"}, gain);
+       playbacknet->@b{updctrl}(@t{"AudioSink/dest/mrs_bool/initAudio"}, @b{true});
+
+@i{// set the starting position of the source}
+       playbacknet->@b{updctrl}(@t{"SoundFileSource/src/mrs_natural/pos"}, startPosition);
+
+       @b{while} ( playbacknet->@b{getctrl}(@t{"SoundFileSource/src/mrs_bool/notEmpty"})->@b{toBool}() ) @{
+              playbacknet->@b{tick}();
+       @}
+       @b{delete} playbacknet;
+@}
+
+int @b{main}(int argc, @b{const} char **argv) @{
+       string fileName;
+       float gain, start;
+       @b{if} (argc<2) @{ cout<<@t{"Please enter filename."}<<endl; @b{exit}(1); @} @b{else} 
+              @{ fileName = argv[1]; @}
+       @b{if} (argc<3) @{ gain = 1; @} @b{else}
+              @{ gain = @b{atof}(argv[2]); @}
+       @b{if} (argc<4) @{ start = 0; @} @b{else}
+              @{ start = @b{atof}(argv[3]); @}
+       cout << @t{"Playing file "} << fileName << @t{" at volume "} <<
+              gain << @t{" starting at "} << start << @t{" seconds"} << endl;
+
+       @b{sfplay}(fileName,gain,start);
+       @b{exit}(0);
+@}
+
+@end example

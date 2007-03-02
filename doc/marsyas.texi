@@ -1,0 +1,93 @@
+\input texinfo   @c -*-texinfo-*-
+@comment %**start of header
+@setfilename marsyas.info
+@settitle Marsyas 0.2
+@comment %**end of header
+     
+
+@dircategory Audio 
+@direntry 
+* Marsyas: (marsyas). Marsyas Analysis Retrieval and Synthesis for
+Audio Signals 
+@end direntry
+
+@copying 
+Copyright 1998-2006 George Tzanetakis 
+
+Permission is granted to make and distribute verbatim
+copies of this manual provided the copyright notice and
+this permission notice are preserved on all copies.
+
+Permission is granted to copy and distribute modified
+versions of this manual under the conditions for
+verbatim copying, provided also that the sections
+entitled "Copying" and "GNU General Public License"
+are included exactly as in the original, and provided
+that the entire resulting derived work is distributed
+under the terms of a permission notice identical to this
+one.
+
+Permission is granted to copy and distribute
+translations of this manual into another language,
+under the above conditions for modified versions,
+except that this permission notice may be stated in a
+translation approved by the Free Software Foundation.
+@end copying 
+     
+@titlepage
+@title Marsyas User Manual 
+@subtitle For version 0.2 
+@subtitle @b{M}usic @b{A}nalysis @b{R}etrieval and @b{SY}nthesis for @b{A}udio @b{S}ignals 
+@author George Tzanetakis 
+     
+@c  The following two commands
+@c  start the copyright page.
+@page
+@vskip 0pt plus 1filll
+
+
+@end titlepage
+@contents
+     
+@c So the toc is printed in the right place.
+      
+@ifnottex
+@node Top
+@top Marsyas Manual
+@end ifnottex
+
+@menu
+* Introduction::                History, related work, and goals.
+* Installation::                Installation instructions for different operating systems.
+* Tools::                       Various sample tools built using marsyas
+components.
+* Architecture::                Software architecture, concepts, and assembling new MarSystems.
+* Programming::                 Writing new basic MarSystem blocks.
+* Interoperability::            Using Marsyas with other projects.
+* Future Work::                 Where Marsyas is going.
+* Users and Projects::          Past and current users/projects.
+* The Index::                   The Index.
+@end menu
+
+
+@include macros.itexi 
+@include intro.texi
+@include install.texi
+@include tools.texi
+@include architecture.texi
+@include programming.texi
+@include interoperability.texi
+
+@c to be scrapped soon.   -gp
+@include unsorted.texi
+
+
+
+@node The Index
+@unnumbered The Index 
+
+@printindex cp 
+
+
+
+@bye

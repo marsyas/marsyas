@@ -1,0 +1,36 @@
+MEAWS 0.4:  Music Evaluation and Audition for Winds and Strings
+----------
+
+This is a project by Graham Percival and Mathieu Lagrange.  Not intended
+for public consumption yet.  We're just storing it here because it's
+convenient.
+
+
+DEFINITIONS:
+tactus: the tempo you would conduct (or listen to a metronome).  Regardless
+of the piece, this will generally be in the range of 30-180 BPM.
+
+tatum: the smallest unit of time.  You could call this the least common
+multiple of every note- (or rest-) length.  Watch out for triplet rhythms;
+you cannot simply take the shortest duration in every case.
+
+
+FILES:
+start.cpp: int main()
+
+mainwindow .h .cpp: the main QT interface.  A lot of stuff is still
+    left over from the QT "mainwindow" tutorial example file.  I haven't
+    finished cleaning it up; that'll take another day or two.
+
+backend .h .cpp: the Marsyas backend audio stuff.
+    We might want to split this up, see below.
+
+metro .h .cpp: the metronome object.
+
+user .h .cpp: the User object.  (records previous tests, user info, etc)
+
+images/ : icons for the QT app.
+music/ : data for the different music for the students.
+
+sd.wav: sound file for the metronome noises.
+
