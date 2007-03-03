@@ -203,39 +203,37 @@ AudioSink::localActivate(bool state)
 void 
 AudioSink::myProcess(realvec& in, realvec& out)
 {
+
   
   
   // copy to output and into reservoir
-
 
 
   for (t=0; t < inSamples_; t++)
     {
       for (o=0; o < inObservations_; o++)
 	{
-	  reservoir_(o, end_) = in(o,t);
-	  out(o,t) = in(o,t);
+	    reservoir_(o, end_) = in(o,t);
+	    out(o,t) = in(o,t);
 	}
-      end_ = (end_ + 1) % reservoirSize_;	  	  
     }
-  
-  
-      
-  //check if RtAudio is initialized
-  if (!isInitialized_)
-    return;
+  end_ = (end_ + inSamples_) % reservoirSize_; 
   
   //check MUTE
-  if(getctrl("mrs_bool/mute")->isTrue())
+  if(ctrl_mute_->isTrue())
     {
       for (t=0; t < rsize_; t++) 
 	{
 	  data_[2*t] = 0.0;
 	  data_[2*t+1] = 0.0;
 	}
-      
       return;
     }
+      
+  //check if RtAudio is initialized
+  if (!isInitialized_)
+    return;
+  
   
   
   //assure that RtAudio thread is running
