@@ -155,9 +155,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  apps/sfplay/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  apps/sfplay/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  apps/sfplay/Makefile
+	  $(AUTOMAKE) --foreign  apps/sfplay/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

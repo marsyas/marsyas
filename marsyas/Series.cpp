@@ -122,6 +122,8 @@ Series::myUpdate(MarControlPtr sender)
 		  
 		  (marsystems_[i])->updctrl("mrs_realvec/outTick", 
 					  *(slices_[i]));
+
+		  slPtrs_.push_back(marsystems_[i]->getctrl("mrs_realvec/outTick"));
 		  if (i > 0) 
 		    {
 		      marsystems_[i]->updctrl("mrs_realvec/inTick", 							   *(slices_[i]));		  
@@ -136,6 +138,7 @@ Series::myUpdate(MarControlPtr sender)
 	      
 	      marsystems_[i]->updctrl("mrs_realvec/outTick", 
 				       *(slices_[i]));
+		  slPtrs_.push_back(marsystems_[i]->getctrl("mrs_realvec/outTick"));
 	      if (i > 0) 
 		marsystems_[i]->updctrl("mrs_realvec/inTick", 							   *(slices_[i]));
 				
@@ -162,14 +165,15 @@ Series::myProcess(realvec& in, realvec& out)
 	{
 	  if (i==0)
 	    {
-	      marsystems_[i]->process(in, (realvec &) marsystems_[i]->getctrl("mrs_realvec/outTick")->to<mrs_realvec>());
+	      marsystems_[i]->process(in, (realvec &) slPtrs_[i]->to<mrs_realvec>());
 	    }
 	  else if (i == marsystemsSize_-1)
 	    {
-	      marsystems_[i]->process((realvec &) marsystems_[i-1]->getctrl("mrs_realvec/outTick")->to<mrs_realvec>(), out);
+	      marsystems_[i]->process((realvec &) slPtrs_[i-1]->to<mrs_realvec>(), out);
 	    }
 	  else
-	    marsystems_[i]->process((realvec &) marsystems_[i-1]->getctrl("mrs_realvec/outTick")->to<mrs_realvec>(), (realvec &) marsystems_[i]->getctrl("mrs_realvec/outTick")->to<mrs_realvec>());
+	    marsystems_[i]->process((realvec &) slPtrs_[i-1]->to<mrs_realvec>(), 
+	    			    (realvec &) slPtrs_[i]->to<mrs_realvec>());
 	  
 	}
     }

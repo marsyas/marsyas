@@ -3735,6 +3735,27 @@ fi;
 
 # System specific
 
+#  cpu config
+case "${host}" in
+	powerpc-*)
+
+cat >>confdefs.h <<\_ACEOF
+#define MARSYAS_BIGENDIAN 1
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define __BIG_ENDIAN__ 1
+_ACEOF
+
+	;;
+	i386-*)
+	;;
+	i686-*)
+	;;
+	esac
+
+#  operating system config
 case "${host}" in
  	*-*-linux-gnu*)
 	cat >>confdefs.h <<\_ACEOF
@@ -3781,49 +3802,8 @@ _ACEOF
 
 
 
-	powerpc-*-darwin*)
+	*-*-darwin*)
 	Libs="-lpthread -lobjc ${MADLIB} ${OGGLIB} -framework CoreAudio -framework CoreMidi -framework CoreFoundation"
-
-cat >>confdefs.h <<\_ACEOF
-#define MARSYAS_MACOSX 1
-_ACEOF
-
-
-cat >>confdefs.h <<\_ACEOF
-#define __MACOSX_CORE__ 1
-_ACEOF
-
-
-cat >>confdefs.h <<\_ACEOF
-#define __BIG_ENDIAN__ 1
-_ACEOF
-
-
-cat >>confdefs.h <<\_ACEOF
-#define __OS_MACOSX__ 1
-_ACEOF
-
-	;;
-	i386-*-darwin*)
-	Libs="-lpthread ${MADLIB} ${OGGLIB} -framework CoreAudio -framework CoreMidi -framework CoreFoundation"
-
-cat >>confdefs.h <<\_ACEOF
-#define MARSYAS_MACOSX 1
-_ACEOF
-
-
-cat >>confdefs.h <<\_ACEOF
-#define __MACOSX_CORE__ 1
-_ACEOF
-
-
-cat >>confdefs.h <<\_ACEOF
-#define __OS_MACOSX__ 1
-_ACEOF
-
-	;;
-	i686-*-darwin*)
-	Libs="-lpthread ${MADLIB} ${OGGLIB} -framework CoreAudio -framework CoreMidi -framework CoreFoundation"
 
 cat >>confdefs.h <<\_ACEOF
 #define MARSYAS_MACOSX 1

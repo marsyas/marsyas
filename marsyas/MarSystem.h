@@ -113,7 +113,7 @@ protected:
 	mrs_natural marsystemsSize_;
 	std::vector<MarSystem*> marsystems_;
 	std::vector<realvec*> slices_;
-
+	std::vector<MarControlPtr> slPtrs_;
 	//Controls 
 	mutable std::map<std::string, MarControlPtr> controls_;
 	std::map<std::string, MarControlPtr>::iterator ctrlIter_;
