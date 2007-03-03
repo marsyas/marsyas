@@ -109,8 +109,7 @@ TopPanelNew::graph()
  graphs.push_back(graph);
  
  gridLayout_->addWidget(graph, nGraphs_/3, (nGraphs_ % 3));
-
- probes_.push_back("/Series/pnet/mrs_realvec/input0");
+ probes_.push_back("/Series/pnet/mrs_realvec/outTick");
  tick();
  
 }

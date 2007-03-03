@@ -156,11 +156,6 @@ protected:
 
 	std::string MATLABscript_;
 
-	//add controls
-	bool addControl(std::string cname, MarControlPtr v);
-	bool addControl(std::string cname, MarControlPtr v, MarControlPtr& ptr);
-	bool addctrl(std::string cname, MarControlPtr v) {return addControl(cname, v);}
-	bool addctrl(std::string cname, MarControlPtr v, MarControlPtr& ptr) {return addControl(cname, v, ptr);}
 
 	//control paths
 	std::string getControlRelativePath(std::string cname) const;
@@ -229,6 +224,17 @@ public:
   MarControlPtr getControl(std::string cname, bool searchParent = false, bool searchChildren = true);
 	MarControlPtr getControlLocal(std::string cname) {return getControl(cname, false, false);}
 	MarControlPtr getctrl(std::string cname) {return getControl(cname);}
+
+
+	//add controls
+	bool addControl(std::string cname, MarControlPtr v);
+	bool addControl(std::string cname, MarControlPtr v, MarControlPtr& ptr);
+	bool addctrl(std::string cname, MarControlPtr v) {return addControl(cname, v);}
+	bool addctrl(std::string cname, MarControlPtr v, MarControlPtr& ptr) {return addControl(cname, v, ptr);}
+
+
+
+
 
   std::map<std::string, MarControlPtr> getControls(std::map<std::string, MarControlPtr>* cmap = NULL);
 	const std::map<std::string, MarControlPtr>& getLocalControls();

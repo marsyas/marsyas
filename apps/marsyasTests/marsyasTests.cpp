@@ -156,6 +156,7 @@ test_simpleSFPlay(string sfName)
       //cout << "pos " << playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() << endl;
       
       playbacknet->tick();
+
       
       //test if setting "mrs_natural/pos" to 0 for rewinding is working
       //if(playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() > 100000)
