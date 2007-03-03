@@ -122,6 +122,8 @@ Series::myUpdate(MarControlPtr sender)
 				MarControlPtr inPtr = marsystems_[i]->getctrl("mrs_realvec/inTick");
 				MarControlPtr outPtr = marsystems_[i]->getctrl("mrs_realvec/onTick");
 				updctrl(outPtr, *(slices_[i]));
+				if (i > 0) 
+				   updctrl(inPtr, *(slices_[i-1]));
 				(slices_[i])->setval(0.0);
 				}
 			}
@@ -133,6 +135,8 @@ Series::myUpdate(MarControlPtr sender)
 				MarControlPtr inPtr = marsystems_[i]->getctrl("mrs_realvec/inTick");
 				MarControlPtr outPtr = marsystems_[i]->getctrl("mrs_realvec/onTick");
 				updctrl(outPtr, *(slices_[i]));
+				if (i > 0) 
+				   updctrl(inPtr, *(slices_[i-1]));
 
 				(slices_[i])->setval(0.0);
 			}
