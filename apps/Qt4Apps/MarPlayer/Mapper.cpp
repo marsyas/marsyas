@@ -47,7 +47,7 @@ Mapper::Mapper()
   // make a Qt-like thread object wrapped around the MarSystem
   mwr_ = new MarSystemQtWrapper(pnet_);
   //start the MarSystemQtWrapper thread
-  mwr_->start();
+  mwr_->tickForever();
 
   // Create MarControlPtr handles for all the controls 
   filePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_string/filename");

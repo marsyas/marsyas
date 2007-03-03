@@ -8,6 +8,7 @@
 
 
 #include <QThread>
+#include <QVector>
 #include <QString>
 #include <QMutex>
 #include <QSemaphore>
@@ -26,8 +27,10 @@ class MarSystemQtWrapper: public QThread
 	Q_OBJECT
 
 public:
-	MarSystemQtWrapper(MarSystem* msys);
+	MarSystemQtWrapper(MarSystem* msys, bool withTimer = false);
 	~MarSystemQtWrapper();
+	void tickForever();
+        void trackctrl(MarControlPtr control);
 
 public slots:
   void updctrl(MarControlPtr control, MarControlPtr cval);
@@ -41,23 +44,23 @@ public slots:
 		  MarControlPtr control = main_pnet_->getControl(cname);
 		  return updctrl(control, newcontrol);
 		}
-
-
-  void trackctrl(MarControlPtr control);
   void emitTrackedControls();
   
   MarControlPtr getctrl(string cname);
   
   void play();
   void pause();
-  void run();
 
 signals:
   void ctrlChanged(MarControlPtr cname);
 	
+protected:
+  void run();
 private:
   QMutex mutex_;
   bool abort_;
+  bool withTimer_;
+  
   QWaitCondition condition_; 
   int counter_;
   
@@ -66,13 +69,10 @@ private:
   
   // Vectors for pushing in events that cannot be
   // processes while the main MarSystem is ticking
-  vector<MarControlPtr> control_names_;
-  vector<MarControlPtr> control_values_;
-  vector<MarControlPtr> tracked_controls_;
-  
-  bool guard_;
+  QVector<MarControlPtr> control_names_;
+  QVector<MarControlPtr> control_values_;
+  QVector<MarControlPtr> tracked_controls_;
   bool pause_;
-  bool empty_;
   
   bool running_;
 };

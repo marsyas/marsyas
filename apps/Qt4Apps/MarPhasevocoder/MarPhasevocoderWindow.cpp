@@ -184,7 +184,7 @@ MarPhasevocoderWindow::createNetwork()
 	pvoc_->updctrl("ShiftOutput/so/mrs_natural/Decimation", D);
 	pvoc_->updctrl("Gain/gain/mrs_real/gain", gopt_);
 
-	mwr_ = new MarSystemQtWrapper(pvoc_);
+	mwr_ = new MarSystemQtWrapper(pvoc_, true);
 	freqPtr_ = mwr_->getctrl("PvOscBank/ob/mrs_real/PitchShift");
 	posPtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/pos");
 	initPtr_ = mwr_->getctrl("AudioSink/dest/mrs_bool/initAudio");
@@ -196,7 +196,7 @@ MarPhasevocoderWindow::createNetwork()
 void 
 MarPhasevocoderWindow::startNetwork()
 {
-	mwr_->start();
+	mwr_->tickForever();
 	mwr_->pause();
 }
 
@@ -209,7 +209,7 @@ MarPhasevocoderWindow::createMenus()
 	helpMenu = menuBar()->addMenu(tr("&Help"));
 	helpMenu->addAction(aboutAct);
 }
-
+ 
 void 
 MarPhasevocoderWindow::createActions()
 {

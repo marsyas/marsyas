@@ -216,9 +216,9 @@ AudioSink::myProcess(realvec& in, realvec& out)
 	    reservoir_(o, end_) = in(o,t);
 	    out(o,t) = in(o,t);
 	}
-	end_++;
-	if (end_ == reservoirSize_) 
-	   end_ = 0;
+      end_ ++; 
+      if (end_ == reservoirSize_) 
+	      end_ = 0;
     }
   
   //check MUTE
