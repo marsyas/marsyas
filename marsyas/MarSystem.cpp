@@ -223,6 +223,8 @@ MarSystem::addControls()
 	addctrl("mrs_bool/mute", false, ctrl_mute_);			//unmuted by default
 	addctrl("mrs_bool/active",true, ctrl_active_);		//active by default
 
+	inTick_.create(inObservations_, inSamples_);
+	outTick_.create(onObservations_, onSamples_);
 
 	addctrl("mrs_realvec/inTick", inTick_, ctrl_inTick_);
 	addctrl("mrs_realvec/outTick", outTick_, ctrl_outTick_);
@@ -509,8 +511,9 @@ MarSystem::process(realvec& in, realvec& out)
 #endif
 
 	checkFlow(in, out);
-
-	updctrl(ctrl_inTick_, in);
+ 	// THIS IS VERY COSTLY AND DOESN'T SEEM NECESSARY 
+	// inTick_ is used correctly by the tick function 
+	// updctrl(ctrl_inTick_, in);
 
 	myProcess(in, out);
 
@@ -527,8 +530,8 @@ MarSystem::process(realvec& in, realvec& out)
 			out.stretch(onObservations_, onSamples_);
 	}
 #endif
-
-	updctrl(ctrl_outTick_, out);
+        // SIMILARLY WITH ABOVE
+	// updctrl(ctrl_outTick_, out);
 
 #ifdef MARSYAS_QT
 	processMutex_->unlock();
