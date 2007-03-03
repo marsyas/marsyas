@@ -50,8 +50,6 @@ Series::clone() const
 void 
 Series::addControls()
 {
-	addctrl("mrs_bool/probe", false);
-	setctrlState("mrs_bool/probe", true);
 }
 
 void 
@@ -80,7 +78,6 @@ const Series::recvControls()
 void 
 Series::myUpdate(MarControlPtr sender)
 {
-	probe_ = getctrl("mrs_bool/probe")->toBool();
 
 	if (marsystemsSize_ != 0) 
 	{
@@ -122,35 +119,25 @@ Series::myUpdate(MarControlPtr sender)
 					delete slices_[i];
 					slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
 						marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
-					ostringstream oss;
-					oss << "mrs_realvec/input" << i;
-					setctrl(oss.str(), *(slices_[i]));
-					(slices_[i])->setval(0.0);
+				MarControlPtr inPtr = marsystems_[i]->getctrl("mrs_realvec/inTick");
+				MarControlPtr outPtr = marsystems_[i]->getctrl("mrs_realvec/onTick");
+				updctrl(outPtr, *(slices_[i]));
+				(slices_[i])->setval(0.0);
 				}
 			}
 			else 
 			{
-				ostringstream oss;
-				oss << "mrs_realvec/input" << i;
-
-
 				slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
 					marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
 
-				addctrl(oss.str(), *(slices_[i]));      				
+				MarControlPtr inPtr = marsystems_[i]->getctrl("mrs_realvec/inTick");
+				MarControlPtr outPtr = marsystems_[i]->getctrl("mrs_realvec/onTick");
+				updctrl(outPtr, *(slices_[i]));
+
 				(slices_[i])->setval(0.0);
 			}
 		}
 
-		if ((probe_)&&(marsystemsSize_ > 1))
-		{
-			for (mrs_natural i=0; i< marsystemsSize_-1; i++)
-			{
-				ostringstream oss;
-				oss << "mrs_realvec/input" << i;
-				setctrl(oss.str(), *(slices_[i]));
-			}
-		}
 		//defaultUpdate();      
 	} 
 }
@@ -181,15 +168,6 @@ Series::myProcess(realvec& in, realvec& out)
 		}
 	}
 
-	if ((probe_)&&(marsystemsSize_ > 1))
-	{
-		for (mrs_natural i=0; i< marsystemsSize_-1; i++)
-		{
-			ostringstream oss;
-			oss << "mrs_realvec/input" << i;
-			setctrl(oss.str(), *(slices_[i]));
-		}
-	}
 }
 
 
