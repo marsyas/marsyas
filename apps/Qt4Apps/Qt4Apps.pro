@@ -4,7 +4,8 @@ SUBDIRS += \
 	#MarEditor \
 	#MarGrid \
 	MarPhasevocoder \
-	MarPlayer 
+	MarPlayer \
+	MarWidgets
 	#Marx2DGraph \
 	#Marx2DGraphStacked \
 	#MarxGL2Din3DSpaceGraph \
