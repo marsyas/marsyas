@@ -57,14 +57,29 @@ Up:&nbsp;<a rel="up" accesskey="u" href="Installation.html#Installation">Install
 <h3 class="section">2.5 Windows (Visual Studio)</h3>
 
 <p><a name="index-Windows-6"></a>
-Installation under Visual Studio is still under construction and not
-the full functionality of Marsyas 0.2 is supported.  Not all the
-executables are supported. The main distribution contains two
-subdirectories named marsyasVisualStudio2003, marsyasVisualStudio2005
-that contain the necessary project solution files for compiling
-Marsyas under Visual Studio. I have only tested this using Visual
-Studio 7.0 under Windows XP. Older version of Visual Studio might not
-work. Support of the Windows port is not as good as Linux and OS X.
+You must have QT 4.2.2 or higher installed.  First, go to the root
+directory of the distribution.
 
+   <p><samp><span class="file">marsyasConfig.pri</span></samp>: change this file for setting build options (i.e. 
+MARSYAS_MAD, MARSYAS_MATLAB, etc). Use the <code>#</code> sign to set/unset options.
+
+   <p>Then, do:
+
+<pre class="example">     qmake MarsyasAll.pro
+     nmake (nmake debug or nmake all for debug or debug and release builds)
+</pre>
+   <p>This builds marsyas.lib, all (at least most of them) command line apps
+(sfplay, bextract, etc) and MarPlayer and MarPhasevocoder.
+
+   <p>To generate a MSVC .vcproj for a project just cd into the app dir (e.g. 
+apps/Qt4Apps/Meaws) and do:
+
+<pre class="example">     qmake -t vcapp
+</pre>
+   <p>In case you also want to create a .vcproj for the marsyas lib, cd into
+marsyas dir and do:
+
+<pre class="example">     qmake -t vclib
+</pre>
    </body></html>
 

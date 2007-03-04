@@ -8,9 +8,10 @@ TARGET = meaws
 VERSION = 0.4
 #CONFIG = qt
 
-INCLUDEPATH += ../../marsyas
+INCLUDEPATH += ../../../lib/release/
 
-!win32:LIBS += -lmarsyas -L../../marsyas
+
+!win32:LIBS += -lmarsyas -L=../../../lib/release/
 
 unix {
   !macx {
@@ -18,7 +19,8 @@ unix {
 	}
 }
 macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
- 
+
+# needs to be updated:
 win32:DEFINES += __WINDOWS_DS__
 win32:LIBS += -lmarsyas  -ldsound  
 win32:LIBPATH += ..\..\marsyasVisualStudio2005\marsyas\Release "$$(DXSDK_DIR)Lib\x86\"
