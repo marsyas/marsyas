@@ -12,7 +12,5 @@ SUBDIRS += \
 	#MarxGLGraph \
 	#MarxGLMultiBufferGraph \
 	#meaws \
-	#tutorial 
-	
 	
 	
