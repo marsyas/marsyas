@@ -20,7 +20,8 @@ void recognize(string sfName) {
 	mrs_natural numberSamples = pnet->getctrl("mrs_natural/onSamples")->toNatural();
 
 	while ( pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() ) {
-		pnet->tick();
+// don't tick because process() does that.
+//		pnet->tick();
 // get data from network
 		pnet->process(in,out);
 
