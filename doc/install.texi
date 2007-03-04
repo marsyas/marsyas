@@ -165,14 +165,36 @@ In general, cygwin is not supported as well as Linux and OS X.
 @section Windows (Visual Studio)
 @cindex Windows
 
-Installation under Visual Studio is still under construction and not
-the full functionality of Marsyas 0.2 is supported.  Not all the
-executables are supported. The main distribution contains two
-subdirectories named marsyasVisualStudio2003, marsyasVisualStudio2005
-that contain the necessary project solution files for compiling
-Marsyas under Visual Studio. I have only tested this using Visual
-Studio 7.0 under Windows XP. Older version of Visual Studio might not
-work. Support of the Windows port is not as good as Linux and OS X.
+You must have QT 4.2.2 or higher installed.  First, go to the root
+directory of the distribution.
+
+@file{marsyasConfig.pri}: change this file for setting build options (i.e.
+MARSYAS_MAD, MARSYAS_MATLAB, etc). Use the @code{#} sign to set/unset options.
+
+Then, do:
+
+@example
+qmake MarsyasAll.pro
+nmake (nmake debug or nmake all for debug or debug and release builds)
+@end example
+
+This builds marsyas.lib, all (at least most of them) command line apps
+(sfplay, bextract, etc) and MarPlayer and MarPhasevocoder.
+
+To generate a MSVC .vcproj for a project just cd into the app dir (e.g.
+apps/Qt4Apps/Meaws) and do:
+
+@example
+qmake -t vcapp 
+@end example
+
+In case you also want to create a .vcproj for the marsyas lib, cd into
+marsyas dir and do:
+
+@example
+qmake -t vclib
+@end example
+
 
 @node Configure Options
 @section Configure Options

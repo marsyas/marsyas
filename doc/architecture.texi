@@ -19,6 +19,7 @@ networks and writing new MarSystems respectively.
 * Architecture overview::       
 * Implicit patching::           
 * MarSystem Composites::        
+* Architecture limitations::    
 @end menu
 
 
@@ -224,6 +225,19 @@ Series1->addMarSystem(mng.create("classifier", "Classifier"));
 @image{images/composite-accumulator}
 
 
+@node Architecture limitations
+@section Architecture limitations
 
+@c TODO: eliminate this section when I rewrite this chapter.  This info
+@c   should go in the appropriate place, not dumped in here at the end.
 
+Due to the way that observations behave in Marsyas, in some cases
+it is impossible to differentiate between a stereo signal and a mono
+signal which is twice as long.  In particular, there is currently
+no direct way to tell apart a stereo
+pair of spectrums from a mono spectrum with twice the number of bins. 
+
+In these cases, we recommend that you use a Parallel Composite: split
+the stereo signal into separate mono dataflows (using Parallel), then treat
+each mono signal individually.
 
