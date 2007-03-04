@@ -283,6 +283,7 @@ AC_CONFIG_FILES([Makefile marsyas/Makefile
 		 lib/release/Makefile
 		 apps/Makefile
 		 apps/sfplay/Makefile
+		 doc/Makefile
 		 bin/Makefile
 		 bin/debug/Makefile
 		 bin/release/Makefile])

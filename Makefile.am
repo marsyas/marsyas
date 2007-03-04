@@ -26,10 +26,10 @@ EXTRA_DIST              = bootstrap TODO
 AUTOMAKE_OPTIONS        = foreign
 
 
-SUBDIRS			= marsyas lib apps bin
+SUBDIRS			= marsyas lib apps bin doc 
  
 # we must now explicitly define subdirs to be included in the dist
-DIST_SUBDIRS		= marsyas lib apps bin
+DIST_SUBDIRS		= marsyas lib apps bin doc
 			  
 MAINTAINERCLEANFILES    = Makefile.in aclocal.m4 configure marsyas/config-h.in \
 			  marsyas/stamp-h.in 

@@ -20,7 +20,7 @@ TEXI2HTML = makeinfo --html
 TEXI2PDF  = texi2pdf
 info_TEXINFOS   = marsyas.texi 
 
-SUBDIRS = marsyas images
+#SUBDIRS = marsyas images
 EXTRA_DIST = marsyas.pdf intro.texi tools.texi architecture.texi programming.texi install.texi unsorted.texi interoperability.texi README
 
 CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
