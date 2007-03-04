@@ -28,8 +28,8 @@ CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
              marsyas.tmp  marsyas.toc \
              marsyas*.html 
 
-QT_EXAMPLES = ../qt4GUIs/tutorial/*.h ../qt4GUIs/tutorial/*.cpp
-QT_EXAMPLES_AS_PERL = ../qt4GUIs/tutorial/*.pro
+QT_EXAMPLES = ../examples/Qt4-tutorial/*.h ../examples/Qt4-tutorial/*.cpp
+QT_EXAMPLES_AS_PERL = ../examples/Qt4-tutorial/*.pro
 EXAMPLES = ../examples/*.cpp
 
 html: marsyas.texi
