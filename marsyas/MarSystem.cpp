@@ -121,8 +121,7 @@ MarSystem::MarSystem(const MarSystem& a)
 	ctrl_debug_ = getctrl("mrs_bool/debug"); 
 	ctrl_mute_ = getctrl("mrs_bool/mute");
 	ctrl_active_ = getctrl("mrs_bool/active");
-	ctrl_inTick_ = getctrl("mrs_realvec/inTick");
-	ctrl_outTick_ = getctrl("mrs_realvec/outTick");
+	ctrl_processedData_ = getctrl("mrs_realvec/processedData");
 
 	//clone children (if any)
 	isComposite_ = a.isComposite_;
@@ -226,8 +225,7 @@ MarSystem::addControls()
 	inTick_.create(inObservations_, inSamples_);
 	outTick_.create(onObservations_, onSamples_);
 
-	addctrl("mrs_realvec/inTick", inTick_, ctrl_inTick_);
-	addctrl("mrs_realvec/outTick", outTick_, ctrl_outTick_);
+	addctrl("mrs_realvec/processedData", outTick_, ctrl_processedData_);
 
 	ctrl_active_->setState(true);
 
@@ -511,10 +509,6 @@ MarSystem::process(realvec& in, realvec& out)
 #endif
 
 	checkFlow(in, out);
- 	// THIS IS VERY COSTLY AND DOESN'T SEEM NECESSARY 
-	// inTick_ is used correctly by the tick function 
-	// updctrl(ctrl_inTick_, in);
-
 	myProcess(in, out);
 
 #ifdef MARSYAS_MATLAB
@@ -530,8 +524,6 @@ MarSystem::process(realvec& in, realvec& out)
 			out.stretch(onObservations_, onSamples_);
 	}
 #endif
-        // SIMILARLY WITH ABOVE
-	// updctrl(ctrl_outTick_, out);
 
 #ifdef MARSYAS_QT
 	processMutex_->unlock();

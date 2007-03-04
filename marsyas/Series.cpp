@@ -120,14 +120,10 @@ Series::myUpdate(MarControlPtr sender)
 		  slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
 					   marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
 		  
-		  (marsystems_[i])->updctrl("mrs_realvec/outTick", 
+		  (marsystems_[i])->updctrl("mrs_realvec/processedData", 
 					  *(slices_[i]));
 
-		  slPtrs_.push_back(marsystems_[i]->getctrl("mrs_realvec/outTick"));
-		  if (i > 0) 
-		    {
-		      marsystems_[i]->updctrl("mrs_realvec/inTick", 							   *(slices_[i]));		  
-		    }
+		  slPtrs_.push_back(marsystems_[i]->getctrl("mrs_realvec/processedData"));
 		  (slices_[i])->setval(0.0);
 		}
 	    }
@@ -136,11 +132,9 @@ Series::myUpdate(MarControlPtr sender)
 	      slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
 				       marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
 	      
-	      marsystems_[i]->updctrl("mrs_realvec/outTick", 
+	      marsystems_[i]->updctrl("mrs_realvec/processedData", 
 				       *(slices_[i]));
-		  slPtrs_.push_back(marsystems_[i]->getctrl("mrs_realvec/outTick"));
-	      if (i > 0) 
-		marsystems_[i]->updctrl("mrs_realvec/inTick", 							   *(slices_[i]));
+		  slPtrs_.push_back(marsystems_[i]->getctrl("mrs_realvec/processedData"));
 				
 	      (slices_[i])->setval(0.0);
 	    }

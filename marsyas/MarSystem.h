@@ -130,8 +130,7 @@ protected:
 	MarControlPtr ctrl_debug_; 
 	MarControlPtr ctrl_mute_;
 	MarControlPtr ctrl_active_;
-  MarControlPtr ctrl_inTick_;
-  MarControlPtr ctrl_outTick_;
+  	MarControlPtr ctrl_processedData_;
   
 
 	mrs_natural inObservations_;
