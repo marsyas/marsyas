@@ -22,7 +22,8 @@ void @b{recognize}(string sfName) @{
        mrs_natural numberSamples = pnet->@b{getctrl}(@t{"mrs_natural/onSamples"})->@b{toNatural}();
 
        @b{while} ( pnet->@b{getctrl}(@t{"SoundFileSource/src/mrs_bool/notEmpty"})->@b{toBool}() ) @{
-              pnet->@b{tick}();
+@i{// don't tick because process() does that.}
+@i{//              pnet->tick();}
 @i{// get data from network}
               pnet->@b{process}(in,out);
 

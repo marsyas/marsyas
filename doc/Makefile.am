@@ -34,6 +34,7 @@ EXAMPLES = ../examples/*.cpp
 
 html: marsyas.texi
 	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas.texi 
+	mkdir -p marsyas/images/
 	cp images/*.png marsyas/images/
 
 pdf: marsyas.texi

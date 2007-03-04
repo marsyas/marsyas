@@ -360,6 +360,7 @@ MarBackend<font color="#990000">::~</font><b><font color="#000000">MarBackend</f
 
 <font color="#009900">void</font> MarBackend<font color="#990000">::</font><b><font color="#000000">openBackendSoundfile</font></b><font color="#990000">(</font>string fileName<font color="#990000">)</font> <font color="#FF0000">{</font>
 	mrsWrapper<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font>filenamePtr<font color="#990000">,</font>fileName<font color="#990000">);</font>
+	mrsWrapper<font color="#990000">-&gt;</font><b><font color="#000000">play</font></b><font color="#990000">();</font>
 <font color="#FF0000">}</font>
 
 <font color="#009900">void</font> MarBackend<font color="#990000">::</font><b><font color="#000000">setBackendVolume</font></b><font color="#990000">(</font><font color="#009900">int</font> vol<font color="#990000">)</font> <font color="#FF0000">{</font>

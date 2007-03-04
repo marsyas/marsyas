@@ -53,6 +53,7 @@ MarBackend::~@b{MarBackend}() @{
 
 void MarBackend::@b{openBackendSoundfile}(string fileName) @{
        mrsWrapper->@b{updctrl}(filenamePtr,fileName);
+       mrsWrapper->@b{play}();
 @}
 
 void MarBackend::@b{setBackendVolume}(int vol) @{

@@ -24,7 +24,8 @@ http://www.gnu.org/software/src-highlite -->
 	mrs_natural numberSamples <font color="#990000">=</font> pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"mrs_natural/onSamples"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toNatural</font></b><font color="#990000">();</font>
 
 	<b><font color="#0000FF">while</font></b> <font color="#990000">(</font> pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_bool/notEmpty"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toBool</font></b><font color="#990000">()</font> <font color="#990000">)</font> <font color="#FF0000">{</font>
-		pnet<font color="#990000">-&gt;</font><b><font color="#000000">tick</font></b><font color="#990000">();</font>
+<i><font color="#9A1900">// don't tick because process() does that.</font></i>
+<i><font color="#9A1900">//		pnet-&gt;tick();</font></i>
 <i><font color="#9A1900">// get data from network</font></i>
 		pnet<font color="#990000">-&gt;</font><b><font color="#000000">process</font></b><font color="#990000">(</font>in<font color="#990000">,</font>out<font color="#990000">);</font>
 
