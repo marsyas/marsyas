@@ -21,7 +21,7 @@ void sfplay(string sfName, float gain1, float gain2) {
 	left->addMarSystem(mng.create("Gain", "gain1"));
 	left->updctrl("Gain/gain1/mrs_real/gain", gain1);
 	left->addMarSystem(mng.create("SoundFileSink", "destL"));
-// srate 22050
+// srate 22050: not good.
 	left->updctrl("SoundFileSink/destL/mrs_string/filename", "left.wav");
 
 	MarSystem* right = mng.create("Series", "right");
