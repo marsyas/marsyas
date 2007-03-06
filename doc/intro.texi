@@ -214,7 +214,7 @@ when it is bad, it is better than nothing.   (Dick Brandon)
 @end quotation
 
 
-@unnumberedsubsubsec Manual
+@subsubheading Manual
 
 If you can add something to the docs, please send an email to
 @code{<marsyas-developers@@lists.sourceforge.net>}.  A formal patch for
@@ -234,7 +234,7 @@ to the second paragraph.
 @end verbatim
 
 
-@unnumberedsubsubsec Examples
+@subsubheading Examples
 
 Small, easy-to-understand examples are also great.  If you have some
 source code that illustrates something, we can add it to

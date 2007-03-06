@@ -3,10 +3,9 @@
 
 @menu
 * Download::                    
-* Linux Installation::          
-* Mac OSX Installation::        
-* Windows (cygwin)::            
-* Windows (Visual Studio)::     
+* Compiling with qmake::        
+* Compiling with autotools::    
+* Platform-specific notes::     
 * Configure Options::           
 * Structure of distribution::   
 @end menu
@@ -31,40 +30,43 @@ http://www.sourceforge.net/projects/marsyas
 @end ifnothtml
 
 @html 
-<a href=``http://www.sourceforge.net/projects/marsyas''>
+<a href="http://www.sourceforge.net/projects/marsyas">
 http://www.sourceforget.net/projects/marsyas </a> 
 @end html
 
 @html 
-<a href=''http://marsyas.sourceforge.net''>
+<a href="http://marsyas.sourceforge.net">
 http://marsyas.sourceforge.net </a> 
 @end html
 
 Marsyas is open source software and is distributed 
-as a tar ball (something like marsyas-0.2.8.tar.gz). 
+as a tarball (something like @file{marsyas-0.2.8.tar.gz}).  Uncompress
+this file using whatever uncompression program you prefer (@code{tar -xf},
+winzip, etc).
 
-To extract the source file type: 
+@ignore
+To extract the source tarball type: 
 
-@example 
+@e xample 
 tar -zxvf marsyas-0.2.8.tar.gz 
-@end example
+@e nd example
 
 This will create a subdirectory of the current 
 directory called marsyas-0.2.8 that contains 
 all the source files needed for compiling Marsyas. 
-
+@end ignore
 
 @subsection Development Version
 
 For the brave, the latest (possibly unstable!) version can be
-obtained from the subversion repository stored at the sourceforge website.
-To check out a working copy do:
+obtained from the subversion repository stored at the sourceforge
+website.  To check out a working copy do:
 
 @example 
-svn co https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk marsyas-0.2.10
+svn co https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk my-marsyas-dir
 @end example
 
-You can replace marsyas-0.2.10 with any directory you want. The 
+You can replace @file{my-marsyas-dir} with any directory you want.  The 
 version/release (version 0.2 release 10) is independently assigned 
 from subversion revisions and the latest can be found by checking 
 the sourceforge website. 
@@ -92,8 +94,31 @@ is welcome and will help further improve the framework.
 @end ignore
 
 
+@node Compiling with qmake
+@section Compiling with qmake
+
+Blah
+
+@node Compiling with autotools
+@section Compiling with autotools
+
+Foo
+
+
+
+
+@node Platform-specific notes
+@section Platform-specific notes
+
+@menu
+* Linux Installation::          
+* Mac OSX Installation::        
+* Windows (cygwin)::            
+* Windows (Visual Studio)::     
+@end menu
+
 @node Linux Installation
-@section Linux Installation 
+@subsection Linux Installation 
 
 @cindex Linux
 
@@ -120,7 +145,7 @@ and include optional packages such as support for reading mp3s.
 
 
 @node Mac OSX Installation
-@section Mac OSX Installation
+@subsection Mac OSX Installation
 
 @cindex Mac OSX
 
@@ -143,7 +168,7 @@ and include optional packages such as support for reading mp3s.
 @xref{Configure Options}.  
 
 @node Windows (cygwin)
-@section Windows (cygwin)
+@subsection Windows (cygwin)
 @cindex Cygwin
 
 Installation under Windows using the cygwin environment and gcc is
@@ -162,7 +187,7 @@ In general, cygwin is not supported as well as Linux and OS X.
 
 
 @node Windows (Visual Studio)
-@section Windows (Visual Studio)
+@subsection Windows (Visual Studio)
 @cindex Windows
 
 You must have QT 4.2.2 or higher installed.  First, go to the root
@@ -330,12 +355,6 @@ each one that has instructions on how to compile and run it.
 distributed processing.
 
 @item @b{marsyasMATLAB:} User MATLAB scripts (mfiles).
-
-@item @b{marsyasVisualStudio2003:}
-Project and Solution files for Visual Studio 2003
-
-@item @b{marsyasVisualStudio2005:}
-Project and Solution files for Visual Studio 2005
 
 @end itemize 
 
