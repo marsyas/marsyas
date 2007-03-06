@@ -1,3 +1,7 @@
+NOT MAINTAINED ANYMORE. The svn revision messages '
+serve the same purpose 
+
+
 2006-10-23    <gtzan@epikouros.cs.uvic.ca>
 
 	* marsyas/MFCC.cpp (MFCC): fixed bugs in Neil's speedup version

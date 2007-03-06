@@ -21,7 +21,7 @@ AUX_DIST                = $(auxdir)/install-sh $(auxdir)/missing \
                         $(auxdir)/mkinstalldirs $(auxdir)/config.sub \
 			$(auxdir)/config.guess $(auxdir)/ltconfig \
 			$(auxdir)/ltmain.sh
-EXTRA_DIST              = bootstrap TODO 
+EXTRA_DIST              = bootstrap TODO marsyasAll.pro marsyasConfig.pri
 
 AUTOMAKE_OPTIONS        = foreign
 
