@@ -120,8 +120,10 @@ void sfplay(vector<string> soundfiles)
 			playbacknet->updctrl("AudioSink/dest/mrs_natural/bufferSize", 256); 
 			playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 		}
-
-		while (playbacknet->getctrl("mrs_bool/notEmpty")->toBool())	
+		MarControlPtr notEmptyPtr_ = 
+		  playbacknet->getctrl("mrs_bool/notEmpty");
+		
+		while (notEmptyPtr_->isTrue())	
 		{
 			playbacknet->tick();
 		}
