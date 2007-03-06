@@ -475,30 +475,30 @@ MarSystem::updatePath()
 void 
 MarSystem::checkFlow(realvec& in, realvec& out)
 {
-	mrs_natural irows = in.getRows();
-	mrs_natural icols = in.getCols();
-	mrs_natural orows = out.getRows();
-	mrs_natural ocols = out.getCols();
+  irows_ = in.getRows();
+  icols_ = in.getCols();
+  orows_ = out.getRows();
+  ocols_ = out.getCols();
 
-	if(ctrl_debug_->isTrue())
-	{
-		MRSWARN("Debug CheckFlow Information");
-		MRSWARN("MarSystem Type    = " << type_); 
-		MRSWARN("MarSystem Name    = " << name_);
-		MRSWARN("inObservations_ = " << inObservations_);
-		MRSWARN("inSamples_ = " << inSamples_);
-		MRSWARN("onObservations_ = " << onObservations_);
-		MRSWARN("onSamples_ = " << onSamples_);      
-		MRSWARN("Input  Slice Rows = " << irows ); 
-		MRSWARN("Input  Slice Cols = " << icols ); 
-		MRSWARN("Output Slice Rows = " << orows );
-		MRSWARN("Output Slice Cols = " << ocols );      
-	}
-
-	MRSASSERT(irows == inObservations_);
-	MRSASSERT(icols == inSamples_);
-	MRSASSERT(orows == onObservations_);
-	MRSASSERT(ocols == onSamples_);
+  if(ctrl_debug_->isTrue())
+    {
+      MRSWARN("Debug CheckFlow Information");
+      MRSWARN("MarSystem Type    = " << type_); 
+      MRSWARN("MarSystem Name    = " << name_);
+      MRSWARN("inObservations_ = " << inObservations_);
+      MRSWARN("inSamples_ = " << inSamples_);
+      MRSWARN("onObservations_ = " << onObservations_);
+      MRSWARN("onSamples_ = " << onSamples_);      
+      MRSWARN("Input  Slice Rows = " << irows ); 
+      MRSWARN("Input  Slice Cols = " << icols ); 
+      MRSWARN("Output Slice Rows = " << orows );
+      MRSWARN("Output Slice Cols = " << ocols );      
+    }
+  
+  MRSASSERT(irows == inObservations_);
+  MRSASSERT(icols == inSamples_);
+  MRSASSERT(orows == onObservations_);
+  MRSASSERT(ocols == onSamples_);
 }
 
 void
