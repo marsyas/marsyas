@@ -57,6 +57,8 @@ unix:CONFIG += marsyasAUDIOIO_ALSA
 #unix:CONFIG += marsyasAUDIOIO_JACK
 #unix:CONFIG += marsyasAUDIOIO_OSS
 
+### no choice about audio API for MacOSX.
+
 ######################################################################
 # GUI suport for Marsyas library 
 ######################################################################
@@ -109,6 +111,7 @@ marsyasMATLAB:INCLUDEPATH 	+= "$$BASEDIR/marsyas/MATLAB"
 marsyasGUI:INCLUDEPATH 		+= "$$BASEDIR/marsyas/Qt" 
 
 unix {
+!macx {    # qmake detects osx as "unix" in 4.2.2.  :/
 	DEFINES += MARSYAS_LINUX
 	LIBS += -lm
 			
@@ -153,6 +156,7 @@ unix {
 		LIBS += -lmad
 		DEFINES += MARSYAS_MAD
 	}
+}
 }
 
 macx {
