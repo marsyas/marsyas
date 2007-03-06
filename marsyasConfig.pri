@@ -209,6 +209,7 @@ win32 {
 			DEFINES += \
 				MARSYAS_ASIO \
 				__WINDOWS_ASIO_
+			DEFINES -= UNICODE
 			SOURCES += 
 				"$$BASEDIR/otherlibs/asio/asio.cpp" \
 				"$$BASEDIR/otherlibs/asio/asiodrivers.cpp" \
@@ -239,6 +240,19 @@ win32 {
 		DEFINES += MARSYAS_MATLAB
 		INCLUDEPATH += \"$$(MATLAB)\extern\include\"
 		LIBS += -llibeng -llibmx -llibut -L\"$$(MATLAB)/bin/win32\"
+	}
+	
+	marsyasMAD {
+		INCLUDEPATH += \"$$(LIBMAD)\"
+		DEFINES += MARSYAS_MAD
+		CONFIG(release, debug|release){
+			message(Building with libMAD MP3 support (release).)
+			LIBS += -llibmad -L\"$$(LIBMAD)/msvc++/Release\"
+		}
+		CONFIG(debug, debug|release){
+			message(Building with libMAD MP3 support (debug).)
+			LIBS += -llibmad -L\"$$(LIBMAD)/msvc++/Debug\"
+		}
 	}
 }
 
