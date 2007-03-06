@@ -1,12 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MarPlayer", "MarPlayer.vcproj", "{1694B80A-3B02-36BD-857E-87E5531AC614}"
-	GlobalSection(Qt) = preSolution
-		Integration = True
-	EndGlobalSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "marsyas", "..\..\..\marsyas\marsyas.vcproj", "{77B37D56-55B3-35DE-BA08-052DF26584B4}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "marsyas", "marsyas.vcproj", "{77B37D56-55B3-35DE-BA08-052DF26584B4}"
 	GlobalSection(Qt) = preSolution
 		Integration = True
 	EndGlobalSection
@@ -20,10 +15,6 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1694B80A-3B02-36BD-857E-87E5531AC614}.Debug|Win32.ActiveCfg = Debug|Win32
-		{1694B80A-3B02-36BD-857E-87E5531AC614}.Debug|Win32.Build.0 = Debug|Win32
-		{1694B80A-3B02-36BD-857E-87E5531AC614}.Release|Win32.ActiveCfg = Release|Win32
-		{1694B80A-3B02-36BD-857E-87E5531AC614}.Release|Win32.Build.0 = Release|Win32
 		{77B37D56-55B3-35DE-BA08-052DF26584B4}.Debug|Win32.ActiveCfg = Debug|Win32
 		{77B37D56-55B3-35DE-BA08-052DF26584B4}.Debug|Win32.Build.0 = Debug|Win32
 		{77B37D56-55B3-35DE-BA08-052DF26584B4}.Release|Win32.ActiveCfg = Release|Win32

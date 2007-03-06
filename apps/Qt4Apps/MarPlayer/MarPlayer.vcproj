@@ -1,447 +1,291 @@
-<?xml version="1.0" encoding="Windows-1252"?>
+<?xml version="1.0" encoding = "Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="MarPlayer"
-	ProjectGUID="{3CFF37B3-11D9-3DD5-8E2A-D249189C3234}"
-	Keyword="Qt4VSv1.0"
-	>
+	ProjectGUID="{1694B80A-3B02-36BD-857E-87E5531AC614}"
+	Keyword="Qt4VSv1.0">
 	<Platforms>
 		<Platform
-			Name="Win32"
-		/>
+			Name="Win32"/>
 	</Platforms>
-	<ToolFiles>
-	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="."
-			IntermediateDirectory="debug\"
-			ConfigurationType="1"
-			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				WarningLevel="0"
-				DefaultCharType="0"
-				EnableErrorChecks="1"
-			/>
+			ConfigurationType="1"
+			IntermediateDirectory="debug\"
+			UseOfMfc="0">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="&quot;C:/Qt/4.2.2/include/QtCore&quot;,&quot;C:/Qt/4.2.2/include/QtCore&quot;,&quot;C:/Qt/4.2.2/include/QtGui&quot;,&quot;C:/Qt/4.2.2/include/QtGui&quot;,&quot;C:/Qt/4.2.2/include&quot;,&quot;C:/Documents and Settings/lmartins/Desktop/MarsyasTrunk/marsyas&quot;,c:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot;,&quot;.&quot;,&quot;..&quot;,&quot;C:/Qt/4.2.2/include/ActiveQt&quot;,&quot;debug&quot;,&quot;.&quot;,c:\Qt\4.2.2\mkspecs\win32-msvc2005"
 				AdditionalOptions="-Zm200 -w34100 -w34189 -EHsc -Zm200 -w34100 -w34189 -EHsc -w34100 -w34189"
-				Optimization="0"
-				AdditionalIncludeDirectories="C:/Qt/4.2.2/include/QtCore;C:/Qt/4.2.2/include/QtGui;C:/Qt/4.2.2/include;&quot;C:/Documents and Settings/lmartins/Desktop/Marsyas_qmakeBuild/marsyas&quot;;&quot;C:/Program Files/Microsoft DirectX SDK (February 2006)/Include&quot;;.;..;C:/Qt/4.2.2/include/ActiveQt;debug;&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot;"
-				PreprocessorDefinitions="_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,MARSYAS_DEBUG,MARSYAS_WIN32,WIN32,_WINDOWS,_DEBUG,MARSYAS_AUDIOIO,MARSYAS_DS,__WINDOWS_DS__,MARSYAS_MIDIIO,MARSYAS_WINMM,__WINDOWS_MM__,QT_DLL,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT"
-				GeneratePreprocessedFile="0"
-				RuntimeLibrary="3"
-				BufferSecurityCheck="false"
-				TreatWChar_tAsBuiltInType="false"
-				RuntimeTypeInfo="true"
 				AssemblerListingLocation="debug\"
-				ObjectFile="debug\"
-				ProgramDataBaseFileName=".\"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
+				BufferSecurityCheck="false"
 				DebugInformationFormat="4"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
+				ExceptionHandling="true"
+				GeneratePreprocessedFile="0"
+				ObjectFile="debug\"
+				Optimization ="0"
 				PreprocessorDefinitions="_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,MARSYAS_DEBUG,MARSYAS_WIN32,WIN32,_WINDOWS,_DEBUG,MARSYAS_AUDIOIO,MARSYAS_DS,__WINDOWS_DS__,MARSYAS_MIDIIO,MARSYAS_WINMM,__WINDOWS_MM__,QT_DLL,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT"
-			/>
+				ProgramDataBaseFileName=".\"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="true"
+				SuppressStartupBanner="true"
+				TreatWChar_tAsBuiltInType="false"
+				WarningLevel="3"/>
 			<Tool
-				Name="VCPreLinkEventTool"
-			/>
+				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				IgnoreImportLibrary="true"
-				AdditionalDependencies="c:\Qt\4.2.2\lib\qtmaind.lib user32.lib dsound.lib /LIBPATH:&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Lib\x86&quot; winmm.lib marsyas.lib /LIBPATH:&quot;C:\Documents and Settings\lmartins\Desktop\Marsyas_qmakeBuild/lib/debug&quot; c:\Qt\4.2.2\lib\QtGuid4.lib c:\Qt\4.2.2\lib\QtCored4.lib"
-				OutputFile="..\..\..\bin\debug\MarPlayer.exe"
-				LinkIncremental="2"
-				SuppressStartupBanner="true"
+				AdditionalDependencies="c:\Qt\4.2.2\lib\qtmaind.lib user32.lib dsound.lib /LIBPATH:&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Lib\x86&quot; winmm.lib marsyas.lib /LIBPATH:&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk/lib/debug&quot; c:\Qt\4.2.2\lib\QtGuid4.lib c:\Qt\4.2.2\lib\QtCored4.lib"
 				AdditionalLibraryDirectories="c:\Qt\4.2.2\lib"
 				GenerateDebugInformation="true"
+				IgnoreImportLibrary="true"
+				LinkIncremental="2"
+				OutputFile="..\..\..\bin\debug\MarPlayer.exe"
 				ProgramDatabaseFile=""
 				SubSystem="2"
-			/>
+				SuppressStartupBanner="true"/>
 			<Tool
-				Name="VCALinkTool"
-			/>
+				Name="VCMIDLTool"
+				DefaultCharType="0"
+				EnableErrorChecks="1"
+				WarningLevel="0"/>
 			<Tool
-				Name="VCManifestTool"
-			/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
-				Name="VCXDCMakeTool"
-			/>
+				Name="VCPreBuildEventTool"/>
 			<Tool
-				Name="VCBscMakeTool"
-			/>
+				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,MARSYAS_DEBUG,MARSYAS_WIN32,WIN32,_WINDOWS,_DEBUG,MARSYAS_AUDIOIO,MARSYAS_DS,__WINDOWS_DS__,MARSYAS_MIDIIO,MARSYAS_WINMM,__WINDOWS_MM__,QT_DLL,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="."
-			IntermediateDirectory="release\"
-			ConfigurationType="1"
-			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				WarningLevel="0"
-				DefaultCharType="0"
-				EnableErrorChecks="1"
-			/>
+			ConfigurationType="1"
+			IntermediateDirectory="release\"
+			UseOfMfc="0">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="&quot;C:/Qt/4.2.2/include/QtCore&quot;,&quot;C:/Qt/4.2.2/include/QtCore&quot;,&quot;C:/Qt/4.2.2/include/QtGui&quot;,&quot;C:/Qt/4.2.2/include/QtGui&quot;,&quot;C:/Qt/4.2.2/include&quot;,&quot;C:/Documents and Settings/lmartins/Desktop/MarsyasTrunk/marsyas&quot;,c:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot;,&quot;.&quot;,&quot;..&quot;,&quot;C:/Qt/4.2.2/include/ActiveQt&quot;,&quot;release&quot;,&quot;.&quot;,c:\Qt\4.2.2\mkspecs\win32-msvc2005"
 				AdditionalOptions="-Zm200 -w34100 -w34189 -EHsc -Zm200 -w34100 -w34189 -EHsc -w34100 -w34189"
-				Optimization="2"
-				AdditionalIncludeDirectories="&quot;C:/Qt/4.2.2/include/QtCore&quot;,&quot;C:/Qt/4.2.2/include/QtCore&quot;,&quot;C:/Qt/4.2.2/include/QtGui&quot;,&quot;C:/Qt/4.2.2/include/QtGui&quot;,&quot;C:/Qt/4.2.2/include&quot;,&quot;C:/Documents and Settings/lmartins/Desktop/Marsyas_qmakeBuild/marsyas&quot;,&quot;C:/Program Files/Microsoft DirectX SDK (February 2006)/Include&quot;,&quot;.&quot;,&quot;..&quot;,&quot;C:/Qt/4.2.2/include/ActiveQt&quot;,&quot;release&quot;,&quot;.&quot;,c:\Qt\4.2.2\mkspecs\win32-msvc2005"
-				PreprocessorDefinitions="QT_NO_DEBUG,NDEBUG,_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,MARSYAS_RELEASE,MARSYAS_WIN32,WIN32,_WINDOWS,NDEBUG,MARSYAS_AUDIOIO,MARSYAS_DS,__WINDOWS_DS__,MARSYAS_MIDIIO,MARSYAS_WINMM,__WINDOWS_MM__,QT_DLL,QT_NO_DEBUG,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT,NDEBUG"
-				GeneratePreprocessedFile="0"
-				RuntimeLibrary="2"
-				BufferSecurityCheck="false"
-				TreatWChar_tAsBuiltInType="false"
-				RuntimeTypeInfo="true"
 				AssemblerListingLocation="release\"
-				ObjectFile="release\"
-				ProgramDataBaseFileName=".\"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
+				BufferSecurityCheck="false"
 				DebugInformationFormat="0"
-			/>
+				ExceptionHandling="true"
+				GeneratePreprocessedFile="0"
+				ObjectFile="release\"
+				Optimization ="2"
+				PreprocessorDefinitions="QT_NO_DEBUG,NDEBUG,_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,MARSYAS_RELEASE,MARSYAS_WIN32,WIN32,_WINDOWS,NDEBUG,MARSYAS_AUDIOIO,MARSYAS_DS,__WINDOWS_DS__,MARSYAS_MIDIIO,MARSYAS_WINMM,__WINDOWS_MM__,QT_DLL,QT_NO_DEBUG,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT,NDEBUG"
+				ProgramDataBaseFileName=".\"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="true"
+				SuppressStartupBanner="true"
+				TreatWChar_tAsBuiltInType="false"
+				WarningLevel="3"/>
 			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="QT_NO_DEBUG,NDEBUG,_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,MARSYAS_RELEASE,MARSYAS_WIN32,WIN32,_WINDOWS,NDEBUG,MARSYAS_AUDIOIO,MARSYAS_DS,__WINDOWS_DS__,MARSYAS_MIDIIO,MARSYAS_WINMM,__WINDOWS_MM__,QT_DLL,QT_NO_DEBUG,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
+				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				IgnoreImportLibrary="true"
-				AdditionalDependencies="c:\Qt\4.2.2\lib\qtmain.lib user32.lib dsound.lib /LIBPATH:&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Lib\x86&quot; winmm.lib marsyas.lib /LIBPATH:&quot;C:\Documents and Settings\lmartins\Desktop\Marsyas_qmakeBuild/lib/release&quot; c:\Qt\4.2.2\lib\QtGui4.lib c:\Qt\4.2.2\lib\QtCore4.lib"
-				OutputFile="..\..\..\bin\release\MarPlayer.exe"
-				LinkIncremental="2"
-				SuppressStartupBanner="true"
+				AdditionalDependencies="c:\Qt\4.2.2\lib\qtmain.lib user32.lib dsound.lib /LIBPATH:&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Lib\x86&quot; winmm.lib marsyas.lib /LIBPATH:&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk/lib/release&quot; c:\Qt\4.2.2\lib\QtGui4.lib c:\Qt\4.2.2\lib\QtCore4.lib"
 				AdditionalLibraryDirectories="c:\Qt\4.2.2\lib"
 				GenerateDebugInformation="false"
+				IgnoreImportLibrary="true"
+				LinkIncremental="2"
+				OutputFile="..\..\..\bin\release\MarPlayer.exe"
 				ProgramDatabaseFile=""
 				SubSystem="2"
-			/>
+				SuppressStartupBanner="true"/>
 			<Tool
-				Name="VCALinkTool"
-			/>
+				Name="VCMIDLTool"
+				DefaultCharType="0"
+				EnableErrorChecks="1"
+				WarningLevel="0"/>
 			<Tool
-				Name="VCManifestTool"
-			/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
-				Name="VCXDCMakeTool"
-			/>
+				Name="VCPreBuildEventTool"/>
 			<Tool
-				Name="VCBscMakeTool"
-			/>
+				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="QT_NO_DEBUG,NDEBUG,_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,MARSYAS_RELEASE,MARSYAS_WIN32,WIN32,_WINDOWS,NDEBUG,MARSYAS_AUDIOIO,MARSYAS_DS,__WINDOWS_DS__,MARSYAS_MIDIIO,MARSYAS_WINMM,__WINDOWS_MM__,QT_DLL,QT_NO_DEBUG,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT"/>
 		</Configuration>
 	</Configurations>
-	<References>
-	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
-			>
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath="main.cpp"
-				>
-			</File>
+				RelativePath="Mapper.cpp"/>
 			<File
-				RelativePath="Mapper.cpp"
-				>
-			</File>
+				RelativePath="MarPlayer.cpp"/>
 			<File
-				RelativePath="MarPlayer.cpp"
-				>
-			</File>
+				RelativePath="..\MarSystemQtWrapper.cpp"/>
 			<File
-				RelativePath="..\MarSystemQtWrapper.cpp"
-				>
-			</File>
+				RelativePath="main.cpp"/>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
-			>
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
-				RelativePath="Mapper.h"
-				>
+				RelativePath="Mapper.h">
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="MOC Mapper.h"
-						CommandLine="$(QTDIR)\bin\moc.exe  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_DEBUG -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -D_DEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\Marsyas_qmakeBuild\marsyas&quot; -I&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;.&quot; -I&quot;.\..&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;.\debug&quot; -I&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot; &quot;Mapper.h&quot; -o &quot;debug\moc_Mapper.cpp&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
+						CommandLine="c:\Qt\4.2.2\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_DEBUG -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -D_DEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas&quot; -Ic:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;.&quot; -I&quot;..&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;debug&quot; -I&quot;.&quot; -Ic:\Qt\4.2.2\mkspecs\win32-msvc2005 -D_MSC_VER=1400 -DWIN32 Mapper.h -o debug\moc_Mapper.cpp"
+						Description="MOC Mapper.h"
 						Outputs="debug\moc_Mapper.cpp"
-					/>
+						Path="c:/Qt/4.2.2/bin"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
+						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
+						CommandLine="c:\Qt\4.2.2\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_RELEASE -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -DNDEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DQT_DLL -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas&quot; -Ic:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;.&quot; -I&quot;..&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;release&quot; -I&quot;.&quot; -Ic:\Qt\4.2.2\mkspecs\win32-msvc2005 -D_MSC_VER=1400 -DWIN32 Mapper.h -o release\moc_Mapper.cpp"
 						Description="MOC Mapper.h"
-						CommandLine="$(QTDIR)\bin\moc.exe  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_RELEASE -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -DNDEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DQT_DLL -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DNDEBUG -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\Marsyas_qmakeBuild\marsyas&quot; -I&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;.&quot; -I&quot;.\..&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;.\release&quot; -I&quot;.&quot; -I&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot; &quot;Mapper.h&quot; -o &quot;release\moc_Mapper.cpp&quot;&#x0D;&#x0A;"
-						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
 						Outputs="release\moc_Mapper.cpp"
-					/>
+						Path="c:/Qt/4.2.2/bin"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="MarPlayer.h"
-				>
+				RelativePath="MarPlayer.h">
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="MOC MarPlayer.h"
-						CommandLine="$(QTDIR)\bin\moc.exe  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_DEBUG -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -D_DEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\Marsyas_qmakeBuild\marsyas&quot; -I&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;.&quot; -I&quot;.\..&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;.\debug&quot; -I&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot; &quot;MarPlayer.h&quot; -o &quot;debug\moc_MarPlayer.cpp&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
+						CommandLine="c:\Qt\4.2.2\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_DEBUG -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -D_DEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas&quot; -Ic:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;.&quot; -I&quot;..&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;debug&quot; -I&quot;.&quot; -Ic:\Qt\4.2.2\mkspecs\win32-msvc2005 -D_MSC_VER=1400 -DWIN32 MarPlayer.h -o debug\moc_MarPlayer.cpp"
+						Description="MOC MarPlayer.h"
 						Outputs="debug\moc_MarPlayer.cpp"
-					/>
+						Path="c:/Qt/4.2.2/bin"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="MOC MarPlayer.h"
-						CommandLine="$(QTDIR)\bin\moc.exe  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_RELEASE -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -DNDEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DQT_DLL -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DNDEBUG -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\Marsyas_qmakeBuild\marsyas&quot; -I&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;.&quot; -I&quot;.\..&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;.\release&quot; -I&quot;.&quot; -I&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot; &quot;MarPlayer.h&quot; -o &quot;release\moc_MarPlayer.cpp&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
+						CommandLine="c:\Qt\4.2.2\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_RELEASE -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -DNDEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DQT_DLL -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas&quot; -Ic:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;.&quot; -I&quot;..&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;release&quot; -I&quot;.&quot; -Ic:\Qt\4.2.2\mkspecs\win32-msvc2005 -D_MSC_VER=1400 -DWIN32 MarPlayer.h -o release\moc_MarPlayer.cpp"
+						Description="MOC MarPlayer.h"
 						Outputs="release\moc_MarPlayer.cpp"
-					/>
+						Path="c:/Qt/4.2.2/bin"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\MarSystemQtWrapper.h"
-				>
+				RelativePath="..\MarSystemQtWrapper.h">
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="MOC ..\MarSystemQtWrapper.h"
-						CommandLine="$(QTDIR)\bin\moc.exe  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_DEBUG -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -D_DEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\Marsyas_qmakeBuild\marsyas&quot; -I&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;.&quot; -I&quot;.\..&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;.\debug&quot; -I&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot; &quot;..\MarSystemQtWrapper.h&quot; -o &quot;debug\moc_MarSystemQtWrapper.cpp&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
+						CommandLine="c:\Qt\4.2.2\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_DEBUG -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -D_DEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas&quot; -Ic:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;.&quot; -I&quot;..&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;debug&quot; -I&quot;.&quot; -Ic:\Qt\4.2.2\mkspecs\win32-msvc2005 -D_MSC_VER=1400 -DWIN32 ..\MarSystemQtWrapper.h -o debug\moc_MarSystemQtWrapper.cpp"
+						Description="MOC ..\MarSystemQtWrapper.h"
 						Outputs="debug\moc_MarSystemQtWrapper.cpp"
-					/>
+						Path="c:/Qt/4.2.2/bin"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="MOC ..\MarSystemQtWrapper.h"
-						CommandLine="$(QTDIR)\bin\moc.exe  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_RELEASE -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -DNDEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DQT_DLL -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DNDEBUG -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\Marsyas_qmakeBuild\marsyas&quot; -I&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;.&quot; -I&quot;.\..&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;.\release&quot; -I&quot;.&quot; -I&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot; &quot;..\MarSystemQtWrapper.h&quot; -o &quot;release\moc_MarSystemQtWrapper.cpp&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
+						CommandLine="c:\Qt\4.2.2\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_RELEASE -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -DNDEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DQT_DLL -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas&quot; -Ic:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;.&quot; -I&quot;..&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;release&quot; -I&quot;.&quot; -Ic:\Qt\4.2.2\mkspecs\win32-msvc2005 -D_MSC_VER=1400 -DWIN32 ..\MarSystemQtWrapper.h -o release\moc_MarSystemQtWrapper.cpp"
+						Description="MOC ..\MarSystemQtWrapper.h"
 						Outputs="release\moc_MarSystemQtWrapper.cpp"
-					/>
+						Path="c:/Qt/4.2.2/bin"/>
 				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
 			Name="Generated Files"
 			Filter="cpp;c;cxx;moc;h;def;odl;idl;res;"
-			UniqueIdentifier="{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}"
-			>
+			UniqueIdentifier="{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}">
 			<File
-				RelativePath="release\moc_Mapper.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="debug\moc_Mapper.cpp"
-				>
+				RelativePath="debug\moc_Mapper.cpp">
 				<FileConfiguration
 					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
+					ExcludedFromBuild="true"/>
 			</File>
 			<File
-				RelativePath="release\moc_MarPlayer.cpp"
-				>
+				RelativePath="release\moc_Mapper.cpp">
 				<FileConfiguration
 					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
+					ExcludedFromBuild="true"/>
 			</File>
 			<File
-				RelativePath="debug\moc_MarPlayer.cpp"
-				>
+				RelativePath="debug\moc_MarPlayer.cpp">
 				<FileConfiguration
 					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
+					ExcludedFromBuild="true"/>
 			</File>
 			<File
-				RelativePath="debug\moc_MarSystemQtWrapper.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="release\moc_MarSystemQtWrapper.cpp"
-				>
+				RelativePath="release\moc_MarPlayer.cpp">
 				<FileConfiguration
 					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
+					ExcludedFromBuild="true"/>
 			</File>
 			<File
-				RelativePath="release\qrc_MarPlayerForm.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="debug\qrc_MarPlayerForm.cpp"
-				>
+				RelativePath="debug\moc_MarSystemQtWrapper.cpp">
 				<FileConfiguration
 					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
+					ExcludedFromBuild="true"/>
 			</File>
 			<File
-				RelativePath="ui_MarPlayerForm.h"
-				>
+				RelativePath="release\moc_MarSystemQtWrapper.cpp">
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"/>
 			</File>
+			<File
+				RelativePath="debug\qrc_MarPlayerForm.cpp">
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"/>
+			</File>
+			<File
+				RelativePath="release\qrc_MarPlayerForm.cpp">
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"/>
+			</File>
+			<File
+				RelativePath="ui_MarPlayerForm.h"/>
 		</Filter>
 		<Filter
 			Name="Form Files"
 			Filter="ui"
 			UniqueIdentifier="{99349809-55BA-4b9d-BF79-8FDBB0286EB3}"
-			ParseFiles="false"
-			>
+			ParseFiles="false">
 			<File
-				RelativePath="MarPlayerForm.ui"
-				>
+				RelativePath="MarPlayerForm.ui">
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="UIC MarPlayerForm.ui"
-						CommandLine="c:\Qt\4.2.2\bin\uic.exe MarPlayerForm.ui -o ui_MarPlayerForm.h&#x0D;&#x0A;"
 						AdditionalDependencies="c:\Qt\4.2.2\bin\uic.exe"
+						CommandLine="c:\Qt\4.2.2\bin\uic.exe MarPlayerForm.ui -o ui_MarPlayerForm.h"
+						Description="UIC MarPlayerForm.ui"
 						Outputs="ui_MarPlayerForm.h"
-					/>
+						Path="c:/Qt/4.2.2/bin"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="UIC MarPlayerForm.ui"
-						CommandLine="c:\Qt\4.2.2\bin\uic.exe MarPlayerForm.ui -o ui_MarPlayerForm.h&#x0D;&#x0A;"
 						AdditionalDependencies="c:\Qt\4.2.2\bin\uic.exe"
+						CommandLine="c:\Qt\4.2.2\bin\uic.exe MarPlayerForm.ui -o ui_MarPlayerForm.h"
+						Description="UIC MarPlayerForm.ui"
 						Outputs="ui_MarPlayerForm.h"
-					/>
+						Path="c:/Qt/4.2.2/bin"/>
 				</FileConfiguration>
 			</File>
 		</Filter>
@@ -449,54 +293,40 @@
 			Name="Resource Files"
 			Filter="qrc;*"
 			UniqueIdentifier="{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}"
-			ParseFiles="false"
-			>
+			ParseFiles="false">
 			<File
-				RelativePath="MarPlayerForm.qrc"
-				>
+				RelativePath="MarPlayerForm.qrc">
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="RCC MarPlayerForm.qrc"
-						CommandLine="c:\Qt\4.2.2\bin\rcc.exe -name MarPlayerForm MarPlayerForm.qrc -o debug\qrc_MarPlayerForm.cpp&#x0D;&#x0A;"
 						AdditionalDependencies="c:\Qt\4.2.2\bin\rcc.exe;images\marsyasBanner.png;images\media-pause.png;images\media-prev.png;images\media-play.png;images\media-next.png"
+						CommandLine="c:\Qt\4.2.2\bin\rcc.exe -name MarPlayerForm MarPlayerForm.qrc -o debug\qrc_MarPlayerForm.cpp"
+						Description="RCC MarPlayerForm.qrc"
 						Outputs="debug\qrc_MarPlayerForm.cpp"
-					/>
+						Path="c:/Qt/4.2.2/bin"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="RCC MarPlayerForm.qrc"
-						CommandLine="c:\Qt\4.2.2\bin\rcc.exe -name MarPlayerForm MarPlayerForm.qrc -o release\qrc_MarPlayerForm.cpp&#x0D;&#x0A;"
 						AdditionalDependencies="c:\Qt\4.2.2\bin\rcc.exe;images\marsyasBanner.png;images\media-pause.png;images\media-prev.png;images\media-play.png;images\media-next.png"
+						CommandLine="c:\Qt\4.2.2\bin\rcc.exe -name MarPlayerForm MarPlayerForm.qrc -o release\qrc_MarPlayerForm.cpp"
+						Description="RCC MarPlayerForm.qrc"
 						Outputs="release\qrc_MarPlayerForm.cpp"
-					/>
+						Path="c:/Qt/4.2.2/bin"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="images\marsyasBanner.png"
-				>
-			</File>
+				RelativePath="images\marsyasBanner.png"/>
 			<File
-				RelativePath="images\media-next.png"
-				>
-			</File>
+				RelativePath="images\media-next.png"/>
 			<File
-				RelativePath="images\media-pause.png"
-				>
-			</File>
+				RelativePath="images\media-pause.png"/>
 			<File
-				RelativePath="images\media-play.png"
-				>
-			</File>
+				RelativePath="images\media-play.png"/>
 			<File
-				RelativePath="images\media-prev.png"
-				>
-			</File>
+				RelativePath="images\media-prev.png"/>
 		</Filter>
 	</Files>
 	<Globals>
