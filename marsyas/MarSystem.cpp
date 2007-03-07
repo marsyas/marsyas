@@ -489,16 +489,16 @@ MarSystem::checkFlow(realvec& in, realvec& out)
       MRSWARN("inSamples_ = " << inSamples_);
       MRSWARN("onObservations_ = " << onObservations_);
       MRSWARN("onSamples_ = " << onSamples_);      
-      MRSWARN("Input  Slice Rows = " << irows ); 
-      MRSWARN("Input  Slice Cols = " << icols ); 
-      MRSWARN("Output Slice Rows = " << orows );
-      MRSWARN("Output Slice Cols = " << ocols );      
+      MRSWARN("Input  Slice Rows = " << irows_ ); 
+      MRSWARN("Input  Slice Cols = " << icols_ ); 
+      MRSWARN("Output Slice Rows = " << orows_ );
+      MRSWARN("Output Slice Cols = " << ocols_ );      
     }
   
-  MRSASSERT(irows == inObservations_);
-  MRSASSERT(icols == inSamples_);
-  MRSASSERT(orows == onObservations_);
-  MRSASSERT(ocols == onSamples_);
+  MRSASSERT(irows_ == inObservations_);
+  MRSASSERT(icols_ == inSamples_);
+  MRSASSERT(orows_ == onObservations_);
+  MRSASSERT(ocols_ == onSamples_);
 }
 
 void

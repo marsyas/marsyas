@@ -16,7 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /**
    \class MarSystem
    \brief MarSystem transforms a realvec
@@ -130,9 +129,8 @@ protected:
 	MarControlPtr ctrl_debug_; 
 	MarControlPtr ctrl_mute_;
 	MarControlPtr ctrl_active_;
-  	MarControlPtr ctrl_processedData_;
-  
-
+ 	MarControlPtr ctrl_processedData_;
+ 
 	mrs_natural inObservations_;
   mrs_natural inSamples_;
   mrs_real israte_;
@@ -140,12 +138,10 @@ protected:
   mrs_natural onSamples_;
   mrs_real osrate_;
 
-//FIXME:  please check this ASAP!  -gp
 	mrs_natural irows_;
 	mrs_natural icols_;
 	mrs_natural orows_;
 	mrs_natural ocols_;
-
 
   mrs_natural tinObservations_;
   mrs_natural tinSamples_;
@@ -161,7 +157,6 @@ protected:
 	bool active_;
 
 	std::string MATLABscript_;
-
 
 	//control paths
 	std::string getControlRelativePath(std::string cname) const;
@@ -231,15 +226,11 @@ public:
 	MarControlPtr getControlLocal(std::string cname) {return getControl(cname, false, false);}
 	MarControlPtr getctrl(std::string cname) {return getControl(cname);}
 
-
 	//add controls
 	bool addControl(std::string cname, MarControlPtr v);
 	bool addControl(std::string cname, MarControlPtr v, MarControlPtr& ptr);
 	bool addctrl(std::string cname, MarControlPtr v) {return addControl(cname, v);}
 	bool addctrl(std::string cname, MarControlPtr v, MarControlPtr& ptr) {return addControl(cname, v, ptr);}
-
-
-
 
 
   std::map<std::string, MarControlPtr> getControls(std::map<std::string, MarControlPtr>* cmap = NULL);
