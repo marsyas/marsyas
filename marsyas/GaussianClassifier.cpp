@@ -169,7 +169,7 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 
   if (mode == "predict")
     {
-      mrs_real min = 10000000.0;
+      mrs_real min = MAXREAL;
       for (t = 0; t < inSamples_; t++)  
 	{
 	  label = in(inObservations_-1, t);
