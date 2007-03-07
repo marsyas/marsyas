@@ -37,6 +37,7 @@ class AudioSource:public MarSystem
 private:
   RtAudio *audio_;
   int bufferSize_;
+  int nBuffers_;
 	int rtSrate_;
 	int rtChannels_;
  

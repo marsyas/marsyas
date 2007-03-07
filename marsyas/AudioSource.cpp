@@ -71,6 +71,8 @@ AudioSource::addControls()
 #else
   addctrl("mrs_natural/bufferSize", 256);
 #endif
+
+  addctrl("mrs_natural/nBuffers", 4);
   
   addctrl("mrs_bool/initAudio", false);
   setctrlState("mrs_bool/initAudio", true);
@@ -123,7 +125,7 @@ AudioSource::initRtAudio()
   nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();
   rtSrate_ = (int)getctrl("mrs_real/israte")->toReal();
   rtChannels_ = (int)getctrl("mrs_natural/nChannels")->toNatural();
-
+  nBuffers_ = (int)getctrl("mrs_natural/nBuffers")->toNatural();
 
 
   
@@ -144,7 +146,7 @@ AudioSource::initRtAudio()
   try 
     {
       audio_ = new RtAudio(0, 0, 0, rtChannels_, rtFormat,
-			   rtSrate_, &bufferSize_, 4);
+			   rtSrate_, &bufferSize_, nBuffers_);
       data_ = (mrs_real *) audio_->getStreamBuffer();
     }
   catch (RtError &error) 
@@ -200,7 +202,7 @@ AudioSource::myProcess(realvec& in, realvec& out)
     return;
   
   //check MUTE
-  if(getctrl("mrs_bool/mute")->isTrue()) return;
+  if(ctrl_mute_->isTrue()) return;
   
   //assure that RtAudio thread is running
   //(this may be needed by if an explicit call to start()
@@ -208,10 +210,10 @@ AudioSource::myProcess(realvec& in, realvec& out)
   if ( stopped_ )
     start();
   
-  
+  int ssize = inSamples_ * inObservations_;  
   
   //send audio to output
-  while (ri_ < inSamples_ * inObservations_)
+  while (ri_ < ssize)
     {
       try 
 	{
@@ -237,10 +239,10 @@ AudioSource::myProcess(realvec& in, realvec& out)
 	out(o,t) = gain_ * reservoir_(inObservations_ * t + o);
       }
   
-  for (t=inSamples_*inObservations_; t < ri_; t++)
-    reservoir_(t-inSamples_ * inObservations_) = reservoir_(t);
+  for (t=ssize; t < ri_; t++)
+    reservoir_(t-ssize) = reservoir_(t);
   
-  ri_ = ri_ - inSamples_ * inObservations_;
+  ri_ = ri_ - ssize;
   
   MATLAB_PUT(out, "AudioSource_out");
   MATLAB_EVAL("plot(AudioSource_out)");
