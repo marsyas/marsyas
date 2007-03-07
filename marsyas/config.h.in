@@ -69,9 +69,6 @@
 /* LINUX STUFF */
 #undef __OS_LINUX__
 
-/* MACOSX STUFF */
-#undef __OS_MACOSX__
-
 /* WINDOWS SYSTEM FOR RTMIDI */
 #undef __OS_WINDOWS__RTMIDI__
 
