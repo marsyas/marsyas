@@ -25,7 +25,7 @@ CONFIG += marsyasQt4Apps
 # release/debug mode
 ######################################################################
 
-CONFIG	+= release
+CONFIG	+= debug_and_release # by default this only builds the release version!
 
 ######################################################################
 # enable/disable ASSERTIONS/WARNINGS/DIAGNOSTICS/LOGS, etc
@@ -226,7 +226,7 @@ win32 {
 				"$$BASEDIR/otherlibs/asio/asiolist.h" \
 				"$$BASEDIR/otherlibs/asio/asiosys.h" \
 				"$$BASEDIR/otherlibs/asio/ginclude.h" \
-				"$$BASEDIRotherlibs/asio/iasiodrv.h" \
+				"$$BASEDIR/otherlibs/asio/iasiodrv.h" \
 				"$$BASEDIR/otherlibs/asio/iasiothiscallresolver.h"
 		}
 	}
