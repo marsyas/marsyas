@@ -140,6 +140,13 @@ protected:
   mrs_natural onSamples_;
   mrs_real osrate_;
 
+//FIXME:  please check this ASAP!  -gp
+	mrs_natural irows_;
+	mrs_natural icols_;
+	mrs_natural orows_;
+	mrs_natural ocols_;
+
+
   mrs_natural tinObservations_;
   mrs_natural tinSamples_;
   mrs_natural tonObservations_;
