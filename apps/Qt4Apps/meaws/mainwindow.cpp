@@ -3,9 +3,6 @@
 MainWindow::MainWindow() {
 	marBackend=NULL;
 	metro=NULL;
-	testingMethod=0;
-
-	exercise = new Exercise();
 
 	createMain();
 	createActions();
@@ -218,10 +215,6 @@ void MainWindow::createToolBars() {
 	infoBar->addAction(testingFileAct);
 	infoBar->addAction(playFileAct);
 	infoBar->addWidget(exerciseTitle);
-
-//	QLabel *userNameLabel = new QLabel();
-//	userNameLabel->setText(user->getName());
-//	infoBar->addWidget(userNameLabel);
 }
 
 void MainWindow::closeExercise() {
@@ -309,16 +302,28 @@ bool MainWindow::chooseUserInfo() {
 
 void MainWindow::newUser() {
 	try {
-		user = new User();
+		user = new User(NewUser);
 	}
 	catch (bool failed) {
 		return;
 	}
-	if ( chooseTestingMethod() ) {
-		connect(setUserInfoAct, SIGNAL(triggered()), user, SLOT(setUserInfo()));
+	enableActions(2);
+//	if ( chooseTestingMethod() ) {
+//		connect(setUserInfoAct, SIGNAL(triggered()), user, SLOT(setUserInfo()));
+//	}
+}
+
+void MainWindow::openUser() {
+	try {
+		user = new User(OpenUser);
 		enableActions(2);
 	}
+	catch (bool failed) {
+		return;
+	}
+	enableActions(2);
 }
+
 
 void MainWindow::enableActions(int state) {
 	if (state==1) {   // just opened app
@@ -385,6 +390,7 @@ void MainWindow::toggleExercise() {
 }
 
 void MainWindow::setupMarBackend() {
+	exercise = new Exercise();
 	if (marBackend != NULL) {
 		delete marBackend;
 		marBackend = NULL;

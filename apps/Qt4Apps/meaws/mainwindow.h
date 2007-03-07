@@ -35,6 +35,7 @@ protected:
 private slots:
 	void about();
 	void newUser();
+	void openUser();
 	void closeUser();
 /*
 	void open();
@@ -51,6 +52,7 @@ private slots:
 	void calcExercise();
 	void testingFile();
 	void playFile();
+	void enableActions(int state);
 
 private:
 	void createActions();
@@ -77,7 +79,6 @@ private:
 
 	QString exerciseName;
 
-	void enableActions(int state);
 
 /*
 	void createStatusBar();

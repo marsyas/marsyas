@@ -17,7 +17,7 @@ Exercise::Exercise() {
 	QString temp;
 	for (int i = 0; i < lily_input.size(); ++i) {
 		temp = lily_input.at(i);
-		cout<<qPrintable(temp)<<endl;
+//		cout<<qPrintable(temp)<<endl;
 		//cout << lily_input.at(i).toLocal8Bit().constData() << endl;
 	}
 	note = 8;

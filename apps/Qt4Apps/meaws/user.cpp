@@ -2,7 +2,17 @@
 #include <QtGui>
 #include "user.h"
 
-User::User() {
+// new user
+User::User(const int type) {
+	if (type==NewUser) { newUser(); }
+	if (type==OpenUser) { openUser(); }
+
+}
+
+User::~User() {
+}
+
+void User::newUser() {
 	bool ok;
   QString text = QInputDialog::getText(this, tr("User info"),
     tr("User name:"), QLineEdit::Normal,
@@ -14,7 +24,8 @@ User::User() {
 	}
 }
 
-User::~User() {
+void User::openUser() {
+
 }
 
 QString User::getName() {
