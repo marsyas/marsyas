@@ -318,7 +318,6 @@ void MainWindow::newUser() {
 		connect(setUserInfoAct, SIGNAL(triggered()), user, SLOT(setUserInfo()));
 		enableActions(2);
 	}
-	openExercise();
 }
 
 void MainWindow::enableActions(int state) {
@@ -355,6 +354,7 @@ void MainWindow::enableActions(int state) {
 		closeExercise();
 	}
 	if (state==3) {   // exercise picked
+		cout<<"ENABLE: exercise picked"<<endl;
 		setupMarBackend();
 		exerciseRunning=false;
 		metro = new Metro(visualMetroBeat, this);
@@ -390,6 +390,7 @@ void MainWindow::setupMarBackend() {
 		marBackend = NULL;
 	}
 	marBackend = new MarBackend(testingMethod);
+	analyze = new Analyze();
 	QString filename = user->getName();
 	filename.append("-");
 	filename.append( QDateTime::currentDateTime().toString("yyyyMMdd") );
@@ -397,10 +398,12 @@ void MainWindow::setupMarBackend() {
 	filename.append( QDateTime::currentDateTime().toString("hhmmss") );
 	filename.append(".wav");
 	audioFileName = filename;
+	cout<<"problem start"<<endl;
 	marBackend->setFileName( qPrintable(audioFileName) );
+	cout<<"problem end"<<endl;
 
 	// communication with Marsyas backend
-	connect(marBackend, SIGNAL(nextNoteError(float, int)), exercise, SLOT(nextNoteError(float, int)));
+	connect(analyze, SIGNAL(nextNoteError(float, int)), exercise, SLOT(nextNoteError(float, int)));
 }
 
 void MainWindow::beat() {
@@ -436,7 +439,7 @@ void MainWindow::setMetroTempo(int tempo) {
 }
 
 void MainWindow::calcExercise() {
-	marBackend->calculate(qPrintable(audioFileName));
+	analyze->calculate(qPrintable(audioFileName));
 
 	exercise->getLily();
 	string command = "cd /Users/gperciva/tmp/ ; lilypond -dpreview out.ly";

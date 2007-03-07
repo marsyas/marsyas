@@ -14,6 +14,7 @@ using namespace std;
 #include "metro.h"
 #include "user.h"
 #include "exercise.h"
+#include "analyze.h"
 
 class QAction;
 class QMenu;
@@ -134,6 +135,7 @@ private:
 
 	Metro *metro;
 	Exercise *exercise;
+	Analyze *analyze;
 };
 
 #endif

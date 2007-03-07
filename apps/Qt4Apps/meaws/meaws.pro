@@ -1,6 +1,8 @@
 SOURCES = start.cpp
-HEADERS = mainwindow.h backend.h user.h metro.h exercise.h
-SOURCES += mainwindow.cpp backend.cpp user.cpp metro.cpp exercise.cpp
+HEADERS = mainwindow.h backend.h metro.h
+SOURCES += mainwindow.cpp backend.cpp metro.cpp
+HEADERS += user.h exercise.h analyze.h
+SOURCES += user.cpp exercise.cpp analyze.cpp
 HEADERS += ../MarSystemQtWrapper.h
 SOURCES += ../MarSystemQtWrapper.cpp 
 RESOURCES = icons.qrc

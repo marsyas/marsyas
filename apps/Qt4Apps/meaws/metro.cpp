@@ -22,6 +22,7 @@
 using namespace std;
 
 Metro::Metro(QAction *getVisualMetroBeat, QWidget *parent) {
+	cout<<"begun making metro"<<endl;
 	visualMetroBeat = getVisualMetroBeat;
   connect(visualMetroBeat, SIGNAL(triggered()), this, SLOT(toggleBigMetro()));
 

@@ -37,7 +37,6 @@ public:
 	void stop();
 	void setFileName(string filename);
 	void playFile();
-	void calculate(string filename);
 
 signals:
 	void nextNoteError(float error, int direction);
@@ -47,13 +46,13 @@ private:
 
 	int method;
 	int introBeats;
+
 // "constructor"
 	void makeRecNet();
 	void startIntonation();
 	void startControl();
 
 // metronome stuff
-  EvExpr *e;
   MarSystem *metroNet;
 	MarSystem *recNet;
 	MarSystem *pitchNet;
