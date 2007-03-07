@@ -248,7 +248,6 @@ fi
 	Libs="-lpthread -lobjc ${MADLIB} ${OGGLIB} -framework CoreAudio -framework CoreMidi -framework CoreFoundation"
 	AC_DEFINE([MARSYAS_MACOSX],[1], [MACOSX SYSTEM])		
 	AC_DEFINE([__MACOSX_CORE__],[1], [MACOSX SYSTEM FOR RTAUDIO])		
-	AC_DEFINE([__OS_MACOSX__],[1], [MACOSX STUFF])
 	;;
 	*-*-cygwin*) 
 	Libs="-lpthread -ldsound -lwinmm ${MADLIB} ${OGGLIB}"
