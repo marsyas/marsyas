@@ -21,7 +21,7 @@ MAINTAINERCLEANFILES    = Makefile.in
 INCLUDES = -I$(top_srcdir)/marsyas
 
 bin_PROGRAMS = sfplay phasevocoder sfplugin bextract mkcollection marsyasTests record classifyFile peakClustering sfinfo \
-	       extract midiTest boomchick pitchextract
+	       extract midiTest boomchick pitchextract orcarecord
 
 sfplay_SOURCES = $(top_srcdir)/apps/sfplay/sfplay.cpp
 sfplay_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
@@ -77,5 +77,9 @@ extract_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 
 midiTest_SOURCES = $(top_srcdir)/apps/midiTest/midiTest.cpp
 midiTest_LDADD =  $(top_builddir)/lib/release/libmarsyas.a \
+	       $(Libs)
+
+orcarecord_SOURCES = $(top_srcdir)/apps/orcarecord/orcarecord.cpp
+orcarecord_LDADD =  $(top_builddir)/lib/release/libmarsyas.a \
 	       $(Libs)
 
