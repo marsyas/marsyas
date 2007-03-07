@@ -106,9 +106,9 @@ marsyasGUI:CONFIG += qt
 marsyasGUI:DEFINES += MARSYAS_QT
 marsyasMATLAB:DEFINES += MARSYAS_MATLAB
 
-INCLUDEPATH 				+= "$$BASEDIR/marsyas" 
-marsyasMATLAB:INCLUDEPATH 	+= "$$BASEDIR/marsyas/MATLAB" 
-marsyasGUI:INCLUDEPATH 		+= "$$BASEDIR/marsyas/Qt" 
+INCLUDEPATH 				+= "$$BASEDIR"/marsyas 
+marsyasMATLAB:INCLUDEPATH 	+= "$$BASEDIR"/marsyas/MATLAB 
+marsyasGUI:INCLUDEPATH 		+= "$$BASEDIR"/marsyas/Qt 
 
 unix {
 !macx {    # qmake detects osx as "unix" in 4.2.2.  :/
@@ -206,8 +206,8 @@ win32 {
 			DEFINES += \
 				MARSYAS_DS \
 				__WINDOWS_DS__
-			LIBS += -ldsound -L\"$$(DXSDK_DIR)Lib\x86\" #DXSDK_DIR must be defined as an environment variable in windows!
-			INCLUDEPATH += "$$(DXSDK_DIR)Include\" #include path for dsound.h
+			LIBS += -ldsound -L\"$$(DXSDK_DIR)Lib/x86\" #DXSDK_DIR must be defined as an environment variable in windows!
+			INCLUDEPATH += "$$(DXSDK_DIR)"Include #include path for dsound.h
 		}
 		marsyasAUDIOIO_ASIO {
 			DEFINES += \
@@ -215,19 +215,19 @@ win32 {
 				__WINDOWS_ASIO_
 			DEFINES -= UNICODE
 			SOURCES += 
-				"$$BASEDIR/otherlibs/asio/asio.cpp" \
-				"$$BASEDIR/otherlibs/asio/asiodrivers.cpp" \
-				"$$BASEDIR/otherlibs/asio/asiolist.cpp" \
-				"$$BASEDIR/otherlibs/asio/iasiothiscallresolver.cpp"
+				"$$BASEDIR"/otherlibs/asio/asio.cpp \
+				"$$BASEDIR"/otherlibs/asio/asiodrivers.cpp \
+				"$$BASEDIR"/otherlibs/asio/asiolist.cpp \
+				"$$BASEDIR"/otherlibs/asio/iasiothiscallresolver.cpp
 			HEADERS += \ 
-				"$$BASEDIR/otherlibs/asio/asio.h" \
-				"$$BASEDIR/otherlibs/asio/asiodrivers.h" \
-				"$$BASEDIR/otherlibs/asio/asiodrvr.h" \
-				"$$BASEDIR/otherlibs/asio/asiolist.h" \
-				"$$BASEDIR/otherlibs/asio/asiosys.h" \
-				"$$BASEDIR/otherlibs/asio/ginclude.h" \
-				"$$BASEDIR/otherlibs/asio/iasiodrv.h" \
-				"$$BASEDIR/otherlibs/asio/iasiothiscallresolver.h"
+				"$$BASEDIR"/otherlibs/asio/asio.h \
+				"$$BASEDIR"/otherlibs/asio/asiodrivers.h \
+				"$$BASEDIR"/otherlibs/asio/asiodrvr.h \
+				"$$BASEDIR"/otherlibs/asio/asiolist.h \
+				"$$BASEDIR"/otherlibs/asio/asiosys.h \
+				"$$BASEDIR"/otherlibs/asio/ginclude.h \
+				"$$BASEDIR"/otherlibs/asio/iasiodrv.h \
+				"$$BASEDIR"/otherlibs/asio/iasiothiscallresolver.h
 		}
 	}
 	
@@ -242,7 +242,7 @@ win32 {
 	marsyasMATLAB{
 		message(Building with MATLAB engine support.)
 		DEFINES += MARSYAS_MATLAB
-		INCLUDEPATH += \"$$(MATLAB)\extern\include\"
+		INCLUDEPATH += "$$(MATLAB)"/extern/include
 		LIBS += -llibeng -llibmx -llibut -L\"$$(MATLAB)/bin/win32\"
 	}
 	
