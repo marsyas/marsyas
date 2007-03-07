@@ -3,10 +3,9 @@
 
 @menu
 * Download::                    
-* Compiling with qmake::        
-* Compiling with autotools::    
+* Configuring Marsyas::         
+* Compiling Marsyas::           
 * Platform-specific notes::     
-* Configure Options::           
 * Structure of distribution::   
 @end menu
 
@@ -94,112 +93,101 @@ is welcome and will help further improve the framework.
 @end ignore
 
 
-@node Compiling with qmake
-@section Compiling with qmake
+@node Configuring Marsyas
+@section Configuring Marsyas
 
-Blah
+@subsection ...with qmake
 
-@node Compiling with autotools
-@section Compiling with autotools
-
-Foo
-
-
-
-
-@node Platform-specific notes
-@section Platform-specific notes
-
-@menu
-* Linux Installation::          
-* Mac OSX Installation::        
-* Windows (cygwin)::            
-* Windows (Visual Studio)::     
-@end menu
-
-@node Linux Installation
-@subsection Linux Installation 
-
-@cindex Linux
-
-Marsyas is mainly developed under Linux so installing 
-under Linux is quite straightforward and can be done using 
-the standard autoconf installation steps where > is whatever 
-command-line prompt you have on your system. 
+Marsyas can be built with qmake, which is the Makefile generator in
+Qt.  To build Marsyas, go to the base of the source tree and edit
+@file{marsyasConfig.pri}.  Once you have selected the options you
+want (i.e. audio API, Ogg Vorbis support, Matlab support, etc), simply type
 
 @example
-./configure 
-make 
-make install                 (as root user)
+qmake
 @end example
 
-By default Marsyas assumes that in Linux systems the ALSA sound system
-and corresponding library and headers are installed.  Most new Linux
-distribution are using ALSA.
+@b{Requirement: Qt-4.2.2 or later.}
+(no, 4.2.1 doesn't work.  The documentation editor learned this the hard way.)
+@c TODO: remove the above lines.  It's funny now, but when the Marsyas
+@c  docs are more complete and professional, comments like this aren't good.
 
 
-In addition there are several configure options that 
-can be used to enable/disable assertions, enable/disable debugging 
-and include optional packages such as support for reading mp3s. 
-@xref{Configure Options}.  
+@subsection ...with autotools
 
-
-@node Mac OSX Installation
-@subsection Mac OSX Installation
-
-@cindex Mac OSX
-
-Installation under OS X is almost identical to Linux. The developer
-tools are not installed by default so you will need to install them. 
-You can download XCode from the Apple Developer website. You can 
-check whether they are installed or not by checking that you 
-can run gcc on a terminal. Once gcc is installed then you can compile 
-using the standard autoconf procedure:
-
-@example 
-./configure 
-make 
-make install                         (as root user)
-@end example 
-
-In addition there are several configure options that 
-can be used to enable/disable assertions, enable/disable debugging 
-and include optional packages such as support for reading mp3s. 
-@xref{Configure Options}.  
-
-@node Windows (cygwin)
-@subsection Windows (cygwin)
-@cindex Cygwin
-
-Installation under Windows using the cygwin environment and gcc is
-similar to Linux. The most recent version of Marsyas 0.2 use RtAudio
-for audio playback under Cygwin. In order to compile RtAudio you will
-need to have the DirectX SDk installed. The standard autoconf
-installation procedure is used:
-
-@example 
-./configure 
-make 
-make install                         (as root user)
-@end example 
-
-In general, cygwin is not supported as well as Linux and OS X. 
-
-
-@node Windows (Visual Studio)
-@subsection Windows (Visual Studio)
-@cindex Windows
-
-You must have QT 4.2.2 or higher installed.  First, go to the root
-directory of the distribution.
-
-@file{marsyasConfig.pri}: change this file for setting build options (i.e.
-MARSYAS_MAD, MARSYAS_MATLAB, etc). Use the @code{#} sign to set/unset options.
-
-Then, do:
+Marsyas may be compiled using the standard GNU configure script:
 
 @example
-qmake MarsyasAll.pro
+./configure
+@end example
+
+Marsyas can be customized using various configuration 
+options. For example to compile Marsyas with assertions 
+enabled and with mp3 support through libmad one would do: 
+
+@example 
+./configure --enable-assert --enable-mad
+@end example 
+
+@noindent
+The list of available options can be viewed by: 
+
+@example 
+./configure --help 
+@end example
+
+
+@noindent
+The following options are supported: 
+
+@itemize @w
+@item @b{--enable-assert}       turns assertions on (small performance penatly) 
+@item @b{--enable-debug}        compiles Marsyas in debug mode generating
+the necessary files for gdb (large performance penalty) 
+@item @b{--enable-mad}          enables support for reading mp3 files using
+libmad (which must be installed) 
+@item @b{--enable-distributed}  compiles code for distributed audio
+feature extraction (experimental) 
+@item @b{--enable-readline}     realine support for the Marsyas Scripting
+Language (msl) 
+@item @b{--enable-oss}          use the OSS sound system 
+@end itemize
+
+
+@noindent
+A frequent variation (if you don't have root priviledges) 
+is to install Marsyas in your home directory (replace /home/gtzan with 
+the appropriate path for your home directory). 
+This can be accomplished by doing: 
+
+@example
+./configure --prefix=/home/gtzan 
+make 
+make install 
+@end example
+
+
+@node Compiling Marsyas
+@section Compiling Marsyas
+
+@subsection ...on *nix (Linux, FreeBSD, MacOSX)
+
+After @ref{Configuring Marsyas}, simply type
+
+@example
+make
+
+(optional, as root unless you changed the installation directory)
+make install
+@end example
+
+
+
+@subsection ...on Windows
+
+After @ref{Configuring Marsyas}, simply type
+
+@example
 nmake (nmake debug or nmake all for debug or debug and release builds)
 @end example
 
@@ -221,72 +209,80 @@ qmake -t vclib
 @end example
 
 
-@node Configure Options
-@section Configure Options
 
-Marsyas can be customized using various configuration 
-options. In autoconf systems (Linux, OSX, Cygwin) 
-this done in the standard way through the .configure 
-script. For example to compile Marsyas with assertions 
-enabled and with mp3 support through libmad one would do: 
+@node Platform-specific notes
+@section Platform-specific notes
 
-@example 
-./configure --enable-assert --enable-mad
-make 
-make install                         (as root user)
-@end example 
+@menu
+* Linux::                       
+* Mac OSX::                     
+* Windows (cygwin)::            
+* Windows (Visual Studio)::     
+@end menu
 
+@node Linux
+@subsection Linux
 
-@noindent The list of available options can be viewed by: 
+@cindex Linux
 
-@example 
-./configure --help 
-@end example
+Marsyas is mainly developed under Linux so installing 
+under Linux is quite straightforward.  By default Marsyas assumes
+that in Linux systems the ALSA sound system
+and corresponding library and headers are installed.  Most new Linux
+distribution are using ALSA.
 
+In addition there are several configure options that 
+can be used to enable/disable assertions, enable/disable debugging 
+and include optional packages such as support for reading mp3s. 
+@ref{Configuring Marsyas}.
 
-@noindent The following options are supported: 
-
-@itemize
-@item @b{--enable-assert}       turns assertions on (small performance penatly) 
-@item @b{--enable-debug}        compiles Marsyas in debug mode generating
-the necessary files for gdb (large performance penalty) 
-@item @b{--enable-mad}          enables support for reading mp3 files using
-libmad (which must be installed) 
-@item @b{--enable-distributed}  compiles code for distributed audio
-feature extraction (experimental) 
-@item @b{--enable-readline}     realine support for the Marsyas Scripting
-Language (msl) 
-@item @b{--enable-oss}          use the OSS sound system 
-@end itemize
+@b{Requirement: ALSA headers.}  On most distributions, this is a
+package called @code{alsa-devel} or @code{libalsa-devel}.
 
 
-A set of optional graphical user interfaces written in QT 4
-@cindex QT4 
-are also included in the distribution in the qt4GUIs subdirectory. 
-If Qt4 is installed on your machine and you have installed 
-Marsyas on your system you can compile the various GUIs 
-by doing (replace MarPlayer with the specific GUI you want compiled)
-(these GUIs have only been tested under Linux and are currently under 
-major development so use at your own risk): 
+@node Mac OSX
+@subsection Mac OSX
 
-@example
-cd qt4GUIs/MarPlayer
-qmake 
-make 
-@end example
+@cindex Mac OSX
 
+Installation under OS X is almost identical to Linux. The developer
+tools are not installed by default so you will need to install them. 
+You can download XCode from the Apple Developer website. You can 
+check whether they are installed or not by checking that you 
+can run gcc on a terminal.
 
-@noindent A frequent variation (if you don't have root priviledges) 
-is to install Marsyas in your home directory (replace /home/gtzan with 
-the appropriate path for your home directory). 
-This can be accomplished by doing: 
+In addition there are several configure options that 
+can be used to enable/disable assertions, enable/disable debugging 
+and include optional packages such as support for reading mp3s. 
+@ref{Configuring Marsyas}.
 
 
-@example
-./configure --prefix=/home/gtzan 
-make 
-make install 
-@end example
+@node Windows (cygwin)
+@subsection Windows (cygwin)
+@cindex Cygwin
+
+Installation under Windows using the cygwin environment and gcc is
+similar to Linux. The most recent version of Marsyas 0.2 use RtAudio
+for audio playback under Cygwin. In order to compile RtAudio you will
+need to have the DirectX SDk installed.
+
+In general, cygwin is not supported as well as Linux and OS X. 
+
+
+@node Windows (Visual Studio)
+@subsection Windows (Visual Studio)
+@cindex Windows
+
+A few of our developers are insane enough to use Visual Studio, so this
+environment is fairly well-supported.
+
+
+TODO: let's see if they actually read the documentation!  When you guys
+notice this, let me know and I'll delete the OS flames.  :)
+
+I have no clue how they bear to use such an inferior operating system,
+let alone do programming in anything _other_ than vi.  I mean, even _emacs_
+would be better than using a graphical tool for programming!
 
 
 @node Structure of distribution
@@ -301,9 +297,11 @@ is important for any serious work with the framework.
 The main marsyas directory consists of the following 
 important files: 
 
+@c  TODO: update after fixing these files.  -gp
 @itemize
 @item @b{INSTALL, COPYING, THANKS, README, AUTHORS, TODO:} text
-files with important information. 
+files with important information in theory.  However, these have not
+been updated in years.
 @item @b{ChangeLog:} the change log is not maintained as consistently 
 as it should be but it still provides useful information about the 
 evolution of the software. 
@@ -311,6 +309,9 @@ evolution of the software.
 the user/programmer that are required for the autotools. You will 
 only need to edit these if you are adding new subdirectories 
 or configuration options to the distribution. 
+@item @b{marsyasConfig.pri:} edit this file to select your configure
+options when using qmake.
+@item @b{marsyasAll.pro:} only developers should edit this file.
 @end itemize 
 
 
@@ -323,12 +324,10 @@ important source code of Marsyas. The source files in this
 subdirectory are compiled into a static library that other 
 programs can use to access Marsyas functionality. 
 
-@item @b{src:} this subdirectory contains several 
-sample executables that do various interesting things 
-using the Marsyas software framework. Some of them are intended 
-to be used as actual research tools others are more demonstration.
-All new Marsyas users should browse at least some of the source
-code here.
+@item @b{bin:} executable files are compiled in @file{bin/release} or
+@file{bin/debug}.
+
+@item @b{apps:} the source code for the above executables.
 
 @c  We use doxygen?  Really!?  check.  -gp
 @item @b{doc:} contains both the user manual (which you are 
@@ -341,20 +340,17 @@ make pdf
 make html 
 @end example 
 
-@c @item @b{rawwaves:} contains some raw sound files that can be used
-@c to test the sample executables in src/.
-
-@item @b{qt4GUIs:} provides GUI interfaces using QT4. These will not
+@item @b{apps/Qt4Apps:} provides GUI interfaces using QT4. These will not
 work with earlier versions of QT. You must have QT4 installed in order
 to use or compile these applications. A README file is supplied with
 each one that has instructions on how to compile and run it.
 
 @item @b{config:} configuration files used by autotools.
 
-@item @b{distributed:} Experimental Marsyas classes for
-distributed processing.
+@c @item @b{distributed:} Experimental Marsyas classes for
+@c distributed processing.
 
-@item @b{marsyasMATLAB:} User MATLAB scripts (mfiles).
+@c @item @b{marsyasMATLAB:} User MATLAB scripts (mfiles).
 
 @end itemize 
 
