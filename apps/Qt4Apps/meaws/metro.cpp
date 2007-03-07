@@ -27,7 +27,7 @@ Metro::Metro(QAction *getVisualMetroBeat, QWidget *parent) {
 
 	resize(200, 200);
 	setWindowTitle("Visual metronome");
-	setParent(parent);
+//	setParent(parent);
 
 	normalBeatColor=Qt::cyan;
 	activeBeatColor=Qt::red;
@@ -62,7 +62,7 @@ void Metro::setupAudio() {
   metroNet = mng.create("Series", "metroNet");
   metroNet->addMarSystem(mng.create("SoundFileSource", "srcMetro"));
   metroNet->addMarSystem(mng.create("AudioSink", "dest"));
-	metroNet->updctrl("SoundFileSource/srcMetro/mrs_string/filename", "sd.wav");
+	metroNet->updctrl("SoundFileSource/srcMetro/mrs_string/filename", "progdata/sd.wav");
   metroNet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
 	mrsWrapper = new MarSystemQtWrapper(metroNet);

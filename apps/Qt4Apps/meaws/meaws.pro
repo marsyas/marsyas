@@ -11,7 +11,7 @@ VERSION = 0.4
 INCLUDEPATH += ../../../lib/release/
 
 
-!win32:LIBS += -lmarsyas -L=../../../lib/release/
+!win32:LIBS += -lmarsyas -L../../../lib/release/
 
 unix {
   !macx {

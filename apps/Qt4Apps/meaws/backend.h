@@ -17,7 +17,7 @@
 */
 
 #include <QObject>
-#include "MarSystemManager.h"
+#include "../../../marsyas/MarSystemManager.h"
 #include "../MarSystemQtWrapper.h"
 #include "EvExpr.h"
 #include "ExVal.h"
