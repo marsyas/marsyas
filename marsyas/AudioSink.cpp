@@ -204,6 +204,23 @@ void
 AudioSink::myProcess(realvec& in, realvec& out)
 {
 
+  //check MUTE
+  if(ctrl_mute_->isTrue())
+    {
+  	for (t=0; t < inSamples_; t++)
+    	{
+      	   for (o=0; o < inObservations_; o++)
+		{
+  		    out(o,t) = in(o,t);
+		}
+	}
+      for (t=0; t < rsize_; t++) 
+	{
+	  data_[2*t] = 0.0;
+	  data_[2*t+1] = 0.0;
+	}
+      return;
+    }
   
   
   // copy to output and into reservoir
@@ -221,16 +238,6 @@ AudioSink::myProcess(realvec& in, realvec& out)
 	      end_ = 0;
     }
   
-  //check MUTE
-  if(ctrl_mute_->isTrue())
-    {
-      for (t=0; t < rsize_; t++) 
-	{
-	  data_[2*t] = 0.0;
-	  data_[2*t+1] = 0.0;
-	}
-      return;
-    }
       
   //check if RtAudio is initialized
   if (!isInitialized_)
@@ -281,15 +288,34 @@ AudioSink::myProcess(realvec& in, realvec& out)
 #else
 	  if (srate_ == 22050)
 	    {
-	      data_[4*t] = reservoir_((start_+t) % reservoirSize_);
-	      data_[4*t+1] = reservoir_((start_+t)%reservoirSize_);
-	      data_[4*t+2] = reservoir_((start_+t) % reservoirSize_);
-	      data_[4*t+3] = reservoir_((start_+t) % reservoirSize_);
-	    }
+		if (inObservations_ == 1) 
+		 {
+	     	    data_[4*t] = reservoir_(0,(start_+t) % reservoirSize_);
+	            data_[4*t+1] = reservoir_(0,(start_+t)%reservoirSize_);
+	            data_[4*t+2] = reservoir_(0,(start_+t) % reservoirSize_);
+	            data_[4*t+3] = reservoir_(0,(start_+t) % reservoirSize_);
+	         }
+		 else
+		 {
+	     	    data_[4*t] = reservoir_(0,(start_+t) % reservoirSize_);
+	            data_[4*t+1] = reservoir_(0,(start_+t)%reservoirSize_);
+	            data_[4*t+2] = reservoir_(1,(start_+t) % reservoirSize_);
+	            data_[4*t+3] = reservoir_(1,(start_+t) % reservoirSize_);
+	         }
+
+	     }
 	  else
 	    {
-	      data_[2*t] = reservoir_((start_+t)%reservoirSize_);
-	      data_[2*t+1] = reservoir_((start_+t)%reservoirSize_);
+	  if (inObservations_ == 1) 
+	    {
+	      data_[2*t] = reservoir_(0, (start_+t)%reservoirSize_);
+	      data_[2*t+1] = reservoir_(0, (start_+t)%reservoirSize_);
+	    }
+	  else 
+	    {
+	      data_[2*t] = reservoir_(0,   (start_+t)%reservoirSize_);
+	      data_[2*t+1] = reservoir_(1, (start_+t)%reservoirSize_);
+	    }
 	    }
 #endif 
 	}
