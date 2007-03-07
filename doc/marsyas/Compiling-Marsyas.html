@@ -1,12 +1,13 @@
 <html lang="en">
 <head>
-<title>mkcollection - Marsyas 0.2</title>
+<title>Compiling Marsyas - Marsyas 0.2</title>
 <meta http-equiv="Content-Type" content="text/html">
 <meta name="description" content="Marsyas 0.2">
 <meta name="generator" content="makeinfo 4.8">
 <link title="Top" rel="start" href="index.html#Top">
-<link rel="up" href="Collections-and-input-files.html#Collections-and-input-files" title="Collections and input files">
-<link rel="prev" href="Creating-collections-manually.html#Creating-collections-manually" title="Creating collections manually">
+<link rel="up" href="Installation.html#Installation" title="Installation">
+<link rel="prev" href="Configuring-Marsyas.html#Configuring-Marsyas" title="Configuring Marsyas">
+<link rel="next" href="Platform_002dspecific-notes.html#Platform_002dspecific-notes" title="Platform-specific notes">
 <link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
 <!--
 Copyright 1998-2006 George Tzanetakis
@@ -45,31 +46,42 @@ translation approved by the Free Software Foundation.-->
 <body>
 <div class="node">
 <p>
-<a name="mkcollection"></a>
-Previous:&nbsp;<a rel="previous" accesskey="p" href="Creating-collections-manually.html#Creating-collections-manually">Creating collections manually</a>,
-Up:&nbsp;<a rel="up" accesskey="u" href="Collections-and-input-files.html#Collections-and-input-files">Collections and input files</a>
+<a name="Compiling-Marsyas"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Platform_002dspecific-notes.html#Platform_002dspecific-notes">Platform-specific notes</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Configuring-Marsyas.html#Configuring-Marsyas">Configuring Marsyas</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Installation.html#Installation">Installation</a>
 <hr>
 </div>
 
-<h4 class="subsection">3.1.2 <code>mkcollection</code></h4>
+<h3 class="section">2.3 Compiling Marsyas</h3>
 
-<p><a name="index-mkcollection-7"></a>
-<code>mkcollection</code> is a simple utility for creating collection
-files. To create a collection of all the audio files residing
-in a directory the following command can be used:
+<h4 class="subsection">2.3.1 ...on *nix (Linux, FreeBSD, MacOSX)</h4>
 
-<pre class="example">     mkcollection reggae.mf /home/gtzan/data/sound/
+<p>After <a href="Configuring-Marsyas.html#Configuring-Marsyas">Configuring Marsyas</a>, simply type
+
+<pre class="example">     make
+     
+     (optional, as root unless you changed the installation directory)
+     make install
 </pre>
-   <p>All the soundfiles residing in that directory or any subdirectories
-will be added to the collection.  <code>mkcollection</code> only will add
-files with <code>.wav</code> and <code> .au</code> extensions but
-does not check that they are valid soundfiles.  In general
-collection files should contain soundfiles with the same sampling rate
-as Marsyas does not perform automatic sampling conversion. The
-exception to this rule is collection that mix files at 22050Hz and
-44100Hz sampling rates, in which case the 44100Hz files are downsampled
-to 22050Hz. No implicit downsampling is performed to collections that
-contain only 44100Hz files.
+   <h4 class="subsection">2.3.2 ...on Windows</h4>
 
+<p>After <a href="Configuring-Marsyas.html#Configuring-Marsyas">Configuring Marsyas</a>, simply type
+
+<pre class="example">     nmake (nmake debug or nmake all for debug or debug and release builds)
+</pre>
+   <p>This builds marsyas.lib, all (at least most of them) command line apps
+(sfplay, bextract, etc) and MarPlayer and MarPhasevocoder.
+
+   <p>To generate a MSVC .vcproj for a project just cd into the app dir (e.g. 
+apps/Qt4Apps/Meaws) and do:
+
+<pre class="example">     qmake -t vcapp
+</pre>
+   <p>In case you also want to create a .vcproj for the marsyas lib, cd into
+marsyas dir and do:
+
+<pre class="example">     qmake -t vclib
+</pre>
    </body></html>
 

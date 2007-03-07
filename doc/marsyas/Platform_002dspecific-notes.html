@@ -1,12 +1,13 @@
 <html lang="en">
 <head>
-<title>mkcollection - Marsyas 0.2</title>
+<title>Platform-specific notes - Marsyas 0.2</title>
 <meta http-equiv="Content-Type" content="text/html">
 <meta name="description" content="Marsyas 0.2">
 <meta name="generator" content="makeinfo 4.8">
 <link title="Top" rel="start" href="index.html#Top">
-<link rel="up" href="Collections-and-input-files.html#Collections-and-input-files" title="Collections and input files">
-<link rel="prev" href="Creating-collections-manually.html#Creating-collections-manually" title="Creating collections manually">
+<link rel="up" href="Installation.html#Installation" title="Installation">
+<link rel="prev" href="Compiling-Marsyas.html#Compiling-Marsyas" title="Compiling Marsyas">
+<link rel="next" href="Structure-of-distribution.html#Structure-of-distribution" title="Structure of distribution">
 <link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
 <!--
 Copyright 1998-2006 George Tzanetakis
@@ -45,31 +46,22 @@ translation approved by the Free Software Foundation.-->
 <body>
 <div class="node">
 <p>
-<a name="mkcollection"></a>
-Previous:&nbsp;<a rel="previous" accesskey="p" href="Creating-collections-manually.html#Creating-collections-manually">Creating collections manually</a>,
-Up:&nbsp;<a rel="up" accesskey="u" href="Collections-and-input-files.html#Collections-and-input-files">Collections and input files</a>
+<a name="Platform-specific-notes"></a>
+<a name="Platform_002dspecific-notes"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Structure-of-distribution.html#Structure-of-distribution">Structure of distribution</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Compiling-Marsyas.html#Compiling-Marsyas">Compiling Marsyas</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Installation.html#Installation">Installation</a>
 <hr>
 </div>
 
-<h4 class="subsection">3.1.2 <code>mkcollection</code></h4>
+<h3 class="section">2.4 Platform-specific notes</h3>
 
-<p><a name="index-mkcollection-7"></a>
-<code>mkcollection</code> is a simple utility for creating collection
-files. To create a collection of all the audio files residing
-in a directory the following command can be used:
+<ul class="menu">
+<li><a accesskey="1" href="Linux.html#Linux">Linux</a>
+<li><a accesskey="2" href="Mac-OSX.html#Mac-OSX">Mac OSX</a>
+<li><a accesskey="3" href="Windows-_0028cygwin_0029.html#Windows-_0028cygwin_0029">Windows (cygwin)</a>
+<li><a accesskey="4" href="Windows-_0028Visual-Studio_0029.html#Windows-_0028Visual-Studio_0029">Windows (Visual Studio)</a>
+</ul>
 
-<pre class="example">     mkcollection reggae.mf /home/gtzan/data/sound/
-</pre>
-   <p>All the soundfiles residing in that directory or any subdirectories
-will be added to the collection.  <code>mkcollection</code> only will add
-files with <code>.wav</code> and <code> .au</code> extensions but
-does not check that they are valid soundfiles.  In general
-collection files should contain soundfiles with the same sampling rate
-as Marsyas does not perform automatic sampling conversion. The
-exception to this rule is collection that mix files at 22050Hz and
-44100Hz sampling rates, in which case the 44100Hz files are downsampled
-to 22050Hz. No implicit downsampling is performed to collections that
-contain only 44100Hz files.
-
-   </body></html>
+</body></html>
 

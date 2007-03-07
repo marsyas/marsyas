@@ -1,13 +1,13 @@
 <html lang="en">
 <head>
-<title>Configure Options - Marsyas 0.2</title>
+<title>Configuring Marsyas - Marsyas 0.2</title>
 <meta http-equiv="Content-Type" content="text/html">
 <meta name="description" content="Marsyas 0.2">
 <meta name="generator" content="makeinfo 4.8">
 <link title="Top" rel="start" href="index.html#Top">
 <link rel="up" href="Installation.html#Installation" title="Installation">
-<link rel="prev" href="Configuring-Marsyas.html#Configuring-Marsyas" title="Configuring Marsyas">
-<link rel="next" href="Platform_002dspecific-notes.html#Platform_002dspecific-notes" title="Platform-specific notes">
+<link rel="prev" href="Download.html#Download" title="Download">
+<link rel="next" href="Compiling-Marsyas.html#Compiling-Marsyas" title="Compiling Marsyas">
 <link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
 <!--
 Copyright 1998-2006 George Tzanetakis
@@ -46,24 +46,40 @@ translation approved by the Free Software Foundation.-->
 <body>
 <div class="node">
 <p>
-<a name="Configure-Options"></a>
-Next:&nbsp;<a rel="next" accesskey="n" href="Platform_002dspecific-notes.html#Platform_002dspecific-notes">Platform-specific notes</a>,
-Previous:&nbsp;<a rel="previous" accesskey="p" href="Configuring-Marsyas.html#Configuring-Marsyas">Configuring Marsyas</a>,
+<a name="Configuring-Marsyas"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Compiling-Marsyas.html#Compiling-Marsyas">Compiling Marsyas</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Download.html#Download">Download</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="Installation.html#Installation">Installation</a>
 <hr>
 </div>
 
-<h3 class="section">2.3 Configure Options</h3>
+<h3 class="section">2.2 Configuring Marsyas</h3>
 
-<p>Marsyas can be customized using various configuration
-options. In autoconf systems (Linux, OSX, Cygwin)
-this done in the standard way through the .configure
-script. For example to compile Marsyas with assertions
+<h4 class="subsection">2.2.1 ...with qmake</h4>
+
+<p>Marsyas can be built with qmake, which is the Makefile generator in
+Qt.  To build Marsyas, go to the base of the source tree and edit
+<samp><span class="file">marsyasConfig.pri</span></samp>.  Once you have selected the options you
+want (i.e. audio API, Ogg Vorbis support, Matlab support, etc), simply type
+
+<pre class="example">     qmake
+</pre>
+   <p><b>Requirement: Qt-4.2.2 or later.</b>
+(no, 4.2.1 doesn't work.  The documentation editor learned this the hard way.) 
+<!-- TODO: remove the above lines.  It's funny now, but when the Marsyas -->
+<!-- docs are more complete and professional, comments like this aren't good. -->
+
+<h4 class="subsection">2.2.2 ...with autotools</h4>
+
+<p>Marsyas may be compiled using the standard GNU configure script:
+
+<pre class="example">     ./configure
+</pre>
+   <p>Marsyas can be customized using various configuration
+options. For example to compile Marsyas with assertions
 enabled and with mp3 support through libmad one would do:
 
 <pre class="example">     ./configure --enable-assert --enable-mad
-     make
-     make install                         (as root user)
 </pre>
    <p class="noindent">The list of available options can be viewed by:
 
@@ -84,19 +100,7 @@ Language (msl)
 <li><b>&ndash;enable-oss</b>          use the OSS sound system
 </ul>
 
-   <p>A set of optional graphical user interfaces written in QT 4
-<a name="index-QT4-3"></a>are also included in the distribution in the qt4GUIs subdirectory. 
-If Qt4 is installed on your machine and you have installed
-Marsyas on your system you can compile the various GUIs
-by doing (replace MarPlayer with the specific GUI you want compiled)
-(these GUIs have only been tested under Linux and are currently under
-major development so use at your own risk):
-
-<pre class="example">     cd qt4GUIs/MarPlayer
-     qmake
-     make
-</pre>
-   <p class="noindent">A frequent variation (if you don't have root priviledges)
+<p class="noindent">A frequent variation (if you don't have root priviledges)
 is to install Marsyas in your home directory (replace /home/gtzan with
 the appropriate path for your home directory). 
 This can be accomplished by doing:

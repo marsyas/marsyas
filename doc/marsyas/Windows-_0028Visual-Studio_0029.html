@@ -5,9 +5,8 @@
 <meta name="description" content="Marsyas 0.2">
 <meta name="generator" content="makeinfo 4.8">
 <link title="Top" rel="start" href="index.html#Top">
-<link rel="up" href="Installation.html#Installation" title="Installation">
+<link rel="up" href="Platform_002dspecific-notes.html#Platform_002dspecific-notes" title="Platform-specific notes">
 <link rel="prev" href="Windows-_0028cygwin_0029.html#Windows-_0028cygwin_0029" title="Windows (cygwin)">
-<link rel="next" href="Configure-Options.html#Configure-Options" title="Configure Options">
 <link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
 <!--
 Copyright 1998-2006 George Tzanetakis
@@ -48,38 +47,23 @@ translation approved by the Free Software Foundation.-->
 <p>
 <a name="Windows-(Visual-Studio)"></a>
 <a name="Windows-_0028Visual-Studio_0029"></a>
-Next:&nbsp;<a rel="next" accesskey="n" href="Configure-Options.html#Configure-Options">Configure Options</a>,
 Previous:&nbsp;<a rel="previous" accesskey="p" href="Windows-_0028cygwin_0029.html#Windows-_0028cygwin_0029">Windows (cygwin)</a>,
-Up:&nbsp;<a rel="up" accesskey="u" href="Installation.html#Installation">Installation</a>
+Up:&nbsp;<a rel="up" accesskey="u" href="Platform_002dspecific-notes.html#Platform_002dspecific-notes">Platform-specific notes</a>
 <hr>
 </div>
 
-<h3 class="section">2.5 Windows (Visual Studio)</h3>
+<h4 class="subsection">2.4.4 Windows (Visual Studio)</h4>
 
 <p><a name="index-Windows-6"></a>
-You must have QT 4.2.2 or higher installed.  First, go to the root
-directory of the distribution.
+A few of our developers are insane enough to use Visual Studio, so this
+environment is fairly well-supported.
 
-   <p><samp><span class="file">marsyasConfig.pri</span></samp>: change this file for setting build options (i.e. 
-MARSYAS_MAD, MARSYAS_MATLAB, etc). Use the <code>#</code> sign to set/unset options.
+   <p>TODO: let's see if they actually read the documentation!  When you guys
+notice this, let me know and I'll delete the OS flames.  :)
 
-   <p>Then, do:
+   <p>I have no clue how they bear to use such an inferior operating system,
+let alone do programming in anything _other_ than vi.  I mean, even _emacs_
+would be better than using a graphical tool for programming!
 
-<pre class="example">     qmake MarsyasAll.pro
-     nmake (nmake debug or nmake all for debug or debug and release builds)
-</pre>
-   <p>This builds marsyas.lib, all (at least most of them) command line apps
-(sfplay, bextract, etc) and MarPlayer and MarPhasevocoder.
-
-   <p>To generate a MSVC .vcproj for a project just cd into the app dir (e.g. 
-apps/Qt4Apps/Meaws) and do:
-
-<pre class="example">     qmake -t vcapp
-</pre>
-   <p>In case you also want to create a .vcproj for the marsyas lib, cd into
-marsyas dir and do:
-
-<pre class="example">     qmake -t vclib
-</pre>
    </body></html>
 

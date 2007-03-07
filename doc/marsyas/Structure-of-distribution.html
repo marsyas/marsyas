@@ -6,7 +6,7 @@
 <meta name="generator" content="makeinfo 4.8">
 <link title="Top" rel="start" href="index.html#Top">
 <link rel="up" href="Installation.html#Installation" title="Installation">
-<link rel="prev" href="Configure-Options.html#Configure-Options" title="Configure Options">
+<link rel="prev" href="Platform_002dspecific-notes.html#Platform_002dspecific-notes" title="Platform-specific notes">
 <link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
 <!--
 Copyright 1998-2006 George Tzanetakis
@@ -46,12 +46,12 @@ translation approved by the Free Software Foundation.-->
 <div class="node">
 <p>
 <a name="Structure-of-distribution"></a>
-Previous:&nbsp;<a rel="previous" accesskey="p" href="Configure-Options.html#Configure-Options">Configure Options</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Platform_002dspecific-notes.html#Platform_002dspecific-notes">Platform-specific notes</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="Installation.html#Installation">Installation</a>
 <hr>
 </div>
 
-<h3 class="section">2.7 Structure of distribution</h3>
+<h3 class="section">2.5 Structure of distribution</h3>
 
 <p>Marsyas is primarily targeted to researchers and software
 developers who want to build new systems and applications
@@ -62,9 +62,11 @@ is important for any serious work with the framework.
    <p>The main marsyas directory consists of the following
 important files:
 
-     <ul>
+<!-- TODO: update after fixing these files.  -gp -->
+<ul>
 <li><b>INSTALL, COPYING, THANKS, README, AUTHORS, TODO:</b> text
-files with important information. 
+files with important information in theory.  However, these have not
+been updated in years. 
 <li><b>ChangeLog:</b> the change log is not maintained as consistently
 as it should be but it still provides useful information about the
 evolution of the software. 
@@ -72,6 +74,9 @@ evolution of the software.
 the user/programmer that are required for the autotools. You will
 only need to edit these if you are adding new subdirectories
 or configuration options to the distribution. 
+<li><b>marsyasConfig.pri:</b> edit this file to select your configure
+options when using qmake. 
+<li><b>marsyasAll.pro:</b> only developers should edit this file. 
 </ul>
 
 <p class="noindent">In addition there are the following subdirectories:
@@ -82,12 +87,10 @@ important source code of Marsyas. The source files in this
 subdirectory are compiled into a static library that other
 programs can use to access Marsyas functionality.
 
-     <li><b>src:</b> this subdirectory contains several
-sample executables that do various interesting things
-using the Marsyas software framework. Some of them are intended
-to be used as actual research tools others are more demonstration. 
-All new Marsyas users should browse at least some of the source
-code here.
+     <li><b>bin:</b> executable files are compiled in <samp><span class="file">bin/release</span></samp> or
+<samp><span class="file">bin/debug</span></samp>.
+
+     <li><b>apps:</b> the source code for the above executables.
 
      <!-- We use doxygen?  Really!?  check.  -gp -->
 <li><b>doc:</b> contains both the user manual (which you are
@@ -98,27 +101,17 @@ or html type (in the doc subdirectory)
      <pre class="example">          make pdf
           make html
      </pre>
-     <!-- @item @b{rawwaves:} contains some raw sound files that can be used -->
-<!-- to test the sample executables in src/. -->
-<li><b>qt4GUIs:</b> provides GUI interfaces using QT4. These will not
+     <li><b>apps/Qt4Apps:</b> provides GUI interfaces using QT4. These will not
 work with earlier versions of QT. You must have QT4 installed in order
 to use or compile these applications. A README file is supplied with
 each one that has instructions on how to compile and run it.
 
      <li><b>config:</b> configuration files used by autotools.
 
-     <li><b>distributed:</b> Experimental Marsyas classes for
-distributed processing.
-
-     <li><b>marsyasMATLAB:</b> User MATLAB scripts (mfiles).
-
-     <li><b>marsyasVisualStudio2003:</b>
-Project and Solution files for Visual Studio 2003
-
-     <li><b>marsyasVisualStudio2005:</b>
-Project and Solution files for Visual Studio 2005
-
-   </ul>
+     <!-- @item @b{distributed:} Experimental Marsyas classes for -->
+<!-- distributed processing. -->
+<!-- @item @b{marsyasMATLAB:} User MATLAB scripts (mfiles). -->
+</ul>
 
    </body></html>
 

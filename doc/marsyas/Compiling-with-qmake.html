@@ -1,12 +1,13 @@
 <html lang="en">
 <head>
-<title>mkcollection - Marsyas 0.2</title>
+<title>Compiling with qmake - Marsyas 0.2</title>
 <meta http-equiv="Content-Type" content="text/html">
 <meta name="description" content="Marsyas 0.2">
 <meta name="generator" content="makeinfo 4.8">
 <link title="Top" rel="start" href="index.html#Top">
-<link rel="up" href="Collections-and-input-files.html#Collections-and-input-files" title="Collections and input files">
-<link rel="prev" href="Creating-collections-manually.html#Creating-collections-manually" title="Creating collections manually">
+<link rel="up" href="Installation.html#Installation" title="Installation">
+<link rel="prev" href="Download.html#Download" title="Download">
+<link rel="next" href="Compiling-with-autotools.html#Compiling-with-autotools" title="Compiling with autotools">
 <link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
 <!--
 Copyright 1998-2006 George Tzanetakis
@@ -45,31 +46,30 @@ translation approved by the Free Software Foundation.-->
 <body>
 <div class="node">
 <p>
-<a name="mkcollection"></a>
-Previous:&nbsp;<a rel="previous" accesskey="p" href="Creating-collections-manually.html#Creating-collections-manually">Creating collections manually</a>,
-Up:&nbsp;<a rel="up" accesskey="u" href="Collections-and-input-files.html#Collections-and-input-files">Collections and input files</a>
+<a name="Compiling-with-qmake"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Compiling-with-autotools.html#Compiling-with-autotools">Compiling with autotools</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Download.html#Download">Download</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Installation.html#Installation">Installation</a>
 <hr>
 </div>
 
-<h4 class="subsection">3.1.2 <code>mkcollection</code></h4>
+<h3 class="section">2.2 Compiling with qmake</h3>
 
-<p><a name="index-mkcollection-7"></a>
-<code>mkcollection</code> is a simple utility for creating collection
-files. To create a collection of all the audio files residing
-in a directory the following command can be used:
+<p>Marsyas can be built with qmake, which is the Makefile generator in
+Qt.
 
-<pre class="example">     mkcollection reggae.mf /home/gtzan/data/sound/
+   <p><b>Requirement: you must have Qt-4.2.2 or later.</b>
+(no, 4.2.1 doesn't work.  The documentation editor learned this the hard way.) 
+<!-- TODO: remove the above lines.  It's funny now, but when the Marsyas -->
+<!-- docs are more complete and professional, comments like this aren't good. -->
+
+   <p>To build Marsyas, go to the base of the source tree and edit
+<samp><span class="file">marsyasConfig.pri</span></samp>.  Once you have selected the options you
+want (i.e. audio API, Ogg Vorbis support, etc), simply type
+
+<pre class="example">     qmake
+     make
+     make install
 </pre>
-   <p>All the soundfiles residing in that directory or any subdirectories
-will be added to the collection.  <code>mkcollection</code> only will add
-files with <code>.wav</code> and <code> .au</code> extensions but
-does not check that they are valid soundfiles.  In general
-collection files should contain soundfiles with the same sampling rate
-as Marsyas does not perform automatic sampling conversion. The
-exception to this rule is collection that mix files at 22050Hz and
-44100Hz sampling rates, in which case the 44100Hz files are downsampled
-to 22050Hz. No implicit downsampling is performed to collections that
-contain only 44100Hz files.
-
    </body></html>
 

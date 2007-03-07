@@ -6,7 +6,7 @@
 <meta name="generator" content="makeinfo 4.8">
 <link title="Top" rel="start" href="index.html#Top">
 <link rel="up" href="Installation.html#Installation" title="Installation">
-<link rel="next" href="Linux-Installation.html#Linux-Installation" title="Linux Installation">
+<link rel="next" href="Configuring-Marsyas.html#Configuring-Marsyas" title="Configuring Marsyas">
 <link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
 <!--
 Copyright 1998-2006 George Tzanetakis
@@ -46,7 +46,7 @@ translation approved by the Free Software Foundation.-->
 <div class="node">
 <p>
 <a name="Download"></a>
-Next:&nbsp;<a rel="next" accesskey="n" href="Linux-Installation.html#Linux-Installation">Linux Installation</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="Configuring-Marsyas.html#Configuring-Marsyas">Configuring Marsyas</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="Installation.html#Installation">Installation</a>
 <hr>
 </div>
@@ -60,32 +60,26 @@ is out of date</i>)
 
    <p>Marsyas is hosted at SourceForge:
 
-   <p><a href=``http://www.sourceforge.net/projects/marsyas''>
+   <p><a href="http://www.sourceforge.net/projects/marsyas">
 http://www.sourceforget.net/projects/marsyas </a>
 
-   <p><a href=''http://marsyas.sourceforge.net''>
+   <p><a href="http://marsyas.sourceforge.net">
 http://marsyas.sourceforge.net </a>
 
    <p>Marsyas is open source software and is distributed
-as a tar ball (something like marsyas-0.2.8.tar.gz).
-
-   <p>To extract the source file type:
-
-<pre class="example">     tar -zxvf marsyas-0.2.8.tar.gz
-</pre>
-   <p>This will create a subdirectory of the current
-directory called marsyas-0.2.8 that contains
-all the source files needed for compiling Marsyas.
+as a tarball (something like <samp><span class="file">marsyas-0.2.8.tar.gz</span></samp>).  Uncompress
+this file using whatever uncompression program you prefer (<code>tar -xf</code>,
+winzip, etc).
 
 <h4 class="subsection">2.1.2 Development Version</h4>
 
 <p>For the brave, the latest (possibly unstable!) version can be
-obtained from the subversion repository stored at the sourceforge website. 
-To check out a working copy do:
+obtained from the subversion repository stored at the sourceforge
+website.  To check out a working copy do:
 
-<pre class="example">     svn co https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk marsyas-0.2.10
+<pre class="example">     svn co https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk my-marsyas-dir
 </pre>
-   <p>You can replace marsyas-0.2.10 with any directory you want. The
+   <p>You can replace <samp><span class="file">my-marsyas-dir</span></samp> with any directory you want.  The
 version/release (version 0.2 release 10) is independently assigned
 from subversion revisions and the latest can be found by checking
 the sourceforge website.

@@ -1,12 +1,12 @@
 <html lang="en">
 <head>
-<title>mkcollection - Marsyas 0.2</title>
+<title>Linux - Marsyas 0.2</title>
 <meta http-equiv="Content-Type" content="text/html">
 <meta name="description" content="Marsyas 0.2">
 <meta name="generator" content="makeinfo 4.8">
 <link title="Top" rel="start" href="index.html#Top">
-<link rel="up" href="Collections-and-input-files.html#Collections-and-input-files" title="Collections and input files">
-<link rel="prev" href="Creating-collections-manually.html#Creating-collections-manually" title="Creating collections manually">
+<link rel="up" href="Platform_002dspecific-notes.html#Platform_002dspecific-notes" title="Platform-specific notes">
+<link rel="next" href="Mac-OSX.html#Mac-OSX" title="Mac OSX">
 <link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
 <!--
 Copyright 1998-2006 George Tzanetakis
@@ -45,31 +45,28 @@ translation approved by the Free Software Foundation.-->
 <body>
 <div class="node">
 <p>
-<a name="mkcollection"></a>
-Previous:&nbsp;<a rel="previous" accesskey="p" href="Creating-collections-manually.html#Creating-collections-manually">Creating collections manually</a>,
-Up:&nbsp;<a rel="up" accesskey="u" href="Collections-and-input-files.html#Collections-and-input-files">Collections and input files</a>
+<a name="Linux"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Mac-OSX.html#Mac-OSX">Mac OSX</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Platform_002dspecific-notes.html#Platform_002dspecific-notes">Platform-specific notes</a>
 <hr>
 </div>
 
-<h4 class="subsection">3.1.2 <code>mkcollection</code></h4>
+<h4 class="subsection">2.4.1 Linux</h4>
 
-<p><a name="index-mkcollection-7"></a>
-<code>mkcollection</code> is a simple utility for creating collection
-files. To create a collection of all the audio files residing
-in a directory the following command can be used:
+<p><a name="index-Linux-3"></a>
+Marsyas is mainly developed under Linux so installing
+under Linux is quite straightforward.  By default Marsyas assumes
+that in Linux systems the ALSA sound system
+and corresponding library and headers are installed.  Most new Linux
+distribution are using ALSA.
 
-<pre class="example">     mkcollection reggae.mf /home/gtzan/data/sound/
-</pre>
-   <p>All the soundfiles residing in that directory or any subdirectories
-will be added to the collection.  <code>mkcollection</code> only will add
-files with <code>.wav</code> and <code> .au</code> extensions but
-does not check that they are valid soundfiles.  In general
-collection files should contain soundfiles with the same sampling rate
-as Marsyas does not perform automatic sampling conversion. The
-exception to this rule is collection that mix files at 22050Hz and
-44100Hz sampling rates, in which case the 44100Hz files are downsampled
-to 22050Hz. No implicit downsampling is performed to collections that
-contain only 44100Hz files.
+   <p>In addition there are several configure options that
+can be used to enable/disable assertions, enable/disable debugging
+and include optional packages such as support for reading mp3s. 
+<a href="Configuring-Marsyas.html#Configuring-Marsyas">Configuring Marsyas</a>.
+
+   <p><b>Requirement: ALSA headers.</b>  On most distributions, this is a
+package called <code>alsa-devel</code> or <code>libalsa-devel</code>.
 
    </body></html>
 
