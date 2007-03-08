@@ -2,6 +2,10 @@
 
 // basic application functions
 MainWindow::MainWindow() {
+	analyze = new Analyze();
+	analyze->calcDurations();
+	analyze->calcNotes();
+
 	marBackend=NULL;
 	metro=NULL;
 
@@ -450,7 +454,9 @@ void MainWindow::setMetroTempo(int tempo) {
 }
 
 void MainWindow::calcExercise() {
-	analyze->calculate(qPrintable(audioFileName));
+	analyze->writePitches(qPrintable(audioFileName));
+	analyze->calcDurations();
+	analyze->calcNotes();
 
 	exercise->getLily();
 	string command = "cd /Users/gperciva/tmp/ ; lilypond -dpreview out.ly";

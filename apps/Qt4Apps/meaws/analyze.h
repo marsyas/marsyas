@@ -7,10 +7,14 @@ class Analyze: public QObject {
 public:
 	Analyze();
 	~Analyze();
-	void calculate(string filename);
+	void writePitches(string filename);
+	void calcDurations();
+	void calcNotes();
 
 signals:
 	void nextNoteError(float error, int direction);
 
+private:
+	int *exercise;
 };
 

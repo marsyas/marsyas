@@ -29,22 +29,23 @@ file = open('notepitches.txt','w')
 for line in filelines:
 	if ( line[0:27] == '                frequency ='):
 		pitch = freq2midi( float(line[28:]) )
-#		extrafile.write( str(pitch) +'\n')  # debug
-		pitchSum = pitchSum + pitch
-		if (pitch==0):
-			skipped = skipped + 1
-		sampCount = sampCount + 1
-		if (sampCount >= numSamples):
-			actualSamps = sampCount - skipped
-			if (actualSamps==0):
-				avgPitch = 0
-			else:
-				avgPitch = float( pitchSum / actualSamps )
+
+		file.write( str(pitch) +'\n')  # debug
+#		pitchSum = pitchSum + pitch
+#		if (pitch==0):
+#			skipped = skipped + 1
+#		sampCount = sampCount + 1
+#		if (sampCount >= numSamples):
+#			actualSamps = sampCount - skipped
+#			if (actualSamps==0):
+#				avgPitch = 0
+#			else:
+#				avgPitch = float( pitchSum / actualSamps )
 #			print str(pitchSum) + '  ' + str(sampCount) + ' ' + str(actualSamps) + ' ' + str(avgPitch)
-			file.write( str(avgPitch) + '\n')
-			sampCount = sampCount - numSamples  ## yes, we want a float   # maybe
-			pitchSum=0
-			skipped=0
+#			file.write( str(avgPitch) + '\n')
+#			sampCount = sampCount - numSamples  ## yes, we want a float   # maybe
+#			pitchSum=0
+#			skipped=0
 
 # extrafile.close()  # debug
 file.close()
