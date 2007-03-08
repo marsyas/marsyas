@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 
+// basic application functions
 MainWindow::MainWindow() {
 	marBackend=NULL;
 	metro=NULL;
@@ -8,6 +9,7 @@ MainWindow::MainWindow() {
 	createActions();
 	createMenus();
 	createToolBars();
+	createStatusBar();
 	readSettings();
 
 	enableActions(1);
@@ -51,80 +53,8 @@ void MainWindow::writeSettings() {
 	settings.setValue("size", size());
 }
 
-void MainWindow::createActions() {
-	newUserAct = new QAction(QIcon(":/progdata/new.png"), tr("&New user"), this);
-	newUserAct->setShortcut(tr("Ctrl+N"));
-	newUserAct->setStatusTip(tr("Create a new session"));
-	connect(newUserAct, SIGNAL(triggered()), this, SLOT(newUser()));
-
-	openAct = new QAction(QIcon(":/progdata/open.png"), tr("&Open user..."), this);
-	openAct->setShortcut(tr("Ctrl+O"));
-	openAct->setStatusTip(tr("Open an existing session"));
-//	connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
-
-	saveAct = new QAction(QIcon(":/progdata/save.png"), tr("&Save user"), this);
-	saveAct->setShortcut(tr("Ctrl+S"));
-	saveAct->setStatusTip(tr("Save the session to disk"));
-//	connect(saveAct, SIGNAL(triggered()), this, SLOT(save()));
-
-	saveAsAct = new QAction(tr("Save user &As..."), this);
-	saveAsAct->setStatusTip(tr("Save the session under a new name"));
-//	connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
-
-	closeAct = new QAction(QIcon(":/progdata/save.png"), tr("&Close user"), this);
-	closeAct = new QAction(tr("&Close user"), this);
-	closeAct->setShortcut(tr("Ctrl+W"));
-	closeAct->setStatusTip(tr("Close user"));
-	connect(closeAct, SIGNAL(triggered()), this, SLOT(closeUser()));
-
-	setUserInfoAct = new QAction(QIcon(":/progdata/new.png"), tr("&User info"), this);
-	setUserInfoAct->setShortcut(tr("Ctrl+U"));
-
-	exitAct = new QAction(tr("E&xit"), this);
-	exitAct->setShortcut(tr("Ctrl+Q"));
-	exitAct->setStatusTip(tr("Exit the application"));
-	connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
-
-	aboutAct = new QAction(tr("&About Meaws"), this);
-	connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
-
-	aboutQtAct = new QAction(tr("About &Qt"), this);
-	aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
-	connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
-
-
-	openExerciseAct = new QAction(QIcon(":/progdata/open.png"), tr("Open &Exercise..."), this);
-	openExerciseAct->setShortcut(tr("Ctrl+R"));
-	openExerciseAct->setStatusTip(tr("Open a new exercise"));
-	connect(openExerciseAct, SIGNAL(triggered()), this, SLOT(openExercise()));
-
-	setMetroIntroAct = new QAction(QIcon(":/progdata/triangle.png"), tr("Set metronome introduction"), this);
-	connect(setMetroIntroAct, SIGNAL(triggered()), this, SLOT(setMetroIntro()));
-
-	visualMetroBeat = new QAction(QIcon(":/progdata/circle.png"), tr("Visual metronome"), this);
-	visualMetroBeat->setStatusTip(tr("Shows the beat"));
-
-	calcExerciseAct = new QAction(QIcon(":/progdata/square.png"), tr("Calculate exercise results"), this);
-	connect(calcExerciseAct, SIGNAL(triggered()), this, SLOT(calcExercise()));
-
-	toggleMetroAct = new QAction(this);
-	toggleMetroAct->setShortcut(tr("Space"));
-	toggleMetroAct->setStatusTip(tr("Start"));
-	toggleMetroAct->setIcon(QIcon(":/progdata/player_play.png"));
-
-	testingFileAct = new QAction(QIcon(":/progdata/open.png"), tr("&Open test audio file..."), this);
-	testingFileAct->setShortcut(tr("Ctrl+T"));
-	testingFileAct->setStatusTip(tr("Open test audio file"));
-	connect(testingFileAct, SIGNAL(triggered()), this, SLOT(testingFile()));
-
-	playFileAct = new QAction(QIcon(":/progdata/open.png"), tr("&Play test audio file..."), this);
-	playFileAct->setIcon(QIcon(":/progdata/play.png"));
-	playFileAct->setStatusTip(tr("Play test audio file"));
-	connect(playFileAct, SIGNAL(triggered()), this, SLOT(playFile()));
-}
-
-void MainWindow::playFile() {
-	marBackend->playFile();
+void MainWindow::createStatusBar() {
+	statusBar()->showMessage(tr("Ready"));
 }
 
 // main window area
@@ -217,8 +147,154 @@ void MainWindow::createToolBars() {
 	infoBar->addWidget(exerciseTitle);
 }
 
+void MainWindow::createActions() {
+	newUserAct = new QAction(QIcon(":/progdata/new.png"), tr("&New user"), this);
+	newUserAct->setShortcut(tr("Ctrl+N"));
+	newUserAct->setStatusTip(tr("Create a new session"));
+	connect(newUserAct, SIGNAL(triggered()), this, SLOT(newUser()));
+
+	openAct = new QAction(QIcon(":/progdata/open.png"), tr("&Open user..."), this);
+	openAct->setShortcut(tr("Ctrl+O"));
+	openAct->setStatusTip(tr("Open an existing session"));
+//	connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
+
+	saveAct = new QAction(QIcon(":/progdata/save.png"), tr("&Save user"), this);
+	saveAct->setShortcut(tr("Ctrl+S"));
+	saveAct->setStatusTip(tr("Save the session to disk"));
+//	connect(saveAct, SIGNAL(triggered()), this, SLOT(save()));
+
+	saveAsAct = new QAction(tr("Save user &As..."), this);
+	saveAsAct->setStatusTip(tr("Save the session under a new name"));
+//	connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
+
+	closeAct = new QAction(QIcon(":/progdata/save.png"), tr("&Close user"), this);
+	closeAct = new QAction(tr("&Close user"), this);
+	closeAct->setShortcut(tr("Ctrl+W"));
+	closeAct->setStatusTip(tr("Close user"));
+	connect(closeAct, SIGNAL(triggered()), this, SLOT(closeUser()));
+
+	setUserInfoAct = new QAction(QIcon(":/progdata/new.png"), tr("&User info"), this);
+	setUserInfoAct->setShortcut(tr("Ctrl+U"));
+
+	exitAct = new QAction(tr("E&xit"), this);
+	exitAct->setShortcut(tr("Ctrl+Q"));
+	exitAct->setStatusTip(tr("Exit the application"));
+	connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
+
+	aboutAct = new QAction(tr("&About Meaws"), this);
+	connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
+
+	aboutQtAct = new QAction(tr("About &Qt"), this);
+	aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
+	connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+
+
+	openExerciseAct = new QAction(QIcon(":/progdata/open.png"), tr("Open &Exercise..."), this);
+	openExerciseAct->setShortcut(tr("Ctrl+R"));
+	openExerciseAct->setStatusTip(tr("Open a new exercise"));
+	connect(openExerciseAct, SIGNAL(triggered()), this, SLOT(openExercise()));
+
+	setMetroIntroAct = new QAction(QIcon(":/progdata/triangle.png"), tr("Set metronome introduction"), this);
+	connect(setMetroIntroAct, SIGNAL(triggered()), this, SLOT(setMetroIntro()));
+
+	visualMetroBeat = new QAction(QIcon(":/progdata/circle.png"), tr("Visual metronome"), this);
+	visualMetroBeat->setStatusTip(tr("Shows the beat"));
+
+	calcExerciseAct = new QAction(QIcon(":/progdata/square.png"), tr("Calculate exercise results"), this);
+	connect(calcExerciseAct, SIGNAL(triggered()), this, SLOT(calcExercise()));
+
+	toggleMetroAct = new QAction(this);
+	toggleMetroAct->setShortcut(tr("Space"));
+	toggleMetroAct->setStatusTip(tr("Start"));
+	toggleMetroAct->setIcon(QIcon(":/progdata/player_play.png"));
+
+	testingFileAct = new QAction(QIcon(":/progdata/open.png"), tr("&Open test audio file..."), this);
+	testingFileAct->setShortcut(tr("Ctrl+T"));
+	testingFileAct->setStatusTip(tr("Open test audio file"));
+	connect(testingFileAct, SIGNAL(triggered()), this, SLOT(testingFile()));
+
+	playFileAct = new QAction(QIcon(":/progdata/open.png"), tr("&Play test audio file..."), this);
+	playFileAct->setIcon(QIcon(":/progdata/play.png"));
+	playFileAct->setStatusTip(tr("Play test audio file"));
+	connect(playFileAct, SIGNAL(triggered()), this, SLOT(playFile()));
+}
+
+void MainWindow::enableActions(int state) {
+	if (state==1) {   // just opened app
+		setWindowTitle(tr("Meaws"));
+
+		saveAct   ->setEnabled(false);
+		saveAsAct ->setEnabled(false);
+		closeAct  ->setEnabled(false);
+		setUserInfoAct->setEnabled(false);
+
+		infoBar     ->setEnabled(false);
+		exerMenu    ->setEnabled(false);
+		openExerciseAct ->setEnabled(false);
+
+		tempoToolBar ->setEnabled(false);
+		tempoToolBar ->setEnabled(true);
+	}
+	if (state==2) {   // user created or loaded
+		setWindowTitle(tr("Meaws - %1").arg(user->getName()));
+
+		saveAct   ->setEnabled(true);
+		saveAsAct ->setEnabled(true);
+		closeAct  ->setEnabled(true);
+		setUserInfoAct->setEnabled(true);
+
+		infoBar     ->setEnabled(true);
+		exerMenu    ->setEnabled(true);
+		openExerciseAct ->setEnabled(true);
+
+		tempoToolBar ->setEnabled(false);
+
+		closeExercise();
+	}
+	if (state==3) {   // exercise picked
+		cout<<"ENABLE: exercise picked"<<endl;
+		setupMarBackend();
+		exerciseRunning=false;
+		metro = new Metro(visualMetroBeat, this);
+
+		connect(toggleMetroAct, SIGNAL(triggered()), this, SLOT(toggleExercise()));
+
+		tempoToolBar ->setEnabled(true);
+	}
+	if (state==4) {   // exercise results
+
+	}
+}
+
+
+
+// user functions
+
+void MainWindow::newUser() {
+	try {
+		user = new User(NewUser);
+	}
+	catch (bool failed) {
+		return;
+	}
+	enableActions(2);
+//	if ( chooseTestingMethod() ) {
+//		connect(setUserInfoAct, SIGNAL(triggered()), user, SLOT(setUserInfo()));
+//	}
+}
+
+void MainWindow::openUser() {
+	try {
+		user = new User(OpenUser);
+		enableActions(2);
+	}
+	catch (bool failed) {
+		return;
+	}
+	enableActions(2);
+}
+
 void MainWindow::closeExercise() {
-	cout<<"closeExercise()"<<endl;
 	if (marBackend != NULL) {
 		delete marBackend;
 		marBackend = NULL;
@@ -227,7 +303,6 @@ void MainWindow::closeExercise() {
 		delete metro;
 		metro = NULL;
 	}
-	
 }
 
 void MainWindow::openExercise() {
@@ -298,80 +373,23 @@ bool MainWindow::chooseUserInfo() {
 	return true;
 }
 
+void MainWindow::closeUser() {
+	if (marBackend != NULL) {
+		delete marBackend;
+		marBackend = NULL;
+	}
 
-
-void MainWindow::newUser() {
-	try {
-		user = new User(NewUser);
-	}
-	catch (bool failed) {
-		return;
-	}
-	enableActions(2);
-//	if ( chooseTestingMethod() ) {
-//		connect(setUserInfoAct, SIGNAL(triggered()), user, SLOT(setUserInfo()));
-//	}
-}
-
-void MainWindow::openUser() {
-	try {
-		user = new User(OpenUser);
-		enableActions(2);
-	}
-	catch (bool failed) {
-		return;
-	}
-	enableActions(2);
+	delete user;
+	imageLabel->clear();
+	testingMethod=0;
+	updateTestingMethod();
+	enableActions(1);
 }
 
 
-void MainWindow::enableActions(int state) {
-	if (state==1) {   // just opened app
-		setWindowTitle(tr("Meaws"));
 
-		saveAct   ->setEnabled(false);
-		saveAsAct ->setEnabled(false);
-		closeAct  ->setEnabled(false);
-		setUserInfoAct->setEnabled(false);
 
-		infoBar     ->setEnabled(false);
-		exerMenu    ->setEnabled(false);
-		openExerciseAct ->setEnabled(false);
-
-		tempoToolBar ->setEnabled(false);
-		tempoToolBar ->setEnabled(true);
-		closeExercise();
-	}
-	if (state==2) {   // user created or loaded
-		setWindowTitle(tr("Meaws - %1").arg(user->getName()));
-
-		saveAct   ->setEnabled(true);
-		saveAsAct ->setEnabled(true);
-		closeAct  ->setEnabled(true);
-		setUserInfoAct->setEnabled(true);
-
-		infoBar     ->setEnabled(true);
-		exerMenu    ->setEnabled(true);
-		openExerciseAct ->setEnabled(true);
-
-		tempoToolBar ->setEnabled(false);
-
-		closeExercise();
-	}
-	if (state==3) {   // exercise picked
-		cout<<"ENABLE: exercise picked"<<endl;
-		setupMarBackend();
-		exerciseRunning=false;
-		metro = new Metro(visualMetroBeat, this);
-
-		connect(toggleMetroAct, SIGNAL(triggered()), this, SLOT(toggleExercise()));
-
-		tempoToolBar ->setEnabled(true);
-	}
-	if (state==4) {   // exercise results
-
-	}
-}
+// other functions
 
 void MainWindow::toggleExercise() {
 	if (exerciseRunning) {   // stop it
@@ -416,19 +434,6 @@ void MainWindow::beat() {
 
 }
 
-void MainWindow::closeUser() {
-	if (marBackend != NULL) {
-		delete marBackend;
-		marBackend = NULL;
-	}
-
-	delete user;
-	imageLabel->clear();
-	testingMethod=0;
-	updateTestingMethod();
-	enableActions(1);
-}
-
 void MainWindow::setMetroIntro() {
 	bool ok;
 	int i = QInputDialog::getInteger(this, tr("Extra beats"),
@@ -453,6 +458,10 @@ void MainWindow::calcExercise() {
 	QString imageFileName="/Users/gperciva/tmp/out.preview.png";
 	QImage image(imageFileName);
 	displayResults->setPixmap(QPixmap::fromImage(image));
-
 }
+
+void MainWindow::playFile() {
+	marBackend->playFile();
+}
+
 

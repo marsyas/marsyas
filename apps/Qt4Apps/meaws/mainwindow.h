@@ -1,25 +1,27 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+// Qt stuff
 #include <QMainWindow>
 #include <QPrinter>
 #include <QGridLayout>
 #include <QFrame>
 #include <QtGui>
-
-#include <iostream>
-using namespace std;
-
-#include "backend.h"
-#include "metro.h"
-#include "user.h"
-#include "exercise.h"
-#include "analyze.h"
-
 class QAction;
 class QMenu;
 class QTextEdit;
 class QLabel;
+
+// C++ stuff
+#include <iostream>
+using namespace std;
+
+// Meaws stuff
+#include "user.h"
+#include "backend.h"
+#include "metro.h"
+#include "exercise.h"
+#include "analyze.h"
 
 class MainWindow : public QMainWindow
 {
@@ -33,7 +35,11 @@ protected:
 	void closeEvent(QCloseEvent *event);
 
 private slots:
+// basic application slots
 	void about();
+	void enableActions(int state);
+
+// user slots
 	void newUser();
 	void openUser();
 	void closeUser();
@@ -41,10 +47,13 @@ private slots:
 	void open();
 	bool save();
 	bool saveAs();
-	void documentWasModified();
 */
+
+// exercise slots
 	void openExercise();
 	void closeExercise();
+
+// other slots
 	void setMetroIntro();
 	void setMetroTempo(int tempo);
 	void beat();
@@ -52,15 +61,58 @@ private slots:
 	void calcExercise();
 	void testingFile();
 	void playFile();
-	void enableActions(int state);
 
 private:
+// basic application functions
 	void createActions();
 	void createMain();
 	void createMenus();
 	void createToolBars();
+	void createStatusBar();
 	void readSettings();
 	void writeSettings();
+
+// basic application variables
+	QMenu *fileMenu;
+	QToolBar *userToolBar;
+	QAction *newUserAct;
+	QAction *openAct;
+	QAction *saveAct;
+	QAction *saveAsAct;
+	QAction *setUserInfoAct;
+	QAction *closeAct;
+	QAction *exitAct;
+
+
+	QMenu *exerMenu;
+	QToolBar *tempoToolBar;
+	QAction *openExerciseAct;
+	QAction *toggleMetroAct;
+	QAction *setMetroIntroAct;
+	QAction *calcExerciseAct;
+	QAction *visualMetroBeat;
+
+	QAction *testingFileAct;
+	QAction *playFileAct;
+
+
+	QToolBar *infoBar;
+
+	QMenu *helpMenu;
+	QAction *aboutAct;
+	QAction *aboutQtAct;
+
+	QGridLayout *mainGrid;
+	QVBoxLayout *mainLayout;
+	QFrame* centralFrame;
+
+
+
+// user functions
+	bool chooseUserInfo();
+
+// user variables
+	User *user;
 
 // testingMethod = 0  not chosen
 //               = 1  Intonation
@@ -70,18 +122,11 @@ private:
 	bool chooseTestingMethod();
 	void updateTestingMethod();
 
-	User *user;
-	bool chooseUserInfo();
-
-	QMenu *fileMenu;
-	QToolBar *userToolBar;
-	QAction *newUserAct;
 
 	QString exerciseName;
 
 
 /*
-	void createStatusBar();
 	bool maybeSave();
 	void loadFile(const QString &userName);
 	bool saveFile(const QString &userName);
@@ -92,34 +137,7 @@ private:
 	QTextEdit *textEdit;
 	QLabel *imageLabel;
 	QLabel *displayResults;
-	QGridLayout *mainGrid;
-	QVBoxLayout *mainLayout;
-	QFrame* centralFrame;
-
 	QString curFile;
-
-	QMenu *helpMenu;
-	QMenu *exerMenu;
-	QToolBar *tempoToolBar;
-	QToolBar *infoBar;
-	QAction *openAct;
-	QAction *saveAct;
-	QAction *saveAsAct;
-	QAction *closeAct;
-	QAction *exitAct;
-	QAction *aboutAct;
-	QAction *aboutQtAct;
-
-	QAction *openExerciseAct;
-
-	QAction *toggleMetroAct;
-	QAction *setMetroIntroAct;
-	QAction *setUserInfoAct;
-	QAction *calcExerciseAct;
-	QAction *visualMetroBeat;
-
-	QAction *testingFileAct;
-	QAction *playFileAct;
 
 	QLabel *exerciseTitle;
 

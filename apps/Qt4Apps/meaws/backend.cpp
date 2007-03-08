@@ -23,6 +23,7 @@ using namespace std;
 
 MarBackend::MarBackend(int testingMethod) {
 	method=testingMethod;
+	method=1;  // temp
 	if (method==1) {
 		cout<<"Setting up Intonation stuff"<<endl;
 		startIntonation();
@@ -51,7 +52,7 @@ void MarBackend::makeRecNet() {
 
   recNet = mng.create("Series", "recNet");
   recNet->addMarSystem(mng.create("AudioSource", "srcRec"));
-	recNet->addMarSystem(mng.create("SoundFileSink","destRec"));
+//	recNet->addMarSystem(mng.create("SoundFileSink","destRec")); // temporary
 
 	recNet->updctrl("AudioSource/srcRec/mrs_real/israte", 44100.0);
   recNet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);

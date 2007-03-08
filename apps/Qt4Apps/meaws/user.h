@@ -1,3 +1,6 @@
+#ifndef USER_H
+#define USER_H
+
 #include <QDialog>
 #include <QString>
 class QAction;
@@ -30,4 +33,5 @@ private:
 	QString name;
 
 };
+#endif
 
