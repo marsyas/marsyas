@@ -137,6 +137,19 @@ in sequence.
 #include "MidiOutput.h"
 
 
+#ifndef WIN32 
+#include "NetworkTCPSink.h"
+#include "NetworkTCPSource.h"
+#include "NetworkUDPSink.h"
+#include "NetworkUDPSource.h"
+#endif
+
+#ifdef CYGWIN
+#include "NetworkTCPSink.h"
+#include "NetworkTCPSource.h"
+#include "NetworkUDPSink.h"
+#include "NetworkUDPSource.h"
+#endif 
 
 using namespace std;
 using namespace Marsyas;
@@ -263,6 +276,20 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("SOM", new SOM("sompr"));
 
 	registerPrototype("MidiOutput", new MidiOutput("midioutpr"));
+
+#ifndef WIN32
+	registerPrototype("NetworkTCPSink", new NetworkTCPSink("tcpsink"));
+	registerPrototype("NetworkTCPSource", new NetworkTCPSource("tcpsource"));
+	registerPrototype("NetworkUDPSink", new NetworkUDPSink("udpsink"));
+	registerPrototype("NetworkUDPSource", new NetworkUDPSource("udpsource"));
+#endif 
+
+#ifdef CYGWIN
+	registerPrototype("NetworkTCPSink", new NetworkTCPSink("tcpsink"));
+	registerPrototype("NetworkTCPSource", new NetworkTCPSource("tcpsource"));
+	registerPrototype("NetworkUDPSink", new NetworkUDPSink("udpsink"));
+	registerPrototype("NetworkUDPSource", new NetworkUDPSource("udpsource"));
+#endif 
 
 	//////////////////////////////////////////////////////////////////////////
 	// Composite MarSystem prototypes
@@ -419,7 +446,9 @@ MarSystemManager::MarSystemManager()
 	pitchPraat->addMarSystem(create("Windowing", "wi"));
 	pitchPraat->addMarSystem(create("AutoCorrelation", "acr"));
     pitchPraat->updctrl("AutoCorrelation/acr/mrs_natural/normalize", 1);
-	pitchPraat->addMarSystem(create("Peaker", "pkr"));
+		pitchPraat->updctrl("AutoCorrelation/acr/mrs_real/octaveCost", 0.01); // 0.01
+		pitchPraat->updctrl("AutoCorrelation/acr/mrs_real/voicingThreshold", 0.3);
+		pitchPraat->addMarSystem(create("Peaker", "pkr"));
 	pitchPraat->addMarSystem(create("MaxArgMax", "mxr"));
 
     // should be adapted to the sampling frequency !!
@@ -431,7 +460,7 @@ MarSystemManager::MarSystemManager()
 	pitchPraat->updctrl("Windowing/wi/mrs_string/type", "Hanning");
 	pitchPraat->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.00);
 	pitchPraat->updctrl("Peaker/pkr/mrs_natural/interpolation", 1);
-	pitchPraat->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.4);
+	// pitchPraat->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.4);
 	pitchPraat->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 1);
 	pitchPraat->updctrl("MaxArgMax/mxr/mrs_natural/interpolation", 1);
 	pitchPraat->linkctrl("mrs_natural/lowSamples", "Peaker/pkr/mrs_natural/peakStart");

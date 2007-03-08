@@ -40,6 +40,9 @@ private:
   realvec scratch_;
   realvec norm_;
   mrs_natural normalize_;
+	mrs_real octaveCost_;
+	mrs_real octaveMax_;
+	mrs_real voicing_;
   virtual void addControls();
 	void myUpdate(MarControlPtr sender);
   

@@ -156,7 +156,6 @@ test_simpleSFPlay(string sfName)
       //cout << "pos " << playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() << endl;
       
       playbacknet->tick();
-
       
       //test if setting "mrs_natural/pos" to 0 for rewinding is working
       //if(playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() > 100000)
@@ -2143,6 +2142,7 @@ test_pitch(string sfName)
   MarSystem* pnet = mng.create("Series", "pnet");
 
   pnet->addMarSystem(mng.create("SoundFileSource", "src"));
+	pnet->addMarSystem(mng.create("ShiftInput", "sfi"));
   pnet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
   pnet->addMarSystem(mng.create("PitchPraat", "pitch")); 
   // pnet->addMarSystem(mng.create("PitchSACF", "pitch")); 
@@ -2166,7 +2166,10 @@ test_pitch(string sfName)
   //  of MinimumPitch. E.g. if MinimumPitch is 75 Hz, the window length
   //  is 40 ms and padded with zeros to reach a power of two.
   mrs_real windowSize = 3/lowPitch*pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
-  pnet->updctrl("mrs_natural/inSamples", powerOfTwo(windowSize));
+  pnet->updctrl("mrs_natural/inSamples", 512);
+	// pnet->updctrl("ShiftInput/sfi/mrs_natural/Decimation", 256);
+	pnet->updctrl("ShiftInput/sfi/mrs_natural/WindowSize", powerOfTwo(windowSize));
+	//pnet->updctrl("ShiftInput/sfi/mrs_natural/WindowSize", 1024);
 
   while (pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
    pnet->tick();
@@ -2177,6 +2180,9 @@ test_pitch(string sfName)
    
    pnet->updctrl("RealvecSink/rvSink/mrs_bool/done", true); 
 	
+	 MATLAB_PUT(data, "data");
+	 MATLAB_EVAL("plot(data(2:2:end))");
+
 	cout << data ;
 	// to output to a file
 	ofstream dataFile;

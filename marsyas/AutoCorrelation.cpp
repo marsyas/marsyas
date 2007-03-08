@@ -65,8 +65,12 @@ AutoCorrelation::addControls()
 {
   addctrl("mrs_real/magcompress", 2.0);
    addctrl("mrs_natural/normalize", 0);
-    setctrlState("mrs_natural/normalize", true);
-	//delete myfft_; //[?]
+   addctrl("mrs_real/octaveCost", 0.0);
+	    addctrl("mrs_real/voicingThreshold", 0.1);
+	 setctrlState("mrs_natural/normalize", true);
+		   setctrlState("mrs_real/octaveCost", true);
+		   setctrlState("mrs_real/voicingThreshold", true);
+			 //delete myfft_; //[?]
   //myfft_ = new fft();//[?]
 }
 
@@ -108,6 +112,15 @@ AutoCorrelation::myUpdate(MarControlPtr sender)
   for (mrs_natural i = 0 ; i < norm_.getSize() ; i++)
 	  norm_(i) = 1/norm_(i);
   }
+
+	octaveCost_ = getctrl("mrs_real/octaveCost")->toReal();
+  voicing_ = getctrl("mrs_real/voicingThreshold")->toReal();
+
+	if(octaveCost_)
+	{
+		octaveCost_ *= octaveCost_;
+		octaveMax_ = octaveCost_*log(36.0*inSamples_);
+	}
 }
 
 void 
@@ -116,14 +129,13 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
   //checkFlow(in,out);
   mrs_real re,im,am;
   mrs_real k;
-  
   k = getctrl("mrs_real/magcompress")->toReal();
-  
+ 
   // Copy to output to perform inplace fft and zeropad to double size
 
   for (o=0; o < inObservations_; o++)
     {
-      for (t=0; t < inSamples_; t++)
+			for (t=0; t < inSamples_; t++)
 	scratch_(t) = in(o,t); 
   
       mrs_real *tmp = scratch_.getData();
@@ -169,13 +181,33 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
       
       // Copy to output 
 	  if(normalize_)
-      for (t=0; t < inSamples_; t++)  
+      for (t=0; t < inSamples_; t++) 
+			{
 	out(o,t) = scratch_(t)*norm_(t);
+			}
 	  else
 		  for (t=0; t < inSamples_; t++)  
 	out(o,t) = scratch_(t);
     }
+	if(octaveCost_)
+	{
+			
+	
+	mrs_real maxOut = 0;
+	for (t=1 ; t<inSamples_/2 ; t++)
+	if (out(o, t)> out(o, t+1) && out(o, t) > out(o, t-1) && out(o, t)>maxOut)
+		maxOut = out(o, t) ;
+	//	cout << maxOut/out(o, 0)<< " " << 1+voicing_ << << endl;
 
+		if(maxOut && maxOut/out(o, 0) > 1-voicing_)
+      for (t=1; t < inSamples_; t++) 
+				out(o, t) += octaveMax_-octaveCost_*log(36.0*t);
+		else
+			out.setval(0);
+		
+	}
+	/*MATLAB_PUT(out, "corr");
+	MATLAB_EVAL("plot(corr)");*/
 }
 
 
