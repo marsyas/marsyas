@@ -1,8 +1,9 @@
-#include <QObject>
+//#include <QObject>
 using namespace std;
 
-class Analyze: public QObject {
-	Q_OBJECT
+class Analyze {
+//class Analyze: public QObject {
+//	Q_OBJECT
 
 public:
 	Analyze();
@@ -11,9 +12,10 @@ public:
 	void calcDurations();
 	void calcNotes();
 
+/*
 signals:
 	void nextNoteError(float error, int direction);
-
+*/
 private:
 	int *exercise;
 };

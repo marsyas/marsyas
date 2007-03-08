@@ -1,4 +1,3 @@
-#include <QObject>
 #include <iostream>
 #include <fstream>
 #include <math.h>
@@ -97,7 +96,7 @@ void Analyze::calcNotes(){
 	//			cout<<note<<"  "<<pitchError;
 	//			cout<<"   "<<avgPitch<<"  "<<expected_pitch[note]<<endl;
 //				outFile<<pitchError<<endl;
-				emit nextNoteError(pitchError,1);
+				//emit nextNoteError(pitchError,1);
 				sumPitch=0;
 				tatum=0;
 				note++;
