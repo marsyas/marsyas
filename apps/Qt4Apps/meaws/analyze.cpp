@@ -20,6 +20,8 @@ void Analyze::calcDurations() {
 	int prevSamp=0;
 	float pitchList[5000];
 	float avg1, avg2;
+	float variance1;
+	float variance2;
 
 	int i=0;
 	int j;
@@ -37,18 +39,25 @@ void Analyze::calcDurations() {
 	for (i=3; i<maxSamps-3; i++) {
 		avg1=0;
 		avg2=0;
+		variance1=0;
+		variance2=0;
 		for (j=0; j<3; j++) {
 			avg1 += pitchList[i-j-1];
 			avg2 += pitchList[i+j];
+			if (j<2) 
+				variance1+= fabs( pitchList[i-j-1] - pitchList[i-j] );
+			if (j<2) 
+				variance2+= fabs( pitchList[i+j] - pitchList[i+j+1] );
 		}
 		avg1 = avg1/3.0;
 		avg2 = avg2/3.0;
 
 		if (fabs(avg1-avg2) > 0.6) {
-//			if (fabs(pitchList[i]-pitchList[i-1] > 0.3)) {
-				cout<<i - prevSamp<<"   "<<pitchList[i]<<endl;
+			if ((variance1<0.5) && (variance2<0.5) ) {
+			//if (fabs(pitchList[i]-pitchList[i+1] < 0.5)) {
+				cout<<i - prevSamp<<"   "<<pitchList[i]<<"   "<<variance1<<endl;
 				prevSamp = i;
-//			}
+			}
 		}
 	}
 }
