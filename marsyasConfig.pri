@@ -31,15 +31,15 @@ CONFIG	+= debug_and_release # by default this only builds the release version!
 # enable/disable ASSERTIONS/WARNINGS/DIAGNOSTICS/LOGS, etc
 ######################################################################
 
-#DEFINES += MARSYAS_ASSERT      	#turn on assertions
-#DEFINES += MARSYAS_PROFILING		#turn on profiling
+#CONFIG += marsyasASSERT		#turn on assertions
+#CONFIG += marsyasPROFILING		#turn on profiling
 
-#DEFINES += MARSYAS_LOGWARNINGS 	#warning messages in log
-#DEFINES += MARSYAS_LOGDEBUG     	#debug messages in log
-#DEFINES += MARSYAS_LOGDIAGNOSTIC 	#diagnostic messages in log
-#DEFINES += MARSYAS_LOGFILE				#log to file
-#DEFINES += MARSYAS_LOGSTDOUT			#log to stdout
-#DEFINES += MARSYAS_LOGGUI				#log to GUI
+#CONFIG += marsyasLOGWARNINGS	#warning messages in log
+#CONFIG += marsyasLOGDEBUG		#debug messages in log
+#CONFIG += marsyasLOGDIAGNOSTIC	#diagnostic messages in log
+#CONFIG += marsyasLOGFILE			#log to file
+#CONFIG += marsyasLOGSTDOUT			#log to stdout
+#CONFIG += marsyasLOGGUI			#log to GUI
 
 ######################################################################
 # Audio and MIDI I/O support in marsyas lib
@@ -53,9 +53,9 @@ CONFIG += marsyasMIDIIO
 # ------------------------------------
 win32:CONFIG += marsyasAUDIOIO_DS
 #win32:CONFIG += marsyasAUDIOIO_ASIO
-unix:CONFIG += marsyasAUDIOIO_ALSA
-#unix:CONFIG += marsyasAUDIOIO_JACK
-#unix:CONFIG += marsyasAUDIOIO_OSS
+unix:!macx:CONFIG += marsyasAUDIOIO_ALSA
+#unix:!macx:CONFIG += marsyasAUDIOIO_JACK
+#unix:!macx:CONFIG += marsyasAUDIOIO_OSS
 
 ### no choice about audio API for MacOSX.
 
@@ -63,7 +63,7 @@ unix:CONFIG += marsyasAUDIOIO_ALSA
 # GUI suport for Marsyas library 
 ######################################################################
 
-#CONFIG += marsyasGUI
+CONFIG += marsyasGUI
 
 ######################################################################
 # Adds support for MATLAB engine classes
@@ -75,7 +75,7 @@ unix:CONFIG += marsyasAUDIOIO_ALSA
 # Adds support for MP3 MAD
 ######################################################################
 
-# CONFIG	+= marsyasMAD
+# CONFIG += marsyasMAD
 
 ######################################################################
 # Adds support for oggvorbis
@@ -89,28 +89,48 @@ unix:CONFIG += marsyasAUDIOIO_ALSA
 # DO NOT CHANGE THE LINES BELLOW!
 #*********************************************************************
 
+INCLUDEPATH += "$$BASEDIR"/marsyas 
+
 CONFIG(debug, debug|release) {
+	message ( Configuring Marsyas for DEBUG building )
 	DEFINES += MARSYAS_DEBUG
 }
 
 CONFIG(release, debug|release) {
+	message ( Configuring Marsyas for RELEASE building )
 	DEFINES += MARSYAS_RELEASE
 }
 
-win32 {
-	win32-msvc2005:QMAKE_CXXFLAGS_DEBUG += /ZI /Od
-	win32-msvc2005:QMAKE_LFLAGS_DEBUG += /INCREMENTAL
+marsyasConsoleApps:message (Build of Console Apps turned ON)
+marsyasQt4Apps:message( Build of of Qt4 Apps turned ON )
+
+marsyasGUI {
+	message ( Marsyas Lib as a Qt class tuned ON )
+	CONFIG += qt
+	DEFINES += MARSYAS_QT
+	INCLUDEPATH += "$$BASEDIR"/marsyas/Qt 
+}
+marsyasMATLAB {
+	message ( MATLAB support turned ON )
+	DEFINES += MARSYAS_MATLAB
+	INCLUDEPATH += "$$BASEDIR"/marsyas/MATLAB 
 }
 
-marsyasGUI:CONFIG += qt
-marsyasGUI:DEFINES += MARSYAS_QT
-marsyasMATLAB:DEFINES += MARSYAS_MATLAB
+marsyasAUDIOIO:message( AUDIO I/O support (RtAudio) turned ON: )
+marsyasAUDIOIO_ALSA:message ( => ALSA )
+marsyasAUDIOIO_JACK:message ( => JACK )
+marsyasAUDIOIO_OSS:message ( => OSS )
+marsyasAUDIOIO_COREAUDIO:message( => CORE AUDIO )
+marsyasAUDIOIO_DS:message( => DIRECT SHOW )
+marsyasAUDIOIO_ASIO:message( => ASIO )
 
-INCLUDEPATH 				+= "$$BASEDIR"/marsyas 
-marsyasMATLAB:INCLUDEPATH 	+= "$$BASEDIR"/marsyas/MATLAB 
-marsyasGUI:INCLUDEPATH 		+= "$$BASEDIR"/marsyas/Qt 
+marsyasMIDIIO:message ( MIDI I/O support (RtMIDI) turned ON)
 
-unix {
+marsyasMAD:message( MP3 MAD support turned ON )
+marsyasOGG:message( Ogg Vorbis support turned ON )
+
+
+unix:{
 !macx {    # qmake detects osx as "unix" in 4.2.2.  :/
 	DEFINES += MARSYAS_LINUX
 	LIBS += -lm
@@ -146,7 +166,6 @@ unix {
 	}
 	
 	marsyasMATLAB {
-		message(Building with MATLAB engine support.)
 		#INCLUDEPATH += ???
 		#LIBS += ???
 		DEFINES 	+= MARSYAS_MATLAB
@@ -180,7 +199,6 @@ macx {
 	}
 		
 	marsyasMATLAB {
-		message(Building with MATLAB engine support.)
 		#INCLUDEPATH += ???
 		#LIBS += ???
 		DEFINES 	+= MARSYAS_MATLAB
@@ -188,6 +206,9 @@ macx {
 }
 
 win32 {
+	win32-msvc2005:QMAKE_CXXFLAGS_DEBUG += /ZI /Od
+	win32-msvc2005:QMAKE_LFLAGS_DEBUG += /INCREMENTAL
+
 	DEFINES += 	MARSYAS_WIN32 \
 		WIN32 \
 		_WINDOWS 	
@@ -240,7 +261,6 @@ win32 {
 	}
 	
 	marsyasMATLAB{
-		message(Building with MATLAB engine support.)
 		DEFINES += MARSYAS_MATLAB
 		INCLUDEPATH += "$$(MATLAB)"/extern/include
 		LIBS += -llibeng -llibmx -llibut -L\"$$(MATLAB)/bin/win32\"
@@ -258,6 +278,40 @@ win32 {
 			LIBS += -llibmad -L\"$$(LIBMAD)/msvc++/Debug\"
 		}
 	}
+}
+
+marsyasASSERT {
+	message ( Assertions turned on )
+	DEFINES += MARSYAS_ASSERT
+}
+marsyasPROFILING {
+	message ( Profiling turned on )
+	DEFINES += MARSYAS_PROFILING
+}
+
+marsyasLOGWARNINGS {
+	message ( Warning messages in log )
+	DEFINES += MARSYAS_LOGWARNINGS
+}
+marsyasLOGDEBUG {
+	message ( Debug messages in log )
+	DEFINES += MARSYAS_LOGDEBUG
+}
+marsyasLOGDIAGNOSTIC {
+	message ( Diagnostic messages in log )
+	DEFINES += _MARSYAS_LOGDIAGNOSTIC
+}
+marsyasLOGFILE {
+	message ( Log to file )
+	DEFINES += MARSYAS_LOGFILE
+}
+marsyasLOGSTDOUT {
+	message ( Log to stdout )
+	DEFINES += MARSYAS_LOGSTDOUT
+}
+marsyasLOGGUI {
+	message ( Log to GUI )
+	DEFINES += MARSYAS_LOGGUI
 }
 
 
