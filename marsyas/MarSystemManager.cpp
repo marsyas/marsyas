@@ -411,7 +411,7 @@ MarSystemManager::MarSystemManager()
 
 	registerPrototype("PitchSACF", pitchSACF);
 
-	//protoptype for pitch Extraction using Praat-Like implementation
+		//protoptype for pitch Extraction using Praat-Like implementation
     // see details and discussion in
 	// http://www.fon.hum.uva.nl/paul/papers/Proceedings_1993.pdf
 
@@ -419,7 +419,9 @@ MarSystemManager::MarSystemManager()
 	pitchPraat->addMarSystem(create("Windowing", "wi"));
 	pitchPraat->addMarSystem(create("AutoCorrelation", "acr"));
     pitchPraat->updctrl("AutoCorrelation/acr/mrs_natural/normalize", 1);
-	pitchPraat->addMarSystem(create("Peaker", "pkr"));
+		pitchPraat->updctrl("AutoCorrelation/acr/mrs_real/octaveCost", 0.01); // 0.01
+		pitchPraat->updctrl("AutoCorrelation/acr/mrs_real/voicingThreshold", 0.3);
+		pitchPraat->addMarSystem(create("Peaker", "pkr"));
 	pitchPraat->addMarSystem(create("MaxArgMax", "mxr"));
 
     // should be adapted to the sampling frequency !!
@@ -431,7 +433,7 @@ MarSystemManager::MarSystemManager()
 	pitchPraat->updctrl("Windowing/wi/mrs_string/type", "Hanning");
 	pitchPraat->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.00);
 	pitchPraat->updctrl("Peaker/pkr/mrs_natural/interpolation", 1);
-	pitchPraat->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.4);
+	// pitchPraat->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.4);
 	pitchPraat->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 1);
 	pitchPraat->updctrl("MaxArgMax/mxr/mrs_natural/interpolation", 1);
 	pitchPraat->linkctrl("mrs_natural/lowSamples", "Peaker/pkr/mrs_natural/peakStart");
