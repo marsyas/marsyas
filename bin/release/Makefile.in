@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-SOURCES = $(bextract_SOURCES) $(boomchick_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mkcollection_SOURCES) $(orcarecord_SOURCES) $(peakClustering_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplugin_SOURCES)
+SOURCES = $(bextract_SOURCES) $(boomchick_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) $(gettingdata_SOURCES) $(helloworld_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mkcollection_SOURCES) $(orcarecord_SOURCES) $(peakClustering_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplugin_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -43,7 +43,8 @@ bin_PROGRAMS = sfplay$(EXEEXT) phasevocoder$(EXEEXT) sfplugin$(EXEEXT) \
 	bextract$(EXEEXT) mkcollection$(EXEEXT) marsyasTests$(EXEEXT) \
 	record$(EXEEXT) classifyFile$(EXEEXT) peakClustering$(EXEEXT) \
 	sfinfo$(EXEEXT) extract$(EXEEXT) midiTest$(EXEEXT) \
-	boomchick$(EXEEXT) pitchextract$(EXEEXT) orcarecord$(EXEEXT)
+	boomchick$(EXEEXT) pitchextract$(EXEEXT) orcarecord$(EXEEXT) \
+	helloworld$(EXEEXT) gettingdata$(EXEEXT)
 subdir = bin/release
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -72,6 +73,14 @@ classifyFile_DEPENDENCIES = $(top_builddir)/lib/release/libmarsyas.a \
 am_extract_OBJECTS = extract.$(OBJEXT)
 extract_OBJECTS = $(am_extract_OBJECTS)
 extract_DEPENDENCIES = $(top_builddir)/lib/release/libmarsyas.a \
+	$(am__DEPENDENCIES_1)
+am_gettingdata_OBJECTS = gettingdata.$(OBJEXT)
+gettingdata_OBJECTS = $(am_gettingdata_OBJECTS)
+gettingdata_DEPENDENCIES = $(top_builddir)/lib/release/libmarsyas.a \
+	$(am__DEPENDENCIES_1)
+am_helloworld_OBJECTS = helloworld.$(OBJEXT)
+helloworld_OBJECTS = $(am_helloworld_OBJECTS)
+helloworld_DEPENDENCIES = $(top_builddir)/lib/release/libmarsyas.a \
 	$(am__DEPENDENCIES_1)
 am_marsyasTests_OBJECTS = marsyasTests.$(OBJEXT)
 marsyasTests_OBJECTS = $(am_marsyasTests_OBJECTS)
@@ -123,6 +132,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/bextract.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/boomchick.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/classifyFile.Po ./$(DEPDIR)/extract.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/gettingdata.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/helloworld.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/marsyasTests.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/midiTest.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/mkcollection.Po \
@@ -139,6 +150,7 @@ CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 SOURCES = $(bextract_SOURCES) $(boomchick_SOURCES) \
 	$(classifyFile_SOURCES) $(extract_SOURCES) \
+	$(gettingdata_SOURCES) $(helloworld_SOURCES) \
 	$(marsyasTests_SOURCES) $(midiTest_SOURCES) \
 	$(mkcollection_SOURCES) $(orcarecord_SOURCES) \
 	$(peakClustering_SOURCES) $(phasevocoder_SOURCES) \
@@ -146,6 +158,7 @@ SOURCES = $(bextract_SOURCES) $(boomchick_SOURCES) \
 	$(sfplay_SOURCES) $(sfplugin_SOURCES)
 DIST_SOURCES = $(bextract_SOURCES) $(boomchick_SOURCES) \
 	$(classifyFile_SOURCES) $(extract_SOURCES) \
+	$(gettingdata_SOURCES) $(helloworld_SOURCES) \
 	$(marsyasTests_SOURCES) $(midiTest_SOURCES) \
 	$(mkcollection_SOURCES) $(orcarecord_SOURCES) \
 	$(peakClustering_SOURCES) $(phasevocoder_SOURCES) \
@@ -208,6 +221,8 @@ VERSION = @VERSION@
 ac_aux_dir = @ac_aux_dir@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
+ac_ct_RANLIB = @ac_ct_RANLIB@
+ac_ct_STRIP = @ac_ct_STRIP@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
@@ -222,30 +237,23 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
-datarootdir = @datarootdir@
-docdir = @docdir@
-dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
-htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
-localedir = @localedir@
 localstatedir = @localstatedir@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
-pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
-psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
@@ -316,6 +324,14 @@ orcarecord_SOURCES = $(top_srcdir)/apps/orcarecord/orcarecord.cpp
 orcarecord_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 	       $(Libs)
 
+helloworld_SOURCES = $(top_srcdir)/examples/helloworld.cpp
+helloworld_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
+		$(Libs)
+
+gettingdata_SOURCES = $(top_srcdir)/examples/gettingdata.cpp
+gettingdata_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
+		    $(Libs)
+
 all: all-am
 
 .SUFFIXES:
@@ -329,9 +345,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  bin/release/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  bin/release/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  bin/release/Makefile
+	  $(AUTOMAKE) --foreign  bin/release/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -384,6 +400,12 @@ classifyFile$(EXEEXT): $(classifyFile_OBJECTS) $(classifyFile_DEPENDENCIES)
 extract$(EXEEXT): $(extract_OBJECTS) $(extract_DEPENDENCIES) 
 	@rm -f extract$(EXEEXT)
 	$(CXXLINK) $(extract_LDFLAGS) $(extract_OBJECTS) $(extract_LDADD) $(LIBS)
+gettingdata$(EXEEXT): $(gettingdata_OBJECTS) $(gettingdata_DEPENDENCIES) 
+	@rm -f gettingdata$(EXEEXT)
+	$(CXXLINK) $(gettingdata_LDFLAGS) $(gettingdata_OBJECTS) $(gettingdata_LDADD) $(LIBS)
+helloworld$(EXEEXT): $(helloworld_OBJECTS) $(helloworld_DEPENDENCIES) 
+	@rm -f helloworld$(EXEEXT)
+	$(CXXLINK) $(helloworld_LDFLAGS) $(helloworld_OBJECTS) $(helloworld_LDADD) $(LIBS)
 marsyasTests$(EXEEXT): $(marsyasTests_OBJECTS) $(marsyasTests_DEPENDENCIES) 
 	@rm -f marsyasTests$(EXEEXT)
 	$(CXXLINK) $(marsyasTests_LDFLAGS) $(marsyasTests_OBJECTS) $(marsyasTests_LDADD) $(LIBS)
@@ -428,6 +450,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/boomchick.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/classifyFile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/extract.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gettingdata.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/helloworld.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/marsyasTests.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/midiTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mkcollection.Po@am__quote@
@@ -519,6 +543,38 @@ extract.obj: $(top_srcdir)/apps/extract/extract.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/extract.Po' tmpdepfile='$(DEPDIR)/extract.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o extract.obj `if test -f '$(top_srcdir)/apps/extract/extract.cpp'; then $(CYGPATH_W) '$(top_srcdir)/apps/extract/extract.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/apps/extract/extract.cpp'; fi`
+
+gettingdata.o: $(top_srcdir)/examples/gettingdata.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gettingdata.o -MD -MP -MF "$(DEPDIR)/gettingdata.Tpo" -c -o gettingdata.o `test -f '$(top_srcdir)/examples/gettingdata.cpp' || echo '$(srcdir)/'`$(top_srcdir)/examples/gettingdata.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gettingdata.Tpo" "$(DEPDIR)/gettingdata.Po"; else rm -f "$(DEPDIR)/gettingdata.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/examples/gettingdata.cpp' object='gettingdata.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/gettingdata.Po' tmpdepfile='$(DEPDIR)/gettingdata.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gettingdata.o `test -f '$(top_srcdir)/examples/gettingdata.cpp' || echo '$(srcdir)/'`$(top_srcdir)/examples/gettingdata.cpp
+
+gettingdata.obj: $(top_srcdir)/examples/gettingdata.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gettingdata.obj -MD -MP -MF "$(DEPDIR)/gettingdata.Tpo" -c -o gettingdata.obj `if test -f '$(top_srcdir)/examples/gettingdata.cpp'; then $(CYGPATH_W) '$(top_srcdir)/examples/gettingdata.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/examples/gettingdata.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gettingdata.Tpo" "$(DEPDIR)/gettingdata.Po"; else rm -f "$(DEPDIR)/gettingdata.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/examples/gettingdata.cpp' object='gettingdata.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/gettingdata.Po' tmpdepfile='$(DEPDIR)/gettingdata.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gettingdata.obj `if test -f '$(top_srcdir)/examples/gettingdata.cpp'; then $(CYGPATH_W) '$(top_srcdir)/examples/gettingdata.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/examples/gettingdata.cpp'; fi`
+
+helloworld.o: $(top_srcdir)/examples/helloworld.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT helloworld.o -MD -MP -MF "$(DEPDIR)/helloworld.Tpo" -c -o helloworld.o `test -f '$(top_srcdir)/examples/helloworld.cpp' || echo '$(srcdir)/'`$(top_srcdir)/examples/helloworld.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/helloworld.Tpo" "$(DEPDIR)/helloworld.Po"; else rm -f "$(DEPDIR)/helloworld.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/examples/helloworld.cpp' object='helloworld.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/helloworld.Po' tmpdepfile='$(DEPDIR)/helloworld.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o helloworld.o `test -f '$(top_srcdir)/examples/helloworld.cpp' || echo '$(srcdir)/'`$(top_srcdir)/examples/helloworld.cpp
+
+helloworld.obj: $(top_srcdir)/examples/helloworld.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT helloworld.obj -MD -MP -MF "$(DEPDIR)/helloworld.Tpo" -c -o helloworld.obj `if test -f '$(top_srcdir)/examples/helloworld.cpp'; then $(CYGPATH_W) '$(top_srcdir)/examples/helloworld.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/examples/helloworld.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/helloworld.Tpo" "$(DEPDIR)/helloworld.Po"; else rm -f "$(DEPDIR)/helloworld.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/examples/helloworld.cpp' object='helloworld.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/helloworld.Po' tmpdepfile='$(DEPDIR)/helloworld.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o helloworld.obj `if test -f '$(top_srcdir)/examples/helloworld.cpp'; then $(CYGPATH_W) '$(top_srcdir)/examples/helloworld.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/examples/helloworld.cpp'; fi`
 
 marsyasTests.o: $(top_srcdir)/apps/marsyasTests/marsyasTests.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT marsyasTests.o -MD -MP -MF "$(DEPDIR)/marsyasTests.Tpo" -c -o marsyasTests.o `test -f '$(top_srcdir)/apps/marsyasTests/marsyasTests.cpp' || echo '$(srcdir)/'`$(top_srcdir)/apps/marsyasTests/marsyasTests.cpp; \
