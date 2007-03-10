@@ -140,7 +140,7 @@ The list of available options can be viewed by:
 @noindent
 The following options are supported: 
 
-@itemize @w
+@itemize
 @item @b{--enable-assert}       turns assertions on (small performance penatly) 
 @item @b{--enable-debug}        compiles Marsyas in debug mode generating
 the necessary files for gdb (large performance penalty) 
