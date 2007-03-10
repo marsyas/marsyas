@@ -65,5 +65,37 @@ notice this, let me know and I'll delete the OS flames.  :)
 let alone do programming in anything _other_ than vi.  I mean, even _emacs_
 would be better than using a graphical tool for programming!
 
+   <p>Real info:
+
+<pre class="example">     Anyone wanting to use MSVC2005 (and probably MSVC6, MSVC2003 and
+     MSVC2005express) and Qt4.2.2 opensource please try doing the following:
+     
+     1) checkout (using SVN) the most recent revision of the "patched" opensource
+     Qt (4.2.2), available at:
+     
+     https://qtwin.svn.sourceforge.net/svnroot/qtwin/qt-4/trunk
+     
+     This should be copied to the path where you normally have Qt installed (e.g.
+     c:\Qt\4.2.2), and to where your env vars point.
+     
+     2)  Do not forget to put you Qt bin dir in the system path (i.e.
+     c:\Qt\4.2.2\bin), so you can use qmake anywhere, and to define the QMAKESPEC
+     env var, that for the case of MSVC2005 should be win32-msvc2005.
+     
+     3) open a MSVC2005 command prompt (you can find this in
+     Start-&gt;Programs-&gt;Microsoft Visual Studio-&gt;Visual Studio Tools); this cmd
+     prompt has all the env variables correctly configured in case you do not
+     have them configured in your system)
+     
+     3) run "qconfigure msvc2005" (without the quotes) and follow the
+     instructions (basically reply yes whenever asked).
+     
+     4) after the successful build of qmake and the subsequent generation of the
+     makefiles for the patched Qt code, just do nmake to build the Qt lib (this
+     will take a while, so go grab a coffee or something! ;-))
+     
+     5) When done, you should now be able to create MSVC2005 project using qmake
+     -t vcapp/vclib from all your marsyas .pro!
+</pre>
    </body></html>
 
