@@ -4,8 +4,7 @@
 #include "analyze.h"
 
 Analyze::Analyze() {
-	exercise = new int[8];
-
+//	exercise = new int[8];
 }
 Analyze::~Analyze() {
 
@@ -15,27 +14,59 @@ void Analyze::calcDurations() {
 	ifstream inFile;
 	inFile.open("notepitches.txt");
 	float curPitch;
-	int sample=0;
+	//int sample=0;
 	float prevPitch=0;
 	int prevSamp=0;
-	float pitchList[5000];
+	float pitchList[5000];  // something big enough; ugly hack
 	float avg1, avg2;
 	float variance1;
 	float variance2;
 
-	int i=0;
-	int j;
+	int i,j,k;
+
+	// load pitches into memory
+	i=0;
 	while (inFile>>curPitch) {
-		if (curPitch>0) {
-			pitchList[i]=curPitch;
-			prevPitch = curPitch;
-		} else {
-			pitchList[i]=prevPitch;
-		}
+		pitchList[i]=curPitch;
 		i++;
 	}
 	inFile.close();
-	int maxSamps = i-1;  // I think?  Check this maximum.
+	int maxSamps = i;
+
+	for (i=0; i<maxSamps; i++) {
+		cout<<pitchList[i]<<endl;
+	}
+	cout<<"process"<<endl;
+
+	// smooth out 0s.
+	i=0;
+	while (i<maxSamps) {
+		if (pitchList[i]==0) {
+			j=i;
+			while (true) {
+				if (j>maxSamps) break;
+				if (pitchList[j]>0) {
+					if (i==0)
+						prevPitch=0;
+						else
+						prevPitch=pitchList[i-1];
+					for (k=i; k<j; k++)	{
+						pitchList[k]=prevPitch;
+					}
+					break;
+				}
+				j++;
+			}
+			i=j;
+		}
+		i++;
+	}
+
+	for (i=0; i<maxSamps; i++) {
+		cout<<pitchList[i]<<endl;
+	}
+
+/*
 	for (i=3; i<maxSamps-3; i++) {
 		avg1=0;
 		avg2=0;
@@ -52,7 +83,7 @@ void Analyze::calcDurations() {
 		avg1 = avg1/3.0;
 		avg2 = avg2/3.0;
 
-		if (fabs(avg1-avg2) > 0.6) {
+		if (fabs(avg1-avg2) > 0.5) {
 			if ((variance1<0.5) && (variance2<0.5) ) {
 			//if (fabs(pitchList[i]-pitchList[i+1] < 0.5)) {
 				cout<<i - prevSamp<<"   "<<pitchList[i]<<"   "<<variance1<<endl;
@@ -60,6 +91,59 @@ void Analyze::calcDurations() {
 			}
 		}
 	}
+*/
+}
+
+void Analyze::getPitches(string filename) {
+  MarSystemManager mng;
+  MarSystem* pnet = mng.create("Series", "pnet");
+
+  pnet->addMarSystem(mng.create("SoundFileSource", "src"));
+  pnet->updctrl("SoundFileSource/src/mrs_string/filename", filename);
+
+	pnet->addMarSystem(mng.create("ShiftInput", "sfi"));
+  pnet->addMarSystem(mng.create("PitchPraat", "pitch")); 
+  pnet->addMarSystem(mng.create("RealvecSink", "rvSink")); 
+
+  mrs_real lowPitch = 36;
+  mrs_real highPitch = 79;
+  mrs_real lowFreq = pitch2hertz(lowPitch);
+  mrs_real highFreq = pitch2hertz(highPitch);
+
+  mrs_natural lowSamples = 
+     hertz2samples(highFreq, pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
+  mrs_natural highSamples = 
+     hertz2samples(lowFreq, pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
+ 
+  pnet->updctrl("PitchPraat/pitch/mrs_natural/lowSamples", lowSamples);
+  pnet->updctrl("PitchPraat/pitch/mrs_natural/highSamples", highSamples);
+  
+  //  The window should be just long
+  //  enough to contain three periods (for pitch detection) 
+  //  of MinimumPitch. E.g. if MinimumPitch is 75 Hz, the window length
+  //  is 40 ms and padded with zeros to reach a power of two.
+  mrs_real windowSize = 3/lowPitch*pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
+  pnet->updctrl("mrs_natural/inSamples", 512);
+	// pnet->updctrl("ShiftInput/sfi/mrs_natural/Decimation", 256);
+	pnet->updctrl("ShiftInput/sfi/mrs_natural/WindowSize", powerOfTwo(windowSize));
+	//pnet->updctrl("ShiftInput/sfi/mrs_natural/WindowSize", 1024);
+
+  while (pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
+   pnet->tick();
+
+	realvec data = pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->toVec();
+   for (mrs_natural i=1; i<data.getSize();i+=2)
+	   data(i) = samples2hertz(data(i), pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
+   
+   pnet->updctrl("RealvecSink/rvSink/mrs_bool/done", true); 
+	
+	ofstream dataFile;
+	dataFile.open("notepitches.txt");
+	for (mrs_natural i=1; i<data.getSize();i+=2)
+		dataFile<<data(i)<<endl;
+	dataFile.close();
+
+	delete pnet;
 }
 
 void Analyze::writePitches(string filename) {

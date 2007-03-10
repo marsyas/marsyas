@@ -1,4 +1,7 @@
 //#include <QObject>
+#include "MarSystemManager.h"
+using namespace Marsyas;
+
 using namespace std;
 
 class Analyze {
@@ -8,6 +11,7 @@ class Analyze {
 public:
 	Analyze();
 	~Analyze();
+	void getPitches(string filename);
 	void writePitches(string filename);
 	void calcDurations();
 	void calcNotes();
