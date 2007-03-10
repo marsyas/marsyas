@@ -32,6 +32,11 @@ void recognize(string sfName) {
 			}
 		}
 		cout<<endl;
+
+		const realvec& processedData = pnet->getctrl("Spectrum/spk/mrs_realvec/processedData")->to<mrs_realvec>();
+		cout << processedData << endl;
+
+		
 	}
 	delete pnet;
 }
