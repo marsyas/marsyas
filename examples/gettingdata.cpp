@@ -17,7 +17,7 @@ void recognize(string sfName) {
 // counter variables
 	int i,j;
 	mrs_natural numberObservations = pnet->getctrl("mrs_natural/onObservations")->toNatural();
-	mrs_natural numberSamples = pnet->getctrl("mrs_natural/onSamples")->toNatural();
+	mrs_natural numberSamples = pnet->getctrl("mrs_natural/onSamples")->toNatural();   // in this case, numbSamples will be 1, due to the Spectrum MarSystem.
 
 	while ( pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() ) {
 // don't tick because process() does that.
