@@ -4,13 +4,39 @@
 #include "analyze.h"
 
 Analyze::Analyze() {
-//	exercise = new int[8];
+//	exercise = (int*) malloc (16*sizeof(int));
+//	exercise = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 }
-Analyze::~Analyze() {
 
+Analyze::~Analyze() {
+	delete exercise;
+}
+
+void Analyze::metroDurations() {
+	int SIZE=18;
+	float SAMPLES_PER_SECOND = 261.625565;  // works with pitch-to-pratt.py
+	int TEMPO=120/60;
+
+// pitch, dur
+	int exer[] = {0, 4, 60, 2, 62, 1, 64, 1, 65, 2, 67, 2, 69, 3, 71, 1, 72, 4, 0, 0 };
+	int i;
+	int samp;
+
+	cout<<"metronome Durations:"<<endl;
+	samp=0;
+	int deltasamp;
+	int pitch;
+	for (i=0; i<=SIZE/2; i++) {
+		deltasamp = SAMPLES_PER_SECOND/TEMPO * exer[2*i+1];
+		samp += deltasamp;
+		pitch = exer[2*i];
+		cout<<samp << "   "<<deltasamp<<"   "<<pitch<<endl;
+	}
 }
 
 void Analyze::calcDurations() {
+	cout<<"detected Durations:"<<endl;
+
 	ifstream inFile;
 	inFile.open("notepitches.txt");
 	float curPitch;
@@ -32,12 +58,12 @@ void Analyze::calcDurations() {
 	}
 	inFile.close();
 	int maxSamps = i;
-
+/*
 	for (i=0; i<maxSamps; i++) {
 		cout<<pitchList[i]<<endl;
 	}
 	cout<<"process"<<endl;
-
+*/
 	// smooth out 0s.
 	i=0;
 	while (i<maxSamps) {
@@ -61,12 +87,12 @@ void Analyze::calcDurations() {
 		}
 		i++;
 	}
-
+/*
 	for (i=0; i<maxSamps; i++) {
 		cout<<pitchList[i]<<endl;
 	}
+*/
 
-/*
 	for (i=3; i<maxSamps-3; i++) {
 		avg1=0;
 		avg2=0;
@@ -83,15 +109,17 @@ void Analyze::calcDurations() {
 		avg1 = avg1/3.0;
 		avg2 = avg2/3.0;
 
+int pitch;
 		if (fabs(avg1-avg2) > 0.5) {
 			if ((variance1<0.5) && (variance2<0.5) ) {
 			//if (fabs(pitchList[i]-pitchList[i+1] < 0.5)) {
-				cout<<i - prevSamp<<"   "<<pitchList[i]<<"   "<<variance1<<endl;
+				pitch = pitchList[i-4];
+				cout<<i <<"     "<<i - prevSamp<<"   "<<pitch<<"   "<<variance1<<endl;
 				prevSamp = i;
 			}
 		}
 	}
-*/
+
 }
 
 void Analyze::getPitches(string filename) {

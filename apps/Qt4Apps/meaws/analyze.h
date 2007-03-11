@@ -15,6 +15,7 @@ public:
 	void writePitches(string filename);
 	void calcDurations();
 	void calcNotes();
+	void metroDurations();
 
 /*
 signals:
