@@ -538,7 +538,7 @@ MarSystem::tick()
 	if(ctrl_active_->isTrue())
 	{
 		scheduler_.tick();
-		process(inTick_,outTick_);
+		process(inTick_, (realvec &) ctrl_processedData_->to<mrs_realvec>());
 	}
 	else
 		MRSDIAG("MarSystem::tick() : MarSystem is not active! Ignoring tick command.");
