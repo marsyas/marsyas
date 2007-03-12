@@ -53,8 +53,8 @@ NormMaxMin::clone() const
 void 
 NormMaxMin::addControls()
 {
-  addctrl("mrs_real/lower", 0.0);
-  addctrl("mrs_real/upper", 1.0);
+  addctrl("mrs_real/lower", 0.0, lowerPtr_);
+  addctrl("mrs_real/upper", 1.0, upperPtr_);
   maximums_.create(1);
   minimums_.create(1);
   addctrl("mrs_realvec/maximums", maximums_);
@@ -62,7 +62,7 @@ NormMaxMin::addControls()
   setctrlState("mrs_realvec/maximums", true);
   setctrlState("mrs_realvec/minimums", true);
 
-  addctrl("mrs_bool/train", true);
+  addctrl("mrs_bool/train", true, trainPtr_);
   setctrlState("mrs_bool/train", true);
 
   addctrl("mrs_bool/init", false);
@@ -75,14 +75,11 @@ NormMaxMin::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("NormMaxMin.cpp - NormMaxMin:myUpdate");
   
-//   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-//   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-//   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-//   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
-	MarSystem::myUpdate(sender);
-  	
-	//defaultUpdate();  [!]
-	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
+
+  MarSystem::myUpdate(sender);
+  
+  //defaultUpdate();  [!]
+  inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
   
   init_ = getctrl("mrs_bool/init")->toBool();
 
@@ -120,13 +117,11 @@ NormMaxMin::myProcess(realvec& in, realvec& out)
 {
   init_ = true;
   setctrl("mrs_bool/init", init_);
+   
   
-  //checkFlow(in,out);
-
-
-  lower_ = getctrl("mrs_real/lower")->toReal();
-  upper_ = getctrl("mrs_real/upper")->toReal();
-  train_ = getctrl("mrs_bool/train")->toBool();
+  lower_ = lowerPtr_->toReal();
+  upper_ = upperPtr_->toReal();
+  train_ = trainPtr_->toBool();
   
   if (lower_ > upper_) 
     {

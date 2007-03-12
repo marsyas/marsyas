@@ -47,6 +47,11 @@ private:
 
   realvec maximums_;
   realvec minimums_;
+
+  MarControlPtr lowerPtr_;
+  MarControlPtr upperPtr_;
+  MarControlPtr trainPtr_;
+  
   
 public:
   NormMaxMin(std::string name);
