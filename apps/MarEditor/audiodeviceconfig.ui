@@ -1,0 +1,218 @@
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>AudioDeviceConfigClass</class>
+ <widget class="QDialog" name="AudioDeviceConfigClass" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>629</width>
+    <height>462</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Audio Device Configuration</string>
+  </property>
+  <widget class="QTreeWidget" name="infoList" >
+   <property name="geometry" >
+    <rect>
+     <x>390</x>
+     <y>10</y>
+     <width>231</width>
+     <height>251</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QTreeWidget" name="audioDevicesList" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>371</width>
+     <height>251</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btnCancel" >
+   <property name="geometry" >
+    <rect>
+     <x>460</x>
+     <y>430</y>
+     <width>77</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>Cancel</string>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_2" >
+   <property name="geometry" >
+    <rect>
+     <x>390</x>
+     <y>270</y>
+     <width>231</width>
+     <height>151</height>
+    </rect>
+   </property>
+   <property name="title" >
+    <string>Current Configuration</string>
+   </property>
+   <widget class="QTreeWidget" name="configList" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>211</width>
+      <height>121</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBox" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>270</y>
+     <width>371</width>
+     <height>181</height>
+    </rect>
+   </property>
+   <property name="title" >
+    <string>Audio Device Buffer Configuration</string>
+   </property>
+   <widget class="QLabel" name="label" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>51</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Buffer Size</string>
+    </property>
+   </widget>
+   <widget class="QTreeWidget" name="bufferSizeList" >
+    <property name="geometry" >
+     <rect>
+      <x>50</x>
+      <y>40</y>
+      <width>211</width>
+      <height>131</height>
+     </rect>
+    </property>
+    <property name="midLineWidth" >
+     <number>1</number>
+    </property>
+    <property name="rootIsDecorated" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QSlider" name="sldrBufferSize" >
+    <property name="geometry" >
+     <rect>
+      <x>20</x>
+      <y>40</y>
+      <width>21</width>
+      <height>131</height>
+     </rect>
+    </property>
+    <property name="minimum" >
+     <number>0</number>
+    </property>
+    <property name="maximum" >
+     <number>20</number>
+    </property>
+    <property name="orientation" >
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2" >
+    <property name="geometry" >
+     <rect>
+      <x>270</x>
+      <y>60</y>
+      <width>91</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Number of Buffers</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="spinNBuffers" >
+    <property name="geometry" >
+     <rect>
+      <x>290</x>
+      <y>90</y>
+      <width>51</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="maximum" >
+     <number>100</number>
+    </property>
+    <property name="minimum" >
+     <number>0</number>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QPushButton" name="btnOK" >
+   <property name="enabled" >
+    <bool>true</bool>
+   </property>
+   <property name="geometry" >
+    <rect>
+     <x>540</x>
+     <y>430</y>
+     <width>77</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>OK</string>
+   </property>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction></pixmapfunction>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>btnCancel</sender>
+   <signal>clicked()</signal>
+   <receiver>AudioDeviceConfigClass</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>460</x>
+     <y>430</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>124</x>
+     <y>380</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnOK</sender>
+   <signal>released()</signal>
+   <receiver>AudioDeviceConfigClass</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>579</x>
+     <y>444</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>416</x>
+     <y>431</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

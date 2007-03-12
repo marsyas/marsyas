@@ -92,11 +92,8 @@ MarSystemControlsGUI::createDefaultControlsWindow()
 		//string ctrlname = citer->first;
 		string ctrlname = citer->second->getName();
 
-		//get control short-name (i.e. without any path)
-		string shortctrlname = ctrlname.substr(msysPrefix_.length(),ctrlname.length() - msysPrefix_.length());
-
 		//create label widget
-		QLabel* cLabel = new QLabel(QString::fromStdString(shortctrlname));
+		QLabel* cLabel = new QLabel(QString::fromStdString(ctrlname));
 		cLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 				
 		//create MarControlValue widget

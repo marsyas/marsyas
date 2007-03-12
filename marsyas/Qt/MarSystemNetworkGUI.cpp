@@ -114,17 +114,17 @@ void
 MarSystemNetworkGUI::msysSelected(QTreeWidgetItem* item, int column)
 {
 	//create complete path to selected MarSystem
-	string selectedPath = "/" + item->text(0).toStdString() + "/"; //add leading and trailing "/" [!]
+	string selectedPath = "/" + item->text(0).toStdString(); 
 	QTreeWidgetItem* parent = item->parent();
 	while(parent)
 	{
-		selectedPath = "/" + parent->text(0).toStdString() + selectedPath; //add leading "/" [!]
+		selectedPath = "/" + parent->text(0).toStdString() + selectedPath; 
 		parent = parent->parent();
 	}
 
 	//get the selected MarSystem pointer
 	//selectedPath must be in the form:
-	// "/ftype/fname/type/name/"
+	// "ftype/fname/type/name/"
 	selectedMsys_ = msys_->getChildMarSystem(selectedPath);
 
 	//Create and show pop-up menu

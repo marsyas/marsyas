@@ -249,7 +249,12 @@ HEADERS += \
 	Cartesian2Polar.h \
 	PeSynFFT.h \
 	Polar2Cartesian.h \
-	FlowCutSource.h
+	FlowCutSource.h \
+	AbsSoundFileSource2.h \
+	AudioSink2.h \
+	AudioSource2.h \
+	SoundFileSource2.h \
+	WavFileSource2.h
 	 
 SOURCES += \
 	ADSR.cpp \
@@ -443,5 +448,10 @@ SOURCES += \
 	Cartesian2Polar.cpp \
 	PeSynFFT.cpp \
 	Polar2Cartesian.cpp \
-	FlowCutSource.cpp
+	FlowCutSource.cpp \
+	AbsSoundFileSource2.cpp \
+	AudioSink2.cpp \
+	AudioSource2.cpp \
+	SoundFileSource2.cpp \
+	WavFileSource2.cpp
 	

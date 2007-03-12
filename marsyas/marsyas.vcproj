@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="marsyas"
 	ProjectGUID="{77B37D56-55B3-35DE-BA08-052DF26584B4}"
+	Keyword="Qt4VSv1.0"
 	>
 	<Platforms>
 		<Platform
@@ -13,80 +14,6 @@
 	<ToolFiles>
 	</ToolFiles>
 	<Configurations>
-		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="."
-			IntermediateDirectory="release\"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				WarningLevel="0"
-				DefaultCharType="0"
-				EnableErrorChecks="1"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalOptions="-Zm200 -EHsc"
-				Optimization="2"
-				AdditionalIncludeDirectories="c:\Documents and Settings\cscuser\Desktop\marsyas\marsyas,c:\Program Files\Microsoft DirectX SDK (August 2006)\Include,.,c:\qt\qt-win-opensource-src-4.2.2\mkspecs\win32-msvc2005"
-				PreprocessorDefinitions="NDEBUG,UNICODE,QT_LARGEFILE_SUPPORT,WIN32,_CRT_SECURE_NO_DEPRECATE,_CRT_NONSTDC_NO_DEPRECATE,MARSYAS_RELEASE,MARSYAS_WIN32,WIN32,_WINDOWS,NDEBUG,MARSYAS_AUDIOIO,MARSYAS_DS,__WINDOWS_DS__,MARSYAS_MIDIIO,MARSYAS_WINMM,__WINDOWS_MM__"
-				GeneratePreprocessedFile="0"
-				RuntimeLibrary="2"
-				BufferSecurityCheck="true"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation="release\"
-				ObjectFile="release\"
-				ProgramDataBaseFileName=".\"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				DebugInformationFormat="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\lib\release\marsyas.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="."
@@ -115,14 +42,14 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="-Zm200 -EHsc"
+				AdditionalOptions="-Zm200 -w34100 -w34189 -EHsc -Zm200 -w34100 -w34189 -EHsc -w34100 -w34189"
 				Optimization="0"
-				AdditionalIncludeDirectories="c:\Documents and Settings\cscuser\Desktop\marsyas\marsyas,c:\Program Files\Microsoft DirectX SDK (August 2006)\Include,.,c:\qt\qt-win-opensource-src-4.2.2\mkspecs\win32-msvc2005"
-				PreprocessorDefinitions="UNICODE,QT_LARGEFILE_SUPPORT,WIN32,_CRT_SECURE_NO_DEPRECATE,_CRT_NONSTDC_NO_DEPRECATE,MARSYAS_RELEASE,MARSYAS_WIN32,WIN32,_WINDOWS,NDEBUG,MARSYAS_AUDIOIO,MARSYAS_DS,__WINDOWS_DS__,MARSYAS_MIDIIO,MARSYAS_WINMM,__WINDOWS_MM__"
+				AdditionalIncludeDirectories="&quot;C:/Qt/4.2.2/include/QtCore&quot;,&quot;C:/Qt/4.2.2/include/QtCore&quot;,&quot;C:/Qt/4.2.2/include/QtGui&quot;,&quot;C:/Qt/4.2.2/include/QtGui&quot;,&quot;C:/Qt/4.2.2/include&quot;,&quot;C:/Documents and Settings/lmartins/Desktop/MarsyasTrunk/marsyas&quot;,&quot;C:/Documents and Settings/lmartins/Desktop/MarsyasTrunk/marsyas/Qt&quot;,&quot;C:/Program Files/Microsoft DirectX SDK (February 2006)/Include&quot;,&quot;C:/Qt/4.2.2/include/ActiveQt&quot;,&quot;debug&quot;,&quot;.&quot;,c:\Qt\4.2.2\mkspecs\win32-msvc2005"
+				PreprocessorDefinitions="UNICODE,WIN32,QT_LARGEFILE_SUPPORT,MARSYAS_DEBUG,MARSYAS_QT,MARSYAS_WIN32,WIN32,_WINDOWS,_DEBUG,MARSYAS_AUDIOIO,MARSYAS_DS,__WINDOWS_DS__,MARSYAS_MIDIIO,MARSYAS_WINMM,__WINDOWS_MM__,MARSYAS_LOGWARNINGS,MARSYAS_LOGDEBUG,MARSYAS_LOGSTDOUT,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT"
 				GeneratePreprocessedFile="0"
-				MinimalRebuild="true"
 				RuntimeLibrary="3"
-				BufferSecurityCheck="true"
+				BufferSecurityCheck="false"
+				TreatWChar_tAsBuiltInType="false"
 				RuntimeTypeInfo="true"
 				AssemblerListingLocation="debug\"
 				ObjectFile="debug\"
@@ -136,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
+				PreprocessorDefinitions="UNICODE,WIN32,QT_LARGEFILE_SUPPORT,MARSYAS_DEBUG,MARSYAS_QT,MARSYAS_WIN32,WIN32,_WINDOWS,_DEBUG,MARSYAS_AUDIOIO,MARSYAS_DS,__WINDOWS_DS__,MARSYAS_MIDIIO,MARSYAS_WINMM,__WINDOWS_MM__,MARSYAS_LOGWARNINGS,MARSYAS_LOGDEBUG,MARSYAS_LOGSTDOUT,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -162,6 +89,81 @@
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="."
+			IntermediateDirectory="release\"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				WarningLevel="0"
+				DefaultCharType="0"
+				EnableErrorChecks="1"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="-Zm200 -w34100 -w34189 -EHsc -Zm200 -w34100 -w34189 -EHsc -w34100 -w34189"
+				Optimization="2"
+				AdditionalIncludeDirectories="&quot;C:/Qt/4.2.2/include/QtCore&quot;,&quot;C:/Qt/4.2.2/include/QtCore&quot;,&quot;C:/Qt/4.2.2/include/QtGui&quot;,&quot;C:/Qt/4.2.2/include/QtGui&quot;,&quot;C:/Qt/4.2.2/include&quot;,&quot;C:/Documents and Settings/lmartins/Desktop/MarsyasTrunk/marsyas&quot;,&quot;C:/Documents and Settings/lmartins/Desktop/MarsyasTrunk/marsyas/Qt&quot;,&quot;C:/Program Files/Microsoft DirectX SDK (February 2006)/Include&quot;,&quot;C:/Qt/4.2.2/include/ActiveQt&quot;,&quot;release&quot;,&quot;.&quot;,c:\Qt\4.2.2\mkspecs\win32-msvc2005"
+				PreprocessorDefinitions="QT_NO_DEBUG,NDEBUG,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,MARSYAS_RELEASE,MARSYAS_QT,MARSYAS_WIN32,WIN32,_WINDOWS,NDEBUG,MARSYAS_AUDIOIO,MARSYAS_DS,__WINDOWS_DS__,MARSYAS_MIDIIO,MARSYAS_WINMM,__WINDOWS_MM__,QT_NO_DEBUG,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT,NDEBUG"
+				GeneratePreprocessedFile="0"
+				RuntimeLibrary="2"
+				BufferSecurityCheck="false"
+				TreatWChar_tAsBuiltInType="false"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation="release\"
+				ObjectFile="release\"
+				ProgramDataBaseFileName=".\"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="QT_NO_DEBUG,NDEBUG,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,MARSYAS_RELEASE,MARSYAS_QT,MARSYAS_WIN32,WIN32,_WINDOWS,NDEBUG,MARSYAS_AUDIOIO,MARSYAS_DS,__WINDOWS_DS__,MARSYAS_MIDIIO,MARSYAS_WINMM,__WINDOWS_MM__,QT_NO_DEBUG,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="..\lib\release\marsyas.lib"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -169,6 +171,7 @@
 		<Filter
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
 				RelativePath="AbsMax.cpp"
@@ -180,6 +183,10 @@
 			</File>
 			<File
 				RelativePath="AbsSoundFileSource.cpp"
+				>
+			</File>
+			<File
+				RelativePath="AbsSoundFileSource2.cpp"
 				>
 			</File>
 			<File
@@ -207,7 +214,15 @@
 				>
 			</File>
 			<File
+				RelativePath="AudioSink2.cpp"
+				>
+			</File>
+			<File
 				RelativePath="AudioSource.cpp"
+				>
+			</File>
+			<File
+				RelativePath="AudioSource2.cpp"
 				>
 			</File>
 			<File
@@ -395,6 +410,10 @@
 				>
 			</File>
 			<File
+				RelativePath="Qt\GainControlsGUI.cpp"
+				>
+			</File>
+			<File
 				RelativePath="GaussianClassifier.cpp"
 				>
 			</File>
@@ -451,6 +470,10 @@
 				>
 			</File>
 			<File
+				RelativePath="Qt\MarControlGUI.cpp"
+				>
+			</File>
+			<File
 				RelativePath="MarControlManager.cpp"
 				>
 			</File>
@@ -467,11 +490,23 @@
 				>
 			</File>
 			<File
+				RelativePath="Qt\MarGUIManager.cpp"
+				>
+			</File>
+			<File
 				RelativePath="MarSystem.cpp"
 				>
 			</File>
 			<File
+				RelativePath="Qt\MarSystemControlsGUI.cpp"
+				>
+			</File>
+			<File
 				RelativePath="MarSystemManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="Qt\MarSystemNetworkGUI.cpp"
 				>
 			</File>
 			<File
@@ -480,6 +515,14 @@
 			</File>
 			<File
 				RelativePath="MarSystemTemplateBasic.cpp"
+				>
+			</File>
+			<File
+				RelativePath="Qt\MarSystemThread.cpp"
+				>
+			</File>
+			<File
+				RelativePath="Qt\MATLABeditorGUI.cpp"
 				>
 			</File>
 			<File
@@ -795,6 +838,14 @@
 				>
 			</File>
 			<File
+				RelativePath="SoundFileSource2.cpp"
+				>
+			</File>
+			<File
+				RelativePath="Qt\SoundFileSource2ControlsGUI.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Spectrum.cpp"
 				>
 			</File>
@@ -887,6 +938,10 @@
 				>
 			</File>
 			<File
+				RelativePath="WavFileSource2.cpp"
+				>
+			</File>
+			<File
 				RelativePath="WekaSink.cpp"
 				>
 			</File>
@@ -910,6 +965,7 @@
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
 				RelativePath="AbsMax.h"
@@ -921,6 +977,10 @@
 			</File>
 			<File
 				RelativePath="AbsSoundFileSource.h"
+				>
+			</File>
+			<File
+				RelativePath="AbsSoundFileSource2.h"
 				>
 			</File>
 			<File
@@ -948,7 +1008,15 @@
 				>
 			</File>
 			<File
+				RelativePath="AudioSink2.h"
+				>
+			</File>
+			<File
 				RelativePath="AudioSource.h"
+				>
+			</File>
+			<File
+				RelativePath="AudioSource2.h"
 				>
 			</File>
 			<File
@@ -1144,6 +1212,32 @@
 				>
 			</File>
 			<File
+				RelativePath="Qt\GainControlsGUI.h"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC Qt\GainControlsGUI.h"
+						CommandLine="$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_DEBUG -DMARSYAS_QT -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -D_DEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DMARSYAS_LOGWARNINGS -DMARSYAS_LOGDEBUG -DMARSYAS_LOGSTDOUT -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas\Qt&quot; -I&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;.\debug&quot; -I&quot;.&quot; -I&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot; &quot;Qt\GainControlsGUI.h&quot; -o &quot;debug\moc_GainControlsGUI.cpp&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
+						Outputs="debug\moc_GainControlsGUI.cpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC Qt\GainControlsGUI.h"
+						CommandLine="$(QTDIR)\bin\moc.exe  -DQT_NO_DEBUG -DNDEBUG -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_RELEASE -DMARSYAS_QT -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -DNDEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DNDEBUG -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas\Qt&quot; -I&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;.\release&quot; -I&quot;.&quot; -I&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot; &quot;Qt\GainControlsGUI.h&quot; -o &quot;release\moc_GainControlsGUI.cpp&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
+						Outputs="release\moc_GainControlsGUI.cpp"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="GaussianClassifier.h"
 				>
 			</File>
@@ -1202,6 +1296,54 @@
 			<File
 				RelativePath="MarControl.h"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC MarControl.h"
+						CommandLine="$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_DEBUG -DMARSYAS_QT -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -D_DEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DMARSYAS_LOGWARNINGS -DMARSYAS_LOGDEBUG -DMARSYAS_LOGSTDOUT -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas\Qt&quot; -I&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;.\debug&quot; -I&quot;.&quot; -I&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot; &quot;MarControl.h&quot; -o &quot;debug\moc_MarControl.cpp&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
+						Outputs="debug\moc_MarControl.cpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC MarControl.h"
+						CommandLine="$(QTDIR)\bin\moc.exe  -DQT_NO_DEBUG -DNDEBUG -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_RELEASE -DMARSYAS_QT -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -DNDEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DNDEBUG -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas\Qt&quot; -I&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;.\release&quot; -I&quot;.&quot; -I&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot; &quot;MarControl.h&quot; -o &quot;release\moc_MarControl.cpp&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
+						Outputs="release\moc_MarControl.cpp"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="Qt\MarControlGUI.h"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC Qt\MarControlGUI.h"
+						CommandLine="$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_DEBUG -DMARSYAS_QT -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -D_DEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DMARSYAS_LOGWARNINGS -DMARSYAS_LOGDEBUG -DMARSYAS_LOGSTDOUT -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas\Qt&quot; -I&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;.\debug&quot; -I&quot;.&quot; -I&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot; &quot;Qt\MarControlGUI.h&quot; -o &quot;debug\moc_MarControlGUI.cpp&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
+						Outputs="debug\moc_MarControlGUI.cpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC Qt\MarControlGUI.h"
+						CommandLine="$(QTDIR)\bin\moc.exe  -DQT_NO_DEBUG -DNDEBUG -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_RELEASE -DMARSYAS_QT -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -DNDEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DNDEBUG -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas\Qt&quot; -I&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;.\release&quot; -I&quot;.&quot; -I&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot; &quot;Qt\MarControlGUI.h&quot; -o &quot;release\moc_MarControlGUI.cpp&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
+						Outputs="release\moc_MarControlGUI.cpp"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="MarControlManager.h"
@@ -1220,12 +1362,90 @@
 				>
 			</File>
 			<File
+				RelativePath="Qt\MarGUIManager.h"
+				>
+			</File>
+			<File
 				RelativePath="MarSystem.h"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC MarSystem.h"
+						CommandLine="$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_DEBUG -DMARSYAS_QT -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -D_DEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DMARSYAS_LOGWARNINGS -DMARSYAS_LOGDEBUG -DMARSYAS_LOGSTDOUT -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas\Qt&quot; -I&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;.\debug&quot; -I&quot;.&quot; -I&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot; &quot;MarSystem.h&quot; -o &quot;debug\moc_MarSystem.cpp&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
+						Outputs="debug\moc_MarSystem.cpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC MarSystem.h"
+						CommandLine="$(QTDIR)\bin\moc.exe  -DQT_NO_DEBUG -DNDEBUG -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_RELEASE -DMARSYAS_QT -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -DNDEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DNDEBUG -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas\Qt&quot; -I&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;.\release&quot; -I&quot;.&quot; -I&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot; &quot;MarSystem.h&quot; -o &quot;release\moc_MarSystem.cpp&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
+						Outputs="release\moc_MarSystem.cpp"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="Qt\MarSystemControlsGUI.h"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC Qt\MarSystemControlsGUI.h"
+						CommandLine="$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_DEBUG -DMARSYAS_QT -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -D_DEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DMARSYAS_LOGWARNINGS -DMARSYAS_LOGDEBUG -DMARSYAS_LOGSTDOUT -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas\Qt&quot; -I&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;.\debug&quot; -I&quot;.&quot; -I&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot; &quot;Qt\MarSystemControlsGUI.h&quot; -o &quot;debug\moc_MarSystemControlsGUI.cpp&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
+						Outputs="debug\moc_MarSystemControlsGUI.cpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC Qt\MarSystemControlsGUI.h"
+						CommandLine="$(QTDIR)\bin\moc.exe  -DQT_NO_DEBUG -DNDEBUG -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_RELEASE -DMARSYAS_QT -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -DNDEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DNDEBUG -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas\Qt&quot; -I&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;.\release&quot; -I&quot;.&quot; -I&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot; &quot;Qt\MarSystemControlsGUI.h&quot; -o &quot;release\moc_MarSystemControlsGUI.cpp&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
+						Outputs="release\moc_MarSystemControlsGUI.cpp"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="MarSystemManager.h"
 				>
+			</File>
+			<File
+				RelativePath="Qt\MarSystemNetworkGUI.h"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC Qt\MarSystemNetworkGUI.h"
+						CommandLine="$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_DEBUG -DMARSYAS_QT -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -D_DEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DMARSYAS_LOGWARNINGS -DMARSYAS_LOGDEBUG -DMARSYAS_LOGSTDOUT -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas\Qt&quot; -I&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;.\debug&quot; -I&quot;.&quot; -I&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot; &quot;Qt\MarSystemNetworkGUI.h&quot; -o &quot;debug\moc_MarSystemNetworkGUI.cpp&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
+						Outputs="debug\moc_MarSystemNetworkGUI.cpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC Qt\MarSystemNetworkGUI.h"
+						CommandLine="$(QTDIR)\bin\moc.exe  -DQT_NO_DEBUG -DNDEBUG -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_RELEASE -DMARSYAS_QT -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -DNDEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DNDEBUG -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas\Qt&quot; -I&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;.\release&quot; -I&quot;.&quot; -I&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot; &quot;Qt\MarSystemNetworkGUI.h&quot; -o &quot;release\moc_MarSystemNetworkGUI.cpp&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
+						Outputs="release\moc_MarSystemNetworkGUI.cpp"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="MarSystemTemplateAdvanced.h"
@@ -1234,6 +1454,58 @@
 			<File
 				RelativePath="MarSystemTemplateBasic.h"
 				>
+			</File>
+			<File
+				RelativePath="Qt\MarSystemThread.h"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC Qt\MarSystemThread.h"
+						CommandLine="$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_DEBUG -DMARSYAS_QT -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -D_DEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DMARSYAS_LOGWARNINGS -DMARSYAS_LOGDEBUG -DMARSYAS_LOGSTDOUT -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas\Qt&quot; -I&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;.\debug&quot; -I&quot;.&quot; -I&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot; &quot;Qt\MarSystemThread.h&quot; -o &quot;debug\moc_MarSystemThread.cpp&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
+						Outputs="debug\moc_MarSystemThread.cpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC Qt\MarSystemThread.h"
+						CommandLine="$(QTDIR)\bin\moc.exe  -DQT_NO_DEBUG -DNDEBUG -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_RELEASE -DMARSYAS_QT -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -DNDEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DNDEBUG -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas\Qt&quot; -I&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;.\release&quot; -I&quot;.&quot; -I&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot; &quot;Qt\MarSystemThread.h&quot; -o &quot;release\moc_MarSystemThread.cpp&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
+						Outputs="release\moc_MarSystemThread.cpp"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="Qt\MATLABeditorGUI.h"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC Qt\MATLABeditorGUI.h"
+						CommandLine="$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_DEBUG -DMARSYAS_QT -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -D_DEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DMARSYAS_LOGWARNINGS -DMARSYAS_LOGDEBUG -DMARSYAS_LOGSTDOUT -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas\Qt&quot; -I&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;.\debug&quot; -I&quot;.&quot; -I&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot; &quot;Qt\MATLABeditorGUI.h&quot; -o &quot;debug\moc_MATLABeditorGUI.cpp&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
+						Outputs="debug\moc_MATLABeditorGUI.cpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC Qt\MATLABeditorGUI.h"
+						CommandLine="$(QTDIR)\bin\moc.exe  -DQT_NO_DEBUG -DNDEBUG -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_RELEASE -DMARSYAS_QT -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -DNDEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DNDEBUG -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas\Qt&quot; -I&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;.\release&quot; -I&quot;.&quot; -I&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot; &quot;Qt\MATLABeditorGUI.h&quot; -o &quot;release\moc_MATLABeditorGUI.cpp&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
+						Outputs="release\moc_MATLABeditorGUI.cpp"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="MaxArgMax.h"
@@ -1556,6 +1828,36 @@
 				>
 			</File>
 			<File
+				RelativePath="SoundFileSource2.h"
+				>
+			</File>
+			<File
+				RelativePath="Qt\SoundFileSource2ControlsGUI.h"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC Qt\SoundFileSource2ControlsGUI.h"
+						CommandLine="$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_DEBUG -DMARSYAS_QT -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -D_DEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DMARSYAS_LOGWARNINGS -DMARSYAS_LOGDEBUG -DMARSYAS_LOGSTDOUT -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas\Qt&quot; -I&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;.\debug&quot; -I&quot;.&quot; -I&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot; &quot;Qt\SoundFileSource2ControlsGUI.h&quot; -o &quot;debug\moc_SoundFileSource2ControlsGUI.cpp&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
+						Outputs="debug\moc_SoundFileSource2ControlsGUI.cpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOC Qt\SoundFileSource2ControlsGUI.h"
+						CommandLine="$(QTDIR)\bin\moc.exe  -DQT_NO_DEBUG -DNDEBUG -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DMARSYAS_RELEASE -DMARSYAS_QT -DMARSYAS_WIN32 -DWIN32 -D_WINDOWS -DNDEBUG -DMARSYAS_AUDIOIO -DMARSYAS_DS -D__WINDOWS_DS__ -DMARSYAS_MIDIIO -DMARSYAS_WINMM -D__WINDOWS_MM__ -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DNDEBUG -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtCore&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include\QtGui&quot; -I&quot;C:\Qt\4.2.2\include&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas&quot; -I&quot;C:\Documents and Settings\lmartins\Desktop\MarsyasTrunk\marsyas\Qt&quot; -I&quot;C:\Program Files\Microsoft DirectX SDK (February 2006)\Include&quot; -I&quot;C:\Qt\4.2.2\include\ActiveQt&quot; -I&quot;.\release&quot; -I&quot;.&quot; -I&quot;c:\Qt\4.2.2\mkspecs\win32-msvc2005&quot; &quot;Qt\SoundFileSource2ControlsGUI.h&quot; -o &quot;release\moc_SoundFileSource2ControlsGUI.cpp&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="c:\Qt\4.2.2\bin\moc.exe"
+						Outputs="release\moc_SoundFileSource2ControlsGUI.cpp"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="Spectrum.h"
 				>
 			</File>
@@ -1648,6 +1950,10 @@
 				>
 			</File>
 			<File
+				RelativePath="WavFileSource2.h"
+				>
+			</File>
+			<File
 				RelativePath="WekaSink.h"
 				>
 			</File>
@@ -1670,6 +1976,228 @@
 			<File
 				RelativePath="ZeroRClassifier.h"
 				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Generated Files"
+			Filter="cpp;c;cxx;moc;h;def;odl;idl;res;"
+			UniqueIdentifier="{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}"
+			>
+			<File
+				RelativePath="release\moc_GainControlsGUI.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="debug\moc_GainControlsGUI.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="debug\moc_MarControl.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="release\moc_MarControl.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="debug\moc_MarControlGUI.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="release\moc_MarControlGUI.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="debug\moc_MarSystem.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="release\moc_MarSystem.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="debug\moc_MarSystemControlsGUI.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="release\moc_MarSystemControlsGUI.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="debug\moc_MarSystemNetworkGUI.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="release\moc_MarSystemNetworkGUI.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="debug\moc_MarSystemThread.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="release\moc_MarSystemThread.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="release\moc_MATLABeditorGUI.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="debug\moc_MATLABeditorGUI.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="release\moc_SoundFileSource2ControlsGUI.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="debug\moc_SoundFileSource2ControlsGUI.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 	</Files>

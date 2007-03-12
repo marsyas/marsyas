@@ -63,7 +63,7 @@ unix:!macx:CONFIG += marsyasAUDIOIO_ALSA
 # GUI suport for Marsyas library 
 ######################################################################
 
-CONFIG += marsyasGUI
+#CONFIG += marsyasGUI
 
 ######################################################################
 # Adds support for MATLAB engine classes
@@ -94,6 +94,11 @@ INCLUDEPATH += "$$BASEDIR"/marsyas
 CONFIG(debug, debug|release) {
 	message ( Configuring Marsyas for DEBUG building )
 	DEFINES += MARSYAS_DEBUG
+	
+	#in debug, activate some logging by default 
+	CONFIG += marsyasLOGWARNINGS	#warning messages in log
+	CONFIG += marsyasLOGDEBUG		#debug messages in log
+	CONFIG += marsyasLOGSTDOUT			#log to stdout
 }
 
 CONFIG(release, debug|release) {

@@ -1,0 +1,192 @@
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>MarEditorClass</class>
+ <widget class="QMainWindow" name="MarEditorClass" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1112</width>
+    <height>679</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>MarEditor</string>
+  </property>
+  <widget class="QWidget" name="centralWidget" />
+  <widget class="QMenuBar" name="menuBar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1112</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuTools" >
+    <property name="title" >
+     <string>Tools</string>
+    </property>
+    <addaction name="actionAudioSettings" />
+   </widget>
+   <widget class="QMenu" name="menuWindows" >
+    <property name="title" >
+     <string>Windows</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuOpen" >
+    <property name="title" >
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen" />
+    <addaction name="actionSave" />
+    <addaction name="separator" />
+    <addaction name="actionExit" />
+   </widget>
+   <addaction name="menuOpen" />
+   <addaction name="menuTools" />
+   <addaction name="menuWindows" />
+  </widget>
+  <widget class="QToolBar" name="mainToolBar" >
+   <property name="windowTitle" >
+    <string>Toolbar</string>
+   </property>
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <attribute name="toolBarArea" >
+    <number>4</number>
+   </attribute>
+   <addaction name="actionOpen" />
+   <addaction name="separator" />
+   <addaction name="actionRewind" />
+   <addaction name="actionPlay" />
+   <addaction name="actionPause" />
+   <addaction name="actionStop" />
+   <addaction name="separator" />
+   <addaction name="actionAudioSettings" />
+  </widget>
+  <widget class="QStatusBar" name="statusBar" />
+  <action name="actionOpen" >
+   <property name="icon" >
+    <iconset>Icons/fileopen.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Open...</string>
+   </property>
+   <property name="statusTip" >
+    <string comment="comentário" >Open audio file</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionExit" >
+   <property name="text" >
+    <string>Exit</string>
+   </property>
+   <property name="statusTip" >
+    <string>Quit the Application</string>
+   </property>
+   <property name="shortcut" >
+    <string/>
+   </property>
+  </action>
+  <action name="actionPlay" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="icon" >
+    <iconset>Icons/player_play.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Play</string>
+   </property>
+   <property name="statusTip" >
+    <string>Play the audio file</string>
+   </property>
+  </action>
+  <action name="actionAudioSettings" >
+   <property name="icon" >
+    <iconset>Icons/resourceeditortool.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Audio Settings...</string>
+   </property>
+   <property name="statusTip" >
+    <string>Configure audio settings</string>
+   </property>
+  </action>
+  <action name="actionStop" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="icon" >
+    <iconset>Icons/stop2.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Stop</string>
+   </property>
+   <property name="statusTip" >
+    <string>Stop playing the audio file</string>
+   </property>
+  </action>
+  <action name="actionPause" >
+   <property name="icon" >
+    <iconset>Icons/player_pause.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Pause</string>
+   </property>
+  </action>
+  <action name="actionRewind" >
+   <property name="icon" >
+    <iconset>Icons/rewind-start.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Rewind</string>
+   </property>
+  </action>
+  <action name="actionSave" >
+   <property name="icon" >
+    <iconset>Icons/fileopen.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Save...</string>
+   </property>
+  </action>
+  <action name="actionSave_2" >
+   <property name="text" >
+    <string>Save...</string>
+   </property>
+  </action>
+  <action name="actionSave_3" >
+   <property name="text" >
+    <string>Save...</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction></pixmapfunction>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>actionExit</sender>
+   <signal>triggered()</signal>
+   <receiver>MarEditorClass</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>393</x>
+     <y>368</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
