@@ -55,5 +55,12 @@ Norm.h DownSampler.h WaveletBands.h Sum.h Product.h\
 PeakPeriods2BPM.h Histogram.h BeatHistoFeatures.h MslModel.h \
 CommandLineOptions.h RawFileSource.h FM.h \
 ANN_node.h Annotator.h ZeroRClassifier.h Summary.h KNNClassifier.h Filter.h \
-Kurtosis.h Skewness.h ERB.h CollectionFileSource.h MeddisHairCell.h ViconFileSource.h Cascade.h Parallel.h SeneffEar.h MP3FileSource.h OggFileSource.h ClassOutputSink.h ClipAudioRange.h SilenceRemove.h RtMidi.h Stk.h Limiter.h CompExp.h NoiseGate.h NoiseSource.h Plucked.h ADSR.h Envelope.h Delay.h NormMaxMin.h HarmonicEnhancer.h Reassign.h Normalize.h AMDF.h SMO.h SOM.h LPC.h LSP.h LPCC.h WekaSource.h RealvecSource.h RealvecSink.h Power.h MemorySource.h MidiInput.h Esitar.h MidiOutput.h mididevices.h NumericLib.h NormCut.h vmblock.h lu.h basis.h dsound.h 
+Kurtosis.h Skewness.h ERB.h CollectionFileSource.h MeddisHairCell.h ViconFileSource.h \
+Cascade.h Parallel.h SeneffEar.h MP3FileSource.h OggFileSource.h ClassOutputSink.h \
+ClipAudioRange.h SilenceRemove.h RtMidi.h Stk.h Limiter.h CompExp.h NoiseGate.h \
+NoiseSource.h Plucked.h ADSR.h Envelope.h Delay.h NormMaxMin.h HarmonicEnhancer.h \
+Reassign.h Normalize.h AMDF.h SMO.h SOM.h LPC.h LSP.h LPCC.h WekaSource.h RealvecSource.h \
+RealvecSink.h Power.h MemorySource.h MidiInput.h Esitar.h MidiOutput.h mididevices.h \
+NumericLib.h NormCut.h vmblock.h lu.h basis.h dsound.h \
+AbsSoundFileSource2.h AudioSink2.h AudioSource2.h SoundFileSource2.h WavFileSource2.h
 
