@@ -161,11 +161,20 @@ MarControl::getType() const
 
 void MarControl::callMarSystemUpdate()
 {
-#ifdef MARSYAS_QT
-	QReadLocker locker(&rwLock_);
-#endif
+	#ifdef MARSYAS_QT
+	rwLock_.lockForRead(); //too many lockers?!?
+	#endif
 	if (state_ && msys_)
-    msys_->controlUpdate(this);
+	{
+		#ifdef MARSYAS_QT
+		rwLock_.unlock();
+		#endif
+		msys_->controlUpdate(this);
+		return;
+	}
+	#ifdef MARSYAS_QT
+	rwLock_.unlock();
+	#endif
 }
 
 bool
@@ -180,6 +189,10 @@ MarControl::linkTo(MarControlPtr ctrl)
 		return false;
 	}
 
+#ifdef MARSYAS_QT
+	rwLock_.lockForRead();
+#endif
+
 	//check if these controls are already linked
 	vector<MarControlPtr>::const_iterator ci;
 	for(ci = linkedTo_.begin(); ci != linkedTo_.end(); ++ci) //iterator may become invalid without a lock!! [!][?] 
@@ -187,20 +200,27 @@ MarControl::linkTo(MarControlPtr ctrl)
 		//compare MarControl* (the actual pointer and not its value)
 		if((*ci)() == ctrl())
 		{
+			#ifdef MARSYAS_QT
+			rwLock_.unlock();
+			#endif
 			return true;//already linked! :-)
 		}
 	}
 	
-	if (ctrl->getType() != this->getType())
+	if (ctrl->getType() != value_->getType())
 	{
 		ostringstream oss;
 		oss << "[MarControl::linkTo] Linking two controls of different types ";
 		oss << "(" << ctrl->getName() << " with " << this->getName() << ").";
-		MRSWARN(oss.str());		
+		MRSWARN(oss.str());
+		#ifdef MARSYAS_QT
+		rwLock_.unlock();
+		#endif
 		return false;
 	}
 
 #ifdef MARSYAS_QT
+	rwLock_.unlock();
 	rwLock_.lockForWrite();
 	ctrl->rwLock_.lockForWrite();
 #endif
@@ -218,6 +238,7 @@ MarControl::linkTo(MarControlPtr ctrl)
 #endif
 	
 	//sync control values (and sizes in case of mrs_vector controls)
+	//operator= is protected by mutexes
 	*this = *ctrl;
 	
 	return true;
@@ -227,21 +248,32 @@ void
 MarControl::clearLinks()
 {
 #ifdef MARSYAS_QT
-	QWriteLocker locker (&rwLock_);
+	rwLock_.lockForRead();
 #endif
 
 	for (size_t i=0; i<linkedTo_.size(); i++)
 	{
 		linkedTo_[i]->removeLink(this);
 	}
+
+#ifdef MARSYAS_QT
+	rwLock_.unlock();
+	rwLock_.lockForWrite();
+#endif
+
 	linkedTo_.clear();
+
+#ifdef MARSYAS_QT
+	rwLock_.unlock();
+#endif
 }
 
 void
 MarControl::removeLink(MarControlPtr link)
 {
 #ifdef MARSYAS_QT
-	QWriteLocker locker (&rwLock_);
+	rwLock_.lockForRead();
+	link->rwLock_.lockForRead();
 #endif
 
 	std::vector<MarControlPtr> temp;
@@ -252,7 +284,18 @@ MarControl::removeLink(MarControlPtr link)
 			temp.push_back(linkedTo_[i]);
 		}
 	}
+
+#ifdef MARSYAS_QT
+	link->rwLock_.unlock();
+	rwLock_.unlock();
+	rwLock_.lockForWrite();
+#endif
+
 	linkedTo_=temp;
+
+#ifdef MARSYAS_QT
+	rwLock_.unlock();
+#endif
 }
 
 #ifdef MARSYAS_QT

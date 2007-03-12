@@ -695,12 +695,11 @@ MarControl&
 MarControl::operator=(const MarControl& a)
 {
 	#ifdef MARSYAS_QT
-	//QWriteLocker locker_w(&rwLock_); [!][?]
 	QReadLocker locker_r(&(a.rwLock_));
 	#endif
 	if (this != &a)
 	{
-		this->setValue(a.value_);
+		this->setValue(a.value_);//setValue() is protected by mutex
 		/*refCount_ = 0;
 		msys_			= a.msys_;
 		cname_		= a.cname_;
@@ -718,7 +717,7 @@ bool
 MarControl::setValue(T& t, bool update)
 {
 	#ifdef MARSYAS_QT
-	rwLock_.lockForWrite();
+	rwLock_.lockForRead();
 	#endif
 
 	MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(value_);
@@ -732,12 +731,22 @@ MarControl::setValue(T& t, bool update)
 			return true;
 		}
 
+		#ifdef MARSYAS_QT
+		rwLock_.unlock();
+		rwLock_.lockForWrite();
+		#endif
+
 		ptr->set(t);
 
 		#ifdef MARSYAS_DEBUG
 		std::ostringstream oss;
 		value_->serialize(oss);
 		value_debug_ = oss.str();
+		#endif
+
+		#ifdef MARSYAS_QT
+		rwLock_.unlock();
+		rwLock_.lockForRead();
 		#endif
 
 		if(isLinked_)
@@ -758,6 +767,7 @@ MarControl::setValue(T& t, bool update)
 		//emit controlChanged(this);
 		emitControlChanged(this);
 		#endif
+
 		return true;
 	}
 	else
@@ -781,7 +791,7 @@ bool
 MarControl::setValue(const T& t, bool update)
 {
 	#ifdef MARSYAS_QT
-	rwLock_.lockForWrite();
+	rwLock_.lockForRead();
 	#endif
 
 	MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(value_);
@@ -791,9 +801,14 @@ MarControl::setValue(const T& t, bool update)
 		{
 			#ifdef MARSYAS_QT
 			rwLock_.unlock();
-			#endif
+			#endif	
 			return true;
 		}
+
+		#ifdef MARSYAS_QT
+		rwLock_.unlock();
+		rwLock_.lockForWrite();
+		#endif
 
 		ptr->set(const_cast<T&>(t));
 
@@ -801,6 +816,11 @@ MarControl::setValue(const T& t, bool update)
 		std::ostringstream oss;
 		value_->serialize(oss);
 		value_debug_ = oss.str();
+		#endif
+
+		#ifdef MARSYAS_QT
+		rwLock_.unlock();
+		rwLock_.lockForRead();
 		#endif
 
 		if(isLinked_)
@@ -821,7 +841,6 @@ MarControl::setValue(const T& t, bool update)
 		//emit controlChanged(this);
 		emitControlChanged(this);
 		#endif
-
 		return true;
 	}
 	else
@@ -843,34 +862,33 @@ inline
 bool
 MarControl::setValue(MarControlPtr mc, bool update)
 {
-	#ifdef MARSYAS_QT
-	rwLock_.lockForRead();
-	#endif
-
 	if (value_->getType() != mc->value_->getType())
 	{
 		std::ostringstream sstr;
 		sstr << "[MarControl::setValue] Trying to set value of incompatible type "
 			<< "(expected " << value_->getType() << ", given " << mc->value_->getType() << ")";
 		MRSWARN(sstr.str());
-		#ifdef MARSYAS_QT
-		rwLock_.unlock();
-		#endif
+		//#ifdef MARSYAS_QT
+		//rwLock_.unlock();
+		//#endif
 		return false;
 	}
 
 	if (MarControlPtr(this) == mc)
 	{
-		#ifdef MARSYAS_QT
-		rwLock_.unlock();
-		#endif
+		//#ifdef MARSYAS_QT
+		//rwLock_.unlock();
+		//#endif
 		return true;
 	}
 
-	#ifdef MARSYAS_QT
-	rwLock_.unlock();
+// 	#ifdef MARSYAS_QT
+// 	rwLock_.unlock();
+// 	rwLock_.lockForWrite();
+// 	#endif
+#ifdef MARSYAS_QT
 	rwLock_.lockForWrite();
-	#endif
+#endif
 
 	delete value_;
 	value_ = mc->value_->clone();
@@ -879,6 +897,11 @@ MarControl::setValue(MarControlPtr mc, bool update)
 	std::ostringstream oss;
 	value_->serialize(oss);
 	value_debug_ = oss.str();
+	#endif
+
+	#ifdef MARSYAS_QT
+	rwLock_.unlock();
+	rwLock_.lockForRead();
 	#endif
 
 	if(isLinked_)
@@ -908,7 +931,7 @@ bool
 MarControl::setValue(MarControlValue *mcv, bool update)
 {
 	#ifdef MARSYAS_QT
-	rwLock_.lockForWrite();
+	rwLock_.lockForRead();
 	#endif
 
 	if (value_->getType() != mcv->getType())
@@ -931,6 +954,11 @@ MarControl::setValue(MarControlValue *mcv, bool update)
 		return true;
 	}
 
+	#ifdef MARSYAS_QT
+	rwLock_.unlock();
+	rwLock_.lockForWrite();
+	#endif
+
 	delete value_;
 	value_ = mcv->clone();
 
@@ -938,6 +966,11 @@ MarControl::setValue(MarControlValue *mcv, bool update)
 	std::ostringstream oss;
 	value_->serialize(oss);
 	value_debug_ = oss.str();
+	#endif
+
+	#ifdef MARSYAS_QT
+	rwLock_.unlock();
+	rwLock_.lockForRead();
 	#endif
 
 	if(isLinked_)
@@ -967,7 +1000,7 @@ bool
 MarControl::setValue(mrs_natural i, mrs_real value, bool update)
 {
 	#ifdef MARSYAS_QT
-	rwLock_.lockForWrite();
+	rwLock_.lockForRead();
 	#endif
 
 	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
@@ -980,16 +1013,20 @@ MarControl::setValue(mrs_natural i, mrs_real value, bool update)
 			#endif
 			return true; // assuming all linked controls are synced we can return immediately 
 		}
+		#ifdef MARSYAS_QT
+		rwLock_.unlock();
+		rwLock_.lockForWrite();
+		#endif
 		ptr->getRef()(i) = value;
 	}
 	else
 	{
-		#ifdef MARSYAS_QT
-		rwLock_.unlock();
-		#endif
 		std::ostringstream sstr;
 		sstr << "[MarControl::create] Trying to use realvec-specific method with " << value_->getType();
 		MRSWARN(sstr.str());
+		#ifdef MARSYAS_QT
+		rwLock_.unlock();
+		#endif
 		return false;
 	}
 
@@ -997,6 +1034,11 @@ MarControl::setValue(mrs_natural i, mrs_real value, bool update)
 	std::ostringstream oss;
 	value_->serialize(oss);
 	value_debug_ = oss.str();
+	#endif
+
+	#ifdef MARSYAS_QT
+	rwLock_.unlock();
+	rwLock_.lockForRead();
 	#endif
 
 	if(isLinked_)
@@ -1024,9 +1066,9 @@ MarControl::setValue(mrs_natural i, mrs_real value, bool update)
 bool
 MarControl::setValue(mrs_natural r, mrs_natural c, mrs_real value, bool update)
 {
-	#ifdef MARSYAS_QT
-	rwLock_.lockForWrite();
-	#endif
+#ifdef MARSYAS_QT
+	rwLock_.lockForRead();
+#endif
 
 	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
 	if(ptr)
@@ -1038,16 +1080,20 @@ MarControl::setValue(mrs_natural r, mrs_natural c, mrs_real value, bool update)
 			#endif
 			return true; // assuming all linked controls are synced we can return immediately 
 		}
+		#ifdef MARSYAS_QT
+		rwLock_.unlock();
+		rwLock_.lockForWrite();
+		#endif
 		ptr->getRef()(r,c) = value;
 	}
 	else
 	{
-		#ifdef MARSYAS_QT
-		rwLock_.unlock();
-		#endif
 		std::ostringstream sstr;
 		sstr << "[MarControl::create] Trying to use realvec-specific method with " << value_->getType();
 		MRSWARN(sstr.str());
+		#ifdef MARSYAS_QT
+		rwLock_.unlock();
+		#endif
 		return false;
 	}
 
@@ -1056,6 +1102,11 @@ MarControl::setValue(mrs_natural r, mrs_natural c, mrs_real value, bool update)
 	value_->serialize(oss);
 	value_debug_ = oss.str();
 	#endif
+
+#ifdef MARSYAS_QT
+	rwLock_.unlock();
+	rwLock_.lockForRead();
+#endif
 
 	if(isLinked_)
 	{
@@ -1155,7 +1206,7 @@ void
 MarControl::stretch(mrs_natural rows, mrs_natural cols)
 {
 	#ifdef MARSYAS_QT
-	rwLock_.lockForWrite();
+	rwLock_.lockForRead();
 	#endif
 
 	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
@@ -1168,16 +1219,20 @@ MarControl::stretch(mrs_natural rows, mrs_natural cols)
 			#endif
 			return; // assuming all linked controls are synced we can return immediately 
 		}
+		#ifdef MARSYAS_QT
+		rwLock_.unlock();
+		rwLock_.lockForWrite();
+		#endif
 		ptr->getRef().stretch(rows, cols);
 	}
 	else
 	{
-		#ifdef MARSYAS_QT
-		rwLock_.unlock();
-		#endif
 		std::ostringstream sstr;
 		sstr << "[MarControl::create] Trying to use realvec-specific method with " << value_->getType();
 		MRSWARN(sstr.str());
+		#ifdef MARSYAS_QT
+		rwLock_.unlock();
+		#endif
 		return;
 	}
 
@@ -1185,6 +1240,11 @@ MarControl::stretch(mrs_natural rows, mrs_natural cols)
 	std::ostringstream oss;
 	value_->serialize(oss);
 	value_debug_ = oss.str();
+	#endif
+
+	#ifdef MARSYAS_QT
+	rwLock_.unlock();
+	rwLock_.lockForRead();
 	#endif
 
 	if(isLinked_)
@@ -1195,15 +1255,12 @@ MarControl::stretch(mrs_natural rows, mrs_natural cols)
 		}
 	}
 
-	#ifdef MARSYAS_QT
-	rwLock_.unlock();
-	#endif
-
 	this->callMarSystemUpdate();
 
 	#ifdef MARSYAS_QT
 	//emit controlChanged(this);
 	emitControlChanged(this);
+	rwLock_.unlock();
 	#endif
 }
 
@@ -1212,7 +1269,7 @@ void
 MarControl::stretch(mrs_natural size)
 {
 	#ifdef MARSYAS_QT
-	rwLock_.lockForWrite();
+	rwLock_.lockForRead();
 	#endif
 
 	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
@@ -1225,16 +1282,20 @@ MarControl::stretch(mrs_natural size)
 			#endif
 			return;  // assuming all linked controls are synced we can return immediately 
 		}
+		#ifdef MARSYAS_QT
+		rwLock_.unlock();
+		rwLock_.lockForWrite();
+		#endif
 		ptr->getRef().stretch(size);
 	}
 	else
 	{
-		#ifdef MARSYAS_QT
-		rwLock_.unlock();
-		#endif
 		std::ostringstream sstr;
 		sstr << "[MarControl::create] Trying to use realvec-specific method with " << value_->getType();
 		MRSWARN(sstr.str());
+		#ifdef MARSYAS_QT
+		rwLock_.unlock();
+		#endif
 		return;
 	}
 
@@ -1242,6 +1303,11 @@ MarControl::stretch(mrs_natural size)
 	std::ostringstream oss;
 	value_->serialize(oss);
 	value_debug_ = oss.str();
+	#endif
+
+	#ifdef MARSYAS_QT
+	rwLock_.unlock();
+	rwLock_.lockForRead();
 	#endif
 
 	if(isLinked_)
@@ -1252,15 +1318,12 @@ MarControl::stretch(mrs_natural size)
 		}
 	}
 
-	#ifdef MARSYAS_QT
-	rwLock_.unlock();
-	#endif
-
 	this->callMarSystemUpdate();
 
 	#ifdef MARSYAS_QT
 	//emit controlChanged(this);
 	emitControlChanged(this);
+	rwLock_.unlock();
 	#endif
 }
 
@@ -1325,7 +1388,7 @@ operator==(const MarControl& v1, const MarControl& v2)
 	#ifdef MARSYAS_QT
 	QReadLocker locker1(&(v1.rwLock_));
 	QReadLocker locker2(&(v2.rwLock_));
-#endif
+	#endif
 	return !(v1.value_->isNotEqual(v2.value_));
 }
 
@@ -1342,8 +1405,12 @@ operator!=(const MarControl& v1, const MarControl& v2)
 
 inline
 mrs_real
-operator+(const MarControl& v1, const mrs_real& v2)//[?] lock?!?
+operator+(const MarControl& v1, const mrs_real& v2)
 {
+	#ifdef MARSYAS_QT
+	QReadLocker locker1(&(v1.rwLock_));
+	#endif
+
 	mrs_real r1;
 	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v1.value_);
 	if(ptr)
@@ -1363,8 +1430,12 @@ operator+(const MarControl& v1, const mrs_real& v2)//[?] lock?!?
 
 inline
 mrs_real
-operator+(const mrs_real& v1, const MarControl& v2)//[?] lock?!?
+operator+(const mrs_real& v1, const MarControl& v2)
 {
+	#ifdef MARSYAS_QT
+	QReadLocker locker2(&(v2.rwLock_));
+	#endif
+
 	mrs_real r2;
 	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v2.value_);
 	if(ptr)
@@ -1384,8 +1455,12 @@ operator+(const mrs_real& v1, const MarControl& v2)//[?] lock?!?
 
 inline
 mrs_real
-operator-(const MarControl& v1, const mrs_real& v2)//[?] lock?!?
+operator-(const MarControl& v1, const mrs_real& v2)
 {
+	#ifdef MARSYAS_QT
+	QReadLocker locker1(&(v1.rwLock_));
+	#endif
+
 	mrs_real r1;
 	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v1.value_);
 	if(ptr)
@@ -1405,8 +1480,12 @@ operator-(const MarControl& v1, const mrs_real& v2)//[?] lock?!?
 
 inline
 mrs_real
-operator-(const mrs_real& v1, const MarControl& v2)//[?] lock?!?
+operator-(const mrs_real& v1, const MarControl& v2)
 {
+	#ifdef MARSYAS_QT
+	QReadLocker locker2(&(v2.rwLock_));
+	#endif
+
 	mrs_real r2;
 	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v2.value_);
 	if(ptr)
@@ -1426,8 +1505,12 @@ operator-(const mrs_real& v1, const MarControl& v2)//[?] lock?!?
 
 inline
 mrs_real
-operator*(const MarControl& v1, const mrs_real& v2)//[?] lock?!?
+operator*(const MarControl& v1, const mrs_real& v2)
 {
+	#ifdef MARSYAS_QT
+	QReadLocker locker1(&(v1.rwLock_));
+	#endif
+
 	mrs_real r1;
 	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v1.value_);
 	if(ptr)
@@ -1447,8 +1530,12 @@ operator*(const MarControl& v1, const mrs_real& v2)//[?] lock?!?
 
 inline
 mrs_real
-operator*(const mrs_real& v1, const MarControl& v2)//[?] lock?!?
+operator*(const mrs_real& v1, const MarControl& v2)
 {
+	#ifdef MARSYAS_QT
+	QReadLocker locker2(&(v2.rwLock_));
+	#endif
+
 	mrs_real r2;
 	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v2.value_);
 	if(ptr)
@@ -1468,8 +1555,12 @@ operator*(const mrs_real& v1, const MarControl& v2)//[?] lock?!?
 
 inline
 mrs_real
-operator/(const MarControl& v1, const mrs_real& v2)//[?] lock?!?
+operator/(const MarControl& v1, const mrs_real& v2)
 {
+	#ifdef MARSYAS_QT
+	QReadLocker locker1(&(v1.rwLock_));
+	#endif
+
 	mrs_real r1;
 	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v1.value_);
 	if(ptr)
@@ -1489,8 +1580,12 @@ operator/(const MarControl& v1, const mrs_real& v2)//[?] lock?!?
 
 inline
 mrs_real
-operator/(const mrs_real& v1, const MarControl& v2)//[?] lock?!?
+operator/(const mrs_real& v1, const MarControl& v2)
 {
+	#ifdef MARSYAS_QT
+	QReadLocker locker2(&(v2.rwLock_));
+	#endif
+
 	mrs_real r2;
 	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v2.value_);
 	if(ptr)
@@ -1510,8 +1605,13 @@ operator/(const mrs_real& v1, const MarControl& v2)//[?] lock?!?
 
 inline
 MarControl
-operator+(const MarControl& v1, const MarControl& v2)//[?] lock?!?
+operator+(const MarControl& v1, const MarControl& v2)
 {
+	#ifdef MARSYAS_QT
+	QReadLocker locker1(&(v1.rwLock_));
+	QReadLocker locker2(&(v2.rwLock_));
+	#endif
+
 	MarControlValue *val = v1.value_->sum(v2.value_);
 	MarControl ret(val);
 	delete val;
@@ -1520,8 +1620,13 @@ operator+(const MarControl& v1, const MarControl& v2)//[?] lock?!?
 
 inline
 MarControl
-operator-(const MarControl& v1, const MarControl& v2)//[?] lock?!?
+operator-(const MarControl& v1, const MarControl& v2)
 {
+	#ifdef MARSYAS_QT
+	QReadLocker locker1(&(v1.rwLock_));
+	QReadLocker locker2(&(v2.rwLock_));
+	#endif
+
 	MarControlValue *val = v1.value_->subtract(v2.value_);
 	MarControl ret(val);
 	delete val;
@@ -1530,8 +1635,12 @@ operator-(const MarControl& v1, const MarControl& v2)//[?] lock?!?
 
 inline
 MarControl
-operator*(const MarControl& v1, const MarControl& v2)//[?] lock?!?
+operator*(const MarControl& v1, const MarControl& v2)
 {
+	#ifdef MARSYAS_QT
+	QReadLocker locker1(&(v1.rwLock_));
+	QReadLocker locker2(&(v2.rwLock_));
+	#endif	
 	MarControlValue *val = v1.value_->multiply(v2.value_);
 	MarControl ret(val);
 	delete val;
@@ -1540,8 +1649,12 @@ operator*(const MarControl& v1, const MarControl& v2)//[?] lock?!?
 
 inline
 MarControl
-operator/(const MarControl& v1, const MarControl& v2)//[?] lock?!?
+operator/(const MarControl& v1, const MarControl& v2)
 {
+	#ifdef MARSYAS_QT
+	QReadLocker locker1(&(v1.rwLock_));
+	QReadLocker locker2(&(v2.rwLock_));
+	#endif	
 	MarControlValue *val = v1.value_->divide(v2.value_);
 	MarControl ret(val);
 	delete val;
