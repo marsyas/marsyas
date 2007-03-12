@@ -78,19 +78,20 @@ Mean::myProcess(realvec& in, realvec& out)
 {
   //checkFlow(in,out);
 
-  /*
   out.setval(0.0);
   for (o=0; o < inObservations_; o++)
     {
       for (t = 0; t < inSamples_; t++)
 		{
-		  // Calculate mean 
-		  obsrow_(t) = in(o,t);
+		  // Calculate mean  
+		  out(o,0) += in(o,t);
 		}
-      out(o,0) = obsrow_.mean();
+      out(o,0) /= inSamples_;
     }
-	*/
-  out = in.meanObs();
+	
+
+  // INEFFICIENT A LOT OF MEMORY COPYING AT EVERY TICK 
+  // out = in.meanObs();
 }
 
       

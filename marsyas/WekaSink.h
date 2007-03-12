@@ -47,8 +47,13 @@ private:
   mrs_natural precision_;
   mrs_natural downsample_;
   
-	MarControlPtr ctrl_regression_;
-	MarControlPtr ctrl_putHeader_;
+  MarControlPtr ctrl_regression_;
+  MarControlPtr ctrl_putHeader_;
+  MarControlPtr ctrl_precision_;
+  MarControlPtr ctrl_downsample_;
+  MarControlPtr ctrl_nLabels_;
+  MarControlPtr ctrl_labelNames_;
+  
  
 public:
   WekaSink(std::string name);

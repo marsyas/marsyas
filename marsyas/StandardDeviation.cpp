@@ -80,7 +80,8 @@ StandardDeviation::myProcess(realvec& in, realvec& out)
 {
   //checkFlow(in,out);
   
-  /*
+
+  
   out.setval(0.0);
   for (o=0; o < inObservations_; o++)
     {
@@ -91,8 +92,9 @@ StandardDeviation::myProcess(realvec& in, realvec& out)
 	}
       out(o,0) = obsrow_.std();
     }
-  */
-  out = in.stdObs(); 
+
+  // INEFFICIENT A LOT OF MEMORY ALLOCATION/COPYING 
+  // out = in.stdObs(); 
 }
 
       

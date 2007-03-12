@@ -17,8 +17,8 @@
 */
 
 /**
-\class WekaSink
-\brief Output sink (text) in Weka format
+   \class WekaSink
+   \brief Output sink (text) in Weka format
 
 */
 
@@ -29,195 +29,200 @@ using namespace Marsyas;
 
 WekaSink::WekaSink(string name):MarSystem("WekaSink",name)
 {
-	mos_ = NULL;
-	addControls();
+  mos_ = NULL;
+  addControls();
 }
 
 WekaSink::~WekaSink()
 {
-	if (mos_ != NULL) 
-		mos_->close();
-	delete mos_;
+  if (mos_ != NULL) 
+    mos_->close();
+  delete mos_;
 }
 
 WekaSink::WekaSink(const WekaSink& a):MarSystem(a)
 {
-	mos_ = NULL;
+  mos_ = NULL;
 
-	ctrl_regression_ = getControl("mrs_bool/regression");
-	ctrl_putHeader_ = getControl("mrs_bool/putHeader");
+  ctrl_regression_ = getControl("mrs_bool/regression");
+  ctrl_putHeader_ = getControl("mrs_bool/putHeader");
+  ctrl_labelNames_ = getControl("mrs_string/labelNames");
+  ctrl_nLabels_ = getControl("mrs_natural/nLabels");
+  ctrl_precision_ = getControl("mrs_natural/precision");
+  ctrl_downsample_ = getControl("mrs_natural/downsample");
+  
 }
 
 MarSystem* 
 WekaSink::clone() const 
 {
-	return new WekaSink(*this);
+  return new WekaSink(*this);
 }
 
 void
 WekaSink::addControls()
 {
-	addctrl("mrs_natural/precision", 6);
-	setctrlState("mrs_natural/precision", true);
-	addctrl("mrs_string/filename", "weka.arff");
-	setctrlState("mrs_string/filename", true);
-	addctrl("mrs_natural/nLabels", 2);
-	addctrl("mrs_natural/downsample", 1);
-	setctrlState("mrs_natural/downsample", true);
-	addctrl("mrs_string/labelNames", "Music,Speech");
-	setctrlState("mrs_string/labelNames", true);
+  addctrl("mrs_natural/precision", 6, ctrl_precision_);
+  setctrlState("mrs_natural/precision", true);
+  addctrl("mrs_string/filename", "weka.arff");
+  setctrlState("mrs_string/filename", true);
+  addctrl("mrs_natural/nLabels", 2, ctrl_nLabels_);
+  addctrl("mrs_natural/downsample", 1, ctrl_downsample_);
+  setctrlState("mrs_natural/downsample", true);
+  addctrl("mrs_string/labelNames", "Music,Speech", ctrl_labelNames_);
+  setctrlState("mrs_string/labelNames", true);
 
-	addctrl("mrs_bool/regression", false, ctrl_regression_);
+  addctrl("mrs_bool/regression", false, ctrl_regression_);
 
-	addControl("mrs_bool/putHeader", false, ctrl_putHeader_);
-	setctrlState(ctrl_putHeader_, true);
+  addControl("mrs_bool/putHeader", false, ctrl_putHeader_);
+  setctrlState(ctrl_putHeader_, true);
 }
 
 void 
 WekaSink::putHeader(string inObsNames)
 {
-	//updctrl(ctrl_putHeader_, false);
-	ctrl_putHeader_->setValue(true);
-
-	if ((filename_ != getctrl("mrs_string/filename")->toString()))
+  //updctrl(ctrl_putHeader_, false);
+  ctrl_putHeader_->setValue(true);
+  
+  if ((filename_ != getctrl("mrs_string/filename")->toString()))
+    {
+      if (mos_ != NULL) 
 	{
-		if (mos_ != NULL) 
-		{
-			mos_->close();
-			delete mos_;
-			if (filename_ == "weka.arff")
-				remove(filename_.c_str());
-		}
-		filename_ = getctrl("mrs_string/filename")->toString();
-
-		mos_ = new ofstream;
-		mos_->open(filename_.c_str());
-
-		(*mos_) << "@relation marsyas" << endl;
-		mrs_natural nAttributes = getctrl("mrs_natural/inObservations")->toNatural()-1;
-		mrs_natural nLabels = getctrl("mrs_natural/nLabels")->toNatural();
-
-		mrs_natural i;
-		for (i =0; i < nAttributes; i++)
-		{
-			string inObsName;
-			string temp;
-			inObsName = inObsNames.substr(0, inObsNames.find(","));
-			temp = inObsNames.substr(inObsNames.find(",")+1, inObsNames.length());
-			inObsNames = temp;
-			ostringstream oss;
-			// oss << "attribute" << i; 
-			oss << inObsName;
-			(*mos_) << "@attribute " << oss.str() << " real" << endl;
-		}
-
-		if (!ctrl_regression_->isTrue()) 
-		{
-			(*mos_) << "@attribute output {";
-			for (i=0; i < nLabels; i++) 
-			{
-				ostringstream oss;
-				// oss << "label" << i;
-				oss << labelNames_[i];
-				(*mos_) << oss.str();
-				if (i < nLabels-1)
-					(*mos_) << ",";
-				// (*mos_) << "@attribute output {music,speech}" << endl;
-			}
-			(*mos_) << "}" << endl;
-		}
-		else 
-		{
-			(*mos_) << "@attribute output real" << endl;
-		}
-		(*mos_) << "\n\n@data" << endl;
+	  mos_->close();
+	  delete mos_;
+	  if (filename_ == "weka.arff")
+	    remove(filename_.c_str());
 	}
+      filename_ = getctrl("mrs_string/filename")->toString();
+      
+      mos_ = new ofstream;
+      mos_->open(filename_.c_str());
+      
+      (*mos_) << "@relation marsyas" << endl;
+      mrs_natural nAttributes = getctrl("mrs_natural/inObservations")->toNatural()-1;
+      mrs_natural nLabels = ctrl_nLabels_->toNatural();
+      
+      mrs_natural i;
+      for (i =0; i < nAttributes; i++)
+	{
+	  string inObsName;
+	  string temp;
+	  inObsName = inObsNames.substr(0, inObsNames.find(","));
+	  temp = inObsNames.substr(inObsNames.find(",")+1, inObsNames.length());
+	  inObsNames = temp;
+	  ostringstream oss;
+	  // oss << "attribute" << i; 
+	  oss << inObsName;
+	  (*mos_) << "@attribute " << oss.str() << " real" << endl;
+	}
+      
+      if (!ctrl_regression_->isTrue()) 
+	{
+	  (*mos_) << "@attribute output {";
+	  for (i=0; i < nLabels; i++) 
+	    {
+	      ostringstream oss;
+	      // oss << "label" << i;
+	      oss << labelNames_[i];
+	      (*mos_) << oss.str();
+	      if (i < nLabels-1)
+		(*mos_) << ",";
+	      // (*mos_) << "@attribute output {music,speech}" << endl;
+	    }
+	  (*mos_) << "}" << endl;
+	}
+      else 
+	{
+	  (*mos_) << "@attribute output real" << endl;
+	}
+      (*mos_) << "\n\n@data" << endl;
+    }
 }
 
 void
 WekaSink::myUpdate(MarControlPtr sender)
 {
-	MRSDIAG("WekaSink.cpp - WekaSink:myUpdate");
-
-	MarSystem::myUpdate(sender);
-
-
-	string labelNames = getctrl("mrs_string/labelNames")->toString();
-
-	labelNames_.clear();
-
-	for (int i = 0; i < getctrl("mrs_natural/nLabels")->toNatural(); i++)
-	{
-		string labelName;
-		string temp;
-
-		labelName = labelNames.substr(0, labelNames.find(","));
-		temp = labelNames.substr(labelNames.find(",")+1, labelNames.length());
-		labelNames = temp;
-		labelNames_.push_back(labelName);
-	}
-
-	string onObsNames = getctrl("mrs_string/inObsNames")->toString();
-
-	//if(!(getctrl("mrs_bool/mute")->toBool()))
-	if(!ctrl_mute_->isTrue())
-		putHeader(onObsNames);
-
-	precision_ = getctrl("mrs_natural/precision")->toNatural();
-	downsample_ = getctrl("mrs_natural/downsample")->toNatural();
+  MRSDIAG("WekaSink.cpp - WekaSink:myUpdate");
+  
+  MarSystem::myUpdate(sender);
+  
+  
+  string labelNames = ctrl_labelNames_->toString();
+  
+  labelNames_.clear();
+  
+  for (int i = 0; i < ctrl_nLabels_->toNatural(); i++)
+    {
+      string labelName;
+      string temp;
+      
+      labelName = labelNames.substr(0, labelNames.find(","));
+      temp = labelNames.substr(labelNames.find(",")+1, labelNames.length());
+      labelNames = temp;
+      labelNames_.push_back(labelName);
+    }
+  
+  string onObsNames = ctrl_onObsNames_->toString();
+  
+  //if(!(getctrl("mrs_bool/mute")->toBool()))
+  if(!ctrl_mute_->isTrue())
+    putHeader(onObsNames);
+  
+  precision_ = ctrl_precision_->toNatural();
+  downsample_ = ctrl_downsample_->toNatural();
 }
 
 void 
 WekaSink::myProcess(realvec& in, realvec& out)
 {
-	//if (mute_) copy input to output
-	//if(getctrl("mrs_bool/mute")->toBool())
-	if(ctrl_mute_->isTrue())
-	{
-		for (o=0; o < inObservations_; o++)
-			for (t = 0; t < inSamples_; t++)
-			{
-				out(o,t) =  in(o,t);
-			}
-			return;
-	}
-
-	static int count = 0;
-	mrs_natural label = 0;
-
+  //if (mute_) copy input to output
+  //if(getctrl("mrs_bool/mute")->toBool())
+  if(ctrl_mute_->isTrue())
+    {
+      for (o=0; o < inObservations_; o++)
 	for (t = 0; t < inSamples_; t++)
+	  {
+	    out(o,t) =  in(o,t);
+	  }
+      return;
+    }
+  
+  static int count = 0;
+  mrs_natural label = 0;
+  
+  for (t = 0; t < inSamples_; t++)
+    {
+      for (o=0; o < inObservations_; o++)
 	{
-		for (o=0; o < inObservations_; o++)
+	  out(o,t) = in(o,t);
+	  if (o < inObservations_-1)
+	    {
+	      if ((count % downsample_) == 0)
 		{
-			out(o,t) = in(o,t);
-			if (o < inObservations_-1)
-			{
-				if ((count % downsample_) == 0)
-				{
-					if( out(o,t) != out(o,t) )	// Jen's NaN check for MIREX 05
-						(*mos_) << fixed << setprecision(precision_) << 0. << ",";
-					else
-						(*mos_) << fixed << setprecision(precision_) << out(o,t) << ",";
-				}
-			}
+		  if( out(o,t) != out(o,t) )	// Jen's NaN check for MIREX 05
+		    (*mos_) << fixed << setprecision(precision_) << 0. << ",";
+		  else
+		    (*mos_) << fixed << setprecision(precision_) << out(o,t) << ",";
 		}
-
-		label = (mrs_natural)in(inObservations_-1, t);
-		ostringstream oss;
-		if ((count % downsample_) == 0)
-		{
-			if(!ctrl_regression_->isTrue())
-			{
-				oss << labelNames_[label];
-				(*mos_) << oss.str();
-				(*mos_) << endl;
-			}
-			else
-			{
-				(*mos_) << in(inObservations_-1, t);
-				(*mos_) << endl;
-			}
-		}
+	    }
 	}
-	count++;
+      
+      label = (mrs_natural)in(inObservations_-1, t);
+      ostringstream oss;
+      if ((count % downsample_) == 0)
+	{
+	  if(!ctrl_regression_->isTrue())
+	    {
+	      oss << labelNames_[label];
+	      (*mos_) << oss.str();
+	      (*mos_) << endl;
+	    }
+	  else
+	    {
+	      (*mos_) << in(inObservations_-1, t);
+	      (*mos_) << endl;
+	    }
+	}
+    }
+  count++;
 }

@@ -45,9 +45,9 @@ Gain::Gain(string name):MarSystem("Gain", name)
 Gain::Gain(const Gain& a) : MarSystem(a)
 {
   ctrl_gain_ = getctrl("mrs_real/gain");
-	ctrl_RMScalc_ = getctrl("mrs_bool/RMScalc");
-	ctrl_inRMS_ = getctrl("mrs_realvec/inRMS");
-	ctrl_outRMS_ = getctrl("mrs_realvec/outRMS");
+  ctrl_RMScalc_ = getctrl("mrs_bool/RMScalc");
+  ctrl_inRMS_ = getctrl("mrs_realvec/inRMS");
+  ctrl_outRMS_ = getctrl("mrs_realvec/outRMS");
 }
 
 Gain::~Gain()
@@ -65,9 +65,9 @@ Gain::addControls()
 {
   //Add specific controls needed by this MarSystem.
   addctrl("mrs_real/gain", 1.0, ctrl_gain_);
-	addctrl("mrs_bool/RMScalc", false, ctrl_RMScalc_);
-	addctrl("mrs_realvec/inRMS", inRMS_, ctrl_inRMS_);
-	addctrl("mrs_realvec/outRMS", outRMS_, ctrl_outRMS_);
+  addctrl("mrs_bool/RMScalc", false, ctrl_RMScalc_);
+  addctrl("mrs_realvec/inRMS", inRMS_, ctrl_inRMS_);
+  addctrl("mrs_realvec/outRMS", outRMS_, ctrl_outRMS_);
 }
 
 void
