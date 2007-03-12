@@ -1232,28 +1232,40 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
 
   MarControlPtr donePtr = featureNetwork->getctrl("SilenceRemove/srm/SoundFileSource/src/mrs_bool/notEmpty");
 
+  MarControlPtr memResetPtr = featureNetwork->getctrl("Memory/memory/mrs_bool/reset");
+  MarControlPtr fnamePtr = featureNetwork->getctrl("SilenceRemove/srm/SoundFileSource/src/mrs_string/filename");
+  
+
+  MarControlPtr annLabelPtr = featureNetwork->getctrl("Annotator/annotator/mrs_natural/label");
+  MarControlPtr nlabelsPtr = featureNetwork->getctrl("WekaSink/wsink/mrs_natural/nLabels");
+  MarControlPtr wekaDownsamplePtr = featureNetwork->getctrl("WekaSink/wsink/mrs_natural/downsample");
+  
+  MarControlPtr wekaFnamePtr = featureNetwork->getctrl("WekaSink/wsink/mrs_string/filename");
+  
+
+  
 
   for (cj=0; cj < (mrs_natural)cls.size(); cj++)
     {
       Collection l = cls[cj];
-      featureNetwork->updctrl("Annotator/annotator/mrs_natural/label", cj);
-      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
-      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 40);
+      featureNetwork->updctrl(annLabelPtr, cj);
+      featureNetwork->updctrl(nlabelsPtr, (mrs_natural)cls.size());
+      featureNetwork->updctrl(wekaDownsamplePtr, 40);
       if (wekafname == EMPTYSTRING) 
-	featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", "weka.arff");
+	featureNetwork->updctrl(wekaFnamePtr, "weka.arff");
       else 
-	featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  
+	featureNetwork->updctrl(wekaFnamePtr, wekafname);  
       // featureNetwork->updctrl("WekaSink/wsink/mrs_natural/label", cj);
 
       cout << "Class " << cj << " is " << l.name() << endl;
 
-      featureNetwork->updctrl("Memory/memory/mrs_bool/reset", true);
+      featureNetwork->updctrl(memResetPtr, true);
 
 
       for (i=0; i < l.size(); i++)
 	{
-	  featureNetwork->updctrl("Memory/memory/mrs_bool/reset", true);
-	  featureNetwork->updctrl("SilenceRemove/srm/SoundFileSource/src/mrs_string/filename", l.entry(i));
+	  featureNetwork->updctrl(memResetPtr, true);
+	  featureNetwork->updctrl(fnamePtr, l.entry(i));
 	  wc = 0;  	  
 	  samplesPlayed = 0;
 
@@ -1269,6 +1281,7 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
 	  cerr << "Processed " << l.entry(i) << endl;
 	}
     }
+  
 
   if (classifierName == "GS")
     featureNetwork->updctrl("GaussianClassifier/gaussian/mrs_bool/done",true);
