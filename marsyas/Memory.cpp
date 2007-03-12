@@ -74,19 +74,15 @@ Memory::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("Memory.cpp - Memory:myUpdate");
   
-  mrs_natural memSize = getctrl("mrs_natural/memSize")->toNatural();
+  mrs_natural memSize = ctrl_memSize_->toNatural();
   
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples")->toNatural() * memSize);
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
-
-  reset_ = getctrl("mrs_bool/reset")->toBool();
-
-  //defaultUpdate(); [!]
-  inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
+  ctrl_onSamples_->setValue(ctrl_inSamples_ * memSize, NOUPDATE);
+  ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);  
+  ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
+  
   
   ostringstream oss;
-  string inObsNames = getctrl("mrs_string/inObsNames")->toString();
+  string inObsNames = ctrl_inObsNames_->toString();
   for (int i = 0; i < inObservations_; i++)
     {
       string inObsName;
@@ -96,7 +92,7 @@ Memory::myUpdate(MarControlPtr sender)
       inObsNames = temp;
       oss << "Mem" << memSize << "_" << inObsName << ",";
     }
-  setctrl("mrs_string/onObsNames", oss.str());
+  ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 
 }
 
@@ -105,7 +101,7 @@ Memory::myUpdate(MarControlPtr sender)
 
 void 
 Memory::myProcess(realvec& in, realvec& out)
-{
+{ 
   //checkFlow(in,out);
 
 
@@ -115,7 +111,7 @@ Memory::myProcess(realvec& in, realvec& out)
   
 
 
-  if (reset_) 
+  if (ctrl_reset_->isTrue()) 
     {
       out.setval(0.0);
       reset_ = false;
