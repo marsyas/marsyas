@@ -61,8 +61,8 @@ SMO::addControls()
   addctrl("mrs_natural/nLabels", 1, nlabelsPtr_);
   setctrlState("mrs_natural/nLabels", true);
   weights_.create(1);
-  addctrl("mrs_realvec/weights", weights_);
-  addctrl("mrs_bool/done", false);
+  addctrl("mrs_realvec/weights", weights_, weightsPtr_);
+  addctrl("mrs_bool/done", false, donePtr_);
   setctrlState("mrs_bool/done", true);
   
 }
@@ -272,9 +272,9 @@ SMO::myProcess(realvec& in, realvec& out)
       
     }
   
-  if (getctrl("mrs_bool/done")->toBool())
+  if (donePtr_->toBool())
     {
-      updctrl("mrs_realvec/weights", weights_);
+      updctrl(weightsPtr_, weights_);
     }
 
   

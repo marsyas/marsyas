@@ -46,6 +46,8 @@ private:
   realvec weights_;
   MarControlPtr modePtr_;
   MarControlPtr nlabelsPtr_;
+  MarControlPtr donePtr_;
+  MarControlPtr weightsPtr_;
   
 
  
