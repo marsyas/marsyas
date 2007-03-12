@@ -1229,6 +1229,10 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
   // main loop for extracting the features 
   featureNetwork->updctrl("Confidence/confidence/mrs_natural/nLabels", (int)cls.size());
   string className = "";
+
+  MarControlPtr donePtr = featureNetwork->getctrl("SilenceRemove/srm/SoundFileSource/src/mrs_bool/notEmpty");
+
+
   for (cj=0; cj < (mrs_natural)cls.size(); cj++)
     {
       Collection l = cls[cj];
@@ -1244,6 +1248,8 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
       cout << "Class " << cj << " is " << l.name() << endl;
 
       featureNetwork->updctrl("Memory/memory/mrs_bool/reset", true);
+
+
       for (i=0; i < l.size(); i++)
 	{
 	  featureNetwork->updctrl("Memory/memory/mrs_bool/reset", true);
@@ -1251,7 +1257,9 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
 	  wc = 0;  	  
 	  samplesPlayed = 0;
 
-	  while ((featureNetwork->getctrl("SilenceRemove/srm/SoundFileSource/src/mrs_bool/notEmpty")->toBool()) && (duration > samplesPlayed))
+
+
+	  while ((donePtr->isTrue()) && (duration > samplesPlayed))
 	    {
 	      featureNetwork->tick();
 	      wc++;
