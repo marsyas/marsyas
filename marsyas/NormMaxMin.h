@@ -43,7 +43,7 @@ private:
   bool init_;
   
   void addControls();
-	void myUpdate(MarControlPtr sender);
+  void myUpdate(MarControlPtr sender);
 
   realvec maximums_;
   realvec minimums_;
@@ -51,6 +51,9 @@ private:
   MarControlPtr lowerPtr_;
   MarControlPtr upperPtr_;
   MarControlPtr trainPtr_;
+  MarControlPtr initPtr_;
+  MarControlPtr maximumsPtr_;
+  MarControlPtr minimumsPtr_;
   
   
 public:

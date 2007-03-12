@@ -57,15 +57,15 @@ NormMaxMin::addControls()
   addctrl("mrs_real/upper", 1.0, upperPtr_);
   maximums_.create(1);
   minimums_.create(1);
-  addctrl("mrs_realvec/maximums", maximums_);
-  addctrl("mrs_realvec/minimums", minimums_);
+  addctrl("mrs_realvec/maximums", maximums_, maximumsPtr_);
+  addctrl("mrs_realvec/minimums", minimums_, minimumsPtr_);
   setctrlState("mrs_realvec/maximums", true);
   setctrlState("mrs_realvec/minimums", true);
 
   addctrl("mrs_bool/train", true, trainPtr_);
   setctrlState("mrs_bool/train", true);
 
-  addctrl("mrs_bool/init", false);
+  addctrl("mrs_bool/init", false, initPtr_);
   setctrlState("mrs_bool/init", true);
 }
 
@@ -96,7 +96,7 @@ NormMaxMin::myUpdate(MarControlPtr sender)
     {
       maximums_.stretch(inObservations_);
       minimums_.stretch(inObservations_);
-
+      
       maximums_.setval(DBL_MIN);
       minimums_.setval(DBL_MAX);
       setctrl("mrs_realvec/maximums", maximums_);
@@ -116,7 +116,7 @@ void
 NormMaxMin::myProcess(realvec& in, realvec& out)
 {
   init_ = true;
-  setctrl("mrs_bool/init", init_);
+  setctrl(initPtr_, init_);
    
   
   lower_ = lowerPtr_->toReal();
@@ -146,8 +146,8 @@ NormMaxMin::myProcess(realvec& in, realvec& out)
 	    
 	  }
       
-      setctrl("mrs_realvec/maximums", maximums_);
-      setctrl("mrs_realvec/minimums", minimums_);  
+      setctrl(maximumsPtr_, maximums_);
+      setctrl(minimumsPtr_, minimums_);  
     }
   else
     {
