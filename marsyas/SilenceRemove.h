@@ -40,6 +40,7 @@ private:
 
 	void addControls();
 	void myUpdate(MarControlPtr sender);
+	MarControlPtr ctrl_notEmpty_;
   
 public:
 	SilenceRemove(std::string name);
