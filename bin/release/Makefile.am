@@ -84,9 +84,9 @@ orcarecord_LDADD =  $(top_builddir)/lib/release/libmarsyas.a \
 	       $(Libs)
 
 helloworld_SOURCES = $(top_srcdir)/examples/helloworld.cpp
-helloworld_LDADD = $(top_builddir)/lib/release/libmarsyas.a \ 
+helloworld_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 		$(Libs)
 
 gettingdata_SOURCES = $(top_srcdir)/examples/gettingdata.cpp
-gettingdata_LDADD = $(top_builddir)/lib/release/libmarsyas.a \ 
+gettingdata_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 		    $(Libs)
