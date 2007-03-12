@@ -57,50 +57,48 @@ SilenceRemove::addControls()
 void
 SilenceRemove::myUpdate(MarControlPtr sender)
 {
-	MRSDIAG("SilenceRemove.cpp - SilenceRemove:myUpdate");
-
-	threshold_ = getctrl("mrs_real/threshold")->toReal();
-
-	if (marsystemsSize_ > 0)
-	{
-		// set input characteristics 
-		setctrl("mrs_natural/inSamples", 
-			marsystems_[0]->getctrl("mrs_natural/inSamples")->toNatural());
-		setctrl("mrs_natural/inObservations", 
-			marsystems_[0]->getctrl("mrs_natural/inObservations"));
-		setctrl("mrs_real/israte", 
-			marsystems_[0]->getctrl("mrs_real/israte"));
-
-		// set output characteristics
-		setctrl("mrs_natural/onSamples", marsystems_[0]->getctrl("mrs_natural/onSamples")->toNatural());
-		setctrl("mrs_natural/onObservations", marsystems_[0]->getctrl("mrs_natural/onObservations")->toNatural());
-		setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-		marsystems_[0]->update(); //lmartins: shouldn't this have already been called?! [?]
-
-
-		ctrl_notEmpty_ = marsystems_[0]->getctrl("mrs_bool/notEmpty");
-	}
+  MRSDIAG("SilenceRemove.cpp - SilenceRemove:myUpdate");
+  
+  threshold_ = getctrl("mrs_real/threshold")->toReal();
+  
+  if (marsystemsSize_ > 0)
+    {
+      // set input characteristics 
+      ctrl_inSamples_->setValue(marsystems_[0]->getctrl("mrs_natural/inSamples"));
+      ctrl_inObservations_->setValue(marsystems_[0]->getctrl("mrs_natural/inObservations"));
+      ctrl_israte_->setValue(marsystems_[0]->getctrl("mrs_real/israte"));
+      
+      // set output characteristics
+      ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
+      ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
+      ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
+      
+      marsystems_[0]->update(); //lmartins: shouldn't this have already been called?! [?]
+      
+      
+      ctrl_notEmpty_ = marsystems_[0]->getctrl("mrs_bool/notEmpty");
+    }
 }
 
 void 
 SilenceRemove::myProcess(realvec& in, realvec& out)
 {
-	//checkFlow(in,out);
-	mrs_real rms = 0.0;
-	mrs_natural count = 0;
-
-	do 
-	{
-		marsystems_[0]->process(in, out);
-
-		for (o=0; o < onObservations_; o++)
-			for (t = 0; t < onSamples_; t++)
-			{
-				rms += (out(o,t) * out(o,t));
-				count++;
-			}
-			rms /= count;
-			rms = sqrt(rms);
-			count = 0;
-	} while (rms < threshold_ && (ctrl_notEmpty_->isTrue())); 
+  //checkFlow(in,out);
+  mrs_real rms = 0.0;
+  mrs_natural count = 0;
+  
+  do 
+    {
+      marsystems_[0]->process(in, out);
+      
+      for (o=0; o < onObservations_; o++)
+	for (t = 0; t < onSamples_; t++)
+	  {
+	    rms += (out(o,t) * out(o,t));
+	    count++;
+	  }
+      rms /= count;
+      rms = sqrt(rms);
+      count = 0;
+    } while (rms < threshold_ && (ctrl_notEmpty_->isTrue())); 
 }
