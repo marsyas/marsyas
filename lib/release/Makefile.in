@@ -65,9 +65,11 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	ExParser.$(OBJEXT) ExSymTbl.$(OBJEXT) ExNode.$(OBJEXT) \
 	ExVal.$(OBJEXT) Expr.$(OBJEXT) ExCommon.$(OBJEXT) \
 	realvec.$(OBJEXT) SoundFileSource.$(OBJEXT) \
-	AuFileSource.$(OBJEXT) WavFileSource.$(OBJEXT) \
+	SoundFileSource2.$(OBJEXT) AuFileSource.$(OBJEXT) \
+	WavFileSource.$(OBJEXT) WavFileSource2.$(OBJEXT) \
 	BaseAudioSink.$(OBJEXT) Mono2Stereo.$(OBJEXT) \
-	AudioSource.$(OBJEXT) AudioSink.$(OBJEXT) \
+	AudioSource.$(OBJEXT) AudioSource2.$(OBJEXT) \
+	AudioSink.$(OBJEXT) AudioSink2.$(OBJEXT) \
 	SoundFileSink.$(OBJEXT) AuFileSink.$(OBJEXT) \
 	WavFileSink.$(OBJEXT) FileName.$(OBJEXT) MarSystem.$(OBJEXT) \
 	MarSystemTemplateAdvanced.$(OBJEXT) \
@@ -95,15 +97,16 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	StandardDeviation.$(OBJEXT) ZeroCrossings.$(OBJEXT) \
 	Thread.$(OBJEXT) Socket.$(OBJEXT) GaussianClassifier.$(OBJEXT) \
 	AbsSoundFileSink.$(OBJEXT) AbsSoundFileSource.$(OBJEXT) \
-	Confidence.$(OBJEXT) MarFileSink.$(OBJEXT) WekaSink.$(OBJEXT) \
-	MFCC.$(OBJEXT) SCF.$(OBJEXT) SFM.$(OBJEXT) \
-	WaveletPyramid.$(OBJEXT) WaveletStep.$(OBJEXT) Daub4.$(OBJEXT) \
-	OnePole.$(OBJEXT) RtAudio.$(OBJEXT) Accumulator.$(OBJEXT) \
-	Shredder.$(OBJEXT) Messager.$(OBJEXT) Talk.$(OBJEXT) \
-	TimeLine.$(OBJEXT) Color.$(OBJEXT) Communicator.$(OBJEXT) \
-	Server.$(OBJEXT) AbsMax.$(OBJEXT) FullWaveRectifier.$(OBJEXT) \
-	Norm.$(OBJEXT) DownSampler.$(OBJEXT) WaveletBands.$(OBJEXT) \
-	Sum.$(OBJEXT) Product.$(OBJEXT) PeakPeriods2BPM.$(OBJEXT) \
+	AbsSoundFileSource2.$(OBJEXT) Confidence.$(OBJEXT) \
+	MarFileSink.$(OBJEXT) WekaSink.$(OBJEXT) MFCC.$(OBJEXT) \
+	SCF.$(OBJEXT) SFM.$(OBJEXT) WaveletPyramid.$(OBJEXT) \
+	WaveletStep.$(OBJEXT) Daub4.$(OBJEXT) OnePole.$(OBJEXT) \
+	RtAudio.$(OBJEXT) Accumulator.$(OBJEXT) Shredder.$(OBJEXT) \
+	Messager.$(OBJEXT) Talk.$(OBJEXT) TimeLine.$(OBJEXT) \
+	Color.$(OBJEXT) Communicator.$(OBJEXT) Server.$(OBJEXT) \
+	AbsMax.$(OBJEXT) FullWaveRectifier.$(OBJEXT) Norm.$(OBJEXT) \
+	DownSampler.$(OBJEXT) WaveletBands.$(OBJEXT) Sum.$(OBJEXT) \
+	Product.$(OBJEXT) PeakPeriods2BPM.$(OBJEXT) \
 	Histogram.$(OBJEXT) BeatHistoFeatures.$(OBJEXT) \
 	MslModel.$(OBJEXT) CommandLineOptions.$(OBJEXT) \
 	RawFileSource.$(OBJEXT) FM.$(OBJEXT) ANN_node.$(OBJEXT) \
@@ -135,11 +138,13 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/ANN_node.Po ./$(DEPDIR)/AbsMax.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbsSoundFileSink.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbsSoundFileSource.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/AbsSoundFileSource2.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Accumulator.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Annotator.Po ./$(DEPDIR)/AuFileSink.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AuFileSource.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/AudioSink.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/AudioSink.Po ./$(DEPDIR)/AudioSink2.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AudioSource.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/AudioSource2.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AutoCorrelation.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/BaseAudioSink.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/BeatHistoFeatures.Po \
@@ -234,6 +239,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/SineSource.Po ./$(DEPDIR)/Skewness.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Socket.Po ./$(DEPDIR)/SoundFileSink.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SoundFileSource.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/SoundFileSource2.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Spectrum.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/StandardDeviation.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Stk.Po ./$(DEPDIR)/Sum.Po \
@@ -248,6 +254,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/ViconFileSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/WavFileSink.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/WavFileSource.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/WavFileSource2.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/WaveletBands.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/WaveletPyramid.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/WaveletStep.Po ./$(DEPDIR)/WekaSink.Po \
@@ -321,6 +328,8 @@ VERSION = @VERSION@
 ac_aux_dir = @ac_aux_dir@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
+ac_ct_RANLIB = @ac_ct_RANLIB@
+ac_ct_STRIP = @ac_ct_STRIP@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
@@ -335,30 +344,23 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
-datarootdir = @datarootdir@
-docdir = @docdir@
-dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
-htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
-localedir = @localedir@
 localstatedir = @localstatedir@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
-pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
-psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
@@ -394,12 +396,16 @@ libmarsyas_a_SOURCES = $(top_srcdir)/marsyas/MrsLog.cpp \
                           $(top_srcdir)/marsyas/ExCommon.cpp \
                           $(top_srcdir)/marsyas/realvec.cpp \
 			  $(top_srcdir)/marsyas/SoundFileSource.cpp \
+			  $(top_srcdir)/marsyas/SoundFileSource2.cpp \
 			  $(top_srcdir)/marsyas/AuFileSource.cpp \
 			  $(top_srcdir)/marsyas/WavFileSource.cpp \
+			  $(top_srcdir)/marsyas/WavFileSource2.cpp \
 			  $(top_srcdir)/marsyas/BaseAudioSink.cpp \
                           $(top_srcdir)/marsyas/Mono2Stereo.cpp \
                           $(top_srcdir)/marsyas/AudioSource.cpp \
+			  $(top_srcdir)/marsyas/AudioSource2.cpp \
                           $(top_srcdir)/marsyas/AudioSink.cpp \
+			  $(top_srcdir)/marsyas/AudioSink2.cpp \
                           $(top_srcdir)/marsyas/SoundFileSink.cpp \
                           $(top_srcdir)/marsyas/AuFileSink.cpp \
                           $(top_srcdir)/marsyas/WavFileSink.cpp \
@@ -468,6 +474,7 @@ libmarsyas_a_SOURCES = $(top_srcdir)/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/marsyas/GaussianClassifier.cpp \
 			  $(top_srcdir)/marsyas/AbsSoundFileSink.cpp \
 			  $(top_srcdir)/marsyas/AbsSoundFileSource.cpp \
+			  $(top_srcdir)/marsyas/AbsSoundFileSource2.cpp \
 			  $(top_srcdir)/marsyas/Confidence.cpp \
 			  $(top_srcdir)/marsyas/MarFileSink.cpp \
 			  $(top_srcdir)/marsyas/WekaSink.cpp \
@@ -634,12 +641,15 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbsMax.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbsSoundFileSink.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbsSoundFileSource.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbsSoundFileSource2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Accumulator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Annotator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AuFileSink.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AuFileSource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AudioSink.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AudioSink2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AudioSource.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AudioSource2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AutoCorrelation.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BaseAudioSink.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BeatHistoFeatures.Po@am__quote@
@@ -781,6 +791,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Socket.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SoundFileSink.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SoundFileSource.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SoundFileSource2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Spectrum.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StandardDeviation.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Stk.Po@am__quote@
@@ -800,6 +811,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ViconFileSource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WavFileSink.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WavFileSource.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WavFileSource2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WaveletBands.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WaveletPyramid.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WaveletStep.Po@am__quote@
@@ -1230,6 +1242,22 @@ SoundFileSource.obj: $(top_srcdir)/marsyas/SoundFileSource.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SoundFileSource.obj `if test -f '$(top_srcdir)/marsyas/SoundFileSource.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/SoundFileSource.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/SoundFileSource.cpp'; fi`
 
+SoundFileSource2.o: $(top_srcdir)/marsyas/SoundFileSource2.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT SoundFileSource2.o -MD -MP -MF "$(DEPDIR)/SoundFileSource2.Tpo" -c -o SoundFileSource2.o `test -f '$(top_srcdir)/marsyas/SoundFileSource2.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/SoundFileSource2.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/SoundFileSource2.Tpo" "$(DEPDIR)/SoundFileSource2.Po"; else rm -f "$(DEPDIR)/SoundFileSource2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/SoundFileSource2.cpp' object='SoundFileSource2.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/SoundFileSource2.Po' tmpdepfile='$(DEPDIR)/SoundFileSource2.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SoundFileSource2.o `test -f '$(top_srcdir)/marsyas/SoundFileSource2.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/SoundFileSource2.cpp
+
+SoundFileSource2.obj: $(top_srcdir)/marsyas/SoundFileSource2.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT SoundFileSource2.obj -MD -MP -MF "$(DEPDIR)/SoundFileSource2.Tpo" -c -o SoundFileSource2.obj `if test -f '$(top_srcdir)/marsyas/SoundFileSource2.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/SoundFileSource2.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/SoundFileSource2.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/SoundFileSource2.Tpo" "$(DEPDIR)/SoundFileSource2.Po"; else rm -f "$(DEPDIR)/SoundFileSource2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/SoundFileSource2.cpp' object='SoundFileSource2.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/SoundFileSource2.Po' tmpdepfile='$(DEPDIR)/SoundFileSource2.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SoundFileSource2.obj `if test -f '$(top_srcdir)/marsyas/SoundFileSource2.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/SoundFileSource2.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/SoundFileSource2.cpp'; fi`
+
 AuFileSource.o: $(top_srcdir)/marsyas/AuFileSource.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AuFileSource.o -MD -MP -MF "$(DEPDIR)/AuFileSource.Tpo" -c -o AuFileSource.o `test -f '$(top_srcdir)/marsyas/AuFileSource.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/AuFileSource.cpp; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AuFileSource.Tpo" "$(DEPDIR)/AuFileSource.Po"; else rm -f "$(DEPDIR)/AuFileSource.Tpo"; exit 1; fi
@@ -1261,6 +1289,22 @@ WavFileSource.obj: $(top_srcdir)/marsyas/WavFileSource.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/WavFileSource.Po' tmpdepfile='$(DEPDIR)/WavFileSource.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o WavFileSource.obj `if test -f '$(top_srcdir)/marsyas/WavFileSource.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/WavFileSource.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/WavFileSource.cpp'; fi`
+
+WavFileSource2.o: $(top_srcdir)/marsyas/WavFileSource2.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT WavFileSource2.o -MD -MP -MF "$(DEPDIR)/WavFileSource2.Tpo" -c -o WavFileSource2.o `test -f '$(top_srcdir)/marsyas/WavFileSource2.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/WavFileSource2.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/WavFileSource2.Tpo" "$(DEPDIR)/WavFileSource2.Po"; else rm -f "$(DEPDIR)/WavFileSource2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/WavFileSource2.cpp' object='WavFileSource2.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/WavFileSource2.Po' tmpdepfile='$(DEPDIR)/WavFileSource2.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o WavFileSource2.o `test -f '$(top_srcdir)/marsyas/WavFileSource2.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/WavFileSource2.cpp
+
+WavFileSource2.obj: $(top_srcdir)/marsyas/WavFileSource2.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT WavFileSource2.obj -MD -MP -MF "$(DEPDIR)/WavFileSource2.Tpo" -c -o WavFileSource2.obj `if test -f '$(top_srcdir)/marsyas/WavFileSource2.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/WavFileSource2.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/WavFileSource2.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/WavFileSource2.Tpo" "$(DEPDIR)/WavFileSource2.Po"; else rm -f "$(DEPDIR)/WavFileSource2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/WavFileSource2.cpp' object='WavFileSource2.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/WavFileSource2.Po' tmpdepfile='$(DEPDIR)/WavFileSource2.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o WavFileSource2.obj `if test -f '$(top_srcdir)/marsyas/WavFileSource2.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/WavFileSource2.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/WavFileSource2.cpp'; fi`
 
 BaseAudioSink.o: $(top_srcdir)/marsyas/BaseAudioSink.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT BaseAudioSink.o -MD -MP -MF "$(DEPDIR)/BaseAudioSink.Tpo" -c -o BaseAudioSink.o `test -f '$(top_srcdir)/marsyas/BaseAudioSink.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/BaseAudioSink.cpp; \
@@ -1310,6 +1354,22 @@ AudioSource.obj: $(top_srcdir)/marsyas/AudioSource.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AudioSource.obj `if test -f '$(top_srcdir)/marsyas/AudioSource.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/AudioSource.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/AudioSource.cpp'; fi`
 
+AudioSource2.o: $(top_srcdir)/marsyas/AudioSource2.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AudioSource2.o -MD -MP -MF "$(DEPDIR)/AudioSource2.Tpo" -c -o AudioSource2.o `test -f '$(top_srcdir)/marsyas/AudioSource2.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/AudioSource2.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AudioSource2.Tpo" "$(DEPDIR)/AudioSource2.Po"; else rm -f "$(DEPDIR)/AudioSource2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/AudioSource2.cpp' object='AudioSource2.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AudioSource2.Po' tmpdepfile='$(DEPDIR)/AudioSource2.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AudioSource2.o `test -f '$(top_srcdir)/marsyas/AudioSource2.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/AudioSource2.cpp
+
+AudioSource2.obj: $(top_srcdir)/marsyas/AudioSource2.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AudioSource2.obj -MD -MP -MF "$(DEPDIR)/AudioSource2.Tpo" -c -o AudioSource2.obj `if test -f '$(top_srcdir)/marsyas/AudioSource2.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/AudioSource2.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/AudioSource2.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AudioSource2.Tpo" "$(DEPDIR)/AudioSource2.Po"; else rm -f "$(DEPDIR)/AudioSource2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/AudioSource2.cpp' object='AudioSource2.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AudioSource2.Po' tmpdepfile='$(DEPDIR)/AudioSource2.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AudioSource2.obj `if test -f '$(top_srcdir)/marsyas/AudioSource2.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/AudioSource2.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/AudioSource2.cpp'; fi`
+
 AudioSink.o: $(top_srcdir)/marsyas/AudioSink.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AudioSink.o -MD -MP -MF "$(DEPDIR)/AudioSink.Tpo" -c -o AudioSink.o `test -f '$(top_srcdir)/marsyas/AudioSink.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/AudioSink.cpp; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AudioSink.Tpo" "$(DEPDIR)/AudioSink.Po"; else rm -f "$(DEPDIR)/AudioSink.Tpo"; exit 1; fi
@@ -1325,6 +1385,22 @@ AudioSink.obj: $(top_srcdir)/marsyas/AudioSink.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AudioSink.Po' tmpdepfile='$(DEPDIR)/AudioSink.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AudioSink.obj `if test -f '$(top_srcdir)/marsyas/AudioSink.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/AudioSink.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/AudioSink.cpp'; fi`
+
+AudioSink2.o: $(top_srcdir)/marsyas/AudioSink2.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AudioSink2.o -MD -MP -MF "$(DEPDIR)/AudioSink2.Tpo" -c -o AudioSink2.o `test -f '$(top_srcdir)/marsyas/AudioSink2.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/AudioSink2.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AudioSink2.Tpo" "$(DEPDIR)/AudioSink2.Po"; else rm -f "$(DEPDIR)/AudioSink2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/AudioSink2.cpp' object='AudioSink2.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AudioSink2.Po' tmpdepfile='$(DEPDIR)/AudioSink2.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AudioSink2.o `test -f '$(top_srcdir)/marsyas/AudioSink2.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/AudioSink2.cpp
+
+AudioSink2.obj: $(top_srcdir)/marsyas/AudioSink2.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AudioSink2.obj -MD -MP -MF "$(DEPDIR)/AudioSink2.Tpo" -c -o AudioSink2.obj `if test -f '$(top_srcdir)/marsyas/AudioSink2.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/AudioSink2.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/AudioSink2.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AudioSink2.Tpo" "$(DEPDIR)/AudioSink2.Po"; else rm -f "$(DEPDIR)/AudioSink2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/AudioSink2.cpp' object='AudioSink2.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AudioSink2.Po' tmpdepfile='$(DEPDIR)/AudioSink2.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AudioSink2.obj `if test -f '$(top_srcdir)/marsyas/AudioSink2.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/AudioSink2.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/AudioSink2.cpp'; fi`
 
 SoundFileSink.o: $(top_srcdir)/marsyas/SoundFileSink.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT SoundFileSink.o -MD -MP -MF "$(DEPDIR)/SoundFileSink.Tpo" -c -o SoundFileSink.o `test -f '$(top_srcdir)/marsyas/SoundFileSink.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/SoundFileSink.cpp; \
@@ -2413,6 +2489,22 @@ AbsSoundFileSource.obj: $(top_srcdir)/marsyas/AbsSoundFileSource.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AbsSoundFileSource.Po' tmpdepfile='$(DEPDIR)/AbsSoundFileSource.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbsSoundFileSource.obj `if test -f '$(top_srcdir)/marsyas/AbsSoundFileSource.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/AbsSoundFileSource.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/AbsSoundFileSource.cpp'; fi`
+
+AbsSoundFileSource2.o: $(top_srcdir)/marsyas/AbsSoundFileSource2.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AbsSoundFileSource2.o -MD -MP -MF "$(DEPDIR)/AbsSoundFileSource2.Tpo" -c -o AbsSoundFileSource2.o `test -f '$(top_srcdir)/marsyas/AbsSoundFileSource2.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/AbsSoundFileSource2.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AbsSoundFileSource2.Tpo" "$(DEPDIR)/AbsSoundFileSource2.Po"; else rm -f "$(DEPDIR)/AbsSoundFileSource2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/AbsSoundFileSource2.cpp' object='AbsSoundFileSource2.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AbsSoundFileSource2.Po' tmpdepfile='$(DEPDIR)/AbsSoundFileSource2.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbsSoundFileSource2.o `test -f '$(top_srcdir)/marsyas/AbsSoundFileSource2.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/AbsSoundFileSource2.cpp
+
+AbsSoundFileSource2.obj: $(top_srcdir)/marsyas/AbsSoundFileSource2.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AbsSoundFileSource2.obj -MD -MP -MF "$(DEPDIR)/AbsSoundFileSource2.Tpo" -c -o AbsSoundFileSource2.obj `if test -f '$(top_srcdir)/marsyas/AbsSoundFileSource2.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/AbsSoundFileSource2.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/AbsSoundFileSource2.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AbsSoundFileSource2.Tpo" "$(DEPDIR)/AbsSoundFileSource2.Po"; else rm -f "$(DEPDIR)/AbsSoundFileSource2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/AbsSoundFileSource2.cpp' object='AbsSoundFileSource2.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AbsSoundFileSource2.Po' tmpdepfile='$(DEPDIR)/AbsSoundFileSource2.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbsSoundFileSource2.obj `if test -f '$(top_srcdir)/marsyas/AbsSoundFileSource2.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/AbsSoundFileSource2.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/AbsSoundFileSource2.cpp'; fi`
 
 Confidence.o: $(top_srcdir)/marsyas/Confidence.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Confidence.o -MD -MP -MF "$(DEPDIR)/Confidence.Tpo" -c -o Confidence.o `test -f '$(top_srcdir)/marsyas/Confidence.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/Confidence.cpp; \

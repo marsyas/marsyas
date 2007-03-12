@@ -47,12 +47,16 @@ libmarsyas_a_SOURCES    = $(top_srcdir)/marsyas/MrsLog.cpp \
                           $(top_srcdir)/marsyas/ExCommon.cpp \
                           $(top_srcdir)/marsyas/realvec.cpp \
 			  $(top_srcdir)/marsyas/SoundFileSource.cpp \
+			  $(top_srcdir)/marsyas/SoundFileSource2.cpp \
 			  $(top_srcdir)/marsyas/AuFileSource.cpp \
 			  $(top_srcdir)/marsyas/WavFileSource.cpp \
+			  $(top_srcdir)/marsyas/WavFileSource2.cpp \
 			  $(top_srcdir)/marsyas/BaseAudioSink.cpp \
                           $(top_srcdir)/marsyas/Mono2Stereo.cpp \
                           $(top_srcdir)/marsyas/AudioSource.cpp \
+			  $(top_srcdir)/marsyas/AudioSource2.cpp \
                           $(top_srcdir)/marsyas/AudioSink.cpp \
+			  $(top_srcdir)/marsyas/AudioSink2.cpp \
                           $(top_srcdir)/marsyas/SoundFileSink.cpp \
                           $(top_srcdir)/marsyas/AuFileSink.cpp \
                           $(top_srcdir)/marsyas/WavFileSink.cpp \
@@ -121,6 +125,7 @@ libmarsyas_a_SOURCES    = $(top_srcdir)/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/marsyas/GaussianClassifier.cpp \
 			  $(top_srcdir)/marsyas/AbsSoundFileSink.cpp \
 			  $(top_srcdir)/marsyas/AbsSoundFileSource.cpp \
+			  $(top_srcdir)/marsyas/AbsSoundFileSource2.cpp \
 			  $(top_srcdir)/marsyas/Confidence.cpp \
 			  $(top_srcdir)/marsyas/MarFileSink.cpp \
 			  $(top_srcdir)/marsyas/WekaSink.cpp \
