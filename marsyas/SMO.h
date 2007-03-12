@@ -44,6 +44,11 @@ private:
 	void myUpdate(MarControlPtr sender);
 
   realvec weights_;
+  MarControlPtr modePtr_;
+  MarControlPtr nlabelsPtr_;
+  
+
+ 
   
 public:
   SMO(std::string name);

@@ -57,8 +57,8 @@ SMO::clone() const
 void 
 SMO::addControls()
 {
-  addctrl("mrs_string/mode", "train");
-  addctrl("mrs_natural/nLabels", 1);
+  addctrl("mrs_string/mode", "train", modePtr_);
+  addctrl("mrs_natural/nLabels", 1, nlabelsPtr_);
   setctrlState("mrs_natural/nLabels", true);
   weights_.create(1);
   addctrl("mrs_realvec/weights", weights_);
@@ -112,12 +112,8 @@ SMO::myProcess(realvec& in, realvec& out)
 {
   //checkFlow(in,out);
 //  mrs_real v;
-  string mode = getctrl("mrs_string/mode")->toString();
-
-  
-
-
-  mrs_natural nlabels = getctrl("mrs_natural/nLabels")->toNatural();
+  string mode = modePtr_->toString();
+  mrs_natural nlabels = nlabelsPtr_->toNatural();
 //  mrs_natural l;
   mrs_natural prediction = 0;
   mrs_real label;
