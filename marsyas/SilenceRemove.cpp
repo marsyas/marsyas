@@ -76,6 +76,9 @@ SilenceRemove::myUpdate(MarControlPtr sender)
 		setctrl("mrs_natural/onObservations", marsystems_[0]->getctrl("mrs_natural/onObservations")->toNatural());
 		setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 		marsystems_[0]->update(); //lmartins: shouldn't this have already been called?! [?]
+
+
+		ctrl_notEmpty_ = marsystems_[0]->getctrl("mrs_bool/notEmpty");
 	}
 }
 
@@ -99,5 +102,5 @@ SilenceRemove::myProcess(realvec& in, realvec& out)
 			rms /= count;
 			rms = sqrt(rms);
 			count = 0;
-	} while (rms < threshold_ && (marsystems_[0]->getctrl("mrs_bool/notEmpty")->toBool())); 
+	} while (rms < threshold_ && (ctrl_notEmpty_->isTrue())); 
 }
