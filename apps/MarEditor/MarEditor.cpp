@@ -48,7 +48,7 @@ MarEditor::MarEditor(QWidget *parent, Qt::WFlags flags)
 	gainNet->addMarSystem(mng.create("Gain", "gain1"));
 	gainNet->addMarSystem(mng.create("Gain", "gain2"));
 	msysNet_->addMarSystem(gainNet);
-	msysNet_->addMarSystem(mng.create("AudioSink", "dest"));
+	msysNet_->addMarSystem(mng.create("AudioSink2", "dest"));
 	msysNet_->linkctrl("mrs_string/filename", "SoundFileSource2/src/mrs_string/filename");
 	msysNet_->linkctrl("mrs_natural/size", "SoundFileSource2/src/mrs_natural/size");
 	msysNet_->linkctrl("mrs_natural/pos", "SoundFileSource2/src/mrs_natural/pos");

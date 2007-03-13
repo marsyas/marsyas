@@ -72,7 +72,7 @@ AudioSource2::addControls()
 }
 
 void 
-AudioSource2::myUpdate()
+AudioSource2::myUpdate(MarControlPtr sender)
 {
 	MRSDIAG("AudioSource2::localUpdate");
 

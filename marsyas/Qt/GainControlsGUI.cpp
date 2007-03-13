@@ -121,7 +121,7 @@ GainControlsGUI::updateCustomControlsWindow(MarControl* control)
 	string cname = control->getName();
 
 	//update Gain Slider value
-	if(cname == (msys_->getPrefix() + "mrs_real/gain"))
+	if(cname == "mrs_real/gain")
 	{
 		int svalue = (int)(control->toReal()*100);
 		if(gainSlider_->value() != svalue)
@@ -136,7 +136,7 @@ GainControlsGUI::updateCustomControlsWindow(MarControl* control)
 	}
 
 	//update input VU meter (using a dB scale)
-	if(cname == (msys_->getPrefix() + "mrs_realvec/inRMS"))
+	if(cname == "mrs_realvec/inRMS")
 	{
 		realvec inRMS = control->toVec();
 		mrs_real RMSdB;
@@ -153,7 +153,7 @@ GainControlsGUI::updateCustomControlsWindow(MarControl* control)
 	}
 
 	//update output VU meter (using a dB scale)
-	if(cname == (msys_->getPrefix() + "mrs_realvec/outRMS"))
+	if(cname == "mrs_realvec/outRMS")
 	{
 		realvec outRMS = control->toVec();
 		mrs_real RMSdB;
@@ -170,7 +170,7 @@ GainControlsGUI::updateCustomControlsWindow(MarControl* control)
 	}
 
 	//update number of input VUmeters if nr of input channels has changed
-	if(cname == (msys_->getPrefix() + "mrs_natural/inObservations") &&
+	if(cname == "mrs_natural/inObservations" &&
 		 (inChannels_ != control->toNatural()))
 	{
 		delete customControlsWindow_; 	
@@ -181,7 +181,7 @@ GainControlsGUI::updateCustomControlsWindow(MarControl* control)
 	}
 
 	//update number of output VUmeters if nr of output channels has changed
-	if(cname == (msys_->getPrefix() + "mrs_natural/onObservations") &&
+	if(cname == "mrs_natural/onObservations" &&
 		onChannels_ != control->toNatural())
 	{
 		delete customControlsWindow_; 	

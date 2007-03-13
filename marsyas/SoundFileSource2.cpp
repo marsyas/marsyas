@@ -117,7 +117,7 @@ SoundFileSource2::addControls()
 }
 
 void
-SoundFileSource2::myUpdate()
+SoundFileSource2::myUpdate(MarControlPtr sender)
 {
 	MRSDIAG("SoundFileSource2::localUpdate");
 

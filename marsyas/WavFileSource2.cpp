@@ -215,7 +215,7 @@ WavFileSource2::getHeader()
 }
 
 void
-WavFileSource2::myUpdate()
+WavFileSource2::myUpdate(MarControlPtr sender)
 {
 	//if not a new audiofile, no need to read header again
 	string filename = getctrl("mrs_string/filename")->toString();

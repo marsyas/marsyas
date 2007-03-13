@@ -45,7 +45,7 @@ namespace Marsyas
 
 		void addControls();
 
-		void myUpdate();
+		void myUpdate(MarControlPtr sender);
 
 		bool checkType();
 		void fileReady(bool ready);

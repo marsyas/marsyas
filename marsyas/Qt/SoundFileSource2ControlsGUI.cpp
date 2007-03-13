@@ -132,7 +132,7 @@ SoundFileSource2ControlsGUI::updateCustomControlsWindow(MarControl* control)
 	string cname = control->getName();
 
 	//update pos slider
-	if(cname == (msys_->getPrefix() + "mrs_natural/pos") && !posSliderPressed_)
+	if(cname == "mrs_natural/pos" && !posSliderPressed_)
 	{
 		int value = (int)control->toNatural();
 		if(posSlider_->value() != value )
@@ -143,7 +143,7 @@ SoundFileSource2ControlsGUI::updateCustomControlsWindow(MarControl* control)
 	}
 
 	//update pos slider range
-	if(cname == (msys_->getPrefix() + "mrs_natural/size"))
+	if(cname == "mrs_natural/size")
 	{
 		int value = (int)control->toNatural();
 		if(posSlider_->maximum() != value)
@@ -154,7 +154,7 @@ SoundFileSource2ControlsGUI::updateCustomControlsWindow(MarControl* control)
 	}
 	
 	//update filename label
-	if(cname == (msys_->getPrefix() + "mrs_string/filename"))
+	if(cname == "mrs_string/filename")
 	{
 		filenameLbl_->setText(QString::fromStdString(control->toString()));
 		return;
