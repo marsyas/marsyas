@@ -117,19 +117,6 @@ protected:
 	mutable std::map<std::string, MarControlPtr> controls_;
 	std::map<std::string, MarControlPtr>::iterator ctrlIter_;
 
-	//control pointers
-	MarControlPtr ctrl_inSamples_;
-	MarControlPtr ctrl_inObservations_; 
-	MarControlPtr ctrl_israte_;
-	MarControlPtr ctrl_inObsNames_;
-	MarControlPtr ctrl_onSamples_;
-	MarControlPtr ctrl_onObservations_;
-	MarControlPtr ctrl_osrate_;
-	MarControlPtr ctrl_onObsNames_;
-	MarControlPtr ctrl_debug_; 
-	MarControlPtr ctrl_mute_;
-	MarControlPtr ctrl_active_;
- 	MarControlPtr ctrl_processedData_;
  
 	mrs_natural inObservations_;
   mrs_natural inSamples_;
@@ -300,6 +287,19 @@ public:
 	void updctrl(TmTime t, std::string cname, MarControlPtr control);
 	void updctrl(TmTime t, Repeat rep, std::string cname, MarControlPtr control);
 	//////////////////////////////////////////////////////////////////////////
+	//control pointers
+	MarControlPtr ctrl_inSamples_;
+	MarControlPtr ctrl_inObservations_; 
+	MarControlPtr ctrl_israte_;
+	MarControlPtr ctrl_inObsNames_;
+	MarControlPtr ctrl_onSamples_;
+	MarControlPtr ctrl_onObservations_;
+	MarControlPtr ctrl_osrate_;
+	MarControlPtr ctrl_onObsNames_;
+	MarControlPtr ctrl_debug_; 
+	MarControlPtr ctrl_mute_;
+	MarControlPtr ctrl_active_;
+ 	MarControlPtr ctrl_processedData_;
 	
 #ifdef MARSYAS_QT
 

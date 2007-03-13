@@ -87,23 +87,23 @@ Series::myUpdate(MarControlPtr sender)
       for (mrs_natural i=1; i < marsystemsSize_; i++)
 	{
 	  //lmartins: replace updctrl() calls by setctrl()? ==> more efficient![?]
-	  marsystems_[i]->updctrl("mrs_string/inObsNames", marsystems_[i-1]->getctrl("mrs_string/onObsNames"));
-	  marsystems_[i]->updctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/onSamples"));
-	  marsystems_[i]->updctrl("mrs_natural/inObservations", marsystems_[i-1]->getctrl("mrs_natural/onObservations"));
-	  marsystems_[i]->updctrl("mrs_real/israte", marsystems_[i-1]->getctrl("mrs_real/osrate"));
+	  marsystems_[i]->ctrl_inObsNames_->setValue(marsystems_[i-1]->ctrl_onObsNames_);
+	  marsystems_[i]->ctrl_inSamples_->setValue(marsystems_[i-1]->ctrl_onSamples_);
+	  marsystems_[i]->ctrl_inObservations_->setValue(marsystems_[i-1]->ctrl_onObservations_);
+	  marsystems_[i]->ctrl_israte_->setValue(marsystems_[i-1]->ctrl_osrate_);
 	  marsystems_[i]->update();
 	}
 
       // set controls based on first and last marsystem 
-      setctrl("mrs_string/inObsNames", marsystems_[0]->getctrl("mrs_string/inObsNames"));
-      setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
-      setctrl("mrs_natural/inObservations", marsystems_[0]->getctrl("mrs_natural/inObservations"));
-      setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte"));
+      ctrl_inObsNames_->setValue(marsystems_[0]->ctrl_inObsNames_, NOUPDATE);
+      ctrl_inSamples_->setValue(marsystems_[0]->ctrl_inSamples_, NOUPDATE);
+      ctrl_inObservations_->setValue(marsystems_[0]->ctrl_inObservations_, NOUPDATE);
+      ctrl_israte_->setValue(marsystems_[0]->ctrl_israte_, NOUPDATE);
 
-      setctrl("mrs_string/onObsNames", marsystems_[marsystemsSize_-1]->getctrl("mrs_string/onObsNames"));
-      setctrl("mrs_natural/onSamples", marsystems_[marsystemsSize_-1]->getctrl("mrs_natural/onSamples")->toNatural());
-      setctrl("mrs_natural/onObservations", marsystems_[marsystemsSize_-1]->getctrl("mrs_natural/onObservations")->toNatural());
-      setctrl("mrs_real/osrate", marsystems_[marsystemsSize_-1]->getctrl("mrs_real/osrate")->toReal());
+      ctrl_onObsNames_->setValue(marsystems_[marsystemsSize_-1]->ctrl_onObsNames_, NOUPDATE);
+      ctrl_onSamples_->setValue(marsystems_[marsystemsSize_-1]->ctrl_onSamples_, NOUPDATE);
+      ctrl_onObservations_->setValue(marsystems_[marsystemsSize_-1]->ctrl_onObservations_, NOUPDATE);
+      ctrl_osrate_->setValue(marsystems_[marsystemsSize_-1]->ctrl_osrate_, NOUPDATE);
 
       // update buffers (aka slices) between components 
       if ((mrs_natural)slices_.size() < marsystemsSize_-1) 
@@ -113,34 +113,31 @@ Series::myUpdate(MarControlPtr sender)
 	{
 	  if (slices_[i] != NULL) 
 	    {
-	      if ((slices_[i])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural()  ||
-		  (slices_[i])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural())
+	      if ((slices_[i])->getRows() != marsystems_[i]->ctrl_onObservations_->toNatural()  ||
+		  (slices_[i])->getCols() != marsystems_[i]->ctrl_onSamples_->toNatural())
 		{
 		  delete slices_[i];
-		  slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
-					   marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
+		  slices_[i] = new realvec(marsystems_[i]->ctrl_onObservations_->toNatural(), 
+					   marsystems_[i]->ctrl_onSamples_->toNatural());
 		  
-		  (marsystems_[i])->updctrl("mrs_realvec/processedData", 
-					  *(slices_[i]));
+		  (marsystems_[i])->ctrl_processedData_->setValue(*(slices_[i]));
 
-		  slPtrs_.push_back(marsystems_[i]->getctrl("mrs_realvec/processedData"));
+		  slPtrs_.push_back(marsystems_[i]->ctrl_processedData_);
 		  (slices_[i])->setval(0.0);
 		}
 	    }
 	  else 
 	    {
-	      slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
-				       marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
+	      slices_[i] = new realvec(marsystems_[i]->ctrl_onObservations_->toNatural(), 
+				       marsystems_[i]->ctrl_onSamples_->toNatural());
 	      
-	      marsystems_[i]->updctrl("mrs_realvec/processedData", 
-				       *(slices_[i]));
-		  slPtrs_.push_back(marsystems_[i]->getctrl("mrs_realvec/processedData"));
+	      marsystems_[i]->ctrl_processedData_->setValue(*(slices_[i]));
+		  slPtrs_.push_back(marsystems_[i]->ctrl_processedData_);
 				
 	      (slices_[i])->setval(0.0);
 	    }
 	}
 
-      //defaultUpdate();      
     } 
 }
 

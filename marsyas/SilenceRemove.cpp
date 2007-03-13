@@ -36,6 +36,11 @@ SilenceRemove::SilenceRemove(string name):MarSystem("SilenceRemove",name)
 	addControls();
 }
 
+SilenceRemove::SilenceRemove(const SilenceRemove& a): MarSystem(a)
+{
+  ctrl_threshold_ = getctrl("mrs_real/threshold");
+}
+
 SilenceRemove::~SilenceRemove()
 {
 
@@ -50,7 +55,7 @@ SilenceRemove::clone() const
 void 
 SilenceRemove::addControls()
 {
-	addctrl("mrs_real/threshold", 0.01);
+	addctrl("mrs_real/threshold", 0.01, ctrl_threshold_);
 	setctrlState("mrs_real/threshold", true);
 }
 
@@ -59,14 +64,14 @@ SilenceRemove::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("SilenceRemove.cpp - SilenceRemove:myUpdate");
   
-  threshold_ = getctrl("mrs_real/threshold")->toReal();
+  threshold_ = ctrl_threshold_->toReal();
   
   if (marsystemsSize_ > 0)
     {
       // set input characteristics 
-      ctrl_inSamples_->setValue(marsystems_[0]->getctrl("mrs_natural/inSamples"));
-      ctrl_inObservations_->setValue(marsystems_[0]->getctrl("mrs_natural/inObservations"));
-      ctrl_israte_->setValue(marsystems_[0]->getctrl("mrs_real/israte"));
+      ctrl_inSamples_->setValue(marsystems_[0]->ctrl_inSamples_);
+      ctrl_inObservations_->setValue(marsystems_[0]->ctrl_inObservations_);
+      ctrl_israte_->setValue(marsystems_[0]->ctrl_israte_);
       
       // set output characteristics
       ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
@@ -75,8 +80,8 @@ SilenceRemove::myUpdate(MarControlPtr sender)
       
       marsystems_[0]->update(); //lmartins: shouldn't this have already been called?! [?]
       
-      
-      ctrl_notEmpty_ = marsystems_[0]->getctrl("mrs_bool/notEmpty");
+      if (ctrl_notEmpty_.isInvalid()) 
+         ctrl_notEmpty_ = marsystems_[0]->getctrl("mrs_bool/notEmpty");
     }
 }
 

@@ -41,9 +41,11 @@ private:
 	void addControls();
 	void myUpdate(MarControlPtr sender);
 	MarControlPtr ctrl_notEmpty_;
+	MarControlPtr ctrl_threshold_;
   
 public:
 	SilenceRemove(std::string name);
+	SilenceRemove(const SilenceRemove&);
   ~SilenceRemove();
   MarSystem* clone() const;  
 

@@ -57,7 +57,7 @@ SoundFileSource::SoundFileSource(const SoundFileSource& a):MarSystem(a)
   ctrl_notEmpty_ = getctrl("mrs_bool/notEmpty");
   ctrl_mute_ = getctrl("mrs_bool/mute");
   ctrl_advance_ = getctrl("mrs_bool/advance"); 
-
+  ctrl_filename_ = getctrl("mrs_string/filename");
 
 }
 
@@ -73,7 +73,7 @@ SoundFileSource::addControls()
   addctrl("mrs_natural/loopPos", 0, ctrl_loop_);
   setctrlState("mrs_natural/loopPos", true);
 
-  addctrl("mrs_string/filename", "defaultfile");
+  addctrl("mrs_string/filename", "defaultfile", ctrl_filename_);
   setctrlState("mrs_string/filename", true);
   
 	addctrl("mrs_string/allfilenames", ",");
@@ -120,18 +120,18 @@ SoundFileSource::myUpdate(MarControlPtr sender)
   ctrl_onObsNames_->setValue("audio,", NOUPDATE);
   ctrl_inObsNames_->setValue("audio,", NOUPDATE);
 
-  if (filename_ != getctrl("mrs_string/filename")->toString())
+  if (filename_ != ctrl_filename_->toString())
   {
     if (checkType() == true)
 		{
 			getHeader();
-			filename_ = getctrl("mrs_string/filename")->toString();
+			filename_ = ctrl_filename_->toString();
 		  
 			setctrl("mrs_natural/nChannels", src_->getctrl("mrs_natural/nChannels"));
-			setctrl("mrs_real/israte", src_->getctrl("mrs_real/israte"));
-			setctrl("mrs_real/osrate", src_->getctrl("mrs_real/osrate"));
+			ctrl_israte_->setValue(src_->ctrl_israte_, NOUPDATE);
+			ctrl_osrate_->setValue(src_->ctrl_osrate_, NOUPDATE);
 		  
-			setctrl("mrs_bool/notEmpty", true);
+			ctrl_notEmpty_->setValue(true, NOUPDATE);
 		  
 			if (src_->getctrl("mrs_natural/size")->toNatural() != 0)
 				src_->notEmpty_ = true; //[!]
@@ -139,16 +139,16 @@ SoundFileSource::myUpdate(MarControlPtr sender)
     else
 		{
 			setctrl("mrs_natural/nChannels", 1);
-			setctrl("mrs_real/israte", 22050.0);
-			setctrl("mrs_bool/notEmpty", false);
+			ctrl_israte_->setValue(22050.0, NOUPDATE);
+			ctrl_notEmpty_->setValue(false, NOUPDATE);
 			src_ = NULL;
 		}
   }
   if (src_ != NULL) 
   {
-		//pass configuration to audio source object and update it 
-		src_->setctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
-    src_->setctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
+    //pass configuration to audio source object and update it 
+    src_->ctrl_inSamples_->setValue(ctrl_inSamples_, NOUPDATE);
+    src_->ctrl_inObservations_->setValue(ctrl_inObservations_, NOUPDATE);
     src_->setctrl("mrs_real/repetitions", getctrl("mrs_real/repetitions"));
     src_->setctrl("mrs_real/duration", getctrl("mrs_real/duration"));
     src_->setctrl("mrs_bool/advance", getctrl("mrs_bool/advance"));
@@ -162,11 +162,10 @@ SoundFileSource::myUpdate(MarControlPtr sender)
  		src_->update();
 
     //sync local controls with the controls from the audio source object 
-		setctrl("mrs_natural/onSamples", src_->getctrl("mrs_natural/onSamples"));
-    setctrl("mrs_natural/onObservations", src_->getctrl("mrs_natural/onObservations"));
+    ctrl_onSamples_->setValue(src_->ctrl_onSamples_, NOUPDATE);
+    ctrl_onObservations_->setValue(src_->ctrl_onObservations_, NOUPDATE);
+    ctrl_osrate_->setValue(src_->ctrl_osrate_, NOUPDATE);
     
-		mrs_real temp = src_->getctrl("mrs_real/osrate")->toReal();
-		setctrl("mrs_real/osrate",temp ); //israte[?]
 
     setctrl("mrs_natural/pos", src_->pos_);//[!]
     setctrl("mrs_natural/loopPos", src_->rewindpos_);//[!]
@@ -275,11 +274,11 @@ SoundFileSource::checkType()
 void
 SoundFileSource::getHeader()
 {
-  string filename = getctrl("mrs_string/filename")->toString();
+  string filename = ctrl_filename_->toString();
  
 	src_->getHeader(filename);
-	setctrl("mrs_natural/pos", 0);
-	setctrl("mrs_natural/loopPos", 0); 
+	ctrl_pos_->setValue(0, NOUPDATE);
+	ctrl_loop_->setValue(0, NOUPDATE);
 }
 
 void

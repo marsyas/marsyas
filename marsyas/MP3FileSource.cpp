@@ -291,12 +291,10 @@ MP3FileSource::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("MP3FileSource::myUpdate");
   
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+  MarSystem::myUpdate(sender);
  
-  israte_ = getctrl("mrs_real/israte")->toReal();
-  inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
+  israte_ = ctrl_israte_->toReal();
+  inSamples_ = ctrl_inSamples_->toNatural();
 
   pos_ = getctrl("mrs_natural/pos")->toNatural();
   
@@ -334,8 +332,7 @@ MP3FileSource::myUpdate(MarControlPtr sender)
       csize_ = (mrs_natural)(duration_ * israte_);
     }
 	
-  //defaultUpdate(); [!]
-	inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
+	inSamples_ = ctrl_inSamples_->toNatural();
   	
   if (inSamples_ < bufferSize_/2) {
     reservoirSize_ = 2 * bufferSize_;

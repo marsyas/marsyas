@@ -73,12 +73,12 @@ SMO::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("SMO.cpp - SMO:myUpdate");
 
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", (mrs_natural)2);
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+  ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
+  ctrl_onObservations_->setValue(2, NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
   
   
-  mrs_natural inObservations = getctrl("mrs_natural/inObservations")->toNatural();
+  mrs_natural inObservations = ctrl_inObservations_->toNatural();
   mrs_natural nlabels = getctrl("mrs_natural/nLabels")->toNatural();
 
 
