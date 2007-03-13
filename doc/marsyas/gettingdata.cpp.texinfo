@@ -19,7 +19,7 @@ void @b{recognize}(string sfName) @{
 @i{// counter variables}
        int i,j;
        mrs_natural numberObservations = pnet->@b{getctrl}(@t{"mrs_natural/onObservations"})->@b{toNatural}();
-       mrs_natural numberSamples = pnet->@b{getctrl}(@t{"mrs_natural/onSamples"})->@b{toNatural}();
+       mrs_natural numberSamples = pnet->@b{getctrl}(@t{"mrs_natural/onSamples"})->@b{toNatural}();   @i{// in this case, numbSamples will be 1, due to the Spectrum MarSystem.}
 
        @b{while} ( pnet->@b{getctrl}(@t{"SoundFileSource/src/mrs_bool/notEmpty"})->@b{toBool}() ) @{
 @i{// don't tick because process() does that.}
@@ -34,6 +34,11 @@ void @b{recognize}(string sfName) @{
                      @}
               @}
               cout<<endl;
+
+              @b{const} realvec& processedData = pnet->@b{getctrl}(@t{"Spectrum/spk/mrs_realvec/processedData"})->to<mrs_realvec>();
+              cout << processedData << endl;
+
+              
        @}
        @b{delete} pnet;
 @}

@@ -83,7 +83,7 @@ http://www.gnu.org/software/src-highlite -->
 <i><font color="#9A1900">// counter variables</font></i>
 	<font color="#009900">int</font> i<font color="#990000">,</font>j<font color="#990000">;</font>
 	mrs_natural numberObservations <font color="#990000">=</font> pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"mrs_natural/onObservations"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toNatural</font></b><font color="#990000">();</font>
-	mrs_natural numberSamples <font color="#990000">=</font> pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"mrs_natural/onSamples"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toNatural</font></b><font color="#990000">();</font>
+	mrs_natural numberSamples <font color="#990000">=</font> pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"mrs_natural/onSamples"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toNatural</font></b><font color="#990000">();</font>   <i><font color="#9A1900">// in this case, numbSamples will be 1, due to the Spectrum MarSystem.</font></i>
 
 	<b><font color="#0000FF">while</font></b> <font color="#990000">(</font> pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_bool/notEmpty"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toBool</font></b><font color="#990000">()</font> <font color="#990000">)</font> <font color="#FF0000">{</font>
 <i><font color="#9A1900">// don't tick because process() does that.</font></i>
@@ -98,6 +98,11 @@ http://www.gnu.org/software/src-highlite -->
 			<font color="#FF0000">}</font>
 		<font color="#FF0000">}</font>
 		cout<font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font>
+
+		<b><font color="#0000FF">const</font></b> realvec<font color="#990000">&amp;</font> processedData <font color="#990000">=</font> pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"Spectrum/spk/mrs_realvec/processedData"</font><font color="#990000">)-&gt;</font>to<font color="#990000">&lt;</font>mrs_realvec<font color="#990000">&gt;();</font>
+		cout <font color="#990000">&lt;&lt;</font> processedData <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
+
+		
 	<font color="#FF0000">}</font>
 	<b><font color="#0000FF">delete</font></b> pnet<font color="#990000">;</font>
 <font color="#FF0000">}</font>
