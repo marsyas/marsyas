@@ -27,6 +27,7 @@
 #include "Fanout.h"
 #include "CommandLineOptions.h"
 #include "TimeLine.h"
+#include "FileName.h"
 
 #include <string> 
 using namespace std;
@@ -40,12 +41,13 @@ bool tline;
 
 mrs_natural offset = 0;
 mrs_natural duration = 1000 * 44100;
-mrs_natural memSize = 40;
+mrs_natural memSize = 1;
 mrs_natural winSize = 512;
 mrs_natural hopSize = 512;
 mrs_real start = 0.0;
 mrs_real length = 30.0;
 mrs_real gain = 1.0;
+mrs_bool pluginMute = 0.0;
 
 #define DEFAULT_EXTRACTOR "STFT" 
 #define DEFAULT_CLASSIFIER  "GS"
@@ -290,6 +292,7 @@ printHelp(string progName)
   cerr << "-e --extractor   : exactor " << endl;
   cerr << "-o --offset      : playback start offset in samples " << endl;
   cerr << "-p --plugin      : output plugin name " << endl;
+  cerr << "-pm --pluginmute : mute the plugin " << endl;
   cerr << "-d --duration    : playback duration in samples     " << endl;
   cerr << "-s --start       : playback start offest in seconds " << endl;
   cerr << "-l --length      : playback length in seconds " << endl;
@@ -764,6 +767,12 @@ void bextract_train(vector<Collection> cls,
 
   featureNetwork->addMarSystem(mng.create("Confidence", "confidence"));
 
+      FileName Sfname(sfName);
+      // Sfname.path()+
+       featureNetwork->updctrl("Confidence/confidence/mrs_string/fileName", Sfname.nameNoExt()); 
+ 
+
+      
   //////////////////////////////////////////////////////////////////////////
   // link controls
   //////////////////////////////////////////////////////////////////////////
@@ -781,6 +790,7 @@ void bextract_train(vector<Collection> cls,
   MarControlPtr ctrl_filename_ = featureNetwork->getctrl("SoundFileSource/src/mrs_string/filename");
   MarControlPtr ctrl_notEmpty_ = featureNetwork->getctrl("SoundFileSource/src/mrs_bool/notEmpty");
   
+
 
 
   //////////////////////////////////////////////////////////////////////////
@@ -807,7 +817,7 @@ void bextract_train(vector<Collection> cls,
       featureNetwork->updctrl("Confidence/confidence/mrs_natural/nLabels", (int)cls.size());
       featureNetwork->updctrl("Confidence/confidence/mrs_bool/mute", true);
       featureNetwork->updctrl("Confidence/confidence/mrs_string/labelNames",classNames);
-      featureNetwork->updctrl("Confidence/confidence/mrs_bool/print",true); 
+      featureNetwork->updctrl("Confidence/confidence/mrs_bool/print",true);
 
       //configure WEKA sink
       if (wekafname != EMPTYSTRING)
@@ -822,7 +832,7 @@ void bextract_train(vector<Collection> cls,
 	  if (wekafname != EMPTYSTRING)
 	    {
 	      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
-	      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 40);
+	      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
 	      featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  			
 	    }
 
@@ -1011,7 +1021,7 @@ void bextract_train(vector<Collection> cls,
       featureNetwork->updctrl("KNNClassifier/knn/mrs_natural/k",3); //[!] hardcoded!!!
     }  
 
-  if (pluginName != EMPTYSTRING) 
+  if (pluginName != EMPTYSTRING && !pluginMute) 
     {
       featureNetwork->updctrl("AudioSink/dest/mrs_bool/mute", false);
       featureNetwork->updctrl("AudioSink/dest/mrs_bool/initAudio", true);//[!][?] this still does not solves the problem of sfplugin being unable to play audio... 
@@ -1190,6 +1200,7 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
 
   featureNetwork->addMarSystem(mng.create("Confidence", "confidence"));
 
+
   // update controls II 
   if (classifierName == "GS")
     featureNetwork->updctrl("GaussianClassifier/gaussian/mrs_natural/nLabels", (mrs_natural)cls.size());
@@ -1203,6 +1214,8 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
   featureNetwork->updctrl("Confidence/confidence/mrs_bool/mute", true);
   featureNetwork->updctrl("Confidence/confidence/mrs_string/labelNames",classNames);
   featureNetwork->updctrl("WekaSink/wsink/mrs_string/labelNames",classNames);
+
+
 
   // link controls
   featureNetwork->linkctrl("mrs_string/filename", 
@@ -1385,6 +1398,7 @@ initOptions()
   cmd_options.addNaturalOption("nhopsamples", "hp", 512);
   cmd_options.addStringOption("classifier", "c", EMPTYSTRING);
   cmd_options.addBoolOption("tline", "t", false);
+  cmd_options.addBoolOption("pluginmute", "pm", false);
 }
 
 void 
@@ -1405,6 +1419,7 @@ loadOptions()
   winSize = cmd_options.getNaturalOption("nwinsamples");
   hopSize = cmd_options.getNaturalOption("nhopsamples");
   tline = cmd_options.getBoolOption("tline");
+  pluginMute  = cmd_options.getBoolOption("pluginmute");
 }
 
 void bextract(vector<string> soundfiles, mrs_natural label, 
