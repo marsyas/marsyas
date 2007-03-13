@@ -53,6 +53,7 @@ private:
   MarControlPtr ctrl_downsample_;
   MarControlPtr ctrl_nLabels_;
   MarControlPtr ctrl_labelNames_;
+  MarControlPtr ctrl_filename_;
   
  
 public:

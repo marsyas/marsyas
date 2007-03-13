@@ -76,10 +76,13 @@ Memory::myUpdate(MarControlPtr sender)
   
   mrs_natural memSize = ctrl_memSize_->toNatural();
   
-  ctrl_onSamples_->setValue(ctrl_inSamples_ * memSize, NOUPDATE);
-  ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);  
+  ctrl_onSamples_->setValue(ctrl_inSamples_->toNatural() * memSize, NOUPDATE);
+  ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
   ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
-  
+
+  reset_ = ctrl_reset_->toBool();
+
+  inObservations_ = ctrl_inObservations_->toNatural();
   
   ostringstream oss;
   string inObsNames = ctrl_inObsNames_->toString();
@@ -101,17 +104,13 @@ Memory::myUpdate(MarControlPtr sender)
 
 void 
 Memory::myProcess(realvec& in, realvec& out)
-{ 
-  //checkFlow(in,out);
-
-
-
+{
   
   mrs_natural memSize = ctrl_memSize_->to<mrs_natural>();
   
 
 
-  if (ctrl_reset_->isTrue()) 
+  if (reset_) 
     {
       out.setval(0.0);
       reset_ = false;

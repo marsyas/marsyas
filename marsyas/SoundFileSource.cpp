@@ -56,7 +56,7 @@ SoundFileSource::SoundFileSource(const SoundFileSource& a):MarSystem(a)
   ctrl_loop_ = getctrl("mrs_natural/loopPos");
   ctrl_notEmpty_ = getctrl("mrs_bool/notEmpty");
   ctrl_mute_ = getctrl("mrs_bool/mute");
-  
+  ctrl_advance_ = getctrl("mrs_bool/advance"); 
 
 
 }
@@ -95,7 +95,7 @@ SoundFileSource::addControls()
 	addctrl("mrs_real/duration", -1.0);
   setctrlState("mrs_real/duration", true);  
 
-	addctrl("mrs_bool/advance", false);
+	addctrl("mrs_bool/advance", false, ctrl_advance_);
   setctrlState("mrs_bool/advance", true);  
 
   addctrl("mrs_bool/shuffle", false);
@@ -117,11 +117,8 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("SoundFileSource::myUpdate");
   
-  setctrl("mrs_string/onObsNames", "audio,");
-  setctrl("mrs_string/inObsNames", "audio,");
-  
-  
-  
+  ctrl_onObsNames_->setValue("audio,", NOUPDATE);
+  ctrl_inObsNames_->setValue("audio,", NOUPDATE);
 
   if (filename_ != getctrl("mrs_string/filename")->toString())
   {
@@ -178,7 +175,7 @@ SoundFileSource::myUpdate(MarControlPtr sender)
     setctrl("mrs_real/repetitions", src_->getctrl("mrs_real/repetitions"));
     setctrl("mrs_real/duration", src_->getctrl("mrs_real/duration"));
     
-		advance_ = getctrl("mrs_bool/advance")->toBool();//?!?!!? [!][?]
+		advance_ = ctrl_advance_->toBool();//?!?!!? [!][?]
 		setctrl("mrs_bool/advance", src_->getctrl("mrs_bool/advance"));
     
 		setctrl("mrs_bool/shuffle", src_->getctrl("mrs_bool/shuffle"));
@@ -312,7 +309,7 @@ SoundFileSource::myProcess(realvec& in, realvec &out)
   
   if (advance_) 
   {
-    updctrl("mrs_bool/advance", false);
+    ctrl_advance_->setValue(false);
   }
 
 	//MATLAB_PUT(out, "SoundFileSource_out");

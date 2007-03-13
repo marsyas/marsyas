@@ -50,17 +50,17 @@ Mean::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("Mean.cpp - Mean:myUpdate");
   
-	setctrl("mrs_natural/onSamples", (mrs_natural)1);
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural());
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
+  ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
+  ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 
-  obsrow_.create(getctrl("mrs_natural/inSamples")->toNatural());
+  obsrow_.create(ctrl_inSamples_->toNatural());
   
-	//defaultUpdate(); [!]
-	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
+  //defaultUpdate(); [!]
+  inObservations_ = ctrl_inObservations_->toNatural();
 
   ostringstream oss;
-  string inObsNames = getctrl("mrs_string/inObsNames")->toString();
+  string inObsNames = ctrl_inObsNames_->toString();
   for (int i = 0; i < inObservations_; i++)
     {
       string inObsName;
@@ -70,7 +70,7 @@ Mean::myUpdate(MarControlPtr sender)
       inObsNames = temp;
       oss << "Mean" << "_" << inObsName << ",";
     }
-  setctrl("mrs_string/onObsNames", oss.str());
+  ctrl_onObsNames_->setValue(oss.str(),NOUPDATE);
 }
 
 void 
@@ -80,16 +80,14 @@ Mean::myProcess(realvec& in, realvec& out)
 
   out.setval(0.0);
   for (o=0; o < inObservations_; o++)
-    {
-      for (t = 0; t < inSamples_; t++)
-		{
-		  // Calculate mean  
-		  out(o,0) += in(o,t);
-		}
-      out(o,0) /= inSamples_;
-    }
-	
-
+      {
+       for (t = 0; t < inSamples_; t++)
+             {
+                // Calculate mean
+	       obsrow_(t) = in(o,t);
+	}
+   out(o,0) = obsrow_.mean();
+   }
   // INEFFICIENT A LOT OF MEMORY COPYING AT EVERY TICK 
   // out = in.meanObs();
 }

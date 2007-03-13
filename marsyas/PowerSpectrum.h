@@ -41,6 +41,8 @@ private:
   mrs_natural N2_;
   mrs_real re_, im_;
   mrs_real dB_, pwr_;
+  MarControlPtr ctrl_spectrumType_;
+  
 
   void addControls();
   void myUpdate(MarControlPtr sender);
@@ -49,6 +51,7 @@ private:
 
 public:
   PowerSpectrum(std::string name);
+  PowerSpectrum(const PowerSpectrum&);
   ~PowerSpectrum();
   MarSystem* clone() const;
 

@@ -31,8 +31,6 @@ using namespace Marsyas;
 
 ZeroCrossings::ZeroCrossings(string name):MarSystem("ZeroCrossings",name)
 {
-  //type_ = "ZeroCrossings";
-  //name_ = name;
 }
 
 
@@ -51,12 +49,10 @@ void
 ZeroCrossings::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("ZeroCrossings.cpp - ZeroCrossings:myUpdate");
-  
-  setctrl("mrs_natural/onSamples", (mrs_natural)1);
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal() / getctrl("mrs_natural/inSamples")->toNatural());
-
-  setctrl("mrs_string/onObsNames", "ZeroCrossings,");  
+  ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
+  ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_->toReal() / ctrl_inSamples_->toNatural());
+  ctrl_onObsNames_->setValue("ZeroCrossings,", NOUPDATE);  
 }
 
 

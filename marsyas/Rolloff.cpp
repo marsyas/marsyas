@@ -41,6 +41,12 @@ Rolloff::Rolloff(string name):MarSystem("Rolloff",name)
   addControls();
 }
 
+Rolloff::Rolloff(const Rolloff& a):MarSystem(a) 
+{
+  ctrl_percentage_ = getctrl("mrs_real/percentage");
+}
+
+
 Rolloff::~Rolloff()
 {
 }
@@ -54,7 +60,7 @@ Rolloff::clone() const
 void 
 Rolloff::addControls()
 {
-  addctrl("mrs_real/percentage", 0.9);
+  addctrl("mrs_real/percentage", 0.9, ctrl_percentage_);
   setctrlState("mrs_real/percentage", true);
 }
 
@@ -63,13 +69,14 @@ Rolloff::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("Rolloff.cpp - Rolloff:myUpdate");
 
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", (mrs_natural)1);
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
-  setctrl("mrs_string/onObsNames", "Rolloff,");
-  sumWindow_.create(getctrl("mrs_natural/inObservations")->toNatural());
+  ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
+  ctrl_onObservations_->setValue((mrs_natural)1, NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
+  ctrl_onObsNames_->setValue("Rolloff,", NOUPDATE);
 
-  perc_ = getctrl("mrs_real/percentage")->toReal();
+  sumWindow_.create(ctrl_inObservations_->toNatural());
+
+  perc_ = ctrl_percentage_->toReal();
 }
 
 void 

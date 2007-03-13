@@ -45,10 +45,11 @@ private:
   mrs_real perc_;
   mrs_real sum_;
   mrs_real total_;
+  MarControlPtr ctrl_percentage_;
   
 public:
   Rolloff(std::string name);
-  
+  Rolloff(const Rolloff&);
   ~Rolloff();
   MarSystem* clone() const;  
   

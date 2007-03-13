@@ -710,6 +710,9 @@ Marsyas::operator>>(istream& is, realvec& vec)
   if ((str0 != "#") || (str1 != "MARSYAS") || (str2 != "mrs_realvec"))
     {
       MRSERR("realvec::operator>>: Problem1 reading realvec object from istream");
+      cout << "-str0 = " << str0 << endl;
+      cout << "-str1 = " << str1 << endl;
+      cout << "-str2 = " << str2 << endl;
       return is;
     }
   is >> str0;				

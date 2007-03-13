@@ -1243,14 +1243,12 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
   MarControlPtr wekaFnamePtr = featureNetwork->getctrl("WekaSink/wsink/mrs_string/filename");
   
 
-  
-
   for (cj=0; cj < (mrs_natural)cls.size(); cj++)
     {
       Collection l = cls[cj];
-      featureNetwork->updctrl(annLabelPtr, cj);
-      featureNetwork->updctrl(nlabelsPtr, (mrs_natural)cls.size());
-      featureNetwork->updctrl(wekaDownsamplePtr, 40);
+      featureNetwork->setctrl(annLabelPtr, cj);
+      featureNetwork->setctrl(nlabelsPtr, (mrs_natural)cls.size());
+      featureNetwork->setctrl(wekaDownsamplePtr, 40);
       if (wekafname == EMPTYSTRING) 
 	featureNetwork->updctrl(wekaFnamePtr, "weka.arff");
       else 
@@ -1259,12 +1257,12 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
 
       cout << "Class " << cj << " is " << l.name() << endl;
 
-      featureNetwork->updctrl(memResetPtr, true);
+      featureNetwork->setctrl(memResetPtr, true);
 
 
       for (i=0; i < l.size(); i++)
 	{
-	  featureNetwork->updctrl(memResetPtr, true);
+	  featureNetwork->setctrl(memResetPtr, true);
 	  featureNetwork->updctrl(fnamePtr, l.entry(i));
 	  wc = 0;  	  
 	  samplesPlayed = 0;
@@ -1281,7 +1279,6 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
 	  cerr << "Processed " << l.entry(i) << endl;
 	}
     }
-  
 
   if (classifierName == "GS")
     featureNetwork->updctrl("GaussianClassifier/gaussian/mrs_bool/done",true);

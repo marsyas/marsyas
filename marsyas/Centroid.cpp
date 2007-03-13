@@ -54,10 +54,10 @@ Centroid::myUpdate(MarControlPtr sender)
 {
   
   MRSDIAG("Centroid.cpp - Centroid:myUpdate");
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", (mrs_natural)1);
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
-  setctrl("mrs_string/onObsNames", "Centroid,");
+  ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
+  ctrl_onObservations_->setValue((mrs_natural)1, NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
+  ctrl_onObsNames_->setValue("Centroid,", NOUPDATE);
 }
 
 void 

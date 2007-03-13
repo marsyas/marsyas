@@ -50,7 +50,7 @@ WekaSink::WekaSink(const WekaSink& a):MarSystem(a)
   ctrl_nLabels_ = getControl("mrs_natural/nLabels");
   ctrl_precision_ = getControl("mrs_natural/precision");
   ctrl_downsample_ = getControl("mrs_natural/downsample");
-  
+  ctrl_filename_ = getControl("mrs_string/filename"); 
 }
 
 MarSystem* 
@@ -64,7 +64,7 @@ WekaSink::addControls()
 {
   addctrl("mrs_natural/precision", 6, ctrl_precision_);
   setctrlState("mrs_natural/precision", true);
-  addctrl("mrs_string/filename", "weka.arff");
+  addctrl("mrs_string/filename", "weka.arff", ctrl_filename_);
   setctrlState("mrs_string/filename", true);
   addctrl("mrs_natural/nLabels", 2, ctrl_nLabels_);
   addctrl("mrs_natural/downsample", 1, ctrl_downsample_);
@@ -84,7 +84,7 @@ WekaSink::putHeader(string inObsNames)
   //updctrl(ctrl_putHeader_, false);
   ctrl_putHeader_->setValue(true);
   
-  if ((filename_ != getctrl("mrs_string/filename")->toString()))
+  if ((filename_ != ctrl_filename_->toString()))
     {
       if (mos_ != NULL) 
 	{
@@ -93,13 +93,13 @@ WekaSink::putHeader(string inObsNames)
 	  if (filename_ == "weka.arff")
 	    remove(filename_.c_str());
 	}
-      filename_ = getctrl("mrs_string/filename")->toString();
+      filename_ = ctrl_filename_->toString();
       
       mos_ = new ofstream;
       mos_->open(filename_.c_str());
       
       (*mos_) << "@relation marsyas" << endl;
-      mrs_natural nAttributes = getctrl("mrs_natural/inObservations")->toNatural()-1;
+      mrs_natural nAttributes = ctrl_inObservations_->toNatural()-1;
       mrs_natural nLabels = ctrl_nLabels_->toNatural();
       
       mrs_natural i;

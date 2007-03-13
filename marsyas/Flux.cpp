@@ -51,14 +51,14 @@ Flux::clone() const
 void
 Flux::myUpdate(MarControlPtr sender)
 {
-  MRSDIAG("Flux.cpp - Flux:localUpdate");
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", (mrs_natural)1);
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
-  setctrl("mrs_string/onObsNames", "Flux,");
+  MRSDIAG("Flux.cpp - Flux:myUpdate");
+  ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
+  ctrl_onObservations_->setValue((mrs_natural)1, NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
+  ctrl_onObsNames_->setValue("Flux,", NOUPDATE);
 
-  prevWindow_.create(getctrl("mrs_natural/inObservations")->toNatural(),
-		     getctrl("mrs_natural/inSamples")->toNatural());
+  prevWindow_.create(ctrl_inObservations_->toNatural(),
+		     ctrl_inSamples_->toNatural());
 }
 
 void 

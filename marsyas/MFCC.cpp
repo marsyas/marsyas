@@ -66,16 +66,16 @@ MFCC::myUpdate(MarControlPtr sender)
   
   MRSDIAG("MFCC.cpp - MFCC:localUpdate");
   
-  setctrl("mrs_natural/onSamples", (mrs_natural)1);
-  setctrl("mrs_natural/onObservations", (mrs_natural)13);
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+  ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
+  ctrl_onObservations_->setValue((mrs_natural)13, NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_);
 
   // Initialize frequency boundaries for filters 
 
   mrs_natural i,j;
 
-  fftSize_ = 2 * getctrl("mrs_natural/inObservations")->toNatural();
-  samplingRate_ = (mrs_natural) (getctrl("mrs_real/israte")->toReal() * getctrl("mrs_natural/inObservations")->toNatural() * 2);
+  fftSize_ = 2 * ctrl_inObservations_->toNatural();
+  samplingRate_ = (mrs_natural) (ctrl_israte_->toReal() * ctrl_inObservations_->toNatural() * 2);
  
   if ((pfftSize_ != fftSize_) || (psamplingRate_ != samplingRate_))
   {
@@ -85,7 +85,7 @@ MFCC::myUpdate(MarControlPtr sender)
     
     for (i=0; i < cepstralCoefs_; i++)
 			oss << "MFCC_" << i << ",";
-    setctrl("mrs_string/onObsNames", oss.str());
+    ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
     
     freqs_.create(42);
     lowestFrequency_ = 133.3333f;
@@ -177,10 +177,10 @@ MFCC::myUpdate(MarControlPtr sender)
 				}  
   }
   
-	pfftSize_ = fftSize_;
+  pfftSize_ = fftSize_;
   psamplingRate_ = samplingRate_;
   
-  mrs_natural inSize = getctrl("mrs_natural/inObservations")->toNatural();  
+  mrs_natural inSize = ctrl_inObservations_->toNatural();  
   fmagnitude_.stretch(inSize*2);
   earMagnitude_.stretch(totalFilters_);
 }

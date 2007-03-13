@@ -63,7 +63,7 @@ private:
   MarControlPtr ctrl_loop_;
   MarControlPtr ctrl_notEmpty_;
   MarControlPtr ctrl_mute_;
-  
+  MarControlPtr ctrl_advance_; 
   
   AbsSoundFileSource* src_;
 

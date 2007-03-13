@@ -51,17 +51,16 @@ StandardDeviation::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("StandardDeviation.cpp - StandardDeviation:myUpdate");
   
-	setctrl("mrs_natural/onSamples", (mrs_natural)1);
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural());
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
+  ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
+  ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 
-  obsrow_.create(getctrl("mrs_natural/inSamples")->toNatural());
+  obsrow_.create(ctrl_inSamples_->toNatural());
   
-	//defaultUpdate();
-	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
+	inObservations_ = ctrl_inObservations_->toNatural();
 
 	ostringstream oss;
-  string inObsNames = getctrl("mrs_string/inObsNames")->toString();
+  string inObsNames = ctrl_inObsNames_->toString();
   for (int i = 0; i < inObservations_; i++)
   {
     string inObsName;
@@ -72,7 +71,7 @@ StandardDeviation::myUpdate(MarControlPtr sender)
     oss << "Std" << "_" << inObsName << ",";
   }
   
-	setctrl("mrs_string/onObsNames", oss.str());
+  ctrl_inObsNames_->setValue(oss.str(), NOUPDATE);
 }
 
 void 
@@ -80,7 +79,6 @@ StandardDeviation::myProcess(realvec& in, realvec& out)
 {
   //checkFlow(in,out);
   
-
   
   out.setval(0.0);
   for (o=0; o < inObservations_; o++)
@@ -93,7 +91,8 @@ StandardDeviation::myProcess(realvec& in, realvec& out)
       out(o,0) = obsrow_.std();
     }
 
-  // INEFFICIENT A LOT OF MEMORY ALLOCATION/COPYING 
+
+  // VERY INEFFICIENT - LOTS OF MEMORY ALLOCATION AND COPYING 
   // out = in.stdObs(); 
 }
 

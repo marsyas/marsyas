@@ -31,8 +31,6 @@ using namespace Marsyas;
 
 Hamming::Hamming(string name):MarSystem("Hamming",name)
 {
-	//type_ = "Hamming";
-	//name_ = name;
 }
 
 Hamming::~Hamming()
@@ -48,11 +46,9 @@ Hamming::clone() const
 void
 Hamming::myUpdate(MarControlPtr sender)
 {
-	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+ 	MarSystem::myUpdate(sender);
 
-	setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));  
+
 	mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
 	envelope_.create(inSamples);
 

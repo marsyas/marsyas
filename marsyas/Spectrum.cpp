@@ -45,12 +45,18 @@ Spectrum::~Spectrum()
 {
 }
 
+Spectrum::Spectrum(const Spectrum& a): MarSystem(a)
+{
+  ctrl_cutoff_ = getctrl("mrs_real/cutoff");
+  ctrl_lowcutoff_ = getctrl("mrs_real/lowcutoff");
+}
+
 void
 Spectrum::addControls()
 {
-  addctrl("mrs_real/cutoff", 1.0);
+  addctrl("mrs_real/cutoff", 1.0, ctrl_cutoff_);
   setctrlState("mrs_real/cutoff", true);
-  addctrl("mrs_real/lowcutoff", 0.0);
+  addctrl("mrs_real/lowcutoff", 0.0, ctrl_lowcutoff_);
   setctrlState("mrs_real/lowcutoff", true);
 }
 
@@ -63,15 +69,14 @@ Spectrum::clone() const
 void 
 Spectrum::myUpdate(MarControlPtr sender)
 {
-  setctrl("mrs_natural/onSamples", (mrs_natural)1);
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal() / getctrl("mrs_natural/inSamples")->toNatural());
+  ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
+  ctrl_onObservations_->setValue(ctrl_inSamples_, NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_->toReal() / ctrl_inSamples_->toNatural());
   
-  cutoff_ = getctrl("mrs_real/cutoff")->toReal();
-  lowcutoff_ = getctrl("mrs_real/lowcutoff")->toReal();
+  cutoff_ = ctrl_cutoff_->toReal();
+  lowcutoff_ = ctrl_lowcutoff_->toReal();
 
-  //defaultUpdate();
-  onObservations_ = getctrl("mrs_natural/onObservations")->toNatural();
+  onObservations_ = ctrl_onObservations_->toNatural();
 
   if (ponObservations_ != onObservations_)
     {
@@ -81,7 +86,7 @@ Spectrum::myUpdate(MarControlPtr sender)
 	  oss << "rbin_" << n << ",";
 	  oss << "ibin_" << n << ",";
 	}
-      setctrl("mrs_string/onObsNames", oss.str());
+      ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
     }
   
   ponObservations_ = onObservations_;
@@ -90,7 +95,6 @@ Spectrum::myUpdate(MarControlPtr sender)
 void 
 Spectrum::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
   
   // copy to output to perform inplace fft 
   // notice transposition of matrix 

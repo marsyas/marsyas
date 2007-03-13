@@ -45,6 +45,12 @@ PowerSpectrum::PowerSpectrum(string name):MarSystem("PowerSpectrum",name)
   addControls();
 }
 
+PowerSpectrum::PowerSpectrum(const PowerSpectrum& a):MarSystem(a)
+{
+  ctrl_spectrumType_ = getctrl("mrs_string/spectrumType");
+}
+
+
 PowerSpectrum::~PowerSpectrum()
 {
 }
@@ -52,7 +58,7 @@ PowerSpectrum::~PowerSpectrum()
 void
 PowerSpectrum::addControls()
 {
-  addctrl("mrs_string/spectrumType", "power");
+  addctrl("mrs_string/spectrumType", "power", ctrl_spectrumType_);
   setctrlState("mrs_string/spectrumType", true);
 }
 
@@ -66,14 +72,12 @@ PowerSpectrum::clone() const
 void 
 PowerSpectrum::myUpdate(MarControlPtr sender)
 {
-  setctrl("mrs_natural/onSamples", (mrs_natural)1);
-  // setctrl("mrs_natural/onObservations", (getctrl("mrs_natural/inObservations")->toNatural() / 2) + 1);
-  setctrl("mrs_natural/onObservations", (getctrl("mrs_natural/inObservations")->toNatural() / 2));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  
-  setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));  
+  ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
+  ctrl_onObservations_->setValue((ctrl_inObservations_->toNatural() /2), NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_->toReal() / ctrl_inSamples_->toNatural());
+  ctrl_onObsNames_->setValue(ctrl_inObsNames_);
 
-  stype_ = getctrl("mrs_string/spectrumType")->toString();
+  stype_ = ctrl_spectrumType_->toString();
   if (stype_ == "power")
     ntype_ = PSD_POWER;
   else if (stype_ == "magnitude") 
@@ -83,15 +87,14 @@ PowerSpectrum::myUpdate(MarControlPtr sender)
   else if (stype_ == "powerdensity")
     ntype_ = PSD_PD;
   
-  //defaultUpdate(); [!]
-	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
+  inObservations_ = ctrl_inObservations_->toNatural();
 
   N2_ = inObservations_ / 2;
   ostringstream oss;
   
   for (mrs_natural n=0; n < N2_; n++)
     oss << "mbin_" << n << ",";
-  setctrl("mrs_string/onObsNames", oss.str());
+  ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 }
 
 void 

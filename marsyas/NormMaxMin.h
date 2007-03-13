@@ -58,6 +58,7 @@ private:
   
 public:
   NormMaxMin(std::string name);
+  NormMaxMin(const NormMaxMin&);
   ~NormMaxMin();
   MarSystem* clone() const;  
   

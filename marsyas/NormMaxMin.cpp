@@ -30,13 +30,22 @@ using namespace Marsyas;
 
 NormMaxMin::NormMaxMin(string name):MarSystem("NormMaxMin",name)
 {
-  //type_ = "NormMaxMin";
-  //name_ = name;
 
   init_ = false;
 
 	addControls();
 }
+
+NormMaxMin::NormMaxMin(const NormMaxMin& a): MarSystem(a) 
+{
+  lowerPtr_ = getctrl("mrs_real/lower");
+  upperPtr_ = getctrl("mrs_real/upper");
+  trainPtr_ = getctrl("mrs_bool/train");
+  initPtr_ = getctrl("mrs_bool/init");
+  maximumsPtr_ = getctrl("mrs_realvec/maximums");
+  minimumsPtr_ = getctrl("mrs_realvec/minimums");
+}
+
 
 
 NormMaxMin::~NormMaxMin()
@@ -78,12 +87,11 @@ NormMaxMin::myUpdate(MarControlPtr sender)
 
   MarSystem::myUpdate(sender);
   
-  //defaultUpdate();  [!]
-  inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
+  inObservations_ = ctrl_inObservations_->toNatural();
   
-  init_ = getctrl("mrs_bool/init")->toBool();
+  init_ = initPtr_->toBool();
 
-  mrs_natural msize = (getctrl("mrs_realvec/maximums")->toVec().getSize());
+  mrs_natural msize = maximumsPtr_->toVec().getSize();
   mrs_natural nsize = maximums_.getSize();
     
   if (msize != nsize) 
@@ -99,15 +107,15 @@ NormMaxMin::myUpdate(MarControlPtr sender)
       
       maximums_.setval(DBL_MIN);
       minimums_.setval(DBL_MAX);
-      setctrl("mrs_realvec/maximums", maximums_);
-      setctrl("mrs_realvec/minimums", minimums_);  
+      maximumsPtr_->setValue(maximums_, NOUPDATE);
+      minimumsPtr_->setValue(minimums_, NOUPDATE);  
     }
-  train_ = getctrl("mrs_bool/train")->toBool();
+  train_ = trainPtr_->toBool();
   
   if (!train_)
     {
-      maximums_ = getctrl("mrs_realvec/maximums")->toVec();
-      minimums_ = getctrl("mrs_realvec/minimums")->toVec();
+      maximums_ = maximumsPtr_->toVec();
+      minimums_ = minimumsPtr_->toVec();
     } 
 }
 

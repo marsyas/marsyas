@@ -43,11 +43,15 @@ private:
   mrs_real re_,im_;
   mrs_natural ponObservations_;
 
+  MarControlPtr ctrl_cutoff_;
+  MarControlPtr ctrl_lowcutoff_;
+
   void addControls();
   void myUpdate(MarControlPtr sender);
  
 public:
   Spectrum(std::string name);
+  Spectrum(const Spectrum&);
   ~Spectrum();
   MarSystem* clone() const;
 
