@@ -38,7 +38,7 @@ Confidence::Confidence(string name):MarSystem("Confidence",name)
   
   predictions_ = 0;
   count_ = 0;
-
+  write_=0;
   addControls();
 }
 
@@ -50,7 +50,7 @@ Confidence::Confidence(const Confidence& a):MarSystem(a)
   count_ = 0;
   print_ = false;
   forcePrint_ = false;
-  
+    write_=0;
 }
 
 
@@ -64,7 +64,7 @@ MarSystem*
 Confidence::clone() const 
 {
   return new Confidence(*this);
-}
+} 
 
 void 
 Confidence::addControls()
@@ -78,6 +78,12 @@ Confidence::addControls()
   setctrlState("mrs_bool/print", true);
   addctrl("mrs_bool/forcePrint", false);
   setctrlState("mrs_bool/forcePrint", true);
+  addctrl("mrs_string/fileName", "MARSYAS_EMPTY");
+  setctrlState("mrs_string/fileName", true);
+  addctrl("mrs_natural/write", 0);
+  setctrlState("mrs_natural/write", true);
+  addctrl("mrs_natural/hopSize", 512);
+  setctrlState("mrs_natural/hopSize", true);
 }
 
 void
@@ -106,6 +112,20 @@ Confidence::myUpdate(MarControlPtr sender)
       labelNames = temp;
       labelNames_.push_back(labelName);
     }  
+  if(!write_ && getctrl("mrs_string/fileName")->toString().compare("MARSYAS_EMPTY"))
+    {
+      string name = getctrl("mrs_string/fileName")->toString();
+      string tmp = name +"_synSeg.txt";
+      cout << getctrl("mrs_string/fileName")->toString().c_str() << endl;
+      outputFileSyn_.open(tmp.c_str(), ios::out);
+      tmp = name +"_tranSeg.txt";
+      outputFileTran_.open(tmp.c_str(), ios::out);
+      write_ = 1;
+  }
+
+  hopDuration_ = 1 / getctrl("mrs_real/osrate")->toReal();
+  nbFrames_ = -getctrl("mrs_natural/memSize")->toNatural()+1;
+  lastLabel_ = "MARSYAS_EMPTY";
 }
 
 void 
@@ -118,8 +138,8 @@ Confidence::myProcess(realvec& in, realvec& out)
   
   mrs_natural label;
   mrs_natural l;
- 
-  if (mute == false) 
+
+   if (mute == false) 
     {
       for (o=0; o < inObservations_; o++)
 	for (t = 0; t < inSamples_; t++)
@@ -128,6 +148,7 @@ Confidence::myProcess(realvec& in, realvec& out)
 	    if (o==0) 
 	      {
 		label = (mrs_natural)in(o,t);
+		// cout << "Label = " << label << endl;
 		confidences_(label) = confidences_(label) + 1;
 	      } 
 	  }
@@ -147,9 +168,19 @@ Confidence::myProcess(realvec& in, realvec& out)
 		}
 	    }
 	  if (print_) 
-	    cout << labelNames_[max_l] << "\t" << 
+	    cout << nbFrames_*hopDuration_ << "\t" << labelNames_[max_l] << "\t" << 
+	      ((confidences_(max_l) / count_)) * 100.0 << endl;
+          if (write_)
+	    { 
+	    outputFileSyn_ << nbFrames_*hopDuration_ << "\t" << labelNames_[max_l] << "\t" << 
 	      ((confidences_(max_l) / count_)) * 100.0 << endl;
 
+	    if(lastLabel_ == "MARSYAS_EMPTY" || lastLabel_ != labelNames_[max_l])
+	      {
+	    outputFileTran_ << nbFrames_*hopDuration_ << "\t" << labelNames_[max_l] << endl;
+	    lastLabel_ = labelNames_[max_l];
+	      }
+	    }
 	  if (cond || forcePrint_)
 	    {
 	      count_ = 0;
@@ -158,7 +189,8 @@ Confidence::myProcess(realvec& in, realvec& out)
 	  confidences_.setval(0.0);
 	}
     }
-}
+    nbFrames_++; 
+ }
 
 
 

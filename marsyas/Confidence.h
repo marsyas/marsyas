@@ -26,7 +26,12 @@
 #ifndef MARSYAS_CONFIDENCE_H
 #define MARSYAS_CONFIDENCE_H
 
-#include "MarSystem.h"	
+#include "MarSystem.h"
+
+#include <fstream>
+#include <iostream>
+
+using namespace std;
 
 namespace Marsyas
 {
@@ -42,7 +47,13 @@ private:
   std::vector<std::string> labelNames_;
   bool print_;
   bool forcePrint_;
-  
+  mrs_natural write_;
+  mrs_natural nbFrames_;
+  mrs_real hopDuration_;
+  ofstream outputFileSyn_;
+  ofstream outputFileTran_;
+  string lastLabel_;
+
   mrs_natural predictions_;
 
   MarControlPtr ctrl_memSize_;
