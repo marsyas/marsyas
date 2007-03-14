@@ -24,6 +24,7 @@
 */
 
 #include "Confidence.h"
+#include "FileName.h"
 
 using namespace std;
 using namespace Marsyas;
@@ -112,13 +113,19 @@ Confidence::myUpdate(MarControlPtr sender)
       labelNames = temp;
       labelNames_.push_back(labelName);
     }  
-  if(!write_ && getctrl("mrs_string/fileName")->toString().compare("MARSYAS_EMPTY"))
+  if(getctrl("mrs_string/fileName")->toString().compare("MARSYAS_EMPTY"))
     {
+      if(write_)
+	{
+	  outputFileSyn_.close();
+	  outputFileTran_.close();
+	}
       string name = getctrl("mrs_string/fileName")->toString();
-      string tmp = name +"_synSeg.txt";
-      cout << getctrl("mrs_string/fileName")->toString().c_str() << endl;
+      FileName Sfname(name);
+      string tmp = Sfname.nameNoExt() +"_synSeg.txt";
+      cout << Sfname.nameNoExt() << endl;
       outputFileSyn_.open(tmp.c_str(), ios::out);
-      tmp = name +"_tranSeg.txt";
+      tmp = Sfname.nameNoExt() +"_tranSeg.txt";
       outputFileTran_.open(tmp.c_str(), ios::out);
       write_ = 1;
   }

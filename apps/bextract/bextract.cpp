@@ -767,9 +767,9 @@ void bextract_train(vector<Collection> cls,
 
   featureNetwork->addMarSystem(mng.create("Confidence", "confidence"));
 
-      FileName Sfname(sfName);
+  // FileName Sfname(sfName);
       // Sfname.path()+
-       featureNetwork->updctrl("Confidence/confidence/mrs_string/fileName", Sfname.nameNoExt()); 
+   //   featureNetwork->updctrl("Confidence/confidence/mrs_string/fileName", Sfname.nameNoExt()); 
  
 
       
@@ -777,6 +777,7 @@ void bextract_train(vector<Collection> cls,
   // link controls
   //////////////////////////////////////////////////////////////////////////
   featureNetwork->linkctrl("mrs_string/filename", "SoundFileSource/src/mrs_string/filename");
+  featureNetwork->linkctrl("mrs_string/filename", "Confidence/confidence/mrs_string/fileName");
   featureNetwork->linkctrl("mrs_natural/nChannels", "SoundFileSource/src/mrs_natural/nChannels");
   featureNetwork->linkctrl("mrs_real/israte", "SoundFileSource/src/mrs_real/israte");
   featureNetwork->linkctrl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
@@ -784,8 +785,6 @@ void bextract_train(vector<Collection> cls,
     featureNetwork->linkctrl("mrs_natural/nChannels",	"AudioSink/dest/mrs_natural/nChannels");
   featureNetwork->linkctrl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
   featureNetwork->linkctrl("mrs_bool/initAudio", "AudioSink/dest/mrs_bool/initAudio");
-	
-
 
   MarControlPtr ctrl_filename_ = featureNetwork->getctrl("SoundFileSource/src/mrs_string/filename");
   MarControlPtr ctrl_notEmpty_ = featureNetwork->getctrl("SoundFileSource/src/mrs_bool/notEmpty");
@@ -832,7 +831,7 @@ void bextract_train(vector<Collection> cls,
 	  if (wekafname != EMPTYSTRING)
 	    {
 	      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
-	      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
+	      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 40);
 	      featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  			
 	    }
 
