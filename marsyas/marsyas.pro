@@ -17,7 +17,7 @@ CONFIG(debug, debug|release) {
 ######################################################################
 # Marsyas GUI source files
 ######################################################################
-marsyasGUI {
+marsyasQT {
 	SOURCES += \
 		Qt/GainControlsGUI.cpp \
 		Qt/MATLABeditorGUI.cpp \

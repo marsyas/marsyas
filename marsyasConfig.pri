@@ -25,7 +25,7 @@ CONFIG += marsyasQt4Apps
 # release/debug mode
 ######################################################################
 
-CONFIG	+= debug_and_release # by default this only builds the release version!
+CONFIG	+= release
 
 ######################################################################
 # enable/disable ASSERTIONS/WARNINGS/DIAGNOSTICS/LOGS, etc
@@ -60,10 +60,10 @@ unix:!macx:CONFIG += marsyasAUDIOIO_ALSA
 ### no choice about audio API for MacOSX.
 
 ######################################################################
-# GUI suport for Marsyas library 
+# Qt suport for Marsyas library 
 ######################################################################
 
-#CONFIG += marsyasGUI
+#CONFIG += marsyasQT
 
 ######################################################################
 # Adds support for MATLAB engine classes
@@ -75,7 +75,7 @@ unix:!macx:CONFIG += marsyasAUDIOIO_ALSA
 # Adds support for MP3 MAD
 ######################################################################
 
-# CONFIG += marsyasMAD
+#CONFIG += marsyasMAD
 
 ######################################################################
 # Adds support for oggvorbis
@@ -88,11 +88,13 @@ unix:!macx:CONFIG += marsyasAUDIOIO_ALSA
 # let qmake set stuff based on above user definitions
 # DO NOT CHANGE THE LINES BELLOW!
 #*********************************************************************
+message ( ***************************************************** )
+message ( Configuring Marsyas build with the following options: )
 
 INCLUDEPATH += "$$BASEDIR"/marsyas 
 
 CONFIG(debug, debug|release) {
-	message ( Configuring Marsyas for DEBUG building )
+	message ( -> DEBUG building )
 	DEFINES += MARSYAS_DEBUG
 	
 	#in debug, activate some logging by default 
@@ -102,38 +104,38 @@ CONFIG(debug, debug|release) {
 }
 
 CONFIG(release, debug|release) {
-	message ( Configuring Marsyas for RELEASE building )
+	message (  -> RELEASE building )
 	DEFINES += MARSYAS_RELEASE
 }
 
-marsyasConsoleApps:message (Build of Console Apps turned ON)
-marsyasQt4Apps:message( Build of of Qt4 Apps turned ON )
-
-marsyasGUI {
-	message ( Marsyas Lib as a Qt class tuned ON )
+marsyasQT {
+	message ( -> Qt support in marsyas.lib )
 	CONFIG += qt
 	DEFINES += MARSYAS_QT
 	INCLUDEPATH += "$$BASEDIR"/marsyas/Qt 
 }
+
 marsyasMATLAB {
-	message ( MATLAB support turned ON )
+	message ( -> MATLAB support )
 	DEFINES += MARSYAS_MATLAB
 	INCLUDEPATH += "$$BASEDIR"/marsyas/MATLAB 
 }
 
-marsyasAUDIOIO:message( AUDIO I/O support (RtAudio) turned ON: )
-marsyasAUDIOIO_ALSA:message ( => ALSA )
-marsyasAUDIOIO_JACK:message ( => JACK )
-marsyasAUDIOIO_OSS:message ( => OSS )
-marsyasAUDIOIO_COREAUDIO:message( => CORE AUDIO )
-marsyasAUDIOIO_DS:message( => DIRECT SHOW )
-marsyasAUDIOIO_ASIO:message( => ASIO )
+marsyasAUDIOIO:message( -> AUDIO I/O support (RtAudio) )
+marsyasAUDIOIO_ALSA:message ( --> ALSA  )
+marsyasAUDIOIO_JACK:message ( --> JACK )
+marsyasAUDIOIO_OSS:message ( --> OSS )
+marsyasAUDIOIO_COREAUDIO:message( --> CORE AUDIO )
+marsyasAUDIOIO_DS:message( --> DIRECT SHOW )
+marsyasAUDIOIO_ASIO:message( --> ASIO )
 
-marsyasMIDIIO:message ( MIDI I/O support (RtMIDI) turned ON)
+marsyasMIDIIO:message ( -> MIDI I/O support (RtMIDI) )
 
-marsyasMAD:message( MP3 MAD support turned ON )
-marsyasOGG:message( Ogg Vorbis support turned ON )
+marsyasMAD:message( -> MP3 MAD support )
+marsyasOGG:message( -> Ogg Vorbis support )
 
+marsyasConsoleApps:message ( -> build Console Apps )
+marsyasQt4Apps:message(  -> build Qt4 Apps )
 
 unix:{
 !macx {    # qmake detects osx as "unix" in 4.2.2.  :/
@@ -286,36 +288,36 @@ win32 {
 }
 
 marsyasASSERT {
-	message ( Assertions turned on )
+	message ( -> Assertions turned on )
 	DEFINES += MARSYAS_ASSERT
 }
 marsyasPROFILING {
-	message ( Profiling turned on )
+	message ( -> Profiling turned on )
 	DEFINES += MARSYAS_PROFILING
 }
 
 marsyasLOGWARNINGS {
-	message ( Warning messages in log )
+	message ( -> Warning messages in log )
 	DEFINES += MARSYAS_LOGWARNINGS
 }
 marsyasLOGDEBUG {
-	message ( Debug messages in log )
+	message ( -> Debug messages in log )
 	DEFINES += MARSYAS_LOGDEBUG
 }
 marsyasLOGDIAGNOSTIC {
-	message ( Diagnostic messages in log )
+	message ( -> Diagnostic messages in log )
 	DEFINES += _MARSYAS_LOGDIAGNOSTIC
 }
 marsyasLOGFILE {
-	message ( Log to file )
+	message ( --> Log to file )
 	DEFINES += MARSYAS_LOGFILE
 }
 marsyasLOGSTDOUT {
-	message ( Log to stdout )
+	message ( --> Log to stdout )
 	DEFINES += MARSYAS_LOGSTDOUT
 }
 marsyasLOGGUI {
-	message ( Log to GUI )
+	message ( --> Log to GUI )
 	DEFINES += MARSYAS_LOGGUI
 }
 
