@@ -238,22 +238,23 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 
     if (!isrc_->getctrl("mrs_bool/notEmpty")->isTrue())
 		{
-			if (cindex_ < col_.size() -1)
-			{
-				 cindex_ = cindex_ + 1;
-				 setctrl("mrs_natural/cindex", cindex_);
-				 isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));      
-				 isrc_->updctrl("mrs_natural/pos", 0);     
-				 pos_ = 0;
-				 myIsrate_ = isrc_->getctrl("mrs_real/israte")->toReal();
-				 setctrl("mrs_real/israte", myIsrate_);
-				 setctrl("mrs_real/osrate", myIsrate_);
-			}
-			else 
-			{
-				setctrl("mrs_bool/notEmpty", false);
-				notEmpty_ = false;
-			}
+		  if (cindex_ < col_.size() -1)
+		    {
+		      cindex_ = cindex_ + 1;
+		      setctrl("mrs_natural/cindex", cindex_);
+		      isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));      
+		      isrc_->updctrl("mrs_natural/pos", 0);     
+		      pos_ = 0;
+		      myIsrate_ = isrc_->getctrl("mrs_real/israte")->toReal();
+		      setctrl("mrs_real/israte", myIsrate_);
+		      setctrl("mrs_real/osrate", myIsrate_);
+		      setctrl("mrs_string/currentlyPlaying", col_.entry(cindex_));
+		    }
+		  else 
+		    {
+		      setctrl("mrs_bool/notEmpty", false);
+		      notEmpty_ = false;
+		    }
 		}
   } 
 }  

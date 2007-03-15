@@ -51,6 +51,7 @@ printHelp(string progName)
   cerr << "Supported tests:" << endl;
   cerr << "audiodevices    : test audio devices " << endl;
   cerr << "cascade         : test Cascade composite " << endl;
+  cerr << "collection      : test Collection " << endl;
   cerr << "fanoutswitch    : test disabling fanout branches " << endl;
   cerr << "filter          : test filter MarSystem " << endl;
   cerr << "fft             : test fft analysis/resynthesis " << endl;
@@ -614,15 +615,16 @@ test_collection(string sfName)
   while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->toBool()) 
     {
       cout << "tick " << isEmpty << endl;
-      //cout << "pos " << playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() << endl;
       
       for (int i=0; i<100; i++)
 	playbacknet->tick();
-
+      
       
       playbacknet->updctrl("SoundFileSource/src/mrs_natural/cindex", cindex);
+      cout << playbacknet->getctrl("SoundFileSource/src/mrs_string/currentlyPlaying")->to<mrs_string>() << endl;
       
       cindex++;
+      cout << "cindex = " << cindex << endl;
       
 
       //test if setting "mrs_natural/pos" to 0 for rewinding is working
