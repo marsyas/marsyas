@@ -59,18 +59,19 @@ void Analyze::calcDurations() {
 	inFile.close();
 	int maxSamps = i;
 /*
+	cout<<"---------original:"<<endl;
 	for (i=0; i<maxSamps; i++) {
 		cout<<pitchList[i]<<endl;
 	}
-	cout<<"process"<<endl;
 */
+
 	// smooth out 0s.
 	i=0;
 	while (i<maxSamps) {
 		if (pitchList[i]==0) {
 			j=i;
 			while (true) {
-				if (j>maxSamps) break;
+				if (j>=maxSamps) break;
 				if (pitchList[j]>0) {
 					if (i==0)
 						prevPitch=0;
@@ -87,39 +88,57 @@ void Analyze::calcDurations() {
 		}
 		i++;
 	}
+
 /*
+	cout<<"---------processed:"<<endl;
 	for (i=0; i<maxSamps; i++) {
 		cout<<pitchList[i]<<endl;
 	}
 */
 
-	for (i=3; i<maxSamps-3; i++) {
-		avg1=0;
-		avg2=0;
-		variance1=0;
-		variance2=0;
-		for (j=0; j<3; j++) {
+	//int pitch;
+	int next=0;
+	float AVERAGE_OVER = 5.0;
+	prevSamp=0;
+	for (i=AVERAGE_OVER; i<maxSamps-AVERAGE_OVER; i++) {
+		avg1=0.0;
+		avg2=0.0;
+		variance1=0.0;
+		variance2=0.0;
+		for (j=0; j<AVERAGE_OVER; j++) {
 			avg1 += pitchList[i-j-1];
 			avg2 += pitchList[i+j];
-			if (j<2) 
-				variance1+= fabs( pitchList[i-j-1] - pitchList[i-j] );
-			if (j<2) 
-				variance2+= fabs( pitchList[i+j] - pitchList[i+j+1] );
+			if (j < (AVERAGE_OVER-1) )
+				variance1+= fabs(pitchList[i-j-1] - pitchList[i-j]);
+				//variance1+= pow( 2, 1000*(pitchList[i-j-1] - pitchList[i-j]) );
+			if (j < (AVERAGE_OVER-1) )
+				variance2+= fabs(pitchList[i+j] - pitchList[i+j+1]);
+				//variance2+= pow ( 2, 1000*(pitchList[i+j] - pitchList[i+j+1]) ) ;
 		}
-		avg1 = avg1/3.0;
-		avg2 = avg2/3.0;
+		avg1 = avg1/AVERAGE_OVER;
+		avg2 = avg2/AVERAGE_OVER;
+		variance1 = variance1/AVERAGE_OVER;
+		variance2 = variance1/AVERAGE_OVER;
 
-int pitch;
 		if (fabs(avg1-avg2) > 0.5) {
-			if ((variance1<0.5) && (variance2<0.5) ) {
-			//if (fabs(pitchList[i]-pitchList[i+1] < 0.5)) {
-				pitch = pitchList[i-4];
-				cout<<i <<"     "<<i - prevSamp<<"   "<<pitch<<"   "<<variance1<<endl;
-				prevSamp = i;
+			if (i>prevSamp+AVERAGE_OVER) next=i;
+		}
+		if (next>0) {
+			if ((variance1<0.5)&&(variance2<0.5)) {
+				//prevSamp = int(i+AVERAGE_OVER);
+				prevSamp = int(i);
+				cout<<pitchList[ prevSamp-1]<<endl;
+				cout<<i<<"   "<<pitchList[ prevSamp ]<<" was a new pitch"<<endl;
+				cout<<pitchList[ prevSamp+1]<<endl;
+				next=0;
 			}
 		}
-	}
+		//	cout<<i<<" "<<pitchList[i];
+		//	cout<<"   "<<avg1<<" "<<avg2<<i - prevSamp<<"   "<<"   "<<variance1<<" "<<variance2<<endl;
+		if (pitchList[i]>61) exit(0);
+//zz
 
+	}
 }
 
 void Analyze::getPitches(string filename) {
