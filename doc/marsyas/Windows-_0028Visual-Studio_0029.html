@@ -58,15 +58,6 @@ Up:&nbsp;<a rel="up" accesskey="u" href="Platform_002dspecific-notes.html#Platfo
 A few of our developers are insane enough to use Visual Studio, so this
 environment is fairly well-supported.
 
-   <p>TODO: let's see if they actually read the documentation!  When you guys
-notice this, let me know and I'll delete the OS flames.  :)
-
-   <p>I have no clue how they bear to use such an inferior operating system,
-let alone do programming in anything _other_ than vi.  I mean, even _emacs_
-would be better than using a graphical tool for programming!
-
-   <p>Real info:
-
 <pre class="example">     Anyone wanting to use MSVC2005 (and probably MSVC6, MSVC2003 and
      MSVC2005express) and Qt4.2.2 opensource please try doing the following:
      
@@ -75,8 +66,9 @@ would be better than using a graphical tool for programming!
      http://qtnode.net/wiki/Qt4_with_Visual_Studio
      
      2)  Do not forget to put you Qt bin dir in the system path (i.e.
-     c:\Qt\4.2.2\bin), so you can use qmake anywhere, and to define the QMAKESPEC
-     env var, that for the case of MSVC2005 should be win32-msvc2005.
+     c:\Qt\4.2.2\bin), so you can use qmake anywhere, and to define the
+     QMAKESPEC env var, that for the case of MSVC2005 should be
+     win32-msvc2005.
      
      3) open a MSVC2005 command prompt (you can find this in
      Start-&gt;Programs-&gt;Microsoft Visual Studio-&gt;Visual Studio Tools); this cmd
@@ -86,12 +78,12 @@ would be better than using a graphical tool for programming!
      3) run "qconfigure msvc2005" (without the quotes) and follow the
      instructions (basically reply yes whenever asked).
      
-     4) after the successful build of qmake and the subsequent generation of the
-     makefiles for the patched Qt code, just do nmake to build the Qt lib (this
-     will take a while, so go grab a coffee or something! ;-))
+     4) after the successful build of qmake and the subsequent generation
+     of the makefiles for the patched Qt code, just do nmake to build the
+     Qt lib (this will take a while, so go grab a coffee or something! ;-))
      
-     5) When done, you should now be able to create MSVC2005 project using qmake
-     -t vcapp/vclib from all your marsyas .pro!
+     5) When done, you should now be able to create MSVC2005 project using
+     qmake -t vcapp/vclib from all your marsyas .pro!
 </pre>
    </body></html>
 
