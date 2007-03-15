@@ -96,6 +96,7 @@ FileName::nameNoExt()
 const	char *tmp = str.c_str();
 		 
 	char *tmp2 = rindex(tmp, '.');
+	if(tmp2)
 	*tmp2 = '\0';
 	string res(tmp);
 return res;
