@@ -95,7 +95,9 @@ void Analyze::calcDurations() {
 		cout<<pitchList[i]<<endl;
 	}
 */
-
+	
+	ofstream file;
+	file.open("detected.txt");
 	//int pitch;
 	int next=0;
 	float AVERAGE_OVER = 5.0;
@@ -109,36 +111,37 @@ void Analyze::calcDurations() {
 			avg1 += pitchList[i-j-1];
 			avg2 += pitchList[i+j];
 			if (j < (AVERAGE_OVER-1) )
-				variance1+= fabs(pitchList[i-j-1] - pitchList[i-j]);
-				//variance1+= pow( 2, 1000*(pitchList[i-j-1] - pitchList[i-j]) );
+				variance1+= fabs(pitchList[i-j-1] - pitchList[i-j-2]);
 			if (j < (AVERAGE_OVER-1) )
 				variance2+= fabs(pitchList[i+j] - pitchList[i+j+1]);
-				//variance2+= pow ( 2, 1000*(pitchList[i+j] - pitchList[i+j+1]) ) ;
 		}
 		avg1 = avg1/AVERAGE_OVER;
 		avg2 = avg2/AVERAGE_OVER;
-		variance1 = variance1/AVERAGE_OVER;
-		variance2 = variance1/AVERAGE_OVER;
+		variance1 = variance1 / (AVERAGE_OVER-1);
+		variance2 = variance2 / (AVERAGE_OVER-1);
 
-		if (fabs(avg1-avg2) > 0.5) {
-			if (i>prevSamp+AVERAGE_OVER) next=i;
+		if (fabs(avg1-avg2) > 0.4) {
+			//if ( (variance1>0) || (variance2>0)) // HACK: works in real life.
+			if (i>prevSamp+10*(AVERAGE_OVER)) next=i;
 		}
 		if (next>0) {
-			if ((variance1<0.5)&&(variance2<0.5)) {
+			if ((variance1<0.4)&&(variance2<0.4)) {
 				//prevSamp = int(i+AVERAGE_OVER);
 				prevSamp = int(i);
-				cout<<pitchList[ prevSamp-1]<<endl;
+//				cout<<pitchList[ prevSamp-1]<<endl;
 				cout<<i<<"   "<<pitchList[ prevSamp ]<<" was a new pitch"<<endl;
-				cout<<pitchList[ prevSamp+1]<<endl;
+				file<<i<<" "<<73<<endl;
+//				cout<<pitchList[ prevSamp+1]<<endl;
 				next=0;
 			}
 		}
-		//	cout<<i<<" "<<pitchList[i];
-		//	cout<<"   "<<avg1<<" "<<avg2<<i - prevSamp<<"   "<<"   "<<variance1<<" "<<variance2<<endl;
-		if (pitchList[i]>61) exit(0);
+	//	cout<<i<<" "<<pitchList[i];
+	//	cout<<"   "<<avg1<<" "<<avg2<<"   "<<i - prevSamp<<"   "<<"   "<<variance1<<" "<<variance2<<endl;
+	//	if (pitchList[i]>61) exit(0);
 //zz
 
 	}
+	file.close();
 }
 
 void Analyze::getPitches(string filename) {
@@ -146,10 +149,10 @@ void Analyze::getPitches(string filename) {
   MarSystem* pnet = mng.create("Series", "pnet");
 
   pnet->addMarSystem(mng.create("SoundFileSource", "src"));
-  pnet->updctrl("SoundFileSource/src/mrs_string/filename", filename);
-
 	pnet->addMarSystem(mng.create("ShiftInput", "sfi"));
+  pnet->updctrl("SoundFileSource/src/mrs_string/filename", filename);
   pnet->addMarSystem(mng.create("PitchPraat", "pitch")); 
+  // pnet->addMarSystem(mng.create("PitchSACF", "pitch")); 
   pnet->addMarSystem(mng.create("RealvecSink", "rvSink")); 
 
   mrs_real lowPitch = 36;
@@ -184,12 +187,8 @@ void Analyze::getPitches(string filename) {
    
    pnet->updctrl("RealvecSink/rvSink/mrs_bool/done", true); 
 	
-	ofstream dataFile;
-	dataFile.open("notepitches.txt");
-	for (mrs_natural i=1; i<data.getSize();i+=2)
-		dataFile<<data(i)<<endl;
-	dataFile.close();
 
+	cout << data ;
 	delete pnet;
 }
 
