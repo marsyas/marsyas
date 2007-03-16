@@ -777,7 +777,8 @@ void bextract_train(vector<Collection> cls,
   // link controls
   //////////////////////////////////////////////////////////////////////////
   featureNetwork->linkctrl("mrs_string/filename", "SoundFileSource/src/mrs_string/filename");
-  featureNetwork->linkctrl("mrs_string/filename", "Confidence/confidence/mrs_string/fileName");
+  featureNetwork->linkctrl("SoundFileSource/src/mrs_string/currentlyPlaying", "Confidence/confidence/mrs_string/fileName");
+  //  featureNetwork->linkctrl("SoundFileSource/src/mrs_string/filename", "Confidence/confidence/mrs_string/fileName");
   featureNetwork->linkctrl("mrs_natural/nChannels", "SoundFileSource/src/mrs_natural/nChannels");
   featureNetwork->linkctrl("mrs_real/israte", "SoundFileSource/src/mrs_real/israte");
   featureNetwork->linkctrl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");

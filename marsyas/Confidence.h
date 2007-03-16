@@ -53,6 +53,7 @@ private:
   ofstream outputFileSyn_;
   ofstream outputFileTran_;
   string lastLabel_;
+  string oriName_;
 
   mrs_natural predictions_;
 

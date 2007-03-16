@@ -40,6 +40,7 @@ Confidence::Confidence(string name):MarSystem("Confidence",name)
   predictions_ = 0;
   count_ = 0;
   write_=0;
+  oriName_ = "MARSYAS_EMPTY";
   addControls();
 }
 
@@ -51,7 +52,8 @@ Confidence::Confidence(const Confidence& a):MarSystem(a)
   count_ = 0;
   print_ = false;
   forcePrint_ = false;
-    write_=0;
+  write_=0;
+  oriName_ = "MARSYAS_EMPTY";
 }
 
 
@@ -113,17 +115,21 @@ Confidence::myUpdate(MarControlPtr sender)
       labelNames = temp;
       labelNames_.push_back(labelName);
     }  
-  if(getctrl("mrs_string/fileName")->toString().compare("MARSYAS_EMPTY"))
+
+  cout << "Confidence " << getctrl("mrs_string/fileName")->toString() << endl;
+
+  if(getctrl("mrs_string/fileName")->toString().compare(oriName_))
     {
       if(write_)
 	{
 	  outputFileSyn_.close();
 	  outputFileTran_.close();
 	}
-      string name = getctrl("mrs_string/fileName")->toString();
-      FileName Sfname(name);
+      oriName_ = getctrl("mrs_string/fileName")->toString();
+      FileName Sfname(oriName_);
       string tmp = Sfname.nameNoExt() +"_synSeg.txt";
-      cout << Sfname.nameNoExt() << endl;
+      // cout << Sfname.nameNoExt() << endl;
+      //      getchar();
       outputFileSyn_.open(tmp.c_str(), ios::out);
       tmp = Sfname.nameNoExt() +"_tranSeg.txt";
       outputFileTran_.open(tmp.c_str(), ios::out);
