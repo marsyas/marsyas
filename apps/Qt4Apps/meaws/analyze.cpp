@@ -120,23 +120,24 @@ void Analyze::calcDurations() {
 		variance1 = variance1 / (AVERAGE_OVER-1);
 		variance2 = variance2 / (AVERAGE_OVER-1);
 
-		if (fabs(avg1-avg2) > 0.4) {
+		if ((fabs(avg1-avg2) > 0.5)&&(fabs(pitchList[i]-pitchList[prevSamp])>0.5)) {
 			//if ( (variance1>0) || (variance2>0)) // HACK: works in real life.
-			if (i>prevSamp+10*(AVERAGE_OVER)) next=i;
+			if (i>prevSamp+4*(AVERAGE_OVER)) next=i;
 		}
 		if (next>0) {
 			if ((variance1<0.4)&&(variance2<0.4)) {
 				//prevSamp = int(i+AVERAGE_OVER);
 				prevSamp = int(i);
 //				cout<<pitchList[ prevSamp-1]<<endl;
+				cout<<"---------------------------"<<endl;
 				cout<<i<<"   "<<pitchList[ prevSamp ]<<" was a new pitch"<<endl;
 				file<<i<<" "<<73<<endl;
 //				cout<<pitchList[ prevSamp+1]<<endl;
 				next=0;
 			}
 		}
-	//	cout<<i<<" "<<pitchList[i];
-	//	cout<<"   "<<avg1<<" "<<avg2<<"   "<<i - prevSamp<<"   "<<"   "<<variance1<<" "<<variance2<<endl;
+		cout<<i<<" "<<pitchList[i];
+		cout<<"   "<<avg1<<" "<<avg2<<"   "<<i - prevSamp<<"   "<<"   "<<variance1<<" "<<variance2<<endl;
 	//	if (pitchList[i]>61) exit(0);
 //zz
 
@@ -187,8 +188,17 @@ void Analyze::getPitches(string filename) {
    
    pnet->updctrl("RealvecSink/rvSink/mrs_bool/done", true); 
 	
+	ofstream file;
+	file.open("notepitches.txt");
+   for (mrs_natural i=1; i<data.getSize();i+=2)
+			if ( data(i)>0 )
+				file<<hertz2pitch( data(i) )<<endl;
+			else
+				file<<0<<endl;
+	file.close();
+	//zz
 
-	cout << data ;
+	//cout << data ;
 	delete pnet;
 }
 
