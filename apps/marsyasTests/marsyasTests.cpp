@@ -2194,6 +2194,43 @@ test_pitch(string sfName)
 	delete pnet;
 }
 
+void
+test_confidence(string sfName) 
+{
+ MarSystemManager mng;
+
+  MarSystem* pnet = mng.create("Series", "pnet");
+
+  pnet->addMarSystem(mng.create("SoundFileSource", "src"));
+ 		pnet->addMarSystem(mng.create("Confidence", "confidence"));
+	 pnet->addMarSystem(mng.create("AudioSink", "dest"));
+
+	pnet->linkControl("SoundFileSource/src/mrs_string/currentlyPlaying", "Confidence/confidence/mrs_string/fileName");
+
+  pnet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  pnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+  pnet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+  pnet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
+  
+  mrs_bool isEmpty;
+  //cout << *pnet << endl;
+  while (isEmpty = pnet->getctrl("mrs_bool/notEmpty")->toBool()) 
+    {
+      //cout << "pos " << pnet->getctrl("mrs_natural/pos")->to<mrs_natural>() << endl;
+  	 cout << pnet->getctrl("SoundFileSource/src/mrs_string/currentlyPlaying")->toString() << endl;
+		 cout << pnet->getctrl("Confidence/confidence/mrs_string/fileName")->toString() << endl;
+	    
+      pnet->tick();
+      
+      //test if setting "mrs_natural/pos" to 0 for rewinding is working
+      //if(pnet->getctrl("mrs_natural/pos")->to<mrs_natural>() > 100000)
+      //	pnet->updctrl("mrs_natural/pos", 0);
+    }
+  cout << "tick " << isEmpty << endl;
+  delete pnet;
+}
+
 int
 main(int argc, const char **argv)
 {
@@ -2277,6 +2314,8 @@ main(int argc, const char **argv)
     test_mono2stereo(fname0);
  else if (testName == "pitch")
     test_pitch(fname0);
+	 else if (testName == "confidence")
+    test_confidence(fname0);
   else 
     {
       cout << "Unsupported test " << endl;
