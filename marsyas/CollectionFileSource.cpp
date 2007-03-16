@@ -38,6 +38,12 @@ CollectionFileSource::CollectionFileSource(string name):AbsSoundFileSource("Soun
 	addControls();
 }
 
+CollectionFileSource::CollectionFileSource(const CollectionFileSource& a):AbsSoundFileSource(a)
+{
+  ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
+}
+
+
 CollectionFileSource::~CollectionFileSource()
 {
   delete isrc_;
@@ -87,7 +93,7 @@ CollectionFileSource::addControls()
   addctrl("mrs_natural/cindex", 0);
   setctrlState("mrs_natural/cindex", true);
 
-  addctrl("mrs_string/currentlyPlaying", "daufile");
+  addctrl("mrs_string/currentlyPlaying", "daufile", ctrl_currentlyPlaying_);
   
   mngCreated_ = false; 
 }
@@ -218,8 +224,9 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 		}
     
 		update();      
-    return;
+		return;
   }
+  
   else
   {
     if (myIsrate_ == 44100.0)
@@ -238,6 +245,8 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 
     if (!isrc_->getctrl("mrs_bool/notEmpty")->isTrue())
 		{
+		  cout << "SWITCHING " << endl;
+		  
 		  if (cindex_ < col_.size() -1)
 		    {
 		      cindex_ = cindex_ + 1;
@@ -249,6 +258,10 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 		      setctrl("mrs_real/israte", myIsrate_);
 		      setctrl("mrs_real/osrate", myIsrate_);
 		      setctrl("mrs_string/currentlyPlaying", col_.entry(cindex_));
+		      ctrl_currentlyPlaying_->setValue(col_.entry(cindex_), NOUPDATE);
+		      
+		      cout << "Just updated currentlyPlaying to" << col_.entry(cindex_) << endl;
+		      
 		    }
 		  else 
 		    {

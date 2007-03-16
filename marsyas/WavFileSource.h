@@ -49,6 +49,8 @@ private:
   mrs_natural size_;  
   short sval_;
   unsigned short bits_;
+  MarControlPtr ctrl_pos_;
+  
 
   void addControls();
 	void myUpdate(MarControlPtr sender);
@@ -68,6 +70,8 @@ private:
   
 public:
   WavFileSource(std::string name);
+  WavFileSource(const WavFileSource& a);
+  
   ~WavFileSource();
   MarSystem* clone() const;  
 

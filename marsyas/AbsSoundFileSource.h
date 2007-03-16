@@ -44,6 +44,8 @@ public:
   mrs_natural pos_;
   mrs_natural rewindpos_;
   bool notEmpty_;
+
+  MarControlPtr ctrl_currentlyPlaying_;
 };
 
 }//namespace Marsyas

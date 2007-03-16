@@ -35,8 +35,18 @@ WavFileSource::WavFileSource(string name):AbsSoundFileSource("WavFileSource",nam
   sfp_ = 0;
   pos_ = 0;
 
-	addControls();
+  addControls();
 }
+
+
+WavFileSource::WavFileSource(const WavFileSource& a): AbsSoundFileSource(a) 
+{
+  ctrl_pos_ = getctrl("mrs_natural/pos");
+  ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
+  
+}
+
+
 
 WavFileSource::~WavFileSource()
 {
@@ -58,7 +68,7 @@ WavFileSource::addControls()
   addctrl("mrs_natural/nChannels",(mrs_natural)1);
   addctrl("mrs_bool/notEmpty", true);  
   
-	addctrl("mrs_natural/pos", (mrs_natural)0);
+	addctrl("mrs_natural/pos", (mrs_natural)0, ctrl_pos_);
   setctrlState("mrs_natural/pos", true);
   
 	addctrl("mrs_natural/loopPos", (mrs_natural)0);
@@ -90,7 +100,7 @@ WavFileSource::addControls()
   setctrlState("mrs_string/allfilenames", true);
   
 	addctrl("mrs_natural/numFiles", 1);
-  addctrl("mrs_string/currentlyPlaying", "daufile"); //"dwavfile" [?]
+  addctrl("mrs_string/currentlyPlaying", "daufile", ctrl_currentlyPlaying_); //"dwavfile" [?]
 }
 
 void 
@@ -375,6 +385,8 @@ WavFileSource::myProcess(realvec& in, realvec& out)
     case 16: 
     {
 			getLinear16(out);
+			ctrl_pos_->setValue(pos_, NOUPDATE);
+			
 			if (pos_ >= rewindpos_ + csize_) 
 				{
 					if (repetitions_ != 1)

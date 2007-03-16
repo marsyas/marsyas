@@ -616,15 +616,15 @@ test_collection(string sfName)
     {
       cout << "tick " << isEmpty << endl;
       
-      for (int i=0; i<100; i++)
+      // for (int i=0; i<100; i++)
 	playbacknet->tick();
       
       
-      playbacknet->updctrl("SoundFileSource/src/mrs_natural/cindex", cindex);
+	// playbacknet->updctrl("SoundFileSource/src/mrs_natural/cindex", cindex);
       cout << playbacknet->getctrl("SoundFileSource/src/mrs_string/currentlyPlaying")->to<mrs_string>() << endl;
       
-      cindex++;
-      cout << "cindex = " << cindex << endl;
+      // cindex++;
+      // cout << "cindex = " << cindex << endl;
       
 
       //test if setting "mrs_natural/pos" to 0 for rewinding is working

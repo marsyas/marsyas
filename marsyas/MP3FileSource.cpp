@@ -81,6 +81,7 @@ MP3FileSource::MP3FileSource(const MP3FileSource& a):AbsSoundFileSource(a)
   pos_ = 0;
   size_ = 0;
   currentPos_ = 0;
+  ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
 }
 
 MarSystem* 
@@ -125,7 +126,7 @@ MP3FileSource::addControls()
   addctrl("mrs_string/allfilenames", ",");
   addctrl("mrs_natural/numFiles", 1);
 	
-  addctrl("mrs_string/currentlyPlaying", "daufile");
+  addctrl("mrs_string/currentlyPlaying", "daufile", ctrl_currentlyPlaying_);
 }
 
 /** 

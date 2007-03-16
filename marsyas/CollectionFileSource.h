@@ -62,6 +62,8 @@ private:
 
 public:
   CollectionFileSource(std::string name);
+  CollectionFileSource(const CollectionFileSource& a);
+  
   ~CollectionFileSource();
   MarSystem* clone() const;    
 

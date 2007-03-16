@@ -89,6 +89,7 @@ AuFileSource::AuFileSource(const AuFileSource& a): AbsSoundFileSource(a)
 {
   ctrl_pos_ = getctrl("mrs_natural/pos");
   ctrl_size_ = getctrl("mrs_natural/size");
+  ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
   
 }
 
@@ -131,7 +132,7 @@ AuFileSource::addControls()
   setctrlState("mrs_string/allfilenames", true);
   addctrl("mrs_natural/numFiles", 1);
       
-  addctrl("mrs_string/currentlyPlaying", "daufile");
+  addctrl("mrs_string/currentlyPlaying", "daufile", ctrl_currentlyPlaying_);
 }
 
 unsigned long 
