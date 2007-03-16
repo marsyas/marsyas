@@ -3,12 +3,26 @@
 #include <math.h>
 #include "analyze.h"
 
-Analyze::Analyze() {
-//	exercise = (int*) malloc (16*sizeof(int));
-//	exercise = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+Analyze::Analyze(string exerciseFile) {
+	ifstream file;	
+	file.open(exerciseFile.c_str() );
+	file >> exerLength;
+	exercise = (int*) malloc(exerLength*sizeof(int));
+	detected = (float*) malloc(exerLength*sizeof(float));
+	int i=0;
+	while ( file>>exercise[i] ) {
+		i++;
+	}
+	file.close();
+/*
+	for (i=0; i<length; i++) {
+		cout<<exercise[i]<<endl;
+	}
+*/
 }
 
 Analyze::~Analyze() {
+	delete detected;
 	delete exercise;
 }
 
@@ -35,7 +49,7 @@ void Analyze::metroDurations() {
 }
 
 void Analyze::calcDurations() {
-	cout<<"detected Durations:"<<endl;
+	//cout<<"detected Durations:"<<endl;
 
 	ifstream inFile;
 	inFile.open("notepitches.txt");
@@ -95,7 +109,7 @@ void Analyze::calcDurations() {
 		cout<<pitchList[i]<<endl;
 	}
 */
-	
+	int detectedIndex=0;
 	ofstream file;
 	file.open("detected.txt");
 	//int pitch;
@@ -129,17 +143,18 @@ void Analyze::calcDurations() {
 				//prevSamp = int(i+AVERAGE_OVER);
 				prevSamp = int(i);
 //				cout<<pitchList[ prevSamp-1]<<endl;
-				cout<<"---------------------------"<<endl;
-				cout<<i<<"   "<<pitchList[ prevSamp ]<<" was a new pitch"<<endl;
+		//		cout<<"---------------------------"<<endl;
+		//		cout<<i<<"   "<<pitchList[ prevSamp ]<<" was a new pitch"<<endl;
 				file<<i<<" "<<73<<endl;
+				detected[detectedIndex]=i;
+				detectedIndex+=2;
 //				cout<<pitchList[ prevSamp+1]<<endl;
 				next=0;
 			}
 		}
-		cout<<i<<" "<<pitchList[i];
-		cout<<"   "<<avg1<<" "<<avg2<<"   "<<i - prevSamp<<"   "<<"   "<<variance1<<" "<<variance2<<endl;
+	//	cout<<i<<" "<<pitchList[i];
+	//	cout<<"   "<<avg1<<" "<<avg2<<"   "<<i - prevSamp<<"   "<<"   "<<variance1<<" "<<variance2<<endl;
 	//	if (pitchList[i]>61) exit(0);
-//zz
 
 	}
 	file.close();
@@ -196,8 +211,6 @@ void Analyze::getPitches(string filename) {
 			else
 				file<<0<<endl;
 	file.close();
-	//zz
-
 	//cout << data ;
 	delete pnet;
 }
@@ -212,6 +225,109 @@ void Analyze::writePitches(string filename) {
 }
 
 void Analyze::calcNotes(){
+
+	int i, j, k;
+	float pitchList[5000];  // something big enough; ugly hack
+	ifstream inFile;
+	inFile.open("notepitches.txt");
+	i=0;
+	float curPitch;
+	// load pitches
+	while (inFile>>curPitch) {
+		pitchList[i]=curPitch;
+		i++;
+	}
+	inFile.close();
+	int maxSamps = i;
+	detected[exerLength-2] = maxSamps;
+
+	// eliminate bad 0s in pitch list
+	float prevPitch;
+	i=0;
+	while (i<maxSamps) {
+		if (pitchList[i]==0) {
+			j=i;
+			while (true) {
+				if (j>=maxSamps) break;
+				if (pitchList[j]>0) {
+					if (i==0)
+						prevPitch=0;
+						else
+						prevPitch=pitchList[i-1];
+					for (k=i; k<j; k++)	{
+						pitchList[k]=prevPitch;
+					}
+					break;
+				}
+				j++;
+			}
+			i=j;
+		}
+		i++;
+	}
+
+	for (i=0; i<exerLength; i++) {
+		cout<<exercise[i]<<endl;
+	}	
+
+	//first pass of average pitch
+	int start, len;
+	float sampSum;
+	for (i=0; i<exerLength; i=i+2) {
+		start = detected[i];
+		len = detected[i+2]-start;
+		sampSum=0.0;
+		for (j=start; j<start+len; j++) {
+			sampSum+=pitchList[j];
+		}
+		detected[i+1]=sampSum/len;
+	}
+
+	//second pass
+	int sampCount;
+	float oldAverage;
+	for (i=0; i<exerLength; i=i+2) {
+		start = detected[i];
+		len = detected[i+2]-start;
+		sampSum=0.0;
+		sampCount=0;
+		oldAverage=detected[i+1];
+		for (j=start; j<start+len; j++) {
+			if ( fabs( pitchList[j]-oldAverage) < 1 ) {
+				sampSum+=pitchList[j];
+				sampCount++;
+			}
+		}
+		if (sampCount>0)
+			detected[i+1]=sampSum/sampCount;
+
+//		if (detected[i+1]==0)
+//			detected[i+1] = 73;  // for display in testing
+	}
+cout<<endl;
+	for (i=0; i<exerLength; i=i+2) {
+		cout<<detected[i]<<" "<<detected[i+1]<<endl;
+	}	
+cout<<endl;
+
+//zz
+	for (i=0; i<exerLength; i=i+2) {
+		if ( (exercise[i]>0)&&(detected[i+1]>0))
+			detected[i+1] = exercise[i+2]/detected[i+1];
+		else
+			detected[i+1] = 1;
+	}	
+
+cout<<endl;
+
+	for (i=0; i<exerLength; i=i+2) {
+		cout<<detected[i]*512.0/44100.0<<" "<<detected[i+1]<<endl;
+	}	
+
+
+
+
+/*
 	string command;
 // please don't look at this code.  I feel embarrassed for having
 // written it, and it will be rewritten next weekend.
@@ -257,6 +373,7 @@ void Analyze::calcNotes(){
 //	outFile.close();
 //	command = "perl color-aud-output.pl toperl.txt ";
 //	system(command.c_str());
+*/
 }
 
 

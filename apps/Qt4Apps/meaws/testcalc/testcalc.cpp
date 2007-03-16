@@ -5,10 +5,10 @@ using namespace std;
 
 int main() {
 	Analyze* analyze;
-  analyze = new Analyze();
-//  analyze->getPitches("/Users/gperciva/data/exer-2.wav");
+  analyze = new Analyze("exer.txt");
+//  analyze->getPitches("/Users/gperciva/data/exer-1.wav");
 //	analyze->metroDurations();
   analyze->calcDurations();
-//  analyze->calcNotes();
+  analyze->calcNotes();
 }
 

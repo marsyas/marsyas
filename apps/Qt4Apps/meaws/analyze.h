@@ -9,7 +9,7 @@ class Analyze {
 //	Q_OBJECT
 
 public:
-	Analyze();
+	Analyze(string exerciseFilename);
 	~Analyze();
 	void getPitches(string filename);
 	void writePitches(string filename);
@@ -23,5 +23,7 @@ signals:
 */
 private:
 	int *exercise;
+	float *detected;
+	int exerLength;
 };
 
