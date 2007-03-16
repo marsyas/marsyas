@@ -25,7 +25,7 @@ CONFIG += marsyasQt4Apps
 # release/debug mode
 ######################################################################
 
-CONFIG	+= release
+CONFIG	+= debug_and_release
 
 ######################################################################
 # enable/disable ASSERTIONS/WARNINGS/DIAGNOSTICS/LOGS, etc
