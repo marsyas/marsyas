@@ -256,6 +256,14 @@ can be used to enable/disable assertions, enable/disable debugging
 and include optional packages such as support for reading mp3s. 
 @ref{Configuring Marsyas}.
 
+When trying to record audio, the sample rate must be specified
+explicitly:
+
+@example
+  recNet->updctrl("AudioSource/srcRec/mrs_real/israte", 44100.0);
+  recNet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
+@end example
+
 
 @node Windows (cygwin)
 @subsection Windows (cygwin)

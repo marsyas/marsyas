@@ -67,5 +67,11 @@ can be used to enable/disable assertions, enable/disable debugging
 and include optional packages such as support for reading mp3s. 
 <a href="Configuring-Marsyas.html#Configuring-Marsyas">Configuring Marsyas</a>.
 
+   <p>When trying to record audio, the sample rate must be specified
+explicitly:
+
+<pre class="example">       recNet-&gt;updctrl("AudioSource/srcRec/mrs_real/israte", 44100.0);
+       recNet-&gt;updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
+</pre>
    </body></html>
 
