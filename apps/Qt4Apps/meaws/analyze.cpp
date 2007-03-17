@@ -3,27 +3,18 @@
 #include <math.h>
 #include "analyze.h"
 
-Analyze::Analyze(string exerciseFile) {
-	ifstream file;	
-	file.open(exerciseFile.c_str() );
-	file >> exerLength;
-	exercise = (int*) malloc(exerLength*sizeof(int));
+Analyze::Analyze(string audioFilename, string exerciseFilename) {
+	getExercise(exerciseFilename);
+	getPitches(audioFilename);
+	smoothPitches();
+
 	detected = (float*) malloc(exerLength*sizeof(float));
-	int i=0;
-	while ( file>>exercise[i] ) {
-		i++;
-	}
-	file.close();
-/*
-	for (i=0; i<length; i++) {
-		cout<<exercise[i]<<endl;
-	}
-*/
 }
 
 Analyze::~Analyze() {
 	delete detected;
 	delete exercise;
+	delete pitchList;
 }
 
 void Analyze::metroDurations() {
@@ -49,74 +40,19 @@ void Analyze::metroDurations() {
 }
 
 void Analyze::calcDurations() {
-	//cout<<"detected Durations:"<<endl;
-
-	ifstream inFile;
-	inFile.open("notepitches.txt");
-	float curPitch;
-	//int sample=0;
-	float prevPitch=0;
 	int prevSamp=0;
-	float pitchList[5000];  // something big enough; ugly hack
 	float avg1, avg2;
 	float variance1;
 	float variance2;
 
-	int i,j,k;
-
-	// load pitches into memory
-	i=0;
-	while (inFile>>curPitch) {
-		pitchList[i]=curPitch;
-		i++;
-	}
-	inFile.close();
-	int maxSamps = i;
-/*
-	cout<<"---------original:"<<endl;
-	for (i=0; i<maxSamps; i++) {
-		cout<<pitchList[i]<<endl;
-	}
-*/
-
-	// smooth out 0s.
-	i=0;
-	while (i<maxSamps) {
-		if (pitchList[i]==0) {
-			j=i;
-			while (true) {
-				if (j>=maxSamps) break;
-				if (pitchList[j]>0) {
-					if (i==0)
-						prevPitch=0;
-						else
-						prevPitch=pitchList[i-1];
-					for (k=i; k<j; k++)	{
-						pitchList[k]=prevPitch;
-					}
-					break;
-				}
-				j++;
-			}
-			i=j;
-		}
-		i++;
-	}
-
-/*
-	cout<<"---------processed:"<<endl;
-	for (i=0; i<maxSamps; i++) {
-		cout<<pitchList[i]<<endl;
-	}
-*/
+	int i, j;
 	int detectedIndex=0;
-	ofstream file;
-	file.open("detected.txt");
+
 	//int pitch;
 	int next=0;
 	float AVERAGE_OVER = 5.0;
 	prevSamp=0;
-	for (i=AVERAGE_OVER; i<maxSamps-AVERAGE_OVER; i++) {
+	for (i=AVERAGE_OVER; i<numPitches-AVERAGE_OVER; i++) {
 		avg1=0.0;
 		avg2=0.0;
 		variance1=0.0;
@@ -145,10 +81,9 @@ void Analyze::calcDurations() {
 //				cout<<pitchList[ prevSamp-1]<<endl;
 		//		cout<<"---------------------------"<<endl;
 		//		cout<<i<<"   "<<pitchList[ prevSamp ]<<" was a new pitch"<<endl;
-				file<<i<<" "<<73<<endl;
 				detected[detectedIndex]=i;
 				detectedIndex+=2;
-//				cout<<pitchList[ prevSamp+1]<<endl;
+				cout<<i<<" "<<pitchList[ prevSamp+1]<<endl;
 				next=0;
 			}
 		}
@@ -157,16 +92,15 @@ void Analyze::calcDurations() {
 	//	if (pitchList[i]>61) exit(0);
 
 	}
-	file.close();
 }
 
-void Analyze::getPitches(string filename) {
+void Analyze::getPitches(string audioFilename) {
   MarSystemManager mng;
   MarSystem* pnet = mng.create("Series", "pnet");
 
   pnet->addMarSystem(mng.create("SoundFileSource", "src"));
 	pnet->addMarSystem(mng.create("ShiftInput", "sfi"));
-  pnet->updctrl("SoundFileSource/src/mrs_string/filename", filename);
+  pnet->updctrl("SoundFileSource/src/mrs_string/filename", audioFilename);
   pnet->addMarSystem(mng.create("PitchPraat", "pitch")); 
   // pnet->addMarSystem(mng.create("PitchSACF", "pitch")); 
   pnet->addMarSystem(mng.create("RealvecSink", "rvSink")); 
@@ -202,7 +136,19 @@ void Analyze::getPitches(string filename) {
 	   data(i) = samples2hertz(data(i), pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
    
    pnet->updctrl("RealvecSink/rvSink/mrs_bool/done", true); 
-	
+
+
+
+
+  numPitches = data.getSize()/2;
+	pitchList = (float*) malloc( numPitches*sizeof(float) );
+	for (int i=0; i<numPitches; i++) {
+		if ( data(2*i+1)>0 )
+			pitchList[i] = hertz2pitch( data(2*i+1) );
+		else
+			pitchList[i] = 0;
+	}
+/*
 	ofstream file;
 	file.open("notepitches.txt");
    for (mrs_natural i=1; i<data.getSize();i+=2)
@@ -211,44 +157,34 @@ void Analyze::getPitches(string filename) {
 			else
 				file<<0<<endl;
 	file.close();
+*/
 	//cout << data ;
 	delete pnet;
 }
 
-void Analyze::writePitches(string filename) {
-	string command;
-	command = "python2.4 praat-to-pitch.py ";
-	command.append(filename);
-	command.append(" 120");  // tempo
-	cout<<"DOING: "<<command.c_str()<<endl;
-	system(command.c_str());
-}
+void Analyze::getExercise(string exerciseFilename) {
+	ifstream infile;	
+	infile.open( exerciseFilename.c_str() );
+	infile >> exerLength;
+	exercise = (int*) malloc(exerLength*sizeof(int));
 
-void Analyze::calcNotes(){
-
-	int i, j, k;
-	float pitchList[5000];  // something big enough; ugly hack
-	ifstream inFile;
-	inFile.open("notepitches.txt");
-	i=0;
-	float curPitch;
-	// load pitches
-	while (inFile>>curPitch) {
-		pitchList[i]=curPitch;
+	int i=0;
+	while ( infile>>exercise[i] ) {
 		i++;
 	}
-	inFile.close();
-	int maxSamps = i;
-	detected[exerLength-2] = maxSamps;
+	infile.close();
+}
 
-	// eliminate bad 0s in pitch list
+// smooth out 0s.
+void Analyze::smoothPitches() {
+	int i,j,k;
 	float prevPitch;
 	i=0;
-	while (i<maxSamps) {
+	while (i<numPitches) {
 		if (pitchList[i]==0) {
 			j=i;
 			while (true) {
-				if (j>=maxSamps) break;
+				if (j>=numPitches) break;
 				if (pitchList[j]>0) {
 					if (i==0)
 						prevPitch=0;
@@ -265,11 +201,65 @@ void Analyze::calcNotes(){
 		}
 		i++;
 	}
+}
 
+/*
+void Analyze::writePitches(string filename) {
+	string command;
+	command = "python2.4 praat-to-pitch.py ";
+	command.append(filename);
+	command.append(" 120");  // tempo
+	cout<<"DOING: "<<command.c_str()<<endl;
+	system(command.c_str());
+}
+*/
+void Analyze::calcNotes(){
+
+	int i, j, k;
+//	float pitchList[5000];  // something big enough; ugly hack
+//	ifstream inFile;
+//	inFile.open("notepitches.txt");
+	i=0;
+	// load pitches
+/*
+	while (inFile>>curPitch) {
+		pitchList[i]=curPitch;
+		i++;
+	}
+	inFile.close();
+	int maxSamps = i;
+*/
+	detected[exerLength-2] = numPitches;
+
+	// eliminate bad 0s in pitch list
+	float prevPitch;
+	i=0;
+	while (i<numPitches) {
+		if (pitchList[i]==0) {
+			j=i;
+			while (true) {
+				if (j>=numPitches) break;
+				if (pitchList[j]>0) {
+					if (i==0)
+						prevPitch=0;
+						else
+						prevPitch=pitchList[i-1];
+					for (k=i; k<j; k++)	{
+						pitchList[k]=prevPitch;
+					}
+					break;
+				}
+				j++;
+			}
+			i=j;
+		}
+		i++;
+	}
+/*
 	for (i=0; i<exerLength; i++) {
 		cout<<exercise[i]<<endl;
 	}	
-
+*/
 	//first pass of average pitch
 	int start, len;
 	float sampSum;
@@ -304,11 +294,11 @@ void Analyze::calcNotes(){
 //		if (detected[i+1]==0)
 //			detected[i+1] = 73;  // for display in testing
 	}
-cout<<endl;
+//cout<<endl;
 	for (i=0; i<exerLength; i=i+2) {
-		cout<<detected[i]<<" "<<detected[i+1]<<endl;
+//		cout<<detected[i]<<" "<<detected[i+1]<<endl;
 	}	
-cout<<endl;
+//cout<<endl;
 
 //zz
 	for (i=0; i<exerLength; i=i+2) {
