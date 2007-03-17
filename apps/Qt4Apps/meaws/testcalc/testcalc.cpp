@@ -6,9 +6,7 @@ using namespace std;
 int main() {
 	Analyze* analyze;
   analyze = new Analyze("/Users/gperciva/data/exer-1.wav", "music/exer.txt");
-//  analyze->getPitches();
-//	analyze->metroDurations();
   analyze->calcDurations();
-//  analyze->calcNotes();
+  analyze->calcNotes();
 }
 

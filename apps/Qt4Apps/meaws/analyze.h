@@ -23,6 +23,7 @@ private:
 	void getPitches(string audioFilename);
 	void getExercise(string exerciseFilename);
 	void smoothPitches();
+	float findMedian(int start, int length, float *array);
 
 	int *exercise;
 	float *pitchList;

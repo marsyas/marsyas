@@ -83,15 +83,15 @@ void Analyze::calcDurations() {
 		//		cout<<i<<"   "<<pitchList[ prevSamp ]<<" was a new pitch"<<endl;
 				detected[detectedIndex]=i;
 				detectedIndex+=2;
-				cout<<i<<" "<<pitchList[ prevSamp+1]<<endl;
+//				cout<<i<<" "<<pitchList[ prevSamp+1]<<endl;
 				next=0;
 			}
 		}
 	//	cout<<i<<" "<<pitchList[i];
 	//	cout<<"   "<<avg1<<" "<<avg2<<"   "<<i - prevSamp<<"   "<<"   "<<variance1<<" "<<variance2<<endl;
 	//	if (pitchList[i]>61) exit(0);
-
 	}
+	detected[exerLength-2] = numPitches;
 }
 
 void Analyze::getPitches(string audioFilename) {
@@ -139,7 +139,7 @@ void Analyze::getPitches(string audioFilename) {
 
 
 
-
+// my addition to the marsyasTest pitch stuff:
   numPitches = data.getSize()/2;
 	pitchList = (float*) malloc( numPitches*sizeof(float) );
 	for (int i=0; i<numPitches; i++) {
@@ -148,17 +148,6 @@ void Analyze::getPitches(string audioFilename) {
 		else
 			pitchList[i] = 0;
 	}
-/*
-	ofstream file;
-	file.open("notepitches.txt");
-   for (mrs_natural i=1; i<data.getSize();i+=2)
-			if ( data(i)>0 )
-				file<<hertz2pitch( data(i) )<<endl;
-			else
-				file<<0<<endl;
-	file.close();
-*/
-	//cout << data ;
 	delete pnet;
 }
 
@@ -201,6 +190,13 @@ void Analyze::smoothPitches() {
 		}
 		i++;
 	}
+
+
+	ofstream file;
+	file.open("notepitches.txt");
+	for (i=0; i<numPitches; i++)
+		file<<pitchList[i]<<endl;
+	file.close();
 }
 
 /*
@@ -213,53 +209,45 @@ void Analyze::writePitches(string filename) {
 	system(command.c_str());
 }
 */
+
+
+
+// TODO: horribly inefficient.  I've never written a bubble sort
+//   before, so I wanted to try it.  Hey, it works, and there's no
+//   appreciable speed penalty.  (we're only sorting O(200) numbers)
+// Still, this should be cleaned up.  :)
+float Analyze::findMedian(int start, int length, float *array) {
+	if ( !(length>0) ) return 0;
+	float toReturn=0.0;
+	float *myarray = (float*) malloc(length * sizeof(float));
+	int i,n;
+	for (i=0; i<length; i++) {
+		myarray[i] = array[start+i];
+	}
+	n = length;
+	bool swapped;
+	float temp;
+	do {
+		swapped=false;
+		n = n-1;
+		for (i=0; i<length; i++) {
+			if ( myarray[i] > myarray[i+1] ) {
+				temp = myarray[i];
+				myarray[i] = myarray[i+1];
+				myarray[i+1] = temp;
+				swapped=true;
+			}
+		}
+	} while (swapped);
+	toReturn = myarray[length/2];
+	free(myarray);
+	return toReturn;
+}
+
 void Analyze::calcNotes(){
 
-	int i, j, k;
-//	float pitchList[5000];  // something big enough; ugly hack
-//	ifstream inFile;
-//	inFile.open("notepitches.txt");
-	i=0;
-	// load pitches
-/*
-	while (inFile>>curPitch) {
-		pitchList[i]=curPitch;
-		i++;
-	}
-	inFile.close();
-	int maxSamps = i;
-*/
-	detected[exerLength-2] = numPitches;
+	int i, j;
 
-	// eliminate bad 0s in pitch list
-	float prevPitch;
-	i=0;
-	while (i<numPitches) {
-		if (pitchList[i]==0) {
-			j=i;
-			while (true) {
-				if (j>=numPitches) break;
-				if (pitchList[j]>0) {
-					if (i==0)
-						prevPitch=0;
-						else
-						prevPitch=pitchList[i-1];
-					for (k=i; k<j; k++)	{
-						pitchList[k]=prevPitch;
-					}
-					break;
-				}
-				j++;
-			}
-			i=j;
-		}
-		i++;
-	}
-/*
-	for (i=0; i<exerLength; i++) {
-		cout<<exercise[i]<<endl;
-	}	
-*/
 	//first pass of average pitch
 	int start, len;
 	float sampSum;
@@ -267,10 +255,14 @@ void Analyze::calcNotes(){
 		start = detected[i];
 		len = detected[i+2]-start;
 		sampSum=0.0;
+
+		detected[i+1] = findMedian(start, len, pitchList);
+/*
 		for (j=start; j<start+len; j++) {
 			sampSum+=pitchList[j];
 		}
 		detected[i+1]=sampSum/len;
+*/
 	}
 
 	//second pass
@@ -296,7 +288,7 @@ void Analyze::calcNotes(){
 	}
 //cout<<endl;
 	for (i=0; i<exerLength; i=i+2) {
-//		cout<<detected[i]<<" "<<detected[i+1]<<endl;
+		cout<<detected[i]<<" "<<detected[i+1]<<endl;
 	}	
 //cout<<endl;
 
@@ -308,62 +300,12 @@ void Analyze::calcNotes(){
 			detected[i+1] = 1;
 	}	
 
-cout<<endl;
+//cout<<endl;
 
 	for (i=0; i<exerLength; i=i+2) {
-		cout<<detected[i]*512.0/44100.0<<" "<<detected[i+1]<<endl;
+//		cout<<detected[i]*512.0/44100.0<<" "<<detected[i+1]<<endl;
 	}	
 
-
-
-
-/*
-	string command;
-// please don't look at this code.  I feel embarrassed for having
-// written it, and it will be rewritten next weekend.
-	float notepitch;
-	int note;
-	int tatum;
-	float sumPitch;
-	float avgPitch;
-	float pitchError;
-	int expected_pitch[8] = {60,62,64,65,67,69,71,72};
-	int expected_duration[8] = {2,1,1,2,2,3,1,4};
-	note=0;
-	ifstream inFile;
-	inFile.open("notepitches.txt");
-//	ofstream outFile("toperl.txt",ios::out);
-	sumPitch=0;
-	tatum=0;
-	while (inFile >> notepitch) {
-// do whatever I want with the note data.
-		tatum++;
-
-// I feel so dirty... AND RIGHTLY SO!
-		if ((note==0) && (tatum==4)) { tatum=0; } else
-		if (notepitch>0) {
-		//if (tatum > (2*2-1)) {  // intro beats.  DOESN'T WORK!
-			sumPitch += notepitch;
-		//	cout<<notepitch<<"   "<<note<<"  "<<tatum<<endl;
-			if (tatum>=expected_duration[note]) {
-				avgPitch = (sumPitch / tatum);
-				pitchError = avgPitch - expected_pitch[note];
-	//			cout<<note<<"  "<<pitchError;
-	//			cout<<"   "<<avgPitch<<"  "<<expected_pitch[note]<<endl;
-//				outFile<<pitchError<<endl;
-				//emit nextNoteError(pitchError,1);
-				sumPitch=0;
-				tatum=0;
-				note++;
-				if (note>=8) break;
-			}
-		}
-	}
-	inFile.close();
-//	outFile.close();
-//	command = "perl color-aud-output.pl toperl.txt ";
-//	system(command.c_str());
-*/
 }
 
 
