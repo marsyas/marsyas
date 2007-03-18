@@ -19,6 +19,7 @@ networks and writing new MarSystems respectively.
 * Architecture overview::       
 * Implicit patching::           
 * MarSystem Composites::        
+* Predefined variable types::   
 * Architecture limitations::    
 @end menu
 
@@ -223,6 +224,25 @@ Series1->addMarSystem(mng.create("classifier", "Classifier"));
 @subsection Accumulator
 
 @image{images/composite-accumulator}
+
+
+@node Predefined variable types
+@section Predefined variable types
+
+Marsyas contains some predefined, portable data types:
+
+@example
+mrs_bool
+mrs_natural   (integers)
+mrs_real
+mrs_complex
+@end example
+
+There is also the @code{realvec} variable type.  A @code{realvec} is
+an array of @code{mrs_real} values.  Many operations can be performed
+on @code{realvec}s, including statistical operations (find the mean,
+median, standard variance, etc).  Using these predefined data types
+is highly recommended.
 
 
 @node Architecture limitations
