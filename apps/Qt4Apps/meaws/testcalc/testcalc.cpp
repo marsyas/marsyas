@@ -5,7 +5,7 @@ using namespace std;
 
 int main() {
 	Analyze* analyze;
-  analyze = new Analyze("/Users/gperciva/data/exer-1.wav", "music/exer.txt");
+  analyze = new Analyze("/Users/gperciva/data/exer-3.wav", "music/exer.txt");
   analyze->calcDurations();
   analyze->calcNotes();
 }

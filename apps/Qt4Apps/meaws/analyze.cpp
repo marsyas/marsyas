@@ -8,13 +8,16 @@ Analyze::Analyze(string audioFilename, string exerciseFilename) {
 	getPitches(audioFilename);
 	smoothPitches();
 
-	detected = (float*) malloc(exerLength*sizeof(float));
+//	detected = new realvec();
+	detected.allocate(exerLength);
+//	detected = (float*) malloc(exerLength*sizeof(float));
 }
 
 Analyze::~Analyze() {
-	delete detected;
+	detected.~realvec();
 	delete exercise;
-	delete pitchList;
+//	delete pitchList;
+	pitchList.~realvec();
 }
 
 void Analyze::metroDurations() {
@@ -41,9 +44,8 @@ void Analyze::metroDurations() {
 
 void Analyze::calcDurations() {
 	int prevSamp=0;
-	float avg1, avg2;
-	float variance1;
-	float variance2;
+	mrs_real avg1, avg2;
+	mrs_real variance1, variance2;
 
 	int i, j;
 	int detectedIndex=0;
@@ -58,40 +60,47 @@ void Analyze::calcDurations() {
 		variance1=0.0;
 		variance2=0.0;
 		for (j=0; j<AVERAGE_OVER; j++) {
-			avg1 += pitchList[i-j-1];
-			avg2 += pitchList[i+j];
+/*
 			if (j < (AVERAGE_OVER-1) )
 				variance1+= fabs(pitchList[i-j-1] - pitchList[i-j-2]);
 			if (j < (AVERAGE_OVER-1) )
 				variance2+= fabs(pitchList[i+j] - pitchList[i+j+1]);
+*/
+			if (j < (AVERAGE_OVER-1) )
+				variance1+= fabs(pitchList(i-j-1) - pitchList(i-j-2));
+			if (j < (AVERAGE_OVER-1) )
+				variance2+= fabs(pitchList(i+j) - pitchList(i+j+1));
 		}
-		avg1 = avg1/AVERAGE_OVER;
-		avg2 = avg2/AVERAGE_OVER;
+//		avg1 = avg1/AVERAGE_OVER;
+//		avg2 = avg2/AVERAGE_OVER;
+		avg1 = findMedian( i-AVERAGE_OVER-1, AVERAGE_OVER, pitchList );
+		avg2 = findMedian( i, AVERAGE_OVER, pitchList );
 		variance1 = variance1 / (AVERAGE_OVER-1);
 		variance2 = variance2 / (AVERAGE_OVER-1);
 
-		if ((fabs(avg1-avg2) > 0.5)&&(fabs(pitchList[i]-pitchList[prevSamp])>0.5)) {
-			//if ( (variance1>0) || (variance2>0)) // HACK: works in real life.
-			if (i>prevSamp+4*(AVERAGE_OVER)) next=i;
+		if (fabs(avg1-avg2) > 0.6) {
+//`&&(fabs(pitchList(i)-pitchList[prevSamp])>0.5)) {
+			if (i>prevSamp+3*(AVERAGE_OVER)) next=i;
+		//		cout<<i<<"   "<<pitchList[ prevSamp ]<<" was a new pitch"<<endl;
 		}
 		if (next>0) {
 			if ((variance1<0.4)&&(variance2<0.4)) {
 				//prevSamp = int(i+AVERAGE_OVER);
 				prevSamp = int(i);
 //				cout<<pitchList[ prevSamp-1]<<endl;
-		//		cout<<"---------------------------"<<endl;
+	//			cout<<"---------------------------"<<endl;
 		//		cout<<i<<"   "<<pitchList[ prevSamp ]<<" was a new pitch"<<endl;
-				detected[detectedIndex]=i;
+				detected(detectedIndex)=i;
 				detectedIndex+=2;
 //				cout<<i<<" "<<pitchList[ prevSamp+1]<<endl;
 				next=0;
 			}
 		}
-	//	cout<<i<<" "<<pitchList[i];
-	//	cout<<"   "<<avg1<<" "<<avg2<<"   "<<i - prevSamp<<"   "<<"   "<<variance1<<" "<<variance2<<endl;
-	//	if (pitchList[i]>61) exit(0);
+//		cout<<i<<" "<<pitchList(i);
+//		cout<<"   "<<avg1<<" "<<avg2<<"   "<<i - prevSamp<<"   "<<"   "<<variance1<<" "<<variance2<<endl;
+	//	if (pitchList(i)>61) exit(0);
 	}
-	detected[exerLength-2] = numPitches;
+	detected(exerLength-2) = numPitches;
 }
 
 void Analyze::getPitches(string audioFilename) {
@@ -141,12 +150,14 @@ void Analyze::getPitches(string audioFilename) {
 
 // my addition to the marsyasTest pitch stuff:
   numPitches = data.getSize()/2;
-	pitchList = (float*) malloc( numPitches*sizeof(float) );
+	pitchList.allocate(numPitches);
+//	pitchList = (float*) malloc( numPitches*sizeof(float) );
+
 	for (int i=0; i<numPitches; i++) {
 		if ( data(2*i+1)>0 )
-			pitchList[i] = hertz2pitch( data(2*i+1) );
+			pitchList(i) = hertz2pitch( data(2*i+1) );
 		else
-			pitchList[i] = 0;
+			pitchList(i) = 0;
 	}
 	delete pnet;
 }
@@ -170,17 +181,17 @@ void Analyze::smoothPitches() {
 	float prevPitch;
 	i=0;
 	while (i<numPitches) {
-		if (pitchList[i]==0) {
+		if (pitchList(i)==0) {
 			j=i;
 			while (true) {
 				if (j>=numPitches) break;
-				if (pitchList[j]>0) {
+				if (pitchList(j)>0) {
 					if (i==0)
 						prevPitch=0;
 						else
-						prevPitch=pitchList[i-1];
+						prevPitch=pitchList(i-1);
 					for (k=i; k<j; k++)	{
-						pitchList[k]=prevPitch;
+						pitchList(k)=prevPitch;
 					}
 					break;
 				}
@@ -195,7 +206,7 @@ void Analyze::smoothPitches() {
 	ofstream file;
 	file.open("notepitches.txt");
 	for (i=0; i<numPitches; i++)
-		file<<pitchList[i]<<endl;
+		file<<pitchList(i)<<endl;
 	file.close();
 }
 
@@ -212,35 +223,18 @@ void Analyze::writePitches(string filename) {
 
 
 
-// TODO: horribly inefficient.  I've never written a bubble sort
-//   before, so I wanted to try it.  Hey, it works, and there's no
-//   appreciable speed penalty.  (we're only sorting O(200) numbers)
-// Still, this should be cleaned up.  :)
-float Analyze::findMedian(int start, int length, float *array) {
+mrs_real Analyze::findMedian(int start, int length, realvec array) {
+//	cout<<start<<" "<<length<<endl;
 	if ( !(length>0) ) return 0;
-	float toReturn=0.0;
-	float *myarray = (float*) malloc(length * sizeof(float));
-	int i,n;
-	for (i=0; i<length; i++) {
-		myarray[i] = array[start+i];
+	mrs_real toReturn;
+	realvec myArray;
+	myArray.allocate(length);
+	for (int i=0; i<length; i++) {
+		myArray(i) = array(start+i);
 	}
-	n = length;
-	bool swapped;
-	float temp;
-	do {
-		swapped=false;
-		n = n-1;
-		for (i=0; i<length; i++) {
-			if ( myarray[i] > myarray[i+1] ) {
-				temp = myarray[i];
-				myarray[i] = myarray[i+1];
-				myarray[i+1] = temp;
-				swapped=true;
-			}
-		}
-	} while (swapped);
-	toReturn = myarray[length/2];
-	free(myarray);
+	toReturn = myArray.median();
+
+	myArray.~realvec();
 	return toReturn;
 }
 
@@ -252,14 +246,13 @@ void Analyze::calcNotes(){
 	int start, len;
 	float sampSum;
 	for (i=0; i<exerLength; i=i+2) {
-		start = detected[i];
-		len = detected[i+2]-start;
+		start = detected(i);
+		len = detected(i+2)-start;
 		sampSum=0.0;
-
-		detected[i+1] = findMedian(start, len, pitchList);
+		detected(i+1) = findMedian(start, len, pitchList);
 /*
 		for (j=start; j<start+len; j++) {
-			sampSum+=pitchList[j];
+			sampSum+=pitchList(j);
 		}
 		detected[i+1]=sampSum/len;
 */
@@ -269,35 +262,35 @@ void Analyze::calcNotes(){
 	int sampCount;
 	float oldAverage;
 	for (i=0; i<exerLength; i=i+2) {
-		start = detected[i];
-		len = detected[i+2]-start;
+		start = detected(i);
+		len = detected(i+2)-start;
 		sampSum=0.0;
 		sampCount=0;
-		oldAverage=detected[i+1];
+		oldAverage=detected(i+1);
 		for (j=start; j<start+len; j++) {
-			if ( fabs( pitchList[j]-oldAverage) < 1 ) {
-				sampSum+=pitchList[j];
+			if ( fabs( pitchList(j)-oldAverage) < 1 ) {
+				sampSum+=pitchList(j);
 				sampCount++;
 			}
 		}
 		if (sampCount>0)
-			detected[i+1]=sampSum/sampCount;
+			detected(i+1)=sampSum/sampCount;
 
-//		if (detected[i+1]==0)
-//			detected[i+1] = 73;  // for display in testing
+		if (detected(i+1)==0)
+			detected(i+1) = 73;  // for display in testing
 	}
 //cout<<endl;
 	for (i=0; i<exerLength; i=i+2) {
-		cout<<detected[i]<<" "<<detected[i+1]<<endl;
+		cout<<detected(i)<<" "<<detected(i+1)<<endl;
 	}	
 //cout<<endl;
 
 //zz
 	for (i=0; i<exerLength; i=i+2) {
-		if ( (exercise[i]>0)&&(detected[i+1]>0))
-			detected[i+1] = exercise[i+2]/detected[i+1];
+		if ( (exercise[i]>0)&&(detected(i+1)>0))
+			detected(i+1) = exercise[i+2]/detected(i+1);
 		else
-			detected[i+1] = 1;
+			detected(i+1) = 1;
 	}	
 
 //cout<<endl;

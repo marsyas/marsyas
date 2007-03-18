@@ -15,19 +15,16 @@ public:
 	void calcNotes();
 	void metroDurations();
 
-/*
-signals:
-	void nextNoteError(float error, int direction);
-*/
 private:
 	void getPitches(string audioFilename);
 	void getExercise(string exerciseFilename);
 	void smoothPitches();
-	float findMedian(int start, int length, float *array);
+	mrs_real findMedian(int start, int length, realvec array);
 
 	int *exercise;
-	float *pitchList;
-	float *detected;
+//	float *pitchList;
+	realvec pitchList;
+	realvec detected;
 
 	int numPitches;
 	int exerLength;
