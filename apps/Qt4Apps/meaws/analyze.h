@@ -13,7 +13,6 @@ public:
 	~Analyze();
 	void calcDurations();
 	void calcNotes();
-	void metroDurations();
 
 private:
 	void getPitches(string audioFilename);

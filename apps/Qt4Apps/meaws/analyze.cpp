@@ -8,38 +8,13 @@ Analyze::Analyze(string audioFilename, string exerciseFilename) {
 	getPitches(audioFilename);
 	smoothPitches();
 
-//	detected = new realvec();
 	detected.allocate(exerLength);
-//	detected = (float*) malloc(exerLength*sizeof(float));
 }
 
 Analyze::~Analyze() {
-	detected.~realvec();
 	delete exercise;
-//	delete pitchList;
+	detected.~realvec();
 	pitchList.~realvec();
-}
-
-void Analyze::metroDurations() {
-	int SIZE=18;
-	float SAMPLES_PER_SECOND = 261.625565;  // works with pitch-to-pratt.py
-	int TEMPO=120/60;
-
-// pitch, dur
-	int exer[] = {0, 4, 60, 2, 62, 1, 64, 1, 65, 2, 67, 2, 69, 3, 71, 1, 72, 4, 0, 0 };
-	int i;
-	int samp;
-
-	cout<<"metronome Durations:"<<endl;
-	samp=0;
-	int deltasamp;
-	int pitch;
-	for (i=0; i<=SIZE/2; i++) {
-		deltasamp = SAMPLES_PER_SECOND/TEMPO * exer[2*i+1];
-		samp += deltasamp;
-		pitch = exer[2*i];
-		cout<<samp << "   "<<deltasamp<<"   "<<pitch<<endl;
-	}
 }
 
 void Analyze::calcDurations() {
@@ -50,7 +25,6 @@ void Analyze::calcDurations() {
 	int i, j;
 	int detectedIndex=0;
 
-	//int pitch;
 	int next=0;
 	float AVERAGE_OVER = 5.0;
 	prevSamp=0;
@@ -60,45 +34,29 @@ void Analyze::calcDurations() {
 		variance1=0.0;
 		variance2=0.0;
 		for (j=0; j<AVERAGE_OVER; j++) {
-/*
-			if (j < (AVERAGE_OVER-1) )
-				variance1+= fabs(pitchList[i-j-1] - pitchList[i-j-2]);
-			if (j < (AVERAGE_OVER-1) )
-				variance2+= fabs(pitchList[i+j] - pitchList[i+j+1]);
-*/
 			if (j < (AVERAGE_OVER-1) )
 				variance1+= fabs(pitchList(i-j-1) - pitchList(i-j-2));
 			if (j < (AVERAGE_OVER-1) )
 				variance2+= fabs(pitchList(i+j) - pitchList(i+j+1));
 		}
-//		avg1 = avg1/AVERAGE_OVER;
-//		avg2 = avg2/AVERAGE_OVER;
 		avg1 = findMedian( i-AVERAGE_OVER-1, AVERAGE_OVER, pitchList );
 		avg2 = findMedian( i, AVERAGE_OVER, pitchList );
 		variance1 = variance1 / (AVERAGE_OVER-1);
 		variance2 = variance2 / (AVERAGE_OVER-1);
 
 		if (fabs(avg1-avg2) > 0.6) {
-//`&&(fabs(pitchList(i)-pitchList[prevSamp])>0.5)) {
 			if (i>prevSamp+3*(AVERAGE_OVER)) next=i;
-		//		cout<<i<<"   "<<pitchList[ prevSamp ]<<" was a new pitch"<<endl;
 		}
 		if (next>0) {
 			if ((variance1<0.4)&&(variance2<0.4)) {
-				//prevSamp = int(i+AVERAGE_OVER);
 				prevSamp = int(i);
-//				cout<<pitchList[ prevSamp-1]<<endl;
 	//			cout<<"---------------------------"<<endl;
-		//		cout<<i<<"   "<<pitchList[ prevSamp ]<<" was a new pitch"<<endl;
 				detected(detectedIndex)=i;
 				detectedIndex+=2;
-//				cout<<i<<" "<<pitchList[ prevSamp+1]<<endl;
 				next=0;
 			}
 		}
-//		cout<<i<<" "<<pitchList(i);
-//		cout<<"   "<<avg1<<" "<<avg2<<"   "<<i - prevSamp<<"   "<<"   "<<variance1<<" "<<variance2<<endl;
-	//	if (pitchList(i)>61) exit(0);
+//		cout<<i<<" "<<pitchList(i)<<"   "<<avg1<<" "<<avg2<<"   "<<i - prevSamp<<"   "<<"   "<<variance1<<" "<<variance2<<endl;
 	}
 	detected(exerLength-2) = numPitches;
 }
@@ -151,8 +109,6 @@ void Analyze::getPitches(string audioFilename) {
 // my addition to the marsyasTest pitch stuff:
   numPitches = data.getSize()/2;
 	pitchList.allocate(numPitches);
-//	pitchList = (float*) malloc( numPitches*sizeof(float) );
-
 	for (int i=0; i<numPitches; i++) {
 		if ( data(2*i+1)>0 )
 			pitchList(i) = hertz2pitch( data(2*i+1) );
@@ -210,19 +166,6 @@ void Analyze::smoothPitches() {
 	file.close();
 }
 
-/*
-void Analyze::writePitches(string filename) {
-	string command;
-	command = "python2.4 praat-to-pitch.py ";
-	command.append(filename);
-	command.append(" 120");  // tempo
-	cout<<"DOING: "<<command.c_str()<<endl;
-	system(command.c_str());
-}
-*/
-
-
-
 mrs_real Analyze::findMedian(int start, int length, realvec array) {
 //	cout<<start<<" "<<length<<endl;
 	if ( !(length>0) ) return 0;
@@ -250,12 +193,6 @@ void Analyze::calcNotes(){
 		len = detected(i+2)-start;
 		sampSum=0.0;
 		detected(i+1) = findMedian(start, len, pitchList);
-/*
-		for (j=start; j<start+len; j++) {
-			sampSum+=pitchList(j);
-		}
-		detected[i+1]=sampSum/len;
-*/
 	}
 
 	//second pass
@@ -279,21 +216,17 @@ void Analyze::calcNotes(){
 		if (detected(i+1)==0)
 			detected(i+1) = 73;  // for display in testing
 	}
-//cout<<endl;
+
 	for (i=0; i<exerLength; i=i+2) {
 		cout<<detected(i)<<" "<<detected(i+1)<<endl;
 	}	
-//cout<<endl;
 
-//zz
 	for (i=0; i<exerLength; i=i+2) {
 		if ( (exercise[i]>0)&&(detected(i+1)>0))
 			detected(i+1) = exercise[i+2]/detected(i+1);
 		else
 			detected(i+1) = 1;
 	}	
-
-//cout<<endl;
 
 	for (i=0; i<exerLength; i=i+2) {
 //		cout<<detected[i]*512.0/44100.0<<" "<<detected[i+1]<<endl;
