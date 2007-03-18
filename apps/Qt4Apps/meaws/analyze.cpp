@@ -8,7 +8,7 @@ Analyze::Analyze(string audioFilename, string exerciseFilename) {
 	getPitches(audioFilename);
 	smoothPitches();
 
-	detected.allocate(exerLength);
+	detected.allocate(2*exerLength);
 }
 
 Analyze::~Analyze() {
@@ -18,34 +18,59 @@ Analyze::~Analyze() {
 }
 
 void Analyze::calcDurations() {
+	int MEAN_RADIUS = 20.0;
+	float prevNote=0.0;
+	float median;
+	int i;
+	int detectedIndex=0;
 	int prevSamp=0;
+/*
 	mrs_real avg1, avg2;
 	mrs_real variance1, variance2;
 
 	int i, j;
-	int detectedIndex=0;
 
 	int next=0;
-	float AVERAGE_OVER = 5.0;
 	prevSamp=0;
-	for (i=AVERAGE_OVER; i<numPitches-AVERAGE_OVER; i++) {
+*/
+	for (i=MEAN_RADIUS; i<numPitches-MEAN_RADIUS; i++) {
+		median = findMedian(i-MEAN_RADIUS, 2*MEAN_RADIUS, pitchList);
+		if ( fabs(median-prevNote) > 0.5) {
+			if (i>prevSamp+MEAN_RADIUS) {
+//				cout<<"---: "<<i<<" "<<prevNote<<" "<<median<<endl;
+				prevNote = median;
+				prevSamp = i;
+				detected(detectedIndex)=i;
+				detectedIndex+=2;
+			}
+			else {
+				prevNote = median;
+				prevSamp = i;
+			}
+		}
+//		cout<<i<<" "<<pitchList(i)<<" "<<median<<endl;
+//		if ( detected(detectedIndex-1) == i)
+//			cout<<"------------"<<endl;
+	}
+/*
+	for (i=MEAN_RADIUS; i<numPitches-MEAN_RADIUS; i++) {
 		avg1=0.0;
 		avg2=0.0;
 		variance1=0.0;
 		variance2=0.0;
-		for (j=0; j<AVERAGE_OVER; j++) {
-			if (j < (AVERAGE_OVER-1) )
+		for (j=0; j<MEAN_RADIUS; j++) {
+			if (j < (MEAN_RADIUS-1) )
 				variance1+= fabs(pitchList(i-j-1) - pitchList(i-j-2));
-			if (j < (AVERAGE_OVER-1) )
+			if (j < (MEAN_RADIUS-1) )
 				variance2+= fabs(pitchList(i+j) - pitchList(i+j+1));
 		}
-		avg1 = findMedian( i-AVERAGE_OVER-1, AVERAGE_OVER, pitchList );
-		avg2 = findMedian( i, AVERAGE_OVER, pitchList );
-		variance1 = variance1 / (AVERAGE_OVER-1);
-		variance2 = variance2 / (AVERAGE_OVER-1);
+		avg1 = findMedian( i-MEAN_RADIUS-1, MEAN_RADIUS, pitchList );
+		avg2 = findMedian( i, MEAN_RADIUS, pitchList );
+		variance1 = variance1 / (MEAN_RADIUS-1);
+		variance2 = variance2 / (MEAN_RADIUS-1);
 
 		if (fabs(avg1-avg2) > 0.6) {
-			if (i>prevSamp+3*(AVERAGE_OVER)) next=i;
+			if (i>prevSamp+3*(MEAN_RADIUS)) next=i;
 		}
 		if (next>0) {
 			if ((variance1<0.4)&&(variance2<0.4)) {
@@ -58,6 +83,7 @@ void Analyze::calcDurations() {
 		}
 //		cout<<i<<" "<<pitchList(i)<<"   "<<avg1<<" "<<avg2<<"   "<<i - prevSamp<<"   "<<"   "<<variance1<<" "<<variance2<<endl;
 	}
+*/
 	detected(exerLength-2) = numPitches;
 }
 
