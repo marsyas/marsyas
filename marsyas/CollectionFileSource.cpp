@@ -147,6 +147,7 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
   {
     isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));
     setctrl("mrs_string/currentlyPlaying", col_.entry(cindex_));
+    ctrl_currentlyPlaying_->setValue(col_.entry(cindex_), NOUPDATE);
   }
   
   myIsrate_ = isrc_->getctrl("mrs_real/israte")->toReal();
