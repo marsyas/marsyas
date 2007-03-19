@@ -1,11 +1,8 @@
 #include "mainwindow.h"
+#include "math.h"
 
 // basic application functions
 MainWindow::MainWindow() {
-	analyze = new Analyze();
-	analyze->calcDurations();
-	analyze->calcNotes();
-
 	marBackend=NULL;
 	metro=NULL;
 
@@ -256,7 +253,6 @@ void MainWindow::enableActions(int state) {
 		closeExercise();
 	}
 	if (state==3) {   // exercise picked
-		cout<<"ENABLE: exercise picked"<<endl;
 		setupMarBackend();
 		exerciseRunning=false;
 		metro = new Metro(visualMetroBeat, this);
@@ -418,7 +414,6 @@ void MainWindow::setupMarBackend() {
 		marBackend = NULL;
 	}
 	marBackend = new MarBackend(testingMethod);
-	analyze = new Analyze();
 	QString filename = user->getName();
 	filename.append("-");
 	filename.append( QDateTime::currentDateTime().toString("yyyyMMdd") );
@@ -426,12 +421,10 @@ void MainWindow::setupMarBackend() {
 	filename.append( QDateTime::currentDateTime().toString("hhmmss") );
 	filename.append(".wav");
 	audioFileName = filename;
-	cout<<"problem start"<<endl;
 	marBackend->setFileName( qPrintable(audioFileName) );
-	cout<<"problem end"<<endl;
 
 	// communication with Marsyas backend
-	connect(analyze, SIGNAL(nextNoteError(float, int)), exercise, SLOT(nextNoteError(float, int)));
+//	connect(analyze, SIGNAL(nextNoteError(float, int)), exercise, SLOT(nextNoteError(float, int)));
 }
 
 void MainWindow::beat() {
@@ -454,9 +447,34 @@ void MainWindow::setMetroTempo(int tempo) {
 }
 
 void MainWindow::calcExercise() {
-	analyze->writePitches(qPrintable(audioFileName));
+	analyze = new Analyze( qPrintable(audioFileName), "music/exer.txt" );
 	analyze->calcDurations();
 	analyze->calcNotes();
+	analyze->writeNotes();
+	delete analyze;
+
+	double error;
+	int direction;
+	string line;
+	float curPitch;
+	int note=0;
+	ifstream infile;
+	infile.open("calcNotes.txt");
+	while (infile>>line) {
+		if (note<8) {  // disgusting hack to produce screenshots
+		note++;
+		curPitch = atof(line.c_str() );
+		//cout<<"curPitch: "<<curPitch<<endl;
+		error = curPitch-1.0;
+		//cout<<"ERROR: "<<error<<endl;
+		if (error<0)
+			direction = 1;  // might be wrong sign
+		else
+			direction = -1;
+		exercise->nextNoteError( fabs(error) , direction);
+		}
+	}
+	infile.close();
 
 	exercise->getLily();
 	string command = "cd /Users/gperciva/tmp/ ; lilypond -dpreview out.ly";

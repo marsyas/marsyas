@@ -8,5 +8,7 @@ int main() {
   analyze = new Analyze("/Users/gperciva/data/exer-1.wav", "music/exer.txt");
   analyze->calcDurations();
   analyze->calcNotes();
+	analyze->writeNotes();
+	delete analyze;
 }
 

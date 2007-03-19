@@ -3,13 +3,13 @@
 #include <math.h>
 #include "analyze.h"
 
-#define GNUPLOT_TEST 1
+#define GNUPLOT_TEST 0
 
 Analyze::Analyze(string audioFilename, string exerciseFilename) {
 	getExercise(exerciseFilename);
 	getPitches(audioFilename);
 	//smoothPitches();
-	writePitches();
+//	writePitches();    // for debug
 
 	detected.allocate(2*exerLength);
 }
@@ -197,6 +197,15 @@ void Analyze::writePitches() {
 	file.close();
 }
 
+void Analyze::writeNotes() {
+	int i;
+	ofstream file;
+	file.open("calcNotes.txt");
+	for (i=1; i<exerLength; i+=2)
+		file<<detected(i)<<endl;
+	file.close();
+}
+
 mrs_real Analyze::findMedian(int start, int length, realvec array) {
 //	cout<<start<<" "<<length<<endl;
 	if ( !(length>0) ) return 0;
@@ -261,7 +270,7 @@ void Analyze::calcNotes(){
 		}	
 		for (i=0; i<exerLength; i=i+2) {
 			detected(i) = detected(i)*512.0/44100.0;
-			printf("%f %f\n", detected(i), detected(i+1) );
+//			printf("%f %f\n", detected(i), detected(i+1) );
 		}
 	}
 

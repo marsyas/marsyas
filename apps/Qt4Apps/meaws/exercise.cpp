@@ -48,13 +48,13 @@ void Exercise::nextNoteError(float error, int direction) {
 	cout<<error<<"  "<<direction<<endl;
 	QString color = "black";
 
-	if (error < -0.3) { color = "Medium Blue"; }
-  if (error < -0.2) { color = "Dodger Blue"; }
-  if (error < -0.1) { color = "Light Sky Blue"; }
+	if (error < -0.001) { color = "Medium Blue"; }
+  if (error < -0.002) { color = "Dodger Blue"; }
+  if (error < -0.005) { color = "Light Sky Blue"; }
   
-  if (error > 0.1) { color = "Light Salmon"; }
-  if (error > 0.2) { color = "tomato"; }
-  if (error > 0.3) { color = "red"; }
+  if (error > 0.0001) { color = "Light Salmon"; }
+  if (error > 0.0005) { color = "tomato"; }
+  if (error > 0.001) { color = "red"; }
 
 	color.insert(0,"\\colorNote #\"");
 	color.append("\" ");
@@ -62,7 +62,7 @@ void Exercise::nextNoteError(float error, int direction) {
 	QString lily_line = lily_input.at(note);
 	lily_line.insert(0,color);
 
-	color="^\\markup{ \\arrow-head #Y #LEFT ##f }";
+	color="^\\markup{ \\hspace #0.5 \\arrow-head #Y #LEFT ##f }";
 	lily_line.append(color);
 
 	lily_input.replace(note,lily_line);
