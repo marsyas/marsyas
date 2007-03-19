@@ -3,10 +3,13 @@
 #include <math.h>
 #include "analyze.h"
 
+#define GNUPLOT_TEST 1
+
 Analyze::Analyze(string audioFilename, string exerciseFilename) {
 	getExercise(exerciseFilename);
 	getPitches(audioFilename);
-	smoothPitches();
+	//smoothPitches();
+	writePitches();
 
 	detected.allocate(2*exerLength);
 }
@@ -183,8 +186,10 @@ void Analyze::smoothPitches() {
 		}
 		i++;
 	}
+}
 
-
+void Analyze::writePitches() {
+	int i;
 	ofstream file;
 	file.open("notepitches.txt");
 	for (i=0; i<numPitches; i++)
@@ -238,25 +243,27 @@ void Analyze::calcNotes(){
 		}
 		if (sampCount>0)
 			detected(i+1)=sampSum/sampCount;
-
-		if (detected(i+1)==0)
-			detected(i+1) = 73;  // for display in testing
 	}
 
-	for (i=0; i<exerLength; i=i+2) {
-		cout<<detected(i)<<" "<<detected(i+1)<<endl;
-	}	
-
-	for (i=0; i<exerLength; i=i+2) {
-		if ( (exercise[i]>0)&&(detected(i+1)>0))
-			detected(i+1) = exercise[i+2]/detected(i+1);
-		else
-			detected(i+1) = 1;
-	}	
-
-	for (i=0; i<exerLength; i=i+2) {
-//		cout<<detected[i]*512.0/44100.0<<" "<<detected[i+1]<<endl;
-	}	
+	// display output
+	if (GNUPLOT_TEST) {
+		for (i=0; i<exerLength; i=i+2) {
+			if (detected(i+1)==0)
+				detected(i+1) = 73;  // for display in testing
+			printf("%f %f\n", detected(i), detected(i+1) );
+		}
+	} else {
+		for (i=0; i<exerLength; i=i+2) {
+			if ( (exercise[i]>0)&&(detected(i+1)>0))
+				detected(i+1) = exercise[i+2]/detected(i+1);
+			else
+				detected(i+1) = 1;
+		}	
+		for (i=0; i<exerLength; i=i+2) {
+			detected(i) = detected(i)*512.0/44100.0;
+			printf("%f %f\n", detected(i), detected(i+1) );
+		}
+	}
 
 }
 

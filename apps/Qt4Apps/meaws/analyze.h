@@ -18,6 +18,7 @@ private:
 	void getPitches(string audioFilename);
 	void getExercise(string exerciseFilename);
 	void smoothPitches();
+	void writePitches();
 	mrs_real findMedian(int start, int length, realvec array);
 
 	int *exercise;
