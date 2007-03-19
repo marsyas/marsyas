@@ -126,7 +126,7 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 	{
 	  getHeader();
 	  filename_ = ctrl_filename_->toString();
-		  
+	  ctrl_currentlyPlaying_->setValue(src_->getctrl("mrs_string/currentlyPlaying"));		  
 	  setctrl("mrs_natural/nChannels", src_->getctrl("mrs_natural/nChannels"));
 	  ctrl_israte_->setValue(src_->ctrl_israte_, NOUPDATE);
 	  ctrl_osrate_->setValue(src_->ctrl_osrate_, NOUPDATE);

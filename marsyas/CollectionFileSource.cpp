@@ -101,13 +101,14 @@ CollectionFileSource::addControls()
 void 
 CollectionFileSource::getHeader(string filename)
 {
-	col_.read(filename);
+  col_.read(filename);
   updctrl("mrs_string/allfilenames", col_.toLongString());
   updctrl("mrs_natural/numFiles", col_.getSize());  
 
   cindex_ = 0;
   setctrl("mrs_natural/cindex", 0);
   setctrl("mrs_bool/notEmpty", true);
+  ctrl_currentlyPlaying_->setValue(col_.entry(0), NOUPDATE);
   addctrl("mrs_natural/size", 1); // just so it's not zero 
   setctrl("mrs_natural/pos", 0);
   pos_ = 0;
@@ -116,7 +117,7 @@ CollectionFileSource::getHeader(string filename)
 void
 CollectionFileSource::myUpdate(MarControlPtr sender)
 {
-	nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();  
+  nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();  
   inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
   inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
   
@@ -138,7 +139,6 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
 
   if (getctrl("mrs_bool/shuffle")->isTrue())
   {
-    cout << "SHUFFLING" << endl;
     col_.shuffle();
     setctrl("mrs_bool/shuffle", false);
   }
@@ -146,8 +146,8 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
   if (cindex_ < col_.size()) 
   {
     isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));
-    setctrl("mrs_string/currentlyPlaying", col_.entry(cindex_));
     ctrl_currentlyPlaying_->setValue(col_.entry(cindex_), NOUPDATE);
+
   }
   
   myIsrate_ = isrc_->getctrl("mrs_real/israte")->toReal();
@@ -173,7 +173,7 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
     temp_.create(inObservations_, inSamples_);
   }
   
-	setctrl("mrs_natural/onObservations", inObservations_);
+  setctrl("mrs_natural/onObservations", inObservations_);
 
   isrc_->updctrl("mrs_natural/inObservations", inObservations_);
   isrc_->updctrl("mrs_real/repetitions", repetitions_);
@@ -196,81 +196,79 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
     cindex_ = cindex_ + 1;
     if (cindex_ >= col_.size() -1)  
 		{
-			setctrl("mrs_bool/notEmpty", false);
-			notEmpty_ = false;      
-			advance_ = false;
-		}
-
-		setctrl("mrs_natural/cindex", cindex_);
-
-		isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));   
-		updctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));   
-		myIsrate_ = isrc_->getctrl("mrs_real/israte")->toReal();
-
-		setctrl("mrs_real/israte", myIsrate_);
-		setctrl("mrs_real/osrate", myIsrate_);
-
-		if (myIsrate_ == 44100.0)
-		{
-		 isrc_->process(tempi_,temp_);
-		 setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
-		 setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
-		 downsampler_->process(temp_,out);
-		}
-		else 
-		{
-		 isrc_->process(in,out);
-		 setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
-		 setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
+		  setctrl("mrs_bool/notEmpty", false);
+		  notEmpty_ = false;      
+		  advance_ = false;
 		}
     
-		update();      
-		return;
+    setctrl("mrs_natural/cindex", cindex_);
+    
+    isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));   
+    updctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));   
+    myIsrate_ = isrc_->getctrl("mrs_real/israte")->toReal();
+    
+    setctrl("mrs_real/israte", myIsrate_);
+    setctrl("mrs_real/osrate", myIsrate_);
+    
+    if (myIsrate_ == 44100.0)
+      {
+	isrc_->process(tempi_,temp_);
+	setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
+	setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
+	downsampler_->process(temp_,out);
+      }
+    else 
+      {
+	isrc_->process(in,out);
+	setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
+	setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
+      }
+    
+    update();      
+    return;
   }
   
   else
-  {
-    if (myIsrate_ == 44100.0)
-		{
-			isrc_->process(tempi_,temp_);
-			setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
-			setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
-			downsampler_->process(temp_,out);
-		}
-    else 
-		{
-			isrc_->process(in,out);
-			setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
-			setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
-		}
-
-    if (!isrc_->getctrl("mrs_bool/notEmpty")->isTrue())
-		{
-		  cout << "SWITCHING " << endl;
-		  
-		  if (cindex_ < col_.size() -1)
-		    {
-		      cindex_ = cindex_ + 1;
-		      setctrl("mrs_natural/cindex", cindex_);
-		      isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));      
-		      isrc_->updctrl("mrs_natural/pos", 0);     
-		      pos_ = 0;
-		      myIsrate_ = isrc_->getctrl("mrs_real/israte")->toReal();
-		      setctrl("mrs_real/israte", myIsrate_);
-		      setctrl("mrs_real/osrate", myIsrate_);
-		      setctrl("mrs_string/currentlyPlaying", col_.entry(cindex_));
-		      ctrl_currentlyPlaying_->setValue(col_.entry(cindex_), NOUPDATE);
-		      
-		      cout << "Just updated currentlyPlaying to" << col_.entry(cindex_) << endl;
-		      
-		    }
-		  else 
-		    {
-		      setctrl("mrs_bool/notEmpty", false);
-		      notEmpty_ = false;
-		    }
-		}
-  } 
+    {
+      if (myIsrate_ == 44100.0)
+	{
+	  isrc_->process(tempi_,temp_);
+	  setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
+	  setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
+	  downsampler_->process(temp_,out);
+	}
+      else 
+	{
+	  isrc_->process(in,out);
+	  setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
+	  setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
+	}
+      
+      if (!isrc_->getctrl("mrs_bool/notEmpty")->isTrue())
+	{
+	  
+	  if (cindex_ < col_.size() -1)
+	    {
+	      cindex_ = cindex_ + 1;
+	      setctrl("mrs_natural/cindex", cindex_);
+	      isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));      
+	      isrc_->updctrl("mrs_natural/pos", 0);     
+	      pos_ = 0;
+	      myIsrate_ = isrc_->getctrl("mrs_real/israte")->toReal();
+	      setctrl("mrs_real/israte", myIsrate_);
+	      setctrl("mrs_real/osrate", myIsrate_);
+	      setctrl("mrs_string/currentlyPlaying", col_.entry(cindex_));
+	      ctrl_currentlyPlaying_->setValue(col_.entry(cindex_), NOUPDATE);
+	      
+	      
+	    }
+	  else 
+	    {
+	      setctrl("mrs_bool/notEmpty", false);
+	      notEmpty_ = false;
+	    }
+	}
+    } 
 }  
 
 
