@@ -11,7 +11,10 @@ public:
 	void calcDurations();
 	void calcNotes();
 	void writeNotes();
+	void printNotes();
 	void writePitches();
+
+	void addHarmonies();
 
 private:
 	void getPitches(string audioFilename);
@@ -23,7 +26,7 @@ private:
 	realvec pitchList;
 	realvec detected;
 
-	int numPitches;
-	int exerLength;
+	mrs_natural numPitches;
+	mrs_natural exerLength;
 };
 

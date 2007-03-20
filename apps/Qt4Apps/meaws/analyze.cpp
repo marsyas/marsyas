@@ -11,7 +11,7 @@ Analyze::Analyze(string audioFilename, string exerciseFilename) {
 	//smoothPitches();
 //	writePitches();    // for debug
 
-	detected.allocate(2*exerLength);
+	detected = realvec(2*exerLength/2,7); // size: 3 + 2*(notes in chords)
 }
 
 Analyze::~Analyze() {
@@ -43,8 +43,8 @@ void Analyze::calcDurations() {
 //				cout<<"---: "<<i<<" "<<prevNote<<" "<<median<<endl;
 				prevNote = median;
 				prevSamp = i;
-				detected(detectedIndex)=i;
-				detectedIndex+=2;
+				detected(detectedIndex,0)=i;
+				detectedIndex++;
 			}
 			else {
 				prevNote = median;
@@ -87,7 +87,10 @@ void Analyze::calcDurations() {
 //		cout<<i<<" "<<pitchList(i)<<"   "<<avg1<<" "<<avg2<<"   "<<i - prevSamp<<"   "<<"   "<<variance1<<" "<<variance2<<endl;
 	}
 */
-	detected(exerLength-2) = numPitches;
+	detected(detectedIndex,0) = numPitches;
+	for (i=detectedIndex; i<detected.getRows(); i++) {
+		detected(i,0) = -1;
+	}
 }
 
 void Analyze::getPitches(string audioFilename) {
@@ -201,9 +204,19 @@ void Analyze::writeNotes() {
 	int i;
 	ofstream file;
 	file.open("calcNotes.txt");
-	for (i=1; i<exerLength; i+=2)
-		file<<detected(i)<<endl;
+	for (i=0; i<detected.getRows(); i++)
+		file<<detected(i,1)<<endl;
 	file.close();
+}
+
+void Analyze::printNotes() {
+	int i,j;
+	for (i=0; i<detected.getRows(); i++) {
+		for (j=0; j<detected.getCols(); j++) {
+			cout<<detected(i,j)<<" ";
+		}
+		cout<<endl;
+	}
 }
 
 mrs_real Analyze::findMedian(int start, int length, realvec array) {
@@ -228,52 +241,84 @@ void Analyze::calcNotes(){
 	//first pass of average pitch
 	int start, len;
 	float sampSum;
-	for (i=0; i<exerLength; i=i+2) {
-		start = detected(i);
-		len = detected(i+2)-start;
-		sampSum=0.0;
-		detected(i+1) = findMedian(start, len, pitchList);
+	for (i=0; i<detected.getRows(); i++) {
+		start = detected(i,0);
+		if (start<0) {
+			detected(i,1)=0;
+		} else { 
+			len = detected(i+1,0)-start;
+			sampSum=0.0;
+			detected(i,1) = findMedian(start, len, pitchList);
+		}
 	}
 
 	//second pass
 	int sampCount;
 	float oldAverage;
-	for (i=0; i<exerLength; i=i+2) {
-		start = detected(i);
-		len = detected(i+2)-start;
-		sampSum=0.0;
-		sampCount=0;
-		oldAverage=detected(i+1);
-		for (j=start; j<start+len; j++) {
-			if ( fabs( pitchList(j)-oldAverage) < 1 ) {
-				sampSum+=pitchList(j);
-				sampCount++;
+	for (i=0; i<detected.getRows(); i++) {
+		start = detected(i,0);
+		if (start>0) {
+			len = detected(i+1,0)-start;
+			sampSum=0.0;
+			sampCount=0;
+			oldAverage=detected(i,1);
+			for (j=start; j<start+len; j++) {
+				if ( fabs( pitchList(j)-oldAverage) < 1 ) {
+					sampSum+=pitchList(j);
+					sampCount++;
+				}
+			}
+			if (sampCount>0) {
+				detected(i,1)=sampSum/sampCount;
 			}
 		}
-		if (sampCount>0)
-			detected(i+1)=sampSum/sampCount;
 	}
 
 	// display output
 	if (GNUPLOT_TEST) {
-		for (i=0; i<exerLength; i=i+2) {
-			if (detected(i+1)==0)
-				detected(i+1) = 73;  // for display in testing
-			printf("%f %f\n", detected(i), detected(i+1) );
+		for (i=0; i<detected.getRows(); i++) {
+			if (detected(i,1)<=0)
+				detected(i,1) = 73;  // for display in testing
+//			printf("%f %f\n", detected(i), detected(i+1) );
 		}
 	} else {
-		for (i=0; i<exerLength; i=i+2) {
-			if ( (exercise[i]>0)&&(detected(i+1)>0))
-				detected(i+1) = exercise[i+2]/detected(i+1);
+		for (i=0; i<detected.getRows(); i++) {
+			if ( detected(i,0) > 0 )
+				detected(i,0) = detected(i,0)*512.0/44100.0;
+			if ( (exercise[i]>0)&&(detected(i,1)>0))
+				detected(i,1) = exercise[2*(i+1)]/detected(i,1);
 			else
-				detected(i+1) = 1;
+				detected(i,1) = 1;
 		}	
-		for (i=0; i<exerLength; i=i+2) {
-			detected(i) = detected(i)*512.0/44100.0;
-//			printf("%f %f\n", detected(i), detected(i+1) );
+	}
+}
+
+// ONLY WORKS WITH GNUPLOT=0 !!!
+void Analyze::addHarmonies() {
+	int i,j;
+	mrs_real curPitch;
+
+	// set up initial amplitudes
+	for (i=0; i<detected.getRows(); i++) {
+		if ( detected(i,1) >= 0 ) {
+			detected(i,2) = 1.0;
+		}
+	}
+
+	// do hokey lower octave + upper tenth, for testing
+	for (i=0; i<detected.getRows(); i++) {
+		curPitch = detected(i,1);
+		if ( detected(i,0) >= 0 ) {
+			detected(i,3) = 0.5 * curPitch;
+			detected(i,4) = 0.2;
+			detected(i,5) = 2.378 * curPitch; // P8 + m3 or M3 (I think)
+			detected(i,6) = 0.5;
+		} else {
+			for (j=3; j<detected.getCols(); j++) {
+				detected(i,j)=0;
+			}
 		}
 	}
 
 }
-
 
