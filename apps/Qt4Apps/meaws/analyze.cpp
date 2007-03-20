@@ -12,6 +12,7 @@ Analyze::Analyze(string audioFilename, string exerciseFilename) {
 //	writePitches();    // for debug
 
 	detected = realvec(2*exerLength/2,7); // size: 3 + 2*(notes in chords)
+//	detected = realvec(100,2); // size: 3 + 2*(notes in chords)
 }
 
 Analyze::~Analyze() {
@@ -319,6 +320,7 @@ void Analyze::addHarmonies() {
 			}
 		}
 	}
+
 
 }
 

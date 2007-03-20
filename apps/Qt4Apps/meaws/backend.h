@@ -17,11 +17,8 @@
 */
 
 #include <QObject>
-#include "../../../marsyas/MarSystemManager.h"
+#include "MarSystemManager.h"
 #include "../MarSystemQtWrapper.h"
-#include "EvExpr.h"
-#include "ExVal.h"
-#include "ExCommon.h"
 
 using namespace Marsyas;
 

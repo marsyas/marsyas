@@ -1,3 +1,4 @@
+include (../Qt4Apps.pri)
 SOURCES = start.cpp
 HEADERS = mainwindow.h backend.h metro.h
 SOURCES += mainwindow.cpp backend.cpp metro.cpp
