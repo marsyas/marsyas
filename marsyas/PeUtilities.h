@@ -54,7 +54,7 @@ namespace Marsyas
 	} pkParameter;
 
 
-	int peaks2M (realvec&, realvec&, realvec&, mrs_natural maxNbPeaks, mrs_natural *nbPkFrame);
+	int peaks2M (realvec&, realvec&, realvec&, mrs_natural maxNbPeaks, mrs_natural *nbPkFrame, mrs_natural start=0);
 	void peaks2V (realvec&, realvec&, realvec&, mrs_natural maxNbPeaks, mrs_natural label=-1);
 
 	void extractParameter(realvec&, std::vector<realvec>&, pkParameter, mrs_natural);

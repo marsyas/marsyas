@@ -86,11 +86,12 @@ void
 RealvecSink::myProcess(realvec& in, realvec& out)
 {
 	//checkFlow(in,out);
+	out=in;
+
 	ctrl_data_->stretch(inObservations_, count_+inSamples_);
 		for (o=0; o < inObservations_; o++)
 	  	for (t=0; t < inSamples_; t++)
 			{
-				out(o, t) = in(o, t);
 			  ctrl_data_->setValue(o, count_+t, in(o, t));
 			}
 				count_+=inSamples_;

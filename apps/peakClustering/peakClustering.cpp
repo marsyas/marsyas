@@ -54,7 +54,7 @@ int bopt_ = 128;
 // output gain
 mrs_real gopt_ = 1.0;
 // number of accumulated frames
-mrs_natural accSize_ = 20;
+mrs_natural accSize_ = 10;
 // number of seconds for analysing process
 mrs_natural stopAnalyse_=0;
 // type of similarity Metrics // test amplitude normamlise gtzan
@@ -527,9 +527,9 @@ main(int argc, const char **argv)
 
 			if(clusterFilteringType_)
 			{
-					realvec ct;
+				realvec ct;
         clusters.selectBefore(clusterFilteringType_);
-clusters.getConversionTable(ct);
+        clusters.getConversionTable(ct);
 				updateLabels(peakSet_, ct);
 			}
 
@@ -541,12 +541,9 @@ clusters.getConversionTable(ct);
 			}
 			/*MATLAB_PUT(peakSet_, "peaks");
 			MATLAB_EVAL("plotPeaks(peaks)");*/ 
-
-			
-
-		/*	MATLAB_PUT(peakSet_, "peaks");
+		  /*	MATLAB_PUT(peakSet_, "peaks");
 			MATLAB_EVAL("figure(1); clf ; plotPeaks(peaks)");*/
- FileName oriFileName(*sfi);
+      FileName oriFileName(*sfi);
 			FileName noiseFileName(noiseName);
 			ofstream resFile;
 			string snrName(outputDirectoryName + "/similaritySnrResults.txt");

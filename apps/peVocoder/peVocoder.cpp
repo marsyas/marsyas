@@ -24,10 +24,14 @@ string fileName = EMPTYSTRING;
 string noiseName = EMPTYSTRING;
 string fileResName = EMPTYSTRING;
 string filePeakName = EMPTYSTRING;
+string panningInfo = EMPTYSTRING;
+string intervalFrequency = EMPTYSTRING;
+string harmonizeFileName = EMPTYSTRING;
 
 // Global variables for command-line options 
 bool helpopt_ = 0;
 bool usageopt_ =0;
+bool peakStore_=0;
 int fftSize_ = 2048;
 int winSize_ = 2048;
 // if kept the same no time expansion
@@ -57,10 +61,7 @@ mrs_real samplingFrequency_=1;
 
 bool microphone_ = false;
 bool analyse_ = false;
-bool attributes_ = false;
-bool ground_ = false;
-bool synthetize_ = false;
-bool clusterSynthetize_ = false;
+mrs_natural synthetize_ = -1;
 
 CommandLineOptions cmd_options;
 
@@ -98,21 +99,20 @@ printHelp(string progName)
 }
 
 
-// original monophonic peakClustering 
-
-
-
+// original monophonic PeVocoding
 void
-clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseName, mrs_real noiseDelay, string T, mrs_natural N, mrs_natural Nw, 
-							 mrs_natural D, mrs_natural S, mrs_natural C,
-							 mrs_natural accSize, bool synthetize)
+peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw, 
+							 mrs_natural D, mrs_natural S, mrs_natural synthetize)
 {
+	mrs_natural nbFrames_=0;
 	cout << "Extracting Peaks and Clusters" << endl;
 	MarSystemManager mng;
 
 	// create the phasevocoder network
 	MarSystem* pvseries = mng.create("Series", "pvseries");
 
+	if(analyse_)
+	{
 	// add original source 
 	if (microphone_) 
 		pvseries->addMarSystem(mng.create("AudioSource", "src"));
@@ -151,41 +151,102 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	pvseries->updctrl("PeAnalyse/peA/PeConvert/conv/mrs_natural/Decimation", D);      
 	pvseries->updctrl("PeAnalyse/peA/PeConvert/conv/mrs_natural/Sinusoids", S);  
   pvseries->updctrl("PeAnalyse/peA/PeConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
-
-	//pvseries->update();
-
-	if(synthetize)
+	}
+	else
 	{
-		synthNetConfigure (pvseries, sfName, outsfname, fileResName, Nw, D, S, accSize, microphone_, 0, bopt_, Nw+1-D);
+	// create realvecSource
+		MarSystem *peSource = mng.create("RealvecSource", "peSource");
+	  pvseries->addMarSystem(peSource);
+mrs_natural nbF_=0;
+		   realvec peakSet_;
+			 peakSet_.read(sfName);
+			 
+			MATLAB_PUT(peakSet_, "peaks");
+			MATLAB_EVAL("plotPeaks(peaks)");
+
+     for (mrs_natural i=0 ; i<peakSet_.getRows() ; i++)
+if(peakSet_(i, pkTime)>nbF_)
+{
+nbF_ = peakSet_(i, pkTime);
+}
+nbF_++;
+
+      realvec peakSetV_(nbSines_*nbPkParameters, nbF_);
+      peakSetV_.setval(0);
+			peaks2V(peakSet_, peakSetV_, peakSetV_, nbSines_);
+
+			pvseries->setctrl("RealvecSource/peSource/mrs_realvec/data", peakSetV_);
+			pvseries->setctrl("RealvecSource/peSource/mrs_real/israte", peakSet_(0, 1));
+			D = peakSet_(0, 2);
+	}
+	
+	if(peakStore_)
+	{
+    // realvec sink to store peaks
+		MarSystem *peSink = mng.create("RealvecSink", "peSink");
+		pvseries->addMarSystem(peSink);
+	}
+
+	if(synthetize>-1)
+	{
+		synthNetCreate(&mng, outsfname, microphone_, synthetize_);
+		MarSystem *peSynth = mng.create("PeSynthetize", "synthNet");
+    pvseries->addMarSystem(peSynth);
+		synthNetConfigure (pvseries, sfName, outsfname, fileResName, panningInfo, 1, Nw, D, S, 1, microphone_, synthetize_, bopt_, Nw+1-D);
 	}
 
 	mrs_real globalSnr = 0;
 	mrs_natural nb=0;
 	//	mrs_real time=0;
+	if(analyse_ || synthetize_ > -1)
 	while(1)
 	{
 		pvseries->tick();
-	// ouput the seg snr
-		if(synthetize)
-		{
-			mrs_real snr = pvseries->getctrl("Shredder/synthNet/Series/postNet/PeResidual/res/mrs_real/snr")->toReal();
-			globalSnr+=snr;
-			nb++;
-			cout << "Frame " << nb << " SNR : "<< snr << endl;
-		}
-
+  nbFrames_++;
 		if (!microphone_)
 		{
-			bool temp = pvseries->getctrl("PeAnalyse/peA/Fanin/fanin/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
-			string fname = pvseries->getctrl("PeAnalyse/peA/Fanin/fanin/SoundFileSource/src/mrs_string/filename")->toString();
+			bool temp;
+			if(analyse_)
+			{
+			temp = pvseries->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool();
+			 mrs_real timeRead =  pvseries->getctrl("SoundFileSource/src/mrs_natural/pos")->toNatural()/samplingFrequency_;
+			mrs_real timeLeft =  pvseries->getctrl("SoundFileSource/src/mrs_natural/size")->toNatural()/samplingFrequency_;
+			printf("%.2f / %.2f \r", timeRead, timeLeft);
+			}
+			else 
+			temp =	!pvseries->getctrl("RealvecSource/peSource/mrs_bool/done")->toBool();
 
 			///*bool*/ temp = pvseries->getctrl("PeAnalyse/peA/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
 			if (temp == false)
 				break;
+
+		 
 		}
 	}
-	if(synthetize_)
-		cout << "Global SNR : " << globalSnr/nb << endl;
+
+	if(peakStore_)
+	{
+		realvec peakSet_ = pvseries->getctrl("RealvecSink/peSink/mrs_realvec/data")->toVec();
+    realvec peakSetM_ = realvec(nbFrames_*nbSines_, nbPkParameters);
+		peakSetM_(0, 0) = -1;
+		peakSetM_(0, 1) =  samplingFrequency_;
+		peakSetM_(0, 2) =  D;
+		peakSetM_(0, pkGroup) = -2;
+    realvec tmp(1);
+		tmp.setval(0);
+		mrs_natural tmp2;
+    peaks2M(peakSet_, tmp, peakSetM_, nbSines_, &tmp2, 1);
+		cout << peakSet_.getSize() << endl;
+		ofstream peakFile;
+	peakFile.open(filePeakName.c_str());
+	if(!peakFile)
+		cout << "Unable to open output Peaks File " << filePeakName << endl;
+	peakFile << peakSetM_;
+	peakFile.close();
+	
+			MATLAB_PUT(peakSet_, "peaks");
+			MATLAB_EVAL("plotPeaks(peaks)");
+	}
 }
 
 
@@ -199,11 +260,17 @@ initOptions()
 	cmd_options.addNaturalOption("voices", "v", 1);
 	cmd_options.addStringOption("filename", "f", EMPTYSTRING);
 	cmd_options.addStringOption("outputdirectoryname", "o", EMPTYSTRING);
-	cmd_options.addStringOption("inputdirectoryname", "i", EMPTYSTRING);
+	cmd_options.addStringOption("inputdirectoryname", "I", EMPTYSTRING);
 	cmd_options.addNaturalOption("winsize", "w", winSize_);
 	cmd_options.addNaturalOption("fftsize", "n", fftSize_);
 	cmd_options.addNaturalOption("sinusoids", "s", nbSines_);
 	cmd_options.addNaturalOption("bufferSize", "b", bopt_);
+  cmd_options.addStringOption("intervalFrequency", "i", EMPTYSTRING);
+  cmd_options.addStringOption("panning", "p", EMPTYSTRING);
+  cmd_options.addStringOption("Harmonize", "H", EMPTYSTRING);
+	cmd_options.addNaturalOption("synthetize", "S", synthetize_);
+	cmd_options.addBoolOption("analyse", "A", analyse_);
+	cmd_options.addBoolOption("PeakStore", "P", peakStore_);
 }
 
 
@@ -212,7 +279,6 @@ loadOptions()
 {
 	helpopt_ = cmd_options.getBoolOption("help");
 	usageopt_ = cmd_options.getBoolOption("usage");
-	pluginName = cmd_options.getStringOption("plugin");
 	fileName   = cmd_options.getStringOption("filename");
 	inputDirectoryName = cmd_options.getStringOption("inputdirectoryname");
 	outputDirectoryName = cmd_options.getStringOption("outputdirectoryname");
@@ -220,6 +286,12 @@ loadOptions()
 	fftSize_ = cmd_options.getNaturalOption("fftsize");
 	nbSines_ = cmd_options.getNaturalOption("sinusoids");
 	bopt_ = cmd_options.getNaturalOption("bufferSize");
+	intervalFrequency = cmd_options.getStringOption("intervalFrequency");
+	panningInfo = cmd_options.getStringOption("panning");
+  harmonizeFileName = cmd_options.getStringOption("Harmonize");
+	synthetize_ = cmd_options.getNaturalOption("synthetize");
+	analyse_ = cmd_options.getBoolOption("analyse");
+	peakStore_ = cmd_options.getBoolOption("PeakStore");
 }
 
 
@@ -236,9 +308,7 @@ main(int argc, const char **argv)
 	vector<string> soundfiles = cmd_options.getRemaining();
 	vector<string>::iterator sfi;
 
-
 	string progName = argv[0];  
-
 
 	if (helpopt_) 
 		printHelp(progName);
@@ -247,7 +317,7 @@ main(int argc, const char **argv)
 		printUsage(progName);
 
 
-	cerr << "peakClustering configuration (-h show the options): " << endl;
+	cerr << "peVocoder configuration (-h show the options): " << endl;
 	cerr << "fft size (-n)      = " << fftSize_ << endl;
 	cerr << "win size (-w)      = " << winSize_ << endl;
 	cerr << "sinusoids (-s)     = " << nbSines_ << endl;
@@ -255,7 +325,6 @@ main(int argc, const char **argv)
 	cerr << "outputDirectory  (-o) = " << outputDirectoryName << endl;
 	cerr << "inputDirectory  (-i) = " << inputDirectoryName << endl;
 
-	// extract peaks and clusters
 	// soundfile input 
 	string sfname;
 	if (soundfiles.size() != 0)   
@@ -264,67 +333,34 @@ main(int argc, const char **argv)
 		for (sfi=soundfiles.begin() ; sfi!=soundfiles.end() ; sfi++)
 		{
 			FileName Sfname(*sfi);
-			if(outputDirectoryName != EMPTYSTRING)
+			if(outputDirectoryName == EMPTYSTRING)
 			{
-
-				fileName = outputDirectoryName + "/" + Sfname.name() ;
-				fileResName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Res." + Sfname.ext() ;
-				filePeakName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Peak.txt" ;
-				cout << fileResName << endl;
-			}
-			if(analyse_)
-			{
-				cout << "Phasevocoding " << Sfname.name() << endl; 
-				clusterExtract(peakSet_, *sfi, fileName, noiseName, noiseDelay_, similarityType_, fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_, synthetize_);
-			}	
-			// if ! peak data read from file
-			if(peakSet_.getSize() == 0)
-				peakSet_.read(filePeakName);
-			if(peakSet_.getSize() == 0)
-			{
-				cout << "unable to load " << filePeakName << endl;
-				exit(1);
+        outputDirectoryName = ".";
 			}
 
-			MATLAB_PUT(peakSet_, "peaks");
-			MATLAB_EVAL("plotPeaks(peaks)");
-
-
-			// computes the cluster attributes
-
-			if(attributes_)
+			if(Sfname.ext() == "peak")
 			{
-				PeClusters clusters(peakSet_);
-				mrs_natural nbClusters=0;
-
-				// compute ground truth
-				if(ground_)
-					clusters.synthetize(peakSet_, *sfi, fileName, winSize_, hopSize_, nbSines_, bopt_, 1);
-
-
-				clusters.selectGround();
-				// commented out by gtzan because getConversionTable needs a realvec argument 
-				// updateLabels(peakSet_, clusters.getConversionTable());
-
-						MATLAB_PUT(peakSet_, "peaksGp");
-			MATLAB_EVAL("plotPeaks(peaksGp)");
+         analyse_ = 0;
+				 synthetize_ = 0;
+				 peakStore_=0;
 			}
-	
-			if(clusterSynthetize_)
+			if(Sfname.ext() == "wav")
 			{
-        PeClusters clusters(peakSet_);
-				// synthetize remaining clusters
-				clusters.synthetize(peakSet_, *sfi, fileName, winSize_, hopSize_, nbSines_, bopt_, 0);
+         analyse_ = 1;
 			}
-			MATLAB_PUT(peakSet_, "peaks");
-			MATLAB_EVAL("plotPeaks(peaks)");
+
+				fileName = outputDirectoryName + "/" + Sfname.nameNoExt() + ".wav" ;
+				filePeakName = outputDirectoryName + "/" + Sfname.nameNoExt() + ".peak" ;
+				cout << "Pevocoding " << Sfname.name() << endl; 
+			
+				peVocode(*sfi, fileName, fftSize_, winSize_, hopSize_, nbSines_, synthetize_);
 		}
 	}
 	else
 	{
 		cout << "Using live microphone input" << endl;
 		microphone_ = true;
-		clusterExtract(peakSet_, "microphone", fileName, noiseName, noiseDelay_, similarityType_, fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_, synthetize_);
+		peVocode("microphone", fileName, fftSize_, winSize_, hopSize_, nbSines_, synthetize_);
 	}
 
 

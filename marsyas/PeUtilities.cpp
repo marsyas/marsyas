@@ -34,9 +34,9 @@ using namespace Marsyas;
 
 
 int 
-Marsyas::peaks2M (realvec& in, realvec& first, realvec& out, mrs_natural maxNbPeaks, mrs_natural *nbPkFrame)
+Marsyas::peaks2M (realvec& in, realvec& first, realvec& out, mrs_natural maxNbPeaks, mrs_natural *nbPkFrame, mrs_natural start)
 {
-	int i,j,k,l=0,m=0;
+	int i,j,k,l=start,m=0;
 
 	if(&first != NULL  && first(0))
 		for (i=0 ; i<maxNbPeaks ; i++)
@@ -62,7 +62,7 @@ Marsyas::peaks2M (realvec& in, realvec& first, realvec& out, mrs_natural maxNbPe
 			 }
 		 }
 			out.stretch(l, nbPkParameters);
-			return l;
+			return l-start;
 }
 
 void 
@@ -441,7 +441,7 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
 
 	 if(synType == 0)
 	 {
-	postNet->addMarSystem(mng->create("PeSynOsc", "pso"));
+	   postNet->addMarSystem(mng->create("PeSynOsc", "pso"));
 	   postNet->addMarSystem(mng->create("Windowing", "wiSyn"));
 	 }
 	 else
@@ -457,18 +457,12 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
 		 // set the correct buffer size
      postNet->addMarSystem(mng->create("ShiftInput", "siSyn"));
 		 // perform an FFT
-		
-
      postNet->addMarSystem(mng->create("Spectrum", "specSyn"));
 		 // convert to polar
 		 postNet->addMarSystem(mng->create("Cartesian2Polar", "c2p"));
-
-	
 		 // perform amplitude and panning change
 		  postNet->addMarSystem(mng->create("PeSynFFT", "psf"));
 		 // convert back to cartesian
-
-	
 		 postNet->addMarSystem(mng->create("Polar2Cartesian", "p2c"));	
 		 // perform an IFFT
 	//	 postNet->addMarSystem(mng->create("PlotSink", "plot"));
