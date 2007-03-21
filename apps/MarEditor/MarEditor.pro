@@ -1,7 +1,7 @@
 include ( ../consoleApps.pri )
 
 TEMPLATE = app
-TARGET += marEditor
+TARGET = MarEditor
 INCLUDEPATH += . 
 
 CONFIG *= qt   # this needs Qt!
