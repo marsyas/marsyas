@@ -159,7 +159,7 @@ MarControlGUI::vecWidget()
 void
 MarControlGUI::showVectorTable()
 {
-	if(control_->getType() != 5) //if not a vector, do nothing
+	if(control_->getType() != "mrs_realvec") //if not a vector, do nothing
 		return;
 	
 	realvec vec = control_->toVec();
