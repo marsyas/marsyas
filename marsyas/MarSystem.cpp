@@ -622,7 +622,12 @@ MarSystem::update(MarControlPtr sender)
 		(onSamples_ != outTick_.getCols()))
 	{
 		inTick_.create(inObservations_, inSamples_);
-		outTick_.create(onObservations_, onSamples_);
+
+		// Fixed resizing of ctrl_processedData 
+		realvec& v = (realvec &)ctrl_processedData_->to<mrs_realvec>();
+		v.create(onObservations_, onSamples_);
+
+		
 	}
 
 #ifdef MARSYAS_QT
