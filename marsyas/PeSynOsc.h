@@ -38,7 +38,8 @@ class PeSynOsc: public MarSystem
 private:
 	mrs_real factor_;
 	mrs_natural delay_;
-  
+  MarControlPtr ctrl_harmonize_;
+
   void addControls();
 	void myUpdate(MarControlPtr sender);
 
@@ -46,6 +47,7 @@ private:
  
 public:
   PeSynOsc(std::string name);
+	PeSynOsc(const PeSynOsc&);
   ~PeSynOsc();
   MarSystem* clone() const;    
 

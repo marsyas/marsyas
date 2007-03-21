@@ -119,9 +119,9 @@ ShiftInput::myProcess(realvec& in, realvec& out)
   for (t = 0; t < N_; t++) 
     pout_(t) = out(t);
 
-  //MATLAB_PUT(in, "ShiftInput_in");
-  //MATLAB_PUT(out, "ShiftInput_out");
-  //MATLAB_EVAL("plot([zeros(1,length(ShiftInput_in)) ShiftInput_in]); hold on; plot(ShiftInput_out, 'r'); hold off");
+	/*MATLAB_PUT(in, "ShiftInput_in");
+	MATLAB_PUT(out, "ShiftInput_out");
+	MATLAB_EVAL("plot([zeros(1,length(ShiftInput_in)) ShiftInput_in]); hold on; plot(ShiftInput_out, 'r'); hold off");*/
 }
 
 

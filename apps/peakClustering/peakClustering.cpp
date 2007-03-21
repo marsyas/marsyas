@@ -83,7 +83,7 @@ mrs_natural clusterFilteringType_ = 0;
 
 
 bool microphone_ = false;
-bool analyse_ = false;
+bool analyse_ = true;
 bool attributes_ = false;
 bool ground_ = false;
 mrs_natural synthetize_ = -1;
@@ -446,7 +446,7 @@ main(int argc, const char **argv)
 				fileName = outputDirectoryName + "/" + Sfname.name() ;
 				fileResName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Res." + Sfname.ext() ;
 				mixName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Mix." + Sfname.ext() ;
-				filePeakName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Peak.txt" ;
+				filePeakName = outputDirectoryName + "/" + Sfname.nameNoExt() + ".peak" ;
 				fileClustName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Clust.txt" ;
 				fileVoicingName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Voicing.txt" ;
 				fileF0Name = outputDirectoryName + "/" + Sfname.nameNoExt() + "F0.txt" ;

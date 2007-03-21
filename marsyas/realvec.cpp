@@ -121,6 +121,7 @@ realvec::operator=(const realvec& a)
 			for (mrs_natural i=0; i<a.size_; i++)
 				data_[i] = a.data_[i];
 			size_ = a.size_;
+			allocatedSize_ = a.allocatedSize_;
 			rows_ = a.rows_;
 			cols_ = a.cols_;
 		}

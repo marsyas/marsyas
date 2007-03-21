@@ -17,10 +17,10 @@
 */
 
 /** 
-    \class PeSynOsc
-    \brief PeSynOsc
+\class PeSynOsc
+\brief PeSynOsc
 
-    Multiply with window (both length Nw) using modulus arithmetic;
+Multiply with window (both length Nw) using modulus arithmetic;
 fold and rotate windowed input into output array (FFT) (length N) 
 according to current input time (t)
 */
@@ -33,10 +33,17 @@ using namespace Marsyas;
 
 PeSynOsc::PeSynOsc(string name):MarSystem("PeSynOsc",name)
 {
-  //type_ = "PeSynOsc";
-  //name_ = name;
+	//type_ = "PeSynOsc";
+	//name_ = name;
 
 	addControls();
+}
+
+
+
+PeSynOsc::PeSynOsc(const PeSynOsc& a):MarSystem(a)
+{
+	ctrl_harmonize_ = getctrl("mrs_realvec/harmonize");
 }
 
 
@@ -47,16 +54,17 @@ PeSynOsc::~PeSynOsc()
 MarSystem* 
 PeSynOsc::clone() const 
 {
-  return new PeSynOsc(*this);
+	return new PeSynOsc(*this);
 }
 
 
 void 
 PeSynOsc::addControls()
 {
-  addctrl("mrs_natural/synSize", MRS_DEFAULT_SLICE_NSAMPLES);
+	addctrl("mrs_natural/synSize", MRS_DEFAULT_SLICE_NSAMPLES);
 	addctrl("mrs_natural/delay", MRS_DEFAULT_SLICE_NSAMPLES /2);
 	addctrl("mrs_natural/nbSinusoids", 0);
+	addctrl("mrs_realvec/harmonize", realvec(), ctrl_harmonize_);
 }
 
 void
@@ -81,28 +89,41 @@ PeSynOsc::sine(realvec& out, mrs_real f, mrs_real a, mrs_real p)
 	{
 		for (i=0 ; i<N ; i++)
 			out(i) += a*cos(factor_*f*(i-delay_)+p); // consider -fftSize/2 for synth in phase
-//	 cout << f << " " << a << " " << p << endl;
+		//	 cout << f << " " << a << " " << p << endl;
 	}
-	}
+}
 
 void 
 PeSynOsc::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural N, Nb;
+	mrs_natural N, Nb, nbH;
 	int i;
 
 	Nb = getctrl("mrs_natural/nbSinusoids")->toNatural();
 	N= out.getSize();
 
 	out.setval(0);
-  //cout << in;
-	for (i=0; i < Nb; i++)
-	{
-		if(in(i+pkGroup*Nb) > -1)
-		sine(out, in(i), in(i+Nb), in(i+2*Nb));
-	/*	else
+	//cout << in;
+	nbH = ctrl_harmonize_->toVec().getSize();
+	if(nbH)
+		for(mrs_natural j=0 ; j<(nbH-1)/2 ; j++)
+		{
+			mrs_real mulF = ctrl_harmonize_->toVec()(1+j*2), 
+				mulA = ctrl_harmonize_->toVec()(2+j*2);
+			for (i=0; i < Nb; i++)
+			{
+				if(in(i+pkGroup*Nb) > -1)
+					sine(out, in(i)*mulF, in(i+Nb)*mulA, in(i+2*Nb));
+			}
+		}
+	else
+		for (i=0; i < Nb; i++)
+		{
+			if(in(i+pkGroup*Nb) > -1)
+				sine(out, in(i), in(i+Nb), in(i+2*Nb));
+			/*	else
 			cout << "truc" << endl;*/
-	}
+		}
 }
 
 
@@ -110,10 +131,10 @@ PeSynOsc::myProcess(realvec& in, realvec& out)
 
 
 
-	
 
-	
 
-	
 
-	
+
+
+
+

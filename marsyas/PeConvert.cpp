@@ -407,12 +407,12 @@ PeConvert::myProcess(realvec& in, realvec& out)
 
 		// fill output with peaks data
 
-	/*	MATLAB_PUT(mag_, "peaks");
+		MATLAB_PUT(mag_, "peaks");
 		MATLAB_PUT(peaks_, "k");
 		MATLAB_PUT(tmp_, "tmp");
 	  MATLAB_PUT(interval_, "int");	
 		MATLAB_EVAL("figure(1);clf;hold on ;plot(peaks);stem(k);stem(tmp(2:2:end)+1, peaks(tmp(2:2:end)+1), 'r')");
-		MATLAB_EVAL("stem(int+1, peaks(int+1), 'k')");*/
+		MATLAB_EVAL("stem(int+1, peaks(int+1), 'k')");
 	
     interval_ /= N2*2;
 		out.setval(0);
@@ -445,7 +445,7 @@ PeConvert::myProcess(realvec& in, realvec& out)
 	// MATLAB_PUT(out, "peaks");
 	// MATLAB_PUT(kmax_, "k");
 	// MATLAB_EVAL("figure(1);clf;plot(peaks(6*k+1:7*k));");
- //cout << out;
+  // cout << out;
 }
 
 

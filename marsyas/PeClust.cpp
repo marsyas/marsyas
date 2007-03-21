@@ -320,6 +320,7 @@ PeClust::myProcess(realvec& in, realvec& out)
 	mrs_natural nbPeaksLastFrame;
 
 	data_.stretch(kmax_*(inSamples_+1), nbPkParameters);
+	// cout << in ;
 	nbPeaks_ = peaks2M(in, lastFrame_, data_, kmax_, &nbPeaksLastFrame);
 	if(nbPeaks_)
 	{
