@@ -69,6 +69,7 @@ printHelp(string progName)
   cerr << "tempo	   : test tempo estimation " << endl;
   cerr << "vicon           : test processing of vicon motion capture data" << endl;
   cerr << "Windowing       : test different window functions of Windowing marsystem" << endl;
+  cerr << "weka            : test weka source and sink functionality" << endl;
   cerr << "updctrl         : test updating control with pointers " << endl;
   cerr << "duplex          : test duplex audio input/output" << endl;
   cerr << "simpleSFPlay    : plays a sound file" << endl;
@@ -95,6 +96,9 @@ loadOptions()
   verboseopt = cmd_options.getBoolOption("verbose");
   testName = cmd_options.getStringOption("testName");
 }
+
+
+
 
 void 
 test_scheduler(string sfName)
@@ -1779,6 +1783,31 @@ void test_Windowing()
     }
 }
 
+
+void 
+test_weka(string fname) 
+{
+  MarSystemManager mng;
+  
+  MarSystem* net;
+  net = mng.create("Series", "net");
+  net->addMarSystem(mng.create("WekaSource", "wsrc"));
+  net->updctrl("mrs_natural/inSamples", 1);
+  
+  net->updctrl("WekaSource/wsrc/mrs_string/filename", fname);
+  net->updctrl("WekaSource/wsrc/mrs_string/obsToExtract", "1,2");
+  
+  cout << "ready to process" << endl;
+  cout << *net << endl;
+  
+  net->tick();
+  
+  
+}
+
+
+
+
 void 
 test_updctrl(string fname) 
 {
@@ -2304,6 +2333,8 @@ main(int argc, const char **argv)
     test_Windowing();
   else if (testName == "updctrl") 
     test_updctrl(fname0);
+  else if (testName == "weka")
+    test_weka(fname0);
   else if (testName == "duplex") 
     test_duplex();
   else if (testName == "simpleSFPlay") 
