@@ -135,9 +135,9 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 
   for (o=0; o < inObservations_; o++)
     {
-			for (t=0; t < inSamples_; t++)
+      for (t=0; t < inSamples_; t++)
 	scratch_(t) = in(o,t); 
-  
+      
       mrs_real *tmp = scratch_.getData();
       myfft_->rfft(tmp, inSamples_/2, FFT_FORWARD);
       
@@ -180,34 +180,40 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
       myfft_->rfft(tmp, inSamples_/2, FFT_INVERSE);
       
       // Copy to output 
-	  if(normalize_)
-      for (t=0; t < inSamples_; t++) 
-			{
-	out(o,t) = scratch_(t)*norm_(t);
-			}
-	  else
-		  for (t=0; t < inSamples_; t++)  
-	out(o,t) = scratch_(t);
+      if(normalize_)
+	for (t=0; t < inSamples_; t++) 
+	  {
+	    out(o,t) = scratch_(t)*norm_(t);
+	  }
+      else
+	for (t=0; t < inSamples_; t++)  
+	  out(o,t) = scratch_(t);
     }
-	if(octaveCost_)
+  
+  for (o=0; o < inObservations_; o++)
+    {
+      
+      if(octaveCost_)
 	{
-			
-	
-	mrs_real maxOut = 0;
-	for (t=1 ; t<inSamples_/2 ; t++)
-	if (out(o, t)> out(o, t+1) && out(o, t) > out(o, t-1) && out(o, t)>maxOut)
-		maxOut = out(o, t) ;
-	//	cout << maxOut/out(o, 0)<< " " << 1+voicing_ << << endl;
-
-		if(maxOut && maxOut/out(o, 0) > 1-voicing_)
-      for (t=1; t < inSamples_; t++) 
-				out(o, t) += octaveMax_-octaveCost_*log(36.0*t);
-		else
-			out.setval(0);
-		
+	  
+	  
+	  mrs_real maxOut = 0;
+	  for (t=1 ; t<inSamples_/2 ; t++)
+	    if (out(o, t)> out(o, t+1) && out(o, t) > out(o, t-1) && out(o, t)>maxOut)
+	      maxOut = out(o, t) ;
+	  //	cout << maxOut/out(o, 0)<< " " << 1+voicing_ << << endl;
+	  
+	  if(maxOut && maxOut/out(o, 0) > 1-voicing_)
+	    for (t=1; t < inSamples_; t++) 
+	      out(o, t) += octaveMax_-octaveCost_*log(36.0*t);
+	  else
+	    out.setval(0);
+	  
 	}
-	/*MATLAB_PUT(out, "corr");
-	MATLAB_EVAL("plot(corr)");*/
+    }
+  
+  /*MATLAB_PUT(out, "corr");
+    MATLAB_EVAL("plot(corr)");*/
 }
 
 
