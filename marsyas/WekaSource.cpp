@@ -128,9 +128,11 @@ WekaSource::myUpdate(MarControlPtr sender)
       
       // If the attribute is 'mrs_real' valued (most are),
       // store the attribute name
-      if( strcmp( token2_, "mrs_real" ) == 0 ){
+      if( strcmp( token2_, "real" ) == 0 ){
 	
 	inObsNames += string( token_ ) + ',';
+	cout << "inObsNames = " << inObsNames << endl;
+	
 	inObservations_++;
       }
       // If the attribute is an output labelling,
