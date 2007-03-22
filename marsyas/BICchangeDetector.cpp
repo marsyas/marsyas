@@ -97,10 +97,20 @@ BICchangeDetector::myUpdate(MarControlPtr sender)
 		segFrames_ = ctrl_inSamples_->to<mrs_natural>()*2/5; // hardcoded [!]
 		segHop_ = ctrl_inSamples_->to<mrs_natural>()*1/5; // hardcoded [!]
 		mrs_natural nfeats = ctrl_inObservations_->to<mrs_natural>();
-		C1_.allocate(nfeats, segFrames_);
+		/* C1_.allocate(nfeats, segFrames_);
 		C2_.allocate(nfeats, segFrames_);
 		C3_.allocate(nfeats, segFrames_);
 		C4_.allocate(nfeats, segFrames_);
+		*/ 
+		// there is no allocate anymore in realvec 
+		// not sure how it compiled. Gustavo ? 
+		
+		C1_.create(nfeats, segFrames_);
+		C2_.create(nfeats, segFrames_);
+		C3_.create(nfeats, segFrames_);
+		C4_.create(nfeats, segFrames_);
+		
+
 	}
 
 	if(ctrl_reset_->to<bool>())
