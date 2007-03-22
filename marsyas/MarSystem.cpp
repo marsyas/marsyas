@@ -249,6 +249,14 @@ MarSystem::addMarSystem(MarSystem *marsystem)
 		return false;
 	}
 
+	if (marsystem == NULL) 
+	  {
+	    MRSWARN("Adding NULL MarSystem");
+	    return false;
+	  }
+	
+
+
 	//idiot proof 2 
 	MarSystem* msys = parent_;
 	while(msys)

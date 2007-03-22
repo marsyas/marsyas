@@ -542,7 +542,7 @@ MarSystemManager::create(string type, string name)
 	else 
 	{
 		MRSWARN("MarSystemManager::getPrototype No prototype found for " + type);
-		return 0;
+		return NULL;
 	}
 }
 
