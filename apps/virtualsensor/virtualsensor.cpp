@@ -414,19 +414,29 @@ void recordVirtualThumbSensor(mrs_real length)
     mrs_natural inSamples = recordNet->getctrl("AudioSource/asrc/mrs_natural/inSamples")->toNatural();
     mrs_natural iterations = (mrs_natural)((srate * length) / inSamples);
 
-    int r;
+    int r,f;
 
     cout << *recordNet << endl; 
+
+    int len; 
+    len = 5000;
+    realvec thumb(len);
+    realvec fret(len);
 
     MarControlPtr arm = pnet->getctrl("Series/recordNet/DeviBot/devibot/mrs_natural/arm");
     MarControlPtr velocity = pnet->getctrl("Series/recordNet/DeviBot/devibot/mrs_natural/velocity");
     MarControlPtr strike = pnet->getctrl("Series/recordNet/DeviBot/devibot/mrs_bool/strike");
 
     
+    // Start Signal 
+    pnet->updctrl(arm, DEVIBOT_GE);
+    pnet->updctrl(velocity, 50);
+    pnet->updctrl(strike, true);
+    
     for (mrs_natural t = 0; t < iterations; t++)
     {
 
-      if (t % 100 == 0) 
+      /*  if (t % 100 == 0) 
 	{
 	  pnet->updctrl(arm, DEVIBOT_GE);
 	  pnet->updctrl(velocity, 50);
@@ -442,16 +452,27 @@ void recordVirtualThumbSensor(mrs_real length)
 	  
 	}
       
-
+      */
       
-        r = esitar->thumb; 
-        cout << "thumb: " << r << endl;       
+      f = esitar->fret;
+      r = esitar->thumb; 
+      cout << "thumb: " << r << endl;       
+      
+      fret(t) = f;
+      thumb(t) = r;
 
 
         pnet->setctrl("Annotator/ann/mrs_natural/label", r);
         pnet->tick();
     }
 
+    // Stop Signal
+    pnet->updctrl(arm, DEVIBOT_NA);
+    pnet->updctrl(velocity, 50);
+    pnet->updctrl(strike, true);
+    
+    thumb.write("thumb.plot");
+    fret.write("fret.plot");
 }
 
 
