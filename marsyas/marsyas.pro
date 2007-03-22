@@ -254,7 +254,9 @@ HEADERS += \
 	AudioSink2.h \
 	AudioSource2.h \
 	SoundFileSource2.h \
-	WavFileSource2.h
+	WavFileSource2.h \
+	BICchangeDetector.h \
+	QGMMModel.h
 	 
 SOURCES += \
 	ADSR.cpp \
@@ -453,5 +455,7 @@ SOURCES += \
 	AudioSink2.cpp \
 	AudioSource2.cpp \
 	SoundFileSource2.cpp \
-	WavFileSource2.cpp
+	WavFileSource2.cpp \
+	BICchangeDetector.cpp \
+	QGMMModel.cpp
 	

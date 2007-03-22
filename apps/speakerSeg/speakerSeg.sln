@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bextract", "bextract.vcproj", "{794804D5-A1A7-3365-A760-4A72991E9C4F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "speakerSeg", "speakerSeg.vcproj", "{44E22253-B050-3C42-85B4-57A956B2FA6B}"
 	GlobalSection(Qt) = preSolution
 		Integration = True
 	EndGlobalSection
@@ -23,10 +23,10 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{794804D5-A1A7-3365-A760-4A72991E9C4F}.Debug|Win32.ActiveCfg = Debug|Win32
-		{794804D5-A1A7-3365-A760-4A72991E9C4F}.Debug|Win32.Build.0 = Debug|Win32
-		{794804D5-A1A7-3365-A760-4A72991E9C4F}.Release|Win32.ActiveCfg = Release|Win32
-		{794804D5-A1A7-3365-A760-4A72991E9C4F}.Release|Win32.Build.0 = Release|Win32
+		{44E22253-B050-3C42-85B4-57A956B2FA6B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{44E22253-B050-3C42-85B4-57A956B2FA6B}.Debug|Win32.Build.0 = Debug|Win32
+		{44E22253-B050-3C42-85B4-57A956B2FA6B}.Release|Win32.ActiveCfg = Release|Win32
+		{44E22253-B050-3C42-85B4-57A956B2FA6B}.Release|Win32.Build.0 = Release|Win32
 		{E05964E9-10F8-3D3C-81C9-7C724A39EDF1}.Debug|Win32.ActiveCfg = Debug|Win32
 		{E05964E9-10F8-3D3C-81C9-7C724A39EDF1}.Debug|Win32.Build.0 = Debug|Win32
 		{E05964E9-10F8-3D3C-81C9-7C724A39EDF1}.Release|Win32.ActiveCfg = Release|Win32

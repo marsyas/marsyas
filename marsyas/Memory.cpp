@@ -35,103 +35,89 @@ using namespace Marsyas;
 
 Memory::Memory(string name):MarSystem("Memory",name)
 {
-  
-  end_ = 0;
-  
-  addControls();
+	end_ = 0;
+	addControls();
 }
 
 Memory::~Memory()
 {
 }
 
-
 Memory::Memory(const Memory& a):MarSystem(a)
 {
-  end_ = 0;
-  ctrl_reset_ = getctrl("mrs_bool/reset");
-  ctrl_memSize_ = getctrl("mrs_natural/memSize");
+	end_ = 0;
+	ctrl_reset_ = getctrl("mrs_bool/reset");
+	ctrl_memSize_ = getctrl("mrs_natural/memSize");
 }
-
 
 MarSystem* 
 Memory::clone() const 
 {
-  return new Memory(*this);
+	return new Memory(*this);
 }
 
 void 
 Memory::addControls()
 {
-  addctrl("mrs_natural/memSize", 40, ctrl_memSize_);
-  setctrlState("mrs_natural/memSize", true);
-  addctrl("mrs_bool/reset", false, ctrl_reset_);
-  setctrlState("mrs_bool/reset", true);
+	addctrl("mrs_natural/memSize", 40, ctrl_memSize_);
+	setctrlState("mrs_natural/memSize", true);
+	addctrl("mrs_bool/reset", false, ctrl_reset_);
+	setctrlState("mrs_bool/reset", true);
 }
 
 void
 Memory::myUpdate(MarControlPtr sender)
 {
-  MRSDIAG("Memory.cpp - Memory:myUpdate");
-  
-  mrs_natural memSize = ctrl_memSize_->toNatural();
-  
-  ctrl_onSamples_->setValue(ctrl_inSamples_->toNatural() * memSize, NOUPDATE);
-  ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
-  ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
+	MRSDIAG("Memory.cpp - Memory:myUpdate");
 
-  reset_ = ctrl_reset_->toBool();
+	mrs_natural memSize = ctrl_memSize_->toNatural();
 
-  inObservations_ = ctrl_inObservations_->toNatural();
-  
-  ostringstream oss;
-  string inObsNames = ctrl_inObsNames_->toString();
-  for (int i = 0; i < inObservations_; i++)
-    {
-      string inObsName;
-      string temp;
-      inObsName = inObsNames.substr(0, inObsNames.find(","));
-      temp = inObsNames.substr(inObsNames.find(",")+1, inObsNames.length());
-      inObsNames = temp;
-      oss << "Mem" << memSize << "_" << inObsName << ",";
-    }
-  ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
+	ctrl_onSamples_->setValue(ctrl_inSamples_->toNatural() * memSize, NOUPDATE);
+	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
+	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
+
+	reset_ = ctrl_reset_->toBool();
+
+	inObservations_ = ctrl_inObservations_->toNatural();
+
+	ostringstream oss;
+	string inObsNames = ctrl_inObsNames_->toString();
+	for (int i = 0; i < inObservations_; i++)
+	{
+		string inObsName;
+		string temp;
+		inObsName = inObsNames.substr(0, inObsNames.find(","));
+		temp = inObsNames.substr(inObsNames.find(",")+1, inObsNames.length());
+		inObsNames = temp;
+		oss << "Mem" << memSize << "_" << inObsName << ",";
+	}
+	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 
 }
-
-
-
 
 void 
 Memory::myProcess(realvec& in, realvec& out)
 {
-  
-  mrs_natural memSize = ctrl_memSize_->to<mrs_natural>();
-  
+	mrs_natural memSize = ctrl_memSize_->to<mrs_natural>();
 
-
-  if (reset_) 
-    {
-      out.setval(0.0);
-      reset_ = false;
-      ctrl_reset_->setValue(false, NOUPDATE);
-      end_ = 0;
-    }
-  
-  
-  
-  for (t = 0; t < inSamples_; t++)
-    {
-      for (o=0; o < inObservations_; o++)
+	if (reset_) 
 	{
-	  out(o, end_ * inSamples_) = in(o,t);
+		out.setval(0.0);
+		reset_ = false;
+		ctrl_reset_->setValue(false, NOUPDATE);
+		end_ = 0;
 	}
-    }
-  end_ = (end_ + 1) % memSize; 		// circular buffer index  
+
+	for (t = 0; t < inSamples_; t++)
+	{
+		for (o=0; o < inObservations_; o++)
+		{
+			out(o, end_ * inSamples_) = in(o,t);
+		}
+	}
+	end_ = (end_ + 1) % memSize; 		// circular buffer index  
 }
 
-      
-      
 
 
 
@@ -139,6 +125,8 @@ Memory::myProcess(realvec& in, realvec& out)
 
 
 
-	
-	
-	
+
+
+
+
+
