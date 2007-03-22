@@ -418,23 +418,27 @@ void recordVirtualThumbSensor(mrs_real length)
 
     cout << *recordNet << endl; 
 
+    MarControlPtr arm = pnet->getctrl("Series/recordNet/DeviBot/devibot/mrs_natural/arm");
+    MarControlPtr velocity = pnet->getctrl("Series/recordNet/DeviBot/devibot/mrs_natural/velocity");
+    MarControlPtr strike = pnet->getctrl("Series/recordNet/DeviBot/devibot/mrs_bool/strike");
+
     
     for (mrs_natural t = 0; t < iterations; t++)
     {
 
       if (t % 100 == 0) 
 	{
-	  pnet->updctrl("DeviBot/devibot/mrs_natural/arm", DEVIBOT_GE);
-	  pnet->updctrl("DeviBot/devibot/mrs_natural/velocity", 50);
-	  pnet->updctrl("DeviBot/devibot/mrs_bool/strike", true);
+	  pnet->updctrl(arm, DEVIBOT_GE);
+	  pnet->updctrl(velocity, 50);
+	  pnet->updctrl(strike, true);
 	}
 
 
       if (t % 100 == 50) 
 	{
-	  pnet->updctrl("DeviBot/devibot/mrs_natural/arm", DEVIBOT_NA);
-	  pnet->updctrl("DeviBot/devibot/mrs_natural/velocity", 50);
-	  pnet->updctrl("DeviBot/devibot/mrs_bool/strike", true);
+	  pnet->updctrl(arm, DEVIBOT_NA);
+	  pnet->updctrl(velocity, 50);
+	  pnet->updctrl(strike, true);
 	  
 	}
       
