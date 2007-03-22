@@ -1792,15 +1792,19 @@ test_weka(string fname)
   MarSystem* net;
   net = mng.create("Series", "net");
   net->addMarSystem(mng.create("WekaSource", "wsrc"));
-  net->updctrl("mrs_natural/inSamples", 1);
+
   
   net->updctrl("WekaSource/wsrc/mrs_string/filename", fname);
-  net->updctrl("WekaSource/wsrc/mrs_string/obsToExtract", "1,2");
+  net->updctrl("WekaSource/wsrc/mrs_string/obsToExtract", "1,2,3");
+  net->updctrl("mrs_natural/inSamples", 1);
   
   cout << "ready to process" << endl;
-  cout << *net << endl;
   
   net->tick();
+  net->tick();
+  net->tick();
+  
+  cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>() << endl;
   
   
 }
