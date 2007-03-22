@@ -236,6 +236,7 @@ WavFileSource::getHeader(string filename)
 			size_ = bytes / (bits_ / 8)/ (getctrl("mrs_natural/nChannels")->toNatural());
 			csize_ = size_;
 			setctrl("mrs_natural/size", size_);
+			ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
 
 			sfp_begin_ = ftell(sfp_);
 			notEmpty_ = true;

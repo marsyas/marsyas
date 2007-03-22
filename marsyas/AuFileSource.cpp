@@ -193,6 +193,7 @@ AuFileSource::getHeader(string filename)
 		    
 			setctrl("mrs_real/israte", (mrs_real)hdr_.srate);
 			setctrl("mrs_natural/size", size_);
+			ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
 			setctrl("mrs_bool/notEmpty", true);
 			notEmpty_ = true;
 			samplesOut_ = 0;

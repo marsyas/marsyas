@@ -268,6 +268,9 @@ MP3FileSource::getHeader(string filename)
   updctrl("mrs_natural/size", size_ / 2);
   updctrl("mrs_natural/bitRate", bitRate);
 
+  ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
+  
+
   offset = 0;
   pos_ = samplesOut_ = frameCount_ = 0;
   currentPos_ = 0;

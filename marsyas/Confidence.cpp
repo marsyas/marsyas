@@ -127,7 +127,7 @@ Confidence::myUpdate(MarControlPtr sender)
       oriName_ = getctrl("mrs_string/fileName")->toString();
       FileName Sfname(oriName_);
       string tmp = Sfname.nameNoExt() +"_synSeg.txt";
-      // cout << Sfname.nameNoExt() << endl;
+      cout << Sfname.nameNoExt() << endl;
       //      getchar();
       outputFileSyn_.open(tmp.c_str(), ios::out);
       tmp = Sfname.nameNoExt() +"_tranSeg.txt";
