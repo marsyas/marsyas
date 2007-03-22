@@ -95,6 +95,7 @@ in sequence.
 #include "Rms.h"
 #include "Peak2Rms.h"
 #include "WekaSink.h" 
+#include "WekaSource.h"
 #include "MFCC.h"
 #include "SCF.h"
 #include "SFM.h"
@@ -217,6 +218,8 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Rms", new Rms("rms"));
 	registerPrototype("Peak2Rms", new Peak2Rms("peakrms"));
 	registerPrototype("WekaSink", new WekaSink("wsink"));
+	registerPrototype("WekaSource", new WekaSource("wsource"));
+	
 	registerPrototype("MFCC", new MFCC("mfcc"));
 	registerPrototype("SCF", new SCF("scf"));
 	registerPrototype("SFM", new SFM("sfm"));

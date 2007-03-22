@@ -14,9 +14,9 @@ using namespace Marsyas;
 WekaSource::WekaSource(string name):MarSystem("WekaSource",name)
 {
   mis_ = new ifstream;
-  
   addControls();
 }
+
 
 WekaSource::~WekaSource()
 {
@@ -27,19 +27,8 @@ WekaSource::~WekaSource()
 
 WekaSource::WekaSource(const WekaSource& a):MarSystem(a)
 {
-  // 	type_ = a.type_;
-  // 	name_ = a.name_;
-// 	ncontrols_ = a.ncontrols_; 		
-// 	inSamples_ = a.inSamples_;
-// 	inObservations_ = a.inObservations_;
-// 	onSamples_ = a.onSamples_;
-// 	onObservations_ = a.onObservations_;
-// 	dbg_ = a.dbg_;
-// 	mute_ = a.mute_;
-
-	obsToExtract_ = a.obsToExtract_;	// String specifying the attributes to be extracted from a Weka file
+  obsToExtract_ = a.obsToExtract_;	// String specifying the attributes to be extracted from a Weka file
   labelNames_ = a.labelNames_;		// String specifying all possible output labels indicated in a Weka file
-  
   mis_ = new ifstream(); 
 }
 
@@ -90,6 +79,8 @@ WekaSource::myUpdate(MarControlPtr sender)
   // parse the header portion of the file to get the required attribute names and possible output labels (if any)...
   if( filename_ != getctrl("mrs_string/filename")->toString() || obsToExtract_ != getctrl("mrs_string/obsToExtract")->toString() ){
     
+    cout << "Opening file" << endl;
+    
     setctrl("mrs_bool/notEmpty", true);
     
     filename_ = getctrl("mrs_string/filename")->toString();
@@ -124,7 +115,11 @@ WekaSource::myUpdate(MarControlPtr sender)
     while( 	(*mis_) >> token_ && strcmp( token_, "@attribute" ) == 0 ){
       
       (*mis_) >> token_;
+      cout << "token_ = " << token_ << endl;
+      
       (*mis_) >> token2_;
+      cout << "token2_ " << token2_ << endl;
+      
       
       // ... but only if the current attribute was specified by the obsToExtract_ ctrl,
       // or it is the output labeling (always included)
@@ -194,90 +189,90 @@ WekaSource::myUpdate(MarControlPtr sender)
 void 
 WekaSource::myProcess(realvec& in,realvec &out)
 {
-	if( getctrl("mrs_bool/notEmpty")->toBool() == false )
-		return;
+  if( getctrl("mrs_bool/notEmpty")->toBool() == false )
+    return;
 
-  	//checkFlow(in,out);
+  //checkFlow(in,out);
 	
-  	string ob;
-	string::size_type curIndex;
-	string::size_type curIndexF;
+  string ob;
+  string::size_type curIndex;
+  string::size_type curIndexF;
 	
-	mrs_natural labelIndex;
-	mrs_natural nObs;
+  mrs_natural labelIndex;
+  mrs_natural nObs;
 	
-	mrs_real parsedVal = 0.;
+  mrs_real parsedVal = 0.;
 
-  	char token_  [2000];
+  char token_  [2000];
 		
-	for (t = 0; t < inSamples_; t++)
+  for (t = 0; t < inSamples_; t++)
+    {		
+      curIndex = 0;
+      nObs = 0;
+		
+      for (o=0; o < totalObs_ && getctrl("mrs_bool/notEmpty")->toBool() ; o++)
 	{		
-		curIndex = 0;
-		nObs = 0;
-		
-		for (o=0; o < totalObs_ && getctrl("mrs_bool/notEmpty")->toBool() ; o++)
-		{		
-			// Get the next attributes from the current sample of data...
-			curIndexF = data_.find(",", curIndex);
+	  // Get the next attributes from the current sample of data...
+	  curIndexF = data_.find(",", curIndex);
 			
-			if( curIndexF == string::npos )
-				curIndexF = data_.length();
+	  if( curIndexF == string::npos )
+	    curIndexF = data_.length();
 
-			ob = data_.substr( curIndex, curIndexF-curIndex );
+	  ob = data_.substr( curIndex, curIndexF-curIndex );
 			
-			curIndex = curIndexF + 1;
+	  curIndex = curIndexF + 1;
 			
-			// ... and ignore it if it is not selected specifically by the obsToExtract_ ctrl
-			// (but we always extract the last attribute IF it holds the output labeling)
-			if( !extract[o] && ( o<totalObs_-1 || getctrl("mrs_string/inObsNames")->toString().find("Label") == string::npos ) )
-				continue;
+	  // ... and ignore it if it is not selected specifically by the obsToExtract_ ctrl
+	  // (but we always extract the last attribute IF it holds the output labeling)
+	  if( !extract[o] && ( o<totalObs_-1 || getctrl("mrs_string/inObsNames")->toString().find("Label") == string::npos ) )
+	    continue;
 			
 			
-			if( o < totalObs_-1 || getctrl("mrs_string/inObsNames")->toString().find("Label") == string::npos ){
+	  if( o < totalObs_-1 || getctrl("mrs_string/inObsNames")->toString().find("Label") == string::npos ){
 			  
-			  parsedVal = (mrs_real) atof( ob.c_str() );
+	    parsedVal = (mrs_real) atof( ob.c_str() );
 				
-			  out(nObs++,t) = parsedVal;
-			  parsedVal = 0.;
-			}
-			else{						
-				// Determine if the label is in the label list (and not a substring of another label)...
-				if( ( curIndexF = labelNames_.find(ob) ) != string::npos && 
-				     (curIndexF==0 || labelNames_[ curIndexF-1 ] == ',') &&
-				     labelNames_[ curIndexF + ob.length() ] == ',' ){
+	    out(nObs++,t) = parsedVal;
+	    parsedVal = 0.;
+	  }
+	  else{						
+	    // Determine if the label is in the label list (and not a substring of another label)...
+	    if( ( curIndexF = labelNames_.find(ob) ) != string::npos && 
+		(curIndexF==0 || labelNames_[ curIndexF-1 ] == ',') &&
+		labelNames_[ curIndexF + ob.length() ] == ',' ){
 				     		
-					// ...If it is, then determine its index within the list
-					labelIndex = 0;
-					curIndex = labelNames_.find(",", 0 );
+	      // ...If it is, then determine its index within the list
+	      labelIndex = 0;
+	      curIndex = labelNames_.find(",", 0 );
 
-					while( curIndex != string::npos && curIndex < curIndexF  ){
-							labelIndex++;
-							curIndex = labelNames_.find(",", curIndex+1 );
-					}						
+	      while( curIndex != string::npos && curIndex < curIndexF  ){
+		labelIndex++;
+		curIndex = labelNames_.find(",", curIndex+1 );
+	      }						
 					
-					out(nObs++,t) = (mrs_real)labelIndex;
-				}
-				// ... If not, then assign label -1
-				else
-					out(nObs++,t) = (mrs_real) -1.;
+	      out(nObs++,t) = (mrs_real)labelIndex;
+	    }
+	    // ... If not, then assign label -1
+	    else
+	      out(nObs++,t) = (mrs_real) -1.;
 					
-			}
+	  }
 			
-		}
-
-		// Check for more data at the end of the loop in order to set 'notEmpty' so that we  
-		// don't end up producing an empty realvec after processing the file
-		if( t<inSamples_ ){
-			(*mis_) >> token_;
-			
-			if( !mis_->eof() )
-				data_ = string(token_);
-			else{
-				setctrl("mrs_bool/notEmpty", false);
-				return;
-			}				
-		}					
 	}
+
+      // Check for more data at the end of the loop in order to set 'notEmpty' so that we  
+      // don't end up producing an empty realvec after processing the file
+      if( t<inSamples_ ){
+	(*mis_) >> token_;
+			
+	if( !mis_->eof() )
+	  data_ = string(token_);
+	else{
+	  setctrl("mrs_bool/notEmpty", false);
+	  return;
+	}				
+      }					
+    }
 }
 
 
@@ -285,74 +280,74 @@ WekaSource::myProcess(realvec& in,realvec &out)
 void
 WekaSource::parseObsToExtract()
 {
-	mrs_natural obs1 = -1;
-	mrs_natural obs2 = -1;
-	mrs_natural tmp;
+  mrs_natural obs1 = -1;
+  mrs_natural obs2 = -1;
+  mrs_natural tmp;
 	
-	char c;
-	bool range = false;
+  char c;
+  bool range = false;
 	
-	// If the string specifying the desired attributes is empty,
-	// assume all attributes are to be extracted from the Weka file.
-	if( obsToExtract_.empty() ){
-		for( mrs_natural i=0 ; i<WEKASOURCE_MAX_OBS ; i++ )
-			extract[i] = true;
-		return;	
-	}
+  // If the string specifying the desired attributes is empty,
+  // assume all attributes are to be extracted from the Weka file.
+  if( obsToExtract_.empty() ){
+    for( mrs_natural i=0 ; i<WEKASOURCE_MAX_OBS ; i++ )
+      extract[i] = true;
+    return;	
+  }
 	
-	for( mrs_natural i=0 ; i<WEKASOURCE_MAX_OBS ; i++ )
-		extract[i] = false;
+  for( mrs_natural i=0 ; i<WEKASOURCE_MAX_OBS ; i++ )
+    extract[i] = false;
 	
-	// Parse the obsToExtract_ string, and store info in a
-	// bool [] representation for easy querying
-	for( string::size_type i=0 ; i<=obsToExtract_.size() ; i++ ){
+  // Parse the obsToExtract_ string, and store info in a
+  // bool [] representation for easy querying
+  for( string::size_type i=0 ; i<=obsToExtract_.size() ; i++ ){
 	
-		if( i==obsToExtract_.size() )
-			c = ',';
-		else
-			c = obsToExtract_[i];
+    if( i==obsToExtract_.size() )
+      c = ',';
+    else
+      c = obsToExtract_[i];
 	
-		MRSASSERT( !( c == ',' && obs1 == -1 ) );
-		MRSASSERT( !( c == '-' && obs1 == -1 ) );
+    MRSASSERT( !( c == ',' && obs1 == -1 ) );
+    MRSASSERT( !( c == '-' && obs1 == -1 ) );
 		
-		switch (c){
+    switch (c){
 		
-			case ',' :	MRSASSERT( obs1 < WEKASOURCE_MAX_OBS );
-					if( !range )
-						extract[obs1] = true;	
-					else{
-						MRSASSERT( obs2 < WEKASOURCE_MAX_OBS && obs1 <= obs2 );
-						for( mrs_natural j=obs1 ; j<=obs2 ; j++ )
-							extract[j] = true; 
-						range = false;
-					}
-					obs1 = -1;
-					obs2 = -1;
-					break;
+    case ',' :	MRSASSERT( obs1 < WEKASOURCE_MAX_OBS );
+      if( !range )
+	extract[obs1] = true;	
+      else{
+	MRSASSERT( obs2 < WEKASOURCE_MAX_OBS && obs1 <= obs2 );
+	for( mrs_natural j=obs1 ; j<=obs2 ; j++ )
+	  extract[j] = true; 
+	range = false;
+      }
+      obs1 = -1;
+      obs2 = -1;
+      break;
 				
 					
 						
-			case '-' :	range = true;		
-					break;
+    case '-' :	range = true;		
+      break;
 					
 					
 					
-			default  :	MRSASSERT( isdigit(c) );
+    default  :	MRSASSERT( isdigit(c) );
 
-					tmp = atoi(&c);		
+      tmp = atoi(&c);		
 					
-					if( obs1 == -1 )
-						obs1 = tmp;
-					else if( !range )
-						obs1 = 10*obs1 + tmp;
-					else if( obs2 == -1 )
-						obs2 = tmp;
-					else
-						obs2 = 10*obs2 + tmp;
+      if( obs1 == -1 )
+	obs1 = tmp;
+      else if( !range )
+	obs1 = 10*obs1 + tmp;
+      else if( obs2 == -1 )
+	obs2 = tmp;
+      else
+	obs2 = 10*obs2 + tmp;
 
-		}
+    }
 	
-	}
+  }
 
 }
 
