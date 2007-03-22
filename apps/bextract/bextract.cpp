@@ -1593,7 +1593,6 @@ main(int argc, const char **argv)
       string sfname = *sfi;
       Collection l;
       readCollection(l,sfname);
-      l.write("patata.mf"); //why is this needed? [?]
 
       classNames += (l.name()+',');
       cls.push_back(l);
