@@ -280,6 +280,8 @@ void recordVirtualSensor(mrs_real length)
     MarSystem* recordNet = mng.create("Series", "recordNet");
     MarSystem* asrc = mng.create("AudioSource", "asrc");
     MarSystem* dest = mng.create("SoundFileSink", "dest");
+
+    
     MidiInput* midiin = new MidiInput("midiin");
 
     recordNet->addMarSystem(asrc);

@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-SOURCES = $(bextract_SOURCES) $(boomchick_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) $(gettingdata_SOURCES) $(helloworld_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mkcollection_SOURCES) $(orcarecord_SOURCES) $(peakClustering_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplugin_SOURCES)
+SOURCES = $(bextract_SOURCES) $(boomchick_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) $(gettingdata_SOURCES) $(helloworld_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mkcollection_SOURCES) $(orcarecord_SOURCES) $(peakClustering_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplugin_SOURCES) $(virtualsensor_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -44,7 +44,8 @@ bin_PROGRAMS = sfplay$(EXEEXT) phasevocoder$(EXEEXT) sfplugin$(EXEEXT) \
 	record$(EXEEXT) classifyFile$(EXEEXT) peakClustering$(EXEEXT) \
 	sfinfo$(EXEEXT) extract$(EXEEXT) midiTest$(EXEEXT) \
 	boomchick$(EXEEXT) pitchextract$(EXEEXT) orcarecord$(EXEEXT) \
-	helloworld$(EXEEXT) gettingdata$(EXEEXT)
+	helloworld$(EXEEXT) gettingdata$(EXEEXT) \
+	virtualsensor$(EXEEXT)
 subdir = bin/release
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -126,6 +127,10 @@ am_sfplugin_OBJECTS = sfplugin.$(OBJEXT)
 sfplugin_OBJECTS = $(am_sfplugin_OBJECTS)
 sfplugin_DEPENDENCIES = $(top_builddir)/lib/release/libmarsyas.a \
 	$(am__DEPENDENCIES_1)
+am_virtualsensor_OBJECTS = virtualsensor.$(OBJEXT)
+virtualsensor_OBJECTS = $(am_virtualsensor_OBJECTS)
+virtualsensor_DEPENDENCIES = $(top_builddir)/lib/release/libmarsyas.a \
+	$(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
@@ -142,7 +147,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/phasevocoder.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/pitchextract.Po ./$(DEPDIR)/record.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sfinfo.Po ./$(DEPDIR)/sfplay.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/sfplugin.Po
+@AMDEP_TRUE@	./$(DEPDIR)/sfplugin.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/virtualsensor.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -155,7 +161,7 @@ SOURCES = $(bextract_SOURCES) $(boomchick_SOURCES) \
 	$(mkcollection_SOURCES) $(orcarecord_SOURCES) \
 	$(peakClustering_SOURCES) $(phasevocoder_SOURCES) \
 	$(pitchextract_SOURCES) $(record_SOURCES) $(sfinfo_SOURCES) \
-	$(sfplay_SOURCES) $(sfplugin_SOURCES)
+	$(sfplay_SOURCES) $(sfplugin_SOURCES) $(virtualsensor_SOURCES)
 DIST_SOURCES = $(bextract_SOURCES) $(boomchick_SOURCES) \
 	$(classifyFile_SOURCES) $(extract_SOURCES) \
 	$(gettingdata_SOURCES) $(helloworld_SOURCES) \
@@ -163,7 +169,7 @@ DIST_SOURCES = $(bextract_SOURCES) $(boomchick_SOURCES) \
 	$(mkcollection_SOURCES) $(orcarecord_SOURCES) \
 	$(peakClustering_SOURCES) $(phasevocoder_SOURCES) \
 	$(pitchextract_SOURCES) $(record_SOURCES) $(sfinfo_SOURCES) \
-	$(sfplay_SOURCES) $(sfplugin_SOURCES)
+	$(sfplay_SOURCES) $(sfplugin_SOURCES) $(virtualsensor_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -329,6 +335,10 @@ orcarecord_SOURCES = $(top_srcdir)/apps/orcarecord/orcarecord.cpp
 orcarecord_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 	       $(Libs)
 
+virtualsensor_SOURCES = $(top_srcdir)/apps/virtualsensor/virtualsensor.cpp
+virtualsensor_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
+		    $(Libs)
+
 helloworld_SOURCES = $(top_srcdir)/examples/helloworld.cpp
 helloworld_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 		$(Libs)
@@ -444,6 +454,9 @@ sfplay$(EXEEXT): $(sfplay_OBJECTS) $(sfplay_DEPENDENCIES)
 sfplugin$(EXEEXT): $(sfplugin_OBJECTS) $(sfplugin_DEPENDENCIES) 
 	@rm -f sfplugin$(EXEEXT)
 	$(CXXLINK) $(sfplugin_LDFLAGS) $(sfplugin_OBJECTS) $(sfplugin_LDADD) $(LIBS)
+virtualsensor$(EXEEXT): $(virtualsensor_OBJECTS) $(virtualsensor_DEPENDENCIES) 
+	@rm -f virtualsensor$(EXEEXT)
+	$(CXXLINK) $(virtualsensor_LDFLAGS) $(virtualsensor_OBJECTS) $(virtualsensor_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -468,6 +481,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sfinfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sfplay.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sfplugin.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/virtualsensor.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -756,6 +770,22 @@ sfplugin.obj: $(top_srcdir)/apps/sfplugin/sfplugin.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/sfplugin.Po' tmpdepfile='$(DEPDIR)/sfplugin.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sfplugin.obj `if test -f '$(top_srcdir)/apps/sfplugin/sfplugin.cpp'; then $(CYGPATH_W) '$(top_srcdir)/apps/sfplugin/sfplugin.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/apps/sfplugin/sfplugin.cpp'; fi`
+
+virtualsensor.o: $(top_srcdir)/apps/virtualsensor/virtualsensor.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT virtualsensor.o -MD -MP -MF "$(DEPDIR)/virtualsensor.Tpo" -c -o virtualsensor.o `test -f '$(top_srcdir)/apps/virtualsensor/virtualsensor.cpp' || echo '$(srcdir)/'`$(top_srcdir)/apps/virtualsensor/virtualsensor.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/virtualsensor.Tpo" "$(DEPDIR)/virtualsensor.Po"; else rm -f "$(DEPDIR)/virtualsensor.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/apps/virtualsensor/virtualsensor.cpp' object='virtualsensor.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/virtualsensor.Po' tmpdepfile='$(DEPDIR)/virtualsensor.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o virtualsensor.o `test -f '$(top_srcdir)/apps/virtualsensor/virtualsensor.cpp' || echo '$(srcdir)/'`$(top_srcdir)/apps/virtualsensor/virtualsensor.cpp
+
+virtualsensor.obj: $(top_srcdir)/apps/virtualsensor/virtualsensor.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT virtualsensor.obj -MD -MP -MF "$(DEPDIR)/virtualsensor.Tpo" -c -o virtualsensor.obj `if test -f '$(top_srcdir)/apps/virtualsensor/virtualsensor.cpp'; then $(CYGPATH_W) '$(top_srcdir)/apps/virtualsensor/virtualsensor.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/apps/virtualsensor/virtualsensor.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/virtualsensor.Tpo" "$(DEPDIR)/virtualsensor.Po"; else rm -f "$(DEPDIR)/virtualsensor.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/apps/virtualsensor/virtualsensor.cpp' object='virtualsensor.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/virtualsensor.Po' tmpdepfile='$(DEPDIR)/virtualsensor.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o virtualsensor.obj `if test -f '$(top_srcdir)/apps/virtualsensor/virtualsensor.cpp'; then $(CYGPATH_W) '$(top_srcdir)/apps/virtualsensor/virtualsensor.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/apps/virtualsensor/virtualsensor.cpp'; fi`
 uninstall-info-am:
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
