@@ -116,7 +116,6 @@ Confidence::myUpdate(MarControlPtr sender)
       labelNames_.push_back(labelName);
     }  
 
-  cout << "Confidence " << getctrl("mrs_string/fileName")->toString() << endl;
 
   if(getctrl("mrs_string/fileName")->toString().compare(oriName_))
     {
