@@ -5,7 +5,7 @@
 ## it under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 2, or (at your option)
 ## any later version.
-##
+## 
 ## This program is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -59,7 +59,7 @@ Kurtosis.h Skewness.h ERB.h CollectionFileSource.h MeddisHairCell.h ViconFileSou
 Cascade.h Parallel.h SeneffEar.h MP3FileSource.h OggFileSource.h ClassOutputSink.h \
 ClipAudioRange.h SilenceRemove.h RtMidi.h Stk.h Limiter.h CompExp.h NoiseGate.h \
 NoiseSource.h Plucked.h ADSR.h Envelope.h Delay.h NormMaxMin.h HarmonicEnhancer.h \
-Reassign.h Normalize.h AMDF.h SMO.h SOM.h LPC.h LSP.h LPCC.h WekaSource.h RealvecSource.h \
+Reassign.h Normalize.h AMDF.h SMO.h SOM.h LPC.h LSP.h LPCC.h BICchangeDetector.h WekaSource.h RealvecSource.h \
 RealvecSink.h Power.h MemorySource.h MidiInput.h Esitar.h MidiOutput.h mididevices.h \
 NumericLib.h NormCut.h vmblock.h lu.h basis.h dsound.h \
 AbsSoundFileSource2.h AudioSink2.h AudioSource2.h SoundFileSource2.h WavFileSource2.h

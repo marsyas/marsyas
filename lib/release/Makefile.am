@@ -172,7 +172,8 @@ libmarsyas_a_SOURCES    = $(top_srcdir)/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/marsyas/SOM.cpp \
 			  $(top_srcdir)/marsyas/LPC.cpp \
 			  $(top_srcdir)/marsyas/LSP.cpp \
-			  $(top_srcdir)/marsyas/LPCC.cpp \
+			  $(top_srcdir)/marsyas/BICchangeDetector.cpp \
+			  $(top_srcdir)/marsyas/LPCC.cpp \		
 			  $(top_srcdir)/marsyas/ERB.cpp \
 			  $(top_srcdir)/marsyas/CollectionFileSource.cpp \
 			  $(top_srcdir)/marsyas/MeddisHairCell.cpp \
