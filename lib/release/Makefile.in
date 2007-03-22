@@ -114,16 +114,16 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	ZeroRClassifier.$(OBJEXT) KNNClassifier.$(OBJEXT) \
 	Filter.$(OBJEXT) Kurtosis.$(OBJEXT) Skewness.$(OBJEXT) \
 	AMDF.$(OBJEXT) SMO.$(OBJEXT) SOM.$(OBJEXT) LPC.$(OBJEXT) \
-	LSP.$(OBJEXT) LPCC.$(OBJEXT) ERB.$(OBJEXT) \
-	CollectionFileSource.$(OBJEXT) MeddisHairCell.$(OBJEXT) \
-	ViconFileSource.$(OBJEXT) Cascade.$(OBJEXT) Parallel.$(OBJEXT) \
-	SeneffEar.$(OBJEXT) MP3FileSource.$(OBJEXT) \
-	OggFileSource.$(OBJEXT) ClassOutputSink.$(OBJEXT) \
-	ClipAudioRange.$(OBJEXT) SilenceRemove.$(OBJEXT) \
-	RtMidi.$(OBJEXT) Stk.$(OBJEXT) Limiter.$(OBJEXT) \
-	NoiseSource.$(OBJEXT) CompExp.$(OBJEXT) NoiseGate.$(OBJEXT) \
-	Plucked.$(OBJEXT) ADSR.$(OBJEXT) Envelope.$(OBJEXT) \
-	Delay.$(OBJEXT) NormMaxMin.$(OBJEXT) \
+	LSP.$(OBJEXT) BICchangeDetector.$(OBJEXT) QGMMModel.$(OBJEXT) \
+	LPCC.$(OBJEXT) ERB.$(OBJEXT) CollectionFileSource.$(OBJEXT) \
+	MeddisHairCell.$(OBJEXT) ViconFileSource.$(OBJEXT) \
+	Cascade.$(OBJEXT) Parallel.$(OBJEXT) SeneffEar.$(OBJEXT) \
+	MP3FileSource.$(OBJEXT) OggFileSource.$(OBJEXT) \
+	ClassOutputSink.$(OBJEXT) ClipAudioRange.$(OBJEXT) \
+	SilenceRemove.$(OBJEXT) RtMidi.$(OBJEXT) Stk.$(OBJEXT) \
+	Limiter.$(OBJEXT) NoiseSource.$(OBJEXT) CompExp.$(OBJEXT) \
+	NoiseGate.$(OBJEXT) Plucked.$(OBJEXT) ADSR.$(OBJEXT) \
+	Envelope.$(OBJEXT) Delay.$(OBJEXT) NormMaxMin.$(OBJEXT) \
 	HarmonicEnhancer.$(OBJEXT) Reassign.$(OBJEXT) \
 	Normalize.$(OBJEXT) WekaSource.$(OBJEXT) \
 	RealvecSource.$(OBJEXT) RealvecSink.$(OBJEXT) Power.$(OBJEXT) \
@@ -146,6 +146,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/AudioSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AudioSource2.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AutoCorrelation.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/BICchangeDetector.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/BaseAudioSink.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/BeatHistoFeatures.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Cartesian2Polar.Po \
@@ -220,6 +221,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/PvOscBank.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PvOverlapadd.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PvUnconvert.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/QGMMModel.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RawFileSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RealvecSink.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RealvecSource.Po \
@@ -328,8 +330,6 @@ VERSION = @VERSION@
 ac_aux_dir = @ac_aux_dir@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
-ac_ct_RANLIB = @ac_ct_RANLIB@
-ac_ct_STRIP = @ac_ct_STRIP@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
@@ -344,23 +344,30 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
+datarootdir = @datarootdir@
+docdir = @docdir@
+dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
+htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
+localedir = @localedir@
 localstatedir = @localstatedir@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
+pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
+psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
@@ -521,6 +528,8 @@ libmarsyas_a_SOURCES = $(top_srcdir)/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/marsyas/SOM.cpp \
 			  $(top_srcdir)/marsyas/LPC.cpp \
 			  $(top_srcdir)/marsyas/LSP.cpp \
+			  $(top_srcdir)/marsyas/BICchangeDetector.cpp \
+			  $(top_srcdir)/marsyas/QGMMModel.cpp \
 			  $(top_srcdir)/marsyas/LPCC.cpp \
 			  $(top_srcdir)/marsyas/ERB.cpp \
 			  $(top_srcdir)/marsyas/CollectionFileSource.cpp \
@@ -651,6 +660,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AudioSource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AudioSource2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AutoCorrelation.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BICchangeDetector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BaseAudioSink.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BeatHistoFeatures.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Cartesian2Polar.Po@am__quote@
@@ -762,6 +772,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PvOscBank.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PvOverlapadd.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PvUnconvert.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/QGMMModel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RawFileSource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RealvecSink.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RealvecSource.Po@am__quote@
@@ -3241,6 +3252,38 @@ LSP.obj: $(top_srcdir)/marsyas/LSP.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/LSP.Po' tmpdepfile='$(DEPDIR)/LSP.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o LSP.obj `if test -f '$(top_srcdir)/marsyas/LSP.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/LSP.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/LSP.cpp'; fi`
+
+BICchangeDetector.o: $(top_srcdir)/marsyas/BICchangeDetector.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT BICchangeDetector.o -MD -MP -MF "$(DEPDIR)/BICchangeDetector.Tpo" -c -o BICchangeDetector.o `test -f '$(top_srcdir)/marsyas/BICchangeDetector.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/BICchangeDetector.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/BICchangeDetector.Tpo" "$(DEPDIR)/BICchangeDetector.Po"; else rm -f "$(DEPDIR)/BICchangeDetector.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/BICchangeDetector.cpp' object='BICchangeDetector.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/BICchangeDetector.Po' tmpdepfile='$(DEPDIR)/BICchangeDetector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o BICchangeDetector.o `test -f '$(top_srcdir)/marsyas/BICchangeDetector.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/BICchangeDetector.cpp
+
+BICchangeDetector.obj: $(top_srcdir)/marsyas/BICchangeDetector.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT BICchangeDetector.obj -MD -MP -MF "$(DEPDIR)/BICchangeDetector.Tpo" -c -o BICchangeDetector.obj `if test -f '$(top_srcdir)/marsyas/BICchangeDetector.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/BICchangeDetector.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/BICchangeDetector.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/BICchangeDetector.Tpo" "$(DEPDIR)/BICchangeDetector.Po"; else rm -f "$(DEPDIR)/BICchangeDetector.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/BICchangeDetector.cpp' object='BICchangeDetector.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/BICchangeDetector.Po' tmpdepfile='$(DEPDIR)/BICchangeDetector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o BICchangeDetector.obj `if test -f '$(top_srcdir)/marsyas/BICchangeDetector.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/BICchangeDetector.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/BICchangeDetector.cpp'; fi`
+
+QGMMModel.o: $(top_srcdir)/marsyas/QGMMModel.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT QGMMModel.o -MD -MP -MF "$(DEPDIR)/QGMMModel.Tpo" -c -o QGMMModel.o `test -f '$(top_srcdir)/marsyas/QGMMModel.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/QGMMModel.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/QGMMModel.Tpo" "$(DEPDIR)/QGMMModel.Po"; else rm -f "$(DEPDIR)/QGMMModel.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/QGMMModel.cpp' object='QGMMModel.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/QGMMModel.Po' tmpdepfile='$(DEPDIR)/QGMMModel.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o QGMMModel.o `test -f '$(top_srcdir)/marsyas/QGMMModel.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/QGMMModel.cpp
+
+QGMMModel.obj: $(top_srcdir)/marsyas/QGMMModel.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT QGMMModel.obj -MD -MP -MF "$(DEPDIR)/QGMMModel.Tpo" -c -o QGMMModel.obj `if test -f '$(top_srcdir)/marsyas/QGMMModel.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/QGMMModel.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/QGMMModel.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/QGMMModel.Tpo" "$(DEPDIR)/QGMMModel.Po"; else rm -f "$(DEPDIR)/QGMMModel.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/QGMMModel.cpp' object='QGMMModel.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/QGMMModel.Po' tmpdepfile='$(DEPDIR)/QGMMModel.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o QGMMModel.obj `if test -f '$(top_srcdir)/marsyas/QGMMModel.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/QGMMModel.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/QGMMModel.cpp'; fi`
 
 LPCC.o: $(top_srcdir)/marsyas/LPCC.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT LPCC.o -MD -MP -MF "$(DEPDIR)/LPCC.Tpo" -c -o LPCC.o `test -f '$(top_srcdir)/marsyas/LPCC.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/LPCC.cpp; \
