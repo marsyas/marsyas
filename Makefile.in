@@ -186,7 +186,11 @@ AUX_DIST = $(auxdir)/install-sh $(auxdir)/missing \
 #DIST_SUBDIRS += ToDeprecate
 
 #  There's no point writing Makefiles for temporary holding areas.
-EXTRA_DIST = bootstrap TODO marsyasAll.pro marsyasConfig.pri ToDeprecate/xcode/readme.txt ToDeprecate/xcode/bextract/*.xcodeproj/*.pbxproj ToDeprecate/xcode/marsyas/*.xcodeproj/*.pbxproj ToDeprecate/xcode/mkcollection/*.xcodeproj/*.pbxproj ToDeprecate/xcode/peakClustering/*.xcodeproj/*.pbxproj ToDeprecate/xcode/phasevocoder/*.xcodeproj/*.pbxproj ToDeprecate/xcode/sfinfo/*.xcodeproj/*.pbxproj ToDeprecate/xcode/sfplay/*.xcodeproj/*.pbxproj
+
+# I'm not really certain what to do about this.  Since we don't
+#  compile the "examples" dir, it doesn't really make sense to have
+#  a makefile in there.
+EXTRA_DIST = bootstrap TODO marsyasAll.pro marsyasConfig.pri ToDeprecate/xcode/readme.txt ToDeprecate/xcode/bextract/bextract.xcodeproj/*.pbxproj ToDeprecate/xcode/marsyas/marsyas.xcodeproj/*.pbxproj ToDeprecate/xcode/mkcollection/mkcollection.xcodeproj/*.pbxproj ToDeprecate/xcode/peakClustering/peakClustering.xcodeproj/*.pbxproj ToDeprecate/xcode/phasevocoder/phasevocoder.xcodeproj/*.pbxproj ToDeprecate/xcode/sfinfo/sfinfo.xcodeproj/*.pbxproj ToDeprecate/xcode/sfplay/sfplay.xcodeproj/*.pbxproj examples/Qt4-tutorial/* examples/[a-z]* examples/README*
 AUTOMAKE_OPTIONS = foreign
 SUBDIRS = marsyas lib apps bin doc
 #SUBDIRS += ToDeprecate
@@ -357,7 +361,7 @@ distclean-tags:
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkdir_p) $(distdir)/ToDeprecate/xcode $(distdir)/ToDeprecate/xcode/bextract/*.xcodeproj $(distdir)/ToDeprecate/xcode/marsyas/*.xcodeproj $(distdir)/ToDeprecate/xcode/mkcollection/*.xcodeproj $(distdir)/ToDeprecate/xcode/peakClustering/*.xcodeproj $(distdir)/ToDeprecate/xcode/phasevocoder/*.xcodeproj $(distdir)/ToDeprecate/xcode/sfinfo/*.xcodeproj $(distdir)/ToDeprecate/xcode/sfplay/*.xcodeproj $(distdir)/config
+	$(mkdir_p) $(distdir)/ToDeprecate/xcode $(distdir)/ToDeprecate/xcode/bextract/bextract.xcodeproj $(distdir)/ToDeprecate/xcode/marsyas/marsyas.xcodeproj $(distdir)/ToDeprecate/xcode/mkcollection/mkcollection.xcodeproj $(distdir)/ToDeprecate/xcode/peakClustering/peakClustering.xcodeproj $(distdir)/ToDeprecate/xcode/phasevocoder/phasevocoder.xcodeproj $(distdir)/ToDeprecate/xcode/sfinfo/sfinfo.xcodeproj $(distdir)/ToDeprecate/xcode/sfplay/sfplay.xcodeproj $(distdir)/config $(distdir)/examples $(distdir)/examples/Qt4-tutorial
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

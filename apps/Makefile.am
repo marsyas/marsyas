@@ -26,4 +26,38 @@ EXTRA_DIST += MarEditor/M*
 EXTRA_DIST += MarEditor/S*
 EXTRA_DIST += MarEditor/[a-z]*
 
+EXTRA_DIST += Qt4Apps/Makefile.*
+EXTRA_DIST += Qt4Apps/MarGrid/*
+EXTRA_DIST += Qt4Apps/MarPeaks/*
+EXTRA_DIST += Qt4Apps/MarPhasevocoder/*
+EXTRA_DIST += Qt4Apps/MarPlayer/images/*
+EXTRA_DIST += Qt4Apps/MarPlayer/[A-Z]*
+EXTRA_DIST += Qt4Apps/MarPlayer/main.cpp
+EXTRA_DIST += Qt4Apps/MarPlayer/*
+EXTRA_DIST += Qt4Apps/MarWidgets/*
+EXTRA_DIST += Qt4Apps/Marx2DGraph/*
+EXTRA_DIST += Qt4Apps/Marx2DGraphStacked/*
+EXTRA_DIST += Qt4Apps/MarxGL2Din3DSpaceGraph/*
+EXTRA_DIST += Qt4Apps/MarxGLGraph/*
+EXTRA_DIST += Qt4Apps/MarxGLMultiBufferGraph/*
+EXTRA_DIST += Qt4Apps/MarSystemQtWrapper.*
+EXTRA_DIST += Qt4Apps/Qt4Apps.*
+EXTRA_DIST += Qt4Apps/README
+EXTRA_DIST += Qt4Apps/meaws/README
+EXTRA_DIST += Qt4Apps/meaws/*.h
+EXTRA_DIST += Qt4Apps/meaws/*.cpp
+EXTRA_DIST += Qt4Apps/meaws/*.pro
+EXTRA_DIST += Qt4Apps/meaws/*.qrc
+EXTRA_DIST += Qt4Apps/meaws/music/*
+EXTRA_DIST += Qt4Apps/meaws/progdata/*
+EXTRA_DIST += Qt4Apps/meaws/testcalc/*
+
+EXTRA_DIST += SeneffEarTest/*
+EXTRA_DIST += *.p*
+EXTRA_DIST += backup/plugins/*
+EXTRA_DIST += backup/Makefile.*
+EXTRA_DIST += backup/[a-n]*
+EXTRA_DIST += backup/[s-t]*
+
+
 

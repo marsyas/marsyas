@@ -20,6 +20,7 @@ MAINTAINERCLEANFILES    = Makefile.in
 
 
 EXTRA_DIST 		= Doxyfile
+EXTRA_DIST += Qt/*
 
 INCLUDES                = -I$(top_builddir) -I$(top_srcdir) -I$(Includes) 
 

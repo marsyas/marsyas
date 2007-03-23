@@ -35,15 +35,22 @@ DIST_SUBDIRS		= marsyas lib apps bin doc
 
 #  There's no point writing Makefiles for temporary holding areas.
 EXTRA_DIST += ToDeprecate/xcode/readme.txt
-EXTRA_DIST += ToDeprecate/xcode/bextract/*.xcodeproj/*.pbxproj
-EXTRA_DIST += ToDeprecate/xcode/marsyas/*.xcodeproj/*.pbxproj
-EXTRA_DIST += ToDeprecate/xcode/mkcollection/*.xcodeproj/*.pbxproj
-EXTRA_DIST += ToDeprecate/xcode/peakClustering/*.xcodeproj/*.pbxproj
-EXTRA_DIST += ToDeprecate/xcode/phasevocoder/*.xcodeproj/*.pbxproj
-EXTRA_DIST += ToDeprecate/xcode/sfinfo/*.xcodeproj/*.pbxproj
-EXTRA_DIST += ToDeprecate/xcode/sfplay/*.xcodeproj/*.pbxproj
+EXTRA_DIST += ToDeprecate/xcode/bextract/bextract.xcodeproj/*.pbxproj
+EXTRA_DIST += ToDeprecate/xcode/marsyas/marsyas.xcodeproj/*.pbxproj
+EXTRA_DIST += ToDeprecate/xcode/mkcollection/mkcollection.xcodeproj/*.pbxproj
+EXTRA_DIST += ToDeprecate/xcode/peakClustering/peakClustering.xcodeproj/*.pbxproj
+EXTRA_DIST += ToDeprecate/xcode/phasevocoder/phasevocoder.xcodeproj/*.pbxproj
+EXTRA_DIST += ToDeprecate/xcode/sfinfo/sfinfo.xcodeproj/*.pbxproj
+EXTRA_DIST += ToDeprecate/xcode/sfplay/sfplay.xcodeproj/*.pbxproj
 
-	  
+# I'm not really certain what to do about this.  Since we don't
+#  compile the "examples" dir, it doesn't really make sense to have
+#  a makefile in there.
+EXTRA_DIST += examples/Qt4-tutorial/*
+EXTRA_DIST += examples/[a-z]*
+EXTRA_DIST += examples/README*
+
+
 MAINTAINERCLEANFILES    = Makefile.in aclocal.m4 configure marsyas/config-h.in \
 			  marsyas/stamp-h.in 
 
