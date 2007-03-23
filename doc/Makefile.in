@@ -462,21 +462,21 @@ uninstall-am: uninstall-info-am
 	uninstall-info-am
 
 
-html: marsyas.texi
-	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas.texi 
-	mkdir -p marsyas/images/
-	cp images/*.png marsyas/images/
-
-pdf: marsyas.texi
-	$(TEXI2PDF) $(TEXI2PDF_FLAGS) $(srcdir)/marsyas.texi
-
 sources:
 	source-highlight --output-dir=marsyas/ -f html $(QT_EXAMPLES) $(EXAMPLES)
 	source-highlight --output-dir=marsyas/ -f texinfo $(QT_EXAMPLES) $(EXAMPLES)
 	source-highlight --output-dir=marsyas/ -f html --src-lang=perl $(QT_EXAMPLES_AS_PERL)
 	source-highlight --output-dir=marsyas/ -f texinfo --src-lang=perl $(QT_EXAMPLES_AS_PERL)
 
-.PHONY: html pdf
+html: sources marsyas.texi
+	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas.texi 
+	mkdir -p marsyas/images/
+	cp images/*.png marsyas/images/
+
+pdf: sources marsyas.texi
+	$(TEXI2PDF) $(TEXI2PDF_FLAGS) $(srcdir)/marsyas.texi
+
+.PHONY: html pdf sources
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

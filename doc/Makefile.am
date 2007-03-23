@@ -35,19 +35,20 @@ QT_EXAMPLES = ../examples/Qt4-tutorial/*.h ../examples/Qt4-tutorial/*.cpp
 QT_EXAMPLES_AS_PERL = ../examples/Qt4-tutorial/*.pro
 EXAMPLES = ../examples/*.cpp
 
-html: marsyas.texi
-	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas.texi 
-	mkdir -p marsyas/images/
-	cp images/*.png marsyas/images/
-
-pdf: marsyas.texi
-	$(TEXI2PDF) $(TEXI2PDF_FLAGS) $(srcdir)/marsyas.texi
-
 sources:
 	source-highlight --output-dir=marsyas/ -f html $(QT_EXAMPLES) $(EXAMPLES)
 	source-highlight --output-dir=marsyas/ -f texinfo $(QT_EXAMPLES) $(EXAMPLES)
 	source-highlight --output-dir=marsyas/ -f html --src-lang=perl $(QT_EXAMPLES_AS_PERL)
 	source-highlight --output-dir=marsyas/ -f texinfo --src-lang=perl $(QT_EXAMPLES_AS_PERL)
 
-.PHONY: html pdf
+
+html: sources marsyas.texi
+	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas.texi 
+	mkdir -p marsyas/images/
+	cp images/*.png marsyas/images/
+
+pdf: sources marsyas.texi
+	$(TEXI2PDF) $(TEXI2PDF_FLAGS) $(srcdir)/marsyas.texi
+
+.PHONY: html pdf sources
 
