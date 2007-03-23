@@ -29,15 +29,13 @@ EXTRA_DIST += marsyas/*.html marsyas/images/*.png
 CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
              marsyas.ats  marsyas.evs  marsyas.fns  marsyas.ovs \
              marsyas.tmp  marsyas.toc \
-             marsyas*.html
-# these _should_ be cleaned up, but "make dist" seems to run
-#   "make pdf" _after_ running "make clean", and it doesn't execute
-#   the "make sources" again before doing so.  :/
-#marsyas/*.texinfo
+             marsyas*.html marsyas/*.texinfo
 
 QT_EXAMPLES = ../examples/Qt4-tutorial/*.h ../examples/Qt4-tutorial/*.cpp
 QT_EXAMPLES_AS_PERL = ../examples/Qt4-tutorial/*.pro
 EXAMPLES = ../examples/*.cpp
+
+#DIST_COMMON = sources pdf html
 
 sources:
 	source-highlight --output-dir=marsyas/ -f html $(QT_EXAMPLES) $(EXAMPLES)
@@ -54,5 +52,5 @@ html: sources marsyas.texi
 pdf: sources marsyas.texi
 	$(TEXI2PDF) $(TEXI2PDF_FLAGS) $(srcdir)/marsyas.texi
 
-.PHONY: html pdf sources
+.PHONY: sources html pdf
 
