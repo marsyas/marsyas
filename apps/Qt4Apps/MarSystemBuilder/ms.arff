@@ -1,0 +1,12 @@
+@relation marsyas
+@attribute  real
+@attribute  real
+@attribute  real
+@attribute  real
+@attribute  real
+@attribute  real
+@attribute  real
+@attribute output {ms,sp}
+
+
+@data
