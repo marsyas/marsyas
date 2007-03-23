@@ -157,7 +157,11 @@ target_alias = @target_alias@
 target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
-SUBDIRS = sfplay   
+SUBDIRS = sfplay
+
+# we can't include any directories in here, otherwise we'll get
+# the .svn directories.  :(
+EXTRA_DIST = ERBTest/* MarEditor/Icons/* MarEditor/M* MarEditor/S* MarEditor/[a-z]*
 all: all-recursive
 
 .SUFFIXES:
@@ -313,6 +317,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
+	$(mkdir_p) $(distdir)/ERBTest $(distdir)/MarEditor $(distdir)/MarEditor/Icons
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

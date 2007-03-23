@@ -26,11 +26,24 @@ EXTRA_DIST              = bootstrap TODO marsyasAll.pro marsyasConfig.pri
 AUTOMAKE_OPTIONS        = foreign
 
 
-SUBDIRS			= marsyas lib apps bin doc 
+SUBDIRS			= marsyas lib apps bin doc
+#SUBDIRS += ToDeprecate
  
 # we must now explicitly define subdirs to be included in the dist
 DIST_SUBDIRS		= marsyas lib apps bin doc
-			  
+#DIST_SUBDIRS += ToDeprecate
+
+#  There's no point writing Makefiles for temporary holding areas.
+EXTRA_DIST += ToDeprecate/xcode/readme.txt
+EXTRA_DIST += ToDeprecate/xcode/bextract/*.xcodeproj/*.pbxproj
+EXTRA_DIST += ToDeprecate/xcode/marsyas/*.xcodeproj/*.pbxproj
+EXTRA_DIST += ToDeprecate/xcode/mkcollection/*.xcodeproj/*.pbxproj
+EXTRA_DIST += ToDeprecate/xcode/peakClustering/*.xcodeproj/*.pbxproj
+EXTRA_DIST += ToDeprecate/xcode/phasevocoder/*.xcodeproj/*.pbxproj
+EXTRA_DIST += ToDeprecate/xcode/sfinfo/*.xcodeproj/*.pbxproj
+EXTRA_DIST += ToDeprecate/xcode/sfplay/*.xcodeproj/*.pbxproj
+
+	  
 MAINTAINERCLEANFILES    = Makefile.in aclocal.m4 configure marsyas/config-h.in \
 			  marsyas/stamp-h.in 
 

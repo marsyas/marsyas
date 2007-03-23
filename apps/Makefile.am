@@ -16,5 +16,14 @@
 ## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 
-SUBDIRS = sfplay   
+SUBDIRS = sfplay
+
+# we can't include any directories in here, otherwise we'll get
+# the .svn directories.  :(
+EXTRA_DIST = ERBTest/*
+EXTRA_DIST += MarEditor/Icons/*
+EXTRA_DIST += MarEditor/M*
+EXTRA_DIST += MarEditor/S*
+EXTRA_DIST += MarEditor/[a-z]*
+
 

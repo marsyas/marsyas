@@ -183,9 +183,13 @@ AUX_DIST = $(auxdir)/install-sh $(auxdir)/missing \
 			$(auxdir)/config.guess $(auxdir)/ltconfig \
 			$(auxdir)/ltmain.sh
 
-EXTRA_DIST = bootstrap TODO marsyasAll.pro marsyasConfig.pri
+#DIST_SUBDIRS += ToDeprecate
+
+#  There's no point writing Makefiles for temporary holding areas.
+EXTRA_DIST = bootstrap TODO marsyasAll.pro marsyasConfig.pri ToDeprecate/xcode/readme.txt ToDeprecate/xcode/bextract/*.xcodeproj/*.pbxproj ToDeprecate/xcode/marsyas/*.xcodeproj/*.pbxproj ToDeprecate/xcode/mkcollection/*.xcodeproj/*.pbxproj ToDeprecate/xcode/peakClustering/*.xcodeproj/*.pbxproj ToDeprecate/xcode/phasevocoder/*.xcodeproj/*.pbxproj ToDeprecate/xcode/sfinfo/*.xcodeproj/*.pbxproj ToDeprecate/xcode/sfplay/*.xcodeproj/*.pbxproj
 AUTOMAKE_OPTIONS = foreign
-SUBDIRS = marsyas lib apps bin doc 
+SUBDIRS = marsyas lib apps bin doc
+#SUBDIRS += ToDeprecate
 
 # we must now explicitly define subdirs to be included in the dist
 DIST_SUBDIRS = marsyas lib apps bin doc
@@ -353,7 +357,7 @@ distclean-tags:
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkdir_p) $(distdir)/config
+	$(mkdir_p) $(distdir)/ToDeprecate/xcode $(distdir)/ToDeprecate/xcode/bextract/*.xcodeproj $(distdir)/ToDeprecate/xcode/marsyas/*.xcodeproj $(distdir)/ToDeprecate/xcode/mkcollection/*.xcodeproj $(distdir)/ToDeprecate/xcode/peakClustering/*.xcodeproj $(distdir)/ToDeprecate/xcode/phasevocoder/*.xcodeproj $(distdir)/ToDeprecate/xcode/sfinfo/*.xcodeproj $(distdir)/ToDeprecate/xcode/sfplay/*.xcodeproj $(distdir)/config
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
