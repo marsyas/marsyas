@@ -25,7 +25,8 @@ CONFIG += marsyasQt4Apps
 # release/debug mode
 ######################################################################
 
-CONFIG	+= release
+unix:CONFIG	+= release
+win32:win32-msvc2005:CONFIG += debug_release
 
 ######################################################################
 # enable/disable ASSERTIONS/WARNINGS/DIAGNOSTICS/LOGS, etc
