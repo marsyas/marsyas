@@ -21,7 +21,10 @@ TEXI2PDF  = texi2pdf
 info_TEXINFOS   = marsyas.texi 
 
 #SUBDIRS = marsyas images
-EXTRA_DIST = marsyas.pdf intro.texi tools.texi architecture.texi programming.texi install.texi unsorted.texi interoperability.texi README
+EXTRA_DIST = marsyas.pdf intro.texi tools.texi architecture.texi programming.texi install.texi unsorted.texi interoperability.texi
+EXTRA_DIST += macros.itexi README
+EXTRA_DIST += images/*.eps images/*.pdf images/*.txt images/*.png
+EXTRA_DIST += marsyas/*.html marsyas/images/*.png
 
 CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
              marsyas.ats  marsyas.evs  marsyas.fns  marsyas.ovs \
