@@ -2,7 +2,7 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
 	#MarEditor \
-	#MarGrid \
+	MarGrid \
 	MarPhasevocoder \
 	MarPlayer \
 	MarWidgets \
