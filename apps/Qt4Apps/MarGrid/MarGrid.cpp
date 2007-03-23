@@ -473,6 +473,8 @@ void MarGrid::mousePressEvent(QMouseEvent *event)
       mwr_->play();
       
     }
+  else 
+     mwr_->pause();
   
   cout << "Playlist: " << endl;
   for (int i=0; i < posFiles.size(); i++) 
@@ -516,6 +518,8 @@ MarGrid::mouseMoveEvent(QMouseEvent* event)
       mwr_->play();
       
     }
+  else 
+      mwr_->pause();
   
   cout << "Playlist: " << endl;
   for (int i=0; i < posFiles.size(); i++) 
