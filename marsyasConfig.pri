@@ -25,7 +25,7 @@ CONFIG += marsyasQt4Apps
 # release/debug mode
 ######################################################################
 
-CONFIG	+= debug_and_release
+CONFIG	+= release
 
 ######################################################################
 # enable/disable ASSERTIONS/WARNINGS/DIAGNOSTICS/LOGS, etc
@@ -75,7 +75,7 @@ unix:!macx:CONFIG += marsyasAUDIOIO_ALSA
 # Adds support for MP3 MAD
 ######################################################################
 
-#CONFIG += marsyasMAD
+# CONFIG += marsyasMAD
 
 ######################################################################
 # Adds support for oggvorbis
@@ -209,6 +209,12 @@ macx {
 		#INCLUDEPATH += ???
 		#LIBS += ???
 		DEFINES 	+= MARSYAS_MATLAB
+	}
+
+
+	marsyasMAD {
+		DEFINES += MARSYAS_MAD 
+		LIBS += -lmad 
 	}
 }
 
