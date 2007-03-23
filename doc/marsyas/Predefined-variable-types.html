@@ -1,13 +1,13 @@
 <html lang="en">
 <head>
-<title>Mac OSX Installation - Marsyas 0.2</title>
+<title>Predefined variable types - Marsyas 0.2</title>
 <meta http-equiv="Content-Type" content="text/html">
 <meta name="description" content="Marsyas 0.2">
 <meta name="generator" content="makeinfo 4.8">
 <link title="Top" rel="start" href="index.html#Top">
-<link rel="up" href="Platform_002dspecific-notes.html#Platform_002dspecific-notes" title="Platform-specific notes">
-<link rel="prev" href="Linux-Installation.html#Linux-Installation" title="Linux Installation">
-<link rel="next" href="Windows-_0028cygwin_0029.html#Windows-_0028cygwin_0029" title="Windows (cygwin)">
+<link rel="up" href="Architecture.html#Architecture" title="Architecture">
+<link rel="prev" href="MarSystem-Composites.html#MarSystem-Composites" title="MarSystem Composites">
+<link rel="next" href="Architecture-limitations.html#Architecture-limitations" title="Architecture limitations">
 <link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
 <!--
 Copyright 1998-2006 George Tzanetakis
@@ -46,31 +46,27 @@ translation approved by the Free Software Foundation.-->
 <body>
 <div class="node">
 <p>
-<a name="Mac-OSX-Installation"></a>
-Next:&nbsp;<a rel="next" accesskey="n" href="Windows-_0028cygwin_0029.html#Windows-_0028cygwin_0029">Windows (cygwin)</a>,
-Previous:&nbsp;<a rel="previous" accesskey="p" href="Linux-Installation.html#Linux-Installation">Linux Installation</a>,
-Up:&nbsp;<a rel="up" accesskey="u" href="Platform_002dspecific-notes.html#Platform_002dspecific-notes">Platform-specific notes</a>
+<a name="Predefined-variable-types"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Architecture-limitations.html#Architecture-limitations">Architecture limitations</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="MarSystem-Composites.html#MarSystem-Composites">MarSystem Composites</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Architecture.html#Architecture">Architecture</a>
 <hr>
 </div>
 
-<h4 class="subsection">2.3.2 Mac OSX Installation</h4>
+<h3 class="section">4.4 Predefined variable types</h3>
 
-<p><a name="index-Mac-OSX-4"></a>
-Installation under OS X is almost identical to Linux. The developer
-tools are not installed by default so you will need to install them. 
-You can download XCode from the Apple Developer website. You can
-check whether they are installed or not by checking that you
-can run gcc on a terminal. Once gcc is installed then you can compile
-using the standard autoconf procedure:
+<p>Marsyas contains some predefined, portable data types:
 
-<pre class="example">     ./configure
-     make
-     make install                         (as root user)
+<pre class="example">     mrs_bool
+     mrs_natural   (integers)
+     mrs_real
+     mrs_complex
 </pre>
-   <p>In addition there are several configure options that
-can be used to enable/disable assertions, enable/disable debugging
-and include optional packages such as support for reading mp3s. 
-<a href="Configuring-Marsyas.html#Configuring-Marsyas">Configuring Marsyas</a>.
+   <p>There is also the <code>realvec</code> variable type.  A <code>realvec</code> is
+an array of <code>mrs_real</code> values.  Many operations can be performed
+on <code>realvec</code>s, including statistical operations (find the mean,
+median, standard variance, etc).  Using these predefined data types
+is highly recommended.
 
    </body></html>
 

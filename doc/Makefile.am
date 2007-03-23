@@ -29,7 +29,7 @@ EXTRA_DIST += marsyas/*.html marsyas/images/*.png
 CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
              marsyas.ats  marsyas.evs  marsyas.fns  marsyas.ovs \
              marsyas.tmp  marsyas.toc \
-             marsyas*.html 
+             marsyas*.html marsyas/*.texinfo
 
 QT_EXAMPLES = ../examples/Qt4-tutorial/*.h ../examples/Qt4-tutorial/*.cpp
 QT_EXAMPLES_AS_PERL = ../examples/Qt4-tutorial/*.pro
