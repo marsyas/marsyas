@@ -429,9 +429,11 @@ void recordVirtualThumbSensor(mrs_real length)
 
     
     // Start Signal 
+#ifdef MARSYAS_MIDIIO
     pnet->updctrl(arm, DEVIBOT_GE);
     pnet->updctrl(velocity, 50);
     pnet->updctrl(strike, true);
+#endif
     
     for (mrs_natural t = 0; t < iterations; t++)
     {
@@ -467,9 +469,11 @@ void recordVirtualThumbSensor(mrs_real length)
     }
 
     // Stop Signal
+#ifdef MARSYAS_MIDIIO
     pnet->updctrl(arm, DEVIBOT_NA);
     pnet->updctrl(velocity, 50);
     pnet->updctrl(strike, true);
+#endif
     
     thumb.write("thumb.plot");
     fret.write("fret.plot");
