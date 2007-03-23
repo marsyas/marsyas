@@ -86,8 +86,8 @@ MarSystemQtWrapper::updctrl(MarControlPtr cname,
 void 
 MarSystemQtWrapper::pause()
 { 
+
 	mutex_.lock();
-	main_pnet_->updctrl("mrs_bool/active", false);
 	pause_ = true;
 	mutex_.unlock();
 } 
@@ -133,7 +133,7 @@ MarSystemQtWrapper::run()
 	{
 	  if (abort_) 
 	    return;
-	  
+
 	  running_ = true;
 	  // udpate stored controls
 	  mutex_.lock();
@@ -159,8 +159,11 @@ MarSystemQtWrapper::run()
 	    main_pnet_->tick();
 	  
 	  mutex_.lock();
-	  if (pause_) 
-	    condition_.wait(&mutex_);
+	  if (pause_)
+	    {
+	      main_pnet_->updctrl("mrs_bool/active", false);
+	      condition_.wait(&mutex_);
+	    } 
 	  pause_ = false;
 	  mutex_.unlock();
 	}
