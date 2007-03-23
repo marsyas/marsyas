@@ -30,7 +30,7 @@
 #include <QPixmap>
 #include <QWidget>
 #include "Collection.h"
-
+#include "Colormap.h"
 
 class QDragEnterEvent;
 class QDropEvent;

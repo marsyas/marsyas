@@ -543,8 +543,27 @@ MarGrid::paintEvent(QPaintEvent *event)
   QRegExp qrp3("blues+");
   QRegExp qrp4("jazz+");
 
+
+  int maxDensity = 0;
+  int minDensity = 10000;
+
+  for (int i=0; i < som_width; i++) 
+	for (int j=0; j < som_height; j++) 
+	{	
+	   int k = i * som_height + j;
+ 	   QList<string> posFiles = files[k];
+           int density = posFiles.size();
+	   if (density > maxDensity) 
+		maxDensity = density;
+	   if (density < minDensity) 
+		minDensity = density;	   
+	}
   
-  
+
+  cout << "maxDensity = " << maxDensity << endl;
+  cout << "minDensity = " << minDensity << endl;
+
+  Colormap *map = Colormap::factory(Colormap::GreyScale);
 
   for (int i=0; i < som_width; i++) 
     for (int j=0; j < som_height; j++) 
@@ -561,8 +580,6 @@ MarGrid::paintEvent(QPaintEvent *event)
 
 	QVector<int> labelvotes;
 	labelvotes << 0 << 0 << 0 << 0 << 0;
-
-
 	
 	for (int i = 0; i < posFiles.size(); ++i) 
 	  {
@@ -627,9 +644,19 @@ MarGrid::paintEvent(QPaintEvent *event)
 	*/ 
 
 	if (posFiles.size() > 0) 
-	  painter.setBrush(QColor("#000000"));	  
+	{
+	  int c = int(posFiles.size() / float(maxDensity) * (map->getDepth()-1));
+	  QColor color(map->getRed(c), map->getGreen(c), map->getBlue(c));
+	  painter.setBrush(color);
+	  // painter.setBrush(QColor("#000000"));	  
+
+	}
 	else
-	  painter.setBrush(QColor("#ffffff"));	  
+	{
+	   QColor color(map->getRed(0), map->getGreen(0), map->getBlue(0));
+	   painter.setBrush(color);
+	  // painter.setBrush(QColor("#ffffff"));	  
+	}
 	
 	painter.setPen(Qt::NoPen);
 	painter.drawRect(myr);
