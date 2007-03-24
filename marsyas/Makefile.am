@@ -24,6 +24,10 @@ EXTRA_DIST += Qt/*
 EXTRA_DIST += MATLAB/*
 EXTRA_DIST += distributed/*
 
+EXTRA_DIST += PCA.*
+EXTRA_DIST += marsyas.pro
+EXTRA_DIST += Network*
+
 INCLUDES                = -I$(top_builddir) -I$(top_srcdir) -I$(Includes) 
 
 pkginclude_HEADERS      = MrsLog.h \

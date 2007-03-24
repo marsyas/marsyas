@@ -156,7 +156,7 @@ target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
 MAINTAINERCLEANFILES = Makefile.in
-EXTRA_DIST = Doxyfile Qt/* MATLAB/* distributed/*
+EXTRA_DIST = Doxyfile Qt/* MATLAB/* distributed/* PCA.* marsyas.pro Network*
 INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(Includes) 
 pkginclude_HEADERS = MrsLog.h \
 VScheduler.h Scheduler.h ScheduledEvent.h SchedulerManager.h \
