@@ -4512,7 +4512,7 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile marsyas/Makefile lib/Makefile lib/debug/Makefile lib/release/Makefile apps/Makefile apps/sfplay/Makefile doc/Makefile bin/Makefile bin/debug/Makefile bin/release/Makefile"
+ac_config_files="$ac_config_files Makefile marsyas/Makefile lib/Makefile lib/debug/Makefile lib/release/Makefile apps/Makefile apps/sfplay/Makefile doc/Makefile examples/Makefile bin/Makefile bin/debug/Makefile bin/release/Makefile"
 
 
 
@@ -5111,6 +5111,7 @@ do
     "apps/Makefile") CONFIG_FILES="$CONFIG_FILES apps/Makefile" ;;
     "apps/sfplay/Makefile") CONFIG_FILES="$CONFIG_FILES apps/sfplay/Makefile" ;;
     "doc/Makefile") CONFIG_FILES="$CONFIG_FILES doc/Makefile" ;;
+    "examples/Makefile") CONFIG_FILES="$CONFIG_FILES examples/Makefile" ;;
     "bin/Makefile") CONFIG_FILES="$CONFIG_FILES bin/Makefile" ;;
     "bin/debug/Makefile") CONFIG_FILES="$CONFIG_FILES bin/debug/Makefile" ;;
     "bin/release/Makefile") CONFIG_FILES="$CONFIG_FILES bin/release/Makefile" ;;
