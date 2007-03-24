@@ -9,9 +9,12 @@
  */
 #ifndef MARSYSTEMNODE_H
 #define MARSYSTEMNODE_H
+
 #include <QtGui>
-#include <MarSystem.h>
+#include "MarSystemManager.h"
+#include "MarSystem.h" 
 #include <string>
+using namespace Marsyas;
 
 using std::string;
 

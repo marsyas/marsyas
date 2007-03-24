@@ -20,7 +20,7 @@ class SeriesNode:public CompositeNode
 
  public:
   SeriesNode(QString name,QWidget* parent);
-  SeriesNode(Composite* msys,QWidget* parent);
+  SeriesNode(MarSystem* msys,QWidget* parent);
   virtual bool append(MarSystemNode* newWidget);
   virtual bool insert(int index,MarSystemNode* newWidget);
   virtual bool insert(MarSystemNode* before, MarSystemNode* newWidget);

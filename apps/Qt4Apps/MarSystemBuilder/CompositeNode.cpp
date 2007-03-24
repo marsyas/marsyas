@@ -16,7 +16,7 @@ CompositeNode::CompositeNode(string type,QString name,QWidget* parent)
   //Any Default behaviour?
 }
 
-CompositeNode::CompositeNode(Composite* msys, QWidget* parent)
+CompositeNode::CompositeNode(MarSystem* msys, QWidget* parent)
   :MarSystemNode(msys,parent)
 {
   //Any Default behaviour
@@ -35,7 +35,7 @@ CompositeNode::append(MarSystemNode* newTail)
   //same mar widget seems like a mistake
   if(!isMember(newTail)){
     nodes_.push_back(newTail);
-    dynamic_cast<Composite*>(represents_)->addMarSystem(newTail->getSystem());
+    dynamic_cast<MarSystem*>(represents_)->addMarSystem(newTail->getSystem());
     return true;
   }else{
     return false;

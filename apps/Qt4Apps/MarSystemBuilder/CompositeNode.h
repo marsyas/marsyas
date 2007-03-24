@@ -11,13 +11,13 @@
 using namespace std;
 #include "MarSystemNode.h"
 #include <MarSystem.h>
-#include <Composite.h>
+using namespace Marsyas;
 
 class CompositeNode:public MarSystemNode
 {
  public:
   CompositeNode(string type,QString name,QWidget* parent);
-  CompositeNode(Composite* msys,QWidget* parent);
+  CompositeNode(MarSystem* msys,QWidget* parent);
 
   //Basic addition member functions
   virtual bool append(MarSystemNode* newTail);

@@ -20,7 +20,7 @@ class DefaultCompositeNode:public CompositeNode
 
  public:
   DefaultCompositeNode(QString name,QWidget* parent);
-  DefaultCompositeNode(Composite* msys,QWidget* parent);
+  DefaultCompositeNode(MarSystem* msys,QWidget* parent);
 
   virtual bool append(MarSystemNode* newWidget);
   virtual bool insert(int index,MarSystemNode* newWidget);

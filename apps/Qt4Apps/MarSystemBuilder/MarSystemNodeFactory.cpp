@@ -52,11 +52,11 @@ MarSystemNodeFactory::newNode(MarSystem* msys,QWidget* parent,bool isComposite)
 
     if(isComposite){
       if(type == MarSystemNodeFactory::FANOUT_TYPE){
-	newWidget = new FanoutNode(dynamic_cast<Composite*>(msys),parent);
+	newWidget = new FanoutNode(dynamic_cast<MarSystem*>(msys),parent);
       }else if(type == MarSystemNodeFactory::SERIES_TYPE){
-	newWidget = new SeriesNode(dynamic_cast<Composite*>(msys),parent);
+	newWidget = new SeriesNode(dynamic_cast<MarSystem*>(msys),parent);
       }else{
-	newWidget = new DefaultCompositeNode(dynamic_cast<Composite*>(msys),parent);
+	newWidget = new DefaultCompositeNode(dynamic_cast<MarSystem*>(msys),parent);
       }
     }else{
       if(type == MarSystemNodeFactory::GAIN_TYPE){

@@ -37,7 +37,7 @@ SeriesNode::SeriesNode(QString name,QWidget* parent)
   setPixmap(pix);
 }
 
-SeriesNode::SeriesNode(Composite* msys, QWidget* parent)
+SeriesNode::SeriesNode(MarSystem* msys, QWidget* parent)
   :CompositeNode(msys,parent)
 {
   QFontMetrics fm(font());

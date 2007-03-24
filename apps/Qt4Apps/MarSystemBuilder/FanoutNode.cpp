@@ -44,7 +44,7 @@ FanoutNode::FanoutNode(QString name,QWidget* parent)
  * Constructor
  * Creates the pix map for the Fanout.... 
  */
-FanoutNode::FanoutNode(Composite* msys,QWidget* parent)
+FanoutNode::FanoutNode(MarSystem* msys,QWidget* parent)
   :CompositeNode(msys,parent)
 {
   QFontMetrics fm(font());

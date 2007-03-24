@@ -15,7 +15,7 @@ class FanoutNode:public CompositeNode
 
  public:
   FanoutNode(QString name,QWidget* parent);
-  FanoutNode(Composite* msys,QWidget* parent);
+  FanoutNode(MarSystem* msys,QWidget* parent);
 
   bool append(MarSystemNode* newTail);
   bool insert(int index,MarSystemNode* newWidget);

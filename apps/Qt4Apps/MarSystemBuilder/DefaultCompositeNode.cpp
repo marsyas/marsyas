@@ -40,7 +40,7 @@ DefaultCompositeNode::DefaultCompositeNode(QString name,QWidget* parent)
 /**
  *  Constructor
  */
-DefaultCompositeNode::DefaultCompositeNode(Composite* msys, QWidget* parent)
+DefaultCompositeNode::DefaultCompositeNode(MarSystem* msys, QWidget* parent)
   :CompositeNode(msys,parent)
 {
   QFontMetrics fm(font());

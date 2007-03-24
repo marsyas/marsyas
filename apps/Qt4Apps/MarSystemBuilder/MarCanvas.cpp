@@ -72,7 +72,7 @@ MarSystemNode*
 MarCanvas::loadMarSystem(istream& is, QWidget* canvas)
 {
   string skipstr;
-  natural i;
+  mrs_natural i;
   //skip #
   is >> skipstr;
   string mcomposite;
@@ -105,7 +105,7 @@ MarCanvas::loadMarSystem(istream& is, QWidget* canvas)
     return 0;
   }else{
     msys->setName(mname);
-    is >> (msys->ncontrols_);
+    // is >> (msys->ncontrols_);
     msys->update();
       
     //Don't think this is important for my work
@@ -133,7 +133,7 @@ MarCanvas::loadMarSystem(istream& is, QWidget* canvas)
     //skip =
     is >> skipstr;
     
-    natural nLinks;
+    mrs_natural nLinks;
     is >> nLinks;
     
     //Handle All Links for the MarSystem
@@ -145,23 +145,23 @@ MarCanvas::loadMarSystem(istream& is, QWidget* canvas)
       
       is >> skipstr >> skipstr >> skipstr >> skipstr >> skipstr;
       
-      natural nSynonyms;
+      mrs_natural nSynonyms;
       is >> nSynonyms;
       
       vector<string> synonymList;
-      synonymList = msys->synonyms_[visible];
+      // synonymList = msys->synonyms_[visible];
       for (int j=0; j < nSynonyms; j++){
 	string inside;
 	is >> skipstr;
 	is >> inside;
 	synonymList.push_back(inside);
-	msys->synonyms_[visible] = synonymList;
+	// msys->synonyms_[visible] = synonymList;
       }
     }
     
     if (isComposite == true){
       is >> skipstr >> skipstr >> skipstr;
-      natural nComponents;
+      mrs_natural nComponents;
       is >> nComponents;
       for (i=0; i < nComponents; i++){
 	MarSystemNode* childWidget = 
