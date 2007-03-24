@@ -158,10 +158,6 @@ target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
 SUBDIRS = sfplay
-
-# we can't include any directories in here, otherwise we'll get
-# the .svn directories.  :(
-EXTRA_DIST = ERBTest/* MarEditor/Icons/* MarEditor/M* MarEditor/S* MarEditor/[a-z]* Qt4Apps/Makefile.* Qt4Apps/MarGrid/* Qt4Apps/MarPeaks/* Qt4Apps/MarPhasevocoder/* Qt4Apps/MarPlayer/images/* Qt4Apps/MarPlayer/[A-Z]* Qt4Apps/MarPlayer/main.cpp Qt4Apps/MarPlayer/* Qt4Apps/MarWidgets/* Qt4Apps/Marx2DGraph/* Qt4Apps/Marx2DGraphStacked/* Qt4Apps/MarxGL2Din3DSpaceGraph/* Qt4Apps/MarxGLGraph/* Qt4Apps/MarxGLMultiBufferGraph/* Qt4Apps/MarSystemQtWrapper.* Qt4Apps/Qt4Apps.* Qt4Apps/README Qt4Apps/meaws/README Qt4Apps/meaws/*.h Qt4Apps/meaws/*.cpp Qt4Apps/meaws/*.pro Qt4Apps/meaws/*.qrc Qt4Apps/meaws/music/* Qt4Apps/meaws/progdata/* Qt4Apps/meaws/testcalc/* SeneffEarTest/* *.p* backup/plugins/* backup/Makefile.* backup/[a-n]* backup/[s-t]*
 all: all-recursive
 
 .SUFFIXES:
@@ -317,7 +313,6 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/ERBTest $(distdir)/MarEditor $(distdir)/MarEditor/Icons $(distdir)/Qt4Apps $(distdir)/Qt4Apps/MarGrid $(distdir)/Qt4Apps/MarPeaks $(distdir)/Qt4Apps/MarPhasevocoder $(distdir)/Qt4Apps/MarPlayer $(distdir)/Qt4Apps/MarPlayer/images $(distdir)/Qt4Apps/MarWidgets $(distdir)/Qt4Apps/Marx2DGraph $(distdir)/Qt4Apps/Marx2DGraphStacked $(distdir)/Qt4Apps/MarxGL2Din3DSpaceGraph $(distdir)/Qt4Apps/MarxGLGraph $(distdir)/Qt4Apps/MarxGLMultiBufferGraph $(distdir)/Qt4Apps/meaws $(distdir)/Qt4Apps/meaws/music $(distdir)/Qt4Apps/meaws/progdata $(distdir)/Qt4Apps/meaws/testcalc $(distdir)/SeneffEarTest $(distdir)/backup $(distdir)/backup/plugins
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -446,6 +441,21 @@ uninstall-info: uninstall-info-recursive
 	mostlyclean-recursive pdf pdf-am ps ps-am tags tags-recursive \
 	uninstall uninstall-am uninstall-info-am
 
+
+# we can't include any directories in here, otherwise we'll get
+# the .svn directories.  :(
+#EXTRA_DIST = ERBTest/*
+#EXTRA_DIST += MarEditor/Icons/*
+#EXTRA_DIST += MarEditor/M*
+#EXTRA_DIST += MarEditor/S*
+#EXTRA_DIST += MarEditor/[a-z]*
+
+#EXTRA_DIST += SeneffEarTest/*
+#EXTRA_DIST += *.p*
+#EXTRA_DIST += backup/plugins/*
+#EXTRA_DIST += backup/Makefile.*
+#EXTRA_DIST += backup/[a-n]*
+#EXTRA_DIST += backup/[s-t]*
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

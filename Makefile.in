@@ -183,20 +183,14 @@ AUX_DIST = $(auxdir)/install-sh $(auxdir)/missing \
 			$(auxdir)/config.guess $(auxdir)/ltconfig \
 			$(auxdir)/ltmain.sh
 
-#DIST_SUBDIRS += ToDeprecate
 
 #  There's no point writing Makefiles for temporary holding areas.
-
-# I'm not really certain what to do about this.  Since we don't
-#  compile the "examples" dir, it doesn't really make sense to have
-#  a makefile in there.
-EXTRA_DIST = bootstrap TODO marsyasAll.pro marsyasConfig.pri ToDeprecate/xcode/readme.txt ToDeprecate/xcode/bextract/bextract.xcodeproj/*.pbxproj ToDeprecate/xcode/marsyas/marsyas.xcodeproj/*.pbxproj ToDeprecate/xcode/mkcollection/mkcollection.xcodeproj/*.pbxproj ToDeprecate/xcode/peakClustering/peakClustering.xcodeproj/*.pbxproj ToDeprecate/xcode/phasevocoder/phasevocoder.xcodeproj/*.pbxproj ToDeprecate/xcode/sfinfo/sfinfo.xcodeproj/*.pbxproj ToDeprecate/xcode/sfplay/sfplay.xcodeproj/*.pbxproj examples/Qt4-tutorial/* examples/[a-z]* examples/README*
+EXTRA_DIST = bootstrap TODO marsyasAll.pro marsyasConfig.pri ToDeprecate/
 AUTOMAKE_OPTIONS = foreign
-SUBDIRS = marsyas lib apps bin doc
-#SUBDIRS += ToDeprecate
+SUBDIRS = marsyas lib apps bin doc examples
 
 # we must now explicitly define subdirs to be included in the dist
-DIST_SUBDIRS = marsyas lib apps bin doc
+DIST_SUBDIRS = marsyas lib apps bin doc examples
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure marsyas/config-h.in \
 			  marsyas/stamp-h.in 
 
@@ -361,7 +355,7 @@ distclean-tags:
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkdir_p) $(distdir)/ToDeprecate/xcode $(distdir)/ToDeprecate/xcode/bextract/bextract.xcodeproj $(distdir)/ToDeprecate/xcode/marsyas/marsyas.xcodeproj $(distdir)/ToDeprecate/xcode/mkcollection/mkcollection.xcodeproj $(distdir)/ToDeprecate/xcode/peakClustering/peakClustering.xcodeproj $(distdir)/ToDeprecate/xcode/phasevocoder/phasevocoder.xcodeproj $(distdir)/ToDeprecate/xcode/sfinfo/sfinfo.xcodeproj $(distdir)/ToDeprecate/xcode/sfplay/sfplay.xcodeproj $(distdir)/config $(distdir)/examples $(distdir)/examples/Qt4-tutorial
+	$(mkdir_p) $(distdir)/config
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -401,6 +395,9 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+	$(MAKE) $(AM_MAKEFLAGS) \
+	  top_distdir="$(top_distdir)" distdir="$(distdir)" \
+	  dist-hook
 	-find $(distdir) -type d ! -perm -777 -exec chmod a+rwx {} \; -o \
 	  ! -type d ! -perm -444 -links 1 -exec chmod a+r {} \; -o \
 	  ! -type d ! -perm -400 -exec chmod a+r {} \; -o \
@@ -593,6 +590,9 @@ uninstall-info: uninstall-info-recursive
 	mostlyclean-recursive pdf pdf-am ps ps-am tags tags-recursive \
 	uninstall uninstall-am uninstall-info-am
 
+
+dist-hook:
+	rm -rf `find $(distdir)/ToDeprecate/ -name .svn`
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
