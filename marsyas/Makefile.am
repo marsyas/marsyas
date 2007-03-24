@@ -20,13 +20,19 @@ MAINTAINERCLEANFILES    = Makefile.in
 
 
 EXTRA_DIST 		= Doxyfile
-EXTRA_DIST += Qt/*
-EXTRA_DIST += MATLAB/*
-EXTRA_DIST += distributed/*
+EXTRA_DIST += Qt/
+EXTRA_DIST += MATLAB/
+EXTRA_DIST += distributed/
 
-EXTRA_DIST += PCA.*
+dist-hook:
+	rm -rf `find $(distdir)/Qt/ -name .svn`
+	rm -rf `find $(distdir)/MATLAB/ -name .svn`
+	rm -rf `find $(distdir)/distributed/ -name .svn`
+
+
+EXTRA_DIST += PCA.cpp PCA.h
 EXTRA_DIST += marsyas.pro
-EXTRA_DIST += Network*
+EXTRA_DIST += NetworkUDPSink.cpp NetworkSocket.cpp NetworkTCPSink.cpp NetworkTCPSource.cpp NetworkUDPSource.cpp
 
 INCLUDES                = -I$(top_builddir) -I$(top_srcdir) -I$(Includes) 
 

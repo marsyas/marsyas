@@ -156,7 +156,7 @@ target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
 MAINTAINERCLEANFILES = Makefile.in
-EXTRA_DIST = Doxyfile Qt/* MATLAB/* distributed/* PCA.* marsyas.pro Network*
+EXTRA_DIST = Doxyfile Qt/ MATLAB/ distributed/ PCA.cpp PCA.h marsyas.pro NetworkUDPSink.cpp NetworkSocket.cpp NetworkTCPSink.cpp NetworkTCPSource.cpp NetworkUDPSource.cpp
 INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(Includes) 
 pkginclude_HEADERS = MrsLog.h \
 VScheduler.h Scheduler.h ScheduledEvent.h SchedulerManager.h \
@@ -299,7 +299,6 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/MATLAB $(distdir)/Qt $(distdir)/distributed
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -326,6 +325,9 @@ distdir: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
+	$(MAKE) $(AM_MAKEFLAGS) \
+	  top_distdir="$(top_distdir)" distdir="$(distdir)" \
+	  dist-hook
 check-am: all-am
 check: check-am
 all-am: Makefile $(HEADERS)
@@ -415,6 +417,11 @@ uninstall-am: uninstall-info-am uninstall-pkgincludeHEADERS
 	pdf-am ps ps-am tags uninstall uninstall-am uninstall-info-am \
 	uninstall-pkgincludeHEADERS
 
+
+dist-hook:
+	rm -rf `find $(distdir)/Qt/ -name .svn`
+	rm -rf `find $(distdir)/MATLAB/ -name .svn`
+	rm -rf `find $(distdir)/distributed/ -name .svn`
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

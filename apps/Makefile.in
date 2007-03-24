@@ -158,7 +158,9 @@ target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
 SUBDIRS = sfplay
-EXTRA_DIST = *.pro *.pri ERBTest/ MarEditor/ Qt4Apps/ SeneffEarTest/ backup/
+
+# I wish there was a better way of doing this.  :(
+EXTRA_DIST = *.pro *.pri ERBTest/ MarEditor/ Qt4Apps/ SeneffEarTest/ backup/ bextract/ boomchick/ classifyFile/ extract/ marsyasTests/ midiTest/ mixer/ mkcollection/ msl/ muggle/ orcarecord/ peVocoder/ peakClustering/ phasevocoder/ pitchextract/ record/ scheduler/ server_main/ sfinfo/ sfplaygui/ sfplugin/ speakerSeg/ tempo/ textract/ tutorial/ virtualsensor/ vocalEffort/
 all: all-recursive
 
 .SUFFIXES:
@@ -452,6 +454,32 @@ dist-hook:
 	rm -rf `find $(distdir)/Qt4Apps/ -name .svn`
 	rm -rf `find $(distdir)/SeneffEarTest/ -name .svn`
 	rm -rf `find $(distdir)/backup/ -name .svn`
+	rm -rf `find $(distdir)/bextract/ -name .svn`
+	rm -rf `find $(distdir)/boomchick/ -name .svn`
+	rm -rf `find $(distdir)/classifyFile/ -name .svn`
+	rm -rf `find $(distdir)/extract/ -name .svn`
+	rm -rf `find $(distdir)/marsyasTests/ -name .svn`
+	rm -rf `find $(distdir)/midiTest/ -name .svn`
+	rm -rf `find $(distdir)/mixer/ -name .svn`
+	rm -rf `find $(distdir)/mkcollection/ -name .svn`
+	rm -rf `find $(distdir)/msl/ -name .svn`
+	rm -rf `find $(distdir)/muggle/ -name .svn`
+	rm -rf `find $(distdir)/orcarecord/ -name .svn`
+	rm -rf `find $(distdir)/peakClustering/ -name .svn`
+	rm -rf `find $(distdir)/phasevocoder/ -name .svn`
+	rm -rf `find $(distdir)/pitchextract/ -name .svn`
+	rm -rf `find $(distdir)/record/ -name .svn`
+	rm -rf `find $(distdir)/scheduler/ -name .svn`
+	rm -rf `find $(distdir)/server_main/ -name .svn`
+	rm -rf `find $(distdir)/sfinfo/ -name .svn`
+	rm -rf `find $(distdir)/sfplaygui/ -name .svn`
+	rm -rf `find $(distdir)/sfplugin/ -name .svn`
+	rm -rf `find $(distdir)/speakerSeg/ -name .svn`
+	rm -rf `find $(distdir)/tempo/ -name .svn`
+	rm -rf `find $(distdir)/textract/ -name .svn`
+	rm -rf `find $(distdir)/tutorial/ -name .svn`
+	rm -rf `find $(distdir)/virtualsensor/ -name .svn`
+	rm -rf `find $(distdir)/vocalEffort/ -name .svn`
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
