@@ -269,7 +269,7 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 			MATLAB_PUT(peakSet_, "peaks");
 			MATLAB_EVAL("plotPeaks(peaks)");
 
-	/*		realvec realTry(nbFrames_, 5);
+			realvec realTry(nbFrames_, 5);
 			realTry.setval(0);
 			for (mrs_natural i=0 ; i<nbFrames_ ; i++)
 			{
@@ -279,8 +279,9 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 				realTry(i, 4) = .6;
 			}
 			ofstream tryFile;
-			tryFile.open("..\..\..\test");
-			tryFile<< realTry;*/
+			string harmonizeName = filePeakName+"HarmoStream";
+			tryFile.open(harmonizeName.c_str());
+			tryFile<< realTry;
 			
 		}
 }
