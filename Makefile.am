@@ -35,9 +35,17 @@ DIST_SUBDIRS		+= examples
 
 #  There's no point writing Makefiles for temporary holding areas.
 EXTRA_DIST += ToDeprecate/
+EXTRA_DIST += otherlibs/
+EXTRA_DIST += scripts/
+EXTRA_DIST += swig/
+EXTRA_DIST += tools/
 
 dist-hook:
 	rm -rf `find $(distdir)/ToDeprecate/ -name .svn`
+	rm -rf `find $(distdir)/otherlibs/ -name .svn`
+	rm -rf `find $(distdir)/scripts/ -name .svn`
+	rm -rf `find $(distdir)/swig/ -name .svn`
+	rm -rf `find $(distdir)/tools/ -name .svn`
 
 
 MAINTAINERCLEANFILES    = Makefile.in aclocal.m4 configure marsyas/config-h.in \

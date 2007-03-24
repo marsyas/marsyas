@@ -21,6 +21,8 @@ MAINTAINERCLEANFILES    = Makefile.in
 
 EXTRA_DIST 		= Doxyfile
 EXTRA_DIST += Qt/*
+EXTRA_DIST += MATLAB/*
+EXTRA_DIST += distributed/*
 
 INCLUDES                = -I$(top_builddir) -I$(top_srcdir) -I$(Includes) 
 

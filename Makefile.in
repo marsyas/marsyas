@@ -185,7 +185,7 @@ AUX_DIST = $(auxdir)/install-sh $(auxdir)/missing \
 
 
 #  There's no point writing Makefiles for temporary holding areas.
-EXTRA_DIST = bootstrap TODO marsyasAll.pro marsyasConfig.pri ToDeprecate/
+EXTRA_DIST = bootstrap TODO marsyasAll.pro marsyasConfig.pri ToDeprecate/ otherlibs/ scripts/ swig/ tools/
 AUTOMAKE_OPTIONS = foreign
 SUBDIRS = marsyas lib apps bin doc examples
 
@@ -593,6 +593,10 @@ uninstall-info: uninstall-info-recursive
 
 dist-hook:
 	rm -rf `find $(distdir)/ToDeprecate/ -name .svn`
+	rm -rf `find $(distdir)/otherlibs/ -name .svn`
+	rm -rf `find $(distdir)/scripts/ -name .svn`
+	rm -rf `find $(distdir)/swig/ -name .svn`
+	rm -rf `find $(distdir)/tools/ -name .svn`
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
