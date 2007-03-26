@@ -3,7 +3,7 @@
 #include <math.h>
 #include "analyze.h"
 
-#define GNUPLOT_TEST 0
+#define GNUPLOT_TEST 1
 
 Analyze::Analyze(string audioFilename, string exerciseFilename) {
 	getExercise(exerciseFilename);
@@ -154,7 +154,7 @@ void Analyze::writePitches() {
 	ofstream file;
 	file.open("notepitches.txt");
 	for (i=0; i<numPitches; i++)
-		file<<pitchList(i)<<endl;
+		file<<fmod(pitchList(i),12)<<endl;
 	file.close();
 }
 
@@ -259,33 +259,45 @@ void Analyze::calcNotes(){
 	}
 }
 
-// ONLY WORKS WITH GNUPLOT=0 !!!
-void Analyze::addHarmonies() {
+void Analyze::initHarms() {
+/*
+	if (GNUPLOT_TEST) {
+		cout<<"Only works with GNUPLOT_TEST=0"<<endl;
+		exit(0);
+	}
+*/
+	int i;
+	// set up initial amplitudes
+	for (i=0; i<detected.getRows(); i++) {
+		if ( detected(i,0) >=0 ) {
+				detected(i,2) = 1.0;
+		}
+	}
+}
+
+void Analyze::addHarmsHokey() {
 	int i,j;
 	mrs_real curPitch;
 
-	// set up initial amplitudes
-	for (i=0; i<detected.getRows(); i++) {
-		if ( detected(i,1) >= 0 ) {
-			detected(i,2) = 1.0;
-		}
-	}
-
 	// do hokey lower octave + upper tenth, for testing
 	for (i=0; i<detected.getRows(); i++) {
+	if ( detected(i,0)>=0 ) {
 		curPitch = detected(i,1);
+	cout<<curPitch;
 		if ( detected(i,0) >= 0 ) {
 			detected(i,3) = 0.5 * curPitch;
+		cout<<" "<<curPitch - 12;
 			detected(i,4) = 0.2;
-			detected(i,5) = 2.378 * curPitch; // P8 + m3 or M3 (I think)
+			detected(i,5) = 5/2 * curPitch; // P8 + M3
+		cout<<" "<<curPitch + 16;
 			detected(i,6) = 0.5;
 		} else {
 			for (j=3; j<detected.getCols(); j++) {
 				detected(i,j)=0;
 			}
 		}
-	}
-
+		cout<<endl;
+	} }
 
 }
 

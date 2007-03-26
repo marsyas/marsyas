@@ -14,7 +14,10 @@ public:
 	void printNotes();
 	void writePitches();
 
-	void addHarmonies();
+	void initHarms();
+	void addHarmsHokey();
+	void addHarmsSmooth();
+	void addHarmsTime();
 
 private:
 	void getPitches(string audioFilename);
