@@ -8,8 +8,6 @@
 Analyze::Analyze(string audioFilename, string exerciseFilename) {
 	getExercise(exerciseFilename);
 	getPitches(audioFilename);
-	//smoothPitches();
-//	writePitches();    // for debug
 
 	detected = realvec(2*exerLength/2,7); // size: 3 + 2*(notes in chords)
 //	detected = realvec(100,2); // size: 3 + 2*(notes in chords)
@@ -28,15 +26,6 @@ void Analyze::calcDurations() {
 	int i;
 	int detectedIndex=0;
 	int prevSamp=0;
-/*
-	mrs_real avg1, avg2;
-	mrs_real variance1, variance2;
-
-	int i, j;
-
-	int next=0;
-	prevSamp=0;
-*/
 	for (i=MEAN_RADIUS; i<numPitches-MEAN_RADIUS; i++) {
 		median = findMedian(i-MEAN_RADIUS, 2*MEAN_RADIUS, pitchList);
 		if ( fabs(median-prevNote) > 0.5) {
@@ -56,38 +45,6 @@ void Analyze::calcDurations() {
 //		if ( detected(detectedIndex-1) == i)
 //			cout<<"------------"<<endl;
 	}
-/*
-	for (i=MEAN_RADIUS; i<numPitches-MEAN_RADIUS; i++) {
-		avg1=0.0;
-		avg2=0.0;
-		variance1=0.0;
-		variance2=0.0;
-		for (j=0; j<MEAN_RADIUS; j++) {
-			if (j < (MEAN_RADIUS-1) )
-				variance1+= fabs(pitchList(i-j-1) - pitchList(i-j-2));
-			if (j < (MEAN_RADIUS-1) )
-				variance2+= fabs(pitchList(i+j) - pitchList(i+j+1));
-		}
-		avg1 = findMedian( i-MEAN_RADIUS-1, MEAN_RADIUS, pitchList );
-		avg2 = findMedian( i, MEAN_RADIUS, pitchList );
-		variance1 = variance1 / (MEAN_RADIUS-1);
-		variance2 = variance2 / (MEAN_RADIUS-1);
-
-		if (fabs(avg1-avg2) > 0.6) {
-			if (i>prevSamp+3*(MEAN_RADIUS)) next=i;
-		}
-		if (next>0) {
-			if ((variance1<0.4)&&(variance2<0.4)) {
-				prevSamp = int(i);
-	//			cout<<"---------------------------"<<endl;
-				detected(detectedIndex)=i;
-				detectedIndex+=2;
-				next=0;
-			}
-		}
-//		cout<<i<<" "<<pitchList(i)<<"   "<<avg1<<" "<<avg2<<"   "<<i - prevSamp<<"   "<<"   "<<variance1<<" "<<variance2<<endl;
-	}
-*/
 	detected(detectedIndex,0) = numPitches;
 	for (i=detectedIndex; i<detected.getRows(); i++) {
 		detected(i,0) = -1;
@@ -164,7 +121,7 @@ void Analyze::getExercise(string exerciseFilename) {
 	infile.close();
 }
 
-// smooth out 0s.
+// smooth out 0s.   Not used anymore
 void Analyze::smoothPitches() {
 	int i,j,k;
 	float prevPitch;
@@ -202,21 +159,29 @@ void Analyze::writePitches() {
 }
 
 void Analyze::writeNotes() {
-	int i;
+	int i,j;
 	ofstream file;
 	file.open("calcNotes.txt");
-	for (i=0; i<detected.getRows(); i++)
-		file<<detected(i,1)<<endl;
+	for (i=0; i<detected.getRows(); i++) {
+		if ( detected(i,0) >=0 ) {
+			for (j=0; j<detected.getCols(); j++) {
+				file<<detected(i,j)<<" ";
+			}
+			file<<endl;
+		}
+	}
 	file.close();
 }
 
 void Analyze::printNotes() {
 	int i,j;
 	for (i=0; i<detected.getRows(); i++) {
-		for (j=0; j<detected.getCols(); j++) {
-			cout<<detected(i,j)<<" ";
+		if ( detected(i,0) >=0 ) {
+			for (j=0; j<detected.getCols(); j++) {
+				cout<<detected(i,j)<<" ";
+			}
+			cout<<endl;
 		}
-		cout<<endl;
 	}
 }
 

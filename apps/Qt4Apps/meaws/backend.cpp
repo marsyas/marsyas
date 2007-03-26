@@ -35,15 +35,15 @@ MarBackend::MarBackend(int testingMethod) {
 }
 
 MarBackend::~MarBackend() {
-	cout<<"deleting"<<endl;
+//	cout<<"deleting MarBackend"<<endl;
 	if (method==1) {
-		mrsWrapper->play();
-		cout<<"deleting Intonation stuff"<<endl;
+//		mrsWrapper->play();
+//		cout<<"Trying to delete mrsWrapper"<<endl;
 // something bad happens here.  :(
 		delete mrsWrapper;
 		//cout<<"mrsWrapper deleted"<<endl;
 		delete recNet;
-		//cout<<"recNet deleted"<<endl;
+	//	cout<<"everything deleted"<<endl;
 	}
 }
 

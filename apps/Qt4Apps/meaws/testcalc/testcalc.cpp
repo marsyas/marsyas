@@ -10,11 +10,11 @@ int main() {
   analyze->calcDurations();
   analyze->calcNotes();
 	analyze->writePitches();
-	analyze->writeNotes();
 
 //	analyze->printNotes();
 //	cout<<"-----------"<<endl;
 	analyze->addHarmonies();
+	analyze->writeNotes();
 	analyze->printNotes();
 	delete analyze;
 }
