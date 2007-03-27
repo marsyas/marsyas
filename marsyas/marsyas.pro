@@ -80,7 +80,6 @@ HEADERS += \
 	Conversions.h \
 	Daub4.h \
 	Delay.h \
-	DeviBot.h \
 	DownSampler.h \
 	ERB.h \
 	Envelope.h \
@@ -288,7 +287,6 @@ SOURCES += \
 	Conversions.cpp \
 	Daub4.cpp \
 	Delay.cpp \
-	DeviBot.cpp \
 	DownSampler.cpp \
 	ERB.cpp \
 	Envelope.cpp \
