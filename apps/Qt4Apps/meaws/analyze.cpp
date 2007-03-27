@@ -243,8 +243,8 @@ void Analyze::calcNotes(){
 	// display output
 	if (GNUPLOT_TEST) {
 		for (i=0; i<detected.getRows(); i++) {
-			if (detected(i,1)<=0)
-				detected(i,1) = 73;  // for display in testing
+			//if (detected(i,1)<=0)
+			//	detected(i,1) = 73;  // for display in testing
 //			printf("%f %f\n", detected(i), detected(i+1) );
 		}
 	} else {
@@ -281,23 +281,93 @@ void Analyze::addHarmsHokey() {
 
 	// do hokey lower octave + upper tenth, for testing
 	for (i=0; i<detected.getRows(); i++) {
-	if ( detected(i,0)>=0 ) {
-		curPitch = detected(i,1);
-	cout<<curPitch;
-		if ( detected(i,0) >= 0 ) {
-			detected(i,3) = 0.5 * curPitch;
-		cout<<" "<<curPitch - 12;
-			detected(i,4) = 0.2;
-			detected(i,5) = 5/2 * curPitch; // P8 + M3
-		cout<<" "<<curPitch + 16;
-			detected(i,6) = 0.5;
-		} else {
-			for (j=3; j<detected.getCols(); j++) {
-				detected(i,j)=0;
+		if ( detected(i,0)>=0 ) {
+			curPitch = detected(i,1);
+		cout<<curPitch;
+			if ( detected(i,0) >= 0 ) {
+				detected(i,3) = 0.5 * curPitch;
+			cout<<" "<<curPitch - 12;
+				detected(i,4) = 0.2;
+				detected(i,5) = 5/2 * curPitch; // P8 + M3
+			cout<<" "<<curPitch + 16;
+				detected(i,6) = 0.5;
+			} else {
+				for (j=3; j<detected.getCols(); j++) {
+					detected(i,j)=0;
+				}
+			}
+			cout<<endl;
+		}
+	}
+}
+
+void Analyze::addHarmsSmooth() {
+	int i,j;
+	mrs_real curPitch, nextPitch;
+	int curMul, nextMul;
+	mrs_real curHarm, nextHarm;
+	int curNote, nextNote;
+
+	for (i=0; i<detected.getRows(); i++) {
+		if ( detected(i,0)>=0 ) {
+			//curPitch = detected(i,1);
+			//nextPitch = detected(i+1,1);
+			curPitch = pitch2hertz( detected(i,1) );
+			nextPitch = pitch2hertz( detected(i+1,1) );
+			curNote = int(round(curPitch));
+		cout<<curNote<<" ";
+			curMul = 1;
+			nextMul = 1;
+			while ( (curMul<20)&&(nextMul<20) ) {
+				curHarm = curPitch * curMul;
+				nextHarm = nextPitch * nextMul;
+				if ( fabs((curHarm/nextHarm)-1.0) < 0.02) { // notes are close
+					cout<<curHarm<<" "<<nextHarm<<" ";
+					cout<<curMul<<" "<<nextMul<<" ";
+					break;
+				}
+				if (curHarm < nextHarm)
+					curMul++;
+				else
+					nextMul++;
+			}
+			while ( curHarm >= 2*curPitch) {
+				curHarm /= 2;
+			}
+			cout<<hertz2pitch(curHarm);
+
+
+			cout<<endl;
+		}
+	}
+}
+
+// 0 4 7: CEG
+// 7 11 2: GBD
+// 5 9 0 : FAC
+void Analyze::addHarmsBasic() {
+	int i;
+	mrs_real curPitch;
+	int curNote;
+
+	for (i=0; i<detected.getRows(); i++) {
+		if (( detected(i,0)>=0 )&&(detected(i,1)>0)) {
+			curPitch = detected(i,1);
+			curNote = int(round(curPitch));
+			cout<<curNote;
+			curNote = curNote % 12;
+			if ( (curNote==0)||(curNote==4)) {
+				cout<<" 48 52 55"<<endl;
+			}
+			if ( (curNote==7)||(curNote==11)||(curNote==2)) {
+				cout<<" 55 59 62"<<endl;
+			}
+			if ( (curNote==5)||(curNote==9)) {
+				cout<<" 53 57 60"<<endl;
 			}
 		}
-		cout<<endl;
-	} }
-
+	}
+	cout<<endl;
+	cout<<endl;
 }
 

@@ -15,7 +15,7 @@ int main() {
 //	analyze->printNotes();
 //	cout<<"-----------"<<endl;
 	analyze->initHarms();
-	analyze->addHarmsHokey();
+	analyze->addHarmsBasic();
 	analyze->writeNotes();
 	analyze->printNotes();
 	delete analyze;

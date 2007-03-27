@@ -17,7 +17,7 @@ public:
 	void initHarms();
 	void addHarmsHokey();
 	void addHarmsSmooth();
-	void addHarmsTime();
+	void addHarmsBasic();
 
 private:
 	void getPitches(string audioFilename);
