@@ -929,6 +929,8 @@ MarSystem::updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd)
 	{
 		MRSWARN("MarSystem::updControl - " + control->getName() + " does not exist locally or in children!");
 		MRSWARN("MarSystem::updControl - MarSystem name = " + getName());
+		cout << "What is happening " << endl;
+		
 		return false;
 	}
 

@@ -59,7 +59,7 @@ MarControlPtr::printControlTracer()
 
 MarControlPtr::MarControlPtr()
 {
-	control_ = NULL;
+  control_ = NULL;
 }
 
 MarControlPtr::~MarControlPtr()

@@ -87,24 +87,28 @@ Series::myUpdate(MarControlPtr sender)
       for (mrs_natural i=1; i < marsystemsSize_; i++)
 	{
 	  //lmartins: replace updctrl() calls by setctrl()? ==> more efficient![?]
-	  marsystems_[i]->ctrl_inObsNames_->setValue(marsystems_[i-1]->ctrl_onObsNames_);
-	  marsystems_[i]->ctrl_inSamples_->setValue(marsystems_[i-1]->ctrl_onSamples_);
-	  marsystems_[i]->ctrl_inObservations_->setValue(marsystems_[i-1]->ctrl_onObservations_);
-	  marsystems_[i]->ctrl_israte_->setValue(marsystems_[i-1]->ctrl_osrate_);
+	  marsystems_[i]->updctrl(marsystems_[i]->ctrl_inObsNames_, 
+				  marsystems_[i-1]->ctrl_onObsNames_);
+	  marsystems_[i]->updctrl(marsystems_[i]->ctrl_inObservations_, 
+				  marsystems_[i-1]->ctrl_onObservations_);
+	  marsystems_[i]->updctrl(marsystems_[i]->ctrl_inSamples_, 
+				  marsystems_[i-1]->ctrl_onSamples_);
+	  marsystems_[i]->updctrl(marsystems_[i]->ctrl_israte_, 
+				  marsystems_[i-1]->ctrl_osrate_);
 	  marsystems_[i]->update();
 	}
 
       // set controls based on first and last marsystem 
-      ctrl_inObsNames_->setValue(marsystems_[0]->ctrl_inObsNames_, NOUPDATE);
-      ctrl_inSamples_->setValue(marsystems_[0]->ctrl_inSamples_, NOUPDATE);
-      ctrl_inObservations_->setValue(marsystems_[0]->ctrl_inObservations_, NOUPDATE);
-      ctrl_israte_->setValue(marsystems_[0]->ctrl_israte_, NOUPDATE);
-
-      ctrl_onObsNames_->setValue(marsystems_[marsystemsSize_-1]->ctrl_onObsNames_, NOUPDATE);
-      ctrl_onSamples_->setValue(marsystems_[marsystemsSize_-1]->ctrl_onSamples_, NOUPDATE);
-      ctrl_onObservations_->setValue(marsystems_[marsystemsSize_-1]->ctrl_onObservations_, NOUPDATE);
-      ctrl_osrate_->setValue(marsystems_[marsystemsSize_-1]->ctrl_osrate_, NOUPDATE);
-
+      updctrl(ctrl_inObsNames_, marsystems_[0]->ctrl_inObsNames_, NOUPDATE);
+      updctrl(ctrl_inSamples_, marsystems_[0]->ctrl_inSamples_, NOUPDATE);
+      updctrl(ctrl_inObservations_, marsystems_[0]->ctrl_inObservations_, NOUPDATE);
+      updctrl(ctrl_israte_, marsystems_[0]->ctrl_israte_, NOUPDATE);
+      
+      updctrl(ctrl_onObsNames_, marsystems_[marsystemsSize_-1]->ctrl_onObsNames_, NOUPDATE);
+      updctrl(ctrl_onSamples_, marsystems_[marsystemsSize_-1]->ctrl_onSamples_, NOUPDATE);
+      updctrl(ctrl_onObservations_, marsystems_[marsystemsSize_-1]->ctrl_onObservations_, NOUPDATE);
+      updctrl(ctrl_osrate_, marsystems_[marsystemsSize_-1]->ctrl_osrate_, NOUPDATE);
+      
       // update buffers (aka slices) between components 
       if ((mrs_natural)slices_.size() < marsystemsSize_-1) 
 	slices_.resize(marsystemsSize_-1, NULL);

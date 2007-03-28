@@ -477,6 +477,14 @@ void recordVirtualThumbSensor(mrs_real length)
     
     thumb.write("thumb.plot");
     fret.write("fret.plot");
+
+    
+    
+    realvec newthumb;
+    
+    newthumb.read("thumb.plot");
+    
+
 }
 
 
