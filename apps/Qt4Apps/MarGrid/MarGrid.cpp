@@ -34,18 +34,17 @@ MarGrid::MarGrid(QWidget *parent)
   setAcceptDrops(true);
   setMouseTracking(true);
 
-
-
+  int winWidth, winHeight;
   
-  
-  int winSize;
-  
-  winSize = 600;
-  setMinimumSize(winSize, winSize);
-
-  som_width = 12;
+  cell_size = 50;
+  som_width = 20;
   som_height = 12;
-  cell_size = winSize / som_width;
+   
+  winWidth = cell_size * som_width;
+  winHeight = cell_size * som_height;
+
+  setMinimumSize(winWidth, winHeight);
+
   for (int i=0; i < som_width; i++)
     for (int j=0; j < som_height; j++) 
       {
@@ -316,7 +315,6 @@ MarGrid::train()
 
 void
 MarGrid::predict()
-
 {
   
   MarSystemManager mng;
@@ -473,8 +471,6 @@ void MarGrid::mousePressEvent(QMouseEvent *event)
       mwr_->play();
       
     }
-  else 
-     mwr_->pause();
   
   cout << "Playlist: " << endl;
   for (int i=0; i < posFiles.size(); i++) 
@@ -518,8 +514,6 @@ MarGrid::mouseMoveEvent(QMouseEvent* event)
       mwr_->play();
       
     }
-  else 
-      mwr_->pause();
   
   cout << "Playlist: " << endl;
   for (int i=0; i < posFiles.size(); i++) 
@@ -547,27 +541,18 @@ MarGrid::paintEvent(QPaintEvent *event)
   QRegExp qrp3("blues+");
   QRegExp qrp4("jazz+");
 
-
   int maxDensity = 0;
   int minDensity = 10000;
+  for (int i=0; i < files.size(); i++) {
+    int count = files[i].size();
 
-  for (int i=0; i < som_width; i++) 
-	for (int j=0; j < som_height; j++) 
-	{	
-	   int k = i * som_height + j;
- 	   QList<string> posFiles = files[k];
-           int density = posFiles.size();
-	   if (density > maxDensity) 
-		maxDensity = density;
-	   if (density < minDensity) 
-		minDensity = density;	   
-	}
-  
-
-  cout << "maxDensity = " << maxDensity << endl;
-  cout << "minDensity = " << minDensity << endl;
-
-  Colormap *map = Colormap::factory(Colormap::GreyScale);
+    if ( count > maxDensity ) {
+      maxDensity = count;
+    }
+    if ( count < minDensity ) {
+       minDensity = count;
+    }
+  }  
 
   for (int i=0; i < som_width; i++) 
     for (int j=0; j < som_height; j++) 
@@ -584,6 +569,8 @@ MarGrid::paintEvent(QPaintEvent *event)
 
 	QVector<int> labelvotes;
 	labelvotes << 0 << 0 << 0 << 0 << 0;
+
+
 	
 	for (int i = 0; i < posFiles.size(); ++i) 
 	  {
@@ -647,26 +634,16 @@ MarGrid::paintEvent(QPaintEvent *event)
 	  painter.setBrush(QColor("#fcaaac"));	  
 	*/ 
 
-	if (posFiles.size() > 0) 
-	{
-	  int c = int(posFiles.size() / float(maxDensity) * (map->getDepth()-1));
-	  QColor color(map->getRed(c), map->getGreen(c), map->getBlue(c));
-	  painter.setBrush(color);
-	  // painter.setBrush(QColor("#000000"));	  
-
-	}
-	else
-	{
-	   QColor color(map->getRed(0), map->getGreen(0), map->getBlue(0));
-	   painter.setBrush(color);
-	  // painter.setBrush(QColor("#ffffff"));	  
-	}
+	// For grey scale colouring
+	if ( posFiles.size() > 0 ) {
+          int color = 255 - int(posFiles.size() / float(maxDensity) * 255);
+          painter.setBrush( QColor(color, color, color) );
+	} else {
+	  painter.setBrush(QColor("#ffffff"));	  
+        }
 	
 	painter.setPen(Qt::NoPen);
 	painter.drawRect(myr);
-
-
-	
 	
 	painter.setPen(Qt::red);
 	painter.drawLine(myl1);
@@ -683,6 +660,5 @@ MarGrid::paintEvent(QPaintEvent *event)
   
   painter.end();
 }
-
 
 
