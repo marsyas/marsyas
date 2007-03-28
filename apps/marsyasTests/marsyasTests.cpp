@@ -2264,6 +2264,64 @@ test_confidence(string sfName)
   delete pnet;
 }
 
+void
+test_realvecCtrl(string sfName) 
+{
+ MarSystemManager mng;
+
+  MarSystem* pnet = mng.create("Series", "pnet");
+
+  pnet->addMarSystem(mng.create("SoundFileSource", "src"));
+  pnet->addMarSystem(mng.create("AudioSink", "dest"));
+
+
+  pnet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  pnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+  
+  pnet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+  pnet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
+  
+  while ( pnet->getctrl("mrs_bool/notEmpty")->toBool()) 
+    {
+      
+      pnet->tick();
+      
+    }
+   delete pnet;
+}
+
+
+void
+test_shredder(string sfName) 
+{
+ MarSystemManager mng;
+
+  MarSystem* pnet = mng.create("Series", "pnet");
+  MarSystem* acc = mng.create("Accumulator", "acc");
+  MarSystem* shred = mng.create("Shredder", "shred");
+
+  acc->addMarSystem(mng.create("SoundFileSource", "src"));
+	pnet->addMarSystem(acc); 
+  shred->addMarSystem(mng.create("AudioSink", "dest"));
+	pnet->addMarSystem(shred);
+
+  pnet->updctrl("Accumulator/acc/SoundFileSource/src/mrs_string/filename", sfName);
+  pnet->updctrl("Shredder/shred/AudioSink/dest/mrs_bool/initAudio", true);
+  
+  pnet->linkControl("mrs_bool/notEmpty", "Accumulator/acc/SoundFileSource/src/mrs_bool/notEmpty");
+  pnet->linkControl("mrs_natural/pos", "Accumulator/acc/SoundFileSource/src/mrs_natural/pos");
+  
+	pnet->updctrl("Accumulator/acc/mrs_natural/nTimes", 10);
+	pnet->updctrl("Shredder/shred/mrs_natural/nTimes", 10);
+
+
+  while (pnet->getctrl("mrs_bool/notEmpty")->toBool()) 
+    {      
+      pnet->tick(); 
+    }
+  delete pnet;
+}
+
 int
 main(int argc, const char **argv)
 {
@@ -2351,6 +2409,10 @@ main(int argc, const char **argv)
     test_pitch(fname0);
 	 else if (testName == "confidence")
     test_confidence(fname0);
+	 else if (testName == "shredder")
+    test_shredder(fname0);
+	 else if (testName == "realvecCtrl")
+    test_realvecCtrl(fname0);
   else 
     {
       cout << "Unsupported test " << endl;
