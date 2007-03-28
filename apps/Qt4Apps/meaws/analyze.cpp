@@ -3,13 +3,13 @@
 #include <math.h>
 #include "analyze.h"
 
-#define GNUPLOT_TEST 1
+#define GNUPLOT_TEST 0
 
 Analyze::Analyze(string audioFilename, string exerciseFilename) {
 	getExercise(exerciseFilename);
 	getPitches(audioFilename);
 
-	detected = realvec(2*exerLength/2,7); // size: 3 + 2*(notes in chords)
+	detected = realvec(2*exerLength/2,9); // size: 3 + 2*(notes in chords)
 //	detected = realvec(100,2); // size: 3 + 2*(notes in chords)
 }
 
@@ -173,6 +173,33 @@ void Analyze::writeNotes() {
 	file.close();
 }
 
+void Analyze::writeHarmData() {
+	int i,j;
+	ofstream file;
+	file.open("harmData.txt");
+	int pos=0;
+
+	i=0;
+	while (true) {
+		while (i >= detected(pos,0)) {
+			pos++;
+			cout<<pos<<endl;
+			if (pos >= detected.getRows())
+				return;
+		}
+
+		if ( detected(pos,0) >=0 ) {
+			file<<i<<" ";
+			for (j=1; j<detected.getCols(); j++) {
+				file<<detected(pos,j)<<" ";
+			}
+			file<<endl;
+		}
+		i++;
+	}
+	file.close();
+}
+
 void Analyze::printNotes() {
 	int i,j;
 	for (i=0; i<detected.getRows(); i++) {
@@ -239,7 +266,13 @@ void Analyze::calcNotes(){
 			}
 		}
 	}
+}
 
+void Analyze::calcMultipliers(){
+	int i;
+	int j;
+	mrs_real desired;
+	mrs_real curPitch;
 	// display output
 	if (GNUPLOT_TEST) {
 		for (i=0; i<detected.getRows(); i++) {
@@ -249,12 +282,22 @@ void Analyze::calcNotes(){
 		}
 	} else {
 		for (i=0; i<detected.getRows(); i++) {
-			if ( detected(i,0) > 0 )
-				detected(i,0) = detected(i,0)*512.0/44100.0;
-			if ( (exercise[i]>0)&&(detected(i,1)>0))
-				detected(i,1) = exercise[2*(i+1)]/detected(i,1);
-			else
+//			if ( detected(i,0) > 0 )
+//				detected(i,0) = detected(i,0)*512.0/44100.0;
+			if ( (exercise[i]>0)&&(detected(i,1)>0)) {
+				curPitch = pitch2hertz(detected(i,1));
+				desired = pitch2hertz( exercise[2*(i+1)] );
+				detected(i,1) = desired / curPitch;
+				for (j=3; j<detected.getCols(); j = j+2) {
+					desired = pitch2hertz( detected(i,j) );
+					detected(i,j) = desired / curPitch;
+				}
+			} else {
 				detected(i,1) = 1;
+				for (j=2; j<detected.getCols(); j = j+2) {
+					detected(i,j) = 0;
+				}
+			}
 		}	
 	}
 }
@@ -302,11 +345,13 @@ void Analyze::addHarmsHokey() {
 }
 
 void Analyze::addHarmsSmooth() {
-	int i,j;
+	int i;
+// int j;
 	mrs_real curPitch, nextPitch;
 	int curMul, nextMul;
 	mrs_real curHarm, nextHarm;
-	int curNote, nextNote;
+	int curNote;
+//int nextNote;
 
 	for (i=0; i<detected.getRows(); i++) {
 		if ( detected(i,0)>=0 ) {
@@ -336,7 +381,6 @@ void Analyze::addHarmsSmooth() {
 			}
 			cout<<hertz2pitch(curHarm);
 
-
 			cout<<endl;
 		}
 	}
@@ -347,27 +391,44 @@ void Analyze::addHarmsSmooth() {
 // 5 9 0 : FAC
 void Analyze::addHarmsBasic() {
 	int i;
-	mrs_real curPitch;
+	mrs_real curPitch; // in midi
 	int curNote;
 
 	for (i=0; i<detected.getRows(); i++) {
 		if (( detected(i,0)>=0 )&&(detected(i,1)>0)) {
 			curPitch = detected(i,1);
 			curNote = int(round(curPitch));
-			cout<<curNote;
 			curNote = curNote % 12;
 			if ( (curNote==0)||(curNote==4)) {
-				cout<<" 48 52 55"<<endl;
+				detected(i,3) = 48;
+				detected(i,4) = 0.5;  // amplitude
+				detected(i,5) = 52;
+				detected(i,6) = 0.2;
+				detected(i,7) = 55;
+				detected(i,8) = 0.2;
+				//cout<<" 48 52 55"<<endl;
 			}
 			if ( (curNote==7)||(curNote==11)||(curNote==2)) {
-				cout<<" 55 59 62"<<endl;
+      	detected(i,3) = 55;
+        detected(i,4) = 0.5;  // amplitude
+        detected(i,5) = 59;
+        detected(i,6) = 0.2;
+        detected(i,7) = 62;
+        detected(i,8) = 0.2;
+				//cout<<" 55 59 62"<<endl;
 			}
 			if ( (curNote==5)||(curNote==9)) {
-				cout<<" 53 57 60"<<endl;
+      	detected(i,3) = 43;
+        detected(i,4) = 0.5;  // amplitude
+        detected(i,5) = 57;
+        detected(i,6) = 0.2;
+        detected(i,7) = 60;
+        detected(i,8) = 0.2;
+				//cout<<" 53 57 60"<<endl;
 			}
 		}
 	}
-	cout<<endl;
-	cout<<endl;
+//	cout<<endl;
+//	cout<<endl;
 }
 

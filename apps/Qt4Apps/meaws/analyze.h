@@ -10,7 +10,9 @@ public:
 	~Analyze();
 	void calcDurations();
 	void calcNotes();
+	void calcMultipliers();
 	void writeNotes();
+	void writeHarmData();
 	void printNotes();
 	void writePitches();
 

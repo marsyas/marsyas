@@ -12,12 +12,12 @@ int main() {
   analyze->calcNotes();
 	analyze->writePitches();
 
-//	analyze->printNotes();
-//	cout<<"-----------"<<endl;
 	analyze->initHarms();
 	analyze->addHarmsBasic();
+	analyze->calcMultipliers(); // do this AFTER addharms() !!!
 	analyze->writeNotes();
-	analyze->printNotes();
+	analyze->writeHarmData();
+//	analyze->printNotes();
 	delete analyze;
 }
 
