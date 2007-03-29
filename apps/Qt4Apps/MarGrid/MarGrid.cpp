@@ -65,7 +65,7 @@ MarGrid::MarGrid(QWidget *parent)
 
   pnet_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
-  mwr_ = new MarSystemWrapper(pnet_);
+  mwr_ = new MarSystemQtWrapper(pnet_);
   mwr_->start();
   
   filePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_string/filename");

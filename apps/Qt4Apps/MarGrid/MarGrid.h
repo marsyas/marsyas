@@ -36,7 +36,7 @@ class QDragEnterEvent;
 class QDropEvent;
 class QMouseEvent;
 #include "MarSystemManager.h"
-#include "MarSystemWrapper.h" 
+#include "../MarSystemQtWrapper.h" 
 
 class MarGrid : public QWidget
 {
@@ -83,7 +83,7 @@ private:
   QRect metalRec;
   QRect classicalRec;
   int inPlace;
-  MarSystemWrapper*  mwr_;
+  MarSystemQtWrapper*  mwr_;
   Marsyas::MarSystem* pnet_;
 
   int som_height;
