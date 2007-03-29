@@ -173,31 +173,41 @@ void Analyze::writeNotes() {
 	file.close();
 }
 
-void Analyze::writeHarmData() {
-	int i,j;
+void Analyze::writeTemp(realvec temp) {
 	ofstream file;
 	file.open("harmData.txt");
-	int pos=0;
+	file<<temp;
+	file.close();
+}
 
+void Analyze::writeHarmData() {
+	int i,j;
+	realvec temp;
+	temp = realvec(1000,detected.getCols());
+
+	int pos=0;
 	i=0;
 	while (true) {
 		while (i >= detected(pos,0)) {
 			pos++;
 			cout<<pos<<endl;
-			if (pos >= detected.getRows())
+			if (pos >= detected.getRows()) {
+				writeTemp(temp);
+				temp.~realvec();
 				return;
+			}
 		}
 
 		if ( detected(pos,0) >=0 ) {
-			file<<i<<" ";
+			temp(i,0)=i;
 			for (j=1; j<detected.getCols(); j++) {
-				file<<detected(pos,j)<<" ";
+				temp(i,j) = detected(pos,j);
+				//file<<detected(pos,j)<<" ";
 			}
-			file<<endl;
+			//file<<endl;
 		}
 		i++;
 	}
-	file.close();
 }
 
 void Analyze::printNotes() {
@@ -294,7 +304,7 @@ void Analyze::calcMultipliers(){
 				}
 			} else {
 				detected(i,1) = 1;
-				for (j=2; j<detected.getCols(); j = j+2) {
+				for (j=2; j<detected.getCols(); j++) {
 					detected(i,j) = 0;
 				}
 			}
