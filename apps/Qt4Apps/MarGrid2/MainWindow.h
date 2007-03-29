@@ -5,7 +5,7 @@
 #include <QIcon>
 #include <QMainWindow>
 #include <QDebug>
-#include "Interface/Display.h"
+#include "Interface/MyDisplay.h"
 #include "Interface/Parser.h"
 
 // #include "Midi/MidiListener.h"
@@ -50,7 +50,7 @@ private:
 	void createMenus();
 
 	//Widgets
-	Display *_display;
+	MyDisplay *_display;
 	PlayBox *_playBox;
 	Playlist *_playlist;
 	Tracklist *_tracklist;

@@ -15,7 +15,7 @@
 #include <ctime>
 #include <cstdlib>
 
-#include "../Interface/Display.h"
+#include "../Interface/MyDisplay.h"
 #include "../Interface/Classifier.h"
 #include "../Interface/Extractor.h"
 
@@ -39,7 +39,7 @@ enum KeypadEnum  { KEYPAD1, KEYPAD2, KEYPAD3,
                    KEYPAD4, KEYPAD5, KEYPAD6,
                    KEYPAD7, KEYPAD8, KEYPAD9, KEYPAD_INVALID };
 
-class Keypad : public Display 
+class Keypad : public MyDisplay 
 {
 	Q_OBJECT
 

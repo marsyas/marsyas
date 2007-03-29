@@ -1,7 +1,7 @@
 #include "Grid.h"
 
 Grid::Grid(int winSize, Tracklist *tracklist, QWidget *parent)
-	: Display(tracklist, parent), _winSize(winSize)
+	: MyDisplay(tracklist, parent), _winSize(winSize)
 {
 	_collection = MusicCollection::getInstance();
 

@@ -15,7 +15,7 @@
 #include <ctime>
 #include <cstdlib>
 
-#include "../Interface/Display.h"
+#include "../Interface/MyDisplay.h"
 #include "../Interface/Classifier.h"
 #include "../Interface/Extractor.h"
 
@@ -38,7 +38,7 @@ class Extractor;
 class MarsyasECP;
 class GridSquare;
 
-class Grid : public Display 
+class Grid : public MyDisplay 
 {
 	Q_OBJECT
 

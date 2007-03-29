@@ -2,7 +2,7 @@
 #include "Keypad.h"
 
 Keypad::Keypad(int winSize, Tracklist *tracklist, QWidget *parent) 
-	: Display(tracklist, parent), _winSize(winSize)
+	: MyDisplay(tracklist, parent), _winSize(winSize)
 {
 	_collection = MusicCollection::getInstance();
 	_width = 3;
