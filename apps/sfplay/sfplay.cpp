@@ -102,7 +102,7 @@ void sfplay(vector<string> soundfiles)
   playbacknet->linkctrl("mrs_natural/nChannels", "AudioSink/dest/mrs_natural/nChannels");
   playbacknet->linkctrl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
 
-  cout << *playbacknet << endl;
+
   
 
 	// play each collection or soundfile 
@@ -111,6 +111,7 @@ void sfplay(vector<string> soundfiles)
 	{
 		string fname = *sfi;
 		playbacknet->updctrl("mrs_string/filename", fname);
+		cout << *playbacknet << endl;
 
 		playbacknet->updctrl("mrs_natural/loopPos", offset);
 		playbacknet->updctrl("mrs_natural/pos", offset);

@@ -154,7 +154,7 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
   setctrl("mrs_real/israte", myIsrate_);
   setctrl("mrs_real/osrate", myIsrate_);
 
-  if (myIsrate_ == 44100.0) 
+  /* if (myIsrate_ == 44100.0) 
   {
     downsampler_->updctrl("mrs_natural/inSamples", 2* inSamples_);
     setctrl("mrs_natural/onSamples", inSamples_);
@@ -165,6 +165,7 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
     isrc_->updctrl("mrs_natural/inSamples", 2 * inSamples_);
   }
   else
+  */ 
   {
     isrc_->updctrl("mrs_natural/inSamples", inSamples_);
     setctrl("mrs_natural/onSamples", inSamples_);
@@ -210,7 +211,7 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
     setctrl("mrs_real/israte", myIsrate_);
     setctrl("mrs_real/osrate", myIsrate_);
     
-    if (myIsrate_ == 44100.0)
+    /* if (myIsrate_ == 44100.0)
       {
 	isrc_->process(tempi_,temp_);
 	setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
@@ -218,6 +219,7 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 	downsampler_->process(temp_,out);
       }
     else 
+    */ 
       {
 	isrc_->process(in,out);
 	setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
@@ -230,14 +232,16 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
   
   else
     {
-      if (myIsrate_ == 44100.0)
+      /*      if (myIsrate_ == 44100.0)
 	{
 	  isrc_->process(tempi_,temp_);
 	  setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
 	  setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
 	  downsampler_->process(temp_,out);
 	}
-      else 
+      else
+      */ 
+
 	{
 	  isrc_->process(in,out);
 	  setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
