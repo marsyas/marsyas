@@ -25,14 +25,13 @@ int main(int argc, const char **argv) {
   analyze->calcDurations();
   analyze->calcNotes();
 
-//	analyze->initHarms();
-//	analyze->addHarmsBasic();
-//	analyze->writeHarmData();
-	if (exerFileName != "") {
-		analyze->calcMultipliers(); // do this AFTER addharms() !!!
-	}
+	analyze->initHarms();
+	analyze->addHarmsBasic();
+
+	analyze->calcMultipliers(); // do this AFTER addharms() !!!
 	analyze->writePitches();
 	analyze->writeNotes();
+	analyze->writeHarmData();
 	delete analyze;
 }
 

@@ -3,17 +3,20 @@
 #include <math.h>
 #include "analyze.h"
 
-#define GNUPLOT_TEST 0
-
 Analyze::Analyze(string audioFilename, string exerciseFileName) {
 	if ( exerciseFileName != "" ) {
 		getExercise(exerciseFileName);
 		PITCH_CORRECT=true;
+	} else {
+		PITCH_CORRECT=false;
 	}
 	getPitches(audioFilename);
-	cout<<numPitches<<endl;
+//	cout<<numPitches<<endl;
 
-	detected = realvec(numPitches,9);
+	detected = realvec(numPitches,9);  // this is way overkill; we
+// probably only need numPitches/100 or so.  But in the worst case
+// we'll need O(n), so that's what I'll allocate here, to avoid
+// having to allocate more memory later. -gp
 }
 
 Analyze::~Analyze() {
@@ -193,7 +196,7 @@ void Analyze::writeHarmData() {
 	while (true) {
 		while (i >= detected(pos,0)) {
 			pos++;
-			cout<<pos<<endl;
+			//cout<<pos<<endl;
 			if (pos >= detected.getRows()) {
 				writeTemp(temp);
 				temp.~realvec();
@@ -287,19 +290,15 @@ void Analyze::calcMultipliers(){
 	mrs_real desired;
 	mrs_real curPitch;
 	// display output
-	if (GNUPLOT_TEST) {
-		for (i=0; i<detected.getRows(); i++) {
-			//if (detected(i,1)<=0)
-			//	detected(i,1) = 73;  // for display in testing
-//			printf("%f %f\n", detected(i), detected(i+1) );
-		}
-	} else {
-		for (i=0; i<detected.getRows(); i++) {
+	for (i=0; i<detected.getRows(); i++) {
+//      calc sample postion instead of heapsize=512 pos
 //			if ( detected(i,0) > 0 )
 //				detected(i,0) = detected(i,0)*512.0/44100.0;
-			if ( (exercise[i]>0)&&(detected(i,1)>0)) {
+		if (PITCH_CORRECT) {
+			if ((exercise[i]>0)&&(detected(i,1)>0)) {
 				curPitch = pitch2hertz(detected(i,1));
 				desired = pitch2hertz( exercise[2*(i+1)] );
+				//cout<<desired<<endl;
 				detected(i,1) = desired / curPitch;
 				for (j=3; j<detected.getCols(); j = j+2) {
 					if ( detected(i,j) > 0 ) {
@@ -313,17 +312,23 @@ void Analyze::calcMultipliers(){
 					detected(i,j) = 0;
 				}
 			}
-		}	
+		} else {
+			if (detected(i,1)>0) {
+                curPitch = pitch2hertz(detected(i,1));
+				desired = curPitch;
+			    detected(i,1) = desired / curPitch;
+                for (j=3; j<detected.getCols(); j = j+2) {
+                    if ( detected(i,j) > 0 ) {
+                        desired = pitch2hertz( detected(i,j) );
+                        detected(i,j) = desired / curPitch;
+                    }
+                }
+			}
+		}
 	}
 }
 
 void Analyze::initHarms() {
-/*
-	if (GNUPLOT_TEST) {
-		cout<<"Only works with GNUPLOT_TEST=0"<<endl;
-		exit(0);
-	}
-*/
 	int i;
 	// set up initial amplitudes
 	for (i=0; i<detected.getRows(); i++) {
@@ -443,7 +448,5 @@ void Analyze::addHarmsBasic() {
 			}
 		}
 	}
-//	cout<<endl;
-//	cout<<endl;
 }
 
