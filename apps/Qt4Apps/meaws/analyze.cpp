@@ -5,12 +5,15 @@
 
 #define GNUPLOT_TEST 0
 
-Analyze::Analyze(string audioFilename, string exerciseFilename) {
-	getExercise(exerciseFilename);
+Analyze::Analyze(string audioFilename, string exerciseFileName) {
+	if ( exerciseFileName != "" ) {
+		getExercise(exerciseFileName);
+		PITCH_CORRECT=true;
+	}
 	getPitches(audioFilename);
+	cout<<numPitches<<endl;
 
-	detected = realvec(2*exerLength/2,9); // size: 3 + 2*(notes in chords)
-//	detected = realvec(100,2); // size: 3 + 2*(notes in chords)
+	detected = realvec(numPitches,9);
 }
 
 Analyze::~Analyze() {
@@ -183,7 +186,7 @@ void Analyze::writeTemp(realvec temp) {
 void Analyze::writeHarmData() {
 	int i,j;
 	realvec temp;
-	temp = realvec(1000,detected.getCols());
+	temp = realvec(numPitches,detected.getCols());
 
 	int pos=0;
 	i=0;
@@ -299,8 +302,10 @@ void Analyze::calcMultipliers(){
 				desired = pitch2hertz( exercise[2*(i+1)] );
 				detected(i,1) = desired / curPitch;
 				for (j=3; j<detected.getCols(); j = j+2) {
-					desired = pitch2hertz( detected(i,j) );
-					detected(i,j) = desired / curPitch;
+					if ( detected(i,j) > 0 ) {
+						desired = pitch2hertz( detected(i,j) );
+						detected(i,j) = desired / curPitch;
+					}
 				}
 			} else {
 				detected(i,1) = 1;

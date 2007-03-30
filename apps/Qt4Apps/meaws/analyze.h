@@ -31,6 +31,7 @@ private:
 	int *exercise;
 	realvec pitchList;
 	realvec detected;
+	bool PITCH_CORRECT;
 
 	mrs_natural numPitches;
 	mrs_natural exerLength;
