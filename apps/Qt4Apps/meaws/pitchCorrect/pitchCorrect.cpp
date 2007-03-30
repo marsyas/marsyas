@@ -4,6 +4,8 @@ using namespace std;
 #include "../analyze.h"
 
 int main(int argc, const char **argv) {
+	cout<<"Usage: pitchCorrect FILENAME.wav  (expected notes.txt)"<<endl;
+	cout<<"(expected notes.txt) is optional"<<endl;
 	string audioFileName, exerFileName;
 	if (argc<2) { cout<<"Please enter filename."<<endl; exit(1); } else
 		{ audioFileName = argv[1]; }
