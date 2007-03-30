@@ -41,7 +41,7 @@ PeClust::PeClust(string name):MarSystem("PeClust", name)
 
 PeClust::PeClust(const PeClust& a) : MarSystem(a)
 {
-	ctrl_peakSet_ = getctrl("mrs_realvec/peakSet");
+
 }
 
 PeClust::~PeClust()
@@ -68,8 +68,6 @@ PeClust::addControls()
 	setctrlState("mrs_string/similarityType", true);
 	addctrl("mrs_realvec/similarityWeight", realvec());
 	setctrlState("mrs_realvec/similarityWeight", true);
-	addctrl("mrs_realvec/peakSet", realvec(), ctrl_peakSet_);
-	setctrlState("mrs_realvec/peakSet", true);
 	addctrl("mrs_natural/hopSize", 512);
 	setctrlState("mrs_natural/hopSize", true);
 	addctrl("mrs_natural/storePeaks", 0);
@@ -408,38 +406,7 @@ MATLAB_PUT(m_, "m");
 		MATLAB_EVAL("plotPeaks(peaks)");
 		
 	  peaks2V(data_, lastFrame_, out, kmax_);
-//cout << data_;
-		// peaks storing
-		mrs_natural storing = getctrl("mrs_natural/storePeaks")->toNatural();
-		if(storing)
-		{
-			const realvec& peakSet = ctrl_peakSet_->to<realvec> (); 
-			int peaksSetSize = peakSet.getRows(), start;
-			if(!peaksSetSize)
-			{
-				// add synth infos
-				ctrl_peakSet_->stretch(nbPeaks_+1, nbPkParameters);
-				ctrl_peakSet_->setValue(0, 0, -1);
-				ctrl_peakSet_->setValue(0, 1, ctrl_israte_->to<mrs_real>());
-				ctrl_peakSet_->setValue(0, 2, getctrl("mrs_natural/hopSize")->to<mrs_natural>());
-				ctrl_peakSet_->setValue(0, pkGroup, -2);
-				start=1;
-
-				for (int i=0 ; i<nbPeaks_ ; i++)
-					for (int j=0 ; j<nbPkParameters ; j++)
-						ctrl_peakSet_->setValue(peaksSetSize+i+start, j, data_(i, j));
-			}
-			else
-			{
-				start=nbPeaksLastFrame;
-				ctrl_peakSet_->stretch(peaksSetSize+nbPeaks_-start, nbPkParameters);
-
-				for (int i=0 ; i<nbPeaks_-nbPeaksLastFrame ; i++)
-					// do not put peaks from the first frame
-					for (int j=0 ; j<nbPkParameters ; j++)
-						ctrl_peakSet_->setValue(peaksSetSize+i, j, data_(i+start, j));
-			}
-		}
+	
 	} 
 }
 

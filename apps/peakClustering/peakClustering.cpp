@@ -34,7 +34,8 @@ string fileClustName = EMPTYSTRING;
 string fileVoicingName = EMPTYSTRING;
 string fileF0Name = EMPTYSTRING;
 string panningInfo = EMPTYSTRING;
-string intervalFrequency = EMPTYSTRING;
+// set the seeking frequency interval for peaks
+string intervalFrequency = "250_2500";
 
 // Global variables for command-line options 
 bool helpopt_ = 0;
@@ -72,15 +73,14 @@ mrs_real noiseGain_=.8;
 mrs_real noiseDuration_=0;
 // sampling frequency
 mrs_real samplingFrequency_=1;
-// cutting frequency
-mrs_real cuttingFrequency_=2500;
 //
 mrs_real timeElapsed;
 //
 mrs_natural nbTicks=0;
 //
 mrs_natural clusterFilteringType_ = 0;
-
+//
+mrs_natural fileInfo_=0;
 
 bool microphone_ = false;
 bool analyse_ = true;
@@ -107,6 +107,7 @@ printHelp(string progName)
 {
 	MRSDIAG("peakClustering.cpp - printHelp");
 	cerr << "peakClustering, MARSYAS, Copyright Mathieu Lagrange " << endl;
+	cerr << "report bugs to lagrange@uvic.ca" << endl;
 	cerr << "--------------------------------------------" << endl;
 	cerr << "Usage : " << progName << " [file]" << endl;
 	cerr << endl;
@@ -114,12 +115,20 @@ printHelp(string progName)
 	cerr << "Options:" << endl;
 	cerr << "-n --fftsize         : size of fft " << endl;
 	cerr << "-w --winsize         : size of window " << endl;
-	cerr << "-s --sinusoids       : number of sinusoids" << endl;
+	cerr << "-s --sinusoids       : number of sinusoids per frame" << endl;
 	cerr << "-b --buffersize      : audio buffer size" << endl;
-	cerr << "-g --gain            : gain (0.0-1.0) " << endl;
-	cerr << "-f --filename        : output filename" << endl;
-	cerr << "-o --outputdirectorypath   : output directory path" << endl;
-	cerr << "-i --inputdirectorypath   : input directory path" << endl;
+	cerr << "-o --outputdirectoryname   : output directory path" << endl;
+	cerr << "-N --noisename : name of degrading audio file " << endl;
+	cerr << "-p --panning : panning informations <foreground level (0..1)>-<foreground pan (-1..1)>-<background level>-<background pan> " << endl;
+	cerr << "-t --typeSimilarity : similarity information a (amplitude) f (frequency) h (harmonicity)  " << endl;
+	cerr << "-q -quitAnalyse : quit processing after specified number f seconds" << endl;
+	cerr << "-T --textureSize: number of frames in a texture window" << endl;
+	cerr << "-c -clustering : number of clusters in a texture window" << endl;
+	cerr << "-k -keep : keep the specified number of clusters in the texture window " << endl;
+	cerr << "-S --synthetise : synthetize using an oscillator bank (0), an IFFT mono (1), or an IFFT stereo (2)" << endl;
+	cerr << "-i --intervalFrequency : <minFrequency>_<maxFrequency> select peaks in this interval (default 250-2500 Hz)" << endl;
+	cerr << "-f --fileInfo : provide clustering parameters in the output name (s20t10i250_2500c2k1 means 20 sines per frames in the 250_2500 Hz frequency Interval, 1 cluster selected among 2 in one texture window of 10 frames)" << endl;
+	cerr << "" << endl;
 	cerr << "-u --usage           : display short usage info" << endl;
 	cerr << "-h --help            : display this information " << endl;
 
@@ -128,9 +137,6 @@ printHelp(string progName)
 
 
 // original monophonic peakClustering 
-
-
-
 void
 clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseName, string mixName, string intervalFrequency, string panningInfo, mrs_real noiseDelay, string T, mrs_natural N, mrs_natural Nw, 
 							 mrs_natural D, mrs_natural S, mrs_natural C,
@@ -193,7 +199,8 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	//create the main network
 	pvseries->addMarSystem(accumNet);
 	pvseries->addMarSystem(peClust);
-
+	if(peakStore_)
+		pvseries->addMarSystem(mng.create("RealvecSink", "peSink"));
 	/*************************************************************/
 
 	if(synthetize >-1) 
@@ -247,6 +254,7 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	pvseries->setctrl("PeClust/peClust/mrs_natural/storePeaks", (mrs_natural) peakStore_); 
 	pvseries->updctrl("PeClust/peClust/mrs_string/similarityType", T); 
 
+
 	similarityWeight_.stretch(3);
 	similarityWeight_(0) = 1;
 	similarityWeight_(1) = 10;
@@ -291,7 +299,7 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		// cout << time << " " << noiseDelay_+noiseDuration_ << endl;
 		// ouput the seg snr
 		if(synthetize > -1 && residual_)
-			{
+		{
 			mrs_real snr = pvseries->getctrl("PeSynthetize/synthNet/Series/postNet/PeResidual/res/mrs_real/snr")->toReal();
 			globalSnr+=snr;
 			nb++;
@@ -321,18 +329,14 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	if(synthetize_ > -1)
 	{
 		cout << "Global SNR : " << globalSnr/nb << endl;
-	*snr0 = globalSnr/nb;
+		*snr0 = globalSnr/nb;
 	}
-	// plot and save peak data
-	peakSet = pvseries->getctrl("PeClust/peClust/mrs_realvec/peakSet")->toVec();
 
-
-	ofstream peakFile;
-	peakFile.open(filePeakName.c_str());
-	if(!peakFile)
-		cout << "Unable to open output Peaks File " << filePeakName << endl;
-	peakFile << peakSet_;
-	peakFile.close();
+	if(peakStore_)
+	{
+		realvec vec = pvseries->getctrl("RealvecSink/peSink/mrs_realvec/data")->toVec();
+		peakStore(vec, filePeakName, samplingFrequency_, nbSines_, D); 
+	}
 }
 
 
@@ -343,11 +347,10 @@ initOptions()
 	cmd_options.addBoolOption("help", "h", false);
 	cmd_options.addBoolOption("usage", "u", false);
 	cmd_options.addNaturalOption("voices", "v", 1);
-	cmd_options.addStringOption("filename", "f", EMPTYSTRING);
 	cmd_options.addStringOption("noisename", "N", EMPTYSTRING);
 	cmd_options.addStringOption("outputdirectoryname", "o", EMPTYSTRING);
-  cmd_options.addStringOption("intervalFrequency", "i", EMPTYSTRING);
-  cmd_options.addStringOption("panning", "p", EMPTYSTRING);
+	cmd_options.addStringOption("intervalFrequency", "i", intervalFrequency);
+	cmd_options.addStringOption("panning", "p", EMPTYSTRING);
 	cmd_options.addStringOption("typeSimilarity", "t", defaultSimilarityType_);
 	cmd_options.addNaturalOption("winsize", "w", winSize_);
 	cmd_options.addNaturalOption("fftsize", "n", fftSize_);
@@ -356,14 +359,16 @@ initOptions()
 	cmd_options.addNaturalOption("quitAnalyse", "q", stopAnalyse_);
 	cmd_options.addNaturalOption("clustering", "c", nbClusters_);
 	cmd_options.addNaturalOption("keep", "k", nbSelectedClusters_);
-  cmd_options.addNaturalOption("clusterFiltering", "F", clusterFilteringType_);
+  cmd_options.addNaturalOption("textureSize", "T", accSize_);
+	cmd_options.addNaturalOption("clusterFiltering", "F", clusterFilteringType_);
+	cmd_options.addBoolOption("fileInfo", "f", 0);
 
 
-	cmd_options.addBoolOption("analyse", "a", analyse_);
+	// cmd_options.addBoolOption("analyse", "a", analyse_);
 	cmd_options.addBoolOption("attributes", "A", attributes_);
 	cmd_options.addBoolOption("ground", "g", ground_);
-	cmd_options.addNaturalOption("synthetize", "s", synthetize_);
-	cmd_options.addNaturalOption("clusterSynthetize", "S", clusterSynthetize_);
+	cmd_options.addNaturalOption("synthetize", "S", synthetize_);
+	cmd_options.addNaturalOption("clusterSynthetize", "SC", clusterSynthetize_);
 	cmd_options.addBoolOption("peakStore", "P", peakStore_);
 }
 
@@ -387,8 +392,10 @@ loadOptions()
 	stopAnalyse_ = cmd_options.getNaturalOption("quitAnalyse");
 	nbClusters_ = cmd_options.getNaturalOption("clustering");
 	nbSelectedClusters_ = cmd_options.getNaturalOption("keep");
-  clusterFilteringType_ = cmd_options.getNaturalOption("clusterFiltering");
-	analyse_ = cmd_options.getBoolOption("analyse");
+	accSize_ = cmd_options.getNaturalOption("textureSize");
+	clusterFilteringType_ = cmd_options.getNaturalOption("clusterFiltering");
+	fileInfo_ = cmd_options.getBoolOption("fileInfo");
+	// analyse_ = cmd_options.getBoolOption("analyse");
 	attributes_ = cmd_options.getBoolOption("attributes");
 	ground_ = cmd_options.getBoolOption("ground");
 	synthetize_ = cmd_options.getNaturalOption("synthetize");
@@ -440,25 +447,39 @@ main(int argc, const char **argv)
 		for (sfi=soundfiles.begin() ; sfi!=soundfiles.end() ; sfi++)
 		{
 			FileName Sfname(*sfi);
+			string path, outputInfo;
 			if(outputDirectoryName != EMPTYSTRING)
+				path = outputDirectoryName;
+			else
+				path =Sfname.path();
+			if(fileInfo_)
 			{
-
-				fileName = outputDirectoryName + "/" + Sfname.name() ;
-				fileResName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Res." + Sfname.ext() ;
-				mixName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Mix." + Sfname.ext() ;
-				filePeakName = outputDirectoryName + "/" + Sfname.nameNoExt() + ".peak" ;
-				fileClustName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Clust.txt" ;
-				fileVoicingName = outputDirectoryName + "/" + Sfname.nameNoExt() + "Voicing.txt" ;
-				fileF0Name = outputDirectoryName + "/" + Sfname.nameNoExt() + "F0.txt" ;
-
-				if(noiseName == "music")
-				{
-					string tmp = Sfname.nameNoExt();
-					tmp.replace(tmp.length()-1, 1, 1, 'M');
-					noiseName = Sfname.path() +tmp + "." +  Sfname.ext();
-				}
-				cout << noiseName << endl;
+				stringstream outputInf;
+				outputInf << "_s" << nbSines_;
+				outputInf << "i" << intervalFrequency;
+				outputInf << "t" << accSize_; 
+				outputInf << "c" << nbClusters_;
+				outputInf <<"k" << nbSelectedClusters_;
+					outputInf << "_";
+				outputInfo = outputInf.str();
 			}
+
+			fileName = path + "/" + Sfname.nameNoExt()+outputInfo+"Sep"+"."+Sfname.ext() ;
+			fileResName = path + "/" + Sfname.nameNoExt() +outputInfo+ "Res"+ "." + Sfname.ext() ;
+			mixName = path + "/" + Sfname.nameNoExt() +outputInfo+ "Mix" + "."+ Sfname.ext() ;
+			filePeakName = path + "/" + Sfname.nameNoExt() + outputInfo+".peak" ;
+			fileClustName = path + "/" + Sfname.nameNoExt()+outputInfo+ "Clust" +".txt" ;
+			fileVoicingName = path + "/" + Sfname.nameNoExt() +outputInfo+ "Voicing" +".txt" ;
+			fileF0Name = path + "/" + Sfname.nameNoExt() +outputInfo+  "F0.txt" ;
+
+			if(noiseName == "music")
+			{
+				string tmp = Sfname.nameNoExt();
+				tmp.replace(tmp.length()-1, 1, 1, 'M');
+				noiseName = Sfname.path() +tmp + "." +  Sfname.ext();
+			}
+			cout << noiseName << endl;
+
 			if(analyse_)
 			{
 				cout << "Phasevocoding " << Sfname.name() << endl; 
@@ -470,7 +491,7 @@ main(int argc, const char **argv)
 			if(peakSet_.getSize() == 0)
 			{
 				cout << "unable to load peak file: " << filePeakName << endl;
-			//	exit(1);
+				//	exit(1);
 			}
 
 			//MATLAB_PUT(peakSet_, "peaks");
@@ -484,12 +505,14 @@ main(int argc, const char **argv)
 			if(attributes_)
 			{
 				realvec vecs;
-				clusters.attributes(peakSet_, cuttingFrequency_);	
+				realvec conv(2);
+				string2parameters(intervalFrequency, conv, '_');
+				clusters.attributes(peakSet_, conv(1));	
 				clusters.getVecs(vecs);
 
 				// cout << vecs;
-//				MATLAB_PUT(getcwd(NULL, 0), "path");
-//				MATLAB_PUT(fileName, "fileName");
+				//				MATLAB_PUT(getcwd(NULL, 0), "path");
+				//				MATLAB_PUT(fileName, "fileName");
 
 				MATLAB_PUT(vecs, "clusters");
 				ofstream clustFile;
@@ -528,8 +551,8 @@ main(int argc, const char **argv)
 			if(clusterFilteringType_)
 			{
 				realvec ct;
-        clusters.selectBefore(clusterFilteringType_);
-        clusters.getConversionTable(ct);
+				clusters.selectBefore(clusterFilteringType_);
+				clusters.getConversionTable(ct);
 				updateLabels(peakSet_, ct);
 			}
 
@@ -541,19 +564,21 @@ main(int argc, const char **argv)
 			}
 			/*MATLAB_PUT(peakSet_, "peaks");
 			MATLAB_EVAL("plotPeaks(peaks)");*/ 
-		  /*	MATLAB_PUT(peakSet_, "peaks");
+			/*	MATLAB_PUT(peakSet_, "peaks");
 			MATLAB_EVAL("figure(1); clf ; plotPeaks(peaks)");*/
-      FileName oriFileName(*sfi);
+
+			// for SNR cimputation
+			/*
+			FileName oriFileName(*sfi);
 			FileName noiseFileName(noiseName);
 			ofstream resFile;
-			string snrName(outputDirectoryName + "/similaritySnrResults.txt");
+			string snrName(path + "/similaritySnrResults.txt");
 			resFile.open( snrName.c_str(), ios::out | ios::app);
 			cout << oriFileName.name() << " " << noiseFileName.name() << " " << similarityType_ << " " << snr0 << endl;
 			resFile << oriFileName.name() << " " << noiseFileName.name() << " " << similarityType_ << " " << snr0 << endl;
 			resFile.close();
-		}
-		
-	   
+			*/
+		}  
 	}
 	else
 	{

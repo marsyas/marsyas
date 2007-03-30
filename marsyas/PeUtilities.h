@@ -79,6 +79,9 @@ synthNetConfigure(MarSystem *pvseries, std::string sfName, std::string outsfname
 mrs_real harmonicWeighting(mrs_real, mrs_real, mrs_real);
 mrs_real harmonicWeightingBasic(mrs_real, mrs_real);
 void discrete2labels(realvec &labels, realvec& n, mrs_natural nbClusters, mrs_natural nbPeaks);
+
+void peakStore(realvec& peaks, std::string filename, mrs_real fs, mrs_natural nbSines, mrs_natural hopSize);
+void peakLoad(realvec& peaks, std::string filename, mrs_real &fs, mrs_natural &nbSines, mrs_natural &nbFrames, mrs_natural &hopSize);
 }
 
 #endif

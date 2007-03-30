@@ -36,9 +36,7 @@ namespace Marsyas
 class PeClust: public MarSystem
 {
 private: 
-
-	MarControlPtr ctrl_peakSet_;
-
+  
 	realvec data_;
 	realvec m_;
 	realvec lastFrame_;

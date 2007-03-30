@@ -620,3 +620,43 @@ void Marsyas::discrete2labels(realvec &labels, realvec& n, mrs_natural nbCluster
 			if(n(i*nbClusters+j) == 1)
 				labels(i) = j;
 }
+
+
+
+void Marsyas::peakStore(realvec &peaks, string filename, mrs_real sf, mrs_natural nbSines, mrs_natural hopSize)
+{
+	mrs_natural nbFrames_ = peaks.getCols();
+	realvec peakSetM_ = realvec(nbSines*nbFrames_, nbPkParameters);
+	peakSetM_(0, 0) = -1;
+	peakSetM_(0, 1) =  sf;
+	peakSetM_(0, 2) =  hopSize;
+	peakSetM_(0, 3) =  nbSines;
+	peakSetM_(0, 4) =  nbFrames_;
+	peakSetM_(0, pkGroup) = -2;
+	realvec tmp(1);
+	tmp.setval(0);
+	mrs_natural tmp2;
+	peaks2M(peaks, tmp, peakSetM_, nbSines, &tmp2, 1);
+	cout << peaks.getSize() << endl;
+	ofstream peakFile;
+	peakFile.open(filename.c_str());
+	if(!peakFile)
+		cout << "Unable to open output Peaks File " << filename << endl;
+	peakFile << peakSetM_;
+	peakFile.close();
+}
+
+void Marsyas::peakLoad(realvec &peaks, string filename, mrs_real &fs, mrs_natural &nbSines, mrs_natural &nbFrames, mrs_natural &hopSize)
+{
+	realvec peakSet_;
+	peakSet_.read(filename);
+
+	fs  = peakSet_(0, 1);
+	hopSize = peakSet_(0, 2);
+	nbSines = peakSet_(0, 3);
+	nbFrames = peakSet_(0, 4);
+
+	peaks.stretch(nbSines*nbPkParameters, nbFrames);
+	peaks.setval(0);
+	peaks2V(peakSet_, peaks, peaks, nbSines);
+}

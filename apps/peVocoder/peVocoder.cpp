@@ -77,8 +77,9 @@ printUsage(string progName)
 void 
 printHelp(string progName)
 {
-	MRSDIAG("peakClustering.cpp - printHelp");
-	cerr << "peakClustering, MARSYAS, Copyright Mathieu Lagrange " << endl;
+	MRSDIAG("peVocoder.cpp - printHelp");
+	cerr << "peVocoder, MARSYAS, Copyright Mathieu Lagrange " << endl;
+  cerr << "report bugs to lagrange@uvic.ca" << endl;
 	cerr << "--------------------------------------------" << endl;
 	cerr << "Usage : " << progName << " [file]" << endl;
 	cerr << endl;
@@ -86,14 +87,15 @@ printHelp(string progName)
 	cerr << "Options:" << endl;
 	cerr << "-n --fftsize         : size of fft " << endl;
 	cerr << "-w --winsize         : size of window " << endl;
-	cerr << "-s --sinusoids       : number of sinusoids" << endl;
+	cerr << "-s --sinusoids       : number of sinusoids per frame" << endl;
 	cerr << "-b --buffersize      : audio buffer size" << endl;
-	cerr << "-g --gain            : gain (0.0-1.0) " << endl;
-	cerr << "-f --filename        : output filename" << endl;
-	cerr << "-o --outputdirectorypath   : output directory path" << endl;
-	cerr << "-i --inputdirectorypath   : input directory path" << endl;
+	cerr << "-o --outputdirectoryname   : output directory path" << endl;
+	cerr << "-p --panning : panning informations <foreground level (0..1)>-<foreground pan (-1..1)>-<background level>-<background pan> " << endl;
+	cerr << "-S --synthetise : synthetize using an oscillator bank (0), an IFFT mono (1), or an IFFT stereo (2)" << endl;
+	cerr << "" << endl;
 	cerr << "-u --usage           : display short usage info" << endl;
 	cerr << "-h --help            : display this information " << endl;
+
 
 	exit(1);
 }
@@ -159,6 +161,8 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		// create realvecSource
 		MarSystem *peSource = mng.create("RealvecSource", "peSource");
 		pvseries->addMarSystem(peSource);
+		/*
+
 		mrs_natural nbF_=0;
 		realvec peakSet_;
 		peakSet_.read(sfName);
@@ -177,9 +181,13 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 			peakSetV_.setval(0);
 			peaks2V(peakSet_, peakSetV_, peakSetV_, nbSines_);
 
-			pvseries->setctrl("RealvecSource/peSource/mrs_realvec/data", peakSetV_);
-			pvseries->setctrl("RealvecSource/peSource/mrs_real/israte", peakSet_(0, 1));
-			D = peakSet_(0, 2);
+			*/
+			realvec peakSet_;
+			mrs_real fs;
+			mrs_natural nbFrames;
+      peakLoad(peakSet_, sfName, fs, S, nbFrames, D);
+			pvseries->setctrl("RealvecSource/peSource/mrs_realvec/data", peakSet_);
+			pvseries->setctrl("RealvecSource/peSource/mrs_real/israte", fs);
 	}
 
 	if(peakStore_)
@@ -248,23 +256,8 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 
 		if(peakStore_)
 		{
-			realvec peakSet_ = pvseries->getctrl("RealvecSink/peSink/mrs_realvec/data")->toVec();
-			realvec peakSetM_ = realvec(nbFrames_*nbSines_, nbPkParameters);
-			peakSetM_(0, 0) = -1;
-			peakSetM_(0, 1) =  samplingFrequency_;
-			peakSetM_(0, 2) =  D;
-			peakSetM_(0, pkGroup) = -2;
-			realvec tmp(1);
-			tmp.setval(0);
-			mrs_natural tmp2;
-			peaks2M(peakSet_, tmp, peakSetM_, nbSines_, &tmp2, 1);
-			cout << peakSet_.getSize() << endl;
-			ofstream peakFile;
-			peakFile.open(filePeakName.c_str());
-			if(!peakFile)
-				cout << "Unable to open output Peaks File " << filePeakName << endl;
-			peakFile << peakSetM_;
-			peakFile.close();
+			realvec vec = pvseries->getctrl("RealvecSink/peSink/mrs_realvec/data")->toVec();
+			peakStore(vec, filePeakName, samplingFrequency_, nbSines_, D); 
 
 			MATLAB_PUT(peakSet_, "peaks");
 			MATLAB_EVAL("plotPeaks(peaks)");
