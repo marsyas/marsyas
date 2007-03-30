@@ -35,6 +35,7 @@ using namespace Marsyas;
 BICchangeDetector::BICchangeDetector(string name):MarSystem("BICchangeDetector", name)
 {
 	prevDists_ = new Memory("cirMem");
+	nfeats_ = 0;
 	addControls();
 }
 
@@ -42,6 +43,7 @@ BICchangeDetector::BICchangeDetector(const BICchangeDetector& a) : MarSystem(a)
 {
 	prevDists_ = new Memory(*(a.prevDists_));
 	
+	nfeats_ = 0;
 	ctrl_reset_ = getctrl("mrs_bool/reset");
 	ctrl_alpha1_= getctrl("mrs_real/alpha1");
 	ctrl_lambda_= getctrl("mrs_real/lambda");
@@ -92,11 +94,12 @@ BICchangeDetector::myUpdate(MarControlPtr sender)
 	//
 	// For now, hop is set fixed as 1/5 of inSamples [!]
 	//
-	if(segFrames_ != ctrl_inSamples_->to<mrs_natural>()*2/5) //hardcoded [!]
+	if(segFrames_ != ctrl_inSamples_->to<mrs_natural>()*2/5 ||
+		nfeats_ != ctrl_inObservations_->to<mrs_natural>()) //hardcoded [!]
 	{
 		segFrames_ = ctrl_inSamples_->to<mrs_natural>()*2/5; // hardcoded [!]
 		segHop_ = ctrl_inSamples_->to<mrs_natural>()*1/5; // hardcoded [!]
-		mrs_natural nfeats = ctrl_inObservations_->to<mrs_natural>();
+		nfeats_ = ctrl_inObservations_->to<mrs_natural>();
 		/* C1_.allocate(nfeats, segFrames_);
 		C2_.allocate(nfeats, segFrames_);
 		C3_.allocate(nfeats, segFrames_);
@@ -105,10 +108,10 @@ BICchangeDetector::myUpdate(MarControlPtr sender)
 		// there is no allocate anymore in realvec 
 		// not sure how it compiled. Gustavo ? 
 		
-		C1_.create(nfeats, segFrames_);
-		C2_.create(nfeats, segFrames_);
-		C3_.create(nfeats, segFrames_);
-		C4_.create(nfeats, segFrames_);
+		C1_.create(nfeats_, segFrames_);
+		C2_.create(nfeats_, segFrames_);
+		C3_.create(nfeats_, segFrames_);
+		C4_.create(nfeats_, segFrames_);
 		
 
 	}
@@ -125,15 +128,22 @@ BICchangeDetector::myUpdate(MarControlPtr sender)
 void 
 BICchangeDetector::myProcess(realvec& in, realvec& out)
 {
+	// [!note!] if CX_ matrices are reused they need to be resized since
+	// they meanwhile were assigned to covariance matrices (10x10)
+	C1_.create(nfeats_, segFrames_);
+	C2_.create(nfeats_, segFrames_);
+	C3_.create(nfeats_, segFrames_);
+	C4_.create(nfeats_, segFrames_);
+
 	for(o=0; o < inObservations_; ++o)
 	{
 		//get segments => use pointers to "in" instead of copies?! [!]
 		for(t=0; t < segFrames_ ; ++t)		
 		{
 			C1_(o, t) = in(o, t);
-			C2_(o, t + segFrames_) = in(o, t + segFrames_);
-			C3_(o, t + segHop_) = in(o, t + segHop_);
-			C4_(o, t + segHop_ + segFrames_) = in(o, t + segHop_ + segFrames_);
+			C2_(o, t) = in(o, t + segFrames_);
+			C3_(o, t) = in(o, t + segHop_);
+			C4_(o, t) = in(o, t + segHop_ + segFrames_);
 		}
 
 		//bypass input to output unchanged [!]
@@ -142,7 +152,7 @@ BICchangeDetector::myProcess(realvec& in, realvec& out)
 	}
 
 	//calculate covariance matrix for each segment
-	C1_ = C1_.covariance();
+	C1_ = C2_.covariance();
 	C2_ = C2_.covariance();
 	C3_ = C3_.covariance();
 	C4_ = C4_.covariance();

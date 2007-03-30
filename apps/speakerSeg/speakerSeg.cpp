@@ -104,7 +104,7 @@ void speakerSeg(vector<string> soundfiles)
 	//create an accumulator for creating hopsize new feature vectors at each tick
 	MarSystem* accum = mng.create("Accumulator", "accum");
 	accum->addMarSystem(featExtractor);
-	accum->updctrl("mrs_natural/nTimes", 1/2*minSegFrames);
+	accum->updctrl("mrs_natural/nTimes", minSegFrames/2);
 
 	//add accumuated feature extraction to main processing network
 	pnet->addMarSystem(accum);

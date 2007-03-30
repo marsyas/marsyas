@@ -43,6 +43,7 @@ namespace Marsyas
 		mrs_natural segFrames_; //number of frames per audio segment
 		mrs_natural minSegFrames_; //minimum nr of frames to avoid ill-cov matrices
 		mrs_natural segHop_;
+		mrs_natural nfeats_;
 		realvec C1_;
 		realvec C2_;
 		realvec C3_;
