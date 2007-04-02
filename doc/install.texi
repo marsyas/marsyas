@@ -3,6 +3,7 @@
 
 @menu
 * Download::                    
+* System requirements::         
 * Configuring Marsyas::         
 * Compiling Marsyas::           
 * Platform-specific notes::     
@@ -91,6 +92,57 @@ hardware support is more than welcome.  The sourceforge page contains
 a link for people to donate money to the project and any contribution
 is welcome and will help further improve the framework. 
 @end ignore
+
+
+@node System requirements
+@section System requirements
+
+@subsection Linux
+
+Required:
+
+@itemize
+@item Standard development environment (gcc, g++, etc): probably already installed.
+@item @uref{http://www.trolltech.com/products/qt,QT/Trolltech} development platform.
+@end itemize
+
+Optional:
+
+@itemize
+@item @uref{http://sourceforge.net/projects/mad/, LibMAD}: mp3 support
+@end itemize
+
+
+@subsection MacOSX
+
+Required:
+
+@itemize
+@item @uref{http://developer.apple.com/tools/xcode/, Xcode}: standard development platform on OSX.  Please install from your OSX installation CD/DVD, or download.
+@item @uref{http://www.trolltech.com/products/qt, QT/Trolltech} development platform.
+@end itemize
+
+Optional:
+
+@itemize
+@item @uref{http://sourceforge.net/projects/mad/, LibMAD}: mp3 support
+@end itemize
+
+
+@subsection Windows
+
+Required:
+
+@itemize
+@item Microsoft Visual Studio
+@item @uref{http://www.trolltech.com/products/qt,QT/Trolltech} development platform
+@end itemize
+
+Optional:
+
+@itemize
+@item @uref{http://sourceforge.net/projects/mad/, LibMAD}: mp3 support
+@end itemize
 
 
 @node Configuring Marsyas
