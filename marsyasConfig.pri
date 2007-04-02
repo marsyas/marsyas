@@ -26,7 +26,7 @@ CONFIG += marsyasQt4Apps
 ######################################################################
 
 unix:CONFIG	+= release
-win32:win32-msvc2005:CONFIG += debug_release
+win32:win32-msvc2005:CONFIG += debug_and_release
 
 ######################################################################
 # enable/disable ASSERTIONS/WARNINGS/DIAGNOSTICS/LOGS, etc
@@ -98,7 +98,11 @@ CONFIG(debug, debug|release) {
 	message ( -> DEBUG building )
 	DEFINES += MARSYAS_DEBUG
 	
+	#in debug, activate assertions
+	CONFIG += marsyasASSERT		#turn on assertions
+	
 	#in debug, activate some logging by default 
+	CONFIG += marsyasLOGDIAGNOSTIC	#diagnostic messages in log
 	CONFIG += marsyasLOGWARNINGS	#warning messages in log
 	CONFIG += marsyasLOGDEBUG		#debug messages in log
 	CONFIG += marsyasLOGSTDOUT			#log to stdout
@@ -277,7 +281,7 @@ win32 {
 	marsyasMATLAB{
 		DEFINES += MARSYAS_MATLAB
 		INCLUDEPATH += "$$(MATLAB)"/extern/include
-		LIBS += -llibeng -llibmx -llibut -L\"$$(MATLAB)/extern/lib/win32/microsoft\"
+		LIBS += -llibeng -llibmx -llibut -L\"$$(MATLAB)/bin/win32\"
 	}
 	
 	marsyasMAD {
