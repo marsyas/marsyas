@@ -4,13 +4,27 @@ using namespace std;
 using namespace Marsyas;
 
 
-MarMonitors::MarMonitors(string au, QWidget *parent)
-  : QWidget(parent)
+MarMonitors::MarMonitors()
 {
+  QWidget *w = new QWidget;
+  setCentralWidget(w);
+  
+  createActions();
+  createMenus();
 
-  audio_file = au;
+  
+
+}
+
+
+void 
+MarMonitors::initNetwork(QString pluginName)
+{
+  
+
+  
   nGraphs_ = 2;
-
+  
   out_.create(512);  
   
   // create the Marsyas 
@@ -34,7 +48,7 @@ MarMonitors::MarMonitors(string au, QWidget *parent)
   pnet_->addMarSystem(mng.create("Hamming", "ham2"));
   
   
-  pnet_->updctrl("SoundFileSource/src/mrs_string/filename", au );
+  pnet_->updctrl("SoundFileSource/src/mrs_string/filename", "/home/gtzan/data/sound/music_speech/music/gravity.au");
   pnet_->updctrl("Windowing/windowing/mrs_natural/zeroPhasing", 1);
   pnet_->updctrl("Gain/gain/mrs_real/gain", 2.0);
   pnet_->updctrl("Gain/gain2/mrs_real/gain", 3.0);
@@ -84,15 +98,56 @@ MarMonitors::MarMonitors(string au, QWidget *parent)
   // connect(numTicksSpinBox, SIGNAL(valueChanged(int)), this, SLOT(setTicks(int)));
   setLayout(gridLayout_);
 
-
   
-      
-
-
-  
-
 }
+
+
+
+
+
+void
+MarMonitors::createMenus()
+{
+  fileMenu = menuBar()->addMenu(tr("&File"));
+  fileMenu->addAction(openAct);
+  menuBar()->addSeparator();
+  helpMenu = menuBar()->addMenu(tr("&Help"));
+  helpMenu->addAction(aboutAct);
+}
+
+
+void 
+MarMonitors::createActions()
+{
+  openAct = new QAction(tr("&Open..."), this);
+  openAct->setShortcut(tr("Ctrl+O"));
+  openAct->setStatusTip(tr("Open an existing file"));
+  connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
+  aboutAct = new QAction(tr("&About"), this);
+  aboutAct->setStatusTip(tr("Show the application's About box"));
+  connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
+}
+
+
+
+
+void 
+MarMonitors::open()
+{
+  QString fileName = QFileDialog::getOpenFileName(this);
+  initNetwork(fileName);
+}
+
+void 
+MarMonitors::about()
+{
+  /* QMessageBox::about(this, tr("Marsyas MarMonitors"),  
+			   tr("Marsyas MarPhasevocoder: A graphical user interface for viewing \n the intermediate results of dataflow calcualtion in arbitrary marsystems stored as plugins"));
+  */ 
 	
+}
+
+
 
 
 

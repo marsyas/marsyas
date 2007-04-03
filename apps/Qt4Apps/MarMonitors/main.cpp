@@ -12,18 +12,13 @@ int main(int argc, char *argv[])
 
   QApplication app(argc, argv);
 
-  if (argc < 2) {
-	std::cout << "Usuage:\n\t$ ./Marx2DGraph /path/to/audiofile.au\n";
-    return 0;
-  }
 
-  std::string progName = argv[0];
-  std::string audioFile = argv[1];
+  std::string audioFile = "/home/gtzan/data/sound/music_speech/music/gravity.au";
 
-  MarMonitors* panel = new MarMonitors( audioFile );
+  MarMonitors* monitors = new MarMonitors();
   
-  panel->setGeometry(50, 50, 800, 500);
-  panel->show();
+  monitors->setGeometry(50, 50, 800, 500);
+  monitors->show();
 
   return app.exec();
 }

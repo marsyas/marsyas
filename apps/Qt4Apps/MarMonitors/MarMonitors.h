@@ -10,25 +10,35 @@
 #include <QSpinBox>
 #include <QDialog>
 #include <QLabel> 
-#include<QListWidget> 
+#include <QMenuBar>
+#include <QMenu>
+#include <QListWidget> 
+#include <QMainWindow>
+#include <QApplication> 
+#include <QFileDialog> 
 
-class MarMonitors : public QWidget
+class MarMonitors : public QMainWindow
 {
    Q_OBJECT
 
 public:
-  MarMonitors(std::string au = "", QWidget *parent = 0);
+  MarMonitors();
 
 public slots: 
   void tick();
   void graph();
   void setup();
   void dialogDone();
-  
+  void open();
+  void about();  
 
 
 private: 
-      
+  void createMenus();
+  void createActions();
+  void initNetwork(QString pluginName);
+
+  
       
   realvec out_;
   QVector<Marx2DGraph*> graphs;
@@ -45,7 +55,12 @@ private:
   int nTicks;
   int nGraphs_;
   
-  std::string audio_file;
+
+  QMenu*   fileMenu;  
+  QMenu*   helpMenu;
+  QAction* openAct;
+  QAction* aboutAct;
+
   
 };
 
