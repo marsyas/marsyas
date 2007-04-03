@@ -1,12 +1,12 @@
 include ( ../Qt4Apps.pri)
 
 TEMPLATE = app
-TARGET = Marx2DGraph 
+TARGET = MarMonitors 
 INCLUDEPATH += . ..
 
 # Input
-HEADERS += ../MarSystemQtWrapper.h Marx2DGraph.h TopPanelNew.h
+HEADERS += ../MarSystemQtWrapper.h Marx2DGraph.h MarMonitors.h
 SOURCES += main.cpp \
            ../MarSystemQtWrapper.cpp \
            Marx2DGraph.cpp \
-           TopPanelNew.cpp
+           MarMonitors.cpp

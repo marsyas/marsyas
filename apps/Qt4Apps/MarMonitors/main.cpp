@@ -5,7 +5,7 @@
 #include <string>
 
 #include "Marx2DGraph.h"
-#include "TopPanelNew.h"
+#include "MarMonitors.h"
 
 int main(int argc, char *argv[])
 {
@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
   std::string progName = argv[0];
   std::string audioFile = argv[1];
 
-  TopPanelNew* panel = new TopPanelNew( audioFile );
+  MarMonitors* panel = new MarMonitors( audioFile );
   
   panel->setGeometry(50, 50, 800, 500);
   panel->show();

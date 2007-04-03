@@ -1,10 +1,10 @@
-#include "TopPanelNew.h"
+#include "MarMonitors.h"
 
 using namespace std;
 using namespace Marsyas;
 
 
-TopPanelNew::TopPanelNew(string au, QWidget *parent)
+MarMonitors::MarMonitors(string au, QWidget *parent)
   : QWidget(parent)
 {
 
@@ -97,7 +97,7 @@ TopPanelNew::TopPanelNew(string au, QWidget *parent)
 
 
 void 
-TopPanelNew::graph()
+MarMonitors::graph()
 {
  int num = 512;
  nGraphs_ += 1;
@@ -116,7 +116,7 @@ TopPanelNew::graph()
 
 
 void 
-TopPanelNew::dialogDone()
+MarMonitors::dialogDone()
 {
   if (graphs.size() == 0) 
     return;
@@ -133,7 +133,7 @@ TopPanelNew::dialogDone()
 
 
 void 
-TopPanelNew::setup()
+MarMonitors::setup()
 {
   QDialog *setupDialog = new QDialog(this);
 
@@ -184,7 +184,7 @@ TopPanelNew::setup()
 
 
 void 
-TopPanelNew::tick()
+MarMonitors::tick()
 {
 
   pnet_->tick();  

@@ -1,9 +1,9 @@
-#ifndef TOPPANELNEW_H
-#define TOPPANELNEW_H 
+#ifndef MARMONITORS_H
+#define MARMONITORS_H 
 
 #include "Marx2DGraph.h"
 #include "MarSystemManager.h" 
-#include "MarSystemWrapper.h"
+#include "../MarSystemQtWrapper.h"
 #include "MarSystem.h"
 #include "MarControl.h" 
 #include <QPushButton> 
@@ -12,12 +12,12 @@
 #include <QLabel> 
 #include<QListWidget> 
 
-class TopPanelNew : public QWidget
+class MarMonitors : public QWidget
 {
    Q_OBJECT
 
 public:
-  TopPanelNew(std::string au = "", QWidget *parent = 0);
+  MarMonitors(std::string au = "", QWidget *parent = 0);
 
 public slots: 
   void tick();
@@ -34,7 +34,7 @@ private:
   QVector<Marx2DGraph*> graphs;
   Marx2DGraph* graph3;
   Marsyas::MarSystem* pnet_;
-  MarSystemWrapper* mwr_;
+  MarSystemQtWrapper* mwr_;
   QGridLayout *gridLayout_;
 
   QVector<string> probes_;
