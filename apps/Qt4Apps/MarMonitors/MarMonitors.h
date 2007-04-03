@@ -46,6 +46,8 @@ private:
   Marsyas::MarSystem* pnet_;
   MarSystemQtWrapper* mwr_;
   QGridLayout *gridLayout_;
+  QWidget* centralWidget_;
+  
 
   QVector<string> probes_;
   QListWidget *listWidget;
