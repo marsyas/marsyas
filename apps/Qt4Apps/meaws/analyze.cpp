@@ -3,14 +3,16 @@
 #include <math.h>
 #include "analyze.h"
 
-Analyze::Analyze(string audioFilename, string exerciseFileName) {
+Analyze::Analyze(string audioFileName, string exerciseFileName) {
 	if ( exerciseFileName != "" ) {
 		getExercise(exerciseFileName);
 		PITCH_CORRECT=true;
 	} else {
 		PITCH_CORRECT=false;
 	}
-	getPitches(audioFilename);
+	outputFileName = audioFileName;
+	outputFileName.append(".analysis.txt");
+	getPitches(audioFileName);
 //	cout<<numPitches<<endl;
 
 	detected = realvec(numPitches,9);  // this is way overkill; we
@@ -181,7 +183,7 @@ void Analyze::writeNotes() {
 
 void Analyze::writeTemp(realvec temp) {
 	ofstream file;
-	file.open("harmData.txt");
+	file.open( outputFileName.c_str() );
 	file<<temp;
 	file.close();
 }

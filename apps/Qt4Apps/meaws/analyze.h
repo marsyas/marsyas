@@ -32,6 +32,7 @@ private:
 	realvec pitchList;
 	realvec detected;
 	bool PITCH_CORRECT;
+	string outputFileName;
 
 	mrs_natural numPitches;
 	mrs_natural exerLength;
