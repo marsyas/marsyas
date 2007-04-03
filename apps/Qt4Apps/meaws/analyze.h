@@ -11,6 +11,7 @@ public:
 	void calcDurations();
 	void calcNotes();
 	void calcMultipliers();
+	void calcNothing();
 	void writeNotes();
 	void writeHarmData();
 	void printNotes();

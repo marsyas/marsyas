@@ -27,6 +27,14 @@ Analyze::~Analyze() {
 	pitchList.~realvec();
 }
 
+void Analyze::calcNothing() {
+	int i;
+	for (i=0; i<numPitches; i++) {
+		detected(i,0) = i;
+		detected(i,1) = pitchList(i);
+	}
+}
+
 void Analyze::calcDurations() {
 	int MEAN_RADIUS = 20.0;
 	float prevNote=0.0;

@@ -4,6 +4,9 @@ using namespace std;
 #include "../analyze.h"
 
 int main(int argc, const char **argv) {
+// TODO: need a better way of selecting this.
+	bool NOTE_SEGMENT = true;
+
 	cout<<"Usage: pitchCorrect FILENAME.wav  (expected notes.txt)"<<endl;
 	cout<<"(expected notes.txt) is optional"<<endl;
 	string audioFileName, exerFileName;
@@ -24,8 +27,13 @@ int main(int argc, const char **argv) {
 
 	Analyze* analyze;
   analyze = new Analyze(audioFileName, exerFileName);
-  analyze->calcDurations();
-  analyze->calcNotes();
+
+	if (NOTE_SEGMENT) {
+		analyze->calcDurations();
+		analyze->calcNotes();
+	} else {
+		analyze->calcNothing();
+	}
 
 	analyze->initHarms();
 	analyze->addHarmsBasic();
