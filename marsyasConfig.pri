@@ -281,7 +281,7 @@ win32 {
 	marsyasMATLAB{
 		DEFINES += MARSYAS_MATLAB
 		INCLUDEPATH += "$$(MATLAB)"/extern/include
-		LIBS += -llibeng -llibmx -llibut -L\"$$(MATLAB)/bin/win32\"
+		LIBS += -llibeng -llibmx -llibut -L\"$$(MATLAB)/extern/lib/win32/microsoft\"
 	}
 	
 	marsyasMAD {
