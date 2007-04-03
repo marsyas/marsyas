@@ -1,4 +1,4 @@
-#include "Colormap.h"
+#include "ColorMap.h"
 #include "SpectraColormap.h"
 #include "GreyScaleColormap.h"
 

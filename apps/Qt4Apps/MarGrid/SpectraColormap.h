@@ -3,7 +3,7 @@
 
 #define SPECTRACOLORMAP_SIZE	64
 
-#include "Colormap.h"
+#include "ColorMap.h"
 
 class SpectraColormap : public Colormap 
 {

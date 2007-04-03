@@ -3,7 +3,7 @@
 
 #define GREYSCALECOLORMAP_SIZE 256
 
-#include "Colormap.h"
+#include "ColorMap.h"
 
 class GreyScaleColormap : public Colormap
 {
