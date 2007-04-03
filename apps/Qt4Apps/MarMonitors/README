@@ -1,0 +1,25 @@
+
+Marx2DGraph 
+--------
+
+
+Various types of 2D graph plots. Will be used 
+to debug and monitor the dataflow of Marsyas.
+
+The code requires 
+that Qt 4.0 or later is installed in your system 
+and has only been tested on Linux systems.  
+
+
+
+To compile: 
+
+qmake 
+make 
+Marx2DGraph 
+
+Any comments/feedback/questions: 
+George Tzanetakis 
+http://www.cs.uvic.ca/~gtzan
+gtzan@cs.uvic.ca 
+
