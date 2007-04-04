@@ -248,10 +248,12 @@ MarMonitors::tick()
   pnet_->tick();  
   for (int i = 0; i < graphs.size(); ++i) 
     {
-      out_ = pnet_->getControl(probes_[i])->toVec();
+      cout << "probes_[i] " << probes_[i] << endl;
+      
+      out_ = (mycontrols_[probes_[i]])->toVec();
       cout << out_ << endl;
       
-      graphs[i]->setBuffer( out_ );
+      // graphs[i]->setBuffer( out_ );
     }
   
 }
