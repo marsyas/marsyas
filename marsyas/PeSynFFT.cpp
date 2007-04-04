@@ -157,7 +157,8 @@ void
 PeSynFFT::myProcess(realvec& in, realvec& out)
 {	
 	mrs_natural nbChannels = ctrl_NbChannels_->toNatural();
-//	cout << in;
+
+	cout << ctrl_Peaks_->toVec();
 	for (t = 0; t < onSamples_; t++)
 	{
 		generateMask(t+(nbChannels-1));

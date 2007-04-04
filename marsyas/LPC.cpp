@@ -46,6 +46,8 @@ LPC::LPC(string name):MarSystem("LPC",name)
 LPC::LPC(const LPC& a):MarSystem(a)
 {
 	ctrl_coeffs_ = getctrl("mrs_realvec/coeffs");
+	ctrl_pitch_ = getctrl("mrs_real/pitch");
+	ctrl_power_ = getctrl("mrs_real/power");
 }
 
 LPC::~LPC()
@@ -157,7 +159,7 @@ LPC::autocorrelationWarped(const realvec& in, realvec& r, mrs_real& pitch, mrs_r
 	}
 
 	for(long i=0; i<=P; i++)
-		R[i]=Rt[i];
+		R[i]=Rt[i]/in.getSize(); // [ML] change /
 
 	delete[] dl;
 	delete[] Rt;
@@ -272,7 +274,8 @@ LPC::LevinsonDurbin(const realvec& r, realvec& a, realvec& k, mrs_real& e)
 			e = Em1; //prediction error
 			//e = Em1*Em1; //RMS prediction error
 		}
-		//e = sqrt(e/(mrs_real)m); //RMS prediction error
+	//	e = sqrt(e/(mrs_real)m); //RMS prediction error
+	 e = 0.5/sqrt(e);
 	}
 }
 
@@ -361,7 +364,7 @@ LPC::myProcess(realvec& in, realvec& out)
 		for(i=1; i < order_+1; i++) {
 			ctrl_coeffs_->setValue(i, -a(i));
 		ctrl_pitch_->setValue(pitch);
-		ctrl_power_->setValue(LevinsonError);
+		ctrl_power_->setValue(sqrt(LevinsonError));
 		}
      out = in;
 	  }

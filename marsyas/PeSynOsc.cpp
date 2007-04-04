@@ -85,7 +85,7 @@ PeSynOsc::sine(realvec& out, mrs_real f, mrs_real a, mrs_real p)
 {
 	int i;
 	int N = out.getSize();
-	if(f > 0.0)
+	if(f > 0.0 && a)
 	{
 		for (i=0 ; i<N ; i++)
 			out(i) += a*cos(factor_*f*(i-delay_)+p); // consider -fftSize/2 for synth in phase
@@ -108,8 +108,9 @@ PeSynOsc::myProcess(realvec& in, realvec& out)
 	if(nbH)
 		for(mrs_natural j=0 ; j<(nbH-1)/2 ; j++)
 		{
-			mrs_real mulF = ctrl_harmonize_->toVec()(1+j*2), 
-				mulA = ctrl_harmonize_->toVec()(2+j*2);
+			mrs_real mulF = ctrl_harmonize_->toVec()(1+j*2); 
+			mrs_real mulA = ctrl_harmonize_->toVec()(2+j*2);
+		//	cout << "mulF" << mulF << "mulA" << mulA << endl;
 			for (i=0; i < Nb; i++)
 			{
 				if(in(i+pkGroup*Nb) > -1)
@@ -121,9 +122,9 @@ PeSynOsc::myProcess(realvec& in, realvec& out)
 		{
 			if(in(i+pkGroup*Nb) > -1)
 				sine(out, in(i), in(i+Nb), in(i+2*Nb));
-			/*	else
-			cout << "truc" << endl;*/
+		//	cout << "truc" << endl;
 		}
+	//	cout << "machin" << endl;
 }
 
 

@@ -255,7 +255,8 @@ HEADERS += \
 	SoundFileSource2.h \
 	WavFileSource2.h \
 	BICchangeDetector.h \
-	QGMMModel.h
+	QGMMModel.h \
+	PeSynOscBank.h
 	 
 SOURCES += \
 	ADSR.cpp \
@@ -455,5 +456,6 @@ SOURCES += \
 	SoundFileSource2.cpp \
 	WavFileSource2.cpp \
 	BICchangeDetector.cpp \
-	QGMMModel.cpp
+	QGMMModel.cpp \
+	PeSynOscBank.cpp
 	

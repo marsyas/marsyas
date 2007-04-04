@@ -438,7 +438,8 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
 	//create Shredder series
 	MarSystem* postNet = mng->create("Series", "postNet");
 //	postNet->addMarSystem(mng->create("PeOverlapadd", "ob"));
-
+ if (synType < 3)
+ {
 	 if(synType == 0)
 	 {
 	   postNet->addMarSystem(mng->create("PeSynOsc", "pso"));
@@ -472,7 +473,9 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
 	 }
 
 	 postNet->addMarSystem(mng->create("OverlapAdd", "ov"));
-
+ }
+ else
+  postNet->addMarSystem(mng->create("PeSynOscBank", "pso"));
 	// postNet->addMarSystem(mng->create("ShiftOutput", "so"));
 
 	MarSystem *dest;
@@ -525,13 +528,16 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 													 mrs_natural D, mrs_natural S, mrs_natural accSize, bool microphone, mrs_natural synType, mrs_natural bopt, mrs_natural delay, bool residual)
 {
 	pvseries->updctrl("PeSynthetize/synthNet/mrs_natural/nTimes", accSize);
-  if(synType==0)
+  
+	if (synType < 3)
+	{
+	if(synType==0)
 	{
 	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynOsc/pso/mrs_natural/nbSinusoids", S);
 	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynOsc/pso/mrs_natural/delay", Nw/2+1);
 	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynOsc/pso/mrs_natural/synSize", D*2);
 	}
-	else
+	else 
 	{
 		// probing the postNet series
 		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/mrs_bool/probe", true);
@@ -562,10 +568,14 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 		// setting the synthesis starting time (default 0)
 
 	}
+	}
+	else
+pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynOscBank/pso/mrs_natural/Interpolation", D);
+
 	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Interpolation", D);
 	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/WindowSize", Nw);      
 	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Decimation", D);
-
+	
 	if (outsfname == EMPTYSTRING) 
 		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/AudioSink/dest/mrs_natural/bufferSize", bopt);
 	
@@ -588,8 +598,8 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/inObservations", 1);
 	}
 
-	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/SoundFileSink/destRes/mrs_string/filename", ressfname);//[!]
  pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/SoundFileSink/dest/mrs_string/filename", outsfname);//[!]
+ pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/SoundFileSink/destRes/mrs_string/filename", ressfname);//[!]
  }
  else
 	 pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/SoundFileSink/dest/mrs_string/filename", outsfname);//[!]

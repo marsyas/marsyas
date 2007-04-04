@@ -68,7 +68,7 @@ realvec peakSet_;
 // delay for noise insertion
 mrs_real noiseDelay_=0;
 // gain for noise insertion
-mrs_real noiseGain_=.8;
+mrs_real noiseGain_=.02;
 // duration for noise insertion
 mrs_real noiseDuration_=0;
 // sampling frequency
@@ -81,6 +81,8 @@ mrs_natural nbTicks=0;
 mrs_natural clusterFilteringType_ = 0;
 //
 mrs_natural fileInfo_=0;
+//
+
 
 bool microphone_ = false;
 bool analyse_ = true;
@@ -126,6 +128,7 @@ printHelp(string progName)
 	cerr << "-c -clustering : number of clusters in a texture window" << endl;
 	cerr << "-k -keep : keep the specified number of clusters in the texture window " << endl;
 	cerr << "-S --synthetise : synthetize using an oscillator bank (0), an IFFT mono (1), or an IFFT stereo (2)" << endl;
+	cerr << "-r --residual : output the residual sound (if the synthesis stage is selected)" << endl;
 	cerr << "-i --intervalFrequency : <minFrequency>_<maxFrequency> select peaks in this interval (default 250-2500 Hz)" << endl;
 	cerr << "-f --fileInfo : provide clustering parameters in the output name (s20t10i250_2500c2k1 means 20 sines per frames in the 250_2500 Hz frequency Interval, 1 cluster selected among 2 in one texture window of 10 frames)" << endl;
 	cerr << "" << endl;
@@ -157,7 +160,10 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		fanin->addMarSystem(mng.create("AudioSource", "src"));
 	else 
 		fanin->addMarSystem(mng.create("SoundFileSource", "src"));
+	
 	// create a series for the noiseSource
+	if(noiseName != EMPTYSTRING)
+	{
 	MarSystem* mixseries = mng.create("Series", "mixseries");
 
 	if(noiseName == "white")
@@ -170,10 +176,12 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	mixseries->addMarSystem(noiseGain);
 	// add this series in the fanout
 	fanin->addMarSystem(mixseries);
-
+	}
 	preNet->addMarSystem(fanin);
 	//////////////////////////////////////////////////////
 	// should be removed for weird command line problems
+
+		if(noiseName != EMPTYSTRING)
 	preNet->addMarSystem(mng.create("SoundFileSink", "mixSink"));
 	////////////////////////////////////////
 	preNet->addMarSystem(mng.create("ShiftInput", "si"));
@@ -206,7 +214,7 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	if(synthetize >-1) 
 	{
 		//create shredder
-		synthNetCreate(&mng, outsfname, microphone_, synthetize);
+		synthNetCreate(&mng, outsfname, microphone_, synthetize, residual_);
 		MarSystem *peSynth = mng.create("PeSynthetize", "synthNet");
 		pvseries->addMarSystem(peSynth);
 	}
@@ -228,12 +236,14 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		samplingFrequency_ = pvseries->getctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_real/osrate")->toReal();
 	}
 
-
+if(noiseName != EMPTYSTRING)
+{
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/SoundFileSource/noise/mrs_string/filename", noiseName);
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/SoundFileSource/noise/mrs_natural/inSamples", D);
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/NoiseSource/noise/mrs_string/mode", "rand");
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/Delay/noiseDelay/mrs_real/delay",  noiseDelay);
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/Gain/noiseGain/mrs_real/gain", noiseGain_);
+}
 
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/ShiftInput/si/mrs_natural/Decimation", D);
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/ShiftInput/si/mrs_natural/WindowSize", Nw+1);
@@ -261,14 +271,15 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	similarityWeight_(2) = 1;
 
 	pvseries->updctrl("PeClust/peClust/mrs_realvec/similarityWeight", similarityWeight_); 
-
+	
+	if(noiseName != EMPTYSTRING)
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/SoundFileSink/mixSink/mrs_string/filename", mixName);//[!]
 
 	//pvseries->update();
 
 	if(synthetize>-1)
 	{
-		synthNetConfigure (pvseries, sfName, outsfname, fileResName, panningInfo, 1, Nw, D, S, accSize, microphone_, synthetize_, bopt_, Nw+1-D);
+		synthNetConfigure (pvseries, sfName, outsfname, fileResName, panningInfo, 1, Nw, D, S, accSize, microphone_, synthetize_, bopt_, Nw+1-D, residual_);
 	}
 
 	if(noiseDuration_)
@@ -362,7 +373,7 @@ initOptions()
   cmd_options.addNaturalOption("textureSize", "T", accSize_);
 	cmd_options.addNaturalOption("clusterFiltering", "F", clusterFilteringType_);
 	cmd_options.addBoolOption("fileInfo", "f", 0);
-
+  cmd_options.addBoolOption("residual", "r", 0);
 
 	// cmd_options.addBoolOption("analyse", "a", analyse_);
 	cmd_options.addBoolOption("attributes", "A", attributes_);
@@ -401,6 +412,7 @@ loadOptions()
 	synthetize_ = cmd_options.getNaturalOption("synthetize");
 	clusterSynthetize_ = cmd_options.getNaturalOption("clusterSynthetize");
 	peakStore_ = cmd_options.getBoolOption("peakStore"); 
+	residual_ = cmd_options.getBoolOption("residual");
 }
 
 

@@ -25,7 +25,7 @@ string noiseName = EMPTYSTRING;
 string fileResName = EMPTYSTRING;
 string filePeakName = EMPTYSTRING;
 string panningInfo = EMPTYSTRING;
-string intervalFrequency = EMPTYSTRING;
+string intervalFrequency = "50-4000";
 string harmonizeFileName = EMPTYSTRING;
 
 // Global variables for command-line options 
@@ -92,6 +92,7 @@ printHelp(string progName)
 	cerr << "-o --outputdirectoryname   : output directory path" << endl;
 	cerr << "-p --panning : panning informations <foreground level (0..1)>-<foreground pan (-1..1)>-<background level>-<background pan> " << endl;
 	cerr << "-S --synthetise : synthetize using an oscillator bank (0), an IFFT mono (1), or an IFFT stereo (2)" << endl;
+	cerr << "-H --harmonize : change the frequency accoring to the file provided" << endl;	
 	cerr << "" << endl;
 	cerr << "-u --usage           : display short usage info" << endl;
 	cerr << "-h --help            : display this information " << endl;
@@ -106,7 +107,7 @@ void
 peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw, 
 				 mrs_natural D, mrs_natural S, mrs_natural synthetize)
 {
-	mrs_natural nbFrames_=0, harmonize_;
+	mrs_natural nbFrames_=0, harmonize_=0;
 	realvec harmonizeData_;
 	MarControlPtr ctrl_harmonize_;
 	cout << "Extracting Peaks and Clusters" << endl;
@@ -211,8 +212,9 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 				cout << "Unable to open "<< harmonizeFileName << endl;
 			harmonize_=1;
 
-			ctrl_harmonize_= pvseries->getctrl("PeSynthetize/synthNet/Series/postNet/PeSynOsc/pso/mrs_realvec/harmonize");
+			ctrl_harmonize_= pvseries->getctrl("PeSynthetize/synthNet/Series/postNet/PeSynOscBank/pso/mrs_realvec/harmonize");
 			ctrl_harmonize_->stretch(harmonizeData_.getCols());
+	   // ctrl_harmonize_->setValue(0, 0.);
 
 		}
 	}
@@ -226,11 +228,21 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		while(1)
 		{
 			pvseries->tick();
-			if (harmonize_)
+			if (harmonize_) 
 			{
+				
 				for (mrs_natural i=0 ; i<harmonizeData_.getCols() ; i++)
-					ctrl_harmonize_->setValue(i, harmonizeData_(nbFrames_, i));
+ctrl_harmonize_->setValue(i, 0.0);
+ctrl_harmonize_->setValue(1, 1.0);
+ctrl_harmonize_->setValue(2, 0.1);
 
+					// if (harmonizeData_.getRows() > nbFrames_)
+					// ctrl_harmonize_->setValue(i, harmonizeData_(nbFrames_, i));
+			/*	else 
+				{
+	      	ctrl_harmonize_->setValue(i, 0);
+          cout << "Harmonize file too short" << endl;
+				}*/
 			}
 			nbFrames_++;
 			if (!microphone_)
@@ -295,7 +307,7 @@ initOptions()
 	cmd_options.addNaturalOption("fftsize", "n", fftSize_);
 	cmd_options.addNaturalOption("sinusoids", "s", nbSines_);
 	cmd_options.addNaturalOption("bufferSize", "b", bopt_);
-	cmd_options.addStringOption("intervalFrequency", "i", EMPTYSTRING);
+	cmd_options.addStringOption("intervalFrequency", "i", intervalFrequency);
 	cmd_options.addStringOption("panning", "p", EMPTYSTRING);
 	cmd_options.addStringOption("Harmonize", "H", EMPTYSTRING);
 	cmd_options.addNaturalOption("synthetize", "S", synthetize_);
@@ -363,14 +375,15 @@ main(int argc, const char **argv)
 		for (sfi=soundfiles.begin() ; sfi!=soundfiles.end() ; sfi++)
 		{
 			FileName Sfname(*sfi);
-			if(outputDirectoryName == EMPTYSTRING)
+		/*	if(outputDirectoryName == EMPTYSTRING)
 			{
 				outputDirectoryName = ".";
-			}
+			}*/
 
 			if(Sfname.ext() == "peak")
 			{
 				analyse_ = 0;
+				if(synthetize_ == -1)
 				synthetize_ = 0;
 				peakStore_=0;
 			}
@@ -379,8 +392,14 @@ main(int argc, const char **argv)
 				analyse_ = 1;
 			}
 
-			fileName = outputDirectoryName + "/" + Sfname.nameNoExt() + ".wav" ;
-			filePeakName = outputDirectoryName + "/" + Sfname.nameNoExt() + ".peak" ;
+					string path;
+			if(outputDirectoryName != EMPTYSTRING)
+				path = outputDirectoryName;
+			else
+				path =Sfname.path();
+
+			fileName = path + "/" + Sfname.nameNoExt() + "Syn.wav" ;
+			filePeakName = path + "/" + Sfname.nameNoExt() + ".peak" ;
 			cout << "Pevocoding " << Sfname.name() << endl; 
 
 			peVocode(*sfi, fileName, fftSize_, winSize_, hopSize_, nbSines_, synthetize_);

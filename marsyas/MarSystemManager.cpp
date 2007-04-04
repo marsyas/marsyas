@@ -65,6 +65,7 @@ in sequence.
 #include "PeClust.h"
 #include "OverlapAdd.h"
 #include "PeSynOsc.h"
+#include "PeSynOscBank.h"
 #include "PeSynFFT.h"
 #include "PeResidual.h"
 #include "RealvecSource.h"
@@ -166,6 +167,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PvFold", new PvFold("pvfp"));
 	registerPrototype("PvOverlapadd", new PvOverlapadd("pvovlfp"));
 	registerPrototype("PvOscBank", new PvOscBank("pvoscp"));
+	registerPrototype("PeSynOscBank", new PeSynOscBank("pvoscp"));
 	registerPrototype("PeSynFFT", new PeSynFFT("pvfft"));
 	registerPrototype("ShiftInput", new ShiftInput("sip"));
 	registerPrototype("ShiftOutput", new ShiftOutput("sop"));
