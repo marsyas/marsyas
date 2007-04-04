@@ -68,17 +68,16 @@ MarMonitors::initNetwork(QString pluginName)
   // create the Marsyas 
   MarSystemManager mng;
   
-  /* ifstream pluginStream("test2.mpl");
+  ifstream pluginStream(pluginName.toStdString().c_str());
   pnet_ = mng.getMarSystem(pluginStream);
-
+  
   if (pnet_ == 0) 
     {
       cout << "Manager does not support system " << endl;
       exit(1);
     }
-  */ 
   
-  pnet_ = mng.create("Series", "pnet");
+  /* pnet_ = mng.create("Series", "pnet");
   pnet_->addMarSystem(mng.create("SoundFileSource", "src"));
   pnet_->addMarSystem(mng.create("Gain", "gain"));
   pnet_->addMarSystem(mng.create("Windowing", "windowing"));
@@ -91,6 +90,7 @@ MarMonitors::initNetwork(QString pluginName)
   pnet_->updctrl("Gain/gain/mrs_real/gain", 2.0);
   pnet_->updctrl("Gain/gain2/mrs_real/gain", 3.0);
   pnet_->updctrl("mrs_bool/probe", true);
+  */ 
   
   cout << *pnet_ << endl;
   
@@ -103,7 +103,7 @@ MarMonitors::initNetwork(QString pluginName)
 
 
 
-  // graph2->addLabel( "Demo Graph");
+
   
 }
 
@@ -170,9 +170,8 @@ MarMonitors::graph()
  graphs.push_back(graph);
  
  gridLayout_->addWidget(graph, nGraphs_/3, (nGraphs_ % 3));
- probes_.push_back("/Series/pnet/mrs_realvec/processedData");
- tick();
- 
+
+ probes_.push_back("patata");
 }
 
 
@@ -183,12 +182,10 @@ MarMonitors::dialogDone()
     return;
   else 
     {
-      
+
       probes_[graphNum->value()] = listWidget->currentItem()->text().toStdString();
-      
     }
   
-  tick();
   
 }
 
@@ -206,11 +203,11 @@ MarMonitors::setup()
 
 
 
-  std::map<std::string, MarControlPtr> mycontrols = pnet_->getControls();
+  mycontrols_ = pnet_->getControls();
   std::map<std::string, MarControlPtr>::iterator myc;
   listWidget = new QListWidget();  
   
-  for (myc = mycontrols.begin(); myc != mycontrols.end(); ++myc)
+  for (myc = mycontrols_.begin(); myc != mycontrols_.end(); ++myc)
     {
       if ((myc->first).find("realvec") < myc->first.length())
 	{
@@ -251,14 +248,10 @@ MarMonitors::tick()
   pnet_->tick();  
   for (int i = 0; i < graphs.size(); ++i) 
     {
-      
       out_ = pnet_->getControl(probes_[i])->toVec();
+      cout << out_ << endl;
+      
       graphs[i]->setBuffer( out_ );
     }
-  
-  
-
-
-  
   
 }

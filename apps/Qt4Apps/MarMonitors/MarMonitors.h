@@ -52,7 +52,7 @@ private:
   QVector<string> probes_;
   QListWidget *listWidget;
   QSpinBox* graphNum;
-  
+  std::map<std::string, MarControlPtr> mycontrols_;
 
   int nTicks;
   int nGraphs_;

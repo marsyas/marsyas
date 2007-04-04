@@ -66,6 +66,7 @@ printHelp(string progName)
   cerr << "scheduler       : test scheduler " << endl;
   cerr << "schedulerExpr   : test scheduler with expressions " << endl;
   cerr << "SOM		   : test support vector machine " << endl;
+  cerr << "stereoFeatures  : test stereo features " << endl;
   cerr << "tempo	   : test tempo estimation " << endl;
   cerr << "vicon           : test processing of vicon motion capture data" << endl;
   cerr << "Windowing       : test different window functions of Windowing marsystem" << endl;
@@ -75,7 +76,6 @@ printHelp(string progName)
   cerr << "simpleSFPlay    : plays a sound file" << endl;
   cerr << "getControls     : test getControls functionality " << endl;
   cerr << "mono2stereo     : test mono2stereo MarSystem " << endl;
-  
   exit(1);
 }
 
@@ -1557,6 +1557,51 @@ randD(double max)
   return max  *  (double)rand() / ((double)(RAND_MAX)+(double)(1.0)) ; 
 }  
 
+
+
+void 
+test_stereoFeatures(string fname)
+{
+  MarSystemManager mng;
+  
+  MarSystem* playbacknet = mng.create("Series", "playbacknet");
+  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+  
+  MarSystem* stereobranches = mng.create("Parallel", "stereobranches");
+  MarSystem* left = mng.create("Series", "left");
+  MarSystem* right = mng.create("Series", "right");
+  left->addMarSystem(mng.create("Gain", "gainleft"));
+  // left->addMarSystem(mng.create("AudioSink", "dest"));
+  right->addMarSystem(mng.create("Gain", "gainright"));
+  stereobranches->addMarSystem(left);
+  stereobranches->addMarSystem(right);
+
+  playbacknet->addMarSystem(stereobranches);
+  
+  
+  playbacknet->updctrl("Parallel/stereobranches/Series/left/AudioSink/dest/mrs_bool/initAudio", true);  
+
+  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", fname);
+  playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+
+  mrs_bool isEmpty;
+  cout << *playbacknet << endl;
+  realvec out;
+  out.create(1,512);
+  while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->toBool()) 
+    {
+      playbacknet->tick();
+
+      
+     
+      
+    }
+
+}
+
+
+
+
 void test_SOM(string collectionName) 
 {
   MarSystemManager mng;
@@ -2381,6 +2426,8 @@ main(int argc, const char **argv)
     test_rmsilence(fname0);
   else if (testName == "scheduler") 
     test_scheduler(fname0);
+  else if (testName == "stereoFeatures")
+    test_stereoFeatures(fname0);
   else if (testName == "SOM") 
     test_SOM("music.mf");
   else if (testName == "tempo") 
@@ -2406,12 +2453,12 @@ main(int argc, const char **argv)
   else if (testName == "mono2stereo")
     test_mono2stereo(fname0);
  else if (testName == "pitch")
-    test_pitch(fname0);
-	 else if (testName == "confidence")
+   test_pitch(fname0);
+  else if (testName == "confidence")
     test_confidence(fname0);
-	 else if (testName == "shredder")
+  else if (testName == "shredder")
     test_shredder(fname0);
-	 else if (testName == "realvecCtrl")
+  else if (testName == "realvecCtrl")
     test_realvecCtrl(fname0);
   else 
     {
