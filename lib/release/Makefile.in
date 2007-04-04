@@ -83,9 +83,10 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	MaxArgMax.$(OBJEXT) MinArgMin.$(OBJEXT) Series.$(OBJEXT) \
 	ShiftInput.$(OBJEXT) ShiftOutput.$(OBJEXT) Shifter.$(OBJEXT) \
 	PvFold.$(OBJEXT) PvConvert.$(OBJEXT) PeConvert.$(OBJEXT) \
-	PeClust.$(OBJEXT) PeSynOsc.$(OBJEXT) Polar2Cartesian.$(OBJEXT) \
-	Cartesian2Polar.$(OBJEXT) FlowCutSource.$(OBJEXT) \
-	PeSynFFT.$(OBJEXT) OverlapAdd.$(OBJEXT) PeResidual.$(OBJEXT) \
+	PeClust.$(OBJEXT) PeSynOsc.$(OBJEXT) PeSynOscBank.$(OBJEXT) \
+	Polar2Cartesian.$(OBJEXT) Cartesian2Polar.$(OBJEXT) \
+	FlowCutSource.$(OBJEXT) PeSynFFT.$(OBJEXT) \
+	OverlapAdd.$(OBJEXT) PeResidual.$(OBJEXT) \
 	PeUtilities.$(OBJEXT) PeClusters.$(OBJEXT) \
 	PeSimilarity.$(OBJEXT) PvConvolve.$(OBJEXT) \
 	PvOscBank.$(OBJEXT) PvUnconvert.$(OBJEXT) \
@@ -210,6 +211,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/PeResidual.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PeSimilarity.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PeSynFFT.Po ./$(DEPDIR)/PeSynOsc.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/PeSynOscBank.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PeUtilities.Po ./$(DEPDIR)/Peak2Rms.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PeakPeriods2BPM.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Peaker.Po ./$(DEPDIR)/Peaker1.Po \
@@ -448,6 +450,7 @@ libmarsyas_a_SOURCES = $(top_srcdir)/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/marsyas/PeConvert.cpp \
 			  $(top_srcdir)/marsyas/PeClust.cpp \
 			  $(top_srcdir)/marsyas/PeSynOsc.cpp  \
+			  $(top_srcdir)/marsyas/PeSynOscBank.cpp \
 			  $(top_srcdir)/marsyas/Polar2Cartesian.cpp  \
 			  $(top_srcdir)/marsyas/Cartesian2Polar.cpp  \
 			  $(top_srcdir)/marsyas/FlowCutSource.cpp \
@@ -755,6 +758,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeSimilarity.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeSynFFT.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeSynOsc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeSynOscBank.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeUtilities.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peak2Rms.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeakPeriods2BPM.Po@am__quote@
@@ -1972,6 +1976,22 @@ PeSynOsc.obj: $(top_srcdir)/marsyas/PeSynOsc.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/PeSynOsc.Po' tmpdepfile='$(DEPDIR)/PeSynOsc.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeSynOsc.obj `if test -f '$(top_srcdir)/marsyas/PeSynOsc.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeSynOsc.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeSynOsc.cpp'; fi`
+
+PeSynOscBank.o: $(top_srcdir)/marsyas/PeSynOscBank.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeSynOscBank.o -MD -MP -MF "$(DEPDIR)/PeSynOscBank.Tpo" -c -o PeSynOscBank.o `test -f '$(top_srcdir)/marsyas/PeSynOscBank.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeSynOscBank.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeSynOscBank.Tpo" "$(DEPDIR)/PeSynOscBank.Po"; else rm -f "$(DEPDIR)/PeSynOscBank.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeSynOscBank.cpp' object='PeSynOscBank.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/PeSynOscBank.Po' tmpdepfile='$(DEPDIR)/PeSynOscBank.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeSynOscBank.o `test -f '$(top_srcdir)/marsyas/PeSynOscBank.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeSynOscBank.cpp
+
+PeSynOscBank.obj: $(top_srcdir)/marsyas/PeSynOscBank.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeSynOscBank.obj -MD -MP -MF "$(DEPDIR)/PeSynOscBank.Tpo" -c -o PeSynOscBank.obj `if test -f '$(top_srcdir)/marsyas/PeSynOscBank.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeSynOscBank.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeSynOscBank.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeSynOscBank.Tpo" "$(DEPDIR)/PeSynOscBank.Po"; else rm -f "$(DEPDIR)/PeSynOscBank.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeSynOscBank.cpp' object='PeSynOscBank.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/PeSynOscBank.Po' tmpdepfile='$(DEPDIR)/PeSynOscBank.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeSynOscBank.obj `if test -f '$(top_srcdir)/marsyas/PeSynOscBank.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeSynOscBank.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeSynOscBank.cpp'; fi`
 
 Polar2Cartesian.o: $(top_srcdir)/marsyas/Polar2Cartesian.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Polar2Cartesian.o -MD -MP -MF "$(DEPDIR)/Polar2Cartesian.Tpo" -c -o Polar2Cartesian.o `test -f '$(top_srcdir)/marsyas/Polar2Cartesian.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/Polar2Cartesian.cpp; \

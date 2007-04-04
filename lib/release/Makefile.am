@@ -92,6 +92,7 @@ libmarsyas_a_SOURCES    = $(top_srcdir)/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/marsyas/PeConvert.cpp \
 			  $(top_srcdir)/marsyas/PeClust.cpp \
 			  $(top_srcdir)/marsyas/PeSynOsc.cpp  \
+			  $(top_srcdir)/marsyas/PeSynOscBank.cpp \
 			  $(top_srcdir)/marsyas/Polar2Cartesian.cpp  \
 			  $(top_srcdir)/marsyas/Cartesian2Polar.cpp  \
 			  $(top_srcdir)/marsyas/FlowCutSource.cpp \

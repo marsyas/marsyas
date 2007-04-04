@@ -76,7 +76,7 @@ unix:!macx:CONFIG += marsyasAUDIOIO_ALSA
 # Adds support for MP3 MAD
 ######################################################################
 
-# CONFIG += marsyasMAD
+CONFIG += marsyasMAD
 
 ######################################################################
 # Adds support for oggvorbis
