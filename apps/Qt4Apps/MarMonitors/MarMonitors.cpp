@@ -253,7 +253,7 @@ MarMonitors::tick()
       out_ = (mycontrols_[probes_[i]])->toVec();
       cout << out_ << endl;
       
-      // graphs[i]->setBuffer( out_ );
+      graphs[i]->setBuffer( out_ );
     }
   
 }

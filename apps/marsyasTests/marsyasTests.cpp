@@ -1571,8 +1571,7 @@ test_stereoFeatures(string fname)
   MarSystem* left = mng.create("Series", "left");
   MarSystem* right = mng.create("Series", "right");
   left->addMarSystem(mng.create("Gain", "gainleft"));
-  left->addMarSystem(mng.create("Gain2", "gainleft2"));
-  
+  left->addMarSystem(mng.create("Gain", "gainleft2"));
 
   // left->addMarSystem(mng.create("AudioSink", "dest"));
   right->addMarSystem(mng.create("Gain", "gainright"));
@@ -1594,8 +1593,8 @@ test_stereoFeatures(string fname)
   while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->toBool()) 
     {
       playbacknet->tick();
-      out = playbacknet->getctrl("Parallel/stereobranches/Series/left/Gain/gainleft/mrs_realvec/processedData")->toVec();
-      cout << out << endl;
+      // out = playbacknet->getctrl("Parallel/stereobranches/Series/left/Gain/gainleft/mrs_realvec/processedData")->toVec();
+      // cout << out << endl;
       
       
      
