@@ -137,6 +137,7 @@ in sequence.
 #include "LSP.h"
 #include "SOM.h"
 #include "FlowCutSource.h"
+#include "MidiInput.h"
 #include "MidiOutput.h"
 #include "BICchangeDetector.h"
 
@@ -254,6 +255,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("LPCC", new LPCC("lpccpr"));
 	registerPrototype("LSP", new LSP("lsppr"));
 	registerPrototype("SOM", new SOM("sompr"));
+	registerPrototype("MidiInput", new MidiInput("midiinpr"));
 	registerPrototype("MidiOutput", new MidiOutput("midioutpr"));
 	registerPrototype("BICchangeDetector", new BICchangeDetector("bicchgdetpr"));
 
