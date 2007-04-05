@@ -1571,15 +1571,24 @@ test_stereoFeatures(string fname)
   MarSystem* stereobranches = mng.create("Parallel", "stereobranches");
   MarSystem* left = mng.create("Series", "left");
   MarSystem* right = mng.create("Series", "right");
-  left->addMarSystem(mng.create("Gain", "gainleft"));
-  left->addMarSystem(mng.create("Gain", "gainleft2"));
+  
+  left->addMarSystem(mng.create("Spectrum", "spkleft"));
+  left->addMarSystem(mng.create("PowerSpectrum", "pspkleft"));
+  left->addMarSystem(mng.create("PlotSink", "psinkleft"));
+  left->updctrl("PlotSink/psinkleft/mrs_string/outputFilename", "leftspk");
 
-  // left->addMarSystem(mng.create("AudioSink", "dest"));
-  right->addMarSystem(mng.create("Gain", "gainright"));
+  right->addMarSystem(mng.create("Spectrum", "spkright"));
+  right->addMarSystem(mng.create("PowerSpectrum", "pspkright"));
+  right->addMarSystem(mng.create("PlotSink", "psinkright"));
+  right->updctrl("PlotSink/psinkright/mrs_string/outputFilename", "rightspk");
+  
+  
   stereobranches->addMarSystem(left);
   stereobranches->addMarSystem(right);
 
   playbacknet->addMarSystem(stereobranches);
+  playbacknet->addMarSystem(mng.create("PlotSink", "psinkfull"));
+  playbacknet->updctrl("PlotSink/psinkfull/mrs_string/outputFilename", "fullpsk");
   
   
   playbacknet->updctrl("Parallel/stereobranches/Series/left/AudioSink/dest/mrs_bool/initAudio", true);  
