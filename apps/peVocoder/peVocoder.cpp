@@ -37,7 +37,7 @@ int winSize_ = 2048;
 // if kept the same no time expansion
 int hopSize_ = 512;
 // nb Sines
-int nbSines_ = 15;
+int nbSines_ = 50;
 // nbClusters
 int nbClusters_ = 3;
 // output buffer Size
@@ -198,25 +198,30 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		pvseries->addMarSystem(peSink);
 	}
 
-	if(synthetize>-1)
-	{
-		synthNetCreate(&mng, outsfname, microphone_, synthetize_);
-		MarSystem *peSynth = mng.create("PeSynthetize", "synthNet");
-		pvseries->addMarSystem(peSynth);
-		synthNetConfigure (pvseries, sfName, outsfname, fileResName, panningInfo, 1, Nw, D, S, 1, microphone_, synthetize_, bopt_, Nw+1-D);
-
-		if(harmonizeFileName != "MARSYAS_EMPTY")
+	if(harmonizeFileName != "MARSYAS_EMPTY")
 		{
 			harmonizeData_.read(harmonizeFileName);
 			if(!harmonizeData_.getSize())
 				cout << "Unable to open "<< harmonizeFileName << endl;
 			harmonize_=1;
 
-			ctrl_harmonize_= pvseries->getctrl("PeSynthetize/synthNet/Series/postNet/PeSynOscBank/pso/mrs_realvec/harmonize");
-			ctrl_harmonize_->stretch(harmonizeData_.getCols());
+		
 	   // ctrl_harmonize_->setValue(0, 0.);
+     synthetize = 3;
+	}
 
-		}
+	if(synthetize>-1 )
+	{
+		synthNetCreate(&mng, outsfname, microphone_, synthetize);
+		MarSystem *peSynth = mng.create("PeSynthetize", "synthNet");
+		pvseries->addMarSystem(peSynth);
+		synthNetConfigure (pvseries, sfName, outsfname, fileResName, panningInfo, 1, Nw, D, S, 1, microphone_, synthetize, bopt_, Nw+1-D);
+	}
+
+	if(harmonize_)
+	{
+	ctrl_harmonize_= pvseries->getctrl("PeSynthetize/synthNet/Series/postNet/PeSynOscBank/pso/mrs_realvec/harmonize");
+		 ctrl_harmonize_->stretch(harmonizeData_.getCols());
 	}
 
 	mrs_real globalSnr = 0;
@@ -224,7 +229,7 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 	mrs_natural nb=0;
 
 	//	mrs_real time=0;
-	if(analyse_ || synthetize_ > -1)
+	if(analyse_ || synthetize > -1)
 		while(1)
 		{
 			pvseries->tick();
@@ -232,17 +237,17 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 			{
 				
 				for (mrs_natural i=0 ; i<harmonizeData_.getCols() ; i++)
-ctrl_harmonize_->setValue(i, 0.0);
-ctrl_harmonize_->setValue(1, 1.0);
-ctrl_harmonize_->setValue(2, 0.1);
+//ctrl_harmonize_->setValue(i, 0.0);
+//ctrl_harmonize_->setValue(1, 1.0);
+//ctrl_harmonize_->setValue(2, 0.1);
 
-					// if (harmonizeData_.getRows() > nbFrames_)
-					// ctrl_harmonize_->setValue(i, harmonizeData_(nbFrames_, i));
-			/*	else 
+					if (harmonizeData_.getRows() > nbFrames_)
+					 ctrl_harmonize_->setValue(i, harmonizeData_(nbFrames_, i));
+				else 
 				{
 	      	ctrl_harmonize_->setValue(i, 0);
           cout << "Harmonize file too short" << endl;
-				}*/
+				}
 			}
 			nbFrames_++;
 			if (!microphone_)

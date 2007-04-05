@@ -475,9 +475,10 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
 	 postNet->addMarSystem(mng->create("OverlapAdd", "ov"));
  }
  else
+ {
   postNet->addMarSystem(mng->create("PeSynOscBank", "pso"));
 	// postNet->addMarSystem(mng->create("ShiftOutput", "so"));
-
+ }
 	MarSystem *dest;
 	if (outsfname == EMPTYSTRING) 
 		dest = new AudioSink("dest");

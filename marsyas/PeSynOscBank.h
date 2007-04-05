@@ -44,6 +44,7 @@ private:
   realvec lastfreq_;
   realvec nextfreq_;
   realvec index_;
+	  realvec nextindex_;
   realvec table_;
 	mrs_natural nbH_;
   mrs_natural L_;
