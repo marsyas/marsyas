@@ -51,6 +51,7 @@ MarSystem* MidiInput::clone() const
 
 void MidiInput::addControls()
 {
+    addctrl("mrs_natural/port", 0);
     addctrl("mrs_bool/virtualPort", false);
     addctrl("mrs_bool/initmidi", false);
     setctrlState("mrs_bool/initmidi", true);
@@ -99,7 +100,7 @@ void MidiInput::myUpdate(MarControlPtr sender)
         else
         {
             try { 
-                midiin->openVirtualPort("MarsyasInput");
+                midiin->openPort(getctrl("mrs_natural/port")->toNatural());
             }
             catch (RtError &error) 
             {
