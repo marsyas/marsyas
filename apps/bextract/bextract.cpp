@@ -422,6 +422,10 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
   if (withBeatFeatures)
     cout << "with beat features" << endl;
 
+
+  
+
+
   MRSDIAG("bextract.cpp - bextract_trainAccumulator");
   mrs_natural i;
   mrs_natural cj;
@@ -434,7 +438,8 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 
   MarSystemManager mng;  
 		
-  //////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+//////////////////////////
   // create the file source
   //////////////////////////////////////////////////////////////////////////
   MarSystem* src = mng.create("SoundFileSource", "src");
@@ -452,6 +457,9 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
   //////////////////////////////////////////////////////////////////////////
   MarSystem* featureNetwork = mng.create("Series", "featureNetwork");
   featureNetwork->addMarSystem(src);
+  
+  // convert stereo files to mono 
+  featureNetwork->addMarSystem(mng.create("Stereo2Mono", "s2m"));
   featureNetwork->addMarSystem(featExtractor);
 
   //////////////////////////////////////////////////////////////////////////
@@ -509,7 +517,11 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
   mrs_natural nChannels = src->getctrl("mrs_natural/nChannels")->toNatural();
 
   // update controls 
-  total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/mrs_natural/inSamples", (mrs_natural) (srate / 22050.0) * MRS_DEFAULT_SLICE_NSAMPLES);//[?] 22050?
+  // total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/mrs_natural/inSamples", (mrs_natural) (srate / 22050.0) * MRS_DEFAULT_SLICE_NSAMPLES);//[?] 22050?
+
+
+  total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/mrs_natural/inSamples", winSize);
+
   total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/mrs_natural/pos", offset);      
 
   // Calculate duration, offset parameters if necessary 
@@ -586,6 +598,10 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
     wsink->updctrl("mrs_string/filename", "weka.arff");
   else 
     wsink->updctrl("mrs_string/filename", wekafname);
+
+
+
+
 
   //iterate over collections
   for (cj=0; cj < (mrs_natural)cls.size(); cj++)

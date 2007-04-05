@@ -151,8 +151,13 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
   }
   
   myIsrate_ = isrc_->getctrl("mrs_real/israte")->toReal();
+  onObservations_ = isrc_->getctrl("mrs_natural/onObservations")->toNatural();
+  
+
   setctrl("mrs_real/israte", myIsrate_);
   setctrl("mrs_real/osrate", myIsrate_);
+  setctrl("mrs_natural/onObservations", onObservations_);
+  
 
   /* if (myIsrate_ == 44100.0) 
   {
@@ -171,11 +176,11 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
     setctrl("mrs_natural/onSamples", inSamples_);
     setctrl("mrs_real/israte", myIsrate_);
     setctrl("mrs_real/osrate", myIsrate_);
+    setctrl("mrs_natural/onObservations", onObservations_);
     temp_.create(inObservations_, inSamples_);
   }
   
   setctrl("mrs_natural/onObservations", inObservations_);
-
   isrc_->updctrl("mrs_natural/inObservations", inObservations_);
   isrc_->updctrl("mrs_real/repetitions", repetitions_);
   isrc_->updctrl("mrs_natural/pos", pos_);
@@ -207,9 +212,13 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
     isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));   
     updctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));   
     myIsrate_ = isrc_->getctrl("mrs_real/israte")->toReal();
+    onObservations_ = isrc_->getctrl("mrs_natural/onObservations")->toNatural();
     
+
     setctrl("mrs_real/israte", myIsrate_);
     setctrl("mrs_real/osrate", myIsrate_);
+    setctrl("mrs_natural/onObservations", onObservations_);
+    
     
     /* if (myIsrate_ == 44100.0)
       {
@@ -259,8 +268,13 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 	      isrc_->updctrl("mrs_natural/pos", 0);     
 	      pos_ = 0;
 	      myIsrate_ = isrc_->getctrl("mrs_real/israte")->toReal();
+	      onObservations_ = isrc_->getctrl("mrs_natural/onObservations")->toNatural();
+	      
+
 	      setctrl("mrs_real/israte", myIsrate_);
 	      setctrl("mrs_real/osrate", myIsrate_);
+	      setctrl("mrs_natural/onObservations", onObservations_);
+	      
 	      setctrl("mrs_string/currentlyPlaying", col_.entry(cindex_));
 	      ctrl_currentlyPlaying_->setValue(col_.entry(cindex_), NOUPDATE);
 	      
