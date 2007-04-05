@@ -273,6 +273,15 @@ MarSystemManager::MarSystemManager()
 	devibotpr->updctrl("mrs_natural/byte1", 144);
 	registerPrototype("DeviBot", devibotpr);
 
+
+	/* Stereo2Mono MarSystem */ 
+	
+	MarSystem* stereo2monopr = new Sum("stereo2monopr");
+	stereo2monopr->updctrl("mrs_real/weight", 0.5);
+	registerPrototype("Stereo2Mono", stereo2monopr);
+	
+
+
 	//--------------------------------------------------------------------------------
 	// texture window analysis composite prototype
 	//--------------------------------------------------------------------------------

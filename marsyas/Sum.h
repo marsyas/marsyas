@@ -36,8 +36,11 @@ class Sum: public MarSystem
 {
 private: 
   void myUpdate(MarControlPtr sender);
+  MarControlPtr ctrl_weight_;
+  void addControls();  
 public:
   Sum(std::string name);
+  Sum(const Sum& a);
   ~Sum();
   MarSystem* clone() const;  
   

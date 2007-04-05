@@ -67,6 +67,7 @@ printHelp(string progName)
   cerr << "schedulerExpr   : test scheduler with expressions " << endl;
   cerr << "SOM		   : test support vector machine " << endl;
   cerr << "stereoFeatures  : test stereo features " << endl;
+  cerr << "stereo2mono     : test stereo to mono conversion " << endl;
   cerr << "tempo	   : test tempo estimation " << endl;
   cerr << "vicon           : test processing of vicon motion capture data" << endl;
   cerr << "Windowing       : test different window functions of Windowing marsystem" << endl;
@@ -1606,6 +1607,34 @@ test_stereoFeatures(string fname)
 
 
 
+
+void 
+test_stereo2mono(string fname)
+{
+  MarSystemManager mng;
+  
+  MarSystem* playbacknet = mng.create("Series", "playbacknet");
+  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+  playbacknet->addMarSystem(mng.create("Stereo2Mono", "s2m"));
+  playbacknet->addMarSystem(mng.create("SoundFileSink", "dest"));
+  
+  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", fname);
+  playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", "monoFromStereo.wav");
+  playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+
+  mrs_bool isEmpty;
+  
+  while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->toBool()) 
+    {
+      playbacknet->tick();
+    }
+
+}
+
+
+
+
+
 void test_SOM(string collectionName) 
 {
   MarSystemManager mng;
@@ -2432,6 +2461,8 @@ main(int argc, const char **argv)
     test_scheduler(fname0);
   else if (testName == "stereoFeatures")
     test_stereoFeatures(fname0);
+  else if (testName == "stereo2mono")
+    test_stereo2mono(fname0);
   else if (testName == "SOM") 
     test_SOM("music.mf");
   else if (testName == "tempo") 

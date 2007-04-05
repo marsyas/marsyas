@@ -31,12 +31,27 @@ using namespace Marsyas;
 
 Sum::Sum(string name):MarSystem("Sum",name)
 {
+  addControls();
 }
+
+Sum::Sum(const Sum& a): MarSystem(a) 
+{
+  ctrl_weight_ = getctrl("mrs_real/weight");
+}
+
 
 
 Sum::~Sum()
 {
 }
+
+void 
+Sum::addControls()
+{
+  addctrl("mrs_real/weight", 1.0, ctrl_weight_);
+  
+}
+
 
 
 MarSystem* 
@@ -61,13 +76,16 @@ Sum::myProcess(realvec& in, realvec& out)
 {
   //checkFlow(in,out);
 
+  mrs_real weightValue = ctrl_weight_->to<mrs_real>();
+  
   out.setval(0.0);
   for (o=0; o < inObservations_; o++)
     for (t = 0; t < inSamples_; t++)
       {
-		out(0,t) += in(o,t);
+	out(0,t) += (weightValue * in(o,t));
       }
 }
+
 
 
 
