@@ -36,7 +36,7 @@ void Analyze::calcNothing() {
 }
 
 void Analyze::calcDurations() {
-	int MEAN_RADIUS = 30.0;
+	int MEAN_RADIUS = 40.0; // overkill?
 	float prevNote=0.0;
 	float median;
 	int i;
@@ -44,7 +44,7 @@ void Analyze::calcDurations() {
 	int prevSamp=0;
 	for (i=MEAN_RADIUS; i<numPitches-MEAN_RADIUS; i++) {
 		median = findMedian(i-MEAN_RADIUS, 2*MEAN_RADIUS, pitchList);
-		if ( fabs(median-prevNote) > 0.5) {
+		if ( fabs(median-prevNote) > 0.7) {
 			if (i>prevSamp+MEAN_RADIUS) {
 //				cout<<"---: "<<i<<" "<<prevNote<<" "<<median<<endl;
 				prevNote = median;
@@ -502,8 +502,19 @@ void Analyze::addHarmsSmooth() {
 }
 
 void Analyze::screwJazz() {
+	int i;
 
-
+	for (i=0; i<detected.getRows(); i++ ) {
+		if ((i>300)&&(i<500)) {
+			detected(i,1) = detected(i,1)*0.5;
+		}
+		if ((i>550)&&(i<770)) {
+			detected(i,1) = detected(i,1)*1.12246204831; // one tone
+		}
+		if ((i>1070)&&(i<1200)) {
+			detected(i,1) = detected(i,1)*0.89089871814; // one tone
+		}
+	}
 }
 
 void Analyze::makeMinor() {
