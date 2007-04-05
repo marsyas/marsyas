@@ -21,6 +21,7 @@ record: record a clip using AudioSource
  */
 
 #include <cstdio>
+#include <unistd.h>
 #include "Collection.h"
 #include "MarSystemManager.h"
 #include "Accumulator.h"
@@ -30,8 +31,10 @@ record: record a clip using AudioSource
 #include "CommandLineOptions.h"
 #include "mididevices.h"
 
+
 #include <string> 
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 using namespace Marsyas;
@@ -74,7 +77,7 @@ void printHelp(string progName)
     cerr << "-l --length     : record length in seconds " << endl;
     cerr << "-s --srate      : samping rate " << endl;
     cerr << "-c --channels   : number of channels to record " << endl;
-    cerr << "-i --instrument : 0: drum or 1: sitar " << endl;
+    cerr << "-i --instrument : 0: drum or 1: Read Sitar 2: Record Sitar Sensors 3: Read Fret to Pitch " << endl;
     cerr << endl;
     exit(1);
 }
@@ -91,7 +94,7 @@ void initOptions()
     cmd_options.addRealOption("length", "l", 48.0);
     cmd_options.addRealOption("srate", "s", 44100.0);
     cmd_options.addNaturalOption("channels", "c", 1);
-    cmd_options.addNaturalOption("instrument", "i", 1);
+    cmd_options.addNaturalOption("instrument", "i", 2);
 }
 
 
@@ -288,6 +291,9 @@ void recordVirtualSensor(mrs_real length)
     recordNet->addMarSystem(midiin);
     srm->addMarSystem(recordNet);
 
+    // Make Virtual Midin Port!
+    recordNet->updctrl("MidiInput/midiin/mrs_bool/virtualPort", true);
+    
     // recordNet->addMarSystem(dest); 
     recordNet->updctrl("mrs_real/israte", 44100.0); 
     recordNet->updctrl("mrs_real/osrate", 44100.0); 
@@ -344,11 +350,11 @@ void recordVirtualSensor(mrs_real length)
            }
          */ 
         else
-        {
-            pnet->setctrl("Annotator/ann/mrs_natural/label", 0);
+	  {
+	    pnet->setctrl("Annotator/ann/mrs_natural/label", 0);
             cout << "edge" << endl;
-        }
-
+	  }
+	
         pnet->tick();
     }
 
@@ -357,25 +363,358 @@ void recordVirtualSensor(mrs_real length)
     //       std::cout << endl;
 }
 
-void recordVirtualThumbSensor(mrs_real length) 
+void readSitarSensors(mrs_real length) 
 {
-    cout << "Thumb" << endl;
+    cout << "Read Sitar Sensors" << endl;
+    MarSystemManager mng;
+
+    MarSystem* pnet = mng.create("Series", "pnet");    
+    MarSystem* asrc = mng.create("SoundFileSource", "asrc");
+    MarSystem* dest = mng.create("AudioSink", "dest");
+    MarSystem* rms = mng.create("Rms", "rms");
+    MarSystem* devibot = mng.create("DeviBot", "devibot");
+
+    pnet->addMarSystem(asrc);
+    pnet->addMarSystem(dest);
+    pnet->addMarSystem(rms);
+    pnet->addMarSystem(devibot);
+
+    pnet->updctrl("SoundFileSource/asrc/mrs_string/filename", "A_120_01.au");   
+    pnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+    // Read in Thumb and Fret data into realvectors
+    realvec thumb;
+    realvec fret;
+    thumb.read("A_120_thumb_01.txt");
+    fret.read("A_120_fret_01.txt");
+    realvec rmsvec; 
+    rmsvec.create(fret.getSize());
+
+    // Gather WISP data from Text files
+    // realvec timer;
+    realvec WispX;    
+    realvec WispY;    
+    realvec WispZ;    
+    int len = fret.getSize();
+    //timer.create(len);    
+    WispX.create(len);    
+    WispY.create(len);    
+    WispZ.create(len);    
+    
+    //    float timestamp;
+    float x;
+    float y;
+    float z;
+    int linecount = 0;
+
+    ifstream myfile;
+    myfile.open("WISPTestData2.txt");
+    while ( !myfile.eof () )
+      {
+	myfile >> x >> y >> z;	
+	cout << x << y << z  << endl;
+	if (linecount > len)
+	  {
+	    len = len*2;
+	    //    timer.stretch(len);    
+	    WispX.stretch(len);    
+	    WispY.stretch(len);    
+	    WispZ.stretch(len);    
+	  }
+	// timer(linecount) = timestamp;
+	WispX(linecount) = x;
+	WispY(linecount) = y;
+	WispZ(linecount) = z;
+	linecount++;
+      }
+    myfile.close();
+    //timer.stretch(linecount);    
+    WispX.stretch(linecount);    
+    WispY.stretch(linecount);    
+    WispZ.stretch(linecount);    
+    
+
+
+    // Set Robot Variables
+    MarControlPtr arm = pnet->getctrl("DeviBot/devibot/mrs_natural/arm");
+    MarControlPtr velocity = pnet->getctrl("DeviBot/devibot/mrs_natural/velocity");
+    MarControlPtr strike = pnet->getctrl("DeviBot/devibot/mrs_bool/strike");
+    
+    pnet->updctrl(arm, DEVIBOT_NA);
+    pnet->updctrl(velocity, 40);
+    pnet->updctrl(strike, true);
+    
+    // Thumb Onset Detection Variables
+    int deriv;
+    int pderiv;
+    int prevthumb = thumb(0);
+    int flag = 0;
+    int upThresh = 18;
+    int downThresh = 15;
+    int onsetWaitTime = 10; // 10::ms each note on
+    int temp = 0;
+    
+    for (mrs_natural t = 0; t < fret.getSize(); t++)
+    {
+      //      cout << thumb(t) << "---";
+      
+      // Thumb Onset Detection
+      deriv = thumb(t) - prevthumb; 
+      pderiv = deriv*(-2) + deriv;
+      
+      if ((deriv > 0) && (deriv > downThresh) && (flag == 0))
+	{
+	  // down Stroke
+	  pnet->updctrl(arm, DEVIBOT_NA);
+	  pnet->updctrl(velocity, 40);
+	  pnet->updctrl(strike, true);
+	  flag = 1;
+	  temp = t;
+	}
+      else if ((deriv < 0) && (pderiv > upThresh) && (flag == 0))
+	{
+	  // up Stroke
+	  pnet->updctrl(arm, DEVIBOT_NA);
+	  pnet->updctrl(velocity, 40);
+	  pnet->updctrl(strike, true);
+	  flag = 1;
+	  temp = t;
+	}
+      else 
+	{
+	  // remove quick onsets
+	  if (t-temp > onsetWaitTime)
+	    {
+	      flag = 0;
+	    }
+	}
+
+      // set prev Thumb
+      prevthumb = thumb(t);
+      pnet->tick();
+      realvec out = pnet->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+      // cout << out(0,0) << endl;
+      rmsvec(t) = out(0,0);
+    }
+    rmsvec.write("A_80_rms_01.txt");
+
+}
+
+void readFrettoPitch(mrs_real length) 
+{
+    cout << "Read Fret to Pitch" << endl;
+    MarSystemManager mng;
+
+    MarSystem* pnet = mng.create("Series", "pnet");    
+ 
+    // Mix Fan out 
+    MarSystem* mix = mng.create("Fanout", "mix");
+ 
+   //    pnet->addMarSystem(mng.create("Fanout", "mix"));
+    
+      // Direct Chain: Sitar to Speaker 
+    MarSystem *DirectChain = mng.create("Series", "DirectChain");
+    DirectChain->addMarSystem(mng.create("SoundFileSource", "asrc"));
+    DirectChain->addMarSystem(mng.create("Gain", "dgain"));
+   
+    // Sine Chain: Fret data converted to Sine waves
+    MarSystem* SineChain = mng.create("Series", "SineChain"); 
+    SineChain->addMarSystem(mng.create("SineSource", "ssrc"));
+    SineChain->addMarSystem(mng.create("Gain", "sgain"));
+    SineChain->addMarSystem(mng.create("SoundFileSink", "fretpitch"));
+    
+    // Add Direct Chain and Sine Chain to  to Mix
+    mix->addMarSystem(DirectChain);
+    mix->addMarSystem(SineChain);
+
+    // Add Mix to pnet
+    pnet->addMarSystem(mix);
+    
+    // Send to speakers
+    pnet->addMarSystem(mng.create("Sum", "mixsum"));
+    pnet->addMarSystem(mng.create("AudioSink", "dest"));
+   
+    // File name of Sitar Sound File
+    pnet->updctrl("Fanout/mix/Series/DirectChain/SoundFileSource/asrc/mrs_string/filename", "A_120_20.au");   
+
+    // File name for SineWave Sound File
+    pnet->updctrl("Fanout/mix/Series/SineChain/SoundFileSink/fretpitch/mrs_string/filename", "fretpitch.au");   
+    
+    // Link Controls to Relevant Variables    
+    MarControlPtr freqptr = pnet->getctrl("Fanout/mix/Series/SineChain/SineSource/ssrc/mrs_real/frequency");
+    MarControlPtr DirVolptr = pnet->getctrl("Fanout/mix/Series/DirectChain/Gain/dgain/mrs_real/gain");
+    MarControlPtr SineVolptr = pnet->getctrl("Fanout/mix/Series/SineChain/Gain/sgain/mrs_real/gain");
+
+    pnet->updctrl(DirVolptr, 2.0);
+    pnet->updctrl(SineVolptr, 0.1);
+    
+    
+    pnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+    
+
+    // Read Fret data into realvectors
+    realvec fret;
+    fret.read("A_120_fret_20.txt");
+
+    for (mrs_natural t = 0; t < fret.getSize(); t++)
+      {
+	// Ma - F# 
+	if ((fret(t) > 0) && (fret(t) < 5))
+	  {
+	    //Silence
+	    //pnet->updctrl(freqptr, 184.997);  
+	  }
+
+	// Tivra Ma - G
+	else if ((fret(t) > 5) && (fret(t) < 10))
+	  {
+	    pnet->updctrl(freqptr, 195.998);  
+	  }
+	
+	// Pa - G# 
+	else if ((fret(t) > 10) && (fret(t) < 15))
+	  {
+	    pnet->updctrl(freqptr, 207.652);  
+	  }
+
+	// Komal Dha - A
+	else if ((fret(t) > 15) && (fret(t) < 20))
+	  {
+	    pnet->updctrl(freqptr, 220.000);  
+	  }
+	
+	// Dha - A# 
+	else if ((fret(t) > 20) && (fret(t) < 24))
+	  {
+	    pnet->updctrl(freqptr, 233.082);  
+	  }
+
+	// Komal Ni - B
+	else if ((fret(t) > 24) && (fret(t) < 28))
+	  {
+	    pnet->updctrl(freqptr, 246.942);  
+	  }
+	
+	// Ni - C 
+	else if ((fret(t) > 28) && (fret(t) < 36))
+	  {
+	    pnet->updctrl(freqptr, 261.626);  
+	  }
+	
+	// Sa - C#
+	else if ((fret(t) > 35) && (fret(t) < 42))
+	  {
+	    pnet->updctrl(freqptr, 277.183);    
+	  }
+
+	// Re - D# 
+	else if ((fret(t) > 41) && (fret(t) < 50))
+	  {
+	    pnet->updctrl(freqptr, 311.127);    
+	  }
+
+	// Komal Ga - E 
+	else if ((fret(t) > 49) && (fret(t) < 58))
+	  {
+	    pnet->updctrl(freqptr, 329.628);     
+	  }
+	
+	// Ga - F 
+	else if ((fret(t) > 57) && (fret(t) < 66))
+	  {
+	    pnet->updctrl(freqptr, 349.228);    
+	  }
+
+	// Ma - F# 
+	else if ((fret(t) > 65) && (fret(t) < 75))
+	  {
+	    pnet->updctrl(freqptr, 369.994);    
+	  }
+
+	// Tivra Ma - G 
+	else if ((fret(t) > 74) && (fret(t) < 83))
+	  {
+	    pnet->updctrl(freqptr, 391.995);    
+	  }
+	
+	// Pa - G# 
+	else if ((fret(t) > 82) && (fret(t) < 91))
+	  {
+	    pnet->updctrl(freqptr, 415.305);    
+	  }
+	
+	// Dha - A# 
+	else if ((fret(t) > 90) && (fret(t) < 99))
+	  {
+	    pnet->updctrl(freqptr, 466.164);    
+	  }
+
+	// Komal Ni - B 
+	else if ((fret(t) > 98) && (fret(t) < 106))
+	  {
+	    pnet->updctrl(freqptr, 493.883);    
+	  }
+	
+	// Ni - C
+	else if ((fret(t) > 105) && (fret(t) < 112))
+	  {
+	    pnet->updctrl(freqptr, 523.251);    
+	  }
+
+	// Sa - C#
+	else if ((fret(t) > 111) && (fret(t) < 117))
+	  {
+	    pnet->updctrl(freqptr, 554.4);    
+	  }
+	
+	// Re - D#
+	else if ((fret(t) > 116) && (fret(t) < 122))
+	  {
+	    pnet->updctrl(freqptr, 622.3);    
+	  }
+
+	// Ga - F
+	else if ((fret(t) > 121) && (fret(t) < 125))
+	  {
+	    pnet->updctrl(freqptr, 698.5);    
+	  }
+	
+	// Ma - F#
+	else if ((fret(t) > 124) && (fret(t) < 128))
+	  {
+	    pnet->updctrl(freqptr, 740.0);    
+	  }
+	  
+      pnet->tick();
+    }
+
+
+}
+
+void recordSitarSensors(mrs_real length) 
+{
+  // This function records syncronized audio data, thumb pressure 
+  // and fret data. Audio is recorded at 44100 HZ. Thumb and Fret
+  // are recorded at 44100/512 Hz. Function is also set up to send 
+  // Midi Output signal to start and stop other processes, such as 
+  // using MAX/MSP to record Open Sound Control Data. 
+
+    cout << "Record Sitar Sensor Data" << endl;
     MarSystemManager mng;
 
     MarSystem* pnet = mng.create("Series", "pnet");
 
-    //    MarSystem* srm = mng.create("SilenceRemove", "src"); 
-
     MarSystem* recordNet = mng.create("Series", "recordNet");
     MarSystem* asrc = mng.create("AudioSource", "asrc");
     MarSystem* dest = mng.create("SoundFileSink", "dest");
+    MidiInput* vmidi = new MidiInput("vmidi");
     Esitar* esitar = new Esitar("esitar");
     MarSystem* devibot = mng.create("DeviBot", "devibot");
 
     recordNet->addMarSystem(asrc);
+    recordNet->addMarSystem(vmidi);
     recordNet->addMarSystem(esitar);
     recordNet->addMarSystem(devibot);
-    // srm->addMarSystem(recordNet);
 
     // recordNet->addMarSystem(dest); 
     recordNet->updctrl("mrs_real/israte", 44100.0); 
@@ -416,10 +755,10 @@ void recordVirtualThumbSensor(mrs_real length)
 
     int r,f;
 
-    cout << *recordNet << endl; 
+    //    cout << *recordNet << endl; 
 
     int len; 
-    len = 5000;
+    len = 2600;
     realvec thumb(len);
     realvec fret(len);
 
@@ -429,13 +768,19 @@ void recordVirtualThumbSensor(mrs_real length)
 
     
     // Start Signal 
-#ifdef MARSYAS_MIDIIO
-    pnet->updctrl(arm, DEVIBOT_GE);
+    pnet->updctrl(arm, DEVIBOT_NA);
     pnet->updctrl(velocity, 50);
     pnet->updctrl(strike, true);
-#endif
+
+    // Wait
+    sleep(1);
+
+    pnet->updctrl(arm, DEVIBOT_NA);
+    pnet->updctrl(velocity, 50);
+    pnet->updctrl(strike, true);
     
-    for (mrs_natural t = 0; t < iterations; t++)
+    //    for (mrs_natural t = 0; t < iterations; t++)
+    for (mrs_natural t = 0; t < len; t++)
     {
 
       /*  if (t % 100 == 0) 
@@ -462,29 +807,18 @@ void recordVirtualThumbSensor(mrs_real length)
       
       fret(t) = f;
       thumb(t) = r;
-
-
-        pnet->setctrl("Annotator/ann/mrs_natural/label", r);
-        pnet->tick();
+      
+      pnet->setctrl("Annotator/ann/mrs_natural/label", r);
+      pnet->tick();
     }
 
     // Stop Signal
-#ifdef MARSYAS_MIDIIO
-    pnet->updctrl(arm, DEVIBOT_NA);
+    pnet->updctrl(arm, DEVIBOT_GE);
     pnet->updctrl(velocity, 50);
     pnet->updctrl(strike, true);
-#endif
     
     thumb.write("thumb.plot");
     fret.write("fret.plot");
-
-    
-    
-    realvec newthumb;
-    
-    newthumb.read("thumb.plot");
-    
-
 }
 
 
@@ -530,12 +864,15 @@ int main(int argc, const char **argv)
         recordVirtualThumbSensor( lengthopt );
     */
     cout << "INSTRUMENTO OPT"<< instrumentopt << endl;
-
+    
     if (instrumentopt == 0)
-        recordVirtualSensor( lengthopt );
+      recordVirtualSensor( lengthopt );
     else if (instrumentopt == 1)
-        recordVirtualThumbSensor( lengthopt );
-
+      readSitarSensors( lengthopt );
+    else if (instrumentopt == 2)
+      recordSitarSensors( lengthopt );
+    else if (instrumentopt == 3)
+     readFrettoPitch( lengthopt );
     exit(0);
 }
 
