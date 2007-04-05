@@ -77,7 +77,7 @@ void printHelp(string progName)
     cerr << "-l --length     : record length in seconds " << endl;
     cerr << "-s --srate      : samping rate " << endl;
     cerr << "-c --channels   : number of channels to record " << endl;
-    cerr << "-i --instrument : 0: drum or 1: Read Sitar 2: Record Sitar Sensors 3: Read Fret to Pitch " << endl;
+    cerr << "-i --instrument : 0: drum or 1: Read Sitar 2: Record Sitar Sensors 3: Read Fret to Pitch 4: read collection of files for READ " << endl;
     cerr << endl;
     exit(1);
 }
@@ -363,9 +363,59 @@ void recordVirtualSensor(mrs_real length)
     //       std::cout << endl;
 }
 
+void readRMSmake(mrs_real length, string AudioFile) 
+{
+    cout << "Read AudioFiles and make RMS files" << endl;
+    cout << AudioFile << endl;
+
+    MarSystemManager mng;
+
+    MarSystem* pnet = mng.create("Series", "pnet");    
+    MarSystem* asrc = mng.create("SoundFileSource", "asrc");
+    MarSystem* rms = mng.create("Rms", "rms");
+    
+    pnet->addMarSystem(asrc);
+    pnet->addMarSystem(rms);
+  
+    pnet->updctrl("SoundFileSource/asrc/mrs_string/filename", AudioFile);   
+    pnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+        
+    realvec rmsvec; 
+    int len = 1000;
+    rmsvec.create(len);
+    int linecount = 0;
+
+    // This is a hack to get size! change this
+    realvec fret;
+    fret.read("A_120_thumb_01.txt");
+
+    for (mrs_natural t = 0; t < fret.getSize(); t++)
+      {
+	if (linecount > len)
+	  {
+	    len = len*2;
+	    rmsvec.stretch(len);    
+	  }
+	pnet->tick();
+	realvec out = pnet->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	//cout << out(0,0) << endl;
+	rmsvec(t) = out(0,0);
+	linecount++;
+	
+      }
+    
+    
+    rmsvec.stretch(linecount);
+    AudioFile += "_rms.txt";
+    rmsvec.write(AudioFile);
+
+}
+
 void readSitarSensors(mrs_real length) 
 {
     cout << "Read Sitar Sensors" << endl;
+
     MarSystemManager mng;
 
     MarSystem* pnet = mng.create("Series", "pnet");    
@@ -863,7 +913,8 @@ int main(int argc, const char **argv)
     else
         recordVirtualThumbSensor( lengthopt );
     */
-    cout << "INSTRUMENTO OPT"<< instrumentopt << endl;
+
+    //    cout << "INSTRUMENTO OPT"<< instrumentopt << endl;
     
     if (instrumentopt == 0)
       recordVirtualSensor( lengthopt );
@@ -872,7 +923,17 @@ int main(int argc, const char **argv)
     else if (instrumentopt == 2)
       recordSitarSensors( lengthopt );
     else if (instrumentopt == 3)
-     readFrettoPitch( lengthopt );
+      readFrettoPitch( lengthopt );
+    else if (instrumentopt == 4)
+      {
+	Collection l;
+	l.read("rms.mf");
+	
+	for (int i=0; i < l.size(); i++)
+	  {
+	    readRMSmake( lengthopt, l.entry(i) );
+	  }
+      }
     exit(0);
 }
 
