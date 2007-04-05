@@ -36,7 +36,7 @@ void Analyze::calcNothing() {
 }
 
 void Analyze::calcDurations() {
-	int MEAN_RADIUS = 20.0;
+	int MEAN_RADIUS = 30.0;
 	float prevNote=0.0;
 	float median;
 	int i;
@@ -170,7 +170,8 @@ void Analyze::writePitches() {
 	ofstream file;
 	file.open("notepitches.txt");
 	for (i=0; i<numPitches; i++)
-		file<<fmod(pitchList(i),12)<<endl;
+		file<<pitchList(i)<<endl;
+//		file<<fmod(pitchList(i),12)<<endl;
 	file.close();
 }
 
@@ -294,6 +295,84 @@ void Analyze::calcNotes(){
 	}
 }
 
+void Analyze::calcIndividualMultipliers(){
+	int i;
+	int j;
+	mrs_real desired;
+	mrs_real curPitch;
+
+	// copy
+  realvec orig= realvec(detected.getRows(),detected.getCols());
+  for (i=0; i< detected.getRows(); i++)
+    for (j=0; j< detected.getCols(); j++)
+      orig(i,j) = detected(i,j);
+
+	int pos=0;
+	i=0;
+	mrs_real lastVal = 0.0;
+	mrs_real lastHarm1 = 0.0;
+	mrs_real lastHarm2 = 0.0;
+	mrs_real lastHarm3 = 0.0;
+	// display output
+  while (true) {
+    while (i >= orig(pos,0)) {
+      pos++;
+      if (pos >= detected.getRows()) {
+  			for (i=0; i<detected.getRows(); i++) {
+					if (( detected(i,1) > 0 )&&( detected(i,1) < 2)&&(detected(i,1)>0.2)) {
+						detected(i,2) = 1.0;
+					} else {
+		//				cout<<"Repeat "<<i<<endl;
+						detected(i,1) = lastVal;
+						detected(i,2) = 1.0;
+						detected(i,3) = lastHarm1;
+						detected(i,5) = lastHarm2;
+						detected(i,7) = lastHarm3;
+					}
+					lastVal = detected(i,1);
+					lastHarm1 = detected(i,3);
+					lastHarm2 = detected(i,5);
+					lastHarm3 = detected(i,7);
+				}
+      	writeTemp(detected);
+        return;
+      }
+    }
+  
+		detected(i,0) = i;  
+		curPitch = pitch2hertz( pitchList(i) );
+		if (PITCH_CORRECT)
+			desired = pitch2hertz( exercise[2*(pos+0)] );
+		else
+			desired = curPitch;
+	//cout<<"expected pitch"<<exercise[2*(pos+0)]<<endl;
+		detected(i,1) = desired / curPitch;
+
+		if (pos>0) {
+		for (j=3; j<detected.getCols(); j = j+2) {
+			if ( orig(pos,j) > 0 ) {
+				desired = pitch2hertz( orig(pos,j) );
+				detected(i,j) = desired / curPitch;
+	//cout<<"  desired: "<<desired;
+				detected(i,j+1) = orig(pos,j+1);
+	//cout<<" result: "<<detected(i,j)*curPitch;
+			}
+		}
+		//cout<<endl;
+		} else {
+		for (j=3; j<detected.getCols(); j++) {
+			detected(i,j) = 0;
+		}
+	}
+
+//	cout<<"pos: "<<pos<<"  i: "<<i<<"  pitchList: "<<pitchList(i);
+//	cout<<"  "<<desired<<"   "<<curPitch;
+//	cout<<"    "<<detected(i,1);
+//	cout<<endl;
+		i++;
+	}
+}
+
 void Analyze::calcMultipliers(){
 	int i;
 	int j;
@@ -308,13 +387,19 @@ void Analyze::calcMultipliers(){
 			if ((exercise[i]>0)&&(detected(i,1)>0)) {
 				curPitch = pitch2hertz(detected(i,1));
 				desired = pitch2hertz( exercise[2*(i+1)] );
-				//cout<<desired<<endl;
 				detected(i,1) = desired / curPitch;
-				for (j=3; j<detected.getCols(); j = j+2) {
+			cout<<"orig: "<<curPitch<<"   "<<desired<<"  "<<detected(i,1)<<endl;
+				//for (j=3; j<detected.getCols(); j = j+2) {	
+				for (j=3; j<4; j = j+2) {	
 					if ( detected(i,j) > 0 ) {
 						desired = pitch2hertz( detected(i,j) );
-						detected(i,j) = desired / curPitch;
+		//				detected(i,j) = desired / curPitch;
+						detected(i,j) = 0.0;
 					}
+					detected(i,5)=0;
+					detected(i,6)=0;
+					detected(i,7)=0;
+					detected(i,8)=0;
 				}
 			} else {
 				detected(i,1) = 1;
@@ -416,6 +501,27 @@ void Analyze::addHarmsSmooth() {
 	}
 }
 
+void Analyze::screwJazz() {
+
+
+}
+
+void Analyze::makeMinor() {
+	int i;
+	int curNote;
+
+	for (i=0; i<exerLength; i=i+2) {
+		curNote = exercise[i];
+		curNote = curNote % 12;
+		if ( (curNote==4)||(curNote==9)||(curNote==11)) {
+			exercise[i] = exercise[i]-1;
+			cout<<"changed to "<<exercise[i]<<endl;
+		}
+	}
+}
+//c cis d dis e f fis g gis a ais b
+//0 1   2 3   4 5 6   7 8   9 10 11  
+
 // 0 4 7: CEG
 // 7 11 2: GBD
 // 5 9 0 : FAC
@@ -425,36 +531,44 @@ void Analyze::addHarmsBasic() {
 	int curNote;
 
 	for (i=0; i<detected.getRows(); i++) {
-		if (( detected(i,0)>=0 )&&(detected(i,1)>0)) {
-			curPitch = detected(i,1);
+		if (detected(i,0)>=0 ) {
+		//	if (detected(i,1)>0)
+		//		curPitch = detected(i,1);
+		//	else
+				curPitch = exercise[2*i];
+		//	cout<<curPitch<<endl;
 			curNote = int(round(curPitch));
 			curNote = curNote % 12;
 			if ( (curNote==0)||(curNote==4)) {
 				detected(i,3) = 48;
-				detected(i,4) = 0.5;  // amplitude
+				detected(i,4) = 0.7;  // amplitude
 				detected(i,5) = 52;
-				detected(i,6) = 0.2;
+				detected(i,6) = 0.5;
 				detected(i,7) = 55;
-				detected(i,8) = 0.2;
+				detected(i,8) = 0.5;
 				//cout<<" 48 52 55"<<endl;
 			}
 			if ( (curNote==7)||(curNote==11)||(curNote==2)) {
       	detected(i,3) = 55;
-        detected(i,4) = 0.5;  // amplitude
+        detected(i,4) = 0.7;  // amplitude
         detected(i,5) = 59;
-        detected(i,6) = 0.2;
+        detected(i,6) = 0.5;
         detected(i,7) = 62;
-        detected(i,8) = 0.2;
+        detected(i,8) = 0.5;
 				//cout<<" 55 59 62"<<endl;
 			}
 			if ( (curNote==5)||(curNote==9)) {
       	detected(i,3) = 43;
-        detected(i,4) = 0.5;  // amplitude
+        detected(i,4) = 0.7;  // amplitude
         detected(i,5) = 57;
-        detected(i,6) = 0.2;
+        detected(i,6) = 0.5;
         detected(i,7) = 60;
-        detected(i,8) = 0.2;
+        detected(i,8) = 0.5;
 				//cout<<" 53 57 60"<<endl;
+			}
+	// check that it matches something
+			if ( detected(i,3)==0 ){
+				cout<<"NOT FOUND for frame "<<i<<" which is "<<detected(i,1)<<endl;
 			}
 		}
 	}

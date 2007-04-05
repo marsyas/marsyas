@@ -34,13 +34,21 @@ int main(int argc, const char **argv) {
 	} else {
 		analyze->calcNothing();
 	}
-
-	analyze->initHarms();
-	analyze->addHarmsBasic();
-
-	analyze->calcMultipliers(); // do this AFTER addharms() !!!
 	analyze->writePitches();
 	analyze->writeNotes();
+
+	analyze->initHarms();
+	if (exerFileName != "") {
+//		analyze->addHarmsBasic();
+//		analyze->makeMinor();
+//		analyze->calcMultipliers(); // do this AFTER addharms() !!!
+		analyze->calcIndividualMultipliers(); // do this AFTER addharms() !!!
+	} else {
+//		analyze->addHarmsBasic();
+//		analyze->calcMultipliers(); // do this AFTER addharms() !!!
+
+		analyze->calcIndividualMultipliers(); // do this AFTER addharms() !!!
+	}
 	analyze->writeHarmData();
 	delete analyze;
 }

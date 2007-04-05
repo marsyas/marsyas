@@ -11,6 +11,7 @@ public:
 	void calcDurations();
 	void calcNotes();
 	void calcMultipliers();
+	void calcIndividualMultipliers();
 	void calcNothing();
 	void writeNotes();
 	void writeHarmData();
@@ -21,6 +22,9 @@ public:
 	void addHarmsHokey();
 	void addHarmsSmooth();
 	void addHarmsBasic();
+
+	void makeMinor();
+	void screwJazz();
 
 private:
 	void getPitches(string audioFilename);
