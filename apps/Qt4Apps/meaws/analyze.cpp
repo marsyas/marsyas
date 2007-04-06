@@ -14,7 +14,7 @@ Analyze::Analyze(string audioFileName, string exerciseFileName) {
 		PITCH_CORRECT=false;
 	}
 	outputFileName = audioFileName;
-	outputFileName.append(".analysis.txt");
+	outputFileName.erase( outputFileName.length()-4, outputFileName.length());
 	getPitches(audioFileName);
 //	cout<<numPitches<<endl;
 
@@ -171,7 +171,9 @@ void Analyze::smoothPitches() {
 void Analyze::writePitches() {
 	int i;
 	ofstream file;
-	file.open("notepitches.txt");
+	string fileName = outputFileName;
+	fileName.append(".pitches.txt");
+	file.open(fileName.c_str());
 	for (i=0; i<numPitches; i++)
 		file<<pitchList(i)<<endl;
 //		file<<fmod(pitchList(i),12)<<endl;
@@ -180,8 +182,10 @@ void Analyze::writePitches() {
 
 void Analyze::writeNotes() {
 	int i,j;
+	string fileName = outputFileName;
+	fileName.append(".calcNotes.txt");
 	ofstream file;
-	file.open("calcNotes.txt");
+	file.open( fileName.c_str() );
 	for (i=0; i<detected.getRows(); i++) {
 		if ( detected(i,0) >=0 ) {
 			for (j=0; j<detected.getCols(); j++) {
@@ -195,7 +199,9 @@ void Analyze::writeNotes() {
 
 void Analyze::writeTemp(realvec temp) {
 	ofstream file;
-	file.open( outputFileName.c_str() );
+	string fileName = outputFileName;
+	fileName.append(".wav.analysis.txt");
+	file.open( fileName.c_str() );
 	file<<temp;
 	file.close();
 }
