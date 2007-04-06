@@ -151,7 +151,7 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 	      f_ += finc_;
 	    }
 	  
-	}
+			}
 
       index_(t) = address_;	  
 	  
@@ -160,5 +160,5 @@ PvOscBank::myProcess(realvec& in, realvec& out)
       
       lastamp_(t) = in(2*t,0);
       lastfreq_(t) = in(2*t+1, 0);
-    }
+	}
 }
