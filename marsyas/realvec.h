@@ -151,7 +151,7 @@ public:
 
   // Communications
   void send(Communicator *com);
-
+  mrs_natural search(mrs_real val);
 };
 
 

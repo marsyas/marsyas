@@ -46,12 +46,16 @@ int process(string inName, string outName)
   MarSystem* audioSink = mng.create("SoundFileSink", "audioSink");
 
 	// replace the input with a noise source
-	lspF->addMarSystem(mng.create("NoiseSource", "ns"));
-  lspF->addMarSystem(mng.create("Gain", "g1"));
 
-	lspF->addMarSystem(mng.create("Filter", "residual"));
-	lspF->addMarSystem(audioSink);
-	lspF->addMarSystem(mng.create("Filter", "inverse"));
+	lspF->addMarSystem(mng.create("Filter", "analysis"));
+
+	//lspF->addMarSystem(mng.create("NoiseSource", "ns"));
+  lspF->addMarSystem(mng.create("Gain", "nsg"));
+  lspF->addMarSystem(audioSink);
+
+	lspF->addMarSystem(mng.create("Filter", "synthesis"));
+  
+
 
   fanout->addMarSystem(lspF);
   // third branch of the fanout
@@ -67,12 +71,15 @@ int process(string inName, string outName)
  	input->updctrl("Fanout/fanout/Series/lspS/LPC/lpc/mrs_real/gamma",1.0);
   input->updctrl("Fanout/fanout/Series/lspS/LPC/lpc/mrs_natural/featureMode", 0);
 
-	input->linkctrl("Fanout/fanout/Series/lspF/Filter/residual/mrs_realvec/ncoeffs",
+	input->linkctrl("Fanout/fanout/Series/lspF/Filter/analysis/mrs_realvec/ncoeffs",
 									"Fanout/fanout/Series/lspS/LPC/lpc/mrs_realvec/coeffs");
-  input->linkctrl("Fanout/fanout/Series/lspF/Filter/inverse/mrs_realvec/dcoeffs",
+  input->linkctrl("Fanout/fanout/Series/lspF/Filter/synthesis/mrs_realvec/dcoeffs",
 									"Fanout/fanout/Series/lspS/LPC/lpc/mrs_realvec/coeffs");
   // link the power of the error with a gain
-	input->linkctrl("Fanout/fanout/Series/lspF/Filter/inverse/mrs_realvec/dcoeffs",
+  input->linkctrl("Fanout/fanout/Series/lspF/Gain/nsg/mrs_real/gain",
+									"Fanout/fanout/Series/lspS/LPC/lpc/mrs_real/power");
+
+	input->linkctrl("Fanout/fanout/Series/lspF/Filter/synthesis/mrs_realvec/dcoeffs",
 									"Fanout/fanout/Series/lspS/LPC/lpc/mrs_realvec/coeffs");
 
 	input->updctrl("Fanout/fanout/Series/lspF/SoundFileSink/audioSink/mrs_string/filename", outName);
@@ -82,6 +89,8 @@ int process(string inName, string outName)
 	{
 		input->tick();
 		i++;
+	/*	cout << input->getctrl("Fanout/fanout/Series/lspF/Gain/nsg/mrs_real/gain")->toReal() << endl;
+		cout << input->getctrl("Fanout/fanout/Series/lspS/LPC/lpc/mrs_real/power")->toReal() << endl;*/
 	}
 
 	cout << endl << "LPC processing finished!";

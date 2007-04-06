@@ -485,6 +485,22 @@ main(int argc, const char **argv)
 			fileVoicingName = path + "/" + Sfname.nameNoExt() +outputInfo+ "Voicing" +".txt" ;
 			fileF0Name = path + "/" + Sfname.nameNoExt() +outputInfo+  "F0.txt" ;
 
+			if(Sfname.ext() == "peak")
+			{
+				analyse_ = 0;
+				if(synthetize_ > -1)
+				clusterSynthetize_ = synthetize_;
+				else
+					clusterSynthetize_ = 0;
+				fileName = path + "/" + Sfname.nameNoExt()+outputInfo+".wav" ;
+	
+			}
+			if(Sfname.ext() == "wav")
+			{
+				analyse_ = 1;
+			}
+
+
 			if(noiseName == "music")
 			{
 				string tmp = Sfname.nameNoExt();

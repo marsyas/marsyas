@@ -423,7 +423,7 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 	cout << "Synthetizing Clusters" << endl;
 	MarSystemManager mng;
 
-	synthNetCreate(&mng, fileName, 0, 1);
+	synthNetCreate(&mng, fileName, 0, synType);
 	MarSystem* pvseries = mng.create("Series", "pvseries");
 	MarSystem *peSynth = mng.create("PeSynthetize", "synthNet");
 
@@ -470,7 +470,7 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 				fileResName = path + name + "GrdRes_" + ossi.str() + "." + ext;*/
 			}
 
-			synthNetConfigure (pvseries, fileName, outsfname, fileResName, panningInfo, 1, Nw, D, S, 1, 0, 0, bopt, Nw+1-D); //  nbFrames
+			synthNetConfigure (pvseries, fileName, outsfname, fileResName, panningInfo, 1, Nw, D, S, 1, 0, synType, bopt, Nw+1-D); //  nbFrames
 
 			mrs_natural nbActiveFrames=0;
 			mrs_real Snr=0;

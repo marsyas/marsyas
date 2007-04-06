@@ -518,6 +518,20 @@ realvec::sqr()
 }
 
 
+mrs_natural
+realvec::search(mrs_real val)
+{
+	mrs_real minDiff = MAXREAL;
+  mrs_natural index=-1;
+  for (mrs_natural i=0; i<size_; i++)
+    if (fabs(data_[i]-val)< minDiff)
+		{
+minDiff = fabs(data_[i]-val);
+index=i;
+    }
+		return index;
+}
+
 void
 realvec::sqroot()
 {
