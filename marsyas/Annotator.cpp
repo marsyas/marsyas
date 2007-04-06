@@ -102,7 +102,7 @@ Annotator::myProcess(realvec& in, realvec& out)
   for (o=0; o < inObservations_; o++)
 	for (t = 0; t < inSamples_; t++)
 	  {
-		  out(o,t) =  in(o,t);
+	    out(o,t) =  in(o,t);
 	  }
 	
   for (t=0; t < inSamples_; t++) 

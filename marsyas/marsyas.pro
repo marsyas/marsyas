@@ -210,6 +210,8 @@ HEADERS += \
 	SoundFileSource.h \
 	Spectrum.h \
 	StandardDeviation.h \
+	StereoSpectrum.h \
+	StereoSpectrumFeatures.h \
 	Stk.h \
 	Sum.h \
 	Summary.h \
@@ -415,6 +417,8 @@ SOURCES += \
 	SoundFileSource.cpp \
 	Spectrum.cpp \
 	StandardDeviation.cpp \
+	StereoSpectrum.cpp \
+	StereoSpectrumFeatures.cpp \
 	Stk.cpp \
 	Sum.cpp \
 	Summary.cpp \

@@ -189,6 +189,8 @@ WekaSink::myProcess(realvec& in, realvec& out)
   
   static int count = 0;
   mrs_natural label = 0;
+  mrs_bool notPrint = false;
+  
   
   for (t = 0; t < inSamples_; t++)
     {
@@ -200,7 +202,12 @@ WekaSink::myProcess(realvec& in, realvec& out)
 	      if ((count % downsample_) == 0)
 		{
 		  if( out(o,t) != out(o,t) )	// Jen's NaN check for MIREX 05
-		    (*mos_) << fixed << setprecision(precision_) << 0. << ",";
+		    {
+		      // (*mos_) << fixed << setprecision(precision_) << 0. << ",";
+		      // DO NOT OUTPUT FEATUERS 
+		      notPrint = true;
+		    }
+		  
 		  else
 		    (*mos_) << fixed << setprecision(precision_) << out(o,t) << ",";
 		}
@@ -213,9 +220,14 @@ WekaSink::myProcess(realvec& in, realvec& out)
 	{
 	  if(!ctrl_regression_->isTrue())
 	    {
-	      oss << labelNames_[label];
-	      (*mos_) << oss.str();
-	      (*mos_) << endl;
+	      if (!notPrint) 
+		{
+		  oss << labelNames_[label];
+		  (*mos_) << oss.str();
+		  (*mos_) << endl;
+		}
+	      
+	      
 	    }
 	  else
 	    {

@@ -56,7 +56,7 @@ Series.h \
  ShiftInput.h ShiftOutput.h Shifter.h PvFold.h PvConvert.h PeConvert.h PeClust.h PeSynOsc.h PeSynOscBank.h PeSynFFT.h OverlapAdd.h PeResidual.h PeUtilities.h PeClusters.h PeSimilarity.h Polar2Cartesian.h Cartesian2Polar.h FlowCutSource.h \
 PvConvolve.h PvOscBank.h PvUnconvert.h PvOverlapadd.h Windowing.h Hamming.h \
 Fanout.h Fanin.h Negative.h SineSource.h MarSystemManager.h \
-PowerSpectrum.h Centroid.h Rolloff.h \
+PowerSpectrum.h StereoSpectrum.h StereoSpectrumFeatures.h Centroid.h Rolloff.h \
 Flux.h Memory.h Mean.h StandardDeviation.h ZeroCrossings.h \
 Socket.h Thread.h GaussianClassifier.h AbsSoundFileSink.h AbsSoundFileSource.h \
 Confidence.h MarFileSink.h WekaSink.h MFCC.h SCF.h SFM.h \

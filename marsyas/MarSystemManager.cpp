@@ -140,6 +140,8 @@ in sequence.
 #include "MidiInput.h"
 #include "MidiOutput.h"
 #include "BICchangeDetector.h"
+#include "StereoSpectrum.h" 
+#include "StereoSpectrumFeatures.h"
 
 using namespace std;
 using namespace Marsyas;
@@ -258,6 +260,9 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("MidiInput", new MidiInput("midiinpr"));
 	registerPrototype("MidiOutput", new MidiOutput("midioutpr"));
 	registerPrototype("BICchangeDetector", new BICchangeDetector("bicchgdetpr"));
+	registerPrototype("StereoSpectrum", new StereoSpectrum("stereopr"));
+	registerPrototype("StereoSpectrumFeatures", new StereoSpectrumFeatures("stereospkfpr"));
+	
 
 	//////////////////////////////////////////////////////////////////////////
 	//									Composite MarSystem prototypes

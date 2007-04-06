@@ -122,6 +122,7 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	MP3FileSource.$(OBJEXT) OggFileSource.$(OBJEXT) \
 	ClassOutputSink.$(OBJEXT) ClipAudioRange.$(OBJEXT) \
 	SilenceRemove.$(OBJEXT) RtMidi.$(OBJEXT) Stk.$(OBJEXT) \
+	StereoSpectrum.$(OBJEXT) StereoSpectrumFeatures.$(OBJEXT) \
 	Limiter.$(OBJEXT) NoiseSource.$(OBJEXT) CompExp.$(OBJEXT) \
 	NoiseGate.$(OBJEXT) Plucked.$(OBJEXT) ADSR.$(OBJEXT) \
 	Envelope.$(OBJEXT) Delay.$(OBJEXT) NormMaxMin.$(OBJEXT) \
@@ -246,6 +247,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/SoundFileSource2.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Spectrum.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/StandardDeviation.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/StereoSpectrum.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/StereoSpectrumFeatures.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Stk.Po ./$(DEPDIR)/Sum.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Summary.Po ./$(DEPDIR)/Talk.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Thread.Po ./$(DEPDIR)/TimeLine.Po \
@@ -548,6 +551,8 @@ libmarsyas_a_SOURCES = $(top_srcdir)/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/marsyas/SilenceRemove.cpp \
 			  $(top_srcdir)/marsyas/RtMidi.cpp \
 			  $(top_srcdir)/marsyas/Stk.cpp \
+			  $(top_srcdir)/marsyas/StereoSpectrum.cpp \
+			  $(top_srcdir)/marsyas/StereoSpectrumFeatures.cpp \
 			  $(top_srcdir)/marsyas/Limiter.cpp \
 			  $(top_srcdir)/marsyas/NoiseSource.cpp \
 			  $(top_srcdir)/marsyas/CompExp.cpp \
@@ -809,6 +814,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SoundFileSource2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Spectrum.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StandardDeviation.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StereoSpectrum.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StereoSpectrumFeatures.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Stk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Sum.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Summary.Po@am__quote@
@@ -3544,6 +3551,38 @@ Stk.obj: $(top_srcdir)/marsyas/Stk.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/Stk.Po' tmpdepfile='$(DEPDIR)/Stk.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Stk.obj `if test -f '$(top_srcdir)/marsyas/Stk.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/Stk.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/Stk.cpp'; fi`
+
+StereoSpectrum.o: $(top_srcdir)/marsyas/StereoSpectrum.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT StereoSpectrum.o -MD -MP -MF "$(DEPDIR)/StereoSpectrum.Tpo" -c -o StereoSpectrum.o `test -f '$(top_srcdir)/marsyas/StereoSpectrum.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/StereoSpectrum.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/StereoSpectrum.Tpo" "$(DEPDIR)/StereoSpectrum.Po"; else rm -f "$(DEPDIR)/StereoSpectrum.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/StereoSpectrum.cpp' object='StereoSpectrum.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/StereoSpectrum.Po' tmpdepfile='$(DEPDIR)/StereoSpectrum.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o StereoSpectrum.o `test -f '$(top_srcdir)/marsyas/StereoSpectrum.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/StereoSpectrum.cpp
+
+StereoSpectrum.obj: $(top_srcdir)/marsyas/StereoSpectrum.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT StereoSpectrum.obj -MD -MP -MF "$(DEPDIR)/StereoSpectrum.Tpo" -c -o StereoSpectrum.obj `if test -f '$(top_srcdir)/marsyas/StereoSpectrum.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/StereoSpectrum.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/StereoSpectrum.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/StereoSpectrum.Tpo" "$(DEPDIR)/StereoSpectrum.Po"; else rm -f "$(DEPDIR)/StereoSpectrum.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/StereoSpectrum.cpp' object='StereoSpectrum.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/StereoSpectrum.Po' tmpdepfile='$(DEPDIR)/StereoSpectrum.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o StereoSpectrum.obj `if test -f '$(top_srcdir)/marsyas/StereoSpectrum.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/StereoSpectrum.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/StereoSpectrum.cpp'; fi`
+
+StereoSpectrumFeatures.o: $(top_srcdir)/marsyas/StereoSpectrumFeatures.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT StereoSpectrumFeatures.o -MD -MP -MF "$(DEPDIR)/StereoSpectrumFeatures.Tpo" -c -o StereoSpectrumFeatures.o `test -f '$(top_srcdir)/marsyas/StereoSpectrumFeatures.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/StereoSpectrumFeatures.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/StereoSpectrumFeatures.Tpo" "$(DEPDIR)/StereoSpectrumFeatures.Po"; else rm -f "$(DEPDIR)/StereoSpectrumFeatures.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/StereoSpectrumFeatures.cpp' object='StereoSpectrumFeatures.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/StereoSpectrumFeatures.Po' tmpdepfile='$(DEPDIR)/StereoSpectrumFeatures.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o StereoSpectrumFeatures.o `test -f '$(top_srcdir)/marsyas/StereoSpectrumFeatures.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/StereoSpectrumFeatures.cpp
+
+StereoSpectrumFeatures.obj: $(top_srcdir)/marsyas/StereoSpectrumFeatures.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT StereoSpectrumFeatures.obj -MD -MP -MF "$(DEPDIR)/StereoSpectrumFeatures.Tpo" -c -o StereoSpectrumFeatures.obj `if test -f '$(top_srcdir)/marsyas/StereoSpectrumFeatures.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/StereoSpectrumFeatures.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/StereoSpectrumFeatures.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/StereoSpectrumFeatures.Tpo" "$(DEPDIR)/StereoSpectrumFeatures.Po"; else rm -f "$(DEPDIR)/StereoSpectrumFeatures.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/StereoSpectrumFeatures.cpp' object='StereoSpectrumFeatures.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/StereoSpectrumFeatures.Po' tmpdepfile='$(DEPDIR)/StereoSpectrumFeatures.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o StereoSpectrumFeatures.obj `if test -f '$(top_srcdir)/marsyas/StereoSpectrumFeatures.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/StereoSpectrumFeatures.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/StereoSpectrumFeatures.cpp'; fi`
 
 Limiter.o: $(top_srcdir)/marsyas/Limiter.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Limiter.o -MD -MP -MF "$(DEPDIR)/Limiter.Tpo" -c -o Limiter.o `test -f '$(top_srcdir)/marsyas/Limiter.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/Limiter.cpp; \

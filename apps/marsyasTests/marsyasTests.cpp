@@ -16,7 +16,7 @@
 #include "MarSystemTemplateBasic.h"
 #include "MarSystemTemplateAdvanced.h"
 #include "EvValUpd.h"
-
+#include "Collection.h"
 
 using namespace std;
 using namespace Marsyas;
@@ -1561,8 +1561,11 @@ randD(double max)
 
 
 void 
-test_stereoFeatures(string fname)
+test_stereoFeatures(string fname0, string fname1)
 {
+  
+
+
   MarSystemManager mng;
   
   MarSystem* playbacknet = mng.create("Series", "playbacknet");
@@ -1573,43 +1576,81 @@ test_stereoFeatures(string fname)
   MarSystem* right = mng.create("Series", "right");
   
   left->addMarSystem(mng.create("Spectrum", "spkleft"));
-  left->addMarSystem(mng.create("PowerSpectrum", "pspkleft"));
-  left->addMarSystem(mng.create("PlotSink", "psinkleft"));
-  left->updctrl("PlotSink/psinkleft/mrs_string/outputFilename", "leftspk");
+  // left->addMarSystem(mng.create("PowerSpectrum", "pspkleft"));
+  // left->addMarSystem(mng.create("PlotSink", "psinkleft"));
+  // left->updctrl("PlotSink/psinkleft/mrs_string/outputFilename", "leftspk");
 
   right->addMarSystem(mng.create("Spectrum", "spkright"));
-  right->addMarSystem(mng.create("PowerSpectrum", "pspkright"));
-  right->addMarSystem(mng.create("PlotSink", "psinkright"));
-  right->updctrl("PlotSink/psinkright/mrs_string/outputFilename", "rightspk");
+  // right->addMarSystem(mng.create("PowerSpectrum", "pspkright"));
+  // right->addMarSystem(mng.create("PlotSink", "psinkright"));
+  // right->updctrl("PlotSink/psinkright/mrs_string/outputFilename", "rightspk");
   
   
   stereobranches->addMarSystem(left);
   stereobranches->addMarSystem(right);
 
   playbacknet->addMarSystem(stereobranches);
-  playbacknet->addMarSystem(mng.create("PlotSink", "psinkfull"));
-  playbacknet->updctrl("PlotSink/psinkfull/mrs_string/outputFilename", "fullpsk");
-  
-  
-  playbacknet->updctrl("Parallel/stereobranches/Series/left/AudioSink/dest/mrs_bool/initAudio", true);  
+  playbacknet->addMarSystem(mng.create("StereoSpectrum", "sspk"));
+  // playbacknet->addMarSystem(mng.create("PlotSink", "psinkfull"))
+  // playbacknet->updctrl("PlotSink/psinkfull/mrs_string/outputFilename", "fullpsk");
+  playbacknet->addMarSystem(mng.create("StereoSpectrumFeatures", "sspkf"));
+  playbacknet->addMarSystem(mng.create("TextureStats", "texturests"));
+  playbacknet->addMarSystem(mng.create("Annotator", "ann"));
+  playbacknet->addMarSystem(mng.create("WekaSink", "wsink"));
 
-  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", fname);
+  
+  playbacknet->updctrl("Annotator/ann/mrs_natural/label", 0);
+  playbacknet->updctrl("WekaSink/wsink/mrs_natural/nLables", 2);
+  playbacknet->updctrl("WekaSink/wsink/mrs_string/filename", "stereo.arff"); 
+  playbacknet->updctrl("WekaSink/wsink/mrs_natural/downsample", 40); 
+  
+  
+  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", fname0);
   playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+
+
+
 
   mrs_bool isEmpty;
   cout << *playbacknet << endl;
-  realvec out;
-  out.create(1,512);
-  while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->toBool()) 
+
+
+  Collection l;
+  l.read(fname0);
+ 
+  int i,t;
+  
+  playbacknet->updctrl("Annotator/ann/mrs_natural/label", 0); 
+  for (i=0; i < l.size(); i++) 
     {
-      playbacknet->tick();
-      // out = playbacknet->getctrl("Parallel/stereobranches/Series/left/Gain/gainleft/mrs_realvec/processedData")->toVec();
-      // cout << out << endl;
+      playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", l.entry(i));
+      cout << "Processing " << l.entry(i) << endl;
       
-      
+      for (t=0; t < 1500; t++)
+	{
+	  playbacknet->tick();
+	}
+    }
+  
+  Collection m;
+  m.read(fname1);
+  
+  playbacknet->updctrl("Annotator/ann/mrs_natural/label", 1); 
+
+
+  for (i=0; i < m.size(); i++)
+    {
+      playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", m.entry(i));
+      cout << "Processing " << m.entry(i) << endl;
+      for (t=0; t < 1500; t++)
+	{
+	  playbacknet->tick();
+	}    
+    }
+  
      
       
-    }
+
 
 }
 
@@ -2469,7 +2510,7 @@ main(int argc, const char **argv)
   else if (testName == "scheduler") 
     test_scheduler(fname0);
   else if (testName == "stereoFeatures")
-    test_stereoFeatures(fname0);
+    test_stereoFeatures(fname0, fname1);
   else if (testName == "stereo2mono")
     test_stereo2mono(fname0);
   else if (testName == "SOM") 
