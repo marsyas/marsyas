@@ -3,6 +3,9 @@
 #include <math.h>
 #include "analyze.h"
 
+#define MAXMUL 1.2
+#define MINMUL 0.8
+
 Analyze::Analyze(string audioFileName, string exerciseFileName) {
 	if ( exerciseFileName != "" ) {
 		getExercise(exerciseFileName);
@@ -36,7 +39,7 @@ void Analyze::calcNothing() {
 }
 
 void Analyze::calcDurations() {
-	int MEAN_RADIUS = 40.0; // overkill?
+	int MEAN_RADIUS = 30.0;
 	float prevNote=0.0;
 	float median;
 	int i;
@@ -44,7 +47,7 @@ void Analyze::calcDurations() {
 	int prevSamp=0;
 	for (i=MEAN_RADIUS; i<numPitches-MEAN_RADIUS; i++) {
 		median = findMedian(i-MEAN_RADIUS, 2*MEAN_RADIUS, pitchList);
-		if ( fabs(median-prevNote) > 0.7) {
+		if ( fabs(median-prevNote) > 0.6) {
 			if (i>prevSamp+MEAN_RADIUS) {
 //				cout<<"---: "<<i<<" "<<prevNote<<" "<<median<<endl;
 				prevNote = median;
@@ -319,7 +322,7 @@ void Analyze::calcIndividualMultipliers(){
       pos++;
       if (pos >= detected.getRows()) {
   			for (i=0; i<detected.getRows(); i++) {
-					if (( detected(i,1) > 0 )&&( detected(i,1) < 2)&&(detected(i,1)>0.2)) {
+					if (( detected(i,1) > 0 )&&( detected(i,1) < MAXMUL)&&(detected(i,1)>MINMUL)) {
 						detected(i,2) = 1.0;
 					} else {
 		//				cout<<"Repeat "<<i<<endl;
@@ -505,6 +508,9 @@ void Analyze::screwJazz() {
 	int i;
 
 	for (i=0; i<detected.getRows(); i++ ) {
+		if ((i>50)&&(i<100)) {
+			detected(i,1) = detected(i,1)*0.94387431268;
+		}
 		if ((i>300)&&(i<500)) {
 			detected(i,1) = detected(i,1)*0.5;
 		}
