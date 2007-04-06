@@ -330,7 +330,8 @@ if(noiseName != EMPTYSTRING)
 			else
 				timeLeft = stopAnalyse_;
 			// string fname = pvseries->getctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_string/filename")->toString();
-			printf("%.2f / %.2f \r", timeRead, timeLeft);
+			printf("  %.2f / %.2f \r", timeRead, timeLeft);
+			fflush(stdout);
 			//cout << fixed << setprecision(2) << timeRead << "/" <<  setprecision(2) << timeLeft;
 			///*bool*/ temp = pvseries->getctrl("Accumulator/accumNet/Series/preNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
 			if (temp2 == false || (stopAnalyse_ !=0 && stopAnalyse_<timeRead))
