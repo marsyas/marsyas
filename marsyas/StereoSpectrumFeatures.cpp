@@ -71,12 +71,14 @@ StereoSpectrumFeatures::myProcess(realvec& in, realvec& out)
       m0_ = 0.0;
       for (o=0; o < inObservations_; o++)
 	{
-	  m0_ += in(o,t);
+	  m0_ += (in(o,t) * in(o,t));
 	}
       if (m0_ != 0.0) 
-	out(0,t) =  m0_ / inObservations_;
+	out(0,t) =  sqrt(m0_ / inObservations_);
       else 
 	out(0,t) = 0.0;
+
+
     }
 
   // 250, 2500 Hz 

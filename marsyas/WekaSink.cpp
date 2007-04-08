@@ -205,11 +205,15 @@ WekaSink::myProcess(realvec& in, realvec& out)
 		    {
 		      // (*mos_) << fixed << setprecision(precision_) << 0. << ",";
 		      // DO NOT OUTPUT FEATUERS 
+		      // (*mos_) << fixed << setprecision(precision_) << 0. << ",";
 		      notPrint = true;
 		    }
 		  
 		  else
-		    (*mos_) << fixed << setprecision(precision_) << out(o,t) << ",";
+		    {
+		      (*mos_) << fixed << setprecision(precision_) << out(o,t) << ",";
+		      notPrint = false;
+		    }
 		}
 	    }
 	}
@@ -225,6 +229,10 @@ WekaSink::myProcess(realvec& in, realvec& out)
 		  oss << labelNames_[label];
 		  (*mos_) << oss.str();
 		  (*mos_) << endl;
+		}
+	      else 
+		{
+		  cout << "skipping instance" << endl;
 		}
 	      
 	      

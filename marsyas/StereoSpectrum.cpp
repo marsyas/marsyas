@@ -135,8 +135,10 @@ StereoSpectrum::myProcess(realvec& in, realvec& out)
       else
 	sign = -1.0;
       
-
-      out(t,0) = (1.0 - 2 * (nf / df)) * sign;
+      if (df != 0.0) 
+	out(t,0) = (1.0 - 2 * (nf / df)) * sign;
+      else 
+	out(t,0) = 0.0;
       
     }
   

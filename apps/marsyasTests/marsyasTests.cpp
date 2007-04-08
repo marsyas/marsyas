@@ -1567,85 +1567,88 @@ test_stereoFeatures(string fname0, string fname1)
 
 
   MarSystemManager mng;
-  
+
   MarSystem* playbacknet = mng.create("Series", "playbacknet");
   playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+  // playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
+
   
   MarSystem* stereobranches = mng.create("Parallel", "stereobranches");
   MarSystem* left = mng.create("Series", "left");
   MarSystem* right = mng.create("Series", "right");
   
   left->addMarSystem(mng.create("Spectrum", "spkleft"));
-  // left->addMarSystem(mng.create("PowerSpectrum", "pspkleft"));
-  // left->addMarSystem(mng.create("PlotSink", "psinkleft"));
-  // left->updctrl("PlotSink/psinkleft/mrs_string/outputFilename", "leftspk");
-
   right->addMarSystem(mng.create("Spectrum", "spkright"));
-  // right->addMarSystem(mng.create("PowerSpectrum", "pspkright"));
-  // right->addMarSystem(mng.create("PlotSink", "psinkright"));
-  // right->updctrl("PlotSink/psinkright/mrs_string/outputFilename", "rightspk");
-  
-  
+
   stereobranches->addMarSystem(left);
   stereobranches->addMarSystem(right);
 
   playbacknet->addMarSystem(stereobranches);
   playbacknet->addMarSystem(mng.create("StereoSpectrum", "sspk"));
-  // playbacknet->addMarSystem(mng.create("PlotSink", "psinkfull"))
-  // playbacknet->updctrl("PlotSink/psinkfull/mrs_string/outputFilename", "fullpsk");
   playbacknet->addMarSystem(mng.create("StereoSpectrumFeatures", "sspkf"));
   playbacknet->addMarSystem(mng.create("TextureStats", "texturests"));
-  playbacknet->addMarSystem(mng.create("Annotator", "ann"));
-  playbacknet->addMarSystem(mng.create("WekaSink", "wsink"));
+
+  MarSystem* acc = mng.create("Accumulator", "acc");
+  acc->addMarSystem(playbacknet);
+  
+  MarSystem* statistics2 = mng.create("Fanout", "statistics2");
+  statistics2->addMarSystem(mng.create("Mean", "mn"));
+  statistics2->addMarSystem(mng.create("StandardDeviation", "std"));
+
+  MarSystem* total = mng.create("Series", "total");
+  total->addMarSystem(acc);
+  total->updctrl("Accumulator/acc/mrs_natural/nTimes", 1000);
+  total->addMarSystem(statistics2);
+
+  total->addMarSystem(mng.create("Annotator", "ann"));
+  total->addMarSystem(mng.create("WekaSink", "wsink"));
 
   
-  playbacknet->updctrl("Annotator/ann/mrs_natural/label", 0);
-  playbacknet->updctrl("WekaSink/wsink/mrs_natural/nLables", 2);
-  playbacknet->updctrl("WekaSink/wsink/mrs_string/filename", "stereo.arff"); 
-  playbacknet->updctrl("WekaSink/wsink/mrs_natural/downsample", 40); 
-  
+  total->updctrl("WekaSink/wsink/mrs_natural/nLables", 2);
+  total->updctrl("WekaSink/wsink/mrs_natural/downsample", 1); 
+  total->updctrl("WekaSink/wsink/mrs_string/labelNames", "garage,grunge,");
+  total->updctrl("WekaSink/wsink/mrs_string/filename", "stereo.arff"); 
   
   playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", fname0);
   playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
 
 
-
+  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_natural/inSamples", 1024);
 
   mrs_bool isEmpty;
-  cout << *playbacknet << endl;
 
+  // cout << *total << endl;
 
   Collection l;
   l.read(fname0);
  
   int i,t;
   
-  playbacknet->updctrl("Annotator/ann/mrs_natural/label", 0); 
+  total->updctrl("Annotator/ann/mrs_natural/label", 0); 
   for (i=0; i < l.size(); i++) 
     {
-      playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", l.entry(i));
+      total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
+      /* if (i==0) 
+	total->updctrl("Accumulator/acc/Series/playbacknet/AudioSink/dest/mrs_bool/initAudio", true);
+      */ 
       cout << "Processing " << l.entry(i) << endl;
+      total->tick();
+      cout << "i = " << i << endl;
       
-      for (t=0; t < 1500; t++)
-	{
-	  playbacknet->tick();
-	}
     }
   
   Collection m;
   m.read(fname1);
   
-  playbacknet->updctrl("Annotator/ann/mrs_natural/label", 1); 
+  total->updctrl("Annotator/ann/mrs_natural/label", 1); 
 
 
   for (i=0; i < m.size(); i++)
     {
-      playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", m.entry(i));
+      total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", m.entry(i));
       cout << "Processing " << m.entry(i) << endl;
-      for (t=0; t < 1500; t++)
-	{
-	  playbacknet->tick();
-	}    
+      total->tick();
+      cout << "i=" << i << endl;
     }
   
      

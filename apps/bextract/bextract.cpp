@@ -44,6 +44,8 @@ mrs_natural duration = 1000 * 44100;
 mrs_natural memSize = 1;
 mrs_natural winSize = 512;
 mrs_natural hopSize = 512;
+mrs_real samplingRate_ = 22050.0;
+mrs_natural accSize_ = 1298;
 mrs_real start = 0.0;
 mrs_real length = 30.0;
 mrs_real gain = 1.0;
@@ -297,6 +299,7 @@ printHelp(string progName)
   cerr << "-s --start       : playback start offest in seconds " << endl;
   cerr << "-l --length      : playback length in seconds " << endl;
   cerr << "-m --memory      : memory size " << endl;
+  cerr << "-sr --samplingrate : sampling rate " << endl;
   cerr << "-w --weka        : weka .arff filename " << endl;
   cerr << "-ws --nwinsamples: analysis window size in samples " << endl;
   cerr << "-hp --nhopsamples: analysis hop size in samples " << endl;
@@ -481,7 +484,7 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
   // accumulate feature vectors over 30 seconds 
   //////////////////////////////////////////////////////////////////////////
   MarSystem* acc = mng.create("Accumulator", "acc");
-  acc->updctrl("mrs_natural/nTimes", 1298);
+  acc->updctrl("mrs_natural/nTimes", accSize_);
 	
   //////////////////////////////////////////////////////////////////////////
   // add network to accumulator
@@ -513,11 +516,7 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
   total->addMarSystem(statistics);
 
   // get parameters
-  mrs_real srate = src->getctrl("mrs_real/osrate")->toReal();
-  mrs_natural nChannels = src->getctrl("mrs_natural/nChannels")->toNatural();
-
-  // update controls 
-  // total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/mrs_natural/inSamples", (mrs_natural) (srate / 22050.0) * MRS_DEFAULT_SLICE_NSAMPLES);//[?] 22050?
+  mrs_real srate = samplingRate_;
 
 
   total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/mrs_natural/inSamples", winSize);
@@ -525,8 +524,8 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
   total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/mrs_natural/pos", offset);      
 
   // Calculate duration, offset parameters if necessary 
-  offset = (mrs_natural) (start * srate * nChannels);
-  duration = (mrs_natural) (length * srate * nChannels);
+  offset = (mrs_natural) (start * samplingRate_ );
+  duration = (mrs_natural) (length * samplingRate_);
 
   //////////////////////////////////////////////////////////////////////////
   // main loop for extracting the features 
@@ -643,8 +642,6 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 	}
     }
 
-  cout << "Annotator = " << (*annotator) << endl;
-  cout << "WSINK = " << (*wsink) << endl;
 
   if (pluginName == EMPTYSTRING) // output to stdout 
     cout << (*total) << endl;      
@@ -677,17 +674,7 @@ void bextract_train(vector<Collection> cls,
   if (extractorStr == EMPTYSTRING) 
     extractorStr = DEFAULT_EXTRACTOR; 
 
-  //////////////////////////////////////////////////////////////////////////
-  // Print analysis options
-  //////////////////////////////////////////////////////////////////////////
-  cout << endl;
-  cout << "Window Size (samples): " << winSize << endl;
-  cout << "Hop Size (samples): " << hopSize << endl;
-	
-  cout << endl;
-  cout << "Extractor = " << extractorName << endl;
-  cout << endl;
-
+ 
   //////////////////////////////////////////////////////////////////////////
   // Find proper sound file format and create SignalSource
   //////////////////////////////////////////////////////////////////////////
@@ -1411,6 +1398,8 @@ initOptions()
   cmd_options.addStringOption("extractor", "e", EMPTYSTRING);
   cmd_options.addNaturalOption("memory", "m", 40);
   cmd_options.addNaturalOption("nwinsamples", "ws", 512);
+  cmd_options.addRealOption("samplingRate", "sr", 22050.0);
+  cmd_options.addNaturalOption("accSize", "as", 1298);
   cmd_options.addNaturalOption("nhopsamples", "hp", 512);
   cmd_options.addStringOption("classifier", "c", EMPTYSTRING);
   cmd_options.addBoolOption("tline", "t", false);
@@ -1434,6 +1423,8 @@ loadOptions()
   memSize = cmd_options.getNaturalOption("memory");
   winSize = cmd_options.getNaturalOption("nwinsamples");
   hopSize = cmd_options.getNaturalOption("nhopsamples");
+  samplingRate_ = cmd_options.getRealOption("samplingRate");
+  accSize_ = cmd_options.getNaturalOption("accSize");
   tline = cmd_options.getBoolOption("tline");
   pluginMute  = cmd_options.getBoolOption("pluginmute");
 }
@@ -1589,11 +1580,30 @@ main(int argc, const char **argv)
   cmd_options.readOptions(argc, argv);
   loadOptions();
 
+
+
   if (helpopt) 
     printHelp(progName);
 
   if (usageopt)
     printUsage(progName);
+
+
+  //////////////////////////////////////////////////////////////////////////
+  // Print analysis options
+  //////////////////////////////////////////////////////////////////////////
+  cout << endl;
+  cout << "Window Size (in samples): " << winSize << endl;
+  cout << "Hop Size (in samples): " << hopSize << endl;
+  cout << "Memory Size (in analysis windows):" << memSize << endl;
+  cout << "Sampling rate: " << samplingRate_ << endl;
+  cout << "Accumulator size (in analysis windows):" << accSize_ << endl;
+  cout << endl;
+  cout << "Extractor = " << extractorName << endl;
+  cout << endl;
+  
+
+
 
   int i = 0;
   Collection l;
