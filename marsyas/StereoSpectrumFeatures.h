@@ -40,7 +40,9 @@ private:
   
   mrs_real m0_;
   mrs_real m1_;
-  
+  mrs_real audioBW_;
+  mrs_natural low_;
+  mrs_natural high_;
 public:
   StereoSpectrumFeatures(std::string name);
   

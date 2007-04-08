@@ -57,15 +57,23 @@ StereoSpectrumFeatures::myUpdate(MarControlPtr sender)
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 
   // CHANGE THIS TO THE RIGHT NUMBER OF FEATURES
-  ctrl_onObservations_->setValue((mrs_natural)1, NOUPDATE);
+  ctrl_onObservations_->setValue((mrs_natural)4, NOUPDATE);
   ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
   ctrl_onObsNames_->setValue("StereoSpectrumFeatures,", NOUPDATE);
+  audioBW_ = ctrl_israte_->to<mrs_real>() * ctrl_inObservations_->to<mrs_natural>();
+
+  mrs_real lowBounday = 250.0; // Hz
+  mrs_real highBounday = 2800.0; // Hz
+
+  low_ = (mrs_natural)250.0 / ctrl_israte_->to<mrs_real>();
+  high_ = (mrs_natural)2800.0 / ctrl_israte_->to<mrs_real>();
+
+
 }
    
 void 
 StereoSpectrumFeatures::myProcess(realvec& in, realvec& out)
 {
-
   for (t = 0; t < inSamples_; t++)
     {
       m0_ = 0.0;
@@ -77,11 +85,48 @@ StereoSpectrumFeatures::myProcess(realvec& in, realvec& out)
 	out(0,t) =  sqrt(m0_ / inObservations_);
       else 
 	out(0,t) = 0.0;
-
-
     }
 
-  // 250, 2500 Hz 
+  // low band panning RMS 0Hz-250Hz
+  for (t = 0; t < inSamples_; t++)
+    {
+      m0_ = 0.0;
+      for (o=0; o < low_; o++)
+	{
+	  m0_ += (in(o,t) * in(o,t));
+	}
+      if (m0_ != 0.0) 
+	out(1,t) =  sqrt(m0_ / low_);
+      else 
+	out(1,t) = 0.0;
+    }
+  
+  // middle band panning RMS 250Hz-2800Hz
+  for (t = 0; t < inSamples_; t++)
+    {
+      m0_ = 0.0;
+      for (o=low_; o < high_; o++)
+	{
+	  m0_ += (in(o,t) * in(o,t));
+	}
+      if (m0_ != 0.0) 
+	out(2,t) =  sqrt(m0_ / (high_-low_));
+      else 
+	out(2,t) = 0.0;
+    }
+
+  for (t = 0; t < inSamples_; t++)
+    {
+      m0_ = 0.0;
+      for (o=high_; o < inObservations_; o++)
+	{
+	  m0_ += (in(o,t) * in(o,t));
+	}
+      if (m0_ != 0.0) 
+	out(3,t) =  sqrt(m0_ / (inObservations_-high_));
+      else 
+	out(3,t) = 0.0;
+    }
   
 }
 
