@@ -152,7 +152,6 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
   
   myIsrate_ = isrc_->getctrl("mrs_real/israte")->toReal();
   onObservations_ = isrc_->getctrl("mrs_natural/onObservations")->toNatural();
-  
 
   setctrl("mrs_real/israte", myIsrate_);
   setctrl("mrs_real/osrate", myIsrate_);

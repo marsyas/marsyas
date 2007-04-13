@@ -111,7 +111,7 @@ void sfplay(vector<string> soundfiles)
 	{
 		string fname = *sfi;
 		playbacknet->updctrl("mrs_string/filename", fname);
-		cout << *playbacknet << endl;
+
 
 		playbacknet->updctrl("mrs_natural/loopPos", offset);
 		playbacknet->updctrl("mrs_natural/pos", offset);
@@ -131,6 +131,7 @@ void sfplay(vector<string> soundfiles)
 		{
 			playbacknet->tick();
 		}
+		cout << *playbacknet << endl;
 	}
 
 	// output network description to cout  
