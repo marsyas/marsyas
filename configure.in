@@ -245,7 +245,7 @@ fi
 
 
 	*-*-darwin*) 
-	Libs="-lpthread -lobjc ${MADLIB} ${OGGLIB} -framework CoreAudio -framework CoreMidi -framework CoreFoundation"
+	Libs="-lpthread ${MADLIB} ${OGGLIB} -framework CoreAudio -framework CoreMidi -framework CoreFoundation"
 	AC_DEFINE([MARSYAS_MACOSX],[1], [MACOSX SYSTEM])		
 	AC_DEFINE([__MACOSX_CORE__],[1], [MACOSX SYSTEM FOR RTAUDIO])		
 	;;

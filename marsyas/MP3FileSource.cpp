@@ -301,7 +301,8 @@ MP3FileSource::myUpdate(MarControlPtr sender)
   inSamples_ = ctrl_inSamples_->toNatural();
 
   pos_ = getctrl("mrs_natural/pos")->toNatural();
-  
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/nChannels")->toNatural());
+
   // if the user has seeked somewhere in the file
   if ( (currentPos_ != pos_) && (pos_ < size_)) 
     {
@@ -344,7 +345,7 @@ MP3FileSource::myUpdate(MarControlPtr sender)
     reservoirSize_ = 2 * inSamples_;
   }
   if (reservoirSize_ > preservoirSize_) {
-    reservoir_.stretch(reservoirSize_);
+    reservoir_.stretch(MAD_NCHANNELS(&frame.header),reservoirSize_);
   }
   preservoirSize_ = reservoirSize_;
 
@@ -427,33 +428,36 @@ MP3FileSource::getLinear16(realvec& slice) {
     // fill the reservoir...
     for (t=0; t < bufferSize_; t++) {
 			
-	left_ch = synth.pcm.samples[0][t];
-	
-	
-	sample = (mrs_real) scale(left_ch);	
-	
-	// for 2 channel audio we can add the channels 
-	// and divide by two
-	if(MAD_NCHANNELS(&frame.header)==2) {
-		right_ch = synth.pcm.samples[1][t];
-		sample += (mrs_real) scale(right_ch);
-		sample /= 2; 
-	}
-	
+      left_ch = synth.pcm.samples[0][t];
+      
+      
+      sample = (mrs_real) scale(left_ch);	
+      sample *= peak;
+      reservoir_(0, ri_) = sample;
+      
+      
+      // for 2 channel audio we can add the channels 
+      // and divide by two
+      if(MAD_NCHANNELS(&frame.header)==2) {
+	right_ch = synth.pcm.samples[1][t];
+	sample = (mrs_real) scale(right_ch);
 	sample *= peak;
-
-	reservoir_(ri_) = sample;
-	ri_++;
+	reservoir_(1, ri_) = sample;
+      }
+      
+      ri_++;
     }
     
   } // reservoir fill
-
+  
   
   // spit out the first inSamples_ in our reservoir 
-  for (o=0; o < inObservations_; o++) {
-    for (t=0; t < inSamples_; t++) {
-      slice(0,t) = reservoir_(t);
-    }
+  for (t=0; t < inSamples_; t++) {
+    slice(0,t) = reservoir_(0,t);
+    if (MAD_NCHANNELS(&frame.header)==2) 
+      {
+	slice(1,t) = reservoir_(1,t);
+      }
   }
 	
   // keep track of where we are
@@ -463,7 +467,9 @@ MP3FileSource::getLinear16(realvec& slice) {
 	
   // move the data we ticked to the front of the reservoir
   for (t=inSamples_; t < ri_; t++) {
-    reservoir_(t-inSamples_) = reservoir_(t);
+    reservoir_(0,t-inSamples_) = reservoir_(0,t);
+    if (MAD_NCHANNELS(&frame.header)==2) 
+      reservoir_(1,t-inSamples_) = reservoir_(1,t);      
   }
   
   // update our reservroi index

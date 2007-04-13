@@ -67,6 +67,7 @@ printHelp(string progName)
   cerr << "schedulerExpr   : test scheduler with expressions " << endl;
   cerr << "SOM		   : test support vector machine " << endl;
   cerr << "stereoFeatures  : test stereo features " << endl;
+  cerr << "stereoMFCC       : test stereo MFCC " << endl;
   cerr << "stereo2mono     : test stereo to mono conversion " << endl;
   cerr << "tempo	   : test tempo estimation " << endl;
   cerr << "vicon           : test processing of vicon motion capture data" << endl;
@@ -1560,6 +1561,112 @@ randD(double max)
 
 
 
+
+
+
+void 
+test_stereoMFCC(string fname0, string fname1)
+{
+  
+
+
+  MarSystemManager mng;
+
+  MarSystem* playbacknet = mng.create("Series", "playbacknet");
+  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+  
+  MarSystem* stereobranches = mng.create("Parallel", "stereobranches");
+  MarSystem* left = mng.create("Series", "left");
+  MarSystem* right = mng.create("Series", "right");
+
+  left->addMarSystem(mng.create("Hamming", "hamleft"));
+  left->addMarSystem(mng.create("Spectrum", "spkleft"));
+  left->addMarSystem(mng.create("PowerSpectrum", "leftpspk"));
+  left->addMarSystem(mng.create("MFCC", "leftMFCC"));
+  left->addMarSystem(mng.create("TextureStats", "leftTextureStats"));
+  
+  right->addMarSystem(mng.create("Hamming", "hamright"));
+  right->addMarSystem(mng.create("Spectrum", "spkright"));
+  right->addMarSystem(mng.create("PowerSpectrum", "rightpspk"));
+  right->addMarSystem(mng.create("MFCC", "rightMFCC"));
+  right->addMarSystem(mng.create("TextureStats", "rightTextureStats"));
+
+  stereobranches->addMarSystem(left);
+  stereobranches->addMarSystem(right);
+
+  playbacknet->addMarSystem(stereobranches);
+
+  MarSystem* acc = mng.create("Accumulator", "acc");
+  acc->addMarSystem(playbacknet);
+  
+  MarSystem* statistics2 = mng.create("Fanout", "statistics2");
+  statistics2->addMarSystem(mng.create("Mean", "mn"));
+  statistics2->addMarSystem(mng.create("StandardDeviation", "std"));
+
+  MarSystem* total = mng.create("Series", "total");
+  total->addMarSystem(acc);
+  total->updctrl("Accumulator/acc/mrs_natural/nTimes", 1000);
+  total->addMarSystem(statistics2);
+
+  total->addMarSystem(mng.create("Annotator", "ann"));
+  total->addMarSystem(mng.create("WekaSink", "wsink"));
+
+  
+  total->updctrl("WekaSink/wsink/mrs_natural/nLables", 2);
+  total->updctrl("WekaSink/wsink/mrs_natural/downsample", 1); 
+  total->updctrl("WekaSink/wsink/mrs_string/labelNames", "garage,grunge,");
+  total->updctrl("WekaSink/wsink/mrs_string/filename", "stereo.arff"); 
+  
+  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", fname0);
+  playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+
+
+  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_natural/inSamples", 1024);
+
+  mrs_bool isEmpty;
+
+  // cout << *total << endl;
+
+  Collection l;
+  l.read(fname0);
+ 
+  int i,t;
+  
+  total->updctrl("Annotator/ann/mrs_natural/label", 0); 
+  for (i=0; i < l.size(); i++) 
+    {
+      total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
+      /* if (i==0) 
+	total->updctrl("Accumulator/acc/Series/playbacknet/AudioSink/dest/mrs_bool/initAudio", true);
+      */ 
+      cout << "Processing " << l.entry(i) << endl;
+      total->tick();
+      cout << "i = " << i << endl;
+      
+    }
+  
+  Collection m;
+  m.read(fname1);
+  
+  total->updctrl("Annotator/ann/mrs_natural/label", 1); 
+
+
+  for (i=0; i < m.size(); i++)
+    {
+      total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", m.entry(i));
+      cout << "Processing " << m.entry(i) << endl;
+      total->tick();
+      cout << "i=" << i << endl;
+    }
+ 
+}
+
+
+
+
+
+
+
 void 
 test_stereoFeatures(string fname0, string fname1)
 {
@@ -2514,6 +2621,8 @@ main(int argc, const char **argv)
     test_scheduler(fname0);
   else if (testName == "stereoFeatures")
     test_stereoFeatures(fname0, fname1);
+  else if (testName == "stereoMFCC") 
+    test_stereoMFCC(fname0, fname1);
   else if (testName == "stereo2mono")
     test_stereo2mono(fname0);
   else if (testName == "SOM") 
