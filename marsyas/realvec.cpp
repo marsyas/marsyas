@@ -341,14 +341,15 @@ realvec::stretch(mrs_natural rows, mrs_natural cols)
 void
 realvec::stretchWrite(const mrs_natural pos, const mrs_real val)
 {
-  if (pos >= size_)
-    if ( pos < 2*size_ )
+  // don't forget the zero-indexing position!
+  mrs_natural wantSize = pos+1;
+  if (wantSize >= size_)
+    if ( wantSize < 2*size_ )
       // grow exponentially with sequential access
       stretch( 2*size_ );
     else
       // if we have a sudden large value, don't double it
-      // don't forget the zero-indexing position!
-      stretch( pos+1 );
+      stretch( wantSize );
   // FIXME: add a MRSASSERT here for debugging.
   // cout<<"List stretched to "<<size_<<endl;
   data_[pos] = val;
@@ -357,20 +358,22 @@ realvec::stretchWrite(const mrs_natural pos, const mrs_real val)
 void
 realvec::stretchWrite(const mrs_natural r, const mrs_natural c, const mrs_real val)
 {
-	if ( (r >= rows_) || (c >= cols_) ) {
-  	mrs_natural nextR = rows_;
-  	mrs_natural nextC = cols_;
-		if ( r >= rows_ )
-			if ( r < 2*rows_ )
+ 	mrs_natural nextR = rows_;
+ 	mrs_natural nextC = cols_;
+	mrs_natural wantR = r+1;
+	mrs_natural wantC = c+1;
+	if ( (wantR >= rows_) || (wantC >= cols_) ) {
+		if ( wantR >= rows_ )
+			if ( wantR < 2*rows_ )
 				nextR = 2*rows_;
 			else
-				nextR = r+1;
+				nextR = wantR;
 
-		if ( c >= cols_ )
-			if ( c < 2*cols_ )
+		if ( wantC >= cols_ )
+			if ( wantC < 2*cols_ )
 				nextC = 2*cols_;
 			else
-				nextC = c+1;
+				nextC = wantC;
 
 	  stretch( nextR, nextC );
   	// FIXME: add a MRSASSERT here for debugging.
