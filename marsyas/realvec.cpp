@@ -338,6 +338,47 @@ realvec::stretch(mrs_natural rows, mrs_natural cols)
 		cols_ = cols;
 }
 
+void
+realvec::stretchWrite(const mrs_natural pos, const mrs_real val)
+{
+  if (pos >= size_)
+    if ( pos < 2*size_ )
+      // grow exponentially with sequential access
+      stretch( 2*size_ );
+    else
+      // if we have a sudden large value, don't double it
+      // don't forget the zero-indexing position!
+      stretch( pos+1 );
+  // FIXME: add a MRSASSERT here for debugging.
+  // cout<<"List stretched to "<<size_<<endl;
+  data_[pos] = val;
+}
+
+void
+realvec::stretchWrite(const mrs_natural r, const mrs_natural c, const mrs_real val)
+{
+	if ( (r >= rows_) || (c >= cols_) ) {
+  	mrs_natural nextR = rows_;
+  	mrs_natural nextC = cols_;
+		if ( r >= rows_ )
+			if ( r < 2*rows_ )
+				nextR = 2*rows_;
+			else
+				nextR = r+1;
+
+		if ( c >= cols_ )
+			if ( c < 2*cols_ )
+				nextC = 2*cols_;
+			else
+				nextC = c+1;
+
+	  stretch( nextR, nextC );
+  	// FIXME: add a MRSASSERT here for debugging.
+  	// cout<<"List stretched to "<<rows_<<", "<<cols_<<endl;
+  }
+	data_[c * rows_ + r] = val;
+}
+
 void 
 realvec::create(mrs_natural rows, mrs_natural cols)
 {

@@ -100,6 +100,11 @@ public:
   mrs_real operator()(const mrs_natural i) const;
   mrs_real& operator()(const long r, const long c);
   mrs_real operator()(const long r, const long c) const;
+
+	// write to array, stretching the array if necessary
+	void stretchWrite(const mrs_natural pos, const mrs_real val);
+	void stretchWrite(const mrs_natural r, const mrs_natural c, const mrs_real val);
+
   // Matlab-like indexing
   realvec operator()(std::string r, std::string c);//Jen
   realvec operator()(std::string r);//Jen
