@@ -415,6 +415,275 @@ tempo_histoSumBands(MarSystem* total1, string sfName, realvec& beatfeatures,
   beatfeatures = estimate;
 }
 
+
+
+void 
+bextract_trainStereoSPS(vector<Collection> cls, string classNames, 
+		     string wekafname, mrs_natural memSize)
+{
+  cout << "STEREO" << endl;
+  cout << "classNames = "  << classNames << endl;
+  cout << "wekafname = "  << wekafname << endl;
+  
+
+
+  MarSystemManager mng;
+
+  MarSystem* playbacknet = mng.create("Series", "playbacknet");
+  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+  // playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
+  
+  
+  MarSystem* stereobranches = mng.create("Parallel", "stereobranches");
+  MarSystem* left = mng.create("Series", "left");
+  MarSystem* right = mng.create("Series", "right");
+  
+  left->addMarSystem(mng.create("Hamming", "hamleft"));
+  left->addMarSystem(mng.create("Spectrum", "spkleft"));
+  right->addMarSystem(mng.create("Hamming", "hamright"));
+  right->addMarSystem(mng.create("Spectrum", "spkright"));
+
+  stereobranches->addMarSystem(left);
+  stereobranches->addMarSystem(right);
+
+  playbacknet->addMarSystem(stereobranches);
+  playbacknet->addMarSystem(mng.create("StereoSpectrum", "sspk"));
+  playbacknet->addMarSystem(mng.create("StereoSpectrumFeatures", "sspkf"));
+  playbacknet->addMarSystem(mng.create("TextureStats", "texturests"));
+
+  MarSystem* acc = mng.create("Accumulator", "acc");
+  acc->addMarSystem(playbacknet);
+  
+  MarSystem* statistics2 = mng.create("Fanout", "statistics2");
+  statistics2->addMarSystem(mng.create("Mean", "mn"));
+  statistics2->addMarSystem(mng.create("StandardDeviation", "std"));
+
+  MarSystem* total = mng.create("Series", "total");
+  total->addMarSystem(acc);
+  total->updctrl("Accumulator/acc/mrs_natural/nTimes", 1000);
+  total->addMarSystem(statistics2);
+
+  total->addMarSystem(mng.create("Annotator", "ann"));
+  total->addMarSystem(mng.create("WekaSink", "wsink"));
+
+  
+  total->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
+  total->updctrl("WekaSink/wsink/mrs_natural/downsample", 1); 
+  total->updctrl("WekaSink/wsink/mrs_string/labelNames", classNames);
+  total->updctrl("WekaSink/wsink/mrs_string/filename", wekafname); 
+
+  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_natural/inSamples", 1024);
+
+  mrs_bool isEmpty;
+
+  // cout << *total << endl;
+  int cj,i;
+  for (cj=0; cj < cls.size(); cj++)
+    {
+      Collection l = cls[cj];
+      total->updctrl("Annotator/ann/mrs_natural/label", cj); 
+      for (i=0; i < l.size(); i++)
+	{
+	  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));	  
+	  cout << "Processing" << l.entry(i) << endl;
+	  total->tick();	  
+	}
+    }
+  
+  
+}
+
+
+void 
+bextract_trainStereoSPSMFCC(vector<Collection> cls, string classNames, 
+		     string wekafname, mrs_natural memSize)
+{
+  cout << "STEREO" << endl;
+  cout << "classNames = "  << classNames << endl;
+  cout << "wekafname = "  << wekafname << endl;
+  
+
+  MarSystemManager mng;
+
+  MarSystem* playbacknet = mng.create("Series", "playbacknet");
+  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+  
+  MarSystem* ffanout = mng.create("Fanout", "ffanout");
+  
+  MarSystem* stereobranches = mng.create("Parallel", "stereobranches");
+  MarSystem* left = mng.create("Series", "left");
+  MarSystem* right = mng.create("Series", "right");
+
+  left->addMarSystem(mng.create("Hamming", "hamleft"));
+  left->addMarSystem(mng.create("Spectrum", "spkleft"));
+  left->addMarSystem(mng.create("PowerSpectrum", "leftpspk"));
+  left->addMarSystem(mng.create("MFCC", "leftMFCC"));
+  left->addMarSystem(mng.create("TextureStats", "leftTextureStats"));
+  
+  right->addMarSystem(mng.create("Hamming", "hamright"));
+  right->addMarSystem(mng.create("Spectrum", "spkright"));
+  right->addMarSystem(mng.create("PowerSpectrum", "rightpspk"));
+  right->addMarSystem(mng.create("MFCC", "rightMFCC"));
+  right->addMarSystem(mng.create("TextureStats", "rightTextureStats"));
+
+  stereobranches->addMarSystem(left);
+  stereobranches->addMarSystem(right);
+
+  MarSystem* secondbranch = mng.create("Series", "secondbranch");
+  MarSystem* stereobranches1 = mng.create("Parallel", "stereobranches1");
+  MarSystem* left1 = mng.create("Series", "left1");
+  MarSystem* right1 = mng.create("Series", "right1");
+  
+  left1->addMarSystem(mng.create("Hamming", "hamleft1"));
+  left1->addMarSystem(mng.create("Spectrum", "spkleft1"));
+  right1->addMarSystem(mng.create("Hamming", "hamright1"));
+  right1->addMarSystem(mng.create("Spectrum", "spkright1"));
+
+  stereobranches1->addMarSystem(left1);
+  stereobranches1->addMarSystem(right1);
+
+  secondbranch->addMarSystem(stereobranches1);
+  secondbranch->addMarSystem(mng.create("StereoSpectrum", "sspk"));
+  secondbranch->addMarSystem(mng.create("StereoSpectrumFeatures", "sspkf"));
+  secondbranch->addMarSystem(mng.create("TextureStats", "texturests"));
+
+
+
+
+
+  playbacknet->addMarSystem(ffanout);
+  ffanout->addMarSystem(stereobranches);
+  ffanout->addMarSystem(secondbranch);
+
+  MarSystem* acc = mng.create("Accumulator", "acc");
+  acc->addMarSystem(playbacknet);
+  
+  MarSystem* statistics2 = mng.create("Fanout", "statistics2");
+  statistics2->addMarSystem(mng.create("Mean", "mn"));
+  statistics2->addMarSystem(mng.create("StandardDeviation", "std"));
+
+  MarSystem* total = mng.create("Series", "total");
+  total->addMarSystem(acc);
+  total->updctrl("Accumulator/acc/mrs_natural/nTimes", 1000);
+  total->addMarSystem(statistics2);
+
+  total->addMarSystem(mng.create("Annotator", "ann"));
+  total->addMarSystem(mng.create("WekaSink", "wsink"));
+
+  total->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
+  total->updctrl("WekaSink/wsink/mrs_natural/downsample", 1); 
+  total->updctrl("WekaSink/wsink/mrs_string/labelNames", classNames);
+  total->updctrl("WekaSink/wsink/mrs_string/filename", wekafname); 
+
+  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_natural/inSamples", 1024);
+
+  mrs_bool isEmpty;
+
+  // cout << *total << endl;
+  int cj,i;
+  for (cj=0; cj < cls.size(); cj++)
+    {
+      Collection l = cls[cj];
+      total->updctrl("Annotator/ann/mrs_natural/label", cj); 
+      for (i=0; i < l.size(); i++)
+	{
+	  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));	  
+	  cout << "Processing" << l.entry(i) << endl;
+	  total->tick();	  
+	}
+    }
+  
+  
+}
+
+
+
+void 
+bextract_trainStereoMFCC(vector<Collection> cls, string classNames, 
+		     string wekafname, mrs_natural memSize)
+{
+  cout << "STEREO" << endl;
+  cout << "classNames = "  << classNames << endl;
+  cout << "wekafname = "  << wekafname << endl;
+  
+
+
+  MarSystemManager mng;
+
+  MarSystem* playbacknet = mng.create("Series", "playbacknet");
+  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+  
+  MarSystem* stereobranches = mng.create("Parallel", "stereobranches");
+  MarSystem* left = mng.create("Series", "left");
+  MarSystem* right = mng.create("Series", "right");
+
+  left->addMarSystem(mng.create("Hamming", "hamleft"));
+  left->addMarSystem(mng.create("Spectrum", "spkleft"));
+  left->addMarSystem(mng.create("PowerSpectrum", "leftpspk"));
+  left->addMarSystem(mng.create("MFCC", "leftMFCC"));
+  left->addMarSystem(mng.create("TextureStats", "leftTextureStats"));
+  
+  right->addMarSystem(mng.create("Hamming", "hamright"));
+  right->addMarSystem(mng.create("Spectrum", "spkright"));
+  right->addMarSystem(mng.create("PowerSpectrum", "rightpspk"));
+  right->addMarSystem(mng.create("MFCC", "rightMFCC"));
+  right->addMarSystem(mng.create("TextureStats", "rightTextureStats"));
+
+  stereobranches->addMarSystem(left);
+  stereobranches->addMarSystem(right);
+
+  playbacknet->addMarSystem(stereobranches);
+
+  MarSystem* acc = mng.create("Accumulator", "acc");
+  acc->addMarSystem(playbacknet);
+  
+  MarSystem* statistics2 = mng.create("Fanout", "statistics2");
+  statistics2->addMarSystem(mng.create("Mean", "mn"));
+  statistics2->addMarSystem(mng.create("StandardDeviation", "std"));
+
+  MarSystem* total = mng.create("Series", "total");
+  total->addMarSystem(acc);
+  total->updctrl("Accumulator/acc/mrs_natural/nTimes", 1000);
+  total->addMarSystem(statistics2);
+
+  total->addMarSystem(mng.create("Annotator", "ann"));
+  total->addMarSystem(mng.create("WekaSink", "wsink"));
+
+  
+  total->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
+  total->updctrl("WekaSink/wsink/mrs_natural/downsample", 1); 
+  total->updctrl("WekaSink/wsink/mrs_string/labelNames", classNames);
+  total->updctrl("WekaSink/wsink/mrs_string/filename", wekafname); 
+  
+  playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+
+
+  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_natural/inSamples", 1024);
+
+  mrs_bool isEmpty;
+
+  // cout << *total << endl;
+  int cj,i;
+  for (cj=0; cj < cls.size(); cj++)
+    {
+      Collection l = cls[cj];
+      total->updctrl("Annotator/ann/mrs_natural/label", cj); 
+      for (i=0; i < l.size(); i++)
+	{
+	  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));	  
+	  cout << "Processing" << l.entry(i) << endl;
+	  total->tick();	  
+	}
+    }
+  
+  
+}
+		     
+
+
+
+
+
 void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label, 
 			       string pluginName, string classNames, 
 			       string wekafname, string filefeaturename, 
@@ -1668,6 +1937,19 @@ main(int argc, const char **argv)
 
       bextract_train_rmsilence(cls, i, pluginName, classNames, wekafname, memSize, extrName, classifierName);      
     }
+  else if (extractorStr == "STEREOSPS")
+    {
+      bextract_trainStereoSPS(cls, classNames, wekafname, memSize);      
+    }
+  else if (extractorStr == "STEREOMFCC")
+    {
+      bextract_trainStereoMFCC(cls, classNames, wekafname, memSize);            
+    }
+  else if (extractorStr == "STEREOSPSMFCC")
+    {
+      bextract_trainStereoSPSMFCC(cls, classNames, wekafname, memSize);            
+    }
+
   //NORMAL Extractor
   else
     {

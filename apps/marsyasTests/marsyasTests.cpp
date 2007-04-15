@@ -58,6 +58,7 @@ printHelp(string progName)
   cerr << "knn             : test K-NearestNeighbor classifier " << endl;
   cerr << "marsystemIO     : test marsystem IO " << endl;
   cerr << "mixer           : test fanout for mixing " << endl;
+  cerr << "mp3convert : convert a collection of .mp3 files to .wav files" << endl;
   cerr << "normMaxMin      : test of normalize marsSystem " << endl;
   cerr << "parallel        : test Parallel composite " << endl;
   cerr << "probe            : test Probe functionality " << endl;
@@ -68,6 +69,7 @@ printHelp(string progName)
   cerr << "SOM		   : test support vector machine " << endl;
   cerr << "stereoFeatures  : test stereo features " << endl;
   cerr << "stereoMFCC       : test stereo MFCC " << endl;
+  cerr << "stereoFeaturesMFCC : test stereo features and MFCCs" << endl;
   cerr << "stereo2mono     : test stereo to mono conversion " << endl;
   cerr << "tempo	   : test tempo estimation " << endl;
   cerr << "vicon           : test processing of vicon motion capture data" << endl;
@@ -1638,9 +1640,9 @@ test_stereoFeaturesMFCC(string fname0, string fname1)
   total->addMarSystem(mng.create("WekaSink", "wsink"));
 
   
-  total->updctrl("WekaSink/wsink/mrs_natural/nLables", 2);
+  total->updctrl("WekaSink/wsink/mrs_natural/nLabels", 3);
   total->updctrl("WekaSink/wsink/mrs_natural/downsample", 1); 
-  total->updctrl("WekaSink/wsink/mrs_string/labelNames", "garage,grunge,");
+  total->updctrl("WekaSink/wsink/mrs_string/labelNames", "garage,grunge,jazz,");
   total->updctrl("WekaSink/wsink/mrs_string/filename", "stereoFeaturesMFCC.arff"); 
   
   playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", fname0);
@@ -1684,6 +1686,25 @@ test_stereoFeaturesMFCC(string fname0, string fname1)
       total->tick();
       cout << "i=" << i << endl;
     }
+
+
+  Collection n;
+  n.read("j.mf");
+  
+  total->updctrl("Annotator/ann/mrs_natural/label", 2); 
+  
+
+  for (i=0; i < n.size(); i++)
+    {
+      total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", n.entry(i));
+      cout << "Processing " << n.entry(i) << endl;
+      total->tick();
+      cout << "i=" << i << endl;
+    }
+  
+
+
+
  
 }
 
@@ -1742,9 +1763,9 @@ test_stereoMFCC(string fname0, string fname1)
   total->addMarSystem(mng.create("WekaSink", "wsink"));
 
   
-  total->updctrl("WekaSink/wsink/mrs_natural/nLables", 2);
+  total->updctrl("WekaSink/wsink/mrs_natural/nLabels", 3);
   total->updctrl("WekaSink/wsink/mrs_natural/downsample", 1); 
-  total->updctrl("WekaSink/wsink/mrs_string/labelNames", "garage,grunge,");
+  total->updctrl("WekaSink/wsink/mrs_string/labelNames", "garage,grunge,jazz,");
   total->updctrl("WekaSink/wsink/mrs_string/filename", "stereoMFCC.arff"); 
   
   playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", fname0);
@@ -1789,26 +1810,125 @@ test_stereoMFCC(string fname0, string fname1)
       cout << "i=" << i << endl;
     }
  
+  Collection n;
+  n.read("j.mf");
+  
+  total->updctrl("Annotator/ann/mrs_natural/label", 2); 
+
+
+  for (i=0; i < n.size(); i++)
+    {
+      total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", n.entry(i));
+      cout << "Processing " << n.entry(i) << endl;
+      total->tick();
+      cout << "i=" << i << endl;
+    }
+  
+
+
+
+
+}
+
+
+void 
+test_mp3convert(string fname0)
+{
+  MarSystemManager mng;
+  MarSystem* convertNet = mng.create("Series", "convertNet");
+
+  convertNet->addMarSystem(mng.create("SoundFileSource", "src"));
+  convertNet->addMarSystem(mng.create("SoundFileSink", "dest"));
+  
+
+  Collection l;
+  l.read(fname0);
+
+  for (int i=0; i < l.size(); i++)
+    {
+      convertNet->updctrl("SoundFileSource/src/mrs_string/filename", l.entry(i));
+      ostringstream oss;
+      oss << "ojazz" << i << ".wav";
+      cout << "Converting " << l.entry(i) << " to " << oss.str() << endl;
+      convertNet->updctrl("SoundFileSink/dest/mrs_string/filename", oss.str());
+      
+      while(convertNet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>() == true)
+	{
+	  convertNet->tick();
+	}
+
+    }
+
+
+
+
+
+
 }
 
 
 
 
+void
+test_stereoFeaturesVisualization(string fname0)
+{
+  MarSystemManager mng;
 
+  MarSystem* total = mng.create("Series", "total");
+  MarSystem* acc = mng.create("Accumulator", "acc");
+  
+  
+  MarSystem* playbacknet = mng.create("Series", "playbacknet");
+  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+  playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
+  
+  
+  MarSystem* stereobranches = mng.create("Parallel", "stereobranches");
+  MarSystem* left = mng.create("Series", "left");
+  MarSystem* right = mng.create("Series", "right");
+  
+  left->addMarSystem(mng.create("Hamming", "hamleft"));
+  left->addMarSystem(mng.create("Spectrum", "spkleft"));
+  right->addMarSystem(mng.create("Hamming", "hamright"));
+  right->addMarSystem(mng.create("Spectrum", "spkright"));
+  
+  stereobranches->addMarSystem(left);
+  stereobranches->addMarSystem(right);
+  
+  playbacknet->addMarSystem(stereobranches);
+  playbacknet->addMarSystem(mng.create("StereoSpectrum", "sspk"));
+  // playbacknet->addMarSystem(mng.create("Memory", "mem"));
+  // playbacknet->addMarSystem(mng.create("PlotSink", "psink"));
+  
+
+  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", fname0);
+  playbacknet->updctrl("mrs_natural/inSamples", 1024);
+  playbacknet->updctrl("mrs_bool/initAudio", true);
+
+  acc->addMarSystem(playbacknet);
+  acc->updctrl("mrs_natural/nTimes", 2500);
+  
+  total->addMarSystem(acc);
+  total->addMarSystem(mng.create("PlotSink", "psink"));
+
+  total->tick();
+  
+  
+}
 
 
 void 
 test_stereoFeatures(string fname0, string fname1)
 {
   
-
+  cout << "TESTING STEREO FEATURES" << endl;
 
   MarSystemManager mng;
 
   MarSystem* playbacknet = mng.create("Series", "playbacknet");
   playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
   // playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
-
+  
   
   MarSystem* stereobranches = mng.create("Parallel", "stereobranches");
   MarSystem* left = mng.create("Series", "left");
@@ -1843,9 +1963,9 @@ test_stereoFeatures(string fname0, string fname1)
   total->addMarSystem(mng.create("WekaSink", "wsink"));
 
   
-  total->updctrl("WekaSink/wsink/mrs_natural/nLables", 2);
+  total->updctrl("WekaSink/wsink/mrs_natural/nLabels", 4);
   total->updctrl("WekaSink/wsink/mrs_natural/downsample", 1); 
-  total->updctrl("WekaSink/wsink/mrs_string/labelNames", "garage,grunge,");
+  total->updctrl("WekaSink/wsink/mrs_string/labelNames", "garage,grunge,jazz,ojazz");
   total->updctrl("WekaSink/wsink/mrs_string/filename", "stereoFeatures.arff"); 
   
   playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", fname0);
@@ -1876,16 +1996,47 @@ test_stereoFeatures(string fname0, string fname1)
       
     }
   
-  Collection m;
-  m.read(fname1);
+  Collection n;
+  n.read(fname1);
   
   total->updctrl("Annotator/ann/mrs_natural/label", 1); 
+
+
+  for (i=0; i < n.size(); i++)
+    {
+      total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", n.entry(i));
+      cout << "Processing " << n.entry(i) << endl;
+      total->tick();
+      cout << "i=" << i << endl;
+    }
+  
+
+  Collection m;
+  m.read("j.mf");
+  
+  total->updctrl("Annotator/ann/mrs_natural/label", 2); 
 
 
   for (i=0; i < m.size(); i++)
     {
       total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", m.entry(i));
       cout << "Processing " << m.entry(i) << endl;
+      total->tick();
+      cout << "i=" << i << endl;
+    }
+
+
+
+  Collection w;
+  w.read("oj.mf");
+  
+  total->updctrl("Annotator/ann/mrs_natural/label", 3); 
+
+
+  for (i=0; i < w.size(); i++)
+    {
+      total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", w.entry(i));
+      cout << "Processing " << w.entry(i) << endl;
       total->tick();
       cout << "i=" << i << endl;
     }
@@ -2737,6 +2888,8 @@ main(int argc, const char **argv)
     test_marsystemIO();
   else if (testName == "mixer")
     test_mixer(fname0, fname1);
+  else if (testName == "mp3convert")
+    test_mp3convert(fname0);
   else if (testName == "normMaxMin") 
     test_normMaxMin();
   else if (testName == "parallel") 
@@ -2753,6 +2906,8 @@ main(int argc, const char **argv)
     test_scheduler(fname0);
   else if (testName == "stereoFeatures")
     test_stereoFeatures(fname0, fname1);
+  else if (testName == "stereoFeaturesVisualization")
+    test_stereoFeaturesVisualization(fname0);
   else if (testName == "stereoMFCC") 
     test_stereoMFCC(fname0, fname1);
   else if (testName =="stereoFeaturesMFCC") 

@@ -300,9 +300,12 @@ MP3FileSource::myUpdate(MarControlPtr sender)
   israte_ = ctrl_israte_->toReal();
   inSamples_ = ctrl_inSamples_->toNatural();
 
-  pos_ = getctrl("mrs_natural/pos")->toNatural();
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/nChannels")->toNatural());
+  mrs_natural nChannels;
+  nChannels = getctrl("mrs_natural/nChannels")->toNatural();
 
+  pos_ = getctrl("mrs_natural/pos")->toNatural();
+  setctrl("mrs_natural/onObservations", nChannels);
+  
   // if the user has seeked somewhere in the file
   if ( (currentPos_ != pos_) && (pos_ < size_)) 
     {
@@ -345,7 +348,7 @@ MP3FileSource::myUpdate(MarControlPtr sender)
     reservoirSize_ = 2 * inSamples_;
   }
   if (reservoirSize_ > preservoirSize_) {
-    reservoir_.stretch(MAD_NCHANNELS(&frame.header),reservoirSize_);
+    reservoir_.stretch(nChannels,reservoirSize_);
   }
   preservoirSize_ = reservoirSize_;
 
