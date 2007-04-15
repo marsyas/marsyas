@@ -9,17 +9,19 @@ CommandLineOptions cmd_options;
 
 int helpOpt;
 int usageOpt;
-mrs_string audioFilename;
+mrs_string fretFilename;
 mrs_natural median_radius;
 mrs_real new_note_midi;
 mrs_real pitch_certainty;
+
+Analyze* analyze;
 
 void
 printUsage()
 {
   MRSDIAG("pitchCorrect.cpp - printUsage");
-  cerr << "Usage: pitchCorrect " << "file1 file2 file3" << endl;
-  cerr << endl;  cerr << "where file1, ..., fileN are sound files in a MARSYAS supported format" << endl;
+  cerr << "Usage: pitchCorrect <audiofile>" << endl;
+  cerr << "where <audiofile> is a sound files in a Marsyas supported format" << endl;
   exit(1);
 }
 
@@ -30,16 +32,17 @@ printHelp()
   cerr << "pitchCorrect: Sample Program"<< endl;
   cerr << "------------------------------" << endl;
   cerr << endl;
-  cerr << "Usage: pitchCorrect file1" << endl;
+  cerr << "Usage: pitchCorrect <audiofile>" << endl;
   cerr << endl;
-  cerr << "where file1, ..., fileN are sound files in a Marsyas supported format" << endl;
+  cerr << "where <audiofile> is a sound files in a Marsyas supported format." << endl;
+	cerr << "You may also call pitchCorrect with only a fret file."<<endl;
   cerr << "Help Options:" << endl;
   cerr << "-u --usage      : display short usage info" << endl;
   cerr << "-h --help       : display this information" << endl;
-  cerr << "-a --audio      : audio file to analyze" << endl;
+  cerr << "-f --fret       : fret data to aid analysis (for sitar)" << endl;
 	cerr << "-r --radius     : radius of median pitch calculation (10)"<<endl;
 	cerr << "-n --newnote    : midi pitch value that indicates a new note (0.6)"<<endl;
-	cerr << "-p --pitch      : certainty of the pitch at this frame.  Higher means that less certain pitches are used.  (500)"<<endl;
+	cerr << "-p --pitch      : certainty of the pitch at this frame.  Higher values mean that pitches of lower certainty are are used.  (200)"<<endl;
   exit(1);
 }
 
@@ -48,10 +51,10 @@ initOptions()
 {
   cmd_options.addBoolOption("help", "h", false);
   cmd_options.addBoolOption("usage", "u", false);
-  cmd_options.addStringOption("audio", "a", "");
+  cmd_options.addStringOption("fret", "f", "");
 	cmd_options.addNaturalOption("radius", "r", 10);
 	cmd_options.addRealOption("newnote", "n", 0.6);
-	cmd_options.addRealOption("pitch", "p", 500);
+	cmd_options.addRealOption("pitch", "p", 200);
 }
 
 void
@@ -59,7 +62,7 @@ loadOptions()
 {
   helpOpt = cmd_options.getBoolOption("help");
   usageOpt = cmd_options.getBoolOption("usage");
-  audioFilename = cmd_options.getStringOption("audio");
+  fretFilename = cmd_options.getStringOption("fret");
 	median_radius = cmd_options.getNaturalOption("radius");
 	new_note_midi = cmd_options.getRealOption("newnote");
 	pitch_certainty = cmd_options.getRealOption("pitch");
@@ -69,10 +72,6 @@ loadOptions()
 void
 analyzeFile(string filename)
 {
-	cout<<"Analyzing "<<filename<<endl;
-
-	Analyze* analyze;
-  analyze = new Analyze();
 	analyze->setOptions(median_radius, new_note_midi, pitch_certainty);
 	analyze->loadData(filename);
 	analyze->writePitches();
@@ -80,7 +79,18 @@ analyzeFile(string filename)
 	analyze->calcNotes();
 	analyze->writeOnsets();
 	analyze->writeNotes();
-	delete analyze;
+}
+
+void
+analyzeFileWithFret(string filename)
+{
+	analyze->setOptions(median_radius, new_note_midi, pitch_certainty);
+	analyze->loadData(filename);
+	analyze->writePitches();
+//	analyze->calcOnsets();
+	analyze->calcNotes();
+	analyze->writeOnsets();
+	analyze->writeNotes();
 }
 
 int main(int argc, const char **argv) {
@@ -93,7 +103,23 @@ int main(int argc, const char **argv) {
   if ( (usageOpt) || (argc==1) )
     printUsage(); 
 
-	if (audioFilename != "")
-		analyzeFile(audioFilename);
+  analyze = new Analyze();
+	if (fretFilename != "")
+		analyzeFile(fretFilename);
+	analyze->clearPitches();
+
+// TODO: we only want to analyze one file; it was just easier to do it
+// this way.
+  vector<string> soundfiles = cmd_options.getRemaining();
+  vector<string>::iterator sfi;
+  for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi)
+    {
+			if (fretFilename == "")
+				analyzeFile( *sfi );
+			else
+      	analyzeFileWithFret( *sfi );
+    }
+
+	delete analyze;
 }
 
