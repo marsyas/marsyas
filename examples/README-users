@@ -9,3 +9,5 @@ In order of increasing complexity, these files are
 - getdata.cpp: get data from a MarSystem for more processing in the cpp file.
 - dataflow-split.cpp: introduces the Parallel MarSystem.
 
+- commandOptions.cpp: using command-line options in Marsyas
+

@@ -17,6 +17,7 @@
 * Writing data to text files::  
 * Getting data from the network::  
 * Scheduler::                   
+* Command-line options::        
 @end menu
 
 
@@ -119,12 +120,22 @@ thing to note is that we have the data at the level of C programming.
 @examplefile{gettingdata.cpp}
 
 
+
 @node Scheduler
 @subsection Scheduler
 
 To schedule events using the new scheduler code, see the
 Marsyas Expression Syntax documentation at
 @uref{http://www.cs.uvic.ca/~inb/work/expr.html}
+
+
+@node Command-line options
+@subsection Command-line options
+
+Getting options from the command-line is fairly easy; Marsyas provides
+a handy object which parses the command-line for you.
+
+@examplefile{commandOptions.cpp}
 
 
 @node Writing your own MarSystems
