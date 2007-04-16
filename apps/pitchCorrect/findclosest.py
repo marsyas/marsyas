@@ -4,7 +4,8 @@ import os
 import sys
 
 fretFile = sys.argv[1]
-praatPitchFile = sys.argv[2]
+#praatPitchFile = sys.argv[2]
+praatPitchFile = 'notepitches.txt'
 
 file = open( fretFile, 'r')
 fretLines = file.readlines()
@@ -22,13 +23,18 @@ for line in praatLines:
 #	print str(i) + ' ' + str(line),
 	candidates = line.split()
 	numCand = len(candidates)
-	closest = 999999999 # infinity :)
+	closest = 999 # infinity :)
 	for j in range(numCand):
 		cur = float( candidates[j] )
-		closeDist = abs( fretPitch - closest )
-		curDist = abs( fretPitch - cur )
+		closeDist = ( closest - fretPitch )
+		curDist = ( cur - fretPitch )
+		#closeDist = abs( fretPitch - closest )
+		#curDist = abs( fretPitch - cur )
 		if ( curDist < closeDist ):
-			closest = cur
+			if (curDist > 0):
+				closest = cur
+	if ( closest == 999):
+		closest = 0
 	print closest
 
 	i=i+1
@@ -40,6 +46,5 @@ for line in praatLines:
 #		print "At " + str(i) + "start looking for "+str(fretPitch)
 		fretIndex = fretIndex+1
 		if ( fretIndex >= len(fretLines)-1 ):
-			print "Abnormal exit"
 			sys.exit(0)
 

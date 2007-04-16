@@ -12,12 +12,12 @@ Analyze::Analyze() {
 	pitch_certainty_div = 500;
 
 // for display
-	IMPULSE_HIGHT = 73;
+	IMPULSE_HIGHT = 75;
 // not used right now
 	// tries to filter out octave errors
 	LOWEST_NOTE = 59;
 //	HIGHEST_NOTE = 99;
-	HIGHEST_NOTE = 75;
+	HIGHEST_NOTE = 74;
 }
 
 Analyze::~Analyze() {
@@ -187,20 +187,36 @@ float fretToPitch( int fret ) {
 	return 0.0;
 }
 
-void Analyze::getPitchesFromRealvecText(string textFilename) {
-	pitchList.~realvec();
+void Analyze::realvecFileToPlain(string textFilename) {
+	realvec blah;
 	ifstream infile;	
 	infile.open( textFilename.c_str() );
-	infile >> pitchList;
+	infile >> blah;
 	infile.close();
 
-// FIXME: temporary for my scale example.
-	//pitchList.stretch(600);
+	ofstream file;
+	string filename = outputFilename;
+	filename.append(".other.txt");
+	cout<<"Writing realvec to "<<filename<<endl;
+	file.open( filename.c_str() );
+	for (int i=0;i< blah.getSize(); i++) {
+		if (blah(i) != 0) {
+			file<<blah(i);
+			file<<"\t";
+			file<<IMPULSE_HIGHT<<endl;
+		}
+	}
+	file.close();
+}
+
+void Analyze::getPitchesFromRealvecText(string textFilename) {
+	pitchList.~realvec();
+	pitchList.read( textFilename);
 
 	for (int i=0; i<pitchList.getSize(); i++) {
 		pitchList(i) = fretToPitch( pitchList(i) );
 		if (pitchList(i) == 0)
-			pitchList(i) = 55;
+			pitchList(i) = 51;
 // we can trust the fret data
 /*
 		if (pitchList(i) < LOWEST_NOTE)
@@ -314,16 +330,19 @@ mrs_real Analyze::findMedian(int start, int length, realvec array) {
 }
 
 void Analyze::writePitches() {
-	int i;
-	ofstream file;
+//	int i;
 	string filename = outputFilename;
 	filename.append(".pitches.txt");
 	cout<<"Writing pitches to "<<filename<<endl;
+	pitchList.writeText(filename);
+/*
+	ofstream file;
 	file.open( filename.c_str() );
 	for (i=0; i<pitchList.getSize(); i++)
 		file<<pitchList(i)<<endl;
 //		file<<fmod(pitchList(i),12)<<endl;
 	file.close();
+*/
 }
 
 void Analyze::writeOnsets() {
@@ -407,6 +426,42 @@ void Analyze::calcNotes(){
     pitch = findMedian(start, len, pitchList);
 		notes.stretchWrite(i, pitch);
   }
+
+	int totalFrames;
+	int correctFrames;
+	float percentageCorrect;
+	float correctSum;
+	// second pass: percentage of close pitches
+	// TODO: check array boundaries
+  for (i=0; i<onsets.getSize()-1; i++) {
+		totalFrames = 0;
+		correctFrames = 0;
+		correctSum = 0.0;
+		for (j=onsets(i); j<onsets(i+1); j++) {
+			if ( fabs( pitchList(j) - notes(i) < 0.1 )) {
+				correctFrames++;
+				correctSum += notes(i);
+			}
+			totalFrames++;
+		}
+		percentageCorrect = (float) correctFrames / totalFrames;
+		if (percentageCorrect < 0.8) {
+			notes(i) = IMPULSE_HIGHT;
+/*
+			if (i>0)
+				notes(i) = notes(i-1);
+			else
+				notes(i) = 0;
+*/
+		} else {
+			notes(i) = round( correctSum / correctFrames );
+		}
+//zz
+		//cout<<percentageCorrect<<endl;
+	}
+
+// FIXME*2: we're doing this a different way for the sitar; need to
+//    figure out if the sitar-method works for violin as well.
 //   FIXME: implement this.  So far there's been no need because
 //            the onset detection has been sucking so hard.  :(
 /*

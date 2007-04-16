@@ -13,6 +13,7 @@ mrs_string fretFilename;
 mrs_natural median_radius;
 mrs_real new_note_midi;
 mrs_real pitch_certainty;
+mrs_string otherFilename;
 
 Analyze* analyze;
 
@@ -43,6 +44,7 @@ printHelp()
 	cerr << "-r --radius     : radius of median pitch calculation (10)"<<endl;
 	cerr << "-n --newnote    : midi pitch value that indicates a new note (0.6)"<<endl;
 	cerr << "-p --pitch      : certainty of the pitch at this frame.  Higher values mean that pitches of lower certainty are are used.  (200)"<<endl;
+	cerr << "-o --other      : other option"<<endl;
   exit(1);
 }
 
@@ -55,6 +57,7 @@ initOptions()
 	cmd_options.addNaturalOption("radius", "r", 10);
 	cmd_options.addRealOption("newnote", "n", 0.6);
 	cmd_options.addRealOption("pitch", "p", 200);
+	cmd_options.addStringOption("other", "o", "");
 }
 
 void
@@ -66,6 +69,7 @@ loadOptions()
 	median_radius = cmd_options.getNaturalOption("radius");
 	new_note_midi = cmd_options.getRealOption("newnote");
 	pitch_certainty = cmd_options.getRealOption("pitch");
+  otherFilename = cmd_options.getStringOption("other");
 }
 
 
@@ -108,16 +112,20 @@ int main(int argc, const char **argv) {
 		analyzeFile(fretFilename);
 	analyze->clearPitches();
 
+	if (otherFilename != "")
+		analyze->realvecFileToPlain(otherFilename);
+		
+
 // TODO: we only want to analyze one file; it was just easier to do it
 // this way.
   vector<string> soundfiles = cmd_options.getRemaining();
   vector<string>::iterator sfi;
   for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi)
     {
-			if (fretFilename == "")
+//			if (fretFilename == "")
 				analyzeFile( *sfi );
-			else
-      	analyzeFileWithFret( *sfi );
+//			else
+//      	analyzeFileWithFret( *sfi );
     }
 
 	delete analyze;

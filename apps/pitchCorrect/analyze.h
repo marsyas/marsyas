@@ -15,6 +15,7 @@ public:
 	void setOptions(mrs_real getRadius, mrs_real getNewNote, mrs_real getCertantyDiv);
 
 
+	void realvecFileToPlain(string textFilename);
 	void loadData(string inputFilename);
 
 	void calcOnsets();
