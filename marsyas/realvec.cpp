@@ -719,6 +719,31 @@ realvec::dump()
 	cout << endl;
 }
 
+void
+realvec::readText(string filename)
+{
+	ifstream infile(filename.c_str());
+	int i = 0;
+	if (size_ == 0)
+		allocate(1);
+	mrs_real value;
+	while (infile >> value) {
+		// slower but safer
+		stretchWrite(i,value);
+		i++;
+	}
+	infile.close();
+}
+
+void
+realvec::writeText(string filename)
+{
+	ofstream outfile(filename.c_str());
+	for (int i=0; i<size_; i++) {
+		outfile << data_[i] <<endl;
+	}
+	outfile.close();
+}
 
 ostream& 
 Marsyas::operator<< (ostream& o, const realvec& vec)

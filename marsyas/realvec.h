@@ -114,11 +114,14 @@ public:
 
   // output functions 
   void debug_info();
-  void write(std::string filename) const;
 	void dump();
+  void write(std::string filename) const;
   void read(std::string filename);
   friend std::ostream& operator<<(std::ostream&, const realvec&);
   friend std::istream& operator>>(std::istream&, realvec&);
+	// input/output functions for line-separated text files
+	void readText(std::string filename);
+	void writeText(std::string filename);
 
   // Observations statistics 
   realvec meanObs() const;//lmartins
