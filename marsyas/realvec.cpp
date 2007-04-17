@@ -732,12 +732,15 @@ realvec::readText(string filename)
 		stretchWrite(i,value);
 		i++;
 	}
+	stretch(i-1);
 	infile.close();
 }
 
 void
 realvec::writeText(string filename)
 {
+	if (size_ == 0)
+		return ;
 	ofstream outfile(filename.c_str());
 	for (int i=0; i<size_; i++) {
 		outfile << data_[i] <<endl;
