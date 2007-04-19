@@ -218,6 +218,16 @@ make
 make install 
 @end example
 
+@subsubsection Debugging options
+
+@example
+./configure --enable-debug --enable-assert --enable-warnings --enable-diagnostics
+make clean
+make
+@end example
+
+The resulting program can be run under @code{gdb} to track down problems.
+
 
 @node Compiling Marsyas
 @section Compiling Marsyas
