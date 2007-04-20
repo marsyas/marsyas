@@ -4,6 +4,7 @@
 @menu
 * Assembling a network::        
 * Writing your own MarSystems::  
+* Tips for Working with Marsyas::  
 @end menu
 
 
@@ -151,4 +152,40 @@ simple canonical example of a MarSystem that is what I use as a
 template when I write a new Marsystem is Gain.h and Gain.cpp
 
 
+@node Tips for Working with Marsyas
+@section Tips for Working with Marsyas
+
+@menu
+* Visualizing data with gnuplot::  
+@end menu
+
+
+@node Visualizing data with gnuplot
+@subsection Visualizing data with gnuplot
+
+Gnuplot is an open-source data plotting utility available on every
+operating system that Marsyas supports.  More information (including
+downloads and installation instructions) can be found on the
+@uref{http://www.gnuplot.info/,Gnuplot website}.
+
+Data in Marsyas can be plotted easily: simply write the realvec to
+a text file and call gnuplot on the result.
+
+@example
+void someFunction() @{
+  string filename = "dataToPlot.txt";
+	realvec data;
+	data.allocate(size);
+// ... do whatever processing here...
+  data.writeText( filename );
+  data.~realvec();
+@}
+@end example
+
+After compiling and running the program, the @code{dataToPlot.txt} file
+may be plotted with gnuplot.
+
+@example
+gnuplot> plot "dataToPlot.txt"
+@end example
 

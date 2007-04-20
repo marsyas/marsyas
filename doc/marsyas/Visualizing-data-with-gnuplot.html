@@ -1,12 +1,11 @@
 <html lang="en">
 <head>
-<title>Programming - Marsyas 0.2</title>
+<title>Visualizing data with gnuplot - Marsyas 0.2</title>
 <meta http-equiv="Content-Type" content="text/html">
 <meta name="description" content="Marsyas 0.2">
 <meta name="generator" content="makeinfo 4.8">
 <link title="Top" rel="start" href="index.html#Top">
-<link rel="prev" href="Architecture.html#Architecture" title="Architecture">
-<link rel="next" href="Interoperability.html#Interoperability" title="Interoperability">
+<link rel="up" href="Tips-for-Working-with-Marsyas.html#Tips-for-Working-with-Marsyas" title="Tips for Working with Marsyas">
 <link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
 <!--
 Copyright 1998-2006 George Tzanetakis
@@ -45,20 +44,34 @@ translation approved by the Free Software Foundation.-->
 <body>
 <div class="node">
 <p>
-<a name="Programming"></a>
-Next:&nbsp;<a rel="next" accesskey="n" href="Interoperability.html#Interoperability">Interoperability</a>,
-Previous:&nbsp;<a rel="previous" accesskey="p" href="Architecture.html#Architecture">Architecture</a>,
-Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<a name="Visualizing-data-with-gnuplot"></a>
+Up:&nbsp;<a rel="up" accesskey="u" href="Tips-for-Working-with-Marsyas.html#Tips-for-Working-with-Marsyas">Tips for Working with Marsyas</a>
 <hr>
 </div>
 
-<h2 class="chapter">5 Programming</h2>
+<h4 class="subsection">5.3.1 Visualizing data with gnuplot</h4>
 
-<ul class="menu">
-<li><a accesskey="1" href="Assembling-a-network.html#Assembling-a-network">Assembling a network</a>
-<li><a accesskey="2" href="Writing-your-own-MarSystems.html#Writing-your-own-MarSystems">Writing your own MarSystems</a>
-<li><a accesskey="3" href="Tips-for-Working-with-Marsyas.html#Tips-for-Working-with-Marsyas">Tips for Working with Marsyas</a>
-</ul>
+<p>Gnuplot is an open-source data plotting utility available on every
+operating system that Marsyas supports.  More information (including
+downloads and installation instructions) can be found on the
+<a href="http://www.gnuplot.info/">Gnuplot website</a>.
 
-</body></html>
+   <p>Data in Marsyas can be plotted easily: simply write the realvec to
+a text file and call gnuplot on the result.
+
+<pre class="example">     void someFunction() {
+       string filename = "dataToPlot.txt";
+     	realvec data;
+     	data.allocate(size);
+     // ... do whatever processing here...
+       data.writeText( filename );
+       data.~realvec();
+     }
+</pre>
+   <p>After compiling and running the program, the <code>dataToPlot.txt</code> file
+may be plotted with gnuplot.
+
+<pre class="example">     gnuplot&gt; plot "dataToPlot.txt"
+</pre>
+   </body></html>
 
