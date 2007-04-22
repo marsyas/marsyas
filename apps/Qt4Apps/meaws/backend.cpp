@@ -25,11 +25,11 @@ MarBackend::MarBackend(int testingMethod) {
 	method=testingMethod;
 	method=1;  // temp
 	if (method==1) {
-		cout<<"Setting up Intonation stuff"<<endl;
+//		cout<<"Setting up Intonation stuff"<<endl;
 		startIntonation();
 	}
 	if (method==2) {
-		cout<<"Setting up Control stuff"<<endl;
+//		cout<<"Setting up Control stuff"<<endl;
 		startControl();
 	}
 }
@@ -76,16 +76,16 @@ void MarBackend::startControl() {
 }
 
 void MarBackend::playFile() {
-	cout<<"playing file now.   (not really, but it will in a few days)"<<endl;
+//	cout<<"playing file now.   (not really, but it will in a few days)"<<endl;
 }
 
 void MarBackend::start() {
-	cout<<"play"<<endl;
+//	cout<<"play"<<endl;
 	mrsWrapper->play();
 }
 
 void MarBackend::stop() {
-	cout<<"stop"<<endl;
+//	cout<<"stop"<<endl;
 	mrsWrapper->pause();
 }
 

@@ -12,13 +12,14 @@ TARGET = meaws
 VERSION = 0.4
 #CONFIG = qt
 
-MUSICDIS = $$DESTDIR
-macx:MUSICDIR = $$DESTDIR/meaws.app/Contents/MacOS
-MUSICDIR = $$MUSICDIR/music/
+# not portable, but I can't figure out the good way to do this yet.  :(
+DATADIR = /tmp/meaws/
+#macx:MUSICDIR = $$DESTDIR/meaws.app/Contents/MacOS
+#MUSICDIR = $$MUSICDIR/music/
 #message($$MUSICDIR)
-music.path = $$MUSICDIR
-music.files = music/*
-INSTALLS += music
+data.path = $$MUSICDIR
+data.files = progdata/*
+INSTALLS += data
 
 
 INCLUDEPATH += ../../../lib/release/

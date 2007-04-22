@@ -21,8 +21,8 @@
 #include <iostream>
 using namespace std;
 
-Metro::Metro(QAction *getVisualMetroBeat, QWidget *parent) {
-	cout<<"begun making metro"<<endl;
+Metro::Metro(QAction *getVisualMetroBeat, QWidget *parent, string audioFilename) {
+//	cout<<"begun making metro"<<endl;
 	visualMetroBeat = getVisualMetroBeat;
   connect(visualMetroBeat, SIGNAL(triggered()), this, SLOT(toggleBigMetro()));
 
@@ -38,7 +38,7 @@ Metro::Metro(QAction *getVisualMetroBeat, QWidget *parent) {
 	audio=true;   // for testing
 
 	if (audio) {
-		setupAudio();
+		setupAudio(audioFilename);
 	}
 
 	timer = new QTimer();
@@ -51,19 +51,20 @@ Metro::Metro(QAction *getVisualMetroBeat, QWidget *parent) {
 }
 
 Metro::~Metro() {
-	cout<<"deleting Metro"<<endl;
+//	cout<<"deleting Metro"<<endl;
 	delete mrsWrapper;
 	delete metroNet;
 	delete flashSpeed;
 	delete timer;
 }
 
-void Metro::setupAudio() {
+void Metro::setupAudio(string audioFilename) {
+	cout<<audioFilename<<endl;
   MarSystemManager mng;
   metroNet = mng.create("Series", "metroNet");
   metroNet->addMarSystem(mng.create("SoundFileSource", "srcMetro"));
   metroNet->addMarSystem(mng.create("AudioSink", "dest"));
-	metroNet->updctrl("SoundFileSource/srcMetro/mrs_string/filename", "progdata/sd.wav");
+	metroNet->updctrl("SoundFileSource/srcMetro/mrs_string/filename", audioFilename);
   metroNet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
 	mrsWrapper = new MarSystemQtWrapper(metroNet);
@@ -74,7 +75,7 @@ void Metro::setupAudio() {
 void Metro::setTempo(int getTempo) {
 	tempo = getTempo;
 	int timeBetweenBeats = 60000/tempo;
-	cout<<"setTempo "<<timeBetweenBeats<<endl;
+//	cout<<"setTempo "<<timeBetweenBeats<<endl;
 	timer->setInterval(timeBetweenBeats);
 }
 
@@ -100,9 +101,10 @@ void Metro::beatFinished() {
 	if (bigDisplay) {
 		drawBeatColor = normalBeatColor;
 		update();
-	} else {
-		visualMetroBeat->setIcon(QIcon(":/progdata/circle.png"));
 	}
+// else {
+		visualMetroBeat->setIcon(QIcon(":/progdata/circle.png"));
+//	}
 }
 
 void Metro::beat() {
@@ -113,11 +115,12 @@ void Metro::beat() {
 	if (bigDisplay) {
 		drawBeatColor = activeBeatColor;
 		update();
-		flashSpeed->start();
-	} else {
+//		flashSpeed->start();
+//	} else {
+	}
 		visualMetroBeat->setIcon(QIcon(":/progdata/circle-beat.png"));
 		flashSpeed->start();
-	}
+//	}
 }
 
 void Metro::toggleBigMetro() {

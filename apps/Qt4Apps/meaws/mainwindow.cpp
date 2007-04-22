@@ -255,9 +255,19 @@ void MainWindow::enableActions(int state) {
 	if (state==3) {   // exercise picked
 		setupMarBackend();
 		exerciseRunning=false;
-		metro = new Metro(visualMetroBeat, this);
 
-		connect(toggleMetroAct, SIGNAL(triggered()), this, SLOT(toggleExercise()));
+		string audioFile;
+		QFile audioResource(":/progdata/sd.wav");
+		if ( file.open() ) {
+			cout<<qPrintable( file.fileName() )<<endl;
+			//file.close();
+			audioResource.copy( file.fileName() );
+			audioFile = (const char*) file.fileName().toAscii();
+			cout<<audioFile<<endl;
+//zzz
+			metro = new Metro(visualMetroBeat, this, audioFile);
+			connect(toggleMetroAct, SIGNAL(triggered()), this, SLOT(toggleExercise()));
+		}
 
 		tempoToolBar ->setEnabled(true);
 	}
@@ -448,7 +458,7 @@ void MainWindow::setMetroTempo(int tempo) {
 }
 
 void MainWindow::calcExercise() {
-	analyze = new Analyze( qPrintable(audioFileName), ":music/exer.txt" );
+	analyze = new Analyze( qPrintable(audioFileName), ":/music/exer.txt" );
 	analyze->calcDurations();
 	analyze->calcNotes();
 	analyze->writeNotes();

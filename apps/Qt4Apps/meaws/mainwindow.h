@@ -7,6 +7,8 @@
 #include <QGridLayout>
 #include <QFrame>
 #include <QtGui>
+
+#include <QTemporaryFile>
 class QAction;
 class QMenu;
 class QTextEdit;
@@ -155,6 +157,8 @@ private:
 	Metro *metro;
 	Exercise *exercise;
 	Analyze *analyze;
+
+	string dataDir;
 };
 
 #endif

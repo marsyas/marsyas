@@ -30,7 +30,7 @@ class Metro: public QWidget {
 	Q_OBJECT
 
 public:
-	Metro(QAction *getVisualMetroBeat, QWidget *parent);
+	Metro(QAction *getVisualMetroBeat, QWidget *parent, string audioFilename);
 	~Metro();
 	void stopMetro();
 	void startMetro();
@@ -61,7 +61,7 @@ private:
 
 // audio stuff
 	bool audio;
-	void setupAudio();
+	void setupAudio(string audioFilename);
 	MarSystemQtWrapper *mrsWrapper;
   MarSystem *metroNet;
   MarControlPtr positionPtr;
