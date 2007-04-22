@@ -1,6 +1,12 @@
 MEAWS 0.4:  Music Evaluation and Audition for Winds and Strings
 ----------
 
+WARNING!!!  this is currently **NOT** portable.  Data files are
+installed to /tmp/meaws.  This directory probably does not exist on
+a Windows machine.  See "dataDir" and "DATADIR" in mainwindow.cpp and
+meaws.pro respectively.
+
+
 This is a project by Graham Percival and Mathieu Lagrange.  Not intended
 for public consumption yet.  We're just storing it here because it's
 convenient.
@@ -29,8 +35,7 @@ metro .h .cpp: the metronome object.
 
 user .h .cpp: the User object.  (records previous tests, user info, etc)
 
-images/ : icons for the QT app.
-music/ : data for the different music for the students.
-
-sd.wav: sound file for the metronome noises.
+icons/ : icons for the QT app.
+data/ : data to be installed
+data/music/ : exercises for the students.
 

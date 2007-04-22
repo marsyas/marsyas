@@ -59,7 +59,7 @@ Metro::~Metro() {
 }
 
 void Metro::setupAudio(string audioFilename) {
-	cout<<audioFilename<<endl;
+//	cout<<audioFilename<<endl;
   MarSystemManager mng;
   metroNet = mng.create("Series", "metroNet");
   metroNet->addMarSystem(mng.create("SoundFileSource", "srcMetro"));
@@ -74,8 +74,8 @@ void Metro::setupAudio(string audioFilename) {
 
 void Metro::setTempo(int getTempo) {
 	tempo = getTempo;
+	// in QT 4.2, the timer interval (in ms) must be an integer 
 	int timeBetweenBeats = 60000/tempo;
-//	cout<<"setTempo "<<timeBetweenBeats<<endl;
 	timer->setInterval(timeBetweenBeats);
 }
 
@@ -102,9 +102,7 @@ void Metro::beatFinished() {
 		drawBeatColor = normalBeatColor;
 		update();
 	}
-// else {
-		visualMetroBeat->setIcon(QIcon(":/icons/circle.png"));
-//	}
+	visualMetroBeat->setIcon(QIcon(":/icons/circle.png"));
 }
 
 void Metro::beat() {
@@ -115,12 +113,9 @@ void Metro::beat() {
 	if (bigDisplay) {
 		drawBeatColor = activeBeatColor;
 		update();
-//		flashSpeed->start();
-//	} else {
 	}
-		visualMetroBeat->setIcon(QIcon(":/icons/circle-beat.png"));
-		flashSpeed->start();
-//	}
+	visualMetroBeat->setIcon(QIcon(":/icons/circle-beat.png"));
+	flashSpeed->start();
 }
 
 void Metro::toggleBigMetro() {

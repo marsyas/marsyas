@@ -22,28 +22,25 @@
 using namespace std;
 
 MarBackend::MarBackend(int testingMethod) {
+	cout<<"backend "<<testingMethod<<endl;
 	method=testingMethod;
-	method=1;  // temp
-	if (method==1) {
-//		cout<<"Setting up Intonation stuff"<<endl;
+	if (method==BACKEND_INTONATION) {
+		cout<<"Setting up Intonation stuff"<<endl;
 		startIntonation();
 	}
-	if (method==2) {
+	if (method==BACKEND_CONTROL) {
 //		cout<<"Setting up Control stuff"<<endl;
 		startControl();
 	}
 }
 
 MarBackend::~MarBackend() {
-//	cout<<"deleting MarBackend"<<endl;
-	if (method==1) {
-//		mrsWrapper->play();
-//		cout<<"Trying to delete mrsWrapper"<<endl;
-// something bad happens here.  :(
+	if (method==BACKEND_INTONATION) {
 		delete mrsWrapper;
-		//cout<<"mrsWrapper deleted"<<endl;
 		delete recNet;
-	//	cout<<"everything deleted"<<endl;
+	}
+	if (method==BACKEND_CONTROL) {
+
 	}
 }
 

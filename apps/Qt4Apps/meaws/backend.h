@@ -22,6 +22,9 @@
 
 using namespace Marsyas;
 
+#define BACKEND_INTONATION 1
+#define BACKEND_CONTROL 2
+
 class MarBackend: public QObject {
 	Q_OBJECT
 

@@ -282,9 +282,9 @@ void MainWindow::newUser() {
 		return;
 	}
 	enableActions(2);
-//	if ( chooseTestingMethod() ) {
-//		connect(setUserInfoAct, SIGNAL(triggered()), user, SLOT(setUserInfo()));
-//	}
+	if ( chooseTestingMethod() ) {
+		connect(setUserInfoAct, SIGNAL(triggered()), user, SLOT(setUserInfo()));
+	}
 }
 
 void MainWindow::openUser() {
@@ -343,8 +343,8 @@ bool MainWindow::chooseTestingMethod() {
 	QString item = QInputDialog::getItem(this, tr("Choose testing method"),
 		tr("TestingMethod:"), items, 0, false, &ok);
 	if (ok && !item.isEmpty()) {
-		if (item=="Intonation test") testingMethod=1;
-		if (item=="Sound control test") testingMethod=2;
+		if (item=="Intonation test") testingMethod=BACKEND_INTONATION;
+		if (item=="Sound control test") testingMethod=BACKEND_CONTROL;
 		updateTestingMethod();
 		return true;
 	} else {
