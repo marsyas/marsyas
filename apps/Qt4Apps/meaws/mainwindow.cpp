@@ -306,8 +306,9 @@ void MainWindow::closeExercise() {
 }
 
 void MainWindow::openExercise() {
+// TODO: fix directory
 	QString exerciseName = QFileDialog::getOpenFileName(this,
-		tr("Open Exercise"),"music/",tr("Exercises (*.png)"));
+		tr("Open Exercise"),":music/",tr("Exercises (*.png)"));
 	if (!exerciseName.isEmpty()) {
 		QImage image(exerciseName);
 		imageLabel->setPixmap(QPixmap::fromImage(image));
@@ -447,7 +448,7 @@ void MainWindow::setMetroTempo(int tempo) {
 }
 
 void MainWindow::calcExercise() {
-	analyze = new Analyze( qPrintable(audioFileName), "music/exer.txt" );
+	analyze = new Analyze( qPrintable(audioFileName), ":music/exer.txt" );
 	analyze->calcDurations();
 	analyze->calcNotes();
 	analyze->writeNotes();

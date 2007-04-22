@@ -101,7 +101,7 @@ void Metro::beatFinished() {
 		drawBeatColor = normalBeatColor;
 		update();
 	} else {
-		visualMetroBeat->setIcon(QIcon(":/images/circle.png"));
+		visualMetroBeat->setIcon(QIcon(":/progdata/circle.png"));
 	}
 }
 
@@ -115,7 +115,7 @@ void Metro::beat() {
 		update();
 		flashSpeed->start();
 	} else {
-		visualMetroBeat->setIcon(QIcon(":/images/circle-beat.png"));
+		visualMetroBeat->setIcon(QIcon(":/progdata/circle-beat.png"));
 		flashSpeed->start();
 	}
 }

@@ -7,7 +7,7 @@ soundFileName = sys.argv[1]
 tempo = sys.argv[2]
 
 # get info from Praat
-os.system('Praat getpitch.praat ' + soundFileName)
+#os.system('Praat getpitch.praat ' + soundFileName)
 file = open('praatPitchList.txt','r')
 filelines=file.readlines()
 file.close()

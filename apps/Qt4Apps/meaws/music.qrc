@@ -1,0 +1,7 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>music/scale.png</file>
+		<file>music/scale.ly</file>
+		<file>music/scale.txt</file>
+</qresource>
+</RCC>

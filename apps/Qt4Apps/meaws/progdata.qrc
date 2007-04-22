@@ -14,5 +14,6 @@
      <file>progdata/triangle.png</file>
      <file>progdata/square.png</file>
      <file>progdata/play.png</file>
+		<file>progdata/sd.wav</file>
 </qresource>
 </RCC>

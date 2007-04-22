@@ -1,4 +1,5 @@
 include (../Qt4Apps.pri)
+
 SOURCES = start.cpp
 HEADERS = mainwindow.h backend.h metro.h
 SOURCES += mainwindow.cpp backend.cpp metro.cpp
@@ -6,10 +7,19 @@ HEADERS += user.h exercise.h analyze.h
 SOURCES += user.cpp exercise.cpp analyze.cpp
 HEADERS += ../MarSystemQtWrapper.h
 SOURCES += ../MarSystemQtWrapper.cpp 
-RESOURCES = icons.qrc
+RESOURCES = progdata.qrc music.qrc
 TARGET = meaws
 VERSION = 0.4
 #CONFIG = qt
+
+MUSICDIS = $$DESTDIR
+macx:MUSICDIR = $$DESTDIR/meaws.app/Contents/MacOS
+MUSICDIR = $$MUSICDIR/music/
+#message($$MUSICDIR)
+music.path = $$MUSICDIR
+music.files = music/*
+INSTALLS += music
+
 
 INCLUDEPATH += ../../../lib/release/
 
