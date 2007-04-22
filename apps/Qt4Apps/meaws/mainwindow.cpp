@@ -6,6 +6,8 @@ MainWindow::MainWindow() {
 	marBackend=NULL;
 	metro=NULL;
 
+	dataDir = "/tmp/meaws/data/";
+
 	createMain();
 	createActions();
 	createMenus();
@@ -149,17 +151,17 @@ void MainWindow::createToolBars() {
 }
 
 void MainWindow::createActions() {
-	newUserAct = new QAction(QIcon(":/progdata/new.png"), tr("&New user"), this);
+	newUserAct = new QAction(QIcon(":/icons/new.png"), tr("&New user"), this);
 	newUserAct->setShortcut(tr("Ctrl+N"));
 	newUserAct->setStatusTip(tr("Create a new session"));
 	connect(newUserAct, SIGNAL(triggered()), this, SLOT(newUser()));
 
-	openAct = new QAction(QIcon(":/progdata/open.png"), tr("&Open user..."), this);
+	openAct = new QAction(QIcon(":/icons/open.png"), tr("&Open user..."), this);
 	openAct->setShortcut(tr("Ctrl+O"));
 	openAct->setStatusTip(tr("Open an existing session"));
 //	connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
 
-	saveAct = new QAction(QIcon(":/progdata/save.png"), tr("&Save user"), this);
+	saveAct = new QAction(QIcon(":/icons/save.png"), tr("&Save user"), this);
 	saveAct->setShortcut(tr("Ctrl+S"));
 	saveAct->setStatusTip(tr("Save the session to disk"));
 //	connect(saveAct, SIGNAL(triggered()), this, SLOT(save()));
@@ -168,13 +170,13 @@ void MainWindow::createActions() {
 	saveAsAct->setStatusTip(tr("Save the session under a new name"));
 //	connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
 
-	closeAct = new QAction(QIcon(":/progdata/save.png"), tr("&Close user"), this);
+	closeAct = new QAction(QIcon(":/icons/save.png"), tr("&Close user"), this);
 	closeAct = new QAction(tr("&Close user"), this);
 	closeAct->setShortcut(tr("Ctrl+W"));
 	closeAct->setStatusTip(tr("Close user"));
 	connect(closeAct, SIGNAL(triggered()), this, SLOT(closeUser()));
 
-	setUserInfoAct = new QAction(QIcon(":/progdata/new.png"), tr("&User info"), this);
+	setUserInfoAct = new QAction(QIcon(":/icons/new.png"), tr("&User info"), this);
 	setUserInfoAct->setShortcut(tr("Ctrl+U"));
 
 	exitAct = new QAction(tr("E&xit"), this);
@@ -190,32 +192,32 @@ void MainWindow::createActions() {
 	connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
 
-	openExerciseAct = new QAction(QIcon(":/progdata/open.png"), tr("Open &Exercise..."), this);
+	openExerciseAct = new QAction(QIcon(":/icons/open.png"), tr("Open &Exercise..."), this);
 	openExerciseAct->setShortcut(tr("Ctrl+R"));
 	openExerciseAct->setStatusTip(tr("Open a new exercise"));
 	connect(openExerciseAct, SIGNAL(triggered()), this, SLOT(openExercise()));
 
-	setMetroIntroAct = new QAction(QIcon(":/progdata/triangle.png"), tr("Set metronome introduction"), this);
+	setMetroIntroAct = new QAction(QIcon(":/icons/triangle.png"), tr("Set metronome introduction"), this);
 	connect(setMetroIntroAct, SIGNAL(triggered()), this, SLOT(setMetroIntro()));
 
-	visualMetroBeat = new QAction(QIcon(":/progdata/circle.png"), tr("Visual metronome"), this);
+	visualMetroBeat = new QAction(QIcon(":/icons/circle.png"), tr("Visual metronome"), this);
 	visualMetroBeat->setStatusTip(tr("Shows the beat"));
 
-	calcExerciseAct = new QAction(QIcon(":/progdata/square.png"), tr("Calculate exercise results"), this);
+	calcExerciseAct = new QAction(QIcon(":/icons/square.png"), tr("Calculate exercise results"), this);
 	connect(calcExerciseAct, SIGNAL(triggered()), this, SLOT(calcExercise()));
 
 	toggleMetroAct = new QAction(this);
 	toggleMetroAct->setShortcut(tr("Space"));
 	toggleMetroAct->setStatusTip(tr("Start"));
-	toggleMetroAct->setIcon(QIcon(":/progdata/player_play.png"));
+	toggleMetroAct->setIcon(QIcon(":/icons/player_play.png"));
 
-	testingFileAct = new QAction(QIcon(":/progdata/open.png"), tr("&Open test audio file..."), this);
+	testingFileAct = new QAction(QIcon(":/icons/open.png"), tr("&Open test audio file..."), this);
 	testingFileAct->setShortcut(tr("Ctrl+T"));
 	testingFileAct->setStatusTip(tr("Open test audio file"));
 	connect(testingFileAct, SIGNAL(triggered()), this, SLOT(testingFile()));
 
-	playFileAct = new QAction(QIcon(":/progdata/open.png"), tr("&Play test audio file..."), this);
-	playFileAct->setIcon(QIcon(":/progdata/play.png"));
+	playFileAct = new QAction(QIcon(":/icons/open.png"), tr("&Play test audio file..."), this);
+	playFileAct->setIcon(QIcon(":/icons/play.png"));
 	playFileAct->setStatusTip(tr("Play test audio file"));
 	connect(playFileAct, SIGNAL(triggered()), this, SLOT(playFile()));
 }
@@ -256,19 +258,11 @@ void MainWindow::enableActions(int state) {
 		setupMarBackend();
 		exerciseRunning=false;
 
-		string audioFile;
-		QFile audioResource(":/progdata/sd.wav");
-		if ( file.open() ) {
-			cout<<qPrintable( file.fileName() )<<endl;
-			//file.close();
-			audioResource.copy( file.fileName() );
-			audioFile = (const char*) file.fileName().toAscii();
-			cout<<audioFile<<endl;
+		string audioFile = dataDir;
+		audioFile.append("sd.wav");
 //zzz
-			metro = new Metro(visualMetroBeat, this, audioFile);
-			connect(toggleMetroAct, SIGNAL(triggered()), this, SLOT(toggleExercise()));
-		}
-
+		metro = new Metro(visualMetroBeat, this, audioFile);
+		connect(toggleMetroAct, SIGNAL(triggered()), this, SLOT(toggleExercise()));
 		tempoToolBar ->setEnabled(true);
 	}
 	if (state==4) {   // exercise results
@@ -317,8 +311,10 @@ void MainWindow::closeExercise() {
 
 void MainWindow::openExercise() {
 // TODO: fix directory
+	QString exerDir( dataDir.c_str() );
+	exerDir.append("music");
 	QString exerciseName = QFileDialog::getOpenFileName(this,
-		tr("Open Exercise"),":music/",tr("Exercises (*.png)"));
+		tr("Open Exercise"), exerDir, tr("Exercises (*.png)"));
 	if (!exerciseName.isEmpty()) {
 		QImage image(exerciseName);
 		imageLabel->setPixmap(QPixmap::fromImage(image));
@@ -407,13 +403,13 @@ void MainWindow::toggleExercise() {
 		marBackend->stop();
 		metro->stopMetro();
 		toggleMetroAct->setStatusTip(tr("Start"));
-		toggleMetroAct->setIcon(QIcon(":/progdata/player_play.png"));
+		toggleMetroAct->setIcon(QIcon(":/icons/player_play.png"));
 		exerciseRunning = !exerciseRunning;
 	} else {   // start it
 		marBackend->start();
 		metro->startMetro();
 		toggleMetroAct->setStatusTip(tr("Stop"));
-		toggleMetroAct->setIcon(QIcon(":/progdata/player_pause.png"));
+		toggleMetroAct->setIcon(QIcon(":/icons/player_pause.png"));
 		exerciseRunning = !exerciseRunning;
 	}
 }
@@ -458,7 +454,7 @@ void MainWindow::setMetroTempo(int tempo) {
 }
 
 void MainWindow::calcExercise() {
-	analyze = new Analyze( qPrintable(audioFileName), ":/music/exer.txt" );
+	analyze = new Analyze( qPrintable(audioFileName), dataDir );
 	analyze->calcDurations();
 	analyze->calcNotes();
 	analyze->writeNotes();

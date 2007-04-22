@@ -103,7 +103,7 @@ void Metro::beatFinished() {
 		update();
 	}
 // else {
-		visualMetroBeat->setIcon(QIcon(":/progdata/circle.png"));
+		visualMetroBeat->setIcon(QIcon(":/icons/circle.png"));
 //	}
 }
 
@@ -118,7 +118,7 @@ void Metro::beat() {
 //		flashSpeed->start();
 //	} else {
 	}
-		visualMetroBeat->setIcon(QIcon(":/progdata/circle-beat.png"));
+		visualMetroBeat->setIcon(QIcon(":/icons/circle-beat.png"));
 		flashSpeed->start();
 //	}
 }

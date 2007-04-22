@@ -7,18 +7,20 @@ HEADERS += user.h exercise.h analyze.h
 SOURCES += user.cpp exercise.cpp analyze.cpp
 HEADERS += ../MarSystemQtWrapper.h
 SOURCES += ../MarSystemQtWrapper.cpp 
-RESOURCES = progdata.qrc music.qrc
+RESOURCES = icons.qrc
 TARGET = meaws
 VERSION = 0.4
 #CONFIG = qt
 
-# not portable, but I can't figure out the good way to do this yet.  :(
-DATADIR = /tmp/meaws/
+# not portable, but I cannot figure out the good way to do this yet.  :(
+MEAWS_DATADIR = /tmp/meaws/
 #macx:MUSICDIR = $$DESTDIR/meaws.app/Contents/MacOS
 #MUSICDIR = $$MUSICDIR/music/
 #message($$MUSICDIR)
-data.path = $$MUSICDIR
-data.files = progdata/*
+
+message("Installing data to $$MEAWS_DATADIR")
+data.path = $$MEAWS_DATADIR
+data.files = data/
 INSTALLS += data
 
 
