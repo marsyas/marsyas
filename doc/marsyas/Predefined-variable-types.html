@@ -68,5 +68,21 @@ on <code>realvec</code>s, including statistical operations (find the mean,
 median, standard variance, etc).  Using these predefined data types
 is highly recommended.
 
+<pre class="example">     realvec foo;
+     foo.create(10);
+     for (mrs_natural i=0; i&lt;10; i++) {
+       foo(i) = i;
+     }
+     foo.~realvec();
+     
+     realvec *bar;
+     bar-&gt;create(20,20);
+     for (mrs_natural i=0; i&lt;20; i++) {
+       for (mrs_natural j=0; j&lt;20; j++) {
+         (*bar)(i,j) = i+j;
+       }
+     }
+     bar-&gt;~realvec();
+</pre>
    </body></html>
 
