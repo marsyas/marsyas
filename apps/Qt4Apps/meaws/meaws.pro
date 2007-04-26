@@ -2,6 +2,8 @@ include (../Qt4Apps.pri)
 
 SOURCES = start.cpp
 HEADERS = mainwindow.h backend.h metro.h
+HEADERS += displayControl.h
+SOURCES += displayControl.cpp
 SOURCES += mainwindow.cpp backend.cpp metro.cpp
 HEADERS += user.h exercise.h analyze.h
 SOURCES += user.cpp exercise.cpp analyze.cpp

@@ -8,6 +8,8 @@
 #include <QFrame>
 #include <QtGui>
 
+#include <QPainter>
+
 #include <QTemporaryFile>
 class QAction;
 class QMenu;
@@ -24,6 +26,7 @@ using namespace std;
 #include "metro.h"
 #include "exercise.h"
 #include "analyze.h"
+#include "displayControl.h"
 
 class MainWindow : public QMainWindow
 {
@@ -98,7 +101,7 @@ private:
 	QAction *playFileAct;
 
 
-	QToolBar *infoBar;
+	QToolBar *testingBar;
 
 	QMenu *helpMenu;
 	QAction *aboutAct;
@@ -138,7 +141,7 @@ private:
 
 	QTextEdit *textEdit;
 	QLabel *imageLabel;
-	QLabel *displayResults;
+	DisplayControl *displayResults;
 	QString curFile;
 
 	QLabel *exerciseTitle;

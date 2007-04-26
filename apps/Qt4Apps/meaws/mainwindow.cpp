@@ -1,6 +1,11 @@
 #include "mainwindow.h"
 #include "math.h"
 
+#define MEAWS_READY_NOTHING 1
+#define MEAWS_READY_USER 2
+#define MEAWS_READY_EXERCISE 3
+#define MEAWS_READY_AUDIO 4
+
 // basic application functions
 MainWindow::MainWindow() {
 	marBackend=NULL;
@@ -15,7 +20,7 @@ MainWindow::MainWindow() {
 	createStatusBar();
 	readSettings();
 
-	enableActions(1);
+	enableActions(MEAWS_READY_NOTHING);
 }
 
 MainWindow::~MainWindow() {
@@ -72,15 +77,18 @@ void MainWindow::createMain() {
 	imageLabel->setScaledContents(false);
 
 	// this is what displays our testing text.  Later on we would
-	// remove textLable and make a QT painting area or make it a picture.
-	displayResults = new QLabel;
+	// remove textLabel and make a QT painting area or make it a picture.
+	displayResults = new DisplayControl;
 	updateTestingMethod();
 
 	// we want to display the above two QLabels within our main window.
 	mainLayout = new QVBoxLayout;
 	mainLayout->addWidget(imageLabel,0,Qt::AlignTop);
-	mainLayout->addWidget(displayResults,0,Qt::AlignTop);
+	mainLayout->addWidget(displayResults,0,0);
 	centralFrame->setLayout(mainLayout);
+
+	displayResults->makeupData();
+//zz
 }
 
 void MainWindow::createMenus()
@@ -142,12 +150,12 @@ void MainWindow::createToolBars() {
 	connect(tempoBox, SIGNAL(valueChanged(int)),
 		this, SLOT(setMetroTempo(int)));
 
-	infoBar = addToolBar(tr("Info"));
+	testingBar = addToolBar(tr("Info"));
 	exerciseTitle = new QLabel();
 	exerciseTitle->setText("");
-	infoBar->addAction(testingFileAct);
-	infoBar->addAction(playFileAct);
-	infoBar->addWidget(exerciseTitle);
+	testingBar->addAction(testingFileAct);
+	testingBar->addAction(playFileAct);
+	testingBar->addWidget(exerciseTitle);
 }
 
 void MainWindow::createActions() {
@@ -223,7 +231,7 @@ void MainWindow::createActions() {
 }
 
 void MainWindow::enableActions(int state) {
-	if (state==1) {   // just opened app
+	if (state==MEAWS_READY_NOTHING) {   // just opened app
 		setWindowTitle(tr("Meaws"));
 
 		saveAct   ->setEnabled(false);
@@ -231,14 +239,15 @@ void MainWindow::enableActions(int state) {
 		closeAct  ->setEnabled(false);
 		setUserInfoAct->setEnabled(false);
 
-		infoBar     ->setEnabled(false);
+		testingBar     ->setEnabled(false);
 		exerMenu    ->setEnabled(false);
 		openExerciseAct ->setEnabled(false);
 
 		tempoToolBar ->setEnabled(false);
-		tempoToolBar ->setEnabled(true);
+
+		testingBar ->setEnabled(false);
 	}
-	if (state==2) {   // user created or loaded
+	if (state==MEAWS_READY_USER) {   // user created or loaded
 		setWindowTitle(tr("Meaws - %1").arg(user->getName()));
 
 		saveAct   ->setEnabled(true);
@@ -246,7 +255,7 @@ void MainWindow::enableActions(int state) {
 		closeAct  ->setEnabled(true);
 		setUserInfoAct->setEnabled(true);
 
-		infoBar     ->setEnabled(true);
+		testingBar     ->setEnabled(true);
 		exerMenu    ->setEnabled(true);
 		openExerciseAct ->setEnabled(true);
 
@@ -254,7 +263,7 @@ void MainWindow::enableActions(int state) {
 
 		closeExercise();
 	}
-	if (state==3) {   // exercise picked
+	if (state==MEAWS_READY_EXERCISE) {   // exercise picked
 		setupMarBackend();
 		exerciseRunning=false;
 
@@ -264,8 +273,10 @@ void MainWindow::enableActions(int state) {
 		metro = new Metro(visualMetroBeat, this, audioFile);
 		connect(toggleMetroAct, SIGNAL(triggered()), this, SLOT(toggleExercise()));
 		tempoToolBar ->setEnabled(true);
+
+		testingBar ->setEnabled(true);
 	}
-	if (state==4) {   // exercise results
+	if (state==MEAWS_READY_AUDIO) {   // exercise results
 
 	}
 }
@@ -281,7 +292,7 @@ void MainWindow::newUser() {
 	catch (bool failed) {
 		return;
 	}
-	enableActions(2);
+	enableActions(MEAWS_READY_USER);
 	if ( chooseTestingMethod() ) {
 		connect(setUserInfoAct, SIGNAL(triggered()), user, SLOT(setUserInfo()));
 	}
@@ -290,12 +301,11 @@ void MainWindow::newUser() {
 void MainWindow::openUser() {
 	try {
 		user = new User(OpenUser);
-		enableActions(2);
 	}
 	catch (bool failed) {
 		return;
 	}
-	enableActions(2);
+	enableActions(MEAWS_READY_USER);
 }
 
 void MainWindow::closeExercise() {
@@ -319,7 +329,7 @@ void MainWindow::openExercise() {
 		QImage image(exerciseName);
 		imageLabel->setPixmap(QPixmap::fromImage(image));
 		exerciseTitle->setText( tr("Exercise: %1").arg(QFileInfo(exerciseName).baseName()) );
-		enableActions(3);
+		enableActions(MEAWS_READY_EXERCISE);
 	}
 }
 
@@ -390,7 +400,7 @@ void MainWindow::closeUser() {
 	imageLabel->clear();
 	testingMethod=0;
 	updateTestingMethod();
-	enableActions(1);
+	enableActions(MEAWS_READY_NOTHING);
 }
 
 
@@ -488,7 +498,7 @@ void MainWindow::calcExercise() {
 	system(command.c_str());
 	QString imageFileName="/Users/gperciva/tmp/out.preview.png";
 	QImage image(imageFileName);
-	displayResults->setPixmap(QPixmap::fromImage(image));
+//	displayResults->setPixmap(QPixmap::fromImage(image));
 }
 
 void MainWindow::playFile() {
