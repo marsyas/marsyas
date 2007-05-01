@@ -7,6 +7,7 @@
 #define MINMUL 0.8
 
 Analyze::Analyze(string audioFileName, string exerciseFileName) {
+//	cout<<"in Analyze"<<endl;
 	if ( exerciseFileName != "" ) {
 		getExercise(exerciseFileName);
 		PITCH_CORRECT=true;
@@ -15,6 +16,7 @@ Analyze::Analyze(string audioFileName, string exerciseFileName) {
 	}
 	outputFileName = audioFileName;
 	outputFileName.erase( outputFileName.length()-4, outputFileName.length());
+//	cout<<"calculating pitches"<<endl;
 	getPitches(audioFileName);
 //	cout<<numPitches<<endl;
 
@@ -22,6 +24,8 @@ Analyze::Analyze(string audioFileName, string exerciseFileName) {
 // probably only need numPitches/100 or so.  But in the worst case
 // we'll need O(n), so that's what I'll allocate here, to avoid
 // having to allocate more memory later. -gp
+
+//	cout<<"end Analyze"<<endl;
 }
 
 Analyze::~Analyze() {
@@ -117,6 +121,7 @@ void Analyze::getPitches(string audioFilename) {
 
 // my addition to the marsyasTest pitch stuff:
   numPitches = data.getSize()/2;
+	cout<<"size: "<<numPitches<<endl;
 	pitchList.allocate(numPitches);
 	for (int i=0; i<numPitches; i++) {
 		if ( data(2*i+1)>0 )
@@ -125,6 +130,10 @@ void Analyze::getPitches(string audioFilename) {
 			pitchList(i) = 0;
 	}
 	delete pnet;
+}
+
+realvec *Analyze::retPitches() {
+	return &pitchList;
 }
 
 void Analyze::getExercise(string exerciseFilename) {

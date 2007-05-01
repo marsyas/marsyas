@@ -18,6 +18,8 @@ public:
 	void printNotes();
 	void writePitches();
 
+	realvec *retPitches();
+
 	void initHarms();
 	void addHarmsHokey();
 	void addHarmsSmooth();

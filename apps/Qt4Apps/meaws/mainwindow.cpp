@@ -75,6 +75,7 @@ void MainWindow::createMain() {
 	imageLabel->setBackgroundRole(QPalette::Base);
 	imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 	imageLabel->setScaledContents(false);
+	imageLabel->setMaximumHeight(75);
 
 	// this is what displays our testing text.  Later on we would
 	// remove textLabel and make a QT painting area or make it a picture.
@@ -83,11 +84,12 @@ void MainWindow::createMain() {
 
 	// we want to display the above two QLabels within our main window.
 	mainLayout = new QVBoxLayout;
-	mainLayout->addWidget(imageLabel,0,Qt::AlignTop);
+//	mainLayout->addWidget(imageLabel,0,Qt::AlignTop);
+	mainLayout->addWidget(imageLabel,0,0);
 	mainLayout->addWidget(displayResults,0,0);
 	centralFrame->setLayout(mainLayout);
 
-	displayResults->makeupData();
+	//displayResults->makeupData();
 //zz
 }
 
@@ -464,7 +466,10 @@ void MainWindow::setMetroTempo(int tempo) {
 }
 
 void MainWindow::calcExercise() {
-	analyze = new Analyze( qPrintable(audioFileName), dataDir );
+	//analyze = new Analyze( qPrintable(audioFileName), dataDir );
+	analyze = new Analyze( qPrintable(audioFileName), "" );
+	displayResults->setData( analyze->retPitches() );
+/*
 	analyze->calcDurations();
 	analyze->calcNotes();
 	analyze->writeNotes();
@@ -499,6 +504,7 @@ void MainWindow::calcExercise() {
 	QString imageFileName="/Users/gperciva/tmp/out.preview.png";
 	QImage image(imageFileName);
 //	displayResults->setPixmap(QPixmap::fromImage(image));
+*/
 }
 
 void MainWindow::playFile() {
