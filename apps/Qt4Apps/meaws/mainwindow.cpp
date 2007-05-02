@@ -75,7 +75,7 @@ void MainWindow::createMain() {
 	imageLabel->setBackgroundRole(QPalette::Base);
 	imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 	imageLabel->setScaledContents(false);
-	imageLabel->setMaximumHeight(75);
+	imageLabel->setMaximumHeight(100);
 
 	// this is what displays our testing text.  Later on we would
 	// remove textLabel and make a QT painting area or make it a picture.
@@ -338,6 +338,7 @@ void MainWindow::openExercise() {
 void MainWindow::testingFile() {
 	audioFileName = QFileDialog::getOpenFileName(this,
 		tr("Open test audio file"),"~/",tr("Audio files (*.wav)"));
+	calcExercise();
 }
 	
 bool MainWindow::maybeTestingMethod() {

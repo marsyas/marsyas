@@ -30,7 +30,9 @@ MarBackend::MarBackend(int testingMethod) {
 	}
 	if (method==BACKEND_CONTROL) {
 //		cout<<"Setting up Control stuff"<<endl;
-		startControl();
+		//startControl();
+// currently no difference.
+		startIntonation();
 	}
 }
 

@@ -86,7 +86,7 @@ DisplayControl::paintEvent(QPaintEvent *)
 			painter.drawPoint( x, height()/2 - y);
 			if (x > prevx+1) {
 				for (catchup=prevx; catchup<x; catchup++) {
-					painter.drawPoint( catchup, height()/2 - prevy);
+					painter.drawPoint( catchup, ( height()/2 - (y+prevy)/2.0 ) );
 				}
 			}
 			prevx = x;

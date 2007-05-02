@@ -14,11 +14,10 @@ TARGET = meaws
 VERSION = 0.4
 #CONFIG = qt
 
-# not portable, but I cannot figure out the good way to do this yet.  :(
-MEAWS_DATADIR = /tmp/meaws/
-#macx:MUSICDIR = $$DESTDIR/meaws.app/Contents/MacOS
-#MUSICDIR = $$MUSICDIR/music/
-#message($$MUSICDIR)
+
+##  You might want to change this:
+win32:MEAWS_DATADIR = c:\temp\meaws
+unix:MEAWS_DATADIR = /tmp/meaws/
 
 message("Installing data to $$MEAWS_DATADIR")
 data.path = $$MEAWS_DATADIR
