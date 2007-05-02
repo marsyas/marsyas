@@ -19,6 +19,7 @@ public:
 	void writePitches();
 
 	realvec *retPitches();
+	double getPitchStability();
 
 	void initHarms();
 	void addHarmsHokey();

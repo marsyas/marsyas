@@ -22,10 +22,10 @@
 using namespace std;
 
 MarBackend::MarBackend(int testingMethod) {
-	cout<<"backend "<<testingMethod<<endl;
+	//cout<<"backend "<<testingMethod<<endl;
 	method=testingMethod;
 	if (method==BACKEND_INTONATION) {
-		cout<<"Setting up Intonation stuff"<<endl;
+		//cout<<"Setting up Intonation stuff"<<endl;
 		startIntonation();
 	}
 	if (method==BACKEND_CONTROL) {

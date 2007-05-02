@@ -27,7 +27,7 @@ DisplayControl::setData(realvec *getData)
 	// scale data for sax display
 	if (data->getRows()==0) {
 		mrs_real median = data->median();
-		cout<<"median: "<<median<<endl;
+		//cout<<"median: "<<median<<endl;
 		for (int i=0; i<data->getSize(); i++) {
 			(*data)(i) = (*data)(i) - median;
 //			cout<<(*data)(i)<<endl;
@@ -58,38 +58,39 @@ DisplayControl::paintEvent(QPaintEvent *)
 	QPainter painter(this);
 
 	if (data->getCols()!=0) {
-		cout<<"drawing 2D matrix"<<endl;
+		//cout<<"drawing 2D matrix"<<endl;
 		int i, j;
 		int myi, myj;
 		for (i=0; i<width(); i++) {
 			for (j=0; j<height(); j++) {
 				myi = i / ( width()/ (data->getRows()-1) );
 				myj = j / ( height()/ (data->getCols()-1) );
-				//cout<<myi<<" "<<myj<<"   ";
 				if ( (*data)(myi,myj) != 0)
 					painter.drawPoint( i,j);
-				//cout<<myi<<" "<<myj<<endl;
-				//cout<<(*data)(i,j)<<endl;
 			}
-			//cout<<endl;
 		}
 	} else if (data->getSize() > 0) {
-		cout<<"drawing 1D matrix  ";
-		cout<<"height: "<<height()<<"   width: "<<width()<<endl;
+		//cout<<"drawing 1D matrix  ";
 		int i;
 		int x,y;
+		int prevx, prevy;
+		int catchup;
 		int size = data->getSize();
 		float hScale = width() / float(size);
 		float vScale = height() / 1.0; // maximum scaled pitch/median
-		cout<<hScale<<"   "<<vScale<<endl;
+		//cout<<hScale<<"   "<<vScale<<endl;
 		painter.drawLine( 0, height()/2, width(), height()/2);
 		for (i=0; i<size; i++) {
 			x = i * hScale;
 			y = (*data)(i) * vScale;
-//			if ( y != 0) {
-				painter.drawPoint( x, height()/2 - y);
-//				cout<<x<<" "<<y<<endl;
-//			}
+			painter.drawPoint( x, height()/2 - y);
+			if (x > prevx+1) {
+				for (catchup=prevx; catchup<x; catchup++) {
+					painter.drawPoint( catchup, height()/2 - prevy);
+				}
+			}
+			prevx = x;
+			prevy = y;
 		}
 	}
 }

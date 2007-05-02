@@ -42,6 +42,21 @@ void Analyze::calcNothing() {
 	}
 }
 
+double Analyze::getPitchStability() {
+	mrs_real median = pitchList.median();
+	mrs_real sum = 0;
+	mrs_real diff;
+	for (int i=0; i<pitchList.getSize(); i++) {
+		diff = abs( pitchList(i)-median );
+		if (diff<1.0)
+			sum += diff;
+	}
+	//cout<<sum<<endl;
+	sum = sum/pitchList.getSize();
+	//cout<<sum<<endl;
+	return 1.0 - sum;
+}
+
 void Analyze::calcDurations() {
 	int MEAN_RADIUS = 30.0;
 	float prevNote=0.0;
@@ -121,7 +136,7 @@ void Analyze::getPitches(string audioFilename) {
 
 // my addition to the marsyasTest pitch stuff:
   numPitches = data.getSize()/2;
-	cout<<"size: "<<numPitches<<endl;
+	//cout<<"size: "<<numPitches<<endl;
 	pitchList.allocate(numPitches);
 	for (int i=0; i<numPitches; i++) {
 		if ( data(2*i+1)>0 )

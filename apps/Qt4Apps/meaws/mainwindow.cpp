@@ -469,6 +469,12 @@ void MainWindow::calcExercise() {
 	//analyze = new Analyze( qPrintable(audioFileName), dataDir );
 	analyze = new Analyze( qPrintable(audioFileName), "" );
 	displayResults->setData( analyze->retPitches() );
+	double percentage = analyze->getPitchStability();
+	QString message;
+	message.setNum(100.0*percentage);
+	message.prepend("Test results: ");
+	message.append("%");
+	statusBar()->showMessage(message);
 /*
 	analyze->calcDurations();
 	analyze->calcNotes();
