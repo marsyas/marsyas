@@ -18,8 +18,10 @@ public:
 	void printNotes();
 	void writePitches();
 
+	void prepSaxPitches();
 	realvec *retPitches();
 	double getPitchStability();
+	realvec *retAmplitudes();
 
 	void initHarms();
 	void addHarmsHokey();
@@ -38,6 +40,7 @@ private:
 
 	int *exercise;
 	realvec pitchList;
+	realvec ampList;
 	realvec detected;
 	bool PITCH_CORRECT;
 	string outputFileName;

@@ -147,8 +147,30 @@ void Analyze::getPitches(string audioFilename) {
 	delete pnet;
 }
 
+void Analyze::prepSaxPitches() {
+  if (pitchList.getRows()==0) {
+    mrs_real median = pitchList.median();
+    for (int i=0; i<pitchList.getSize(); i++) {
+      pitchList(i) = pitchList(i) - median;
+    }
+  }
+}
+
 realvec *Analyze::retPitches() {
 	return &pitchList;
+}
+
+realvec*
+Analyze::retAmplitudes() {
+
+	// test data
+	ampList.allocate(100);
+	for (int i=0; i<100; i++) {
+		ampList(i) = (i-50)/100.0;
+	}
+
+
+	return &ampList;
 }
 
 void Analyze::getExercise(string exerciseFilename) {

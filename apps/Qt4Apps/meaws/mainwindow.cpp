@@ -80,13 +80,20 @@ void MainWindow::createMain() {
 	// this is what displays our testing text.  Later on we would
 	// remove textLabel and make a QT painting area or make it a picture.
 	displayResults = new DisplayControl;
+	displayAmplitude = new DisplayControl;
 	updateTestingMethod();
 
 	// we want to display the above two QLabels within our main window.
 	mainLayout = new QVBoxLayout;
 //	mainLayout->addWidget(imageLabel,0,Qt::AlignTop);
 	mainLayout->addWidget(imageLabel,0,0);
-	mainLayout->addWidget(displayResults,0,0);
+
+	displayLayout = new QHBoxLayout;
+
+	displayLayout->addWidget(displayResults,0,0);
+	displayLayout->addWidget(displayAmplitude,0,0);
+	mainLayout->addLayout(displayLayout);
+
 	centralFrame->setLayout(mainLayout);
 
 	//displayResults->makeupData();
@@ -469,7 +476,10 @@ void MainWindow::setMetroTempo(int tempo) {
 void MainWindow::calcExercise() {
 	//analyze = new Analyze( qPrintable(audioFileName), dataDir );
 	analyze = new Analyze( qPrintable(audioFileName), "" );
+	analyze->prepSaxPitches();
 	displayResults->setData( analyze->retPitches() );
+	displayAmplitude->setData( analyze->retAmplitudes() );
+
 	double percentage = analyze->getPitchStability();
 	QString message;
 	message.setNum(100.0*percentage);

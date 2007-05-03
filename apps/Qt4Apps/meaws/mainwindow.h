@@ -142,6 +142,9 @@ private:
 	QTextEdit *textEdit;
 	QLabel *imageLabel;
 	DisplayControl *displayResults;
+	DisplayControl *displayAmplitude;
+	QHBoxLayout *displayLayout;
+
 	QString curFile;
 
 	QLabel *exerciseTitle;
