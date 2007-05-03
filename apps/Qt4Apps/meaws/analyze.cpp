@@ -168,31 +168,35 @@ Analyze::retAmplitudes() {
 void
 Analyze::getAmplitudes(string audioFilename)
 {
-	cout<<"begin getAmplitudes"<<endl;
-
 // calculate amplitudes
   MarSystemManager mng;
   MarSystem* pnet = mng.create("Series", "pnet");
   pnet->addMarSystem(mng.create("SoundFileSource", "src"));
   pnet->updctrl("SoundFileSource/src/mrs_string/filename", audioFilename);
+  pnet->addMarSystem(mng.create("ShiftInput", "si"));
 	pnet->addMarSystem(mng.create("Power", "pw"));
   pnet->addMarSystem(mng.create("RealvecSink", "rvSink")); 
 
-	cout<<"starting to tick"<<endl;
-
   while (pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
    pnet->tick();
-	cout<<"finished ticking"<<endl;
 
 	realvec data = pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->toVec();
+	mrs_natural i;
 	ampList.allocate( data.getSize() );
-   for (mrs_natural i=0; i<data.getSize(); i++)
-			ampList(i) = data(i);
-   
+  for (i=0; i<data.getSize(); i++) {
+    //ampList(i) = 20*log10(data(i));
+    ampList(i) = log10(data(i));
+	}
+
+	// pre-scale data for display
+	mrs_real median = ampList.median();
+  for (i=0; i<ampList.getSize(); i++) {
+    ampList(i) = ampList(i) - median;
+	}   
+
    pnet->updctrl("RealvecSink/rvSink/mrs_bool/done", true); 
 
 	delete pnet;
-	cout<<"end getAmplitudes"<<endl;
 }
 
 void Analyze::getExercise(string exerciseFilename) {
