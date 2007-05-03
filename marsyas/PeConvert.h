@@ -58,7 +58,8 @@ private:
   mrs_natural nbParameters_;
   mrs_natural nbPeaks_;
   mrs_natural kmax_;
-  mrs_natural size_, psize_, skip_;
+  mrs_natural pick_;
+  mrs_natural size_, psize_, skip_, prec_;
   
   void addControls();
 	void getBinInterval(realvec& interval, realvec& index, realvec& mag);

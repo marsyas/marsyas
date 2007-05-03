@@ -28,7 +28,7 @@ using namespace std;
 using namespace Marsyas;
 
 void
-Marsyas::similarityMatrix(realvec &data, realvec& m, string type, mrs_natural nbMaxSines, mrs_natural hSize, realvec& firstF, realvec& firstA, realvec& secondF, realvec& secondA)
+Marsyas::similarityMatrix(realvec &data, realvec& m, string type, mrs_natural nbMaxSines, mrs_natural hSize, realvec& firstF, realvec& firstA, realvec& secondF, realvec& secondA, realvec & hmap)
 {
 	mrs_natural i, j;
 	realvec vec(data.getRows());
@@ -53,6 +53,12 @@ Marsyas::similarityMatrix(realvec &data, realvec& m, string type, mrs_natural nb
 			break;
 		case 'h':
 			j=-1;
+			break;
+		case 'v':
+			j=-3;
+			break;
+		case 's':
+			j=-4;
 			break;
 		case 't':
 			j=5;
@@ -106,6 +112,14 @@ Marsyas::similarityMatrix(realvec &data, realvec& m, string type, mrs_natural nb
 		 }
 			// do the job
 			similarityCompute(vec, m);
+		}
+		else if (j==-3)
+		{
+           harmonicityVirtanenCompute(data, m);
+		}
+	    else if (j==-4)
+		{
+           harmonicitySrinivasanCompute(data, m, hmap);
 		}
 		else
 		{// specific similarity computation
@@ -251,6 +265,59 @@ Marsyas::harmonicitySimilarityCompute(realvec& data, std::vector<realvec>& fSet,
 	}
 }
 
+mrs_real Marsyas::hVirtanen(mrs_real f1, mrs_real f2)
+{
+	// minimal f0 frequency in Hz
+	mrs_real fMin = 50;
+	mrs_real dist=MAXREAL;
+
+    mrs_real r1 = floor(f1/fMin);
+    mrs_real r2 = floor(f2/fMin);
+
+for (mrs_natural i=1 ; i<=r1 ; i++)
+  for (mrs_natural j=1; j<=r2 ; j++)
+  {
+    mrs_real val = abs(log((f1/f2)/(i/j)));
+    if (dist > val)
+      dist=val;
+  }
+
+return dist;
+}
+
+void
+Marsyas::harmonicityVirtanenCompute(realvec& data, realvec& m)
+{
+mrs_natural i, j;
+
+for (i=0 ; i<data.getRows() ; i++)
+for (j=0 ; j<i ; j++)
+{
+    mrs_real sim = 1/(1+hVirtanen (data(i, pkFrequency), data(j, pkFrequency)));
+	m(i, j) *= sim;
+    m(j, i) *= sim;
+}
+
+}
+
+void
+Marsyas::harmonicitySrinivasanCompute(realvec& data, realvec& m, realvec& hMap)
+{
+mrs_natural i, j;
+
+if(!hMap.getSize())
+	computeHarmonicityMap(hMap, 512); // 512
+
+
+
+for (i=0 ; i<data.getRows() ; i++)
+for (j=0 ; j<i ; j++)
+{
+	//cout << data(i, pkBin) << " " << data(j, pkBin) << " " << hMap(data(i, pkBin), data(j, pkBin)) << endl;
+ 	m(i, j) *= hMap(data(i, pkBin), data(j, pkBin));
+    m(j, i) *= hMap(data(i, pkBin), data(j, pkBin));
+}
+}
 
 void Marsyas::selectClusters(realvec &m, realvec &data, realvec &labels, mrs_natural wantedNbClusters, mrs_natural nbClusters)
 {

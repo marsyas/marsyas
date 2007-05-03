@@ -322,13 +322,13 @@ PeClust::myProcess(realvec& in, realvec& out)
 	nbPeaks_ = peaks2M(in, lastFrame_, data_, kmax_, &nbPeaksLastFrame);
 	if(nbPeaks_)
 	{
-				MATLAB_PUT(data_, "peaks");
-		  MATLAB_EVAL("plotPeaks(peaks)");
+		MATLAB_PUT(data_, "peaks");
+		MATLAB_EVAL("plotPeaks(peaks)");
 
 		m_.stretch(nbPeaks_, nbPeaks_);
 		// similarity matrix calculation
-		similarityMatrix(data_, m_, similarityType_, kmax_, harmonicitySize_, firstF_, firstA_, secondF_, secondA_);
-MATLAB_PUT(m_, "m");
+		similarityMatrix(data_, m_, similarityType_, kmax_, harmonicitySize_, firstF_, firstA_, secondF_, secondA_, hMap_);
+        MATLAB_PUT(m_, "m");
 		// Ncut
 		realvec labels(nbPeaks_);
 		labels.setval(-1);

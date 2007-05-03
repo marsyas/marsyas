@@ -49,6 +49,7 @@ namespace Marsyas
 	pkVolume,
 	pkPan,
 	pkBinLow,
+	pkBin,
 	pkBinHigh,
 	nbPkParameters
 	} pkParameter;
@@ -82,6 +83,8 @@ void discrete2labels(realvec &labels, realvec& n, mrs_natural nbClusters, mrs_na
 
 void peakStore(realvec& peaks, std::string filename, mrs_real fs, mrs_natural nbSines, mrs_natural hopSize);
 void peakLoad(realvec& peaks, std::string filename, mrs_real &fs, mrs_natural &nbSines, mrs_natural &nbFrames, mrs_natural &hopSize);
+
+void computeHarmonicityMap(realvec& map, mrs_natural nbBins);
 }
 
 #endif

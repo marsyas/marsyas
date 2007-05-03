@@ -52,6 +52,7 @@ private:
 	realvec secondF_;
 	realvec firstA_;
 	realvec secondA_;
+	realvec hMap_;
 
 	mrs_real harmonicityWeight_;
 	mrs_natural harmonicitySize_;

@@ -671,3 +671,41 @@ void Marsyas::peakLoad(realvec &peaks, string filename, mrs_real &fs, mrs_natura
 	peaks.setval(0);
 	peaks2V(peakSet_, peaks, peaks, nbSines);
 }
+
+
+mrs_real gaussian(mrs_real x, mrs_real v, mrs_real m)
+{
+return exp(-(x-m)*(x-m)/(2*v*v))/(v*sqrt(2*PI));
+}
+
+
+void Marsyas::computeHarmonicityMap(realvec& map, mrs_natural nbBins)
+{
+	mrs_natural i, j;
+	realvec tmp(nbBins, nbBins);
+	map.stretch(nbBins, nbBins);
+    map.setval(0);
+
+    for (i=0 ; i<nbBins ; i++)
+     for (j=0 ; j<nbBins ; j++)
+	  {
+        mrs_real val=0;
+        if((i+1)%(j+1) == 0 || (j+1)%(i+1) == 0)
+            val = 1;
+        tmp(i, j) = val;
+	  }
+
+	 mrs_natural kSize=5, k, l;
+	 mrs_real sum=0;
+for (i=0 ; i<nbBins ; i++)
+    for (j=0 ; j<nbBins ; j++)
+        for (k=max( (mrs_natural) 0, i-kSize); k<min(nbBins, i+kSize) ; k++)
+            for (l=max((mrs_natural) 0, j-kSize) ; l<min(nbBins, j+kSize) ; l++)
+			{
+                mrs_real val1 = gaussian (i+1, (k+1)/10.0, k+1);
+                mrs_real val2 = gaussian (j+1, (l+1)/10.0, l+1);
+                map(i, j) += tmp(k, l)*val1*val2;	
+				sum += tmp(k, l)*val1*val2;	
+}
+			map/=sum;
+}

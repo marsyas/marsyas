@@ -71,12 +71,16 @@ PeConvert::addControls()
 {
 	addctrl("mrs_natural/Decimation",MRS_DEFAULT_SLICE_NSAMPLES/4);
 	setctrlState("mrs_natural/Decimation", true);
-	addctrl("mrs_natural/Sinusoids", 1);
+	addctrl("mrs_natural/Sinusoids", 0);
 	setctrlState("mrs_natural/Sinusoids", true);
 	addctrl("mrs_string/frequencyInterval", EMPTYSTRING);
 	setctrlState("mrs_string/frequencyInterval", true);
 	addctrl("mrs_natural/nbFramesSkipped", 0);
 	setctrlState("mrs_natural/nbFramesSkipped", true);
+	addctrl("mrs_natural/improvedPrecision", 1);
+	setctrlState("mrs_natural/improvedPrecision", true);
+	addctrl("mrs_natural/picking", 1);
+	setctrlState("mrs_natural/picking", true);
 }
 
 void
@@ -111,6 +115,8 @@ PeConvert::myUpdate(MarControlPtr sender)
 	fundamental_ = (mrs_real) (getctrl("mrs_real/osrate")->toReal() / (mrs_real)getctrl("mrs_natural/inObservations")->toNatural()*2);
 	kmax_ = getctrl("mrs_natural/Sinusoids")->toNatural();
 	skip_ = getctrl("mrs_natural/nbFramesSkipped")->toNatural();
+    prec_ = getctrl("mrs_natural/improvedPrecision")->toNatural();
+	pick_ = getctrl("mrs_natural/picking")->toNatural();
 
 	if(getctrl("mrs_string/frequencyInterval")->toString() != EMPTYSTRING)
 	{
@@ -331,7 +337,10 @@ PeConvert::myProcess(realvec& in, realvec& out)
 				phasediff = phase_(t) - lastphase_(t);
 			else
 				phasediff = phase_(t) - lastphase_(t)+TWOPI;
+			if(prec_)
 			frequency_(t) = phasediff * factor_ ;
+			else
+frequency_(t) = fundamental_;
 
 			// compute precise amplitude
 			mag_(t) = sqrt((a*a + b*b))*2; //*4/0.884624;//*50/3); // [!!!!!!!!!!!]
@@ -362,6 +371,8 @@ PeConvert::myProcess(realvec& in, realvec& out)
 		}
 		// select local maxima
 		realvec peaks_=mag_;
+        realvec tmp_;
+
 		Peaker peaker("Peaker");
 		peaker.updctrl("mrs_real/peakStrength", 0.2);
 		// to be set as a control
@@ -372,25 +383,40 @@ PeConvert::myProcess(realvec& in, realvec& out)
 		peaker.updctrl("mrs_natural/onSamples", peaks_.getCols());
 		peaker.updctrl("mrs_natural/onObservations", peaks_.getRows());
 
+		if(pick_)
 		peaker.process(mag_, peaks_);
-
-		
-			
-
-		realvec tmp_(kmax_*2);
+		else
+		{
+			peaks_=mag_;
+			for (t=0 ; t< downFrequency_ ; t++)
+		      peaks_(t)=0;
+		    for (t=upFrequency_ ; t<peaks_.getSize() ; t++)
+		      peaks_(t)=0;		
+		}
 		for(t=0 ; t<N2 ; t++)
 		{
 			if(!frequency_(t))// || frequency_(t)>500)  // 250 2500
 				peaks_(t) = 0;
 		}
 
-		// keep only the kmax_ highest amplitude local maxima
+
+		 // keep only the kmax_ highest amplitude local maxima
 		MaxArgMax max("MaxArgMax");
+		if(pick_)
+		{
+					 tmp_.stretch(kmax_*2);
 		max.updctrl("mrs_natural/nMaximums", kmax_);
+		}
+		else
+		{
+					 tmp_.stretch((upFrequency_-downFrequency_)*2);
+		max.updctrl("mrs_natural/nMaximums", upFrequency_-downFrequency_);
+		}
 		max.updctrl("mrs_natural/inSamples", size_);
 		max.updctrl("mrs_natural/inObservations", 1);
 		max.update();
 		max.process(peaks_, tmp_);
+
 
 		nbPeaks_=tmp_.getSize()/2;
 		realvec index_(nbPeaks_);
@@ -403,6 +429,7 @@ PeConvert::myProcess(realvec& in, realvec& out)
 		// search for bins interval
 		realvec interval_(nbPeaks_*2);
 		interval_.setval(0);
+		if(pick_)
 		getShortBinInterval(interval_, index2_, mag_);
 
 		// fill output with peaks data
@@ -410,7 +437,7 @@ PeConvert::myProcess(realvec& in, realvec& out)
 		MATLAB_PUT(mag_, "peaks");
 		MATLAB_PUT(peaks_, "k");
 		MATLAB_PUT(tmp_, "tmp");
-	  MATLAB_PUT(interval_, "int");	
+	    MATLAB_PUT(interval_, "int");	
 		MATLAB_EVAL("figure(1);clf;hold on ;plot(peaks);stem(k);stem(tmp(2:2:end)+1, peaks(tmp(2:2:end)+1), 'r')");
 		MATLAB_EVAL("stem(int+1, peaks(int+1), 'k')");
 	
@@ -435,6 +462,7 @@ PeConvert::myProcess(realvec& in, realvec& out)
 			out(i+pkPan*kmax_) = 0;
 
 			out(i+pkBinLow*kmax_) = interval_(2*i);
+			out(i+pkBin*kmax_) = index_(i);
 			out(i+pkBinHigh*kmax_) = interval_(2*i+1);
 		}
 	}

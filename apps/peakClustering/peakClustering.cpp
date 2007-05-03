@@ -66,6 +66,7 @@ realvec similarityWeight_;
 // store for clustered peaks 
 realvec peakSet_;
 // delay for noise insertion
+
 mrs_real noiseDelay_=0;
 // gain for noise insertion
 mrs_real noiseGain_=.02;
@@ -82,7 +83,9 @@ mrs_natural clusterFilteringType_ = 0;
 //
 mrs_natural fileInfo_=0;
 //
-
+mrs_natural unprecise_;
+//
+mrs_natural peakPicking_;
 
 bool microphone_ = false;
 bool analyse_ = true;
@@ -131,6 +134,8 @@ printHelp(string progName)
 	cerr << "-r --residual : output the residual sound (if the synthesis stage is selected)" << endl;
 	cerr << "-i --intervalFrequency : <minFrequency>_<maxFrequency> select peaks in this interval (default 250-2500 Hz)" << endl;
 	cerr << "-f --fileInfo : provide clustering parameters in the output name (s20t10i250_2500c2k1 means 20 sines per frames in the 250_2500 Hz frequency Interval, 1 cluster selected among 2 in one texture window of 10 frames)" << endl;
+	cerr << "-pp --peakPicking : perform peak picking in the spectrum" << endl;
+	cerr << "-u --unprecise : do not perform precise estimation of sinusoidal parameters" << endl;
 	cerr << "" << endl;
 	cerr << "-u --usage           : display short usage info" << endl;
 	cerr << "-h --help            : display this information " << endl;
@@ -253,6 +258,8 @@ if(noiseName != EMPTYSTRING)
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Shifter/sh/mrs_natural/shift", 1);
 	//pvseries->updctrl("Accumulator/accumNet/Series/preNet/PvFold/fo/mrs_natural/Decimation", D); // useless ?
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Decimation", D);      
+	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/unprecise", unprecise_);      
+	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/picking", peakPicking_);      
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Sinusoids", S); 
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_string/frequencyInterval", intervalFrequency);  
 	// pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
@@ -375,11 +382,12 @@ initOptions()
 	cmd_options.addNaturalOption("clusterFiltering", "F", clusterFilteringType_);
 	cmd_options.addBoolOption("fileInfo", "f", 0);
   cmd_options.addBoolOption("residual", "r", 0);
-
+ cmd_options.addBoolOption("unprecise", "u", 0);
 	// cmd_options.addBoolOption("analyse", "a", analyse_);
 	cmd_options.addBoolOption("attributes", "A", attributes_);
 	cmd_options.addBoolOption("ground", "g", ground_);
 	cmd_options.addNaturalOption("synthetize", "S", synthetize_);
+		cmd_options.addNaturalOption("peakPicking", "pp", 1);
 	cmd_options.addNaturalOption("clusterSynthetize", "SC", clusterSynthetize_);
 	cmd_options.addBoolOption("peakStore", "P", peakStore_);
 }
@@ -411,9 +419,12 @@ loadOptions()
 	attributes_ = cmd_options.getBoolOption("attributes");
 	ground_ = cmd_options.getBoolOption("ground");
 	synthetize_ = cmd_options.getNaturalOption("synthetize");
+	peakPicking_ = cmd_options.getNaturalOption("peakPicking");
 	clusterSynthetize_ = cmd_options.getNaturalOption("clusterSynthetize");
 	peakStore_ = cmd_options.getBoolOption("peakStore"); 
 	residual_ = cmd_options.getBoolOption("residual");
+	unprecise_ = cmd_options.getBoolOption("unprecise");
+
 }
 
 
