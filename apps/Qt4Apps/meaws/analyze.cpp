@@ -17,8 +17,8 @@ Analyze::Analyze(string audioFileName, string exerciseFileName) {
 	outputFileName = audioFileName;
 	outputFileName.erase( outputFileName.length()-4, outputFileName.length());
 //	cout<<"calculating pitches"<<endl;
-	getPitches(audioFileName);
 	getAmplitudes(audioFileName);
+	getPitches(audioFileName);
 //	cout<<numPitches<<endl;
 
 	detected = realvec(numPitches,9);  // this is way overkill; we
@@ -137,7 +137,6 @@ void Analyze::getPitches(string audioFilename) {
 
 // my addition to the marsyasTest pitch stuff:
   numPitches = data.getSize()/2;
-	//cout<<"size: "<<numPitches<<endl;
 	pitchList.allocate(numPitches);
 	for (int i=0; i<numPitches; i++) {
 		if ( data(2*i+1)>0 )
@@ -174,14 +173,13 @@ Analyze::getAmplitudes(string audioFilename)
 // calculate amplitudes
   MarSystemManager mng;
   MarSystem* pnet = mng.create("Series", "pnet");
-
   pnet->addMarSystem(mng.create("SoundFileSource", "src"));
   pnet->updctrl("SoundFileSource/src/mrs_string/filename", audioFilename);
-//	pnet->addMarSystem(mng.create("ShiftInput", "sfi"));
 	pnet->addMarSystem(mng.create("Power", "pw"));
   pnet->addMarSystem(mng.create("RealvecSink", "rvSink")); 
 
 	cout<<"starting to tick"<<endl;
+
   while (pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
    pnet->tick();
 	cout<<"finished ticking"<<endl;
