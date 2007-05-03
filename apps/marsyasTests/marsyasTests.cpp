@@ -2811,6 +2811,43 @@ test_realvecCtrl(string sfName)
    delete pnet;
 }
 
+void
+test_power(string sfName) 
+{
+	MarSystemManager mng;
+
+  MarSystem* pnet = mng.create("Series", "pnet");
+
+  pnet->addMarSystem(mng.create("SoundFileSource", "src"));
+  pnet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  pnet->addMarSystem(mng.create("ShiftInput", "si"));
+  pnet->addMarSystem(mng.create("Power", "pw"));
+  pnet->addMarSystem(mng.create("RealvecSink", "rvSink")); 
+
+  pnet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  pnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+  pnet->updctrl("ShiftInput/si/mrs_natural/WindowSize", 2048);
+
+  pnet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+  pnet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
+  
+//  cout << *pnet;
+  while ( pnet->getctrl("mrs_bool/notEmpty")->toBool()) 
+    {
+      cout << pnet->getctrl("mrs_natural/pos")->toNatural();
+      pnet->tick();
+      
+    }
+  realvec data = pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->toVec();
+
+  // dB conversion
+  for (mrs_natural i=0 ; i<data.getSize() ; i++)
+	  data(i) = 20*log10(data(i));
+
+  cout << data;
+ 
+  delete pnet;
+}
 
 void
 test_shredder(string sfName) 
@@ -2946,6 +2983,8 @@ main(int argc, const char **argv)
     test_shredder(fname0);
   else if (testName == "realvecCtrl")
     test_realvecCtrl(fname0);
+   else if (testName == "power")
+    test_power(fname0);
   else 
     {
       cout << "Unsupported test " << endl;
