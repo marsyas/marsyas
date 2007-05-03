@@ -18,7 +18,7 @@
 
 /** 
     \class Power
-    \brief compute the RMS Power of the input observations into one columns 
+    \brief compute the RMS Power of the input observations into one column
 */
 
 #include "Power.h"
@@ -28,8 +28,13 @@ using namespace Marsyas;
 
 Power::Power(string name):MarSystem("Power",name)
 {
+	  addControls();
 }
 
+Power::Power(const Power& a) : MarSystem(a)
+{
+	  cout << "truc" << endl;
+}
 
 Power::~Power()
 {
@@ -43,14 +48,22 @@ Power::clone() const
 }
 
 void
+Power::addControls()
+{
+
+}
+
+void
 Power::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("Power.cpp - Power:myUpdate");
   
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inOservations"));
-  setctrl("mrs_natural/onSamples", 1);
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-}
+ setctrl("mrs_natural/onSamples", 1);
+	setctrl("mrs_natural/onObservations", 
+		getctrl("mrs_natural/inObservations"));
+	setctrl("mrs_real/osrate", 
+		getctrl("mrs_real/israte"));
+	}
 
 
 void 

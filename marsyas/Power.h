@@ -35,9 +35,12 @@ private:
   void myUpdate(MarControlPtr sender);
 public:
   Power(std::string name);
+  Power(const Power& a);
   ~Power();
   MarSystem* clone() const;  
   
+  void addControls();
+
   void myProcess(realvec& in, realvec& out);
 };
 
