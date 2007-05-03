@@ -122,6 +122,15 @@ void MainWindow::createMenus()
 	helpMenu = menuBar()->addMenu(tr("&Help"));
 	helpMenu->addAction(aboutAct);
 	helpMenu->addAction(aboutQtAct);
+
+	// testing menu
+	testingMenu = menuBar()->addMenu(tr("Testing"));
+	exerciseTitle = new QLabel();
+	exerciseTitle->setText("");
+	testingMenu->addAction(testingFileAct);
+	testingMenu->addAction(calcExerciseAct);
+//	testingMenu->addAction(playFileAct);
+
 }
 
 void MainWindow::createToolBars() {
@@ -130,9 +139,10 @@ void MainWindow::createToolBars() {
 	userToolBar->addAction(openAct);
 	userToolBar->addAction(saveAct);
 	userToolBar->addAction(closeAct);
-	userToolBar->addAction(openExerciseAct);
+
 
 	tempoToolBar = addToolBar(tr("Tempo"));
+	tempoToolBar->addAction(openExerciseAct);
 	tempoToolBar->addAction(setMetroIntroAct);
 
 	tempoBox = new QSpinBox();
@@ -143,11 +153,11 @@ void MainWindow::createToolBars() {
 	slider = new QSlider(Qt::Horizontal);
 	slider->setRange(30, 240);
 	slider->setValue(60);
-//		slider->setMinimumWidth(60);
+	slider->setMinimumWidth(100);
+	slider->setMaximumWidth(250);
 	tempoToolBar->addWidget(slider);
 
 	tempoToolBar->addAction(toggleMetroAct);
-	tempoToolBar->addAction(calcExerciseAct);
 	tempoToolBar->addAction(visualMetroBeat);
 
 	connect(slider, SIGNAL(valueChanged(int)),
@@ -159,12 +169,8 @@ void MainWindow::createToolBars() {
 	connect(tempoBox, SIGNAL(valueChanged(int)),
 		this, SLOT(setMetroTempo(int)));
 
-	testingBar = addToolBar(tr("Info"));
-	exerciseTitle = new QLabel();
-	exerciseTitle->setText("");
-	testingBar->addAction(testingFileAct);
-	testingBar->addAction(playFileAct);
-	testingBar->addWidget(exerciseTitle);
+	otherToolBar = addToolBar(tr("Other"));
+	otherToolBar->addWidget(exerciseTitle);
 }
 
 void MainWindow::createActions() {
@@ -187,8 +193,8 @@ void MainWindow::createActions() {
 	saveAsAct->setStatusTip(tr("Save the session under a new name"));
 //	connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
 
-	closeAct = new QAction(QIcon(":/icons/save.png"), tr("&Close user"), this);
-	closeAct = new QAction(tr("&Close user"), this);
+	closeAct = new QAction(QIcon(":/icons/quit.png"), tr("&Close user"), this);
+	//closeAct = new QAction(tr("&Close user"), this);
 	closeAct->setShortcut(tr("Ctrl+W"));
 	closeAct->setStatusTip(tr("Close user"));
 	connect(closeAct, SIGNAL(triggered()), this, SLOT(closeUser()));
@@ -248,13 +254,11 @@ void MainWindow::enableActions(int state) {
 		closeAct  ->setEnabled(false);
 		setUserInfoAct->setEnabled(false);
 
-		testingBar     ->setEnabled(false);
+		testingMenu     ->setEnabled(true);
 		exerMenu    ->setEnabled(false);
 		openExerciseAct ->setEnabled(false);
 
-		tempoToolBar ->setEnabled(false);
-
-		testingBar ->setEnabled(false);
+		tempoToolBar ->setEnabled(true);
 	}
 	if (state==MEAWS_READY_USER) {   // user created or loaded
 		setWindowTitle(tr("Meaws - %1").arg(user->getName()));
@@ -264,7 +268,7 @@ void MainWindow::enableActions(int state) {
 		closeAct  ->setEnabled(true);
 		setUserInfoAct->setEnabled(true);
 
-		testingBar     ->setEnabled(true);
+		testingMenu     ->setEnabled(true);
 		exerMenu    ->setEnabled(true);
 		openExerciseAct ->setEnabled(true);
 
@@ -283,7 +287,7 @@ void MainWindow::enableActions(int state) {
 		connect(toggleMetroAct, SIGNAL(triggered()), this, SLOT(toggleExercise()));
 		tempoToolBar ->setEnabled(true);
 
-		testingBar ->setEnabled(true);
+		testingMenu ->setEnabled(true);
 	}
 	if (state==MEAWS_READY_AUDIO) {   // exercise results
 

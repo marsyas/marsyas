@@ -80,6 +80,7 @@ private:
 // basic application variables
 	QMenu *fileMenu;
 	QToolBar *userToolBar;
+	QToolBar *otherToolBar;
 	QAction *newUserAct;
 	QAction *openAct;
 	QAction *saveAct;
@@ -101,7 +102,7 @@ private:
 	QAction *playFileAct;
 
 
-	QToolBar *testingBar;
+	QMenu *testingMenu;
 
 	QMenu *helpMenu;
 	QAction *aboutAct;

@@ -14,5 +14,6 @@
      <file>icons/triangle.png</file>
      <file>icons/square.png</file>
      <file>icons/play.png</file>
+     <file>icons/quit.png</file>
 </qresource>
 </RCC>

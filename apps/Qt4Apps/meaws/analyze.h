@@ -33,6 +33,7 @@ public:
 
 private:
 	void getPitches(string audioFilename);
+	void getAmplitudes(string audioFilename);
 	void getExercise(string exerciseFilename);
 	void smoothPitches();
 	void writeTemp(realvec temp);

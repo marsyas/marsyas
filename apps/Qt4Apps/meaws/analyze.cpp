@@ -18,6 +18,7 @@ Analyze::Analyze(string audioFileName, string exerciseFileName) {
 	outputFileName.erase( outputFileName.length()-4, outputFileName.length());
 //	cout<<"calculating pitches"<<endl;
 	getPitches(audioFileName);
+	getAmplitudes(audioFileName);
 //	cout<<numPitches<<endl;
 
 	detected = realvec(numPitches,9);  // this is way overkill; we
@@ -52,7 +53,7 @@ double Analyze::getPitchStability() {
 			sum += diff;
 	}
 	//cout<<sum<<endl;
-	sum = sum/pitchList.getSize();
+	sum = sum/pitchList.getSize()*10.0;
 	//cout<<sum<<endl;
 	return 1.0 - sum;
 }
@@ -162,15 +163,38 @@ realvec *Analyze::retPitches() {
 
 realvec*
 Analyze::retAmplitudes() {
-
-	// test data
-	ampList.allocate(100);
-	for (int i=0; i<100; i++) {
-		ampList(i) = (i-50)/100.0;
-	}
-
-
 	return &ampList;
+}
+
+void
+Analyze::getAmplitudes(string audioFilename)
+{
+	cout<<"begin getAmplitudes"<<endl;
+
+// calculate amplitudes
+  MarSystemManager mng;
+  MarSystem* pnet = mng.create("Series", "pnet");
+
+  pnet->addMarSystem(mng.create("SoundFileSource", "src"));
+  pnet->updctrl("SoundFileSource/src/mrs_string/filename", audioFilename);
+//	pnet->addMarSystem(mng.create("ShiftInput", "sfi"));
+	pnet->addMarSystem(mng.create("Power", "pw"));
+  pnet->addMarSystem(mng.create("RealvecSink", "rvSink")); 
+
+	cout<<"starting to tick"<<endl;
+  while (pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
+   pnet->tick();
+	cout<<"finished ticking"<<endl;
+
+	realvec data = pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->toVec();
+	ampList.allocate( data.getSize() );
+   for (mrs_natural i=0; i<data.getSize(); i++)
+			ampList(i) = data(i);
+   
+   pnet->updctrl("RealvecSink/rvSink/mrs_bool/done", true); 
+
+	delete pnet;
+	cout<<"end getAmplitudes"<<endl;
 }
 
 void Analyze::getExercise(string exerciseFilename) {
