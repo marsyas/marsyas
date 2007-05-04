@@ -18,13 +18,7 @@ public:
 	void setPlotName(QString plotName);
 	void setBackgroundColor(QPalette color);
 	void setPixelWidth(mrs_natural width);
-	void setVertical(mrs_real minVal, mrs_real highVal);
-
-	/*
-	 * you must do setData() --AFTER-- setVertical()
-	 * also, the realvec* getData  will be modified at will.  Only
-	 * pass in a temporary / unnecessary realvec.
-	 */
+	void setVertical(mrs_real minVal, mrs_real highVal); // scales data
 	void setData(realvec* getData);
 
 protected:

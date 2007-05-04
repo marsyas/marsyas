@@ -5,8 +5,8 @@ QtMarPlot::QtMarPlot(QWidget *parent)
 {
 	data_ = NULL;
 	plotName_ = "";
-	minVal_ = -1.0;
-	highVal_ = 1.0;
+	minVal_ = -0.5;
+	highVal_ = 0.5;
 	width_ = 1.0;
 	setAutoFillBackground(true);
 }
@@ -74,15 +74,6 @@ QtMarPlot::plot2d()
 */
 
 void
-QtMarPlot::putBlob(int x, int y, QPainter painter)
-{
-	painter.drawPoint(x, y);
-	painter.drawPoint(x, y-1);
-	painter.drawPoint(x-1, y);
-	painter.drawPoint(x-1, y-1);
-}
-
-void
 QtMarPlot::plot1d()
 {
 	QPainter painter(this);
@@ -102,15 +93,16 @@ QtMarPlot::plot1d()
 
 	int i;
 	int x,y;
-	int size = data_->getSize();
-	float hScale = width() / float(size);
-	float vScale = height() / 1.0; // maximum scaled pitch/median
+	float hScale = width() / float(data_->getSize());
+	float vScale = height() / (highVal_ - minVal_); // maximum scaled pitch/median
+	int midY = height()/2;
 
 	// iterates over the data_
-	for (i=0; i<size; i++) {
+	for (i=0; i<data_->getSize(); i++) {
 		x = i * hScale;
 		y = (*data_)(i) * vScale;
-		painter.drawPoint( x, height()/2 - y);
+		if ( (y>-midY) && (y<midY))
+			painter.drawPoint( x, midY - y);
 
 	}
 }
