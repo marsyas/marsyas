@@ -15,18 +15,18 @@ endCommand = " -P -f -S 0 -k 2 -c 3 -N music -i 250_2500 -o "+outputDirectory;
 execStyle=["-T 1 -s 20 -t abfb ", 
 		   "-T 1 -s 20 -t abfb -u ", 
 		   #virtanen
-		   "-T 1 -s 20 -t abfbvo -u ", 
-		   "-T 10 -s 20 -t abfbvo -u ", 
-		   "-T 1 -s 20 -t abfbvo ", 
-		   "-T 10 -s 20 -t abfbvo ",
+		   "-T 1 -s 20 -t voabfb -u ", 
+		   "-T 10 -s 20 -t voabfb -u ", 
+		   "-T 1 -s 20 -t voabfb ", 
+		   "-T 10 -s 20 -t voabfb ",
 		   #hwps 
-		   "-T 1 -s 20 -t abfbho -u ", 
-		   "-T 10 -s 20 -t abfbho -u ", 
-		   "-T 1 -s 20 -t abfbho ", 
-		   "-T 10 -s 20 -t abfbho ", 
+		   "-T 1 -s 20 -t hoabfb -u ", 
+		   "-T 10 -s 20 -t hoabfb -u ", 
+		   "-T 1 -s 20 -t hoabfb ", 
+		   "-T 10 -s 20 -t hoabfb ", 
 		   # srinivasan
-		   " -s 1024 -pp 0 -u  -T 1 -t abfbso ", 
-		   "-s 1024 -pp 0 -u -T 10 -t abfbso "];
+		   " -s 1024 -pp 0 -u  -T 1 -t soabfb ", 
+		   "-s 1024 -pp 0 -u -T 10 -t soabfb "];
 
 #execStyle=[" -T 10 -s 20 -t hoabfb -u  "];
 
