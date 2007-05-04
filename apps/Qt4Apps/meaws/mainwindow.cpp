@@ -79,8 +79,14 @@ void MainWindow::createMain() {
 
 	// this is what displays our testing text.  Later on we would
 	// remove textLabel and make a QT painting area or make it a picture.
-	displayResults = new DisplayControl;
-	displayAmplitude = new DisplayControl;
+	displayResults = new QtMarPlot();
+	displayResults->setPlotName("Pitch");
+	displayResults->setBackgroundColor(QColor(255,255,255));
+	displayResults->setPixelWidth(2);
+	displayAmplitude = new QtMarPlot();
+	displayAmplitude->setPlotName("Amplitude");
+	displayAmplitude->setBackgroundColor(QColor(255,255,255));
+	displayAmplitude->setPixelWidth(2);
 	updateTestingMethod();
 
 	// we want to display the above two QLabels within our main window.

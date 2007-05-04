@@ -26,7 +26,7 @@ using namespace std;
 #include "metro.h"
 #include "exercise.h"
 #include "analyze.h"
-#include "displayControl.h"
+#include "../QtMarPlot.h"
 
 class MainWindow : public QMainWindow
 {
@@ -142,8 +142,8 @@ private:
 
 	QTextEdit *textEdit;
 	QLabel *imageLabel;
-	DisplayControl *displayResults;
-	DisplayControl *displayAmplitude;
+	QtMarPlot *displayResults;
+	QtMarPlot *displayAmplitude;
 	QHBoxLayout *displayLayout;
 
 	QString curFile;
