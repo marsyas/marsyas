@@ -124,8 +124,7 @@ PeConvert::myUpdate(MarControlPtr sender)
 	string2parameters(getctrl("mrs_string/frequencyInterval")->toString(), conv, '_');
 	//cout << conv;
 	downFrequency_ = (mrs_natural) floor(conv(0)/getctrl("mrs_real/osrate")->toReal()*size_*2) ;
-	upFrequency_ = (mrs_natural) floor(conv(1)/getctrl("mrs_real/osrate")->toReal()*size_*2);
-	}
+	upFrequency_ = (mrs_natural) floor(conv(1)/getctrl("mrs_real/osrate")->toReal()*size_*2);	}
 	else
 	{
 	downFrequency_ = 0;

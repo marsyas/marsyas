@@ -15,8 +15,6 @@
 #include "PeClusters.h"
 #include "PeUtilities.h"
 #include <time.h>
-
-
 #include <string>
 
 using namespace std;
@@ -69,7 +67,7 @@ realvec peakSet_;
 
 mrs_real noiseDelay_=0;
 // gain for noise insertion
-mrs_real noiseGain_=.02;
+mrs_real noiseGain_=.8;
 // duration for noise insertion
 mrs_real noiseDuration_=0;
 // sampling frequency
@@ -133,11 +131,10 @@ printHelp(string progName)
 	cerr << "-S --synthetise : synthetize using an oscillator bank (0), an IFFT mono (1), or an IFFT stereo (2)" << endl;
 	cerr << "-r --residual : output the residual sound (if the synthesis stage is selected)" << endl;
 	cerr << "-i --intervalFrequency : <minFrequency>_<maxFrequency> select peaks in this interval (default 250-2500 Hz)" << endl;
-	cerr << "-f --fileInfo : provide clustering parameters in the output name (s20t10i250_2500c2k1 means 20 sines per frames in the 250_2500 Hz frequency Interval, 1 cluster selected among 2 in one texture window of 10 frames)" << endl;
+	cerr << "-f --fileInfo : provide clustering parameters in the output name (s20t10i250_2500c2k1uTabfbho means 20 sines per frames in the 250_2500 Hz frequency Interval, 1 cluster selected among 2 in one texture window of 10 frames, no precise parameter estimation and using a combination of similarities abfbho)" << endl;
 	cerr << "-pp --peakPicking : perform peak picking in the spectrum" << endl;
 	cerr << "-u --unprecise : do not perform precise estimation of sinusoidal parameters" << endl;
 	cerr << "" << endl;
-	cerr << "-u --usage           : display short usage info" << endl;
 	cerr << "-h --help            : display this information " << endl;
 
 	exit(1);
@@ -364,7 +361,6 @@ void
 initOptions()
 {
 	cmd_options.addBoolOption("help", "h", false);
-	cmd_options.addBoolOption("usage", "u", false);
 	cmd_options.addNaturalOption("voices", "v", 1);
 	cmd_options.addStringOption("noisename", "N", EMPTYSTRING);
 	cmd_options.addStringOption("outputdirectoryname", "o", EMPTYSTRING);
@@ -484,6 +480,9 @@ main(int argc, const char **argv)
 				outputInf << "t" << accSize_; 
 				outputInf << "c" << nbClusters_;
 				outputInf <<"k" << nbSelectedClusters_;
+				if(unprecise_)
+                  outputInf << "u";
+				outputInf << "T" << similarityType_;
 					outputInf << "_";
 				outputInfo = outputInf.str();
 			}
