@@ -88,17 +88,17 @@ SpectralSNR::myProcess(realvec& in, realvec& out)
 	{
 	  orig = in(o,0);
 	  extr = in(N2+o, 0);
-	  
-	  sum += (orig * orig) / ((orig-extr) * (orig-extr));
+	  if (orig != 0.0) 
+	    sum += (orig * orig) / ((orig-extr) * (orig-extr));
 	}
     }
   if (sum != 0.0) sum /= N2;
   
-
-  
   
   out(0,0) = 10.0 * log10(sqrt(sum));
-  cout << out(0,0) << endl;
+
+  cout << "sum = " << sum << endl;
+  cout << "out = " << out(0,0) << endl;
   
 }
 

@@ -2088,6 +2088,16 @@ void test_spectralSNR(string fname0, string fname1)
   
   MarSystemManager mng;
 
+
+  MarSystem* total = mng.create("Series", "total");
+  
+  
+
+  MarSystem* acc = mng.create("Accumulator", "acc");
+  acc->updctrl("mrs_natural/nTimes", 100);
+  
+  
+
   MarSystem* snet = mng.create("Series", "snet");
   
   
@@ -2099,12 +2109,12 @@ void test_spectralSNR(string fname0, string fname1)
   branch1->addMarSystem(mng.create("SoundFileSource", "src1"));
   branch1->addMarSystem(mng.create("Spectrum", "spk1"));
   branch1->addMarSystem(mng.create("PowerSpectrum", "pspk1"));
-  branch1->addMarSystem(mng.create("PlotSink", "psink1"));
+  // branch1->addMarSystem(mng.create("PlotSink", "psink1"));
   
   branch2->addMarSystem(mng.create("SoundFileSource", "src2"));
   branch2->addMarSystem(mng.create("Spectrum", "spk2"));
   branch2->addMarSystem(mng.create("PowerSpectrum", "pspk2"));
-  branch2->addMarSystem(mng.create("PlotSink", "psink2"));
+  // branch2->addMarSystem(mng.create("PlotSink", "psink2"));
   
   net->addMarSystem(branch1);
   net->addMarSystem(branch2);
@@ -2112,30 +2122,36 @@ void test_spectralSNR(string fname0, string fname1)
   
   net->updctrl("Series/branch1/SoundFileSource/src1/mrs_string/filename", 
 	       fname0);
+  net->updctrl("Series/branch1/SoundFileSource/src1/mrs_natural/inSamples", 
+	       2048);
   net->updctrl("Series/branch2/SoundFileSource/src2/mrs_string/filename", 
 	       fname1);
+  net->updctrl("Series/branch2/SoundFileSource/src2/mrs_natural/inSamples", 
+	       2048);
 
   net->updctrl("Series/branch1/PowerSpectrum/pspk1/mrs_string/spectrumType", "magnitude");
   net->updctrl("Series/branch2/PowerSpectrum/pspk2/mrs_string/spectrumType", "magnitude");
   
-  net->updctrl("Series/branch1/PlotSink/psink1/mrs_string/outputFilename", "p1p");
+  /* net->updctrl("Series/branch1/PlotSink/psink1/mrs_string/outputFilename", "p1p");
   net->updctrl("Series/branch2/PlotSink/psink2/mrs_string/outputFilename", "p2p");
 
+  */ 
 
   
   snet->addMarSystem(net);
   snet->addMarSystem(mng.create("SpectralSNR", "ssnr"));
 
+
+  acc->addMarSystem(snet);
+  total->addMarSystem(acc);
+  // total->addMarSystem(mng.create("Mean", "mean"));
+  total->addMarSystem(mng.create("PlotSink", "psink"));
   
   
   mrs_bool isEmpty;
 
 
-  
-  while(isEmpty = net->getctrl("Series/branch1/SoundFileSource/src1/mrs_bool/notEmpty")->to<mrs_bool>())
-    {
-      snet->tick();
-    }
+  total->tick();
   
 
   
