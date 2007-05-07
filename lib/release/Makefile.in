@@ -269,6 +269,7 @@ libmarsyas_a_SOURCES = $(top_srcdir)/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/marsyas/ClipAudioRange.cpp \
 			  $(top_srcdir)/marsyas/SilenceRemove.cpp \
 			  $(top_srcdir)/marsyas/RtMidi.cpp \
+			  $(top_srcdir)/marsyas/SpectralSNR.cpp \
 			  $(top_srcdir)/marsyas/Stk.cpp \
 			  $(top_srcdir)/marsyas/StereoSpectrum.cpp \
 			  $(top_srcdir)/marsyas/StereoSpectrumFeatures.cpp \
@@ -369,12 +370,13 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	SeneffEar.$(OBJEXT) MP3FileSource.$(OBJEXT) \
 	OggFileSource.$(OBJEXT) ClassOutputSink.$(OBJEXT) \
 	ClipAudioRange.$(OBJEXT) SilenceRemove.$(OBJEXT) \
-	RtMidi.$(OBJEXT) Stk.$(OBJEXT) StereoSpectrum.$(OBJEXT) \
-	StereoSpectrumFeatures.$(OBJEXT) Limiter.$(OBJEXT) \
-	NoiseSource.$(OBJEXT) CompExp.$(OBJEXT) NoiseGate.$(OBJEXT) \
-	Plucked.$(OBJEXT) ADSR.$(OBJEXT) Envelope.$(OBJEXT) \
-	Delay.$(OBJEXT) NormMaxMin.$(OBJEXT) HarmonicEnhancer.$(OBJEXT) \
-	Reassign.$(OBJEXT) Normalize.$(OBJEXT) WekaSource.$(OBJEXT) \
+	RtMidi.$(OBJEXT) SpectralSNR.$(OBJEXT) Stk.$(OBJEXT) \
+	StereoSpectrum.$(OBJEXT) StereoSpectrumFeatures.$(OBJEXT) \
+	Limiter.$(OBJEXT) NoiseSource.$(OBJEXT) CompExp.$(OBJEXT) \
+	NoiseGate.$(OBJEXT) Plucked.$(OBJEXT) ADSR.$(OBJEXT) \
+	Envelope.$(OBJEXT) Delay.$(OBJEXT) NormMaxMin.$(OBJEXT) \
+	HarmonicEnhancer.$(OBJEXT) Reassign.$(OBJEXT) \
+	Normalize.$(OBJEXT) WekaSource.$(OBJEXT) \
 	RealvecSource.$(OBJEXT) RealvecSink.$(OBJEXT) Power.$(OBJEXT) \
 	MemorySource.$(OBJEXT) MidiInput.$(OBJEXT) Esitar.$(OBJEXT) \
 	MidiOutput.$(OBJEXT) NumericLib.$(OBJEXT) NormCut.$(OBJEXT) \
@@ -491,7 +493,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Socket.Po ./$(DEPDIR)/SoundFileSink.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SoundFileSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SoundFileSource2.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Spectrum.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/SpectralSNR.Po ./$(DEPDIR)/Spectrum.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/StandardDeviation.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/StereoSpectrum.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/StereoSpectrumFeatures.Po \
@@ -741,6 +743,7 @@ ClassOutputSink.$(OBJEXT): $(top_srcdir)/marsyas/ClassOutputSink.cpp
 ClipAudioRange.$(OBJEXT): $(top_srcdir)/marsyas/ClipAudioRange.cpp
 SilenceRemove.$(OBJEXT): $(top_srcdir)/marsyas/SilenceRemove.cpp
 RtMidi.$(OBJEXT): $(top_srcdir)/marsyas/RtMidi.cpp
+SpectralSNR.$(OBJEXT): $(top_srcdir)/marsyas/SpectralSNR.cpp
 Stk.$(OBJEXT): $(top_srcdir)/marsyas/Stk.cpp
 StereoSpectrum.$(OBJEXT): $(top_srcdir)/marsyas/StereoSpectrum.cpp
 StereoSpectrumFeatures.$(OBJEXT): \
@@ -941,6 +944,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SoundFileSink.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SoundFileSource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SoundFileSource2.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpectralSNR.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Spectrum.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StandardDeviation.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StereoSpectrum.Po@am__quote@
@@ -2995,6 +2999,18 @@ RtMidi.obj: $(top_srcdir)/marsyas/RtMidi.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/RtMidi.Po' tmpdepfile='$(DEPDIR)/RtMidi.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RtMidi.obj `cygpath -w $(top_srcdir)/marsyas/RtMidi.cpp`
+
+SpectralSNR.o: $(top_srcdir)/marsyas/SpectralSNR.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/SpectralSNR.cpp' object='SpectralSNR.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/SpectralSNR.Po' tmpdepfile='$(DEPDIR)/SpectralSNR.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SpectralSNR.o `test -f '$(top_srcdir)/marsyas/SpectralSNR.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/SpectralSNR.cpp
+
+SpectralSNR.obj: $(top_srcdir)/marsyas/SpectralSNR.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/SpectralSNR.cpp' object='SpectralSNR.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/SpectralSNR.Po' tmpdepfile='$(DEPDIR)/SpectralSNR.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SpectralSNR.obj `cygpath -w $(top_srcdir)/marsyas/SpectralSNR.cpp`
 
 Stk.o: $(top_srcdir)/marsyas/Stk.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/marsyas/Stk.cpp' object='Stk.o' libtool=no @AMDEPBACKSLASH@

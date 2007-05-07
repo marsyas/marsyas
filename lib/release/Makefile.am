@@ -189,6 +189,7 @@ libmarsyas_a_SOURCES    = $(top_srcdir)/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/marsyas/ClipAudioRange.cpp \
 			  $(top_srcdir)/marsyas/SilenceRemove.cpp \
 			  $(top_srcdir)/marsyas/RtMidi.cpp \
+			  $(top_srcdir)/marsyas/SpectralSNR.cpp \
 			  $(top_srcdir)/marsyas/Stk.cpp \
 			  $(top_srcdir)/marsyas/StereoSpectrum.cpp \
 			  $(top_srcdir)/marsyas/StereoSpectrumFeatures.cpp \

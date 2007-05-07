@@ -58,6 +58,10 @@ void Parallel::myUpdate(MarControlPtr sender)
       
       mrs_natural inObservations = marsystems_[0]->getctrl("mrs_natural/inObservations")->toNatural();
       mrs_natural onObservations = marsystems_[0]->getctrl("mrs_natural/onObservations")->toNatural();
+
+
+      cout << "PARALLEL: ONOBS = " << onObservations << endl;
+      
       
       for (mrs_natural i=1; i < marsystemsSize_; i++) 
 	{

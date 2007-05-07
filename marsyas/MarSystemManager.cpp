@@ -140,6 +140,7 @@ in sequence.
 #include "MidiInput.h"
 #include "MidiOutput.h"
 #include "BICchangeDetector.h"
+#include "SpectralSNR.h"
 #include "StereoSpectrum.h" 
 #include "StereoSpectrumFeatures.h"
 
@@ -260,6 +261,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("MidiInput", new MidiInput("midiinpr"));
 	registerPrototype("MidiOutput", new MidiOutput("midioutpr"));
 	registerPrototype("BICchangeDetector", new BICchangeDetector("bicchgdetpr"));
+	registerPrototype("SpectralSNR", new SpectralSNR("ssnrpr"));
 	registerPrototype("StereoSpectrum", new StereoSpectrum("stereopr"));
 	registerPrototype("StereoSpectrumFeatures", new StereoSpectrumFeatures("stereospkfpr"));
 	

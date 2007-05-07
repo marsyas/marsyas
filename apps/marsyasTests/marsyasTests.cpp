@@ -67,6 +67,7 @@ printHelp(string progName)
   cerr << "scheduler       : test scheduler " << endl;
   cerr << "schedulerExpr   : test scheduler with expressions " << endl;
   cerr << "SOM		   : test support vector machine " << endl;
+  cerr << "spectralSNR     : test spectral SNR " << endl;
   cerr << "stereoFeatures  : test stereo features " << endl;
   cerr << "stereoMFCC       : test stereo MFCC " << endl;
   cerr << "stereoFeaturesMFCC : test stereo features and MFCCs" << endl;
@@ -2076,6 +2077,70 @@ test_stereo2mono(string fname)
 
 
 
+void test_spectralSNR(string fname0, string fname1) 
+{
+  cout << "Testing spectral SNR" << endl;
+  cout << "Original  signal: " << fname0 << endl;  
+  cout << "Extracted signal: " << fname1 << endl;  
+  
+  
+  
+  
+  MarSystemManager mng;
+
+  MarSystem* snet = mng.create("Series", "snet");
+  
+  
+  MarSystem* net = mng.create("Parallel", "net");
+  
+  MarSystem* branch1 = mng.create("Series", "branch1");
+  MarSystem* branch2 = mng.create("Series", "branch2");
+  
+  branch1->addMarSystem(mng.create("SoundFileSource", "src1"));
+  branch1->addMarSystem(mng.create("Spectrum", "spk1"));
+  branch1->addMarSystem(mng.create("PowerSpectrum", "pspk1"));
+  branch1->addMarSystem(mng.create("PlotSink", "psink1"));
+  
+  branch2->addMarSystem(mng.create("SoundFileSource", "src2"));
+  branch2->addMarSystem(mng.create("Spectrum", "spk2"));
+  branch2->addMarSystem(mng.create("PowerSpectrum", "pspk2"));
+  branch2->addMarSystem(mng.create("PlotSink", "psink2"));
+  
+  net->addMarSystem(branch1);
+  net->addMarSystem(branch2);
+
+  
+  net->updctrl("Series/branch1/SoundFileSource/src1/mrs_string/filename", 
+	       fname0);
+  net->updctrl("Series/branch2/SoundFileSource/src2/mrs_string/filename", 
+	       fname1);
+
+  net->updctrl("Series/branch1/PowerSpectrum/pspk1/mrs_string/spectrumType", "magnitude");
+  net->updctrl("Series/branch2/PowerSpectrum/pspk2/mrs_string/spectrumType", "magnitude");
+  
+  net->updctrl("Series/branch1/PlotSink/psink1/mrs_string/outputFilename", "p1p");
+  net->updctrl("Series/branch2/PlotSink/psink2/mrs_string/outputFilename", "p2p");
+
+
+  
+  snet->addMarSystem(net);
+  snet->addMarSystem(mng.create("SpectralSNR", "ssnr"));
+
+  
+  
+  mrs_bool isEmpty;
+
+
+  
+  while(isEmpty = net->getctrl("Series/branch1/SoundFileSource/src1/mrs_bool/notEmpty")->to<mrs_bool>())
+    {
+      snet->tick();
+    }
+  
+
+  
+}
+
 
 
 void test_SOM(string collectionName) 
@@ -2951,6 +3016,8 @@ main(int argc, const char **argv)
     test_stereoFeaturesMFCC(fname0, fname1);
   else if (testName == "stereo2mono")
     test_stereo2mono(fname0);
+  else if (testName == "spectralSNR")
+    test_spectralSNR(fname0, fname1);
   else if (testName == "SOM") 
     test_SOM("music.mf");
   else if (testName == "tempo") 
