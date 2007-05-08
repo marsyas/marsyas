@@ -1,0 +1,99 @@
+@c Generator: GNU source-highlight, by Lorenzo Bettini, http://www.gnu.org/software/src-highlite
+@example
+@b{#include} @t{"CommandLineOptions.h"}
+
+@b{using} @b{namespace} std;
+@b{using} @b{namespace} Marsyas;
+
+CommandLineOptions cmd_options;
+
+int helpOpt;
+int usageOpt;
+mrs_natural naturalOpt;
+mrs_real realOpt;
+mrs_string stringOpt;
+
+void 
+@b{printUsage}()
+@{ 
+  @b{MRSDIAG}(@t{"commandOptions.cpp - printUsage"});
+  cerr << @t{"Usage: commandOptions "} << @t{"file1 file2 file3"} << endl;
+  cerr << endl;  cerr << @t{"where file1, ..., fileN are sound files in a MARSYAS supported format"} << endl;
+  @b{exit}(1);
+@}
+
+void 
+@b{printHelp}()
+@{
+  @b{MRSDIAG}(@t{"commandOptions.cpp - printHelp"});
+  cerr << @t{"commandOptions: Sample Program"}<< endl;
+  cerr << @t{"------------------------------"} << endl;
+  cerr << endl;
+  cerr << @t{"Usage: commandOptions file1 file2 file3"} << endl;
+  cerr << endl;
+  cerr << @t{"where file1, ..., fileN are sound files in a Marsyas supported format"} << endl;
+  cerr << @t{"Help Options:"} << endl;
+  cerr << @t{"-u --usage      : display short usage info"} << endl;
+  cerr << @t{"-h --help       : display this information "} << endl;
+  cerr << @t{"-n --natural    : sets a `natural' variable "} << endl;
+  cerr << @t{"-r --real       : sets a `real' variable "} << endl;
+  cerr << @t{"-s --string     : sets a `string' variable "} << endl;
+  @b{exit}(1);
+@}
+
+void 
+@b{initOptions}()
+@{
+  cmd_options.@b{addBoolOption}(@t{"help"}, @t{"h"}, @b{false});
+  cmd_options.@b{addBoolOption}(@t{"usage"}, @t{"u"}, @b{false});
+  cmd_options.@b{addNaturalOption}(@t{"natural"}, @t{"n"}, 9);
+  cmd_options.@b{addRealOption}(@t{"real"}, @t{"r"}, 3.1415927);
+  cmd_options.@b{addStringOption}(@t{"string"}, @t{"s"}, @t{"hello world"});
+@}
+
+void 
+@b{loadOptions}()
+@{
+  helpOpt = cmd_options.@b{getBoolOption}(@t{"help"});
+  usageOpt = cmd_options.@b{getBoolOption}(@t{"usage"});
+  naturalOpt = cmd_options.@b{getNaturalOption}(@t{"natural"});
+  realOpt = cmd_options.@b{getRealOption}(@t{"real"});
+  stringOpt = cmd_options.@b{getStringOption}(@t{"string"});
+@}
+
+
+
+void @b{doStuff}(string printMe) @{
+       cout<<printMe<<endl;
+@}
+
+int @b{main}(int argc, @b{const} char **argv) @{
+  @b{initOptions}();
+  cmd_options.@b{readOptions}(argc,argv);
+  @b{loadOptions}();
+  
+  vector<string> soundfiles = cmd_options.@b{getRemaining}();
+  
+  @b{if} (helpOpt) 
+    @b{printHelp}();
+  
+  @b{if} ( (usageOpt) || (argc==1) )
+    @b{printUsage}();
+
+       cout<<@t{"Command-line options were:"}<<endl;
+       cout<<@t{"   --natural: "}<<naturalOpt<<endl;
+       cout<<@t{"   --real: "}<<realOpt<<endl;
+       cout<<@t{"   --string: "}<<stringOpt<<endl;
+       cout<<@t{"(these may simply be the default values)"}<<endl;
+       cout<<endl;
+       cout<<@t{"The rest of the command-line arguments were: "}<<endl;
+
+  vector<string>::iterator sfi;
+  @b{for} (sfi = soundfiles.@b{begin}(); sfi != soundfiles.@b{end}(); ++sfi)
+    @{
+                     @b{doStuff}( *sfi );
+              @}
+@}
+
+
+@end example
