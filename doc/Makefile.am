@@ -49,13 +49,16 @@ sources:
 	source-highlight --output-dir=marsyas/ -f texinfo --src-lang=perl $(QT_EXAMPLES_AS_PERL)
 
 
-html: sources marsyas.texi
+#html: sources marsyas.texi
+html: marsyas.texi
 	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas.texi 
 	mkdir -p marsyas/images/
 	cp images/*.png marsyas/images/
 
-pdf: sources marsyas.texi
+#pdf: sources marsyas.texi
+pdf: marsyas.texi
 	$(TEXI2PDF) $(TEXI2PDF_FLAGS) $(srcdir)/marsyas.texi
 
-.PHONY: sources html pdf
+#.PHONY: sources html pdf
+.PHONY: html pdf
 
