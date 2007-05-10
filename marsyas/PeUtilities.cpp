@@ -672,6 +672,8 @@ void Marsyas::peakLoad(realvec &peaks, string filename, mrs_real &fs, mrs_natura
 	nbSines = peakSet_(0, 3);
 	nbFrames = peakSet_(0, 4);
 
+	peakSet_(0, 5) = -1;
+
 	peaks.stretch(nbSines*nbPkParameters, nbFrames);
 	peaks.setval(0);
 	peaks2V(peakSet_, peaks, peaks, nbSines);
