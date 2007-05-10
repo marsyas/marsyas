@@ -86,9 +86,6 @@ PeConvert::addControls()
 void
 PeConvert::myUpdate(MarControlPtr sender)
 {
-	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/Sinusoids")->toNatural()*nbParameters_);
-	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal() * getctrl("mrs_natural/inObservations")->toNatural()/2);  
 
 	//defaultUpdate(); [!]
 	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
@@ -113,10 +110,13 @@ PeConvert::myUpdate(MarControlPtr sender)
 	factor_ = getctrl("mrs_real/osrate")->toReal();
 	factor_ /= TWOPI;
 	fundamental_ = (mrs_real) (getctrl("mrs_real/osrate")->toReal() / (mrs_real)getctrl("mrs_natural/inObservations")->toNatural()*2);
-	kmax_ = getctrl("mrs_natural/Sinusoids")->toNatural();
 	skip_ = getctrl("mrs_natural/nbFramesSkipped")->toNatural();
     prec_ = getctrl("mrs_natural/improvedPrecision")->toNatural();
 	pick_ = getctrl("mrs_natural/picking")->toNatural();
+    if(!pick_ && !getctrl("mrs_natural/Sinusoids")->toNatural())
+		kmax_ = getctrl("mrs_natural/inObservations")->toNatural()/4+1;
+	else
+    	kmax_ = getctrl("mrs_natural/Sinusoids")->toNatural();
 
 	if(getctrl("mrs_string/frequencyInterval")->toString() != EMPTYSTRING)
 	{
@@ -130,6 +130,10 @@ PeConvert::myUpdate(MarControlPtr sender)
 	downFrequency_ = 0;
 	upFrequency_ = size_;
 	}
+
+    setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+	setctrl("mrs_natural/onObservations", kmax_*nbParameters_);
+	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal() * getctrl("mrs_natural/inObservations")->toNatural()/2);  
 }
 
 
@@ -339,12 +343,13 @@ PeConvert::myProcess(realvec& in, realvec& out)
 			if(prec_)
 			frequency_(t) = phasediff * factor_ ;
 			else
-frequency_(t) = fundamental_;
+            frequency_(t) = t*fundamental_;
 
 			// compute precise amplitude
 			mag_(t) = sqrt((a*a + b*b))*2; //*4/0.884624;//*50/3); // [!!!!!!!!!!!]
 			mrs_real mag = lobe_value_compute ((t * fundamental_-frequency_(t))/factor_, 1, N2*2);
 			magCorr_(t) = mag_(t)/mag;
+			// cout << mag_(t) << " " << magCorr_(t) << endl;
 
 
 			// computing precise frequency using the derivative method // use at your own risk	
@@ -401,7 +406,7 @@ frequency_(t) = fundamental_;
 
 		 // keep only the kmax_ highest amplitude local maxima
 		MaxArgMax max("MaxArgMax");
-		if(pick_)
+		if(getctrl("mrs_natural/Sinusoids")->toNatural())
 		{
 					 tmp_.stretch(kmax_*2);
 		max.updctrl("mrs_natural/nMaximums", kmax_);
@@ -415,7 +420,6 @@ frequency_(t) = fundamental_;
 		max.updctrl("mrs_natural/inObservations", 1);
 		max.update();
 		max.process(peaks_, tmp_);
-
 
 		nbPeaks_=tmp_.getSize()/2;
 		realvec index_(nbPeaks_);
@@ -440,12 +444,12 @@ frequency_(t) = fundamental_;
 		MATLAB_EVAL("figure(1);clf;hold on ;plot(peaks);stem(k);stem(tmp(2:2:end)+1, peaks(tmp(2:2:end)+1), 'r')");
 		MATLAB_EVAL("stem(int+1, peaks(int+1), 'k')");
 	
-    interval_ /= N2*2;
+        interval_ /= N2*2;
 		out.setval(0);
 		for (i=0;i<nbPeaks_;i++)
 		{
 			out(i+pkFrequency*kmax_) = frequency_((mrs_natural) index_(i));
-
+ // cout << out(i+pkFrequency*kmax_) << endl;
 			out(i+pkAmplitude*kmax_) = magCorr_((mrs_natural) index_(i));
 
 			out(i+pkPhase*kmax_) = -phase_((mrs_natural) index_(i));
@@ -472,7 +476,7 @@ frequency_(t) = fundamental_;
 	// MATLAB_PUT(out, "peaks");
 	// MATLAB_PUT(kmax_, "k");
 	// MATLAB_EVAL("figure(1);clf;plot(peaks(6*k+1:7*k));");
-  // cout << out;
+
 }
 
 

@@ -86,7 +86,8 @@ PeClust::myUpdate(MarControlPtr sender)
 	setctrl("mrs_string/onObsNames", 
 		getctrl("mrs_string/inObsNames"));
 
-	kmax_ = getctrl("mrs_natural/Sinusoids")->toNatural();
+	//kmax_ = getctrl("mrs_natural/Sinusoids")->toNatural();
+	kmax_ = getctrl("mrs_natural/inObservations")->toNatural()/nbPkParameters;
 	nbClusters_ = getctrl("mrs_natural/Clusters")->toNatural();
 
 	// string with the observations to consider for similarity computing

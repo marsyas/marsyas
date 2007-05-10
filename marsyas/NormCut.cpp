@@ -72,6 +72,11 @@ Marsyas::ncut(mrs_natural *n, realvec &W, mrs_natural *nbcluster, realvec &NcutE
    // Check for matrix symmetry
    for( i=0 ; i<*n ; i++ )
       for( j=0 ; j<*n ; j++ ){
+		  if( W(i*(*n)+j) > 1 )
+				 {
+						cout << W;         
+				ERROR("W(i, j) values should be <= 1");
+				 }
          if( W(i*(*n)+j) != W(j*(*n)+i) )
 				 {
 						cout << W;         

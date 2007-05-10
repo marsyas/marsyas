@@ -63,7 +63,7 @@ PeSynOsc::addControls()
 {
 	addctrl("mrs_natural/synSize", MRS_DEFAULT_SLICE_NSAMPLES);
 	addctrl("mrs_natural/delay", MRS_DEFAULT_SLICE_NSAMPLES /2);
-	addctrl("mrs_natural/nbSinusoids", 0);
+	//addctrl("mrs_natural/nbSinusoids", 0);
 	addctrl("mrs_realvec/harmonize", realvec(), ctrl_harmonize_);
 }
 
@@ -99,7 +99,7 @@ PeSynOsc::myProcess(realvec& in, realvec& out)
 	mrs_natural N, Nb, nbH;
 	int i;
 
-	Nb = getctrl("mrs_natural/nbSinusoids")->toNatural();
+	Nb = in.getSize()/nbPkParameters ; //getctrl("mrs_natural/nbSinusoids")->toNatural();
 	N= out.getSize();
 
 	out.setval(0);

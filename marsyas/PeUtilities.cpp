@@ -534,7 +534,7 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 	{
 	if(synType==0)
 	{
-	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynOsc/pso/mrs_natural/nbSinusoids", S);
+	//pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynOsc/pso/mrs_natural/nbSinusoids", S);
 	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynOsc/pso/mrs_natural/delay", Nw/2+1);
 	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynOsc/pso/mrs_natural/synSize", D*2);
 	}
@@ -634,20 +634,25 @@ void Marsyas::discrete2labels(realvec &labels, realvec& n, mrs_natural nbCluster
 
 
 
-void Marsyas::peakStore(realvec &peaks, string filename, mrs_real sf, mrs_natural nbSines, mrs_natural hopSize)
+void Marsyas::peakStore(realvec &peaks, string filename, mrs_real sf, mrs_natural hopSize)
 {
 	mrs_natural nbFrames_ = peaks.getCols();
-	realvec peakSetM_ = realvec(nbSines*nbFrames_, nbPkParameters);
+	realvec peakSetM_ = realvec(peaks.getRows()/nbPkParameters*nbFrames_+1, nbPkParameters);
 	peakSetM_(0, 0) = -1;
 	peakSetM_(0, 1) =  sf;
 	peakSetM_(0, 2) =  hopSize;
-	peakSetM_(0, 3) =  nbSines;
+	peakSetM_(0, 3) =  peaks.getRows()/nbPkParameters;
 	peakSetM_(0, 4) =  nbFrames_;
 	peakSetM_(0, pkGroup) = -2;
 	realvec tmp(1);
 	tmp.setval(0);
 	mrs_natural tmp2;
-	peaks2M(peaks, tmp, peakSetM_, nbSines, &tmp2, 1);
+	
+	peaks2M(peaks, tmp, peakSetM_, peaks.getRows()/nbPkParameters, &tmp2, 1);
+	
+	//cout << peakSetM_;
+	cout << sf << " " << peakSetM_(0, 1) << endl ;
+
 	cout << peaks.getSize() << endl;
 	ofstream peakFile;
 	peakFile.open(filename.c_str());

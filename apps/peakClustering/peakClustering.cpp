@@ -83,7 +83,7 @@ mrs_natural fileInfo_=0;
 //
 mrs_natural unprecise_;
 //
-mrs_natural peakPicking_;
+mrs_natural noPeakPicking_;
 
 bool microphone_ = false;
 bool analyse_ = true;
@@ -132,7 +132,7 @@ printHelp(string progName)
 	cerr << "-r --residual : output the residual sound (if the synthesis stage is selected)" << endl;
 	cerr << "-i --intervalFrequency : <minFrequency>_<maxFrequency> select peaks in this interval (default 250-2500 Hz)" << endl;
 	cerr << "-f --fileInfo : provide clustering parameters in the output name (s20t10i250_2500c2k1uTabfbho means 20 sines per frames in the 250_2500 Hz frequency Interval, 1 cluster selected among 2 in one texture window of 10 frames, no precise parameter estimation and using a combination of similarities abfbho)" << endl;
-	cerr << "-pp --peakPicking : perform peak picking in the spectrum" << endl;
+	cerr << "-npp --noPeakPicking : do not perform peak picking in the spectrum" << endl;
 	cerr << "-u --unprecise : do not perform precise estimation of sinusoidal parameters" << endl;
 	cerr << "" << endl;
 	cerr << "-h --help            : display this information " << endl;
@@ -258,8 +258,9 @@ if(noiseName != EMPTYSTRING)
 	if(unprecise_)
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/improvedPrecision", 0);      
 	else
-		pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/improvedPrecision", 1);      
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/picking", peakPicking_);      
+		pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/improvedPrecision", 1);  
+	if(noPeakPicking_)
+	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/picking", 0);      
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Sinusoids", S); 
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_string/frequencyInterval", intervalFrequency);  
 	// pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
@@ -353,8 +354,8 @@ if(noiseName != EMPTYSTRING)
 
 	if(peakStore_)
 	{
-		realvec vec = pvseries->getctrl("RealvecSink/peSink/mrs_realvec/data")->toVec();
-		peakStore(vec, filePeakName, samplingFrequency_, nbSines_, D); 
+		realvec vec = pvseries->getctrl("RealvecSink/peSink/mrs_realvec/data")->toVec();	
+		peakStore(vec, filePeakName, samplingFrequency_, D); 
 	}
 }
 
@@ -364,6 +365,7 @@ void
 initOptions()
 {
 	cmd_options.addBoolOption("help", "h", false);
+	cmd_options.addBoolOption("usage", "us", false);
 	cmd_options.addNaturalOption("voices", "v", 1);
 	cmd_options.addStringOption("noisename", "N", EMPTYSTRING);
 	cmd_options.addStringOption("outputdirectoryname", "o", EMPTYSTRING);
@@ -386,7 +388,7 @@ initOptions()
 	cmd_options.addBoolOption("attributes", "A", attributes_);
 	cmd_options.addBoolOption("ground", "g", ground_);
 	cmd_options.addNaturalOption("synthetize", "S", synthetize_);
-		cmd_options.addNaturalOption("peakPicking", "pp", 1);
+		cmd_options.addBoolOption("noPeakPicking", "npp", 0);
 	cmd_options.addNaturalOption("clusterSynthetize", "SC", clusterSynthetize_);
 	cmd_options.addBoolOption("peakStore", "P", peakStore_);
 }
@@ -418,7 +420,7 @@ loadOptions()
 	attributes_ = cmd_options.getBoolOption("attributes");
 	ground_ = cmd_options.getBoolOption("ground");
 	synthetize_ = cmd_options.getNaturalOption("synthetize");
-	peakPicking_ = cmd_options.getNaturalOption("peakPicking");
+	noPeakPicking_ = cmd_options.getBoolOption("noPeakPicking");
 	clusterSynthetize_ = cmd_options.getNaturalOption("clusterSynthetize");
 	peakStore_ = cmd_options.getBoolOption("peakStore"); 
 	residual_ = cmd_options.getBoolOption("residual");
@@ -480,12 +482,12 @@ main(int argc, const char **argv)
 				stringstream outputInf;
 				outputInf << "_s" << nbSines_;
 				outputInf << "i" << intervalFrequency;
-				outputInf << "t" << accSize_; 
+				outputInf << "T" << accSize_; 
 				outputInf << "c" << nbClusters_;
 				outputInf <<"k" << nbSelectedClusters_;
 				if(unprecise_)
                   outputInf << "u";
-				outputInf << "T" << similarityType_;
+				outputInf << "t" << similarityType_;
 					outputInf << "_";
 				outputInfo = outputInf.str();
 			}

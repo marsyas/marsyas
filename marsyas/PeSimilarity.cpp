@@ -37,6 +37,8 @@ Marsyas::similarityMatrix(realvec &data, realvec& m, string type, mrs_natural nb
 
 	for (i=0 ; i< (mrs_natural) type.length() ; i+=2)
 	{
+		/*cout << type[i] << endl;
+		cout << m;*/
 		switch(type[i])
 		{
 		case 'f':
@@ -142,6 +144,10 @@ Marsyas::similarityMatrix(realvec &data, realvec& m, string type, mrs_natural nb
 			harmonicitySimilarityCompute(data, frequencySet_, amplitudeSet_, m, hSize, firstF, firstA, secondF, secondA);	
 		}
 	}
+	// normalization in case the similarity values are bigger than one
+	/*m/=m.maxval();
+	for (i=0 ; i<m.getCols() ; i++)
+		m(i, i) = 1 ;*/
 }
 
 void
@@ -259,8 +265,8 @@ Marsyas::harmonicitySimilarityCompute(realvec& data, std::vector<realvec>& fSet,
 
 		//	cout << data(i, pkFrequency) << " " <<data(j, pkFrequency) << " value: "<< val << " " << exp(val*val) <<endl;
 			
-			m(i, j) *= exp(val*val);
-			m(j, i) *= m(i, j);
+			m(i, j) *= exp(val*val)/exp(1.0);
+			m(j, i) *= exp(val*val)/exp(1.0);
 		}
 	}
 }
