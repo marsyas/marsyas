@@ -559,28 +559,6 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 		// setting the name of the original file
 		if (microphone) 
 		{
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynOsc/pso/mrs_natural/nbSinusoids", S);
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynOsc/pso/mrs_natural/delay", Nw/2+1);
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynOsc/pso/mrs_natural/synSize", D*2);
-		}
-		else 
-		{
-			// probing the postNet series
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/mrs_bool/probe", true);
-			// linking between the first slice and the psf
-			pvseries->linkControl("PeSynthetize/synthNet/Series/postNet/mrs_realvec/input0", "PeSynthetize/synthNet/Series/postNet/PeSynFFT/psf/mrs_realvec/peaks");
-			//
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Windowing/wiSyn/mrs_string/type", "Hanning");
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/FlowCutSource/fcs/mrs_natural/setSamples", D);	
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/FlowCutSource/fcs/mrs_natural/setObservations", 1);	
-			// setting the panning mode mono/stereo
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynFFT/psf/mrs_natural/nbChannels", synType);
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynFFT/psf/mrs_string/panning", panningInfo);
-			// setting the FFT size
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftInput/siSyn/mrs_natural/WindowSize", D*2);
-			// setting the name of the original file
-			if (microphone) 
-			{
 				pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/AudioSource/srcSyn/mrs_natural/inSamples", D);
 				pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/AudioSource/srcSyn/mrs_natural/inObservations", 1);
 			}
@@ -697,11 +675,16 @@ void Marsyas::peakLoad(realvec &peaks, string filename, mrs_real &fs, mrs_natura
 	nbSines = peakSet(0, 3);
 	nbFrames = peakSet(0, 4);
 
-	peakSet_(0, 5) = -1;
+	peakSet(0, 5) = -1;
 
-	peaks.stretch(nbSines*nbPkParameters, nbFrames);
-	peaks.setval(0);
-	peaks2V(peakSet_, peaks, peaks, nbSines);
+	if(tf_format)
+	{
+		peaks.stretch(nbSines*nbPkParameters, nbFrames);
+		peaks.setval(0);
+		peaks2V(peakSet, peaks, peaks, nbSines);
+	}
+	else
+		peaks = peakSet;
 }
 
 
