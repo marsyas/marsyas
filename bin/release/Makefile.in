@@ -103,7 +103,7 @@ MAINTAINERCLEANFILES = Makefile.in
 INCLUDES = -I$(top_srcdir)/marsyas
 
 bin_PROGRAMS = sfplay phasevocoder sfplugin bextract mkcollection marsyasTests record classifyFile peVocoder peakClustering sfinfo \
-	       extract midiTest boomchick pitchextract orcarecord helloworld gettingdata virtualsensor
+	       extract midiTest boomchick pitchextract orcarecord helloworld gettingdata virtualsensor pePeakEval
 
 
 sfplay_SOURCES = $(top_srcdir)/apps/sfplay/sfplay.cpp
@@ -200,6 +200,11 @@ gettingdata_SOURCES = $(top_srcdir)/examples/gettingdata.cpp
 gettingdata_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 		    $(Libs)
 
+
+pePeakEval_SOURCES = $(top_srcdir)/apps/pePeakEval/pePeakEval.cpp
+pePeakEval_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
+		    $(Libs)
+
 subdir = bin/release
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_CLEAN_FILES =
@@ -209,7 +214,7 @@ bin_PROGRAMS = sfplay$(EXEEXT) phasevocoder$(EXEEXT) sfplugin$(EXEEXT) \
 	peakClustering$(EXEEXT) sfinfo$(EXEEXT) extract$(EXEEXT) \
 	midiTest$(EXEEXT) boomchick$(EXEEXT) pitchextract$(EXEEXT) \
 	orcarecord$(EXEEXT) helloworld$(EXEEXT) gettingdata$(EXEEXT) \
-	virtualsensor$(EXEEXT)
+	virtualsensor$(EXEEXT) pePeakEval$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 
 am_bextract_OBJECTS = bextract.$(OBJEXT)
@@ -252,6 +257,10 @@ am_orcarecord_OBJECTS = orcarecord.$(OBJEXT)
 orcarecord_OBJECTS = $(am_orcarecord_OBJECTS)
 orcarecord_DEPENDENCIES = $(top_builddir)/lib/release/libmarsyas.a
 orcarecord_LDFLAGS =
+am_pePeakEval_OBJECTS = pePeakEval.$(OBJEXT)
+pePeakEval_OBJECTS = $(am_pePeakEval_OBJECTS)
+pePeakEval_DEPENDENCIES = $(top_builddir)/lib/release/libmarsyas.a
+pePeakEval_LDFLAGS =
 am_peVocoder_OBJECTS = peVocoder.$(OBJEXT)
 peVocoder_OBJECTS = $(am_peVocoder_OBJECTS)
 peVocoder_DEPENDENCIES = $(top_builddir)/lib/release/libmarsyas.a
@@ -302,7 +311,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/helloworld.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/marsyasTests.Po ./$(DEPDIR)/midiTest.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/mkcollection.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/orcarecord.Po ./$(DEPDIR)/peVocoder.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/orcarecord.Po ./$(DEPDIR)/pePeakEval.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/peVocoder.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/peakClustering.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/phasevocoder.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/pitchextract.Po ./$(DEPDIR)/record.Po \
@@ -320,12 +330,12 @@ DIST_SOURCES = $(bextract_SOURCES) $(boomchick_SOURCES) \
 	$(gettingdata_SOURCES) $(helloworld_SOURCES) \
 	$(marsyasTests_SOURCES) $(midiTest_SOURCES) \
 	$(mkcollection_SOURCES) $(orcarecord_SOURCES) \
-	$(peVocoder_SOURCES) $(peakClustering_SOURCES) \
-	$(phasevocoder_SOURCES) $(pitchextract_SOURCES) \
-	$(record_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) \
-	$(sfplugin_SOURCES) $(virtualsensor_SOURCES)
+	$(pePeakEval_SOURCES) $(peVocoder_SOURCES) \
+	$(peakClustering_SOURCES) $(phasevocoder_SOURCES) \
+	$(pitchextract_SOURCES) $(record_SOURCES) $(sfinfo_SOURCES) \
+	$(sfplay_SOURCES) $(sfplugin_SOURCES) $(virtualsensor_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(bextract_SOURCES) $(boomchick_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) $(gettingdata_SOURCES) $(helloworld_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mkcollection_SOURCES) $(orcarecord_SOURCES) $(peVocoder_SOURCES) $(peakClustering_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplugin_SOURCES) $(virtualsensor_SOURCES)
+SOURCES = $(bextract_SOURCES) $(boomchick_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) $(gettingdata_SOURCES) $(helloworld_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mkcollection_SOURCES) $(orcarecord_SOURCES) $(pePeakEval_SOURCES) $(peVocoder_SOURCES) $(peakClustering_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplugin_SOURCES) $(virtualsensor_SOURCES)
 
 all: all-am
 
@@ -400,6 +410,10 @@ orcarecord.$(OBJEXT): $(top_srcdir)/apps/orcarecord/orcarecord.cpp
 orcarecord$(EXEEXT): $(orcarecord_OBJECTS) $(orcarecord_DEPENDENCIES) 
 	@rm -f orcarecord$(EXEEXT)
 	$(CXXLINK) $(orcarecord_LDFLAGS) $(orcarecord_OBJECTS) $(orcarecord_LDADD) $(LIBS)
+pePeakEval.$(OBJEXT): $(top_srcdir)/apps/pePeakEval/pePeakEval.cpp
+pePeakEval$(EXEEXT): $(pePeakEval_OBJECTS) $(pePeakEval_DEPENDENCIES) 
+	@rm -f pePeakEval$(EXEEXT)
+	$(CXXLINK) $(pePeakEval_LDFLAGS) $(pePeakEval_OBJECTS) $(pePeakEval_LDADD) $(LIBS)
 peVocoder.$(OBJEXT): $(top_srcdir)/apps/peVocoder/peVocoder.cpp
 peVocoder$(EXEEXT): $(peVocoder_OBJECTS) $(peVocoder_DEPENDENCIES) 
 	@rm -f peVocoder$(EXEEXT)
@@ -455,6 +469,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/midiTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mkcollection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/orcarecord.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pePeakEval.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/peVocoder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/peakClustering.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/phasevocoder.Po@am__quote@
@@ -599,6 +614,18 @@ orcarecord.obj: $(top_srcdir)/apps/orcarecord/orcarecord.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/orcarecord.Po' tmpdepfile='$(DEPDIR)/orcarecord.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o orcarecord.obj `cygpath -w $(top_srcdir)/apps/orcarecord/orcarecord.cpp`
+
+pePeakEval.o: $(top_srcdir)/apps/pePeakEval/pePeakEval.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/apps/pePeakEval/pePeakEval.cpp' object='pePeakEval.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/pePeakEval.Po' tmpdepfile='$(DEPDIR)/pePeakEval.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o pePeakEval.o `test -f '$(top_srcdir)/apps/pePeakEval/pePeakEval.cpp' || echo '$(srcdir)/'`$(top_srcdir)/apps/pePeakEval/pePeakEval.cpp
+
+pePeakEval.obj: $(top_srcdir)/apps/pePeakEval/pePeakEval.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/apps/pePeakEval/pePeakEval.cpp' object='pePeakEval.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/pePeakEval.Po' tmpdepfile='$(DEPDIR)/pePeakEval.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o pePeakEval.obj `cygpath -w $(top_srcdir)/apps/pePeakEval/pePeakEval.cpp`
 
 peVocoder.o: $(top_srcdir)/apps/peVocoder/peVocoder.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/apps/peVocoder/peVocoder.cpp' object='peVocoder.o' libtool=no @AMDEPBACKSLASH@
