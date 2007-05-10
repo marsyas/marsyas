@@ -34,6 +34,7 @@ namespace Marsyas
 
 void similarityCompute(realvec&, realvec&);
 void similarityMatrix(realvec&, realvec&, std::string type, mrs_natural, mrs_natural , realvec& firstF, realvec& firstA, realvec& secondF, realvec& secondA, realvec &hmap);
+void harmonicWrapping(mrs_real peak1Freq, mrs_real peak2Freq, realvec& firstF, realvec& secondF);
 void harmonicitySimilarityCompute(realvec&, std::vector<realvec>&, std::vector<realvec>&, realvec& m, mrs_natural, realvec& firstF, realvec& firstA, realvec& secondF, realvec& secondA);
 void harmonicityVirtanenCompute(realvec&, realvec& m);
 mrs_real hVirtanen(mrs_real, mrs_real);

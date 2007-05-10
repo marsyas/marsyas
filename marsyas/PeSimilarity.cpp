@@ -169,6 +169,37 @@ Marsyas::similarityCompute(realvec &d, realvec& m)
 }
 
 void
+Marsyas::harmonicWrapping(mrs_real peak1Freq, mrs_real peak2Freq, realvec& firstF, realvec& secondF)
+{
+	// shift frequencies
+	firstF -= peak1Freq;
+	secondF -= peak2Freq;
+	
+	// fundamental frequency estimate
+	mrs_real hF = min(peak1Freq, peak2Freq);
+	//mrs_real mhF = min(hF, abs(peak1Freq-peak2Freq));
+	
+	// wrap frequencies around fundamental freq estimate
+	firstF /= hF;
+	secondF /= hF;
+
+	for (mrs_natural k=0 ; k<firstF.getSize() ; k++)
+	{
+		firstF(k)=fmod(firstF(k), 1);
+		//if(firstF(k)<0)
+		while(firstF(k)<0)//replacing "if" in case of strongly negative (=> multiple wraps)
+			firstF(k)+=1;
+	}
+	for (mrs_natural k=0 ; k<secondF.getSize() ; k++)
+	{
+		secondF(k)=fmod(secondF(k), 1);
+		//if(secondF(k)<0)
+		while(secondF(k)<0) //replacing "if" in case of strongly negative (=> multiple wraps)
+			secondF(k)+=1;
+	}
+}
+
+void
 Marsyas::harmonicitySimilarityCompute(realvec& data, std::vector<realvec>& fSet, std::vector<realvec>& aSet, realvec& m, mrs_natural hSize, 
 																			realvec& firstF, realvec& firstA, realvec& secondF, realvec& secondA)
 {
@@ -179,91 +210,64 @@ Marsyas::harmonicitySimilarityCompute(realvec& data, std::vector<realvec>& fSet,
 	realvec x3(hSize);
 	realvec x4(hSize);
   //cout << data ;
+	
 	// similarity computing
 	for(i=0 ; i<data.getRows() ; i++)
 	{
 		for(j=0 ; j<i ; j++)
 		{
-			mrs_real val=0, hF;
-			mrs_natural indexFirst = (mrs_natural) (data(i, pkTime)-startIndex), indexSecond = (mrs_natural) (data(j, pkTime)-startIndex);
+			mrs_real val=0;
 
+			//convert indexes for this texture window (which start from 0)
+			mrs_natural indexFirst = (mrs_natural) (data(i, pkTime)-startIndex);
+			mrs_natural indexSecond = (mrs_natural) (data(j, pkTime)-startIndex);
+
+			//get freq and amp vectors for both peak sets (i.e. first and second)
 			firstF.stretch(fSet[indexFirst].getSize());
 			firstA.stretch(aSet[indexFirst].getSize());
-    	secondF.stretch(fSet[indexSecond].getSize());
-			secondA.stretch(aSet[indexSecond].getSize());
-
 			firstF = fSet[indexFirst];
 			firstA = aSet[indexFirst];
+			secondF.stretch(fSet[indexSecond].getSize());
+			secondA.stretch(aSet[indexSecond].getSize());
 			secondF = fSet[indexSecond];
 			secondA = aSet[indexSecond];
 
-			/*MATLAB_PUT(data(i, pkFrequency), "sf1");
+			/*
+			MATLAB_PUT(data(i, pkFrequency), "sf1");
 			MATLAB_PUT(data(j, pkFrequency), "sf2");
 			MATLAB_PUT(firstF, "f1");
 			MATLAB_PUT(firstA, "a1");
 			MATLAB_PUT(secondF, "f2");
-			MATLAB_PUT(secondA, "a2");*/
+			MATLAB_PUT(secondA, "a2");
+			*/
 
-			// fundamentqal frequency estimates
-			hF = min(data(i, pkFrequency), data(j, pkFrequency));
-			// mrs_real mhF = min(hF, abs(data(i, pkFrequency)-data(j, pkFrequency)));
-		
+			//peaks i and j frequencies
+			mrs_real iFreq = data(i, pkFrequency);
+			mrs_real jFreq = data(j, pkFrequency);
+
 			// weight the amplitudes
 			//for (mrs_natural k=0 ; k<firstF.getSize() ; k++)
 			//	firstA(k)*=harmonicWeighting(firstF(k), hF, harmonicityWeight_);
 			//for (mrs_natural k=0 ; k<secondF.getSize() ; k++)
 			//	secondA(k)*=harmonicWeighting(secondF(k), hF, harmonicityWeight_);
 
-
-			//cout << firstF;
-			// align and wrap frequencies
-			firstF-=data(i, pkFrequency);
-			secondF-=data(j, pkFrequency);
-
-			firstF/=hF;
-			secondF/=hF;
-
-			for (mrs_natural k=0 ; k<firstF.getSize() ; k++)
-			{
-				firstF(k)=fmod(firstF(k), 1);
-				if(firstF(k)<0)
-					firstF(k)+=1;
-			}
-			for (mrs_natural k=0 ; k<secondF.getSize() ; k++)
-			{
-				secondF(k)=fmod(secondF(k), 1);
-				if(secondF(k)<0)
-					secondF(k)+=1;
-			}
-
-			//	realvec v(100);
-			//		for (mrs_natural k=0 ; k<v.getSize() ; k++)
-			//v(k) = harmonicWeighting(k, 10, 0.1);
-			//MATLAB_PUT(v, "v");
-			//MATLAB_EVAL("clf ; plot(v)");
-
-			// compare the two
-			// cout <<firstF<<secondF;
-
-	/*		MATLAB_PUT(firstF, "F1");
-			MATLAB_PUT(firstA, "A1");
-			MATLAB_PUT(secondF, "F2");
-			MATLAB_PUT(secondA, "A2");*/
-		//	MATLAB_EVAL("plotHarmo");
-
-			// cout << data(i, pkFrequency) << " " <<data(j, pkFrequency) <<endl;
-			/*if(firstF.getSize() < secondF.getSize())
-				val = correlatePeakSets(firstF,firstA,secondF,secondA);
-			else
-				val = correlatePeakSets(secondF,secondA,firstF,firstA);*/
-
+			
+			//********************************************************************
+			//						HWPS
+			//********************************************************************
+			
+			//////////////////////////////////
+			// calculate harmonic wrapping
+			//////////////////////////////////
+			harmonicWrapping(iFreq, jFreq, firstF, secondF);
+						
+			//////////////////////////////////
+			// histogram and COSINE distance
+			/////////////////////////////////
 			val = cosinePeakSets(firstF,firstA, secondF,secondA, aSet[indexFirst], aSet[indexSecond], x1, x2, x3, x4, hSize);
+			//val=exp(-val);
 
-			//	val=exp(-val);
-
-
-
-		//	cout << data(i, pkFrequency) << " " <<data(j, pkFrequency) << " value: "<< val << " " << exp(val*val) <<endl;
+			//cout << data(i, pkFrequency) << " " <<data(j, pkFrequency) << " value: "<< val << " " << exp(val*val) <<endl;
 			
 			m(i, j) *= exp(val*val)/exp(1.0);
 			m(j, i) *= exp(val*val)/exp(1.0);
