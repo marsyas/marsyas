@@ -274,7 +274,7 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		if(peakStore_)
 		{
 			realvec vec = pvseries->getctrl("RealvecSink/peSink/mrs_realvec/data")->toVec();
-			peakStore(vec, filePeakName, samplingFrequency_, nbSines_, D); 
+			peakStore(vec, filePeakName, samplingFrequency_, D); 
 
 			MATLAB_PUT(peakSet_, "peaks");
 			MATLAB_EVAL("plotPeaks(peaks)");
