@@ -29,7 +29,7 @@ EXTRA_DIST += out-www/*.html out-www/images/*.png
 
 CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
              marsyas.ats  marsyas.evs  marsyas.fns  marsyas.ovs \
-             marsyas.tmp  marsyas.toc
+             marsyas.tmp  marsyas.toc  marsyas.info
 
 clean-local:
 	-rm -rf out-www

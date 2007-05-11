@@ -48,7 +48,7 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_CLEAN_FILES =
 SOURCES =
 DIST_SOURCES =
-INFO_DEPS = $(srcdir)/marsyas.info
+INFO_DEPS = marsyas.info
 TEXINFO_TEX = $(top_srcdir)/config/texinfo.tex
 am__TEXINFO_TEX_DIR = $(top_srcdir)/config
 DVIS = marsyas.dvi
@@ -170,7 +170,7 @@ info_TEXINFOS = marsyas.texi
 EXTRA_DIST = marsyas.pdf intro.texi tools.texi architecture.texi programming.texi install.texi unsorted.texi interoperability.texi macros.itexi README images/*.eps images/*.pdf images/*.txt images/*.png sources-doc/*.texinfo sources-doc/*.html out-www/*.html out-www/images/*.png
 CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
              marsyas.ats  marsyas.evs  marsyas.fns  marsyas.ovs \
-             marsyas.tmp  marsyas.toc
+             marsyas.tmp  marsyas.toc  marsyas.info
 
 #             marsyas*.html
 #  these files should be cleaned up, but "make dist" won't generate
@@ -182,7 +182,7 @@ EXAMPLES = ../examples/*.cpp
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .dvi .html .info .pdf .ps .texi
+.SUFFIXES: .dvi .ps
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -213,10 +213,9 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 
-.texi.info:
+marsyas.info: marsyas.texi 
 	restore=: && \
 	backupdir="$(am__leading_dot)am$$$$" && \
-	am__cwd=`pwd` && cd $(srcdir) && \
 	rm -rf $$backupdir && mkdir $$backupdir && \
 	for f in $@ $@-[0-9] $@-[0-9][0-9] $(@:.info=).i[0-9] $(@:.info=).i[0-9][0-9]; do \
 	  if test -f $$f; then \
@@ -224,39 +223,32 @@ $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	    restore=mv; \
 	  fi; \
 	done; \
-	cd "$$am__cwd"; \
 	if $(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I $(srcdir) \
-	 -o $@ $<; \
+	 -o $@ `test -f 'marsyas.texi' || echo '$(srcdir)/'`marsyas.texi; \
 	then \
 	  rc=0; \
-	  cd $(srcdir); \
 	else \
 	  rc=$$?; \
-	  cd $(srcdir) && \
 	  $$restore $$backupdir/* `echo "./$@" | sed 's|[^/]*$$||'`; \
 	fi; \
 	rm -rf $$backupdir; \
 	exit $$rc
 
-.texi.dvi:
+marsyas.dvi: marsyas.texi  
 	TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
 	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I $(srcdir)' \
-	$(TEXI2DVI) $<
+	$(TEXI2DVI) -o $@ `test -f 'marsyas.texi' || echo '$(srcdir)/'`marsyas.texi
 
-.texi.pdf:
+marsyas.pdf: marsyas.texi  
 	TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
 	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I $(srcdir)' \
-	$(TEXI2PDF) $<
+	$(TEXI2PDF) -o $@ `test -f 'marsyas.texi' || echo '$(srcdir)/'`marsyas.texi
 
-.texi.html:
+marsyas.html: marsyas.texi  
 	$(MAKEINFOHTML) $(AM_MAKEINFOHTMLFLAGS) $(MAKEINFOFLAGS) -I $(srcdir) \
-	 -o $@ $<
+	 -o $@ `test -f 'marsyas.texi' || echo '$(srcdir)/'`marsyas.texi
 	if test ! -d $@ && test -d $(@:.html=); then \
 	  mv $(@:.html=) $@; else :; fi
-$(srcdir)/marsyas.info: marsyas.texi 
-marsyas.dvi: marsyas.texi 
-marsyas.pdf: marsyas.texi 
-marsyas.html: marsyas.texi 
 .dvi.ps:
 	$(DVIPS) -o $@ $<
 
