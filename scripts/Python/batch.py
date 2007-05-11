@@ -2,33 +2,45 @@ import os
 from glob import glob
 
 inputDirectory = "../../../../Databases/taslp/";
-outputDirectory = "../../../output ";
+outputDirectory = "../../../output3 ";
 
 testCommand = " ";
-testCommand = " -q 1 ";
+#testCommand = " -q 1 ";
 
 beginCommand = "../../bin/release/peakClustering  ";
 beginCommand = "..\\..\\bin\\release\\peakClustering.exe  ";
 
-endCommand = " -P -f -S 0 -k 2 -c 3 -N music -i 250_2500 -o "+outputDirectory;
+endCommand = " -P -f -S 0 -r -k 2 -c 3 -N music -i 250_2500 -o "+outputDirectory;
 
-execStyle=["-T 1 -s 20 -t abfb ", 
-		   "-T 1 -s 20 -t abfb -u ", 
-		   #virtanen
-		   "-T 1 -s 20 -t voabfb -u ", 
-		   "-T 10 -s 20 -t voabfb -u ", 
-		   "-T 1 -s 20 -t voabfb ", 
-		   "-T 10 -s 20 -t voabfb ",
+execStyle=[
 		   #hwps 
-		   "-T 1 -s 20 -t hoabfb -u ", 
-		   "-T 10 -s 20 -t hoabfb -u ", 
 		   "-T 1 -s 20 -t hoabfb ", 
 		   "-T 10 -s 20 -t hoabfb ", 
-		   # srinivasan
+		   "-T 1 -s 20 -t hoabfb -u ", 
+		   "-T 10 -s 20 -t hoabfb -u ", 
+		   #virtanen
+		   "-T 1 -s 20 -t voabfb ", 
+		   "-T 10 -s 20 -t voabfb ",
+		   "-T 1 -s 20 -t voabfb -u ", 
+		   "-T 10 -s 20 -t voabfb -u ", 
+           #srinivasan criterion
+		   "-T 1 -s 20 -t soabfb ", 
+		   "-T 10 -s 20 -t soabfb ",
+		   "-T 1 -s 20 -t soabfb -u ", 
+		   "-T 10 -s 20 -t soabfb -u ", 
+           # amplitude only
+           "-T 1 -s 20 -t abfb ", 
+		   "-T 1 -s 20 -t abfb -u ", 
+           # harmonicity only
+           "-T 1 -s 20 -t ho ", 
+		   "-T 1 -s 20 -t ho -u ", 
+           "-T 1 -s 20 -t vo ", 
+		   "-T 1 -s 20 -t vo -u ", 
+           "-T 1 -s 20 -t so ", 
+		   "-T 1 -s 20 -t so -u ", 
+		   # srinivasan algo
 		   " -s 1024 -pp 0 -u  -T 1 -t soabfb ", 
 		   "-s 1024 -pp 0 -u -T 10 -t soabfb "];
-
-#execStyle=[" -T 10 -s 20 -t hoabfb -u  "];
 
 for style in execStyle:
   for name in glob(inputDirectory+"*V*.wav"):
