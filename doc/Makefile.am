@@ -24,16 +24,16 @@ info_TEXINFOS   = marsyas.texi
 EXTRA_DIST = marsyas.pdf intro.texi tools.texi architecture.texi programming.texi install.texi unsorted.texi interoperability.texi
 EXTRA_DIST += macros.itexi README
 EXTRA_DIST += images/*.eps images/*.pdf images/*.txt images/*.png
-EXTRA_DIST += out-www/*.html out-www/images/*.png
 EXTRA_DIST += sources-doc/*.texinfo sources-doc/*.html
-
-# hopefully can remove in May.
-EXTRA_DIST += marsyas/*.texinfo
+EXTRA_DIST += out-www/*.html out-www/images/*.png
 
 CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
              marsyas.ats  marsyas.evs  marsyas.fns  marsyas.ovs \
-             marsyas.tmp  marsyas.toc \
-             marsyas*.html
+             marsyas.tmp  marsyas.toc
+
+clean-local:
+	-rm -rf out-www
+#             marsyas*.html
 #  these files should be cleaned up, but "make dist" won't generate
 #  them.  I hate autotools so much.  :/
 #marsyas/*.texinfo

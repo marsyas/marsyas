@@ -167,14 +167,12 @@ TEXI2PDF = texi2pdf
 info_TEXINFOS = marsyas.texi 
 
 #SUBDIRS = marsyas images
-
-# hopefully can remove in May.
-EXTRA_DIST = marsyas.pdf intro.texi tools.texi architecture.texi programming.texi install.texi unsorted.texi interoperability.texi macros.itexi README images/*.eps images/*.pdf images/*.txt images/*.png out-www/*.html out-www/images/*.png sources-doc/*.texinfo sources-doc/*.html marsyas/*.texinfo
+EXTRA_DIST = marsyas.pdf intro.texi tools.texi architecture.texi programming.texi install.texi unsorted.texi interoperability.texi macros.itexi README images/*.eps images/*.pdf images/*.txt images/*.png sources-doc/*.texinfo sources-doc/*.html out-www/*.html out-www/images/*.png
 CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
              marsyas.ats  marsyas.evs  marsyas.fns  marsyas.ovs \
-             marsyas.tmp  marsyas.toc \
-             marsyas*.html
+             marsyas.tmp  marsyas.toc
 
+#             marsyas*.html
 #  these files should be cleaned up, but "make dist" won't generate
 #  them.  I hate autotools so much.  :/
 #marsyas/*.texinfo
@@ -319,7 +317,7 @@ CTAGS:
 
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/images $(distdir)/marsyas $(distdir)/out-www $(distdir)/out-www/images $(distdir)/sources-doc
+	$(mkdir_p) $(distdir)/images $(distdir)/out-www $(distdir)/out-www/images $(distdir)/sources-doc
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -383,7 +381,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic mostlyclean-am
+clean-am: clean-generic clean-local mostlyclean-am
 
 distclean: distclean-am
 	-rm -f Makefile
@@ -456,16 +454,19 @@ ps-am: $(PSS)
 
 uninstall-am: uninstall-info-am
 
-.PHONY: all all-am check check-am clean clean-generic dist-info \
-	distclean distclean-generic distdir dvi dvi-am html html-am \
-	info info-am install install-am install-data install-data-am \
-	install-exec install-exec-am install-info install-info-am \
-	install-man install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-aminfo \
-	maintainer-clean-generic mostlyclean mostlyclean-aminfo \
-	mostlyclean-generic pdf pdf-am ps ps-am uninstall uninstall-am \
-	uninstall-info-am
+.PHONY: all all-am check check-am clean clean-generic clean-local \
+	dist-info distclean distclean-generic distdir dvi dvi-am html \
+	html-am info info-am install install-am install-data \
+	install-data-am install-exec install-exec-am install-info \
+	install-info-am install-man install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-aminfo maintainer-clean-generic mostlyclean \
+	mostlyclean-aminfo mostlyclean-generic pdf pdf-am ps ps-am \
+	uninstall uninstall-am uninstall-info-am
 
+
+clean-local:
+	-rm -rf out-www
 
 #DIST_COMMON = sources pdf html
 
