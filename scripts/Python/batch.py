@@ -39,8 +39,8 @@ execStyle=[
            "-T 1 -s 20 -t so ", 
 		   "-T 1 -s 20 -t so -u ", 
 		   # srinivasan algo
-		   " -s 1024 -pp 0 -u  -T 1 -t soabfb ", 
-		   "-s 1024 -pp 0 -u -T 10 -t soabfb "];
+		   " -s 1024 -npp -u  -T 1 -t soabfb ", 
+		   "-s 1024 -npp -u -T 10 -t soabfb "];
 
 for style in execStyle:
   for name in glob(inputDirectory+"*V*.wav"):
