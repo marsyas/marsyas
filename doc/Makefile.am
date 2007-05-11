@@ -20,11 +20,11 @@ TEXI2HTML = makeinfo --html -o out-www/
 TEXI2PDF  = texi2pdf
 info_TEXINFOS   = marsyas.texi 
 
-#SUBDIRS = marsyas images
 EXTRA_DIST = marsyas.pdf intro.texi tools.texi architecture.texi programming.texi install.texi unsorted.texi interoperability.texi
+
 EXTRA_DIST += macros.itexi README
 EXTRA_DIST += images/*.eps images/*.pdf images/*.txt images/*.png
-EXTRA_DIST += sources-doc/*.texinfo sources-doc/*.html
+EXTRA_DIST += source-doc/*.texinfo source-doc/*.html
 EXTRA_DIST += out-www/*.html out-www/images/*.png
 
 CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
@@ -33,13 +33,9 @@ CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
 
 clean-local:
 	-rm -rf out-www
-#             marsyas*.html
-#  these files should be cleaned up, but "make dist" won't generate
-#  them.  I hate autotools so much.  :/
-#marsyas/*.texinfo
-
 QT_EXAMPLES = ../examples/Qt4-tutorial/*.h ../examples/Qt4-tutorial/*.cpp
 QT_EXAMPLES_AS_PERL = ../examples/Qt4-tutorial/*.pro
+
 EXAMPLES = ../examples/*.cpp
 
 #DIST_COMMON = sources pdf html
@@ -56,7 +52,6 @@ html: marsyas.texi
 	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas.texi 
 	mkdir -p out-www/images/
 	cp images/*.png out-www/images/
-#	cp source-doc/*.html out-www/
 
 #pdf: sources marsyas.texi
 pdf: marsyas.texi

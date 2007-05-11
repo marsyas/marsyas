@@ -165,17 +165,11 @@ target_vendor = @target_vendor@
 TEXI2HTML = makeinfo --html -o out-www/
 TEXI2PDF = texi2pdf
 info_TEXINFOS = marsyas.texi 
-
-#SUBDIRS = marsyas images
-EXTRA_DIST = marsyas.pdf intro.texi tools.texi architecture.texi programming.texi install.texi unsorted.texi interoperability.texi macros.itexi README images/*.eps images/*.pdf images/*.txt images/*.png sources-doc/*.texinfo sources-doc/*.html out-www/*.html out-www/images/*.png
+EXTRA_DIST = marsyas.pdf intro.texi tools.texi architecture.texi programming.texi install.texi unsorted.texi interoperability.texi macros.itexi README images/*.eps images/*.pdf images/*.txt images/*.png source-doc/*.texinfo source-doc/*.html out-www/*.html out-www/images/*.png
 CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
              marsyas.ats  marsyas.evs  marsyas.fns  marsyas.ovs \
              marsyas.tmp  marsyas.toc  marsyas.info
 
-#             marsyas*.html
-#  these files should be cleaned up, but "make dist" won't generate
-#  them.  I hate autotools so much.  :/
-#marsyas/*.texinfo
 QT_EXAMPLES = ../examples/Qt4-tutorial/*.h ../examples/Qt4-tutorial/*.cpp
 QT_EXAMPLES_AS_PERL = ../examples/Qt4-tutorial/*.pro
 EXAMPLES = ../examples/*.cpp
@@ -309,7 +303,7 @@ CTAGS:
 
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/images $(distdir)/out-www $(distdir)/out-www/images $(distdir)/sources-doc
+	$(mkdir_p) $(distdir)/images $(distdir)/out-www $(distdir)/out-www/images $(distdir)/source-doc
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -473,7 +467,6 @@ html: marsyas.texi
 	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas.texi 
 	mkdir -p out-www/images/
 	cp images/*.png out-www/images/
-#	cp source-doc/*.html out-www/
 
 #pdf: sources marsyas.texi
 pdf: marsyas.texi
