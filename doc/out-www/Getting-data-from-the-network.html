@@ -1,0 +1,125 @@
+<html lang="en">
+<head>
+<title>Getting data from the network - Marsyas 0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Marsyas 0.2">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Assembling-a-network.html#Assembling-a-network" title="Assembling a network">
+<link rel="prev" href="Writing-data-to-text-files.html#Writing-data-to-text-files" title="Writing data to text files">
+<link rel="next" href="Scheduler.html#Scheduler" title="Scheduler">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+Copyright 1998-2006 George Tzanetakis
+
+Permission is granted to make and distribute verbatim
+copies of this manual provided the copyright notice and
+this permission notice are preserved on all copies.
+
+Permission is granted to copy and distribute modified
+versions of this manual under the conditions for
+verbatim copying, provided also that the sections
+entitled "Copying" and "GNU General Public License"
+are included exactly as in the original, and provided
+that the entire resulting derived work is distributed
+under the terms of a permission notice identical to this
+one.
+
+Permission is granted to copy and distribute
+translations of this manual into another language,
+under the above conditions for modified versions,
+except that this permission notice may be stated in a
+translation approved by the Free Software Foundation.-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Getting-data-from-the-network"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Scheduler.html#Scheduler">Scheduler</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Writing-data-to-text-files.html#Writing-data-to-text-files">Writing data to text files</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Assembling-a-network.html#Assembling-a-network">Assembling a network</a>
+<hr>
+</div>
+
+<h4 class="subsection">5.1.5 Getting data from the network</h4>
+
+<p>Putting together a network of MarSystems is all well and good,
+but you probably want to do something with that data.  In this
+example we simply print it to the screen, but the important
+thing to note is that we have the data at the level of C programming.
+
+<pre class="verbatim"><!-- Generator: GNU source-highlight 2.4
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><b><font color="#000080">#include</font></b> <font color="#FF0000">"MarSystemManager.h"</font>
+<b><font color="#0000FF">using</font></b> <b><font color="#0000FF">namespace</font></b> std<font color="#990000">;</font>
+<b><font color="#0000FF">using</font></b> <b><font color="#0000FF">namespace</font></b> Marsyas<font color="#990000">;</font>
+
+<font color="#009900">void</font> <b><font color="#000000">recognize</font></b><font color="#990000">(</font>string sfName<font color="#990000">)</font> <font color="#FF0000">{</font>
+	MarSystemManager mng<font color="#990000">;</font>
+	MarSystem<font color="#990000">*</font> pnet <font color="#990000">=</font> mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"Series"</font><font color="#990000">,</font> <font color="#FF0000">"pnet"</font><font color="#990000">);</font>
+<i><font color="#9A1900">// standard network</font></i>
+	pnet<font color="#990000">-&gt;</font><b><font color="#000000">addMarSystem</font></b><font color="#990000">(</font>mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource"</font><font color="#990000">,</font> <font color="#FF0000">"src"</font><font color="#990000">));</font>
+	pnet<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_string/filename"</font><font color="#990000">,</font> sfName<font color="#990000">);</font>
+	pnet<font color="#990000">-&gt;</font><b><font color="#000000">addMarSystem</font></b><font color="#990000">(</font>mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"Spectrum"</font><font color="#990000">,</font><font color="#FF0000">"spk"</font><font color="#990000">));</font>
+
+<i><font color="#9A1900">// variables to get data from network</font></i>
+	realvec <b><font color="#000000">in</font></b><font color="#990000">(</font>pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"mrs_natural/inObservations"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toNatural</font></b><font color="#990000">(),</font> pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"mrs_natural/inSamples"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toNatural</font></b><font color="#990000">());</font>
+	realvec <b><font color="#000000">out</font></b><font color="#990000">(</font>pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"mrs_natural/onObservations"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toNatural</font></b><font color="#990000">(),</font> pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"mrs_natural/onSamples"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toNatural</font></b><font color="#990000">());</font>
+
+<i><font color="#9A1900">// counter variables</font></i>
+	<font color="#009900">int</font> i<font color="#990000">,</font>j<font color="#990000">;</font>
+	mrs_natural numberObservations <font color="#990000">=</font> pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"mrs_natural/onObservations"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toNatural</font></b><font color="#990000">();</font>
+	mrs_natural numberSamples <font color="#990000">=</font> pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"mrs_natural/onSamples"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toNatural</font></b><font color="#990000">();</font>   <i><font color="#9A1900">// in this case, numbSamples will be 1, due to the Spectrum MarSystem.</font></i>
+
+	<b><font color="#0000FF">while</font></b> <font color="#990000">(</font> pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_bool/notEmpty"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toBool</font></b><font color="#990000">()</font> <font color="#990000">)</font> <font color="#FF0000">{</font>
+<i><font color="#9A1900">// don't tick because process() does that.</font></i>
+<i><font color="#9A1900">//		pnet-&gt;tick();</font></i>
+<i><font color="#9A1900">// get data from network</font></i>
+		pnet<font color="#990000">-&gt;</font><b><font color="#000000">process</font></b><font color="#990000">(</font>in<font color="#990000">,</font>out<font color="#990000">);</font>
+
+<i><font color="#9A1900">// display data</font></i>
+		<b><font color="#0000FF">for</font></b> <font color="#990000">(</font>i<font color="#990000">=</font><font color="#993399">0</font><font color="#990000">;</font> i<font color="#990000">&lt;</font>numberObservations<font color="#990000">;</font> i<font color="#990000">++)</font> <font color="#FF0000">{</font>
+			<b><font color="#0000FF">for</font></b> <font color="#990000">(</font>j<font color="#990000">=</font><font color="#993399">0</font><font color="#990000">;</font> j<font color="#990000">&lt;</font>numberSamples<font color="#990000">;</font> j<font color="#990000">++)</font> <font color="#FF0000">{</font>
+				cout<font color="#990000">&lt;&lt;</font><b><font color="#000000">out</font></b><font color="#990000">(</font>i<font color="#990000">,</font>j<font color="#990000">)&lt;&lt;</font><font color="#FF0000">" "</font><font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+		<font color="#FF0000">}</font>
+		cout<font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font>
+
+		<b><font color="#0000FF">const</font></b> realvec<font color="#990000">&amp;</font> processedData <font color="#990000">=</font> pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"Spectrum/spk/mrs_realvec/processedData"</font><font color="#990000">)-&gt;</font>to<font color="#990000">&lt;</font>mrs_realvec<font color="#990000">&gt;();</font>
+		cout <font color="#990000">&lt;&lt;</font> processedData <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
+
+		
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">delete</font></b> pnet<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">int</font> <b><font color="#000000">main</font></b><font color="#990000">(</font><font color="#009900">int</font> argc<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#009900">char</font> <font color="#990000">**</font>argv<font color="#990000">)</font> <font color="#FF0000">{</font>
+	string fileName<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>argc<font color="#990000">&lt;</font><font color="#993399">2</font><font color="#990000">)</font> <font color="#FF0000">{</font> cout<font color="#990000">&lt;&lt;</font><font color="#FF0000">"Please enter filename."</font><font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font> <b><font color="#000000">exit</font></b><font color="#990000">(</font><font color="#993399">1</font><font color="#990000">);</font> <font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> 
+		<font color="#FF0000">{</font> fileName <font color="#990000">=</font> argv<font color="#990000">[</font><font color="#993399">1</font><font color="#990000">];</font> <font color="#FF0000">}</font>
+	cout <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"Processing file "</font> <font color="#990000">&lt;&lt;</font> fileName <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
+
+	<b><font color="#000000">recognize</font></b><font color="#990000">(</font>fileName<font color="#990000">);</font>
+	<b><font color="#000000">exit</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+
+</tt></pre>
+</pre>
+
+   </body></html>
+

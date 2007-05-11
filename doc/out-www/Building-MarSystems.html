@@ -1,0 +1,91 @@
+<html lang="en">
+<head>
+<title>Building MarSystems - Marsyas 0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Marsyas 0.2">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Architecture-overview.html#Architecture-overview" title="Architecture overview">
+<link rel="next" href="Dataflow-model.html#Dataflow-model" title="Dataflow model">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+Copyright 1998-2006 George Tzanetakis
+
+Permission is granted to make and distribute verbatim
+copies of this manual provided the copyright notice and
+this permission notice are preserved on all copies.
+
+Permission is granted to copy and distribute modified
+versions of this manual under the conditions for
+verbatim copying, provided also that the sections
+entitled "Copying" and "GNU General Public License"
+are included exactly as in the original, and provided
+that the entire resulting derived work is distributed
+under the terms of a permission notice identical to this
+one.
+
+Permission is granted to copy and distribute
+translations of this manual into another language,
+under the above conditions for modified versions,
+except that this permission notice may be stated in a
+translation approved by the Free Software Foundation.-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Building-MarSystems"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Dataflow-model.html#Dataflow-model">Dataflow model</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Architecture-overview.html#Architecture-overview">Architecture overview</a>
+<hr>
+</div>
+
+<h4 class="subsection">4.1.1 Building MarSystems</h4>
+
+<p>The basic idea behind the design of Marsyas is that any audio
+analysis/synthesis computation can be expressed as some type of
+processing object, which we call MarSystem, that reads data from an
+input slice of floating point numbers, performs some
+computation/transformation based on data, and writes the results to
+another slice of floating point numbers.  Networks of MarSystems can
+be combined and encapsulated as one MarSystem.
+
+   <p>For example consider an
+audio processing series of computations consisting of reading samples
+from a soundfile, performing an short-time fourier transform (STFT) to
+calculate the complex spectrum, performing an inverse STFT to convert
+back from the frequency domain to time domain, then applying a gain to
+the amplitude of the samples and writing the result to a soundfile.
+
+   <p>As is very frequently the case with audio processing networks objects
+the input of each stage is the output of the previous stage.  This way
+of assembling MarSystems is called a Series composite.  Once a Series
+Composite is formed it can basically be used as one MarSystem that
+does the whole thing. A figure showing a block diagram-like
+presentation of this network is shown in the figure bellow.
+
+   <p>The main method that each MarSystem must support is <b>process</b> which
+takes two arguments both arrays of floating point numbers used to
+represent slices (matrices where one dimension is samples in time and
+the other is observations which are interpreted as happening at the
+same time). When the <b>process</b> method is called it reads data from
+the input slice, performs some computation/transformation and writes
+the results to the output slice. Both slices have to be preallocated
+when process is called.  One of the main advantages of Marsyas is that
+a lot of the necessary buffer allocation/reallocation and memory
+management happens behind the scene without the programmer having to
+do anything explicitly.
+
+   </body></html>
+

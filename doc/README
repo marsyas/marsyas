@@ -1,3 +1,12 @@
+BUILD REQUIREMENTS
+- in most cases, you can just do "make html" or "make pdf"
+- if you want to add more source examples (see below), you must have
+    . GNU source-highlight   (it's packaged in Debian and fink)
+      http://www.gnu.org/software/src-highlite/source-highlight.html
+- if you want to create source documentation, you must have
+    . Doxygen      (it's in Debian and fink)
+
+
 Here are a few useful macros:
 - @qq{text}: adds ``double quotes'' around text.  @qq looks better in HTML
    than using `` and ''.
