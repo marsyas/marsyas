@@ -3,12 +3,12 @@
 @macro examplefile{FILENAME}
 @ifhtml
 @html
-@verbatiminclude marsyas/\FILENAME\.html
+@verbatiminclude source-doc/\FILENAME\.html
 @end html
 @end ifhtml
 @ifnothtml
 @subsubheading \FILENAME\
-@include marsyas/\FILENAME\.texinfo
+@include source-doc/\FILENAME\.texinfo
 @end ifnothtml
 @end macro
 
@@ -18,7 +18,7 @@
 @end ifhtml
 @ifnothtml
 @subsubheading \FILENAME\
-@include marsyas/\FILENAME\.texinfo
+@include source-doc/\FILENAME\.texinfo
 @end ifnothtml
 @end macro
 

@@ -16,7 +16,7 @@
 ## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 
-TEXI2HTML = makeinfo --html
+TEXI2HTML = makeinfo --html -o out-www/
 TEXI2PDF  = texi2pdf
 info_TEXINFOS   = marsyas.texi 
 
@@ -24,7 +24,9 @@ info_TEXINFOS   = marsyas.texi
 EXTRA_DIST = marsyas.pdf intro.texi tools.texi architecture.texi programming.texi install.texi unsorted.texi interoperability.texi
 EXTRA_DIST += macros.itexi README
 EXTRA_DIST += images/*.eps images/*.pdf images/*.txt images/*.png
-EXTRA_DIST += marsyas/*.html marsyas/images/*.png
+EXTRA_DIST += out-www/*.html out-www/images/*.png
+EXTRA_DIST += sources-doc/*.texinfo sources-doc/*.html
+
 # hopefully can remove in May.
 EXTRA_DIST += marsyas/*.texinfo
 
@@ -43,17 +45,18 @@ EXAMPLES = ../examples/*.cpp
 #DIST_COMMON = sources pdf html
 
 sources:
-	source-highlight --output-dir=marsyas/ -f html $(QT_EXAMPLES) $(EXAMPLES)
-	source-highlight --output-dir=marsyas/ -f texinfo $(QT_EXAMPLES) $(EXAMPLES)
-	source-highlight --output-dir=marsyas/ -f html --src-lang=perl $(QT_EXAMPLES_AS_PERL)
-	source-highlight --output-dir=marsyas/ -f texinfo --src-lang=perl $(QT_EXAMPLES_AS_PERL)
+	source-highlight --output-dir=source-doc/ -f html $(QT_EXAMPLES) $(EXAMPLES)
+	source-highlight --output-dir=source-doc/ -f texinfo $(QT_EXAMPLES) $(EXAMPLES)
+	source-highlight --output-dir=source-doc/ -f html --src-lang=perl $(QT_EXAMPLES_AS_PERL)
+	source-highlight --output-dir=source-doc/ -f texinfo --src-lang=perl $(QT_EXAMPLES_AS_PERL)
 
 
 #html: sources marsyas.texi
 html: marsyas.texi
 	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas.texi 
-	mkdir -p marsyas/images/
-	cp images/*.png marsyas/images/
+	mkdir -p out-www/images/
+	cp images/*.png out-www/images/
+#	cp source-doc/*.html out-www/
 
 #pdf: sources marsyas.texi
 pdf: marsyas.texi
