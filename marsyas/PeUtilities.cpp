@@ -650,9 +650,7 @@ void Marsyas::peakStore(realvec &peaks, string filename, mrs_real sf, mrs_natura
 	{
      // search from a file
       peaks.read(filename) ;
-	  cout << peaks;
 	  peaks.transpose();
-	  cout << peaks;
       nbFrames_ = peaks.getCols();
 	}
 	realvec peakSetM_ = realvec(peaks.getRows()/nbPkParameters*nbFrames_+1, nbPkParameters);
