@@ -74,7 +74,7 @@ public:
   mrs_natural getSize() const;
   mrs_natural getCols() const;
   mrs_natural getRows() const;
-  
+  void transpose();
   mrs_real *getData() const;// dirty for easy integration 
 
   void shuffle();

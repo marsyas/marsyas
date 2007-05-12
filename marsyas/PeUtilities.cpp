@@ -644,7 +644,17 @@ void Marsyas::discrete2labels(realvec &labels, realvec& n, mrs_natural nbCluster
 
 void Marsyas::peakStore(realvec &peaks, string filename, mrs_real sf, mrs_natural hopSize)
 {
-	mrs_natural nbFrames_ = peaks.getCols();
+    mrs_natural nbFrames_ = peaks.getCols();
+	
+	if(!nbFrames_)
+	{
+     // search from a file
+      peaks.read(filename) ;
+	  cout << peaks;
+	  peaks.transpose();
+	  cout << peaks;
+      nbFrames_ = peaks.getCols();
+	}
 	realvec peakSetM_ = realvec(peaks.getRows()/nbPkParameters*nbFrames_+1, nbPkParameters);
 	peakSetM_(0, 0) = -1;
 	peakSetM_(0, 1) =  sf;
@@ -653,6 +663,8 @@ void Marsyas::peakStore(realvec &peaks, string filename, mrs_real sf, mrs_natura
 	peakSetM_(0, 4) =  nbFrames_;
 	peakSetM_(0, 5) = -1;
 	peakSetM_(0, pkGroup) = -2;
+	for (mrs_natural i=pkGroup ; i< nbPkParameters ; i++)
+		peakSetM_(0, i)=0;
 	realvec tmp(1);
 	tmp.setval(0);
 	mrs_natural tmp2;
@@ -660,9 +672,9 @@ void Marsyas::peakStore(realvec &peaks, string filename, mrs_real sf, mrs_natura
 	peaks2M(peaks, tmp, peakSetM_, peaks.getRows()/nbPkParameters, &tmp2, 1);
 	
 	//cout << peakSetM_;
-	cout << sf << " " << peakSetM_(0, 1) << endl ;
+	//cout << sf << " " << peakSetM_(0, 1) << endl ;
 
-	cout << peaks.getSize() << endl;
+	//cout << peaks.getSize() << endl;
 	ofstream peakFile;
 	peakFile.open(filename.c_str());
 	if(!peakFile)

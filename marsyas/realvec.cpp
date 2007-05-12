@@ -143,6 +143,23 @@ realvec::getData() const
   return data_;
 }
 
+void
+realvec::transpose()
+{
+  mrs_real *tmp_ = new mrs_real[size_];
+  
+for (mrs_natural i=0; i < rows_; i++)
+for (mrs_natural j=0; j < cols_; j++)
+   tmp_[i * cols_ + j] = data_[j * rows_ + i];
+
+  mrs_natural tmp = rows_;
+  rows_ = cols_;
+  cols_ = tmp;
+
+  delete [] data_;
+  data_ = tmp_;
+}
+
 mrs_real 
 realvec::median() const
 {

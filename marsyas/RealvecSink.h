@@ -25,6 +25,11 @@
 
 #include "MarSystem.h"	
 
+#include <fstream>
+#include <iostream>
+
+using namespace std;
+
 namespace Marsyas
 {
 
@@ -38,6 +43,9 @@ private:
 	void myUpdate(MarControlPtr sender);
   
   mrs_natural count_;
+ mrs_natural write_;
+ string oriName_;
+ ofstream outputFile_;
 
 public:
   RealvecSink(std::string name);

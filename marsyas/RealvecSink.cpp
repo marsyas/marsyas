@@ -17,7 +17,7 @@
 */
 
 /** 
-    \class RealvecSink
+\class RealvecSink
 
 */
 
@@ -28,17 +28,20 @@ using namespace Marsyas;
 
 RealvecSink::RealvecSink(string name):MarSystem("RealvecSink",name)
 {
-  //type_ = "RealvecSink";
-  //name_ = name;
-  
+	//type_ = "RealvecSink";
+	//name_ = name;
+	oriName_ = "MARSYAS_EMPTY";
 	count_= 0;
-
+	write_ = 0 ;
 	addControls();
 }
 
 RealvecSink::RealvecSink(const RealvecSink& a):MarSystem(a)
 {
-ctrl_data_ = getctrl("mrs_realvec/data");
+	count_ = 0;
+	write_ = 0 ;
+	oriName_ = "MARSYAS_EMPTY";
+	ctrl_data_ = getctrl("mrs_realvec/data");
 }
 
 
@@ -50,36 +53,86 @@ RealvecSink::~RealvecSink()
 MarSystem* 
 RealvecSink::clone() const 
 {
-  return new RealvecSink(*this);
+	return new RealvecSink(*this);
 }
 
 void 
 RealvecSink::addControls()
 {
-  addctrl("mrs_bool/done", false);
-  setctrlState("mrs_bool/done", true);
-  addctrl("mrs_realvec/data", realvec(), ctrl_data_);
-  //setctrlState("mrs_realvec/data", true);
-  setctrlState("mrs_real/israte", true);
+	addctrl("mrs_bool/done", false);
+	setctrlState("mrs_bool/done", true);
+	addctrl("mrs_realvec/data", realvec(), ctrl_data_);
+	setctrlState("mrs_real/israte", true);
+	addctrl("mrs_string/fileName", "MARSYAS_EMPTY");
+	setctrlState("mrs_string/fileName", true);
 }
 
 
 void
 RealvecSink::myUpdate(MarControlPtr sender)
 {
-  MRSDIAG("RealvecSink.cpp - RealvecSink:myUpdate");
-  
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural());
-	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples")->toNatural());
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
- 
- count_ = 0;
+	MRSDIAG("RealvecSink.cpp - RealvecSink:myUpdate");
 
-		if( getctrl("mrs_bool/done")->isTrue()){
-    ctrl_data_->stretch(0);
+	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural());
+	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples")->toNatural());
+	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
+
+	if( getctrl("mrs_bool/done")->isTrue()){
+		if(write_)
+		{
+			// closing output file
+			outputFile_.close();
+			// copy to tmp
+			string tmp  = oriName_.c_str();
+			tmp+="tmp";
+			ofstream out;
+			out.open(tmp.c_str(), ios::out);
+			ifstream in;
+			in.open(oriName_.c_str(), ios::in);
+			out << in.rdbuf();
+			in.close();
+			out.close();
+
+			//reopen
+			out.open(oriName_.c_str(), ios::out);
+			// print header
+			out << "# MARSYAS mrs_realvec" << endl;
+			out << "# Size = " << inObservations_*count_ << endl << endl;
+			out << endl;
+
+
+			out << "# type: matrix" << endl;
+			out << "# rows: " << count_ << endl;
+			out << "# columns: " << inObservations_ << endl;
+			// fill core
+			in.open(tmp.c_str(), ios::in);
+			out << in.rdbuf();
+			in.close();
+			// remove tmp file
+			unlink(tmp.c_str());
+			// write bottom
+			out << endl;
+			out << "# Size = " << inObservations_*count_ << endl;
+			out << "# MARSYAS mrs_realvec" << endl;  
+			out.close();
+		}
+		else
+		{
+			ctrl_data_->stretch(0);
+		}
 		count_=0;
-    setctrl("mrs_bool/done", false);
-  }
+		setctrl("mrs_bool/done", false);
+	}
+
+
+	if(getctrl("mrs_string/fileName")->toString().compare(oriName_))
+	{
+		if(write_)
+			outputFile_.close();
+		oriName_ = getctrl("mrs_string/fileName")->toString();
+		outputFile_.open(oriName_.c_str(), ios::out);
+		write_ = 1;
+	}
 }
 
 void 
@@ -88,14 +141,27 @@ RealvecSink::myProcess(realvec& in, realvec& out)
 	//checkFlow(in,out);
 	out=in;
 
-	ctrl_data_->stretch(inObservations_, count_+inSamples_);
-		for (o=0; o < inObservations_; o++)
-	  	for (t=0; t < inSamples_; t++)
-			{
-			  ctrl_data_->setValue(o, count_+t, in(o, t));
-			}
-				count_+=inSamples_;
-	//out.dump();
+	if(write_)
+	{
+		for (t=0; t < inSamples_; t++)
+		{for (o=0 ; o<inObservations_ ; o++)
+		outputFile_ << in(o, t) << " " ;
+		outputFile_ << endl;
+		}
 	}
+	else
+	{
+		ctrl_data_->stretch(inObservations_, count_+inSamples_);
+		for (o=0; o < inObservations_; o++)
+			for (t=0; t < inSamples_; t++)
+			{
+				ctrl_data_->setValue(o, count_+t, in(o, t));
+			}
+
+			//out.dump();
+	}
+
+	count_+=inSamples_;
+}
 
 

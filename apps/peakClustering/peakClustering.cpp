@@ -279,7 +279,8 @@ if(noiseName != EMPTYSTRING)
 	similarityWeight_(2) = 1;
 
 	pvseries->updctrl("PeClust/peClust/mrs_realvec/similarityWeight", similarityWeight_); 
-	
+	pvseries->updctrl("RealvecSink/peSink/mrs_string/fileName", filePeakName);
+
 	if(noiseName != EMPTYSTRING)
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/SoundFileSink/mixSink/mrs_string/filename", mixName);//[!]
 
@@ -354,7 +355,8 @@ if(noiseName != EMPTYSTRING)
 
 	if(peakStore_)
 	{
-		realvec vec = pvseries->getctrl("RealvecSink/peSink/mrs_realvec/data")->toVec();	
+		realvec vec = pvseries->getctrl("RealvecSink/peSink/mrs_realvec/data")->toVec();
+		pvseries->updctrl("RealvecSink/peSink/mrs_bool/done", true);
 		peakStore(vec, filePeakName, samplingFrequency_, D); 
 	}
 }
