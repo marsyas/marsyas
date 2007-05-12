@@ -304,6 +304,8 @@ for (i=0 ; i<data.getRows() ; i++)
 for (j=0 ; j<i ; j++)
 {
     mrs_real sim = 1/(1+hVirtanen (data(i, pkFrequency), data(j, pkFrequency)));
+	// should consider
+	// mrs_real sim = exp(-hVirtanen (data(i, pkFrequency), data(j, pkFrequency))/exp(1);
 	m(i, j) *= sim;
     m(j, i) *= sim;
 }

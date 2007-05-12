@@ -141,8 +141,11 @@ void Marsyas::extractParameter(realvec&in, std::vector<realvec>& out, pkParamete
 	for (i=0 ; i<in.getRows() ; i++)
 	{
 		index = (mrs_natural) in(i, pkTime) - startIndex;
+		if( in(i, pkGroup) >= 0)
+		{
 		out[index](l[index]) = in(i, type);
 		l[index]++;
+		}
 	}
 	// stretch realvecs
 	for (i=0 ; i < nbFrames ; i++)
@@ -420,8 +423,10 @@ Marsyas::cosinePeakSets(realvec&f1, realvec&a1, realvec&f2, realvec&a2, realvec&
 		res2 += x3(i)*x3(i);
 		res3 += x4(i)*x4(i);
 	}
+	if (res2 && res3)
 	res = res1/(sqrt(res2)*sqrt(res3));
-
+	else
+    res = 0;
 	/*if(res3==0)
 	{
 	cout << a4 ;
@@ -646,6 +651,7 @@ void Marsyas::peakStore(realvec &peaks, string filename, mrs_real sf, mrs_natura
 	peakSetM_(0, 2) =  hopSize;
 	peakSetM_(0, 3) =  peaks.getRows()/nbPkParameters;
 	peakSetM_(0, 4) =  nbFrames_;
+	peakSetM_(0, 5) = -1;
 	peakSetM_(0, pkGroup) = -2;
 	realvec tmp(1);
 	tmp.setval(0);

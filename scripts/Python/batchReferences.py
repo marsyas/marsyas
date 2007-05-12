@@ -1,14 +1,14 @@
 import os
 from glob import glob
 
-inputDirectory = "../../../../Databases/taslp/";
+inputDirectory = "../../../Databases/taslp/";
 outputDirectory = "../../../references ";
 
 testCommand = " ";
 #testCommand = " -q 1 ";
 
 beginCommand = "../../bin/release/peakClustering  ";
-beginCommand = "..\\..\\bin\\release\\peakClustering.exe  ";
+#beginCommand = "..\\..\\bin\\release\\peakClustering.exe  ";
 
 endCommand = " -P -S 0 -r -i 250_2500 -o "+outputDirectory;
 

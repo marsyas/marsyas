@@ -97,12 +97,17 @@ calculateSimilarity(string peaksfname1, string peaksfname2)
 
 	mrs_natural nrFrames = min(peaks1Freq.size(), peaks2Freq.size());
 
-	mrs_real sim = 0;
+	mrs_real sim = 0, globalAmp=0;
 	for(mrs_natural f = 0; f < nrFrames; ++f)
-		sim += cosinePeakSets(peaks1Freq[f], peaks1Amp[f], peaks2Freq[f], peaks2Amp[f], peaks1Amp[f], peaks2Amp[f],
+	{
+		mrs_real amp = (peaks1Amp[f].sum()+peaks2Amp[f].sum())/2;
+		globalAmp += amp;
+
+		sim += amp * cosinePeakSets(peaks1Freq[f], peaks1Amp[f], peaks2Freq[f], peaks2Amp[f], peaks1Amp[f], peaks2Amp[f],
 									x1, x2, x3, x4, histSize);
 
-	return sim/nrFrames;
+	}
+	return sim/globalAmp;
 }
 
 void
