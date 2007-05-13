@@ -1,5 +1,11 @@
-MEAWS 0.4:  Music Evaluation and Audition for Winds and Strings
+MEAWS 0.5:  Music Evaluation and Audition for Winds and Strings
 ----------
+
+****** WARNING *********
+This is the unstable development branch of meaws.  I'm currently
+rewriting everything.  It is highly non-working.
+
+
 
 WARNING!!!  this is currently **NOT** portable.  Data files are
 installed to /tmp/meaws.  This directory probably does not exist on
@@ -25,8 +31,7 @@ FILES:
 start.cpp: int main()
 
 mainwindow .h .cpp: the main QT interface.  A lot of stuff is still
-    left over from the QT "mainwindow" tutorial example file.  I haven't
-    finished cleaning it up; that'll take another day or two.
+    left over from the QT "mainwindow" tutorial example file.
 
 backend .h .cpp: the Marsyas backend audio stuff.
     We might want to split this up, see below.
@@ -35,7 +40,11 @@ metro .h .cpp: the metronome object.
 
 user .h .cpp: the User object.  (records previous tests, user info, etc)
 
+exercise .h .cpp: these are somewhat confused right now.  :(
+analyze .h .cpp: 
+
 icons/ : icons for the QT app.
 data/ : data to be installed
 data/music/ : exercises for the students.
+
 

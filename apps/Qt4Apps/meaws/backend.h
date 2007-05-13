@@ -16,14 +16,15 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#ifndef MEAWS_BACKEND_H
+#define MEAWS_BACKEND_H
+
 #include <QObject>
 #include "MarSystemManager.h"
 #include "../MarSystemQtWrapper.h"
+#include "defs.h"
 
 using namespace Marsyas;
-
-#define BACKEND_INTONATION 1
-#define BACKEND_CONTROL 2
 
 class MarBackend: public QObject {
 	Q_OBJECT
@@ -66,4 +67,5 @@ private:
 	void stopPitchNet();
 	MarSystem *pitchExtractor;
 };
+#endif
 

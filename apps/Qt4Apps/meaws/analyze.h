@@ -1,3 +1,9 @@
+// partly-old file, partly-new.  Will probably be merged
+// with backend .h.cpp  and/or main marsyas code
+
+#ifndef MEAWS_ANALYZE_H
+#define MEAWS_ANALYZE_H
+
 #include "MarSystemManager.h"
 using namespace Marsyas;
 
@@ -49,4 +55,5 @@ private:
 	mrs_natural numPitches;
 	mrs_natural exerLength;
 };
+#endif
 

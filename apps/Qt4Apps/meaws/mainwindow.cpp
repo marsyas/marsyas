@@ -8,11 +8,7 @@
 
 // basic application functions
 MainWindow::MainWindow() {
-	marBackend=NULL;
-	metro=NULL;
-
-	dataDir = "/tmp/meaws/data/";
-
+//	dataDir = "/tmp/meaws/data/";
 	createMain();
 	createActions();
 	createMenus();
@@ -24,9 +20,6 @@ MainWindow::MainWindow() {
 }
 
 MainWindow::~MainWindow() {
-	if (marBackend != NULL) {
-		delete marBackend;
-	}
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
@@ -77,6 +70,7 @@ void MainWindow::createMain() {
 	imageLabel->setScaledContents(false);
 	imageLabel->setMaximumHeight(100);
 
+/*
 	// this is what displays our testing text.  Later on we would
 	// remove textLabel and make a QT painting area or make it a picture.
 	displayResults = new QtMarPlot();
@@ -87,21 +81,27 @@ void MainWindow::createMain() {
 	displayAmplitude->setPlotName("Amplitude");
 	displayAmplitude->setBackgroundColor(QColor(255,255,255));
 	displayAmplitude->setPixelWidth(2);
-	updateTestingMethod();
-
+*/
 	// we want to display the above two QLabels within our main window.
 	mainLayout = new QVBoxLayout;
 //	mainLayout->addWidget(imageLabel,0,Qt::AlignTop);
 	mainLayout->addWidget(imageLabel,0,0);
-
+/*
 	displayLayout = new QHBoxLayout;
-
 	displayLayout->addWidget(displayResults,0,0);
 	displayLayout->addWidget(displayAmplitude,0,0);
 	mainLayout->addLayout(displayLayout);
+*/
 
+/*
+	cout<<"making display"<<endl;
+	resultsDisplay = new MeawsDisplay();
+	mainLayout->addLayout(resultsDisplay);
 	centralFrame->setLayout(mainLayout);
+	cout<<"... done"<<endl;
 
+	updateTestingMethod();
+*/
 	//displayResults->makeupData();
 //zz
 }
@@ -168,13 +168,14 @@ void MainWindow::createToolBars() {
 
 	connect(slider, SIGNAL(valueChanged(int)),
 		tempoBox, SLOT(setValue(int)));
+	connect(tempoBox, SIGNAL(valueChanged(int)),
+		slider, SLOT(setValue(int)));
+/*
 	connect(slider, SIGNAL(valueChanged(int)),
 		this, SLOT(setMetroTempo(int)));
 	connect(tempoBox, SIGNAL(valueChanged(int)),
-		slider, SLOT(setValue(int)));
-	connect(tempoBox, SIGNAL(valueChanged(int)),
 		this, SLOT(setMetroTempo(int)));
-
+*/
 	otherToolBar = addToolBar(tr("Other"));
 	otherToolBar->addWidget(exerciseTitle);
 }
@@ -183,7 +184,7 @@ void MainWindow::createActions() {
 	newUserAct = new QAction(QIcon(":/icons/new.png"), tr("&New user"), this);
 	newUserAct->setShortcut(tr("Ctrl+N"));
 	newUserAct->setStatusTip(tr("Create a new session"));
-	connect(newUserAct, SIGNAL(triggered()), this, SLOT(newUser()));
+//	connect(newUserAct, SIGNAL(triggered()), this, SLOT(newUser()));
 
 	openAct = new QAction(QIcon(":/icons/open.png"), tr("&Open user..."), this);
 	openAct->setShortcut(tr("Ctrl+O"));
@@ -203,7 +204,7 @@ void MainWindow::createActions() {
 	//closeAct = new QAction(tr("&Close user"), this);
 	closeAct->setShortcut(tr("Ctrl+W"));
 	closeAct->setStatusTip(tr("Close user"));
-	connect(closeAct, SIGNAL(triggered()), this, SLOT(closeUser()));
+//	connect(closeAct, SIGNAL(triggered()), this, SLOT(closeUser()));
 
 	setUserInfoAct = new QAction(QIcon(":/icons/new.png"), tr("&User info"), this);
 	setUserInfoAct->setShortcut(tr("Ctrl+U"));
@@ -214,26 +215,26 @@ void MainWindow::createActions() {
 	connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
 	aboutAct = new QAction(tr("&About Meaws"), this);
-	connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
+//	connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 
 	aboutQtAct = new QAction(tr("About &Qt"), this);
 	aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
-	connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+//	connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
 
 	openExerciseAct = new QAction(QIcon(":/icons/open.png"), tr("Open &Exercise..."), this);
 	openExerciseAct->setShortcut(tr("Ctrl+R"));
 	openExerciseAct->setStatusTip(tr("Open a new exercise"));
-	connect(openExerciseAct, SIGNAL(triggered()), this, SLOT(openExercise()));
+//	connect(openExerciseAct, SIGNAL(triggered()), this, SLOT(openExercise()));
 
 	setMetroIntroAct = new QAction(QIcon(":/icons/triangle.png"), tr("Set metronome introduction"), this);
-	connect(setMetroIntroAct, SIGNAL(triggered()), this, SLOT(setMetroIntro()));
+//	connect(setMetroIntroAct, SIGNAL(triggered()), this, SLOT(setMetroIntro()));
 
 	visualMetroBeat = new QAction(QIcon(":/icons/circle.png"), tr("Visual metronome"), this);
 	visualMetroBeat->setStatusTip(tr("Shows the beat"));
 
 	calcExerciseAct = new QAction(QIcon(":/icons/square.png"), tr("Calculate exercise results"), this);
-	connect(calcExerciseAct, SIGNAL(triggered()), this, SLOT(calcExercise()));
+//	connect(calcExerciseAct, SIGNAL(triggered()), this, SLOT(calcExercise()));
 
 	toggleMetroAct = new QAction(this);
 	toggleMetroAct->setShortcut(tr("Space"));
@@ -243,12 +244,12 @@ void MainWindow::createActions() {
 	testingFileAct = new QAction(QIcon(":/icons/open.png"), tr("&Open test audio file..."), this);
 	testingFileAct->setShortcut(tr("Ctrl+T"));
 	testingFileAct->setStatusTip(tr("Open test audio file"));
-	connect(testingFileAct, SIGNAL(triggered()), this, SLOT(testingFile()));
+//	connect(testingFileAct, SIGNAL(triggered()), this, SLOT(testingFile()));
 
 	playFileAct = new QAction(QIcon(":/icons/open.png"), tr("&Play test audio file..."), this);
 	playFileAct->setIcon(QIcon(":/icons/play.png"));
 	playFileAct->setStatusTip(tr("Play test audio file"));
-	connect(playFileAct, SIGNAL(triggered()), this, SLOT(playFile()));
+//	connect(playFileAct, SIGNAL(triggered()), this, SLOT(playFile()));
 }
 
 void MainWindow::enableActions(int state) {
@@ -267,7 +268,7 @@ void MainWindow::enableActions(int state) {
 		tempoToolBar ->setEnabled(true);
 	}
 	if (state==MEAWS_READY_USER) {   // user created or loaded
-		setWindowTitle(tr("Meaws - %1").arg(user->getName()));
+//		setWindowTitle(tr("Meaws - %1").arg(user->getName()));
 
 		saveAct   ->setEnabled(true);
 		saveAsAct ->setEnabled(true);
@@ -280,17 +281,19 @@ void MainWindow::enableActions(int state) {
 
 		tempoToolBar ->setEnabled(false);
 
-		closeExercise();
+//		closeExercise();
 	}
 	if (state==MEAWS_READY_EXERCISE) {   // exercise picked
-		setupMarBackend();
+//		setupMarBackend();
 		exerciseRunning=false;
 
 		string audioFile = dataDir;
 		audioFile.append("sd.wav");
 //zzz
+/*
 		metro = new Metro(visualMetroBeat, this, audioFile);
 		connect(toggleMetroAct, SIGNAL(triggered()), this, SLOT(toggleExercise()));
+*/
 		tempoToolBar ->setEnabled(true);
 
 		testingMenu ->setEnabled(true);
@@ -298,244 +301,6 @@ void MainWindow::enableActions(int state) {
 	if (state==MEAWS_READY_AUDIO) {   // exercise results
 
 	}
-}
-
-
-
-// user functions
-
-void MainWindow::newUser() {
-	try {
-		user = new User(NewUser);
-	}
-	catch (bool failed) {
-		return;
-	}
-	enableActions(MEAWS_READY_USER);
-	if ( chooseTestingMethod() ) {
-		connect(setUserInfoAct, SIGNAL(triggered()), user, SLOT(setUserInfo()));
-	}
-}
-
-void MainWindow::openUser() {
-	try {
-		user = new User(OpenUser);
-	}
-	catch (bool failed) {
-		return;
-	}
-	enableActions(MEAWS_READY_USER);
-}
-
-void MainWindow::closeExercise() {
-	if (marBackend != NULL) {
-		delete marBackend;
-		marBackend = NULL;
-	}
-	if (metro != NULL) {
-		delete metro;
-		metro = NULL;
-	}
-}
-
-void MainWindow::openExercise() {
-// TODO: fix directory
-	QString exerDir( dataDir.c_str() );
-	exerDir.append("music");
-	QString exerciseName = QFileDialog::getOpenFileName(this,
-		tr("Open Exercise"), exerDir, tr("Exercises (*.png)"));
-	if (!exerciseName.isEmpty()) {
-		QImage image(exerciseName);
-		imageLabel->setPixmap(QPixmap::fromImage(image));
-		exerciseTitle->setText( tr("Exercise: %1").arg(QFileInfo(exerciseName).baseName()) );
-		enableActions(MEAWS_READY_EXERCISE);
-	}
-}
-
-void MainWindow::testingFile() {
-	audioFileName = QFileDialog::getOpenFileName(this,
-		tr("Open test audio file"),"~/",tr("Audio files (*.wav)"));
-	calcExercise();
-}
-	
-bool MainWindow::maybeTestingMethod() {
-	if (testingMethod>0) {
-		return true;
-	} else {
-		return chooseTestingMethod();
-	}
-}
-
-bool MainWindow::chooseTestingMethod() {
-	QStringList items;
-	items << tr("Intonation test") << tr("Sound control test");
-	bool ok;
-	QString item = QInputDialog::getItem(this, tr("Choose testing method"),
-		tr("TestingMethod:"), items, 0, false, &ok);
-	if (ok && !item.isEmpty()) {
-		if (item=="Intonation test") testingMethod=BACKEND_INTONATION;
-		if (item=="Sound control test") testingMethod=BACKEND_CONTROL;
-		updateTestingMethod();
-		return true;
-	} else {
-		return false;
-	}
-}
-
-void MainWindow::updateTestingMethod() {
-/*
-	if (testingMethod==0) textLabel->setText("No testing method selected");
-	if (testingMethod==1) {
-		textLabel->setText("Intonation test");
-	}
-	if (testingMethod==2) {
-		textLabel->setText("Sound control test");
-	}
-*/
-}
-
-bool MainWindow::chooseUserInfo() {
-/*
-	bool ok;
-	QString text = QInputDialog::getText(this, tr("User info"),
-		tr("User name:"), QLineEdit::Normal,
-		QDir::home().dirName(), &ok);
-	if (ok && !text.isEmpty()) {
-		userName = text;
-		return true;
-	} else {
-		return false;
-	}
-*/
-	return true;
-}
-
-void MainWindow::closeUser() {
-	if (marBackend != NULL) {
-		delete marBackend;
-		marBackend = NULL;
-	}
-
-	delete user;
-	imageLabel->clear();
-	testingMethod=0;
-	updateTestingMethod();
-	enableActions(MEAWS_READY_NOTHING);
-}
-
-
-
-
-// other functions
-
-void MainWindow::toggleExercise() {
-	if (exerciseRunning) {   // stop it
-		marBackend->stop();
-		metro->stopMetro();
-		toggleMetroAct->setStatusTip(tr("Start"));
-		toggleMetroAct->setIcon(QIcon(":/icons/player_play.png"));
-		exerciseRunning = !exerciseRunning;
-	} else {   // start it
-		marBackend->start();
-		metro->startMetro();
-		toggleMetroAct->setStatusTip(tr("Stop"));
-		toggleMetroAct->setIcon(QIcon(":/icons/player_pause.png"));
-		exerciseRunning = !exerciseRunning;
-	}
-}
-
-void MainWindow::setupMarBackend() {
-	exercise = new Exercise();
-	if (marBackend != NULL) {
-		delete marBackend;
-		marBackend = NULL;
-	}
-	marBackend = new MarBackend(testingMethod);
-	QString filename = user->getName();
-	filename.append("-");
-	filename.append( QDateTime::currentDateTime().toString("yyyyMMdd") );
-	filename.append("-");
-	filename.append( QDateTime::currentDateTime().toString("hhmmss") );
-	filename.append(".wav");
-	audioFileName = filename;
-	marBackend->setFileName( qPrintable(audioFileName) );
-
-	// communication with Marsyas backend
-//	connect(analyze, SIGNAL(nextNoteError(float, int)), exercise, SLOT(nextNoteError(float, int)));
-}
-
-void MainWindow::beat() {
-
-}
-
-void MainWindow::setMetroIntro() {
-	bool ok;
-	int i = QInputDialog::getInteger(this, tr("Extra beats"),
-		tr("How many beats do you want \nto hear before beginning?"),
-		4, 0, 32, 1, &ok);
-	if (ok) {
-		metroIntroBeats=i;
-		metro->setIntro(metroIntroBeats);
-	}
-}
-
-void MainWindow::setMetroTempo(int tempo) {
-	metro->setTempo(tempo);
-}
-
-void MainWindow::calcExercise() {
-	//analyze = new Analyze( qPrintable(audioFileName), dataDir );
-	analyze = new Analyze( qPrintable(audioFileName), "" );
-	analyze->prepSaxPitches();
-	displayResults->setData( analyze->retPitches() );
-	displayAmplitude->setData( analyze->retAmplitudes() );
-
-	double percentage = analyze->getPitchStability();
-	QString message;
-	message.setNum(100.0*percentage);
-	message.prepend("Test results: ");
-	message.append("%");
-	statusBar()->showMessage(message);
-/*
-	analyze->calcDurations();
-	analyze->calcNotes();
-	analyze->writeNotes();
-	delete analyze;
-
-	double error;
-	int direction;
-	string line;
-	float curPitch;
-	int note=0;
-	ifstream infile;
-	infile.open("calcNotes.txt");
-	while (infile>>line) {
-		if (note<8) {  // disgusting hack to produce screenshots
-		note++;
-		curPitch = atof(line.c_str() );
-		//cout<<"curPitch: "<<curPitch<<endl;
-		error = curPitch-1.0;
-		//cout<<"ERROR: "<<error<<endl;
-		if (error<0)
-			direction = 1;  // might be wrong sign
-		else
-			direction = -1;
-		exercise->nextNoteError( fabs(error) , direction);
-		}
-	}
-	infile.close();
-
-	exercise->getLily();
-	string command = "cd /Users/gperciva/tmp/ ; lilypond -dpreview out.ly";
-	system(command.c_str());
-	QString imageFileName="/Users/gperciva/tmp/out.preview.png";
-	QImage image(imageFileName);
-//	displayResults->setPixmap(QPixmap::fromImage(image));
-*/
-}
-
-void MainWindow::playFile() {
-	marBackend->playFile();
 }
 
 

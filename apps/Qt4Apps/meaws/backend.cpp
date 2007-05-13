@@ -24,11 +24,11 @@ using namespace std;
 MarBackend::MarBackend(int testingMethod) {
 	//cout<<"backend "<<testingMethod<<endl;
 	method=testingMethod;
-	if (method==BACKEND_INTONATION) {
+	if (method==TEST_INTONATION) {
 		//cout<<"Setting up Intonation stuff"<<endl;
 		startIntonation();
 	}
-	if (method==BACKEND_CONTROL) {
+	if (method==TEST_CONTROL) {
 //		cout<<"Setting up Control stuff"<<endl;
 		//startControl();
 // currently no difference.
@@ -37,11 +37,11 @@ MarBackend::MarBackend(int testingMethod) {
 }
 
 MarBackend::~MarBackend() {
-	if (method==BACKEND_INTONATION) {
+	if (method==TEST_INTONATION) {
 		delete mrsWrapper;
 		delete recNet;
 	}
-	if (method==BACKEND_CONTROL) {
+	if (method==TEST_CONTROL) {
 
 	}
 }

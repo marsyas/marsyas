@@ -1,12 +1,15 @@
 include (../Qt4Apps.pri)
 
-SOURCES = start.cpp
-HEADERS = mainwindow.h backend.h metro.h
-SOURCES += mainwindow.cpp backend.cpp metro.cpp
-HEADERS += user.h exercise.h analyze.h
-SOURCES += user.cpp exercise.cpp analyze.cpp
-HEADERS += ../MarSystemQtWrapper.h ../QtMarPlot.h
-SOURCES += ../MarSystemQtWrapper.cpp ../QtMarPlot.cpp
+SOURCES = start.cpp mainwindow.cpp
+HEADERS = mainwindow.h
+
+#HEADERS += backend.h metro.h
+#SOURCES += mainwindow.cpp backend.cpp metro.cpp
+#HEADERS += user.h exercise.h analyze.h display.h
+#SOURCES += user.cpp exercise.cpp analyze.cpp display.cpp
+#HEADERS += ../MarSystemQtWrapper.h ../QtMarPlot.h
+#SOURCES += ../MarSystemQtWrapper.cpp ../QtMarPlot.cpp
+
 RESOURCES = icons.qrc
 TARGET = meaws
 VERSION = 0.4

@@ -8,9 +8,8 @@
 #include <QFrame>
 #include <QtGui>
 
-#include <QPainter>
-
-#include <QTemporaryFile>
+// #include <QPainter>
+// #include <QTemporaryFile>
 class QAction;
 class QMenu;
 class QTextEdit;
@@ -21,12 +20,15 @@ class QLabel;
 using namespace std;
 
 // Meaws stuff
+/*
 #include "user.h"
 #include "backend.h"
 #include "metro.h"
 #include "exercise.h"
 #include "analyze.h"
-#include "../QtMarPlot.h"
+#include "display.h"
+#include "defs.h"
+*/
 
 class MainWindow : public QMainWindow
 {
@@ -44,15 +46,14 @@ private slots:
 	void about();
 	void enableActions(int state);
 
+/*
 // user slots
 	void newUser();
 	void openUser();
 	void closeUser();
-/*
 	void open();
 	bool save();
 	bool saveAs();
-*/
 
 // exercise slots
 	void openExercise();
@@ -66,6 +67,7 @@ private slots:
 	void calcExercise();
 	void testingFile();
 	void playFile();
+*/
 
 private:
 // basic application functions
@@ -118,7 +120,7 @@ private:
 	bool chooseUserInfo();
 
 // user variables
-	User *user;
+//	User *user;
 
 // testingMethod = 0  not chosen
 //               = 1  Intonation
@@ -142,8 +144,9 @@ private:
 
 	QTextEdit *textEdit;
 	QLabel *imageLabel;
-	QtMarPlot *displayResults;
-	QtMarPlot *displayAmplitude;
+	//MeawsDisplay *resultsDisplay;
+//	QtMarPlot *displayResults;
+//	QtMarPlot *displayAmplitude;
 	QHBoxLayout *displayLayout;
 
 	QString curFile;
@@ -156,14 +159,16 @@ private:
 
 	QString audioFileName;
 
-  MarBackend *marBackend;
-	void setupMarBackend();
+  //MarBackend *marBackend;
+//	void setupMarBackend();
 
 	bool exerciseRunning;
 
+/*
 	Metro *metro;
 	Exercise *exercise;
 	Analyze *analyze;
+*/
 
 	string dataDir;
 };

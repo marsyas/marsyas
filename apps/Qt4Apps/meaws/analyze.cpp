@@ -1,3 +1,6 @@
+// partly-old file, partly-new.  Will probably be merged
+// with backend .h.cpp  and/or main marsyas code
+
 #include <iostream>
 #include <fstream>
 #include <math.h>
