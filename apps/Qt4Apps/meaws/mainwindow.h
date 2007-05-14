@@ -15,19 +15,15 @@ class QMenu;
 class QTextEdit;
 class QLabel;
 
-// C++ stuff
-#include <iostream>
-using namespace std;
-
 // Meaws stuff
-/*
+#include "defs.h"
 #include "user.h"
+/*
 #include "backend.h"
 #include "metro.h"
 #include "exercise.h"
 #include "analyze.h"
 #include "display.h"
-#include "defs.h"
 */
 
 class MainWindow : public QMainWindow
@@ -41,10 +37,12 @@ public:
 protected:
 	void closeEvent(QCloseEvent *event);
 
+public slots:
+	void enableActions(int state);
+
 private slots:
 // basic application slots
 	void about();
-	void enableActions(int state);
 
 /*
 // user slots
@@ -78,19 +76,23 @@ private:
 	void createStatusBar();
 	void readSettings();
 	void writeSettings();
+	void createObjects();
 
-// basic application variables
+// main interface objects
+	QFrame* centralFrame;
+	QGridLayout *mainGrid;
+	QVBoxLayout *mainLayout;
+
+// menu and toolbar objects
 	QMenu *fileMenu;
-	QToolBar *userToolBar;
-	QToolBar *otherToolBar;
+	QToolBar *fileToolBar;
 	QAction *newUserAct;
-	QAction *openAct;
-	QAction *saveAct;
-	QAction *saveAsAct;
+	QAction *openUserAct;
+	QAction *saveUserAct;
+	QAction *saveAsUserAct;
 	QAction *setUserInfoAct;
-	QAction *closeAct;
+	QAction *closeUserAct;
 	QAction *exitAct;
-
 
 	QMenu *exerMenu;
 	QToolBar *tempoToolBar;
@@ -100,9 +102,11 @@ private:
 	QAction *calcExerciseAct;
 	QAction *visualMetroBeat;
 
+	QToolBar *otherToolBar;
 	QAction *testingFileAct;
 	QAction *playFileAct;
-
+	QSlider *tempoSlider;
+	QSpinBox *tempoBox;
 
 	QMenu *testingMenu;
 
@@ -110,21 +114,26 @@ private:
 	QAction *aboutAct;
 	QAction *aboutQtAct;
 
-	QGridLayout *mainGrid;
-	QVBoxLayout *mainLayout;
-	QFrame* centralFrame;
 
 
+// other stuff that appears to be necessary... for now
+	QLabel *exerciseTitle;
+	std::string dataDir;
+	QLabel *imageLabel;
+	bool exerciseRunning;
 
 // user functions
-	bool chooseUserInfo();
+//	bool chooseUserInfo();
 
 // user variables
-//	User *user;
+	User *user;
+
 
 // testingMethod = 0  not chosen
 //               = 1  Intonation
 //               = 2  Sound control
+
+/*
 	int testingMethod;
 	bool maybeTestingMethod();
 	bool chooseTestingMethod();
@@ -132,7 +141,7 @@ private:
 
 
 	QString exerciseName;
-
+*/
 
 /*
 	bool maybeSave();
@@ -142,8 +151,8 @@ private:
 	QString strippedName(const QString &fullFileName);
 */
 
+/*
 	QTextEdit *textEdit;
-	QLabel *imageLabel;
 	//MeawsDisplay *resultsDisplay;
 //	QtMarPlot *displayResults;
 //	QtMarPlot *displayAmplitude;
@@ -151,18 +160,14 @@ private:
 
 	QString curFile;
 
-	QLabel *exerciseTitle;
 
-	QSlider *slider;
-	QSpinBox *tempoBox;
 	int metroIntroBeats;
 
 	QString audioFileName;
-
+*/
   //MarBackend *marBackend;
 //	void setupMarBackend();
 
-	bool exerciseRunning;
 
 /*
 	Metro *metro;
@@ -170,7 +175,6 @@ private:
 	Analyze *analyze;
 */
 
-	string dataDir;
 };
 
 #endif

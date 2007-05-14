@@ -1,7 +1,10 @@
 include (../Qt4Apps.pri)
 
 SOURCES = start.cpp mainwindow.cpp
-HEADERS = mainwindow.h
+HEADERS = defs.h mainwindow.h
+
+HEADERS += user.h
+SOURCES += user.cpp
 
 #HEADERS += backend.h metro.h
 #SOURCES += mainwindow.cpp backend.cpp metro.cpp
@@ -12,7 +15,7 @@ HEADERS = mainwindow.h
 
 RESOURCES = icons.qrc
 TARGET = meaws
-VERSION = 0.4
+VERSION = 0.5
 #CONFIG = qt
 
 

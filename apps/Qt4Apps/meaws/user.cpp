@@ -1,11 +1,10 @@
+//testing only
 #include <iostream>
-#include <QtGui>
+using namespace std;
+
 #include "user.h"
 
-// new user
-User::User(const int type) {
-	if (type==NewUser) { newUser(); }
-	if (type==OpenUser) { openUser(); }
+User::User() {
 
 }
 
@@ -22,6 +21,7 @@ void User::newUser() {
 	} else {
 		throw false;
 	}
+	emit enableActions(MEAWS_READY_USER);
 }
 
 void User::openUser() {
