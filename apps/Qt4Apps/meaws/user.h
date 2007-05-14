@@ -25,7 +25,7 @@ public slots:
 	void newUser();
 	void open();
 	bool save();
-	void saveAs();
+	bool saveAs();
 	void close();
 	void setUserInfo();
 
@@ -34,9 +34,12 @@ signals:
 
 private:
 	bool maybeSave();
+	bool saveFile(const QString &saveFilename);
+	void openFile(const QString &openFilename);
 
 	bool isModified;
-	QString name;
+	QString username;
+	QString filename;
 
 };
 #endif

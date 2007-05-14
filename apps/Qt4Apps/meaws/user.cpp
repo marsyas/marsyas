@@ -18,7 +18,7 @@ void User::newUser() {
 			tr("User name:"), QLineEdit::Normal,
 			QDir::home().dirName(), &ok);
 		if (ok && !text.isEmpty()) {
-			name = text;
+			username = text;
 			isModified = true;
 			emit enableActions(MEAWS_READY_USER);
 		}
@@ -26,20 +26,73 @@ void User::newUser() {
 }
 
 void User::open() {
+	if (maybeSave()) {
+		QString openFilename = QFileDialog::getOpenFileName(0,tr("Save file"),
+			MEAWS_DIR);
+		if (!openFilename.isEmpty())
+			openFile(openFilename);
+	}
+}
 
+void User::openFile(const QString &openFilename) {
+	QFile file(openFilename);
+	if (!file.open(QFile::ReadOnly | QFile::Text)) {
+		QMessageBox::warning(this, tr("Application"),
+			tr("Cannot read file %1:\n%2.")
+			.arg(openFilename)
+			.arg(file.errorString()));
+		return;
+	}
+
+	QDataStream in(&file);
+	QApplication::setOverrideCursor(Qt::WaitCursor);
+	in>>username;
+	QApplication::restoreOverrideCursor();
+
+	filename = openFilename;
+	emit enableActions(MEAWS_READY_USER);
 }
 
 bool User::save() {
-	return true;
+	if (filename.isEmpty()) {
+		return saveAs();
+	} else {
+		return saveFile(filename);
+	}
 }
 
-void User::saveAs() {
+bool User::saveAs() {
+	QString saveAsFilename = QFileDialog::getSaveFileName(0,tr("Save file"),
+		MEAWS_DIR);
+	if (saveAsFilename.isEmpty())
+		return false;
+	return saveFile(saveAsFilename);
+}
 
+bool User::saveFile(const QString &saveFilename) {
+	QFile file(saveFilename);
+	if (!file.open(QFile::WriteOnly | QFile::Text)) {
+		QMessageBox::warning(this, tr("Application"),
+			tr("Cannot write file %1:\n%2.")
+			.arg(saveFilename)
+			.arg(file.errorString()));
+		return false;
+	}
+
+	QDataStream out(&file);
+	QApplication::setOverrideCursor(Qt::WaitCursor);
+	out << username;
+	QApplication::restoreOverrideCursor();
+
+	filename = saveFilename;
+	isModified = false;
+	return true;
 }
 
 void User::close() {
 	if (maybeSave()) {
-		name = "";
+		username = "";
+		isModified = false;
 		emit enableActions(MEAWS_READY_NOTHING);
 	}
 }
@@ -61,7 +114,7 @@ bool User::maybeSave() {
 
 
 QString User::getName() {
-	return name;
+	return username;
 }
 
 void User::setUserInfo() {
@@ -70,7 +123,8 @@ void User::setUserInfo() {
 		tr("User name:"), QLineEdit::Normal,
 		QDir::home().dirName(), &ok);
 	if (ok && !text.isEmpty()) {
-		name = text;
+		username = text;
+		isModified = true;
 		emit enableActions(MEAWS_READY_USER);
 	}
 }

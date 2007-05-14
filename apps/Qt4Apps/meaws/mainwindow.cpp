@@ -22,7 +22,8 @@ MainWindow::~MainWindow() {
 
 void MainWindow::closeEvent(QCloseEvent *event) {
 	if (1) {
-	//if (maybeSave()) {
+		if (user!=NULL)
+			user->close();
 		writeSettings();
 		event->accept();
 	} else {
@@ -272,7 +273,6 @@ void MainWindow::enableActions(int state) {
 		exerMenu     ->setEnabled(false);
 		tempoToolBar ->setEnabled(false);
 		testingMenu  ->setEnabled(false);
-//		openExerciseAct ->setEnabled(false);
 		break;
 	case MEAWS_READY_USER:   // user selected
 		setWindowTitle(tr("Meaws - %1").arg(user->getName()));
@@ -282,13 +282,9 @@ void MainWindow::enableActions(int state) {
 		closeUserAct  ->setEnabled(true);
 		setUserInfoAct->setEnabled(true);
 
-		testingMenu     ->setEnabled(true);
-		exerMenu    ->setEnabled(true);
-		openExerciseAct ->setEnabled(true);
-
+		exerMenu     ->setEnabled(true);
 		tempoToolBar ->setEnabled(false);
-
-//		closeExercise();
+		testingMenu  ->setEnabled(false);
 		break;
 	case MEAWS_READY_EXERCISE:   // exercise loaded
 //		setupMarBackend();
