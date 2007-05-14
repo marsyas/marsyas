@@ -188,25 +188,26 @@ void MainWindow::createActions() {
 	openUserAct = new QAction(QIcon(":/icons/open.png"), tr("&Open user..."), this);
 	openUserAct->setShortcut(tr("Ctrl+O"));
 	openUserAct->setStatusTip(tr("Open an existing session"));
-//	connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
+	connect(openUserAct, SIGNAL(triggered()), user, SLOT(open()));
 
 	saveUserAct = new QAction(QIcon(":/icons/save.png"), tr("&Save user"), this);
 	saveUserAct->setShortcut(tr("Ctrl+S"));
 	saveUserAct->setStatusTip(tr("Save the session to disk"));
-//	connect(saveAct, SIGNAL(triggered()), this, SLOT(save()));
+	connect(saveUserAct, SIGNAL(triggered()), user, SLOT(save()));
 
 	saveAsUserAct = new QAction(tr("Save user &As..."), this);
 	saveAsUserAct->setStatusTip(tr("Save the session under a new name"));
-//	connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
+	connect(saveAsUserAct, SIGNAL(triggered()), user, SLOT(saveAs()));
 
 	closeUserAct = new QAction(QIcon(":/icons/quit.png"), tr("&Close user"), this);
-	//closeUserAct = new QAction(tr("&Close user"), this);
 	closeUserAct->setShortcut(tr("Ctrl+W"));
 	closeUserAct->setStatusTip(tr("Close user"));
-//	connect(closeAct, SIGNAL(triggered()), this, SLOT(closeUser()));
+	connect(closeUserAct, SIGNAL(triggered()), user, SLOT(close()));
 
 	setUserInfoAct = new QAction(QIcon(":/icons/new.png"), tr("&User info"), this);
 	setUserInfoAct->setShortcut(tr("Ctrl+U"));
+	connect(setUserInfoAct, SIGNAL(triggered()), user, SLOT(setUserInfo()));
+
 
 	exitAct = new QAction(tr("E&xit"), this);
 	exitAct->setShortcut(tr("Ctrl+Q"));
@@ -214,11 +215,11 @@ void MainWindow::createActions() {
 	connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
 	aboutAct = new QAction(tr("&About Meaws"), this);
-//	connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
+	connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 
 	aboutQtAct = new QAction(tr("About &Qt"), this);
 	aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
-//	connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+	connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
 
 	openExerciseAct = new QAction(QIcon(":/icons/open.png"), tr("Open &Exercise..."), this);
@@ -274,7 +275,7 @@ void MainWindow::enableActions(int state) {
 //		openExerciseAct ->setEnabled(false);
 		break;
 	case MEAWS_READY_USER:   // user selected
-//		setWindowTitle(tr("Meaws - %1").arg(user->getName()));
+		setWindowTitle(tr("Meaws - %1").arg(user->getName()));
 
 		saveUserAct   ->setEnabled(true);
 		saveAsUserAct ->setEnabled(true);

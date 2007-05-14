@@ -22,15 +22,20 @@ public:
 	QString getName();
 
 public slots:
-	void setUserInfo();
 	void newUser();
+	void open();
+	bool save();
+	void saveAs();
+	void close();
+	void setUserInfo();
 
 signals:
 	void enableActions(int state);
 
 private:
-	void openUser();
+	bool maybeSave();
 
+	bool isModified;
 	QString name;
 
 };
