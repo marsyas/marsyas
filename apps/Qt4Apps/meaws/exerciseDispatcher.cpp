@@ -9,10 +9,10 @@ ExerciseDispatcher::ExerciseDispatcher() {
 ExerciseDispatcher::~ExerciseDispatcher() {
 }
 
-void ExerciseDispatcher::setInstructionArea(QLayout *getInstructionArea){
+void ExerciseDispatcher::setInstructionArea(QGridLayout *getInstructionArea){
 	instructionArea = getInstructionArea;
 }
-void ExerciseDispatcher::setResultArea(QLayout *getResultArea){
+void ExerciseDispatcher::setResultArea(QGridLayout *getResultArea){
 	resultArea = getResultArea;
 }
 
@@ -23,6 +23,10 @@ void ExerciseDispatcher::open() {
 	if (!openFilename.isEmpty()) {
 		cout<<qPrintable(openFilename)<<endl;
 
+		ExerciseIntonation *foo = new ExerciseIntonation();
+		foo->setArea(instructionArea, resultArea);
+		foo->open(openFilename);
+/*
 		exerciseName = openFilename;
         QImage image(openFilename);
 		imageLabel = new QLabel;
@@ -30,6 +34,7 @@ void ExerciseDispatcher::open() {
 //        exerciseTitle->setText( tr("Exercise: %1").arg(QFileInfo(exerciseName).baseName()) );
 		instructionArea->addWidget(imageLabel);
         enableActions(MEAWS_READY_EXERCISE);
+*/
 	}
 }
 

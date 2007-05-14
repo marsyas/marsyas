@@ -2,6 +2,7 @@
 #define MEAWS_EXERCISE_DISPATCHER_H
 
 #include "defs.h"
+#include "exerciseIntonation.h"
 //#include <QObject>
 #include <QDialog>
 #include <QFileDialog>
@@ -18,16 +19,16 @@ public:
 	
 public slots:
 	void open();
-	void setInstructionArea(QLayout *getInstructionArea);
-	void setResultArea(QLayout *getResultArea);
+	void setInstructionArea(QGridLayout *getInstructionArea);
+	void setResultArea(QGridLayout *getResultArea);
 
 signals:
 	void enableActions(int state);
 
 private:
 	QString exerciseName;
-	QLayout *instructionArea;
-	QLayout *resultArea;
+	QGridLayout *instructionArea;
+	QGridLayout *resultArea;
 
 	QLabel *imageLabel;
 };

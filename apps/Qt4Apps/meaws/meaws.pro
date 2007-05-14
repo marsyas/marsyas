@@ -6,6 +6,9 @@ HEADERS = defs.h mainwindow.h
 HEADERS += user.h exerciseDispatcher.h
 SOURCES += user.cpp exerciseDispatcher.cpp
 
+HEADERS += exerciseAbstract.h exerciseIntonation.h
+SOURCES += exerciseAbstract.cpp exerciseIntonation.cpp
+
 #HEADERS += backend.h metro.h
 #SOURCES += mainwindow.cpp backend.cpp metro.cpp
 #HEADERS += user.h exercise.h analyze.h display.h
