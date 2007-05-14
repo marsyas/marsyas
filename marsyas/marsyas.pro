@@ -259,7 +259,8 @@ HEADERS += \
 	BICchangeDetector.h \
 	QGMMModel.h \
 	PeSynOscBank.h \
-	SpectralSNR.h
+	SpectralSNR.h \
+	HWPSspectrum.h
 	 
 SOURCES += \
 	ADSR.cpp \
@@ -463,5 +464,6 @@ SOURCES += \
 	BICchangeDetector.cpp \
 	QGMMModel.cpp \
 	PeSynOscBank.cpp \
-	SpectralSNR.cpp
+	SpectralSNR.cpp \
+	HWPSspectrum.cpp
 	

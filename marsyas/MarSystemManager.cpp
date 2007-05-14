@@ -143,6 +143,7 @@ in sequence.
 #include "SpectralSNR.h"
 #include "StereoSpectrum.h" 
 #include "StereoSpectrumFeatures.h"
+#include "HWPSspectrum.h"
 
 using namespace std;
 using namespace Marsyas;
@@ -264,14 +265,15 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("SpectralSNR", new SpectralSNR("ssnrpr"));
 	registerPrototype("StereoSpectrum", new StereoSpectrum("stereopr"));
 	registerPrototype("StereoSpectrumFeatures", new StereoSpectrumFeatures("stereospkfpr"));
+	registerPrototype("HWPSspectrum", new HWPSspectrum("hwpsspectrumpr"));
 	
 
-	//////////////////////////////////////////////////////////////////////////
+	//***************************************************************************************
 	//									Composite MarSystem prototypes
-	//////////////////////////////////////////////////////////////////////////
+	//***************************************************************************************
 
 	//--------------------------------------------------------------------------------
-	//Making a prototype for a specific MidiOutput device 
+	// Making a prototype for a specific MidiOutput device 
 	//--------------------------------------------------------------------------------
 	MarSystem* devibotpr = new MidiOutput("devibotpr");
 	devibotpr->linkctrl("mrs_natural/arm", "mrs_natural/byte2");
@@ -280,14 +282,12 @@ MarSystemManager::MarSystemManager()
 	devibotpr->updctrl("mrs_natural/byte1", 144);
 	registerPrototype("DeviBot", devibotpr);
 
-
-	/* Stereo2Mono MarSystem */ 
-	
+	//--------------------------------------------------------------------------------
+	// Stereo2Mono MarSystem 
+	//--------------------------------------------------------------------------------
 	MarSystem* stereo2monopr = new Sum("stereo2monopr");
 	stereo2monopr->updctrl("mrs_real/weight", 0.5);
 	registerPrototype("Stereo2Mono", stereo2monopr);
-	
-
 
 	//--------------------------------------------------------------------------------
 	// texture window analysis composite prototype
@@ -378,7 +378,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PhaseVocoder", pvocpr);
 
 	//--------------------------------------------------------------------------------
-	//protoptype for pitch Extraction using SACF
+	// prototype for pitch Extraction using SACF
 	//--------------------------------------------------------------------------------
 	MarSystem* pitchSACF = new Series("pitchSACF");
 	//pitchSACF->addMarSystem(create("Windowing", "wi"));
@@ -422,7 +422,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PitchSACF", pitchSACF);
 
 	//--------------------------------------------------------------------------------
-	//protoptype for pitch Extraction using Praat-Like implementation
+	// prototype for pitch Extraction using Praat-Like implementation
 	// see details and discussion in
 	// http://www.fon.hum.uva.nl/paul/papers/Proceedings_1993.pdf
 	//--------------------------------------------------------------------------------
@@ -491,6 +491,19 @@ MarSystemManager::MarSystemManager()
 		"PvFold/fo/mrs_natural/FFTSize");
 	peAnalysePr->updctrl("Shifter/sh/mrs_natural/shift", 1);
 	registerPrototype("PeAnalyse", peAnalysePr);
+
+	//--------------------------------------------------------------------------------
+	// prototype for HWPS Spectrum calculation
+	//--------------------------------------------------------------------------------
+	MarSystem* HWPSspectpr = new Series("HWPSspectpr");
+	HWPSspectpr->addMarSystem(create("peAnalyse", "analyse"));
+	HWPSspectpr->addMarSystem(create("HWPSspectrum", "HWPSspect"));
+	HWPSspectpr->linkctrl("mrs_natural/Sinusoids", 
+		"peAnalyse/analyse/mrs_natural/Sinusoids");
+	HWPSspectpr->linkctrl("mrs_natural/Sinusoids", 
+		"HWPSspectrum/HWPSspect/mrs_natural/Sinusoids");
+	HWPSspectpr->updctrl("mrs_natural/Sinusoids", 20);
+	registerPrototype("HWPSspectrumnet", HWPSspectpr);
 }
 
 MarSystemManager::~MarSystemManager()

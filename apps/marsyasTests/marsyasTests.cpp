@@ -58,21 +58,21 @@ printHelp(string progName)
   cerr << "knn             : test K-NearestNeighbor classifier " << endl;
   cerr << "marsystemIO     : test marsystem IO " << endl;
   cerr << "mixer           : test fanout for mixing " << endl;
-  cerr << "mp3convert : convert a collection of .mp3 files to .wav files" << endl;
+  cerr << "mp3convert      : test convertion of a collection of .mp3 files to .wav files" << endl;
   cerr << "normMaxMin      : test of normalize marsSystem " << endl;
   cerr << "parallel        : test Parallel composite " << endl;
-  cerr << "probe            : test Probe functionality " << endl;
+  cerr << "probe           : test Probe functionality " << endl;
   cerr << "realvec         : test realvec functions " << endl;
   cerr << "rmsilence  	   : test removing silences " << endl;
   cerr << "scheduler       : test scheduler " << endl;
   cerr << "schedulerExpr   : test scheduler with expressions " << endl;
-  cerr << "SOM		   : test support vector machine " << endl;
+  cerr << "SOM		         : test support vector machine " << endl;
   cerr << "spectralSNR     : test spectral SNR " << endl;
   cerr << "stereoFeatures  : test stereo features " << endl;
-  cerr << "stereoMFCC       : test stereo MFCC " << endl;
+  cerr << "stereoMFCC      : test stereo MFCC " << endl;
   cerr << "stereoFeaturesMFCC : test stereo features and MFCCs" << endl;
   cerr << "stereo2mono     : test stereo to mono conversion " << endl;
-  cerr << "tempo	   : test tempo estimation " << endl;
+  cerr << "tempo	         : test tempo estimation " << endl;
   cerr << "vicon           : test processing of vicon motion capture data" << endl;
   cerr << "Windowing       : test different window functions of Windowing marsystem" << endl;
   cerr << "weka            : test weka source and sink functionality" << endl;
@@ -101,9 +101,6 @@ loadOptions()
   verboseopt = cmd_options.getBoolOption("verbose");
   testName = cmd_options.getStringOption("testName");
 }
-
-
-
 
 void 
 test_scheduler(string sfName)
@@ -210,9 +207,6 @@ test_getControls(string sfName)
   delete playbacknet;
 }
 
-
-
-
 void
 test_mono2stereo(string sfName)
 {
@@ -240,17 +234,11 @@ test_mono2stereo(string sfName)
   delete playbacknet;
 }
 
-
-
-
-
-
 void 
 test_audiodevices()
 {
   std::cout << "Testing audio devices" << endl;
   
-
   RtAudio *audio = 0;
   RtAudioDeviceInfo info;
   try {
@@ -421,7 +409,6 @@ test_marsystemIO()
   delete pnet;
 }
 
-
 void 
 test_mixer(string sfName0, string sfName1)
 {
@@ -494,7 +481,6 @@ test_fft(string sfName)
 void 
 test_parallel()
 {
-  
   Parallel *parallel = new Parallel("parallel");
   
   realvec in;
@@ -543,8 +529,7 @@ test_probe()
   pnet->addMarSystem(mng.create("SoundFileSource", "src"));
   pnet->addMarSystem(mng.create("Gain", "gain"));
   pnet->addMarSystem(mng.create("Gain", "gain2"));
-  
-
+ 
   cout << "BEFORE PROBE " << endl;  
   cout << "pnet = " << *pnet << endl;
   pnet->updctrl("mrs_bool/probe", true);
@@ -599,8 +584,6 @@ test_cascade()
 	delete cascade;
 }
 
-
-
 void 
 test_collection(string sfName) 
 {
@@ -628,7 +611,6 @@ test_collection(string sfName)
       // for (int i=0; i<100; i++)
 	playbacknet->tick();
       
-      
 	// playbacknet->updctrl("SoundFileSource/src/mrs_natural/cindex", cindex);
       cout << playbacknet->getctrl("SoundFileSource/src/mrs_string/currentlyPlaying")->to<mrs_string>() << endl;
       
@@ -642,12 +624,7 @@ test_collection(string sfName)
     }
   cout << "tick " << isEmpty << endl;
   delete playbacknet;
-  
-  
-  
-  
 }
-
 
 void 
 test_knn()
@@ -867,7 +844,6 @@ test_vicon(string vfName)
   
   playbacknet->updctrl("mrs_natural/inSamples", 184);
 
-
   // set message to STK 
   /* cout << "ControlChange    0.0  1  44 24.000000" << endl;
      cout << "AfterTouch       0.0 1 64.000000" << endl;
@@ -1083,7 +1059,6 @@ test_MATLABengine()
   else
     cout << "Error getting value back from MATLAB!" << endl;
   getchar();
-	
 
   //-------------------------------------------------------------------------------------------
   cout << "******************************************************" << endl;
@@ -1116,7 +1091,6 @@ test_MATLABengine()
     cout << "Error getting value back from MATLAB!" << endl;
   getchar();
 
-
   //-------------------------------------------------------------------------------------------
   cout << "******************************************************" << endl;
   cout << "  TEST std::vector<mrs_real>" << endl;
@@ -1147,7 +1121,6 @@ test_MATLABengine()
   else
     cout << "Error getting value back from MATLAB!" << endl;
   getchar();
-
 
   //-------------------------------------------------------------------------------------------
   cout << "******************************************************" << endl;
@@ -1237,7 +1210,6 @@ test_LPC_LSP(string sfName)
   input->addMarSystem(mng.create("LSP", "lsp"));
   input->updctrl("LSP/lsp/mrs_natural/order",lpcOrder);
   input->updctrl("LSP/lsp/mrs_real/gamma",1.0);
-
 
   int i = 0;
   while(input->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
