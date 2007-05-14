@@ -62,13 +62,26 @@ void MainWindow::createMain() {
 	QFrame* centralFrame = new QFrame;
 	setCentralWidget(centralFrame);
 
+	instructionArea = new QGridLayout;
+	resultArea = new QGridLayout;
+
+	mainLayout = new QVBoxLayout;
+	mainLayout->addLayout(instructionArea);
+	mainLayout->addLayout(resultArea);
+	centralFrame->setLayout(mainLayout);
+
+	exercise->setInstructionArea(instructionArea);
+	exercise->setResultArea(resultArea);
+
 	// this is what displays the picture of the exercise.
+/*
 	imageLabel = new QLabel;
-	imageLabel->setBackgroundRole(QPalette::Base);
+	imageLabel->setText( "hello");
+//	imageLabel->setBackgroundRole(QPalette::Base);
 	imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 	imageLabel->setScaledContents(false);
 	imageLabel->setMaximumHeight(100);
-
+*/
 /*
 	// this is what displays our testing text.  Later on we would
 	// remove textLabel and make a QT painting area or make it a picture.
@@ -82,9 +95,6 @@ void MainWindow::createMain() {
 	displayAmplitude->setPixelWidth(2);
 */
 	// we want to display the above two QLabels within our main window.
-	mainLayout = new QVBoxLayout;
-//	mainLayout->addWidget(imageLabel,0,Qt::AlignTop);
-	mainLayout->addWidget(imageLabel,0,0);
 /*
 	displayLayout = new QHBoxLayout;
 	displayLayout->addWidget(displayResults,0,0);
@@ -96,7 +106,6 @@ void MainWindow::createMain() {
 	cout<<"making display"<<endl;
 	resultsDisplay = new MeawsDisplay();
 	mainLayout->addLayout(resultsDisplay);
-	centralFrame->setLayout(mainLayout);
 	cout<<"... done"<<endl;
 
 	updateTestingMethod();
@@ -226,7 +235,7 @@ void MainWindow::createActions() {
 	openExerciseAct = new QAction(QIcon(":/icons/open.png"), tr("Open &Exercise..."), this);
 	openExerciseAct->setShortcut(tr("Ctrl+R"));
 	openExerciseAct->setStatusTip(tr("Open a new exercise"));
-//	connect(openExerciseAct, SIGNAL(triggered()), this, SLOT(openExercise()));
+	connect(openExerciseAct, SIGNAL(triggered()), exercise, SLOT(open()));
 
 	setMetroIntroAct = new QAction(QIcon(":/icons/triangle.png"), tr("Set metronome introduction"), this);
 //	connect(setMetroIntroAct, SIGNAL(triggered()), this, SLOT(setMetroIntro()));
@@ -256,6 +265,8 @@ void MainWindow::createActions() {
 void MainWindow::createObjects() {
 	user = new User();
 	connect(user, SIGNAL(enableActions(int)), this, SLOT(enableActions(int)));
+	exercise = new ExerciseDispatcher();
+	connect(exercise, SIGNAL(enableActions(int)), this, SLOT(enableActions(int)));
 
 }
 

@@ -3,8 +3,8 @@ include (../Qt4Apps.pri)
 SOURCES = start.cpp mainwindow.cpp
 HEADERS = defs.h mainwindow.h
 
-HEADERS += user.h
-SOURCES += user.cpp
+HEADERS += user.h exerciseDispatcher.h
+SOURCES += user.cpp exerciseDispatcher.cpp
 
 #HEADERS += backend.h metro.h
 #SOURCES += mainwindow.cpp backend.cpp metro.cpp
@@ -21,7 +21,8 @@ VERSION = 0.5
 
 ##  You might want to change this:
 win32:MEAWS_DATADIR = c:\temp\meaws
-unix:MEAWS_DATADIR = /tmp/meaws/
+#unix:MEAWS_DATADIR = ${HOME}/.meaws/
+unix:MEAWS_DATADIR = /home/gperciva/.meaws/
 
 message("Installing data to $$MEAWS_DATADIR")
 data.path = $$MEAWS_DATADIR

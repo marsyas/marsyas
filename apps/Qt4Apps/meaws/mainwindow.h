@@ -18,6 +18,7 @@ class QLabel;
 // Meaws stuff
 #include "defs.h"
 #include "user.h"
+#include "exerciseDispatcher.h"
 /*
 #include "backend.h"
 #include "metro.h"
@@ -80,8 +81,9 @@ private:
 
 // main interface objects
 	QFrame* centralFrame;
-	QGridLayout *mainGrid;
 	QVBoxLayout *mainLayout;
+	QGridLayout *instructionArea;
+	QGridLayout *resultArea;
 
 // menu and toolbar objects
 	QMenu *fileMenu;
@@ -125,8 +127,9 @@ private:
 // user functions
 //	bool chooseUserInfo();
 
-// user variables
+// main object variables
 	User *user;
+	ExerciseDispatcher *exercise;
 
 
 // testingMethod = 0  not chosen
