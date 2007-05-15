@@ -39,6 +39,11 @@ record: record a clip using AudioSource
 using namespace std;
 using namespace Marsyas;
 
+#define DEVIBOT_DHA 3
+#define DEVIBOT_TU 2
+#define DEVIBOT_GE 1
+#define DEVIBOT_NA 0
+
 int helpopt;
 int usageopt;
 int trainopt;
