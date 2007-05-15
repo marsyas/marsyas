@@ -15,8 +15,7 @@ void ExerciseIntonation::setupDisplay() {
 
 QString ExerciseIntonation::exercisesDir() {
 	QString toReturn(MEAWS_DIR);
-	toReturn.append("/data/music/intonation/");
-	cout<<qPrintable(toReturn);
+	toReturn.append("data/intonation/");
 	return toReturn;
 }
 

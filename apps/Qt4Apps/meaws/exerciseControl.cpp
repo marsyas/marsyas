@@ -38,8 +38,7 @@ void ExerciseControl::setupDisplay() {
 
 QString ExerciseControl::exercisesDir() {
 	QString toReturn(MEAWS_DIR);
-	toReturn.append("/data/music/control/");
-	cout<<qPrintable(toReturn);
+	toReturn.append("data/control/");
 	return toReturn;
 }
 
