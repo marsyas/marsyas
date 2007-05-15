@@ -3,7 +3,8 @@
 
 #include "defs.h"
 #include "exerciseIntonation.h"
-//#include <QObject>
+#include "exerciseControl.h"
+
 #include <QDialog>
 #include <QFileDialog>
 #include <QImage>
@@ -19,18 +20,19 @@ public:
 	
 public slots:
 	void open();
-	void setInstructionArea(QGridLayout *getInstructionArea);
-	void setResultArea(QGridLayout *getResultArea);
+	void setArea(QGridLayout *getInstructionArea, QGridLayout *getResultArea);
 
 signals:
 	void enableActions(int state);
 
 private:
+	bool chooseEvaluation();
+
 	QString exerciseName;
 	QGridLayout *instructionArea;
 	QGridLayout *resultArea;
 
-	QLabel *imageLabel;
+	Exercise *evaluation;
 };
 #endif
 

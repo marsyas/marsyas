@@ -7,10 +7,11 @@
 class ExerciseIntonation : public Exercise {
 public:
 	ExerciseIntonation();
-	void open(QString exerciseFilename);
+	void setupDisplay();
 
 private:
-	QLabel *imageLabel;
+	QLabel *resultLabel;
+
 };
 #endif
 

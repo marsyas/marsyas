@@ -26,7 +26,7 @@ public slots:
 	void open();
 	bool save();
 	bool saveAs();
-	void close();
+	bool close();
 	void setUserInfo();
 
 signals:

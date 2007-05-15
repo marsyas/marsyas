@@ -12,8 +12,9 @@ class Exercise : public QObject {
 
 public:
 	Exercise();
-	virtual void open(QString exerciseFilename) = 0;
 	void setArea(QGridLayout *getInstructionArea, QGridLayout *getResultArea);
+	virtual void setupDisplay() = 0;
+	virtual void open(QString exerciseFilename);
 
 protected:
     QGridLayout *instructionArea;

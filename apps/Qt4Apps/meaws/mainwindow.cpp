@@ -1,10 +1,11 @@
-#include "mainwindow.h"
-
 // C++ stuff for testing
+/*
 #include <iostream>
 using namespace std;
+*/
 
-// basic application functions
+#include "mainwindow.h"
+
 MainWindow::MainWindow() {
 	createObjects();
 	createMain();
@@ -13,7 +14,6 @@ MainWindow::MainWindow() {
 	createToolBars();
 	createStatusBar();
 	readSettings();
-
 	enableActions(MEAWS_READY_NOTHING);
 }
 
@@ -21,13 +21,13 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
-	if (1) {
-		if (user!=NULL)
-			user->close();
-		writeSettings();
-		event->accept();
-	} else {
-		event->ignore();
+	if (user != NULL) {
+		if ( !user->close() )
+			event->ignore();
+		else {
+			writeSettings();
+			event->accept();
+		}
 	}
 }
 
@@ -35,7 +35,7 @@ void MainWindow::about() {
 	QMessageBox::about(this, tr("About Meaws"),
 		tr("Meaws (Musician Evaulation and Audition for Winds and Strings) "
 		"is a learning tool for musicians.  It listens to a musician and "
-		"displays the music with notes coloured based on their intonation."
+		"provides feedback on their performance."
 		));
 }
 
@@ -57,7 +57,6 @@ void MainWindow::createStatusBar() {
 	statusBar()->showMessage(tr("Ready"));
 }
 
-// main window area
 void MainWindow::createMain() {
 	QFrame* centralFrame = new QFrame;
 	setCentralWidget(centralFrame);
@@ -70,18 +69,8 @@ void MainWindow::createMain() {
 	mainLayout->addLayout(resultArea);
 	centralFrame->setLayout(mainLayout);
 
-	exercise->setInstructionArea(instructionArea);
-	exercise->setResultArea(resultArea);
+	exercise->setArea(instructionArea, resultArea);
 
-	// this is what displays the picture of the exercise.
-/*
-	imageLabel = new QLabel;
-	imageLabel->setText( "hello");
-//	imageLabel->setBackgroundRole(QPalette::Base);
-	imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-	imageLabel->setScaledContents(false);
-	imageLabel->setMaximumHeight(100);
-*/
 /*
 	// this is what displays our testing text.  Later on we would
 	// remove textLabel and make a QT painting area or make it a picture.
@@ -93,30 +82,22 @@ void MainWindow::createMain() {
 	displayAmplitude->setPlotName("Amplitude");
 	displayAmplitude->setBackgroundColor(QColor(255,255,255));
 	displayAmplitude->setPixelWidth(2);
-*/
-	// we want to display the above two QLabels within our main window.
-/*
+
 	displayLayout = new QHBoxLayout;
 	displayLayout->addWidget(displayResults,0,0);
 	displayLayout->addWidget(displayAmplitude,0,0);
 	mainLayout->addLayout(displayLayout);
-*/
 
-/*
 	cout<<"making display"<<endl;
 	resultsDisplay = new MeawsDisplay();
 	mainLayout->addLayout(resultsDisplay);
 	cout<<"... done"<<endl;
-
-	updateTestingMethod();
 */
-	//displayResults->makeupData();
-//zz
+
 }
 
 void MainWindow::createMenus()
 {
-	// file menu
 	fileMenu = menuBar()->addMenu(tr("&File"));
 	fileMenu->addAction(newUserAct);
 	fileMenu->addAction(openUserAct);
@@ -128,12 +109,10 @@ void MainWindow::createMenus()
 	fileMenu->addAction(closeUserAct);
 	fileMenu->addAction(exitAct);
 
-	// exercise menu
 	exerMenu = menuBar()->addMenu(tr("Exercise"));
 	exerMenu->addAction(openExerciseAct);
 	exerMenu->setEnabled(false);
 
-	// testing menu
 	testingMenu = menuBar()->addMenu(tr("Testing"));
 	testingMenu->addAction(testingFileAct);
 	testingMenu->addAction(calcExerciseAct);
@@ -152,7 +131,6 @@ void MainWindow::createToolBars() {
 	fileToolBar->addAction(openUserAct);
 	fileToolBar->addAction(saveUserAct);
 	fileToolBar->addAction(closeUserAct);
-
 
 	tempoToolBar = addToolBar(tr("Tempo"));
 	tempoToolBar->addAction(openExerciseAct);

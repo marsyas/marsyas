@@ -9,33 +9,35 @@ ExerciseDispatcher::ExerciseDispatcher() {
 ExerciseDispatcher::~ExerciseDispatcher() {
 }
 
-void ExerciseDispatcher::setInstructionArea(QGridLayout *getInstructionArea){
+void ExerciseDispatcher::setArea(QGridLayout *getInstructionArea, QGridLayout *getResultArea){
 	instructionArea = getInstructionArea;
-}
-void ExerciseDispatcher::setResultArea(QGridLayout *getResultArea){
 	resultArea = getResultArea;
 }
 
-
-void ExerciseDispatcher::open() {
-	QString openFilename = QFileDialog::getOpenFileName(0,tr("Save file"),
-		MEAWS_DIR);
-	if (!openFilename.isEmpty()) {
-		cout<<qPrintable(openFilename)<<endl;
-
-		ExerciseIntonation *foo = new ExerciseIntonation();
-		foo->setArea(instructionArea, resultArea);
-		foo->open(openFilename);
-/*
-		exerciseName = openFilename;
-        QImage image(openFilename);
-		imageLabel = new QLabel;
-        imageLabel->setPixmap(QPixmap::fromImage(image));
-//        exerciseTitle->setText( tr("Exercise: %1").arg(QFileInfo(exerciseName).baseName()) );
-		instructionArea->addWidget(imageLabel);
-        enableActions(MEAWS_READY_EXERCISE);
-*/
+bool ExerciseDispatcher::chooseEvaluation() {
+	QStringList items;
+	items << tr("Intonation test") << tr("Sound control test");
+	bool ok;
+	QString item = QInputDialog::getItem(this, tr("Choose testing method"),
+		tr("TestingMethod:"), items, 0, false, &ok);
+	if (ok && !item.isEmpty()) {
+		if (item=="Intonation test") evaluation = new ExerciseIntonation();
+		if (item=="Sound control test") evaluation = new ExerciseControl();
+		evaluation->setArea(instructionArea, resultArea);
+		evaluation->setupDisplay();
+		return true;
 	}
+	return false;
 }
 
+void ExerciseDispatcher::open() {
+	if (chooseEvaluation()) {
+		QString openFilename = QFileDialog::getOpenFileName(0,tr("Save file"),
+			MEAWS_DIR);
+		if (!openFilename.isEmpty()) {
+			evaluation->open(openFilename);
+			enableActions(MEAWS_READY_EXERCISE);
+		}
+	}
+}
 

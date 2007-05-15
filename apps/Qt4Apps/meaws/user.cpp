@@ -89,12 +89,14 @@ bool User::saveFile(const QString &saveFilename) {
 	return true;
 }
 
-void User::close() {
+bool User::close() {
 	if (maybeSave()) {
 		username = "";
 		isModified = false;
 		emit enableActions(MEAWS_READY_NOTHING);
+		return true;
 	}
+	return false;
 }
 
 bool User::maybeSave() {
