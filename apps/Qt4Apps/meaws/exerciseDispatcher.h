@@ -20,6 +20,7 @@ public:
 	
 public slots:
 	void open();
+	void close();
 	void setArea(QGridLayout *getInstructionArea, QGridLayout *getResultArea);
 
 signals:

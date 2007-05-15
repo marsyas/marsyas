@@ -6,6 +6,16 @@ using namespace std;
 ExerciseControl::ExerciseControl() {
 }
 
+ExerciseControl::~ExerciseControl() {
+	instructionArea->removeWidget(instructionImageLabel);
+	delete (instructionImageLabel);;
+
+	resultArea->removeWidget(displayPitches);
+	delete displayPitches;
+	resultArea->removeWidget(displayAmplitude);
+	delete displayAmplitude;
+}
+
 void ExerciseControl::setupDisplay() {
 /*
 	QtMarPlot *displayResults;
@@ -20,8 +30,8 @@ void ExerciseControl::setupDisplay() {
 	displayAmplitude->setBackgroundColor(QColor(255,255,255));
 	displayAmplitude->setPixelWidth(2);
 */
-	QLabel *displayPitches = new QLabel;
-	QLabel *displayAmplitude = new QLabel;
+	displayPitches = new QLabel;
+	displayAmplitude = new QLabel;
 	displayPitches->setText("Display Pitches here");
 	displayAmplitude->setText("Display Ampitudes here");
 	resultArea->addWidget(displayPitches,0,0);

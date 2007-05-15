@@ -14,11 +14,11 @@ void Exercise::setArea(QGridLayout *getInstructionArea, QGridLayout *getResultAr
 }
 
 void Exercise::open(QString exerciseFilename) {
-	QLabel *imageLabel = new QLabel;
-	imageLabel->setPixmap(QPixmap::fromImage(QImage(exerciseFilename)));
-	imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-	imageLabel->setScaledContents(false);
-	imageLabel->setMaximumHeight(120);
-	instructionArea->addWidget(imageLabel,0,0,Qt::AlignTop);
+	instructionImageLabel = new QLabel;
+	instructionImageLabel->setPixmap(QPixmap::fromImage(QImage(exerciseFilename)));
+	instructionImageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+	instructionImageLabel->setScaledContents(false);
+	instructionImageLabel->setMaximumHeight(120);
+	instructionArea->addWidget(instructionImageLabel,0,0,Qt::AlignTop);
 }
 

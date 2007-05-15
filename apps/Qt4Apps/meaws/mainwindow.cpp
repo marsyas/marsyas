@@ -63,37 +63,12 @@ void MainWindow::createMain() {
 
 	instructionArea = new QGridLayout;
 	resultArea = new QGridLayout;
+	exercise->setArea(instructionArea, resultArea);
 
 	mainLayout = new QVBoxLayout;
 	mainLayout->addLayout(instructionArea);
 	mainLayout->addLayout(resultArea);
 	centralFrame->setLayout(mainLayout);
-
-	exercise->setArea(instructionArea, resultArea);
-
-/*
-	// this is what displays our testing text.  Later on we would
-	// remove textLabel and make a QT painting area or make it a picture.
-	displayResults = new QtMarPlot();
-	displayResults->setPlotName("Pitch");
-	displayResults->setBackgroundColor(QColor(255,255,255));
-	displayResults->setPixelWidth(2);
-	displayAmplitude = new QtMarPlot();
-	displayAmplitude->setPlotName("Amplitude");
-	displayAmplitude->setBackgroundColor(QColor(255,255,255));
-	displayAmplitude->setPixelWidth(2);
-
-	displayLayout = new QHBoxLayout;
-	displayLayout->addWidget(displayResults,0,0);
-	displayLayout->addWidget(displayAmplitude,0,0);
-	mainLayout->addLayout(displayLayout);
-
-	cout<<"making display"<<endl;
-	resultsDisplay = new MeawsDisplay();
-	mainLayout->addLayout(resultsDisplay);
-	cout<<"... done"<<endl;
-*/
-
 }
 
 void MainWindow::createMenus()
@@ -109,9 +84,9 @@ void MainWindow::createMenus()
 	fileMenu->addAction(closeUserAct);
 	fileMenu->addAction(exitAct);
 
-	exerMenu = menuBar()->addMenu(tr("Exercise"));
-	exerMenu->addAction(openExerciseAct);
-	exerMenu->setEnabled(false);
+	exerciseMenu = menuBar()->addMenu(tr("Exercise"));
+	exerciseMenu->addAction(openExerciseAct);
+	exerciseMenu->addAction(closeExerciseAct);
 
 	testingMenu = menuBar()->addMenu(tr("Testing"));
 	testingMenu->addAction(testingFileAct);
@@ -132,8 +107,11 @@ void MainWindow::createToolBars() {
 	fileToolBar->addAction(saveUserAct);
 	fileToolBar->addAction(closeUserAct);
 
+	exerciseToolBar = addToolBar(tr("Exercise"));
+	exerciseToolBar->addAction(openExerciseAct);
+	exerciseToolBar->addAction(closeExerciseAct);
+
 	tempoToolBar = addToolBar(tr("Tempo"));
-	tempoToolBar->addAction(openExerciseAct);
 	tempoToolBar->addAction(setMetroIntroAct);
 
 	tempoBox = new QSpinBox();
@@ -215,6 +193,14 @@ void MainWindow::createActions() {
 	openExerciseAct->setStatusTip(tr("Open a new exercise"));
 	connect(openExerciseAct, SIGNAL(triggered()), exercise, SLOT(open()));
 
+	closeExerciseAct = new QAction(QIcon(":/icons/quit.png"), tr("&Close exercise"), this);
+	closeExerciseAct->setShortcut(tr("Ctrl+E"));
+	closeExerciseAct->setStatusTip(tr("Close exercise"));
+	connect(closeExerciseAct, SIGNAL(triggered()), exercise, SLOT(close()));
+
+
+
+
 	setMetroIntroAct = new QAction(QIcon(":/icons/triangle.png"), tr("Set metronome introduction"), this);
 //	connect(setMetroIntroAct, SIGNAL(triggered()), this, SLOT(setMetroIntro()));
 
@@ -259,9 +245,10 @@ void MainWindow::enableActions(int state) {
 		closeUserAct  ->setEnabled(false);
 		setUserInfoAct->setEnabled(false);
 
-		exerMenu     ->setEnabled(false);
-		tempoToolBar ->setEnabled(false);
-		testingMenu  ->setEnabled(false);
+		exerciseMenu   ->setEnabled(false);
+		exerciseToolBar->setEnabled(false);
+		tempoToolBar   ->setEnabled(false);
+		testingMenu    ->setEnabled(false);
 		break;
 	case MEAWS_READY_USER:   // user selected
 		setWindowTitle(tr("Meaws - %1").arg(user->getName()));
@@ -271,11 +258,19 @@ void MainWindow::enableActions(int state) {
 		closeUserAct  ->setEnabled(true);
 		setUserInfoAct->setEnabled(true);
 
-		exerMenu     ->setEnabled(true);
-		tempoToolBar ->setEnabled(false);
-		testingMenu  ->setEnabled(false);
+		exerciseMenu    ->setEnabled(true);
+		exerciseToolBar ->setEnabled(true);
+		closeExerciseAct->setEnabled(false);
+
+		tempoToolBar   ->setEnabled(false);
+		testingMenu    ->setEnabled(false);
 		break;
 	case MEAWS_READY_EXERCISE:   // exercise loaded
+		closeExerciseAct->setEnabled(true);
+
+		tempoToolBar ->setEnabled(false);
+		testingMenu ->setEnabled(false);
+
 //		setupMarBackend();
 //		exerciseRunning=false;
 
@@ -286,9 +281,6 @@ void MainWindow::enableActions(int state) {
 		metro = new Metro(visualMetroBeat, this, audioFile);
 		connect(toggleMetroAct, SIGNAL(triggered()), this, SLOT(toggleExercise()));
 */
-		tempoToolBar ->setEnabled(true);
-
-		testingMenu ->setEnabled(true);
 		break;
 	case MEAWS_READY_AUDIO:    // ready to analyze
 		break;

@@ -7,10 +7,14 @@
 class ExerciseControl : public Exercise {
 public:
 	ExerciseControl();
+	~ExerciseControl();
+
 	void setupDisplay();
 	QString exercisesDir();
 
-//private:
+private:
+	QLabel *displayPitches;
+	QLabel *displayAmplitude;
 };
 #endif
 

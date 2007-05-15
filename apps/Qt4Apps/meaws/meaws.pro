@@ -21,11 +21,11 @@ TARGET = meaws
 VERSION = 0.5
 #CONFIG = qt
 
-
 ##  You might want to change this:
+unix:HOME = /home/gperciva
+macx: HOME = /Users/gperciva
 win32:MEAWS_DATADIR = c:\temp\meaws
-#unix:MEAWS_DATADIR = ${HOME}/.meaws/
-unix:MEAWS_DATADIR = /home/gperciva/.meaws/
+unix:MEAWS_DATADIR = $${HOME}/.meaws/
 
 message("Installing data to $$MEAWS_DATADIR")
 data.path = $$MEAWS_DATADIR

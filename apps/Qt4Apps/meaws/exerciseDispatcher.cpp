@@ -41,3 +41,7 @@ void ExerciseDispatcher::open() {
 	}
 }
 
+void ExerciseDispatcher::close() {
+	delete evaluation;
+	enableActions(MEAWS_READY_USER);
+}

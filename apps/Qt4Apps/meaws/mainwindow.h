@@ -42,31 +42,7 @@ public slots:
 	void enableActions(int state);
 
 private slots:
-// basic application slots
 	void about();
-
-/*
-// user slots
-	void newUser();
-	void openUser();
-	void closeUser();
-	void open();
-	bool save();
-	bool saveAs();
-
-// exercise slots
-	void openExercise();
-	void closeExercise();
-
-// other slots
-	void setMetroIntro();
-	void setMetroTempo(int tempo);
-	void beat();
-	void toggleExercise();
-	void calcExercise();
-	void testingFile();
-	void playFile();
-*/
 
 private:
 // basic application functions
@@ -96,9 +72,13 @@ private:
 	QAction *closeUserAct;
 	QAction *exitAct;
 
-	QMenu *exerMenu;
-	QToolBar *tempoToolBar;
+	QMenu *exerciseMenu;
+	QToolBar *exerciseToolBar;
 	QAction *openExerciseAct;
+	QAction *closeExerciseAct;
+
+
+	QToolBar *tempoToolBar;
 	QAction *toggleMetroAct;
 	QAction *setMetroIntroAct;
 	QAction *calcExerciseAct;

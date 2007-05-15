@@ -5,6 +5,13 @@ using namespace std;
 
 ExerciseIntonation::ExerciseIntonation() {
 }
+ExerciseIntonation::~ExerciseIntonation() {
+	instructionArea->removeWidget(instructionImageLabel);
+	delete (instructionImageLabel);;
+
+	resultArea->removeWidget(resultLabel);
+	delete resultLabel;
+}
 
 void ExerciseIntonation::setupDisplay() {
 	resultLabel = new QLabel;

@@ -7,6 +7,7 @@
 class ExerciseIntonation : public Exercise {
 public:
 	ExerciseIntonation();
+	~ExerciseIntonation();
 	void setupDisplay();
 	QString exercisesDir();
 

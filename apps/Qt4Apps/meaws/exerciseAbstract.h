@@ -20,6 +20,7 @@ public:
 protected:
     QGridLayout *instructionArea;
     QGridLayout *resultArea;
+	QLabel *instructionImageLabel;
 };
 #endif
 
