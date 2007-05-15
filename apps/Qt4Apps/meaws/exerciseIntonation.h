@@ -8,6 +8,7 @@ class ExerciseIntonation : public Exercise {
 public:
 	ExerciseIntonation();
 	void setupDisplay();
+	QString exercisesDir();
 
 private:
 	QLabel *resultLabel;

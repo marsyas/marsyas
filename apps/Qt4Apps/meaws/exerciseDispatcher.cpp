@@ -33,7 +33,7 @@ bool ExerciseDispatcher::chooseEvaluation() {
 void ExerciseDispatcher::open() {
 	if (chooseEvaluation()) {
 		QString openFilename = QFileDialog::getOpenFileName(0,tr("Save file"),
-			MEAWS_DIR);
+			evaluation->exercisesDir());
 		if (!openFilename.isEmpty()) {
 			evaluation->open(openFilename);
 			enableActions(MEAWS_READY_EXERCISE);
