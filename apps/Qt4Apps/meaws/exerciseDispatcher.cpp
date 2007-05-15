@@ -4,6 +4,8 @@ using namespace std;
 #include "exerciseDispatcher.h"
 
 ExerciseDispatcher::ExerciseDispatcher() {
+	attemptRunningBool = false;
+	marBackend = NULL;
 }
 
 ExerciseDispatcher::~ExerciseDispatcher() {
@@ -36,6 +38,7 @@ void ExerciseDispatcher::open() {
 			evaluation->exercisesDir(), tr("Exercises (*.png)"));
 		if (!openFilename.isEmpty()) {
 			evaluation->open(openFilename);
+			marBackend = new MarBackend(evaluation->getType());
 			enableActions(MEAWS_READY_EXERCISE);
 		}
 	}
@@ -45,3 +48,11 @@ void ExerciseDispatcher::close() {
 	delete evaluation;
 	enableActions(MEAWS_READY_USER);
 }
+
+void ExerciseDispatcher::toggleAttempt() {
+	attemptRunningBool = !attemptRunningBool;
+	attemptRunning(attemptRunningBool);
+
+}
+
+

@@ -34,7 +34,7 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 void MainWindow::about() {
 	QMessageBox::about(this, tr("About Meaws"),
 		tr("Meaws (Musician Evaulation and Audition for Winds and Strings) "
-		"is a learning tool for musicians.  It listens to a musician and "
+		"is a learning tool for musicians.	It listens to a musician and "
 		"provides feedback on their performance."
 		));
 }
@@ -109,6 +109,7 @@ void MainWindow::createToolBars() {
 
 	exerciseToolBar = addToolBar(tr("Exercise"));
 	exerciseToolBar->addAction(openExerciseAct);
+	exerciseToolBar->addAction(toggleAttemptAct);
 	exerciseToolBar->addAction(closeExerciseAct);
 
 	tempoToolBar = addToolBar(tr("Tempo"));
@@ -126,7 +127,6 @@ void MainWindow::createToolBars() {
 //	tempoSlider->setMaximumWidth(250);
 	tempoToolBar->addWidget(tempoSlider);
 
-	tempoToolBar->addAction(toggleMetroAct);
 	tempoToolBar->addAction(visualMetroBeat);
 
 	connect(tempoSlider, SIGNAL(valueChanged(int)),
@@ -193,6 +193,12 @@ void MainWindow::createActions() {
 	openExerciseAct->setStatusTip(tr("Open a new exercise"));
 	connect(openExerciseAct, SIGNAL(triggered()), exercise, SLOT(open()));
 
+	toggleAttemptAct = new QAction(this);
+	toggleAttemptAct->setShortcut(tr("Space"));
+	toggleAttemptAct->setStatusTip(tr("Start"));
+	toggleAttemptAct->setIcon(QIcon(":/icons/player_play.png"));
+	connect(toggleAttemptAct, SIGNAL(triggered()), exercise, SLOT(toggleAttempt()));
+
 	closeExerciseAct = new QAction(QIcon(":/icons/quit.png"), tr("&Close exercise"), this);
 	closeExerciseAct->setShortcut(tr("Ctrl+E"));
 	closeExerciseAct->setStatusTip(tr("Close exercise"));
@@ -210,11 +216,6 @@ void MainWindow::createActions() {
 	calcExerciseAct = new QAction(QIcon(":/icons/square.png"), tr("Calculate exercise results"), this);
 //	connect(calcExerciseAct, SIGNAL(triggered()), this, SLOT(calcExercise()));
 
-	toggleMetroAct = new QAction(this);
-	toggleMetroAct->setShortcut(tr("Space"));
-	toggleMetroAct->setStatusTip(tr("Start"));
-	toggleMetroAct->setIcon(QIcon(":/icons/player_play.png"));
-
 	testingFileAct = new QAction(QIcon(":/icons/open.png"), tr("&Open test audio file..."), this);
 	testingFileAct->setShortcut(tr("Ctrl+T"));
 	testingFileAct->setStatusTip(tr("Open test audio file"));
@@ -231,13 +232,23 @@ void MainWindow::createObjects() {
 	connect(user, SIGNAL(enableActions(int)), this, SLOT(enableActions(int)));
 	exercise = new ExerciseDispatcher();
 	connect(exercise, SIGNAL(enableActions(int)), this, SLOT(enableActions(int)));
+	connect(exercise, SIGNAL(attemptRunning(bool)), this, SLOT(attemptRunning(bool)));
+}
 
+void MainWindow::attemptRunning(bool running) {
+	if (running) {
+		toggleAttemptAct->setStatusTip(tr("Stop"));
+		toggleAttemptAct->setIcon(QIcon(":/icons/player_pause.png"));
+	} else {
+		toggleAttemptAct->setStatusTip(tr("Start"));
+		toggleAttemptAct->setIcon(QIcon(":/icons/player_play.png"));
+	}
 }
 
 
 void MainWindow::enableActions(int state) {
 	switch (state) {
-	case MEAWS_READY_NOTHING:   // just opened app
+	case MEAWS_READY_NOTHING:	// just opened app
 		setWindowTitle(tr("Meaws"));
 
 		saveUserAct   ->setEnabled(false);
@@ -250,7 +261,7 @@ void MainWindow::enableActions(int state) {
 		tempoToolBar   ->setEnabled(false);
 		testingMenu    ->setEnabled(false);
 		break;
-	case MEAWS_READY_USER:   // user selected
+	case MEAWS_READY_USER:	 // user selected
 		setWindowTitle(tr("Meaws - %1").arg(user->getName()));
 
 		saveUserAct   ->setEnabled(true);
@@ -258,14 +269,16 @@ void MainWindow::enableActions(int state) {
 		closeUserAct  ->setEnabled(true);
 		setUserInfoAct->setEnabled(true);
 
-		exerciseMenu    ->setEnabled(true);
+		exerciseMenu	->setEnabled(true);
 		exerciseToolBar ->setEnabled(true);
+		toggleAttemptAct->setEnabled(false);
 		closeExerciseAct->setEnabled(false);
 
 		tempoToolBar   ->setEnabled(false);
 		testingMenu    ->setEnabled(false);
 		break;
-	case MEAWS_READY_EXERCISE:   // exercise loaded
+	case MEAWS_READY_EXERCISE:	 // exercise loaded
+		toggleAttemptAct->setEnabled(true);
 		closeExerciseAct->setEnabled(true);
 
 		tempoToolBar ->setEnabled(false);
@@ -279,7 +292,7 @@ void MainWindow::enableActions(int state) {
 //zzz
 /*
 		metro = new Metro(visualMetroBeat, this, audioFile);
-		connect(toggleMetroAct, SIGNAL(triggered()), this, SLOT(toggleExercise()));
+		connect(toggleAttemptAct, SIGNAL(triggered()), this, SLOT(toggleExercise()));
 */
 		break;
 	case MEAWS_READY_AUDIO:    // ready to analyze

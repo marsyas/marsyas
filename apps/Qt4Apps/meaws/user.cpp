@@ -19,7 +19,7 @@ void User::newUser() {
 			QDir::home().dirName(), &ok);
 		if (ok && !text.isEmpty()) {
 			username = text;
-			isModified = true;
+			//isModified = true;
 			emit enableActions(MEAWS_READY_USER);
 		}
 	}

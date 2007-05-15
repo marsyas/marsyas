@@ -13,6 +13,10 @@ ExerciseIntonation::~ExerciseIntonation() {
 	delete resultLabel;
 }
 
+int ExerciseIntonation::getType() {
+	return TYPE_INTONATION;
+}
+
 void ExerciseIntonation::setupDisplay() {
 	resultLabel = new QLabel;
 	resultLabel->setText("Intonation Exercise");

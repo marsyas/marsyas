@@ -40,6 +40,7 @@ protected:
 
 public slots:
 	void enableActions(int state);
+	void attemptRunning(bool running);
 
 private slots:
 	void about();
@@ -75,11 +76,11 @@ private:
 	QMenu *exerciseMenu;
 	QToolBar *exerciseToolBar;
 	QAction *openExerciseAct;
+	QAction *toggleAttemptAct;
 	QAction *closeExerciseAct;
 
 
 	QToolBar *tempoToolBar;
-	QAction *toggleMetroAct;
 	QAction *setMetroIntroAct;
 	QAction *calcExerciseAct;
 	QAction *visualMetroBeat;

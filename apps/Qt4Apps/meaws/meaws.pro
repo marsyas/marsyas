@@ -9,6 +9,9 @@ SOURCES += user.cpp exerciseDispatcher.cpp
 HEADERS += exerciseAbstract.h exerciseIntonation.h exerciseControl.h
 SOURCES += exerciseAbstract.cpp exerciseIntonation.cpp exerciseControl.cpp
 
+HEADERS += backend.h
+SOURCES += backend.cpp
+
 #HEADERS += backend.h metro.h
 #SOURCES += mainwindow.cpp backend.cpp metro.cpp
 #HEADERS += user.h exercise.h analyze.h display.h

@@ -15,6 +15,7 @@ public:
 	void setArea(QGridLayout *getInstructionArea, QGridLayout *getResultArea);
 	virtual void setupDisplay() = 0;
 	virtual QString exercisesDir() = 0;
+	virtual int getType() = 0;
 	virtual void open(QString exerciseFilename);
 
 protected:

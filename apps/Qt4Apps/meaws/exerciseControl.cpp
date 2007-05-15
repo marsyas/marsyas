@@ -16,6 +16,10 @@ ExerciseControl::~ExerciseControl() {
 	delete displayAmplitude;
 }
 
+int ExerciseControl::getType() {
+	return TYPE_CONTROL;
+}
+
 void ExerciseControl::setupDisplay() {
 /*
 	QtMarPlot *displayResults;
@@ -51,5 +55,4 @@ QString ExerciseControl::exercisesDir() {
 	toReturn.append("data/control/");
 	return toReturn;
 }
-
 

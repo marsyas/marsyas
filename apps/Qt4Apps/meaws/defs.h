@@ -1,9 +1,9 @@
 #ifndef MEAWS_DEFS_H
 #define MEAWS_DEFS_H
 
-#define TEST_NONE 0
-#define TEST_INTONATION 1
-#define TEST_CONTROL 2
+#define TYPE_NONE 0
+#define TYPE_INTONATION 1
+#define TYPE_CONTROL 2
 
 #define MEAWS_READY_NOTHING 1
 #define MEAWS_READY_USER 2

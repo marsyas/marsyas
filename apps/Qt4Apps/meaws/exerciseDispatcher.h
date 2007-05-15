@@ -4,6 +4,7 @@
 #include "defs.h"
 #include "exerciseIntonation.h"
 #include "exerciseControl.h"
+#include "backend.h"
 
 #include <QDialog>
 #include <QFileDialog>
@@ -17,14 +18,16 @@ class ExerciseDispatcher : public QDialog {
 public:
 	ExerciseDispatcher();
 	~ExerciseDispatcher();
-	
+
 public slots:
 	void open();
 	void close();
 	void setArea(QGridLayout *getInstructionArea, QGridLayout *getResultArea);
+	void toggleAttempt();
 
 signals:
 	void enableActions(int state);
+	void attemptRunning(bool running);
 
 private:
 	bool chooseEvaluation();
@@ -34,6 +37,8 @@ private:
 	QGridLayout *resultArea;
 
 	Exercise *evaluation;
+	bool attemptRunningBool;
+	MarBackend *marBackend;
 };
 #endif
 

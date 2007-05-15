@@ -8,6 +8,7 @@ class ExerciseControl : public Exercise {
 public:
 	ExerciseControl();
 	~ExerciseControl();
+	int getType();
 
 	void setupDisplay();
 	QString exercisesDir();

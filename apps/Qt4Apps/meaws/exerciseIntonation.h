@@ -8,6 +8,8 @@ class ExerciseIntonation : public Exercise {
 public:
 	ExerciseIntonation();
 	~ExerciseIntonation();
+	int getType();
+
 	void setupDisplay();
 	QString exercisesDir();
 
