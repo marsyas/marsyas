@@ -69,4 +69,7 @@ void ExerciseDispatcher::openAttempt() {
 
 }
 
+void ExerciseDispatcher::analyze() {
+	marBackend->analyze();
+}
 

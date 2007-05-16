@@ -26,6 +26,8 @@ public slots:
 	void toggleAttempt();
 	void openAttempt();
 
+	void analyze(); // temp
+
 signals:
 	void enableActions(int state);
 	void attemptRunning(bool running);

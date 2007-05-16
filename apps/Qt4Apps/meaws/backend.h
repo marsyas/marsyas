@@ -21,6 +21,8 @@ public:
 	void setFileName(std::string filename);
 	void playFile();
 	void open(std::string filename);
+
+	void analyze();
 /*
 signals:
 	void nextNoteError(float error, int direction);
@@ -38,13 +40,14 @@ private:
 	int introBeats;
 
 // "constructor"
-//	MarSystem* makeSourceNet(std::string filename);
-	MarSystem* makePitchNet(std::string filename);
+	MarSystem* makeSourceNet(std::string filename);
+	MarSystem* makePitchNet(mrs_real source_osrate);
 	MarSystem* makeAmplitudeNet();
 
 //	void makeRecNet();
 	void startIntonation();
 	void startControl();
+
   MarControlPtr filenamePtr;
 /*
 // metronome stuff

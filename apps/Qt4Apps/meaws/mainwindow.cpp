@@ -214,7 +214,7 @@ void MainWindow::createActions() {
 	visualMetroBeat->setStatusTip(tr("Shows the beat"));
 
 	calcExerciseAct = new QAction(QIcon(":/icons/square.png"), tr("Calculate exercise results"), this);
-//	connect(calcExerciseAct, SIGNAL(triggered()), this, SLOT(calcExercise()));
+	connect(calcExerciseAct, SIGNAL(triggered()), exercise, SLOT(analyze()));
 
 	testingFileAct = new QAction(QIcon(":/icons/open.png"), tr("&Open test audio file..."), this);
 	testingFileAct->setShortcut(tr("Ctrl+T"));
