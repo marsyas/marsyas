@@ -27,7 +27,7 @@ void User::newUser() {
 
 void User::open() {
 	if (maybeSave()) {
-		QString openFilename = QFileDialog::getOpenFileName(0,tr("Save file"),
+		QString openFilename = QFileDialog::getOpenFileName(0,tr("Open File"),
 			MEAWS_DIR);
 		if (!openFilename.isEmpty())
 			openFile(openFilename);
@@ -62,7 +62,7 @@ bool User::save() {
 }
 
 bool User::saveAs() {
-	QString saveAsFilename = QFileDialog::getSaveFileName(0,tr("Save file"),
+	QString saveAsFilename = QFileDialog::getSaveFileName(0,tr("Save File"),
 		MEAWS_DIR);
 	if (saveAsFilename.isEmpty())
 		return false;

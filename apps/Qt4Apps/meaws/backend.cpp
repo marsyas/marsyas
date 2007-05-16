@@ -6,11 +6,14 @@ using namespace std;
 //using namespace Marsyas;
 
 MarBackend::MarBackend(int getType) {
+	MarSystemManager mng;
+	mrsWrapper = NULL;
+	sourceNet = NULL;
+
 	method=getType;
 	if (method==TYPE_INTONATION) {
 		cout<<"Setting up Intonation stuff"<<endl;
-		//makeRecNet();
-		startIntonation();
+		//startIntonation();
 	}
 	if (method==TYPE_CONTROL) {
 		cout<<"Setting up Control stuff"<<endl;
@@ -21,35 +24,28 @@ MarBackend::MarBackend(int getType) {
 }
 
 MarBackend::~MarBackend() {
-/*
 	if (method==TYPE_INTONATION) {
-		delete mrsWrapper;
-		delete recNet;
+		if (mrsWrapper != NULL) delete mrsWrapper;
+		if (sourceNet != NULL) delete sourceNet;
 	}
 	if (method==TYPE_CONTROL) {
 	}
-*/
 }
 
-void MarBackend::makeRecNet() {
-	MarSystemManager mng;
+MarSystem* MarBackend::makePitchNet(std::string filename) {
+	MarSystem *pnet = mng.create("Series", "pitchNet");
+	if (filename != "") {
+		pnet->addMarSystem(mng.create("SoundFileSource", "src"));
+		pnet->updctrl("SoundFileSource/src/mrs_string/filename", filename);
+	} else {
+		cout<<"Not implemented"<<endl;
+//		pnet->addMarSystem(mng.create("AudioSource", "srcRec"));
+//		recNet->updctrl("AudioSource/srcRec/mrs_real/israte", 44100.0);
+//		recNet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
+	}
 
-	recNet = mng.create("Series", "recNet");
-	recNet->addMarSystem(mng.create("AudioSource", "srcRec"));
-	recNet->addMarSystem(mng.create("SoundFileSink","destRec")); // temporary
-
-	recNet->updctrl("AudioSource/srcRec/mrs_real/israte", 44100.0);
-	recNet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
-
-/*
-	MarSystemManager mng;
-	MarSystem* pnet = mng.create("Series", "pnet");
-
-	pnet->addMarSystem(mng.create("AudioSource", "srcRec"));
-//	pnet->addMarSystem(mng.create("SoundFileSource", "src"));
 
 	pnet->addMarSystem(mng.create("ShiftInput", "sfi"));
-//	pnet->updctrl("SoundFileSource/src/mrs_string/filename", audioFilename);
 	pnet->addMarSystem(mng.create("PitchPraat", "pitch")); 
 	pnet->addMarSystem(mng.create("RealvecSink", "rvSink")); 
 
@@ -58,11 +54,9 @@ void MarBackend::makeRecNet() {
 	mrs_real lowFreq = pitch2hertz(lowPitch);
 	mrs_real highFreq = pitch2hertz(highPitch);
 
-  mrs_natural lowSamples = 
-     hertz2samples(highFreq, pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
-  mrs_natural highSamples = 
-     hertz2samples(lowFreq, pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
- 
+	mrs_natural lowSamples = hertz2samples(highFreq, pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
+ 	mrs_natural highSamples = hertz2samples(lowFreq, pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
+
   pnet->updctrl("PitchPraat/pitch/mrs_natural/lowSamples", lowSamples);
   pnet->updctrl("PitchPraat/pitch/mrs_natural/highSamples", highSamples);
   
@@ -76,16 +70,16 @@ void MarBackend::makeRecNet() {
 	pnet->updctrl("ShiftInput/sfi/mrs_natural/WindowSize", powerOfTwo(windowSize));
 	//pnet->updctrl("ShiftInput/sfi/mrs_natural/WindowSize", 1024);
 
-	realvec mydat;
+//	realvec mydat;
+/*
 	while (pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool()) {
-   		mydat=pnet->getctrl("PitchPraat/pitch/mrs_realvec/data")->toVec();
-		cout<<mydat;
+//   		mydat=pnet->getctrl("PitchPraat/pitch/mrs_realvec/data")->toVec();
+//		cout<<mydat;
 		pnet->tick();
 	}
-
-    mrsWrapper = new MarSystemQtWrapper(pnet);
-    mrsWrapper->start();
 */
+	return pnet;
+
 /*
 	realvec data = pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->toVec();
    for (mrs_natural i=1; i<data.getSize();i+=2)
@@ -110,11 +104,33 @@ void MarBackend::makeRecNet() {
 }
 
 
+void MarBackend::open(std::string filename) {
+	cout<<filename<<endl;
+//	sourceNet = makeSourceNet(filename);
+	pitchNet = makePitchNet(filename);
+
+//	allNet = mng.create("Series", "allNet");
+//	allNet->addMarSystem(sourceNet);
+// test
+//	allNet->addMarSystem(mng.create("AudioSink", "audioDest"));
+//	allNet->updctrl("AudioSink/audioDest/mrs_bool/initAudio", true);
+//	allNet->addMarSystem(pitchNet);
+
+	while (pitchNet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
+		pitchNet->tick();
+	stop();
+
+//	mrsWrapper = new MarSystemQtWrapper(pitchNet);
+//	mrsWrapper->start();
+//	mrsWrapper->pause();
+}
+
 void MarBackend::setFileName(string filename) {
 	mrsWrapper->updctrl(filenamePtr, filename);
 }
 
 void MarBackend::startIntonation() {
+/*
 	makeRecNet();
 
 	mrsWrapper = new MarSystemQtWrapper(recNet);
@@ -122,6 +138,7 @@ void MarBackend::startIntonation() {
 	filenamePtr = mrsWrapper->getctrl("SoundFileSink/destRec/mrs_string/filename");
 	mrsWrapper->pause();
 	mrsWrapper->updctrl(filenamePtr, "foo.wav");
+*/
 }
 
 void MarBackend::startControl() {
@@ -139,6 +156,24 @@ void MarBackend::start() {
 
 void MarBackend::stop() {
 	cout<<"stop"<<endl;
-	mrsWrapper->pause();
+//	mrsWrapper->pause();
+
+	realvec data = pitchNet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->toVec();
+	for (mrs_natural i=1; i<data.getSize();i+=2)
+		data(i) = samples2hertz(data(i), pitchNet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
+	pitchNet->updctrl("RealvecSink/rvSink/mrs_bool/done", true); 
+
+
+// my addition to the marsyasTest pitch stuff:
+	int numPitches = data.getSize()/2;
+	pitchList.create(numPitches); // fills with 0s as well
+	for (int i=0; i<numPitches; i++) {
+//		extra check is for low-/big-endian chips
+		if (( data(2*i+1)>0 ) && (data(2*i+1)<1000)) {
+			pitchList(i) = hertz2pitch( data(2*i+1) );
+		}
+	}
+	cout<<pitchList;
+//	pitchList.writeText("pitchList.txt");
 }
 

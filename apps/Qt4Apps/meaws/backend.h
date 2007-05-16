@@ -20,20 +20,29 @@ public:
 	void stop();
 	void setFileName(std::string filename);
 	void playFile();
+	void open(std::string filename);
 /*
 signals:
 	void nextNoteError(float error, int direction);
 */
 private:
 	MarSystemQtWrapper *mrsWrapper;
-	MarSystem *recNet;
+	MarSystemManager mng;
+	MarSystem *sourceNet;
+	MarSystem *pitchNet;
+	MarSystem *amplitudeNet;
+	MarSystem *allNet;
 
 	realvec pitchList;
 	int method;
 	int introBeats;
 
 // "constructor"
-	void makeRecNet();
+//	MarSystem* makeSourceNet(std::string filename);
+	MarSystem* makePitchNet(std::string filename);
+	MarSystem* makeAmplitudeNet();
+
+//	void makeRecNet();
 	void startIntonation();
 	void startControl();
   MarControlPtr filenamePtr;

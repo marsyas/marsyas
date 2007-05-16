@@ -219,7 +219,7 @@ void MainWindow::createActions() {
 	testingFileAct = new QAction(QIcon(":/icons/open.png"), tr("&Open test audio file..."), this);
 	testingFileAct->setShortcut(tr("Ctrl+T"));
 	testingFileAct->setStatusTip(tr("Open test audio file"));
-//	connect(testingFileAct, SIGNAL(triggered()), this, SLOT(testingFile()));
+	connect(testingFileAct, SIGNAL(triggered()), exercise, SLOT(openAttempt()));
 
 	playFileAct = new QAction(QIcon(":/icons/open.png"), tr("&Play test audio file..."), this);
 	playFileAct->setIcon(QIcon(":/icons/play.png"));
@@ -281,14 +281,10 @@ void MainWindow::enableActions(int state) {
 		toggleAttemptAct->setEnabled(true);
 		closeExerciseAct->setEnabled(true);
 
-		tempoToolBar ->setEnabled(false);
-		testingMenu ->setEnabled(false);
 
-//		setupMarBackend();
-//		exerciseRunning=false;
+		tempoToolBar->setEnabled(true);
+		testingMenu ->setEnabled(true);
 
-//		string audioFile = dataDir;
-//		audioFile.append("sd.wav");
 //zzz
 /*
 		metro = new Metro(visualMetroBeat, this, audioFile);

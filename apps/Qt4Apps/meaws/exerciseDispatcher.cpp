@@ -60,3 +60,13 @@ void ExerciseDispatcher::toggleAttempt() {
 }
 
 
+void ExerciseDispatcher::openAttempt() {
+	QString openFilename = QFileDialog::getOpenFileName(0,tr("Open Attempt"),
+			"/home/gperciva/data/");
+	if (!openFilename.isEmpty()) {
+		marBackend->open( qPrintable(openFilename) );
+	}
+
+}
+
+
