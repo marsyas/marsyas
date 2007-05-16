@@ -104,6 +104,7 @@ HWPSspectrum::myProcess(realvec& in, realvec& out)
 		x3_.stretch(hsize);
 		x4_.stretch(hsize);
 
+		mrs_real maxDist = MINREAL;
 		for(mrs_natural i=0; i < nbPeaks_; ++i)
 		{
 			out(i+pkVolume*kmax_) = 0;
@@ -120,10 +121,32 @@ HWPSspectrum::myProcess(realvec& in, realvec& out)
 				cosineDist_ = cosinePeakSets(peakFreqsWrappedi_,peakAmps_, peakFreqsWrappedj_,peakAmps_,
 					peakAmps_, peakAmps_, x1_, x2_, x3_, x4_, hsize);
 
-				out(i+pkVolume*kmax_)+= cosineDist_; //?!?!?!?!?! [?]
+				out(i+pkVolume*kmax_)+= cosineDist_; 
+				if(out(i+pkVolume*kmax_) > maxDist)
+					maxDist = out(i+pkVolume*kmax_);
 			}
 		}
+
+		/*
+		for(mrs_natural i=0; i < nbPeaks_; ++i)
+		{
+			out(i+pkAmplitude*kmax_) *= out(i+pkVolume*kmax_)/maxDist;
+		}
+		*/
+
+
+		mrs_real dist;
+		for(mrs_natural i=0; i < nbPeaks_; ++i)
+		{
+			dist = out(i+pkVolume*kmax_)/maxDist;
+			if(dist < 0.75)
+				out(i+pkAmplitude*kmax_) = 0;
+		}
 	}
+	
+	//MATLAB_PUT(in,"spect");
+	//MATLAB_PUT(out,"HWPSspect");
+	//MATLAB_EVAL("testHWPS");
 }
 
 
