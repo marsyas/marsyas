@@ -496,7 +496,7 @@ MarSystemManager::MarSystemManager()
 	// prototype for HWPS Spectrum calculation
 	//--------------------------------------------------------------------------------
 	MarSystem* HWPSspectpr = new Series("HWPSspectpr");
-	HWPSspectpr->addMarSystem(create("peAnalyse", "analyse"));
+	HWPSspectpr->addMarSystem(create("PeAnalyse", "analyse"));
 	HWPSspectpr->addMarSystem(create("HWPSspectrum", "HWPSspect"));
 	HWPSspectpr->linkctrl("mrs_natural/Sinusoids", 
 		"peAnalyse/analyse/mrs_natural/Sinusoids");
