@@ -3,10 +3,10 @@
 
 #include "defs.h"
 #include <QObject>
-// #include "MarSystemManager.h"
-// #include "../MarSystemQtWrapper.h"
+#include "MarSystemManager.h"
+#include "../MarSystemQtWrapper.h"
 
-// using namespace Marsyas;
+using namespace Marsyas;
 
 class MarBackend: public QObject {
 	Q_OBJECT
@@ -25,8 +25,10 @@ signals:
 	void nextNoteError(float error, int direction);
 */
 private:
-//	MarSystemQtWrapper *mrsWrapper;
+	MarSystemQtWrapper *mrsWrapper;
+	MarSystem *recNet;
 
+	realvec pitchList;
 	int method;
 	int introBeats;
 
@@ -34,14 +36,13 @@ private:
 	void makeRecNet();
 	void startIntonation();
 	void startControl();
+  MarControlPtr filenamePtr;
 /*
 // metronome stuff
   MarSystem *metroNet;
-	MarSystem *recNet;
 	MarSystem *pitchNet;
 
 	MarSystem *allNet;
-  MarControlPtr filenamePtr;
 	int *pitchError;
 
 // pitch extracting stuff  (INCOMPLETE)

@@ -52,7 +52,11 @@ void ExerciseDispatcher::close() {
 void ExerciseDispatcher::toggleAttempt() {
 	attemptRunningBool = !attemptRunningBool;
 	attemptRunning(attemptRunningBool);
-
+	if (attemptRunningBool) {
+		marBackend->start();
+	} else {
+		marBackend->stop();
+	}
 }
 
 

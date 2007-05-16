@@ -98,7 +98,7 @@ void Analyze::getPitches(string audioFilename) {
   MarSystem* pnet = mng.create("Series", "pnet");
 
   pnet->addMarSystem(mng.create("SoundFileSource", "src"));
-	pnet->addMarSystem(mng.create("ShiftInput", "sfi"));
+  pnet->addMarSystem(mng.create("ShiftInput", "sfi"));
   pnet->updctrl("SoundFileSource/src/mrs_string/filename", audioFilename);
   pnet->addMarSystem(mng.create("PitchPraat", "pitch")); 
   // pnet->addMarSystem(mng.create("PitchSACF", "pitch")); 

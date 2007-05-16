@@ -12,6 +12,9 @@ SOURCES += exerciseAbstract.cpp exerciseIntonation.cpp exerciseControl.cpp
 HEADERS += backend.h
 SOURCES += backend.cpp
 
+HEADERS += ../MarSystemQtWrapper.h
+SOURCES += ../MarSystemQtWrapper.cpp
+
 #HEADERS += backend.h metro.h
 #SOURCES += mainwindow.cpp backend.cpp metro.cpp
 #HEADERS += user.h exercise.h analyze.h display.h
