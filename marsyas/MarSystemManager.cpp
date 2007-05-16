@@ -487,23 +487,23 @@ MarSystemManager::MarSystemManager()
 		"PeConvert/conv/mrs_natural/Sinusoids");
 	peAnalysePr->linkctrl("mrs_natural/Decimation", 
 		"PeConvert/conv/mrs_natural/Decimation");
-	peAnalysePr->linkctrl("mrs_natural/FFTSize", 
-		"PvFold/fo/mrs_natural/FFTSize");
+	//peAnalysePr->linkctrl("mrs_natural/FFTSize", ?!?!?!? [?]
+	//	"PvFold/fo/mrs_natural/FFTSize");
 	peAnalysePr->updctrl("Shifter/sh/mrs_natural/shift", 1);
 	registerPrototype("PeAnalyse", peAnalysePr);
 
 	//--------------------------------------------------------------------------------
 	// prototype for HWPS Spectrum calculation
 	//--------------------------------------------------------------------------------
-	MarSystem* HWPSspectpr = new Series("HWPSspectpr");
-	HWPSspectpr->addMarSystem(create("PeAnalyse", "analyse"));
-	HWPSspectpr->addMarSystem(create("HWPSspectrum", "HWPSspect"));
-	HWPSspectpr->linkctrl("mrs_natural/Sinusoids", 
-		"peAnalyse/analyse/mrs_natural/Sinusoids");
-	HWPSspectpr->linkctrl("mrs_natural/Sinusoids", 
+	MarSystem* HWPSspectrumnetpr = new Series("HWPSspectrumnetpr");
+	HWPSspectrumnetpr->addMarSystem(create("PeAnalyse", "analyse"));
+	HWPSspectrumnetpr->addMarSystem(create("HWPSspectrum", "HWPSspect"));
+	HWPSspectrumnetpr->linkctrl("mrs_natural/Sinusoids", 
+		"PeAnalyse/analyse/mrs_natural/Sinusoids");
+	HWPSspectrumnetpr->linkctrl("mrs_natural/Sinusoids", 
 		"HWPSspectrum/HWPSspect/mrs_natural/Sinusoids");
-	HWPSspectpr->updctrl("mrs_natural/Sinusoids", 20);
-	registerPrototype("HWPSspectrumnet", HWPSspectpr);
+	HWPSspectrumnetpr->updctrl("mrs_natural/Sinusoids", 20);
+	registerPrototype("HWPSspectrumnet", HWPSspectrumnetpr);
 }
 
 MarSystemManager::~MarSystemManager()

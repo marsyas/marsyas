@@ -125,7 +125,10 @@ HWPSanalyse(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 			pvseries->addMarSystem(mng.create("SoundFileSource", "src"));
 		
 		// create analyzer
-		pvseries->addMarSystem(mng.create("HWPSspectrumnet", "HWPS"));
+		pvseries->addMarSystem(mng.create("PeAnalyse", "analyse"));
+		pvseries->addMarSystem(mng.create("HWPSspectrum", "HWPS"));
+		pvseries->linkctrl("mrs_natural/Sinusoids","PeAnalyse/analyse/mrs_natural/Sinusoids");
+		pvseries->linkctrl("mrs_natural/Sinusoids","HWPSspectrum/HWPS/mrs_natural/Sinusoids");
 
 		////////////////////////////////////////////////////////////////
 		// update the controls
@@ -144,16 +147,16 @@ HWPSanalyse(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		}
 
 
-		pvseries->updctrl("HWPSspectrumnet/HWPS/PeAnalyse/analyse/ShiftInput/si/mrs_natural/Decimation", D);
-		pvseries->updctrl("HWPSspectrumnet/HWPS/PeAnalyse/analyse/ShiftInput/si/mrs_natural/WindowSize", Nw+1);
-		pvseries->updctrl("HWPSspectrumnet/HWPS/PeAnalyse/analyse/Windowing/wi/mrs_natural/size", N);
-		pvseries->updctrl("HWPSspectrumnet/HWPS/PeAnalyse/analyse/Windowing/wi/mrs_string/type", "Hanning");
-		pvseries->updctrl("HWPSspectrumnet/HWPS/PeAnalyse/analyse/Windowing/wi/mrs_natural/zeroPhasing", 1);
-		pvseries->updctrl("HWPSspectrumnet/HWPS/PeAnalyse/analyse/Shifter/sh/mrs_natural/shift", 1);
-		pvseries->updctrl("HWPSspectrumnet/HWPS/PeAnalyse/analyse/PvFold/fo/mrs_natural/Decimation", D); // useless ?
-		pvseries->updctrl("HWPSspectrumnet/HWPS/PeAnalyse/analyse/PeConvert/conv/mrs_natural/Decimation", D);      
-		pvseries->updctrl("HWPSspectrumnet/HWPS/mrs_natural/Sinusoids", S);  
-		pvseries->updctrl("HWPSspectrumnet/HWPS/PeAnalyse/analyse/PeConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
+		pvseries->updctrl("PeAnalyse/analyse/ShiftInput/si/mrs_natural/Decimation", D);
+		pvseries->updctrl("PeAnalyse/analyse/ShiftInput/si/mrs_natural/WindowSize", Nw+1);
+		pvseries->updctrl("PeAnalyse/analyse/Windowing/wi/mrs_natural/size", N);
+		pvseries->updctrl("PeAnalyse/analyse/Windowing/wi/mrs_string/type", "Hanning");
+		pvseries->updctrl("PeAnalyse/analyse/Windowing/wi/mrs_natural/zeroPhasing", 1);
+		pvseries->updctrl("PeAnalyse/analyse/Shifter/sh/mrs_natural/shift", 1);
+		pvseries->updctrl("PeAnalyse/analyse/PvFold/fo/mrs_natural/Decimation", D); // useless ?
+		pvseries->updctrl("PeAnalyse/analyse/PeConvert/conv/mrs_natural/Decimation", D);      
+		pvseries->updctrl("mrs_natural/Sinusoids", S);  
+		pvseries->updctrl("PeAnalyse/analyse/PeConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
 	}
 	else
 	{
