@@ -11,11 +11,12 @@ MarBackend::MarBackend(int getType) {
 	sourceNet = NULL;
 	pitchNet = NULL;
 	amplitudeNet = NULL;
+	allNet = NULL;
 
 	method=getType;
 	if (method==TYPE_INTONATION) {
 		cout<<"Setting up Intonation stuff"<<endl;
-		//startIntonation();
+		startIntonation();
 	}
 	if (method==TYPE_CONTROL) {
 		cout<<"Setting up Control stuff"<<endl;
@@ -27,13 +28,27 @@ MarBackend::MarBackend(int getType) {
 
 MarBackend::~MarBackend() {
 	if (method==TYPE_INTONATION) {
-		if (mrsWrapper != NULL) delete mrsWrapper;
-		if (sourceNet != NULL) delete sourceNet;
-		if (pitchNet != NULL) delete pitchNet;
-		if (amplitudeNet != NULL) delete amplitudeNet;
+		delNet();
 	}
 	if (method==TYPE_CONTROL) {
 	}
+}
+
+void MarBackend::delNet() {
+	cout<<"started delNet()"<<endl;
+	mrsWrapper->pause();
+	if (mrsWrapper != NULL) delete mrsWrapper;
+	cout<<"del Wrap"<<endl;
+	if (allNet != NULL) delete allNet;
+	cout<<"del all"<<endl;
+/*
+	if (pitchNet != NULL) delete pitchNet;
+	cout<<"del pitch"<<endl;
+	if (amplitudeNet != NULL) delete amplitudeNet;
+	cout<<"del ampl"<<endl;
+	if (sourceNet != NULL) delete sourceNet;
+*/
+	cout<<"endded delNet()"<<endl;
 }
 
 MarSystem* MarBackend::makeSourceNet(std::string filename) {
@@ -85,21 +100,12 @@ MarSystem* MarBackend::makePitchNet(mrs_real source_osrate) {
 
 
 void MarBackend::open(std::string filename) {
+	delNet();
+	cout<<"deleted"<<endl;
 	sourceNet = makeSourceNet(filename);
-	mrs_real osrate = sourceNet->getctrl("mrs_real/osrate")->toReal();
-	pitchNet = makePitchNet(osrate);
-
-	allNet = mng.create("Series", "allNet");
-	allNet->addMarSystem(sourceNet);
-// test
-//	allNet->addMarSystem(mng.create("AudioSink", "audioDest"));
-//	allNet->updctrl("AudioSink/audioDest/mrs_bool/initAudio", true);
-// non-test
-	allNet->addMarSystem(pitchNet);
-
-	mrsWrapper = new MarSystemQtWrapper(allNet);
-	mrsWrapper->start();
-//	mrsWrapper->pause();
+	cout<<"created"<<endl;
+	setupAllNet();
+	cout<<"all created"<<endl;
 }
 
 void MarBackend::setFileName(string filename) {
@@ -107,6 +113,26 @@ void MarBackend::setFileName(string filename) {
 }
 
 void MarBackend::startIntonation() {
+	sourceNet = makeSourceNet("");
+	setupAllNet();
+}
+
+void MarBackend::setupAllNet() {
+	mrs_real osrate = sourceNet->getctrl("mrs_real/osrate")->toReal();
+//	pitchNet = makePitchNet(osrate);
+
+	allNet = mng.create("Series", "allNet");
+	allNet->addMarSystem(sourceNet);
+// test
+//	allNet->addMarSystem(mng.create("AudioSink", "audioDest"));
+//	allNet->updctrl("AudioSink/audioDest/mrs_bool/initAudio", true);
+// non-test
+	allNet->addMarSystem( makePitchNet(osrate) );
+//	allNet->addMarSystem(pitchNet);
+
+	mrsWrapper = new MarSystemQtWrapper(allNet);
+	mrsWrapper->start();
+//	mrsWrapper->pause();
 }
 
 void MarBackend::startControl() {
@@ -131,11 +157,12 @@ void MarBackend::analyze() {
 	delete mrsWrapper;
 
 	mrs_real osrate = sourceNet->getctrl("mrs_real/osrate")->toReal();
+	cout<<osrate<<endl;
 
-	realvec data = pitchNet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->toVec();
+	realvec data = allNet->getctrl("Series/pitchNet/RealvecSink/rvSink/mrs_realvec/data")->toVec();
 	for (mrs_natural i=1; i<data.getSize();i+=2)
 		data(i) = samples2hertz(data(i), osrate);
-	pitchNet->updctrl("RealvecSink/rvSink/mrs_bool/done", true); 
+	allNet->updctrl("Series/pitchNet/RealvecSink/rvSink/mrs_bool/done", true); 
 
 
 // my addition to the marsyasTest pitch stuff:

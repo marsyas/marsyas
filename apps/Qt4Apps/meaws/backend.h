@@ -48,6 +48,8 @@ private:
 	void startIntonation();
 	void startControl();
 
+	void setupAllNet();
+	void delNet();
   MarControlPtr filenamePtr;
 /*
 // metronome stuff
