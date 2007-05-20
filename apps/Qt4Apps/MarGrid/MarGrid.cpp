@@ -37,7 +37,7 @@ MarGrid::MarGrid(QWidget *parent)
   int winWidth, winHeight;
   
   cell_size = 50;
-  som_width = 20;
+  som_width = 12;;
   som_height = 12;
    
   winWidth = cell_size * som_width;
@@ -471,6 +471,8 @@ void MarGrid::mousePressEvent(QMouseEvent *event)
       mwr_->play();
       
     }
+  else 
+      mwr_->pause();
   
   cout << "Playlist: " << endl;
   for (int i=0; i < posFiles.size(); i++) 
@@ -514,6 +516,8 @@ MarGrid::mouseMoveEvent(QMouseEvent* event)
       mwr_->play();
       
     }
+   else 
+	mwr_->play();
   
   cout << "Playlist: " << endl;
   for (int i=0; i < posFiles.size(); i++) 

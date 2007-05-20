@@ -70,7 +70,7 @@ unix:!macx:CONFIG += marsyasAUDIOIO_ALSA
 # Adds support for MATLAB engine classes
 ######################################################################
 
-CONFIG	+= marsyasMATLAB
+# CONFIG	+= marsyasMATLAB
 
 ######################################################################
 # Adds support for MP3 MAD
