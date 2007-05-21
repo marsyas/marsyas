@@ -70,16 +70,14 @@ MarGrid::MarGrid(QWidget *parent)
   
   filePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_string/filename");
 
-  mwr_->updctrl(filePtr_, "u2.au");
-      mwr_->play();
 
-  setup();
+  setup("music.mf");
 }
 
 
 
 void 
-MarGrid::setup()
+MarGrid::setup(QString fname)
 {
 
   // Build network for feature extraction 
@@ -164,9 +162,11 @@ MarGrid::setup()
   
   total_->updctrl("Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/inSamples", 512);
   
-  total_->updctrl("mrs_string/filename", "music.mf");
+  trainFname = fname;
+  total_->updctrl("mrs_string/filename", trainFname.toStdString());
   total_->updctrl("mrs_real/repetitions", 1.0);
   
+
 }
 
   
@@ -176,7 +176,7 @@ MarGrid::extract()
 {
   // EXTRACT FEATURES 
   Collection l;
-  l.read("music.mf");
+  l.read(trainFname.toStdString());
 
   
   int index= 0;

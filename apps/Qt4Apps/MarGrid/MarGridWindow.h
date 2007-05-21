@@ -32,6 +32,8 @@
 #include <QMainWindow>
 #include <QLabel>
 
+#include <iostream> 
+using namespace std;
 #include "MarGrid.h"
 
 class MarGridWindow : public QMainWindow
@@ -44,16 +46,19 @@ public:
 public slots: 
    void about();
    void playingFile(QString);
-  
+  void openTrainFile();
+ signals: 
+   void trainFile(QString);
 
 
 private:
   void createMenus();
   void createActions();
-  
+
+
   QMenu*   fileMenu;  
   QMenu*   helpMenu;
-  QAction* openAct;
+  QAction* openTrainAct;
   QAction* aboutAct;
   QLabel*  playLabel;  
   

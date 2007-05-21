@@ -46,6 +46,8 @@ MarGridWindow::MarGridWindow()
   
   QWidget *margrid = new MarGrid();
 
+  connect(this, SIGNAL(trainFile(QString)), margrid, SLOT(setup(QString)));
+
   QGridLayout *gridLayout = new QGridLayout;
   gridLayout->addWidget(extract, 0, 0);
   gridLayout->addWidget(train, 0, 1);
@@ -74,21 +76,31 @@ void
 MarGridWindow::createMenus()
 {
   fileMenu = menuBar()->addMenu(tr("&File"));
-  fileMenu->addAction(openAct);
+  fileMenu->addAction(openTrainAct);
   menuBar()->addSeparator();
   helpMenu = menuBar()->addMenu(tr("&Help"));
   helpMenu->addAction(aboutAct);
 }
 
 
+void 
+MarGridWindow::openTrainFile()
+{
+  QString fileName = QFileDialog::getOpenFileName(this);
+  cout << "fileName = " << fileName.toStdString() << endl;
+  emit trainFile(fileName);
+}
+
 
 void 
 MarGridWindow::createActions()
 {
   
-  openAct = new QAction(tr("&Open..."), this);
-  openAct->setShortcut(tr("Ctrl+O"));
-  openAct->setStatusTip(tr("Open an existing file"));
+  openTrainAct = new QAction(tr("&Open Training File"), this);
+  openTrainAct->setStatusTip(tr("Open Collection File for Training"));
+  connect(openTrainAct, SIGNAL(triggered()), this, SLOT(openTrainFile()));
+  
+
   // connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
   aboutAct = new QAction(tr("&About"), this);
   aboutAct->setStatusTip(tr("Show the application's About box"));

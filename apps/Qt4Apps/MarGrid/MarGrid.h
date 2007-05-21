@@ -47,7 +47,7 @@ public:
     void clear();
 
 public slots: 
-  void setup();
+  void setup(QString fname);
   void extract();
   void predict();
   void train();
@@ -68,6 +68,7 @@ private:
 
   MarControlPtr filePtr_;
   
+  QString trainFname;
   Marsyas::MarSystemManager mng;  
   QVector<QList <std::string> > files;
   QVector<int> counters;
