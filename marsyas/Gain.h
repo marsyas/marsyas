@@ -50,10 +50,12 @@ private:
 	MarControlPtr ctrl_RMScalc_;
 	MarControlPtr ctrl_inRMS_;
 	MarControlPtr ctrl_outRMS_;
+    MarControlPtr ctrl_powerRMS_;
 
 	//RMS value for each in/out channel
 	realvec inRMS_;
 	realvec outRMS_;
+    mrs_real powerRMS_;
 
 	void myUpdate(MarControlPtr sender);
 

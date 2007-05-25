@@ -17,8 +17,8 @@
 */
 
 /** 
- \class PeSimilarity
-    \brief similarities computation routines for peaks extraction project
+\class PeSimilarity
+\brief similarities computation routines for peaks extraction project
 */
 
 #include "PeSimilarity.h"
@@ -117,11 +117,11 @@ Marsyas::similarityMatrix(realvec &data, realvec& m, string type, mrs_natural nb
 		}
 		else if (j==-3)
 		{
-           harmonicityVirtanenCompute(data, m);
+			harmonicityVirtanenCompute(data, m);
 		}
-	    else if (j==-4)
+		else if (j==-4)
 		{
-           harmonicitySrinivasanCompute(data, m, hmap);
+			harmonicitySrinivasanCompute(data, m, hmap);
 		}
 		else
 		{// specific similarity computation
@@ -130,13 +130,13 @@ Marsyas::similarityMatrix(realvec &data, realvec& m, string type, mrs_natural nb
 
 			realvec normData = data;
 			//for(int j =0 ; j<normData.getRows() ; j++)
-				//normData(j, pkAmplitude) = amplitude2dB(normData(j, pkAmplitude));
+			//normData(j, pkAmplitude) = amplitude2dB(normData(j, pkAmplitude));
 
-				
 
-				// build frequency and amplitude matrices
-				extractParameter(normData, frequencySet_, pkFrequency, nbMaxSines);
-		//	normData.normSplMinMax(2);
+
+			// build frequency and amplitude matrices
+			extractParameter(normData, frequencySet_, pkFrequency, nbMaxSines);
+			//	normData.normSplMinMax(2);
 			// unallow null amplitude
 			//normData+= 0.00000000001;
 			extractParameter(normData, amplitudeSet_, pkAmplitude, nbMaxSines);
@@ -147,14 +147,14 @@ Marsyas::similarityMatrix(realvec &data, realvec& m, string type, mrs_natural nb
 	// normalization in case the similarity values are bigger than one
 	/*m/=m.maxval();
 	for (i=0 ; i<m.getCols() ; i++)
-		m(i, i) = 1 ;*/
+	m(i, i) = 1 ;*/
 }
 
 void
 Marsyas::similarityCompute(realvec &d, realvec& m)
 {
 	int i, j;
- 
+
 	// getSize ?? [ML]
 	for(i=0 ; i<d.getCols() ; i++)
 	{
@@ -174,11 +174,11 @@ Marsyas::harmonicWrapping(mrs_real peak1Freq, mrs_real peak2Freq, realvec& first
 	// shift frequencies
 	firstF -= peak1Freq;
 	secondF -= peak2Freq;
-	
+
 	// fundamental frequency estimate
 	mrs_real hF = min(peak1Freq, peak2Freq);
 	//mrs_real mhF = min(hF, abs(peak1Freq-peak2Freq));
-	
+
 	// wrap frequencies around fundamental freq estimate
 	firstF /= hF;
 	secondF /= hF;
@@ -201,16 +201,16 @@ Marsyas::harmonicWrapping(mrs_real peak1Freq, mrs_real peak2Freq, realvec& first
 
 void
 Marsyas::harmonicitySimilarityCompute(realvec& data, std::vector<realvec>& fSet, std::vector<realvec>& aSet, realvec& m, mrs_natural hSize, 
-																			realvec& firstF, realvec& firstA, realvec& secondF, realvec& secondA)
+									  realvec& firstF, realvec& firstA, realvec& secondF, realvec& secondA)
 {
 	mrs_natural i, j, startIndex = (mrs_natural) data(0, pkTime);
 
-  realvec x1(hSize);
+	realvec x1(hSize);
 	realvec x2(hSize);
 	realvec x3(hSize);
 	realvec x4(hSize);
-  //cout << data ;
-	
+	//cout << data ;
+
 	// similarity computing
 	for(i=0 ; i<data.getRows() ; i++)
 	{
@@ -251,16 +251,16 @@ Marsyas::harmonicitySimilarityCompute(realvec& data, std::vector<realvec>& fSet,
 			//for (mrs_natural k=0 ; k<secondF.getSize() ; k++)
 			//	secondA(k)*=harmonicWeighting(secondF(k), hF, harmonicityWeight_);
 
-			
+
 			//********************************************************************
 			//						HWPS
 			//********************************************************************
-			
+
 			//////////////////////////////////
 			// calculate harmonic wrapping
 			//////////////////////////////////
 			harmonicWrapping(iFreq, jFreq, firstF, secondF);
-						
+
 			//////////////////////////////////
 			// histogram and COSINE distance
 			/////////////////////////////////
@@ -268,7 +268,7 @@ Marsyas::harmonicitySimilarityCompute(realvec& data, std::vector<realvec>& fSet,
 			//val=exp(-val);
 
 			//cout << data(i, pkFrequency) << " " <<data(j, pkFrequency) << " value: "<< val << " " << exp(val*val) <<endl;
-			
+
 			m(i, j) *= exp(val*val)/exp(1.0);
 			m(j, i) *= exp(val*val)/exp(1.0);
 		}
@@ -281,73 +281,75 @@ mrs_real Marsyas::hVirtanen(mrs_real f1, mrs_real f2)
 	mrs_real fMin = 50;
 	mrs_real dist=MAXREAL;
 
-    mrs_real r1 = floor(f1/fMin);
-    mrs_real r2 = floor(f2/fMin);
+	mrs_real r1 = floor(f1/fMin);
+	mrs_real r2 = floor(f2/fMin);
 
-for (mrs_natural i=1 ; i<=r1 ; i++)
-  for (mrs_natural j=1; j<=r2 ; j++)
-  {
-    mrs_real val = abs(log((f1/f2)/(i/j)));
-    if (dist > val)
-      dist=val;
-  }
+	for (mrs_natural i=1 ; i<=r1 ; i++)
+		for (mrs_natural j=1; j<=r2 ; j++)
+		{
+			mrs_real val = abs(log((f1/f2)/(i/j)));
+			if (dist > val)
+				dist=val;
+		}
 
-return dist;
+		return dist;
 }
 
 void
 Marsyas::harmonicityVirtanenCompute(realvec& data, realvec& m)
 {
-mrs_natural i, j;
+	mrs_natural i, j;
 
-for (i=0 ; i<data.getRows() ; i++)
-for (j=0 ; j<i ; j++)
-{
-    mrs_real sim = 1/(1+hVirtanen (data(i, pkFrequency), data(j, pkFrequency)));
-	// should consider
-	// mrs_real sim = exp(-hVirtanen (data(i, pkFrequency), data(j, pkFrequency))/exp(1);
-	m(i, j) *= sim;
-    m(j, i) *= sim;
-}
+	for (i=0 ; i<data.getRows() ; i++)
+		for (j=0 ; j<i ; j++)
+		{
+			mrs_real sim = 1/(1+hVirtanen (data(i, pkFrequency), data(j, pkFrequency)));
+			// should consider
+			// mrs_real sim = exp(-hVirtanen (data(i, pkFrequency), data(j, pkFrequency))/exp(1);
+			m(i, j) *= sim;
+			m(j, i) *= sim;
+		}
 
 }
 
 void
 Marsyas::harmonicitySrinivasanCompute(realvec& data, realvec& m, realvec& hMap)
 {
-mrs_natural i, j;
+	mrs_natural i, j;
 
-if(!hMap.getSize())
-	computeHarmonicityMap(hMap, 512); // 512
+	if(!hMap.getSize())
+		computeHarmonicityMap(hMap, 512); // 512
 
 
 
-for (i=0 ; i<data.getRows() ; i++)
-for (j=0 ; j<i ; j++)
-{
-	//cout << data(i, pkBin) << " " << data(j, pkBin) << " " << hMap(data(i, pkBin), data(j, pkBin)) << endl;
- 	m(i, j) *= hMap(data(i, pkBin), data(j, pkBin));
-    m(j, i) *= hMap(data(i, pkBin), data(j, pkBin));
+	for (i=0 ; i<data.getRows() ; i++)
+		for (j=0 ; j<i ; j++)
+		{
+			//cout << data(i, pkBin) << " " << data(j, pkBin) << " " << hMap(data(i, pkBin), data(j, pkBin)) << endl;
+			m(i, j) *= hMap(data(i, pkBin), data(j, pkBin));
+			m(j, i) *= hMap(data(i, pkBin), data(j, pkBin));
+		}
 }
-}
 
-void Marsyas::selectClusters(realvec &m, realvec &data, realvec &labels, mrs_natural wantedNbClusters, mrs_natural nbClusters)
+mrs_real Marsyas::selectClusters(realvec &m, realvec &data, realvec &labels, mrs_natural wantedNbClusters, mrs_natural nbClusters)
 {
 	mrs_natural i, j, nbFound=0;
+	mrs_real clusterDensity=0, outerClusterDensity=0;
+
+	// intra class density
 	realvec sValue(nbClusters);
-	//cout << labels;
 	sValue.setval(0);
-		realvec sNValue(nbClusters);
-	//cout << labels;
+	// outer class density
+	realvec sNValue(nbClusters);
 	sNValue.setval(0);
+	// numbers of peaks considered
 	realvec sNb(nbClusters);
-	//cout << labels;
 	sNb.setval(0);
-realvec sNNb(nbClusters);
-	//cout << labels;
+	// numbers of peaks considered
+	realvec sNNb(nbClusters);
 	sNNb.setval(0);
+	// newlabeling of the clusters (0/1)
 	realvec newLabels(nbClusters);
-	//cout << labels;
 	newLabels.setval(0);
 
 	for(i=0 ; i<m.getRows() ; i++)
@@ -357,38 +359,30 @@ realvec sNNb(nbClusters);
 			if(labels(i)==labels(j))
 			{
 				sValue((mrs_natural) labels(i))+= m(i, j);
-			sNb((mrs_natural) labels(i))++;
+				sNb((mrs_natural) labels(i))++;
 			}	
 			else
 			{
-	sNValue((mrs_natural) labels(i))+= m(i, j);
-	sNNb((mrs_natural) labels(i))++;
+				sNValue((mrs_natural) labels(i))+= m(i, j);
+				sNNb((mrs_natural) labels(i))++;
 			}
-			}
+		}
 	}
- for(i=0; i<nbClusters ;i++)
-	sValue(i) /= sNb(i);
+	// normalize by number of elements
+	for(i=0; i<nbClusters ;i++)
+		sValue(i) /= sNb(i);
+	for(i=0; i<nbClusters ;i++)
+		sNValue(i) /= sNNb(i);
 
- for(i=0; i<nbClusters ;i++)
-	sNValue(i) /= sNNb(i);
+	// normalize by outer density
+	/*for(i=0; i<nbClusters ;i++)
+	sValue(i) /= sNValue(i);*/
 
- //for(i=0; i<nbClusters ;i++)
-	//sValue(i) /= sNValue(i);
+	/*MATLAB_PUT(sValue.maxval(), "val");
+	MATLAB_EVAL("hold on ; plot(x, val, 'ko');");*/
 
- /*MATLAB_PUT(sValue.maxval(), "val");
- MATLAB_EVAL("hold on ; plot(x, val, 'ko');");*/
-
- // create the clusters set
- //realvec vecs;
- //clusters.attributes(peakSet_);	
- //clusters.getVecs(vecs);
-
- // get infos
-
- // weight sValues
-
-
- while(nbFound<nbClusters-wantedNbClusters)
+// find the clusters with highest density
+	while(nbFound<nbClusters-wantedNbClusters)
 	{
 		mrs_natural index=0;
 		mrs_real value=MAXREAL;
@@ -398,12 +392,19 @@ realvec sNNb(nbClusters);
 			{
 				value=sValue(i);
 				index = i;
+				clusterDensity += value;
 			}
 		}
 		sValue(index) = -1;
 		nbFound++;
 	}
-  // cout << sValue;
+	clusterDensity/=nbClusters-wantedNbClusters;
+	// compute outer Cluster density
+	for(i=0; i<nbClusters ;i++)
+//			if(sValue(i) == -1 )
+				outerClusterDensity += sValue(i);
+	outerClusterDensity/=wantedNbClusters;
+	// propagate new labeling
 	mrs_natural k=0;
 	for(i=0; i<nbClusters ;i++)
 		if(sValue(i) == -1)
@@ -415,4 +416,5 @@ realvec sNNb(nbClusters);
 	for(i=0 ; i<m.getRows() ; i++)
 		labels(i) = newLabels(labels(i));
 	//cout << labels;
+	return outerClusterDensity;///outerClusterDensity;
 }

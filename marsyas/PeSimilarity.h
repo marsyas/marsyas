@@ -39,7 +39,7 @@ void harmonicitySimilarityCompute(realvec&, std::vector<realvec>&, std::vector<r
 void harmonicityVirtanenCompute(realvec&, realvec& m);
 mrs_real hVirtanen(mrs_real, mrs_real);
 void harmonicitySrinivasanCompute(realvec& data, realvec& m, realvec& hmap);
-void selectClusters(realvec &m, realvec &data, realvec &labels, mrs_natural removedNbClusters, mrs_natural);
+mrs_real selectClusters(realvec &m, realvec &data, realvec &labels, mrs_natural removedNbClusters, mrs_natural);
 }
 
 #endif

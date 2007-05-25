@@ -157,12 +157,16 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	MarSystem* preNet = mng.create("Series", "preNet");
 	//create fanout for mixing
 	MarSystem* fanin = mng.create("Fanin", "fanin");
+	// create ori series
+	MarSystem* oriNet = mng.create("Series", "oriNet");
 	// add original source in the fanout
 	if (microphone_) 
-		fanin->addMarSystem(mng.create("AudioSource", "src"));
+		oriNet->addMarSystem(mng.create("AudioSource", "src"));
 	else 
-		fanin->addMarSystem(mng.create("SoundFileSource", "src"));
-	
+		oriNet->addMarSystem(mng.create("SoundFileSource", "src"));
+	oriNet->addMarSystem(mng.create("Gain", "oriGain"));
+// add the ori Series to the fanout
+	fanin->addMarSystem(oriNet);
 	// create a series for the noiseSource
 	if(noiseName != EMPTYSTRING)
 	{
@@ -232,11 +236,13 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	}
 	else
 	{
-		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_string/filename", sfName);
-		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_natural/inSamples", D);
-		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_natural/inObservations", 1);
-		samplingFrequency_ = pvseries->getctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_real/osrate")->toReal();
+		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/oriNet/SoundFileSource/src/mrs_string/filename", sfName);
+		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/oriNet/SoundFileSource/src/mrs_natural/inSamples", D);
+		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/oriNet/SoundFileSource/src/mrs_natural/inObservations", 1);
+		samplingFrequency_ = pvseries->getctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/oriNet/SoundFileSource/src/mrs_real/osrate")->toReal();
 	}
+		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/oriNet/Gain/oriGain/mrs_bool/RMScalc", true);
+
 
 if(noiseName != EMPTYSTRING)
 {
@@ -301,8 +307,14 @@ if(noiseName != EMPTYSTRING)
 
 	}
 
-	//	cout << *pvseries << endl;
-
+	// link original gain and output gain
+	pvseries->linkControl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/oriNet/Gain/oriGain/mrs_real/powerRMS", 
+		"PeSynthetize/synthNet/Series/postNet/Gain/outGain/mrs_real/gain");
+	// link cluster density and output gain
+	//pvseries->linkControl("PeClust/peClust/mrs_real/clusterDensity", 
+	//	"PeSynthetize/synthNet/Series/postNet/Gain/outGain/mrs_real/gain");
+	
+	ofstream cfile("density.txt", ios::app);
 	mrs_real globalSnr = 0;
 	mrs_natural nb=0;
 	//	mrs_real time=0;
@@ -328,21 +340,29 @@ if(noiseName != EMPTYSTRING)
 
 		if (!microphone_)
 		{
-			bool temp = pvseries->getctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
-			bool temp1 = accumNet->getctrl("Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
-			bool temp2 = preNet->getctrl("Fanin/fanin/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
+			bool temp = pvseries->getctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/oriNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
+			bool temp1 = accumNet->getctrl("Series/preNet/Fanin/fanin/Series/oriNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
+			bool temp2 = preNet->getctrl("Fanin/fanin/Series/oriNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
 
-			mrs_real timeRead =  preNet->getctrl("Fanin/fanin/SoundFileSource/src/mrs_natural/pos")->toNatural()/samplingFrequency_;
+			mrs_real timeRead =  preNet->getctrl("Fanin/fanin/Series/oriNet/SoundFileSource/src/mrs_natural/pos")->toNatural()/samplingFrequency_;
 			mrs_real timeLeft;
 			if(!stopAnalyse_)
-				timeLeft =  preNet->getctrl("Fanin/fanin/SoundFileSource/src/mrs_natural/size")->toNatural()/samplingFrequency_;
+				timeLeft =  preNet->getctrl("Fanin/fanin/Series/oriNet/SoundFileSource/src/mrs_natural/size")->toNatural()/samplingFrequency_;
 			else
 				timeLeft = stopAnalyse_;
-			// string fname = pvseries->getctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/SoundFileSource/src/mrs_string/filename")->toString();
-			printf("  %.2f / %.2f \r", timeRead, timeLeft);
-			fflush(stdout);
+			// string fname = pvseries->getctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/oriNet/SoundFileSource/src/mrs_string/filename")->toString();
+			
+			//printf("  %.2f / %.2f \r", timeRead, timeLeft);
+			//fflush(stdout);
+			
 			//cout << fixed << setprecision(2) << timeRead << "/" <<  setprecision(2) << timeLeft;
 			///*bool*/ temp = pvseries->getctrl("Accumulator/accumNet/Series/preNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
+			
+			mrs_real oriGain = preNet->getctrl("Fanin/fanin/Series/oriNet/Gain/oriGain/mrs_real/powerRMS")->toReal();
+            mrs_real density = pvseries->getctrl("PeClust/peClust/mrs_real/clusterDensity")->toReal();
+            cfile << density << " " << oriGain << endl;
+			//cout << oriGain << endl;
+
 			if (temp2 == false || (stopAnalyse_ !=0 && stopAnalyse_<timeRead))
 				break;
 		}
@@ -359,6 +379,7 @@ if(noiseName != EMPTYSTRING)
 		pvseries->updctrl("RealvecSink/peSink/mrs_bool/done", true);
 		peakStore(vec, filePeakName, samplingFrequency_, D); 
 	}
+	cfile.close();
 }
 
 

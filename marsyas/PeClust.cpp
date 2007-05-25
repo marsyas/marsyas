@@ -72,6 +72,8 @@ PeClust::addControls()
 	setctrlState("mrs_natural/hopSize", true);
 	addctrl("mrs_natural/storePeaks", 0);
 	setctrlState("mrs_natural/storePeaks", true);
+	addctrl("mrs_real/clusterDensity", 0.0);
+	setctrlState("mrs_real/clusterDensity", true);
 }
 
 void
@@ -393,7 +395,9 @@ PeClust::myProcess(realvec& in, realvec& out)
 		mrs_natural nbSelected = getctrl("mrs_natural/selectedClusters")->toNatural();
 		if(nbSelected)
 		{
-			selectClusters(m_, data_, labels, nbSelected, nbClusters_);
+			mrs_real clusterDensity = selectClusters(m_, data_, labels, nbSelected, nbClusters_);
+
+setctrl("mrs_real/clusterDensity", clusterDensity);
 			// back = nbClusters_;
 			nbClusters_ = nbSelected;
 		}

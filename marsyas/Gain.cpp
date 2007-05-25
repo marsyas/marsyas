@@ -48,6 +48,7 @@ Gain::Gain(const Gain& a) : MarSystem(a)
   ctrl_RMScalc_ = getctrl("mrs_bool/RMScalc");
   ctrl_inRMS_ = getctrl("mrs_realvec/inRMS");
   ctrl_outRMS_ = getctrl("mrs_realvec/outRMS");
+  ctrl_powerRMS_ = getctrl("mrs_real/powerRMS");
 }
 
 Gain::~Gain()
@@ -68,6 +69,7 @@ Gain::addControls()
   addctrl("mrs_bool/RMScalc", false, ctrl_RMScalc_);
   addctrl("mrs_realvec/inRMS", inRMS_, ctrl_inRMS_);
   addctrl("mrs_realvec/outRMS", outRMS_, ctrl_outRMS_);
+  addctrl("mrs_real/powerRMS", powerRMS_, ctrl_powerRMS_);
 }
 
 void
@@ -127,6 +129,12 @@ Gain::myProcess(realvec& in, realvec& out)
 		//ctrl_outRMS_->setValue(outRMS_, NOUPDATE);
 		//updctrl(ctrl_outRMS_, outRMS_, NOUPDATE);
 	  setctrl(ctrl_outRMS_, outRMS_);
+
+	  // [ML] this a temporary hack !!!
+	  if (outRMS_.mean() > 0.00000001)
+	   setctrl(ctrl_powerRMS_, 1.0);
+	  else
+	   setctrl(ctrl_powerRMS_, 0.0);
 	}
 }
 

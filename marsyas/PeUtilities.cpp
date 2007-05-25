@@ -487,6 +487,9 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
 		postNet->addMarSystem(mng->create("PeSynOscBank", "pso"));
 		// postNet->addMarSystem(mng->create("ShiftOutput", "so"));
 	}
+
+    postNet->addMarSystem(mng->create("Gain", "outGain"));
+
 	MarSystem *dest;
 	if (outsfname == EMPTYSTRING) 
 		dest = new AudioSink("dest");
