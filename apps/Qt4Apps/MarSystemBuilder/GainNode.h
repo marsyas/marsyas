@@ -16,7 +16,7 @@ class GainNode:public MarSystemNode
   GainNode(MarSystem* msys,QWidget* parent);
   
  protected:
-  //void paintEvent(QPaintEvent* event);
+  void paintEvent(QPaintEvent* event);
   void resizeEvent(QResizeEvent* event);
 };
 

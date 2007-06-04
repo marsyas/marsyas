@@ -47,9 +47,10 @@ public slots:
    void about();
    void playingFile(QString);
   void openTrainFile();
+  void openPredictFile();
  signals: 
    void trainFile(QString);
-
+   void predictFile(QString);
 
 private:
   void createMenus();
@@ -59,9 +60,11 @@ private:
   QMenu*   fileMenu;  
   QMenu*   helpMenu;
   QAction* openTrainAct;
+  QAction* openPredictAct;
   QAction* aboutAct;
   QLabel*  playLabel;  
-  
+  QLabel* trainLabel;
+  QLabel* predictLabel;
   
 };
 

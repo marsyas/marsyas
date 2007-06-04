@@ -71,15 +71,14 @@ MarGrid::MarGrid(QWidget *parent)
   filePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_string/filename");
 
 
-  setup("music.mf");
+  setupTrain("music.mf");
 }
 
 
 
 void 
-MarGrid::setup(QString fname)
+MarGrid::setupTrain(QString fname)
 {
-
   // Build network for feature extraction 
   MarSystem* extractNet = mng.create("Series", "extractNet");
   extractNet->addMarSystem(mng.create("SoundFileSource", "src"));
@@ -138,13 +137,15 @@ MarGrid::setup(QString fname)
 
   total_->linkctrl("mrs_natural/cindex",
 		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/cindex");  
-  
-  
-  total_->linkctrl("mrs_string/allfilenames",
-		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/allfilenames");  
-  
+
   total_->linkctrl("mrs_natural/numFiles",
 		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/numFiles");  
+  
+  total_->linkctrl("mrs_string/allfilenames",
+		   "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/allfilenames");  
+  
+  total_->linkctrl("mrs_natural/numFiles",
+		   "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/numFiles");  
   
   
   total_->linkctrl("mrs_bool/notEmpty",
@@ -163,6 +164,7 @@ MarGrid::setup(QString fname)
   total_->updctrl("Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/inSamples", 512);
   
   trainFname = fname;
+  predictFname = "test.mf";
   total_->updctrl("mrs_string/filename", trainFname.toStdString());
   total_->updctrl("mrs_real/repetitions", 1.0);
   
@@ -175,40 +177,28 @@ void
 MarGrid::extract()
 {
   // EXTRACT FEATURES 
-  Collection l;
-  l.read(trainFname.toStdString());
-
-  
   int index= 0;
-
+  int numFiles = total_->getctrl("mrs_natural/numFiles")->to<mrs_natural>();
 
   realvec som_in;
   realvec som_res;
-  realvec norm_som_res;
-  
   realvec som_fmatrix;
+
+  mrs_natural total_onObservations = 
+    total_->getctrl("mrs_natural/onObservations")->toNatural();
   
   som_in.create(total_->getctrl("mrs_natural/inObservations")->toNatural(), 
 		total_->getctrl("mrs_natural/inSamples")->toNatural());
   
-  som_res.create(total_->getctrl("mrs_natural/onObservations")->toNatural(), 
+  som_res.create(total_onObservations, 
 		 total_->getctrl("mrs_natural/onSamples")->toNatural());
-
-  norm_som_res.create(total_->getctrl("mrs_natural/onObservations")->toNatural(), 
-		      total_->getctrl("mrs_natural/onSamples")->toNatural());
-
-  som_fmatrix.create(total_->getctrl("mrs_natural/onObservations")->toNatural(), 
-		     l.size());
-
   
-  mrs_natural total_onObservations = total_->getctrl("mrs_natural/onObservations")->toNatural();
-  
-
-  
+  som_fmatrix.create(total_onObservations, 
+		     numFiles);
 
   // calculate features 
   cout << "Calculating features" << endl;
-  for (index=0; index < l.size(); index++)
+  for (index=0; index < numFiles; index++)
     {
       total_->updctrl("mrs_natural/label", index);
       total_->updctrl("mrs_bool/memReset", true);
@@ -223,13 +213,10 @@ MarGrid::extract()
       for (int o=0; o < total_onObservations; o++) 
 	som_fmatrix(o, index) = som_res(o, 0);
     }
-  
 
   ofstream oss;
   oss.open("som_fmatrix.txt");
   oss << som_fmatrix << endl;
-
-
 }
 
 
@@ -237,17 +224,15 @@ MarGrid::extract()
 void
 MarGrid::train()
 {
-
+  // Read the feature matrix from file som_fmatrix.txt 
   realvec train_som_fmatrix;
   ifstream iss;
   iss.open("som_fmatrix.txt");
   iss >> train_som_fmatrix;
 
-
+  // Normalize the feature matrix so that all features are between 0 and 1
   norm_som_fmatrix.create(train_som_fmatrix.getRows(),
 			  train_som_fmatrix.getCols());
-
-
   norm_ = mng.create("NormMaxMin", "norm");
   norm_->updctrl("mrs_natural/inSamples", train_som_fmatrix.getCols());
   norm_->updctrl("mrs_natural/inObservations", 
@@ -257,47 +242,32 @@ MarGrid::train()
   norm_->updctrl("mrs_bool/train", false);  
   norm_->process(train_som_fmatrix, norm_som_fmatrix);
 
-
-
-  
-  
-  
+  // Create netork for training the self-organizing map 
   som_ = mng.create("SOM", "som");  
   som_->updctrl("mrs_natural/grid_width", som_width);
   som_->updctrl("mrs_natural/grid_height", som_height);
   som_->updctrl("mrs_natural/inSamples", norm_som_fmatrix.getCols());
   som_->updctrl("mrs_natural/inObservations", norm_som_fmatrix.getRows());  
-
   som_->updctrl("mrs_string/mode", "train");
-
-
 
   realvec som_fmatrixres;
   som_fmatrixres.create(som_->getctrl("mrs_natural/onObservations")->toNatural(), 
 			som_->getctrl("mrs_natural/onSamples")->toNatural());
   
   cout << "Starting training" << endl;
-  // cout << "som = " << *som_ << endl;
-  
-
-
-
   
   for (int i=0; i < 2000; i ++) 
     {
       cout << "Training iteration" << i << endl;
-      
       norm_som_fmatrix.shuffle();
       som_->process(norm_som_fmatrix, som_fmatrixres);
     }
-  
   
   cout << "Training done" << endl;
   som_->updctrl("mrs_bool/done", true);
   som_->tick();
 
-  
-
+  // write the trained som network and the feature normalization networks 
   ofstream oss;
   oss.open("som.mpl");
   oss << *som_ << endl;
@@ -312,55 +282,44 @@ MarGrid::train()
 }
 
 
+void
+MarGrid::setupPredict(QString fname)
+{
+  predictFname = fname;
+}
 
 void
 MarGrid::predict()
 {
-  
   MarSystemManager mng;
-  
+
+  // read trained som network from file som.mpl and normalization network norm.mpl 
   ifstream iss;
   iss.open("som.mpl");
   som_ = mng.getMarSystem(iss);
 
-
   ifstream niss;
   niss.open("norm.mpl");
   norm_ = mng.getMarSystem(iss);
-  
-
 
   resetPredict();
   cout << "Starting prediction" << endl;
   som_->updctrl("mrs_string/mode", "predict");  
-
-  cout << "Update mode" << endl;
-  
   
   Collection l1;
-  l1.read("test.mf");
+  l1.read(predictFname.toStdString());
   cout << "Read collection" << endl;
 
   total_->updctrl("mrs_natural/pos", 0);  
-  total_->updctrl("mrs_string/filename", "test.mf");    
-  
+  total_->updctrl("mrs_string/filename", predictFname.toStdString());    
   
   som_->updctrl("mrs_natural/inSamples", 1);
-  
- 
-  
-
 
   realvec predict_res(som_->getctrl("mrs_natural/onObservations")->toNatural(), 
 		      som_->getctrl("mrs_natural/onSamples")->toNatural());
-  
 
   norm_->updctrl("mrs_natural/inSamples", 1);
-
   
-
-
-
   realvec som_in;
   realvec som_res;
   realvec norm_som_res;
@@ -477,11 +436,8 @@ void MarGrid::mousePressEvent(QMouseEvent *event)
   cout << "Playlist: " << endl;
   for (int i=0; i < posFiles.size(); i++) 
     cout << posFiles[i] << endl;
-  
-
 
   repaint();
-  
   
 }
 
@@ -495,17 +451,13 @@ MarGrid::mouseMoveEvent(QMouseEvent* event)
       return;
     }
   
-
   grid_x = event->pos().x() / cell_size;
   grid_y = event->pos().y() / cell_size;
-
   
   int k = grid_x * som_height + grid_y;
   QList<string> posFiles = files[k];
   
   int counter = counters[k];
-
-  
 
   if (posFiles.size() != 0) 
     {
@@ -523,8 +475,6 @@ MarGrid::mouseMoveEvent(QMouseEvent* event)
   for (int i=0; i < posFiles.size(); i++) 
     cout << posFiles[i] << endl;
   
-
-
   repaint();
   
 }

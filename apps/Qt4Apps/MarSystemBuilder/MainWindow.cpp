@@ -55,11 +55,14 @@ void
 MainWindow::init()
 {
   cout<<"init()"<<endl;
-  QGroupBox* mainBox = new QGroupBox;
+  
+  QWidget* mainBox = new QWidget;
   QGridLayout* mainLayout = new QGridLayout;
 
   theCanvas = new MarCanvas(this);
-  theCanvas->setMinimumSize(1100,800);
+  theCanvas->setMinimumSize(800,600);
+
+
 
   QGroupBox* westPanel = new QGroupBox;
   QVBoxLayout* westLayout = new QVBoxLayout;
@@ -88,6 +91,8 @@ MainWindow::init()
   				     QString(MarSystemNodeFactory::FANOUT_TYPE.c_str()),
   				     collectionBox);
 
+
+
   connect(addSeries, SIGNAL(reemitClick(QString)), 
     theCanvas, SLOT(addNewMarSystemNode(QString)));
   connect(addFanout, SIGNAL(reemitClick(QString)), 
@@ -107,6 +112,7 @@ MainWindow::init()
   westLayout->addWidget(regularBox);
   westLayout->addStretch(1);
   westPanel->setLayout(westLayout);
+
 
   //seup the scroll area over theCanvas
   QScrollArea* scrollArea = new QScrollArea(this);

@@ -20,24 +20,32 @@ CanvasWidget::CanvasWidget(QWidget* parent)
 void
 CanvasWidget::paintEvent(QPaintEvent* event)
 {
+  cout << "CanvasWidget::PaintEvent called" << endl;
   if(paintWidget!=NULL){
-      QPainter painter(this);
-      painter.setBrush(Qt::NoBrush);
-      painter.setRenderHint(QPainter::Antialiasing);
-      painter.setPen(Qt::white);
-      if(paintWidget->getPrev() !=0){
-	 painter.drawLine(paintWidget->getPrev()->getCenter(),
-			  paintWidget->getPrev()->getBottom(),
-			  paintWidget->getCenter(),
-			  paintWidget->y());
-      }
-      if(paintWidget->getNext() !=0){
-	painter.drawLine(paintWidget->getCenter(),
-			 paintWidget->getBottom(),
-			 paintWidget->getNext()->getCenter(),
-			 paintWidget->getNext()->y());
-      }
-      paintWidget=0;
+    cout << "Painting " << endl;
+    QPainter painter(this);
+    painter.setBrush(Qt::NoBrush);
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setPen(Qt::white);
+    
+    
+
+    if(paintWidget->getPrev() !=0){
+      cout << "There is previous " << endl;
+      
+      painter.drawLine(paintWidget->getPrev()->getCenter(),
+		       paintWidget->getPrev()->getBottom(),
+		       paintWidget->getCenter(),
+		       paintWidget->y());
+    }
+    if(paintWidget->getNext() !=0){
+      cout << "There is next " << endl;
+      painter.drawLine(paintWidget->getCenter(),
+		       paintWidget->getBottom(),
+		       paintWidget->getNext()->getCenter(),
+		       paintWidget->getNext()->y());
+    }
+    paintWidget=0;
   }
 }
 
@@ -113,45 +121,62 @@ CanvasWidget::dropEvent(QDropEvent *event)
 {
   //Only accept MarSystemNodes that started in this box
   if(event->mimeData()->hasFormat("application/x-MarSystemNode") 
-     && children().contains(event->source())){
+     && children().contains(event->source()))
+    {
+      
+      QByteArray itemData = 
+	event->mimeData()->data("application/x-MarSystemNode");
+      
+      QDataStream dataStream(&itemData, QIODevice::ReadOnly);
+      
+      QString widgetName;
+      QPoint offset;
+      
+      dataStream >> widgetName >> offset;
+      
+      cout << "widgetName = " << widgetName.toStdString() << endl;
+      
+      //Get a reference to a MarSystemNode that is being moved about
+      MarSystemNode *newMarSystemNode= (MarSystemNode *)event->source();
+      
 
-    QByteArray itemData = 
-      event->mimeData()->data("application/x-MarSystemNode");
+      //Move the eidget to it's new location
+      newMarSystemNode->move(event->pos()-offset);
+      
+      //Drop the object here and show it.
+      event->setDropAction(Qt::TargetMoveAction);
+      event->accept();
+      newMarSystemNode->setParent(this);
+      newMarSystemNode->show();
+      newMarSystemNode->update();
+      update();
 
-    QDataStream dataStream(&itemData, QIODevice::ReadOnly);
-
-    QString widgetName;
-    QPoint offset;
-
-    dataStream >> widgetName >> offset;
-
-    //Get a reference to a MarSystemNode that is being moved about
-    MarSystemNode *newMarSystemNode= (MarSystemNode *)event->source();
-
-    //Move the eidget to it's new location
-    newMarSystemNode->move(event->pos()-offset);
-    
-    //Drop the object here and show it.
-    event->setDropAction(Qt::TargetMoveAction);
-    event->accept();
-    newMarSystemNode->show();
-
-    //set the widget to draw the lines to.
-    paintWidget=newMarSystemNode;
-    
-    if(paintWidget->getPrev() !=0 && paintWidget->getNext()!=0){
-      update(QRect(0,paintWidget->getNext()->getBottom(),
-		   width(),
-	    paintWidget->getPrev()->y()-paintWidget->getNext()->getBottom()));
-    }else if(paintWidget->getNext()!=0){
-      update(QRect(0,paintWidget->getNext()->getBottom(),
-	    width(),paintWidget->y()-paintWidget->getNext()->getBottom()));
-    }else if(paintWidget->getPrev()!=0){
-      update(QRect(0,paintWidget->getBottom(),
-	    width(),paintWidget->getPrev()->y() - paintWidget->getBottom()));
+      //set the widget to draw the lines to.
+      paintWidget=newMarSystemNode;
+      
+      if(paintWidget->getPrev() !=0 && paintWidget->getNext()!=0)
+	{
+	  update();
+	  /* update(QRect(0,paintWidget->getNext()->getBottom(),
+		     width(),
+		     paintWidget->getPrev()->y()-paintWidget->getNext()->getBottom()));
+	  */ 
+	}
+      else if (paintWidget->getNext()!=0)
+	{
+	  update();
+	  /* update(QRect(0,paintWidget->getNext()->getBottom(),
+	     width(),paintWidget->y()-paintWidget->getNext()->getBottom())); */ 
+	}
+      else if (paintWidget->getPrev()!=0){
+	update();
+	/* update(QRect(0,paintWidget->getBottom(),
+	   width(),painWidget->getPrev()->y() - paintWidget->getBottom())); */ 
+      }
+      else 
+	update();
+      return;
     }
-    return;
-  }
   event->ignore();
 }
 

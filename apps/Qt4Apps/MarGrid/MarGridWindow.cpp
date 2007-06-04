@@ -43,17 +43,22 @@ MarGridWindow::MarGridWindow()
   QPushButton *train = new QPushButton(tr("Train"));
   QPushButton *predict = new QPushButton(tr("Predict"));
   playLabel = new QLabel("Hello");
-  
+  trainLabel = new QLabel("Train File: \t ./music.mf");
+  predictLabel = new QLabel("Predict File: \t ./test.mf");
+
   QWidget *margrid = new MarGrid();
 
-  connect(this, SIGNAL(trainFile(QString)), margrid, SLOT(setup(QString)));
+  connect(this, SIGNAL(trainFile(QString)), margrid, SLOT(setupTrain(QString)));
+  connect(this, SIGNAL(predictFile(QString)), margrid, SLOT(setupPredict(QString)));
 
   QGridLayout *gridLayout = new QGridLayout;
-  gridLayout->addWidget(extract, 0, 0);
-  gridLayout->addWidget(train, 0, 1);
-  gridLayout->addWidget(predict, 0, 2);
-  gridLayout->addWidget(playLabel, 1, 0, 1, 3);
-  gridLayout->addWidget(margrid, 2, 0, 1, 3);
+  gridLayout->addWidget(trainLabel, 0,0,1,3);
+  gridLayout->addWidget(predictLabel, 1, 0,1,3);
+  gridLayout->addWidget(extract, 2, 0);
+  gridLayout->addWidget(train, 2, 1);
+  gridLayout->addWidget(predict, 2, 2);
+  gridLayout->addWidget(playLabel, 3, 0, 1, 3);
+  gridLayout->addWidget(margrid, 4, 0, 1, 3);
 
   connect(extract, SIGNAL(clicked()), margrid, SLOT(extract()));
   connect(train, SIGNAL(clicked()), margrid, SLOT(train()));
@@ -77,6 +82,8 @@ MarGridWindow::createMenus()
 {
   fileMenu = menuBar()->addMenu(tr("&File"));
   fileMenu->addAction(openTrainAct);
+  fileMenu->addAction(openPredictAct);
+  
   menuBar()->addSeparator();
   helpMenu = menuBar()->addMenu(tr("&Help"));
   helpMenu->addAction(aboutAct);
@@ -88,7 +95,17 @@ MarGridWindow::openTrainFile()
 {
   QString fileName = QFileDialog::getOpenFileName(this);
   cout << "fileName = " << fileName.toStdString() << endl;
+  trainLabel->setText("TrainFile: \t" + fileName);
   emit trainFile(fileName);
+}
+
+
+void 
+MarGridWindow::openPredictFile()
+{
+  QString fileName = QFileDialog::getOpenFileName(this);
+  predictLabel->setText("PredictFile: \t" + fileName);
+  emit predictFile(fileName);
 }
 
 
@@ -96,10 +113,13 @@ void
 MarGridWindow::createActions()
 {
   
-  openTrainAct = new QAction(tr("&Open Training File"), this);
+  openTrainAct = new QAction(tr("&Open Collection File for Training"), this);
   openTrainAct->setStatusTip(tr("Open Collection File for Training"));
   connect(openTrainAct, SIGNAL(triggered()), this, SLOT(openTrainFile()));
   
+  openPredictAct = new QAction(tr("&Open Collection File for Predicting"), this);
+  openPredictAct->setStatusTip(tr("Open Collection File for Prediciting"));
+  connect(openPredictAct, SIGNAL(triggered()), this, SLOT(openPredictFile()));
 
   // connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
   aboutAct = new QAction(tr("&About"), this);

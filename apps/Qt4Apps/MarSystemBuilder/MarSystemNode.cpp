@@ -90,14 +90,16 @@ MarSystemNode::mousePressEvent(QMouseEvent *event)
   QDrag * drag = new QDrag(this);
   drag->setMimeData(mime);
   drag->setHotSpot(event->pos() - rect().topLeft());
-  drag->setPixmap(*pixmap_);
-  hide();
+  // drag->setPixmap(*pixmap_);
+  // hide();
 
   if(drag->start(Qt::MoveAction) == Qt::MoveAction)
     close();
   else
     show();
 }
+
+
 
 
 /*****************************

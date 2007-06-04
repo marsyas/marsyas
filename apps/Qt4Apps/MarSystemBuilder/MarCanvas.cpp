@@ -16,19 +16,28 @@
 MarCanvas::MarCanvas(QWidget * parent)
   :CanvasWidget(parent)
 {
+  cout << "MarCanvas::MarCanvas" << endl;
   setGeometry(0,0,parent->width(),parent->height());
   setPalette(QColor(0,0,0));
   setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
 
-  ifstream stream ("/home/pminter/code/c++/marsyas-0.2/src/plugins/playback.mpl",fstream::in);
+  
+  MarSystemNode *myMar = new GainNode("test", parent);
+  paintWidget=myMar;
+  connect(paintWidget,SIGNAL(resized(int,int,int,int)),this,SLOT(handleChildResize(int,int,int,int)));
+
+  paintWidget->show();
+  lastWidget=myMar;
+
+  /* ifstream stream ("/home/pminter/code/c++/marsyas-0.2/src/plugins/playback.mpl",fstream::in);
 
   MarSystemNode *myMar = loadMarSystem(stream,0);;
-  myMar->show();
-  connect(myMar,SIGNAL(resized(int,int,int,int)),this,SLOT(handleChildResize(int,int,int,int)));
-  paintWidget=myMar;
-  lastWidget=myMar;
+
+
+
   saveMarSystem("/home/pminter/code/c++/MarSystemBuilder/test.mpl");
-  
+  */ 
+  cout << "end of MarCanvas::MarCanvas" << endl;
 }
 
 /*************************
@@ -39,22 +48,40 @@ MarCanvas::MarCanvas(QWidget * parent)
 void 
 MarCanvas::addNewMarSystemNode(QString widgetType)
 {
+  cout << "Adding " << widgetType.toStdString() << endl;
+
   /**Add Functionality Here to specify the right type of MarSystemNode
    Probably use a factory*/
   MarSystemManager* manager = new MarSystemManager();
-  MarSystem* msys = manager->getPrototype(widgetType.toStdString());
+  MarSystem* msys = manager->create(widgetType.toStdString(), "default" + widgetType.toStdString()); // getPrototype(widgetType.toStdString());
   MarSystemNodeFactory* factory = MarSystemNodeFactory::getInstance();
-  msys->setName("Default");//TODO get this infor somewhere
+  // msys->setName("Default");//TODO get this infor somewhere
+
+  cout << "Created stuff" << endl;
+
+
 
   if(!lastWidget->isCollection()){
-  MarSystemNode *newMarSystemNode =
-    factory->newNode(msys,this);
+    cout << "Not a collection adding" << endl;
+    cout << *msys << endl;
+    MarSystemNode *newMarSystemNode =  factory->newNode(msys,this);
     newMarSystemNode->show();
+    cout << "after showing" << endl;
     lastWidget = newMarSystemNode;
     paintWidget=lastWidget;//be sure to do this before update since it
 			   //is required.
-    update(QRect(0,paintWidget->getPrev()->getBottom(),
+
+
+
+    cout << "before updating " << endl;
+    update();
+    /*  update(QRect(0,paintWidget->getPrev()->getBottom(),
 	       width(),paintWidget->y()));
+    */ 
+
+
+
+
   }else{
   MarSystemNode *newMarSystemNode =
     factory->newNode(msys, 
@@ -62,6 +89,149 @@ MarCanvas::addNewMarSystemNode(QString widgetType)
     (dynamic_cast<CompositeNode*>(lastWidget))->append(newMarSystemNode);
   }
 }
+
+/**
+ * Default Behaviour for handleing dragged MarSystemNodes
+ */
+void
+MarCanvas::dragEnterEvent(QDragEnterEvent *event)
+{
+  cout << "DragEnterEvent" << endl;
+  if(event->mimeData()->hasFormat("application/x-MarSystemNode")){
+    if(children().contains(event->source())){
+      event->setDropAction(Qt::MoveAction);
+      event->accept();
+    }else{
+      event->ignore();
+    }
+  }else{
+    event->ignore();
+  }
+}
+
+/**
+ * Default Behavior for handling dragging of MarSystemNodes
+ */
+void 
+MarCanvas::dragMoveEvent(QDragMoveEvent *event)
+{
+  cout << "dragMoveEvent" << endl;
+
+  if(event->mimeData()->hasFormat("application/x-MarSystemNode")){
+    if(children().contains(event->source())){
+      //set the widget to draw the lines to.
+      paintWidget=(MarSystemNode*)event->source();
+
+      if(true){
+	event->setDropAction(Qt::MoveAction);
+	event->accept();
+
+	QByteArray itemData = 
+	  event->mimeData()->data("application/x-MarSystemNode");
+	QDataStream dataStream(&itemData, QIODevice::ReadOnly);
+
+	QString widgetName;
+	QPoint offset;
+
+	dataStream >> widgetName >> offset;
+
+	paintWidget->move(event->pos()-offset);
+	// update();
+	/* if(paintWidget->getPrev() !=0 && paintWidget->getNext()!=0){
+	  update(QRect(0,paintWidget->getPrev()->getBottom(),
+		       width(),
+		       paintWidget->getNext()->y()
+		        -paintWidget->getPrev()->getBottom()));
+	}else if(paintWidget->getPrev() !=0){
+	  update(QRect(0,paintWidget->getPrev()->getBottom(),
+		width(),paintWidget->y()-paintWidget->getPrev()->getBottom()));
+	}else if(paintWidget->getNext() !=0){
+	  update(QRect(0,paintWidget->getBottom(),
+	        width(),paintWidget->getNext()->y()-paintWidget->getBottom()));
+	}
+	*/ 
+	//do not carry out final statement
+	return;
+      }
+    }
+  }
+  //if any of the tests fail do not use the event
+  event->ignore();
+}
+
+/**
+ * Default code for handling dropped MarSystemNodes
+ */
+void 
+MarCanvas::dropEvent(QDropEvent *event)
+{
+
+  cout << "*********** MARCANVAS DROP EVENT ******" << endl;
+
+  //Only accept MarSystemNodes that started in this box
+  if(event->mimeData()->hasFormat("application/x-MarSystemNode") 
+     && children().contains(event->source()))
+    {
+	QByteArray itemData = 
+	  event->mimeData()->data("application/x-MarSystemNode");
+	QDataStream dataStream(&itemData, QIODevice::ReadOnly);
+
+	QString widgetName;
+	QPoint offset;
+
+	dataStream >> widgetName >> offset;
+
+	paintWidget->move(event->pos()-offset);
+
+	cout << "widgetName = " << widgetName.toStdString() << endl;
+      
+	//Drop the object here and show it.
+	// event->setDropAction(Qt::TargetMoveAction);
+	// event->accept();
+      
+	return;
+    }
+  event->ignore();
+}
+
+
+void
+MarCanvas::paintEvent(QPaintEvent* event)
+{
+  cout << "CanvasWidget::PaintEvent called" << endl;
+  if(paintWidget!=NULL){
+
+    cout << "Painting " << endl;
+    QPainter painter(this);
+    painter.setBrush(Qt::NoBrush);
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setPen(Qt::white);
+    
+    
+
+    if(paintWidget->getPrev() !=0){
+      cout << "There is previous " << endl;
+      
+      painter.drawLine(paintWidget->getPrev()->getCenter(),
+		       paintWidget->getPrev()->getBottom(),
+		       paintWidget->getCenter(),
+		       paintWidget->y());
+    }
+    if(paintWidget->getNext() !=0){
+      cout << "There is next " << endl;
+      painter.drawLine(paintWidget->getCenter(),
+		       paintWidget->getBottom(),
+		       paintWidget->getNext()->getCenter(),
+		       paintWidget->getNext()->y());
+    }
+    paintWidget->update();
+    paintWidget->show();
+    // paintWidget=0;
+  }
+}
+
+
+
 
 /**
  * Loads all the MarSystemNodes into this MarCanvas

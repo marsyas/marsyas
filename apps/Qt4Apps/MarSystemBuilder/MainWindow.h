@@ -8,6 +8,7 @@
 
 #include <qvariant.h>
 #include <qmainwindow.h>
+#include <QGroupBox> 
 #include <iostream>
 #include "MarCanvas.h"
 #include "WidgetButton.h"

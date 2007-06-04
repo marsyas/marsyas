@@ -51,6 +51,13 @@ public slots:
  //virtual QRect getDimensionsFor(MarSystemNode* widget);
  //MarSystemNode * paintWidget; 
 
+
+ void dragEnterEvent(QDragEnterEvent *event);
+ void dragMoveEvent(QDragMoveEvent *event);
+ void dropEvent(QDropEvent *event);
+ void paintEvent(QPaintEvent* event);
+
+
  private:
  MarSystemNode * myMar;
  MarSystemNode * lastWidget;

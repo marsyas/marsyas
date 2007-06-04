@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
 {
   QApplication qapp(argc,argv);
   MainWindow w;
-  w.setGeometry(0,0,600,600);
+  // w.setGeometry(0,0,600,600);
   w.show();
   qapp.exec();
 }

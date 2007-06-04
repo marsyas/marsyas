@@ -17,7 +17,7 @@ SeriesNode::SeriesNode(QString name,QWidget* parent)
   QPixmap pix(width(),height());
 
   QPainter paint;
-  paint.begin(&pix);
+  paint.begin(this);
   //painter.setRenderHint(QPainter::Antialiasing);
   paint.setBrush(Qt::white);
   paint.setPen(Qt::black);
@@ -49,7 +49,7 @@ SeriesNode::SeriesNode(MarSystem* msys, QWidget* parent)
   QPixmap pix(width(),height());
 
   QPainter paint;
-  paint.begin(&pix);
+  paint.begin(this);
   //painter.setRenderHint(QPainter::Antialiasing);
   paint.setBrush(Qt::white);
   paint.setPen(Qt::black);
