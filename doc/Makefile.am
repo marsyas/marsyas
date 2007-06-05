@@ -29,10 +29,11 @@ EXTRA_DIST += out-www/*.html out-www/images/*.png
 
 CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
              marsyas.ats  marsyas.evs  marsyas.fns  marsyas.ovs \
-             marsyas.tmp  marsyas.toc  marsyas.info
+             marsyas.tmp  marsyas.toc  marsyas.info marsyas.cps 
 
-clean-local:
-	-rm -rf out-www
+#clean-local:
+#	-rm -rf out-www
+
 QT_EXAMPLES = ../examples/Qt4-tutorial/*.h ../examples/Qt4-tutorial/*.cpp
 QT_EXAMPLES_AS_PERL = ../examples/Qt4-tutorial/*.pro
 
@@ -47,16 +48,13 @@ sources:
 	source-highlight --output-dir=source-doc/ -f texinfo --src-lang=perl $(QT_EXAMPLES_AS_PERL)
 
 
-#html: sources marsyas.texi
 html: marsyas.texi
 	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas.texi 
 	mkdir -p out-www/images/
 	cp images/*.png out-www/images/
 
-#pdf: sources marsyas.texi
 pdf: marsyas.texi
 	$(TEXI2PDF) $(TEXI2PDF_FLAGS) $(srcdir)/marsyas.texi
 
-#.PHONY: sources html pdf
 .PHONY: html pdf
 

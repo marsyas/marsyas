@@ -37,6 +37,7 @@ EXTRA_DIST += mkcollection/
 EXTRA_DIST += msl/
 EXTRA_DIST += muggle/
 EXTRA_DIST += orcarecord/
+EXTRA_DIST += pePeakEval/
 EXTRA_DIST += peVocoder/
 EXTRA_DIST += peakClustering/
 EXTRA_DIST += phasevocoder/
@@ -53,6 +54,7 @@ EXTRA_DIST += textract/
 EXTRA_DIST += tutorial/
 EXTRA_DIST += virtualsensor/
 EXTRA_DIST += vocalEffort/
+EXTRA_DIST += HWPSanalysis/
 
 dist-hook:
 	rm -rf `find $(distdir)/ERBTest/ -name .svn`
@@ -86,4 +88,6 @@ dist-hook:
 	rm -rf `find $(distdir)/tutorial/ -name .svn`
 	rm -rf `find $(distdir)/virtualsensor/ -name .svn`
 	rm -rf `find $(distdir)/vocalEffort/ -name .svn`
+	rm -rf `find $(distdir)/HWPSanalysis/ -name .svn`
+	rm -rf `find $(distdir)/pePeakEval/ -name .svn`
 
