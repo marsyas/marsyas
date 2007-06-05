@@ -182,7 +182,7 @@ text editor with your own syntax highlighting.
 @itemize
 @item @file{examples/}: the simplest examples are here.  These files
 are provided only for learning; they have little purpose as actual programs.
-@item @file{qt4GUIs/tutorial}: a simple QT4/Marsyas program.  Just like
+@item @file{examples/Qt4-tutorial/}: a simple Qt4/Marsyas program.  Just like
 the files in @file{examples/}, it has little value as a standalone program.
 @end itemize
 

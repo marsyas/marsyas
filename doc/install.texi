@@ -159,7 +159,7 @@ want (i.e. audio API, Ogg Vorbis support, Matlab support, etc), simply type
 qmake
 @end example
 
-@b{Requirement: Qt-4.2.2 or later.}
+@b{Requirement: Qt-4.2.3 or later.}
 (no, 4.2.1 doesn't work.  The documentation editor learned this the hard way.)
 @c TODO: remove the above lines.  It's funny now, but when the Marsyas
 @c  docs are more complete and professional, comments like this aren't good.
@@ -298,7 +298,7 @@ can be used to enable/disable assertions, enable/disable debugging
 and include optional packages such as support for reading mp3s. 
 @ref{Configuring Marsyas}.
 
-@b{Requirement: ALSA headers.}  On most distributions, this is a
+@b{Requirement:} ALSA headers.  On most distributions, this is a
 package called @code{alsa-devel} or @code{libalsa-devel}.
 
 
@@ -343,16 +343,16 @@ In general, cygwin is not supported as well as Linux and OS X.
 @subsection Windows (Visual Studio)
 @cindex Windows
 
-A few of our developers are insane enough to use Visual Studio, so this
-environment is fairly well-supported.
+A few of our developers use Visual Studio, so this environment is fairly
+well supported.
 
 @example
 Anyone wanting to use MSVC2005 (and probably MSVC6, MSVC2003 and
-MSVC2005express) and Qt4.2.2 opensource please try doing the following:
+MSVC2005express) and Qt4.x opensource please try doing the following:
 
 1)  Use the most recent version of qmake, available at:
 
-http://qtnode.net/wiki/Qt4_with_Visual_Studio 
+@url{http://qtnode.net/wiki/Qt4_with_Visual_Studio}
 
 2)  Do not forget to put you Qt bin dir in the system path (i.e.
 c:\Qt\4.2.2\bin), so you can use qmake anywhere, and to define the
