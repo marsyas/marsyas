@@ -343,9 +343,9 @@ MP3FileSource::myUpdate(MarControlPtr sender)
 	inSamples_ = ctrl_inSamples_->toNatural();
   	
   if (inSamples_ < bufferSize_/2) {
-    reservoirSize_ = 2 * bufferSize_;
+    reservoirSize_ = 2 * nChannels * bufferSize_;
   } else { 
-    reservoirSize_ = 2 * inSamples_;
+    reservoirSize_ = 2 * nChannels * inSamples_;
   }
   if (reservoirSize_ > preservoirSize_) {
     reservoir_.stretch(nChannels,reservoirSize_);

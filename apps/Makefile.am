@@ -16,9 +16,9 @@
 ## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 
-SUBDIRS = sfplay
+SUBDIRS = sfplay sfinfo
 
-EXTRA_DIST = *.pro *.pri
+EXTRA_DIST = apps.pro
 EXTRA_DIST += ERBTest/
 EXTRA_DIST += MarEditor/
 EXTRA_DIST += Qt4Apps/
@@ -45,7 +45,6 @@ EXTRA_DIST += pitchextract/
 EXTRA_DIST += record/
 EXTRA_DIST += scheduler/
 EXTRA_DIST += server_main/
-EXTRA_DIST += sfinfo/
 EXTRA_DIST += sfplaygui/
 EXTRA_DIST += sfplugin/
 EXTRA_DIST += speakerSeg/
