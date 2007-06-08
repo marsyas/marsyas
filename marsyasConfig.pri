@@ -67,10 +67,11 @@ unix:!macx:CONFIG += marsyasAUDIOIO_ALSA
 #CONFIG += marsyasQT
 
 ######################################################################
-# Adds support for MATLAB engine classes
+# Adds support for MATLAB engine classes, for debug/release builds
 ######################################################################
 
-# CONFIG	+= marsyasMATLAB
+# CONFIG	+= marsyasMATLABdebug
+# CONFIG	+= marsyasMATLABrelease
 
 ######################################################################
 # Adds support for MP3 MAD
@@ -120,10 +121,20 @@ marsyasQT {
 	INCLUDEPATH += "$$BASEDIR"/marsyas/Qt 
 }
 
-marsyasMATLAB {
-	message ( -> MATLAB support )
-	DEFINES += MARSYAS_MATLAB
-	INCLUDEPATH += "$$BASEDIR"/marsyas/MATLAB 
+marsyasMATLABdebug {
+	CONFIG(debug, debug|release) {
+		message ( -> MATLAB support  for debug builds)
+		DEFINES += MARSYAS_MATLAB
+		INCLUDEPATH += "$$BASEDIR"/marsyas/MATLAB 
+	}
+}
+
+marsyasMATLABrelease {
+	CONFIG(release, debug|release) {
+		message ( -> MATLAB support  for release builds)
+		DEFINES += MARSYAS_MATLAB
+		INCLUDEPATH += "$$BASEDIR"/marsyas/MATLAB 
+	}
 }
 
 marsyasAUDIOIO:message( -> AUDIO I/O support (RtAudio) )
@@ -177,10 +188,19 @@ unix:{
 		LIBS += -lasound -lpthread
 	}
 	
-	marsyasMATLAB {
-		#INCLUDEPATH += ???
-		#LIBS += ???
-		DEFINES 	+= MARSYAS_MATLAB
+	marsyasMATLABdebug {
+		CONFIG(debug, debug|release) {
+			#INCLUDEPATH += ???
+			#LIBS += ???
+			DEFINES 	+= MARSYAS_MATLAB
+		}
+	}
+	marsyasMATLABrelease {
+		CONFIG(release, debug|release) {
+			#INCLUDEPATH += ???
+			#LIBS += ???
+			DEFINES 	+= MARSYAS_MATLAB
+		}
 	}
 	
 	marsyasMAD {
@@ -210,12 +230,20 @@ macx {
 		LIBS += -framework CoreMidi -framework CoreAudio
 	}
 		
-	marsyasMATLAB {
-		#INCLUDEPATH += ???
-		#LIBS += ???
-		DEFINES 	+= MARSYAS_MATLAB
+	marsyasMATLABdebug {
+		CONFIG(debug, debug|release) {
+			#INCLUDEPATH += ???
+			#LIBS += ???
+			DEFINES 	+= MARSYAS_MATLAB
+		}
 	}
-
+	marsyasMATLABrelease {
+		CONFIG(release, debug|release) {
+			#INCLUDEPATH += ???
+			#LIBS += ???
+			DEFINES 	+= MARSYAS_MATLAB
+		}
+	}
 
 	marsyasMAD {
 		DEFINES += MARSYAS_MAD 
@@ -278,10 +306,19 @@ win32 {
 		LIBS += -lwinmm		
 	}
 	
-	marsyasMATLAB{
-		DEFINES += MARSYAS_MATLAB
-		INCLUDEPATH += "$$(MATLAB)"/extern/include
-		LIBS += -llibeng -llibmx -llibut -L\"$$(MATLAB)/extern/lib/win32/microsoft\"
+	marsyasMATLABrelease{
+		CONFIG(debug, debug|release) {
+			DEFINES += MARSYAS_MATLAB
+			INCLUDEPATH += "$$(MATLAB)"/extern/include
+			LIBS += -llibeng -llibmx -llibut -L\"$$(MATLAB)/extern/lib/win32/microsoft\"
+		}
+	}
+	marsyasMATLABrelease{
+		CONFIG(release, debug|release) {
+			DEFINES += MARSYAS_MATLAB
+			INCLUDEPATH += "$$(MATLAB)"/extern/include
+			LIBS += -llibeng -llibmx -llibut -L\"$$(MATLAB)/extern/lib/win32/microsoft\"
+		}
 	}
 	
 	marsyasMAD {
