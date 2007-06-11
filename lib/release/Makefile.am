@@ -68,6 +68,7 @@ libmarsyas_a_SOURCES    = $(top_srcdir)/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/marsyas/MarControl.cpp \
 			  $(top_srcdir)/marsyas/MarControlValue.cpp \
 			  $(top_srcdir)/marsyas/Gain.cpp \
+			  $(top_srcdir)/marsyas/myMar.cpp \
 			  $(top_srcdir)/marsyas/Spectrum.cpp \
 			  $(top_srcdir)/marsyas/InvSpectrum.cpp \
 			  $(top_srcdir)/marsyas/Collection.cpp \

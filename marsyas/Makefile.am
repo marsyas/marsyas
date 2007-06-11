@@ -49,6 +49,7 @@ AuFileSink.h WavFileSink.h FileName.h MarSystem.h \
 MarSystemTemplateAdvanced.h MarSystemTemplateBasic.h \
 MarControlManager.h MarControl.h MarControlValue.h \
 Gain.h Spectrum.h InvSpectrum.h \
+myMar.h \
 Collection.h fft.h Rms.h Peak2Rms.h PlotSink.h \
 AutoCorrelation.h Peaker.h Peaker1.h HalfWaveRectifier.h \
 TimeStretch.h Conversions.h MaxArgMax.h MinArgMin.h \

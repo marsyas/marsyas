@@ -29,6 +29,7 @@ in sequence.
 #include "MarSystem.h"
 
 #include "Gain.h"
+#include "myMar.h"
 #include "HalfWaveRectifier.h"
 #include "common.h"
 #include "Series.h"
@@ -151,6 +152,7 @@ using namespace Marsyas;
 MarSystemManager::MarSystemManager()
 {
 	registerPrototype("Gain", new Gain("gp"));
+	registerPrototype("myMar", new myMar("mar"));
 	registerPrototype("SoundFileSource", new SoundFileSource("sfp"));
 	registerPrototype("SoundFileSource2", new SoundFileSource2("sf2p"));
 	registerPrototype("HalfWaveRectifier", new HalfWaveRectifier("hwrp"));

@@ -24,7 +24,7 @@ AUX_DIST                = $(auxdir)/install-sh $(auxdir)/missing \
 EXTRA_DIST              = bootstrap TODO marsyasAll.pro marsyasConfig.pri
 
 AUTOMAKE_OPTIONS        = foreign
-
+EXTRA_DIST += .qmake.cache
 
 SUBDIRS			= marsyas lib apps bin doc
 SUBDIRS			+= examples
@@ -32,6 +32,7 @@ SUBDIRS			+= examples
 # we must now explicitly define subdirs to be included in the dist
 DIST_SUBDIRS		= marsyas lib apps bin doc
 DIST_SUBDIRS		+= examples
+
 
 #  There's no point writing Makefiles for temporary holding areas.
 EXTRA_DIST += ToDeprecate/

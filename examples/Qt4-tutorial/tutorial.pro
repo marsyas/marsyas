@@ -6,8 +6,8 @@ HEADERS += backend.h
 SOURCES += backend.cpp
 
 #  these files are common to every Marsyas/QT app 
-HEADERS += ../MarSystemQtWrapper.h
-SOURCES += ../MarSystemQtWrapper.cpp
+HEADERS += MarSystemQtWrapper.h
+SOURCES += MarSystemQtWrapper.cpp
 
 #  basic system variables
 TARGET = runme
