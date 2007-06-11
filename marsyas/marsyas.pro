@@ -245,7 +245,6 @@ HEADERS += \
 	mididevices.h \
 	realvec.h \
 	vmblock.h \
-	win_config.h \
 	PeSynOsc.h \
 	Cartesian2Polar.h \
 	PeSynFFT.h \
