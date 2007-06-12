@@ -14,9 +14,6 @@
 #if !defined(__THREAD_H)
 #define __THREAD_H
 
-#ifdef WIN32
-#define MARSYAS_WIN32
-#endif 
 
 #include "common.h"
 
