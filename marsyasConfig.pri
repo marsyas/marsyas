@@ -32,15 +32,15 @@ win32:win32-msvc2005:CONFIG += debug_and_release
 # enable/disable ASSERTIONS/WARNINGS/DIAGNOSTICS/LOGS, etc
 ######################################################################
 
-#CONFIG += marsyasASSERT		#turn on assertions
+#CONFIG += marsyasASSERTS		#turn on assertions
 #CONFIG += marsyasPROFILING		#turn on profiling
 
 #CONFIG += marsyasLOGWARNINGS	#warning messages in log
-#CONFIG += marsyasLOGDEBUG		#debug messages in log
-#CONFIG += marsyasLOGDIAGNOSTIC	#diagnostic messages in log
-#CONFIG += marsyasLOGFILE			#log to file
-#CONFIG += marsyasLOGSTDOUT			#log to stdout
-#CONFIG += marsyasLOGGUI			#log to GUI
+#CONFIG += marsyasLOGDEBUGS		#debug messages in log
+#CONFIG += marsyasLOGDIAGNOSTICS	#diagnostic messages in log
+#CONFIG += marsyasLOG2FILE			#log to file
+#CONFIG += marsyasLOG2STDOUT		#log to stdout
+#CONFIG += marsyasLOG2GUI			#log to GUI
 
 ######################################################################
 # Audio and MIDI I/O support in marsyas lib
@@ -100,13 +100,13 @@ CONFIG(debug, debug|release) {
 	DEFINES += MARSYAS_DEBUG
 	
 	#in debug, activate assertions
-	CONFIG += marsyasASSERT		#turn on assertions
+	CONFIG += marsyasASSERTS		#turn on assertions
 	
 	#in debug, activate some logging by default 
-	CONFIG += marsyasLOGDIAGNOSTIC	#diagnostic messages in log
+	CONFIG += marsyasLOGDIAGNOSTICS	#diagnostic messages in log
 	CONFIG += marsyasLOGWARNINGS	#warning messages in log
-	CONFIG += marsyasLOGDEBUG		#debug messages in log
-	CONFIG += marsyasLOGSTDOUT			#log to stdout
+	CONFIG += marsyasLOGDEBUGS		#debug messages in log
+	CONFIG += marsyasLOG2STDOUT			#log to stdout
 }
 
 CONFIG(release, debug|release) {
@@ -335,9 +335,9 @@ win32 {
 	}
 }
 
-marsyasASSERT {
+marsyasASSERTS {
 	message ( -> Assertions turned on )
-	DEFINES += MARSYAS_ASSERT
+	DEFINES += MARSYAS_ASSERTS
 }
 marsyasPROFILING {
 	message ( -> Profiling turned on )
@@ -346,27 +346,27 @@ marsyasPROFILING {
 
 marsyasLOGWARNINGS {
 	message ( -> Warning messages in log )
-	DEFINES += MARSYAS_LOGWARNINGS
+	DEFINES += MARSYAS_LOG_WARNINGS
 }
-marsyasLOGDEBUG {
+marsyasLOGDEBUGS {
 	message ( -> Debug messages in log )
-	DEFINES += MARSYAS_LOGDEBUG
+	DEFINES += MARSYAS_LOG_DEBUGS
 }
-marsyasLOGDIAGNOSTIC {
+marsyasLOGDIAGNOSTICS {
 	message ( -> Diagnostic messages in log )
-	DEFINES += _MARSYAS_LOGDIAGNOSTIC
+	DEFINES += _MARSYAS_LOG_DIAGNOSTICS
 }
-marsyasLOGFILE {
+marsyasLOG2FILE {
 	message ( --> Log to file )
-	DEFINES += MARSYAS_LOGFILE
+	DEFINES += MARSYAS_LOG2FILE
 }
-marsyasLOGSTDOUT {
+marsyasLOG2STDOUT {
 	message ( --> Log to stdout )
-	DEFINES += MARSYAS_LOGSTDOUT
+	DEFINES += MARSYAS_LOG2STDOUT
 }
-marsyasLOGGUI {
+marsyasLOG2GUI {
 	message ( --> Log to GUI )
-	DEFINES += MARSYAS_LOGGUI
+	DEFINES += MARSYAS_LOG2GUI
 }
 
 

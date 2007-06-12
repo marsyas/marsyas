@@ -737,7 +737,7 @@ MarSystem::linkControl(string cname1, string cname2)
 	//make sure 2nd control exists somewhere in the network
 	if(ctrl2.isInvalid())
 	{
-		//MRSWARN("MarSystem::linkControl - control does not exist anywhere: " + cname2);
+		MRSWARN("MarSystem::linkControl - 2nd control does not exist anywhere: " + cname2 + " -> THIS MAY BE NORMAL WHEN LOADING A MARSYSTEM NETWORK FROM A .mpl FILE!");
 		return false;
 	}
 

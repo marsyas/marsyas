@@ -85,7 +85,6 @@ PeConvert::addControls()
 void
 PeConvert::myUpdate(MarControlPtr sender)
 {
-
 	//defaultUpdate(); [!]
 	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
 
@@ -112,27 +111,29 @@ PeConvert::myUpdate(MarControlPtr sender)
 	skip_ = getctrl("mrs_natural/nbFramesSkipped")->toNatural();
   prec_ = getctrl("mrs_natural/improvedPrecision")->toNatural();
 	pick_ = getctrl("mrs_natural/picking")->toNatural();
-    if(!pick_ && !getctrl("mrs_natural/Sinusoids")->toNatural())
+  if(!pick_ && !getctrl("mrs_natural/Sinusoids")->toNatural())
 		kmax_ = getctrl("mrs_natural/inObservations")->toNatural()/4+1;
 	else
-    	kmax_ = getctrl("mrs_natural/Sinusoids")->toNatural();
+    kmax_ = getctrl("mrs_natural/Sinusoids")->toNatural();
 
 	if(getctrl("mrs_string/frequencyInterval")->toString() != EMPTYSTRING)
 	{
-	realvec conv(2);
-	string2parameters(getctrl("mrs_string/frequencyInterval")->toString(), conv, '_');
-	//cout << conv;
-	downFrequency_ = (mrs_natural) floor(conv(0)/getctrl("mrs_real/osrate")->toReal()*size_*2) ;
-	upFrequency_ = (mrs_natural) floor(conv(1)/getctrl("mrs_real/osrate")->toReal()*size_*2);	}
+		realvec conv(2);
+		string2parameters(getctrl("mrs_string/frequencyInterval")->toString(), conv, '_');
+		//cout << conv;
+		downFrequency_ = (mrs_natural) floor(conv(0)/getctrl("mrs_real/osrate")->toReal()*size_*2) ;
+		upFrequency_ = (mrs_natural) floor(conv(1)/getctrl("mrs_real/osrate")->toReal()*size_*2);	
+	}
 	else
 	{
 		downFrequency_ = 0;
 		upFrequency_ = size_;
 	}
 
-    setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 	setctrl("mrs_natural/onObservations", kmax_*nbParameters_);
-	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal() * getctrl("mrs_natural/inObservations")->toNatural()/2);  
+	//setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal() * getctrl("mrs_natural/inObservations")->toNatural()/2); ??!!?!?!? [?]
+	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
 }
 
 double lobe_value_compute (double f, int type, int size)
@@ -293,8 +294,6 @@ PeConvert::getLargeBinInterval(realvec& interval, realvec& index, realvec& mag)
 void 
 PeConvert::myProcess(realvec& in, realvec& out)
 {
-	//checkFlow(in,out); 
-
 	mrs_natural N2 = inObservations_/4;
 	mrs_real a, c;
 	mrs_real b, d;
@@ -341,7 +340,7 @@ PeConvert::myProcess(realvec& in, realvec& out)
 			if(prec_)
 				frequency_(t) = phasediff * factor_ ;
 			else
-            frequency_(t) = t*fundamental_;
+         frequency_(t) = t*fundamental_;
 
 			// compute precise amplitude
 			mag_(t) = sqrt((a*a + b*b))*2; //*4/0.884624;//*50/3); // [!!!!!!!!!!!]
@@ -361,6 +360,7 @@ PeConvert::myProcess(realvec& in, realvec& out)
 
 			if(lastfrequency_(t) != 0.0)
 				deltafrequency_(t) = (frequency_(t)-lastfrequency_(t))/(frequency_(t)+lastfrequency_(t));
+			
 			deltamag_(t) = (mag_(t)-lastmag_(t))/(mag_(t)+lastmag_(t));
 
 			// remove potential peak if frequency too irrelevant
@@ -370,9 +370,10 @@ PeConvert::myProcess(realvec& in, realvec& out)
 			lastfrequency_(t) = frequency_(t);
 			lastmag_(t) = mag_(t);
 		}
+		
 		// select local maxima
 		realvec peaks_=mag_;
-        realvec tmp_;
+    realvec tmp_;
 
 		Peaker peaker("Peaker");
 		peaker.updctrl("mrs_real/peakStrength", 0.2);
@@ -399,7 +400,6 @@ PeConvert::myProcess(realvec& in, realvec& out)
 			if(!frequency_(t))// || frequency_(t)>500)  // 250 2500
 				peaks_(t) = 0;
 		}
-
 
 		 // keep only the kmax_ highest amplitude local maxima
 		MaxArgMax max("MaxArgMax");
@@ -433,34 +433,29 @@ PeConvert::myProcess(realvec& in, realvec& out)
 		getShortBinInterval(interval_, index2_, mag_);
 
 		// fill output with peaks data
-
+		/*
 		MATLAB_PUT(mag_, "peaks");
 		MATLAB_PUT(peaks_, "k");
 		MATLAB_PUT(tmp_, "tmp");
-	    MATLAB_PUT(interval_, "int");	
+	  MATLAB_PUT(interval_, "int");	
 		MATLAB_EVAL("figure(1);clf;hold on ;plot(peaks);stem(k);stem(tmp(2:2:end)+1, peaks(tmp(2:2:end)+1), 'r')");
 		MATLAB_EVAL("stem(int+1, peaks(int+1), 'k')");
+		*/
 	
-        interval_ /= N2*2;
+    interval_ /= N2*2;
 		out.setval(0);
 		for (i=0;i<nbPeaks_;i++)
 		{
 			out(i+pkFrequency*kmax_) = frequency_((mrs_natural) index_(i));
- // cout << out(i+pkFrequency*kmax_) << endl;
+			//cout << out(i+pkFrequency*kmax_) << endl;
 			out(i+pkAmplitude*kmax_) = magCorr_((mrs_natural) index_(i));
-
 			out(i+pkPhase*kmax_) = -phase_((mrs_natural) index_(i));
-
 			out(i+pkDeltaFrequency*kmax_) = deltafrequency_((mrs_natural) index_(i));
-
 			out(i+pkDeltaAmplitude*kmax_) = deltamag_((mrs_natural) index_(i));
-
 			out(i+pkTime*kmax_) = time_;
-
 			out(i+pkGroup*kmax_) = 0;
 			out(i+pkVolume*kmax_) = 1;
 			out(i+pkPan*kmax_) = 0;
-
 			out(i+pkBinLow*kmax_) = interval_(2*i);
 			out(i+pkBin*kmax_) = index_(i);
 			out(i+pkBinHigh*kmax_) = interval_(2*i+1);

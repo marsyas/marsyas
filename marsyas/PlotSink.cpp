@@ -17,8 +17,8 @@
 */
 
 /**
-   \class PlotSink
-   \brief PlotSink: Text output sink
+\class PlotSink
+\brief PlotSink: Text output sink
 
 */
 
@@ -30,10 +30,10 @@ using namespace Marsyas;
 
 PlotSink::PlotSink(string name):MarSystem("PlotSink",name)
 {
-  //type_ = "PlotSink";
-  //name_ = name;
+	//type_ = "PlotSink";
+	//name_ = name;
 
-  counter_ = 0;
+	counter_ = 0;
 
 	addControls();
 }
@@ -47,24 +47,24 @@ PlotSink::~PlotSink()
 MarSystem* 
 PlotSink::clone() const 
 {
-  return new PlotSink(*this);
+	return new PlotSink(*this);
 }
 
 void 
 PlotSink::addControls()
 {
-  addctrl("mrs_string/separator", ",");
-  addctrl("mrs_bool/sequence", true);
-  addctrl("mrs_string/outputFilename", "marsyas");
+	addctrl("mrs_string/separator", ",");
+	addctrl("mrs_bool/sequence", true);
+	addctrl("mrs_string/outputFilename", "marsyas");
 }
 
 void 
 PlotSink::myProcess(realvec& in, realvec& out)
 {
 	//checkFlow(in,out);
-	
+
 	mrs_natural nObservations = getctrl("mrs_natural/inObservations")->toNatural();
-  mrs_natural nSamples = getctrl("mrs_natural/inSamples")->toNatural();
+	mrs_natural nSamples = getctrl("mrs_natural/inSamples")->toNatural();
 
 #ifdef MARSYAS_MATLAB
 	for (t = 0; t < nSamples; t++)
@@ -77,41 +77,41 @@ PlotSink::myProcess(realvec& in, realvec& out)
 	return;
 #endif
 
-  string sep = getctrl("mrs_string/separator")->toString();
-  bool seq = getctrl("mrs_bool/sequence")->toBool();
-  string outName = getctrl("mrs_string/outputFilename")->toString();
-  counter_++;
-  
-  if (!seq) 
-    {
-      for (t = 0; t < nSamples; t++)
+	string sep = getctrl("mrs_string/separator")->toString();
+	bool seq = getctrl("mrs_bool/sequence")->toBool();
+	string outName = getctrl("mrs_string/outputFilename")->toString();
+	counter_++;
+
+	if (!seq) 
 	{
-	  
-	  for (o=0; o < nObservations; o++)
-	    {
-	      out(o,t) = in(o,t);
-	      if (o < nObservations - 1) 
-		cout << out(o,t) << sep;
-	      else
-		cout << out(o,t);
-	    }
-	  cout << endl;
+		for (t = 0; t < nSamples; t++)
+		{
+
+			for (o=0; o < nObservations; o++)
+			{
+				out(o,t) = in(o,t);
+				if (o < nObservations - 1) 
+					cout << out(o,t) << sep;
+				else
+					cout << out(o,t);
+			}
+			cout << endl;
+		}
 	}
-    }
-  else 
-    {
-      // copy input to output 
-      for (t = 0; t < nSamples; t++)
-	for (o=0; o < nObservations; o++)
-	  out(o,t) = in(o,t);
-      
-      ostringstream oss;
-      oss << outName << setfill('0') << setw(4) << counter_ << ".plot";
-      cout << "Writing " << oss.str() << endl;
-      in.write(oss.str());
-    }
-  
-  
+	else 
+	{
+		// copy input to output 
+		for (t = 0; t < nSamples; t++)
+			for (o=0; o < nObservations; o++)
+				out(o,t) = in(o,t);
+
+		ostringstream oss;
+		oss << outName << setfill('0') << setw(4) << counter_ << ".plot";
+		cout << "Writing " << oss.str() << endl;
+		in.write(oss.str());
+	}
+
+
 }
 
 
@@ -129,5 +129,5 @@ PlotSink::myProcess(realvec& in, realvec& out)
 
 
 
-	
-	
+
+

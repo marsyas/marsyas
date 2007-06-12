@@ -59,30 +59,27 @@ namespace Marsyas
 /************************************************************************/
 /* LOGGING MACROS                                                                   */
 /************************************************************************/
-
-//#define LOG_TO_COUT
-
 #define MRSERR(x) {std::ostringstream oss; MrsLog::mrsErr((std::ostringstream&)(oss << x));}
 
-#if MARSYAS_DIAGNOSTIC
+#if MARSYAS_LOG_DIAGNOSTICS
 #define MRSDIAG(x) {std::ostringstream oss; MrsLog::mrsDiagnostic((std::ostringstream&)(oss << x));}
 #else
 #define MRSDIAG(x)
 #endif
 
-#if MARSYAS_WARNING
+#if MARSYAS_LOG_WARNINGS
 #define MRSWARN(x) {std::ostringstream oss; MrsLog::mrsWarning((std::ostringstream&)(oss << x));}
 #else 
 #define MRSWARN(x) 
 #endif 
 
-#ifdef MARSYAS_DEBUG
+#ifdef MARSYAS_LOG_DEBUGS
 #define MRSDEBUG(x) {std::ostringstream oss; MrsLog::mrsDebug((std::ostringstream&)(oss << x));}
 #else
 #define MRSDEBUG(x)
 #endif 
 
-#if MARSYAS_ASSERT
+#if MARSYAS_ASSERTS
 #define MRSASSERT(f) \
         if (f)       \
              {}      \

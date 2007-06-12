@@ -124,11 +124,16 @@ HWPSanalyse(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		else 
 			pvseries->addMarSystem(mng.create("SoundFileSource", "src"));
 		
-		// create analyzer
-		pvseries->addMarSystem(mng.create("PeAnalyse", "analyse"));
-		pvseries->addMarSystem(mng.create("HWPSspectrum", "HWPS"));
-		pvseries->linkctrl("mrs_natural/Sinusoids","PeAnalyse/analyse/mrs_natural/Sinusoids");
-		pvseries->linkctrl("mrs_natural/Sinusoids","HWPSspectrum/HWPS/mrs_natural/Sinusoids");
+		
+		//create analyzer (using composite prototype)
+		pvseries->addMarSystem(mng.create("HWPSspectrumnet", "WHASP"));
+
+// 		// create analyzer
+// 		pvseries->addMarSystem(mng.create("PeAnalyse", "analyse"));
+// 		pvseries->addMarSystem(mng.create("HWPSspectrum", "HWPS"));
+// 		pvseries->linkctrl("mrs_natural/Sinusoids","PeAnalyse/analyse/mrs_natural/Sinusoids");
+// 		pvseries->linkctrl("mrs_natural/Sinusoids","HWPSspectrum/HWPS/mrs_natural/Sinusoids");
+
 
 		////////////////////////////////////////////////////////////////
 		// update the controls
@@ -140,6 +145,10 @@ HWPSanalyse(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		}
 		else
 		{
+			pvseries->linkctrl("HWPSspectrumnet/WHASP/mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");  //!!!!!!! [!]
+			pvseries->linkctrl("HWPSspectrumnet/WHASP/mrs_string/filename", "SoundFileSource/src/mrs_string/filename"); //!!!!!!!!! [!]
+			pvseries->linkctrl("HWPSspectrumnet/WHASP/mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty"); //!!!!!!!! [!]
+			
 			pvseries->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 			pvseries->updctrl("SoundFileSource/src/mrs_natural/inSamples", D);
 			pvseries->updctrl("SoundFileSource/src/mrs_natural/inObservations", 1);

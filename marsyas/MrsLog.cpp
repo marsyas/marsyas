@@ -41,15 +41,14 @@ MrsLog::setLogFile(string fname)
 	fname_ = fname;
 }
 
-
-
 void 
 MrsLog::mrsErr(const ostringstream& oss)
 {
-#ifdef LOG_TO_COUT
+#ifdef MARSYAS_LOG2STDOUT
 	cout << oss.str() << endl;
 #endif
 
+#ifdef MARSYAS_LOG2FILE
 	ofstream ofs(fname_.c_str(), ios::out | ios::app);
 	if (ofs.fail())
 		return;
@@ -60,20 +59,17 @@ MrsLog::mrsErr(const ostringstream& oss)
 	}
 	ofs.close();
 	return;
+#endif 
 }
-
-
-
-
-
 
 void 
 MrsLog::mrsWarning(const ostringstream& oss)
 {
-#ifdef LOG_TO_COUT
+#ifdef MARSYAS_LOG2STDOUT
 	cout << oss.str() << endl;
 #endif
 
+#ifdef MARSYAS_LOG2FILE
 	ofstream ofs(fname_.c_str(), ios::out | ios::app);
 	if (ofs.fail())
 		return;
@@ -84,18 +80,17 @@ MrsLog::mrsWarning(const ostringstream& oss)
 	}
 	ofs.close();
 	return;
+#endif
 }
-
-
-
 
 void 
 MrsLog::mrsDiagnostic(const ostringstream& oss)
 {
-#ifdef LOG_TO_COUT
+#ifdef MARSYAS_LOG2STDOUT
 	cout << oss.str() << endl;
 #endif
 
+#ifdef MARSYAS_LOG2FILE
 	ofstream ofs(fname_.c_str(), ios::out | ios::app);
 	if (ofs.fail())
 		return;
@@ -106,18 +101,17 @@ MrsLog::mrsDiagnostic(const ostringstream& oss)
 	}
 	ofs.close();
 	return;
+#endif
 }
-
-
-
 
 void 
 MrsLog::mrsDebug(const ostringstream& oss)
 {
-#ifdef LOG_TO_COUT
+#ifdef MARSYAS_LOG2STDOUT
 	cout << oss.str() << endl;
 #endif
 
+#ifdef MARSYAS_LOG2FILE
 	ofstream ofs(fname_.c_str(), ios::out | ios::app);
 	if (ofs.fail())
 		return;
@@ -128,6 +122,7 @@ MrsLog::mrsDebug(const ostringstream& oss)
 	}
 	ofs.close();
 	return;
+#endif
 }
 
 void 
