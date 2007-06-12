@@ -42,7 +42,11 @@ marsyasQT {
 ######################################################################
 # Marsyas MATLAB engine input files
 ######################################################################
-marsyasMATLAB {
+marsyasMATLABdebug {
+	HEADERS += ./MATLAB/MATLABengine.h
+	SOURCES += ./MATLAB/MATLABengine.cpp
+}
+marsyasMATLABrelease {
 	HEADERS += ./MATLAB/MATLABengine.h
 	SOURCES += ./MATLAB/MATLABengine.cpp
 }
