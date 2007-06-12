@@ -488,8 +488,6 @@ MarSystemManager::MarSystemManager()
 		"PeConvert/conv/mrs_natural/Sinusoids");
 	peAnalysePr->linkctrl("mrs_natural/Decimation", 
 		"PeConvert/conv/mrs_natural/Decimation");
-	peAnalysePr->linkctrl("mrs_natural/FFTSize", //?!?!?!? [?]
-		"PvFold/fo/mrs_natural/FFTSize");
 	peAnalysePr->updctrl("Shifter/sh/mrs_natural/shift", 1);
 	registerPrototype("PeAnalyse", peAnalysePr);
 
