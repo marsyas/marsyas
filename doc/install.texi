@@ -97,6 +97,9 @@ is welcome and will help further improve the framework.
 @node System requirements
 @section System requirements
 
+@strong{Warning!} Marsyas does not work with qmake in Qt-4.3.  Please
+downgrade to Qt-4.2.2 or use the autotools method of compiling Marsyas.
+
 @subsection Linux
 
 Required:
@@ -159,10 +162,9 @@ want (i.e. audio API, Ogg Vorbis support, Matlab support, etc), simply type
 qmake
 @end example
 
-@b{Requirement: Qt-4.2.3 or later.}
-(no, 4.2.1 doesn't work.  The documentation editor learned this the hard way.)
-@c TODO: remove the above lines.  It's funny now, but when the Marsyas
-@c  docs are more complete and professional, comments like this aren't good.
+@b{Requirement: Qt-4.2.3.}  Marsyas does not work with qmake in Qt-4.3.
+Please downgrade to Qt-4.2.2 or use the autotools method of compiling
+Marsyas.
 
 
 @subsection ...with autotools
