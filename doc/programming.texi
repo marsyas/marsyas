@@ -149,7 +149,24 @@ that handles the control messages.  There are certain conventions that
 need to be followed so typically it is a better idea to copy and
 modify an existing Marsystem rather than writing one from scratch. The
 simple canonical example of a MarSystem that is what I use as a
-template when I write a new Marsystem is Gain.h and Gain.cpp
+template when I write a new Marsystem is @file{Gain.h} and
+@file{Gain.cpp}
+
+The new MarSystem must be added to MarSystemManager.cpp and the build
+process.  Again, the easiest way is to look for @code{Gain} and do the
+same thing with your new MarSystem.  There are four files which require
+attention:
+
+@itemize
+@item @file{marsyas/MarSystemManager.cpp}
+@item @file{marsyas/marsyas.pro}
+@item @file{marsyas/Makefile.am}
+@item @file{lib/release/Makefile.am}
+@end itemize
+
+Once you have edited these files, recompile marsyas (with automake:
+@code{automake}, @code{./configure}.  With qmake, just run
+@code{qmake}), make, and then make install.
 
 
 @node Tips for Working with Marsyas
