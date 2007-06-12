@@ -132,8 +132,8 @@ PeConvert::myUpdate(MarControlPtr sender)
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 	setctrl("mrs_natural/onObservations", kmax_*nbParameters_);
-	//setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal() * getctrl("mrs_natural/inObservations")->toNatural()/2); ??!!?!?!? [?]
-	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
+	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal() * getctrl("mrs_natural/inObservations")->toNatural()/2); ??!!?!?!? [?]
+	//setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
 }
 
 double lobe_value_compute (double f, int type, int size)
