@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vocalEffort", "vocalEffort.vcproj", "{4F841AE6-9692-3C8A-80C4-E81945D63652}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
+	ProjectSection(ProjectDependencies) = postProject
+		{5865CF7B-8C12-3541-93AE-E1AC391ED830} = {5865CF7B-8C12-3541-93AE-E1AC391ED830}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "marsyas", "..\..\marsyas\marsyas.vcproj", "{5865CF7B-8C12-3541-93AE-E1AC391ED830}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
+EndProject
+Global
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4F841AE6-9692-3C8A-80C4-E81945D63652}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4F841AE6-9692-3C8A-80C4-E81945D63652}.Debug|Win32.Build.0 = Debug|Win32
+		{4F841AE6-9692-3C8A-80C4-E81945D63652}.Release|Win32.ActiveCfg = Release|Win32
+		{4F841AE6-9692-3C8A-80C4-E81945D63652}.Release|Win32.Build.0 = Release|Win32
+		{5865CF7B-8C12-3541-93AE-E1AC391ED830}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5865CF7B-8C12-3541-93AE-E1AC391ED830}.Debug|Win32.Build.0 = Debug|Win32
+		{5865CF7B-8C12-3541-93AE-E1AC391ED830}.Release|Win32.ActiveCfg = Release|Win32
+		{5865CF7B-8C12-3541-93AE-E1AC391ED830}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
