@@ -919,18 +919,14 @@ MarSystem::updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd)
 	// check if the control is valid
 	if(control.isInvalid())
 	{
-	  MRSWARN("MarSystem::updControl - Invalid control ptr");
-		MRSWARN("MarSystem::updControl - MarSystem name = " + getName());
+		MRSWARN("MarSystem::updControl - Invalid control ptr @ " + getAbsPath());
 		return false;
 	}
 
 	//check if control exists locally or among children
 	if(!hasControl(control))
 	{
-		MRSWARN("MarSystem::updControl - " + control->getName() + " does not exist locally or in children!");
-		MRSWARN("MarSystem::updControl - MarSystem name = " + getName());
-		cout << "What is happening " << endl;
-		
+		MRSWARN("MarSystem::updControl - " + control->getName() +" @ "+getAbsPath()+ " does not exist locally or in children!");
 		return false;
 	}
 

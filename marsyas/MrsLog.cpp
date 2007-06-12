@@ -45,7 +45,7 @@ void
 MrsLog::mrsErr(const ostringstream& oss)
 {
 #ifdef MARSYAS_LOG2STDOUT
-	cout << oss.str() << endl;
+	cout << "[MRSERR] " << oss.str() << endl;
 #endif
 
 #ifdef MARSYAS_LOG2FILE
@@ -66,7 +66,7 @@ void
 MrsLog::mrsWarning(const ostringstream& oss)
 {
 #ifdef MARSYAS_LOG2STDOUT
-	cout << oss.str() << endl;
+	cout << "[MRS_WARNING] " << oss.str() << endl;
 #endif
 
 #ifdef MARSYAS_LOG2FILE
@@ -87,7 +87,7 @@ void
 MrsLog::mrsDiagnostic(const ostringstream& oss)
 {
 #ifdef MARSYAS_LOG2STDOUT
-	cout << oss.str() << endl;
+	cout << "[MRS_DIAG] " << oss.str() << endl;
 #endif
 
 #ifdef MARSYAS_LOG2FILE
@@ -108,7 +108,7 @@ void
 MrsLog::mrsDebug(const ostringstream& oss)
 {
 #ifdef MARSYAS_LOG2STDOUT
-	cout << oss.str() << endl;
+	cout << "[MRS_DEBUG] " << oss.str() << endl;
 #endif
 
 #ifdef MARSYAS_LOG2FILE
