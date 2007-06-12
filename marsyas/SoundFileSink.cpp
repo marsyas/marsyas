@@ -148,7 +148,7 @@ SoundFileSink::checkType()
       sfp_ = fopen(filename.c_str(), "wb");
       if (sfp_ == NULL) 
 	{
-	  string wrn = "Problem opening file ";
+		string wrn = "SoundFileSink::checkType: Problem opening file ";
 	  wrn += filename;
 	  MRSWARN(wrn);
 	  filename = "defaultfile";
