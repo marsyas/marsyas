@@ -259,7 +259,8 @@ HEADERS += \
 	QGMMModel.h \
 	PeSynOscBank.h \
 	SpectralSNR.h \
-	HWPSspectrum.h
+	HWPSspectrum.h \
+	Vibrato.h
 	 
 SOURCES += \
 	ADSR.cpp \
@@ -464,5 +465,6 @@ SOURCES += \
 	QGMMModel.cpp \
 	PeSynOscBank.cpp \
 	SpectralSNR.cpp \
-	HWPSspectrum.cpp
+	HWPSspectrum.cpp \
+	Vibrato.cpp
 	
