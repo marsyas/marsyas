@@ -793,6 +793,36 @@ test_filter()
 	delete f;
 }
 
+void 
+test_vibrato(string sfName)
+{
+  cout << "Testing vibrato" << endl;
+
+  MarSystemManager mng;
+  MarSystem* playbacknet = mng.create("Series", "playbacknet");
+  
+  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+  playbacknet->addMarSystem(mng.create("Vibrato", "vib"));
+  playbacknet->addMarSystem(mng.create("Vibrato2", "vib2"));
+  playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
+  
+  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+  
+  playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+  playbacknet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
+  
+  playbacknet->updctrl("Vibrato/vib/mrs_real/mod_freq", 10.0);
+
+  
+  mrs_bool isEmpty;
+  while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->toBool()) 
+    {
+      playbacknet->tick();
+    }
+}
+
+
 // test input,processing and sonification 
 // of Vicon (motion capture system) 
 
@@ -2988,6 +3018,8 @@ main(int argc, const char **argv)
     test_probe();
   else if (testName == "vicon") 
     test_vicon(fname0);   
+  else if (testName == "vibrato")
+    test_vibrato(fname0);
   else if (testName == "realvec")
     test_realvec();
   else if (testName == "rmsilence") 

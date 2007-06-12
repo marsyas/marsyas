@@ -144,6 +144,7 @@ in sequence.
 #include "StereoSpectrum.h" 
 #include "StereoSpectrumFeatures.h"
 #include "HWPSspectrum.h"
+#include "Vibrato.h"
 
 using namespace std;
 using namespace Marsyas;
@@ -266,7 +267,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("StereoSpectrum", new StereoSpectrum("stereopr"));
 	registerPrototype("StereoSpectrumFeatures", new StereoSpectrumFeatures("stereospkfpr"));
 	registerPrototype("HWPSspectrum", new HWPSspectrum("hwpsspectrumpr"));
-	
+	registerPrototype("Vibrato", new Vibrato("vibratopr"));
 
 	//***************************************************************************************
 	//									Composite MarSystem prototypes

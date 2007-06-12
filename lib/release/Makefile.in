@@ -282,6 +282,7 @@ libmarsyas_a_SOURCES = $(top_srcdir)/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/marsyas/ADSR.cpp \
 			  $(top_srcdir)/marsyas/Envelope.cpp \
 			  $(top_srcdir)/marsyas/Delay.cpp \
+			  $(top_srcdir)/marsyas/Vibrato.cpp \
 			  $(top_srcdir)/marsyas/NormMaxMin.cpp \
 			  $(top_srcdir)/marsyas/HarmonicEnhancer.cpp \
 			  $(top_srcdir)/marsyas/Reassign.cpp \
@@ -376,8 +377,9 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	HWPSspectrum.$(OBJEXT) Limiter.$(OBJEXT) NoiseSource.$(OBJEXT) \
 	CompExp.$(OBJEXT) NoiseGate.$(OBJEXT) Plucked.$(OBJEXT) \
 	ADSR.$(OBJEXT) Envelope.$(OBJEXT) Delay.$(OBJEXT) \
-	NormMaxMin.$(OBJEXT) HarmonicEnhancer.$(OBJEXT) \
-	Reassign.$(OBJEXT) Normalize.$(OBJEXT) WekaSource.$(OBJEXT) \
+	Vibrato.$(OBJEXT) NormMaxMin.$(OBJEXT) \
+	HarmonicEnhancer.$(OBJEXT) Reassign.$(OBJEXT) \
+	Normalize.$(OBJEXT) WekaSource.$(OBJEXT) \
 	RealvecSource.$(OBJEXT) RealvecSink.$(OBJEXT) Power.$(OBJEXT) \
 	MemorySource.$(OBJEXT) MidiInput.$(OBJEXT) Esitar.$(OBJEXT) \
 	MidiOutput.$(OBJEXT) NumericLib.$(OBJEXT) NormCut.$(OBJEXT) \
@@ -508,6 +510,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/TmGetTime.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TmSampleCount.Po ./$(DEPDIR)/TmTime.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TmTimer.Po ./$(DEPDIR)/VScheduler.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Vibrato.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ViconFileSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/WavFileSink.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/WavFileSource.Po \
@@ -759,6 +762,7 @@ Plucked.$(OBJEXT): $(top_srcdir)/marsyas/Plucked.cpp
 ADSR.$(OBJEXT): $(top_srcdir)/marsyas/ADSR.cpp
 Envelope.$(OBJEXT): $(top_srcdir)/marsyas/Envelope.cpp
 Delay.$(OBJEXT): $(top_srcdir)/marsyas/Delay.cpp
+Vibrato.$(OBJEXT): $(top_srcdir)/marsyas/Vibrato.cpp
 NormMaxMin.$(OBJEXT): $(top_srcdir)/marsyas/NormMaxMin.cpp
 HarmonicEnhancer.$(OBJEXT): $(top_srcdir)/marsyas/HarmonicEnhancer.cpp
 Reassign.$(OBJEXT): $(top_srcdir)/marsyas/Reassign.cpp
@@ -967,6 +971,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TmTime.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TmTimer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/VScheduler.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Vibrato.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ViconFileSource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WavFileSink.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WavFileSource.Po@am__quote@
@@ -3159,6 +3164,18 @@ Delay.obj: $(top_srcdir)/marsyas/Delay.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/Delay.Po' tmpdepfile='$(DEPDIR)/Delay.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Delay.obj `cygpath -w $(top_srcdir)/marsyas/Delay.cpp`
+
+Vibrato.o: $(top_srcdir)/marsyas/Vibrato.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/Vibrato.cpp' object='Vibrato.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/Vibrato.Po' tmpdepfile='$(DEPDIR)/Vibrato.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Vibrato.o `test -f '$(top_srcdir)/marsyas/Vibrato.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/Vibrato.cpp
+
+Vibrato.obj: $(top_srcdir)/marsyas/Vibrato.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/Vibrato.cpp' object='Vibrato.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/Vibrato.Po' tmpdepfile='$(DEPDIR)/Vibrato.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Vibrato.obj `cygpath -w $(top_srcdir)/marsyas/Vibrato.cpp`
 
 NormMaxMin.o: $(top_srcdir)/marsyas/NormMaxMin.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/marsyas/NormMaxMin.cpp' object='NormMaxMin.o' libtool=no @AMDEPBACKSLASH@

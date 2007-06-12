@@ -72,6 +72,7 @@ dist-hook:
 	rm -rf `find $(distdir)/msl/ -name .svn`
 	rm -rf `find $(distdir)/muggle/ -name .svn`
 	rm -rf `find $(distdir)/orcarecord/ -name .svn`
+	rm -rf `find $(distdir)/peVocoder/ -name .svn`
 	rm -rf `find $(distdir)/peakClustering/ -name .svn`
 	rm -rf `find $(distdir)/phasevocoder/ -name .svn`
 	rm -rf `find $(distdir)/pitchextract/ -name .svn`

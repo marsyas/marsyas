@@ -202,6 +202,7 @@ libmarsyas_a_SOURCES    = $(top_srcdir)/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/marsyas/ADSR.cpp \
 			  $(top_srcdir)/marsyas/Envelope.cpp \
 			  $(top_srcdir)/marsyas/Delay.cpp \
+			  $(top_srcdir)/marsyas/Vibrato.cpp \
 			  $(top_srcdir)/marsyas/NormMaxMin.cpp \
 			  $(top_srcdir)/marsyas/HarmonicEnhancer.cpp \
 			  $(top_srcdir)/marsyas/Reassign.cpp \
