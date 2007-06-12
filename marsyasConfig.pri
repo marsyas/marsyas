@@ -306,7 +306,7 @@ win32 {
 		LIBS += -lwinmm		
 	}
 	
-	marsyasMATLABrelease{
+	marsyasMATLABdebug{
 		CONFIG(debug, debug|release) {
 			DEFINES += MARSYAS_MATLAB
 			INCLUDEPATH += "$$(MATLAB)"/extern/include
