@@ -13,6 +13,7 @@
 #include "Filter.h"
 #include "Gain.h"
 #include "RtAudio.h"
+#include "RtMidi.h"
 #include "MarSystemTemplateBasic.h"
 #include "MarSystemTemplateAdvanced.h"
 #include "EvValUpd.h"
@@ -52,6 +53,7 @@ printHelp(string progName)
   cerr << "audiodevices    : test audio devices " << endl;
   cerr << "cascade         : test Cascade composite " << endl;
   cerr << "collection      : test Collection " << endl;
+  cerr << "drumclassify    : test drumclassify (mplfile argument)" << endl;
   cerr << "fanoutswitch    : test disabling fanout branches " << endl;
   cerr << "filter          : test filter MarSystem " << endl;
   cerr << "fft             : test fft analysis/resynthesis " << endl;
@@ -139,6 +141,168 @@ test_scheduler(string sfName)
   // so you must not delete them
   delete series1;
 }
+
+/*
+   This code works by loading an mpl file with a trained classifier. 
+
+   First run bextract to analyze examples and train a classifier
+   bextract -e DRUMEXTRACT -f outputfile.mpl -w 512 -sr 44100.0
+
+   Then run 
+   drumextract outputfile.mpl
+ */
+void drumClassify( string drumFile) {
+    int windowsize = 512;
+    int numberOfCoefficients = 67;
+
+    MarSystemManager mng;
+
+    MarSystem* TimeLoop= mng.create("Series", "TimeLoop");
+    TimeLoop->addMarSystem(mng.create("AudioSource", "src"));
+    TimeLoop->addMarSystem(mng.create("Peaker1", "peak"));
+
+    TimeLoop->updctrl("Peaker1/peak/mrs_natural/peakEnd", 512);
+    TimeLoop->updctrl("Peaker1/peak/mrs_real/peakSpacing", 0.5);
+    TimeLoop->updctrl("Peaker1/peak/mrs_real/peakStrength", 0.7);
+    TimeLoop->updctrl("Peaker1/peak/mrs_natural/peakStart", 0);
+    TimeLoop->updctrl("Peaker1/peak/mrs_natural/peakStrengthReset", 2);
+    TimeLoop->updctrl("Peaker1/peak/mrs_real/peakDecay", 0.9);
+    TimeLoop->updctrl("Peaker1/peak/mrs_real/peakGain", 0.5);
+
+    //======================================
+    // Features
+    //======================================
+    MarSystem* extractNet = mng.create("Series", "extractNet");
+
+    MarSystem* spectimeFanout = mng.create("Fanout", "spectimeFanout");
+    spectimeFanout->addMarSystem(mng.create("ZeroCrossings", "zcrs"));
+    spectimeFanout->addMarSystem(mng.create("Rms", "rms"));
+
+    MarSystem* spectralNet = mng.create("Series", "spectralNet");
+    spectralNet->addMarSystem(mng.create("Hamming", "ham"));
+    spectralNet->addMarSystem(mng.create("Spectrum", "spk"));
+    spectralNet->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+
+    MarSystem* featureFanout = mng.create("Fanout", "featureFanout");
+    featureFanout->addMarSystem(mng.create("Centroid", "centroid"));
+    featureFanout->addMarSystem(mng.create("Rolloff", "rolloff"));
+    featureFanout->addMarSystem(mng.create("MFCC", "mfcc"));
+    featureFanout->addMarSystem(mng.create("Kurtosis", "kurtosis"));
+    featureFanout->addMarSystem(mng.create("Skewness", "skewness"));
+    featureFanout->addMarSystem(mng.create("SFM", "sfm"));
+    featureFanout->addMarSystem(mng.create("SCF", "scf"));
+
+
+    spectralNet->addMarSystem(featureFanout);
+    spectimeFanout->addMarSystem(spectralNet);
+    extractNet->addMarSystem(spectimeFanout);
+
+    // Our Classifier
+    extractNet->addMarSystem(mng.create("GaussianClassifier", "classifier"));  
+    extractNet->updctrl("GaussianClassifier/classifier/mrs_string/mode","predict");
+    extractNet->updctrl("GaussianClassifier/classifier/mrs_natural/nLabels",2);
+
+    realvec means;
+    realvec vars; 
+
+    means.create(numberOfCoefficients);
+    vars.create(numberOfCoefficients);
+
+    //=============================
+    //Read trained values from mpl value into realvecs to be loaded into the classifier
+    //============================
+
+    vector<string> words; 
+    ifstream in(drumFile.c_str()); 
+    string word; 
+    while(in >> word) 
+        words.push_back(word);  
+
+    for ( unsigned int i = 0; i < words.size(); i++)
+    {
+
+        if ( words[i] == "means" )
+            for ( int p = 0; p < numberOfCoefficients; p++)
+            {
+                // get he current word from the file
+                word = words[i++];
+                // cast the string to a float
+                float readval;
+                istringstream mystream(word);
+                mystream >> readval;
+                means.setval( i,i,readval);
+            }
+        if ( words[i] == "covars" )  
+            for ( int p = 0; p < numberOfCoefficients; p++)
+            {
+                // get he current word from the file
+                word = words[i++];
+                // cast the string to a float
+                float readval;
+                istringstream mystream(word);
+                mystream >> readval;
+                means.setval( i,i,readval);
+            }
+    }
+
+    cout << means << endl;
+    cout << vars << endl;
+
+    extractNet->updctrl("GaussianClassifier/classifier/realvec/means", means);
+    extractNet->updctrl("GaussianClassifier/classifier/realvec/covars", vars);
+    extractNet->updctrl("mrs_natural/inSamples",512);
+    extractNet->updctrl("mrs_natural/onSamples",512);
+    extractNet->updctrl("mrs_real/israte", 44100.0);
+    extractNet->updctrl("mrs_real/osrate", 44100.0);
+
+    realvec in1;
+    realvec out1;
+    realvec out2;
+
+    in1.create(TimeLoop->getctrl("mrs_natural/inObservations")->toNatural(), 
+            TimeLoop->getctrl("mrs_natural/inSamples")->toNatural());
+
+    out1.create(TimeLoop->getctrl("mrs_natural/onObservations")->toNatural(), 
+            TimeLoop->getctrl("mrs_natural/onSamples")->toNatural());
+
+    out2.create(extractNet->getctrl("mrs_natural/onObservations")->toNatural(),
+            extractNet->getctrl("mrs_natural/onSamples")->toNatural());
+
+    RtMidiOut *midiout = new RtMidiOut();
+    midiout->openPort(0);
+    vector<unsigned char> message;
+
+    message.push_back(144);
+    message.push_back(60);
+    message.push_back(0);
+
+    // Peaker1 looks for hits and then if it finds one reports a non-zero value
+    // When a non-zero value is found extractNet is ticked
+    while ( TimeLoop->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() )
+    {
+        TimeLoop->process(in1,out1);
+        for (int i = 0; i < windowsize;i++)
+        {
+            if ( out1(i) > 0)
+            {
+                extractNet->process(out1, out2);
+
+                cout << *extractNet << endl;
+                cout << out2 << endl;               
+
+                float class1 = out2(0);
+                float class2 = out2(1);
+                
+                int decision;
+                decision =  (int) ((class1/class2) * 127);
+                message[3]=decision; 
+                break;
+            }
+        }
+
+    }
+}
+
 
 void
 test_simpleSFPlay(string sfName)
@@ -3072,7 +3236,9 @@ main(int argc, const char **argv)
     test_realvecCtrl(fname0);
    else if (testName == "power")
     test_power(fname0);
-  else 
+  else if (testName == "drumclassify")
+    drumClassify(fname0);
+else 
     {
       cout << "Unsupported test " << endl;
       printHelp(progName);
