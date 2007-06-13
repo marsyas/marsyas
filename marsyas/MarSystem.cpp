@@ -140,10 +140,10 @@ MarSystem::MarSystem(const MarSystem& a)
 		// get original links...
 		vector<MarControlPtr> protolinks = ctrlIter_->second->getLinks();
 		//... and re-establish links between the new cloned controls
+		controls_[ctrlIter_->first]->getLinks().clear(); // clear clone's links table
 		vector<MarControlPtr>::const_iterator ci;
 		for (ci = protolinks.begin(); ci != protolinks.end(); ++ci)
 		{
-			controls_[ctrlIter_->first]->getLinks().clear(); // clear clone's links table
 			MarControlPtr ctrl = this->getControl((*ci)->getMarSystem()->getAbsPath() + (*ci)->getName(), true);
 			if (!ctrl.isInvalid())
 			{
