@@ -42,7 +42,7 @@ AC_PROG_RANLIB
 AC_ARG_ENABLE([assert],[AC_HELP_STRING([--enable-assert],[Turn assertions on])])
 case "$enable_assert" in
       yes)
-               AC_DEFINE([MARSYAS_ASSERT],[1],[Enable Marsyas Assertions])
+               AC_DEFINE([MARSYAS_ASSERTS],[1],[Enable Marsyas Assertions])
                echo Assertions enabled
        ;;
        *) echo Assertions disabled ;;
@@ -52,7 +52,7 @@ esac
 AC_ARG_ENABLE([diagnostics],[AC_HELP_STRING([--enable-diagnostics],[Turn diagnostics on])])
 case "$enable_diagnostics" in
        yes)
-               AC_DEFINE([MARSYAS_LOGDIAGNOSTIC],[1],[Enable Marsyas Diagnostics])
+               AC_DEFINE([MARSYAS_LOG_DIAGNOSTICS],[1],[Enable Marsyas Diagnostics])
                echo Diagnostics enabled
        ;;
        *) echo Diagnostics disabled ;;
@@ -62,7 +62,7 @@ esac
 AC_ARG_ENABLE([warnings],[AC_HELP_STRING([--enable-warnings],[Turn warnings on])], [enable_warnings=$enableval], [enable_warnings=yes])
 case "$enable_warnings" in
        yes)
-               AC_DEFINE([MARSYAS_LOGWARNING],[1], [Enable Marsyas Warnings])
+               AC_DEFINE([MARSYAS_LOG_WARNINGS],[1], [Enable Marsyas Warnings])
                echo Warnings enabled
        ;;
        *) echo Warnings disabled ;;
@@ -95,7 +95,7 @@ esac
 AC_ARG_ENABLE([debug],[AC_HELP_STRING([--enable-debug],[Compile for debugging with gdb])])
 case "$enable_debug" in
        yes)
-               AC_DEFINE([MRSDEBUGGING],[1], [Enable DEBUG MESSAGES])
+               AC_DEFINE([MARSYAS_LOG_DEBUGS],[1], [Enable DEBUG MESSAGES])
                CXXFLAGS="-O0 -g -ggdb "
                echo Debugging enabled
        ;;
@@ -105,6 +105,7 @@ esac
 AC_ARG_ENABLE([profiling],[AC_HELP_STRING([--enable-profiling],[Compile for profiling])])
 case "$enable_profiling" in
        yes)
+               AC_DEFINE([MARSYAS_PROFILING],[1], [Enable PROFILING])
                CXXFLAGS="$CXXFLAGS -pg"
                echo Profiling enabled
        ;;

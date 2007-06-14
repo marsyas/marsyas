@@ -102,7 +102,7 @@ SUBDIRS = sfplay sfinfo
 
 
 # I wish there was a better way of doing this.  :(
-EXTRA_DIST = apps.pro ERBTest/ MarEditor/ Qt4Apps/ SeneffEarTest/ backup/ bextract/ boomchick/ classifyFile/ extract/ marsyasTests/ midiTest/ mixer/ mkcollection/ msl/ muggle/ orcarecord/ pePeakEval/ peVocoder/ peakClustering/ phasevocoder/ pitchextract/ record/ scheduler/ server_main/ sfplaygui/ sfplugin/ speakerSeg/ tempo/ textract/ tutorial/ virtualsensor/ vocalEffort/ HWPSanalysis/
+EXTRA_DIST = apps.pro consoleApps.pri ERBTest/ MarEditor/ Qt4Apps/ SeneffEarTest/ backup/ bextract/ boomchick/ classifyFile/ extract/ marsyasTests/ midiTest/ mixer/ mkcollection/ msl/ muggle/ orcarecord/ pePeakEval/ peVocoder/ peakClustering/ phasevocoder/ pitchextract/ record/ scheduler/ server_main/ sfplaygui/ sfplugin/ speakerSeg/ tempo/ textract/ tutorial/ virtualsensor/ vocalEffort/ HWPSanalysis/
 subdir = apps
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_CLEAN_FILES =
@@ -380,6 +380,7 @@ dist-hook:
 	rm -rf `find $(distdir)/vocalEffort/ -name .svn`
 	rm -rf `find $(distdir)/HWPSanalysis/ -name .svn`
 	rm -rf `find $(distdir)/pePeakEval/ -name .svn`
+	rm -rf `find $(distdir)/peVocoder/ -name .svn`
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

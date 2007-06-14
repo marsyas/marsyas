@@ -19,6 +19,7 @@
 SUBDIRS = sfplay sfinfo
 
 EXTRA_DIST = apps.pro
+EXTRA_DIST += consoleApps.pri
 EXTRA_DIST += ERBTest/
 EXTRA_DIST += MarEditor/
 EXTRA_DIST += Qt4Apps/
@@ -90,4 +91,5 @@ dist-hook:
 	rm -rf `find $(distdir)/vocalEffort/ -name .svn`
 	rm -rf `find $(distdir)/HWPSanalysis/ -name .svn`
 	rm -rf `find $(distdir)/pePeakEval/ -name .svn`
+	rm -rf `find $(distdir)/peVocoder/ -name .svn`
 
