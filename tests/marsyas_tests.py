@@ -10,6 +10,10 @@ if not(os.path.isdir('audio')):
 	print "Please run this from the `tests' directory."
 	sys.exit();
 
+mode = ''
+if len(sys.argv) > 1:
+	mode = sys.argv[1]
+
 test_commands = []
 test_answers = []
 tests = open(test_file).readlines()
@@ -24,8 +28,14 @@ logfile = open(LOG_FILE, 'w')
 os.chdir('audio')
 problem = 0
 for i in range( len(test_commands) ):
-	print test_commands[i]
-	os.system(test_commands[i])
+	command = ''
+	if mode != '':
+		command = '..%(sep)s..%(sep)sbin%(sep)s%(mode)s%(sep)s' % {'sep': os.sep, 'mode': mode}
+	command += test_commands[i]
+	print command
+	if (os.system(command) != 0): # if something went wrong
+		problem = 1
+		break
 	# use .au files because identical-sounding .wav files can have
 	# different headers
 	if filecmp.cmp('out.au', test_answers[i]):
