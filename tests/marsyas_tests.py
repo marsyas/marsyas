@@ -20,8 +20,8 @@ for line in tests:
 		test_commands.append( line_split[0] )
 		test_answers.append( line_split[1].strip() )
 	
+logfile = open(LOG_FILE, 'w')
 os.chdir('audio')
-logfile = open('../'+LOG_FILE, 'w')
 problem = 0
 for i in range( len(test_commands) ):
 	print test_commands[i]
