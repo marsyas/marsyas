@@ -27,7 +27,7 @@ AUTOMAKE_OPTIONS        = foreign
 EXTRA_DIST += .qmake.cache
 
 SUBDIRS			= marsyas lib apps bin doc
-SUBDIRS			+= examples
+SUBDIRS			+= examples tests
  
 # we must now explicitly define subdirs to be included in the dist
 DIST_SUBDIRS		= marsyas lib apps bin doc

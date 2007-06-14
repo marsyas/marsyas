@@ -286,6 +286,8 @@ AC_CONFIG_FILES([Makefile marsyas/Makefile
 		 apps/sfinfo/Makefile
 		 doc/Makefile
 		 examples/Makefile
+		 tests/Makefile
+		 tests/audio/Makefile
 		 bin/Makefile
 		 bin/debug/Makefile
 		 bin/release/Makefile])

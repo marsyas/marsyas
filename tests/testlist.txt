@@ -1,0 +1,4 @@
+# two columns: command	<TAB>	answer file
+# comments are #, obviously.
+phasevocoder -p 1.3 redwheel.wav -f out.au	red13.au
+

@@ -4517,7 +4517,7 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile marsyas/Makefile lib/Makefile lib/debug/Makefile lib/release/Makefile apps/Makefile apps/sfplay/Makefile apps/sfinfo/Makefile doc/Makefile examples/Makefile bin/Makefile bin/debug/Makefile bin/release/Makefile"
+ac_config_files="$ac_config_files Makefile marsyas/Makefile lib/Makefile lib/debug/Makefile lib/release/Makefile apps/Makefile apps/sfplay/Makefile apps/sfinfo/Makefile doc/Makefile examples/Makefile tests/Makefile tests/audio/Makefile bin/Makefile bin/debug/Makefile bin/release/Makefile"
 
 
 
@@ -5118,6 +5118,8 @@ do
     "apps/sfinfo/Makefile") CONFIG_FILES="$CONFIG_FILES apps/sfinfo/Makefile" ;;
     "doc/Makefile") CONFIG_FILES="$CONFIG_FILES doc/Makefile" ;;
     "examples/Makefile") CONFIG_FILES="$CONFIG_FILES examples/Makefile" ;;
+    "tests/Makefile") CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
+    "tests/audio/Makefile") CONFIG_FILES="$CONFIG_FILES tests/audio/Makefile" ;;
     "bin/Makefile") CONFIG_FILES="$CONFIG_FILES bin/Makefile" ;;
     "bin/debug/Makefile") CONFIG_FILES="$CONFIG_FILES bin/debug/Makefile" ;;
     "bin/release/Makefile") CONFIG_FILES="$CONFIG_FILES bin/release/Makefile" ;;
