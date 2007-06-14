@@ -494,6 +494,11 @@ MarSystem::updatePath() // => mutexes [?]
 	{
 		absPath_ = prefix_;
 	}
+
+	//propagate new path to all children (if any)
+	if(isComposite_)
+		for(mrs_natural i=0; i< marsystemsSize_; ++i)
+			marsystems_[i]->updatePath();
 }
 
 void 
@@ -725,6 +730,7 @@ MarSystem::linkControl(string cname1, string cname2)
 	//the MarSystem in question.
 	//cname 2 must be a valid absolute, relative or local control pathname
 	//to an EXISTING control.
+	// When linking ctrl1 to ctrl2, ctrl1 will get the current value of ctrl2!
 		
 	//try to get the controls
 	MarControlPtr ctrl1 = getControl(cname1, false, true);//search local and child controls
@@ -791,7 +797,7 @@ MarSystem::linkControl(string cname1, string cname2)
 	}
 
 	//now both controls exist 
-	//just link them
+	//just link them (ctrl1 will be synced with the value of ctrl2).
 	return ctrl1->linkTo(ctrl2);
 }
 
@@ -810,7 +816,7 @@ MarSystem::getControl(string cname, bool searchParent, bool searchChildren)
 			return parent_->getControl(cname, true, true);//parent will also ask its parent if necessary // => mutexes [?]
 		else //parent search not allowed, so the control was not found => return invalid control
 		{
-			//MRSWARN("MarSystem::getControl - Unsupported control name: " + cname);
+			//MRSWARN("MarSystem::getControl - Unsupported control name: " + cname + " @ " + absPath_ + " -> THIS MAY BE NORMAL DURING CLONING!");
 			return MarControlPtr();
 		}
 
@@ -1127,6 +1133,7 @@ MarSystem::addControl(string cname, MarControlPtr v)
 	controls_[cname]->setName(cname);
 
 	//success!
+	MRSDIAG("MarSystem::addControl - control added successfully: " + cname + " @ " + absPath_);
 	return true;
 }
 
