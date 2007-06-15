@@ -64,12 +64,10 @@ important files:
 
 <!-- TODO: update after fixing these files.  -gp -->
 <ul>
-<li><b>INSTALL, COPYING, THANKS, README, AUTHORS, TODO:</b> text
+<li><b>INSTALL, COPYING, THANKS, README, AUTHORS, TODO, Changelog:</b> text
 files with important information in theory.  However, these have not
-been updated in years. 
-<li><b>ChangeLog:</b> the change log is not maintained as consistently
-as it should be but it still provides useful information about the
-evolution of the software. 
+been updated in years.  We use <code>svn</code> log messages instead of the
+Changelog. 
 <li><b>configure.in, Makefile.am:</b> the main files edited by
 the user/programmer that are required for the autotools. You will
 only need to edit these if you are adding new subdirectories
@@ -94,9 +92,10 @@ programs can use to access Marsyas functionality.
 
      <!-- We use doxygen?  Really!?  check.  -gp -->
 <li><b>doc:</b> contains both the user manual (which you are
-currently reading) as well as the source code documentation
-that is generated using doxygen. To regenerate the manual in pdf
+currently reading).  To regenerate the manual in pdf
 or html type (in the doc subdirectory)
+<!-- as well as the source code documentation -->
+<!-- that is generated using doxygen. -->
 
      <pre class="example">          make pdf
           make html

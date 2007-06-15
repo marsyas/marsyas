@@ -28,8 +28,8 @@
 
 @cindex Compiling
 @cindex Linking
-Unless you write your program inside the @file{marsyas/src} directory,
-you need to include the Marsyas libraries in your project.
+To use any marsyas code in your program(s), you need to include the
+Marsyas libraries in your project.
 
 
 @unnumberedsubsubsec Linux and other *nixes
@@ -144,18 +144,18 @@ a handy object which parses the command-line for you.
 
 It's relatively straightforward to extend Marsyas by writing your own
 Marsystems. As mentioned before each MarSystems must basically support
-the process method that handles the dataflow and the update method
-that handles the control messages.  There are certain conventions that
-need to be followed so typically it is a better idea to copy and
-modify an existing Marsystem rather than writing one from scratch. The
-simple canonical example of a MarSystem that is what I use as a
-template when I write a new Marsystem is @file{Gain.h} and
-@file{Gain.cpp}
+the process method that handles the dataflow and the update method that
+handles the control messages.  There are certain conventions that need
+to be followed so typically it is a better idea to copy and modify an
+existing Marsystem rather than writing one from scratch. The simple
+canonical example of a MarSystem that is what I use as a template when I
+write a new Marsystem is @file{Gain.h} and @file{Gain.cpp}  or
+@file{MarSystemTemplateBasic .h .cpp}.
 
-The new MarSystem must be added to MarSystemManager.cpp and the build
-process.  Again, the easiest way is to look for @code{Gain} and do the
-same thing with your new MarSystem.  There are four files which require
-attention:
+The new MarSystem should be placed in the @file{marsyas/} directory, and
+must be added to @file{MarSystemManager.cpp} and the build process.
+Again, the easiest way is to look for @code{Gain} and do the same thing
+with your new MarSystem.  There are four files which require attention:
 
 @itemize
 @item @file{marsyas/MarSystemManager.cpp}
@@ -165,8 +165,9 @@ attention:
 @end itemize
 
 Once you have edited these files, recompile marsyas (with automake:
-@code{automake}, @code{./configure}.  With qmake, just run
-@code{qmake}), make, and then make install.
+@code{automake}, @code{./configure}, @code{make}, @code{make install}.
+With qmake, just run @code{qmake}), then @code{make}, and @code{make
+install}.)
 
 
 @node Tips for Working with Marsyas

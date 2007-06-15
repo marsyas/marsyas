@@ -57,23 +57,28 @@ Up:&nbsp;<a rel="up" accesskey="u" href="Architecture.html#Architecture">Archite
 
 <p>Marsyas contains some predefined, portable data types:
 
+   <p><a name="index-mrs_005fbool-17"></a><a name="index-mrs_005fnatural-18"></a><a name="index-mrs_005freal-19"></a><a name="index-mrs_005fcomplex-20"></a>
 <pre class="example">     mrs_bool
      mrs_natural   (integers)
      mrs_real
      mrs_complex
 </pre>
-   <p>There is also the <code>realvec</code> variable type.  A <code>realvec</code> is
-an array of <code>mrs_real</code> values.  Many operations can be performed
-on <code>realvec</code>s, including statistical operations (find the mean,
-median, standard variance, etc).  Using these predefined data types
-is highly recommended.
+   <p><a name="index-realvec-21"></a>
+There is also the <code>realvec</code> variable type.  A <code>realvec</code> is an
+array of <code>mrs_real</code> values; this is the most common type of
+variable in Marsyas (all the audio processing is done via
+<code>realvec</code>s, for example).  Many operations can be performed on
+<code>realvec</code>s, including statistical operations (find the mean,
+median, standard variance, etc).  Using these predefined data types is
+highly recommended.
 
 <pre class="example">     realvec foo;
      foo.create(10);
      for (mrs_natural i=0; i&lt;10; i++) {
        foo(i) = i;
      }
-     foo.~realvec();
+     ...
+     foo.~realvec();  // delete the data
      
      realvec *bar;
      bar-&gt;create(20,20);
@@ -82,6 +87,7 @@ is highly recommended.
          (*bar)(i,j) = i+j;
        }
      }
+     ...
      bar-&gt;~realvec();
 </pre>
    </body></html>

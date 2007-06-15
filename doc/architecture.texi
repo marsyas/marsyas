@@ -8,12 +8,12 @@ Marsyas reflects an underlying dataflow model that we have found
 useful in implementing real and non-real time audio analysis and
 synthesis systems. In marsyas 0.2 a lot of things can be accomplished
 by assembling complex networks of basic building blocks called
-MarSystems that process data. This is the so called @qq{Black-Box}
-functionality of the framework. In addition the programmer can also
-write directly her/his own building blocks directly in C++ following a
-certain API and coding conventions offering the so called
-@qq{White-Box} functionality. The next two sections describe building
-networks and writing new MarSystems respectively.
+MarSystems that process data. This is the so
+called @qq{Black-Box} functionality of the framework. In addition the
+programmer can also write directly her/his own building blocks directly
+in C++ following a certain API and coding conventions offering the so
+called @qq{White-Box} functionality. The next two sections describe
+building networks and writing new MarSystems respectively.
 
 @menu
 * Architecture overview::       
@@ -57,7 +57,7 @@ the input of each stage is the output of the previous stage.  This way
 of assembling MarSystems is called a Series composite.  Once a Series
 Composite is formed it can basically be used as one MarSystem that
 does the whole thing. A figure showing a block diagram-like
-presentation of this network is shown in the figure bellow.
+presentation of this network is shown in the next section.
 
 The main method that each MarSystem must support is @b{process} which
 takes two arguments both arrays of floating point numbers used to
@@ -231,6 +231,11 @@ Series1->addMarSystem(mng.create("classifier", "Classifier"));
 
 Marsyas contains some predefined, portable data types:
 
+@cindex mrs_bool
+@cindex mrs_natural
+@cindex mrs_real
+@cindex mrs_complex
+
 @example
 mrs_bool
 mrs_natural   (integers)
@@ -238,11 +243,15 @@ mrs_real
 mrs_complex
 @end example
 
-There is also the @code{realvec} variable type.  A @code{realvec} is
-an array of @code{mrs_real} values.  Many operations can be performed
-on @code{realvec}s, including statistical operations (find the mean,
-median, standard variance, etc).  Using these predefined data types
-is highly recommended.
+@cindex realvec
+
+There is also the @code{realvec} variable type.  A @code{realvec} is an
+array of @code{mrs_real} values; this is the most common type of
+variable in Marsyas (all the audio processing is done via
+@code{realvec}s, for example).  Many operations can be performed on
+@code{realvec}s, including statistical operations (find the mean,
+median, standard variance, etc).  Using these predefined data types is
+highly recommended.
 
 @example
 realvec foo;
@@ -250,7 +259,8 @@ foo.create(10);
 for (mrs_natural i=0; i<10; i++) @{
   foo(i) = i;
 @}
-foo.~realvec();
+...
+foo.~realvec();  // delete the data
 
 realvec *bar;
 bar->create(20,20);
@@ -259,6 +269,7 @@ for (mrs_natural i=0; i<20; i++) @{
     (*bar)(i,j) = i+j;
   @}
 @}
+...
 bar->~realvec();
 @end example
 

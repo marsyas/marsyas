@@ -190,7 +190,7 @@ Once you are familiar with everything covered in this manual and those
 examples, you should examine the source code:
 
 @itemize
-@item @file{src/}: the source code for real Marsyas executables.  These
+@item @file{apps/}: the source code for real Marsyas executables.  These
 are real, working programs.  This means that they have poor comments,
 bad variable names, and are difficult to read.  :)
 @item @file{marsyas/}: the source code for MarSystems.  These are the

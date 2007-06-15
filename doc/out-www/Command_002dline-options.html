@@ -77,49 +77,49 @@ mrs_string stringOpt<font color="#990000">;</font>
 <font color="#009900">void</font> 
 <b><font color="#000000">printUsage</font></b><font color="#990000">()</font>
 <font color="#FF0000">{</font> 
-  <b><font color="#000000">MRSDIAG</font></b><font color="#990000">(</font><font color="#FF0000">"commandOptions.cpp - printUsage"</font><font color="#990000">);</font>
-  cerr <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"Usage: commandOptions "</font> <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"file1 file2 file3"</font> <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
-  cerr <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>  cerr <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"where file1, ..., fileN are sound files in a MARSYAS supported format"</font> <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
-  <b><font color="#000000">exit</font></b><font color="#990000">(</font><font color="#993399">1</font><font color="#990000">);</font>
+	<b><font color="#000000">MRSDIAG</font></b><font color="#990000">(</font><font color="#FF0000">"commandOptions.cpp - printUsage"</font><font color="#990000">);</font>
+	cerr <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"Usage: commandOptions "</font> <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"file1 file2 file3"</font> <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
+	cerr <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>  cerr <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"where file1, ..., fileN are sound files in a MARSYAS supported format"</font> <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
+	<b><font color="#000000">exit</font></b><font color="#990000">(</font><font color="#993399">1</font><font color="#990000">);</font>
 <font color="#FF0000">}</font>
 
 <font color="#009900">void</font> 
 <b><font color="#000000">printHelp</font></b><font color="#990000">()</font>
 <font color="#FF0000">{</font>
-  <b><font color="#000000">MRSDIAG</font></b><font color="#990000">(</font><font color="#FF0000">"commandOptions.cpp - printHelp"</font><font color="#990000">);</font>
-  cerr <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"commandOptions: Sample Program"</font><font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
-  cerr <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"------------------------------"</font> <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
-  cerr <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
-  cerr <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"Usage: commandOptions file1 file2 file3"</font> <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
-  cerr <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
-  cerr <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"where file1, ..., fileN are sound files in a Marsyas supported format"</font> <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
-  cerr <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"Help Options:"</font> <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
-  cerr <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"-u --usage      : display short usage info"</font> <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
-  cerr <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"-h --help       : display this information "</font> <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
-  cerr <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"-n --natural    : sets a `natural' variable "</font> <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
-  cerr <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"-r --real       : sets a `real' variable "</font> <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
-  cerr <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"-s --string     : sets a `string' variable "</font> <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
-  <b><font color="#000000">exit</font></b><font color="#990000">(</font><font color="#993399">1</font><font color="#990000">);</font>
+	<b><font color="#000000">MRSDIAG</font></b><font color="#990000">(</font><font color="#FF0000">"commandOptions.cpp - printHelp"</font><font color="#990000">);</font>
+	cerr <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"commandOptions: Sample Program"</font><font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
+	cerr <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"------------------------------"</font> <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
+	cerr <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
+	cerr <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"Usage: commandOptions file1 file2 file3"</font> <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
+	cerr <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
+	cerr <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"where file1, ..., fileN are sound files in a Marsyas supported format"</font> <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
+	cerr <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"Help Options:"</font> <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
+	cerr <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"-u --usage		 : display short usage info"</font> <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
+	cerr <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"-h --help		 : display this information "</font> <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
+	cerr <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"-n --natural		 : sets a `natural' variable "</font> <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
+	cerr <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"-r --real		 : sets a `real' variable "</font> <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
+	cerr <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"-s --string		 : sets a `string' variable "</font> <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
+	<b><font color="#000000">exit</font></b><font color="#990000">(</font><font color="#993399">1</font><font color="#990000">);</font>
 <font color="#FF0000">}</font>
 
 <font color="#009900">void</font> 
 <b><font color="#000000">initOptions</font></b><font color="#990000">()</font>
 <font color="#FF0000">{</font>
-  cmd_options<font color="#990000">.</font><b><font color="#000000">addBoolOption</font></b><font color="#990000">(</font><font color="#FF0000">"help"</font><font color="#990000">,</font> <font color="#FF0000">"h"</font><font color="#990000">,</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
-  cmd_options<font color="#990000">.</font><b><font color="#000000">addBoolOption</font></b><font color="#990000">(</font><font color="#FF0000">"usage"</font><font color="#990000">,</font> <font color="#FF0000">"u"</font><font color="#990000">,</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
-  cmd_options<font color="#990000">.</font><b><font color="#000000">addNaturalOption</font></b><font color="#990000">(</font><font color="#FF0000">"natural"</font><font color="#990000">,</font> <font color="#FF0000">"n"</font><font color="#990000">,</font> <font color="#993399">9</font><font color="#990000">);</font>
-  cmd_options<font color="#990000">.</font><b><font color="#000000">addRealOption</font></b><font color="#990000">(</font><font color="#FF0000">"real"</font><font color="#990000">,</font> <font color="#FF0000">"r"</font><font color="#990000">,</font> <font color="#993399">3.1415927</font><font color="#990000">);</font>
-  cmd_options<font color="#990000">.</font><b><font color="#000000">addStringOption</font></b><font color="#990000">(</font><font color="#FF0000">"string"</font><font color="#990000">,</font> <font color="#FF0000">"s"</font><font color="#990000">,</font> <font color="#FF0000">"hello world"</font><font color="#990000">);</font>
+	cmd_options<font color="#990000">.</font><b><font color="#000000">addBoolOption</font></b><font color="#990000">(</font><font color="#FF0000">"help"</font><font color="#990000">,</font> <font color="#FF0000">"h"</font><font color="#990000">,</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+	cmd_options<font color="#990000">.</font><b><font color="#000000">addBoolOption</font></b><font color="#990000">(</font><font color="#FF0000">"usage"</font><font color="#990000">,</font> <font color="#FF0000">"u"</font><font color="#990000">,</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+	cmd_options<font color="#990000">.</font><b><font color="#000000">addNaturalOption</font></b><font color="#990000">(</font><font color="#FF0000">"natural"</font><font color="#990000">,</font> <font color="#FF0000">"n"</font><font color="#990000">,</font> <font color="#993399">9</font><font color="#990000">);</font>
+	cmd_options<font color="#990000">.</font><b><font color="#000000">addRealOption</font></b><font color="#990000">(</font><font color="#FF0000">"real"</font><font color="#990000">,</font> <font color="#FF0000">"r"</font><font color="#990000">,</font> <font color="#993399">3.1415927</font><font color="#990000">);</font>
+	cmd_options<font color="#990000">.</font><b><font color="#000000">addStringOption</font></b><font color="#990000">(</font><font color="#FF0000">"string"</font><font color="#990000">,</font> <font color="#FF0000">"s"</font><font color="#990000">,</font> <font color="#FF0000">"hello world"</font><font color="#990000">);</font>
 <font color="#FF0000">}</font>
 
 <font color="#009900">void</font> 
 <b><font color="#000000">loadOptions</font></b><font color="#990000">()</font>
 <font color="#FF0000">{</font>
-  helpOpt <font color="#990000">=</font> cmd_options<font color="#990000">.</font><b><font color="#000000">getBoolOption</font></b><font color="#990000">(</font><font color="#FF0000">"help"</font><font color="#990000">);</font>
-  usageOpt <font color="#990000">=</font> cmd_options<font color="#990000">.</font><b><font color="#000000">getBoolOption</font></b><font color="#990000">(</font><font color="#FF0000">"usage"</font><font color="#990000">);</font>
-  naturalOpt <font color="#990000">=</font> cmd_options<font color="#990000">.</font><b><font color="#000000">getNaturalOption</font></b><font color="#990000">(</font><font color="#FF0000">"natural"</font><font color="#990000">);</font>
-  realOpt <font color="#990000">=</font> cmd_options<font color="#990000">.</font><b><font color="#000000">getRealOption</font></b><font color="#990000">(</font><font color="#FF0000">"real"</font><font color="#990000">);</font>
-  stringOpt <font color="#990000">=</font> cmd_options<font color="#990000">.</font><b><font color="#000000">getStringOption</font></b><font color="#990000">(</font><font color="#FF0000">"string"</font><font color="#990000">);</font>
+	helpOpt <font color="#990000">=</font> cmd_options<font color="#990000">.</font><b><font color="#000000">getBoolOption</font></b><font color="#990000">(</font><font color="#FF0000">"help"</font><font color="#990000">);</font>
+	usageOpt <font color="#990000">=</font> cmd_options<font color="#990000">.</font><b><font color="#000000">getBoolOption</font></b><font color="#990000">(</font><font color="#FF0000">"usage"</font><font color="#990000">);</font>
+	naturalOpt <font color="#990000">=</font> cmd_options<font color="#990000">.</font><b><font color="#000000">getNaturalOption</font></b><font color="#990000">(</font><font color="#FF0000">"natural"</font><font color="#990000">);</font>
+	realOpt <font color="#990000">=</font> cmd_options<font color="#990000">.</font><b><font color="#000000">getRealOption</font></b><font color="#990000">(</font><font color="#FF0000">"real"</font><font color="#990000">);</font>
+	stringOpt <font color="#990000">=</font> cmd_options<font color="#990000">.</font><b><font color="#000000">getStringOption</font></b><font color="#990000">(</font><font color="#FF0000">"string"</font><font color="#990000">);</font>
 <font color="#FF0000">}</font>
 
 
@@ -129,31 +129,31 @@ mrs_string stringOpt<font color="#990000">;</font>
 <font color="#FF0000">}</font>
 
 <font color="#009900">int</font> <b><font color="#000000">main</font></b><font color="#990000">(</font><font color="#009900">int</font> argc<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#009900">char</font> <font color="#990000">**</font>argv<font color="#990000">)</font> <font color="#FF0000">{</font>
-  <b><font color="#000000">initOptions</font></b><font color="#990000">();</font>
-  cmd_options<font color="#990000">.</font><b><font color="#000000">readOptions</font></b><font color="#990000">(</font>argc<font color="#990000">,</font>argv<font color="#990000">);</font>
-  <b><font color="#000000">loadOptions</font></b><font color="#990000">();</font>
-  
-  vector<font color="#990000">&lt;</font>string<font color="#990000">&gt;</font> soundfiles <font color="#990000">=</font> cmd_options<font color="#990000">.</font><b><font color="#000000">getRemaining</font></b><font color="#990000">();</font>
-  
-  <b><font color="#0000FF">if</font></b> <font color="#990000">(</font>helpOpt<font color="#990000">)</font> 
-    <b><font color="#000000">printHelp</font></b><font color="#990000">();</font>
-  
-  <b><font color="#0000FF">if</font></b> <font color="#990000">(</font> <font color="#990000">(</font>usageOpt<font color="#990000">)</font> <font color="#990000">||</font> <font color="#990000">(</font>argc<font color="#990000">==</font><font color="#993399">1</font><font color="#990000">)</font> <font color="#990000">)</font>
-    <b><font color="#000000">printUsage</font></b><font color="#990000">();</font>
+	<b><font color="#000000">initOptions</font></b><font color="#990000">();</font>
+	cmd_options<font color="#990000">.</font><b><font color="#000000">readOptions</font></b><font color="#990000">(</font>argc<font color="#990000">,</font>argv<font color="#990000">);</font>
+	<b><font color="#000000">loadOptions</font></b><font color="#990000">();</font>
+	
+	vector<font color="#990000">&lt;</font>string<font color="#990000">&gt;</font> soundfiles <font color="#990000">=</font> cmd_options<font color="#990000">.</font><b><font color="#000000">getRemaining</font></b><font color="#990000">();</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>helpOpt<font color="#990000">)</font> 
+	<b><font color="#000000">printHelp</font></b><font color="#990000">();</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font> <font color="#990000">(</font>usageOpt<font color="#990000">)</font> <font color="#990000">||</font> <font color="#990000">(</font>argc<font color="#990000">==</font><font color="#993399">1</font><font color="#990000">)</font> <font color="#990000">)</font>
+	<b><font color="#000000">printUsage</font></b><font color="#990000">();</font>
 
 	cout<font color="#990000">&lt;&lt;</font><font color="#FF0000">"Command-line options were:"</font><font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font>
-	cout<font color="#990000">&lt;&lt;</font><font color="#FF0000">"   --natural: "</font><font color="#990000">&lt;&lt;</font>naturalOpt<font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font>
-	cout<font color="#990000">&lt;&lt;</font><font color="#FF0000">"   --real: "</font><font color="#990000">&lt;&lt;</font>realOpt<font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font>
-	cout<font color="#990000">&lt;&lt;</font><font color="#FF0000">"   --string: "</font><font color="#990000">&lt;&lt;</font>stringOpt<font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font>
+	cout<font color="#990000">&lt;&lt;</font><font color="#FF0000">"		--natural: "</font><font color="#990000">&lt;&lt;</font>naturalOpt<font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font>
+	cout<font color="#990000">&lt;&lt;</font><font color="#FF0000">"		--real: "</font><font color="#990000">&lt;&lt;</font>realOpt<font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font>
+	cout<font color="#990000">&lt;&lt;</font><font color="#FF0000">"		--string: "</font><font color="#990000">&lt;&lt;</font>stringOpt<font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font>
 	cout<font color="#990000">&lt;&lt;</font><font color="#FF0000">"(these may simply be the default values)"</font><font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font>
 	cout<font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font>
 	cout<font color="#990000">&lt;&lt;</font><font color="#FF0000">"The rest of the command-line arguments were: "</font><font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font>
 
-  vector<font color="#990000">&lt;</font>string<font color="#990000">&gt;::</font>iterator sfi<font color="#990000">;</font>
-  <b><font color="#0000FF">for</font></b> <font color="#990000">(</font>sfi <font color="#990000">=</font> soundfiles<font color="#990000">.</font><b><font color="#000000">begin</font></b><font color="#990000">();</font> sfi <font color="#990000">!=</font> soundfiles<font color="#990000">.</font><b><font color="#000000">end</font></b><font color="#990000">();</font> <font color="#990000">++</font>sfi<font color="#990000">)</font>
-    <font color="#FF0000">{</font>
-			<b><font color="#000000">doStuff</font></b><font color="#990000">(</font> <font color="#990000">*</font>sfi <font color="#990000">);</font>
-		<font color="#FF0000">}</font>
+	vector<font color="#990000">&lt;</font>string<font color="#990000">&gt;::</font>iterator sfi<font color="#990000">;</font>
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font>sfi <font color="#990000">=</font> soundfiles<font color="#990000">.</font><b><font color="#000000">begin</font></b><font color="#990000">();</font> sfi <font color="#990000">!=</font> soundfiles<font color="#990000">.</font><b><font color="#000000">end</font></b><font color="#990000">();</font> <font color="#990000">++</font>sfi<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">doStuff</font></b><font color="#990000">(</font> <font color="#990000">*</font>sfi <font color="#990000">);</font>
+	<font color="#FF0000">}</font>
 <font color="#FF0000">}</font>
 
 </tt></pre>

@@ -98,7 +98,7 @@ is welcome and will help further improve the framework.
 @section System requirements
 
 @strong{Warning!} Marsyas does not work with qmake in Qt-4.3.  Please
-downgrade to Qt-4.2.2 or use the autotools method of compiling Marsyas.
+downgrade to Qt-4.2.3 or use the autotools method of compiling Marsyas.
 
 @subsection Linux
 
@@ -336,7 +336,7 @@ explicitly:
 Installation under Windows using the cygwin environment and gcc is
 similar to Linux. The most recent version of Marsyas 0.2 use RtAudio
 for audio playback under Cygwin. In order to compile RtAudio you will
-need to have the DirectX SDk installed.
+need to have the DirectX SDK installed.
 
 In general, cygwin is not supported as well as Linux and OS X. 
 
@@ -392,12 +392,10 @@ important files:
 
 @c  TODO: update after fixing these files.  -gp
 @itemize
-@item @b{INSTALL, COPYING, THANKS, README, AUTHORS, TODO:} text
+@item @b{INSTALL, COPYING, THANKS, README, AUTHORS, TODO, Changelog:} text
 files with important information in theory.  However, these have not
-been updated in years.
-@item @b{ChangeLog:} the change log is not maintained as consistently 
-as it should be but it still provides useful information about the 
-evolution of the software. 
+been updated in years.  We use @code{svn} log messages instead of the
+Changelog.
 @item @b{configure.in, Makefile.am:} the main files edited by 
 the user/programmer that are required for the autotools. You will 
 only need to edit these if you are adding new subdirectories 
@@ -424,9 +422,10 @@ programs can use to access Marsyas functionality.
 
 @c  We use doxygen?  Really!?  check.  -gp
 @item @b{doc:} contains both the user manual (which you are 
-currently reading) as well as the source code documentation
-that is generated using doxygen. To regenerate the manual in pdf
+currently reading).  To regenerate the manual in pdf
 or html type (in the doc subdirectory)
+@c as well as the source code documentation
+@c that is generated using doxygen.
 
 @example 
 make pdf 

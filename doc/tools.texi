@@ -9,6 +9,9 @@ achieved using the provided components.  Marsyas is an extensible
 framework for building applications, so the primary purpose of these
 examples is to provide source code of working applications.
 
+The executable files may be found in @file{bin/release/}, while the
+source code for those files is in @file{apps/@{DIR@}/}.
+
 @c   fluff, not necessary.  -gp
 @c It is important to realize that Marsyas is a
 @c framework for building applications rather than a set of

@@ -1,69 +1,4 @@
-<html lang="en">
-<head>
-<title>Hello World (playing an audio file) - Marsyas 0.2</title>
-<meta http-equiv="Content-Type" content="text/html">
-<meta name="description" content="Marsyas 0.2">
-<meta name="generator" content="makeinfo 4.8">
-<link title="Top" rel="start" href="index.html#Top">
-<link rel="up" href="Assembling-a-network.html#Assembling-a-network" title="Assembling a network">
-<link rel="prev" href="Including-libraries-and-linking.html#Including-libraries-and-linking" title="Including libraries and linking">
-<link rel="next" href="Reading-and-altering-controls.html#Reading-and-altering-controls" title="Reading and altering controls">
-<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
-<!--
-Copyright 1998-2006 George Tzanetakis
-
-Permission is granted to make and distribute verbatim
-copies of this manual provided the copyright notice and
-this permission notice are preserved on all copies.
-
-Permission is granted to copy and distribute modified
-versions of this manual under the conditions for
-verbatim copying, provided also that the sections
-entitled "Copying" and "GNU General Public License"
-are included exactly as in the original, and provided
-that the entire resulting derived work is distributed
-under the terms of a permission notice identical to this
-one.
-
-Permission is granted to copy and distribute
-translations of this manual into another language,
-under the above conditions for modified versions,
-except that this permission notice may be stated in a
-translation approved by the Free Software Foundation.-->
-<meta http-equiv="Content-Style-Type" content="text/css">
-<style type="text/css"><!--
-  pre.display { font-family:inherit }
-  pre.format  { font-family:inherit }
-  pre.smalldisplay { font-family:inherit; font-size:smaller }
-  pre.smallformat  { font-family:inherit; font-size:smaller }
-  pre.smallexample { font-size:smaller }
-  pre.smalllisp    { font-size:smaller }
-  span.sc    { font-variant:small-caps }
-  span.roman { font-family:serif; font-weight:normal; } 
-  span.sansserif { font-family:sans-serif; font-weight:normal; } 
---></style>
-</head>
-<body>
-<div class="node">
-<p>
-<a name="Hello-World-(playing-an-audio-file)"></a>
-<a name="Hello-World-_0028playing-an-audio-file_0029"></a>
-Next:&nbsp;<a rel="next" accesskey="n" href="Reading-and-altering-controls.html#Reading-and-altering-controls">Reading and altering controls</a>,
-Previous:&nbsp;<a rel="previous" accesskey="p" href="Including-libraries-and-linking.html#Including-libraries-and-linking">Including libraries and linking</a>,
-Up:&nbsp;<a rel="up" accesskey="u" href="Assembling-a-network.html#Assembling-a-network">Assembling a network</a>
-<hr>
-</div>
-
-<h4 class="subsection">5.1.2 Hello World (playing an audio file)</h4>
-
-<p><a name="index-Hello-world-24"></a><a name="index-Playing-an-audio-file-25"></a>
-Instead of printing &ldquo;Hello World!&rdquo;, we shall play a sound file.  This is
-relatively straightforward: we create a <code>MarSystem</code> which is a
-series of <code>SoundFileSource</code>, <code>Gain</code>, and <code>AudioSink</code>.  Once
-the network is created and the controls are given, we call <code>tick()</code> to
-make time pass until we have finished playing the file.
-
-<pre class="verbatim"><!-- Generator: GNU source-highlight 2.4
+<!-- Generator: GNU source-highlight 2.4
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -105,7 +40,3 @@ http://www.gnu.org/software/src-highlite -->
 <font color="#FF0000">}</font>
 
 </tt></pre>
-</pre>
-
-   </body></html>
-

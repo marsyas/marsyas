@@ -57,18 +57,18 @@ Up:&nbsp;<a rel="up" accesskey="u" href="Programming.html#Programming">Programmi
 
 <p>It's relatively straightforward to extend Marsyas by writing your own
 Marsystems. As mentioned before each MarSystems must basically support
-the process method that handles the dataflow and the update method
-that handles the control messages.  There are certain conventions that
-need to be followed so typically it is a better idea to copy and
-modify an existing Marsystem rather than writing one from scratch. The
-simple canonical example of a MarSystem that is what I use as a
-template when I write a new Marsystem is <samp><span class="file">Gain.h</span></samp> and
-<samp><span class="file">Gain.cpp</span></samp>
+the process method that handles the dataflow and the update method that
+handles the control messages.  There are certain conventions that need
+to be followed so typically it is a better idea to copy and modify an
+existing Marsystem rather than writing one from scratch. The simple
+canonical example of a MarSystem that is what I use as a template when I
+write a new Marsystem is <samp><span class="file">Gain.h</span></samp> and <samp><span class="file">Gain.cpp</span></samp>  or
+<samp><span class="file">MarSystemTemplateBasic .h .cpp</span></samp>.
 
-   <p>The new MarSystem must be added to MarSystemManager.cpp and the build
-process.  Again, the easiest way is to look for <code>Gain</code> and do the
-same thing with your new MarSystem.  There are four files which require
-attention:
+   <p>The new MarSystem should be placed in the <samp><span class="file">marsyas/</span></samp> directory, and
+must be added to <samp><span class="file">MarSystemManager.cpp</span></samp> and the build process. 
+Again, the easiest way is to look for <code>Gain</code> and do the same thing
+with your new MarSystem.  There are four files which require attention:
 
      <ul>
 <li><samp><span class="file">marsyas/MarSystemManager.cpp</span></samp>
@@ -78,8 +78,9 @@ attention:
 </ul>
 
    <p>Once you have edited these files, recompile marsyas (with automake:
-<code>automake</code>, <code>./configure</code>.  With qmake, just run
-<code>qmake</code>), make, and then make install.
+<code>automake</code>, <code>./configure</code>, <code>make</code>, <code>make install</code>. 
+With qmake, just run <code>qmake</code>), then <code>make</code>, and <code>make
+install</code>.)
 
    </body></html>
 

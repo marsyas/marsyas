@@ -5,7 +5,6 @@ Intro text
 
 @menu
 * Audio and MIDI::              
-* Open Sound Control (OSC)::    
 * WEKA::                        
 * MATLAB::                      
 * Python::                      
@@ -46,38 +45,40 @@ Intro text
 
 
 
-@node Open Sound Control (OSC)
-@section Open Sound Control (OSC)
+@c @n ode Open Sound Control (OSC)
+@c @s ection Open Sound Control (OSC)
 
-This is coming soon, right George?  It had better be soon...
 
 
 @node WEKA
 @section WEKA
 
+It @emph{can} be done; read the source code.
 
 @node MATLAB
 @section MATLAB
 
+It @emph{can} be done; read the source code.
 
 @node Python
 @section Python
 
+It @emph{can} be done; read the source code.
 
 @node Trolltech Qt4
 @section Trolltech Qt4
 
 To get started, look at the tutorial files:
 
-@examplefile{tutorial.pro}
-@examplefile{main.cpp}
-@examplefile{mainwindow.h}
-@examplefile{mainwindow.cpp}
-@examplefile{backend.h}
-@examplefile{backend.cpp}
+@examplefilenewpage{tutorial.pro}
+@examplefilenewpage{main.cpp}
+@examplefilenewpage{mainwindow.h}
+@examplefilenewpage{mainwindow.cpp}
+@examplefilenewpage{backend.h}
+@examplefilenewpage{backend.cpp}
 
-After examining that project, see @file{qtGUIs/MarPlayer/}, followed by
-the other examples in the @file{qtGUIs/} directory.
+After examining that project, see @file{apps/Qt4Apps/MarPlayer/}, followed by
+the other examples in the @file{apps/Qt4Apps/} directory.
 
 
 @node OCaml
