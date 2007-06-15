@@ -33,7 +33,7 @@ May 2006
 
 #include "LPC.h"
 
-#define _MATLAB_LPC_
+// #define _MATLAB_LPC_
 
 using namespace std;
 using namespace Marsyas;
