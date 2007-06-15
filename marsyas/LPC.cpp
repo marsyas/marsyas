@@ -33,7 +33,7 @@ May 2006
 
 #include "LPC.h"
 
-//#define _MATLAB_LPC_
+#define _MATLAB_LPC_
 
 using namespace std;
 using namespace Marsyas;
@@ -98,10 +98,10 @@ LPC::myUpdate(MarControlPtr sender)
 	if(getctrl("mrs_natural/featureMode")->toNatural() != 1)
 	{
 		featureMode_ = 0;
-	  ctrl_coeffs_->stretch(order_+1);
-	  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural());
+		ctrl_coeffs_->stretch(order_+1);
+		setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural());
 		setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples")->toNatural());
-  }
+	}
 	else
 		featureMode_ = 1;
 
@@ -191,24 +191,24 @@ LPC::autocorrelationWarped(const realvec& in, realvec& r, mrs_real& pitch, mrs_r
 	//this seems like some sort of Narrowed Autocorrelation (NAC)... [?][!]
 	//however, it does not seem to fit the NAC definition...
 	//so, what is this for??
-// 	mrs_real norm = 1.0 / (mrs_real)in.getSize();
-// 	mrs_natural k = in.getSize()/2;
-// 	for (mrs_natural i=0; i < in.getSize()/2; i++) 
-// 	r(i) *= (k-i) * norm;
+	// 	mrs_real norm = 1.0 / (mrs_real)in.getSize();
+	// 	mrs_natural k = in.getSize()/2;
+	// 	for (mrs_natural i=0; i < in.getSize()/2; i++) 
+	// 	r(i) *= (k-i) * norm;
 
 	//if autocorr peak not very prominent => not a good period estimate
 	//so discard it...
 	if ((r(j) / r(0)) < 0.4) j=0;
 	//avoid detection of too high fundamental freqs (e.g. harmonics)?
 	if (j > in.getSize()/4) j = 0;
-	
+
 	//pitch gets in fact the period (i.e. autocorr lag)
 	//measured in time samples... maybe this should be converted
 	//to a more convenient representation (e.g. pitch in Hz).
 	//Such a conversion would have to depend on the warp factor lambda... [!]
 	pitch  = (mrs_real)j;
 
-//MATLAB engine stuff - for testing and validation purposes only!
+	//MATLAB engine stuff - for testing and validation purposes only!
 #ifdef _MATLAB_LPC_
 	MATLAB_PUT(pitch, "pitch");
 	MATLAB_EVAL("LPC_pitch = [LPC_pitch pitch];");
@@ -217,14 +217,14 @@ LPC::autocorrelationWarped(const realvec& in, realvec& r, mrs_real& pitch, mrs_r
 
 //Perhaps this method could become a member of realvec...
 void
-LPC::LevinsonDurbin(const realvec& r, realvec& a, realvec& k, mrs_real& e)
+LPC::LevinsonDurbin(const realvec& r, realvec& a, realvec& kVec, mrs_real& e)
 {
 	//*Based on the code from: http://www.musicdsp.org/showone.php?id=137
-	
+
 	mrs_natural P = order_;
 	mrs_real* R = r.getData();
 	mrs_real* A = a.getData();
-	mrs_real* K = k.getData();
+	mrs_real* K = kVec.getData();
 	e = 0.0; //prediction error;
 
 	mrs_real Am1[62];
@@ -271,11 +271,10 @@ LPC::LevinsonDurbin(const realvec& r, realvec& a, realvec& k, mrs_real& e)
 				Am1[s] = A[s];            // am1(s) = am(s)
 
 			Em1 = Em;                     //Em1 = Em;
-			e = Em1; //prediction error
-			//e = Em1*Em1; //RMS prediction error
+			//e = Em1; //prediction error
+			e = Em1*Em1; //RMS prediction error
 		}
-	//	e = sqrt(e/(mrs_real)m); //RMS prediction error
-	 e = 0.5/sqrt(e);
+		e = sqrt(e/(mrs_real)P); //RMS prediction error
 	}
 }
 
@@ -306,6 +305,98 @@ LPC::predictionError(const realvec& data, const realvec& coeffs)
 	return sqrt(power/(mrs_real)count);//=~ RMS LPC Gain
 }
 
+
+
+
+/*
+
+Computation of the autocorrelation coefficients and the prediction error gain
+using the implementation of peter Kabal
+http://www-mmsp.ece.mcgill.ca/Documents/Software/index.html
+
+*/
+
+mrs_real
+LPC::VRfDotProd (mrs_real * x1, mrs_real * x2, mrs_natural N)
+{
+	mrs_natural i;
+	mrs_real sum;
+
+	sum = 0.0;
+	for (i = 0; i < N; ++i)
+		sum +=  x1[i] * x2[i];
+
+	return sum;
+}
+
+void
+LPC::SPautoc (mrs_real * x, mrs_natural Nx, mrs_real * cor, mrs_natural Nt)
+{
+	mrs_natural i;
+	mrs_natural N;
+
+	N = Nt;
+	if (Nt > Nx)
+		N = Nx;
+
+	for (i = 0; i < N; ++i)
+		cor[i] =  VRfDotProd (x, &x[i], Nx - i);
+
+	for (i = N; i < Nt; ++i)
+		cor[i] = 0.0;
+
+	return;
+}
+
+
+mrs_real
+LPC::SPcorXpc (mrs_real * rxx, mrs_real * pc, mrs_natural Np)
+{
+	mrs_natural i, j, k;
+	mrs_real rc, tp;
+	mrs_real perr, t, sum;
+
+	perr = rxx[0];
+
+
+	for (k = 0; k < Np; ++k) {
+
+		/* Calculate the next reflection coefficient */
+		sum = rxx[k+1];
+		for (i = 0; i < k; ++i)
+			sum = sum - rxx[k-i] * pc[i];
+
+		/* Check for zero prediction error */
+		if (perr == 0.0 && sum == 0.0)
+			rc = 0.0;
+		else
+			rc =  (-sum / perr);
+
+		/* Calculate the error (equivalent to perr = perr * (1-rc^2))
+		A change in sign of perr means that rc (reflection coefficient for stage k)
+		has a magnitude greater than unity (corresponding to an unstable synthesis
+		filter)
+		*/
+		t = perr + rc * sum;
+
+		perr = t;
+
+		/* Convert from reflection coefficients to predictor coefficients */
+		pc[k] = -rc;
+		for (i = 0, j = k - 1; i < j; ++i, --j) {
+			tp = pc[i] + rc * pc[j];
+			pc[j] = pc[j] + rc * pc[i];
+			pc[i] = tp;
+		}
+		if (i == j)
+			pc[i] = pc[i] + rc * pc[i];
+	}
+
+	return perr;
+}
+
+
+
 void 
 LPC::myProcess(realvec& in, realvec& out)
 {
@@ -314,20 +405,20 @@ LPC::myProcess(realvec& in, realvec& out)
 	mrs_real PredictionError = 0.0;
 	mrs_real pitch = 0.0;
 
-//MATLAB engine stuff - for testing and validation purposes only!
-
+	//MATLAB engine stuff - for testing and validation purposes only!
+#ifdef _MATLAB_LPC_
+	MATLAB_PUT(featureMode_, "featureMode");
 	MATLAB_PUT(in, "LPC_in");
 	MATLAB_PUT(order_, "LPC_order");
 	MATLAB_PUT(getctrl("mrs_real/gamma")->toReal(), "LPC_gamma");
+#endif 
 
 	//-------------------------
 	// warped autocorrelation
 	//-------------------------
 	//calculate warped autocorrelation coeffs
 	realvec r(in.getSize());
-	//this also estimates the pitch - does it work if lambda != 0 [?]
-	autocorrelationWarped(in, r, pitch, getctrl("mrs_real/lambda")->toReal()); 
-
+	
 	//--------------------------
 	// Levison-Durbin recursion
 	//--------------------------
@@ -338,7 +429,17 @@ LPC::myProcess(realvec& in, realvec& out)
 	// a = [1 a(1) a(2) ... a(order_-1)]
 	realvec a(order_+1);
 	realvec k(order_+1); //reflection coeffs
-	LevinsonDurbin(r, a, k, LevinsonError);
+
+	// previous implementation from musicDSP without correct gain estimation
+	// LevinsonDurbin(r, a, k, LevinsonError);
+
+	// implementation adapted from peter Kabal
+	SPautoc (in.getData(), in.getSize(), k.getData(), k.getSize());
+	LevinsonError = SPcorXpc (k.getData(), a.getData(), a.getSize()-1);
+
+	//this also estimates the pitch - does it work if lambda != 0 [?] [ML] normalization issue 
+    //autocorrelationWarped(in, r, pitch, getctrl("mrs_real/lambda")->toReal()); 
+	//LevinsonError = SPcorXpc (r.getData(), a.getData(), a.getSize()-1);
 
 	//--------------------------
 	// LPC coeffs
@@ -347,27 +448,30 @@ LPC::myProcess(realvec& in, realvec& out)
 	// y(n) = x(n) - a(1)x(n-1) - ... - a(order_-1)x(n-order_-1)
 	// a = [1 a(1) a(2) ... a(order_-1)]
 	// out = [a(1) a(2) ... a(order_-1)]
-	
+
 	// coeffs as output
 	if(featureMode_)
 	{
 		for(i=0; i < order_; i++)
-			out(i) = a(i+1);
+			// out(i) = a(i+1); // musicDsp implementation  
+			out(i) = -a(i); // musicDsp implementation  
+
 		//------------------------------
-	//output pitch and power values
-	//------------------------------
-	out(order_) = pitch; // lag in samples <= from ::autocorrelationWarped(...) - does it work if lambda != 0 [?]
-	out(order_+1) = LevinsonError; //prediction error (= gain? [?])
+		//output pitch and power values
+		//------------------------------
+		out(order_) = pitch; // lag in samples <= from ::autocorrelationWarped(...) - does it work if lambda != 0 [?]
+		out(order_+1) = LevinsonError; //prediction error (= gain? [?])
 	}
 	else{ // coefs as control
 		ctrl_coeffs_->setValue(0, 1.0);
 		for(i=1; i < order_+1; i++) {
-			ctrl_coeffs_->setValue(i, -a(i));
-		ctrl_pitch_->setValue(pitch);
-		ctrl_power_->setValue(sqrt(LevinsonError));
+			// ctrl_coeffs_->setValue(i, -a(i)); // musicDsp implementation  
+			ctrl_coeffs_->setValue(i, -a(i-1));  
+			ctrl_pitch_->setValue(pitch);
+			ctrl_power_->setValue(sqrt(LevinsonError));
 		}
-     out = in;
-	  }
+		out = in;
+	}
 	//--------------------------
 	// LPC Pole-shifting
 	//--------------------------
@@ -380,18 +484,19 @@ LPC::myProcess(realvec& in, realvec& out)
 		else
 			for(mrs_natural j = 0; j < order_; j++)
 				ctrl_coeffs_->setValue(j+1, (*ctrl_coeffs_)(j+1) * pow(gamma, (double)j+1));
-	//---------------------------
-	// RMS Prediction Error
-	//---------------------------
-	//calculate RMS prediction error of LPC model (=> power_)
-	//PredictionError = predictionError(in, out);
 
 
-//MATLAB engine stuff - for testing and validation purposes only!
-//#ifdef _MATLAB_LPC_
-//	MATLAB_PUT(out, "LPC_out");
-//	MATLAB_EVAL("LPC_test");
-//#endif
+
+	//MATLAB engine stuff - for testing and validation purposes only!
+    #ifdef _MATLAB_LPC_
+	MATLAB_PUT(out, "LPC_out");
+	MATLAB_PUT(getctrl("mrs_real/pitch")->toReal(), "pitch_MARS");
+	MATLAB_PUT(getctrl("mrs_real/power")->toReal(), "g_MARS");
+	MATLAB_PUT(ctrl_coeffs_->toVec(), "a_MARS");
+	MATLAB_EVAL("LPC_test");
+	mrs_real matlabGain;
+	MATLAB_GET("LPCgain", matlabGain);
+    #endif
 
 
 }

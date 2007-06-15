@@ -80,6 +80,22 @@ private:
 	*/
 	mrs_real predictionError(const realvec& data, const realvec& coeffs);
 
+	/*implementation from peter Kabal
+     *http://www-mmsp.ece.mcgill.ca/Documents/Software/index.html
+	 *
+	 * Returns the dot product of two vectors x1 and x2 of size N
+	 */
+	mrs_real VRfDotProd (mrs_real * x1, mrs_real * x2, mrs_natural N);
+
+     /* Computes the Nt (order+1) reflection coefficients cor from a time serie x of size Nx
+	 */
+	void SPautoc (mrs_real * x, mrs_natural Nx, mrs_real * cor, mrs_natural Nt);
+
+	/* Computes the Np autocorrelation coefficients pc [a(1) ... a(order)] from the reflections coefficients rxx
+	   and return the prediction error
+	 */
+	mrs_real SPcorXpc (mrs_real * rxx, mrs_real * pc, mrs_natural Np);
+
 public:
 	LPC(std::string name);
 	LPC(const LPC&);

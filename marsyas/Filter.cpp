@@ -203,17 +203,19 @@ if (norder_ == dorder_){
 	}
 	out *= gain;
 // cout << out;
-	// 	MATLAB_PUT(in, "Filter_in");
-	// 	MATLAB_PUT(out, "Filter_out");
-	// 	MATLAB_EVAL("MAT_out = filter([1 -.97], 1, Filter_in)");
-	// 	
-	// 	MATLAB_EVAL("spec_in = abs(fft(Filter_in));");
-	// 	MATLAB_EVAL("spec_out = abs(fft(Filter_out));");
-	// 	MATLAB_EVAL("spec_mat = abs(fft(MAT_out));");
-	// 
-	// 	MATLAB_EVAL("subplot(2,1,1);plot(Filter_in);hold on; plot(Filter_out, 'r'); plot(MAT_out, 'g');hold off");
-	// 	MATLAB_EVAL("subplot(2,1,2);plot(spec_in(1:end/2));hold on; plot(spec_out(1:end/2),'r');plot(spec_mat(1:end/2),'g');hold off;");
-	// 	MATLAB_EVAL("h = abs(fft([1 -.97], length(Filter_in)));");
-	// 	MATLAB_EVAL("hold on; plot(h(1:end/2), 'k'); hold off");
+		//MATLAB_PUT(in, "Filter_in");
+	 //	MATLAB_PUT(out, "Filter_out");
+	 //	MATLAB_PUT(ncoeffs_, "ncoeffs_");
+	 //	MATLAB_PUT(dcoeffs_, "dcoeffs_");
+	 //	MATLAB_EVAL("MAT_out = filter(ncoeffs_, dcoeffs_, Filter_in)");
+	 //	
+	 //	MATLAB_EVAL("spec_in = abs(fft(Filter_in));");
+	 //	MATLAB_EVAL("spec_out = abs(fft(Filter_out));");
+	 //	MATLAB_EVAL("spec_mat = abs(fft(MAT_out));");
+	 //
+	 //	MATLAB_EVAL("subplot(2,1,1);plot(Filter_in);hold on; plot(Filter_out, 'r'); plot(MAT_out, 'g');hold off");
+	 //	MATLAB_EVAL("subplot(2,1,2);plot(spec_in(1:end/2));hold on; plot(spec_out(1:end/2),'r');plot(spec_mat(1:end/2),'g');hold off;");
+	 //	MATLAB_EVAL("h = abs(fft([1 -.97], length(Filter_in)));");
+	 //	MATLAB_EVAL("hold on; plot(h(1:end/2), 'k'); hold off");
 }
 

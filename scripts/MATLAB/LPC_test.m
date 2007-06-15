@@ -13,12 +13,15 @@ MAT_in = LPC_in;
 % win = hamming(N)';
 % MAT_in = MAT_in.*win;
 
-%LPC from Marsyas
-a_MARS = [1, -1*LPC_out(1:LPC_order)'];
-pitch_MARS = LPC_out(LPC_order+1);
-g_MARS = LPC_out(LPC_order+2);
-g_MARS_dB = 20*log10(g_MARS);
-
+% LPC from Marsyas
+if(featureMode)
+    a_MARS = [1, -1*LPC_out(1:LPC_order)'];
+    pitch_MARS = LPC_out(LPC_order+1);
+    g_MARS = LPC_out(LPC_order+2);
+    g_MARS_dB = 20*log10(g_MARS);
+else
+    g_MARS_dB = 20*log10(g_MARS);
+end
 %LPC from MATLAB
 
 %MATLAB LPC
@@ -36,12 +39,13 @@ g_MARS_dB = 20*log10(g_MARS);
 %%%%%%%%%%%%%%%%%%%%%%%
 %MATLAB lpc
 %%%%%%%%%%%%%%%%%%%%%%%
-[a_MAT, LPCgain] = lpc(MAT_in, LPC_order);
+[a_MAT, LPCgain] = lpc(MAT_in, LPC_order)
 
 rs = filter(a_MAT, 1, MAT_in);
-g_MAT = sqrt(mean(rs.^2));
+g_MAT = sqrt(mean(rs.^2))
 g_MAT_dB = 20*log10(g_MAT);
 
+LPCgain = sqrt(LPCgain);
 
 % Z-Plane pole shifting...
 % using MATLAB LPC values
