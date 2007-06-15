@@ -58,9 +58,15 @@ all the source files needed for compiling Marsyas.
 
 @subsection Development Version
 
-For the brave, the latest (possibly unstable!) version can be
-obtained from the subversion repository stored at the sourceforge
-website.  To check out a working copy do:
+The latest version can be obtained from the subversion repository 
+stored at the sourceforge website. Although constantly in flux the 
+latest version is typically relatively stable and usable and if it is not 
+we are quick in fixing it. In contrast releases happen infrequently. 
+If you are planning on working extensively with Marsyas and writing 
+your own source code it is highly recommend that you download a 
+subversion working copy. If you only require one of the tools provided 
+in Marsyas and don't plan to explore the framework then the regular 
+releases should suffice. To check out a working copy do:
 
 @example 
 svn co https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk my-marsyas-dir

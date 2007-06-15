@@ -44,11 +44,10 @@ Gain::Gain(string name):MarSystem("Gain", name)
 
 Gain::Gain(const Gain& a) : MarSystem(a)
 {
+  // For any MarControlPtr in a MarSystem 
+  // it is necessary to perform this getctrl 
+  // in the copy constructor in order for cloning to work 
   ctrl_gain_ = getctrl("mrs_real/gain");
-  ctrl_RMScalc_ = getctrl("mrs_bool/RMScalc");
-  ctrl_inRMS_ = getctrl("mrs_realvec/inRMS");
-  ctrl_outRMS_ = getctrl("mrs_realvec/outRMS");
-  ctrl_powerRMS_ = getctrl("mrs_real/powerRMS");
 }
 
 Gain::~Gain()
@@ -66,76 +65,35 @@ Gain::addControls()
 {
   //Add specific controls needed by this MarSystem.
   addctrl("mrs_real/gain", 1.0, ctrl_gain_);
-  addctrl("mrs_bool/RMScalc", false, ctrl_RMScalc_);
-  addctrl("mrs_realvec/inRMS", inRMS_, ctrl_inRMS_);
-  addctrl("mrs_realvec/outRMS", outRMS_, ctrl_outRMS_);
-  addctrl("mrs_real/powerRMS", powerRMS_, ctrl_powerRMS_);
 }
 
 void
 Gain::myUpdate(MarControlPtr sender)
 {
-	MarSystem::myUpdate(sender);
-
-	inRMS_.create(ctrl_inObservations_->to<mrs_natural>());
-	outRMS_.create(ctrl_onObservations_->to<mrs_natural>()); 
+  // no need to do anything Gain-specific in myUpdate 
+   MarSystem::myUpdate(sender);
 }
 
 
 void 
 Gain::myProcess(realvec& in, realvec& out)
 {
-	//get a local copy of the current gain control value
-	//(it will be used for this entire processing, even if it's
-	//changed by someone else, e.g. by a different thread)
-	mrs_real gainValue = ctrl_gain_->to<mrs_real>();
-
-	inRMS_.setval(0.0);
-	outRMS_.setval(0.0);
-
-	bool calcRMS = ctrl_RMScalc_->isTrue();
-
-	for (o=0; o < inObservations_; o++)
+  //get a local copy of the current gain control value
+  //(it will be used for this entire processing, even if it's
+  //changed by someone else, e.g. by a different thread)
+  mrs_real gainValue = ctrl_gain_->to<mrs_real>();
+  
+  // It is important to loop over both observations 
+  // and channels so that for example a gain can be 
+  // applied to multi-channel signals 
+  for (o=0; o < inObservations_; o++)
+    {
+      for (t = 0; t < inSamples_; t++)
 	{
-		for (t = 0; t < inSamples_; t++)
-		{
-			//apply gain to all channels
-			out(o,t) = gainValue * in(o,t);
-			
-			//calculate first part of RMS values for each in/out channel
-			if(calcRMS)
-			{
-				inRMS_(o) += in(o,t)*in(o,t);
-				outRMS_(o) += out(o,t)*out(o,t);
-			}
-		}
-		//calculate second part of RMS values for each in/out channel
-		if(calcRMS)
-		{
-			inRMS_(o)/=(mrs_real)inSamples_;
-			inRMS_(o)=sqrt(inRMS_(o));
-
-			outRMS_(o)/=(mrs_real)onSamples_;
-			outRMS_(o)=sqrt(outRMS_(o));
-		}
+	  //apply gain to all channels
+	  out(o,t) = gainValue * in(o,t);
 	}
-
-	if(calcRMS)
-	{
-		//ctrl_inRMS_->setValue(inRMS_, NOUPDATE);
-		//updctrl(ctrl_inRMS_, inRMS_, NOUPDATE);
-		setctrl(ctrl_inRMS_, inRMS_);
-	
-		//ctrl_outRMS_->setValue(outRMS_, NOUPDATE);
-		//updctrl(ctrl_outRMS_, outRMS_, NOUPDATE);
-	  setctrl(ctrl_outRMS_, outRMS_);
-
-	  // [ML] this a temporary hack !!!
-	  if (outRMS_.mean() > 0.00000001)
-	   setctrl(ctrl_powerRMS_, 1.0);
-	  else
-	   setctrl(ctrl_powerRMS_, 0.0);
-	}
+    }
 }
 
 
