@@ -103,7 +103,6 @@ CONFIG(debug, debug|release) {
 	CONFIG += marsyasASSERTS		#turn on assertions
 	
 	#in debug, activate some logging by default 
-	CONFIG += marsyasLOGDIAGNOSTICS	#diagnostic messages in log
 	CONFIG += marsyasLOGWARNINGS	#warning messages in log
 	CONFIG += marsyasLOGDEBUGS		#debug messages in log
 	CONFIG += marsyasLOG2STDOUT			#log to stdout
@@ -354,7 +353,7 @@ marsyasLOGDEBUGS {
 }
 marsyasLOGDIAGNOSTICS {
 	message ( -> Diagnostic messages in log )
-	DEFINES += _MARSYAS_LOG_DIAGNOSTICS
+	DEFINES += MARSYAS_LOG_DIAGNOSTICS
 }
 marsyasLOG2FILE {
 	message ( --> Log to file )
