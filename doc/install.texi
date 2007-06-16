@@ -143,7 +143,9 @@ Optional:
 Required:
 
 @itemize
-@item Microsoft Visual Studio
+@item Microsoft Visual Studio (visual studio express can compile Marsyas
+after a bit of fiddling with preferences)
+@item Microsoft DirectX SDK and Platform SDK
 @item @uref{http://www.trolltech.com/products/qt,QT/Trolltech} development platform
 @end itemize
 
