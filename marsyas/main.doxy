@@ -1,0 +1,23 @@
+/*!  \mainpage Main page
+ *
+ * \ref Core "Core MarSystems"
+ *
+ * \ref IO "Input/Output MarSystems"
+ *
+ */
+
+
+/**  @defgroup Core Core MarSystems
+ *
+ * These are the core MarSystems.
+ *
+ */
+
+/**  @defgroup IO Input/Output MarSystems
+ *
+ * These are the MarSystems which get data to/from files, networks, or
+ * audio
+ *
+ */
+
+

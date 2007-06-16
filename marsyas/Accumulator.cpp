@@ -19,13 +19,16 @@
 
 /** 
 \class Accumulator 
-
+ 
 \brief Accumulate result of multiple tick 
 
 Accumulate result of multiple tick process calls 
 to internal MarSystem. Spit output only once when
 all the results are accumulated. Used to change 
-the rate of process requests
+the rate of process requests.
+
+Controls:
+- \a mrs_natural \b nTimes	the number of ticks to gather
 */
 
 #include "Accumulator.h"

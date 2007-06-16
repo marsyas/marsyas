@@ -18,6 +18,7 @@
 
 /** 
     \class Parallel
+    \ingroup Core
     \brief Parallel composite of MarSystem objects
 */
 

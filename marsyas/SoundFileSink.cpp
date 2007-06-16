@@ -19,6 +19,7 @@
 
 /**
    \class SoundFileSink
+   \ingroup IO
    \brief Interface for sound file sinks
    
    Abstract base class for any type of sound file input.

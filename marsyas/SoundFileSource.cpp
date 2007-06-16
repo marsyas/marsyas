@@ -18,11 +18,18 @@
 
 /**
    \class SoundFileSource
+   \ingroup IO
    \brief Interface for sound file sources 
    
    Abstract base class for any type of sound file input.
    Specific IO classes for various formats like AuFileSource 
    are children of this class. 
+
+   Controls:
+   - \a mrs_string \b filename	name of the sound file to read
+   - \a mrs_bool \b notEmpty	is the sound buffer empty?
+   - \a mrs_natural \b nChannels	how many channels (mono, stereo, etc)
+   - \a mrs_natural \b pos	position currently read, in samples
 */
 
 #include "SoundFileSource.h"
