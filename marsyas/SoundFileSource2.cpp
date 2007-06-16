@@ -19,6 +19,7 @@
 /**
 \class SoundFileSource2
 \brief Interface for sound file sources 
+\todo Merge this with SoundFileSource (and all the other foo2 -> foo stuff)
 
 Abstract base class for any type of sound file input.
 Specific IO classes for various formats like AuFileSource 
