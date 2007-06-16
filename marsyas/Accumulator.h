@@ -18,17 +18,14 @@
 
 /** 
     \class Accumulator 
-	\ingroup Core
     \brief Accumulate result of multiple tick 
 
     Accumulate result of multiple tick process calls 
-
+    to internal MarSystem. Spit output only once when
+    all the results are accumulated. Used to change 
+    the rate of process requests.
 */
 
- //   to internal MarSystem. Spit output only once when
- //   all the results are accumulated. Used to change 
- //   the rate of process requests.
-	
 #ifndef MARSYAS_ACCUMULATOR_H
 #define MARSYAS_ACCUMULATOR_H
 

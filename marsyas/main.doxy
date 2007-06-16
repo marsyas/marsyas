@@ -1,15 +1,13 @@
 /*!  \mainpage Main page
  *
- * \ref Core "Core MarSystems"
  *
- * \ref IO "Input/Output MarSystems"
  *
  */
 
 
 /**  @defgroup Core Core MarSystems
  *
- * These are the core MarSystems.
+ * \brief These are the core MarSystems.
  *
  */
 
@@ -17,6 +15,12 @@
  *
  * These are the MarSystems which get data to/from files, networks, or
  * audio
+ *
+ */
+
+/**  @defgroup Analysis Analysis
+ *
+ * These MarSystems analyze sound.
  *
  */
 

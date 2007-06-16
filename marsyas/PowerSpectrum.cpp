@@ -18,6 +18,7 @@
  
 /** 
     \class PowerSpectrum
+	\ingroup Analysis
     \brief PowerSpectrum computes the magnitude/power of the complex spectrum 
 
     Computes the magnitude/power of a complex spectrum 

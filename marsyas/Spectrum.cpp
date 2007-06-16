@@ -19,6 +19,7 @@
 
 /** 
     \class Spectrum
+	\ingroup Analysis
     \brief Compute the complex spectrum of input window 
 
     Computes the complex spectrum of the input window 

@@ -26,10 +26,10 @@
    are children of this class. 
 
    Controls:
-   - \a mrs_string \b filename	: name of the sound file to read
-   - \a mrs_bool \b notEmpty	: is the sound buffer empty?
-   - \a mrs_natural \b nChannels	: how many channels (mono, stereo, etc)
-   - \a mrs_natural \b pos	: position currently read, in samples
+   - \b mrs_string/filename	: name of the sound file to read
+   - \b mrs_bool/notEmpty	: is the sound buffer empty?
+   - \b mrs_natural/nChannels	: how many channels (mono, stereo, etc)
+   - \b mrs_natural/pos	: position currently read, in samples
 */
 
 #include "SoundFileSource.h"
