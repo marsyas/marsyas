@@ -18,6 +18,7 @@
 
 /**
    \class WavFileSource
+   \ingroup Internal
    \brief SoundFileSource for .wav soundfiles
    
    SoundFileSource reader for .wav sound files.

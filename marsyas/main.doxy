@@ -1,10 +1,3 @@
-/*!  \mainpage Main page
- *
- *
- *
- */
-
-
 /**  @defgroup Core Core MarSystems
  *
  * \brief These are the core MarSystems.
@@ -24,4 +17,15 @@
  *
  */
 
+
+/**  @defgroup Internal Interally-used MarSystems (don't use)
+ *
+ * These MarSystems are used internally; if you constructing a
+ * MarNetwork, you should not need to know about these MarSystems.
+ *
+ * For example, SoundFileSource will transparently call WavFileSource or
+ * AuFileSource, but you should simply use SoundFileSource with the
+ * appropriate filename.
+ *
+ */
 

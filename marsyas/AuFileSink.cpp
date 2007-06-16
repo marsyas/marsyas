@@ -18,6 +18,7 @@
 
 /**
    \class AuFileSink
+   \ingroup Internal
    \brief SoundFileSink for .au (.snd) soundfiles
    
    SoundFileSink writer for .au (.snd) sound files.

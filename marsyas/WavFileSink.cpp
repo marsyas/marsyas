@@ -18,6 +18,7 @@
 
 /**
    \class WavFileSink
+   \ingroup Internal
    \brief WavFileSink for .wav soundfiles
    
    SoundFileSink writer for .wav sound files.

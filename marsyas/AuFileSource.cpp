@@ -18,6 +18,7 @@
 
 /**
    \class AuFileSource
+   \ingroup Internal
    \brief SoundFileSource for .au (.snd) soundfiles
    
    SoundFileSource reader for .au (.snd) sound files.
