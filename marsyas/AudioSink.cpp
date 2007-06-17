@@ -303,10 +303,10 @@ AudioSink::myProcess(realvec& in, realvec& out)
 	         }
 		 else
 		 {
-	     	    data_[4*t] = reservoir_(0,(start_+t) % reservoirSize_);
-	            data_[4*t+1] = reservoir_(0,(start_+t)%reservoirSize_);
-	            data_[4*t+2] = reservoir_(1,(start_+t) % reservoirSize_);
-	            data_[4*t+3] = reservoir_(1,(start_+t) % reservoirSize_);
+		   data_[4*t] = reservoir_(0,(start_+t) % reservoirSize_);
+		   data_[4*t+1]= reservoir_(1,(start_+t) % reservoirSize_);
+		   data_[4*t+2] = reservoir_(0,(start_+t) % reservoirSize_);
+		   data_[4*t+3] = reservoir_(1,(start_+t) % reservoirSize_);
 	         }
 
 	     }

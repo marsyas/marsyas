@@ -210,6 +210,7 @@ libmarsyas_a_SOURCES    = $(top_srcdir)/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/marsyas/WekaSource.cpp \
 			  $(top_srcdir)/marsyas/RealvecSource.cpp \
 			  $(top_srcdir)/marsyas/RealvecSink.cpp \
+			  $(top_srcdir)/marsyas/Panorama.cpp \
 			  $(top_srcdir)/marsyas/Power.cpp \
 			  $(top_srcdir)/marsyas/MemorySource.cpp \
 			  $(top_srcdir)/marsyas/MidiInput.cpp \

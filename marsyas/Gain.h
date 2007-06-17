@@ -36,27 +36,9 @@ namespace Marsyas
 class Gain: public MarSystem
 {
 private: 
-  //Add specific controls needed by this MarSystem.
+        //Add specific controls needed by this MarSystem.
 	void addControls();
-	
-	// lmartins: since this is the default MarSystem::myUpdate(MarControlPtr sender)
-	// (i.e. does not alters input data format) it's not needed to
-	// override it here! Use the default implementation defined in 
-	// MarSystem::myUpdate(MarControlPtr sender).
-	//
-	//void myUpdate(MarControlPtr sender);
-	 
 	MarControlPtr ctrl_gain_;
-	MarControlPtr ctrl_RMScalc_;
-	MarControlPtr ctrl_inRMS_;
-	MarControlPtr ctrl_outRMS_;
-    MarControlPtr ctrl_powerRMS_;
-
-	//RMS value for each in/out channel
-	realvec inRMS_;
-	realvec outRMS_;
-    mrs_real powerRMS_;
-
 	void myUpdate(MarControlPtr sender);
 
 public:

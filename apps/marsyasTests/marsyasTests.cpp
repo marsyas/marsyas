@@ -62,6 +62,7 @@ printHelp(string progName)
   cerr << "mixer           : test fanout for mixing " << endl;
   cerr << "mp3convert      : test convertion of a collection of .mp3 files to .wav files" << endl;
   cerr << "normMaxMin      : test of normalize marsSystem " << endl;
+  cerr << "panorama     : test Panorama amplitude panning " << endl;
   cerr << "parallel        : test Parallel composite " << endl;
   cerr << "probe           : test Probe functionality " << endl;
   cerr << "realvec         : test realvec functions " << endl;
@@ -75,6 +76,7 @@ printHelp(string progName)
   cerr << "stereoFeaturesMFCC : test stereo features and MFCCs" << endl;
   cerr << "stereo2mono     : test stereo to mono conversion " << endl;
   cerr << "tempo	         : test tempo estimation " << endl;
+  cerr << "vibrato       : test vibrato using time-varying delay line" << endl;
   cerr << "vicon           : test processing of vicon motion capture data" << endl;
   cerr << "Windowing       : test different window functions of Windowing marsystem" << endl;
   cerr << "weka            : test weka source and sink functionality" << endl;
@@ -956,6 +958,38 @@ test_filter()
 
 	delete f;
 }
+
+void 
+test_panorama(string sfName)
+{
+  cout << "Testing panorama amplitude panning" << endl;
+  MarSystemManager mng;
+  MarSystem* playbacknet = mng.create("Series", "playbacknet");
+  
+  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+  playbacknet->addMarSystem(mng.create("Panorama", "pan"));
+  playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
+  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+  
+  playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+  playbacknet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
+  mrs_bool isEmpty;
+  mrs_natural t = 0;	
+  mrs_real angle = -PI/4.0;
+  playbacknet->updctrl("Panorama/pan/mrs_real/angle", angle);
+  while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->toBool()) 
+    {
+      playbacknet->tick();
+      t++;
+      if (t % 10 == 0)
+	{
+	  angle += (PI/32);
+	  playbacknet->updctrl("Panorama/pan/mrs_real/angle", angle);
+	}
+    }
+}
+
 
 void 
 test_vibrato(string sfName)
@@ -3184,6 +3218,8 @@ main(int argc, const char **argv)
     test_vicon(fname0);   
   else if (testName == "vibrato")
     test_vibrato(fname0);
+  else if (testName == "panorama")
+    test_panorama(fname0);
   else if (testName == "realvec")
     test_realvec();
   else if (testName == "rmsilence") 

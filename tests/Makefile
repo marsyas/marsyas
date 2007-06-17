@@ -18,7 +18,7 @@ SHELL = /bin/sh
 srcdir = .
 top_srcdir = ..
 
-prefix = /Users/gperciva/usr
+prefix = /usr/local
 exec_prefix = ${prefix}
 
 bindir = ${exec_prefix}/bin
@@ -29,8 +29,8 @@ sysconfdir = ${prefix}/etc
 sharedstatedir = ${prefix}/com
 localstatedir = ${prefix}/var
 libdir = ${exec_prefix}/lib
-infodir = ${prefix}/share/info
-mandir = ${prefix}/share/man
+infodir = ${prefix}/info
+mandir = ${prefix}/man
 includedir = ${prefix}/include
 oldincludedir = /usr/include
 pkgdatadir = $(datadir)/marsyas
@@ -38,10 +38,10 @@ pkglibdir = $(libdir)/marsyas
 pkgincludedir = $(includedir)/marsyas
 top_builddir = ..
 
-ACLOCAL = ${SHELL} /Users/gperciva/usr/src/marsyas/config/missing --run aclocal-1.8
-AUTOCONF = ${SHELL} /Users/gperciva/usr/src/marsyas/config/missing --run autoconf
-AUTOMAKE = ${SHELL} /Users/gperciva/usr/src/marsyas/config/missing --run automake-1.8
-AUTOHEADER = ${SHELL} /Users/gperciva/usr/src/marsyas/config/missing --run autoheader
+ACLOCAL = ${SHELL} /Users/gtzan/src/c++/marsyas-0.2.11/config/missing --run aclocal-1.6
+AUTOCONF = ${SHELL} /Users/gtzan/src/c++/marsyas-0.2.11/config/missing --run autoconf
+AUTOMAKE = ${SHELL} /Users/gtzan/src/c++/marsyas-0.2.11/config/missing --run automake-1.6
+AUTOHEADER = ${SHELL} /Users/gtzan/src/c++/marsyas-0.2.11/config/missing --run autoheader
 
 am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
 INSTALL = /usr/bin/install -c
@@ -69,8 +69,8 @@ target_triplet = i386-apple-darwin8.9.1
 EXEEXT = 
 OBJEXT = o
 PATH_SEPARATOR = :
-AMTAR = ${SHELL} /Users/gperciva/usr/src/marsyas/config/missing --run tar
-AWK = gawk
+AMTAR = ${SHELL} /Users/gtzan/src/c++/marsyas-0.2.11/config/missing --run tar
+AWK = awk
 Audio = 
 CC = gcc
 CXX = g++
@@ -96,7 +96,7 @@ VERSION = 0.2.11
 ac_aux_dir = config
 am__include = include
 am__quote = 
-install_sh = /Users/gperciva/usr/src/marsyas/config/install-sh
+install_sh = /Users/gtzan/src/c++/marsyas-0.2.11/config/install-sh
 
 EXTRA_DIST = marsyas_tests.py testlist.txt
 SUBDIRS = audio

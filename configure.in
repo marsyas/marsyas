@@ -127,7 +127,7 @@ case "$enable_log2file" in
 esac
 
 AC_ARG_ENABLE([log2stdout],[AC_HELP_STRING([--enable-log2stdout],[Log
-messages to stdout])])
+messages to stdout])],[enable_log2stdout=$enableval],[enable_log2stdout=yes])
 case "$enable_log2stdout" in
        yes)
                AC_DEFINE([MARSYAS_LOG2STDOUT],[1], [Log to stdout])

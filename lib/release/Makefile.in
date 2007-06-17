@@ -290,6 +290,7 @@ libmarsyas_a_SOURCES = $(top_srcdir)/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/marsyas/WekaSource.cpp \
 			  $(top_srcdir)/marsyas/RealvecSource.cpp \
 			  $(top_srcdir)/marsyas/RealvecSink.cpp \
+			  $(top_srcdir)/marsyas/Panorama.cpp \
 			  $(top_srcdir)/marsyas/Power.cpp \
 			  $(top_srcdir)/marsyas/MemorySource.cpp \
 			  $(top_srcdir)/marsyas/MidiInput.cpp \
@@ -380,10 +381,11 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	Vibrato.$(OBJEXT) NormMaxMin.$(OBJEXT) \
 	HarmonicEnhancer.$(OBJEXT) Reassign.$(OBJEXT) \
 	Normalize.$(OBJEXT) WekaSource.$(OBJEXT) \
-	RealvecSource.$(OBJEXT) RealvecSink.$(OBJEXT) Power.$(OBJEXT) \
-	MemorySource.$(OBJEXT) MidiInput.$(OBJEXT) Esitar.$(OBJEXT) \
-	MidiOutput.$(OBJEXT) NumericLib.$(OBJEXT) NormCut.$(OBJEXT) \
-	vmblock.$(OBJEXT) lu.$(OBJEXT) basis.$(OBJEXT)
+	RealvecSource.$(OBJEXT) RealvecSink.$(OBJEXT) \
+	Panorama.$(OBJEXT) Power.$(OBJEXT) MemorySource.$(OBJEXT) \
+	MidiInput.$(OBJEXT) Esitar.$(OBJEXT) MidiOutput.$(OBJEXT) \
+	NumericLib.$(OBJEXT) NormCut.$(OBJEXT) vmblock.$(OBJEXT) \
+	lu.$(OBJEXT) basis.$(OBJEXT)
 libmarsyas_a_OBJECTS = $(am_libmarsyas_a_OBJECTS)
 
 DEFS = @DEFS@
@@ -462,9 +464,10 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/NormCut.Po ./$(DEPDIR)/NormMaxMin.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Normalize.Po ./$(DEPDIR)/NumericLib.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/OggFileSource.Po ./$(DEPDIR)/OnePole.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/OverlapAdd.Po ./$(DEPDIR)/Parallel.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/PeClust.Po ./$(DEPDIR)/PeClusters.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/PeConvert.Po ./$(DEPDIR)/PeResidual.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/OverlapAdd.Po ./$(DEPDIR)/Panorama.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Parallel.Po ./$(DEPDIR)/PeClust.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/PeClusters.Po ./$(DEPDIR)/PeConvert.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/PeResidual.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PeSimilarity.Po ./$(DEPDIR)/PeSynFFT.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PeSynOsc.Po ./$(DEPDIR)/PeSynOscBank.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PeUtilities.Po ./$(DEPDIR)/Peak2Rms.Po \
@@ -770,6 +773,7 @@ Normalize.$(OBJEXT): $(top_srcdir)/marsyas/Normalize.cpp
 WekaSource.$(OBJEXT): $(top_srcdir)/marsyas/WekaSource.cpp
 RealvecSource.$(OBJEXT): $(top_srcdir)/marsyas/RealvecSource.cpp
 RealvecSink.$(OBJEXT): $(top_srcdir)/marsyas/RealvecSink.cpp
+Panorama.$(OBJEXT): $(top_srcdir)/marsyas/Panorama.cpp
 Power.$(OBJEXT): $(top_srcdir)/marsyas/Power.cpp
 MemorySource.$(OBJEXT): $(top_srcdir)/marsyas/MemorySource.cpp
 MidiInput.$(OBJEXT): $(top_srcdir)/marsyas/MidiInput.cpp
@@ -895,6 +899,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OggFileSource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OnePole.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OverlapAdd.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Panorama.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parallel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeClust.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeClusters.Po@am__quote@
@@ -3260,6 +3265,18 @@ RealvecSink.obj: $(top_srcdir)/marsyas/RealvecSink.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/RealvecSink.Po' tmpdepfile='$(DEPDIR)/RealvecSink.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RealvecSink.obj `cygpath -w $(top_srcdir)/marsyas/RealvecSink.cpp`
+
+Panorama.o: $(top_srcdir)/marsyas/Panorama.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/Panorama.cpp' object='Panorama.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/Panorama.Po' tmpdepfile='$(DEPDIR)/Panorama.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Panorama.o `test -f '$(top_srcdir)/marsyas/Panorama.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/Panorama.cpp
+
+Panorama.obj: $(top_srcdir)/marsyas/Panorama.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/Panorama.cpp' object='Panorama.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/Panorama.Po' tmpdepfile='$(DEPDIR)/Panorama.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Panorama.obj `cygpath -w $(top_srcdir)/marsyas/Panorama.cpp`
 
 Power.o: $(top_srcdir)/marsyas/Power.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/marsyas/Power.cpp' object='Power.o' libtool=no @AMDEPBACKSLASH@
