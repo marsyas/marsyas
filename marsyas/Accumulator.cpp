@@ -28,7 +28,7 @@ all the results are accumulated. Used to change
 the rate of process requests.
 
 Controls:
-- \b mrs_natural/nTimes	: the number of ticks to gather
+- \b mrs_natural/nTimes	: the number of ticks to gather  (I think?) AAA
 */
 
 #include "Accumulator.h"

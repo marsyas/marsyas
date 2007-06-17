@@ -18,11 +18,14 @@
 
 /** 
     \class Series
+    \ingroup Core
     \brief Series of MarSystem objects
 
     Combines a series of MarSystem objects to a single MarSystem 
     corresponding to executing the System objects one after the other 
     in sequence. 
+
+	Controls: none
 */
 
 #include "Series.h"

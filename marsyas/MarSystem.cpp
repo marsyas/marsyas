@@ -18,6 +18,7 @@
 
 /**
 \class MarSystem
+\ingroup Core
 \brief MarSystem transforms a realvec
 
 Abstract base class for any type of system. Basically a MarSystem
@@ -26,6 +27,24 @@ vector (possibly with different dimensionality). Different types of
 computation can be used. MarSystems are the core processing blocks of
 Marsyas including transformations like FFT, Filter as well as feature
 extractors like Spectral Centroid.
+
+Controls:  (these are inherited by all MarSystems)
+- \b mrs_natural/inSamples	: number of input samples
+- \b mrs_natural/inSamples	: number of input observations
+- \b mrs_real/israte	: rate (number of samples per second) of input
+- \b mrs_string/inObsNames	: dunno AAA
+
+- \b mrs_natural/onSamples	: number of output samples
+- \b mrs_natural/onSamples	: number of output observations
+- \b mrs_real/osrate	: rate (number of samples per second) of output
+- \b mrs_string/onObsNames	: dunno AAA
+
+- \b mrs_bool/debug	: dunno (old code from when we didn't have --enable-debug?) AAA
+- \b mrs_bool/mute	: dunno (old code?) AAA
+- \b mrs_bool/active	: dunno ("not paused"? -- old code?) AAA
+
+- \b mrs_realvec/processedData	: output realvec; useful for viewing the output of a MarSystem directly.
+
 */
 
 #include "MarSystem.h"

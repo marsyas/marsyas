@@ -18,11 +18,17 @@
 
 /** 
 \class Fanout
+\ingroup Core
 \brief Fanout of MarSystem objects
 
 Combines a series of MarSystem objects to a single MarSystem 
 corresponding to executing the System objects one after the other 
 in sequence. 
+
+Controls:
+- \b mrs_bool/probe	: dunno BBB
+- \b mrs_natural/disable	: dunno BBB
+- \b mrs_natural/enable	: dunno BBB  -- isn't this just the opposite of enable?  Potential bug?
 */
 
 #include "Fanout.h"

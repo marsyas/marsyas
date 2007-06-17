@@ -18,7 +18,10 @@
 
 /** 
     \class Parallel
+    \ingroup Core
     \brief Parallel composite of MarSystem objects
+
+	Controls: none
 */
 
 #include "Parallel.h"
