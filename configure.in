@@ -112,6 +112,36 @@ case "$enable_profiling" in
        *) echo Profiling disabled ;;
 esac
 
+AC_ARG_ENABLE([log2file],[AC_HELP_STRING([--enable-log2file],[Log
+messages to a file])])
+case "$enable_log2file" in
+       yes)
+               AC_DEFINE([MARSYAS_LOG2FILE],[1], [Log to file])
+               echo Log messages will be written to a file
+       ;;
+       *) echo Log messages will not be written to a file ;;
+esac
+
+AC_ARG_ENABLE([log2stdout],[AC_HELP_STRING([--enable-log2stdout],[Log
+messages to stdout])])
+case "$enable_log2stdout" in
+       yes)
+               AC_DEFINE([MARSYAS_LOG2STDOUT],[1], [Log to stdout])
+               echo Log messages will be written to stdout
+       ;;
+       *) echo Log messages will not be written to stdout ;;
+esac
+
+AC_ARG_ENABLE([log2gui],[AC_HELP_STRING([--enable-log2GUI],[Log
+messages to GUI])])
+case "$enable_log2gui" in
+       yes)
+               AC_DEFINE([MARSYAS_LOG2GUI],[1], [Log to GUI])
+               echo Log messages will be written to GUI
+       ;;
+       *) echo Log messages will not be written to GUI ;;
+esac
+
 
 
 
