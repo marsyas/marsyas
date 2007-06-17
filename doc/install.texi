@@ -163,15 +163,18 @@ Optional:
 
 Marsyas can be built with qmake, which is the Makefile generator in
 Qt.  To build Marsyas, go to the base of the source tree and edit
-@file{marsyasConfig.pri}.  Once you have selected the options you
-want (i.e. audio API, Ogg Vorbis support, Matlab support, etc), simply type
+@file{marsyasConfig.pri}.  You will probably want to change the settings
+for @emph{release/debug mode}, @emph{WARNINGS/LOGS}, and @emph{MATLAB
+engine classes}, and @emph{MP3 MAD}.
+
+Once you have selected the options you want, simply type
 
 @example
 qmake
 @end example
 
 @b{Requirement: Qt-4.2.3.}  Marsyas does not work with qmake in Qt-4.3.
-Please downgrade to Qt-4.2.2 or use the autotools method of compiling
+Please downgrade to Qt-4.2.3 or use the autotools method of compiling
 Marsyas.
 
 
@@ -183,22 +186,23 @@ Marsyas may be compiled using the standard GNU configure script:
 ./configure
 @end example
 
-Marsyas can be customized using various configuration 
-options. For example to compile Marsyas with assertions 
-enabled and with mp3 support through libmad one would do: 
-
-@example 
-./configure --enable-assert --enable-mad
-@end example 
-
-@noindent
-The list of available options can be viewed by: 
+Marsyas can be customized using various configuration options.  The
+current list of available options can be viewed by typing:
 
 @example 
 ./configure --help 
 @end example
 
+For example, to compile Marsyas with assertions enabled, mp3
+support through libmad, and writing warnings to a file, one would do: 
 
+@example 
+./configure --enable-assert --with-mad --enable-log2file
+@end example 
+
+@c shouldn't be in this manual; ./configure --help is the most
+@c up-to-date source of this info, so people should read that.
+@ignore 
 @noindent
 The following options are supported: 
 
@@ -214,16 +218,14 @@ feature extraction (experimental)
 Language (msl) 
 @item @b{--enable-oss}          use the OSS sound system 
 @end itemize
-
+@end ignore
 
 @noindent
 A frequent variation (if you don't have root priviledges) 
-is to install Marsyas in your home directory (replace /home/gtzan with 
-the appropriate path for your home directory). 
-This can be accomplished by doing: 
+is to install Marsyas in your home directory:
 
 @example
-./configure --prefix=/home/gtzan 
+./configure --prefix=$HOME
 make 
 make install 
 @end example
@@ -231,7 +233,8 @@ make install
 @subsubsection Debugging options
 
 @example
-./configure --enable-debug --enable-assert --enable-warnings --enable-diagnostics
+./configure --enable-debug --enable-assert --enable-warnings
+--enable-diagnostics --enable-log2file
 make clean
 make
 @end example

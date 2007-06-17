@@ -59,13 +59,16 @@ Up:&nbsp;<a rel="up" accesskey="u" href="Installation.html#Installation">Install
 
 <p>Marsyas can be built with qmake, which is the Makefile generator in
 Qt.  To build Marsyas, go to the base of the source tree and edit
-<samp><span class="file">marsyasConfig.pri</span></samp>.  Once you have selected the options you
-want (i.e. audio API, Ogg Vorbis support, Matlab support, etc), simply type
+<samp><span class="file">marsyasConfig.pri</span></samp>.  You will probably want to change the settings
+for <em>release/debug mode</em>, <em>WARNINGS/LOGS</em>, and <em>MATLAB
+engine classes</em>, and <em>MP3 MAD</em>.
+
+   <p>Once you have selected the options you want, simply type
 
 <pre class="example">     qmake
 </pre>
    <p><b>Requirement: Qt-4.2.3.</b>  Marsyas does not work with qmake in Qt-4.3. 
-Please downgrade to Qt-4.2.2 or use the autotools method of compiling
+Please downgrade to Qt-4.2.3 or use the autotools method of compiling
 Marsyas.
 
 <h4 class="subsection">2.3.2 ...with autotools</h4>
@@ -74,43 +77,30 @@ Marsyas.
 
 <pre class="example">     ./configure
 </pre>
-   <p>Marsyas can be customized using various configuration
-options. For example to compile Marsyas with assertions
-enabled and with mp3 support through libmad one would do:
-
-<pre class="example">     ./configure --enable-assert --enable-mad
-</pre>
-   <p class="noindent">The list of available options can be viewed by:
+   <p>Marsyas can be customized using various configuration options.  The list
+of available options can be viewed by typing:
 
 <pre class="example">     ./configure --help
 </pre>
-   <p class="noindent">The following options are supported:
+   <pre class="sp">
 
-     <ul>
-<li><b>&ndash;enable-assert</b>       turns assertions on (small performance penatly)
-<li><b>&ndash;enable-debug</b>        compiles Marsyas in debug mode generating
-the necessary files for gdb (large performance penalty)
-<li><b>&ndash;enable-mad</b>          enables support for reading mp3 files using
-libmad (which must be installed)
-<li><b>&ndash;enable-distributed</b>  compiles code for distributed audio
-feature extraction (experimental)
-<li><b>&ndash;enable-readline</b>     realine support for the Marsyas Scripting
-Language (msl)
-<li><b>&ndash;enable-oss</b>          use the OSS sound system
-</ul>
+</pre>
+For example, to compile Marsyas with assertions enabled, mp3
+support through libmad, and writing warnings to a file, one would do:
 
-<p class="noindent">A frequent variation (if you don't have root priviledges)
-is to install Marsyas in your home directory (replace /home/gtzan with
-the appropriate path for your home directory). 
-This can be accomplished by doing:
+<pre class="example">     ./configure --enable-assert --with-mad --enable-log2file
+</pre>
+   <p class="noindent">A frequent variation (if you don't have root priviledges)
+is to install Marsyas in your home directory:
 
-<pre class="example">     ./configure --prefix=/home/gtzan
+<pre class="example">     ./configure --prefix=$HOME
      make
      make install
 </pre>
    <h5 class="subsubsection">2.3.2.1 Debugging options</h5>
 
-<pre class="example">     ./configure --enable-debug --enable-assert --enable-warnings --enable-diagnostics
+<pre class="example">     ./configure --enable-debug --enable-assert --enable-warnings
+     --enable-diagnostics --enable-log2file
      make clean
      make
 </pre>

@@ -1261,8 +1261,10 @@ Optional Features:
   --enable-diagnostics    Turn diagnostics on
   --enable-warnings       Turn warnings on
   --enable-audio          Enable Audio IO
+  --enable-oss            Use OSS audio instead of ALSA (Linux)
   --enable-midi           Enable MIDI IO
-  --enable-debug          Compile for debugging with gdb
+  --enable-debug          Compile for debugging with gdb (large performance
+                          penalty)
   --enable-profiling      Compile for profiling
   --enable-log2file       Log messages to a file
   --enable-log2stdout     Log messages to stdout
@@ -1276,7 +1278,8 @@ Optional Features:
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
-  --with-mad              Link to libmad (mp3 audio decoder)
+  --with-mad              Link to libmad (mp3 audio decoder) (must be
+                          installed)
   --with-vorbis           Link to libvorbis (ogg audio decoder)
   --with-readline         Readline functionality for Marsyas scriping language
                           (MSL)
@@ -4199,6 +4202,11 @@ _ACEOF
 	;;
 esac
 
+# Check whether --enable-oss was given.
+if test "${enable_oss+set}" = set; then
+  enableval=$enable_oss;
+fi
+
 
 # Check whether --enable-midi was given.
 if test "${enable_midi+set}" = set; then
@@ -4434,7 +4442,6 @@ esac
 if test "${enable_bindings+set}" = set; then
   enableval=$enable_bindings;
 fi
-
 
 
 
