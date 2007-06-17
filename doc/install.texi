@@ -140,6 +140,22 @@ Optional:
 
 @subsection Windows
 
+On Windows, you may use either Cygwin or Microsoft Visual Studio
+
+@subsubsection Cygwin
+
+Cygwin is a unix environment for Windows.
+
+Required:
+
+@itemize
+@item @uref{http://www.cygwin.com/,Cygwin}, with gcc and autotools
+installed (these should be installed by default)
+@item Microsoft DirectX SDK and Platform SDK
+@end itemize
+
+@subsubsection Microsoft Visual Studio
+
 Required:
 
 @itemize
