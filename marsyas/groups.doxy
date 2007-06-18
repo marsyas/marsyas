@@ -6,8 +6,7 @@
 
 /**  @defgroup IO Input/Output MarSystems
  *
- * These are the MarSystems which get data to/from files, networks, or
- * audio
+ * These are the MarSystems which get data to/from files and audio.
  *
  */
 

@@ -18,8 +18,15 @@
 
 /**
 \class PlotSink
-\brief PlotSink: Text output sink
+\ingroup IO
+\brief Text output sink
 
+Output data to a text file.
+
+Controls:
+- \b mrs_string/outputFilename	: file to write
+- \b mrs_string/separator	: dunno CCC
+- \b mrs_bool/sequence	: dunno CCC
 */
 
 #include "PlotSink.h"
