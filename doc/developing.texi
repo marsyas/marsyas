@@ -1,8 +1,22 @@
 @node Developing MarSystems
 @chapter Developing MarSystems
 
+The main method that each MarSystem must support is @b{process} which
+takes two arguments both arrays of floating point numbers used to
+represent slices (matrices where one dimension is samples in time and
+the other is observations which are interpreted as happening at the
+same time). When the @b{process} method is called it reads data from
+the input slice, performs some computation/transformation and writes
+the results to the output slice. Both slices have to be preallocated
+when process is called.  One of the main advantages of Marsyas is that
+a lot of the necessary buffer allocation/reallocation and memory
+management happens behind the scene without the programmer having to
+do anything explicitly.
+
 @menu
 * Writing your own MarSystems::  
+* Adding the MarSystem to Marsyas::  
+* myUpdate() and myProcess()::  
 @end menu
 
 
@@ -19,22 +33,71 @@ canonical example of a MarSystem that is what I use as a template when I
 write a new Marsystem is @file{Gain.h} and @file{Gain.cpp}  or
 @file{MarSystemTemplateBasic .h .cpp}.
 
+
+@node Adding the MarSystem to Marsyas
+@section Adding the MarSystem to Marsyas
+
 The new MarSystem should be placed in the @file{marsyas/} directory, and
 must be added to @file{MarSystemManager.cpp} and the build process.
 Again, the easiest way is to look for @code{Gain} and do the same thing
-with your new MarSystem.  There are four files which require attention:
+with your new MarSystem.
+
+@subsubheading MarSystemManager
 
 @itemize
 @item @file{marsyas/MarSystemManager.cpp}
-@item @file{marsyas/marsyas.pro}
+@end itemize
+
+@subsubheading Build process: autotools
+
+@itemize
 @item @file{marsyas/Makefile.am}
 @item @file{lib/release/Makefile.am}
 @end itemize
 
-Once you have edited these files, recompile marsyas (with automake:
-@code{automake}, @code{./configure}, @code{make}, @code{make install}.
-With qmake, just run @code{qmake}), then @code{make}, and @code{make
-install}.)
+Now execute @code{automake} and @code{./configure} before recompiling
+with @code{make}.
 
+@subsubheading Build process: qmake
+
+@itemize
+@item @file{marsyas/marsyas.pro}
+@end itemize
+
+Now execute @code{qmake} before recompiling with whichever compiler you
+use.
+
+
+@node myUpdate() and myProcess()
+@section myUpdate() and myProcess()
+
+Every MarSystem includes @code{myUpdate(...)} and
+@code{myProcess(...)}.  @code{myProcess()} is called every time the
+MarSystem receives a @code{tick()} (ie all the time).  @code{myUpdate()}
+is called whenever the values of controls that have state are changed.
+
+In other words, resource-intensive operations (such as changing the
+buffer size, computing trigonomic functions, etc) that only depend on
+the controls should be performed inside @code{myUpdate()}.
+
+Taking a real-world example, consider a simple one-pole high/low-pass
+filter where we wish to perform the following operations:
+
+@example
+mrs_real fc = ctrl_fc ->to<mrs_real>();
+mrs_real tanf = tan( PI * fc / 44100.0);
+mrs_real c = (tanf - 1.0) / (tanf + 1.0);
+for (t=1; t < inSampes_; t++) @{
+    az = c*in(0,t) + in(0,t-1) - c*out(0,t-1);
+    out(0,t) = (1-az)/2;
+@}
+@end example
+
+@noindent
+Since @code{tanf} and @code{c} only depend on @code{fc}, they may be
+computed inside @code{myUpdate()} instead of @code{myProcess()}.  If
+@code{fc} has not changed, we can use the old value @code{c} to perform
+the loop over our sound buffer; if the value of @code{fc} has changed,
+then @code{c} will be recomputed inside @code{myUpdate()}.
 
 

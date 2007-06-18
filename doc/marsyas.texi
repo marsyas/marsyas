@@ -62,7 +62,7 @@ translation approved by the Free Software Foundation.
 * Tools::                       Various sample tools built using marsyas
 components.
 * Architecture::                Software architecture and concepts.
-* Programming Applications::    Writing programs that use MarSystems.
+* Programming applications::    Writing programs that use MarSystems.
 * Developing MarSystems::       Writing new basic MarSystem blocks.
 * Interoperability::            Using Marsyas with other projects.
 * The Index::                   The Index.

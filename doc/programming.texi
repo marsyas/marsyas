@@ -1,5 +1,5 @@
-@node Programming Applications
-@chapter Programming Applications
+@node Programming applications
+@chapter Programming applications
 
 @menu
 * Including libraries and linking::  
