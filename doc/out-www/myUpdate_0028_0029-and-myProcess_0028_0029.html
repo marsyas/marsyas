@@ -1,12 +1,12 @@
 <html lang="en">
 <head>
-<title>Writing your own MarSystems - Marsyas 0.2</title>
+<title>myUpdate() and myProcess() - Marsyas 0.2</title>
 <meta http-equiv="Content-Type" content="text/html">
 <meta name="description" content="Marsyas 0.2">
 <meta name="generator" content="makeinfo 4.8">
 <link title="Top" rel="start" href="index.html#Top">
 <link rel="up" href="Developing-MarSystems.html#Developing-MarSystems" title="Developing MarSystems">
-<link rel="next" href="Adding-the-MarSystem-to-Marsyas.html#Adding-the-MarSystem-to-Marsyas" title="Adding the MarSystem to Marsyas">
+<link rel="prev" href="Adding-the-MarSystem-to-Marsyas.html#Adding-the-MarSystem-to-Marsyas" title="Adding the MarSystem to Marsyas">
 <link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
 <!--
 Copyright 1998-2006 George Tzanetakis
@@ -45,23 +45,40 @@ translation approved by the Free Software Foundation.-->
 <body>
 <div class="node">
 <p>
-<a name="Writing-your-own-MarSystems"></a>
-Next:&nbsp;<a rel="next" accesskey="n" href="Adding-the-MarSystem-to-Marsyas.html#Adding-the-MarSystem-to-Marsyas">Adding the MarSystem to Marsyas</a>,
+<a name="myUpdate()-and-myProcess()"></a>
+<a name="myUpdate_0028_0029-and-myProcess_0028_0029"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Adding-the-MarSystem-to-Marsyas.html#Adding-the-MarSystem-to-Marsyas">Adding the MarSystem to Marsyas</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="Developing-MarSystems.html#Developing-MarSystems">Developing MarSystems</a>
 <hr>
 </div>
 
-<h3 class="section">6.1 Writing your own MarSystems</h3>
+<h3 class="section">6.3 myUpdate() and myProcess()</h3>
 
-<p>It's relatively straightforward to extend Marsyas by writing your own
-Marsystems. As mentioned before each MarSystems must basically support
-the process method that handles the dataflow and the update method that
-handles the control messages.  There are certain conventions that need
-to be followed so typically it is a better idea to copy and modify an
-existing Marsystem rather than writing one from scratch. The simple
-canonical example of a MarSystem that is what I use as a template when I
-write a new Marsystem is <samp><span class="file">Gain.h</span></samp> and <samp><span class="file">Gain.cpp</span></samp>  or
-<samp><span class="file">MarSystemTemplateBasic .h .cpp</span></samp>.
+<p>Every MarSystem includes <code>myUpdate(...)</code> and
+<code>myProcess(...)</code>.  <code>myProcess()</code> is called every time the
+MarSystem receives a <code>tick()</code> (ie all the time).  <code>myUpdate()</code>
+is called whenever the values of controls that have state are changed.
+
+   <p>In other words, resource-intensive operations (such as changing the
+buffer size, computing trigonomic functions, etc) that only depend on
+the controls should be performed inside <code>myUpdate()</code>.
+
+   <p>Taking a real-world example, consider a simple one-pole high/low-pass
+filter where we wish to perform the following operations:
+
+<pre class="example">     mrs_real fc = ctrl_fc -&gt;to&lt;mrs_real&gt;();
+     mrs_real tanf = tan( PI * fc / 44100.0);
+     mrs_real c = (tanf - 1.0) / (tanf + 1.0);
+     for (t=1; t &lt; inSampes_; t++) {
+         az = c*in(0,t) + in(0,t-1) - c*out(0,t-1);
+         out(0,t) = (1-az)/2;
+     }
+</pre>
+   <p class="noindent">Since <code>tanf</code> and <code>c</code> only depend on <code>fc</code>, they may be
+computed inside <code>myUpdate()</code> instead of <code>myProcess()</code>.  If
+<code>fc</code> has not changed, we can use the old value <code>c</code> to perform
+the loop over our sound buffer; if the value of <code>fc</code> has changed,
+then <code>c</code> will be recomputed inside <code>myUpdate()</code>.
 
    </body></html>
 

@@ -1,12 +1,13 @@
 <html lang="en">
 <head>
-<title>Writing your own MarSystems - Marsyas 0.2</title>
+<title>Adding the MarSystem to Marsyas - Marsyas 0.2</title>
 <meta http-equiv="Content-Type" content="text/html">
 <meta name="description" content="Marsyas 0.2">
 <meta name="generator" content="makeinfo 4.8">
 <link title="Top" rel="start" href="index.html#Top">
 <link rel="up" href="Developing-MarSystems.html#Developing-MarSystems" title="Developing MarSystems">
-<link rel="next" href="Adding-the-MarSystem-to-Marsyas.html#Adding-the-MarSystem-to-Marsyas" title="Adding the MarSystem to Marsyas">
+<link rel="prev" href="Writing-your-own-MarSystems.html#Writing-your-own-MarSystems" title="Writing your own MarSystems">
+<link rel="next" href="myUpdate_0028_0029-and-myProcess_0028_0029.html#myUpdate_0028_0029-and-myProcess_0028_0029" title="myUpdate() and myProcess()">
 <link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
 <!--
 Copyright 1998-2006 George Tzanetakis
@@ -45,23 +46,44 @@ translation approved by the Free Software Foundation.-->
 <body>
 <div class="node">
 <p>
-<a name="Writing-your-own-MarSystems"></a>
-Next:&nbsp;<a rel="next" accesskey="n" href="Adding-the-MarSystem-to-Marsyas.html#Adding-the-MarSystem-to-Marsyas">Adding the MarSystem to Marsyas</a>,
+<a name="Adding-the-MarSystem-to-Marsyas"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="myUpdate_0028_0029-and-myProcess_0028_0029.html#myUpdate_0028_0029-and-myProcess_0028_0029">myUpdate() and myProcess()</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Writing-your-own-MarSystems.html#Writing-your-own-MarSystems">Writing your own MarSystems</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="Developing-MarSystems.html#Developing-MarSystems">Developing MarSystems</a>
 <hr>
 </div>
 
-<h3 class="section">6.1 Writing your own MarSystems</h3>
+<h3 class="section">6.2 Adding the MarSystem to Marsyas</h3>
 
-<p>It's relatively straightforward to extend Marsyas by writing your own
-Marsystems. As mentioned before each MarSystems must basically support
-the process method that handles the dataflow and the update method that
-handles the control messages.  There are certain conventions that need
-to be followed so typically it is a better idea to copy and modify an
-existing Marsystem rather than writing one from scratch. The simple
-canonical example of a MarSystem that is what I use as a template when I
-write a new Marsystem is <samp><span class="file">Gain.h</span></samp> and <samp><span class="file">Gain.cpp</span></samp>  or
-<samp><span class="file">MarSystemTemplateBasic .h .cpp</span></samp>.
+<p>The new MarSystem should be placed in the <samp><span class="file">marsyas/</span></samp> directory, and
+must be added to <samp><span class="file">MarSystemManager.cpp</span></samp> and the build process. 
+Again, the easiest way is to look for <code>Gain</code> and do the same thing
+with your new MarSystem.
+
+<h5 class="subsubheading">MarSystemManager</h5>
+
+     <ul>
+<li><samp><span class="file">marsyas/MarSystemManager.cpp</span></samp>
+</ul>
+
+<h5 class="subsubheading">Build process: autotools</h5>
+
+     <ul>
+<li><samp><span class="file">marsyas/Makefile.am</span></samp>
+<li><samp><span class="file">lib/release/Makefile.am</span></samp>
+</ul>
+
+   <p>Now execute <code>automake</code> and <code>./configure</code> before recompiling
+with <code>make</code>.
+
+<h5 class="subsubheading">Build process: qmake</h5>
+
+     <ul>
+<li><samp><span class="file">marsyas/marsyas.pro</span></samp>
+</ul>
+
+   <p>Now execute <code>qmake</code> before recompiling with whichever compiler you
+use.
 
    </body></html>
 
