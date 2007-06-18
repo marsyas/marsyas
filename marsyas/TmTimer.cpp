@@ -19,6 +19,7 @@
 
 /**
    \class TmTimer
+	\ingroup none
    \brief Abstract TmTimer
    \author inb@cs.uvic.ca
 */

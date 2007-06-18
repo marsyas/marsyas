@@ -18,6 +18,7 @@
 
 /** 
 \class Spectral Crest Factor
+	\ingroup none
 \brief Spectral Crest Factor
 
 Spectral Crest Factor is a feature set very similar to the

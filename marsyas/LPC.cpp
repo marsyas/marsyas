@@ -18,6 +18,7 @@
 
 /** 
 \class LPC
+	\ingroup none
 \brief Compute Warped LPC coefficients, Pitch and Power [STILL UNDER TESTING!].
 
 Linear Prediction Coefficients (LPC). Features commonly used 

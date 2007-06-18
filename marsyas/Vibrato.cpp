@@ -18,6 +18,7 @@
 
 /** 
     \class Vibrato
+	\ingroup none
     \brief Apply vibrato using time-varying delay 
 
 */

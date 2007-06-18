@@ -18,6 +18,7 @@
 
 /** 
 \class PeClusters
+	\ingroup none
 \brief 
 
 */

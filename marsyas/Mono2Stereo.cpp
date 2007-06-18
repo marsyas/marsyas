@@ -19,6 +19,7 @@
 
 /** 
     \class Mono2Stereo
+	\ingroup none
     \brief Convert mono to stereo by copying 
 
    Convert mono to stereo by copying - if input is not mono 

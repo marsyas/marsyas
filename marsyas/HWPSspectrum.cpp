@@ -18,6 +18,7 @@
 
 /** 
     \class HWPSspectrum
+	\ingroup none
     \brief Calculate HWPS enhanced spectrum
  
 */

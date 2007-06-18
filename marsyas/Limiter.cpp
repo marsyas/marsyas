@@ -18,6 +18,7 @@
 
 /** 
     \class Limiter
+	\ingroup none
     \brief Multiply input realvec with Limiter
 
    Simple MarSystem example. Just multiply the values of the input realvec

@@ -18,6 +18,7 @@
 
 /** 
     \class MeddisHairCell
+	\ingroup none
     \brief MeddisHairCell for auditory models 
 
     Directed port from the Auditory toolbox by Malcolm Slaney 

@@ -18,6 +18,7 @@
 
 /** 
     \class GaussianClassifier
+	\ingroup none
     \brief Single Gaussian multidimensional classifier
 
     Simple multidimensional Gaussian classifier. The classifier

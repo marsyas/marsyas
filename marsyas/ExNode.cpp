@@ -17,6 +17,7 @@
 */
 /**
    \class ExNode
+	\ingroup none
    \brief ExNode is the base class for an expression tree node.
    \author Neil Burroughs  inb@cs.uvic.ca
    \version 1.0

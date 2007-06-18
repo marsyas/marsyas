@@ -18,6 +18,7 @@
 
 /** 
     \class PvFold
+	\ingroup none
     \brief PvFold
 
     Multiply with window (both length Nw) using modulus arithmetic;

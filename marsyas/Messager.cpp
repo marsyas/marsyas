@@ -19,6 +19,7 @@
 
 /***************************************************/
 /*! \class Messager
+	\ingroup none
     \brief Control message parser.
 
     This class reads and parses control messages

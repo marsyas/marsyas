@@ -18,6 +18,7 @@
 
 /** 
     \class TmControlValue
+	\ingroup none
     \brief TmControlValue is a simple parameter passing mechanism for updtimer
 */
 

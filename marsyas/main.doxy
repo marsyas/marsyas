@@ -1,0 +1,12 @@
+/** \mainpage Marsyas
+ *
+ * Main MarSystems:
+ * - \ref Core "Core"
+ * - \ref IO "Input/Output"
+ *
+ * Specialized MarSystems:
+ * - \ref Analysis "Analysis"
+ * - \ref Synthesis "Synthesis"
+ * - \ref Processing "Processing"
+ *
+ */

@@ -18,6 +18,7 @@
 
 /** 
     \class Mean
+	\ingroup none
     \brief Mean calculate the mean of each row of observations
 
 */

@@ -18,6 +18,7 @@
 
 /** 
 \class BICchangeDetector
+	\ingroup none
 \brief detect changes between to succeeding segments using BIC
 
 Detect changes between two succeeding segments using divergenceShape

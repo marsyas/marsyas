@@ -19,6 +19,7 @@
 
 /** 
     \class StereoSpectrumFeatures
+	\ingroup none
     \brief StereoSpectrumFeatures capture panning information 
 
     After computing the Stereo Spectrum we can summarize 

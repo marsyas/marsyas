@@ -18,6 +18,7 @@
 
 /** 
 \class Cartesian2Polar
+	\ingroup none
 \brief perform conversion of spectral values
 */
 

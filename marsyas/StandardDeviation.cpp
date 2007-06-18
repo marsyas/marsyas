@@ -18,6 +18,7 @@
 
 /** 
     \class Standard Deviation
+	\ingroup none
     \brief Standard Deviation of each row of observations 
 
     Calculates the standard deviation of each row of observations. 

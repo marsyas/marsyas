@@ -18,6 +18,7 @@
 
 /**
    \class MarEvent
+	\ingroup none
    \brief MarEvent 
 
 */

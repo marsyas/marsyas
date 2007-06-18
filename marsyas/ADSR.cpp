@@ -18,6 +18,7 @@
 
 /** 
     \class Envelope
+	\ingroup none
     \brief Multiply input realvec by Value of Envelope
 
    Simple MarSystem example. Just multiply the values of the input realvec

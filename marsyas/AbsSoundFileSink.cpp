@@ -18,6 +18,7 @@
 
 /**
    \class AbsSoundFileSink
+	\ingroup none
    \brief Abstract Interface for SoundFileSinks of various formats
 */
 

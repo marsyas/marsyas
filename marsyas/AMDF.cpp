@@ -18,6 +18,7 @@
 
 /** 
     \class AMDF
+	\ingroup none
     \brief Average Magnitude Difference Function
 
     Computer the average magnitude difference function 

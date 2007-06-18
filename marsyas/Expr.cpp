@@ -17,6 +17,7 @@
 */
 /**
    \class Expr, Ex, Rp
+	\ingroup none
    \brief Expr encapsulates an evaluatable expression. Ex is a convenience
           class that encapsulates an expression string and can parse to a
           tree. Rp is the same as Ex but is interpreted as an expression for

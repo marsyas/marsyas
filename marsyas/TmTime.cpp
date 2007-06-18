@@ -19,6 +19,7 @@
 
 /**
    \class TmTime
+	\ingroup none
    \brief TmTime
    \author inb@cs.uvic.ca
 */

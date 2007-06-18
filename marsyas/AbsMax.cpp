@@ -19,6 +19,7 @@
 
 /** 
     \class AbsMax
+	\ingroup none
     \brief Calculate the maximum of the absolute values of the signal 
     
 Calculates the maximum of the absolute values of 

@@ -19,6 +19,7 @@
 
 /**
    \class TmGetTime
+	\ingroup none
    \brief TmGetTime reads the getlocaltime() function, system clock to get the
           current number of microseconds
    \author inb@cs.uvic.ca

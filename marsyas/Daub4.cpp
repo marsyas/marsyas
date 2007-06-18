@@ -18,6 +18,7 @@
 
 /** 
     \class Daub4
+	\ingroup none
     \brief Daubechies4 WaveletStep
 
    Applies the Daubechies 4-coefficient wavelet filter as 

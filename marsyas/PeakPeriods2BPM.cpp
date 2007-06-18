@@ -18,6 +18,7 @@
 
 /** 
     \class PeakPeriods2BPM
+	\ingroup none
     \brief PeakPeriods2BPM: convert peaks to beats per minute 
 
 */

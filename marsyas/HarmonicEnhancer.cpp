@@ -18,6 +18,7 @@
 
 /** 
     \class HarmonicEnhancer
+	\ingroup none
     \brief Used to strengthen harmonic peaks in Beat Histograms 
 
 */

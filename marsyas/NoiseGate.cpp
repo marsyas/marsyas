@@ -18,6 +18,7 @@
 
 /** 
     \class NoiseGate
+	\ingroup none
     \brief Multiply input realvec with NoiseGate
 
    Simple MarSystem example. Just multiply the values of the input realvec

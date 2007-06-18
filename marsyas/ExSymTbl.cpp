@@ -17,6 +17,7 @@
 */
 /**
     \class ExRecord.cpp
+	\ingroup none
     \brief classes for managing the symbol table - functions and variables
     \author Neil Burroughs  inb@cs.uvic.ca
     \date Jan 4, 2007

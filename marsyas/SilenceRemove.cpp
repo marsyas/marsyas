@@ -18,6 +18,7 @@
 
 /** 
 \class SilenceRemove 
+	\ingroup none
 
 \brief SilenceRemove takes as argument another Marsystem 
 and ticks it ignoring the output when it is silent. Effectively 

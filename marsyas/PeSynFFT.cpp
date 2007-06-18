@@ -18,6 +18,7 @@
 
 /** 
     \class PeSynFFT
+	\ingroup none
     \brief  perform amplitude modification of Power Spectrum using Peaks Info
 
 */

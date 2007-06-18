@@ -18,6 +18,7 @@
 
 /** 
 \class CommandLineOptions
+	\ingroup none
 \brief CommandLineOptions
 
 Class for handling command-line options 

@@ -18,6 +18,7 @@
 
 /** 
     \class Conversions
+	\ingroup none
     \brief Various conversion functions
 */
 

@@ -18,6 +18,7 @@
 
 /** 
     \class MinArgMin
+	\ingroup none
     \brief Calculate k minimums and their positions
 
     The output is : min1, argmin1, min2, argmin2, .... 

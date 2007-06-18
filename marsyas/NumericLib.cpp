@@ -18,6 +18,7 @@
 
 /** 
 \class NumericLib
+	\ingroup none
 \brief Assorted Numerical Routines
 
 	Numerical routines ported and adapted from several sources (indicated where appropriated).

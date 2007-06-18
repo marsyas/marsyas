@@ -18,6 +18,7 @@
 
 /** 
 \class PeUtilities
+	\ingroup none
 \brief utilties for peaks extraction project
 
 */

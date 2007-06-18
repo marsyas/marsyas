@@ -18,6 +18,7 @@
 
 /**
    \class AbsSoundFileSource
+	\ingroup none
    \brief Abstract Interface for SoundFileSource of various formats
 */
 

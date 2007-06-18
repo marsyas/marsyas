@@ -18,6 +18,7 @@
 
 /** 
     \class Histogram
+	\ingroup none
     \brief Histogram
 
     Calculate histogram

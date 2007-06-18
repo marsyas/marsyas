@@ -18,6 +18,7 @@
 
 /**
    \class BaseAudioSink
+	\ingroup none
    \brief Interface for real-time audio sources
    
    Abstract base class used as interface for real-time audio sources.

@@ -19,6 +19,7 @@
 
 /** 
 \class Peaker
+	\ingroup none
 \brief Pick peaks out of signal 
 
 Peaker is used to select peaks(or valleys) from the input vector. Various 

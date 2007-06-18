@@ -19,6 +19,7 @@
 
 /** 
 \class PeConvert
+	\ingroup none
 \brief PeConvert
 
 PeConvert N real and imaginary spectrum values to 

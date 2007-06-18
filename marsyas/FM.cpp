@@ -18,6 +18,7 @@
 
 /** 
     \class FM 
+	\ingroup none
     \brief FM synthesis source
 
    Simple FM synthesis MarSystem.

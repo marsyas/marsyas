@@ -18,6 +18,7 @@
 
 /** 
 \class QGMMModel  
+	\ingroup none
 \brief Quasi-GMM Model
 
 Implementation by Luis Gustavo Martins - lmartins@inescporto.pt

@@ -18,6 +18,7 @@
 
 /** 
     \class Rolloff
+	\ingroup none
     \brief Rolloff of each time slice of observations
 
     Rolloff computes the rolloff of the observations for each 

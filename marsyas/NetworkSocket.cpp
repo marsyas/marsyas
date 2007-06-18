@@ -18,6 +18,7 @@
 
 /** 
     \class NetworkSocket
+	\ingroup none
     \brief Wrapper class for linux socket calls.  
     \author Stuart Bray
 

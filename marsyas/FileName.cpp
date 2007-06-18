@@ -19,6 +19,7 @@
 
 /** 
     \class FileName
+	\ingroup none
     \brief Various utilities
 
     FileName is a class bundling together various rather 

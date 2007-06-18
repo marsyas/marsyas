@@ -18,6 +18,7 @@
 
 /** 
     \class OverlapAdd
+	\ingroup none
     \brief OverlapAdd
 
    perform an overlap-add operation of the input buffer

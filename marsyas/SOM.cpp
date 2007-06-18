@@ -19,6 +19,7 @@
 
 /** 
     \class SOM
+	\ingroup none
     \brief Self-organizing map
 
 

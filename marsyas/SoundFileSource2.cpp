@@ -18,6 +18,7 @@
 
 /**
 \class SoundFileSource2
+\ingroup Experimental
 \brief Interface for sound file sources 
 \todo Merge this with SoundFileSource (and all the other foo2 -> foo stuff)
 

@@ -19,6 +19,7 @@
 
 /** 
     \class PvConvert
+	\ingroup none
     \brief PvConvert
 
     PvConvert N real and imaginary spectrum values to 

@@ -18,6 +18,7 @@
 
 /** 
     \class Esitar
+	\ingroup none
     \brief Update midi inpput using controls. Just through for dataflow. 
 */
 

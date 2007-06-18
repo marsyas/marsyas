@@ -18,6 +18,7 @@
 
 /** 
    \class PCA
+	\ingroup none
    \brief Perform Principal Component Analysis
 
    Perform Principal Component Analysis (PCA) on all samples of the 

@@ -18,6 +18,7 @@
 
 /** 
     \class Server
+	\ingroup none
     \brief Basic server class
     
     Create a server that can handle multiple clients. 

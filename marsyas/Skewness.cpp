@@ -18,6 +18,7 @@
 
 /** 
     \class Skewness
+	\ingroup none
     \brief Skewness computes the skewness of the input 
 
 */

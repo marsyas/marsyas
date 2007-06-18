@@ -18,6 +18,7 @@
 
 /** 
 \class MaxArgMax
+	\ingroup none
 \brief Calculate k maximums and their positions
 
 The output is : max1, argmax1, max2, argmax2, .... 

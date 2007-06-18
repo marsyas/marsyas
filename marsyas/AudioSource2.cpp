@@ -18,6 +18,7 @@
 
 /**
 \class AudioSource2
+\ingroup Experimental
 \brief Real-time audio source 
 
 Real-time Audio Source based on RtAudio

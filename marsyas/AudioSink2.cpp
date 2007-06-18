@@ -18,6 +18,7 @@
 
 /**
 \class AudioSink2
+\ingroup Experimental
 \brief Real-time Audio source for Linux
 
 Real-time Audio Sink for Linux based on the OSS sound API. 

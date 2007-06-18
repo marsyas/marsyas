@@ -18,6 +18,7 @@
 
 /** 
     \class Norm
+	\ingroup none
     \brief Norm: normalize input row vectors
 
     Normalize by subtracting mean and dividing by standard deviation

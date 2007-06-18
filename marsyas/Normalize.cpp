@@ -18,6 +18,7 @@
 
 /** 
     \class Normalize
+	\ingroup none
     \brief Normalize my mapping min/max range to user specified range
 */
 

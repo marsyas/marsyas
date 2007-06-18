@@ -18,6 +18,7 @@
 
 /** 
 \class RealvecSink
+	\ingroup none
 
 */
 

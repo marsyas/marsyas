@@ -18,6 +18,7 @@
 
 /** 
     \class ClassOutputSink
+	\ingroup none
     \brief ClassOutputSink
 
 */

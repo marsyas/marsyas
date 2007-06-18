@@ -18,6 +18,7 @@
 
 /** 
     \class PvConvolve
+	\ingroup none
     \brief PvConvolve
 
 

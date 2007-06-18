@@ -18,6 +18,7 @@
 
 /** 
     \class Confidence
+	\ingroup none
     \brief Confidence calculates classification confidence 
 
     Calculates classification confidence by majority voting. 

@@ -18,6 +18,7 @@
 
 /** 
     \class Plucked
+	\ingroup none
     \brief Multiply input realvec with gain
 
    Implementation of the Karplus_Strong 1D Digital Waveguide Model. 

@@ -18,6 +18,7 @@
 
 /** 
     \class WaveletBands
+	\ingroup none
     \brief Calculate time-domain wavelet-based bands
 
     Calculate time-domain wavelet-based bands by 

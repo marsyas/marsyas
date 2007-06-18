@@ -18,6 +18,7 @@
 
 /** 
     \class Delay
+	\ingroup none
     \brief Delay
 
    Simple Delay example

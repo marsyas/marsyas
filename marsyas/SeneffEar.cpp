@@ -18,6 +18,7 @@
 
 /** 
     \class SeneffEar
+	\ingroup none
     \brief SeneffEar auditory model
 
     SeneffEar is a perceptually-inspired auditory filterbank. 

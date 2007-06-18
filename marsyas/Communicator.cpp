@@ -19,6 +19,7 @@
 
 /** 
     \class Communicator
+	\ingroup none
     \brief Abstract base class for communicator
 
     Abstract base class for a send/receive string message type 

@@ -18,6 +18,7 @@
 
 /** 
     \class KNNClassifier
+	\ingroup none
     \brief Single KNN multidimensional classifier
 
    Simple multidimensional KNN classifier. The classifier

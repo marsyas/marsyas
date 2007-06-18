@@ -20,6 +20,7 @@
 
 /** 
     \class MslModel
+	\ingroup none
     \brief MslModel of MarSystem objects that are in a working set
     
     A working copy of all MarSystems in a current session.

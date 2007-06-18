@@ -18,6 +18,7 @@
 
 /** 
 \class TimeLine 
+	\ingroup none
 \brief TimeLine is a list of TimeRegions. 
 
 TimeLine is a list of TimeRegions. It represents a segmentation in

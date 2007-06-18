@@ -18,6 +18,7 @@
 
 /** 
     \class OnePole
+	\ingroup none
     \brief Simple one-pole filter
 
     OnePole Filter. 

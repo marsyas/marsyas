@@ -18,6 +18,7 @@
 
 /** 
     \class Rms
+	\ingroup none
     \brief Rms energy of realvec
 
    Simple MarSystem example. Calculate the RMS energy of

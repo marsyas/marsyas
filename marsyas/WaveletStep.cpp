@@ -18,6 +18,7 @@
 
 /** 
     \class WaveletStep
+	\ingroup none
     \brief One step of Discrete Wavelet Transform (DWT)
 
    One step of the Discrete Wavelet Transform (DWT) 

@@ -18,6 +18,7 @@
 
 /** 
     \class RealvecSource
+	\ingroup none
 
 */
 

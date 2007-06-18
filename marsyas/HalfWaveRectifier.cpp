@@ -18,6 +18,7 @@
 
 /** 
     \class HalfWaveRectifier
+	\ingroup none
     \brief Half Wave Rectify 
 
 */

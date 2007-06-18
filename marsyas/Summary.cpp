@@ -18,6 +18,7 @@
 
 /** 
     \class Summary
+	\ingroup none
 
     When the mode control is set to "predict" then then classifications are tracked
 	when done control is set, then the confusion matrix is shown

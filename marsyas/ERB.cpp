@@ -19,6 +19,7 @@
 
 /** 
     \class ERB
+	\ingroup none
     \brief ERB Filterbank
 
     ERB (Equivalent rectangular bandwith) filterbank. Based on 

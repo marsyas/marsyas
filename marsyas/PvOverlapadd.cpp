@@ -18,6 +18,7 @@
 
 /** 
     \class PvOverlapadd
+	\ingroup none
     \brief PvOverlapadd
 
     Multiply with window (both length Nw) using modulus arithmetic;

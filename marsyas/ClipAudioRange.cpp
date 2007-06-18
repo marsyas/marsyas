@@ -18,6 +18,7 @@
 
 /** 
     \class ClipAudioRange
+	\ingroup none
     \brief ClipAudioRange
 
     Clip any values greater than 1 or -1 to 1 and -1. 

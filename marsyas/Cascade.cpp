@@ -18,6 +18,7 @@
 
 /** 
     \class Cascade
+	\ingroup none
     \brief Cascade of MarSystem objects
 */
 

@@ -18,6 +18,7 @@
 
 /** 
 \class PeSimilarity
+	\ingroup none
 \brief similarities computation routines for peaks extraction project
 */
 

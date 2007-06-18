@@ -19,6 +19,7 @@
 
 /** 
     \class NetworkTCPSink
+	\ingroup none
     \brief NetworkTCPSink
     \author Stuart Bray 
 

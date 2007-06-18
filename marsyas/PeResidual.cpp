@@ -18,6 +18,7 @@
 
 /** 
     \class PeResidual
+	\ingroup none
     \brief Compute the Reconstruction Signal-to-Noise Ratio
 */
 

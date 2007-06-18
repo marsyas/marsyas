@@ -17,6 +17,7 @@
 */
 /**
    \class EvExpr
+	\ingroup none
    \brief Expression Event evaluates the supplied expression when prompted
           by the scheduler.
    \author Neil Burroughs  inb@cs.uvic.ca

@@ -18,6 +18,7 @@
 
 /** 
     \class Product
+	\ingroup none
     \brief Product 
     \author Adam Tindale
 

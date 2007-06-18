@@ -18,6 +18,7 @@
 
 /** 
 \class PeSynOsc
+	\ingroup none
 \brief PeSynOsc
 
 Multiply with window (both length Nw) using modulus arithmetic;

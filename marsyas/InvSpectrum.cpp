@@ -18,6 +18,7 @@
 
 /** 
     \class InvSpectrum
+	\ingroup none
     \brief Convert back the complex spectrum to time domain
 
     Convert back the complex spectrum to time domain 

@@ -18,6 +18,7 @@
 
 /** 
 \class PeClust
+	\ingroup none
 \brief Cluster peaks from peConvert
 
 

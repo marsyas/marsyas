@@ -18,6 +18,7 @@
 
 /** 
     \class MFCC
+	\ingroup none
     \brief MFCC Mel-Frequency Cepstral Coefficients
 
     Mel-Frequency cepstral coefficients are features frequently 

@@ -18,6 +18,7 @@
 
 /**
    \class SchedulerManager
+	\ingroup none
    \brief SchedulerManager schedules things
    \author inb@cs.uvic.ca
 */

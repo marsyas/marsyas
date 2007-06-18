@@ -1,12 +1,23 @@
-/**  @defgroup Core Core MarSystems
+/**  @defgroup Core Core
  *
  * \brief These are the core MarSystems.
  *
  */
 
-/**  @defgroup IO Input/Output MarSystems
+/**  @defgroup IO Input/Output
  *
  * These are the MarSystems which get data to/from files and audio.
+ *
+ */
+
+/**  @defgroup Internal Internal IO
+ *
+ * These MarSystems are used internally; if you constructing a
+ * MarNetwork, you should not need to know about these MarSystems.
+ *
+ * For example, SoundFileSource will transparently call WavFileSource or
+ * AuFileSource, but you should simply use SoundFileSource with the
+ * appropriate filename.
  *
  */
 
@@ -22,17 +33,23 @@
  *
  */
 
-
-
-
-/**  @defgroup Internal Interally-used MarSystems (don't use)
+/**  @defgroup Processing Processing
  *
- * These MarSystems are used internally; if you constructing a
- * MarNetwork, you should not need to know about these MarSystems.
- *
- * For example, SoundFileSource will transparently call WavFileSource or
- * AuFileSource, but you should simply use SoundFileSource with the
- * appropriate filename.
+ * These MarSystems process realvecs.
  *
  */
+
+/**  @defgroup Experimental Experimental
+ *
+ * These MarSystems are experimental and should not be used.
+ *
+ */
+
+/**  @defgroup none Undocumented
+ *
+ * These MarSystems have not been documented yet.
+ *
+ */
+
+
 

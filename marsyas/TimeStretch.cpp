@@ -18,6 +18,7 @@
 
 /** 
     \class TimeStretch
+	\ingroup none
     \brief TimeStretch input realvec by factor 
 
 

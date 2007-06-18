@@ -19,6 +19,7 @@
 
 /** 
     \class Panorama
+	\ingroup none
     \brief Amplitude Panning to move single broadband source to an azimuth angle
 */
 

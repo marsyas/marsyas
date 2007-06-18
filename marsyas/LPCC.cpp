@@ -18,6 +18,7 @@
 
 /** 
 \class LPCC
+	\ingroup none
 \brief Convert LPC coefficients to Cepstrum coefficients.
 
 This MarSystem is expecting to receive at its input LPC coefficients + Pitch + Power,

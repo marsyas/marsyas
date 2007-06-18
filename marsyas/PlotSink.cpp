@@ -18,6 +18,7 @@
 
 /**
 \class PlotSink
+	\ingroup none
 \ingroup IO
 \brief Text output sink
 

@@ -18,6 +18,7 @@
 
 /** 
     \class PvOscBank
+	\ingroup none
     \brief PvOscBank
 
     A bank of sine wave oscillators used for phasevocoding. 

@@ -18,6 +18,7 @@
 
 /** 
     \class MemorySource
+	\ingroup none
 
 */
 

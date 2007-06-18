@@ -19,6 +19,7 @@
 
 /** 
     \class BeatHistoFeatures
+	\ingroup none
     \brief Beat Histogram Features
 
     Beat Histogram Features numerical values summarizing 

@@ -18,6 +18,7 @@
 
 /**
    \class CollectionFileSource
+	\ingroup none
    \brief CollectionFileSource abstracts a collections of soundfiles as a SoundFileSource. 
    
    CollectionFileSource reads in a collection file consisting of a list of 

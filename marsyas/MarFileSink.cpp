@@ -18,6 +18,7 @@
 
 /**
    \class MarFileSink
+	\ingroup none
    \brief Text output sink
 
 */

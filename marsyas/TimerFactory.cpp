@@ -19,6 +19,7 @@
 
 /**
    \class TimerFactory
+	\ingroup none
    \brief TimerFactory
    \author inb@cs.uvic.ca
 */

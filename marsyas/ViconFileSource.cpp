@@ -18,6 +18,7 @@
 
 /**
    \class ViconFileSource
+	\ingroup none
    \brief ViconFileSource for exported VICON .txt files
    
    ViconFileSource reader for exported VICON .txt files. 

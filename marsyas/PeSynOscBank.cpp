@@ -18,6 +18,7 @@
 
 /** 
 \class PeSynOscBank
+	\ingroup none
 \brief PeSynOscBank
 
 A bank of sine wave oscillators used for pevocoding. 

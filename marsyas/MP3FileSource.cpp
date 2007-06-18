@@ -19,6 +19,7 @@
 
 /**
    \class MP3FileSource
+	\ingroup Internal
    \brief MP3FileSource read mp3 files using libmad
    \author Stuart Bray
 

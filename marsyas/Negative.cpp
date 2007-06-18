@@ -18,7 +18,10 @@
 
 /** 
     \class Negative
+	\ingroup Processing
     \brief Negate the input
+
+	Controls: none
 */
 
 #include "Negative.h"

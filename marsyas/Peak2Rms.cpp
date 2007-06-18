@@ -18,6 +18,7 @@
 
 /** 
     \class Peak2Rms
+	\ingroup none
     \brief Peak to Rms ratio for time domain signals
     \author Adam Tindale
 

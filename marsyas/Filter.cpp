@@ -18,6 +18,7 @@
 
 /**  
 \class Filter
+	\ingroup none
 \brief Filter a Signal 
 
 Filters a Signal using the coefficients stored in a FilterCoeffs

@@ -18,6 +18,7 @@
 
 /** 
     \class Talk
+	\ingroup none
     \brief Message handler
 
     Reacts to various messages using Communicator. 

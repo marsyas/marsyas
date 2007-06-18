@@ -19,6 +19,7 @@
 
 /** 
 \class LSP
+	\ingroup none
 \brief Compute Linear Spectral Pair (LSP) coefficients 
 Takes the output of ::LPC() and calculates the corresponding LSP values.
 See the LPC class implementation.

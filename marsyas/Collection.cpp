@@ -19,6 +19,7 @@
 
 /**
    \class Collection
+	\ingroup none
    \brief List of files
 
    List of files used for batch processing.

@@ -19,6 +19,7 @@
 
 /**
    \class Repeat
+	\ingroup none
    \brief 
 */
 #include "Repeat.h"

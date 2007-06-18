@@ -19,6 +19,7 @@
 
 /** 
     \class Kurtosis
+	\ingroup none
     \brief Kurtosis 
 
     Calculate the Kurtosis of the input observations. Typically used 

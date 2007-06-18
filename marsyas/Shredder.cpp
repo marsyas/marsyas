@@ -19,6 +19,7 @@
 
 /** 
     \class Shredder 
+	\ingroup none
 
     \brief Split the output of an accumulator
 

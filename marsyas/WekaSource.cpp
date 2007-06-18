@@ -1,6 +1,7 @@
 
 /**
    \class WekaSource
+	\ingroup none
    \brief Input sink for Weka-formatted (textual) feature data
 
 */
