@@ -264,7 +264,8 @@ HEADERS += \
 	PeSynOscBank.h \
 	SpectralSNR.h \
 	HWPSspectrum.h \
-	Vibrato.h
+	Vibrato.h \
+	Panorama.h
 	 
 SOURCES += \
 	ADSR.cpp \
@@ -470,5 +471,6 @@ SOURCES += \
 	PeSynOscBank.cpp \
 	SpectralSNR.cpp \
 	HWPSspectrum.cpp \
-	Vibrato.cpp
+	Vibrato.cpp \
+	Panorama.cpp
 	
