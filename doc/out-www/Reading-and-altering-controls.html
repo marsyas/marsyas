@@ -1,0 +1,118 @@
+<html lang="en">
+<head>
+<title>Reading and altering controls - Marsyas 0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Marsyas 0.2">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Example-programs.html#Example-programs" title="Example programs">
+<link rel="prev" href="Hello-World-_0028playing-an-audio-file_0029.html#Hello-World-_0028playing-an-audio-file_0029" title="Hello World (playing an audio file)">
+<link rel="next" href="Writing-data-to-text-files.html#Writing-data-to-text-files" title="Writing data to text files">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+Copyright 1998-2006 George Tzanetakis
+
+Permission is granted to make and distribute verbatim
+copies of this manual provided the copyright notice and
+this permission notice are preserved on all copies.
+
+Permission is granted to copy and distribute modified
+versions of this manual under the conditions for
+verbatim copying, provided also that the sections
+entitled "Copying" and "GNU General Public License"
+are included exactly as in the original, and provided
+that the entire resulting derived work is distributed
+under the terms of a permission notice identical to this
+one.
+
+Permission is granted to copy and distribute
+translations of this manual into another language,
+under the above conditions for modified versions,
+except that this permission notice may be stated in a
+translation approved by the Free Software Foundation.-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Reading-and-altering-controls"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Writing-data-to-text-files.html#Writing-data-to-text-files">Writing data to text files</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Hello-World-_0028playing-an-audio-file_0029.html#Hello-World-_0028playing-an-audio-file_0029">Hello World (playing an audio file)</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Example-programs.html#Example-programs">Example programs</a>
+<hr>
+</div>
+
+<h4 class="subsection">5.2.2 Reading and altering controls</h4>
+
+<p>Here we have modified the example from the previous section: we have added
+the ability to start at an arbitrary position (time) inside the audio file. 
+To calculate the starting position in the file, we must know the sample rate
+and number of channels.  We get this information from the
+<code>SoundFileSource</code> with <code>getctrl</code>.
+
+<pre class="verbatim"><!-- Generator: GNU source-highlight 2.4
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><b><font color="#000080">#include</font></b> <font color="#FF0000">"MarSystemManager.h"</font>
+<b><font color="#0000FF">using</font></b> <b><font color="#0000FF">namespace</font></b> std<font color="#990000">;</font>
+<b><font color="#0000FF">using</font></b> <b><font color="#0000FF">namespace</font></b> Marsyas<font color="#990000">;</font>
+
+<font color="#009900">void</font> <b><font color="#000000">sfplay</font></b><font color="#990000">(</font>string sfName<font color="#990000">,</font> <font color="#009900">float</font> gain<font color="#990000">,</font> <font color="#009900">float</font> start<font color="#990000">)</font> <font color="#FF0000">{</font>
+	MarSystemManager mng<font color="#990000">;</font>
+
+	MarSystem<font color="#990000">*</font> playbacknet <font color="#990000">=</font> mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"Series"</font><font color="#990000">,</font> <font color="#FF0000">"playbacknet"</font><font color="#990000">);</font>
+
+	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">addMarSystem</font></b><font color="#990000">(</font>mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource"</font><font color="#990000">,</font> <font color="#FF0000">"src"</font><font color="#990000">));</font>
+	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">addMarSystem</font></b><font color="#990000">(</font>mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"Gain"</font><font color="#990000">,</font> <font color="#FF0000">"gt"</font><font color="#990000">));</font>
+	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">addMarSystem</font></b><font color="#990000">(</font>mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"AudioSink"</font><font color="#990000">,</font> <font color="#FF0000">"dest"</font><font color="#990000">));</font>
+
+<i><font color="#9A1900">// calculate the starting position.</font></i>
+	mrs_natural nChannels <font color="#990000">=</font> playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_natural/nChannels"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toNatural</font></b><font color="#990000">();</font>
+	mrs_real srate <font color="#990000">=</font> playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_real/israte"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toReal</font></b><font color="#990000">();</font>
+	mrs_natural startPosition <font color="#990000">=</font> <font color="#990000">(</font>mrs_natural<font color="#990000">)</font> <font color="#990000">(</font>start <font color="#990000">*</font> srate <font color="#990000">*</font> nChannels<font color="#990000">);</font>
+
+	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_string/filename"</font><font color="#990000">,</font> sfName<font color="#990000">);</font>
+	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"Gain/gt/mrs_real/gain"</font><font color="#990000">,</font> gain<font color="#990000">);</font>
+	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"AudioSink/dest/mrs_bool/initAudio"</font><font color="#990000">,</font> <b><font color="#0000FF">true</font></b><font color="#990000">);</font>
+
+<i><font color="#9A1900">// set the starting position of the source</font></i>
+	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_natural/pos"</font><font color="#990000">,</font> startPosition<font color="#990000">);</font>
+
+	<b><font color="#0000FF">while</font></b> <font color="#990000">(</font> playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_bool/notEmpty"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toBool</font></b><font color="#990000">()</font> <font color="#990000">)</font> <font color="#FF0000">{</font>
+		playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">tick</font></b><font color="#990000">();</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">delete</font></b> playbacknet<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">int</font> <b><font color="#000000">main</font></b><font color="#990000">(</font><font color="#009900">int</font> argc<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#009900">char</font> <font color="#990000">**</font>argv<font color="#990000">)</font> <font color="#FF0000">{</font>
+	string fileName<font color="#990000">;</font>
+	<font color="#009900">float</font> gain<font color="#990000">,</font> start<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>argc<font color="#990000">&lt;</font><font color="#993399">2</font><font color="#990000">)</font> <font color="#FF0000">{</font> cout<font color="#990000">&lt;&lt;</font><font color="#FF0000">"Please enter filename."</font><font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font> <b><font color="#000000">exit</font></b><font color="#990000">(</font><font color="#993399">1</font><font color="#990000">);</font> <font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> 
+		<font color="#FF0000">{</font> fileName <font color="#990000">=</font> argv<font color="#990000">[</font><font color="#993399">1</font><font color="#990000">];</font> <font color="#FF0000">}</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>argc<font color="#990000">&lt;</font><font color="#993399">3</font><font color="#990000">)</font> <font color="#FF0000">{</font> gain <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">;</font> <font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b>
+		<font color="#FF0000">{</font> gain <font color="#990000">=</font> <b><font color="#000000">atof</font></b><font color="#990000">(</font>argv<font color="#990000">[</font><font color="#993399">2</font><font color="#990000">]);</font> <font color="#FF0000">}</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>argc<font color="#990000">&lt;</font><font color="#993399">4</font><font color="#990000">)</font> <font color="#FF0000">{</font> start <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> <font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b>
+		<font color="#FF0000">{</font> start <font color="#990000">=</font> <b><font color="#000000">atof</font></b><font color="#990000">(</font>argv<font color="#990000">[</font><font color="#993399">3</font><font color="#990000">]);</font> <font color="#FF0000">}</font>
+	cout <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"Playing file "</font> <font color="#990000">&lt;&lt;</font> fileName <font color="#990000">&lt;&lt;</font> <font color="#FF0000">" at volume "</font> <font color="#990000">&lt;&lt;</font>
+		gain <font color="#990000">&lt;&lt;</font> <font color="#FF0000">" starting at "</font> <font color="#990000">&lt;&lt;</font> start <font color="#990000">&lt;&lt;</font> <font color="#FF0000">" seconds"</font> <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
+
+	<b><font color="#000000">sfplay</font></b><font color="#990000">(</font>fileName<font color="#990000">,</font>gain<font color="#990000">,</font>start<font color="#990000">);</font>
+	<b><font color="#000000">exit</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">);</font>
+<font color="#FF0000">}</font>
+</tt></pre>
+</pre>
+
+   </body></html>
+

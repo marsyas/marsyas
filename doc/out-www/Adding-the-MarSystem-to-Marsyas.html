@@ -1,0 +1,89 @@
+<html lang="en">
+<head>
+<title>Adding the MarSystem to Marsyas - Marsyas 0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Marsyas 0.2">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Developing-MarSystems.html#Developing-MarSystems" title="Developing MarSystems">
+<link rel="prev" href="Writing-your-own-MarSystems.html#Writing-your-own-MarSystems" title="Writing your own MarSystems">
+<link rel="next" href="myUpdate_0028_0029-and-myProcess_0028_0029.html#myUpdate_0028_0029-and-myProcess_0028_0029" title="myUpdate() and myProcess()">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+Copyright 1998-2006 George Tzanetakis
+
+Permission is granted to make and distribute verbatim
+copies of this manual provided the copyright notice and
+this permission notice are preserved on all copies.
+
+Permission is granted to copy and distribute modified
+versions of this manual under the conditions for
+verbatim copying, provided also that the sections
+entitled "Copying" and "GNU General Public License"
+are included exactly as in the original, and provided
+that the entire resulting derived work is distributed
+under the terms of a permission notice identical to this
+one.
+
+Permission is granted to copy and distribute
+translations of this manual into another language,
+under the above conditions for modified versions,
+except that this permission notice may be stated in a
+translation approved by the Free Software Foundation.-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Adding-the-MarSystem-to-Marsyas"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="myUpdate_0028_0029-and-myProcess_0028_0029.html#myUpdate_0028_0029-and-myProcess_0028_0029">myUpdate() and myProcess()</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Writing-your-own-MarSystems.html#Writing-your-own-MarSystems">Writing your own MarSystems</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Developing-MarSystems.html#Developing-MarSystems">Developing MarSystems</a>
+<hr>
+</div>
+
+<h3 class="section">6.2 Adding the MarSystem to Marsyas</h3>
+
+<p>The new MarSystem should be placed in the <samp><span class="file">marsyas/</span></samp> directory, and
+must be added to <samp><span class="file">MarSystemManager.cpp</span></samp> and the build process. 
+Again, the easiest way is to look for <code>Gain</code> and do the same thing
+with your new MarSystem.
+
+<h5 class="subsubheading">MarSystemManager</h5>
+
+     <ul>
+<li><samp><span class="file">marsyas/MarSystemManager.cpp</span></samp>
+</ul>
+
+<h5 class="subsubheading">Build process: autotools</h5>
+
+     <ul>
+<li><samp><span class="file">marsyas/Makefile.am</span></samp>
+<li><samp><span class="file">lib/release/Makefile.am</span></samp>
+</ul>
+
+   <p>Now execute <code>automake</code> and <code>./configure</code> before recompiling
+with <code>make</code>.
+
+<h5 class="subsubheading">Build process: qmake</h5>
+
+     <ul>
+<li><samp><span class="file">marsyas/marsyas.pro</span></samp>
+</ul>
+
+   <p>Now execute <code>qmake</code> before recompiling with whichever compiler you
+use.
+
+   </body></html>
+

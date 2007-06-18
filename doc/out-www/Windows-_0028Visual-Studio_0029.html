@@ -1,0 +1,89 @@
+<html lang="en">
+<head>
+<title>Windows (Visual Studio) - Marsyas 0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Marsyas 0.2">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Platform_002dspecific-notes.html#Platform_002dspecific-notes" title="Platform-specific notes">
+<link rel="prev" href="Windows-_0028cygwin_0029.html#Windows-_0028cygwin_0029" title="Windows (cygwin)">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+Copyright 1998-2006 George Tzanetakis
+
+Permission is granted to make and distribute verbatim
+copies of this manual provided the copyright notice and
+this permission notice are preserved on all copies.
+
+Permission is granted to copy and distribute modified
+versions of this manual under the conditions for
+verbatim copying, provided also that the sections
+entitled "Copying" and "GNU General Public License"
+are included exactly as in the original, and provided
+that the entire resulting derived work is distributed
+under the terms of a permission notice identical to this
+one.
+
+Permission is granted to copy and distribute
+translations of this manual into another language,
+under the above conditions for modified versions,
+except that this permission notice may be stated in a
+translation approved by the Free Software Foundation.-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Windows-(Visual-Studio)"></a>
+<a name="Windows-_0028Visual-Studio_0029"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Windows-_0028cygwin_0029.html#Windows-_0028cygwin_0029">Windows (cygwin)</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Platform_002dspecific-notes.html#Platform_002dspecific-notes">Platform-specific notes</a>
+<hr>
+</div>
+
+<h4 class="subsection">2.5.4 Windows (Visual Studio)</h4>
+
+<p><a name="index-Windows-6"></a>
+A few of our developers use Visual Studio, so this environment is fairly
+well supported.
+
+<pre class="example">     Anyone wanting to use MSVC2005 (and probably MSVC6, MSVC2003 and
+     MSVC2005express) and Qt4.x opensource please try doing the following:
+     
+     1)  Use the most recent version of qmake, available at:
+     
+     <a href="http://qtnode.net/wiki/Qt4_with_Visual_Studio">http://qtnode.net/wiki/Qt4_with_Visual_Studio</a>
+     
+     2)  Do not forget to put you Qt bin dir in the system path (i.e.
+     c:\Qt\4.2.2\bin), so you can use qmake anywhere, and to define the
+     QMAKESPEC env var, that for the case of MSVC2005 should be
+     win32-msvc2005.
+     
+     3) open a MSVC2005 command prompt (you can find this in
+     Start-&gt;Programs-&gt;Microsoft Visual Studio-&gt;Visual Studio Tools); this cmd
+     prompt has all the env variables correctly configured in case you do not
+     have them configured in your system)
+     
+     3) run "qconfigure msvc2005" (without the quotes) and follow the
+     instructions (basically reply yes whenever asked).
+     
+     4) after the successful build of qmake and the subsequent generation
+     of the makefiles for the patched Qt code, just do nmake to build the
+     Qt lib (this will take a while, so go grab a coffee or something! ;-))
+     
+     5) When done, you should now be able to create MSVC2005 project using
+     qmake -t vcapp/vclib from all your marsyas .pro!
+</pre>
+   </body></html>
+
