@@ -18,9 +18,15 @@
 
 /** 
   \class MidiInput
+  \ingroup IO
   \brief Update midi inpput using controls. Just through for dataflow. 
- */
 
+  Controls:
+  - \b mrs_natural/port	: input midi port
+  - \b mrs_bool/virtualPort	: is this a virtual MIDI port?
+  - \b mrs_bool/initmidi	: enable midi (should be \em true )
+ */
+    
 #include "MidiInput.h"
 
 using namespace std;

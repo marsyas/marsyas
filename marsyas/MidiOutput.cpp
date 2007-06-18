@@ -18,7 +18,17 @@
 
 /** 
   \class MidiOutput
+  \ingroup IO
   \brief Control of MahaDeviBot Commands via Midi Controls.
+
+  Controls:
+  - \b mrs_natural/port	: input midi port
+  - \b mrs_bool/virtualPort	: is this a virtual MIDI port?
+  - \b mrs_bool/initmidi	: enable midi (should be \em true )
+
+  - \b mrs_natural/byte1	: used for deviBot
+  - \b mrs_natural/byte2	: used for deviBot
+  - \b mrs_natural/byte3	: used for deviBot
  */
 
 #include "MidiOutput.h"
