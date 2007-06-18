@@ -1,19 +1,23 @@
-include( "$$BASEDIR"/marsyasConfig.pri )
+include( $$quote( "$$BASEDIR/marsyasConfig.pri" ) )
 
 CONFIG(release, debug|release) {
   message(Building with release support.)
-  DESTDIR = "$$BASEDIR"/bin/release
+  DESTDIR = $$quote( "$$BASEDIR/bin/release" )
 }
 
 CONFIG(debug, debug|release) {
   message(Building with debug support.)
-  DESTDIR = "$$BASEDIR"/bin/debug
+  DESTDIR = $$quote( "$$BASEDIR/bin/debug" )
 }
 
 CONFIG(release, debug|release){
-	LIBS 	+= 	-lmarsyas -L\"$$BASEDIR/lib/release\"
+	win32: LIBS  += marsyas.lib
+	!win32: LIBS += -lmarsyas
+	LIBPATH +=  $$quote( "$$BASEDIR/lib/release" )
 }
 CONFIG(debug, debug|release){
-	LIBS 	+= 	-lmarsyas -L\"$$BASEDIR/lib/debug\"
+	win32:LIBS 	+= 	marsyas.lib
+	!win32: += -lmarsyas 	
+	LIBPATH += $$quote( "$$BASEDIR/lib/debug" )
 }
 

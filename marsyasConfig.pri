@@ -93,7 +93,7 @@ unix:!macx:CONFIG += marsyasAUDIOIO_ALSA
 message ( ***************************************************** )
 message ( Configuring Marsyas build with the following options: )
 
-INCLUDEPATH += "$$BASEDIR"/marsyas 
+INCLUDEPATH += $$quote( "$$BASEDIR/marsyas" ) 
 
 CONFIG(debug, debug|release) {
 	message ( -> DEBUG building )
@@ -117,14 +117,14 @@ marsyasQT {
 	message ( -> Qt support in marsyas.lib )
 	CONFIG += qt
 	DEFINES += MARSYAS_QT
-	INCLUDEPATH += "$$BASEDIR"/marsyas/Qt 
+	INCLUDEPATH += $$quote( "$$BASEDIR/marsyas/Qt" ) 
 }
 
 marsyasMATLABdebug {
 	CONFIG(debug, debug|release) {
 		message ( -> MATLAB support  for debug builds)
 		DEFINES += MARSYAS_MATLAB
-		INCLUDEPATH += "$$BASEDIR"/marsyas/MATLAB 
+		INCLUDEPATH += $$quote( "$$BASEDIR/marsyas/MATLAB" ) 
 	}
 }
 
@@ -132,7 +132,7 @@ marsyasMATLABrelease {
 	CONFIG(release, debug|release) {
 		message ( -> MATLAB support  for release builds)
 		DEFINES += MARSYAS_MATLAB
-		INCLUDEPATH += "$$BASEDIR"/marsyas/MATLAB 
+		INCLUDEPATH += $$quote( "$$BASEDIR/marsyas/MATLAB" ) 
 	}
 }
 
@@ -255,8 +255,8 @@ win32 {
 	win32-msvc2005:QMAKE_LFLAGS_DEBUG += /INCREMENTAL
 
 	DEFINES += 	MARSYAS_WIN32 \
-		WIN32 \
-		_WINDOWS 	
+				WIN32 \
+				_WINDOWS 	
 	LIBS 	+= 	-luser32
 
 	CONFIG(release, debug|release){
@@ -272,8 +272,9 @@ win32 {
 			DEFINES += \
 				MARSYAS_DS \
 				__WINDOWS_DS__
-			LIBS += -ldsound -L\"$$(DXSDK_DIR)Lib/x86\" #DXSDK_DIR must be defined as an environment variable in windows!
-			INCLUDEPATH += "$$(DXSDK_DIR)"Include #include path for dsound.h
+			LIBS += dsound.lib 
+			LIBPATH += $$quote( "$$(DXSDK_DIR)Lib/x86" ) #DXSDK_DIR must be defined as an environment variable in windows!
+			INCLUDEPATH += $$quote( "$$(DXSDK_DIR)Include" ) #include path for dsound.h
 		}
 		marsyasAUDIOIO_ASIO {
 			DEFINES += \
@@ -281,19 +282,19 @@ win32 {
 				__WINDOWS_ASIO_
 			DEFINES -= UNICODE
 			SOURCES += 
-				"$$BASEDIR"/otherlibs/asio/asio.cpp \
-				"$$BASEDIR"/otherlibs/asio/asiodrivers.cpp \
-				"$$BASEDIR"/otherlibs/asio/asiolist.cpp \
-				"$$BASEDIR"/otherlibs/asio/iasiothiscallresolver.cpp
+				$$quote( "$$BASEDIR/otherlibs/asio/asio.cpp" ) \
+				$$quote( "$$BASEDIR/otherlibs/asio/asiodrivers.cpp" ) \
+				$$quote( "$$BASEDIR/otherlibs/asio/asiolist.cpp" ) \
+				$$quote( "$$BASEDIR/otherlibs/asio/iasiothiscallresolver.cpp" )
 			HEADERS += \ 
-				"$$BASEDIR"/otherlibs/asio/asio.h \
-				"$$BASEDIR"/otherlibs/asio/asiodrivers.h \
-				"$$BASEDIR"/otherlibs/asio/asiodrvr.h \
-				"$$BASEDIR"/otherlibs/asio/asiolist.h \
-				"$$BASEDIR"/otherlibs/asio/asiosys.h \
-				"$$BASEDIR"/otherlibs/asio/ginclude.h \
-				"$$BASEDIR"/otherlibs/asio/iasiodrv.h \
-				"$$BASEDIR"/otherlibs/asio/iasiothiscallresolver.h
+				$$quote( "$$BASEDIR/otherlibs/asio/asio.h" ) \
+				$$quote( "$$BASEDIR/otherlibs/asio/asiodrivers.h" ) \
+				$$quote( "$$BASEDIR/otherlibs/asio/asiodrvr.h" ) \
+				$$quote( "$$BASEDIR/otherlibs/asio/asiolist.h" ) \
+				$$quote( "$$BASEDIR/otherlibs/asio/asiosys.h" ) \
+				$$quote( "$$BASEDIR/otherlibs/asio/ginclude.h" ) \
+				$$quote( "$$BASEDIR/otherlibs/asio/iasiodrv.h" ) \
+				$$quote( "$$BASEDIR/otherlibs/asio/iasiothiscallresolver.h" )
 		}
 	}
 	
@@ -308,28 +309,32 @@ win32 {
 	marsyasMATLABdebug{
 		CONFIG(debug, debug|release) {
 			DEFINES += MARSYAS_MATLAB
-			INCLUDEPATH += "$$(MATLAB)"/extern/include
-			LIBS += -llibeng -llibmx -llibut -L\"$$(MATLAB)/extern/lib/win32/microsoft\"
+			INCLUDEPATH += $$quote( "$$(MATLAB)/extern/include" )
+			LIBS += -llibeng -llibmx -llibut 
+			LIBPATH += $$quote( "$$(MATLAB)/extern/lib/win32/microsoft" )
 		}
 	}
 	marsyasMATLABrelease{
 		CONFIG(release, debug|release) {
 			DEFINES += MARSYAS_MATLAB
-			INCLUDEPATH += "$$(MATLAB)"/extern/include
-			LIBS += -llibeng -llibmx -llibut -L\"$$(MATLAB)/extern/lib/win32/microsoft\"
+			INCLUDEPATH += $$quote( "$$(MATLAB)/extern/include" )
+			LIBS += -llibeng -llibmx -llibut 
+			LIBPATH += $$quote( "$$(MATLAB)/extern/lib/win32/microsoft" )
 		}
 	}
 	
 	marsyasMAD {
-		INCLUDEPATH += \"$$(LIBMAD)\"
+		INCLUDEPATH += $$quote( "$$(LIBMAD)" )
 		DEFINES += MARSYAS_MAD
 		CONFIG(release, debug|release){
 			message(Building with libMAD MP3 support (release).)
-			LIBS += -llibmad -L\"$$(LIBMAD)/msvc++/Release\"
+			LIBS += -llibmad 
+			LIBPATH += $$quote( "$$(LIBMAD)/msvc++/Release" )
 		}
 		CONFIG(debug, debug|release){
 			message(Building with libMAD MP3 support (debug).)
-			LIBS += -llibmad -L\"$$(LIBMAD)/msvc++/Debug\"
+			LIBS += -llibmad 
+			LIBPATH += $$quote( "$$(LIBMAD)/msvc++/Debug" )
 		}
 	}
 }

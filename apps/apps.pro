@@ -1,4 +1,4 @@
-include( "$$BASEDIR"/marsyasConfig.pri )
+include( $$quote( "$$BASEDIR/marsyasConfig.pri" ) )
 
 TEMPLATE = subdirs
 

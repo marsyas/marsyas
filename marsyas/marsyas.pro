@@ -1,4 +1,4 @@
-include( "$$BASEDIR"/marsyasConfig.pri )
+include( $$quote( "$$BASEDIR/marsyasConfig.pri" ) )
 
 TEMPLATE = lib
 CONFIG += staticlib
@@ -6,12 +6,12 @@ TARGET = marsyas
 
 CONFIG(release, debug|release) {
   message(Building with release support.)
-  DESTDIR = "$$BASEDIR"/lib/release/
+  DESTDIR = $$quote( "$$BASEDIR/lib/release/" )
 }
 
 CONFIG(debug, debug|release) {
   message(Building with debug support.)
-  DESTDIR = "$$BASEDIR"/lib/debug/
+  DESTDIR = $$quote( "$$BASEDIR/lib/debug/" )
 }
 
 ######################################################################
