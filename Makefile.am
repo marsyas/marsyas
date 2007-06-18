@@ -31,7 +31,7 @@ SUBDIRS			+= examples tests
  
 # we must now explicitly define subdirs to be included in the dist
 DIST_SUBDIRS		= marsyas lib apps bin doc
-DIST_SUBDIRS		+= examples
+DIST_SUBDIRS		+= examples tests
 
 
 #  There's no point writing Makefiles for temporary holding areas.

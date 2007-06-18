@@ -117,7 +117,7 @@ AUTOMAKE_OPTIONS = foreign
 SUBDIRS = marsyas lib apps bin doc examples tests
 
 # we must now explicitly define subdirs to be included in the dist
-DIST_SUBDIRS = marsyas lib apps bin doc examples
+DIST_SUBDIRS = marsyas lib apps bin doc examples tests
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure marsyas/config-h.in \
 			  marsyas/stamp-h.in 
