@@ -16,6 +16,14 @@
  *
  */
 
+/**  @defgroup Synthesis Synthesis
+ *
+ * These MarSystems generate sounds.
+ *
+ */
+
+
+
 
 /**  @defgroup Internal Interally-used MarSystems (don't use)
  *

@@ -18,8 +18,11 @@
 
 /** 
     \class SineSource
+	\ingroup Synthesis
     \brief SineSource generate a sine wave
 
+	Controls:
+	- b mrs_real/frequency	: frequency of the sine wave
 */
 
 #include "SineSource.h"

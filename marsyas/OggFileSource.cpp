@@ -19,6 +19,7 @@
 
 /**
    \class OggFileSource
+   \ingroup Internal
    \brief OggFileSource read ogg files using vorbisfile
    \author Taras Glek
  
