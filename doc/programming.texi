@@ -1,30 +1,15 @@
-@node Programming
-@chapter Programming
-
-@menu
-* Assembling a network::        
-* Writing your own MarSystems::  
-* Tips for Working with Marsyas::  
-@end menu
-
-
-@node Assembling a network
-@section Assembling a network
+@node Programming Applications
+@chapter Programming Applications
 
 @menu
 * Including libraries and linking::  
-* Hello World (playing an audio file)::  
-* Reading and altering controls::  
-* Writing data to text files::  
-* Getting data from the network::  
-* Scheduler::                   
-* Command-line options::        
+* Example programs::            
+* Other programming issues::    
 @end menu
 
 
-
 @node Including libraries and linking
-@subsection Including libraries and linking
+@section Including libraries and linking
 
 @cindex Compiling
 @cindex Linking
@@ -32,7 +17,7 @@ To use any marsyas code in your program(s), you need to include the
 Marsyas libraries in your project.
 
 
-@unnumberedsubsubsec Linux and other *nixes
+@subsection Linux and other *nixes (including Cygwin)
 
 The easiest way to compile Marsyas projects is to use a makefile.  In your
 working directory, create a file called @file{Makefile} which contains
@@ -56,8 +41,7 @@ your file.
 
 
 
-
-@unnumberedsubsubsec OSX
+@subsection MacOS X
 
 To compile Marsyas projects in OSX, use the same @file{Makefile} as is used
 in other *nixes, but replace the final line with
@@ -68,10 +52,27 @@ in other *nixes, but replace the final line with
 @end example
 
 
-@unnumberedsubsubsec Windows Visual Studio
+@subsection Windows Visual Studio
 
 Please see the documentation for your compiler / development environment.
 @c alternately, Gustavo could write something here.  :)
+
+
+@node Example programs
+@section Example programs
+
+The most efficient way to learn how to write programs that use MarSystem
+is to read these examples.  We recommend that you use these examples as
+templates when you begin to write your own programs.
+
+@menu
+* Hello World (playing an audio file)::  
+* Reading and altering controls::  
+* Writing data to text files::  
+* Getting data from the network::  
+* Command-line options::        
+@end menu
+
 
 
 @node Hello World (playing an audio file)
@@ -122,13 +123,6 @@ thing to note is that we have the data at the level of C programming.
 
 
 
-@node Scheduler
-@subsection Scheduler
-
-To schedule events using the new scheduler code, see the
-Marsyas Expression Syntax documentation at
-@uref{http://www.cs.uvic.ca/~inb/work/expr.html}
-
 
 @node Command-line options
 @subsection Command-line options
@@ -139,43 +133,21 @@ a handy object which parses the command-line for you.
 @examplefile{commandOptions.cpp}
 
 
-@node Writing your own MarSystems
-@section Writing your own MarSystems
-
-It's relatively straightforward to extend Marsyas by writing your own
-Marsystems. As mentioned before each MarSystems must basically support
-the process method that handles the dataflow and the update method that
-handles the control messages.  There are certain conventions that need
-to be followed so typically it is a better idea to copy and modify an
-existing Marsystem rather than writing one from scratch. The simple
-canonical example of a MarSystem that is what I use as a template when I
-write a new Marsystem is @file{Gain.h} and @file{Gain.cpp}  or
-@file{MarSystemTemplateBasic .h .cpp}.
-
-The new MarSystem should be placed in the @file{marsyas/} directory, and
-must be added to @file{MarSystemManager.cpp} and the build process.
-Again, the easiest way is to look for @code{Gain} and do the same thing
-with your new MarSystem.  There are four files which require attention:
-
-@itemize
-@item @file{marsyas/MarSystemManager.cpp}
-@item @file{marsyas/marsyas.pro}
-@item @file{marsyas/Makefile.am}
-@item @file{lib/release/Makefile.am}
-@end itemize
-
-Once you have edited these files, recompile marsyas (with automake:
-@code{automake}, @code{./configure}, @code{make}, @code{make install}.
-With qmake, just run @code{qmake}), then @code{make}, and @code{make
-install}.)
-
-
-@node Tips for Working with Marsyas
-@section Tips for Working with Marsyas
+@node Other programming issues
+@section Other programming issues
 
 @menu
+* Scheduler::                   
 * Visualizing data with gnuplot::  
 @end menu
+
+
+@node Scheduler
+@subsection Scheduler
+
+To schedule events using the new scheduler code, see the
+Marsyas Expression Syntax documentation at
+@uref{http://www.cs.uvic.ca/~inb/work/expr.html}
 
 
 @node Visualizing data with gnuplot

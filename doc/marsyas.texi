@@ -61,11 +61,10 @@ translation approved by the Free Software Foundation.
 * Installation::                Installation instructions for different operating systems.
 * Tools::                       Various sample tools built using marsyas
 components.
-* Architecture::                Software architecture, concepts, and assembling new MarSystems.
-* Programming::                 Writing new basic MarSystem blocks.
+* Architecture::                Software architecture and concepts.
+* Programming Applications::    Writing programs that use MarSystems.
+* Developing MarSystems::       Writing new basic MarSystem blocks.
 * Interoperability::            Using Marsyas with other projects.
-* Future Work::                 Where Marsyas is going.
-* Users and Projects::          Past and current users/projects.
 * The Index::                   The Index.
 @end menu
 
@@ -76,10 +75,11 @@ components.
 @include tools.texi
 @include architecture.texi
 @include programming.texi
+@include developing.texi
 @include interoperability.texi
 
 @c to be scrapped soon.   -gp
-@include unsorted.texi
+@c @include unsorted.texi
 
 
 
