@@ -16,8 +16,8 @@
 ## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 
-TEXI2HTML = makeinfo --html -o out-www/
-TEXI2PDF  = texi2pdf
+TEXI2HTML = makeinfo --html -o out-www/manual/
+TEXI2PDF  = texi2pdf -o out-www/
 info_TEXINFOS   = marsyas.texi 
 
 EXTRA_DIST = marsyas.pdf intro.texi tools.texi architecture.texi programming.texi install.texi unsorted.texi interoperability.texi
@@ -46,14 +46,14 @@ sources:
 	source-highlight --output-dir=source-doc/ -f texinfo $(QT_EXAMPLES) $(EXAMPLES)
 	source-highlight --output-dir=source-doc/ -f html --src-lang=perl $(QT_EXAMPLES_AS_PERL)
 	source-highlight --output-dir=source-doc/ -f texinfo --src-lang=perl $(QT_EXAMPLES_AS_PERL)
-	mkdir -p out-www/
-	cp source-doc/*.html out-www/
+	mkdir -p out-www/manual/
+	cp source-doc/*.html out-www/manual/
 
 
 html: marsyas.texi
 	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas.texi 
-	mkdir -p out-www/images/
-	cp images/*.png out-www/images/
+	mkdir -p out-www/manual/images/
+	cp images/*.png out-www/manual/images/
 
 pdf: marsyas.texi
 	$(TEXI2PDF) $(TEXI2PDF_FLAGS) $(srcdir)/marsyas.texi
