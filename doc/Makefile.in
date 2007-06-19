@@ -342,12 +342,15 @@ uninstall-am: uninstall-info-am
 #DIST_COMMON = sources pdf html
 
 sources:
+	mkdir -p source-doc/
 	source-highlight --output-dir=source-doc/ -f html $(QT_EXAMPLES) $(EXAMPLES)
 	source-highlight --output-dir=source-doc/ -f texinfo $(QT_EXAMPLES) $(EXAMPLES)
 	source-highlight --output-dir=source-doc/ -f html --src-lang=perl $(QT_EXAMPLES_AS_PERL)
 	source-highlight --output-dir=source-doc/ -f texinfo --src-lang=perl $(QT_EXAMPLES_AS_PERL)
-# all on one line to stay in that directory
+
+doxy:
 	mkdir -p out-www/doxy/html/
+# all on one line to stay in that directory
 	cd ../marsyas/ ; doxygen
 # now I'm automagically back in  doc/
 	mkdir -p out-www/sourceDoc/
