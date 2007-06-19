@@ -26,9 +26,11 @@ corresponding to executing the System objects one after the other
 in sequence. 
 
 Controls:
-- \b mrs_bool/probe	: dunno BBB
-- \b mrs_natural/disable	: dunno BBB
-- \b mrs_natural/enable	: dunno BBB  -- isn't this just the opposite of enable?  Potential bug?
+- \b mrs_natural/disable	: passes in the number of the child
+  MarSystem to disable.
+- \b mrs_natural/enable	: pass in the number of the child MarSystem to
+  enable.  (by default all children are enabled)
+- \b mrs_bool/probe	: deprecated.
 */
 
 #include "Fanout.h"

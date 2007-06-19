@@ -27,7 +27,8 @@
    - \b mrs_natural/nChannels	: number of channels (mono, stereo, etc)
    - \b mrs_natural/bufferSize	: size of audio buffer (in samples)
    - \b mrs_bool/initAudio	: initialize audio (this should be \em true)
-   - \b mrs_bool/notEmpty	: is there any audio input left?  BBB
+   - \b mrs_bool/notEmpty	: is there any audio input left?
+     (End-Of-File not yet reached)
    - \b mrs_real/gain	: scales input
 */
 

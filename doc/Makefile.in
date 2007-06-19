@@ -346,15 +346,24 @@ sources:
 	source-highlight --output-dir=source-doc/ -f texinfo $(QT_EXAMPLES) $(EXAMPLES)
 	source-highlight --output-dir=source-doc/ -f html --src-lang=perl $(QT_EXAMPLES_AS_PERL)
 	source-highlight --output-dir=source-doc/ -f texinfo --src-lang=perl $(QT_EXAMPLES_AS_PERL)
-	mkdir -p out-www/manual/
-	cp source-doc/*.html out-www/manual/
+# all on one line to stay in that directory
+	mkdir -p out-www/doxy/html/
+	cd ../marsyas/ ; doxygen
+# now I'm automagically back in  doc/
+	mkdir -p out-www/sourceDoc/
+	mv out-www/doxy/html/* out-www/sourceDoc/
+	rmdir out-www/doxy/html
+	rmdir out-www/doxy/
 
 html: marsyas.texi
+	mkdir -p out-www/manual/
+	cp source-doc/*.html out-www/manual/
 	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas.texi 
 	mkdir -p out-www/manual/images/
 	cp images/*.png out-www/manual/images/
 
 pdf: marsyas.texi
+	mkdir -p out-www/
 	$(TEXI2PDF) $(TEXI2PDF_FLAGS) $(srcdir)/marsyas.texi
 
 .PHONY: html pdf

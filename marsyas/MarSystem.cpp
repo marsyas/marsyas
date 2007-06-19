@@ -32,16 +32,20 @@ Controls:  (these are inherited by all MarSystems)
 - \b mrs_natural/inSamples	: number of input samples
 - \b mrs_natural/inSamples	: number of input observations
 - \b mrs_real/israte	: rate (number of samples per second) of input
-- \b mrs_string/inObsNames	: dunno AAA
+- \b mrs_string/inObsNames	: stores the names of observations.  Used
+  for graphs, WEKA output, etc.
 
 - \b mrs_natural/onSamples	: number of output samples
 - \b mrs_natural/onSamples	: number of output observations
 - \b mrs_real/osrate	: rate (number of samples per second) of output
-- \b mrs_string/onObsNames	: dunno AAA
+- \b mrs_string/onObsNames	: stores the names of observations.  Used
+  for graphs, WEKA output, etc.
 
-- \b mrs_bool/debug	: dunno (old code from when we didn't have --enable-debug?) AAA
-- \b mrs_bool/mute	: dunno (old code?) AAA
-- \b mrs_bool/active	: dunno ("not paused"? -- old code?) AAA
+- \b mrs_bool/debug	: for debugging purposes...
+- \b mrs_bool/mute	: in some MarSystems, this disables the myProcess().
+  Not support on all MarSystems (yet).
+- \b mrs_bool/active	: used to put all internal threads to sleep.
+  (experimental)
 
 - \b mrs_realvec/processedData	: output realvec; useful for viewing the output of a MarSystem directly.
 

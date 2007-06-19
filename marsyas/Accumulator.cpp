@@ -22,13 +22,15 @@
 \ingroup Core
 \brief Accumulate result of multiple tick 
 
+AAA
 Accumulate result of multiple tick process calls 
 to internal MarSystem. Spit output only once when
 all the results are accumulated. Used to change 
 the rate of process requests.
 
 Controls:
-- \b mrs_natural/nTimes	: the number of ticks to gather  (I think?) AAA
+- \b mrs_natural/nTimes	: the multiplier of ticks() for the internal
+  MarSystems.
 */
 
 #include "Accumulator.h"

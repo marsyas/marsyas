@@ -29,19 +29,21 @@
    - \b mrs_string/filename	: name of the sound file to read
    - \b mrs_bool/notEmpty	: is there any data left?
    - \b mrs_natural/nChannels	: how many channels (mono, stereo, etc)
-   - \b mrs_natural/pos	: position currently read, in samples
-   - \b mrs_natural/loopPos	: dunno CCC
-   - \b mrs_string/allfilenames	: a long string containing every sound file to read.  CCC
+   - \b mrs_natural/pos	: sample position currently read, in samples
+   - \b mrs_natural/loopPos	: sample position at which to loop
+   - \b mrs_string/allfilenames	: a long string containing every sound file to read.
    - \b mrs_natural/numFiles	: how many files to read
-   - \b mrs_natural/size	: number of samples (or bytes?) in the current soudn file (or in all sound files?) CCC
+   - \b mrs_natural/size	: number of samples in the current sound file
    - \b mrs_real/frequency	: sample rate of the current sound file
    - \b mrs_bool/noteon	: dunno CCC
    - \b mrs_real/repetitions	: number of times to repeat the sound file
-   - \b mrs_real/duration	: number of seconds (or milliseconds?) in the current sound file CCC
-   - \b mrs_bool/advance	: dunno CCC
+   - \b mrs_real/duration	: number of seconds in the current sound file
+   - \b mrs_bool/advance	: go to the next sound file (collection
+     only)
    - \b mrs_bool/shuffle	: randomize the order of reading multiple sound files
-   - \b mrs_natural/cindex	: dunno CCC
-   - \b mrs_string/currentlyPlaying	: filename (check?) of the current sound file.
+   - \b mrs_natural/cindex	: number of the current sound file in the
+     collection
+   - \b mrs_string/currentlyPlaying	: filename of the current sound file.
 
 */
 
