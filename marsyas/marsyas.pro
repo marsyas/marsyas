@@ -265,7 +265,8 @@ HEADERS += \
 	SpectralSNR.h \
 	HWPSspectrum.h \
 	Vibrato.h \
-	Panorama.h
+	Panorama.h \
+	Biquad.h
 	 
 SOURCES += \
 	ADSR.cpp \
@@ -472,5 +473,6 @@ SOURCES += \
 	SpectralSNR.cpp \
 	HWPSspectrum.cpp \
 	Vibrato.cpp \
-	Panorama.cpp
+	Panorama.cpp \
+	Biquad.cpp
 	
