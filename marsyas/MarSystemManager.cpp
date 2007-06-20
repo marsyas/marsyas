@@ -122,6 +122,7 @@ in sequence.
 #include "AudioSource2.h"
 #include "ClassOutputSink.h"
 #include "Filter.h" 
+#include "Biquad.h"
 #include "ERB.h"
 #include "ClipAudioRange.h"
 #include "HarmonicEnhancer.h"
@@ -250,6 +251,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("AudioSource2", new AudioSource2("audiosource2p"));
 	registerPrototype("ClassOutputSink", new ClassOutputSink("classoutputsinkp"));
 	registerPrototype("Filter", new Filter("filterp"));
+	registerPrototype("Biquad", new Biquad("biquadp"));
 	registerPrototype("ERB", new ERB("erbp"));
 	registerPrototype("ClipAudioRange", new ClipAudioRange("clpr"));
 	registerPrototype("HarmonicEnhancer", new HarmonicEnhancer("hepr"));

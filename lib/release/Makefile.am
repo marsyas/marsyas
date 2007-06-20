@@ -166,6 +166,7 @@ libmarsyas_a_SOURCES    = $(top_srcdir)/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/marsyas/ZeroRClassifier.cpp \
 			  $(top_srcdir)/marsyas/KNNClassifier.cpp \
 			  $(top_srcdir)/marsyas/Filter.cpp \
+			  $(top_srcdir)/marsyas/Biquad.cpp \
 			  $(top_srcdir)/marsyas/Kurtosis.cpp \
 			  $(top_srcdir)/marsyas/Skewness.cpp \
 			  $(top_srcdir)/marsyas/AMDF.cpp \
