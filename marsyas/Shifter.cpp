@@ -23,6 +23,9 @@
 	and shifted version as different observations. 
 
 	Coded by lmartins@inescporto.pt
+
+	Controls:
+	- \b mrs_natural/shift	[rw] : number of samples to shift by.
 */
 
 #include "Shifter.h"

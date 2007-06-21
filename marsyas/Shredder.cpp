@@ -26,6 +26,9 @@
     Split the result an accumulator. Spit several outputs when
     the input is recieved. Used to restore
     the rate of process requests initially change by an accumulator
+
+	Controls:
+	- \b mrs_natural/nTimes	[rw] : dunno
 */
 
 #include "Shredder.h"

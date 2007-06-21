@@ -20,13 +20,15 @@
 /** 
 \class Accumulator 
 \ingroup Core
-\brief Accumulate result of multiple tick 
+\brief Accumulate result of multiple ticks
 
-AAA
 Accumulate result of multiple tick process calls 
 to internal MarSystem. Spit output only once when
 all the results are accumulated. Used to change 
 the rate of process requests.
+
+For example, if \c nTimes is 5, then each time the Accumulator recieves
+a tick(), it sends 5 tick()s to the MarSystems that are inside it.
 
 Controls:
 - \b mrs_natural/nTimes	: the multiplier of ticks() for the internal
