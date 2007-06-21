@@ -18,7 +18,7 @@
 
 /** 
     \class ZeroCrossings
-	\ingroup none
+	\ingroup Analysis
     \brief Time-domain ZeroCrossings 
 
     Basically counts the number of times the input 

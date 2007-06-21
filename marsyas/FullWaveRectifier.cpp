@@ -18,7 +18,7 @@
 
 /** 
     \class FullWaveRectifier
-	\ingroup none
+	\ingroup Processing
     \brief FullWaveRectifier
 
 

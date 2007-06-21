@@ -17,8 +17,8 @@
 */
 
 /** 
-    \class Envelope
-	\ingroup none
+    \class ADSRenvelope
+	\ingroup Processing
     \brief Multiply input realvec by Value of Envelope
 
    Simple MarSystem example. Just multiply the values of the input realvec

@@ -21,7 +21,7 @@
  *
  */
 
-/**  @defgroup Network Network
+/**  @defgroup Network Network Input/Output
  *
  * These Marsystems are used to transmit information over a network.
  *

@@ -19,6 +19,7 @@
 
 /** 
     \class realvec
+	\class Notmar
     \brief Vector of mrs_real values
 
     Array (vector in the numerical sense) of mrs_real values. Basic 

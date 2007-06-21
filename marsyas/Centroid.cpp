@@ -19,7 +19,7 @@
 
 /** 
     \class Centroid
-	\ingroup none
+	\ingroup Analysis
     \brief Centroid of each time slice of observations
 
     Centroid computes the centroid of the observations for each 

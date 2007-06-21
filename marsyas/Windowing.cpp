@@ -18,7 +18,7 @@
 
 /** 
   \class Windowing
-	\ingroup none
+	\ingroup Processing
   \brief window the input signal
 
  */

@@ -8,7 +8,7 @@
  * - \ref Analysis "Analysis"
  * - \ref Synthesis "Synthesis"
  * - \ref Processing "Processing"
- * - \ref Network "Network"
+ * - \ref Network "Network Input/Output"
  *
  * Source files which are not MarSystems:
  * - \ref Notmar "Not MarSystems"

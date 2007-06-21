@@ -18,7 +18,7 @@
 
 /** 
     \class AutoCorrelation
-	\ingroup none
+	\ingroup Analysis
     \brief Compute the generalized autocorrelation of input window 
 
     Computes the generalized autocorrelation 

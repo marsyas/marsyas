@@ -18,7 +18,7 @@
 
 /** 
 \class NumericLib
-	\ingroup none
+	\ingroup Notmar
 \brief Assorted Numerical Routines
 
 	Numerical routines ported and adapted from several sources (indicated where appropriated).

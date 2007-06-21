@@ -18,7 +18,7 @@
 
 /** 
 \class Hamming
-	\ingroup none
+	\ingroup Processing
 \brief Multiply input realvec with gain
 
 Simple MarSystem example. Just multiply the values of the input realvec

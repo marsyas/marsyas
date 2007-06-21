@@ -18,7 +18,7 @@
 
 /** 
     \class Annotator
-	\ingroup none
+	\ingroup none AAA
     \brief Annotate feature stream with additional row of labels
     
 */

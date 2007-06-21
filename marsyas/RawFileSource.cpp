@@ -18,7 +18,7 @@
 
 /**
    \class RawFileSource
-	\ingroup none
+	\ingroup Interal
    \brief SoundFileSource for .raw wavetable files
    
    STK rawwave files have no header and are assumed to contain a

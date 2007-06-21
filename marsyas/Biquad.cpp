@@ -18,6 +18,7 @@
 
 /**  
   \class Biquad
+  \ingroup Processing
   \brief Filter a Signal 
 
  */
