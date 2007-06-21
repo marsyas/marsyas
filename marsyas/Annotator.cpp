@@ -18,8 +18,8 @@
 
 /** 
     \class Annotator
-	\ingroup none AAA
-    \brief Annotate feature stream with additional row of labels
+	\ingroup Classifiers
+    \brief Annotate feature stream with additional row of labels.
     
 */
 

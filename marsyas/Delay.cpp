@@ -18,7 +18,7 @@
 
 /** 
     \class Delay
-	\ingroup Processing
+	\ingroup Basic
     \brief Delay
 
    Simple Delay example

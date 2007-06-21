@@ -18,7 +18,7 @@
 
 /** 
 \class Shifter
-	\ingroup Processing
+	\ingroup Basic
 	\brief Shifts the input and outputs the original and shifted version.
 
 	Shifts the input by <shift> samples and send to output the original 

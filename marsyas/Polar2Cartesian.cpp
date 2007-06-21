@@ -18,7 +18,7 @@
 
 /** 
 \class Polar2Cartesian
-	\ingroup none
+	\ingroup Notmar
 \brief perform conversion of spectral values
 */
 

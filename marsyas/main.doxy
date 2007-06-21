@@ -3,12 +3,14 @@
  * Main MarSystems:
  * - \ref Composites "Composites"
  * - \ref IO "Input/Output"
+ * - \ref Basic "Basic Processing"
  *
  * Specialized MarSystems:
  * - \ref Analysis "Analysis"
  * - \ref Synthesis "Synthesis"
  * - \ref Processing "Processing"
  * - \ref Network "Network Input/Output"
+ * - \ref Classifiers "Classifiers"
  *
  * Source files which are not MarSystems:
  * - \ref Notmar "Not MarSystems"

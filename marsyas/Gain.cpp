@@ -18,7 +18,7 @@
 
 /** 
     \class Gain
-	\ingroup Processing
+	\ingroup Basic
     \brief Multiply input realvec with gain
 
    Simple MarSystem example. Just multiply the values of the input realvec

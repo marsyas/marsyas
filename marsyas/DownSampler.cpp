@@ -19,7 +19,7 @@
 
 /** 
     \class DownSampler
-	\ingroup Processing
+	\ingroup Basic
     \brief Downsample the input signal
 
     Downsample the signal by an integer factor.

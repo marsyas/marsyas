@@ -18,7 +18,7 @@
 
 /** 
     \class CompExp
-	\ingroup none
+	\ingroup Processing
     \brief Multiply input realvec with CompExp
 
    Simple MarSystem example. Just multiply the values of the input realvec

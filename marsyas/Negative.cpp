@@ -18,7 +18,7 @@
 
 /** 
     \class Negative
-	\ingroup Processing
+	\ingroup Basic
     \brief Negate the input
 
 	Controls: none

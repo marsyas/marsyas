@@ -1,4 +1,3 @@
-
 /*
 ** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
@@ -19,7 +18,7 @@
 
 /** 
     \class ShiftOuput
-	\ingroup Processing
+	\ingroup Basic
     \brief Shift next D samples  
 
     Shift next D samples from the input source to the output source 

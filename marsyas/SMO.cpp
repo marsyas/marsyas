@@ -18,7 +18,7 @@
 
 /** 
     \class SMO
-	\ingroup none
+	\ingroup Classifiers
     \brief Support Vector Machine similar to the Weka implementation
 
     Support Vector Machine Classifier similar to the Weka implementation 

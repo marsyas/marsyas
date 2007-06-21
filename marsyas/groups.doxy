@@ -4,13 +4,25 @@
  *
  */
 
+/**  @defgroup Basic Basic Processing
+ *
+ * \brief These are simple building blocks for processing data.  For
+ * more complicated prococessing blocks, see \ref Processing.
+ *
+ */
+
 /**  @defgroup IO Input/Output
  *
- * These are the MarSystems which get data to/from files and audio.
+ * \brief These are the MarSystems which get data to/from files and audio.
+ * They may rely on other MarSystems to perform the actual operations;
+ * see \ref Internal "Internal IO" for a list of these MarSystems.
  *
  */
 
 /**  @defgroup Internal Internal IO
+ *
+ * \brief These MarSystems are used internally; if you constructing a
+ * MarNetwork, you should not need to know about these MarSystems.
  *
  * These MarSystems are used internally; if you constructing a
  * MarNetwork, you should not need to know about these MarSystems.
@@ -23,44 +35,51 @@
 
 /**  @defgroup Network Network Input/Output
  *
- * These Marsystems are used to transmit information over a network.
+ * \brief These Marsystems are used to transmit information over a network.
  *
  */
 
 /**  @defgroup Analysis Analysis
  *
- * These MarSystems analyze sound.
+ * \brief These MarSystems analyze sound.
  *
  */
 
 /**  @defgroup Synthesis Synthesis
  *
- * These MarSystems generate sounds.
+ * \brief These MarSystems generate sounds.
  *
  */
 
 /**  @defgroup Processing Processing
  *
- * These MarSystems process realvecs.
+ * \brief These MarSystems process realvecs.
  *
  */
 
+/**  @defgroup Classifiers Classifiers
+ *
+ * \brief These MarSystems are involved in classifying audio.
+ *
+ */
+
+
 /**  @defgroup Experimental Experimental
  *
- * These MarSystems are experimental and should not be used.
+ * \brief These MarSystems are experimental and should not be used.
  *
  */
 
 /**  @defgroup none Undocumented
  *
- * These MarSystems have not been documented yet.
+ * \brief These MarSystems have not been documented yet.
  *
  */
 
 
 /**  @defgroup Notmar Classes which are not MarSystems
  *
- * These classes are not MarSystems
+ * \brief These classes are not MarSystems, but are still useful.
  *
  */
 
