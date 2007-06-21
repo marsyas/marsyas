@@ -54,7 +54,7 @@ void Biquad::addControls()
 
     addctrl("mrs_string/type","lowpass");
     addctrl("mrs_real/resonance", 0.5);
-    addctrl("mrs_real/freq", 500);
+    addctrl("mrs_real/frequency", 500.0);
 
     setctrlState("mrs_string/type", true);
     setctrlState("mrs_real/resonance", true);
