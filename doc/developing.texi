@@ -17,7 +17,6 @@ do anything explicitly.
 * Writing your own MarSystems::  
 * Using your MarSystem::        
 * myUpdate() and myProcess()::  
-* Adding the MarSystem to Marsyas source code::  
 @end menu
 
 
@@ -90,45 +89,6 @@ computed inside @code{myUpdate()} instead of @code{myProcess()}.  If
 @code{fc} has not changed, we can use the old value @code{c} to perform
 the loop over our sound buffer; if the value of @code{fc} has changed,
 then @code{c} will be recomputed inside @code{myUpdate()}.
-
-
-
-@node Adding the MarSystem to Marsyas source code
-@section Adding the MarSystem to Marsyas source code
-
-If you have created a useful MarSystem which you want to share with
-others, you may add it to the Marsyas source code.  This is not required
-for building your own applications.
-
-The new MarSystem should be placed in the @file{marsyas/} directory, and
-must be added to @file{MarSystemManager.cpp} and the build process.
-Again, the easiest way is to look for @code{Gain} and do the same thing
-with your new MarSystem.
-
-@subsubheading MarSystemManager
-
-@itemize
-@item @file{marsyas/MarSystemManager.cpp}
-@end itemize
-
-@subsubheading Build process: autotools
-
-@itemize
-@item @file{marsyas/Makefile.am}
-@item @file{lib/release/Makefile.am}
-@end itemize
-
-Now execute @code{automake} and @code{./configure} before recompiling
-with @code{make}.
-
-@subsubheading Build process: qmake
-
-@itemize
-@item @file{marsyas/marsyas.pro}
-@end itemize
-
-Now execute @code{qmake} before recompiling with whichever compiler you
-use.
 
 
 

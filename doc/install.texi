@@ -103,9 +103,6 @@ is welcome and will help further improve the framework.
 @node System requirements
 @section System requirements
 
-@strong{Warning!} Marsyas does not work with qmake in Qt-4.3.  Please
-downgrade to Qt-4.2.3 or use the autotools method of compiling Marsyas.
-
 @subsection Linux
 
 Required:
@@ -189,9 +186,7 @@ Once you have selected the options you want, simply type
 qmake
 @end example
 
-@b{Requirement: Qt-4.2.3.}  Marsyas does not work with qmake in Qt-4.3.
-Please downgrade to Qt-4.2.3 or use the autotools method of compiling
-Marsyas.
+@b{Requirement:} Qt-4.2.3 or above.
 
 
 @subsection ...with autotools

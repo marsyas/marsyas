@@ -1,0 +1,170 @@
+@node Contributing to Marsyas
+@chapter Contributing to Marsyas
+
+This chapter explains how to integrate your code in Marsyas so that
+others may use it.
+
+@menu
+* Documentation::               
+* marsyasTests::                
+* Applications::                
+* MarSystems::                  
+@end menu
+
+
+@node Documentation
+@section Documentation
+
+The documentation for Marsyas is still a work in progress; we can use
+all the help we can get.  Don't
+say @qq{oh, I don't know enough} or @qq{I'm not good at writing
+English.}  The question is not @qq{could anybody create something better
+than my suggestion?}  -- the question is @qq{is this better than
+nothing?}  Remember the most important thing about documentation:
+
+@quotation
+Documentation is like sex: when it is good, it is very, very good; and
+when it is bad, it is better than nothing.   (Dick Brandon)
+@end quotation
+
+
+@subsection Manual
+
+If you can add something to the docs, please send an email to
+@code{<marsyas-developers@@lists.sourceforge.net>}.  A formal patch for
+the texidoc is not required; we can take care of the technical
+details.  Here is an example of a perfect documentation suggestion:
+
+@verbatim
+To: marsyas-users@lists.sourceforge.net
+From: helpful-user@example.net
+Subject: doc addition
+
+In 4.2.1 Implicit patching vs. explicit patching, please add
+----
+It could be helpful to think of this like blah blah blah.
+----
+to the second paragraph.
+@end verbatim
+
+
+@subsection Examples
+
+Small, easy-to-understand examples are also great.  If you have some
+source code that illustrates something, we can add it to
+@file{examples/}.  We use these examples to generate the @ref{Example
+programs}.  You don't have to write any English at all!
+
+
+@node marsyasTests
+@section marsyasTests
+
+The easiest way to add code to Marsyas is to add a test to
+@file{apps/marsyasTests.cpp}.  This file is a huge mess of short
+examples, many out of date and no longer working, but it seems popular.
+
+To add your own test, follow the general pattern of other tests.  You
+will need to modify
+
+@itemize
+@item @code{void printHelp(string progName)} : display the argument
+which calls your test.
+@item @code{int main(int argc, const char **argv)} : call your
+test function.  Yes, that's a 100-line collection of @code{else if}
+statements.  (see @qq{huge mess}, above)
+@item @code{void test_myTestName()} : your actual code.
+@end itemize
+
+
+@node Applications
+@section Applications
+
+The source code for applications is in the @file{apps/} directory.  The
+easiest way to get started is probably to copy everything from an
+existing directory, then modify the files accordingly.
+
+You should update all these files:
+
+@subsubheading Build system: autotools
+
+@itemize
+@item @file{apps/MYDIR/Makefile.am}
+@item @file{apps/Makefile.am}
+@item @file{bin/release/Makefile.am}
+@end itemize
+
+@subsubheading Build system: qmake
+
+@itemize
+@item @file{apps/MYDIR/MYNAME.pro}
+@item @file{apps/apps.pro}
+@end itemize
+
+
+
+@node MarSystems
+@section MarSystems
+
+If you have created a useful MarSystem which you want to share with
+others, you may add it to the Marsyas source code.  This is not required
+for building your own applications.
+
+
+@subsection Build system
+
+The new MarSystem should be placed in the @file{marsyas/} directory, and
+must be added to @file{MarSystemManager.cpp} and the build process.
+Again, the easiest way is to look for @code{Gain} and do the same thing
+with your new MarSystem.
+
+@subsubheading MarSystemManager
+
+@itemize
+@item @file{marsyas/MarSystemManager.cpp}
+@end itemize
+
+@subsubheading Build system: autotools
+
+@itemize
+@item @file{marsyas/Makefile.am}
+@item @file{lib/release/Makefile.am}
+@end itemize
+
+Now execute @code{automake} and @code{./configure} before recompiling
+with @code{make}.
+
+@subsubheading Build system: qmake
+
+@itemize
+@item @file{marsyas/marsyas.pro}
+@end itemize
+
+Now execute @code{qmake} before recompiling with whichever compiler you
+use.
+
+
+@subsection Source documentation
+
+At the beginning of your @code{.cpp} file, please include a short
+documentation snippet:
+
+@example
+/**
+    \class Gain
+    \ingroup Processing
+    \brief Multiply input realvec with gain
+
+   Simple MarSystem example. Just multiply the values of the input
+realvec with gain and put them in the output vector. This object can be
+used as a prototype template for building more complicated MarSystems. 
+
+    Controls:
+    - \b mrs_real/gain  [w] : adjust the gain multiplier.
+@end example
+
+The @code{[w]} indicates that the control should be written and not
+(usefully) read.  Valid options are @code{[r]}, @code{[w]}, and
+@code{[rw]}.
+
+
+

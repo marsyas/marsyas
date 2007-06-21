@@ -198,46 +198,4 @@ basic building blocks of Marsyas, and are even more difficult to read.
 @end itemize
 
 
-@subsection Help!
-
-The documentation for Marsyas is still a work in progress; we can use
-all the help we can get.  Don't
-say @qq{oh, I don't know enough} or @qq{I'm not good at writing English.}  The
-question is
-not @qq{could anybody create something
-better than my suggestion?}  -- the question is @qq{is this better than
-nothing?}  Remember the most important thing about documentation:
-
-@quotation
-Documentation is like sex: when it is good, it is very, very good; and
-when it is bad, it is better than nothing.   (Dick Brandon)
-@end quotation
-
-
-@subsubheading Manual
-
-If you can add something to the docs, please send an email to
-@code{<marsyas-developers@@lists.sourceforge.net>}.  A formal patch for
-the texidoc is not required; we can take care of the technical
-details.  Here is an example of a perfect documentation suggestion:
-
-@verbatim
-To: marsyas-users@lists.sourceforge.net
-From: helpful-user@example.net
-Subject: doc addition
-
-In 4.2.1 Implicit patching vs. explicit patching, please add
-----
-It could be helpful to think of this like blah blah blah.
-----
-to the second paragraph.
-@end verbatim
-
-
-@subsubheading Examples
-
-Small, easy-to-understand examples are also great.  If you have some
-source code that illustrates something, we can add it to
-@file{examples/}.  You don't have to write any English at all!
-
 
