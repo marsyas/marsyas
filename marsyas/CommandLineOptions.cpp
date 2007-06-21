@@ -18,7 +18,7 @@
 
 /** 
 \class CommandLineOptions
-	\ingroup none
+	\ingroup Notmar
 \brief CommandLineOptions
 
 Class for handling command-line options 

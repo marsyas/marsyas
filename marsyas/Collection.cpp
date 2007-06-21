@@ -19,7 +19,7 @@
 
 /**
    \class Collection
-	\ingroup none
+	\ingroup Notmar
    \brief List of files
 
    List of files used for batch processing.

@@ -18,7 +18,7 @@
 
 /** 
     \class Sum
-	\ingroup none
+	\ingroup Processing
     \brief Sum the input rows of observations into one row 
 
     Sum the input rows of observation into one row. Frequently 

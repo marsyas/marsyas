@@ -19,7 +19,7 @@
 
 /** 
     \class FileName
-	\ingroup none
+	\ingroup Notmar
     \brief Various utilities
 
     FileName is a class bundling together various rather 

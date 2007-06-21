@@ -18,8 +18,8 @@
 
 /** 
     \class NetworkSocket
-	\ingroup none
-    \brief Wrapper class for linux socket calls.  
+	\ingroup Network
+    \brief Wrapper class for linux socket calls.
     \author Stuart Bray
 
     The main purpose for this class is to wrap TCP and UDP calls 

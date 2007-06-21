@@ -21,6 +21,12 @@
  *
  */
 
+/**  @defgroup Network Network
+ *
+ * These Marsystems are used to transmit information over a network.
+ *
+ */
+
 /**  @defgroup Analysis Analysis
  *
  * These MarSystems analyze sound.
@@ -50,6 +56,14 @@
  * These MarSystems have not been documented yet.
  *
  */
+
+
+/**  @defgroup Notmar Classes which are not MarSystems
+ *
+ * These classes are not MarSystems
+ *
+ */
+
 
 
 

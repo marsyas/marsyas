@@ -19,7 +19,7 @@
 
 /** 
     \class Shredder 
-	\ingroup none
+	\ingroup Core
 
     \brief Split the output of an accumulator
 

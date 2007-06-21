@@ -18,7 +18,7 @@
 
 /** 
     \class NetworkTCPSource
-	\ingroup none
+	\ingroup Network
     \brief NetworkTCPSource
     \author Stuart Bray 
 

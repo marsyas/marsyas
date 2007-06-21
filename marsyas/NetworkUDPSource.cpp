@@ -18,7 +18,7 @@
 
 /** 
     \class NetworkUDPSource
-	\ingroup none
+	\ingroup Network
     \brief Accept data from a UDP Socket
     \author Stuart Bray June 2004
 */

@@ -18,7 +18,7 @@
 
 /** 
 \class Shifter
-	\ingroup none
+	\ingroup Core
 	Shifts the input by <shift> samples and send to output the original 
 	and shifted version as different observations. 
 

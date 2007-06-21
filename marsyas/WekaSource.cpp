@@ -1,7 +1,7 @@
 
 /**
    \class WekaSource
-	\ingroup none
+	\ingroup IO
    \brief Input sink for Weka-formatted (textual) feature data
 
 */

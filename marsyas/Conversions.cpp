@@ -18,7 +18,7 @@
 
 /** 
     \class Conversions
-	\ingroup none
+	\ingroup Notmar
     \brief Various conversion functions
 */
 

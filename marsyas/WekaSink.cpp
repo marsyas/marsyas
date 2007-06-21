@@ -18,7 +18,7 @@
 
 /**
    \class WekaSink
-	\ingroup none
+	\ingroup IO
    \brief Output sink (text) in Weka format
 
 */

@@ -18,7 +18,7 @@
 
 /** 
     \class NetworkUDPSink
-	\ingroup none
+	\ingroup Network
     \brief NetworkUDPSink
     \author Stuart Bray June 2004 
 

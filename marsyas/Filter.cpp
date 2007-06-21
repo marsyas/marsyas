@@ -18,7 +18,7 @@
 
 /**  
 \class Filter
-	\ingroup none
+	\ingroup Processing
 \brief Filter a Signal 
 
 Filters a Signal using the coefficients stored in a FilterCoeffs

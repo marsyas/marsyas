@@ -18,7 +18,7 @@
 
 /** 
     \class Power
-	\ingroup none
+	\ingroup Analysis
     \brief compute the RMS Power of the input observations into one column
 */
 
