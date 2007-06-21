@@ -6,6 +6,7 @@
 * System requirements::         
 * Configuring Marsyas::         
 * Compiling Marsyas::           
+* Generating documentation::    
 * Platform-specific notes::     
 * Structure of distribution::   
 @end menu
@@ -295,6 +296,27 @@ qmake -t vclib
 @end example
 
 
+@node Generating documentation
+@section Generating documentation
+
+This manual is built with texinfo, and the source code documentation is
+created with doxygen.  These software packages may be installed from
+
+@itemize
+@item @uref{http://www.gnu.org/software/texinfo/}
+@item @uref{http://www.doxygen.org/}
+@end itemize
+
+The latest version of the manual is in the SVN tree (see
+@ref{Download}), and can be built by running these commands from the
+@file{doc/} directory:
+
+@example
+make html
+make pdf
+make doxy
+@end example
+
 
 @node Platform-specific notes
 @section Platform-specific notes
@@ -442,17 +464,9 @@ programs can use to access Marsyas functionality.
 
 @item @b{apps:} the source code for the above executables.
 
-@c  We use doxygen?  Really!?  check.  -gp
 @item @b{doc:} contains both the user manual (which you are 
-currently reading).  To regenerate the manual in pdf
-or html type (in the doc subdirectory)
-@c as well as the source code documentation
-@c that is generated using doxygen.
-
-@example 
-make pdf 
-make html 
-@end example 
+currently reading).  To regenerate the manual, see @ref{Generating
+documentation}
 
 @item @b{apps/Qt4Apps:} provides GUI interfaces using QT4. These will not
 work with earlier versions of QT. You must have QT4 installed in order
