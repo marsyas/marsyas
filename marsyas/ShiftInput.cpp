@@ -18,12 +18,17 @@
 
 /** 
     \class ShiftInput
-	\ingroup core
+	\ingroup Processing
     \brief Shift next D samples  
 
     Shift next D samples from the input source to the output source 
     into the right-hand end of the outputSlice. 
     with gain and put them in the output vector. 
+
+	Controls:
+	- \b mrs_natural/Interpolation	[rw] : dunno
+	- \b mrs_natural/WindowSize	[rw] : dunno
+	- \b mrs_natural/Decimation	[rw] : dunno
 */
 
 #include "ShiftInput.h"

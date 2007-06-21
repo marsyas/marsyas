@@ -18,7 +18,7 @@
 
 /** 
     \class Series
-    \ingroup Core
+    \ingroup Composites
     \brief Series of MarSystem objects
 
     Combines a series of MarSystem objects to a single MarSystem 

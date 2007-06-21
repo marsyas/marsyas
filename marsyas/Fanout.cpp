@@ -18,7 +18,7 @@
 
 /** 
 \class Fanout
-\ingroup Core
+\ingroup Composites
 \brief Fanout of MarSystem objects
 
 Combines a series of MarSystem objects to a single MarSystem 

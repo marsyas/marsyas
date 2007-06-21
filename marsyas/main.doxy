@@ -1,7 +1,7 @@
 /** \mainpage Marsyas
  *
  * Main MarSystems:
- * - \ref Core "Core"
+ * - \ref Composites "Composites"
  * - \ref IO "Input/Output"
  *
  * Specialized MarSystems:

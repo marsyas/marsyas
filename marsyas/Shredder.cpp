@@ -19,7 +19,7 @@
 
 /** 
     \class Shredder 
-	\ingroup Core
+	\ingroup Composites
 
     \brief Split the output of an accumulator
 

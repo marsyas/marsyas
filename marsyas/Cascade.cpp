@@ -18,7 +18,7 @@
 
 /** 
     \class Cascade
-	\ingroup Core
+	\ingroup Composites
     \brief Cascade of MarSystem objects
 */
 

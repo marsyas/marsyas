@@ -18,7 +18,7 @@
 
 /**
 \class MarSystem
-\ingroup Core
+\ingroup Composites
 \brief MarSystem transforms a realvec
 
 Abstract base class for any type of system. Basically a MarSystem

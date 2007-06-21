@@ -18,7 +18,7 @@
 
 /** 
     \class Parallel
-    \ingroup Core
+    \ingroup Composites
     \brief Parallel composite of MarSystem objects
 
 	Controls: none

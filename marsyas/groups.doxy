@@ -1,6 +1,6 @@
-/**  @defgroup Core Core
+/**  @defgroup Composites Composites
  *
- * \brief These are the core MarSystems.
+ * \brief These are MarSystems which contain other MarSystems.
  *
  */
 

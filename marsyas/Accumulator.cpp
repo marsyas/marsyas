@@ -19,7 +19,7 @@
 
 /** 
 \class Accumulator 
-\ingroup Core
+\ingroup Composites
 \brief Accumulate result of multiple ticks
 
 Accumulate result of multiple tick process calls 

@@ -18,7 +18,7 @@
 
 /** 
 \class Fanin
-	\ingroup Core
+	\ingroup Composites
 \brief Fanin of MarSystem objects
 
 Combines a series of MarSystem objects to a single MarSystem 
