@@ -194,6 +194,12 @@ are provided only for learning; they have little purpose as actual programs.
 the files in @file{examples/}, it has little value as a standalone program.
 @end itemize
 
+@subsubheading Source code documentation
+
+Many MarSystems have been documented; see @ref{MarSystem details} for
+more information.
+
+
 @subsubheading Source code
 
 Once you are familiar with everything covered in this manual, you should

@@ -1,16 +1,20 @@
 /** \mainpage Marsyas
  *
  * Main MarSystems:
- * - \ref Composites "Composites"
- * - \ref IO "Input/Output"
- * - \ref Basic "Basic Processing"
+ * - \ref Composites "Composites": these are the "building blocks" of
+ * Marsyas.
+ * - \ref IO "Input/Output": get data in or out.
+ * - \ref Basic "Basic Processing": simple processing blocks.
  *
  * Specialized MarSystems:
- * - \ref Analysis "Analysis"
- * - \ref Synthesis "Synthesis"
- * - \ref Processing "Processing"
- * - \ref Network "Network Input/Output"
- * - \ref Classifiers "Classifiers"
+ * - \ref Processing "Processing": more advanced processing, such as
+ * filters and envelopes.
+ * - \ref Analysis "Analysis": translates audio blocks into other
+ * blocks.
+ * - \ref Synthesis "Synthesis": creates audio.
+ * - \ref Network "Network Input/Output": send data over a network
+ * - \ref Classifiers "Classifiers": MarSystems relating to
+ * audio classification.
  *
  * Source files which are not MarSystems:
  * - \ref Notmar "Not MarSystems"

@@ -19,9 +19,10 @@ in @ref{Developing MarSystems}.
 @menu
 * Architecture overview::       
 * Implicit patching::           
-* MarSystem Composites::        
+* MarSystem composites::        
 * Predefined variable types::   
 * Architecture limitations::    
+* MarSystem details::           
 @end menu
 
 
@@ -179,8 +180,8 @@ Series1->addMarSystem(mng.create("classifier", "Classifier"));
 
 
 
-@node MarSystem Composites
-@section MarSystem Composites
+@node MarSystem composites
+@section MarSystem composites
 
 
 @menu
@@ -280,4 +281,26 @@ pair of spectrums from a mono spectrum with twice the number of bins.
 In these cases, we recommend that you use a Parallel Composite: split
 the stereo signal into separate mono dataflows (using Parallel), then treat
 each mono signal individually.
+
+
+@node MarSystem details
+@section MarSystem details
+
+Most MarSystems are documented in the
+@uref{../sourceDoc/index.html,source documentation}.  MarSystems are
+organized into groups.
+
+@itemize
+@item @strong{Processing}: audio block => audio block.  Examples are
+@code{Gain} and @code{Filter}
+
+@item @strong{Analysis}: audio block => other block.  Examples are
+@code{Spectrum} and @code{Rms}.
+
+@item @strong{Synthesis}: other block => audio block.  Examples are
+@code{SineSource} and @code{NoiseSource}.
+
+@end itemize
+
+
 
