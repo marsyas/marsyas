@@ -7,7 +7,7 @@
 /**  @defgroup Basic Basic Processing
  *
  * \brief These are simple building blocks for processing data.  For
- * more complicated prococessing blocks, see \ref Processing.
+ * more complicated processing blocks, see \ref Processing.
  *
  */
 
@@ -60,6 +60,12 @@
 /**  @defgroup Classifiers Classifiers
  *
  * \brief These MarSystems are involved in classifying audio.
+ *
+ */
+
+/**  @defgroup Scheduler Scheduler
+ *
+ * \brief These MarSystems are invovled in the scheduler.
  *
  */
 

@@ -202,8 +202,9 @@ more information.
 
 @subsubheading Source code
 
-Once you are familiar with everything covered in this manual, you should
-examine the source code:
+Unfortunately this manual and the source code documentation are not
+complete.  Once you are familiar with everything covered in this manual,
+you should examine the source code:
 
 @itemize
 @item @file{apps/}: the source code for real Marsyas executables.  These

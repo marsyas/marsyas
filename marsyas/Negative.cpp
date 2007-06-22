@@ -21,7 +21,7 @@
 	\ingroup Basic
     \brief Negate the input
 
-	Controls: none
+	Controls: none.
 */
 
 #include "Negative.h"

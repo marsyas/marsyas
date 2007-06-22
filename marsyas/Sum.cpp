@@ -23,6 +23,9 @@
 
     Sum the input rows of observation into one row. Frequently 
 used for mixing audio signals before SoudFileSink or AudioSink. 
+
+	Controls:
+	- \b mrs_real/weight [w] : dunno BBB
 */
 
 #include "Sum.h"

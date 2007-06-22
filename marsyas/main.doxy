@@ -2,7 +2,7 @@
  *
  * Main MarSystems:
  * - \ref Composites "Composites": these are the "building blocks" of
- * Marsyas.
+ * %Marsyas.
  * - \ref IO "Input/Output": get data in or out.
  * - \ref Basic "Basic Processing": simple processing blocks.
  *
@@ -15,6 +15,7 @@
  * - \ref Network "Network Input/Output": send data over a network
  * - \ref Classifiers "Classifiers": MarSystems relating to
  * audio classification.
+ * - \ref Scheduler "Scheduler": MarSystems relating to the scheduler.
  *
  * Source files which are not MarSystems:
  * - \ref Notmar "Not MarSystems"

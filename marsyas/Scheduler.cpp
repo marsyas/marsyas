@@ -17,9 +17,9 @@
 */
 
 /**
-   \class Scheduler
-	\ingroup none
-   \brief Scheduler schedules things
+	\class Scheduler
+	\ingroup Scheduler
+	\brief Scheduler schedules things
 
 */
 

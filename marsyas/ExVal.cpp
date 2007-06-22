@@ -17,7 +17,7 @@
 */
 /**
    \class ExVal
-	\ingroup none
+	\ingroup Scheduler
    \brief ExVal is the abstract value type for expression tree nodes. Every
           expression results in a ExVal of the basic types: string, natural,
           real, bool.

@@ -26,7 +26,7 @@ with gain and put them in the output vector. This object can be used
 as a prototype template for building more complicated MarSystems. 
 
 	Controls:
-	- \b mrs_real/gain	[rw] : adjust the gain multiplier.
+	- \b mrs_real/gain [w] : adjust the gain multiplier.
 */
 
 #include "Gain.h"

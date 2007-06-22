@@ -17,13 +17,18 @@
 */
 
 /** 
-\class SilenceRemove 
+	\class SilenceRemove 
 	\ingroup Composites
 
-\brief SilenceRemove takes as argument another Marsystem 
+	\brief Blocks tick()s if the output is silent.
+
+	SilenceRemove takes as argument another Marsystem 
 and ticks it ignoring the output when it is silent. Effectively 
 tick silence remove is the same as playing the sound with 
 silences removed. 
+
+	Controls:
+	- \b mrs_real/threshold [rw] : threshold value of "silence".
 */
 
 #include "SilenceRemove.h"

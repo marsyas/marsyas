@@ -26,11 +26,13 @@ corresponding to executing the System objects one after the other
 in sequence. 
 
 Controls:
-- \b mrs_natural/disable	: passes in the number of the child
+- \b mrs_natural/disable [w] : passes in the number of the child
   MarSystem to disable.
-- \b mrs_natural/enable	: pass in the number of the child MarSystem to
+- \b mrs_natural/enable	[w] : pass in the number of the child MarSystem to
   enable.  (by default all children are enabled)
 - \b mrs_bool/probe	: deprecated.
+
+\todo if Fanout mrs_bool/probe really is depreciated, chop it.
 */
 
 #include "Fanout.h"

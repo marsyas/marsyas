@@ -31,7 +31,7 @@ For example, if \c nTimes is 5, then each time the Accumulator recieves
 a tick(), it sends 5 tick()s to the MarSystems that are inside it.
 
 Controls:
-- \b mrs_natural/nTimes	: the multiplier of ticks() for the internal
+- \b mrs_natural/nTimes [rw] : the multiplier of ticks() for the internal
   MarSystems.
 */
 

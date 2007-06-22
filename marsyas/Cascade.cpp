@@ -20,6 +20,10 @@
     \class Cascade
 	\ingroup Composites
     \brief Cascade of MarSystem objects
+
+	Long description, BBB.
+
+	Controls: none.
 */
 
 #include "Cascade.h"

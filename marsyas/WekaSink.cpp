@@ -17,10 +17,18 @@
 */
 
 /**
-   \class WekaSink
+	\class WekaSink
 	\ingroup IO
-   \brief Output sink (text) in Weka format
+	\brief Output sink (text) in Weka format
 
+	Controls:
+	- \b mrs_natural/precision [w] : precision of numbers to output.
+	- \b mrs_string/filename [w] : name of output file.
+	- \b mrs_natural/nLabels [rw] : number of labels.
+	- \b mrs_natural/downsample [rw] : dunno BBB
+	- \b mrs_string/labelNames [rw] : names of labels.
+	- \b mrs_bool/regresssion [rw] : dunno BBB
+	- \b mrs_bool/putHeader [rw] : dunno BBB
 */
 
 #include "WekaSink.h"

@@ -29,26 +29,25 @@ Marsyas including transformations like FFT, Filter as well as feature
 extractors like Spectral Centroid.
 
 Controls:  (these are inherited by all MarSystems)
-- \b mrs_natural/inSamples	: number of input samples
-- \b mrs_natural/inSamples	: number of input observations
-- \b mrs_real/israte	: rate (number of samples per second) of input
-- \b mrs_string/inObsNames	: stores the names of observations.  Used
+- \b mrs_natural/inSamples [r] : number of input samples
+- \b mrs_natural/inObservations [r] : number of input observations
+- \b mrs_real/israte [rw] : rate (number of samples per second) of input
+- \b mrs_string/inObsNames [rw] : stores the names of observations.  Used
   for graphs, WEKA output, etc.
 
-- \b mrs_natural/onSamples	: number of output samples
-- \b mrs_natural/onSamples	: number of output observations
-- \b mrs_real/osrate	: rate (number of samples per second) of output
-- \b mrs_string/onObsNames	: stores the names of observations.  Used
+- \b mrs_natural/onSamples [w] : number of output samples
+- \b mrs_natural/onObservations [w] : number of output observations
+- \b mrs_real/osrate [rw] : rate (number of samples per second) of output
+- \b mrs_string/onObsNames [rw] : stores the names of observations.  Used
   for graphs, WEKA output, etc.
 
-- \b mrs_bool/debug	: for debugging purposes...
-- \b mrs_bool/mute	: in some MarSystems, this disables the myProcess().
+- \b mrs_realvec/processedData [r] : output realvec; useful for viewing the output of a MarSystem directly. BBB
+
+- \b mrs_bool/debug	[rw] : for debugging purposes...
+- \b mrs_bool/mute [rw] : in some MarSystems, this disables the myProcess().
   Not support on all MarSystems (yet).
-- \b mrs_bool/active	: used to put all internal threads to sleep.
+- \b mrs_bool/active [rw] : used to put all internal threads to sleep.
   (experimental)
-
-- \b mrs_realvec/processedData	: output realvec; useful for viewing the output of a MarSystem directly.
-
 */
 
 #include "MarSystem.h"

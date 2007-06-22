@@ -24,6 +24,8 @@
 
    Convert mono to stereo by copying - if input is not mono 
 just propagate. 
+
+	Controls: none.
 */
 
 #include "Mono2Stereo.h"

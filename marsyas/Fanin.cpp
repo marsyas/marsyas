@@ -17,13 +17,16 @@
 */
 
 /** 
-\class Fanin
+	\class Fanin
 	\ingroup Composites
-\brief Fanin of MarSystem objects
+	\brief Fanin of MarSystem objects
 
-Combines a series of MarSystem objects to a single MarSystem 
-corresponding to executing the System objects one after the other 
-in sequence. 
+	Combines a series of MarSystem objects to a single MarSystem
+corresponding to executing the System objects one after the other in
+sequence. 
+	BBB
+
+	Controls: none.
 */
 
 #include "Fanin.h"

@@ -28,7 +28,7 @@
     the rate of process requests initially change by an accumulator
 
 	Controls:
-	- \b mrs_natural/nTimes	[rw] : dunno
+	- \b mrs_natural/nTimes	[rw] : dunno BBB
 */
 
 #include "Shredder.h"

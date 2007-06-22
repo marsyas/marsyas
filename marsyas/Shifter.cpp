@@ -17,17 +17,17 @@
 */
 
 /** 
-\class Shifter
+	\class Shifter
 	\ingroup Basic
 	\brief Shifts the input and outputs the original and shifted version.
 
 	Shifts the input by <shift> samples and send to output the original 
 	and shifted version as different observations. 
 
-	Coded by lmartins@inescporto.pt
+	\author lmartins@inescporto.pt
 
 	Controls:
-	- \b mrs_natural/shift	[rw] : number of samples to shift by.
+	- \b mrs_natural/shift [rw] : number of samples to shift by.
 */
 
 #include "Shifter.h"

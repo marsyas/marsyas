@@ -5,15 +5,15 @@ This chapter explains how to integrate your code in Marsyas so that
 others may use it.
 
 @menu
-* Documentation::               
-* marsyasTests::                
-* Applications::                
-* MarSystems::                  
+* Contributing documentation::  
+* Adding to marsyasTests::      
+* Contributing Applications::   
+* Contributing MarSystems::     
 @end menu
 
 
-@node Documentation
-@section Documentation
+@node Contributing documentation
+@section Contributing documentation
 
 The documentation for Marsyas is still a work in progress; we can use
 all the help we can get.  Don't
@@ -56,8 +56,8 @@ source code that illustrates something, we can add it to
 programs}.  You don't have to write any English at all!
 
 
-@node marsyasTests
-@section marsyasTests
+@node Adding to marsyasTests
+@section Adding to marsyasTests
 
 The easiest way to add code to Marsyas is to add a test to
 @file{apps/marsyasTests.cpp}.  This file is a huge mess of short
@@ -76,8 +76,8 @@ statements.  (see @qq{huge mess}, above)
 @end itemize
 
 
-@node Applications
-@section Applications
+@node Contributing Applications
+@section Contributing Applications
 
 The source code for applications is in the @file{apps/} directory.  The
 easiest way to get started is probably to copy everything from an
@@ -102,12 +102,37 @@ You should update all these files:
 
 
 
-@node MarSystems
-@section MarSystems
+@node Contributing MarSystems
+@section Contributing MarSystems
 
 If you have created a useful MarSystem which you want to share with
 others, you may add it to the Marsyas source code.  This is not required
 for building your own applications.
+
+
+@subsection Source documentation
+
+At the beginning of your @code{.cpp} file, please include a short
+documentation snippet:
+
+@example
+/**
+    \class Gain
+    \ingroup Processing
+    \brief Multiply input realvec with gain
+
+	Simple MarSystem example.  Just multiply the values of the input
+realvec with gain and put them in the output vector.  This object can be
+used as a prototype template for building more complicated MarSystems. 
+
+    Controls:
+    - \b mrs_real/gain  [w] : adjust the gain multiplier.
+*/
+@end example
+
+The @code{[w]} indicates that the control should be written and not
+(usefully) read.  Valid options are @code{[r]}, @code{[w]}, and
+@code{[rw]}.
 
 
 @subsection Build system
@@ -142,29 +167,6 @@ with @code{make}.
 Now execute @code{qmake} before recompiling with whichever compiler you
 use.
 
-
-@subsection Source documentation
-
-At the beginning of your @code{.cpp} file, please include a short
-documentation snippet:
-
-@example
-/**
-    \class Gain
-    \ingroup Processing
-    \brief Multiply input realvec with gain
-
-   Simple MarSystem example. Just multiply the values of the input
-realvec with gain and put them in the output vector. This object can be
-used as a prototype template for building more complicated MarSystems. 
-
-    Controls:
-    - \b mrs_real/gain  [w] : adjust the gain multiplier.
-@end example
-
-The @code{[w]} indicates that the control should be written and not
-(usefully) read.  Valid options are @code{[r]}, @code{[w]}, and
-@code{[rw]}.
 
 
 

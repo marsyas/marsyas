@@ -18,7 +18,7 @@
 
 /**
    \class Scheduler
-	\ingroup none
+	\ingroup Scheduler
    \brief Scheduler schedules things
 
 */

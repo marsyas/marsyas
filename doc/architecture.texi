@@ -302,5 +302,12 @@ organized into groups.
 
 @end itemize
 
+The @qq{main} MarSystems are fairly well documented, but many MarSystems
+lack even basic documentation.  In this case, the only option is to read
+the source code.
+
+Once you have learned how to use an undocumented MarSystem,
+@emph{please} send some documentation.  See @ref{Contributing
+documentation} and/or @ref{Contributing MarSystems} for details.
 
 

@@ -21,12 +21,12 @@
    \ingroup IO
    \brief Real-time Audio source for Linux
 
-   Real-time Audio Sink for Linux based on the OSS sound API.  AAA isn't this also for OSX and windows as well?
+   Real-time Audio Sink for Linux based on the OSS sound API.  BBB isn't this also for OSX and windows as well?
 
    Controls:
-   - \b mrs_natural/nChannels	: number of channels (mono, stereo, etc)
-   - \b mrs_natural/bufferSize	: size of audio buffer (in samples)
-   - \b mrs_bool/initAudio	: initialize audio (this should be \em true)
+   - \b mrs_natural/nChannels [rw] : number of channels (mono, stereo, etc)
+   - \b mrs_natural/bufferSize [rw] : size of audio buffer (in samples)
+   - \b mrs_bool/initAudio [w] : initialize audio (this should be \em true)
 */
 
 #include "AudioSink.h"

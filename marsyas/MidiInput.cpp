@@ -22,9 +22,9 @@
   \brief Update midi inpput using controls. Just through for dataflow. 
 
   Controls:
-  - \b mrs_natural/port	: input midi port
-  - \b mrs_bool/virtualPort	: is this a virtual MIDI port?
-  - \b mrs_bool/initmidi	: enable midi (should be \em true )
+  - \b mrs_natural/port [rw] : input midi port
+  - \b mrs_bool/virtualPort [rw] : is this a virtual MIDI port?
+  - \b mrs_bool/initmidi [w] : enable midi (should be \em true )
  */
     
 #include "MidiInput.h"

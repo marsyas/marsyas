@@ -27,9 +27,9 @@ Specific IO classes for various formats like AuFileSink
 are children of this class. 
 
    Controls:
-   - \b mrs_natural/channel	: dunno CCC
-   - \b mrs_natural/nChannels	: number of channels (mono, stereo, etc)
-   - \b mrs_string/filename	: name of the audio file to write
+   - \b mrs_natural/channel [rw] : dunno CCC
+   - \b mrs_natural/nChannels [rw] : number of channels (mono, stereo, etc)
+   - \b mrs_string/filename [w] : name of the audio file to write
 
 */
 
