@@ -8,11 +8,19 @@ test_file = 'testlist.txt'
 
 if not(os.path.isdir('audio')):
 	print "Please run this from the `tests' directory."
-	sys.exit();
+	sys.exit()
 
-mode = ''
 if len(sys.argv) > 1:
 	mode = sys.argv[1]
+else:
+	mode = 'release'
+
+if not( (mode=='release') or (mode=='debug') or (mode=='installed')):
+	print "Please select `release', `debug', or `installed' mode."
+	sys.exit()
+
+if (mode == 'installed'):
+	mode = ''
 
 test_commands = []
 test_answers = []
@@ -39,11 +47,11 @@ for i in range( len(test_commands) ):
 	# use .au files because identical-sounding .wav files can have
 	# different headers
 	if filecmp.cmp('out.au', test_answers[i]):
-		logfile.write("Test " + str(i) + " successful\n");
+		logfile.write("Test " + str(i) + " successful\n")
 	else:
 		logfile.write("Test " + str(i) + " FAILED: " + test_commands[i]+'\n')
 		problem = 1
-logfile.close
+logfile.close()
 
 if not(problem):
 	print "All tests passed.  Congratulations, you didn't",
@@ -52,5 +60,4 @@ else:
 	print "Some test(s) failed.  Please see " + LOG_FILE,
 	print "for an account of the damage."
 	print "  (tests are 0-indexed)"
-
 
