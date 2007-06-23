@@ -1,0 +1,4 @@
+# two columns: command	<TAB>	answer file
+# comments are #, obviously.
+pitchextract right.wav > out.txt	right-pitchextract.txt
+

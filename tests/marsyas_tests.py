@@ -4,53 +4,64 @@ import os
 import filecmp
 
 LOG_FILE = 'results.log'
-test_file = 'testlist.txt'
 
+# check execution directory
 if not(os.path.isdir('audio')):
 	print "Please run this from the `tests' directory."
 	sys.exit()
 
+# setup release/debug/installed mode
 if len(sys.argv) > 1:
 	mode = sys.argv[1]
 else:
 	mode = 'release'
-
 if not( (mode=='release') or (mode=='debug') or (mode=='installed')):
 	print "Please select `release', `debug', or `installed' mode."
 	sys.exit()
-
 if (mode == 'installed'):
 	mode = ''
 
-test_commands = []
-test_answers = []
-tests = open(test_file).readlines()
+problem = 0
 
-for line in tests:
-	if (not(line[0]=='#') and not(line[0]=='\n')):
-		line_split = line.split('\t')
-		test_commands.append( line_split[0] )
-		test_answers.append( line_split[1].strip() )
-	
+def doTests(test_filename, temp_filename):
+	global logfile
+	global problem
+	test_commands = []
+	test_answers = []
+
+	# load tests
+	tests = open('..'+os.sep+test_filename).readlines()
+	for line in tests:
+		if (not(line[0]=='#') and not(line[0]=='\n')):
+			line_split = line.split('\t')
+			test_commands.append( line_split[0] )
+			test_answers.append( line_split[1].strip() )
+
+	# do tests
+	for i in range( len(test_commands) ):
+		command = ''
+		if mode != '':
+			command = '..%(sep)s..%(sep)sbin%(sep)s%(mode)s%(sep)s' % {'sep': os.sep, 'mode': mode}
+		command += test_commands[i]
+		#print command
+		if (os.system(command) != 0): # if something went wrong
+			problem = 1
+			break
+		# use .au files because identical-sounding .wav files can have
+		# different headers
+		if filecmp.cmp(temp_filename, test_answers[i]):
+			logfile.write("Test " + str(i) + " successful\n")
+		else:
+			logfile.write("Test " + str(i) + " FAILED: " + test_commands[i]+'\n')
+			problem = 1
+
+#test_file = 'testlist.txt'
 logfile = open(LOG_FILE, 'w')
 os.chdir('audio')
-problem = 0
-for i in range( len(test_commands) ):
-	command = ''
-	if mode != '':
-		command = '..%(sep)s..%(sep)sbin%(sep)s%(mode)s%(sep)s' % {'sep': os.sep, 'mode': mode}
-	command += test_commands[i]
-	print command
-	if (os.system(command) != 0): # if something went wrong
-		problem = 1
-		break
-	# use .au files because identical-sounding .wav files can have
-	# different headers
-	if filecmp.cmp('out.au', test_answers[i]):
-		logfile.write("Test " + str(i) + " successful\n")
-	else:
-		logfile.write("Test " + str(i) + " FAILED: " + test_commands[i]+'\n')
-		problem = 1
+logfile.write("--------- Audio tests\n")
+doTests('audio-tests.txt', 'out.au')
+logfile.write("--------- Text output tests\n")
+doTests('text-tests.txt', 'out.txt')
 logfile.close()
 
 if not(problem):
