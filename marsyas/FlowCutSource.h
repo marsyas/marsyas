@@ -19,7 +19,6 @@
 /** 
    \class FlowCutSource
     \brief break the data flow consistency by entering a black hole in the network
-		       frightning, uh ??
 */
 
 #ifndef MARSYAS_FLOWCUTSOURCE_H
