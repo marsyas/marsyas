@@ -64,7 +64,7 @@ int process(string inName, string outName)
 	fanout->addMarSystem(mng.create("Gain", "gain1"));
 
 	input->updctrl("SoundFileSource/src/mrs_string/filename", inName);
-	input->updctrl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
+	input->updctrl("mrs_natural/inSamples", hopSize);
 	//input->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
 	input->updctrl("ShiftInput/si/mrs_natural/WindowSize", windowSize);
 

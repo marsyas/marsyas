@@ -1042,9 +1042,9 @@ test_vicon(string vfName)
   // viconNet->addMarSystem(mng.create("Vicon2Ctrl", "vctrl"));
   // viconNet->addMarSystem(mng.create("PlotSink", "vsrc"));
   
-  viconNet->updctrl("ViconFileSource/vsrc/mrs_natural/inSamples", 1);
+  viconNet->updctrl("mrs_natural/inSamples", 1);
   viconNet->updctrl("ViconFileSource/vsrc/mrs_string/filename", vfName);
-  viconNet->updctrl("ViconFileSource/vsrc/mrs_real/israte", 120.0);
+  viconNet->updctrl("mrs_real/israte", 120.0);
  
   MarSystem* playbacknet = mng.create("Series", "playbacknet");
   MarSystem* sinebank = mng.create("Fanout", "sinebank");
@@ -1424,7 +1424,7 @@ test_LPC_LSP(string sfName)
 	
   input->addMarSystem(mng.create("SoundFileSource","src"));
   input->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-  input->updctrl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
+  input->updctrl("mrs_natural/inSamples", hopSize);
 
   input->addMarSystem(mng.create("ShiftInput", "si"));
   input->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
@@ -1458,7 +1458,7 @@ test_LPC_LSP(string sfName)
 
 	input->addMarSystem(mng.create("SoundFileSource","src"));
 	input->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-	input->updctrl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
+	input->updctrl("mrs_natural/inSamples", hopSize);
 
 	//input->addMarSystem(mng.create("ShiftInput", "si"));
 	//input->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
@@ -1850,7 +1850,7 @@ test_stereoFeaturesMFCC(string fname0, string fname1)
   playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
 
 
-  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_natural/inSamples", 1024);
+  total->updctrl("mrs_natural/inSamples", 1024);
 
   mrs_bool isEmpty;
 
@@ -1973,7 +1973,7 @@ test_stereoMFCC(string fname0, string fname1)
   playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
 
 
-  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_natural/inSamples", 1024);
+  total->updctrl("mrs_natural/inSamples", 1024);
 
   mrs_bool isEmpty;
 
@@ -2173,7 +2173,7 @@ test_stereoFeatures(string fname0, string fname1)
   playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
 
 
-  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_natural/inSamples", 1024);
+  total->updctrl("mrs_natural/inSamples", 1024);
 
   mrs_bool isEmpty;
 
@@ -2322,12 +2322,8 @@ void test_spectralSNR(string fname0, string fname1)
   
   net->updctrl("Series/branch1/SoundFileSource/src1/mrs_string/filename", 
 	       fname0);
-  net->updctrl("Series/branch1/SoundFileSource/src1/mrs_natural/inSamples", 
-	       2048);
   net->updctrl("Series/branch2/SoundFileSource/src2/mrs_string/filename", 
 	       fname1);
-  net->updctrl("Series/branch2/SoundFileSource/src2/mrs_natural/inSamples", 
-	       2048);
 
   net->updctrl("Series/branch1/PowerSpectrum/pspk1/mrs_string/spectrumType", "magnitude");
   net->updctrl("Series/branch2/PowerSpectrum/pspk2/mrs_string/spectrumType", "magnitude");
@@ -2346,6 +2342,8 @@ void test_spectralSNR(string fname0, string fname1)
   total->addMarSystem(acc);
   // total->addMarSystem(mng.create("Mean", "mean"));
   total->addMarSystem(mng.create("PlotSink", "psink"));
+
+	total->updctrl("mrs_natural/inSamples",	2048);
   
   
   mrs_bool isEmpty;
@@ -2436,7 +2434,7 @@ void test_SOM(string collectionName)
   total->linkctrl("mrs_natural/label",
 		  "Annotator/ann/mrs_natural/label");
 
-  total->updctrl("Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/inSamples", 512);
+  total->updctrl("mrs_natural/inSamples", 512);
   
   total->updctrl("mrs_string/filename", collectionName);
 
@@ -2650,8 +2648,8 @@ test_duplex()
   dnet->addMarSystem(mng.create("AudioSink", "dest"));
 
   dnet->updctrl("AudioSource/src/mrs_natural/nChannels", 2);
-  dnet->updctrl("AudioSource/src/mrs_natural/inSamples", 1024);
-  dnet->updctrl("AudioSource/src/mrs_real/israte", 44100.0);
+  dnet->updctrl("mrs_natural/inSamples", 1024);
+  dnet->updctrl("mrs_real/israte", 44100.0);
   
   dnet->updctrl("AudioSource/src/mrs_bool/initAudio", true);
   dnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
@@ -2680,7 +2678,7 @@ Pluck(mrs_real pos, mrs_real fre, mrs_real loz, mrs_real stret, string name)
 	series->updctrl("Gain/gain/mrs_real/gain", 1.0);
   series->updctrl("SoundFileSink/dest/mrs_natural/nChannels", 
   series->getctrl("Plucked/src/mrs_natural/nChannels"));
-  series->updctrl("SoundFileSink/dest/mrs_real/israte", 
+  series->updctrl("mrs_real/israte", 
   series->getctrl("Plucked/src/mrs_real/osrate"));
   series->updctrl("SoundFileSink/dest/mrs_string/filename",name);
 

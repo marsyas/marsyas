@@ -298,11 +298,13 @@ MarSystemManager::MarSystemManager()
 	// texture window analysis composite prototype
 	//--------------------------------------------------------------------------------
 	MarSystem* textureStatspr = new Series("tstatspr");
+	textureStatspr->addMarSystem(new Memory("mempr"));
+
 	MarSystem* meanstdpr = new Fanout("meanstdpr");
 	meanstdpr->addMarSystem(new Mean("meanpr"));
 	meanstdpr->addMarSystem(new StandardDeviation("stdpr"));
-	textureStatspr->addMarSystem(new Memory("mempr"));
 	textureStatspr->addMarSystem(meanstdpr);
+
 	textureStatspr->linkctrl("mrs_natural/memSize", "Memory/mempr/mrs_natural/memSize");
 	textureStatspr->linkctrl("mrs_bool/reset", "Memory/mempr/mrs_bool/reset");
 	registerPrototype("TextureStats", textureStatspr);

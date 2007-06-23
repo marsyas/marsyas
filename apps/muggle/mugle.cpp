@@ -161,7 +161,7 @@ void mugle(string queryName, string collectionName)
 
 
 
-  total->updctrl("Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/inSamples", 512);
+  total->updctrl("mrs_natural/inSamples", 512);
   
   
   

@@ -118,14 +118,14 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 	// update the controls
 	if (microphone_) 
 	{
-		pvseries->updctrl("AudioSource/src/mrs_natural/inSamples", D);
-		pvseries->updctrl("AudioSource/src/mrs_natural/inObservations", 1);
+		pvseries->updctrl("mrs_natural/inSamples", D);
+		pvseries->updctrl("mrs_natural/inObservations", 1);
 	}
 	else
 	{
 		pvseries->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-		pvseries->updctrl("SoundFileSource/src/mrs_natural/inSamples", D);
-		pvseries->updctrl("SoundFileSource/src/mrs_natural/inObservations", 1);
+		pvseries->updctrl("mrs_natural/inSamples", D);
+		pvseries->updctrl("mrs_natural/inObservations", 1);
 
 		// if audio output loop to infinity and beyond 
 		if (outsfname == EMPTYSTRING) 
@@ -219,7 +219,7 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 				}
 				if ((type == 176) && (byte2 == 101)&& (byte3 > 4))
 				{
-					pvseries->updctrl("SoundFileSource/src/mrs_natural/inSamples", byte3);
+					pvseries->updctrl("mrs_natural/inSamples", byte3);
 					pvseries->updctrl("ShiftInput/si/mrs_natural/Decimation", byte3); 
 					pvseries->updctrl("PvFold/fo/mrs_natural/Decimation", byte3);
 					pvseries->updctrl("PvConvert/conv/mrs_natural/Decimation", byte3 );
@@ -295,14 +295,14 @@ phasevocPoly(string sfName, mrs_natural N, mrs_natural Nw,
 
 	if (microphone_) 
 	{
-		total->updctrl("AudioSource/src/mrs_natural/inSamples", D);
-		total->updctrl("AudioSource/src/mrs_natural/inObservations", 1);
+		total->updctrl("mrs_natural/inSamples", D);
+		total->updctrl("mrs_natural/inObservations", 1);
 	}
 	else
 	{
 		total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-		total->updctrl("SoundFileSource/src/mrs_natural/inSamples", D);
-		total->updctrl("SoundFileSource/src/mrs_natural/inObservations", 1);
+		total->updctrl("mrs_natural/inSamples", D);
+		total->updctrl("mrs_natural/inObservations", 1);
 
 		// if audio output loop to infinity and beyond 
 		if (outsfname == EMPTYSTRING) 

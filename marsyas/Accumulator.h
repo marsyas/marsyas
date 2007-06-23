@@ -38,6 +38,7 @@ class Accumulator: public MarSystem
 {
 private: 
 	mrs_natural nTimes_;
+	MarControlPtr ctrl_nTimes_;
 	realvec tout_;
 
 	void addControls();
@@ -45,6 +46,7 @@ private:
   
 public:
 	Accumulator(std::string name);
+	Accumulator(const Accumulator& a);
   ~Accumulator();
   MarSystem* clone() const;  
 

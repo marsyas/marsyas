@@ -170,7 +170,8 @@ void MarControl::callMarSystemUpdate()
 		#ifdef MARSYAS_QT
 		rwLock_.unlock();
 		#endif
-		msys_->controlUpdate(this);
+		//msys_->controlUpdate(this);
+		msys_->update(this);
 		return;
 	}
 	#ifdef MARSYAS_QT

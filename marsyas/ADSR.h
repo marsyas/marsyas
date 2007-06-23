@@ -24,7 +24,6 @@
 
 */
 
-
 #ifndef MARSYAS_ADSR_H
 #define MARSYAS_ADSR_H	
 
@@ -52,14 +51,13 @@ private:
   mrs_real rTime_;
   mrs_real sampleRate_;
   mrs_natural state_;
- 
 
 public:
   ADSR(std::string name);
   ~ADSR();
   MarSystem* clone() const;  
   
-  void update();
+  void myUpdate();
   void myProcess(realvec& in, realvec& out);
 };
 

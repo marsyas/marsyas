@@ -51,8 +51,8 @@ MarPeaks::createNetwork()
  	
 	msys_->addMarSystem(fanout);
 
-	msys_->updctrl("SoundFileSource/src/mrs_natural/inSamples", 1024);
-	msys_->updctrl("SoundFileSource/src/mrs_natural/inObservations", 1);
+	msys_->updctrl("mrs_natural/inSamples", 1024);
+	msys_->updctrl("mrs_natural/inObservations", 1);
 	msys_->updctrl("SoundFileSource/src/mrs_real/repetitions", 1.0);
 	msys_->updctrl("Fanout/fanout/Series/pspect/PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
 	//msys_->updctrl("Fanout/fanout/Series/pspect/Memory/mem/mrs_natural/memSize", 100);

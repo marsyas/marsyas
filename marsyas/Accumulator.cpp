@@ -46,6 +46,11 @@ Accumulator::Accumulator(string name):MarSystem("Accumulator", name)
 	addControls();
 }
 
+Accumulator::Accumulator(const Accumulator& a) : MarSystem(a)
+{
+	ctrl_nTimes_ = getctrl("mrs_natural/nTimes");
+}
+
 Accumulator::~Accumulator()
 {
 }
@@ -59,7 +64,7 @@ Accumulator::clone() const
 void 
 Accumulator::addControls()
 {
-	addctrl("mrs_natural/nTimes", 5);
+	addctrl("mrs_natural/nTimes", 5, ctrl_nTimes_);
 	setctrlState("mrs_natural/nTimes", true);
 	nTimes_ = 5;
 }
@@ -68,41 +73,40 @@ void
 Accumulator::myUpdate(MarControlPtr sender)
 {
 	MRSDIAG("Accumulator.cpp - Accumulator:myUpdate");
-
-	nTimes_ = getctrl("mrs_natural/nTimes")->toNatural();
-
+	
 	string onObsNames;
+	
+	nTimes_ = ctrl_nTimes_->to<mrs_natural>();
 
 	if (marsystemsSize_ > 0)
 	{
+		//propagate in flow controls to first child
+		marsystems_[0]->setctrl("mrs_natural/inObservations", inObservations_);
+		marsystems_[0]->setctrl("mrs_natural/inSamples", inSamples_);
+		marsystems_[0]->setctrl("mrs_real/israte", israte_);
+		marsystems_[0]->setctrl("mrs_string/inObsNames", inObsNames_);
 		marsystems_[0]->update();
 
-		// set input characteristics 
-		setctrl("mrs_natural/inSamples", 
-			marsystems_[0]->getctrl("mrs_natural/inSamples")->toNatural());
-		setctrl("mrs_natural/inObservations", 
-			marsystems_[0]->getctrl("mrs_natural/inObservations"));
-		setctrl("mrs_real/israte", 
-			marsystems_[0]->getctrl("mrs_real/israte"));
-		setctrl("mrs_string/inObsNames", 
-			marsystems_[0]->getctrl("mrs_string/inObsNames"));
-
-		// set output characteristics 
-		setctrl("mrs_natural/onSamples", 
+		// forward flow propagation 
+		setctrl(ctrl_onSamples_, 
 			nTimes_ * marsystems_[0]->getctrl("mrs_natural/onSamples")->toNatural());
-		setctrl("mrs_natural/onObservations", 
+		setctrl(ctrl_onObservations_, 
 			marsystems_[0]->getctrl("mrs_natural/onObservations")->toNatural());
-		setctrl("mrs_real/osrate", 
+		setctrl(ctrl_osrate_, 
 			marsystems_[0]->getctrl("mrs_real/osrate"));
 
 		onObsNames = marsystems_[0]->getctrl("mrs_string/onObsNames")->toString();
 	}
+	else
+	{
+		MarSystem::myUpdate(sender);
+		setctrl(ctrl_onSamples_, ctrl_inSamples_->to<mrs_natural>()*nTimes_);
+	}
 
-	onObservations_ = getctrl("mrs_natural/onObservations")->toNatural();
-	onSamples_ = getctrl("mrs_natural/onSamples")->toNatural();
+	onObservations_ = ctrl_onObservations_->to<mrs_natural>();
+	onSamples_ = ctrl_onSamples_->to<mrs_natural>();
 
 	ostringstream oss;
-
 	for (int i = 0; i < onObservations_; i++)
 	{
 		string onObsName;
@@ -112,7 +116,7 @@ Accumulator::myUpdate(MarControlPtr sender)
 		onObsNames = temp;
 		oss << "Acc" << nTimes_ << "_" << onObsName << ",";
 	}
-	setctrl("mrs_string/onObsNames", oss.str());
+	setctrl(ctrl_onObsNames_, oss.str());
 
 	tout_.create(onObservations_, onSamples_ / nTimes_);
 }

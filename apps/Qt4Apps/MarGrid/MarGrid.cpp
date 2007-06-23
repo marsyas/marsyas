@@ -161,7 +161,7 @@ MarGrid::setupTrain(QString fname)
   
   
   
-  total_->updctrl("Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/inSamples", 512);
+  total_->updctrl("mrs_natural/inSamples", 512);
   
   trainFname = fname;
   predictFname = "test.mf";

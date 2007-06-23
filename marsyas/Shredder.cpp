@@ -35,11 +35,16 @@
 
 using namespace std;
 using namespace Marsyas;
- 
+
 Shredder::Shredder(string name):MarSystem("Shredder", name)
 {
-  isComposite_ = true;
-  addControls();
+	isComposite_ = true;
+	addControls();
+}
+
+Shredder::Shredder(const Shredder& a) : MarSystem(a)
+{
+	ctrl_nTimes_ = getctrl("mrs_natural/nTimes");
 }
 
 Shredder::~Shredder()
@@ -49,157 +54,79 @@ Shredder::~Shredder()
 MarSystem* 
 Shredder::clone() const 
 {
-  return new Shredder(*this);
+	return new Shredder(*this);
 }
 
 void 
 Shredder::addControls()
 {
-  addctrl("mrs_natural/nTimes", 5);
-  setctrlState("mrs_natural/nTimes", true);
-  nTimes_ = 5;
+	addctrl("mrs_natural/nTimes", 5, ctrl_nTimes_);
+	setctrlState("mrs_natural/nTimes", true);
+	nTimes_ = 5;
 }
 
 void
 Shredder::myUpdate(MarControlPtr sender)
 {
-  MRSDIAG("Shredder.cpp - Shredder:myUpdate");
-  
-  nTimes_ = getctrl("mrs_natural/nTimes")->toNatural();
+	MRSDIAG("Shredder.cpp - Shredder:myUpdate");
 
-  // update dataflow component MarSystems in order 
-  if (marsystemsSize_ > 0)
-    {
-      marsystems_[0]->update(); 
-	  
-      // set input characteristics 
-      setctrl("mrs_natural/inSamples", 
-	      marsystems_[0]->getctrl("mrs_natural/inSamples")->toNatural() * nTimes_);
+	nTimes_ = ctrl_nTimes_->to<mrs_natural>();
 
-      
-      setctrl("mrs_natural/inObservations", 
-	      marsystems_[0]->getctrl("mrs_natural/inObservations"));
-      setctrl("mrs_real/israte", 
-	      marsystems_[0]->getctrl("mrs_real/israte")->toReal());
-	  
-      // set output characteristics 
-      setctrl("mrs_natural/onSamples", 
-	      marsystems_[0]->getctrl("mrs_natural/onSamples")->toNatural());
-      setctrl("mrs_natural/onObservations", 
-	      marsystems_[0]->getctrl("mrs_natural/onObservations")->toNatural());
-      setctrl("mrs_real/osrate", 
-	      marsystems_[0]->getctrl("mrs_real/osrate"));
-      setctrl("mrs_string/onObsNames", 
-	      marsystems_[0]->getctrl("mrs_string/onObsNames"));
-    }
-
-  tin_.create(marsystems_[0]->getctrl("mrs_natural/inObservations")->toNatural(), 
-	      marsystems_[0]->getctrl("mrs_natural/inSamples")->toNatural());
-}
-
- 
-bool
-Shredder::updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd)
-{
-  
-  // check if the control is valid
-  if(control.isInvalid())
-    {
-      MRSWARN("MarSystem::updControl - Invalid control ptr");
-      MRSWARN("MarSystem::updControl - MarSystem name = " + name_);
-      return false;
-    }
-  
-  //check if control is local or in children
-  if(!hasControl(control))
-    {
-      MRSWARN("MarSystem::updControl -" + control->getName() + " does not exist locally or in children!");
-      MRSWARN("MarSystem::updControl - MarSystem name = " + name_);
-      return false;
-    }
-
-  if(!control->setValue(newcontrol, upd))
-    return false; //some error occurred in setValue()
-
-
-  
-
-  //in case this is a composite Marsystem,
-  if(isComposite_)
-    {
-
-      
-
-
-      // call update (only if the control has state,
-      // upd is true, and if it's not a local control (otherwise update 
-      // was already called by control->setValue())).
-      if(upd && control->hasState() && !hasControlLocal(control))
-	update();
-
-      // certain controls must also be propagated to its children
-      // (must find a way to avoid this hard-coded control list, though! [!] )
-      string cname = control->getName();
-      
-      //Shredder Specific [!]
-      if(cname == "mrs_natural/inSamples")
+	// update dataflow component MarSystems in order 
+	if (marsystemsSize_ > 0)
 	{
-	  if (marsystemsSize_ > 0)
-	    {
-			  
-	      //Shredder Specific [!]
-	      mrs_natural val = newcontrol->to<mrs_natural>() / nTimes_;
+		//propagate in flow controls to first child
+		marsystems_[0]->setctrl("mrs_natural/inObservations", inObservations_);
+		marsystems_[0]->setctrl("mrs_natural/inSamples", inSamples_ / nTimes_);
+		marsystems_[0]->setctrl("mrs_real/israte", israte_);
+		marsystems_[0]->setctrl("mrs_string/inObsNames", inObsNames_);
+		marsystems_[0]->update(); 
 
-	      if(!marsystems_[0]->updctrl(cname, val, upd))
-		return false;//some error occurred in updctrl()
-	      if(upd && marsystems_[0]->hasControlState(cname))
-		update();
-	    }
-	}
-      if (//(cname == "mrs_natural/inSamples")|| 
-	  (cname == "mrs_natural/inObservations")||
-	  (cname == "mrs_real/israte")||
-	  (cname == "mrs_string/inObsNames"))
-	{
-	  //if there is at least a child MarSystem in this composite...
-	  if (marsystemsSize_ > 0)
-	    {
-	      if(!marsystems_[0]->updctrl(cname, newcontrol, upd))
-		return false;//some error occurred in updctrl()
-	      if(upd && marsystems_[0]->hasControlState(cname))
-		update();
-	    }
-	}
-    }
+		// forward flow propagation
+		setctrl("mrs_natural/onSamples", 
+			marsystems_[0]->getctrl("mrs_natural/onSamples")->toNatural());
+		setctrl("mrs_natural/onObservations", 
+			marsystems_[0]->getctrl("mrs_natural/onObservations")->toNatural());
+		setctrl("mrs_real/osrate", 
+			marsystems_[0]->getctrl("mrs_real/osrate"));
+		setctrl("mrs_string/onObsNames", 
+			marsystems_[0]->getctrl("mrs_string/onObsNames"));
 
-  //success!
-  return true;
+		tin_.create(marsystems_[0]->getctrl("mrs_natural/inObservations")->toNatural(), 
+			marsystems_[0]->getctrl("mrs_natural/inSamples")->toNatural());
+	}
+	else //if composite is empty...
+		MarSystem::myUpdate(sender);
 }
-
-
 
 void 
 Shredder::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
+	if(marsystemsSize_>0)
+	{
+		for (c = 0; c < nTimes_; c++) 
+		{
+			for (o=0; o < inObservations_; o++)
+				for (t = 0; t < inSamples_/nTimes_; t++)
+				{
+					tin_(o,t) = in(o, t + c * (inSamples_/nTimes_)) ;
+				}
+				marsystems_[0]->recvControls(); // HACK STU
+				marsystems_[0]->process(tin_, out);
+		}
+	}
+	else //composite has no children!
+	{
+		MRSWARN("Shredder::process: composite has no children MarSystems - passing input to output without changes.");
+		out = in;
+	}
 
-  for (c = 0; c < nTimes_; c++) 
-    {
-      for (o=0; o < inObservations_; o++)
-	for (t = 0; t < inSamples_/nTimes_; t++)
-	  {
-	    tin_(o,t) = in(o, t + c * (inSamples_/nTimes_)) ;
-	  }
-      marsystems_[0]->recvControls(); // HACK STU
-      marsystems_[0]->process(tin_, out);
-		
-    }
-  /*
-    MATLAB_PUT(in, "Schredder_in");
-    MATLAB_PUT(out, "Schredder_out");
-    MATLAB_EVAL("figure(1);imagesc(Schredder_in(1:2:end, :))");
-    MATLAB_EVAL("figure(2);plot(Schredder_out)");
-  */
+	/*
+	MATLAB_PUT(in, "Schredder_in");
+	MATLAB_PUT(out, "Schredder_out");
+	MATLAB_EVAL("figure(1);imagesc(Schredder_in(1:2:end, :))");
+	MATLAB_EVAL("figure(2);plot(Schredder_out)");
+	*/
 }
 
 
@@ -208,6 +135,6 @@ Shredder::myProcess(realvec& in, realvec& out)
 
 
 
-	
 
-	
+
+

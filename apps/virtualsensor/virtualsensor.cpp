@@ -213,7 +213,7 @@ void drumExtract(vector<Collection> cls, string classNames)
             }
             endPos = startPos + 512;
 
-            extractNet->updctrl("SoundFileSource/src/mrs_natural/inSamples", 
+            extractNet->updctrl("mrs_natural/inSamples", 
                     endPos - startPos);
             extractNet->updctrl("SoundFileSource/src/mrs_natural/pos", startPos);
             extractNet->tick();
@@ -327,8 +327,8 @@ void recordVirtualSensor(mrs_real length)
     pnet->updctrl("WekaSink/wsink/mrs_string/labelNames", "edge, middle");
     pnet->updctrl("WekaSink/wsink/mrs_string/filename", "vsensor.arff");
 
-    pnet->updctrl("SoundFileSink/dest/mrs_real/israte", 44100.0); 
-    pnet->updctrl("SoundFileSink/dest/mrs_real/osrate", 44100.0); 
+    pnet->updctrl("mrs_real/israte", 44100.0); 
+    //pnet->updctrl("mrs_real/osrate", 44100.0); 
     pnet->updctrl("SoundFileSink/dest/mrs_string/filename", "vsens.au");   
 
     mrs_real srate = recordNet->getctrl("AudioSource/asrc/mrs_real/israte")->toReal();

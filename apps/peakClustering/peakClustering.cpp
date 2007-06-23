@@ -231,14 +231,14 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 
 	if (microphone_) 
 	{
-		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/AudioSource/src/mrs_natural/inSamples", D);
-		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/AudioSource/src/mrs_natural/inObservations", 1);
+		pvseries->updctrl("mrs_natural/inSamples", D);
+		pvseries->updctrl("mrs_natural/inObservations", 1);
 	}
 	else
 	{
 		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/oriNet/SoundFileSource/src/mrs_string/filename", sfName);
-		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/oriNet/SoundFileSource/src/mrs_natural/inSamples", D);
-		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/oriNet/SoundFileSource/src/mrs_natural/inObservations", 1);
+		pvseries->updctrl("mrs_natural/inSamples", D);
+		pvseries->updctrl("mrs_natural/inObservations", 1);
 		samplingFrequency_ = pvseries->getctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/oriNet/SoundFileSource/src/mrs_real/osrate")->toReal();
 	}
 		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/oriNet/Gain/oriGain/mrs_bool/RMScalc", true);
@@ -247,7 +247,7 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 if(noiseName != EMPTYSTRING)
 {
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/SoundFileSource/noise/mrs_string/filename", noiseName);
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/SoundFileSource/noise/mrs_natural/inSamples", D);
+	pvseries->updctrl("mrs_natural/inSamples", D);
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/NoiseSource/noise/mrs_string/mode", "rand");
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/Delay/noiseDelay/mrs_real/delay",  noiseDelay);
 	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/Gain/noiseGain/mrs_real/gain", noiseGain_);

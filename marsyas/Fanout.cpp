@@ -83,6 +83,7 @@ void
 Fanout::myUpdate(MarControlPtr sender)
 {
 	probe_ = getctrl("mrs_bool/probe")->toBool();
+	
 	if (enabled_.getSize() != marsystemsSize_)
 	{
 		enabled_.create(marsystemsSize_);
@@ -105,52 +106,48 @@ Fanout::myUpdate(MarControlPtr sender)
 		setctrl("mrs_natural/enable", -1);
 	}
 
-
-	mrs_natural onObservations = 0;
-
 	if (marsystemsSize_ != 0)
 	{
+		//propagate in flow controls to first child
+		marsystems_[0]->setctrl("mrs_natural/inObservations", inObservations_);
+		marsystems_[0]->setctrl("mrs_natural/inSamples", inSamples_);
+		marsystems_[0]->setctrl("mrs_real/israte", israte_);
+		marsystems_[0]->setctrl("mrs_string/inObsNames", inObsNames_);
 		marsystems_[0]->update();
-		setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
-		setctrl("mrs_natural/inObservations", marsystems_[0]->getctrl("mrs_natural/inObservations"));
-		setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte"));  
-		setctrl("mrs_string/inObsNames", marsystems_[0]->getctrl("mrs_string/inObsNames"));
-		ostringstream oss;
-		oss << marsystems_[0]->getctrl("mrs_string/onObsNames");
 
+		// update dataflow component MarSystems in order
+		ostringstream oss;
+		mrs_natural onObservations = 0;
 		if (enabled_(0))
 		{
 			onObservations += marsystems_[0]->getctrl("mrs_natural/onObservations")->toNatural();
 			localIndices_(0) = marsystems_[0]->getctrl("mrs_natural/onObservations")->toNatural();
+			oss << marsystems_[0]->getctrl("mrs_string/onObsNames");
 		}
-
 		for (mrs_natural i=1; i < marsystemsSize_; i++)
 		{
-			oss << marsystems_[i]->getctrl("mrs_string/onObsNames");
-
-			//lmartins: replace updctrl() calls by setctrl() + update() ? ==> more efficient! [?]
-			marsystems_[i]->updctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/inSamples"));
-			marsystems_[i]->updctrl("mrs_natural/inObservations", marsystems_[i-1]->getctrl("mrs_natural/inObservations"));
-			marsystems_[i]->updctrl("mrs_real/israte", marsystems_[i-1]->getctrl("mrs_real/israte"));
-			marsystems_[i]->updctrl("mrs_string/inObsNames", marsystems_[0]->getctrl("mrs_string/inObsNames"));
-			marsystems_[i]->update();
-
+			marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/inSamples"));
+			marsystems_[i]->setctrl("mrs_natural/inObservations", marsystems_[i-1]->getctrl("mrs_natural/inObservations"));
+			marsystems_[i]->setctrl("mrs_real/israte", marsystems_[i-1]->getctrl("mrs_real/israte"));
+			marsystems_[i]->setctrl("mrs_string/inObsNames", marsystems_[0]->getctrl("mrs_string/inObsNames"));
+			marsystems_[i]->update(sender);
 			if (enabled_(i))
 			{
 				onObservations += (marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural());
 				localIndices_(i) = marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural();
+				oss << marsystems_[i]->getctrl("mrs_string/onObsNames");
 			}
 		}
 
-		setctrl("mrs_natural/onSamples", marsystems_[0]->getctrl("mrs_natural/onSamples")->toNatural());
-		setctrl("mrs_natural/onObservations", onObservations);
-		setctrl("mrs_real/osrate", marsystems_[0]->getctrl("mrs_real/osrate")->toReal());
-		setctrl("mrs_string/onObsNames", oss.str());
+		// forward flow propagation
+		setctrl(ctrl_onSamples_, marsystems_[0]->getctrl("mrs_natural/onSamples")->toNatural());
+		setctrl(ctrl_onObservations_, onObservations);
+		setctrl(ctrl_osrate_, marsystems_[0]->getctrl("mrs_real/osrate")->toReal());
+		setctrl(ctrl_onObsNames_, oss.str());
 
 		// update buffers between components 
 		if ((mrs_natural)slices_.size() < marsystemsSize_) 
 			slices_.resize(marsystemsSize_, NULL);
-
 		for (mrs_natural i=0; i< marsystemsSize_; i++)
 		{
 			if (slices_[i] != NULL) 
@@ -171,25 +168,34 @@ Fanout::myUpdate(MarControlPtr sender)
 			(slices_[i])->setval(0.0);
 		}
 	}
+	else //if composite is empty...
+		MarSystem::myUpdate(sender);
 }
 
 void
 Fanout::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural outIndex = 0;
-	mrs_natural localIndex = 0;
-
-	for (mrs_natural i = 0; i < marsystemsSize_; i++)
+	if(marsystemsSize_>0)
 	{
-		if (enabled_(i))
+		mrs_natural outIndex = 0;
+
+		for (mrs_natural i = 0; i < marsystemsSize_; i++)
 		{
-			marsystems_[i]->process(in, *(slices_[i]));
+			if (enabled_(i))
+			{
+				marsystems_[i]->process(in, *(slices_[i]));
 
-			for (o=0; o < localIndices_(i); o++)
-				for (t=0; t < onSamples_; t++)
-					out(outIndex + o,t) = (*(slices_[i]))(o,t);
+				for (o=0; o < localIndices_(i); o++)
+					for (t=0; t < onSamples_; t++)
+						out(outIndex + o,t) = (*(slices_[i]))(o,t);
 
-			outIndex += localIndices_(i);      
+				outIndex += (mrs_natural)localIndices_(i);      
+			}
 		}
+	}
+	else //composite has no children!
+	{
+		MRSWARN("FanOut::process: composite has no children MarSystems - passing input to output without changes.");
+		out = in;
 	}
 }

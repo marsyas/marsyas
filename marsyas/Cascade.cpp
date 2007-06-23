@@ -62,27 +62,32 @@ Cascade::myUpdate(MarControlPtr sender)
 {
   if (marsystemsSize_ != 0) 
 	{
-    marsystems_[0]->update();
-    
-    setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
-    setctrl("mrs_natural/inObservations", marsystems_[0]->getctrl("mrs_natural/inObservations"));
-    setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte"));  
-    
+		//propagate in flow controls to first child
+		marsystems_[0]->setctrl("mrs_natural/inObservations", inObservations_);
+		marsystems_[0]->setctrl("mrs_natural/inSamples", inSamples_);
+		marsystems_[0]->setctrl("mrs_real/israte", israte_);
+		marsystems_[0]->setctrl("mrs_string/inObsNames", inObsNames_);
+		marsystems_[0]->update();
+
+		// update dataflow component MarSystems in order 
+		ostringstream oss;
+		oss << marsystems_[0]->getctrl("mrs_string/onObsNames");   
     mrs_natural onObservations = marsystems_[0]->getctrl("mrs_natural/onObservations")->toNatural();
-    
     for (mrs_natural i=1; i < marsystemsSize_; i++) 
 		{
-      //lmartins: setctrl or updctrl?!? [?]
-	  marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/onSamples"));
+			marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/onSamples"));
       marsystems_[i]->setctrl("mrs_natural/inObservations", marsystems_[i-1]->getctrl("mrs_natural/onObservations"));
       marsystems_[i]->setctrl("mrs_real/israte", marsystems_[i-1]->getctrl("mrs_real/osrate"));
       marsystems_[i]->update();
+			oss << marsystems_[i]->getctrl("mrs_string/onObsNames");
       onObservations += marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural();
     }
     
-    setctrl("mrs_natural/onSamples", marsystems_[0]->getctrl("mrs_natural/onSamples"));
-    setctrl("mrs_natural/onObservations", onObservations);
-    setctrl("mrs_real/osrate", marsystems_[0]->getctrl("mrs_real/osrate"));
+		//forward flow propagation
+    setctrl(ctrl_onSamples_, marsystems_[0]->getctrl("mrs_natural/onSamples"));
+    setctrl(ctrl_onObservations_, onObservations);
+    setctrl(ctrl_osrate_, marsystems_[0]->getctrl("mrs_real/osrate"));
+		setctrl(ctrl_onObsNames_, oss.str());
     
     // update buffers between components
     if ((mrs_natural)slices_.size() < marsystemsSize_) 
@@ -98,25 +103,26 @@ Cascade::myUpdate(MarControlPtr sender)
 						(slices_[i])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural()) 
 				{
 					delete slices_[i];
-					slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
+					slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
+																	 marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
 				}
       }
       else 
 			{
-				slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
+				slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
+																 marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
       }
 
       (slices_[i])->setval(0.0);
     }
-		//defaultUpdate();
   }
+	else //if composite is empty...
+		MarSystem::myUpdate(sender);
 }
       
 void 
 Cascade::myProcess(realvec& in, realvec& out)
 {
-  checkFlow(in, out);
-  
   mrs_natural outIndex = 0;
   mrs_natural localIndex = 0;
   
@@ -150,5 +156,10 @@ Cascade::myProcess(realvec& in, realvec& out)
       outIndex += localIndex;
     }
   }
+	else if(marsystemsSize_ == 0) //composite has no children!
+	{
+		MRSWARN("Cascade::process: composite has no children MarSystems - passing input to output without changes.");
+		out = in;
+	}
 }
 

@@ -85,6 +85,8 @@ MarSystem::MarSystem(string type, string name)
 
 	MATLABscript_ = "";
 
+	isUpdating_ = false;
+
 	//add default controls that 
 	//all MarSystems should have
 	addControls();
@@ -113,6 +115,8 @@ MarSystem::MarSystem(const MarSystem& a)
 	
 
 	MATLABscript_ = a.MATLABscript_;
+
+	isUpdating_ = false;
 
 	//clone controls
 	{
@@ -273,12 +277,10 @@ MarSystem::addMarSystem(MarSystem *marsystem)
 
 	if (marsystem == NULL) 
 	  {
-	    MRSWARN("Adding NULL MarSystem");
+	    MRSWARN("MarSystem::addMarSystem - Adding a NULL MarSystem - failing...");
 	    return false;
 	  }
 	
-
-
 	//idiot proof 2 
 	MarSystem* msys = parent_;
 	while(msys)
@@ -330,15 +332,16 @@ MarSystem::addMarSystem(MarSystem *marsystem)
 		#endif
 		//set parent for the new child MarSystem
 		marsystem->setParent(this);
+		
 		//update child MarSystem
-		marsystem->update();
+		//marsystem->update(); //superfluous update call! It will be called by this->update() [!]
 		//update parent MarSystem
 		update();
 		return true;
 	}
 	else
 	{
-		MRSWARN("MarSystem::addMarSystem -Trying to add MarSystem to a non-Composite - failing...");
+		MRSWARN("MarSystem::addMarSystem - Trying to add MarSystem to a non-Composite - failing...");
 		#ifdef MARSYAS_QT
 		rwLock_.unlock();
 		#endif
@@ -605,10 +608,22 @@ MarSystem::myUpdate(MarControlPtr sender)
 	//By default, a MarSystem does not modify the input data stream format.
 	//Override this method on a derived MarSystem if data format changes
 	//should take place...
+
+	//forward flow propagation
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 	ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
+}
+
+bool
+MarSystem::isUpdating()
+{
+#ifdef MARSYAS_QT
+	QReadLocker locker(&processMutex_);
+#endif
+	
+	return isUpdating_;
 }
 
 void 
@@ -620,15 +635,29 @@ MarSystem::update(MarControlPtr sender)
 
 	MRSDIAG("MarSystem.cpp - MarSystem:Update");
 
+	isUpdating_ = true;
+
+	//store current flow variables
+	tinObservations_ = inObservations_;
+	tinSamples_ = inSamples_;
+	tisrate_ = israte_;
+	tinObsNames_ = inObsNames_;
+	tonObservations_ = onObservations_;
+	tonSamples_ = onSamples_;
+	tosrate_ = osrate_;
+	tonObsNames_ = onObsNames_;
+
 	//sync input member variables
 	inObservations_ = ctrl_inObservations_->to<mrs_natural>();
 	inSamples_ = ctrl_inSamples_->to<mrs_natural>();
 	israte_ = ctrl_israte_->to<mrs_real>();
+	inObsNames_ = ctrl_inObsNames_->to<mrs_string>();
 	//sync output member variables
 	onObservations_ = ctrl_onObservations_->to<mrs_natural>();
 	onSamples_ = ctrl_onSamples_->to<mrs_natural>();
 	osrate_ = ctrl_osrate_->to<mrs_real>();
-
+	onObsNames_ = ctrl_onObsNames_->to<mrs_string>();
+	
 	//call derived class specific update
 	myUpdate(sender);
 
@@ -636,10 +665,12 @@ MarSystem::update(MarControlPtr sender)
 	inObservations_ = ctrl_inObservations_->to<mrs_natural>();
 	inSamples_ = ctrl_inSamples_->to<mrs_natural>();
 	israte_ = ctrl_israte_->to<mrs_real>();
+	inObsNames_ = ctrl_inObsNames_->to<mrs_string>();
 	//sync output member variables
 	onObservations_ = ctrl_onObservations_->to<mrs_natural>();
 	onSamples_ = ctrl_onSamples_->to<mrs_natural>();
 	osrate_ = ctrl_osrate_->to<mrs_real>();
+	onObsNames_ = ctrl_onObsNames_->to<mrs_string>();
 
 	//check active status
 	bool active = ctrl_active_->isTrue();
@@ -652,18 +683,29 @@ MarSystem::update(MarControlPtr sender)
 
 	//resize input and output realvec if necessary
 	if ((inObservations_ != inTick_.getRows()) ||
-		(inSamples_ != inTick_.getCols())      ||
-		(onObservations_ != outTick_.getRows()) ||
-		(onSamples_ != outTick_.getCols()))
+			(inSamples_ != inTick_.getCols())      ||
+			(onObservations_ != outTick_.getRows()) ||
+			(onSamples_ != outTick_.getCols()))
 	{
 		inTick_.create(inObservations_, inSamples_);
-
+		
 		// Fixed resizing of ctrl_processedData 
 		realvec& v = (realvec &)ctrl_processedData_->to<mrs_realvec>();
-		v.create(onObservations_, onSamples_);
-
-		
+		v.create(onObservations_, onSamples_);		// this may break MarControl encapsulation!!!!!! [!]
 	}
+
+	//check for OUT-FLOW modifications without parent knowledge!!
+	if(parent_)
+	{
+		if(tonObservations_ != onObservations_ ||
+			tonSamples_ != onSamples_ ||
+			tosrate_ != osrate_ ||
+			tonObsNames_ != onObsNames_)
+				if(!parent_->isUpdating())
+					parent_->update(sender);
+	}
+
+	isUpdating_ = false;
 
 #ifdef MARSYAS_QT
 	processMutex_->unlock();
@@ -950,91 +992,14 @@ MarSystem::updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd)
 		MRSWARN("MarSystem::updControl - Invalid control ptr @ " + getAbsPath());
 		return false;
 	}
+// 	//check if control exists locally or among children
+// 	if(!hasControl(control))
+// 	{
+// 		MRSWARN("MarSystem::updControl - " + control->getName() +" @ "+getAbsPath()+ " does not exist locally or in children!");
+// 		return false;
+// 	}
 
-	//check if control exists locally or among children
-	if(!hasControl(control))
-	{
-		MRSWARN("MarSystem::updControl - " + control->getName() +" @ "+getAbsPath()+ " does not exist locally or in children!");
-		return false;
-	}
-
-	if(!control->setValue(newcontrol, upd))
-		return false; //some error occurred in setValue()
-
-	//in case this is a composite Marsystem,
-	if(isComposite_) // => mutexes [?]
-	{
-		// call update (only if the control has state,
-		// upd is true, and if it's not a local control (otherwise update 
-		// was already called by control->setValue())).
-		if(upd && control->hasState() && !hasControlLocal(control))
-			update();
-
-		// certain controls must also be propagated to its children
-		// (must find a way to avoid this hard-coded control list, though! [!] )
-		string cname = control->getName();
-		if ((cname == "mrs_natural/inSamples")|| 
-			(cname == "mrs_natural/inObservations")||
-			(cname == "mrs_real/israte")||
-			(cname == "mrs_string/inObsNames"))
-		{
-			//if there is at least a child MarSystem in this composite...
-			if (marsystemsSize_ > 0) // => mutexes [?]
-			{
-				if(!marsystems_[0]->updctrl(cname, newcontrol, upd))
-					return false;//some error occurred in updctrl()
-				if(upd && marsystems_[0]->hasControlState(cname))
-					update();
-			}
-		}
-	}
-
-	//success!
-	return true;
-}
-
-void
-MarSystem::controlUpdate(MarControlPtr ctrl)
-{
-	//this method is called by MarControl each time the value of
-	//the control (if it has state) is modified.
-	//It is possible to define specialized "update" functions for
-	//different controls, if needed...
-
-	#ifdef MARSYAS_QT
-	QReadLocker locker(&rwLock_);
-	#endif
-
-	// TODO: simple fix, but this method needs to be recoded
-	MarControlPtr ctrlcpy = ctrl->clone();
-
-	// check local controls 
-	for (ctrlIter_ = controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
-	{
-		//compare MarControl* (the actual pointer and not its value)
-		if((ctrlIter_->second)() == ctrl())
-		{
-			update(ctrl);
-			break;
-		}
-	}
-	
-	if(isComposite_ && marsystemsSize_ > 0)
-	{
-		string cname = ctrl->getName();
-		// (should find a way to avoid this hard-coded check...) [!]
-		// default controls - semantics of composites 
-		if ((cname == "mrs_natural/inSamples")||
-			(cname == "mrs_natural/inObservations")||
-			(cname == "mrs_real/israte")||
-			(cname == "mrs_string/inObsNames"))
-		{
-			//marsystems_[0]->updctrl(cname, ctrl);
-			marsystems_[0]->getctrl(cname)->setValue(ctrlcpy, true);
-			update();
-			return;
-		}
-	}
+		return control->setValue(newcontrol, upd);
 }
 
 //get local controls only (i.e. no child controls included)

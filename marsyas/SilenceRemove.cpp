@@ -44,7 +44,7 @@ SilenceRemove::SilenceRemove(string name):MarSystem("SilenceRemove",name)
 
 SilenceRemove::SilenceRemove(const SilenceRemove& a): MarSystem(a)
 {
-  ctrl_threshold_ = getctrl("mrs_real/threshold");
+	ctrl_threshold_ = getctrl("mrs_real/threshold");
 }
 
 SilenceRemove::~SilenceRemove()
@@ -68,48 +68,60 @@ SilenceRemove::addControls()
 void
 SilenceRemove::myUpdate(MarControlPtr sender)
 {
-  MRSDIAG("SilenceRemove.cpp - SilenceRemove:myUpdate");
-  
-  threshold_ = ctrl_threshold_->toReal();
-  
-  if (marsystemsSize_ > 0)
-    {
-      // set input characteristics 
-      ctrl_inSamples_->setValue(marsystems_[0]->ctrl_inSamples_);
-      ctrl_inObservations_->setValue(marsystems_[0]->ctrl_inObservations_);
-      ctrl_israte_->setValue(marsystems_[0]->ctrl_israte_);
-      
-      // set output characteristics
-      ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
-      ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
-      ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
-      
-      marsystems_[0]->update(); //lmartins: shouldn't this have already been called?! [?]
-      
-      if (ctrl_notEmpty_.isInvalid()) 
-         ctrl_notEmpty_ = marsystems_[0]->getctrl("mrs_bool/notEmpty");
-    }
+	MRSDIAG("SilenceRemove.cpp - SilenceRemove:myUpdate");
+
+	threshold_ = ctrl_threshold_->toReal();
+
+	if (marsystemsSize_ > 0)
+	{
+		//propagate in flow controls to first child
+		marsystems_[0]->setctrl("mrs_natural/inObservations", inObservations_);
+		marsystems_[0]->setctrl("mrs_natural/inSamples", inSamples_);
+		marsystems_[0]->setctrl("mrs_real/israte", israte_);
+		marsystems_[0]->setctrl("mrs_string/inObsNames", inObsNames_);
+		marsystems_[0]->update();
+
+		// forward flow propagation
+		ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
+		ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
+		ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
+		ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
+
+		//marsystems_[0]->update(); //lmartins: shouldn't this have already been called?! [?]
+
+		if (ctrl_notEmpty_.isInvalid()) 
+			ctrl_notEmpty_ = marsystems_[0]->getctrl("mrs_bool/notEmpty");
+	}
+	else //if composite is empty...
+		MarSystem::myUpdate(sender);
 }
 
 void 
 SilenceRemove::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
-  mrs_real rms = 0.0;
-  mrs_natural count = 0;
-  
-  do 
-    {
-      marsystems_[0]->process(in, out);
-      
-      for (o=0; o < onObservations_; o++)
-	for (t = 0; t < onSamples_; t++)
-	  {
-	    rms += (out(o,t) * out(o,t));
-	    count++;
-	  }
-      rms /= count;
-      rms = sqrt(rms);
-      count = 0;
-    } while (rms < threshold_ && (ctrl_notEmpty_->isTrue())); 
+	mrs_real rms = 0.0;
+	mrs_natural count = 0;
+
+	if(marsystemsSize_>0)
+	{
+		do 
+		{
+			marsystems_[0]->process(in, out);
+
+			for (o=0; o < onObservations_; o++)
+				for (t = 0; t < onSamples_; t++)
+				{
+					rms += (out(o,t) * out(o,t));
+					count++;
+				}
+				rms /= count;
+				rms = sqrt(rms);
+				count = 0;
+		} while (rms < threshold_ && (ctrl_notEmpty_->isTrue())); 
+	}
+	else //composite has no children!
+	{
+		MRSWARN("SilenceRemove::process: composite has no children MarSystems - passing input to output without changes.");
+		out = in;
+	}
 }

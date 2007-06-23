@@ -34,7 +34,6 @@ class Parallel: public MarSystem
 private:
 	void myUpdate(MarControlPtr sender);
   void deleteSlices();
-	bool updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd=true);
   
 public:
   Parallel(std::string name);

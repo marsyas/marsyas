@@ -111,7 +111,7 @@ tempo_bcWavelet(string sfName, string resName)
   srate = total->getctrl("SoundFileSource/src/mrs_real/israte")->toReal();
   offset = (mrs_natural) (start * srate * nChannels);
   duration = (mrs_natural) (length * srate * nChannels);
-  total->updctrl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
+  total->updctrl("mrs_natural/inSamples", hopSize);
   total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
   
   // wavelt filterbank envelope extraction controls 
@@ -272,7 +272,7 @@ tempo_bcWavelet(string sfName, string resName)
   mrs_natural hitindex = 0;
 
 
-  playback->updctrl("SoundFileSink/adest/mrs_real/israte", srate);
+  playback->updctrl("mrs_real/israte", srate);
   playback->updctrl("SoundFileSink/adest/mrs_string/filename", "boomchick.wav");
 
   
@@ -393,7 +393,7 @@ tempo_bcFilter(string sfName, string resName)
   srate = total->getctrl("SoundFileSource/src/mrs_real/israte")->toReal();
   offset = (mrs_natural) (start * srate * nChannels);
   duration = (mrs_natural) (length * srate * nChannels);
-  total->updctrl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
+  total->updctrl("mrs_natural/inSamples", hopSize);
   total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
   
   // prepare vectors for processing 
@@ -623,7 +623,7 @@ tempo_bcFilter(string sfName, string resName)
   mrs_natural hitindex = 0;
 
 
-  playback->updctrl("SoundFileSink/adest/mrs_real/israte", srate);
+  playback->updctrl("mrs_real/israte", srate);
   playback->updctrl("SoundFileSink/adest/mrs_string/filename", "boomchick.wav");
   
   playback->updctrl("Fanout/mix/SoundFileSource/bdsrc/mrs_string/filename", bdname);

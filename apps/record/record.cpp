@@ -115,8 +115,8 @@ void record(mrs_real length, mrs_real gain, string filename)
     recordNet->addMarSystem(asrc);
     recordNet->addMarSystem(dest);
 
-    recordNet->updctrl("AudioSource/asrc/mrs_natural/inSamples", 100);
-    recordNet->updctrl("AudioSource/asrc/mrs_real/israte", sropt);
+    recordNet->updctrl("mrs_natural/inSamples", 100);
+    recordNet->updctrl("mrs_real/israte", sropt);
     recordNet->updctrl("AudioSource/asrc/mrs_natural/nChannels", copt);
     recordNet->updctrl("AudioSource/asrc/mrs_real/gain", gain);
 
@@ -125,11 +125,11 @@ void record(mrs_real length, mrs_real gain, string filename)
 
     recordNet->updctrl("SoundFileSink/dest/mrs_string/filename", filename);
 
-    mrs_real srate = recordNet->getctrl("AudioSource/asrc/mrs_real/israte")->toReal();
+    mrs_real srate = recordNet->getctrl("mrs_real/israte")->toReal();
     mrs_natural nChannels = recordNet->getctrl("AudioSource/asrc/mrs_natural/nChannels")->toNatural();
     cout << "AudioSource srate =  " << srate << endl; 
     cout << "AudioSource nChannels = " << nChannels << endl;
-    mrs_natural inSamples = recordNet->getctrl("AudioSource/asrc/mrs_natural/inSamples")->toNatural();
+    mrs_natural inSamples = recordNet->getctrl("mrs_natural/inSamples")->toNatural();
 
 
     mrs_natural iterations = (mrs_natural)((srate * length) / inSamples);

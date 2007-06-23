@@ -301,7 +301,7 @@ void extract_trainAccumulator(string sfName, mrs_natural memSize,
 
   // update controls I
   featureNetwork->updctrl("Memory/memory/mrs_natural/memSize", memSize);
-  featureNetwork->updctrl(src->getType() + "/src/mrs_natural/inSamples", 
+  featureNetwork->updctrl("mrs_natural/inSamples", 
 			 MRS_DEFAULT_SLICE_NSAMPLES);
   featureNetwork->updctrl(src->getType() + "/src/mrs_natural/pos", offset);      
   featureNetwork->addMarSystem(wsink->clone());
@@ -319,7 +319,7 @@ void extract_trainAccumulator(string sfName, mrs_natural memSize,
   total->addMarSystem(mng.create("PlotSink", "psink"));
   
   // update controls 
-  total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
+  total->updctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
   total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/mrs_natural/pos", offset);      
 
 

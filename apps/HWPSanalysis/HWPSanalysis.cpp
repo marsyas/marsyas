@@ -134,8 +134,8 @@ HWPSanalyse(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		////////////////////////////////////////////////////////////////
 		if (microphone_) 
 		{
-			pvseries->updctrl("AudioSource/src/mrs_natural/inSamples", D);
-			pvseries->updctrl("AudioSource/src/mrs_natural/inObservations", 1);
+			pvseries->updctrl("mrs_natural/inSamples", D);
+			pvseries->updctrl("mrs_natural/inObservations", 1);
 		}
 		else
 		{
@@ -144,8 +144,8 @@ HWPSanalyse(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 // 			pvseries->linkctrl("HWPSspectrumnet/WHASP/mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty"); //!!!!!!!! [!]
 			
 			pvseries->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-			pvseries->updctrl("SoundFileSource/src/mrs_natural/inSamples", D);
-			pvseries->updctrl("SoundFileSource/src/mrs_natural/inObservations", 1);
+			pvseries->updctrl("mrs_natural/inSamples", D);
+			pvseries->updctrl("mrs_natural/inObservations", 1);
 			samplingFrequency_ = pvseries->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
 		}
 
@@ -191,7 +191,7 @@ HWPSanalyse(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		mrs_natural nbFrames;
 		peakLoad(peakSet_, sfName, fs, S, nbFrames, D);
 		pvseries->setctrl("RealvecSource/peSource/mrs_realvec/data", peakSet_);
-		pvseries->setctrl("RealvecSource/peSource/mrs_real/israte", fs);
+		pvseries->setctrl("mrs_real/israte", fs);
 	}
 
 	if(peakStore_)

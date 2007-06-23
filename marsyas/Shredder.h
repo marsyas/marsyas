@@ -39,14 +39,15 @@ class Shredder: public MarSystem
 {
 private: 
 	mrs_natural nTimes_;
+	MarControlPtr ctrl_nTimes_;
 	realvec tin_;
 
 	void addControls();
 	void myUpdate(MarControlPtr sender);
-	bool updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd=true);
   
 public:
 	Shredder(std::string name);
+	Shredder(const Shredder& a);
   ~Shredder();
   MarSystem* clone() const; 
 

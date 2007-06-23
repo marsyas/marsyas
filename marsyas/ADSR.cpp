@@ -79,9 +79,10 @@ ADSR::addControls()
 
 
 void
-ADSR::update()
+ADSR::myUpdate()
 {
-  MRSDIAG("ADSR.cpp - ADSR:update");
+  MRSDIAG("ADSR.cpp - ADSR:myUpdate");
+
   setctrl("natural/onSamples", getctrl("natural/inSamples"));
   setctrl("natural/onObservations", getctrl("natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte")); 

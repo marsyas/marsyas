@@ -124,7 +124,7 @@ void tempo_medianMultiBands(string sfName, string resName)
   mrs_natural winSize = (mrs_natural)(srate / 22050.0) * 65536;
   mrs_natural hopSize = winSize / 16;
   total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-  total->updctrl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
+  total->updctrl("mrs_natural/inSamples", hopSize);
   total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
   total->updctrl("ShiftInput/si/mrs_natural/WindowSize", winSize);
   total->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
@@ -303,7 +303,7 @@ tempo_new(string sfName, string resName)
   
   // total->updctrl("PlotSink/psink3/mrs_string/outputFilename", "histo");
   // total->updctrl("PlotSink/psink4/mrs_string/outputFilename", "rhisto");   
-  total->updctrl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
+  total->updctrl("mrs_natural/inSamples", hopSize);
   total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
 
   total->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 5);
@@ -404,7 +404,7 @@ tempo_new(string sfName, string resName)
   // input filename with hopSize/winSize 
   winSize = (mrs_natural)(srate / 22050.0) * 8 * 65536;
   
-  total1->updctrl("SoundFileSource/src1/mrs_natural/inSamples", winSize);
+  total1->updctrl("mrs_natural/inSamples", winSize);
   total1->updctrl("SoundFileSource/src1/mrs_natural/pos", 0);      
 
   // wavelt filterbank envelope extraction controls 
@@ -579,7 +579,7 @@ tempo_histoSumBands(string sfName, string resName)
   duration = (mrs_natural) (length * srate * nChannels);
   
 
-  total->updctrl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
+  total->updctrl("mrs_natural/inSamples", hopSize);
   total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
   total->updctrl("ShiftInput/si/mrs_natural/WindowSize", winSize);
   total->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
@@ -700,7 +700,7 @@ tempo_medianSumBands(string sfName, string resName)
   offset = (mrs_natural) (start * srate * nChannels);
   duration = (mrs_natural) (length * srate * nChannels);
 
-  total->updctrl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
+  total->updctrl("mrs_natural/inSamples", hopSize);
   total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
   total->updctrl("ShiftInput/si/mrs_natural/WindowSize", winSize);
   total->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
@@ -815,7 +815,7 @@ tempo_bcWavelet(string sfName, string resName)
   srate = total->getctrl("SoundFileSource/src/mrs_real/israte")->toReal();
   offset = (mrs_natural) (start * srate * nChannels);
   duration = (mrs_natural) (length * srate * nChannels);
-  total->updctrl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
+  total->updctrl("mrs_natural/inSamples", hopSize);
   total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
   
   // wavelt filterbank envelope extraction controls 
@@ -1095,7 +1095,7 @@ tempo_bcFilter(string sfName, string resName)
   srate = total->getctrl("SoundFileSource/src/mrs_real/israte")->toReal();
   offset = (mrs_natural) (start * srate * nChannels);
   duration = (mrs_natural) (length * srate * nChannels);
-  total->updctrl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
+  total->updctrl("mrs_natural/inSamples", hopSize);
   total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
   
   // prepare vectors for processing 

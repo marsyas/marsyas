@@ -496,8 +496,8 @@ wavsfplay1(string sfName)
     series->updctrl("Gain/gain/mrs_real/gain", 1.0);
     series->updctrl("SoundFileSink/dest/mrs_natural/nChannels", 
             series->getctrl("SoundFileSource/src/mrs_natural/nChannels"));
-    series->updctrl("SoundFileSink/dest/mrs_real/israte", 
-            series->getctrl("SoundFileSource/src/mrs_real/osrate"));
+    //series->updctrl("SoundFileSink/dest/mrs_real/israte", 
+    //        series->getctrl("SoundFileSource/src/mrs_real/osrate"));
 
     series->updctrl("mrs_natural/inSamples", 2048);  
     series->updctrl("SoundFileSink/dest/mrs_string/filename", "ajay.wav");

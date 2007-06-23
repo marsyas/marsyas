@@ -352,7 +352,7 @@ tempo_histoSumBands(MarSystem* total1, string sfName, realvec& beatfeatures,
   // only do 30 seconds 
   duration = (mrs_natural) (30.0 * srate * nChannels);
 
-  total1->updctrl("SoundFileSource/src1/mrs_natural/inSamples", hopSize);
+  total1->updctrl("mrs_natural/inSamples", hopSize);
   total1->updctrl("SoundFileSource/src1/mrs_natural/pos", offset);      
   total1->updctrl("ShiftInput/si/mrs_natural/WindowSize", winSize);
   total1->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
@@ -472,7 +472,7 @@ bextract_trainStereoSPS(vector<Collection> cls, string classNames,
   total->updctrl("WekaSink/wsink/mrs_string/labelNames", classNames);
   total->updctrl("WekaSink/wsink/mrs_string/filename", wekafname); 
 
-  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_natural/inSamples", 1024);
+  total->updctrl("mrs_natural/inSamples", 1024);
 
   mrs_bool isEmpty;
 
@@ -575,7 +575,7 @@ bextract_trainStereoSPSMFCC(vector<Collection> cls, string classNames,
   total->updctrl("WekaSink/wsink/mrs_string/labelNames", classNames);
   total->updctrl("WekaSink/wsink/mrs_string/filename", wekafname); 
 
-  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_natural/inSamples", 1024);
+  total->updctrl("mrs_natural/inSamples", 1024);
 
   mrs_bool isEmpty;
 
@@ -658,7 +658,7 @@ bextract_trainStereoMFCC(vector<Collection> cls, string classNames,
   playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
 
 
-  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_natural/inSamples", 1024);
+  total->updctrl("mrs_natural/inSamples", 1024);
 
   mrs_bool isEmpty;
 
@@ -747,7 +747,7 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
   // update controls
   //////////////////////////////////////////////////////////////////////////
   featureNetwork->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-  featureNetwork->updctrl("SoundFileSource/src/mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
+  featureNetwork->updctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
 
   //////////////////////////////////////////////////////////////////////////
   // accumulate feature vectors over 30 seconds 
@@ -788,7 +788,7 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
   mrs_real srate = samplingRate_;
 
 
-  total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/mrs_natural/inSamples", winSize);
+  total->updctrl("mrs_natural/inSamples", winSize);
 
   total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/mrs_natural/pos", offset);      
 
@@ -1007,7 +1007,7 @@ void bextract_train(vector<Collection> cls,
   //////////////////////////////////////////////////////////////////////////
   // src has to be configured with hopSize frame length in case a ShiftInput
   // is used in the feature extraction network
-  featureNetwork->updctrl(src->getType() + "/src/mrs_natural/inSamples", hopSize);
+  featureNetwork->updctrl("mrs_natural/inSamples", hopSize);
   featureNetwork->updctrl(src->getType() + "/src/mrs_natural/pos", offset);      
 	
   //////////////////////////////////////////////////////////////////////////
@@ -1232,8 +1232,8 @@ void bextract_train(vector<Collection> cls,
 		}
 
 	      featureNetwork->updctrl(src->getType() + "/src/mrs_natural/pos", start);
-	      //featureNetwork->updctrl(src->getType() + "/src/mrs_natural/inSamples", hopSize); //[?]
-	      //featureNetwork->updctrl(src->getType() + "/src/mrs_natural/inSamples", tline.lineSize_);//[?]
+	      //featureNetwork->updctrl("mrs_natural/inSamples", hopSize); //[?]
+	      //featureNetwork->updctrl("mrs_natural/inSamples", tline.lineSize_);//[?]
 				
 	      //iterate over audio region
 	      //(using the winSize and hopSize defined by the user)
@@ -1349,7 +1349,7 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
   srm->addMarSystem(src);
 
   // src->updctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
-  // srm->updctrl("SoundFileSource/src/mrs_natural/inSamples", 2048);
+  // srm->updctrl("mrs_natural/inSamples", 2048);
   // srm->updctrl("mrs_natural/inSamples", 2048);
 
   // Calculate duration, offest parameters if necessary 
@@ -1446,11 +1446,10 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
 
   // update controls I
   featureNetwork->updctrl("Memory/memory/mrs_natural/memSize", memSize);
-  // featureNetwork->updctrl(src->getType() + "/src/mrs_natural/inSamples", 
+  // featureNetwork->updctrl("mrs_natural/inSamples", 
   // MRS_DEFAULT_SLICE_NSAMPLES);
 
-  featureNetwork->updctrl("SilenceRemove/srm/" + src->getType() + "/src/mrs_natural/inSamples", 
-			  winSize);
+  featureNetwork->updctrl("mrs_natural/inSamples", winSize);
   featureNetwork->updctrl("SilenceRemove/srm/" + src->getType() + "/src/mrs_natural/pos", offset);      
   featureNetwork->addMarSystem(mng.create("Annotator", "annotator"));
   featureNetwork->addMarSystem(wsink->clone());

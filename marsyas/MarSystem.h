@@ -117,24 +117,32 @@ protected:
 	mutable std::map<std::string, MarControlPtr> controls_;
 	std::map<std::string, MarControlPtr>::iterator ctrlIter_;
 
- 
+	//in flow member vars
 	mrs_natural inObservations_;
   mrs_natural inSamples_;
   mrs_real israte_;
+	mrs_string inObsNames_;
+	//out flow member vars
   mrs_natural onObservations_;
   mrs_natural onSamples_;
   mrs_real osrate_;
+	mrs_string onObsNames_;
+	//temporary in flow vars
+	mrs_natural tinObservations_;
+	mrs_natural tinSamples_;
+	mrs_real		tisrate_;
+	mrs_string	tinObsNames_;
+	//temporary out flow vars
+	mrs_natural tonObservations_;
+	mrs_natural tonSamples_;
+	mrs_real		tosrate_;
+	mrs_string	tonObsNames_;
 
 	mrs_natural irows_;
 	mrs_natural icols_;
 	mrs_natural orows_;
 	mrs_natural ocols_;
 
-  mrs_natural tinObservations_;
-  mrs_natural tinSamples_;
-  mrs_natural tonObservations_;
-  mrs_natural tonSamples_;
-  
   realvec inTick_;
   realvec outTick_;
 
@@ -143,16 +151,18 @@ protected:
 
 	bool active_;
 
+	bool isUpdating_; //is true while inside ::update() -> used for children to check if an update came from their parent
+
 	std::string MATLABscript_;
 
 	//control paths
 	std::string getControlRelativePath(std::string cname) const;
 	std::string getControlLocalPath(std::string cname) const;
 
-	virtual void controlUpdate(MarControlPtr ctrl);
-
 	virtual void myUpdate(MarControlPtr sender);
+
 	virtual void localActivate(bool state);
+	
 	virtual void myProcess(realvec& in, realvec& out) = 0;
 
 	MarSystem& operator=(const MarSystem&) { assert(0); } // copy assignment (should never be called!) [!]
@@ -178,13 +188,18 @@ public:
 	bool linkctrl(std::string cname1, std::string cname2) {return linkControl(cname1, cname2);}
   
 	// update controls
-  virtual bool updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd = true);
-	bool updctrl(MarControlPtr control, MarControlPtr newcontrol, bool upd = true) {return updControl(control, newcontrol, upd);}
+  bool updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd = true);
+	bool updControl(char* cname, MarControlPtr newcontrol, bool upd = true)
+	{
+		MarControlPtr control = getControl(cname);
+		return updControl(control, newcontrol, upd);
+	}
 	bool updControl(std::string cname, MarControlPtr newcontrol, bool upd = true)
 	{
 		MarControlPtr control = getControl(cname);
 		return updControl(control, newcontrol, upd);
 	}
+	bool updctrl(MarControlPtr control, MarControlPtr newcontrol, bool upd = true) {return updControl(control, newcontrol, upd);}
   bool updctrl(char *cname, MarControlPtr newcontrol, bool upd = true) 
   {
     MarControlPtr control = getControl(cname);
@@ -196,18 +211,18 @@ public:
     return updControl(control, newcontrol, upd);
   }
 
+	// set controls (does not call update())
+	bool setControl(std::string cname, MarControlPtr newcontrol) {return updctrl(cname, newcontrol, NOUPDATE);}
+	bool setctrl(char *cname, MarControlPtr newcontrol) {return updctrl(std::string(cname), newcontrol, NOUPDATE);}
+	bool setctrl(std::string cname, MarControlPtr newcontrol) {return updctrl(cname, newcontrol, NOUPDATE);}
+	bool setctrl(MarControlPtr control, MarControlPtr newcontrol) {return updctrl(control, newcontrol, NOUPDATE);}
+
 	// query controls
 	bool hasControl(MarControlPtr control, bool searchChildren = true);
 	bool hasControlLocal(MarControlPtr control) {return hasControl(control, false);}
 	bool hasControl(std::string cname, bool searchChildren = true);
 	bool hasControlLocal(std::string cname) {return hasControl(cname, false);}
 
-	// set controls
-	bool setControl(std::string cname, MarControlPtr newcontrol) {return updctrl(cname, newcontrol, NOUPDATE);}
-	bool setctrl(char *cname, MarControlPtr newcontrol) {return updctrl(std::string(cname), newcontrol, NOUPDATE);}
-	bool setctrl(std::string cname, MarControlPtr newcontrol) {return updctrl(cname, newcontrol, NOUPDATE);}
-	bool setctrl(MarControlPtr control, MarControlPtr newcontrol) {return updctrl(control, newcontrol, NOUPDATE);}
-  
 	// get controls
   MarControlPtr getControl(std::string cname, bool searchParent = false, bool searchChildren = true);
 	MarControlPtr getControlLocal(std::string cname) {return getControl(cname, false, false);}
@@ -218,7 +233,6 @@ public:
 	bool addControl(std::string cname, MarControlPtr v, MarControlPtr& ptr);
 	bool addctrl(std::string cname, MarControlPtr v) {return addControl(cname, v);}
 	bool addctrl(std::string cname, MarControlPtr v, MarControlPtr& ptr) {return addControl(cname, v, ptr);}
-
 
   std::map<std::string, MarControlPtr> getControls(std::map<std::string, MarControlPtr>* cmap = NULL);
 	const std::map<std::string, MarControlPtr>& getLocalControls();
@@ -243,6 +257,7 @@ public:
 	virtual std::vector<MarSystem*> getChildren();
   
   // Processing and update methods 
+	bool isUpdating();
   void checkFlow(realvec&in, realvec& out);
 	void update(MarControlPtr sender = MarControlPtr());
   void process(realvec& in, realvec& out);   
@@ -287,7 +302,8 @@ public:
 	void updctrl(TmTime t, std::string cname, MarControlPtr control);
 	void updctrl(TmTime t, Repeat rep, std::string cname, MarControlPtr control);
 	//////////////////////////////////////////////////////////////////////////
-	//control pointers
+	
+	//control pointers [!] should these be public?
 	MarControlPtr ctrl_inSamples_;
 	MarControlPtr ctrl_inObservations_; 
 	MarControlPtr ctrl_israte_;

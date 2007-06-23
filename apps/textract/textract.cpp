@@ -212,7 +212,7 @@ void textract_trainAccumulator(string sfName, mrs_natural offset, mrs_natural du
 	total->addMarSystem(wsink->clone());
 
 	// update controls 
-	total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
+	total->updctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
 	total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/mrs_natural/pos", offset);      
 
 	mrs_natural wc = 0;
@@ -239,7 +239,7 @@ void textract_trainAccumulator(string sfName, mrs_natural offset, mrs_natural du
 		cout << "end = " << tline.end(r) << endl;
 
 		total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/pos", (mrs_natural)tline.start(r) * tline.lineSize_);
-		total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/inSamples", tline.lineSize_);
+		total->updctrl("mrs_natural/inSamples", tline.lineSize_);
 		if (tlineName == EMPTYSTRING)
 		{
 			if ((tline.getRClassId(r) > 0) && (tline.getRClassId(r) != 4))//[?]

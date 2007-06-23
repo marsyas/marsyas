@@ -66,26 +66,33 @@ Fanin::myUpdate(MarControlPtr sender)
 {
 	if (marsystemsSize_ != 0) 
 	{
-		marsystems_[0]->update();
+		//propagate in flow controls to first child
+		marsystems_[0]->setctrl("mrs_natural/inSamples", inSamples_);
+		marsystems_[0]->setctrl("mrs_real/israte", israte_);
+		//marsystems_[0]->setctrl("mrs_natural/inObservations", inObservations_);
+		//marsystems_[0]->setctrl("mrs_string/inObsNames", inObsNames_);
+		marsystems_[0]->update(sender);
+
+		ostringstream oss;
+		oss << name_ <<"_mix_0, ";
 
 		mrs_natural inObservations = marsystems_[0]->getctrl("mrs_natural/inObservations")->toNatural();
 
 		for (mrs_natural i=1; i < marsystemsSize_; i++) 
 		{
-			//lmartins: setctrl or updctrl?!? [?]
 			marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
 			marsystems_[i]->setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte")); //[!] israte
-			marsystems_[i]->update();
+			marsystems_[i]->update(sender);
 			inObservations += marsystems_[i]->getctrl("mrs_natural/inObservations")->toNatural();
+			oss << name_ << "_mix_" << i << ", ";
 		}
 
-		setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
-		setctrl("mrs_natural/onSamples", marsystems_[0]->getctrl("mrs_natural/onSamples"));
-		setctrl("mrs_natural/inObservations", inObservations);
-		setctrl("mrs_natural/onObservations", 1);//sum the outputs of each child into  single observation!
-		setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte"));
-		setctrl("mrs_real/osrate", marsystems_[0]->getctrl("mrs_real/osrate"));
-
+		// forward flow propagation
+		setctrl(ctrl_onSamples_, marsystems_[0]->getctrl("mrs_natural/onSamples"));
+		setctrl(ctrl_onObservations_, 1); 
+		setctrl(ctrl_osrate_, marsystems_[0]->getctrl("mrs_real/osrate"));
+		setctrl(ctrl_onObsNames_, oss.str());
+		
 		// update slices for child MarSystems
 		if ((mrs_natural)slices_.size() < marsystemsSize_) 
 			slices_.resize(marsystemsSize_, NULL);
@@ -110,96 +117,35 @@ Fanin::myUpdate(MarControlPtr sender)
 			(slices_[i])->setval(0.0);
 		}
 	}
-}
+	else //if composite is empty...
+		MarSystem::myUpdate(sender);
 
-bool 
-Fanin::updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd)
-{ 
-	// check if the control is valid
-	if(control.isInvalid())
-	{
-		MRSWARN("MarSystem::updControl - Invalid control ptr");
-		MRSWARN("MarSystem::updControl - MarSystem name = " + name_);
-		return false;
-	}
-
-	//check if control is local or in children
-	if(!hasControl(control))
-	{
-		MRSWARN("MarSystem::updControl -" + control->getName() + " does not exist locally or in children!");
-		MRSWARN("MarSystem::updControl - MarSystem name = " + name_);
-		return false;
-	}
-
-	// since the control exists somewhere, set its value...
-	if(!control->setValue(newcontrol, upd))
-		return false; //some error occurred in setValue()
-
-	//in case this is a composite Marsystem,
-	if(isComposite_)
-	{
-		// call update (only if the control has state,
-		// upd is true, and if it's not a local control (otherwise update 
-		// was already called by control->setValue())).
-		if(upd && control->hasState() && !hasControlLocal(control))
-			update();
-
-		// certain controls must also be propagated to its children
-		// (must find a way to avoid this hard-coded control list, though! [!] )
-	  string cname = control->getName();
-
-// 		//Fanin Specific [!]
-// 		if(cname == "mrs_natural/inObservations")
-// 		{
-// 			if (marsystemsSize_ > 0)
-// 			{
-// 				//Fanin Specific [!]
-// // 				mrs_natural val = newcontrol->toNatural() / marsystemsSize_;
-// // 				if(!marsystems_[0]->updctrl(cname, val, upd))
-// // 					return false;//some error occurred in updctrl()
-// 				
-// 				if(upd && marsystems_[0]->hasControlState(cname))
-// 					update();
-// 			}
-// 		}
-		if ((cname == "mrs_natural/inSamples")|| 
-			//(cname == "mrs_natural/inObservations")||
-			(cname == "mrs_real/israte")||
-			(cname == "mrs_string/inObsNames"))
-		{
-			//if there is at least a child MarSystem in this composite...
-			if (marsystemsSize_ > 0)
-			{
-				if(!marsystems_[0]->updctrl(cname, newcontrol, upd))
-					return false;//some error occurred in updctrl()
-				if(upd && marsystems_[0]->hasControlState(cname))
-					update();
-			}
-		}
-	}
-
-	//success!
-	return true;
 }
 
 void
 Fanin::myProcess(realvec& in, realvec& out)
 {
-	//checkFlow(in,out);
-
-	out.setval(0.0);
-
-	// Add assertions about sizes
-	realvec ob(1,inSamples_);
-
-	for (o=0; o < inObservations_; o++)
+	if(marsystemsSize_>0)
 	{
-		// process each observation 
-		for (t=0; t < inSamples_; t++)
-			ob(0,t) = in(o,t);
-		marsystems_[o]->process(ob, *(slices_[o]));
-		for (t=0; t < onSamples_; t++)
-			out(0,t) += (*(slices_[o]))(0,t);	  
+		out.setval(0.0);
+
+		// Add assertions about sizes
+		realvec ob(1,inSamples_);
+
+		for (o=0; o < inObservations_; o++)
+		{
+			// process each observation 
+			for (t=0; t < inSamples_; t++)
+				ob(0,t) = in(o,t);
+			marsystems_[o]->process(ob, *(slices_[o]));
+			for (t=0; t < onSamples_; t++)
+				out(0,t) += (*(slices_[o]))(0,t);	  
+		}
+	}
+	else //composite has no children!
+	{
+		MRSWARN("Fanin::process: composite has no children MarSystems - passing input to output without changes.");
+		out = in;
 	}
 }
 

@@ -167,8 +167,8 @@ MarPhasevocoderWindow::createNetwork()
 	MarSystem* dest = mng.create("AudioSink", "dest");
 	pvoc_->addMarSystem(dest);
 
-	pvoc_->updctrl("SoundFileSource/src/mrs_natural/inSamples", D);
-	pvoc_->updctrl("SoundFileSource/src/mrs_natural/inObservations", 1);
+	pvoc_->updctrl("mrs_natural/inSamples", D);
+	pvoc_->updctrl("mrs_natural/inObservations", 1);
 	pvoc_->updctrl("SoundFileSource/src/mrs_real/repetitions", -1.0);
 	pvoc_->updctrl("ShiftInput/si/mrs_natural/Decimation", D);
 	pvoc_->updctrl("ShiftInput/si/mrs_natural/WindowSize", Nw);

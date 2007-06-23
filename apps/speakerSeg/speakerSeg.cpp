@@ -72,7 +72,7 @@ void speakerSeg(vector<string> soundfiles)
 	featExtractor->addMarSystem(mng.create("SoundFileSource", "src"));
 	featExtractor->addMarSystem(mng.create("LPCnet", "lpc"));
 	featExtractor->addMarSystem(mng.create("LSP", "lsp"));
-	featExtractor->updctrl("SoundFileSource/src/mrs_natural/inSamples", 125); //hardcoded for fs=8khz [!]
+	featExtractor->updctrl("mrs_natural/inSamples", 125); //hardcoded for fs=8khz [!]
 	featExtractor->updctrl("LPCnet/lpc/mrs_natural/order", 10);	//hardcoded [!]
 
 	// based on the nr of features (in this case, the LSP order = 10),

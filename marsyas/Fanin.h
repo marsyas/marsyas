@@ -37,8 +37,7 @@ class Fanin: public MarSystem
 private:
 	void myUpdate(MarControlPtr sender);
   void deleteSlices();
-	bool updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd=true);
-  
+ 
 public:
   Fanin(std::string name);
   ~Fanin();
