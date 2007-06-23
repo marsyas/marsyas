@@ -60,7 +60,6 @@ CollectionFileSource::clone() const
 void
 CollectionFileSource::addControls()
 {
-  addctrl("mrs_natural/nChannels",(mrs_natural)1);
   addctrl("mrs_bool/notEmpty", true);  
   notEmpty_ = true;
   addctrl("mrs_natural/pos", (mrs_natural)0);
@@ -118,11 +117,9 @@ CollectionFileSource::getHeader(string filename)
 void
 CollectionFileSource::myUpdate(MarControlPtr sender)
 {
-  nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();  
   inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
   inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
   
-  nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();
   filename_ = getctrl("mrs_string/filename")->toString();    
   pos_ = getctrl("mrs_natural/pos")->toNatural();
   
@@ -180,8 +177,6 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
     temp_.create(inObservations_, inSamples_);
   }
   
-  setctrl("mrs_natural/onObservations", inObservations_);
-  isrc_->updctrl("mrs_natural/inObservations", inObservations_);
   isrc_->updctrl("mrs_real/repetitions", repetitions_);
   isrc_->updctrl("mrs_natural/pos", pos_);
   

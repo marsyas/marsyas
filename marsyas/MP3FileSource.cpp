@@ -95,10 +95,7 @@ MP3FileSource::clone() const
 void 
 MP3FileSource::addControls()
 {
-  // nChannels is one for now
-  addctrl("mrs_natural/nChannels",1);
   addctrl("mrs_natural/bitRate", 160000);
-  setctrlState("mrs_natural/nChannels", true);
   addctrl("mrs_bool/init", false);
   setctrlState("mrs_bool/init", true);
   addctrl("mrs_bool/notEmpty", true);
@@ -153,7 +150,7 @@ MP3FileSource::getHeader(string filename)
 
   if (myStat.st_size == 0 ) {
     MRSWARN("Error reading file: " + filename);
-    setctrl("mrs_natural/nChannels", 1);
+    setctrl("mrs_natural/onObservations", 1);
     setctrl("mrs_real/israte", 22050.0);
     setctrl("mrs_natural/size", 0);
     notEmpty_ = 0;
@@ -175,7 +172,7 @@ MP3FileSource::getHeader(string filename)
   if (numRead != myStat.st_size) 
     {
       MRSWARN("Error reading: " + filename + " to memory.");
-      setctrl("mrs_natural/nChannels", 1);
+      setctrl("mrs_natural/onObservations", 1);
       setctrl("mrs_real/israte", 22050.0);
       setctrl("mrs_natural/size", 0);
       notEmpty_ = 0;
@@ -264,7 +261,7 @@ MP3FileSource::getHeader(string filename)
   
   // update some controls 
   updctrl("mrs_real/duration", duration_);
-  updctrl("mrs_natural/nChannels", MAD_NCHANNELS(&frame.header)); 
+  updctrl("mrs_natural/onObservations", MAD_NCHANNELS(&frame.header)); 
   updctrl("mrs_real/israte", sampleRate);
   updctrl("mrs_natural/size", size_ / 2);
   updctrl("mrs_natural/bitRate", bitRate);
@@ -300,12 +297,8 @@ MP3FileSource::myUpdate(MarControlPtr sender)
  
   israte_ = ctrl_israte_->toReal();
   inSamples_ = ctrl_inSamples_->toNatural();
-
-  mrs_natural nChannels;
-  nChannels = getctrl("mrs_natural/nChannels")->toNatural();
-
   pos_ = getctrl("mrs_natural/pos")->toNatural();
-  setctrl("mrs_natural/onObservations", nChannels);
+  mrs_natural nChannels = ctrl_onObservations_->toNatural();
   
   // if the user has seeked somewhere in the file
   if ( (currentPos_ != pos_) && (pos_ < size_)) 

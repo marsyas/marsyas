@@ -24,7 +24,6 @@
    Real-time Audio Sink for Linux based on the OSS sound API.  BBB isn't this also for OSX and windows as well?
 
    Controls:
-   - \b mrs_natural/nChannels [rw] : number of channels (mono, stereo, etc)
    - \b mrs_natural/bufferSize [rw] : size of audio buffer (in samples)
    - \b mrs_bool/initAudio [w] : initialize audio (this should be \em true)
 */

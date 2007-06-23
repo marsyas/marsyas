@@ -82,10 +82,8 @@ void sfplay(vector<string> soundfiles)
   playbacknet->addMarSystem(mng.create("Gain", "gt"));
   playbacknet->addMarSystem(dest);
   
-  mrs_natural nChannels = playbacknet->getctrl("SoundFileSource/src/mrs_natural/nChannels")->toNatural();
-  mrs_real srate = playbacknet->getctrl("SoundFileSource/src/mrs_real/israte")->toReal();
   // playback offset 
-  offset = (mrs_natural) (start * srate * nChannels);
+
 
   // update controls 
   playbacknet->updctrl("mrs_natural/inSamples", 100);
@@ -95,56 +93,58 @@ void sfplay(vector<string> soundfiles)
   
   // link top-level controls 
   playbacknet->linkctrl("mrs_string/filename","SoundFileSource/src/mrs_string/filename");
-  playbacknet->linkctrl("mrs_natural/nChannels","SoundFileSource/src/mrs_natural/nChannels");
   playbacknet->linkctrl("mrs_real/israte", "SoundFileSource/src/mrs_real/israte");
   playbacknet->linkctrl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
   playbacknet->linkctrl("mrs_natural/loopPos", "SoundFileSource/src/mrs_natural/loopPos");
-  playbacknet->linkctrl("mrs_natural/nChannels", "AudioSink/dest/mrs_natural/nChannels");
   playbacknet->linkctrl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
 
 
   
 
 	// play each collection or soundfile 
-	vector<string>::iterator sfi;  
-	for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
+  vector<string>::iterator sfi;  
+  for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
+    {
+      string fname = *sfi;
+      playbacknet->updctrl("mrs_string/filename", fname);
+      
+      mrs_natural nChannels = playbacknet->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+      mrs_real srate = playbacknet->getctrl("mrs_real/israte")->to<mrs_real>();
+      
+      playbacknet->updctrl("mrs_natural/loopPos", offset);
+      playbacknet->updctrl("mrs_natural/pos", offset);
+      
+      offset = (mrs_natural) (start * srate * nChannels);
+      
+      if (fileName != EMPTYSTRING) // soundfile output instead of audio output
+	playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", fileName);
+      
+      if (fileName == EMPTYSTRING)	// audio output
 	{
-		string fname = *sfi;
-		playbacknet->updctrl("mrs_string/filename", fname);
-
-
-		playbacknet->updctrl("mrs_natural/loopPos", offset);
-		playbacknet->updctrl("mrs_natural/pos", offset);
-
-		if (fileName != EMPTYSTRING) // soundfile output instead of audio output
-			playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", fileName);
-
-		if (fileName == EMPTYSTRING)	// audio output
-		{
-			playbacknet->updctrl("AudioSink/dest/mrs_natural/bufferSize", 256); 
-			playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-		}
-		MarControlPtr notEmptyPtr_ = 
-		  playbacknet->getctrl("mrs_bool/notEmpty");
-		
-		while (notEmptyPtr_->isTrue())	
-		{
-			playbacknet->tick();
-		}
-		cout << *playbacknet << endl;
+	  playbacknet->updctrl("AudioSink/dest/mrs_natural/bufferSize", 256); 
+	  playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 	}
-
-	// output network description to cout  
-	if ((pluginName == EMPTYSTRING) && (verboseopt)) // output to stdout 
+      MarControlPtr notEmptyPtr_ = 
+	playbacknet->getctrl("mrs_bool/notEmpty");
+      
+      while (notEmptyPtr_->isTrue())	
 	{
-		cout << (*playbacknet) << endl;      
+	  playbacknet->tick();
 	}
-	else if (pluginName != EMPTYSTRING)             // output to plugin
-	{
-		ofstream oss(pluginName.c_str());
-		oss << (*playbacknet) << endl;
-	}
-	delete playbacknet;
+      cout << *playbacknet << endl;
+    }
+  
+  // output network description to cout  
+  if ((pluginName == EMPTYSTRING) && (verboseopt)) // output to stdout 
+    {
+      cout << (*playbacknet) << endl;      
+    }
+  else if (pluginName != EMPTYSTRING)             // output to plugin
+    {
+      ofstream oss(pluginName.c_str());
+      oss << (*playbacknet) << endl;
+    }
+  delete playbacknet;
 }
 
 

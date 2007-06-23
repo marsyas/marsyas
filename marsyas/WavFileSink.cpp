@@ -57,7 +57,6 @@ WavFileSink::clone() const
 void 
 WavFileSink::addControls()
 {
-  addctrl("mrs_natural/nChannels", (mrs_natural)1);
   addctrl("mrs_string/filename", "default");
   setctrlState("mrs_string/filename", true);
 }
@@ -85,7 +84,6 @@ WavFileSink::myUpdate(MarControlPtr sender)
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
   nChannels_ = getctrl("mrs_natural/inObservations")->toNatural();      
-  setctrl("mrs_natural/nChannels", nChannels_);
   
   delete [] sdata_;
   delete [] cdata_;
@@ -99,7 +97,7 @@ WavFileSink::myUpdate(MarControlPtr sender)
 void 
 WavFileSink::putHeader(string filename)
 {
-  mrs_natural nChannels = (mrs_natural)getctrl("mrs_natural/nChannels")->toNatural();
+  mrs_natural nChannels = (mrs_natural)getctrl("mrs_natural/inObservations")->toNatural();
   sfp_ = fopen(filename.c_str(), "wb");
   
   written_ = 0;

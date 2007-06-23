@@ -45,8 +45,8 @@ protected:
   short *sdata_;
   unsigned char *cdata_;
   long *ldata_;
-  void ConvertToIeeeExtended(double num,char *bytes);
-  double ieee_ext2double(unsigned char *bytes);
+
+
   std::string filename_;
   
   FILE *sfp_;  

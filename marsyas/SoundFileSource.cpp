@@ -28,7 +28,6 @@
    Controls:
    - \b mrs_string/filename [w] : name of the sound file to read
    - \b mrs_bool/notEmpty [r] : is there any data left?
-   - \b mrs_natural/nChannels [rw] : how many channels (mono, stereo, etc)
    - \b mrs_natural/pos [rw] : sample position currently read, in samples
    - \b mrs_natural/loopPos [rw] : sample position at which to loop
    - \b mrs_string/allfilenames [w] : a long string containing every sound file to read.
@@ -87,7 +86,6 @@ SoundFileSource::SoundFileSource(const SoundFileSource& a):MarSystem(a)
 void
 SoundFileSource::addControls()
 {
-  addctrl("mrs_natural/nChannels", 1);
   addctrl("mrs_bool/notEmpty", true, ctrl_notEmpty_);  
   
   addctrl("mrs_natural/pos", 0, ctrl_pos_);
@@ -149,7 +147,8 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 	  getHeader();
 	  filename_ = ctrl_filename_->toString();
 	  ctrl_currentlyPlaying_->setValue(src_->getctrl("mrs_string/currentlyPlaying"));		  
-	  setctrl("mrs_natural/nChannels", src_->getctrl("mrs_natural/nChannels"));
+	  ctrl_onObservations_->setValue(src_->ctrl_onObservations_, NOUPDATE);
+
 	  ctrl_israte_->setValue(src_->ctrl_israte_, NOUPDATE);
 	  ctrl_osrate_->setValue(src_->ctrl_osrate_, NOUPDATE);
 		  
@@ -160,7 +159,7 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 	}
       else
 	{
-	  setctrl("mrs_natural/nChannels", 1);
+	  ctrl_onObservations_->setValue(1, NOUPDATE);
 	  ctrl_israte_->setValue(22050.0, NOUPDATE);
 	  ctrl_notEmpty_->setValue(false, NOUPDATE);
 	  src_ = NULL;

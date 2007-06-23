@@ -100,7 +100,6 @@ AuFileSource::AuFileSource(const AuFileSource& a): AbsSoundFileSource(a)
 void
 AuFileSource::addControls()
 {
-  addctrl("mrs_natural/nChannels",(mrs_natural)1);
   addctrl("mrs_bool/notEmpty", true);  
   
   addctrl("mrs_natural/pos", (mrs_natural)0, ctrl_pos_);
@@ -159,7 +158,7 @@ AuFileSource::getHeader(string filename)
     if ((n != 1) ||((hdr_.pref[0] != '.') &&(hdr_.pref[1] != 's')))
 		{
 			MRSWARN("Filename " + filename + " is not correct .au file \n or has settings that are not supported in Marsyas");
-			setctrl("mrs_natural/nChannels", (mrs_natural)1);
+			setctrl("mrs_natural/onObservations", (mrs_natural)1);
 			setctrl("mrs_real/israte", (mrs_real)22050.0);
 			setctrl("mrs_natural/size", (mrs_natural)0);
 			notEmpty_ = false;
@@ -190,7 +189,7 @@ AuFileSource::getHeader(string filename)
 
 			fseek(sfp_, hdr_.hdrLength, 0);
 			sfp_begin_ = ftell(sfp_);
-			setctrl("mrs_natural/nChannels", (mrs_natural)hdr_.channels);
+			setctrl("mrs_natural/onObservations", (mrs_natural)hdr_.channels);
 		    
 			setctrl("mrs_real/israte", (mrs_real)hdr_.srate);
 			setctrl("mrs_natural/size", size_);
@@ -204,14 +203,14 @@ AuFileSource::getHeader(string filename)
 	}
   else
   {
-    setctrl("mrs_natural/nChannels", (mrs_natural)1);
+    setctrl("mrs_natural/onObservations", (mrs_natural)1);
     setctrl("mrs_real/israte", (mrs_real)22050.0);
     setctrl("mrs_natural/size", (mrs_natural)0);
     notEmpty_ = false;
     setctrl("mrs_bool/notEmpty", false);
     pos_ = 0;
   }
-  nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();
+  nChannels_ = getctrl("mrs_natural/onObservations")->toNatural();
   samplesRead_ = 0;
 }
 
@@ -260,11 +259,10 @@ AuFileSource::getLinear16(realvec& slice)
 void
 AuFileSource::myUpdate(MarControlPtr sender)
 {
-  nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();  
+  nChannels_ = getctrl("mrs_natural/onObservations")->toNatural();  
   inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
   inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
   israte_ = getctrl("mrs_real/israte")->toReal();
-  nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();
   
   setctrl("mrs_natural/onSamples", inSamples_);
   setctrl("mrs_natural/onObservations", nChannels_);

@@ -66,7 +66,7 @@ WavFileSource::clone() const
 void 
 WavFileSource::addControls()
 {
-  addctrl("mrs_natural/nChannels",(mrs_natural)1);
+  //addctrl("mrs_natural/nChannels",(mrs_natural)1);
   addctrl("mrs_bool/notEmpty", true);  
   
 	addctrl("mrs_natural/pos", (mrs_natural)0, ctrl_pos_);
@@ -122,7 +122,7 @@ WavFileSource::getHeader(string filename)
     if (strcmp(magic, "WAVE"))
 		{
 			MRSWARN("Filename " + filename + " is not correct .wav file \n or has settings that are not supported in Marsyas");
-			setctrl("mrs_natural/nChannels", 1);
+			// setctrl("mrs_natural/nChannels", 1);
 			setctrl("mrs_real/israte", 22050.0);
 			setctrl("mrs_natural/size", 0);
 			notEmpty_ = false;
@@ -180,8 +180,9 @@ WavFileSource::getHeader(string filename)
 			#endif 
 		  
 			// access directly controls to avoid update() recursion
-			setctrl("mrs_natural/nChannels", (mrs_natural)channels);
-		  
+			// setctrl("mrs_natural/nChannels", (mrs_natural)channels);
+			setctrl("mrs_natural/onObservations", (mrs_natural)channels);
+
 			unsigned short srate;
 			fread(&srate, 2,1,sfp_);
 		  
@@ -234,7 +235,7 @@ WavFileSource::getHeader(string filename)
 			#endif 
 		  
 			//size in number of samples per channel
-			size_ = bytes / (bits_ / 8)/ (getctrl("mrs_natural/nChannels")->toNatural());
+			size_ = bytes / (bits_ / 8)/ (getctrl("mrs_natural/onObservations")->toNatural());
 			csize_ = size_;
 			setctrl("mrs_natural/size", size_);
 			ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
@@ -247,15 +248,16 @@ WavFileSource::getHeader(string filename)
 	}
   else
   {
-    setctrl("mrs_natural/nChannels", 1);
+    // setctrl("mrs_natural/nChannels", 1);
     setctrl("mrs_real/israte", 22050.0);
+    setctrl("mrs_natural/onObservations", 1);
     setctrl("mrs_natural/size", 0);
     notEmpty_ = false;
     setctrl("mrs_bool/notEmpty", false);      
     pos_ = 0;
   }
   
-		nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();  
+  nChannels_ = getctrl("mrs_natural/onObservations")->toNatural();  
 }
 
 void
@@ -266,7 +268,7 @@ WavFileSource::myUpdate(MarControlPtr sender)
   israte_ = getctrl("mrs_real/israte")->toReal();
 	osrate_ = getctrl("mrs_real/osrate")->toReal();
   
-  nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();
+  nChannels_ = getctrl("mrs_natural/onObservations")->toNatural();
 
   setctrl("mrs_natural/onSamples", inSamples_);
   setctrl("mrs_natural/onObservations", nChannels_);
@@ -295,7 +297,7 @@ WavFileSource::myUpdate(MarControlPtr sender)
 mrs_natural 
 WavFileSource::getLinear8(mrs_natural c, realvec& slice)
 {
-  mrs_natural nChannels = getctrl("nChannels")->toNatural();
+  mrs_natural nChannels = getctrl("mrs_natural/onObservations")->toNatural();
   mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
   
   samplesToRead_ = inSamples * nChannels;
