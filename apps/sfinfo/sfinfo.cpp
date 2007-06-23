@@ -117,5 +117,5 @@ main(int argc, const char **argv)
   
   sfinfo(soundfiles);
 
-  exit(1);
+  exit(0);
 }
