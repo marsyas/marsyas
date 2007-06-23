@@ -416,7 +416,7 @@ main(int argc, const char **argv)
       pitchextract1(sfname, wopt, hopt, lpopt, upopt, topt);
       i++;
     }
-  exit(1);
+  exit(0);
   
 
 
