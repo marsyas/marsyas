@@ -39,9 +39,9 @@ for i in range( len(test_commands) ):
 	# use .au files because identical-sounding .wav files can have
 	# different headers
 	if filecmp.cmp('out.au', test_answers[i]):
-		logfile.write("Test " + str(i) + " successful");
+		logfile.write("Test " + str(i) + " successful\n");
 	else:
-		logfile.write("Test " + str(i) + " FAILED: " + test_commands[i])
+		logfile.write("Test " + str(i) + " FAILED: " + test_commands[i]+'\n')
 		problem = 1
 logfile.close
 

@@ -100,6 +100,8 @@ install_sh = @install_sh@
 
 EXTRA_DIST = marsyas_tests.py testlist.txt
 SUBDIRS = audio
+
+CLEANFILES = results.log audio/out.au
 subdir = tests
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_CLEAN_FILES =
@@ -278,6 +280,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
