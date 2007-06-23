@@ -1,0 +1,74 @@
+
+# MarSystem
+# Type = SoundFileSource
+# Name = src
+
+# MarControls = 28
+# mrs_bool/active = 1
+# Links = 0
+# mrs_bool/advance = 0
+# Links = 0
+# mrs_bool/debug = 0
+# Links = 0
+# mrs_bool/mute = 0
+# Links = 0
+# mrs_bool/notEmpty = 1
+# Links = 0
+# mrs_bool/noteon = 0
+# Links = 0
+# mrs_bool/shuffle = 0
+# Links = 0
+# mrs_natural/cindex = 0
+# Links = 0
+# mrs_natural/inObservations = 1
+# Links = 0
+# mrs_natural/inSamples = 512
+# Links = 0
+# mrs_natural/loopPos = 0
+# Links = 0
+# mrs_natural/nChannels = 1
+# Links = 0
+# mrs_natural/numFiles = 1
+# Links = 0
+# mrs_natural/onObservations = 1
+# Links = 0
+# mrs_natural/onSamples = 512
+# Links = 0
+# mrs_natural/pos = 0
+# Links = 0
+# mrs_natural/size = 18640
+# Links = 0
+# mrs_real/duration = -1
+# Links = 0
+# mrs_real/frequency = 0
+# Links = 0
+# mrs_real/israte = 22050
+# Links = 0
+# mrs_real/osrate = 22050
+# Links = 0
+# mrs_real/repetitions = 1
+# Links = 0
+# mrs_realvec/processedData = # MARSYAS mrs_realvec
+# Size = 512
+
+
+# type: matrix
+# rows: 1
+# columns: 512
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+
+# Size = 512
+# MARSYAS mrs_realvec
+
+# Links = 0
+# mrs_string/allfilenames = ,
+# Links = 0
+# mrs_string/currentlyPlaying = right.wav
+# Links = 0
+# mrs_string/filename = right.wav
+# Links = 0
+# mrs_string/inObsNames = audio,
+# Links = 0
+# mrs_string/onObsNames = audio,
+# Links = 0
+
