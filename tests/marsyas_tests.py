@@ -35,7 +35,10 @@ def doTests(test_filename, temp_filename):
 		if (not(line[0]=='#') and not(line[0]=='\n')):
 			line_split = line.split('\t')
 			test_commands.append( line_split[0] )
-			test_answers.append( line_split[1].strip() )
+			if (len(line_split)==2):
+				test_answers.append( line_split[1].strip() )
+			else:
+				test_answers.append('')
 
 	# do tests
 	for i in range( len(test_commands) ):
@@ -47,13 +50,14 @@ def doTests(test_filename, temp_filename):
 		if (os.system(command) != 0): # if something went wrong
 			problem = 1
 			break
-		# use .au files because identical-sounding .wav files can have
-		# different headers
-		if filecmp.cmp(temp_filename, test_answers[i]):
-			logfile.write("Test " + str(i) + " successful\n")
-		else:
-			logfile.write("Test " + str(i) + " FAILED: " + test_commands[i]+'\n')
-			problem = 1
+		if not(test_answers[i] == ''):
+			# use .au files because identical-sounding .wav files can have
+			# different headers
+			if filecmp.cmp(temp_filename, test_answers[i]):
+				logfile.write("Test " + str(i) + " successful\n")
+			else:
+				logfile.write("Test " + str(i) + " FAILED: " + test_commands[i]+'\n')
+				problem = 1
 
 #test_file = 'testlist.txt'
 logfile = open(LOG_FILE, 'w')
