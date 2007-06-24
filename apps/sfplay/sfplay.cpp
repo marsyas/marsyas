@@ -109,12 +109,13 @@ void sfplay(vector<string> soundfiles)
       playbacknet->updctrl("mrs_string/filename", fname);
       
       mrs_natural nChannels = playbacknet->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+
       mrs_real srate = playbacknet->getctrl("mrs_real/israte")->to<mrs_real>();
       
+      offset = (mrs_natural) (start * srate * nChannels);
+
       playbacknet->updctrl("mrs_natural/loopPos", offset);
       playbacknet->updctrl("mrs_natural/pos", offset);
-      
-      offset = (mrs_natural) (start * srate * nChannels);
       
       if (fileName != EMPTYSTRING) // soundfile output instead of audio output
 	playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", fileName);
