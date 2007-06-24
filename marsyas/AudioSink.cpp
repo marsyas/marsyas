@@ -75,7 +75,6 @@ AudioSink::clone() const
 void 
 AudioSink::addControls()
 {
-  addctrl("mrs_natural/nChannels",1);
   
 #ifdef MARSYAS_MACOSX
   addctrl("mrs_natural/bufferSize", 1024);

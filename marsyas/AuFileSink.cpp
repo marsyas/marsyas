@@ -87,8 +87,6 @@ AuFileSink::clone() const
 void 
 AuFileSink::addControls()
 {
-  addctrl("mrs_natural/nChannels", (mrs_natural)1);
-  setctrlState("mrs_natural/nChannels", true);
   addctrl("mrs_string/filename", "daufile");
   setctrlState("mrs_string/filename", true);
 }
@@ -115,7 +113,6 @@ AuFileSink::myUpdate(MarControlPtr sender)
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
   nChannels_ = getctrl("mrs_natural/inObservations")->toNatural();      
-  setctrl("mrs_natural/nChannels", nChannels_);
     
   delete [] sdata_;
   delete [] cdata_;
@@ -129,7 +126,7 @@ AuFileSink::myUpdate(MarControlPtr sender)
 void 
 AuFileSink::putHeader(string filename)
 {
-  mrs_natural nChannels = (mrs_natural)getctrl("mrs_natural/nChannels")->toNatural();
+  mrs_natural nChannels = (mrs_natural)getctrl("mrs_natural/inObservations")->toNatural();
   
   written_ = 0;
   char *comment = "MARSYAS 2001, George Tzanetakis.\n";
