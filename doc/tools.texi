@@ -30,6 +30,7 @@ source code for those files is in @file{apps/@{DIR@}/}.
 * Feature Extraction::          
 * Synthesis::                   
 * Marsystem Interaction::       
+* Regression tests::            
 @end menu
 
 
@@ -353,5 +354,27 @@ a project to do for Marsyas it would be to use the GNU readline
 utility for it's commandline editing capabilities and try 
 to come up with some alternative syntax (I have some ideas 
 in that direction). 
+
+
+@node Regression tests
+@section Regression tests
+
+Marsyas contains a suite of tests to ensure that new functionality (or
+bug fixes) do not cause bugs in existing (working) code.  Running these
+tests should only take a few seconds.
+
+The tests do not require the marsyas executables to be installed (by
+default they execute @file{../../bin/release/PROGNAME} ), but they
+@emph{do} require python to be installed.
+
+@example
+cd tests
+./marsyas_tests.py
+@end example
+
+You will see many messages scroll by; this is normal.  At the end, you
+will see the test results.  More information about these tests is
+available in the file @file{results.log}.
+
 
 
