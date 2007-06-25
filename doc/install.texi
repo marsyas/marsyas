@@ -4,6 +4,7 @@
 @menu
 * Download::                    
 * System requirements::         
+* Optional libraries::          
 * Configuring Marsyas::         
 * Compiling Marsyas::           
 * Generating documentation::    
@@ -110,13 +111,13 @@ Required:
 
 @itemize
 @item Standard development environment (gcc, g++, etc): probably already installed.
-@item @uref{http://www.trolltech.com/products/qt,QT/Trolltech} development platform.
-@end itemize
 
-Optional:
+@item @uref{http://www.alsa-project.org/,ALSA} headers.  On most
+distributions, this is a package called @code{alsa-devel} or
+@code{libalsa-devel}.
 
-@itemize
-@item @uref{http://sourceforge.net/projects/mad/, LibMAD}: mp3 support
+@item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech}
+development platform.
 @end itemize
 
 
@@ -126,19 +127,44 @@ Required:
 
 @itemize
 @item @uref{http://developer.apple.com/tools/xcode/, Xcode}: standard development platform on OSX.  Please install from your OSX installation CD/DVD, or download.
-@item @uref{http://www.trolltech.com/products/qt, QT/Trolltech} development platform.
-@end itemize
-
-Optional:
-
-@itemize
-@item @uref{http://sourceforge.net/projects/mad/, LibMAD}: mp3 support
+@item @uref{http://www.trolltech.com/products/qt, Qt/Trolltech} development platform.
 @end itemize
 
 
 @subsection Windows
 
-On Windows, you may use either Cygwin or Microsoft Visual Studio
+On Windows, you may use either MinGW, Microsoft Visual Studio, or
+Cygwin.
+
+@subsubsection MinGW
+
+MinGW is a collection of compilers, compiler tools, libraries, and
+header files, which can compile code on Windows.  This is the main
+supported compiler for Qt/OpenSource; it is installed by default as part
+of the normal Qt installation on Windows.
+
+Required:
+
+@itemize
+@item @uref{http://www.mingw.org/, MinGW} (installed by default by
+Qt/OpenSource)
+@item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech} development platform.
+@item Microsoft DirectX SDK and Platform SDK
+@end itemize
+
+
+
+@subsubsection Microsoft Visual Studio
+
+Required:
+
+@itemize
+@item Microsoft Visual Studio (visual studio express can compile Marsyas
+after a bit of fiddling with preferences)
+@item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech} development platform
+@item Microsoft DirectX SDK and Platform SDK
+@end itemize
+
 
 @subsubsection Cygwin
 
@@ -152,22 +178,14 @@ installed (these should be installed by default)
 @item Microsoft DirectX SDK and Platform SDK
 @end itemize
 
-@subsubsection Microsoft Visual Studio
 
-Required:
-
-@itemize
-@item Microsoft Visual Studio (visual studio express can compile Marsyas
-after a bit of fiddling with preferences)
-@item Microsoft DirectX SDK and Platform SDK
-@item @uref{http://www.trolltech.com/products/qt,QT/Trolltech} development platform
-@end itemize
-
-Optional:
+@node Optional libraries
+@section Optional libraries
 
 @itemize
 @item @uref{http://sourceforge.net/projects/mad/, LibMAD}: mp3 support
 @end itemize
+
 
 
 @node Configuring Marsyas
@@ -344,9 +362,6 @@ can be used to enable/disable assertions, enable/disable debugging
 and include optional packages such as support for reading mp3s. 
 @ref{Configuring Marsyas}.
 
-@b{Requirement:} ALSA headers.  On most distributions, this is a
-package called @code{alsa-devel} or @code{libalsa-devel}.
-
 
 @node Mac OSX
 @subsection Mac OSX
@@ -468,8 +483,8 @@ programs can use to access Marsyas functionality.
 currently reading).  To regenerate the manual, see @ref{Generating
 documentation}
 
-@item @b{apps/Qt4Apps:} provides GUI interfaces using QT4. These will not
-work with earlier versions of QT. You must have QT4 installed in order
+@item @b{apps/Qt4Apps:} provides GUI interfaces using Qt4. These will not
+work with earlier versions of Qt. You must have Qt4 installed in order
 to use or compile these applications. A README file is supplied with
 each one that has instructions on how to compile and run it.
 
