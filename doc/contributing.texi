@@ -8,7 +8,8 @@ others may use it.
 * Contributing documentation::  
 * Adding to marsyasTests::      
 * Contributing Applications::   
-* Contributing MarSystems::     
+* Contributing system code::    
+* Sending a patch::             
 @end menu
 
 
@@ -101,15 +102,18 @@ You should update all these files:
 @end itemize
 
 
-
-@node Contributing MarSystems
-@section Contributing MarSystems
-
-If you have created a useful MarSystem which you want to share with
-others, you may add it to the Marsyas source code.  This is not required
-for building your own applications.
+@node Contributing system code
+@section Contributing system code
 
 
+@menu
+* Source documentation::        
+* Contributing non-MarSystem system code::  
+* Contributing MarSystems::     
+@end menu
+
+
+@node Source documentation
 @subsection Source documentation
 
 At the beginning of your @code{.cpp} file, please include a short
@@ -126,7 +130,7 @@ realvec with gain and put them in the output vector.  This object can be
 used as a prototype template for building more complicated MarSystems. 
 
     Controls:
-    - \b mrs_real/gain  [w] : adjust the gain multiplier.
+    - \b mrs_real/gain [w] : adjust the gain multiplier.
 */
 @end example
 
@@ -134,13 +138,60 @@ The @code{[w]} indicates that the control should be written and not
 (usefully) read.  Valid options are @code{[r]}, @code{[w]}, and
 @code{[rw]}.
 
+The @code{\ingroup GROUP} will generally be @code{Processing},
+@code{Analysis}, or @code{Synthesis}.  For details about these
+categories, see @ref{MarSystem details}.  For a complete list of all
+available groups, see the file @file{marsyas/groups.doxy}.
 
-@subsection Build system
+
+@node Contributing non-MarSystem system code
+@subsection Contributing non-MarSystem system code
+
+If you have created a useful library or set of functions which you want
+to share with others, you may add it to the Marsyas source code.  The
+new files should be placed in the @file{marsyas/} directory, and added
+to the build process.  The easiest way is to look for any appearances of
+@code{realvec} in the below files, and duplicate these entries using
+your @file{myfile}.
+
+You must add your file to @emph{both} build systems, even if you
+personally only use one.
+
+@subsubheading Build system: autotools
+
+@itemize
+@item @file{marsyas/Makefile.am}
+@item @file{lib/release/Makefile.am}
+@end itemize
+
+Now execute @code{automake} and @code{./configure} before recompiling
+with @code{make}.
+
+@subsubheading Build system: qmake
+
+@itemize
+@item @file{marsyas/marsyas.pro}
+@end itemize
+
+Now execute @code{qmake} before recompiling with whichever compiler you
+use.
+
+
+
+@node Contributing MarSystems
+@subsection Contributing MarSystems
+
+If you have created a useful MarSystem which you want to share with
+others, you may add it to the Marsyas source code.  This is not required
+for building your own applications.
 
 The new MarSystem should be placed in the @file{marsyas/} directory, and
 must be added to @file{MarSystemManager.cpp} and the build process.
-Again, the easiest way is to look for @code{Gain} and do the same thing
+The easiest way is to look for @code{Gain} and do the same thing
 with your new MarSystem.
+
+You must add your file to @emph{both} build systems, even if you
+personally only use one.
 
 @subsubheading MarSystemManager
 
@@ -168,5 +219,38 @@ Now execute @code{qmake} before recompiling with whichever compiler you
 use.
 
 
+@node Sending a patch
+@section Sending a patch
+
+@subheading Checklist
+
+@itemize
+@item Does Marsyas still compile?
+@item Do the @ref{Regression tests} still pass successfully?
+@item Did you add @ref{Source documentation}?
+@item Did you add your file(s) to the @code{autotools} and @code{qmake}
+build precess?
+@end itemize
+
+If the answer to all these questions is @emph{yes}, then proceed.
+
+
+@subheading Producing the patch
+
+To produce a patch with svn, simply type
+
+@example
+svn diff > mypatch.diff
+@end example
+
+@noindent
+and then send the resulting file to
+@code{<marsyas-developers@@lists.sourceforge.net>}.
+
+If you have SVN write access, you may simply type
+
+@example
+svn ci
+@end example
 
 

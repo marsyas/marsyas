@@ -308,6 +308,6 @@ the source code.
 
 Once you have learned how to use an undocumented MarSystem,
 @emph{please} send some documentation.  See @ref{Contributing
-documentation} and/or @ref{Contributing MarSystems} for details.
+documentation} and @ref{Source documentation} for details.
 
 
