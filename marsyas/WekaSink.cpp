@@ -25,10 +25,11 @@
 	- \b mrs_natural/precision [w] : precision of numbers to output.
 	- \b mrs_string/filename [w] : name of output file.
 	- \b mrs_natural/nLabels [rw] : number of labels.
-	- \b mrs_natural/downsample [rw] : dunno BBB
+	- \b mrs_natural/downsample [rw] : divides number of samples.
 	- \b mrs_string/labelNames [rw] : names of labels.
-	- \b mrs_bool/regresssion [rw] : dunno BBB
-	- \b mrs_bool/putHeader [rw] : dunno BBB
+	- \b mrs_bool/regresssion [rw] : classification or regression?
+	- \b mrs_bool/putHeader [rw] : add extra information to the .arff
+	  file.
 */
 
 #include "WekaSink.h"

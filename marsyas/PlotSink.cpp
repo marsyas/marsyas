@@ -25,8 +25,8 @@ Output data to a text file.
 
 Controls:
 - \b mrs_string/outputFilename	: file to write
-- \b mrs_string/separator	: dunno CCC
-- \b mrs_bool/sequence	: dunno CCC
+- \b mrs_string/separator	: dunno AAA
+- \b mrs_bool/sequence	: dunno AAA
 */
 
 #include "PlotSink.h"

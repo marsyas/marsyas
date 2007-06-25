@@ -23,8 +23,9 @@
 
 	Combines a series of MarSystem objects to a single MarSystem
 corresponding to executing the System objects one after the other in
-sequence. 
-	BBB
+sequence.  The output is summed together.
+
+	\b Warning: this will probably be deprecated soon.
 
 	Controls: none.
 */

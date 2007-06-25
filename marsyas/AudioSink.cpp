@@ -21,7 +21,7 @@
    \ingroup IO
    \brief Real-time Audio source for Linux
 
-   Real-time Audio Sink for Linux based on the OSS sound API.  BBB isn't this also for OSX and windows as well?
+   Real-time Audio Sink based on RtAudio.
 
    Controls:
    - \b mrs_natural/bufferSize [rw] : size of audio buffer (in samples)

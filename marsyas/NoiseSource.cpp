@@ -22,7 +22,8 @@
 	\brief Creates noise
 
 	Controls:
-	- \b mrs_string/mode	: dunno DDD
+	- \b mrs_string/mode	: use "wavetable" or random noise generator.
+	  Currently only includes "wavetable" and anything else.
 */
 
 

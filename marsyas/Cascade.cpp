@@ -21,7 +21,8 @@
 	\ingroup Composites
     \brief Cascade of MarSystem objects
 
-	Long description, BBB.
+	Fills observations with successive output of its internal
+MarSystems.  ie MarSystemA => obs 0, MarSystemB => obs 1.
 
 	Controls: none.
 */

@@ -34,7 +34,7 @@
    - \b mrs_natural/numFiles [r] : how many files to read
    - \b mrs_natural/size [r] : number of samples in the current sound file
    - \b mrs_real/frequency [r] : sample rate of the current sound file
-   - \b mrs_bool/noteon [rw] : dunno CCC
+   - \b mrs_bool/noteon [rw] : dunno AAA
    - \b mrs_real/repetitions [rw] : number of times to repeat the sound file
    - \b mrs_real/duration [r] : number of seconds in the current sound file
    - \b mrs_bool/advance [w] : go to the next sound file (collection

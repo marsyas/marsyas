@@ -1,4 +1,4 @@
-	/*
+/*
 ** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
@@ -22,7 +22,7 @@
     \brief break the data flow consistency by entering a black hole in the network
 
 	Break the data flow consistency by entering a black hole in the
-network.  BBB
+network.  AAA
 
 	Controls:
 	- \b mrs_natural/setSamples [w] : sets the number of samples.

@@ -41,7 +41,8 @@ Controls:  (these are inherited by all MarSystems)
 - \b mrs_string/onObsNames [rw] : stores the names of observations.  Used
   for graphs, WEKA output, etc.
 
-- \b mrs_realvec/processedData [r] : output realvec; useful for viewing the output of a MarSystem directly. BBB
+- \b mrs_realvec/processedData [r] : output realvec; useful for viewing
+  the output of a MarSystem directly, for a GUI plot for example.
 
 - \b mrs_bool/debug	[rw] : for debugging purposes...
 - \b mrs_bool/mute [rw] : in some MarSystems, this disables the myProcess().
