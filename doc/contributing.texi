@@ -107,14 +107,14 @@ You should update all these files:
 
 
 @menu
-* Source documentation::        
+* Contributing source documentation::        
 * Contributing non-MarSystem system code::  
 * Contributing MarSystems::     
 @end menu
 
 
-@node Source documentation
-@subsection Source documentation
+@node Contributing source documentation
+@subsection Contributing source documentation
 
 At the beginning of your @code{.cpp} file, please include a short
 documentation snippet:
@@ -142,6 +142,14 @@ The @code{\ingroup GROUP} will generally be @code{Processing},
 @code{Analysis}, or @code{Synthesis}.  For details about these
 categories, see @ref{MarSystem details}.  For a complete list of all
 available groups, see the file @file{marsyas/groups.doxy}.
+
+There is one special group: @code{Basic} Processing.  This is a subset
+of the @code{Processing} group.  No MarSystem should only be in the
+@code{Basic} group; it should be placed in both groups, with
+
+@example
+\ingroup Processing Basic
+@end example
 
 
 @node Contributing non-MarSystem system code
@@ -227,7 +235,7 @@ use.
 @itemize
 @item Does Marsyas still compile?
 @item Do the @ref{Regression tests} still pass successfully?
-@item Did you add @ref{Source documentation}?
+@item Did you add @ref{Contributing source documentation} (if applicable)?
 @item Did you add your file(s) to the @code{autotools} and @code{qmake}
 build precess?
 @end itemize

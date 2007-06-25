@@ -302,12 +302,15 @@ organized into groups.
 
 @end itemize
 
+There is one special group: @code{Basic} Processing.  This is a subset
+of the @code{Processing} group.
+
 The @qq{main} MarSystems are fairly well documented, but many MarSystems
 lack even basic documentation.  In this case, the only option is to read
 the source code.
 
 Once you have learned how to use an undocumented MarSystem,
 @emph{please} send some documentation.  See @ref{Contributing
-documentation} and @ref{Source documentation} for details.
+documentation} and @ref{Contributing source documentation} for details.
 
 

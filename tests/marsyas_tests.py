@@ -68,7 +68,7 @@ logfile.write("--------- Text output tests\n")
 doTests('text-tests.txt', 'out.txt')
 logfile.close()
 
-print "*********   TEST RESULTS *********",
+print "*********   TEST RESULTS *********"
 if not(problem):
 	print "All tests passed.  Congratulations, you didn't",
 	print "break Marsyas!  (this time)"
