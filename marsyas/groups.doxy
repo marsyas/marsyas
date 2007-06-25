@@ -7,7 +7,7 @@
 /**  @defgroup Basic Basic Processing
  *
  * \brief These are simple building blocks for processing data.  For
- * more complicated processing blocks, see \ref Processing.
+ * a list of all processing blocks, see \ref Processing.
  *
  */
 
@@ -53,7 +53,9 @@
 
 /**  @defgroup Processing Processing
  *
- * \brief These MarSystems process realvecs.
+ * \brief These MarSystems process realvecs.  There is a separate list
+ * of \ref Basic "simple processing" blocks; this list includes both
+ * simple and advanced processing blocks.
  *
  */
 

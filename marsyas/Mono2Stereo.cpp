@@ -19,7 +19,7 @@
 
 /** 
     \class Mono2Stereo
-	\ingroup Basic
+	\ingroup Processing Basic
     \brief Convert mono to stereo by copying 
 
    Convert mono to stereo by copying - if input is not mono 

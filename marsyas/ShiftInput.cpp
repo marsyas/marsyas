@@ -18,7 +18,7 @@
 
 /** 
     \class ShiftInput
-	\ingroup Basic
+	\ingroup Processing Basic
     \brief Shift next D samples  
 
     Shift next D samples from the input source to the output source 

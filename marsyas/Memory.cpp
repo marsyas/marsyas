@@ -18,7 +18,7 @@
 
 /** 
     \class Memory
-	\ingroup Basic
+	\ingroup Processing Basic
     \brief Memory output the past memSize input observations. 
 
     Memory is essentially a circular buffer that holds 
