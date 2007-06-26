@@ -105,7 +105,6 @@ HEADERS += \
 	Filter.h \
 	Flux.h \
 	FullWaveRectifier.h \
-	Gain.h \
 	GaussianClassifier.h \
 	HalfWaveRectifier.h \
 	Hamming.h \
@@ -266,9 +265,9 @@ HEADERS += \
 	HWPSspectrum.h \
 	Vibrato.h \
 	Panorama.h \
-#addMar-h
-	Biquad.h
-# please leave Biquad.cpp at the end like this; it makes stuff happy.
+	Biquad.h \
+	Gain.h
+# please leave Gain.h at the end like this; it makes scripts happy.
 	 
 SOURCES += \
 	ADSR.cpp \
@@ -321,7 +320,6 @@ SOURCES += \
 	Filter.cpp \
 	Flux.cpp \
 	FullWaveRectifier.cpp \
-	Gain.cpp \
 	GaussianClassifier.cpp \
 	HalfWaveRectifier.cpp \
 	Hamming.cpp \
@@ -476,7 +474,7 @@ SOURCES += \
 	HWPSspectrum.cpp \
 	Vibrato.cpp \
 	Panorama.cpp \
-#addMar-cpp
-	Biquad.cpp
-# please leave Biquad.cpp at the end like this; it makes stuff happy.
+	Biquad.cpp \
+	Gain.cpp
+# please leave Gain.cpp at the end like this; it makes scripts happy.
 

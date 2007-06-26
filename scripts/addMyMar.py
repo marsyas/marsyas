@@ -39,24 +39,24 @@ fileToEdit = os.path.join(marsyasBaseDir, 'marsyas', 'Makefile.am')
 filelines = open( fileToEdit ).readlines()
 newfile = open( fileToEdit, 'w')
 for line in filelines:
-	newfile.write(line)
-	if (line[0:16] == '#addMar-Makefile'):
+	if (line[0:6] == 'Gain.h'):
 		insertLine = addMar + '.h \\'
 		print "Adding line 1 of 1 to " + fileToEdit
 		newfile.write(insertLine)
 		newfile.write('\n')
+	newfile.write(line)
 newfile.close()
 
 fileToEdit = os.path.join(marsyasBaseDir, 'lib', 'release', 'Makefile.am')
 filelines = open( fileToEdit ).readlines()
 newfile = open( fileToEdit, 'w')
 for line in filelines:
-	newfile.write(line)
-	if (line[0:16] == '#addMar-Makefile'):
+	if (line.strip()[23:30] == 'Gain.cpp'):
 		insertLine = '\t\t\t  $(top_srcdir)/marsyas/'+addMar+'.cpp \\'
 		print "Adding line 1 of 1 to " + fileToEdit
 		newfile.write(insertLine)
 		newfile.write('\n')
+	newfile.write(line)
 newfile.close()
 
 
@@ -65,17 +65,17 @@ fileToEdit = os.path.join(marsyasBaseDir, 'marsyas', 'marsyas.pro')
 filelines = open( fileToEdit ).readlines()
 newfile = open( fileToEdit, 'w')
 for line in filelines:
-	newfile.write(line)
-	if (line[0:9] == '#addMar-h'):
+	if (line[0:7] == '\tGain.h'):
 		insertLine = '\t'+addMar+'.h \\'
 		print "Adding line 1 of 2 to " + fileToEdit
 		newfile.write(insertLine)
 		newfile.write('\n')
-	if (line[0:11] == '#addMar-cpp'):
+	if (line[0:9] == '\tGain.cpp'):
 		insertLine = '\t'+addMar+'.cpp \\'
 		print "Adding line 2 of 2 to " + fileToEdit
 		newfile.write(insertLine)
 		newfile.write('\n')
+	newfile.write(line)
 newfile.close()
 
 
