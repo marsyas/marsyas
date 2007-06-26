@@ -221,4 +221,7 @@ libmarsyas_a_SOURCES    = $(top_srcdir)/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/marsyas/NormCut.cpp \
 			  $(top_srcdir)/marsyas/vmblock.cpp \
 			  $(top_srcdir)/marsyas/lu.cpp \
+#addMar-Makefile
 			  $(top_srcdir)/marsyas/basis.cpp
+
+
