@@ -17,11 +17,15 @@
 */
 
 /** 
-\class MarSystemTemplateBasic
-\brief Basic example on how to use controls efficiently in MarSystems
+	\class MarSystemTemplateBasic
+	\ingroup Special
+	\brief Basic example on how to use controls efficiently in MarSystems
 
+	Controls:
+	- \b mrs_real/gain [w] : sets the gain multiplier.
+	- \b mrs_natural/repeats [w] : sets the number of times to repeat.
+	- \b mrs_bool/dummy [rw] : does nothing.
 */
-
 #include "MarSystemTemplateBasic.h"
 
 using namespace std;

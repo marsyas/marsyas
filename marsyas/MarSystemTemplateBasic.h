@@ -47,16 +47,19 @@ namespace Marsyas
     
   public:
     MarSystemTemplateBasic(std::string name);
-    MarSystemTemplateBasic(const MarSystemTemplateBasic& a);//copy ctor
+	//copy ctor
+    MarSystemTemplateBasic(const MarSystemTemplateBasic& a);
     ~MarSystemTemplateBasic();
     MarSystem* clone() const;  
     
     void myProcess(realvec& in, realvec& out);
   };
   
-}//namespace Marsyas
+}
+//namespace Marsyas
 
-#endif //MARSYAS_MARSYSTEMTEMPLATEBASIC_H
+#endif
+//MARSYAS_MARSYSTEMTEMPLATEBASIC_H
 
 
 
