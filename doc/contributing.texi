@@ -151,6 +151,9 @@ of the @code{Processing} group.  No MarSystem should only be in the
 \ingroup Processing Basic
 @end example
 
+Code which is not a MarSystem should be placed in the @code{Notmar}
+group.
+
 
 @node Contributing non-MarSystem system code
 @subsection Contributing non-MarSystem system code

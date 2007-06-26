@@ -10,7 +10,8 @@ except:
 
 oldName = 'MarSystemTemplateBasic'
 
-marsyasDir = os.path.dirname( sys.argv[0] )
+marsyasDir = os.path.join( os.path.dirname(sys.argv[0])+os.sep+'..'+os.sep+'marsyas'+os.sep )
+print marsyasDir
 writeDir = os.getcwd()
 
 def copyWithSub( oldFile, newFile ):
