@@ -5,10 +5,8 @@ import filecmp
 
 LOG_FILE = 'results.log'
 
-# check execution directory
-if not(os.path.isdir('audio')):
-	print "Please run this from the `tests' directory."
-	sys.exit()
+# chdir to script directory
+os.chdir( os.path.dirname( sys.argv[0] ) )
 
 # setup release/debug/installed mode
 if len(sys.argv) > 1:
@@ -56,7 +54,7 @@ def doTests(test_filename, temp_filename):
 			if filecmp.cmp(temp_filename, test_answers[i]):
 				logfile.write("Test " + str(i) + " successful\n")
 			else:
-				logfile.write("Test " + str(i) + " FAILED: " + test_commands[i]+'\n')
+				logfile.write("Test " + str(i) + " FAILED:   " + test_commands[i]+'\n')
 				problem = 1
 
 #test_file = 'testlist.txt'

@@ -22,7 +22,7 @@
     \brief break the data flow consistency by entering a black hole in the network
 
 	Break the data flow consistency by entering a black hole in the
-network.  AAA
+network.  Overwrites the output with 0s.
 
 	Controls:
 	- \b mrs_natural/setSamples [w] : sets the number of samples.

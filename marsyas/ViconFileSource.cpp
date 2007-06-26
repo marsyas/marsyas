@@ -25,7 +25,7 @@
 
 	Controls:
 	- \b mrs_string/filename [w] : name of file to read
-	- \b mrs_string/markers [w] : separator in file ?  AAA
+	- \b mrs_string/markers [w] : separators in the file.
 	- \b mrs_bool/notEmpty [r] : is there any data left?
 	- \b mrs_natural/size [r] : filesize in samples
 */

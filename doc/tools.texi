@@ -367,14 +367,15 @@ The tests do not require the marsyas executables to be installed (by
 default they execute @file{../../bin/release/PROGNAME} ), but they
 @emph{do} require python to be installed.
 
+Simply execute
+
 @example
-cd tests
-./marsyas_tests.py
+tests/marsyas_tests.py
 @end example
 
 You will see many messages scroll by; this is normal.  At the end, you
 will see the test results.  More information about these tests is
-available in the file @file{results.log}.
+available in the file @file{tests/results.log}.
 
 
 
