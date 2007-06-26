@@ -370,7 +370,7 @@ default they execute @file{../../bin/release/PROGNAME} ), but they
 Simply execute
 
 @example
-tests/marsyas_tests.py
+scripts/marsyas_tests.py
 @end example
 
 You will see many messages scroll by; this is normal.  At the end, you
