@@ -51,7 +51,7 @@ fileToEdit = os.path.join(marsyasBaseDir, 'lib', 'release', 'Makefile.am')
 filelines = open( fileToEdit ).readlines()
 newfile = open( fileToEdit, 'w')
 for line in filelines:
-	if (line.strip()[23:30] == 'Gain.cpp'):
+	if (line[27:35] == 'Gain.cpp'):
 		insertLine = '\t\t\t  $(top_srcdir)/marsyas/'+addMar+'.cpp \\'
 		print "Adding line 1 of 1 to " + fileToEdit
 		newfile.write(insertLine)
@@ -79,5 +79,6 @@ for line in filelines:
 newfile.close()
 
 
-
+print "All done; please renerate autools with:"
+print "aclocal && automake"
 
