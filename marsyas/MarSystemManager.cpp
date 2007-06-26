@@ -147,6 +147,9 @@ in sequence.
 #include "HWPSspectrum.h"
 #include "Vibrato.h"
 #include "Panorama.h"
+//addMar-include
+
+
 
 using namespace std;
 using namespace Marsyas;
@@ -272,6 +275,9 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("HWPSspectrum", new HWPSspectrum("hwpsspectrumpr"));
 	registerPrototype("Vibrato", new Vibrato("vibratopr"));
 	registerPrototype("Panorama", new Panorama("panoramapr"));
+//addMar-register
+
+
 
 	//***************************************************************************************
 	//									Composite MarSystem prototypes
