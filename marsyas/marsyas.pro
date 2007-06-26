@@ -266,7 +266,9 @@ HEADERS += \
 	HWPSspectrum.h \
 	Vibrato.h \
 	Panorama.h \
+#addMar-h
 	Biquad.h
+# please leave Biquad.cpp at the end like this; it makes stuff happy.
 	 
 SOURCES += \
 	ADSR.cpp \
@@ -474,5 +476,7 @@ SOURCES += \
 	HWPSspectrum.cpp \
 	Vibrato.cpp \
 	Panorama.cpp \
+#addMar-cpp
 	Biquad.cpp
-	
+# please leave Biquad.cpp at the end like this; it makes stuff happy.
+
