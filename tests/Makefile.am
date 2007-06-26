@@ -1,5 +1,5 @@
 
-EXTRA_DIST = marsyas_tests.py testlist.txt
+EXTRA_DIST = audio-tests.txt text-tests.txt
 SUBDIRS = audio
 
 CLEANFILES = results.log audio/out.au audio/out.txt
