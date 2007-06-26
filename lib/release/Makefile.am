@@ -67,7 +67,6 @@ libmarsyas_a_SOURCES    = $(top_srcdir)/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/marsyas/MarControlManager.cpp \
 			  $(top_srcdir)/marsyas/MarControl.cpp \
 			  $(top_srcdir)/marsyas/MarControlValue.cpp \
-			  $(top_srcdir)/marsyas/Gain.cpp \
 			  $(top_srcdir)/marsyas/Spectrum.cpp \
 			  $(top_srcdir)/marsyas/InvSpectrum.cpp \
 			  $(top_srcdir)/marsyas/Collection.cpp \
@@ -221,7 +220,7 @@ libmarsyas_a_SOURCES    = $(top_srcdir)/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/marsyas/NormCut.cpp \
 			  $(top_srcdir)/marsyas/vmblock.cpp \
 			  $(top_srcdir)/marsyas/lu.cpp \
-#addMar-Makefile
-			  $(top_srcdir)/marsyas/basis.cpp
-
+			  $(top_srcdir)/marsyas/basis.cpp \
+			  $(top_srcdir)/marsyas/Gain.cpp
+# please leave Gain.cpp at the end like this; it make scripts happy.
 

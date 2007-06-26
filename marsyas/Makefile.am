@@ -77,8 +77,6 @@ RealvecSink.h Power.h MemorySource.h MidiInput.h Esitar.h MidiOutput.h mididevic
 NumericLib.h NormCut.h vmblock.h lu.h basis.h dsound.h \
 AbsSoundFileSource2.h AudioSink2.h AudioSource2.h SoundFileSource2.h \
 WavFileSource2.h HWPSspectrum.h Panorama.h Vibrato.h \
-#addMar-Makefile
 Gain.h
-# just leave Gain there at the end.  It makes the python+automake
-# script happier.
+# please leave Gain.h at the end like this; it makes scripts happy.
 
