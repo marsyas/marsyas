@@ -246,6 +246,9 @@ public:
 	bool isTrue();
 
 	// realvec-specific helpers
+	void create(mrs_natural size);// allocate(size) + fill zeros
+	void create(mrs_natural rows, mrs_natural cols); 
+	void create(mrs_real val, mrs_natural rows, mrs_natural cols);	
 	void stretch(mrs_natural rows, mrs_natural cols);
 	void stretch(mrs_natural size);
 	mrs_real operator()(const mrs_natural i) const;
@@ -1022,7 +1025,7 @@ MarControl::setValue(mrs_natural i, mrs_real value, bool update)
 	else
 	{
 		std::ostringstream sstr;
-		sstr << "[MarControl::create] Trying to use realvec-specific method with " << value_->getType();
+		sstr << "[MarControl::setValue] Trying to use realvec-specific method with " << value_->getType();
 		MRSWARN(sstr.str());
 		#ifdef MARSYAS_QT
 		rwLock_.unlock();
@@ -1089,7 +1092,7 @@ MarControl::setValue(mrs_natural r, mrs_natural c, mrs_real value, bool update)
 	else
 	{
 		std::ostringstream sstr;
-		sstr << "[MarControl::create] Trying to use realvec-specific method with " << value_->getType();
+		sstr << "[MarControl::setValue] Trying to use realvec-specific method with " << value_->getType();
 		MRSWARN(sstr.str());
 		#ifdef MARSYAS_QT
 		rwLock_.unlock();
@@ -1203,6 +1206,174 @@ MarControl::isTrue()
 
 inline
 void
+MarControl::create(mrs_natural size)
+{
+#ifdef MARSYAS_QT
+	rwLock_.lockForRead();
+#endif
+
+	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
+	if(ptr)
+	{
+		#ifdef MARSYAS_QT
+		rwLock_.unlock();
+		rwLock_.lockForWrite();
+		#endif
+		ptr->getRef().create(size);
+	}
+	else
+	{
+		std::ostringstream sstr;
+		sstr << "[MarControl::create] Trying to use realvec-specific method with " << value_->getType();
+		MRSWARN(sstr.str());
+		#ifdef MARSYAS_QT
+		rwLock_.unlock();
+		#endif
+		return;
+	}
+
+#ifdef MARSYAS_DEBUG
+	std::ostringstream oss;
+	value_->serialize(oss);
+	value_debug_ = oss.str();
+#endif
+
+#ifdef MARSYAS_QT
+	rwLock_.unlock();
+	rwLock_.lockForRead();
+#endif
+
+	if(isLinked_)
+	{
+		for(size_t i=0; i<linkedTo_.size(); i++)
+		{
+			linkedTo_[i]->create(size);
+		}
+	}
+
+	this->callMarSystemUpdate();
+
+#ifdef MARSYAS_QT
+	//emit controlChanged(this);
+	emitControlChanged(this);
+	rwLock_.unlock();
+#endif
+}
+
+inline
+void
+MarControl::create(mrs_natural rows, mrs_natural cols)
+{
+#ifdef MARSYAS_QT
+	rwLock_.lockForRead();
+#endif
+
+	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
+	if(ptr)
+	{
+		#ifdef MARSYAS_QT
+		rwLock_.unlock();
+		rwLock_.lockForWrite();
+		#endif
+		ptr->getRef().create(rows, cols);
+	}
+	else
+	{
+		std::ostringstream sstr;
+		sstr << "[MarControl::create] Trying to use realvec-specific method with " << value_->getType();
+		MRSWARN(sstr.str());
+		#ifdef MARSYAS_QT
+		rwLock_.unlock();
+		#endif
+		return;
+	}
+
+#ifdef MARSYAS_DEBUG
+	std::ostringstream oss;
+	value_->serialize(oss);
+	value_debug_ = oss.str();
+#endif
+
+#ifdef MARSYAS_QT
+	rwLock_.unlock();
+	rwLock_.lockForRead();
+#endif
+
+	if(isLinked_)
+	{
+		for(size_t i=0; i<linkedTo_.size(); i++)
+		{
+			linkedTo_[i]->create(rows, cols);
+		}
+	}
+
+	this->callMarSystemUpdate();
+
+#ifdef MARSYAS_QT
+	//emit controlChanged(this);
+	emitControlChanged(this);
+	rwLock_.unlock();
+#endif
+}
+
+inline
+void
+MarControl::create(mrs_real val, mrs_natural rows, mrs_natural cols)
+{
+#ifdef MARSYAS_QT
+	rwLock_.lockForRead();
+#endif
+
+	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
+	if(ptr)
+	{
+		#ifdef MARSYAS_QT
+		rwLock_.unlock();
+		rwLock_.lockForWrite();
+		#endif
+		ptr->getRef().create(val, rows, cols);
+	}
+	else
+	{
+		std::ostringstream sstr;
+		sstr << "[MarControl::create] Trying to use realvec-specific method with " << value_->getType();
+		MRSWARN(sstr.str());
+		#ifdef MARSYAS_QT
+		rwLock_.unlock();
+		#endif
+		return;
+	}
+
+	#ifdef MARSYAS_DEBUG
+	std::ostringstream oss;
+	value_->serialize(oss);
+	value_debug_ = oss.str();
+	#endif
+
+	#ifdef MARSYAS_QT
+	rwLock_.unlock();
+	rwLock_.lockForRead();
+	#endif
+
+	if(isLinked_)
+	{
+		for(size_t i=0; i<linkedTo_.size(); i++)
+		{
+			linkedTo_[i]->create(val, rows, cols);
+		}
+	}
+
+	this->callMarSystemUpdate();
+
+#ifdef MARSYAS_QT
+	//emit controlChanged(this);
+	emitControlChanged(this);
+	rwLock_.unlock();
+#endif
+}
+
+inline
+void
 MarControl::stretch(mrs_natural rows, mrs_natural cols)
 {
 	#ifdef MARSYAS_QT
@@ -1228,7 +1399,7 @@ MarControl::stretch(mrs_natural rows, mrs_natural cols)
 	else
 	{
 		std::ostringstream sstr;
-		sstr << "[MarControl::create] Trying to use realvec-specific method with " << value_->getType();
+		sstr << "[MarControl::stretch] Trying to use realvec-specific method with " << value_->getType();
 		MRSWARN(sstr.str());
 		#ifdef MARSYAS_QT
 		rwLock_.unlock();
@@ -1291,7 +1462,7 @@ MarControl::stretch(mrs_natural size)
 	else
 	{
 		std::ostringstream sstr;
-		sstr << "[MarControl::create] Trying to use realvec-specific method with " << value_->getType();
+		sstr << "[MarControl::stretch] Trying to use realvec-specific method with " << value_->getType();
 		MRSWARN(sstr.str());
 		#ifdef MARSYAS_QT
 		rwLock_.unlock();

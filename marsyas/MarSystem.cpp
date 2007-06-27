@@ -691,8 +691,9 @@ MarSystem::update(MarControlPtr sender)
 		inTick_.create(inObservations_, inSamples_);
 		
 		// Fixed resizing of ctrl_processedData 
-		realvec& v = (realvec &)ctrl_processedData_->to<mrs_realvec>();
-		v.create(onObservations_, onSamples_);		// this may break MarControl encapsulation!!!!!! [!]
+		//realvec& v = (realvec &)ctrl_processedData_->to<mrs_realvec>();
+		//v.create(onObservations_, onSamples_);		// this may break MarControl encapsulation!!!!!! [!]
+		ctrl_processedData_->create(onObservations_, onSamples_);
 	}
 
 	//check for OUT-FLOW modifications without parent knowledge!!
