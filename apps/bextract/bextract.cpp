@@ -327,7 +327,6 @@ tempo_histoSumBands(MarSystem* total1, string sfName, realvec& beatfeatures,
 {
   estimate.setval(0.0);
 
-  mrs_natural nChannels;
   mrs_real srate;
 
   // prepare network 
@@ -337,7 +336,7 @@ tempo_histoSumBands(MarSystem* total1, string sfName, realvec& beatfeatures,
 
   total1->updctrl("SoundFileSource/src1/mrs_string/filename", sfName);
 
-  nChannels = total1->getctrl("SoundFileSource/src1/mrs_natural/nChannels")->toNatural();
+  
   srate = total1->getctrl("SoundFileSource/src1/mrs_real/israte")->toReal();
 
   mrs_natural ifactor = 8;
@@ -346,11 +345,10 @@ tempo_histoSumBands(MarSystem* total1, string sfName, realvec& beatfeatures,
   mrs_natural winSize = (mrs_natural) ((srate / 22050.0) * 2 * 65536);
   mrs_natural hopSize = winSize / 16;
 
-  offset = (mrs_natural) (start * srate * nChannels);
-  // duration = (mrs_natural) (length * srate * nChannels);
-
+  offset = (mrs_natural) (start * srate);
+  
   // only do 30 seconds 
-  duration = (mrs_natural) (30.0 * srate * nChannels);
+  duration = (mrs_natural) (30.0 * srate);
 
   total1->updctrl("mrs_natural/inSamples", hopSize);
   total1->updctrl("SoundFileSource/src1/mrs_natural/pos", offset);      
@@ -958,12 +956,12 @@ void bextract_train(vector<Collection> cls,
   if (start > 0.0) 
     offset = (mrs_natural) (start 
 			    * src->getctrl("mrs_real/israte")->toReal() 
-			    * src->getctrl("mrs_natural/nChannels")->toNatural());
+			    * src->getctrl("mrs_natural/onObservations")->toNatural());
 
   if (length != 30.0) 
     duration = (mrs_natural) (length 
 			      * src->getctrl("mrs_real/israte")->toReal() 
-			      * src->getctrl("mrs_natural/nChannels")->toNatural());
+			      * src->getctrl("mrs_natural/onObservations")->toNatural());
 
   //////////////////////////////////////////////////////////////////////////
   // Feature Extractor
@@ -1051,14 +1049,13 @@ void bextract_train(vector<Collection> cls,
   featureNetwork->linkctrl("mrs_string/filename", "SoundFileSource/src/mrs_string/filename");
   featureNetwork->linkctrl("SoundFileSource/src/mrs_string/currentlyPlaying", "Confidence/confidence/mrs_string/fileName");
   //  featureNetwork->linkctrl("SoundFileSource/src/mrs_string/filename", "Confidence/confidence/mrs_string/fileName");
-  featureNetwork->linkctrl("mrs_natural/nChannels", "SoundFileSource/src/mrs_natural/nChannels");
+
   featureNetwork->linkctrl("mrs_real/israte", "SoundFileSource/src/mrs_real/israte");
   featureNetwork->linkctrl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
-  if (pluginName != EMPTYSTRING) 
-    featureNetwork->linkctrl("mrs_natural/nChannels",	"AudioSink/dest/mrs_natural/nChannels");
+  
   featureNetwork->linkctrl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
   featureNetwork->linkctrl("mrs_bool/initAudio", "AudioSink/dest/mrs_bool/initAudio");
-
+  
   MarControlPtr ctrl_filename_ = featureNetwork->getctrl("SoundFileSource/src/mrs_string/filename");
   MarControlPtr ctrl_notEmpty_ = featureNetwork->getctrl("SoundFileSource/src/mrs_bool/notEmpty");
   
@@ -1355,13 +1352,13 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
   // Calculate duration, offest parameters if necessary 
   if (start > 0.0f) 
     offset = (mrs_natural) (start 
-			    * src->getctrl("mrs_real/israte")->toReal() 
-			    * src->getctrl("mrs_natural/nChannels")->toNatural());
+			    * src->getctrl("mrs_real/israte")->toReal());
+  
 
   if (length != 30.0f) 
     duration = (mrs_natural) (length 
-			      * src->getctrl("mrs_real/israte")->toReal() 
-			      * src->getctrl("mrs_natural/nChannels")->toNatural());
+			      * src->getctrl("mrs_real/israte")->toReal());
+  
 
   // create audio sink and mute it 
   // it is stored in the output plugin 
@@ -1491,17 +1488,13 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
   // link controls
   featureNetwork->linkctrl("mrs_string/filename", 
 			   "SilenceRemove/srm/SoundFileSource/src/mrs_string/filename");
-  featureNetwork->linkctrl("mrs_natural/nChannels", 
-			   "SilenceRemove/srm/src/mrs_natural/nChannels");
+
   featureNetwork->linkctrl("mrs_real/israte", 
 			   "SilenceRemove/srm/SoundFileSource/src/mrs_real/israte");
   featureNetwork->linkctrl("mrs_natural/pos", 
 			   "SilenceRemove/srm/SoundFileSource/src/mrs_natural/pos");
 
-  /* if (pluginName != EMPTYSTRING) 
-     featureNetwork->linkctrl("mrs_natural/nChannels", 
-     "AudioSink/dest/mrs_natural/nChannels");
-  */ 
+
 
   featureNetwork->linkctrl("mrs_bool/notEmpty", 
 			   "SilenceRemove/srm/SoundFileSource/src/mrs_bool/notEmpty");
