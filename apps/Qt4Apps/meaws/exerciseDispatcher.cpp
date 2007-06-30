@@ -34,7 +34,7 @@ bool ExerciseDispatcher::chooseEvaluation() {
 
 void ExerciseDispatcher::open() {
 	if (chooseEvaluation()) {
-		QString openFilename = QFileDialog::getOpenFileName(0,tr("Save file"),
+		QString openFilename = QFileDialog::getOpenFileName(0,tr("Open file"),
 			evaluation->exercisesDir(), tr("Exercises (*.png)"));
 		if (!openFilename.isEmpty()) {
 			evaluation->open(openFilename);
@@ -67,6 +67,10 @@ void ExerciseDispatcher::openAttempt() {
 		marBackend->open( qPrintable(openFilename) );
 	}
 
+}
+
+void ExerciseDispatcher::playFile() {
+	marBackend->playFile();
 }
 
 void ExerciseDispatcher::analyze() {

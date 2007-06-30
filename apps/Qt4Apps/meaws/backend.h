@@ -5,7 +5,6 @@
 #include <QObject>
 #include "MarSystemManager.h"
 #include "../MarSystemQtWrapper.h"
-
 using namespace Marsyas;
 
 class MarBackend: public QObject {
@@ -14,25 +13,21 @@ class MarBackend: public QObject {
 public:
 	MarBackend(int getType);
 	~MarBackend();
-//	void setIntro(int beats);
-//	void playBeat();
+
 	void start();
 	void stop();
-	void setFileName(std::string filename);
+//	void setFileName(std::string filename);
 	void playFile();
 	void open(std::string filename);
 
 	void analyze();
-/*
-signals:
-	void nextNoteError(float error, int direction);
-*/
+
 private:
 	MarSystemQtWrapper *mrsWrapper;
 	MarSystemManager mng;
 	MarSystem *sourceNet;
-	MarSystem *pitchNet;
-	MarSystem *amplitudeNet;
+//	MarSystem *pitchNet;
+//	MarSystem *amplitudeNet;
 	MarSystem *allNet;
 
 	realvec pitchList;
@@ -44,26 +39,12 @@ private:
 	MarSystem* makePitchNet(mrs_real source_osrate);
 	MarSystem* makeAmplitudeNet();
 
-//	void makeRecNet();
 	void startIntonation();
 	void startControl();
 
 	void setupAllNet();
 	void delNet();
   MarControlPtr filenamePtr;
-/*
-// metronome stuff
-  MarSystem *metroNet;
-	MarSystem *pitchNet;
-
-	MarSystem *allNet;
-	int *pitchError;
-
-// pitch extracting stuff  (INCOMPLETE)
-	void startPitchNet(string sfName);
-	void stopPitchNet();
-	MarSystem *pitchExtractor;
-*/
 };
 #endif
 

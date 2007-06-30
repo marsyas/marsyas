@@ -26,6 +26,8 @@ public slots:
 	void toggleAttempt();
 	void openAttempt();
 
+	void playFile();
+
 	void analyze(); // temp
 
 signals:

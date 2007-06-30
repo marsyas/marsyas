@@ -7,7 +7,7 @@ ExerciseIntonation::ExerciseIntonation() {
 }
 ExerciseIntonation::~ExerciseIntonation() {
 	instructionArea->removeWidget(instructionImageLabel);
-	delete (instructionImageLabel);;
+	delete (instructionImageLabel);
 
 	resultArea->removeWidget(resultLabel);
 	delete resultLabel;
