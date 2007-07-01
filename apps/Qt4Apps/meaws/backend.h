@@ -21,6 +21,8 @@ public:
 	void open(std::string filename);
 
 	void analyze();
+public slots:
+	void ctrlChanged(MarControlPtr changed);
 
 private:
 	MarSystemQtWrapper *mrsWrapper;
@@ -45,6 +47,8 @@ private:
 	void setupAllNet();
 	void delNet();
   MarControlPtr filenamePtr;
+
+	MarControlPtr emptyPtr;
 };
 #endif
 

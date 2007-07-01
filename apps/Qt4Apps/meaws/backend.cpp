@@ -121,11 +121,26 @@ void MarBackend::setupAllNet() {
 */
 
 // interactive
-/*
+
 	mrsWrapper = new MarSystemQtWrapper(allNet);
+	emptyPtr = mrsWrapper->getctrl("mrs_bool/notEmpty");
+	mrsWrapper->trackctrl( emptyPtr );
+	connect(mrsWrapper, SIGNAL(ctrlChanged(MarControlPtr)), this, SLOT(ctrlChanged(MarControlPtr)));
+
 	mrsWrapper->start();
 	mrsWrapper->pause();
-*/
+
+}
+
+void MarBackend::ctrlChanged(MarControlPtr changed) {
+	if ( changed.isEqual( emptyPtr ) ) {
+		cout<<changed->to<mrs_bool>()<<endl;
+		if ( changed->to<mrs_bool>() ) {
+			start();
+		} else {
+			stop();
+		}
+	}
 }
 
 void MarBackend::playFile() {
@@ -148,6 +163,10 @@ void MarBackend::playFile() {
 //		allNet->tick();
 
 	mrsWrapper = new MarSystemQtWrapper(allNet);
+	emptyPtr = mrsWrapper->getctrl("mrs_bool/notEmpty");
+	mrsWrapper->trackctrl( emptyPtr );
+	connect(mrsWrapper, SIGNAL(ctrlChanged(MarControlPtr)), this, SLOT(ctrlChanged(MarControlPtr)));
+
 	mrsWrapper->start();
 	mrsWrapper->play();
 	cout<<"done playing?"<<endl;
