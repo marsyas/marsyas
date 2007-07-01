@@ -39,6 +39,7 @@ void ExerciseDispatcher::open() {
 		if (!openFilename.isEmpty()) {
 			evaluation->open(openFilename);
 			marBackend = new MarBackend(evaluation->getType());
+			connect(marBackend, SIGNAL(setAttempt(bool)), this, SLOT(setAttempt(bool)));
 			enableActions(MEAWS_READY_EXERCISE);
 		}
 	}
@@ -50,12 +51,20 @@ void ExerciseDispatcher::close() {
 }
 
 void ExerciseDispatcher::toggleAttempt() {
-	attemptRunningBool = !attemptRunningBool;
-	attemptRunning(attemptRunningBool);
-	if (attemptRunningBool) {
-		marBackend->start();
-	} else {
-		marBackend->stop();
+	setAttempt(!attemptRunningBool);
+}
+
+void ExerciseDispatcher::setAttempt(bool running) {
+	// if the attempt state has changed
+	if (running != attemptRunningBool) {
+		if (running) {
+			attemptRunningBool = true;
+			marBackend->start();
+		} else {
+			attemptRunningBool = false;
+			marBackend->stop();
+		}
+		attemptRunning(attemptRunningBool);
 	}
 }
 
@@ -69,11 +78,10 @@ void ExerciseDispatcher::openAttempt() {
 
 }
 
+
 void ExerciseDispatcher::playFile() {
 	marBackend->playFile();
-	if (attemptRunningBool==false)
-		toggleAttempt();
-	cout<<"done playFile()"<<endl;
+	setAttempt(true);
 }
 
 void ExerciseDispatcher::analyze() {

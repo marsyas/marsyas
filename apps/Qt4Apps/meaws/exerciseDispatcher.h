@@ -24,6 +24,7 @@ public slots:
 	void close();
 	void setArea(QGridLayout *getInstructionArea, QGridLayout *getResultArea);
 	void toggleAttempt();
+	void setAttempt(bool running);
 	void openAttempt();
 
 	void playFile();

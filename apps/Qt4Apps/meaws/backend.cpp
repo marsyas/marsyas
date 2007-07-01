@@ -10,6 +10,8 @@ MarBackend::MarBackend(int getType) {
 	mrsWrapper = NULL;
 	allNet = NULL;
 	sourceNet = makeSourceNet("");
+
+	tempold = false;
 }
 
 MarBackend::~MarBackend() {
@@ -17,13 +19,11 @@ MarBackend::~MarBackend() {
 }
 
 void MarBackend::delNet() {
-//	cout<<"started delNet()"<<endl;
 	if (mrsWrapper != NULL) {
 		mrsWrapper->pause();
 		delete mrsWrapper;
 		mrsWrapper = NULL;
 	}
-//	cout<<"del Wrap"<<endl;
 	if (allNet != NULL) {
 		delete allNet;
 		allNet = NULL;
@@ -34,8 +34,6 @@ void MarBackend::delNet() {
 			sourceNet = NULL;
 		}
 	}
-//	cout<<"del all"<<endl;
-//	cout<<"endded delNet()"<<endl;
 }
 
 MarSystem* MarBackend::makeSourceNet(std::string filename) {
@@ -51,7 +49,6 @@ MarSystem* MarBackend::makeSourceNet(std::string filename) {
 		pnet->addMarSystem(mng.create("AudioSource", "srcRec"));
 //		pnet->updctrl("AudioSource/srcRec/mrs_real/israte", 44100.0);
 		pnet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
-
 //		pnet->linkctrl("mrs_real/osrate", "AudioSource/srcRec/mrs_real/osrate");
 		cout<<"DEBUG: finished trying"<<endl;
 	}
@@ -100,27 +97,30 @@ void MarBackend::setFileName(string filename) {
 }
 */
 
+void MarBackend::playFile() {
+	string filename = sourceNet->getctrl("SoundFileSource/srcFile/mrs_string/filename")->toString();
+	delNet();
+	sourceNet = makeSourceNet(filename);
+	method = TYPE_PLAYBACK;
+	setupAllNet();
+}
+
 void MarBackend::setupAllNet() {
 	mrs_real osrate = sourceNet->getctrl("mrs_real/osrate")->toReal();
 
 	allNet = mng.create("Series", "allNet");
 	allNet->addMarSystem(sourceNet);
 	allNet->linkctrl("mrs_bool/notEmpty", "Series/sourceNet/mrs_bool/notEmpty");
-// test
-/*
-	allNet->addMarSystem(mng.create("AudioSink", "audioDest"));
-	allNet->updctrl("AudioSink/audioDest/mrs_bool/initAudio", true);
-*/
-// non-test
-	allNet->addMarSystem( makePitchNet(osrate) );
 
-// non-interactive
-/*
-	while (allNet->getctrl("mrs_bool/notEmpty")->toBool())
-		allNet->tick();
-*/
-
-// interactive
+	switch (method) {
+	case TYPE_PLAYBACK:
+		allNet->addMarSystem(mng.create("AudioSink", "audioDest"));
+		allNet->updctrl("AudioSink/audioDest/mrs_bool/initAudio", true);
+		break;
+	case TYPE_INTONATION:
+		allNet->addMarSystem( makePitchNet(osrate) );
+		break;
+	}
 
 	mrsWrapper = new MarSystemQtWrapper(allNet);
 	emptyPtr = mrsWrapper->getctrl("mrs_bool/notEmpty");
@@ -129,61 +129,32 @@ void MarBackend::setupAllNet() {
 
 	mrsWrapper->start();
 	mrsWrapper->pause();
-
 }
 
 void MarBackend::ctrlChanged(MarControlPtr changed) {
 	if ( changed.isEqual( emptyPtr ) ) {
-		cout<<changed->to<mrs_bool>()<<endl;
+		bool tempnew = changed->to<mrs_bool>();
+		if (tempnew != tempold)
 		if ( changed->to<mrs_bool>() ) {
 			start();
+			tempold=true;
 		} else {
 			stop();
+			tempold=false;
 		}
 	}
 }
 
-void MarBackend::playFile() {
-	cout<<"playing file now"<<endl;
-	string filename = sourceNet->getctrl("SoundFileSource/srcFile/mrs_string/filename")->toString();
-//cout<<filename<<endl;
-	delNet();
-	sourceNet = makeSourceNet(filename);
-
-//	mrs_real osrate = sourceNet->getctrl("mrs_real/osrate")->toReal();
-//cout<<"makeing allNet"<<endl;
-	allNet = mng.create("Series", "allNet");
-	allNet->addMarSystem(sourceNet);
-	allNet->linkctrl("mrs_bool/notEmpty", "Series/sourceNet/mrs_bool/notEmpty");
-// test
-	allNet->addMarSystem(mng.create("AudioSink", "audioDest"));
-	allNet->updctrl("AudioSink/audioDest/mrs_bool/initAudio", true);
-//cout<<"allNet made"<<endl;
-//	while (allNet->getctrl("mrs_bool/notEmpty")->toBool())
-//		allNet->tick();
-
-	mrsWrapper = new MarSystemQtWrapper(allNet);
-	emptyPtr = mrsWrapper->getctrl("mrs_bool/notEmpty");
-	mrsWrapper->trackctrl( emptyPtr );
-	connect(mrsWrapper, SIGNAL(ctrlChanged(MarControlPtr)), this, SLOT(ctrlChanged(MarControlPtr)));
-
-	mrsWrapper->start();
-	mrsWrapper->play();
-	cout<<"done playing?"<<endl;
-}
-
 void MarBackend::start() {
-	cout<<"play"<<endl;
+	emit setAttempt(true);
 	if (mrsWrapper != NULL)
 		mrsWrapper->play();
-	cout<<"...done play"<<endl;
 }
 
 void MarBackend::stop() {
-	cout<<"stop"<<endl;
+	emit setAttempt(false);
 	if (mrsWrapper != NULL)
 		mrsWrapper->pause();
-	cout<<"...done stop"<<endl;
 }
 
 void MarBackend::analyze() {
@@ -193,7 +164,7 @@ void MarBackend::analyze() {
 	}
 
 	mrs_real osrate = sourceNet->getctrl("mrs_real/osrate")->toReal();
-	cout<<osrate<<endl;
+//	cout<<osrate<<endl;
 
 	realvec data = allNet->getctrl("Series/pitchNet/RealvecSink/rvSink/mrs_realvec/data")->toVec();
 	for (mrs_natural i=1; i<data.getSize();i+=2)

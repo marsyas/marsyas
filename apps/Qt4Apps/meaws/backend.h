@@ -14,15 +14,19 @@ public:
 	MarBackend(int getType);
 	~MarBackend();
 
-	void start();
-	void stop();
 //	void setFileName(std::string filename);
 	void playFile();
 	void open(std::string filename);
 
 	void analyze();
+
 public slots:
 	void ctrlChanged(MarControlPtr changed);
+	void start();
+	void stop();
+
+signals:
+	void setAttempt(bool running);
 
 private:
 	MarSystemQtWrapper *mrsWrapper;
@@ -49,6 +53,7 @@ private:
   MarControlPtr filenamePtr;
 
 	MarControlPtr emptyPtr;
+	bool tempold;
 };
 #endif
 
