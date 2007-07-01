@@ -71,6 +71,9 @@ void ExerciseDispatcher::openAttempt() {
 
 void ExerciseDispatcher::playFile() {
 	marBackend->playFile();
+	if (attemptRunningBool==false)
+		toggleAttempt();
+	cout<<"done playFile()"<<endl;
 }
 
 void ExerciseDispatcher::analyze() {

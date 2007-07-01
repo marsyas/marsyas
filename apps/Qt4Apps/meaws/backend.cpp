@@ -17,13 +17,13 @@ MarBackend::~MarBackend() {
 }
 
 void MarBackend::delNet() {
-	cout<<"started delNet()"<<endl;
+//	cout<<"started delNet()"<<endl;
 	if (mrsWrapper != NULL) {
 		mrsWrapper->pause();
 		delete mrsWrapper;
 		mrsWrapper = NULL;
 	}
-	cout<<"del Wrap"<<endl;
+//	cout<<"del Wrap"<<endl;
 	if (allNet != NULL) {
 		delete allNet;
 		allNet = NULL;
@@ -34,8 +34,8 @@ void MarBackend::delNet() {
 			sourceNet = NULL;
 		}
 	}
-	cout<<"del all"<<endl;
-	cout<<"endded delNet()"<<endl;
+//	cout<<"del all"<<endl;
+//	cout<<"endded delNet()"<<endl;
 }
 
 MarSystem* MarBackend::makeSourceNet(std::string filename) {
@@ -49,7 +49,7 @@ MarSystem* MarBackend::makeSourceNet(std::string filename) {
 	} else {
 		cout<<"DEBUG: trying to init audio"<<endl;
 		pnet->addMarSystem(mng.create("AudioSource", "srcRec"));
-		pnet->updctrl("AudioSource/srcRec/mrs_real/israte", 44100.0);
+//		pnet->updctrl("AudioSource/srcRec/mrs_real/israte", 44100.0);
 		pnet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
 
 //		pnet->linkctrl("mrs_real/osrate", "AudioSource/srcRec/mrs_real/osrate");
@@ -115,8 +115,11 @@ void MarBackend::setupAllNet() {
 	allNet->addMarSystem( makePitchNet(osrate) );
 
 // non-interactive
+/*
 	while (allNet->getctrl("mrs_bool/notEmpty")->toBool())
 		allNet->tick();
+*/
+
 // interactive
 /*
 	mrsWrapper = new MarSystemQtWrapper(allNet);
@@ -132,7 +135,7 @@ void MarBackend::playFile() {
 	delNet();
 	sourceNet = makeSourceNet(filename);
 
-	mrs_real osrate = sourceNet->getctrl("mrs_real/osrate")->toReal();
+//	mrs_real osrate = sourceNet->getctrl("mrs_real/osrate")->toReal();
 //cout<<"makeing allNet"<<endl;
 	allNet = mng.create("Series", "allNet");
 	allNet->addMarSystem(sourceNet);
@@ -146,16 +149,22 @@ void MarBackend::playFile() {
 
 	mrsWrapper = new MarSystemQtWrapper(allNet);
 	mrsWrapper->start();
+	mrsWrapper->play();
+	cout<<"done playing?"<<endl;
 }
 
 void MarBackend::start() {
 	cout<<"play"<<endl;
-	mrsWrapper->play();
+	if (mrsWrapper != NULL)
+		mrsWrapper->play();
+	cout<<"...done play"<<endl;
 }
 
 void MarBackend::stop() {
 	cout<<"stop"<<endl;
-	mrsWrapper->pause();
+	if (mrsWrapper != NULL)
+		mrsWrapper->pause();
+	cout<<"...done stop"<<endl;
 }
 
 void MarBackend::analyze() {
