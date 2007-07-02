@@ -11,7 +11,7 @@ class Transcriber {
 public:
 	Transcriber();
 	~Transcriber();
-	void setOptions(mrs_real getRadius, mrs_real getNewNote, mrs_real getCertantyDiv);
+	void setOptions(mrs_natural getRadius, mrs_real getNewNote, mrs_real getCertantyDiv);
 
 	void setPitchList(realvec newPitchList);
 	void getPitchesFromAudio(string audioFilename);

@@ -17,7 +17,7 @@
 #include "Transcriber.h"
 
 Transcriber::Transcriber() {
-	median_radius = 10.0;
+	median_radius = 10;
 	new_note_midi = 0.6;
 	pitch_certainty_div = 500;
 
@@ -32,7 +32,7 @@ Transcriber::~Transcriber() {
 }
 
 void
-Transcriber::setOptions(mrs_real getRadius, mrs_real getNewNote, mrs_real getCertantyDiv)
+Transcriber::setOptions(mrs_natural getRadius, mrs_real getNewNote, mrs_real getCertantyDiv)
 {
 	median_radius = getRadius;
 	new_note_midi = getNewNote;
@@ -122,6 +122,7 @@ realvec Transcriber::getOnsets() {
 
 // find median without 0s.
 mrs_real Transcriber::findMedian(int start, int length, realvec array) {
+cout<<"beginning findMedian"<<endl;
 	if ( length<=0 ) return 0;
 	mrs_real toReturn;
 	realvec myArray;
@@ -139,14 +140,15 @@ mrs_real Transcriber::findMedian(int start, int length, realvec array) {
 		toReturn = myArray.median();
 	else
 		toReturn = 0;
-//	cout<<"Median without zeros is: "<<toReturn<<endl;
+cout<<"Median without zeros is: "<<toReturn<<endl;
 
 	myArray.~realvec();
+cout<<"deleted myArray"<<endl;
 	return toReturn;
 }
 
 int secToFrame(mrs_real second) {
-	return round( second*44100.0/512.0 );
+	return (int) round( second*44100.0/512.0 );
 }
 
 void Transcriber::setOnsets(string filename) {
@@ -164,6 +166,7 @@ void Transcriber::calcOnsets() {
 	float prevNote=0.0;
 	int durIndex=1;
 	int prevSamp=0;
+	cout<<"calcOnsets"<<endl;
 	for (i=median_radius; i<pitchList.getSize()-median_radius; i++) {
 		median = findMedian(i-median_radius, 2*median_radius, pitchList);
 		if ( fabs(median-prevNote) > new_note_midi ) {
@@ -182,6 +185,7 @@ void Transcriber::calcOnsets() {
 	}
 	onsets.stretchWrite(durIndex, pitchList.getSize() );
 	onsets.stretch(durIndex+1);
+	cout<<"calcOnsets finished"<<endl;
 }
 
 void Transcriber::calcNotes(){
@@ -192,8 +196,8 @@ void Transcriber::calcNotes(){
 	mrs_real pitch;
 	int i;
 	for (i=0; i<onsets.getSize()-1; i++) {
-	    start = onsets(i);
-		end = onsets(i+1);
+	    start = (int) onsets(i);
+		end = (int) onsets(i+1);
 		pitch = findMedian( start, end-start, pitchList);
 		notes(i) = pitch;
 	}
@@ -205,8 +209,8 @@ void Transcriber::calcNotes(){
 	mrs_real distance;
 	int j, k;
 	for (i=0; i<onsets.getSize()-1; i++) {
-	    start = onsets(i);
-		end = onsets(i+1);
+	    start = (int) onsets(i);
+		end = (int) onsets(i+1);
 		closePitches.stretch(end-start);
 		k=0;
 		for (j=start; j<end; j++) {
