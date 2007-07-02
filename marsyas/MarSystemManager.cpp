@@ -147,6 +147,7 @@ in sequence.
 #include "HWPSspectrum.h"
 #include "Vibrato.h"
 #include "Panorama.h"
+#include "FlowThru.h"
 //addMar-include
 
 
@@ -275,6 +276,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("HWPSspectrum", new HWPSspectrum("hwpsspectrumpr"));
 	registerPrototype("Vibrato", new Vibrato("vibratopr"));
 	registerPrototype("Panorama", new Panorama("panoramapr"));
+	registerPrototype("FlowThru", new Panorama("flowthrupr"));
 //addMar-register
 
 
