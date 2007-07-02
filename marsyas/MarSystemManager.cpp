@@ -276,7 +276,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("HWPSspectrum", new HWPSspectrum("hwpsspectrumpr"));
 	registerPrototype("Vibrato", new Vibrato("vibratopr"));
 	registerPrototype("Panorama", new Panorama("panoramapr"));
-	registerPrototype("FlowThru", new Panorama("flowthrupr"));
+	registerPrototype("FlowThru", new FlowThru("flowthrupr"));
 //addMar-register
 
 
