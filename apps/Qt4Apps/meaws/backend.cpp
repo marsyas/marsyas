@@ -192,20 +192,21 @@ void MarBackend::analyze() {
 	switch (method) {
 	case TYPE_PLAYBACK:
 		break;
-	case TYPE_INTONATION:
+	case TYPE_INTONATION: {
 		getPitches();
-//		cout<<getPitches();
-//		cout<<"****************"<<endl;
 		Transcriber *trans = new Transcriber();
 		trans->setPitchList( getPitches() );
 		trans->calcOnsets();
 		trans->calcNotes();
+
 		cout<<"****************"<<endl;
 		cout<<trans->getOnsets();
 		cout<<"****************"<<endl;
 		cout<<trans->getNotes();
-//zz
+
+		delete trans;
 		break;
+	}
 	case TYPE_CONTROL:
 		break;
 	}
