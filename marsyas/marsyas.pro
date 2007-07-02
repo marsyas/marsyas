@@ -266,6 +266,7 @@ HEADERS += \
 	Vibrato.h \
 	Panorama.h \
 	Biquad.h \
+	Transcriber.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 	 
@@ -475,6 +476,7 @@ SOURCES += \
 	Vibrato.cpp \
 	Panorama.cpp \
 	Biquad.cpp \
+	Transcriber.cpp \
 	Gain.cpp
 # please leave Gain.cpp at the end like this; it makes scripts happy.
 

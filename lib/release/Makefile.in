@@ -301,6 +301,7 @@ libmarsyas_a_SOURCES = $(top_srcdir)/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/marsyas/vmblock.cpp \
 			  $(top_srcdir)/marsyas/lu.cpp \
 			  $(top_srcdir)/marsyas/basis.cpp \
+			  $(top_srcdir)/marsyas/Transcriber.cpp \
 			  $(top_srcdir)/marsyas/Gain.cpp
 
 subdir = lib/release
@@ -386,7 +387,8 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	Panorama.$(OBJEXT) Power.$(OBJEXT) MemorySource.$(OBJEXT) \
 	MidiInput.$(OBJEXT) Esitar.$(OBJEXT) MidiOutput.$(OBJEXT) \
 	NumericLib.$(OBJEXT) NormCut.$(OBJEXT) vmblock.$(OBJEXT) \
-	lu.$(OBJEXT) basis.$(OBJEXT) Gain.$(OBJEXT)
+	lu.$(OBJEXT) basis.$(OBJEXT) Transcriber.$(OBJEXT) \
+	Gain.$(OBJEXT)
 libmarsyas_a_OBJECTS = $(am_libmarsyas_a_OBJECTS)
 
 DEFS = @DEFS@
@@ -514,8 +516,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/TmControlValue.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TmGetTime.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TmSampleCount.Po ./$(DEPDIR)/TmTime.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/TmTimer.Po ./$(DEPDIR)/VScheduler.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Vibrato.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/TmTimer.Po ./$(DEPDIR)/Transcriber.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/VScheduler.Po ./$(DEPDIR)/Vibrato.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ViconFileSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/WavFileSink.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/WavFileSource.Po \
@@ -786,6 +788,7 @@ NormCut.$(OBJEXT): $(top_srcdir)/marsyas/NormCut.cpp
 vmblock.$(OBJEXT): $(top_srcdir)/marsyas/vmblock.cpp
 lu.$(OBJEXT): $(top_srcdir)/marsyas/lu.cpp
 basis.$(OBJEXT): $(top_srcdir)/marsyas/basis.cpp
+Transcriber.$(OBJEXT): $(top_srcdir)/marsyas/Transcriber.cpp
 Gain.$(OBJEXT): $(top_srcdir)/marsyas/Gain.cpp
 libmarsyas.a: $(libmarsyas_a_OBJECTS) $(libmarsyas_a_DEPENDENCIES) 
 	-rm -f libmarsyas.a
@@ -979,6 +982,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TmSampleCount.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TmTime.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TmTimer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Transcriber.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/VScheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Vibrato.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ViconFileSource.Po@am__quote@
@@ -3401,6 +3405,18 @@ basis.obj: $(top_srcdir)/marsyas/basis.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/basis.Po' tmpdepfile='$(DEPDIR)/basis.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o basis.obj `cygpath -w $(top_srcdir)/marsyas/basis.cpp`
+
+Transcriber.o: $(top_srcdir)/marsyas/Transcriber.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/Transcriber.cpp' object='Transcriber.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/Transcriber.Po' tmpdepfile='$(DEPDIR)/Transcriber.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Transcriber.o `test -f '$(top_srcdir)/marsyas/Transcriber.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/Transcriber.cpp
+
+Transcriber.obj: $(top_srcdir)/marsyas/Transcriber.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/Transcriber.cpp' object='Transcriber.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/Transcriber.Po' tmpdepfile='$(DEPDIR)/Transcriber.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Transcriber.obj `cygpath -w $(top_srcdir)/marsyas/Transcriber.cpp`
 
 Gain.o: $(top_srcdir)/marsyas/Gain.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/marsyas/Gain.cpp' object='Gain.o' libtool=no @AMDEPBACKSLASH@
