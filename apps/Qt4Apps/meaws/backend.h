@@ -5,6 +5,7 @@
 #include <QObject>
 #include "MarSystemManager.h"
 #include "../MarSystemQtWrapper.h"
+#include "Transcriber.h"
 using namespace Marsyas;
 
 class MarBackend: public QObject {
