@@ -302,6 +302,7 @@ libmarsyas_a_SOURCES = $(top_srcdir)/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/marsyas/lu.cpp \
 			  $(top_srcdir)/marsyas/basis.cpp \
 			  $(top_srcdir)/marsyas/Transcriber.cpp \
+			  $(top_srcdir)/marsyas/FlowThru.h \
 			  $(top_srcdir)/marsyas/Gain.cpp
 
 subdir = lib/release
@@ -536,6 +537,11 @@ CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 CXXFLAGS = @CXXFLAGS@
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 DIST_SOURCES = $(libmarsyas_a_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
 SOURCES = $(libmarsyas_a_SOURCES)

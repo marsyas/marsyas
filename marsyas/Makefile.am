@@ -78,6 +78,7 @@ NumericLib.h NormCut.h vmblock.h lu.h basis.h dsound.h \
 AbsSoundFileSource2.h AudioSink2.h AudioSource2.h SoundFileSource2.h \
 WavFileSource2.h HWPSspectrum.h Panorama.h Vibrato.h \
 Transcriber.h \
+FlowThru.h \
 Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 
