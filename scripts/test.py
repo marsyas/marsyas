@@ -6,7 +6,7 @@ runningDir = os.path.dirname(sys.argv[0])
 
 print runningDir
 
-absRunning = os.path.abspath( runningdir )
+absRunning = os.path.abspath( runningDir )
 
 print absRunning
 
