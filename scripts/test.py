@@ -14,6 +14,10 @@ marsyasBaseDir = os.path.join(runningDir+os.sep+'..'+os.sep)
 
 print marsyasBaseDir
 
-print os.path.join( absRunning+os.sep+'..'+os.sep)
+absBaseDir = os.path.join( absRunning+os.sep+'..'+os.sep)
+
+print absBaseDir
+
+print os.path.abspath( absBaseDir)
 
 
