@@ -122,7 +122,6 @@ realvec Transcriber::getOnsets() {
 
 // find median without 0s.
 mrs_real Transcriber::findMedian(int start, int length, realvec array) {
-cout<<"beginning findMedian"<<endl;
 	if ( length<=0 ) return 0;
 	mrs_real toReturn;
 	realvec myArray;
@@ -140,10 +139,8 @@ cout<<"beginning findMedian"<<endl;
 		toReturn = myArray.median();
 	else
 		toReturn = 0;
-cout<<"Median without zeros is: "<<toReturn<<endl;
 
 	myArray.~realvec();
-cout<<"deleted myArray"<<endl;
 	return toReturn;
 }
 
@@ -159,14 +156,15 @@ void Transcriber::setOnsets(string filename) {
 }
 
 void Transcriber::calcOnsets() {
-	onsets.create(1);
+	// temporary-ish, to work around a PPC bug in realvec stretch()
+	// err, being 4 instead of 1 is the workaround.
+	onsets.create(4);
 	int i;
 
 	float median;
 	float prevNote=0.0;
 	int durIndex=1;
 	int prevSamp=0;
-	cout<<"calcOnsets"<<endl;
 	for (i=median_radius; i<pitchList.getSize()-median_radius; i++) {
 		median = findMedian(i-median_radius, 2*median_radius, pitchList);
 		if ( fabs(median-prevNote) > new_note_midi ) {
@@ -185,7 +183,6 @@ void Transcriber::calcOnsets() {
 	}
 	onsets.stretchWrite(durIndex, pitchList.getSize() );
 	onsets.stretch(durIndex+1);
-	cout<<"calcOnsets finished"<<endl;
 }
 
 void Transcriber::calcNotes(){
@@ -201,7 +198,6 @@ void Transcriber::calcNotes(){
 		pitch = findMedian( start, end-start, pitchList);
 		notes(i) = pitch;
 	}
-	cout<<notes<<endl;
 
 	// second pass: median of close pitches
 	realvec closePitches;
