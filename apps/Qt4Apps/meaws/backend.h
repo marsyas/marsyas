@@ -29,31 +29,27 @@ signals:
 	void setAttempt(bool running);
 
 private:
-	MarSystemQtWrapper *mrsWrapper;
 	MarSystemManager mng;
 	MarSystem *sourceNet;
-//	MarSystem *pitchNet;
-//	MarSystem *amplitudeNet;
 	MarSystem *allNet;
+	MarSystemQtWrapper *mrsWrapper;
+	MarControlPtr emptyPtr;
 
-	realvec pitchList;
+// constructor, destructor
 	int method;
-	int introBeats;
-
-// "constructor"
 	MarSystem* makeSourceNet(std::string filename);
 	MarSystem* makePitchNet(mrs_real source_osrate);
-	MarSystem* makeAmplitudeNet();
-
-	void startIntonation();
-	void startControl();
-
 	void setupAllNet();
 	void delNet();
-  MarControlPtr filenamePtr;
 
-	MarControlPtr emptyPtr;
+// pitch stuff
+	realvec pitchList;
+	realvec getPitches();
+
+
 	bool tempold;
+// not used
+ 	MarControlPtr filenamePtr;
 };
 #endif
 
