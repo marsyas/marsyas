@@ -10,7 +10,11 @@ except:
 
 oldName = 'MarSystemTemplateBasic'
 
-marsyasDir = os.path.join( os.path.dirname(sys.argv[0])+os.sep+'..'+os.sep+'marsyas'+os.sep )
+marsyasBaseDir = os.path.dirname(sys.argv[0])
+marsyasBaseDir = os.path.abspath( marsyasBaseDir )
+marsyasBaseDir = os.path.join(marsyasBaseDir+os.sep+'..'+os.sep)
+marsyasBaseDir = os.path.abspath( marsyasBaseDir )
+
 #print marsyasDir
 writeDir = os.getcwd()
 

@@ -10,10 +10,10 @@
 import os
 import sys
 
-marsyasBaseDir = ''
-def set_base_dir( newBaseDir ):
-	global marsyasBaseDir
-	marsyasBaseDir = newBaseDir
+marsyasBaseDir = os.path.dirname(sys.argv[0])
+marsyasBaseDir = os.path.abspath( marsyasBaseDir )
+marsyasBaseDir = os.path.join(marsyasBaseDir+os.sep+'..'+os.sep)
+marsyasBaseDir = os.path.abspath( marsyasBaseDir )
 
 def modify_manager(filename,action):
 	fileToEdit = os.path.join(marsyasBaseDir, 'marsyas', 'MarSystemManager.cpp')
@@ -101,4 +101,29 @@ def modify_lib_release_makefile(source_file,action):
 				continue
 			newfile.write(line)
 	newfile.close()
+
+
+
+def process(source_filename, marsystem, action):
+	if (marsystem):
+		modify_manager(source_filename,action)
+
+	modify_lib_release_makefile(source_filename,action)
+
+	buildfile = os.path.join(marsyasBaseDir, 'marsyas', 'Makefile.am')
+	modify_h_file(source_filename, buildfile, action)
+
+	buildfile = os.path.join(marsyasBaseDir, 'marsyas', 'marsyas.pro')
+	modify_h_file(source_filename, buildfile, action)
+
+	buildfile = os.path.join(marsyasBaseDir, 'marsyas', 'marsyas.pro')
+	modify_cpp_file(source_filename, buildfile, action)
+
+	print "All done; please renerate autools with:"
+	print "aclocal && automake"
+
+	if (action==2):
+		print "    Don't forget to remove your source files from the",
+		print "Marsyas SVN tree!"
+
 
