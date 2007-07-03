@@ -28,7 +28,6 @@ in sequence.
 #include "MarSystemManager.h"
 #include "MarSystem.h"
 
-#include "Gain.h"
 #include "HalfWaveRectifier.h"
 #include "common.h"
 #include "Series.h"
@@ -147,7 +146,8 @@ in sequence.
 #include "Vibrato.h"
 #include "Panorama.h"
 #include "FlowThru.h"
-//addMar-include
+#include "Gain.h"
+// please leave Gain at the end; it makes scripts happy.
 
 
 
@@ -156,7 +156,6 @@ using namespace Marsyas;
 
 MarSystemManager::MarSystemManager()
 {
-	registerPrototype("Gain", new Gain("gp"));
 	registerPrototype("SoundFileSource", new SoundFileSource("sfp"));
 	registerPrototype("SoundFileSource2", new SoundFileSource2("sf2p"));
 	registerPrototype("HalfWaveRectifier", new HalfWaveRectifier("hwrp"));
@@ -275,7 +274,8 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Vibrato", new Vibrato("vibratopr"));
 	registerPrototype("Panorama", new Panorama("panoramapr"));
 	registerPrototype("FlowThru", new FlowThru("flowthrupr"));
-//addMar-register
+	registerPrototype("Gain", new Gain("gp"));
+// Please leave Gain at the end; it makes scripts happy.
 
 
 
