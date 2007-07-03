@@ -222,7 +222,7 @@ libmarsyas_a_SOURCES    = $(top_srcdir)/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/marsyas/lu.cpp \
 			  $(top_srcdir)/marsyas/basis.cpp \
 			  $(top_srcdir)/marsyas/Transcriber.cpp \
-			  $(top_srcdir)/marsyas/FlowThru.h \
+			  $(top_srcdir)/marsyas/FlowThru.cpp \
 			  $(top_srcdir)/marsyas/Gain.cpp
 # please leave Gain.cpp at the end like this; it make scripts happy.
 
