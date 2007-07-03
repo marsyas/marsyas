@@ -202,9 +202,10 @@ void MarBackend::analyze() {
 		trans->setPitchList( getPitches() );
 		trans->calcOnsets();
 		trans->calcNotes();
+		trans->calcRelativeDurations();
 
 		cout<<"****************"<<endl;
-		cout<<trans->getOnsets();
+		cout<<trans->getDurations();
 		cout<<"****************"<<endl;
 		cout<<trans->getNotes();
 

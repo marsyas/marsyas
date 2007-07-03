@@ -122,7 +122,7 @@ AutoCorrelation.h Peaker.h Peaker1.h HalfWaveRectifier.h \
 TimeStretch.h Conversions.h MaxArgMax.h MinArgMin.h \
 Series.h \
  ShiftInput.h ShiftOutput.h Shifter.h PvFold.h PvConvert.h PeConvert.h PeClust.h PeSynOsc.h PeSynOscBank.h PeSynFFT.h OverlapAdd.h PeResidual.h PeUtilities.h PeClusters.h PeSimilarity.h Polar2Cartesian.h Cartesian2Polar.h FlowCutSource.h \
-PvConvolve.h PvOscBank.h PvUnconvert.h PvOverlapadd.h Windowing.h Hamming.h \
+PvConvolve.h PvOscBank.h PvUnconvert.h PvOverlapadd.h Windowing.h \
 Fanout.h Fanin.h Negative.h SineSource.h MarSystemManager.h \
 PowerSpectrum.h SpectralSNR.h StereoSpectrum.h StereoSpectrumFeatures.h Centroid.h Rolloff.h \
 Flux.h Memory.h Mean.h StandardDeviation.h ZeroCrossings.h \

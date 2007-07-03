@@ -186,7 +186,6 @@ libmarsyas_a_SOURCES = $(top_srcdir)/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/marsyas/PvUnconvert.cpp \
 			  $(top_srcdir)/marsyas/PvOverlapadd.cpp \
 			  $(top_srcdir)/marsyas/Windowing.cpp \
-			  $(top_srcdir)/marsyas/Hamming.cpp \
 			  $(top_srcdir)/marsyas/Fanout.cpp \
 			  $(top_srcdir)/marsyas/Fanin.cpp \
 			  $(top_srcdir)/marsyas/Negative.cpp \
@@ -346,8 +345,8 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	PeResidual.$(OBJEXT) PeUtilities.$(OBJEXT) PeClusters.$(OBJEXT) \
 	PeSimilarity.$(OBJEXT) PvConvolve.$(OBJEXT) PvOscBank.$(OBJEXT) \
 	PvUnconvert.$(OBJEXT) PvOverlapadd.$(OBJEXT) \
-	Windowing.$(OBJEXT) Hamming.$(OBJEXT) Fanout.$(OBJEXT) \
-	Fanin.$(OBJEXT) Negative.$(OBJEXT) SineSource.$(OBJEXT) \
+	Windowing.$(OBJEXT) Fanout.$(OBJEXT) Fanin.$(OBJEXT) \
+	Negative.$(OBJEXT) SineSource.$(OBJEXT) \
 	MarSystemManager.$(OBJEXT) PowerSpectrum.$(OBJEXT) \
 	Centroid.$(OBJEXT) Rolloff.$(OBJEXT) Flux.$(OBJEXT) \
 	Memory.$(OBJEXT) Mean.$(OBJEXT) StandardDeviation.$(OBJEXT) \
@@ -443,7 +442,6 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/GaussianClassifier.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/HWPSspectrum.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/HalfWaveRectifier.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Hamming.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/HarmonicEnhancer.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Histogram.Po ./$(DEPDIR)/InvSpectrum.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/KNNClassifier.Po \
@@ -669,7 +667,6 @@ PvOscBank.$(OBJEXT): $(top_srcdir)/marsyas/PvOscBank.cpp
 PvUnconvert.$(OBJEXT): $(top_srcdir)/marsyas/PvUnconvert.cpp
 PvOverlapadd.$(OBJEXT): $(top_srcdir)/marsyas/PvOverlapadd.cpp
 Windowing.$(OBJEXT): $(top_srcdir)/marsyas/Windowing.cpp
-Hamming.$(OBJEXT): $(top_srcdir)/marsyas/Hamming.cpp
 Fanout.$(OBJEXT): $(top_srcdir)/marsyas/Fanout.cpp
 Fanin.$(OBJEXT): $(top_srcdir)/marsyas/Fanin.cpp
 Negative.$(OBJEXT): $(top_srcdir)/marsyas/Negative.cpp
@@ -866,7 +863,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GaussianClassifier.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HWPSspectrum.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HalfWaveRectifier.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Hamming.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HarmonicEnhancer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Histogram.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InvSpectrum.Po@am__quote@
@@ -2029,18 +2025,6 @@ Windowing.obj: $(top_srcdir)/marsyas/Windowing.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/Windowing.Po' tmpdepfile='$(DEPDIR)/Windowing.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Windowing.obj `cygpath -w $(top_srcdir)/marsyas/Windowing.cpp`
-
-Hamming.o: $(top_srcdir)/marsyas/Hamming.cpp
-@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/Hamming.cpp' object='Hamming.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/Hamming.Po' tmpdepfile='$(DEPDIR)/Hamming.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Hamming.o `test -f '$(top_srcdir)/marsyas/Hamming.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/Hamming.cpp
-
-Hamming.obj: $(top_srcdir)/marsyas/Hamming.cpp
-@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/Hamming.cpp' object='Hamming.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/Hamming.Po' tmpdepfile='$(DEPDIR)/Hamming.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Hamming.obj `cygpath -w $(top_srcdir)/marsyas/Hamming.cpp`
 
 Fanout.o: $(top_srcdir)/marsyas/Fanout.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/marsyas/Fanout.cpp' object='Fanout.o' libtool=no @AMDEPBACKSLASH@

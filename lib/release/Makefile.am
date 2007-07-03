@@ -106,7 +106,6 @@ libmarsyas_a_SOURCES    = $(top_srcdir)/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/marsyas/PvUnconvert.cpp \
 			  $(top_srcdir)/marsyas/PvOverlapadd.cpp \
 			  $(top_srcdir)/marsyas/Windowing.cpp \
-			  $(top_srcdir)/marsyas/Hamming.cpp \
 			  $(top_srcdir)/marsyas/Fanout.cpp \
 			  $(top_srcdir)/marsyas/Fanin.cpp \
 			  $(top_srcdir)/marsyas/Negative.cpp \
