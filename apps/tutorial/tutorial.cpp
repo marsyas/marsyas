@@ -259,7 +259,7 @@ sfplay5(string sfName)
     series->addMarSystem(mng.create("Gain", "gain"));
     series->addMarSystem(mng.create("SoundFileSink", "dest"));
     // hamming window -> complex spectrum -> power spectrum 
-    series->addMarSystem(mng.create("Hamming", "hamming"));
+    series->addMarSystem(mng.create("Windowing", "hamming"));
     series->addMarSystem(mng.create("Spectrum", "spk"));
     series->addMarSystem(mng.create("PowerSpectrum", "pspk"));
     series->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType", "power");
@@ -301,7 +301,7 @@ sfplay6(string sfName)
     series->addMarSystem(mng.create("Gain", "gain"));
     series->addMarSystem(mng.create("SoundFileSink", "dest"));
     // hamming window -> complex spectrum -> power spectrum 
-    series->addMarSystem(mng.create("Hamming", "hamming"));
+    series->addMarSystem(mng.create("Windowing", "hamming"));
     series->addMarSystem(mng.create("Spectrum", "spk"));
     series->addMarSystem(mng.create("PowerSpectrum", "pspk"));
     series->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType", "power");
@@ -360,7 +360,7 @@ sfplay7(string sfName)
     series->addMarSystem(mng.create("Gain", "gain"));
     series->addMarSystem(mng.create("SoundFileSink", "dest"));
     // hamming window -> complex spectrum -> power spectrum 
-    series->addMarSystem(mng.create("Hamming", "hamming"));
+    series->addMarSystem(mng.create("Windowing", "hamming"));
     series->addMarSystem(mng.create("Spectrum", "spk"));
     series->addMarSystem(mng.create("PowerSpectrum", "pspk"));
     series->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType", "power");

@@ -76,7 +76,6 @@ in sequence.
 #include "Windowing.h"
 #include "AuFileSink.h"
 #include "WavFileSink.h"
-#include "Hamming.h"
 #include "PowerSpectrum.h"
 #include "Centroid.h"
 #include "Rolloff.h" 
@@ -205,7 +204,6 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("AuFileSink", new AuFileSink("ausinkp"));
 	registerPrototype("WavFileSink", new WavFileSink("wavsinkp"));
 	registerPrototype("Mono2Stereo", new Mono2Stereo("mono2stereop"));
-	registerPrototype("Hamming", new Hamming("hmp"));  
 	registerPrototype("Windowing", new Windowing("win"));
 	registerPrototype("PowerSpectrum", new PowerSpectrum("pspkp"));
 	registerPrototype("Centroid", new Centroid("cntrp"));
@@ -322,7 +320,7 @@ MarSystemManager::MarSystemManager()
 	//--------------------------------------------------------------------------------
 	MarSystem* pspectpr = new Series("pspectpr");
 	pspectpr->addMarSystem(create("ShiftInput", "si"));
-	pspectpr->addMarSystem(create("Hamming", "hamming"));
+	pspectpr->addMarSystem(create("Windowing", "hamming"));
 	pspectpr->addMarSystem(create("Spectrum","spk"));
 	pspectpr->updctrl("Spectrum/spk/mrs_real/cutoff", 1.0);
 	pspectpr->addMarSystem(create("PowerSpectrum", "pspk"));
@@ -346,7 +344,7 @@ MarSystemManager::MarSystemManager()
 	LPCnetpr->updctrl("Filter/preEmph/mrs_realvec/ncoeffs", ncoeffs);
 	LPCnetpr->updctrl("Filter/preEmph/mrs_realvec/dcoeffs", dcoeffs);
 	LPCnetpr->addMarSystem(create("ShiftInput", "si"));
-	LPCnetpr->addMarSystem(create("Hamming", "ham"));
+	LPCnetpr->addMarSystem(create("Windowing", "ham"));
 	LPCnetpr->addMarSystem(create("LPC", "lpc"));
 	LPCnetpr->linkctrl("mrs_realvec/preEmphFIR","Filter/preEmph/mrs_realvec/ncoeffs");
 	LPCnetpr->linkctrl("mrs_natural/WindowSize","ShiftInput/si/mrs_natural/WindowSize");

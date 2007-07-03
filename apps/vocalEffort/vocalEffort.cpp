@@ -32,7 +32,7 @@ int process(string inName, string outName)
 
 	input->addMarSystem(mng.create("SoundFileSource","src"));
     input->addMarSystem(mng.create("ShiftInput", "si"));
-    input->addMarSystem(mng.create("Hamming", "ham")); 
+    input->addMarSystem(mng.create("Windowing", "ham")); 
   
 	MarSystem * fanout = mng.create("Fanout", "fanout");
 	input->addMarSystem(fanout);

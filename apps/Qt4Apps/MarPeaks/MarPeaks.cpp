@@ -40,7 +40,7 @@ MarPeaks::createNetwork()
 	//msys_->addMarSystem(mng.create("Spectrum", "spk"));
 	
 	MarSystem* powerSpect = mng.create("Series", "pspect");
-	powerSpect->addMarSystem(mng.create("Hamming", "win"));
+	powerSpect->addMarSystem(mng.create("Windowing", "win"));
 	powerSpect->addMarSystem(mng.create("Spectrum", "spk"));
 	powerSpect->addMarSystem(mng.create("PowerSpectrum", "pspk"));
 	//powerSpect->addMarSystem(mng.create("Memory", "mem"));

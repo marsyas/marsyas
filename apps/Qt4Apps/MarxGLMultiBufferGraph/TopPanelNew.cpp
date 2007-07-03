@@ -16,7 +16,7 @@ TopPanelNew::TopPanelNew(string au, QWidget *parent)
   MarSystemManager mng;
   pnet = mng.create("Series", "pnet");
   pnet->addMarSystem(mng.create("SoundFileSource", "src"));
-  pnet->addMarSystem(mng.create("Hamming", "hamming"));
+  pnet->addMarSystem(mng.create("Windowing", "hamming"));
   pnet->addMarSystem(mng.create("Spectrum","spk"));
   pnet->addMarSystem(mng.create("PowerSpectrum", "pspk"));
   pnet->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","power");  

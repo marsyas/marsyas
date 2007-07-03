@@ -436,9 +436,9 @@ bextract_trainStereoSPS(vector<Collection> cls, string classNames,
   MarSystem* left = mng.create("Series", "left");
   MarSystem* right = mng.create("Series", "right");
   
-  left->addMarSystem(mng.create("Hamming", "hamleft"));
+  left->addMarSystem(mng.create("Windowing", "hamleft"));
   left->addMarSystem(mng.create("Spectrum", "spkleft"));
-  right->addMarSystem(mng.create("Hamming", "hamright"));
+  right->addMarSystem(mng.create("Windowing", "hamright"));
   right->addMarSystem(mng.create("Spectrum", "spkright"));
 
   stereobranches->addMarSystem(left);
@@ -512,13 +512,13 @@ bextract_trainStereoSPSMFCC(vector<Collection> cls, string classNames,
   MarSystem* left = mng.create("Series", "left");
   MarSystem* right = mng.create("Series", "right");
 
-  left->addMarSystem(mng.create("Hamming", "hamleft"));
+  left->addMarSystem(mng.create("Windowing", "hamleft"));
   left->addMarSystem(mng.create("Spectrum", "spkleft"));
   left->addMarSystem(mng.create("PowerSpectrum", "leftpspk"));
   left->addMarSystem(mng.create("MFCC", "leftMFCC"));
   left->addMarSystem(mng.create("TextureStats", "leftTextureStats"));
   
-  right->addMarSystem(mng.create("Hamming", "hamright"));
+  right->addMarSystem(mng.create("Windowing", "hamright"));
   right->addMarSystem(mng.create("Spectrum", "spkright"));
   right->addMarSystem(mng.create("PowerSpectrum", "rightpspk"));
   right->addMarSystem(mng.create("MFCC", "rightMFCC"));
@@ -532,9 +532,9 @@ bextract_trainStereoSPSMFCC(vector<Collection> cls, string classNames,
   MarSystem* left1 = mng.create("Series", "left1");
   MarSystem* right1 = mng.create("Series", "right1");
   
-  left1->addMarSystem(mng.create("Hamming", "hamleft1"));
+  left1->addMarSystem(mng.create("Windowing", "hamleft1"));
   left1->addMarSystem(mng.create("Spectrum", "spkleft1"));
-  right1->addMarSystem(mng.create("Hamming", "hamright1"));
+  right1->addMarSystem(mng.create("Windowing", "hamright1"));
   right1->addMarSystem(mng.create("Spectrum", "spkright1"));
 
   stereobranches1->addMarSystem(left1);
@@ -615,13 +615,13 @@ bextract_trainStereoMFCC(vector<Collection> cls, string classNames,
   MarSystem* left = mng.create("Series", "left");
   MarSystem* right = mng.create("Series", "right");
 
-  left->addMarSystem(mng.create("Hamming", "hamleft"));
+  left->addMarSystem(mng.create("Windowing", "hamleft"));
   left->addMarSystem(mng.create("Spectrum", "spkleft"));
   left->addMarSystem(mng.create("PowerSpectrum", "leftpspk"));
   left->addMarSystem(mng.create("MFCC", "leftMFCC"));
   left->addMarSystem(mng.create("TextureStats", "leftTextureStats"));
   
-  right->addMarSystem(mng.create("Hamming", "hamright"));
+  right->addMarSystem(mng.create("Windowing", "hamright"));
   right->addMarSystem(mng.create("Spectrum", "spkright"));
   right->addMarSystem(mng.create("PowerSpectrum", "rightpspk"));
   right->addMarSystem(mng.create("MFCC", "rightMFCC"));
@@ -1374,7 +1374,7 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
   // Calculate windowed power spectrum and then 
   // calculate specific feature sets 
   MarSystem* spectralShape = mng.create("Series", "spectralShape");
-  spectralShape->addMarSystem(mng.create("Hamming", "hamming"));
+  spectralShape->addMarSystem(mng.create("Windowing", "hamming"));
   spectralShape->addMarSystem(mng.create("Spectrum","spk"));
   spectralShape->updctrl("Spectrum/spk/mrs_real/cutoff", 1.0);
   spectralShape->addMarSystem(mng.create("PowerSpectrum", "pspk"));
@@ -1737,7 +1737,7 @@ void bextract(vector<string> soundfiles, mrs_natural label,
   MarSystem* spectralShape = mng.create("Series", "spectralShape");
   spectralShape->addMarSystem(mng.create("SoundFileSource", "src"));
   //spectralShape->addMarSystem(mng.create("AudioSink", "dest"));
-  spectralShape->addMarSystem(mng.create("Hamming", "hamming"));
+  spectralShape->addMarSystem(mng.create("Windowing", "hamming"));
   spectralShape->addMarSystem(mng.create("Spectrum", "spk"));
   spectralShape->addMarSystem(mng.create("PowerSpectrum", "pspk"));
   spectralShape->addMarSystem(textureFeatures);

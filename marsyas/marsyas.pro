@@ -107,7 +107,6 @@ HEADERS += \
 	FullWaveRectifier.h \
 	GaussianClassifier.h \
 	HalfWaveRectifier.h \
-	Hamming.h \
 	HarmonicEnhancer.h \
 	Heap.h \
 	Histogram.h \
@@ -324,7 +323,6 @@ SOURCES += \
 	FullWaveRectifier.cpp \
 	GaussianClassifier.cpp \
 	HalfWaveRectifier.cpp \
-	Hamming.cpp \
 	HarmonicEnhancer.cpp \
 	Histogram.cpp \
 	InvSpectrum.cpp \

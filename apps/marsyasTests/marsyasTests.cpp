@@ -181,7 +181,7 @@ void drumClassify( string drumFile) {
     spectimeFanout->addMarSystem(mng.create("Rms", "rms"));
 
     MarSystem* spectralNet = mng.create("Series", "spectralNet");
-    spectralNet->addMarSystem(mng.create("Hamming", "ham"));
+    spectralNet->addMarSystem(mng.create("Windowing", "ham"));
     spectralNet->addMarSystem(mng.create("Spectrum", "spk"));
     spectralNet->addMarSystem(mng.create("PowerSpectrum", "pspk"));
 
@@ -1784,13 +1784,13 @@ test_stereoFeaturesMFCC(string fname0, string fname1)
   MarSystem* left = mng.create("Series", "left");
   MarSystem* right = mng.create("Series", "right");
 
-  left->addMarSystem(mng.create("Hamming", "hamleft"));
+  left->addMarSystem(mng.create("Windowing", "hamleft"));
   left->addMarSystem(mng.create("Spectrum", "spkleft"));
   left->addMarSystem(mng.create("PowerSpectrum", "leftpspk"));
   left->addMarSystem(mng.create("MFCC", "leftMFCC"));
   left->addMarSystem(mng.create("TextureStats", "leftTextureStats"));
   
-  right->addMarSystem(mng.create("Hamming", "hamright"));
+  right->addMarSystem(mng.create("Windowing", "hamright"));
   right->addMarSystem(mng.create("Spectrum", "spkright"));
   right->addMarSystem(mng.create("PowerSpectrum", "rightpspk"));
   right->addMarSystem(mng.create("MFCC", "rightMFCC"));
@@ -1804,9 +1804,9 @@ test_stereoFeaturesMFCC(string fname0, string fname1)
   MarSystem* left1 = mng.create("Series", "left1");
   MarSystem* right1 = mng.create("Series", "right1");
   
-  left1->addMarSystem(mng.create("Hamming", "hamleft1"));
+  left1->addMarSystem(mng.create("Windowing", "hamleft1"));
   left1->addMarSystem(mng.create("Spectrum", "spkleft1"));
-  right1->addMarSystem(mng.create("Hamming", "hamright1"));
+  right1->addMarSystem(mng.create("Windowing", "hamright1"));
   right1->addMarSystem(mng.create("Spectrum", "spkright1"));
 
   stereobranches1->addMarSystem(left1);
@@ -1931,13 +1931,13 @@ test_stereoMFCC(string fname0, string fname1)
   MarSystem* left = mng.create("Series", "left");
   MarSystem* right = mng.create("Series", "right");
 
-  left->addMarSystem(mng.create("Hamming", "hamleft"));
+  left->addMarSystem(mng.create("Windowing", "hamleft"));
   left->addMarSystem(mng.create("Spectrum", "spkleft"));
   left->addMarSystem(mng.create("PowerSpectrum", "leftpspk"));
   left->addMarSystem(mng.create("MFCC", "leftMFCC"));
   left->addMarSystem(mng.create("TextureStats", "leftTextureStats"));
   
-  right->addMarSystem(mng.create("Hamming", "hamright"));
+  right->addMarSystem(mng.create("Windowing", "hamright"));
   right->addMarSystem(mng.create("Spectrum", "spkright"));
   right->addMarSystem(mng.create("PowerSpectrum", "rightpspk"));
   right->addMarSystem(mng.create("MFCC", "rightMFCC"));
@@ -2088,9 +2088,9 @@ test_stereoFeaturesVisualization(string fname0)
   MarSystem* left = mng.create("Series", "left");
   MarSystem* right = mng.create("Series", "right");
   
-  left->addMarSystem(mng.create("Hamming", "hamleft"));
+  left->addMarSystem(mng.create("Windowing", "hamleft"));
   left->addMarSystem(mng.create("Spectrum", "spkleft"));
-  right->addMarSystem(mng.create("Hamming", "hamright"));
+  right->addMarSystem(mng.create("Windowing", "hamright"));
   right->addMarSystem(mng.create("Spectrum", "spkright"));
   
   stereobranches->addMarSystem(left);
@@ -2135,9 +2135,9 @@ test_stereoFeatures(string fname0, string fname1)
   MarSystem* left = mng.create("Series", "left");
   MarSystem* right = mng.create("Series", "right");
   
-  left->addMarSystem(mng.create("Hamming", "hamleft"));
+  left->addMarSystem(mng.create("Windowing", "hamleft"));
   left->addMarSystem(mng.create("Spectrum", "spkleft"));
-  right->addMarSystem(mng.create("Hamming", "hamright"));
+  right->addMarSystem(mng.create("Windowing", "hamright"));
   right->addMarSystem(mng.create("Spectrum", "spkright"));
 
   stereobranches->addMarSystem(left);
@@ -2369,7 +2369,7 @@ void test_SOM(string collectionName)
   spectimeFanout->addMarSystem(mng.create("ZeroCrossings", "zcrs"));
   
   MarSystem* spectralNet = mng.create("Series", "spectralNet");
-  spectralNet->addMarSystem(mng.create("Hamming", "ham"));
+  spectralNet->addMarSystem(mng.create("Windowing", "ham"));
   spectralNet->addMarSystem(mng.create("Spectrum", "spk"));
   spectralNet->addMarSystem(mng.create("PowerSpectrum", "pspk"));
   MarSystem* featureFanout = mng.create("Fanout", "featureFanout");
@@ -2566,7 +2566,7 @@ void test_Windowing()
     in.setval(1.0);
     
     vector<string> winname;
-    winname.push_back("Hamming");
+    winname.push_back("Windowing");
     winname.push_back("Hanning");
     winname.push_back("Triangle");
     winname.push_back("Bartlett");

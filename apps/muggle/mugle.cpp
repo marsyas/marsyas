@@ -89,7 +89,7 @@ void mugle(string queryName, string collectionName)
   spectimeFanout->addMarSystem(mng.create("ZeroCrossings", "zcrs"));
   
   MarSystem* spectralNet = mng.create("Series", "spectralNet");
-  spectralNet->addMarSystem(mng.create("Hamming", "ham"));
+  spectralNet->addMarSystem(mng.create("Windowing", "ham"));
   spectralNet->addMarSystem(mng.create("Spectrum", "spk"));
   spectralNet->addMarSystem(mng.create("PowerSpectrum", "pspk"));
   MarSystem* featureFanout = mng.create("Fanout", "featureFanout");

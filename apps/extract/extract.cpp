@@ -113,7 +113,7 @@ void simple_extract(string sfName)
   
   
   MarSystem* spectralShape = mng.create("Series", "spectralShape");
-  spectralShape->addMarSystem(mng.create("Hamming", "hamming"));
+  spectralShape->addMarSystem(mng.create("Windowing", "hamming"));
   spectralShape->addMarSystem(mng.create("Spectrum","spk"));
   spectralShape->addMarSystem(mng.create("PowerSpectrum", "pspk"));
   // spectralShape->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","decibels"); 
@@ -166,7 +166,7 @@ newExtract(string sfName, mrs_natural memSize, string extractorStr)
   // calculate specific feature sets 
   
   MarSystem* spectralShape = mng.create("Series", "spectralShape");
-  spectralShape->addMarSystem(mng.create("Hamming", "hamming"));
+  spectralShape->addMarSystem(mng.create("Windowing", "hamming"));
   spectralShape->addMarSystem(mng.create("Spectrum","spk"));
   spectralShape->addMarSystem(mng.create("PowerSpectrum", "pspk"));
   spectralShape->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","power");  
@@ -229,7 +229,7 @@ void extract_trainAccumulator(string sfName, mrs_natural memSize,
   // calculate specific feature sets 
   
   MarSystem* spectralShape = mng.create("Series", "spectralShape");
-  spectralShape->addMarSystem(mng.create("Hamming", "hamming"));
+  spectralShape->addMarSystem(mng.create("Windowing", "hamming"));
   spectralShape->addMarSystem(mng.create("Spectrum","spk"));
   spectralShape->addMarSystem(mng.create("PowerSpectrum", "pspk"));
   spectralShape->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","power");  

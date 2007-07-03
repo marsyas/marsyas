@@ -144,7 +144,7 @@ void textract_trainAccumulator(string sfName, mrs_natural offset, mrs_natural du
 	// Calculate windowed power spectrum and then 
 	// calculate specific feature sets 
 	MarSystem* spectralShape = mng.create("Series", "spectralShape");
-	spectralShape->addMarSystem(mng.create("Hamming", "hamming"));
+	spectralShape->addMarSystem(mng.create("Windowing", "hamming"));
 	spectralShape->addMarSystem(mng.create("Spectrum","spk"));
 	spectralShape->addMarSystem(mng.create("PowerSpectrum", "pspk"));
 	spectralShape->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","power");  

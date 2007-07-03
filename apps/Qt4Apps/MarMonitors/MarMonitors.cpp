@@ -82,7 +82,7 @@ MarMonitors::initNetwork(QString pluginName)
   pnet_->addMarSystem(mng.create("Gain", "gain"));
   pnet_->addMarSystem(mng.create("Windowing", "windowing"));
   pnet_->addMarSystem(mng.create("Gain", "gain2"));
-  pnet_->addMarSystem(mng.create("Hamming", "ham2"));
+  pnet_->addMarSystem(mng.create("Windowing", "ham2"));
   
   
   pnet_->updctrl("SoundFileSource/src/mrs_string/filename", "/home/gtzan/data/sound/music_speech/music/gravity.au");

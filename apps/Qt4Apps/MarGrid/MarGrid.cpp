@@ -84,7 +84,7 @@ MarGrid::setupTrain(QString fname)
   extractNet->addMarSystem(mng.create("SoundFileSource", "src"));
   
   MarSystem* spectralNet = mng.create("Series", "spectralNet");
-  spectralNet->addMarSystem(mng.create("Hamming", "ham"));
+  spectralNet->addMarSystem(mng.create("Windowing", "ham"));
   spectralNet->addMarSystem(mng.create("Spectrum", "spk"));
   spectralNet->addMarSystem(mng.create("PowerSpectrum", "pspk"));
   

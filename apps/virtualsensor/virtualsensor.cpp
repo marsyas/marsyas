@@ -145,7 +145,7 @@ void drumExtract(vector<Collection> cls, string classNames)
     spectimeFanout->addMarSystem(mng.create("Rms", "rms"));
 
     MarSystem* spectralNet = mng.create("Series", "spectralNet");
-    spectralNet->addMarSystem(mng.create("Hamming", "ham"));
+    spectralNet->addMarSystem(mng.create("Windowing", "ham"));
     spectralNet->addMarSystem(mng.create("Spectrum", "spk"));
     spectralNet->addMarSystem(mng.create("PowerSpectrum", "pspk"));
     MarSystem* featureFanout = mng.create("Fanout", "featureFanout");
@@ -311,7 +311,7 @@ void recordVirtualSensor(mrs_real length)
     pnet->addMarSystem(dest);
 
     // pnet->addMarSystem(mng.create("PlotSink", "psink"));
-    pnet->addMarSystem(mng.create("Hamming", "ham"));
+    pnet->addMarSystem(mng.create("Windowing", "ham"));
     pnet->addMarSystem(mng.create("Spectrum", "spk"));
     pnet->addMarSystem(mng.create("PowerSpectrum", "pspk"));
     MarSystem* features = mng.create("Fanout", "features");
@@ -784,7 +784,7 @@ void recordSitarSensors(mrs_real length)
     pnet->addMarSystem(dest);
     
     // pnet->addMarSystem(mng.create("PlotSink", "psink"));
-    pnet->addMarSystem(mng.create("Hamming", "ham"));
+    pnet->addMarSystem(mng.create("Windowing", "ham"));
     pnet->addMarSystem(mng.create("Spectrum", "spk"));
     pnet->addMarSystem(mng.create("PowerSpectrum", "pspk"));
     MarSystem* features = mng.create("Fanout", "features");
