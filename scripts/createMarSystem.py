@@ -15,11 +15,11 @@ marsyasBaseDir = os.path.abspath( marsyasBaseDir )
 marsyasBaseDir = os.path.join(marsyasBaseDir+os.sep+'..'+os.sep)
 marsyasBaseDir = os.path.abspath( marsyasBaseDir )
 
-#print marsyasDir
+#print marsyasBaseDir
 writeDir = os.getcwd()
 
 def copyWithSub( oldFile, newFile ):
-	oldFile = open( os.path.join( marsyasDir, oldFile)).readlines()
+	oldFile = open( os.path.join( marsyasBaseDir, 'marsyas', oldFile)).readlines()
 	file = open( os.path.join(writeDir, newFile), 'w')
 	for line in oldFile:
 		newLine = line
