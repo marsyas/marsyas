@@ -4,7 +4,7 @@ import sys
 import modifyBuild
 
 # action: 1 == add filename.   2 == remove filename.
-action = 1
+action = 2
 
 try:
 	source_filename = sys.argv[1]
