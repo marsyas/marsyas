@@ -7,7 +7,9 @@
 	- setPitchList() or getPitchesFromAudio()
 	- calcOnsets()
 	- calcNotes()
-	- to see the results, use getOnsets() and getNotes()
+	- (optional)  calcRelativeDurations().  MUST BE AFTER THE FIRST TWO!
+	- to see the results, use getOnsets() and getNotes(), and/or
+	  getDurations()
 */
 
 
@@ -91,7 +93,7 @@ void Transcriber::getPitchesFromAudio(string audioFilename) {
 
 
 // my addition to the marsyasTest pitch stuff:
-	int i;
+	mrs_natural i;
 	mrs_real maxConf=0.0;
 	for (i=0; i<data.getSize(); i=i+2) {
 		if (maxConf < data(i))
@@ -120,14 +122,18 @@ realvec Transcriber::getOnsets() {
 	return onsets;
 }
 
+realvec Transcriber::getDurations() {
+	return durations;
+}
+
 // find median without 0s.
-mrs_real Transcriber::findMedian(int start, int length, realvec array) {
+mrs_real Transcriber::findMedian(mrs_natural start, mrs_natural length, realvec array) {
 	if ( length<=0 ) return 0;
 	mrs_real toReturn;
 	realvec myArray;
 	myArray.allocate(length);
-	int j=0;
-	for (int i=0; i<length; i++) {
+	mrs_natural j=0;
+	for (mrs_natural i=0; i<length; i++) {
 		// don't include 0s
 		if ( array(start+i) > 0 ) {
 			myArray(j)=array(start+i);
@@ -144,16 +150,16 @@ mrs_real Transcriber::findMedian(int start, int length, realvec array) {
 	return toReturn;
 }
 
-int secToFrame(mrs_real second) 
+mrs_natural secToFrame(mrs_real second) 
 {
 	//return (int) round( second*44100.0/512.0 ); //round() does not exist in <cmath> [!]
-	return (int) floor(0.5 + second*44100.0/512.0);
+	return (mrs_natural) floor(0.5 + second*44100.0/512.0);
 
 }
 
 void Transcriber::setOnsets(string filename) {
 	onsets.readText(filename);
-	for (int i=0; i<onsets.getSize(); i++) {
+	for (mrs_natural i=0; i<onsets.getSize(); i++) {
 		onsets(i) = secToFrame( onsets(i) );
 	}
 }
@@ -162,12 +168,12 @@ void Transcriber::calcOnsets() {
 	// temporary-ish, to work around a PPC bug in realvec stretch()
 	// err, being 4 instead of 1 is the workaround.
 	onsets.create(4);
-	int i;
+	mrs_natural i;
 
 	float median;
 	float prevNote=0.0;
-	int durIndex=1;
-	int prevSamp=0;
+	mrs_natural durIndex=1;
+	mrs_natural prevSamp=0;
 	for (i=median_radius; i<pitchList.getSize()-median_radius; i++) {
 		median = findMedian(i-median_radius, 2*median_radius, pitchList);
 		if ( fabs(median-prevNote) > new_note_midi ) {
@@ -188,16 +194,38 @@ void Transcriber::calcOnsets() {
 	onsets.stretch(durIndex+1);
 }
 
+void Transcriber::calcRelativeDurations() {
+	durations.create( onsets.getSize()-1 );
+
+	mrs_natural i;
+	mrs_natural min = 99999; // infinity
+	// calculate durations in samples
+	// and find smallest
+	for (i=0; i<onsets.getSize()-1; i++) {
+		durations(i) = onsets(i+1) - onsets(i);
+//		cout<<"duration: "<<durations(i)<<endl;
+		// we don't care about silent durations
+		if ((durations(i) < min) && (notes(i)>0))
+			min = durations(i);
+	}
+//	cout<<"min: "<<min<<endl;
+	// find relative durations
+	// yes, we want to truncate the division.
+	for (i=0; i<onsets.getSize()-1; i++) {
+		durations(i) = (mrs_natural) ( durations(i) / (min*0.9) );
+	}
+}
+
 void Transcriber::calcNotes(){
 	notes.create( onsets.getSize()-1 );
 
 	// first pass: median pitch
-	int start, end;
+	mrs_natural start, end;
 	mrs_real pitch;
-	int i;
+	mrs_natural i;
 	for (i=0; i<onsets.getSize()-1; i++) {
-	    start = (int) onsets(i);
-		end = (int) onsets(i+1);
+	    start = (mrs_natural) onsets(i);
+		end = (mrs_natural) onsets(i+1);
 		pitch = findMedian( start, end-start, pitchList);
 		notes(i) = pitch;
 	}
@@ -206,10 +234,10 @@ void Transcriber::calcNotes(){
 	realvec closePitches;
 	closePitches.create(1);
 	mrs_real distance;
-	int j, k;
+	mrs_natural j, k;
 	for (i=0; i<onsets.getSize()-1; i++) {
-	    start = (int) onsets(i);
-		end = (int) onsets(i+1);
+	    start = (mrs_natural) onsets(i);
+		end = (mrs_natural) onsets(i+1);
 		closePitches.stretch(end-start);
 		k=0;
 		for (j=start; j<end; j++) {

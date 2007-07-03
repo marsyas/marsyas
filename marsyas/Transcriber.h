@@ -17,16 +17,18 @@ public:
 	void getPitchesFromAudio(string audioFilename);
 
 	void calcOnsets();
+	void calcRelativeDurations();
 	void calcNotes();
 
 	realvec getOnsets();
+	realvec getDurations();
 	realvec getNotes();
 
 	void clearPitches();
 	void setOnsets(string fileName);
 
 private:
-	mrs_real findMedian(int start, int length, realvec array);
+	mrs_real findMedian(mrs_natural start, mrs_natural length, realvec array);
 	mrs_real notePitch(realvec curNote);
 
 	string outputFilename;
@@ -34,15 +36,16 @@ private:
 	realvec fretList;
 
 	realvec onsets;
+	realvec durations;
 	realvec notes;
 
 	mrs_natural median_radius;
 	mrs_real new_note_midi;
 	mrs_real pitch_certainty_div;
 
-	int IMPULSE_HIGHT;
-	int LOWEST_NOTE;
-	int HIGHEST_NOTE;
+	mrs_natural IMPULSE_HIGHT;
+	mrs_natural LOWEST_NOTE;
+	mrs_natural HIGHEST_NOTE;
 };
 #endif
 
