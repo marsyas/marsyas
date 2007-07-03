@@ -86,5 +86,6 @@ void ExerciseDispatcher::playFile() {
 
 void ExerciseDispatcher::analyze() {
 	marBackend->analyze();
+	evaluation->displayAnalysis( marBackend );
 }
 

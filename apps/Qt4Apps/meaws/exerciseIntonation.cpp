@@ -30,4 +30,8 @@ QString ExerciseIntonation::exercisesDir() {
 	return toReturn;
 }
 
+void ExerciseIntonation::displayAnalysis(MarBackend *results) {
+
+}
+
 

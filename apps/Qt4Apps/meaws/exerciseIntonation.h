@@ -13,6 +13,8 @@ public:
 	void setupDisplay();
 	QString exercisesDir();
 
+	void displayAnalysis(MarBackend *results);
+
 private:
 	QLabel *resultLabel;
 

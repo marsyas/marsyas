@@ -4,6 +4,9 @@
 #include "defs.h"
 #include "exerciseAbstract.h"
 
+//temporary
+#include "../QtMarPlot.h"
+
 class ExerciseControl : public Exercise {
 public:
 	ExerciseControl();
@@ -13,9 +16,15 @@ public:
 	void setupDisplay();
 	QString exercisesDir();
 
+	void displayAnalysis(MarBackend *results);
+
 private:
-	QLabel *displayPitches;
-	QLabel *displayAmplitude;
+//	QLabel *displayPitches;
+//	QLabel *displayAmplitude;
+
+// temporary
+    QtMarPlot *displayPitches;
+    QtMarPlot *displayAmplitude;
 };
 #endif
 

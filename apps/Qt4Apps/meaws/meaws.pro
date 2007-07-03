@@ -12,6 +12,10 @@ SOURCES += exerciseAbstract.cpp exerciseIntonation.cpp exerciseControl.cpp
 HEADERS += backend.h
 SOURCES += backend.cpp
 
+#temporary
+HEADERS += ../QtMarPlot.h
+SOURCES += ../QtMarPlot.cpp
+
 HEADERS += ../MarSystemQtWrapper.h
 SOURCES += ../MarSystemQtWrapper.cpp
 

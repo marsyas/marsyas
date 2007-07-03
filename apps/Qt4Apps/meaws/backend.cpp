@@ -133,6 +133,10 @@ void MarBackend::setupAllNet() {
 	case TYPE_INTONATION:
 		allNet->addMarSystem( makePitchNet(osrate) );
 		break;
+	case TYPE_CONTROL:
+		allNet->addMarSystem( makePitchNet(osrate) );
+// do amplitude
+		break;
 	}
 
 	mrsWrapper = new MarSystemQtWrapper(allNet);
@@ -208,11 +212,13 @@ void MarBackend::analyze() {
 		break;
 	}
 	case TYPE_CONTROL:
+		getPitches();
 		break;
 	}
 }
 
 realvec MarBackend::getPitches() {
+	// if we haven't calculated them already, do it now
 	if (pitchList.getSize()==0) {
 		mrs_real osrate = sourceNet->getctrl("mrs_real/osrate")->toReal();
 
@@ -234,6 +240,7 @@ realvec MarBackend::getPitches() {
 	return pitchList;
 }
 
-
-
+realvec* MarBackend::getPitchPointer() {
+	return &pitchList;
+}
 

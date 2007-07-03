@@ -7,6 +7,8 @@
 #include <QGridLayout>
 #include <QLabel>
 
+#include "backend.h"
+
 class Exercise : public QObject {
 	Q_OBJECT
 
@@ -16,6 +18,7 @@ public:
 	virtual void setupDisplay() = 0;
 	virtual QString exercisesDir() = 0;
 	virtual int getType() = 0;
+	virtual void displayAnalysis(MarBackend *results) = 0;
 	virtual void open(QString exerciseFilename);
 
 protected:

@@ -1,4 +1,6 @@
 #include "QtMarPlot.h"
+//#include <iostream>
+//using namespace std;
 
 QtMarPlot::QtMarPlot(QWidget *parent)
 	: QWidget(parent)
@@ -21,7 +23,15 @@ void
 QtMarPlot::setData(realvec *getData)
 {
 	data_ = getData;
+//	cout<<*data_;
 	update();
+}
+
+void
+QtMarPlot::setVertical(mrs_real minVal, mrs_real highVal)
+{
+	minVal_ = minVal;
+	highVal_ = highVal;
 }
 
 void
@@ -47,11 +57,7 @@ QtMarPlot::paintEvent(QPaintEvent *)
 {
 	if (data_==NULL)
 		return;
-	if (data_->getCols()!=0) {
-//		plot2d();
-	} else if (data_->getSize() > 0) {
-		plot1d();
-	}
+	plot1d();
 }
 
 /*

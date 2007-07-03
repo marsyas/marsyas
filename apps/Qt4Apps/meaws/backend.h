@@ -20,6 +20,8 @@ public:
 	void open(std::string filename);
 
 	void analyze();
+	realvec getPitches();
+	realvec *getPitchPointer();
 
 public slots:
 	void ctrlChanged(MarControlPtr changed);
@@ -45,7 +47,6 @@ private:
 
 // pitch stuff
 	realvec pitchList;
-	realvec getPitches();
 
 
 	bool tempold;
