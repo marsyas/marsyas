@@ -13,7 +13,7 @@
 
 #include <iostream>
 #include <fstream>
-#include <math.h>
+#include <cmath>
 #include "Transcriber.h"
 
 Transcriber::Transcriber() {
@@ -144,8 +144,11 @@ mrs_real Transcriber::findMedian(int start, int length, realvec array) {
 	return toReturn;
 }
 
-int secToFrame(mrs_real second) {
-	return (int) round( second*44100.0/512.0 );
+int secToFrame(mrs_real second) 
+{
+	//return (int) round( second*44100.0/512.0 ); //round() does not exist in <cmath> [!]
+	return (int) floor(0.5 + second*44100.0/512.0);
+
 }
 
 void Transcriber::setOnsets(string filename) {
