@@ -14,7 +14,9 @@ except:
 
 marsyasBaseDir = os.path.join(os.path.dirname(sys.argv[0])+os.sep+'..'+os.sep)
 
+marsyasBaseDir = os.path.abspath( marsyasBaseDir )
 print marsyasBaseDir
+
 modifyBuild.set_base_dir(marsyasBaseDir)
 
 modifyBuild.modify_manager(source_filename,action)
