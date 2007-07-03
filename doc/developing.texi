@@ -33,6 +33,9 @@ canonical example of a MarSystem that is what I use as a template when I
 write a new Marsystem is @file{Gain.h} and @file{Gain.cpp}  or
 @file{MarSystemTemplateBasic .h .cpp}.
 
+There is a Python script which automates this process; see @ref{Creating
+a MarSystem}.
+
 
 @node Using your MarSystem
 @section Using your MarSystem

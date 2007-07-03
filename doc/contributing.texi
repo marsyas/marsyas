@@ -161,7 +161,17 @@ group.
 If you have created a useful library or set of functions which you want
 to share with others, you may add it to the Marsyas source code.  The
 new files should be placed in the @file{marsyas/} directory, and added
-to the build process.  The easiest way is to look for any appearances of
+to the build process.
+
+@subheading Automatically
+
+There is a Python script which automates this process; please see
+@ref{Adding/removing to/from the build system}.  If you are a masochist
+and wish to do this manually, see below.
+
+@subheading Manually
+
+The easiest way is to look for any appearances of
 @code{realvec} in the below files, and duplicate these entries using
 your @file{myfile}.
 
@@ -187,14 +197,20 @@ with @code{make}.
 Now execute @code{qmake} before recompiling with whichever compiler you
 use.
 
-
-
 @node Contributing MarSystems
 @subsection Contributing MarSystems
 
 If you have created a useful MarSystem which you want to share with
 others, you may add it to the Marsyas source code.  This is not required
 for building your own applications.
+
+@subheading Automatically
+
+There is a Python script which automates this process; please see
+@ref{Adding/removing to/from the build system}.  If you are a masochist
+and wish to do this manually, see below.
+
+@subheading Manually
 
 The new MarSystem should be placed in the @file{marsyas/} directory, and
 must be added to @file{MarSystemManager.cpp} and the build process.

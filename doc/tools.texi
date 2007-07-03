@@ -30,7 +30,7 @@ source code for those files is in @file{apps/@{DIR@}/}.
 * Feature Extraction::          
 * Synthesis::                   
 * Marsystem Interaction::       
-* Regression tests::            
+* Scripts::                     
 @end menu
 
 
@@ -356,16 +356,30 @@ to come up with some alternative syntax (I have some ideas
 in that direction). 
 
 
+@node Scripts
+@section Scripts
+
+Marsyas contains a few python scripts which can make life much more
+pleasant.  Python is installed by default on Linux and MacOS X machines;
+Windows users may install it from @uref{http://python.org}.
+
+
+@menu
+* Regression tests::            
+* Creating a MarSystem::        
+* Adding/removing to/from the build system::  
+@end menu
+
 @node Regression tests
-@section Regression tests
+@subsection Regression tests
 
 Marsyas contains a suite of tests to ensure that new functionality (or
 bug fixes) do not cause bugs in existing (working) code.  Running these
 tests should only take a few seconds.
 
 The tests do not require the marsyas executables to be installed (by
-default they execute @file{../../bin/release/PROGNAME} ), but they
-@emph{do} require python to be installed.
+default they execute @file{../../bin/release/PROGNAME} ), but marsyas
+must be compiled (ie @code{make}).
 
 Simply execute
 
@@ -377,5 +391,45 @@ You will see many messages scroll by; this is normal.  At the end, you
 will see the test results.  More information about these tests is
 available in the file @file{tests/results.log}.
 
+
+@node Creating a MarSystem
+@subsection Creating a MarSystem
+
+To create a @qq{blank} MarSystem to begin programming, use
+
+@example
+createMarSystem.py foo
+@end example
+
+@noindent
+where @code{foo} is the name of your MarSystem.  This script will create
+@file{foo.h} and @file{foo.cpp} in your @emph{current} directory.
+
+If you want to create these new MarSystems in the @file{marsyas/}
+directory, you would execute @code{../scripts/createMarSystem.py foo}
+(on *nix).  If you want to create these new MarSystems in a different
+directory, simply change to that directory, then execute
+@code{/path/to/marsyas/scripts/createMarSystem.py foo}
+
+
+@node Adding/removing to/from the build system
+@subsection Adding/removing to/from the build system
+
+To add files to the Marsyas build system, use
+
+@example
+addMarsystem foo
+addClass foo
+@end example
+
+To remove files from the build system, use
+
+@example
+removeMarsystem foo
+removeClass foo
+@end example
+
+Not that removing files from the build system does not actually remove
+the files themselves.
 
 
