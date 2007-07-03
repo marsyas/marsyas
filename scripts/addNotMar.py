@@ -12,9 +12,15 @@ except:
 	print "Please enter the name of your new MarSystem"
 	sys.exit()
 
-marsyasBaseDir = os.path.join(os.path.dirname(sys.argv[0])+os.sep+'..'+os.sep)
+marsyasBaseDir = os.path.dirname(sys.argv[0])
+#print marsyasBaseDir
+marsyasBaseDir = os.path.abspath( marsyasBaseDir )
+#print marsyasBaseDir
+marsyasBaseDir = os.path.join(marsyasBaseDir+os.sep+'..'+os.sep)
+#print marsyasBaseDir
+marsyasBaseDir = os.path.abspath( marsyasBaseDir )
+#print marsyasBaseDir
 
-print marsyasBaseDir
 modifyBuild.set_base_dir(marsyasBaseDir)
 
 #modifyBuild.modify_manager(source_filename,action)
