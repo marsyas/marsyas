@@ -54,10 +54,14 @@ QString ExerciseControl::exercisesDir() {
 }
 
 void ExerciseControl::displayAnalysis(MarBackend *results) {
-//	cout<<results->getPitches();
-//	cout<<"displaying?"<<endl;
+	realvec tempPitches = results->getPitches();
+	int length = tempPitches.getSize();
+	myPitches.create(length);
+	for (int i=0; i<length; i++)
+		myPitches(i) = tempPitches(i);
+
 	displayPitches->setVertical(0,200);
-	displayPitches->setData( results->getPitchPointer() );
+	displayPitches->setData( &myPitches );
 
 }
 

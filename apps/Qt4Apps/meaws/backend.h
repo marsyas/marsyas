@@ -21,7 +21,6 @@ public:
 
 	void analyze();
 	realvec getPitches();
-	realvec *getPitchPointer();
 
 public slots:
 	void ctrlChanged(MarControlPtr changed);

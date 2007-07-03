@@ -240,7 +240,4 @@ realvec MarBackend::getPitches() {
 	return pitchList;
 }
 
-realvec* MarBackend::getPitchPointer() {
-	return &pitchList;
-}
 

@@ -25,6 +25,7 @@ private:
 // temporary
     QtMarPlot *displayPitches;
     QtMarPlot *displayAmplitude;
+	realvec myPitches;
 };
 #endif
 
