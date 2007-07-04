@@ -32,67 +32,61 @@ int process(string inName, string outName)
 
 	input->addMarSystem(mng.create("SoundFileSource","src"));
     input->addMarSystem(mng.create("ShiftInput", "si"));
-    input->addMarSystem(mng.create("Windowing", "ham")); 
-  
-	MarSystem * fanout = mng.create("Fanout", "fanout");
-	input->addMarSystem(fanout);
-	
-	// first branch of the fanout with the processing lpc
-	MarSystem* lspS = mng.create("Series","lspS");
+   
+	MarSystem* flowthru = mng.create("FlowThru", "flowthru");
+	 flowthru->addMarSystem(mng.create("Hamming", "hamAna")); 
+  flowthru->addMarSystem(mng.create("LPC", "lpc"));
+	input->addMarSystem(flowthru);
 
-	lspS->addMarSystem(mng.create("LPC", "lpc"));
-	fanout->addMarSystem(lspS);
-	// second branch of the fanout with the filtering
-	MarSystem* lspF = mng.create("Series","lspF");
-    MarSystem* audioSink = mng.create("SoundFileSink", "audioSink");
+	//input->addMarSystem(mng.create("ShiftOutput", "so"));
+ 	
+	MarSystem* audioSink = mng.create("SoundFileSink", "audioSink");
 
-	// replace the input with a noise source
+    input->addMarSystem(mng.create("Filter", "analysis"));
 
-	lspF->addMarSystem(mng.create("Filter", "analysis"));
+	//input->addMarSystem(mng.create("PlotSink", "plot"));
 
-	//lspF->addMarSystem(mng.create("NoiseSource", "ns"));
-    //lspF->addMarSystem(mng.create("Gain", "nsg"));
-  
-	// lspF->addMarSystem(mng.create("Filter", "synthesis"));
-  
-    lspF->addMarSystem(mng.create("OverlapAdd", "ova"));
-    lspF->addMarSystem(audioSink);
+	input->addMarSystem(mng.create("NoiseSource", "ns"));
 
-	
-  fanout->addMarSystem(lspF);
-  // third branch of the fanout
-	fanout->addMarSystem(mng.create("Gain", "gain1"));
+	//    input->addMarSystem(mng.create("Gain", "nsg1"));
+    //  	input->addMarSystem(mng.create("PlotSink", "plot2"));
+ 	input->addMarSystem(mng.create("Filter", "synthesis"));
+      input->addMarSystem(mng.create("Gain", "nsg"));
+    input->addMarSystem(mng.create("Windowing", "winSyn")); 
+	input->addMarSystem(mng.create("OverlapAdd", "ova"));
+    input->addMarSystem(audioSink);
 
 	input->updctrl("SoundFileSource/src/mrs_string/filename", inName);
-	input->updctrl("mrs_natural/inSamples", hopSize);
-	//input->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
+	input->updctrl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
+	input->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
 	input->updctrl("ShiftInput/si/mrs_natural/WindowSize", windowSize);
+    input->updctrl("Windowing/winSyn/mrs_string/type", "Hanning");
+	//input->updctrl("ShiftOutput/so/mrs_natural/Interpolation", hopSize);
 
- 	input->updctrl("Fanout/fanout/Series/lspS/LPC/lpc/mrs_natural/order",lpcOrder);
- 	input->updctrl("Fanout/fanout/Series/lspS/LPC/lpc/mrs_real/lambda",0.0);
- 	input->updctrl("Fanout/fanout/Series/lspS/LPC/lpc/mrs_real/gamma",1.0);
-    input->updctrl("Fanout/fanout/Series/lspS/LPC/lpc/mrs_natural/featureMode", 0);
+ 	input->updctrl("FlowThru/flowthru/LPC/lpc/mrs_natural/order",lpcOrder);
+ 	input->updctrl("FlowThru/flowthru/LPC/lpc/mrs_real/lambda",0.0);
+ 	input->updctrl("FlowThru/flowthru/LPC/lpc/mrs_real/gamma",1.0);
+   // input->updctrl("LPC/lpc/mrs_natural/featureMode", 0);
   
-	input->linkctrl("Fanout/fanout/Series/lspF/Filter/analysis/mrs_realvec/ncoeffs",
-									"Fanout/fanout/Series/lspS/LPC/lpc/mrs_realvec/coeffs");
-    input->linkctrl("Fanout/fanout/Series/lspF/Filter/synthesis/mrs_realvec/dcoeffs",
-									"Fanout/fanout/Series/lspS/LPC/lpc/mrs_realvec/coeffs");
+	input->linkctrl("Filter/analysis/mrs_realvec/ncoeffs",
+									"FlowThru/flowthru/LPC/lpc/mrs_realvec/coeffs");
+    input->linkctrl("Filter/synthesis/mrs_realvec/dcoeffs",
+									"FlowThru/flowthru/LPC/lpc/mrs_realvec/coeffs");
   // link the power of the error with a gain
- // input->linkctrl("Fanout/fanout/Series/lspF/Gain/nsg/mrs_real/gain",
-	//								"Fanout/fanout/Series/lspS/LPC/lpc/mrs_real/power");
+  input->linkctrl("Gain/nsg/mrs_real/gain",
+									"FlowThru/flowthru/LPC/lpc/mrs_real/power");
 
-	//input->linkctrl("Fanout/fanout/Series/lspF/Filter/synthesis/mrs_realvec/dcoeffs",
-	//								"Fanout/fanout/Series/lspS/LPC/lpc/mrs_realvec/coeffs");
-
-	input->updctrl("Fanout/fanout/Series/lspF/SoundFileSink/audioSink/mrs_string/filename", outName);
+	input->updctrl("SoundFileSink/audioSink/mrs_string/filename", outName);
+//input->updctrl("Gain/nsg1/mrs_real/gain", .1);
+input->updctrl("NoiseSource/ns/mrs_string/mode", "truc");
 
 	int i = 0;
 	while(input->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
 	{
 		input->tick();
 		i++;
-	//	cout << input->getctrl("Fanout/fanout/Series/lspF/Filter/analysis/mrs_realvec/ncoeffs")->toVec() << endl;
-	//	cout << input->getctrl("Fanout/fanout/Series/lspS/LPC/lpc/mrs_realvec/coeffs")->toVec() << endl;
+	//	cout << input->getctrl("Filter/analysis/mrs_realvec/ncoeffs")->toVec() << endl;
+	//	cout << input->getctrl("LPC/lpc/mrs_realvec/coeffs")->toVec() << endl;
 	}
 
 	cout << endl << "LPC processing finished!";

@@ -71,8 +71,6 @@ LPC::addControls()
 	setctrlState("mrs_natural/order", true); 
 	addctrl("mrs_real/lambda", (mrs_real)0.0);	
 	addctrl("mrs_real/gamma", (mrs_real)1.0);
-	addctrl("mrs_natural/featureMode", (mrs_natural) 1);
-	setctrlState("mrs_natural/featureMode", true); 
 }
 
 void
@@ -96,15 +94,7 @@ LPC::myUpdate(MarControlPtr sender)
 	temp_.create(order_ ,order_);
 	Zs_.create(order_);
 
-	if(getctrl("mrs_natural/featureMode")->toNatural() != 1)
-	{
-		featureMode_ = 0;
-		ctrl_coeffs_->stretch(order_+1);
-		setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural());
-		setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples")->toNatural());
-	}
-	else
-		featureMode_ = 1;
+	ctrl_coeffs_->stretch(order_+1);
 
 	//MATLAB engine stuff - for testing and validation purposes only!
 #ifdef _MATLAB_LPC_
@@ -404,7 +394,7 @@ LPC::myProcess(realvec& in, realvec& out)
 	mrs_natural i;
 	mrs_real LevinsonError = 0.0;
 	mrs_real PredictionError = 0.0;
-	mrs_real pitch = 0.0;
+	mrs_real pitch = 0.0, lag = 0.0;
 
 	//MATLAB engine stuff - for testing and validation purposes only!
 #ifdef _MATLAB_LPC_
@@ -435,12 +425,18 @@ LPC::myProcess(realvec& in, realvec& out)
 	// LevinsonDurbin(r, a, k, LevinsonError);
 
 	// implementation adapted from peter Kabal
-	SPautoc (in.getData(), in.getSize(), k.getData(), k.getSize());
-	LevinsonError = SPcorXpc (k.getData(), a.getData(), a.getSize()-1);
+	//SPautoc (in.getData(), in.getSize(), k.getData(), k.getSize());
+	//LevinsonError = SPcorXpc (k.getData(), a.getData(), a.getSize()-1);
+	//cout << LevinsonError << endl;
 
 	//this also estimates the pitch - does it work if lambda != 0 [?] [ML] normalization issue 
-    //autocorrelationWarped(in, r, pitch, getctrl("mrs_real/lambda")->toReal()); 
-	//LevinsonError = SPcorXpc (r.getData(), a.getData(), a.getSize()-1);
+    autocorrelationWarped(in, r, lag, getctrl("mrs_real/lambda")->toReal()); 
+	LevinsonError = SPcorXpc (r.getData(), a.getData(), a.getSize()-1);
+    
+	// LevinsonError /= in.getSize(); [ML] add this if SPautoc used
+	LevinsonError = sqrt(LevinsonError);
+	// pitch in Hz
+	pitch = getctrl("mrs_real/israte")->toReal()/lag ;
 
 	//--------------------------
 	// LPC coeffs
@@ -450,9 +446,7 @@ LPC::myProcess(realvec& in, realvec& out)
 	// a = [1 a(1) a(2) ... a(order_-1)]
 	// out = [a(1) a(2) ... a(order_-1)]
 
-	// coeffs as output
-	if(featureMode_)
-	{
+
 		for(i=0; i < order_; i++)
 			// out(i) = a(i+1); // musicDsp implementation  
 			out(i) = -a(i); // musicDsp implementation  
@@ -462,32 +456,26 @@ LPC::myProcess(realvec& in, realvec& out)
 		//------------------------------
 		out(order_) = pitch; // lag in samples <= from ::autocorrelationWarped(...) - does it work if lambda != 0 [?]
 		out(order_+1) = LevinsonError; //prediction error (= gain? [?])
-	}
-	else{ // coefs as control
+
 		ctrl_coeffs_->setValue(0, 1.0);
 		for(i=1; i < order_+1; i++) {
 			// ctrl_coeffs_->setValue(i, -a(i)); // musicDsp implementation  
 			ctrl_coeffs_->setValue(i, -a(i-1));  
 			ctrl_pitch_->setValue(pitch);
-			ctrl_power_->setValue(sqrt(LevinsonError));
+			ctrl_power_->setValue(LevinsonError);
 		}
-		out = in;
-	}
 	//--------------------------
 	// LPC Pole-shifting
 	//--------------------------
 	//verify if Z-Plane pole-shifting should be performed...
 	mrs_real gamma = getctrl("mrs_real/gamma")->toReal();
 	if(gamma != 1.0)
-		if(featureMode_)
-			for(mrs_natural j = 0; j < order_; j++)
+	{
+    	for(mrs_natural j = 0; j < order_; j++)
 				out(j) = (out(j) * pow(gamma, (double)j+1));
-		else
 			for(mrs_natural j = 0; j < order_; j++)
 				ctrl_coeffs_->setValue(j+1, (*ctrl_coeffs_)(j+1) * pow(gamma, (double)j+1));
-
-
-
+	}
 	//MATLAB engine stuff - for testing and validation purposes only!
     #ifdef _MATLAB_LPC_
 	MATLAB_PUT(out, "LPC_out");
@@ -498,8 +486,6 @@ LPC::myProcess(realvec& in, realvec& out)
 	mrs_real matlabGain;
 	MATLAB_GET("LPCgain", matlabGain);
     #endif
-
-
 }
 
 

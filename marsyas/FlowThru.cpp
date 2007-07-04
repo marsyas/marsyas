@@ -151,7 +151,7 @@ FlowThru::myProcess(realvec& in, realvec& out)
 	//input should be passed thru the output untouched!
 	out = in;
 
-  if(marsystemsSize_ > 1)
+  if(marsystemsSize_ >= 1)
 	{
 		for (mrs_natural i = 0; i < marsystemsSize_; i++)
 		{

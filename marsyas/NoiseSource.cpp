@@ -77,7 +77,7 @@ NoiseSource::myUpdate(MarControlPtr sender)
   for (t=0; t < wavetableSize_; t++)
     // wavetable_(t) = (mrs_real)(0.5 * sin(incr * t));
 	// Random Generator
-    wavetable_(t) = (mrs_real)(2.0 * rand() / (RAND_MAX + 1.0) );
+    wavetable_(t) = (mrs_real)(2.0 * rand() / (RAND_MAX + 1.0) )-1;
     index_ = 0;
 		mode_=0;
 	}
@@ -98,7 +98,7 @@ NoiseSource::myProcess(realvec &in, realvec &out)
 	if(mode_ == 1)
 	{
 		for (t=0; t < inSamples; t++)
-			out(t) = (mrs_real)(2.0 * rand() / (RAND_MAX + 1.0) );
+			out(t) = (mrs_real)(2.0 * rand() / (RAND_MAX + 1.0) )-1;
 	}
 	else
 		for (t=0; t < inSamples; t++)
