@@ -227,6 +227,14 @@ Once you have selected the options you want, simply type
 qmake
 @end example
 
+@strong{Warning:} on MacOS X and when using Qt-4.3.0 or higher, you
+should add this line to your @file{~/.profile} before running
+@code{qmake}:
+
+@example
+export QMAKESPEC=/usr/local/Qt4.3/mkspecs/macx-g++/
+@end example
+
 
 @subsection ...with autotools
 
