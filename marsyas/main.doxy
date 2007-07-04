@@ -1,17 +1,19 @@
 /** \mainpage Marsyas
  *
- * Main MarSystems:
- * - \ref Composites "Composites": these are the "building blocks" of
- * %Marsyas.
+ * Core MarSystems:
+ * - \ref Composites "Composites": these are the "building blocks"
+ * of %Marsyas.
  * - \ref IO "Input/Output": get data in or out.
  * - \ref Basic "Basic Processing": simple processing blocks.
  *
- * Specialized MarSystems:
+ * Main MarSystems:
  * - \ref Processing "Processing": more advanced processing, such as
  * filters and envelopes.
  * - \ref Analysis "Analysis": translates audio blocks into other
  * blocks.
  * - \ref Synthesis "Synthesis": creates audio.
+ *
+ * Specialized MarSystems:
  * - \ref Network "Network Input/Output": send data over a network
  * - \ref Classifiers "Classifiers": MarSystems relating to
  * audio classification.

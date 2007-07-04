@@ -18,6 +18,7 @@
 
 /** 
 \class MarSystemTemplateAdvanced
+\ingroup Special
 \brief Advanced example on how to use composite ad custom controls efficiently in MarSystems
 */
 

@@ -77,6 +77,13 @@
  *
  */
 
+/**  @defgroup Special Special
+ *
+ * \brief These MarSystems somehow manage to evade all the other
+ * categories, and are thus placed here.
+ *
+ */
+
 /**  @defgroup none Undocumented
  *
  * \brief These MarSystems have not been documented yet.
