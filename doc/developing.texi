@@ -16,6 +16,7 @@ do anything explicitly.
 @menu
 * Writing your own MarSystems::  
 * Using your MarSystem::        
+* Anatomy of a MarSystem::      
 * myUpdate() and myProcess()::  
 @end menu
 
@@ -59,6 +60,39 @@ playbacknet->addMarSystem(mng.create("Gain", "gain"));
 playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
 playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 @end example
+
+
+@node Anatomy of a MarSystem
+@section Anatomy of a MarSystem
+
+A MarSystem is an object which contains these methods.  In this example,
+we use a fake MarSystem called @code{MyName}.
+
+@itemize
+@item Constructors / Destructor:
+@example
+MyName::MyName(string name):MarSystem("MyName", name)
+MyName::MyName(const MyName& a) : MarSystem(a)
+MyName::~MyName()
+@end example
+
+@item Marsyas system integration:
+@example
+MarSystem* MyName::clone() const
+void MyName::addControls()
+@end example
+
+@item Actual processing methods:
+@example
+void MyName::myUpdate(MarControlPtr sender)
+void MyName::myProcess(realvec& in, realvec& out)
+@end example
+
+@end itemize
+
+Virtually all changes that you make to the basic template (created
+with the script in @ref{Creating a MarSystem}) will be to
+@ref{myUpdate() and myProcess()}.
 
 
 @node myUpdate() and myProcess()
