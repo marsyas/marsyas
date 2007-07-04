@@ -203,12 +203,8 @@ void MarBackend::analyze() {
 		trans->calcOnsets();
 		trans->calcNotes();
 		trans->calcRelativeDurations();
-
-		cout<<"****************"<<endl;
-		cout<<trans->getDurations();
-		cout<<"****************"<<endl;
-		cout<<trans->getNotes();
-
+		durations = trans->getDurations();
+		notes = trans->getNotes();
 		delete trans;
 		break;
 	}
@@ -239,6 +235,16 @@ realvec MarBackend::getPitches() {
 		}
 	}
 	return pitchList;
+}
+
+realvec MarBackend::getDurations()
+{
+	return durations;
+}
+
+realvec MarBackend::getNotes()
+{
+	return notes;
 }
 
 

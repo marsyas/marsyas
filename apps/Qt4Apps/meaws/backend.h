@@ -22,6 +22,10 @@ public:
 	void analyze();
 	realvec getPitches();
 
+// transcriber
+	realvec getDurations();
+	realvec getNotes();
+
 public slots:
 	void ctrlChanged(MarControlPtr changed);
 	void start();
@@ -47,6 +51,9 @@ private:
 // pitch stuff
 	realvec pitchList;
 
+// transcribed stuff
+	realvec durations;
+	realvec notes;
 
 	bool tempold;
 // not used

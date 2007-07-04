@@ -31,7 +31,14 @@ QString ExerciseIntonation::exercisesDir() {
 }
 
 void ExerciseIntonation::displayAnalysis(MarBackend *results) {
+	realvec durations = results->getDurations();
+	realvec notes = results->getNotes();
 
+	for (int i=0; i<durations.getSize(); i++) {
+		if (notes(i)>0) {
+			cout<<notes(i)<<"   "<<durations(i)<<endl;
+		}
+	}
 }
 
 
