@@ -174,13 +174,13 @@ the advantages of dataflow computation.
 @node About the documentation
 @section About the documentation
 
-@subsubheading Latest version
+@subsection Latest version
 
 The documentation is uploaded regularly to
 @uref{http://opihi.cs.uvic.ca/marsyas/}
 
 
-@subsubheading Examples
+@subsection Examples
 
 In addition to this manual, there are example files included in the
 Marsyas source tree.  Many of these files are also included in the
@@ -194,13 +194,13 @@ are provided only for learning; they have little purpose as actual programs.
 the files in @file{examples/}, it has little value as a standalone program.
 @end itemize
 
-@subsubheading Source code documentation
+@subsection Source code documentation
 
 Many MarSystems have been documented; see @ref{MarSystem details} for
 more information.
 
 
-@subsubheading Source code
+@subsection Source code
 
 Unfortunately this manual and the source code documentation are not
 complete.  Once you are familiar with everything covered in this manual,

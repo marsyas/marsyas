@@ -4,7 +4,7 @@
 @menu
 * Download::                    
 * System requirements::         
-* Optional libraries::          
+* Optional programs and libraries::  
 * Configuring Marsyas::         
 * Compiling Marsyas::           
 * Generating documentation::    
@@ -45,18 +45,6 @@ Marsyas is open source software and is distributed
 as a tarball (something like @file{marsyas-0.2.8.tar.gz}).  Uncompress
 this file using whatever uncompression program you prefer (@code{tar -xf},
 winzip, etc).
-
-@ignore
-To extract the source tarball type: 
-
-@e xample 
-tar -zxvf marsyas-0.2.8.tar.gz 
-@e nd example
-
-This will create a subdirectory of the current 
-directory called marsyas-0.2.8 that contains 
-all the source files needed for compiling Marsyas. 
-@end ignore
 
 @subsection Development Version
 
@@ -115,9 +103,13 @@ Required:
 @item @uref{http://www.alsa-project.org/,ALSA} headers.  On most
 distributions, this is a package called @code{alsa-devel} or
 @code{libalsa-devel}.
+@end itemize
 
+Strongly recommended:
+
+@itemize
 @item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech}
-development platform.
+development platform, version 4.2.3 or above.
 @end itemize
 
 
@@ -127,7 +119,13 @@ Required:
 
 @itemize
 @item @uref{http://developer.apple.com/tools/xcode/, Xcode}: standard development platform on OSX.  Please install from your OSX installation CD/DVD, or download.
-@item @uref{http://www.trolltech.com/products/qt, Qt/Trolltech} development platform.
+@end itemize
+
+Strongly recommended:
+
+@itemize
+@item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech}
+development platform, version 4.2.3 or above.
 @end itemize
 
 
@@ -148,7 +146,8 @@ Required:
 @itemize
 @item @uref{http://www.mingw.org/, MinGW} (installed by default by
 Qt/OpenSource)
-@item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech} development platform.
+@item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech}
+development platform, version 4.2.3 or above.
 @item Microsoft DirectX SDK and Platform SDK
 @end itemize
 
@@ -161,7 +160,8 @@ Required:
 @itemize
 @item Microsoft Visual Studio (visual studio express can compile Marsyas
 after a bit of fiddling with preferences)
-@item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech} development platform
+@item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech}
+development platform, version 4.2.3 or above.
 @item Microsoft DirectX SDK and Platform SDK
 @end itemize
 
@@ -178,14 +178,36 @@ installed (these should be installed by default)
 @item Microsoft DirectX SDK and Platform SDK
 @end itemize
 
+Strongly recommended:
 
-@node Optional libraries
-@section Optional libraries
+@itemize
+@item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech}
+development platform, version 4.2.3 or above.
+@end itemize
+
+
+
+@node Optional programs and libraries
+@section Optional programs and libraries
+
+Useful libraries:
 
 @itemize
 @item @uref{http://sourceforge.net/projects/mad/, LibMAD}: mp3 support
 @end itemize
 
+Useful programs:
+
+@itemize
+@uref{http://python.org, Python}: Installed by default on Linux and MacOS X
+machines; Windows users may install it from this site.  Marsyas contains
+some very useful @ref{Scripts} which are written in Python.
+
+@uref{http://www.mathworks.com/products/matlab/, Matlab}: information
+may be easily passed to and from Matlab and Marsyas; this allows easy
+prototyping.
+
+@end itemize
 
 
 @node Configuring Marsyas
@@ -204,8 +226,6 @@ Once you have selected the options you want, simply type
 @example
 qmake
 @end example
-
-@b{Requirement:} Qt-4.2.3 or above.
 
 
 @subsection ...with autotools
@@ -383,8 +403,9 @@ When trying to record audio, the sample rate must be specified
 explicitly:
 
 @example
-  recNet->updctrl("AudioSource/srcRec/mrs_real/israte", 44100.0);
-  recNet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
+pnet->addMarSystem(mng.create("AudioSource", "srcRec"));
+pnet->updctrl("mrs_real/israte", 44100.0);
+pnet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
 @end example
 
 
