@@ -10,13 +10,11 @@ MainWindow::MainWindow() {
 	createObjects();
 	createMain();
 	createActions();
-/*
 	createMenus();
 	createToolBars();
 	createStatusBar();
 	readSettings();
 	enableActions(MEAWS_READY_NOTHING);
-*/
 }
 
 MainWindow::~MainWindow() {

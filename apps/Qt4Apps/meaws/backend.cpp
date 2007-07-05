@@ -14,6 +14,7 @@ using namespace std;
  */
 
 MarBackend::MarBackend(int getType) {
+	cout<<"begin constructor MarBackend"<<endl;
 	method=getType;
 
 	mrsWrapper = NULL;
@@ -21,6 +22,7 @@ MarBackend::MarBackend(int getType) {
 	sourceNet = makeSourceNet("");
 
 	tempold = false;
+	cout<<"end constructor MarBackend"<<endl;
 }
 
 MarBackend::~MarBackend() {

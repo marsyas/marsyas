@@ -33,6 +33,7 @@ bool ExerciseDispatcher::chooseEvaluation() {
 }
 
 void ExerciseDispatcher::open() {
+	cout<<"begin dispatcher open"<<endl;
 	if (chooseEvaluation()) {
 		QString openFilename = QFileDialog::getOpenFileName(0,tr("Open file"),
 			evaluation->exercisesDir(), tr("Exercises (*.png)"));
@@ -43,6 +44,7 @@ void ExerciseDispatcher::open() {
 			enableActions(MEAWS_READY_EXERCISE);
 		}
 	}
+	cout<<"end dispatcher open"<<endl;
 }
 
 void ExerciseDispatcher::close() {
