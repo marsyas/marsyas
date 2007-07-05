@@ -11,8 +11,15 @@
 #define MEAWS_READY_EXERCISE 3
 #define MEAWS_READY_AUDIO 4
 
+#ifdef UNIX
 //#define MEAWS_DIR "/home/gperciva/.meaws/"
 #define MEAWS_DIR "/Users/gperciva/.meaws/"
+#endif
+
+#ifdef WIN32
+#define MEAWS_DIR "c:\\temp\\meaws"
+#endif
+
 
 #endif
 

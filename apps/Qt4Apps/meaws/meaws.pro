@@ -33,15 +33,20 @@ VERSION = 0.5
 
 ##  You might want to change this:
 unix:HOME = /home/gperciva
-macx: HOME = /Users/gperciva
-win32:MEAWS_DATADIR = c:\temp\meaws
-unix:MEAWS_DATADIR = $${HOME}/.meaws/
+macx:HOME = /Users/gperciva
+win32{
+  MEAWS_DATADIR = c:\temp\meaws
+  DEFINES += WIN32
+}
+unix {
+  MEAWS_DATADIR = $${HOME}/.meaws/
+  DEFINES += UNIX
+}
 
 message("Installing data to $$MEAWS_DATADIR")
 data.path = $$MEAWS_DATADIR
 data.files = data/
 INSTALLS += data
-
 
 INCLUDEPATH += ../../../lib/release/
 

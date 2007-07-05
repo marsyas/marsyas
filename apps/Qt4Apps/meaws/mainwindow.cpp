@@ -1,20 +1,22 @@
 // C++ stuff for testing
-/*
 #include <iostream>
 using namespace std;
-*/
 
 #include "mainwindow.h"
 
 MainWindow::MainWindow() {
+	cout<<MEAWS_DIR<<endl;
+
 	createObjects();
 	createMain();
 	createActions();
+/*
 	createMenus();
 	createToolBars();
 	createStatusBar();
 	readSettings();
 	enableActions(MEAWS_READY_NOTHING);
+*/
 }
 
 MainWindow::~MainWindow() {
