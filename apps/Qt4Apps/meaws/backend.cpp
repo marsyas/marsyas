@@ -14,15 +14,13 @@ using namespace std;
  */
 
 MarBackend::MarBackend(int getType) {
-	cout<<"begin constructor MarBackend"<<endl;
 	method=getType;
 
 	mrsWrapper = NULL;
 	allNet = NULL;
 	sourceNet = makeSourceNet("");
 
-	tempold = false;
-	cout<<"end constructor MarBackend"<<endl;
+	isEmptyState = false;
 }
 
 MarBackend::~MarBackend() {
@@ -79,6 +77,7 @@ void MarBackend::setFileName(string filename) {
 */
 
 void MarBackend::playFile() {
+	// TODO: crashes if it hasn't loaded a file.
 	string filename = sourceNet->getctrl("SoundFileSource/srcFile/mrs_string/filename")->toString();
 	delNet();
 	sourceNet = makeSourceNet(filename);
@@ -87,15 +86,16 @@ void MarBackend::playFile() {
 }
 
 void MarBackend::ctrlChanged(MarControlPtr changed) {
-	if ( changed.isEqual( emptyPtr ) ) {
-		bool tempnew = changed->to<mrs_bool>();
-		if (tempnew != tempold)
-		if ( changed->to<mrs_bool>() ) {
-			start();
-			tempold=true;
-		} else {
-			stop();
-			tempold=false;
+	if ( changed.isEqual( isEmptyPtr ) ) {
+		bool changedState = changed->to<mrs_bool>();
+		if (changedState != isEmptyState) {
+			if ( changedState ) {
+				start();
+				isEmptyState=true;
+			} else {
+				stop();
+				isEmptyState=false;
+			}
 		}
 	}
 }
@@ -142,8 +142,8 @@ void MarBackend::setupAllNet() {
 	}
 
 	mrsWrapper = new MarSystemQtWrapper(allNet);
-	emptyPtr = mrsWrapper->getctrl("mrs_bool/notEmpty");
-	mrsWrapper->trackctrl( emptyPtr );
+	isEmptyPtr = mrsWrapper->getctrl("mrs_bool/notEmpty");
+	mrsWrapper->trackctrl( isEmptyPtr );
 	connect(mrsWrapper, SIGNAL(ctrlChanged(MarControlPtr)), this, SLOT(ctrlChanged(MarControlPtr)));
 
 	mrsWrapper->start();
@@ -190,30 +190,34 @@ MarSystem* MarBackend::makePitchNet(mrs_real source_osrate) {
  *   ***************************
  */
 
-void MarBackend::analyze() {
+bool MarBackend::analyze() {
 	if (mrsWrapper != NULL) {
 		delete mrsWrapper;
 		mrsWrapper = NULL;
 	}
-	switch (method) {
-	case TYPE_PLAYBACK:
-		break;
-	case TYPE_INTONATION: {
-		getPitches();
-		Transcriber *trans = new Transcriber();
-		trans->setPitchList( getPitches() );
-		trans->calcOnsets();
-		trans->calcNotes();
-		trans->calcRelativeDurations();
-		durations = trans->getDurations();
-		notes = trans->getNotes();
-		delete trans;
-		break;
+	if (allNet != NULL) {
+		switch (method) {
+		case TYPE_PLAYBACK:
+			break;
+		case TYPE_INTONATION: {
+			getPitches();
+			Transcriber *trans = new Transcriber();
+			trans->setPitchList( getPitches() );
+			trans->calcOnsets();
+			trans->calcNotes();
+			trans->calcRelativeDurations();
+			durations = trans->getDurations();
+			notes = trans->getNotes();
+			delete trans;
+			break;
+		}
+		case TYPE_CONTROL:
+			getPitches();
+			break;
+		}
+		return true;
 	}
-	case TYPE_CONTROL:
-		getPitches();
-		break;
-	}
+	return false;
 }
 
 realvec MarBackend::getPitches() {

@@ -19,7 +19,7 @@ public:
 	void playFile();
 	void open(std::string filename);
 
-	void analyze();
+	bool analyze();
 	realvec getPitches();
 
 // transcriber
@@ -39,7 +39,8 @@ private:
 	MarSystem *sourceNet;
 	MarSystem *allNet;
 	MarSystemQtWrapper *mrsWrapper;
-	MarControlPtr emptyPtr;
+	MarControlPtr isEmptyPtr;
+	bool isEmptyState;
 
 // constructor, destructor
 	int method;
@@ -55,7 +56,6 @@ private:
 	realvec durations;
 	realvec notes;
 
-	bool tempold;
 // not used
  	MarControlPtr filenamePtr;
 };
