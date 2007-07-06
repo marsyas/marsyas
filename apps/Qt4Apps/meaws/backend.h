@@ -49,6 +49,9 @@ private:
 	void setupAllNet();
 	void delNet();
 
+// for playback
+	bool hasAudio;
+
 // pitch stuff
 	realvec pitchList;
 

@@ -21,6 +21,7 @@ MarBackend::MarBackend(int getType) {
 	sourceNet = makeSourceNet("");
 
 	isEmptyState = false;
+	hasAudio = false;
 }
 
 MarBackend::~MarBackend() {
@@ -37,10 +38,12 @@ void MarBackend::delNet() {
 		delete allNet;
 		allNet = NULL;
 		sourceNet = NULL;
+		hasAudio = false;
 	} else {
 		if (sourceNet != NULL) {
 			delete sourceNet;
 			sourceNet = NULL;
+			hasAudio = false;
 		}
 	}
 }
@@ -50,15 +53,13 @@ MarSystem* MarBackend::makeSourceNet(std::string filename) {
 	if (filename != "") {
 		pnet->addMarSystem(mng.create("SoundFileSource", "srcFile"));
 		pnet->updctrl("SoundFileSource/srcFile/mrs_string/filename", filename);
-		//pnet->linkctrl("mrs_real/osrate", "SoundFileSource/srcFile/mrs_real/osrate");
+		pnet->linkctrl("mrs_real/osrate", "SoundFileSource/srcFile/mrs_real/osrate");
 		pnet->linkctrl("mrs_bool/notEmpty", "SoundFileSource/srcFile/mrs_bool/notEmpty");
 	} else {
-		cout<<"DEBUG: trying to init audio"<<endl;
 		pnet->addMarSystem(mng.create("AudioSource", "srcRec"));
 		pnet->updctrl("mrs_real/israte", 44100.0);
 		pnet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
 		//pnet->linkctrl("mrs_real/osrate", "AudioSource/srcRec/mrs_real/osrate");
-		cout<<"DEBUG: finished trying"<<endl;
 	}
 	return pnet;
 }
@@ -67,6 +68,7 @@ MarSystem* MarBackend::makeSourceNet(std::string filename) {
 void MarBackend::open(std::string filename) {
 	delNet();
 	sourceNet = makeSourceNet(filename);
+	hasAudio = true;
 	setupAllNet();
 }
 
@@ -77,12 +79,13 @@ void MarBackend::setFileName(string filename) {
 */
 
 void MarBackend::playFile() {
-	// TODO: crashes if it hasn't loaded a file.
-	string filename = sourceNet->getctrl("SoundFileSource/srcFile/mrs_string/filename")->toString();
-	delNet();
-	sourceNet = makeSourceNet(filename);
-	method = TYPE_PLAYBACK;
-	setupAllNet();
+	if (hasAudio) {
+		string filename = sourceNet->getctrl("SoundFileSource/srcFile/mrs_string/filename")->toString();
+		delNet();
+		sourceNet = makeSourceNet(filename);
+		method = TYPE_PLAYBACK;
+		setupAllNet();
+	}
 }
 
 void MarBackend::ctrlChanged(MarControlPtr changed) {
@@ -110,6 +113,7 @@ void MarBackend::stop() {
 	emit setAttempt(false);
 	if (mrsWrapper != NULL)
 		mrsWrapper->pause();
+	hasAudio = true;
 }
 
 
