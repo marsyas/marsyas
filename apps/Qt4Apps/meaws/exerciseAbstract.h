@@ -6,6 +6,7 @@
 #include <QString>
 #include <QGridLayout>
 #include <QLabel>
+#include <QDir>
 
 #include "backend.h"
 

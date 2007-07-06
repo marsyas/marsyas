@@ -12,37 +12,28 @@ SOURCES += exerciseAbstract.cpp exerciseIntonation.cpp exerciseControl.cpp
 HEADERS += backend.h
 SOURCES += backend.cpp
 
-#temporary
+#temporary?  maybe?
 HEADERS += ../QtMarPlot.h
 SOURCES += ../QtMarPlot.cpp
 
 HEADERS += ../MarSystemQtWrapper.h
 SOURCES += ../MarSystemQtWrapper.cpp
 
-#HEADERS += backend.h metro.h
-#SOURCES += mainwindow.cpp backend.cpp metro.cpp
-#HEADERS += user.h exercise.h analyze.h display.h
-#SOURCES += user.cpp exercise.cpp analyze.cpp display.cpp
-#HEADERS += ../MarSystemQtWrapper.h ../QtMarPlot.h
-#SOURCES += ../MarSystemQtWrapper.cpp ../QtMarPlot.cpp
 
 RESOURCES = icons.qrc
 TARGET = meaws
 VERSION = 0.5
 #CONFIG = qt
 
-##  You might want to change this:
-unix:HOME = /home/gperciva
-macx:HOME = /Users/gperciva
+
+unix {
+  MEAWS_DATADIR = $$(HOME)/.meaws/
+#  DEFINES += UNIX
+}
 win32{
   MEAWS_DATADIR = c:\temp\meaws
-  DEFINES += WIN32
+#  DEFINES += WIN32
 }
-unix {
-  MEAWS_DATADIR = $${HOME}/.meaws/
-  DEFINES += UNIX
-}
-
 message("Installing data to $$MEAWS_DATADIR")
 data.path = $$MEAWS_DATADIR
 data.files = data/

@@ -11,13 +11,13 @@
 #define MEAWS_READY_EXERCISE 3
 #define MEAWS_READY_AUDIO 4
 
-#ifdef UNIX
-//#define MEAWS_DIR "/home/gperciva/.meaws/"
-#define MEAWS_DIR "/Users/gperciva/.meaws/"
-#endif
-
+// might work?  might not.  Can't check by myself.
 #ifdef WIN32
 #define MEAWS_DIR "c:\\temp\\meaws"
+#endif
+
+#ifndef MEAWS_DIR
+#define MEAWS_DIR QDir::homePath() + "/.meaws/"
 #endif
 
 
