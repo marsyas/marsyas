@@ -20,7 +20,7 @@ def modify_manager(filename,action):
 	filelines = open( fileToEdit ).readlines()
 	if (action==1):
 		for line in filelines:
-			if (line.find(filename)>=0):
+			if (line.find('\"'+filename+'.h"')>=0):
 				print "New MarSystem already added?!"
 				sys.exit()
 	newfile = open( fileToEdit, 'w')
