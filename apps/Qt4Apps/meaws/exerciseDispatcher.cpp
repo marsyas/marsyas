@@ -6,9 +6,11 @@ using namespace std;
 ExerciseDispatcher::ExerciseDispatcher() {
 	attemptRunningBool = false;
 	marBackend = NULL;
+	evaluation = NULL;
 }
 
 ExerciseDispatcher::~ExerciseDispatcher() {
+	close();
 }
 
 void ExerciseDispatcher::setArea(QGridLayout *getInstructionArea, QGridLayout *getResultArea){
@@ -23,6 +25,8 @@ bool ExerciseDispatcher::chooseEvaluation() {
 	QString item = QInputDialog::getItem(this, tr("Choose testing method"),
 		tr("TestingMethod:"), items, 0, false, &ok);
 	if (ok && !item.isEmpty()) {
+		if (evaluation != NULL)
+			delete evaluation;
 		if (item=="Intonation test") evaluation = new ExerciseIntonation();
 		if (item=="Sound control test") evaluation = new ExerciseControl();
 		evaluation->setArea(instructionArea, resultArea);
@@ -38,6 +42,8 @@ void ExerciseDispatcher::open() {
 			evaluation->exercisesDir(), tr("Exercises (*.png)"));
 		if (!openFilename.isEmpty()) {
 			evaluation->open(openFilename);
+			if (marBackend != NULL)
+				delete marBackend;
 			marBackend = new MarBackend(evaluation->getType());
 			connect(marBackend, SIGNAL(setAttempt(bool)), this, SLOT(setAttempt(bool)));
 			enableActions(MEAWS_READY_EXERCISE);
@@ -48,7 +54,14 @@ void ExerciseDispatcher::open() {
 }
 
 void ExerciseDispatcher::close() {
-	delete evaluation;
+	if (marBackend != NULL) {
+		delete marBackend;
+		marBackend = NULL;
+	}
+	if (evaluation != NULL) {
+		delete evaluation;
+		evaluation = NULL;
+	}
 	enableActions(MEAWS_READY_USER);
 }
 
