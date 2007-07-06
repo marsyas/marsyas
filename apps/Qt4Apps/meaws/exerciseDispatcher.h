@@ -19,6 +19,8 @@ public:
 	ExerciseDispatcher();
 	~ExerciseDispatcher();
 
+	QString getMessage();
+
 public slots:
 	void open();
 	void close();
@@ -45,6 +47,8 @@ private:
 	Exercise *evaluation;
 	bool attemptRunningBool;
 	MarBackend *marBackend;
+
+	QString statusMessage;
 };
 #endif
 

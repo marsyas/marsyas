@@ -290,6 +290,8 @@ void MainWindow::enableActions(int state) {
 */
 		break;
 	case MEAWS_READY_AUDIO:    // ready to analyze
+
+		statusBar()->showMessage(exercise->getMessage(),100000);
 		break;
 	}
 }

@@ -7,6 +7,7 @@ ExerciseDispatcher::ExerciseDispatcher() {
 	attemptRunningBool = false;
 	marBackend = NULL;
 	evaluation = NULL;
+	statusMessage = "ready";
 }
 
 ExerciseDispatcher::~ExerciseDispatcher() {
@@ -99,8 +100,15 @@ void ExerciseDispatcher::playFile() {
 	setAttempt(true);
 }
 
+QString ExerciseDispatcher::getMessage() {
+	return statusMessage;
+}
+
 void ExerciseDispatcher::analyze() {
-	if ( marBackend->analyze() )
+	if ( marBackend->analyze() ) {
 		evaluation->displayAnalysis( marBackend );
+		statusMessage = evaluation->getMessage();
+		enableActions(MEAWS_READY_AUDIO);
+	}
 }
 

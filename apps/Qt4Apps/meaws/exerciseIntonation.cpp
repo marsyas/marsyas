@@ -39,7 +39,12 @@ QString ExerciseIntonation::exercisesDir() {
 	return toReturn;
 }
 
-void ExerciseIntonation::displayAnalysis(MarBackend *results) {
+QString ExerciseIntonation::getMessage() {
+	QString toReturn("foo");
+	return toReturn;
+}
+
+bool ExerciseIntonation::displayAnalysis(MarBackend *results) {
 	realvec durations = results->getDurations();
 	realvec notes = results->getNotes();
 
@@ -62,7 +67,6 @@ void ExerciseIntonation::displayAnalysis(MarBackend *results) {
 
 	resultLabel->setPixmap(QPixmap::fromImage(QImage("/tmp/tempscore.preview.png")));
 */
-
+	return true;
 }
-
 

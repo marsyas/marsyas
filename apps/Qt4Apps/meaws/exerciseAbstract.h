@@ -19,7 +19,8 @@ public:
 	virtual void setupDisplay() = 0;
 	virtual QString exercisesDir() = 0;
 	virtual int getType() = 0;
-	virtual void displayAnalysis(MarBackend *results) = 0;
+	virtual bool displayAnalysis(MarBackend *results) = 0;
+	virtual QString getMessage() = 0;
 	virtual void open(QString exerciseFilename);
 
 protected:

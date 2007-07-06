@@ -63,7 +63,12 @@ QString ExerciseControl::exercisesDir() {
 	return toReturn;
 }
 
-void ExerciseControl::displayAnalysis(MarBackend *results) {
+QString ExerciseControl::getMessage() {
+	QString toReturn("foo");
+	return toReturn;
+}
+
+bool ExerciseControl::displayAnalysis(MarBackend *results) {
 	realvec tempPitches = results->getPitches();
 	int length = tempPitches.getSize();
 	myPitches.create(length);
@@ -73,5 +78,6 @@ void ExerciseControl::displayAnalysis(MarBackend *results) {
 	displayPitches->setVertical(0,200);
 	displayPitches->setData( &myPitches );
 
+	return true;
 }
 

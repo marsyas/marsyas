@@ -15,8 +15,9 @@ public:
 
 	void setupDisplay();
 	QString exercisesDir();
+	QString getMessage();
 
-	void displayAnalysis(MarBackend *results);
+	bool displayAnalysis(MarBackend *results);
 
 private:
 //	QLabel *displayPitches;
