@@ -116,6 +116,12 @@ void MarBackend::stop() {
 	hasAudio = true;
 }
 
+mrs_real MarBackend::getRate() {
+	if (sourceNet != NULL)
+		return sourceNet->getctrl("mrs_real/osrate")->toReal();
+	else
+		return 0;
+}
 
 /*   ***************************
  *   ***                     ***

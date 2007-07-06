@@ -54,13 +54,14 @@ void ExerciseIntonation::displayAnalysis(MarBackend *results) {
 		}
 	}
 	out_file.close();
-
+/*
 	system("/Users/gperciva/progs/python/libbabelpond/reldurs.py /tmp/notes.txt");
 	sleep(1);
 	system("cd /tmp; lilypond -dpreview tempscore.ly");
 	sleep(5);
 
 	resultLabel->setPixmap(QPixmap::fromImage(QImage("/tmp/tempscore.preview.png")));
+*/
 
 }
 

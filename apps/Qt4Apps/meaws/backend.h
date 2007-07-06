@@ -26,6 +26,8 @@ public:
 	realvec getDurations();
 	realvec getNotes();
 
+	mrs_real getRate();
+
 public slots:
 	void ctrlChanged(MarControlPtr changed);
 	void start();
