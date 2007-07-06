@@ -4,16 +4,26 @@ using namespace std;
 #include "exerciseControl.h"
 
 ExerciseControl::ExerciseControl() {
+	displayPitches = NULL;
+	displayAmplitude = NULL;
 }
 
 ExerciseControl::~ExerciseControl() {
-	instructionArea->removeWidget(instructionImageLabel);
-	delete (instructionImageLabel);;
-
-	resultArea->removeWidget(displayPitches);
-	delete displayPitches;
-	resultArea->removeWidget(displayAmplitude);
-	delete displayAmplitude;
+	if (instructionImageLabel != NULL) {
+		instructionArea->removeWidget(instructionImageLabel);
+		delete (instructionImageLabel);
+		instructionImageLabel = NULL;
+	}
+	if (displayPitches != NULL) {
+		resultArea->removeWidget(displayPitches);
+		delete displayPitches;
+		displayPitches = NULL;
+	}
+	if (displayAmplitude != NULL) {
+		resultArea->removeWidget(displayAmplitude);
+		delete displayAmplitude;
+		displayAmplitude = NULL;
+	}
 }
 
 int ExerciseControl::getType() {

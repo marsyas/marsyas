@@ -6,13 +6,20 @@ using namespace std;
 #include <QTextStream>
 
 ExerciseIntonation::ExerciseIntonation() {
+	resultLabel = NULL;
 }
-ExerciseIntonation::~ExerciseIntonation() {
-	instructionArea->removeWidget(instructionImageLabel);
-	delete (instructionImageLabel);
 
-	resultArea->removeWidget(resultLabel);
-	delete resultLabel;
+ExerciseIntonation::~ExerciseIntonation() {
+	if (instructionImageLabel != NULL) {
+		instructionArea->removeWidget(instructionImageLabel);
+		delete instructionImageLabel;
+		instructionImageLabel = NULL;
+	}
+	if (resultLabel != NULL) {
+		resultArea->removeWidget(resultLabel);
+		delete resultLabel;
+		resultLabel = NULL;
+	}
 }
 
 int ExerciseIntonation::getType() {

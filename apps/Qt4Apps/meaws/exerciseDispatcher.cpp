@@ -41,6 +41,8 @@ void ExerciseDispatcher::open() {
 			marBackend = new MarBackend(evaluation->getType());
 			connect(marBackend, SIGNAL(setAttempt(bool)), this, SLOT(setAttempt(bool)));
 			enableActions(MEAWS_READY_EXERCISE);
+		} else {
+			close();
 		}
 	}
 }

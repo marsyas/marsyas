@@ -6,6 +6,7 @@ using namespace std;
 Exercise::Exercise() {
 	instructionArea = NULL;
 	resultArea = NULL;
+	instructionImageLabel = NULL;
 }
 
 void Exercise::setArea(QGridLayout *getInstructionArea, QGridLayout *getResultArea) {
