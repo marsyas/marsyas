@@ -138,7 +138,9 @@ mrs_real ExerciseControl::evaluateCrescendoDecrescendo(realvec &vec, realvec &we
 	for (mrs_natural i=maxIndex ; i<vec.getSize() ; i++)
 		vecLinear(i) = slope2*(vec.getSize()-i)+vec(vec.getSize()-1);
 
-	return slidingWeightedDeviation(vec-vecLinear, weight)/(vec.maxval()-vec.minval());
+	// TODO: compile fix, might be yucky.  -gp
+	realvec vecSubtracted = vec - vecLinear;
+	return slidingWeightedDeviation( vecSubtracted, weight)/(vec.maxval()-vec.minval());
 }
 
 mrs_real ExerciseControl::evaluateVibrato(realvec &vec, realvec &weight)
