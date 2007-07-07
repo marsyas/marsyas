@@ -9,17 +9,27 @@ using namespace std;
 #include <sstream>
 
 ExerciseControl::ExerciseControl() {
+	displayPitches = NULL;
+	displayAmplitudes = NULL;
 	hopSize = 8;
 }
 
 ExerciseControl::~ExerciseControl() {
-	instructionArea->removeWidget(instructionImageLabel);
-	delete (instructionImageLabel);;
-
-	resultArea->removeWidget(displayPitches);
-	delete displayPitches;
-	resultArea->removeWidget(displayAmplitudes);
-	delete displayAmplitudes;
+	if (instructionImageLabel != NULL) {
+		instructionArea->removeWidget(instructionImageLabel);
+		delete (instructionImageLabel);
+		instructionImageLabel = NULL;
+	}
+	if (displayPitches != NULL) {
+		resultArea->removeWidget(displayPitches);
+		delete displayPitches;
+		displayPitches = NULL;
+	}
+	if (displayAmplitudes != NULL) {
+		resultArea->removeWidget(displayAmplitudes);
+		delete displayAmplitudes;
+		displayAmplitudes = NULL;
+	}
 }
 
 int ExerciseControl::getType() {
