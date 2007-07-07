@@ -146,8 +146,10 @@ void MarBackend::setupAllNet() {
 		allNet->addMarSystem( makePitchNet(osrate) );
 		break;
 	case TYPE_CONTROL:
-		allNet->addMarSystem( makePitchNet(osrate) );
-// do amplitude
+		MarSystem *fanout = mng.create("Fanout", "fanout");
+		allNet->addMarSystem(fanout);
+		fanout->addMarSystem(makePitchNet(osrate));
+		fanout->addMarSystem(makeAmplitudeNet(osrate));
 		break;
 	}
 
@@ -165,7 +167,9 @@ MarSystem* MarBackend::makePitchNet(mrs_real source_osrate) {
 	MarSystem *pnet = mng.create("Series", "pitchNet");
 	pnet->addMarSystem(mng.create("ShiftInput", "sfi"));
 	pnet->addMarSystem(mng.create("PitchPraat", "pitch")); 
-	pnet->addMarSystem(mng.create("RealvecSink", "rvSink")); 
+	
+	pitchesSink = mng.create("RealvecSink", "rvSink");
+	pnet->addMarSystem(pitchesSink); 
 
 	mrs_real lowPitch = 36;
 	mrs_real highPitch = 79;
@@ -191,6 +195,23 @@ MarSystem* MarBackend::makePitchNet(mrs_real source_osrate) {
 	return pnet;
 }
 
+MarSystem* MarBackend::makeAmplitudeNet(mrs_real source_osrate) {
+	MarSystem *pnet = mng.create("Series", "amplitudeNet");
+    // should be done with the source
+	pnet->addMarSystem(mng.create("ShiftInput", "sfiAmp"));
+	pnet->addMarSystem(mng.create("Power", "power")); 
+	
+	amplitudesSink = mng.create("RealvecSink", "amplitudeData");
+	pnet->addMarSystem(amplitudesSink); 
+    pnet->addMarSystem(mng.create("FlowCutSource", "fcs")); 
+	
+	pnet->updctrl("mrs_natural/inSamples", 512);
+	pnet->updctrl("ShiftInput/sfi/mrs_natural/WindowSize", 512);
+    pnet->updctrl("FlowCutSource/fcs/mrs_natural/setSamples", 2);
+    pnet->updctrl("FlowCutSource/fcs/mrs_natural/setObservations", 1);
+
+	return pnet;
+}
 
 /*   ***************************
  *   ***                     ***
@@ -223,6 +244,7 @@ bool MarBackend::analyze() {
 		}
 		case TYPE_CONTROL:
 			getPitches();
+			getAmplitudes();
 			break;
 		}
 		return true;
@@ -235,10 +257,10 @@ realvec MarBackend::getPitches() {
 	if (pitchList.getSize()==0) {
 		mrs_real osrate = sourceNet->getctrl("mrs_real/osrate")->toReal();
 
-		realvec data = allNet->getctrl("Series/pitchNet/RealvecSink/rvSink/mrs_realvec/data")->toVec();
+		realvec data = pitchesSink->getctrl("mrs_realvec/data")->toVec();
 		for (mrs_natural i=1; i<data.getSize();i+=2)
 			data(i) = samples2hertz(data(i), osrate);
-		allNet->updctrl("Series/pitchNet/RealvecSink/rvSink/mrs_bool/done", true); 
+		pitchesSink->updctrl("mrs_bool/done", true); 
 
 // my addition to the marsyasTest pitch stuff:
 		int numPitches = data.getSize()/2;
@@ -250,7 +272,18 @@ realvec MarBackend::getPitches() {
 			}
 		}
 	}
+	
 	return pitchList;
+}
+
+realvec MarBackend::getAmplitudes() {
+	if(amplitudeList.getSize()==0)
+	{
+	amplitudeList = amplitudesSink->getctrl("mrs_realvec/data")->toVec();
+    amplitudesSink->updctrl("mrs_bool/done", true); 
+	}
+	
+	return amplitudeList;
 }
 
 realvec MarBackend::getDurations()

@@ -5,6 +5,8 @@ using namespace std;
 #include <QFile>
 #include <QTextStream>
 
+
+
 ExerciseIntonation::ExerciseIntonation() {
 	resultLabel = NULL;
 }
@@ -48,9 +50,9 @@ bool ExerciseIntonation::displayAnalysis(MarBackend *results) {
 	realvec durations = results->getDurations();
 	realvec notes = results->getNotes();
 
-    QFile out_file("/tmp/notes.txt");
-    out_file.open(QIODevice::WriteOnly | QIODevice::Text);
-    QTextStream out(&out_file);
+	QFile out_file("/tmp/notes.txt");
+	out_file.open(QIODevice::WriteOnly | QIODevice::Text);
+	QTextStream out(&out_file);
 
 	for (int i=0; i<durations.getSize(); i++) {
 		if (notes(i)>0) {
@@ -60,10 +62,12 @@ bool ExerciseIntonation::displayAnalysis(MarBackend *results) {
 	}
 	out_file.close();
 /*
+#ifndef MARSYAS_WIN32 // [ML] this is ugly and sleep does not exist in Win32 !!
 	system("/Users/gperciva/progs/python/libbabelpond/reldurs.py /tmp/notes.txt");
 	sleep(1);
 	system("cd /tmp; lilypond -dpreview tempscore.ly");
 	sleep(5);
+#endif
 
 	resultLabel->setPixmap(QPixmap::fromImage(QImage("/tmp/tempscore.preview.png")));
 */

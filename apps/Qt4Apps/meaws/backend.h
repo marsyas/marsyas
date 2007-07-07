@@ -21,6 +21,7 @@ public:
 
 	bool analyze();
 	realvec getPitches();
+	realvec getAmplitudes();
 
 // transcriber
 	realvec getDurations();
@@ -40,6 +41,8 @@ private:
 	MarSystemManager mng;
 	MarSystem *sourceNet;
 	MarSystem *allNet;
+	MarSystem *amplitudesSink;
+	MarSystem *pitchesSink;
 	MarSystemQtWrapper *mrsWrapper;
 	MarControlPtr isEmptyPtr;
 	bool isEmptyState;
@@ -48,6 +51,7 @@ private:
 	int method;
 	MarSystem* makeSourceNet(std::string filename);
 	MarSystem* makePitchNet(mrs_real source_osrate);
+	MarSystem* makeAmplitudeNet(mrs_real source_osrate);
 	void setupAllNet();
 	void delNet();
 
@@ -56,6 +60,7 @@ private:
 
 // pitch stuff
 	realvec pitchList;
+    realvec amplitudeList;
 
 // transcribed stuff
 	realvec durations;

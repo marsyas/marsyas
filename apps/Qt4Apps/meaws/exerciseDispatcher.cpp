@@ -42,7 +42,7 @@ void ExerciseDispatcher::open() {
 		QString openFilename = QFileDialog::getOpenFileName(0,tr("Open file"),
 			evaluation->exercisesDir(), tr("Exercises (*.png)"));
 		if (!openFilename.isEmpty()) {
-			evaluation->open(openFilename);
+    		evaluation->open(openFilename);
 			if (marBackend != NULL)
 				delete marBackend;
 			marBackend = new MarBackend(evaluation->getType());
