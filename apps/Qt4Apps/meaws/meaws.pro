@@ -1,8 +1,5 @@
 include (../Qt4Apps.pri)
 
-INCLUDEPATH += ../../../lib/release/
-INCLUDEPATH += . ..
-
 SOURCES = start.cpp mainwindow.cpp
 HEADERS = defs.h mainwindow.h
 
@@ -45,20 +42,29 @@ INSTALLS += data
 INCLUDEPATH += ../../../lib/release/
 
 
-!win32:LIBS += -lmarsyas -L../../../lib/release/
 
 unix {
-  !macx {
-  LIBS += -lasound
-	}
+!macx {
+	LIBS += -lmarsyas -L../../../lib/release/
+	LIBS += -lasound
+}
 }
 
-macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
+macx {
+	LIBS += -lmarsyas -L../../../lib/release/
+	LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
+}
 
-# needs to be updated:
+win32 {
+	INCLUDEPATH += ../../../lib/release/
+	INCLUDEPATH += . ..
+	CONFIG += console
+}
+
+# needs to be upddate:   (or deleted?)
 # win32:DEFINES += __WINDOWS_DS__
 # win32:LIBS += -lmarsyas  -ldsound  
 # win32:LIBPATH += ..\..\marsyasVisualStudio2005\marsyas\Release "$$(DXSDK_DIR)Lib\x86\"
 # win32:INCLUDEPATH += ../../marsyas "$$(DXSDK_DIR)"Include\ #include path for dsound.h
 
-CONFIG += console
+
