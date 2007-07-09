@@ -52,6 +52,7 @@ private:
     QtMarPlot *displayAmplitudes;
 	realvec myPitches;
 	realvec myAmplitudes;
+    realvec myWeight;
 
 	mrs_natural hopSize;
 

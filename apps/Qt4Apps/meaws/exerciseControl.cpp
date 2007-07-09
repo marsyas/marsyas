@@ -42,11 +42,11 @@ void ExerciseControl::setupDisplay() {
 	displayPitches = new QtMarPlot();
 	displayPitches->setPlotName("Pitch");
 	displayPitches->setBackgroundColor(QColor(255,255,255));
-	displayPitches->setPixelWidth(2);
+	displayPitches->setPixelWidth(3);
 	displayAmplitudes = new QtMarPlot();
 	displayAmplitudes->setPlotName("Amplitude");
 	displayAmplitudes->setBackgroundColor(QColor(255,255,255));
-	displayAmplitudes->setPixelWidth(2);
+	displayAmplitudes->setPixelWidth(3);
 	/*
 	displayPitches = new QLabel;
 	displayAmplitude = new QLabel;
@@ -107,12 +107,32 @@ QString ExerciseControl::getMessage() {
 }
 
 bool ExerciseControl::displayAnalysis(MarBackend *results) {
-	myPitches = results->getPitches();	
-	displayPitches->setVertical(0,200);
+	mrs_natural i, j=0;
+	realvec tmpP = results->getPitches();
+	realvec tmpA = results->getAmplitudes();
+	myPitches.stretch(tmpP.getSize());
+	myAmplitudes.stretch(tmpP.getSize());
+
+	// remove zeros pitches
+	for(i=0 ; i< tmpP.getSize() ; i++)
+		if(tmpP(i))
+		{
+	myPitches(j) = tmpP(i);
+	myAmplitudes(j++) = tmpA(i);
+	}
+		myPitches.stretch(j);
+		myAmplitudes.stretch(j);
+
+	myPitches.apply(hertz2bark);
+	myWeight = myAmplitudes;
+	myAmplitudes.apply(amplitude2dB);
+
+	displayPitches->setVertical(myPitches.median()-0.04,myPitches.median()+0.02);
 	displayPitches->setData( &myPitches );
 
-	myAmplitudes = results->getAmplitudes();	
-	displayAmplitudes->setVertical(0,200);
+	cout << myAmplitudes ;
+
+	displayAmplitudes->setVertical(0,myAmplitudes.maxval()+1);
 	displayAmplitudes->setData( &myAmplitudes);
 
 	evaluatePerformance(results, straightMezzo);
@@ -121,6 +141,10 @@ bool ExerciseControl::displayAnalysis(MarBackend *results) {
 	ss << "Results: " << pitchError << " " << amplitudeError;
 	resultString = ss.str();
 
+	/*MATLAB_PUT(myPitches, "pitch");
+	MATLAB_PUT(myAmplitudes, "amp");
+    MATLAB_EVAL("subplot(2, 1, 1); plot(pitch); subplot(2, 1, 2); plot(amp); ");*/
+
 	return 0 ;
 }
 
@@ -128,24 +152,24 @@ void ExerciseControl::evaluatePerformance(MarBackend *results, exerciseControlTy
 	switch(type)
 	{
 	case straightPiano:
-		pitchError = evaluateStraight(myPitches, myAmplitudes);
-		amplitudeError = evaluateStraight(myAmplitudes, myAmplitudes);
+		pitchError = evaluateStraight(myPitches, myWeight);
+		amplitudeError = evaluateStraight(myAmplitudes, myWeight);
 		break;
 	case straightMezzo:
-		pitchError = evaluateStraight(myPitches, myAmplitudes);
-		amplitudeError = evaluateStraight(myAmplitudes, myAmplitudes);
+		pitchError = evaluateStraight(myPitches, myWeight);
+		amplitudeError = evaluateStraight(myAmplitudes, myWeight);
 		break;
 	case straightForte:
-		pitchError = evaluateStraight(myPitches, myAmplitudes);
-		amplitudeError = evaluateStraight(myAmplitudes, myAmplitudes);
+		pitchError = evaluateStraight(myPitches, myWeight);
+		amplitudeError = evaluateStraight(myAmplitudes, myWeight);
 		break;
 	case crescendoDecrescendo:
-		pitchError = evaluateStraight(myPitches, myAmplitudes);
-		amplitudeError = evaluateCrescendoDecrescendo(myAmplitudes, myAmplitudes);
+		pitchError = evaluateStraight(myPitches, myWeight);
+		amplitudeError = evaluateCrescendoDecrescendo(myAmplitudes, myWeight);
 		break;
 	case vibrato:
-		pitchError = evaluateVibrato(myPitches, myAmplitudes);
-		amplitudeError = evaluateVibrato(myAmplitudes, myAmplitudes);
+		pitchError = evaluateVibrato(myPitches, myWeight);
+		amplitudeError = evaluateVibrato(myAmplitudes, myWeight);
 		break;
 	}
 }
@@ -237,9 +261,9 @@ mrs_real ExerciseControl::slidingWeightedDeviation(realvec &vec, realvec &weight
 		return 0;
 	}
 
-	for (mrs_natural i=0 ; i<vec.getSize() ; i+=hopSize)
+	for (mrs_natural i=0 ; i<vec.getSize()-hopSize*2 ; i+=hopSize)
 	{
-		for (mrs_natural j=0 ; j<vec.getSize() ; j+=hopSize)
+		for (mrs_natural j=0 ; j<hopSize*2 ; j++)
 		{
 			window(j) = vec(i+j);
 			windowWeight(j) = weight(i+j);

@@ -268,7 +268,8 @@ realvec MarBackend::getPitches() {
 		for (int i=0; i<numPitches; i++) {
 			// extra check is for low-/big-endian chips
 			if (( data(2*i+1)>0 ) && (data(2*i+1)<10000)) {
-				pitchList(i) = hertz2pitch( data(2*i+1) );
+				// the conversion should be done afterwrads hertz2pitch(
+				pitchList(i) =  data(2*i+1);
 			}
 		}
 	}
