@@ -12,6 +12,8 @@ ExerciseControl::ExerciseControl() {
 	displayPitches = NULL;
 	displayAmplitudes = NULL;
 	hopSize = 8;
+
+	noteButton = new QToolButton*[5];
 }
 
 ExerciseControl::~ExerciseControl() {
@@ -60,6 +62,36 @@ void ExerciseControl::setupDisplay() {
 
 	//	resultsDisplay = new MeawsDisplay();
 	//	mainLayout->addLayout(resultsDisplay);
+}
+
+void ExerciseControl::open(QString exerciseFilename) {
+	QString noteImageBaseFilename = exerciseFilename.remove(".png");
+	QString noteImageFilename;
+	QPixmap image;
+
+	notes = new QButtonGroup;
+	for (int i=0; i<5; i++) {
+		noteButton[i] = new QToolButton;
+		noteImageFilename = noteImageBaseFilename+"-"+QString::number(i+1)+".png";
+		//cout<<qPrintable(noteButtonFilename)<<endl;
+		image = QPixmap::fromImage(QImage( noteImageFilename ));
+	    //noteButton[i]->setIcon(QPixmap::fromImage(QImage( noteImageFilename )));
+		noteButton[i]->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+	    noteButton[i]->setIcon( image );
+		noteButton[i]->setIconSize( image.size() );
+		//noteButton[i]->setScaledContents(false);
+		noteButton[i]->setMaximumHeight(120);
+		notes->addButton(noteButton[i]);
+		notes->setId( noteButton[i],i+1);
+		instructionArea->addWidget(noteButton[i],0,i,Qt::AlignLeft|Qt::AlignTop);
+	}
+//	instructionArea->addWidget(notes);
+	connect(notes, SIGNAL(buttonClicked(int)), this, SLOT(setNote(int)));
+}
+//zz
+
+void ExerciseControl::setNote(int noteNumber) {
+	cout<<noteNumber<<endl;
 }
 
 

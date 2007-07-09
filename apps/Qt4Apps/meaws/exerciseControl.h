@@ -4,6 +4,8 @@
 #include "defs.h"
 #include "exerciseAbstract.h"
 #include <string>
+#include <QToolButton>
+#include <QButtonGroup>
 
 //temporary  ??? [ML] for how long ;-)
 #include "../QtMarPlot.h"
@@ -17,6 +19,8 @@ typedef enum {
 } exerciseControlType ;
 
 class ExerciseControl : public Exercise {
+	Q_OBJECT
+
 public:
 	ExerciseControl();
 	~ExerciseControl();
@@ -27,6 +31,10 @@ public:
 	QString getMessage();
 
 	bool displayAnalysis(MarBackend *results);
+	void open(QString exerciseFilename);  // overloaded from Abstract
+
+public slots:
+	void setNote(int noteNumber);
 
 private:
 	void evaluatePerformance(MarBackend *results, exerciseControlType type);
@@ -51,6 +59,11 @@ private:
 	mrs_real amplitudeError;
 
 	std::string resultString;
+
+
+	QButtonGroup *notes;
+	QToolButton **noteButton;
+
 };
 #endif
 
