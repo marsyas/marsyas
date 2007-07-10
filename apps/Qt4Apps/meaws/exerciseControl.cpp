@@ -6,6 +6,7 @@ using namespace std;
 #include "PowerSpectrum.h"
 #include "Power.h"
 
+#include <QGroupBox>
 #include <sstream>
 
 ExerciseControl::ExerciseControl() {
@@ -70,6 +71,7 @@ void ExerciseControl::open(QString exerciseFilename) {
 	QPixmap image;
 
 	notes = new QButtonGroup;
+	instructionArea->setHorizontalSpacing(0);
 	for (int i=0; i<5; i++) {
 		noteButton[i] = new QToolButton;
 		noteImageFilename = noteImageBaseFilename+"-"+QString::number(i+1)+".png";
@@ -79,12 +81,13 @@ void ExerciseControl::open(QString exerciseFilename) {
 		noteButton[i]->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 	    noteButton[i]->setIcon( image );
 		noteButton[i]->setIconSize( image.size() );
-		//noteButton[i]->setScaledContents(false);
+		// noteButton[i]->setScaledContents(false);
 		noteButton[i]->setMaximumHeight(120);
 		notes->addButton(noteButton[i]);
-		notes->setId( noteButton[i],i+1);
+		notes->setId( noteButton[i],i);
 		instructionArea->addWidget(noteButton[i],0,i,Qt::AlignLeft|Qt::AlignTop);
 	}
+
 //	instructionArea->addWidget(notes);
 	connect(notes, SIGNAL(buttonClicked(int)), this, SLOT(setNote(int)));
 }
