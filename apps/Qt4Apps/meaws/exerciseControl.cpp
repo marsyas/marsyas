@@ -115,23 +115,23 @@ bool ExerciseControl::displayAnalysis(MarBackend *results) {
 	mrs_natural i, j=0;
 
 	// import results
-	//if(results)
-	//{
-	//	overallPitches = results->getPitches();
-	//	overallAmplitudes = results->getAmplitudes();
+	if(results)
+	{
+		overallPitches = results->getPitches();
+		overallAmplitudes = results->getAmplitudes();
 
-	///*	ofstream dump ;
-	//	dump.open("pitch");
-	//	dump << overallPitches;
-	//	dump.close();
-	//	dump.open("amps");
-	//	dump << overallAmplitudes;
-	//	dump.close();*/
+	/*	ofstream dump ;
+		dump.open("pitch");
+		dump << overallPitches;
+		dump.close();
+		dump.open("amps");
+		dump << overallAmplitudes;
+		dump.close();*/
 
-	//}
+	}
 
-	overallPitches.read("pitch");
-	overallAmplitudes.read("amps");
+	//overallPitches.read("pitch");
+	//overallAmplitudes.read("amps");
 
 
 	MATLAB_PUT(overallPitches, "pitch");
@@ -355,9 +355,26 @@ void ExerciseControl::selectExercisePerformance()
 	//}
 	//	myPitches.stretch(j);
 	//	myAmplitudes.stretch(j);
+	
+	// deal with octave errors
+	mrs_real medianPitch = myPitches.median();
+	for (mrs_natural i=0 ; i<myPitches.getSize() ; i++)
+	{
+		if(myPitches(i)>medianPitch*1.5)
+			myPitches(i)/=2;
+        if(myPitches(i)<medianPitch*.75)
+			myPitches(i)*=2;
+	}
+	
+		MATLAB_PUT(myPitches, "pitch");
+	MATLAB_PUT(myAmplitudes, "amp");
+	MATLAB_EVAL("subplot(2, 1, 1); plot(pitch); subplot(2, 1, 2); plot(amp); ");
+
+
 	if(exerciseState != vibrato)
-		myPitches.apply(hertz2bark);
+	{
+    myPitches.apply(hertz2bark);
 	myWeight = myAmplitudes;
 	myAmplitudes.apply(amplitude2dB);
-
+	}
 }

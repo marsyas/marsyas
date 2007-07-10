@@ -106,7 +106,7 @@ QString ExerciseDispatcher::getMessage() {
 
 void ExerciseDispatcher::analyze() {
     // to be removed DEBUG
-	//	if ( marBackend->analyze() ) 
+		if ( marBackend->analyze() ) 
 	{
 		evaluation->displayAnalysis( marBackend );
 		statusMessage = evaluation->getMessage();
