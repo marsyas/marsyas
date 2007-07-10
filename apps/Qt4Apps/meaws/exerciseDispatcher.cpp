@@ -105,7 +105,9 @@ QString ExerciseDispatcher::getMessage() {
 }
 
 void ExerciseDispatcher::analyze() {
-	if ( marBackend->analyze() ) {
+    // to be removed DEBUG
+	//	if ( marBackend->analyze() ) 
+	{
 		evaluation->displayAnalysis( marBackend );
 		statusMessage = evaluation->getMessage();
 		enableActions(MEAWS_READY_AUDIO);

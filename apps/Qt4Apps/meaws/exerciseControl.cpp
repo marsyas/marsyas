@@ -13,7 +13,7 @@ ExerciseControl::ExerciseControl() {
 	displayPitches = NULL;
 	displayAmplitudes = NULL;
 	hopSize = 8;
-
+	exerciseState = straightPiano;
 	noteButton = new QToolButton*[5];
 }
 
@@ -77,9 +77,9 @@ void ExerciseControl::open(QString exerciseFilename) {
 		noteImageFilename = noteImageBaseFilename+"-"+QString::number(i+1)+".png";
 		//cout<<qPrintable(noteButtonFilename)<<endl;
 		image = QPixmap::fromImage(QImage( noteImageFilename ));
-	    //noteButton[i]->setIcon(QPixmap::fromImage(QImage( noteImageFilename )));
+		//noteButton[i]->setIcon(QPixmap::fromImage(QImage( noteImageFilename )));
 		noteButton[i]->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-	    noteButton[i]->setIcon( image );
+		noteButton[i]->setIcon( image );
 		noteButton[i]->setIconSize( image.size() );
 		// noteButton[i]->setScaledContents(false);
 		noteButton[i]->setMaximumHeight(120);
@@ -88,13 +88,15 @@ void ExerciseControl::open(QString exerciseFilename) {
 		instructionArea->addWidget(noteButton[i],0,i,Qt::AlignLeft|Qt::AlignTop);
 	}
 
-//	instructionArea->addWidget(notes);
+	//	instructionArea->addWidget(notes);
 	connect(notes, SIGNAL(buttonClicked(int)), this, SLOT(setNote(int)));
 }
 //zz
 
 void ExerciseControl::setNote(int noteNumber) {
-	cout<<noteNumber<<endl;
+	exerciseState = (exerciseControlType) noteNumber;
+	displayAnalysis(NULL);
+
 }
 
 
@@ -111,48 +113,52 @@ QString ExerciseControl::getMessage() {
 
 bool ExerciseControl::displayAnalysis(MarBackend *results) {
 	mrs_natural i, j=0;
-	realvec tmpP = results->getPitches();
-	realvec tmpA = results->getAmplitudes();
-	myPitches.stretch(tmpP.getSize());
-	myAmplitudes.stretch(tmpP.getSize());
 
-	// remove zeros pitches
-	for(i=0 ; i< tmpP.getSize() ; i++)
-		if(tmpP(i))
-		{
-	myPitches(j) = tmpP(i);
-	myAmplitudes(j++) = tmpA(i);
-	}
-		myPitches.stretch(j);
-		myAmplitudes.stretch(j);
+	// import results
+	//if(results)
+	//{
+	//	overallPitches = results->getPitches();
+	//	overallAmplitudes = results->getAmplitudes();
 
-	myPitches.apply(hertz2bark);
-	myWeight = myAmplitudes;
-	myAmplitudes.apply(amplitude2dB);
+	///*	ofstream dump ;
+	//	dump.open("pitch");
+	//	dump << overallPitches;
+	//	dump.close();
+	//	dump.open("amps");
+	//	dump << overallAmplitudes;
+	//	dump.close();*/
+
+	//}
+
+	overallPitches.read("pitch");
+	overallAmplitudes.read("amps");
+
+
+	MATLAB_PUT(overallPitches, "pitch");
+	MATLAB_PUT(overallAmplitudes, "amp");
+	MATLAB_EVAL("subplot(2, 1, 1); plot(pitch); subplot(2, 1, 2); plot(amp); ");
+
+	selectExercisePerformance();
 
 	displayPitches->setVertical(myPitches.median()-0.04,myPitches.median()+0.02);
 	displayPitches->setData( &myPitches );
 
-	cout << myAmplitudes ;
-
 	displayAmplitudes->setVertical(0,myAmplitudes.maxval()+1);
 	displayAmplitudes->setData( &myAmplitudes);
 
-	evaluatePerformance(results, straightMezzo);
+    evaluatePerformance();
+	cout << "Results: " << pitchError << " " << amplitudeError;
 
 	std::stringstream ss;
 	ss << "Results: " << pitchError << " " << amplitudeError;
 	resultString = ss.str();
 
-	/*MATLAB_PUT(myPitches, "pitch");
-	MATLAB_PUT(myAmplitudes, "amp");
-    MATLAB_EVAL("subplot(2, 1, 1); plot(pitch); subplot(2, 1, 2); plot(amp); ");*/
 
 	return 0 ;
 }
 
-void ExerciseControl::evaluatePerformance(MarBackend *results, exerciseControlType type) {
-	switch(type)
+void ExerciseControl::evaluatePerformance() {
+	switch(exerciseState)
 	{
 	case straightPiano:
 		pitchError = evaluateStraight(myPitches, myWeight);
@@ -290,4 +296,68 @@ mrs_real ExerciseControl::weightedDeviation(realvec &vec, realvec &weight)
 		res+= (vec(i)-meanData)*(vec(i)-meanData)*weight(i);
 
 	return sqrt(res/(vec.getSize()*weight.mean()));
+}
+
+void ExerciseControl::selectExercisePerformance()
+{
+	mrs_natural startSectionSilence=0, endSectionSilence=0, accSilence=0, delaySilence = 10, i;
+	mrs_natural startSectionActivity=0, endSectionActivity=0, accActivity=0, delayActivity = 10;
+	mrs_natural currentType= -1;
+
+	// search for consequent non zeros pitches followed by zeros
+	for (i=0 ; i<overallPitches.getSize() ; i++)
+	{
+		if(overallPitches(i) && !startSectionActivity)
+			startSectionActivity=i;
+		if(overallPitches(i) && startSectionActivity)
+			accActivity++;
+		if(!overallPitches(i) && accActivity>delayActivity && !startSectionSilence)
+			startSectionSilence=i;
+		if(!overallPitches(i) && startSectionActivity)
+			endSectionActivity=i;
+		if(!overallPitches(i) && startSectionSilence)
+			accSilence++;
+		if(accSilence>delaySilence || i==overallPitches.getSize()-1)
+		{
+			currentType++;
+
+			if(i==overallPitches.getSize()-1)
+				startSectionSilence = overallPitches.getSize()-1;
+
+			if(((exerciseControlType) currentType) == exerciseState)
+			{
+				myPitches.stretch(startSectionSilence-startSectionActivity);
+				myAmplitudes.stretch(startSectionSilence-startSectionActivity);
+
+				for (mrs_natural j=0 ; j<myPitches.getSize() ; j++)
+				{
+					myPitches(j) = overallPitches(startSectionActivity+j) ;
+					myAmplitudes(j) = overallAmplitudes(startSectionActivity+j) ;
+				}
+				break;
+			}
+			startSectionActivity=0;
+			startSectionSilence=0;
+			accActivity=0;
+			accSilence=0;
+		}
+	}
+	// select the needed performance following the exercice type
+	//myPitches.stretch(tmpP.getSize());
+	//myAmplitudes.stretch(tmpP.getSize());
+
+	//// remove zeros pitches
+	//for(i=0 ; i< tmpP.getSize() ; i++)
+	//	if(tmpP(i))
+	//	{
+	//myPitches(j) = tmpP(i);
+	//myAmplitudes(j++) = tmpA(i);
+	//}
+	//	myPitches.stretch(j);
+	//	myAmplitudes.stretch(j);
+	if(exerciseState != vibrato)
+		myPitches.apply(hertz2bark);
+	myWeight = myAmplitudes;
+	myAmplitudes.apply(amplitude2dB);
+
 }

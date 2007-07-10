@@ -37,13 +37,13 @@ public slots:
 	void setNote(int noteNumber);
 
 private:
-	void evaluatePerformance(MarBackend *results, exerciseControlType type);
+	void evaluatePerformance();
 	mrs_real evaluateStraight(realvec &vec, realvec &weight);
 	mrs_real evaluateCrescendoDecrescendo(realvec &vec, realvec &weight);
 	mrs_real evaluateVibrato(realvec &vec, realvec &weight);
 	mrs_real slidingWeightedDeviation(realvec &vec, realvec &weight);
     mrs_real weightedDeviation(realvec &vec, realvec &weight);
-
+void selectExercisePerformance();
 //	QLabel *displayPitches;
 //	QLabel *displayAmplitude;
 
@@ -54,6 +54,10 @@ private:
 	realvec myAmplitudes;
     realvec myWeight;
 
+    realvec overallPitches;
+	realvec overallAmplitudes;
+
+
 	mrs_natural hopSize;
 
 	mrs_real pitchError;
@@ -61,6 +65,7 @@ private:
 
 	std::string resultString;
 
+    exerciseControlType exerciseState;
 
 	QButtonGroup *notes;
 	QToolButton **noteButton;
