@@ -21,6 +21,7 @@ public:
 
 	bool analyze();
 	realvec getPitches();
+	realvec getMidiPitches();
 	realvec getAmplitudes();
 
 // transcriber
@@ -60,6 +61,7 @@ private:
 
 // pitch stuff
 	realvec pitchList;
+	realvec pitchMidiList;
     realvec amplitudeList;
 
 // transcribed stuff

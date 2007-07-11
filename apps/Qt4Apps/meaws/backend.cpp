@@ -22,6 +22,8 @@ MarBackend::MarBackend(int getType) {
 
 	isEmptyState = false;
 	hasAudio = false;
+
+	setupAllNet();
 }
 
 MarBackend::~MarBackend() {
@@ -51,14 +53,17 @@ void MarBackend::delNet() {
 MarSystem* MarBackend::makeSourceNet(std::string filename) {
 	MarSystem *pnet = mng.create("Series", "sourceNet");
 	if (filename != "") {
+		cout<<"DEBUG: getting from file"<<endl;
 		pnet->addMarSystem(mng.create("SoundFileSource", "srcFile"));
 		pnet->updctrl("SoundFileSource/srcFile/mrs_string/filename", filename);
 		pnet->linkctrl("mrs_real/osrate", "SoundFileSource/srcFile/mrs_real/osrate");
 		pnet->linkctrl("mrs_bool/notEmpty", "SoundFileSource/srcFile/mrs_bool/notEmpty");
 	} else {
+		cout<<"DEBUG: getting audio"<<endl;
 		pnet->addMarSystem(mng.create("AudioSource", "srcRec"));
 		pnet->updctrl("mrs_real/israte", 44100.0);
 		pnet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
+		pnet->linkctrl("mrs_bool/notEmpty", "AudioSource/srcRec/mrs_bool/notEmpty");
 		//pnet->linkctrl("mrs_real/osrate", "AudioSource/srcRec/mrs_real/osrate");
 	}
 	return pnet;
@@ -70,6 +75,7 @@ void MarBackend::open(std::string filename) {
 	sourceNet = makeSourceNet(filename);
 	hasAudio = true;
 	setupAllNet();
+	mrsWrapper->play();
 }
 
 /*
@@ -92,6 +98,7 @@ void MarBackend::ctrlChanged(MarControlPtr changed) {
 	if ( changed.isEqual( isEmptyPtr ) ) {
 		bool changedState = changed->to<mrs_bool>();
 		if (changedState != isEmptyState) {
+			cout<<"in ctrlChanged"<<endl;
 			if ( changedState ) {
 				start();
 				isEmptyState=true;
@@ -147,9 +154,9 @@ void MarBackend::setupAllNet() {
 		break;
 	case TYPE_CONTROL:
 		MarSystem *fanout = mng.create("Fanout", "fanout");
-		allNet->addMarSystem(fanout);
 		fanout->addMarSystem(makePitchNet(osrate));
 		fanout->addMarSystem(makeAmplitudeNet(osrate));
+		allNet->addMarSystem(fanout);
 		break;
 	}
 
@@ -160,6 +167,7 @@ void MarBackend::setupAllNet() {
 
 	mrsWrapper->start();
 	mrsWrapper->pause();
+//	emit setAttempt(false);
 }
 
 
@@ -231,14 +239,17 @@ bool MarBackend::analyze() {
 		case TYPE_PLAYBACK:
 			break;
 		case TYPE_INTONATION: {
-			getPitches();
+			getMidiPitches();
+		cout<<getMidiPitches();
 			Transcriber *trans = new Transcriber();
-			trans->setPitchList( getPitches() );
+			trans->setPitchList( getMidiPitches() );
 			trans->calcOnsets();
 			trans->calcNotes();
 			trans->calcRelativeDurations();
 			durations = trans->getDurations();
 			notes = trans->getNotes();
+		cout<<durations;
+		cout<<notes;
 			delete trans;
 			break;
 		}
@@ -275,6 +286,19 @@ realvec MarBackend::getPitches() {
 	}
 	
 	return pitchList;
+}
+
+realvec MarBackend::getMidiPitches() {
+	if (pitchList.getSize()==0) {
+		getPitches();
+	}
+	pitchMidiList = getPitches();
+	for (int i=0; i<pitchMidiList.getSize(); i++) {
+		pitchMidiList(i) = hertz2pitch( pitchMidiList(i) );
+		if (pitchMidiList(i) < 10)
+			pitchMidiList(i) = 0;
+	}
+	return pitchMidiList;
 }
 
 realvec MarBackend::getAmplitudes() {
