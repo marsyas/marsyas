@@ -120,8 +120,8 @@ bool ExerciseControl::displayAnalysis(MarBackend *results) {
 	// import results
 	if(results)
 	{
-	/*	overallPitches = results->getPitches();
-		overallAmplitudes = results->getAmplitudes();*/
+		overallPitches = results->getPitches();
+		overallAmplitudes = results->getAmplitudes();
 
 	/*	ofstream dump ;
 		dump.open("pitch");
@@ -134,13 +134,13 @@ bool ExerciseControl::displayAnalysis(MarBackend *results) {
 	}
 
 	cout << overallPitches;
-	overallPitches.read("pitch");
-	overallAmplitudes.read("amps");
+	//overallPitches.read("pitch");
+	//overallAmplitudes.read("amps");
 
 
-	MATLAB_PUT(overallPitches, "pitch");
-	MATLAB_PUT(overallAmplitudes, "amp");
-	MATLAB_EVAL("subplot(2, 1, 1); plot(pitch); subplot(2, 1, 2); plot(amp); ");
+	//MATLAB_PUT(overallPitches, "pitch");
+	//MATLAB_PUT(overallAmplitudes, "amp");
+	//MATLAB_EVAL("subplot(2, 1, 1); plot(pitch); subplot(2, 1, 2); plot(amp); ");
 
 	selectExercisePerformance();
 
@@ -265,9 +265,9 @@ realvec spectrum(2048, 1), power(1);
 		vibratoWeight(i) = power(0);
 	}
 
-		MATLAB_PUT(vibratoFrequency, "pitch");
+	/*	MATLAB_PUT(vibratoFrequency, "pitch");
 	    MATLAB_PUT(vibratoWeight, "amp");
-	    MATLAB_EVAL("subplot(2, 1, 1); plot(pitch); subplot(2, 1, 2); plot(amp); ");
+	    MATLAB_EVAL("subplot(2, 1, 1); plot(pitch); subplot(2, 1, 2); plot(amp); ");*/
 
 
 	return slidingWeightedDeviation(vibratoFrequency, vibratoWeight);

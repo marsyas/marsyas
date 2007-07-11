@@ -144,6 +144,9 @@ void MarBackend::setupAllNet() {
 	allNet = mng.create("Series", "allNet");
 	allNet->addMarSystem(sourceNet);
 	allNet->linkctrl("mrs_bool/notEmpty", "Series/sourceNet/mrs_bool/notEmpty");
+	
+	// does not compile if inside the switch ?!?
+	MarSystem *fanout = mng.create("Fanout", "fanout");
 
 	switch (method) {
 	case TYPE_PLAYBACK:
@@ -154,10 +157,10 @@ void MarBackend::setupAllNet() {
 		allNet->addMarSystem( makePitchNet(osrate) );
 		break;
 	case TYPE_CONTROL:
-		MarSystem *fanout = mng.create("Fanout", "fanout");
 		fanout->addMarSystem(makePitchNet(osrate));
 		fanout->addMarSystem(makeAmplitudeNet(osrate));
 		allNet->addMarSystem(fanout);
+		break;
 	case TYPE_SHIFT:
 		allNet->addMarSystem( makePitchNet(osrate) );
 		break;

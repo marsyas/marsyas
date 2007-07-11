@@ -49,12 +49,14 @@ Windowing::addcontrols()
 {
     addctrl("mrs_string/type", "Hamming");
     addctrl("mrs_natural/zeroPhasing", 0);
+    addctrl("mrs_natural/zeroPadding", 0);
     addctrl("mrs_natural/size", 0);
     // used for the gaussian window
     addctrl("mrs_real/variance", 0.4);
     
     setctrlState("mrs_string/type", true);
     setctrlState("mrs_natural/zeroPhasing", true);
+    setctrlState("mrs_natural/zeroPadding", true);
     setctrlState("mrs_natural/size", true);
     setctrlState("mrs_real/variance", true);
 }
@@ -62,8 +64,12 @@ Windowing::addcontrols()
 void
 Windowing::myUpdate(MarControlPtr sender)
 {
-    setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-    setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+	if (getctrl("mrs_natural/zeroPadding")->toNatural() != 0)
+	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/zeroPadding")->toNatural());
+	else
+	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+
+	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
     setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
     // needed?
@@ -176,6 +182,7 @@ Windowing::myProcess(realvec& in, realvec& out)
     //lmartins: if (mute_) return;
     if(getctrl("mrs_bool/mute")->toBool()) return;
 
+	out.setval(0);
     for (o=0; o < inObservations_; o++)
     {
         for (t = 0; t < inSamples_; t++)
@@ -187,6 +194,4 @@ Windowing::myProcess(realvec& in, realvec& out)
         for (t = inSamples_/2; t < inSamples_; t++)
             out(o,t+(onSamples_-inSamples_))=tmp_((t+delta_)%inSamples_);
     }
-    // MATLAB_PUT(out, "peaks");
-    //MATLAB_EVAL("plot(peaks(1,:))");
 }

@@ -252,8 +252,8 @@ AudioSource::myProcess(realvec& in, realvec& out)
   
   ri_ = ri_ - ssize;
   
-  MATLAB_PUT(out, "AudioSource_out");
-  MATLAB_EVAL("plot(AudioSource_out)");
+ /* MATLAB_PUT(out, "AudioSource_out");
+  MATLAB_EVAL("plot(AudioSource_out)");*/
 }
 
 
