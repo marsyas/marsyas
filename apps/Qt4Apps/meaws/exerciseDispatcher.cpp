@@ -30,6 +30,8 @@ bool ExerciseDispatcher::chooseEvaluation() {
 			delete evaluation;
 		if (item=="Intonation test") evaluation = new ExerciseIntonation();
 		if (item=="Sound control test") evaluation = new ExerciseControl();
+		connect(evaluation,SIGNAL(analysisDone()), this,
+SLOT(analysisDone()));
 		evaluation->setArea(instructionArea, resultArea);
 		evaluation->setupDisplay();
 		return true;
@@ -105,12 +107,17 @@ QString ExerciseDispatcher::getMessage() {
 }
 
 void ExerciseDispatcher::analyze() {
-    // to be removed DEBUG
+    // to be removed DEBUG   -Mathieu
+// what's to be removed?  Was this already removed?  -gp
 		if ( marBackend->analyze() ) 
 	{
 		evaluation->displayAnalysis( marBackend );
-		statusMessage = evaluation->getMessage();
-		enableActions(MEAWS_READY_AUDIO);
+		analysisDone();
 	}
+}
+
+void ExerciseDispatcher::analysisDone() {
+	statusMessage = evaluation->getMessage();
+	enableActions(MEAWS_READY_AUDIO);
 }
 

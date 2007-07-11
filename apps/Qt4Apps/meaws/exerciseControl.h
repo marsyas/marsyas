@@ -24,6 +24,8 @@ class ExerciseControl : public Exercise {
 public:
 	ExerciseControl();
 	~ExerciseControl();
+	void setStatusBarWriting(QObject *mainwindow);
+
 	int getType();
 
 	void setupDisplay();
@@ -35,6 +37,9 @@ public:
 
 public slots:
 	void setNote(int noteNumber);
+
+signals:
+	void analysisDone();
 
 private:
 	void evaluatePerformance();

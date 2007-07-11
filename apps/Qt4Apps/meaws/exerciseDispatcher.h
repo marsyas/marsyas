@@ -32,6 +32,7 @@ public slots:
 	void playFile();
 
 	void analyze(); // temp
+	void analysisDone(); // even tempier
 
 signals:
 	void enableActions(int state);

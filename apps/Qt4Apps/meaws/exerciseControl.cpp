@@ -154,7 +154,7 @@ bool ExerciseControl::displayAnalysis(MarBackend *results) {
 	ss << "Results: " << pitchError << " " << amplitudeError;
 	resultString = ss.str();
 
-
+	emit analysisDone();
 	return 0 ;
 }
 
@@ -379,3 +379,4 @@ void ExerciseControl::selectExercisePerformance()
 	myAmplitudes.apply(amplitude2dB);
 	}
 }
+
