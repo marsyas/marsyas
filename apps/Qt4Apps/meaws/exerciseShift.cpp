@@ -52,13 +52,20 @@ QString ExerciseShift::getMessage() {
 
 bool ExerciseShift::displayAnalysis(MarBackend *results) {
 	pitches = results->getMidiPitches();
+	//cout<<"*** shifter: midi pitch size "<<pitches.getSize()<<endl;
 	mrs_real sum = 0.0;
 	mrs_natural count = 0;
 	for (mrs_natural i=0; i<pitches.getSize(); i++) {
-		if (pitches(i)>70) {
+		//if (pitches(i)>70) {
+		if (pitches(i)>30) {
 			sum += pitches(i);
 			count++;
 		}
+	}
+	if (count==0) {
+		// DO SOMETHING!
+		count = 1;
+		sum = 50;
 	}
 	mrs_real average = sum/count;
 	sum = 0.0;

@@ -111,6 +111,7 @@ QString ExerciseDispatcher::getMessage() {
 void ExerciseDispatcher::analyze() {
     // to be removed DEBUG   -Mathieu
 // what's to be removed?  Was this already removed?  -gp
+// stuff that mght be accidentally commiited -gp.
 		if ( marBackend->analyze() ) 
 	{
 		evaluation->displayAnalysis( marBackend );

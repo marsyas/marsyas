@@ -99,7 +99,7 @@ void MarBackend::ctrlChanged(MarControlPtr changed) {
 		bool changedState = changed->to<mrs_bool>();
 		if (changedState != isEmptyState) {
 			if ( changedState ) {
-				start();
+				//start();
 				isEmptyState=true;
 			} else {
 				stop();
@@ -110,12 +110,14 @@ void MarBackend::ctrlChanged(MarControlPtr changed) {
 }
 
 void MarBackend::start() {
+//	cout<<"start"<<endl;
 	emit setAttempt(true);
 	if (mrsWrapper != NULL)
 		mrsWrapper->play();
 }
 
 void MarBackend::stop() {
+//	cout<<"stop"<<endl;
 	emit setAttempt(false);
 	if (mrsWrapper != NULL)
 		mrsWrapper->pause();
@@ -172,6 +174,7 @@ void MarBackend::setupAllNet() {
 	mrsWrapper->start();
 	mrsWrapper->pause();
 //	emit setAttempt(false);
+//	cout<<"finished setupAllNet"<<endl;
 }
 
 
@@ -257,6 +260,13 @@ bool MarBackend::analyze() {
 		case TYPE_CONTROL:
 			getPitches();
 			getAmplitudes();
+			break;
+		case TYPE_SHIFT:
+			getMidiPitches();
+			//cout<<getMidiPitches();
+			break;
+		default:
+			cout<<"**** SOMETHING IS BROKEN ****"<<endl;
 			break;
 		}
 		return true;
