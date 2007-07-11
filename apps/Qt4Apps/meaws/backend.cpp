@@ -53,13 +53,13 @@ void MarBackend::delNet() {
 MarSystem* MarBackend::makeSourceNet(std::string filename) {
 	MarSystem *pnet = mng.create("Series", "sourceNet");
 	if (filename != "") {
-		cout<<"DEBUG: getting from file"<<endl;
+		//cout<<"DEBUG: getting from file"<<endl;
 		pnet->addMarSystem(mng.create("SoundFileSource", "srcFile"));
 		pnet->updctrl("SoundFileSource/srcFile/mrs_string/filename", filename);
 		pnet->linkctrl("mrs_real/osrate", "SoundFileSource/srcFile/mrs_real/osrate");
 		pnet->linkctrl("mrs_bool/notEmpty", "SoundFileSource/srcFile/mrs_bool/notEmpty");
 	} else {
-		cout<<"DEBUG: getting audio"<<endl;
+		//cout<<"DEBUG: getting audio"<<endl;
 		pnet->addMarSystem(mng.create("AudioSource", "srcRec"));
 		pnet->updctrl("mrs_real/israte", 44100.0);
 		pnet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
@@ -98,7 +98,6 @@ void MarBackend::ctrlChanged(MarControlPtr changed) {
 	if ( changed.isEqual( isEmptyPtr ) ) {
 		bool changedState = changed->to<mrs_bool>();
 		if (changedState != isEmptyState) {
-			cout<<"in ctrlChanged"<<endl;
 			if ( changedState ) {
 				start();
 				isEmptyState=true;
@@ -240,7 +239,6 @@ bool MarBackend::analyze() {
 			break;
 		case TYPE_INTONATION: {
 			getMidiPitches();
-		cout<<getMidiPitches();
 			Transcriber *trans = new Transcriber();
 			trans->setPitchList( getMidiPitches() );
 			trans->calcOnsets();
@@ -248,8 +246,6 @@ bool MarBackend::analyze() {
 			trans->calcRelativeDurations();
 			durations = trans->getDurations();
 			notes = trans->getNotes();
-		cout<<durations;
-		cout<<notes;
 			delete trans;
 			break;
 		}

@@ -42,11 +42,17 @@ QString ExerciseIntonation::exercisesDir() {
 }
 
 QString ExerciseIntonation::getMessage() {
-	QString toReturn("foo");
+	// TODO: another totally fake demo for MISTIC.
+	QString toReturn("Grade: 76\%");
 	return toReturn;
 }
 
 bool ExerciseIntonation::displayAnalysis(MarBackend *results) {
+	// TODO: this is a totally fake demo for the MISTIC talk.
+	resultLabel->setPixmap(QPixmap::fromImage(QImage(MEAWS_DIR+"data/scale1.preview.png")));
+
+
+/*
 	realvec durations = results->getDurations();
 	realvec notes = results->getNotes();
 
@@ -61,6 +67,8 @@ bool ExerciseIntonation::displayAnalysis(MarBackend *results) {
 		}
 	}
 	out_file.close();
+*/
+
 /*
 #ifndef MARSYAS_WIN32 // [ML] this is ugly and sleep does not exist in Win32 !!
 	system("/Users/gperciva/progs/python/libbabelpond/reldurs.py /tmp/notes.txt");

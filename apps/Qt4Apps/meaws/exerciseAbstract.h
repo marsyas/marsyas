@@ -23,6 +23,9 @@ public:
 	virtual QString getMessage() = 0;
 	virtual void open(QString exerciseFilename);
 
+signals:
+	void analysisDone();
+
 protected:
     QGridLayout *instructionArea;
     QGridLayout *resultArea;
