@@ -56,8 +56,8 @@ bool ExerciseShift::displayAnalysis(MarBackend *results) {
 	mrs_real sum = 0.0;
 	mrs_natural count = 0;
 	for (mrs_natural i=0; i<pitches.getSize(); i++) {
-		//if (pitches(i)>70) {
-		if (pitches(i)>30) {
+		if (pitches(i)>70) {
+		//if (pitches(i)>40) {
 			sum += pitches(i);
 			count++;
 		}
@@ -78,6 +78,7 @@ bool ExerciseShift::displayAnalysis(MarBackend *results) {
 		}
 		//cout<<pitches(i)<<endl;
 	}
+	//displayPitches->setVertical(-10,10);
 	displayPitches->setVertical(-1,1);
     displayPitches->setData( &pitches );
 
