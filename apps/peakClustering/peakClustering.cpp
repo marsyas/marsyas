@@ -241,8 +241,7 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		pvseries->updctrl("mrs_natural/inObservations", 1);
 		samplingFrequency_ = pvseries->getctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/oriNet/SoundFileSource/src/mrs_real/osrate")->toReal();
 	}
-		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/oriNet/Gain/oriGain/mrs_bool/RMScalc", true);
-
+	
 
 if(noiseName != EMPTYSTRING)
 {
@@ -307,14 +306,6 @@ if(noiseName != EMPTYSTRING)
 
 	}
 
-	// link original gain and output gain
-	pvseries->linkControl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/oriNet/Gain/oriGain/mrs_real/powerRMS", 
-		"PeSynthetize/synthNet/Series/postNet/Gain/outGain/mrs_real/gain");
-	// link cluster density and output gain
-	//pvseries->linkControl("PeClust/peClust/mrs_real/clusterDensity", 
-	//	"PeSynthetize/synthNet/Series/postNet/Gain/outGain/mrs_real/gain");
-	
-	ofstream cfile("density.txt", ios::app);
 	mrs_real globalSnr = 0;
 	mrs_natural nb=0;
 	//	mrs_real time=0;
@@ -358,11 +349,7 @@ if(noiseName != EMPTYSTRING)
 			//cout << fixed << setprecision(2) << timeRead << "/" <<  setprecision(2) << timeLeft;
 			///*bool*/ temp = pvseries->getctrl("Accumulator/accumNet/Series/preNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
 			
-			mrs_real oriGain = preNet->getctrl("Fanin/fanin/Series/oriNet/Gain/oriGain/mrs_real/powerRMS")->toReal();
-            mrs_real density = pvseries->getctrl("PeClust/peClust/mrs_real/clusterDensity")->toReal();
-            cfile << density << " " << oriGain << endl;
-			//cout << oriGain << endl;
-
+		
 			if (temp2 == false || (stopAnalyse_ !=0 && stopAnalyse_<timeRead))
 				break;
 		}
@@ -379,7 +366,6 @@ if(noiseName != EMPTYSTRING)
 		pvseries->updctrl("RealvecSink/peSink/mrs_bool/done", true);
 		peakStore(vec, filePeakName, samplingFrequency_, D); 
 	}
-	cfile.close();
 }
 
 
