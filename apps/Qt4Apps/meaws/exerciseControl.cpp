@@ -4,7 +4,10 @@ using namespace std;
 #include "exerciseControl.h"
 
 #include "PowerSpectrum.h"
+#include "Series.h"
 #include "Power.h"
+#include "Spectrum.h"
+#include "Windowing.h"
 
 #include <QGroupBox>
 #include <sstream>
@@ -117,8 +120,8 @@ bool ExerciseControl::displayAnalysis(MarBackend *results) {
 	// import results
 	if(results)
 	{
-		overallPitches = results->getPitches();
-		overallAmplitudes = results->getAmplitudes();
+	/*	overallPitches = results->getPitches();
+		overallAmplitudes = results->getAmplitudes();*/
 
 	/*	ofstream dump ;
 		dump.open("pitch");
@@ -131,8 +134,8 @@ bool ExerciseControl::displayAnalysis(MarBackend *results) {
 	}
 
 	cout << overallPitches;
-	//overallPitches.read("pitch");
-	//overallAmplitudes.read("amps");
+	overallPitches.read("pitch");
+	overallAmplitudes.read("amps");
 
 
 	MATLAB_PUT(overallPitches, "pitch");
@@ -211,9 +214,9 @@ mrs_real ExerciseControl::evaluateCrescendoDecrescendo(realvec &vec, realvec &we
 
 mrs_real ExerciseControl::evaluateVibrato(realvec &vec, realvec &weight)
 {
-	realvec vibratoFrequency (vec.getSize()), vibratoWeight(vec.getSize());
-	realvec window(4096), windowWeight(hopSize*2);
-	realvec spectrum(4096), power(1);
+	realvec window(hopSize*2), windowWeight(hopSize*2);
+		realvec vibratoFrequency (vec.getSize()-window.getSize()), vibratoWeight(vec.getSize()-window.getSize());
+realvec spectrum(2048, 1), power(1);
 
 	window.setval(0);
 
@@ -224,11 +227,15 @@ mrs_real ExerciseControl::evaluateVibrato(realvec &vec, realvec &weight)
 	}
 
 	// create necesary marsystems for vibrato analysis
-	PowerSpectrum ps("PowerSpectrum");
-	ps.updctrl("mrs_natural/inSamples", window.getCols());
-	ps.updctrl("mrs_natural/inObservations", window.getRows());
-	ps.updctrl("mrs_natural/onSamples", spectrum.getCols());
-	ps.updctrl("mrs_natural/onObservations", spectrum.getRows());
+	Series vibSeries("vibSeries");
+	vibSeries.addMarSystem(new Windowing("window"));
+	vibSeries.addMarSystem(new Spectrum("fft"));
+	vibSeries.addMarSystem(new PowerSpectrum("ps"));
+	
+	vibSeries.updctrl("mrs_natural/inSamples", window.getCols());
+	vibSeries.updctrl("mrs_natural/inObservations", window.getRows());
+	vibSeries.updctrl("Windowing/window/mrs_string/type", "Hanning");
+	vibSeries.updctrl("Windowing/window/mrs_natural/zeroPadding", 4096);
 
 	Power p("Power");
 	p.updctrl("mrs_natural/inSamples", windowWeight.getCols());
@@ -236,26 +243,32 @@ mrs_real ExerciseControl::evaluateVibrato(realvec &vec, realvec &weight)
 	p.updctrl("mrs_natural/onSamples", power.getCols());
 	p.updctrl("mrs_natural/onObservations", power.getRows());
 
-	for (mrs_natural i=0 ; i<vec.getSize() ; i++)
+	for (mrs_natural i=0 ; i<vec.getSize()-window.getSize() ; i++)
 	{
-		mrs_real meanValue = 0 ;
-		for (mrs_natural j=0 ; j<vec.getSize() ; j++)
-			meanValue += vec(i+j);
-		meanValue/=vec.getSize();
+		
 
-		for (mrs_natural j=0 ; j<vec.getSize() ; j++)
+		for (mrs_natural j=0 ; j<window.getSize() ; j++)
 		{
-			window(j) = vec(i+j)-meanValue;
+			window(j) = vec(i+j);
 			windowWeight(j) = weight(i+j);
 		}
-		ps.process(window, spectrum);
+		window-=window.mean();
+		vibSeries.process(window, spectrum);
 		p.process(windowWeight, power);
 
-		mrs_natural indexMax=0;
+		mrs_natural indexMax=0, k=0;
+		while(spectrum(k+1)<spectrum(k) && k<spectrum.getSize()-1) spectrum(k++) = 0;
+
+	
 		spectrum.maxval(&indexMax);
-		vibratoFrequency(i) = indexMax/4096*44100;
+		vibratoFrequency(i) = indexMax/2048.0;
 		vibratoWeight(i) = power(0);
 	}
+
+		MATLAB_PUT(vibratoFrequency, "pitch");
+	    MATLAB_PUT(vibratoWeight, "amp");
+	    MATLAB_EVAL("subplot(2, 1, 1); plot(pitch); subplot(2, 1, 2); plot(amp); ");
+
 
 	return slidingWeightedDeviation(vibratoFrequency, vibratoWeight);
 }
@@ -304,6 +317,8 @@ void ExerciseControl::selectExercisePerformance()
 	mrs_natural startSectionSilence=0, endSectionSilence=0, accSilence=0, delaySilence = 10, i;
 	mrs_natural startSectionActivity=0, endSectionActivity=0, accActivity=0, delayActivity = 10;
 	mrs_natural currentType= -1;
+
+	myPitches.stretch(0);
 
 	// search for consequent non zeros pitches followed by zeros
 	for (i=0 ; i<overallPitches.getSize() ; i++)
@@ -358,6 +373,8 @@ void ExerciseControl::selectExercisePerformance()
 	//	myAmplitudes.stretch(j);
 	
 	// deal with octave errors
+	if(myPitches.getSize() != 0)
+	{
 	mrs_real medianPitch = myPitches.median();
 	for (mrs_natural i=0 ; i<myPitches.getSize() ; i++)
 	{
@@ -371,12 +388,13 @@ void ExerciseControl::selectExercisePerformance()
 	MATLAB_PUT(myAmplitudes, "amp");
 	MATLAB_EVAL("subplot(2, 1, 1); plot(pitch); subplot(2, 1, 2); plot(amp); ");
 
+myWeight = myAmplitudes;
 
 	if(exerciseState != vibrato)
 	{
     myPitches.apply(hertz2bark);
-	myWeight = myAmplitudes;
 	myAmplitudes.apply(amplitude2dB);
+	}
 	}
 }
 
