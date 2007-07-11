@@ -3,6 +3,7 @@
 
 #include "defs.h"
 #include "exerciseAbstract.h"
+#include "../QtMarPlot.h"
 
 class ExerciseShift : public Exercise {
 public:
@@ -17,8 +18,10 @@ public:
 	bool displayAnalysis(MarBackend *results);
 
 private:
-	QLabel *resultLabel;
+	mrs_real score;
 
+	realvec pitches;
+    QtMarPlot *displayPitches;
 };
 #endif
 

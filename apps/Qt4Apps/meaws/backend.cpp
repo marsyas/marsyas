@@ -156,6 +156,11 @@ void MarBackend::setupAllNet() {
 		fanout->addMarSystem(makePitchNet(osrate));
 		fanout->addMarSystem(makeAmplitudeNet(osrate));
 		allNet->addMarSystem(fanout);
+	case TYPE_SHIFT:
+		allNet->addMarSystem( makePitchNet(osrate) );
+		break;
+	default:
+		cout<<"**** SOMETHING IS BROKEN ****"<<endl;
 		break;
 	}
 

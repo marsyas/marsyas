@@ -8,7 +8,8 @@ using namespace std;
 
 
 ExerciseShift::ExerciseShift() {
-	resultLabel = NULL;
+	score = 0;
+    displayPitches = NULL;
 }
 
 ExerciseShift::~ExerciseShift() {
@@ -17,11 +18,11 @@ ExerciseShift::~ExerciseShift() {
 		delete instructionImageLabel;
 		instructionImageLabel = NULL;
 	}
-	if (resultLabel != NULL) {
-		resultArea->removeWidget(resultLabel);
-		delete resultLabel;
-		resultLabel = NULL;
-	}
+    if (displayPitches != NULL) {
+        resultArea->removeWidget(displayPitches);
+        delete displayPitches;
+        displayPitches = NULL;
+    }
 }
 
 int ExerciseShift::getType() {
@@ -29,10 +30,12 @@ int ExerciseShift::getType() {
 }
 
 void ExerciseShift::setupDisplay() {
-	resultLabel = new QLabel;
-	resultLabel->setText("Shifting Exercise");
+    displayPitches = new QtMarPlot();
+    displayPitches->setPlotName("Shifting Pitches");
+    displayPitches->setBackgroundColor(QColor(255,255,255));
+    displayPitches->setPixelWidth(2);
 
-	resultArea->addWidget(resultLabel);
+	resultArea->addWidget(displayPitches);
 }
 
 QString ExerciseShift::exercisesDir() {
@@ -43,42 +46,36 @@ QString ExerciseShift::exercisesDir() {
 
 QString ExerciseShift::getMessage() {
 	// TODO: another totally fake demo for MISTIC.
-	QString toReturn("Grade: 76\%");
+	QString toReturn("Grade: " + QString::number(score) + "\%");
 	return toReturn;
 }
 
 bool ExerciseShift::displayAnalysis(MarBackend *results) {
-	// TODO: this is a totally fake demo for the MISTIC talk.
-	resultLabel->setPixmap(QPixmap::fromImage(QImage(MEAWS_DIR+"data/scale1.preview.png")));
-
-
-/*
-	realvec durations = results->getDurations();
-	realvec notes = results->getNotes();
-
-	QFile out_file("/tmp/notes.txt");
-	out_file.open(QIODevice::WriteOnly | QIODevice::Text);
-	QTextStream out(&out_file);
-
-	for (int i=0; i<durations.getSize(); i++) {
-		if (notes(i)>0) {
-			out<<(int) floor(notes(i)+0.5)<<"\t"<<durations(i)<<endl;;
-			cout<<(int) floor(notes(i)+0.5)<<"\t"<<durations(i)<<endl;;
+	pitches = results->getMidiPitches();
+	mrs_real sum = 0.0;
+	mrs_natural count = 0;
+	for (mrs_natural i=0; i<pitches.getSize(); i++) {
+		if (pitches(i)>70) {
+			sum += pitches(i);
+			count++;
 		}
 	}
-	out_file.close();
-*/
+	mrs_real average = sum/count;
+	sum = 0.0;
+	count++;
+	for (mrs_natural i=0; i<pitches.getSize(); i++) {
+		pitches(i) = pitches(i)-average;
+		if (pitches(i)>-3) {
+			sum += fabs( pitches(i) );
+			count++;
+		}
+		//cout<<pitches(i)<<endl;
+	}
+	displayPitches->setVertical(-1,1);
+    displayPitches->setData( &pitches );
 
-/*
-#ifndef MARSYAS_WIN32 // [ML] this is ugly and sleep does not exist in Win32 !!
-	system("/Users/gperciva/progs/python/libbabelpond/reldurs.py /tmp/notes.txt");
-	sleep(1);
-	system("cd /tmp; lilypond -dpreview tempscore.ly");
-	sleep(5);
-#endif
+	score = 100*( 1 - (sum)/(count*0.5) );
 
-	resultLabel->setPixmap(QPixmap::fromImage(QImage("/tmp/tempscore.preview.png")));
-*/
 	return true;
 }
 
