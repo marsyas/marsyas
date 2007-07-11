@@ -5,6 +5,7 @@
 #define TYPE_PLAYBACK 1
 #define TYPE_INTONATION 2
 #define TYPE_CONTROL 3
+#define TYPE_SHIFT 4
 
 #define MEAWS_READY_NOTHING 1
 #define MEAWS_READY_USER 2

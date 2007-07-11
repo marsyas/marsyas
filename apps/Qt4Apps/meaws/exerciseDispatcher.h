@@ -4,6 +4,7 @@
 #include "defs.h"
 #include "exerciseIntonation.h"
 #include "exerciseControl.h"
+#include "exerciseShift.h"
 #include "backend.h"
 
 #include <QDialog>

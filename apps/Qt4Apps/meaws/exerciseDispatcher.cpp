@@ -21,7 +21,8 @@ void ExerciseDispatcher::setArea(QGridLayout *getInstructionArea, QGridLayout *g
 
 bool ExerciseDispatcher::chooseEvaluation() {
 	QStringList items;
-	items << tr("Intonation test") << tr("Sound control test");
+	items << tr("Intonation test") << tr("Sound control test") <<
+tr("Shifting test");
 	bool ok;
 	QString item = QInputDialog::getItem(this, tr("Choose testing method"),
 		tr("TestingMethod:"), items, 0, false, &ok);
@@ -30,6 +31,7 @@ bool ExerciseDispatcher::chooseEvaluation() {
 			delete evaluation;
 		if (item=="Intonation test") evaluation = new ExerciseIntonation();
 		if (item=="Sound control test") evaluation = new ExerciseControl();
+		if (item=="Shifting test") evaluation = new ExerciseShift();
 		connect(evaluation,SIGNAL(analysisDone()), this,
 SLOT(analysisDone()));
 		evaluation->setArea(instructionArea, resultArea);

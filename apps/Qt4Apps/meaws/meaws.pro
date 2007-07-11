@@ -9,6 +9,9 @@ SOURCES += user.cpp exerciseDispatcher.cpp
 HEADERS += exerciseAbstract.h exerciseIntonation.h exerciseControl.h
 SOURCES += exerciseAbstract.cpp exerciseIntonation.cpp exerciseControl.cpp
 
+HEADERS += exerciseShift.h
+SOURCES += exerciseShift.cpp
+
 HEADERS += backend.h
 SOURCES += backend.cpp
 
