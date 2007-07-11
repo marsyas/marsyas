@@ -97,6 +97,9 @@ private:
 	QAction *aboutAct;
 	QAction *aboutQtAct;
 
+	// status bar
+	QLabel *normalStatusMessage;
+	QLabel *permanentStatusMessage;
 
 
 // other stuff that appears to be necessary... for now

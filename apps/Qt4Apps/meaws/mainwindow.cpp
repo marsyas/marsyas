@@ -52,6 +52,10 @@ void MainWindow::writeSettings() {
 }
 
 void MainWindow::createStatusBar() {
+	normalStatusMessage = new QLabel;
+	permanentStatusMessage = new QLabel;
+	statusBar()->addWidget(normalStatusMessage);
+	statusBar()->addPermanentWidget(permanentStatusMessage);
 	statusBar()->showMessage(tr("Ready"));
 }
 
@@ -291,7 +295,8 @@ void MainWindow::enableActions(int state) {
 		break;
 	case MEAWS_READY_AUDIO:    // ready to analyze
 
-		statusBar()->showMessage(exercise->getMessage(),100000);
+		//statusBar()->showMessage(exercise->getMessage(),100000);
+		permanentStatusMessage->setText(exercise->getMessage());
 		break;
 	}
 }
