@@ -62,21 +62,27 @@ MarSystemQtWrapper::getctrl(string cname)
 	MarControlPtr value;
 	value = main_pnet_->getctrl(cname);
 	mutex_.unlock();
-
 	return value;
 } 
 
 void 
 MarSystemQtWrapper::updctrl(MarControlPtr cname, 
-														MarControlPtr cvalue)
+			    MarControlPtr cvalue)
 {
 	if ( !running_ )
 	{
-		main_pnet_->updctrl(cname, cvalue);
+	  cout << "Not running" << endl;
+	  main_pnet_->updctrl(cname, cvalue);
 	} 
+	else if (pause_) 
+	  {
+	    main_pnet_->updctrl(cname, cvalue);
+	  }
 	else 
 	{
 		mutex_.lock();
+		cout << "Running" << endl;
+	  
 		control_names_.push_back(cname);
 		control_values_.push_back(cvalue);
 		mutex_.unlock();
@@ -145,6 +151,7 @@ MarSystemQtWrapper::run()
 		 vvi = control_values_.begin();
 	       vsi != control_names_.end(); ++vsi, ++vvi)
 	    {
+	      cout << "updating something " << endl;
 	      main_pnet_->updctrl(*vsi, *vvi);
 	    } 
 	  
@@ -160,7 +167,7 @@ MarSystemQtWrapper::run()
 	  
 	  mutex_.lock();
 	  if (pause_)
-	    {
+	    {	      
 	      main_pnet_->updctrl("mrs_bool/active", false);
 	      condition_.wait(&mutex_);
 	    } 
