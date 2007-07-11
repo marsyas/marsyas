@@ -158,6 +158,31 @@ MarSystem::MarSystem(const MarSystem& a)
 		for (mrs_natural i=0; i< a.marsystemsSize_; i++)
 		{
 			addMarSystem((*a.marsystems_[i]).clone());
+			
+			//relink any controls of this child that are linked
+			//to sibling MarSystems (this can only be done after the cloned
+			//child gets assigned a parent (i.e. this composite), as done by addMarSystem())
+			for(ctrlIter_ = a.marsystems_[i]->controls_.begin(); ctrlIter_ != a.marsystems_[i]->controls_.end(); ++ctrlIter_)
+			{
+				// get original links...
+				vector<MarControlPtr> protolinks = ctrlIter_->second->getLinks();
+								
+				// clear clone's links - not needed here!!!
+				//marsystems_[i]->controls_[ctrlIter_->first]->getLinks().clear(); 
+				
+				//... and re-establish any missing links between controls of siblings
+				vector<MarControlPtr>::const_iterator ci;
+				for (ci = protolinks.begin(); ci != protolinks.end(); ++ci)
+				{
+					MarControlPtr ctrl = marsystems_[i]->getControl((*ci)->getMarSystem()->getAbsPath() + (*ci)->getName(), true);
+					if (!ctrl.isInvalid())
+					{
+						//linking controls already linked, does nothing,
+						//so only the missing sibling links will be done now...
+						marsystems_[i]->getctrl(ctrlIter_->first)->linkTo(ctrl);
+					}
+				}
+			}
 		}
 	}
 
