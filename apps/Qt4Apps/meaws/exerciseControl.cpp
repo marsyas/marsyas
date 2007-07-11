@@ -130,6 +130,7 @@ bool ExerciseControl::displayAnalysis(MarBackend *results) {
 
 	}
 
+	cout << overallPitches;
 	//overallPitches.read("pitch");
 	//overallAmplitudes.read("amps");
 

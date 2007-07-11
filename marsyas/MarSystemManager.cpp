@@ -443,7 +443,7 @@ MarSystemManager::MarSystemManager()
 	pitchPraat->addMarSystem(create("Windowing", "wi"));
 	pitchPraat->addMarSystem(create("AutoCorrelation", "acr"));
 	pitchPraat->updctrl("AutoCorrelation/acr/mrs_natural/normalize", 1);
-	pitchPraat->updctrl("AutoCorrelation/acr/mrs_real/octaveCost", 0.01); // 0.01
+	pitchPraat->updctrl("AutoCorrelation/acr/mrs_real/octaveCost", 0.05); // 0.01
 	pitchPraat->updctrl("AutoCorrelation/acr/mrs_real/voicingThreshold", 0.3);
 	pitchPraat->addMarSystem(create("Peaker", "pkr"));
 	pitchPraat->addMarSystem(create("MaxArgMax", "mxr"));

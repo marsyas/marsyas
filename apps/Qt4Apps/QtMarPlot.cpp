@@ -101,14 +101,15 @@ QtMarPlot::plot1d()
 	int x,y;
 	float hScale = width() / float(data_->getSize());
 	float vScale = height() / (highVal_ - minVal_); // maximum scaled pitch/median
+	float vMean = (minVal_+highVal_)/2;
 	int midY = height()/2;
 
 	// iterates over the data_
 	for (i=0; i<data_->getSize(); i++) {
 		x = i * hScale;
-		y = (*data_)(i) * vScale;
+		y = ((*data_)(i)-vMean) * vScale;
 		if ( (y>-midY) && (y<midY))
-			painter.drawPoint( x, midY - y);
+			painter.drawPoint( x, -y+midY);
 
 	}
 }
