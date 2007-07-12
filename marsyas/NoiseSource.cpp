@@ -20,6 +20,14 @@
 	\class NoiseSource
 	\ingroup Synthesis
 	\brief Creates noise
+	\bug wavetable produces periodic noise.  gztan said: NoiseSource is a bad
+implementation that uses a wavetable for the noise
+with a reading pointer that is reset at every update (which is why you
+get
+a period sound at the window rate - the random waveform repeats in
+every iteration). The slower fix is to just use rand directly without
+using a stored wavetable. A faster way is to just randomize the pointer
+reading from the wavetable of NoiseSource every tick. 
 
 	Controls:
 	- \b mrs_string/mode	: use "wavetable" or random noise generator.

@@ -20,6 +20,7 @@
 	\class Fanin
 	\ingroup Composites
 	\brief Fanin of MarSystem objects
+	\deprecated Fanin (the whole marsystem) is deprecated.
 
 	Combines a series of MarSystem objects to a single MarSystem
 corresponding to executing the System objects one after the other in

@@ -21,6 +21,9 @@
   \ingroup Processing
   \brief Filter a Signal 
 
+  \todo I don't know how Biquad works (inObs?!), if it works at all.
+Investigate.
+
  */
 
 #include "Biquad.h"

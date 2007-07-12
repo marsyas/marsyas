@@ -26,7 +26,9 @@ used for mixing audio signals before SoudFileSink or AudioSink.
 
 	Controls:
 	- \b mrs_real/weight [w] : scales input to avoid clipping.
-\todo should be implemented as a meta-composite in marsystemmanager.
+\todo Sum mrs_real/weight should be implemented as a meta-composite in
+marsystemmanager.  (?   -- lmartins said this)
+
 */
 
 #include "Sum.h"

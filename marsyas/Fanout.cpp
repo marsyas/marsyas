@@ -32,7 +32,7 @@ Controls:
   enable.  (by default all children are enabled)
 - \b mrs_bool/probe	: deprecated.
 
-\todo if Fanout mrs_bool/probe really is depreciated, chop it.
+\deprecated if Fanout mrs_bool/probe really is depreciated, chop it.
 */
 
 #include "Fanout.h"
