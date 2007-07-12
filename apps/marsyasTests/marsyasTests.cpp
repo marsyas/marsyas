@@ -1159,8 +1159,6 @@ test_MATLABengine()
 
 #ifdef MARSYAS_MATLAB
 	
-  cout << endl;
-
   //-------------------------------------------------------------------------------------------
   cout << "******************************************************" << endl;
   cout << "  TEST evaluate MATLAB command" << endl;

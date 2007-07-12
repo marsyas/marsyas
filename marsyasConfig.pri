@@ -70,8 +70,8 @@ unix:!macx:CONFIG += marsyasAUDIOIO_ALSA
 # Adds support for MATLAB engine classes, for debug/release builds
 ######################################################################
 
-# CONFIG	+= marsyasMATLABdebug
-# CONFIG	+= marsyasMATLABrelease
+#CONFIG	+= marsyasMATLABdebug
+#CONFIG	+= marsyasMATLABrelease
 
 ######################################################################
 # Adds support for MP3 MAD
@@ -241,7 +241,7 @@ macx {
 			INCLUDEPATH += /Applications/MATLAB74/extern/include
 			LIBPATH += /Applications/MATLAB74/bin/maci \
 				   /Applications/MATLAB74/sys/os/maci 
-			LIBS += -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz
+			LIBS += -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz -lhdf5
 			DEFINES 	+= MARSYAS_MATLAB
 		}
 	}
