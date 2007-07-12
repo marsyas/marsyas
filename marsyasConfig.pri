@@ -238,8 +238,10 @@ macx {
 	}
 	marsyasMATLABrelease {
 		CONFIG(release, debug|release) {
-			#INCLUDEPATH += ???
-			#LIBS += ???
+			INCLUDEPATH += /Applications/MATLAB74/extern/include
+			LIBPATH += /Applications/MATLAB74/bin/maci \
+				   /Applications/MATLAB74/sys/os/maci 
+			LIBS += -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz
 			DEFINES 	+= MARSYAS_MATLAB
 		}
 	}
