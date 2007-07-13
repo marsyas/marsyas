@@ -11,16 +11,17 @@ mrs_natural naturalOpt;
 mrs_real realOpt;
 mrs_string stringOpt;
 
-void 
+void
 printUsage()
-{ 
+{
 	MRSDIAG("commandOptions.cpp - printUsage");
 	cerr << "Usage: commandOptions " << "file1 file2 file3" << endl;
-	cerr << endl;  cerr << "where file1, ..., fileN are sound files in a MARSYAS supported format" << endl;
+	cerr << endl;
+	cerr << "where file1, ..., fileN are sound files in a MARSYAS supported format" << endl;
 	exit(1);
 }
 
-void 
+void
 printHelp()
 {
 	MRSDIAG("commandOptions.cpp - printHelp");
@@ -39,7 +40,7 @@ printHelp()
 	exit(1);
 }
 
-void 
+void
 initOptions()
 {
 	cmd_options.addBoolOption("help", "h", false);
@@ -49,7 +50,7 @@ initOptions()
 	cmd_options.addStringOption("string", "s", "hello world");
 }
 
-void 
+void
 loadOptions()
 {
 	helpOpt = cmd_options.getBoolOption("help");
@@ -61,22 +62,24 @@ loadOptions()
 
 
 
-void doStuff(string printMe) {
+void doStuff(string printMe)
+{
 	cout<<printMe<<endl;
 }
 
-int main(int argc, const char **argv) {
+int main(int argc, const char **argv)
+{
 	initOptions();
 	cmd_options.readOptions(argc,argv);
 	loadOptions();
-	
+
 	vector<string> soundfiles = cmd_options.getRemaining();
-	
-	if (helpOpt) 
-	printHelp();
-	
+
+	if (helpOpt)
+		printHelp();
+
 	if ( (usageOpt) || (argc==1) )
-	printUsage();
+		printUsage();
 
 	cout<<"Command-line options were:"<<endl;
 	cout<<"		--natural: "<<naturalOpt<<endl;

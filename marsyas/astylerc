@@ -1,5 +1,5 @@
 # I think this matches our style
 style=ansi
 # set 4 spaces per indent
-indent=spaces=4
+indent=tab
 

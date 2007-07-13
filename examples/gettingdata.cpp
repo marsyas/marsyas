@@ -2,7 +2,8 @@
 using namespace std;
 using namespace Marsyas;
 
-void recognize(string sfName) {
+void recognize(string sfName)
+{
 	MarSystemManager mng;
 	MarSystem* pnet = mng.create("Series", "pnet");
 // standard network
@@ -19,15 +20,18 @@ void recognize(string sfName) {
 	mrs_natural numberObservations = pnet->getctrl("mrs_natural/onObservations")->toNatural();
 	mrs_natural numberSamples = pnet->getctrl("mrs_natural/onSamples")->toNatural();   // in this case, numbSamples will be 1, due to the Spectrum MarSystem.
 
-	while ( pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() ) {
+	while ( pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() )
+	{
 // don't tick because process() does that.
 //		pnet->tick();
 // get data from network
 		pnet->process(in,out);
 
 // display data
-		for (i=0; i<numberObservations; i++) {
-			for (j=0; j<numberSamples; j++) {
+		for (i=0; i<numberObservations; i++)
+		{
+			for (j=0; j<numberSamples; j++)
+			{
 				cout<<out(i,j)<<" ";
 			}
 		}
@@ -36,15 +40,23 @@ void recognize(string sfName) {
 		const realvec& processedData = pnet->getctrl("Spectrum/spk/mrs_realvec/processedData")->to<mrs_realvec>();
 		cout << processedData << endl;
 
-		
+
 	}
 	delete pnet;
 }
 
-int main(int argc, const char **argv) {
+int main(int argc, const char **argv)
+{
 	string fileName;
-	if (argc<2) { cout<<"Please enter filename."<<endl; exit(1); } else 
-		{ fileName = argv[1]; }
+	if (argc<2)
+	{
+		cout<<"Please enter filename."<<endl;
+		exit(1);
+	}
+	else
+	{
+		fileName = argv[1];
+	}
 	cout << "Processing file " << fileName << endl;
 
 	recognize(fileName);

@@ -2,7 +2,8 @@
 using namespace std;
 using namespace Marsyas;
 
-void recognize(string sfName) {
+void recognize(string sfName)
+{
 	MarSystemManager mng;
 	MarSystem* pnet = mng.create("Series", "pnet");
 // standard network
@@ -14,16 +15,25 @@ void recognize(string sfName) {
 	pnet->addMarSystem(mng.create("PlotSink","plot"));
 	pnet->updctrl("PlotSink/plot/mrs_string/outputFilename", "out");
 
-	while ( pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() ) {
+	while ( pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() )
+	{
 		pnet->tick();
 	}
 	delete pnet;
 }
 
-int main(int argc, const char **argv) {
+int main(int argc, const char **argv)
+{
 	string fileName;
-	if (argc<2) { cout<<"Please enter filename."<<endl; exit(1); } else 
-		{ fileName = argv[1]; }
+	if (argc<2)
+	{
+		cout<<"Please enter filename."<<endl;
+		exit(1);
+	}
+	else
+	{
+		fileName = argv[1];
+	}
 	cout << "Processing file " << fileName << endl;
 
 	recognize(fileName);
