@@ -276,15 +276,22 @@ documentation} and @ref{Contributing source documentation} for details.
 @node Systems limitations
 @section System limitations
 
-Due to the way that observations behave in Marsyas, in some cases
-it is impossible to differentiate between a stereo signal and a mono
-signal which is twice as long.  In particular, there is currently
-no direct way to tell apart a stereo
-pair of spectrums from a mono spectrum with twice the number of bins. 
+There are many bugs in Marsyas (far too many to list here!), but there
+@emph{are} a few issues which are more fundamental.  We list these
+issues here, along with workarounds.
+
+
+@subsection Stereo vs. mono in a spectrum
+
+Due to the way that observations behave in Marsyas, in some cases it is
+impossible to differentiate between a stereo signal and a mono signal
+which is twice as long.  In particular, there is currently no direct way
+to tell apart a stereo pair of spectrums from a mono spectrum with twice
+the number of bins. 
 
 In these cases, we recommend that you use a Parallel Composite: split
-the stereo signal into separate mono dataflows (using Parallel), then treat
-each mono signal individually.
+the stereo signal into separate mono dataflows (using Parallel), then
+treat each mono signal individually.
 
 
 
