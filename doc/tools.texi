@@ -29,13 +29,6 @@ Many Marsyas tools can operate on individual soundfiles or
 collections of soundfiles.  A collection is a simple text
 file which contain lists of soundfiles. 
 
-@menu
-* Creating collections manually::  
-* mkcollection::                
-@end menu
-
-
-@node Creating collections manually
 @subsection Creating collections manually
 
 A simple way to create a collection is the unix ls command. 
@@ -60,8 +53,6 @@ collections file must have a @code{.mf} extension such as
 line starting with the @code{#} character is ignored.  For Windows Visual
 Studio, change the slash character separating directories appropriately.
 
-
-@node mkcollection
 @subsection @code{mkcollection}
 @cindex mkcollection     
  
