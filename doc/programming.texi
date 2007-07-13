@@ -11,16 +11,50 @@
 @node Including libraries and linking
 @section Including libraries and linking
 
-@cindex Compiling
-@cindex Linking
+@cindex Compiling, programs
+@cindex Linking, programs
 To use any marsyas code in your program(s), you need to include the
 Marsyas libraries in your project.
 
+@subsection ... using qmake
 
-@subsection Linux and other *nixes (including Cygwin)
+The easiest way to compile Marsyas programs is to use qmake.  You may do
+this even if you used autotools to configure Marsyas itself; the author
+of this documentation uses autotools to build Marsyas, and qmake to
+build his programs.
 
-The easiest way to compile Marsyas projects is to use a makefile.  In your
-working directory, create a file called @file{Makefile} which contains
+Create a @file{my_program_name.pro} file:
+
+@example
+SOURCES = my_program_name.cpp
+
+HEADERS = extra_file.h
+SOURCES += extra_file.cpp
+
+
+### copy and paste these lines into every project
+# change these lines to match your Marsyas installation:
+# INCLUDEPATH += $@{HOME@}/usr/include/marsyas/
+# LIBPATH += $@{HOME@}/usr/lib/
+
+unix:LIBS += -lmarsyas
+unix:!macx:LIBS += -lasound
+macx:LIBS += -framework CoreAudio -framework CoreMidi
+macx:LIBS += -framework CoreFoundation
+@end example
+
+Then type @code{qmake} to generate a Makefile.  Now you many compile
+normally.
+
+
+
+
+@subsection ... writing your own Makefile
+
+We @emph{highly} recommend that you use qmake to create a Makefile.
+However, if you enjoy swearing at your computer and cursing k&r, rms,
+gnu, and every other three-letter programmer acronym in existance, you
+may create a file called @file{Makefile} which contains
 
 @example
 all:
@@ -39,9 +73,7 @@ if you installed marsyas in @file{$@{HOME@}/usr/}, then you would use
 the @file{Makefile} is written, simply type @code{make} to compile
 your file.
 
-
-
-@subsection MacOS X
+@subsubheading MacOS X
 
 To compile Marsyas projects in OSX, use the same @file{Makefile} as is used
 in other *nixes, but replace the final line with
@@ -52,10 +84,11 @@ in other *nixes, but replace the final line with
 @end example
 
 
-@subsection Windows Visual Studio
+@subsection ... on Windows Visual Studio
 
-Please see the documentation for your compiler / development environment.
-@c alternately, Gustavo could write something here.  :)
+Please see the documentation for your compiler / development
+environment.  Alternately, contribute some documentation for this
+section.
 
 
 @node Example programs
