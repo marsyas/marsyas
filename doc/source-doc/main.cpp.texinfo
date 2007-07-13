@@ -19,12 +19,20 @@
 @i{*/}
 
 @b{#include} @t{"mainwindow.h"}
-int @b{main}(int argc, char *argv[]) @{
+int @b{main}(int argc, char *argv[])
+@{
 @i{// to keep this example as simple as possible, we only take the}
 @i{// filename from the command-line.}
-       string fileName; 
-       @b{if} (argc<2) @{ cout<<@t{"Please enter filename."}<<endl; @b{exit}(1); @} @b{else}
-              @{ fileName = argv[1]; @}
+       string fileName;
+       @b{if} (argc<2)
+       @{
+              cout<<@t{"Please enter filename."}<<endl;
+              @b{exit}(1);
+       @}
+       @b{else}
+       @{
+              fileName = argv[1];
+       @}
 
        QApplication @b{app}(argc, argv);
        MarQTwindow @b{marqt}(fileName);

@@ -4,7 +4,8 @@
 @b{using} @b{namespace} std;
 @b{using} @b{namespace} Marsyas;
 
-void @b{recognize}(string sfName) @{
+void @b{recognize}(string sfName)
+@{
        MarSystemManager mng;
        MarSystem* pnet = mng.@b{create}(@t{"Series"}, @t{"pnet"});
 @i{// standard network}
@@ -21,15 +22,18 @@ void @b{recognize}(string sfName) @{
        mrs_natural numberObservations = pnet->@b{getctrl}(@t{"mrs_natural/onObservations"})->@b{toNatural}();
        mrs_natural numberSamples = pnet->@b{getctrl}(@t{"mrs_natural/onSamples"})->@b{toNatural}();   @i{// in this case, numbSamples will be 1, due to the Spectrum MarSystem.}
 
-       @b{while} ( pnet->@b{getctrl}(@t{"SoundFileSource/src/mrs_bool/notEmpty"})->@b{toBool}() ) @{
+       @b{while} ( pnet->@b{getctrl}(@t{"SoundFileSource/src/mrs_bool/notEmpty"})->@b{toBool}() )
+       @{
 @i{// don't tick because process() does that.}
 @i{//              pnet->tick();}
 @i{// get data from network}
               pnet->@b{process}(in,out);
 
 @i{// display data}
-              @b{for} (i=0; i<numberObservations; i++) @{
-                     @b{for} (j=0; j<numberSamples; j++) @{
+              @b{for} (i=0; i<numberObservations; i++)
+              @{
+                     @b{for} (j=0; j<numberSamples; j++)
+                     @{
                             cout<<@b{out}(i,j)<<@t{" "};
                      @}
               @}
@@ -38,15 +42,23 @@ void @b{recognize}(string sfName) @{
               @b{const} realvec& processedData = pnet->@b{getctrl}(@t{"Spectrum/spk/mrs_realvec/processedData"})->to<mrs_realvec>();
               cout << processedData << endl;
 
-              
+
        @}
        @b{delete} pnet;
 @}
 
-int @b{main}(int argc, @b{const} char **argv) @{
+int @b{main}(int argc, @b{const} char **argv)
+@{
        string fileName;
-       @b{if} (argc<2) @{ cout<<@t{"Please enter filename."}<<endl; @b{exit}(1); @} @b{else} 
-              @{ fileName = argv[1]; @}
+       @b{if} (argc<2)
+       @{
+              cout<<@t{"Please enter filename."}<<endl;
+              @b{exit}(1);
+       @}
+       @b{else}
+       @{
+              fileName = argv[1];
+       @}
        cout << @t{"Processing file "} << fileName << endl;
 
        @b{recognize}(fileName);

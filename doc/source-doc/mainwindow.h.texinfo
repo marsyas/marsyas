@@ -29,7 +29,8 @@
 
 @b{#include} @t{"backend.h"}
 
-@b{class} MarQTwindow : @b{public} QWidget @{
+@b{class} MarQTwindow : @b{public} QWidget
+@{
        Q_OBJECT
 @b{public}:
        @b{MarQTwindow}(string fileName);

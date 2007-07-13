@@ -4,7 +4,8 @@
 @b{using} @b{namespace} std;
 @b{using} @b{namespace} Marsyas;
 
-void @b{sfplay}(string sfName, float gain, float start) @{
+void @b{sfplay}(string sfName, float gain, float start)
+@{
        MarSystemManager mng;
 
        MarSystem* playbacknet = mng.@b{create}(@t{"Series"}, @t{"playbacknet"});
@@ -25,23 +26,44 @@ void @b{sfplay}(string sfName, float gain, float start) @{
 @i{// set the starting position of the source}
        playbacknet->@b{updctrl}(@t{"SoundFileSource/src/mrs_natural/pos"}, startPosition);
 
-       @b{while} ( playbacknet->@b{getctrl}(@t{"SoundFileSource/src/mrs_bool/notEmpty"})->@b{toBool}() ) @{
+       @b{while} ( playbacknet->@b{getctrl}(@t{"SoundFileSource/src/mrs_bool/notEmpty"})->@b{toBool}() )
+       @{
               playbacknet->@b{tick}();
        @}
        @b{delete} playbacknet;
 @}
 
-int @b{main}(int argc, @b{const} char **argv) @{
+int @b{main}(int argc, @b{const} char **argv)
+@{
        string fileName;
        float gain, start;
-       @b{if} (argc<2) @{ cout<<@t{"Please enter filename."}<<endl; @b{exit}(1); @} @b{else} 
-              @{ fileName = argv[1]; @}
-       @b{if} (argc<3) @{ gain = 1; @} @b{else}
-              @{ gain = @b{atof}(argv[2]); @}
-       @b{if} (argc<4) @{ start = 0; @} @b{else}
-              @{ start = @b{atof}(argv[3]); @}
+       @b{if} (argc<2)
+       @{
+              cout<<@t{"Please enter filename."}<<endl;
+              @b{exit}(1);
+       @}
+       @b{else}
+       @{
+              fileName = argv[1];
+       @}
+       @b{if} (argc<3)
+       @{
+              gain = 1;
+       @}
+       @b{else}
+       @{
+              gain = @b{atof}(argv[2]);
+       @}
+       @b{if} (argc<4)
+       @{
+              start = 0;
+       @}
+       @b{else}
+       @{
+              start = @b{atof}(argv[3]);
+       @}
        cout << @t{"Playing file "} << fileName << @t{" at volume "} <<
-              gain << @t{" starting at "} << start << @t{" seconds"} << endl;
+       gain << @t{" starting at "} << start << @t{" seconds"} << endl;
 
        @b{sfplay}(fileName,gain,start);
        @b{exit}(0);

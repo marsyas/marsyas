@@ -22,7 +22,8 @@ http://www.gnu.org/software/src-highlite -->
 
 <b><font color="#000080">#include</font></b> <font color="#FF0000">"mainwindow.h"</font>
 
-MarQTwindow<font color="#990000">::</font><b><font color="#000000">MarQTwindow</font></b><font color="#990000">(</font>string fileName<font color="#990000">)</font> <font color="#FF0000">{</font>
+MarQTwindow<font color="#990000">::</font><b><font color="#000000">MarQTwindow</font></b><font color="#990000">(</font>string fileName<font color="#990000">)</font>
+<font color="#FF0000">{</font>
 <i><font color="#9A1900">// typical Qt front-end</font></i>
 	QPushButton <font color="#990000">*</font>quit <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> <b><font color="#000000">QPushButton</font></b><font color="#990000">(</font><b><font color="#000000">tr</font></b><font color="#990000">(</font><font color="#FF0000">"Quit"</font><font color="#990000">));</font>
 	<b><font color="#000000">connect</font></b><font color="#990000">(</font>quit<font color="#990000">,</font> <b><font color="#000000">SIGNAL</font></b><font color="#990000">(</font><b><font color="#000000">clicked</font></b><font color="#990000">()),</font> qApp<font color="#990000">,</font> <b><font color="#000000">SLOT</font></b><font color="#990000">(</font><b><font color="#000000">quit</font></b><font color="#990000">()));</font>
@@ -51,22 +52,24 @@ MarQTwindow<font color="#990000">::</font><b><font color="#000000">MarQTwindow</
 
 <i><font color="#9A1900">//		Qt -&gt; Marsyas</font></i>
 	<b><font color="#000000">connect</font></b><font color="#990000">(</font>volume<font color="#990000">,</font> <b><font color="#000000">SIGNAL</font></b><font color="#990000">(</font><b><font color="#000000">valueChanged</font></b><font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)),</font>
-			marBackend<font color="#990000">,</font> <b><font color="#000000">SLOT</font></b><font color="#990000">(</font><b><font color="#000000">setBackendVolume</font></b><font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)));</font>
+	        marBackend<font color="#990000">,</font> <b><font color="#000000">SLOT</font></b><font color="#990000">(</font><b><font color="#000000">setBackendVolume</font></b><font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)));</font>
 
 <i><font color="#9A1900">//		Marsyas -&gt; Qt</font></i>
 	<b><font color="#000000">connect</font></b><font color="#990000">(</font>marBackend<font color="#990000">,</font> <b><font color="#000000">SIGNAL</font></b><font color="#990000">(</font><b><font color="#000000">changedBackendPosition</font></b><font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)),</font>
-			<b><font color="#0000FF">this</font></b><font color="#990000">,</font> <b><font color="#000000">SLOT</font></b><font color="#990000">(</font><b><font color="#000000">setMainPosition</font></b><font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)));</font>
+	        <b><font color="#0000FF">this</font></b><font color="#990000">,</font> <b><font color="#000000">SLOT</font></b><font color="#990000">(</font><b><font color="#000000">setMainPosition</font></b><font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)));</font>
 
 <i><font color="#9A1900">//		Qt -&gt; Marsyas (getBackendPosition) -&gt; Qt (changedBackendPosition)</font></i>
 	<b><font color="#000000">connect</font></b><font color="#990000">(</font>updatePos<font color="#990000">,</font> <b><font color="#000000">SIGNAL</font></b><font color="#990000">(</font><b><font color="#000000">clicked</font></b><font color="#990000">()),</font>
-			marBackend<font color="#990000">,</font> <b><font color="#000000">SLOT</font></b><font color="#990000">(</font><b><font color="#000000">getBackendPosition</font></b><font color="#990000">()));</font>
+	        marBackend<font color="#990000">,</font> <b><font color="#000000">SLOT</font></b><font color="#990000">(</font><b><font color="#000000">getBackendPosition</font></b><font color="#990000">()));</font>
 <font color="#FF0000">}</font>
 
-MarQTwindow<font color="#990000">::~</font><b><font color="#000000">MarQTwindow</font></b><font color="#990000">()</font> <font color="#FF0000">{</font>
+MarQTwindow<font color="#990000">::~</font><b><font color="#000000">MarQTwindow</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
 	<b><font color="#0000FF">delete</font></b> marBackend<font color="#990000">;</font>
 <font color="#FF0000">}</font>
 
-<font color="#009900">void</font> MarQTwindow<font color="#990000">::</font><b><font color="#000000">setMainPosition</font></b><font color="#990000">(</font><font color="#009900">int</font> newPos<font color="#990000">)</font> <font color="#FF0000">{</font>
+<font color="#009900">void</font> MarQTwindow<font color="#990000">::</font><b><font color="#000000">setMainPosition</font></b><font color="#990000">(</font><font color="#009900">int</font> newPos<font color="#990000">)</font>
+<font color="#FF0000">{</font>
 	lcd<font color="#990000">-&gt;</font><b><font color="#000000">display</font></b><font color="#990000">(</font>newPos<font color="#990000">);</font>
 <font color="#FF0000">}</font>
 

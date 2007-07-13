@@ -6,7 +6,8 @@ http://www.gnu.org/software/src-highlite -->
 <b><font color="#0000FF">using</font></b> <b><font color="#0000FF">namespace</font></b> std<font color="#990000">;</font>
 <b><font color="#0000FF">using</font></b> <b><font color="#0000FF">namespace</font></b> Marsyas<font color="#990000">;</font>
 
-<font color="#009900">void</font> <b><font color="#000000">recognize</font></b><font color="#990000">(</font>string sfName<font color="#990000">)</font> <font color="#FF0000">{</font>
+<font color="#009900">void</font> <b><font color="#000000">recognize</font></b><font color="#990000">(</font>string sfName<font color="#990000">)</font>
+<font color="#FF0000">{</font>
 	MarSystemManager mng<font color="#990000">;</font>
 	MarSystem<font color="#990000">*</font> pnet <font color="#990000">=</font> mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"Series"</font><font color="#990000">,</font> <font color="#FF0000">"pnet"</font><font color="#990000">);</font>
 <i><font color="#9A1900">// standard network</font></i>
@@ -23,15 +24,18 @@ http://www.gnu.org/software/src-highlite -->
 	mrs_natural numberObservations <font color="#990000">=</font> pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"mrs_natural/onObservations"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toNatural</font></b><font color="#990000">();</font>
 	mrs_natural numberSamples <font color="#990000">=</font> pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"mrs_natural/onSamples"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toNatural</font></b><font color="#990000">();</font>   <i><font color="#9A1900">// in this case, numbSamples will be 1, due to the Spectrum MarSystem.</font></i>
 
-	<b><font color="#0000FF">while</font></b> <font color="#990000">(</font> pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_bool/notEmpty"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toBool</font></b><font color="#990000">()</font> <font color="#990000">)</font> <font color="#FF0000">{</font>
+	<b><font color="#0000FF">while</font></b> <font color="#990000">(</font> pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_bool/notEmpty"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toBool</font></b><font color="#990000">()</font> <font color="#990000">)</font>
+	<font color="#FF0000">{</font>
 <i><font color="#9A1900">// don't tick because process() does that.</font></i>
 <i><font color="#9A1900">//		pnet-&gt;tick();</font></i>
 <i><font color="#9A1900">// get data from network</font></i>
 		pnet<font color="#990000">-&gt;</font><b><font color="#000000">process</font></b><font color="#990000">(</font>in<font color="#990000">,</font>out<font color="#990000">);</font>
 
 <i><font color="#9A1900">// display data</font></i>
-		<b><font color="#0000FF">for</font></b> <font color="#990000">(</font>i<font color="#990000">=</font><font color="#993399">0</font><font color="#990000">;</font> i<font color="#990000">&lt;</font>numberObservations<font color="#990000">;</font> i<font color="#990000">++)</font> <font color="#FF0000">{</font>
-			<b><font color="#0000FF">for</font></b> <font color="#990000">(</font>j<font color="#990000">=</font><font color="#993399">0</font><font color="#990000">;</font> j<font color="#990000">&lt;</font>numberSamples<font color="#990000">;</font> j<font color="#990000">++)</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">for</font></b> <font color="#990000">(</font>i<font color="#990000">=</font><font color="#993399">0</font><font color="#990000">;</font> i<font color="#990000">&lt;</font>numberObservations<font color="#990000">;</font> i<font color="#990000">++)</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#0000FF">for</font></b> <font color="#990000">(</font>j<font color="#990000">=</font><font color="#993399">0</font><font color="#990000">;</font> j<font color="#990000">&lt;</font>numberSamples<font color="#990000">;</font> j<font color="#990000">++)</font>
+			<font color="#FF0000">{</font>
 				cout<font color="#990000">&lt;&lt;</font><b><font color="#000000">out</font></b><font color="#990000">(</font>i<font color="#990000">,</font>j<font color="#990000">)&lt;&lt;</font><font color="#FF0000">" "</font><font color="#990000">;</font>
 			<font color="#FF0000">}</font>
 		<font color="#FF0000">}</font>
@@ -40,15 +44,23 @@ http://www.gnu.org/software/src-highlite -->
 		<b><font color="#0000FF">const</font></b> realvec<font color="#990000">&amp;</font> processedData <font color="#990000">=</font> pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"Spectrum/spk/mrs_realvec/processedData"</font><font color="#990000">)-&gt;</font>to<font color="#990000">&lt;</font>mrs_realvec<font color="#990000">&gt;();</font>
 		cout <font color="#990000">&lt;&lt;</font> processedData <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
 
-		
+
 	<font color="#FF0000">}</font>
 	<b><font color="#0000FF">delete</font></b> pnet<font color="#990000">;</font>
 <font color="#FF0000">}</font>
 
-<font color="#009900">int</font> <b><font color="#000000">main</font></b><font color="#990000">(</font><font color="#009900">int</font> argc<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#009900">char</font> <font color="#990000">**</font>argv<font color="#990000">)</font> <font color="#FF0000">{</font>
+<font color="#009900">int</font> <b><font color="#000000">main</font></b><font color="#990000">(</font><font color="#009900">int</font> argc<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#009900">char</font> <font color="#990000">**</font>argv<font color="#990000">)</font>
+<font color="#FF0000">{</font>
 	string fileName<font color="#990000">;</font>
-	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>argc<font color="#990000">&lt;</font><font color="#993399">2</font><font color="#990000">)</font> <font color="#FF0000">{</font> cout<font color="#990000">&lt;&lt;</font><font color="#FF0000">"Please enter filename."</font><font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font> <b><font color="#000000">exit</font></b><font color="#990000">(</font><font color="#993399">1</font><font color="#990000">);</font> <font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> 
-		<font color="#FF0000">{</font> fileName <font color="#990000">=</font> argv<font color="#990000">[</font><font color="#993399">1</font><font color="#990000">];</font> <font color="#FF0000">}</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>argc<font color="#990000">&lt;</font><font color="#993399">2</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		cout<font color="#990000">&lt;&lt;</font><font color="#FF0000">"Please enter filename."</font><font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font>
+		<b><font color="#000000">exit</font></b><font color="#990000">(</font><font color="#993399">1</font><font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		fileName <font color="#990000">=</font> argv<font color="#990000">[</font><font color="#993399">1</font><font color="#990000">];</font>
+	<font color="#FF0000">}</font>
 	cout <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"Processing file "</font> <font color="#990000">&lt;&lt;</font> fileName <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
 
 	<b><font color="#000000">recognize</font></b><font color="#990000">(</font>fileName<font color="#990000">);</font>

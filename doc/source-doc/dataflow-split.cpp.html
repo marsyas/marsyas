@@ -9,14 +9,15 @@ http://www.gnu.org/software/src-highlite -->
 <b><font color="#0000FF">using</font></b> <b><font color="#0000FF">namespace</font></b> std<font color="#990000">;</font>
 <b><font color="#0000FF">using</font></b> <b><font color="#0000FF">namespace</font></b> Marsyas<font color="#990000">;</font>
 
-<font color="#009900">void</font> <b><font color="#000000">sfplay</font></b><font color="#990000">(</font>string sfName<font color="#990000">,</font> <font color="#009900">float</font> gain1<font color="#990000">,</font> <font color="#009900">float</font> gain2<font color="#990000">)</font> <font color="#FF0000">{</font>
+<font color="#009900">void</font> <b><font color="#000000">sfplay</font></b><font color="#990000">(</font>string sfName<font color="#990000">,</font> <font color="#009900">float</font> gain1<font color="#990000">,</font> <font color="#009900">float</font> gain2<font color="#990000">)</font>
+<font color="#FF0000">{</font>
 	MarSystemManager mng<font color="#990000">;</font>
 
 	MarSystem<font color="#990000">*</font> playbacknet <font color="#990000">=</font> mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"Series"</font><font color="#990000">,</font> <font color="#FF0000">"playbacknet"</font><font color="#990000">);</font>
 	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">addMarSystem</font></b><font color="#990000">(</font>mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource"</font><font color="#990000">,</font> <font color="#FF0000">"src"</font><font color="#990000">));</font>
 	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_string/filename"</font><font color="#990000">,</font> sfName<font color="#990000">);</font>
 <i><font color="#9A1900">// get the sample rate</font></i>
-  mrs_real sample_rate <font color="#990000">=</font> playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"mrs_real/israte"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toReal</font></b><font color="#990000">();</font>
+	mrs_real sample_rate <font color="#990000">=</font> playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"mrs_real/israte"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toReal</font></b><font color="#990000">();</font>
 
 	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">addMarSystem</font></b><font color="#990000">(</font>mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSink"</font><font color="#990000">,</font> <font color="#FF0000">"snk"</font><font color="#990000">));</font>
 	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSink/snk/mrs_string/filename"</font><font color="#990000">,</font> <font color="#FF0000">"both.wav"</font><font color="#990000">);</font>
@@ -26,7 +27,7 @@ http://www.gnu.org/software/src-highlite -->
 	left<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"Gain/gain1/mrs_real/gain"</font><font color="#990000">,</font> gain1<font color="#990000">);</font>
 	left<font color="#990000">-&gt;</font><b><font color="#000000">addMarSystem</font></b><font color="#990000">(</font>mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSink"</font><font color="#990000">,</font> <font color="#FF0000">"destL"</font><font color="#990000">));</font>
 <i><font color="#9A1900">// set the sample rate of this marsystem:</font></i>
-  left<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"mrs_real/israte"</font><font color="#990000">,</font>sample_rate<font color="#990000">);</font>
+	left<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"mrs_real/israte"</font><font color="#990000">,</font>sample_rate<font color="#990000">);</font>
 	left<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSink/destL/mrs_string/filename"</font><font color="#990000">,</font> <font color="#FF0000">"left.wav"</font><font color="#990000">);</font>
 
 	MarSystem<font color="#990000">*</font> right <font color="#990000">=</font> mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"Series"</font><font color="#990000">,</font> <font color="#FF0000">"right"</font><font color="#990000">);</font>
@@ -34,7 +35,7 @@ http://www.gnu.org/software/src-highlite -->
 	right<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"Gain/gain2/mrs_real/gain"</font><font color="#990000">,</font> gain2<font color="#990000">);</font>
 	right<font color="#990000">-&gt;</font><b><font color="#000000">addMarSystem</font></b><font color="#990000">(</font>mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSink"</font><font color="#990000">,</font> <font color="#FF0000">"destR"</font><font color="#990000">));</font>
 <i><font color="#9A1900">// set the sample rate of this marsystem:</font></i>
-  right<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"mrs_real/israte"</font><font color="#990000">,</font>sample_rate<font color="#990000">);</font>
+	right<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"mrs_real/israte"</font><font color="#990000">,</font>sample_rate<font color="#990000">);</font>
 	right<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSink/destR/mrs_string/filename"</font><font color="#990000">,</font> <font color="#FF0000">"right.wav"</font><font color="#990000">);</font>
 
 	MarSystem<font color="#990000">*</font> para <font color="#990000">=</font> mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"Parallel"</font><font color="#990000">,</font> <font color="#FF0000">"para"</font><font color="#990000">);</font>
@@ -42,23 +43,44 @@ http://www.gnu.org/software/src-highlite -->
 	para<font color="#990000">-&gt;</font><b><font color="#000000">addMarSystem</font></b><font color="#990000">(</font>right<font color="#990000">);</font>
 	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">addMarSystem</font></b><font color="#990000">(</font>para<font color="#990000">);</font>
 
-	<b><font color="#0000FF">while</font></b> <font color="#990000">(</font> playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_bool/notEmpty"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toBool</font></b><font color="#990000">()</font> <font color="#990000">)</font> <font color="#FF0000">{</font>
+	<b><font color="#0000FF">while</font></b> <font color="#990000">(</font> playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_bool/notEmpty"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toBool</font></b><font color="#990000">()</font> <font color="#990000">)</font>
+	<font color="#FF0000">{</font>
 		playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">tick</font></b><font color="#990000">();</font>
 	<font color="#FF0000">}</font>
 	<b><font color="#0000FF">delete</font></b> playbacknet<font color="#990000">;</font>
 <font color="#FF0000">}</font>
 
-<font color="#009900">int</font> <b><font color="#000000">main</font></b><font color="#990000">(</font><font color="#009900">int</font> argc<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#009900">char</font> <font color="#990000">**</font>argv<font color="#990000">)</font> <font color="#FF0000">{</font>
+<font color="#009900">int</font> <b><font color="#000000">main</font></b><font color="#990000">(</font><font color="#009900">int</font> argc<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#009900">char</font> <font color="#990000">**</font>argv<font color="#990000">)</font>
+<font color="#FF0000">{</font>
 	string fileName<font color="#990000">;</font>
 	<font color="#009900">float</font> gain1<font color="#990000">,</font> gain2<font color="#990000">;</font>
-	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>argc<font color="#990000">&lt;</font><font color="#993399">2</font><font color="#990000">)</font> <font color="#FF0000">{</font> cout<font color="#990000">&lt;&lt;</font><font color="#FF0000">"Please enter filename."</font><font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font> <b><font color="#000000">exit</font></b><font color="#990000">(</font><font color="#993399">1</font><font color="#990000">);</font> <font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> 
-		<font color="#FF0000">{</font> fileName <font color="#990000">=</font> argv<font color="#990000">[</font><font color="#993399">1</font><font color="#990000">];</font> <font color="#FF0000">}</font>
-	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>argc<font color="#990000">&lt;</font><font color="#993399">3</font><font color="#990000">)</font> <font color="#FF0000">{</font> gain1 <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">;</font> <font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b>
-		<font color="#FF0000">{</font> gain1 <font color="#990000">=</font> <b><font color="#000000">atof</font></b><font color="#990000">(</font>argv<font color="#990000">[</font><font color="#993399">2</font><font color="#990000">]);</font> <font color="#FF0000">}</font>
-	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>argc<font color="#990000">&lt;</font><font color="#993399">4</font><font color="#990000">)</font> <font color="#FF0000">{</font> gain2 <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">;</font> <font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b>
-		<font color="#FF0000">{</font> gain2 <font color="#990000">=</font> <b><font color="#000000">atof</font></b><font color="#990000">(</font>argv<font color="#990000">[</font><font color="#993399">3</font><font color="#990000">]);</font> <font color="#FF0000">}</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>argc<font color="#990000">&lt;</font><font color="#993399">2</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		cout<font color="#990000">&lt;&lt;</font><font color="#FF0000">"Please enter filename."</font><font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font>
+		<b><font color="#000000">exit</font></b><font color="#990000">(</font><font color="#993399">1</font><font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		fileName <font color="#990000">=</font> argv<font color="#990000">[</font><font color="#993399">1</font><font color="#990000">];</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>argc<font color="#990000">&lt;</font><font color="#993399">3</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		gain1 <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		gain1 <font color="#990000">=</font> <b><font color="#000000">atof</font></b><font color="#990000">(</font>argv<font color="#990000">[</font><font color="#993399">2</font><font color="#990000">]);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>argc<font color="#990000">&lt;</font><font color="#993399">4</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		gain2 <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		gain2 <font color="#990000">=</font> <b><font color="#000000">atof</font></b><font color="#990000">(</font>argv<font color="#990000">[</font><font color="#993399">3</font><font color="#990000">]);</font>
+	<font color="#FF0000">}</font>
 	cout <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"Splitting stereo file "</font> <font color="#990000">&lt;&lt;</font> fileName <font color="#990000">&lt;&lt;</font>
-		<font color="#FF0000">" into separate files at volumes "</font> <font color="#990000">&lt;&lt;</font>gain1 <font color="#990000">&lt;&lt;</font> <font color="#FF0000">" and "</font><font color="#990000">&lt;&lt;</font>gain2<font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font>
+	<font color="#FF0000">" into separate files at volumes "</font> <font color="#990000">&lt;&lt;</font>gain1 <font color="#990000">&lt;&lt;</font> <font color="#FF0000">" and "</font><font color="#990000">&lt;&lt;</font>gain2<font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font>
 
 	<b><font color="#000000">sfplay</font></b><font color="#990000">(</font>fileName<font color="#990000">,</font>gain1<font color="#990000">,</font>gain2<font color="#990000">);</font>
 	<b><font color="#000000">exit</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">);</font>

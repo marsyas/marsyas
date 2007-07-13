@@ -13,16 +13,17 @@ mrs_natural naturalOpt;
 mrs_real realOpt;
 mrs_string stringOpt;
 
-void 
+void
 @b{printUsage}()
-@{ 
+@{
        @b{MRSDIAG}(@t{"commandOptions.cpp - printUsage"});
        cerr << @t{"Usage: commandOptions "} << @t{"file1 file2 file3"} << endl;
-       cerr << endl;  cerr << @t{"where file1, ..., fileN are sound files in a MARSYAS supported format"} << endl;
+       cerr << endl;
+       cerr << @t{"where file1, ..., fileN are sound files in a MARSYAS supported format"} << endl;
        @b{exit}(1);
 @}
 
-void 
+void
 @b{printHelp}()
 @{
        @b{MRSDIAG}(@t{"commandOptions.cpp - printHelp"});
@@ -41,7 +42,7 @@ void
        @b{exit}(1);
 @}
 
-void 
+void
 @b{initOptions}()
 @{
        cmd_options.@b{addBoolOption}(@t{"help"}, @t{"h"}, @b{false});
@@ -51,7 +52,7 @@ void
        cmd_options.@b{addStringOption}(@t{"string"}, @t{"s"}, @t{"hello world"});
 @}
 
-void 
+void
 @b{loadOptions}()
 @{
        helpOpt = cmd_options.@b{getBoolOption}(@t{"help"});
@@ -63,22 +64,24 @@ void
 
 
 
-void @b{doStuff}(string printMe) @{
+void @b{doStuff}(string printMe)
+@{
        cout<<printMe<<endl;
 @}
 
-int @b{main}(int argc, @b{const} char **argv) @{
+int @b{main}(int argc, @b{const} char **argv)
+@{
        @b{initOptions}();
        cmd_options.@b{readOptions}(argc,argv);
        @b{loadOptions}();
-       
+
        vector<string> soundfiles = cmd_options.@b{getRemaining}();
-       
-       @b{if} (helpOpt) 
-       @b{printHelp}();
-       
+
+       @b{if} (helpOpt)
+              @b{printHelp}();
+
        @b{if} ( (usageOpt) || (argc==1) )
-       @b{printUsage}();
+              @b{printUsage}();
 
        cout<<@t{"Command-line options were:"}<<endl;
        cout<<@t{"              --natural: "}<<naturalOpt<<endl;

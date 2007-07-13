@@ -25,7 +25,8 @@
 using namespace std;
 using namespace Marsyas;
 
-class MarBackend: public QObject {
+class MarBackend: public QObject
+{
 	Q_OBJECT
 
 public:

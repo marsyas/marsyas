@@ -4,7 +4,8 @@
 @b{using} @b{namespace} std;
 @b{using} @b{namespace} Marsyas;
 
-void @b{recognize}(string sfName) @{
+void @b{recognize}(string sfName)
+@{
        MarSystemManager mng;
        MarSystem* pnet = mng.@b{create}(@t{"Series"}, @t{"pnet"});
 @i{// standard network}
@@ -16,16 +17,25 @@ void @b{recognize}(string sfName) @{
        pnet->@b{addMarSystem}(mng.@b{create}(@t{"PlotSink"},@t{"plot"}));
        pnet->@b{updctrl}(@t{"PlotSink/plot/mrs_string/outputFilename"}, @t{"out"});
 
-       @b{while} ( pnet->@b{getctrl}(@t{"SoundFileSource/src/mrs_bool/notEmpty"})->@b{toBool}() ) @{
+       @b{while} ( pnet->@b{getctrl}(@t{"SoundFileSource/src/mrs_bool/notEmpty"})->@b{toBool}() )
+       @{
               pnet->@b{tick}();
        @}
        @b{delete} pnet;
 @}
 
-int @b{main}(int argc, @b{const} char **argv) @{
+int @b{main}(int argc, @b{const} char **argv)
+@{
        string fileName;
-       @b{if} (argc<2) @{ cout<<@t{"Please enter filename."}<<endl; @b{exit}(1); @} @b{else} 
-              @{ fileName = argv[1]; @}
+       @b{if} (argc<2)
+       @{
+              cout<<@t{"Please enter filename."}<<endl;
+              @b{exit}(1);
+       @}
+       @b{else}
+       @{
+              fileName = argv[1];
+       @}
        cout << @t{"Processing file "} << fileName << endl;
 
        @b{recognize}(fileName);

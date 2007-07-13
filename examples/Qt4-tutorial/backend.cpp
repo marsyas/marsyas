@@ -19,7 +19,8 @@
 #include "backend.h"
 using namespace Marsyas;
 
-MarBackend::MarBackend() {
+MarBackend::MarBackend()
+{
 // make a typical Marsyas network:
 	MarSystemManager mng;
 	playbacknet = mng.create("Series", "playbacknet");
@@ -44,22 +45,26 @@ MarBackend::MarBackend() {
 	timer->start(1000);
 }
 
-MarBackend::~MarBackend() {
+MarBackend::~MarBackend()
+{
 	delete mrsWrapper;
 	delete playbacknet;
 }
 
-void MarBackend::openBackendSoundfile(string fileName) {
+void MarBackend::openBackendSoundfile(string fileName)
+{
 	mrsWrapper->updctrl(filenamePtr,fileName);
 	mrsWrapper->play();
 }
 
-void MarBackend::setBackendVolume(int vol) {
+void MarBackend::setBackendVolume(int vol)
+{
 	float newGain = vol/100.0f;
 	mrsWrapper->updctrl(gainPtr, newGain);
 }
 
-void MarBackend::getBackendPosition() {
+void MarBackend::getBackendPosition()
+{
 	int newPos = (int) positionPtr->to<mrs_natural>();
 	emit changedBackendPosition(newPos);
 }

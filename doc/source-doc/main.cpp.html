@@ -21,12 +21,20 @@ http://www.gnu.org/software/src-highlite -->
 <i><font color="#9A1900">*/</font></i>
 
 <b><font color="#000080">#include</font></b> <font color="#FF0000">"mainwindow.h"</font>
-<font color="#009900">int</font> <b><font color="#000000">main</font></b><font color="#990000">(</font><font color="#009900">int</font> argc<font color="#990000">,</font> <font color="#009900">char</font> <font color="#990000">*</font>argv<font color="#990000">[])</font> <font color="#FF0000">{</font>
+<font color="#009900">int</font> <b><font color="#000000">main</font></b><font color="#990000">(</font><font color="#009900">int</font> argc<font color="#990000">,</font> <font color="#009900">char</font> <font color="#990000">*</font>argv<font color="#990000">[])</font>
+<font color="#FF0000">{</font>
 <i><font color="#9A1900">// to keep this example as simple as possible, we only take the</font></i>
 <i><font color="#9A1900">// filename from the command-line.</font></i>
-	string fileName<font color="#990000">;</font> 
-	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>argc<font color="#990000">&lt;</font><font color="#993399">2</font><font color="#990000">)</font> <font color="#FF0000">{</font> cout<font color="#990000">&lt;&lt;</font><font color="#FF0000">"Please enter filename."</font><font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font> <b><font color="#000000">exit</font></b><font color="#990000">(</font><font color="#993399">1</font><font color="#990000">);</font> <font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b>
-		<font color="#FF0000">{</font> fileName <font color="#990000">=</font> argv<font color="#990000">[</font><font color="#993399">1</font><font color="#990000">];</font> <font color="#FF0000">}</font>
+	string fileName<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>argc<font color="#990000">&lt;</font><font color="#993399">2</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		cout<font color="#990000">&lt;&lt;</font><font color="#FF0000">"Please enter filename."</font><font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font>
+		<b><font color="#000000">exit</font></b><font color="#990000">(</font><font color="#993399">1</font><font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		fileName <font color="#990000">=</font> argv<font color="#990000">[</font><font color="#993399">1</font><font color="#990000">];</font>
+	<font color="#FF0000">}</font>
 
 	QApplication <b><font color="#000000">app</font></b><font color="#990000">(</font>argc<font color="#990000">,</font> argv<font color="#990000">);</font>
 	MarQTwindow <b><font color="#000000">marqt</font></b><font color="#990000">(</font>fileName<font color="#990000">);</font>

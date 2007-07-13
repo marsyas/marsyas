@@ -18,7 +18,8 @@
 
 #include "mainwindow.h"
 
-MarQTwindow::MarQTwindow(string fileName) {
+MarQTwindow::MarQTwindow(string fileName)
+{
 // typical Qt front-end
 	QPushButton *quit = new QPushButton(tr("Quit"));
 	connect(quit, SIGNAL(clicked()), qApp, SLOT(quit()));
@@ -47,22 +48,24 @@ MarQTwindow::MarQTwindow(string fileName) {
 
 //		Qt -> Marsyas
 	connect(volume, SIGNAL(valueChanged(int)),
-			marBackend, SLOT(setBackendVolume(int)));
+	        marBackend, SLOT(setBackendVolume(int)));
 
 //		Marsyas -> Qt
 	connect(marBackend, SIGNAL(changedBackendPosition(int)),
-			this, SLOT(setMainPosition(int)));
+	        this, SLOT(setMainPosition(int)));
 
 //		Qt -> Marsyas (getBackendPosition) -> Qt (changedBackendPosition)
 	connect(updatePos, SIGNAL(clicked()),
-			marBackend, SLOT(getBackendPosition()));
+	        marBackend, SLOT(getBackendPosition()));
 }
 
-MarQTwindow::~MarQTwindow() {
+MarQTwindow::~MarQTwindow()
+{
 	delete marBackend;
 }
 
-void MarQTwindow::setMainPosition(int newPos) {
+void MarQTwindow::setMainPosition(int newPos)
+{
 	lcd->display(newPos);
 }
 

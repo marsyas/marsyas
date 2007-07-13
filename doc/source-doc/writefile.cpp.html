@@ -6,7 +6,8 @@ http://www.gnu.org/software/src-highlite -->
 <b><font color="#0000FF">using</font></b> <b><font color="#0000FF">namespace</font></b> std<font color="#990000">;</font>
 <b><font color="#0000FF">using</font></b> <b><font color="#0000FF">namespace</font></b> Marsyas<font color="#990000">;</font>
 
-<font color="#009900">void</font> <b><font color="#000000">recognize</font></b><font color="#990000">(</font>string sfName<font color="#990000">)</font> <font color="#FF0000">{</font>
+<font color="#009900">void</font> <b><font color="#000000">recognize</font></b><font color="#990000">(</font>string sfName<font color="#990000">)</font>
+<font color="#FF0000">{</font>
 	MarSystemManager mng<font color="#990000">;</font>
 	MarSystem<font color="#990000">*</font> pnet <font color="#990000">=</font> mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"Series"</font><font color="#990000">,</font> <font color="#FF0000">"pnet"</font><font color="#990000">);</font>
 <i><font color="#9A1900">// standard network</font></i>
@@ -18,16 +19,25 @@ http://www.gnu.org/software/src-highlite -->
 	pnet<font color="#990000">-&gt;</font><b><font color="#000000">addMarSystem</font></b><font color="#990000">(</font>mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"PlotSink"</font><font color="#990000">,</font><font color="#FF0000">"plot"</font><font color="#990000">));</font>
 	pnet<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"PlotSink/plot/mrs_string/outputFilename"</font><font color="#990000">,</font> <font color="#FF0000">"out"</font><font color="#990000">);</font>
 
-	<b><font color="#0000FF">while</font></b> <font color="#990000">(</font> pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_bool/notEmpty"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toBool</font></b><font color="#990000">()</font> <font color="#990000">)</font> <font color="#FF0000">{</font>
+	<b><font color="#0000FF">while</font></b> <font color="#990000">(</font> pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_bool/notEmpty"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toBool</font></b><font color="#990000">()</font> <font color="#990000">)</font>
+	<font color="#FF0000">{</font>
 		pnet<font color="#990000">-&gt;</font><b><font color="#000000">tick</font></b><font color="#990000">();</font>
 	<font color="#FF0000">}</font>
 	<b><font color="#0000FF">delete</font></b> pnet<font color="#990000">;</font>
 <font color="#FF0000">}</font>
 
-<font color="#009900">int</font> <b><font color="#000000">main</font></b><font color="#990000">(</font><font color="#009900">int</font> argc<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#009900">char</font> <font color="#990000">**</font>argv<font color="#990000">)</font> <font color="#FF0000">{</font>
+<font color="#009900">int</font> <b><font color="#000000">main</font></b><font color="#990000">(</font><font color="#009900">int</font> argc<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#009900">char</font> <font color="#990000">**</font>argv<font color="#990000">)</font>
+<font color="#FF0000">{</font>
 	string fileName<font color="#990000">;</font>
-	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>argc<font color="#990000">&lt;</font><font color="#993399">2</font><font color="#990000">)</font> <font color="#FF0000">{</font> cout<font color="#990000">&lt;&lt;</font><font color="#FF0000">"Please enter filename."</font><font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font> <b><font color="#000000">exit</font></b><font color="#990000">(</font><font color="#993399">1</font><font color="#990000">);</font> <font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> 
-		<font color="#FF0000">{</font> fileName <font color="#990000">=</font> argv<font color="#990000">[</font><font color="#993399">1</font><font color="#990000">];</font> <font color="#FF0000">}</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>argc<font color="#990000">&lt;</font><font color="#993399">2</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		cout<font color="#990000">&lt;&lt;</font><font color="#FF0000">"Please enter filename."</font><font color="#990000">&lt;&lt;</font>endl<font color="#990000">;</font>
+		<b><font color="#000000">exit</font></b><font color="#990000">(</font><font color="#993399">1</font><font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		fileName <font color="#990000">=</font> argv<font color="#990000">[</font><font color="#993399">1</font><font color="#990000">];</font>
+	<font color="#FF0000">}</font>
 	cout <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"Processing file "</font> <font color="#990000">&lt;&lt;</font> fileName <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
 
 	<b><font color="#000000">recognize</font></b><font color="#990000">(</font>fileName<font color="#990000">);</font>

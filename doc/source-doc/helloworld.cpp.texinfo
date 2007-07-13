@@ -4,7 +4,8 @@
 @b{using} @b{namespace} std;
 @b{using} @b{namespace} Marsyas;
 
-void @b{sfplay}(string sfName, float gain) @{
+void @b{sfplay}(string sfName, float gain)
+@{
        MarSystemManager mng;
 
        MarSystem* playbacknet = mng.@b{create}(@t{"Series"}, @t{"playbacknet"});
@@ -17,21 +18,36 @@ void @b{sfplay}(string sfName, float gain) @{
        playbacknet->@b{updctrl}(@t{"Gain/gt/mrs_real/gain"}, gain);
        playbacknet->@b{updctrl}(@t{"AudioSink/dest/mrs_bool/initAudio"}, @b{true});
 
-       @b{while} ( playbacknet->@b{getctrl}(@t{"SoundFileSource/src/mrs_bool/notEmpty"})->@b{toBool}() ) @{
+       @b{while} ( playbacknet->@b{getctrl}(@t{"SoundFileSource/src/mrs_bool/notEmpty"})->@b{toBool}() )
+       @{
               playbacknet->@b{tick}();
        @}
        @b{delete} playbacknet;
 @}
 
-int @b{main}(int argc, @b{const} char **argv) @{
+int @b{main}(int argc, @b{const} char **argv)
+@{
        string fileName;
        float gain;
-       @b{if} (argc<2) @{ cout<<@t{"Please enter filename."}<<endl; @b{exit}(1); @} @b{else} 
-              @{ fileName = argv[1]; @}
-       @b{if} (argc<3) @{ gain = 1; @} @b{else}
-              @{ gain = @b{atof}(argv[2]); @}
+       @b{if} (argc<2)
+       @{
+              cout<<@t{"Please enter filename."}<<endl;
+              @b{exit}(1);
+       @}
+       @b{else}
+       @{
+              fileName = argv[1];
+       @}
+       @b{if} (argc<3)
+       @{
+              gain = 1;
+       @}
+       @b{else}
+       @{
+              gain = @b{atof}(argv[2]);
+       @}
        cout << @t{"Playing file "} << fileName << @t{" at volume "} <<
-              gain << endl;
+       gain << endl;
 
        @b{sfplay}(fileName,gain);
        @b{exit}(0);

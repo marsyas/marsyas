@@ -27,7 +27,8 @@ using namespace std;
 
 #include "backend.h"
 
-class MarQTwindow : public QWidget {
+class MarQTwindow : public QWidget
+{
 	Q_OBJECT
 public:
 	MarQTwindow(string fileName);

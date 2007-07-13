@@ -17,12 +17,20 @@
 */
 
 #include "mainwindow.h"
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
 // to keep this example as simple as possible, we only take the
 // filename from the command-line.
-	string fileName; 
-	if (argc<2) { cout<<"Please enter filename."<<endl; exit(1); } else
-		{ fileName = argv[1]; }
+	string fileName;
+	if (argc<2)
+	{
+		cout<<"Please enter filename."<<endl;
+		exit(1);
+	}
+	else
+	{
+		fileName = argv[1];
+	}
 
 	QApplication app(argc, argv);
 	MarQTwindow marqt(fileName);
