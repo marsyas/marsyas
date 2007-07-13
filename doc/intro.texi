@@ -201,8 +201,8 @@ the files in @file{examples/}, it has little value as a standalone program.
 
 @subsection Source code documentation
 
-Many MarSystems have been documented; see @ref{MarSystem details} for
-more information.
+Many MarSystems have been documented; see @ref{List of available
+MarSystems} for more information.
 
 
 @subsection Source code

@@ -61,7 +61,8 @@ translation approved by the Free Software Foundation.
 * Installation::                Installation instructions for different operating systems.
 * Tools::                       Various sample tools built using marsyas
 components.
-* Architecture::                Software architecture and concepts.
+* Architecture concepts::       Important concepts about Marsyas.
+* System details::              Details about Marsyas.
 * Programming applications::    Writing programs that use MarSystems.
 * Developing MarSystems::       Writing new basic MarSystem blocks.
 * Interoperability::            Using Marsyas with other projects.
@@ -75,6 +76,7 @@ components.
 @include install.texi
 @include tools.texi
 @include architecture.texi
+@include system.texi
 @include programming.texi
 @include developing.texi
 @include interoperability.texi

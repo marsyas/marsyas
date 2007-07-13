@@ -12,18 +12,6 @@ examples is to provide source code of working applications.
 The executable files may be found in @file{bin/release/}, while the
 source code for those files is in @file{apps/@{DIR@}/}.
 
-@c   fluff, not necessary.  -gp
-@c It is important to realize that Marsyas is a
-@c framework for building applications rather than a set of
-@c applications.
-@c They are also used as a
-@c testbed to design/benchmark/experiment with the framework.
-@c Marsyas is
-@c meant to be an extensible framework so making the effort of
-@c understanding the code behind the executables is necessary for any
-@c serious work. These tools also show the capabilities of the framework 
-@c and also serve as pedagogical examples.
-
 @menu
 * Collections and input files::  
 * Simple Soundfile Interaction::  

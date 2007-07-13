@@ -1,6 +1,5 @@
-@c much more info to come soon.  -gp
-@node Architecture
-@chapter Architecture
+@node Architecture concepts
+@chapter Architecture concepts
 
 In order to fully take advantage of the capabilities of Marsyas it is
 important to understand how it works internally. The architecture of
@@ -20,9 +19,6 @@ in @ref{Developing MarSystems}.
 * Architecture overview::       
 * Implicit patching::           
 * MarSystem composites::        
-* Predefined variable types::   
-* Architecture limitations::    
-* MarSystem details::           
 @end menu
 
 
@@ -215,102 +211,5 @@ Series1->addMarSystem(mng.create("classifier", "Classifier"));
 
 @image{images/composite-accumulator}
 
-
-@node Predefined variable types
-@section Predefined variable types
-
-Marsyas contains some predefined, portable data types:
-
-@cindex mrs_bool
-@cindex mrs_natural
-@cindex mrs_real
-@cindex mrs_complex
-
-@example
-mrs_bool
-mrs_natural   (integers)
-mrs_real
-mrs_complex
-@end example
-
-@cindex realvec
-
-There is also the @code{realvec} variable type.  A @code{realvec} is an
-array of @code{mrs_real} values; this is the most common type of
-variable in Marsyas (all the audio processing is done via
-@code{realvec}s, for example).  Many operations can be performed on
-@code{realvec}s, including statistical operations (find the mean,
-median, standard variance, etc).  Using these predefined data types is
-highly recommended.
-
-@example
-realvec foo;
-foo.create(10);
-for (mrs_natural i=0; i<10; i++) @{
-  foo(i) = i;
-@}
-...
-foo.~realvec();  // delete the data
-
-realvec *bar;
-bar->create(20,20);
-for (mrs_natural i=0; i<20; i++) @{
-  for (mrs_natural j=0; j<20; j++) @{
-    (*bar)(i,j) = i+j;
-  @}
-@}
-...
-bar->~realvec();
-@end example
-
-
-
-
-@node Architecture limitations
-@section Architecture limitations
-
-@c TODO: eliminate this section when I rewrite this chapter.  This info
-@c   should go in the appropriate place, not dumped in here at the end.
-
-Due to the way that observations behave in Marsyas, in some cases
-it is impossible to differentiate between a stereo signal and a mono
-signal which is twice as long.  In particular, there is currently
-no direct way to tell apart a stereo
-pair of spectrums from a mono spectrum with twice the number of bins. 
-
-In these cases, we recommend that you use a Parallel Composite: split
-the stereo signal into separate mono dataflows (using Parallel), then treat
-each mono signal individually.
-
-
-@node MarSystem details
-@section MarSystem details
-
-Most MarSystems are documented in the
-@uref{../sourceDoc/index.html,source documentation}.  MarSystems are
-organized into groups.
-
-@itemize
-@item @strong{Processing}: audio block => audio block.  Examples are
-@code{Gain} and @code{Filter}
-
-@item @strong{Analysis}: audio block => other block.  Examples are
-@code{Spectrum} and @code{Rms}.
-
-@item @strong{Synthesis}: other block => audio block.  Examples are
-@code{SineSource} and @code{NoiseSource}.
-
-@end itemize
-
-There is one special group: @code{Basic} Processing.  This is a subset
-of the @code{Processing} group.
-
-The @qq{main} MarSystems are fairly well documented, but many MarSystems
-lack even basic documentation.  In this case, the only option is to read
-the source code.
-
-Once you have learned how to use an undocumented MarSystem,
-@emph{please} send some documentation.  See @ref{Contributing
-documentation} and @ref{Contributing source documentation} for details.
 
 

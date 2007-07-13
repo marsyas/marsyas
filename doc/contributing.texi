@@ -140,8 +140,8 @@ The @code{[w]} indicates that the control should be written and not
 
 The @code{\ingroup GROUP} will generally be @code{Processing},
 @code{Analysis}, or @code{Synthesis}.  For details about these
-categories, see @ref{MarSystem details}.  For a complete list of all
-available groups, see the file @file{marsyas/groups.doxy}.
+categories, see @ref{List of available MarSystems}.  For a complete list
+of all available groups, see the file @file{marsyas/groups.doxy}.
 
 There is one special group: @code{Basic} Processing.  This is a subset
 of the @code{Processing} group.  No MarSystem should only be in the
