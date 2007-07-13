@@ -177,7 +177,7 @@ the advantages of dataflow computation.
 @subsection Latest version
 
 The documentation is uploaded regularly to
-@uref{http://opihi.cs.uvic.ca/marsyas/}
+@uref{http://marsyas.sness.net/help/manual}
 
 
 @subsection Examples

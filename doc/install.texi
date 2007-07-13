@@ -7,9 +7,9 @@
 * Optional programs and libraries::  
 * Configuring Marsyas::         
 * Compiling Marsyas::           
-* Generating documentation::    
 * Platform-specific notes::     
 * Structure of distribution::   
+* Generating documentation::    
 @end menu
 
 
@@ -18,28 +18,16 @@
 
 @subsection Stable(-ish) Version
 
-(@i{Important Note: Marsyas does not use CVS and therefore the CVS repository 
-is out of date})
+(@i{Important Note: Marsyas does not use CVS any more; any links to
+"marsyas CVS" are hopelessly out of date})
 
 Marsyas is hosted at SourceForge:
 
-@ifnothtml
-http://marsyas.sourceforge.net/
-@end ifnothtml
+@quotation
+@uref{http://marsyas.sourceforge.net/}
 
-@ifnothtml
-http://www.sourceforge.net/projects/marsyas   
-@end ifnothtml
-
-@html 
-<a href="http://www.sourceforge.net/projects/marsyas">
-http://www.sourceforget.net/projects/marsyas </a> 
-@end html
-
-@html 
-<a href="http://marsyas.sourceforge.net">
-http://marsyas.sourceforge.net </a> 
-@end html
+@uref{http://www.sourceforge.net/projects/marsyas}
+@end quotation
 
 Marsyas is open source software and is distributed 
 as a tarball (something like @file{marsyas-0.2.8.tar.gz}).  Uncompress
@@ -66,19 +54,6 @@ You can replace @file{my-marsyas-dir} with any directory you want.  The
 version/release (version 0.2 release 10) is independently assigned 
 from subversion revisions and the latest can be found by checking 
 the sourceforge website. 
-
-@c  this info isn't necessary
-@ignore
-Installation is the biggest source of grief for first time users of
-Marsyas and the main source of email questions. Significant
-improvements in the installation process have been made 
-with the latest releases. (after marsyas-0.2.2). The following
-operating systems are supported in roughly the following order (from
-more complete support to less): Linux, MacOS X, Windows (cygwin),
-Windows (Visual Studio). If you want to use the full functionality 
-of Marsyas and have frequent updates and support you are strongly 
-encouraged to use Linux. 
-@end ignore
 
 @c  This is good info, but not at this place in the docs.
 @ignore
@@ -228,12 +203,14 @@ qmake
 @end example
 
 @strong{Warning:} on MacOS X and when using Qt-4.3.0 or higher, you
-should add this line to your @file{~/.profile} before running
-@code{qmake}:
+must set this environment variable:
 
 @example
 export QMAKESPEC=/usr/local/Qt4.3/mkspecs/macx-g++/
 @end example
+
+The easiest (and safest) way to set this is to add that line to your
+@file{~/.profile} and then close (and re-open) your terminal window.
 
 
 @subsection ...with autotools
@@ -342,36 +319,15 @@ qmake -t vclib
 @end example
 
 
-@node Generating documentation
-@section Generating documentation
-
-This manual is built with texinfo, and the source code documentation is
-created with doxygen.  These software packages may be installed from
-
-@itemize
-@item @uref{http://www.gnu.org/software/texinfo/}
-@item @uref{http://www.doxygen.org/}
-@end itemize
-
-The latest version of the manual is in the SVN tree (see
-@ref{Download}), and can be built by running these commands from the
-@file{doc/} directory:
-
-@example
-make html
-make pdf
-make doxy
-@end example
-
-
 @node Platform-specific notes
 @section Platform-specific notes
 
 @menu
 * Linux::                       
 * Mac OSX::                     
-* Windows (cygwin)::            
+* Windows (MinGW)::             
 * Windows (Visual Studio)::     
+* Windows (cygwin)::            
 @end menu
 
 @node Linux
@@ -417,21 +373,16 @@ pnet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
 @end example
 
 
-@node Windows (cygwin)
-@subsection Windows (cygwin)
-@cindex Cygwin
+@node Windows (MinGW)
+@subsection Windows (MinGW)
+@cindex Windows, MinGW
 
-Installation under Windows using the cygwin environment and gcc is
-similar to Linux. The most recent version of Marsyas 0.2 use RtAudio
-for audio playback under Cygwin. In order to compile RtAudio you will
-need to have the DirectX SDK installed.
-
-In general, cygwin is not supported as well as Linux and OS X. 
+No specific notes.
 
 
 @node Windows (Visual Studio)
 @subsection Windows (Visual Studio)
-@cindex Windows
+@cindex Windows, Visual Studio
 
 A few of our developers use Visual Studio, so this environment is fairly
 well supported.
@@ -466,6 +417,19 @@ qmake -t vcapp/vclib from all your marsyas .pro!
 @end example
 
 
+@node Windows (cygwin)
+@subsection Windows (cygwin)
+@cindex Windows, Cygwin
+@cindex Cygwin
+
+Installation under Windows using the cygwin environment and gcc is
+similar to Linux. The most recent version of Marsyas 0.2 use RtAudio
+for audio playback under Cygwin. In order to compile RtAudio you will
+need to have the DirectX SDK installed.
+
+In general, cygwin is not supported as well as Linux and OS X. 
+
+
 @node Structure of distribution
 @section Structure of distribution 
 
@@ -482,7 +446,7 @@ important files:
 @itemize
 @item @b{INSTALL, COPYING, THANKS, README, AUTHORS, TODO, Changelog:} text
 files with important information in theory.  However, these have not
-been updated in years.  We use @code{svn} log messages instead of the
+been updated in years.  We use @code{svn log} messages instead of the
 Changelog.
 @item @b{configure.in, Makefile.am:} the main files edited by 
 the user/programmer that are required for the autotools. You will 
@@ -506,11 +470,11 @@ programs can use to access Marsyas functionality.
 @item @b{bin:} executable files are compiled in @file{bin/release} or
 @file{bin/debug}.
 
-@item @b{apps:} the source code for the above executables.
-
-@item @b{doc:} contains both the user manual (which you are 
+@item @b{doc:} contains the user manual (which you are 
 currently reading).  To regenerate the manual, see @ref{Generating
 documentation}
+
+@item @b{apps:} the source code for the above executables.
 
 @item @b{apps/Qt4Apps:} provides GUI interfaces using Qt4. These will not
 work with earlier versions of Qt. You must have Qt4 installed in order
@@ -519,11 +483,43 @@ each one that has instructions on how to compile and run it.
 
 @item @b{config:} configuration files used by autotools.
 
-@c @item @b{distributed:} Experimental Marsyas classes for
-@c distributed processing.
+@item @b{scripts:} useful scripts to help programming with Marsyas.
 
-@c @item @b{marsyasMATLAB:} User MATLAB scripts (mfiles).
+@item @b{scripts/MATLAB:} MATLAB scripts.
 
 @end itemize 
 
+
+@node Generating documentation
+@section Generating documentation
+
+This manual is built with texinfo, and the source code documentation is
+created with doxygen.  These software packages may be installed from
+
+@itemize
+@item @uref{http://www.gnu.org/software/texinfo/}
+@item @uref{http://www.doxygen.org/}
+@end itemize
+
+The latest version of the manual is in the SVN tree (see
+@ref{Download}), and can be built by running these commands from the
+@file{doc/} directory:
+
+@example
+make html
+make pdf
+make doxy
+@end example
+
+Source-highlighted examples are stored in the @file{doc/source-doc/}
+directory.  These may be built with this additional program and the
+following command:
+
+@itemize
+@item @uref{http://www.gnu.org/software/src-highlite/}
+@end itemize
+
+@example
+make sources
+@end example
 
