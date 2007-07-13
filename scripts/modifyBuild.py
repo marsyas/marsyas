@@ -31,7 +31,7 @@ def modify_manager(filename,action):
 				print "Adding line 1 of 2 to " + fileToEdit
 				newfile.write(insertLine + '\n')
 			if (line[0:25] == '\tregisterPrototype(\"Gain\"'):
-				insertLine = '\tregisterPrototype(\"' + filename + '", new' + filename +'(\"'+filename.lower()+'pr\"));'
+				insertLine = '\tregisterPrototype(\"' + filename + '", new ' + filename +'(\"'+filename.lower()+'pr\"));'
 				print "Adding line 2 of 2 to " + fileToEdit
 				newfile.write(insertLine + '\n')
 			newfile.write(line)
