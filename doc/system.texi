@@ -232,9 +232,15 @@ see the file @file{marsyas/realvec.h}
 @node List of available MarSystems
 @section List of available MarSystems
 
-Most MarSystems are documented in the
-@uref{../sourceDoc/index.html,source documentation}.  MarSystems are
-organized into groups.
+@subsection Source documentation
+
+MarSystems are documented in the @uref{../sourceDoc/index.html,source
+documentation}.  Most MarSystems are organized into groups.
+
+@subsection MarSystem groups
+
+The groups are fairly self-explanatory, but we should clarify a few
+groupings:
 
 @itemize
 @item @strong{Processing}: audio block => audio block.  Examples are
@@ -250,6 +256,11 @@ organized into groups.
 
 There is one special group: @code{Basic} Processing.  This is a subset
 of the @code{Processing} group.
+
+To see all MarSystems, look at @emph{Data Structures} instead of
+@emph{Main Page}.
+
+@subsection Limited documentation
 
 The @qq{main} MarSystems are fairly well documented, but many MarSystems
 lack even basic documentation.  In this case, the only option is to read

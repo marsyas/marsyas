@@ -84,19 +84,19 @@
  *
  */
 
-/**  @defgroup none Undocumented
- *
- * \brief These MarSystems have not been documented yet.
- *
- */
-
-
 /**  @defgroup Notmar Classes which are not MarSystems
  *
  * \brief These classes are not MarSystems, but are still useful.
  *
  */
 
+
+
+/**  @defgroup none Undocumented
+ *
+ * \brief These MarSystems have not been documented yet.
+ *
+ */
 
 
 
