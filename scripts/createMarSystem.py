@@ -19,6 +19,10 @@ marsyasBaseDir = os.path.abspath( marsyasBaseDir )
 writeDir = os.getcwd()
 
 def copyWithSub( oldFile, newFile ):
+	if (os.path.exists(newFile)):
+		print newFile + " already exists!!!  I will not"
+		print "overwrite an existing file!"
+		sys.exit();
 	oldFile = open( os.path.join( marsyasBaseDir, 'marsyas', oldFile)).readlines()
 	file = open( os.path.join(writeDir, newFile), 'w')
 	for line in oldFile:
@@ -35,6 +39,5 @@ def copyWithSub( oldFile, newFile ):
 
 copyWithSub(oldName + '.h', newName + '.h')
 copyWithSub(oldName + '.cpp', newName + '.cpp')
-
 
 
