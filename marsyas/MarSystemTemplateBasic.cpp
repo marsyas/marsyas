@@ -49,8 +49,8 @@ MarSystemTemplateBasic::MarSystemTemplateBasic(const MarSystemTemplateBasic& a) 
 	// All member "pointers" to controls have to be
 	// explicitly reassigned here, at the copy ctor.
 	// Otherwise these member "pointers" would be invalid!
-	ctrl_repeats_ = getctrl("mrs_natural/repeats");
-	ctrl_gain_ = getctrl("mrs_real/gain");
+	ctrl_repeats_EXAMPLE_ = getctrl("mrs_natural/repeats");
+	ctrl_gain_EXAMPLE_ = getctrl("mrs_real/gain");
 }
 
 
@@ -82,7 +82,7 @@ MarSystemTemplateBasic::addControls()
 	// if a "pointer" to a control is to be used (for efficiency purposes 
 	// - see myProcess() bellow), it should be passed as the last
 	// argument to addctrl()
-	addctrl("mrs_real/gain", 1.0, ctrl_gain_);
+	addctrl("mrs_real/gain", 1.0, ctrl_gain_EXAMPLE_);
 	// IMPORTANT NOTE:
 	// in the above case, since the control value is supposed to 
 	// be a mrs_real, the default value also has to be a mrs_real!
@@ -90,10 +90,10 @@ MarSystemTemplateBasic::addControls()
 	// control will in fact have a mrs_natural value despite of
 	// the "mrs_real/..." name.
 
-	addctrl("mrs_natural/repeats", 1, ctrl_repeats_);
+	addctrl("mrs_natural/repeats", 1, ctrl_repeats_EXAMPLE_);
 	// if we have a "pointer" to a control, we can set its state
 	// in a different and more efficient way
-	ctrl_repeats_->setState(true);
+	ctrl_repeats_EXAMPLE_->setState(true);
 }
 
 void
@@ -129,7 +129,7 @@ MarSystemTemplateBasic::myUpdate(MarControlPtr sender)
 	// corresponding slice will not be updated accordingly! 
 	// (see marsyasTests.cpp >> test_MarControls() )
 	//
-	ctrl_onSamples_->setValue(ctrl_inSamples_ * ctrl_repeats_, NOUPDATE);
+	ctrl_onSamples_->setValue(ctrl_inSamples_ * ctrl_repeats_EXAMPLE_, NOUPDATE);
 
 	// NOTE:
 	// see Gain.cpp for some more info about output parameter configuration.
@@ -141,10 +141,10 @@ MarSystemTemplateBasic::myProcess(realvec& in, realvec& out)
 	static mrs_natural rep = 1;
 	static realvec vec;
 
-	const mrs_real& gainValue = ctrl_gain_->to<mrs_real>();
+	const mrs_real& gainValue = ctrl_gain_EXAMPLE_->to<mrs_real>();
 	// this is equivalent (although slightly more efficient) to:
   //
-	// mrs_real& gainValue = ctrl_gain_->toReal(); // ::toReal() calls ::to<mrs_real>()
+	// mrs_real& gainValue = ctrl_gain_EXAMPLE_->toReal(); // ::toReal() calls ::to<mrs_real>()
 	//
 	// This reference will not allow writing directly to the control, but
 	// avoids a copy (which can hurt if the control is a big realvec)
@@ -153,7 +153,7 @@ MarSystemTemplateBasic::myProcess(realvec& in, realvec& out)
 	
 	// There may be cases where is more adequate to get a copy of the control value,
 	// so it does not change event if the actual control value is changed elsewhere: 
-	mrs_natural repeats = ctrl_repeats_->to<mrs_natural>();
+	mrs_natural repeats = ctrl_repeats_EXAMPLE_->to<mrs_natural>();
 
 	for (o=0; o < inObservations_; o++)
 		for (t = 0; t < inSamples_; t++)
@@ -164,13 +164,7 @@ MarSystemTemplateBasic::myProcess(realvec& in, realvec& out)
 	// (e.g. some weird amplitude modulation effect), this is the way
 	// to do it:
 	mrs_real g = (((mrs_natural)(gainValue*10)+1)%10)/10.0;
-	ctrl_gain_->setValue(g);
+	ctrl_gain_EXAMPLE_->setValue(g);
 }
-
-
-
-
-
-
 
 
