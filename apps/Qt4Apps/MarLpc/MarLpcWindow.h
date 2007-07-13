@@ -35,10 +35,16 @@ public slots:
    void ctrlChanged(MarControlPtr cname);
 
 private:
+
+  mrs_real amplitudePole_;
+  mrs_real frequencyPole_;
+
   void createMenus();
   void createActions();
   void createNetwork();
   void startNetwork();
+
+  void updateResonanceFilter();
    
   MarSystem* lpc_;
   MarSystemQtWrapper* mwr_;
@@ -54,7 +60,9 @@ private:
   MarControlGUI* amplitudePoleControl_;
 
   QSlider* posSlider_;
-  
+  QSlider* amplitudePoleSlider_;
+  QSlider* frequencyPoleSlider_;
+
   QMenu*   fileMenu;  
   QMenu*   helpMenu;
   QAction* openAct;

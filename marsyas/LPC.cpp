@@ -18,7 +18,7 @@
 
 /** 
 \class LPC
-	\ingroup none
+\ingroup none
 \brief Compute Warped LPC coefficients, Pitch and Power [STILL UNDER TESTING!].
 
 Linear Prediction Coefficients (LPC). Features commonly used 
@@ -409,7 +409,7 @@ LPC::myProcess(realvec& in, realvec& out)
 	//-------------------------
 	//calculate warped autocorrelation coeffs
 	realvec r(in.getSize());
-	
+
 	//--------------------------
 	// Levison-Durbin recursion
 	//--------------------------
@@ -430,9 +430,9 @@ LPC::myProcess(realvec& in, realvec& out)
 	//cout << LevinsonError << endl;
 
 	//this also estimates the pitch - does it work if lambda != 0 [?] [ML] normalization issue 
-    autocorrelationWarped(in, r, lag, getctrl("mrs_real/lambda")->toReal()); 
+	autocorrelationWarped(in, r, lag, getctrl("mrs_real/lambda")->toReal()); 
 	LevinsonError = SPcorXpc (r.getData(), a.getData(), a.getSize()-1);
-    
+
 	// LevinsonError /= in.getSize(); [ML] add this if SPautoc used
 	LevinsonError = sqrt(LevinsonError);
 	// pitch in Hz
@@ -447,23 +447,16 @@ LPC::myProcess(realvec& in, realvec& out)
 	// out = [a(1) a(2) ... a(order_-1)]
 
 
-		for(i=0; i < order_; i++)
-			// out(i) = a(i+1); // musicDsp implementation  
-			out(i) = -a(i); // musicDsp implementation  
+	for(i=0; i < order_; i++)
+		// out(i) = a(i+1); // musicDsp implementation  
+		out(i) = -a(i); // musicDsp implementation  
 
-		//------------------------------
-		//output pitch and power values
-		//------------------------------
-		out(order_) = pitch; // lag in samples <= from ::autocorrelationWarped(...) - does it work if lambda != 0 [?]
-		out(order_+1) = LevinsonError; //prediction error (= gain? [?])
+	//------------------------------
+	//output pitch and power values
+	//------------------------------
+	out(order_) = pitch; // lag in samples <= from ::autocorrelationWarped(...) - does it work if lambda != 0 [?]
+	out(order_+1) = LevinsonError; //prediction error (= gain? [?])
 
-		ctrl_coeffs_->setValue(0, 1.0);
-		for(i=1; i < order_+1; i++) {
-			// ctrl_coeffs_->setValue(i, -a(i)); // musicDsp implementation  
-			ctrl_coeffs_->setValue(i, -a(i-1));  
-			ctrl_pitch_->setValue(pitch);
-			ctrl_power_->setValue(LevinsonError);
-		}
 	//--------------------------
 	// LPC Pole-shifting
 	//--------------------------
@@ -471,13 +464,23 @@ LPC::myProcess(realvec& in, realvec& out)
 	mrs_real gamma = getctrl("mrs_real/gamma")->toReal();
 	if(gamma != 1.0)
 	{
-    	for(mrs_natural j = 0; j < order_; j++)
-				out(j) = (out(j) * pow(gamma, (double)j+1));
-			for(mrs_natural j = 0; j < order_; j++)
-				ctrl_coeffs_->setValue(j+1, (*ctrl_coeffs_)(j+1) * pow(gamma, (double)j+1));
+		for(mrs_natural j = 0; j < order_; j++)
+		{
+			out(j) = (out(j) * pow(gamma, (double)j+1));
+		}
 	}
+
+		ctrl_coeffs_->setValue(0, 1.0);
+	for(i=1; i < order_+1; i++) {
+		// ctrl_coeffs_->setValue(i, -a(i)); // musicDsp implementation  
+		ctrl_coeffs_->setValue(i, out(i-1));  
+		ctrl_pitch_->setValue(pitch);
+		ctrl_power_->setValue(LevinsonError);
+	}
+
+
 	//MATLAB engine stuff - for testing and validation purposes only!
-    #ifdef _MATLAB_LPC_
+#ifdef _MATLAB_LPC_
 	MATLAB_PUT(out, "LPC_out");
 	MATLAB_PUT(getctrl("mrs_real/pitch")->toReal(), "pitch_MARS");
 	MATLAB_PUT(getctrl("mrs_real/power")->toReal(), "g_MARS");
@@ -485,7 +488,7 @@ LPC::myProcess(realvec& in, realvec& out)
 	MATLAB_EVAL("LPC_test");
 	mrs_real matlabGain;
 	MATLAB_GET("LPCgain", matlabGain);
-    #endif
+#endif
 }
 
 
