@@ -267,6 +267,7 @@ HEADERS += \
 	Biquad.h \
 	Transcriber.h \
 	FlowThru.h \
+	FanOutIn.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 	 
@@ -477,6 +478,7 @@ SOURCES += \
 	Biquad.cpp \
 	Transcriber.cpp \
 	FlowThru.cpp \
+	FanOutIn.cpp \
 	Gain.cpp
 # please leave Gain.cpp at the end like this; it makes scripts happy.
 

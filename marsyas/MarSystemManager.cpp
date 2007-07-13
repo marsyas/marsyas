@@ -146,6 +146,7 @@ in sequence.
 #include "Vibrato.h"
 #include "Panorama.h"
 #include "FlowThru.h"
+#include "FanOutIn.h"
 #include "Gain.h"
 // please leave Gain at the end; it makes scripts happy.
 
@@ -274,6 +275,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Vibrato", new Vibrato("vibratopr"));
 	registerPrototype("Panorama", new Panorama("panoramapr"));
 	registerPrototype("FlowThru", new FlowThru("flowthrupr"));
+	registerPrototype("FanOutIn", new FanOutIn("fanoutinpr"));
 	registerPrototype("Gain", new Gain("gp"));
 // Please leave Gain at the end; it makes scripts happy.
 
