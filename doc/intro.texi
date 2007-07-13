@@ -38,9 +38,14 @@ This framework has been created mainly to support George Tzanetakis's
 research mainly in the emerging area of Music Information Retrieval
 (MIR). Anyone who finds the framework useful is welcome to use it and
 contribute to it. If you would like specific features to be developed
-feel free to contact the author or support the project by donnating
+feel free to contact the author or support the project by donating
 money through the sourceforge page.
 
+There is a lot of work behind the development of Marsyas. Although
+Marsyas is and will remain free software, any form of financial or
+hardware support is more than welcome.  The sourceforge page contains
+a link for people to donate money to the project and any contribution
+is welcome and will help further improve the framework. 
 
 
 @menu
