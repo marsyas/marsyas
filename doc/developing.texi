@@ -74,8 +74,11 @@ playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
 @menu
 * Methods of the object::       
-* Constductors / destructor and Marsyas system integration::  
-* myUpdate() and myProcess()::  
+* Constructors / destructor::   
+* Handling controls::           
+* myProcess::                   
+* myUpdate vs. myProcess::      
+* More details about MarSystems::  
 @end menu
 
 
@@ -91,41 +94,48 @@ we use a fake MarSystem called @code{MyName}.
 MyName::MyName(string name):MarSystem("MyName", name)
 MyName::MyName(const MyName& a) : MarSystem(a)
 MyName::~MyName()
-@end example
-
-@item Marsyas system integration:
-@example
 MarSystem* MyName::clone() const
-void MyName::addControls()
 @end example
 
-@item Actual processing methods:
+@item Handling controls:
 @example
+void MyName::addControls()
 void MyName::myUpdate(MarControlPtr sender)
+@end example
+
+@item Actual processing method:
+@example
 void MyName::myProcess(realvec& in, realvec& out)
 @end example
 
 @end itemize
 
-Virtually all changes that you make to the basic template (created
-with the script in @ref{Creating a MarSystem}) will be to
-@ref{myUpdate() and myProcess()}.
+Most of the changes that you make to the basic template (created with
+the script in @ref{Creating a MarSystem}) will be to the @ref{Handling
+controls} methods and the @ref{myProcess} method.
 
 
-@node Constductors / destructor and Marsyas system integration
-@subsection Constductors / destructor and Marsyas system integration
+@node Constructors / destructor
+@subsection Constructors / destructor
 
 The first function is the standard C++ constructor; the second function
-is the copy constructor.
+is the copy constructor.  The destructor is straightforward.
 
 @example
 MyName::MyName(string name):MarSystem("MyName", name)
 MyName::MyName(const MyName& a) : MarSystem(a)
+MyName::~MyName()
+
+MarSystem* MyName::clone() const
 @end example
 
 @code{clone()} is used to create a new MarSystem; Marsyas stores an
 instance of every MarSystem at run-time, and future MarSystems are
 simply @code{clone()}'d from the initial instance.
+
+
+@node Handling controls
+@subsection Handling controls
 
 @code{addControls()} defines which controls a MarSystem uses:
 
@@ -157,17 +167,42 @@ initial example), then setting this control would automatically call
 @code{MyName::myUpdate()}.
 
 
-@node myUpdate() and myProcess()
-@subsection myUpdate() and myProcess()
+@node myProcess
+@subsection myProcess
 
-Every MarSystem includes @code{myUpdate(...)} and
-@code{myProcess(...)}.  @code{myProcess()} is called every time the
-MarSystem receives a @code{tick()} (ie all the time).  @code{myUpdate()}
-is called whenever the values of controls that have state are changed.
+@code{myProcess()} is called every time the MarSystem receives a
+@code{tick()} (ie all the time the program is running).
 
-In other words, resource-intensive operations (such as changing the
-buffer size, computing trigonomic functions, etc) that only depend on
-the controls should be performed inside @code{myUpdate()}.
+Resource-intensive operations (such as changing the buffer size,
+computing trigonomic functions, etc) that only depend on the controls
+(not the actual dataflow input) should be performed inside
+@code{myUpdate()}.  See @ref{myUpdate vs. myProcess} for more
+information.
+
+Most @code{myProcess()} functions will look like this:
+
+@example
+void
+MyMar::myProcess(realvec& in, realvec& out)
+@{   
+	// pre-loop initialization
+	...
+
+	// loop over buffer
+	for (o=0; o < inObservations_; o++)
+		for (t = 0; t < inSamples_; t++)
+		// calculate next value
+		...
+		out(o,t) = ...;
+
+	// post-loop actions
+	...
+@}
+@end example
+
+
+@node myUpdate vs. myProcess
+@subsection myUpdate vs. myProcess
 
 Taking a real-world example, consider a simple one-pole high/low-pass
 filter where we wish to perform the following operations:
@@ -176,6 +211,8 @@ filter where we wish to perform the following operations:
 mrs_real fc = ctrl_fc ->to<mrs_real>();
 mrs_real tanf = tan( PI * fc / 44100.0);
 mrs_real c = (tanf - 1.0) / (tanf + 1.0);
+
+// main loop
 for (t=1; t < inSampes_; t++) @{
     az = c*in(0,t) + in(0,t-1) - c*out(0,t-1);
     out(0,t) = (1-az)/2;
@@ -189,5 +226,17 @@ computed inside @code{myUpdate()} instead of @code{myProcess()}.  If
 the loop over our sound buffer; if the value of @code{fc} has changed,
 then @code{c} will be recomputed inside @code{myUpdate()}.
 
+
+@node More details about MarSystems
+@subsection More details about MarSystems
+
+The files have useful comments:
+
+@example
+marsyas/MarSystemTemplateBasic .h .cpp
+marsyas/MarSystemTemplateMedium .h .cpp
+marsyas/MarSystemTemplateAdvanced .h .cpp
+marsyas/Gain .h .cpp
+@end example
 
 
