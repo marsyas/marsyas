@@ -34,7 +34,7 @@ EXTRA_DIST += PCA.cpp PCA.h
 EXTRA_DIST += marsyas.pro
 EXTRA_DIST += NetworkUDPSink.cpp NetworkSocket.cpp NetworkTCPSink.cpp NetworkTCPSource.cpp NetworkUDPSource.cpp
 
-INCLUDES                = -I$(top_builddir) -I$(top_srcdir) -I$(Includes) 
+INCLUDES                = -I$(top_builddir) -I$(top_srcdir) -I$(INCLUDES) 
 
 pkginclude_HEADERS = \
 	MrsLog.h \

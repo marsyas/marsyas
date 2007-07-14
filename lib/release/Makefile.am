@@ -22,6 +22,8 @@ MAINTAINERCLEANFILES    = Makefile.in
 
 lib_LIBRARIES         = libmarsyas.a
 
+INCLUDES += -I@top_srcdir@/marsyas -l@top_srcdir@/marsyas/MATLAB 
+
 libmarsyas_a_SOURCES    = \
 	$(top_srcdir)/marsyas/MrsLog.cpp \
 	$(top_srcdir)/marsyas/VScheduler.cpp \
@@ -223,6 +225,7 @@ libmarsyas_a_SOURCES    = \
 	$(top_srcdir)/marsyas/basis.cpp \
 	$(top_srcdir)/marsyas/Transcriber.cpp \
 	$(top_srcdir)/marsyas/FlowThru.cpp \
+	$(top_srcdir)/marsyas/MATLAB/MATLABEngine.cpp \
 	$(top_srcdir)/marsyas/FanOutIn.cpp \
 	$(top_srcdir)/marsyas/MarSystemTemplateMedium.cpp \
 	$(top_srcdir)/marsyas/Gain.cpp

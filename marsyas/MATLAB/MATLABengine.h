@@ -37,6 +37,9 @@ Code by Luís Gustavo Martins <lmartins@inescporto.pt>
 #include <string>
 #include <vector>
 
+#include "common.h"
+#include "realvec.h"
+
 #include "engine.h" //$(MATLAB)\extern\include
 
 //starting from MATLAB R2006b (version 7.3.0)

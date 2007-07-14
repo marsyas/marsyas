@@ -18,7 +18,7 @@
 
 MAINTAINERCLEANFILES    = Makefile.in
 
-INCLUDES = -I$(top_srcdir)/marsyas
+INCLUDES += -I$(top_srcdir)/marsyas 
 
 bin_PROGRAMS = sfplay phasevocoder sfplugin bextract mkcollection marsyasTests record classifyFile peVocoder peakClustering sfinfo \
 	       extract midiTest boomchick pitchextract orcarecord helloworld gettingdata virtualsensor pePeakEval

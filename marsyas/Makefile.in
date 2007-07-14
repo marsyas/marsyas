@@ -76,10 +76,12 @@ CC = @CC@
 CXX = @CXX@
 DEPDIR = @DEPDIR@
 DISTRIBUTED = @DISTRIBUTED@
+
+INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(INCLUDES) 
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
-Includes = @Includes@
 Libs = @Libs@
 MADLIB = @MADLIB@
+MATLABLIBS = @MATLABLIBS@
 MOC = @MOC@
 MslLibs = @MslLibs@
 OGGLIB = @OGGLIB@
@@ -101,8 +103,6 @@ install_sh = @install_sh@
 MAINTAINERCLEANFILES = Makefile.in
 
 EXTRA_DIST = Doxyfile Qt/ MATLAB/ distributed/ PCA.cpp PCA.h marsyas.pro NetworkUDPSink.cpp NetworkSocket.cpp NetworkTCPSink.cpp NetworkTCPSource.cpp NetworkUDPSource.cpp
-
-INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(Includes) 
 
 pkginclude_HEADERS = \
 	MrsLog.h \

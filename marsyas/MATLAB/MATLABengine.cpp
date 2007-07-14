@@ -32,8 +32,6 @@ Code by Luís Gustavo Martins <lmartins@inescporto.pt>
 
 #ifdef MARSYAS_MATLAB
 
-#include "common.h"
-#include "realvec.h"
 #include "MATLABengine.h"
 
 using namespace std;

@@ -76,10 +76,12 @@ CC = @CC@
 CXX = @CXX@
 DEPDIR = @DEPDIR@
 DISTRIBUTED = @DISTRIBUTED@
+
+INCLUDES = @INCLUDES@ -I$(top_srcdir)/marsyas 
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
-Includes = @Includes@
 Libs = @Libs@
 MADLIB = @MADLIB@
+MATLABLIBS = @MATLABLIBS@
 MOC = @MOC@
 MslLibs = @MslLibs@
 OGGLIB = @OGGLIB@
@@ -99,8 +101,6 @@ am__quote = @am__quote@
 install_sh = @install_sh@
 
 MAINTAINERCLEANFILES = Makefile.in
-
-INCLUDES = -I$(top_srcdir)/marsyas
 
 bin_PROGRAMS = sfplay phasevocoder sfplugin bextract mkcollection marsyasTests record classifyFile peVocoder peakClustering sfinfo \
 	       extract midiTest boomchick pitchextract orcarecord helloworld gettingdata virtualsensor pePeakEval

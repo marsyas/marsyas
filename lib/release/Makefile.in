@@ -76,10 +76,12 @@ CC = @CC@
 CXX = @CXX@
 DEPDIR = @DEPDIR@
 DISTRIBUTED = @DISTRIBUTED@
+
+INCLUDES = @INCLUDES@ -I@top_srcdir@/marsyas -l@top_srcdir@/marsyas/MATLAB 
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
-Includes = @Includes@
 Libs = @Libs@
 MADLIB = @MADLIB@
+MATLABLIBS = @MATLABLIBS@
 MOC = @MOC@
 MslLibs = @MslLibs@
 OGGLIB = @OGGLIB@
@@ -303,6 +305,7 @@ libmarsyas_a_SOURCES = \
 	$(top_srcdir)/marsyas/basis.cpp \
 	$(top_srcdir)/marsyas/Transcriber.cpp \
 	$(top_srcdir)/marsyas/FlowThru.cpp \
+	$(top_srcdir)/marsyas/MATLAB/MATLABEngine.cpp \
 	$(top_srcdir)/marsyas/FanOutIn.cpp \
 	$(top_srcdir)/marsyas/MarSystemTemplateMedium.cpp \
 	$(top_srcdir)/marsyas/Gain.cpp
@@ -391,7 +394,7 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	MidiInput.$(OBJEXT) Esitar.$(OBJEXT) MidiOutput.$(OBJEXT) \
 	NumericLib.$(OBJEXT) NormCut.$(OBJEXT) vmblock.$(OBJEXT) \
 	lu.$(OBJEXT) basis.$(OBJEXT) Transcriber.$(OBJEXT) \
-	FlowThru.$(OBJEXT) FanOutIn.$(OBJEXT) \
+	FlowThru.$(OBJEXT) MATLABEngine.$(OBJEXT) FanOutIn.$(OBJEXT) \
 	MarSystemTemplateMedium.$(OBJEXT) Gain.$(OBJEXT)
 libmarsyas_a_OBJECTS = $(am_libmarsyas_a_OBJECTS)
 
@@ -451,8 +454,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/KNNClassifier.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Kurtosis.Po ./$(DEPDIR)/LPC.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/LPCC.Po ./$(DEPDIR)/LSP.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Limiter.Po ./$(DEPDIR)/MFCC.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/MP3FileSource.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Limiter.Po ./$(DEPDIR)/MATLABEngine.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/MFCC.Po ./$(DEPDIR)/MP3FileSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MarControl.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MarControlManager.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MarControlValue.Po \
@@ -794,6 +797,7 @@ lu.$(OBJEXT): $(top_srcdir)/marsyas/lu.cpp
 basis.$(OBJEXT): $(top_srcdir)/marsyas/basis.cpp
 Transcriber.$(OBJEXT): $(top_srcdir)/marsyas/Transcriber.cpp
 FlowThru.$(OBJEXT): $(top_srcdir)/marsyas/FlowThru.cpp
+MATLABEngine.$(OBJEXT): $(top_srcdir)/marsyas/MATLAB/MATLABEngine.cpp
 FanOutIn.$(OBJEXT): $(top_srcdir)/marsyas/FanOutIn.cpp
 MarSystemTemplateMedium.$(OBJEXT): \
 	$(top_srcdir)/marsyas/MarSystemTemplateMedium.cpp
@@ -881,6 +885,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LPCC.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LSP.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Limiter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MATLABEngine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MFCC.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MP3FileSource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MarControl.Po@am__quote@
@@ -3427,6 +3432,18 @@ FlowThru.obj: $(top_srcdir)/marsyas/FlowThru.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/FlowThru.Po' tmpdepfile='$(DEPDIR)/FlowThru.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FlowThru.obj `cygpath -w $(top_srcdir)/marsyas/FlowThru.cpp`
+
+MATLABEngine.o: $(top_srcdir)/marsyas/MATLAB/MATLABEngine.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/MATLAB/MATLABEngine.cpp' object='MATLABEngine.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/MATLABEngine.Po' tmpdepfile='$(DEPDIR)/MATLABEngine.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MATLABEngine.o `test -f '$(top_srcdir)/marsyas/MATLAB/MATLABEngine.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/MATLAB/MATLABEngine.cpp
+
+MATLABEngine.obj: $(top_srcdir)/marsyas/MATLAB/MATLABEngine.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/MATLAB/MATLABEngine.cpp' object='MATLABEngine.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/MATLABEngine.Po' tmpdepfile='$(DEPDIR)/MATLABEngine.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MATLABEngine.obj `cygpath -w $(top_srcdir)/marsyas/MATLAB/MATLABEngine.cpp`
 
 FanOutIn.o: $(top_srcdir)/marsyas/FanOutIn.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/marsyas/FanOutIn.cpp' object='FanOutIn.o' libtool=no @AMDEPBACKSLASH@
