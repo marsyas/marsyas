@@ -148,6 +148,7 @@ in sequence.
 #include "FlowThru.h"
 #include "FanOutIn.h"
 #include "CompExp.h"
+#include "MarSystemTemplateMedium.h"
 #include "Gain.h"
 // please leave Gain at the end; it makes scripts happy.
 
@@ -278,6 +279,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("FlowThru", new FlowThru("flowthrupr"));
 	registerPrototype("FanOutIn", new FanOutIn("fanoutinpr"));
 	registerPrototype("CompExp", new CompExp("compexppr"));
+	registerPrototype("MarSystemTemplateMedium", new MarSystemTemplateMedium("marsystemtemplatemediumpr"));
 	registerPrototype("Gain", new Gain("gp"));
 // Please leave Gain at the end; it makes scripts happy.
 

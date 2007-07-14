@@ -268,6 +268,7 @@ HEADERS += \
 	Transcriber.h \
 	FlowThru.h \
 	FanOutIn.h \
+	MarSystemTemplateMedium.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 	 
@@ -479,6 +480,7 @@ SOURCES += \
 	Transcriber.cpp \
 	FlowThru.cpp \
 	FanOutIn.cpp \
+	MarSystemTemplateMedium.cpp \
 	Gain.cpp
 # please leave Gain.cpp at the end like this; it makes scripts happy.
 

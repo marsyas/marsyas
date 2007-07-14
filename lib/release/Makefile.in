@@ -304,6 +304,7 @@ libmarsyas_a_SOURCES = \
 	$(top_srcdir)/marsyas/Transcriber.cpp \
 	$(top_srcdir)/marsyas/FlowThru.cpp \
 	$(top_srcdir)/marsyas/FanOutIn.cpp \
+	$(top_srcdir)/marsyas/MarSystemTemplateMedium.cpp \
 	$(top_srcdir)/marsyas/Gain.cpp
 
 subdir = lib/release
@@ -390,7 +391,8 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	MidiInput.$(OBJEXT) Esitar.$(OBJEXT) MidiOutput.$(OBJEXT) \
 	NumericLib.$(OBJEXT) NormCut.$(OBJEXT) vmblock.$(OBJEXT) \
 	lu.$(OBJEXT) basis.$(OBJEXT) Transcriber.$(OBJEXT) \
-	FlowThru.$(OBJEXT) FanOutIn.$(OBJEXT) Gain.$(OBJEXT)
+	FlowThru.$(OBJEXT) FanOutIn.$(OBJEXT) \
+	MarSystemTemplateMedium.$(OBJEXT) Gain.$(OBJEXT)
 libmarsyas_a_OBJECTS = $(am_libmarsyas_a_OBJECTS)
 
 DEFS = @DEFS@
@@ -459,6 +461,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/MarSystemManager.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MarSystemTemplateAdvanced.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MarSystemTemplateBasic.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/MarSystemTemplateMedium.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MaxArgMax.Po ./$(DEPDIR)/Mean.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MeddisHairCell.Po ./$(DEPDIR)/Memory.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MemorySource.Po ./$(DEPDIR)/Messager.Po \
@@ -792,6 +795,8 @@ basis.$(OBJEXT): $(top_srcdir)/marsyas/basis.cpp
 Transcriber.$(OBJEXT): $(top_srcdir)/marsyas/Transcriber.cpp
 FlowThru.$(OBJEXT): $(top_srcdir)/marsyas/FlowThru.cpp
 FanOutIn.$(OBJEXT): $(top_srcdir)/marsyas/FanOutIn.cpp
+MarSystemTemplateMedium.$(OBJEXT): \
+	$(top_srcdir)/marsyas/MarSystemTemplateMedium.cpp
 Gain.$(OBJEXT): $(top_srcdir)/marsyas/Gain.cpp
 libmarsyas.a: $(libmarsyas_a_OBJECTS) $(libmarsyas_a_DEPENDENCIES) 
 	-rm -f libmarsyas.a
@@ -887,6 +892,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MarSystemManager.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MarSystemTemplateAdvanced.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MarSystemTemplateBasic.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MarSystemTemplateMedium.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MaxArgMax.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Mean.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeddisHairCell.Po@am__quote@
@@ -3433,6 +3439,18 @@ FanOutIn.obj: $(top_srcdir)/marsyas/FanOutIn.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/FanOutIn.Po' tmpdepfile='$(DEPDIR)/FanOutIn.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FanOutIn.obj `cygpath -w $(top_srcdir)/marsyas/FanOutIn.cpp`
+
+MarSystemTemplateMedium.o: $(top_srcdir)/marsyas/MarSystemTemplateMedium.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/MarSystemTemplateMedium.cpp' object='MarSystemTemplateMedium.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/MarSystemTemplateMedium.Po' tmpdepfile='$(DEPDIR)/MarSystemTemplateMedium.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MarSystemTemplateMedium.o `test -f '$(top_srcdir)/marsyas/MarSystemTemplateMedium.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/MarSystemTemplateMedium.cpp
+
+MarSystemTemplateMedium.obj: $(top_srcdir)/marsyas/MarSystemTemplateMedium.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/MarSystemTemplateMedium.cpp' object='MarSystemTemplateMedium.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/MarSystemTemplateMedium.Po' tmpdepfile='$(DEPDIR)/MarSystemTemplateMedium.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MarSystemTemplateMedium.obj `cygpath -w $(top_srcdir)/marsyas/MarSystemTemplateMedium.cpp`
 
 Gain.o: $(top_srcdir)/marsyas/Gain.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/marsyas/Gain.cpp' object='Gain.o' libtool=no @AMDEPBACKSLASH@
