@@ -61,20 +61,42 @@ programs}.  You don't have to write any English at all!
 @node Code style
 @section Code style
 
-We have a style defined for
+@itemize
+@item
+We use the @code{ansi} style defined in 
 @uref{http://astyle.sourceforge.net/,Artistic Style}; this may be found
 at @file{marsyas/astylerc}.  To use the file, call
 
 @example
-astyle --options=@emph{/path/to/marsyas_topdir/}marsyas/astylerc
-filename.cpp
+astyle --options=@emph{/path/to/marsyas_topdir/}marsyas/astylerc filename.cpp
 @end example
 
 @samp{filename.cpp} can include wildcards, ie @samp{*.h} and
 @samp{*.cpp}.
 
-You do not need to format your source code according to this file, but
-don't complain if your file is modified accordingly.
+This style changes the positions of braces @code{@{@}}, tab indentation,
+and a few other whitespace issues.  These issues are somewhat personal
+and we can almost guarantee that everybody will hate @emph{some} aspect
+of the style, but having a uniform style makes it much easier to
+understand (and fix bugs in!) unfamiliar code.  You do not need to
+format your source code according to this file, but don't complain if
+your file is modified accordingly.
+
+@item
+We strongly encourage the use of underscores @code{_} after member
+variables (variables which can be used throughout the class).  In other
+words, in your @file{.h} files use:
+
+@example
+class MyMar: public MarSystem
+@{
+private:
+	mrs_real varname_;  // don't use a plain "varname"
+	...
+@}
+@end example
+
+@end itemize
 
 
 @node Adding to marsyasTests
