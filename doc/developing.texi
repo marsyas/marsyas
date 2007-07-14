@@ -14,15 +14,22 @@ management happens behind the scene without the programmer having to
 do anything explicitly.
 
 @menu
+* Compiling and using a new MarSystem::  
+* Anatomy of a MarSystem::      
+@end menu
+
+
+@node Compiling and using a new MarSystem
+@section Compiling and using a new MarSystem
+
+@menu
 * Writing your own MarSystems::  
 * Using your MarSystem::        
-* Anatomy of a MarSystem::      
-* myUpdate() and myProcess()::  
 @end menu
 
 
 @node Writing your own MarSystems
-@section Writing your own MarSystems
+@subsection Writing your own MarSystems
 
 It's relatively straightforward to extend Marsyas by writing your own
 Marsystems. As mentioned before each MarSystems must basically support
@@ -39,7 +46,7 @@ a MarSystem}.
 
 
 @node Using your MarSystem
-@section Using your MarSystem
+@subsection Using your MarSystem
 
 Suppose that you have created a MarSystem called @code{MyMar}, which
 implements a filter.  To use this MarSystem in a network (see
@@ -64,6 +71,16 @@ playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
 @node Anatomy of a MarSystem
 @section Anatomy of a MarSystem
+
+@menu
+* Methods of the object::       
+* Constductors / destructor and Marsyas system integration::  
+* myUpdate() and myProcess()::  
+@end menu
+
+
+@node Methods of the object
+@subsection Methods of the object
 
 A MarSystem is an object which contains these methods.  In this example,
 we use a fake MarSystem called @code{MyName}.
@@ -95,8 +112,53 @@ with the script in @ref{Creating a MarSystem}) will be to
 @ref{myUpdate() and myProcess()}.
 
 
+@node Constductors / destructor and Marsyas system integration
+@subsection Constductors / destructor and Marsyas system integration
+
+The first function is the standard C++ constructor; the second function
+is the copy constructor.
+
+@example
+MyName::MyName(string name):MarSystem("MyName", name)
+MyName::MyName(const MyName& a) : MarSystem(a)
+@end example
+
+@code{clone()} is used to create a new MarSystem; Marsyas stores an
+instance of every MarSystem at run-time, and future MarSystems are
+simply @code{clone()}'d from the initial instance.
+
+@code{addControls()} defines which controls a MarSystem uses:
+
+@example
+addctrl("mrs_real/frequency", 1000);
+//setctrlState("mrs_real/frequency", true);
+@end example
+
+The @code{addctrl()} sets up a control for the MarSystem; this control
+may be changed by other C++ code by doing
+
+@example
+@emph{MarNetwork}->updctrl("@emph{MyName}/@emph{myInstanceName}/mrs_real/frequency",
+500 );
+@end example
+
+This will change the value of the control and call @code{MyName::myUpdate()}.
+
+If we called @code{setctrl} instead of @code{updctrl},
+
+@example
+@emph{MarNetwork}->setctrl("@emph{MyName}/@emph{myInstanceName}/mrs_real/frequency",
+500 );
+@end example
+
+Then @code{myUpdate()} will not be called.  If we had set
+@code{setctrlState} to @emph{true} (ie uncommented the line in the
+initial example), then setting this control would automatically call
+@code{MyName::myUpdate()}.
+
+
 @node myUpdate() and myProcess()
-@section myUpdate() and myProcess()
+@subsection myUpdate() and myProcess()
 
 Every MarSystem includes @code{myUpdate(...)} and
 @code{myProcess(...)}.  @code{myProcess()} is called every time the

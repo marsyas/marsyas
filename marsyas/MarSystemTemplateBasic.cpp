@@ -101,6 +101,8 @@ MarSystemTemplateBasic::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("MarSystemTemplateBasic.cpp - MarSystemTemplateBasic:myUpdate");
   
+
+	MarSystem::myUpdate(sender);
   // As an example, this MarSystem will output a nr of repeated input frames 
 	//
 	// The traditional (and still valid), but inefficient way to set controls:
@@ -116,10 +118,11 @@ MarSystemTemplateBasic::myUpdate(MarControlPtr sender)
 	// To avoid calling update() (and avoid recursion since we are already
 	// inside update()/myUpdate(MarControlPtr sender)), setValue() should be called with the
 	// NOUPDATE flag, as bellow:
+/*
 	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 	ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
-	
+*/
 	// here it's possible to see how the "repeats" control
 	// affects the onSamples control (i.e. output number of samples)
 	//

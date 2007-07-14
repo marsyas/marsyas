@@ -6,6 +6,7 @@ others may use it.
 
 @menu
 * Contributing documentation::  
+* Code style::                  
 * Adding to marsyasTests::      
 * Contributing Applications::   
 * Contributing system code::    
@@ -55,6 +56,25 @@ Small, easy-to-understand examples are also great.  If you have some
 source code that illustrates something, we can add it to
 @file{examples/}.  We use these examples to generate the @ref{Example
 programs}.  You don't have to write any English at all!
+
+
+@node Code style
+@section Code style
+
+We have a style defined for
+@uref{http://astyle.sourceforge.net/,Artistic Style}; this may be found
+at @file{marsyas/astylerc}.  To use the file, call
+
+@example
+astyle --options=@emph{/path/to/marsyas_topdir/}marsyas/astylerc
+filename.cpp
+@end example
+
+@samp{filename.cpp} can include wildcards, ie @samp{*.h} and
+@samp{*.cpp}.
+
+You do not need to format your source code according to this file, but
+don't complain if your file is modified accordingly.
 
 
 @node Adding to marsyasTests
@@ -107,7 +127,7 @@ You should update all these files:
 
 
 @menu
-* Contributing source documentation::        
+* Contributing source documentation::  
 * Contributing non-MarSystem system code::  
 * Contributing MarSystems::     
 @end menu
