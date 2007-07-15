@@ -1,6 +1,8 @@
 #include "common-reg.h"
 #include "CommandLineOptions.h"
 
+#include "basicChecks.cpp"
+
 
 CommandLineOptions cmd_options;
 string testName;
@@ -29,10 +31,8 @@ printHelp(string progName)
 	cerr << progName << " -t testName file1 file2 file3" << endl;
 	cerr << endl;
 	cerr << "Supported tests:" << endl;
-
-/*
-	cerr << "audiodevices    : test audio devices " << endl;
-*/
+	cerr << "null            : no test" <<endl;
+	cerr << "audiodevices    : test audio devices" << endl;
 	exit(1);
 }
 
@@ -58,7 +58,8 @@ int
 main(int argc, const char **argv)
 {
 	// get name (ie "regressionChecks" or "regressionChecks.exe")
-	string progName = argv[0]; if (argc == 1) printUsage(progName);
+	string progName = argv[0];
+	if (argc == 1) printUsage(progName);
 
 	// handling of command-line options
 	initOptions();
@@ -77,20 +78,23 @@ main(int argc, const char **argv)
 	if (soundfiles.size() > 1)
 		fname1 = soundfiles[1];
 
-	cout << "Marsyas test name = " << testName << endl;
-	cout << "fname0 = " << fname0 << endl;
-	cout << "fname1 = " << fname1 << endl;
-
 	/*
-	  if (testName == "audiodevices")
-	    test_audiodevices();
-	  else if (testName == "cascade") 
-	    test_cascade();
-	else 
-	    {
-	      cout << "Unsupported test " << endl;
-	      printHelp(progName);
-	    }
+		cout << "Marsyas test name = " << testName << endl;
+		cout << "fname0 = " << fname0 << endl;
+		cout << "fname1 = " << fname1 << endl;
 	*/
+
+	if (testName == "audiodevices")
+		basic_audiodevices();
+
+
+	else if (testName == "null")
+		basic_null();
+	else
+	{
+		cout << "Unsupported test " << endl;
+		printHelp(progName);
+	}
 	exit(0);
 }
+
