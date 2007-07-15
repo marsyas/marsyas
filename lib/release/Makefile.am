@@ -225,7 +225,7 @@ libmarsyas_a_SOURCES    = \
 	$(top_srcdir)/marsyas/basis.cpp \
 	$(top_srcdir)/marsyas/Transcriber.cpp \
 	$(top_srcdir)/marsyas/FlowThru.cpp \
-	$(top_srcdir)/marsyas/MATLAB/MATLABEngine.cpp \
+	$(top_srcdir)/marsyas/MATLAB/MATLABengine.cpp \
 	$(top_srcdir)/marsyas/FanOutIn.cpp \
 	$(top_srcdir)/marsyas/MarSystemTemplateMedium.cpp \
 	$(top_srcdir)/marsyas/Gain.cpp
