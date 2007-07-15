@@ -99,7 +99,7 @@ am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
 
-SUBDIRS = sfplay sfinfo
+SUBDIRS = sfplay sfinfo regressionChecks
 
 
 # I wish there was a better way of doing this.  :(
