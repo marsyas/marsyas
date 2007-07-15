@@ -17,6 +17,7 @@
 
 
 SUBDIRS = sfplay sfinfo
+SUBDIRS += regressionChecks
 
 EXTRA_DIST = apps.pro
 EXTRA_DIST += consoleApps.pri
