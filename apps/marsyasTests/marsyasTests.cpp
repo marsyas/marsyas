@@ -921,6 +921,7 @@ test_panorama(string sfName)
 }
 
 
+// moved into regressionChecks on July 14.  -gp
 void 
 test_vibrato(string sfName)
 {

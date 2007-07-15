@@ -2,6 +2,7 @@
 #include "CommandLineOptions.h"
 
 #include "coreChecks.cpp"
+#include "basicChecks.cpp"
 
 
 CommandLineOptions cmd_options;
@@ -46,7 +47,7 @@ initOptions()
 	cmd_options.addBoolOption("usage", "u", false);
 	cmd_options.addBoolOption("verbose", "v", false);
 	cmd_options.addStringOption("testName", "t", EMPTYSTRING);
-	cmd_options.addStringOption("out", "o", EMPTYSTRING);
+	cmd_options.addStringOption("output", "o", EMPTYSTRING);
 }
 
 void
@@ -89,12 +90,17 @@ main(int argc, const char **argv)
 		cout << "fname1 = " << fname1 << endl;
 	*/
 
-	if (testName == "audiodevices")
+	// Core system
+	if (testName == "null")
+		core_null();
+	else if (testName == "audiodevices")
 		core_audiodevices();
 
+	// Basic audio processing
+	else if (testName == "vibrato")
+		basic_vibrato(fname0, outputFilename);
 
-	else if (testName == "null")
-		core_null();
+
 	else
 	{
 		cout << "Unsupported test " << endl;
