@@ -1,4 +1,4 @@
-// basic/fundamental  Marsyas checks
+// core/fundamental  Marsyas checks
 #include "common-reg.h"
 #include "RtAudio.h"
 //#include "RtMidi.h"
@@ -6,13 +6,13 @@
 
 // possibly useful as a basis for new tests
 void
-basic_null()
+core_null()
 {
 	cout<<"Null test passed succesfully!"<<endl;
 }
 
 void
-basic_audiodevices()
+core_audiodevices()
 {
 	std::cout << "Testing audio devices" << endl;
 
