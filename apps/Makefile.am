@@ -17,7 +17,8 @@
 
 
 SUBDIRS = sfplay sfinfo
-SUBDIRS += regressionChecks
+# isn't working.  :(   -gp
+#SUBDIRS += regressionChecks
 
 EXTRA_DIST = apps.pro
 EXTRA_DIST += consoleApps.pri
@@ -28,6 +29,7 @@ EXTRA_DIST += SeneffEarTest/
 EXTRA_DIST += backup/
 
 # I wish there was a better way of doing this.  :(
+EXTRA_DIST += regressionChecks/
 EXTRA_DIST += bextract/
 EXTRA_DIST += boomchick/
 EXTRA_DIST += classifyFile/
@@ -58,6 +60,7 @@ EXTRA_DIST += vocalEffort/
 EXTRA_DIST += HWPSanalysis/
 
 dist-hook:
+	rm -rf `find $(distdir)/regressionChecks/ -name .svn`
 	rm -rf `find $(distdir)/ERBTest/ -name .svn`
 	rm -rf `find $(distdir)/MarEditor/ -name .svn`
 	rm -rf `find $(distdir)/Qt4Apps/ -name .svn`
