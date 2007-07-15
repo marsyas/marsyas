@@ -33,6 +33,8 @@ Controls:
 - \b mrs_bool/probe	: deprecated.
 
 \deprecated if Fanout mrs_bool/probe really is depreciated, chop it.
+UPDATE: lmartins said that _all_ probes are deprecated.  Chop them all
+after the merge.
 */
 
 #include "Fanout.h"

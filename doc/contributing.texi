@@ -68,7 +68,7 @@ We use the @code{ansi} style defined in
 at @file{marsyas/astylerc}.  To use the file, call
 
 @example
-astyle --options=@emph{/path/to/marsyas_topdir/}astylerc filename.cpp
+astyle --options=@emph{/path/to/marsyas_topdir}/astylerc filename.cpp
 @end example
 
 @samp{filename.cpp} can include wildcards, ie @samp{*.h} and

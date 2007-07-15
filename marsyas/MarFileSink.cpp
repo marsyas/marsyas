@@ -21,6 +21,9 @@
 	\ingroup IO
    \brief Text output sink
 
+\todo sort out PlotSink and MarFileSink (rename, delete one or both,
+etc)
+
 */
 
 #include "MarFileSink.h"
