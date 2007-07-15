@@ -344,6 +344,7 @@ AC_CONFIG_FILES([Makefile marsyas/Makefile
 		 apps/Makefile
 		 apps/sfplay/Makefile
 		 apps/sfinfo/Makefile
+		 apps/regressionChecks/Makefile
 		 doc/Makefile
 		 examples/Makefile
 		 tests/Makefile
