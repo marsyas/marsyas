@@ -22,6 +22,7 @@ marsyasConsoleApps {
 		phasevocoder \
 		pitchextract \
 		record \
+		regressionChecks \
 		scheduler \
 		#server_main \
 		sfinfo \
