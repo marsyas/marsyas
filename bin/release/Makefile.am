@@ -20,8 +20,10 @@ MAINTAINERCLEANFILES    = Makefile.in
 
 INCLUDES += -I$(top_srcdir)/marsyas 
 
-bin_PROGRAMS = sfplay phasevocoder sfplugin bextract mkcollection marsyasTests record classifyFile peVocoder peakClustering sfinfo \
-	       extract midiTest boomchick pitchextract orcarecord helloworld gettingdata virtualsensor pePeakEval
+bin_PROGRAMS = sfplay phasevocoder sfplugin bextract mkcollection \
+	marsyasTests record classifyFile peVocoder peakClustering sfinfo \
+	extract midiTest boomchick pitchextract orcarecord helloworld \
+	gettingdata virtualsensor pePeakEval regressionChecks
 
 sfplay_SOURCES = $(top_srcdir)/apps/sfplay/sfplay.cpp
 sfplay_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
@@ -45,6 +47,10 @@ mkcollection_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 
 marsyasTests_SOURCES = $(top_srcdir)/apps/marsyasTests/marsyasTests.cpp
 marsyasTests_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
+	       $(Libs)
+
+regressionChecks_SOURCES = $(top_srcdir)/apps/regressionChecks/regressionChecks.cpp
+regressionChecks_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 	       $(Libs)
 
 record_SOURCES = $(top_srcdir)/apps/record/record.cpp

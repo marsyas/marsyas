@@ -102,8 +102,10 @@ install_sh = @install_sh@
 
 MAINTAINERCLEANFILES = Makefile.in
 
-bin_PROGRAMS = sfplay phasevocoder sfplugin bextract mkcollection marsyasTests record classifyFile peVocoder peakClustering sfinfo \
-	       extract midiTest boomchick pitchextract orcarecord helloworld gettingdata virtualsensor pePeakEval
+bin_PROGRAMS = sfplay phasevocoder sfplugin bextract mkcollection \
+	marsyasTests record classifyFile peVocoder peakClustering sfinfo \
+	extract midiTest boomchick pitchextract orcarecord helloworld \
+	gettingdata virtualsensor pePeakEval regressionChecks
 
 
 sfplay_SOURCES = $(top_srcdir)/apps/sfplay/sfplay.cpp
@@ -133,6 +135,11 @@ mkcollection_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 
 marsyasTests_SOURCES = $(top_srcdir)/apps/marsyasTests/marsyasTests.cpp
 marsyasTests_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
+	       $(Libs)
+
+
+regressionChecks_SOURCES = $(top_srcdir)/apps/regressionChecks/regressionChecks.cpp
+regressionChecks_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 	       $(Libs)
 
 
@@ -214,7 +221,8 @@ bin_PROGRAMS = sfplay$(EXEEXT) phasevocoder$(EXEEXT) sfplugin$(EXEEXT) \
 	peakClustering$(EXEEXT) sfinfo$(EXEEXT) extract$(EXEEXT) \
 	midiTest$(EXEEXT) boomchick$(EXEEXT) pitchextract$(EXEEXT) \
 	orcarecord$(EXEEXT) helloworld$(EXEEXT) gettingdata$(EXEEXT) \
-	virtualsensor$(EXEEXT) pePeakEval$(EXEEXT)
+	virtualsensor$(EXEEXT) pePeakEval$(EXEEXT) \
+	regressionChecks$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 
 am_bextract_OBJECTS = bextract.$(OBJEXT)
@@ -281,6 +289,10 @@ am_record_OBJECTS = record.$(OBJEXT)
 record_OBJECTS = $(am_record_OBJECTS)
 record_DEPENDENCIES = $(top_builddir)/lib/release/libmarsyas.a
 record_LDFLAGS =
+am_regressionChecks_OBJECTS = regressionChecks.$(OBJEXT)
+regressionChecks_OBJECTS = $(am_regressionChecks_OBJECTS)
+regressionChecks_DEPENDENCIES = $(top_builddir)/lib/release/libmarsyas.a
+regressionChecks_LDFLAGS =
 am_sfinfo_OBJECTS = sfinfo.$(OBJEXT)
 sfinfo_OBJECTS = $(am_sfinfo_OBJECTS)
 sfinfo_DEPENDENCIES = $(top_builddir)/lib/release/libmarsyas.a
@@ -316,6 +328,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/peakClustering.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/phasevocoder.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/pitchextract.Po ./$(DEPDIR)/record.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/regressionChecks.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sfinfo.Po ./$(DEPDIR)/sfplay.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sfplugin.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/virtualsensor.Po
@@ -332,10 +345,11 @@ DIST_SOURCES = $(bextract_SOURCES) $(boomchick_SOURCES) \
 	$(mkcollection_SOURCES) $(orcarecord_SOURCES) \
 	$(pePeakEval_SOURCES) $(peVocoder_SOURCES) \
 	$(peakClustering_SOURCES) $(phasevocoder_SOURCES) \
-	$(pitchextract_SOURCES) $(record_SOURCES) $(sfinfo_SOURCES) \
-	$(sfplay_SOURCES) $(sfplugin_SOURCES) $(virtualsensor_SOURCES)
+	$(pitchextract_SOURCES) $(record_SOURCES) \
+	$(regressionChecks_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) \
+	$(sfplugin_SOURCES) $(virtualsensor_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(bextract_SOURCES) $(boomchick_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) $(gettingdata_SOURCES) $(helloworld_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mkcollection_SOURCES) $(orcarecord_SOURCES) $(pePeakEval_SOURCES) $(peVocoder_SOURCES) $(peakClustering_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplugin_SOURCES) $(virtualsensor_SOURCES)
+SOURCES = $(bextract_SOURCES) $(boomchick_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) $(gettingdata_SOURCES) $(helloworld_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mkcollection_SOURCES) $(orcarecord_SOURCES) $(pePeakEval_SOURCES) $(peVocoder_SOURCES) $(peakClustering_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(regressionChecks_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplugin_SOURCES) $(virtualsensor_SOURCES)
 
 all: all-am
 
@@ -435,6 +449,11 @@ record.$(OBJEXT): $(top_srcdir)/apps/record/record.cpp
 record$(EXEEXT): $(record_OBJECTS) $(record_DEPENDENCIES) 
 	@rm -f record$(EXEEXT)
 	$(CXXLINK) $(record_LDFLAGS) $(record_OBJECTS) $(record_LDADD) $(LIBS)
+regressionChecks.$(OBJEXT): \
+	$(top_srcdir)/apps/regressionChecks/regressionChecks.cpp
+regressionChecks$(EXEEXT): $(regressionChecks_OBJECTS) $(regressionChecks_DEPENDENCIES) 
+	@rm -f regressionChecks$(EXEEXT)
+	$(CXXLINK) $(regressionChecks_LDFLAGS) $(regressionChecks_OBJECTS) $(regressionChecks_LDADD) $(LIBS)
 sfinfo.$(OBJEXT): $(top_srcdir)/apps/sfinfo/sfinfo.cpp
 sfinfo$(EXEEXT): $(sfinfo_OBJECTS) $(sfinfo_DEPENDENCIES) 
 	@rm -f sfinfo$(EXEEXT)
@@ -475,6 +494,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/phasevocoder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pitchextract.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/record.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/regressionChecks.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sfinfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sfplay.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sfplugin.Po@am__quote@
@@ -686,6 +706,18 @@ record.obj: $(top_srcdir)/apps/record/record.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/record.Po' tmpdepfile='$(DEPDIR)/record.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o record.obj `cygpath -w $(top_srcdir)/apps/record/record.cpp`
+
+regressionChecks.o: $(top_srcdir)/apps/regressionChecks/regressionChecks.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/apps/regressionChecks/regressionChecks.cpp' object='regressionChecks.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/regressionChecks.Po' tmpdepfile='$(DEPDIR)/regressionChecks.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o regressionChecks.o `test -f '$(top_srcdir)/apps/regressionChecks/regressionChecks.cpp' || echo '$(srcdir)/'`$(top_srcdir)/apps/regressionChecks/regressionChecks.cpp
+
+regressionChecks.obj: $(top_srcdir)/apps/regressionChecks/regressionChecks.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/apps/regressionChecks/regressionChecks.cpp' object='regressionChecks.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/regressionChecks.Po' tmpdepfile='$(DEPDIR)/regressionChecks.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o regressionChecks.obj `cygpath -w $(top_srcdir)/apps/regressionChecks/regressionChecks.cpp`
 
 sfinfo.o: $(top_srcdir)/apps/sfinfo/sfinfo.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/apps/sfinfo/sfinfo.cpp' object='sfinfo.o' libtool=no @AMDEPBACKSLASH@
