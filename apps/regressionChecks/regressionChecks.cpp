@@ -37,6 +37,7 @@ printHelp(string progName)
 	cerr << "audiodevices    : test audio devices" << endl;
 	cerr << endl << "    *** Basic Audio Processing tests ***" << endl;
 	cerr << "vibrato         : test vibrato" << endl;
+	cerr << "pitch           : do pitch extraction" << endl;
 	exit(1);
 }
 
@@ -99,6 +100,8 @@ main(int argc, const char **argv)
 	// Basic audio processing
 	else if (testName == "vibrato")
 		basic_vibrato(fname0, outputFilename);
+	else if (testName == "pitch")
+		basic_pitch(fname0);
 
 
 	else
