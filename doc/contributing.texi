@@ -8,7 +8,7 @@ others may use it.
 * Contributing documentation::  
 * Code style::                  
 * Adding to marsyasTests::      
-* Contributing Applications::   
+* Contributing applications::   
 * Contributing system code::    
 * Sending a patch::             
 @end menu
@@ -68,7 +68,7 @@ We use the @code{ansi} style defined in
 at @file{marsyas/astylerc}.  To use the file, call
 
 @example
-astyle --options=@emph{/path/to/marsyas_topdir/}marsyas/astylerc filename.cpp
+astyle --options=@emph{/path/to/marsyas_topdir/}astylerc filename.cpp
 @end example
 
 @samp{filename.cpp} can include wildcards, ie @samp{*.h} and
@@ -119,8 +119,8 @@ statements.  (see @qq{huge mess}, above)
 @end itemize
 
 
-@node Contributing Applications
-@section Contributing Applications
+@node Contributing applications
+@section Contributing applications
 
 The source code for applications is in the @file{apps/} directory.  The
 easiest way to get started is probably to copy everything from an
@@ -142,6 +142,10 @@ You should update all these files:
 @item @file{apps/MYDIR/MYNAME.pro}
 @item @file{apps/apps.pro}
 @end itemize
+
+By convention, your program should return @code{exit(0)} upon successful
+completion.  If any problems arise, the program should return a number
+greater than 0.
 
 
 @node Contributing system code
