@@ -27,11 +27,11 @@ AUTOMAKE_OPTIONS        = foreign
 EXTRA_DIST += .qmake.cache
 
 SUBDIRS			= marsyas lib apps bin doc
-SUBDIRS			+= examples tests
+SUBDIRS			+= examples regressionTests
  
 # we must now explicitly define subdirs to be included in the dist
 DIST_SUBDIRS		= marsyas lib apps bin doc
-DIST_SUBDIRS		+= examples tests
+DIST_SUBDIRS		+= examples regressionTests
 
 
 #  There's no point writing Makefiles for temporary holding areas.

@@ -6,7 +6,7 @@ import filecmp
 LOG_FILE = 'results.log'
 
 # chdir to test directory
-os.chdir( os.path.join( os.path.dirname(sys.argv[0])+os.sep+'..'+os.sep+'tests'+os.sep ) )
+os.chdir( os.path.join( os.path.dirname(sys.argv[0])+os.sep+'..'+os.sep+'regressionTests'+os.sep ) )
 
 print os.getcwd()
 
@@ -73,7 +73,7 @@ if not(problem):
 	print "All tests passed.  Congratulations, you didn't",
 	print "break Marsyas!  (this time)"
 else:
-	print "Some test(s) failed.  Please see tests/" + LOG_FILE,
+	print "Some test(s) failed.  Please see regressionTests/" + LOG_FILE,
 	print "for an account of the damage."
 	print "  (tests are 0-indexed)"
 
