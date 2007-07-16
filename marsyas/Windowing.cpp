@@ -64,10 +64,10 @@ Windowing::addcontrols()
 void
 Windowing::myUpdate(MarControlPtr sender)
 {
-	if (getctrl("mrs_natural/zeroPadding")->toNatural() != 0)
-	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/zeroPadding")->toNatural());
+	if (getctrl("mrs_natural/zeroPadding")->toNatural() > inSamples_)
+		setctrl("mrs_natural/onSamples", getctrl("mrs_natural/zeroPadding")->toNatural());
 	else
-	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+		setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
     setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
@@ -182,7 +182,8 @@ Windowing::myProcess(realvec& in, realvec& out)
     //lmartins: if (mute_) return;
     if(getctrl("mrs_bool/mute")->toBool()) return;
 
-	out.setval(0);
+	if (getctrl("mrs_natural/zeroPadding")->toNatural() > 0)
+		out.setval(0);
     for (o=0; o < inObservations_; o++)
     {
         for (t = 0; t < inSamples_; t++)
