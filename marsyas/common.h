@@ -1,6 +1,10 @@
 #ifndef MARSYAS_COMMON_H
 #define MARSYAS_COMMON_H
 
+/**
+\todo merge EMPTYSTING into common.h
+*/
+
 /************************************************************************/
 /*      common includes			                                            */
 /************************************************************************/
