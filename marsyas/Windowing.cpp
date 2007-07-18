@@ -123,7 +123,11 @@ Windowing::myUpdate(MarControlPtr sender)
 	envelope_.create(inSamples_);
 	mrs_real temp = 0.0;
 
-	if (type == "Hamming")
+	if(type == "Rectangular")
+	{
+		envelope_.setval(0);
+	}
+	if(type == "Hamming")
 	{   
 		mrs_real A = (mrs_real)0.54;
 		mrs_real B = (mrs_real)0.46;
