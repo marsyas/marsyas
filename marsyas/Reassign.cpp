@@ -18,7 +18,7 @@
 
 /** 
     \class Reassign
-	\ingroup Machine
+	\ingroup MachineLearning
     \brief Used to strengthen harmonic peaks in Beat Histograms 
 
 */

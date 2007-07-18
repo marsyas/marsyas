@@ -18,7 +18,7 @@
 
 /** 
    \class PCA
-	\ingroup Machine
+	\ingroup MachineLearning
    \brief Perform Principal Component Analysis
 
    Perform Principal Component Analysis (PCA) on all samples of the 

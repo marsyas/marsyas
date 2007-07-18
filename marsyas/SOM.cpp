@@ -19,7 +19,7 @@
 
 /** 
     \class SOM
-	\ingroup Machine
+	\ingroup MachineLearning
     \brief Self-organizing map
 
 

@@ -18,7 +18,7 @@
 
 /** 
     \class GaussianClassifier
-	\ingroup Machine
+	\ingroup MachineLearning
     \brief Single Gaussian multidimensional classifier
 
     Simple multidimensional Gaussian classifier. The classifier

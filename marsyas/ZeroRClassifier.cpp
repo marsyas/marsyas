@@ -18,7 +18,7 @@
 
 /** 
     \class ZeroRClassifier
-	\ingroup Machine
+	\ingroup MachineLearning
 
     When the mode control is set to "predict" then the output 
     of the classifier will output the class with the most instances. 

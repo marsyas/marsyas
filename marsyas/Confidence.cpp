@@ -18,7 +18,7 @@
 
 /** 
     \class Confidence
-	\ingroup Machine
+	\ingroup MachineLearning
     \brief Confidence calculates classification confidence 
 
     Calculates classification confidence by majority voting. 

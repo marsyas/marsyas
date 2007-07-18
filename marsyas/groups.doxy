@@ -59,7 +59,7 @@
  *
  */
 
-/**  @defgroup Machine Machine Learning
+/**  @defgroup MachineLearning Machine Learning
  *
  * \brief These MarSystems are involved in classifying audio for machine
  * learning.

@@ -19,7 +19,7 @@
 
 /** 
     \class BeatHistoFeatures
-	\ingroup Machine
+	\ingroup MachineLearning
     \brief Beat Histogram Features
 
     Beat Histogram Features numerical values summarizing 
