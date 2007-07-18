@@ -63,9 +63,10 @@ programs}.  You don't have to write any English at all!
 
 @itemize
 @item
-We use the @code{ansi} style defined in 
-@uref{http://astyle.sourceforge.net/,Artistic Style}; this may be found
-at @file{marsyas/astylerc}.  To use the file, call
+We use the @code{ansi} style defined in
+@uref{http://astyle.sourceforge.net/,Artistic Style}; our exact style
+file is in the top of the Marsyas source directory as a @file{astylerc}.
+To use the file, call
 
 @example
 astyle --options=@emph{/path/to/marsyas_topdir}/astylerc filename.cpp
@@ -83,9 +84,9 @@ format your source code according to this file, but don't complain if
 your file is modified accordingly.
 
 @item
-We strongly encourage the use of underscores @code{_} after member
-variables (variables which can be used throughout the class).  In other
-words, in your @file{.h} files use:
+We strongly encourage the use of underscores@code{_} after member
+variables (@qq{member variables} are variables which can be used
+throughout the class).  In other words, in your @file{.h} files use:
 
 @example
 class MyMar: public MarSystem
@@ -95,6 +96,11 @@ private:
 	...
 @}
 @end example
+
+@item  By convention, a program (not a MarSystem) should return
+@code{exit(0)} upon successful completion.  If any problems arise, the
+program should return a number greater than 0.
+
 
 @end itemize
 
@@ -247,8 +253,9 @@ use.
 @subsection Contributing MarSystems
 
 If you have created a useful MarSystem which you want to share with
-others, you may add it to the Marsyas source code.  This is not required
-for building your own applications.
+others, you may add it to the Marsyas source code.  @strong{THIS IS NOT
+REQUIRED FOR BUILDING YOUR OWN APPLICATONS!!!}  See @ref{Compiling and
+using a new MarSystem}.
 
 @subheading Automatically
 
