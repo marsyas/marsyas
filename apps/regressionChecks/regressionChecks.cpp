@@ -8,6 +8,7 @@
 CommandLineOptions cmd_options;
 string testName;
 string outputFilename;
+string answerFilename;
 mrs_bool helpOpt;
 
 void
@@ -17,8 +18,10 @@ printUsage(string progName)
 	cerr << "regressionChecks, MARSYAS" << endl;
 	cerr << "-------------------------" << endl;
 	cerr << "Usage:" <<endl;
-	cerr << "    " << progName << " -t testName file1 file2 ... fileN";
-	cerr << endl << "        -o outfile.wav    (optional)" << endl;
+	cerr << "    " << progName;
+	cerr << " -t testName file1 file2 ... fileN" <<endl;
+	cerr << "        -o outfile.wav      (optional)" << endl;
+	cerr << "        -a answerfile.wav   (optional)" << endl;
 	cerr << endl << "List of all tests:" << endl;
 	cerr << "    " << progName << " -h" << endl <<endl;
 	exit(1);
@@ -32,6 +35,7 @@ printHelp(string progName)
 	cerr << "-------------------------" << endl;
 	cerr << "Usage:" << endl;
 	cerr << "    " << progName << " -t testName file1 file2 file3" << endl;
+	cerr << " -o outfile.wav -a answerfile.wav"<<endl;
 	cerr << endl << "    *** Core System tests ***" << endl;
 	cerr << "null            : no test" << endl;
 	cerr << "audiodevices    : test audio devices" << endl;
@@ -50,6 +54,7 @@ initOptions()
 	cmd_options.addBoolOption("verbose", "v", false);
 	cmd_options.addStringOption("testName", "t", EMPTYSTRING);
 	cmd_options.addStringOption("output", "o", EMPTYSTRING);
+	cmd_options.addStringOption("answer", "a", EMPTYSTRING);
 }
 
 void
@@ -60,6 +65,7 @@ loadOptions()
 	           cmd_options.getBoolOption("verbose") );
 	testName = cmd_options.getStringOption("testName");
 	outputFilename = cmd_options.getStringOption("output");
+	answerFilename = cmd_options.getStringOption("answer");
 }
 
 int
@@ -111,6 +117,11 @@ main(int argc, const char **argv)
 	{
 		cout << "Unsupported test " << endl;
 		printHelp(progName);
+	}
+
+	if (answerFilename != EMPTYSTRING)
+	{
+		core_isClose(outputFilename, answerFilename);
 	}
 	exit(0);
 }
