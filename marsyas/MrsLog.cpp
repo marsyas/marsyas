@@ -18,7 +18,7 @@
 
 /**
 \class MrsLog
-	\ingroup none
+	\ingroup Special
 \brief Logging Class
 
 Logging class for diagnostic, warning, error, debug, etc messages. Can output

@@ -19,7 +19,7 @@
 
 /** 
     \class Kurtosis
-	\ingroup none
+	\ingroup Analysis
     \brief Kurtosis 
 
     Calculate the Kurtosis of the input observations. Typically used 

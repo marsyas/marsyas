@@ -18,7 +18,7 @@
 
 /** 
     \class ANN_node
-	\ingroup none
+	\ingroup Classifiers
     \brief Single node used to build Artifical Neural Networks
 
 Essentially forms a weighted sum of the input rows of observations. 

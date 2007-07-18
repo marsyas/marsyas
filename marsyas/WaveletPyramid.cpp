@@ -18,7 +18,7 @@
 
 /** 
     \class WaveletPyramid
-	\ingroup none
+	\ingroup Analysis
     \brief Pyramid wavelet algorithm
 
    Discrete Wavelet Transform (DWT) pyramid algorithm.

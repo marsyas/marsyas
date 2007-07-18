@@ -19,7 +19,7 @@
 
 /**
    \class Color:
-	\ingroup none
+	\ingroup Notmar
    \brief Triplet of RGB values 
    
    Simply a triplet of RGB values representing a color

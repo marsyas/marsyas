@@ -332,6 +332,7 @@ Marsyas::harmonicitySrinivasanCompute(realvec& data, realvec& m, realvec& hMap)
 		}
 }
 
+//                           similarity matrix, peak data, initial peak labels,       wanted N,                   initial N
 mrs_real Marsyas::selectClusters(realvec &m, realvec &data, realvec &labels, mrs_natural wantedNbClusters, mrs_natural nbClusters)
 {
 	mrs_natural i, j, nbFound=0;

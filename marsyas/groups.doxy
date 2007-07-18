@@ -65,6 +65,12 @@
  *
  */
 
+/**  @defgroup Clustering Clustering
+ *
+ * \brief These MarSystems are involved in data clustering.
+ *
+ */
+
 /**  @defgroup Scheduler Scheduler
  *
  * \brief These MarSystems are invovled in the scheduler.

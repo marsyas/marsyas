@@ -18,7 +18,7 @@
 
 /** 
 \class MarControl
-	\ingroup none
+	\ingroup Special
 \brief 
 	MarControlPtr is a smart pointer wrapper for MarControl.
 	MarControl is the control class containing a name, type and value.

@@ -19,7 +19,7 @@
 
 /** 
     \class SOM
-	\ingroup none
+	\ingroup Clustering
     \brief Self-organizing map
 
 
