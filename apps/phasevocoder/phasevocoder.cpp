@@ -24,6 +24,7 @@ string pluginName = EMPTYSTRING;
 // Global variables for command-line options 
 bool helpopt_ = 0;
 bool usageopt_ =0;
+bool quietopt_ =0;
 int fftSize_ = 512;
 int winSize_ = 512;
 int dopt = 64;
@@ -71,6 +72,7 @@ printHelp(string progName)
   cerr << "-b --buffersize      : audio buffer size" << endl;
   cerr << "-g --gain            : gain (0.0-1.0) " << endl;
   cerr << "-f --filename        : output filename" << endl;
+  cerr << "-q --quit            : don't display console output" << endl;
   cerr << "-u --usage           : display short usage info" << endl;
   cerr << "-h --help            : display this information " << endl;
   
@@ -83,8 +85,9 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 		    mrs_natural D, mrs_natural I, mrs_real P, 
 		    string outsfname)
 {
-  cout << "phasevocSeries" << endl;
-  MarSystemManager mng;
+	if (!quietopt_)
+		cout << "phasevocSeries" << endl;
+	MarSystemManager mng;
   
   // create the phasevocoder network
   MarSystem* pvseries = mng.create("Series", "pvseries");
@@ -147,7 +150,8 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
   pvseries->updctrl("Gain/gain/mrs_real/gain", gopt_);
 
 
-  cout << *pvseries << endl;
+	if (!quietopt_)
+		cout << *pvseries << endl;
 
   if (outsfname == EMPTYSTRING) 
 		pvseries->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
@@ -1298,6 +1302,7 @@ initOptions()
 {
 	cmd_options.addBoolOption("help", "h", false);
 	cmd_options.addBoolOption("usage", "u", false);
+	cmd_options.addBoolOption("quiet", "q", false);
 	cmd_options.addNaturalOption("voices", "v", 1);
 	cmd_options.addStringOption("filename", "f", EMPTYSTRING);
 	cmd_options.addStringOption("plugin", "p", EMPTYSTRING);
@@ -1319,6 +1324,7 @@ loadOptions()
 {
 	helpopt_ = cmd_options.getBoolOption("help");
 	usageopt_ = cmd_options.getBoolOption("usage");
+	quietopt_ = cmd_options.getBoolOption("quiet");
 	pluginName = cmd_options.getStringOption("plugin");
 	fileName   = cmd_options.getStringOption("filename");
 	winSize_ = cmd_options.getNaturalOption("winsize");
@@ -1375,11 +1381,13 @@ main(int argc, const char **argv)
 		i = 1;
 	}
 
-	cout << "Phasevocoding " << sfname << endl;
+	if (!quietopt_)
+		cout << "Phasevocoding " << sfname << endl;
 
 	if(i == 1)//sound file input
 	{
-		cout << "Using sound file input" << endl;
+		if (!quietopt_)
+			cout << "Using sound file input" << endl;
 		microphone_ = false;
 		if (vopt_ == 1) 
 		{
@@ -1408,7 +1416,8 @@ main(int argc, const char **argv)
 	}
 	if (i == 0) //micophone input
 	{
-		cout << "Using live microphone input" << endl;
+		if (!quietopt_)
+			cout << "Using live microphone input" << endl;
 		microphone_ = true;
 		if (vopt_ == 1) 
 			phasevocSeries("microphone", fftSize_, winSize_, dopt, iopt, popt, fileName);
