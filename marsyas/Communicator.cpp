@@ -19,11 +19,11 @@
 
 /** 
     \class Communicator
-	\ingroup none
+    \ingroup Network
     \brief Abstract base class for communicator
-
+    
     Abstract base class for a send/receive string message type 
-of communicator. 
+    of communicator. 
 */
 
 #include "Communicator.h"

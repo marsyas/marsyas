@@ -18,7 +18,7 @@
 
 /** 
     \class OverlapAdd
-	\ingroup none
+    \ingroup Processing Basic
     \brief OverlapAdd
 
    perform an overlap-add operation of the input buffer

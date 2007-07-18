@@ -17,19 +17,19 @@
 */
 
 /** 
-\class LPC
-\ingroup none
-\brief Compute Warped LPC coefficients, Pitch and Power [STILL UNDER TESTING!].
+    \class LPC
+    \ingroup Analysis
+    \brief Compute Warped LPC coefficients, Pitch and Power [STILL UNDER TESTING!].
 
-Linear Prediction Coefficients (LPC). Features commonly used 
-in Speech Recognition research. This class is a modification of the original
-Marsyas0.1 LPC class.  The following differences apply: 
-- order now reflects the LPC order (and returns <order> coefficients plus pitch and gain)
-- It is possible to define a pole-shifting parameter, gamma (default value = 1.0 => no shifting)
-- It is possible to define a warping factor, lambda (defualt value = 0.0 => no warping)
-
-Code by Luís Gustavo Martins - lmartins@inescporto.pt
-May 2006
+    Linear Prediction Coefficients (LPC). Features commonly used 
+    in Speech Recognition research. This class is a modification of the original
+    Marsyas0.1 LPC class.  The following differences apply: 
+    - order now reflects the LPC order (and returns <order> coefficients plus pitch and gain)
+    - It is possible to define a pole-shifting parameter, gamma (default value = 1.0 => no shifting)
+    - It is possible to define a warping factor, lambda (defualt value = 0.0 => no warping)
+    
+    Code by Luís Gustavo Martins - lmartins@inescporto.pt
+    May 2006
 */
 
 #include "LPC.h"

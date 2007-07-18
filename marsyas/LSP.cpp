@@ -1,6 +1,6 @@
 
 /*
-** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2007 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -18,14 +18,14 @@
 */
 
 /** 
-\class LSP
-	\ingroup none
-\brief Compute Linear Spectral Pair (LSP) coefficients 
-Takes the output of ::LPC() and calculates the corresponding LSP values.
-See the LPC class implementation.
-
-Cobe by Luís Gustavo Martins - lmartins@inescporto.pt
-May 2006
+    \class LSP
+    \ingroup Analysis
+    \brief Compute Linear Spectral Pair (LSP) coefficients 
+    Takes the output of ::LPC() and calculates the corresponding LSP values.
+    See the LPC class implementation.
+    
+    Cobe by Luís Gustavo Martins - lmartins@inescporto.pt
+    May 2006
 */
 
 #include "LSP.h"

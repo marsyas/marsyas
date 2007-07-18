@@ -18,7 +18,7 @@
 
 /**
    \class MarEvent
-	\ingroup none
+   \ingroup Scheduler
    \brief MarEvent
 */
 

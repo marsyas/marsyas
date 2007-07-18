@@ -18,7 +18,7 @@
 
 /** 
     \class Flux
-	\ingroup none
+    \ingroup Analysis
     \brief Flux calculate the flux between the current and prev. vector
 
     The flux is defined as the norm of the difference vector between 

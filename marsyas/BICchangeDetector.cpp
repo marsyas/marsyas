@@ -17,14 +17,14 @@
 */
 
 /** 
-\class BICchangeDetector
-	\ingroup none
-\brief detect changes between to succeeding segments using BIC
+    \class BICchangeDetector
+    \ingroup MachineLearning
+    \brief detect changes between to succeeding segments using BIC
 
-Detect changes between two succeeding segments using divergenceShape
-(or BattacharyyaShape), and validation using BIC and quasi-GMM modeling
+    Detect changes between two succeeding segments using divergenceShape
+    (or BattacharyyaShape), and validation using BIC and quasi-GMM modeling
 
-Implementation by Luis Gustavo Martins - lmartins@inescporto.pt
+    Implementation by Luis Gustavo Martins - lmartins@inescporto.pt
 */
 
 #include "BICchangeDetector.h"

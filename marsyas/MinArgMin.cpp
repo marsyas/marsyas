@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2007 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 /** 
     \class MinArgMin
-	\ingroup none
+    \ingroup Analysis
     \brief Calculate k minimums and their positions
 
     The output is : min1, argmin1, min2, argmin2, .... 

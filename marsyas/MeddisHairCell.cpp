@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2007 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 /** 
     \class MeddisHairCell
-	\ingroup none
+    \ingroup Analysis
     \brief MeddisHairCell for auditory models 
 
     Directed port from the Auditory toolbox by Malcolm Slaney 

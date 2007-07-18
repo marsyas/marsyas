@@ -18,12 +18,12 @@
 
 /** 
     \class Daub4
-	\ingroup none
+    \ingroup Analysis
     \brief Daubechies4 WaveletStep
 
-   Applies the Daubechies 4-coefficient wavelet filter as 
-a WaveletStep for the WaveletPyramid algorithm. The code is 
-is based on the Numerical Recipies wavelet code. 
+    Applies the Daubechies 4-coefficient wavelet filter as 
+    a WaveletStep for the WaveletPyramid algorithm. The code is 
+    is based on the Numerical Recipies wavelet code. 
 */
 
 #include "Daub4.h"
