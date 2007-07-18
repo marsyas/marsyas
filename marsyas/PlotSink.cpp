@@ -20,6 +20,9 @@
 \class PlotSink
 \ingroup IO
 \brief Text output sink
+Output input data at each tick to sequence numbered text files,
+to Marsyas messages (default = stdout), and as a MATLAB plot 
+if MATLAB engine is being used.
 
 \todo sort out PlotSink and MarFileSink (rename, delete one or both,
 etc)
@@ -27,9 +30,14 @@ etc)
 Output data to a text file.
 
 Controls:
-- \b mrs_string/outputFilename	: file to write
-- \b mrs_string/separator	: dunno AAA
-- \b mrs_bool/sequence	: dunno AAA
+- \b mrs_bool/sequence	: when true, this control
+activates the writing of sequence numbered files containing the
+input data at each tick.
+- \b mrs_string/filename	: base filename used for the output 
+sequence numbered files.
+- \b mrs_string/separator	: separator character/string used when
+outputting input data using Marsyas messages (i.e. MRSMSG() - by default
+messages are sent to the stdout).
 */
 
 #include "PlotSink.h"
@@ -40,19 +48,20 @@ using namespace Marsyas;
 
 PlotSink::PlotSink(string name):MarSystem("PlotSink",name)
 {
-	//type_ = "PlotSink";
-	//name_ = name;
-
 	counter_ = 0;
-
 	addControls();
 }
 
+PlotSink::PlotSink(const PlotSink& a):MarSystem(a)
+{
+	ctrl_separator_ = getctrl("mrs_string/separator");
+	ctrl_sequence_ = getctrl("mrs_bool/sequence");
+	ctrl_filename_ = getctrl("mrs_string/filename");
+}
 
 PlotSink::~PlotSink()
 {
 }
-
 
 MarSystem* 
 PlotSink::clone() const 
@@ -63,65 +72,56 @@ PlotSink::clone() const
 void 
 PlotSink::addControls()
 {
-	addctrl("mrs_string/separator", ",");
-	addctrl("mrs_bool/sequence", true);
-	addctrl("mrs_string/outputFilename", "marsyas");
+	addctrl("mrs_string/separator", ",", ctrl_separator_);
+	addctrl("mrs_bool/sequence", true, ctrl_sequence_);
+	addctrl("mrs_string/filename", "defaultfile", ctrl_filename_);
 }
 
 void 
 PlotSink::myProcess(realvec& in, realvec& out)
 {
-	//checkFlow(in,out);
+	out = in;
 
-	mrs_natural nObservations = getctrl("mrs_natural/inObservations")->toNatural();
-	mrs_natural nSamples = getctrl("mrs_natural/inSamples")->toNatural();
-
-#ifdef MARSYAS_MATLAB
-	for (t = 0; t < nSamples; t++)
-		for (o=0; o < nObservations; o++)
-			out(o,t) = in(o,t);
-	// create in the matlab variable containg the data
-	MATLAB_PUT(in, "data")
-		// tentatively plot it
-		MATLAB_EVAL("plot(data);");
+	//if using MATLABengine, plot the input data in MATLAB
+	#ifdef MARSYAS_MATLAB
+	// create in the matlab variable containing the data
+	MATLAB_PUT(in, "in_data")
+	// tentatively plot it
+	MATLAB_EVAL("plot(in_data); axis([1 length(in_data) 0 1])");
 	return;
-#endif
+	#endif
 
-	string sep = getctrl("mrs_string/separator")->toString();
-	bool seq = getctrl("mrs_bool/sequence")->toBool();
-	string outName = getctrl("mrs_string/outputFilename")->toString();
 	counter_++;
 
-	if (!seq) 
+	if (ctrl_sequence_->isTrue()) 
 	{
-		for (t = 0; t < nSamples; t++)
-		{
-
-			for (o=0; o < nObservations; o++)
-			{
-				out(o,t) = in(o,t);
-				if (o < nObservations - 1) 
-					cout << out(o,t) << sep;
-				else
-					cout << out(o,t);
-			}
-			cout << endl;
-		}
+		//save current input to a sequence of numbered output files
+		ostringstream oss;
+		oss << ctrl_filename_->to<mrs_string>() <<
+			setfill('0') << setw(4) << counter_ << ".plot";
+		MRSMSG("Writing " << oss.str() << endl);
+		in.write(oss.str());
 	}
 	else 
 	{
-		// copy input to output 
-		for (t = 0; t < nSamples; t++)
-			for (o=0; o < nObservations; o++)
-				out(o,t) = in(o,t);
-
-		ostringstream oss;
-		oss << outName << setfill('0') << setw(4) << counter_ << ".plot";
-		cout << "Writing " << oss.str() << endl;
-		in.write(oss.str());
+		string sep =ctrl_separator_->toString();
+		//output input content as a Marsyas Message (stdout by default)
+		for (t = 0; t < inSamples_; t++)
+		{
+			for (o=0; o < inObservations_; o++)
+			{
+				if (o < inObservations_ - 1)
+				{
+					MRSMSG(out(o,t) << sep);
+				}
+				else
+				{
+					MRSMSG(out(o,t));
+				}
+			}
+			MRSMSG(endl);
+		}
 	}
-
-
 }
 
 

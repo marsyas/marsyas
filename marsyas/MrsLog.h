@@ -39,7 +39,9 @@ namespace Marsyas
 	public:   
 		static void setLogFile(std::string fname);
 		static void getLogFile();
-		
+
+		static void mrsMessage(const std::ostringstream& oss);
+		//logging methods
 		static void mrsErr(const std::ostringstream& oss);
 		static void mrsWarning(const std::ostringstream& oss);
 		static void mrsDiagnostic(const std::ostringstream& oss);

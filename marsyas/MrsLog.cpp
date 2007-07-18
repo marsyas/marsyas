@@ -43,6 +43,12 @@ MrsLog::setLogFile(string fname)
 }
 
 void 
+MrsLog::mrsMessage(const ostringstream& oss)
+{
+	cout << "[MRS_MESSAGE] " << oss.str() << endl;
+}
+
+void 
 MrsLog::mrsErr(const ostringstream& oss)
 {
 #ifdef MARSYAS_LOG2STDOUT

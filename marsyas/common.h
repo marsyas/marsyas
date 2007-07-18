@@ -61,8 +61,10 @@ namespace Marsyas
 #define TWOPI 6.28318530717958647692 //double precision instead of 6.28318530718f
 
 /************************************************************************/
-/* LOGGING MACROS                                                                   */
+/* LOGGING MACROS                                                       */
 /************************************************************************/
+#define MRSMSG(x) {std::ostringstream oss; MrsLog::mrsMessage((std::ostringstream&)(oss << x));}
+
 #define MRSERR(x) {std::ostringstream oss; MrsLog::mrsErr((std::ostringstream&)(oss << x));}
 
 #if MARSYAS_LOG_DIAGNOSTICS

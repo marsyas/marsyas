@@ -1215,6 +1215,26 @@ MarControl::create(mrs_natural size)
 	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
 	if(ptr)
 	{
+		//avoid linking loops!! HIGHLY ENEFICCIENT --> REFACTOR CONTROL LINKING [TODO] [!]
+		//check for changes in realvec dimensions...
+		if (ptr->getRef().getSize() == size)
+		{
+			//if dimensions were not changed, we must also check each element value...
+			mrs_natural i;
+			for(i=0; i < ptr->getRef().getSize(); ++i)
+			{
+				if(ptr->getRef()(i) != 0)
+					break; //if there is at least one element different from val, break...
+			}
+			if(i == ptr->getRef().getSize())
+			{
+				//the realvec has not changed -> no need to proceed				
+				#ifdef MARSYAS_QT
+				rwLock_.unlock();
+				#endif
+				return; 
+			}
+		}
 		#ifdef MARSYAS_QT
 		rwLock_.unlock();
 		rwLock_.lockForWrite();
@@ -1271,6 +1291,26 @@ MarControl::create(mrs_natural rows, mrs_natural cols)
 	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
 	if(ptr)
 	{
+		//avoid linking loops!! HIGHLY ENEFICCIENT --> REFACTOR CONTROL LINKING [TODO] [!]
+		//check for changes in realvec dimensions...
+		if (ptr->getRef().getRows() == rows && ptr->getRef().getCols() == cols)
+		{
+			//if dimensions were not changed, we must also check each element value...
+			mrs_natural i;
+			for(i=0; i < ptr->getRef().getSize(); ++i)
+			{
+				if(ptr->getRef()(i) != 0)
+					break; //if there is an element different from val, break...
+			}
+			if(i == ptr->getRef().getSize())
+			{
+				//the realvec has not changed -> no need to proceed				
+				#ifdef MARSYAS_QT
+				rwLock_.unlock();
+				#endif
+				return; 
+			}
+		}		
 		#ifdef MARSYAS_QT
 		rwLock_.unlock();
 		rwLock_.lockForWrite();
@@ -1327,6 +1367,26 @@ MarControl::create(mrs_real val, mrs_natural rows, mrs_natural cols)
 	MarControlValueT<realvec> *ptr = dynamic_cast<MarControlValueT<realvec>*>(value_);
 	if(ptr)
 	{
+		//avoid linking loops!! HIGHLY ENEFICCIENT --> REFACTOR CONTROL LINKING [TODO] [!]
+		//check for changes in realvec dimensions...
+		if (ptr->getRef().getRows() == rows && ptr->getRef().getCols() == cols)
+		{
+			//if dimensions were not changed, we must also check each element value...
+			mrs_natural i;
+			for(i=0; i < ptr->getRef().getSize(); ++i)
+			{
+				if(ptr->getRef()(i) != val)
+					break; //if there is an element different from val, break...
+			}
+			if(i == ptr->getRef().getSize())
+			{
+				//the realvec has not changed -> no need to proceed				
+				#ifdef MARSYAS_QT
+				rwLock_.unlock();
+				#endif
+				return; 
+			}
+		}
 		#ifdef MARSYAS_QT
 		rwLock_.unlock();
 		rwLock_.lockForWrite();

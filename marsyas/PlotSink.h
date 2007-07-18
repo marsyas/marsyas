@@ -17,9 +17,11 @@
 */
 
 /**
-   \class PlotSink
-   \brief PlotSink: Text output sink
-
+\class PlotSink
+\brief Text output sink
+Output input data at each tick to sequence numbered text files,
+to Marsyas messages (default = stdout), and as a MATLAB plot 
+if MATLAB engine is being used.
 */
 
 #ifndef MARSYAS_PLOTSINK_H
@@ -30,30 +32,36 @@
 namespace Marsyas
 {
 
-class PlotSink: public MarSystem
-{
-private:
-  void addControls();
-  mrs_natural counter_;
-  
-public:
-  PlotSink(std::string name);
-  ~PlotSink();
+	class PlotSink: public MarSystem
+	{
+	private:
+		mrs_natural counter_;
 
-  MarSystem* clone() const;  
-  
-  void myProcess(realvec& in, realvec& out);
-};
+		MarControlPtr ctrl_separator_;
+		MarControlPtr ctrl_sequence_;
+		MarControlPtr ctrl_filename_;
+
+		void addControls();
+
+	public:
+		PlotSink(std::string name);
+		PlotSink(const PlotSink& a);
+		~PlotSink();
+
+		MarSystem* clone() const;  
+
+		void myProcess(realvec& in, realvec& out);
+	};
 
 }//namespace Marsyas
 
 
 #endif
 
-	
 
-	
 
-	
 
-	
+
+
+
+
