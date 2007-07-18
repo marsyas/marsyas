@@ -59,15 +59,10 @@
  *
  */
 
-/**  @defgroup Classifiers Classifiers
+/**  @defgroup Machine Machine Learning
  *
- * \brief These MarSystems are involved in classifying audio.
- *
- */
-
-/**  @defgroup Clustering Clustering
- *
- * \brief These MarSystems are involved in data clustering.
+ * \brief These MarSystems are involved in classifying audio for machine
+ * learning.
  *
  */
 
