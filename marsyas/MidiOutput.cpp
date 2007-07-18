@@ -18,7 +18,7 @@
 
 /** 
   \class MidiOutput
-  \ingroup IO
+  \ingroup MIDI
   \brief Control of MahaDeviBot Commands via Midi Controls.
 
   Controls:

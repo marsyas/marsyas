@@ -18,7 +18,7 @@
 
 /** 
   \class MidiInput
-  \ingroup IO
+  \ingroup MIDI
   \brief Update midi inpput using controls. Just through for dataflow. 
 
   Controls:

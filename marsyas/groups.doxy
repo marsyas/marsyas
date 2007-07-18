@@ -39,6 +39,12 @@
  *
  */
 
+/**  @defgroup MIDI MIDI Input/Output and Devices
+ *
+ * \brief These Marsystems are used for MIDI devices.
+ *
+ */
+
 /**  @defgroup Analysis Analysis
  *
  * \brief These MarSystems analyze sound.

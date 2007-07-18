@@ -14,9 +14,10 @@
  * - \ref Synthesis "Synthesis": creates audio.
  *
  * Specialized MarSystems:
- * - \ref Network "Network Input/Output": send data over a network
- * - \ref Classifiers "Classifiers": MarSystems relating to
- * audio classification.
+ * - \ref Network "Network Input/Output": send data over a network.
+ * - \ref MIDI "MIDI Input/Output and Devices": deals with MIDI.
+ * - \ref MachineLearning "Machine Learning": MarSystems relating to
+ * audio classification and machine learning.
  * - \ref Scheduler "Scheduler": MarSystems relating to the scheduler.
  *
  * Source files which are not MarSystems:
