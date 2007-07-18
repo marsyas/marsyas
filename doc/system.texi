@@ -5,7 +5,7 @@
 
 @menu
 * Predefined types::            
-* Realvec (array of real numbers)::  
+* Realvec::                     
 * List of available MarSystems::  
 * Systems limitations::         
 @end menu
@@ -40,13 +40,14 @@ double precision instead of float) are defined in
 @file{marsyas/common.h}.
 
 
-@node Realvec (array of real numbers)
-@section Realvec (array of real numbers)
+@node Realvec
+@section Realvec
 @cindex realvec
 
-The basic unit of data in Marsyas is the @code{realvec}.  All data flows
-from MarSystem to MarSystem in the form of @code{realvec}s; the actual
-function which does the main work of every MarSystem is
+The basic unit of data in Marsyas is the @code{realvec}, which is
+essentially a one- or two-dimensional array of real numbers.  All data
+flows from MarSystem to MarSystem in the form of @code{realvec}s; the
+actual function which does the main work of every MarSystem is
 
 @example
 void
@@ -56,11 +57,11 @@ void
 @}
 @end example
 
-This is fairly obvious: each MarSystem takes a @code{realvec} as input,
-and writes a @code{realvec} as output.
+In other words, each MarSystem takes a @code{realvec} as input, and
+writes a @code{realvec} as output.
 
 @menu
-* Working with a realvec::      
+* Reading and writing to a realvec::  
 * Resizing a realvec::          
 * Realvec arithmetic::          
 * Applying a function to a realvec::  
@@ -70,8 +71,8 @@ and writes a @code{realvec} as output.
 @end menu
 
 
-@node Working with a realvec
-@subsection Working with a realvec
+@node Reading and writing to a realvec
+@subsection Reading and writing to a realvec
 
 Realvecs may be accessed using @code{var_name(index) = value}.
 
@@ -202,7 +203,7 @@ maxval();
 minval();
 mean();
 median();
-sun();
+sum();
 std();
 var();
 meanObs();
