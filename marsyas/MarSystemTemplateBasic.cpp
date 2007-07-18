@@ -50,7 +50,7 @@ MarSystemTemplateBasic::MarSystemTemplateBasic(const MarSystemTemplateBasic& a) 
 	// IMPORTANT!
 	// All member pointers to controls have to be explicitly
 	// reassigned here, at the copy constructor.
-	// Otherwise these member "pointers" would be invalid,
+	// Otherwise these member pointers would be invalid,
 	// which will result in trying to de-allocate them
 	// twice!
 	ctrl_gain_EXAMPLE_ = getctrl("mrs_real/gain");

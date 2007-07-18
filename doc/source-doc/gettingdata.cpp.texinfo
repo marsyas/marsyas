@@ -12,37 +12,18 @@ void @b{recognize}(string sfName)
        pnet->@b{addMarSystem}(mng.@b{create}(@t{"SoundFileSource"}, @t{"src"}));
        pnet->@b{updctrl}(@t{"SoundFileSource/src/mrs_string/filename"}, sfName);
        pnet->@b{addMarSystem}(mng.@b{create}(@t{"Spectrum"},@t{"spk"}));
-
-@i{// variables to get data from network}
-       realvec @b{in}(pnet->@b{getctrl}(@t{"mrs_natural/inObservations"})->@b{toNatural}(), pnet->@b{getctrl}(@t{"mrs_natural/inSamples"})->@b{toNatural}());
-       realvec @b{out}(pnet->@b{getctrl}(@t{"mrs_natural/onObservations"})->@b{toNatural}(), pnet->@b{getctrl}(@t{"mrs_natural/onSamples"})->@b{toNatural}());
-
-@i{// counter variables}
-       int i,j;
-       mrs_natural numberObservations = pnet->@b{getctrl}(@t{"mrs_natural/onObservations"})->@b{toNatural}();
-       mrs_natural numberSamples = pnet->@b{getctrl}(@t{"mrs_natural/onSamples"})->@b{toNatural}();   @i{// in this case, numbSamples will be 1, due to the Spectrum MarSystem.}
+       pnet->@b{addMarSystem}(mng.@b{create}(@t{"Gain"}, @t{"g2"}));
 
        @b{while} ( pnet->@b{getctrl}(@t{"SoundFileSource/src/mrs_bool/notEmpty"})->@b{toBool}() )
        @{
-@i{// don't tick because process() does that.}
-@i{//              pnet->tick();}
-@i{// get data from network}
-              pnet->@b{process}(in,out);
-
-@i{// display data}
-              @b{for} (i=0; i<numberObservations; i++)
-              @{
-                     @b{for} (j=0; j<numberSamples; j++)
-                     @{
-                            cout<<@b{out}(i,j)<<@t{" "};
-                     @}
-              @}
-              cout<<endl;
-
-              @b{const} realvec& processedData = pnet->@b{getctrl}(@t{"Spectrum/spk/mrs_realvec/processedData"})->to<mrs_realvec>();
+              pnet->@b{tick}();
+              @i{// gets data from the Spectrum}
+              @b{const} realvec& processedData =
+pnet->@b{getctrl}(@t{"Spectrum/spk/mrs_realvec/processedData"})->to<mrs_realvec>();
+              @i{// get data from the end of the MarSystem}
+              @i{// TODO: clarify these two points.}
+              @i{//const realvec& processedData = pnet->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();}
               cout << processedData << endl;
-
-
        @}
        @b{delete} pnet;
 @}

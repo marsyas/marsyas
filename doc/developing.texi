@@ -133,6 +133,24 @@ MarSystem* MyName::clone() const
 instance of every MarSystem at run-time, and future MarSystems are
 simply @code{clone()}'d from the initial instance.
 
+@subsubsection Copy constructor
+
+All member pointers to controls @strong{must} be explicitly reassigned
+in the copy constructor.  Otherwise these member points would be
+invalid, which results in trying to de-allocate them twice!  The
+function should look like this:
+
+@example
+MyMar::MyMar(const MyMar& a) : MarSystem(a)
+@{
+    ctrl_gain_ = getctrl("mrs_real/gain");
+    ctrl_other_ = getctrl("mrs_natural/other");
+    ctrl_dothis_ = getctrl("mrs_bool/dothis");
+    ...
+@}
+@end example
+
+
 
 @node Handling controls
 @subsection Handling controls
