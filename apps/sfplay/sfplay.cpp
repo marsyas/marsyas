@@ -132,7 +132,7 @@ void sfplay(vector<string> soundfiles)
 	{
 	  playbacknet->tick();
 	}
-      cout << *playbacknet << endl;
+      //cout << *playbacknet << endl;
     }
   
   // output network description to cout  
