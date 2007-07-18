@@ -5,8 +5,6 @@
 void
 basic_vibrato(string infile, string outfile)
 {
-	cout << "Testing vibrato" << endl;
-
 	MarSystem* pnet = mng.create("Series", "pnet");
 	addSource( pnet, infile );
 	pnet->addMarSystem(mng.create("Vibrato", "vib"));
