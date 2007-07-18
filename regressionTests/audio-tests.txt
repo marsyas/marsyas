@@ -6,5 +6,5 @@ sfplay -s 0.25 -l 0.1 -g 0.7 right.wav -f out.au	right-sfplay.au
 #sfplay coll.mf -f out.au	coll-triad.au
 
 regressionChecks -t vibrato right.wav -o out.au
-#regressionChecks -t isClose out.au	right-vibrato.au
+regressionChecks -t isClose out.au right-vibrato.au
 
