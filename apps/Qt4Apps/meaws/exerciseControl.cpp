@@ -235,7 +235,7 @@ realvec spectrum(2048, 1), power(1);
 	vibSeries.updctrl("mrs_natural/inSamples", window.getCols());
 	vibSeries.updctrl("mrs_natural/inObservations", window.getRows());
 	vibSeries.updctrl("Windowing/window/mrs_string/type", "Hanning");
-	vibSeries.updctrl("Windowing/window/mrs_natural/zeroPadding", 4096);
+	vibSeries.updctrl("Windowing/window/mrs_natural/zeroPadding", 4096); lmartins: THIS IS NOW DIFFERENTLY IMPLEMENTED IN Windowing.cpp -> go there and figure out how ;-)
 
 	Power p("Power");
 	p.updctrl("mrs_natural/inSamples", windowWeight.getCols());
