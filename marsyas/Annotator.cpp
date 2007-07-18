@@ -18,7 +18,7 @@
 
 /** 
     \class Annotator
-	\ingroup Classifiers
+	\ingroup Machine
     \brief Annotate feature stream with additional row of labels.
     
 */

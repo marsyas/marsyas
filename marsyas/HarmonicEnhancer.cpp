@@ -18,7 +18,7 @@
 
 /** 
     \class HarmonicEnhancer
-	\ingroup Classifiers
+	\ingroup Machine
     \brief Used to strengthen harmonic peaks in Beat Histograms 
 
 */

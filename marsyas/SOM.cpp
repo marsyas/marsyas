@@ -19,7 +19,7 @@
 
 /** 
     \class SOM
-	\ingroup Clustering
+	\ingroup Machine
     \brief Self-organizing map
 
 
