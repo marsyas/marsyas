@@ -9,6 +9,8 @@
 // dunno what this is doing
 #define EMPTYSTRING "MARSYAS_EMPTY"
 
+#define CLOSE_ENOUGH 0.001
+
 using namespace std;
 using namespace Marsyas;
 

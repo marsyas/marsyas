@@ -35,6 +35,7 @@ printHelp(string progName)
 	cerr << endl << "    *** Core System tests ***" << endl;
 	cerr << "null            : no test" << endl;
 	cerr << "audiodevices    : test audio devices" << endl;
+	cerr << "isClose         : test if two sound files are (almost) equal" << endl;
 	cerr << endl << "    *** Basic Audio Processing tests ***" << endl;
 	cerr << "vibrato         : test vibrato" << endl;
 	cerr << "pitch           : do pitch extraction" << endl;
@@ -96,6 +97,8 @@ main(int argc, const char **argv)
 		core_null();
 	else if (testName == "audiodevices")
 		core_audiodevices();
+	else if (testName == "isClose")
+		core_isClose(fname0, fname1);
 
 	// Basic audio processing
 	else if (testName == "vibrato")
