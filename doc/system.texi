@@ -129,8 +129,8 @@ current size.
 
 @example
 stretch();
-getSize();
 
+getSize();
 // for two-dimensional realvecs
 getCols();
 getRows();
