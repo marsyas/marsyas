@@ -55,14 +55,14 @@ manager:
 
 @example
 MarSystemManager mng;
-// add myMar
-MarSystem* myFilt = new myMar("hello");
-mng.registerPrototype("myMar", myFilt);
+// add MyMar to MarSystemManager
+MarSystem* myMar = new MyMar("hello");
+mng.registerPrototype("MyMar", myMar);
 
 // create a network normally
 playbacknet = mng.create("Series", "playbacknet");
 playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
-playbacknet->addMarSystem(mng.create("myMar", "filter"));
+playbacknet->addMarSystem(mng.create("MyMar", "mymar"));
 playbacknet->addMarSystem(mng.create("Gain", "gain"));
 playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
 playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
