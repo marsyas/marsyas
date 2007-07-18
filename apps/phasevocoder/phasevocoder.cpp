@@ -1361,16 +1361,19 @@ main(int argc, const char **argv)
 	if (usageopt_)
 		printUsage(progName);
 
-	cerr << "Phasevocoder configuration (-h show the options): " << endl;
-	cerr << "fft size (-n)      = " << fftSize_ << endl;
-	cerr << "win size (-w)      = " << winSize_ << endl;
-	cerr << "decimation (-d)    = " << dopt << endl;
-	cerr << "interpolation (-i) = " << iopt << endl;
-	cerr << "pitch shift (-p)   = " << popt << endl;
-	cerr << "sinusoids (-s)     = " << sopt << endl;
-	cerr << "voices (-v)        = " << vopt_ << endl;
-	cerr << "midiPort (-m)      = " << midi_ << endl;
-	cerr << "outFile  (-f)      = " << fileName << endl;
+	if (!quietopt_)
+	{
+		cerr << "Phasevocoder configuration (-h show the options): " << endl;
+		cerr << "fft size (-n)      = " << fftSize_ << endl;
+		cerr << "win size (-w)      = " << winSize_ << endl;
+		cerr << "decimation (-d)    = " << dopt << endl;
+		cerr << "interpolation (-i) = " << iopt << endl;
+		cerr << "pitch shift (-p)   = " << popt << endl;
+		cerr << "sinusoids (-s)     = " << sopt << endl;
+		cerr << "voices (-v)        = " << vopt_ << endl;
+		cerr << "midiPort (-m)      = " << midi_ << endl;
+		cerr << "outFile  (-f)      = " << fileName << endl;
+	}
 
 	int i =0;
 	// soundfile input 
