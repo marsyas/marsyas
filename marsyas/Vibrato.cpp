@@ -69,7 +69,7 @@ Vibrato::myUpdate(MarControlPtr sender)
   mod_freq = mod_freq / israte_;     // mod_freq in samples
   
   mrs_natural L = 2 + delay_ + width_ * 2;
-  cout << "L = " << L << endl;
+//  cout << "L = " << L << endl;
 
   if (delaylineSize_ == 0) 
     {
