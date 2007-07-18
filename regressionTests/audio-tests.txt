@@ -1,9 +1,10 @@
 # two columns: command	<TAB>	answer file
 # comments are #, obviously.
-phasevocoder -p 1.5 -s 50 right.wav -g 1.9 -f out.au	right-phasevocoder.au
 sfplay -s 0.25 -l 0.1 -g 0.7 right.wav -f out.au	right-sfplay.au
-mkcollection coll.mf coll
-sfplay coll.mf -f out.au	coll-triad.au
+#phasevocoder -p 1.5 -s 50 right.wav -g 0.9 -f out.au	right-phasevocoder.au
+#mkcollection coll.mf coll
+#sfplay coll.mf -f out.au	coll-triad.au
 
-regressionChecks -t vibrato right.wav -o out.au	right-vibrato.au
+regressionChecks -t vibrato right.wav -o out.au
+#regressionChecks -t isClose out.au	right-vibrato.au
 
