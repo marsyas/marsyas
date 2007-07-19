@@ -6,7 +6,11 @@ import filecmp
 LOG_FILE = 'results.log'
 
 # chdir to test directory
-os.chdir( os.path.join( os.path.dirname(sys.argv[0])+os.sep+'..'+os.sep+'regressionTests'+os.sep ) )
+marsyasBaseDir = os.path.dirname(sys.argv[0])
+marsyasBaseDir = os.path.abspath( marsyasBaseDir )
+marsyasBaseDir = os.path.join(marsyasBaseDir+os.sep+'..'+os.sep)
+marsyasBaseDir = os.path.abspath( marsyasBaseDir )
+os.chdir (marsyasBaseDir + os.sep + 'regressionTests')
 
 print os.getcwd()
 
@@ -49,6 +53,7 @@ def doTests(test_filename, temp_filename):
 		#print command
 		if (os.system(command) != 0): # if something went wrong
 			problem = 1
+			logfile.write("Test " + str(i) + " FAILED:   " + test_commands[i]+'\n')
 			break
 		if not(test_answers[i] == ''):
 			# use .au files because identical-sounding .wav files can have
@@ -58,6 +63,9 @@ def doTests(test_filename, temp_filename):
 			else:
 				logfile.write("Test " + str(i) + " FAILED:   " + test_commands[i]+'\n')
 				problem = 1
+		else:
+			# we would have found a problem above
+			logfile.write("Test " + str(i) + " successful\n")
 
 #test_file = 'testlist.txt'
 logfile = open(LOG_FILE, 'w')
