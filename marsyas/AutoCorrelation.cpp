@@ -92,27 +92,32 @@ AutoCorrelation::myUpdate(MarControlPtr sender)
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
   
   scratch_.create(2*getctrl("mrs_natural/onSamples")->toNatural());
-  
+ 
+// works better without this code.  Gustavo and I can't figure out where
+// the code came from, anyway.  -gp 
+// Mathieu: this doesn't work with the Windowing MarSystem from July 19.
+/*
   // only working for hanning window
   normalize_ = 0;
   if(getctrl("mrs_natural/normalize")->toNatural())
   {
 	  normalize_ = 1;
-  norm_.create(getctrl("mrs_natural/onSamples")->toNatural());
-  norm_.setval(1);
-  Windowing win("Windowing");
-  win.updctrl("mrs_string/type", "Hanning");
-  win.updctrl("mrs_natural/inSamples", norm_.getCols());
-  win.updctrl("mrs_natural/inObservations", norm_.getRows());
-  win.process(norm_, norm_);
-  AutoCorrelation autocorr("Autocorrelation");
-  autocorr.updctrl("mrs_natural/inSamples", norm_.getCols());
-  autocorr.updctrl("mrs_natural/inObservations", norm_.getRows());
-  autocorr.update();
-  autocorr.process(norm_, norm_);
-  for (mrs_natural i = 0 ; i < norm_.getSize() ; i++)
-	  norm_(i) = 1/norm_(i);
+	  norm_.create(getctrl("mrs_natural/onSamples")->toNatural());
+	  norm_.setval(1);
+	  Windowing win("Windowing");
+	  win.updctrl("mrs_string/type", "Hanning");
+	  win.updctrl("mrs_natural/inSamples", norm_.getCols());
+	  win.updctrl("mrs_natural/inObservations", norm_.getRows());
+	  win.process(norm_, norm_);
+	  AutoCorrelation autocorr("Autocorrelation");
+	  autocorr.updctrl("mrs_natural/inSamples", norm_.getCols());
+	  autocorr.updctrl("mrs_natural/inObservations", norm_.getRows());
+	  autocorr.update();
+	  autocorr.process(norm_, norm_);
+	  for (mrs_natural i = 0 ; i < norm_.getSize() ; i++)
+		  norm_(i) = 1/norm_(i);
   }
+*/
 
 	octaveCost_ = getctrl("mrs_real/octaveCost")->toReal();
   voicing_ = getctrl("mrs_real/voicingThreshold")->toReal();
