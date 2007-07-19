@@ -2,7 +2,7 @@ include ( ../consoleApps.pri )
 
 TEMPLATE = app
 CONFIG += console
-TARGET = marsyasTests
+TARGET = regressionChecks
 
 SOURCES += regressionChecks.cpp
 
