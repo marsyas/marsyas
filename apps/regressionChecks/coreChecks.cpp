@@ -124,7 +124,6 @@ core_isClose(string infile1, string infile2)
 			//cout<<processedData(i)<<" ";
 			if ( processedData(i) > CLOSE_ENOUGH )
 			{
-				cout<<"Not close"<<endl;
 				exit(1);
 			}
 		}

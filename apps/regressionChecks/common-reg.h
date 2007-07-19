@@ -15,6 +15,7 @@ using namespace std;
 using namespace Marsyas;
 
 MarSystemManager mng;
+mrs_real srate;
 
 // really useful global functions
 void
@@ -27,6 +28,7 @@ addSource(MarSystem* net, string infile)
 
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
 	net->updctrl("SoundFileSource/src/mrs_string/filename", infile);
+	srate = net->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
 	net->linkControl("mrs_bool/notEmpty",
 	                 "SoundFileSource/src/mrs_bool/notEmpty");
 }
