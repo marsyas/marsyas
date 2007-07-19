@@ -265,7 +265,6 @@ HEADERS += \
 	Vibrato.h \
 	Panorama.h \
 	Biquad.h \
-	Transcriber.h \
 	FlowThru.h \
 	FanOutIn.h \
 	MarSystemTemplateMedium.h \
@@ -477,7 +476,6 @@ SOURCES += \
 	Vibrato.cpp \
 	Panorama.cpp \
 	Biquad.cpp \
-	Transcriber.cpp \
 	FlowThru.cpp \
 	FanOutIn.cpp \
 	MarSystemTemplateMedium.cpp \

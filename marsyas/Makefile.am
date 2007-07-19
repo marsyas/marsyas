@@ -246,7 +246,6 @@ pkginclude_HEADERS = \
 	HWPSspectrum.h \
 	Panorama.h \
 	Vibrato.h \
-	Transcriber.h \
 	FlowThru.h \
 	FanOutIn.h \
 	MarSystemTemplateMedium.h \

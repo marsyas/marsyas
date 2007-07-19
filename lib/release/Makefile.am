@@ -223,7 +223,6 @@ libmarsyas_a_SOURCES    = \
 	$(top_srcdir)/marsyas/vmblock.cpp \
 	$(top_srcdir)/marsyas/lu.cpp \
 	$(top_srcdir)/marsyas/basis.cpp \
-	$(top_srcdir)/marsyas/Transcriber.cpp \
 	$(top_srcdir)/marsyas/FlowThru.cpp \
 	$(top_srcdir)/marsyas/MATLAB/MATLABengine.cpp \
 	$(top_srcdir)/marsyas/FanOutIn.cpp \
