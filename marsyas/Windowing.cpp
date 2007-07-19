@@ -75,7 +75,7 @@ Windowing::myUpdate(MarControlPtr sender)
 {
 	string type = ctrl_type_->toString();
 	
-	ctrl_onObservations_->setValue(ctrl_onObservations_, NOUPDATE);
+	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 	ostringstream oss;
 	string inObsNames = ctrl_inObsNames_->toString();
