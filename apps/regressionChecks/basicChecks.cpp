@@ -59,3 +59,18 @@ basic_pitch(string infile)
 	delete pnet;
 }
 
+void
+basic_windowing(string infile, string outfile)
+{
+	MarSystem* pnet = mng.create("Series", "pnet");
+	addSource( pnet, infile );
+	pnet->addMarSystem(mng.create("Windowing", "win"));
+	pnet->updctrl("Windowing/win/mrs_string/type", "Hanning");
+	addDest( pnet, outfile);
+
+	while (pnet->getctrl("mrs_bool/notEmpty")->toBool())
+	{
+		pnet->tick();
+	}
+	delete pnet;
+}

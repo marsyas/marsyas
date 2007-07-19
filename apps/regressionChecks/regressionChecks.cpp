@@ -111,6 +111,8 @@ main(int argc, const char **argv)
 		basic_vibrato(fname0, outputFilename);
 	else if (testName == "pitch")
 		basic_pitch(fname0);
+	else if (testName == "windowing")
+		basic_windowing(fname0,outputFilename);
 
 
 	else
