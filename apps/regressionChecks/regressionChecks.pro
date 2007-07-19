@@ -4,4 +4,5 @@ TEMPLATE = app
 CONFIG += console
 TARGET = marsyasTests
 
-SOURCES += marsyasTests.cpp
+SOURCES += regressionCheck.cpp
+
