@@ -122,11 +122,21 @@ development platform, version 4.2.3 or above.
 Required:
 
 @itemize
-@item Microsoft Visual Studio (visual studio express can compile Marsyas
-after a bit of fiddling with preferences)
+@item Microsoft Visual Studio 2005 Express (similar instructions will
+work for MSVC 2005 Professional) (previous versions of MSVC will probably
+work with some minor modifications)
+
 @item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech}
-development platform, version 4.2.3 or above.
-@item Microsoft DirectX SDK and Platform SDK
+development platform, version 4.2.3 or above.  If you are using the Open
+Source version of Qt/Open Source with MSVC 2005, please follow the
+instructions at
+@uref{http://qtnode.net/wiki?title=Qt4_with_Visual_Studio}
+
+@item Latest version Platform SDK from Microsoft (search on Microsoft
+website)
+
+@item Microsoft DirectX SDK (ditto)
+
 @end itemize
 
 
@@ -338,13 +348,14 @@ No specific notes.
 A few of our developers use Visual Studio, so this environment is fairly
 well supported.
 
-@example
+@ignore
+@e xample
 Anyone wanting to use MSVC2005 (and probably MSVC6, MSVC2003 and
 MSVC2005express) and Qt4.x opensource please try doing the following:
 
 1)  Use the most recent version of qmake, available at:
 
-@url{http://qtnode.net/wiki/Qt4_with_Visual_Studio}
+@u rl{http://qtnode.net/wiki/Qt4_with_Visual_Studio}
 
 2)  Do not forget to put you Qt bin dir in the system path (i.e.
 c:\Qt\4.2.2\bin), so you can use qmake anywhere, and to define the
@@ -365,7 +376,8 @@ Qt lib (this will take a while, so go grab a coffee or something! ;-))
 
 5) When done, you should now be able to create MSVC2005 project using
 qmake -t vcapp/vclib from all your marsyas .pro!
-@end example
+@e nd example
+@end ignore
 
 
 @subsubsection Windows (cygwin)
