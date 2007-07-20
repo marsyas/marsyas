@@ -311,8 +311,9 @@ fi
 	AC_DEFINE([__MACOSX_CORE__],[1], [MACOSX SYSTEM FOR RTAUDIO])		
 	;;
 	*-*-cygwin*) 
+	AC_DEFINE([MARSYAS_CYGWIN])
 	Libs="-lpthread -ldsound -lwinmm ${MADLIB} ${OGGLIB} ${MATLABLIBS}"
-	INCLUDES="$INCLUDES /usr/include/directx"
+	# INCLUDES="$INCLUDES /usr/include/directx"
 	AC_DEFINE([__WINDOWS_DS__],[1], [WINDOWS SYSTEM FOR RTAUDIO])		
 	AC_DEFINE([__WINDOWS_MM__],[1], [WINDOWS SYSTEM FOR RTAUDIO])		
 	AC_DEFINE([__CYGWIN__], [1], [CYGWIN FOR THREAD STUFF])

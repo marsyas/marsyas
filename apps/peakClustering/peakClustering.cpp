@@ -9,7 +9,6 @@
 #include "SoundFileSink.h"
 #include "SoundFileSource.h"
 #include "Gain.h"
-#include "Messager.h"
 #include "Conversions.h"
 #include "CommandLineOptions.h"
 #include "PeClusters.h"
