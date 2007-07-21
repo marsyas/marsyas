@@ -119,25 +119,40 @@ development platform, version 4.2.3 or above.
 
 @subsubsection Microsoft Visual Studio
 
+Windows XP SP2 has been tested; in theory other versions of Windows
+should work, but they have not been tested.
+
 Required:
 
 @itemize
-@item Microsoft Visual Studio 2005 Express (similar instructions will
-work for MSVC 2005 Professional) (previous versions of MSVC will probably
-work with some minor modifications)
+@item Latest version of
+@uref{http://www.microsoft.com/downloads/details.aspx?FamilyId=0BAF2B35-C656-4969-ACE8-E4C0C0716ADB&displaylang=en,
+Microsoft Platform SDK}
+
+@item @uref{http://msdn2.microsoft.com/en-us/xna/aa937781.aspx,
+Microsoft DirectX SDK}
+
+@item @uref{http://msdn.microsoft.com/vstudio/express/, Microsoft Visual
+Studio 2005 Express} (similar instructions will work for MSVC 2005
+Professional) (previous versions of MSVC will probably work, but have
+not been tested)
+
+Only Visual C++ and .Net 2.0 libraries included with MSVS install
+packages are needed for Marsyas building.
 
 @item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech}
-development platform, version 4.2.3 or above.  If you are using the Open
-Source version of Qt/Open Source with MSVC 2005, please follow the
-instructions at
-@uref{http://qtnode.net/wiki?title=Qt4_with_Visual_Studio}
+development platform, version 4.2.3 or above.  For use with MSVS2005,
+download the qt-win-opensource-src-4.3.0.zip file  (i.e.  without the
+MinGW compiler) from Trolltech's website.
 
-@item Latest version Platform SDK from Microsoft (search on Microsoft
-website)
-
-@item Microsoft DirectX SDK (ditto)
+@item (OPTIONAL) WEVE (Windows Environement Variable Editor -
+@uref{http://www.silvermace.com/weve/}): allows easy editing of Windows
+environment variables.  Highly recommended.
 
 @end itemize
+
+Your machine may need extra System configuration; please see the
+platform-specific notes for @ref{Windows}.
 
 
 @subsubsection Cygwin
@@ -345,39 +360,260 @@ No specific notes.
 @subsubsection Windows (Visual Studio)
 @cindex Windows, Visual Studio
 
-A few of our developers use Visual Studio, so this environment is fairly
-well supported.
+@subsubheading Installation
 
-@ignore
-@e xample
-Anyone wanting to use MSVC2005 (and probably MSVC6, MSVC2003 and
-MSVC2005express) and Qt4.x opensource please try doing the following:
+@example
+a) Install Microsoft Platform SDK into your system
 
-1)  Use the most recent version of qmake, available at:
+b) Install Microsoft DirectX SDK into your system
 
-@u rl{http://qtnode.net/wiki/Qt4_with_Visual_Studio}
+c) Install MSVS2005 into your system (you can get a free version of
+MSVS2005, known as MSVS2005 Express).  Only Visual C++ and .Net 2.0
+libraries included with MSVS install packages are needed for Marsyas
+building.
 
-2)  Do not forget to put you Qt bin dir in the system path (i.e.
-c:\Qt\4.2.2\bin), so you can use qmake anywhere, and to define the
-QMAKESPEC env var, that for the case of MSVC2005 should be
-win32-msvc2005.
+d) After installing the SDKs and MSVS2005 as instructed, make sure
+that your following Windows User and System Variables at least include
+similar entries as presented bellow (paths may be slightly different
+depending on where you installed your applications and SDKs as well as
+depending on the versions of the SDKs installed - see WEVE for a nice
+tool to easily set and verify Windows env. Vars):
+@end example
 
-3) open a MSVC2005 command prompt (you can find this in
-Start->Programs->Microsoft Visual Studio->Visual Studio Tools); this cmd
-prompt has all the env variables correctly configured in case you do not
-have them configured in your system)
+@subsubheading System Environment Variables
 
-3) run "qconfigure msvc2005" (without the quotes) and follow the
-instructions (basically reply yes whenever asked).
+@example
+Path
+C:\Program Files\Microsoft DirectX SDK (June 2007)\Utilities\Bin\x86
+C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Bin\.
+C:\Program Files\Microsoft Platform SDK for Windows Server 2003
+R2\Bin\WinNT\.
+C:\Program Files\Microsoft Visual Studio 8\Common7\Tools
+C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\bin
+C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
+C:\Program Files\Microsoft Visual Studio 8\VC\VCPackages
+C:\Program Files\Microsoft Visual Studio 8\Common7\IDE
+C:\Program Files\Microsoft Visual Studio 8\VC\BIN
 
-4) after the successful build of qmake and the subsequent generation
-of the makefiles for the patched Qt code, just do nmake to build the
-Qt lib (this will take a while, so go grab a coffee or something! ;-))
+VS80COMNTOOLS
+C:\Program Files\Microsoft Visual Studio 8\Common7\Tools\
 
-5) When done, you should now be able to create MSVC2005 project using
-qmake -t vcapp/vclib from all your marsyas .pro!
-@e nd example
-@end ignore
+Basemake
+C:\Program Files\Microsoft Platform SDK for Windows Server 2003 
+R2\Include\BKOffice.Mak
+
+Bkoffice
+C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\.
+
+INCLUDE
+C:\Program Files\Microsoft Platform SDK for Windows Server 2003
+R2\Include\.
+C:\Program Files\Microsoft Visual Studio 8\VC\INCLUDE
+
+INETSDK
+C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\.
+
+LIB
+C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib\.
+C:\Program Files\Microsoft Visual Studio 8\VC\LIB
+C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\lib
+
+MSSdk
+C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\.
+
+Mstools
+C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\.
+
+LIBPATH
+C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
+
+VSINSTALLDIR
+C:\Program Files\Microsoft Visual Studio 8
+
+VCINSTALLDIR
+C:\Program Files\Microsoft Visual Studio 8\VC
+
+FrameworkDir
+C:\WINDOWS\Microsoft.NET\Framework
+
+FrameworkVersion=v2.0.50727
+
+FrameworkSDKDir
+C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0
+
+DXSDK_DIR
+C:\Program Files\Microsoft DirectX SDK (June 2007)\
+@end example
+
+@subsubheading System Environment Variables
+
+@example
+Basemake
+C:\Program Files\Microsoft Platform SDK for Windows Server 2003 
+R2\Include\BKOffice.Mak
+
+Bkoffice
+C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\.
+
+INCLUDE
+C:\Program Files\Microsoft Platform SDK for Windows Server 2003
+R2\Include\.
+C:\Program Files\Microsoft Visual Studio 8\VC\INCLUDE
+
+INETSDK
+C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\.
+
+LIB
+C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib\.
+C:\Program Files\Microsoft Visual Studio 8\VC\LIB;
+C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\lib
+%DXSDK_DIR%\Lib\x86
+
+MSSdk
+C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\.
+
+Mstools
+C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\.
+
+PATH
+C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Bin\.
+C:\Program Files\Microsoft Platform SDK for Windows Server 2003
+R2\Bin\WinNT\.
+@end example
+
+@subsubheading More installation instructions
+
+@example
+e) Download Trolltech's Qt4 opensource library and uncompress the
+downloaded .zip file (e.g.  qt-win-opensource-src-4.3.0.zip) into the
+folder in your disk where you want Qt to be installed (a good suggestion
+is to use a path containing no spaces, such as c:\Qt\4.3.0-msvc2005 or
+something similar).
+
+f) For using the Qt4 opensource with MSVS2005, Qt4 source code must be
+patched (Trolltech only provides official support for the MinGW compiler
+on Qt4 opensource - see corresponding section on this documentation on
+how to build Marsyas with Qt4 using the MinGW compiler). If you are
+using a commercial license of Qt4 for Windows, MSVS2005 support is
+already included and you should skip this step! Point your web browser
+to http://qtnode.net/wiki?title=Qt4_with_Visual_Studio and carefully
+follow the instructions presented there (some of them include some of
+the steps already presented above). After succesfully patching and
+building Qt4 (this step will take quite some time to complete - go grab
+a coffee and/or keep reading this documentation ;-)), be sure that your
+user env. vars in Windows include the following info:
+
+-----------------
+USER ENV. VARS:
+-----------------
+QTDIR
+C:\Qt\4.3.0-msvc2005
+
+Path
+%QTDIR%\bin;
+
+INCLUDE
+%QTDIR%\include
+
+QMAKESPEC
+win32-msvc2005
+
+g) In order to be able to build Marsyas Projects in MSVS2005, go to the 
+MSVS2005 menu Tools->Options...->Projects and Solutions->VC++
+Directories and 
+make sure that the following lines are listed in the "include files" and 
+"library files" directories path lists (yes, this should be taken care
+by the 
+SDKs installs, but strangely it some times doesn't happen):
+
+INCLUDE FILES DIRECTORIES:
+--------------------------
+C:\Program Files\Microsoft Platform SDK for Windows Server 2003
+R2\Include\.
+
+LIB FILES DIRECTORIES:
+-----------------------
+C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib\.
+
+
+h) If you followed these instructions carefully, you should now be ready
+to 
+get Marsyas (from a tar ball in sourceforge or from sourceforge SVN -
+see 
+http://marsyas.sf.net) and build it using Trolltech's qmake utility to
+build 
+Marsyas (installed during steps 2.e and 2.f above) . Go to the directory
+where 
+you extracted the Marsyas tarball (or where you checked out Marsyas from
+the 
+sourceforge SVN server to - btw, have a look at this very nice SVN
+client 
+utility for windows: http://tortoisesvn.tigris.org/) and open a cmd
+window 
+there and type the following cmd lines for building Marsyas and some of
+the 
+included apps and examples in release:
+
+C:\MyMarsyasDir > qmake
+C:\MyMarsyasDir > nmake release
+
+This should build the Marsyas library (i.e. marsyas.lib, which you can
+find in 
+c:\MyMarsyasDir\lib\release) and some of the applications and examples
+(that 
+you can find and execute in c:\MyMarsyasDir\bin\release).
+
+i) You can generate MSVS2005 project files (.vcproj) for both the
+Marsyas lib 
+and all the apps and examples using qmake and the .pro project files
+included 
+in Marsyas (both release and debug solution configurations will be
+created in 
+MSVS2005). This will allow you to open Marsyas projects in MSVS2005 and
+use 
+its nice IDE for code writing/editing, building and most importantly 
+debugging. For creating a MSVS2005 project for the Marsyas (static)
+library, 
+open a cmd window on the marsyas directory in your Marsyas folder and
+run the 
+following qmake command:
+
+C:\MyMarsyasDir\marsyas > qmake -t vclib
+
+This will generate a marsyas.vcproj file that you can open in MSVS2005
+to edit 
+and build.
+
+For creating a MSVS2005 project for a Marsyas application (e.g. sfplay),
+go to 
+its folder and execute:
+
+C:\MyMarsyasDir\apps\sfplay > qmake -t vcapp
+
+You will get a sfplay.vcproj that you can once again open in MSVS2005.
+If you 
+need to debug your application using MSVS2005, it's a nice idea to
+create a 
+MSVS2005 Solution that includes the marsyas.vcproj and your application 
+.vcproj. If you then define a dependency of your application to the 
+marsyas.vcproj (check MSVS2005 documentation), MSVS2005 will then always
+check 
+if it needs to also build the Marsyas lib before linking it to your 
+application. Furthermore, having set up this Solution allows you to
+debug into 
+Marsyas library code (e.g. put breakpoints in your application code as
+well as 
+in Marsyas lib code, watches, memory views, call stacks, etc). Check
+qmake and 
+MSVS2005 documentation for more details.
+
+j) Read carefully the remaining of this fine documentation (RTFM ;-))
+and in case of questions, problems or suggestions, do not hesitate to
+post an email to Marsyas User and Developers Mailing lists:
+
+marsyas-users@@lists.sourceforge.net
+marsyas-developers@@lists.sourceforge.net
+@end example
 
 
 @subsubsection Windows (cygwin)
