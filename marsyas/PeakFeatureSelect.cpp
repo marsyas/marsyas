@@ -17,7 +17,7 @@
 */
 
 /** 
-	\class PeFeatSelect
+	\class PeakFeatureSelect
 	\ingroup MarSystem
 	\brief This MarSystem takes a realvec with peak information (using peakView)
 	and allows to select which peak features should be sent to the output. 
@@ -25,40 +25,40 @@
 
 	Controls:
 	- \b mrs_natural/selectedFeatures [rw] : bit field used to select peaks features to output
-	- \b mrs_natural/totalNumPeaks [w] : this control sets the total num of peaks at the input (should normally be linked with PeConvert similar control)
-	- \b mrs_natural/frameMaxNumPeaks [w] : this control sets the maximum num of peaks per frame at the input (should normally be linked with PeConvert similar control)
+	- \b mrs_natural/totalNumPeaks [w] : this control sets the total num of peaks at the input (should normally be linked with PeakConvert similar control)
+	- \b mrs_natural/frameMaxNumPeaks [w] : this control sets the maximum num of peaks per frame at the input (should normally be linked with PeakConvert similar control)
 */
 
-#include "PeFeatSelect.h"
+#include "PeakFeatureSelect.h"
 #include "peakView.h"
 
 using namespace std;
 using namespace Marsyas;
 
-PeFeatSelect::PeFeatSelect(string name):MarSystem("PeFeatSelect", name)
+PeakFeatureSelect::PeakFeatureSelect(string name):MarSystem("PeakFeatureSelect", name)
 {
 	addControls();
 }
 
-PeFeatSelect::PeFeatSelect(const PeFeatSelect& a) : MarSystem(a)
+PeakFeatureSelect::PeakFeatureSelect(const PeakFeatureSelect& a) : MarSystem(a)
 {
 	ctrl_selectedFeatures_ = getctrl("mrs_natural/selectedFeatures");
 	ctrl_totalNumPeaks_ = getctrl("mrs_natural/totalNumPeaks");
 	ctrl_frameMaxNumPeaks_ = getctrl("mrs_natural/frameMaxNumPeaks");
 }
 
-PeFeatSelect::~PeFeatSelect()
+PeakFeatureSelect::~PeakFeatureSelect()
 {
 }
 
 MarSystem* 
-PeFeatSelect::clone() const 
+PeakFeatureSelect::clone() const 
 {
-	return new PeFeatSelect(*this);
+	return new PeakFeatureSelect(*this);
 }
 
 void 
-PeFeatSelect::addControls()
+PeakFeatureSelect::addControls()
 {
 	addctrl("mrs_natural/selectedFeatures", 0, ctrl_selectedFeatures_);
 	ctrl_selectedFeatures_->setState(true);
@@ -76,7 +76,7 @@ PeFeatSelect::addControls()
 }
 
 void
-PeFeatSelect::myUpdate(MarControlPtr sender)
+PeakFeatureSelect::myUpdate(MarControlPtr sender)
 {
 	if(ctrl_selectedFeatures_->to<mrs_natural>() != selectedFeatures_ ||
 		 ctrl_frameMaxNumPeaks_->to<mrs_natural>() != frameMaxNumPeaks_)
@@ -87,42 +87,42 @@ PeFeatSelect::myUpdate(MarControlPtr sender)
 		//determine the number of selected features to output, per peak
 		numFeats_ = 0;
 		ostringstream oss;
-		if(selectedFeatures_ & PeFeatSelect::pkFrequency)
+		if(selectedFeatures_ & PeakFeatureSelect::pkFrequency)
 		{
 			numFeats_++;
 			oss << "pkFrequency,";
 		}
-		if(selectedFeatures_ & PeFeatSelect::pkAmplitude)
+		if(selectedFeatures_ & PeakFeatureSelect::pkAmplitude)
 		{
 			numFeats_++;
 			oss << "pkAmplitude,";
 		}
-		if(selectedFeatures_ & PeFeatSelect::pkFrame)
+		if(selectedFeatures_ & PeakFeatureSelect::pkFrame)
 		{
 			numFeats_++;
 			oss << "pkFrame,";
 		}
 		//-----------------------------------------------------
-		if(selectedFeatures_ & (PeFeatSelect::pkSetFrequencies |
-			PeFeatSelect::pkSetAmplitudes | 
-			PeFeatSelect::pkSetFrames))
+		if(selectedFeatures_ & (PeakFeatureSelect::pkSetFrequencies |
+			PeakFeatureSelect::pkSetAmplitudes | 
+			PeakFeatureSelect::pkSetFrames))
 		{
 			numFeats_++;
 			oss << "frameNumPeaks,";
 		}
-		if(selectedFeatures_ & PeFeatSelect::pkSetFrequencies)
+		if(selectedFeatures_ & PeakFeatureSelect::pkSetFrequencies)
 		{
 			for(mrs_natural i = 0; i < frameMaxNumPeaks_; ++i)
 				oss << "pk_"<< i << "_Frequency,";
 			numFeats_ += frameMaxNumPeaks_;
 		}
-		if(selectedFeatures_ & PeFeatSelect::pkSetAmplitudes)
+		if(selectedFeatures_ & PeakFeatureSelect::pkSetAmplitudes)
 		{
 			for(mrs_natural i = 0; i < frameMaxNumPeaks_; ++i)
 				oss << "pk_"<< i << "_Amplitude,";
 			numFeats_ += frameMaxNumPeaks_;
 		}
-		if(selectedFeatures_ & PeFeatSelect::pkSetFrames)
+		if(selectedFeatures_ & PeakFeatureSelect::pkSetFrames)
 		{
 			for(mrs_natural i = 0; i < frameMaxNumPeaks_; ++i)
 				oss << "pk_"<< i << "_Frame,";
@@ -140,7 +140,7 @@ PeFeatSelect::myUpdate(MarControlPtr sender)
 }
 
 void 
-PeFeatSelect::myProcess(realvec& in, realvec& out)
+PeakFeatureSelect::myProcess(realvec& in, realvec& out)
 {
 	peakView inPeakView(in);
 
@@ -164,38 +164,38 @@ PeFeatSelect::myProcess(realvec& in, realvec& out)
 			{	
 				mrs_natural feat_index = 0;
 
-				if(selectedFeatures_ & PeFeatSelect::pkFrequency)
+				if(selectedFeatures_ & PeakFeatureSelect::pkFrequency)
 				{
 					out(feat_index, peak_index) = inPeakView(p, peakView::pkFrequency, f);
-					if(selectedFeatures_ & PeFeatSelect::barkPkFreq)
+					if(selectedFeatures_ & PeakFeatureSelect::barkPkFreq)
 					{
 						out(feat_index, peak_index) = hertz2bark(out(feat_index, peak_index));
 					}
 					feat_index++;
 				}
-				if(selectedFeatures_ & PeFeatSelect::pkAmplitude)
+				if(selectedFeatures_ & PeakFeatureSelect::pkAmplitude)
 				{
 					out(feat_index, peak_index) = inPeakView(p, peakView::pkAmplitude, f);
-					if(selectedFeatures_ & PeFeatSelect::dBPkAmp)
+					if(selectedFeatures_ & PeakFeatureSelect::dBPkAmp)
 					{
 						out(feat_index, peak_index) = amplitude2dB(out(feat_index, peak_index));
 					}
 					feat_index++;
 				}
-				if(selectedFeatures_ & PeFeatSelect::pkFrame)
+				if(selectedFeatures_ & PeakFeatureSelect::pkFrame)
 				{
 					out(feat_index, peak_index) = inPeakView(p, peakView::pkFrame, f);
 					feat_index++;
 				}
 				//-----------------------------------------------------------------------------
-				if(selectedFeatures_ & (PeFeatSelect::pkSetFrequencies |
-					PeFeatSelect::pkSetAmplitudes | 
-					PeFeatSelect::pkSetFrames))
+				if(selectedFeatures_ & (PeakFeatureSelect::pkSetFrequencies |
+					PeakFeatureSelect::pkSetAmplitudes | 
+					PeakFeatureSelect::pkSetFrames))
 				{
 					out(feat_index, peak_index) = frameNumPeaks;
 					feat_index++;
 				}
-				if(selectedFeatures_ & PeFeatSelect::pkSetFrequencies)
+				if(selectedFeatures_ & PeakFeatureSelect::pkSetFrequencies)
 				{
 					//for each peak, just get all the feats of the peaks in the same frame
 					for(mrs_natural i=0; i < frameNumPeaks; ++i)
@@ -204,7 +204,7 @@ PeFeatSelect::myProcess(realvec& in, realvec& out)
 						feat_index++;
 					}
 				}
-				if(selectedFeatures_ & PeFeatSelect::pkSetAmplitudes)
+				if(selectedFeatures_ & PeakFeatureSelect::pkSetAmplitudes)
 				{
 					//for each peak, just get all the feats of the peaks in the same frame
 					for(mrs_natural i=0; i < frameNumPeaks; ++i)
@@ -213,7 +213,7 @@ PeFeatSelect::myProcess(realvec& in, realvec& out)
 						feat_index++;
 					}
 				}
-				if(selectedFeatures_ & PeFeatSelect::pkSetFrames)
+				if(selectedFeatures_ & PeakFeatureSelect::pkSetFrames)
 				{
 					//for each peak, just get all the feats of the peaks in the same frame
 					for(mrs_natural i=0; i < frameNumPeaks; ++i)

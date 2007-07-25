@@ -17,7 +17,7 @@
 */
 
 /** 
-	\class PeClusterSelect
+	\class PeakClusterSelect
 	\ingroup Special
 	\brief Downsample the number of clusters according to cluster density
           (most dense 'numClustersToKeep' clusters retained)
@@ -25,43 +25,43 @@
 	Controls:
 	- \b mrs_natural/numClustersToKeep [w] : sets the number of clusters to keep.
 */
-#include "PeClusterSelect.h"
+#include "PeakClusterSelect.h"
 
 using namespace std;
 using namespace Marsyas;
 
-PeClusterSelect::PeClusterSelect(string name):MarSystem("PeClusterSelect", name)
+PeakClusterSelect::PeakClusterSelect(string name):MarSystem("PeakClusterSelect", name)
 {
 	addControls();  
 }
 
-PeClusterSelect::PeClusterSelect(const PeClusterSelect& a) : MarSystem(a)
+PeakClusterSelect::PeakClusterSelect(const PeakClusterSelect& a) : MarSystem(a)
 {
 	ctrl_numClustersToKeep_ = getctrl("mrs_natural/numClustersToKeep");
 }
 
 
-PeClusterSelect::~PeClusterSelect()
+PeakClusterSelect::~PeakClusterSelect()
 {
 }
 
 MarSystem* 
-PeClusterSelect::clone() const 
+PeakClusterSelect::clone() const 
 {
-	return new PeClusterSelect(*this);
+	return new PeakClusterSelect(*this);
 }
 
 void 
-PeClusterSelect::addControls()
+PeakClusterSelect::addControls()
 {
 	addctrl("mrs_natural/numClustersToKeep", 1, ctrl_numClustersToKeep_);
 	ctrl_numClustersToKeep_->setState(false);
 }
 
 void
-PeClusterSelect::myUpdate(MarControlPtr sender)
+PeakClusterSelect::myUpdate(MarControlPtr sender)
 {
-  MRSDIAG("PeClusterSelect.cpp - PeClusterSelect:myUpdate");
+  MRSDIAG("PeakClusterSelect.cpp - PeakClusterSelect:myUpdate");
   
 	ctrl_onObservations_->setValue(1, NOUPDATE);
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
@@ -70,7 +70,7 @@ PeClusterSelect::myUpdate(MarControlPtr sender)
 }
 
 void 
-PeClusterSelect::myProcess(realvec& in, realvec& out)
+PeakClusterSelect::myProcess(realvec& in, realvec& out)
 {	
 	mrs_natural numClustersToKeep = ctrl_numClustersToKeep_->to<mrs_natural>();
    mrs_natural curNumClusters=-1, i, j, curClusterLabel;
@@ -133,7 +133,7 @@ PeClusterSelect::myProcess(realvec& in, realvec& out)
 }
 
 void
-PeClusterSelect::sort(realvec& rv, mrs_natural dimension, mrs_natural left, mrs_natural right, mrs_bool sortColumns)
+PeakClusterSelect::sort(realvec& rv, mrs_natural dimension, mrs_natural left, mrs_natural right, mrs_bool sortColumns)
 {
    if( left < right )
    {
@@ -144,7 +144,7 @@ PeClusterSelect::sort(realvec& rv, mrs_natural dimension, mrs_natural left, mrs_
 }
 
 int
-PeClusterSelect::partition(realvec& rv, mrs_natural dimension, mrs_natural left, mrs_natural right, mrs_bool sortColumns)
+PeakClusterSelect::partition(realvec& rv, mrs_natural dimension, mrs_natural left, mrs_natural right, mrs_bool sortColumns)
 {
    // Not quite fair, but good enough random partitioning
    int pivot_i = rand()%(right-left+1) + left;
@@ -190,7 +190,7 @@ PeClusterSelect::partition(realvec& rv, mrs_natural dimension, mrs_natural left,
 }
 
 void
-PeClusterSelect::swap(realvec& rv, mrs_natural sample1, mrs_natural sample2, mrs_bool swapColumns)
+PeakClusterSelect::swap(realvec& rv, mrs_natural sample1, mrs_natural sample2, mrs_bool swapColumns)
 {
    if( swapColumns ) // swap two columns
    {

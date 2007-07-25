@@ -18,15 +18,15 @@
 
 
 /** 
-\class PeConvert
+\class PeakConvert
 \ingroup MarSystem
-\brief PeConvert
+\brief PeakConvert
 
-PeConvert N real and imaginary spectrum values to 
+PeakConvert N real and imaginary spectrum values to 
 to a fixed number of peaks.
 */
 
-#include "PeConvert.h"
+#include "PeakConvert.h"
 #include "Peaker.h"
 #include "MaxArgMax.h"
 #include "peakView.h"
@@ -36,7 +36,7 @@ to a fixed number of peaks.
 using namespace std;
 using namespace Marsyas;
 
-PeConvert::PeConvert(string name):MarSystem("PeConvert",name)
+PeakConvert::PeakConvert(string name):MarSystem("PeakConvert",name)
 {
 	psize_ = 0;
 	size_ = 0;
@@ -55,7 +55,7 @@ PeConvert::PeConvert(string name):MarSystem("PeConvert",name)
 	addControls();
 }
 
-PeConvert::PeConvert(const PeConvert& a) : MarSystem(a)
+PeakConvert::PeakConvert(const PeakConvert& a) : MarSystem(a)
 {
 	psize_ = a.psize_;
 	size_ = a.size_;
@@ -75,20 +75,20 @@ PeConvert::PeConvert(const PeConvert& a) : MarSystem(a)
 	ctrl_frameMaxNumPeaks_ = getctrl("mrs_natural/frameMaxNumPeaks");
 }
 
-PeConvert::~PeConvert()
+PeakConvert::~PeakConvert()
 {
 	delete peaker_;
 	delete max_;
 }
 
 MarSystem* 
-PeConvert::clone() const 
+PeakConvert::clone() const 
 {
-	return new PeConvert(*this);
+	return new PeakConvert(*this);
 }
 
 void 
-PeConvert::addControls()
+PeakConvert::addControls()
 {
 	addctrl("mrs_natural/Decimation",MRS_DEFAULT_SLICE_NSAMPLES/4);
 	setctrlState("mrs_natural/Decimation", true);
@@ -113,7 +113,7 @@ PeConvert::addControls()
 }
 
 void
-PeConvert::myUpdate(MarControlPtr sender)
+PeakConvert::myUpdate(MarControlPtr sender)
 {
 	//if picking is disabled (==false), the nr of sinusoids should be set
 	//to the size of half of the FFTs (i.e. the 1/4 of inObservations) [!]
@@ -167,13 +167,13 @@ PeConvert::myUpdate(MarControlPtr sender)
 		upFrequency_ = size_;
 	}
 
-	//HACK [!] - see PeSynOsc::myUpdate() //[TODO]
+	//HACK [!] - see PeakSynthOsc::myUpdate() //[TODO]
 	setctrl("mrs_real/osrate", timeSrate);
 
 }
 
 mrs_real
-PeConvert::lobe_value_compute(mrs_real f, mrs_natural type, mrs_natural size)
+PeakConvert::lobe_value_compute(mrs_real f, mrs_natural type, mrs_natural size)
 {
 	mrs_real re ;
 
@@ -198,7 +198,7 @@ PeConvert::lobe_value_compute(mrs_real f, mrs_natural type, mrs_natural size)
 
 /*
 void
-PeConvert::getBinInterval(realvec& interval, realvec& index, realvec& mag) //[WTF] is this being used for anything?!?
+PeakConvert::getBinInterval(realvec& interval, realvec& index, realvec& mag) //[WTF] is this being used for anything?!?
 {
 	mrs_natural k=0, start=0, nbP=index.getSize();
 	mrs_natural minIndex = 0;
@@ -215,7 +215,7 @@ PeConvert::getBinInterval(realvec& interval, realvec& index, realvec& mag) //[WT
 }*/
 
 void
-PeConvert::getShortBinInterval(realvec& interval, realvec& index, realvec& mag)
+PeakConvert::getShortBinInterval(realvec& interval, realvec& index, realvec& mag)
 {
 	mrs_natural k=0, start=0, nbP=index.getSize();
 	mrs_natural minIndex = 0;
@@ -262,7 +262,7 @@ PeConvert::getShortBinInterval(realvec& interval, realvec& index, realvec& mag)
 
 
 void
-PeConvert::getLargeBinInterval(realvec& interval, realvec& index, realvec& mag)
+PeakConvert::getLargeBinInterval(realvec& interval, realvec& index, realvec& mag)
 {
 	mrs_natural k=0, start=0, nbP=index.getSize();
 
@@ -332,7 +332,7 @@ PeConvert::getLargeBinInterval(realvec& interval, realvec& index, realvec& mag)
 }
 
 void 
-PeConvert::myProcess(realvec& in, realvec& out)
+PeakConvert::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural N2 = inObservations_/4;
 

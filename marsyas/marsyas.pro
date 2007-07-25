@@ -158,13 +158,13 @@ HEADERS += \
 	OverlapAdd.h \
 	PCA.h \
 	Parallel.h \
-	PeConvert.h \
-	PeResidual.h \
+	PeakConvert.h \
+	PeakResidual.h \
 	PeUtilities.h \
 	Peak2Rms.h \
 	PeakPeriods2BPM.h \
 	Peaker.h \
-	Peaker1.h \
+	PeakerAdaptive.h \
 	PlotSink.h \
 	Plucked.h \
 	Power.h \
@@ -244,9 +244,9 @@ HEADERS += \
 	mididevices.h \
 	realvec.h \
 	vmblock.h \
-	PeSynOsc.h \
+	PeakSynthOsc.h \
 	Cartesian2Polar.h \
-	PeSynFFT.h \
+	PeakSynthFFT.h \
 	Polar2Cartesian.h \
 	FlowCutSource.h \
 	AbsSoundFileSource2.h \
@@ -256,7 +256,7 @@ HEADERS += \
 	WavFileSource2.h \
 	BICchangeDetector.h \
 	QGMMModel.h \
-	PeSynOscBank.h \
+	PeakSynthOscBank.h \
 	SpectralSNR.h \
 	Vibrato.h \
 	Panorama.h \
@@ -265,7 +265,7 @@ HEADERS += \
 	FlowThru.h \
 	FanOutIn.h \
 	MarSystemTemplateMedium.h \
-	PeFeatSelect.h \
+	PeakFeatureSelect.h \
 	SimilarityMatrix.h \
 	Metric.h \
 	HWPS.h \
@@ -273,8 +273,8 @@ HEADERS += \
 	NormMatrix.h \
 	WHaSp.h \
 	FanOutIn.h \
-	PeLabeler.h \
-	PeClusterSelect.h \
+	PeakLabeler.h \
+	PeakClusterSelect.h \
 	peakView.h \
 	PeakViewSink.h \
 	PeakViewSource.h \
@@ -384,13 +384,13 @@ SOURCES += \
 	OverlapAdd.cpp \
 	PCA.cpp \
 	Parallel.cpp \
-	PeConvert.cpp \
-	PeResidual.cpp \
+	PeakConvert.cpp \
+	PeakResidual.cpp \
 	PeUtilities.cpp \
 	Peak2Rms.cpp \
 	PeakPeriods2BPM.cpp \
 	Peaker.cpp \
-	Peaker1.cpp \
+	PeakerAdaptive.cpp \
 	PlotSink.cpp \
 	Plucked.cpp \
 	Power.cpp \
@@ -465,9 +465,9 @@ SOURCES += \
 	lu.cpp \
 	realvec.cpp \
 	vmblock.cpp \
-	PeSynOsc.cpp \
+	PeakSynthOsc.cpp \
 	Cartesian2Polar.cpp \
-	PeSynFFT.cpp \
+	PeakSynthFFT.cpp \
 	Polar2Cartesian.cpp \
 	FlowCutSource.cpp \
 	AbsSoundFileSource2.cpp \
@@ -477,7 +477,7 @@ SOURCES += \
 	WavFileSource2.cpp \
 	BICchangeDetector.cpp \
 	QGMMModel.cpp \
-	PeSynOscBank.cpp \
+	PeakSynthOscBank.cpp \
 	SpectralSNR.cpp \
 	Vibrato.cpp \
 	Panorama.cpp \
@@ -486,7 +486,7 @@ SOURCES += \
 	FlowThru.cpp \
 	FanOutIn.cpp \
 	MarSystemTemplateMedium.cpp \
-	PeFeatSelect.cpp \
+	PeakFeatureSelect.cpp \
 	SimilarityMatrix.cpp \
 	Metric.cpp \
 	HWPS.cpp \
@@ -494,8 +494,8 @@ SOURCES += \
 	NormMatrix.cpp \
 	WHaSp.cpp \
 	FanOutIn.cpp \
-	PeLabeler.cpp \
-	PeClusterSelect.cpp \
+	PeakLabeler.cpp \
+	PeakClusterSelect.cpp \
 	peakView.cpp \
 	PeakViewSink.cpp \
 	PeakViewSource.cpp \

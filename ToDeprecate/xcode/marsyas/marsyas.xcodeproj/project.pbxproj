@@ -141,18 +141,18 @@
 		56FB6F540B0548000098B8DC /* PlotSink.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56FB663C0B052B5B0098B8DC /* PlotSink.cpp */; };
 		56FB6F550B0548000098B8DC /* PeUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 56FB663E0B052B5B0098B8DC /* PeUtilities.h */; };
 		56FB6F560B0548000098B8DC /* PeUtilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56FB663F0B052B5B0098B8DC /* PeUtilities.cpp */; };
-		56FB6F570B0548000098B8DC /* PeResidual.h in Headers */ = {isa = PBXBuildFile; fileRef = 56FB66410B052B5B0098B8DC /* PeResidual.h */; };
-		56FB6F580B0548000098B8DC /* PeResidual.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56FB66420B052B5B0098B8DC /* PeResidual.cpp */; };
+		56FB6F570B0548000098B8DC /* PeakResidual.h in Headers */ = {isa = PBXBuildFile; fileRef = 56FB66410B052B5B0098B8DC /* PeakResidual.h */; };
+		56FB6F580B0548000098B8DC /* PeakResidual.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56FB66420B052B5B0098B8DC /* PeakResidual.cpp */; };
 		56FB6F590B0548000098B8DC /* PeOverlapadd.h in Headers */ = {isa = PBXBuildFile; fileRef = 56FB66440B052B5B0098B8DC /* PeOverlapadd.h */; };
 		56FB6F5A0B0548000098B8DC /* PeOverlapadd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56FB66450B052B5B0098B8DC /* PeOverlapadd.cpp */; };
-		56FB6F5B0B0548000098B8DC /* PeConvert.h in Headers */ = {isa = PBXBuildFile; fileRef = 56FB66470B052B5B0098B8DC /* PeConvert.h */; };
-		56FB6F5C0B0548000098B8DC /* PeConvert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56FB66480B052B5B0098B8DC /* PeConvert.cpp */; };
+		56FB6F5B0B0548000098B8DC /* PeakConvert.h in Headers */ = {isa = PBXBuildFile; fileRef = 56FB66470B052B5B0098B8DC /* PeakConvert.h */; };
+		56FB6F5C0B0548000098B8DC /* PeakConvert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56FB66480B052B5B0098B8DC /* PeakConvert.cpp */; };
 		56FB6F5D0B0548000098B8DC /* PeClust.h in Headers */ = {isa = PBXBuildFile; fileRef = 56FB664A0B052B5B0098B8DC /* PeClust.h */; };
 		56FB6F5E0B0548000098B8DC /* PeClust.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56FB664B0B052B5B0098B8DC /* PeClust.cpp */; };
 		56FB6F5F0B0548000098B8DC /* PeakPeriods2BPM.h in Headers */ = {isa = PBXBuildFile; fileRef = 56FB664D0B052B5B0098B8DC /* PeakPeriods2BPM.h */; };
 		56FB6F600B0548000098B8DC /* PeakPeriods2BPM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56FB664E0B052B5B0098B8DC /* PeakPeriods2BPM.cpp */; };
-		56FB6F610B0548000098B8DC /* Peaker1.h in Headers */ = {isa = PBXBuildFile; fileRef = 56FB66500B052B5B0098B8DC /* Peaker1.h */; };
-		56FB6F620B0548000098B8DC /* Peaker1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56FB66510B052B5B0098B8DC /* Peaker1.cpp */; };
+		56FB6F610B0548000098B8DC /* PeakerAdaptive.h in Headers */ = {isa = PBXBuildFile; fileRef = 56FB66500B052B5B0098B8DC /* PeakerAdaptive.h */; };
+		56FB6F620B0548000098B8DC /* PeakerAdaptive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56FB66510B052B5B0098B8DC /* PeakerAdaptive.cpp */; };
 		56FB6F630B0548000098B8DC /* Peaker.h in Headers */ = {isa = PBXBuildFile; fileRef = 56FB66530B052B5B0098B8DC /* Peaker.h */; };
 		56FB6F640B0548000098B8DC /* Peaker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56FB66540B052B5B0098B8DC /* Peaker.cpp */; };
 		56FB6F650B0548000098B8DC /* PCA.h in Headers */ = {isa = PBXBuildFile; fileRef = 56FB66550B052B5B0098B8DC /* PCA.h */; };
@@ -512,18 +512,18 @@
 		56FB663C0B052B5B0098B8DC /* PlotSink.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PlotSink.cpp; path = ../../marsyas/PlotSink.cpp; sourceTree = SOURCE_ROOT; };
 		56FB663E0B052B5B0098B8DC /* PeUtilities.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PeUtilities.h; path = ../../marsyas/PeUtilities.h; sourceTree = SOURCE_ROOT; };
 		56FB663F0B052B5B0098B8DC /* PeUtilities.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PeUtilities.cpp; path = ../../marsyas/PeUtilities.cpp; sourceTree = SOURCE_ROOT; };
-		56FB66410B052B5B0098B8DC /* PeResidual.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PeResidual.h; path = ../../marsyas/PeResidual.h; sourceTree = SOURCE_ROOT; };
-		56FB66420B052B5B0098B8DC /* PeResidual.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PeResidual.cpp; path = ../../marsyas/PeResidual.cpp; sourceTree = SOURCE_ROOT; };
+		56FB66410B052B5B0098B8DC /* PeakResidual.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PeakResidual.h; path = ../../marsyas/PeakResidual.h; sourceTree = SOURCE_ROOT; };
+		56FB66420B052B5B0098B8DC /* PeakResidual.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PeakResidual.cpp; path = ../../marsyas/PeakResidual.cpp; sourceTree = SOURCE_ROOT; };
 		56FB66440B052B5B0098B8DC /* PeOverlapadd.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PeOverlapadd.h; path = ../../marsyas/PeOverlapadd.h; sourceTree = SOURCE_ROOT; };
 		56FB66450B052B5B0098B8DC /* PeOverlapadd.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PeOverlapadd.cpp; path = ../../marsyas/PeOverlapadd.cpp; sourceTree = SOURCE_ROOT; };
-		56FB66470B052B5B0098B8DC /* PeConvert.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PeConvert.h; path = ../../marsyas/PeConvert.h; sourceTree = SOURCE_ROOT; };
-		56FB66480B052B5B0098B8DC /* PeConvert.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PeConvert.cpp; path = ../../marsyas/PeConvert.cpp; sourceTree = SOURCE_ROOT; };
+		56FB66470B052B5B0098B8DC /* PeakConvert.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PeakConvert.h; path = ../../marsyas/PeakConvert.h; sourceTree = SOURCE_ROOT; };
+		56FB66480B052B5B0098B8DC /* PeakConvert.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PeakConvert.cpp; path = ../../marsyas/PeakConvert.cpp; sourceTree = SOURCE_ROOT; };
 		56FB664A0B052B5B0098B8DC /* PeClust.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PeClust.h; path = ../../marsyas/PeClust.h; sourceTree = SOURCE_ROOT; };
 		56FB664B0B052B5B0098B8DC /* PeClust.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PeClust.cpp; path = ../../marsyas/PeClust.cpp; sourceTree = SOURCE_ROOT; };
 		56FB664D0B052B5B0098B8DC /* PeakPeriods2BPM.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PeakPeriods2BPM.h; path = ../../marsyas/PeakPeriods2BPM.h; sourceTree = SOURCE_ROOT; };
 		56FB664E0B052B5B0098B8DC /* PeakPeriods2BPM.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PeakPeriods2BPM.cpp; path = ../../marsyas/PeakPeriods2BPM.cpp; sourceTree = SOURCE_ROOT; };
-		56FB66500B052B5B0098B8DC /* Peaker1.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Peaker1.h; path = ../../marsyas/Peaker1.h; sourceTree = SOURCE_ROOT; };
-		56FB66510B052B5B0098B8DC /* Peaker1.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Peaker1.cpp; path = ../../marsyas/Peaker1.cpp; sourceTree = SOURCE_ROOT; };
+		56FB66500B052B5B0098B8DC /* PeakerAdaptive.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PeakerAdaptive.h; path = ../../marsyas/PeakerAdaptive.h; sourceTree = SOURCE_ROOT; };
+		56FB66510B052B5B0098B8DC /* PeakerAdaptive.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PeakerAdaptive.cpp; path = ../../marsyas/PeakerAdaptive.cpp; sourceTree = SOURCE_ROOT; };
 		56FB66530B052B5B0098B8DC /* Peaker.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Peaker.h; path = ../../marsyas/Peaker.h; sourceTree = SOURCE_ROOT; };
 		56FB66540B052B5B0098B8DC /* Peaker.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Peaker.cpp; path = ../../marsyas/Peaker.cpp; sourceTree = SOURCE_ROOT; };
 		56FB66550B052B5B0098B8DC /* PCA.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PCA.h; path = ../../marsyas/PCA.h; sourceTree = SOURCE_ROOT; };
@@ -891,18 +891,18 @@
 				56FB663C0B052B5B0098B8DC /* PlotSink.cpp */,
 				56FB663E0B052B5B0098B8DC /* PeUtilities.h */,
 				56FB663F0B052B5B0098B8DC /* PeUtilities.cpp */,
-				56FB66410B052B5B0098B8DC /* PeResidual.h */,
-				56FB66420B052B5B0098B8DC /* PeResidual.cpp */,
+				56FB66410B052B5B0098B8DC /* PeakResidual.h */,
+				56FB66420B052B5B0098B8DC /* PeakResidual.cpp */,
 				56FB66440B052B5B0098B8DC /* PeOverlapadd.h */,
 				56FB66450B052B5B0098B8DC /* PeOverlapadd.cpp */,
-				56FB66470B052B5B0098B8DC /* PeConvert.h */,
-				56FB66480B052B5B0098B8DC /* PeConvert.cpp */,
+				56FB66470B052B5B0098B8DC /* PeakConvert.h */,
+				56FB66480B052B5B0098B8DC /* PeakConvert.cpp */,
 				56FB664A0B052B5B0098B8DC /* PeClust.h */,
 				56FB664B0B052B5B0098B8DC /* PeClust.cpp */,
 				56FB664D0B052B5B0098B8DC /* PeakPeriods2BPM.h */,
 				56FB664E0B052B5B0098B8DC /* PeakPeriods2BPM.cpp */,
-				56FB66500B052B5B0098B8DC /* Peaker1.h */,
-				56FB66510B052B5B0098B8DC /* Peaker1.cpp */,
+				56FB66500B052B5B0098B8DC /* PeakerAdaptive.h */,
+				56FB66510B052B5B0098B8DC /* PeakerAdaptive.cpp */,
 				56FB66530B052B5B0098B8DC /* Peaker.h */,
 				56FB66540B052B5B0098B8DC /* Peaker.cpp */,
 				56FB66550B052B5B0098B8DC /* PCA.h */,
@@ -1196,12 +1196,12 @@
 				56FB6F510B0548000098B8DC /* Plucked.h in Headers */,
 				56FB6F530B0548000098B8DC /* PlotSink.h in Headers */,
 				56FB6F550B0548000098B8DC /* PeUtilities.h in Headers */,
-				56FB6F570B0548000098B8DC /* PeResidual.h in Headers */,
+				56FB6F570B0548000098B8DC /* PeakResidual.h in Headers */,
 				56FB6F590B0548000098B8DC /* PeOverlapadd.h in Headers */,
-				56FB6F5B0B0548000098B8DC /* PeConvert.h in Headers */,
+				56FB6F5B0B0548000098B8DC /* PeakConvert.h in Headers */,
 				56FB6F5D0B0548000098B8DC /* PeClust.h in Headers */,
 				56FB6F5F0B0548000098B8DC /* PeakPeriods2BPM.h in Headers */,
-				56FB6F610B0548000098B8DC /* Peaker1.h in Headers */,
+				56FB6F610B0548000098B8DC /* PeakerAdaptive.h in Headers */,
 				56FB6F630B0548000098B8DC /* Peaker.h in Headers */,
 				56FB6F650B0548000098B8DC /* PCA.h in Headers */,
 				56FB6F670B0548000098B8DC /* Parallel.h in Headers */,
@@ -1391,7 +1391,7 @@
 				56FB70160B0548000098B8DC /* basis.cpp in Sources */,
 				56FB6F3C0B0548000098B8DC /* Repeat.cpp in Sources */,
 				56FB6F9E0B0548000098B8DC /* MATLABengine.cpp in Sources */,
-				56FB6F580B0548000098B8DC /* PeResidual.cpp in Sources */,
+				56FB6F580B0548000098B8DC /* PeakResidual.cpp in Sources */,
 				56FB6F060B0548000098B8DC /* Stk.cpp in Sources */,
 				56FB6F230B0548000098B8DC /* Shifter.cpp in Sources */,
 				56FB6FF80B0548000098B8DC /* Conversions.cpp in Sources */,
@@ -1449,7 +1449,7 @@
 				56FB6FA40B0548000098B8DC /* MarSystemManager.cpp in Sources */,
 				56FB6FC00B0548000098B8DC /* Kurtosis.cpp in Sources */,
 				56FB6F0A0B0548000098B8DC /* Spectrum.cpp in Sources */,
-				56FB6F620B0548000098B8DC /* Peaker1.cpp in Sources */,
+				56FB6F620B0548000098B8DC /* PeakerAdaptive.cpp in Sources */,
 				56FB6F4E0B0548000098B8DC /* PvConvert.cpp in Sources */,
 				56FB6F190B0548000098B8DC /* SineSource.cpp in Sources */,
 				56FB6FB40B0548000098B8DC /* LSP.cpp in Sources */,
@@ -1510,7 +1510,7 @@
 				56FB6F0E0B0548000098B8DC /* SoundFileSink.cpp in Sources */,
 				56FB6F480B0548000098B8DC /* PvOscBank.cpp in Sources */,
 				56FB6FAE0B0548000098B8DC /* MarControlManager.cpp in Sources */,
-				56FB6F5C0B0548000098B8DC /* PeConvert.cpp in Sources */,
+				56FB6F5C0B0548000098B8DC /* PeakConvert.cpp in Sources */,
 				56FB6FD90B0548000098B8DC /* Filter.cpp in Sources */,
 				56FB70140B0548000098B8DC /* BeatHistoFeatures.cpp in Sources */,
 				56FB6F420B0548000098B8DC /* RawFileSource.cpp in Sources */,

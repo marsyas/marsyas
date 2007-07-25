@@ -856,7 +856,7 @@ tempo_bcWavelet(string sfName, string resName)
   
 
   // Peak pickers for high and low band
-  MarSystem* lowpkr = mng.create("Peaker1", "lowpkr");
+  MarSystem* lowpkr = mng.create("PeakerAdaptive", "lowpkr");
   lowpkr->updctrl("mrs_natural/inSamples", inSamples);
   lowpkr->updctrl("mrs_real/peakSpacing", 0.1);
   lowpkr->updctrl("mrs_real/peakStrength", 0.5);
@@ -865,7 +865,7 @@ tempo_bcWavelet(string sfName, string resName)
   lowpkr->updctrl("mrs_real/peakGain", 1.0);
 
 
-  MarSystem* hipkr = mng.create("Peaker1", "hipkr");
+  MarSystem* hipkr = mng.create("PeakerAdaptive", "hipkr");
   hipkr->updctrl("mrs_natural/inSamples", inSamples);
   hipkr->updctrl("mrs_real/peakSpacing", 0.05);
   hipkr->updctrl("mrs_real/peakStrength", 0.6);
@@ -1128,7 +1128,7 @@ tempo_bcFilter(string sfName, string resName)
   mrs_natural inSamples = total->getctrl("mrs_natural/inSamples")->toNatural();
   
   // Peak pickers for high and low band
-  MarSystem* lowpkr = mng.create("Peaker1", "lowpkr");
+  MarSystem* lowpkr = mng.create("PeakerAdaptive", "lowpkr");
   lowpkr->updctrl("mrs_natural/inSamples", inSamples);
   lowpkr->updctrl("mrs_real/peakSpacing", 0.3);
   lowpkr->updctrl("mrs_real/peakStrength", 0.7);
@@ -1138,7 +1138,7 @@ tempo_bcFilter(string sfName, string resName)
   lowpkr->updctrl("mrs_natural/peakStrengthReset", 4);
   lowpkr->updctrl("mrs_real/peakDecay", 0.9);  
 
-  MarSystem* hipkr = mng.create("Peaker1", "hipkr");
+  MarSystem* hipkr = mng.create("PeakerAdaptive", "hipkr");
   hipkr->updctrl("mrs_natural/inSamples", inSamples);
   hipkr->updctrl("mrs_real/peakSpacing", 0.3);
   hipkr->updctrl("mrs_real/peakStrength", 0.7);

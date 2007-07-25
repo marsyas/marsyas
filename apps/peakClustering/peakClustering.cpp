@@ -13,7 +13,7 @@
 #include "Messager.h"
 #include "Conversions.h"
 #include "CommandLineOptions.h"
-#include "PeFeatSelect.h"
+#include "PeakFeatureSelect.h"
 #include "SimilarityMatrix.h"
 
 //[TODO]
@@ -227,9 +227,9 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	analysisNet->addMarSystem(spectrumNet);
 
 	//***************************************************************
-	//add PeConvert to main SERIES for processing texture windows
+	//add PeakConvert to main SERIES for processing texture windows
 	//***************************************************************
-	mainNet->addMarSystem(mng.create("PeConvert", "conv"));
+	mainNet->addMarSystem(mng.create("PeakConvert", "conv"));
 	
 	
 	//***************************************************************
@@ -248,9 +248,9 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	//
 	MarSystem* freqSim = mng.create("Series","freqSim");
 	//--------
-	freqSim->addMarSystem(mng.create("PeFeatSelect","FREQfeatSelect"));
-	freqSim->updctrl("PeFeatSelect/FREQfeatSelect/mrs_natural/selectedFeatures",
-		PeFeatSelect::pkFrequency | PeFeatSelect::barkPkFreq);
+	freqSim->addMarSystem(mng.create("PeakFeatureSelect","FREQfeatSelect"));
+	freqSim->updctrl("PeakFeatureSelect/FREQfeatSelect/mrs_natural/selectedFeatures",
+		PeakFeatureSelect::pkFrequency | PeakFeatureSelect::barkPkFreq);
 	//--------
 	MarSystem* fsimMat = mng.create("SimilarityMatrix","FREQsimMat");
 	fsimMat->addMarSystem(mng.create("Metric","FreqL2Norm"));
@@ -270,9 +270,9 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	//
 	MarSystem* ampSim = mng.create("Series","ampSim");
 	//--------
-	ampSim->addMarSystem(mng.create("PeFeatSelect","AMPfeatSelect"));
-	ampSim->updctrl("PeFeatSelect/AMPfeatSelect/mrs_natural/selectedFeatures",
-		PeFeatSelect::pkAmplitude | PeFeatSelect::dBPkAmp);
+	ampSim->addMarSystem(mng.create("PeakFeatureSelect","AMPfeatSelect"));
+	ampSim->updctrl("PeakFeatureSelect/AMPfeatSelect/mrs_natural/selectedFeatures",
+		PeakFeatureSelect::pkAmplitude | PeakFeatureSelect::dBPkAmp);
 	//--------
 	MarSystem* asimMat = mng.create("SimilarityMatrix","AMPsimMat");
 	asimMat->addMarSystem(mng.create("Metric","AmpL2Norm"));
@@ -292,9 +292,9 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	//
 	MarSystem* HWPSim = mng.create("Series","HWPSim");
 	//--------
-	HWPSim->addMarSystem(mng.create("PeFeatSelect","HWPSfeatSelect"));
-	HWPSim->updctrl("PeFeatSelect/HWPSfeatSelect/mrs_natural/selectedFeatures",
-		PeFeatSelect::pkFrequency | PeFeatSelect::pkSetFrequencies | PeFeatSelect::pkSetAmplitudes);
+	HWPSim->addMarSystem(mng.create("PeakFeatureSelect","HWPSfeatSelect"));
+	HWPSim->updctrl("PeakFeatureSelect/HWPSfeatSelect/mrs_natural/selectedFeatures",
+		PeakFeatureSelect::pkFrequency | PeakFeatureSelect::pkSetFrequencies | PeakFeatureSelect::pkSetAmplitudes);
 	//--------
 	MarSystem* HWPSsimMat = mng.create("SimilarityMatrix","HWPSsimMat");
 	HWPSsimMat->addMarSystem(mng.create("HWPS","hwps"));
@@ -307,40 +307,40 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	//--------
 	simNet->addMarSystem(HWPSim);
 	//
-	// LINK controls of PeFeatSelects in each similarity branch
+	// LINK controls of PeakFeatureSelects in each similarity branch
 	//
-	simNet->linkctrl("Series/ampSim/PeFeatSelect/AMPfeatSelect/mrs_natural/totalNumPeaks",
-		"Series/freqSim/PeFeatSelect/FREQfeatSelect/mrs_natural/totalNumPeaks");
-	simNet->linkctrl("Series/HWPSim/PeFeatSelect/HWPSfeatSelect/mrs_natural/totalNumPeaks",
-		"Series/freqSim/PeFeatSelect/FREQfeatSelect/mrs_natural/totalNumPeaks");
+	simNet->linkctrl("Series/ampSim/PeakFeatureSelect/AMPfeatSelect/mrs_natural/totalNumPeaks",
+		"Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/totalNumPeaks");
+	simNet->linkctrl("Series/HWPSim/PeakFeatureSelect/HWPSfeatSelect/mrs_natural/totalNumPeaks",
+		"Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/totalNumPeaks");
 	//------
-	simNet->linkctrl("Series/ampSim/PeFeatSelect/AMPfeatSelect/mrs_natural/frameMaxNumPeaks",
-		"Series/freqSim/PeFeatSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks");
-	simNet->linkctrl("Series/HWPSim/PeFeatSelect/HWPSfeatSelect/mrs_natural/frameMaxNumPeaks",
-		"Series/freqSim/PeFeatSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks");
+	simNet->linkctrl("Series/ampSim/PeakFeatureSelect/AMPfeatSelect/mrs_natural/frameMaxNumPeaks",
+		"Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks");
+	simNet->linkctrl("Series/HWPSim/PeakFeatureSelect/HWPSfeatSelect/mrs_natural/frameMaxNumPeaks",
+		"Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks");
 	//---- create an "alias" link for the above two controls in the simNet
 	simNet->linkctrl("mrs_natural/totalNumPeaks",
-		"Series/freqSim/PeFeatSelect/FREQfeatSelect/mrs_natural/totalNumPeaks");
+		"Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/totalNumPeaks");
 	simNet->linkctrl("mrs_natural/frameMaxNumPeaks",
-		"Series/freqSim/PeFeatSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks");
+		"Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks");
 	simNet->linkctrl("mrs_natural/totalNumPeaks",
-		"Series/ampSim/PeFeatSelect/AMPfeatSelect/mrs_natural/totalNumPeaks");
+		"Series/ampSim/PeakFeatureSelect/AMPfeatSelect/mrs_natural/totalNumPeaks");
 	simNet->linkctrl("mrs_natural/frameMaxNumPeaks",
-		"Series/ampSim/PeFeatSelect/AMPfeatSelect/mrs_natural/frameMaxNumPeaks");
+		"Series/ampSim/PeakFeatureSelect/AMPfeatSelect/mrs_natural/frameMaxNumPeaks");
 	simNet->linkctrl("mrs_natural/totalNumPeaks",
-		"Series/HWPSim/PeFeatSelect/HWPSfeatSelect/mrs_natural/totalNumPeaks");
+		"Series/HWPSim/PeakFeatureSelect/HWPSfeatSelect/mrs_natural/totalNumPeaks");
 	simNet->linkctrl("mrs_natural/frameMaxNumPeaks",
-		"Series/HWPSim/PeFeatSelect/HWPSfeatSelect/mrs_natural/frameMaxNumPeaks");
+		"Series/HWPSim/PeakFeatureSelect/HWPSfeatSelect/mrs_natural/frameMaxNumPeaks");
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//add simNet to clustNet
 	clustNet->addMarSystem(simNet);
 	//
-	// LINK controls related to variable number of peak from PeConvert to simNet
+	// LINK controls related to variable number of peak from PeakConvert to simNet
 	//
 	mainNet->linkctrl("FlowThru/clustNet/FanOutIn/simNet/mrs_natural/totalNumPeaks",
-		"PeConvert/conv/mrs_natural/totalNumPeaks");
+		"PeakConvert/conv/mrs_natural/totalNumPeaks");
 	mainNet->linkctrl("FlowThru/clustNet/FanOutIn/simNet/mrs_natural/frameMaxNumPeaks",
-		"PeConvert/conv/mrs_natural/frameMaxNumPeaks");
+		"PeakConvert/conv/mrs_natural/frameMaxNumPeaks");
 
 	//***************************************************************
 	// create NCutNet MarSystem and add it to clustNet
@@ -354,18 +354,18 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	stack->addMarSystem(mng.create("NormCut","NCut"));
 	stack->addMarSystem(mng.create("Gain", "ID"));
 	// add the cluster selection module
-	NCutNet->addMarSystem(mng.create("PeClusterSelect","clusterSelect"));
+	NCutNet->addMarSystem(mng.create("PeakClusterSelect","clusterSelect"));
 	
 	//***************************************************************
-	// create PeLabeler MarSystem and add it to mainNet
+	// create PeakLabeler MarSystem and add it to mainNet
 	//***************************************************************
-	MarSystem* labeler = mng.create("PeLabeler","labeler");
+	MarSystem* labeler = mng.create("PeakLabeler","labeler");
 	mainNet->addMarSystem(labeler);
 	//---- link labeler label control to the NCut output control
-	mainNet->linkctrl("PeLabeler/labeler/mrs_realvec/peakLabels", "FlowThru/clustNet/mrs_realvec/innerOut");
+	mainNet->linkctrl("PeakLabeler/labeler/mrs_realvec/peakLabels", "FlowThru/clustNet/mrs_realvec/innerOut");
 
 	//***************************************************************
-	// create PeLabeler MarSystem and add it to mainNet
+	// create PeakLabeler MarSystem and add it to mainNet
 	//***************************************************************
 	if(peakStore_)
 	{
@@ -419,19 +419,19 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/spectrumNet/Windowing/wi/mrs_bool/zeroPhasing", true);
 	mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/spectrumNet/Shifter/sh/mrs_natural/shift", 1);
 	
-	mainNet->updctrl("PeConvert/conv/mrs_natural/Decimation", D);
+	mainNet->updctrl("PeakConvert/conv/mrs_natural/Decimation", D);
 	if(unprecise_)
-		mainNet->updctrl("PeConvert/conv/mrs_bool/improvedPrecision", false);      
+		mainNet->updctrl("PeakConvert/conv/mrs_bool/improvedPrecision", false);      
 	else
-		mainNet->updctrl("PeConvert/conv/mrs_bool/improvedPrecision", true);  
+		mainNet->updctrl("PeakConvert/conv/mrs_bool/improvedPrecision", true);  
 	if(noPeakPicking_)
-		mainNet->updctrl("PeConvert/conv/mrs_bool/picking", false);      
-	mainNet->updctrl("PeConvert/conv/mrs_natural/frameMaxNumPeaks", S); 
-	mainNet->updctrl("PeConvert/conv/mrs_string/frequencyInterval", intervalFrequency);  
-	// mainNet->updctrl("PeConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
+		mainNet->updctrl("PeakConvert/conv/mrs_bool/picking", false);      
+	mainNet->updctrl("PeakConvert/conv/mrs_natural/frameMaxNumPeaks", S); 
+	mainNet->updctrl("PeakConvert/conv/mrs_string/frequencyInterval", intervalFrequency);  
+	// mainNet->updctrl("PeakConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
 	
 	mainNet->updctrl("FlowThru/clustNet/Series/NCutNet/Fanout/stack/NormCut/NCut/mrs_natural/numClusters", C); 
-	mainNet->updctrl("FlowThru/clustNet/Series/NCutNet/PeClusterSelect/clusterSelect/mrs_natural/numClustersToKeep", nbSelectedClusters_);
+	mainNet->updctrl("FlowThru/clustNet/Series/NCutNet/PeakClusterSelect/clusterSelect/mrs_natural/numClustersToKeep", nbSelectedClusters_);
 // 	//[TODO]
 // 	mainNet->setctrl("PeClust/peClust/mrs_natural/selectedClusters", nbSelectedClusters_); 
 // 	mainNet->setctrl("PeClust/peClust/mrs_natural/hopSize", D); 
@@ -478,7 +478,7 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		
 		if(synthetize > -1 && residual_)
 		{
-			mrs_real snr = mainNet->getctrl("PeSynthetize/synthNet/Series/postNet/PeResidual/res/mrs_real/SNR")->toReal();
+			mrs_real snr = mainNet->getctrl("PeSynthetize/synthNet/Series/postNet/PeakResidual/res/mrs_real/SNR")->toReal();
 			globalSnr += snr;
 			frameCount++;
 			// cout << "Frame " << frameCount << " SNR : "<< snr << endl;

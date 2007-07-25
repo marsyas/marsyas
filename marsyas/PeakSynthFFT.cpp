@@ -17,42 +17,42 @@
 */
 
 /** 
-    \class PeSynFFT
+    \class PeakSynthFFT
 	\ingroup none
     \brief  perform amplitude modification of Power Spectrum using Peaks Info
 
 */
 
-#include "PeSynFFT.h"
+#include "PeakSynthFFT.h"
 #include "peakView.h"
 
 using namespace std;
 using namespace Marsyas;
 
-PeSynFFT::PeSynFFT(string name):MarSystem("PeSynFFT", name)
+PeakSynthFFT::PeakSynthFFT(string name):MarSystem("PeakSynthFFT", name)
 {
  
   addControls();
 }
 
-PeSynFFT::PeSynFFT(const PeSynFFT& a) : MarSystem(a)
+PeakSynthFFT::PeakSynthFFT(const PeakSynthFFT& a) : MarSystem(a)
 {
 	ctrl_Peaks_ = getctrl("mrs_realvec/peaks");
 	ctrl_NbChannels_ = getctrl("mrs_natural/nbChannels");
 }
 
-PeSynFFT::~PeSynFFT()
+PeakSynthFFT::~PeakSynthFFT()
 {
 }
 
 MarSystem* 
-PeSynFFT::clone() const 
+PeakSynthFFT::clone() const 
 {
-  return new PeSynFFT(*this);
+  return new PeakSynthFFT(*this);
 }
 
 void 
-PeSynFFT::addControls()
+PeakSynthFFT::addControls()
 {
 	addctrl("mrs_realvec/peaks", realvec(), ctrl_Peaks_);
 	addctrl("mrs_natural/nbChannels", 1, ctrl_NbChannels_);
@@ -62,7 +62,7 @@ PeSynFFT::addControls()
 }
 
 void
-PeSynFFT::myUpdate(MarControlPtr sender)
+PeakSynthFFT::myUpdate(MarControlPtr sender)
 {
 	MarSystem::myUpdate(sender);
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples")->toNatural()*getctrl("mrs_natural/nbChannels")->toNatural());
@@ -84,7 +84,7 @@ PeSynFFT::myUpdate(MarControlPtr sender)
 }
 
 void
-PeSynFFT::generateMask(mrs_natural type)
+PeakSynthFFT::generateMask(mrs_natural type)
 {
 	mrs_natural i, j;
 	realvec peaks = ctrl_Peaks_->toVec();
@@ -141,7 +141,7 @@ PeSynFFT::generateMask(mrs_natural type)
 }
 
 void
-PeSynFFT::lpfMask()
+PeakSynthFFT::lpfMask()
 {
 	mrs_natural i;
 	mrs_real gain = 0.8, deltaGain=.3;
@@ -155,7 +155,7 @@ PeSynFFT::lpfMask()
 }
 
 void 
-PeSynFFT::myProcess(realvec& in, realvec& out)
+PeakSynthFFT::myProcess(realvec& in, realvec& out)
 {	
 	mrs_natural nbChannels = ctrl_NbChannels_->toNatural();
 
@@ -166,12 +166,12 @@ PeSynFFT::myProcess(realvec& in, realvec& out)
 		lpfMask();
 		for (o=0; o < onObservations_/2; o++)
 		{
-			//apply PeSynFFT to all channels
+			//apply PeakSynthFFT to all channels
 			out(o,t) = mask_(o) * in(o, 0);		
 		}
 		for (o=onObservations_/2; o < onObservations_; o++)
 		{
-			//apply PeSynFFT to all channels
+			//apply PeakSynthFFT to all channels
 			out(o,t) = in(o, 0);		
 		}
 	}

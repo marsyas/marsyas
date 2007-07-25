@@ -89,7 +89,7 @@ pkginclude_HEADERS = \
 	PlotSink.h \
 	AutoCorrelation.h \
 	Peaker.h \
-	Peaker1.h \
+	PeakerAdaptive.h \
 	HalfWaveRectifier.h \
 	TimeStretch.h \
 	Conversions.h \
@@ -101,12 +101,12 @@ pkginclude_HEADERS = \
 	Shifter.h \
 	PvFold.h \
 	PvConvert.h \
-	PeConvert.h \
-	PeSynOsc.h \
-	PeSynOscBank.h \
-	PeSynFFT.h \
+	PeakConvert.h \
+	PeakSynthOsc.h \
+	PeakSynthOscBank.h \
+	PeakSynthFFT.h \
 	OverlapAdd.h \
-	PeResidual.h \
+	PeakResidual.h \
 	PeUtilities.h \
 	Polar2Cartesian.h \
 	Cartesian2Polar.h \
@@ -245,7 +245,7 @@ pkginclude_HEADERS = \
 	FlowThru.h \
 	FanOutIn.h \
 	MarSystemTemplateMedium.h \
-	PeFeatSelect.h \
+	PeakFeatureSelect.h \
 	SimilarityMatrix.h \
 	Metric.h \
 	HWPS.h \
@@ -253,8 +253,8 @@ pkginclude_HEADERS = \
 	NormMatrix.h \
 	WHaSp.h \
 	FanOutIn.h \
-	PeLabeler.h \
-	PeClusterSelect.h \
+	PeakLabeler.h \
+	PeakClusterSelect.h \
 	peakView.h \
 	PeakViewSink.h \
 	PeakViewSource.h \

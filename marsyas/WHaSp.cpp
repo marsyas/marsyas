@@ -22,13 +22,13 @@
 	\brief Calculate Wrapped Harmonically Spectrum (WHaSp)
 	
 	- \b mrs_natural/histSize [w] : set the discretization size when comparing HWPS spectrums (i.e. the histogram nr of bins).
-	- \b mrs_natural/totalNumPeaks [w] : this control sets the total num of peaks at the input (should normally be linked with PeConvert similar control)
-	- \b mrs_natural/frameMaxNumPeaks [w] : this control sets the maximum num of peaks per frame at the input (should normally be linked with PeConvert similar control)
+	- \b mrs_natural/totalNumPeaks [w] : this control sets the total num of peaks at the input (should normally be linked with PeakConvert similar control)
+	- \b mrs_natural/frameMaxNumPeaks [w] : this control sets the maximum num of peaks per frame at the input (should normally be linked with PeakConvert similar control)
 */
 
 #include "WHaSp.h"
 #include "peakView.h"
-#include "PeFeatSelect.h"
+#include "PeakFeatureSelect.h"
 #include "SimilarityMatrix.h"
 #include "HWPS.h"
 
@@ -76,9 +76,9 @@ WHaSp::createSimMatrixNet()
 
 	//add a feat selector and 
 	//set the features needed for HWPS
-	MarSystem* peFeatSelect = new PeFeatSelect("peFeatSelect");
+	MarSystem* peFeatSelect = new PeakFeatureSelect("peFeatSelect");
 	peFeatSelect->updctrl("mrs_natural/selectedFeatures",
-		PeFeatSelect::pkFrequency | PeFeatSelect::pkSetFrequencies| PeFeatSelect::pkSetAmplitudes);
+		PeakFeatureSelect::pkFrequency | PeakFeatureSelect::pkSetFrequencies| PeakFeatureSelect::pkSetAmplitudes);
 	HWPSnet_->addMarSystem(peFeatSelect);
 
 	//create a similarityMatrix MarSystem that uses the HPWS metric
@@ -87,10 +87,10 @@ WHaSp::createSimMatrixNet()
 
 	HWPSnet_->addMarSystem(simMat);
 
-	//link totalNumPeaks control to PeFeatSelect
-	ctrl_totalNumPeaks_->linkTo(HWPSnet_->getctrl("PeFeatSelect/peFeatSelect/mrs_natural/totalNumPeaks"));
-	//link frameMaxNumPeaks control to PeFeatSelect
-	ctrl_frameMaxNumPeaks_->linkTo(HWPSnet_->getctrl("PeFeatSelect/peFeatSelect/mrs_natural/frameMaxNumPeaks"));
+	//link totalNumPeaks control to PeakFeatureSelect
+	ctrl_totalNumPeaks_->linkTo(HWPSnet_->getctrl("PeakFeatureSelect/peFeatSelect/mrs_natural/totalNumPeaks"));
+	//link frameMaxNumPeaks control to PeakFeatureSelect
+	ctrl_frameMaxNumPeaks_->linkTo(HWPSnet_->getctrl("PeakFeatureSelect/peFeatSelect/mrs_natural/frameMaxNumPeaks"));
 
 	//link histSize control to HWPS metric
 	ctrl_histSize_->linkTo(HWPSnet_->getctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize"));

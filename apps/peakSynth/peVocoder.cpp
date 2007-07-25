@@ -147,9 +147,9 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		pvseries->updctrl("PeAnalyse/peA/Windowing/wi/mrs_bool/zeroPhasing", true);
 		pvseries->updctrl("PeAnalyse/peA/Shifter/sh/mrs_natural/shift", 1);
 		pvseries->updctrl("PeAnalyse/peA/PvFold/fo/mrs_natural/Decimation", D); // useless ?
-		pvseries->updctrl("PeAnalyse/peA/PeConvert/conv/mrs_natural/Decimation", D);      
-		pvseries->updctrl("PeAnalyse/peA/PeConvert/conv/mrs_natural/frameMaxNumPeaks", S);  
-		pvseries->updctrl("PeAnalyse/peA/PeConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
+		pvseries->updctrl("PeAnalyse/peA/PeakConvert/conv/mrs_natural/Decimation", D);      
+		pvseries->updctrl("PeAnalyse/peA/PeakConvert/conv/mrs_natural/frameMaxNumPeaks", S);  
+		pvseries->updctrl("PeAnalyse/peA/PeakConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
 	}
 	else //read analysis data (i.e. peaks) from a .peak file
 	{
@@ -187,7 +187,7 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 
 	if(harmonize_)
 	{
-	ctrl_harmonize_= pvseries->getctrl("PeSynthetize/synthNet/Series/postNet/PeSynOscBank/pso/mrs_realvec/harmonize");
+	ctrl_harmonize_= pvseries->getctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOscBank/pso/mrs_realvec/harmonize");
 		 ctrl_harmonize_->stretch(harmonizeData_.getCols());
 	}
 

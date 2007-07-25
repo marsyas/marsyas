@@ -158,7 +158,7 @@ HWPSanalyse(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		pvseries->updctrl("WHaSpnet/whaspnet/PeAnalyse/analyse/Shifter/sh/mrs_natural/shift", 1);
 		pvseries->updctrl("WHaSpnet/whaspnet/PeAnalyse/analyse/mrs_natural/Decimation", D);      
 		pvseries->updctrl("mrs_natural/frameMaxNumPeaks", S);  
-		pvseries->updctrl("WHaSpnet/whaspnet/PeAnalyse/analyse/PeConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
+		pvseries->updctrl("WHaSpnet/whaspnet/PeAnalyse/analyse/PeakConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
 	}
 	else
 	{
@@ -224,7 +224,7 @@ HWPSanalyse(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 
 	if(harmonize_)
 	{
-		ctrl_harmonize_= pvseries->getctrl("PeSynthetize/synthNet/Series/postNet/PeSynOscBank/pso/mrs_realvec/harmonize");
+		ctrl_harmonize_= pvseries->getctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOscBank/pso/mrs_realvec/harmonize");
 		ctrl_harmonize_->stretch(harmonizeData_.getCols());
 	}
 

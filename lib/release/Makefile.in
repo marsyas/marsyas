@@ -82,15 +82,15 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	Spectrum.$(OBJEXT) InvSpectrum.$(OBJEXT) Collection.$(OBJEXT) \
 	fft.$(OBJEXT) Rms.$(OBJEXT) Peak2Rms.$(OBJEXT) \
 	PlotSink.$(OBJEXT) AutoCorrelation.$(OBJEXT) Peaker.$(OBJEXT) \
-	Peaker1.$(OBJEXT) HalfWaveRectifier.$(OBJEXT) \
+	PeakerAdaptive.$(OBJEXT) HalfWaveRectifier.$(OBJEXT) \
 	TimeStretch.$(OBJEXT) Conversions.$(OBJEXT) \
 	MaxArgMax.$(OBJEXT) MinArgMin.$(OBJEXT) Series.$(OBJEXT) \
 	ShiftInput.$(OBJEXT) ShiftOutput.$(OBJEXT) Shifter.$(OBJEXT) \
-	PvFold.$(OBJEXT) PvConvert.$(OBJEXT) PeConvert.$(OBJEXT) \
-	PeSynOsc.$(OBJEXT) PeSynOscBank.$(OBJEXT) \
+	PvFold.$(OBJEXT) PvConvert.$(OBJEXT) PeakConvert.$(OBJEXT) \
+	PeakSynthOsc.$(OBJEXT) PeakSynthOscBank.$(OBJEXT) \
 	Polar2Cartesian.$(OBJEXT) Cartesian2Polar.$(OBJEXT) \
-	FlowCutSource.$(OBJEXT) PeSynFFT.$(OBJEXT) \
-	OverlapAdd.$(OBJEXT) PeResidual.$(OBJEXT) \
+	FlowCutSource.$(OBJEXT) PeakSynthFFT.$(OBJEXT) \
+	OverlapAdd.$(OBJEXT) PeakResidual.$(OBJEXT) \
 	PeUtilities.$(OBJEXT) PvConvolve.$(OBJEXT) PvOscBank.$(OBJEXT) \
 	PvUnconvert.$(OBJEXT) PvOverlapadd.$(OBJEXT) \
 	Windowing.$(OBJEXT) Fanout.$(OBJEXT) Fanin.$(OBJEXT) \
@@ -136,13 +136,13 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	MidiInput.$(OBJEXT) Esitar.$(OBJEXT) MidiOutput.$(OBJEXT) \
 	NumericLib.$(OBJEXT) NormCut.$(OBJEXT) vmblock.$(OBJEXT) \
 	lu.$(OBJEXT) basis.$(OBJEXT) FlowThru.$(OBJEXT) \
-	PeFeatSelect.$(OBJEXT) SimilarityMatrix.$(OBJEXT) \
+	PeakFeatureSelect.$(OBJEXT) SimilarityMatrix.$(OBJEXT) \
 	Metric.$(OBJEXT) MATLABengine.$(OBJEXT) FanOutIn.$(OBJEXT) \
 	MarSystemTemplateMedium.$(OBJEXT) HWPS.$(OBJEXT) RBF.$(OBJEXT) \
 	NormMatrix.$(OBJEXT) WHaSp.$(OBJEXT) FanOutIn.$(OBJEXT) \
-	PeLabeler.$(OBJEXT) peakView.$(OBJEXT) \
+	PeakLabeler.$(OBJEXT) peakView.$(OBJEXT) \
 	PeakViewSource.$(OBJEXT) PeakViewSink.$(OBJEXT) \
-	PeClusterSelect.$(OBJEXT) Gain.$(OBJEXT)
+	PeakClusterSelect.$(OBJEXT) Gain.$(OBJEXT)
 libmarsyas_a_OBJECTS = $(am_libmarsyas_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
@@ -318,7 +318,7 @@ libmarsyas_a_SOURCES = \
 	$(top_srcdir)/marsyas/PlotSink.cpp \
 	$(top_srcdir)/marsyas/AutoCorrelation.cpp \
 	$(top_srcdir)/marsyas/Peaker.cpp \
-	$(top_srcdir)/marsyas/Peaker1.cpp \
+	$(top_srcdir)/marsyas/PeakerAdaptive.cpp \
 	$(top_srcdir)/marsyas/HalfWaveRectifier.cpp \
 	$(top_srcdir)/marsyas/TimeStretch.cpp \
 	$(top_srcdir)/marsyas/Conversions.cpp \
@@ -330,15 +330,15 @@ libmarsyas_a_SOURCES = \
 	$(top_srcdir)/marsyas/Shifter.cpp \
 	$(top_srcdir)/marsyas/PvFold.cpp \
 	$(top_srcdir)/marsyas/PvConvert.cpp \
-	$(top_srcdir)/marsyas/PeConvert.cpp \
-	$(top_srcdir)/marsyas/PeSynOsc.cpp  \
-	$(top_srcdir)/marsyas/PeSynOscBank.cpp \
+	$(top_srcdir)/marsyas/PeakConvert.cpp \
+	$(top_srcdir)/marsyas/PeakSynthOsc.cpp  \
+	$(top_srcdir)/marsyas/PeakSynthOscBank.cpp \
 	$(top_srcdir)/marsyas/Polar2Cartesian.cpp  \
 	$(top_srcdir)/marsyas/Cartesian2Polar.cpp  \
 	$(top_srcdir)/marsyas/FlowCutSource.cpp \
-	$(top_srcdir)/marsyas/PeSynFFT.cpp \
+	$(top_srcdir)/marsyas/PeakSynthFFT.cpp \
 	$(top_srcdir)/marsyas/OverlapAdd.cpp \
-	$(top_srcdir)/marsyas/PeResidual.cpp \
+	$(top_srcdir)/marsyas/PeakResidual.cpp \
 	$(top_srcdir)/marsyas/PeUtilities.cpp \
 	$(top_srcdir)/marsyas/PvConvolve.cpp \
 	$(top_srcdir)/marsyas/PvOscBank.cpp \
@@ -459,7 +459,7 @@ libmarsyas_a_SOURCES = \
 	$(top_srcdir)/marsyas/lu.cpp \
 	$(top_srcdir)/marsyas/basis.cpp \
 	$(top_srcdir)/marsyas/FlowThru.cpp \
-	$(top_srcdir)/marsyas/PeFeatSelect.cpp \
+	$(top_srcdir)/marsyas/PeakFeatureSelect.cpp \
 	$(top_srcdir)/marsyas/SimilarityMatrix.cpp \
 	$(top_srcdir)/marsyas/Metric.cpp \
 	$(top_srcdir)/marsyas/MATLAB/MATLABengine.cpp \
@@ -470,11 +470,11 @@ libmarsyas_a_SOURCES = \
 	$(top_srcdir)/marsyas/NormMatrix.cpp \
 	$(top_srcdir)/marsyas/WHaSp.cpp \
 	$(top_srcdir)/marsyas/FanOutIn.cpp \
-	$(top_srcdir)/marsyas/PeLabeler.cpp \
+	$(top_srcdir)/marsyas/PeakLabeler.cpp \
 	$(top_srcdir)/marsyas/peakView.cpp \
 	$(top_srcdir)/marsyas/PeakViewSource.cpp \
 	$(top_srcdir)/marsyas/PeakViewSink.cpp \
-	$(top_srcdir)/marsyas/PeClusterSelect.cpp \
+	$(top_srcdir)/marsyas/PeakClusterSelect.cpp \
 	$(top_srcdir)/marsyas/Gain.cpp
 
 all: all-am
@@ -662,21 +662,21 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OverlapAdd.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Panorama.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parallel.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeClusterSelect.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeConvert.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeFeatSelect.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeLabeler.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeResidual.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeSynFFT.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeSynOsc.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeSynOscBank.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeakClusterSelect.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeakConvert.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeakFeatureSelect.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeakLabeler.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeakResidual.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeakSynthFFT.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeakSynthOsc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeakSynthOscBank.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeUtilities.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peak2Rms.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeakPeriods2BPM.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeakViewSink.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeakViewSource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peaker.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peaker1.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeakerAdaptive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PlotSink.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Plucked.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Polar2Cartesian.Po@am__quote@
@@ -1532,19 +1532,19 @@ Peaker.obj: $(top_srcdir)/marsyas/Peaker.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Peaker.obj `if test -f '$(top_srcdir)/marsyas/Peaker.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/Peaker.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/Peaker.cpp'; fi`
 
-Peaker1.o: $(top_srcdir)/marsyas/Peaker1.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Peaker1.o -MD -MP -MF "$(DEPDIR)/Peaker1.Tpo" -c -o Peaker1.o `test -f '$(top_srcdir)/marsyas/Peaker1.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/Peaker1.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/Peaker1.Tpo" "$(DEPDIR)/Peaker1.Po"; else rm -f "$(DEPDIR)/Peaker1.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/Peaker1.cpp' object='Peaker1.o' libtool=no @AMDEPBACKSLASH@
+PeakerAdaptive.o: $(top_srcdir)/marsyas/PeakerAdaptive.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeakerAdaptive.o -MD -MP -MF "$(DEPDIR)/PeakerAdaptive.Tpo" -c -o PeakerAdaptive.o `test -f '$(top_srcdir)/marsyas/PeakerAdaptive.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeakerAdaptive.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeakerAdaptive.Tpo" "$(DEPDIR)/PeakerAdaptive.Po"; else rm -f "$(DEPDIR)/PeakerAdaptive.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeakerAdaptive.cpp' object='PeakerAdaptive.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Peaker1.o `test -f '$(top_srcdir)/marsyas/Peaker1.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/Peaker1.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeakerAdaptive.o `test -f '$(top_srcdir)/marsyas/PeakerAdaptive.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeakerAdaptive.cpp
 
-Peaker1.obj: $(top_srcdir)/marsyas/Peaker1.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Peaker1.obj -MD -MP -MF "$(DEPDIR)/Peaker1.Tpo" -c -o Peaker1.obj `if test -f '$(top_srcdir)/marsyas/Peaker1.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/Peaker1.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/Peaker1.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/Peaker1.Tpo" "$(DEPDIR)/Peaker1.Po"; else rm -f "$(DEPDIR)/Peaker1.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/Peaker1.cpp' object='Peaker1.obj' libtool=no @AMDEPBACKSLASH@
+PeakerAdaptive.obj: $(top_srcdir)/marsyas/PeakerAdaptive.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeakerAdaptive.obj -MD -MP -MF "$(DEPDIR)/PeakerAdaptive.Tpo" -c -o PeakerAdaptive.obj `if test -f '$(top_srcdir)/marsyas/PeakerAdaptive.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeakerAdaptive.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeakerAdaptive.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeakerAdaptive.Tpo" "$(DEPDIR)/PeakerAdaptive.Po"; else rm -f "$(DEPDIR)/PeakerAdaptive.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeakerAdaptive.cpp' object='PeakerAdaptive.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Peaker1.obj `if test -f '$(top_srcdir)/marsyas/Peaker1.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/Peaker1.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/Peaker1.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeakerAdaptive.obj `if test -f '$(top_srcdir)/marsyas/PeakerAdaptive.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeakerAdaptive.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeakerAdaptive.cpp'; fi`
 
 HalfWaveRectifier.o: $(top_srcdir)/marsyas/HalfWaveRectifier.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT HalfWaveRectifier.o -MD -MP -MF "$(DEPDIR)/HalfWaveRectifier.Tpo" -c -o HalfWaveRectifier.o `test -f '$(top_srcdir)/marsyas/HalfWaveRectifier.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/HalfWaveRectifier.cpp; \
@@ -1700,47 +1700,47 @@ PvConvert.obj: $(top_srcdir)/marsyas/PvConvert.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PvConvert.obj `if test -f '$(top_srcdir)/marsyas/PvConvert.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PvConvert.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PvConvert.cpp'; fi`
 
-PeConvert.o: $(top_srcdir)/marsyas/PeConvert.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeConvert.o -MD -MP -MF "$(DEPDIR)/PeConvert.Tpo" -c -o PeConvert.o `test -f '$(top_srcdir)/marsyas/PeConvert.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeConvert.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeConvert.Tpo" "$(DEPDIR)/PeConvert.Po"; else rm -f "$(DEPDIR)/PeConvert.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeConvert.cpp' object='PeConvert.o' libtool=no @AMDEPBACKSLASH@
+PeakConvert.o: $(top_srcdir)/marsyas/PeakConvert.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeakConvert.o -MD -MP -MF "$(DEPDIR)/PeakConvert.Tpo" -c -o PeakConvert.o `test -f '$(top_srcdir)/marsyas/PeakConvert.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeakConvert.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeakConvert.Tpo" "$(DEPDIR)/PeakConvert.Po"; else rm -f "$(DEPDIR)/PeakConvert.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeakConvert.cpp' object='PeakConvert.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeConvert.o `test -f '$(top_srcdir)/marsyas/PeConvert.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeConvert.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeakConvert.o `test -f '$(top_srcdir)/marsyas/PeakConvert.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeakConvert.cpp
 
-PeConvert.obj: $(top_srcdir)/marsyas/PeConvert.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeConvert.obj -MD -MP -MF "$(DEPDIR)/PeConvert.Tpo" -c -o PeConvert.obj `if test -f '$(top_srcdir)/marsyas/PeConvert.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeConvert.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeConvert.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeConvert.Tpo" "$(DEPDIR)/PeConvert.Po"; else rm -f "$(DEPDIR)/PeConvert.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeConvert.cpp' object='PeConvert.obj' libtool=no @AMDEPBACKSLASH@
+PeakConvert.obj: $(top_srcdir)/marsyas/PeakConvert.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeakConvert.obj -MD -MP -MF "$(DEPDIR)/PeakConvert.Tpo" -c -o PeakConvert.obj `if test -f '$(top_srcdir)/marsyas/PeakConvert.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeakConvert.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeakConvert.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeakConvert.Tpo" "$(DEPDIR)/PeakConvert.Po"; else rm -f "$(DEPDIR)/PeakConvert.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeakConvert.cpp' object='PeakConvert.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeConvert.obj `if test -f '$(top_srcdir)/marsyas/PeConvert.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeConvert.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeConvert.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeakConvert.obj `if test -f '$(top_srcdir)/marsyas/PeakConvert.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeakConvert.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeakConvert.cpp'; fi`
 
-PeSynOsc.o: $(top_srcdir)/marsyas/PeSynOsc.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeSynOsc.o -MD -MP -MF "$(DEPDIR)/PeSynOsc.Tpo" -c -o PeSynOsc.o `test -f '$(top_srcdir)/marsyas/PeSynOsc.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeSynOsc.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeSynOsc.Tpo" "$(DEPDIR)/PeSynOsc.Po"; else rm -f "$(DEPDIR)/PeSynOsc.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeSynOsc.cpp' object='PeSynOsc.o' libtool=no @AMDEPBACKSLASH@
+PeakSynthOsc.o: $(top_srcdir)/marsyas/PeakSynthOsc.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeakSynthOsc.o -MD -MP -MF "$(DEPDIR)/PeakSynthOsc.Tpo" -c -o PeakSynthOsc.o `test -f '$(top_srcdir)/marsyas/PeakSynthOsc.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeakSynthOsc.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeakSynthOsc.Tpo" "$(DEPDIR)/PeakSynthOsc.Po"; else rm -f "$(DEPDIR)/PeakSynthOsc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeakSynthOsc.cpp' object='PeakSynthOsc.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeSynOsc.o `test -f '$(top_srcdir)/marsyas/PeSynOsc.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeSynOsc.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeakSynthOsc.o `test -f '$(top_srcdir)/marsyas/PeakSynthOsc.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeakSynthOsc.cpp
 
-PeSynOsc.obj: $(top_srcdir)/marsyas/PeSynOsc.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeSynOsc.obj -MD -MP -MF "$(DEPDIR)/PeSynOsc.Tpo" -c -o PeSynOsc.obj `if test -f '$(top_srcdir)/marsyas/PeSynOsc.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeSynOsc.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeSynOsc.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeSynOsc.Tpo" "$(DEPDIR)/PeSynOsc.Po"; else rm -f "$(DEPDIR)/PeSynOsc.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeSynOsc.cpp' object='PeSynOsc.obj' libtool=no @AMDEPBACKSLASH@
+PeakSynthOsc.obj: $(top_srcdir)/marsyas/PeakSynthOsc.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeakSynthOsc.obj -MD -MP -MF "$(DEPDIR)/PeakSynthOsc.Tpo" -c -o PeakSynthOsc.obj `if test -f '$(top_srcdir)/marsyas/PeakSynthOsc.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeakSynthOsc.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeakSynthOsc.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeakSynthOsc.Tpo" "$(DEPDIR)/PeakSynthOsc.Po"; else rm -f "$(DEPDIR)/PeakSynthOsc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeakSynthOsc.cpp' object='PeakSynthOsc.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeSynOsc.obj `if test -f '$(top_srcdir)/marsyas/PeSynOsc.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeSynOsc.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeSynOsc.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeakSynthOsc.obj `if test -f '$(top_srcdir)/marsyas/PeakSynthOsc.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeakSynthOsc.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeakSynthOsc.cpp'; fi`
 
-PeSynOscBank.o: $(top_srcdir)/marsyas/PeSynOscBank.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeSynOscBank.o -MD -MP -MF "$(DEPDIR)/PeSynOscBank.Tpo" -c -o PeSynOscBank.o `test -f '$(top_srcdir)/marsyas/PeSynOscBank.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeSynOscBank.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeSynOscBank.Tpo" "$(DEPDIR)/PeSynOscBank.Po"; else rm -f "$(DEPDIR)/PeSynOscBank.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeSynOscBank.cpp' object='PeSynOscBank.o' libtool=no @AMDEPBACKSLASH@
+PeakSynthOscBank.o: $(top_srcdir)/marsyas/PeakSynthOscBank.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeakSynthOscBank.o -MD -MP -MF "$(DEPDIR)/PeakSynthOscBank.Tpo" -c -o PeakSynthOscBank.o `test -f '$(top_srcdir)/marsyas/PeakSynthOscBank.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeakSynthOscBank.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeakSynthOscBank.Tpo" "$(DEPDIR)/PeakSynthOscBank.Po"; else rm -f "$(DEPDIR)/PeakSynthOscBank.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeakSynthOscBank.cpp' object='PeakSynthOscBank.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeSynOscBank.o `test -f '$(top_srcdir)/marsyas/PeSynOscBank.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeSynOscBank.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeakSynthOscBank.o `test -f '$(top_srcdir)/marsyas/PeakSynthOscBank.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeakSynthOscBank.cpp
 
-PeSynOscBank.obj: $(top_srcdir)/marsyas/PeSynOscBank.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeSynOscBank.obj -MD -MP -MF "$(DEPDIR)/PeSynOscBank.Tpo" -c -o PeSynOscBank.obj `if test -f '$(top_srcdir)/marsyas/PeSynOscBank.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeSynOscBank.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeSynOscBank.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeSynOscBank.Tpo" "$(DEPDIR)/PeSynOscBank.Po"; else rm -f "$(DEPDIR)/PeSynOscBank.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeSynOscBank.cpp' object='PeSynOscBank.obj' libtool=no @AMDEPBACKSLASH@
+PeakSynthOscBank.obj: $(top_srcdir)/marsyas/PeakSynthOscBank.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeakSynthOscBank.obj -MD -MP -MF "$(DEPDIR)/PeakSynthOscBank.Tpo" -c -o PeakSynthOscBank.obj `if test -f '$(top_srcdir)/marsyas/PeakSynthOscBank.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeakSynthOscBank.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeakSynthOscBank.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeakSynthOscBank.Tpo" "$(DEPDIR)/PeakSynthOscBank.Po"; else rm -f "$(DEPDIR)/PeakSynthOscBank.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeakSynthOscBank.cpp' object='PeakSynthOscBank.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeSynOscBank.obj `if test -f '$(top_srcdir)/marsyas/PeSynOscBank.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeSynOscBank.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeSynOscBank.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeakSynthOscBank.obj `if test -f '$(top_srcdir)/marsyas/PeakSynthOscBank.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeakSynthOscBank.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeakSynthOscBank.cpp'; fi`
 
 Polar2Cartesian.o: $(top_srcdir)/marsyas/Polar2Cartesian.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Polar2Cartesian.o -MD -MP -MF "$(DEPDIR)/Polar2Cartesian.Tpo" -c -o Polar2Cartesian.o `test -f '$(top_srcdir)/marsyas/Polar2Cartesian.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/Polar2Cartesian.cpp; \
@@ -1784,19 +1784,19 @@ FlowCutSource.obj: $(top_srcdir)/marsyas/FlowCutSource.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FlowCutSource.obj `if test -f '$(top_srcdir)/marsyas/FlowCutSource.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/FlowCutSource.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/FlowCutSource.cpp'; fi`
 
-PeSynFFT.o: $(top_srcdir)/marsyas/PeSynFFT.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeSynFFT.o -MD -MP -MF "$(DEPDIR)/PeSynFFT.Tpo" -c -o PeSynFFT.o `test -f '$(top_srcdir)/marsyas/PeSynFFT.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeSynFFT.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeSynFFT.Tpo" "$(DEPDIR)/PeSynFFT.Po"; else rm -f "$(DEPDIR)/PeSynFFT.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeSynFFT.cpp' object='PeSynFFT.o' libtool=no @AMDEPBACKSLASH@
+PeakSynthFFT.o: $(top_srcdir)/marsyas/PeakSynthFFT.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeakSynthFFT.o -MD -MP -MF "$(DEPDIR)/PeakSynthFFT.Tpo" -c -o PeakSynthFFT.o `test -f '$(top_srcdir)/marsyas/PeakSynthFFT.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeakSynthFFT.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeakSynthFFT.Tpo" "$(DEPDIR)/PeakSynthFFT.Po"; else rm -f "$(DEPDIR)/PeakSynthFFT.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeakSynthFFT.cpp' object='PeakSynthFFT.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeSynFFT.o `test -f '$(top_srcdir)/marsyas/PeSynFFT.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeSynFFT.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeakSynthFFT.o `test -f '$(top_srcdir)/marsyas/PeakSynthFFT.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeakSynthFFT.cpp
 
-PeSynFFT.obj: $(top_srcdir)/marsyas/PeSynFFT.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeSynFFT.obj -MD -MP -MF "$(DEPDIR)/PeSynFFT.Tpo" -c -o PeSynFFT.obj `if test -f '$(top_srcdir)/marsyas/PeSynFFT.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeSynFFT.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeSynFFT.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeSynFFT.Tpo" "$(DEPDIR)/PeSynFFT.Po"; else rm -f "$(DEPDIR)/PeSynFFT.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeSynFFT.cpp' object='PeSynFFT.obj' libtool=no @AMDEPBACKSLASH@
+PeakSynthFFT.obj: $(top_srcdir)/marsyas/PeakSynthFFT.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeakSynthFFT.obj -MD -MP -MF "$(DEPDIR)/PeakSynthFFT.Tpo" -c -o PeakSynthFFT.obj `if test -f '$(top_srcdir)/marsyas/PeakSynthFFT.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeakSynthFFT.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeakSynthFFT.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeakSynthFFT.Tpo" "$(DEPDIR)/PeakSynthFFT.Po"; else rm -f "$(DEPDIR)/PeakSynthFFT.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeakSynthFFT.cpp' object='PeakSynthFFT.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeSynFFT.obj `if test -f '$(top_srcdir)/marsyas/PeSynFFT.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeSynFFT.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeSynFFT.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeakSynthFFT.obj `if test -f '$(top_srcdir)/marsyas/PeakSynthFFT.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeakSynthFFT.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeakSynthFFT.cpp'; fi`
 
 OverlapAdd.o: $(top_srcdir)/marsyas/OverlapAdd.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT OverlapAdd.o -MD -MP -MF "$(DEPDIR)/OverlapAdd.Tpo" -c -o OverlapAdd.o `test -f '$(top_srcdir)/marsyas/OverlapAdd.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/OverlapAdd.cpp; \
@@ -1812,19 +1812,19 @@ OverlapAdd.obj: $(top_srcdir)/marsyas/OverlapAdd.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o OverlapAdd.obj `if test -f '$(top_srcdir)/marsyas/OverlapAdd.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/OverlapAdd.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/OverlapAdd.cpp'; fi`
 
-PeResidual.o: $(top_srcdir)/marsyas/PeResidual.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeResidual.o -MD -MP -MF "$(DEPDIR)/PeResidual.Tpo" -c -o PeResidual.o `test -f '$(top_srcdir)/marsyas/PeResidual.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeResidual.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeResidual.Tpo" "$(DEPDIR)/PeResidual.Po"; else rm -f "$(DEPDIR)/PeResidual.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeResidual.cpp' object='PeResidual.o' libtool=no @AMDEPBACKSLASH@
+PeakResidual.o: $(top_srcdir)/marsyas/PeakResidual.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeakResidual.o -MD -MP -MF "$(DEPDIR)/PeakResidual.Tpo" -c -o PeakResidual.o `test -f '$(top_srcdir)/marsyas/PeakResidual.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeakResidual.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeakResidual.Tpo" "$(DEPDIR)/PeakResidual.Po"; else rm -f "$(DEPDIR)/PeakResidual.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeakResidual.cpp' object='PeakResidual.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeResidual.o `test -f '$(top_srcdir)/marsyas/PeResidual.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeResidual.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeakResidual.o `test -f '$(top_srcdir)/marsyas/PeakResidual.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeakResidual.cpp
 
-PeResidual.obj: $(top_srcdir)/marsyas/PeResidual.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeResidual.obj -MD -MP -MF "$(DEPDIR)/PeResidual.Tpo" -c -o PeResidual.obj `if test -f '$(top_srcdir)/marsyas/PeResidual.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeResidual.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeResidual.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeResidual.Tpo" "$(DEPDIR)/PeResidual.Po"; else rm -f "$(DEPDIR)/PeResidual.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeResidual.cpp' object='PeResidual.obj' libtool=no @AMDEPBACKSLASH@
+PeakResidual.obj: $(top_srcdir)/marsyas/PeakResidual.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeakResidual.obj -MD -MP -MF "$(DEPDIR)/PeakResidual.Tpo" -c -o PeakResidual.obj `if test -f '$(top_srcdir)/marsyas/PeakResidual.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeakResidual.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeakResidual.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeakResidual.Tpo" "$(DEPDIR)/PeakResidual.Po"; else rm -f "$(DEPDIR)/PeakResidual.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeakResidual.cpp' object='PeakResidual.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeResidual.obj `if test -f '$(top_srcdir)/marsyas/PeResidual.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeResidual.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeResidual.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeakResidual.obj `if test -f '$(top_srcdir)/marsyas/PeakResidual.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeakResidual.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeakResidual.cpp'; fi`
 
 PeUtilities.o: $(top_srcdir)/marsyas/PeUtilities.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeUtilities.o -MD -MP -MF "$(DEPDIR)/PeUtilities.Tpo" -c -o PeUtilities.o `test -f '$(top_srcdir)/marsyas/PeUtilities.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeUtilities.cpp; \
@@ -3506,19 +3506,19 @@ FlowThru.obj: $(top_srcdir)/marsyas/FlowThru.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FlowThru.obj `if test -f '$(top_srcdir)/marsyas/FlowThru.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/FlowThru.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/FlowThru.cpp'; fi`
 
-PeFeatSelect.o: $(top_srcdir)/marsyas/PeFeatSelect.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeFeatSelect.o -MD -MP -MF "$(DEPDIR)/PeFeatSelect.Tpo" -c -o PeFeatSelect.o `test -f '$(top_srcdir)/marsyas/PeFeatSelect.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeFeatSelect.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeFeatSelect.Tpo" "$(DEPDIR)/PeFeatSelect.Po"; else rm -f "$(DEPDIR)/PeFeatSelect.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeFeatSelect.cpp' object='PeFeatSelect.o' libtool=no @AMDEPBACKSLASH@
+PeakFeatureSelect.o: $(top_srcdir)/marsyas/PeakFeatureSelect.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeakFeatureSelect.o -MD -MP -MF "$(DEPDIR)/PeakFeatureSelect.Tpo" -c -o PeakFeatureSelect.o `test -f '$(top_srcdir)/marsyas/PeakFeatureSelect.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeakFeatureSelect.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeakFeatureSelect.Tpo" "$(DEPDIR)/PeakFeatureSelect.Po"; else rm -f "$(DEPDIR)/PeakFeatureSelect.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeakFeatureSelect.cpp' object='PeakFeatureSelect.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeFeatSelect.o `test -f '$(top_srcdir)/marsyas/PeFeatSelect.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeFeatSelect.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeakFeatureSelect.o `test -f '$(top_srcdir)/marsyas/PeakFeatureSelect.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeakFeatureSelect.cpp
 
-PeFeatSelect.obj: $(top_srcdir)/marsyas/PeFeatSelect.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeFeatSelect.obj -MD -MP -MF "$(DEPDIR)/PeFeatSelect.Tpo" -c -o PeFeatSelect.obj `if test -f '$(top_srcdir)/marsyas/PeFeatSelect.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeFeatSelect.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeFeatSelect.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeFeatSelect.Tpo" "$(DEPDIR)/PeFeatSelect.Po"; else rm -f "$(DEPDIR)/PeFeatSelect.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeFeatSelect.cpp' object='PeFeatSelect.obj' libtool=no @AMDEPBACKSLASH@
+PeakFeatureSelect.obj: $(top_srcdir)/marsyas/PeakFeatureSelect.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeakFeatureSelect.obj -MD -MP -MF "$(DEPDIR)/PeakFeatureSelect.Tpo" -c -o PeakFeatureSelect.obj `if test -f '$(top_srcdir)/marsyas/PeakFeatureSelect.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeakFeatureSelect.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeakFeatureSelect.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeakFeatureSelect.Tpo" "$(DEPDIR)/PeakFeatureSelect.Po"; else rm -f "$(DEPDIR)/PeakFeatureSelect.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeakFeatureSelect.cpp' object='PeakFeatureSelect.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeFeatSelect.obj `if test -f '$(top_srcdir)/marsyas/PeFeatSelect.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeFeatSelect.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeFeatSelect.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeakFeatureSelect.obj `if test -f '$(top_srcdir)/marsyas/PeakFeatureSelect.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeakFeatureSelect.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeakFeatureSelect.cpp'; fi`
 
 SimilarityMatrix.o: $(top_srcdir)/marsyas/SimilarityMatrix.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT SimilarityMatrix.o -MD -MP -MF "$(DEPDIR)/SimilarityMatrix.Tpo" -c -o SimilarityMatrix.o `test -f '$(top_srcdir)/marsyas/SimilarityMatrix.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/SimilarityMatrix.cpp; \
@@ -3646,19 +3646,19 @@ WHaSp.obj: $(top_srcdir)/marsyas/WHaSp.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o WHaSp.obj `if test -f '$(top_srcdir)/marsyas/WHaSp.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/WHaSp.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/WHaSp.cpp'; fi`
 
-PeLabeler.o: $(top_srcdir)/marsyas/PeLabeler.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeLabeler.o -MD -MP -MF "$(DEPDIR)/PeLabeler.Tpo" -c -o PeLabeler.o `test -f '$(top_srcdir)/marsyas/PeLabeler.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeLabeler.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeLabeler.Tpo" "$(DEPDIR)/PeLabeler.Po"; else rm -f "$(DEPDIR)/PeLabeler.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeLabeler.cpp' object='PeLabeler.o' libtool=no @AMDEPBACKSLASH@
+PeakLabeler.o: $(top_srcdir)/marsyas/PeakLabeler.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeakLabeler.o -MD -MP -MF "$(DEPDIR)/PeakLabeler.Tpo" -c -o PeakLabeler.o `test -f '$(top_srcdir)/marsyas/PeakLabeler.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeakLabeler.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeakLabeler.Tpo" "$(DEPDIR)/PeakLabeler.Po"; else rm -f "$(DEPDIR)/PeakLabeler.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeakLabeler.cpp' object='PeakLabeler.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeLabeler.o `test -f '$(top_srcdir)/marsyas/PeLabeler.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeLabeler.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeakLabeler.o `test -f '$(top_srcdir)/marsyas/PeakLabeler.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeakLabeler.cpp
 
-PeLabeler.obj: $(top_srcdir)/marsyas/PeLabeler.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeLabeler.obj -MD -MP -MF "$(DEPDIR)/PeLabeler.Tpo" -c -o PeLabeler.obj `if test -f '$(top_srcdir)/marsyas/PeLabeler.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeLabeler.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeLabeler.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeLabeler.Tpo" "$(DEPDIR)/PeLabeler.Po"; else rm -f "$(DEPDIR)/PeLabeler.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeLabeler.cpp' object='PeLabeler.obj' libtool=no @AMDEPBACKSLASH@
+PeakLabeler.obj: $(top_srcdir)/marsyas/PeakLabeler.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeakLabeler.obj -MD -MP -MF "$(DEPDIR)/PeakLabeler.Tpo" -c -o PeakLabeler.obj `if test -f '$(top_srcdir)/marsyas/PeakLabeler.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeakLabeler.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeakLabeler.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeakLabeler.Tpo" "$(DEPDIR)/PeakLabeler.Po"; else rm -f "$(DEPDIR)/PeakLabeler.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeakLabeler.cpp' object='PeakLabeler.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeLabeler.obj `if test -f '$(top_srcdir)/marsyas/PeLabeler.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeLabeler.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeLabeler.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeakLabeler.obj `if test -f '$(top_srcdir)/marsyas/PeakLabeler.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeakLabeler.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeakLabeler.cpp'; fi`
 
 peakView.o: $(top_srcdir)/marsyas/peakView.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT peakView.o -MD -MP -MF "$(DEPDIR)/peakView.Tpo" -c -o peakView.o `test -f '$(top_srcdir)/marsyas/peakView.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/peakView.cpp; \
@@ -3702,19 +3702,19 @@ PeakViewSink.obj: $(top_srcdir)/marsyas/PeakViewSink.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeakViewSink.obj `if test -f '$(top_srcdir)/marsyas/PeakViewSink.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeakViewSink.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeakViewSink.cpp'; fi`
 
-PeClusterSelect.o: $(top_srcdir)/marsyas/PeClusterSelect.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeClusterSelect.o -MD -MP -MF "$(DEPDIR)/PeClusterSelect.Tpo" -c -o PeClusterSelect.o `test -f '$(top_srcdir)/marsyas/PeClusterSelect.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeClusterSelect.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeClusterSelect.Tpo" "$(DEPDIR)/PeClusterSelect.Po"; else rm -f "$(DEPDIR)/PeClusterSelect.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeClusterSelect.cpp' object='PeClusterSelect.o' libtool=no @AMDEPBACKSLASH@
+PeakClusterSelect.o: $(top_srcdir)/marsyas/PeakClusterSelect.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeakClusterSelect.o -MD -MP -MF "$(DEPDIR)/PeakClusterSelect.Tpo" -c -o PeakClusterSelect.o `test -f '$(top_srcdir)/marsyas/PeakClusterSelect.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeakClusterSelect.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeakClusterSelect.Tpo" "$(DEPDIR)/PeakClusterSelect.Po"; else rm -f "$(DEPDIR)/PeakClusterSelect.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeakClusterSelect.cpp' object='PeakClusterSelect.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeClusterSelect.o `test -f '$(top_srcdir)/marsyas/PeClusterSelect.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeClusterSelect.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeakClusterSelect.o `test -f '$(top_srcdir)/marsyas/PeakClusterSelect.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PeakClusterSelect.cpp
 
-PeClusterSelect.obj: $(top_srcdir)/marsyas/PeClusterSelect.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeClusterSelect.obj -MD -MP -MF "$(DEPDIR)/PeClusterSelect.Tpo" -c -o PeClusterSelect.obj `if test -f '$(top_srcdir)/marsyas/PeClusterSelect.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeClusterSelect.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeClusterSelect.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeClusterSelect.Tpo" "$(DEPDIR)/PeClusterSelect.Po"; else rm -f "$(DEPDIR)/PeClusterSelect.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeClusterSelect.cpp' object='PeClusterSelect.obj' libtool=no @AMDEPBACKSLASH@
+PeakClusterSelect.obj: $(top_srcdir)/marsyas/PeakClusterSelect.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PeakClusterSelect.obj -MD -MP -MF "$(DEPDIR)/PeakClusterSelect.Tpo" -c -o PeakClusterSelect.obj `if test -f '$(top_srcdir)/marsyas/PeakClusterSelect.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeakClusterSelect.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeakClusterSelect.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PeakClusterSelect.Tpo" "$(DEPDIR)/PeakClusterSelect.Po"; else rm -f "$(DEPDIR)/PeakClusterSelect.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/PeakClusterSelect.cpp' object='PeakClusterSelect.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeClusterSelect.obj `if test -f '$(top_srcdir)/marsyas/PeClusterSelect.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeClusterSelect.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeClusterSelect.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeakClusterSelect.obj `if test -f '$(top_srcdir)/marsyas/PeakClusterSelect.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/PeakClusterSelect.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/PeakClusterSelect.cpp'; fi`
 
 Gain.o: $(top_srcdir)/marsyas/Gain.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Gain.o -MD -MP -MF "$(DEPDIR)/Gain.Tpo" -c -o Gain.o `test -f '$(top_srcdir)/marsyas/Gain.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/Gain.cpp; \

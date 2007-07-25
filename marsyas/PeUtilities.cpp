@@ -454,7 +454,7 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
 	{
 		if(synType == 0)
 		{
-			postNet->addMarSystem(mng->create("PeSynOsc", "pso"));
+			postNet->addMarSystem(mng->create("PeakSynthOsc", "pso"));
 			postNet->addMarSystem(mng->create("Windowing", "wiSyn"));
 		}
 		else
@@ -474,7 +474,7 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
 			// convert to polar
 			postNet->addMarSystem(mng->create("Cartesian2Polar", "c2p"));
 			// perform amplitude and panning change
-			postNet->addMarSystem(mng->create("PeSynFFT", "psf"));
+			postNet->addMarSystem(mng->create("PeakSynthFFT", "psf"));
 			// convert back to cartesian
 			postNet->addMarSystem(mng->create("Polar2Cartesian", "p2c"));	
 			// perform an IFFT
@@ -488,7 +488,7 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
 	}
 	else
 	{
-		postNet->addMarSystem(mng->create("PeSynOscBank", "pso"));
+		postNet->addMarSystem(mng->create("PeakSynthOscBank", "pso"));
 		// postNet->addMarSystem(mng->create("ShiftOutput", "so"));
 	}
 
@@ -518,7 +518,7 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
 		fanout->addMarSystem(fanSeries);
 
 		postNet->addMarSystem(fanout);
-		postNet->addMarSystem(mng->create("PeResidual", "res"));
+		postNet->addMarSystem(mng->create("PeakResidual", "res"));
 
 		MarSystem *destRes;
 		if (outsfname == "MARSYAS_EMPTY") 
@@ -549,23 +549,23 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 	{
 	if(synType==0)
 	{
-	//pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynOsc/pso/mrs_natural/nbSinusoids", S);
-	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynOsc/pso/mrs_natural/delay", Nw/2+1);
-	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynOsc/pso/mrs_natural/synSize", D*2);
+	//pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/nbSinusoids", S);
+	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/delay", Nw/2+1);
+	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/synSize", D*2);
 	}
 	else 
 	{
 		// probing the postNet series
 		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/mrs_bool/probe", true);
 		// linking between the first slice and the psf
-		pvseries->linkControl("PeSynthetize/synthNet/Series/postNet/mrs_realvec/input0", "PeSynthetize/synthNet/Series/postNet/PeSynFFT/psf/mrs_realvec/peaks");
+		pvseries->linkControl("PeSynthetize/synthNet/Series/postNet/mrs_realvec/input0", "PeSynthetize/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_realvec/peaks");
 		//
 		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Windowing/wiSyn/mrs_string/type", "Hanning");
 	  pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/FlowCutSource/fcs/mrs_natural/setSamples", D);	
 		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/FlowCutSource/fcs/mrs_natural/setObservations", 1);	
 		// setting the panning mode mono/stereo
-		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynFFT/psf/mrs_natural/nbChannels", synType);
-	  pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynFFT/psf/mrs_string/panning", panningInfo);
+		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_natural/nbChannels", synType);
+	  pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_string/panning", panningInfo);
 		// setting the FFT size
 		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftInput/siSyn/mrs_natural/WindowSize", D*2);
 		// setting the name of the original file
@@ -586,7 +586,7 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 		}
 	}
 	else
-		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynOscBank/pso/mrs_natural/Interpolation", D);
+		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOscBank/pso/mrs_natural/Interpolation", D);
 
 	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Interpolation", D); //[WTF]
 	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/WindowSize", Nw);    //[WTF]  

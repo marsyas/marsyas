@@ -161,15 +161,15 @@ void drumClassify( string drumFile) {
 
     MarSystem* TimeLoop= mng.create("Series", "TimeLoop");
     TimeLoop->addMarSystem(mng.create("AudioSource", "src"));
-    TimeLoop->addMarSystem(mng.create("Peaker1", "peak"));
+    TimeLoop->addMarSystem(mng.create("PeakerAdaptive", "peak"));
 
-    TimeLoop->updctrl("Peaker1/peak/mrs_natural/peakEnd", 512);
-    TimeLoop->updctrl("Peaker1/peak/mrs_real/peakSpacing", 0.5);
-    TimeLoop->updctrl("Peaker1/peak/mrs_real/peakStrength", 0.7);
-    TimeLoop->updctrl("Peaker1/peak/mrs_natural/peakStart", 0);
-    TimeLoop->updctrl("Peaker1/peak/mrs_natural/peakStrengthReset", 2);
-    TimeLoop->updctrl("Peaker1/peak/mrs_real/peakDecay", 0.9);
-    TimeLoop->updctrl("Peaker1/peak/mrs_real/peakGain", 0.5);
+    TimeLoop->updctrl("PeakerAdaptive/peak/mrs_natural/peakEnd", 512);
+    TimeLoop->updctrl("PeakerAdaptive/peak/mrs_real/peakSpacing", 0.5);
+    TimeLoop->updctrl("PeakerAdaptive/peak/mrs_real/peakStrength", 0.7);
+    TimeLoop->updctrl("PeakerAdaptive/peak/mrs_natural/peakStart", 0);
+    TimeLoop->updctrl("PeakerAdaptive/peak/mrs_natural/peakStrengthReset", 2);
+    TimeLoop->updctrl("PeakerAdaptive/peak/mrs_real/peakDecay", 0.9);
+    TimeLoop->updctrl("PeakerAdaptive/peak/mrs_real/peakGain", 0.5);
 
     //======================================
     // Features
@@ -278,7 +278,7 @@ void drumClassify( string drumFile) {
     message.push_back(60);
     message.push_back(0);
 
-    // Peaker1 looks for hits and then if it finds one reports a non-zero value
+    // PeakerAdaptive looks for hits and then if it finds one reports a non-zero value
     // When a non-zero value is found extractNet is ticked
     while ( TimeLoop->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() )
     {

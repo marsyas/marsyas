@@ -17,7 +17,7 @@
 */
 
 /** 
-    \class PeSynFFT
+    \class PeakSynthFFT
     \brief perform amplitude modification of Power Spectrum using Peaks Info
 */
 
@@ -29,7 +29,7 @@
 namespace Marsyas
 {
 
-class PeSynFFT: public MarSystem
+class PeakSynthFFT: public MarSystem
 {
 private: 
  	
@@ -48,9 +48,9 @@ private:
   void generateMask(mrs_natural type);
   void lpfMask();
 public:
-  PeSynFFT(std::string name);
-	PeSynFFT(const PeSynFFT& a);
-  ~PeSynFFT();
+  PeakSynthFFT(std::string name);
+	PeakSynthFFT(const PeakSynthFFT& a);
+  ~PeakSynthFFT();
   MarSystem* clone() const;  
   
   void myProcess(realvec& in, realvec& out);

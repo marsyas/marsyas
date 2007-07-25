@@ -17,7 +17,7 @@
 */
 
 /** 
-	\class PeLabeler
+	\class PeakLabeler
 	\ingroup MarSystem
 	\brief Assigns clustering labels to the "pkGroup" feature of the input peak realvec, based on the information received at the mrs_realvec/labels control.
 
@@ -25,47 +25,47 @@
 	- \b mrs_realvec/labels [w] : cluster labels to be assigned to each peak received at the input. 
 
 */
-#include "PeLabeler.h"
+#include "PeakLabeler.h"
 #include "peakView.h"
 
 using namespace std;
 using namespace Marsyas;
 
-PeLabeler::PeLabeler(string name):MarSystem("PeLabeler", name)
+PeakLabeler::PeakLabeler(string name):MarSystem("PeakLabeler", name)
 {
 	addControls();
 }
 
-PeLabeler::PeLabeler(const PeLabeler& a) : MarSystem(a)
+PeakLabeler::PeakLabeler(const PeakLabeler& a) : MarSystem(a)
 {
 	ctrl_peakLabels_ = getctrl("mrs_realvec/peakLabels");
 }
 
-PeLabeler::~PeLabeler()
+PeakLabeler::~PeakLabeler()
 {
 }
 
 MarSystem* 
-PeLabeler::clone() const 
+PeakLabeler::clone() const 
 {
-	return new PeLabeler(*this);
+	return new PeakLabeler(*this);
 }
 
 void 
-PeLabeler::addControls()
+PeakLabeler::addControls()
 {
 	addctrl("mrs_realvec/peakLabels", realvec(), ctrl_peakLabels_);
 }
 
 void
-PeLabeler::myUpdate(MarControlPtr sender)
+PeakLabeler::myUpdate(MarControlPtr sender)
 {
 	//the out flow parameters are the same as the out flow ones
 	MarSystem::myUpdate(sender);
 }
 
 void 
-PeLabeler::myProcess(realvec& in, realvec& out)
+PeakLabeler::myProcess(realvec& in, realvec& out)
 {
 	out = in;
 
@@ -75,7 +75,7 @@ PeLabeler::myProcess(realvec& in, realvec& out)
 
 	if(peakLabels.getSize() != outPeakView.getTotalNumPeaks())
 	{
-		MRSERR("PeLabeler::myProcess - peakLabels control and input peaks number mismatch! Labeling not performed!");
+		MRSERR("PeakLabeler::myProcess - peakLabels control and input peaks number mismatch! Labeling not performed!");
 	}
 	else
 	{

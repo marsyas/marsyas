@@ -35,7 +35,7 @@ in sequence.
 #include "Fanout.h" 
 #include "TimeStretch.h" 
 #include "Peaker.h"
-#include "Peaker1.h"
+#include "PeakerAdaptive.h"
 #include "MaxArgMax.h"
 #include "MinArgMin.h"
 #include "AutoCorrelation.h"
@@ -59,12 +59,12 @@ in sequence.
 #include "AudioSink.h"
 #include "AudioSink2.h"
 #include "Mono2Stereo.h"
-#include "PeConvert.h"
+#include "PeakConvert.h"
 #include "OverlapAdd.h"
-#include "PeSynOsc.h"
-#include "PeSynOscBank.h"
-#include "PeSynFFT.h"
-#include "PeResidual.h"
+#include "PeakSynthOsc.h"
+#include "PeakSynthOscBank.h"
+#include "PeakSynthFFT.h"
+#include "PeakResidual.h"
 #include "RealvecSource.h"
 #include "RealvecSink.h"
 #include "Power.h"
@@ -146,7 +146,7 @@ in sequence.
 #include "FanOutIn.h"
 #include "CompExp.h"
 #include "MarSystemTemplateMedium.h"
-#include "PeFeatSelect.h"
+#include "PeakFeatureSelect.h"
 #include "SimilarityMatrix.h"
 #include "Metric.h"
 #include "HWPS.h"
@@ -154,8 +154,8 @@ in sequence.
 #include "NormMatrix.h"
 #include "WHaSp.h"
 #include "FanOutIn.h"
-#include "PeLabeler.h"
-#include "PeClusterSelect.h"
+#include "PeakLabeler.h"
+#include "PeakClusterSelect.h"
 #include "PeakViewSink.h"
 #include "NormCut.h"
 #include "PeakViewSource.h"
@@ -177,7 +177,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Parallel", new Parallel("parallelp"));
 	registerPrototype("TimeStretch", new TimeStretch("tscp"));
 	registerPrototype("Peaker", new Peaker("pkrp"));
-	registerPrototype("Peaker1", new Peaker1("pkr1pr"));
+	registerPrototype("PeakerAdaptive", new PeakerAdaptive("pkr1pr"));
 	registerPrototype("MaxArgMax", new MaxArgMax("mxrp"));
 	registerPrototype("MinArgMin", new MinArgMin("mnrp"));
 	registerPrototype("Spectrum", new Spectrum("spkp"));
@@ -188,16 +188,16 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PvFold", new PvFold("pvfp"));
 	registerPrototype("PvOverlapadd", new PvOverlapadd("pvovlfp"));
 	registerPrototype("PvOscBank", new PvOscBank("pvoscp"));
-	registerPrototype("PeSynOscBank", new PeSynOscBank("pvoscp"));
-	registerPrototype("PeSynFFT", new PeSynFFT("pvfft"));
+	registerPrototype("PeakSynthOscBank", new PeakSynthOscBank("pvoscp"));
+	registerPrototype("PeakSynthFFT", new PeakSynthFFT("pvfft"));
 	registerPrototype("ShiftInput", new ShiftInput("sip"));
 	registerPrototype("ShiftOutput", new ShiftOutput("sop"));
 	registerPrototype("Shifter", new Shifter("sp"));
 	registerPrototype("PvConvolve", new PvConvolve("pvconvpr"));
-	registerPrototype("PeConvert", new PeConvert("peconvp"));
+	registerPrototype("PeakConvert", new PeakConvert("peconvp"));
 	registerPrototype("OverlapAdd", new OverlapAdd("oa"));
-	registerPrototype("PeSynOsc", new PeSynOsc("pso"));
-	registerPrototype("PeResidual", new PeResidual("peres"));
+	registerPrototype("PeakSynthOsc", new PeakSynthOsc("pso"));
+	registerPrototype("PeakResidual", new PeakResidual("peres"));
 	registerPrototype("RealvecSource", new RealvecSource("realvecSrc"));
 	registerPrototype("RealvecSink", new RealvecSink("realvecSink"));
 	registerPrototype("Power", new Power("pow"));
@@ -285,7 +285,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("FanOutIn", new FanOutIn("fanoutinpr"));
 	registerPrototype("CompExp", new CompExp("compexppr"));
 	registerPrototype("MarSystemTemplateMedium", new MarSystemTemplateMedium("marsystemtemplatemediumpr"));
-	registerPrototype("PeFeatSelect", new PeFeatSelect("pefeatselectpr"));
+	registerPrototype("PeakFeatureSelect", new PeakFeatureSelect("pefeatselectpr"));
 	registerPrototype("SimilarityMatrix", new SimilarityMatrix("similaritymatrixpr"));
 	registerPrototype("Metric", new Metric("metricpr"));
 	registerPrototype("HWPS", new HWPS("hwpspr"));
@@ -293,8 +293,8 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("NormMatrix", new NormMatrix("normmatrixpr"));
 	registerPrototype("WHaSp", new WHaSp("whasppr"));
 	registerPrototype("FanOutIn", new FanOutIn("fanoutinpr"));
-	registerPrototype("PeLabeler", new PeLabeler("pelabelerpr"));
-	registerPrototype("PeClusterSelect", new PeClusterSelect("peclusterselectpr"));
+	registerPrototype("PeakLabeler", new PeakLabeler("pelabelerpr"));
+	registerPrototype("PeakClusterSelect", new PeakClusterSelect("peclusterselectpr"));
 	registerPrototype("PeakViewSink", new PeakViewSink("peakviewsinkpr"));
 	registerPrototype("NormCut", new NormCut("normcutpr"));
 	registerPrototype("PeakViewSource", new PeakViewSource("peakviewsourcepr"));
@@ -506,7 +506,7 @@ MarSystemManager::MarSystemManager()
 	parallel->addMarSystem(create("Spectrum", "spk1"));
 	parallel->addMarSystem(create("Spectrum", "spk2"));
 	peAnalysePr->addMarSystem(parallel);
-	peAnalysePr->addMarSystem(create("PeConvert", "conv"));
+	peAnalysePr->addMarSystem(create("PeakConvert", "conv"));
 	peAnalysePr->linkctrl("mrs_natural/Decimation", 
 		"ShiftInput/si/mrs_natural/Decimation");
 	peAnalysePr->linkctrl("mrs_natural/WindowSize", 
@@ -518,9 +518,9 @@ MarSystemManager::MarSystemManager()
 	peAnalysePr->linkctrl("mrs_bool/zeroPhasing", 
 		"Windowing/wi/mrs_bool/zeroPhasing");
 	peAnalysePr->linkctrl("mrs_natural/frameMaxNumPeaks", 
-		"PeConvert/conv/mrs_natural/frameMaxNumPeaks");
+		"PeakConvert/conv/mrs_natural/frameMaxNumPeaks");
 	peAnalysePr->linkctrl("mrs_natural/Decimation", 
-		"PeConvert/conv/mrs_natural/Decimation");
+		"PeakConvert/conv/mrs_natural/Decimation");
 	peAnalysePr->updctrl("Shifter/sh/mrs_natural/shift", 1);
 	registerPrototype("PeAnalyse", peAnalysePr);
 
@@ -531,9 +531,9 @@ MarSystemManager::MarSystemManager()
 	WHaSpnetpr->addMarSystem(create("PeAnalyse", "analyse"));
 	WHaSpnetpr->addMarSystem(create("WHaSp", "whasp"));
 	//
-	WHaSpnetpr->linkctrl("PeAnalyse/analyse/PeConvert/conv/mrs_natural/totalNumPeaks",
+	WHaSpnetpr->linkctrl("PeAnalyse/analyse/PeakConvert/conv/mrs_natural/totalNumPeaks",
 		"WHaSp/whasp/mrs_natural/totalNumPeaks");
-	WHaSpnetpr->linkctrl("PeAnalyse/analyse/PeConvert/conv/mrs_natural/frameMaxNumPeaks",
+	WHaSpnetpr->linkctrl("PeAnalyse/analyse/PeakConvert/conv/mrs_natural/frameMaxNumPeaks",
 		"WHaSp/whasp/mrs_natural/frameMaxNumPeaks");
 	//
 	WHaSpnetpr->linkctrl("mrs_natural/frameMaxNumPeaks", 

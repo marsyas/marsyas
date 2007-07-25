@@ -17,45 +17,45 @@
 */
 
 /** 
-\class PeResidual
+\class PeakResidual
 \ingroup none
 \brief Compute the Reconstruction Signal-to-Noise Ratio
 */
 
-#include "PeResidual.h"
+#include "PeakResidual.h"
 
 using namespace std;
 using namespace Marsyas;
 
-PeResidual::PeResidual(string name):MarSystem("PeResidual", name)
+PeakResidual::PeakResidual(string name):MarSystem("PeakResidual", name)
 {
 
 	addControls();
 }
 
-PeResidual::PeResidual(const PeResidual& a) : MarSystem(a)
+PeakResidual::PeakResidual(const PeakResidual& a) : MarSystem(a)
 {
 	ctrl_SNR_ = getctrl("mrs_real/SNR");
 }
 
-PeResidual::~PeResidual()
+PeakResidual::~PeakResidual()
 {
 }
 
 MarSystem* 
-PeResidual::clone() const 
+PeakResidual::clone() const 
 {
-	return new PeResidual(*this);
+	return new PeakResidual(*this);
 }
 
 void 
-PeResidual::addControls()
+PeakResidual::addControls()
 {
 	addctrl("mrs_real/SNR", 0.0, ctrl_SNR_);
 }
 
 void
-PeResidual::myUpdate(MarControlPtr sender)
+PeakResidual::myUpdate(MarControlPtr sender)
 {
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 	ctrl_onObservations_->setValue(ctrl_inObservations_->to<mrs_natural>()/2, NOUPDATE);
@@ -76,7 +76,7 @@ PeResidual::myUpdate(MarControlPtr sender)
 }
 
 void 
-PeResidual::myProcess(realvec& in, realvec& out)
+PeakResidual::myProcess(realvec& in, realvec& out)
 {
 	mrs_real snr = -80.0;
 	mrs_real originalPower;

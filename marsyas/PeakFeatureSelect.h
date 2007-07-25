@@ -17,7 +17,7 @@
 */
 
 /** 
-\class PeFeatSelect
+\class PeakFeatureSelect
 \brief This MarSystem takes a realvec with peak information (using peakView)
 and allows to select which peak features should be sent to the output. 
 Used for similarity computations on peaks. 
@@ -32,7 +32,7 @@ Used for similarity computations on peaks.
 
 namespace Marsyas
 {
-  class PeFeatSelect: public MarSystem
+  class PeakFeatureSelect: public MarSystem
   {
   private:
 		mrs_natural selectedFeatures_;
@@ -61,9 +61,9 @@ namespace Marsyas
 			dBPkAmp = 128, //should we also add standardization options here?!? [?]
 		};
 
-    PeFeatSelect(std::string name);
-    PeFeatSelect(const PeFeatSelect& a);
-    ~PeFeatSelect();
+    PeakFeatureSelect(std::string name);
+    PeakFeatureSelect(const PeakFeatureSelect& a);
+    ~PeakFeatureSelect();
     MarSystem* clone() const;  
     
     void myProcess(realvec& in, realvec& out);

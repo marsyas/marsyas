@@ -17,7 +17,7 @@
 */
 
 /** 
-\class PeLabeler
+\class PeakLabeler
 \brief Assigns "pkGroup" labels to the input peak realvec, based on the information received at the mrs_realvec/labels control.
 
 */
@@ -30,7 +30,7 @@
 namespace Marsyas
 {
   
-  class PeLabeler: public MarSystem
+  class PeakLabeler: public MarSystem
   {
   private:
 		MarControlPtr ctrl_peakLabels_;
@@ -40,9 +40,9 @@ namespace Marsyas
     void myUpdate(MarControlPtr sender);
     
   public:
-    PeLabeler(std::string name);
-    PeLabeler(const PeLabeler& a);
-    ~PeLabeler();
+    PeakLabeler(std::string name);
+    PeakLabeler(const PeakLabeler& a);
+    ~PeakLabeler();
     MarSystem* clone() const;  
     
     void myProcess(realvec& in, realvec& out);
