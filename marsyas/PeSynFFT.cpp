@@ -24,7 +24,7 @@
 */
 
 #include "PeSynFFT.h"
-#include "PeUtilities.h"
+#include "peakView.h"
 
 using namespace std;
 using namespace Marsyas;
@@ -57,7 +57,7 @@ PeSynFFT::addControls()
 	addctrl("mrs_realvec/peaks", realvec(), ctrl_Peaks_);
 	addctrl("mrs_natural/nbChannels", 1, ctrl_NbChannels_);
 	setctrlState("mrs_natural/nbChannels", true);
-	addctrl("mrs_string/panning", EMPTYSTRING);
+	addctrl("mrs_string/panning", "MARSYAS_EMPTY");
 	setctrlState("mrs_string/panning", true);
 }
 
@@ -69,7 +69,7 @@ PeSynFFT::myUpdate(MarControlPtr sender)
 
 	realvec conv(4);
 	conv.setval(-1);
-	if(getctrl("mrs_string/panning")->toString() != EMPTYSTRING)
+	if(getctrl("mrs_string/panning")->toString() != "MARSYAS_EMPTY")
 	{
 	string2parameters(getctrl("mrs_string/panning")->toString(), conv, '_');
 	}
@@ -90,7 +90,7 @@ PeSynFFT::generateMask(mrs_natural type)
 	realvec peaks = ctrl_Peaks_->toVec();
 
 	//cout << peaks;
-	mrs_natural nbPeaks = peaks.getSize()/nbPkParameters;
+	mrs_natural nbPeaks = peaks.getSize()/peakView::nbPkParameters;
 
 	// intialize background
 	if(bgVolume_ != -1)
@@ -109,8 +109,8 @@ PeSynFFT::generateMask(mrs_natural type)
 	{
 		for(j=0 ; j<nbPeaks; j++)
 		{
-			if(peaks(j+pkGroup*nbPeaks) > -1 &&
-				 i>=peaks(j+nbPeaks*pkBinLow)*onObservations_ && i<peaks(j+nbPeaks*pkBinHigh)*onObservations_)
+			if(peaks(j+peakView::pkGroup*nbPeaks) > -1 &&
+				 i>=peaks(j+nbPeaks*peakView::pkBinLow)*onObservations_ && i<peaks(j+nbPeaks*peakView::pkBinHigh)*onObservations_)
 			{
 				mrs_real vol, pan;
 				if(fgVolume_ != -1)
@@ -122,8 +122,8 @@ PeSynFFT::generateMask(mrs_natural type)
 				else
 				{
 					// use peaks info
-					vol = peaks(j+nbPeaks*pkVolume);
-					pan = peaks(j+nbPeaks*pkPan);
+					vol = peaks(j+nbPeaks*peakView::pkVolume);
+					pan = peaks(j+nbPeaks*peakView::pkPan);
 				}
 
 				mask_(i) = vol;

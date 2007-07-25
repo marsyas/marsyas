@@ -16,6 +16,13 @@ CONFIG(debug, debug|release){
 	LIBS += -lqwt -L\"$$BASEDIR/otherlibs/Qwt/lib/debug\"
 }
 
+     LIBPATH+= /usr/local/lib
+     LIBS += -lQGLViewer
+     DEFINES += MARSYAS_QGLVIEWER 
+     INCLUDEPATH += /usr/local/include/qglviewer
+
+
+
 # Input
 HEADERS += \
 	../MarSystemQtWrapper.h \

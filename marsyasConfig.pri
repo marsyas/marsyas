@@ -80,10 +80,17 @@ unix:!macx:CONFIG += marsyasAUDIOIO_ALSA
 #CONFIG += marsyasMAD
 
 ######################################################################
+# Adds support for qglviewer (QT-based OpenGL viewer)
+######################################################################
+
+#CONFIG += marsyasQGLVIEWER
+
+######################################################################
 # Adds support for oggvorbis
 ######################################################################
 
 #CONFIG	+= marsyasOGG
+
 
 
 #*********************************************************************
@@ -136,6 +143,7 @@ marsyasMATLABrelease {
 	}
 }
 
+
 marsyasAUDIOIO:message( -> AUDIO I/O support (RtAudio) )
 marsyasAUDIOIO_ALSA:message ( --> ALSA  )
 marsyasAUDIOIO_JACK:message ( --> JACK )
@@ -145,12 +153,12 @@ marsyasAUDIOIO_DS:message( --> DIRECT SHOW )
 marsyasAUDIOIO_ASIO:message( --> ASIO )
 
 marsyasMIDIIO:message ( -> MIDI I/O support (RtMIDI) )
-
 marsyasMAD:message( -> MP3 MAD support )
 marsyasOGG:message( -> Ogg Vorbis support )
 
 marsyasConsoleApps:message ( -> build Console Apps )
 marsyasQt4Apps:message(  -> build Qt4 Apps )
+marsyasQGLVIEWER:message (-> QGVVIEWER support) 
 
 unix:{
 !macx {    # qmake detects osx as "unix" in 4.2.2.  :/
@@ -207,6 +215,10 @@ unix:{
 		DEFINES += MARSYAS_MAD
 	}
 }
+
+   # For all unix, including macx
+   
+   
 }
 
 macx {
@@ -231,8 +243,10 @@ macx {
 		
 	marsyasMATLABdebug {
 		CONFIG(debug, debug|release) {
-			#INCLUDEPATH += ???
-			#LIBS += ???
+			INCLUDEPATH += $$(MATLAB)/extern/include
+			LIBPATH += $$(MATLAB)/bin/maci \
+				   $$(MATLAB)/sys/os/maci 
+			LIBS += -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz -lhdf5
 			DEFINES 	+= MARSYAS_MATLAB
 		}
 	}
@@ -312,16 +326,16 @@ win32 {
 		CONFIG(debug, debug|release) {
 			DEFINES += MARSYAS_MATLAB
 			INCLUDEPATH += $$quote( "$$(MATLAB)/extern/include" )
-			LIBS += -llibeng -llibmx -llibut 
-			LIBPATH += $$quote( "$$(MATLAB)/extern/lib/win32/microsoft" )
+			LIBS += libeng.lib libmx.lib libut.lib 
+			LIBPATH += $$quote( \"$$(MATLAB)/extern/lib/win32/microsoft\" )
 		}
 	}
 	marsyasMATLABrelease{
 		CONFIG(release, debug|release) {
 			DEFINES += MARSYAS_MATLAB
 			INCLUDEPATH += $$quote( "$$(MATLAB)/extern/include" )
-			LIBS += -llibeng -llibmx -llibut 
-			LIBPATH += $$quote( "$$(MATLAB)/extern/lib/win32/microsoft" )
+			LIBS += libeng.lib libmx.lib libut.lib 
+			LIBPATH += $$quote( \"$$(MATLAB)/extern/lib/win32/microsoft\" )
 		}
 	}
 	
@@ -330,13 +344,13 @@ win32 {
 		DEFINES += MARSYAS_MAD
 		CONFIG(release, debug|release){
 			message(Building with libMAD MP3 support (release).)
-			LIBS += -llibmad 
-			LIBPATH += $$quote( "$$(LIBMAD)/msvc++/Release" )
+			LIBS += libmad.lib 
+			LIBPATH += $$quote( \"$$(LIBMAD)/msvc++/Release\" )
 		}
 		CONFIG(debug, debug|release){
 			message(Building with libMAD MP3 support (debug).)
-			LIBS += -llibmad 
-			LIBPATH += $$quote( "$$(LIBMAD)/msvc++/Debug" )
+			LIBS += libmad.lib 
+			LIBPATH += $$quote( \"$$(LIBMAD)/msvc++/Debug\" )
 		}
 	}
 }

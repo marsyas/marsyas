@@ -17,10 +17,10 @@
 */
 
 /** 
-    \class Norm
-    \brief Norm: normalize input row vectors
+\class Norm
+\brief Norm: normalize input row vectors (i.e. observations = features)
 
-    Normalize by subtracting mean and dividing by standard deviation
+Normalize (observations = features) by subtracting observations' mean and dividing by observations' standard deviation
 */
 
 #ifndef MARSYAS_NORM_H
@@ -31,19 +31,18 @@
 namespace Marsyas
 {
 
-class Norm: public MarSystem
-{
-public:
-  // Norm();
-  Norm(std::string name);
-  ~Norm();
-  MarSystem* clone() const;  
-  
-  void myProcess(realvec& in, realvec& out);
-};
+	class Norm: public MarSystem
+	{
+	public:
+		Norm(std::string name);
+		~Norm();
+		MarSystem* clone() const;  
+
+		void myProcess(realvec& in, realvec& out);
+	};
 
 }//namespace Marsyas
 
 #endif
 
-	
+

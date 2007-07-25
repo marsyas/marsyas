@@ -17,9 +17,9 @@
 */
 
 /** 
-    \class PeResidual
-	\ingroup none
-    \brief Compute the Reconstruction Signal-to-Noise Ratio
+\class PeResidual
+\ingroup none
+\brief Compute the Reconstruction Signal-to-Noise Ratio
 */
 
 #include "PeResidual.h"
@@ -29,15 +29,14 @@ using namespace Marsyas;
 
 PeResidual::PeResidual(string name):MarSystem("PeResidual", name)
 {
-  
+
 	addControls();
 }
 
 PeResidual::PeResidual(const PeResidual& a) : MarSystem(a)
 {
-//	ctrl_resVec_ = getctrl("mrs_realvec/resVec");
+	ctrl_SNR_ = getctrl("mrs_real/SNR");
 }
-
 
 PeResidual::~PeResidual()
 {
@@ -46,70 +45,68 @@ PeResidual::~PeResidual()
 MarSystem* 
 PeResidual::clone() const 
 {
-  return new PeResidual(*this);
+	return new PeResidual(*this);
 }
 
 void 
 PeResidual::addControls()
 {
-  //Add specific controls needed by this MarSystem.
-  addctrl("mrs_real/snr", 0.0);
-//	addctrl("mrs_realvec/resVec", realvec(), ctrl_resVec_);
-//  setctrlState("mrs_realvec/peakSet", true);
+	addctrl("mrs_real/SNR", 0.0, ctrl_SNR_);
 }
 
- void
+void
 PeResidual::myUpdate(MarControlPtr sender)
 {
-	setctrl("mrs_natural/onSamples", 
-		getctrl("mrs_natural/inSamples"));
-	setctrl("mrs_natural/onObservations", 
-		getctrl("mrs_natural/inObservations")->toNatural()/2);
-	setctrl("mrs_real/osrate", 
-		getctrl("mrs_real/israte"));
-	setctrl("mrs_string/onObsNames", 
-		getctrl("mrs_string/inObsNames"));
+	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
+	ctrl_onObservations_->setValue(ctrl_inObservations_->to<mrs_natural>()/2, NOUPDATE);
+	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
+
+	ostringstream oss;
+	string inObsNames = ctrl_inObsNames_->toString();
+	string inObsName;
+	string temp;
+	for(o=0; o < ctrl_onObservations_->to<mrs_natural>(); o++)
+	{
+		inObsName = inObsNames.substr(0, inObsNames.find(","));
+		temp = inObsNames.substr(inObsNames.find(",")+1, inObsNames.length());
+		inObsNames = temp;
+		oss << inObsName << "_residual,";
+	}
+	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 }
 
 void 
 PeResidual::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
+	mrs_real snr = -80.0;
+	mrs_real originalPower;
+	mrs_real synthPower;
+	mrs_real diffPower;
 
-  mrs_real snr=-80; 
-  
-  for (o=0; o < inObservations_/2; o++)
+	for (o=0; o < inObservations_/2; o++)
 	{
-		mrs_real tmpOri=0;
-		mrs_real tmpSyn=0;
-		mrs_real tmpDiff=0;
+		originalPower=0;
+		synthPower=0;
+		diffPower=0;
 		for (t = 0; t < inSamples_; t++)
 		{
 			out(o,t) =  in(o,t)-in(o+1, t);
-			tmpSyn += in(o, t)*in(o, t);
-			tmpDiff += out(o, t)*out(o, t);
-			tmpOri += in(o+1, t)*in(o+1, t);
+			synthPower += in(o, t)*in(o, t);
+			diffPower += out(o, t)*out(o, t);
+			originalPower += in(o+1, t)*in(o+1, t);
 		}
 
-			//	tmpOri/=inSamples_;
-			//tmpSyn/=inSamples_;
-			//tmpDiff/=inSamples_;
-		
-			if(tmpSyn > .001 && tmpOri > .01)
-		{
+		//originalPower/=inSamples_;
+		//synthPower/=inSamples_;
+		//diffPower/=inSamples_;
 
-			snr= log10((tmpOri)/(tmpDiff+MINREAL)); // +tmpSyn
+		if(synthPower > .001 && originalPower > .01) //[?]
+		{
+			snr = log10((originalPower)/(diffPower+MINREAL)); // +synthPower
 		}
 	}
 
- setctrl("mrs_real/snr", snr);
-
- /*mrs_natural resVecSize = ctrl_resVec_->to<realvec> ().getSize();
-ctrl_resVec_->stretch(resVecSize+1);
-(**ctrl_resVec_)(resVecSize) = snr;*/
-
- //   MATLAB_PUT(in, "vec");
- // MATLAB_EVAL("figure(1);clf;plot(vec');");
+	ctrl_SNR_->setValue(snr);
 }
 
 
@@ -118,4 +115,4 @@ ctrl_resVec_->stretch(resVecSize+1);
 
 
 
-	
+

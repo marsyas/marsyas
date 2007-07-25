@@ -29,6 +29,7 @@
 
 #include "BICchangeDetector.h"
 #include "Memory.h"
+#include "NumericLib.h"
 
 using namespace std;
 using namespace Marsyas;
@@ -153,17 +154,22 @@ BICchangeDetector::myProcess(realvec& in, realvec& out)
 	}
 
 	//calculate covariance matrix for each segment
-	C1_ = C2_.covariance();
-	C2_ = C2_.covariance();
-	C3_ = C3_.covariance();
-	C4_ = C4_.covariance();
+	realvec tmp;
+	C1_.covariance(tmp);
+	C1_ = tmp;
+	C2_.covariance(tmp);
+	C2_ = tmp;
+	C3_.covariance(tmp);
+	C3_ = tmp;
+	C4_.covariance(tmp);
+	C4_ = tmp;
 
 	//update current qGMM model, using the first sub-segment data, C1_
 	QGMMmodel_.updateModel(C1_, segFrames_);
 
 	//calculate divergenceShape between sub-segment pairs
-	dist12_ = realvec::divergenceShape(C1_, C2_);
-	dist34_ = realvec::divergenceShape(C3_, C4_);
+	dist12_ = NumericLib::divergenceShape(C1_, C2_);
+	dist34_ = NumericLib::divergenceShape(C3_, C4_);
 
 	//calculate bhattacharyyaShape between sub-segment pairs => should be an option! [!]
 	//mrs_real dist12 = realvec::bhattacharyyaShape(C1_, C2_);

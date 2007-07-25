@@ -1831,3 +1831,195 @@ void NumericLib::svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realv
         }
      }
 }
+
+/////////////////////////////////////////////////////////////
+//  METRICS
+/////////////////////////////////////////////////////////////
+mrs_real
+NumericLib::euclideanDistance(const realvec& Vi, const realvec& Vj, const realvec& covMatrix)
+{
+	mrs_real res1;
+	mrs_real res = 0;
+
+	//if no variances are passed as argument (i.e. empty covMatrix), 
+	//just do a plain euclidean computation
+	if(covMatrix.getSize() == 0)
+	{
+		for (mrs_natural r=0 ; r < Vi.getSize()  ; r++)
+		{
+			res1 = Vi(r)-Vj(r);
+			res1 *= res1; //square
+			res += res1; //summation
+		}
+		res = sqrt(res);
+	}
+	else 
+	{
+		// do a standardized euclidean distance 
+		//(i.e. just use the diagonal elements of covMatrix)
+		for (mrs_natural r=0 ; r < Vi.getSize()  ; r++)
+		{
+			res1 = Vi(r)-Vj(r);
+			res1 *= res1; //square
+			res1 /= covMatrix(r,r); //divide by var of each feature 
+			res += res1; //summation
+		}
+		res = sqrt(res);
+	}
+	return res;
+}
+
+mrs_real
+NumericLib::mahalanobisDistance(const realvec& Vi, const realvec& Vj, const realvec& covMatrix)
+{
+	//realvec invCovMatrix;
+	//covMatrix.invert(invCovMatrix);
+
+	//NOT IMPLEMENTED YET!!!! [!]
+	return MINREAL;
+}
+
+mrs_real
+NumericLib::cosineDistance(const realvec& Vi, const realvec& Vj, const realvec& dummy)
+{
+	//as defined in: 
+	//http://www.mathworks.com/access/helpdesk/help/toolbox/stats/index.html?/access/helpdesk/help/toolbox/stats/pdist.html
+	mrs_real res1 = 0;
+	mrs_real res2 = 0;
+	mrs_real res3 = 0;
+	mrs_real res = 0;
+	for (mrs_natural r=0 ; r < Vi.getSize()  ; r++)
+	{
+		res1 += Vi(r)*Vj(r);
+		res2 += Vi(r)*Vi(r);
+		res3 += Vj(r)*Vj(r);
+	}
+	if (res2!=0 && res3!=0)
+	{
+		res = res1/sqrt(res2 * res3);
+		if(res > 1.0) //cosine similarity should never be bigger than 1.0!!
+		{
+			MRSWARN("NumericLib::cosineDistance() - cosine similarity value is > 1.0 by " << res-1.0 << " -> setting value to 1.0!");
+			res = 1.0;
+		}
+		return (1.0 - res); //return DISTANCE (and not the cosine similarity)
+	}
+	else
+	{
+		MRSERR("NumericLib::cosineDistance() - at least one of the input points have small relative magnitudes, making it effectively zero... returning invalid value of -1.0!");
+		return -1.0;
+	}
+}
+
+mrs_real
+NumericLib::cityblockDistance(const realvec& Vi, const realvec& Vj, const realvec& dummy)
+{
+	return MINREAL; //NOT IMPLEMENTED YET!!!! [!]
+}
+
+mrs_real
+NumericLib::correlationDistance(const realvec& Vi, const realvec& Vj, const realvec& dummy)
+{
+	return MINREAL; //NOT IMPLEMENTED YET!!!! [!]
+}
+
+mrs_real
+NumericLib::divergenceShape(const realvec& Ci, const realvec& Cj, const realvec& dummy)
+{
+	///matrices should be square and equal sized
+	if(Ci.getCols() != Cj.getCols() && Ci.getRows() != Cj.getRows() &&
+		Ci.getCols()!= Ci.getRows())
+	{
+		MRSERR("realvec::divergenceShape() : input matrices should be square and equal sized. Returning invalid value (-1.0)");
+		return -1.0;
+	}
+
+	realvec Cii = Ci;
+	realvec Cjj = Cj;
+
+	mrs_real res;
+
+	realvec Citemp(Cii.getRows(), Cii.getCols());
+	realvec invCi(Cii);
+
+	realvec Cjtemp(Cjj.getRows(),Cjj.getCols());
+	realvec invCj(Cjj);
+
+#ifdef _MATLAB_REALVEC_
+	MATLAB_PUT(Cii, "Ci");
+	MATLAB_PUT(Cjj, "Cj");
+	MATLAB_PUT(Citemp, "Citemp");
+	MATLAB_PUT(Cjtemp, "Cjtemp");
+#endif
+
+
+	invCi.invert(Citemp); 
+	invCj.invert(Cjtemp);
+
+#ifdef _MATLAB_REALVEC_
+	MATLAB_PUT(Citemp, "Citemp2");
+	MATLAB_PUT(Cjtemp, "Cjtemp2");
+	MATLAB_PUT(invCi, "invCi");
+	MATLAB_PUT(invCj, "invCj");
+#endif
+
+	Cjj *= (-1.0);
+	Cii += Cjj;
+
+#ifdef _MATLAB_REALVEC_
+	MATLAB_PUT(Cii, "Ci_minus_Cj");
+#endif
+
+	invCi *= (-1.0);
+	invCj += invCi;
+
+#ifdef _MATLAB_REALVEC_
+	MATLAB_PUT(invCj, "invCj_minus_invCi");
+#endif
+
+	Cii *= invCj;
+
+	res = Cii.trace() / 2.0;
+
+#ifdef _MATLAB_REALVEC_
+	MATLAB_PUT(Cii, "divergenceMatrix");
+	MATLAB_PUT(res, "divergence");
+#endif
+
+	return res;
+}
+
+mrs_real
+NumericLib::bhattacharyyaShape(const realvec& Ci, const realvec& Cj, const realvec& dummy)
+{
+	///matrices should be square and equal sized
+	if(Ci.getCols() != Cj.getCols() && Ci.getRows() != Cj.getRows() &&
+		Ci.getCols()!= Ci.getRows())
+	{
+		MRSERR("realvec::bhattacharyyaShape() : input matrices should be square and equal sized. Returning invalid value (-1.0)");
+		return -1.0;
+	}
+
+	realvec Cii = Ci;
+	realvec Cjj = Cjj;
+
+	//denominator
+	mrs_real sqrtdetCi = sqrt(Cii.det());
+	mrs_real sqrtdetCj = sqrt(Cjj.det());
+	mrs_real den = sqrtdetCi * sqrtdetCj;
+#ifdef _MATLAB_REALVEC_
+	MATLAB_PUT(Cii, "Ci");
+	MATLAB_PUT(Cjj, "Cj");
+	MATLAB_PUT(sqrtdetCi, "sqrtdetCi");
+	MATLAB_PUT(sqrtdetCj, "sqrtdetCj");
+	MATLAB_PUT(den, "den");
+#endif
+
+	//numerator
+	Cii += Cjj;
+	Cii /= 2.0;
+	mrs_real num = Cii.det();
+
+	//bhattacharyyaShape
+	return log(num/den);
+}

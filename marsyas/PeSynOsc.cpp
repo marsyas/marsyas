@@ -18,7 +18,7 @@
 
 /** 
 \class PeSynOsc
-	\ingroup none
+\ingroup none
 \brief PeSynOsc
 
 Multiply with window (both length Nw) using modulus arithmetic;
@@ -27,20 +27,15 @@ according to current input time (t)
 */
 
 #include "PeSynOsc.h"
-#include "PeUtilities.h"
+#include "peakView.h"
 
 using namespace std;
 using namespace Marsyas;
 
 PeSynOsc::PeSynOsc(string name):MarSystem("PeSynOsc",name)
 {
-	//type_ = "PeSynOsc";
-	//name_ = name;
-
 	addControls();
 }
-
-
 
 PeSynOsc::PeSynOsc(const PeSynOsc& a):MarSystem(a)
 {
@@ -58,7 +53,6 @@ PeSynOsc::clone() const
 	return new PeSynOsc(*this);
 }
 
-
 void 
 PeSynOsc::addControls()
 {
@@ -73,7 +67,7 @@ PeSynOsc::myUpdate(MarControlPtr sender)
 {
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/synSize"));
 	setctrl("mrs_natural/onObservations", (mrs_natural)1);
-	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());    
+	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal()); //HACK!! [!] - see PeConvert::myUpdate()
 
 	delay_ = getctrl("mrs_natural/delay")->toNatural();
 
@@ -100,7 +94,7 @@ PeSynOsc::myProcess(realvec& in, realvec& out)
 	mrs_natural N, Nb, nbH;
 	int i;
 
-	Nb = in.getSize()/nbPkParameters ; //getctrl("mrs_natural/nbSinusoids")->toNatural();
+	Nb = in.getSize()/peakView::nbPkParameters ; //getctrl("mrs_natural/nbSinusoids")->toNatural();
 	N= out.getSize();
 
 	out.setval(0);
@@ -111,21 +105,20 @@ PeSynOsc::myProcess(realvec& in, realvec& out)
 		{
 			mrs_real mulF = ctrl_harmonize_->toVec()(1+j*2); 
 			mrs_real mulA = ctrl_harmonize_->toVec()(2+j*2);
-		//	cout << "mulF" << mulF << "mulA" << mulA << endl;
+			//	cout << "mulF" << mulF << "mulA" << mulA << endl;
 			for (i=0; i < Nb; i++)
 			{
-				if(in(i+pkGroup*Nb) > -1)
+				if(in(i+peakView::pkGroup*Nb) > -1)
 					sine(out, in(i)*mulF, in(i+Nb)*mulA, in(i+2*Nb));
 			}
 		}
 	else
 		for (i=0; i < Nb; i++)
 		{
-			if(in(i+pkGroup*Nb) > -1)
+			if(in(i+peakView::pkGroup*Nb) > -1)
 				sine(out, in(i), in(i+Nb), in(i+2*Nb));
-		//	cout << "truc" << endl;
+			//	cout << "truc" << endl;
 		}
-	//	cout << "machin" << endl;
 }
 
 

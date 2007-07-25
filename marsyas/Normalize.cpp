@@ -17,9 +17,9 @@
 */
 
 /** 
-    \class Normalize
-	\ingroup Processing
-    \brief Normalize my mapping min/max range to user specified range
+\class Normalize
+\ingroup Processing
+\brief Normalize my mapping min/max range to user specified range
 */
 
 #include "Normalize.h"
@@ -27,11 +27,8 @@
 using namespace std;
 using namespace Marsyas;
 
-
 Normalize::Normalize(string name):MarSystem("Normalize",name)
 {
-  //type_ = "Normalize";
-  //name_ = name;
 }
 
 Normalize::~Normalize()
@@ -41,36 +38,29 @@ Normalize::~Normalize()
 MarSystem* 
 Normalize::clone() const 
 {
-  return new Normalize(*this);
+	return new Normalize(*this);
 }
 
 void 
 Normalize::myProcess(realvec& in, realvec& out)
 {
-  
-  //checkFlow(in,out);
+	mrs_real rms = 0.0;
 
-  mrs_real rms = 0.0;
-
-  for (t = 0; t < inSamples_; t++)  
-    {
-      rms = 0.0;
-
-      // calculate 2-norm 
-      for (o=0; o < inObservations_; o++)
+	for (t = 0; t < inSamples_; t++)  
+	{
+		rms = 0.0;
+		// calculate 2-norm 
+		for (o=0; o < inObservations_; o++)
 		{
-		  rms += (in(o,t) * in(o,t));
+			rms += (in(o,t) * in(o,t));
 		}
-      rms = sqrt(rms);
-
-      // normalize 
-      for (o=0; o < inObservations_; o++)
+		rms = sqrt(rms);
+		// normalize 
+		for (o=0; o < inObservations_; o++)
 		{
-		  out(o,t) = in(o,t) / rms;
+			out(o,t) = in(o,t) / rms;
 		}
- 
-    }
-  
+	}
 }
 
 
@@ -79,7 +69,7 @@ Normalize::myProcess(realvec& in, realvec& out)
 
 
 
-	
-	
 
-	
+
+
+

@@ -18,11 +18,7 @@
 
 /** 
     \class PeResidual
-    \brief Multiply input realvec with PeResidual
-
-   Simple MarSystem example. Just multiply the values of the input realvec
-with PeResidual and put them in the output vector. This object can be used 
-as a prototype template for building more complicated MarSystems. 
+    \brief Compute the Reconstruction Signal-to-Noise Ratio
 */
 
 #ifndef MARSYAS_PERESIDUAL_H
@@ -36,11 +32,9 @@ namespace Marsyas
 class PeResidual: public MarSystem
 {
 private: 
-	MarControlPtr ctrl_resVec_ ;
+	MarControlPtr ctrl_SNR_ ;
 
-  //Add specific controls needed by this MarSystem.
 	void addControls();
-	
 	void myUpdate(MarControlPtr sender);
 
 public:

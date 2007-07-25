@@ -15,14 +15,11 @@
 ** along with this program; if not, write to the Free Software 
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-
-
 /** 
-    \class PeSynOscBank
-    \brief PeSynOscBank
+\class PeSynOscBank
+\brief PeSynOscBank
 
-    A bank of sine wave oscillators used for phasevocoding. 
-
+A bank of sine wave oscillators used for phasevocoding. 
 */
 
 #ifndef MARSYAS_PeSynOscBank_H
@@ -33,55 +30,54 @@
 namespace Marsyas
 {
 
-class PeSynOscBank: public MarSystem
-{
-private:
+	class PeSynOscBank: public MarSystem
+	{
+	private:
+		realvec lastamp_;
+		realvec nextamp_;
+		realvec lastfreq_;
+		realvec nextfreq_;
+		realvec index_;
+		realvec nextindex_;
+		realvec table_;
+		mrs_natural nbH_;
+		mrs_natural L_;
+		mrs_natural N_;
+		mrs_natural NP_;
+		mrs_real P_;
+		mrs_real Iinv_;
+		mrs_real Pinc_;
+		mrs_real R_;
+		mrs_natural I_;
+		mrs_real S_;
+		mrs_natural size_, psize_;
+		mrs_real address_,paddress_, ppaddress_,f_, finc_, a_, ainc_;
+		mrs_natural naddress_;
+		mrs_real tableval_;
 
-	  MarControlPtr ctrl_harmonize_;
+		MarControlPtr ctrl_harmonize_;
 
-  realvec lastamp_;
-  realvec nextamp_;
-  realvec lastfreq_;
-  realvec nextfreq_;
-  realvec index_;
-	  realvec nextindex_;
-  realvec table_;
-	mrs_natural nbH_;
-  mrs_natural L_;
-  mrs_natural N_;
-  mrs_natural NP_;
-  mrs_real P_;
-  mrs_real Iinv_;
-  mrs_real Pinc_;
-  mrs_real R_;
-  mrs_natural I_;
-  mrs_real S_;
-  mrs_natural size_, psize_;
-  mrs_real address_,paddress_, ppaddress_,f_, finc_, a_, ainc_;
-  mrs_natural naddress_;
-  mrs_real tableval_;
+		void addControls();
+		void myUpdate(MarControlPtr sender);
 
-  void addControls();
-	void myUpdate(MarControlPtr sender);
-  
-public:
-  PeSynOscBank(std::string name);
-  	PeSynOscBank(const PeSynOscBank&);
+	public:
+		PeSynOscBank(std::string name);
+		PeSynOscBank(const PeSynOscBank&);
 
-  ~PeSynOscBank();
-  MarSystem* clone() const;    
-  
-  void process1(realvec& in, realvec& out);
-  void myProcess(realvec& in, realvec& out);
-  
-};
+		~PeSynOscBank();
+		MarSystem* clone() const;    
+
+		void process1(realvec& in, realvec& out);
+		void myProcess(realvec& in, realvec& out);
+
+	};
 
 }//namespace Marsyas
 
 #endif
 
-	
 
-	
 
-	
+
+
+

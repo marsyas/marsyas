@@ -99,7 +99,7 @@ namespace Marsyas
 /*  MATLAB engine macros                                                */
 /************************************************************************/
 #ifdef MARSYAS_MATLAB
-	#include "MATLAB/MATLABengine.h"
+	#include "MATLABengine.h"
 	#define MATLAB_PUT(var, name) {MATLABengine::getMatlabEng()->putVariable(var, name);}
 	#define MATLAB_GET(name, var){MATLABengine::getMatlabEng()->getVariable(name, var);}
 	#define MATLAB_EVAL(s) {MATLABengine::getMatlabEng()->evalString(s);} 

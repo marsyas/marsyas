@@ -57,13 +57,13 @@ PeCluster::init(realvec& peakSet, mrs_natural l)
 	for (i=0 ; i< peakSet.getRows() ; i++)
 		if (peakSet(i, pkGroup) == l)
 		{
-			if(peakSet(i, pkTime) < start)
+			if(peakSet(i, pkFrame) < start)
 			{
-				start = peakSet(i, pkTime);
+				start = peakSet(i, pkFrame);
 			}
-			if(peakSet(i, pkTime) > end)
+			if(peakSet(i, pkFrame) > end)
 			{
-				end= peakSet(i, pkTime);
+				end= peakSet(i, pkFrame);
 			}
 			nbPeaks++;
 		}
@@ -104,10 +104,10 @@ PeCluster::computeAttributes(realvec& peakSet, mrs_natural l, string type, mrs_r
 
 		for(i=0 ; i<nbPeaks ; i++)
 		{ 
-			frequencyEvolution(((mrs_natural) set(i, pkTime)-start)) += 
+			frequencyEvolution(((mrs_natural) set(i, pkFrame)-start)) += 
 				set(i, pkFrequency);//*set(i, pkAmplitude);
 
-			amplitudeEvolution(((mrs_natural) set(i, pkTime)-start)) += 
+			amplitudeEvolution(((mrs_natural) set(i, pkFrame)-start)) += 
 				set(i, pkAmplitude);
 		}
 
@@ -337,8 +337,8 @@ PeClusters::PeClusters(realvec &peakSet)
 		//  cout << peakSet(i, pkGroup) << " ";
 		if(peakSet(i, pkGroup) > nbClusters)
 			nbClusters = (mrs_natural) peakSet(i, pkGroup);
-		if(peakSet(i, pkTime) > nbFrames)
-			nbFrames = (mrs_natural) peakSet(i, pkTime);
+		if(peakSet(i, pkFrame) > nbFrames)
+			nbFrames = (mrs_natural) peakSet(i, pkFrame);
 	}
 	nbClusters++;
 	nbFrames++;
@@ -483,7 +483,7 @@ PeClusters::synthetize(realvec &peakSet, string fileName, string outFileName, mr
 				// get snr and decide ground thruth
 				if(residual)
 				{
-					const mrs_real snr = pvseries->getctrl("PeSynthetize/synthNet/Series/postNet/PeResidual/res/mrs_real/snr")->toReal();
+					const mrs_real snr = pvseries->getctrl("PeSynthetize/synthNet/Series/postNet/PeResidual/res/mrs_real/SNR")->toReal();
 					//	cout << " SNR : "<< snr << endl;
 					if(snr != -80)
 					{

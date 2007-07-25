@@ -102,15 +102,12 @@ pkginclude_HEADERS = \
 	PvFold.h \
 	PvConvert.h \
 	PeConvert.h \
-	PeClust.h \
 	PeSynOsc.h \
 	PeSynOscBank.h \
 	PeSynFFT.h \
 	OverlapAdd.h \
 	PeResidual.h \
 	PeUtilities.h \
-	PeClusters.h \
-	PeSimilarity.h \
 	Polar2Cartesian.h \
 	Cartesian2Polar.h \
 	FlowCutSource.h \
@@ -243,12 +240,24 @@ pkginclude_HEADERS = \
 	AudioSource2.h \
 	SoundFileSource2.h \
 	WavFileSource2.h \
-	HWPSspectrum.h \
 	Panorama.h \
 	Vibrato.h \
 	FlowThru.h \
 	FanOutIn.h \
 	MarSystemTemplateMedium.h \
+	PeFeatSelect.h \
+	SimilarityMatrix.h \
+	Metric.h \
+	HWPS.h \
+	RBF.h \
+	NormMatrix.h \
+	WHaSp.h \
+	FanOutIn.h \
+	PeLabeler.h \
+	PeClusterSelect.h \
+	peakView.h \
+	PeakViewSink.h \
+	PeakViewSource.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 

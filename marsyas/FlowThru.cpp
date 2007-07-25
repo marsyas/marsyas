@@ -25,7 +25,8 @@ Combines a series of MarSystem objects to a single MarSystem
 corresponding to executing the System objects one after the other 
 in sequence, but forwards the original composite input flow to the output. 
 
-Controls: none
+	Controls:
+	- \b mrs_realvec/innerOut [r] : this control contains the output of the last child of the composite
 */
 
 #include "FlowThru.h"
@@ -37,6 +38,11 @@ FlowThru::FlowThru(string name):MarSystem("FlowThru",name)
 {
 	isComposite_ = true;
 	addControls();
+}
+
+FlowThru::FlowThru(const FlowThru& a):MarSystem(a)
+{
+	ctrl_innerOut_ = getctrl("mrs_realvec/innerOut");
 }
 
 FlowThru::~FlowThru()
@@ -53,6 +59,7 @@ FlowThru::clone() const
 void 
 FlowThru::addControls()
 {
+	addctrl("mrs_realvec/innerOut", realvec(), ctrl_innerOut_);
 }
 
 void 
@@ -107,6 +114,11 @@ FlowThru::myUpdate(MarControlPtr sender)
 				marsystems_[i-1]->ctrl_osrate_);
 			marsystems_[i]->update();
 		}
+		
+		//THIS DOES NOT WORK DUE TO BREAKS IN ENCAPSULATION!!!! [!]
+		//link mrs_realvec/innerOut control to the output control of the last child
+		//ctrl_innerOut_->clearLinks();
+		//ctrl_innerOut_->linkTo(marsystems_[marsystemsSize_-1]->getctrl("mrs_realvec/processedData"));
 
 		// update buffers (aka slices) between components 
 		if ((mrs_natural)slices_.size() < marsystemsSize_) 
@@ -123,10 +135,11 @@ FlowThru::myUpdate(MarControlPtr sender)
 					slices_[i] = new realvec(marsystems_[i]->ctrl_onObservations_->toNatural(), 
 						marsystems_[i]->ctrl_onSamples_->toNatural());
 
-					(marsystems_[i])->ctrl_processedData_->setValue(*(slices_[i]));
+					(marsystems_[i])->ctrl_processedData_->setValue(*(slices_[i]));// [WTF] ?!?!?!?!?!?!?!?!?!?!??!!?!?!?!? [?]
 
 					slPtrs_.push_back(marsystems_[i]->ctrl_processedData_);
-					(slices_[i])->setval(0.0);
+					
+					(slices_[i])->setval(0.0);// [WTF] ?!?!?!?!?!?!?!?!?!?!??!!?!?!?!? [?]
 				}
 			}
 			else 
@@ -134,10 +147,16 @@ FlowThru::myUpdate(MarControlPtr sender)
 				slices_[i] = new realvec(marsystems_[i]->ctrl_onObservations_->toNatural(), 
 					marsystems_[i]->ctrl_onSamples_->toNatural());
 
-				marsystems_[i]->ctrl_processedData_->setValue(*(slices_[i]));
+				marsystems_[i]->ctrl_processedData_->setValue(*(slices_[i]));// [WTF] ?!?!?!?!?!?!?!?!?!?!??!!?!?!?!? [?]
+				
 				slPtrs_.push_back(marsystems_[i]->ctrl_processedData_);
 
-				(slices_[i])->setval(0.0);
+				(slices_[i])->setval(0.0);// [WTF] ?!?!?!?!?!?!?!?!?!?!??!!?!?!?!? [?]
+			}
+
+			if(i==marsystemsSize_-1)
+			{
+				ctrl_innerOut_->create(marsystems_[i]->ctrl_onObservations_->toNatural(),marsystems_[i]->ctrl_onSamples_->toNatural());
 			}
 		}
 	}
@@ -159,9 +178,17 @@ FlowThru::myProcess(realvec& in, realvec& out)
 			{
 				marsystems_[i]->process(in, (realvec &) slPtrs_[i]->to<mrs_realvec>());
 			}
+			else if (i == marsystemsSize_-1)//!!!!!!!!!!!!!!!!!!!!!!!! [!]
+			{
+				mrs_realvec outVec;
+				outVec.allocate(marsystems_[i]->ctrl_onObservations_->toNatural(),
+												marsystems_[i]->ctrl_onSamples_->toNatural());
+				marsystems_[i]->process((realvec &) slPtrs_[i-1]->to<mrs_realvec>(),outVec); 
+				ctrl_innerOut_->setValue(outVec); //COPYING INVOLVED! ONLY WAY TO GET AROUND BREAK IN INCAPSULATION (so we can use links to this control)
+			}
 			else
 				marsystems_[i]->process((realvec &) slPtrs_[i-1]->to<mrs_realvec>(), 
-				(realvec &) slPtrs_[i]->to<mrs_realvec>());
+																(realvec &) slPtrs_[i]->to<mrs_realvec>());
 		}
 	}
 	else if(marsystemsSize_ == 0) //composite has no children!

@@ -6,7 +6,9 @@
 #include "CommandLineOptions.h"
 #include "Collection.h"
 #include "FileName.h"
-#include "PeUtilities.h"
+
+//#include "PeUtilities.h"
+#include "peakView.h"
 
 using namespace std;
 using namespace Marsyas;
@@ -15,7 +17,7 @@ using namespace Marsyas;
 bool helpopt = 0;
 bool usageopt =0;
 
-string outFileName = EMPTYSTRING;
+string outFileName = "MARSYAS_EMPTY";
 
 CommandLineOptions cmd_options;
 
@@ -63,48 +65,56 @@ loadOptions()
 }
 
 mrs_real
-calculateSimilarity(string peaksfname1, string peaksfname2)
+calculateSimilarity(string peaks1fname, string peaks2fname)
 {
+	mrs_real fs1, fs2;
+	//mrs_natural nbSines1, nbSines2, nbFrames1, nbFrames2, hopSize1, hopSize2;
+	
 	//load peak files into realvecs
 	realvec peaks1, peaks2;
-	mrs_real fs1, fs2;
-	mrs_natural nbSines1, nbSines2, nbFrames1, nbFrames2, hopSize1, hopSize2;
-	peakLoad(peaks1, peaksfname1, fs1, nbSines1, nbFrames1, hopSize1, false); //load peaks in table format
-	peakLoad(peaks2, peaksfname2, fs2, nbSines2, nbFrames2, hopSize2, false); //load peaks in table format
+	peakView peaks1View(peaks1);
+	peakView peaks2View(peaks2);
+
+	//load data from .peak file into a realvec (using peakView wrapper class)
+	peaks1View.peakRead(peaks1fname);// fs1, nbSines1, nbFrames1, hopSize1, false); //load peaks in table format
+	peaks2View.peakRead(peaks2fname);// fs2, nbSines2, nbFrames2, hopSize2, false); //load peaks in table format
 
 	//get frequency and amplitude parameters for the peaks in file1
-	vector<realvec> peaks1Freq, peaks1Amp;
-	extractParameter(peaks1, peaks1Freq, pkFrequency, nbSines1);
-	extractParameter(peaks1, peaks1Amp, pkAmplitude, nbSines1);
+	vector<realvec> peaks1Freqs;
+	vector<realvec> peaks1Amps;
+	peaks1Freqs = peaks1View.getPeaksParam(peakView::pkFrequency, 0, peaks1View.getNbFrames()-1);
+	peaks1Amps = peaks1View.getPeaksParam(peakView::pkAmplitude, 0, peaks1View.getNbFrames()-1);
 	//normalize frequency vectors by Nyquist frequency
-	for(mrs_natural v=0; v < peaks1Freq.size(); ++v)
-		peaks1Freq[v]/= fs1/2;
+	fs1 = peaks1View.getFs();
+	for(mrs_natural v=0; v < peaks1Freqs.size(); ++v)
+		peaks1Freqs[v]/= fs1/2;
 
 	//get frequency and amplitude parameters for the peaks in file2
-	vector<realvec> peaks2Freq, peaks2Amp;
-	extractParameter(peaks2, peaks2Freq, pkFrequency, nbSines2);
-	extractParameter(peaks2, peaks2Amp, pkAmplitude, nbSines2);
+	vector<realvec> peaks2Freqs;
+	vector<realvec> peaks2Amps;
+	peaks2Freqs = peaks2View.getPeaksParam(peakView::pkFrequency, 0, peaks2View.getNbFrames()-1);
+	peaks2Amps = peaks2View.getPeaksParam(peakView::pkAmplitude, 0, peaks2View.getNbFrames()-1);
 	//normalize frequency vectors by Nyquist frequency
-	for(mrs_natural v=0; v < peaks2Freq.size(); ++v)
-		peaks2Freq[v]/= fs2/2;
+	fs2 = peaks2View.getFs();
+	for(mrs_natural v=0; v < peaks2Freqs.size(); ++v)
+		peaks2Freqs[v]/= fs2/2;
 
 	//use HWPS correlation computation...
 	mrs_natural histSize = 1024; //hardcoded!!!!! [!]
-	realvec x1(histSize);
-	realvec x2(histSize);
-	realvec x3(histSize);
-	realvec x4(histSize);
+	mrs_natural nrFrames = min(peaks1Freqs.size(), peaks2Freqs.size());
 
-	mrs_natural nrFrames = min(peaks1Freq.size(), peaks2Freq.size());
+	mrs_real sim = 0;
+	mrs_real globalAmp=0;
 
-	mrs_real sim = 0, globalAmp=0;
 	for(mrs_natural f = 0; f < nrFrames; ++f)
 	{
-		mrs_real amp = (peaks1Amp[f].sum()+peaks2Amp[f].sum())/2;
+		mrs_real amp = (peaks1Amps[f].sum()+peaks2Amps[f].sum())/2;
 		globalAmp += amp;
 
-		sim += amp * cosinePeakSets(peaks1Freq[f], peaks1Amp[f], peaks2Freq[f], peaks2Amp[f], peaks1Amp[f], peaks2Amp[f],
-									x1, x2, x3, x4, histSize);
+		sim += amp * peakView::cosineDistance(peaks1Freqs[f], peaks1Amps[f], 
+																					peaks2Freqs[f], peaks2Amps[f], 
+																					peaks1Amps[f], peaks2Amps[f], 
+																					histSize);
 
 	}
 	return sim/globalAmp;

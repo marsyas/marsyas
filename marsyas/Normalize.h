@@ -17,10 +17,8 @@
 */
 
 /** 
-    \class Normalize
-    \brief Normalize my mapping min/max range to user specified range
-
-
+\class Normalize
+\brief Normalize my mapping min/max range to user specified range
 */
 
 #ifndef MARSYAS_NORMALIZE_H
@@ -30,19 +28,18 @@
 
 namespace Marsyas
 {
+	class Normalize: public MarSystem
+	{ 
+	public:
+		Normalize(std::string name);
+		~Normalize();
+		MarSystem* clone() const;  
 
-class Normalize: public MarSystem
-{ 
-public:
-  Normalize(std::string name);
-  ~Normalize();
-  MarSystem* clone() const;  
-  
-  void myProcess(realvec& in, realvec& out);
-};
+		void myProcess(realvec& in, realvec& out);
+	};
 
 }//namespace Marsyas
 
 #endif
-	
-	
+
+

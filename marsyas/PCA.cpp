@@ -121,8 +121,8 @@ PCA::myProcess(realvec& in, realvec& out)
   //in.stdSample(means_,stds_); //original code
   //means_.create(in.getRows());//not needed anymore if using new realvec::operator=() ;-)
   //stds_.create(in.getRows());//not needed anymore if using new realvec::operator=() ;-)
-  means_ = in.meanObs(); 
-  stds_ = in.stdObs(); 
+  in.meanObs(means_); 
+  in.stdObs(stds_); 
 
   // Adjust data : ( X - means(X) ) / ( sqrt(n) * stds(X) )
   for (o=0; o < inObservations_; o++)

@@ -28,419 +28,422 @@
 #include "AudioSink.h"
 #include "SoundFileSink.h"
 #include "SoundFileSource.h"
+#include "NumericLib.h"
 
 using namespace std;
 using namespace Marsyas;
 
+//[TODO] -> deprecate all this junk!!
 
 
-int 
-Marsyas::peaks2M (realvec& in, realvec& first, realvec& out, mrs_natural maxNbPeaks, mrs_natural *nbPkFrame, mrs_natural start)
-{
-	int i,j,k,l=start,m=0;
-
-	if(&first != NULL  && first(0))
-		for (i=0 ; i<maxNbPeaks ; i++)
-		{
-			if(first(i) != 0.0) 
-			{
-				for(k=0;k<nbPkParameters;k++)
-					out(l, k) = first(k*maxNbPeaks+i);
-				l++;
-				m++;
-			}
-		}
-		*nbPkFrame = m;
-
-		for (j=0 ; j<in.getCols() ; j++)
-			for (i=0 ; i<maxNbPeaks ; i++)
-		 {
-			 if(in(i, j) != 0.0) 
-			 {
-				 for(k=0;k<nbPkParameters;k++)
-					 out(l, k) = in(k*maxNbPeaks+i, j);
-				 l++;
-			 }
-		 }
-			out.stretch(l, nbPkParameters);
-			return l-start;
-}
-
-void 
-Marsyas::peaks2V (realvec& in, realvec& last, realvec& out, mrs_natural maxNbPeaks, mrs_natural label)
-{
-	mrs_natural i, j, k=0, start=0, iStart=0;
-	mrs_natural frameIndex=-1, startIndex = (mrs_natural) in(0, pkTime);
-
-	out.setval(0);
-
-	// on-line case with first init
-	if(label == -1 && last(0))
-	{
-		start=1;
-		startIndex +=1;
-	}
-	// if coming from a saved realvec first elts contain config so should be avoided
-	if(in(0) == -1)
-	{
-		iStart = 1;
-	}
-
-	for (i=iStart ; i<in.getRows() ; i++, k++)
-	{
-		if(frameIndex != in(i, 5))
-		{
-			frameIndex = (mrs_natural) in(i, 5);
-			k=0;
-		}
-		if((!start || (start && in(i, 5) >= startIndex)))
-			if(label < 0 || label == in(i, pkGroup))
-				for (j=0 ; j<in.getCols() ; j++)
-				{
-					out(j*maxNbPeaks+k, frameIndex-startIndex) = in(i, j);
-					/*	 if(peakFile)
-					peakFile << in(i, j);*/
-				}
-	}
-	//on-line case
-	if(label == -1)
-	{
-		for (j=0 ; j<out.getRows() ; j++)
-		{
-			last(j) = out(j, out.getCols()-1);
-		}
-	}
-}
-
-
-void Marsyas::updateLabels(realvec& peakSet, realvec& conversion)
-{
-	for (mrs_natural i=0 ; i<peakSet.getRows() ; i++)
-		peakSet(i, pkGroup) = conversion((mrs_natural) peakSet(i, pkGroup)+2);
-}
-
-
-void Marsyas::extractParameter(realvec&in, std::vector<realvec>& out, pkParameter type, mrs_natural kmax)
-{
-	mrs_natural i, index, k=0;
-	mrs_natural frameIndex=-1;
-	mrs_natural startIndex = (mrs_natural)in(0, pkTime);
-	mrs_natural endIndex = (mrs_natural) in(in.getRows()-1, pkTime);
-	mrs_natural nbFrames = endIndex-startIndex+1;
-	mrs_natural* l = new mrs_natural[nbFrames];
-	realvec vec(kmax);
-	vec.setval(0);
-	
-	// allocate vector of realvec
-	for (i=0 ; i < nbFrames ; i++)
-	{
-		out.push_back(vec);
-		l[i]=0;
-	}
-
-	// fill vector
-	for (i=0 ; i<in.getRows() ; i++)
-	{
-		index = (mrs_natural) in(i, pkTime) - startIndex;
-		if( in(i, pkGroup) >= 0)
-		{
-		out[index](l[index]) = in(i, type);
-		l[index]++;
-		}
-	}
-	// stretch realvecs
-	for (i=0 ; i < nbFrames ; i++)
-	{
-		out[i].stretch(l[i]);
-	}
-
-	delete [] l;
-	////out.setval(0);
-	//for (i=0 ; i<in.getRows() ; i++)
-	//{
-	//	if(frameIndex != in(i, pkTime))
-	//	{
-	//		if(k)
-	//		{
-	//			vec.stretch(k);
-	//			// put inside vector
-	//			out.push_back(vec);
-	//			vec.stretch(kmax);
-	//		}
-	//		else
-	//			out.push_back(realvec());
-	//		frameIndex = (mrs_natural) in(i, pkTime);
-	//		k=0;
-	//	}
-	//	if(in(i, pkTime) == frameIndex)
-	//	{
-	//		vec(k++) = in(i, type);
-	//	}
-	//}
-	//if(k)
-	//{
-	//	vec.stretch(k);
-	//	// put inside vector
-	//	out.push_back(vec);
-	//}
-}
-
-
-mrs_real
-Marsyas::compareTwoPeakSets(realvec&f1, realvec&a1, realvec&f2, realvec&a2)
-{
-	mrs_natural nb=0;
-	mrs_real res=0;
-	realvec i1(f1.getSize());
-	realvec i2(f2.getSize());
-	i1.setval(1);
-	i2.setval(1);
-
-	//cout << f1 << a1 << f2 << a2 ;
-	// while the smallest set is not empty
-	MATLAB_EVAL("Acc=[];");
-	while (1)
-	{
-
-
-		//cout << i1<<i2;
-		mrs_natural ind1=-1, ind2=0;
-		mrs_real A1, A2, F1, F2;
-		// minDiff = 10000000000000, maxVal = -100000000000000; 
-		mrs_real maxVal = 0, minDiff =100;
-		// take the highest amplitude peak
-		for (mrs_natural i=0 ; i<a1.getSize() ; i++)
-		{
-			A1 = a1(i);
-			if(i1(i) && A1 > maxVal)
-			{
-				maxVal= A1;
-				ind1 = i;
-			}
-		}
-		if(ind1 == -1) break;
-
-		F1 = f1(ind1);
-		A1 = a1(ind1);
-		// find the closest frequency peak in the second set
-		for (mrs_natural i=0 ; i<f2.getSize() ; i++)
-		{
-			F2 = f2(i);
-			if(i2(i) && abs(F1-F2) < minDiff)
-			{
-				minDiff= abs(F1-F2); // or product of fDiff and aDiff
-				ind2 = i;
-			}
-		}
-		A2 = a2(ind2);
-		// acc the amplitude difference
-		res += abs(A1-A2)*abs(F1-F2); // or product of fDiff and aDiff
-		nb++;
-		// remove the two peaks
-		i1(ind1) = 0;
-		i2(ind2) = 0;
-
-		MATLAB_PUT(f1, "f1");
-		MATLAB_PUT(a1, "a1");
-		MATLAB_PUT(i1, "i1");
-		MATLAB_PUT(i2, "i2");
-		MATLAB_PUT(f2, "f2");
-		MATLAB_PUT(a2, "a2");
-		MATLAB_PUT(abs(A1-A2)*abs(F1-F2), "acc");
-		MATLAB_EVAL("Acc=[Acc acc] ;subplot(2, 1, 1) ; plot(f1, a1.*i1, '*r', f2, a2.*i2, 'k+'); subplot(2, 1, 2); plot(Acc)");
-
-	}
-	return res/nb;
-}
-
-mrs_real
-Marsyas::compareTwoPeakSets2(realvec&f1, realvec&a1, realvec&f2, realvec&a2)
-{
-	mrs_real res = 0;
-	for (mrs_natural i = 0 ; i < f1.getSize() ; i++)
-		for (mrs_natural j = 0 ; j < f2.getSize() ; j++)
-		{
-			res += abs(f1(i)-f2(j))* abs(a1(i)-a2(j));
-		}
-		return res/(f1.getSize()*f2.getSize());
-}
-
-mrs_real
-Marsyas::compareTwoPeakSets3(realvec&f1, realvec&a1, realvec&f2, realvec&a2)
-{
-	mrs_natural nb=0;
-	mrs_real res=0;
-	realvec i1(f1.getSize());
-	realvec i2(f2.getSize());
-	i1.setval(1);
-	i2.setval(1);
-
-	//cout << f1 << a1 << f2 << a2 ;
-	// while the smallest set is not empty
-	while (1)
-	{
-		//cout << i1<<i2;
-		mrs_natural ind1=-1, ind2=0;
-		// mrs_real minDiff = 10000000000000, minVal = 100000000000000;
-
-		mrs_real minVal = 0;
-		// 
-		// 
-		// look for the smallest couple
-		for (mrs_natural i=0 ; i<a1.getSize() ; i++)
-			for (mrs_natural j=0 ; j<a2.getSize() ; j++)
-			{
-				mrs_real val = abs(f1(i)-f2(j));
-				if(i1(i) && i2(j) && val < minVal)
-				{
-					minVal= val;
-					ind1 = i;
-					ind2 = j;
-				}
-			}
-
-			if(ind1 == -1 || ind2 == -1) break;
-
-			mrs_real val = abs(a1(ind1)-a2(ind2))*abs(f1(ind1)-f2(ind2));
-			res += val; // or product of fDiff and aDiff
-			nb++;
-			// remove the two peaks
-			i1(ind1) = 0;
-			i2(ind2) = 0;
-
-			MATLAB_PUT(f1, "f1");
-			MATLAB_PUT(a1, "a1");
-			MATLAB_PUT(i1, "i1");
-			MATLAB_PUT(i2, "i2");
-			MATLAB_PUT(f2, "f2");
-			MATLAB_PUT(a2, "a2");
-			MATLAB_EVAL("subplot(2, 1, 1) ; plot(f1, a1.*i1, '*r', f2, a2.*i2, 'k+'); subplot(2, 1, 2); plot(Acc)");
-
-	}
-	return res/nb;
-}
-
-mrs_real
-Marsyas::correlatePeakSets(realvec&f1, realvec&a1, realvec&f2, realvec&a2)
-{
-	mrs_real res=0;
-	realvec i1(f1.getSize());
-	realvec i2(f2.getSize());
-	i1.setval(1);
-	i2.setval(1);
-
-	//cout << f1 << a1 << f2 << a2 ;
-	for (mrs_natural k=0; k<f1.getSize() ; k++)
-	{
-		//cout << i1<<i2;
-		mrs_natural ind1=-1, ind2=-1;
-		mrs_real minDiff = 2; 
-		// look for the couple closest in frequency
-		for (mrs_natural i=0 ; i<f1.getSize() ; i++)
-			for (mrs_natural j=0 ; j<f2.getSize() ; j++)
-				if(i1(i) && i2(j))
-				{
-					mrs_real fa = f1(i), fb = f2(j);
-					if(fa>fb)
-					{
-						fa = f2(j);
-						fb = f1(i);
-					}
-					mrs_real df = fb-fa;
-					if(df>1-fb+fa)
-						df = 1-fb+fa;
-
-					if(df < minDiff)
-					{
-						minDiff= df;
-						ind1 = i;
-						ind2 = j;
-					}
-				}
-
-
-
-
-				cout << i1;
-				cout << i2;
-
-
-
-				mrs_real val = a1(ind1)*a2(ind2)/(minDiff*minDiff+0.0000000000000001);
-				cout << ind1 << " " << ind2 << " " << val << endl;	
-				res += val; // or product of fDiff and aDiff
-				// remove the two peaks	
-				if(ind1 != -1)
-				{
-					i1(ind1) = 0;
-					i2(ind2) = 0;
-				}
-				else
-				{
-					cout << i1 << i2;
-				}
-				/*		MATLAB_PUT(f1, "f1");
-				MATLAB_PUT(a1, "a1");
-				MATLAB_PUT(i1, "i1");
-				MATLAB_PUT(i2, "i2");
-				MATLAB_PUT(f2, "f2");
-				MATLAB_PUT(a2, "a2");
-				MATLAB_PUT(val, "acc");
-				MATLAB_EVAL("plotHarmo");*/
-				//	cout << ind1 <<" " << ind2<<endl;
-	}
-	return res/f1.getSize();
-}
-
-mrs_real
-Marsyas::cosinePeakSets(realvec&f1, realvec&a1, realvec&f2, realvec&a2, realvec&a3, realvec&a4, realvec&x1, realvec&x2, realvec&x3, realvec&x4, mrs_natural length)
-{
-	mrs_natural index;
-	mrs_real res1=0, res2=0, res3=0, res;
-
-	x1.setval(0);
-	x2.setval(0);
-	x3.setval(0);
-	x4.setval(0);
-	// first discrete Harmonically Wrapped Spectrum 
-	for (mrs_natural i=0 ; i<f1.getSize() ; i++)
-	{
-		index= (mrs_natural) fmod(floor(f1(i)*length+.5), length);
-		x1(index) += a1(i);
-		x3(index) += a3(i);
-	}
-	// second discrete Harmonically Wrapped Spectrum 
-	for (mrs_natural i=0 ; i<f2.getSize()  ; i++)
-	{
-		index= (mrs_natural) fmod(floor(f2(i)*length+.5), length);
-		//	cout << endl << "index " << index << endl;
-		x2(index) += a2(i);
-		x4(index) += a4(i);
-	}
-	// cosine metric
-	for (mrs_natural i=0 ; i<x1.getSize()  ; i++)
-	{
-		res1 += x1(i)*x2(i);
-		res2 += x3(i)*x3(i);
-		res3 += x4(i)*x4(i);
-	}
-	if (res2 && res3)
-	res = res1/(sqrt(res2)*sqrt(res3));
-	else
-    res = 0;
-	/*if(res3==0)
-	{
-	cout << a4 ;
-	cout << res1 << " " << res2 << " " << res3 << " " << x1.getSize() << endl;
-
-	}*/
-
-	//MATLAB_PUT(x1, "x1");
-	//MATLAB_PUT(x2, "x2");
-	//MATLAB_EVAL("plotHarmo");
-
-	return res;
-}
+// //online --> matrix
+// int 
+// Marsyas::peaks2M(realvec& in, realvec& first, realvec& out, mrs_natural maxNbPeaks, mrs_natural *nbPkFrame, mrs_natural start)
+// {
+// 	int i,j,k,l=start,m=0;
+// 
+// 	if(&first != NULL  && first(0)) //[WTF]
+// 		for (i=0 ; i<maxNbPeaks ; i++)
+// 		{
+// 			if(first(i) != 0.0) 
+// 			{
+// 				for(k=0;k<nbPkParameters;k++)
+// 					out(l, k) = first(k*maxNbPeaks+i);//[WTF]
+// 				l++;
+// 				m++;
+// 			}
+// 		}
+// 		*nbPkFrame = m;
+// 
+// 		for (j=0 ; j<in.getCols() ; j++)
+// 			for (i=0 ; i<maxNbPeaks ; i++)
+// 		 {
+// 			 if(in(i, j) != 0.0) 
+// 			 {
+// 				 for(k=0;k<nbPkParameters;k++)
+// 					 out(l, k) = in(k*maxNbPeaks+i, j);
+// 				 l++;
+// 			 }
+// 		 }
+// 			out.stretch(l, nbPkParameters);
+// 			return l-start;
+// }
+// 
+// void 
+// Marsyas::peaks2V (realvec& in, realvec& last, realvec& out, mrs_natural maxNbPeaks, mrs_natural label)
+// {
+// 	mrs_natural i, j, k=0, start=0, iStart=0;
+// 	mrs_natural frameIndex=-1, startIndex = (mrs_natural) in(0, pkFrame);
+// 
+// 	out.setval(0);
+// 
+// 	// on-line case with first init
+// 	if(label == -1 && last(0))
+// 	{
+// 		start=1;
+// 		startIndex +=1;
+// 	}
+// 	// if coming from a saved realvec first elts contain config so should be avoided
+// 	if(in(0) == -1)
+// 	{
+// 		iStart = 1;
+// 	}
+// 
+// 	for (i=iStart ; i<in.getRows() ; i++, k++)
+// 	{
+// 		if(frameIndex != in(i, 5))
+// 		{
+// 			frameIndex = (mrs_natural) in(i, 5);
+// 			k=0;
+// 		}
+// 		if((!start || (start && in(i, 5) >= startIndex)))
+// 			if(label < 0 || label == in(i, pkGroup))
+// 				for (j=0 ; j<in.getCols() ; j++)
+// 				{
+// 					out(j*maxNbPeaks+k, frameIndex-startIndex) = in(i, j);
+// 					/*	 if(peakFile)
+// 					peakFile << in(i, j);*/
+// 				}
+// 	}
+// 	//on-line case
+// 	if(label == -1)
+// 	{
+// 		for (j=0 ; j<out.getRows() ; j++)
+// 		{
+// 			last(j) = out(j, out.getCols()-1);
+// 		}
+// 	}
+// }
+// 
+// 
+// void Marsyas::updateLabels(realvec& peakSet, realvec& conversion)
+// {
+// 	for (mrs_natural i=0 ; i<peakSet.getRows() ; i++)
+// 		peakSet(i, pkGroup) = conversion((mrs_natural) peakSet(i, pkGroup)+2);
+// }
+// 
+// 
+// void Marsyas::extractParameter(realvec&in, std::vector<realvec>& out, pkParameter type, mrs_natural kmax)
+// {
+// 	mrs_natural i, index, k=0;
+// 	mrs_natural frameIndex=-1;
+// 	mrs_natural startIndex = (mrs_natural)in(0, pkFrame);
+// 	mrs_natural endIndex = (mrs_natural) in(in.getRows()-1, pkFrame);
+// 	mrs_natural nbFrames = endIndex-startIndex+1;
+// 	mrs_natural* l = new mrs_natural[nbFrames];
+// 	realvec vec(kmax);
+// 	vec.setval(0);
+// 	
+// 	// allocate vector of realvec
+// 	for (i=0 ; i < nbFrames ; i++)
+// 	{
+// 		out.push_back(vec);
+// 		l[i]=0;
+// 	}
+// 
+// 	// fill vector
+// 	for (i=0 ; i<in.getRows() ; i++)
+// 	{
+// 		index = (mrs_natural) in(i, pkFrame) - startIndex;
+// 		if( in(i, pkGroup) >= 0)
+// 		{
+// 		out[index](l[index]) = in(i, type);
+// 		l[index]++;
+// 		}
+// 	}
+// 	// stretch realvecs
+// 	for (i=0 ; i < nbFrames ; i++)
+// 	{
+// 		out[i].stretch(l[i]);
+// 	}
+// 
+// 	delete [] l;
+// 	////out.setval(0);
+// 	//for (i=0 ; i<in.getRows() ; i++)
+// 	//{
+// 	//	if(frameIndex != in(i, pkFrame))
+// 	//	{
+// 	//		if(k)
+// 	//		{
+// 	//			vec.stretch(k);
+// 	//			// put inside vector
+// 	//			out.push_back(vec);
+// 	//			vec.stretch(kmax);
+// 	//		}
+// 	//		else
+// 	//			out.push_back(realvec());
+// 	//		frameIndex = (mrs_natural) in(i, pkFrame);
+// 	//		k=0;
+// 	//	}
+// 	//	if(in(i, pkFrame) == frameIndex)
+// 	//	{
+// 	//		vec(k++) = in(i, type);
+// 	//	}
+// 	//}
+// 	//if(k)
+// 	//{
+// 	//	vec.stretch(k);
+// 	//	// put inside vector
+// 	//	out.push_back(vec);
+// 	//}
+// }
+// 
+// 
+// mrs_real
+// Marsyas::compareTwoPeakSets(realvec&f1, realvec&a1, realvec&f2, realvec&a2)
+// {
+// 	mrs_natural nb=0;
+// 	mrs_real res=0;
+// 	realvec i1(f1.getSize());
+// 	realvec i2(f2.getSize());
+// 	i1.setval(1);
+// 	i2.setval(1);
+// 
+// 	//cout << f1 << a1 << f2 << a2 ;
+// 	// while the smallest set is not empty
+// 	MATLAB_EVAL("Acc=[];");
+// 	while (1)
+// 	{
+// 
+// 
+// 		//cout << i1<<i2;
+// 		mrs_natural ind1=-1, ind2=0;
+// 		mrs_real A1, A2, F1, F2;
+// 		// minDiff = 10000000000000, maxVal = -100000000000000; 
+// 		mrs_real maxVal = 0, minDiff =100;
+// 		// take the highest amplitude peak
+// 		for (mrs_natural i=0 ; i<a1.getSize() ; i++)
+// 		{
+// 			A1 = a1(i);
+// 			if(i1(i) && A1 > maxVal)
+// 			{
+// 				maxVal= A1;
+// 				ind1 = i;
+// 			}
+// 		}
+// 		if(ind1 == -1) break;
+// 
+// 		F1 = f1(ind1);
+// 		A1 = a1(ind1);
+// 		// find the closest frequency peak in the second set
+// 		for (mrs_natural i=0 ; i<f2.getSize() ; i++)
+// 		{
+// 			F2 = f2(i);
+// 			if(i2(i) && abs(F1-F2) < minDiff)
+// 			{
+// 				minDiff= abs(F1-F2); // or product of fDiff and aDiff
+// 				ind2 = i;
+// 			}
+// 		}
+// 		A2 = a2(ind2);
+// 		// acc the amplitude difference
+// 		res += abs(A1-A2)*abs(F1-F2); // or product of fDiff and aDiff
+// 		nb++;
+// 		// remove the two peaks
+// 		i1(ind1) = 0;
+// 		i2(ind2) = 0;
+// 
+// 		MATLAB_PUT(f1, "f1");
+// 		MATLAB_PUT(a1, "a1");
+// 		MATLAB_PUT(i1, "i1");
+// 		MATLAB_PUT(i2, "i2");
+// 		MATLAB_PUT(f2, "f2");
+// 		MATLAB_PUT(a2, "a2");
+// 		MATLAB_PUT(abs(A1-A2)*abs(F1-F2), "acc");
+// 		MATLAB_EVAL("Acc=[Acc acc] ;subplot(2, 1, 1) ; plot(f1, a1.*i1, '*r', f2, a2.*i2, 'k+'); subplot(2, 1, 2); plot(Acc)");
+// 
+// 	}
+// 	return res/nb;
+// }
+// 
+// mrs_real
+// Marsyas::compareTwoPeakSets2(realvec&f1, realvec&a1, realvec&f2, realvec&a2)
+// {
+// 	mrs_real res = 0;
+// 	for (mrs_natural i = 0 ; i < f1.getSize() ; i++)
+// 		for (mrs_natural j = 0 ; j < f2.getSize() ; j++)
+// 		{
+// 			res += abs(f1(i)-f2(j))* abs(a1(i)-a2(j));
+// 		}
+// 		return res/(f1.getSize()*f2.getSize());
+// }
+// 
+// mrs_real
+// Marsyas::compareTwoPeakSets3(realvec&f1, realvec&a1, realvec&f2, realvec&a2)
+// {
+// 	mrs_natural nb=0;
+// 	mrs_real res=0;
+// 	realvec i1(f1.getSize());
+// 	realvec i2(f2.getSize());
+// 	i1.setval(1);
+// 	i2.setval(1);
+// 
+// 	//cout << f1 << a1 << f2 << a2 ;
+// 	// while the smallest set is not empty
+// 	while (1)
+// 	{
+// 		//cout << i1<<i2;
+// 		mrs_natural ind1=-1, ind2=0;
+// 		// mrs_real minDiff = 10000000000000, minVal = 100000000000000;
+// 
+// 		mrs_real minVal = 0;
+// 		// 
+// 		// 
+// 		// look for the smallest couple
+// 		for (mrs_natural i=0 ; i<a1.getSize() ; i++)
+// 			for (mrs_natural j=0 ; j<a2.getSize() ; j++)
+// 			{
+// 				mrs_real val = abs(f1(i)-f2(j));
+// 				if(i1(i) && i2(j) && val < minVal)
+// 				{
+// 					minVal= val;
+// 					ind1 = i;
+// 					ind2 = j;
+// 				}
+// 			}
+// 
+// 			if(ind1 == -1 || ind2 == -1) break;
+// 
+// 			mrs_real val = abs(a1(ind1)-a2(ind2))*abs(f1(ind1)-f2(ind2));
+// 			res += val; // or product of fDiff and aDiff
+// 			nb++;
+// 			// remove the two peaks
+// 			i1(ind1) = 0;
+// 			i2(ind2) = 0;
+// 
+// 			MATLAB_PUT(f1, "f1");
+// 			MATLAB_PUT(a1, "a1");
+// 			MATLAB_PUT(i1, "i1");
+// 			MATLAB_PUT(i2, "i2");
+// 			MATLAB_PUT(f2, "f2");
+// 			MATLAB_PUT(a2, "a2");
+// 			MATLAB_EVAL("subplot(2, 1, 1) ; plot(f1, a1.*i1, '*r', f2, a2.*i2, 'k+'); subplot(2, 1, 2); plot(Acc)");
+// 
+// 	}
+// 	return res/nb;
+// }
+// 
+// mrs_real
+// Marsyas::correlatePeakSets(realvec&f1, realvec&a1, realvec&f2, realvec&a2)
+// {
+// 	mrs_real res=0;
+// 	realvec i1(f1.getSize());
+// 	realvec i2(f2.getSize());
+// 	i1.setval(1);
+// 	i2.setval(1);
+// 
+// 	//cout << f1 << a1 << f2 << a2 ;
+// 	for (mrs_natural k=0; k<f1.getSize() ; k++)
+// 	{
+// 		//cout << i1<<i2;
+// 		mrs_natural ind1=-1, ind2=-1;
+// 		mrs_real minDiff = 2; 
+// 		// look for the couple closest in frequency
+// 		for (mrs_natural i=0 ; i<f1.getSize() ; i++)
+// 			for (mrs_natural j=0 ; j<f2.getSize() ; j++)
+// 				if(i1(i) && i2(j))
+// 				{
+// 					mrs_real fa = f1(i), fb = f2(j);
+// 					if(fa>fb)
+// 					{
+// 						fa = f2(j);
+// 						fb = f1(i);
+// 					}
+// 					mrs_real df = fb-fa;
+// 					if(df>1-fb+fa)
+// 						df = 1-fb+fa;
+// 
+// 					if(df < minDiff)
+// 					{
+// 						minDiff= df;
+// 						ind1 = i;
+// 						ind2 = j;
+// 					}
+// 				}
+// 
+// 
+// 
+// 
+// 				cout << i1;
+// 				cout << i2;
+// 
+// 
+// 
+// 				mrs_real val = a1(ind1)*a2(ind2)/(minDiff*minDiff+0.0000000000000001);
+// 				cout << ind1 << " " << ind2 << " " << val << endl;	
+// 				res += val; // or product of fDiff and aDiff
+// 				// remove the two peaks	
+// 				if(ind1 != -1)
+// 				{
+// 					i1(ind1) = 0;
+// 					i2(ind2) = 0;
+// 				}
+// 				else
+// 				{
+// 					cout << i1 << i2;
+// 				}
+// 				/*		MATLAB_PUT(f1, "f1");
+// 				MATLAB_PUT(a1, "a1");
+// 				MATLAB_PUT(i1, "i1");
+// 				MATLAB_PUT(i2, "i2");
+// 				MATLAB_PUT(f2, "f2");
+// 				MATLAB_PUT(a2, "a2");
+// 				MATLAB_PUT(val, "acc");
+// 				MATLAB_EVAL("plotHarmo");*/
+// 				//	cout << ind1 <<" " << ind2<<endl;
+// 	}
+// 	return res/f1.getSize();
+// }
+// 
+// mrs_real
+// Marsyas::cosinePeakSets(realvec&f1, realvec&a1, realvec&f2, realvec&a2, realvec&a3, realvec&a4, realvec&x1, realvec&x2, realvec&x3, realvec&x4, mrs_natural length)
+// {
+// 	mrs_natural index;
+// 	mrs_real res1=0, res2=0, res3=0, res;
+// 
+// 	x1.setval(0);
+// 	x2.setval(0);
+// 	x3.setval(0);
+// 	x4.setval(0);
+// 	// first discrete Harmonically Wrapped Spectrum 
+// 	for (mrs_natural i=0 ; i<f1.getSize() ; i++)
+// 	{
+// 		index= (mrs_natural) fmod(floor(f1(i)*length+.5), length);
+// 		x1(index) += a1(i);
+// 		x3(index) += a3(i);
+// 	}
+// 	// second discrete Harmonically Wrapped Spectrum 
+// 	for (mrs_natural i=0 ; i<f2.getSize()  ; i++)
+// 	{
+// 		index= (mrs_natural) fmod(floor(f2(i)*length+.5), length);
+// 		//	cout << endl << "index " << index << endl;
+// 		x2(index) += a2(i);
+// 		x4(index) += a4(i);
+// 	}
+// 	// cosine metric
+// 	for (mrs_natural i=0 ; i<x1.getSize()  ; i++)
+// 	{
+// 		res1 += x1(i)*x2(i);
+// 		res2 += x3(i)*x3(i);
+// 		res3 += x4(i)*x4(i);
+// 	}
+// 	if (res2 && res3)
+// 	res = res1/(sqrt(res2)*sqrt(res3));
+// 	else
+//     res = 0;
+// 	/*if(res3==0)
+// 	{
+// 	cout << a4 ;
+// 	cout << res1 << " " << res2 << " " << res3 << " " << x1.getSize() << endl;
+// 
+// 	}*/
+// 
+// 	//MATLAB_PUT(x1, "x1");
+// 	//MATLAB_PUT(x2, "x2");
+// 	//MATLAB_EVAL("plotHarmo");
+// 
+// 	return res;
+// }
 
 void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool microphone, mrs_natural synType, bool residual)
 {
@@ -492,7 +495,7 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
     postNet->addMarSystem(mng->create("Gain", "outGain"));
 
 	MarSystem *dest;
-	if (outsfname == EMPTYSTRING) 
+	if (outsfname == "MARSYAS_EMPTY") 
 		dest = new AudioSink("dest");
 	else
 	{
@@ -518,7 +521,7 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
 		postNet->addMarSystem(mng->create("PeResidual", "res"));
 
 		MarSystem *destRes;
-		if (outsfname == EMPTYSTRING) 
+		if (outsfname == "MARSYAS_EMPTY") 
 			destRes = new AudioSink("destRes");
 		else
 		{
@@ -585,11 +588,11 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 	else
 		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeSynOscBank/pso/mrs_natural/Interpolation", D);
 
-	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Interpolation", D);
-	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/WindowSize", Nw);      
-	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Decimation", D);
+	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Interpolation", D); //[WTF]
+	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/WindowSize", Nw);    //[WTF]  
+	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Decimation", D);	//[WTF]
 
-	if (outsfname == EMPTYSTRING) 
+	if (outsfname == "MARSYAS_EMPTY") 
 		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/AudioSink/dest/mrs_natural/bufferSize", bopt);
 
 
@@ -619,128 +622,125 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 
 }
 
+// mrs_real Marsyas::harmonicWeighting(mrs_real f, mrs_real h, mrs_real w)
+// {
+// 	if(f < h)
+// 		return 1;
+// 	else
+// 		return pow(harmonicWeightingBasic(f, h), -w/log(harmonicWeightingBasic(1,h)));
+// }
+// 
+//
+// mrs_real Marsyas::harmonicWeightingBasic(mrs_real f, mrs_real h)
+// {
+// 	return (1+cos(2*PI*f/h))/2;
+// }
+// 
+// //[WTF]
+// void Marsyas::discrete2labels(realvec &labels, realvec& n, mrs_natural nbClusters, mrs_natural nbPeaks)
+// {
+// 	for(mrs_natural i=0 ; i<nbPeaks ; i++)
+// 		for(mrs_natural j=0 ; j<nbClusters ; j++)
+// 			if(n(i*nbClusters+j) == 1)
+// 				labels(i) = j;
+// }
+// 
+// void Marsyas::peakStore(realvec &peaks, string filename, mrs_real sf, mrs_natural hopSize)
+// {
+//   mrs_natural nbFrames_ = peaks.getCols();
+// 	
+// 	if(!nbFrames_) //i.e. if(nbFrames == 0)
+// 	{
+//      // search from a file  //[WTF]
+//       peaks.read(filename) ;
+// 	  peaks.transpose();
+//       nbFrames_ = peaks.getCols();
+// 	}
+// 	realvec peakSetM_ = realvec(peaks.getRows()/nbPkParameters*nbFrames_+1, nbPkParameters);
+// 	peakSetM_(0, 0) = -1;
+// 	peakSetM_(0, 1) =  sf;
+// 	peakSetM_(0, 2) =  hopSize;
+// 	peakSetM_(0, 3) =  peaks.getRows()/nbPkParameters;
+// 	peakSetM_(0, 4) =  nbFrames_;
+// 	peakSetM_(0, 5) = -1;
+// 	peakSetM_(0, pkGroup) = -2; //isn't this overwritten below?!? [WTF]
+// 	for (mrs_natural i=pkGroup ; i< nbPkParameters ; i++)
+// 		peakSetM_(0, i)=0;
+// 	realvec tmp(1);
+// 	tmp.setval(0);
+// 	mrs_natural tmp2;
+// 	
+// 	peaks2M(peaks, tmp, peakSetM_, peaks.getRows()/nbPkParameters, &tmp2, 1);
+// 	
+// 	//cout << peakSetM_;
+// 	//cout << sf << " " << peakSetM_(0, 1) << endl ;
+// 
+// 	//cout << peaks.getSize() << endl;
+// 	ofstream peakFile;
+// 	peakFile.open(filename.c_str());
+// 	if(!peakFile)
+// 		cout << "Unable to open output Peaks File " << filename << endl;
+// 	peakFile << peakSetM_;
+// 	peakFile.close();
+// }
+// 
+// void Marsyas::peakLoad(realvec &peaks, string filename, mrs_real &fs, mrs_natural &nbSines, mrs_natural &nbFrames, mrs_natural &hopSize, bool tf_format)
+// {
+// 	realvec peakSet;
+// 	peakSet.read(filename);
+// 
+// 	fs  = peakSet(0, 1);
+// 	hopSize = peakSet(0, 2);
+// 	nbSines = peakSet(0, 3);
+// 	nbFrames = peakSet(0, 4);
+// 
+// 	peakSet(0, 5) = -1; //HACK!!!!! [!]
+// 
+// 	if(tf_format)
+// 	{
+// 		peaks.stretch(nbSines*nbPkParameters, nbFrames);
+// 		peaks.setval(0);
+// 		peaks2V(peakSet, peaks, peaks, nbSines);
+// 	}
+// 	else
+// 		peaks = peakSet;
+// }
+// 
+// /*
+// mrs_real gaussian(mrs_real x, mrs_real v, mrs_real m)
+// {
+// 	return exp(-(x-m)*(x-m)/(2*v*v))/(v*sqrt(2*PI));
+// }*/
+// 
+// 
+// void Marsyas::computeHarmonicityMap(realvec& map, mrs_natural nbBins)
+// {
+// 	mrs_natural i, j;
+// 	realvec tmp(nbBins, nbBins);
+// 	map.stretch(nbBins, nbBins);
+// 	map.setval(0);
+// 
+// 	for (i=0 ; i<nbBins ; i++)
+// 		for (j=0 ; j<nbBins ; j++)
+// 		{
+// 			mrs_real val=0;
+// 			if((i+1)%(j+1) == 0 || (j+1)%(i+1) == 0)
+// 				val = 1;
+// 			tmp(i, j) = val;
+// 		}
+// 
+// 		mrs_natural kSize=5, k, l;
+// 		mrs_real sum=0;
+// 		for (i=0 ; i<nbBins ; i++)
+// 			for (j=0 ; j<nbBins ; j++)
+// 				for (k=max( (mrs_natural) 0, i-kSize); k<min(nbBins, i+kSize) ; k++)
+// 					for (l=max((mrs_natural) 0, j-kSize) ; l<min(nbBins, j+kSize) ; l++)
+// 					{
+// 						mrs_real val1 = NumericLib::gaussian (i+1, (k+1)/10.0, k+1);
+// 						mrs_real val2 = NumericLib::gaussian (j+1, (l+1)/10.0, l+1);
+// 						map(i, j) += tmp(k, l)*val1*val2;	
+// 						sum += tmp(k, l)*val1*val2;	
+// 					}
+// 					map/=sum;
+// }
 
-
-
-mrs_real Marsyas::harmonicWeighting(mrs_real f, mrs_real h, mrs_real w)
-{
-	if(f < h)
-		return 1;
-	else
-		return pow(harmonicWeightingBasic(f, h), -w/log(harmonicWeightingBasic(1,h)));
-}
-
-
-mrs_real Marsyas::harmonicWeightingBasic(mrs_real f, mrs_real h)
-{
-	return (1+cos(2*PI*f/h))/2;
-}
-
-void Marsyas::discrete2labels(realvec &labels, realvec& n, mrs_natural nbClusters, mrs_natural nbPeaks)
-{
-	for(mrs_natural i=0 ; i<nbPeaks ; i++)
-		for(mrs_natural j=0 ; j<nbClusters ; j++)
-			if(n(i*nbClusters+j) == 1)
-				labels(i) = j;
-}
-
-
-
-void Marsyas::peakStore(realvec &peaks, string filename, mrs_real sf, mrs_natural hopSize)
-{
-    mrs_natural nbFrames_ = peaks.getCols();
-	
-	if(!nbFrames_)
-	{
-     // search from a file
-      peaks.read(filename) ;
-	  peaks.transpose();
-      nbFrames_ = peaks.getCols();
-	}
-	realvec peakSetM_ = realvec(peaks.getRows()/nbPkParameters*nbFrames_+1, nbPkParameters);
-	peakSetM_(0, 0) = -1;
-	peakSetM_(0, 1) =  sf;
-	peakSetM_(0, 2) =  hopSize;
-	peakSetM_(0, 3) =  peaks.getRows()/nbPkParameters;
-	peakSetM_(0, 4) =  nbFrames_;
-	peakSetM_(0, 5) = -1;
-	peakSetM_(0, pkGroup) = -2;
-	for (mrs_natural i=pkGroup ; i< nbPkParameters ; i++)
-		peakSetM_(0, i)=0;
-	realvec tmp(1);
-	tmp.setval(0);
-	mrs_natural tmp2;
-	
-	peaks2M(peaks, tmp, peakSetM_, peaks.getRows()/nbPkParameters, &tmp2, 1);
-	
-	//cout << peakSetM_;
-	//cout << sf << " " << peakSetM_(0, 1) << endl ;
-
-	//cout << peaks.getSize() << endl;
-	ofstream peakFile;
-	peakFile.open(filename.c_str());
-	if(!peakFile)
-		cout << "Unable to open output Peaks File " << filename << endl;
-	peakFile << peakSetM_;
-	peakFile.close();
-}
-
-void Marsyas::peakLoad(realvec &peaks, string filename, mrs_real &fs, mrs_natural &nbSines, mrs_natural &nbFrames, mrs_natural &hopSize, bool tf_format)
-{
-	realvec peakSet;
-	peakSet.read(filename);
-
-	fs  = peakSet(0, 1);
-	hopSize = peakSet(0, 2);
-	nbSines = peakSet(0, 3);
-	nbFrames = peakSet(0, 4);
-
-	peakSet(0, 5) = -1;
-
-	if(tf_format)
-	{
-		peaks.stretch(nbSines*nbPkParameters, nbFrames);
-		peaks.setval(0);
-		peaks2V(peakSet, peaks, peaks, nbSines);
-	}
-	else
-		peaks = peakSet;
-}
-
-
-mrs_real gaussian(mrs_real x, mrs_real v, mrs_real m)
-{
-	return exp(-(x-m)*(x-m)/(2*v*v))/(v*sqrt(2*PI));
-}
-
-
-void Marsyas::computeHarmonicityMap(realvec& map, mrs_natural nbBins)
-{
-	mrs_natural i, j;
-	realvec tmp(nbBins, nbBins);
-	map.stretch(nbBins, nbBins);
-	map.setval(0);
-
-	for (i=0 ; i<nbBins ; i++)
-		for (j=0 ; j<nbBins ; j++)
-		{
-			mrs_real val=0;
-			if((i+1)%(j+1) == 0 || (j+1)%(i+1) == 0)
-				val = 1;
-			tmp(i, j) = val;
-		}
-
-		mrs_natural kSize=5, k, l;
-		mrs_real sum=0;
-		for (i=0 ; i<nbBins ; i++)
-			for (j=0 ; j<nbBins ; j++)
-				for (k=max( (mrs_natural) 0, i-kSize); k<min(nbBins, i+kSize) ; k++)
-					for (l=max((mrs_natural) 0, j-kSize) ; l<min(nbBins, j+kSize) ; l++)
-					{
-						mrs_real val1 = gaussian (i+1, (k+1)/10.0, k+1);
-						mrs_real val2 = gaussian (j+1, (l+1)/10.0, l+1);
-						map(i, j) += tmp(k, l)*val1*val2;	
-						sum += tmp(k, l)*val1*val2;	
-					}
-					map/=sum;
-}

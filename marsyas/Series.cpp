@@ -125,10 +125,11 @@ Series::myUpdate(MarControlPtr sender)
 					slices_[i] = new realvec(marsystems_[i]->ctrl_onObservations_->toNatural(), 
 						marsystems_[i]->ctrl_onSamples_->toNatural());
 
-					(marsystems_[i])->ctrl_processedData_->setValue(*(slices_[i]));
+					marsystems_[i]->ctrl_processedData_->setValue(*(slices_[i])); // [WTF] ?!?!?!?!?!?!?!?!?!?!??!!?!?!?!? [?]
 
 					slPtrs_.push_back(marsystems_[i]->ctrl_processedData_);
-					(slices_[i])->setval(0.0);
+					
+					(slices_[i])->setval(0.0); // [WTF]?!?!?!?!?!?!?!? [?]
 				}
 			}
 			else 
@@ -136,10 +137,11 @@ Series::myUpdate(MarControlPtr sender)
 				slices_[i] = new realvec(marsystems_[i]->ctrl_onObservations_->toNatural(), 
 					marsystems_[i]->ctrl_onSamples_->toNatural());
 
-				marsystems_[i]->ctrl_processedData_->setValue(*(slices_[i]));
+				marsystems_[i]->ctrl_processedData_->setValue(*(slices_[i]));// [WTF] ?!?!?!?!?!?!?!?!?!?!??!!?!?!?!? [?]
+				
 				slPtrs_.push_back(marsystems_[i]->ctrl_processedData_);
 
-				(slices_[i])->setval(0.0);
+				(slices_[i])->setval(0.0);// [WTF] ?!?!?!?!?!?!?!?!?!?!??!!?!?!?!? [?]
 			}
 		}
 	}
@@ -160,15 +162,15 @@ Series::myProcess(realvec& in, realvec& out)
 		{
 			if (i==0)
 			{
-				marsystems_[i]->process(in, (realvec &) slPtrs_[i]->to<mrs_realvec>());
+				marsystems_[i]->process(in, (realvec &) slPtrs_[i]->to<mrs_realvec>()); //breaks encapsulation!!!! [!]
 			}
 			else if (i == marsystemsSize_-1)
 			{
-				marsystems_[i]->process((realvec &) slPtrs_[i-1]->to<mrs_realvec>(), out);
+				marsystems_[i]->process((realvec &) slPtrs_[i-1]->to<mrs_realvec>(), out); 
 			}
 			else
-				marsystems_[i]->process((realvec &) slPtrs_[i-1]->to<mrs_realvec>(), 
-				(realvec &) slPtrs_[i]->to<mrs_realvec>());
+				marsystems_[i]->process((realvec &) slPtrs_[i-1]->to<mrs_realvec>(), //breaks encapsulation!!!! [!]
+				(realvec &) slPtrs_[i]->to<mrs_realvec>()); //breaks encapsulation!!!! [!]
 		}
 	}
 	else if(marsystemsSize_ == 0) //composite has no children!

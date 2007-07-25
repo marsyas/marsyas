@@ -158,11 +158,8 @@ HEADERS += \
 	OverlapAdd.h \
 	PCA.h \
 	Parallel.h \
-	PeClust.h \
-	PeClusters.h \
 	PeConvert.h \
 	PeResidual.h \
-	PeSimilarity.h \
 	PeUtilities.h \
 	Peak2Rms.h \
 	PeakPeriods2BPM.h \
@@ -261,13 +258,26 @@ HEADERS += \
 	QGMMModel.h \
 	PeSynOscBank.h \
 	SpectralSNR.h \
-	HWPSspectrum.h \
 	Vibrato.h \
 	Panorama.h \
 	Biquad.h \
+	peakView.h \
 	FlowThru.h \
 	FanOutIn.h \
 	MarSystemTemplateMedium.h \
+	PeFeatSelect.h \
+	SimilarityMatrix.h \
+	Metric.h \
+	HWPS.h \
+	RBF.h \
+	NormMatrix.h \
+	WHaSp.h \
+	FanOutIn.h \
+	PeLabeler.h \
+	PeClusterSelect.h \
+	peakView.h \
+	PeakViewSink.h \
+	PeakViewSource.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 	 
@@ -374,11 +384,8 @@ SOURCES += \
 	OverlapAdd.cpp \
 	PCA.cpp \
 	Parallel.cpp \
-	PeClust.cpp \
-	PeClusters.cpp \
 	PeConvert.cpp \
 	PeResidual.cpp \
-	PeSimilarity.cpp \
 	PeUtilities.cpp \
 	Peak2Rms.cpp \
 	PeakPeriods2BPM.cpp \
@@ -472,13 +479,26 @@ SOURCES += \
 	QGMMModel.cpp \
 	PeSynOscBank.cpp \
 	SpectralSNR.cpp \
-	HWPSspectrum.cpp \
 	Vibrato.cpp \
 	Panorama.cpp \
 	Biquad.cpp \
+	peakView.cpp \
 	FlowThru.cpp \
 	FanOutIn.cpp \
 	MarSystemTemplateMedium.cpp \
+	PeFeatSelect.cpp \
+	SimilarityMatrix.cpp \
+	Metric.cpp \
+	HWPS.cpp \
+	RBF.cpp \
+	NormMatrix.cpp \
+	WHaSp.cpp \
+	FanOutIn.cpp \
+	PeLabeler.cpp \
+	PeClusterSelect.cpp \
+	peakView.cpp \
+	PeakViewSink.cpp \
+	PeakViewSource.cpp \
 	Gain.cpp
 # please leave Gain.cpp at the end like this; it makes scripts happy.
 

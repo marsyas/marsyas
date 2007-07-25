@@ -41,27 +41,29 @@ namespace Marsyas
 
 class realvec 
 {
-private:
-  mrs_real *data_;
+protected:
   mrs_natural size_;
-	mrs_natural allocatedSize_;
+  mrs_natural allocatedSize_;
   mrs_natural rows_;
   mrs_natural cols_;
+
+  mrs_real *data_;
   
 public:
   realvec();
-  ~realvec();
+  virtual ~realvec();
   realvec(mrs_natural size);
   realvec(mrs_natural rows, mrs_natural cols);
   realvec(const realvec& a);
+  
   realvec& operator=(const realvec& a);
 
-  void allocate(mrs_natural size);//just allocate(size)  
+  void allocate(mrs_natural size);  
   void allocate(mrs_natural rows, mrs_natural cols);	
 
-  void create(mrs_natural size);// allocate(size) + fill zeros
-  void create(mrs_natural rows, mrs_natural cols); 
-  void create(mrs_real val, mrs_natural rows, mrs_natural cols);	
+  void create(mrs_natural size);// allocate(size) + fill with zeros
+  void create(mrs_natural rows, mrs_natural cols); //allocate(rows,cols) + fill with zeros
+  void create(mrs_real val, mrs_natural rows, mrs_natural cols); //allocate(rows,cols) + fill with val
   
   void stretch(mrs_natural rows, mrs_natural cols); // allocate(size) + keep old vals
   void stretch(mrs_natural size);// allocate(size) + keep old vals
@@ -69,12 +71,11 @@ public:
   void setval(mrs_natural start, mrs_natural end, mrs_real val);// set all entries to val 
   void setval(mrs_real val);// set all entries to val 
   
-	void apply(mrs_real (*func) (mrs_real));// apply a given function to all the elts
+  void apply(mrs_real (*func) (mrs_real));// apply a given function to all the elements
 
   mrs_natural getSize() const;
   mrs_natural getCols() const;
   mrs_natural getRows() const;
-  void transpose();
   mrs_real *getData() const;// dirty for easy integration 
 
   void shuffle();
@@ -91,71 +92,69 @@ public:
 
   friend realvec operator+(const realvec& vec1, const realvec& vec2);
   friend realvec operator-(const realvec& vec1, const realvec& vec2);
-	friend realvec operator*(const realvec& vec1, const realvec& vec2);
-	friend realvec operator/(const realvec& vec1, const realvec& vec2);
-	friend bool operator!=(const realvec& v1, const realvec& v2);
+  friend realvec operator*(const realvec& vec1, const realvec& vec2);
+  friend realvec operator/(const realvec& vec1, const realvec& vec2);
+  friend bool operator!=(const realvec& v1, const realvec& v2);
    
   // item access
   mrs_real& operator()(const mrs_natural i);
   mrs_real operator()(const mrs_natural i) const;
-  mrs_real& operator()(const long r, const long c);
-  mrs_real operator()(const long r, const long c) const;
+  mrs_real& operator()(const mrs_natural r, const mrs_natural c);
+  mrs_real operator()(const mrs_natural r, const mrs_natural c) const;
 
-	// write to array, stretching the array if necessary
-	void stretchWrite(const mrs_natural pos, const mrs_real val);
-	void stretchWrite(const mrs_natural r, const mrs_natural c, const mrs_real val);
+  // write to array, stretching the array if necessary
+  void stretchWrite(const mrs_natural pos, const mrs_real val);
+  void stretchWrite(const mrs_natural r, const mrs_natural c, const mrs_real val);
 
   // Matlab-like indexing
-  realvec operator()(std::string r, std::string c);//Jen
-  realvec operator()(std::string r);//Jen
+  realvec operator()(std::string r, std::string c);
+  realvec operator()(std::string r);
   // vector indexing
-  realvec getRow(const mrs_natural r) const;//lmartins
-  realvec getCol(const mrs_natural c) const;//lmartins
+  void getRow(const mrs_natural r, realvec& res) const;
+  void getCol(const mrs_natural c, realvec& res) const;
 
   // output functions 
   void debug_info();
-	void dump();
-  void write(std::string filename) const;
-  void read(std::string filename);
+  void dump();
+  bool write(std::string filename) const;
+  bool read(std::string filename);
   friend std::ostream& operator<<(std::ostream&, const realvec&);
   friend std::istream& operator>>(std::istream&, realvec&);
-	// input/output functions for line-separated text files
-	void readText(std::string filename);
-	void writeText(std::string filename);
+  // input/output functions for line-separated text files
+  bool readText(std::string filename);
+  bool writeText(std::string filename);
 
   // Observations statistics 
-  realvec meanObs() const;//lmartins
-  realvec stdObs() const;//lmartins
-  realvec varObs() const;//lmartins
-  void normObs();//lmartins
-	void normSpl(mrs_natural=0);//lmartins
-  void normObsMinMax();//lmartins
-	void normSplMinMax(mrs_natural=0);//lmartins
+  void meanObs(realvec& res) const;
+  void stdObs(realvec& res) const;
+  void varObs(realvec& res) const;
+  void normObs();
+  void normSpl(mrs_natural=0);
+  void normObsMinMax();
+  void normSplMinMax(mrs_natural=0);
 
   // Vector/Matrix Algebra and Statistics
-  mrs_real maxval(mrs_natural *index=NULL) const;//lmartins
-  mrs_real minval() const;//lmartins
+  mrs_real maxval(mrs_natural *index=NULL) const;
+  mrs_real minval() const;
   mrs_real mean() const;
   mrs_real median() const;
   mrs_real sum() const;
   mrs_real std() const;
   mrs_real var() const;
-	void sort();
+  void sort();
   void abs();
   void sqr();
   void sqroot();
+  void norm();
+  void norm(mrs_real mean, mrs_real std);
   void renorm(mrs_real old_mean, mrs_real old_std, mrs_real new_mean, mrs_real new_std);
   mrs_natural invert(realvec& res);//lmartins: this seems to be both inplace and returning the inverse matrix in "res"... why both?!? [!][?] 
-
-  realvec covariance() const; //Typical covariance calculation, as performed by MATLAB cov(). //lmartins
-  realvec covariance2() const;//Marsyas0.1 covariance calculation (assumes standardized data, and uses biased estimation) //lmartins
-  realvec correlation() const; //lmartins
-  mrs_real trace() const; //lmartins
-  mrs_real det() const; //lmartins
-  
-  // Distances and metrics (should this be here?)[?]
-  static mrs_real divergenceShape(realvec Ci, realvec Cj);//lmartins 
-  static mrs_real bhattacharyyaShape(realvec Ci, realvec Cj); //lmartins
+  void transpose();
+  void covariance(realvec& res) const; //Typical covariance calculation, as performed by MATLAB cov(). 
+  void covariance2(realvec& res) const;//Marsyas0.1 covariance calculation (assumes standardized data, and uses biased estimation) 
+  void correlation(realvec& res) const; 
+  mrs_real trace() const; 
+  mrs_real det() const; 
 
   // Communications
   void send(Communicator *com);
@@ -237,7 +236,7 @@ realvec::operator/=(const realvec& vec)
 }
  
 inline 
-mrs_real realvec::operator()(const long r, const long c) const
+mrs_real realvec::operator()(const mrs_natural r, const mrs_natural c) const
 {
   MRSASSERT(r < rows_);
   MRSASSERT(c < cols_);
@@ -247,7 +246,7 @@ mrs_real realvec::operator()(const long r, const long c) const
 }
 
 inline 
-mrs_real& realvec::operator()(const long r, const long c)
+mrs_real& realvec::operator()(const mrs_natural r, const mrs_natural c)
 {
   MRSASSERT(r < rows_);
   MRSASSERT(c < cols_);

@@ -1,0 +1,9 @@
+<!DOCTYPE RCC><RCC version="1.0">
+ <qresource>
+     <file>images/extract.png</file>
+     <file>images/predict.png</file>
+     <file>images/train.png</file>
+     <file>images/iTunes.png</file>
+     <file>images/Preferences.png</file>
+ </qresource>
+</RCC>

@@ -8,25 +8,25 @@
 #include "Messager.h"
 #include "Conversions.h"
 #include "CommandLineOptions.h"
-#include "PeClusters.h"
-#include "PeUtilities.h"
+#include "peakView.h"
+
+#include "PeUtilities.h" //TO DEPRECATE IN NEAR FUTURE!!! [TODO]
 
 #include <string>
 
 using namespace std;
 using namespace Marsyas;
 
-
-string pluginName = EMPTYSTRING;
-string inputDirectoryName = EMPTYSTRING;
-string outputDirectoryName = EMPTYSTRING;
-string fileName = EMPTYSTRING;
-string noiseName = EMPTYSTRING;
-string fileResName = EMPTYSTRING;
-string filePeakName = EMPTYSTRING;
-string panningInfo = EMPTYSTRING;
+string pluginName = "MARSYAS_EMPTY";
+string inputDirectoryName = "MARSYAS_EMPTY";
+string outputDirectoryName = "MARSYAS_EMPTY";
+string fileName = "MARSYAS_EMPTY";
+string noiseName = "MARSYAS_EMPTY";
+string fileResName = "MARSYAS_EMPTY";
+string filePeakName = "MARSYAS_EMPTY";
+string panningInfo = "MARSYAS_EMPTY";
 string intervalFrequency = "50-4000";
-string harmonizeFileName = EMPTYSTRING;
+string harmonizeFileName = "MARSYAS_EMPTY";
 
 // Global variables for command-line options 
 bool helpopt_ = 0;
@@ -126,8 +126,8 @@ HWPSanalyse(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		
 		
 		//create analyzer (using composite prototype)
-		pvseries->addMarSystem(mng.create("HWPSspectrumnet", "WHASP"));
-		pvseries->linkctrl("mrs_natural/Sinusoids","HWPSspectrumnet/WHASP/PeAnalyse/analyse/mrs_natural/Sinusoids");
+		pvseries->addMarSystem(mng.create("WHaSpnet", "whaspnet"));
+		pvseries->linkctrl("mrs_natural/frameMaxNumPeaks","WHaSpnet/whaspnet/PeAnalyse/analyse/mrs_natural/frameMaxNumPeaks");
 		
 		////////////////////////////////////////////////////////////////
 		// update the controls
@@ -150,15 +150,15 @@ HWPSanalyse(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		}
 
 
-		pvseries->updctrl("HWPSspectrumnet/WHASP/PeAnalyse/analyse/mrs_natural/Decimation", D);
-		pvseries->updctrl("HWPSspectrumnet/WHASP/PeAnalyse/analyse/mrs_natural/WindowSize", Nw+1);
-		pvseries->updctrl("HWPSspectrumnet/WHASP/PeAnalyse/analyse/mrs_natural/FFTSize", N);
-		pvseries->updctrl("HWPSspectrumnet/WHASP/PeAnalyse/analyse/mrs_string/WindowType", "Hanning");
-		pvseries->updctrl("HWPSspectrumnet/WHASP/PeAnalyse/analyse/mrs_natural/zeroPhasing", 1);
-		pvseries->updctrl("HWPSspectrumnet/WHASP/PeAnalyse/analyse/Shifter/sh/mrs_natural/shift", 1);
-		pvseries->updctrl("HWPSspectrumnet/WHASP/PeAnalyse/analyse/mrs_natural/Decimation", D);      
-		pvseries->updctrl("mrs_natural/Sinusoids", S);  
-		pvseries->updctrl("HWPSspectrumnet/WHASP/PeAnalyse/analyse/PeConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
+		pvseries->updctrl("WHaSpnet/whaspnet/PeAnalyse/analyse/mrs_natural/Decimation", D);
+		pvseries->updctrl("WHaSpnet/whaspnet/PeAnalyse/analyse/mrs_natural/WindowSize", Nw+1);
+		pvseries->updctrl("WHaSpnet/whaspnet/PeAnalyse/analyse/mrs_natural/FFTSize", N);
+		pvseries->updctrl("WHaSpnet/whaspnet/PeAnalyse/analyse/mrs_string/WindowType", "Hanning");
+		pvseries->updctrl("WHaSpnet/whaspnet/PeAnalyse/analyse/mrs_bool/zeroPhasing", true);
+		pvseries->updctrl("WHaSpnet/whaspnet/PeAnalyse/analyse/Shifter/sh/mrs_natural/shift", 1);
+		pvseries->updctrl("WHaSpnet/whaspnet/PeAnalyse/analyse/mrs_natural/Decimation", D);      
+		pvseries->updctrl("mrs_natural/frameMaxNumPeaks", S);  
+		pvseries->updctrl("WHaSpnet/whaspnet/PeAnalyse/analyse/PeConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
 	}
 	else
 	{
@@ -175,9 +175,9 @@ HWPSanalyse(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		MATLAB_EVAL("plotPeaks(peaks)");
 
 		for (mrs_natural i=0 ; i<peakSet_.getRows() ; i++)
-		if(peakSet_(i, pkTime)>nbF_)
+		if(peakSet_(i, pkFrame)>nbF_)
 		{
-		nbF_ = peakSet_(i, pkTime);
+		nbF_ = peakSet_(i, pkFrame);
 		}
 		nbF_++;
 
@@ -187,11 +187,12 @@ HWPSanalyse(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 
 		*/
 		realvec peakSet_;
-		mrs_real fs;
-		mrs_natural nbFrames;
-		peakLoad(peakSet_, sfName, fs, S, nbFrames, D);
+		
+		//peakLoad(peakSet_, sfName, fs, S, nbFrames, D);
+		peakView peakSetView(peakSet_);
+		peakSetView.peakRead(sfName);
 		pvseries->setctrl("RealvecSource/peSource/mrs_realvec/data", peakSet_);
-		pvseries->setctrl("mrs_real/israte", fs);
+		pvseries->setctrl("mrs_real/israte", peakSetView.getFs());
 	}
 
 	if(peakStore_)
@@ -215,10 +216,10 @@ HWPSanalyse(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 
 	if(synthetize>-1 )
 	{
-		synthNetCreate(&mng, outsfname, microphone_, synthetize);
+		synthNetCreate(&mng, outsfname, microphone_, synthetize); //[TODO]
 		MarSystem *peSynth = mng.create("PeSynthetize", "synthNet");
 		pvseries->addMarSystem(peSynth);
-		synthNetConfigure (pvseries, sfName, outsfname, fileResName, panningInfo, 1, Nw, D, S, 1, microphone_, synthetize, bopt_, Nw+1-D);
+		synthNetConfigure (pvseries, sfName, outsfname, fileResName, panningInfo, 1, Nw, D, S, 1, microphone_, synthetize, bopt_, Nw+1-D); //[TODO]
 	}
 
 	if(harmonize_)
@@ -274,7 +275,10 @@ HWPSanalyse(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		if(peakStore_)
 		{
 			realvec vec = pvseries->getctrl("RealvecSink/peSink/mrs_realvec/data")->toVec();
-			peakStore(vec, filePeakName, samplingFrequency_, D); 
+			//peakStore(vec, filePeakName, samplingFrequency_, D); 
+			peakView vecView(vec);
+			vecView.peakWrite(filePeakName, samplingFrequency_, D);
+
 
 			MATLAB_PUT(peakSet_, "peaks");
 			MATLAB_EVAL("plotPeaks(peaks)");
@@ -301,16 +305,16 @@ initOptions()
 	cmd_options.addBoolOption("help", "h", false);
 	cmd_options.addBoolOption("usage", "u", false);
 	cmd_options.addNaturalOption("voices", "v", 1);
-	cmd_options.addStringOption("filename", "f", EMPTYSTRING);
-	cmd_options.addStringOption("outputdirectoryname", "o", EMPTYSTRING);
-	cmd_options.addStringOption("inputdirectoryname", "I", EMPTYSTRING);
+	cmd_options.addStringOption("filename", "f", "MARSYAS_EMPTY");
+	cmd_options.addStringOption("outputdirectoryname", "o", "MARSYAS_EMPTY");
+	cmd_options.addStringOption("inputdirectoryname", "I", "MARSYAS_EMPTY");
 	cmd_options.addNaturalOption("winsize", "w", winSize_);
 	cmd_options.addNaturalOption("fftsize", "n", fftSize_);
 	cmd_options.addNaturalOption("sinusoids", "s", nbSines_);
 	cmd_options.addNaturalOption("bufferSize", "b", bopt_);
 	cmd_options.addStringOption("intervalFrequency", "i", intervalFrequency);
-	cmd_options.addStringOption("panning", "p", EMPTYSTRING);
-	cmd_options.addStringOption("Harmonize", "H", EMPTYSTRING);
+	cmd_options.addStringOption("panning", "p", "MARSYAS_EMPTY");
+	cmd_options.addStringOption("Harmonize", "H", "MARSYAS_EMPTY");
 	cmd_options.addNaturalOption("synthetize", "S", synthetize_);
 	cmd_options.addBoolOption("analyse", "A", analyse_);
 	cmd_options.addBoolOption("PeakStore", "P", peakStore_);
@@ -391,7 +395,7 @@ main(int argc, const char **argv)
 			}
 
 			string path;
-			if(outputDirectoryName != EMPTYSTRING)
+			if(outputDirectoryName != "MARSYAS_EMPTY")
 				path = outputDirectoryName;
 			else
 				path =Sfname.path();

@@ -1,0 +1,98 @@
+<ui version="4.0" >
+ <class>PeakVisForm</class>
+ <widget class="QMainWindow" name="PeakVisForm" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>795</width>
+    <height>696</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>',',',',~~~~ PeakVis ~~~~,',',','</string>
+  </property>
+  <widget class="QWidget" name="centralwidget" >
+   <widget class="QLabel" name="filenameLabel" >
+    <property name="geometry" >
+     <rect>
+      <x>70</x>
+      <y>630</y>
+      <width>271</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string/>
+    </property>
+   </widget>
+   <widget class="QFrame" name="frame" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>771</width>
+      <height>611</height>
+     </rect>
+    </property>
+    <property name="frameShape" >
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow" >
+     <enum>QFrame::Raised</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="filenmeTagLabel" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>630</y>
+      <width>61</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Filame :</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="openFileButton" >
+    <property name="geometry" >
+     <rect>
+      <x>670</x>
+      <y>630</y>
+      <width>113</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Open...</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>795</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile" >
+    <property name="title" >
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen" />
+   </widget>
+   <addaction name="menuFile" />
+  </widget>
+  <widget class="QStatusBar" name="statusbar" />
+  <action name="actionOpen" >
+   <property name="text" >
+    <string>Open...</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -36,8 +36,8 @@ namespace Marsyas
 	class FlowThru: public MarSystem
 	{
 	private:
+		MarControlPtr ctrl_innerOut_;
 		realvec empty_;
-		bool probe_;
 
 		void addControls();
 		void myUpdate(MarControlPtr sender);
@@ -45,8 +45,7 @@ namespace Marsyas
 
 	public:
 		FlowThru(std::string name);
-		//FlowThru(const FlowThru& a);
-
+		FlowThru(const FlowThru& a);
 		~FlowThru();
 		MarSystem* clone() const;  
 

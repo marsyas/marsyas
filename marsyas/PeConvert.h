@@ -37,13 +37,16 @@ directly in Hz.
 namespace Marsyas
 {
 
+	class Peaker;
+	class MaxArgMax;
+
 class PeConvert: public MarSystem
 {
 private:
   realvec lastphase_;
   realvec phase_;
   realvec mag_;
-	  realvec magCorr_;
+	realvec magCorr_;
 	realvec frequency_;
   realvec lastmag_;
 	realvec lastfrequency_;
@@ -54,22 +57,34 @@ private:
   mrs_real factor_;
   mrs_natural downFrequency_;
   mrs_natural upFrequency_;
-  mrs_natural time_;
   mrs_natural nbParameters_;
   mrs_natural nbPeaks_;
-  mrs_natural kmax_;
-  mrs_natural pick_;
-  mrs_natural size_, psize_, skip_, prec_;
+  mrs_natural frameMaxNumPeaks_;
+	mrs_natural size_;
+	mrs_natural psize_;
+	mrs_natural skip_;
+  bool pick_;
+	bool prec_;
+
+	mrs_natural frame_;
+
+	Peaker* peaker_;
+	MaxArgMax* max_;
+
+	MarControlPtr ctrl_totalNumPeaks_;
+	MarControlPtr ctrl_frameMaxNumPeaks_;
   
   void addControls();
-	void getBinInterval(realvec& interval, realvec& index, realvec& mag);
-	void getShortBinInterval(realvec& interval, realvec& index, realvec& mag);
-  void getLargeBinInterval(realvec& interval, realvec& index, realvec& mag);
 	void myUpdate(MarControlPtr sender);
+
+	mrs_real lobe_value_compute(mrs_real f, mrs_natural type, mrs_natural size);
+	//void getBinInterval(realvec& interval, realvec& index, realvec& mag);
+	void getShortBinInterval(realvec& interval, realvec& index, realvec& mag);
+	void getLargeBinInterval(realvec& interval, realvec& index, realvec& mag);
   
 public:
   PeConvert(std::string name);
-  
+	PeConvert(const PeConvert& a);
   ~PeConvert();
   MarSystem* clone() const;    
 

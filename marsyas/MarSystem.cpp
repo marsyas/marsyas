@@ -277,7 +277,7 @@ MarSystem::addControls()
 	inTick_.create(inObservations_, inSamples_);
 	outTick_.create(onObservations_, onSamples_);
 
-	addctrl("mrs_realvec/processedData", outTick_, ctrl_processedData_);
+	addctrl("mrs_realvec/processedData", outTick_, ctrl_processedData_); //[!]
 
 	ctrl_active_->setState(true);
 
@@ -619,7 +619,7 @@ MarSystem::tick()
 	if(ctrl_active_->isTrue())
 	{
 		scheduler_.tick();
-		process(inTick_, (realvec &) ctrl_processedData_->to<mrs_realvec>());
+		process(inTick_, (realvec &) ctrl_processedData_->to<mrs_realvec>()); //THIS BREAKS INCAPSULATION!!!! [!]
 	}
 	else
 		MRSDIAG("MarSystem::tick() : MarSystem is not active! Ignoring tick command.");

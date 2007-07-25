@@ -1,0 +1,267 @@
+
+/*
+** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+**  
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+** 
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+** 
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software 
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
+/** 
+\class peakView
+\class Notmar
+\brief Helper class for accessing peaks in a realvec. 
+*/
+
+#include "peakView.h"
+
+using namespace std;
+using namespace Marsyas;
+
+peakView::peakView(realvec& vec): vec_(vec)
+{
+	//max number of peaks in each frame
+	frameMaxNumPeaks_ = vec_.getRows() / nbPkParameters;
+	numFrames_ = vec_.getCols();
+}
+
+peakView::~peakView()
+{
+
+}
+
+mrs_natural 
+peakView::getFrameNumPeaks(const mrs_natural frame) const
+{
+	//count the number of detected peaks in the frame
+	//
+	//"peaks" with freq == 0 are considered non-existent
+	//so just count peaks until we get the first "peak" with freq!=0
+	mrs_natural p;
+	for(p=0; p < frameMaxNumPeaks_; ++p)
+	{
+		if((*this)(p, pkFrequency, frame) == 0)
+			return p;
+	}
+	return frameMaxNumPeaks_;
+}
+
+mrs_natural
+peakView::getTotalNumPeaks() const
+{
+	mrs_natural numPeaks = 0;
+	for(mrs_natural f=0; f < numFrames_; ++f)
+	{
+		numPeaks += this->getFrameNumPeaks(f);
+	}
+	return numPeaks;
+}
+
+vector<realvec> //[!] this makes a copy...
+peakView::getPeaksParam(const pkParameter param, mrs_natural startFrame, mrs_natural endFrame) const
+{
+	vector<realvec> result;
+
+	if(startFrame < 0 || endFrame < 0)
+	{
+		return result;
+		MRSWARN("peakView::getPeaksParam: negative start/stop frame! Returning empty vector.");
+	}
+	if(startFrame >= vec_.getCols() || endFrame >= vec_.getCols())
+	{
+		return result;
+		MRSWARN("peakView::getPeaksParam: start/end frame bigger than vector column size! Returning empty vector.");
+	}	
+
+	mrs_natural numPeaks;
+	realvec valVec;
+
+	for(mrs_natural f = startFrame; f <= endFrame; ++f)
+	{
+		//get a vector with the parameter values for all the peaks
+		//detected in the frame (i.e. whose freq != 0)
+		numPeaks = getFrameNumPeaks(f);
+		valVec.allocate(numPeaks);
+		for(mrs_natural p=0; p<numPeaks; ++p)
+			valVec(p) = (*this)(p, param, f);
+
+		result.push_back(valVec);
+	}
+
+	return result;
+}
+
+string
+peakView::getParamName(mrs_natural paramIdx)
+{
+	switch(paramIdx)
+	{
+	case 0:
+		return "pkFrequency";
+		break;
+	case 1:
+		return "pkAmplitude";
+		break;
+	case 2:
+		return "pkPhase";
+		break;
+	case 3:
+		return "pkDeltaFrequency";
+		break;
+	case 4:
+		return "pkDeltaAmplitude";
+		break;
+	case 5:
+		return "pkFrame";
+		break;
+	case 6:
+		return "pkGroup";
+		break;
+	case 7:
+		return "pkVolume";
+		break;
+	case 8:
+		return "pkPan";
+		break;
+	case 9:
+		return "pkBinLow";
+		break;
+	case 10:
+		return "pkBin";
+		break;
+	case 11:
+		return "pkBinHigh";
+		break;
+	case 12:
+		return "nbPkParameters";
+		break;
+	default:
+		return "MARSYAS_EMPTY";
+		break;
+	}
+}
+
+realvec //copies involved!! [!]
+peakView::toTable()
+{
+	//create the table (assuming the largest possible number of peaks + the header for now...)
+	realvec vec_Table(frameMaxNumPeaks_*numFrames_+1, nbPkParameters);
+
+	//In Table format, the 1st row is a "header row"
+	vec_Table(0, 0) = -1;
+	vec_Table(0, 1) =  fs_;
+	vec_Table(0, 2) =  frameSize_;
+	vec_Table(0, 3) =  frameMaxNumPeaks_;
+	vec_Table(0, 4) =  numFrames_;
+	vec_Table(0, 5) = -1;
+	vec_Table(0, pkGroup) = -2;
+	for (mrs_natural i = pkGroup+1 ; i < nbPkParameters ; i++) //i = pkGroup or i = pkGroup+1 [?]
+		vec_Table(0, i)=0;
+
+	//fill the table with peak data
+	mrs_natural l = 1; //l = peak index for table format (i.e. row index)
+	for (mrs_natural j=0 ; j < vec_.getCols(); ++j) //j = frame index
+		for (mrs_natural i=0 ; i < frameMaxNumPeaks_; ++i) //i = peak index
+		{
+			//just output existing peaks at each frame (i.e. freq != 0)
+			if(vec_(i, j) != 0.0) 
+			{
+				for(mrs_natural k = 0; k < nbPkParameters; k++)// k = parameter index
+					vec_Table(l, k) = (*this)(i, pkParameter(k), j);
+				l++;
+			}
+		}
+
+	//resize the table to the correct (i.e. possibly smaller) 
+	//number of peaks (i.e. nr of rows)
+	vec_Table.stretch(l, nbPkParameters);
+
+	return vec_Table;
+}
+
+void
+peakView::fromTable(realvec& vec_table)
+{
+	//get data from header
+	fs_  = vec_table(0, 1);
+	frameSize_ = (mrs_natural)vec_table(0, 2);
+	frameMaxNumPeaks_ = (mrs_natural)vec_table(0, 3);
+	numFrames_ = (mrs_natural)vec_table(0, 4);
+	
+	//get the first frame in table (it may not be 0!!!)
+	mrs_natural frame = (mrs_natural)vec_table(1, pkFrame); // start frame [!]
+	
+	//resize (and set to zero) vec_ for new peak data
+	//(should accommodate empty frames before the first frame in table!) 
+	vec_.create(frameMaxNumPeaks_*nbPkParameters, numFrames_+frame); //[!]
+	
+	//load data from table into it vec_
+	mrs_natural p = 0; // peak index inside each frame
+	mrs_natural r = 1;//peak index in table (i.e. row index) - ignore header row
+
+	//check in case realvec has less parameters than nbPkParameters
+	mrs_natural actualNbPkParams = (mrs_natural)min((mrs_real)nbPkParameters, (mrs_real)vec_table.getCols());
+
+	//iterate over table rows (i.e. peaks)
+	while(r < vec_table.getRows()-1) 
+	{
+		//get parameters for this peak
+		for(mrs_natural prm = 0; prm < actualNbPkParams; ++prm)
+		{
+			(*this)(p, pkParameter(prm), frame) = vec_table(r, prm);
+		}
+		r++; //move on to next table row (i.e. peak)
+		p++; 
+		//if the next row in table is form a different frame,
+		//reset peak index and get new frame index
+		if(vec_table(r, pkFrame) != frame)
+		{
+			frame = (mrs_natural)vec_table(r, pkFrame);
+			p = 0;
+		}
+	}
+}
+
+bool
+peakView::peakWrite(string filename, mrs_real fs, mrs_natural frameSize)
+{
+	//we may want to write this peakVector with its internal parameters
+	if(fs != 0)
+		fs_ = fs;
+	if(frameSize != 0)
+		frameSize_ = frameSize;
+
+	//convert vec_ to table format and save to file
+	return this->toTable().write(filename);
+}
+
+bool
+peakView::peakRead(string filename)
+{
+	//read .peak into a realvec
+	realvec vec_Table;
+	if(vec_Table.read(filename))
+	{
+		//read data from the table
+		this->fromTable(vec_Table);
+		return true;
+	}
+	else
+		return false; //problem reading .peak file
+}
+
+
+
+
+
+

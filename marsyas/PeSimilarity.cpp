@@ -204,7 +204,7 @@ void
 Marsyas::harmonicitySimilarityCompute(realvec& data, std::vector<realvec>& fSet, std::vector<realvec>& aSet, realvec& m, mrs_natural hSize, 
 									  realvec& firstF, realvec& firstA, realvec& secondF, realvec& secondA)
 {
-	mrs_natural i, j, startIndex = (mrs_natural) data(0, pkTime);
+	mrs_natural i, j, startIndex = (mrs_natural) data(0, pkFrame);
 
 	realvec x1(hSize);
 	realvec x2(hSize);
@@ -220,8 +220,8 @@ Marsyas::harmonicitySimilarityCompute(realvec& data, std::vector<realvec>& fSet,
 			mrs_real val=0;
 
 			//convert indexes for this texture window (which start from 0)
-			mrs_natural indexFirst = (mrs_natural) (data(i, pkTime)-startIndex);
-			mrs_natural indexSecond = (mrs_natural) (data(j, pkTime)-startIndex);
+			mrs_natural indexFirst = (mrs_natural) (data(i, pkFrame)-startIndex);
+			mrs_natural indexSecond = (mrs_natural) (data(j, pkFrame)-startIndex);
 
 			//get freq and amp vectors for both peak sets (i.e. first and second)
 			firstF.stretch(fSet[indexFirst].getSize());

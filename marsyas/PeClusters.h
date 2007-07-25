@@ -17,10 +17,10 @@
 */
 
 /** 
-    \class PeClusters
-    \brief Class for storing clusters description
+\class PeClusters
+\brief Class for storing clusters description
 
-  
+
 */
 
 #ifndef MARSYAS_PECLUSTERS_H
@@ -35,85 +35,85 @@ using std::ofstream;
 namespace Marsyas
 {
 	typedef enum {
-	start,
-	length,
-	phase,
-	deltaFrequency,
-	deltaAmplitude,
-	firstLabel,
-	thruth,
-	nbClustersParameters
+		start,
+		length,
+		phase,
+		deltaFrequency,
+		deltaAmplitude,
+		firstLabel,
+		thruth,
+		nbClustersParameters
 	} ctParameter;
 
 
 	class PeCluster {
 		friend class PeClusters;
 	private :
-	mrs_natural envSize;
-	mrs_natural histSize;
-	mrs_natural nbPeaks;
-	mrs_real cuttingFrequency_;
+		mrs_natural envSize;
+		mrs_natural histSize;
+		mrs_natural nbPeaks;
+		mrs_real cuttingFrequency_;
 
-	mrs_real start;
-	mrs_real end;
-mrs_real length;
-mrs_natural oriLabel;
-mrs_natural groundLabel;
-mrs_natural label;
+		mrs_real start;
+		mrs_real end;
+		mrs_real length;
+		mrs_natural oriLabel;
+		mrs_natural groundLabel;
+		mrs_natural label;
 
-mrs_real ampMean;
-mrs_real ampStd;
-mrs_real freqMean;
-mrs_real freqStd;
+		mrs_real ampMean;
+		mrs_real ampStd;
+		mrs_real freqMean;
+		mrs_real freqStd;
 
-realvec spectralEnvelope;
-realvec amplitudeEvolution;
-realvec frequencyEvolution;
+		realvec spectralEnvelope;
+		realvec amplitudeEvolution;
+		realvec frequencyEvolution;
 
-realvec frequencyDistribution;
-realvec amplitudeDistribution;
-realvec harmonicityDistribution;
+		realvec frequencyDistribution;
+		realvec amplitudeDistribution;
+		realvec harmonicityDistribution;
 
-realvec frequencyHistogram;
-realvec amplitudeHistogram;
-realvec harmonicityHistogram;
+		realvec frequencyHistogram;
+		realvec amplitudeHistogram;
+		realvec harmonicityHistogram;
 
 
-std::vector<realvec> frequencySet_;
-std::vector<realvec> amplitudeSet_;
+		std::vector<realvec> frequencySet_;
+		std::vector<realvec> amplitudeSet_;
 
 
 	public :
- PeCluster();
-  ~PeCluster();
+		PeCluster();
+		~PeCluster();
 
-	void init(realvec& peakSet, mrs_natural l);
-	
-	void computeAttributes(realvec& peakSet, mrs_natural l, std::string type, mrs_real cuttingFrequency);
+		void init(realvec& peakSet, mrs_natural l);
 
-	mrs_natural getVecSize();
-	void toVec(realvec&);
+		void computeAttributes(realvec& peakSet, mrs_natural l, std::string type, mrs_real cuttingFrequency);
 
-	mrs_natural getGroundThruth ();
-	void setGroundThruth (mrs_natural);
+		mrs_natural getVecSize();
+		void toVec(realvec&);
 
-	mrs_natural getOriLabel ();
-	void setOriLabel (mrs_natural);
-	mrs_real getVoicingFactor1(mrs_natural); mrs_real getVoicingFactor2(mrs_natural); mrs_real getVoicingFactor3(mrs_natural);
-	mrs_real getF0(mrs_natural);
-	mrs_natural getLabel ();
-	void setLabel (mrs_natural);
+		mrs_natural getGroundThruth ();
+		void setGroundThruth (mrs_natural);
+
+		mrs_natural getOriLabel ();
+		void setOriLabel (mrs_natural);
+		mrs_real getVoicingFactor1(mrs_natural); mrs_real getVoicingFactor2(mrs_natural); mrs_real getVoicingFactor3(mrs_natural);
+		mrs_real getF0(mrs_natural);
+		mrs_natural getLabel ();
+		void setLabel (mrs_natural);
 	} ;
 
 
 	class PeClusters
 	{
-		private:
-PeCluster *set;
-mrs_natural nbClusters;
-mrs_natural nbFrames;
+	private:
+		PeCluster *set;
+		mrs_natural nbClusters;
+		mrs_natural nbFrames;
 
-public:
+	public:
 		PeClusters(realvec &peakSet);
 		~PeClusters();
 
@@ -121,7 +121,7 @@ public:
 		void getConversionTable(realvec &);
 		void selectBefore(mrs_real val);
 		void selectGround();
-void attributes(realvec &peakSet, mrs_real);
+		void attributes(realvec &peakSet, mrs_real);
 		mrs_real synthetize(realvec &peakSet, std::string fileName, std::string outFileName, mrs_natural Nw, mrs_natural D, mrs_natural S, mrs_natural bopt, mrs_natural synType, mrs_natural residual=0);
 
 		void voicingLine(std::string fileName, mrs_natural, mrs_natural twLength);

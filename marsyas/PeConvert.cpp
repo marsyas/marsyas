@@ -19,18 +19,17 @@
 
 /** 
 \class PeConvert
-	\ingroup none
+\ingroup MarSystem
 \brief PeConvert
 
 PeConvert N real and imaginary spectrum values to 
-to a fixed numer of peaks.
-Peaks have several fields interlieved: frequency, amplitude, phase, vf, va
+to a fixed number of peaks.
 */
 
 #include "PeConvert.h"
 #include "Peaker.h"
 #include "MaxArgMax.h"
-#include "PeUtilities.h"
+#include "peakView.h"
 
 #include <algorithm>
 
@@ -41,20 +40,45 @@ PeConvert::PeConvert(string name):MarSystem("PeConvert",name)
 {
 	psize_ = 0;
 	size_ = 0;
-	nbParameters_ = nbPkParameters; // f, a, p, df, da, t, g  // should be set as a control [!]
-	time_ = 0;
+	nbParameters_ = peakView::nbPkParameters; 
 	skip_=0;
+	frame_ = 0;
 
 	fundamental_ = 0.0;
 	factor_ = 0.0;
 	nbPeaks_ = 0;
-	kmax_  = 0;
+	frameMaxNumPeaks_  = 0;
+
+	peaker_ = new Peaker("Peaker");
+	max_ = new MaxArgMax("MaxArgMax");
 
 	addControls();
 }
 
+PeConvert::PeConvert(const PeConvert& a) : MarSystem(a)
+{
+	psize_ = a.psize_;
+	size_ = a.size_;
+	nbParameters_ = a.nbParameters_; 
+	skip_ = a.skip_;
+	frame_ = a.frame_;
+
+	fundamental_ = a.fundamental_;
+	factor_ = a.factor_;
+	nbPeaks_ = a.nbPeaks_;
+	frameMaxNumPeaks_  = a.frameMaxNumPeaks_;
+
+	peaker_ = new Peaker("Peaker");
+	max_ = new MaxArgMax("MaxArgMax");
+
+	ctrl_totalNumPeaks_ = getctrl("mrs_natural/totalNumPeaks");
+	ctrl_frameMaxNumPeaks_ = getctrl("mrs_natural/frameMaxNumPeaks");
+}
+
 PeConvert::~PeConvert()
 {
+	delete peaker_;
+	delete max_;
 }
 
 MarSystem* 
@@ -68,29 +92,49 @@ PeConvert::addControls()
 {
 	addctrl("mrs_natural/Decimation",MRS_DEFAULT_SLICE_NSAMPLES/4);
 	setctrlState("mrs_natural/Decimation", true);
-	addctrl("mrs_natural/Sinusoids", 0);
-	setctrlState("mrs_natural/Sinusoids", true);
-	addctrl("mrs_string/frequencyInterval", EMPTYSTRING);
+
+	addctrl("mrs_natural/frameMaxNumPeaks", 0);
+	setctrlState("mrs_natural/frameMaxNumPeaks", true);
+	
+	addctrl("mrs_string/frequencyInterval", "MARSYAS_EMPTY");
 	setctrlState("mrs_string/frequencyInterval", true);
+	
 	addctrl("mrs_natural/nbFramesSkipped", 0);
 	setctrlState("mrs_natural/nbFramesSkipped", true);
-	addctrl("mrs_natural/improvedPrecision", 1);
-	setctrlState("mrs_natural/improvedPrecision", true);
-	
-	//if picking is disabled (=0), the nr of sinusoids should be set
-	//to the size of half of the FFTs (i.e. the 1/4 of inObservations) [!]
-	addctrl("mrs_natural/picking", 1);
-	setctrlState("mrs_natural/picking", true);
+
+	addctrl("mrs_bool/improvedPrecision", true);
+	setctrlState("mrs_bool/improvedPrecision", true);
+
+	addctrl("mrs_bool/picking", true);
+	setctrlState("mrs_bool/picking", true);
+
+	addctrl("mrs_natural/totalNumPeaks", 0, ctrl_totalNumPeaks_);
+
 }
 
 void
 PeConvert::myUpdate(MarControlPtr sender)
 {
-	//defaultUpdate(); [!]
-	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
+	//if picking is disabled (==false), the nr of sinusoids should be set
+	//to the size of half of the FFTs (i.e. the 1/4 of inObservations) [!]
+	if(!pick_ && ctrl_frameMaxNumPeaks_->to<mrs_natural>() == 0)
+		frameMaxNumPeaks_ = inObservations_/4+1;
+	else
+		frameMaxNumPeaks_ = ctrl_frameMaxNumPeaks_->to<mrs_natural>();
 
+	setctrl(ctrl_onSamples_, ctrl_inSamples_);
+	setctrl(ctrl_onObservations_, frameMaxNumPeaks_*nbParameters_);
+	setctrl(ctrl_osrate_, ctrl_israte_); //see HACK at the end of this routine... [!] [TODO]
+	ostringstream oss;
+	for(mrs_natural j=0; j< nbParameters_; ++j) //j = param index
+	{
+		for (mrs_natural i=0; i < frameMaxNumPeaks_; i++) //i = peak index
+			oss << peakView::getParamName(j) << "_" << i+j*frameMaxNumPeaks_ << ",";
+	}
+	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
+	
+	mrs_real timeSrate = israte_*(mrs_real)inObservations_/2.0;
 	size_ = inObservations_ /4 +1;
-
 	if (size_ != psize_)
 	{
 		lastphase_.stretch(size_);
@@ -102,28 +146,20 @@ PeConvert::myUpdate(MarControlPtr sender)
 		lastfrequency_.stretch(size_);
 		deltamag_.stretch(size_);
 		deltafrequency_.stretch(size_);
+		psize_ = size_;
 	}
-
-	psize_ = size_;
-
-	factor_ = getctrl("mrs_real/osrate")->toReal();
+	factor_ = timeSrate;
 	factor_ /= TWOPI;
-	fundamental_ = (mrs_real) (getctrl("mrs_real/osrate")->toReal() / (mrs_real)getctrl("mrs_natural/inObservations")->toNatural()*2);
+	fundamental_ = israte_;
 	skip_ = getctrl("mrs_natural/nbFramesSkipped")->toNatural();
-  prec_ = getctrl("mrs_natural/improvedPrecision")->toNatural();
-	pick_ = getctrl("mrs_natural/picking")->toNatural();
-  if(!pick_ && !getctrl("mrs_natural/Sinusoids")->toNatural())
-		kmax_ = getctrl("mrs_natural/inObservations")->toNatural()/4+1;
-	else
-    kmax_ = getctrl("mrs_natural/Sinusoids")->toNatural();
-
-	if(getctrl("mrs_string/frequencyInterval")->toString() != EMPTYSTRING)
+	prec_ = getctrl("mrs_bool/improvedPrecision")->toBool();
+	pick_ = getctrl("mrs_bool/picking")->toBool(); 
+	if(getctrl("mrs_string/frequencyInterval")->toString() != "MARSYAS_EMPTY")
 	{
 		realvec conv(2);
-		string2parameters(getctrl("mrs_string/frequencyInterval")->toString(), conv, '_');
-		//cout << conv;
-		downFrequency_ = (mrs_natural) floor(conv(0)/getctrl("mrs_real/osrate")->toReal()*size_*2) ;
-		upFrequency_ = (mrs_natural) floor(conv(1)/getctrl("mrs_real/osrate")->toReal()*size_*2);	
+		string2parameters(getctrl("mrs_string/frequencyInterval")->toString(), conv, '_'); //[!]
+		downFrequency_ = (mrs_natural) floor(conv(0)/timeSrate*size_*2) ;
+		upFrequency_ = (mrs_natural) floor(conv(1)/timeSrate*size_*2);	
 	}
 	else
 	{
@@ -131,71 +167,68 @@ PeConvert::myUpdate(MarControlPtr sender)
 		upFrequency_ = size_;
 	}
 
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-	setctrl("mrs_natural/onObservations", kmax_*nbParameters_);
-	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal() * getctrl("mrs_natural/inObservations")->toNatural()/2); //??!!?!?!? [?]
-	//setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
+	//HACK [!] - see PeSynOsc::myUpdate() //[TODO]
+	setctrl("mrs_real/osrate", timeSrate);
+
 }
 
-double lobe_value_compute (double f, int type, int size)
+mrs_real
+PeConvert::lobe_value_compute(mrs_real f, mrs_natural type, mrs_natural size)
 {
-	double re ;
+	mrs_real re ;
 
 	// size par size-2 !!!
 	switch (type)
 	{
-	case 1 :
+	case 1:
 		{
 			re= fabs (0.5*lobe_value_compute(f, 0, size)+
 				0.25*lobe_value_compute(f-2.*PI/size, 0, size)+
 				0.25*lobe_value_compute(f+2.*PI/size, 0, size))/size ;
 			return fabs(re);
 		}
-	case 0 :
-		return (double) (f == 0) ? size : (sin(f*0.5*(size))/sin(f*0.5));
-
-	default :
+	case 0:
+		return (mrs_real) (f == 0) ? size : (sin(f*0.5*(size))/sin(f*0.5));
+	default:
 		{
-			//  assert (0) ;
-			return 0 ;
+			return 0.0 ;
 		}
 	}
 }
 
+/*
 void
-PeConvert::getBinInterval(realvec& interval, realvec& index, realvec& mag)
+PeConvert::getBinInterval(realvec& interval, realvec& index, realvec& mag) //[WTF] is this being used for anything?!?
 {
-	mrs_natural i, k=0, start=0, nbP = index.getSize();
+	mrs_natural k=0, start=0, nbP=index.getSize();
 	mrs_natural minIndex = 0;
 
-	//cout << index;
 	// getting rid of padding zeros
-	while(start<index.getSize() && !index(start)){start++;}
+	while(start<index.getSize() && !index(start))
+		start++;
 
-	for(i=start ; i<nbP ; i++, k++)
+	for(mrs_natural i=start ; i<nbP ; i++, k++)
 	{
 		interval(2*k) = index(i)-1;
 		interval(2*k+1) = index(i);
 	}
-	//cout << interval;
-}
-
+}*/
 
 void
 PeConvert::getShortBinInterval(realvec& interval, realvec& index, realvec& mag)
 {
-	mrs_natural i, j, k=0, start=0, nbP = index.getSize();
+	mrs_natural k=0, start=0, nbP=index.getSize();
 	mrs_natural minIndex = 0;
 
-	//cout << index;
 	// getting rid of padding zeros
-	while(start<index.getSize() && !index(start)){start++;}
+	while(start<index.getSize() && !index(start))
+		start++;
 
-	for(i=start ; i<nbP ; i++, k++)
+	for(mrs_natural i=start ; i<nbP ; i++, k++)
 	{
 		minIndex = 0;
 		// look for the next valley location upward
-		for (j= (mrs_natural) index(i) ; j<mag.getSize()-1 ; j++)
+		for (mrs_natural j=(mrs_natural)index(i) ; j<mag.getSize()-1 ; j++)
 		{
 			if(mag(j) < mag(j+1))
 			{
@@ -203,13 +236,15 @@ PeConvert::getShortBinInterval(realvec& interval, realvec& index, realvec& mag)
 				break;
 			}
 		}
-		if(!minIndex)
+		if(!minIndex) //arght!!! I hate using logic with integers!!! Makes code so difficult to read!!! [!]
 		{
-			cout << "pb while looking for bin intervals" << endl;
+			cout << "pb while looking for bin intervals" << endl; //[?]
 		}
+
 		interval(2*k+1) = minIndex;
+
 		// look for the next valley location downward
-		for (j= (mrs_natural) index(i) ; j>1 ; j--)
+		for (mrs_natural j= (mrs_natural) index(i) ; j>1 ; j--)
 		{
 			if(mag(j) < mag(j-1))
 			{
@@ -217,266 +252,300 @@ PeConvert::getShortBinInterval(realvec& interval, realvec& index, realvec& mag)
 				break;
 			}
 		}
-		if(!minIndex)
+		if(!minIndex) //arght!!! I hate using logic with integers!!! Makes code so difficult to read!!! [!]
 		{
-			cout << "pb while looking for bin intervals" << endl;
+			cout << "pb while looking for bin intervals" << endl; //[?]
 		}
 		interval(2*k) = minIndex;
 	}
-	//cout << interval;
 }
 
 
 void
 PeConvert::getLargeBinInterval(realvec& interval, realvec& index, realvec& mag)
 {
-	mrs_natural i, j, k=0, start=0, nbP = index.getSize();
+	mrs_natural k=0, start=0, nbP=index.getSize();
 
 	// handling the first case
 	mrs_real minVal = HUGE_VAL;
 	mrs_natural minIndex = 0;
-	//cout << index;
-	// getting rid of padding zeros
-	while(!index(start)){start++;}
 
-	for (j= 0 ; j<index(start) ; j++)
+	// getting rid of padding zeros
+	while(!index(start))
+		start++;
+
+	for (mrs_natural j=0 ; j<index(start) ; j++) //is this foor loop like this?!?!?!?!?!?!?!?! [!]
+	{
 		if(minVal > mag(j))
 		{
 			minVal = mag(j);
 			minIndex = j;
 		}
-		if(!minIndex)
-		{
-			cout << "pb while looking for minimal bin intervals" << endl;
-		}
-		interval(0) = minIndex;
+	}
+	if(!minIndex)
+	{
+		cout << "pb while looking for minimal bin intervals" << endl; //[WTF]
+	}
+	interval(0) = minIndex;
 
-		for(i=start ; i<nbP-1 ; i++, k++)
-		{
-			minVal = HUGE_VAL;
-			minIndex = 0;
-			// look for the minimal value among successive peaks
-			for (j= (mrs_natural) index(i) ; j<index(i+1) ; j++)
-				if(minVal > mag(j))
-				{
-					minVal = mag(j);
-					minIndex = j;
-				}
-
-				if(!minIndex)
-				{
-					cout << "pb while looking for bin intervals" << endl;
-				}
-				interval(2*k+1) = minIndex-1;
-				interval(2*(k+1)) = minIndex;
-		}
-		// handling the last case
+	for(mrs_natural i=start ; i<nbP-1 ; i++, k++)
+	{
 		minVal = HUGE_VAL;
 		minIndex = 0;
-		for (j= (mrs_natural) index(nbP-1) ; j<mag.getSize()-1 ; j++)
+		// look for the minimal value among successive peaks
+		for (mrs_natural j= (mrs_natural) index(i) ; j<index(i+1) ; j++) // is this for loop like this?!?!?! [?]
 		{
 			if(minVal > mag(j))
 			{
 				minVal = mag(j);
 				minIndex = j;
 			}
-			// consider stopping the search at the first valley
-			if(minVal<mag(j+1))
-				break;
 		}
+
 		if(!minIndex)
 		{
-			cout << "pb while looking for maximal bin intervals" << endl;
+			cout << "pb while looking for bin intervals" << endl; //[WTF]
 		}
-		interval(2*(k)+1) = minIndex;
-	//	cout << interval;
+		interval(2*k+1) = minIndex-1;
+		interval(2*(k+1)) = minIndex;
+	}
+
+	// handling the last case
+	minVal = HUGE_VAL;
+	minIndex = 0;
+	for (mrs_natural j= (mrs_natural) index(nbP-1) ; j<mag.getSize()-1 ; j++)
+	{
+		if(minVal > mag(j))
+		{
+			minVal = mag(j);
+			minIndex = j;
+		}
+		// consider stopping the search at the first valley
+		if(minVal<mag(j+1))
+			break;
+	}
+	if(!minIndex)
+	{
+		cout << "pb while looking for maximal bin intervals" << endl; //[WTF]
+	}
+	interval(2*(k)+1) = minIndex;
 }
 
 void 
 PeConvert::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural N2 = inObservations_/4;
+
 	mrs_real a, c;
 	mrs_real b, d;
 	mrs_real phasediff;
 
-	if(skip_<=time_)
+	out.setval(0);
+	peakView pkViewOut(out);
+
+	for(mrs_natural f=0 ; f < inSamples_; ++f)
 	{
-		// handle amplitudes
-		for (t=0; t <= N2; t++)
+		if(frame_ >= skip_)
 		{
-			if (t==0)
+			// handle amplitudes
+			for (o=0; o <= N2; o++)
 			{
-				a = in(2*t,0);
-				b = 0.0;
-				c = in(2*N2+2*t, 0);
-				d = 0.0;
+				if (o==0)
+				{
+					a = in(2*o,f);
+					b = 0.0;
+					c = in(2*N2+2*o, f);
+					d = 0.0;
+				}
+				else if (o == N2)
+				{
+					a = in(1, f);
+					b = 0.0;
+					c = in(2*N2+1, f);
+					d = 0.0;
+				}
+				else
+				{
+					a = in(2*o, f);
+					b = in(2*o+1, f);
+					c = in(2*N2+2*o, f);
+					d = in(2*N2+2*o+1, f);
+				}
+
+				// computer magnitude value 
+				//mrs_real par = lobe_value_compute (0, 1, 2048); //[?]
+
+				// compute phase
+				phase_(o) = atan2(b,a);
+
+				// compute precise frequency using the phase difference
+				lastphase_(o)= atan2(d,c);
+				if(phase_(o) >= lastphase_(o))
+					phasediff = phase_(o)-lastphase_(o);
+				else
+					phasediff = phase_(o)-lastphase_(o)+TWOPI;
+				if(prec_)
+					frequency_(o) = phasediff * factor_ ;
+				else
+					frequency_(o) = o*fundamental_;
+
+				// compute precise amplitude
+				mag_(o) = sqrt((a*a + b*b))*2; //*4/0.884624;//*50/3); // [!]
+				mrs_real mag = lobe_value_compute ((o * fundamental_-frequency_(o))/factor_, 1, N2*2);
+				magCorr_(o) = mag_(o)/mag;
+
+				// computing precise frequency using the derivative method // use at your own risk	[?]
+				/*	mrs_real lastmag = sqrt(c*c + d*d);
+				mrs_real rap = (mag_(o)-lastmag)/(lastmag*2);
+				f=asin(rap);
+				f *= (getctrl("mrs_real/israte")->toReal()*inObservations/2.0)/PI;
+				*/
+				// rough frequency and amplitude
+				//frequency_(o) = o * fundamental_;
+				//magCorr_(o) = mag_(o);
+
+				if(lastfrequency_(o) != 0.0)
+					deltafrequency_(o) = (frequency_(o)-lastfrequency_(o))/(frequency_(o)+lastfrequency_(o));
+
+				deltamag_(o) = (mag_(o)-lastmag_(o))/(mag_(o)+lastmag_(o));
+
+				// remove potential peak if frequency too irrelevant
+				if(abs(frequency_(o)-o*fundamental_) > 0.5*fundamental_)
+					frequency_(o)=0;
+
+				lastfrequency_(o) = frequency_(o);
+				lastmag_(o) = mag_(o);
 			}
-			else if (t == N2)
+
+			// select local maxima
+			realvec peaks_ = mag_;
+			realvec tmp_;
+
+			peaker_->updctrl("mrs_real/peakStrength", 0.2);
+			// to be set as a control
+			peaker_->updctrl("mrs_natural/peakStart", downFrequency_);   // 0
+			peaker_->updctrl("mrs_natural/peakEnd", upFrequency_);  // size_
+			peaker_->updctrl("mrs_natural/inSamples", mag_.getCols());
+			peaker_->updctrl("mrs_natural/inObservations", mag_.getRows());
+			peaker_->updctrl("mrs_natural/onSamples", peaks_.getCols());
+			peaker_->updctrl("mrs_natural/onObservations", peaks_.getRows());
+
+			if(pick_)
+				peaker_->process(mag_, peaks_);
+			else
 			{
-				a = in(1, 0);
-				b = 0.0;
-				c = in(2*N2+1, 0);
-				d = 0.0;
+				peaks_ = mag_;
+				for (o = 0 ; o < downFrequency_ ; o++)
+					peaks_(o)=0;
+				for (o = upFrequency_ ; o < peaks_.getSize() ; o++)
+					peaks_(o)=0;		
+			}
+			for(o=0 ; o<N2 ; o++)
+			{
+				if(!frequency_(o))// || frequency_(o)>500)  // 250 2500 [?]
+					peaks_(o) = 0;
+			}
+
+			// keep only the frameMaxNumPeaks_ highest amplitude local maxima
+			//if(getctrl("mrs_natural/frameMaxNumPeaks")->toNatural())
+			if(ctrl_frameMaxNumPeaks_->to<mrs_natural>())
+			{
+				tmp_.stretch(frameMaxNumPeaks_*2);
+				max_->updctrl("mrs_natural/nMaximums", frameMaxNumPeaks_);
 			}
 			else
 			{
-				a = in(2*t, 0);
-				b = in(2*t+1, 0);
-				c = in(2*N2+2*t, 0);
-				d = in(2*N2+2*t+1, 0);
+				tmp_.stretch((upFrequency_-downFrequency_)*2);
+				max_->updctrl("mrs_natural/nMaximums", upFrequency_-downFrequency_);
 			}
+			max_->updctrl("mrs_natural/inSamples", size_);
+			max_->updctrl("mrs_natural/inObservations", 1);
+			max_->update();
+			max_->process(peaks_, tmp_);
 
-			// computer magnitude value 
-			//mrs_real par = lobe_value_compute (0, 1, 2048);
-			// compute phase
-			phase_(t) = atan2(b,a);
+			nbPeaks_=tmp_.getSize()/2;
+			realvec index_(nbPeaks_); //[!] make member to avoid reallocation at each tick!
+			for (mrs_natural i=0 ; i<nbPeaks_ ; i++)
+				index_(i) = tmp_(2*i+1);
+			realvec index2_ = index_;
+			index2_.sort();
 
-			// compute precise frequency using the phase difference
-			lastphase_(t)= atan2(d,c);
-			if(phase_(t) >= lastphase_(t))
-				phasediff = phase_(t) - lastphase_(t);
-			else
-				phasediff = phase_(t) - lastphase_(t)+TWOPI;
-			if(prec_)
-				frequency_(t) = phasediff * factor_ ;
-			else
-         frequency_(t) = t*fundamental_;
+			// search for bins interval
+			realvec interval_(nbPeaks_*2); //[!] make member to avoid reallocation at each tick!
+			interval_.setval(0);
+			if(pick_)
+				getShortBinInterval(interval_, index2_, mag_);
 
-			// compute precise amplitude
-			mag_(t) = sqrt((a*a + b*b))*2; //*4/0.884624;//*50/3); // [!!!!!!!!!!!]
-			mrs_real mag = lobe_value_compute ((t * fundamental_-frequency_(t))/factor_, 1, N2*2);
-			magCorr_(t) = mag_(t)/mag;
-			// cout << mag_(t) << " " << magCorr_(t) << endl;
-
-			// computing precise frequency using the derivative method // use at your own risk	
-			/*	mrs_real lastmag = sqrt(c*c + d*d);
-			mrs_real rap = (mag_(t)-lastmag)/(lastmag*2);
-			f=asin(rap);
-			f *= (getctrl("mrs_real/osrate")->toReal())/PI;
+			// fill output with peaks data
+			/*
+			MATLAB_PUT(mag_, "peaks");
+			MATLAB_PUT(peaks_, "k");
+			MATLAB_PUT(tmp_, "tmp");
+			MATLAB_PUT(interval_, "int");	
+			MATLAB_EVAL("figure(1);clf;hold on ;plot(peaks);stem(k);stem(tmp(2:2:end)+1, peaks(tmp(2:2:end)+1), 'r')");
+			MATLAB_EVAL("stem(int+1, peaks(int+1), 'k')");
 			*/
-			// rough frequency and amplitude
-			//frequency_(t) = t * fundamental_;
-			//magCorr_(t) = mag_(t);
 
-			if(lastfrequency_(t) != 0.0)
-				deltafrequency_(t) = (frequency_(t)-lastfrequency_(t))/(frequency_(t)+lastfrequency_(t));
-			
-			deltamag_(t) = (mag_(t)-lastmag_(t))/(mag_(t)+lastmag_(t));
+			interval_ /= N2*2;
 
-			// remove potential peak if frequency too irrelevant
-			if(abs(frequency_(t) -t*fundamental_)>.5*fundamental_)
-				frequency_(t)=0;
-
-			lastfrequency_(t) = frequency_(t);
-			lastmag_(t) = mag_(t);
-		}
-		
-		// select local maxima
-		realvec peaks_=mag_;
-    realvec tmp_;
-
-		Peaker peaker("Peaker");
-		peaker.updctrl("mrs_real/peakStrength", 0.2);
-		// to be set as a control
-		peaker.updctrl("mrs_natural/peakStart", downFrequency_);   // 0
-		peaker.updctrl("mrs_natural/peakEnd", upFrequency_);  // size_
-		peaker.updctrl("mrs_natural/inSamples", mag_.getCols());
-		peaker.updctrl("mrs_natural/inObservations", mag_.getRows());
-		peaker.updctrl("mrs_natural/onSamples", peaks_.getCols());
-		peaker.updctrl("mrs_natural/onObservations", peaks_.getRows());
-
-		if(pick_)
-		peaker.process(mag_, peaks_);
-		else
-		{
-			peaks_=mag_;
-			for (t=0 ; t< downFrequency_ ; t++)
-		      peaks_(t)=0;
-		    for (t=upFrequency_ ; t<peaks_.getSize() ; t++)
-		      peaks_(t)=0;		
-		}
-		for(t=0 ; t<N2 ; t++)
-		{
-			if(!frequency_(t))// || frequency_(t)>500)  // 250 2500
-				peaks_(t) = 0;
-		}
-
-		 // keep only the kmax_ highest amplitude local maxima
-		MaxArgMax max("MaxArgMax");
-		if(getctrl("mrs_natural/Sinusoids")->toNatural())
-		{
-			tmp_.stretch(kmax_*2);
-			max.updctrl("mrs_natural/nMaximums", kmax_);
+			for (mrs_natural i = 0; i < nbPeaks_; i++)
+			{
+				/*
+				out(i+pkFrequency*frameMaxNumPeaks_) = frequency_((mrs_natural) index_(i));
+				out(i+pkAmplitude*frameMaxNumPeaks_) = magCorr_((mrs_natural) index_(i));
+				out(i+pkPhase*frameMaxNumPeaks_) = -phase_((mrs_natural) index_(i));
+				out(i+pkDeltaFrequency*frameMaxNumPeaks_) = deltafrequency_((mrs_natural) index_(i));
+				out(i+pkDeltaAmplitude*frameMaxNumPeaks_) = deltamag_((mrs_natural) index_(i));
+				out(i+pkFrame*frameMaxNumPeaks_) = time_;
+				out(i+pkGroup*frameMaxNumPeaks_) = 0;
+				out(i+pkVolume*frameMaxNumPeaks_) = 1;
+				out(i+pkPan*frameMaxNumPeaks_) = 0;
+				out(i+pkBinLow*frameMaxNumPeaks_) = interval_(2*i);
+				out(i+pkBin*frameMaxNumPeaks_) = index_(i);
+				out(i+pkBinHigh*frameMaxNumPeaks_) = interval_(2*i+1);
+				*/
+				pkViewOut(i, peakView::pkFrequency, f) = frequency_((mrs_natural) index_(i));
+				pkViewOut(i, peakView::pkAmplitude, f) = magCorr_((mrs_natural) index_(i));
+				pkViewOut(i, peakView::pkPhase, f) = -phase_((mrs_natural) index_(i));
+				pkViewOut(i, peakView::pkDeltaFrequency, f) = deltafrequency_((mrs_natural) index_(i));
+				pkViewOut(i, peakView::pkDeltaAmplitude, f) = deltamag_((mrs_natural) index_(i));
+				pkViewOut(i, peakView::pkFrame, f) = frame_; 
+				pkViewOut(i, peakView::pkGroup, f) = 0;
+				pkViewOut(i, peakView::pkVolume, f) = 1;
+				pkViewOut(i, peakView::pkPan, f) = 0;
+				pkViewOut(i, peakView::pkBinLow, f) = interval_(2*i);
+				pkViewOut(i, peakView::pkBin, f) = index_(i);
+				pkViewOut(i, peakView::pkBinHigh, f) = interval_(2*i+1);
+			}
 		}
 		else
 		{
-			tmp_.stretch((upFrequency_-downFrequency_)*2);
-			max.updctrl("mrs_natural/nMaximums", upFrequency_-downFrequency_);
+			for(mrs_natural i=0; i< frameMaxNumPeaks_; ++i)
+			{
+				//pkViewOut(i, peakView::pkFrequency, f) = 0;
+				//pkViewOut(i, peakView::pkAmplitude, f) = 0;
+				//pkViewOut(i, peakView::pkPhase, f) = 0;
+				//pkViewOut(i, peakView::pkDeltaFrequency, f) = 0;
+				//pkViewOut(i, peakView::pkDeltaAmplitude, f) = 0;
+				pkViewOut(i, peakView::pkFrame, f) = frame_; 
+				//pkViewOut(i, peakView::pkGroup, f) = 0;
+				//pkViewOut(i, peakView::pkVolume, f) = 0;
+				//pkViewOut(i, peakView::pkPan, f) = 0;
+				//pkViewOut(i, peakView::pkBinLow, f) = 0;
+				//pkViewOut(i, peakView::pkBin, f) = 0;
+				//pkViewOut(i, peakView::pkBinHigh, f) = 0;
+			}
 		}
-		max.updctrl("mrs_natural/inSamples", size_);
-		max.updctrl("mrs_natural/inObservations", 1);
-		max.update();
-		max.process(peaks_, tmp_);
-
-		nbPeaks_=tmp_.getSize()/2;
-		realvec index_(nbPeaks_);
-		mrs_natural i;
-		for (i=0 ; i<nbPeaks_ ; i++)
-			index_(i) = tmp_(2*i+1);
-		realvec index2_ = index_;
-		index2_.sort();
-
-		// search for bins interval
-		realvec interval_(nbPeaks_*2);
-		interval_.setval(0);
-		if(pick_)
-		getShortBinInterval(interval_, index2_, mag_);
-
-		// fill output with peaks data
-		/*
-		MATLAB_PUT(mag_, "peaks");
-		MATLAB_PUT(peaks_, "k");
-		MATLAB_PUT(tmp_, "tmp");
-	  MATLAB_PUT(interval_, "int");	
-		MATLAB_EVAL("figure(1);clf;hold on ;plot(peaks);stem(k);stem(tmp(2:2:end)+1, peaks(tmp(2:2:end)+1), 'r')");
-		MATLAB_EVAL("stem(int+1, peaks(int+1), 'k')");
-		*/
-	
-    interval_ /= N2*2;
-		out.setval(0);
-		for (i=0;i<nbPeaks_;i++)
-		{
-			out(i+pkFrequency*kmax_) = frequency_((mrs_natural) index_(i));
-			//cout << out(i+pkFrequency*kmax_) << endl;
-			out(i+pkAmplitude*kmax_) = magCorr_((mrs_natural) index_(i));
-			out(i+pkPhase*kmax_) = -phase_((mrs_natural) index_(i));
-			out(i+pkDeltaFrequency*kmax_) = deltafrequency_((mrs_natural) index_(i));
-			out(i+pkDeltaAmplitude*kmax_) = deltamag_((mrs_natural) index_(i));
-			out(i+pkTime*kmax_) = time_;
-			out(i+pkGroup*kmax_) = 0;
-			out(i+pkVolume*kmax_) = 1;
-			out(i+pkPan*kmax_) = 0;
-			out(i+pkBinLow*kmax_) = interval_(2*i);
-			out(i+pkBin*kmax_) = index_(i);
-			out(i+pkBinHigh*kmax_) = interval_(2*i+1);
-		}
+		frame_++;
 	}
-	else
-		out.setval(0);
 
-	time_++;
+	//count the total number of existing peaks (i.e. peak freq != 0)
+	ctrl_totalNumPeaks_->setValue(pkViewOut.getTotalNumPeaks());
+
 	// MATLAB_PUT(out, "peaks");
-	// MATLAB_PUT(kmax_, "k");
+	// MATLAB_PUT(frameMaxNumPeaks_, "k");
 	// MATLAB_EVAL("figure(1);clf;plot(peaks(6*k+1:7*k));");
-
 }
-
-
-
-
-
-
 
 
 

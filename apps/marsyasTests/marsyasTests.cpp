@@ -18,6 +18,7 @@
 #include "MarSystemTemplateAdvanced.h"
 #include "EvValUpd.h"
 #include "Collection.h"
+#include "NumericLib.h"
 
 using namespace std;
 using namespace Marsyas;
@@ -412,7 +413,7 @@ test_fanoutswitch()
 
   pnet->addMarSystem(src);
   pnet->addMarSystem(mng.create("PlotSink", "psink1"));  
-  pnet->updctrl("PlotSink/psink1/mrs_string/outputFilename", "in");
+  pnet->updctrl("PlotSink/psink1/mrs_string/filename", "in");
  
   MarSystem* mix = mng.create("Fanout", "mix");
   MarSystem* g1 = mng.create("Gain", "g1");
@@ -1621,9 +1622,9 @@ test_realvec()
   cout << ">>>>>>>> Done!" << endl << endl;
   getchar();
   cout << ">>>>>>>> Calculate Divergence Shape between the two matrices:" << endl;
-  cout << "realvec::divShape(Ci, Cj) = " << realvec::divergenceShape(matrixA,matrixB) << endl << endl;
+  cout << "realvec::divShape(Ci, Cj) = " << NumericLib::divergenceShape(matrixA,matrixB) << endl << endl;
   cout << ">>>>>>>> Calculate Bhattacharyya Shape between the two matrices:" << endl;
-  cout << "realvec::battShape(Ci, Cj) = " << realvec::bhattacharyyaShape(matrixA,matrixB) << endl;
+  cout << "realvec::battShape(Ci, Cj) = " << NumericLib::bhattacharyyaShape(matrixA,matrixB) << endl;
   getchar();
 
 #endif
@@ -2257,8 +2258,8 @@ void test_spectralSNR(string fname0, string fname1)
   net->updctrl("Series/branch1/PowerSpectrum/pspk1/mrs_string/spectrumType", "magnitude");
   net->updctrl("Series/branch2/PowerSpectrum/pspk2/mrs_string/spectrumType", "magnitude");
   
-  /* net->updctrl("Series/branch1/PlotSink/psink1/mrs_string/outputFilename", "p1p");
-  net->updctrl("Series/branch2/PlotSink/psink2/mrs_string/outputFilename", "p2p");
+  /* net->updctrl("Series/branch1/PlotSink/psink1/mrs_string/filename", "p1p");
+  net->updctrl("Series/branch2/PlotSink/psink2/mrs_string/filename", "p2p");
 
   */ 
 
@@ -2490,12 +2491,8 @@ void test_Windowing()
     realvec in;
     realvec out;
 
-    in.create(series->getctrl("mrs_natural/inSamples")->toNatural());
-    out.create(series->getctrl("mrs_natural/inSamples")->toNatural());
-    in.setval(1.0);
-    
     vector<string> winname;
-    winname.push_back("Windowing");
+    winname.push_back("Hamming");
     winname.push_back("Hanning");
     winname.push_back("Triangle");
     winname.push_back("Bartlett");
@@ -2503,11 +2500,23 @@ void test_Windowing()
     winname.push_back("Blackman");
     winname.push_back("Blackman-Harris");
 
+		//series->updctrl("Windowing/win/mrs_natural/size", 800);
+		//series->updctrl("Windowing/win/mrs_natural/zeroPadding", 200);
+		//series->updctrl("Windowing/win/mrs_bool/zeroPhasing", true);
+
+		in.create(series->getctrl("mrs_natural/inSamples")->toNatural());
+		out.create(series->getctrl("mrs_natural/onSamples")->toNatural());
+		in.setval(1.0);
+
     for (unsigned int i = 0 ; i < winname.size(); i++)
     {
         series->updctrl("Windowing/win/mrs_string/type", winname[i]);                    
-        series->updctrl("PlotSink/plot/mrs_string/outputFilename", "marsyas" + winname[i]);    
-       
+        series->updctrl("PlotSink/plot/mrs_string/filename", "marsyas" + winname[i]); 
+				
+				MRSMSG(winname[i]);
+				MRSMSG("size: " << series->getctrl("Windowing/win/mrs_natural/size")->toNatural());
+				MRSMSG("zero-padding: " << series->getctrl("Windowing/win/mrs_natural/zeroPadding")->toNatural());
+
         series->process(in,out); 
     }
 }

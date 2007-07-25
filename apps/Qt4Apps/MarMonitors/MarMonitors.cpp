@@ -86,7 +86,7 @@ MarMonitors::initNetwork(QString pluginName)
   
   
   pnet_->updctrl("SoundFileSource/src/mrs_string/filename", "/home/gtzan/data/sound/music_speech/music/gravity.au");
-  pnet_->updctrl("Windowing/windowing/mrs_natural/zeroPhasing", 1);
+  pnet_->updctrl("Windowing/windowing/mrs_bool/zeroPhasing", true);
   pnet_->updctrl("Gain/gain/mrs_real/gain", 2.0);
   pnet_->updctrl("Gain/gain2/mrs_real/gain", 3.0);
   pnet_->updctrl("mrs_bool/probe", true);

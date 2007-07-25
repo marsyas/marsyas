@@ -24,11 +24,6 @@ Output input data at each tick to sequence numbered text files,
 to Marsyas messages (default = stdout), and as a MATLAB plot 
 if MATLAB engine is being used.
 
-\todo sort out PlotSink and MarFileSink (rename, delete one or both,
-etc)
-
-Output data to a text file.
-
 Controls:
 - \b mrs_bool/sequence	: when true, this control
 activates the writing of sequence numbered files containing the

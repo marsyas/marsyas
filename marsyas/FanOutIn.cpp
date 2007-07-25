@@ -120,9 +120,9 @@ FanOutIn::myUpdate(MarControlPtr sender)
 	  // update dataflow component MarSystems in order
 		for (mrs_natural i=1; i < marsystemsSize_; i++)
 		{
-			marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/inSamples"));
-			marsystems_[i]->setctrl("mrs_natural/inObservations", marsystems_[i-1]->getctrl("mrs_natural/inObservations"));
-			marsystems_[i]->setctrl("mrs_real/israte", marsystems_[i-1]->getctrl("mrs_real/israte"));
+			marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
+			marsystems_[i]->setctrl("mrs_natural/inObservations", marsystems_[0]->getctrl("mrs_natural/inObservations"));
+			marsystems_[i]->setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte"));
 			marsystems_[i]->setctrl("mrs_string/inObsNames", marsystems_[0]->getctrl("mrs_string/inObsNames"));
 			marsystems_[i]->update(sender);
 
@@ -131,16 +131,16 @@ FanOutIn::myUpdate(MarControlPtr sender)
 				marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>() != 
 				marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>())
 			{
-				MRSERR("FanInOut::myUpdate - child MarSystem " + marsystems_[i]->getPrefix() + 
-					" ouput configuration is not the same as the one from the first child MarSystem(" + 
-					marsystems_[0]->getPrefix() + " ! Outputing zero valued result...");
+				//MRSERR("FanInOut::myUpdate - child MarSystem " + marsystems_[i]->getPrefix() + 
+				//	" ouput configuration is not the same as the one from the first child MarSystem(" + 
+				//	marsystems_[0]->getPrefix() + " ! Outputing zero valued result...");
 				wrongOutConfig_ = true;
 			}
 		}
 
 		// forward flow propagation
 		setctrl(ctrl_onSamples_, marsystems_[0]->getctrl("mrs_natural/onSamples")->toNatural());
-		setctrl(ctrl_onObservations_, marsystems_[0]->getctrl("mrs_natural/onObservation")->toNatural());
+		setctrl(ctrl_onObservations_, marsystems_[0]->getctrl("mrs_natural/onObservations")->toNatural());
 		setctrl(ctrl_osrate_, marsystems_[0]->getctrl("mrs_real/osrate")->toReal());
 		ostringstream oss;
 		oss << marsystems_[0]->getctrl("mrs_string/onObsNames");
@@ -186,6 +186,9 @@ FanOutIn::myProcess(realvec& in, realvec& out)
 		if(wrongOutConfig_)
 		{
 			//if there is  a child with a non matching output configuration, just output zeros
+			MRSERR("FanInOut::myUpdate - at least one child MarSystem ouput \
+						 configuration is not the same as the one from the first child \
+						 MarSystem! Outputing zero valued result...");
 			out.setval(0);
 			return;
 		}

@@ -20,7 +20,10 @@ CONFIG(release, debug|release){
 	LIBPATH += $$quote( "$$BASEDIR/lib/release" )
 }
 CONFIG(debug, debug|release){
+	CONFIGURE	+= console
 	win32:LIBS 	+= 	marsyas.lib
 	!win32:LIBS += 	-lmarsyas 	
 	LIBPATH += $$quote( "$$BASEDIR/lib/debug" )
 }
+
+

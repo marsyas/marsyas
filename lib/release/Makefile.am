@@ -22,7 +22,8 @@ MAINTAINERCLEANFILES    = Makefile.in
 
 lib_LIBRARIES         = libmarsyas.a
 
-INCLUDES += -I@top_srcdir@/marsyas -l@top_srcdir@/marsyas/MATLAB 
+INCLUDES += -I@top_srcdir@/marsyas -l@top_srcdir@/marsyas/MATLAB
+ 
 
 libmarsyas_a_SOURCES    = \
 	$(top_srcdir)/marsyas/MrsLog.cpp \
@@ -92,7 +93,6 @@ libmarsyas_a_SOURCES    = \
 	$(top_srcdir)/marsyas/PvFold.cpp \
 	$(top_srcdir)/marsyas/PvConvert.cpp \
 	$(top_srcdir)/marsyas/PeConvert.cpp \
-	$(top_srcdir)/marsyas/PeClust.cpp \
 	$(top_srcdir)/marsyas/PeSynOsc.cpp  \
 	$(top_srcdir)/marsyas/PeSynOscBank.cpp \
 	$(top_srcdir)/marsyas/Polar2Cartesian.cpp  \
@@ -102,8 +102,6 @@ libmarsyas_a_SOURCES    = \
 	$(top_srcdir)/marsyas/OverlapAdd.cpp \
 	$(top_srcdir)/marsyas/PeResidual.cpp \
 	$(top_srcdir)/marsyas/PeUtilities.cpp \
-	$(top_srcdir)/marsyas/PeClusters.cpp \
-	$(top_srcdir)/marsyas/PeSimilarity.cpp \
 	$(top_srcdir)/marsyas/PvConvolve.cpp \
 	$(top_srcdir)/marsyas/PvOscBank.cpp \
 	$(top_srcdir)/marsyas/PvUnconvert.cpp \
@@ -195,7 +193,6 @@ libmarsyas_a_SOURCES    = \
 	$(top_srcdir)/marsyas/Stk.cpp \
 	$(top_srcdir)/marsyas/StereoSpectrum.cpp \
 	$(top_srcdir)/marsyas/StereoSpectrumFeatures.cpp \
-	$(top_srcdir)/marsyas/HWPSspectrum.cpp \
 	$(top_srcdir)/marsyas/Limiter.cpp \
 	$(top_srcdir)/marsyas/NoiseSource.cpp \
 	$(top_srcdir)/marsyas/CompExp.cpp \
@@ -224,9 +221,22 @@ libmarsyas_a_SOURCES    = \
 	$(top_srcdir)/marsyas/lu.cpp \
 	$(top_srcdir)/marsyas/basis.cpp \
 	$(top_srcdir)/marsyas/FlowThru.cpp \
+	$(top_srcdir)/marsyas/PeFeatSelect.cpp \
+	$(top_srcdir)/marsyas/SimilarityMatrix.cpp \
+	$(top_srcdir)/marsyas/Metric.cpp \
 	$(top_srcdir)/marsyas/MATLAB/MATLABengine.cpp \
 	$(top_srcdir)/marsyas/FanOutIn.cpp \
 	$(top_srcdir)/marsyas/MarSystemTemplateMedium.cpp \
+	$(top_srcdir)/marsyas/HWPS.cpp \
+	$(top_srcdir)/marsyas/RBF.cpp \
+	$(top_srcdir)/marsyas/NormMatrix.cpp \
+	$(top_srcdir)/marsyas/WHaSp.cpp \
+	$(top_srcdir)/marsyas/FanOutIn.cpp \
+	$(top_srcdir)/marsyas/PeLabeler.cpp \
+	$(top_srcdir)/marsyas/peakView.cpp \
+	$(top_srcdir)/marsyas/PeakViewSource.cpp \
+	$(top_srcdir)/marsyas/PeakViewSink.cpp \
+	$(top_srcdir)/marsyas/PeClusterSelect.cpp \
 	$(top_srcdir)/marsyas/Gain.cpp
 # please leave Gain.cpp at the end like this; it make scripts happy.
 

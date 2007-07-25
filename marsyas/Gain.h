@@ -36,7 +36,7 @@ namespace Marsyas
 class Gain: public MarSystem
 {
 private: 
-        //Add specific controls needed by this MarSystem.
+  //Add specific controls needed by this MarSystem.
 	void addControls();
 	MarControlPtr ctrl_gain_;
 	void myUpdate(MarControlPtr sender);

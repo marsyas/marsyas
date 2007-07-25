@@ -15,6 +15,7 @@
 using namespace std;
 using namespace Marsyas;
 
+#define EMPTYSTRING "MARSYAS_EMPTY"
 
 string pluginName = EMPTYSTRING;
 string inputDirectoryName = EMPTYSTRING;
@@ -125,9 +126,6 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		// create analyser
 		pvseries->addMarSystem(mng.create("PeAnalyse", "peA"));
 
-
-
-
 		////////////////////////////////////////////////////////////////
 		// update the controls
 		////////////////////////////////////////////////////////////////
@@ -144,57 +142,29 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 			samplingFrequency_ = pvseries->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
 		}
 
-
 		pvseries->updctrl("PeAnalyse/peA/ShiftInput/si/mrs_natural/Decimation", D);
 		pvseries->updctrl("PeAnalyse/peA/ShiftInput/si/mrs_natural/WindowSize", Nw+1);
 		pvseries->updctrl("PeAnalyse/peA/Windowing/wi/mrs_natural/size", N);
 		pvseries->updctrl("PeAnalyse/peA/Windowing/wi/mrs_string/type", "Hanning");
-		pvseries->updctrl("PeAnalyse/peA/Windowing/wi/mrs_natural/zeroPhasing", 1);
+		pvseries->updctrl("PeAnalyse/peA/Windowing/wi/mrs_bool/zeroPhasing", true);
 		pvseries->updctrl("PeAnalyse/peA/Shifter/sh/mrs_natural/shift", 1);
 		pvseries->updctrl("PeAnalyse/peA/PvFold/fo/mrs_natural/Decimation", D); // useless ?
 		pvseries->updctrl("PeAnalyse/peA/PeConvert/conv/mrs_natural/Decimation", D);      
-		pvseries->updctrl("PeAnalyse/peA/PeConvert/conv/mrs_natural/Sinusoids", S);  
+		pvseries->updctrl("PeAnalyse/peA/PeConvert/conv/mrs_natural/frameMaxNumPeaks", S);  
 		pvseries->updctrl("PeAnalyse/peA/PeConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
 	}
-	else
+	else //read analysis data (i.e. peaks) from a .peak file
 	{
-		// create realvecSource
-		MarSystem *peSource = mng.create("RealvecSource", "peSource");
+		// create PeakViewSource
+		MarSystem *peSource = mng.create("PeakViewSource", "peSource");
 		pvseries->addMarSystem(peSource);
-		/*
-
-		mrs_natural nbF_=0;
-		realvec peakSet_;
-		peakSet_.read(sfName);
-
-		MATLAB_PUT(peakSet_, "peaks");
-		MATLAB_EVAL("plotPeaks(peaks)");
-
-		for (mrs_natural i=0 ; i<peakSet_.getRows() ; i++)
-			if(peakSet_(i, pkTime)>nbF_)
-			{
-				nbF_ = peakSet_(i, pkTime);
-			}
-			nbF_++;
-
-			realvec peakSetV_(nbSines_*nbPkParameters, nbF_);
-			peakSetV_.setval(0);
-			peaks2V(peakSet_, peakSetV_, peakSetV_, nbSines_);
-
-			*/
-			realvec peakSet_;
-			mrs_real fs;
-			mrs_natural nbFrames;
-      peakLoad(peakSet_, sfName, fs, S, nbFrames, D);
-			pvseries->setctrl("RealvecSource/peSource/mrs_realvec/data", peakSet_);
-			pvseries->setctrl("RealvecSource/peSource/mrs_real/israte", fs);
+		peSource->updctrl("mrs_string/filename", sfName);
 	}
 
 	if(peakStore_)
 	{
-		// realvec sink to store peaks
-		MarSystem *peSink = mng.create("RealvecSink", "peSink");
-		pvseries->addMarSystem(peSink);
+		pvseries->addMarSystem(mng.create("peakViewSink", "peSink"));
+		pvseries->updctrl("PeakViewSink/peSink/mrs_string/filename", filePeakName);
 	}
 
 	if(harmonizeFileName != "MARSYAS_EMPTY")
@@ -232,14 +202,13 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		while(1)
 		{
 			pvseries->tick();
-			if (harmonize_) 
+			
+			if (harmonize_) //[WTF] 
 			{
-				
-				for (mrs_natural i=0 ; i<harmonizeData_.getCols() ; i++)
-//ctrl_harmonize_->setValue(i, 0.0);
-//ctrl_harmonize_->setValue(1, 1.0);
-//ctrl_harmonize_->setValue(2, 0.1);
-
+				for (mrs_natural i=0 ; i<harmonizeData_.getCols() ; i++) //[WTF] ?!?!?!?!?!?!
+					//ctrl_harmonize_->setValue(i, 0.0);
+					//ctrl_harmonize_->setValue(1, 1.0);
+					//ctrl_harmonize_->setValue(2, 0.1);
 					if (harmonizeData_.getRows() > nbFrames_)
 					 ctrl_harmonize_->setValue(i, harmonizeData_(nbFrames_, i));
 				else 
@@ -257,28 +226,33 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 					temp = pvseries->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool();
 					mrs_real timeRead =  pvseries->getctrl("SoundFileSource/src/mrs_natural/pos")->toNatural()/samplingFrequency_;
 					mrs_real timeLeft =  pvseries->getctrl("SoundFileSource/src/mrs_natural/size")->toNatural()/samplingFrequency_;
-					printf("%.2f / %.2f \r", timeRead, timeLeft);
+					printf("Reading Audio File: %.2f / %.2f \r", timeRead, timeLeft);
 				}
 				else 
-					temp =	!pvseries->getctrl("RealvecSource/peSource/mrs_bool/done")->toBool();
+				{
+					temp =	pvseries->getctrl("PeakViewSource/peSource/mrs_bool/notEmpty")->toBool();
+					samplingFrequency_ = pvseries->getctrl("PeakViewSource/peSource/mrs_real/osrate")->to<mrs_real>();
+					mrs_real timeRead =  pvseries->getctrl("PeakViewSource/peSource/mrs_natural/pos")->toNatural()/samplingFrequency_;
+					mrs_real timeLeft =  pvseries->getctrl("PeakViewSource/peSource/mrs_natural/size")->toNatural()/samplingFrequency_;
+					printf("Readinf peak file: %.2f / %.2f \r", timeRead, timeLeft);
+				}
 
-				///*bool*/ temp = pvseries->getctrl("PeAnalyse/peA/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
 				if (temp == false)
 					break;
-
-
 			}
 		}
 
 		if(peakStore_)
 		{
-			realvec vec = pvseries->getctrl("RealvecSink/peSink/mrs_realvec/data")->toVec();
-			peakStore(vec, filePeakName, samplingFrequency_, D); 
+			pvseries->updctrl("PeakViewSink/peSink/mrs_real/fs", samplingFrequency_);
+			pvseries->updctrl("PeakViewSink/peSink/mrs_natural/frameSize", D);
+			pvseries->updctrl("PeakViewSink/peSink/mrs_string/filename", filePeakName); 
+			pvseries->updctrl("PeakViewSink/peSink/mrs_bool/done", true);
 
-			MATLAB_PUT(peakSet_, "peaks");
-			MATLAB_EVAL("plotPeaks(peaks)");
+			//MATLAB_PUT(peakSet_, "peaks");
+			//MATLAB_EVAL("plotPeaks(peaks)");
 
-			realvec realTry(nbFrames_, 5);
+			realvec realTry(nbFrames_, 5); //[WTF]
 			realTry.setval(0);
 			for (mrs_natural i=0 ; i<nbFrames_ ; i++)
 			{
@@ -291,12 +265,8 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 			string harmonizeName = filePeakName+"HarmoStream";
 			tryFile.open(harmonizeName.c_str());
 			tryFile<< realTry;
-			
 		}
 }
-
-
-
 
 void 
 initOptions()

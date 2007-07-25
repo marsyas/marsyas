@@ -17,11 +17,11 @@
 */
 
 /** 
-    \class Norm
-	\ingroup Processing
-    \brief Norm: normalize input row vectors
+\class Norm
+\ingroup Processing
+\brief Norm: normalize input row vectors (i.e. observations = features)
 
-    Normalize by subtracting mean and dividing by standard deviation
+Normalize (observations = features) by subtracting observations' mean and dividing by observations' standard deviation
 */
 
 #include "Norm.h"
@@ -31,58 +31,39 @@ using namespace Marsyas;
 
 Norm::Norm(string name):MarSystem("Norm",name)
 {
-  //type_ = "Norm";
-  //name_ = name;
-}
 
+}
 
 Norm::~Norm()
 {
 }
 
-
 MarSystem* 
 Norm::clone() const 
 {
-  return new Norm(*this);
+	return new Norm(*this);
 }
 
 void 
 Norm::myProcess(realvec& in, realvec& out)
 {
-  
-  //checkFlow(in,out);
-  realvec row(inSamples_);
-  mrs_real mean;
-  mrs_real std;
-  
+	realvec row(inSamples_);
+	mrs_real mean;
+	mrs_real std;
 
-  for (o=0; o < inObservations_; o++)
-    {
-      // calculate the mean and standard deviation 
-      // of each row 
-      for (t = 0; t < inSamples_; t++)
-	row(t) = in(o,t);
-      mean = row.mean();
-      std =  row.std();
-      
-      for (t = 0; t < inSamples_; t++)
+	for (o=0; o < inObservations_; o++)
 	{
-	  // Scale to -1.0 1.0 audio range
-	  out(o,t) = (mrs_real)(0.05 * ((in(o,t) - mean) / std)); 
-	  
+		// calculate the mean and standard deviation 
+		// of each row 
+		for (t = 0; t < inSamples_; t++)
+			row(t) = in(o,t);
+		mean = row.mean();
+		std =  row.std();
+
+		for (t = 0; t < inSamples_; t++)
+		{
+			// Scale to -1.0 1.0 audio range
+			out(o,t) = (mrs_real)(0.05 * ((in(o,t) - mean) / std)); 
+		}
 	}
-    }
-  
-  
 }
-
-
-
-
-
-
-
-	
-
-	

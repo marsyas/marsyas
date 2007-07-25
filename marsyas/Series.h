@@ -36,8 +36,8 @@ namespace Marsyas
 class Series: public MarSystem
 {
 private:
-  realvec empty_;
-  bool probe_;
+	realvec empty_;
+	bool probe_;
 
 	void addControls();
 	void myUpdate(MarControlPtr sender);
@@ -45,8 +45,6 @@ private:
 
 public:
   Series(std::string name);
-  //Series(const Series& a);
-  
   ~Series();
   MarSystem* clone() const;  
   

@@ -26,6 +26,7 @@ Implementation by Luis Gustavo Martins - lmartins@inescporto.pt
 */
 
 #include "QGMMModel.h"
+#include "NumericLib.h"
 
 using namespace std;
 using namespace Marsyas;
@@ -126,7 +127,7 @@ QGMMModel::updateModel(realvec &covMatrix, mrs_natural nrModelFrames)
 											  covMatrix, nrModelFrames);
 		
 		//calculate the divergence between the current model and the updated one
-		mrs_real divergenceShape = realvec::divergenceShape(GSmixCovMatrix_[curMix],updatedModel);
+		mrs_real divergenceShape = NumericLib::divergenceShape(GSmixCovMatrix_[curMix],updatedModel);
 
 		//recursive mean divergenceShape calculation
 		meanDiv = meanDiv + 1/(count+1)*(divergenceShape - meanDiv);

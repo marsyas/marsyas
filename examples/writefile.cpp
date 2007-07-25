@@ -13,7 +13,7 @@ void recognize(string sfName)
 
 // add a PlotSink wherever we want to get data from
 	pnet->addMarSystem(mng.create("PlotSink","plot"));
-	pnet->updctrl("PlotSink/plot/mrs_string/outputFilename", "out");
+	pnet->updctrl("PlotSink/plot/mrs_string/filename", "out");
 
 	while ( pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() )
 	{

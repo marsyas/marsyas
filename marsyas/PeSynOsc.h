@@ -17,10 +17,10 @@
 */
 
 /** 
-    \class PeSynOsc
-    \brief PeSynOsc
+\class PeSynOsc
+\brief PeSynOsc
 
-    Multiply with window (both length Nw) using modulus arithmetic;
+Multiply with window (both length Nw) using modulus arithmetic;
 fold and rotate windowed input into output array (FFT) (length N) 
 according to current input time (t)
 */
@@ -33,38 +33,38 @@ according to current input time (t)
 namespace Marsyas
 {
 
-class PeSynOsc: public MarSystem
-{
-private:
-	mrs_real factor_;
-	mrs_natural delay_;
-  MarControlPtr ctrl_harmonize_;
+	class PeSynOsc: public MarSystem
+	{
+	private:
+		mrs_real factor_;
+		mrs_natural delay_;
+		MarControlPtr ctrl_harmonize_;
 
-  void addControls();
-	void myUpdate(MarControlPtr sender);
+		void addControls();
+		void myUpdate(MarControlPtr sender);
 
-	void sine(realvec& out, mrs_real f, mrs_real a, mrs_real p);
- 
-public:
-  PeSynOsc(std::string name);
-	PeSynOsc(const PeSynOsc&);
-  ~PeSynOsc();
-  MarSystem* clone() const;    
+		void sine(realvec& out, mrs_real f, mrs_real a, mrs_real p);
 
-  void myProcess(realvec& in, realvec& out);
-  
-};
+	public:
+		PeSynOsc(std::string name);
+		PeSynOsc(const PeSynOsc&);
+		~PeSynOsc();
+		MarSystem* clone() const;    
+
+		void myProcess(realvec& in, realvec& out);
+
+	};
 
 }//namespace Marsyas;
 
 #endif
 
-	
 
-	
 
-	
 
-	
 
-	
+
+
+
+
+

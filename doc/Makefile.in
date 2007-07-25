@@ -36,7 +36,6 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-LIBOBJDIR =
 subdir = doc
 DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	texinfo.tex

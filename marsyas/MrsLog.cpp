@@ -51,9 +51,9 @@ MrsLog::mrsMessage(const ostringstream& oss)
 void 
 MrsLog::mrsErr(const ostringstream& oss)
 {
-#ifdef MARSYAS_LOG2STDOUT
+//#ifdef MARSYAS_LOG2STDOUT
 	cout << "[MRSERR] " << oss.str() << endl;
-#endif
+//#endif
 
 #ifdef MARSYAS_LOG2FILE
 	ofstream ofs(fname_.c_str(), ios::out | ios::app);

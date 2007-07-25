@@ -298,11 +298,11 @@ tempo_new(string sfName, string resName)
   offset = (mrs_natural) (start * srate * nChannels);
   duration = (mrs_natural) (length * srate * nChannels);
   
-  // total->updctrl("PlotSink/psink1/mrs_string/outputFilename", "acr");
-  // total->updctrl("PlotSink/psink2/mrs_string/outputFilename", "peaks");
+  // total->updctrl("PlotSink/psink1/mrs_string/filename", "acr");
+  // total->updctrl("PlotSink/psink2/mrs_string/filename", "peaks");
   
-  // total->updctrl("PlotSink/psink3/mrs_string/outputFilename", "histo");
-  // total->updctrl("PlotSink/psink4/mrs_string/outputFilename", "rhisto");   
+  // total->updctrl("PlotSink/psink3/mrs_string/filename", "histo");
+  // total->updctrl("PlotSink/psink4/mrs_string/filename", "rhisto");   
   total->updctrl("mrs_natural/inSamples", hopSize);
   total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
 

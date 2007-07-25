@@ -27,7 +27,6 @@ in sequence.
     
 #include "MarSystemManager.h"
 #include "MarSystem.h"
-
 #include "HalfWaveRectifier.h"
 #include "common.h"
 #include "Series.h"
@@ -61,7 +60,6 @@ in sequence.
 #include "AudioSink2.h"
 #include "Mono2Stereo.h"
 #include "PeConvert.h"
-#include "PeClust.h"
 #include "OverlapAdd.h"
 #include "PeSynOsc.h"
 #include "PeSynOscBank.h"
@@ -142,17 +140,27 @@ in sequence.
 #include "SpectralSNR.h"
 #include "StereoSpectrum.h" 
 #include "StereoSpectrumFeatures.h"
-#include "HWPSspectrum.h"
 #include "Vibrato.h"
 #include "Panorama.h"
 #include "FlowThru.h"
 #include "FanOutIn.h"
 #include "CompExp.h"
 #include "MarSystemTemplateMedium.h"
+#include "PeFeatSelect.h"
+#include "SimilarityMatrix.h"
+#include "Metric.h"
+#include "HWPS.h"
+#include "RBF.h"
+#include "NormMatrix.h"
+#include "WHaSp.h"
+#include "FanOutIn.h"
+#include "PeLabeler.h"
+#include "PeClusterSelect.h"
+#include "PeakViewSink.h"
+#include "NormCut.h"
+#include "PeakViewSource.h"
 #include "Gain.h"
 // please leave Gain at the end; it makes scripts happy.
-
-
 
 using namespace std;
 using namespace Marsyas;
@@ -187,16 +195,15 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Shifter", new Shifter("sp"));
 	registerPrototype("PvConvolve", new PvConvolve("pvconvpr"));
 	registerPrototype("PeConvert", new PeConvert("peconvp"));
-	registerPrototype("PeClust", new PeClust("peclust"));
 	registerPrototype("OverlapAdd", new OverlapAdd("oa"));
 	registerPrototype("PeSynOsc", new PeSynOsc("pso"));
 	registerPrototype("PeResidual", new PeResidual("peres"));
 	registerPrototype("RealvecSource", new RealvecSource("realvecSrc"));
 	registerPrototype("RealvecSink", new RealvecSink("realvecSink"));
 	registerPrototype("Power", new Power("pow"));
-  registerPrototype("Cartesian2Polar", new Cartesian2Polar("c2p"));
+	registerPrototype("Cartesian2Polar", new Cartesian2Polar("c2p"));
 	registerPrototype("Polar2Cartesian", new Polar2Cartesian("p2c"));
-  registerPrototype("FlowCutSource", new FlowCutSource("fcs"));
+	registerPrototype("FlowCutSource", new FlowCutSource("fcs"));
 	registerPrototype("AuFileSource", new AuFileSource("aufp"));
 	registerPrototype("WavFileSource", new WavFileSource("wavfp"));
 	registerPrototype("WavFileSource2", new WavFileSource2("wavf2p"));
@@ -222,7 +229,6 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Peak2Rms", new Peak2Rms("peakrms"));
 	registerPrototype("WekaSink", new WekaSink("wsink"));
 	registerPrototype("WekaSource", new WekaSource("wsource"));
-	
 	registerPrototype("MFCC", new MFCC("mfcc"));
 	registerPrototype("SCF", new SCF("scf"));
 	registerPrototype("SFM", new SFM("sfm"));
@@ -273,22 +279,31 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("SpectralSNR", new SpectralSNR("ssnrpr"));
 	registerPrototype("StereoSpectrum", new StereoSpectrum("stereopr"));
 	registerPrototype("StereoSpectrumFeatures", new StereoSpectrumFeatures("stereospkfpr"));
-	registerPrototype("HWPSspectrum", new HWPSspectrum("hwpsspectrumpr"));
 	registerPrototype("Vibrato", new Vibrato("vibratopr"));
 	registerPrototype("Panorama", new Panorama("panoramapr"));
 	registerPrototype("FlowThru", new FlowThru("flowthrupr"));
 	registerPrototype("FanOutIn", new FanOutIn("fanoutinpr"));
 	registerPrototype("CompExp", new CompExp("compexppr"));
 	registerPrototype("MarSystemTemplateMedium", new MarSystemTemplateMedium("marsystemtemplatemediumpr"));
+	registerPrototype("PeFeatSelect", new PeFeatSelect("pefeatselectpr"));
+	registerPrototype("SimilarityMatrix", new SimilarityMatrix("similaritymatrixpr"));
+	registerPrototype("Metric", new Metric("metricpr"));
+	registerPrototype("HWPS", new HWPS("hwpspr"));
+	registerPrototype("RBF", new RBF("rbfpr"));
+	registerPrototype("NormMatrix", new NormMatrix("normmatrixpr"));
+	registerPrototype("WHaSp", new WHaSp("whasppr"));
+	registerPrototype("FanOutIn", new FanOutIn("fanoutinpr"));
+	registerPrototype("PeLabeler", new PeLabeler("pelabelerpr"));
+	registerPrototype("PeClusterSelect", new PeClusterSelect("peclusterselectpr"));
+	registerPrototype("PeakViewSink", new PeakViewSink("peakviewsinkpr"));
+	registerPrototype("NormCut", new NormCut("normcutpr"));
+	registerPrototype("PeakViewSource", new PeakViewSource("peakviewsourcepr"));
 	registerPrototype("Gain", new Gain("gp"));
-// Please leave Gain at the end; it makes scripts happy.
-
-
+	// Please leave Gain at the end; it makes scripts happy.
 
 	//***************************************************************************************
-	//									Composite MarSystem prototypes
+	//				Composite MarSystem prototypes
 	//***************************************************************************************
-
 	//--------------------------------------------------------------------------------
 	// Making a prototype for a specific MidiOutput device 
 	//--------------------------------------------------------------------------------
@@ -454,7 +469,7 @@ MarSystemManager::MarSystemManager()
 	pitchPraat->addMarSystem(create("Peaker", "pkr"));
 	pitchPraat->addMarSystem(create("MaxArgMax", "mxr"));
 	// should be adapted to the sampling frequency !!
-	//	The window should be just long
+	// The window should be just long
 	//  enough to contain three periods (for pitch detection) 
 	//  of MinimumPitch. E.g. if MinimumPitch is 75 Hz, the window length
 	//  is 40 ms  and padded with zeros to reach a power of two.
@@ -500,27 +515,32 @@ MarSystemManager::MarSystemManager()
 		"Windowing/wi/mrs_natural/size");
 	peAnalysePr->linkctrl("mrs_string/WindowType", 
 		"Windowing/wi/mrs_string/type");
-	peAnalysePr->linkctrl("mrs_natural/zeroPhasing", 
-		"Windowing/wi/mrs_natural/zeroPhasing");
-	peAnalysePr->linkctrl("mrs_natural/Sinusoids", 
-		"PeConvert/conv/mrs_natural/Sinusoids");
+	peAnalysePr->linkctrl("mrs_bool/zeroPhasing", 
+		"Windowing/wi/mrs_bool/zeroPhasing");
+	peAnalysePr->linkctrl("mrs_natural/frameMaxNumPeaks", 
+		"PeConvert/conv/mrs_natural/frameMaxNumPeaks");
 	peAnalysePr->linkctrl("mrs_natural/Decimation", 
 		"PeConvert/conv/mrs_natural/Decimation");
 	peAnalysePr->updctrl("Shifter/sh/mrs_natural/shift", 1);
 	registerPrototype("PeAnalyse", peAnalysePr);
 
 	//--------------------------------------------------------------------------------
-	// prototype for HWPS Spectrum calculation
+	// prototype for WHaSp calculation
 	//--------------------------------------------------------------------------------
-	MarSystem* HWPSspectrumnetpr = new Series("HWPSspectrumnetpr");
-	HWPSspectrumnetpr->addMarSystem(create("PeAnalyse", "analyse"));
-	HWPSspectrumnetpr->addMarSystem(create("HWPSspectrum", "HWPSspect"));
-	HWPSspectrumnetpr->linkctrl("mrs_natural/Sinusoids", 
-		"PeAnalyse/analyse/mrs_natural/Sinusoids");
-	HWPSspectrumnetpr->linkctrl("mrs_natural/Sinusoids", 
-		"HWPSspectrum/HWPSspect/mrs_natural/Sinusoids");
-	HWPSspectrumnetpr->updctrl("mrs_natural/Sinusoids", 20);
-	registerPrototype("HWPSspectrumnet", HWPSspectrumnetpr);
+	MarSystem* WHaSpnetpr = new Series("WHaSpnetpr");
+	WHaSpnetpr->addMarSystem(create("PeAnalyse", "analyse"));
+	WHaSpnetpr->addMarSystem(create("WHaSp", "whasp"));
+	//
+	WHaSpnetpr->linkctrl("PeAnalyse/analyse/PeConvert/conv/mrs_natural/totalNumPeaks",
+		"WHaSp/whasp/mrs_natural/totalNumPeaks");
+	WHaSpnetpr->linkctrl("PeAnalyse/analyse/PeConvert/conv/mrs_natural/frameMaxNumPeaks",
+		"WHaSp/whasp/mrs_natural/frameMaxNumPeaks");
+	//
+	WHaSpnetpr->linkctrl("mrs_natural/frameMaxNumPeaks", 
+		"PeAnalyse/analyse/mrs_natural/frameMaxNumPeaks");
+	WHaSpnetpr->updctrl("mrs_natural/frameMaxNumPeaks", 20);
+	//
+	registerPrototype("WHaSpnet", WHaSpnetpr);
 }
 
 MarSystemManager::~MarSystemManager()

@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWPSanalysis", "HWPSanalysis.vcproj", "{EA1501CE-D6F7-3061-9269-04B9A51C6A76}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWPSanalysis", "HWPSanalysis.vcproj", "{30777B1B-1CA1-3217-A49D-2BC29339C9BC}"
 	GlobalSection(Qt) = preSolution
 		Integration = True
 	EndGlobalSection
 	ProjectSection(ProjectDependencies) = postProject
-		{E05964E9-10F8-3D3C-81C9-7C724A39EDF1} = {E05964E9-10F8-3D3C-81C9-7C724A39EDF1}
+		{EB971ED8-F26F-3A48-920B-3BF223E2629A} = {EB971ED8-F26F-3A48-920B-3BF223E2629A}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "marsyas", "..\..\marsyas\marsyas.vcproj", "{E05964E9-10F8-3D3C-81C9-7C724A39EDF1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "marsyas", "..\..\marsyas\marsyas.vcproj", "{EB971ED8-F26F-3A48-920B-3BF223E2629A}"
 	GlobalSection(Qt) = preSolution
 		Integration = True
 	EndGlobalSection
@@ -23,14 +23,14 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{EA1501CE-D6F7-3061-9269-04B9A51C6A76}.Debug|Win32.ActiveCfg = Debug|Win32
-		{EA1501CE-D6F7-3061-9269-04B9A51C6A76}.Debug|Win32.Build.0 = Debug|Win32
-		{EA1501CE-D6F7-3061-9269-04B9A51C6A76}.Release|Win32.ActiveCfg = Release|Win32
-		{EA1501CE-D6F7-3061-9269-04B9A51C6A76}.Release|Win32.Build.0 = Release|Win32
-		{E05964E9-10F8-3D3C-81C9-7C724A39EDF1}.Debug|Win32.ActiveCfg = Debug|Win32
-		{E05964E9-10F8-3D3C-81C9-7C724A39EDF1}.Debug|Win32.Build.0 = Debug|Win32
-		{E05964E9-10F8-3D3C-81C9-7C724A39EDF1}.Release|Win32.ActiveCfg = Release|Win32
-		{E05964E9-10F8-3D3C-81C9-7C724A39EDF1}.Release|Win32.Build.0 = Release|Win32
+		{30777B1B-1CA1-3217-A49D-2BC29339C9BC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{30777B1B-1CA1-3217-A49D-2BC29339C9BC}.Debug|Win32.Build.0 = Debug|Win32
+		{30777B1B-1CA1-3217-A49D-2BC29339C9BC}.Release|Win32.ActiveCfg = Release|Win32
+		{30777B1B-1CA1-3217-A49D-2BC29339C9BC}.Release|Win32.Build.0 = Release|Win32
+		{EB971ED8-F26F-3A48-920B-3BF223E2629A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EB971ED8-F26F-3A48-920B-3BF223E2629A}.Debug|Win32.Build.0 = Debug|Win32
+		{EB971ED8-F26F-3A48-920B-3BF223E2629A}.Release|Win32.ActiveCfg = Release|Win32
+		{EB971ED8-F26F-3A48-920B-3BF223E2629A}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

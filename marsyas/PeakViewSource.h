@@ -17,48 +17,50 @@
 */
 
 /** 
-    \class HWPSspectrum
-    \brief Calculate HWPS enhanced spectrum
- 
+\class PeakViewSource
+\brief MarSystem to read .peak files and at each tick output the peaks in each frame
+
 */
 
-#ifndef MARSYAS_HWPSspectrum_H
-#define MARSYAS_HWPSspectrum_H
+#ifndef MARSYAS_PEAKVIEWSOURCE_H
+#define MARSYAS_PEAKVIEWSOURCE_H
 
-#include "MarSystem.h"	
+#include "MarSystem.h"
 
 namespace Marsyas
 {
-
-class HWPSspectrum: public MarSystem
-{
-private: 
-	mrs_natural nbParameters_;
-	mrs_natural kmax_;
-	mrs_natural nbPeaks_;
-	mrs_real freq_;
-	realvec peakFreqs_;
-	realvec peakFreqsWrappedi_;
-	realvec peakFreqsWrappedj_;
-	realvec peakAmps_;
-	realvec x1_;
-	realvec x2_;
-	realvec x3_;
-	realvec x4_;
-	mrs_real cosineDist_;
-
-	void addControls();
-	void myUpdate(MarControlPtr sender);
-
-public:
-  HWPSspectrum(std::string name);
-	HWPSspectrum(const HWPSspectrum& a);
-  ~HWPSspectrum();
-  MarSystem* clone() const;  
   
-  void myProcess(realvec& in, realvec& out);
-};
+  class PeakViewSource: public MarSystem
+  {
+  private:
+		std::string filename_;
+		realvec peakData_;
 
-}//namespace Marsyas
+		mrs_natural frameSize_;
+		mrs_natural numFrames_;
+		mrs_natural frameIdx_;
+
+    MarControlPtr ctrl_filename_;
+		MarControlPtr ctrl_notEmpty_;
+		MarControlPtr ctrl_pos_;
+		MarControlPtr ctrl_size_;
+
+		void defaultConfig();
+		void addControls();
+    void myUpdate(MarControlPtr sender);
+    
+  public:
+    PeakViewSource(std::string name);
+    PeakViewSource(const PeakViewSource& a);
+    ~PeakViewSource();
+    MarSystem* clone() const;  
+    
+    void myProcess(realvec& in, realvec& out);
+  };
+  
+}
 
 #endif
+
+
+

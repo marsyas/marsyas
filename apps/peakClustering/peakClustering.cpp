@@ -1,23 +1,30 @@
 // #include <vld.h>
 
 #include <cstdio>
-#include<iostream>
-#include<iomanip>
+#include <iostream>
+#include <iomanip>
+#include <ctime>
+#include <string>
 
 #include "MarSystemManager.h"
 #include "AudioSink.h"
 #include "SoundFileSink.h"
 #include "SoundFileSource.h"
-#include "Gain.h"
+#include "Messager.h"
 #include "Conversions.h"
 #include "CommandLineOptions.h"
-#include "PeClusters.h"
+#include "PeFeatSelect.h"
+#include "SimilarityMatrix.h"
+
+//[TODO]
 #include "PeUtilities.h"
-#include <time.h>
-#include <string>
+
+#define EMPTYSTRING "MARSYAS_EMPTY"
 
 using namespace std;
 using namespace Marsyas;
+
+#define EMPTYSTRING "MARSYAS_EMPTY"
 
 string pluginName = EMPTYSTRING;
 string inputDirectoryName = EMPTYSTRING;
@@ -141,6 +148,9 @@ printHelp(string progName)
 
 
 // original monophonic peakClustering 
+// clusterExtract(peakSet_, *sfi, fileName, noiseName, mixName, intervalFrequency, panningInfo, noiseDelay_, similarityType_, ...
+//                fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_, synthetize_, &snr0);
+
 void
 clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseName, string mixName, string intervalFrequency, string panningInfo, mrs_real noiseDelay, string T, mrs_natural N, mrs_natural Nw, 
 							 mrs_natural D, mrs_natural S, mrs_natural C,
@@ -149,224 +159,376 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	cout << "Extracting Peaks and Clusters" << endl;
 	MarSystemManager mng;
 
-	// create the phasevocoder network
-	MarSystem* pvseries = mng.create("Series", "pvseries");
+	//**************************************************
+	// create the peakClustering network
+	//**************************************************
+	MarSystem* mainNet = mng.create("Series", "mainNet");
+	
+	//**************************************************************************
+	//create accumulator for the texture window and add it to the main network
+	//**************************************************************************
+	MarSystem* textWinNet = mng.create("Accumulator", "textWinNet");
+	mainNet->addMarSystem(textWinNet);
 
-	//create accumulator series
-	MarSystem* preNet = mng.create("Series", "preNet");
-	//create fanout for mixing
-	MarSystem* fanin = mng.create("Fanin", "fanin");
-	// create ori series
+	//************************************************************************
+	//create Analysis Network and add it to the texture window accumulator
+	//************************************************************************
+	MarSystem* analysisNet = mng.create("Series", "analysisNet");
+	textWinNet->addMarSystem(analysisNet);
+
+	//************************************************************************
+	//create FanInOut for mixing with a noise source and add to Analysis Net
+	//************************************************************************
+	MarSystem* mixer = mng.create("FanOutIn", "mixer");
+	//---- create original series and add it to mixer
 	MarSystem* oriNet = mng.create("Series", "oriNet");
-	// add original source in the fanout
 	if (microphone_) 
 		oriNet->addMarSystem(mng.create("AudioSource", "src"));
 	else 
 		oriNet->addMarSystem(mng.create("SoundFileSource", "src"));
 	oriNet->addMarSystem(mng.create("Gain", "oriGain"));
-// add the ori Series to the fanout
-	fanin->addMarSystem(oriNet);
-	// create a series for the noiseSource
+	mixer->addMarSystem(oriNet);
+	//---- create a series for the noiseSource
 	if(noiseName != EMPTYSTRING)
 	{
-	MarSystem* mixseries = mng.create("Series", "mixseries");
+		MarSystem* mixseries = mng.create("Series", "mixseries");
+		if(noiseName == "white")
+			mixseries->addMarSystem(mng.create("NoiseSource", "noise"));
+		else
+			mixseries->addMarSystem(mng.create("SoundFileSource", "noise"));
 
-	if(noiseName == "white")
-		mixseries->addMarSystem(mng.create("NoiseSource", "noise"));
-	else
-		mixseries->addMarSystem(mng.create("SoundFileSource", "noise"));
-
-	mixseries->addMarSystem(mng.create("Delay", "noiseDelay"));
-	MarSystem* noiseGain = mng.create("Gain", "noiseGain");
-	mixseries->addMarSystem(noiseGain);
-	// add this series in the fanout
-	fanin->addMarSystem(mixseries);
+		mixseries->addMarSystem(mng.create("Delay", "noiseDelay"));
+		MarSystem* noiseGain = mng.create("Gain", "noiseGain");
+		mixseries->addMarSystem(noiseGain);
+		// add this series in the fanout
+		mixer->addMarSystem(mixseries);
 	}
-	preNet->addMarSystem(fanin);
-	//////////////////////////////////////////////////////
-	// should be removed for weird command line problems
+	//add Mixer to analysis network
+	analysisNet->addMarSystem(mixer);
+	
+	//********************************************************
+	// create SoundFileSink and add it to the analysis net
+	//********************************************************
+	if(noiseName != EMPTYSTRING)
+		analysisNet->addMarSystem(mng.create("SoundFileSink", "mixSink"));
 
-		if(noiseName != EMPTYSTRING)
-	preNet->addMarSystem(mng.create("SoundFileSink", "mixSink"));
-	////////////////////////////////////////
-	preNet->addMarSystem(mng.create("ShiftInput", "si"));
-	preNet->addMarSystem(mng.create("Shifter", "sh"));
-	preNet->addMarSystem(mng.create("Windowing", "wi"));
-
+	//********************************************************
+	// create Spectrum Network and add it to the analysis net
+	//********************************************************
+	MarSystem* spectrumNet = mng.create("Series", "spectrumNet");
+	spectrumNet->addMarSystem(mng.create("ShiftInput", "si"));
+	spectrumNet->addMarSystem(mng.create("Shifter", "sh"));
+	spectrumNet->addMarSystem(mng.create("Windowing", "wi"));
 	MarSystem *parallel = mng.create("Parallel", "par");
 	parallel->addMarSystem(mng.create("Spectrum", "spk1"));
 	parallel->addMarSystem(mng.create("Spectrum", "spk2"));
-	preNet->addMarSystem(parallel);
+	spectrumNet->addMarSystem(parallel);
+	//add Spectrum net to analysis net 
+	analysisNet->addMarSystem(spectrumNet);
 
-	preNet->addMarSystem(mng.create("PeConvert", "conv"));
-	//create accumulator
-	MarSystem* accumNet = mng.create("Accumulator", "accumNet");
-	accumNet->addMarSystem(preNet);
+	//***************************************************************
+	//add PeConvert to main SERIES for processing texture windows
+	//***************************************************************
+	mainNet->addMarSystem(mng.create("PeConvert", "conv"));
+	
+	
+	//***************************************************************
+	//create a FlowThru for the Clustering Network and add to main net
+	//***************************************************************
+	MarSystem* clustNet = mng.create("FlowThru", "clustNet");
+	mainNet->addMarSystem(clustNet);
+		
+	//***************************************************************
+	// create Similarities Network and add it to ClustNet
+	//***************************************************************
+	MarSystem* simNet = mng.create("FanOutIn", "simNet");
+	simNet->updctrl("mrs_string/combinator", "*");
+	//
+	//create Frequency similarity net and add it to simNet
+	//
+	MarSystem* freqSim = mng.create("Series","freqSim");
+	//--------
+	freqSim->addMarSystem(mng.create("PeFeatSelect","FREQfeatSelect"));
+	freqSim->updctrl("PeFeatSelect/FREQfeatSelect/mrs_natural/selectedFeatures",
+		PeFeatSelect::pkFrequency | PeFeatSelect::barkPkFreq);
+	//--------
+	MarSystem* fsimMat = mng.create("SimilarityMatrix","FREQsimMat");
+	fsimMat->addMarSystem(mng.create("Metric","FreqL2Norm"));
+	fsimMat->updctrl("Metric/FreqL2Norm/mrs_string/metric","euclideanDistance");
+	//fsimMat->updctrl("mrs_natural/calcCovMatrix", SimilarityMatrix::diagCovMatrix);
+	fsimMat->updctrl("mrs_string/normalize", "MinMax");
+	fsimMat->linkctrl("Metric/FreqL2Norm/mrs_realvec/covMatrix", "mrs_realvec/covMatrix");
+	freqSim->addMarSystem(fsimMat);	
+	//--------
+	freqSim->addMarSystem(mng.create("RBF","FREQrbf"));
+	freqSim->updctrl("RBF/FREQrbf/mrs_string/RBFtype","Gaussian");
+	freqSim->updctrl("RBF/FREQrbf/mrs_bool/symmetricIn",true);
+	//--------
+	simNet->addMarSystem(freqSim);
+	//
+	//create Amplitude similarity net and add it to simNet
+	//
+	MarSystem* ampSim = mng.create("Series","ampSim");
+	//--------
+	ampSim->addMarSystem(mng.create("PeFeatSelect","AMPfeatSelect"));
+	ampSim->updctrl("PeFeatSelect/AMPfeatSelect/mrs_natural/selectedFeatures",
+		PeFeatSelect::pkAmplitude | PeFeatSelect::dBPkAmp);
+	//--------
+	MarSystem* asimMat = mng.create("SimilarityMatrix","AMPsimMat");
+	asimMat->addMarSystem(mng.create("Metric","AmpL2Norm"));
+	asimMat->updctrl("Metric/AmpL2Norm/mrs_string/metric","euclideanDistance");
+	//asimMat->updctrl("mrs_natural/calcCovMatrix", SimilarityMatrix::diagCovMatrix);
+	asimMat->updctrl("mrs_string/normalize", "MinMax");
+	asimMat->linkctrl("Metric/AmpL2Norm/mrs_realvec/covMatrix", "mrs_realvec/covMatrix");
+	ampSim->addMarSystem(asimMat);	
+	//--------
+	ampSim->addMarSystem(mng.create("RBF","AMPrbf"));
+	ampSim->updctrl("RBF/AMPrbf/mrs_string/RBFtype","Gaussian");
+	ampSim->updctrl("RBF/AMPrbf/mrs_bool/symmetricIn",true);
+	//--------
+	simNet->addMarSystem(ampSim);
+	//
+	//create HWPS similarity net and add it to simNet
+	//
+	MarSystem* HWPSim = mng.create("Series","HWPSim");
+	//--------
+	HWPSim->addMarSystem(mng.create("PeFeatSelect","HWPSfeatSelect"));
+	HWPSim->updctrl("PeFeatSelect/HWPSfeatSelect/mrs_natural/selectedFeatures",
+		PeFeatSelect::pkFrequency | PeFeatSelect::pkSetFrequencies | PeFeatSelect::pkSetAmplitudes);
+	//--------
+	MarSystem* HWPSsimMat = mng.create("SimilarityMatrix","HWPSsimMat");
+	HWPSsimMat->addMarSystem(mng.create("HWPS","hwps"));
+	HWPSsimMat->updctrl("HWPS/hwps/mrs_bool/calcDistance", true);
+	HWPSim->addMarSystem(HWPSsimMat);	
+	//--------
+	HWPSim->addMarSystem(mng.create("RBF","HWPSrbf"));
+	HWPSim->updctrl("RBF/HWPSrbf/mrs_string/RBFtype","Gaussian");
+	HWPSim->updctrl("RBF/HWPSrbf/mrs_bool/symmetricIn",true);
+	//--------
+	simNet->addMarSystem(HWPSim);
+	//
+	// LINK controls of PeFeatSelects in each similarity branch
+	//
+	simNet->linkctrl("Series/ampSim/PeFeatSelect/AMPfeatSelect/mrs_natural/totalNumPeaks",
+		"Series/freqSim/PeFeatSelect/FREQfeatSelect/mrs_natural/totalNumPeaks");
+	simNet->linkctrl("Series/HWPSim/PeFeatSelect/HWPSfeatSelect/mrs_natural/totalNumPeaks",
+		"Series/freqSim/PeFeatSelect/FREQfeatSelect/mrs_natural/totalNumPeaks");
+	//------
+	simNet->linkctrl("Series/ampSim/PeFeatSelect/AMPfeatSelect/mrs_natural/frameMaxNumPeaks",
+		"Series/freqSim/PeFeatSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks");
+	simNet->linkctrl("Series/HWPSim/PeFeatSelect/HWPSfeatSelect/mrs_natural/frameMaxNumPeaks",
+		"Series/freqSim/PeFeatSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks");
+	//---- create an "alias" link for the above two controls in the simNet
+	simNet->linkctrl("mrs_natural/totalNumPeaks",
+		"Series/freqSim/PeFeatSelect/FREQfeatSelect/mrs_natural/totalNumPeaks");
+	simNet->linkctrl("mrs_natural/frameMaxNumPeaks",
+		"Series/freqSim/PeFeatSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks");
+	simNet->linkctrl("mrs_natural/totalNumPeaks",
+		"Series/ampSim/PeFeatSelect/AMPfeatSelect/mrs_natural/totalNumPeaks");
+	simNet->linkctrl("mrs_natural/frameMaxNumPeaks",
+		"Series/ampSim/PeFeatSelect/AMPfeatSelect/mrs_natural/frameMaxNumPeaks");
+	simNet->linkctrl("mrs_natural/totalNumPeaks",
+		"Series/HWPSim/PeFeatSelect/HWPSfeatSelect/mrs_natural/totalNumPeaks");
+	simNet->linkctrl("mrs_natural/frameMaxNumPeaks",
+		"Series/HWPSim/PeFeatSelect/HWPSfeatSelect/mrs_natural/frameMaxNumPeaks");
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//add simNet to clustNet
+	clustNet->addMarSystem(simNet);
+	//
+	// LINK controls related to variable number of peak from PeConvert to simNet
+	//
+	mainNet->linkctrl("FlowThru/clustNet/FanOutIn/simNet/mrs_natural/totalNumPeaks",
+		"PeConvert/conv/mrs_natural/totalNumPeaks");
+	mainNet->linkctrl("FlowThru/clustNet/FanOutIn/simNet/mrs_natural/frameMaxNumPeaks",
+		"PeConvert/conv/mrs_natural/frameMaxNumPeaks");
 
-	/*************************************************************/
+	//***************************************************************
+	// create NCutNet MarSystem and add it to clustNet
+	//***************************************************************
+	MarSystem* NCutNet = mng.create("Series","NCutNet");
+	clustNet->addMarSystem(NCutNet);
+	//---add NCutNet components
+	// add a stack to stack the 
+	MarSystem* stack = mng.create("Fanout","stack");
+	NCutNet->addMarSystem(stack);
+	stack->addMarSystem(mng.create("NormCut","NCut"));
+	stack->addMarSystem(mng.create("Gain", "ID"));
+	// add the cluster selection module
+	NCutNet->addMarSystem(mng.create("PeClusterSelect","clusterSelect"));
+	
+	//***************************************************************
+	// create PeLabeler MarSystem and add it to mainNet
+	//***************************************************************
+	MarSystem* labeler = mng.create("PeLabeler","labeler");
+	mainNet->addMarSystem(labeler);
+	//---- link labeler label control to the NCut output control
+	mainNet->linkctrl("PeLabeler/labeler/mrs_realvec/peakLabels", "FlowThru/clustNet/mrs_realvec/innerOut");
 
-	MarSystem* peClust = mng.create("PeClust", "peClust");
-
-	/*************************************************************/
-
-	//create the main network
-	pvseries->addMarSystem(accumNet);
-	pvseries->addMarSystem(peClust);
+	//***************************************************************
+	// create PeLabeler MarSystem and add it to mainNet
+	//***************************************************************
 	if(peakStore_)
-		pvseries->addMarSystem(mng.create("RealvecSink", "peSink"));
-	/*************************************************************/
+	{
+ 		mainNet->addMarSystem(mng.create("PeakViewSink", "peSink"));
+		mainNet->updctrl("PeakViewSink/peSink/mrs_string/filename", filePeakName);
+	}
 
+	//****************************************************************
+	// Create Synthesis Network
+	//****************************************************************
 	if(synthetize >-1) 
 	{
 		//create shredder
 		synthNetCreate(&mng, outsfname, microphone_, synthetize, residual_);
 		MarSystem *peSynth = mng.create("PeSynthetize", "synthNet");
-		pvseries->addMarSystem(peSynth);
+		mainNet->addMarSystem(peSynth);
 	}
+	
+	
 	////////////////////////////////////////////////////////////////
 	// update the controls
 	////////////////////////////////////////////////////////////////
-	pvseries->updctrl("Accumulator/accumNet/mrs_natural/nTimes", accSize);
+	mainNet->updctrl("Accumulator/textWinNet/mrs_natural/nTimes", accSize);
 
 	if (microphone_) 
 	{
-		pvseries->updctrl("mrs_natural/inSamples", D);
-		pvseries->updctrl("mrs_natural/inObservations", 1);
+		mainNet->updctrl("mrs_natural/inSamples", D);
+		mainNet->updctrl("mrs_natural/inObservations", 1);
 	}
 	else
 	{
-		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/oriNet/SoundFileSource/src/mrs_string/filename", sfName);
-		pvseries->updctrl("mrs_natural/inSamples", D);
-		pvseries->updctrl("mrs_natural/inObservations", 1);
-		samplingFrequency_ = pvseries->getctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/oriNet/SoundFileSource/src/mrs_real/osrate")->toReal();
+		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_string/filename", sfName);
+		mainNet->updctrl("mrs_natural/inSamples", D);
+		mainNet->updctrl("mrs_natural/inObservations", 1);
+		samplingFrequency_ = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_real/osrate")->toReal();
 	}
-	
-
-if(noiseName != EMPTYSTRING)
-{
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/SoundFileSource/noise/mrs_string/filename", noiseName);
-	pvseries->updctrl("mrs_natural/inSamples", D);
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/NoiseSource/noise/mrs_string/mode", "rand");
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/Delay/noiseDelay/mrs_real/delay",  noiseDelay);
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/Gain/noiseGain/mrs_real/gain", noiseGain_);
-}
-
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/ShiftInput/si/mrs_natural/Decimation", D);
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/ShiftInput/si/mrs_natural/WindowSize", Nw+1);
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Windowing/wi/mrs_natural/size", N);
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Windowing/wi/mrs_string/type", "Hanning");
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Windowing/wi/mrs_natural/zeroPhasing", 1);
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/Shifter/sh/mrs_natural/shift", 1);
-	//pvseries->updctrl("Accumulator/accumNet/Series/preNet/PvFold/fo/mrs_natural/Decimation", D); // useless ?
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Decimation", D);
-	if(unprecise_)
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/improvedPrecision", 0);      
-	else
-		pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/improvedPrecision", 1);  
-	if(noPeakPicking_)
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/picking", 0);      
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/Sinusoids", S); 
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_string/frequencyInterval", intervalFrequency);  
-	// pvseries->updctrl("Accumulator/accumNet/Series/preNet/PeConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
-
-	pvseries->setctrl("PeClust/peClust/mrs_natural/Sinusoids", S);  
-	pvseries->setctrl("PeClust/peClust/mrs_natural/Clusters", C); 
-	pvseries->setctrl("PeClust/peClust/mrs_natural/selectedClusters", nbSelectedClusters_); 
-	pvseries->setctrl("PeClust/peClust/mrs_natural/hopSize", D); 
-	pvseries->setctrl("PeClust/peClust/mrs_natural/storePeaks", (mrs_natural) peakStore_); 
-	pvseries->updctrl("PeClust/peClust/mrs_string/similarityType", T); 
-
-
-	similarityWeight_.stretch(3);
-	similarityWeight_(0) = 1;
-	similarityWeight_(1) = 10;
-	similarityWeight_(2) = 1;
-
-	pvseries->updctrl("PeClust/peClust/mrs_realvec/similarityWeight", similarityWeight_); 
-	pvseries->updctrl("RealvecSink/peSink/mrs_string/fileName", filePeakName);
 
 	if(noiseName != EMPTYSTRING)
-	pvseries->updctrl("Accumulator/accumNet/Series/preNet/SoundFileSink/mixSink/mrs_string/filename", mixName);//[!]
+	{
+		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/mixseries/SoundFileSource/noise/mrs_string/filename", noiseName);
+		mainNet->updctrl("mrs_natural/inSamples", D);
+		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/mixseries/NoiseSource/noise/mrs_string/mode", "rand");
+		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Seriesmixseries/Delay/noiseDelay/mrs_real/delay",  noiseDelay);
+		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/mixseries/Gain/noiseGain/mrs_real/gain", noiseGain_);
+	}
 
-	//pvseries->update();
+	mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/spectrumNet/ShiftInput/si/mrs_natural/Decimation", D);
+	mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/spectrumNet/ShiftInput/si/mrs_natural/WindowSize", Nw+1);
+	mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/spectrumNet/Windowing/wi/mrs_natural/size", N);
+	mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/spectrumNet/Windowing/wi/mrs_string/type", "Hanning");
+	mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/spectrumNet/Windowing/wi/mrs_bool/zeroPhasing", true);
+	mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/spectrumNet/Shifter/sh/mrs_natural/shift", 1);
+	
+	mainNet->updctrl("PeConvert/conv/mrs_natural/Decimation", D);
+	if(unprecise_)
+		mainNet->updctrl("PeConvert/conv/mrs_bool/improvedPrecision", false);      
+	else
+		mainNet->updctrl("PeConvert/conv/mrs_bool/improvedPrecision", true);  
+	if(noPeakPicking_)
+		mainNet->updctrl("PeConvert/conv/mrs_bool/picking", false);      
+	mainNet->updctrl("PeConvert/conv/mrs_natural/frameMaxNumPeaks", S); 
+	mainNet->updctrl("PeConvert/conv/mrs_string/frequencyInterval", intervalFrequency);  
+	// mainNet->updctrl("PeConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
+	
+	mainNet->updctrl("FlowThru/clustNet/Series/NCutNet/Fanout/stack/NormCut/NCut/mrs_natural/numClusters", C); 
+	mainNet->updctrl("FlowThru/clustNet/Series/NCutNet/PeClusterSelect/clusterSelect/mrs_natural/numClustersToKeep", nbSelectedClusters_);
+// 	//[TODO]
+// 	mainNet->setctrl("PeClust/peClust/mrs_natural/selectedClusters", nbSelectedClusters_); 
+// 	mainNet->setctrl("PeClust/peClust/mrs_natural/hopSize", D); 
+// 	mainNet->setctrl("PeClust/peClust/mrs_natural/storePeaks", (mrs_natural) peakStore_); 
+// 	mainNet->updctrl("PeClust/peClust/mrs_string/similarityType", T); 
+//
+// 	similarityWeight_.stretch(3);
+// 	similarityWeight_(0) = 1;
+// 	similarityWeight_(1) = 10;  //[WTF]
+// 	similarityWeight_(2) = 1;
+// 	mainNet->updctrl("PeClust/peClust/mrs_realvec/similarityWeight", similarityWeight_); 
+
+	if(noiseName != EMPTYSTRING)
+		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/SoundFileSink/mixSink/mrs_string/filename", mixName);
+
+	mainNet->update();
 
 	if(synthetize>-1)
 	{
-		synthNetConfigure (pvseries, sfName, outsfname, fileResName, panningInfo, 1, Nw, D, S, accSize, microphone_, synthetize_, bopt_, Nw+1-D, residual_);
+		//[TODO]
+		synthNetConfigure(mainNet, sfName, outsfname, fileResName, panningInfo, 1, Nw, D, S, accSize, microphone_, synthetize_, bopt_, Nw+1-D, residual_);
 	}
 
-	if(noiseDuration_)
+	if(noiseDuration_) //[WTF]
 	{
 		ostringstream ossi;
 		ossi << ((noiseDelay_+noiseDuration_)) << "s";
 		cout << ossi.str() << endl;
 		// touch the gain directly
 		//	noiseGain->updctrl("0.1s", Repeat("0.1s", 1), new EvValUpd(noiseGain,"mrs_real/gain", 0.0));
-
 	}
-
+	
+	//***************************************************************************************************************
+	//									MAIN TICKING LOOP
+	//***************************************************************************************************************
+	//ofstream cfile("density.txt", ios::app); //[WTF] [TODO]
 	mrs_real globalSnr = 0;
-	mrs_natural nb=0;
+	mrs_natural frameCount = 0;
 	//	mrs_real time=0;
+
 	while(1)
 	{	
-		//		cout << "tick"<<endl;
-		pvseries->tick();
-		//	cout << "tick"<<endl;
-		/*	if(time > (noiseDelay_+noiseDuration_))
-		{
-		pvseries->updctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/mixseries/Gain/noiseGain/mrs_real/gain", (mrs_real) 0);
-		}
-		time+=accSize_*hopSize_/samplingFrequency_;*/
-		// cout << time << " " << noiseDelay_+noiseDuration_ << endl;
-		// ouput the seg snr
+		mainNet->tick();
+		
 		if(synthetize > -1 && residual_)
 		{
-			mrs_real snr = pvseries->getctrl("PeSynthetize/synthNet/Series/postNet/PeResidual/res/mrs_real/snr")->toReal();
-			globalSnr+=snr;
-			nb++;
-			// cout << "Frame " << nb << " SNR : "<< snr << endl;
+			mrs_real snr = mainNet->getctrl("PeSynthetize/synthNet/Series/postNet/PeResidual/res/mrs_real/SNR")->toReal();
+			globalSnr += snr;
+			frameCount++;
+			// cout << "Frame " << frameCount << " SNR : "<< snr << endl;
 		}
 
 		if (!microphone_)
 		{
-			bool temp = pvseries->getctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/oriNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
-			bool temp1 = accumNet->getctrl("Series/preNet/Fanin/fanin/Series/oriNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
-			bool temp2 = preNet->getctrl("Fanin/fanin/Series/oriNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
+			bool temp = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
+			bool temp1 = textWinNet->getctrl("Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
+			bool temp2 = analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
 
-			mrs_real timeRead =  preNet->getctrl("Fanin/fanin/Series/oriNet/SoundFileSource/src/mrs_natural/pos")->toNatural()/samplingFrequency_;
+			mrs_real timeRead =  analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_natural/pos")->toNatural()/samplingFrequency_;
 			mrs_real timeLeft;
 			if(!stopAnalyse_)
-				timeLeft =  preNet->getctrl("Fanin/fanin/Series/oriNet/SoundFileSource/src/mrs_natural/size")->toNatural()/samplingFrequency_;
+				timeLeft =  analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_natural/size")->toNatural()/samplingFrequency_;
 			else
 				timeLeft = stopAnalyse_;
-			// string fname = pvseries->getctrl("Accumulator/accumNet/Series/preNet/Fanin/fanin/Series/oriNet/SoundFileSource/src/mrs_string/filename")->toString();
-			
-			//printf("  %.2f / %.2f \r", timeRead, timeLeft);
-			//fflush(stdout);
-			
+			// string fname = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_string/filename")->toString();
+
+			printf("  %.2f / %.2f \r", timeRead, timeLeft);
+			fflush(stdout);
+
 			//cout << fixed << setprecision(2) << timeRead << "/" <<  setprecision(2) << timeLeft;
-			///*bool*/ temp = pvseries->getctrl("Accumulator/accumNet/Series/preNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
-			
-		
+			///*bool*/ temp = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
+
+			//[TODO]
+// 			mrs_real density = mainNet->getctrl("PeClust/peClust/mrs_real/clusterDensity")->toReal();
+// 			cfile << density << " " << oriGain << endl;
+// 			//cout << oriGain << endl;
+
 			if (temp2 == false || (stopAnalyse_ !=0 && stopAnalyse_<timeRead))
 				break;
 		}
 	}
-	if(synthetize_ > -1)
+	if(synthetize_ > -1 && residual_)
 	{
-		cout << "Global SNR : " << globalSnr/nb << endl;
-		*snr0 = globalSnr/nb;
+		cout << "Global SNR : " << globalSnr/frameCount << endl;
+		*snr0 = globalSnr/frameCount;
 	}
 
 	if(peakStore_)
 	{
-		realvec vec = pvseries->getctrl("RealvecSink/peSink/mrs_realvec/data")->toVec();
-		pvseries->updctrl("RealvecSink/peSink/mrs_bool/done", true);
-		peakStore(vec, filePeakName, samplingFrequency_, D); 
+		mainNet->updctrl("PeakViewSink/peSink/mrs_real/fs", samplingFrequency_);
+		mainNet->updctrl("PeakViewSink/peSink/mrs_natural/frameSize", D);
+		mainNet->updctrl("PeakViewSink/peSink/mrs_string/filename", filePeakName); 
+		mainNet->updctrl("PeakViewSink/peSink/mrs_bool/done", true);
 	}
-}
 
+	//cfile.close(); [TODO]
+}
 
 
 void 
@@ -387,16 +549,16 @@ initOptions()
 	cmd_options.addNaturalOption("quitAnalyse", "q", stopAnalyse_);
 	cmd_options.addNaturalOption("clustering", "c", nbClusters_);
 	cmd_options.addNaturalOption("keep", "k", nbSelectedClusters_);
-  cmd_options.addNaturalOption("textureSize", "T", accSize_);
+	cmd_options.addNaturalOption("textureSize", "T", accSize_);
 	cmd_options.addNaturalOption("clusterFiltering", "F", clusterFilteringType_);
 	cmd_options.addBoolOption("fileInfo", "f", 0);
-  cmd_options.addBoolOption("residual", "r", 0);
- cmd_options.addBoolOption("unprecise", "u", 0);
+	cmd_options.addBoolOption("residual", "r", 0);
+	cmd_options.addBoolOption("unprecise", "u", 0);
 	// cmd_options.addBoolOption("analyse", "a", analyse_);
 	cmd_options.addBoolOption("attributes", "A", attributes_);
 	cmd_options.addBoolOption("ground", "g", ground_);
 	cmd_options.addNaturalOption("synthetize", "S", synthetize_);
-		cmd_options.addBoolOption("noPeakPicking", "npp", 0);
+	cmd_options.addBoolOption("noPeakPicking", "npp", 0);
 	cmd_options.addNaturalOption("clusterSynthetize", "SC", clusterSynthetize_);
 	cmd_options.addBoolOption("peakStore", "P", peakStore_);
 }
@@ -441,7 +603,7 @@ loadOptions()
 int
 main(int argc, const char **argv)
 {
-	MRSDIAG("sftransform.cpp - main");
+	MRSDIAG("peakClustering.cpp - main");
 
 	mrs_real snr0=0;
 	initOptions();
@@ -451,16 +613,13 @@ main(int argc, const char **argv)
 	vector<string> soundfiles = cmd_options.getRemaining();
 	vector<string>::iterator sfi;
 
-
 	string progName = argv[0];  
-
 
 	if (helpopt_) 
 		printHelp(progName);
 
 	if (usageopt_)
 		printUsage(progName);
-
 
 	cerr << "peakClustering configuration (-h show the options): " << endl;
 	cerr << "fft size (-n)      = " << fftSize_ << endl;
@@ -471,6 +630,7 @@ main(int argc, const char **argv)
 	cerr << "inputDirectory  (-i) = " << inputDirectoryName << endl;
 
 	nbTicks = clock();
+	
 	// extract peaks and clusters
 	// soundfile input 
 	string sfname;
@@ -494,9 +654,9 @@ main(int argc, const char **argv)
 				outputInf << "c" << nbClusters_;
 				outputInf <<"k" << nbSelectedClusters_;
 				if(unprecise_)
-                  outputInf << "u";
+					outputInf << "u";
 				outputInf << "t" << similarityType_;
-					outputInf << "_";
+				outputInf << "_";
 				outputInfo = outputInf.str();
 			}
 
@@ -510,19 +670,18 @@ main(int argc, const char **argv)
 
 			if(Sfname.ext() == "peak")
 			{
-				analyse_ = 0;
+				analyse_ = false;
 				if(synthetize_ > -1)
-				clusterSynthetize_ = synthetize_;
+					clusterSynthetize_ = synthetize_;
 				else
 					clusterSynthetize_ = 0;
 				fileName = path + "/" + Sfname.nameNoExt()+outputInfo+".wav" ;
-	
 			}
+			
 			if(Sfname.ext() == "wav")
 			{
 				analyse_ = 1;
 			}
-
 
 			if(noiseName == "music")
 			{
@@ -534,103 +693,111 @@ main(int argc, const char **argv)
 
 			if(analyse_)
 			{
-				cout << "Phasevocoding " << Sfname.name() << endl; 
+				cout << "PeakClustering " << Sfname.name() << endl; 
 				clusterExtract(peakSet_, *sfi, fileName, noiseName, mixName, intervalFrequency, panningInfo, noiseDelay_, similarityType_, fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_, synthetize_, &snr0);
 			}	
-			// if ! peak data read from file
-			if(peakSet_.getSize() == 0)
-				peakSet_.read(filePeakName);
-			if(peakSet_.getSize() == 0)
-			{
-				cout << "unable to load peak file: " << filePeakName << endl;
-				//	exit(1);
-			}
-
-			//MATLAB_PUT(peakSet_, "peaks");
-			//MATLAB_EVAL("figure(1); clf ; plotPeaks(peaks)");
-
-
-			// create data for clusters
-			PeClusters clusters(peakSet_);
-			mrs_natural nbClusters=0;
-			// computes the cluster attributes
-			if(attributes_)
-			{
-				realvec vecs;
-				realvec conv(2);
-				string2parameters(intervalFrequency, conv, '_');
-				clusters.attributes(peakSet_, conv(1));	
-				clusters.getVecs(vecs);
-
-				// cout << vecs;
-				//				MATLAB_PUT(getcwd(NULL, 0), "path");
-				//				MATLAB_PUT(fileName, "fileName");
-
-				MATLAB_PUT(vecs, "clusters");
-				ofstream clustFile;
-				clustFile.open(fileClustName.c_str());
-				if(!clustFile)
-					cout << "Unable to open output Clusters File " << fileClustName << endl;
-				//	clustFile << vecs;
-				clustFile.close();
-
-				// store voicingLine
-				clusters.voicingLine(fileVoicingName, hopSize_, accSize_);
-				clusters.f0Line(fileF0Name, hopSize_, samplingFrequency_, accSize_);
-			}
-
-			// compute ground truth 
-			if(ground_)
-			{
-				realvec vecs;
-				clusters.synthetize(peakSet_, *sfi, fileName, winSize_, hopSize_, nbSines_, bopt_, 1);
-				clusters.getVecs(vecs);
-				MATLAB_PUT(vecs, "clusters");
-				clusters.selectGround();
-				realvec ct;
-
-
-
-				clusters.getConversionTable(ct);
-				updateLabels(peakSet_, ct);
-				//	cout << ct;
-			}
-			if(ground_ || attributes_)
-				MATLAB_EVAL("figure(2) ; plotClusters");
-			/*	MATLAB_PUT(peakSet_, "peaksGp");
-			MATLAB_EVAL("plotPeaks(peaksGp)");*/
-
-			if(clusterFilteringType_)
-			{
-				realvec ct;
-				clusters.selectBefore(clusterFilteringType_);
-				clusters.getConversionTable(ct);
-				updateLabels(peakSet_, ct);
-			}
-
-			if(clusterSynthetize_ > -1)
-			{
-				PeClusters sclusters(peakSet_);
-				// synthetize remaining clusters
-				snr0 = sclusters.synthetize(peakSet_, *sfi, fileName, winSize_, hopSize_, nbSines_, bopt_, clusterSynthetize_);
-			}
-			/*MATLAB_PUT(peakSet_, "peaks");
-			MATLAB_EVAL("plotPeaks(peaks)");*/ 
-			/*	MATLAB_PUT(peakSet_, "peaks");
-			MATLAB_EVAL("figure(1); clf ; plotPeaks(peaks)");*/
-
-			// for SNR cimputation
-			/*
-			FileName oriFileName(*sfi);
-			FileName noiseFileName(noiseName);
-			ofstream resFile;
-			string snrName(path + "/similaritySnrResults.txt");
-			resFile.open( snrName.c_str(), ios::out | ios::app);
-			cout << oriFileName.name() << " " << noiseFileName.name() << " " << similarityType_ << " " << snr0 << endl;
-			resFile << oriFileName.name() << " " << noiseFileName.name() << " " << similarityType_ << " " << snr0 << endl;
-			resFile.close();
-			*/
-		}  
+			
+			
+			
+			
+			
+			
+			
+// 			
+// 			
+// 			
+// 			// if ! peak data read from file
+// 			if(peakSet_.getSize() == 0)
+// 				peakSet_.read(filePeakName);
+// 			if(peakSet_.getSize() == 0)
+// 			{
+// 				cout << "unable to load peak file: " << filePeakName << endl;
+// 				//	exit(1);
+// 			}
+// 
+// 			//MATLAB_PUT(peakSet_, "peaks");
+// 			//MATLAB_EVAL("figure(1); clf ; plotPeaks(peaks)");
+// 
+// 
+// 			// create data for clusters
+// 			PeClusters clusters(peakSet_);
+// 			mrs_natural nbClusters=0;
+// 			// computes the cluster attributes
+// 			if(attributes_)
+// 			{
+// 				realvec vecs;
+// 				realvec conv(2);
+// 				string2parameters(intervalFrequency, conv, '_');
+// 				clusters.attributes(peakSet_, conv(1));	
+// 				clusters.getVecs(vecs);
+// 
+// 				// cout << vecs;
+// 				//				MATLAB_PUT(getcwd(NULL, 0), "path");
+// 				//				MATLAB_PUT(fileName, "fileName");
+// 
+// 				MATLAB_PUT(vecs, "clusters");
+// 				ofstream clustFile;
+// 				clustFile.open(fileClustName.c_str());
+// 				if(!clustFile)
+// 					cout << "Unable to open output Clusters File " << fileClustName << endl;
+// 				//	clustFile << vecs;
+// 				clustFile.close();
+// 
+// 				// store voicingLine
+// 				clusters.voicingLine(fileVoicingName, hopSize_, accSize_);
+// 				clusters.f0Line(fileF0Name, hopSize_, samplingFrequency_, accSize_);
+// 			}
+// 
+// 			// compute ground truth 
+// 			if(ground_)
+// 			{
+// 				realvec vecs;
+// 				clusters.synthetize(peakSet_, *sfi, fileName, winSize_, hopSize_, nbSines_, bopt_, 1);
+// 				clusters.getVecs(vecs);
+// 				MATLAB_PUT(vecs, "clusters");
+// 				clusters.selectGround();
+// 				realvec ct;
+// 
+// 				clusters.getConversionTable(ct);
+// 				updateLabels(peakSet_, ct);
+// 				//	cout << ct;
+// 			}
+// 			if(ground_ || attributes_)
+// 				MATLAB_EVAL("figure(2) ; plotClusters");
+// 			/*	MATLAB_PUT(peakSet_, "peaksGp");
+// 			MATLAB_EVAL("plotPeaks(peaksGp)");*/
+// 
+// 			if(clusterFilteringType_)
+// 			{
+// 				realvec ct;
+// 				clusters.selectBefore(clusterFilteringType_);
+// 				clusters.getConversionTable(ct);
+// 				updateLabels(peakSet_, ct);
+// 			}
+// 
+// 			if(clusterSynthetize_ > -1)
+// 			{
+// 				PeClusters sclusters(peakSet_);
+// 				// synthetize remaining clusters
+// 				snr0 = sclusters.synthetize(peakSet_, *sfi, fileName, winSize_, hopSize_, nbSines_, bopt_, clusterSynthetize_);
+// 			}
+// 			/*MATLAB_PUT(peakSet_, "peaks");
+// 			MATLAB_EVAL("plotPeaks(peaks)");*/ 
+// 			/*	MATLAB_PUT(peakSet_, "peaks");
+// 			MATLAB_EVAL("figure(1); clf ; plotPeaks(peaks)");*/
+// 
+// 			// for SNR cimputation
+// 			/*
+// 			FileName oriFileName(*sfi);
+// 			FileName noiseFileName(noiseName);
+// 			ofstream resFile;
+// 			string snrName(path + "/similaritySnrResults.txt");
+// 			resFile.open( snrName.c_str(), ios::out | ios::app);
+// 			cout << oriFileName.name() << " " << noiseFileName.name() << " " << similarityType_ << " " << snr0 << endl;
+// 			resFile << oriFileName.name() << " " << noiseFileName.name() << " " << similarityType_ << " " << snr0 << endl;
+// 			resFile.close();
+// 			*/
+ 		}  
 	}
 	else
 	{
@@ -638,7 +805,6 @@ main(int argc, const char **argv)
 		microphone_ = true;
 		clusterExtract(peakSet_, "microphone", fileName, noiseName, mixName, intervalFrequency, panningInfo, noiseDelay_, similarityType_, fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_, synthetize_, &snr0);
 	}
-
 
 	timeElapsed = (clock()-nbTicks)/((mrs_real) CLOCKS_PER_SEC );
 	cout << "Time elapsed: " << timeElapsed << endl;

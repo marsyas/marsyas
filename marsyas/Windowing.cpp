@@ -79,13 +79,13 @@ Windowing::myUpdate(MarControlPtr sender)
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 	ostringstream oss;
 	string inObsNames = ctrl_inObsNames_->toString();
+	string inObsName;
+	string temps;
 	for (int i = 0; i < inObservations_; i++)
 	{
-		string inObsName;
-		string temp;
 		inObsName = inObsNames.substr(0, inObsNames.find(","));
-		temp = inObsNames.substr(inObsNames.find(",")+1, inObsNames.length());
-		inObsNames = temp;
+		temps = inObsNames.substr(inObsNames.find(",")+1, inObsNames.length());
+		inObsNames = temps;
 		oss << "Win_" << type <<"_" << inObsName << ",";
 	}
 	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
@@ -123,11 +123,7 @@ Windowing::myUpdate(MarControlPtr sender)
 	envelope_.create(inSamples_);
 	mrs_real temp = 0.0;
 
-	if(type == "Rectangular")
-	{
-		envelope_.setval(0);
-	}
-	if(type == "Hamming")
+	if (type == "Hamming")
 	{   
 		mrs_real A = (mrs_real)0.54;
 		mrs_real B = (mrs_real)0.46;
@@ -203,9 +199,11 @@ Windowing::myUpdate(MarControlPtr sender)
 void 
 Windowing::myProcess(realvec& in, realvec& out)
 {
-	out.setval(0);
+  
 
-
+  out.setval(0);
+	
+	
 	for (o=0; o < inObservations_; o++)
 	{
 		//apply the window to the input data

@@ -18,7 +18,7 @@
 
 /** 
 \class PeSynOscBank
-	\ingroup none
+\ingroup none
 \brief PeSynOscBank
 
 A bank of sine wave oscillators used for pevocoding. 
@@ -26,16 +26,13 @@ A bank of sine wave oscillators used for pevocoding.
 */
 
 #include "PeSynOscBank.h"
-#include "PeUtilities.h"
+#include "peakView.h"
 
 using namespace std;
 using namespace Marsyas;
 
 PeSynOscBank::PeSynOscBank(string name):MarSystem("PeSynOscBank",name)
 {
-	//type_ = "PeSynOscBank";
-	//name_ = name;
-
 	psize_ = 0;
 	size_ = 0;
 
@@ -46,7 +43,6 @@ PeSynOscBank::PeSynOscBank(const PeSynOscBank& a):MarSystem(a)
 {
 	ctrl_harmonize_ = getctrl("mrs_realvec/harmonize");
 }
-
 
 PeSynOscBank::~PeSynOscBank()
 {
@@ -78,21 +74,18 @@ PeSynOscBank::myUpdate(MarControlPtr sender)
 	setctrl("mrs_natural/onObservations", (mrs_natural)1);
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
 
-	// mrs_natural inObservations = getctrl("mrs_natural/inObservations")->toNatural();
-
-	//defaultUpdate();
 	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
 
 	nbH_ = (ctrl_harmonize_->toVec().getSize()-1)/2;
 	// replace this !!
 	if (!nbH_)
 	{
-ctrl_harmonize_->stretch(3);
-ctrl_harmonize_->setValue(1, 1.0);
-ctrl_harmonize_->setValue(2, 1.0);
+		ctrl_harmonize_->stretch(3);
+		ctrl_harmonize_->setValue(1, 1.0);
+		ctrl_harmonize_->setValue(2, 1.0);
 	}
 
-		size_ = 2048*nbH_;
+	size_ = 2048*nbH_;
 
 	//if (size_ != psize_) 
 	{
@@ -102,7 +95,7 @@ ctrl_harmonize_->setValue(2, 1.0);
 		nextfreq_.stretch(size_);
 		index_.stretch(size_);
 		nextindex_.stretch(size_);
-		N_ = inObservations_/nbPkParameters;
+		N_ = inObservations_/peakView::nbPkParameters;
 
 		L_ = 8192;
 		table_.stretch(L_);
@@ -113,8 +106,6 @@ ctrl_harmonize_->setValue(2, 1.0);
 		}
 		psize_ = size_;
 	}
-
-
 	// N_ = inObservations_/nbPkParameters;
 	P_ = getctrl("mrs_real/PitchShift")->toReal();
 	I_ = getctrl("mrs_natural/Interpolation")->toNatural();
@@ -125,11 +116,7 @@ ctrl_harmonize_->setValue(2, 1.0);
 void 
 PeSynOscBank::myProcess(realvec& in, realvec& out)
 {
-
-	//checkFlow(in,out);
-	//  cout << in;
 	out.setval(0.0);
-
 
 	if (P_ > 1.0)
 		NP_ = (mrs_natural)(N_/P_);
@@ -145,85 +132,81 @@ PeSynOscBank::myProcess(realvec& in, realvec& out)
 
 	bool flag = false;
 
-		if(nbH_)
-	for(mrs_natural j=0 ; j<nbH_ ; j++)
+	if(nbH_)
+	{
+		for(mrs_natural j=0 ; j<nbH_ ; j++)
 		{
-		mrs_real mulF = ctrl_harmonize_->toVec()(1+j*2); 
-		mrs_real mulA = ctrl_harmonize_->toVec()(2+j*2);
+			mrs_real mulF = ctrl_harmonize_->toVec()(1+j*2); 
+			mrs_real mulA = ctrl_harmonize_->toVec()(2+j*2);
 
-		for (t=0; t < NP_; t++)
-		{
-			
-			mrs_natural index = (mrs_natural) ceil(in(t)/R_*2048*2+0.5);
-if (in(t) == 0.0 || index >= 2048)
-				break;
-      index+=j*2048;
-
-			/* save current values for next iteration */ 
-
-			if(nextfreq_(index))
+			for (t=0; t < NP_; t++)
 			{
-				cout << "PROBLEM"<<endl;
+				mrs_natural index = (mrs_natural) ceil(in(t)/R_*2048*2+0.5);
+				if (in(t) == 0.0 || index >= 2048)
+					break;
+				index+=j*2048;
+
+				/* save current values for next iteration */ 
+
+				if(nextfreq_(index))
+				{
+					cout << "PROBLEM"<<endl;
+				}
+				nextamp_(index) = in(t+NP_)*mulA;
+				nextfreq_(index) = in(t)*Pinc_*mulF;
 			}
-			nextamp_(index) = in(t+NP_)*mulA;
-			nextfreq_(index) = in(t)*Pinc_*mulF;
 		}
 	}
-		for (t=0; t < nextamp_.getSize(); t++)
+
+	for (t=0; t < nextamp_.getSize(); t++)
+	{
+		// cout << endl << index << endl;	
+		if(lastfreq_(t) && nextfreq_(t))
 		{
-			// cout << endl << index << endl;	
-			if(lastfreq_(t) && nextfreq_(t))
-			{
-				f_ = lastfreq_(t);
-				finc_ = (nextfreq_(t) - f_)*Iinv_;
-			}
-			else if(nextfreq_(t))
-			{
-				f_ = nextfreq_(t);
-				finc_=0;
-			}
-			else
-			{
-				f_ = lastfreq_(t);
-				finc_=0;
-			}
-
-			a_ = lastamp_(t);
-			ainc_ = (nextamp_(t) - a_)*Iinv_;
-
-			address_ = index_(t);		
-
-			/* avoid extra computing */ 
-			if ((a_ != 0.0 || ainc_!=0.0))
-			{
-				// accumulate I samples from each oscillator 
-				// into output slice
-				for (c=0; c < I_; c++)
-				{
-					naddress_ = (mrs_natural)address_ % L_;
-					out(0, c) += a_ * table_(naddress_);
-					address_ += f_;
-
-					while (address_ >= L_)
-						address_ -= L_;
-					while (address_ < 0)
-						address_ += L_;
-
-					a_ += ainc_;
-					f_ += finc_;
-				}
-				// move down one parenthesis
-
-
-			}
-			nextindex_(t) = address_;	
-
+			f_ = lastfreq_(t);
+			finc_ = (nextfreq_(t) - f_)*Iinv_;
+		}
+		else if(nextfreq_(t))
+		{
+			f_ = nextfreq_(t);
+			finc_=0;
+		}
+		else
+		{
+			f_ = lastfreq_(t);
+			finc_=0;
 		}
 
+		a_ = lastamp_(t);
+		ainc_ = (nextamp_(t) - a_)*Iinv_;
+
+		address_ = index_(t);		
+
+		/* avoid extra computing */ 
+		if ((a_ != 0.0 || ainc_!=0.0))
+		{
+			// accumulate I samples from each oscillator 
+			// into output slice
+			for (c=0; c < I_; c++)
+			{
+				naddress_ = (mrs_natural)address_ % L_;
+				out(0, c) += a_ * table_(naddress_);
+				address_ += f_;
+
+				while (address_ >= L_)
+					address_ -= L_;
+				while (address_ < 0)
+					address_ += L_;
+
+				a_ += ainc_;
+				f_ += finc_;
+			}
+			// move down one parenthesis
+		}
+		nextindex_(t) = address_;	
+	}
 
 	lastamp_ = nextamp_;
 	lastfreq_ = nextfreq_;
 	index_ = nextindex_;
-
-	// 	cout <<out;
 }

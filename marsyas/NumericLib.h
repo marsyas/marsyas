@@ -260,6 +260,22 @@ public:
 	bool polyRoots(std::vector<mrs_complex> coefs, bool complexCoefs, mrs_natural order, std::vector<mrs_complex> &roots);
 	mrs_real determinant(realvec matrix);
 
+	static mrs_real gaussian(mrs_real x, mrs_real var, mrs_real mean)
+	{
+		return exp(-(x-mean)*(x-mean)/(2*var*var))/(var*sqrt(2*PI));
+	}
+	
+	///////////////////////////////////////////////////////////////////////////
+	//						metrics
+	///////////////////////////////////////////////////////////////////////////
+	static mrs_real euclideanDistance(const realvec& Vi, const realvec& Vj, const realvec& covMatrix);
+	static mrs_real mahalanobisDistance(const realvec& Vi, const realvec& Vj, const realvec& covMatrix);
+	static mrs_real cosineDistance(const realvec& Vi, const realvec& Vj, const realvec& dummy = realvec());
+	static mrs_real cityblockDistance(const realvec& Vi, const realvec& Vj, const realvec& dummy = realvec());
+	static mrs_real correlationDistance(const realvec& Vi, const realvec& Vj, const realvec& dummy = realvec());
+	static mrs_real divergenceShape(const realvec& Ci, const realvec& Cj, const realvec& dummy = realvec()); 
+	static mrs_real bhattacharyyaShape(const realvec& Ci, const realvec& Cj, const realvec& dummy = realvec());
+	///////////////////////////////////////////////////////////////////////////
 
 	// A is m x n
 	// U is m x m
