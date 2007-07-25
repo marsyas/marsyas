@@ -26,11 +26,10 @@
 #ifndef MARSYAS_PEUTILITIES_H
 #define MARSYAS_PEUTILITIES_H
 
-#include "realvec.h"
-#include <fstream>
-//using std::ofstream;
-#include "PeClusters.h"
 #include "MarSystemManager.h"
+#include "realvec.h"
+
+#include <fstream>
 #include <string>
 
 namespace Marsyas
