@@ -168,7 +168,7 @@ SUBDIRS = sfplay sfinfo
 EXTRA_DIST = apps.pro consoleApps.pri ERBTest/ MarEditor/ Qt4Apps/ \
 	SeneffEarTest/ backup/ regressionChecks/ bextract/ boomchick/ \
 	classifyFile/ extract/ marsyasTests/ midiTest/ mixer/ \
-	mkcollection/ msl/ muggle/ orcarecord/ pePeakEval/ peVocoder/ \
+	mkcollection/ msl/ muggle/ orcarecord/ peakEval/ peakSynth/ \
 	peakClustering/ phasevocoder/ pitchextract/ record/ scheduler/ \
 	server_main/ sfplaygui/ sfplugin/ speakerSeg/ tempo/ textract/ \
 	tutorial/ virtualsensor/ vocalEffort/ HWPSanalysis/
@@ -491,7 +491,7 @@ dist-hook:
 	rm -rf `find $(distdir)/msl/ -name .svn`
 	rm -rf `find $(distdir)/muggle/ -name .svn`
 	rm -rf `find $(distdir)/orcarecord/ -name .svn`
-	rm -rf `find $(distdir)/peVocoder/ -name .svn`
+	rm -rf `find $(distdir)/peakSynth/ -name .svn`
 	rm -rf `find $(distdir)/peakClustering/ -name .svn`
 	rm -rf `find $(distdir)/phasevocoder/ -name .svn`
 	rm -rf `find $(distdir)/pitchextract/ -name .svn`
@@ -508,8 +508,8 @@ dist-hook:
 	rm -rf `find $(distdir)/virtualsensor/ -name .svn`
 	rm -rf `find $(distdir)/vocalEffort/ -name .svn`
 	rm -rf `find $(distdir)/HWPSanalysis/ -name .svn`
-	rm -rf `find $(distdir)/pePeakEval/ -name .svn`
-	rm -rf `find $(distdir)/peVocoder/ -name .svn`
+	rm -rf `find $(distdir)/peakEval/ -name .svn`
+	rm -rf `find $(distdir)/peakSynth/ -name .svn`
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

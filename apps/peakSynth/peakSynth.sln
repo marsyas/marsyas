@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "peVocoder", "peVocoder.vcproj", "{1F674246-1F78-3CFD-89B2-D3BE2686CED7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "peakSynth", "peakSynth.vcproj", "{1F674246-1F78-3CFD-89B2-D3BE2686CED7}"
 	GlobalSection(Qt) = preSolution
 		Integration = True
 	EndGlobalSection

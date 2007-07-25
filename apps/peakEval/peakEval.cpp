@@ -24,7 +24,7 @@ CommandLineOptions cmd_options;
 void 
 printUsage(string progName)
 {
-	MRSDIAG("pePeakEval.cpp - printUsage");
+	MRSDIAG("peakEval.cpp - printUsage");
 	cerr << "Usage : " << progName << " [peakfile1] [peakfile2] -o [outFileName]" << endl;
 	cerr << endl;
 	cerr << "[peakfile1] and [peakfile2] can be collections (.mf) of .peak files. " << endl;
@@ -33,8 +33,8 @@ printUsage(string progName)
 void 
 printHelp(string progName)
 {
-	MRSDIAG("pePeakEval.cpp - printHelp");
-	cerr << "pePeakEval, MARSYAS" << endl;
+	MRSDIAG("peakEval.cpp - printHelp");
+	cerr << "peakEval, MARSYAS" << endl;
 	cerr << "report bugs to lmartins@inescporto.pt" << endl;
 	cerr << "--------------------------------------------" << endl;
 	cerr << "Usage : " << progName << " [peakfile1] [peakfile2] -o [outFileName]" << endl;
@@ -123,7 +123,7 @@ calculateSimilarity(string peaks1fname, string peaks2fname)
 void
 readCollection(Collection& l, string name)
 {
-	MRSDIAG("pePeakEval.cpp - readCollection");
+	MRSDIAG("peakEval.cpp - readCollection");
 	ifstream from1(name.c_str());
 	mrs_natural attempts  =0;
 
@@ -152,7 +152,7 @@ readCollection(Collection& l, string name)
 int
 main(int argc, const char **argv)
 {
-	MRSDIAG("pePeakEval.cpp - main");
+	MRSDIAG("peakEval.cpp - main");
 
 	initOptions();
 	cmd_options.readOptions(argc, argv);

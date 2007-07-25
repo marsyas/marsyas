@@ -75,8 +75,8 @@ printUsage(string progName)
 void 
 printHelp(string progName)
 {
-	MRSDIAG("peVocoder.cpp - printHelp");
-	cerr << "peVocoder, MARSYAS, Copyright Mathieu Lagrange " << endl;
+	MRSDIAG("peakSynth.cpp - printHelp");
+	cerr << "peakSynth, MARSYAS, Copyright Mathieu Lagrange " << endl;
   cerr << "report bugs to lagrange@uvic.ca" << endl;
 	cerr << "--------------------------------------------" << endl;
 	cerr << "Usage : " << progName << " [file]" << endl;
@@ -331,7 +331,7 @@ main(int argc, const char **argv)
 		printUsage(progName);
 
 
-	cerr << "peVocoder configuration (-h show the options): " << endl;
+	cerr << "peakSynth configuration (-h show the options): " << endl;
 	cerr << "fft size (-n)      = " << fftSize_ << endl;
 	cerr << "win size (-w)      = " << winSize_ << endl;
 	cerr << "sinusoids (-s)     = " << nbSines_ << endl;

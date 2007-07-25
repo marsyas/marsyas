@@ -17,7 +17,7 @@ marsyasConsoleApps {
 		#msl \
 		#muggle \
 		#orcarecord \
-		#peVocoder \
+		#peakSynth \
 		peakClustering \
 		phasevocoder \
 		pitchextract \

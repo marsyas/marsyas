@@ -2,6 +2,6 @@ include ( ../consoleApps.pri )
 
 TEMPLATE = app
 CONFIG += console
-TARGET = peVocoder
+TARGET = peakEval
 
-SOURCES += peVocoder.cpp
+SOURCES += peakEval.cpp

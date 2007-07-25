@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-SOURCES = $(ERBTest_SOURCES) $(SeneffEarTest_SOURCES) $(bextract_SOURCES) $(boomchick_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mixer_SOURCES) $(mkcollection_SOURCES) $(msl_SOURCES) $(mugle_SOURCES) $(orcarecord_SOURCES) $(peVocoder_SOURCES) $(peakClustering_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(scheduler_SOURCES) $(server_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplaygui_SOURCES) $(sfplugin_SOURCES) $(tempo_SOURCES) $(tutorial_SOURCES) $(virtualsensor_SOURCES) $(vocalEffort_SOURCES)
+SOURCES = $(ERBTest_SOURCES) $(SeneffEarTest_SOURCES) $(bextract_SOURCES) $(boomchick_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mixer_SOURCES) $(mkcollection_SOURCES) $(msl_SOURCES) $(mugle_SOURCES) $(orcarecord_SOURCES) $(peakSynth_SOURCES) $(peakClustering_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(scheduler_SOURCES) $(server_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplaygui_SOURCES) $(sfplugin_SOURCES) $(tempo_SOURCES) $(tutorial_SOURCES) $(virtualsensor_SOURCES) $(vocalEffort_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -47,7 +47,7 @@ bin_PROGRAMS = sfinfo$(EXEEXT) sfplugin$(EXEEXT) sfplay$(EXEEXT) \
 	SeneffEarTest$(EXEEXT) record$(EXEEXT) orcarecord$(EXEEXT) \
 	virtualsensor$(EXEEXT) mixer$(EXEEXT) mugle$(EXEEXT) \
 	classifyFile$(EXEEXT) midiTest$(EXEEXT) \
-	peakClustering$(EXEEXT) peVocoder$(EXEEXT) scheduler$(EXEEXT) \
+	peakClustering$(EXEEXT) peakSynth$(EXEEXT) scheduler$(EXEEXT) \
 	vocalEffort$(EXEEXT)
 subdir = apps/backup
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
@@ -114,9 +114,9 @@ am_orcarecord_OBJECTS = orcarecord.$(OBJEXT)
 orcarecord_OBJECTS = $(am_orcarecord_OBJECTS)
 orcarecord_DEPENDENCIES = $(top_builddir)/marsyas/libmarsyas.a \
 	$(am__DEPENDENCIES_1)
-am_peVocoder_OBJECTS = peVocoder.$(OBJEXT)
-peVocoder_OBJECTS = $(am_peVocoder_OBJECTS)
-peVocoder_DEPENDENCIES = $(top_builddir)/marsyas/libmarsyas.a \
+am_peakSynth_OBJECTS = peakSynth.$(OBJEXT)
+peakSynth_OBJECTS = $(am_peakSynth_OBJECTS)
+peakSynth_DEPENDENCIES = $(top_builddir)/marsyas/libmarsyas.a \
 	$(am__DEPENDENCIES_1)
 am_peakClustering_OBJECTS = peakClustering.$(OBJEXT)
 peakClustering_OBJECTS = $(am_peakClustering_OBJECTS)
@@ -185,7 +185,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/midiTest.Po ./$(DEPDIR)/mixer.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/mkcollection.Po ./$(DEPDIR)/msl.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/mugle.Po ./$(DEPDIR)/orcarecord.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/peVocoder.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/peakSynth.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/peakClustering.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/phasevocoder.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/pitchextract.Po ./$(DEPDIR)/record.Po \
@@ -206,7 +206,7 @@ SOURCES = $(ERBTest_SOURCES) $(SeneffEarTest_SOURCES) \
 	$(classifyFile_SOURCES) $(extract_SOURCES) \
 	$(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mixer_SOURCES) \
 	$(mkcollection_SOURCES) $(msl_SOURCES) $(mugle_SOURCES) \
-	$(orcarecord_SOURCES) $(peVocoder_SOURCES) \
+	$(orcarecord_SOURCES) $(peakSynth_SOURCES) \
 	$(peakClustering_SOURCES) $(phasevocoder_SOURCES) \
 	$(pitchextract_SOURCES) $(record_SOURCES) $(scheduler_SOURCES) \
 	$(server_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) \
@@ -218,7 +218,7 @@ DIST_SOURCES = $(ERBTest_SOURCES) $(SeneffEarTest_SOURCES) \
 	$(classifyFile_SOURCES) $(extract_SOURCES) \
 	$(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mixer_SOURCES) \
 	$(mkcollection_SOURCES) $(msl_SOURCES) $(mugle_SOURCES) \
-	$(orcarecord_SOURCES) $(peVocoder_SOURCES) \
+	$(orcarecord_SOURCES) $(peakSynth_SOURCES) \
 	$(peakClustering_SOURCES) $(phasevocoder_SOURCES) \
 	$(pitchextract_SOURCES) $(record_SOURCES) $(scheduler_SOURCES) \
 	$(server_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) \
@@ -443,8 +443,8 @@ peakClustering_SOURCES = peakClustering.cpp
 peakClustering_LDADD = $(top_builddir)/marsyas/libmarsyas.a \
 		     $(Libs)
 
-peVocoder_SOURCES = peVocoder.cpp 
-peVocoder_LDADD = $(top_builddir)/marsyas/libmarsyas.a \
+peakSynth_SOURCES = peakSynth.cpp 
+peakSynth_LDADD = $(top_builddir)/marsyas/libmarsyas.a \
 		     $(Libs)
 
 scheduler_SOURCES = scheduler.cpp
@@ -550,9 +550,9 @@ mugle$(EXEEXT): $(mugle_OBJECTS) $(mugle_DEPENDENCIES)
 orcarecord$(EXEEXT): $(orcarecord_OBJECTS) $(orcarecord_DEPENDENCIES) 
 	@rm -f orcarecord$(EXEEXT)
 	$(CXXLINK) $(orcarecord_LDFLAGS) $(orcarecord_OBJECTS) $(orcarecord_LDADD) $(LIBS)
-peVocoder$(EXEEXT): $(peVocoder_OBJECTS) $(peVocoder_DEPENDENCIES) 
-	@rm -f peVocoder$(EXEEXT)
-	$(CXXLINK) $(peVocoder_LDFLAGS) $(peVocoder_OBJECTS) $(peVocoder_LDADD) $(LIBS)
+peakSynth$(EXEEXT): $(peakSynth_OBJECTS) $(peakSynth_DEPENDENCIES) 
+	@rm -f peakSynth$(EXEEXT)
+	$(CXXLINK) $(peakSynth_LDFLAGS) $(peakSynth_OBJECTS) $(peakSynth_LDADD) $(LIBS)
 peakClustering$(EXEEXT): $(peakClustering_OBJECTS) $(peakClustering_DEPENDENCIES) 
 	@rm -f peakClustering$(EXEEXT)
 	$(CXXLINK) $(peakClustering_LDFLAGS) $(peakClustering_OBJECTS) $(peakClustering_LDADD) $(LIBS)
@@ -615,7 +615,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/msl.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mugle.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/orcarecord.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/peVocoder.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/peakSynth.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/peakClustering.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/phasevocoder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pitchextract.Po@am__quote@

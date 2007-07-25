@@ -2,6 +2,6 @@ include ( ../consoleApps.pri )
 
 TEMPLATE = app
 CONFIG += console
-TARGET = pePeakEval
+TARGET = peakSynth
 
-SOURCES += pePeakEval.cpp
+SOURCES += peakSynth.cpp

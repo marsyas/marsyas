@@ -41,8 +41,8 @@ EXTRA_DIST += mkcollection/
 EXTRA_DIST += msl/
 EXTRA_DIST += muggle/
 EXTRA_DIST += orcarecord/
-EXTRA_DIST += pePeakEval/
-EXTRA_DIST += peVocoder/
+EXTRA_DIST += peakEval/
+EXTRA_DIST += peakSynth/
 EXTRA_DIST += peakClustering/
 EXTRA_DIST += phasevocoder/
 EXTRA_DIST += pitchextract/
@@ -77,7 +77,7 @@ dist-hook:
 	rm -rf `find $(distdir)/msl/ -name .svn`
 	rm -rf `find $(distdir)/muggle/ -name .svn`
 	rm -rf `find $(distdir)/orcarecord/ -name .svn`
-	rm -rf `find $(distdir)/peVocoder/ -name .svn`
+	rm -rf `find $(distdir)/peakSynth/ -name .svn`
 	rm -rf `find $(distdir)/peakClustering/ -name .svn`
 	rm -rf `find $(distdir)/phasevocoder/ -name .svn`
 	rm -rf `find $(distdir)/pitchextract/ -name .svn`
@@ -94,6 +94,6 @@ dist-hook:
 	rm -rf `find $(distdir)/virtualsensor/ -name .svn`
 	rm -rf `find $(distdir)/vocalEffort/ -name .svn`
 	rm -rf `find $(distdir)/HWPSanalysis/ -name .svn`
-	rm -rf `find $(distdir)/pePeakEval/ -name .svn`
-	rm -rf `find $(distdir)/peVocoder/ -name .svn`
+	rm -rf `find $(distdir)/peakEval/ -name .svn`
+	rm -rf `find $(distdir)/peakSynth/ -name .svn`
 
