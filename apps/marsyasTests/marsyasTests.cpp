@@ -292,8 +292,8 @@ void drumClassify( string drumFile) {
                 cout << *extractNet << endl;
                 cout << out2 << endl;               
 
-                float class1 = out2(0);
-                float class2 = out2(1);
+                mrs_real class1 = out2(0);
+                mrs_real class2 = out2(1);
                 
                 int decision;
                 decision =  (int) ((class1/class2) * 127);
@@ -1467,11 +1467,14 @@ test_realvec()
   matrixA(1,2) = 6.0;
   cout << matrixA << endl;
   getchar();
-  cout << ">>>>>>>> realvec::getRow(1):" << endl << endl;
-  cout << matrixA.getRow(1) << endl;
+  cout << ">>>>>>>> realvec::getRow(1,...):" << endl << endl;
+	realvec tmpVec;
+	matrixA.getRow(1, tmpVec);
+  cout << tmpVec << endl;
   getchar();
-  cout << ">>>>>>>> realvec::getCol(2):" << endl << endl;
-  cout << matrixA.getCol(2) << endl << endl;
+  cout << ">>>>>>>> realvec::getCol(2,...):" << endl << endl;
+	matrixA.getCol(2, tmpVec);
+  cout << tmpVec << endl << endl;
   getchar();
 	
   cout << ">>>>>>>> Sending matrix to MATLAB..." << endl;
@@ -1485,7 +1488,8 @@ test_realvec()
   cout << meanobs << endl;
   getchar();
   cout << ">>>>>>>> compare with realvec::meanObs(): " << endl << endl;
-  cout << matrixA.meanObs() << endl;
+	matrixA.meanObs(tmpVec);
+  cout << tmpVec << endl;
   getchar();
 
   cout << endl<< ">>>>>>>> calculate stdev of each row using MATLAB:" << endl << endl;
@@ -1495,7 +1499,8 @@ test_realvec()
   cout << stdobs << endl;
   getchar();
   cout << ">>>>>>>> compare with realvec::stdObs(): " << endl << endl;
-  cout << matrixA.stdObs() << endl;
+	matrixA.stdObs(tmpVec);
+  cout << tmpVec << endl;
   getchar();
 
   cout << endl<< ">>>>>>>> calculate variance of each row using MATLAB:" << endl << endl;
@@ -1505,7 +1510,8 @@ test_realvec()
   cout << varobs << endl;
   getchar();
   cout << ">>>>>>>> compare with realvec::varObs(): " << endl << endl;
-  cout << matrixA.varObs() << endl;
+  matrixA.varObs(tmpVec);
+	cout <<  tmpVec << endl;
   getchar();
 
   cout << endl<< ">>>>>>>> Standardize observation's matrix using MATLAB:" << endl << endl;
@@ -1542,7 +1548,8 @@ test_realvec()
   //realvec::covariance() uses the unbiased estimator for the covar calculation
   //matrixB.create(matrixA.getRows(),matrixA.getCols()); //no need for this anymore!:-)
   matrixB = matrixA;
-  cout << matrixB.covariance() << endl;
+	matrixB.covariance(tmpVec);
+  cout <<  tmpVec << endl;
   getchar();
 
   cout << endl<< ">>>>>>>> calculate COVARIANCE matrix using MATLAB (biased estimator):" << endl << endl;
@@ -1554,7 +1561,8 @@ test_realvec()
   //realvec::covariance2() uses the biased estimator for the covar calculation
   matrixB.create(matrixA.getRows(),matrixA.getCols());
   matrixB = matrixA;
-  cout << matrixB.covariance2() << endl;
+	matrixB.covariance2(tmpVec);
+  cout <<  tmpVec << endl;
   cout << ">>>>>>>> Results are different because realvec::covariance2() does not remove the mean from input data before estimating the cov matrix... " << endl << endl;
   getchar();
 
@@ -1564,7 +1572,8 @@ test_realvec()
   cout << corrmatrix << endl;
   getchar();
   cout << ">>>>>>>> compare with realvec::correlation(): " << endl << endl;
-  cout << matrixA.correlation() << endl;
+	matrixA.correlation(tmpVec);
+  cout <<  tmpVec << endl;
   getchar();
 
   //-----------------------
