@@ -82,8 +82,8 @@ calculateSimilarity(string peaks1fname, string peaks2fname)
 	//get frequency and amplitude parameters for the peaks in file1
 	vector<realvec> peaks1Freqs;
 	vector<realvec> peaks1Amps;
-	peaks1Freqs = peaks1View.getPeaksParam(peakView::pkFrequency, 0, peaks1View.getNbFrames()-1);
-	peaks1Amps = peaks1View.getPeaksParam(peakView::pkAmplitude, 0, peaks1View.getNbFrames()-1);
+	peaks1View.getPeaksParam(peaks1Freqs, peakView::pkFrequency, 0, peaks1View.getNbFrames()-1);
+	peaks1View.getPeaksParam(peaks1Amps, peakView::pkAmplitude, 0, peaks1View.getNbFrames()-1);
 	//normalize frequency vectors by Nyquist frequency
 	fs1 = peaks1View.getFs();
 	for(mrs_natural v=0; v < peaks1Freqs.size(); ++v)
@@ -92,8 +92,8 @@ calculateSimilarity(string peaks1fname, string peaks2fname)
 	//get frequency and amplitude parameters for the peaks in file2
 	vector<realvec> peaks2Freqs;
 	vector<realvec> peaks2Amps;
-	peaks2Freqs = peaks2View.getPeaksParam(peakView::pkFrequency, 0, peaks2View.getNbFrames()-1);
-	peaks2Amps = peaks2View.getPeaksParam(peakView::pkAmplitude, 0, peaks2View.getNbFrames()-1);
+	peaks2View.getPeaksParam(peaks2Freqs, peakView::pkFrequency, 0, peaks2View.getNbFrames()-1);
+	peaks2View.getPeaksParam(peaks2Amps, peakView::pkAmplitude, 0, peaks2View.getNbFrames()-1);
 	//normalize frequency vectors by Nyquist frequency
 	fs2 = peaks2View.getFs();
 	for(mrs_natural v=0; v < peaks2Freqs.size(); ++v)

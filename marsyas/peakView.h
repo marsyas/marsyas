@@ -58,8 +58,8 @@ namespace Marsyas
 		mrs_natural frameMaxNumPeaks_;
 		mrs_natural numFrames_;
 
-		realvec toTable();
-		void fromTable(realvec& vec_table);
+		void toTable(realvec& vecTable);
+		void fromTable(const realvec& vecTable);
 
 	public:
 		peakView(realvec& vec);
@@ -73,7 +73,7 @@ namespace Marsyas
 		mrs_natural getFrameNumPeaks(const mrs_natural frame=0) const;
 		mrs_natural getTotalNumPeaks() const;
 		
-		std::vector<realvec> getPeaksParam(const pkParameter param, mrs_natural startFrame = 0, mrs_natural endFrame = 0) const;
+		void getPeaksParam(std::vector<realvec>& result, const pkParameter param, mrs_natural startFrame = 0, mrs_natural endFrame = 0) const;
 		
 		mrs_real& operator()(const mrs_natural peakIndex, const pkParameter param, const mrs_natural frame=0);
 		mrs_real operator()(const mrs_natural peakIndex, const pkParameter param, const mrs_natural frame=0) const;

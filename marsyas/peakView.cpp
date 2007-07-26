@@ -67,20 +67,18 @@ peakView::getTotalNumPeaks() const
 	return numPeaks;
 }
 
-vector<realvec> //[!] this makes a copy...
-peakView::getPeaksParam(const pkParameter param, mrs_natural startFrame, mrs_natural endFrame) const
+void
+peakView::getPeaksParam(vector<realvec>& result, const pkParameter param, mrs_natural startFrame, mrs_natural endFrame) const
 {
-	vector<realvec> result;
-
 	if(startFrame < 0 || endFrame < 0)
 	{
-		return result;
 		MRSWARN("peakView::getPeaksParam: negative start/stop frame! Returning empty vector.");
+		return;
 	}
 	if(startFrame >= vec_.getCols() || endFrame >= vec_.getCols())
 	{
-		return result;
 		MRSWARN("peakView::getPeaksParam: start/end frame bigger than vector column size! Returning empty vector.");
+		return;
 	}	
 
 	mrs_natural numPeaks;
@@ -97,8 +95,6 @@ peakView::getPeaksParam(const pkParameter param, mrs_natural startFrame, mrs_nat
 
 		result.push_back(valVec);
 	}
-
-	return result;
 }
 
 string
@@ -151,22 +147,22 @@ peakView::getParamName(mrs_natural paramIdx)
 	}
 }
 
-realvec //copies involved!! [!]
-peakView::toTable()
+void
+peakView::toTable(realvec& vecTable)
 {
-	//create the table (assuming the largest possible number of peaks + the header for now...)
-	realvec vec_Table(frameMaxNumPeaks_*numFrames_+1, nbPkParameters);
+	//resize and initialize the table (assuming the largest possible number of peaks + the header for now...)
+	vecTable.create(frameMaxNumPeaks_*numFrames_+1, nbPkParameters);
 
 	//In Table format, the 1st row is a "header row"
-	vec_Table(0, 0) = -1;
-	vec_Table(0, 1) =  fs_;
-	vec_Table(0, 2) =  frameSize_;
-	vec_Table(0, 3) =  frameMaxNumPeaks_;
-	vec_Table(0, 4) =  numFrames_;
-	vec_Table(0, 5) = -1;
-	vec_Table(0, pkGroup) = -2;
+	vecTable(0, 0) = -1;
+	vecTable(0, 1) =  fs_;
+	vecTable(0, 2) =  frameSize_;
+	vecTable(0, 3) =  frameMaxNumPeaks_;
+	vecTable(0, 4) =  numFrames_;
+	vecTable(0, 5) = -1;
+	vecTable(0, pkGroup) = -2;
 	for (mrs_natural i = pkGroup+1 ; i < nbPkParameters ; i++) //i = pkGroup or i = pkGroup+1 [?]
-		vec_Table(0, i)=0;
+		vecTable(0, i)=0;
 
 	//fill the table with peak data
 	mrs_natural l = 1; //l = peak index for table format (i.e. row index)
@@ -177,56 +173,53 @@ peakView::toTable()
 			if(vec_(i, j) != 0.0) 
 			{
 				for(mrs_natural k = 0; k < nbPkParameters; k++)// k = parameter index
-					vec_Table(l, k) = (*this)(i, pkParameter(k), j);
+					vecTable(l, k) = (*this)(i, pkParameter(k), j);
 				l++;
 			}
 		}
 
 	//resize the table to the correct (i.e. possibly smaller) 
 	//number of peaks (i.e. nr of rows)
-	vec_Table.stretch(l, nbPkParameters);
-
-	return vec_Table;
+	vecTable.stretch(l, nbPkParameters);
 }
 
 void
-peakView::fromTable(realvec& vec_table)
+peakView::fromTable(const realvec& vecTable)
 {
 	//get data from header
-	fs_  = vec_table(0, 1);
-	frameSize_ = (mrs_natural)vec_table(0, 2);
-	frameMaxNumPeaks_ = (mrs_natural)vec_table(0, 3);
-	numFrames_ = (mrs_natural)vec_table(0, 4);
+	fs_  = vecTable(0, 1);
+	frameSize_ = (mrs_natural)vecTable(0, 2);
+	frameMaxNumPeaks_ = (mrs_natural)vecTable(0, 3);
+	numFrames_ = (mrs_natural)vecTable(0, 4);
 	
 	//get the first frame in table (it may not be 0!!!)
-	mrs_natural frame = (mrs_natural)vec_table(1, pkFrame); // start frame [!]
+	mrs_natural frame = (mrs_natural)vecTable(1, pkFrame); // start frame [!]
 	
 	//resize (and set to zero) vec_ for new peak data
 	//(should accommodate empty frames before the first frame in table!) 
 	vec_.create(frameMaxNumPeaks_*nbPkParameters, numFrames_+frame); //[!]
 	
-	//load data from table into it vec_
 	mrs_natural p = 0; // peak index inside each frame
 	mrs_natural r = 1;//peak index in table (i.e. row index) - ignore header row
 
 	//check in case realvec has less parameters than nbPkParameters
-	mrs_natural actualNbPkParams = (mrs_natural)min((mrs_real)nbPkParameters, (mrs_real)vec_table.getCols());
+	mrs_natural actualNbPkParams = (mrs_natural)min((mrs_real)nbPkParameters, (mrs_real)vecTable.getCols());
 
-	//iterate over table rows (i.e. peaks)
-	while(r < vec_table.getRows()-1) 
+	//iterate over table rows (i.e. peaks) - excluding header row
+	while(r < vecTable.getRows()-1) 
 	{
 		//get parameters for this peak
 		for(mrs_natural prm = 0; prm < actualNbPkParams; ++prm)
 		{
-			(*this)(p, pkParameter(prm), frame) = vec_table(r, prm);
+			(*this)(p, pkParameter(prm), frame) = vecTable(r, prm);
 		}
 		r++; //move on to next table row (i.e. peak)
-		p++; 
+		p++;
 		//if the next row in table is form a different frame,
 		//reset peak index and get new frame index
-		if(vec_table(r, pkFrame) != frame)
+		if(vecTable(r, pkFrame) != frame)
 		{
-			frame = (mrs_natural)vec_table(r, pkFrame);
+			frame = (mrs_natural)vecTable(r, pkFrame);
 			p = 0;
 		}
 	}
@@ -242,7 +235,9 @@ peakView::peakWrite(string filename, mrs_real fs, mrs_natural frameSize)
 		frameSize_ = frameSize;
 
 	//convert vec_ to table format and save to file
-	return this->toTable().write(filename);
+	realvec resVec;
+	this->toTable(resVec);
+	return resVec.write(filename);
 }
 
 bool
