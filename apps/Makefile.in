@@ -105,7 +105,7 @@ SUBDIRS = sfplay sfinfo
 #SUBDIRS += regressionChecks
 
 # I wish there was a better way of doing this.  :(
-EXTRA_DIST = apps.pro consoleApps.pri ERBTest/ MarEditor/ Qt4Apps/ SeneffEarTest/ backup/ regressionChecks/ bextract/ boomchick/ classifyFile/ extract/ marsyasTests/ midiTest/ mixer/ mkcollection/ msl/ muggle/ orcarecord/ peakEval/ peakSynth/ peakClustering/ phasevocoder/ pitchextract/ record/ scheduler/ server_main/ sfplaygui/ sfplugin/ speakerSeg/ tempo/ textract/ tutorial/ virtualsensor/ vocalEffort/ HWPSanalysis/
+EXTRA_DIST = apps.pro consoleApps.pri ERBTest/ MarEditor/ Qt4Apps/ SeneffEarTest/ backup/ regressionChecks/ bextract/ boomchick/ classifyFile/ extract/ marsyasTests/ midiTest/ mixer/ mkcollection/ msl/ muggle/ orcarecord/ peakEval/ peakSynth/ peakClustering/ phasevocoder/ pitchextract/ record/ scheduler/ server_main/ sfplaygui/ sfplugin/ speakerSeg/ tempo/ textract/ tutorial/ virtualsensor/ vocalEffort/ WHaSp/
 subdir = apps
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_CLEAN_FILES =
@@ -382,7 +382,7 @@ dist-hook:
 	rm -rf `find $(distdir)/tutorial/ -name .svn`
 	rm -rf `find $(distdir)/virtualsensor/ -name .svn`
 	rm -rf `find $(distdir)/vocalEffort/ -name .svn`
-	rm -rf `find $(distdir)/HWPSanalysis/ -name .svn`
+	rm -rf `find $(distdir)/WHaSp/ -name .svn`
 	rm -rf `find $(distdir)/peakEval/ -name .svn`
 	rm -rf `find $(distdir)/peakSynth/ -name .svn`
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

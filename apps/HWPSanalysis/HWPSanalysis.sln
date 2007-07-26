@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWPSanalysis", "HWPSanalysis.vcproj", "{30777B1B-1CA1-3217-A49D-2BC29339C9BC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WHaSp", "WHaSp.vcproj", "{30777B1B-1CA1-3217-A49D-2BC29339C9BC}"
 	GlobalSection(Qt) = preSolution
 		Integration = True
 	EndGlobalSection

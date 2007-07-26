@@ -57,7 +57,7 @@ EXTRA_DIST += textract/
 EXTRA_DIST += tutorial/
 EXTRA_DIST += virtualsensor/
 EXTRA_DIST += vocalEffort/
-EXTRA_DIST += HWPSanalysis/
+EXTRA_DIST += WHaSp/
 
 dist-hook:
 	rm -rf `find $(distdir)/regressionChecks/ -name .svn`
@@ -93,7 +93,7 @@ dist-hook:
 	rm -rf `find $(distdir)/tutorial/ -name .svn`
 	rm -rf `find $(distdir)/virtualsensor/ -name .svn`
 	rm -rf `find $(distdir)/vocalEffort/ -name .svn`
-	rm -rf `find $(distdir)/HWPSanalysis/ -name .svn`
+	rm -rf `find $(distdir)/WHaSp/ -name .svn`
 	rm -rf `find $(distdir)/peakEval/ -name .svn`
 	rm -rf `find $(distdir)/peakSynth/ -name .svn`
 

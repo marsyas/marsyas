@@ -68,7 +68,7 @@ CommandLineOptions cmd_options;
 void 
 printUsage(string progName)
 {
-	MRSDIAG("HWPSanalysis.cpp - printUsage");
+	MRSDIAG("WHaSp.cpp - printUsage");
 	cerr << "Usage : " << progName << " [file]" << endl;
 	cerr << endl;
 	cerr << "If no filename is given the default live audio input is used. " << endl;
@@ -77,8 +77,8 @@ printUsage(string progName)
 void 
 printHelp(string progName)
 {
-	MRSDIAG("HWPSanalysis.cpp - printHelp");
-	cerr << "HWPSanalysis, MARSYAS, Copyright Mathieu Lagrange " << endl;
+	MRSDIAG("WHaSp.cpp - printHelp");
+	cerr << "WHaSp, MARSYAS, Copyright Mathieu Lagrange " << endl;
 	cerr << "report bugs to lagrange@uvic.ca" << endl;
 	cerr << "--------------------------------------------" << endl;
 	cerr << "Usage : " << progName << " [file]" << endl;
@@ -343,7 +343,7 @@ loadOptions()
 int
 main(int argc, const char **argv)
 {
-	MRSDIAG("HWPSanalysis.cpp - main");
+	MRSDIAG("WHaSp.cpp - main");
 
 	initOptions();
 	cmd_options.readOptions(argc, argv);
@@ -361,7 +361,7 @@ main(int argc, const char **argv)
 		printUsage(progName);
 
 
-	cerr << "HWPSanalysis configuration (-h show the options): " << endl;
+	cerr << "WHaSp configuration (-h show the options): " << endl;
 	cerr << "fft size (-n)      = " << fftSize_ << endl;
 	cerr << "win size (-w)      = " << winSize_ << endl;
 	cerr << "sinusoids (-s)     = " << nbSines_ << endl;
@@ -402,7 +402,7 @@ main(int argc, const char **argv)
 
 			fileName = path + "/" + Sfname.nameNoExt() + "Syn.wav" ;
 			filePeakName = path + "/" + Sfname.nameNoExt() + ".peak" ;
-			cout << "HWPSanalysis " << Sfname.name() << endl; 
+			cout << "WHaSp " << Sfname.name() << endl; 
 
 			HWPSanalyse(*sfi, fileName, fftSize_, winSize_, hopSize_, nbSines_, synthetize_);
 		}

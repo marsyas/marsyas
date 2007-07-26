@@ -2,6 +2,6 @@ include ( ../consoleApps.pri )
 
 TEMPLATE = app
 CONFIG += console
-TARGET = HWPSanalysis
+TARGET = WHaSp
 
-SOURCES += HWPSanalysis.cpp
+SOURCES += WHaSp.cpp
