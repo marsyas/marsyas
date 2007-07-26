@@ -339,30 +339,31 @@ void recordVirtualSensor(mrs_real length)
 
     cout << *recordNet << endl; 
     for (mrs_natural t = 0; t < iterations; t++)
-    {
-        r = midiin->rval;
-        cout << "rval: " << r << endl;
-        cout << t << " of "<< iterations << endl; 
-        if (r > 61)
-        {
-            cout << "middle" << endl;
-            pnet->setctrl("Annotator/ann/mrs_natural/label", 1);
-        }
-        /* else if (r > 61) 
-           {
-           cout << "middle" << endl;
-           pnet->setctrl("Annotator/ann/mrs_natural/label", 1);
-           }
-         */ 
-        else
+      {
+	r = 0; // quick hack - needs to be fixed 
+	// r = midiin->rval;
+	cout << "rval: " << r << endl;
+	cout << t << " of "<< iterations << endl; 
+	if (r > 61)
+	  {
+	    cout << "middle" << endl;
+	    pnet->setctrl("Annotator/ann/mrs_natural/label", 1);
+	  }
+	/* else if (r > 61) 
+	   {
+	   cout << "middle" << endl;
+	   pnet->setctrl("Annotator/ann/mrs_natural/label", 1);
+	   }
+	*/ 
+	else
 	  {
 	    pnet->setctrl("Annotator/ann/mrs_natural/label", 0);
-            cout << "edge" << endl;
+	    cout << "edge" << endl;
 	  }
 	
-        pnet->tick();
-    }
-
+	pnet->tick();
+      }
+    
     // 	for (i=0; i < nBytes; i++) 
     // 	  std::cout << "Byte " << i << " = " << (int) message[i] << ", "; 
     //       std::cout << endl;

@@ -43,15 +43,18 @@ namespace Marsyas
 #ifdef MARSYAS_MIDIIO
             RtMidiIn* midiin;
 #endif 
-            int byte3, byte2, type;  
+            int byte3, byte2, byte1;  
             bool initMidi;
             bool virtualPort;
+	    MarControlPtr ctrl_byte1_;
+	    MarControlPtr ctrl_byte2_;
+	    MarControlPtr ctrl_byte3_;
+
         public:
             MidiInput(std::string name);
+	    MidiInput(const MidiInput& a);
             ~MidiInput();
             MarSystem* clone() const;  
-
-            int rval;
 
             void myProcess(realvec& in, realvec& out);
     };

@@ -34,13 +34,18 @@ using namespace Marsyas;
 
 MidiInput::MidiInput(string name):MarSystem("MidiInput",name)
 {
-    //type_ = "MidiInput";
-    //name_ = name;
-    initMidi = false;
+  initMidi = false;
 #ifdef MARSYAS_MIDIIO
     midiin = NULL;
 #endif 
     addControls();
+}
+
+MidiInput::MidiInput(const MidiInput& a): MarSystem(a) 
+{
+  ctrl_byte1_ = getctrl("mrs_natural/byte1");
+  ctrl_byte2_ = getctrl("mrs_natural/byte2");
+  ctrl_byte3_ = getctrl("mrs_natural/byte3");
 }
 
 MidiInput::~MidiInput()
@@ -61,15 +66,14 @@ void MidiInput::addControls()
     addctrl("mrs_bool/virtualPort", false);
     addctrl("mrs_bool/initmidi", false);
     setctrlState("mrs_bool/initmidi", true);
+    addctrl("mrs_natural/byte1", 0, ctrl_byte1_);
+    addctrl("mrs_natural/byte2", 0, ctrl_byte2_);
+    addctrl("mrs_natural/byte3", 0, ctrl_byte3_);
 }
 
 void MidiInput::myUpdate(MarControlPtr sender)
 {
     MRSDIAG("MidiInput.cpp - MidiInput:myUpdate");
-    // 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-    //   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-    //   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-    //   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
     MarSystem::myUpdate(sender);
 
 #ifdef MARSYAS_MIDIIO
@@ -93,62 +97,62 @@ void MidiInput::myUpdate(MarControlPtr sender)
         setctrl("mrs_bool/initmidi", false);
 
         if (virtualPort)
-        {
+	  {
             try { 
-                midiin->openVirtualPort("MarsyasInput");
+	      midiin->openVirtualPort("MarsyasInput");
             }
             catch (RtError &error) 
-            {
+	      {
                 error.printMessage();
                 return;
-            } 
-        }
+	      } 
+	  }
         else
-        {
+	  {
             try { 
-                midiin->openPort(getctrl("mrs_natural/port")->toNatural());
+	      midiin->openPort(getctrl("mrs_natural/port")->toNatural());
             }
             catch (RtError &error) 
-            {
+	      {
                 error.printMessage();
                 return;
-            } 
-        }
+	      } 
+	  }
     }
-
+    
 #endif
 }
 
 void MidiInput::mycallback(double deltatime, std::vector< unsigned char > * message, void *userData) 
 {
-    int nBytes = 0;
-    nBytes = message->size();
-
-    MidiInput* mythis = (MidiInput*) userData;
-
-    if (nBytes > 0) 
+  int nBytes = 0;
+  nBytes = message->size();
+  
+  MidiInput* mythis = (MidiInput*) userData;
+  
+  if (nBytes > 0) 
     {
-        if (nBytes > 2) 
+      if (nBytes > 2) 
         {
-            mythis->byte3 = message->at(2); 
-            mythis->byte2 = message->at(1);
-            mythis->type = message->at(0);
-        }
+	  mythis->byte3 = message->at(2); 
+	  mythis->byte2 = message->at(1);
+	  mythis->byte1 = message->at(0);
 
-        if ((mythis->type == 160)&&(mythis->byte2 == 9))
-        {
-            mythis->rval = mythis->byte3;
         }
+      
     }
 }
 
 void MidiInput::myProcess(realvec& in, realvec& out)
 {
-    //checkFlow(in,out);
-
-    for (o=0; o < inObservations_; o++)
-        for (t = 0; t < inSamples_; t++)
-        {
-            out(o,t) =  in(o,t);
-        }
+  // just pass data through 
+  for (o=0; o < inObservations_; o++)
+    for (t = 0; t < inSamples_; t++)
+      {
+	out(o,t) =  in(o,t);
+      }
+  ctrl_byte1_->setValue((mrs_natural)byte1, NOUPDATE);
+  ctrl_byte2_->setValue((mrs_natural)byte2, NOUPDATE);
+  ctrl_byte3_->setValue((mrs_natural)byte3, NOUPDATE);
+  
 }
