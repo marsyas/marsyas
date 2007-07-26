@@ -1,5 +1,3 @@
-// #include <vld.h>
-
 #include <cstdio>
 #include <iostream>
 #include <iomanip>
@@ -18,8 +16,6 @@
 
 //[TODO]
 #include "PeUtilities.h"
-
-#define EMPTYSTRING "MARSYAS_EMPTY"
 
 using namespace std;
 using namespace Marsyas;
@@ -51,31 +47,33 @@ int hopSize_ = 512;
 // nb Sines
 int nbSines_ = 20;
 // nbClusters
-int nbClusters_ = 2;
+int nbClusters_ = 3;
 // nbClusters
-int nbSelectedClusters_ = 0;
+int nbSelectedClusters_ = 2;
 // output buffer Size
 int bopt_ = 128;
-// output gain
+// output gain //[WTF]
 mrs_real gopt_ = 1.0;
 // number of accumulated frames
 mrs_natural accSize_ = 10;
 // number of seconds for analysing process
 mrs_natural stopAnalyse_=0;
-// type of similarity Metrics // test amplitude normamlise gtzan
-string defaultSimilarityType_ = "hoabfb";
-string similarityType_ = EMPTYSTRING;
+
+// type of similarity Metrics // test amplitude normamlise gtzan //[TODO]
+string defaultSimilarityType_ = "hoabfb";//[TODO]
+string similarityType_ = EMPTYSTRING;//[TODO]
 // weight for similarity Metrics
-realvec similarityWeight_;	
+realvec similarityWeight_;	//[TODO]
 // store for clustered peaks 
-realvec peakSet_;
+realvec peakSet_;//[TODO]
 // delay for noise insertion
 
-mrs_real noiseDelay_=0;
+mrs_real noiseDelay_=0;//[TODO]
 // gain for noise insertion
-mrs_real noiseGain_=.8;
+mrs_real noiseGain_=.8;//[TODO]
 // duration for noise insertion
-mrs_real noiseDuration_=0;
+mrs_real noiseDuration_=0;//[TODO]
+
 // sampling frequency
 mrs_real samplingFrequency_=1;
 //
@@ -95,9 +93,9 @@ bool microphone_ = false;
 bool analyse_ = true;
 bool attributes_ = false;
 bool ground_ = false;
-mrs_natural synthetize_ = -1;
+mrs_natural synthetize_ = 0;
 mrs_natural clusterSynthetize_ = -1;
-bool peakStore_= false;
+bool peakStore_= true;
 bool residual_ = 0;
 
 CommandLineOptions cmd_options;
@@ -116,7 +114,7 @@ printHelp(string progName)
 {
 	MRSDIAG("peakClustering.cpp - printHelp");
 	cerr << "peakClustering, MARSYAS, Copyright Mathieu Lagrange " << endl;
-	cerr << "report bugs to lagrange@uvic.ca" << endl;
+	cerr << "report bugs to marsyas" << endl;
 	cerr << "--------------------------------------------" << endl;
 	cerr << "Usage : " << progName << " [file]" << endl;
 	cerr << endl;
@@ -538,7 +536,7 @@ initOptions()
 	cmd_options.addBoolOption("usage", "us", false);
 	cmd_options.addNaturalOption("voices", "v", 1);
 	cmd_options.addStringOption("noisename", "N", EMPTYSTRING);
-	cmd_options.addStringOption("outputdirectoryname", "o", EMPTYSTRING);
+	cmd_options.addStringOption("outputdirectoryname", "o", ".");
 	cmd_options.addStringOption("intervalFrequency", "i", intervalFrequency);
 	cmd_options.addStringOption("panning", "p", EMPTYSTRING);
 	cmd_options.addStringOption("typeSimilarity", "t", defaultSimilarityType_);
