@@ -18,12 +18,12 @@
 
 MAINTAINERCLEANFILES    = Makefile.in
 
-INCLUDES += -I$(top_srcdir)/marsyas 
+INCLUDES += -I$(top_srcdir)/marsyas -I$(top_srcdir)/marsyas/MATLAB
 
 bin_PROGRAMS = sfplay phasevocoder sfplugin bextract mkcollection \
 	marsyasTests record classifyFile peakSynth peakClustering sfinfo \
 	extract midiTest boomchick pitchextract orcarecord helloworld \
-	gettingdata virtualsensor regressionChecks
+	gettingdata virtualsensor scheduler msl regressionChecks
 
 sfplay_SOURCES = $(top_srcdir)/apps/sfplay/sfplay.cpp
 sfplay_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
@@ -100,6 +100,14 @@ virtualsensor_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 helloworld_SOURCES = $(top_srcdir)/examples/helloworld.cpp
 helloworld_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 		$(Libs)
+
+scheduler_SOURCES = $(top_srcdir)/apps/scheduler/scheduler.cpp
+scheduler_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
+		$(Libs)
+
+msl_SOURCES = $(top_srcdir)/apps/msl/msl.cpp
+msl_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
+		$(Libs) $(MslLibs)
 
 gettingdata_SOURCES = $(top_srcdir)/examples/gettingdata.cpp
 gettingdata_LDADD = $(top_builddir)/lib/release/libmarsyas.a \

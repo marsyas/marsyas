@@ -84,12 +84,14 @@ main(int argc, char** argv)
 			// if history command, show the command history
 			if (strncmp (inputString, "history", 7) == 0)
 			{
-				HIST_ENTRY ** iter = history_list();
+			  // check what's the correct call for this 
+			  // 	HIST_ENTRY ** iter = history_list();
 
-				if (iter)
+			  /* if (iter)
 					for (int i = 0; iter[i]; i++)
 						cout << (i + history_base) << ". " 
 							<< iter[i]->line << endl;
+			  */ 
 			}
 			// else process command in MslModel
 			else
@@ -156,10 +158,10 @@ char ** command_completion (const char * text, int start, int end)
      to complete.  Otherwise it is the name of a file in the current
      directory, in which case we will return NULL and allow the filename
      completion to work. */
-  if (start == 0)
-    matches = rl_completion_matches (text, command_generator);
+  // if (start == 0)
+  // matches = rl_completion_matches (text, command_generator);
 
-  return (matches);
+  // return (matches);
 }
 
 //

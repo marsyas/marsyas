@@ -3656,7 +3656,7 @@ case "x$with_readline" in
                MslLibs="-lreadline -lcurses"
 
 cat >>confdefs.h <<\_ACEOF
-#define __WITHREADLINE__ 1
+#define MARSYAS_READLINE 1
 _ACEOF
 
                echo Readline support enabled
@@ -3668,7 +3668,7 @@ _ACEOF
                CPPFLAGS="$CPPFLAGS -I${with_readline}/include"
 
 cat >>confdefs.h <<\_ACEOF
-#define __WITHREADLINE__ 1
+#define MARSYAS_READLINE 1
 _ACEOF
 
                echo Readline support enabled

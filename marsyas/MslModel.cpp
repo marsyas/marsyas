@@ -22,7 +22,7 @@
     \class MslModel
     \ingroup Experimental
     \brief MslModel of MarSystem objects that are in a working set
-    
+    cd 
     A working copy of all MarSystems in a current session.
     Keeps track of all actions performed and takes as
     input a simple command line string.

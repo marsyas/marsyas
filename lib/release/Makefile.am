@@ -22,7 +22,7 @@ MAINTAINERCLEANFILES    = Makefile.in
 
 lib_LIBRARIES         = libmarsyas.a
 
-INCLUDES += -I@top_srcdir@/marsyas -l@top_srcdir@/marsyas/MATLAB
+INCLUDES += -I@top_srcdir@/marsyas -I@top_srcdir@/marsyas/MATLAB
  
 
 libmarsyas_a_SOURCES    = \

@@ -2339,14 +2339,6 @@ void test_SOM(string collectionName)
   total->addMarSystem(mng.create("Annotator", "ann"));
   total->addMarSystem(mng.create("SOM", "som"));
   
-  /* 
-  total->addMarSystem(mng.create("KNNClassifier", "knn"));
-  total->addMarSystem(mng.create("ClassOutputSink", "csink"));
-  
-  total->updctrl("KNNClassifier/knn/mrs_natural/k",3);
-  total->updctrl("KNNClassifier/knn/mrs_natural/nPredictions", 3);
-  total->updctrl("KNNClassifier/knn/mrs_string/mode","train");  
-  */ 
   
   // link top-level controls 
   total->linkctrl("mrs_string/filename",
@@ -2377,38 +2369,9 @@ void test_SOM(string collectionName)
   
   total->updctrl("mrs_string/filename", collectionName);
 
-  /* total->updctrl("ClassOutputSink/csink/mrs_string/labelNames", 
-		 total->getctrl("mrs_string/allfilenames"));
-
-  total->updctrl("ClassOutputSink/csink/mrs_natural/nLabels", 
-		 total->getctrl("mrs_natural/numFiles"));
-
-  total->updctrl("KNNClassifier/knn/mrs_natural/nLabels", 
-		 total->getctrl("mrs_natural/numFiles"));
-  */ 
-    
   mrs_natural l=0;
 
-  /* while (total->getctrl("mrs_bool/notEmpty")->toBool())
-    {
-      total->updctrl("mrs_natural/label", l);
-      total->tick();
-      total->updctrl("mrs_bool/memReset", true);
-      total->updctrl("mrs_bool/advance", true);
-      l++;
-      cerr << "Processed " << l << " files " << endl;
-    }
-  */ 
-  
-  /* total->updctrl("KNNClassifier/knn/mrs_bool/done",true);  
-  total->updctrl("KNNClassifier/knn/mrs_string/mode", "predict");
-  total->updctrl("ClassOutputSink/csink/mrs_string/filename", "similar.mf");
-  total->updctrl("ClassOutputSink/csink/mrs_bool/silent", false);
-  */ 
-  
-  //cout << (*total) << endl;
-
-	mrs_natural trainSize = 2000;
+  mrs_natural trainSize = 20000;
   mrs_natural grid_width = 10;
   mrs_natural grid_height = 10;
   mrs_natural iterations = 20;
@@ -2446,47 +2409,47 @@ void test_SOM(string collectionName)
   som_map.create((mrs_natural)grid_width,(mrs_natural)grid_height);
   
   
-	for (mrs_natural k=0; k < iterations; k++) 
+  for (mrs_natural k=0; k < iterations; k++) 
+    {
+      cout << "Iteration " << k << endl;
+      
+      for (mrs_natural i=0; i < trainSize; i++) 
 	{
-		cout << "Iteration " << k << endl;
-
-		for (mrs_natural i=0; i < trainSize; i++) 
-		{
-			input(0) = train_data(i);
-			input(1) = 0;
-			som->process(input, output);
-			som_map((mrs_natural)output(0), (mrs_natural)output(1)) = train_data(i) * 64.0;
-			if (i==100)
-			{
-				ostringstream oss;
-				oss << "map" << k << ".plot";
-				som_map.write(oss.str());	    
-			}
-		}
+	  input(0) = train_data(i);
+	  input(1) = 0;
+	  som->process(input, output);
+	  som_map((mrs_natural)output(0), (mrs_natural)output(1)) = train_data(i) * 64.0;
+	  if (i==100)
+	    {
+	      ostringstream oss;
+	      oss << "map" << k << ".plot";
+	      som_map.write(oss.str());	    
+	    }
 	}
-
-	cout << "predicting" << endl;
-
+    }
+  
+  cout << "predicting" << endl;
+  
   som->updctrl("mrs_bool/done", true);
   // predict 
   som->updctrl("mrs_string/mode", "predict");
   
-	for (mrs_natural i=0; i < 100; i++) 
+  for (mrs_natural i=0; i < 100; i++) 
+    {
+      input(0) = train_data(i);
+      cout << "input(0) = " << input(0) << endl;
+      input(1) = i;
+      cout << "input(1) = " << input(1) << endl;
+      som->process(input,output);
+      som->process(input, output);
+      som_map((mrs_natural)output(0), (mrs_natural)output(1)) = train_data(i) * 64.0;
+      if (i==99)
 	{
-		input(0) = train_data(i);
-		cout << "input(0) = " << input(0) << endl;
-		input(1) = i;
-		cout << "input(1) = " << input(1) << endl;
-		som->process(input,output);
-		som->process(input, output);
-		som_map((mrs_natural)output(0), (mrs_natural)output(1)) = train_data(i) * 64.0;
-		if (i==99)
-		{
-			ostringstream oss;
-			oss << "predictmap" << ".plot";
-			som_map.write(oss.str());	    
-		}
-	} 
+	  ostringstream oss;
+	  oss << "predictmap" << ".plot";
+	  som_map.write(oss.str());	    
+	}
+    } 
   
 }
 

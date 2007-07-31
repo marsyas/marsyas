@@ -7,7 +7,7 @@ SUBDIRS += \
 	MarPlayer \
 	MarWidgets \
 	Marx2DGraph \
-	PeakVis \
+	#PeakVis \
 	#Marx2DGraphStacked \
 	#MarxGL2Din3DSpaceGraph \
 	#MarxGLGraph \

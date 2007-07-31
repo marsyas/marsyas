@@ -13,7 +13,8 @@ AC_ARG_WITH([mad],
 	    [MAD_LIBS="-lmad"],
 	    [MAD_LIBS=""])
 
-ALSA_LIBS="-lpthread -lm -ldl -lasound"
+# ALSA_LIBS="-lpthread -lm -ldl -lasound"
+ALSA_LIBS=""
 
 AC_ARG_ENABLE([bindings],
 	      [AS_HELP_STRING([--enable-bindings],[Use containing folder as Marsyas source])],

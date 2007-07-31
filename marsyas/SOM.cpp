@@ -120,6 +120,8 @@ SOM::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", (mrs_natural)3);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+
+  grid_pos_.create(2);
   
   //defaultUpdate();[!]
 	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
@@ -170,13 +172,10 @@ SOM::myUpdate(MarControlPtr sender)
     }  
 }
 
-realvec
+void
 SOM::find_grid_location(realvec& in, int t)
 {
-  realvec grid_pos;
-  grid_pos.create(2);
-  
-//  int temp;
+  //  int temp;
   mrs_real ival;				// input value
   mrs_real pval;				// prototype value 
   mrs_real minDist = INF;
@@ -203,15 +202,14 @@ SOM::find_grid_location(realvec& in, int t)
 	if (dist < minDist) 
 	  {
 	    minDist = dist;
-	    grid_pos(0) = x;
-	    grid_pos(1) = y;
+	    grid_pos_(0) = x;
+	    grid_pos_(1) = y;
 	  }
       }
   
 
 
   
-  return grid_pos;
 }
 
 
@@ -240,11 +238,14 @@ SOM::myProcess(realvec& in, realvec& out)
     {
       if (mode == "train")  
 	{
+	  mrs_real dx;
+	  mrs_real dy;
+	  mrs_real adj;
 	  for (t=0; t < inSamples_; t++) 
 	    {
-	      realvec grid_pos = find_grid_location(in, t);
-	      px = (int) grid_pos(0);
-	      py = (int) grid_pos(1);
+	      find_grid_location(in, t);
+	      px = (int) grid_pos_(0);
+	      py = (int) grid_pos_(1);
 	      out(0,t) = px;
 	      out(1,t) = py;
 	      out(2,t) = in(inObservations_-1,t);	  
@@ -252,20 +253,19 @@ SOM::myProcess(realvec& in, realvec& out)
 	      for (int x=0; x < grid_width_; x++) 
 		for (int y=0; y < grid_height_; y++)
 		  {
-		    geom_dist = sqrt((double)(px -x) * (px - x) + (py - y) * (py -y));
+		    dx = px-x;
+		    dy = py-y;
+		    geom_dist = sqrt((double)(dx*dx + dy*dy));
 		    geom_dist_gauss = gaussian( geom_dist, 0.0, neigh_std_, false);
 		    
-		    
 		    // subtract map vector from training data vector 
+		    adj = alpha_ * geom_dist_gauss;
 		    for (o=0; o < inObservations_-1; o++) 
-		      adjustments_(o) = in(o,t) - grid_map_(x * grid_height_ + y);
-		    
-		    adjustments_ *= alpha_ * geom_dist_gauss;
-		    
-		    for (o=0; o < inObservations_-1; o++) 
-		      grid_map_(x * grid_height_ + y, o) += adjustments_(o);
-		    
-		    
+		      {
+			adjustments_(o) = in(o,t) - grid_map_(x * grid_height_ + y);
+			adjustments_(o) *= adj;
+			grid_map_(x * grid_height_ + y, o) += adjustments_(o);
+		      }
 		  }
 	    }
 
@@ -277,9 +277,9 @@ SOM::myProcess(realvec& in, realvec& out)
 	{
 	  for (t=0; t < inSamples_; t++) 
 	    {
-	      realvec grid_pos = find_grid_location(in, t);
-	      px = (int) grid_pos(0);
-	      py = (int) grid_pos(1);
+	      find_grid_location(in, t);
+	      px = (int) grid_pos_(0);
+	      py = (int) grid_pos_(1);
 	      out(0,t) = px;
 	      out(1,t) = py;
 	      out(2,t) = in(inObservations_-1,t);	  

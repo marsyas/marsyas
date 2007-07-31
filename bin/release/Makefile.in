@@ -77,7 +77,7 @@ CXX = @CXX@
 DEPDIR = @DEPDIR@
 DISTRIBUTED = @DISTRIBUTED@
 
-INCLUDES = @INCLUDES@ -I$(top_srcdir)/marsyas 
+INCLUDES = @INCLUDES@ -I$(top_srcdir)/marsyas -I$(top_srcdir)/marsyas/MATLAB
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 Libs = @Libs@
 MADLIB = @MADLIB@
@@ -105,7 +105,7 @@ MAINTAINERCLEANFILES = Makefile.in
 bin_PROGRAMS = sfplay phasevocoder sfplugin bextract mkcollection \
 	marsyasTests record classifyFile peakSynth peakClustering sfinfo \
 	extract midiTest boomchick pitchextract orcarecord helloworld \
-	gettingdata virtualsensor regressionChecks
+	gettingdata virtualsensor scheduler msl regressionChecks
 
 
 sfplay_SOURCES = $(top_srcdir)/apps/sfplay/sfplay.cpp
@@ -203,6 +203,16 @@ helloworld_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 		$(Libs)
 
 
+scheduler_SOURCES = $(top_srcdir)/apps/scheduler/scheduler.cpp
+scheduler_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
+		$(Libs)
+
+
+msl_SOURCES = $(top_srcdir)/apps/msl/msl.cpp
+msl_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
+		$(Libs) $(MslLibs)
+
+
 gettingdata_SOURCES = $(top_srcdir)/examples/gettingdata.cpp
 gettingdata_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 		    $(Libs)
@@ -216,7 +226,8 @@ bin_PROGRAMS = sfplay$(EXEEXT) phasevocoder$(EXEEXT) sfplugin$(EXEEXT) \
 	peakClustering$(EXEEXT) sfinfo$(EXEEXT) extract$(EXEEXT) \
 	midiTest$(EXEEXT) boomchick$(EXEEXT) pitchextract$(EXEEXT) \
 	orcarecord$(EXEEXT) helloworld$(EXEEXT) gettingdata$(EXEEXT) \
-	virtualsensor$(EXEEXT) regressionChecks$(EXEEXT)
+	virtualsensor$(EXEEXT) scheduler$(EXEEXT) msl$(EXEEXT) \
+	regressionChecks$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 
 am_bextract_OBJECTS = bextract.$(OBJEXT)
@@ -255,6 +266,10 @@ am_mkcollection_OBJECTS = mkcollection.$(OBJEXT)
 mkcollection_OBJECTS = $(am_mkcollection_OBJECTS)
 mkcollection_DEPENDENCIES = $(top_builddir)/lib/release/libmarsyas.a
 mkcollection_LDFLAGS =
+am_msl_OBJECTS = msl.$(OBJEXT)
+msl_OBJECTS = $(am_msl_OBJECTS)
+msl_DEPENDENCIES = $(top_builddir)/lib/release/libmarsyas.a
+msl_LDFLAGS =
 am_orcarecord_OBJECTS = orcarecord.$(OBJEXT)
 orcarecord_OBJECTS = $(am_orcarecord_OBJECTS)
 orcarecord_DEPENDENCIES = $(top_builddir)/lib/release/libmarsyas.a
@@ -283,6 +298,10 @@ am_regressionChecks_OBJECTS = regressionChecks.$(OBJEXT)
 regressionChecks_OBJECTS = $(am_regressionChecks_OBJECTS)
 regressionChecks_DEPENDENCIES = $(top_builddir)/lib/release/libmarsyas.a
 regressionChecks_LDFLAGS =
+am_scheduler_OBJECTS = scheduler.$(OBJEXT)
+scheduler_OBJECTS = $(am_scheduler_OBJECTS)
+scheduler_DEPENDENCIES = $(top_builddir)/lib/release/libmarsyas.a
+scheduler_LDFLAGS =
 am_sfinfo_OBJECTS = sfinfo.$(OBJEXT)
 sfinfo_OBJECTS = $(am_sfinfo_OBJECTS)
 sfinfo_DEPENDENCIES = $(top_builddir)/lib/release/libmarsyas.a
@@ -312,15 +331,15 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/gettingdata.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/helloworld.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/marsyasTests.Po ./$(DEPDIR)/midiTest.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/mkcollection.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/mkcollection.Po ./$(DEPDIR)/msl.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/orcarecord.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/peakClustering.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/peakSynth.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/phasevocoder.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/pitchextract.Po ./$(DEPDIR)/record.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/regressionChecks.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/sfinfo.Po ./$(DEPDIR)/sfplay.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/sfplugin.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/scheduler.Po ./$(DEPDIR)/sfinfo.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/sfplay.Po ./$(DEPDIR)/sfplugin.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/virtualsensor.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -332,13 +351,14 @@ DIST_SOURCES = $(bextract_SOURCES) $(boomchick_SOURCES) \
 	$(classifyFile_SOURCES) $(extract_SOURCES) \
 	$(gettingdata_SOURCES) $(helloworld_SOURCES) \
 	$(marsyasTests_SOURCES) $(midiTest_SOURCES) \
-	$(mkcollection_SOURCES) $(orcarecord_SOURCES) \
+	$(mkcollection_SOURCES) $(msl_SOURCES) $(orcarecord_SOURCES) \
 	$(peakClustering_SOURCES) $(peakSynth_SOURCES) \
 	$(phasevocoder_SOURCES) $(pitchextract_SOURCES) \
-	$(record_SOURCES) $(regressionChecks_SOURCES) $(sfinfo_SOURCES) \
-	$(sfplay_SOURCES) $(sfplugin_SOURCES) $(virtualsensor_SOURCES)
+	$(record_SOURCES) $(regressionChecks_SOURCES) \
+	$(scheduler_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) \
+	$(sfplugin_SOURCES) $(virtualsensor_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(bextract_SOURCES) $(boomchick_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) $(gettingdata_SOURCES) $(helloworld_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mkcollection_SOURCES) $(orcarecord_SOURCES) $(peakClustering_SOURCES) $(peakSynth_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(regressionChecks_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplugin_SOURCES) $(virtualsensor_SOURCES)
+SOURCES = $(bextract_SOURCES) $(boomchick_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) $(gettingdata_SOURCES) $(helloworld_SOURCES) $(marsyasTests_SOURCES) $(midiTest_SOURCES) $(mkcollection_SOURCES) $(msl_SOURCES) $(orcarecord_SOURCES) $(peakClustering_SOURCES) $(peakSynth_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(regressionChecks_SOURCES) $(scheduler_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplugin_SOURCES) $(virtualsensor_SOURCES)
 
 all: all-am
 
@@ -409,6 +429,10 @@ mkcollection.$(OBJEXT): $(top_srcdir)/apps/mkcollection/mkcollection.cpp
 mkcollection$(EXEEXT): $(mkcollection_OBJECTS) $(mkcollection_DEPENDENCIES) 
 	@rm -f mkcollection$(EXEEXT)
 	$(CXXLINK) $(mkcollection_LDFLAGS) $(mkcollection_OBJECTS) $(mkcollection_LDADD) $(LIBS)
+msl.$(OBJEXT): $(top_srcdir)/apps/msl/msl.cpp
+msl$(EXEEXT): $(msl_OBJECTS) $(msl_DEPENDENCIES) 
+	@rm -f msl$(EXEEXT)
+	$(CXXLINK) $(msl_LDFLAGS) $(msl_OBJECTS) $(msl_LDADD) $(LIBS)
 orcarecord.$(OBJEXT): $(top_srcdir)/apps/orcarecord/orcarecord.cpp
 orcarecord$(EXEEXT): $(orcarecord_OBJECTS) $(orcarecord_DEPENDENCIES) 
 	@rm -f orcarecord$(EXEEXT)
@@ -439,6 +463,10 @@ regressionChecks.$(OBJEXT): \
 regressionChecks$(EXEEXT): $(regressionChecks_OBJECTS) $(regressionChecks_DEPENDENCIES) 
 	@rm -f regressionChecks$(EXEEXT)
 	$(CXXLINK) $(regressionChecks_LDFLAGS) $(regressionChecks_OBJECTS) $(regressionChecks_LDADD) $(LIBS)
+scheduler.$(OBJEXT): $(top_srcdir)/apps/scheduler/scheduler.cpp
+scheduler$(EXEEXT): $(scheduler_OBJECTS) $(scheduler_DEPENDENCIES) 
+	@rm -f scheduler$(EXEEXT)
+	$(CXXLINK) $(scheduler_LDFLAGS) $(scheduler_OBJECTS) $(scheduler_LDADD) $(LIBS)
 sfinfo.$(OBJEXT): $(top_srcdir)/apps/sfinfo/sfinfo.cpp
 sfinfo$(EXEEXT): $(sfinfo_OBJECTS) $(sfinfo_DEPENDENCIES) 
 	@rm -f sfinfo$(EXEEXT)
@@ -472,6 +500,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/marsyasTests.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/midiTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mkcollection.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/msl.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/orcarecord.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/peakClustering.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/peakSynth.Po@am__quote@
@@ -479,6 +508,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pitchextract.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/record.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/regressionChecks.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sfinfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sfplay.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sfplugin.Po@am__quote@
@@ -607,6 +637,18 @@ mkcollection.obj: $(top_srcdir)/apps/mkcollection/mkcollection.cpp
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mkcollection.obj `cygpath -w $(top_srcdir)/apps/mkcollection/mkcollection.cpp`
 
+msl.o: $(top_srcdir)/apps/msl/msl.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/apps/msl/msl.cpp' object='msl.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/msl.Po' tmpdepfile='$(DEPDIR)/msl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o msl.o `test -f '$(top_srcdir)/apps/msl/msl.cpp' || echo '$(srcdir)/'`$(top_srcdir)/apps/msl/msl.cpp
+
+msl.obj: $(top_srcdir)/apps/msl/msl.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/apps/msl/msl.cpp' object='msl.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/msl.Po' tmpdepfile='$(DEPDIR)/msl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o msl.obj `cygpath -w $(top_srcdir)/apps/msl/msl.cpp`
+
 orcarecord.o: $(top_srcdir)/apps/orcarecord/orcarecord.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/apps/orcarecord/orcarecord.cpp' object='orcarecord.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@	depfile='$(DEPDIR)/orcarecord.Po' tmpdepfile='$(DEPDIR)/orcarecord.TPo' @AMDEPBACKSLASH@
@@ -690,6 +732,18 @@ regressionChecks.obj: $(top_srcdir)/apps/regressionChecks/regressionChecks.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/regressionChecks.Po' tmpdepfile='$(DEPDIR)/regressionChecks.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o regressionChecks.obj `cygpath -w $(top_srcdir)/apps/regressionChecks/regressionChecks.cpp`
+
+scheduler.o: $(top_srcdir)/apps/scheduler/scheduler.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/apps/scheduler/scheduler.cpp' object='scheduler.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/scheduler.Po' tmpdepfile='$(DEPDIR)/scheduler.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o scheduler.o `test -f '$(top_srcdir)/apps/scheduler/scheduler.cpp' || echo '$(srcdir)/'`$(top_srcdir)/apps/scheduler/scheduler.cpp
+
+scheduler.obj: $(top_srcdir)/apps/scheduler/scheduler.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/apps/scheduler/scheduler.cpp' object='scheduler.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/scheduler.Po' tmpdepfile='$(DEPDIR)/scheduler.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o scheduler.obj `cygpath -w $(top_srcdir)/apps/scheduler/scheduler.cpp`
 
 sfinfo.o: $(top_srcdir)/apps/sfinfo/sfinfo.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/apps/sfinfo/sfinfo.cpp' object='sfinfo.o' libtool=no @AMDEPBACKSLASH@

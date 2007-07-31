@@ -38,6 +38,7 @@ private:
 	void myUpdate(MarControlPtr sender);
 
   realvec grid_map_;
+  realvec grid_pos_;
   mrs_natural grid_width_;
   mrs_natural grid_height_;
   realvec adjustments_;
@@ -57,7 +58,7 @@ private:
   double gaussian(double x, double mean, double std, bool scale);
   
   void init_grid_map();
-  realvec find_grid_location(realvec& in, int t);
+  void find_grid_location(realvec& in, int t);
 
 };
 

@@ -212,7 +212,7 @@ MslLibs=""
 case "x$with_readline" in
        xyes)
                MslLibs="-lreadline -lcurses"
-               AC_DEFINE([__WITHREADLINE__],[1],[Enable readline])
+               AC_DEFINE([MARSYAS_READLINE],[1],[Enable readline])
                echo Readline support enabled
        ;;
        xno|x) echo Readline support disabled ;;
@@ -220,7 +220,7 @@ case "x$with_readline" in
                # Passed a prefix for readline
                MslLibs="-L${with_readline}/lib -lreadline -lcurses"
                CPPFLAGS="$CPPFLAGS -I${with_readline}/include"
-               AC_DEFINE([__WITHREADLINE__],[1],[Enable readline])
+               AC_DEFINE([MARSYAS_READLINE],[1],[Enable readline])
                echo Readline support enabled
        ;;
 esac
