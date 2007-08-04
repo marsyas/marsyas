@@ -2,62 +2,27 @@
 @chapter Installation
 
 @menu
+* System preparation::          
 * Download::                    
-* System requirements::         
-* Optional programs and libraries::  
 * Configuring Marsyas::         
 * Compiling Marsyas::           
-* Platform-specific notes::     
+* Platform-specific notes while running Marsyas::  
 @end menu
 
 
-@node Download
-@section Download
+@node System preparation
+@section System preparation
 
-@subsection Stable(-ish) Version
+@menu
+* Requirements on *nix (including MacOS X)::  
+* Requirements on Windows::     
+* Optional programs and libraries::  
+@end menu
 
-(@i{Important Note: Marsyas does not use CVS any more; any links to
-"marsyas CVS" are hopelessly out of date})
+@node Requirements on *nix (including MacOS X)
+@subsection Requirements on *nix (including MacOS X)
 
-Marsyas is hosted at SourceForge:
-
-@quotation
-@uref{http://marsyas.sourceforge.net/}
-
-@uref{http://www.sourceforge.net/projects/marsyas}
-@end quotation
-
-Marsyas is open source software and is distributed 
-as a tarball (something like @file{marsyas-0.2.8.tar.gz}).  Uncompress
-this file using whatever uncompression program you prefer (@code{tar -xf},
-winzip, etc).
-
-@subsection Development Version
-
-The latest version can be obtained from the subversion repository 
-stored at the sourceforge website. Although constantly in flux the 
-latest version is typically relatively stable and usable and if it is not 
-we are quick in fixing it. In contrast releases happen infrequently. 
-If you are planning on working extensively with Marsyas and writing 
-your own source code it is highly recommend that you download a 
-subversion working copy. If you only require one of the tools provided 
-in Marsyas and don't plan to explore the framework then the regular 
-releases should suffice. To check out a working copy do:
-
-@example 
-svn co https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk my-marsyas-dir
-@end example
-
-You can replace @file{my-marsyas-dir} with any directory you want.  The 
-version/release (version 0.2 release 10) is independently assigned 
-from subversion revisions and the latest can be found by checking 
-the sourceforge website. 
-
-
-@node System requirements
-@section System requirements
-
-@subsection Linux
+@subsubsection Linux
 
 Required:
 
@@ -77,7 +42,7 @@ development platform, version 4.2.3 or above.
 @end itemize
 
 
-@subsection MacOSX
+@subsubsection MacOS X
 
 Required:
 
@@ -93,7 +58,8 @@ development platform, version 4.2.3 or above.
 @end itemize
 
 
-@subsection Windows
+@node Requirements on Windows
+@subsection Requirements on Windows
 
 On Windows, you may use either MinGW, Microsoft Visual Studio, or
 Cygwin.
@@ -113,6 +79,26 @@ Qt/OpenSource)
 @item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech}
 development platform, version 4.2.3 or above.
 @item Microsoft DirectX SDK and Platform SDK
+@end itemize
+
+
+@subsubsection Cygwin
+
+Cygwin is a unix environment for Windows.
+
+Required:
+
+@itemize
+@item @uref{http://www.cygwin.com/,Cygwin}, with gcc and autotools
+installed (these should be installed by default)
+@item Microsoft DirectX SDK and Platform SDK
+@end itemize
+
+Strongly recommended:
+
+@itemize
+@item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech}
+development platform, version 4.2.3 or above.
 @end itemize
 
 
@@ -150,215 +136,6 @@ MinGW compiler) from Trolltech's website.
 environment variables.  Highly recommended.
 
 @end itemize
-
-Your machine may need extra System configuration; please see the
-platform-specific notes for @ref{Windows}.
-
-
-@subsubsection Cygwin
-
-Cygwin is a unix environment for Windows.
-
-Required:
-
-@itemize
-@item @uref{http://www.cygwin.com/,Cygwin}, with gcc and autotools
-installed (these should be installed by default)
-@item Microsoft DirectX SDK and Platform SDK
-@end itemize
-
-Strongly recommended:
-
-@itemize
-@item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech}
-development platform, version 4.2.3 or above.
-@end itemize
-
-
-
-@node Optional programs and libraries
-@section Optional programs and libraries
-
-Useful libraries:
-
-@itemize
-@item @uref{http://sourceforge.net/projects/mad/, LibMAD}: mp3 support
-@end itemize
-
-Useful programs:
-
-@itemize
-@uref{http://python.org, Python}: Installed by default on Linux and MacOS X
-machines; Windows users may install it from this site.  Marsyas contains
-some very useful @ref{Scripts} which are written in Python.
-
-@uref{http://www.mathworks.com/products/matlab/, Matlab}: information
-may be easily passed to and from Matlab and Marsyas; this allows easy
-prototyping.
-
-@end itemize
-
-
-@node Configuring Marsyas
-@section Configuring Marsyas
-
-@subsection ...with qmake
-
-Marsyas can be built with qmake, which is the Makefile generator in
-Qt.  To build Marsyas, go to the base of the source tree and edit
-@file{marsyasConfig.pri}.  You will probably want to change the settings
-for @emph{release/debug mode}, @emph{WARNINGS/LOGS}, and @emph{MATLAB
-engine classes}, and @emph{MP3 MAD}.
-
-Once you have selected the options you want, simply type
-
-@example
-qmake
-@end example
-
-@strong{Warning:} on MacOS X and when using Qt-4.3.0 or higher, you
-must set this environment variable:
-
-@example
-export QMAKESPEC=/usr/local/Qt4.3/mkspecs/macx-g++/
-@end example
-
-The easiest (and safest) way to set this is to add that line to your
-@file{~/.profile} and then close (and re-open) your terminal window.
-
-
-@subsection ...with autotools
-
-Marsyas may be compiled using the standard GNU configure script:
-
-@example
-./configure
-@end example
-
-Marsyas can be customized using various configuration options.  The
-current list of available options can be viewed by typing:
-
-@example 
-./configure --help 
-@end example
-
-For example, to compile Marsyas with assertions enabled, mp3
-support through libmad, and writing warnings to a file, one would do: 
-
-@example 
-./configure --enable-assert --with-mad --enable-log2file
-@end example 
-
-@c shouldn't be in this manual; ./configure --help is the most
-@c up-to-date source of this info, so people should read that. -gp
-
-@noindent
-A frequent variation (if you don't have root priviledges) 
-is to install Marsyas in your home directory:
-
-@example
-./configure --prefix=$HOME
-make 
-make install 
-@end example
-
-@subsubsection Debugging options
-
-@example
-./configure --enable-debug --enable-assert --enable-warnings
---enable-diagnostics --enable-log2file
-make clean
-make
-@end example
-
-The resulting program can be run under @code{gdb} to track down problems.
-
-
-@node Compiling Marsyas
-@section Compiling Marsyas
-
-@subsection ...on *nix (Linux, FreeBSD, MacOSX, and Cygwin)
-
-After @ref{Configuring Marsyas}, simply type
-
-@example
-make
-
-(optional, as root unless you changed the installation directory)
-make install
-@end example
-
-
-
-@subsection ...on Windows (MinGW or Visual Studio)
-
-After @ref{Configuring Marsyas}, simply type
-
-@example
-nmake (nmake debug or nmake all for debug or debug and release builds)
-@end example
-
-This builds marsyas.lib, all (at least most of them) command line apps
-(sfplay, bextract, etc) and MarPlayer and MarPhasevocoder.
-
-To generate a MSVC .vcproj for a project just cd into the app dir (e.g.
-apps/Qt4Apps/Meaws) and do:
-
-@example
-qmake -t vcapp 
-@end example
-
-In case you also want to create a .vcproj for the marsyas lib, cd into
-marsyas dir and do:
-
-@example
-qmake -t vclib
-@end example
-
-
-@node Platform-specific notes
-@section Platform-specific notes
-
-@menu
-* Linux::                       
-* Mac OSX::                     
-* Windows::                     
-@end menu
-
-@node Linux
-@subsection Linux
-
-@cindex Linux
-
-No specific notes.
-
-
-@node Mac OSX
-@subsection Mac OSX
-
-@cindex Mac OSX
-
-When trying to record audio, the sample rate must be specified
-explicitly:
-
-@example
-pnet->addMarSystem(mng.create("AudioSource", "srcRec"));
-pnet->updctrl("mrs_real/israte", 44100.0);
-pnet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
-@end example
-
-
-@node Windows
-@subsection Windows
-
-@subsubsection Windows (MinGW)
-@cindex Windows, MinGW
-
-No specific notes.
-
-
-@subsubsection Windows (Visual Studio)
-@cindex Windows, Visual Studio
 
 @subsubheading Installation
 
@@ -616,9 +393,217 @@ marsyas-developers@@lists.sourceforge.net
 @end example
 
 
-@subsubsection Windows (cygwin)
-@cindex Windows, Cygwin
-@cindex Cygwin
+
+
+
+@node Optional programs and libraries
+@subsection Optional programs and libraries
+
+Useful libraries:
+
+@itemize
+@item @uref{http://sourceforge.net/projects/mad/, LibMAD}: mp3 support
+@end itemize
+
+Useful programs:
+
+@itemize
+@uref{http://python.org, Python}: Installed by default on Linux and MacOS X
+machines; Windows users may install it from this site.  Marsyas contains
+some very useful @ref{Scripts} which are written in Python.
+
+@uref{http://www.mathworks.com/products/matlab/, Matlab}: information
+may be easily passed to and from Matlab and Marsyas; this allows easy
+prototyping.
+
+@end itemize
+
+
+@node Download
+@section Download
+
+@subsection Stable(-ish) Version
+
+(@i{Important Note: Marsyas does not use CVS any more; any links to
+"marsyas CVS" are hopelessly out of date})
+
+Marsyas is hosted at SourceForge:
+
+@quotation
+@uref{http://marsyas.sourceforge.net/}
+
+@uref{http://www.sourceforge.net/projects/marsyas}
+@end quotation
+
+Marsyas is open source software and is distributed 
+as a tarball (something like @file{marsyas-0.2.8.tar.gz}).  Uncompress
+this file using whatever uncompression program you prefer (@code{tar -xf},
+winzip, etc).
+
+@subsection Development Version
+
+The latest version can be obtained from the subversion repository 
+stored at the sourceforge website. Although constantly in flux the 
+latest version is typically relatively stable and usable and if it is not 
+we are quick in fixing it. In contrast releases happen infrequently. 
+If you are planning on working extensively with Marsyas and writing 
+your own source code it is highly recommend that you download a 
+subversion working copy. If you only require one of the tools provided 
+in Marsyas and don't plan to explore the framework then the regular 
+releases should suffice. To check out a working copy do:
+
+@example 
+svn co https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk my-marsyas-dir
+@end example
+
+You can replace @file{my-marsyas-dir} with any directory you want.  The 
+version/release (version 0.2 release 10) is independently assigned 
+from subversion revisions and the latest can be found by checking 
+the sourceforge website. 
+
+
+@node Configuring Marsyas
+@section Configuring Marsyas
+
+@subsection ...with qmake
+
+Marsyas can be built with qmake, which is the Makefile generator in
+Qt.  To build Marsyas, go to the base of the source tree and edit
+@file{marsyasConfig.pri}.  You will probably want to change the settings
+for @emph{release/debug mode}, @emph{WARNINGS/LOGS}, and @emph{MATLAB
+engine classes}, and @emph{MP3 MAD}.
+
+Once you have selected the options you want, simply type
+
+@example
+qmake
+@end example
+
+@strong{Warning:} on MacOS X and when using Qt-4.3.0 or higher, you
+must set this environment variable:
+
+@example
+export QMAKESPEC=/usr/local/Qt4.3/mkspecs/macx-g++/
+@end example
+
+The easiest (and safest) way to set this is to add that line to your
+@file{~/.profile} and then close (and re-open) your terminal window.
+
+
+@subsection ...with autotools
+
+Marsyas may be compiled using the standard GNU configure script:
+
+@example
+./configure
+@end example
+
+Marsyas can be customized using various configuration options.  The
+current list of available options can be viewed by typing:
+
+@example 
+./configure --help 
+@end example
+
+For example, to compile Marsyas with assertions enabled, mp3
+support through libmad, and writing warnings to a file, one would do: 
+
+@example 
+./configure --enable-assert --with-mad --enable-log2file
+@end example 
+
+@c shouldn't be in this manual; ./configure --help is the most
+@c up-to-date source of this info, so people should read that. -gp
+
+@noindent
+A frequent variation (if you don't have root priviledges) 
+is to install Marsyas in your home directory:
+
+@example
+./configure --prefix=$HOME
+make 
+make install 
+@end example
+
+@subsubsection Debugging options
+
+@example
+./configure --enable-debug --enable-assert --enable-warnings
+--enable-diagnostics --enable-log2file
+make clean
+make
+@end example
+
+The resulting program can be run under @code{gdb} to track down problems.
+
+
+@node Compiling Marsyas
+@section Compiling Marsyas
+
+@subsection ...on *nix (Linux, FreeBSD, MacOSX, and Cygwin)
+
+After @ref{Configuring Marsyas}, simply type
+
+@example
+make
+
+(optional, as root unless you changed the installation directory)
+make install
+@end example
+
+
+
+@subsection ...on Windows (MinGW or Visual Studio)
+
+After @ref{Configuring Marsyas}, simply type
+
+@example
+nmake (nmake debug or nmake all for debug or debug and release builds)
+@end example
+
+This builds marsyas.lib, all (at least most of them) command line apps
+(sfplay, bextract, etc) and MarPlayer and MarPhasevocoder.
+
+To generate a MSVC .vcproj for a project just cd into the app dir (e.g.
+apps/Qt4Apps/Meaws) and do:
+
+@example
+qmake -t vcapp 
+@end example
+
+In case you also want to create a .vcproj for the marsyas lib, cd into
+marsyas dir and do:
+
+@example
+qmake -t vclib
+@end example
+
+
+@node Platform-specific notes while running Marsyas
+@section Platform-specific notes while running Marsyas
+
+@subsection Linux
+
+@cindex Linux
+
+No specific notes.
+
+
+@subsection Mac OSX
+
+@cindex Mac OSX
+
+When trying to record audio, the sample rate must be specified
+explicitly:
+
+@example
+pnet->addMarSystem(mng.create("AudioSource", "srcRec"));
+pnet->updctrl("mrs_real/israte", 44100.0);
+pnet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
+@end example
+
+
+@subsection Windows
 
 No specific notes.
 
