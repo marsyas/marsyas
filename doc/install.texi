@@ -1,6 +1,9 @@
 @node Installation
 @chapter Installation
 
+This chapter shows the steps to get a working version of Marsyas.
+Complete each section fully before attempting the next section.
+
 @menu
 * System preparation::          
 * Download::                    
@@ -27,7 +30,8 @@
 Required:
 
 @itemize
-@item Standard development environment (gcc, g++, etc): probably already installed.
+@item Standard development environment (gcc, g++, etc): probably already
+installed.
 
 @item @uref{http://www.alsa-project.org/,ALSA} headers.  On most
 distributions, this is a package called @code{alsa-devel} or
@@ -47,7 +51,10 @@ development platform, version 4.2.3 or above.
 Required:
 
 @itemize
-@item @uref{http://developer.apple.com/tools/xcode/, Xcode}: standard development platform on OSX.  Please install from your OSX installation CD/DVD, or download.
+@item @uref{http://developer.apple.com/tools/xcode/, Xcode}: standard
+development platform on OSX.  Please install from your OSX installation
+CD/DVD, or download.
+
 @end itemize
 
 Strongly recommended:
@@ -149,8 +156,8 @@ MSVS2005, known as MSVS2005 Express).  Only Visual C++ and .Net 2.0
 libraries included with MSVS install packages are needed for Marsyas
 building.
 
-d) After installing the SDKs and MSVS2005 as instructed, make sure
-that your following Windows User and System Variables at least include
+d) After installing the SDKs and MSVS2005 as instructed, make sure that
+your following Windows User and System Variables at least include
 similar entries as presented bellow (paths may be slightly different
 depending on where you installed your applications and SDKs as well as
 depending on the versions of the SDKs installed - see WEVE for a nice
@@ -295,13 +302,12 @@ INCLUDE
 QMAKESPEC
 win32-msvc2005
 
-g) In order to be able to build Marsyas Projects in MSVS2005, go to the 
+g) In order to be able to build Marsyas Projects in MSVS2005, go to the
 MSVS2005 menu Tools->Options...->Projects and Solutions->VC++
-Directories and 
-make sure that the following lines are listed in the "include files" and 
-"library files" directories path lists (yes, this should be taken care
-by the 
-SDKs installs, but strangely it some times doesn't happen):
+Directories and make sure that the following lines are listed in the
+"include files" and "library files" directories path lists (yes, this
+should be taken care by the SDKs installs, but strangely it some times
+doesn't happen):
 
 INCLUDE FILES DIRECTORIES:
 --------------------------
@@ -314,75 +320,54 @@ C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib\.
 
 
 h) If you followed these instructions carefully, you should now be ready
-to 
-get Marsyas (from a tar ball in sourceforge or from sourceforge SVN -
-see 
-http://marsyas.sf.net) and build it using Trolltech's qmake utility to
-build 
-Marsyas (installed during steps 2.e and 2.f above) . Go to the directory
-where 
-you extracted the Marsyas tarball (or where you checked out Marsyas from
-the 
-sourceforge SVN server to - btw, have a look at this very nice SVN
-client 
-utility for windows: http://tortoisesvn.tigris.org/) and open a cmd
-window 
-there and type the following cmd lines for building Marsyas and some of
-the 
-included apps and examples in release:
+to get Marsyas (from a tar ball in sourceforge or from sourceforge SVN -
+see http://marsyas.sf.net) and build it using Trolltech's qmake utility
+to build Marsyas (installed during steps 2.e and 2.f above) . Go to the
+directory where you extracted the Marsyas tarball (or where you checked
+out Marsyas from the sourceforge SVN server to - btw, have a look at
+this very nice SVN client utility for windows:
+http://tortoisesvn.tigris.org/) and open a cmd window there and type the
+following cmd lines for building Marsyas and some of the included apps
+and examples in release:
 
 C:\MyMarsyasDir > qmake
 C:\MyMarsyasDir > nmake release
 
 This should build the Marsyas library (i.e. marsyas.lib, which you can
-find in 
-c:\MyMarsyasDir\lib\release) and some of the applications and examples
-(that 
-you can find and execute in c:\MyMarsyasDir\bin\release).
+find in c:\MyMarsyasDir\lib\release) and some of the applications and
+examples (that you can find and execute in c:\MyMarsyasDir\bin\release).
 
 i) You can generate MSVS2005 project files (.vcproj) for both the
-Marsyas lib 
-and all the apps and examples using qmake and the .pro project files
-included 
-in Marsyas (both release and debug solution configurations will be
-created in 
-MSVS2005). This will allow you to open Marsyas projects in MSVS2005 and
-use 
-its nice IDE for code writing/editing, building and most importantly 
-debugging. For creating a MSVS2005 project for the Marsyas (static)
-library, 
-open a cmd window on the marsyas directory in your Marsyas folder and
-run the 
-following qmake command:
+Marsyas lib and all the apps and examples using qmake and the .pro
+project files included in Marsyas (both release and debug solution
+configurations will be created in MSVS2005). This will allow you to open
+Marsyas projects in MSVS2005 and use its nice IDE for code
+writing/editing, building and most importantly debugging. For creating a
+MSVS2005 project for the Marsyas (static) library, open a cmd window on
+the marsyas directory in your Marsyas folder and run the following qmake
+command:
 
 C:\MyMarsyasDir\marsyas > qmake -t vclib
 
 This will generate a marsyas.vcproj file that you can open in MSVS2005
-to edit 
-and build.
+to edit and build.
 
 For creating a MSVS2005 project for a Marsyas application (e.g. sfplay),
-go to 
-its folder and execute:
+go to its folder and execute:
 
 C:\MyMarsyasDir\apps\sfplay > qmake -t vcapp
 
 You will get a sfplay.vcproj that you can once again open in MSVS2005.
-If you 
-need to debug your application using MSVS2005, it's a nice idea to
-create a 
-MSVS2005 Solution that includes the marsyas.vcproj and your application 
-.vcproj. If you then define a dependency of your application to the 
-marsyas.vcproj (check MSVS2005 documentation), MSVS2005 will then always
-check 
-if it needs to also build the Marsyas lib before linking it to your 
-application. Furthermore, having set up this Solution allows you to
-debug into 
-Marsyas library code (e.g. put breakpoints in your application code as
-well as 
-in Marsyas lib code, watches, memory views, call stacks, etc). Check
-qmake and 
-MSVS2005 documentation for more details.
+If you need to debug your application using MSVS2005, it's a nice idea
+to create a MSVS2005 Solution that includes the marsyas.vcproj and your
+application .vcproj. If you then define a dependency of your application
+to the marsyas.vcproj (check MSVS2005 documentation), MSVS2005 will then
+always check if it needs to also build the Marsyas lib before linking it
+to your application. Furthermore, having set up this Solution allows you
+to debug into Marsyas library code (e.g. put breakpoints in your
+application code as well as in Marsyas lib code, watches, memory views,
+call stacks, etc). Check qmake and MSVS2005 documentation for more
+details.
 
 j) Read carefully the remaining of this fine documentation (RTFM ;-))
 and in case of questions, problems or suggestions, do not hesitate to
