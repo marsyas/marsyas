@@ -85,16 +85,25 @@ Transcriber::getPitchesFromAudio(const string audioFilename)
     MarSystem* pnet = mng.create("Series", "pnet");
     mrs_real srate = addFileSource(pnet, audioFilename);
     pnet->addMarSystem(makePitchNet(srate, 100.0));
-    pnet->addMarSystem(mng.create("RealvecSink", "rvSink"));
+	MarSystem* rvSink = mng.create("RealvecSink", "rvSink");
+	pnet->addMarSystem(rvSink);
 
     while ( pnet->getctrl("mrs_bool/notEmpty")->toBool() )
     {
         pnet->tick();
     }
 
-    realvec data =
-        pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->toVec();
-    pnet->updctrl("RealvecSink/rvSink/mrs_bool/done", true);
+	pitchList = getPitchesFromRealvecSink(rvSink, srate);
+    delete pnet;
+    return pitchList;
+}
+
+realvec
+Transcriber::getPitchesFromRealvecSink(MarSystem* rvSink, const mrs_real srate)
+{
+	realvec pitchList;
+	realvec data = rvSink->getctrl("mrs_realvec/data")->toVec();
+	rvSink->updctrl("mrs_bool/done", true);
 
     for (mrs_natural i=1; i<data.getSize(); i+=2)
         data(i) = samples2hertz(data(i), srate);
@@ -106,15 +115,7 @@ Transcriber::getPitchesFromAudio(const string audioFilename)
         if ( pitch>0 )
             pitchList(i)=pitch;
     }
-
-    delete pnet;
-    return pitchList;
-}
-
-realvec
-Transcriber::getPitchesFromRealvecSink(MarSystem* rvSink, const mrs_real srate)
-{
-	return NULL;
+	return pitchList;
 }
 
 
