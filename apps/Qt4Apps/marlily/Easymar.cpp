@@ -1,16 +1,11 @@
 /**
 	\class Easymar
 	\ingroup Notmar
-	\brief A collection of functions which simplify transcription (pitch
-extraction, amplitude extraction, etc).
+	\brief A collection of functions which greatly simplify working with
+Marsyas (setting up a file source, destination, etc).
 
 	Usage:
-	- setPitchList() or getPitchesFromAudio()
-	- calcOnsets()
-	- calcNotes()
-	- (optional)  calcRelativeDurations().  MUST BE AFTER THE FIRST TWO!
-	- to see the results, use getOnsets() and getNotes(), and/or
-	  getDurations()
+	mrs_real srate = addFileSource(myNet, infilename);
 */
 
 #include "Easymar.h"
@@ -26,7 +21,7 @@ Easymar::~Easymar() {
 
 // TODO: ask -devel about making this a general Marsyas function
 mrs_real
-Easymar::addFileSource(MarSystem* net, string const infile)
+Easymar::addFileSource(MarSystem* net, const string infile)
 {
     if (infile == EMPTYSTRING) {
 		MRSERR("Please specify a sound file.");
@@ -40,7 +35,7 @@ Easymar::addFileSource(MarSystem* net, string const infile)
 }
 
 void
-Easymar::addDest(MarSystem* net, string outfile)
+Easymar::addDest(MarSystem* net, const string outfile)
 {
     if (outfile == EMPTYSTRING)
     {

@@ -34,23 +34,6 @@ Transcriber::~Transcriber() {
 
 #define EMPTYSTRING "MARSYAS_EMPTY"
 
-/*
-// TODO: ask -devel about making this a general Marsyas function
-mrs_real
-Transcriber::addFileSource(MarSystem* net, string const infile)
-{
-    if (infile == EMPTYSTRING) {
-		MRSERR("Please specify a sound file.");
-		return 0;
-    }
-    net->addMarSystem(mng.create("SoundFileSource", "src"));
-    net->updctrl("SoundFileSource/src/mrs_string/filename", infile);
-    net->linkControl("mrs_bool/notEmpty",
-                     "SoundFileSource/src/mrs_bool/notEmpty");
-	return net->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
-}
-*/
-
 MarSystem*
 Transcriber::makePitchNet(const mrs_real srate, const mrs_real lowFreq)
 {
@@ -74,6 +57,42 @@ Transcriber::makePitchNet(const mrs_real srate, const mrs_real lowFreq)
                  powerOfTwo(windowSize));
 
     return net;
+}
+
+MarSystem* Transcriber::makeAmplitudeNet() {
+    MarSystem *pnet = mng.create("Series", "amplitudeNet");
+    pnet->addMarSystem(mng.create("ShiftInput", "sfiAmp"));
+    pnet->addMarSystem(mng.create("Power", "power"));
+
+    pnet->updctrl("mrs_natural/inSamples", 512);
+    pnet->updctrl("ShiftInput/sfi/mrs_natural/WindowSize", 512);
+
+//    amplitudesSink = mng.create("RealvecSink", "amplitudeData");
+//    pnet->addMarSystem(amplitudesSink); 
+//    pnet->addMarSystem(mng.create("FlowCutSource", "fcs"));
+    
+//    pnet->updctrl("FlowCutSource/fcs/mrs_natural/setSamples", 2);
+ //   pnet->updctrl("FlowCutSource/fcs/mrs_natural/setObservations", 1);
+    
+    return pnet;
+}
+//zz
+
+void
+Transcriber::getAllFromAudio(const string audioFilename)
+{
+    MarSystem* pnet = mng.create("Series", "pnet");
+    mrs_real srate = Easymar::addFileSource(pnet, audioFilename);
+	pnet->addMarSystem(makeAmplitudeNet());
+	MarSystem* ampSink = mng.create("RealvecSink", "ampSink");
+	pnet->addMarSystem(ampSink);
+    while ( pnet->getctrl("mrs_bool/notEmpty")->toBool() )
+        pnet->tick();
+
+	realvec data = ampSink->getctrl("mrs_realvec/data")->toVec();
+	cout<<data;
+	ampSink->updctrl("mrs_bool/done", true);
+	delete pnet;
 }
 
 realvec
@@ -114,6 +133,8 @@ Transcriber::getPitchesFromRealvecSink(MarSystem* rvSink, const mrs_real srate)
     }
 	return pitchList;
 }
+
+
 
 
 

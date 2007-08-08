@@ -13,7 +13,7 @@ public:
     ~Easymar();
 
     static mrs_real addFileSource(MarSystem* net, const string infile);
-	static void addDest(MarSystem* net, string outfile);
+	static void addDest(MarSystem* net, const string outfile);
 
 private:
 };
