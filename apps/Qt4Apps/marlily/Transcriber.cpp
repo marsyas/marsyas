@@ -35,8 +35,8 @@ Transcriber::~Transcriber() {
 #define EMPTYSTRING "MARSYAS_EMPTY"
 
 // TODO: ask -devel about making this a general Marsyas function
-void
-Transcriber::addFileSource(MarSystem* net, string const infile, mrs_real &srate)
+mrs_real
+Transcriber::addFileSource(MarSystem* net, string const infile)
 {
     if (infile == EMPTYSTRING) {
         // TODO: spend 1 hour and finally figure out WTF the MRS_FOO
@@ -47,10 +47,9 @@ Transcriber::addFileSource(MarSystem* net, string const infile, mrs_real &srate)
 
     net->addMarSystem(mng.create("SoundFileSource", "src"));
     net->updctrl("SoundFileSource/src/mrs_string/filename", infile);
-    srate =
-        net->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
     net->linkControl("mrs_bool/notEmpty",
                      "SoundFileSource/src/mrs_bool/notEmpty");
+	return net->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
 }
 
 MarSystem*
@@ -82,10 +81,9 @@ realvec
 Transcriber::getPitchesFromAudio(const string audioFilename)
 {
     realvec pitchList;
-    mrs_real srate;
 
     MarSystem* pnet = mng.create("Series", "pnet");
-    addFileSource(pnet, audioFilename, srate);
+    mrs_real srate = addFileSource(pnet, audioFilename);
     pnet->addMarSystem(makePitchNet(srate, 100.0));
     pnet->addMarSystem(mng.create("RealvecSink", "rvSink"));
 
@@ -113,6 +111,11 @@ Transcriber::getPitchesFromAudio(const string audioFilename)
     return pitchList;
 }
 
+realvec
+Transcriber::getPitchesFromRealvecSink(MarSystem* rvSink, const mrs_real srate)
+{
+	return NULL;
+}
 
 
 
