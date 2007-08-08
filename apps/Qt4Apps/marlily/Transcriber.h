@@ -12,9 +12,10 @@ public:
     Transcriber();
     ~Transcriber();
 
+	static void	addFileSource(MarSystem* net, string infile, mrs_real &srate);
     static realvec getPitchesFromAudio(string audioFilename);
-    static MarSystem* makePitchNet(MarSystemManager mng, mrs_real source_osrate,
-                                   mrs_real lowFreq);
+//    static MarSystem* makePitchNet(MarSystemManager mng, mrs_real source_osrate,
+//                                   mrs_real lowFreq);
     /*
     	void setOptions(mrs_natural getRadius, mrs_real getNewNote, mrs_real getCertantyDiv);
 

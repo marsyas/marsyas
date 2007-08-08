@@ -18,10 +18,12 @@
 */
 
 
+#include "Transcriber.h"
+static MarSystemManager mng;
+
 #include <iostream>
 //#include <fstream>
 //#include <cmath>
-#include "Transcriber.h"
 
 Transcriber::Transcriber() {
     /*
@@ -46,15 +48,12 @@ Transcriber::~Transcriber() {
 
 // TODO: ask -devel about making this a general Marsyas function
 void
-addFileSource(MarSystemManager mng, MarSystem* net, string infile,
-              mrs_real &srate)
+Transcriber::addFileSource(MarSystem* net, string infile, mrs_real &srate)
 {
-    if (infile == EMPTYSTRING) {
-        // TODO: spend 1 hour and finally figure out WTF the MRS_FOO
-        // things do.
-        cout << "Please specify a sound file." << endl;
-        exit(1);
-    }
+	if (infile == EMPTYSTRING) {
+		// TODO: spend 1 hour and finally figure out WTF the MRS_FOO
+		// things do.
+		cout << "Please specify a sound file." << endl; exit(1); }
 
     net->addMarSystem(mng.create("SoundFileSource", "src"));
     net->updctrl("SoundFileSource/src/mrs_string/filename", infile);
@@ -64,6 +63,7 @@ addFileSource(MarSystemManager mng, MarSystem* net, string infile,
                      "SoundFileSource/src/mrs_bool/notEmpty");
 }
 
+/*
 MarSystem*
 Transcriber::makePitchNet(MarSystemManager mng, mrs_real source_osrate, mrs_real lowFreq)
 {
@@ -81,6 +81,7 @@ cout<<"made network"<<endl;
 //   mrs_real highPitch = 100;
     //mrs_real lowFreq = pitch2hertz(lowPitch);
     mrs_real highFreq = 5000.0;
+*/
 /*
     mrs_natural lowSamples = hertz2samples(highFreq, source_osrate);
     mrs_natural highSamples = hertz2samples(lowFreq, source_osrate);
@@ -98,16 +99,39 @@ cout<<"window"<<endl;
                  powerOfTwo(windowSize));
 
 */
-    return NULL;
-}
+//    return NULL;
+//}
 
 realvec Transcriber::getPitchesFromAudio(string audioFilename) {
     realvec pitchList;
+    mrs_real srate;
 
-//    MarSystemManager mng;
- //   MarSystem* pnet = mng.create("Series", "pnet");
-//    mrs_real srate;
-//    addFileSource(mng, pnet, audioFilename, srate);
+	MarSystem* pnet = mng.create("Series", "pnet");
+	addFileSource(pnet, audioFilename, srate);
+//	addFileSource(mng, pnet, audioFilename, srate);
+/*
+	pnet->addMarSystem(mng.create("SoundFileSource", "src"));
+	pnet->updctrl("SoundFileSource/src/mrs_string/filename",
+audioFilename);
+    srate =
+        pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
+    pnet->linkControl("mrs_bool/notEmpty",
+                     "SoundFileSource/src/mrs_bool/notEmpty");
+*/
+	pnet->addMarSystem(mng.create("AudioSink", "dest"));
+	pnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+	while (
+pnet->getctrl("mrs_bool/notEmpty")->toBool()
+//pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool()
+)
+	{
+		pnet->tick();
+	}
+	delete pnet;
+    return pitchList;
+}
+
 //    makePitchNet(mng, srate, 100.0);
     //pnet->addMarSystem( makePitchNet(mng, srate, 100.0) );
     /*
@@ -169,10 +193,8 @@ realvec Transcriber::getPitchesFromAudio(string audioFilename) {
             pitchList(i)=pitch;
     }
     cout<<"Trans: done transfer"<<endl;
-*/
-//    delete pnet;
-    return pitchList;
 }
+*/
 
 
 
