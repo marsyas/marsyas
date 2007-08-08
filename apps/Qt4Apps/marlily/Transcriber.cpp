@@ -6,7 +6,8 @@
 /**
 	\class Transcriber
 	\ingroup Notmar
-	\brief A simple pitch-based music transcription object
+	\brief A collection of functions which simplify transcription (pitch
+extraction, amplitude extraction, etc).
 
 	Usage:
 	- setPitchList() or getPitchesFromAudio()
@@ -26,34 +27,23 @@ static MarSystemManager mng;
 //#include <cmath>
 
 Transcriber::Transcriber() {
-    /*
-        	median_radius = 10;
-        	new_note_midi = 0.6;
-        	pitch_certainty_div = 500;
-
-        	// tries to avoid octave errors
-        	LOWEST_NOTE = 40;
-        	HIGHEST_NOTE = 90;
-    */
 }
 
 Transcriber::~Transcriber() {
-    /*
-        	pitchList.~realvec();
-        	notes.~realvec();
-    */
 }
 
 #define EMPTYSTRING "MARSYAS_EMPTY"
 
 // TODO: ask -devel about making this a general Marsyas function
 void
-Transcriber::addFileSource(MarSystem* net, string infile, mrs_real &srate)
+Transcriber::addFileSource(MarSystem* net, string const infile, mrs_real &srate)
 {
-	if (infile == EMPTYSTRING) {
-		// TODO: spend 1 hour and finally figure out WTF the MRS_FOO
-		// things do.
-		cout << "Please specify a sound file." << endl; exit(1); }
+    if (infile == EMPTYSTRING) {
+        // TODO: spend 1 hour and finally figure out WTF the MRS_FOO
+        // things do.
+        cout << "Please specify a sound file." << endl;
+        exit(1);
+    }
 
     net->addMarSystem(mng.create("SoundFileSource", "src"));
     net->updctrl("SoundFileSource/src/mrs_string/filename", infile);
@@ -63,128 +53,54 @@ Transcriber::addFileSource(MarSystem* net, string infile, mrs_real &srate)
                      "SoundFileSource/src/mrs_bool/notEmpty");
 }
 
-/*
 MarSystem*
-Transcriber::makePitchNet(MarSystemManager mng, mrs_real source_osrate, mrs_real lowFreq)
+Transcriber::makePitchNet(const mrs_real source_osrate, const mrs_real lowFreq)
 {
-	cout<<"making pitch"<<endl;
-	mng.create("Parallel", "para");
-    //MarSystem *net = mng.create("Series", "pitchNet");
-cout<<"made series"<<endl;
-    //net->addMarSystem(mng.create("ShiftInput", "sfi"));
-    //net->addMarSystem(mng.create("PitchPraat", "pitch"));
-cout<<"made network"<<endl;
-//   pitchesSink = mng.create("RealvecSink", "rvSink");
-//    net->addMarSystem(pitchesSink);
-//    net->addMarSystem(mng.create("Gain", "gain"));
-//   mrs_real lowPitch = 36;
-//   mrs_real highPitch = 100;
-    //mrs_real lowFreq = pitch2hertz(lowPitch);
     mrs_real highFreq = 5000.0;
-*/
-/*
-    mrs_natural lowSamples = hertz2samples(highFreq, source_osrate);
-    mrs_natural highSamples = hertz2samples(lowFreq, source_osrate);
 
+    MarSystem *net = mng.create("Series", "pitchNet");
+    net->addMarSystem(mng.create("ShiftInput", "sfi"));
+    net->addMarSystem(mng.create("PitchPraat", "pitch"));
+
+    // yes, this is the right way around (lowSamples<-highFreq)
     net->updctrl("PitchPraat/pitch/mrs_natural/lowSamples",
-                 lowSamples);
+                 hertz2samples(highFreq, source_osrate) );
     net->updctrl("PitchPraat/pitch/mrs_natural/highSamples",
-                 highSamples);
-    //The window should be just long enough to contain three periods (for
-    //pitch detection) of MinimumPitch.
-cout<<"window"<<endl;
-    mrs_real windowSize = 3/lowFreq*source_osrate;
+                 hertz2samples(lowFreq, source_osrate) );
+
+    // The window should be just long enough to contain three periods
+    // (for pitch detection) of MinimumPitch.
+    mrs_real windowSize = 3.0/lowFreq*source_osrate;
     net->updctrl("mrs_natural/inSamples", 512);
     net->updctrl("ShiftInput/sfi/mrs_natural/WindowSize",
                  powerOfTwo(windowSize));
 
-*/
-//    return NULL;
-//}
+    return net;
+}
 
-realvec Transcriber::getPitchesFromAudio(string audioFilename) {
+realvec
+Transcriber::getPitchesFromAudio(const string audioFilename)
+{
     realvec pitchList;
     mrs_real srate;
 
-	MarSystem* pnet = mng.create("Series", "pnet");
-	addFileSource(pnet, audioFilename, srate);
-//	addFileSource(mng, pnet, audioFilename, srate);
-/*
-	pnet->addMarSystem(mng.create("SoundFileSource", "src"));
-	pnet->updctrl("SoundFileSource/src/mrs_string/filename",
-audioFilename);
-    srate =
-        pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
-    pnet->linkControl("mrs_bool/notEmpty",
-                     "SoundFileSource/src/mrs_bool/notEmpty");
-*/
-	pnet->addMarSystem(mng.create("AudioSink", "dest"));
-	pnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+    MarSystem* pnet = mng.create("Series", "pnet");
+    addFileSource(pnet, audioFilename, srate);
+    pnet->addMarSystem(makePitchNet(srate, 100.0));
+    pnet->addMarSystem(mng.create("RealvecSink", "rvSink"));
 
-	while (
-pnet->getctrl("mrs_bool/notEmpty")->toBool()
-//pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool()
-)
-	{
-		pnet->tick();
-	}
-	delete pnet;
-    return pitchList;
-}
-
-//    makePitchNet(mng, srate, 100.0);
-    //pnet->addMarSystem( makePitchNet(mng, srate, 100.0) );
-    /*
-
-        // sets up SoundFileSource, links notEmpty, and sets srate
-        pnet->addMarSystem(mng.create("SoundFileSource", "src"));
-        pnet->updctrl("SoundFileSource/src/mrs_string/filename",
-    audioFilename);
-        mrs_real srate =
-    		pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
-        pnet->linkControl("mrs_bool/notEmpty",
-                         "SoundFileSource/src/mrs_bool/notEmpty");
-    */
-
-
-    /*
-        pnet->addMarSystem(mng.create("ShiftInput", "sfi"));
-        pnet->addMarSystem(mng.create("PitchPraat", "pitch"));
-        pnet->addMarSystem(mng.create("RealvecSink", "rvSink"));
-
-        mrs_real lowPitch = 50;
-        mrs_real highPitch = 100;
-        mrs_real lowFreq = pitch2hertz(lowPitch);
-        mrs_real highFreq = pitch2hertz(highPitch);
-        // note the reversed order!
-        mrs_natural lowSamples = hertz2samples(highFreq, srate);
-        mrs_natural highSamples = hertz2samples(lowFreq, srate);
-
-        pnet->updctrl("PitchPraat/pitch/mrs_natural/lowSamples",
-                      lowSamples);
-        pnet->updctrl("PitchPraat/pitch/mrs_natural/highSamples",
-                      highSamples);
-
-        //  The window should be just long enough to contain three periods
-        //  (for pitch detection) of MinimumPitch. E.g. if MinimumPitch is
-        //  75 Hz, the window length is 40 ms and padded with zeros to reach
-        //  a power of two.
-        mrs_real windowSize = 3.0 / lowPitch * srate;
-        pnet->updctrl("mrs_natural/inSamples", 512);
-        pnet->updctrl("ShiftInput/sfi/mrs_natural/WindowSize",
-                      powerOfTwo(windowSize));
-    */
-/*
-    while (pnet->getctrl("mrs_bool/notEmpty")->toBool())
+    while ( pnet->getctrl("mrs_bool/notEmpty")->toBool() )
+    {
         pnet->tick();
+    }
 
     realvec data =
         pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->toVec();
-    for (mrs_natural i=1; i<data.getSize(); i+=2)
-        data(i) = samples2hertz(data(i), srate);
     pnet->updctrl("RealvecSink/rvSink/mrs_bool/done", true);
 
-    cout<<"Trans: got pitches"<<endl;
+    for (mrs_natural i=1; i<data.getSize(); i+=2)
+        data(i) = samples2hertz(data(i), srate);
+
     mrs_real pitch;
     pitchList.create(data.getSize()/2);
     for (mrs_natural i=0; i<data.getSize(); i++) {
@@ -192,9 +108,10 @@ pnet->getctrl("mrs_bool/notEmpty")->toBool()
         if ( pitch>0 )
             pitchList(i)=pitch;
     }
-    cout<<"Trans: done transfer"<<endl;
+
+    delete pnet;
+    return pitchList;
 }
-*/
 
 
 
