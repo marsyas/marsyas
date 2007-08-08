@@ -2,6 +2,9 @@ SOURCES = testTrans.cpp
 HEADERS += Transcriber.h
 SOURCES += Transcriber.cpp
 
+HEADERS += Easymar.h
+SOURCES += Easymar.cpp
+
 INCLUDEPATH += ../../../lib/release/
 
 unix {

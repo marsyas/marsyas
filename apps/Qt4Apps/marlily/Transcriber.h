@@ -2,6 +2,7 @@
 #define MARSYAS_TRANSCRIBER_H
 
 #include "MarSystemManager.h"
+#include "Easymar.h"
 using namespace Marsyas;
 
 using namespace std;
@@ -13,7 +14,7 @@ public:
     ~Transcriber();
 
     static realvec getPitchesFromAudio(const string audioFilename);
-    static mrs_real addFileSource(MarSystem* net, const string infile);
+//    static mrs_real addFileSource(MarSystem* net, const string infile);
     static MarSystem* makePitchNet(const mrs_real srate, const mrs_real lowFreq);
 	static realvec getPitchesFromRealvecSink(MarSystem* rvSink, const mrs_real
 srate);

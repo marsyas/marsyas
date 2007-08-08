@@ -34,6 +34,7 @@ Transcriber::~Transcriber() {
 
 #define EMPTYSTRING "MARSYAS_EMPTY"
 
+/*
 // TODO: ask -devel about making this a general Marsyas function
 mrs_real
 Transcriber::addFileSource(MarSystem* net, string const infile)
@@ -48,6 +49,7 @@ Transcriber::addFileSource(MarSystem* net, string const infile)
                      "SoundFileSource/src/mrs_bool/notEmpty");
 	return net->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
 }
+*/
 
 MarSystem*
 Transcriber::makePitchNet(const mrs_real srate, const mrs_real lowFreq)
@@ -80,7 +82,7 @@ Transcriber::getPitchesFromAudio(const string audioFilename)
     realvec pitchList;
 
     MarSystem* pnet = mng.create("Series", "pnet");
-    mrs_real srate = addFileSource(pnet, audioFilename);
+    mrs_real srate = Easymar::addFileSource(pnet, audioFilename);
     pnet->addMarSystem(makePitchNet(srate, 100.0));
 	MarSystem* rvSink = mng.create("RealvecSink", "rvSink");
 	pnet->addMarSystem(rvSink);
