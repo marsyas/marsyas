@@ -39,12 +39,9 @@ mrs_real
 Transcriber::addFileSource(MarSystem* net, string const infile)
 {
     if (infile == EMPTYSTRING) {
-        // TODO: spend 1 hour and finally figure out WTF the MRS_FOO
-        // things do.
-        cout << "Please specify a sound file." << endl;
-        exit(1);
+		MRSERR("Please specify a sound file.");
+		return 0;
     }
-
     net->addMarSystem(mng.create("SoundFileSource", "src"));
     net->updctrl("SoundFileSource/src/mrs_string/filename", infile);
     net->linkControl("mrs_bool/notEmpty",
