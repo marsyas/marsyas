@@ -53,7 +53,7 @@ Transcriber::addFileSource(MarSystem* net, string const infile)
 }
 
 MarSystem*
-Transcriber::makePitchNet(const mrs_real source_osrate, const mrs_real lowFreq)
+Transcriber::makePitchNet(const mrs_real srate, const mrs_real lowFreq)
 {
     mrs_real highFreq = 5000.0;
 
@@ -63,13 +63,13 @@ Transcriber::makePitchNet(const mrs_real source_osrate, const mrs_real lowFreq)
 
     // yes, this is the right way around (lowSamples<-highFreq)
     net->updctrl("PitchPraat/pitch/mrs_natural/lowSamples",
-                 hertz2samples(highFreq, source_osrate) );
+                 hertz2samples(highFreq, srate) );
     net->updctrl("PitchPraat/pitch/mrs_natural/highSamples",
-                 hertz2samples(lowFreq, source_osrate) );
+                 hertz2samples(lowFreq, srate) );
 
     // The window should be just long enough to contain three periods
     // (for pitch detection) of MinimumPitch.
-    mrs_real windowSize = 3.0/lowFreq*source_osrate;
+    mrs_real windowSize = 3.0/lowFreq*srate;
     net->updctrl("mrs_natural/inSamples", 512);
     net->updctrl("ShiftInput/sfi/mrs_natural/WindowSize",
                  powerOfTwo(windowSize));
@@ -89,9 +89,7 @@ Transcriber::getPitchesFromAudio(const string audioFilename)
 	pnet->addMarSystem(rvSink);
 
     while ( pnet->getctrl("mrs_bool/notEmpty")->toBool() )
-    {
         pnet->tick();
-    }
 
 	pitchList = getPitchesFromRealvecSink(rvSink, srate);
     delete pnet;
@@ -112,8 +110,8 @@ Transcriber::getPitchesFromRealvecSink(MarSystem* rvSink, const mrs_real srate)
     pitchList.create(data.getSize()/2);
     for (mrs_natural i=0; i<data.getSize(); i++) {
         pitch = data(2*i+1);
-        if ( pitch>0 )
-            pitchList(i)=pitch;
+        if (pitch > 0)
+            pitchList(i) = pitch;
     }
 	return pitchList;
 }
