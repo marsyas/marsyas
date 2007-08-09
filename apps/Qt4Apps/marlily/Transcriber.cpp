@@ -78,7 +78,6 @@ void
 Transcriber::getAllFromAudio(const string audioFilename, realvec&
 pitchList, realvec& ampList)
 {
-cout<<"begin"<<endl;
 	MarSystem* pitchSink = mng.create("RealvecSink", "pitchSink");
 	MarSystem* ampSink = mng.create("RealvecSink", "ampSink");
 
@@ -96,7 +95,6 @@ cout<<"begin"<<endl;
 	pitchList = getPitchesFromRealvecSink(pitchSink, srate);
 	ampList = getAmpsFromRealvecSink(ampSink);
 	delete pnet;
-cout<<"end"<<endl;
 }
 
 realvec
@@ -246,7 +244,7 @@ Transcriber::ampSegment(realvec& pitchList, realvec& ampList)
 	realvec noteAmps;
 	realvec boundaries;
 	boundaries = findValleys(ampList);
-	cout<<ampList.getRows()<<endl;
+//	cout<<ampList.getRows()<<endl;
 //	for (int i=0; i<onsets.getSize(); i++)
 //		cout<<onsets(i)<<" "<<1<<endl;
 //	cout<<endl;

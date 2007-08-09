@@ -3,16 +3,22 @@
 //    ./marlily filename.wav
 
 int main(int argc, char *argv[]) {
+	std::string file = argv[1];
 	realvec pitchList, ampList;
-	Transcriber::getAllFromAudio(argv[1], pitchList, ampList);
+	Transcriber::getAllFromAudio(file, pitchList, ampList);
 	Transcriber::toMidi(pitchList);
-	pitchList.writeText("pitches.txt");
-	ampList.writeText("amps.txt");
-
+	std::string writefile;
+	writefile = file;
+	writefile.append(".pitches.txt");
+	pitchList.writeText(writefile);
+	writefile = file;
+	writefile.append(".amps.txt");
+	ampList.writeText(writefile);
+/*
 	realvec foo = pitchList;
 	foo /= 100.0;
 	foo.writeText("foo.txt");
-
+*/
 	Transcriber::ampSegment(pitchList, ampList);
 //	Transcriber::pitchSegment(pitchList, ampList);
 //	cout<<ampList;
