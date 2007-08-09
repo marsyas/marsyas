@@ -67,7 +67,7 @@ MarSystem* Transcriber::makeAmplitudeNet(MarSystem* rvSink) {
     net->addMarSystem(mng.create("Rms", "rms"));
 	if (rvSink != NULL)
 		net->addMarSystem(rvSink);
-
+	
     net->updctrl("mrs_natural/inSamples", 512);
     net->updctrl("ShiftInput/sfiAmp/mrs_natural/WindowSize", 512);
 
@@ -156,6 +156,7 @@ Transcriber::pitchSegment(realvec& pitchList, realvec& ampList)
 
 	pitchList = segmentRealvec(pitchList, boundaries);
 	ampList = segmentRealvec(ampList, boundaries);
+
 }
 //zz
 
@@ -186,9 +187,12 @@ Transcriber::segmentRealvec(const realvec list, const realvec boundaries)
 	newList.stretch(boundaries.getSize(), maxCols);
 	return newList;
 }
+///   totemp
+realvec onsets;
+int onIndex=0;
 
 realvec
-Transcriber::findPitchBoundaries(const realvec& pitchList)
+Transcriber::findPitchBoundaries(const realvec pitchList)
 {
 	// find boundaries (boundaries)
 	mrs_natural window = 6;
@@ -226,6 +230,9 @@ Transcriber::findPitchBoundaries(const realvec& pitchList)
 	}
 	boundaries.stretch(onsetIndex+1);
 	boundaries(onsetIndex) = pitchList.getSize();
+
+// totemp
+	onsets = boundaries;
 	return boundaries;
 }
 
@@ -233,8 +240,71 @@ Transcriber::findPitchBoundaries(const realvec& pitchList)
 void
 Transcriber::ampSegment(realvec& pitchList, realvec& ampList)
 {
+	realvec noteAmps;
+	for (mrs_natural o=0; o<ampList.getRows(); o++) {
+		ampList.getRow(o,noteAmps);
+		findAmpBoundaries(noteAmps);
+	}
 
+/*
+	MarSystem* net = mng.create("Series", "net");
+	net->addMarSystem(mng.create("RealvecSource", "src"));
+	net->updctrl("RealvecSource/src/mrs_realvec/data", ampList);
+	net->addMarSystem(mng.create("Peaker", "pkr"));
+  net->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.1);
+  net->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.4);
+  //net->updctrl("Peaker/pkr/mrs_natural/peakStart", peakStart);
+  net->updctrl("Peaker/pkr/mrs_natural/peakEnd", 512);
+  //net->updctrl("Peaker/pkr/mrs_real/peakGain", 0.4);
 
+	int i=0;
+	while( i<100)
+//net->getctrl("RealvecSource/src/mrs_bool/done")->toBool())
+	{
+		i++;
+		net->tick();
+		const realvec& processedData =
+net->getctrl("Peaker/pkr/mrs_realvec/processedData")->to<mrs_realvec>();
+		cout << processedData << endl;
+	}
+*/
+
+}
+
+realvec
+Transcriber::findAmpBoundaries(const realvec ampList)
+{
+	//cout<<ampList.getRows()<<" "<<ampList.getCols()<<endl;
+
+	mrs_real localMaximum=0.0;
+	mrs_real minval = 0.2;
+	mrs_natural peakSpacing = 5;
+	mrs_natural prevPeakIndex;
+	mrs_real prevPeakValue;
+	localMaximum=0.0;
+	prevPeakIndex = -peakSpacing;
+	prevPeakValue = 0.0;
+	for (int i=1; i<ampList.getCols()-1; i++) {
+		if ( (ampList(i) > ampList(i-1)) &&
+		     (ampList(i) > ampList(i+1)) &&
+		     (ampList(i) > minval) )
+		{
+			localMaximum = ampList(i);
+			if (i < prevPeakIndex+peakSpacing) {
+				if (localMaximum > prevPeakValue)
+				{
+					prevPeakIndex = i;
+					prevPeakValue = localMaximum;
+				}
+			} else {
+				prevPeakIndex = i;
+				prevPeakValue = localMaximum;
+				cout<<i+onsets(onIndex)<<" "<<localMaximum<<endl;
+			}
+		}
+	}
+	onIndex++;
+	return NULL;
 }
 
 
