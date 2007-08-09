@@ -241,10 +241,28 @@ void
 Transcriber::ampSegment(realvec& pitchList, realvec& ampList)
 {
 	realvec noteAmps;
+	realvec boundaries;
+	boundaries = findAmpBoundaries(ampList);
+//	for (int i=0; i<onsets.getSize(); i++)
+//		cout<<onsets(i)<<" "<<1<<endl;
+//	cout<<endl;
+/*
 	for (mrs_natural o=0; o<ampList.getRows(); o++) {
 		ampList.getRow(o,noteAmps);
-		findAmpBoundaries(noteAmps);
+		boundaries = findAmpBoundaries(noteAmps);
+		if (boundaries.getSize()>1)
+		{
+*/
+		for (int i=0; i<boundaries.getSize(); i++)
+		{
+			cout<<boundaries(i)<<" "<<1<<endl;
+//			cout<<boundaries(i)+onsets(onIndex)<<" "<<1<<endl;
+		}
+/*
+		onIndex++;
 	}
+*/
+
 
 /*
 	MarSystem* net = mng.create("Series", "net");
@@ -274,37 +292,42 @@ net->getctrl("Peaker/pkr/mrs_realvec/processedData")->to<mrs_realvec>();
 realvec
 Transcriber::findAmpBoundaries(const realvec ampList)
 {
-	//cout<<ampList.getRows()<<" "<<ampList.getCols()<<endl;
+//	cout<<ampList.getRows()<<" "<<ampList.getCols()<<endl;
 
-	mrs_real localMaximum=0.0;
-	mrs_real minval = 0.2;
-	mrs_natural peakSpacing = 5;
-	mrs_natural prevPeakIndex;
-	mrs_real prevPeakValue;
-	localMaximum=0.0;
-	prevPeakIndex = -peakSpacing;
-	prevPeakValue = 0.0;
-	for (int i=1; i<ampList.getCols()-1; i++) {
-		if ( (ampList(i) > ampList(i-1)) &&
-		     (ampList(i) > ampList(i+1)) &&
-		     (ampList(i) > minval) )
+	realvec boundaries;
+	boundaries.create(4);
+	mrs_natural boundIndex = 0;
+
+	mrs_real localMin = 0.0;
+	mrs_real maxValue = 1.0;
+	mrs_natural peakSpacing = 8;
+	mrs_natural prevPeakIndex = 0;
+//	mrs_natural prevPeakIndex = -peakSpacing;
+	mrs_real prevPeakValue = 1.0;
+	for (mrs_natural i=1; i<ampList.getCols()-1; i++) {
+		//cout<<ampList(i)<<endl;
+		if ( (ampList(i) < ampList(i-1)) &&
+		     (ampList(i) < ampList(i+1)) &&
+		     (ampList(i) < maxValue) )
 		{
-			localMaximum = ampList(i);
+			localMin = ampList(i);
 			if (i < prevPeakIndex+peakSpacing) {
-				if (localMaximum > prevPeakValue)
+				if (localMin < prevPeakValue)
 				{
+					boundaries(boundIndex-1) = i;
 					prevPeakIndex = i;
-					prevPeakValue = localMaximum;
+					prevPeakValue = localMin;
 				}
 			} else {
+				boundaries.stretchWrite(boundIndex, i);
+				boundIndex++;
 				prevPeakIndex = i;
-				prevPeakValue = localMaximum;
-				cout<<i+onsets(onIndex)<<" "<<localMaximum<<endl;
+				prevPeakValue = localMin;
 			}
 		}
 	}
-	onIndex++;
-	return NULL;
+	boundaries.stretch(boundIndex);
+	return boundaries;
 }
 
 

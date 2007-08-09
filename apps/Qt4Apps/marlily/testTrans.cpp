@@ -9,16 +9,21 @@ int main(int argc, char *argv[]) {
 	pitchList.writeText("pitches.txt");
 	ampList.writeText("amps.txt");
 
-	Transcriber::pitchSegment(pitchList, ampList);
+	realvec foo = pitchList;
+	foo /= 100.0;
+	foo.writeText("foo.txt");
+
 	Transcriber::ampSegment(pitchList, ampList);
+//	Transcriber::pitchSegment(pitchList, ampList);
 //	cout<<ampList;
-	realvec foo;
+/*
 	for (int i=0; i<pitchList.getRows(); i++)
 	{
 		pitchList.getRow(i, foo);
 //		cout<<"********* "<<i<<endl;
 //		cout<<foo;
 	}
+*/
 
 }
 
