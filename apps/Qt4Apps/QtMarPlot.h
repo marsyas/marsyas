@@ -20,6 +20,7 @@ public:
 	void setPixelWidth(mrs_natural width);
 	void setVertical(mrs_real minVal, mrs_real highVal); // scales data
 	void setData(realvec* getData);
+	void setCenterLine(bool drawit);
 
 protected:
 	void paintEvent(QPaintEvent *event);
@@ -29,6 +30,7 @@ private:
 	QString plotName_;
 	mrs_real minVal_, highVal_;
 	qreal width_;
+	bool drawCenter_;
 
 	void plot1d();
 	//void plot2d(); // not implemented yet

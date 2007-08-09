@@ -10,6 +10,7 @@ QtMarPlot::QtMarPlot(QWidget *parent)
 	minVal_ = -0.5;
 	highVal_ = 0.5;
 	width_ = 1.0;
+	drawCenter_ = true;
 	setAutoFillBackground(true);
 }
 
@@ -25,6 +26,12 @@ QtMarPlot::setData(realvec *getData)
 	data_ = getData;
 //	cout<<*data_;
 	update();
+}
+
+void
+QtMarPlot::setCenterLine(bool drawit)
+{
+	drawCenter_ = drawit;
 }
 
 void
@@ -89,7 +96,8 @@ QtMarPlot::plot1d()
 	// dotted line
 	QPen pen(Qt::SolidPattern, 1, Qt::DashLine);
 	painter.setPen(pen);
-	painter.drawLine( 0, height()/2, width(), height()/2);
+	if (drawCenter_)
+		painter.drawLine( 0, height()/2, width(), height()/2);
 
 	pen.setWidth(width_);
 	pen.setStyle(Qt::SolidLine);
