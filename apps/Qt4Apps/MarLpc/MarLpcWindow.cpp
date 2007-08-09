@@ -25,7 +25,7 @@ MarLpcWindow::MarLpcWindow()
 	createMenus();  
 
 	QLabel  *breathinessLabel  = new QLabel("breathiness");
-	QSlider *breathinessSlider = new QSlider(Qt::Horizontal);
+	breathinessSlider_ = new QSlider(Qt::Horizontal);
 
 	QLabel  *cutOffLabel  = new QLabel("cutOff");
 	QSlider *cutOffSlider = new QSlider(Qt::Horizontal);
@@ -39,7 +39,7 @@ MarLpcWindow::MarLpcWindow()
 	amplitudePoleSlider_ = new QSlider(Qt::Horizontal);
 
 	QLabel  *tiltLabel  = new QLabel("Tilt");
-	QSlider *tiltSlider = new QSlider(Qt::Horizontal);
+	tiltSlider_ = new QSlider(Qt::Horizontal);
 
 	QLabel *posLabel = new QLabel("Pos");
 	posSlider_ = new QSlider(Qt::Horizontal);
@@ -49,17 +49,17 @@ MarLpcWindow::MarLpcWindow()
 
 	frequencyPoleSlider_->setValue(50);
 	amplitudePoleSlider_->setValue(50);
-	tiltSlider->setValue(50);
+	tiltSlider_->setValue(50);
 
 	createNetwork();
 
 	QGridLayout *gridLayout = new QGridLayout;
 
 	gridLayout->addWidget(breathinessLabel, 0, 0);
-	gridLayout->addWidget(breathinessSlider, 1, 0);
+	gridLayout->addWidget(breathinessSlider_, 1, 0);
 
 	gridLayout->addWidget(tiltLabel, 0, 1);
-	gridLayout->addWidget(tiltSlider, 1, 1);
+	gridLayout->addWidget(tiltSlider_, 1, 1);
 
 	gridLayout->addWidget(frequencyPoleLabel1, 2, 0);
 	gridLayout->addWidget(frequencyPoleSlider_, 3, 0);
@@ -74,11 +74,11 @@ MarLpcWindow::MarLpcWindow()
 	gridLayout->addWidget(frequencyPoleControl_, 4, 0);
     gridLayout->addWidget(amplitudePoleControl_, 4, 1);
 
-	connect(breathinessSlider, SIGNAL(valueChanged(int)), this, SLOT(breathinessChanged(int)));
+	connect(breathinessSlider_, SIGNAL(valueChanged(int)), this, SLOT(breathinessChanged(int)));
 	connect(cutOffSlider, SIGNAL(valueChanged(int)), this, SLOT(cutOffChanged(int)));
 	connect(frequencyPoleSlider_, SIGNAL(valueChanged(int)), this, SLOT(frequencyPoleChanged(int)));
 	connect(amplitudePoleSlider_, SIGNAL(valueChanged(int)), this, SLOT(amplitudePoleChanged(int)));
-	connect(tiltSlider, SIGNAL(valueChanged(int)), this, SLOT(tiltChanged(int)));
+	connect(tiltSlider_, SIGNAL(valueChanged(int)), this, SLOT(tiltChanged(int)));
 	connect(posSlider_, SIGNAL(sliderReleased()), this, SLOT(posChanged()));
 	
 	connect(mwr_, SIGNAL(ctrlChanged(MarControlPtr)), this, SLOT(ctrlChanged(MarControlPtr)));
@@ -108,7 +108,6 @@ void
 MarLpcWindow::frequencyPoleChanged(int value)
 {
 	frequencyPole_ =  value/100.0*.4*PI;
-
 	updateResonanceFilter();
 }
 
@@ -263,7 +262,6 @@ mrs_real formantBe = .975;
 		"FanOutIn/fanoutin/Series/aSeries/FlowThru/formantFlowthru/LPC/formantLpc/mrs_realvec/coeffs");
 
 	// setting up synthesis parameters
-	lpc_->updctrl("FanOutIn/fanoutin/Series/nSeries/NoiseSource/ns/mrs_string/mode", "randomized");
 	lpc_->updctrl("Windowing/winSyn/mrs_string/type", "Hanning");
 
 	//lpc_->linkctrl("FanOutIn/fanoutin/Series/aSeries/Filter/tilt/mrs_realvec/dcoeffs",
@@ -277,6 +275,11 @@ mrs_real formantBe = .975;
 		"FanOutIn/fanoutin/Series/aSeries/FlowThru/formantFlowthru/LPC/formantLpc/mrs_real/power");
 	lpc_->linkctrl("FanOutIn/fanoutin/Series/nSeries/FanOutIn/nFanOutIn/Gain/nFormant/mrs_real/gain",
 		"FanOutIn/fanoutin/Series/aSeries/FlowThru/formantFlowthru/LPC/formantLpc/mrs_real/power");
+
+
+	// creating shortcuts for osc manipulation
+	lpc_->linkctrl("mrs_natural/formantOrder",
+		"FanOutIn/fanoutin/Series/aSeries/FlowThru/formantFlowthru/LPC/formantLpc/mrs_natural/order");
 
 	mwr_ = new MarSystemQtWrapper(lpc_, true);
 
@@ -326,11 +329,17 @@ MarLpcWindow::open()
 {
 	QString fileName = QFileDialog::getOpenFileName(this);
 
+	play(fileName.toStdString());
+}
+
+void 
+MarLpcWindow::play(string fileName)
+{
 	mwr_->trackctrl(frequencyPolePtr_); 
 	mwr_->trackctrl(amplitudePolePtr_); 
 	mwr_->trackctrl(posPtr_);
 
-	mwr_->updctrl(fnamePtr_, fileName.toStdString());
+	mwr_->updctrl(fnamePtr_, fileName);
 	mwr_->updctrl(initPtr_, true);
 
 	mwr_->play();

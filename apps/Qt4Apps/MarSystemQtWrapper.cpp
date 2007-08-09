@@ -20,9 +20,6 @@ MarSystemQtWrapper::MarSystemQtWrapper(MarSystem* msys, bool withTimer)
       connect(timer, SIGNAL(timeout()), this, SLOT(emitTrackedControls()));
       timer->start(100);
     }
-  
-
-
 }
 
 MarSystemQtWrapper::~MarSystemQtWrapper()
@@ -129,6 +126,12 @@ MarSystemQtWrapper::emitTrackedControls()
 	}
 	mutex_.unlock();
 }
+
+QVector<MarControlPtr> MarSystemQtWrapper::getTrackedControls()
+{
+  return tracked_controls_;
+}
+
 
 void 
 MarSystemQtWrapper::run() 

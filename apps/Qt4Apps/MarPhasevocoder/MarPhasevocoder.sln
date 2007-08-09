@@ -2,19 +2,13 @@
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MarPhasevocoder", "MarPhasevocoder.vcproj", "{FF891051-D71E-3A77-A845-EC4955E92F50}"
-	GlobalSection(Qt) = preSolution
-		Integration = True
-	EndGlobalSection
+	ProjectSection(ProjectDependencies) = postProject
+		{E05964E9-10F8-3D3C-81C9-7C724A39EDF1} = {E05964E9-10F8-3D3C-81C9-7C724A39EDF1}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "marsyas", "..\..\..\marsyas\marsyas.vcproj", "{E05964E9-10F8-3D3C-81C9-7C724A39EDF1}"
-	GlobalSection(Qt) = preSolution
-		Integration = True
-	EndGlobalSection
 EndProject
 Global
-	GlobalSection(Qt) = preSolution
-		Integration = True
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Release|Win32 = Release|Win32
@@ -31,5 +25,14 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
+	GlobalSection(Qt) = preSolution
+		Integration = True
 	EndGlobalSection
 EndGlobal

@@ -33,10 +33,10 @@ using namespace Marsyas;
 
 Filter::Filter(string name):MarSystem("Filter",name)
 {
-	norder_ = 1;
+	norder_ = 2;
 	dorder_ = 1;
 	channels_ = 1;
-	order_ = 2;
+	order_ = 2; 
 	fgain_ = 1.0;
 	ncoeffs_.create(norder_);
 	dcoeffs_.create(dorder_);

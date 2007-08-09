@@ -19,7 +19,14 @@ class MarLpcWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MarLpcWindow();
+  QSlider* posSlider_;
+  QSlider* amplitudePoleSlider_;
+  QSlider* frequencyPoleSlider_;
+QSlider *breathinessSlider_;
+QSlider *tiltSlider_;
+
+  MarLpcWindow();
+MarSystemQtWrapper* getMarSystemQtWrapper(){return mwr_;};
 
 public slots: 
    void about();
@@ -31,7 +38,8 @@ public slots:
    void cutOffChanged(int value);
   
    void posChanged();
-   void open();  
+   void open(); 
+   void play(string fileName);
    void ctrlChanged(MarControlPtr cname);
 
 private:
@@ -59,9 +67,6 @@ private:
   MarControlGUI* frequencyPoleControl_;
   MarControlGUI* amplitudePoleControl_;
 
-  QSlider* posSlider_;
-  QSlider* amplitudePoleSlider_;
-  QSlider* frequencyPoleSlider_;
 
   QMenu*   fileMenu;  
   QMenu*   helpMenu;
