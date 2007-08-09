@@ -72,8 +72,7 @@ Rms::myProcess(realvec& in, realvec& out)
       rmsEnergy = sqrt(rmsEnergy);
     }
 
-  // SCALING SHOULD BE REMOVED 
-  out(0) = (mrs_real)(rmsEnergy * 10000000.0);
+	out(0) = (mrs_real) rmsEnergy;
 }
 
 
