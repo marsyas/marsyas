@@ -14,10 +14,12 @@ public:
     ~Transcriber();
 
     static realvec getPitchesFromAudio(const string audioFilename);
-    static MarSystem* makePitchNet(const mrs_real srate, const mrs_real lowFreq);
+    static MarSystem* makePitchNet(const mrs_real srate, const mrs_real
+lowFreq = 100.0, MarSystem* rvSink = NULL);
 	static realvec getPitchesFromRealvecSink(MarSystem* rvSink, const mrs_real
 srate);
-	static MarSystem* makeAmplitudeNet();
+	static realvec getAmpsFromRealvecSink(MarSystem* rvSink);
+	static MarSystem* makeAmplitudeNet(MarSystem* rvSink = NULL);
 
 	static void getAllFromAudio(const string audioFilename);
 
