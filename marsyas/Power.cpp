@@ -34,7 +34,6 @@ Power::Power(string name):MarSystem("Power",name)
 
 Power::Power(const Power& a) : MarSystem(a)
 {
-	  cout << "truc" << endl;
 }
 
 Power::~Power()
