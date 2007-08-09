@@ -23,9 +23,14 @@ srate);
 
 	static void getAllFromAudio(const string audioFilename, realvec&
 pitchList, realvec& ampList);
+	static void toMidi(realvec& pitchList);
 	static void pitchSegment(realvec& pitchList, realvec& ampList);
 	static void ampSegment(realvec& pitchList, realvec& ampList);
 
+	static realvec findPitchBoundaries(const realvec& pitchList);
+
+    static mrs_real findMedian(const mrs_natural start, const
+mrs_natural length, const realvec array);
     /*
     	void setOptions(mrs_natural getRadius, mrs_real getNewNote, mrs_real getCertantyDiv);
 
@@ -46,7 +51,6 @@ pitchList, realvec& ampList);
 
 private:
     /*
-    	mrs_real findMedian(mrs_natural start, mrs_natural length, realvec array);
     	mrs_real notePitch(realvec curNote);
 
     	string outputFilename;

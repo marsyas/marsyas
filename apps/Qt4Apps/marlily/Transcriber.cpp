@@ -138,17 +138,91 @@ Transcriber::getAmpsFromRealvecSink(MarSystem* rvSink)
 {
 	realvec ampList = rvSink->getctrl("mrs_realvec/data")->toVec();
 	rvSink->updctrl("mrs_bool/done", true);
-	//ampList.norm();
+	ampList /= ampList.maxval();
 	return ampList;
 }
 
 void
+Transcriber::toMidi(realvec& pitchList)
+{
+	pitchList.apply( hertz2pitch );
+}
+
+
+void
 Transcriber::pitchSegment(realvec& pitchList, realvec& ampList)
 {
+	realvec boundaries = findPitchBoundaries(pitchList);
 
+	cout<<boundaries;
+//	onsets.writeText("onsets.txt");
 
+/*
+	//cout<<onsets;
+	realvec newPitches;
+	newPitches.create(10);
+	//newPitches.create(onsets.getSize(), 100);
+
+	int nextOnset=0;
+	int prevOnset=0;
+	int j=0;
+	for (int i=0; i<pitchList.getSize(); i++)
+	{
+		if (i >= nextOnset ) {
+			j++;
+			prevOnset = nextOnset;
+			nextOnset = onsets(j);
+		}
+//		cout<<j<<" "<<i-prevOnset<<endl;
+		newPitches.stretchWrite(j, i-prevOnset, pitchList(i) );
+	}
+	pitchList = newPitches;
+*/
 }
 //zz
+
+realvec
+Transcriber::findPitchBoundaries(const realvec& pitchList)
+{
+	// find boundaries (boundaries)
+	mrs_natural window = 6;
+	mrs_real noteBoundary = 0.4;
+	mrs_natural noteDistance = 8;
+
+	realvec boundaries;
+	// temporary-ish, to work around a PPC bug in realvec stretch()
+	// err, being 4 instead of 1 is the workaround.
+	boundaries.create(4);
+
+	mrs_natural i;
+	mrs_real median;
+	mrs_real prevNote=0.0;
+	mrs_natural onsetIndex=1;
+	mrs_natural prevSamp=0;
+	for (i=window/2; i<pitchList.getSize()-window/2; i++) {
+		median = findMedian(i-window/2, window, pitchList);
+		//cout<<i<<"   "<<median<<"     actual: "<<pitchList(i)<<endl;
+		if ( fabs(median-prevNote) > noteBoundary ) {
+			if (i>prevSamp+noteDistance) {
+				prevNote = median;
+				prevSamp = i;
+				boundaries.stretchWrite( onsetIndex, i);
+				onsetIndex++;
+				//cout<<"*** new note: "<<median<<" at "<<i<<endl;
+			}
+			else {
+				prevNote = median;
+				//prevSamp = i;
+				//boundaries(onsetIndex) = i;
+				//cout<<"****** correction: new note: "<<median<<" at "<<prevSamp<<endl;
+			}
+		}
+	}
+	boundaries.stretch(onsetIndex+1);
+	boundaries(onsetIndex) = pitchList.getSize();
+	return boundaries;
+}
+
 
 void
 Transcriber::ampSegment(realvec& pitchList, realvec& ampList)
@@ -158,13 +232,36 @@ Transcriber::ampSegment(realvec& pitchList, realvec& ampList)
 }
 
 
+// find median without 0s.
+mrs_real
+Transcriber::findMedian(const mrs_natural start, const mrs_natural
+length, const realvec array)
+{
+	if ( length<=0 )
+		return 0;
+	realvec noZeros;
+	noZeros.create(length);
+	mrs_natural j=0;
+	// don't include 0s
+	for (mrs_natural i=0; i<length; i++) {
+		if ( array(start+i) > 0 ) {
+			noZeros(j)=array(start+i);
+			j++;
+		}
+	}
+	noZeros.stretch(j-1);
+	if (j-1 > 0)
+		return noZeros.median();
+	return 0;
+}
+
 
 /*
 void
 Transcriber::setOptions(mrs_natural getRadius, mrs_real getNewNote, mrs_real getCertantyDiv)
 {
-	median_radius = getRadius;
-	new_note_midi = getNewNote;
+	window = getRadius;
+	noteBoundary = getNewNote;
 	pitch_certainty_div = getCertantyDiv;
 }
 
@@ -276,26 +373,26 @@ void Transcriber::calcOnsets() {
 
 	float median;
 	float prevNote=0.0;
-	mrs_natural durIndex=1;
+	mrs_natural onsetIndex=1;
 	mrs_natural prevSamp=0;
-	for (i=median_radius; i<pitchList.getSize()-median_radius; i++) {
-		median = findMedian(i-median_radius, 2*median_radius, pitchList);
-		if ( fabs(median-prevNote) > new_note_midi ) {
-			if (i>prevSamp+median_radius) {
+	for (i=window; i<pitchList.getSize()-window; i++) {
+		median = findMedian(i-window, 2*window, pitchList);
+		if ( fabs(median-prevNote) > noteBoundary ) {
+			if (i>prevSamp+window) {
 				prevNote = median;
 				prevSamp = i;
-				onsets.stretchWrite( durIndex, i);
-				durIndex++;
+				onsets.stretchWrite( onsetIndex, i);
+				onsetIndex++;
 			}
 			else {
 				prevNote = median;
 				prevSamp = i;
-				onsets(durIndex) = i;
+				onsets(onsetIndex) = i;
 			}
 		}
 	}
-	onsets.stretchWrite(durIndex, pitchList.getSize() );
-	onsets.stretch(durIndex+1);
+	onsets.stretchWrite(onsetIndex, pitchList.getSize() );
+	onsets.stretch(onsetIndex+1);
 }
 
 void Transcriber::calcRelativeDurations() {
@@ -346,7 +443,7 @@ void Transcriber::calcNotes(){
 		k=0;
 		for (j=start; j<end; j++) {
 			distance = fabs( pitchList(j) - notes(i) );
-			if (distance < new_note_midi) {
+			if (distance < noteBoundary) {
 				closePitches(k) = pitchList(j);
 				k++;
 			}
