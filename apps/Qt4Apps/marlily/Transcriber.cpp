@@ -73,10 +73,10 @@ MarSystem* Transcriber::makeAmplitudeNet(MarSystem* rvSink) {
 
     return net;
 }
-//zz
 
 void
-Transcriber::getAllFromAudio(const string audioFilename)
+Transcriber::getAllFromAudio(const string audioFilename, realvec&
+pitchList, realvec& ampList)
 {
 	MarSystem* pitchSink = mng.create("RealvecSink", "pitchSink");
 	MarSystem* ampSink = mng.create("RealvecSink", "ampSink");
@@ -92,11 +92,8 @@ Transcriber::getAllFromAudio(const string audioFilename)
     while ( pnet->getctrl("mrs_bool/notEmpty")->toBool() )
         pnet->tick();
 
-	realvec pitchList = getPitchesFromRealvecSink(pitchSink, srate);
-	realvec ampList = getAmpsFromRealvecSink(ampSink);
-
-	pitchList.writeText("pitches.txt");
-	ampList.writeText("amps.txt");
+	pitchList = getPitchesFromRealvecSink(pitchSink, srate);
+	ampList = getAmpsFromRealvecSink(ampSink);
 	delete pnet;
 }
 
@@ -130,6 +127,7 @@ Transcriber::getPitchesFromRealvecSink(MarSystem* rvSink, const mrs_real srate)
         pitch = samples2hertz(data(2*i+1), srate);
 		if (pitch > 0)
             pitchList(i) = pitch;
+		// values in PitchList are 0 by default
 	}
 
 	return pitchList;
@@ -140,8 +138,23 @@ Transcriber::getAmpsFromRealvecSink(MarSystem* rvSink)
 {
 	realvec ampList = rvSink->getctrl("mrs_realvec/data")->toVec();
 	rvSink->updctrl("mrs_bool/done", true);
-
+	//ampList.norm();
 	return ampList;
+}
+
+void
+Transcriber::pitchSegment(realvec& pitchList, realvec& ampList)
+{
+
+
+}
+//zz
+
+void
+Transcriber::ampSegment(realvec& pitchList, realvec& ampList)
+{
+
+
 }
 
 

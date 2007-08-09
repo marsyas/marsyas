@@ -18,10 +18,13 @@ public:
 lowFreq = 100.0, MarSystem* rvSink = NULL);
 	static realvec getPitchesFromRealvecSink(MarSystem* rvSink, const mrs_real
 srate);
-	static realvec getAmpsFromRealvecSink(MarSystem* rvSink);
 	static MarSystem* makeAmplitudeNet(MarSystem* rvSink = NULL);
+	static realvec getAmpsFromRealvecSink(MarSystem* rvSink);
 
-	static void getAllFromAudio(const string audioFilename);
+	static void getAllFromAudio(const string audioFilename, realvec&
+pitchList, realvec& ampList);
+	static void pitchSegment(realvec& pitchList, realvec& ampList);
+	static void ampSegment(realvec& pitchList, realvec& ampList);
 
     /*
     	void setOptions(mrs_natural getRadius, mrs_real getNewNote, mrs_real getCertantyDiv);
