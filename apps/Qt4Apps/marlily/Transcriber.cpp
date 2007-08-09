@@ -154,32 +154,38 @@ Transcriber::pitchSegment(realvec& pitchList, realvec& ampList)
 {
 	realvec boundaries = findPitchBoundaries(pitchList);
 
-	cout<<boundaries;
-//	onsets.writeText("onsets.txt");
-
-/*
-	//cout<<onsets;
-	realvec newPitches;
-	newPitches.create(10);
-	//newPitches.create(onsets.getSize(), 100);
-
-	int nextOnset=0;
-	int prevOnset=0;
-	int j=0;
-	for (int i=0; i<pitchList.getSize(); i++)
-	{
-		if (i >= nextOnset ) {
-			j++;
-			prevOnset = nextOnset;
-			nextOnset = onsets(j);
-		}
-//		cout<<j<<" "<<i-prevOnset<<endl;
-		newPitches.stretchWrite(j, i-prevOnset, pitchList(i) );
-	}
-	pitchList = newPitches;
-*/
+	pitchList = segmentRealvec(pitchList, boundaries);
+	ampList = segmentRealvec(ampList, boundaries);
 }
 //zz
+
+realvec
+Transcriber::segmentRealvec(const realvec list, const realvec boundaries)
+{
+	mrs_natural maxCols=0;
+	realvec newList;
+	newList.create(boundaries.getSize()-1,10);
+
+	if (boundaries.getSize() == 1)
+		return list;
+
+	mrs_natural note = 0;
+	mrs_natural prevBound = boundaries(note);
+	mrs_natural nextBound = boundaries(note+1);
+	for (mrs_natural i=0; i<list.getSize(); i++)
+	{
+		if (i == nextBound ) {
+			if ((i-prevBound) > maxCols)
+				maxCols = (i-prevBound);
+			note++;
+			prevBound = nextBound;
+			nextBound = boundaries(note+1);
+		}
+		newList.stretchWrite(note, i - prevBound, list(i) );
+	}
+	newList.stretch(boundaries.getSize(), maxCols);
+	return newList;
+}
 
 realvec
 Transcriber::findPitchBoundaries(const realvec& pitchList)
@@ -262,7 +268,7 @@ Transcriber::setOptions(mrs_natural getRadius, mrs_real getNewNote, mrs_real get
 {
 	window = getRadius;
 	noteBoundary = getNewNote;
-	pitch_certainty_div = getCertantyDiv;
+	pitch_certamrs_naturaly_div = getCertantyDiv;
 }
 
 void
@@ -353,7 +359,7 @@ mrs_real Transcriber::findMedian(mrs_natural start, mrs_natural length, realvec 
 
 mrs_natural secToFrame(mrs_real second)
 {
-	//return (int) round( second*44100.0/512.0 ); //round() does not exist in <cmath> [!]
+	//return (mrs_natural) round( second*44100.0/512.0 ); //round() does not exist in <cmath> [!]
 	return (mrs_natural) floor(0.5 + second*44100.0/512.0);
 
 }

@@ -10,14 +10,13 @@ int main(int argc, char *argv[]) {
 	ampList.writeText("amps.txt");
 
 	Transcriber::pitchSegment(pitchList, ampList);
-/*
 	realvec foo;
 	for (int i=0; i<pitchList.getRows(); i++)
 	{
 		pitchList.getRow(i, foo);
+		cout<<"********* "<<i<<endl;
 		cout<<foo;
 	}
-*/
 //	Transcriber::ampSegment(pitchList, ampList);
 //	cout<<ampList;
 
