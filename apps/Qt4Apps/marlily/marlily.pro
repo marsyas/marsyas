@@ -1,10 +1,17 @@
 SOURCES = testTrans.cpp
+#SOURCES = start.cpp
+
+HEADERS += mainwindow.h
+SOURCES += mainwindow.cpp
+
+
 HEADERS += Transcriber.h
 SOURCES += Transcriber.cpp
 
 HEADERS += Easymar.h
 SOURCES += Easymar.cpp
 
+RESOURCES = icons.qrc
 INCLUDEPATH += ../../../lib/release/
 
 unix {

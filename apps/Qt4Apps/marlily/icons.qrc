@@ -1,0 +1,19 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+     <file>../meaws/icons/copy.png</file>
+     <file>../meaws/icons/cut.png</file>
+     <file>../meaws/icons/new.png</file>
+     <file>../meaws/icons/open.png</file>
+     <file>../meaws/icons/paste.png</file>
+     <file>../meaws/icons/save.png</file>
+     <file>../meaws/icons/player_pause.png</file>
+     <file>../meaws/icons/player_play.png</file>
+     <file>../meaws/icons/player_stop.png</file>
+     <file>../meaws/icons/circle.png</file>
+     <file>../meaws/icons/circle-beat.png</file>
+     <file>../meaws/icons/triangle.png</file>
+     <file>../meaws/icons/square.png</file>
+     <file>../meaws/icons/play.png</file>
+     <file>../meaws/icons/quit.png</file>
+</qresource>
+</RCC>

@@ -78,6 +78,7 @@ void
 Transcriber::getAllFromAudio(const string audioFilename, realvec&
 pitchList, realvec& ampList)
 {
+cout<<"begin"<<endl;
 	MarSystem* pitchSink = mng.create("RealvecSink", "pitchSink");
 	MarSystem* ampSink = mng.create("RealvecSink", "ampSink");
 
@@ -95,6 +96,7 @@ pitchList, realvec& ampList)
 	pitchList = getPitchesFromRealvecSink(pitchSink, srate);
 	ampList = getAmpsFromRealvecSink(ampSink);
 	delete pnet;
+cout<<"end"<<endl;
 }
 
 realvec
@@ -147,6 +149,7 @@ Transcriber::toMidi(realvec& pitchList)
 {
 	pitchList.apply( hertz2pitch );
 }
+
 
 
 void
@@ -242,7 +245,8 @@ Transcriber::ampSegment(realvec& pitchList, realvec& ampList)
 {
 	realvec noteAmps;
 	realvec boundaries;
-	boundaries = findAmpBoundaries(ampList);
+	boundaries = findValleys(ampList);
+	cout<<ampList.getRows()<<endl;
 //	for (int i=0; i<onsets.getSize(); i++)
 //		cout<<onsets(i)<<" "<<1<<endl;
 //	cout<<endl;
@@ -255,7 +259,7 @@ Transcriber::ampSegment(realvec& pitchList, realvec& ampList)
 */
 		for (int i=0; i<boundaries.getSize(); i++)
 		{
-			cout<<boundaries(i)<<" "<<1<<endl;
+//			cout<<boundaries(i)<<" "<<1<<endl;
 //			cout<<boundaries(i)+onsets(onIndex)<<" "<<1<<endl;
 		}
 /*
@@ -290,44 +294,43 @@ net->getctrl("Peaker/pkr/mrs_realvec/processedData")->to<mrs_realvec>();
 }
 
 realvec
-Transcriber::findAmpBoundaries(const realvec ampList)
+Transcriber::findValleys(const realvec list)
 {
 //	cout<<ampList.getRows()<<" "<<ampList.getCols()<<endl;
 
-	realvec boundaries;
-	boundaries.create(4);
-	mrs_natural boundIndex = 0;
+	realvec valleys;
+	valleys.create(4);
+	mrs_natural valIndex = 0;
 
 	mrs_real localMin = 0.0;
 	mrs_real maxValue = 1.0;
 	mrs_natural peakSpacing = 8;
-	mrs_natural prevPeakIndex = 0;
-//	mrs_natural prevPeakIndex = -peakSpacing;
-	mrs_real prevPeakValue = 1.0;
-	for (mrs_natural i=1; i<ampList.getCols()-1; i++) {
-		//cout<<ampList(i)<<endl;
-		if ( (ampList(i) < ampList(i-1)) &&
-		     (ampList(i) < ampList(i+1)) &&
-		     (ampList(i) < maxValue) )
+	mrs_natural prevValIndex = 0;
+	mrs_real prevValValue = 1.0;
+	for (mrs_natural i=1; i<list.getCols()-1; i++) {
+		//cout<<list(i)<<endl;
+		if ( (list(i) < list(i-1)) &&
+		     (list(i) < list(i+1)) &&
+		     (list(i) < maxValue) )
 		{
-			localMin = ampList(i);
-			if (i < prevPeakIndex+peakSpacing) {
-				if (localMin < prevPeakValue)
+			localMin = list(i);
+			if (i < prevValIndex+peakSpacing) {
+				if (localMin < prevValValue)
 				{
-					boundaries(boundIndex-1) = i;
-					prevPeakIndex = i;
-					prevPeakValue = localMin;
+					valleys(valIndex-1) = i;
+					prevValIndex = i;
+					prevValValue = localMin;
 				}
 			} else {
-				boundaries.stretchWrite(boundIndex, i);
-				boundIndex++;
-				prevPeakIndex = i;
-				prevPeakValue = localMin;
+				valleys.stretchWrite(valIndex, i);
+				valIndex++;
+				prevValIndex = i;
+				prevValValue = localMin;
 			}
 		}
 	}
-	boundaries.stretch(boundIndex);
-	return boundaries;
+	valleys.stretch(valIndex);
+	return valleys;
 }
 
 

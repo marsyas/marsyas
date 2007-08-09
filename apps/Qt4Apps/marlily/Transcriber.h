@@ -28,7 +28,7 @@ pitchList, realvec& ampList);
 	static void ampSegment(realvec& pitchList, realvec& ampList);
 
 	static realvec findPitchBoundaries(const realvec pitchList);
-	static realvec findAmpBoundaries(const realvec ampList);
+	static realvec findValleys(const realvec list);
 
     static mrs_real findMedian(const mrs_natural start, const
 mrs_natural length, const realvec array);
