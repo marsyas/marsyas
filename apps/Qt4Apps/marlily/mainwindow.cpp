@@ -52,12 +52,12 @@ void MainWindow::createMain() {
 	QFrame* centralFrame = new QFrame;
 	setCentralWidget(centralFrame);
 
-	instructionArea = new QGridLayout;
-	resultArea = new QGridLayout;
+	pitchPlot = new QtMarPlot;
+	ampPlot = new QtMarPlot;
 
 	mainLayout = new QVBoxLayout;
-	mainLayout->addLayout(instructionArea);
-	mainLayout->addLayout(resultArea);
+	mainLayout->addWidget(pitchPlot);
+	mainLayout->addWidget(ampPlot);
 	centralFrame->setLayout(mainLayout);
 }
 
@@ -101,13 +101,28 @@ void MainWindow::open() {
 	QString openFilename = QFileDialog::getOpenFileName(0,
 		tr("Open File"));
 	if (!openFilename.isEmpty()) {
-		cout<<qPrintable(openFilename)<<endl;
-
-	    Transcriber::getAllFromAudio(openFilename.toStdString(), pitchList, ampList);
+		string filename = openFilename.toStdString();
+// since this line has a bus error...
+//	    Transcriber::getAllFromAudio(openFilename.toStdString(), pitchList, ampList);
 //    	Transcriber::toMidi(pitchList);
+		string readFile;
+		readFile = filename;
+		readFile.append(".pitches.txt");
+		pitchList.readText(readFile);
+		readFile = filename;
+		readFile.append(".amps.txt");
+		ampList.readText(readFile);
 
-		cout<<pitchList;
-		cout<<ampList;
+		pitchPlot->setData(&pitchList);
+		pitchPlot->setVertical(50,80);
+		pitchPlot->setPlotName("Pitches");
+		pitchPlot->setPixelWidth(2);
+		pitchPlot->setCenterLine(false);
+		ampPlot->setData(&ampList);
+		ampPlot->setVertical(0,1);
+		ampPlot->setPlotName("Amplitudes");
+		ampPlot->setPixelWidth(2);
+		ampPlot->setCenterLine(false);
 	}
 }
 

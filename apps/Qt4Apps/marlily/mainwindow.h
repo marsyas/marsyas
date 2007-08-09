@@ -14,6 +14,7 @@ class QAction;
 class QMenu;
 class QTextEdit;
 class QLabel;
+#include "../QtMarPlot.h"
 
 #include "Transcriber.h"
 
@@ -47,8 +48,8 @@ private:
 // main interface objects
 	QFrame* centralFrame;
 	QVBoxLayout *mainLayout;
-	QGridLayout *instructionArea;
-	QGridLayout *resultArea;
+	QtMarPlot *pitchPlot;
+	QtMarPlot *ampPlot;
 
 // menu and toolbar objects
 	QMenu *fileMenu;

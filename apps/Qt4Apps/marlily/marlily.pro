@@ -4,12 +4,14 @@ SOURCES = start.cpp
 HEADERS += mainwindow.h
 SOURCES += mainwindow.cpp
 
-
 HEADERS += Transcriber.h
 SOURCES += Transcriber.cpp
 
 HEADERS += Easymar.h
 SOURCES += Easymar.cpp
+
+HEADERS += ../QtMarPlot.h
+SOURCES += ../QtMarPlot.cpp
 
 INCLUDEPATH += ../../../lib/release/
 
