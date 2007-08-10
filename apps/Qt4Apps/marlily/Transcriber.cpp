@@ -244,6 +244,9 @@ Transcriber::ampSegment(realvec& pitchList, realvec& ampList)
 	realvec noteAmps;
 	realvec boundaries;
 	boundaries = findValleys(ampList);
+
+	pitchList = segmentRealvec(pitchList, boundaries);
+	ampList = segmentRealvec(ampList, boundaries);
 //	cout<<ampList.getRows()<<endl;
 //	for (int i=0; i<onsets.getSize(); i++)
 //		cout<<onsets(i)<<" "<<1<<endl;

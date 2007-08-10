@@ -35,6 +35,11 @@ private slots:
 	void about();
 	void open();
 
+	void showMusic();
+	void segment();
+	void nextNote();
+	void prevNote();
+
 private:
 // basic application functions
 	void createActions();
@@ -45,6 +50,9 @@ private:
 	void readSettings();
 	void writeSettings();
 
+	void display();
+	void message();
+
 // main interface objects
 	QFrame* centralFrame;
 	QVBoxLayout *mainLayout;
@@ -53,8 +61,12 @@ private:
 
 // menu and toolbar objects
 	QMenu *fileMenu;
-	QToolBar *fileToolBar;
 	QAction *openUserAct;
+	QMenu *audioMenu;
+	QAction *segmentAct;
+	QAction *nextNoteAct;
+	QAction *prevNoteAct;
+	QAction *showMusicAct;
 	QAction *exitAct;
 
 	QMenu *helpMenu;
@@ -66,8 +78,13 @@ private:
 	QLabel *permanentStatusMessage;
 
 
+	int currNote;
 	realvec pitchList;
 	realvec ampList;
+	realvec pitchSplit;
+	realvec ampSplit;
+	realvec tempPitch;
+	realvec tempAmp;
 };
 
 #endif
