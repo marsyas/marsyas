@@ -83,6 +83,12 @@ pitchList, realvec& ampList)
 
     MarSystem* pnet = mng.create("Series", "pnet");
     mrs_real srate = Easymar::addFileSource(pnet, audioFilename);
+// TODO: double the number of observations?
+	pnet->addMarSystem(mng.create("ShiftInput", "shift"));
+    pnet->updctrl("ShiftInput/shift/mrs_natural/WindowSize",1024);
+  	pnet->updctrl("ShiftInput/shift/mrs_natural/Decimation",512);
+
+
 
 	MarSystem* fanout = mng.create("Fanout", "fanout");
 	fanout->addMarSystem(makePitchNet(srate, 100.0, pitchSink));
@@ -247,6 +253,7 @@ Transcriber::ampSegment(realvec& pitchList, realvec& ampList)
 
 	pitchList = segmentRealvec(pitchList, boundaries);
 	ampList = segmentRealvec(ampList, boundaries);
+	cout<<getRelativeDurations(boundaries);
 //	cout<<ampList.getRows()<<endl;
 //	for (int i=0; i<onsets.getSize(); i++)
 //		cout<<onsets(i)<<" "<<1<<endl;
@@ -357,6 +364,38 @@ length, const realvec array)
 		return noZeros.median();
 	return 0;
 }
+
+
+realvec
+Transcriber::getRelativeDurations(realvec boundaries) {
+	boundaries.sort();
+	cout<<boundaries;
+
+	realvec durations;
+	durations.create( boundaries.getSize()-1 );
+
+	mrs_natural i;
+	mrs_natural min = 99999; // infinity
+	// calculate durations in samples
+	// and find smallest
+	for (i=0; i<boundaries.getSize()-1; i++) {
+		durations(i) = boundaries(i+1) - boundaries(i);
+		cout<<"duration: "<<durations(i)<<endl;
+		// we don't care about silent durations
+		if (durations(i) < min)
+			min = durations(i);
+	}
+	cout<<"min: "<<min<<endl;
+	// find relative durations
+	// yes, we want to truncate the division.
+	for (i=0; i<boundaries.getSize()-1; i++) {
+		durations(i) = (mrs_natural) ( durations(i) / (min) );
+	//	durations(i) = (mrs_natural) ( durations(i) / (min*0.9) );
+	}
+	cout<<"**********"<<endl;
+	return durations;
+}
+
 
 
 /*

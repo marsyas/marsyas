@@ -32,7 +32,9 @@ pitchList, realvec& ampList);
 
     static mrs_real findMedian(const mrs_natural start, const
 mrs_natural length, const realvec array);
-	static realvec segmentRealvec(realvec list, const realvec boundaries);
+	static realvec segmentRealvec(const realvec list, const realvec boundaries);
+
+	static realvec getRelativeDurations(const realvec boundaries);
     /*
     	void setOptions(mrs_natural getRadius, mrs_real getNewNote, mrs_real getCertantyDiv);
 

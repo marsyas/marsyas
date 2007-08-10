@@ -185,8 +185,6 @@ void MainWindow::showMusic() {
 }
 
 void MainWindow::display() {
-	pitchPlot->setVertical(50,80);
-	pitchPlot->setPlotName("Pitches");
 	pitchPlot->setPixelWidth(2);
 	pitchPlot->setCenterLine(false);
 	ampPlot->setVertical(0,1);
@@ -196,14 +194,26 @@ void MainWindow::display() {
 	if (currNote<0) {
 		pitchPlot->setData(&pitchList);
 		ampPlot->setData(&ampList);
+		QString pitchMessage = "Pitches: ";
+		pitchMessage.append(QString::number( pitchList.mean() ));
+		pitchPlot->setPlotName(pitchMessage);
+		pitchPlot->setVertical(pitchList.minval(),pitchList.maxval());
 	} else {
 		pitchSplit.getRow(currNote, tempPitch);
 		ampSplit.getRow(currNote, tempAmp);
 		pitchPlot->setData(&tempPitch);
 		ampPlot->setData(&tempAmp);
+		QString ampMessage = "Amplitudes: ";
+		int numVals=0;
+		while ((tempPitch(numVals)>0) && (numVals<tempPitch.getCols()))
+			numVals++;
+		ampMessage.append(QString::number( numVals ));
+		ampPlot->setPlotName(ampMessage);
 		QString pitchMessage = "Pitches: ";
 		pitchMessage.append(QString::number( tempPitch.median() ));
 		pitchPlot->setPlotName(pitchMessage);
+		pitchPlot->setVertical(50,80);
+//		pitchPlot->setVertical(tempPitch.minval(),tempPitch.maxval());
 	}
 	message();
 }
