@@ -26,10 +26,12 @@ static MarSystemManager mng;
 //#include <fstream>
 //#include <cmath>
 
-Transcriber::Transcriber() {
+Transcriber::Transcriber()
+{
 }
 
-Transcriber::~Transcriber() {
+Transcriber::~Transcriber()
+{
 }
 
 #define EMPTYSTRING "MARSYAS_EMPTY"
@@ -37,56 +39,57 @@ Transcriber::~Transcriber() {
 MarSystem*
 Transcriber::makePitchNet(const mrs_real srate, const mrs_real lowFreq, MarSystem* rvSink)
 {
-    mrs_real highFreq = 5000.0;
+	mrs_real highFreq = 5000.0;
 
-    MarSystem *net = mng.create("Series", "pitchNet");
-    net->addMarSystem(mng.create("ShiftInput", "sfi"));
-    net->addMarSystem(mng.create("PitchPraat", "pitch"));
+	MarSystem *net = mng.create("Series", "pitchNet");
+	net->addMarSystem(mng.create("ShiftInput", "sfi"));
+	net->addMarSystem(mng.create("PitchPraat", "pitch"));
 	if (rvSink != NULL)
 		net->addMarSystem(rvSink);
 
-    // yes, this is the right way around (lowSamples<-highFreq)
-    net->updctrl("PitchPraat/pitch/mrs_natural/lowSamples",
-                 hertz2samples(highFreq, srate) );
-    net->updctrl("PitchPraat/pitch/mrs_natural/highSamples",
-                 hertz2samples(lowFreq, srate) );
+	// yes, this is the right way around (lowSamples<-highFreq)
+	net->updctrl("PitchPraat/pitch/mrs_natural/lowSamples",
+	             hertz2samples(highFreq, srate) );
+	net->updctrl("PitchPraat/pitch/mrs_natural/highSamples",
+	             hertz2samples(lowFreq, srate) );
 
-    // The window should be just long enough to contain three periods
-    // (for pitch detection) of MinimumPitch.
-    mrs_real windowSize = 3.0/lowFreq*srate;
-    net->updctrl("mrs_natural/inSamples", 512);
-    net->updctrl("ShiftInput/sfi/mrs_natural/WindowSize",
-                 powerOfTwo(windowSize));
+	// The window should be just long enough to contain three periods
+	// (for pitch detection) of MinimumPitch.
+	mrs_real windowSize = 3.0/lowFreq*srate;
+	net->updctrl("mrs_natural/inSamples", 512);
+	net->updctrl("ShiftInput/sfi/mrs_natural/WindowSize",
+	             powerOfTwo(windowSize));
 
-    return net;
+	return net;
 }
 
-MarSystem* Transcriber::makeAmplitudeNet(MarSystem* rvSink) {
-    MarSystem *net = mng.create("Series", "amplitudeNet");
-    net->addMarSystem(mng.create("ShiftInput", "sfiAmp"));
-    net->addMarSystem(mng.create("Rms", "rms"));
+MarSystem* Transcriber::makeAmplitudeNet(MarSystem* rvSink)
+{
+	MarSystem *net = mng.create("Series", "amplitudeNet");
+	net->addMarSystem(mng.create("ShiftInput", "sfiAmp"));
+	net->addMarSystem(mng.create("Rms", "rms"));
 	if (rvSink != NULL)
 		net->addMarSystem(rvSink);
-	
-    net->updctrl("mrs_natural/inSamples", 512);
-    net->updctrl("ShiftInput/sfiAmp/mrs_natural/WindowSize", 512);
 
-    return net;
+	net->updctrl("mrs_natural/inSamples", 512);
+	net->updctrl("ShiftInput/sfiAmp/mrs_natural/WindowSize", 512);
+
+	return net;
 }
 
 void
 Transcriber::getAllFromAudio(const string audioFilename, realvec&
-pitchList, realvec& ampList)
+                             pitchList, realvec& ampList)
 {
 	MarSystem* pitchSink = mng.create("RealvecSink", "pitchSink");
 	MarSystem* ampSink = mng.create("RealvecSink", "ampSink");
 
-    MarSystem* pnet = mng.create("Series", "pnet");
-    mrs_real srate = Easymar::addFileSource(pnet, audioFilename);
+	MarSystem* pnet = mng.create("Series", "pnet");
+	mrs_real srate = Easymar::addFileSource(pnet, audioFilename);
 // TODO: double the number of observations?
 //	pnet->addMarSystem(mng.create("ShiftInput", "shift"));
 //   pnet->updctrl("ShiftInput/shift/mrs_natural/WindowSize",1024);
-  	//pnet->updctrl("ShiftInput/shift/mrs_natural/Decimation",512);
+	//pnet->updctrl("ShiftInput/shift/mrs_natural/Decimation",512);
 
 
 
@@ -95,8 +98,8 @@ pitchList, realvec& ampList)
 	fanout->addMarSystem(makeAmplitudeNet(ampSink));
 	pnet->addMarSystem(fanout);
 
-    while ( pnet->getctrl("mrs_bool/notEmpty")->toBool() )
-        pnet->tick();
+	while ( pnet->getctrl("mrs_bool/notEmpty")->toBool() )
+		pnet->tick();
 
 	pitchList = getPitchesFromRealvecSink(pitchSink, srate);
 	ampList = getAmpsFromRealvecSink(ampSink);
@@ -106,17 +109,17 @@ pitchList, realvec& ampList)
 realvec
 Transcriber::getPitchesFromAudio(const string audioFilename)
 {
-    MarSystem* pnet = mng.create("Series", "pnet");
-    mrs_real srate = Easymar::addFileSource(pnet, audioFilename);
+	MarSystem* pnet = mng.create("Series", "pnet");
+	mrs_real srate = Easymar::addFileSource(pnet, audioFilename);
 	MarSystem* rvSink = mng.create("RealvecSink", "rvSink");
-    pnet->addMarSystem(makePitchNet(srate, 100.0, rvSink));
+	pnet->addMarSystem(makePitchNet(srate, 100.0, rvSink));
 
-    while ( pnet->getctrl("mrs_bool/notEmpty")->toBool() )
-        pnet->tick();
+	while ( pnet->getctrl("mrs_bool/notEmpty")->toBool() )
+		pnet->tick();
 
 	realvec pitchList = getPitchesFromRealvecSink(rvSink, srate);
-    delete pnet;
-    return pitchList;
+	delete pnet;
+	return pitchList;
 }
 
 realvec
@@ -126,13 +129,13 @@ Transcriber::getPitchesFromRealvecSink(MarSystem* rvSink, const mrs_real srate)
 	rvSink->updctrl("mrs_bool/done", true);
 
 	realvec pitchList;
-    pitchList.create(data.getSize()/2);
-    mrs_real pitch;
-    for (mrs_natural i=0; i<pitchList.getSize(); i++)
+	pitchList.create(data.getSize()/2);
+	mrs_real pitch;
+	for (mrs_natural i=0; i<pitchList.getSize(); i++)
 	{
-        pitch = samples2hertz(data(2*i+1), srate);
+		pitch = samples2hertz(data(2*i+1), srate);
 		if (pitch > 0)
-            pitchList(i) = pitch;
+			pitchList(i) = pitch;
 		// values in PitchList are 0 by default
 	}
 
@@ -159,10 +162,12 @@ Transcriber::toMidi(realvec& pitchList)
 void
 Transcriber::pitchSegment(realvec& pitchList, realvec& ampList)
 {
-	realvec boundaries = findPitchBoundaries(pitchList);
-
-	pitchList = segmentRealvec(pitchList, boundaries);
-	ampList = segmentRealvec(ampList, boundaries);
+	if (pitchList.getRows() == 1)
+	{
+		realvec boundaries = findPitchBoundaries(pitchList);
+		pitchList = segmentRealvec(pitchList, boundaries);
+		ampList = segmentRealvec(ampList, boundaries);
+	}
 
 }
 //zz
@@ -182,7 +187,8 @@ Transcriber::segmentRealvec(const realvec list, const realvec boundaries)
 	mrs_natural nextBound = (mrs_natural) boundaries(note+1);
 	for (mrs_natural i=0; i<list.getSize(); i++)
 	{
-		if (i == nextBound ) {
+		if (i == nextBound )
+		{
 			if ((i-prevBound) > maxCols)
 				maxCols = (i-prevBound);
 			note++;
@@ -194,9 +200,6 @@ Transcriber::segmentRealvec(const realvec list, const realvec boundaries)
 	newList.stretch(boundaries.getSize(), maxCols);
 	return newList;
 }
-///   totemp
-realvec onsets;
-int onIndex=0;
 
 realvec
 Transcriber::findPitchBoundaries(const realvec pitchList)
@@ -216,18 +219,22 @@ Transcriber::findPitchBoundaries(const realvec pitchList)
 	mrs_real prevNote=0.0;
 	mrs_natural onsetIndex=1;
 	mrs_natural prevSamp=0;
-	for (i=window/2; i<pitchList.getSize()-window/2; i++) {
+	for (i=window/2; i<pitchList.getSize()-window/2; i++)
+	{
 		median = findMedian(i-window/2, window, pitchList);
 		//cout<<i<<"   "<<median<<"     actual: "<<pitchList(i)<<endl;
-		if ( fabs(median-prevNote) > noteBoundary ) {
-			if (i>prevSamp+noteDistance) {
+		if ( fabs(median-prevNote) > noteBoundary )
+		{
+			if (i>prevSamp+noteDistance)
+			{
 				prevNote = median;
 				prevSamp = i;
 				boundaries.stretchWrite( onsetIndex, i);
 				onsetIndex++;
 				//cout<<"*** new note: "<<median<<" at "<<i<<endl;
 			}
-			else {
+			else
+			{
 				prevNote = median;
 				//prevSamp = i;
 				//boundaries(onsetIndex) = i;
@@ -238,8 +245,6 @@ Transcriber::findPitchBoundaries(const realvec pitchList)
 	boundaries.stretch(onsetIndex+1);
 	boundaries(onsetIndex) = pitchList.getSize();
 
-// totemp
-	onsets = boundaries;
 	return boundaries;
 }
 
@@ -247,13 +252,14 @@ Transcriber::findPitchBoundaries(const realvec pitchList)
 void
 Transcriber::ampSegment(realvec& pitchList, realvec& ampList)
 {
-	realvec noteAmps;
-	realvec boundaries;
-	boundaries = findValleys(ampList);
-	cout<<"left findValleys"<<endl;
-//	pitchList = segmentRealvec(pitchList, boundaries);
-//	ampList = segmentRealvec(ampList, boundaries);
-
+	if (ampList.getRows() == 1)
+	{
+		realvec noteAmps;
+		realvec boundaries;
+		boundaries = findValleys(ampList);
+		pitchList = segmentRealvec(pitchList, boundaries);
+		ampList = segmentRealvec(ampList, boundaries);
+	}
 
 //	cout<<getRelativeDurations(boundaries);
 //	cout<<ampList.getRows()<<endl;
@@ -261,14 +267,14 @@ Transcriber::ampSegment(realvec& pitchList, realvec& ampList)
 //		cout<<onsets(i)<<" "<<1<<endl;
 //	cout<<endl;
 
-/*
+	/*
 
-	for (mrs_natural o=0; o<ampList.getRows(); o++) {
-		ampList.getRow(o,noteAmps);
-		boundaries = findAmpBoundaries(noteAmps);
-		if (boundaries.getSize()>1)
-		{
-*/
+		for (mrs_natural o=0; o<ampList.getRows(); o++) {
+			ampList.getRow(o,noteAmps);
+			boundaries = findAmpBoundaries(noteAmps);
+			if (boundaries.getSize()>1)
+			{
+	*/
 
 
 }
@@ -276,12 +282,7 @@ Transcriber::ampSegment(realvec& pitchList, realvec& ampList)
 realvec
 Transcriber::findValleys(const realvec list)
 {
-//	cout<<ampList.getRows()<<" "<<ampList.getCols()<<endl;
-
-// FIXME: produces free'ing invalid pointers in linux.
-// it's in realvec::stretch.  fsck.
 	realvec valleys(1);
-//	realvec valleys(200); // obscene workaround.  :( :(
 
 	mrs_natural valIndex = 0;
 
@@ -290,27 +291,28 @@ Transcriber::findValleys(const realvec list)
 	mrs_natural peakSpacing = 8;
 	mrs_natural prevValIndex = 0;
 	mrs_real prevValValue = 1.0;
-	for (mrs_natural i=peakSpacing; i<list.getCols()-peakSpacing; i++) {
-		//cout<<list(i)<<endl;
+	for (mrs_natural i=peakSpacing; i<list.getCols()-peakSpacing; i++)
+	{
 		if ( (list(i) < list(i-1)) &&
-		     (list(i) < list(i+1)) &&
-		     (list(i) < maxValue) )
+		        (list(i) < list(i+1)) &&
+		        (list(i) < maxValue) )
 		{
 			localMin = list(i);
-			if (i < prevValIndex+peakSpacing) {
+			if (i < prevValIndex+peakSpacing)
+			{
 				if (localMin < prevValValue)
 				{
-					cout<<"**** "<<valIndex-1<<endl;
+					//			cout<<"**** "<<valIndex-1<<endl;
 					valleys(valIndex-1) = i;
 					prevValIndex = i;
 					prevValValue = localMin;
 				}
-			} else {
-				cout<<"just about to stretchWrite "<<valIndex<<endl;
-				//valleys.stretch(valIndex);
-//				valleys(valIndex) = i;
+			}
+			else
+			{
+				//cout<<"just about to stretchWrite "<<valIndex<<endl;
 				valleys.stretchWrite(valIndex, i);
-				cout<<"done stretchWrite"<<endl;
+				//cout<<"done stretchWrite"<<endl;
 				valIndex++;
 				prevValIndex = i;
 				prevValValue = localMin;
@@ -318,7 +320,7 @@ Transcriber::findValleys(const realvec list)
 		}
 	}
 	valleys.stretch(valIndex);
-	cout<<"just about to leave findValleys"<<endl;
+	//cout<<"just about to leave findValleys"<<endl;
 	return valleys;
 }
 
@@ -326,7 +328,7 @@ Transcriber::findValleys(const realvec list)
 // find median without 0s.
 mrs_real
 Transcriber::findMedian(const mrs_natural start, const mrs_natural
-length, const realvec array)
+                        length, const realvec array)
 {
 	if ( length<=0 )
 		return 0;
@@ -334,8 +336,10 @@ length, const realvec array)
 	noZeros.create(length);
 	mrs_natural j=0;
 	// don't include 0s
-	for (mrs_natural i=0; i<length; i++) {
-		if ( array(start+i) > 0 ) {
+	for (mrs_natural i=0; i<length; i++)
+	{
+		if ( array(start+i) > 0 )
+		{
 			noZeros(j)=array(start+i);
 			j++;
 		}
@@ -348,7 +352,8 @@ length, const realvec array)
 
 
 realvec
-Transcriber::getRelativeDurations(realvec boundaries) {
+Transcriber::getRelativeDurations(realvec boundaries)
+{
 	boundaries.sort();
 	cout<<boundaries;
 
@@ -359,7 +364,8 @@ Transcriber::getRelativeDurations(realvec boundaries) {
 	mrs_natural min = 99999; // infinity
 	// calculate durations in samples
 	// and find smallest
-	for (i=0; i<boundaries.getSize()-1; i++) {
+	for (i=0; i<boundaries.getSize()-1; i++)
+	{
 		durations(i) = boundaries(i+1) - boundaries(i);
 		cout<<"duration: "<<durations(i)<<endl;
 		// we don't care about silent durations
@@ -369,9 +375,10 @@ Transcriber::getRelativeDurations(realvec boundaries) {
 	cout<<"min: "<<min<<endl;
 	// find relative durations
 	// yes, we want to truncate the division.
-	for (i=0; i<boundaries.getSize()-1; i++) {
+	for (i=0; i<boundaries.getSize()-1; i++)
+	{
 		durations(i) = (mrs_natural) ( durations(i) / (min) );
-	//	durations(i) = (mrs_natural) ( durations(i) / (min*0.9) );
+		//	durations(i) = (mrs_natural) ( durations(i) / (min*0.9) );
 	}
 	cout<<"**********"<<endl;
 	return durations;

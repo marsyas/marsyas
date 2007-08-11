@@ -6,13 +6,14 @@ using namespace Marsyas;
 
 using namespace std;
 
-class Easymar {
+class Easymar
+{
 
 public:
-    Easymar();
-    ~Easymar();
+	Easymar();
+	~Easymar();
 
-    static mrs_real addFileSource(MarSystem* net, const string infile);
+	static mrs_real addFileSource(MarSystem* net, const string infile);
 	static void addDest(MarSystem* net, const string outfile);
 
 private:

@@ -4,7 +4,8 @@ using namespace std;
 
 #include "mainwindow.h"
 
-MainWindow::MainWindow() {
+MainWindow::MainWindow()
+{
 	createMain();
 	createActions();
 	createMenus();
@@ -13,20 +14,24 @@ MainWindow::MainWindow() {
 	readSettings();
 }
 
-MainWindow::~MainWindow() {
+MainWindow::~MainWindow()
+{
 }
 
-void MainWindow::closeEvent(QCloseEvent *event) {
+void MainWindow::closeEvent(QCloseEvent *event)
+{
 	event->accept();
 }
 
-void MainWindow::about() {
+void MainWindow::about()
+{
 	QMessageBox::about(this, tr("About MarLily"),
-		tr("MarLily is a tool to aid investigation of music"
-"transcription algorithms"));
+	                   tr("MarLily is a tool to aid investigation of music"
+	                      "transcription algorithms"));
 }
 
-void MainWindow::readSettings() {
+void MainWindow::readSettings()
+{
 	QSettings settings("MarLily", "MarLily");
 	QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
 	QSize size = settings.value("size", QSize(700, 400)).toSize();
@@ -34,13 +39,15 @@ void MainWindow::readSettings() {
 	move(pos);
 }
 
-void MainWindow::writeSettings() {
+void MainWindow::writeSettings()
+{
 	QSettings settings("MarLily", "MarLily");
 	settings.setValue("pos", pos());
 	settings.setValue("size", size());
 }
 
-void MainWindow::createStatusBar() {
+void MainWindow::createStatusBar()
+{
 	normalStatusMessage = new QLabel;
 	permanentStatusMessage = new QLabel;
 	statusBar()->addWidget(normalStatusMessage);
@@ -48,7 +55,8 @@ void MainWindow::createStatusBar() {
 	statusBar()->showMessage(tr("Ready"));
 }
 
-void MainWindow::createMain() {
+void MainWindow::createMain()
+{
 	QFrame* centralFrame = new QFrame;
 	setCentralWidget(centralFrame);
 
@@ -65,6 +73,7 @@ void MainWindow::createMenus()
 {
 	fileMenu = menuBar()->addMenu(tr("&File"));
 	fileMenu->addAction(openUserAct);
+	fileMenu->addAction(exitAct);
 
 	menuBar()->addSeparator();
 
@@ -80,10 +89,12 @@ void MainWindow::createMenus()
 	helpMenu->addAction(aboutQtAct);
 }
 
-void MainWindow::createToolBars() {
+void MainWindow::createToolBars()
+{
 }
 
-void MainWindow::createActions() {
+void MainWindow::createActions()
+{
 	openUserAct = new QAction(tr("&Open file..."), this);
 	openUserAct->setShortcut(tr("Ctrl+O"));
 	openUserAct->setStatusTip(tr("Open an existing session"));
@@ -125,10 +136,12 @@ void MainWindow::createActions() {
 }
 
 
-void MainWindow::open() {
+void MainWindow::open()
+{
 	QString openFilename = QFileDialog::getOpenFileName(0,
-		tr("Open File"));
-	if (!openFilename.isEmpty()) {
+	                       tr("Open File"));
+	if (!openFilename.isEmpty())
+	{
 		string filename = openFilename.toStdString();
 // TODO: error
 // since this line has a bus error...
@@ -148,7 +161,8 @@ void MainWindow::open() {
 	}
 }
 
-void MainWindow::segment() {
+void MainWindow::segment()
+{
 	pitchSplit = pitchList;
 	ampSplit = ampList;
 	Transcriber::ampSegment(pitchSplit, ampSplit);
@@ -156,50 +170,61 @@ void MainWindow::segment() {
 	display();
 }
 
-void MainWindow::message() {
+void MainWindow::message()
+{
 	QString message;
-	if (currNote>-1) {
+	if (currNote>-1)
+	{
 		message = "Note ";
 		message.append(QString::number(currNote));
-	} else {
+	}
+	else
+	{
 		message = "Entire piece";
 	}
 	statusBar()->showMessage(message);
 }
 
-void MainWindow::nextNote() {
+void MainWindow::nextNote()
+{
 	currNote++;
 	if (currNote > ampSplit.getRows()-1)
 		currNote = -1;
 	display();
 }
 
-void MainWindow::prevNote() {
+void MainWindow::prevNote()
+{
 	currNote--;
 	if (currNote < -1)
 		currNote = ampSplit.getRows()-1;
 	display();
 }
 
-void MainWindow::showMusic() {
+void MainWindow::showMusic()
+{
 
 }
 
-void MainWindow::display() {
+void MainWindow::display()
+{
 	pitchPlot->setPixelWidth(2);
 	pitchPlot->setCenterLine(false);
 	ampPlot->setVertical(0,1);
 	ampPlot->setPlotName("Amplitudes");
 	ampPlot->setPixelWidth(2);
 	ampPlot->setCenterLine(false);
-	if (currNote<0) {
+	if (currNote<0)
+	{
 		pitchPlot->setData(&pitchList);
 		ampPlot->setData(&ampList);
 		QString pitchMessage = "Pitches: ";
 		pitchMessage.append(QString::number( pitchList.mean() ));
 		pitchPlot->setPlotName(pitchMessage);
 		pitchPlot->setVertical(pitchList.minval(),pitchList.maxval());
-	} else {
+	}
+	else
+	{
 		pitchSplit.getRow(currNote, tempPitch);
 		ampSplit.getRow(currNote, tempAmp);
 		pitchPlot->setData(&tempPitch);
