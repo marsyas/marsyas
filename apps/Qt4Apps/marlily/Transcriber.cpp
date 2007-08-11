@@ -175,8 +175,6 @@ Transcriber::appendRealvec(realvec& orig, const realvec& newValues)
 	{
 		orig( origSize + i) = newValues(i);
 	}
-	orig.sort();
-//	newValues.~realvec();
 }
 
 realvec
@@ -204,6 +202,7 @@ Transcriber::pitchSegment(realvec& pitchList, realvec& boundaries)
 		appendRealvec(newBoundaries, regionBounds);
 	}
 	appendRealvec(boundaries, newBoundaries);
+	boundaries.sort();
 }
 //zz
 
@@ -239,14 +238,12 @@ Transcriber::segmentRealvec(const realvec list, const realvec boundaries)
 realvec
 Transcriber::findPitchBoundaries(const realvec pitchList)
 {
-	// find boundaries (onsets)
 	mrs_natural minSpace = 8;
 	mrs_real noteBoundary = 0.5;
 
 	realvec boundaries;
 	boundaries.create(1);
-	boundaries(0) = 0.0; // done automatically, but good for clarity
-	mrs_natural onsetIndex=1;
+	mrs_natural onsetIndex=0;
 
 	mrs_real median;
 	mrs_real prevNote=0.0;
@@ -269,9 +266,7 @@ Transcriber::findPitchBoundaries(const realvec pitchList)
 			}
 		}
 	}
-	boundaries.stretch(onsetIndex+1);
-	boundaries(onsetIndex) = pitchList.getSize();
-	boundaries.sort();
+	boundaries.stretch(onsetIndex);
 	return boundaries;
 }
 
@@ -292,6 +287,7 @@ Transcriber::ampSegment(realvec& ampList, realvec& boundaries)
 		appendRealvec(newBoundaries, regionBounds);
 	}
 	appendRealvec(boundaries, newBoundaries);
+	boundaries.sort();
 }
 
 realvec
@@ -404,6 +400,8 @@ Transcriber::getNotes(realvec pitchList, realvec ampList, realvec
                       boundaries)
 {
 	realvec notes;
+	segmentRealvec(pitchList, boundaries);
+	segmentRealvec(ampList, boundaries);
 
 
 
