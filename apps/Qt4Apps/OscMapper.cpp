@@ -1,21 +1,24 @@
 
 #include "OscMapper.h"
 
-OscMapper::OscMapper(quint16 port, QObject* p, MarSystemQtWrapper *mwr)
+OscMapper::OscMapper(QHostAddress inputHost, quint16 inputPort, QHostAddress outputHost, quint16 outputPort, QObject* p, MarSystemQtWrapper *mwr)
 {
-	oscServer_ = new QOscServer (port, p);
 	mwr_=mwr;
 
-	QObject::connect(oscServer_, SIGNAL( data( QString, QVariant ) ), this, SLOT(convertMessages (QString, QVariant)));
+	oscServer_ = new QOscServer (inputHost, inputPort, p);
+	QObject::connect(oscServer_, SIGNAL( data( QString, QVariant ) ), this, SLOT( updctrl (QString, QVariant)));
 
+	oscClient_ = new QOscClient (outputHost, outputPort, p);
+	QObject::connect(mwr_, SIGNAL( ctrlChanged ( MarControlPtr ) ), this, SLOT( ctrlChanged ( MarControlPtr )));
 }
 
 OscMapper::~OscMapper()
 {
 	delete oscServer_;
+	delete oscClient_;
 }
 
-void OscMapper::registerQtSlot(QObject *object, QString path, QVariant::Type type)
+void OscMapper::registerInputQtSlot(QObject *object, QString path, QVariant::Type type)
 {
 	PathObject* integerobj = new PathObject(path, type, oscServer_);
 
@@ -37,3 +40,23 @@ void OscMapper::registerQtSlot(QObject *object, QString path, QVariant::Type typ
 
 }
 
+void OscMapper::registerOutputQtSlot(QObject *object, QString path, QVariant::Type type)
+{
+    PathObject* integerobj = new PathObject(path, type, oscClient_);
+
+	switch(type)
+	{
+	case QVariant::Type::Bool:
+		QObject::connect( object, SIGNAL( valueChanged( bool ) ), integerobj, SLOT( send( bool ) ) );
+		break;
+	case QVariant::Type::Int:
+		QObject::connect( object, SIGNAL( valueChanged( int ) ), integerobj, SLOT( send( int ) ) );
+		break;
+	case QVariant::Type::Double:
+		QObject::connect( object, SIGNAL( valueChanged( double ) ), integerobj, SLOT( send( double ) ) );			
+		break;
+	case QVariant::Type::String:
+		QObject::connect( object, SIGNAL( valueChanged( string ) ), integerobj, SLOT( send( string ) ));		
+		break;
+	}
+}

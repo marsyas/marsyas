@@ -69,10 +69,10 @@ MarLpcWindow::MarLpcWindow()
 
 	gridLayout->addWidget(posLabel, 5, 0);
 	gridLayout->addWidget(posSlider_, 6, 0);
-    gridLayout->addWidget(posControl_, 6, 1);
+	gridLayout->addWidget(posControl_, 6, 1);
 
 	gridLayout->addWidget(frequencyPoleControl_, 4, 0);
-    gridLayout->addWidget(amplitudePoleControl_, 4, 1);
+	gridLayout->addWidget(amplitudePoleControl_, 4, 1);
 
 	connect(breathinessSlider_, SIGNAL(valueChanged(int)), this, SLOT(breathinessChanged(int)));
 	connect(cutOffSlider, SIGNAL(valueChanged(int)), this, SLOT(cutOffChanged(int)));
@@ -80,7 +80,7 @@ MarLpcWindow::MarLpcWindow()
 	connect(amplitudePoleSlider_, SIGNAL(valueChanged(int)), this, SLOT(amplitudePoleChanged(int)));
 	connect(tiltSlider_, SIGNAL(valueChanged(int)), this, SLOT(tiltChanged(int)));
 	connect(posSlider_, SIGNAL(sliderReleased()), this, SLOT(posChanged()));
-	
+
 	connect(mwr_, SIGNAL(ctrlChanged(MarControlPtr)), this, SLOT(ctrlChanged(MarControlPtr)));
 
 	w->setLayout(gridLayout);
@@ -117,9 +117,8 @@ MarLpcWindow::tiltChanged(int value)
 	realvec dcoeffs(2);
 	dcoeffs(0)= 1;
 	dcoeffs(1)= -.8-.2*value/100.0;
-	cout << value << " " << dcoeffs ;
+
 	mwr_->updctrl("FanOutIn/fanoutin/Series/aSeries/Filter/tilt/mrs_realvec/dcoeffs",  dcoeffs);
-	 
 }
 
 void 
@@ -129,7 +128,6 @@ MarLpcWindow::breathinessChanged(int value)
 
 	mwr_->updctrl("FanOutIn/fanoutin/Series/nSeries/Gain/noiseLevel/mrs_real/gain",  volume);
 	mwr_->updctrl("FanOutIn/fanoutin/Series/aSeries/Gain/residualLevel/mrs_real/gain", (mrs_real) (1-volume));
- 
 }
 
 void 
@@ -156,22 +154,22 @@ MarLpcWindow::ctrlChanged(MarControlPtr cname)
 
 	/*if (cname.isEqual(frequencyPolePtr_)) 
 	{
-		frequencyPoleSlider_->blockSignals(true);
-		mrs_real fval = cname->to<mrs_real>();
-		int val = (int)(fval * 50.0);
-		frequencyPoleSlider_->setValue(val);
-		frequencyPoleSlider_->blockSignals(false);
-		frequencyPoleControl_->updControl(cname);
+	frequencyPoleSlider_->blockSignals(true);
+	mrs_real fval = cname->to<mrs_real>();
+	int val = (int)(fval * 50.0);
+	frequencyPoleSlider_->setValue(val);
+	frequencyPoleSlider_->blockSignals(false);
+	frequencyPoleControl_->updControl(cname);
 	}
 
 	if (cname.isEqual(amplitudePolePtr_)) 
 	{
-		amplitudePoleSlider_->blockSignals(true);
-		mrs_real fval = cname->to<mrs_real>();
-		int val = (int)(fval * 50.0);
-		amplitudePoleSlider_->setValue(val);
-		amplitudePoleSlider_->blockSignals(false);
-		amplitudePoleControl_->updControl(cname);
+	amplitudePoleSlider_->blockSignals(true);
+	mrs_real fval = cname->to<mrs_real>();
+	int val = (int)(fval * 50.0);
+	amplitudePoleSlider_->setValue(val);
+	amplitudePoleSlider_->blockSignals(false);
+	amplitudePoleControl_->updControl(cname);
 	}*/
 }
 
@@ -183,10 +181,10 @@ MarLpcWindow::createNetwork()
 	mrs_natural I = iopt;
 	mrs_real P = popt;
 	mrs_natural D = 256;
-mrs_natural emphasisOrder = 3;
-mrs_natural formantOrder = 30;
-mrs_real emphasisBe = .9;
-mrs_real formantBe = .975;
+	mrs_natural emphasisOrder = 3;
+	mrs_natural formantOrder = 20;
+	mrs_real emphasisBe = .9;
+	mrs_real formantBe = .975;
 
 	MarSystemManager mng;
 
@@ -195,38 +193,38 @@ mrs_real formantBe = .975;
 	lpc_->addMarSystem(mng.create("SoundFileSource", "src"));
 	lpc_->addMarSystem(mng.create("ShiftInput", "si"));
 
-		MarSystem *fanoutin = mng.create("FanOutIn", "fanoutin");
-			// analysis branch (generates the residual)
-			MarSystem* aSeries = mng.create("Series", "aSeries");
-				// first stage of Lpc for emphasis analysis
-				MarSystem* emphasisFlowthru = mng.create("FlowThru", "emphasisFlowthru");
-				emphasisFlowthru->addMarSystem(mng.create("Windowing", "emphasisWindow")); 
-				emphasisFlowthru->addMarSystem(mng.create("LPC", "emphasisLpc"));
-			aSeries->addMarSystem(emphasisFlowthru);
-			aSeries->addMarSystem(mng.create("Filter", "emphasisAnalysis"));
-				// second stage of Lpc for formant analysis
-				MarSystem* formantFlowthru = mng.create("FlowThru", "formantFlowthru");
-				formantFlowthru->addMarSystem(mng.create("Windowing", "hamAna")); 
-				formantFlowthru->addMarSystem(mng.create("LPC", "formantLpc"));
-			aSeries->addMarSystem(formantFlowthru);
-			aSeries->addMarSystem(mng.create("Filter", "formantAnalysis"));
-			// adjust residual level (Qt)
-			aSeries->addMarSystem(mng.create("Gain", "residualLevel"));
-			// apply syntheitic emphasis filters (Qt)
-			aSeries->addMarSystem(mng.create("Filter", "tilt"));
-		    aSeries->addMarSystem(mng.create("Filter", "resonance"));
-		fanoutin->addMarSystem(aSeries);
-			// noise branch (generates noise)
-			MarSystem* nSeries = mng.create("Series", "nSeries");
-			nSeries->addMarSystem(mng.create("NoiseSource", "ns"));
-			// adjust noise level from LPCs analysis (Qt)
-				MarSystem* nFanOutIn = mng.create("FanOutIn", "nFanOutIn");
-				nFanOutIn->addMarSystem(mng.create("Gain", "nEmphasis"));
-				nFanOutIn->addMarSystem(mng.create("Gain", "nFormant"));
-			nSeries->addMarSystem(nFanOutIn);
-			// adjust noise level (Qt)
-			nSeries->addMarSystem(mng.create("Gain", "noiseLevel"));
-		fanoutin->addMarSystem(nSeries);
+	MarSystem *fanoutin = mng.create("FanOutIn", "fanoutin");
+	// analysis branch (generates the residual)
+	MarSystem* aSeries = mng.create("Series", "aSeries");
+	// first stage of Lpc for emphasis analysis
+	MarSystem* emphasisFlowthru = mng.create("FlowThru", "emphasisFlowthru");
+	emphasisFlowthru->addMarSystem(mng.create("Windowing", "emphasisWindow")); 
+	emphasisFlowthru->addMarSystem(mng.create("LPC", "emphasisLpc"));
+	aSeries->addMarSystem(emphasisFlowthru);
+	aSeries->addMarSystem(mng.create("Filter", "emphasisAnalysis"));
+	// second stage of Lpc for formant analysis
+	MarSystem* formantFlowthru = mng.create("FlowThru", "formantFlowthru");
+	formantFlowthru->addMarSystem(mng.create("Windowing", "hamAna")); 
+	formantFlowthru->addMarSystem(mng.create("LPC", "formantLpc"));
+	aSeries->addMarSystem(formantFlowthru);
+	aSeries->addMarSystem(mng.create("Filter", "formantAnalysis"));
+	// adjust residual level (Qt)
+	aSeries->addMarSystem(mng.create("Gain", "residualLevel"));
+	// apply syntheitic emphasis filters (Qt)
+	aSeries->addMarSystem(mng.create("Filter", "tilt"));
+	aSeries->addMarSystem(mng.create("Filter", "resonance"));
+	fanoutin->addMarSystem(aSeries);
+	// noise branch (generates noise)
+	MarSystem* nSeries = mng.create("Series", "nSeries");
+	nSeries->addMarSystem(mng.create("NoiseSource", "ns"));
+	// adjust noise level from LPCs analysis (Qt)
+	MarSystem* nFanOutIn = mng.create("FanOutIn", "nFanOutIn");
+	nFanOutIn->addMarSystem(mng.create("Gain", "nEmphasis"));
+	nFanOutIn->addMarSystem(mng.create("Gain", "nFormant"));
+	nSeries->addMarSystem(nFanOutIn);
+	// adjust noise level (Qt)
+	nSeries->addMarSystem(mng.create("Gain", "noiseLevel"));
+	fanoutin->addMarSystem(nSeries);
 	lpc_->addMarSystem(fanoutin);
 
 	// filtering modified residual with formant filter
@@ -242,7 +240,7 @@ mrs_real formantBe = .975;
 	lpc_->updctrl("mrs_natural/inSamples", D);
 	lpc_->updctrl("mrs_natural/inObservations", 1);
 	lpc_->updctrl("SoundFileSource/src/mrs_real/repetitions", -1.0);
-    lpc_->updctrl("ShiftInput/si/mrs_natural/Decimation", D);
+	lpc_->updctrl("ShiftInput/si/mrs_natural/Decimation", D);
 	lpc_->updctrl("ShiftInput/si/mrs_natural/WindowSize", Nw);
 
 	// setting up emphasis analysis parameters
@@ -252,7 +250,7 @@ mrs_real formantBe = .975;
 
 	lpc_->linkctrl("FanOutIn/fanoutin/Series/aSeries/Filter/emphasisAnalysis/mrs_realvec/ncoeffs",
 		"FanOutIn/fanoutin/Series/aSeries/FlowThru/emphasisFlowthru/LPC/emphasisLpc/mrs_realvec/coeffs");
-	
+
 	// setting up emphasis analysis parameters
 	lpc_->updctrl("FanOutIn/fanoutin/Series/aSeries/FlowThru/formantFlowthru/LPC/formantLpc/mrs_natural/order", formantOrder);
 	lpc_->updctrl("FanOutIn/fanoutin/Series/aSeries/FlowThru/formantFlowthru/LPC/formantLpc/mrs_real/lambda",0.0);
@@ -269,7 +267,7 @@ mrs_real formantBe = .975;
 
 	lpc_->linkctrl("Filter/synthesis/mrs_realvec/dcoeffs",
 		"FanOutIn/fanoutin/Series/aSeries/FlowThru/formantFlowthru/LPC/formantLpc/mrs_realvec/coeffs");
-	
+
 	// link the LPCs gain estimations with gains
 	lpc_->linkctrl("FanOutIn/fanoutin/Series/nSeries/FanOutIn/nFanOutIn/Gain/nEmphasis/mrs_real/gain",
 		"FanOutIn/fanoutin/Series/aSeries/FlowThru/formantFlowthru/LPC/formantLpc/mrs_real/power");
@@ -280,7 +278,7 @@ mrs_real formantBe = .975;
 	// creating shortcuts for osc manipulation
 	lpc_->linkctrl("mrs_natural/formantOrder",
 		"FanOutIn/fanoutin/Series/aSeries/FlowThru/formantFlowthru/LPC/formantLpc/mrs_natural/order");
-
+	
 	mwr_ = new MarSystemQtWrapper(lpc_, true);
 
 	posPtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/pos");
@@ -311,7 +309,7 @@ MarLpcWindow::createMenus()
 	helpMenu = menuBar()->addMenu(tr("&Help"));
 	helpMenu->addAction(aboutAct);
 }
- 
+
 void 
 MarLpcWindow::createActions()
 {
@@ -354,11 +352,10 @@ MarLpcWindow::about()
 
 void MarLpcWindow::updateResonanceFilter()
 {
-realvec dcoeffs(3);
+	realvec dcoeffs(3);
 	dcoeffs(0)= 1;
 	dcoeffs(1)= -2*amplitudePole_*cos(frequencyPole_);
 	dcoeffs(2)= amplitudePole_*amplitudePole_;
-	
-	cout <<  dcoeffs ;
+
 	mwr_->updctrl("FanOutIn/fanoutin/Series/aSeries/Filter/resonance/mrs_realvec/dcoeffs",  dcoeffs);
 }

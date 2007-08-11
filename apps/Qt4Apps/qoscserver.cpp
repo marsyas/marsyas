@@ -32,6 +32,7 @@ QOscServer::QOscServer( QHostAddress address, quint16 port, QObject* p )
 	: QOscBase( p )
 {
 	socket()->bind( address, port );
+	connect( socket(), SIGNAL( readyRead() ), this, SLOT( readyRead() ) );
 }
 
 QOscServer::~QOscServer() {

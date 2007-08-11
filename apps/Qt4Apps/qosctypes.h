@@ -68,7 +68,7 @@ class QOscServer;
  */
 class PathObject : public QObject
 {
-	Q_OBJECT
+	Q_OBJECT	
 	friend class QOscServer;
 	public:
 		PathObject( QString path, QVariant::Type type, QOscClient* parent );
