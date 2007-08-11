@@ -84,9 +84,9 @@ pitchList, realvec& ampList)
     MarSystem* pnet = mng.create("Series", "pnet");
     mrs_real srate = Easymar::addFileSource(pnet, audioFilename);
 // TODO: double the number of observations?
-	pnet->addMarSystem(mng.create("ShiftInput", "shift"));
-    pnet->updctrl("ShiftInput/shift/mrs_natural/WindowSize",1024);
-  	pnet->updctrl("ShiftInput/shift/mrs_natural/Decimation",512);
+//	pnet->addMarSystem(mng.create("ShiftInput", "shift"));
+//   pnet->updctrl("ShiftInput/shift/mrs_natural/WindowSize",1024);
+  	//pnet->updctrl("ShiftInput/shift/mrs_natural/Decimation",512);
 
 
 
@@ -178,8 +178,8 @@ Transcriber::segmentRealvec(const realvec list, const realvec boundaries)
 		return list;
 
 	mrs_natural note = 0;
-	mrs_natural prevBound = boundaries(note);
-	mrs_natural nextBound = boundaries(note+1);
+	mrs_natural prevBound = (mrs_natural) boundaries(note);
+	mrs_natural nextBound = (mrs_natural) boundaries(note+1);
 	for (mrs_natural i=0; i<list.getSize(); i++)
 	{
 		if (i == nextBound ) {
@@ -187,7 +187,7 @@ Transcriber::segmentRealvec(const realvec list, const realvec boundaries)
 				maxCols = (i-prevBound);
 			note++;
 			prevBound = nextBound;
-			nextBound = boundaries(note+1);
+			nextBound = (mrs_natural) boundaries(note+1);
 		}
 		newList.stretchWrite(note, i - prevBound, list(i) );
 	}
@@ -383,7 +383,7 @@ Transcriber::getRelativeDurations(realvec boundaries) {
 		cout<<"duration: "<<durations(i)<<endl;
 		// we don't care about silent durations
 		if (durations(i) < min)
-			min = durations(i);
+			min = (mrs_natural) durations(i);
 	}
 	cout<<"min: "<<min<<endl;
 	// find relative durations

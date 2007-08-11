@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
 	foo /= 100.0;
 	foo.writeText("foo.txt");
 */
-	Transcriber::ampSegment(pitchList, ampList);
+//	Transcriber::ampSegment(pitchList, ampList);
 //	Transcriber::pitchSegment(pitchList, ampList);
 //	cout<<ampList;
 /*

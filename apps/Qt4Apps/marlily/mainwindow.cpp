@@ -130,8 +130,9 @@ void MainWindow::open() {
 		tr("Open File"));
 	if (!openFilename.isEmpty()) {
 		string filename = openFilename.toStdString();
+// TODO: error
 // since this line has a bus error...
-//	    Transcriber::getAllFromAudio(openFilename.toStdString(), pitchList, ampList);
+// 	   Transcriber::getAllFromAudio(openFilename.toStdString(), pitchList, ampList);
 //    	Transcriber::toMidi(pitchList);
 
 		string readFile;

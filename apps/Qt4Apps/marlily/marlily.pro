@@ -1,5 +1,5 @@
-SOURCES = testTrans.cpp
-#SOURCES = start.cpp
+#SOURCES = testTrans.cpp
+SOURCES = start.cpp
 
 HEADERS += mainwindow.h
 SOURCES += mainwindow.cpp

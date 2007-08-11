@@ -9,7 +9,7 @@ QtMarPlot::QtMarPlot(QWidget *parent)
 	plotName_ = "";
 	minVal_ = -0.5;
 	highVal_ = 0.5;
-	width_ = 1.0;
+	width_ = 1;
 	drawCenter_ = true;
 	setAutoFillBackground(true);
 }
@@ -71,10 +71,10 @@ QtMarPlot::paintEvent(QPaintEvent *)
 void
 QtMarPlot::plot2d()
 {
-	QPainter painter(this);
+	QPamrs_naturaler painter(this);
 	//cout<<"drawing 2D matrix"<<endl;
-	int i, j;
-	int myi, myj;
+	mrs_natural i, j;
+	mrs_natural myi, myj;
 	for (i=0; i<width(); i++) {
 		for (j=0; j<height(); j++) {
 			myi = i / ( width()/ (data_->getRows()-1) );
@@ -105,17 +105,17 @@ QtMarPlot::plot1d()
 	pen.setJoinStyle(Qt::RoundJoin);
 	painter.setPen(pen);
 
-	int i;
-	int x,y;
+	mrs_natural i;
+	mrs_natural x,y;
 	float hScale = width() / float(data_->getSize());
 	float vScale = height() / (highVal_ - minVal_); // maximum scaled pitch/median
 	float vMean = (minVal_+highVal_)/2;
-	int midY = height()/2;
+	mrs_natural midY = height()/2;
 
 	// iterates over the data_
 	for (i=0; i<data_->getSize(); i++) {
-		x = i * hScale;
-		y = ((*data_)(i)-vMean) * vScale;
+		x = mrs_natural (i * hScale);
+		y = mrs_natural ( ((*data_)(i)-vMean) * vScale );
 		if ( (y>-midY) && (y<midY))
 			painter.drawPoint( x, -y+midY);
 

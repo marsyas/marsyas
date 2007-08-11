@@ -29,7 +29,7 @@ private:
 	realvec *data_;
 	QString plotName_;
 	mrs_real minVal_, highVal_;
-	qreal width_;
+	mrs_natural width_;
 	bool drawCenter_;
 
 	void plot1d();
