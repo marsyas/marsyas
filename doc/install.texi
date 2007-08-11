@@ -9,6 +9,7 @@ Complete each section fully before attempting the next section.
 * Download::                    
 * Configuring Marsyas::         
 * Compiling Marsyas::           
+* Post-install optional configuration::  
 * Platform-specific notes while running Marsyas::  
 @end menu
 
@@ -561,6 +562,32 @@ marsyas dir and do:
 
 @example
 qmake -t vclib
+@end example
+
+
+@node Post-install optional configuration
+@section Post-install optional configuration
+
+@menu
+* Vim editor support::          
+@end menu
+
+@node Vim editor support
+@subsection Vim editor support
+
+A syntax file for vim color highlighting is at the top of the source
+tree, @file{marsyas.vim}.  To use this file, copy it to
+@file{$HOME/.vim/syntax} add the following lines to
+@file{$HOME/.vim/filetype.vim}:
+
+@example
+if exists("did_load_filetypes")
+  finish
+endif
+augroup filetypedetect
+  au! BufNewFile,BufRead *.cpp          setf marsyas
+  au! BufNewFile,BufRead *.h            setf marsyas
+augroup END
 @end example
 
 
