@@ -79,7 +79,8 @@ MarSystem* Transcriber::makeAmplitudeNet(MarSystem* rvSink)
 
 void
 Transcriber::getAllFromAudio(const string audioFilename, realvec&
-                             pitchList, realvec& ampList)
+                             pitchList, realvec& ampList, realvec&
+                             boundaries)
 {
 	MarSystem* pitchSink = mng.create("RealvecSink", "pitchSink");
 	MarSystem* ampSink = mng.create("RealvecSink", "ampSink");
@@ -103,6 +104,9 @@ Transcriber::getAllFromAudio(const string audioFilename, realvec&
 
 	pitchList = getPitchesFromRealvecSink(pitchSink, srate);
 	ampList = getAmpsFromRealvecSink(ampSink);
+	boundaries.create(2);
+	boundaries(0) = 0; // done automatically, but adds clarity
+	boundaries(1) = pitchList.getSize();
 	delete pnet;
 }
 
@@ -138,7 +142,7 @@ Transcriber::getPitchesFromRealvecSink(MarSystem* rvSink, const mrs_real srate)
 		pitchOutput = data(2*i+1);
 		if (pitchOutput > 1)
 			pitchList(i) = samples2hertz( pitchOutput, srate);
-			// values in PitchList are 0 by default
+		// values in PitchList are 0 by default
 	}
 
 	return pitchList;
@@ -174,28 +178,41 @@ Transcriber::appendRealvec(realvec& orig, const realvec& newValues)
 		orig( origSize + i) = newValues(i);
 	}
 	orig.sort();
-	newValues.~realvec();
+//	newValues.~realvec();
+}
+
+realvec
+Transcriber::getSubVector(const realvec list, mrs_natural start,
+                          mrs_natural length)
+{
+	realvec subVector(length);
+	for (mrs_natural i=0; i<length; i++)
+		subVector(i) = list(start + i);
+	return subVector;
 }
 
 void
 Transcriber::pitchSegment(realvec& pitchList, realvec& ampList, realvec&
-boundaries)
+                          boundaries)
 {
-	if (pitchList.getRows() == 1)
+	realvec region, newBoundaries, regionBounds;
+	mrs_natural start, length;
+	for (mrs_natural i=0; i<boundaries.getSize()-1; i++)
 	{
-		realvec newBoundaries = findPitchBoundaries(pitchList);
-		appendRealvec(boundaries, newBoundaries);
-		pitchList = segmentRealvec(pitchList, boundaries);
-		ampList = segmentRealvec(ampList, boundaries);
+		start = (mrs_natural) boundaries(i);
+		length = mrs_natural (boundaries(i+1) - boundaries(i));
+		region = getSubVector(pitchList, start, length);
+		regionBounds = findPitchBoundaries(region);
+		regionBounds += start;
+		appendRealvec(newBoundaries, regionBounds);
+	}
+	appendRealvec(boundaries, newBoundaries);
 
+	/*
 		for (int i=0; i<boundaries.getSize(); i++) {
-			cout<<boundaries(i)<<" 73"<<endl;
+			cout<<boundaries(i)<<" 80"<<endl;
 		}
-	}
-	else
-	{
-		cout<<"TODO: not implemented"<<endl;
-	}
+	*/
 
 }
 //zz
@@ -271,27 +288,20 @@ Transcriber::findPitchBoundaries(const realvec pitchList)
 
 void
 Transcriber::ampSegment(realvec& pitchList, realvec& ampList, realvec&
-boundaries)
+                        boundaries)
 {
-	cout<<"ampSegment"<<endl;
-	if (ampList.getRows() == 1)
+	realvec region, newBoundaries, regionBounds;
+	mrs_natural start, length;
+	for (mrs_natural i=0; i<boundaries.getSize()-1; i++)
 	{
-/*
-		realvec noteAmps;
-		boundaries = findValleys(ampList);
-		pitchList = segmentRealvec(pitchList, boundaries);
-		ampList = segmentRealvec(ampList, boundaries);
-*/
+		start = (mrs_natural) boundaries(i);
+		length = mrs_natural (boundaries(i+1) - boundaries(i));
+		region = getSubVector(ampList, start, length);
+		regionBounds = findValleys(region);
+		regionBounds += start;
+		appendRealvec(newBoundaries, regionBounds);
 	}
-	else
-	{
-//		for (mrs_natural o=0; o<ampList.getRows(); o++) {
-//			ampList.getRow(o,noteAmps);
-//			boundaries = findAmpBoundaries(noteAmps);
-	}
-
-
-
+	appendRealvec(boundaries, newBoundaries);
 }
 
 realvec
@@ -306,7 +316,7 @@ Transcriber::findValleys(const realvec list)
 	mrs_natural minSpace = 8;
 	mrs_natural prevValIndex = 0;
 	mrs_real prevValValue = 1.0;
-	for (mrs_natural i=minSpace; i<list.getCols()-minSpace; i++)
+	for (mrs_natural i=minSpace; i<list.getSize()-minSpace; i++)
 	{
 		if ( (list(i) < list(i-1)) &&
 		        (list(i) < list(i+1)) &&
@@ -317,7 +327,7 @@ Transcriber::findValleys(const realvec list)
 			{
 				if (localMin < prevValValue)
 				{
-					//			cout<<"**** "<<valIndex-1<<endl;
+					cout<<"**** "<<valIndex-1<<endl;
 					valleys(valIndex-1) = i;
 					prevValIndex = i;
 					prevValValue = localMin;
@@ -325,9 +335,7 @@ Transcriber::findValleys(const realvec list)
 			}
 			else
 			{
-				//cout<<"just about to stretchWrite "<<valIndex<<endl;
 				valleys.stretchWrite(valIndex, i);
-				//cout<<"done stretchWrite"<<endl;
 				valIndex++;
 				prevValIndex = i;
 				prevValValue = localMin;

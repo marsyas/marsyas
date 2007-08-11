@@ -23,12 +23,13 @@ public:
 	static realvec getAmpsFromRealvecSink(MarSystem* rvSink);
 
 	static void getAllFromAudio(const string audioFilename, realvec&
-	                            pitchList, realvec& ampList);
+	                            pitchList, realvec& ampList, realvec&
+	                            boundaries);
 	static void toMidi(realvec& pitchList);
 	static void pitchSegment(realvec& pitchList, realvec& ampList,
-realvec& boundaries);
+	                         realvec& boundaries);
 	static void ampSegment(realvec& pitchList, realvec& ampList,
-realvec& boundaries);
+	                       realvec& boundaries);
 
 	static realvec findPitchBoundaries(const realvec pitchList);
 	static realvec findValleys(const realvec list);
@@ -37,6 +38,8 @@ realvec& boundaries);
 	                           mrs_natural length, const realvec array);
 	static realvec segmentRealvec(const realvec list, const realvec boundaries);
 	static void appendRealvec(realvec& orig, const realvec& newValues);
+	static realvec getSubVector(const realvec list, const mrs_natural
+	                            start, const mrs_natural length);
 
 	static realvec getRelativeDurations(const realvec boundaries);
 	/*
