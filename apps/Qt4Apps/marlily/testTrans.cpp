@@ -5,7 +5,7 @@
 int main(int argc, char *argv[])
 {
 	std::string file = argv[1];
-	realvec pitchList, ampList;
+	realvec pitchList, ampList, boundaries;
 	Transcriber::getAllFromAudio(file, pitchList, ampList);
 	Transcriber::toMidi(pitchList);
 	std::string writefile;
@@ -15,15 +15,15 @@ int main(int argc, char *argv[])
 	writefile = file;
 	writefile.append(".amps.txt");
 	ampList.writeText(writefile);
-	Transcriber::pitchSegment(pitchList, ampList);
-	Transcriber::ampSegment(pitchList, ampList);
+	Transcriber::pitchSegment(pitchList, ampList, boundaries);
+//	Transcriber::ampSegment(pitchList, ampList, boundaries);
 
 	realvec foo;
 	for (int i=0; i<pitchList.getRows(); i++)
 	{
-		pitchList.getRow(i, foo);
-		cout<<"********* "<<i<<endl;
-		cout<<foo;
+//		pitchList.getRow(i, foo);
+//		cout<<"********* "<<i<<endl;
+//		cout<<foo;
 	}
 	/*
 			realvec foo = pitchList;
@@ -31,6 +31,5 @@ int main(int argc, char *argv[])
 			foo.writeText("foo.txt");
 		//	cout<<ampList;
 	*/
-
 }
 

@@ -165,7 +165,7 @@ void MainWindow::segment()
 {
 	pitchSplit = pitchList;
 	ampSplit = ampList;
-	Transcriber::ampSegment(pitchSplit, ampSplit);
+//	Transcriber::ampSegment(pitchSplit, ampSplit);
 	currNote=0;
 	display();
 }

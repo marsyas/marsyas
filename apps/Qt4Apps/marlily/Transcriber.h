@@ -25,8 +25,10 @@ public:
 	static void getAllFromAudio(const string audioFilename, realvec&
 	                            pitchList, realvec& ampList);
 	static void toMidi(realvec& pitchList);
-	static void pitchSegment(realvec& pitchList, realvec& ampList);
-	static void ampSegment(realvec& pitchList, realvec& ampList);
+	static void pitchSegment(realvec& pitchList, realvec& ampList,
+realvec& boundaries);
+	static void ampSegment(realvec& pitchList, realvec& ampList,
+realvec& boundaries);
 
 	static realvec findPitchBoundaries(const realvec pitchList);
 	static realvec findValleys(const realvec list);
@@ -34,6 +36,7 @@ public:
 	static mrs_real findMedian(const mrs_natural start, const
 	                           mrs_natural length, const realvec array);
 	static realvec segmentRealvec(const realvec list, const realvec boundaries);
+	static void appendRealvec(realvec& orig, const realvec& newValues);
 
 	static realvec getRelativeDurations(const realvec boundaries);
 	/*

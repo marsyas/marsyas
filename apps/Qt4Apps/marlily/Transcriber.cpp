@@ -159,16 +159,38 @@ Transcriber::toMidi(realvec& pitchList)
 	pitchList.apply( hertz2pitch );
 }
 
-
+void
+Transcriber::appendRealvec(realvec& orig, const realvec& newValues)
+{
+	if (orig.getSize() == 0)
+	{
+		orig = newValues;
+		return;
+	}
+	mrs_natural origSize = orig.getSize();
+	orig.stretch( origSize + newValues.getSize() );
+	for (mrs_natural i=0; i<newValues.getSize(); i++)
+	{
+		orig( origSize + i) = newValues(i);
+	}
+	orig.sort();
+	newValues.~realvec();
+}
 
 void
-Transcriber::pitchSegment(realvec& pitchList, realvec& ampList)
+Transcriber::pitchSegment(realvec& pitchList, realvec& ampList, realvec&
+boundaries)
 {
 	if (pitchList.getRows() == 1)
 	{
-		realvec boundaries = findPitchBoundaries(pitchList);
+		realvec newBoundaries = findPitchBoundaries(pitchList);
+		appendRealvec(boundaries, newBoundaries);
 		pitchList = segmentRealvec(pitchList, boundaries);
 		ampList = segmentRealvec(ampList, boundaries);
+
+		for (int i=0; i<boundaries.getSize(); i++) {
+			cout<<boundaries(i)<<" 73"<<endl;
+		}
 	}
 	else
 	{
@@ -211,80 +233,63 @@ realvec
 Transcriber::findPitchBoundaries(const realvec pitchList)
 {
 	// find boundaries (onsets)
-	mrs_natural minSpace = 6;
-	mrs_real noteBoundary = 0.4;
-	mrs_natural noteDistance = 8;
+	mrs_natural minSpace = 8;
+	mrs_real noteBoundary = 0.5;
 
 	realvec boundaries;
-	// temporary-ish, to work around a PPC bug in realvec stretch()
-	// err, being 4 instead of 1 is the workaround.
 	boundaries.create(1);
+	boundaries(0) = 0.0; // done automatically, but good for clarity
+	mrs_natural onsetIndex=1;
 
-	mrs_natural i;
 	mrs_real median;
 	mrs_real prevNote=0.0;
-	mrs_natural onsetIndex=1;
 	mrs_natural prevSamp=0;
-	for (i=minSpace/2; i<pitchList.getSize()-minSpace/2; i++)
+	for (mrs_natural i=minSpace; i<pitchList.getSize()-minSpace; i++)
 	{
 		median = findMedian(i-minSpace/2, minSpace, pitchList);
-		//cout<<i<<"   "<<median<<"     actual: "<<pitchList(i)<<endl;
 		if ( fabs(median-prevNote) > noteBoundary )
 		{
-			if (i>prevSamp+noteDistance)
+			if (i>prevSamp+minSpace)
 			{
 				prevNote = median;
 				prevSamp = i;
 				boundaries.stretchWrite( onsetIndex, i);
 				onsetIndex++;
-				//cout<<"*** new note: "<<median<<" at "<<i<<endl;
 			}
 			else
 			{
 				prevNote = median;
-				//prevSamp = i;
-				//boundaries(onsetIndex) = i;
-				//cout<<"****** correction: new note: "<<median<<" at "<<prevSamp<<endl;
 			}
 		}
 	}
 	boundaries.stretch(onsetIndex+1);
 	boundaries(onsetIndex) = pitchList.getSize();
-
+	boundaries.sort();
 	return boundaries;
 }
 
 
 void
-Transcriber::ampSegment(realvec& pitchList, realvec& ampList)
+Transcriber::ampSegment(realvec& pitchList, realvec& ampList, realvec&
+boundaries)
 {
+	cout<<"ampSegment"<<endl;
 	if (ampList.getRows() == 1)
 	{
+/*
 		realvec noteAmps;
-		realvec boundaries;
 		boundaries = findValleys(ampList);
 		pitchList = segmentRealvec(pitchList, boundaries);
 		ampList = segmentRealvec(ampList, boundaries);
+*/
 	}
 	else
 	{
-		cout<<"TODO: not implemented"<<endl;
+//		for (mrs_natural o=0; o<ampList.getRows(); o++) {
+//			ampList.getRow(o,noteAmps);
+//			boundaries = findAmpBoundaries(noteAmps);
 	}
 
-//	cout<<getRelativeDurations(boundaries);
-//	cout<<ampList.getRows()<<endl;
-//	for (int i=0; i<onsets.getSize(); i++)
-//		cout<<onsets(i)<<" "<<1<<endl;
-//	cout<<endl;
-
-	/*
-
-		for (mrs_natural o=0; o<ampList.getRows(); o++) {
-			ampList.getRow(o,noteAmps);
-			boundaries = findAmpBoundaries(noteAmps);
-			if (boundaries.getSize()>1)
-			{
-	*/
 
 
 }

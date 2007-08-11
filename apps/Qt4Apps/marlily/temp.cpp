@@ -5,9 +5,8 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-	mrs_real bar;
-	bar = NAN;
-	bar = samples2hertz(bar,44100.0);
-	cout<<bar<<endl;
+	realvec foo;
+	foo.stretch(3);
+	foo(0)=2;
 }
 
