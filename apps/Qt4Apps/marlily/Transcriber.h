@@ -26,10 +26,8 @@ public:
 	                            pitchList, realvec& ampList, realvec&
 	                            boundaries);
 	static void toMidi(realvec& pitchList);
-	static void pitchSegment(realvec& pitchList, realvec& ampList,
-	                         realvec& boundaries);
-	static void ampSegment(realvec& pitchList, realvec& ampList,
-	                       realvec& boundaries);
+	static void pitchSegment(realvec& pitchList, realvec& boundaries);
+	static void ampSegment(realvec& ampList, realvec& boundaries);
 
 	static realvec findPitchBoundaries(const realvec pitchList);
 	static realvec findValleys(const realvec list);
@@ -41,6 +39,8 @@ public:
 	static realvec getSubVector(const realvec list, const mrs_natural
 	                            start, const mrs_natural length);
 
+	static realvec getNotes(const realvec pitchList, const realvec
+	                        ampList, const realvec boundaries);
 	static realvec getRelativeDurations(const realvec boundaries);
 	/*
 		void setOptions(mrs_natural getRadius, mrs_real getNewNote, mrs_real getCertantyDiv);

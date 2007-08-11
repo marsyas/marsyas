@@ -190,8 +190,7 @@ Transcriber::getSubVector(const realvec list, mrs_natural start,
 }
 
 void
-Transcriber::pitchSegment(realvec& pitchList, realvec& ampList, realvec&
-                          boundaries)
+Transcriber::pitchSegment(realvec& pitchList, realvec& boundaries)
 {
 	realvec region, newBoundaries, regionBounds;
 	mrs_natural start, length;
@@ -205,13 +204,6 @@ Transcriber::pitchSegment(realvec& pitchList, realvec& ampList, realvec&
 		appendRealvec(newBoundaries, regionBounds);
 	}
 	appendRealvec(boundaries, newBoundaries);
-
-	/*
-		for (int i=0; i<boundaries.getSize(); i++) {
-			cout<<boundaries(i)<<" 80"<<endl;
-		}
-	*/
-
 }
 //zz
 
@@ -285,11 +277,11 @@ Transcriber::findPitchBoundaries(const realvec pitchList)
 
 
 void
-Transcriber::ampSegment(realvec& pitchList, realvec& ampList, realvec&
-                        boundaries)
+Transcriber::ampSegment(realvec& ampList, realvec& boundaries)
 {
 	realvec region, newBoundaries, regionBounds;
 	mrs_natural start, length;
+	//for (mrs_natural i=0; i<3; i++)
 	for (mrs_natural i=0; i<boundaries.getSize()-1; i++)
 	{
 		start = (mrs_natural) boundaries(i);
@@ -309,7 +301,7 @@ Transcriber::findValleys(const realvec list)
 
 	mrs_natural valIndex = 0;
 
-	mrs_real localMin = 0.0;
+	mrs_real localMin;
 	mrs_real maxValue = 1.0;
 	mrs_natural minSpace = 8;
 	mrs_natural prevValIndex = 0;
@@ -325,23 +317,25 @@ Transcriber::findValleys(const realvec list)
 			{
 				if (localMin < prevValValue)
 				{
-					cout<<"**** "<<valIndex-1<<endl;
+					// replace previous valley with this one
 					valleys(valIndex-1) = i;
 					prevValIndex = i;
 					prevValValue = localMin;
+					//cout<<"***** fix bound "<<i<<endl;
 				}
 			}
 			else
 			{
+				// new valley found
 				valleys.stretchWrite(valIndex, i);
 				valIndex++;
 				prevValIndex = i;
 				prevValValue = localMin;
+				//cout<<"*** new bound "<<i<<endl;
 			}
 		}
 	}
 	valleys.stretch(valIndex);
-	//cout<<"just about to leave findValleys"<<endl;
 	return valleys;
 }
 
@@ -403,6 +397,21 @@ Transcriber::getRelativeDurations(realvec boundaries)
 	}
 	cout<<"**********"<<endl;
 	return durations;
+}
+
+realvec
+Transcriber::getNotes(realvec pitchList, realvec ampList, realvec
+                      boundaries)
+{
+	realvec notes;
+
+
+
+	for (mrs_natural i=0; i<boundaries.getSize(); i++)
+	{
+		cout<<boundaries(i)<<" 80"<<endl;
+	}
+	return notes;
 }
 
 
