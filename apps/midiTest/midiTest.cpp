@@ -17,7 +17,6 @@ using namespace Marsyas;
 
 CommandLineOptions cmd_options;
 
-#define EMPTYSTRING "MARSYAS_EMPTY"
 int helpopt;
 int usageopt;
 mrs_natural bufferSizeopt;

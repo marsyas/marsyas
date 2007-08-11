@@ -1,10 +1,6 @@
 #ifndef MARSYAS_COMMON_H
 #define MARSYAS_COMMON_H
 
-/**
-\todo merge EMPTYSTING into common.h
-*/
-
 /************************************************************************/
 /*      common includes			                                            */
 /************************************************************************/
@@ -44,6 +40,8 @@ namespace Marsyas
 
 #define FFT_FORWARD 1
 #define FFT_INVERSE 0
+
+#define EMPTYSTRING "MARSYAS_EMPTY"
 
 /************************************************************************/
 /*  Numerical defines                                                   */

@@ -23,8 +23,6 @@
 using namespace std;
 using namespace Marsyas;
 
-#define EMPTYSTRING "MARSYAS_EMPTY"
-
 CommandLineOptions cmd_options;
 string testName;
 int helpopt;

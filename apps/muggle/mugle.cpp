@@ -22,8 +22,6 @@ float repetitions = 1;
 mrs_natural offset;
 mrs_natural duration;
 
-
-#define EMPTYSTRING "MARSYAS_EMPTY"
 CommandLineOptions cmd_options;
 
 

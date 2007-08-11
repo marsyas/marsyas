@@ -52,8 +52,6 @@ mrs_real lengthopt;
 mrs_real sropt;
 mrs_natural copt;
 
-#define EMPTYSTRING "MARSYAS_EMPTY" 
-
 CommandLineOptions cmd_options;
 
 

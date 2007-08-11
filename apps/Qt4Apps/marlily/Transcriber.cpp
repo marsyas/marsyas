@@ -34,8 +34,6 @@ Transcriber::~Transcriber()
 {
 }
 
-#define EMPTYSTRING "MARSYAS_EMPTY"
-
 MarSystem*
 Transcriber::makePitchNet(const mrs_real srate, const mrs_real lowFreq, MarSystem* rvSink)
 {

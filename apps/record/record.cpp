@@ -41,8 +41,6 @@ mrs_real sropt;
 mrs_natural copt;
 mrs_natural yearopt;
 
-#define EMPTYSTRING "MARSYAS_EMPTY" 
-
 CommandLineOptions cmd_options;
 
 

@@ -54,8 +54,6 @@ mrs_bool pluginMute = 0.0;
 #define DEFAULT_EXTRACTOR "STFT" 
 #define DEFAULT_CLASSIFIER  "GS"
 
-#define EMPTYSTRING "MARSYAS_EMPTY" 
-
 string pluginName = EMPTYSTRING;
 string wekafname = EMPTYSTRING;
 string filefeaturename = EMPTYSTRING;

@@ -6,9 +6,6 @@
 #include "Collection.h"
 #include "FileName.h"
 
-// dunno what this is doing
-#define EMPTYSTRING "MARSYAS_EMPTY"
-
 #define CLOSE_ENOUGH 0.0001
 
 using namespace std;

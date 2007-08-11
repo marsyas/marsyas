@@ -16,7 +16,6 @@ using namespace std;
 using namespace Marsyas;
 
 
-#define EMPTYSTRING "MARSYAS_EMPTY"
 string fileName;
 string pluginName;
 string methodopt;

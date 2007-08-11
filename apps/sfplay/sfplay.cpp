@@ -8,8 +8,6 @@
 using namespace std;
 using namespace Marsyas;
 
-#define EMPTYSTRING "MARSYAS_EMPTY"
-
 /* global variables for various commandline options */ 
 int helpopt;
 int usageopt;

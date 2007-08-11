@@ -42,7 +42,6 @@ mrs_real start = 0.0;
 mrs_real length = 30.0;
 mrs_real gain = 1.0;
 
-#define EMPTYSTRING "MARSYAS_EMPTY" 
 string pluginName = EMPTYSTRING;
 string wekafname = EMPTYSTRING;
 string filefeaturename = EMPTYSTRING;

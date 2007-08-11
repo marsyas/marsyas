@@ -9,8 +9,6 @@
 #include "MarSystemManager.h"
 #include "FileName.h"
 
-#define EMPTYSTRING "MARSYAS_EMPTY" 
-
 using namespace std;
 using namespace Marsyas;
 

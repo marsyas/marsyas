@@ -19,8 +19,6 @@ Easymar::~Easymar()
 {
 }
 
-#define EMPTYSTRING "MARSYAS_EMPTY"
-
 // TODO: ask -devel about making this a general Marsyas function
 mrs_real
 Easymar::addFileSource(MarSystem* net, const string infile)

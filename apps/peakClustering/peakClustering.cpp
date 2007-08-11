@@ -20,8 +20,6 @@
 using namespace std;
 using namespace Marsyas;
 
-#define EMPTYSTRING "MARSYAS_EMPTY"
-
 string pluginName = EMPTYSTRING;
 string inputDirectoryName = EMPTYSTRING;
 string outputDirectoryName = EMPTYSTRING;
