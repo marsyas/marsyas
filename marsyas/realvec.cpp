@@ -336,8 +336,9 @@ void
 realvec::stretchWrite(const mrs_natural pos, const mrs_real val)
 {
 	// don't forget the zero-indexing position!
+	//   i.e.  pos=0  is the first value to store
 	mrs_natural wantSize = pos+1;
-	if (wantSize >= size_)
+	if (wantSize > size_)
 		if ( wantSize < 2*size_ )
 			// grow exponentially with sequential access
 			stretch( 2*size_ );
