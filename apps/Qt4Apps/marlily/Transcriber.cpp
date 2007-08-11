@@ -130,13 +130,15 @@ Transcriber::getPitchesFromRealvecSink(MarSystem* rvSink, const mrs_real srate)
 
 	realvec pitchList;
 	pitchList.create(data.getSize()/2);
-	mrs_real pitch;
+	mrs_real pitchOutput;
 	for (mrs_natural i=0; i<pitchList.getSize(); i++)
 	{
-		pitch = samples2hertz(data(2*i+1), srate);
-		if (pitch > 0)
-			pitchList(i) = pitch;
-		// values in PitchList are 0 by default
+		// on linux (but not OSX), we have pitchOutput of 0.5 if the pitch
+		// detection can't decide on a pitch.
+		pitchOutput = data(2*i+1);
+		if (pitchOutput > 1)
+			pitchList(i) = samples2hertz( pitchOutput, srate);
+			// values in PitchList are 0 by default
 	}
 
 	return pitchList;
@@ -167,6 +169,10 @@ Transcriber::pitchSegment(realvec& pitchList, realvec& ampList)
 		realvec boundaries = findPitchBoundaries(pitchList);
 		pitchList = segmentRealvec(pitchList, boundaries);
 		ampList = segmentRealvec(ampList, boundaries);
+	}
+	else
+	{
+		cout<<"TODO: not implemented"<<endl;
 	}
 
 }
@@ -204,24 +210,24 @@ Transcriber::segmentRealvec(const realvec list, const realvec boundaries)
 realvec
 Transcriber::findPitchBoundaries(const realvec pitchList)
 {
-	// find boundaries (boundaries)
-	mrs_natural window = 6;
+	// find boundaries (onsets)
+	mrs_natural minSpace = 6;
 	mrs_real noteBoundary = 0.4;
 	mrs_natural noteDistance = 8;
 
 	realvec boundaries;
 	// temporary-ish, to work around a PPC bug in realvec stretch()
 	// err, being 4 instead of 1 is the workaround.
-	boundaries.create(4);
+	boundaries.create(1);
 
 	mrs_natural i;
 	mrs_real median;
 	mrs_real prevNote=0.0;
 	mrs_natural onsetIndex=1;
 	mrs_natural prevSamp=0;
-	for (i=window/2; i<pitchList.getSize()-window/2; i++)
+	for (i=minSpace/2; i<pitchList.getSize()-minSpace/2; i++)
 	{
-		median = findMedian(i-window/2, window, pitchList);
+		median = findMedian(i-minSpace/2, minSpace, pitchList);
 		//cout<<i<<"   "<<median<<"     actual: "<<pitchList(i)<<endl;
 		if ( fabs(median-prevNote) > noteBoundary )
 		{
@@ -260,6 +266,10 @@ Transcriber::ampSegment(realvec& pitchList, realvec& ampList)
 		pitchList = segmentRealvec(pitchList, boundaries);
 		ampList = segmentRealvec(ampList, boundaries);
 	}
+	else
+	{
+		cout<<"TODO: not implemented"<<endl;
+	}
 
 //	cout<<getRelativeDurations(boundaries);
 //	cout<<ampList.getRows()<<endl;
@@ -288,17 +298,17 @@ Transcriber::findValleys(const realvec list)
 
 	mrs_real localMin = 0.0;
 	mrs_real maxValue = 1.0;
-	mrs_natural peakSpacing = 8;
+	mrs_natural minSpace = 8;
 	mrs_natural prevValIndex = 0;
 	mrs_real prevValValue = 1.0;
-	for (mrs_natural i=peakSpacing; i<list.getCols()-peakSpacing; i++)
+	for (mrs_natural i=minSpace; i<list.getCols()-minSpace; i++)
 	{
 		if ( (list(i) < list(i-1)) &&
 		        (list(i) < list(i+1)) &&
 		        (list(i) < maxValue) )
 		{
 			localMin = list(i);
-			if (i < prevValIndex+peakSpacing)
+			if (i < prevValIndex+minSpace)
 			{
 				if (localMin < prevValValue)
 				{

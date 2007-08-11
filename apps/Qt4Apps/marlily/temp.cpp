@@ -1,16 +1,13 @@
 #include "MarSystemManager.h"
+#include "math.h"
 using namespace Marsyas;
-
-realvec makereal()
-{
-	realvec foo(1);
-	foo(0)=1;
-	return foo;
-}
+using namespace std;
 
 int main(int argc, char *argv[])
 {
-	realvec foo = makereal();
-	std::cout<<foo;
+	mrs_real bar;
+	bar = NAN;
+	bar = samples2hertz(bar,44100.0);
+	cout<<bar<<endl;
 }
 
