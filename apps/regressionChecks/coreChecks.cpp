@@ -130,3 +130,18 @@ core_isClose(string infile1, string infile2)
 	}
 }
 
+
+void
+core_realvec()
+{
+	realvec test;
+	test.create(0);
+	for (mrs_natural i=0; i<14; i++)
+	{
+		test.stretchWrite(i,1);
+		cout<<test;
+	}
+
+}
+
+

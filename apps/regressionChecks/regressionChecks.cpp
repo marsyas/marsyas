@@ -3,6 +3,7 @@
 
 #include "coreChecks.cpp"
 #include "basicChecks.cpp"
+#include "analysisChecks.cpp"
 
 
 CommandLineOptions cmd_options;
@@ -40,8 +41,10 @@ printHelp(string progName)
 	cerr << "null            : no test" << endl;
 	cerr << "audiodevices    : test audio devices" << endl;
 	cerr << "isClose         : test if two sound files are (almost) equal" << endl;
+	cerr << "realvec         : test realvec" << endl;
 	cerr << endl << "    *** Basic Audio Processing tests ***" << endl;
 	cerr << "vibrato         : test vibrato" << endl;
+	cerr << endl << "    *** Analysis tests ***" << endl;
 	cerr << "pitch           : do pitch extraction" << endl;
 	exit(1);
 }
@@ -105,12 +108,16 @@ main(int argc, const char **argv)
 		core_audiodevices();
 	else if (testName == "isClose")
 		core_isClose(fname0, fname1);
+	else if (testName == "realvec")
+		core_realvec();
 
 	// Basic audio processing
 	else if (testName == "vibrato")
 		basic_vibrato(fname0, outputFilename);
 	else if (testName == "pitch")
-		basic_pitch(fname0);
+		analysis_pitch(fname0);
+
+	// Analysis
 	else if (testName == "windowing")
 		basic_windowing(fname0,outputFilename);
 
