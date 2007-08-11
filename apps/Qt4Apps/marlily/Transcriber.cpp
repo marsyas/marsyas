@@ -250,54 +250,26 @@ Transcriber::ampSegment(realvec& pitchList, realvec& ampList)
 	realvec noteAmps;
 	realvec boundaries;
 	boundaries = findValleys(ampList);
+	cout<<"left findValleys"<<endl;
+//	pitchList = segmentRealvec(pitchList, boundaries);
+//	ampList = segmentRealvec(ampList, boundaries);
 
-	pitchList = segmentRealvec(pitchList, boundaries);
-	ampList = segmentRealvec(ampList, boundaries);
-	cout<<getRelativeDurations(boundaries);
+
+//	cout<<getRelativeDurations(boundaries);
 //	cout<<ampList.getRows()<<endl;
 //	for (int i=0; i<onsets.getSize(); i++)
 //		cout<<onsets(i)<<" "<<1<<endl;
 //	cout<<endl;
+
 /*
+
 	for (mrs_natural o=0; o<ampList.getRows(); o++) {
 		ampList.getRow(o,noteAmps);
 		boundaries = findAmpBoundaries(noteAmps);
 		if (boundaries.getSize()>1)
 		{
 */
-		for (int i=0; i<boundaries.getSize(); i++)
-		{
-//			cout<<boundaries(i)<<" "<<1<<endl;
-//			cout<<boundaries(i)+onsets(onIndex)<<" "<<1<<endl;
-		}
-/*
-		onIndex++;
-	}
-*/
 
-
-/*
-	MarSystem* net = mng.create("Series", "net");
-	net->addMarSystem(mng.create("RealvecSource", "src"));
-	net->updctrl("RealvecSource/src/mrs_realvec/data", ampList);
-	net->addMarSystem(mng.create("Peaker", "pkr"));
-  net->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.1);
-  net->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.4);
-  //net->updctrl("Peaker/pkr/mrs_natural/peakStart", peakStart);
-  net->updctrl("Peaker/pkr/mrs_natural/peakEnd", 512);
-  //net->updctrl("Peaker/pkr/mrs_real/peakGain", 0.4);
-
-	int i=0;
-	while( i<100)
-//net->getctrl("RealvecSource/src/mrs_bool/done")->toBool())
-	{
-		i++;
-		net->tick();
-		const realvec& processedData =
-net->getctrl("Peaker/pkr/mrs_realvec/processedData")->to<mrs_realvec>();
-		cout << processedData << endl;
-	}
-*/
 
 }
 
@@ -306,8 +278,11 @@ Transcriber::findValleys(const realvec list)
 {
 //	cout<<ampList.getRows()<<" "<<ampList.getCols()<<endl;
 
-	realvec valleys;
-	valleys.create(4);
+// FIXME: produces free'ing invalid pointers in linux.
+// it's in realvec::stretch.  fsck.
+	realvec valleys(1);
+//	realvec valleys(200); // obscene workaround.  :( :(
+
 	mrs_natural valIndex = 0;
 
 	mrs_real localMin = 0.0;
@@ -315,7 +290,7 @@ Transcriber::findValleys(const realvec list)
 	mrs_natural peakSpacing = 8;
 	mrs_natural prevValIndex = 0;
 	mrs_real prevValValue = 1.0;
-	for (mrs_natural i=1; i<list.getCols()-1; i++) {
+	for (mrs_natural i=peakSpacing; i<list.getCols()-peakSpacing; i++) {
 		//cout<<list(i)<<endl;
 		if ( (list(i) < list(i-1)) &&
 		     (list(i) < list(i+1)) &&
@@ -325,12 +300,17 @@ Transcriber::findValleys(const realvec list)
 			if (i < prevValIndex+peakSpacing) {
 				if (localMin < prevValValue)
 				{
+					cout<<"**** "<<valIndex-1<<endl;
 					valleys(valIndex-1) = i;
 					prevValIndex = i;
 					prevValValue = localMin;
 				}
 			} else {
+				cout<<"just about to stretchWrite "<<valIndex<<endl;
+				//valleys.stretch(valIndex);
+//				valleys(valIndex) = i;
 				valleys.stretchWrite(valIndex, i);
+				cout<<"done stretchWrite"<<endl;
 				valIndex++;
 				prevValIndex = i;
 				prevValValue = localMin;
@@ -338,6 +318,7 @@ Transcriber::findValleys(const realvec list)
 		}
 	}
 	valleys.stretch(valIndex);
+	cout<<"just about to leave findValleys"<<endl;
 	return valleys;
 }
 

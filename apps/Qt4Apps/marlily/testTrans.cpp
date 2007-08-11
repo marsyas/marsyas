@@ -14,22 +14,22 @@ int main(int argc, char *argv[]) {
 	writefile = file;
 	writefile.append(".amps.txt");
 	ampList.writeText(writefile);
+	Transcriber::ampSegment(pitchList, ampList);
 /*
 	realvec foo = pitchList;
 	foo /= 100.0;
 	foo.writeText("foo.txt");
-*/
-//	Transcriber::ampSegment(pitchList, ampList);
 //	Transcriber::pitchSegment(pitchList, ampList);
 //	cout<<ampList;
-/*
+
 	for (int i=0; i<pitchList.getRows(); i++)
 	{
 		pitchList.getRow(i, foo);
-//		cout<<"********* "<<i<<endl;
-//		cout<<foo;
+		cout<<"********* "<<i<<endl;
+		cout<<foo;
 	}
 */
+
 
 }
 

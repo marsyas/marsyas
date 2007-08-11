@@ -1,5 +1,8 @@
-#SOURCES = testTrans.cpp
-SOURCES = start.cpp
+CONFIG += marsyasASSERTS
+
+SOURCES = testTrans.cpp
+#SOURCES = start.cpp
+#SOURCES = temp.cpp
 
 HEADERS += mainwindow.h
 SOURCES += mainwindow.cpp
