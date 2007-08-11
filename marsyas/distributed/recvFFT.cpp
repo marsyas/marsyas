@@ -10,7 +10,6 @@ using namespace Marsyas;
 CommandLineOptions cmd_options;
 
 
-#define EMPTYSTRING "MARSYAS_EMPTY"
 string fileName = EMPTYSTRING;
 
 int helpopt;

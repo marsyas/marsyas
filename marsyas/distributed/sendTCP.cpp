@@ -9,7 +9,6 @@
 using namespace std;
 using namespace Marsyas;
 
-#define EMPTYSTRING "MARSYAS_EMPTY"
 
 #ifdef WIN32
 #define MARSYAS_MFDIR "" 

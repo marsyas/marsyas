@@ -9,8 +9,6 @@
 
 #include "..\OscMapper.h"
 
-#define EMPTYSTRING "MARSYAS_EMPTY"
-
 mrs_natural inputOscPort_;
 mrs_natural outputOscPort_;
 
