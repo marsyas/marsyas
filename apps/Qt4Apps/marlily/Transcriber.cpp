@@ -189,6 +189,24 @@ Transcriber::getSubVector(const realvec* list, mrs_natural start,
 	return subVector;
 }
 
+realvec*
+Transcriber::getSubVectorNoZeros(const realvec* list, mrs_natural start,
+                          mrs_natural length)
+{
+	realvec *subVector = new realvec(length);
+	mrs_natural subIndex=0;
+	for (mrs_natural i=0; i<length; i++)
+	{
+		if ((*list)(start+i) > 0)
+		{
+			(*subVector)(subIndex) = (*list)(start + i);
+			subIndex++;
+		}
+	}
+	subVector->stretch(subIndex);
+	return subVector;
+}
+
 void
 Transcriber::pitchSegment(realvec* pitchList, realvec* boundaries)
 {
@@ -411,21 +429,25 @@ Transcriber::getNotes(const realvec* pitchList, const realvec* ampList,
                       boundaries)
 {
 	mrs_natural numNotes = boundaries->getSize();
-	realvec* notes = new realvec(numNotes-1, 2);
-//	pitchList = segmentRealvec(pitchList, boundaries);
-//	ampList = segmentRealvec(ampList, boundaries);
+//	realvec* notes = new realvec(numNotes-1, 2);
+	realvec* notes = new realvec(1, 2);
 
-	//realvec durs = getRelativeDurations(boundaries);
-//	realvec notePitches, noteAmps;
 	mrs_natural start, length;
 	realvec* region;
 	for (mrs_natural i=0; i<numNotes-1; i++)
 	{
 		start = (mrs_natural) (*boundaries)(i);
 		length = (mrs_natural) ((*boundaries)(i+1) - (*boundaries)(i));
-		region = getSubVector(pitchList, start, length);
-		(*notes)(i,0) = findMedian(0, length, region);
-		(*notes)(i,1) = (*boundaries)(i+1)-(*boundaries)(i);
+		region = getSubVectorNoZeros(pitchList, start, length);
+		if (region->getSize() > 0)
+		{
+			mrs_real regionPitch = region->median();
+			mrs_real regionSTD = region->std();
+			//cout<<length<<"\t"<<regionPitch<<"\t"<<regionSTD<<endl;
+			cout<<(*boundaries)(i)<<"\t"<<10*regionSTD<<endl;
+		//(*notes)(i,0) = findMedian(0, length, region);
+		//(*notes)(i,1) = (*boundaries)(i+1)-(*boundaries)(i);
+		}
 	}
 	return notes;
 }

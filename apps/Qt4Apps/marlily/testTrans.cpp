@@ -19,6 +19,6 @@ int main(int argc, char *argv[])
 	Transcriber::ampSegment(ampList, boundaries);
 	realvec* notes;
 	notes = Transcriber::getNotes(pitchList, ampList, boundaries);
-	cout<<(*notes);
+//	cout<<(*notes);
 }
 
