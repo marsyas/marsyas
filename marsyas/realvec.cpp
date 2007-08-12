@@ -24,6 +24,12 @@
 
 Array (vector in the numerical sense) of mrs_real values. Basic 
 arithmetic operations and statistics are supported. 
+
+\todo Crash-proof certain functions in realvec (like calling median() on
+an empty realvec)
+
+\todo document realvec functions.  In detail.  Using all the doxygen
+tricks.  For something as basic as this, it's worth it.
 */
 
 #include "realvec.h"

@@ -93,6 +93,10 @@ AutoCorrelation::myUpdate(MarControlPtr sender)
   
   scratch_.create(2*getctrl("mrs_natural/onSamples")->toNatural());
  
+/**
+	\bug Autocorrealtion normalize  is currently commented out.  Either
+un-comment it and fix the code, or delete the stuff entirely.
+*/
 // works better without this code.  Gustavo and I can't figure out where
 // the code came from, anyway.  -gp 
 // Mathieu: this doesn't work with the Windowing MarSystem from July 19.

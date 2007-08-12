@@ -1,6 +1,11 @@
 /** \file general.doxy
-\bug sfplay portability  (see sourceforge)
+\bug sfplay portability  (see sourceforge)  -fixed, kind-of.  Delete
+from sourceforge.
 
-\bug Vibrato portability   (see sourceforge)
+\bug Vibrato portability   (see sourceforge)  - fixed, kind-of.  Delete
+from sourceforge.
+
+\todo check  examples/Qt4-tutorial  to see if it still works.  Also
+change member variables to foo_ (underscore).
 
 */
