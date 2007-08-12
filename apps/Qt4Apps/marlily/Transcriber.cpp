@@ -366,7 +366,7 @@ realvec
 Transcriber::getRelativeDurations(realvec boundaries)
 {
 	boundaries.sort();
-	cout<<boundaries;
+//	cout<<boundaries;
 
 	realvec durations;
 	durations.create( boundaries.getSize()-1 );
@@ -378,20 +378,20 @@ Transcriber::getRelativeDurations(realvec boundaries)
 	for (i=0; i<boundaries.getSize()-1; i++)
 	{
 		durations(i) = boundaries(i+1) - boundaries(i);
-		cout<<"duration: "<<durations(i)<<endl;
+//		cout<<"duration: "<<durations(i)<<endl;
 		// we don't care about silent durations
 		if (durations(i) < min)
 			min = (mrs_natural) durations(i);
 	}
-	cout<<"min: "<<min<<endl;
+//	cout<<"min: "<<min<<endl;
 	// find relative durations
 	// yes, we want to truncate the division.
 	for (i=0; i<boundaries.getSize()-1; i++)
 	{
-		durations(i) = (mrs_natural) ( durations(i) / (min) );
-		//	durations(i) = (mrs_natural) ( durations(i) / (min*0.9) );
+		//durations(i) = (mrs_natural) ( durations(i) / (min) );
+		durations(i) = (mrs_natural) ( durations(i) / (min*0.9) );
 	}
-	cout<<"**********"<<endl;
+	//cout<<"**********"<<endl;
 	return durations;
 }
 
@@ -399,15 +399,19 @@ realvec
 Transcriber::getNotes(realvec pitchList, realvec ampList, realvec
                       boundaries)
 {
-	realvec notes;
-	segmentRealvec(pitchList, boundaries);
-	segmentRealvec(ampList, boundaries);
+	mrs_natural numNotes = boundaries.getSize();
+	realvec notes(numNotes-1, 2);
+	pitchList = segmentRealvec(pitchList, boundaries);
+	ampList = segmentRealvec(ampList, boundaries);
 
-
-
-	for (mrs_natural i=0; i<boundaries.getSize(); i++)
+	realvec durs = getRelativeDurations(boundaries);
+	realvec notePitches, noteAmps;
+	for (mrs_natural i=0; i<numNotes-1; i++)
 	{
-		cout<<boundaries(i)<<" 80"<<endl;
+		pitchList.getRow(i,notePitches);
+		ampList.getRow(i,noteAmps);
+		notes(i,0) = findMedian(0, notePitches.getSize(), notePitches);
+		notes(i,1) = boundaries(i+1)-boundaries(i);
 	}
 	return notes;
 }
