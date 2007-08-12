@@ -1,6 +1,17 @@
 #include "Transcriber.h"
+#include <fstream>
+#include <iostream>
 
 //    ./marlily filename.wav
+void writeOnsets(string filename, realvec* boundaries)
+{
+	ofstream file;
+	file.open(filename.c_str());
+	for (int i=0; i<boundaries->getSize(); i++)
+		file<<(*boundaries)(i)<<"\t"<<90<<endl;
+	file.close();
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -15,10 +26,15 @@ int main(int argc, char *argv[])
 	writefile = file;
 	writefile.append(".amps.txt");
 	ampList->writeText(writefile);
-	Transcriber::pitchSegment(pitchList, boundaries);
+
 	Transcriber::ampSegment(ampList, boundaries);
+	writeOnsets("onsets.amps.txt", boundaries);
+// not necessary so far.
+//	Transcriber::pitchSegment(pitchList, boundaries);
+//	writeOnsets("onsets.pitch.txt", boundaries);
+
 	realvec* notes;
 	notes = Transcriber::getNotes(pitchList, ampList, boundaries);
-//	cout<<(*notes);
+	cout<<(*notes);
 }
 
