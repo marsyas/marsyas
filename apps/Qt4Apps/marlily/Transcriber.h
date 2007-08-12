@@ -14,34 +14,36 @@ public:
 	Transcriber();
 	~Transcriber();
 
-	static realvec getPitchesFromAudio(const string audioFilename);
+	static realvec* getPitchesFromAudio(const string audioFilename);
 	static MarSystem* makePitchNet(const mrs_real srate, const mrs_real
 	                               lowFreq = 100.0, MarSystem* rvSink = NULL);
-	static realvec getPitchesFromRealvecSink(MarSystem* rvSink, const mrs_real
+	static realvec* getPitchesFromRealvecSink(MarSystem* rvSink, const mrs_real
 	        srate);
 	static MarSystem* makeAmplitudeNet(MarSystem* rvSink = NULL);
-	static realvec getAmpsFromRealvecSink(MarSystem* rvSink);
+	static realvec* getAmpsFromRealvecSink(MarSystem* rvSink);
 
-	static void getAllFromAudio(const string audioFilename, realvec&
-	                            pitchList, realvec& ampList, realvec&
-	                            boundaries);
-	static void toMidi(realvec& pitchList);
-	static void pitchSegment(realvec& pitchList, realvec& boundaries);
-	static void ampSegment(realvec& ampList, realvec& boundaries);
+	static void getAllFromAudio(const string audioFilename, realvec* &
+	                            pitchList, realvec* &ampList, realvec*
+	                            &boundaries);
+	static void toMidi(realvec* pitchList);
+	static void pitchSegment(realvec* pitchList, realvec* boundaries);
+	static void ampSegment(realvec* ampList, realvec* boundaries);
 
-	static realvec findPitchBoundaries(const realvec pitchList);
-	static realvec findValleys(const realvec list);
+	static realvec* findPitchBoundaries(const realvec* pitchList);
+	static realvec* findValleys(const realvec* list);
 
 	static mrs_real findMedian(const mrs_natural start, const
-	                           mrs_natural length, const realvec array);
-	static realvec segmentRealvec(const realvec list, const realvec boundaries);
-	static void appendRealvec(realvec& orig, const realvec& newValues);
-	static realvec getSubVector(const realvec list, const mrs_natural
-	                            start, const mrs_natural length);
+	                           mrs_natural length, const realvec* array);
 
-	static realvec getNotes(const realvec pitchList, const realvec
-	                        ampList, const realvec boundaries);
-	static realvec getRelativeDurations(const realvec boundaries);
+	static realvec segmentRealvec(const realvec list, const realvec boundaries);
+	static void appendRealvec(realvec* orig, const realvec* newValues);
+	static realvec* getSubVector(const realvec* list, const mrs_natural
+	                             start, const mrs_natural length);
+
+	static realvec* getNotes(const realvec* pitchList, const realvec*
+	                         ampList, const realvec* boundaries);
+//	static realvec getRelativeDurations(const realvec boundaries);
+
 	/*
 		void setOptions(mrs_natural getRadius, mrs_real getNewNote, mrs_real getCertantyDiv);
 
