@@ -145,27 +145,37 @@ void MainWindow::open()
 		string filename = openFilename.toStdString();
 // TODO: error
 // since this line has a bus error...
-// 	   Transcriber::getAllFromAudio(openFilename.toStdString(), pitchList, ampList);
+// 	   Transcriber::getAllFromAudio(openFilename.toStdString(),
+//pitchList, ampList, boundaries);
 //    	Transcriber::toMidi(pitchList);
 
 		string readFile;
 		readFile = filename;
 		readFile.append(".pitches.txt");
-		pitchList.readText(readFile);
+		pitchList = new realvec();
+		pitchList->readText(readFile);
 		readFile = filename;
 		readFile.append(".amps.txt");
-		ampList.readText(readFile);
+		ampList = new realvec();
+		ampList->readText(readFile);
+		readFile = filename;
+		readFile.append(".bounds.txt");
+		boundaries = new realvec();
+		boundaries->readText(readFile);
 
 		currNote=-1;
 		display();
+
 	}
 }
 
 void MainWindow::segment()
 {
-	pitchSplit = pitchList;
-	ampSplit = ampList;
-//	Transcriber::ampSegment(pitchSplit, ampSplit);
+	Transcriber::ampSegment(ampList, boundaries);
+//	Trasccriber::pitchSegment(pitchList, boundaries);
+	pitchSplit = Transcriber::segmentRealvec(pitchList, boundaries);
+	ampSplit = Transcriber::segmentRealvec(ampList, boundaries);
+
 	currNote=0;
 	display();
 }
@@ -188,7 +198,7 @@ void MainWindow::message()
 void MainWindow::nextNote()
 {
 	currNote++;
-	if (currNote > ampSplit.getRows()-1)
+	if (currNote > ampSplit->getRows()-1)
 		currNote = -1;
 	display();
 }
@@ -197,7 +207,7 @@ void MainWindow::prevNote()
 {
 	currNote--;
 	if (currNote < -1)
-		currNote = ampSplit.getRows()-1;
+		currNote = ampSplit->getRows()-1;
 	display();
 }
 
@@ -216,30 +226,34 @@ void MainWindow::display()
 	ampPlot->setCenterLine(false);
 	if (currNote<0)
 	{
-		pitchPlot->setData(&pitchList);
-		ampPlot->setData(&ampList);
+		pitchPlot->setData(pitchList);
+		ampPlot->setData(ampList);
 		QString pitchMessage = "Pitches: ";
-		pitchMessage.append(QString::number( pitchList.mean() ));
+		pitchMessage.append(QString::number( pitchList->mean() ));
 		pitchPlot->setPlotName(pitchMessage);
-		pitchPlot->setVertical(pitchList.minval(),pitchList.maxval());
+		pitchPlot->setVertical(pitchList->minval(),pitchList->maxval());
 	}
 	else
 	{
-		pitchSplit.getRow(currNote, tempPitch);
-		ampSplit.getRow(currNote, tempAmp);
-		pitchPlot->setData(&tempPitch);
-		ampPlot->setData(&tempAmp);
+//		tempPitch = new realvec;
+//		tempAmp = new realvec;
+//		pitchSplit->getRow(currNote, (*tempPitch));
+//		ampSplit->getRow(currNote, (*tempAmp));
+/*
+		pitchPlot->setData(tempPitch);
+		ampPlot->setData(tempAmp);
 		QString ampMessage = "Amplitudes: ";
 		int numVals=0;
-		while ((tempPitch(numVals)>0) && (numVals<tempPitch.getCols()))
+		while (((*tempPitch)(numVals)>0) && (numVals<tempPitch->getCols()))
 			numVals++;
 		ampMessage.append(QString::number( numVals ));
 		ampPlot->setPlotName(ampMessage);
 		QString pitchMessage = "Pitches: ";
-		pitchMessage.append(QString::number( tempPitch.median() ));
+		pitchMessage.append(QString::number( tempPitch->median() ));
 		pitchPlot->setPlotName(pitchMessage);
 		pitchPlot->setVertical(50,80);
 //		pitchPlot->setVertical(tempPitch.minval(),tempPitch.maxval());
+*/
 	}
 	message();
 }

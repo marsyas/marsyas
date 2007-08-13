@@ -79,12 +79,13 @@ private:
 
 
 	int currNote;
-	realvec pitchList;
-	realvec ampList;
-	realvec pitchSplit;
-	realvec ampSplit;
-	realvec tempPitch;
-	realvec tempAmp;
+	realvec *pitchList;
+	realvec *ampList;
+	realvec *boundaries;
+	realvec *pitchSplit;
+	realvec *ampSplit;
+	realvec *tempPitch;
+	realvec *tempAmp;
 };
 
 #endif

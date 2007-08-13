@@ -26,6 +26,9 @@ int main(int argc, char *argv[])
 	writefile = file;
 	writefile.append(".amps.txt");
 	ampList->writeText(writefile);
+	writefile = file;
+	writefile.append(".bounds.txt");
+	boundaries->writeText(writefile);
 
 	Transcriber::ampSegment(ampList, boundaries);
 	writeOnsets("onsets.amps.txt", boundaries);

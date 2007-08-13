@@ -39,7 +39,7 @@ start);
 	static mrs_real findMedian(const mrs_natural start, const
 	                           mrs_natural length, const realvec* array);
 
-	static realvec segmentRealvec(const realvec list, const realvec boundaries);
+	static realvec* segmentRealvec(const realvec* list, const realvec* boundaries);
 	static void appendRealvec(realvec* orig, const realvec* newValues);
 	static realvec* getSubVector(const realvec* list, const mrs_natural
 	                             start, const mrs_natural length);

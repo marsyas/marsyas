@@ -233,20 +233,19 @@ Transcriber::pitchSegment(realvec* pitchList, realvec* boundaries)
 	boundaries->sort();
 }
 
-realvec
-Transcriber::segmentRealvec(const realvec list, const realvec boundaries)
+realvec*
+Transcriber::segmentRealvec(const realvec* list, const realvec* boundaries)
 {
 	mrs_natural maxCols=0;
-	realvec newList;
-	newList.create(boundaries.getSize()-1,10);
+	realvec* newList = new realvec(boundaries->getSize()-1,10);
 
-	if (boundaries.getSize() == 1)
-		return list;
+	if (boundaries->getSize() == 1)
+		return NULL;
 
 	mrs_natural note = 0;
-	mrs_natural prevBound = (mrs_natural) boundaries(note);
-	mrs_natural nextBound = (mrs_natural) boundaries(note+1);
-	for (mrs_natural i=0; i<list.getSize(); i++)
+	mrs_natural prevBound = (mrs_natural) (*boundaries)(note);
+	mrs_natural nextBound = (mrs_natural) (*boundaries)(note+1);
+	for (mrs_natural i=0; i<list->getSize(); i++)
 	{
 		if (i == nextBound )
 		{
@@ -254,11 +253,11 @@ Transcriber::segmentRealvec(const realvec list, const realvec boundaries)
 				maxCols = (i-prevBound);
 			note++;
 			prevBound = nextBound;
-			nextBound = (mrs_natural) boundaries(note+1);
+			nextBound = (mrs_natural) (*boundaries)(note+1);
 		}
-		newList.stretchWrite(note, i - prevBound, list(i) );
+		newList->stretchWrite(note, i - prevBound, (*list)(i) );
 	}
-	newList.stretch(boundaries.getSize(), maxCols);
+	newList->stretch(boundaries->getSize(), maxCols);
 	return newList;
 }
 
