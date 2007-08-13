@@ -33,6 +33,8 @@ public:
 	static realvec* findValleys(const realvec* list);
 	static void findAmpBoundaries(realvec* ampList, realvec*
 &boundaries);
+	static mrs_real findNextPeakValue(const realvec* list, const mrs_natural
+start);
 
 	static mrs_real findMedian(const mrs_natural start, const
 	                           mrs_natural length, const realvec* array);

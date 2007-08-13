@@ -29,9 +29,8 @@ int main(int argc, char *argv[])
 
 	Transcriber::ampSegment(ampList, boundaries);
 	writeOnsets("onsets.amps.txt", boundaries);
-// not necessary so far.
 //	Transcriber::pitchSegment(pitchList, boundaries);
-//	writeOnsets("onsets.pitch.txt", boundaries);
+	writeOnsets("onsets.pitch.txt", boundaries);
 
 	realvec* notes;
 	notes = Transcriber::getNotes(pitchList, ampList, boundaries);

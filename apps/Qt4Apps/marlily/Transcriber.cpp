@@ -327,17 +327,18 @@ Transcriber::findAmpBoundaries(realvec* ampList, realvec* &boundaries)
 	(*newBounds)(0) = 0;
 	mrs_natural newIndex=1;
 
-	mrs_natural window = 10;
+	mrs_natural window = 20;
 	mrs_real peakRatio = 0.7;
 	realvec *region;
 	mrs_natural start;
 	mrs_real valley;
 	for (mrs_natural i=0; i<boundaries->getSize(); i++)
 	{
-		start = (*boundaries)(i);
+		start = (mrs_natural) (*boundaries)(i);
 		region = getSubVector(ampList, start, window);
 		valley = (*ampList)(start);
-		if ( (valley < peakRatio*region->mean()) &&
+		//cout<<findNextPeakValue(ampList, start)<<endl;
+		if ( (valley < peakRatio*findNextPeakValue(region, 0)) &&
 			(region->mean() > 0.01) )
 		{
 			(*newBounds)(newIndex) = start;
@@ -392,6 +393,25 @@ Transcriber::findValleys(const realvec* list)
 	}
 	valleys->stretch(valIndex);
 	return valleys;
+}
+
+mrs_real
+Transcriber::findNextPeakValue(const realvec* list, const mrs_natural
+start)
+{
+	mrs_natural i = start;
+	mrs_bool isPeak = false;
+	do {
+		i++;
+		if (i == list->getSize())
+			return (*list)(i-1);
+		if ( ((*list)(i) > (*list)(i-1)) &&
+		        ((*list)(i) > (*list)(i+1)))
+		{
+			isPeak = true;
+		}
+	} while ( isPeak == false );
+	return (*list)(i);
 }
 
 
@@ -485,11 +505,13 @@ Transcriber::getNotes(const realvec* pitchList, const realvec* ampList,
 				prevPitch = regionPitch;
 				same=1;
 				prevSample = start;
+				cout<<"-----"<<endl;
 			}
 			mrs_real regionSTD = 10*region->std();
 //			if (regionSTD < 10)
 //				regionSTD = 10;
-			cout<<(*boundaries)(i)<<"\t"<<length<<"\t"<<regionPitch<<"\t"<<regionSTD<<"\t"<<same<<"\t"<<start-prevSample<<endl;
+			cout<<(*boundaries)(i)<<"\t"<<length<<"\t"<<regionPitch<<"\t"<<same<<"\t"<<start-prevSample<<endl;
+			//cout<<(*boundaries)(i)<<"\t"<<length<<"\t"<<regionPitch<<"\t"<<regionSTD<<"\t"<<same<<"\t"<<start-prevSample<<endl;
 			//cout<<(*boundaries)(i)<<"\t"<<regionSTD<<endl;
 		//(*notes)(i,0) = findMedian(0, length, region);
 		//(*notes)(i,1) = (*boundaries)(i+1)-(*boundaries)(i);
