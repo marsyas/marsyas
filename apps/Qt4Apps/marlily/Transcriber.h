@@ -49,7 +49,8 @@ start);
 
 	static realvec* getNotes(const realvec* pitchList, const realvec*
 	                         ampList, const realvec* boundaries);
-//	static realvec getRelativeDurations(const realvec boundaries);
+	static void getRelativeDurations(const realvec *boundaries,
+realvec* &durations);
 
 	/*
 		void setOptions(mrs_natural getRadius, mrs_real getNewNote, mrs_real getCertantyDiv);

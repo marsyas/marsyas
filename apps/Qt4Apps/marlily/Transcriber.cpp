@@ -324,25 +324,29 @@ Transcriber::findAmpBoundaries(realvec* ampList, realvec* &boundaries)
 {
 	mrs_natural numSamples = boundaries->getSize();
 	realvec *newBounds = new realvec(numSamples);
-	(*newBounds)(0) = 0;
-	mrs_natural newIndex=1;
+//	(*newBounds)(0) = 0;
+	mrs_natural newIndex=0;
 
-	mrs_natural window = 20;
-	mrs_real peakRatio = 0.7;
+//	mrs_natural window = 10;
+	mrs_real peakRatio = 0.8;
 	realvec *region;
-	mrs_natural start;
+	mrs_natural start, length;
 	mrs_real valley;
-	for (mrs_natural i=0; i<boundaries->getSize(); i++)
+	for (mrs_natural i=0; i<boundaries->getSize()-1; i++)
 	{
 		start = (mrs_natural) (*boundaries)(i);
-		region = getSubVector(ampList, start, window);
+		length = (mrs_natural) ((*boundaries)(i+1) - (*boundaries)(i));
+		region = getSubVector(ampList, start, length);
 		valley = (*ampList)(start);
-		//cout<<findNextPeakValue(ampList, start)<<endl;
+		//cout<<start<<"\t"<<findNextPeakValue(region, 0)<<endl;
 		if ( (valley < peakRatio*findNextPeakValue(region, 0)) &&
 			(region->mean() > 0.01) )
 		{
 			(*newBounds)(newIndex) = start;
 			newIndex++;
+		} else {
+			//cout<<"Removed "<<start<<endl;
+			//cout<<valley<<"\t"<<findNextPeakValue(region, 0)<<endl;
 		}
 	}
 	(*newBounds)(newIndex) = (*boundaries)( numSamples-1 );
@@ -401,12 +405,14 @@ start)
 {
 	mrs_natural i = start;
 	mrs_bool isPeak = false;
+	mrs_real minValue = 0.1;
 	do {
 		i++;
 		if (i == list->getSize())
-			return (*list)(i-1);
+			return 0.0;
 		if ( ((*list)(i) > (*list)(i-1)) &&
-		        ((*list)(i) > (*list)(i+1)))
+		        ((*list)(i) > (*list)(i+1)) &&
+				( (*list)(i) > minValue) )
 		{
 			isPeak = true;
 		}
@@ -441,40 +447,33 @@ Transcriber::findMedian(const mrs_natural start, const mrs_natural
 }
 
 
-/*
-realvec
-Transcriber::getRelativeDurations(realvec boundaries)
+void
+Transcriber::getRelativeDurations(const realvec* boundaries, realvec*
+&durations)
 {
-	boundaries.sort();
-//	cout<<boundaries;
-
-	realvec durations;
-	durations.create( boundaries.getSize()-1 );
+	durations = new realvec( boundaries->getSize()-1 );
 
 	mrs_natural i;
 	mrs_natural min = 99999; // infinity
 	// calculate durations in samples
 	// and find smallest
-	for (i=0; i<boundaries.getSize()-1; i++)
+	for (i=0; i<boundaries->getSize()-1; i++)
 	{
-		durations(i) = boundaries(i+1) - boundaries(i);
-//		cout<<"duration: "<<durations(i)<<endl;
+		(*durations)(i) = (*boundaries)(i+1) - (*boundaries)(i);
+//		cout<<"duration: "<<(*durations)(i)<<endl;
 		// we don't care about silent durations
-		if (durations(i) < min)
-			min = (mrs_natural) durations(i);
+		if ((*durations)(i) < min)
+			min = (mrs_natural) (*durations)(i);
 	}
 //	cout<<"min: "<<min<<endl;
 	// find relative durations
 	// yes, we want to truncate the division.
-	for (i=0; i<boundaries.getSize()-1; i++)
+	for (i=0; i<boundaries->getSize()-1; i++)
 	{
-		//durations(i) = (mrs_natural) ( durations(i) / (min) );
-		durations(i) = (mrs_natural) ( durations(i) / (min*0.9) );
+		(*durations)(i) = (mrs_natural) ( (*durations)(i) / (min) );
 	}
-	//cout<<"**********"<<endl;
-	return durations;
+//	cout<<(*durations);
 }
-*/
 
 realvec*
 Transcriber::getNotes(const realvec* pitchList, const realvec* ampList,
@@ -482,19 +481,26 @@ Transcriber::getNotes(const realvec* pitchList, const realvec* ampList,
                       boundaries)
 {
 	mrs_natural numNotes = boundaries->getSize();
-//	realvec* notes = new realvec(numNotes-1, 2);
-	realvec* notes = new realvec(1, 2);
+	realvec* notes = new realvec(numNotes-1, 2);
+//	realvec* notes = new realvec(1, 2);
 
 	mrs_natural start, length;
 	realvec* region;
 	mrs_natural same=1;
 	mrs_natural prevSample=0;
 	mrs_real prevPitch=0.0;
+	realvec* durations = new realvec();
+	getRelativeDurations(boundaries, durations);
+	//cout<<(*durations);
 	for (mrs_natural i=0; i<numNotes-1; i++)
 	{
+		(*notes)(i,1) = (*durations)(i);
+
 		start = (mrs_natural) (*boundaries)(i);
 		length = (mrs_natural) ((*boundaries)(i+1) - (*boundaries)(i));
-		region = getSubVector(pitchList, start, length);
+		(*notes)(i,0) = findMedian(start, length, pitchList);
+		//region = getSubVector(pitchList, start, length);
+/*
 		if (region->getSize() > 0)
 		{
 			mrs_real regionPitch = round( region->median() );
@@ -505,18 +511,16 @@ Transcriber::getNotes(const realvec* pitchList, const realvec* ampList,
 				prevPitch = regionPitch;
 				same=1;
 				prevSample = start;
-				cout<<"-----"<<endl;
+				//cout<<"-----"<<endl;
 			}
-			mrs_real regionSTD = 10*region->std();
-//			if (regionSTD < 10)
-//				regionSTD = 10;
-			cout<<(*boundaries)(i)<<"\t"<<length<<"\t"<<regionPitch<<"\t"<<same<<"\t"<<start-prevSample<<endl;
+*/
+		//	cout<<(*boundaries)(i)<<"\t"<<length<<"\t"<<regionPitch<<"\t"<<same<<"\t"<<start-prevSample<<endl;
 			//cout<<(*boundaries)(i)<<"\t"<<length<<"\t"<<regionPitch<<"\t"<<regionSTD<<"\t"<<same<<"\t"<<start-prevSample<<endl;
 			//cout<<(*boundaries)(i)<<"\t"<<regionSTD<<endl;
 		//(*notes)(i,0) = findMedian(0, length, region);
 		//(*notes)(i,1) = (*boundaries)(i+1)-(*boundaries)(i);
-		}
 	}
+//cout<<(*notes);
 	return notes;
 }
 
