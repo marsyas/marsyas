@@ -35,6 +35,6 @@ int main(int argc, char *argv[])
 
 	realvec* notes;
 	notes = Transcriber::getNotes(pitchList, ampList, boundaries);
-	cout<<(*notes);
+//	cout<<(*notes);
 }
 

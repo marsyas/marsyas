@@ -310,12 +310,46 @@ Transcriber::ampSegment(realvec* ampList, realvec* boundaries)
 		length = (mrs_natural) ((*boundaries)(i+1) - (*boundaries)(i));
 		region = getSubVector(ampList, start, length);
 		regionBounds = findValleys(region);
+		findAmpBoundaries(region, regionBounds);
 		(*regionBounds) += start;
 		appendRealvec(newBoundaries, regionBounds);
 	}
 	appendRealvec(boundaries, newBoundaries);
 	boundaries->sort();
 }
+
+// filter list of valleys
+void
+Transcriber::findAmpBoundaries(realvec* ampList, realvec* &boundaries)
+{
+	mrs_natural numSamples = boundaries->getSize();
+	realvec *newBounds = new realvec(numSamples);
+	(*newBounds)(0) = 0;
+	mrs_natural newIndex=1;
+
+	mrs_natural window = 10;
+	mrs_real peakRatio = 0.7;
+	realvec *region;
+	mrs_natural start;
+	mrs_real valley;
+	for (mrs_natural i=0; i<boundaries->getSize(); i++)
+	{
+		start = (*boundaries)(i);
+		region = getSubVector(ampList, start, window);
+		valley = (*ampList)(start);
+		if ( (valley < peakRatio*region->mean()) &&
+			(region->mean() > 0.01) )
+		{
+			(*newBounds)(newIndex) = start;
+			newIndex++;
+		}
+	}
+	(*newBounds)(newIndex) = (*boundaries)( numSamples-1 );
+	newBounds->stretch(newIndex+1);
+	delete boundaries;
+	boundaries = newBounds;
+}
+
 
 realvec*
 Transcriber::findValleys(const realvec* list)
@@ -325,15 +359,13 @@ Transcriber::findValleys(const realvec* list)
 	mrs_natural valIndex = 0;
 
 	mrs_real localMin;
-	mrs_real maxValue = 1.0;
 	mrs_natural minSpace = 8;
 	mrs_natural prevValIndex = 0;
 	mrs_real prevValValue = 1.0;
 	for (mrs_natural i=minSpace; i<list->getSize()-minSpace; i++)
 	{
 		if ( ((*list)(i) < (*list)(i-1)) &&
-		        ((*list)(i) < (*list)(i+1)) &&
-		        ((*list)(i) < maxValue) )
+		        ((*list)(i) < (*list)(i+1)))
 		{
 			localMin = (*list)(i);
 			if (i < prevValIndex+minSpace)
