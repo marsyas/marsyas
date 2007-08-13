@@ -321,6 +321,8 @@ Transcriber::ampSegment(realvec* ampList, realvec* boundaries)
 void
 Transcriber::findAmpBoundaries(realvec* ampList, realvec* &boundaries)
 {
+	if (boundaries->getSize() <2)
+		return;
 	mrs_natural numSamples = boundaries->getSize();
 	realvec *newBounds = new realvec(numSamples);
 //	(*newBounds)(0) = 0;

@@ -30,10 +30,10 @@ int main(int argc, char *argv[])
 	writefile.append(".bounds.txt");
 	boundaries->writeText(writefile);
 
+	Transcriber::pitchSegment(pitchList, boundaries);
+	writeOnsets("onsets.pitch.txt", boundaries);
 	Transcriber::ampSegment(ampList, boundaries);
 	writeOnsets("onsets.amps.txt", boundaries);
-//	Transcriber::pitchSegment(pitchList, boundaries);
-	writeOnsets("onsets.pitch.txt", boundaries);
 
 	realvec* notes;
 	notes = Transcriber::getNotes(pitchList, ampList, boundaries);
