@@ -16,21 +16,14 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 /** 
-\class realvec
-\class Notmar
-\brief Vector of mrs_real values
+    \class realvec
+    \brief Vector of mrs_real values
 
-Array (vector in the numerical sense) of mrs_real values. Basic 
+    Array (vector in the numerical sense) of mrs_real values. Basic 
 arithmetic operations and statistics are supported. 
-
-\todo Crash-proof certain functions in realvec (like calling median() on
-an empty realvec)
-
-\todo document realvec functions.  In detail.  Using all the doxygen
-tricks.  For something as basic as this, it's worth it.
 */
+
 
 #include "realvec.h"
 #include "NumericLib.h"
@@ -44,7 +37,7 @@ tricks.  For something as basic as this, it's worth it.
 using namespace std;
 using namespace Marsyas;
 
-
+/// constructor
 realvec::realvec()
 {
 	size_ = 0;

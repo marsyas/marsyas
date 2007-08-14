@@ -8,4 +8,7 @@ from sourceforge.
 \todo check  examples/Qt4-tutorial  to see if it still works.  Also
 change member variables to foo_ (underscore).
 
+\todo I think that all the docs have a namespace problem -- Gain instead
+of marsyas::gain.  If so, this sucks.  Investigate, fix, etc.  :(
+
 */

@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class realvec
-    \brief Vector of mrs_real values
-
-    Array (vector in the numerical sense) of mrs_real values. Basic 
-arithmetic operations and statistics are supported. 
-*/
-
 #ifndef MARSYAS_REALVEC_H
 #define MARSYAS_REALVEC_H 
 
@@ -38,15 +30,36 @@ arithmetic operations and statistics are supported.
 
 namespace Marsyas
 {
+/** 
+    \class realvec
+	\ingroup Notmar
+    \brief Vector of mrs_real values
+
+    Array (vector in the numerical sense) of mrs_real values. Basic 
+arithmetic operations and statistics are supported. 
+
+
+\todo Crash-proof certain functions in realvec (like calling median() on
+an empty realvec)
+
+\todo document realvec functions.  In detail.  Using all the doxygen
+tricks.  For something as basic as this, it's worth it.
+*/
+
 
 class realvec 
 {
 protected:
+	/// total number of values in data_
   mrs_natural size_;
+	/// total memory allocated for data_
   mrs_natural allocatedSize_;
+	/// number of rows in array; for a one-dimensional array, this is 1.
   mrs_natural rows_;
+	/// number of columns in array.
   mrs_natural cols_;
 
+	/// the actual array
   mrs_real *data_;
   
 public:
@@ -58,15 +71,24 @@ public:
   
   realvec& operator=(const realvec& a);
 
+	/** \name Memory allocation */
+	//@{
   void allocate(mrs_natural size);  
   void allocate(mrs_natural rows, mrs_natural cols);	
 
-  void create(mrs_natural size);// allocate(size) + fill with zeros
-  void create(mrs_natural rows, mrs_natural cols); //allocate(rows,cols) + fill with zeros
-  void create(mrs_real val, mrs_natural rows, mrs_natural cols); //allocate(rows,cols) + fill with val
+	///allocate(size) + fill with zeros
+  void create(mrs_natural size);
+	///allocate(rows,cols) + fill with zeros
+  void create(mrs_natural rows, mrs_natural cols);
+	///allocate(rows,cols) + fill with val
+  void create(mrs_real val, mrs_natural rows, mrs_natural cols);
+
+	/// allocate(size) + keep old vals.  May also be used to shrink realvec.
+  void stretch(mrs_natural rows, mrs_natural cols);
+	/// allocate(size) + keep old vals.  May also be used to shrink realvec.
+  void stretch(mrs_natural size);
+	//@}
   
-  void stretch(mrs_natural rows, mrs_natural cols); // allocate(size) + keep old vals
-  void stretch(mrs_natural size);// allocate(size) + keep old vals
 
   void setval(mrs_natural start, mrs_natural end, mrs_real val);// set all entries to val 
   void setval(mrs_real val);// set all entries to val 
@@ -271,6 +293,7 @@ mrs_real& realvec::operator()(const mrs_natural i)
 }
 
 }//namespace Marsyas
+
 
 #endif /* !MARSYAS_REALVEC_H */
 
