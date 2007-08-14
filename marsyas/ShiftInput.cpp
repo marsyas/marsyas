@@ -26,9 +26,9 @@
     with gain and put them in the output vector. 
 
 	Controls:
-	- \b mrs_natural/Interpolation [rw] : dunno
-	- \b mrs_natural/WindowSize [rw] : dunno
-	- \b mrs_natural/Decimation [rw] : dunno
+	- \b mrs_natural/Interpolation [rw] : DOCME
+	- \b mrs_natural/WindowSize [rw] : DOCME
+	- \b mrs_natural/Decimation [rw] : DOCME
 */
 
 #include "ShiftInput.h"

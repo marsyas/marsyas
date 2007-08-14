@@ -64,11 +64,11 @@ public:
    \brief Convenience class for placing Ex and Rp expressions in a separate file
           to be read at parse time. Expressions are separated by declaring block
           headers:
-            #ExInit:
-            #ExExpr:
-            #RpInit:
-            #RpExpr:
-            #RpRate:
+            #::ExInit:
+            #::ExExpr:
+            #::RpInit:
+            #::RpExpr:
+            #::RpRate:
 */
 class ExFile {
     std::string iex_, ex_, rp_, rr_;

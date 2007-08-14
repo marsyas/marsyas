@@ -18,7 +18,7 @@
 
 /** 
 \class Shifter
-	Shifts the input by <shift> samples and send to output the original 
+	Shifts the input by \<shift\> samples and send to output the original 
 	and shifted version as different observations. 
 
 	Coded by lmartins@inescporto.pt

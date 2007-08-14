@@ -25,7 +25,7 @@ TimeLine is a list of TimeRegions. It represents a segmentation in
 time of sound.  Each segment is defined by its boundaries and a
 class id. A class_name table is used to derive the class names from
 the class id's.  A simple float_vector representation is used for
-the TimeLine where the class #ids and the boundaries are
+the TimeLine where the class #::ids and the boundaries are
 interleaved.  For example the following numbers:
 
 0 1 100 0 258 3 640

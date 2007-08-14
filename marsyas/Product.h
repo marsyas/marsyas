@@ -18,7 +18,7 @@
 
 /** 
     \class Product
-    \breif Product 
+    \brief Product 
     \author Adam Tindale
     
     Used for ring modulation

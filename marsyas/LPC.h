@@ -24,7 +24,7 @@
 Linear Prediction Coefficients (LPC). Features commonly used 
 in Speech Recognition research. This class is a modification of the original
 Marsyas0.1 LPC class. The following differences apply: 
-- order now reflects the LPC order (and returns <order> coefficients plus pitch and gain)
+- order now reflects the LPC order (and returns \<order\> coefficients plus pitch and gain)
 - It is possible to define a pole-shifting parameter (gamma - default value = 1.0)
 - It is possible to define a warping factor, lambda (defualt value = 0 => no warping)
 
@@ -60,6 +60,7 @@ private:
 	*Also estimates the pitch (only tested for lambda = 0), and updates the pitch_ member variable
 	*@param in input audio frame
 	*@param r autocorrelation output vector size (LPCorder + 1)
+	*@param pitch DOCME
 	*@param lambda frequency resolution (warp)
 	*/
 	void autocorrelationWarped(const realvec& in, realvec& r, mrs_real& pitch, mrs_real lambda);
