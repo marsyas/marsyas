@@ -24,7 +24,7 @@ using namespace Marsyas;
 
 AutoCorrelation::AutoCorrelation(string name):MarSystem("AutoCorrelation",name)
 {
-  myfft_ = NULL;
+	myfft_ = NULL;
 
 	addControls();
 }
@@ -32,43 +32,43 @@ AutoCorrelation::AutoCorrelation(string name):MarSystem("AutoCorrelation",name)
 
 AutoCorrelation::~AutoCorrelation()
 {
-  delete myfft_;
+	delete myfft_;
 }
 
 // copy constructor 
 AutoCorrelation::AutoCorrelation(const AutoCorrelation& a):MarSystem(a)
 {
-// 	type_ = a.type_;
-// 	name_ = a.name_;
-// 	ncontrols_ = a.ncontrols_; 		
-// 
-// 	inSamples_ = a.inSamples_;
-// 	inObservations_ = a.inObservations_;
-// 	onSamples_ = a.onSamples_;
-// 	onObservations_ = a.onObservations_;
-// 	dbg_ = a.dbg_;
-// 	mute_ = a.mute_;
+	// 	type_ = a.type_;
+	// 	name_ = a.name_;
+	// 	ncontrols_ = a.ncontrols_; 		
+	// 
+	// 	inSamples_ = a.inSamples_;
+	// 	inObservations_ = a.inObservations_;
+	// 	onSamples_ = a.onSamples_;
+	// 	onObservations_ = a.onObservations_;
+	// 	dbg_ = a.dbg_;
+	// 	mute_ = a.mute_;
 	myfft_ = NULL;
 }
 
 void
 AutoCorrelation::addControls()
 {
-  addctrl("mrs_real/magcompress", 2.0);
-   addctrl("mrs_natural/normalize", 0);
-   addctrl("mrs_real/octaveCost", 0.0);
-	    addctrl("mrs_real/voicingThreshold", 0.1);
-	 setctrlState("mrs_natural/normalize", true);
-		   setctrlState("mrs_real/octaveCost", true);
-		   setctrlState("mrs_real/voicingThreshold", true);
-			 //delete myfft_; //[?]
-  //myfft_ = new fft();//[?]
+	addctrl("mrs_real/magcompress", 2.0);
+	addctrl("mrs_natural/normalize", 0);
+	addctrl("mrs_real/octaveCost", 0.0);
+	addctrl("mrs_real/voicingThreshold", 0.1);
+	setctrlState("mrs_natural/normalize", true);
+	setctrlState("mrs_real/octaveCost", true);
+	setctrlState("mrs_real/voicingThreshold", true);
+	//delete myfft_; //[?]
+	//myfft_ = new fft();//[?]
 }
 
 MarSystem*
 AutoCorrelation::clone() const
 {
-  return new AutoCorrelation(*this);
+	return new AutoCorrelation(*this);
 }
 
 void
@@ -78,43 +78,39 @@ AutoCorrelation::myUpdate(MarControlPtr sender)
 	myfft_ = new fft();//[!]
 
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
-  
-  scratch_.create(2*getctrl("mrs_natural/onSamples")->toNatural());
- 
-/**
-	\bug Autocorrealtion normalize  is currently commented out.  Either
-un-comment it and fix the code, or delete the stuff entirely.
-*/
-// works better without this code.  Gustavo and I can't figure out where
-// the code came from, anyway.  -gp 
-// Mathieu: this doesn't work with the Windowing MarSystem from July 19.
-/*
-  // only working for hanning window
-  normalize_ = 0;
-  if(getctrl("mrs_natural/normalize")->toNatural())
-  {
-	  normalize_ = 1;
-	  norm_.create(getctrl("mrs_natural/onSamples")->toNatural());
-	  norm_.setval(1);
-	  Windowing win("Windowing");
-	  win.updctrl("mrs_string/type", "Hanning");
-	  win.updctrl("mrs_natural/inSamples", norm_.getCols());
-	  win.updctrl("mrs_natural/inObservations", norm_.getRows());
-	  win.process(norm_, norm_);
-	  AutoCorrelation autocorr("Autocorrelation");
-	  autocorr.updctrl("mrs_natural/inSamples", norm_.getCols());
-	  autocorr.updctrl("mrs_natural/inObservations", norm_.getRows());
-	  autocorr.update();
-	  autocorr.process(norm_, norm_);
-	  for (mrs_natural i = 0 ; i < norm_.getSize() ; i++)
-		  norm_(i) = 1/norm_(i);
-  }
-*/
+	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
+
+	scratch_.create(2*getctrl("mrs_natural/onSamples")->toNatural());
+
+	// only working for hanning window
+	normalize_ = 0;
+	if(getctrl("mrs_natural/normalize")->toNatural())
+	{
+		realvec tmp(getctrl("mrs_natural/onSamples")->toNatural());
+		normalize_ = 1;
+		norm_.create(getctrl("mrs_natural/onSamples")->toNatural());
+		norm_.setval(1);
+		Windowing win("Windowing");
+		win.updctrl("mrs_string/type", "Hanning");
+		win.updctrl("mrs_natural/inSamples", norm_.getCols());
+		win.updctrl("mrs_natural/inObservations", norm_.getRows());
+		win.process(norm_, tmp);
+
+		AutoCorrelation autocorr("Autocorrelation");
+		autocorr.updctrl("mrs_natural/inSamples", norm_.getCols());
+		autocorr.updctrl("mrs_natural/inObservations", norm_.getRows());
+		autocorr.update();
+		autocorr.process(tmp, norm_);
+		
+	
+		for (mrs_natural i = 0 ; i < norm_.getSize() ; i++)
+			norm_(i) = 1/norm_(i);
+	}
+
 
 	octaveCost_ = getctrl("mrs_real/octaveCost")->toReal();
-  voicing_ = getctrl("mrs_real/voicingThreshold")->toReal();
+	voicing_ = getctrl("mrs_real/voicingThreshold")->toReal();
 
 	if(octaveCost_)
 	{
@@ -126,94 +122,95 @@ un-comment it and fix the code, or delete the stuff entirely.
 void 
 AutoCorrelation::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
-  mrs_real re,im,am;
-  mrs_real k;
-  k = getctrl("mrs_real/magcompress")->toReal();
- 
-  // Copy to output to perform inplace fft and zeropad to double size
+	//checkFlow(in,out);
+	mrs_real re,im,am;
+	mrs_real k;
+	k = getctrl("mrs_real/magcompress")->toReal();
 
-  for (o=0; o < inObservations_; o++)
-    {
-      for (t=0; t < inSamples_; t++)
-	scratch_(t) = in(o,t); 
-      
-      mrs_real *tmp = scratch_.getData();
-      myfft_->rfft(tmp, inSamples_/2, FFT_FORWARD);
-      
-      // Special case for zero and Nyquist/2 only real part 
-      if (k == 2.0)
+	// Copy to output to perform inplace fft and zeropad to double size
+
+	for (o=0; o < inObservations_; o++)
 	{
-	  re = tmp[0];
-	  tmp[0] = re * re;
-	  re = tmp[1];
-	  tmp[1] = re * re;
+		for (t=0; t < inSamples_; t++)
+			scratch_(t) = in(o,t); 
+
+		mrs_real *tmp = scratch_.getData();
+		myfft_->rfft(tmp, inSamples_/2, FFT_FORWARD);
+
+		// Special case for zero and Nyquist/2 only real part 
+		if (k == 2.0)
+		{
+			re = tmp[0];
+			tmp[0] = re * re;
+			re = tmp[1];
+			tmp[1] = re * re;
+		}
+		else 
+		{
+			re = tmp[0];
+			re = sqrt(re * re);
+			tmp[0] = pow(re, k);
+			re = tmp[1];
+			re = sqrt(re * re);
+			tmp[1] = pow(re, k);
+		}
+
+		// Compress the magnitude spectrum and zero 
+		// the imaginary part.   
+		for (t=1; t < inSamples_/2; t++)
+		{
+			re = tmp[2*t];
+			im = tmp[2*t+1];
+			if (k == 2.0)
+				am = re * re + im * im;
+			else
+			{
+				am = sqrt(re * re + im * im);
+				am = pow(am, k);
+			}
+			tmp[2*t] = am;
+			tmp[2*t+1] = 0;
+		}
+
+		// Take the inverse Fourier Transform 
+		myfft_->rfft(tmp, inSamples_/2, FFT_INVERSE);
+
+		// Copy to output 
+		if(normalize_) 
+		{
+			for (t=0; t < inSamples_; t++) 
+			{
+				out(o,t) = scratch_(t)*norm_(t);
+			}
+		}
+
+		else
+			for (t=0; t < inSamples_; t++)  
+				out(o,t) = scratch_(t);
 	}
-      else 
+
+	for (o=0; o < inObservations_; o++)
 	{
-	  re = tmp[0];
-	  re = sqrt(re * re);
-	  tmp[0] = pow(re, k);
-	  re = tmp[1];
-	  re = sqrt(re * re);
-	  tmp[1] = pow(re, k);
+
+		if(octaveCost_)
+		{
+			mrs_real maxOut = 0;
+			for (t=1 ; t<inSamples_/2 ; t++)
+				if (out(o, t)> out(o, t+1) && out(o, t) > out(o, t-1) && out(o, t)>maxOut)
+					maxOut = out(o, t) ;
+			//	cout << maxOut/out(o, 0)<< " " << 1+voicing_ << << endl;
+
+			if(maxOut && maxOut/out(o, 0) > 1-voicing_)
+				for (t=1; t < inSamples_; t++) 
+					out(o, t) += octaveMax_-octaveCost_*log(36.0*t);
+			else
+				out.setval(0);
+
+		}
 	}
-      
-      // Compress the magnitude spectrum and zero 
-      // the imaginary part.   
-      for (t=1; t < inSamples_/2; t++)
-	{
-	  re = tmp[2*t];
-	  im = tmp[2*t+1];
-	  if (k == 2.0)
-	    am = re * re + im * im;
-	  else
-	    {
-	      am = sqrt(re * re + im * im);
-	      am = pow(am, k);
-	    }
-	  tmp[2*t] = am;
-	  tmp[2*t+1] = 0;
-	}
-      
-      // Take the inverse Fourier Transform 
-      myfft_->rfft(tmp, inSamples_/2, FFT_INVERSE);
-      
-      // Copy to output 
-      if(normalize_)
-	for (t=0; t < inSamples_; t++) 
-	  {
-	    out(o,t) = scratch_(t)*norm_(t);
-	  }
-      else
-	for (t=0; t < inSamples_; t++)  
-	  out(o,t) = scratch_(t);
-    }
-  
-  for (o=0; o < inObservations_; o++)
-    {
-      
-      if(octaveCost_)
-	{
-	  
-	  
-	  mrs_real maxOut = 0;
-	  for (t=1 ; t<inSamples_/2 ; t++)
-	    if (out(o, t)> out(o, t+1) && out(o, t) > out(o, t-1) && out(o, t)>maxOut)
-	      maxOut = out(o, t) ;
-	  //	cout << maxOut/out(o, 0)<< " " << 1+voicing_ << << endl;
-	  
-	  if(maxOut && maxOut/out(o, 0) > 1-voicing_)
-	    for (t=1; t < inSamples_; t++) 
-	      out(o, t) += octaveMax_-octaveCost_*log(36.0*t);
-	  else
-	    out.setval(0);
-	  
-	}
-    }
-  
-  /*MATLAB_PUT(out, "corr");
-    MATLAB_EVAL("plot(corr)");*/
+
+	/*MATLAB_PUT(out, "corr");
+	MATLAB_EVAL("plot(corr)");*/
 }
 
 
@@ -221,6 +218,6 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 
 
 
-	
 
-	
+
+
