@@ -6,6 +6,8 @@ previous reports.
 \todo document controls for ALL "core" MarSystems.  (once that's done,
 tackle Processing, Analysis, and Synthesis)
 
+\todo finish putting Marsystems in categories.  grep "ingroup none" *
+
 \todo Remove class from all doxy.  Doxygen is happier if it can figure
 out the class by itself (ie place the doxy stuff right before the "class
 foo" line)
@@ -24,5 +26,6 @@ MarSystemQtWrapper.
 \todo Discuss splitting MarSystemManager into MarSystemManager-atoms and
 MarSystemManager-molecules
 
+\todo doxygen for the apps?  (maybe?)  (seperate docs?)
 */
 
