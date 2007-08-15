@@ -30,7 +30,7 @@ namespace Marsyas
 {
 /**
    \class TmTimer
-	\ingroup none
+	\ingroup Scheduler
    \brief Abstract TmTimer
    \author inb@cs.uvic.ca
 */

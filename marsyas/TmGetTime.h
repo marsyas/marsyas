@@ -31,7 +31,7 @@ namespace Marsyas
 {
 /**
    \class TmGetTime
-	\ingroup none
+	\ingroup Scheduler
    \brief TmGetTime reads the getlocaltime() function, system clock to get the
           current number of microseconds
    \author inb@cs.uvic.ca

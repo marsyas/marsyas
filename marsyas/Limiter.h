@@ -31,8 +31,14 @@ namespace Marsyas
    Simple MarSystem example. Just multiply the values of the input realvec
 with Limiter and put them in the output vector. This object can be used 
 as a prototype template for building more complicated MarSystems. 
-*/
 
+	Controls:
+	- \b mrs_real/thresh [rw] : DUNNO
+	- \b mrs_real/at [rw] : DUNNO
+	- \b mrs_real/rt [rw] : DUNNO
+	- \b mrs_real/slope [rw] : DUNNO
+*/
+}
 /* How to use the Limiter Marsystem
 
 	The system can be setup using the marsystem manager

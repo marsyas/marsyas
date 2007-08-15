@@ -27,7 +27,7 @@ namespace Marsyas
 {
 /**
    \class TmSampleCount
-	\ingroup none
+	\ingroup Scheduler
    \brief TmSampleCount reads the insamples information to advance the timer
    \author inb@cs.uvic.ca
 */

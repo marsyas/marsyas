@@ -27,7 +27,7 @@ namespace Marsyas
 {
 /** 
     \class TmControlValue
-	\ingroup none
+	\ingroup Scheduler
     \brief TmControlValue is a simple parameter passing mechanism for updtimer
 */
 

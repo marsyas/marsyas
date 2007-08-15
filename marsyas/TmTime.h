@@ -26,7 +26,7 @@ namespace Marsyas
 {
 /**
    \class TmTime
-	\ingroup none
+	\ingroup Scheduler
    \brief TmTime
    \author inb@cs.uvic.ca
 */
