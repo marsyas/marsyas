@@ -20,22 +20,22 @@
 #define MARSYAS_SHIFTINPUT_H
 
 #include "MarSystem.h"	
-
+ 
 namespace Marsyas
 {
 /** 
     \class ShiftInput
     \ingroup Processing Basic
-    \brief Shift next D samples  
+    \brief ShiftInput (hopSize, winSize)
 
-    Shift next D samples from the input source to the output source 
-    into the right-hand end of the outputSlice. 
-    with gain and put them in the output vector. 
-
+    The ShiftInput MarSystem is used for performing efficient overlap
+input from a source. The hop size between the overlapped windows is
+controlled by the inSamples control which needs to be set by the <b>
+preceding </b> source or MarSystem. The output of the MarSystem is
+the overlapped windows with size adjusted by the WindowSize control.
+ 
 	Controls:
-	- \b mrs_natural/Interpolation [rw] : DOCME
-	- \b mrs_natural/WindowSize [rw] : DOCME
-	- \b mrs_natural/Decimation [rw] : DOCME
+	- \b mrs_natural/WindowSize [rw] : The window size of the overlapped windows
 */
 
 
