@@ -61,7 +61,6 @@ ShiftInput::clone() const
 void
 ShiftInput::addControls()
 {
-  addctrl("mrs_natural/Decimation", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES/2);
   addctrl("mrs_natural/WindowSize", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES);
   setctrlState("mrs_natural/WindowSize", true);
 
@@ -77,7 +76,6 @@ ShiftInput::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/WindowSize"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
-  setctrl("mrs_natural/Decimation", getctrl("mrs_natural/inSamples"));
 
   W_ = getctrl("mrs_natural/WindowSize")->toNatural();
 
