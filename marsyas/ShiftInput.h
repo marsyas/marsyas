@@ -36,6 +36,7 @@ the overlapped windows with size adjusted by the WindowSize control.
  
 	Controls:
 	- \b mrs_natural/WindowSize [rw] : The window size of the overlapped windows
+	- \b mrs_bool/reset [??] : [DOCME]
 */
 
 
