@@ -27,6 +27,8 @@ namespace Marsyas
     \class OverlapAdd
     \ingroup Processing Basic
     \brief OverlapAdd
+	
+	Controls: none.
 
    perform an overlap-add operation of the input buffer.
     Multiply with window (both length Nw) using modulus arithmetic;
