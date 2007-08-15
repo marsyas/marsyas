@@ -40,7 +40,6 @@ class Series: public MarSystem
 {
 private:
 	realvec empty_;
-	bool probe_;
 
 	void addControls();
 	void myUpdate(MarControlPtr sender);

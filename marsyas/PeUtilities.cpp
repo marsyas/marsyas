@@ -548,8 +548,6 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 	}
 	else 
 	{
-		// probing the postNet series
-		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/mrs_bool/probe", true);
 		// linking between the first slice and the psf
 		pvseries->linkControl("PeSynthetize/synthNet/Series/postNet/mrs_realvec/input0", "PeSynthetize/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_realvec/peaks");
 		//

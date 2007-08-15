@@ -52,8 +52,6 @@ Fanout::clone() const
 void 
 Fanout::addControls()
 {
-	addctrl("mrs_bool/probe", false);
-	setctrlState("mrs_bool/probe", true);
 	addctrl("mrs_natural/disable", -1);
 	setctrlState("mrs_natural/disable", true);
 	addctrl("mrs_natural/enable", -1);
@@ -62,9 +60,7 @@ Fanout::addControls()
 
 void 
 Fanout::myUpdate(MarControlPtr sender)
-{
-	probe_ = getctrl("mrs_bool/probe")->toBool();
-	
+{	
 	if (enabled_.getSize() != marsystemsSize_)
 	{
 		enabled_.create(marsystemsSize_);

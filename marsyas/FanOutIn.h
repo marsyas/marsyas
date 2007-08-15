@@ -44,7 +44,6 @@ Controls:
 	private:
 		realvec enabled_;
 
-		bool probe_;
 		mrs_natural disable_;
 		mrs_natural enable_;
 

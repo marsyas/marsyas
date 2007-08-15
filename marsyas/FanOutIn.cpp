@@ -59,8 +59,6 @@ FanOutIn::clone() const
 void 
 FanOutIn::addControls()
 {
-	addctrl("mrs_bool/probe", false);
-	setctrlState("mrs_bool/probe", true);
 	addctrl("mrs_natural/disable", -1);
 	setctrlState("mrs_natural/disable", true);
 	addctrl("mrs_natural/enable", -1);
