@@ -37,6 +37,8 @@ namespace Marsyas
    - \b mrs_bool/notEmpty [r] : is there any audio input left?
      (End-Of-File not yet reached)
    - \b mrs_real/gain [w] : scales input
+   - \b mrs_natural/nChannels [DOCME] : DOCME
+   - \b mrs_natural/nBuffers [DOCME] : DOCME
 */
 
 
