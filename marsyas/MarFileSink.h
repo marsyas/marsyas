@@ -27,6 +27,8 @@ namespace Marsyas
    \class MarFileSink
 	\ingroup IO
    \brief Text output sink
+   
+   Controls: none
 
 \todo sort out PlotSink and MarFileSink (rename, delete one or both,
 etc)
