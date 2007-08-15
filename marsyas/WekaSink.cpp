@@ -68,7 +68,7 @@ WekaSink::addControls()
 
   addctrl("mrs_bool/regression", false, ctrl_regression_);
 
-  addControl("mrs_bool/putHeader", false, ctrl_putHeader_);
+  addctrl("mrs_bool/putHeader", false, ctrl_putHeader_);
   setctrlState(ctrl_putHeader_, true);
 }
 
