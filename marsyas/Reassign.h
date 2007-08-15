@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Reassign
-    \brief Used to strengthen peaks in Beat Histograms 
-
-*/
-
 #ifndef MARSYAS_REASSIGN_H
 #define MARSYAS_REASSIGN_H
 
@@ -29,6 +23,13 @@
 
 namespace Marsyas
 {
+/** 
+    \class Reassign
+	\ingroup MachineLearning
+    \brief Used to strengthen harmonic peaks in Beat Histograms 
+
+*/
+
 
 class Reassign: public MarSystem
 {

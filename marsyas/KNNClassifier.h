@@ -16,8 +16,16 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#ifndef MARSYAS_KNNCLASSIFIER_H
+#define MARSYAS_KNNCLASSIFIER_H
+
+#include "MarSystem.h"
+
+namespace Marsyas
+{
 /** 
     \class KNNClassifier
+	\ingroup MachineLearning
     \brief Single KNN multidimensional classifier
 
    Simple multidimensional KNN classifier. The classifier
@@ -38,13 +46,6 @@ MarSystem.
 
 */
 
-#ifndef MARSYAS_KNNCLASSIFIER_H
-#define MARSYAS_KNNCLASSIFIER_H
-
-#include "MarSystem.h"
-
-namespace Marsyas
-{
 
 class KNNClassifier: public MarSystem
 {

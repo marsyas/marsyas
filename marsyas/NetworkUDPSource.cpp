@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class NetworkUDPSource
-	\ingroup Network
-    \brief Accept data from a UDP Socket
-    \author Stuart Bray June 2004
-*/
-
-
 #include "NetworkUDPSource.h"
 #include "SocketException.h"
 

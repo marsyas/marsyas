@@ -16,18 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Summary
-    \brief summarizes classifier accuracy
-
-When the mode control is set to "predict" then the output 
-of the classifier will output the class with the must instances. 
-
-This MarSystems serves as ground truth for classification/regression 
-MarSystem results. 
-
-*/
-
 #ifndef MARSYAS_SUMMARY_H
 #define MARSYAS_SUMMARY_H
 
@@ -35,6 +23,16 @@ MarSystem results.
 
 namespace Marsyas
 {
+/** 
+    \class Summary
+	\ingroup MachineLearning
+
+    When the mode control is set to "predict" then then classifications are tracked
+	when done control is set, then the confusion matrix is shown
+
+
+*/
+
 
 class Summary: public MarSystem
 {

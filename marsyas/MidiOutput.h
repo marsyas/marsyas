@@ -16,11 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class MidiOutput
-    \brief MidiOutput Midi Commands. 
-*/
-
 #ifndef MARSYAS_MIDIOUTPUT_H
 #define MARSYAS_MIDIOUTPUT_H
 
@@ -32,6 +27,21 @@
 
 namespace Marsyas
 {
+/** 
+  \class MidiOutput
+  \ingroup MIDI
+  \brief Control of MahaDeviBot Commands via Midi Controls.
+
+  Controls:
+  - \b mrs_natural/port [rw] : input midi port
+  - \b mrs_bool/virtualPort [rw] : is this a virtual MIDI port?
+  - \b mrs_bool/initmidi [w] : enable midi (should be \em true )
+
+  - \b mrs_natural/byte1 [w] : used for deviBot
+  - \b mrs_natural/byte2 [w] : used for deviBot
+  - \b mrs_natural/byte3 [w] : used for deviBot
+*/
+
   
   class MidiOutput: public MarSystem
     {

@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class PowerSpectrum
-    \brief PowerSpectrum computes the magnitude/power of the complex spectrum 
-
-    Computes the magnitude/power of a complex spectrum 
-*/
-
 #ifndef MARSYAS_POWERSPECTRUM_H
 #define MARSYAS_POWERSPECTRUM_H
 
@@ -31,6 +24,14 @@
 
 namespace Marsyas
 {
+/** 
+    \class PowerSpectrum
+	\ingroup Analysis
+    \brief PowerSpectrum computes the magnitude/power of the complex spectrum 
+
+    Computes the magnitude/power of a complex spectrum 
+*/
+
 
 class PowerSpectrum: public MarSystem
 {

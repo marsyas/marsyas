@@ -17,19 +17,20 @@
 */
 
 
+#if !defined(__Color_h)
+#define __Color_h
+
+namespace Marsyas
+{
 /**
    \class Color:
+	\ingroup Notmar
    \brief Triplet of RGB values 
    
    Simply a triplet of RGB values representing a color
 plus various utility functions.
 */ 
 
-#if !defined(__Color_h)
-#define __Color_h
-
-namespace Marsyas
-{
 
 class Color
 {

@@ -16,22 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Memory
-	\ingroup Processing Basic
-    \brief Memory output the past memSize input observations. 
-
-    Memory is essentially a circular buffer that holds 
-past observations. It used to compute "texture" features 
--or dynamic features- which are stastics of short-term features 
--typically around 10-20 milliseconds- over a larger 
-window -around 1 second-.
-
-	Controls:
-	- \b mrs_natural/memSize [rw] : maximum buffer size (in samples)
-	- \b mrs_bool/reset [rw] : DOCME
-*/
-
 #include "Memory.h"
 
 using namespace std;

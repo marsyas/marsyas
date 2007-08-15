@@ -16,37 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class SoundFileSource
-   \ingroup IO
-   \brief Interface for sound file sources 
-   
-   Abstract base class for any type of sound file input.
-   Specific IO classes for various formats like AuFileSource 
-   are children of this class. 
-
-   Controls:
-   - \b mrs_string/filename [w] : name of the sound file to read
-   - \b mrs_bool/notEmpty [r] : is there any data left?
-   - \b mrs_natural/pos [rw] : sample position currently read, in samples
-   - \b mrs_natural/loopPos [rw] : sample position at which to loop
-   - \b mrs_string/allfilenames [w] : a long string containing every sound file to read.
-   - \b mrs_natural/numFiles [r] : how many files to read
-   - \b mrs_natural/size [r] : number of samples in the current sound file
-   - \b mrs_real/frequency [r] : sample rate of the current sound file
-   - \b mrs_bool/noteon [rw] : used as a wavetable on receiving a
-     noteon.
-   - \b mrs_real/repetitions [rw] : number of times to repeat the sound file
-   - \b mrs_real/duration [r] : number of seconds in the current sound file
-   - \b mrs_bool/advance [w] : go to the next sound file (collection
-     only)
-   - \b mrs_bool/shuffle [w] : randomize the order of reading multiple sound files
-   - \b mrs_natural/cindex [rw] : number of the current sound file in the
-     collection
-   - \b mrs_string/currentlyPlaying [r] : filename of the current sound file.
-
-*/
-
 #include "SoundFileSource.h"
 
 using namespace std;

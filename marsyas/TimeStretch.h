@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class TimeStretch
-    \brief TimeStretch input realvec by factor 
-
-
-*/
-
 #ifndef MARSYAS_TIMESCALE_H
 #define MARSYAS_TIMESCALE_H
 
@@ -30,6 +23,14 @@
 
 namespace Marsyas
 {
+/** 
+    \class TimeStretch
+	\ingroup none
+    \brief TimeStretch input realvec by factor 
+
+
+*/
+
 
 class TimeStretch: public MarSystem
 {

@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class OnePole
-    \brief Simple one-pole filter
-
-    OnePole Filter. 
-    Output is normalized by setting the
-    gain to (1.0-a). 
-*/
-
 #ifndef MARSYAS_ONEPOLE_H
 #define MARSYAS_ONEPOLE_H
 
@@ -32,6 +23,16 @@
 
 namespace Marsyas
 {
+/** 
+    \class OnePole
+	\ingroup Processing
+    \brief Simple one-pole filter
+
+    OnePole Filter. 
+    Output is normalized by setting the
+    gain to (1.0-a). 
+*/
+
 
 class OnePole: public MarSystem
 {

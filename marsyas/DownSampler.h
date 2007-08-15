@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class DownSampler
-    \brief Downsample the input signal
-
-    Downsample the signal by an integer factor.
-*/
-
 #ifndef MARSYAS_DOWNSAMPLER_H
 #define MARSYAS_DOWNSAMPLER_H
 
@@ -30,6 +23,18 @@
 
 namespace Marsyas
 {
+/** 
+    \class DownSampler
+	\ingroup Processing Basic
+    \brief Downsample the input signal
+
+    Downsample the signal by an integer factor.
+
+	Controls:
+	- \b mrs_natural/factor [w] : factor to downsample by.
+
+*/
+
 
 class DownSampler: public MarSystem
 {

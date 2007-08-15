@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Mean
-    \brief Mean calculate the mean of each row of observations
-
-*/
-
 #ifndef MARSYAS_MEAN_H
 #define MARSYAS_MEAN_H
 
@@ -29,6 +23,13 @@
 
 namespace Marsyas
 {
+/** 
+    \class Mean
+    \ingroup Analysis
+    \brief Mean calculate the mean of each row of observations
+    
+*/
+
 
 class Mean: public MarSystem
 {

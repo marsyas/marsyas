@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class WaveletPyramid
-    \brief Pyramid wavelet algorithm
-
-   Discrete Wavelet Transform (DWT) pyramid algorithm.
-Based on the Numerical Recipies wavelet code. 
-*/
-
 #ifndef MARSYAS_WAVELETPYRAMID_H
 #define MARSYAS_WAVELETPYRAMID_H
 
@@ -32,6 +24,15 @@ Based on the Numerical Recipies wavelet code.
 
 namespace Marsyas
 {
+/** 
+    \class WaveletPyramid
+	\ingroup Analysis
+    \brief Pyramid wavelet algorithm
+
+   Discrete Wavelet Transform (DWT) pyramid algorithm.
+Based on the Numerical Recipies wavelet code. 
+*/
+
 
 class WaveletPyramid: public MarSystem
 {

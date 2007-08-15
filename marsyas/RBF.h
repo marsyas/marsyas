@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class RBF
-\brief Radial Basis Functions
-
-*/
-
 #ifndef MARSYAS_RBF_H
 #define MARSYAS_RBF_H
 
@@ -29,6 +23,16 @@
 
 namespace Marsyas
 {
+/** 
+	\class RBF
+	\ingroup Special
+	\brief Radial Basis Functions
+
+	Controls:
+	- \b mrs_string/RBFtype [rw] : chose RBF function to use.
+	- \b mrs_real/Beta [rw] : sets the Beta constant used in some of the RBF functions.
+	- \b mrs_bool/symmetricIn [w]: if the input is a symmetric Matrix, setting this to true improves performance
+*/
   class RBF: public MarSystem
   {
   private:

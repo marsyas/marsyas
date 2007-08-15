@@ -16,20 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class LPCC
-    \ingroup Analysis
-    \brief Convert LPC coefficients to Cepstrum coefficients.
-    
-    This MarSystem is expecting to receive at its input LPC coefficients + Pitch + Power,
-    as output by the LPC MarSystem (see LPC.cpp/.h). It only converts the LPC
-    coefficients to cepstral coefficients and ignores the pitch value received from LPC.
-    
-    Code by:
-    Luís Gustavo Martins - lmartins@inescporto.pt
-    November 2006
-*/
-
 #include "LPCC.h"
 
 using namespace std;

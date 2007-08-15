@@ -16,19 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class PeakConvert
-    \brief PeakConvert
-
-    PeakConvert N real and imaginary spectrum values to 
-N/2+1 pairs of magnitude and phase values. The phases 
-are unwrapped and successive phase differences are 
-used to compute estimates of the instantaneous frequencies 
-for each phase vocoder analysis channel; decimation rate 
-and sampling rate are used to render these frequencies 
-directly in Hz. 
-*/
-
 #ifndef MARSYAS_PECONVERT_H
 #define MARSYAS_PECONVERT_H
 
@@ -36,6 +23,15 @@ directly in Hz.
 
 namespace Marsyas
 {
+/** 
+\class PeakConvert
+\ingroup MarSystem
+\brief PeakConvert
+
+PeakConvert N real and imaginary spectrum values to 
+to a fixed number of peaks.
+*/
+
 
 	class Peaker;
 	class MaxArgMax;

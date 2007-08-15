@@ -16,11 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Negative
-    \brief Negate the input
-*/
-
 #ifndef MARSYAS_NEGATIVE_H
 #define MARSYAS_NEGATIVE_H
 
@@ -28,6 +23,14 @@
 
 namespace Marsyas
 {
+/** 
+    \class Negative
+	\ingroup Processing Basic
+    \brief Negate the input
+
+	Controls: none.
+*/
+
 
 class Negative: public MarSystem
 {

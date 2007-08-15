@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Kurtosis
-    \brief Kurtosis 
-
-    Calculate the Kurtosis of the input observations. Typically used 
-for characterizing the magnitude spectrum. 
-*/
-
 #ifndef MARSYAS_KURTOSIS_H
 #define MARSYAS_KURTOSIS_H
 
@@ -31,6 +23,15 @@ for characterizing the magnitude spectrum.
 
 namespace Marsyas
 {
+/** 
+    \class Kurtosis
+	\ingroup Analysis
+    \brief Kurtosis 
+
+    Calculate the Kurtosis of the input observations. Typically used 
+for characterizing the magnitude spectrum. 
+*/
+
 
 class Kurtosis: public MarSystem
 {

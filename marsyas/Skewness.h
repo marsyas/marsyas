@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Skewness
-    \brief Skewness computes the skewness of the input 
-
-*/
-
 #ifndef MARSYAS_SKEWNESS_H
 #define MARSYAS_SKEWNESS_H
 
@@ -29,6 +23,13 @@
 
 namespace Marsyas
 {
+/** 
+    \class Skewness
+	\ingroup none
+    \brief Skewness computes the skewness of the input 
+
+*/
+
 
 class Skewness: public MarSystem
 {

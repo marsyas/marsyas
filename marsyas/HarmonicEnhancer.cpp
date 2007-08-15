@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class HarmonicEnhancer
-	\ingroup MachineLearning
-    \brief Used to strengthen harmonic peaks in Beat Histograms 
-
-*/
-
 #include "HarmonicEnhancer.h"
 
 using namespace std;

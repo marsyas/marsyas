@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class Scheduler
-   \brief Scheduler schedules things
-   \author inb@cs.uvic.ca
-*/
-
 #ifndef MARSYAS_VSCHEDULER_H
 #define MARSYAS_VSCHEDULER_H
 
@@ -37,6 +31,13 @@
 
 namespace Marsyas
 {
+/**
+   \class Scheduler
+	\ingroup none
+   \brief Scheduler schedules things
+   \author inb@cs.uvic.ca
+*/
+
 
 class VScheduler {
 protected:

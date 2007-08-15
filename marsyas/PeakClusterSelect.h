@@ -16,16 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-   \class PeakClusterSelect
-   \ingroup Special
-   \brief Downsample the number of clusters according to cluster density
-         (most dense 'numClustersToKeep' clusters retained)
-
-   Controls:
-   - \b mrs_natural/numClustersToKeep [w] : sets the number of clusters to keep.
-*/
-
 #ifndef MARSYAS_PECLUSTERSELECT_H
 #define MARSYAS_PECLUSTERSELECT_H
 
@@ -33,7 +23,16 @@
 
 namespace Marsyas
 {
-  
+ /** 
+	\class PeakClusterSelect
+	\ingroup Special
+	\brief Downsample the number of clusters according to cluster density
+          (most dense 'numClustersToKeep' clusters retained)
+
+	Controls:
+	- \b mrs_natural/numClustersToKeep [w] : sets the number of clusters to keep.
+*/
+ 
   class PeakClusterSelect: public MarSystem
   {
   private:    

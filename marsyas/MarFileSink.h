@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class MarFileSink
-   \brief Sink for output of MarFiles (for now only supports ascii output) 
-
-*/
-
 #ifndef MARSYAS_MARFILESINK_H
 #define MARSYAS_MARFILESINK_H
 
@@ -29,6 +23,16 @@
 
 namespace Marsyas
 {
+/**
+   \class MarFileSink
+	\ingroup IO
+   \brief Text output sink
+
+\todo sort out PlotSink and MarFileSink (rename, delete one or both,
+etc)
+
+*/
+
 
 class MarFileSink:public MarSystem 
 {

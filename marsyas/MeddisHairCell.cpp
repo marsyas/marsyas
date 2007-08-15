@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class MeddisHairCell
-    \ingroup Analysis
-    \brief MeddisHairCell for auditory models 
-
-    Directed port from the Auditory toolbox by Malcolm Slaney 
-*/
-
 #include "MeddisHairCell.h"
 
 using namespace std;

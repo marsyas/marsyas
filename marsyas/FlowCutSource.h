@@ -16,11 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-   \class FlowCutSource
-    \brief break the data flow consistency by entering a black hole in the network
-*/
-
 #ifndef MARSYAS_FLOWCUTSOURCE_H
 #define MARSYAS_FLOWCUTSOURCE_H
 
@@ -28,6 +23,21 @@
 
 namespace Marsyas
 {
+/**
+    \class FlowCutSource
+	\ingroup IO
+    \brief break the data flow consistency by entering a black hole in the network
+
+	Break the data flow consistency by entering a black hole in the
+network.  Overwrites the output with 0s.
+
+	Controls:
+	- \b mrs_natural/setSamples [w] : sets the number of samples.
+	- \b mrs_natural/setObservations [w] : sets the number of
+	  observations.
+	- \b mrs_real/setRate [w] : sets the sample rate.
+*/
+
 
 class FlowCutSource: public MarSystem
 {

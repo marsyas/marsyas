@@ -16,19 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-	\class PeakFeatureSelect
-	\ingroup MarSystem
-	\brief This MarSystem takes a realvec with peak information (using peakView)
-	and allows to select which peak features should be sent to the output. 
-	Used for similarity computations on peaks.  
-
-	Controls:
-	- \b mrs_natural/selectedFeatures [rw] : bit field used to select peaks features to output
-	- \b mrs_natural/totalNumPeaks [w] : this control sets the total num of peaks at the input (should normally be linked with PeakConvert similar control)
-	- \b mrs_natural/frameMaxNumPeaks [w] : this control sets the maximum num of peaks per frame at the input (should normally be linked with PeakConvert similar control)
-*/
-
 #include "PeakFeatureSelect.h"
 #include "peakView.h"
 

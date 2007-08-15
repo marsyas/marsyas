@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class peakView
-\class Notmar
-\brief Helper class for accessing peaks in a realvec. 
-*/
-
 #ifndef MARSYAS_PEAKVIEW_H
 #define MARSYAS_PEAKVIEW_H 
 
@@ -30,6 +24,12 @@
 
 namespace Marsyas
 {
+/** 
+\class peakView
+\ingroup Notmar
+\brief Helper class for accessing peaks in a realvec. 
+*/
+
 	class peakView
 	{
 	public:

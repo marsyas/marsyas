@@ -16,16 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class NetworkTCPSink
-    \brief NetworkTCPSink
-    \author Stuart Bray 
-
-    NetworkSink that uses the TCP communication protocol
-*/
-
-
-
 #ifndef MARSYAS_NetworkTCPSink_H
 #define MARSYAS_NetworkTCPSink_H
 
@@ -33,6 +23,15 @@
 
 namespace Marsyas
 {
+/** 
+    \class NetworkTCPSink
+	\ingroup Network
+    \brief NetworkTCPSink
+    \author Stuart Bray 
+
+    NetworkSink that uses the TCP communication protocol
+*/
+
 
 class NetworkTCPSink: public NetworkSocket
 {

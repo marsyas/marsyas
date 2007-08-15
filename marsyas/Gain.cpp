@@ -16,19 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Gain
-	\ingroup Processing Basic
-    \brief Multiply input realvec with gain
-
-   Simple MarSystem example. Just multiply the values of the input realvec
-with gain and put them in the output vector. This object can be used 
-as a prototype template for building more complicated MarSystems. 
-
-	Controls:
-	- \b mrs_real/gain [w] : adjust the gain multiplier.
-*/
-
 #include "Gain.h"
 
 using namespace std;

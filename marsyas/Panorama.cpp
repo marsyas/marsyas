@@ -17,12 +17,6 @@
 */
 
 
-/** 
-    \class Panorama
-	\ingroup Processing
-    \brief Amplitude Panning to move single broadband source to an azimuth angle
-*/
-
 #include "Panorama.h"
 
 using namespace std;

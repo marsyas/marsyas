@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class SchedulerManager
-   \brief SchedulerManager
-   \author inb@cs.uvic.ca
-*/
-
 #ifndef MARSYAS_SCHEDULER_MANAGER_H
 #define MARSYAS_SCHEDULER_MANAGER_H
 
@@ -62,6 +56,14 @@
 using namespace std;
 namespace Marsyas
 {
+/**
+   \class SchedulerManager
+	\ingroup Scheduler
+   \brief SchedulerManager schedules things
+   \author inb@cs.uvic.ca
+*/
+
+
 /*
 struct MakeTimer {
     MakeTimer() {}

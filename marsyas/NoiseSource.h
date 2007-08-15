@@ -23,6 +23,14 @@
 
 namespace Marsyas
 {
+/**
+   \class NoiseSource
+   \ingroup Synthesis
+   \brief Creates noise
+
+*/
+
+
 
 class NoiseSource: public MarSystem
 {

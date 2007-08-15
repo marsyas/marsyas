@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class ERB
-    \brief ERB Filterbank
-
-    ERB (Equivalent rectangular bandwith) filterbank. Based on 
-the code from the Auditory Toolbox by Malcolm Slaney. 
-*/
-
 #ifndef MARSYAS_ERB_H
 #define MARSYAS_ERB_H
 
@@ -32,6 +24,15 @@ the code from the Auditory Toolbox by Malcolm Slaney.
 
 namespace Marsyas
 {
+/** 
+    \class ERB
+	\ingroup Processing
+    \brief ERB Filterbank
+
+    ERB (Equivalent rectangular bandwith) filterbank. Based on 
+the code from the Auditory Toolbox by Malcolm Slaney. 
+*/
+
 
 class ERB: public MarSystem
 {

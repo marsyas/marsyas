@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class realvec
-    \brief Vector of mrs_real values
-
-    Array (vector in the numerical sense) of mrs_real values. Basic 
-arithmetic operations and statistics are supported. 
-*/
-
-
 #include "realvec.h"
 #include "NumericLib.h"
 #include <algorithm>

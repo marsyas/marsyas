@@ -17,14 +17,6 @@
 */
 
 
-/**
-   \class Collection
-	\ingroup Notmar
-   \brief List of files
-
-   List of files used for batch processing.
-*/
-
 #include "Collection.h"
 
 using namespace std;

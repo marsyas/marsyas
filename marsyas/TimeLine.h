@@ -16,29 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class TimeLine 
-    \brief TimeLine is a list of TimeRegions. 
-    
-   TimeLine is a list of TimeRegions. It represents a segmentation in
-   time of sound.  Each segment is defined by its boundaries and a
-   class id. A class_name table is used to derive the class names from
-   the class id's.  A simple float_vector representation is used for
-   the TimeLine where the class #::ids and the boundaries are
-   interleaved.  For example the following numbers:
-
-   0 1 100 0 258 3 640
-   
-   mean from time 0 to 100 class is 1
-   from time 100 to 258 class is 0
-   etc.
-   
-   The units used to define the boundaries of 
-   each segment can be arbitrary integer multiples
-   of one sample and are defined by lineSize.  
-
-*/
-
 #ifndef MARSYAS_TIMELINE_H
 #define MARSYAS_TIMELINE_H
 
@@ -52,6 +29,30 @@
 
 namespace Marsyas
 {
+/** 
+\class TimeLine 
+	\ingroup none
+\brief TimeLine is a list of TimeRegions. 
+
+TimeLine is a list of TimeRegions. It represents a segmentation in
+time of sound.  Each segment is defined by its boundaries and a
+class id. A class_name table is used to derive the class names from
+the class id's.  A simple float_vector representation is used for
+the TimeLine where the class #::ids and the boundaries are
+interleaved.  For example the following numbers:
+
+0 1 100 0 258 3 640
+
+mean from time 0 to 100 class is 1
+from time 100 to 258 class is 0
+etc.
+
+The units used to define the boundaries of 
+each segment can be arbitrary integer multiples
+of one sample and are defined by lineSize.  
+
+*/
+
 
 struct TimeRegion
 {

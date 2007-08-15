@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class HarmonicEnhancer
-    \brief Used to strengthen harmonic peaks in Beat Histograms 
-
-*/
-
 #ifndef MARSYAS_HARMONICENHANCER_H
 #define MARSYAS_HARMONICENHANCER_H
 
@@ -30,6 +24,13 @@
 
 namespace Marsyas
 {
+/** 
+    \class HarmonicEnhancer
+	\ingroup MachineLearning
+    \brief Used to strengthen harmonic peaks in Beat Histograms 
+
+*/
+
 
 class HarmonicEnhancer: public MarSystem
 {

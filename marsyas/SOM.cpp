@@ -17,14 +17,6 @@
 */
 
 
-/** 
-    \class SOM
-	\ingroup MachineLearning
-    \brief Self-organizing map
-
-
-*/
-
 #include "SOM.h"
 
 using namespace std;

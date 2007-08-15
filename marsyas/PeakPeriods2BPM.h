@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class PeakPeriods2BPM
-    \brief PeakPeriods2BPM: convert peaks to beats per minute 
-
-*/
-
 #ifndef MARSYAS_PEAKPERIODS2BPM_H
 #define MARSYAS_PEAKPERIODS2BPM_H
 
@@ -29,6 +23,13 @@
 
 namespace Marsyas
 {
+/** 
+    \class PeakPeriods2BPM
+	\ingroup none
+    \brief PeakPeriods2BPM: convert peaks to beats per minute 
+
+*/
+
 
 class PeakPeriods2BPM: public MarSystem
 {

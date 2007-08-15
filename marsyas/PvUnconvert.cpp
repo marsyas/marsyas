@@ -16,20 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class PvUnconvert
-	\ingroup none
-    \brief PvUnconvert
-
-    PvUnconvert N real and imaginary spectrum values to 
-N/2+1 pairs of magnitude and phase values. The phases 
-are unwrapped and successive phase differences are 
-used to compute estimates of the instantaneous frequencies 
-for each phase vocoder analysis channel; decimation rate 
-and sampling rate are used to render these frequencies 
-directly in Hz. 
-*/
-
 #include "PvUnconvert.h"
 
 using namespace std;

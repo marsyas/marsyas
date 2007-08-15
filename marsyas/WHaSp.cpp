@@ -16,16 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-	\class WHaSp
-	\ingroup MarSystem
-	\brief Calculate Wrapped Harmonically Spectrum (WHaSp)
-	
-	- \b mrs_natural/histSize [w] : set the discretization size when comparing HWPS spectrums (i.e. the histogram nr of bins).
-	- \b mrs_natural/totalNumPeaks [w] : this control sets the total num of peaks at the input (should normally be linked with PeakConvert similar control)
-	- \b mrs_natural/frameMaxNumPeaks [w] : this control sets the maximum num of peaks per frame at the input (should normally be linked with PeakConvert similar control)
-*/
-
 #include "WHaSp.h"
 #include "peakView.h"
 #include "PeakFeatureSelect.h"

@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class MaxArgMax
-    \brief Calculate k maximums and their positions
-
-    The output is : max1, argmax1, max2, argmax2, .... 
-*/
-
 #ifndef MARSYAS_MAXARGMAX_H
 #define MARSYAS_MAXARGMAX_H
 
@@ -30,6 +23,14 @@
 
 namespace Marsyas
 {
+/** 
+    \class MaxArgMax
+    \ingroup Analysis
+    \brief Calculate k maximums and their positions
+    
+    The output is : max1, argmax1, max2, argmax2, .... 
+*/
+
 
 class MaxArgMax: public MarSystem
 {

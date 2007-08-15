@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class NormMatrix
-\ingroup Processing
-\brief NormMatrix: normalize Matrix
-
-Normalize matrix by subtracting matrix mean and dividing by matrix standard deviation
-*/
-
 #include "NormMatrix.h"
 
 using namespace std;

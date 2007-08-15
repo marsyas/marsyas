@@ -16,11 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Cartesian2Polar
-    \brief perform a conversion from spectral values
-*/
-
 #ifndef MARSYAS_CARTESIAN2POLAR_H
 #define MARSYAS_CARTESIAN2POLAR_H
 
@@ -28,6 +23,12 @@
 
 namespace Marsyas
 {
+/** 
+	\class Cartesian2Polar
+	\ingroup Notmar
+	\brief perform conversion of spectral values
+*/
+
 
 class Cartesian2Polar: public MarSystem
 {

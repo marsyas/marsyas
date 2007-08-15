@@ -16,16 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Spectral Flatness Measure
-    \brief Spectral Flatness Measure
-    
-    Spectral Flastness Measure is a feature set defined in the MPEG-7 
-    audio standard. It assumes an 1/4 octave frequency resolution,
-    resulting in 24 frequency bands between 250Hz and 16kHz.
-    Based on code provided by Luis Gustavo Martins <lmartins@inescporto.pt>
-*/
-
 #ifndef MARSYAS_SFM_H
 #define MARSYAS_SFM_H
 
@@ -33,6 +23,17 @@
 
 namespace Marsyas
 {
+/** 
+\class Spectral Flatness Measure
+	\ingroup none
+\brief Spectral Flatness Measure
+
+Spectral Flatness Measure is a feature set defined in the MPEG-7 
+audio standard. It assumes an 1/4 octave frequency resolution,
+resulting in 24 frequency bands between 250Hz and 16kHz.
+Based on code provided by Luis Gustavo Martins <lmartins@inescporto.pt>
+*/
+
 
 class SFM: public MarSystem
 {

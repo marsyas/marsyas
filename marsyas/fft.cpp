@@ -16,16 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class fft:
-    \brief fft calculation.
-
-   System for calculating the fft (Fast Fourier Transform) of the input fvec.
-The actual fft code is scammed from the CARL software and is very similar 
-to the fft implementation in Numerical Recipes. Returns an fvec of complex 
-values (2*i, 2*i+1) = (Real, Imaginary).
-*/
-
 #include "fft.h"
 
 using namespace Marsyas;

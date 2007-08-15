@@ -17,15 +17,6 @@
 */
 
 
-/**
-   \class OggFileSource
-   \ingroup Internal
-   \brief OggFileSource read ogg files using vorbisfile
-   \author Taras Glek
- 
-This class reads an ogg file using the vorbis ogg decoder library.
-*/
-
 #include "OggFileSource.h"
 
 using namespace std;

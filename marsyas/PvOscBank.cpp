@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class PvOscBank
-	\ingroup none
-    \brief PvOscBank
-
-    A bank of sine wave oscillators used for phasevocoding. 
-
-*/
-
 #include "PvOscBank.h"
 
 using namespace std;

@@ -16,16 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class AutoCorrelation
-	\ingroup Analysis
-    \brief Compute the generalized autocorrelation of input window 
-
-    Computes the generalized autocorrelation 
-(with optional magnitude compression) using the 
-Fast Fourier Transform (FFT). 
-*/
-
 #include "AutoCorrelation.h"
 #include "Windowing.h"
 

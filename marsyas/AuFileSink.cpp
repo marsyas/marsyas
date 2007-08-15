@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class AuFileSink
-   \ingroup Internal
-   \brief SoundFileSink for .au (.snd) soundfiles
-   
-   SoundFileSink writer for .au (.snd) sound files.
-   (Next, Sun audio format). 
-*/
-
 #include "AuFileSink.h"
 
 using namespace std;

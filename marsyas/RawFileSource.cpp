@@ -16,17 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class RawFileSource
-	\ingroup Interal
-   \brief SoundFileSource for .raw wavetable files
-   
-   STK rawwave files have no header and are assumed to contain a
-   monophonic stream of 16-bit signed integers in big-endian byte
-   order with a sample rate of 22050 Hz.
-   
-*/
-
 #include "RawFileSource.h"
 
 using namespace std;

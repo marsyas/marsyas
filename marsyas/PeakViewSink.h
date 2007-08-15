@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class PeakViewSink
-\ingroup IO
-\brief This MarSystem accumulates realvecs with peak information (using peakView) 
-arriving at its input and when receiving a "done" control trigger, saves the peak data
-to the specified file in .peak format. 
-*/
-
 #ifndef MARSYAS_PEAKVIEWSINK_H
 #define MARSYAS_PEAKVIEWSINK_H
 
@@ -36,6 +28,26 @@ using namespace std;
 
 namespace Marsyas
 {
+/** 
+\class PeakViewSink
+\ingroup IO
+\brief This MarSystem accumulates realvecs with peak information (using peakView) 
+arriving at its input and when receiving a "done" control trigger, saves the peak data
+to the specified file in .peak format.
+
+Controls:
+- \b mrs_string/filename [w] : specifies the name of the file to where the accumulated 
+peak data will be saved.
+- \b mrs_bool/accumulate2Disk [w] : specifies if the peak data accumulation should be 
+performed using a temporary disk file ("true") or accumulate peak data in memory ("false").
+- \b mrs_real/fs [w]: sampling frequency associated with peak data (will be saved in the 
+.peak file header).
+- \b mrs_natural/frameSize [w]: frame size (in samples) associated with the peak data 
+(will be saved in the .peak file header).
+- \b mrs_bool/done [w] : "trigger" this control to "true" to save accumulated peak data 
+to the specified file and reset accumulated peak memory (disk or memory).
+*/
+
 
 	class PeakViewSink: public MarSystem
 	{

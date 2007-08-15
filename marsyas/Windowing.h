@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class Windowing
-\brief Windowing multiply input with Windowing window
-
-Multiply input with Windowing window 
-*/
-
 #ifndef MARSYAS_WINDOWING_H
 #define MARSYAS_WINDOWING_H
 
@@ -30,6 +23,13 @@ Multiply input with Windowing window
 
 namespace Marsyas
 {
+/** 
+\class Windowing
+\ingroup Processing
+\brief window the input signal
+
+*/
+
 
 	class Windowing: public MarSystem
 	{

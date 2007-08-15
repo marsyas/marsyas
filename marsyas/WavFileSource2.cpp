@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-\class WavFileSource2
-	\ingroup Experimental
-\brief SoundFileSource for .wav soundfiles
-
-SoundFileSource reader for .wav sound files.
-*/
-
 #include "WavFileSource2.h"
 
 using namespace std;

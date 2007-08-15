@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class MarSystemTemplateAdvanced
-\brief Advanced example on how to use composite ad custom controls efficiently in MarSystems
-
-*/
-
 #ifndef MARSYAS_MARSYSTEMTEMPLATEADVANCED_H
 #define MARSYAS_MARSYSTEMTEMPLATEADVANCED_H
 
@@ -29,6 +23,12 @@
 
 namespace Marsyas
 {
+/** 
+	\class MarSystemTemplateAdvanced
+	\ingroup Special
+	\brief Advanced example on how to use composite ad custom controls efficiently in MarSystems
+*/
+
 	// declare a new custom control to be used by 
 	// this MarSystem (e.g. a header for a file)
 	struct MyHeader

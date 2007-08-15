@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class BaseAudioSink
-	\ingroup Internal
-   \brief Interface for real-time audio sources
-   
-   Abstract base class used as interface for real-time audio sources.
-*/
-
 #include "BaseAudioSink.h"
 
 using namespace std;

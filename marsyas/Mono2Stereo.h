@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Mono2Stereo
-    \brief Convert mono to stereo by copying 
-
-   Convert mono to stereo by copying - if input is not mono 
-just propagate. 
-*/
-
 #ifndef MARSYAS_MONO2STEREO_H
 #define MARSYAS_MONO2STEREO_H
 
@@ -31,6 +23,17 @@ just propagate.
 
 namespace Marsyas
 {
+/** 
+    \class Mono2Stereo
+	\ingroup Processing Basic
+    \brief Convert mono to stereo by copying 
+
+   Convert mono to stereo by copying - if input is not mono 
+just propagate. 
+
+	Controls: none.
+*/
+
 
 class Mono2Stereo: public MarSystem
 {

@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
-/** 
-    \class Peaker
-    \brief Pick peaks out of signal 
-
-   Peaker is used to select peaks(or valleys) from the input vector. Various 
-parameters of the peak selection process can be adjusted.
-*/
-
 #ifndef MARSYAS_PEAKER_H
 #define MARSYAS_PEAKER_H
 
@@ -32,6 +23,15 @@ parameters of the peak selection process can be adjusted.
 
 namespace Marsyas
 {
+/** 
+\class Peaker
+	\ingroup Analysis
+\brief Pick peaks out of signal 
+
+Peaker is used to select peaks(or valleys) from the input vector. Various 
+parameters of the peak selection process can be adjusted.
+*/
+
 
 class Peaker: public MarSystem
 {

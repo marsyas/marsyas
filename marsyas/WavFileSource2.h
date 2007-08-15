@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-\class WavFileSource2
-\brief SoundFileSource for .wav soundfiles
-
-SoundFileSource reader for .wav sound files.
-*/
-
 #ifndef MARSYAS_WAVFILESOURCE2_H
 #define MARSYAS_WAVFILESOURCE2_H
 
@@ -34,6 +27,14 @@ SoundFileSource reader for .wav sound files.
 
 namespace Marsyas
 {
+/**
+\class WavFileSource2
+	\ingroup Experimental
+\brief SoundFileSource for .wav soundfiles
+
+SoundFileSource reader for .wav sound files.
+*/
+
 
 class WavFileSource2: public AbsSoundFileSource2
 {

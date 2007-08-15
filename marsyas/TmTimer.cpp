@@ -17,13 +17,6 @@
 */
 
 
-/**
-   \class TmTimer
-	\ingroup none
-   \brief Abstract TmTimer
-   \author inb@cs.uvic.ca
-*/
-
 #include "TmTimer.h"
 
 using namespace std;

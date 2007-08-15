@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class AuFileSource
-   \ingroup Internal
-   \brief SoundFileSource for .au (.snd) soundfiles
-   
-   SoundFileSource reader for .au (.snd) sound files.
-   (Next, Sun audio format). 
-*/
-
 #include "AuFileSource.h"
 
 using namespace std;

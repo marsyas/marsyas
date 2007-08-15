@@ -16,16 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Accumulator 
-    \brief Accumulate result of multiple tick 
-
-    Accumulate result of multiple tick process calls 
-    to internal MarSystem. Spit output only once when
-    all the results are accumulated. Used to change 
-    the rate of process requests.
-*/
-
 #ifndef MARSYAS_ACCUMULATOR_H
 #define MARSYAS_ACCUMULATOR_H
 
@@ -33,6 +23,24 @@
 
 namespace Marsyas
 {
+/** 
+	\class Accumulator 
+	\ingroup Composites
+	\brief Accumulate result of multiple ticks
+
+Accumulate result of multiple tick process calls 
+to internal MarSystem. Spit output only once when
+all the results are accumulated. Used to change 
+the rate of process requests.
+
+For example, if \c nTimes is 5, then each time the Accumulator recieves
+a tick(), it sends 5 tick()s to the MarSystems that are inside it.
+
+Controls:
+- \b mrs_natural/nTimes [rw] : the multiplier of ticks() for the internal
+  MarSystems.
+*/
+
 
 class Accumulator: public MarSystem
 {

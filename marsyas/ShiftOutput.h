@@ -17,15 +17,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class ShiftOutput
-    \brief ShiftOutput next D samples  
-
-    Shift next D samples from the input source to the output source 
-into the right-hand end of the outputSlice. 
-with gain and put them in the output vector. 
-*/
-
 #ifndef MARSYAS_SHIFTOUTPUT_H
 #define MARSYAS_SHIFTOUTPUT_H
 
@@ -33,6 +24,21 @@ with gain and put them in the output vector.
 
 namespace Marsyas
 {
+/** 
+    \class ShiftOuput
+	\ingroup Processing Basic
+    \brief Shift next D samples  
+
+    Shift next D samples from the input source to the output source 
+into the right-hand end of the outputSlice. 
+with gain and put them in the output vector. 
+
+	Controls:
+	- \b mrs_natural/Interpolation [rw] : DOCME
+	- \b mrs_natural/WindowSize [rw] : DOCME
+	- \b mrs_natural/Decimation [rw] : DOCME
+*/
+
 
 class ShiftOutput: public MarSystem
 {

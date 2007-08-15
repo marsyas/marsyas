@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class PeakViewSource
-\brief MarSystem to read .peak files and at each tick output the peaks in each frame
-
-*/
-
 #ifndef MARSYAS_PEAKVIEWSOURCE_H
 #define MARSYAS_PEAKVIEWSOURCE_H
 
@@ -29,6 +23,15 @@
 
 namespace Marsyas
 {
+/** 
+	\class PeakViewSource
+	\ingroup Special
+	\brief MarSystem to read .peak files and at each tick output the peaks in each frame
+
+	Controls:
+	- \b mrs_string/filename [w] : .peak file name to read
+
+*/
   
   class PeakViewSource: public MarSystem
   {

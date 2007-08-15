@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class TmControlValue
-    \brief TmControlValue 
-    Created: Burroughs, Dec 4, 2006
-*/
-
 #ifndef __TMCONTROLVALUE__
 #define __TMCONTROLVALUE__
 
@@ -31,6 +25,12 @@
 #include "common.h"
 namespace Marsyas
 {
+/** 
+    \class TmControlValue
+	\ingroup none
+    \brief TmControlValue is a simple parameter passing mechanism for updtimer
+*/
+
 class MarSystem;
 
 enum {

@@ -16,16 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Product
-	\ingroup none
-    \brief Product 
-    \author Adam Tindale
-
-    Multiplies observations together. Used for ring modulation. 
-
-*/
-
 #include "Product.h"
 
 using namespace std;

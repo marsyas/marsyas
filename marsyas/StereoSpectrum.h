@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class StereoSpectrum
-    \brief StereoSpectrum computes the panning index for each spectrum 
-    bin of a stereo input.
-
-*/
-
 #ifndef MARSYAS_STEREOSPECTRUM_H
 #define MARSYAS_STEREOSPECTRUM_H
 
@@ -31,6 +24,15 @@
 
 namespace Marsyas
 {
+/** 
+    \class StereoSpectrum
+	\ingroup none
+    \brief StereoSpectrum computes the panning index for each spectrum 
+    bin of a stereo input.
+
+*/
+
+
 
 class StereoSpectrum: public MarSystem
 {

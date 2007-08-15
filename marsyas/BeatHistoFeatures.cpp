@@ -17,17 +17,6 @@
 */
 
 
-/** 
-    \class BeatHistoFeatures
-	\ingroup MachineLearning
-    \brief Beat Histogram Features
-
-    Beat Histogram Features numerical values summarizing 
-the BH as described in the TSAP paper. Exact details 
-keep changing. 
-
-*/
-
 #include "BeatHistoFeatures.h"
 #include <cfloat> 
 

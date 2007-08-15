@@ -16,11 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class AbsSoundFileSource
-   \brief Abstract Interface for SoundFileSource of various formats
-*/
-
 #ifndef MARSYAS_ABSSOUNDFILESOURCE_H
 #define MARSYAS_ABSSOUNDFILESOURCE_H
 
@@ -29,6 +24,12 @@
 
 namespace Marsyas
 {
+/**
+   \class AbsSoundFileSource
+	\ingroup Internal
+   \brief Abstract Interface for SoundFileSource of various formats
+*/
+
 
 class AbsSoundFileSource: public MarSystem
 {

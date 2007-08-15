@@ -16,11 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Power
-    \brief Compute the power of the input rows of observations into one column
-*/
-
 #ifndef MARSYAS_POWER_H
 #define MARSYAS_POWER_H
 
@@ -28,6 +23,12 @@
 
 namespace Marsyas
 {
+/** 
+    \class Power
+	\ingroup Analysis
+    \brief compute the RMS Power of the input observations into one column
+*/
+
 
 class Power: public MarSystem
 {

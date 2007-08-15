@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class SilenceRemove 
-
-    \brief SilenceRemove takes as argument another Marsystem 
-and ticks it ignoring the output when it is silent. Effectively 
-tick silence remove is the same as playing the sound with 
-silences removed. 
-*/
-
 #ifndef MARSYAS_SILENCEREMOVE_H
 #define MARSYAS_SILENCEREMOVE_H
 
@@ -32,6 +23,21 @@ silences removed.
 
 namespace Marsyas
 {
+/** 
+	\class SilenceRemove 
+	\ingroup Composites
+
+	\brief Blocks tick()s if the output is silent.
+
+	SilenceRemove takes as argument another Marsystem 
+and ticks it ignoring the output when it is silent. Effectively 
+tick silence remove is the same as playing the sound with 
+silences removed. 
+
+	Controls:
+	- \b mrs_real/threshold [rw] : threshold value of "silence".
+*/
+
 
 class SilenceRemove: public MarSystem
 {

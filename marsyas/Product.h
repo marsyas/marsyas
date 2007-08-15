@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Product
-    \brief Product 
-    \author Adam Tindale
-    
-    Used for ring modulation
-*/
-
 #ifndef MARSYAS_PRODUCT_H
 #define MARSYAS_PRODUCT_H
 
@@ -31,6 +23,16 @@
 
 namespace Marsyas
 {
+/** 
+    \class Product
+	\ingroup none
+    \brief Product 
+    \author Adam Tindale
+
+    Multiplies observations together. Used for ring modulation. 
+
+*/
+
 
 class Product: public MarSystem
 {

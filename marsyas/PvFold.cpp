@@ -16,16 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class PvFold
-	\ingroup none
-    \brief PvFold
-
-    Multiply with window (both length Nw) using modulus arithmetic;
-fold and rotate windowed input into output array (FFT) (length N) 
-according to current input time (t)
-*/
-
 #include "PvFold.h"
 
 using namespace std;

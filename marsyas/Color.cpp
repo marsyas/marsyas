@@ -17,15 +17,6 @@
 */
 
 
-/**
-   \class Color:
-	\ingroup Notmar
-   \brief Triplet of RGB values 
-   
-   Simply a triplet of RGB values representing a color
-plus various utility functions.
-*/ 
-
 #include "Color.h"
 
 using namespace Marsyas;

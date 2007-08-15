@@ -17,17 +17,6 @@
 */
 
 
-/**
-   \class MP3FileSource
-	\ingroup Internal
-   \brief MP3FileSource read mp3 files using libmad
-   \author Stuart Bray
-
-This class reads an mp3 file using the mad mp3 decoder library.  Some
-of this code was inspired from Bertrand Petit's madlld example.  The
-code to resize the buffers was borrowed from Marsyas AudioSource.
-*/
-
 #include "MP3FileSource.h"
 
 using namespace std;

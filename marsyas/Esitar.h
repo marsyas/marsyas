@@ -16,11 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Esitar
-    \brief Update midi inpput using controls. Just through for dataflow. 
-*/
-
 #ifndef MARSYAS_ESITAR_H
 #define MARSYAS_ESITAR_H
 
@@ -32,6 +27,12 @@
 
 namespace Marsyas
 {
+/** 
+    \class Esitar
+    \ingroup MIDI
+    \brief Update midi inpput using controls. Just through for dataflow. 
+*/
+
 
 class Esitar: public MarSystem
 {

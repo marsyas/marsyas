@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Skewness
-	\ingroup none
-    \brief Skewness computes the skewness of the input 
-
-*/
-
 #include "Skewness.h"
 
 using namespace std;

@@ -17,12 +17,6 @@
 */
 
 
-/**
-   \class TimerFactory
-	\ingroup none
-   \brief TimerFactory
-   \author inb@cs.uvic.ca
-*/
 #include "TimerFactory.h"
 
 using namespace std;

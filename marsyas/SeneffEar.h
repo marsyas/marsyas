@@ -16,16 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
-/** 
-    \class SeneffEar
-    \brief SeneffEar auditory model
-
-    SeneffEar is a perceptually-inspired auditory filterbank. 
-This is a direct reimplementation of the corresponding model 
-from the Auditory Toolbox in Matlab by Malcolm Slaney. 
-*/
-
 #ifndef MARSYAS_SENEFFEAR_H
 #define MARSYAS_SENEFFEAR_H
 
@@ -36,6 +26,16 @@ from the Auditory Toolbox in Matlab by Malcolm Slaney.
 
 namespace Marsyas
 {
+/** 
+    \class SeneffEar
+	\ingroup none
+    \brief SeneffEar auditory model
+
+    SeneffEar is a perceptually-inspired auditory filterbank. 
+    This is a direct reimplementation of the corresponding model 
+    from the Auditory Toolbox in Matlab by Malcolm Slaney. 
+*/
+
 
 class SeneffEar: public MarSystem
 {

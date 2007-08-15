@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Vibrato
-    \brief Apply vibrato using time-varying delay 
-
-*/
-
 #ifndef MARSYAS_VIBRATO_H
 #define MARSYAS_VIBRATO_H
 
@@ -30,6 +24,13 @@
 
 namespace Marsyas
 {
+/** 
+    \class Vibrato
+	\ingroup Processing
+    \brief Apply vibrato using time-varying delay 
+
+*/
+
 
 class Vibrato: public MarSystem
 {

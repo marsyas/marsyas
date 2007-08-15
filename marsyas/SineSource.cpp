@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class SineSource
-	\ingroup Synthesis
-    \brief SineSource generate a sine wave
-
-	Controls:
-	- b mrs_real/frequency	: frequency of the sine wave
-*/
-
 #include "SineSource.h"
 
 using namespace std;

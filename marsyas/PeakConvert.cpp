@@ -17,15 +17,6 @@
 */
 
 
-/** 
-\class PeakConvert
-\ingroup MarSystem
-\brief PeakConvert
-
-PeakConvert N real and imaginary spectrum values to 
-to a fixed number of peaks.
-*/
-
 #include "PeakConvert.h"
 #include "Peaker.h"
 #include "MaxArgMax.h"

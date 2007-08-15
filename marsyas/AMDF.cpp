@@ -16,16 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class AMDF
-	\ingroup Analysis
-    \brief Average Magnitude Difference Function
-
-    Computer the average magnitude difference function 
-which can then be used for pitch detection by detecting 
-the location of valleys. 
-*/
-
 #include "AMDF.h"
 
 using namespace std;

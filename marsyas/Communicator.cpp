@@ -17,15 +17,6 @@
 */
 
 
-/** 
-    \class Communicator
-    \ingroup Network
-    \brief Abstract base class for communicator
-    
-    Abstract base class for a send/receive string message type 
-    of communicator. 
-*/
-
 #include "Communicator.h"
 
 using namespace Marsyas;

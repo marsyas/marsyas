@@ -16,17 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Cascade
-	\ingroup Composites
-    \brief Cascade of MarSystem objects
-
-	Fills observations with successive output of its internal
-MarSystems.  ie MarSystemA => obs 0, MarSystemB => obs 1.
-
-	Controls: none.
-*/
-
 #include "Cascade.h"
 
 using namespace std;

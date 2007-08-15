@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Parallel
-    \ingroup Composites
-    \brief Parallel composite of MarSystem objects
-
-	Controls: none
-*/
-
 #include "Parallel.h"
 
 using namespace std;

@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class AuFileSink
-   \brief SoundFileSink for .au (.snd) soundfiles
-   
-   SoundFileSink writer for .au (.snd) sound files.
-   (Next, Sun audio format). 
-*/
-
 #ifndef MARSYAS_AUFILESINK_H
 #define MARSYAS_AUFILESINK_H
 
@@ -33,6 +25,15 @@
 
 namespace Marsyas
 {
+/**
+   \class AuFileSink
+   \ingroup Internal
+   \brief SoundFileSink for .au (.snd) soundfiles
+   
+   SoundFileSink writer for .au (.snd) sound files.
+   (Next, Sun audio format). 
+*/
+
 
 class AuFileSink: public AbsSoundFileSink
 {

@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class MinArgMin
-    \brief Calculate k minimums and their positions
-
-    The output is : min1, argmin1, min2, argmin2, .... 
-*/
-
 #ifndef MARSYAS_MINARGMIN_H
 #define MARSYAS_MINARGMIN_H
 
@@ -30,6 +23,14 @@
 
 namespace Marsyas
 {
+/** 
+    \class MinArgMin
+    \ingroup Analysis
+    \brief Calculate k minimums and their positions
+
+    The output is : min1, argmin1, min2, argmin2, .... 
+*/
+
 
 class MinArgMin: public MarSystem
 {

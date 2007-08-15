@@ -16,16 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class SeneffEar
-	\ingroup none
-    \brief SeneffEar auditory model
-
-    SeneffEar is a perceptually-inspired auditory filterbank. 
-    This is a direct reimplementation of the corresponding model 
-    from the Auditory Toolbox in Matlab by Malcolm Slaney. 
-*/
-
 #include "SeneffEar.h"
 #include "fft.h"
 

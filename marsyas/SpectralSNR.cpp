@@ -17,13 +17,6 @@
 */
  
 
-/** 
-    \class SpectralSNR
-	\ingroup none
-    \brief SpectralSNR computes a frequency domain signal-to-noise ratio
-
-*/
-
 
 
 #include "SpectralSNR.h"

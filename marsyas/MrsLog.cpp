@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-\class MrsLog
-	\ingroup Special
-\brief Logging Class
-
-Logging class for diagnostic, warning, error, debug, etc messages. Can output
-messages to a log file or std output (i.e. screen).
-*/
-
 #include <iostream>
 #include <fstream>
 

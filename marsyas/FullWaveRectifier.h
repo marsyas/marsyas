@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class FullWaveRectifier
-    \brief FullWaveRectifier
-
-
-*/
-
 #ifndef MARSYAS_FULLWAVERECTIFIER_H
 #define MARSYAS_FULLWAVERECTIFIER_H
 
@@ -30,6 +23,14 @@
 
 namespace Marsyas
 {
+/** 
+    \class FullWaveRectifier
+	\ingroup Processing
+    \brief FullWaveRectifier
+
+
+*/
+
 
 class FullWaveRectifier: public MarSystem
 {

@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class AuFileSource
-   \brief SoundFileSource for .au (.snd) soundfiles
-   
-   SoundFileSource reader for .au (.snd) sound files.
-   (Next, Sun audio format). 
-*/
-
 #ifndef MARSYAS_AUFILESOURCE_H
 #define MARSYAS_AUFILESOURCE_H
 
@@ -42,6 +34,15 @@ typedef __int32 int32_t;
 
 namespace Marsyas
 {
+/**
+   \class AuFileSource
+   \ingroup Internal
+   \brief SoundFileSource for .au (.snd) soundfiles
+   
+   SoundFileSource reader for .au (.snd) sound files.
+   (Next, Sun audio format). 
+*/
+
 
 /********  NeXT/Sun Soundfile Header Struct   *******/
 struct snd_header 

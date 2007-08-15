@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class Repeat
-   \brief Repeat encapsulates event repetition information
-
-*/
-
 #ifndef MARSYAS_REPEAT_H
 #define MARSYAS_REPEAT_H
 
@@ -32,6 +26,11 @@
 
 namespace Marsyas
 {
+/**
+   \class Repeat
+	\ingroup none
+   \brief 
+*/
 
 class Repeat {
 public:

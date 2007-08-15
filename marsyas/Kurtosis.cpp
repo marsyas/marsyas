@@ -17,15 +17,6 @@
 */
 
 
-/** 
-    \class Kurtosis
-	\ingroup Analysis
-    \brief Kurtosis 
-
-    Calculate the Kurtosis of the input observations. Typically used 
-for characterizing the magnitude spectrum. 
-*/
-
 #include "Kurtosis.h"
 
 using namespace std;

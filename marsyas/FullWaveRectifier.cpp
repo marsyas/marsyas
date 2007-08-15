@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class FullWaveRectifier
-	\ingroup Processing
-    \brief FullWaveRectifier
-
-
-*/
-
 #include "FullWaveRectifier.h"
 
 using namespace std;

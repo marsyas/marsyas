@@ -16,6 +16,13 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#ifndef MARSYAS_PEAKER1_H
+#define MARSYAS_PEAKER1_H
+
+#include "MarSystem.h"
+
+namespace Marsyas
+{
 /** 
     \class PeakerAdaptive
     \brief Pick peaks out of signal 
@@ -24,13 +31,6 @@
 parameters of the peak selection process can be adjusted.
 */
 
-#ifndef MARSYAS_PEAKER1_H
-#define MARSYAS_PEAKER1_H
-
-#include "MarSystem.h"
-
-namespace Marsyas
-{
 
 class PeakerAdaptive: public MarSystem
 {

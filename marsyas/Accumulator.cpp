@@ -17,24 +17,6 @@
 */
 
 
-/** 
-\class Accumulator 
-\ingroup Composites
-\brief Accumulate result of multiple ticks
-
-Accumulate result of multiple tick process calls 
-to internal MarSystem. Spit output only once when
-all the results are accumulated. Used to change 
-the rate of process requests.
-
-For example, if \c nTimes is 5, then each time the Accumulator recieves
-a tick(), it sends 5 tick()s to the MarSystems that are inside it.
-
-Controls:
-- \b mrs_natural/nTimes [rw] : the multiplier of ticks() for the internal
-  MarSystems.
-*/
-
 #include "Accumulator.h"
 
 using namespace std;

@@ -1,10 +1,4 @@
 
-/**
-   \class WekaSource
-   \brief Input sink for Weka-formatted (textual) feature data
-
-*/
-
 #ifndef MARSYAS_WEKASOURCE_H
 #define MARSYAS_WEKASOURCE_H
 
@@ -16,6 +10,22 @@
 
 namespace Marsyas
 {
+/**
+	\class WekaSource
+	\ingroup IO
+	\brief Input sink for Weka-formatted (textual) feature data
+
+	Controls:
+	- \b mrs_string/filename [w] : name of file to read.
+	- \b mrs_string/obsToExtract [rw] : A string of ',' separated indexes
+or index ranges (specified using '-') of the attributes desired from the
+weka file.  From this, the number of inObservations is inferred.  (Note:
+attribute indexing starts from 0)
+	- \b mrs_natural/nLables [rw] : number of labels.
+	- \b mrs_string/labelNames [rw] : names of labels.
+	- \b mrs_bool/notEmpty [r] : is there more data to read?
+*/ 
+
 
 class WekaSource:public MarSystem 
 {

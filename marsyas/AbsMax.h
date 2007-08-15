@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class AbsMax
-    \brief Calculate the maximum of the absolute values of the signal 
-    
-Calculates the maximum of the absolute values of 
-the singal. Used for sending waveform plots to editor. 
-*/
-
 #ifndef MARSYAS_ABSMAX_H
 #define MARSYAS_ABSMAX_H
 
@@ -31,6 +23,15 @@ the singal. Used for sending waveform plots to editor.
 
 namespace Marsyas
 {
+/** 
+    \class AbsMax
+	\ingroup Analysis
+    \brief Calculate the maximum of the absolute values of the signal 
+    
+Calculates the maximum of the absolute values of 
+the singal. Used for sending waveform plots to editor. 
+*/
+
 
 class AbsMax: public MarSystem
 {

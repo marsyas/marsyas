@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-\class AudioSource2
-\ingroup Experimental
-\brief Real-time audio source 
-
-Real-time Audio Source based on RtAudio
-*/
-
 #include "AudioSource2.h"
 
 using namespace std;

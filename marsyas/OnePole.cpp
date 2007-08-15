@@ -16,16 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class OnePole
-	\ingroup Processing
-    \brief Simple one-pole filter
-
-    OnePole Filter. 
-    Output is normalized by setting the
-    gain to (1.0-a). 
-*/
-
 #include "OnePole.h"
 
 using namespace std;

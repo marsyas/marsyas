@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class SpectralSNR
-    \brief SpectralSNR computes a frequency domain signal-to-noise ratio
-
-*/
-
 #ifndef MARSYAS_SPECTRALSNR_H
 #define MARSYAS_SPECTRALSNR_H
 
@@ -30,6 +24,13 @@
 
 namespace Marsyas
 {
+/** 
+    \class SpectralSNR
+	\ingroup none
+    \brief SpectralSNR computes a frequency domain signal-to-noise ratio
+
+*/
+
 
 class SpectralSNR: public MarSystem
 {

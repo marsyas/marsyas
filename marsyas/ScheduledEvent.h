@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
-/**
-   \class ScheduledEvent
-   \brief Scheduled event contains a control name, and a
-          MarControlValue along with a sample time that
-          the name and value should be issued at.
-*/
-
 #ifndef MARSYAS_SCHEDULEDEVENT_H
 #define MARSYAS_SCHEDULEDEVENT_H
 
@@ -38,6 +30,17 @@
 
 namespace Marsyas
 {
+/**
+   \class Scheduler
+	\ingroup Scheduler
+   \brief Scheduler schedules things
+
+   Scheduled event contains a control name, and a
+          MarControlValue along with a sample time that
+          the name and value should be issued at.
+
+*/
+
 
 class ScheduledEvent {
 protected:

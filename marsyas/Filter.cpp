@@ -16,16 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**  
-\class Filter
-	\ingroup Processing
-\brief Filter a Signal 
-
-Filters a Signal using the coefficients stored in a FilterCoeffs
-object. The filter is implemented as a direct form II structure. This
-is a canonical form which has the minimum number of delay elements.
-*/
-
 #include "Filter.h"
 
 using namespace std;

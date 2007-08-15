@@ -16,11 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Parallel
-    \brief Parallel composite of MarSystem objects
-*/
-
 #ifndef MARSYAS_PARALLEL_H
 #define MARSYAS_PARALLEL_H
 
@@ -28,6 +23,14 @@
 
 namespace Marsyas
 {
+/** 
+    \class Parallel
+    \ingroup Composites
+    \brief Parallel composite of MarSystem objects
+
+	Controls: none
+*/
+
 
 class Parallel: public MarSystem
 {

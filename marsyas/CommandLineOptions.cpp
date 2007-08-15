@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class CommandLineOptions
-	\ingroup Notmar
-\brief CommandLineOptions
-
-Class for handling command-line options 
-*/
-
 #include "CommandLineOptions.h"
 
 using namespace std;

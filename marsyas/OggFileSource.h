@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class OggFileSource
-   \brief OggFileSource read ogg files using libvorbis
-   \author Taras Glek
-
-This class reads an ogg file using the vorbis ogg decoder library.
-
-*/
-
 #ifndef MARSYAS_OGGSOURCE_H
 #define MARSYAS_OGGSOURCE_H
 
@@ -49,6 +40,15 @@ This class reads an ogg file using the vorbis ogg decoder library.
 
 namespace Marsyas
 {
+/**
+   \class OggFileSource
+   \ingroup Internal
+   \brief OggFileSource read ogg files using vorbisfile
+   \author Taras Glek
+ 
+This class reads an ogg file using the vorbis ogg decoder library.
+*/
+
 
 class OggFileSource: public AbsSoundFileSource
 {

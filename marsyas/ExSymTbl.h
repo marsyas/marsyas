@@ -15,12 +15,7 @@
 ** along with this program; if not, write to the Free Software 
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-/**
-    \class ExRecord.cpp
-    \brief classes for managing the symbol table - functions and variables
-    \author Neil Burroughs  inb@cs.uvic.ca
-    \date Jan 4, 2007
-*/
+
 #ifndef __SYM_TBL_H__
 #define __SYM_TBL_H__
 
@@ -33,6 +28,13 @@
 
 namespace Marsyas
 {
+/**
+    \class ExRecord.cpp
+    \ingroup Scheduler
+    \brief classes for managing the symbol table - functions and variables
+    \author Neil Burroughs  inb@cs.uvic.ca
+    \date Jan 4, 2007
+*/
 
 class ExNode;
 class ExNode_Fun;

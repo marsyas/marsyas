@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class QGMMModel  
-\brief Quasi-GMM Model
-
-Implementation by Luis Gustavo Martins - lmartins@inescporto.pt
-
-*/
-
 #if !defined(__QGMMMODEL_h)
 #define __QGMMMODEL_H
 
@@ -33,6 +25,15 @@ Implementation by Luis Gustavo Martins - lmartins@inescporto.pt
 
 namespace Marsyas
 {
+/** 
+\class QGMMModel  
+	\ingroup none
+\brief Quasi-GMM Model
+
+Implementation by Luis Gustavo Martins - lmartins@inescporto.pt
+
+*/
+
 
 class QGMMModel
 {

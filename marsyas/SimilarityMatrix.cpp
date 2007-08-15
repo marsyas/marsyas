@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-	\class SimilarityMatrix
-	\ingroup MarSystem
-	\brief Calculate Similarity Matrix of a set of feature vectors at input
-
-	Controls:
-	- \b mrs_bool/calcCovMatrix [w] : enables/disables calculation of covariance matrix from input data
-	- \b mrs_realvec/covMatrix  [r] : covariance matrix from input data (if disabled, will contain an empty realvec)
-*/
 #include "SimilarityMatrix.h"
 
 using namespace std;

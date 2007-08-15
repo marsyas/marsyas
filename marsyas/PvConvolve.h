@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class PvConvolve
-    \brief PvConvolve
-
-    
-*/
-
 #ifndef MARSYAS_PVCONVOLVE_H
 #define MARSYAS_PVCONVOLVE_H
 
@@ -30,6 +23,14 @@
 
 namespace Marsyas
 {
+/** 
+    \class PvConvolve
+	\ingroup none
+    \brief PvConvolve
+
+
+*/
+
 
 class PvConvolve: public MarSystem
 {

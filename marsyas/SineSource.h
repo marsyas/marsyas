@@ -17,13 +17,6 @@
 */
 
 
-
-/** 
-    \class SineSource
-    \brief SineSource generate a sine wave
-
-*/
-
 #ifndef MARSYAS_SINESOURCE_H
 #define MARSYAS_SINESOURCE_H	
 
@@ -34,6 +27,15 @@
 
 namespace Marsyas
 {
+/** 
+    \class SineSource
+	\ingroup Synthesis
+    \brief SineSource generate a sine wave
+
+	Controls:
+	- b mrs_real/frequency	: frequency of the sine wave
+*/
+
 
 class SineSource: public MarSystem
 {

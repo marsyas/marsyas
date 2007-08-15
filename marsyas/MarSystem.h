@@ -16,18 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class MarSystem
-   \brief MarSystem transforms a realvec
-
-   Abstract base class for any type of system. Basically a MarSystem
-takes as input a vector of float numbers (realvec) and produces a new
-vector (possibly with different dimensionality). Different types of
-computation can be used. MarSystems are the core processing blocks of
-Marsyas including transformations like FFT, Filter as well as feature
-extractors like Spectral Centroid.
-*/
-
 #ifndef MARSYAS_MARSYSTEM_H
 #define MARSYAS_MARSYSTEM_H
 
@@ -55,6 +43,41 @@ extractors like Spectral Centroid.
 
 namespace Marsyas
 {
+/**
+\class MarSystem
+\ingroup Composites
+\brief MarSystem transforms a realvec
+
+Abstract base class for any type of system. Basically a MarSystem
+takes as input a vector of float numbers (realvec) and produces a new
+vector (possibly with different dimensionality). Different types of
+computation can be used. MarSystems are the core processing blocks of
+Marsyas including transformations like FFT, Filter as well as feature
+extractors like Spectral Centroid.
+
+Controls:  (these are inherited by all MarSystems)
+- \b mrs_natural/inSamples [r] : number of input samples
+- \b mrs_natural/inObservations [r] : number of input observations
+- \b mrs_real/israte [rw] : rate (number of samples per second) of input
+- \b mrs_string/inObsNames [rw] : stores the names of observations.  Used
+  for graphs, WEKA output, etc.
+
+- \b mrs_natural/onSamples [w] : number of output samples
+- \b mrs_natural/onObservations [w] : number of output observations
+- \b mrs_real/osrate [rw] : rate (number of samples per second) of output
+- \b mrs_string/onObsNames [rw] : stores the names of observations.  Used
+  for graphs, WEKA output, etc.
+
+- \b mrs_realvec/processedData [r] : output realvec; useful for viewing
+  the output of a MarSystem directly, for a GUI plot for example.
+
+- \b mrs_bool/debug	[rw] : for debugging purposes...
+- \b mrs_bool/mute [rw] : in some MarSystems, this disables the myProcess().
+  Not support on all MarSystems (yet).
+- \b mrs_bool/active [rw] : used to put all internal threads to sleep.
+  (experimental)
+*/
+
 
 #ifdef MARSYAS_QT
 //forward declarations

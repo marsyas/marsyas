@@ -16,17 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Shredder 
-
-    \brief Split the output of an accumulator
-
-    Split the result an accumulator. Spit several outputs when
-    the input is recieved. Used to restore
-    the rate of process requests initially change by an accumulator
-*/
-
-	
 #ifndef MARSYAS_SHREDDER_H
 #define MARSYAS_SHREDDER_H
 
@@ -34,6 +23,20 @@
 
 namespace Marsyas
 {
+/** 
+    \class Shredder 
+	\ingroup Composites
+
+    \brief Split the output of an accumulator
+
+    Split the result an accumulator. Spit several outputs when
+    the input is recieved. Used to restore
+    the rate of process requests initially change by an accumulator.
+
+	Controls:
+- \b mrs_natural/nTimes [rw] : the multiplier of ticks() for the internal
+  MarSystems.
+*/
 
 class Shredder: public MarSystem
 {

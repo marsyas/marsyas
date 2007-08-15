@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Rms
-	\ingroup Analysis
-    \brief Rms energy of realvec
-
-   Simple MarSystem example. Calculate the RMS energy of
-a realvec
-*/
-
 #include "Rms.h"
 
 using namespace std;

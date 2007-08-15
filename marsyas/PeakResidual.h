@@ -16,11 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class PeakResidual
-    \brief Compute the Reconstruction Signal-to-Noise Ratio
-*/
-
 #ifndef MARSYAS_PERESIDUAL_H
 #define MARSYAS_PERESIDUAL_H
 
@@ -28,6 +23,12 @@
 
 namespace Marsyas
 {
+/** 
+\class PeakResidual
+\ingroup none
+\brief Compute the Reconstruction Signal-to-Noise Ratio
+*/
+
 
 class PeakResidual: public MarSystem
 {

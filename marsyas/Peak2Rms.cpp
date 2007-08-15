@@ -16,17 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Peak2Rms
-	\ingroup none
-    \brief Peak to Rms ratio for time domain signals
-    \author Adam Tindale
-
-    Computes the Peak to Rms ratio for a mono channel. For multiple streams of data
-    a separate instance is needed using a fanout. 
-    
-*/
-
 #include "Peak2Rms.h"
 
 using namespace std;

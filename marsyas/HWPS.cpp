@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-	\class HWPS
-	\ingroup Special
-	\brief Calculates the Harmonic Wrapped Peak Similarity (HWPS) of input peaks
-
-	Controls:
-	- \b mrs_bool/calcDistance [w] :when true, outputs Harmonically Wrapped Peak Distance instead of the Similarity (i.e. out = 1-HWPS)
-	- \b mrs_natural/hitSize [w] : histogram number of bins when discretizing for cosine distance computation
-*/
 #include "HWPS.h"
 #include "NumericLib.h"
 

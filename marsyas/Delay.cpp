@@ -16,22 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Delay
-	\ingroup Processing Basic
-    \brief Delay
-
-	Simple Delay example
-
-	Controls:
-	- \b mrs_natural/delay [w] : delay in samples.
-	- \b mrs_real/delay [w] : delay in seconds.
-\todo having two different controls with the same name seems stupid.  Maybe delaySamples and delaySeconds?
-
-	- \b mrs_real/gain [rw] : direct gain.
-	- \b mrs_real/feedback [rw] : feedback gain.
-*/
-
 #include "Delay.h"
 
 using namespace std;

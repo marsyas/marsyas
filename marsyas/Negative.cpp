@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Negative
-	\ingroup Processing Basic
-    \brief Negate the input
-
-	Controls: none.
-*/
-
 #include "Negative.h"
 
 using namespace std;

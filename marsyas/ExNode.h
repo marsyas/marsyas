@@ -15,13 +15,6 @@
 ** along with this program; if not, write to the Free Software 
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-/**
-   \class ExNode
-   \brief ExNode is the base class for an expression tree node.
-   \author Neil Burroughs  inb@cs.uvic.ca
-   \version 1.0
-   \date    Jan 04, 2007
-*/
 
 /***
 ExNode represents an expression tree node. Additional nodes may be added later,
@@ -59,6 +52,14 @@ class ExNode_NatDbl : public ExNode_Fun {
 
 namespace Marsyas
 {
+/**
+   \class ExNode
+	\ingroup Scheduler
+   \brief ExNode is the base class for an expression tree node.
+   \author Neil Burroughs  inb@cs.uvic.ca
+   \version 1.0
+   \date    Jan 04, 2007
+*/
 
 void loadlib_Real(ExRecord* st);
 void loadlib_String(ExRecord* st);

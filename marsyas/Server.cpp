@@ -16,16 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Server
-	\ingroup none
-    \brief Basic server class
-    
-    Create a server that can handle multiple clients. 
-Send/receive message strings Communicator methods are supported. 
-Used for compatibility with the marsyas 0.1 interface. 
-*/
-
 #include "Server.h"
 
 using namespace std;

@@ -17,11 +17,6 @@
 */
 
 
-/**
-   \class MarEvent
-   \brief 
-*/
-
 #ifndef MARSYAS_MAREVENT_H
 #define MARSYAS_MAREVENT_H
 
@@ -31,6 +26,13 @@
 
 namespace Marsyas
 {
+/**
+   \class MarEvent
+   \ingroup Experimental
+   \brief MarEvent 
+
+*/
+
 
 class MarSystem; // forward declaration
 

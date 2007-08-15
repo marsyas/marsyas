@@ -16,17 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class ADSRenvelope
-	\ingroup Processing
-    \brief Multiply input realvec by Value of Envelope
-
-   Simple MarSystem example. Just multiply the values of the input realvec
-with current value of the ADSR envelope and put them in the output vector.
-
-*/
-
-
 
 #include "ADSR.h"
 

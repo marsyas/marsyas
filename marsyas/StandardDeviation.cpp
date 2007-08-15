@@ -16,16 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Standard Deviation
-	\ingroup Analysis
-    \brief Standard Deviation of each row of observations 
-
-    Calculates the standard deviation of each row of observations. 
-The resulting standard deviations are returned as a column 
-vector. 
-*/
-
 #include "StandardDeviation.h"
 
 using namespace std;

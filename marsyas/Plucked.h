@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Plucked
-    \brief Multiply input realvec with gain
-
-   Simple MarSystem example. Just multiply the values of the input realvec
-with gain and put them in the output vector. This object can be used 
-as a prototype template for building more complicated MarSystems. 
-*/
-
 #ifndef MARSYAS_PLUCKED_H
 #define MARSYAS_PLUCKED_H
 
@@ -34,6 +25,16 @@ as a prototype template for building more complicated MarSystems.
 
 namespace Marsyas
 {
+/** 
+    \class Plucked
+	\ingroup Synthesis
+    \brief Multiply input realvec with gain
+
+   Implementation of the Karplus_Strong 1D Digital Waveguide Model. 
+   http://ccrma.stanford.edu/~jos/SimpleStrings/Karplus_Strong_Algorithm.html 
+   With extensions proposed by Jaffe and Smith: Blend Factor, Decay, and Stretch Factor.
+*/
+
 
 class Plucked: public MarSystem
 {

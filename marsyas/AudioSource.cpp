@@ -16,21 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class AudioSource
-   \ingroup IO
-   \brief Real-time audio source 
-
-   Real-time Audio Source based on RtAudio.
-
-   Controls:
-   - \b mrs_natural/bufferSize [rw] : size of audio buffer (in samples)
-   - \b mrs_bool/initAudio [w] : initialize audio (this should be \em true)
-   - \b mrs_bool/notEmpty [r] : is there any audio input left?
-     (End-Of-File not yet reached)
-   - \b mrs_real/gain [w] : scales input
-*/
-
 #include "AudioSource.h"
 
 using namespace std;

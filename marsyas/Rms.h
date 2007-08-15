@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Rms
-    \brief Rms energy of realvec
-
-   Simple MarSystem example. Calculate the RMS energy of
-a realvec
-*/
-
 #ifndef MARSYAS_RMS_H
 #define MARSYAS_RMS_H
 
@@ -31,6 +23,15 @@ a realvec
 
 namespace Marsyas
 {
+/** 
+    \class Rms
+	\ingroup Analysis
+    \brief Rms energy of realvec
+
+   Simple MarSystem example. Calculate the RMS energy of
+a realvec
+*/
+
 
 class Rms: public MarSystem
 {

@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
-/** 
-    \class Communicator
-    \brief Abstract base class for communicator
-
-    Abstract base class for a send/receive string message type 
-of communicator. 
-*/
-
 #if !defined(__Communicator_h)
 #define __Communicator_h
 
@@ -32,6 +23,15 @@ of communicator.
 
 namespace Marsyas
 {
+/** 
+    \class Communicator
+    \ingroup Network
+    \brief Abstract base class for communicator
+    
+    Abstract base class for a send/receive string message type 
+    of communicator. 
+*/
+
 
 class Communicator
 {

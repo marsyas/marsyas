@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Server
-    \brief Basic server class
-    
-    Create a server that can handle multiple clients. 
-Send/receive message strings Communicator methods are supported. 
-Used for compatibility with the marsyas-0.1 Java interface 
-*/
-
 #if !defined(__Server_h)
 #define __Server_h
 
@@ -52,6 +43,16 @@ Used for compatibility with the marsyas-0.1 Java interface
 
 namespace Marsyas
 {
+/** 
+    \class Server
+	\ingroup none
+    \brief Basic server class
+    
+    Create a server that can handle multiple clients. 
+Send/receive message strings Communicator methods are supported. 
+Used for compatibility with the marsyas 0.1 interface. 
+*/
+
 
 class Server: public Communicator 
 {

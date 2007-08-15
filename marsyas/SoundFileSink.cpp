@@ -17,20 +17,6 @@
 */
 
 
-/**
-   \class SoundFileSink
-   \ingroup IO
-   \brief Interface for sound file sinks
-   
-   Abstract base class for any type of sound file input.
-Specific IO classes for various formats like AuFileSink 
-are children of this class. 
-
-   Controls:
-   - \b mrs_string/filename [w] : name of the audio file to write
-
-*/
-
 #include "SoundFileSink.h"
 
 using namespace std;

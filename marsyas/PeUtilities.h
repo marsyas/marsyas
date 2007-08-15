@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class PeUtilities
-\brief utilties for peaks extraction project
-
-
-*/
-
 #ifndef MARSYAS_PEUTILITIES_H
 #define MARSYAS_PEUTILITIES_H
 
@@ -34,6 +27,16 @@
 
 namespace Marsyas
 {
+/** 
+\class PeUtilities
+	\ingroup none
+\brief utilties for peaks extraction project
+
+
+\todo WhyTF does PeUtilities exist in the global namespace?  Fix this;
+make them a static class or delete the whole thing or something.
+*/
+
 
 
 // 	typedef enum {

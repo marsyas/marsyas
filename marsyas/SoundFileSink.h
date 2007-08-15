@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class SoundFileSink
-   \brief Interface for sound file sink
-   
-   Abstract base class for any type of sound file input.
-Specific IO classes for various formats like AuFileSink 
-are children of this class. 
-*/
-
 #ifndef MARSYAS_SOUNDFILESINK_H
 #define MARSYAS_SOUNDFILESINK_H
 
@@ -34,6 +25,20 @@ are children of this class.
 
 namespace Marsyas
 {
+/**
+   \class SoundFileSink
+   \ingroup IO
+   \brief Interface for sound file sinks
+   
+   Abstract base class for any type of sound file input.
+Specific IO classes for various formats like AuFileSink 
+are children of this class. 
+
+   Controls:
+   - \b mrs_string/filename [w] : name of the audio file to write
+
+*/
+
 
 class SoundFileSink: public MarSystem
 {

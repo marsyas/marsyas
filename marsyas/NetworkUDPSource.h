@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class NetworkUDPSource
-    \brief NetworkUDPSource Source using UDP for communication 
-
-
-*/
-
 #ifndef MARSYAS_NETWORKUDPSOURCE_H
 #define MARSYAS_NETWORKUDPSOURCE_H
 
@@ -30,6 +23,14 @@
 
 namespace Marsyas
 {
+/** 
+    \class NetworkUDPSource
+	\ingroup Network
+    \brief Accept data from a UDP Socket
+    \author Stuart Bray June 2004
+*/
+
+
 
 class NetworkUDPSource: public NetworkSocket
 {

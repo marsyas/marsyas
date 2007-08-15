@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class PeakSynthFFT
-	\ingroup none
-    \brief  perform amplitude modification of Power Spectrum using Peaks Info
-
-*/
-
 #include "PeakSynthFFT.h"
 #include "peakView.h"
 

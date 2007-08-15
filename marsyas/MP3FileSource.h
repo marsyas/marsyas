@@ -16,16 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class MP3FileSource
-   \brief MP3FileSource read mp3 files using libmad
-   \author Stuart Bray
-
-This class reads an mp3 file using the mad mp3 decoder library.  Some
-of this code was inspired from Bertrand Petit's madlld example.  The
-code to resize the buffers was borrowed from Marsyas AudioSource.
-*/
-
 #ifndef MARSYAS_MP3SOURCE_H
 #define MARSYAS_MP3SOURCE_H
 
@@ -49,6 +39,17 @@ extern "C" {
 
 namespace Marsyas
 {
+/**
+   \class MP3FileSource
+	\ingroup Internal
+   \brief MP3FileSource read mp3 files using libmad
+   \author Stuart Bray
+
+This class reads an mp3 file using the mad mp3 decoder library.  Some
+of this code was inspired from Bertrand Petit's madlld example.  The
+code to resize the buffers was borrowed from Marsyas AudioSource.
+*/
+
 
 class MP3FileSource: public AbsSoundFileSource
 {

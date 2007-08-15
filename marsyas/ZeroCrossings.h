@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class ZeroCrossings
-    \brief Time-domain ZeroCrossings 
-
-    Basically counts the number of times the input 
-signal crosses the zero line. 
-*/
-
 #ifndef MARSYAS_ZEROCROSSINGS_H
 #define MARSYAS_ZEROCROSSINGS_H
 
@@ -31,6 +23,15 @@ signal crosses the zero line.
 
 namespace Marsyas
 {
+/** 
+    \class ZeroCrossings
+	\ingroup Analysis
+    \brief Time-domain ZeroCrossings 
+
+    Basically counts the number of times the input 
+signal crosses the zero line. 
+*/
+
 
 class ZeroCrossings: public MarSystem
 {

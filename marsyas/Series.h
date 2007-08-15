@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Series
-    \brief Series of MarSystem objects
-    
-    Combines a series of MarSystem objects to a single MarSystem 
-corresponding to executing the System objects one after the other 
-in sequence. 
-*/
-
 #ifndef MARSYAS_SERIES_H
 #define MARSYAS_SERIES_H
 
@@ -32,6 +23,18 @@ in sequence.
 
 namespace Marsyas
 {
+/**
+    \class Series
+    \ingroup Composites
+    \brief Series of MarSystem objects
+
+    Combines a series of MarSystem objects to a single MarSystem 
+    corresponding to executing the System objects one after the other 
+    in sequence. 
+
+	Controls: none
+*/
+
 
 class Series: public MarSystem
 {

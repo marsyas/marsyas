@@ -16,8 +16,16 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#ifndef MARSYAS_PVUNCONVERT_H
+#define MARSYAS_PVUNCONVERT_H
+
+#include "MarSystem.h"	
+
+namespace Marsyas
+{
 /** 
     \class PvUnconvert
+	\ingroup none
     \brief PvUnconvert
 
     PvUnconvert N real and imaginary spectrum values to 
@@ -29,13 +37,6 @@ and sampling rate are used to render these frequencies
 directly in Hz. 
 */
 
-#ifndef MARSYAS_PVUNCONVERT_H
-#define MARSYAS_PVUNCONVERT_H
-
-#include "MarSystem.h"	
-
-namespace Marsyas
-{
 
 class PvUnconvert: public MarSystem
 {

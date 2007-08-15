@@ -16,28 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class GaussianClassifier
-    \brief Single Gaussian multidimensional classifier
-
-   Simple multidimensional Gaussian classifier. The classifier
-parameters (or model) are stored in the the theta control.  When the
-mode control is set to "train" the input slice is used to accumulate
-information for training.  The actual final theta calculation is
-completed when the control train is set to true. That can accomodate
-non-incremental or batch training. The labels control is used to
-provide ground truth about the label(s). The output of the classifier is
-the ground truth label(s) when the mode control is train.
-
-When the mode control is set to "predict" then the output 
-of the classifier is the predicted labels using the trained 
-parameter vector theta. 
-
-This MarSystems serves as a prototypical classification/regression 
-MarSystem. 
-
-*/
-
 #ifndef MARSYAS_GAUSSIANCLASSIFIER_H
 #define MARSYAS_GAUSSIANCLASSIFIER_H
 
@@ -45,6 +23,29 @@ MarSystem.
 
 namespace Marsyas
 {
+/** 
+    \class GaussianClassifier
+	\ingroup MachineLearning
+    \brief Single Gaussian multidimensional classifier
+
+    Simple multidimensional Gaussian classifier. The classifier
+    parameters (or model) are stored in the the theta control.  When the
+    mode control is set to "train" the input slice is used to accumulate
+    information for training.  The actual final theta calculation is
+    completed when the control train is set to true. That can accomodate
+    non-incremental or batch training. The labels control is used to
+    provide ground truth about the label(s). The output of the classifier is
+    the ground truth label(s) when the mode control is train.
+
+    When the mode control is set to "predict" then the output 
+    of the classifier is the predicted labels using the trained 
+    parameter vector theta. 
+
+    This MarSystems serves as a prototypical classification/regression 
+    MarSystem. 
+
+*/
+
 
 class GaussianClassifier: public MarSystem
 {

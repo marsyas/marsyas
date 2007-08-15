@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Esitar
-    \ingroup MIDI
-    \brief Update midi inpput using controls. Just through for dataflow. 
-*/
-
 #include "Esitar.h"
 
 using namespace std;

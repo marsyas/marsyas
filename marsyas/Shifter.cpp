@@ -16,20 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-	\class Shifter
-	\ingroup Processing Basic
-	\brief Shifts the input and outputs the original and shifted version.
-
-	Shifts the input by \<shift\> samples and send to output the original 
-	and shifted version as different observations. 
-
-	\author lmartins@inescporto.pt
-
-	Controls:
-	- \b mrs_natural/shift [rw] : number of samples to shift by.
-*/
-
 #include "Shifter.h"
 
 using namespace std;

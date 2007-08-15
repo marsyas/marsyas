@@ -17,15 +17,6 @@
 */
  
 
-/** 
-    \class StereoSpectrum
-	\ingroup none
-    \brief StereoSpectrum computes the panning index for each spectrum 
-    bin of a stereo input.
-
-*/
-
-
 
 #include "StereoSpectrum.h"
 

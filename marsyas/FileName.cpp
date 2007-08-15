@@ -17,15 +17,6 @@
  */
 
 
-/** 
-    \class FileName
-	\ingroup Notmar
-    \brief Various utilities
-
-    FileName is a class bundling together various rather 
-unrelated convenience utilities related to filenames. 
-*/
-
 #include "FileName.h"
 
 using namespace std;

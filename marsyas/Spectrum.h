@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Spectrum
-    \brief Compute the complex spectrum of input window 
-
-    Computes the complex spectrum of the input window 
-using the Fast Fourier Transform (FFT). 
-*/
-
 #ifndef MARSYAS_SPECTRUM_H
 #define MARSYAS_SPECTRUM_H
 
@@ -32,6 +24,15 @@ using the Fast Fourier Transform (FFT).
 
 namespace Marsyas
 {
+/** 
+    \class Spectrum
+	\ingroup Analysis
+    \brief Compute the complex spectrum of input window 
+
+    Computes the complex spectrum of the input window 
+    using the Fast Fourier Transform (FFT). 
+*/
+
 
 class Spectrum: public MarSystem
 {

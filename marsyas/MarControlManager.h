@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class MarControlManager
-\brief MarControlManager handle controls creation
-\author lfpt@inescporto.pt, lmartins@inescporto.pt 
-**/
-
 #ifndef MARSYAS_MARCONTROLMANAGER_H
 #define MARSYAS_MARCONTROLMANAGER_H
 
@@ -31,6 +25,12 @@
 
 namespace Marsyas
 {
+/** 
+\class MarControlManager
+\brief MarControlManager handle controls creation
+\author lfpt@inescporto.pt, lmartins@inescporto.pt 
+**/
+
 	class MarSystem;
 
 	class MarControlManager

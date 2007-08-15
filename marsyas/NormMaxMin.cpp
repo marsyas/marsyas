@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class NormMaxMin
-\ingroup Processing
-\brief Normalize my mapping min/max range to user specified range
-
-
-*/
-
 #include "NormMaxMin.h"
 
 using namespace std;

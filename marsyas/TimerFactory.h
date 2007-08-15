@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class TimerFactory
-   \brief TimerFactory
-   \author inb@cs.uvic.ca
-*/
-
 #ifndef MARSYAS_TIMER_FACTORY_H
 #define MARSYAS_TIMER_FACTORY_H
 
@@ -54,6 +48,14 @@ using namespace std;
 
 namespace Marsyas
 {
+/**
+   \class TimerFactory
+	\ingroup none
+   \brief TimerFactory
+   \author inb@cs.uvic.ca
+*/
+
+
 struct MakeTimer {
     MakeTimer() {}
     virtual ~MakeTimer(){}

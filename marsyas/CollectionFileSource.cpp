@@ -16,16 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class CollectionFileSource
-	\ingroup Internal
-   \brief CollectionFileSource abstracts a collections of soundfiles as a SoundFileSource. 
-   
-   CollectionFileSource reads in a collection file consisting of a list of 
-SoundFiles. The soundfiles are played one after the other with specifics 
-such as offsets,durations as a single SoundFileSource. 
-*/
-
 #include "CollectionFileSource.h"
 
 using namespace std;

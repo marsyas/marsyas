@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class MemorySource
-    \ingroup IO
-
-*/
-
 #include "MemorySource.h"
 
 using namespace std;

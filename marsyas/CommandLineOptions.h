@@ -17,13 +17,6 @@
 */
 
 
-/** 
-    \class CommandLineOptions
-    \brief CommandLineOptions
-
-    Class for handling command-line options 
-*/
-
 #ifndef MARSYAS_COMMANDLINEOPTIONS_H
 #define MARSYAS_COMMANDLINEOPTIONS_H
 
@@ -36,6 +29,14 @@
 
 namespace Marsyas
 {
+/** 
+\class CommandLineOptions
+	\ingroup Notmar
+\brief CommandLineOptions
+
+Class for handling command-line options 
+*/
+
 
 class CommandLineOptions
 {

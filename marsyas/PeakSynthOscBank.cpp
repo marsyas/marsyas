@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class PeakSynthOscBank
-\ingroup none
-\brief PeakSynthOscBank
-
-A bank of sine wave oscillators used for pevocoding. 
-
-*/
-
 #include "PeakSynthOscBank.h"
 #include "peakView.h"
 

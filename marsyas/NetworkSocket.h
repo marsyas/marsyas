@@ -16,17 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class NetworkSocket
-    \brief Wrapper class for linux socket calls.  
-    \author Stuart Bray
-
-    The main purpose for this class is to wrap TCP and UDP calls 
-    for MarSystems that send data over a network.  This class can also 
-    be used to setup a simple client and server. 
-
-*/
-
 #ifndef MARSYAS_NETWORKSOCKET_H
 #define MARSYAS_NETWORKSOCKET_H
 
@@ -51,6 +40,18 @@
 
 namespace Marsyas
 {
+/** 
+    \class NetworkSocket
+	\ingroup Network
+    \brief Wrapper class for linux socket calls.
+    \author Stuart Bray
+
+    The main purpose for this class is to wrap TCP and UDP calls 
+    for MarSystems that send data over a network.  This class can also 
+    be used to setup a simple client and server. 
+
+*/
+
 
 class NetworkSocket: public MarSystem
 {

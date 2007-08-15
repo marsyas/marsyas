@@ -15,16 +15,7 @@
 ** along with this program; if not, write to the Free Software 
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-/**
-   \class ExVal
-	\ingroup Scheduler
-   \brief ExVal is the abstract value type for expression tree nodes. Every
-          expression results in a ExVal of the basic types: string, natural,
-          real, bool.
-   \author Neil Burroughs  inb@cs.uvic.ca
-   \version 1.0
-   \date    Jan 04, 2007
-*/
+
 #include "ExNode.h"
 #include "ExVal.h"
 

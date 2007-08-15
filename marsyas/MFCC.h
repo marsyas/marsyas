@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class MFCC
-    \brief MFCC Mel-Frequency Cepstral Coefficients
-
-    Mel-Frequency cepstral coefficients are features frequently 
-used in Speech Recognition. The code is based on the correspdonging 
-function in the Auditory Toolbox by Malcolm Slaney. 
-*/
-
 #ifndef MARSYAS_MFCC_H
 #define MARSYAS_MFCC_H
 
@@ -32,6 +23,16 @@ function in the Auditory Toolbox by Malcolm Slaney.
 
 namespace Marsyas
 {
+/** 
+    \class MFCC
+	\ingroup Analysis
+    \brief MFCC Mel-Frequency Cepstral Coefficients
+
+    Mel-Frequency cepstral coefficients are features frequently 
+used in Speech Recognition. The code is based on the correspdonging 
+function in the Auditory Toolbox by Malcolm Slaney. 
+*/
+
 
 class MFCC: public MarSystem
 {

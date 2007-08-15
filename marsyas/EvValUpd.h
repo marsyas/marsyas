@@ -17,11 +17,6 @@
 */
 
 
-/**
-   \class MarEvent
-   \brief 
-*/
-
 #ifndef MARSYAS_EV_VALUPD_H
 #define MARSYAS_EV_VALUPD_H
 
@@ -34,6 +29,13 @@
 
 namespace Marsyas
 {
+/**
+   \class MarEvent
+   \ingroup Scheduler
+   \brief MarEvent 
+
+*/
+
 
 class MarSystem; // forward declaration
 

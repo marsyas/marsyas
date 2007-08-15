@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class MarSystemTemplateAdvanced
-\ingroup Special
-\brief Advanced example on how to use composite ad custom controls efficiently in MarSystems
-*/
-
 #include "MarSystemTemplateAdvanced.h"
 #include "MarControlManager.h"
 

@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class NormCut
-\brief Computes the Normalized Cut for an input similarity matrix
-
-*/
-
 #ifndef MARSYAS_NORMCUT_H
 #define MARSYAS_NORMCUT_H
 
@@ -29,6 +23,13 @@
 
 namespace Marsyas
 {
+/** 
+\class NormCut
+\ingroup MarSystem
+\brief Computes the Normalized Cut for an input similarity matrix
+
+*/
+
 
 	//typedef struct {
 	//   mrs_real offset;

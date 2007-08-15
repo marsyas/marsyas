@@ -16,16 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class MFCC
-	\ingroup Analysis
-    \brief MFCC Mel-Frequency Cepstral Coefficients
-
-    Mel-Frequency cepstral coefficients are features frequently 
-used in Speech Recognition. The code is based on the correspdonging 
-function in the Auditory Toolbox by Malcolm Slaney. 
-*/
-
 #include "MFCC.h"
 
 using namespace std;

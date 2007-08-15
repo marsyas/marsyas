@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Talk
-    \brief Message handler
-
-    Reacts to various messages using Communicator. 
-Specifically used for handling the graphical user interface events. 
-
-*/
-
 #ifndef MARSYAS_TALK_H 
 #define MARSYAS_TALK_H
 
@@ -54,6 +45,15 @@ Specifically used for handling the graphical user interface events.
 
 namespace Marsyas
 {
+/** 
+    \class Talk
+	\ingroup none
+    \brief Message handler
+
+    Reacts to various messages using Communicator. 
+Specifically used for handling the graphical user interface events. 
+*/
+
 
 class Talk
 {

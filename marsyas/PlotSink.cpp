@@ -16,25 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-\class PlotSink
-\ingroup IO
-\brief Text output sink
-Output input data at each tick to sequence numbered text files,
-to Marsyas messages (default = stdout), and as a MATLAB plot 
-if MATLAB engine is being used.
-
-Controls:
-- \b mrs_bool/sequence	: when true, this control
-activates the writing of sequence numbered files containing the
-input data at each tick.
-- \b mrs_string/filename	: base filename used for the output 
-sequence numbered files.
-- \b mrs_string/separator	: separator character/string used when
-outputting input data using Marsyas messages (i.e. MRSMSG() - by default
-messages are sent to the stdout).
-*/
-
 #include "PlotSink.h"
 #include <iomanip> 
 

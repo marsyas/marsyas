@@ -16,21 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class FanOutIn
-\ingroup Composites
-\brief FanOutIn of MarSystem objects
-
-Combines a parallel set of MarSystem objects to a single MarSystem 
-corresponding to executing the System objects in parallel using the
-same input, and combining their outputs using a sum or a multiplication
-combinator.
-
-Controls:
-- \b mrs_string/combinator [rw] : choose a * or + combination operation
-
-*/
-
 #include "FanOutIn.h"
 
 using namespace std;

@@ -17,15 +17,6 @@
 */
 
 
-/** 
-    \class ERB
-	\ingroup Processing
-    \brief ERB Filterbank
-
-    ERB (Equivalent rectangular bandwith) filterbank. Based on 
-the code from the Auditory Toolbox by Malcolm Slaney. 
-*/
-
 #include "ERB.h"
 #include "Series.h"
 #include "Filter.h"

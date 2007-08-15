@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**  
-     \class Biquad
-     \brief Filter a Signal 
-
-
-
-*/
-
 #ifndef MARSYAS_Biquad_H
 #define MARSYAS_Biquad_H
 
@@ -32,6 +24,16 @@
 
 namespace Marsyas
 {
+/**  
+  \class Biquad
+  \ingroup Processing
+  \brief Filter a Signal 
+
+  \todo I don't know how Biquad works (inObs?!), if it works at all.
+Investigate.
+
+*/
+
 
 class Biquad: public MarSystem
 {

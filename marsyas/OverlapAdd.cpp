@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class OverlapAdd
-    \ingroup Processing Basic
-    \brief OverlapAdd
-
-   perform an overlap-add operation of the input buffer
-*/
-
 #include "OverlapAdd.h"
 
 using namespace std;

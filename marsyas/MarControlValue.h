@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-	\class MarControlValue
-	\brief Generic class for Marsyas control values
-	Created by lfpt@inescporto.pt and lmartins@inescporto.pt
-*/
-
 #ifndef __MARCONTROLVALUE__
 #define __MARCONTROLVALUE__
 
@@ -31,6 +25,12 @@
 
 namespace Marsyas
 {
+/** 
+	\class MarControlValue
+	\brief Generic class for Marsyas control values
+	Created by lfpt@inescporto.pt and lmartins@inescporto.pt
+*/
+
 
 class MarControlValue
 {

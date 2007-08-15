@@ -17,14 +17,6 @@
 */
 
 
-/** 
-    \class FileName
-    \brief Various utilities
-
-    FileName is a class bundling together various rather 
-unrelated convenience utilities related to filenames. 
-*/
-
 #ifndef MARSYAS_FILENAME_H
 #define MARSYAS_FILENAME_H
 
@@ -32,6 +24,15 @@ unrelated convenience utilities related to filenames.
 
 namespace Marsyas
 {
+/** 
+    \class FileName
+	\ingroup Notmar
+    \brief Various utilities
+
+    FileName is a class bundling together various rather 
+unrelated convenience utilities related to filenames. 
+*/
+
 
 class FileName
 {

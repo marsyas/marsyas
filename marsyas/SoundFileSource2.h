@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-\class SoundFileSource2
-\brief Interface for sound file sources 
-
-Abstract base class for any type of sound file input.
-Specific IO classes for various formats like AuFileSource 
-are children of this class. 
-*/
-
 #ifndef MARSYAS_SOUNDFILESOURCE2_H
 #define MARSYAS_SOUNDFILESOURCE2_H
 
@@ -37,6 +28,17 @@ are children of this class.
 
 namespace Marsyas
 {
+/**
+\class SoundFileSource2
+\ingroup Experimental
+\brief Interface for sound file sources 
+\todo Merge this with SoundFileSource (and all the other soundfileXXX2 stuff)
+
+Abstract base class for any type of sound file input.
+Specific IO classes for various formats like AuFileSource 
+are children of this class. 
+*/
+
 	class SoundFileSource2: public MarSystem
 	{
 	private:

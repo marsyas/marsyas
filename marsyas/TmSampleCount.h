@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class TmSampleCount
-   \brief TmSampleCount reads the insamples information to advance the timer
-   \author inb@cs.uvic.ca
-*/
-
 #ifndef MARSYAS_TM_SAMPLECOUNT_H
 #define MARSYAS_TM_SAMPLECOUNT_H
 
@@ -31,6 +25,12 @@
 
 namespace Marsyas
 {
+/**
+   \class TmSampleCount
+	\ingroup none
+   \brief TmSampleCount reads the insamples information to advance the timer
+   \author inb@cs.uvic.ca
+*/
 
 // forward declaration of MarSystem allows Scheduler.getctrl("insamples")
 // for scheduler count

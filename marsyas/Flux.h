@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Flux
-    \brief Flux calculate the flux between the current and prev. vector
-
-    The flux is defined as the norm of the difference vector between 
-    two succesive spectra. 
-*/
-
 #ifndef MARSYAS_FLUX_H
 #define MARSYAS_FLUX_H
 
@@ -31,6 +23,15 @@
 
 namespace Marsyas
 {
+/** 
+    \class Flux
+    \ingroup Analysis
+    \brief Flux calculate the flux between the current and prev. vector
+
+    The flux is defined as the norm of the difference vector between 
+    two succesive spectra. 
+*/
+
 
   class Flux: public MarSystem
   {

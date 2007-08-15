@@ -16,16 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class MarFileSink
-	\ingroup IO
-   \brief Text output sink
-
-\todo sort out PlotSink and MarFileSink (rename, delete one or both,
-etc)
-
-*/
-
 #include "MarFileSink.h"
 
 using namespace std;

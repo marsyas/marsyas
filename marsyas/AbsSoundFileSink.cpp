@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class AbsSoundFileSink
-	\ingroup Internal
-   \brief Abstract Interface for SoundFileSinks of various formats
-*/
-
 #include "AbsSoundFileSink.h"
 
 using namespace std;

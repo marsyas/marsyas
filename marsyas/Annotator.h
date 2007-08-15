@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Annotator
-    \brief Annotate feature stream with additional row of labels
-    
-*/
-
 #ifndef MARSYAS_ANNOTATOR_H
 #define MARSYAS_ANNOTATOR_H
 
@@ -31,6 +25,13 @@
 
 namespace Marsyas
 {
+/** 
+    \class Annotator
+	\ingroup MachineLearning
+    \brief Annotate feature stream with additional row of labels.
+    
+*/
+
 
 class Annotator: public MarSystem
 {

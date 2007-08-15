@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class Norm
-\ingroup Processing
-\brief Norm: normalize input row vectors (i.e. observations = features)
-
-Normalize (observations = features) by subtracting observations' mean and dividing by observations' standard deviation
-*/
-
 #include "Norm.h"
 
 using namespace std;

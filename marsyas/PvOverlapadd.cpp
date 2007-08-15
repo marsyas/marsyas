@@ -16,16 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class PvOverlapadd
-	\ingroup none
-    \brief PvOverlapadd
-
-    Multiply with window (both length Nw) using modulus arithmetic;
-fold and rotate windowed input into output array (FFT) (length N) 
-according to current input time (t)
-*/
-
 #include "PvOverlapadd.h"
 
 using namespace std;

@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class Cartesian2Polar
-	\ingroup Notmar
-\brief perform conversion of spectral values
-*/
-
 #include "Cartesian2Polar.h"
 
 using namespace std;

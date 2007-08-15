@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class FM 
-    \brief FM synthesis source
-
-   Simple FM synthesis MarSystem.
-
-*/
-
 #ifndef MARSYAS_FM_H
 #define MARSYAS_FM_H	
 
@@ -31,6 +23,15 @@
 
 namespace Marsyas
 {
+/** 
+    \class FM 
+	\ingroup Synthesis
+    \brief FM synthesis source
+
+   Simple FM synthesis MarSystem.
+
+*/
+
 
 class FM: public MarSystem
 {

@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Talk
-	\ingroup none
-    \brief Message handler
-
-    Reacts to various messages using Communicator. 
-Specifically used for handling the graphical user interface events. 
-*/
-
 #include "Talk.h"
 
 using namespace std;

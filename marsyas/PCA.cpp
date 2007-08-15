@@ -16,21 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-   \class PCA
-	\ingroup MachineLearning
-   \brief Perform Principal Component Analysis
-
-   Perform Principal Component Analysis (PCA) on all samples of the 
-   incoming realvec of data. The correlation method is taken, with a
-   correlation matrix computed over all samples within the single
-   input realvec.  Eigenvalue/Eigenvector calculation is by the QL
-   algorithm (ie. not suitable when the correlation matrix is 
-              singular or near singular).  Output is the set of input samples 
-   projected onto the top "npc" (a MarSystem control) principal
-   components.
-*/
-
 #include "PCA.h"
 
 using namespace std;

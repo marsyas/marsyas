@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class WavFileSink
-   \brief WavFileSink for .wav soundfiles
-   
-   SoundFileSink writer for .wav sound files.
-*/
-
 #ifndef MARSYAS_WAVFILESINK_H
 #define MARSYAS_WAVFILESINK_H
 
@@ -34,6 +27,14 @@
 
 namespace Marsyas
 {
+/**
+   \class WavFileSink
+   \ingroup Internal
+   \brief WavFileSink for .wav soundfiles
+   
+   SoundFileSink writer for .wav sound files.
+*/
+
 
 struct wavhdr {
   char riff[4];           // "RIFF"

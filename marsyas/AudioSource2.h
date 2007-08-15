@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-\class AudioSource2
-\brief Real-time audio source 
-
-Real-time Audio Source based on RtAudio
-*/
-
 #ifndef MARSYAS_AUDIOSOURCE2_H
 #define MARSYAS_AUDIOSOURCE2_H
 
@@ -31,6 +24,14 @@ Real-time Audio Source based on RtAudio
 
 namespace Marsyas
 {
+/**
+	\class AudioSource2
+	\ingroup Experimental
+	\brief Real-time audio source 
+
+Real-time Audio Source based on RtAudio
+*/
+
 
 class AudioSource2:public MarSystem
 {

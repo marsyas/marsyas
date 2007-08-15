@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Limiter
-    \brief Multiply input realvec with Limiter
-
-   Simple MarSystem example. Just multiply the values of the input realvec
-with Limiter and put them in the output vector. This object can be used 
-as a prototype template for building more complicated MarSystems. 
-*/
-
 #ifndef MARSYAS_COMPEXP_H
 #define MARSYAS_COMPEXP_H
 
@@ -32,6 +23,38 @@ as a prototype template for building more complicated MarSystems.
 
 namespace Marsyas
 {
+/** 
+    \class CompExp
+	\ingroup Processing
+    \brief Multiply input realvec with CompExp
+
+   Simple MarSystem example. Just multiply the values of the input realvec
+with CompExp and put them in the output vector. This object can be used 
+as a prototype template for building more complicated MarSystems. 
+*/
+
+/* How to use the Compressor/Expander Marsystem
+
+	The system can be setup using the marsystem manager
+		series->addMarSystem(mng.create("CompExp", "compexp"));
+
+	Options: Threshold can be set to any value between -1.0 and 1
+	Compressor  -1.0 <= thresh < 0
+	Expander	0 <= thresh <= 1.0	
+		series->updctrl("NoiseGate/noisegate/mrs_real/thresh", thresh);
+		
+	Attack time can be calculated using the following formula: at = 1 - exp(-2.2*T/t_AT)
+	where at = attack time, T = sampling period, t_AT = time parameter 0.00016 < t_AT < 2.6 sec
+		series->updctrl("NoiseGate/noisegate/mrs_real/rolloff", t_AT);
+	
+	Release time can be calculated similar to at time: rt = 1 - exp(-2.2*T/t_RT)
+	where rt = release time, T = sampling period, t_RT = time parameter 0.001 < t_RT < 5.0 msec
+		series->updctrl("NoiseGate/noisegate/mrs_real/rt", t_RT);
+		
+	Slope factor: 0 < slope <= 1.0
+		series->updctrl("NoiseGate/noisegate/mrs_real/rt", slope);	
+*/
+
 
 class CompExp: public MarSystem
 {

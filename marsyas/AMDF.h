@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class AMDF
-    \brief Average Magnitude Difference Function
-
-    Computer the average magnitude difference function 
-which can then be used for pitch detection by detecting 
-the location of valleys. 
-*/
-
 #ifndef MARSYAS_AMDF_H
 #define MARSYAS_AMDF_H
 
@@ -32,6 +23,16 @@ the location of valleys.
 
 namespace Marsyas
 {
+/** 
+    \class AMDF
+	\ingroup Analysis
+    \brief Average Magnitude Difference Function
+
+    Computer the average magnitude difference function 
+which can then be used for pitch detection by detecting 
+the location of valleys. 
+*/
+
 
 class AMDF: public MarSystem
 {

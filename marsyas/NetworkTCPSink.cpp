@@ -17,15 +17,6 @@
 */
 
 
-/** 
-    \class NetworkTCPSink
-	\ingroup Network
-    \brief NetworkTCPSink
-    \author Stuart Bray 
-
-    NetworkSink that uses the TCP communication protocol
-*/
-
 #include "NetworkTCPSink.h"
 #include "SocketException.h"
 

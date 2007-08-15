@@ -16,11 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Cascade
-    \brief Cascade composite of MarSystem objects
-*/
-
 #ifndef MARSYAS_CASCADE_H
 #define MARSYAS_CASCADE_H
 
@@ -28,6 +23,17 @@
 
 namespace Marsyas
 {
+/** 
+    \class Cascade
+	\ingroup Composites
+    \brief Cascade of MarSystem objects
+
+	Fills observations with successive output of its internal
+MarSystems.  ie MarSystemA => obs 0, MarSystemB => obs 1.
+
+	Controls: none.
+*/
+
 
 class Cascade: public MarSystem
 {

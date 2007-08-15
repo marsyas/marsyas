@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class NetworkUDPSink
-    \brief NetworkUDPSink
-    \author Stuart Bray June 2004 
-
-    Sink for data using the UDP protocal 
-*/
-
 #ifndef MARSYAS_NETWORKUDPSINK_H
 #define MARSYAS_NETWORKUDPSINK_H
 
@@ -31,6 +23,15 @@
 
 namespace Marsyas
 {
+/** 
+    \class NetworkUDPSink
+	\ingroup Network
+    \brief NetworkUDPSink
+    \author Stuart Bray June 2004 
+
+    Sink for data using the UDP protocol 
+*/
+
 
 class NetworkUDPSink: public NetworkSocket
 {

@@ -16,16 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class WaveletStep
-	\ingroup none
-    \brief One step of Discrete Wavelet Transform (DWT)
-
-   One step of the Discrete Wavelet Transform (DWT) 
-pyramid algorithm. Called by WaveletPyramid. The code is 
-is based on the Numerical Recipies wavelet code. 
-*/
-
 #include "WaveletStep.h"
 
 using namespace std;

@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class PeakPeriods2BPM
-	\ingroup none
-    \brief PeakPeriods2BPM: convert peaks to beats per minute 
-
-*/
-
 #include "PeakPeriods2BPM.h"
 
 using namespace std;

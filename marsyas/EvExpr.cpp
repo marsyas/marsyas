@@ -15,15 +15,6 @@
 ** along with this program; if not, write to the Free Software 
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-/**
-   \class EvExpr
-	\ingroup Scheduler
-   \brief Expression Event evaluates the supplied expression when prompted
-          by the scheduler.
-   \author Neil Burroughs  inb@cs.uvic.ca
-   \version 1.0
-   \date    Jan 5, 2007
-*/
 
 #include "EvExpr.h"
 #include "MarSystem.h"

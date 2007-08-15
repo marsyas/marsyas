@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class HalfWaveRectifier
-    \brief Half Wave Rectify 
-
-*/
-
 #ifndef MARSYAS_HALFWAVERECTIFIER_H
 #define MARSYAS_HALFWAVERECTIFIER_H
 
@@ -29,6 +23,13 @@
 
 namespace Marsyas
 {
+/** 
+    \class HalfWaveRectifier
+	\ingroup Processing
+    \brief Half Wave Rectify 
+
+*/
+
 
 class HalfWaveRectifier: public MarSystem
 {

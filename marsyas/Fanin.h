@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Fanin
-    \brief Fanin composite of MarSystem objects
-    
-    Executes the systems in paraellel for each 
-observation stream and sums the results. 
-*/
-
 #ifndef MARSYAS_FANIN_H
 #define MARSYAS_FANIN_H
 
@@ -31,6 +23,21 @@ observation stream and sums the results.
 
 namespace Marsyas
 {
+/** 
+	\class Fanin
+	\ingroup Composites
+	\brief Fanin of MarSystem objects
+	\deprecated Fanin (the whole marsystem) is deprecated.
+
+	Combines a series of MarSystem objects to a single MarSystem
+corresponding to executing the System objects one after the other in
+sequence.  The output is summed together.
+
+	\b Warning: this will probably be deprecated soon.
+
+	Controls: none.
+*/
+
 
 class Fanin: public MarSystem
 {

@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Fanout
-    \brief Fanout composite of MarSystem objects
-    
-    Combines a parallel set of MarSystem objects to a single MarSystem 
-corresponding to executing the System objects in parallel and 
-make each of their outputs a separate observation
-*/
-
 #ifndef MARSYAS_FANOUT_H
 #define MARSYAS_FANOUT_H
 
@@ -32,6 +23,27 @@ make each of their outputs a separate observation
 
 namespace Marsyas
 {
+/** 
+\class Fanout
+\ingroup Composites
+\brief Fanout of MarSystem objects
+
+Combines a series of MarSystem objects to a single MarSystem 
+corresponding to executing the System objects one after the other 
+in sequence. 
+
+Controls:
+- \b mrs_natural/disable [w] : passes in the number of the child
+  MarSystem to disable.
+- \b mrs_natural/enable	[w] : pass in the number of the child MarSystem to
+  enable.  (by default all children are enabled)
+- \b mrs_bool/probe	: deprecated.
+
+\deprecated if Fanout mrs_bool/probe really is depreciated, chop it.
+UPDATE: lmartins said that _all_ probes are deprecated.  Chop them all
+after the merge.
+*/
+
 
 class Fanout: public MarSystem
 {

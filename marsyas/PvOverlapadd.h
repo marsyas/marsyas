@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class PvOverlapadd
-    \brief PvOverlapadd
-
-    Multiply with window (both length Nw) using modulus arithmetic;
-fold and rotate windowed input into output array (FFT) (length N) 
-according to current input time (t)
-*/
-
 #ifndef MARSYAS_PVOVERLAPADD_H
 #define MARSYAS_PVOVERLAPADD_H
 
@@ -32,6 +23,16 @@ according to current input time (t)
 
 namespace Marsyas
 {
+/** 
+    \class PvOverlapadd
+	\ingroup none
+    \brief PvOverlapadd
+
+    Multiply with window (both length Nw) using modulus arithmetic;
+fold and rotate windowed input into output array (FFT) (length N) 
+according to current input time (t)
+*/
+
 
 class PvOverlapadd: public MarSystem
 {

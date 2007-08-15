@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class ANN_node
-	\ingroup none
-    \brief Single node used to build Artifical Neural Networks
-
-Essentially forms a weighted sum of the input rows of observations. 
-*/
-
 #include "ANN_node.h"
 
 using namespace std;

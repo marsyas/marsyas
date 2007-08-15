@@ -17,15 +17,6 @@
 */
 
 
-/** 
-    \class Centroid
-    \brief Centroid of each time slice of observations
-
-    Centroid computes the centroid of the observations for each 
-time samle. The center is defined as the normalized first moment 
-(center of gravity) of the observation vector. 
-*/
-
 #ifndef MARSYAS_CENTROID_H
 #define MARSYAS_CENTROID_H
 
@@ -33,6 +24,16 @@ time samle. The center is defined as the normalized first moment
 
 namespace Marsyas
 {
+/**
+    \class Centroid
+	\ingroup Analysis
+    \brief Centroid of each time slice of observations
+
+    Centroid computes the centroid of the observations for each
+time samle. The center is defined as the normalized first moment
+(center of gravity) of the observation vector.
+*/
+
 
 class Centroid: public MarSystem
 {

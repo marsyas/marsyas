@@ -16,38 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
-/***************************************************/
-/*! \class Messager
-    \brief Control message parser.
-
-    This class reads and parses control messages
-    from a socket connection or pipe. 
-
-    For each call to nextMessage(), the active
-    input sources are queried to see if a new
-    control message is available.
-
-    This class is primarily for use in 
-    event loops.
-
-    One of the original goals in creating this
-    class was to simplify the message acquisition
-    process by removing all threads.  If the
-    windoze select() function behaved just like
-    the unix one, that would have been possible.
-    Since it does not (it can't be used to poll
-    STDIN), I am using a thread to acquire
-    messages from STDIN, which sends these
-    messages via a socket connection to the
-    message socket server.  Perhaps in the future,
-    it will be possible to simplify things.
-
-    This class is canibalized from the Synthesis 
-    Toolkit by Perry Cook and Gary Scavone. 
-*/
-/***************************************************/
-
 #if !defined(__MESSAGER_H)
 #define __MESSSAGER_H
 
@@ -75,6 +43,38 @@ extern "C" THREAD_RETURN THREAD_TYPE stdinHandler(void * ptr);
 
 namespace Marsyas
 {
+/***************************************************/
+/*! \class Messager
+  \ingroup Networking
+  \brief Control message parser.
+  
+  This class reads and parses control messages
+  from a socket connection or pipe. 
+  
+  For each call to nextMessage(), the active
+  input sources are queried to see if a new
+  control message is available.
+  
+  This class is primarily for use in 
+  event loops.
+  
+  One of the original goals in creating this
+  class was to simplify the message acquisition
+  process by removing all threads.  If the
+  windoze select() function behaved just like
+  the unix one, that would have been possible.
+  Since it does not (it can't be used to poll
+  STDIN), I am using a thread to acquire
+  messages from STDIN, which sends these
+  messages via a socket connection to the
+  message socket server.  Perhaps in the future,
+  it will be possible to simplify things.
+  
+  This class is canibalized from the Synthesis 
+  Toolkit by Perry Cook and Gary Scavone. 
+*/
+/***************************************************/
+
 
 
 class Messager // : public Stk

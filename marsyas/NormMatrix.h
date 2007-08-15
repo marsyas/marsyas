@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class NormMatrix
-\brief NormMatrix: normalize Matrix
-
-Normalize matrix by subtracting matrix mean and dividing by matrix standard deviation
-*/
-
 #ifndef MARSYAS_NORMMATRIX_H
 #define MARSYAS_NORMMATRIX_H
 
@@ -30,6 +23,14 @@ Normalize matrix by subtracting matrix mean and dividing by matrix standard devi
 
 namespace Marsyas
 {
+/** 
+\class NormMatrix
+\ingroup Processing
+\brief NormMatrix: normalize Matrix
+
+Normalize matrix by subtracting matrix mean and dividing by matrix standard deviation
+*/
+
 
 	class NormMatrix: public MarSystem
 	{

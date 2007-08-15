@@ -16,11 +16,6 @@
  ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/** 
-  \class MidiInput
-  \brief Update midi inpput using controls. Just through for dataflow. 
- */
-
 #ifndef MARSYAS_MIDIINPUT_H
 #define MARSYAS_MIDIINPUT_H
 
@@ -32,7 +27,17 @@
 
 namespace Marsyas
 {
+/** 
+  \class MidiInput
+  \ingroup MIDI
+  \brief Update midi inpput using controls. Just through for dataflow. 
 
+  Controls:
+  - \b mrs_natural/port [rw] : input midi port
+  - \b mrs_bool/virtualPort [rw] : is this a virtual MIDI port?
+  - \b mrs_bool/initmidi [w] : enable midi (should be \em true )
+*/
+ 
     class MidiInput: public MarSystem
     {
         private: 

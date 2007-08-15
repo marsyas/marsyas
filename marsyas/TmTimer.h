@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class Timer
-   \brief Abstract Timer
-
-*/
-
 #ifndef MARSYAS_TM_TIMER_H
 #define MARSYAS_TM_TIMER_H
 
@@ -34,6 +28,13 @@
 
 namespace Marsyas
 {
+/**
+   \class TmTimer
+	\ingroup none
+   \brief Abstract TmTimer
+   \author inb@cs.uvic.ca
+*/
+
 
 class Scheduler;
 

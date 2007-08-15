@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class OverlapAdd
-    \brief OverlapAdd
-
-    Multiply with window (both length Nw) using modulus arithmetic;
-fold and rotate windowed input into output array (FFT) (length N) 
-according to current input time (t)
-*/
-
 #ifndef MARSYAS_OVERLAPADD_H
 #define MARSYAS_OVERLAPADD_H
 
@@ -32,6 +23,17 @@ according to current input time (t)
 
 namespace Marsyas
 {
+/** 
+    \class OverlapAdd
+    \ingroup Processing Basic
+    \brief OverlapAdd
+
+   perform an overlap-add operation of the input buffer.
+    Multiply with window (both length Nw) using modulus arithmetic;
+fold and rotate windowed input into output array (FFT) (length N) 
+according to current input time (t)
+*/
+
 
 class OverlapAdd: public MarSystem
 {

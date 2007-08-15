@@ -16,10 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class RealvecSource
-*/
-
 #ifndef MARSYAS_REALVECSOURCE_H
 #define MARSYAS_REALVECSOURCE_H
 
@@ -27,6 +23,12 @@
 
 namespace Marsyas
 {
+/** 
+    \class RealvecSource
+	\ingroup none
+
+*/
+
 
 class RealvecSource: public MarSystem
 {

@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class Scheduler
-	\ingroup none
-   \brief Scheduler schedules things
-   \author inb@cs.uvic.ca
-*/
-
 #include "VScheduler.h"
 #include "EvExpr.h"
 

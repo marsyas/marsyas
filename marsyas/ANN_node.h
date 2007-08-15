@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class ANN_node
-    \brief Single node used to build Artifical Neural Networks
-
-Essentialky forms a weighted sum of the input rows of observations. 
-*/
-
 #ifndef MARSYAS_ANN_NODE_H
 #define MARSYAS_ANN_NODE_H
 
@@ -30,6 +23,14 @@ Essentialky forms a weighted sum of the input rows of observations.
 
 namespace Marsyas
 {
+/** 
+    \class ANN_node
+	\ingroup none
+    \brief Single node used to build Artifical Neural Networks
+
+Essentially forms a weighted sum of the input rows of observations. 
+*/
+
 
 class ANN_node: public MarSystem
 {

@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Mean
-    \ingroup Analysis
-    \brief Mean calculate the mean of each row of observations
-    
-*/
-
 #include "Mean.h"
 
 using namespace std;

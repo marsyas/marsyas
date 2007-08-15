@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-\class AbsSoundFileSource2
-	\ingroup Experimental
-\brief Abstract Interface for SoundFileSource of various formats
-*/
-
 #include "AbsSoundFileSource2.h"
 
 using namespace std;

@@ -15,12 +15,6 @@
 ** along with this program; if not, write to the Free Software 
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-/** 
-\class PeakSynthOscBank
-\brief PeakSynthOscBank
-
-A bank of sine wave oscillators used for phasevocoding. 
-*/
 
 #ifndef MARSYAS_PeakSynthOscBank_H
 #define MARSYAS_PeakSynthOscBank_H
@@ -29,6 +23,15 @@ A bank of sine wave oscillators used for phasevocoding.
 
 namespace Marsyas
 {
+/** 
+\class PeakSynthOscBank
+\ingroup none
+\brief PeakSynthOscBank
+
+A bank of sine wave oscillators used for pevocoding. 
+
+*/
+
 
 	class PeakSynthOscBank: public MarSystem
 	{

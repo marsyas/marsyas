@@ -17,18 +17,6 @@
 */
 
 
-/** 
-    \class DownSampler
-	\ingroup Processing Basic
-    \brief Downsample the input signal
-
-    Downsample the signal by an integer factor.
-
-	Controls:
-	- \b mrs_natural/factor [w] : factor to downsample by.
-
-*/
-
 #include "DownSampler.h"
 
 using namespace std;

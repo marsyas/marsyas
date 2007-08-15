@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
  
-/** 
-    \class PowerSpectrum
-	\ingroup Analysis
-    \brief PowerSpectrum computes the magnitude/power of the complex spectrum 
-
-    Computes the magnitude/power of a complex spectrum 
-*/
-
 #include "PowerSpectrum.h"
 
 using namespace std;

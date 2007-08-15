@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class ClipAudioRange
-	\ingroup Processing
-    \brief ClipAudioRange
-
-    Clip any values greater than 1 or -1 to 1 and -1. 
-*/
-
 #include "ClipAudioRange.h"
 
 using namespace std;

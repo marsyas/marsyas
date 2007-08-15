@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class MslModel
-    \brief MslModel is used by the interpreter and the GUI.  It basically
-    takes in input string commands and manages the internal marsystem 
-    structure you create.
-    
-*/
-
 #ifndef MARSYAS_MSLMODEL_H
 #define MARSYAS_MSLMODEL_H
 
@@ -33,6 +25,17 @@
 
 namespace Marsyas
 {
+/** 
+    \class MslModel
+    \ingroup Experimental
+    \brief MslModel of MarSystem objects that are in a working set
+    cd 
+    A working copy of all MarSystems in a current session.
+    Keeps track of all actions performed and takes as
+    input a simple command line string.
+		
+*/
+
 
 typedef std::vector<std::string> cmdList_t;
 

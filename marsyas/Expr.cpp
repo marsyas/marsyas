@@ -15,17 +15,6 @@
 ** along with this program; if not, write to the Free Software 
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-/**
-   \class Expr, Ex, Rp
-	\ingroup Scheduler
-   \brief Expr encapsulates an evaluatable expression. Ex is a convenience
-          class that encapsulates an expression string and can parse to a
-          tree. Rp is the same as Ex but is interpreted as an expression for
-          deciding on repetition.
-   \author Neil Burroughs  inb@cs.uvic.ca
-   \version 1.0
-   \date    Jan 01, 2007
-*/
 #include "Expr.h"
 #include "ExParser.h"
 #include "ExScanner.h"

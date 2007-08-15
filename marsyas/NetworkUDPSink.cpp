@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class NetworkUDPSink
-	\ingroup Network
-    \brief NetworkUDPSink
-    \author Stuart Bray June 2004 
-
-    Sink for data using the UDP protocol 
-*/
-
 #include "NetworkUDPSink.h"
 #include "SocketException.h"
 

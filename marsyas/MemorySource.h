@@ -16,9 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class MemorySource
-*/
 
 #ifndef MARSYAS_MEMORYSOURCE_H
 #define MARSYAS_MEMORYSOURCE_H
@@ -27,6 +24,12 @@
 
 namespace Marsyas
 {
+/** 
+    \class MemorySource
+    \ingroup IO
+
+*/
+
 
 class MemorySource: public MarSystem
 {

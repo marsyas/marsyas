@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class ClipAudioRange
-    \brief ClipAudioRange
-
-    Clip any values greater than 1 or -1 to 1 and -1. 
-*/
-
 #ifndef MARSYAS_CLIPAUDIORANGE_H
 #define MARSYAS_CLIPAUDIORANGE_H
 
@@ -30,6 +23,14 @@
 
 namespace Marsyas
 {
+/** 
+    \class ClipAudioRange
+	\ingroup Processing
+    \brief ClipAudioRange
+
+    Clip any values greater than 1 or -1 to 1 and -1. 
+*/
+
 
 class ClipAudioRange: public MarSystem
 {

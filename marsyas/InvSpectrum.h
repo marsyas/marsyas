@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class InvSpectrum
-    \brief Convert back the complex spectrum to time domain
-
-    Convert back the complex spectrum to time domain 
-using the Inverse Fast Fourier Transform (IFFT) 
-*/
-
 #ifndef MARSYAS_INVSPECTRUM_H
 #define MARSYAS_INVSPECTRUM_H
 
@@ -32,6 +24,15 @@ using the Inverse Fast Fourier Transform (IFFT)
 
 namespace Marsyas
 {
+/** 
+    \class InvSpectrum
+	\ingroup Synthesis
+    \brief Convert back the complex spectrum to time domain
+
+    Convert back the complex spectrum to time domain 
+using the Inverse Fast Fourier Transform (IFFT) 
+*/
+
 
 class InvSpectrum: public MarSystem
 {

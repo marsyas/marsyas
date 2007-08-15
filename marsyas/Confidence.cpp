@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Confidence
-	\ingroup MachineLearning
-    \brief Confidence calculates classification confidence 
-
-    Calculates classification confidence by majority voting. 
-*/
-
 #include "Confidence.h"
 #include "FileName.h"
 

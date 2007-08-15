@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Peak2Rms
-    \brief Multiply input realvec with Peak2Rms
-
-   Simple MarSystem example. Just multiply the values of the input realvec
-with Peak2Rms and put them in the output vector. This object can be used 
-as a prototype template for building more complicated MarSystems. 
-*/
-
 #ifndef MARSYAS_PEAK2RMS_H
 #define MARSYAS_PEAK2RMS_H
 
@@ -32,6 +23,17 @@ as a prototype template for building more complicated MarSystems.
 
 namespace Marsyas
 {
+/** 
+    \class Peak2Rms
+	\ingroup none
+    \brief Peak to Rms ratio for time domain signals
+    \author Adam Tindale
+
+    Computes the Peak to Rms ratio for a mono channel. For multiple streams of data
+    a separate instance is needed using a fanout. 
+    
+*/
+
 
 class Peak2Rms: public MarSystem
 {

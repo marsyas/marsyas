@@ -16,21 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Sum
-	\ingroup Processing Basic
-    \brief Sum the input rows of observations into one row 
-
-    Sum the input rows of observation into one row. Frequently 
-used for mixing audio signals before SoudFileSink or AudioSink. 
-
-	Controls:
-	- \b mrs_real/weight [w] : scales input to avoid clipping.
-\todo Sum mrs_real/weight should be implemented as a meta-composite in
-marsystemmanager.  (?   -- lmartins said this)
-
-*/
-
 #include "Sum.h"
 
 using namespace std;

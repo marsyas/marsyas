@@ -17,17 +17,6 @@
 */
 
 
-/** 
-    \class Mono2Stereo
-	\ingroup Processing Basic
-    \brief Convert mono to stereo by copying 
-
-   Convert mono to stereo by copying - if input is not mono 
-just propagate. 
-
-	Controls: none.
-*/
-
 #include "Mono2Stereo.h"
 
 using namespace std;

@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class TmGetTime
-   \brief TmGetTime reads the getlocaltime() function, system clock to get the
-          current number of microseconds
-   \author inb@cs.uvic.ca
-*/
-
 #ifndef MARSYAS_TM_GETTIME_H
 #define MARSYAS_TM_GETTIME_H
 
@@ -36,6 +29,13 @@
 
 namespace Marsyas
 {
+/**
+   \class TmGetTime
+	\ingroup none
+   \brief TmGetTime reads the getlocaltime() function, system clock to get the
+          current number of microseconds
+   \author inb@cs.uvic.ca
+*/
 
 class Scheduler; // forward declaration
 

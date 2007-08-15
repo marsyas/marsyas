@@ -17,15 +17,6 @@
 */
 
 
-/** 
-\class Peaker
-	\ingroup Analysis
-\brief Pick peaks out of signal 
-
-Peaker is used to select peaks(or valleys) from the input vector. Various 
-parameters of the peak selection process can be adjusted.
-*/
-
 #include "Peaker.h"
 
 using namespace std;

@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class FM 
-	\ingroup Synthesis
-    \brief FM synthesis source
-
-   Simple FM synthesis MarSystem.
-
-*/
-
 #include "FM.h"
 
 using namespace std;

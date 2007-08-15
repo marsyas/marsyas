@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class PeakLabeler
-\brief Assigns "pkGroup" labels to the input peak realvec, based on the information received at the mrs_realvec/labels control.
-
-*/
-
 #ifndef MARSYAS_PELABELER_H
 #define MARSYAS_PELABELER_H
 
@@ -29,6 +23,15 @@
 
 namespace Marsyas
 {
+/** 
+	\class PeakLabeler
+	\ingroup MarSystem
+	\brief Assigns clustering labels to the "pkGroup" feature of the input peak realvec, based on the information received at the mrs_realvec/labels control.
+
+	Controls:
+	- \b mrs_realvec/labels [w] : cluster labels to be assigned to each peak received at the input. 
+
+*/
   
   class PeakLabeler: public MarSystem
   {

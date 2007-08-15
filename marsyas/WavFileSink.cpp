@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class WavFileSink
-   \ingroup Internal
-   \brief WavFileSink for .wav soundfiles
-   
-   SoundFileSink writer for .wav sound files.
-*/
-
 #include "WavFileSink.h"
 
 using namespace std;

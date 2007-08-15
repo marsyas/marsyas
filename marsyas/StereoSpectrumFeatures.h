@@ -17,14 +17,6 @@
 */
 
 
-/** 
-    \class StereoSpectrumFeatures
-    \brief StereoSpectrumFeatures capture panning information 
-
-    After computing the Stereo Spectrum we can summarize 
-it by extracting features using the StereoSpectrumFeatures. 
-*/
-
 #ifndef MARSYAS_STEREOSPECTRUMFEATURES_H
 #define MARSYAS_STEREOSPECTRUMFEATURES_H
 
@@ -32,6 +24,16 @@ it by extracting features using the StereoSpectrumFeatures.
 
 namespace Marsyas
 {
+/** 
+    \class StereoSpectrumFeatures
+	\ingroup none
+    \brief StereoSpectrumFeatures capture panning information 
+
+    After computing the Stereo Spectrum we can summarize 
+it by extracting features using the StereoSpectrumFeatures. 
+*/
+
+
 
 class StereoSpectrumFeatures: public MarSystem
 {

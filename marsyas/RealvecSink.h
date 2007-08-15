@@ -16,10 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class RealvecSink
-*/
-
 #ifndef MARSYAS_REALVECSINK_H
 #define MARSYAS_REALVECSINK_H
 
@@ -32,6 +28,12 @@ using namespace std;
 
 namespace Marsyas
 {
+/** 
+\class RealvecSink
+	\ingroup none
+
+*/
+
 
 class RealvecSink: public MarSystem
 {

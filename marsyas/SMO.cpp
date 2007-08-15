@@ -16,20 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class SMO
-	\ingroup MachineLearning
-    \brief Support Vector Machine similar to the Weka implementation
-
-    Support Vector Machine Classifier similar to the Weka implementation 
-based on the Sequential Minimum Optimization (SMO) proposed by Platt. 
-For now only the prediction part works and only for 2-class problems. 
-Basically the machine is represented as a linear combination of 
-attributes that represented the separating hyperplane. Currently I use 
-weka for training. 
-
-*/
-
 #include "SMO.h"
 
 using namespace std;

@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class PeUtilities
-	\ingroup none
-\brief utilties for peaks extraction project
-
-*/
-
 #include "PeUtilities.h"
 
 #include "AudioSink.h"

@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class FlowThru
-\brief FlowThru of MarSystem objects
-
-Combines a series of MarSystem objects to a single MarSystem 
-corresponding to executing the System objects one after the other 
-in sequence, but forwards the original composite input flow to the output. 
-*/
-
 #ifndef MARSYAS_FLOWTHRU_H
 #define MARSYAS_FLOWTHRU_H
 
@@ -32,6 +23,19 @@ in sequence, but forwards the original composite input flow to the output.
 
 namespace Marsyas
 {
+/** 
+	\class FlowThru
+	\ingroup Composites
+	\brief FlowThru of MarSystem objects
+
+Combines a series of MarSystem objects to a single MarSystem 
+corresponding to executing the System objects one after the other 
+in sequence, but forwards the original composite input flow to the output. 
+
+	Controls:
+	- \b mrs_realvec/innerOut [r] : this control contains the output of the last child of the composite
+*/
+
 
 	class FlowThru: public MarSystem
 	{

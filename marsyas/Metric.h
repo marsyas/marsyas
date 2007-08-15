@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class Metric
-\brief Computes metrics (e.g. euclidean, mahalanobis, cosine, etc) between two realvecs
-
-*/
-
 #ifndef MARSYAS_METRIC_H
 #define MARSYAS_METRIC_H
 
@@ -29,6 +23,15 @@
 
 namespace Marsyas
 {
+/** 
+	\class Metric
+	\ingroup MarSystem
+	\brief Computes metrics (e.g. euclidean, mahalanobis, cosine, etc) between two realvecs
+
+	Controls:
+	- \b mrs_string/metric [rw] : name of the metric function to use (e.g. euclidean, mahalanobis, cosine, etc)
+	- \b mrs_realvec/covMatrix [w]: optional covariance matrix calculated from the input dataset used for metric normalization
+*/
   class Metric: public MarSystem
   {
   private:

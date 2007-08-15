@@ -16,17 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class WaveletBands
-	\ingroup none
-    \brief Calculate time-domain wavelet-based bands
-
-    Calculate time-domain wavelet-based bands by 
-zeroing out all the coefficients except for the band 
-we are interested in and then performing the Inverse 
-Wavelet Transform to get back to time domain. 
-*/
-
 #include "WaveletBands.h"
 
 using namespace std;

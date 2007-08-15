@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class Scheduler
-   \brief Scheduler schedules things
-   Modified: Neil Burroughs, Dec 4, 2006
-
-*/
-
 #ifndef MARSYAS_SCHEDULER_H
 #define MARSYAS_SCHEDULER_H
 
@@ -45,6 +38,13 @@
 
 namespace Marsyas
 {
+/**
+	\class Scheduler
+	\ingroup Scheduler
+	\brief Scheduler schedules things
+
+*/
+
 
 class Scheduler {
 protected:

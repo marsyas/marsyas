@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class NumericLib
-	\ingroup Notmar
-\brief Assorted Numerical Routines
-
-	Numerical routines ported and adapted from several sources (indicated where appropriated).
-	Code adapted by <lmartins@inescporto.pt> - 16.06.2006 
-*/
-
 #include "NumericLib.h"
 
 //*************************************************************

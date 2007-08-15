@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class MeddisHairCell
-    \brief MeddisHairCell for auditory models 
-
-    Directed port from the Auditory toolbox by Malcolm Slaney 
-*/
-
-
 #ifndef MARSYAS_MEDDISHAIRCELL_H
 #define MARSYAS_MEDDISHAIRCELL_H
 
@@ -31,6 +23,14 @@
 
 namespace Marsyas
 {
+/** 
+    \class MeddisHairCell
+    \ingroup Analysis
+    \brief MeddisHairCell for auditory models 
+
+    Directed port from the Auditory toolbox by Malcolm Slaney 
+*/
+
 
 class MeddisHairCell: public MarSystem
 {

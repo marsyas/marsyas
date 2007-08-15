@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class SchedulerManager
-	\ingroup Scheduler
-   \brief SchedulerManager schedules things
-   \author inb@cs.uvic.ca
-*/
-
 #include "SchedulerManager.h"
 #include "TimerFactory.h"
 /*

@@ -16,11 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Conversions
-    \brief Various conversion functions
-*/
-
 #ifndef MARSYAS_CONVERSIONS_H
 #define MARSYAS_CONVERSIONS_H
 
@@ -31,6 +26,12 @@
 
 namespace Marsyas
 {
+/** 
+    \class Conversions
+	\ingroup Notmar
+    \brief Various conversion functions
+*/
+
 
 mrs_real pitch2hertz(mrs_real pitch);
 mrs_natural hertz2samples(mrs_real hz, mrs_real srate);

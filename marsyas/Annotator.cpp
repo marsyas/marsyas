@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Annotator
-	\ingroup MachineLearning
-    \brief Annotate feature stream with additional row of labels.
-    
-*/
-
 #include "Annotator.h"
 
 using namespace std;

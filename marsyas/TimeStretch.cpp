@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class TimeStretch
-	\ingroup none
-    \brief TimeStretch input realvec by factor 
-
-
-*/
-
 #include "TimeStretch.h"
 
 using namespace std;

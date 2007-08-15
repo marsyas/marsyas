@@ -16,19 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Spectral Crest Factor
-    \brief Spectral Crest Factor
-    
-    Spectral Crest Factor is a feature set very similar to the
-    Spectral Flatness Measure defined in the MPEG-7 audio standard.
-    Although it is not defined in the MPEG7 standard, its calculation
-    is here based on the same definitions used for the MPEG7 SFM:
-    1/4 octave frequency resolution, resulting in 24 frequency bands between
-    250Hz and 16kHz.
-    Based on code provided by Luis Gustavo Martins <lmartins@inescporto.pt>
-*/
-
 #ifndef MARSYAS_SCF_H
 #define MARSYAS_SCF_H
 
@@ -36,6 +23,20 @@
 
 namespace Marsyas
 {
+/** 
+\class Spectral Crest Factor
+	\ingroup none
+\brief Spectral Crest Factor
+
+Spectral Crest Factor is a feature set very similar to the
+Spectral Flatness Measure defined in the MPEG-7 audio standard.
+Although it is not defined in the MPEG7 standard, its calculation
+is here based on the same definitions used for the MPEG7 SFM:
+1/4 octave frequency resolution, resulting in 24 frequency bands between
+250Hz and 16kHz.
+Based on code provided by Luis Gustavo Martins <lmartins@inescporto.pt>
+*/
+
 
 class SCF: public MarSystem
 {

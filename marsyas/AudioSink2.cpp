@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-\class AudioSink2
-\ingroup Experimental
-\brief Real-time Audio source for Linux
-
-Real-time Audio Sink for Linux based on the OSS sound API. 
-*/
-
 #include "AudioSink2.h"
 
 using namespace std;

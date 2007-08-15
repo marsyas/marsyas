@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class ClassOutputSink
-    \brief ClassOutputSink
-
-*/
-
 #ifndef MARSYAS_CLASSOUTPUTSINK_H
 #define MARSYAS_CLASSOUTPUTSINK_H
 
@@ -29,6 +23,13 @@
 
 namespace Marsyas
 {
+/** 
+    \class ClassOutputSink
+	\ingroup Internal
+    \brief ClassOutputSink
+
+*/
+
 
 class ClassOutputSink: public MarSystem
 {

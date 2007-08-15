@@ -16,8 +16,16 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#ifndef MARSYAS_SMO_H
+#define MARSYAS_SMO_H
+
+#include "MarSystem.h"	
+
+namespace Marsyas
+{
 /** 
     \class SMO
+	\ingroup MachineLearning
     \brief Support Vector Machine similar to the Weka implementation
 
     Support Vector Machine Classifier similar to the Weka implementation 
@@ -29,13 +37,6 @@ weka for training.
 
 */
 
-#ifndef MARSYAS_SMO_H
-#define MARSYAS_SMO_H
-
-#include "MarSystem.h"	
-
-namespace Marsyas
-{
 
 class SMO: public MarSystem
 {

@@ -15,13 +15,6 @@
 ** along with this program; if not, write to the Free Software 
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-/**
-   \class ExNode
-   \brief ExNode is the base class for an expression tree node.
-   \author Neil Burroughs  inb@cs.uvic.ca
-   \version 1.0
-   \date    Jan 04, 2007
-*/
 #ifndef __EX_COMMON_H__
 #define __EX_COMMON_H__
 
@@ -31,6 +24,13 @@
 
 namespace Marsyas
 {
+/**
+   \class ExNode
+   \brief ExNode is the base class for an expression tree node.
+   \author Neil Burroughs  inb@cs.uvic.ca
+   \version 1.0
+   \date    Jan 04, 2007
+*/
     
 enum {
     NONE=0,

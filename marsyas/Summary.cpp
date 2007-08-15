@@ -16,16 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Summary
-	\ingroup MachineLearning
-
-    When the mode control is set to "predict" then then classifications are tracked
-	when done control is set, then the confusion matrix is shown
-
-
-*/
-
 #include "Summary.h"
 
 using namespace std;

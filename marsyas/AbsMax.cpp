@@ -17,15 +17,6 @@
 */
 
 
-/** 
-    \class AbsMax
-	\ingroup Analysis
-    \brief Calculate the maximum of the absolute values of the signal 
-    
-Calculates the maximum of the absolute values of 
-the singal. Used for sending waveform plots to editor. 
-*/
-
 #include "AbsMax.h"
 using namespace std;
 using namespace Marsyas;

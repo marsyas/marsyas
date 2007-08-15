@@ -16,18 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class AudioSink
-   \ingroup IO
-   \brief Real-time Audio source for Linux
-
-   Real-time Audio Sink based on RtAudio.
-
-   Controls:
-   - \b mrs_natural/bufferSize [rw] : size of audio buffer (in samples)
-   - \b mrs_bool/initAudio [w] : initialize audio (this should be \em true)
-*/
-
 #include "AudioSink.h"
 
 using namespace std;

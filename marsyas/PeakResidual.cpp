@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class PeakResidual
-\ingroup none
-\brief Compute the Reconstruction Signal-to-Noise Ratio
-*/
-
 #include "PeakResidual.h"
 
 using namespace std;

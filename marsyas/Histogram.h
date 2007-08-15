@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Histogram
-    \brief Histogram
-
-    Calculate histogram
-*/
-
 #ifndef MARSYAS_HISTOGRAM_H
 #define MARSYAS_HISTOGRAM_H
 
@@ -30,6 +23,14 @@
 
 namespace Marsyas
 {
+/** 
+    \class Histogram
+    \ingroup Analysis
+    \brief Histogram
+
+    Calculate histogram
+*/
+
 
 class Histogram: public MarSystem
 {

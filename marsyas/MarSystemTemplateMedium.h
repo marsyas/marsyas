@@ -16,12 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class MarSystemTemplateMedium
-\brief Basic example on how to use controls efficiently in MarSystems
-
-*/
-
 #ifndef MARSYAS_MARSYSTEMTEMPLATEMEDIUM_H
 #define MARSYAS_MARSYSTEMTEMPLATEMEDIUM_H
 
@@ -29,6 +23,16 @@
 
 namespace Marsyas
 {
+/** 
+	\class MarSystemTemplateMedium
+	\ingroup Special
+	\brief Basic example on how to use controls efficiently in MarSystems
+
+	Controls:
+	- \b mrs_real/gain [w] : sets the gain multiplier.
+	- \b mrs_natural/repeats [w] : sets the number of times to repeat.
+	- \b mrs_bool/dummy [rw] : does nothing.
+*/
   
   class MarSystemTemplateMedium: public MarSystem
   {

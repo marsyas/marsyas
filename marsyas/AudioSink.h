@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class AudioSink
-   \brief Real-time Audio sink using RtAudio
-
-   Real-time Audio Sink using RtAudio
-*/
-
 
 #ifndef MARSYAS_AUDIOSINK_H
 #define MARSYAS_AUDIOSINK_H
@@ -32,6 +25,18 @@
 
 namespace Marsyas
 {
+/**
+   \class AudioSink
+   \ingroup IO
+   \brief Real-time Audio source for Linux
+
+   Real-time Audio Sink based on RtAudio.
+
+   Controls:
+   - \b mrs_natural/bufferSize [rw] : size of audio buffer (in samples)
+   - \b mrs_bool/initAudio [w] : initialize audio (this should be \em true)
+*/
+
 
 class AudioSink:public MarSystem
 {

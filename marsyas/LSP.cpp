@@ -17,17 +17,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class LSP
-    \ingroup Analysis
-    \brief Compute Linear Spectral Pair (LSP) coefficients 
-    Takes the output of ::LPC() and calculates the corresponding LSP values.
-    See the LPC class implementation.
-    
-    Cobe by Luís Gustavo Martins - lmartins@inescporto.pt
-    May 2006
-*/
-
 #include "LSP.h"
 #include "NumericLib.h"
 

@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class Collection
-   \brief List of files
-
-   List of files used for batch processing.
-*/
-
 #ifndef MARSYAS_COLLECTION_H
 #define MARSYAS_COLLECTION_H
 
@@ -35,6 +28,14 @@
 
 namespace Marsyas
 {
+/**
+	\class Collection
+	\ingroup Notmar
+	\brief List of files
+
+List of files used for batch processing.
+*/
+
 
 class Collection
 {

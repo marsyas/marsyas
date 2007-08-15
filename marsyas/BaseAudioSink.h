@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class BaseAudioSink
-   \brief Interface for real-time audio sinks
-   
-   Abstract base class used as interface for real-time audio sinks.
-*/
-
 #ifndef MARSYAS_BASEAUDIOSINK_H
 #define MARSYAS_BASEAUDIOSINK_H
 
@@ -30,6 +23,14 @@
 
 namespace Marsyas
 {
+/**
+   \class BaseAudioSink
+	\ingroup Internal
+   \brief Interface for real-time audio sources
+   
+   Abstract base class used as interface for real-time audio sources.
+*/
+
 
 class BaseAudioSink:public MarSystem
 {

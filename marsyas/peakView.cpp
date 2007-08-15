@@ -17,12 +17,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class peakView
-\class Notmar
-\brief Helper class for accessing peaks in a realvec. 
-*/
-
 #include "peakView.h"
 
 using namespace std;

@@ -16,6 +16,15 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#ifndef MARSYAS_FFT_H 
+#define MARSYAS_FFT_H
+
+#include <cstdio>
+#include <cmath>
+#include "common.h" 
+
+namespace Marsyas
+{
 /** 
     \class fft:
     \brief fft calculation.
@@ -26,15 +35,6 @@ to the fft implementation in Numerical Recipes. Returns an fvec of complex
 values (2*i, 2*i+1) = (Real, Imaginary).
 */
 
-#ifndef MARSYAS_FFT_H 
-#define MARSYAS_FFT_H
-
-#include <cstdio>
-#include <cmath>
-#include "common.h" 
-
-namespace Marsyas
-{
 
 class fft
 {

@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-   \class AbsSoundFileSink
-   \brief Abstract Interface for SoundFileSinks of various formats
-*/
-
-
-
 #ifndef MARSYAS_ABSSOUNDFILESINK_H
 #define MARSYAS_ABSSOUNDFILESINK_H
 
@@ -31,6 +24,12 @@
 
 namespace Marsyas
 {
+/**
+   \class AbsSoundFileSink
+	\ingroup Internal
+   \brief Abstract Interface for SoundFileSinks of various formats
+*/
+
 
 class AbsSoundFileSink: public MarSystem
 {

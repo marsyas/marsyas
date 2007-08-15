@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class SOM
-    \brief Self-organizing map
-
-
-*/
-
 #ifndef MARSYAS_SOM_H
 #define MARSYAS_SOM_H
 
@@ -30,6 +23,13 @@
 
 namespace Marsyas
 {
+/** 
+    \class SOM
+	\ingroup MachineLearning
+    \brief Self-organizing map
+
+*/
+
 
 class SOM: public MarSystem
 {

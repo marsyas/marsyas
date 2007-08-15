@@ -16,13 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class NormMaxMin
-    \brief Normalize my mapping min/max range to user specified range
-
-
-*/
-
 #ifndef MARSYAS_NORMMINMAX_H
 #define MARSYAS_NORMMINMAX_H
 
@@ -32,6 +25,14 @@
 
 namespace Marsyas
 {
+/** 
+\class NormMaxMin
+\ingroup Processing
+\brief Normalize my mapping min/max range to user specified range
+
+
+*/
+
 
 class NormMaxMin: public MarSystem
 {

@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class MinArgMin
-    \ingroup Analysis
-    \brief Calculate k minimums and their positions
-
-    The output is : min1, argmin1, min2, argmin2, .... 
-*/
-
 #include "MinArgMin.h"
 
 using namespace std;

@@ -16,16 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class BeatHistoFeatures
-    \brief Beat Histogram Features
-
-    Beat Histogram Features numerical values summarizing 
-the BH as described in the TSAP paper. Exact details 
-keep changing. 
-
-*/
-
 #ifndef MARSYAS_BEATHISTOFEATURES_H
 #define MARSYAS_BEATHISTOFEATURES_H
 
@@ -34,6 +24,16 @@ keep changing.
 
 namespace Marsyas
 {
+/** 
+    \class BeatHistoFeatures
+	\ingroup MachineLearning
+    \brief Beat Histogram Features
+
+    Beat Histogram Features numerical values summarizing 
+the BH as described in the TSAP paper. Exact details 
+keep changing. 
+
+*/
 
 class BeatHistoFeatures: public MarSystem
 {

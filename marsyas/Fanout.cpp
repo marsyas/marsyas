@@ -16,27 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class Fanout
-\ingroup Composites
-\brief Fanout of MarSystem objects
-
-Combines a series of MarSystem objects to a single MarSystem 
-corresponding to executing the System objects one after the other 
-in sequence. 
-
-Controls:
-- \b mrs_natural/disable [w] : passes in the number of the child
-  MarSystem to disable.
-- \b mrs_natural/enable	[w] : pass in the number of the child MarSystem to
-  enable.  (by default all children are enabled)
-- \b mrs_bool/probe	: deprecated.
-
-\deprecated if Fanout mrs_bool/probe really is depreciated, chop it.
-UPDATE: lmartins said that _all_ probes are deprecated.  Chop them all
-after the merge.
-*/
-
 #include "Fanout.h"
 
 using namespace std;

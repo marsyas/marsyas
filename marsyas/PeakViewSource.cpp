@@ -16,15 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-	\class PeakViewSource
-	\ingroup Special
-	\brief MarSystem to read .peak files and at each tick output the peaks in each frame
-
-	Controls:
-	- \b mrs_string/filename [w] : .peak file name to read
-
-*/
 #include "PeakViewSource.h"
 #include "peakView.h"
 

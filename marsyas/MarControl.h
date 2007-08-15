@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class MarControl
-\brief 
-MarControl is a smart pointer wrapper for MarControlValue.
-Created by lfpt@inescporto.pt and lmartins@inescporto.pt
-
-*/
-
 #ifndef __MARCONTROL__
 #define __MARCONTROL__
 
@@ -58,6 +50,15 @@ Created by lfpt@inescporto.pt and lmartins@inescporto.pt
 
 namespace Marsyas
 {
+/** 
+	\class MarControl
+	\ingroup Special
+	\brief  MarControlPtr is a smart pointer wrapper for MarControl.
+	MarControl is the control class containing a name, type and value.
+	Created by lfpt@inescporto.pt and lmartins@inescporto.pt
+
+*/
+
 	static const bool NOUPDATE = false;
 		
 	class MarSystem;

@@ -16,17 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-    \class Rolloff
-    \brief Rolloff of each time slice of observations
-    
-    Rolloff computes the rolloff of the observations for each 
-    time samle. It is defined as the frequency for which the 
-    sum of magnitudes of its lower frequencies are equal to
-    percentage of the sum of magnitudes of its higher frequencies. 
-
-*/
-
 #ifndef MARSYAS_ROLLOFF_H
 #define MARSYAS_ROLLOFF_H
 
@@ -34,6 +23,18 @@
 
 namespace Marsyas
 {
+/** 
+    \class Rolloff
+	\ingroup Analysis
+    \brief Rolloff of each time slice of observations
+
+    Rolloff computes the rolloff of the observations for each 
+    time samle. It is defined as the frequency for which the 
+    sum of magnitudes of its lower frequencies are equal to
+    percentage of the sum of magnitudes of its higher frequencies. 
+
+*/
+
 
 class Rolloff: public MarSystem
 {
