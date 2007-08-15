@@ -278,7 +278,7 @@ MarLpcWindow::createNetwork()
 	// creating shortcuts for osc manipulation
 	lpc_->linkctrl("mrs_natural/formantOrder",
 		"FanOutIn/fanoutin/Series/aSeries/FlowThru/formantFlowthru/LPC/formantLpc/mrs_natural/order");
-	
+
 	mwr_ = new MarSystemQtWrapper(lpc_, true);
 
 	posPtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/pos");

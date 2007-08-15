@@ -1,19 +1,20 @@
-#N canvas 36 251 1187 658 12;
+#N canvas 80 265 769 690 12;
+#X obj 965 17 OSC;
 #X msg 44 119 disconnect;
 #X text 8 143 ========================================;
 #X msg 93 183 send /mrs_natural/formantOrder \$1;
 #X obj 518 10 vsl 15 128 2 20 0 0 empty empty empty 0 -8 0 8 -262144
--1 -1 4800 1;
+-1 -1 5100 1;
 #X text 543 9 order of the formant lpc (1->20);
 #X obj 558 56 vsl 15 128 1 100 0 0 empty empty empty 0 -8 0 8 -262144
--1 -1 8200 1;
+-1 -1 0 1;
 #X obj 592 109 vsl 15 128 1 100 0 0 empty empty empty 0 -8 0 8 -262144
--1 -1 5300 1;
+-1 -1 0 1;
 #X obj 632 154 vsl 15 128 1 100 0 0 empty empty empty 0 -8 0 8 -262144
--1 -1 6000 1;
+-1 -1 0 1;
 #X obj 25 606 sendOSC;
 #X obj 680 207 vsl 15 128 1 100 0 0 empty empty empty 0 -8 0 8 -262144
--1 -1 6600 1;
+-1 -1 0 1;
 #X text 584 54 frequency of the Pole;
 #X text 618 107 amplitude of the Pole;
 #X text 660 155 tilt;
@@ -27,41 +28,41 @@
 network. Otherwise \, it relates to a Qt slot explicitely registered
 with the OscMapper.;
 #X msg 254 424 send /SoundFileSource/src/mrs_bool/mute \$1;
-#X obj 718 363 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1
+#X obj 718 363 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
 1;
 #X text 739 361 mute;
 #X msg 26 93 connect localhost 1;
 #X obj 26 50 print rcvOSC;
-#X text 147 11 Listen to the messages send by the OscMapper client
-side.;
 #X text 201 94 connect to the OscMapper server side.;
-#X text 653 474;
+#X text 653 474 comment;
 #X floatatom 260 458 5 0 0 0 - - -;
 #X floatatom 323 460 5 0 0 0 - - -;
 #X floatatom 380 461 5 0 0 0 - - -;
 #X obj 256 507 pack f f f;
 #X obj 247 619 print;
 #X obj 26 9 dumpOSC 3;
-#X msg 254 543 send /Fanoutin/fanoutin/Series/aSeries/Filter/resonance/mrs_realvec/dcoeffs
+#X text 119 9 Listen to the messages send by the OscMapper client side.
+;
+#X msg 254 544 send /FanOutIn/fanoutin/Series/aSeries/Filter/resonance/mrs_realvec/dcoeffs
 \$1 \$2 \$3;
-#X connect 0 0 8 0;
-#X connect 2 0 8 0;
-#X connect 3 0 2 0;
-#X connect 5 0 17 0;
-#X connect 6 0 16 0;
-#X connect 7 0 15 0;
-#X connect 9 0 14 0;
-#X connect 14 0 8 0;
-#X connect 15 0 8 0;
-#X connect 16 0 8 0;
-#X connect 17 0 8 0;
-#X connect 19 0 8 0;
-#X connect 20 0 19 0;
-#X connect 22 0 8 0;
+#X connect 1 0 9 0;
+#X connect 3 0 9 0;
+#X connect 4 0 3 0;
+#X connect 6 0 18 0;
+#X connect 7 0 17 0;
+#X connect 8 0 16 0;
+#X connect 10 0 15 0;
+#X connect 15 0 9 0;
+#X connect 16 0 9 0;
+#X connect 17 0 9 0;
+#X connect 18 0 9 0;
+#X connect 20 0 9 0;
+#X connect 21 0 20 0;
+#X connect 23 0 9 0;
 #X connect 27 0 30 0;
 #X connect 28 0 30 1;
 #X connect 29 0 30 2;
-#X connect 30 0 33 0;
-#X connect 32 0 23 0;
-#X connect 33 0 8 0;
-#X connect 33 0 31 0;
+#X connect 30 0 34 0;
+#X connect 32 0 24 0;
+#X connect 34 0 9 0;
+#X connect 34 0 31 0;

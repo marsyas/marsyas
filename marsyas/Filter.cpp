@@ -100,6 +100,7 @@ void Filter::myUpdate(MarControlPtr sender)
 
 	ncoeffs_ = getctrl("mrs_realvec/ncoeffs")->toVec();
 	dcoeffs_ = getctrl("mrs_realvec/dcoeffs")->toVec();
+
 	if (getctrl("mrs_natural/stateUpdate")->toNatural()) 
 		state_ = getctrl("mrs_realvec/state")->toVec();
 

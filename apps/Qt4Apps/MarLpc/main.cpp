@@ -83,6 +83,7 @@ outputOscHostAddress_ = QString().fromStdString(outputOscHost_);
 
 	oscMapper->registerOutputQtSlot (win->breathinessSlider_, "/breathinessSlider", QVariant::Int);
 
+	// sending Osc messages is done through registration of the Marsyas Control in the MarSystemQtWrapper
 	MarSystemQtWrapper *mwr = win->getMarSystemQtWrapper ();
 	MarControlPtr formantOrderPtr = mwr->getctrl("mrs_natural/formantOrder");
 	mwr->trackctrl(formantOrderPtr);

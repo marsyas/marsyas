@@ -15,14 +15,21 @@ class OscMapper: public QObject
 	Q_OBJECT
 
 public:
+
+	// create an OscMapper (both osc client/server) attached to the specified MarSystemQtWrapper
 	OscMapper(QHostAddress inputHost, quint16 inputPort, QHostAddress outputHost, quint16 outputPort, QObject* p, MarSystemQtWrapper *mwr);
 	~OscMapper();
 
+	// link a specific Qt Object with the reception of Osc messages of the specfied path
 	void registerInputQtSlot(QObject *object, QString path, QVariant::Type type);
 
+	// link a specific Qt Object with the emmission of Osc messages of the specified path
+	// Notice : assumming that the valuechanged () signal is send by the Qt Object
 	void registerOutputQtSlot(QObject *object, QString path, QVariant::Type type);
 
 	public slots:
+
+		// convert Osc messages recieved by the server into Marsyas paths and values
 		void updctrl(QString path, QVariant data)
 		{
 
@@ -72,9 +79,11 @@ public:
 				cval = vec;
 				break;
 			}
+			cout << cval;
 			mwr_->updctrl(control, cval);
 		}
 
+		// convert Marsyas path and values into Qt formats to be sent to the Osc client
 		void ctrlChanged(MarControlPtr ctrl)
 		{
 			QString oscPath("/");

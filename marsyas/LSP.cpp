@@ -23,7 +23,7 @@
 #include <algorithm>
 #include <vector>
 
-//#define _MATLAB_LSP_
+// #define _MATLAB_LSP_
 
 using namespace std;
 using namespace Marsyas;

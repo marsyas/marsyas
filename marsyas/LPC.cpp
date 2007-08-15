@@ -473,6 +473,7 @@ LPC::myProcess(realvec& in, realvec& out)
 	mrs_real matlabGain;
 	MATLAB_GET("LPCgain", matlabGain);
 #endif
+
 }
 
 
