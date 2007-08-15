@@ -36,7 +36,7 @@ window -around 1 second-.
 
 	Controls:
 	- \b mrs_natural/memSize [rw] : maximum buffer size (in samples)
-	- \b mrs_bool/reset [rw] : DOCME
+	- \b mrs_bool/reset [rw] : clear and reset the memory buffer
 */
 
 
