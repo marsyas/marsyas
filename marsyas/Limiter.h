@@ -38,7 +38,8 @@ as a prototype template for building more complicated MarSystems.
 	- \b mrs_real/rt [rw] : DUNNO
 	- \b mrs_real/slope [rw] : DUNNO
 */
-}
+
+
 /* How to use the Limiter Marsystem
 
 	The system can be setup using the marsystem manager
