@@ -87,22 +87,41 @@ public:
   void stretch(mrs_natural rows, mrs_natural cols);
 	/// allocate(size) + keep old vals.  May also be used to shrink realvec.
   void stretch(mrs_natural size);
+
+  	/// write to array, stretching the array if necessary
+  void stretchWrite(const mrs_natural pos, const mrs_real val);
+  	/// write to array, stretching the array if necessary
+  void stretchWrite(const mrs_natural pos, const mrs_real val);
+  void stretchWrite(const mrs_natural r, const mrs_natural c, const mrs_real val);
 	//@}
   
-
-  void setval(mrs_natural start, mrs_natural end, mrs_real val);// set all entries to val 
-  void setval(mrs_real val);// set all entries to val 
+	/** \name Initialize array */
+	//@{
+	/// set all entries to val 
+  void setval(mrs_natural start, mrs_natural end, mrs_real val);
+	/// set all entries to val 
+  void setval(mrs_real val);
+	//@}
   
-  void apply(mrs_real (*func) (mrs_real));// apply a given function to all the elements
+	/** \name other */
+	//@{
+	/// apply a given function to all the elements
+  void apply(mrs_real (*func) (mrs_real));
+	//@}
 
+	/** \name Getting information */
+	//@{
   mrs_natural getSize() const;
   mrs_natural getCols() const;
   mrs_natural getRows() const;
   mrs_real *getData() const;// dirty for easy integration 
+	//@}
+
 
   void shuffle();
   
-  // vector operations 
+	/** \name Vector Operations */
+	//@{
   realvec& operator+=(const realvec& vec);
   realvec& operator-=(const realvec& vec);
   realvec& operator*=(const realvec& vec);
@@ -117,36 +136,45 @@ public:
   friend realvec operator*(const realvec& vec1, const realvec& vec2);
   friend realvec operator/(const realvec& vec1, const realvec& vec2);
   friend bool operator!=(const realvec& v1, const realvec& v2);
+	//@}
    
-  // item access
+	/** \name Item access */
+	//@{
   mrs_real& operator()(const mrs_natural i);
   mrs_real operator()(const mrs_natural i) const;
   mrs_real& operator()(const mrs_natural r, const mrs_natural c);
   mrs_real operator()(const mrs_natural r, const mrs_natural c) const;
+	//@}
 
-  // write to array, stretching the array if necessary
-  void stretchWrite(const mrs_natural pos, const mrs_real val);
-  void stretchWrite(const mrs_natural r, const mrs_natural c, const mrs_real val);
 
-  // Matlab-like indexing
+	/** \name Indexing*/
+	//@{
+	/// matlab-like
   realvec operator()(std::string r, std::string c);
+	/// matlab-like
   realvec operator()(std::string r);
-  // vector indexing
+	/// vector indexing
   void getRow(const mrs_natural r, realvec& res) const;
+	/// vector indexing
   void getCol(const mrs_natural c, realvec& res) const;
+	//@}
 
-  // output functions 
+	/** \name Output functions */
+	//@{
   void debug_info();
   void dump();
   bool write(std::string filename) const;
   bool read(std::string filename);
   friend std::ostream& operator<<(std::ostream&, const realvec&);
   friend std::istream& operator>>(std::istream&, realvec&);
-  // input/output functions for line-separated text files
+	/// input function for line-separated text files
   bool readText(std::string filename);
+	/// output function for line-separated text files
   bool writeText(std::string filename);
+	//@}
 
-  // Observations statistics 
+	/** \name Observations statics */
+	//@{
   void meanObs(realvec& res) const;
   void stdObs(realvec& res) const;
   void varObs(realvec& res) const;
@@ -154,8 +182,10 @@ public:
   void normSpl(mrs_natural=0);
   void normObsMinMax();
   void normSplMinMax(mrs_natural=0);
+	//@}
 
-  // Vector/Matrix Algebra and Statistics
+	/** \name Vector/Matrix Algebra and Statistics */
+	//@{
   mrs_real maxval(mrs_natural *index=NULL) const;
   mrs_real minval() const;
   mrs_real mean() const;
@@ -177,10 +207,13 @@ public:
   void correlation(realvec& res) const; 
   mrs_real trace() const; 
   mrs_real det() const; 
+	//@}
 
-  // Communications
+	/** \name Communications */
+	//@{
   void send(Communicator *com);
   mrs_natural search(mrs_real val);
+	//@}
 };
 
 
