@@ -27,7 +27,9 @@ namespace Marsyas
 /** 
     \class MemorySource
     \ingroup IO
+	\brief DOCME
 
+	long descr DOCME
 */
 
 

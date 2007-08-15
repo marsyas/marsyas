@@ -1,19 +1,27 @@
-/** \file general.doxy
-\bug sfplay portability  (see sourceforge)  -fixed, kind-of.  Delete
-from sourceforge.
 
-\bug Vibrato portability   (see sourceforge)  - fixed, kind-of.  Delete
-from sourceforge.
+/** \file general.doxy
+\bug sfplay portability  (see sourceforge).   Not fixed yet, despite
+previous reports.
+
+\todo document controls for ALL "core" MarSystems.
 
 \todo check  examples/Qt4-tutorial  to see if it still works.  Also
 change member variables to foo_ (underscore).
 
-\todo Remove \class from all doxy.  Doxygen is happier if it can figure
-out the class by itself (ie place the /** right before the "class foo"
-line)
+\todo Remove class from all doxy.  Doxygen is happier if it can figure
+out the class by itself (ie place the doxy stuff right before the "class
+foo" line)
 
 \todo run dos2unix on all source files.  Also (possibly) run astyle.
 Problem: these changes count as... umm... changes :).  That means that
 you can't easily use svn blame to find out who made the last non-trivial
 change.
+
+\todo get Transcriber-simple integated in Marsyas.  Then update
+pitchextract to use it (maybe?)
+
+\todo Nag gtzan about having a marsyas/Qt/  that contains stuff like
+MarSystemQtWrapper.
+
 */
+
