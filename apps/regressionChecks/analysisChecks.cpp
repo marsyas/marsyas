@@ -4,14 +4,12 @@
 void
 analysis_pitch(string infile)
 {
-	cout<<"begin"<<endl;
 	MarSystem* pnet = mng.create("Series", "pnet");
 	// sets up SoundFileSource, links notEmpty, and sets srate
 	mrs_real srate = addSource( pnet, infile );
 
 	pnet->addMarSystem(mng.create("ShiftInput", "sfi"));
 	pnet->addMarSystem(mng.create("PitchPraat", "pitch"));
-	cout<<"got net"<<endl;
 
 	mrs_real lowPitch = 50;
 	mrs_real highPitch = 100;
