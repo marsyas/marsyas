@@ -28,6 +28,10 @@ namespace Marsyas
     \class MemorySource
     \ingroup IO
 	\brief DOCME
+	
+	Controls:
+	- \b mrs_natural/samplesToUse [rw] : DOCME
+	- \b mrs_bool/done [r] : DOCME
 
 	long descr DOCME
 */
