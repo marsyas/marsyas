@@ -11,12 +11,15 @@ SOURCES += backend.cpp
 HEADERS += ../../apps/Qt4Apps/MarSystemQtWrapper.h
 SOURCES += ../../apps/Qt4Apps/MarSystemQtWrapper.cpp
 
-#MARSYAS_INSTALL_DIR  = ${HOME}/usr/
-#MARSYAS_INSTALL_DIR  = /usr/local
-message("Marsyas was installed in $$MARSYAS_INSTALL_DIR, right?")
 
+#MARSYAS_INSTALL_DIR  = ${HOME}/usr/
+MARSYAS_INSTALL_DIR  = /usr/local
+message("If Marsyas was installed, it went into $$MARSYAS_INSTALL_DIR, right?")
 INCLUDEPATH += $$MARSYAS_INSTALL_DIR/include/marsyas
-INCLUDEPATH += ../../bin/release
+# in case you have not installed Marsyas
+INCLUDEPATH += ../../lib/release
+
+
 unix:LIBS += -lmarsyas -L$$MARSYAS_INSTALL_DIR/lib # -lmad -lvorbis -lvorbisfile
 !macx:LIBS += -lasound
 macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation

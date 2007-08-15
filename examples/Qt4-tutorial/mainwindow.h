@@ -38,7 +38,7 @@ public slots:
 	void setMainPosition(int newPos);
 
 private:
-	MarBackend *marBackend;
-	QLCDNumber *lcd;
+	MarBackend *marBackend_;
+	QLCDNumber *lcd_;
 };
 
