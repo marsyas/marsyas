@@ -31,12 +31,11 @@ namespace Marsyas
 	Simple Delay example
 
 	Controls:
-	- \b mrs_natural/delay [w] : delay in samples.
-	- \b mrs_real/delay [w] : delay in seconds.
-\todo having two different controls with the same name seems stupid.  Maybe delaySamples and delaySeconds?
-
 	- \b mrs_real/gain [rw] : direct gain.
-	- \b mrs_real/feedback [rw] : feedback gain.
+	- \b mrs_real/feedback [rw] : feedback gain.	
+	- \b mrs_natural/delaySamples [w] : delay in samples.
+	- \b mrs_real/delaySeconds [w] : delay in seconds.
+
 */
 
 
