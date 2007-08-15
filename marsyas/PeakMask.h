@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-	\class PeakMask
-	\brief Basic example on how to use controls efficiently in MarSystems
-
-	This example is the same as Gain; it scales the output by
-multiplying each sample with a real number.
-*/
-
 #ifndef MARSYAS_PEAKMASK_H
 #define MARSYAS_PEAKMASK_H
 
@@ -31,6 +23,18 @@ multiplying each sample with a real number.
 
 namespace Marsyas
 {
+/**
+	\class PeakMask
+	\ingroup Special
+	\brief Basic example on how to use controls efficiently in MarSystems
+
+	This example is the same as Gain; it scales the output by
+multiplying each sample with a real number.
+
+	Controls:
+	- \b mrs_real/gain [w] : sets the gain multiplier.
+	- \b mrs_bool/dummy [rw] : does nothing.
+*/
 
 class PeakMask: public MarSystem
 {
