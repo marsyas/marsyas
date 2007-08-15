@@ -6,7 +6,7 @@ analysis_pitch(string infile)
 {
 	MarSystem* pnet = mng.create("Series", "pnet");
 	// sets up SoundFileSource, links notEmpty, and sets srate
-	addSource( pnet, infile );
+	mrs_real srate = addSource( pnet, infile );
 
 	pnet->addMarSystem(mng.create("ShiftInput", "sfi"));
 	pnet->addMarSystem(mng.create("PitchPraat", "pitch"));
