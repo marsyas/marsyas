@@ -24,16 +24,16 @@ void OscMapper::registerInputQtSlot(QObject *object, QString path, QVariant::Typ
 
 	switch(type)
 	{
-	case QVariant::Type::Bool:
+	case QVariant::Bool:
 		QObject::connect( integerobj, SIGNAL( data( bool ) ), object, SLOT( setValue( bool ) ) );
 		break;
-	case QVariant::Type::Int:
+	case QVariant::Int:
 		QObject::connect( integerobj, SIGNAL( data( int ) ), object, SLOT( setValue( int ) ) );
 		break;
-	case QVariant::Type::Double:
+	case QVariant::Double:
 		QObject::connect( integerobj, SIGNAL( data( double ) ), object, SLOT( setValue( double ) ) );			
 		break;
-	case QVariant::Type::String:
+	case QVariant::String:
 		QObject::connect( integerobj, SIGNAL( data( string ) ), object, SLOT( setValue( string ) ) );		
 		break;
 	}
@@ -46,16 +46,16 @@ void OscMapper::registerOutputQtSlot(QObject *object, QString path, QVariant::Ty
 
 	switch(type)
 	{
-	case QVariant::Type::Bool:
+	case QVariant::Bool:
 		QObject::connect( object, SIGNAL( valueChanged( bool ) ), integerobj, SLOT( send( bool ) ) );
 		break;
-	case QVariant::Type::Int:
+	case QVariant::Int:
 		QObject::connect( object, SIGNAL( valueChanged( int ) ), integerobj, SLOT( send( int ) ) );
 		break;
-	case QVariant::Type::Double:
+	case QVariant::Double:
 		QObject::connect( object, SIGNAL( valueChanged( double ) ), integerobj, SLOT( send( double ) ) );			
 		break;
-	case QVariant::Type::String:
+	case QVariant::String:
 		QObject::connect( object, SIGNAL( valueChanged( string ) ), integerobj, SLOT( send( string ) ));		
 		break;
 	}

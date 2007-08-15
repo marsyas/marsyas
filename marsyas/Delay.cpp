@@ -50,12 +50,12 @@ Delay::addControls()
 {
   addctrl("mrs_real/gain", 0.0);   // direct gain
   addctrl("mrs_real/feedback", 0.0); // feedback gain
-  addctrl("mrs_natural/delay", 0); // delay in samples
-  addctrl("mrs_real/delay", 0.0); // delay in seconds
+  addctrl("mrs_natural/delaySamples", 0); // delay in samples
+  addctrl("mrs_real/delaySeconds", 0.0); // delay in seconds
   setctrlState("mrs_real/gain", true);
   setctrlState("mrs_real/feedback", true);
-  setctrlState("mrs_real/delay", true);
-	setctrlState("mrs_natural/delay", true);
+  setctrlState("mrs_real/delaySeconds", true);
+	setctrlState("mrs_natural/delaySamples", true);
 }
 
 
@@ -71,12 +71,12 @@ Delay::myUpdate(MarControlPtr sender)
   gain_ = getctrl("mrs_real/gain")->toReal();
   feedback_ = getctrl("mrs_real/feedback")->toReal();
 
-	if(getctrl("mrs_natural/delay")->toNatural())
-  delay_ = getctrl("mrs_natural/delay")->toNatural();
+	if(getctrl("mrs_natural/delaySamples")->toNatural())
+  delay_ = getctrl("mrs_natural/delaySamples")->toNatural();
 
-	// cout << getctrl("mrs_real/delay")->toReal() << " " << endl;
-  if(getctrl("mrs_real/delay")->toReal() != 0.0)
-		delay_ = (mrs_natural) ceil(getctrl("mrs_real/delay")->toReal()*getctrl("mrs_real/osrate")->toReal());
+	// cout << getctrl("mrs_real/delaySeconds")->toReal() << " " << endl;
+  if(getctrl("mrs_real/delaySeconds")->toReal() != 0.0)
+		delay_ = (mrs_natural) ceil(getctrl("mrs_real/delaySeconds")->toReal()*getctrl("mrs_real/osrate")->toReal());
  
   cursor_ = 0;
 

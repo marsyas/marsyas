@@ -35,37 +35,37 @@ public:
 
 			string control = path.toStdString();
 			control.erase(0, 1);
-			MarControlPtr cval=NULL;
+			MarControlPtr cval;
 			QString tmp;
 
 			QVariant::Type targetType;
 			if(path.contains("mrs_natural/"))
-				data.convert(QVariant::Type::Int);
+				data.convert(QVariant::Int);
 			else if(path.contains("mrs_bool/"))
-				data.convert(QVariant::Type::Bool);
+				data.convert(QVariant::Bool);
 			else if(path.contains("mrs_string/"))
-				data.convert(QVariant::Type::String);
+				data.convert(QVariant::String);
 			else if(path.contains("mrs_real/"))
-				data.convert(QVariant::Type::Double);
+				data.convert(QVariant::Double);
 			else if(path.contains("mrs_realvec/"))
-				data.convert(QVariant::Type::List);
+				data.convert(QVariant::List);
 
 			switch(data.type())
 			{
-			case QVariant::Type::Bool:
+			case QVariant::Bool:
 				cval = data.toBool();
 				break;
-			case QVariant::Type::Int:
+			case QVariant::Int:
 				cval = data.toInt();
 				break;
-			case QVariant::Type::Double:
+			case QVariant::Double:
 				cval = data.toDouble();
 				break;
-			case QVariant::Type::String:
+			case QVariant::String:
 				tmp = data.toString();
 				cval = tmp.toStdString();
 				break;
-			case QVariant::Type::List:
+			case QVariant::List:
 				mrs_natural i=0;
 				QList<QVariant> list = data.toList();
 				realvec vec(list.size());
@@ -91,7 +91,7 @@ public:
 
 			QVariant oscData;
 			if(oscPath.contains("mrs_natural/"))
-				oscData = ctrl->toNatural();
+				oscData = (int) ctrl->toNatural();
 			else if(oscPath.contains("mrs_bool/"))
 				oscData = ctrl->toBool();
 			else if(oscPath.contains("mrs_string/"))
