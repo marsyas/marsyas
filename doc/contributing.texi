@@ -168,12 +168,13 @@ greater than 0.
 @node Contributing source documentation
 @subsection Contributing source documentation
 
-At the beginning of your @code{.cpp} file, please include a short
-documentation snippet:
+In your @code{.h} file, just after the @code{namespace Marsyas \n @{}
+line, please include a short documentation snippet:
 
 @example
+namespace Marsyas
+@{
 /**
-    \class Gain
     \ingroup Processing
     \brief Multiply input realvec with gain
 
@@ -184,7 +185,15 @@ used as a prototype template for building more complicated MarSystems.
     Controls:
     - \b mrs_real/gain [w] : adjust the gain multiplier.
 */
+
+class Gain: public MarSystem
+@{
 @end example
+
+@strong{Warning: } the old convention included a @code{\class Gain};
+this was a mistake in our understanding of Doxygen.  Please @strong{do
+not} include an explicit class name; just make sure that the doc snippet
+occurs above the class.
 
 The @code{[w]} indicates that the control should be written and not
 (usefully) read.  Valid options are @code{[r]}, @code{[w]}, and
@@ -205,6 +214,10 @@ of the @code{Processing} group.  No MarSystem should only be in the
 
 Code which is not a MarSystem should be placed in the @code{Notmar}
 group.
+
+A complete list of groups can be found in the @file{marsyas/groups.doxy}
+file.  The main groups are @code{Composites}, @code{Basic}, @code{IO},
+@code{Processing}, @code{Analysis}, and @code{Synthesis}.
 
 
 @node Contributing non-MarSystem system code
