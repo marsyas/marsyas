@@ -37,10 +37,6 @@ Controls:
   MarSystem to disable.
 - \b mrs_natural/enable	[w] : pass in the number of the child MarSystem to
   enable.  (by default all children are enabled)
-
-\deprecated if Fanout mrs_bool/probe really is depreciated, chop it.
-UPDATE: lmartins said that _all_ probes are deprecated.  Chop them all
-after the merge.
 */
 
 

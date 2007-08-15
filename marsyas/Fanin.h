@@ -27,7 +27,8 @@ namespace Marsyas
 	\class Fanin
 	\ingroup Composites
 	\brief Fanin of MarSystem objects
-	\deprecated Fanin (the whole marsystem) is deprecated.
+	\deprecated Fanin (the whole marsystem) is deprecated.  (some code
+in  apps/  still use it, though)
 
 	Combines a series of MarSystem objects to a single MarSystem
 corresponding to executing the System objects one after the other in

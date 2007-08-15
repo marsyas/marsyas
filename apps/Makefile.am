@@ -34,7 +34,7 @@ EXTRA_DIST += bextract/
 EXTRA_DIST += boomchick/
 EXTRA_DIST += classifyFile/
 EXTRA_DIST += extract/
-EXTRA_DIST += marsyasTests/
+EXTRA_DIST += mudbox/
 EXTRA_DIST += midiTest/
 EXTRA_DIST += mixer/
 EXTRA_DIST += mkcollection/
@@ -70,7 +70,7 @@ dist-hook:
 	rm -rf `find $(distdir)/boomchick/ -name .svn`
 	rm -rf `find $(distdir)/classifyFile/ -name .svn`
 	rm -rf `find $(distdir)/extract/ -name .svn`
-	rm -rf `find $(distdir)/marsyasTests/ -name .svn`
+	rm -rf `find $(distdir)/mudbox/ -name .svn`
 	rm -rf `find $(distdir)/midiTest/ -name .svn`
 	rm -rf `find $(distdir)/mixer/ -name .svn`
 	rm -rf `find $(distdir)/mkcollection/ -name .svn`

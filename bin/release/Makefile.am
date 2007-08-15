@@ -21,7 +21,7 @@ MAINTAINERCLEANFILES    = Makefile.in
 INCLUDES += -I$(top_srcdir)/marsyas -I$(top_srcdir)/marsyas/MATLAB
 
 bin_PROGRAMS = sfplay phasevocoder sfplugin bextract mkcollection \
-	marsyasTests record classifyFile peakSynth peakClustering sfinfo \
+	mudbox record classifyFile peakSynth peakClustering sfinfo \
 	extract midiTest boomchick pitchextract orcarecord helloworld \
 	gettingdata virtualsensor scheduler msl regressionChecks
 
@@ -45,8 +45,8 @@ mkcollection_SOURCES = $(top_srcdir)/apps/mkcollection/mkcollection.cpp
 mkcollection_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 	       $(Libs)
 
-marsyasTests_SOURCES = $(top_srcdir)/apps/marsyasTests/marsyasTests.cpp
-marsyasTests_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
+mudbox_SOURCES = $(top_srcdir)/apps/mudbox/mudbox.cpp
+mudbox_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 	       $(Libs)
 
 regressionChecks_SOURCES = $(top_srcdir)/apps/regressionChecks/regressionChecks.cpp

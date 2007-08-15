@@ -3,10 +3,8 @@
 \bug sfplay portability  (see sourceforge).   Not fixed yet, despite
 previous reports.
 
-\todo document controls for ALL "core" MarSystems.
-
-\todo check  examples/Qt4-tutorial  to see if it still works.  Also
-change member variables to foo_ (underscore).
+\todo document controls for ALL "core" MarSystems.  (once that's done,
+tackle Processing, Analysis, and Synthesis)
 
 \todo Remove class from all doxy.  Doxygen is happier if it can figure
 out the class by itself (ie place the doxy stuff right before the "class
@@ -22,6 +20,9 @@ pitchextract to use it (maybe?)
 
 \todo Nag gtzan about having a marsyas/Qt/  that contains stuff like
 MarSystemQtWrapper.
+
+\todo Discuss splitting MarSystemManager into MarSystemManager-atoms and
+MarSystemManager-molecules
 
 */
 

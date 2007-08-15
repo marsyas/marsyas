@@ -10,7 +10,7 @@ marsyasConsoleApps {
 		#boomchick \
 		classifyFile \
 		extract \
-		marsyasTests \
+		mudbox \
 		#midiTest \
 		#mixer \
 		mkcollection \
