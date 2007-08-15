@@ -7,7 +7,7 @@ others may use it.
 @menu
 * Contributing documentation::  
 * Code style::                  
-* Adding to marsyasTests::      
+* Adding to mudbox::      
 * Contributing applications::   
 * Contributing system code::    
 * Sending a patch::             
@@ -105,11 +105,11 @@ program should return a number greater than 0.
 @end itemize
 
 
-@node Adding to marsyasTests
-@section Adding to marsyasTests
+@node Adding to mudbox
+@section Adding to mudbox
 
 The easiest way to add code to Marsyas is to add a test to
-@file{apps/marsyasTests.cpp}.  This file is a huge mess of short
+@file{apps/mudbox/mudbox.cpp}.  This file is a huge mess of short
 examples, many out of date and no longer working, but it seems popular.
 
 To add your own test, follow the general pattern of other tests.  You
