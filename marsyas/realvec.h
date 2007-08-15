@@ -91,7 +91,6 @@ public:
   	/// write to array, stretching the array if necessary
   void stretchWrite(const mrs_natural pos, const mrs_real val);
   	/// write to array, stretching the array if necessary
-  void stretchWrite(const mrs_natural pos, const mrs_real val);
   void stretchWrite(const mrs_natural r, const mrs_natural c, const mrs_real val);
 	//@}
   
