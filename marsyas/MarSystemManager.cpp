@@ -376,9 +376,9 @@ MarSystemManager::MarSystemManager()
 	pvocpr->addMarSystem(new PvConvert("conv"));
 	pvocpr->addMarSystem(new PvOscBank("ob"));
 	pvocpr->addMarSystem(new ShiftOutput("so"));
-	pvocpr->addMarSystem(new Gain("gt"));
-	pvocpr->linkctrl("mrs_natural/Decimation", 
-		"ShiftInput/si/mrs_natural/Decimation"); // [?] missing WindowSize initialization ?
+	pvocpr->addMarSystem(new Gain("gt")); 
+	pvocpr->linkctrl("mrs_natural/WindowSize", 
+		"ShiftInput/si/mrs_natural/WindowSize");
 	pvocpr->linkctrl("mrs_natural/Decimation", 
 		"PvFold/fo/mrs_natural/Decimation");
 	pvocpr->linkctrl("mrs_natural/Decimation", 
@@ -499,8 +499,6 @@ MarSystemManager::MarSystemManager()
 	parallel->addMarSystem(create("Spectrum", "spk2"));
 	peAnalysePr->addMarSystem(parallel);
 	peAnalysePr->addMarSystem(create("PeakConvert", "conv"));
-	peAnalysePr->linkctrl("mrs_natural/Decimation", 
-		"ShiftInput/si/mrs_natural/Decimation");
 	peAnalysePr->linkctrl("mrs_natural/WindowSize", 
 		"ShiftInput/si/mrs_natural/WindowSize");
 	peAnalysePr->linkctrl("mrs_natural/FFTSize", 
