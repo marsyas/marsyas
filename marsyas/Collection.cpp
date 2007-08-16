@@ -131,7 +131,11 @@ Collection::toLongString()
 }
 
 
-
+string 
+Collection::labelEntry(unsigned int i) 
+{
+  return labelList_[i]; 
+}
 
 string 
 Collection::entry(unsigned int i)
@@ -161,9 +165,19 @@ Marsyas::operator>>(istream& i, Collection& l)
 	  char c = fileEntry[0];
 	  istringstream iss(fileEntry);
 	  iss >> fname;
-	  if (c != '#') 
+	  string::size_type loc = fileEntry.find( "\t", 0 );
+	  if (loc != string::npos) 
 	    {
-	      l.collectionList_.push_back(fileEntry);
+	      l.collectionList_.push_back(fileEntry.substr(0, loc));
+	      l.labelList_.push_back(fileEntry.substr(loc+1, fileEntry.size()));
+	      cout << "Found tab" << endl;
+	    } 
+	  else 
+	    {
+	      if (c != '#') 
+		{
+		  l.collectionList_.push_back(fileEntry);
+		}
 	    }
 	}
     }

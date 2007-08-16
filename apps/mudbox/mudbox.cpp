@@ -689,6 +689,25 @@ test_cascade()
 void 
 test_collection(string sfName) 
 {
+/*   cout << "sfName = " << sfName << endl;
+  Collection l;
+  l.read(sfName);
+  cout << "Finished reading" << endl;
+  l.write("out.mf");
+  cout << "Finished writing" << endl;
+
+  int i;
+  for (i = 0; i < l.size() ; i++)
+    {
+      cout << "**" << l.entry(i) << "***" << endl;
+      cout << "**" << l.labelEntry(i) << "***" << endl;
+    }
+  return;
+*/ 
+
+  
+
+
   
   MarSystemManager mng;
   
@@ -1802,7 +1821,7 @@ test_stereoFeaturesMFCC(string fname0, string fname1)
 
   Collection l;
   l.read(fname0);
- 
+
   int i,t;
   
   total->updctrl("Annotator/ann/mrs_natural/label", 0); 

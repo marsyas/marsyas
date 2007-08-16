@@ -49,6 +49,7 @@ public:
   mrs_natural size();
   void setName(std::string name);
   std::string entry(unsigned int i);
+  std::string labelEntry(unsigned int i);
   mrs_natural getSize();
   void add(std::string entry);
   std::string name();
