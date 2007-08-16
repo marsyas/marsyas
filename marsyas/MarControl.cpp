@@ -113,10 +113,10 @@ MarControl::setName(std::string cname)
 std::string 
 MarControl::getName() const
 {
+
 #ifdef MARSYAS_QT
   QReadLocker locker(&rwLock_);
 #endif
-
   return cname_;
 }
 

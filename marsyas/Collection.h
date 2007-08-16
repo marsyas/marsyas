@@ -41,6 +41,7 @@ class Collection
 {
 private:
   std::vector<std::string> collectionList_;
+  std::vector<std::string> labelList_;
   std::string name_;
 public:
   Collection();

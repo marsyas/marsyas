@@ -39,8 +39,8 @@ Daub4::clone() const
 void
 Daub4::addControls()
 {
-  addctrl("mrs_bool/forward", true);
-  addctrl("mrs_natural/processSize", 0);
+  addctrl("mrs_bool/forward", true, ctrl_forward_);
+  addctrl("mrs_natural/processSize", 0, ctrl_processSize_);
 }
 
 void
@@ -63,16 +63,13 @@ Daub4::myProcess(realvec& in, realvec& out)
 {
   //checkFlow(in,out);
 
-  mrs_natural nh, nh1, i, j;
-  mrs_natural n = getctrl("mrs_natural/processSize")->toNatural();
-  bool forward = getctrl("mrs_bool/forward")->toBool();
+  const mrs_natural& n = ctrl_processSize_->to<mrs_natural>();
+  const mrs_bool& forward = ctrl_forward_->to<mrs_bool>();
   
   if (n < 4) return;
   nh = n >> 1;
   nh1 = nh + 1;
 
-  workspace_.setval(0.0);
-  
   // Apply Filter 
   if (forward)
   {

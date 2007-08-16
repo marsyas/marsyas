@@ -43,9 +43,12 @@ private:
   mrs_real c1_;
   mrs_real c2_;
   mrs_real c3_;
+  mrs_natural nh, nh1, i, j;
+  MarControlPtr ctrl_forward_;
+  MarControlPtr ctrl_processSize_;
 
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
 public:
   Daub4(std::string name);

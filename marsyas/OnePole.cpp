@@ -54,10 +54,7 @@ OnePole::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("OnePole.cpp - OnePole:myUpdate");
   
-//   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-//   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-//   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-	MarSystem::myUpdate(sender);
+  MarSystem::myUpdate(sender);
   
   alpha_ = getctrl("mrs_real/alpha")->toReal();
   gain_ = (mrs_real)(1.0 - alpha_);

@@ -334,11 +334,12 @@ tempo_histoSumBands(MarSystem* total1, string sfName, realvec& beatfeatures,
 
   total1->updctrl("SoundFileSource/src1/mrs_string/filename", sfName);
 
-  
   srate = total1->getctrl("SoundFileSource/src1/mrs_real/israte")->toReal();
 
   mrs_natural ifactor = 8;
   total1->updctrl("DownSampler/initds/mrs_natural/factor", ifactor);  
+
+
 
   mrs_natural winSize = (mrs_natural) ((srate / 22050.0) * 2 * 65536);
   mrs_natural hopSize = winSize / 16;
@@ -350,11 +351,11 @@ tempo_histoSumBands(MarSystem* total1, string sfName, realvec& beatfeatures,
 
   total1->updctrl("mrs_natural/inSamples", hopSize);
   total1->updctrl("SoundFileSource/src1/mrs_natural/pos", offset);      
+  total1->updctrl("SoundFileSource/src1/mrs_natural/inSamples", hopSize);
   total1->updctrl("ShiftInput/si/mrs_natural/WindowSize", winSize);
-  total1->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
   total1->updctrl("ShiftInput/si/mrs_bool/reset", true);
   total1->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 3);  
-
+  
   // wavelt filterbank envelope extraction controls 
   total1->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", true);
   total1->updctrl("OnePole/lpf/mrs_real/alpha", 0.99f);
@@ -362,6 +363,7 @@ tempo_histoSumBands(MarSystem* total1, string sfName, realvec& beatfeatures,
   total1->updctrl("DownSampler/ds/mrs_natural/factor", factor);  
 
   srate = total1->getctrl("DownSampler/initds/mrs_real/osrate")->toReal();  
+
 
   // Peak picker 4BPMs at 60BPM resolution from 50 BPM to 250 BPM 
   mrs_natural pkinS = total1->getctrl("Peaker/pkr/mrs_natural/onSamples")->toNatural();
