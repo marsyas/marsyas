@@ -58,6 +58,7 @@ public:
   void shuffle();
   void read(std::string filename);
   void write(std::string filename);
+  void labelAll(std::string label);
   std::string toLongString();
   
   friend std::ostream& operator<<(std::ostream&, const Collection&);

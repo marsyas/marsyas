@@ -56,6 +56,21 @@ Collection::write(string filename)
   os << (*this) << endl;
 }
 
+void 
+Collection::labelAll(string label) 
+{
+  if (hasLabels_ == false) 
+    {
+      hasLabels_ = true;
+      for (unsigned int i=0; i < collectionList_.size(); i++) 
+	labelList_.push_back(label);
+    }
+  else 
+    {
+      for (unsigned int i=0; i < collectionList_.size(); i++) 
+	labelList_[i] = label;
+    }
+}
 
 ostream& 
 Marsyas::operator<<(ostream& o, const Collection& l)

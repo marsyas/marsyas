@@ -694,6 +694,7 @@ test_collection(string sfName)
   Collection l;
   l.read(sfName);
   cout << "Finished reading" << endl;
+  l.labelAll("music");
   l.write("out.mf");
   cout << "Finished writing" << endl;
 

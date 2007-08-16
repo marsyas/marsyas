@@ -29,14 +29,71 @@
 #include <sys/stat.h>
 #include <assert.h>
 
-
+#include "CommandLineOptions.h"
 #include "FileName.h"
 #include "Collection.h"
-
 #include <string>
 
 using namespace std;
 using namespace Marsyas;
+
+
+/* global variables for various commandline options */ 
+
+int helpopt;
+int usageopt;
+string collectionName;
+string labelopt;
+CommandLineOptions cmd_options;
+
+void printUsage(string progName)
+{
+  MRSDIAG("mkcollection.cpp - printUsage");
+  cerr << "Usage : " << progName << " [-l label] [-c collectionName] dir1 dir2 ... dirN" << endl;
+  cerr << endl;
+  cerr << "where dir1, dir2, ..., dirN are directories that will be scanned recursively for sound files in a MARSYAS supported format and added to the collection. " << endl;
+  exit(1);
+}
+
+void 
+printHelp(string progName)
+{
+  MRSDIAG("mkcollection.cpp - printHelp");
+  cerr << "mkcollection, MARSYAS, Copyright George Tzanetakis " << endl;
+  cerr << "--------------------------------------------" << endl;
+  cerr << "Utility for creating collection files " << endl;
+  cerr << endl;
+  cerr << "Usage : " << progName << " [-l label] [-c collectionName] dir1 dir2 ... dirN" << endl;
+  cerr << endl;
+  cerr << "where dir1, dir2, ..., dirN are directories that will be scanned recursively for sound files in a MARSYAS supported format and added to the collection. " << endl;
+  cerr << "Help Options:" << endl;
+  cerr << "-u --usage      : display short usage info" << endl;
+  cerr << "-h --help       : display this information " << endl;
+  cerr << "-l --label      : label for the collection " << endl;
+  cerr << "-c --collectionName : the name of the collection (including the .mf extension) " << endl;
+  exit(1);
+}
+
+void 
+initOptions()
+{
+  cmd_options.addBoolOption("help", "h", false);
+  cmd_options.addBoolOption("usage", "u", false);
+  cmd_options.addStringOption("label", "l", EMPTYSTRING);
+  cmd_options.addStringOption("collectionName", "c", "music.mf");
+}
+
+
+void 
+loadOptions()
+{
+  helpopt = cmd_options.getBoolOption("help");
+  usageopt = cmd_options.getBoolOption("usage");
+  collectionName = cmd_options.getStringOption("collectionName");
+  labelopt = cmd_options.getStringOption("label");
+}
+
+
 
 #ifndef WIN32
 #include <dirent.h>
@@ -221,17 +278,19 @@ void read(Collection& cl, string dir, int recursive)
 
 	
 int 
-main(int argc, char **argv)
+main(int argc, const char **argv)
 {
 
-  if (argc ==1)
-    {
-      cerr << "Usage :" << argv[0] << " collectionName directory(ies) \n";
-      exit(1);
-    }
-  string collectionName;
-  collectionName = argv[1];
-  
+  string progName = argv[0];  
+  if (argc == 1)
+    printUsage(progName);
+
+  // handling of command-line options 
+  initOptions();
+  cmd_options.readOptions(argc, argv);
+  loadOptions();
+
+
   cout << "CollectionName = " << collectionName << endl;
   Collection cl;
   FileName fname(collectionName);
@@ -239,24 +298,35 @@ main(int argc, char **argv)
   collectionName = collectionName.substr(0, collectionName.size()-3); 
 
   cl.setName(collectionName);
+
+  vector<string> soundfiles = cmd_options.getRemaining();
+  if (helpopt) 
+    printHelp(progName);
   
-  int i;
-  
-  for (i=0; i < argc-2; i++)
+  if (usageopt)
+    printUsage(progName);
+
+  vector<string>::iterator sfi;  
+  for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
     {
       mode_t mode;
-      mode = File_Mode(argv[i+2]);
+      string fname = *sfi;
+      mode = File_Mode(fname.c_str());
       if (S_ISDIR(mode)) {
-	read(cl, argv[i+2], 1);	
+	read(cl, fname.c_str(), 1);	
       } else {
-	cerr << argv[i+2] << " is not a directory. Skipping...\n";
+	cerr << fname << " is not a directory. Skipping...\n";
       }
     }
   
   string collectionstr;
   collectionstr += collectionName;
   collectionstr += ".mf";
+  if (labelopt != EMPTYSTRING) 
+    cl.labelAll(labelopt);
+  
   cl.write(collectionstr);
+
   cout << "Wrote collection " << collectionstr << endl;
   return 0;
 }
