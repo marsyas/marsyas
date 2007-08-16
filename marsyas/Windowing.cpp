@@ -199,23 +199,24 @@ Windowing::myProcess(realvec& in, realvec& out)
 	
 	for (o=0; o < inObservations_; o++)
 	{
-		//apply the window to the input data
-		for (t = 0; t < inSamples_; t++)
-		{
-			tmp_(t) =  in(o,t)*envelope_(t); // /(norm_);     
-		}
+
 		//shift windowed data in case zeroPhasing is selected
 		if(ctrl_zeroPhasing_->isTrue())
 		{
-			for (t = 0; t < inSamples_/2; t++)
-				out(o,t)=tmp_((t+delta_)%inSamples_);
-			for (t = inSamples_/2; t < inSamples_; t++)
-				out(o,t+(onSamples_-inSamples_))=tmp_((t+delta_)%inSamples_);
+		  //apply the window to the input data
+		  for (t = 0; t < inSamples_; t++)
+		    {
+		      tmp_(t) =  in(o,t)*envelope_(t); // /(norm_);     
+		    }
+		  for (t = 0; t < inSamples_/2; t++)
+		    out(o,t)=tmp_((t+delta_)%inSamples_);
+		  for (t = inSamples_/2; t < inSamples_; t++)
+		    out(o,t+(onSamples_-inSamples_))=tmp_((t+delta_)%inSamples_);
 		}
 		else
 		{
-			for(t=0; t< inSamples_; ++t)
-				out(o,t) = tmp_(t);
+		  for(t=0; t< inSamples_; ++t)
+		    out(o,t) = in(o,t) * envelope_(t);
 		}
 
 	}
