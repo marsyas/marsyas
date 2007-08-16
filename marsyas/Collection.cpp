@@ -25,6 +25,7 @@ using namespace Marsyas;
 Collection::Collection()
 {
   collectionList_.reserve(1000);
+  hasLabels_ = false;
 }
 
 Collection::~Collection()
@@ -63,7 +64,10 @@ Marsyas::operator<<(ostream& o, const Collection& l)
   // o << "# name = " << l.name_ << endl << endl;
   for (unsigned int i=0; i < l.collectionList_.size(); i++)
     {
-      o << l.collectionList_[i] << endl;
+      if (!l.hasLabels_) 
+	o << l.collectionList_[i] << endl;
+      else 
+	o << l.collectionList_[i] << "\t" << l.labelList_[i] << endl;
     }
   o << endl;
   return o;
@@ -90,6 +94,7 @@ Collection::add(string entry)
   collectionList_.push_back(entry);
 }
 
+
 mrs_natural 
 Collection::getSize() 
 {
@@ -97,6 +102,11 @@ Collection::getSize()
   return size;
 }
 
+mrs_bool 
+Collection::hasLabels() 
+{
+  return hasLabels_; 
+}
 
 void 
 Collection::shuffle()
@@ -112,6 +122,12 @@ Collection::shuffle()
       temp = collectionList_[i];
       collectionList_[i] = collectionList_[rind];
       collectionList_[rind] = temp;
+      if (hasLabels_) 
+	{
+	  temp = labelList_[i];
+	  labelList_[i] = labelList_[rind];
+	  labelList_[rind] = temp;
+	}
     }
 }
 
@@ -134,7 +150,9 @@ Collection::toLongString()
 string 
 Collection::labelEntry(unsigned int i) 
 {
-  return labelList_[i]; 
+  if (hasLabels_)
+    return labelList_[i]; 
+  return "No label"; 
 }
 
 string 
@@ -161,16 +179,20 @@ Marsyas::operator>>(istream& i, Collection& l)
 	  ; // do nothing
 	}
       else 
-	{
+	{ 
 	  char c = fileEntry[0];
 	  istringstream iss(fileEntry);
 	  iss >> fname;
 	  string::size_type loc = fileEntry.find( "\t", 0 );
 	  if (loc != string::npos) 
 	    {
-	      l.collectionList_.push_back(fileEntry.substr(0, loc));
-	      l.labelList_.push_back(fileEntry.substr(loc+1, fileEntry.size()));
-	      cout << "Found tab" << endl;
+	      if (c != '#') 
+		{
+		  l.collectionList_.push_back(fileEntry.substr(0, loc));
+		  l.labelList_.push_back(fileEntry.substr(loc+1, fileEntry.size()));
+		  l.hasLabels_ = true;
+		}
+	      
 	    } 
 	  else 
 	    {

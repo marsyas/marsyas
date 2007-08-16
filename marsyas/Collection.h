@@ -43,6 +43,7 @@ private:
   std::vector<std::string> collectionList_;
   std::vector<std::string> labelList_;
   std::string name_;
+  bool hasLabels_;
 public:
   Collection();
   ~Collection();
@@ -51,6 +52,7 @@ public:
   std::string entry(unsigned int i);
   std::string labelEntry(unsigned int i);
   mrs_natural getSize();
+  mrs_bool hasLabels(); 
   void add(std::string entry);
   std::string name();
   void shuffle();

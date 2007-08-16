@@ -58,6 +58,7 @@ printHelp(string progName)
   cerr << "Supported tests:" << endl;
   cerr << "cascade         : test Cascade composite " << endl;
   cerr << "collection      : test Collection " << endl;
+  cerr << "CollectionFileSource: test using Collection as SoundFileSources" << endl;
   cerr << "drumclassify    : test drumclassify (mplfile argument)" << endl;
   cerr << "fanoutswitch    : test disabling fanout branches " << endl;
   cerr << "filter          : test filter MarSystem " << endl;
@@ -689,7 +690,7 @@ test_cascade()
 void 
 test_collection(string sfName) 
 {
-/*   cout << "sfName = " << sfName << endl;
+  cout << "sfName = " << sfName << endl;
   Collection l;
   l.read(sfName);
   cout << "Finished reading" << endl;
@@ -703,12 +704,13 @@ test_collection(string sfName)
       cout << "**" << l.labelEntry(i) << "***" << endl;
     }
   return;
-*/ 
+}
 
   
 
-
-  
+void 
+test_CollectionFileSource(string sfName)
+{  
   MarSystemManager mng;
   
   MarSystem* playbacknet = mng.create("Series", "playbacknet");
@@ -3126,6 +3128,8 @@ main(int argc, const char **argv)
     test_cascade();
   else if (testName == "collection")
     test_collection(fname0);
+  else if (testName == "CollectionFileSource")
+    test_CollectionFileSource(fname0);
   else if (testName == "fanoutswitch")
     test_fanoutswitch();
   else if (testName == "filter") 
