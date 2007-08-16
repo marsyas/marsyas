@@ -1,5 +1,12 @@
-// Various tests of MarSystems. This is the place 
-// to put code that is still at testing/debugging phase. 
+// mudbox is a container executable for various simple 
+// functions/applications that typically test drive 
+// a single MarSystem or type of processing. It can 
+// either be viewed as repository of simple (but sometimes 
+// broken) examples or as an incubator for more complicated 
+// applications that deserve a separate executable. This 
+// is the best place to experiment with Marsyas without 
+// changing adding your own application and having to change 
+// the build process.  
 
 #include <cstdio>
 #include <string>
