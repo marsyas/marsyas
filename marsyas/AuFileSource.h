@@ -92,6 +92,7 @@ private:
   mrs_real duration_;
   bool advance_;
   mrs_natural cindex_;
+  mrs_natural nt_;
   
   mrs_real repetitions_;
 

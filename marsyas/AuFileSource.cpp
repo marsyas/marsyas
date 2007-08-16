@@ -228,14 +228,15 @@ AuFileSource::getLinear16(realvec& slice)
   for (t=0; t < samplesToWrite_; t++)
   {
     sval_ = 0;
+    nt_ = nChannels_ * t;
     
 		#if defined(MARSYAS_BIGENDIAN)
     for (c=0; c < nChannels_; c++)
-			slice(c, t) = ((mrs_real) sdata_[nChannels_*t + c] / (PCM_FMAXSHRT));
+			slice(c, t) = ((mrs_real) sdata_[nt_ + c] / (PCM_FMAXSHRT));
 		#else
     for (c=0; c < nChannels_; c++)
 		{
-			usval_ = sdata_[nChannels_*t + c];
+			usval_ = sdata_[nt_ + c];
 			usval_ = ((usval_ >> 8) | (usval_ << 8));
 			sval_ = usval_;
 		  
