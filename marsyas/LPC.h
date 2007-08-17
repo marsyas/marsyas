@@ -61,7 +61,7 @@ private:
 	*Also estimates the pitch (only tested for lambda = 0), and updates the pitch_ member variable
 	*@param in input audio frame
 	*@param r autocorrelation output vector size (LPCorder + 1)
-	*@param pitch DOCME
+	*@param pitch pitch estimate calculated by autocorrelation
 	*@param lambda frequency resolution (warp)
 	*/
 	void autocorrelationWarped(const realvec& in, realvec& r, mrs_real& pitch, mrs_real lambda);
