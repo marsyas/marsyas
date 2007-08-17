@@ -31,7 +31,7 @@ using namespace std;
 using namespace Marsyas;
 
 CommandLineOptions cmd_options;
-string testName;
+string toy_withName;
 int helpopt;
 int usageopt;
 int verboseopt;
@@ -39,8 +39,8 @@ int verboseopt;
 void 
 printUsage(string progName)
 {
-  MRSDIAG("marsyasTests.cpp - printUsage");
-  cerr << "Usage : " << progName << " -t testName file1 file2 ... fileN" << endl;
+  MRSDIAG("marsyasToy_Withs.cpp - printUsage");
+  cerr << "Usage : " << progName << " -t toy_withName file1 file2 ... fileN" << endl;
   cerr << endl;
   exit(1);
 }
@@ -53,44 +53,45 @@ printHelp(string progName)
   cerr << "--------------------------------------------" << endl;
   cerr << "Various tests " << endl;
   cerr << endl;
-  cerr << "Usage : " << progName << "-t testName file1 file2 file3" << endl;
+  cerr << "Usage : " << progName << "-t toy_withName file1 file2 file3" << endl;
   cerr << endl;
-  cerr << "Supported tests:" << endl;
-  cerr << "cascade         : test Cascade composite " << endl;
-  cerr << "collection      : test Collection " << endl;
-  cerr << "CollectionFileSource: test using Collection as SoundFileSources" << endl;
-  cerr << "drumclassify    : test drumclassify (mplfile argument)" << endl;
-  cerr << "fanoutswitch    : test disabling fanout branches " << endl;
-  cerr << "filter          : test filter MarSystem " << endl;
-  cerr << "fft             : test fft analysis/resynthesis " << endl;
-  cerr << "knn             : test K-NearestNeighbor classifier " << endl;
-  cerr << "marsystemIO     : test marsystem IO " << endl;
-  cerr << "mixer           : test fanout for mixing " << endl;
-  cerr << "mp3convert      : test convertion of a collection of .mp3 files to .wav files" << endl;
-  cerr << "normMaxMin      : test of normalize marsSystem " << endl;
-  cerr << "panorama     : test Panorama amplitude panning " << endl;
-  cerr << "parallel        : test Parallel composite " << endl;
-  cerr << "probe           : test Probe functionality " << endl;
-  cerr << "realvec         : test realvec functions " << endl;
-  cerr << "rmsilence  	   : test removing silences " << endl;
-  cerr << "scheduler       : test scheduler " << endl;
-  cerr << "schedulerExpr   : test scheduler with expressions " << endl;
-  cerr << "SOM		         : test support vector machine " << endl;
-  cerr << "spectralSNR     : test spectral SNR " << endl;
-  cerr << "stereoFeatures  : test stereo features " << endl;
-  cerr << "stereoMFCC      : test stereo MFCC " << endl;
-  cerr << "stereoFeaturesMFCC : test stereo features and MFCCs" << endl;
-  cerr << "stereo2mono     : test stereo to mono conversion " << endl;
-  cerr << "tempo	         : test tempo estimation " << endl;
-  cerr << "vibrato       : test vibrato using time-varying delay line" << endl;
-  cerr << "vicon           : test processing of vicon motion capture data" << endl;
-  cerr << "Windowing       : test different window functions of Windowing marsystem" << endl;
-  cerr << "weka            : test weka source and sink functionality" << endl;
-  cerr << "updctrl         : test updating control with pointers " << endl;
-  cerr << "duplex          : test duplex audio input/output" << endl;
+  cerr << "Supported toy_withs:" << endl;
+  cerr << "cascade         : toy_with Cascade composite " << endl;
+  cerr << "collection      : toy_with Collection " << endl;
+  cerr << "CollectionFileSource: toy_with using Collection as SoundFileSources" << endl;
+  cerr << "drumclassify    : toy_with drumclassify (mplfile argument)" << endl;
+  cerr << "fanoutswitch    : toy_with disabling fanout branches " << endl;
+  cerr << "filter          : toy_with filter MarSystem " << endl;
+  cerr << "fft             : toy_with fft analysis/resynthesis " << endl;
+  cerr << "knn             : toy_with K-NearestNeighbor classifier " << endl;
+  cerr << "marsystemIO     : toy_with marsystem IO " << endl;
+  cerr << "mixer           : toy_with fanout for mixing " << endl;
+  cerr << "mp3convert      : toy_with convertion of a collection of .mp3 files to .wav files" << endl;
+  cerr << "normMaxMin      : toy_with of normalize marsSystem " << endl;
+  cerr << "panorama     : toy_with Panorama amplitude panning " << endl;
+  cerr << "parallel        : toy_with Parallel composite " << endl;
+  cerr << "probe           : toy_with Probe functionality " << endl;
+  cerr << "realvec         : toy_with realvec functions " << endl;
+  cerr << "reverb          : toy_with reverb " << endl;
+  cerr << "rmsilence  	   : toy_with removing silences " << endl;
+  cerr << "scheduler       : toy_with scheduler " << endl;
+  cerr << "schedulerExpr   : toy_with scheduler with expressions " << endl;
+  cerr << "SOM		         : toy_with support vector machine " << endl;
+  cerr << "spectralSNR     : toy_with spectral SNR " << endl;
+  cerr << "stereoFeatures  : toy_with stereo features " << endl;
+  cerr << "stereoMFCC      : toy_with stereo MFCC " << endl;
+  cerr << "stereoFeaturesMFCC : toy_with stereo features and MFCCs" << endl;
+  cerr << "stereo2mono     : toy_with stereo to mono conversion " << endl;
+  cerr << "tempo	         : toy_with tempo estimation " << endl;
+  cerr << "vibrato       : toy_with vibrato using time-varying delay line" << endl;
+  cerr << "vicon           : toy_with processing of vicon motion capture data" << endl;
+  cerr << "Windowing       : toy_with different window functions of Windowing marsystem" << endl;
+  cerr << "weka            : toy_with weka source and sink functionality" << endl;
+  cerr << "updctrl         : toy_with updating control with pointers " << endl;
+  cerr << "duplex          : toy_with duplex audio input/output" << endl;
   cerr << "simpleSFPlay    : plays a sound file" << endl;
-  cerr << "getControls     : test getControls functionality " << endl;
-  cerr << "mono2stereo     : test mono2stereo MarSystem " << endl;
+  cerr << "getControls     : toy_with getControls functionality " << endl;
+  cerr << "mono2stereo     : toy_with mono2stereo MarSystem " << endl;
   exit(1);
 }
 
@@ -100,7 +101,7 @@ initOptions()
   cmd_options.addBoolOption("help", "h", false);
   cmd_options.addBoolOption("usage", "u", false);
   cmd_options.addBoolOption("verbose", "v", false);
-  cmd_options.addStringOption("testName", "t", EMPTYSTRING);
+  cmd_options.addStringOption("toy_withName", "t", EMPTYSTRING);
 }
 
 void 
@@ -109,13 +110,13 @@ loadOptions()
   helpopt = cmd_options.getBoolOption("help");
   usageopt = cmd_options.getBoolOption("usage");
   verboseopt = cmd_options.getBoolOption("verbose");
-  testName = cmd_options.getStringOption("testName");
+  toy_withName = cmd_options.getStringOption("toy_withName");
 }
 
 void 
-test_scheduler(string sfName)
+toy_with_scheduler(string sfName)
 {
-  cout << "Testing scheduler" << endl;
+  cout << "Toy_Withing scheduler" << endl;
   
   string ipName=sfName;
   string opName="scheduled.wav";
@@ -313,7 +314,7 @@ void drumClassify( string drumFile) {
 
 
 void
-test_simpleSFPlay(string sfName)
+toy_with_simpleSFPlay(string sfName)
 {
   MarSystemManager mng;
 
@@ -336,7 +337,7 @@ test_simpleSFPlay(string sfName)
       
       playbacknet->tick();
       
-      //test if setting "mrs_natural/pos" to 0 for rewinding is working
+      //toy_with if setting "mrs_natural/pos" to 0 for rewinding is working
       //if(playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() > 100000)
       //	playbacknet->updctrl("mrs_natural/pos", 0);
     }
@@ -345,7 +346,7 @@ test_simpleSFPlay(string sfName)
 }
 
 void
-test_getControls(string sfName)
+toy_with_getControls(string sfName)
 {
   MarSystemManager mng;
   
@@ -380,9 +381,9 @@ test_getControls(string sfName)
 }
 
 void
-test_mono2stereo(string sfName)
+toy_with_mono2stereo(string sfName)
 {
-  cout << "Mono2Stereo test" << endl;
+  cout << "Mono2Stereo toy_with" << endl;
   
   MarSystemManager mng;
 
@@ -407,9 +408,9 @@ test_mono2stereo(string sfName)
 }
 
 void 
-test_fanoutswitch()
+toy_with_fanoutswitch()
 {
-  cout << "Testing fanout switch" << endl;
+  cout << "Toy_Withing fanout switch" << endl;
   
   MarSystemManager mng;
   
@@ -452,7 +453,7 @@ test_fanoutswitch()
 }
 
 void 
-test_rmsilence(string sfName)
+toy_with_rmsilence(string sfName)
 {
   cout << "Removing silences from: " << sfName << endl;
   MarSystemManager mng;
@@ -483,9 +484,9 @@ test_rmsilence(string sfName)
 }
 
 void
-test_marsystemIO()
+toy_with_marsystemIO()
 {
-  cout << "Testing IO of MarSystems" << endl;
+  cout << "Toy_Withing IO of MarSystems" << endl;
   MarSystemManager mng;
 
   MarSystem* pnet = mng.create("Series", "pnet");
@@ -513,7 +514,7 @@ test_marsystemIO()
 }
 
 void 
-test_mixer(string sfName0, string sfName1)
+toy_with_mixer(string sfName0, string sfName1)
 {
   cout << "Mixing" << endl;
   cout << "File0 = " << sfName0 << endl;
@@ -553,9 +554,9 @@ test_mixer(string sfName0, string sfName1)
 }
 
 void 
-test_fft(string sfName) 
+toy_with_fft(string sfName) 
 {
-  cout << "test_fft: sfName = " << sfName << endl;
+  cout << "toy_with_fft: sfName = " << sfName << endl;
 
   MarSystemManager mng;
   
@@ -582,7 +583,7 @@ test_fft(string sfName)
 }
 
 void 
-test_parallel()
+toy_with_parallel()
 {
   Parallel *parallel = new Parallel("parallel");
   
@@ -622,9 +623,9 @@ test_parallel()
 }
 
 void 
-test_probe()
+toy_with_probe()
 {
-  cout << "Testing probe functionality" << endl;
+  cout << "Toy_Withing probe functionality" << endl;
   
   // create the Marsyas 
   MarSystemManager mng;
@@ -644,7 +645,7 @@ test_probe()
 }
 
 void 
-test_cascade()
+toy_with_cascade()
 {
   Cascade *cascade = new Cascade("cascade");
   
@@ -688,7 +689,7 @@ test_cascade()
 }
 
 void 
-test_collection(string sfName) 
+toy_with_collection(string sfName) 
 {
   cout << "sfName = " << sfName << endl;
   Collection l;
@@ -710,7 +711,7 @@ test_collection(string sfName)
   
 
 void 
-test_CollectionFileSource(string sfName)
+toy_with_CollectionFileSource(string sfName)
 {  
   MarSystemManager mng;
   
@@ -742,7 +743,7 @@ test_CollectionFileSource(string sfName)
       // cout << "cindex = " << cindex << endl;
       
 
-      //test if setting "mrs_natural/pos" to 0 for rewinding is working
+      //toy_with if setting "mrs_natural/pos" to 0 for rewinding is working
       //if(playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() > 100000)
       //	playbacknet->updctrl("mrs_natural/pos", 0);
     }
@@ -751,12 +752,12 @@ test_CollectionFileSource(string sfName)
 }
 
 void 
-test_knn()
+toy_with_knn()
 {
   MarSystemManager mng;
   MarSystem *knn = mng.create("KNNClassifier", "knn");
 
-  // ---- TEST TRAIN ---------------------
+  // ---- TOY_WITH TRAIN ---------------------
   
   knn->updctrl("mrs_string/mode", "train");
   
@@ -803,13 +804,13 @@ test_knn()
   cout << "INPUT: " << input << endl;
   
   knn->process(input, output);
-  cout << "TEST: " << output << endl;
+  cout << "TOY_WITH: " << output << endl;
 
   // IMPORTANT updcontrol done and then process to indicate to KNN to finish  
   knn->updctrl("mrs_bool/done", true);
   knn->tick();
   
-  // --------------- TEST PREDICT -----------------
+  // --------------- TOY_WITH PREDICT -----------------
   knn->updctrl("mrs_string/mode", "predict");
   knn->updctrl("mrs_natural/k", 3);
   knn->updctrl("mrs_natural/nLabels", 2);
@@ -835,11 +836,11 @@ test_knn()
 	delete knn;
 }
 
-// test filter 
+// toy_with filter 
 void 
-test_filter() 
+toy_with_filter() 
 {
-  // Test 1 
+  // Toy_With 1 
 
   /* realvec a(3),b(3);
      Filter* f = new Filter("f");
@@ -867,7 +868,7 @@ test_filter()
      cout << out << endl;
   */ 
 
-  // Test 2 
+  // Toy_With 2 
 
   Filter* f = new Filter("f");
 
@@ -918,9 +919,9 @@ test_filter()
 }
 
 void 
-test_panorama(string sfName)
+toy_with_panorama(string sfName)
 {
-  cout << "Testing panorama amplitude panning" << endl;
+  cout << "Toy_Withing panorama amplitude panning" << endl;
   MarSystemManager mng;
   MarSystem* playbacknet = mng.create("Series", "playbacknet");
   
@@ -949,18 +950,112 @@ test_panorama(string sfName)
 }
 
 
+void 
+toy_with_reverb(string sfName)
+{
+  cout << "Toy-with reverb" << endl;
+  MarSystemManager mng;
+  MarSystem* playbacknet = mng.create("Series", "playbacknet");
+  
+  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+  MarSystem* filterbank = mng.create("Fanout", "filterbank");
+  filterbank->addMarSystem(mng.create("Filter", "cf8"));
+  filterbank->addMarSystem(mng.create("Filter", "cf12"));
+  filterbank->addMarSystem(mng.create("Filter", "cf18"));
+  filterbank->addMarSystem(mng.create("Filter", "cf20"));
+  
+  realvec cf8_a(8);
+  realvec cf8_b(9);
+  cf8_a.setval(0.0);
+  cf8_b.setval(0.0);
+  cf8_a(0) = 1.0;
+  cf8_b(0) = 1.0;
+  cf8_b(8) = -0.9227;
+
+  realvec cf12_a(12);
+  realvec cf12_b(13);
+  cf12_a.setval(0.0);
+  cf12_b.setval(0.0);
+  cf12_a(0) = 1.0;
+  cf12_b(0) = 1.0;
+  cf12_b(12) = -0.8864;
+
+  realvec cf18_a(18);
+  realvec cf18_b(19);
+  cf18_a.setval(0.0);
+  cf18_b.setval(0.0);
+  cf18_a(0) = 1.0;
+  cf18_b(0) = 1.0;
+  cf18_b(18) = -0.9137;
+
+  realvec cf20_a(20);
+  realvec cf20_b(21);
+  cf20_a.setval(0.0);
+  cf20_b.setval(0.0);
+  cf20_a(0) = 1.0;
+  cf20_b(0) = 1.0;
+  cf20_b(20) = -0.8866;
+
+  filterbank->updctrl("Filter/cf8/mrs_realvec/ncoeffs", cf8_a);
+  filterbank->updctrl("Filter/cf8/mrs_realvec/dcoeffs", cf8_b);
+  filterbank->updctrl("Filter/cf12/mrs_realvec/ncoeffs", cf12_a);
+  filterbank->updctrl("Filter/cf12/mrs_realvec/dcoeffs", cf12_b);
+  filterbank->updctrl("Filter/cf18/mrs_realvec/ncoeffs", cf18_a);
+  filterbank->updctrl("Filter/cf18/mrs_realvec/dcoeffs", cf18_b);
+  filterbank->updctrl("Filter/cf20/mrs_realvec/ncoeffs", cf20_a);
+  filterbank->updctrl("Filter/cf20/mrs_realvec/dcoeffs", cf20_b);
+
+  
+
+  playbacknet->addMarSystem(mng.create("Gain", "gain"));
+  playbacknet->addMarSystem(filterbank);
+  playbacknet->addMarSystem(mng.create("Filter", "allpass"));
+  playbacknet->addMarSystem(mng.create("Filter", "allpass1"));
+  playbacknet->addMarSystem(mng.create("AudioSink", "dest"));  
+
+  realvec apf_a(12);
+  realvec apf_b(12);
+  apf_a.setval(0.0);
+  apf_b.setval(0.0);
+  apf_a(0) = -0.1989;
+  apf_a(11) = 1.0;
+  apf_b(0) = 1.0;
+  apf_b(11) = -0.1989;
+
+  playbacknet->updctrl("Filter/allpass/mrs_realvec/ncoeffs", apf_a);
+  playbacknet->updctrl("Filter/allpass/mrs_realvec/dcoeffs", apf_b);
+  playbacknet->updctrl("Filter/allpass1/mrs_realvec/ncoeffs", apf_a);
+  playbacknet->updctrl("Filter/allpass1/mrs_realvec/dcoeffs", apf_b);
+  playbacknet->updctrl("Gain/gain/mrs_real/gain", 0.25);
+  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+  cout << "Starting processing " << endl;
+  cout << "sfName " << sfName << endl;
+  mrs_bool isEmpty;
+
+  playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+
+  while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->toBool()) 
+    {
+      playbacknet->tick();
+    }
+
+
+
+}
+
 // moved into regressionChecks on July 14.  -gp
 void 
-test_vibrato(string sfName)
+toy_with_vibrato(string sfName)
 {
-  cout << "Testing vibrato" << endl;
+  cout << "Toy_Withing vibrato" << endl;
 
   MarSystemManager mng;
   MarSystem* playbacknet = mng.create("Series", "playbacknet");
   
   playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
   playbacknet->addMarSystem(mng.create("Vibrato", "vib"));
-  playbacknet->addMarSystem(mng.create("Vibrato2", "vib2"));
   playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
   
   playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
@@ -980,14 +1075,14 @@ test_vibrato(string sfName)
 }
 
 
-// test input,processing and sonification 
+// toy_with input,processing and sonification 
 // of Vicon (motion capture system) 
 
 void 
-test_vicon(string vfName)
+toy_with_vicon(string vfName)
 {
   if (vfName != EMPTYSTRING) 
-    cout << "Testing Vicon file: " << vfName << endl;
+    cout << "Toy_Withing Vicon file: " << vfName << endl;
   else 
     {
       cout << "No vicon file specified" << endl;
@@ -1103,13 +1198,13 @@ test_vicon(string vfName)
 }
 
 void
-test_MATLABengine()
+toy_with_MATLABengine()
 {
-  //In order to test the MATLABengine class
+  //In order to toy_with the MATLABengine class
   // the following define must be set:
   //	  MARSYAS_MATLAB
   //
-  // To build this test with MATLAB engine support, please consult the following site 
+  // To build this toy_with with MATLAB engine support, please consult the following site 
   // for detailed info:
   //
   // http://www.mathworks.com/access/helpdesk/help/techdoc/matlab_external/f39903.html
@@ -1120,7 +1215,7 @@ test_MATLABengine()
 	
   //-------------------------------------------------------------------------------------------
   cout << "******************************************************" << endl;
-  cout << "  TEST evaluate MATLAB command" << endl;
+  cout << "  TOY_WITH evaluate MATLAB command" << endl;
   cout << "******************************************************" << endl;
   cout << endl << "Run MATLAB benchmark utility..." << endl;
   MATLABengine::getMatlabEng()->evalString("bench;");
@@ -1134,7 +1229,7 @@ test_MATLABengine()
 
   //-------------------------------------------------------------------------------------------
   cout << "******************************************************" << endl;
-  cout << "  TEST mrs_natural" << endl;
+  cout << "  TOY_WITH mrs_natural" << endl;
   cout << "******************************************************" << endl;
   mrs_natural Marsyas_natural = 123456789;
   cout << "Send a mrs_natural to MATLAB: " << Marsyas_natural << endl;
@@ -1150,7 +1245,7 @@ test_MATLABengine()
 	
   //-------------------------------------------------------------------------------------------
   cout << "******************************************************" << endl;
-  cout << "  TEST mrs_real" << endl;
+  cout << "  TOY_WITH mrs_real" << endl;
   cout << "******************************************************" << endl;
   mrs_real Marsyas_real = 3.123456789;
   cout << "Send a mrs_real to MATLAB: " << Marsyas_real << endl;
@@ -1166,7 +1261,7 @@ test_MATLABengine()
 	
   //-------------------------------------------------------------------------------------------
   cout << "******************************************************" << endl;
-  cout << "  TEST mrs_complex" << endl;
+  cout << "  TOY_WITH mrs_complex" << endl;
   cout << "******************************************************" << endl;
   mrs_complex Marsyas_complex = mrs_complex(1.123456789, 2.123456789);
   cout << "Send a mrs_complex to MATLAB: " << Marsyas_complex.real() << " + j" << Marsyas_complex.imag() << endl;
@@ -1182,7 +1277,7 @@ test_MATLABengine()
 	
   //-------------------------------------------------------------------------------------------
   cout << "******************************************************" << endl;
-  cout << "  TEST realvec (row vector)" << endl;
+  cout << "  TOY_WITH realvec (row vector)" << endl;
   cout << "******************************************************" << endl;
   realvec marRow_realvec1D(4);//Marsyas row vector
   marRow_realvec1D(0) = 1.123456789;
@@ -1203,7 +1298,7 @@ test_MATLABengine()
 
   //-------------------------------------------------------------------------------------------
   cout << "******************************************************" << endl;
-  cout << "  TEST realvec (col vector)" << endl;
+  cout << "  TOY_WITH realvec (col vector)" << endl;
   cout << "******************************************************" << endl;
   realvec marCol_realvec1D(4,1);//Marsyas col vector
   marCol_realvec1D(0) = 1.123456789;
@@ -1224,7 +1319,7 @@ test_MATLABengine()
 
   //-------------------------------------------------------------------------------------------
   cout << "******************************************************" << endl;
-  cout << "  TEST realvec (2D array)" << endl;
+  cout << "  TOY_WITH realvec (2D array)" << endl;
   cout << "******************************************************" << endl;
   realvec marsyas_realvec2D(2,3);//Marsyas matrix: 2 rows; 3 columns
   marsyas_realvec2D(0,0) = 0.0;
@@ -1247,7 +1342,7 @@ test_MATLABengine()
 
   //-------------------------------------------------------------------------------------------
   cout << "******************************************************" << endl;
-  cout << "  TEST std::vector<mrs_natural>" << endl;
+  cout << "  TOY_WITH std::vector<mrs_natural>" << endl;
   cout << "******************************************************" << endl;
   vector<mrs_natural> vector_natural(4);
   vector_natural[0] = 1;
@@ -1278,7 +1373,7 @@ test_MATLABengine()
 
   //-------------------------------------------------------------------------------------------
   cout << "******************************************************" << endl;
-  cout << "  TEST std::vector<mrs_real>" << endl;
+  cout << "  TOY_WITH std::vector<mrs_real>" << endl;
   cout << "******************************************************" << endl;
   vector<mrs_real> vector_real(4);
   vector_real[0] = 1.123456789;
@@ -1309,7 +1404,7 @@ test_MATLABengine()
 
   //-------------------------------------------------------------------------------------------
   cout << "******************************************************" << endl;
-  cout << "  TEST std::vector<mrs_complex>" << endl;
+  cout << "  TOY_WITH std::vector<mrs_complex>" << endl;
   cout << "******************************************************" << endl;
   vector<mrs_complex> vector_complex(4);
   vector_complex[0] = mrs_complex(1.123456789, 2.123456789);
@@ -1339,8 +1434,8 @@ test_MATLABengine()
   getchar();
 
 #else
-  cout << endl << "MATLAB Engine not configured! Not possible to run test..." << endl;
-  cout << "To build this test with MATLAB engine support, check:" << endl << endl;
+  cout << endl << "MATLAB Engine not configured! Not possible to run toy_with..." << endl;
+  cout << "To build this toy_with with MATLAB engine support, check:" << endl << endl;
   cout << "http://www.mathworks.com/access/helpdesk/help/techdoc/matlab_external/f39903.html" << endl;
   getchar();
 
@@ -1348,9 +1443,9 @@ test_MATLABengine()
 }
 
 void
-test_LPC_LSP(string sfName)
+toy_with_LPC_LSP(string sfName)
 {
-  // In order to test the LPC and LSP routines using the MATLABengine class
+  // In order to toy_with the LPC and LSP routines using the MATLABengine class
   // for numeric validation of the routines and graphical plots of the results,
   // the following defines must be set:
   //
@@ -1359,12 +1454,12 @@ test_LPC_LSP(string sfName)
   //    _MATLAB_LSP_ (in LSP.cpp)
   //
   // Additionally, inside MATLAB, the /marsyasMATLAB directory should be in the path
-  // so the LPC_test.m and LSP_test.m mfiles (included in /marsyasMATLAB) in can be  
-  // called directly from the C++ code for testing and plotting purposes.
+  // so the LPC_toy_with.m and LSP_toy_with.m mfiles (included in /marsyasMATLAB) in can be  
+  // called directly from the C++ code for toy_withing and plotting purposes.
   //
   // <lmartins@inescporto.pt> - 17.06.2006
 
-  cout << "TEST: LPC and LSP calculation and validation using MATLAB (engine)" << endl;
+  cout << "TOY_WITH: LPC and LSP calculation and validation using MATLAB (engine)" << endl;
   cout << "Sound to analyze: " << sfName << endl;
 	
   mrs_natural lpcOrder = 10;
@@ -1445,9 +1540,9 @@ test_LPC_LSP(string sfName)
 }
 
 void
-test_realvec()
+toy_with_realvec()
 {
-  //Test new operator= implementation:
+  //Toy_With new operator= implementation:
   //attributions are now performed even if the realvec arguments
   //have different sizes => left hand realvec is deleted before 
   //performing attribution. 
@@ -1469,7 +1564,7 @@ test_realvec()
   cout << a << endl << endl;
   cout << b << endl << endl;
 
-  cout << "When tests stops - press a key to continue" << endl;
+  cout << "When toy_withs stops - press a key to continue" << endl;
  
   getchar();
 
@@ -1648,7 +1743,7 @@ test_realvec()
   cout << "Maximum absolute error = " << (matrixA - invMatrix).maxval() << endl;
   getchar();
 
-  //test DivergenceShape metrics
+  //toy_with DivergenceShape metrics
   cout << ">>>>>>>> Creating two random matrices in MATLAB..." << endl;
   cout << ">>>>>>>> ... and get them into realvecs: " << endl << endl; 
   MATLAB_EVAL("matrixA = cov(rand(40,4))");
@@ -1667,9 +1762,9 @@ test_realvec()
 }
 
 void
-test_MarControls(string sfName)
+toy_with_MarControls(string sfName)
 {
-  cout << "TEST: new MarControl API" << endl;
+  cout << "TOY_WITH: new MarControl API" << endl;
   cout << "Using input audio file: " << sfName << endl;
   MarSystemManager mng; 
 	mng.registerPrototype("MarSystemTemplateBasic", new MarSystemTemplateBasic("mtbp"));
@@ -1717,7 +1812,7 @@ test_MarControls(string sfName)
 		pnet->update();
 	}
 
-	cout << "Finished MarControls test!";
+	cout << "Finished MarControls toy_with!";
 
 	delete pnet;
 }
@@ -1734,7 +1829,7 @@ randD(double max)
 
 
 void 
-test_stereoFeaturesMFCC(string fname0, string fname1)
+toy_with_stereoFeaturesMFCC(string fname0, string fname1)
 {
   
 
@@ -1883,7 +1978,7 @@ test_stereoFeaturesMFCC(string fname0, string fname1)
 
 
 void 
-test_stereoMFCC(string fname0, string fname1)
+toy_with_stereoMFCC(string fname0, string fname1)
 {
   
 
@@ -1999,7 +2094,7 @@ test_stereoMFCC(string fname0, string fname1)
 
 
 void 
-test_mp3convert(string fname0)
+toy_with_mp3convert(string fname0)
 {
   MarSystemManager mng;
   MarSystem* convertNet = mng.create("Series", "convertNet");
@@ -2037,7 +2132,7 @@ test_mp3convert(string fname0)
 
 
 void
-test_stereoFeaturesVisualization(string fname0)
+toy_with_stereoFeaturesVisualization(string fname0)
 {
   MarSystemManager mng;
 
@@ -2085,10 +2180,10 @@ test_stereoFeaturesVisualization(string fname0)
 
 
 void 
-test_stereoFeatures(string fname0, string fname1)
+toy_with_stereoFeatures(string fname0, string fname1)
 {
   
-  cout << "TESTING STEREO FEATURES" << endl;
+  cout << "TOY_WITHING STEREO FEATURES" << endl;
 
   MarSystemManager mng;
 
@@ -2219,7 +2314,7 @@ test_stereoFeatures(string fname0, string fname1)
 
 
 void 
-test_stereo2mono(string fname)
+toy_with_stereo2mono(string fname)
 {
   MarSystemManager mng;
   
@@ -2243,9 +2338,9 @@ test_stereo2mono(string fname)
 
 
 
-void test_spectralSNR(string fname0, string fname1) 
+void toy_with_spectralSNR(string fname0, string fname1) 
 {
-  cout << "Testing spectral SNR" << endl;
+  cout << "Toy_Withing spectral SNR" << endl;
   cout << "Original  signal: " << fname0 << endl;  
   cout << "Extracted signal: " << fname1 << endl;  
   
@@ -2323,7 +2418,7 @@ void test_spectralSNR(string fname0, string fname1)
 
 
 
-void test_SOM(string collectionName) 
+void toy_with_SOM(string collectionName) 
 {
   MarSystemManager mng;
   
@@ -2480,7 +2575,7 @@ void test_SOM(string collectionName)
   
 }
 
-void test_Windowing()
+void toy_with_Windowing()
 {
     MarSystemManager mng; 
     MarSystem* series = mng.create("Series","series");
@@ -2522,7 +2617,7 @@ void test_Windowing()
 
 
 void 
-test_weka(string fname) 
+toy_with_weka(string fname) 
 {
   MarSystemManager mng;
   
@@ -2550,7 +2645,7 @@ test_weka(string fname)
 
 
 void 
-test_updctrl(string fname) 
+toy_with_updctrl(string fname) 
 {
   MarSystemManager mng;  
   
@@ -2572,9 +2667,9 @@ test_updctrl(string fname)
 }
 
 void 
-test_duplex()
+toy_with_duplex()
 {
-  cout << "Testing duplex audio input and output" << endl;
+  cout << "Toy_Withing duplex audio input and output" << endl;
   MarSystemManager mng;  
   
   MarSystem* dnet;
@@ -2599,7 +2694,7 @@ test_duplex()
     } 
 }
 
-// Pluck(0,100,1.0,0.5,"TestPluckedRich0_100hz.wav");
+// Pluck(0,100,1.0,0.5,"Toy_WithPluckedRich0_100hz.wav");
 //Pluck Karplus Strong Model Kastro.cpp output to wavfile
 void 
 Pluck(mrs_real pos, mrs_real fre, mrs_real loz, mrs_real stret, string name)
@@ -2720,7 +2815,7 @@ series->getctrl("Plucked/src/mrs_real/osrate"));
 }
 
 
-void test_normMaxMin()
+void toy_with_normMaxMin()
 {
     MarSystemManager mng;
     // MarSystem * nrm = mng.create("NormMaxMin", "nrm");
@@ -2764,7 +2859,7 @@ void test_normMaxMin()
 
 // take advantage of MarSystemManager 
     void 
-tempotest_sfplay(string sfName)
+tempotoy_with_sfplay(string sfName)
 {
     cout << "Playing " << sfName << endl; 
 
@@ -2788,7 +2883,7 @@ tempotest_sfplay(string sfName)
  
 
 void 
-test_tempo(string fname, mrs_natural tempo, mrs_natural rank)
+toy_with_tempo(string fname, mrs_natural tempo, mrs_natural rank)
 {
     ifstream from(fname.c_str());
 
@@ -2896,7 +2991,7 @@ test_tempo(string fname, mrs_natural tempo, mrs_natural rank)
     {
         cout << "Playing " << retrievedFiles[0] << endl;
 
-        tempotest_sfplay(retrievedFiles[0]);
+        tempotoy_with_sfplay(retrievedFiles[0]);
     }
 
     return;
@@ -2907,7 +3002,7 @@ test_tempo(string fname, mrs_natural tempo, mrs_natural rank)
 
 
 void
-test_pitch(string sfName) 
+toy_with_pitch(string sfName) 
 {
 
   MarSystemManager mng;
@@ -2965,7 +3060,7 @@ test_pitch(string sfName)
 }
 
 void
-test_confidence(string sfName) 
+toy_with_confidence(string sfName) 
 {
  MarSystemManager mng;
 
@@ -2993,7 +3088,7 @@ test_confidence(string sfName)
       
       pnet->tick();
       
-      //test if setting "mrs_natural/pos" to 0 for rewinding is working
+      //toy_with if setting "mrs_natural/pos" to 0 for rewinding is working
       //if(pnet->getctrl("mrs_natural/pos")->to<mrs_natural>() > 100000)
       //	pnet->updctrl("mrs_natural/pos", 0);
     }
@@ -3002,7 +3097,7 @@ test_confidence(string sfName)
 }
 
 void
-test_realvecCtrl(string sfName) 
+toy_with_realvecCtrl(string sfName) 
 {
  MarSystemManager mng;
 
@@ -3028,7 +3123,7 @@ test_realvecCtrl(string sfName)
 }
 
 void
-test_power(string sfName) 
+toy_with_power(string sfName) 
 {
 	MarSystemManager mng;
 
@@ -3066,7 +3161,7 @@ test_power(string sfName)
 }
 
 void
-test_shredder(string sfName) 
+toy_with_shredder(string sfName) 
 {
  MarSystemManager mng;
 
@@ -3118,102 +3213,104 @@ main(int argc, const char **argv)
   if (soundfiles.size() > 1)  
     fname1 = soundfiles[1];
  
-  cout << "Marsyas test name = " << testName << endl;
+  cout << "Marsyas toy_with name = " << toy_withName << endl;
   cout << "fname0 = " << fname0 << endl;
   cout << "fname1 = " << fname1 << endl;
   
 
-  if (testName == "audiodevices")
+  if (toy_withName == "audiodevices")
     {}
-  else if (testName == "cascade") 
-    test_cascade();
-  else if (testName == "collection")
-    test_collection(fname0);
-  else if (testName == "CollectionFileSource")
-    test_CollectionFileSource(fname0);
-  else if (testName == "fanoutswitch")
-    test_fanoutswitch();
-  else if (testName == "filter") 
-    test_filter();
-  else if (testName == "fft") 
-    test_fft(fname0);
-  else if (testName == "knn")
-    test_knn();
-  else if (testName == "marsystemIO")
-    test_marsystemIO();
-  else if (testName == "mixer")
-    test_mixer(fname0, fname1);
-  else if (testName == "mp3convert")
-    test_mp3convert(fname0);
-  else if (testName == "normMaxMin") 
-    test_normMaxMin();
-  else if (testName == "parallel") 
-    test_parallel();
-  else if (testName == "probe")
-    test_probe();
-  else if (testName == "vicon") 
-    test_vicon(fname0);   
-  else if (testName == "vibrato")
-    test_vibrato(fname0);
-  else if (testName == "panorama")
-    test_panorama(fname0);
-  else if (testName == "realvec")
-    test_realvec();
-  else if (testName == "rmsilence") 
-    test_rmsilence(fname0);
-  else if (testName == "scheduler") 
-    test_scheduler(fname0);
-  else if (testName == "stereoFeatures")
-    test_stereoFeatures(fname0, fname1);
-  else if (testName == "stereoFeaturesVisualization")
-    test_stereoFeaturesVisualization(fname0);
-  else if (testName == "stereoMFCC") 
-    test_stereoMFCC(fname0, fname1);
-  else if (testName =="stereoFeaturesMFCC") 
-    test_stereoFeaturesMFCC(fname0, fname1);
-  else if (testName == "stereo2mono")
-    test_stereo2mono(fname0);
-  else if (testName == "spectralSNR")
-    test_spectralSNR(fname0, fname1);
-  else if (testName == "SOM") 
-    test_SOM("music.mf");
-  else if (testName == "tempo") 
-    test_tempo(fname0, 120, 1);
-  else if (testName == "MATLABengine")
-    test_MATLABengine();
-  else if (testName == "LPC_LSP")
-    test_LPC_LSP(fname0);
-  else if (testName == "MarControls")
-    test_MarControls(fname0);
-  else if (testName == "Windowing")
-    test_Windowing();
-  else if (testName == "updctrl") 
-    test_updctrl(fname0);
-  else if (testName == "weka")
-    test_weka(fname0);
-  else if (testName == "duplex") 
-    test_duplex();
-  else if (testName == "simpleSFPlay") 
-    test_simpleSFPlay(fname0);
-  else if (testName == "getControls") 
-    test_getControls(fname0);
-  else if (testName == "mono2stereo")
-    test_mono2stereo(fname0);
- else if (testName == "pitch")
-   test_pitch(fname0);
-  else if (testName == "confidence")
-    test_confidence(fname0);
-  else if (testName == "shredder")
-    test_shredder(fname0);
-  else if (testName == "realvecCtrl")
-    test_realvecCtrl(fname0);
-   else if (testName == "power")
-    test_power(fname0);
-  else if (testName == "drumclassify")
+  else if (toy_withName == "cascade") 
+    toy_with_cascade();
+  else if (toy_withName == "collection")
+    toy_with_collection(fname0);
+  else if (toy_withName == "CollectionFileSource")
+    toy_with_CollectionFileSource(fname0);
+  else if (toy_withName == "fanoutswitch")
+    toy_with_fanoutswitch();
+  else if (toy_withName == "filter") 
+    toy_with_filter();
+  else if (toy_withName == "fft") 
+    toy_with_fft(fname0);
+  else if (toy_withName == "knn")
+    toy_with_knn();
+  else if (toy_withName == "marsystemIO")
+    toy_with_marsystemIO();
+  else if (toy_withName == "mixer")
+    toy_with_mixer(fname0, fname1);
+  else if (toy_withName == "mp3convert")
+    toy_with_mp3convert(fname0);
+  else if (toy_withName == "normMaxMin") 
+    toy_with_normMaxMin();
+  else if (toy_withName == "parallel") 
+    toy_with_parallel();
+  else if (toy_withName == "probe")
+    toy_with_probe();
+  else if (toy_withName == "vicon") 
+    toy_with_vicon(fname0);   
+  else if (toy_withName == "vibrato")
+    toy_with_vibrato(fname0);
+  else if (toy_withName == "reverb") 
+    toy_with_reverb(fname0);
+  else if (toy_withName == "panorama")
+    toy_with_panorama(fname0);
+  else if (toy_withName == "realvec")
+    toy_with_realvec();
+  else if (toy_withName == "rmsilence") 
+    toy_with_rmsilence(fname0);
+  else if (toy_withName == "scheduler") 
+    toy_with_scheduler(fname0);
+  else if (toy_withName == "stereoFeatures")
+    toy_with_stereoFeatures(fname0, fname1);
+  else if (toy_withName == "stereoFeaturesVisualization")
+    toy_with_stereoFeaturesVisualization(fname0);
+  else if (toy_withName == "stereoMFCC") 
+    toy_with_stereoMFCC(fname0, fname1);
+  else if (toy_withName =="stereoFeaturesMFCC") 
+    toy_with_stereoFeaturesMFCC(fname0, fname1);
+  else if (toy_withName == "stereo2mono")
+    toy_with_stereo2mono(fname0);
+  else if (toy_withName == "spectralSNR")
+    toy_with_spectralSNR(fname0, fname1);
+  else if (toy_withName == "SOM") 
+    toy_with_SOM("music.mf");
+  else if (toy_withName == "tempo") 
+    toy_with_tempo(fname0, 120, 1);
+  else if (toy_withName == "MATLABengine")
+    toy_with_MATLABengine();
+  else if (toy_withName == "LPC_LSP")
+    toy_with_LPC_LSP(fname0);
+  else if (toy_withName == "MarControls")
+    toy_with_MarControls(fname0);
+  else if (toy_withName == "Windowing")
+    toy_with_Windowing();
+  else if (toy_withName == "updctrl") 
+    toy_with_updctrl(fname0);
+  else if (toy_withName == "weka")
+    toy_with_weka(fname0);
+  else if (toy_withName == "duplex") 
+    toy_with_duplex();
+  else if (toy_withName == "simpleSFPlay") 
+    toy_with_simpleSFPlay(fname0);
+  else if (toy_withName == "getControls") 
+    toy_with_getControls(fname0);
+  else if (toy_withName == "mono2stereo")
+    toy_with_mono2stereo(fname0);
+ else if (toy_withName == "pitch")
+   toy_with_pitch(fname0);
+  else if (toy_withName == "confidence")
+    toy_with_confidence(fname0);
+  else if (toy_withName == "shredder")
+    toy_with_shredder(fname0);
+  else if (toy_withName == "realvecCtrl")
+    toy_with_realvecCtrl(fname0);
+   else if (toy_withName == "power")
+    toy_with_power(fname0);
+  else if (toy_withName == "drumclassify")
     drumClassify(fname0);
 else 
     {
-      cout << "Unsupported test " << endl;
+      cout << "Unsupported toy_with " << endl;
       printHelp(progName);
     }
   
