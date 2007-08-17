@@ -185,7 +185,7 @@ MP3FileSource::getHeader(string filename)
   }
   
   // decode some frames until we find the samplerate and bitrate
-  while ( frame.header.samplerate == 0 ||  frame.header.bitrate == 0 ) 
+  while (1)
     {
       pos_ += bufferSize_;
       currentPos_ = pos_;
@@ -197,7 +197,10 @@ MP3FileSource::getHeader(string filename)
 	    {
 				
 	      if(stream.error != MAD_ERROR_LOSTSYNC) {
-		MRSWARN("MP3FileSource: recoverable frame level error");
+		string errmsg;
+		errmsg += "MP3FileSource: recoverable frame level error";
+		errmsg += mad_stream_errorstr(&stream);
+		MRSWARN(errmsg);
 	      }
 	      
 	      // get some more samples...
@@ -226,6 +229,9 @@ MP3FileSource::getHeader(string filename)
 	  
 	  frameCount_++;
 	}
+      else
+	break;
+      
     
   }
 	
