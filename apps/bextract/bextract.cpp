@@ -36,7 +36,6 @@ using namespace Marsyas;
 int helpopt;
 int usageopt;
 int normopt;
-
 bool tline;
 
 mrs_natural offset = 0;
@@ -54,11 +53,13 @@ mrs_bool pluginMute = 0.0;
 #define DEFAULT_EXTRACTOR "STFT" 
 #define DEFAULT_CLASSIFIER  "GS"
 
+string outDirName = EMPTYSTRING;
 string pluginName = EMPTYSTRING;
 string wekafname = EMPTYSTRING;
 string filefeaturename = EMPTYSTRING;
 string extractorName = EMPTYSTRING;
 string classifierName = EMPTYSTRING;
+string collectionName = EMPTYSTRING;
 
 CommandLineOptions cmd_options;
 
@@ -781,6 +782,7 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
   MarSystem* total = mng.create("Series", "total");
   total->addMarSystem(acc);
   total->addMarSystem(statistics);
+  
 
   // get parameters
   mrs_real srate = samplingRate_;
@@ -1650,6 +1652,7 @@ initOptions()
   cmd_options.addBoolOption("help", "h", false);
   cmd_options.addBoolOption("usage", "u", false);
   cmd_options.addBoolOption("verbose", "v", false);
+  cmd_options.addStringOption("collection", "c", EMPTYSTRING);
   cmd_options.addBoolOption("normalize", "n", false);
   cmd_options.addRealOption("start", "s", 0);
   cmd_options.addRealOption("length", "l", 1000.0f);
@@ -1662,9 +1665,10 @@ initOptions()
   cmd_options.addRealOption("samplingRate", "sr", 22050.0);
   cmd_options.addNaturalOption("accSize", "as", 1298);
   cmd_options.addNaturalOption("nhopsamples", "hp", 512);
-  cmd_options.addStringOption("classifier", "c", EMPTYSTRING);
+  cmd_options.addStringOption("classifier", "cl", EMPTYSTRING);
   cmd_options.addBoolOption("tline", "t", false);
   cmd_options.addBoolOption("pluginmute", "pm", false);
+  cmd_options.addStringOption("outdir", "od", EMPTYSTRING);
 }
 
 void 
@@ -1675,7 +1679,7 @@ loadOptions()
   start = cmd_options.getRealOption("start");
   length = cmd_options.getRealOption("length");
   normopt = cmd_options.getBoolOption("normalize");
-
+  collectionName = cmd_options.getStringOption("collection");
   pluginName = cmd_options.getStringOption("plugin");
   filefeaturename   = cmd_options.getStringOption("filefeature");
   wekafname = cmd_options.getStringOption("wekafile");
@@ -1688,6 +1692,7 @@ loadOptions()
   accSize_ = cmd_options.getNaturalOption("accSize");
   tline = cmd_options.getBoolOption("tline");
   pluginMute  = cmd_options.getBoolOption("pluginmute");
+  outDirName = cmd_options.getStringOption("outdir");
 }
 
 void bextract(vector<string> soundfiles, mrs_natural label, 
@@ -1797,6 +1802,98 @@ void bextract(vector<string> soundfiles, mrs_natural label,
     }
 }
 
+
+
+void 
+mirex_bextract()
+{
+  cout << "MIREX 2007 bextract" << endl;
+  cout << "Extracting features for files in collection : " << collectionName << endl;
+
+  // Get the first filename just to initialize correctly the network 
+  Collection l; 
+  l.read(collectionName);
+  string sfName = l.entry(0);
+
+
+  MarSystemManager mng;
+
+  MarSystem* src = mng.create("SoundFileSource", "src");
+  
+  MarSystem* featExtractor = (*featExtractors[extractorName])();
+  featExtractor->updctrl("mrs_natural/WindowSize", winSize);
+  
+  MarSystem* featureNetwork = mng.create("Series", "featureNetwork");
+  featureNetwork->addMarSystem(src);
+  featureNetwork->addMarSystem(featExtractor);
+  
+  // Texture Window Statistics (if any)
+  if(memSize != 0)
+    {
+      featureNetwork->addMarSystem(mng.create("TextureStats", "tStats"));
+      featureNetwork->updctrl("TextureStats/tStats/mrs_natural/memSize", memSize);
+    }
+
+  featureNetwork->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  featureNetwork->updctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
+
+  if (extractorName == EMPTYSTRING) 
+    {
+      cout << "Please specify feature extractor" << endl;
+      return; 
+    }
+
+  
+  MarSystem* acc = mng.create("Accumulator", "acc");
+  acc->updctrl("mrs_natural/nTimes", accSize_);
+  acc->addMarSystem(featureNetwork);
+  
+  MarSystem* statistics = mng.create("Fanout", "statistics2");
+  statistics->addMarSystem(mng.create("Mean", "mn"));
+  statistics->addMarSystem(mng.create("StandardDeviation", "std"));  
+  
+  MarSystem* total = mng.create("Series", "total");
+  total->addMarSystem(acc);
+  total->addMarSystem(statistics);
+  total->addMarSystem(mng.create("Annotator", "ann"));
+  total->addMarSystem(mng.create("WekaSink", "wsink"));
+
+		     
+  total->updctrl("mrs_natural/inSamples", winSize);
+
+  if (outDirName != EMPTYSTRING) 
+    wekafname = outDirName + wekafname;
+
+  if (wekafname == EMPTYSTRING) 
+    total->updctrl("WekaSink/wsink/mrs_string/filename", "weka.arff");
+  else 
+    total->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);
+
+
+
+  int i;
+  for (i=0; i < l.size(); i++) 
+    {
+      total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", l.entry(i));
+      cout << "Extracting: " << l.entry(i) << endl;
+      total->tick();
+    }
+
+
+  cout << "Extracted features to: " << wekafname << endl;
+  string outCollection; 
+  if (outDirName != EMPTYSTRING) 
+    outCollection = outDirName + "extract.txt";
+  else 
+    outCollection = "extract.txt";
+  l.write(outCollection);
+  cout << "Wrote collection to: " << outCollection << endl;
+
+
+}
+
+
+
 int
 main(int argc, const char **argv)
 {
@@ -1828,6 +1925,10 @@ main(int argc, const char **argv)
   featExtractorDesc["LPCC"] = "LPC derived Cepstral coefficients ";
   featExtractorDesc["BEAT"] = "Beat histogram features";
   //////////////////////////////////////////////////////////////////////////
+
+
+
+
 
   string progName = argv[0];  
   if (argc == 1)
@@ -1863,6 +1964,16 @@ main(int argc, const char **argv)
   cout << "Extractor = " << extractorName << endl;
   cout << endl;
   
+
+  cout << "collectionName = " << collectionName << endl;
+  if (collectionName != EMPTYSTRING) 
+    {
+      mirex_bextract();
+      exit(0);
+    }
+
+
+
 
 
 

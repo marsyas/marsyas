@@ -54,6 +54,7 @@ EXTRA_DIST += sfplugin/
 EXTRA_DIST += speakerSeg/
 EXTRA_DIST += tempo/
 EXTRA_DIST += textract/
+EXTRA_DIST += train/
 EXTRA_DIST += tutorial/
 EXTRA_DIST += virtualsensor/
 EXTRA_DIST += vocalEffort/
@@ -90,6 +91,7 @@ dist-hook:
 	rm -rf `find $(distdir)/speakerSeg/ -name .svn`
 	rm -rf `find $(distdir)/tempo/ -name .svn`
 	rm -rf `find $(distdir)/textract/ -name .svn`
+	rm -rf `find $(distdir)/train// -name .svn`
 	rm -rf `find $(distdir)/tutorial/ -name .svn`
 	rm -rf `find $(distdir)/virtualsensor/ -name .svn`
 	rm -rf `find $(distdir)/vocalEffort/ -name .svn`
