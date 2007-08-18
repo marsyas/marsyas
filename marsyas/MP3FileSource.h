@@ -56,7 +56,7 @@ class MP3FileSource: public AbsSoundFileSource
 private:
  
   void addControls();
-	void myUpdate(MarControlPtr sender);
+  void myUpdate(MarControlPtr sender);
   mrs_natural getLinear16(realvec& slice);
 
 #ifdef MARSYAS_MAD
@@ -68,6 +68,9 @@ private:
 
   void fillStream( mrs_natural offset = 0 );
   void closeFile(); 
+
+  float fixed2float(mad_fixed_t Fixed);
+
   
   // MAD stuff
 #ifdef MARSYAS_MAD

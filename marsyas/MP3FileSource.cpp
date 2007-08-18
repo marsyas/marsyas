@@ -54,17 +54,6 @@ MP3FileSource::~MP3FileSource()
 
 MP3FileSource::MP3FileSource(const MP3FileSource& a):AbsSoundFileSource(a)
 {
-// 	type_ = a.type_;
-// 	name_ = a.name_;
-// 	ncontrols_ = a.ncontrols_; 		
-// 
-// 	inSamples_ = a.inSamples_;
-// 	inObservations_ = a.inObservations_;
-// 	onSamples_ = a.onSamples_;
-// 	onObservations_ = a.onObservations_;
-// 	dbg_ = a.dbg_;
-// 	mute_ = a.mute_;
-
   ptr_ = NULL;
   fp = NULL;
   
@@ -139,7 +128,7 @@ MP3FileSource::getHeader(string filename)
 
   if (myStat.st_size == 0 ) {
     MRSWARN("Error reading file: " + filename);
-    setctrl("mrs_natural/onObservations", 1);
+    setctrl("mrs_natural/onObservations", 2);
     setctrl("mrs_real/israte", 22050.0);
     setctrl("mrs_natural/size", 0);
     notEmpty_ = 0;
@@ -161,7 +150,7 @@ MP3FileSource::getHeader(string filename)
   if (numRead != myStat.st_size) 
     {
       MRSWARN("Error reading: " + filename + " to memory.");
-      setctrl("mrs_natural/onObservations", 1);
+      setctrl("mrs_natural/onObservations", 2);
       setctrl("mrs_real/israte", 22050.0);
       setctrl("mrs_natural/size", 0);
       notEmpty_ = 0;
@@ -198,7 +187,7 @@ MP3FileSource::getHeader(string filename)
 				
 	      if(stream.error != MAD_ERROR_LOSTSYNC) {
 		string errmsg;
-		errmsg += "MP3FileSource: recoverable frame level error";
+		errmsg += "MP3FileSource: recoverable frame level error: ";
 		errmsg += mad_stream_errorstr(&stream);
 		MRSWARN(errmsg);
 	      }
@@ -240,6 +229,7 @@ MP3FileSource::getHeader(string filename)
   mrs_natural bitRate = frame.header.bitrate;
   mrs_real sampleRate = frame.header.samplerate;
 
+  cout << "sampleRate = " << sampleRate << endl;
   
   // only works for a constant bitrate, duration is (bits in file / bitrate)
   mrs_real duration_ = 2 * (fileSize_ * 8) / bitRate;
@@ -256,8 +246,11 @@ MP3FileSource::getHeader(string filename)
   
   // update some controls 
   updctrl("mrs_real/duration", duration_);
+
   updctrl("mrs_natural/onObservations", MAD_NCHANNELS(&frame.header)); 
-  updctrl("mrs_real/israte", sampleRate);
+  // updctrl("mrs_natural/onObservations", 2);
+  
+  updctrl("mrs_real/israte", sampleRate); 
   updctrl("mrs_natural/size", size_ / 2);
   updctrl("mrs_natural/bitRate", bitRate);
 
@@ -268,6 +261,7 @@ MP3FileSource::getHeader(string filename)
   pos_ = samplesOut_ = frameCount_ = 0;
   currentPos_ = 0;
   notEmpty_ = 1;
+
   
 #endif
 }	
@@ -288,12 +282,17 @@ MP3FileSource::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("MP3FileSource::myUpdate");
   
-  MarSystem::myUpdate(sender);
- 
+  
   israte_ = ctrl_israte_->toReal();
   inSamples_ = ctrl_inSamples_->toNatural();
   pos_ = getctrl("mrs_natural/pos")->toNatural();
   mrs_natural nChannels = ctrl_onObservations_->toNatural();
+  
+  setctrl("mrs_natural/onSamples", inSamples_);
+  setctrl("mrs_real/osrate", israte_);
+  
+  cout << "MP3 nChannels = " << nChannels << endl;
+  
   
   // if the user has seeked somewhere in the file
   if ( (currentPos_ != pos_) && (pos_ < size_)) 
@@ -384,7 +383,10 @@ MP3FileSource::getLinear16(realvec& slice) {
 	  {
 	    
 	    if(stream.error != MAD_ERROR_LOSTSYNC) {
-	      MRSWARN("MP3FileSource: recoverable frame level error");
+	      string errmsg;
+	      errmsg += "MP3FileSource: recoverable frame level error :";
+	      errmsg += mad_stream_errorstr(&stream);
+	      MRSWARN(errmsg);
 	    }
 	    
 	    fillStream();
@@ -416,15 +418,16 @@ MP3FileSource::getLinear16(realvec& slice) {
     
 
     mad_synth_frame(&synth, &frame);  
-			
+
+
+    
     // fill the reservoir...
     for (t=0; t < bufferSize_; t++) {
 			
       left_ch = synth.pcm.samples[0][t];
-      
-      
       sample = (mrs_real) scale(left_ch);	
       sample *= peak;
+      
       reservoir_(0, ri_) = sample;
       
       
@@ -434,6 +437,8 @@ MP3FileSource::getLinear16(realvec& slice) {
 	right_ch = synth.pcm.samples[1][t];
 	sample = (mrs_real) scale(right_ch);
 	sample *= peak;
+	
+	
 	reservoir_(1, ri_) = sample;
       }
       
@@ -582,6 +587,24 @@ MP3FileSource::fillStream( mrs_natural target )
   
 #endif
 }
+
+
+
+float 
+MP3FileSource::fixed2float(mad_fixed_t Fixed) 
+{
+  float f;
+  if (Fixed & (1<<31)) {
+    // negative
+    Fixed = Fixed & ((1<<31)-1); // strip sign
+    f = -(float)Fixed / (1<<MAD_F_FRACBITS);
+  }
+  else {
+    f = (float)Fixed / (1<<MAD_F_FRACBITS);
+  }
+  return f;  
+}
+
 
 
 
