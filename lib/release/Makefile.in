@@ -316,6 +316,8 @@ libmarsyas_a_SOURCES = \
 	$(top_srcdir)/marsyas/PeakViewSource.cpp \
 	$(top_srcdir)/marsyas/PeakViewSink.cpp \
 	$(top_srcdir)/marsyas/PeakClusterSelect.cpp \
+	$(top_srcdir)/marsyas/OneRClassifier.cpp \
+	$(top_srcdir)/marsyas/WekaData.cpp \
 	$(top_srcdir)/marsyas/Gain.cpp
 
 subdir = lib/release
@@ -408,7 +410,8 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	NormMatrix.$(OBJEXT) WHaSp.$(OBJEXT) FanOutIn.$(OBJEXT) \
 	PeakLabeler.$(OBJEXT) peakView.$(OBJEXT) \
 	PeakViewSource.$(OBJEXT) PeakViewSink.$(OBJEXT) \
-	PeakClusterSelect.$(OBJEXT) Gain.$(OBJEXT)
+	PeakClusterSelect.$(OBJEXT) OneRClassifier.$(OBJEXT) \
+	WekaData.$(OBJEXT) Gain.$(OBJEXT)
 libmarsyas_a_OBJECTS = $(am_libmarsyas_a_OBJECTS)
 
 DEFS = @DEFS@
@@ -490,6 +493,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/NormMatrix.Po ./$(DEPDIR)/NormMaxMin.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Normalize.Po ./$(DEPDIR)/NumericLib.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/OggFileSource.Po ./$(DEPDIR)/OnePole.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/OneRClassifier.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/OverlapAdd.Po ./$(DEPDIR)/Panorama.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Parallel.Po ./$(DEPDIR)/PeUtilities.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Peak2Rms.Po \
@@ -553,8 +557,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/WavFileSource2.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/WaveletBands.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/WaveletPyramid.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/WaveletStep.Po ./$(DEPDIR)/WekaSink.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/WekaSource.Po ./$(DEPDIR)/Windowing.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/WaveletStep.Po ./$(DEPDIR)/WekaData.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/WekaSink.Po ./$(DEPDIR)/WekaSource.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Windowing.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ZeroCrossings.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ZeroRClassifier.Po ./$(DEPDIR)/basis.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/fft.Po ./$(DEPDIR)/lu.Po \
@@ -830,6 +835,8 @@ peakView.$(OBJEXT): $(top_srcdir)/marsyas/peakView.cpp
 PeakViewSource.$(OBJEXT): $(top_srcdir)/marsyas/PeakViewSource.cpp
 PeakViewSink.$(OBJEXT): $(top_srcdir)/marsyas/PeakViewSink.cpp
 PeakClusterSelect.$(OBJEXT): $(top_srcdir)/marsyas/PeakClusterSelect.cpp
+OneRClassifier.$(OBJEXT): $(top_srcdir)/marsyas/OneRClassifier.cpp
+WekaData.$(OBJEXT): $(top_srcdir)/marsyas/WekaData.cpp
 Gain.$(OBJEXT): $(top_srcdir)/marsyas/Gain.cpp
 libmarsyas.a: $(libmarsyas_a_OBJECTS) $(libmarsyas_a_DEPENDENCIES) 
 	-rm -f libmarsyas.a
@@ -951,6 +958,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NumericLib.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OggFileSource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OnePole.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OneRClassifier.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OverlapAdd.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Panorama.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parallel.Po@am__quote@
@@ -1042,6 +1050,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WaveletBands.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WaveletPyramid.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WaveletStep.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WekaData.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WekaSink.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WekaSource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Windowing.Po@am__quote@
@@ -3588,6 +3597,30 @@ PeakClusterSelect.obj: $(top_srcdir)/marsyas/PeakClusterSelect.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/PeakClusterSelect.Po' tmpdepfile='$(DEPDIR)/PeakClusterSelect.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeakClusterSelect.obj `cygpath -w $(top_srcdir)/marsyas/PeakClusterSelect.cpp`
+
+OneRClassifier.o: $(top_srcdir)/marsyas/OneRClassifier.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/OneRClassifier.cpp' object='OneRClassifier.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/OneRClassifier.Po' tmpdepfile='$(DEPDIR)/OneRClassifier.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o OneRClassifier.o `test -f '$(top_srcdir)/marsyas/OneRClassifier.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/OneRClassifier.cpp
+
+OneRClassifier.obj: $(top_srcdir)/marsyas/OneRClassifier.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/OneRClassifier.cpp' object='OneRClassifier.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/OneRClassifier.Po' tmpdepfile='$(DEPDIR)/OneRClassifier.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o OneRClassifier.obj `cygpath -w $(top_srcdir)/marsyas/OneRClassifier.cpp`
+
+WekaData.o: $(top_srcdir)/marsyas/WekaData.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/WekaData.cpp' object='WekaData.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/WekaData.Po' tmpdepfile='$(DEPDIR)/WekaData.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o WekaData.o `test -f '$(top_srcdir)/marsyas/WekaData.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/WekaData.cpp
+
+WekaData.obj: $(top_srcdir)/marsyas/WekaData.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/WekaData.cpp' object='WekaData.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/WekaData.Po' tmpdepfile='$(DEPDIR)/WekaData.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o WekaData.obj `cygpath -w $(top_srcdir)/marsyas/WekaData.cpp`
 
 Gain.o: $(top_srcdir)/marsyas/Gain.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/marsyas/Gain.cpp' object='Gain.o' libtool=no @AMDEPBACKSLASH@

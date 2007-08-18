@@ -201,7 +201,7 @@ MP3FileSource::getHeader(string filename)
 #ifdef MARSYAS_MAD  
   // if we have a file open already, close it
   closeFile();
-  
+  reservoir_.setval(0.0);
   
   fp = fopen(filename.c_str(), "rb");
   fseek(fp, 0L, SEEK_END);
@@ -308,7 +308,7 @@ MP3FileSource::getHeader(string filename)
     
   }
   
-  PrintFrameInfo(&frame.header);
+  // PrintFrameInfo(&frame.header);
 
 
   mrs_natural nChannels = MAD_NCHANNELS(&frame.header);

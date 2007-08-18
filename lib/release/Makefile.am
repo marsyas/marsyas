@@ -237,6 +237,8 @@ libmarsyas_a_SOURCES    = \
 	$(top_srcdir)/marsyas/PeakViewSource.cpp \
 	$(top_srcdir)/marsyas/PeakViewSink.cpp \
 	$(top_srcdir)/marsyas/PeakClusterSelect.cpp \
+	$(top_srcdir)/marsyas/OneRClassifier.cpp \
+	$(top_srcdir)/marsyas/WekaData.cpp \
 	$(top_srcdir)/marsyas/Gain.cpp
 # please leave Gain.cpp at the end like this; it make scripts happy.
 

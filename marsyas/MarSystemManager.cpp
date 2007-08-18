@@ -151,6 +151,8 @@
 #include "PeakViewSink.h"
 #include "NormCut.h"
 #include "PeakViewSource.h"
+#include "OneRClassifier.h"
+#include "WekaData.h"
 #include "Gain.h"
 // please leave Gain at the end; it makes scripts happy.
 
@@ -290,6 +292,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PeakViewSink", new PeakViewSink("peakviewsinkpr"));
 	registerPrototype("NormCut", new NormCut("normcutpr"));
 	registerPrototype("PeakViewSource", new PeakViewSource("peakviewsourcepr"));
+	registerPrototype("OneRClassifier", new OneRClassifier("onerclassifierpr"));
 	registerPrototype("Gain", new Gain("gp"));
 	// Please leave Gain at the end; it makes scripts happy.
 

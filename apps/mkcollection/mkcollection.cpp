@@ -127,6 +127,12 @@ struct dirent
 	char d_name[_MAX_PATH+1];
 };
 
+DIR *closedir(string dir) 
+{
+  // do nothing just a stub 
+  return NULL; 
+}
+
 //Function to simulate the opendir function call.
 //returns a handle(typedef'd as a void *) that is used in subsequent
 //calls to readdir.
@@ -273,6 +279,7 @@ void read(Collection& cl, string dir, int recursive)
     }
       
   }
+  closedir(dirp);
   levels--;
 }
 

@@ -77,7 +77,7 @@ CONFIG	+= marsyasMATLABdebug
 # Adds support for MP3 MAD
 ######################################################################
 
-#CONFIG += marsyasMAD
+CONFIG += marsyasMAD
 
 ######################################################################
 # Adds support for qglviewer (QT-based OpenGL viewer)
