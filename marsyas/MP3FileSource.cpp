@@ -105,6 +105,90 @@ MP3FileSource::addControls()
   addctrl("mrs_string/currentlyPlaying", "daufile", ctrl_currentlyPlaying_);
 }
 
+
+
+
+void 
+MP3FileSource::PrintFrameInfo(struct mad_header *Header)
+{
+  const char	*Layer,
+    *Mode,
+    *Emphasis;
+  
+  /* Convert the layer number to it's printed representation. */
+  switch(Header->layer)
+    {
+    case MAD_LAYER_I:
+      Layer="I";
+      break;
+    case MAD_LAYER_II:
+      Layer="II";
+      break;
+    case MAD_LAYER_III:
+      Layer="III";
+      break;
+    default:
+      Layer="(unexpected layer value)";
+      break;
+    }
+  
+  /* Convert the audio mode to it's printed representation. */
+  switch(Header->mode)
+    {
+    case MAD_MODE_SINGLE_CHANNEL:
+      Mode="single channel";
+      break;
+    case MAD_MODE_DUAL_CHANNEL:
+      Mode="dual channel";
+      break;
+    case MAD_MODE_JOINT_STEREO:
+      Mode="joint (MS/intensity) stereo";
+      break;
+    case MAD_MODE_STEREO:
+      Mode="normal LR stereo";
+      break;
+    default:
+      Mode="(unexpected mode value)";
+      break;
+    }
+  
+  /* Convert the emphasis to it's printed representation. Note that
+   * the MAD_EMPHASIS_RESERVED enumeration value appeared in libmad
+   * version 0.15.0b.
+   */
+  switch(Header->emphasis)
+    {
+    case MAD_EMPHASIS_NONE:
+      Emphasis="no";
+      break;
+    case MAD_EMPHASIS_50_15_US:
+      Emphasis="50/15 us";
+      break;
+    case MAD_EMPHASIS_CCITT_J_17:
+      Emphasis="CCITT J.17";
+      break;
+#if (MAD_VERSION_MAJOR>=1) || \
+	((MAD_VERSION_MAJOR==0) && (MAD_VERSION_MINOR>=15))
+    case MAD_EMPHASIS_RESERVED:
+      Emphasis="reserved(!)";
+      break;
+#endif
+    default:
+      Emphasis="(unexpected emphasis value)";
+      break;
+    }
+  
+  printf("%lu kb/s audio MPEG layer %s stream %s CRC, "
+	 "%s with %s emphasis at %d Hz sample rate\n",
+	 Header->bitrate,Layer,
+	 Header->flags&MAD_FLAG_PROTECTION?"with":"without",
+	 Mode,Emphasis,Header->samplerate);
+}
+
+
+
+
+
 /** 
  * Function: getHeader
  * Description: Opens the MP3 file and collects all the necessary
@@ -189,7 +273,7 @@ MP3FileSource::getHeader(string filename)
 		string errmsg;
 		errmsg += "MP3FileSource: recoverable frame level error: ";
 		errmsg += mad_stream_errorstr(&stream);
-		MRSWARN(errmsg);
+		MRSDIAG(errmsg);
 	      }
 	      
 	      // get some more samples...
@@ -223,13 +307,19 @@ MP3FileSource::getHeader(string filename)
       
     
   }
-	
+  
+  PrintFrameInfo(&frame.header);
+
+
+  mrs_natural nChannels = MAD_NCHANNELS(&frame.header);
+  setctrl("mrs_natural/onObservations", nChannels);
+  
+
   frameSamples_ = 32 * MAD_NSBSAMPLES(&frame.header);
   bufferSize_ = frameSamples_; // mad frame size
   mrs_natural bitRate = frame.header.bitrate;
   mrs_real sampleRate = frame.header.samplerate;
 
-  cout << "sampleRate = " << sampleRate << endl;
   
   // only works for a constant bitrate, duration is (bits in file / bitrate)
   mrs_real duration_ = 2 * (fileSize_ * 8) / bitRate;
@@ -237,23 +327,21 @@ MP3FileSource::getHeader(string filename)
   cindex_ = getctrl("mrs_natural/cindex")->toNatural();
   
   
-  size_ = (mrs_natural) ((duration_ * sampleRate) / MAD_NCHANNELS(&frame.header));
+  size_ = (mrs_natural) ((duration_ * sampleRate) / nChannels);
 
   
-  csize_ = size_ * MAD_NCHANNELS(&frame.header);
+  csize_ = size_ * nChannels;
   totalFrames_ = (mrs_natural)((sampleRate * duration_) / frameSamples_);
   
   
   // update some controls 
-  updctrl("mrs_real/duration", duration_);
-
-  updctrl("mrs_natural/onObservations", MAD_NCHANNELS(&frame.header)); 
-  // updctrl("mrs_natural/onObservations", 2);
+  setctrl("mrs_real/duration", duration_);
+  setctrl("mrs_real/israte", sampleRate); 
+  setctrl("mrs_natural/size", size_ / 2);
+  setctrl("mrs_natural/bitRate", bitRate);
+  update();
   
-  updctrl("mrs_real/israte", sampleRate); 
-  updctrl("mrs_natural/size", size_ / 2);
-  updctrl("mrs_natural/bitRate", bitRate);
-
+  
   ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
   
 
@@ -291,7 +379,7 @@ MP3FileSource::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/onSamples", inSamples_);
   setctrl("mrs_real/osrate", israte_);
   
-  cout << "MP3 nChannels = " << nChannels << endl;
+
   
   
   // if the user has seeked somewhere in the file
@@ -386,7 +474,7 @@ MP3FileSource::getLinear16(realvec& slice) {
 	      string errmsg;
 	      errmsg += "MP3FileSource: recoverable frame level error :";
 	      errmsg += mad_stream_errorstr(&stream);
-	      MRSWARN(errmsg);
+	      MRSDIAG(errmsg);
 	    }
 	    
 	    fillStream();

@@ -70,7 +70,7 @@ private:
   void closeFile(); 
 
   float fixed2float(mad_fixed_t Fixed);
-
+  void  PrintFrameInfo(struct mad_header *Header);
   
   // MAD stuff
 #ifdef MARSYAS_MAD
