@@ -16,6 +16,18 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+/** 
+    \class Summary
+    \brief summarizes classifier accuracy
+
+When the mode control is set to "predict" then the output 
+of the classifier will output the class with the must instances. 
+
+This MarSystems serves as ground truth for classification/regression 
+MarSystem results. 
+
+*/
+
 #ifndef MARSYAS_SUMMARY_H
 #define MARSYAS_SUMMARY_H
 
@@ -23,34 +35,36 @@
 
 namespace Marsyas
 {
-/** 
-    \class Summary
-	\ingroup MachineLearning
 
-    When the mode control is set to "predict" then then classifications are tracked
-	when done control is set, then the confusion matrix is shown
-
-
-*/
-
+//Some statistical information computed by computeSummaryStatistics
+typedef struct
+{
+	mrs_natural	instances;
+	mrs_natural	correctInstances;
+	mrs_real kappa;
+	mrs_real meanAbsoluteError;
+	mrs_real rootMeanSquaredError;
+	mrs_real relativeAbsoluteError;
+	mrs_real rootRelativeSquaredError;
+}summaryStatistics;
 
 class Summary: public MarSystem
 {
 private: 
-  void addControls();
+	void addControls();
 	void myUpdate(MarControlPtr sender);
-  realvec confusionMatrix;
-  std::string labelNames;
+
+	realvec confusionMatrix;
+	std::string classNames;
+
+	summaryStatistics computeSummaryStatistics(const realvec& mat);
+
 public:
-  Summary(std::string name);
-  ~Summary();
-  MarSystem* clone() const;  
+	Summary(std::string name);
+	~Summary();
+	MarSystem* clone()const;
   
-  void myProcess(realvec& in, realvec& out);
-};
-
+	void myProcess(realvec& in, realvec& out);
+};//class Summary
 }//namespace Marsyas
-
 #endif
-	
-	
