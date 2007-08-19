@@ -3,12 +3,12 @@
 
 #include "MarSystemManager.h"
 #include "Easymar.h"
-#include "TranscriberInfo.h"
+#include "TranscriberExtract.h"
 using namespace Marsyas;
 
 using namespace std;
 
-class Transcriber: public TranscriberInfo
+class Transcriber: public TranscriberExtract
 {
 
 public:

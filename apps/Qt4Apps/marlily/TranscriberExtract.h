@@ -7,12 +7,12 @@ using namespace Marsyas;
 
 using namespace std;
 
-class TranscriberInfo
+class TranscriberExtract
 {
 
 public:
-	TranscriberInfo();
-	~TranscriberInfo();
+	TranscriberExtract();
+	~TranscriberExtract();
 
 	static realvec* getPitchesFromAudio(const string audioFilename);
 	static MarSystem* makePitchNet(const mrs_real srate, const mrs_real

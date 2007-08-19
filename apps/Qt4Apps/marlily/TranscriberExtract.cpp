@@ -1,7 +1,7 @@
 // currently refactoring this file.  -gp
 
 /**
-	\class TranscriberInfo
+	\class TranscriberExtract
 	\ingroup Notmar
 	\brief A collection of functions which simplify transcription (pitch
 extraction, amplitude extraction, etc).
@@ -11,21 +11,21 @@ extraction, amplitude extraction, etc).
 */
 
 
-#include "TranscriberInfo.h"
+#include "TranscriberExtract.h"
 static MarSystemManager mng;
 
 #include <iostream>
 
-TranscriberInfo::TranscriberInfo()
+TranscriberExtract::TranscriberExtract()
 {
 }
 
-TranscriberInfo::~TranscriberInfo()
+TranscriberExtract::~TranscriberExtract()
 {
 }
 
 MarSystem*
-TranscriberInfo::makePitchNet(const mrs_real srate, const mrs_real lowFreq, MarSystem* rvSink)
+TranscriberExtract::makePitchNet(const mrs_real srate, const mrs_real lowFreq, MarSystem* rvSink)
 {
 	mrs_real highFreq = 5000.0;
 
@@ -51,7 +51,7 @@ TranscriberInfo::makePitchNet(const mrs_real srate, const mrs_real lowFreq, MarS
 	return net;
 }
 
-MarSystem* TranscriberInfo::makeAmplitudeNet(MarSystem* rvSink)
+MarSystem* TranscriberExtract::makeAmplitudeNet(MarSystem* rvSink)
 {
 	MarSystem *net = mng.create("Series", "amplitudeNet");
 	net->addMarSystem(mng.create("ShiftInput", "sfiAmp"));
@@ -66,7 +66,7 @@ MarSystem* TranscriberInfo::makeAmplitudeNet(MarSystem* rvSink)
 }
 
 void
-TranscriberInfo::getAllFromAudio(const string audioFilename, realvec* &
+TranscriberExtract::getAllFromAudio(const string audioFilename, realvec* &
                              pitchList, realvec* &ampList, realvec* &
                              boundaries)
 {
@@ -97,7 +97,7 @@ TranscriberInfo::getAllFromAudio(const string audioFilename, realvec* &
 }
 
 realvec*
-TranscriberInfo::getPitchesFromAudio(const string audioFilename)
+TranscriberExtract::getPitchesFromAudio(const string audioFilename)
 {
 	MarSystem* pnet = mng.create("Series", "pnet");
 	mrs_real srate = Easymar::addFileSource(pnet, audioFilename);
@@ -113,7 +113,7 @@ TranscriberInfo::getPitchesFromAudio(const string audioFilename)
 }
 
 realvec*
-TranscriberInfo::getPitchesFromRealvecSink(MarSystem* rvSink, const mrs_real srate)
+TranscriberExtract::getPitchesFromRealvecSink(MarSystem* rvSink, const mrs_real srate)
 {
 	realvec data = rvSink->getctrl("mrs_realvec/data")->toVec();
 	rvSink->updctrl("mrs_bool/done", true);
@@ -134,7 +134,7 @@ TranscriberInfo::getPitchesFromRealvecSink(MarSystem* rvSink, const mrs_real sra
 }
 
 realvec*
-TranscriberInfo::getAmpsFromRealvecSink(MarSystem* rvSink)
+TranscriberExtract::getAmpsFromRealvecSink(MarSystem* rvSink)
 {
 	realvec data = rvSink->getctrl("mrs_realvec/data")->toVec();
 	rvSink->updctrl("mrs_bool/done", true);
@@ -145,7 +145,7 @@ TranscriberInfo::getAmpsFromRealvecSink(MarSystem* rvSink)
 }
 
 void
-TranscriberInfo::toMidi(realvec* pitchList)
+TranscriberExtract::toMidi(realvec* pitchList)
 {
 	pitchList->apply( hertz2pitch );
 }

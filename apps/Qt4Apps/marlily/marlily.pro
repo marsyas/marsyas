@@ -7,8 +7,8 @@ SOURCES = testTrans.cpp
 HEADERS += mainwindow.h
 SOURCES += mainwindow.cpp
 
-HEADERS += Transcriber.h TranscriberInfo.h
-SOURCES += Transcriber.cpp TranscriberInfo.cpp
+HEADERS += Transcriber.h TranscriberExtract.h
+SOURCES += Transcriber.cpp TranscriberExtract.cpp
 
 HEADERS += Easymar.h
 SOURCES += Easymar.cpp
