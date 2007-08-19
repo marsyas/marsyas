@@ -1,4 +1,4 @@
-#CONFIG += marsyasASSERTS
+include ( ../Qt4Apps.pri )
 
 SOURCES = testTrans.cpp
 #SOURCES = start.cpp
@@ -7,8 +7,8 @@ SOURCES = testTrans.cpp
 HEADERS += mainwindow.h
 SOURCES += mainwindow.cpp
 
-HEADERS += Transcriber.h
-SOURCES += Transcriber.cpp
+HEADERS += Transcriber.h TranscriberInfo.h
+SOURCES += Transcriber.cpp TranscriberInfo.cpp
 
 HEADERS += Easymar.h
 SOURCES += Easymar.cpp

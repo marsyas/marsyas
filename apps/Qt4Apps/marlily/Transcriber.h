@@ -3,29 +3,18 @@
 
 #include "MarSystemManager.h"
 #include "Easymar.h"
+#include "TranscriberInfo.h"
 using namespace Marsyas;
 
 using namespace std;
 
-class Transcriber
+class Transcriber: public TranscriberInfo
 {
 
 public:
 	Transcriber();
 	~Transcriber();
 
-	static realvec* getPitchesFromAudio(const string audioFilename);
-	static MarSystem* makePitchNet(const mrs_real srate, const mrs_real
-	                               lowFreq = 100.0, MarSystem* rvSink = NULL);
-	static realvec* getPitchesFromRealvecSink(MarSystem* rvSink, const mrs_real
-	        srate);
-	static MarSystem* makeAmplitudeNet(MarSystem* rvSink = NULL);
-	static realvec* getAmpsFromRealvecSink(MarSystem* rvSink);
-
-	static void getAllFromAudio(const string audioFilename, realvec* &
-	                            pitchList, realvec* &ampList, realvec*
-	                            &boundaries);
-	static void toMidi(realvec* pitchList);
 	static void pitchSegment(realvec* pitchList, realvec* boundaries);
 	static void ampSegment(realvec* ampList, realvec* boundaries);
 
