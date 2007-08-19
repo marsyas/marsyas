@@ -63,12 +63,13 @@ Flux::myProcess(realvec& in, realvec& out)
       max_ = 0.0;
       for(o = 1; o < inObservations_; ++o)
 	{
-	  diff_ = pow(log(in(o,t)+MINREAL) - log(prevWindow_(o,t)+MINREAL), 2.0);
+	  logtmp_ = log(in(o,t) + MINREAL);
+	  diff_ = pow(logtmp_  - prevWindow_(o,t), 2.0);
 	  if(diff_ > max_)
 	    max_ = diff_;
 	  flux_ += diff_;
 
-	  prevWindow_(o,t) = in(o,t);
+	  prevWindow_(o,t) = logtmp_;
 	}
 		
       if(max_ != 0.0)

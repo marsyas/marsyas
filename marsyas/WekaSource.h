@@ -137,7 +137,7 @@ public:
 	MarSystem *clone()const;
 	void myProcess(realvec& in, realvec& out);
 	void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
 private:
 	//control values
@@ -185,6 +185,7 @@ private:
 	mrs_natural percentageSplit_;
 	mrs_natural percentageIndex_;
 
+	void handleDefault(bool trainMode, realvec& out);
 	void handleFoldingNonStratifiedValidation(bool trainMode, realvec &out);
 	void handleFoldingStratifiedValidation(bool trainMode, realvec &out);
 	void handleUseTestSet(bool trainMode, realvec &out);

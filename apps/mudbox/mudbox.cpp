@@ -5,7 +5,7 @@
 // broken) examples or as an incubator for more complicated 
 // applications that deserve a separate executable. This 
 // is the best place to experiment with Marsyas without 
-// changing adding your own application and having to change 
+// adding your own application and having to change 
 // the build process.  
 
 #include <cstdio>
@@ -13,12 +13,8 @@
 
 #include "common.h"
 #include "MarSystemManager.h"
-#include "Cascade.h" 
-#include "Parallel.h" 
 #include "CommandLineOptions.h"
 #include "FileName.h"
-#include "Filter.h"
-#include "Gain.h"
 #include "RtAudio.h"
 #include "RtMidi.h"
 #include "MarSystemTemplateBasic.h"
@@ -40,7 +36,7 @@ void
 printUsage(string progName)
 {
   MRSDIAG("marsyasToy_Withs.cpp - printUsage");
-  cerr << "Usage : " << progName << " -t toy_withName file1 file2 ... fileN" << endl;
+  cerr << "Usage : " << progName << " -t toy_withName file1 [file2]" << endl;
   cerr << endl;
   exit(1);
 }
@@ -113,43 +109,60 @@ loadOptions()
   toy_withName = cmd_options.getStringOption("toy_withName");
 }
 
+
 void 
-toy_with_scheduler(string sfName)
+toy_with_cascade()
 {
-  cout << "Toy_Withing scheduler" << endl;
-  
-  string ipName=sfName;
-  string opName="scheduled.wav";
-  
-  cout << "Input: " << ipName << "\nOutput: " << opName << endl;
-  
+  cout << "Toy with Cascade Composite" << endl;
   MarSystemManager mng;
+  MarSystem* cascade = mng.create("Cascade", "cascade");
   
-  // Create a series Composite 
-  //    type, name
-  MarSystem* series1 = mng.create("Series", "series1");
-  series1->addMarSystem(mng.create("SoundFileSource", "src"));
-  series1->addMarSystem(mng.create("Gain", "gain"));
-  series1->addMarSystem(mng.create("SoundFileSink", "dest"));
+
+
+  realvec a(3),b(3);
+  MarSystem* f0 = mng.create("Filter", "f0");
+  a(0) = 1.0f;
+  a(1) = 0.0f;
+  a(2) = 0.0f;
+  b(0) = 1.0f;
+  b(1) = -0.9f;
+  b(2) = 0.0f;
+  f0->setctrl("mrs_realvec/ncoeffs", a);
+  f0->setctrl("mrs_realvec/dcoeffs", b);
+  f0->setctrl("mrs_natural/inSamples", mrs_natural(5));
+  f0->setctrl("mrs_natural/inObservations", mrs_natural(1));
+  f0->setctrl("mrs_real/israte", 44100.0f);
   
-  // only update controls from Composite level 
-  series1->updctrl("mrs_natural/inSamples", 256);
-  series1->updctrl("SoundFileSource/src/mrs_string/filename", ipName);
-  series1->updctrl("SoundFileSink/dest/mrs_string/filename", opName);
+  MarSystem* f1 = mng.create("Filter", "f1");
+  a(0) = 1.0f;
+  a(1) = 1.0f;
+  a(2) = 0.0f;
+  b(0) = 1.0f;
+  b(1) = 0.0f;
+  b(2) = 0.0f;
+  f1->setctrl("mrs_realvec/ncoeffs", a);
+  f1->setctrl("mrs_realvec/dcoeffs", b);
+
+  cout << "After creating Filters" << endl;
   
-  // post events to the scheduler using updctrl(..)
-  series1->updctrl("Gain/gain/mrs_real/gain", 1.0);
-  series1->updctrl("1s", Repeat("2s", 3), new EvValUpd(series1,"Gain/gain/mrs_real/gain", 0.0));
-  series1->updctrl("2s", Repeat("2s", 3), new EvValUpd(series1,"Gain/gain/mrs_real/gain", 1.0));
+  cascade->addMarSystem(f0);
+  cascade->addMarSystem(f1);
   
-  for (int i=0; i<10000; i++) {
-    series1->tick();
-  }
+  realvec in, out;
+  in.create(mrs_natural(1),mrs_natural(5));
+  in(0,0) = 1.0f;
+  out.create(mrs_natural(2),mrs_natural(5));
   
-  // Composite deletes the added MarSystems
-  // so you must not delete them
-  delete series1;
+  cout << "Before processing" << endl;
+
+  // TOCHECK: memory leak when calling process directly 
+  cascade->process(in, out);
 }
+
+
+
+
+
 
 /*
    This code works by loading an mpl file with a trained classifier. 
@@ -311,6 +324,10 @@ void drumClassify( string drumFile) {
 
     }
 }
+
+
+
+
 
 
 void
@@ -585,7 +602,8 @@ toy_with_fft(string sfName)
 void 
 toy_with_parallel()
 {
-  Parallel *parallel = new Parallel("parallel");
+  MarSystemManager mng;
+  MarSystem *parallel = mng.create("Parallel", "parallel");
   
   realvec in;
   in.create(mrs_natural(10), mrs_natural(10));
@@ -598,16 +616,16 @@ toy_with_parallel()
   realvec out;
   out.create(in.getRows(),in.getCols());
   
-  Gain* g0 = new Gain("g0");
+  MarSystem* g0 = mng.create("Gain", "g0");
   g0->setctrl("mrs_natural/inObservations", mrs_natural(3));
   g0->setctrl("mrs_natural/inSamples", in.getCols());
   g0->setctrl("mrs_real/gain", 3.0f);
   
-  Gain* g1 = new Gain("g1");
+  MarSystem* g1 = mng.create("Gain", "g1");
   g1->setctrl("mrs_natural/inObservations", mrs_natural(2));
   g1->setctrl("mrs_real/gain", 2.0f);
   
-  Gain* g2 = new Gain("g2");
+  MarSystem* g2 = mng.create("Gain", "g2");
   g2->setctrl("mrs_natural/inObservations", mrs_natural(5));
   g2->setctrl("mrs_real/gain", 5.0f);
   
@@ -644,49 +662,6 @@ toy_with_probe()
   cout << "pnet = " << *pnet << endl;
 }
 
-void 
-toy_with_cascade()
-{
-  Cascade *cascade = new Cascade("cascade");
-  
-  realvec a(3),b(3);
-  Filter* f0 = new Filter("f0");
-  a(0) = 1.0f;
-  a(1) = 0.0f;
-  a(2) = 0.0f;
-  b(0) = 1.0f;
-  b(1) = -0.9f;
-  b(2) = 0.0f;
-  f0->setctrl("mrs_realvec/ncoeffs", a);
-  f0->setctrl("mrs_realvec/dcoeffs", b);
-  f0->setctrl("mrs_natural/inSamples", mrs_natural(5));
-  f0->setctrl("mrs_natural/inObservations", mrs_natural(1));
-  f0->setctrl("mrs_real/israte", 44100.0f);
-  
-  Filter* f1 = new Filter("f1");
-  a(0) = 1.0f;
-  a(1) = 1.0f;
-  a(2) = 0.0f;
-  b(0) = 1.0f;
-  b(1) = 0.0f;
-  b(2) = 0.0f;
-  f1->setctrl("mrs_realvec/ncoeffs", a);
-  f1->setctrl("mrs_realvec/dcoeffs", b);
-  
-  cascade->addMarSystem(f0);
-  cascade->addMarSystem(f1);
-  
-  realvec in, out;
-  in.create(mrs_natural(1),mrs_natural(5));
-  in(0,0) = 1.0f;
-  out.create(mrs_natural(2),mrs_natural(5));
-  
-  cascade->process(in, out);
-  
-  cout << out << endl;
-
-	delete cascade;
-}
 
 void 
 toy_with_collection(string sfName) 
@@ -870,7 +845,9 @@ toy_with_filter()
 
   // Toy_With 2 
 
-  Filter* f = new Filter("f");
+  MarSystemManager mng; 
+  
+  MarSystem* f = mng.create("Filter", "f");
 
   realvec al(5),bl(5);
 
@@ -2619,15 +2596,17 @@ void toy_with_Windowing()
 void 
 toy_with_weka(string fname) 
 {
+  cout << "Toying with weka " << fname << endl;
+
   MarSystemManager mng;
   
   MarSystem* net;
   net = mng.create("Series", "net");
   net->addMarSystem(mng.create("WekaSource", "wsrc"));
-
+  net->addMarSystem(mng.create("Gain", "gain"));
   
   net->updctrl("WekaSource/wsrc/mrs_string/filename", fname);
-  net->updctrl("WekaSource/wsrc/mrs_string/obsToExtract", "1,2,3");
+  net->updctrl("WekaSource/wsrc/mrs_string/attributesToInclude", "1,2,3");
   net->updctrl("mrs_natural/inSamples", 1);
   
   cout << "ready to process" << endl;
@@ -3190,6 +3169,49 @@ toy_with_shredder(string sfName)
     }
   delete pnet;
 }
+
+
+void
+toy_with_scheduler(string sfName)
+{
+  cout << "Testing scheduler" << endl;
+
+  string ipName=sfName;
+  string opName="scheduled.wav";
+
+  cout << "Input: " << ipName << "\nOutput: " << opName << endl;
+
+  MarSystemManager mng;
+
+  // Create a series Composite
+  //    type, name
+  MarSystem* series1 = mng.create("Series", "series1");
+  series1->addMarSystem(mng.create("SoundFileSource", "src"));
+  series1->addMarSystem(mng.create("Gain", "gain"));
+  series1->addMarSystem(mng.create("SoundFileSink", "dest"));
+
+  // only update controls from Composite level
+  series1->updctrl("mrs_natural/inSamples", 256);
+  series1->updctrl("SoundFileSource/src/mrs_string/filename", ipName);
+  series1->updctrl("SoundFileSink/dest/mrs_string/filename", opName);
+
+  // post events to the scheduler using updctrl(..)
+  series1->updctrl("Gain/gain/mrs_real/gain", 1.0);
+  series1->updctrl("1s", Repeat("2s", 3), new EvValUpd(series1,"Gain/gain/mrs_real/gain", 0.0));
+  series1->updctrl("2s", Repeat("2s", 3), new EvValUpd(series1,"Gain/gain/mrs_real/gain", 1.0));
+  for (int i=0; i<10000; i++) {
+    series1->tick();
+  }
+
+  // Composite deletes the added MarSystems
+  // so you must not delete them
+  delete series1;
+}
+
+
+
+
+
 
 int
 main(int argc, const char **argv)

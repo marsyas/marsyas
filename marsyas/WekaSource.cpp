@@ -14,6 +14,7 @@ WekaSource::WekaSource(string name):MarSystem("WekaSource",name)
 {
 	addControls();
 	validationModeEnum_ = None;
+	currentIndex_ = 0;
 }
 
 WekaSource::~WekaSource()
@@ -22,7 +23,10 @@ WekaSource::~WekaSource()
 	useTestSetData_.Clear();
 }
 
-WekaSource::WekaSource(const WekaSource& a) : MarSystem(a) {}
+WekaSource::WekaSource(const WekaSource& a) : MarSystem(a) {
+  validationModeEnum_ = None;
+  currentIndex_  = 0;
+}
 
 MarSystem *WekaSource::clone() const
 {
@@ -72,161 +76,211 @@ void WekaSource::addControls()
 
 }//addControls
 
-void WekaSource::myUpdate()
+void WekaSource::myUpdate(MarControlPtr sender)
 {
-	MRSDIAG("WekaSource.cpp - WekaSource:myUpdate");
+  MRSDIAG("WekaSource.cpp - WekaSource:myUpdate");
+  
+  cout << "WekaSource::myUpdate called" << endl;
 
-	// If 'filename' was updated, or the attributes desired from the Weka file has changed,
-	// parse the header portion of the file to get the required attribute names and possible output labels (if any)...
-	if (strcmp(filename_.c_str(), getctrl("mrs_string/filename")->toString().c_str()) != 0)
+  // If 'filename' was updated, or the attributes desired from the Weka file has changed,
+  // parse the header portion of the file to get the required attribute names and possible output labels (if any)...
+  if (strcmp(filename_.c_str(), getctrl("mrs_string/filename")->toString().c_str()) != 0)
+    {
+      
+      cout << "WEKA SOURCE myUpdate filename changed" << endl;
+      filename_ = getctrl("mrs_string/filename")->toString();
+      attributesToInclude_ = getctrl("mrs_string/attributesToInclude")->toString();
+
+      cout << "filename_ = " << filename_ << endl;
+      cout << "attributesToInclude_ = " << attributesToInclude_ << endl;
+      
+      loadFile(filename_, attributesToInclude_, data_);
+      data_.Dump("org.txt", classesFound_);
+      
+
+      string names;
+      bool first = true;
+      for(vector<string>::const_iterator citer = classesFound_.begin(); citer!= classesFound_.end(); citer++)
 	{
-		filename_ = getctrl("mrs_string/filename")->toString();
-		attributesToInclude_ = getctrl("mrs_string/attributesToInclude")->toString();
-
-		loadFile(filename_, attributesToInclude_, data_);
-		//data_.Dump("org.txt", classesFound_);
-
-		string names;
-		bool first = true;
-		for(vector<string>::const_iterator citer = classesFound_.begin(); citer!= classesFound_.end(); citer++)
-		{
-			if(!first)
-				names += ",";
-
-			names += (*citer);
+	  if(!first)
+	    names += ",";
+	  
+	  names += (*citer);
 			first = false;
+	}
+      setctrl("mrs_string/classNames", names);
+      setctrl("mrs_natural/nClasses", (mrs_natural)classesFound_.size());
+
+      cout << "classnames = " << names << endl;
+      
+      names = "";
+      first = true;
+      mrs_natural index = 0;
+      for(vector<string>::const_iterator citer = attributesFound_.begin(); citer!= attributesFound_.end(); citer++,index++)
+	{
+	  if(attributesIncluded_[index])
+	    {
+	      if(!first)
+		names += ",";
+	      
+	      names += (*citer);
+	      first = false;
+	    }//if
+	}
+      MRSASSERT(index==attributesIncluded_.size());
+      
+
+
+      setctrl("mrs_string/attributeNames", names);
+
+      cout << "attributeNames = " << names << endl;
+
+      setctrl("mrs_natural/nAttributes", (mrs_natural)attributesFound_.size());
+      setctrl("mrs_natural/onSamples", (mrs_natural)attributesFound_.size()+1);
+      //setctrl("mrs_natural/onOberservations", (mrs_natural)attributesFound_.size()+1);
+      
+
+      data_.Shuffle();
+      data_.Dump("shuffle.txt", classesFound_);
+      
+      cout << "After shuffling" << endl;
+
+      string mode = getctrl("mrs_string/validationMode")->toString();
+      validationMode_ = mode;
+
+      if (validationMode_ == "") 
+	{
+	  validationModeEnum_ = None;
+	  currentIndex_ = 0;
+	  return;
+	}
+      char *cp = strtok((char *)mode.c_str(), ",");
+      MRSASSERT(cp!=NULL);
+
+      cout << "validationMode_ = " << validationMode_ << endl;
+      
+      if(strcmp(cp ,"kFold")==0)
+	{//Validation mode is Folding, now extract the fold count.
+	  cp = (char *)strtok(NULL, ",");
+	  MRSASSERT(cp!=NULL);
+	  
+	  validationModeEnum_ = kFoldStratified;
+	  if(strcmp(cp,"NS")==0)
+	    validationModeEnum_ = kFoldNonStratified;
+	  else if(strcmp(cp,"S")==0)
+	    validationModeEnum_ = kFoldStratified;
+	  else
+	    MRSASSERT(0);
+	  
+	  cp = (char *)strtok(NULL, ",");
+	  MRSASSERT(cp!=NULL);
+	  
+	  foldCount_ = ::atol(cp);
+	  MRSASSERT(foldCount_>=2&&foldCount_<=10);
+	  
+	  if( validationModeEnum_ == kFoldStratified)
+	    {//in stratified mode we simply use all the available data
+	      cout << "=== Stratified cross-validation (" <<  foldCount_ << " folds) ===" << endl;
+	      foldData_.SetupkFoldSections(data_, foldCount_);
+	    }
+	  else
+	    {//in non-stratified we seperate the data according to class
+	      cout << "=== Non-Stratified cross-validation (" <<  foldCount_ << " folds) ===" << endl;
+	      foldClassData_.clear();
+	      foldClassData_.resize(classesFound_.size());
+	      
+	      //load each dataset with rows for each class
+	      for(mrs_natural ii=0; ii<(mrs_natural)classesFound_.size(); ii++)
+		{
+		  WekaFoldData data;
+		  data.SetupkFoldSections(data_, foldCount_, ii);
+		  foldClassData_[ii] = data;
 		}
-		setctrl("mrs_string/classNames", names);
-		setctrl("mrs_natural/nClasses", (mrs_natural)classesFound_.size());
+	      foldClassDataIndex_ = 0;
+	    }
+	  
+	}//if "kFold"
+      else if(strcmp(cp ,"UseTestSet")==0)
+	{
+	  validationModeEnum_ = UseTestSet;
+	  
+	  cp = (char *)strtok(NULL, ",");
+	  MRSASSERT(cp!=NULL);
+	  useTestSetFilename_ = cp;
+	  loadFile(cp, attributesToInclude_, useTestSetData_);
+	  MRSASSERT(data_.getCols()==useTestSetData_.getCols());
+	  currentIndex_ = 0;
+	  
+	  cout << "=== Evaluation on test set === (" <<  useTestSetFilename_.c_str() << ") ===" << endl;
+	  
+	}//else if "UseTestSet"
+      else if(strcmp(cp ,"PercentageSplit")==0)
+	{
+	  cout << "=== Evaluation on test split ===" << endl;
+	  validationModeEnum_ = PercentageSplit;
+	  
+	  cp = (char *)strtok(NULL, ",");
+	  MRSASSERT(cp!=NULL);
+	  percentageSplit_ = ::atoi(cp);
+	  MRSASSERT(percentageSplit_>0&&percentageSplit_<100);
+	  
+	  percentageIndex_ = ((mrs_natural)data_.size() * percentageSplit_) / 100;
+	  if(percentageIndex_ < 1) percentageIndex_ = 1;
+	  currentIndex_ = 0;
+	  
+	}//else if "PercentageSplit"
+      
+      //		cout << "=== Summary ===" << endl << endl;
+      
+    }//if
 
-		names = "";
-		first = true;
-		mrs_natural index = 0;
-		for(vector<string>::const_iterator citer = attributesFound_.begin(); citer!= attributesFound_.end(); citer++,index++)
-		{
-			if(attributesIncluded_[index])
-			{
-				if(!first)
-					names += ",";
-
-				names += (*citer);
-				first = false;
-			}//if
-		}
-		MRSASSERT(index==attributesIncluded_.size());
-
-		setctrl("mrs_string/attributeNames", names);
-		setctrl("mrs_natural/nAttributes", (mrs_natural)attributesFound_.size());
-		setctrl("mrs_natural/onSamples", (mrs_natural)attributesFound_.size()+1);
-		//setctrl("mrs_natural/onOberservations", (mrs_natural)attributesFound_.size()+1);
-
-		data_.Shuffle();
-		//data_.Dump("shuffle.txt", classesFound_);
-
-		string mode = getctrl("mrs_string/validationMode")->toString();
-		validationMode_ = mode;
-		char *cp = strtok((char *)mode.c_str(), ",");
-		MRSASSERT(cp!=NULL);
-
-		if(strcmp(cp ,"kFold")==0)
-		{//Validation mode is Folding, now extract the fold count.
-			cp = (char *)strtok(NULL, ",");
-			MRSASSERT(cp!=NULL);
-
-			validationModeEnum_ = kFoldStratified;
-			if(strcmp(cp,"NS")==0)
-				validationModeEnum_ = kFoldNonStratified;
-			else if(strcmp(cp,"S")==0)
-				validationModeEnum_ = kFoldStratified;
-			else
-				MRSASSERT(0);
-
-			cp = (char *)strtok(NULL, ",");
-			MRSASSERT(cp!=NULL);
-
-			foldCount_ = ::atol(cp);
-			MRSASSERT(foldCount_>=2&&foldCount_<=10);
-
-			if( validationModeEnum_ == kFoldStratified)
-			{//in stratified mode we simply use all the available data
-				cout << "=== Stratified cross-validation (" <<  foldCount_ << " folds) ===" << endl;
-				foldData_.SetupkFoldSections(data_, foldCount_);
-			}
-			else
-			{//in non-stratified we seperate the data according to class
-				cout << "=== Non-Stratified cross-validation (" <<  foldCount_ << " folds) ===" << endl;
-				foldClassData_.clear();
-				foldClassData_.resize(classesFound_.size());
-
-				//load each dataset with rows for each class
-				for(mrs_natural ii=0; ii<(mrs_natural)classesFound_.size(); ii++)
-				{
-					WekaFoldData data;
-					data.SetupkFoldSections(data_, foldCount_, ii);
-					foldClassData_[ii] = data;
-				}
-				foldClassDataIndex_ = 0;
-			}
-
-		}//if "kFold"
-		else if(strcmp(cp ,"UseTestSet")==0)
-		{
-			validationModeEnum_ = UseTestSet;
-
-			cp = (char *)strtok(NULL, ",");
-			MRSASSERT(cp!=NULL);
-			useTestSetFilename_ = cp;
-			loadFile(cp, attributesToInclude_, useTestSetData_);
-			MRSASSERT(data_.getCols()==useTestSetData_.getCols());
-			currentIndex_ = 0;
-
-			cout << "=== Evaluation on test set === (" <<  useTestSetFilename_.c_str() << ") ===" << endl;
-
-		}//else if "UseTestSet"
-		else if(strcmp(cp ,"PercentageSplit")==0)
-		{
-			cout << "=== Evaluation on test split ===" << endl;
-			validationModeEnum_ = PercentageSplit;
-
-			cp = (char *)strtok(NULL, ",");
-			MRSASSERT(cp!=NULL);
-			percentageSplit_ = ::atoi(cp);
-			MRSASSERT(percentageSplit_>0&&percentageSplit_<100);
-
-			percentageIndex_ = ((mrs_natural)data_.size() * percentageSplit_) / 100;
-			if(percentageIndex_ < 1) percentageIndex_ = 1;
-			currentIndex_ = 0;
-
-		}//else if "PercentageSplit"
-
-//		cout << "=== Summary ===" << endl << endl;
-
-	}//if
+  cout << "exiting myUpdate" << endl;
 }//myUpdate
 
 void WekaSource::myProcess(realvec& in,realvec &out)
 {
-	if(getctrl("mrs_bool/done")->toBool()) return;
-	bool trainMode = (strcmp(getctrl("mrs_string/mode")->toString().c_str(), "train") == 0);
-	switch(validationModeEnum_)
-	{
-		case kFoldNonStratified:
-			handleFoldingNonStratifiedValidation(trainMode, out);
-			break;
-		case kFoldStratified:
-			handleFoldingStratifiedValidation(trainMode, out);
-			break;
-		case UseTestSet:
-			handleUseTestSet(trainMode, out);
-			break;
-		case PercentageSplit:
-			handlePercentageSplit(trainMode, out);
-			break;
-		
-		default:
-			MRSASSERT(0);
-	}//switch
+  cout << "WekaSource myProcess" << endl;
+  if(getctrl("mrs_bool/done")->toBool()) return;
+  bool trainMode = (strcmp(getctrl("mrs_string/mode")->toString().c_str(), "train") == 0);
+  switch(validationModeEnum_)
+    {
+    case kFoldNonStratified:
+      handleFoldingNonStratifiedValidation(trainMode, out);
+      break;
+    case kFoldStratified:
+      handleFoldingStratifiedValidation(trainMode, out);
+      break;
+    case UseTestSet:
+      handleUseTestSet(trainMode, out);
+      break;
+    case PercentageSplit:
+      handlePercentageSplit(trainMode, out);
+      break;
+      
+    default:
+      handleDefault(trainMode, out);
+    }//switch
+
+  
+
 }//myProcess
+
+
+void 
+WekaSource::handleDefault(bool trainMode, realvec &out)
+{
+  vector<mrs_real> *row = NULL;
+  cout << "currentIndex_ = " << currentIndex_ << endl;
+  row = data_.at(currentIndex_++);
+  if(currentIndex_ >= (mrs_natural)data_.size())
+    {
+      this->updctrl("mrs_bool/done", true);
+    }
+  for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ii++)
+    {
+      out(0, ii) = row->at(ii);
+    }
+}
 
 void WekaSource::handlePercentageSplit(bool trainMode, realvec &out)
 {
@@ -358,26 +412,43 @@ void WekaSource::handleFoldingStratifiedValidation(bool trainMode, realvec &out)
 
 void WekaSource::loadFile(const std::string& filename, const std::string& attributesToExtract, WekaData& data)
 {
-	ifstream *mis = new ifstream;
+  cout << "WekaSource::loadFile" << endl;
 
-	mis->open(filename.c_str());
-	MRSASSERT( mis->is_open() );
-
-	parseHeader(*mis, filename, attributesToExtract);
-	parseData(*mis, filename, data);
-
-	mis->close();
-	delete mis;
-
+  ifstream *mis = new ifstream;
+  
+  mis->open(filename.c_str());
+  MRSASSERT( mis->is_open() );
+  
+  
+  parseHeader(*mis, filename, attributesToExtract);
+  cout << "Parsed Header" << endl;
+  parseData(*mis, filename, data);
+  cout << "Parsed Data" << endl;
+  
+  mis->close();
+  delete mis;
+  
 }//loadFile
 
 void WekaSource::parseHeader(ifstream& mis, const string& filename, const std::string& attributesToExtract)
 {
-	string token1,token2,token3;
-
-	mis >> token1;
-	MRSASSERT ( strcmp( token1.c_str() , "@relation") == 0 );
-
+  char str[1024];
+  // skip comment lines 
+  while (mis.peek() == '%') 
+    {
+      mis.getline(str, 1023);
+      cout << "Skipping" << str << endl;
+    }
+  
+  string token1,token2,token3;
+  
+  mis >> token1;
+  if ((token1 != "@relation")&&(token1 != "@RELATION"))
+    {
+	    MRSERR("Not proper weka .arff file");
+	    return;
+	  }
+	
 	mis >> token2;
 	MRSASSERT ( strcmp( token2.c_str(), "marsyas") == 0 );
 	relation_ = token2;
@@ -389,85 +460,115 @@ void WekaSource::parseHeader(ifstream& mis, const string& filename, const std::s
 
 	// Parse the attribute definitions and store their names...
 	//ie: @attribute Mean_Mem40_Centroid real
-	while( mis >> token1 && strcmp( token1.c_str(), "@attribute" ) == 0 )
+	while( mis >> token1 && (token1 == "@attribute" || (token1 == "@ATTRIBUTE")))
 	{
-		mis >> token2;
-		mis >> token3;
-
-		if (strcmp( token3.c_str(), "real" ) == 0)
+	  mis >> token2;
+	  mis >> token3;
+	  
+	  if ((token3 == "real") || (token3 == "REAL"))
+	    {
+	      attributesFound_.push_back(token2);
+	      attributesIncluded_.push_back(true);
+	    }
+	  else if (token3[0] == '{')
+	    {
+	      string token = token3.substr( 1, token3.length()-2 );	// Remove curly braces
+	      char *cp = (char *)token.c_str();
+	      cp = strtok(cp, ",");
+	      while(cp)
 		{
-			attributesFound_.push_back(token2);
-			attributesIncluded_.push_back(true);
-		}
-		else if(strcmp( token2.c_str(), "output" ) == 0 )
-		{
-			string token = token3.substr( 1, token3.length()-2 );	// Remove curly braces
-			char *cp = (char *)token.c_str();
-			cp = strtok(cp, ",");
-			while(cp)
-			{
-				classesFound_.push_back(cp);
-				cp = strtok(NULL, ",");
-			}//while
-		}
-		else
-		{
-			attributesFound_.push_back(token2);
-			attributesIncluded_.push_back(false);
-			MRSWARN("Incompatible datatype " + token3 + " found in file '" + filename + "'.  " + 
-			"attribute " + token2 + "will be ignored!");
-		}//else
+		  cout << "Class = " << cp << endl;
+		  classesFound_.push_back(cp);
+		  cp = strtok(NULL, ",");
+		}//while
+	    }
+	  else
+	    {
+	      cout << "token2 = " << token2 << endl;
+	      attributesFound_.push_back(token2);
+	      attributesIncluded_.push_back(false);
+	      MRSWARN("Incompatible datatype " + token3 + " found in file '" + filename + "'.  " + 
+		      "attribute " + token2 + "will be ignored!");
+	    }//else
 	}//while
-	MRSASSERT( strcmp( token1.c_str() , "@data") == 0 );
-	MRSASSERT( attributesFound_.size()== attributesIncluded_.size());
 
 	//Now we parse the attributes to include string and decide which attributes
 	//are to be extracted from the arff file. An empty include list means all
 	//attributes.
+	
+	
+	for(vector<string>::const_iterator citer = attributesFound_.begin(); citer!= attributesFound_.end(); citer++)
+	  {
+	    cout << "Attributes = " << *citer << endl;
+	  }
+	
+	
+	
+	
 	parseAttributesToInclude(attributesToInclude_);
-
+	
 }//parseHeader
 
 void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data)
 {
-	MRSASSERT(!mis.eof());
 
-	data.Create(attributesIncludedList_.size()+1);
 
-	string token;
-	mis >> token;
+  cout << "WekaSource::parseData" << endl;
+  MRSASSERT(!mis.eof());
+  
+  data.Create(attributesIncludedList_.size()+1);
 
-	mrs_natural lineCount = 0;
-	while(!mis.eof())
+
+  char str[1024];  
+  while (mis.peek() == '%') 
+    {
+      mis.getline(str, 1023);
+      cout << "Skipping" << str << endl;
+    }
+  
+  
+  string token;
+  mis >> token;
+  cout << "token in parseData = " << token << endl;
+
+
+  mrs_natural lineCount = 0;
+  while(!mis.eof())
+    {
+
+      
+      char *cp = (char *)token.c_str();
+      if (cp[0] != '%')
 	{
-		char *cp = (char *)token.c_str();
-		cp = strtok(cp, ",");
-
-		vector<mrs_real> *lineBuffer = new vector<mrs_real>(attributesIncludedList_.size()+1);
-
-		mrs_natural index = 0;
-		for(mrs_natural ii=0; ii < (mrs_natural)attributesFound_.size(); ii++)
+	  cp = strtok(cp, ",");
+	  
+	  vector<mrs_real> *lineBuffer = new vector<mrs_real>(attributesIncludedList_.size()+1);
+	  
+	  mrs_natural index = 0;
+	  for(mrs_natural ii=0; ii < (mrs_natural)attributesFound_.size(); ii++)
+	    {
+	      MRSASSERT( cp!=NULL );
+	      if(attributesIncluded_[ii])
 		{
-			MRSASSERT( cp!=NULL );
-			if(attributesIncluded_[ii])
-			{
-				lineBuffer->at(index++) = ::atof( cp );
-			}
-			cp = strtok(NULL, ",");
-		}//for index
-		MRSASSERT(index==lineBuffer->size()-1);
-
-		//now extract the class name for this record
-		MRSASSERT( cp!=NULL );
-		mrs_natural classIndex = findClass(cp);
-		MRSASSERT(classIndex>=0);
-		lineBuffer->at(index) = (mrs_real)classIndex;
-
-		data.Append(lineBuffer);
-		lineCount++;
-
-		mis >> token;
-	}//while
+		  lineBuffer->at(index++) = ::atof( cp );
+		  cout << "Num = " << ::atof(cp) << endl;
+		}
+	      cp = strtok(NULL, ",");
+	    }//for index
+	  MRSASSERT(index==lineBuffer->size()-1);
+	  
+	  //now extract the class name for this record
+	  MRSASSERT( cp!=NULL );
+	  mrs_natural classIndex = findClass(cp);
+	  cout << "class " << cp << endl;
+	  MRSASSERT(classIndex>=0);
+	  lineBuffer->at(index) = (mrs_real)classIndex;
+	  
+	  data.Append(lineBuffer);
+	  lineCount++;
+	}
+      mis >> token;
+    }//while
 }
 
 //Given a string, check if it is an class found in the arff file header.
@@ -540,10 +641,15 @@ void WekaSource::parseAttributesToInclude(const std::string& attributesToInclude
 	//and set attributes to include list the same as attributes found
 	if(attributesToInclude_.size()==0)
 	{
-		attributesIncludedList_.assign(attributesFound_.begin(), attributesFound_.end());
-		for(mrs_natural ii=0; ii<(mrs_natural)attributesIncluded_.size(); ii++)
-			attributesIncluded_[ii] = true;
-		return;
+	  cout << "attributesToInclude empty use all" << endl;
+	  attributesIncludedList_.assign(attributesFound_.begin(), attributesFound_.end());
+	  for(mrs_natural ii=0; ii<(mrs_natural)attributesIncluded_.size(); ii++)
+	    {
+	      attributesIncluded_[ii] = true;
+	      cout << "Setting to true" << endl;
+	    }
+	  cout << "ok with attributes" << endl;
+	  return;
 	}//if
 
 	//Otherwise lets assume all attributes are out for now

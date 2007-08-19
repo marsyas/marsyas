@@ -40,6 +40,7 @@ namespace Marsyas
     
     realvec prevWindow_;
     mrs_real diff_,flux_, max_;
+    mrs_real logtmp_;
   public:
     Flux(std::string name);
   

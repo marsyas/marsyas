@@ -22,6 +22,7 @@
 #include "HalfWaveRectifier.h"
 #include "common.h"
 #include "Series.h"
+#include "Cascade.h"
 #include "Parallel.h"
 #include "Fanin.h" 
 #include "Fanout.h" 
@@ -169,6 +170,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Fanin", new Fanin("finp"));
 	registerPrototype("Fanout", new Fanout("fonp"));
 	registerPrototype("Parallel", new Parallel("parallelp"));
+	  registerPrototype("Cascade", new Cascade("cascadep"));
 	registerPrototype("TimeStretch", new TimeStretch("tscp"));
 	registerPrototype("Peaker", new Peaker("pkrp"));
 	registerPrototype("PeakerAdaptive", new PeakerAdaptive("pkr1pr"));
