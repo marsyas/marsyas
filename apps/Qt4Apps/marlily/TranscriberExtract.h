@@ -3,9 +3,16 @@
 
 #include "MarSystemManager.h"
 #include "Easymar.h"
-using namespace Marsyas;
-
 using namespace std;
+
+namespace Marsyas
+{
+/**
+	\class TranscriberExtract
+	\ingroup Notmar
+	\brief A collection of functions which simplify transcription (pitch
+extraction, amplitude extraction, etc).
+*/
 
 class TranscriberExtract
 {
@@ -23,11 +30,12 @@ public:
 	static realvec* getAmpsFromRealvecSink(MarSystem* rvSink);
 
 	static void getAllFromAudio(const string audioFilename, realvec* &
-	                            pitchList, realvec* &ampList, realvec*
-	                            &boundaries);
+	                            pitchList, realvec* &ampList);
 	static void toMidi(realvec* pitchList);
 
 private:
+
 };
+}
 #endif
 

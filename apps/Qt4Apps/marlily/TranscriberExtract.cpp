@@ -1,16 +1,3 @@
-// currently refactoring this file.  -gp
-
-/**
-	\class TranscriberExtract
-	\ingroup Notmar
-	\brief A collection of functions which simplify transcription (pitch
-extraction, amplitude extraction, etc).
-
-	Usage:
-	- setPitchList() or getPitchesFromAudio()
-*/
-
-
 #include "TranscriberExtract.h"
 static MarSystemManager mng;
 
@@ -67,8 +54,7 @@ MarSystem* TranscriberExtract::makeAmplitudeNet(MarSystem* rvSink)
 
 void
 TranscriberExtract::getAllFromAudio(const string audioFilename, realvec* &
-                             pitchList, realvec* &ampList, realvec* &
-                             boundaries)
+                                    pitchList, realvec* &ampList)
 {
 	MarSystem* pitchSink = mng.create("RealvecSink", "pitchSink");
 	MarSystem* ampSink = mng.create("RealvecSink", "ampSink");
@@ -76,9 +62,9 @@ TranscriberExtract::getAllFromAudio(const string audioFilename, realvec* &
 	MarSystem* pnet = mng.create("Series", "pnet");
 	mrs_real srate = Easymar::addFileSource(pnet, audioFilename);
 // TODO: double the number of observations?
+//	pnet->updctrl("SoundFileSource/src/mrs_natural/inSamples",256);
 //	pnet->addMarSystem(mng.create("ShiftInput", "shift"));
-//   pnet->updctrl("ShiftInput/shift/mrs_natural/WindowSize",1024);
-	//pnet->updctrl("ShiftInput/shift/mrs_natural/Decimation",512);
+//	pnet->updctrl("ShiftInput/shift/mrs_natural/WindowSize",512);
 
 	MarSystem* fanout = mng.create("Fanout", "fanout");
 	fanout->addMarSystem(makePitchNet(srate, 100.0, pitchSink));
@@ -90,9 +76,6 @@ TranscriberExtract::getAllFromAudio(const string audioFilename, realvec* &
 
 	pitchList = getPitchesFromRealvecSink(pitchSink, srate);
 	ampList = getAmpsFromRealvecSink(ampSink);
-	boundaries = new realvec(2);
-	(*boundaries)(0) = 0;
-	(*boundaries)(1) = pitchList->getSize();
 	delete pnet;
 }
 

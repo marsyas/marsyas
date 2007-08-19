@@ -4,12 +4,19 @@
 #include "MarSystemManager.h"
 #include "Easymar.h"
 #include "TranscriberExtract.h"
-using namespace Marsyas;
-
 using namespace std;
+namespace Marsyas
+{
 
 class Transcriber: public TranscriberExtract
 {
+	/**
+		\class Transcriber
+		\ingroup Notmar
+		\brief A collection of functions which simplify transcription
+	(detecting onsets via pitch and amplitudes, calculating notes, etc).
+
+	*/
 
 public:
 	Transcriber();
@@ -21,9 +28,9 @@ public:
 	static realvec* findPitchBoundaries(const realvec* pitchList);
 	static realvec* findValleys(const realvec* list);
 	static void findAmpBoundaries(realvec* ampList, realvec*
-&boundaries);
+	                              &boundaries);
 	static mrs_real findNextPeakValue(const realvec* list, const mrs_natural
-start);
+	                                  start);
 
 	static mrs_real findMedian(const mrs_natural start, const
 	                           mrs_natural length, const realvec* array);
@@ -34,7 +41,7 @@ start);
 	static realvec* getNotes(const realvec* pitchList, const realvec*
 	                         ampList, const realvec* boundaries);
 	static void getRelativeDurations(const realvec *boundaries,
-realvec* &durations);
+	                                 realvec* &durations);
 
 	/*
 		void setOptions(mrs_natural getRadius, mrs_real getNewNote, mrs_real getCertantyDiv);
@@ -76,5 +83,6 @@ private:
 		mrs_natural HIGHEST_NOTE;
 	*/
 };
+}
 #endif
 

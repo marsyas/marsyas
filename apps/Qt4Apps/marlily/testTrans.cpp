@@ -17,8 +17,11 @@ int main(int argc, char *argv[])
 {
 	std::string file = argv[1];
 	realvec *pitchList, *ampList, *boundaries;
-	Transcriber::getAllFromAudio(file, pitchList, ampList, boundaries);
+	Transcriber::getAllFromAudio(file, pitchList, ampList);
 	Transcriber::toMidi(pitchList);
+	boundaries = new realvec(2);
+	(*boundaries)(0) = 0;
+	(*boundaries)(1) = pitchList->getSize();
 	std::string writefile;
 	writefile = file;
 	writefile.append(".pitches.txt");
@@ -35,8 +38,8 @@ int main(int argc, char *argv[])
 	Transcriber::ampSegment(ampList, boundaries);
 	writeOnsets("onsets.amps.txt", boundaries);
 
-	realvec* notes;
-	notes = Transcriber::getNotes(pitchList, ampList, boundaries);
-	cout<<(*notes);
+//	realvec* notes;
+//	notes = Transcriber::getNotes(pitchList, ampList, boundaries);
+//	cout<<(*notes);
 }
 

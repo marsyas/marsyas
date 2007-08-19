@@ -3,21 +3,6 @@
 // lack of compiler warnings.
 
 
-/**
-	\class Transcriber
-	\ingroup Notmar
-	\brief A collection of functions which simplify transcription (pitch
-extraction, amplitude extraction, etc).
-
-	Usage:
-	- setPitchList() or getPitchesFromAudio()
-	- calcOnsets()
-	- calcNotes()
-	- (optional)  calcRelativeDurations().  MUST BE AFTER THE FIRST TWO!
-	- to see the results, use getOnsets() and getNotes(), and/or
-	  getDurations()
-*/
-
 
 #include "Transcriber.h"
 static MarSystemManager mng;
@@ -166,11 +151,13 @@ Transcriber::findAmpBoundaries(realvec* ampList, realvec* &boundaries)
 		valley = (*ampList)(start);
 		//cout<<start<<"\t"<<findNextPeakValue(region, 0)<<endl;
 		if ( (valley < peakRatio*findNextPeakValue(&region, 0)) &&
-			(region.mean() > 0.01) )
+		        (region.mean() > 0.01) )
 		{
 			(*newBounds)(newIndex) = start;
 			newIndex++;
-		} else {
+		}
+		else
+		{
 			//cout<<"Removed "<<start<<endl;
 			//cout<<valley<<"\t"<<findNextPeakValue(region, 0)<<endl;
 		}
@@ -227,22 +214,24 @@ Transcriber::findValleys(const realvec* list)
 
 mrs_real
 Transcriber::findNextPeakValue(const realvec* list, const mrs_natural
-start)
+                               start)
 {
 	mrs_natural i = start;
 	mrs_bool isPeak = false;
 	mrs_real minValue = 0.1;
-	do {
+	do
+	{
 		i++;
 		if (i == list->getSize())
 			return 0.0;
 		if ( ((*list)(i) > (*list)(i-1)) &&
 		        ((*list)(i) > (*list)(i+1)) &&
-				( (*list)(i) > minValue) )
+		        ( (*list)(i) > minValue) )
 		{
 			isPeak = true;
 		}
-	} while ( isPeak == false );
+	}
+	while ( isPeak == false );
 	return (*list)(i);
 }
 
@@ -275,7 +264,7 @@ Transcriber::findMedian(const mrs_natural start, const mrs_natural
 
 void
 Transcriber::getRelativeDurations(const realvec* boundaries, realvec*
-&durations)
+                                  &durations)
 {
 	durations = new realvec( boundaries->getSize()-1 );
 
@@ -326,23 +315,23 @@ Transcriber::getNotes(const realvec* pitchList, const realvec* ampList,
 		length = (mrs_natural) ((*boundaries)(i+1) - (*boundaries)(i));
 		(*notes)(i,0) = findMedian(start, length, pitchList);
 		//region = getSubVector(pitchList, start, length);
-/*
-		if (region->getSize() > 0)
-		{
-			mrs_real regionPitch = round( region->median() );
-			if (regionPitch == prevPitch)
-				same++;
-			else
-			{
-				prevPitch = regionPitch;
-				same=1;
-				prevSample = start;
-				//cout<<"-----"<<endl;
-			}
-*/
+		/*
+				if (region->getSize() > 0)
+				{
+					mrs_real regionPitch = round( region->median() );
+					if (regionPitch == prevPitch)
+						same++;
+					else
+					{
+						prevPitch = regionPitch;
+						same=1;
+						prevSample = start;
+						//cout<<"-----"<<endl;
+					}
+		*/
 		//	cout<<(*boundaries)(i)<<"\t"<<length<<"\t"<<regionPitch<<"\t"<<same<<"\t"<<start-prevSample<<endl;
-			//cout<<(*boundaries)(i)<<"\t"<<length<<"\t"<<regionPitch<<"\t"<<regionSTD<<"\t"<<same<<"\t"<<start-prevSample<<endl;
-			//cout<<(*boundaries)(i)<<"\t"<<regionSTD<<endl;
+		//cout<<(*boundaries)(i)<<"\t"<<length<<"\t"<<regionPitch<<"\t"<<regionSTD<<"\t"<<same<<"\t"<<start-prevSample<<endl;
+		//cout<<(*boundaries)(i)<<"\t"<<regionSTD<<endl;
 		//(*notes)(i,0) = findMedian(0, length, region);
 		//(*notes)(i,1) = (*boundaries)(i+1)-(*boundaries)(i);
 	}
