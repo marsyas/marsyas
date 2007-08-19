@@ -2606,17 +2606,23 @@ toy_with_weka(string fname)
   net->addMarSystem(mng.create("Gain", "gain"));
   
   net->updctrl("WekaSource/wsrc/mrs_string/filename", fname);
-  net->updctrl("WekaSource/wsrc/mrs_string/attributesToInclude", "1,2,3");
+
+  // doesn't seem to work - check at some point
+  // net->updctrl("WekaSource/wsrc/mrs_string/attributesToInclude", "1,2,3");
+  
+  net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "PercentageSplit,50%");
   net->updctrl("mrs_natural/inSamples", 1);
-  
-  cout << "ready to process" << endl;
-  
-  net->tick();
-  net->tick();
-  net->tick();
-  
-  cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>() << endl;
-  
+
+
+  while(net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>() == false)
+     {
+       net->tick();
+       cout << "MODE = " << net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>() << endl;
+       cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>() << endl;       
+     }
+
+
+
   
 }
 

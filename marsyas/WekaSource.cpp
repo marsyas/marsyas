@@ -12,15 +12,15 @@ using namespace Marsyas;
 
 WekaSource::WekaSource(string name):MarSystem("WekaSource",name)
 {
-	addControls();
-	validationModeEnum_ = None;
-	currentIndex_ = 0;
+  addControls();
+  validationModeEnum_ = None;
+  currentIndex_ = 0;
 }
 
 WekaSource::~WekaSource()
 {
-	data_.Clear();
-	useTestSetData_.Clear();
+  data_.Clear();
+  useTestSetData_.Clear();
 }
 
 WekaSource::WekaSource(const WekaSource& a) : MarSystem(a) {
@@ -30,69 +30,67 @@ WekaSource::WekaSource(const WekaSource& a) : MarSystem(a) {
 
 MarSystem *WekaSource::clone() const
 {
-	return new WekaSource(*this);
-}//clone
+  return new WekaSource(*this);
+}
 
-void WekaSource::addControls()
+void 
+WekaSource::addControls()
 {
-	addctrl("mrs_string/filename", "");
-	setctrlState("mrs_string/filename", true);
+  addctrl("mrs_string/filename", "");
+  setctrlState("mrs_string/filename", true);
 
-	//comma seperated list of attributes to extract from the feature data
-	//Can be attribute name, index, or range of indexes.
-	//ie: "Mean_Mem40_Centroid, Mean_Mem40_Kurtosis, 4-7, 9,  .... "
-	addctrl("mrs_string/attributesToInclude", "");
-	setctrlState("mrs_string/attributesToInclude", true);
+  //comma seperated list of attributes to extract from the feature data
+  //Can be attribute name, index, or range of indexes.
+  //ie: "Mean_Mem40_Centroid, Mean_Mem40_Kurtosis, 4-7, 9,  .... "
+  addctrl("mrs_string/attributesToInclude", "");
+  setctrlState("mrs_string/attributesToInclude", true);
 
-	//comma seperated list of class names found in feature file
-	//ie: "Music, Speech, .... "
-	addctrl("mrs_string/classNames", "");
+  //comma seperated list of class names found in feature file
+  //ie: "Music, Speech, .... "
+  addctrl("mrs_string/classNames", "");
 
-	//number of classes found
-	addctrl("mrs_natural/nClasses", 0);
+  //number of classes found
+  addctrl("mrs_natural/nClasses", 0);
 
-	//The mode that the weka source is currently in.
-	//Can be  "train" or "predict"
-	addctrl("mrs_string/mode", "");
+  //The mode that the weka source is currently in.
+  //Can be  "train" or "predict"
+  addctrl("mrs_string/mode", "");
 
-	//number of output samples will always be 1, regardless of the input samples
-	setctrl("mrs_natural/onSamples", 1 );
+  //number of output samples will always be 1, regardless of the input samples
+  setctrl("mrs_natural/onSamples", 1 );
 
-	//number of attributes and attribute names that will be reported.
-	addctrl("mrs_natural/nAttributes", 0);
-	addctrl("mrs_string/attributeNames", "");
+  //number of attributes and attribute names that will be reported.
+  addctrl("mrs_natural/nAttributes", 0);
+  addctrl("mrs_string/attributeNames", "");
 
-	//type of classifier validation to do.
-	//Blank or not set means none.
-	//Other supported types:
-	//"kFold,[S,NS],xx"  where xx is an integer 2-10
-	//if S is specified, use Stratified
-	//if NS is specified, use Non-Stratified
-	//"UseTestSet,wekafilename"
-	//"PercentageSplit,percent" where percent is 1-99
-	//others to come
-	addctrl("mrs_string/validationMode", "");
-	addctrl("mrs_bool/done", false);
+  //type of classifier validation to do.
+  //Blank or not set means none.
+  //Other supported types:
+  //"kFold,[S,NS],xx"  where xx is an integer 2-10
+  //if S is specified, use Stratified
+  //if NS is specified, use Non-Stratified
+  //"UseTestSet,wekafilename"
+  //"PercentageSplit,percent" where percent is 1-99
+  //others to come
+  addctrl("mrs_string/validationMode", "");
+  addctrl("mrs_bool/done", false);
 
-}//addControls
+}
 
-void WekaSource::myUpdate(MarControlPtr sender)
+void 
+WekaSource::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("WekaSource.cpp - WekaSource:myUpdate");
   
-  cout << "WekaSource::myUpdate called" << endl;
 
   // If 'filename' was updated, or the attributes desired from the Weka file has changed,
   // parse the header portion of the file to get the required attribute names and possible output labels (if any)...
   if (strcmp(filename_.c_str(), getctrl("mrs_string/filename")->toString().c_str()) != 0)
     {
       
-      cout << "WEKA SOURCE myUpdate filename changed" << endl;
       filename_ = getctrl("mrs_string/filename")->toString();
       attributesToInclude_ = getctrl("mrs_string/attributesToInclude")->toString();
 
-      cout << "filename_ = " << filename_ << endl;
-      cout << "attributesToInclude_ = " << attributesToInclude_ << endl;
       
       loadFile(filename_, attributesToInclude_, data_);
       data_.Dump("org.txt", classesFound_);
@@ -106,12 +104,11 @@ void WekaSource::myUpdate(MarControlPtr sender)
 	    names += ",";
 	  
 	  names += (*citer);
-			first = false;
+	  first = false;
 	}
       setctrl("mrs_string/classNames", names);
       setctrl("mrs_natural/nClasses", (mrs_natural)classesFound_.size());
 
-      cout << "classnames = " << names << endl;
       
       names = "";
       first = true;
@@ -133,17 +130,13 @@ void WekaSource::myUpdate(MarControlPtr sender)
 
       setctrl("mrs_string/attributeNames", names);
 
-      cout << "attributeNames = " << names << endl;
-
+      setctrl("mrs_natural/onSamples", 1);
       setctrl("mrs_natural/nAttributes", (mrs_natural)attributesFound_.size());
-      setctrl("mrs_natural/onSamples", (mrs_natural)attributesFound_.size()+1);
-      //setctrl("mrs_natural/onOberservations", (mrs_natural)attributesFound_.size()+1);
+      setctrl("mrs_natural/onObservations", (mrs_natural)attributesFound_.size()+1);
       
 
-      data_.Shuffle();
-      data_.Dump("shuffle.txt", classesFound_);
+
       
-      cout << "After shuffling" << endl;
 
       string mode = getctrl("mrs_string/validationMode")->toString();
       validationMode_ = mode;
@@ -154,13 +147,19 @@ void WekaSource::myUpdate(MarControlPtr sender)
 	  currentIndex_ = 0;
 	  return;
 	}
+
+
+
       char *cp = strtok((char *)mode.c_str(), ",");
       MRSASSERT(cp!=NULL);
 
-      cout << "validationMode_ = " << validationMode_ << endl;
+
       
       if(strcmp(cp ,"kFold")==0)
 	{//Validation mode is Folding, now extract the fold count.
+	  data_.Shuffle();
+	  data_.Dump("shuffle.txt", classesFound_);
+
 	  cp = (char *)strtok(NULL, ",");
 	  MRSASSERT(cp!=NULL);
 	  
@@ -234,12 +233,11 @@ void WekaSource::myUpdate(MarControlPtr sender)
       
     }//if
 
-  cout << "exiting myUpdate" << endl;
 }//myUpdate
 
 void WekaSource::myProcess(realvec& in,realvec &out)
 {
-  cout << "WekaSource myProcess" << endl;
+
   if(getctrl("mrs_bool/done")->toBool()) return;
   bool trainMode = (strcmp(getctrl("mrs_string/mode")->toString().c_str(), "train") == 0);
   switch(validationModeEnum_)
@@ -270,7 +268,6 @@ void
 WekaSource::handleDefault(bool trainMode, realvec &out)
 {
   vector<mrs_real> *row = NULL;
-  cout << "currentIndex_ = " << currentIndex_ << endl;
   row = data_.at(currentIndex_++);
   if(currentIndex_ >= (mrs_natural)data_.size())
     {
@@ -278,141 +275,141 @@ WekaSource::handleDefault(bool trainMode, realvec &out)
     }
   for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ii++)
     {
-      out(0, ii) = row->at(ii);
+      out(ii, 0) = row->at(ii);
     }
 }
 
 void WekaSource::handlePercentageSplit(bool trainMode, realvec &out)
 {
-	vector<mrs_real> *row = NULL;
-	if(trainMode)
-	{
-		MRSASSERT(currentIndex_<percentageIndex_);
-		row = data_.at(currentIndex_++);
+  cout << "WekaSource::handlePercentageSplit" << endl;
+  vector<mrs_real> *row = NULL;
+  if(trainMode)
+    {
+      MRSASSERT(currentIndex_<percentageIndex_);
+      row = data_.at(currentIndex_++);
 
-		if(currentIndex_>=percentageIndex_)
-		{
-			this->updctrl("mrs_string/mode", "predict");
-		}
+      if(currentIndex_>=percentageIndex_)
+	{
+	  this->updctrl("mrs_string/mode", "predict");
 	}
-	else
+    }
+  else
+    {
+      row = data_.at(currentIndex_++);
+      if(currentIndex_ >= (mrs_natural)data_.size())
 	{
-		row = data_.at(currentIndex_++);
-		if(currentIndex_ >= (mrs_natural)data_.size())
-		{
-			this->updctrl("mrs_bool/done", true);
-		}//if
-	}//else
-	MRSASSERT(row->size()==out.getCols());
-	for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ii++)
-	{
-		out(0, ii) = row->at(ii);
-	}//for ii
+	  this->updctrl("mrs_bool/done", true);
+	}//if
+    }//else
+  MRSASSERT(row->size()==out.getCols());
+  for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ii++)
+    {
+      out(ii, 0) = row->at(ii);
+    }//for ii
 }//handlePercentageSplit
 
 void WekaSource::handleUseTestSet(bool trainMode, realvec &out)
 {
-	vector<mrs_real> *row = NULL;
-	if(trainMode)
-	{//train mode
-		row = data_.at(currentIndex_++);
+  vector<mrs_real> *row = NULL;
+  if(trainMode)
+    {//train mode
+      row = data_.at(currentIndex_++);
 
-		if(currentIndex_ >= (mrs_natural)data_.size())
-		{
-			this->updctrl("mrs_string/mode", "predict");
-			currentIndex_ = 0;
-		}//if
-	}
-	else
-	{//predict mode
-		row = useTestSetData_.at(currentIndex_++);
-
-		if(currentIndex_ >= (mrs_natural)useTestSetData_.size())
-		{
-			this->updctrl("mrs_bool/done", true);
-			currentIndex_ = 0;
-		}
-	}//else
-	MRSASSERT(row->size()==out.getCols());
-	for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ii++)
+      if(currentIndex_ >= (mrs_natural)data_.size())
 	{
-		out(0, ii) = row->at(ii);
-	}//for ii
+	  this->updctrl("mrs_string/mode", "predict");
+	  currentIndex_ = 0;
+	}//if
+    }
+  else
+    {//predict mode
+      row = useTestSetData_.at(currentIndex_++);
+
+      if(currentIndex_ >= (mrs_natural)useTestSetData_.size())
+	{
+	  this->updctrl("mrs_bool/done", true);
+	  currentIndex_ = 0;
+	}
+    }//else
+  MRSASSERT(row->size()==out.getCols());
+  for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ii++)
+    {
+      out(ii, 0 ) = row->at(ii);
+    }//for ii
 }//handleUseTestSet
 
 void WekaSource::handleFoldingNonStratifiedValidation(bool trainMode, realvec &out)
 {
-	WekaFoldData::nextMode currentMode = trainMode ? WekaFoldData::Training : WekaFoldData::Predict;
+  WekaFoldData::nextMode currentMode = trainMode ? WekaFoldData::Training : WekaFoldData::Predict;
 
-	WekaFoldData::nextMode next;
-	vector<mrs_real> *row = foldClassData_[foldClassDataIndex_].Next(next);
+  WekaFoldData::nextMode next;
+  vector<mrs_real> *row = foldClassData_[foldClassDataIndex_].Next(next);
 
-	switch(currentMode)
-	{
-	case WekaFoldData::Training:
-		{
-			if(next == WekaFoldData::Predict)
-			{
-				foldClassDataIndex_++;
-				if(foldClassDataIndex_ >= (mrs_natural)foldClassData_.size())
-				{
-					foldClassDataIndex_ = 0;
-					this->updctrl("mrs_string/mode", "predict");
-				}
-			}
-		}break;
-	case WekaFoldData::Predict:
-		{
-			if(next == WekaFoldData::None)
-			{
-				foldClassDataIndex_++;
-				if(foldClassDataIndex_ >= (mrs_natural)foldClassData_.size())
-				{
-					foldClassDataIndex_ = 0;
-					this->updctrl("mrs_bool/done", true);
-				}
-			}
-			else if(next == WekaFoldData::Training)
-			{
-				foldClassDataIndex_++;
-				if(foldClassDataIndex_ >= (mrs_natural)foldClassData_.size())
-				{
-					foldClassDataIndex_ = 0;
-					this->updctrl("mrs_string/mode", "train");
-				}
-			}
-		}break;
-	}//switch
+  switch(currentMode)
+    {
+    case WekaFoldData::Training:
+      {
+	if(next == WekaFoldData::Predict)
+	  {
+	    foldClassDataIndex_++;
+	    if(foldClassDataIndex_ >= (mrs_natural)foldClassData_.size())
+	      {
+		foldClassDataIndex_ = 0;
+		this->updctrl("mrs_string/mode", "predict");
+	      }
+	  }
+      }break;
+    case WekaFoldData::Predict:
+      {
+	if(next == WekaFoldData::None)
+	  {
+	    foldClassDataIndex_++;
+	    if(foldClassDataIndex_ >= (mrs_natural)foldClassData_.size())
+	      {
+		foldClassDataIndex_ = 0;
+		this->updctrl("mrs_bool/done", true);
+	      }
+	  }
+	else if(next == WekaFoldData::Training)
+	  {
+	    foldClassDataIndex_++;
+	    if(foldClassDataIndex_ >= (mrs_natural)foldClassData_.size())
+	      {
+		foldClassDataIndex_ = 0;
+		this->updctrl("mrs_string/mode", "train");
+	      }
+	  }
+      }break;
+    }//switch
 
-	MRSASSERT(row->size()==out.getCols());
-	for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ii++)
-	{
-		out(0, ii) = row->at(ii);
-	}//for ii
+  MRSASSERT(row->size()==out.getCols());
+  for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ii++)
+    {
+      out(ii, 0) = row->at(ii);
+    }//for ii
 }
 
 void WekaSource::handleFoldingStratifiedValidation(bool trainMode, realvec &out)
 {
-	WekaFoldData::nextMode next;
-	vector<mrs_real> *row = foldData_.Next(next);
+  WekaFoldData::nextMode next;
+  vector<mrs_real> *row = foldData_.Next(next);
 
-	if(next == WekaFoldData::None)
-		this->updctrl("mrs_bool/done", true);
-	else if(next == WekaFoldData::Training && !trainMode)
-		this->updctrl("mrs_string/mode", "train");
-	else if(next == WekaFoldData::Predict && trainMode)
-		this->updctrl("mrs_string/mode", "predict");
+  if(next == WekaFoldData::None)
+    this->updctrl("mrs_bool/done", true);
+  else if(next == WekaFoldData::Training && !trainMode)
+    this->updctrl("mrs_string/mode", "train");
+  else if(next == WekaFoldData::Predict && trainMode)
+    this->updctrl("mrs_string/mode", "predict");
 
-	MRSASSERT(row->size()==out.getCols());
-	for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ii++)
-	{
-		out(0, ii) = row->at(ii);
-	}//for ii
+  MRSASSERT(row->size()==out.getCols());
+  for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ii++)
+    {
+      out(ii, 0) = row->at(ii);
+    }//for ii
 }//handleFoldingValidation
 
 void WekaSource::loadFile(const std::string& filename, const std::string& attributesToExtract, WekaData& data)
 {
-  cout << "WekaSource::loadFile" << endl;
 
   ifstream *mis = new ifstream;
   
@@ -421,9 +418,7 @@ void WekaSource::loadFile(const std::string& filename, const std::string& attrib
   
   
   parseHeader(*mis, filename, attributesToExtract);
-  cout << "Parsed Header" << endl;
   parseData(*mis, filename, data);
-  cout << "Parsed Data" << endl;
   
   mis->close();
   delete mis;
@@ -437,7 +432,6 @@ void WekaSource::parseHeader(ifstream& mis, const string& filename, const std::s
   while (mis.peek() == '%') 
     {
       mis.getline(str, 1023);
-      cout << "Skipping" << str << endl;
     }
   
   string token1,token2,token3;
@@ -445,67 +439,66 @@ void WekaSource::parseHeader(ifstream& mis, const string& filename, const std::s
   mis >> token1;
   if ((token1 != "@relation")&&(token1 != "@RELATION"))
     {
-	    MRSERR("Not proper weka .arff file");
-	    return;
-	  }
+      MRSERR("Not proper weka .arff file");
+      return;
+    }
 	
-	mis >> token2;
-	MRSASSERT ( strcmp( token2.c_str(), "marsyas") == 0 );
-	relation_ = token2;
+  mis >> token2;
+  MRSASSERT ( strcmp( token2.c_str(), "marsyas") == 0 );
+  relation_ = token2;
 
-	attributesFound_.clear();
-	attributesIncluded_.clear();
-	classesFound_.clear();
-	attributesIncludedList_.clear();
+  attributesFound_.clear();
+  attributesIncluded_.clear();
+  classesFound_.clear();
+  attributesIncludedList_.clear();
 
-	// Parse the attribute definitions and store their names...
-	//ie: @attribute Mean_Mem40_Centroid real
-	while( mis >> token1 && (token1 == "@attribute" || (token1 == "@ATTRIBUTE")))
-	{
-	  mis >> token2;
-	  mis >> token3;
+  // Parse the attribute definitions and store their names...
+  //ie: @attribute Mean_Mem40_Centroid real
+  while( mis >> token1 && (token1 == "@attribute" || (token1 == "@ATTRIBUTE")))
+    {
+      mis >> token2;
+      mis >> token3;
 	  
-	  if ((token3 == "real") || (token3 == "REAL"))
+      if ((token3 == "real") || (token3 == "REAL"))
+	{
+	  attributesFound_.push_back(token2);
+	  attributesIncluded_.push_back(true);
+	}
+      else if (token3[0] == '{')
+	{
+	  string token = token3.substr( 1, token3.length()-2 );	// Remove curly braces
+	  char *cp = (char *)token.c_str();
+	  cp = strtok(cp, ",");
+	  while(cp)
 	    {
-	      attributesFound_.push_back(token2);
-	      attributesIncluded_.push_back(true);
-	    }
-	  else if (token3[0] == '{')
-	    {
-	      string token = token3.substr( 1, token3.length()-2 );	// Remove curly braces
-	      char *cp = (char *)token.c_str();
-	      cp = strtok(cp, ",");
-	      while(cp)
-		{
-		  cout << "Class = " << cp << endl;
-		  classesFound_.push_back(cp);
-		  cp = strtok(NULL, ",");
-		}//while
-	    }
-	  else
-	    {
-	      cout << "token2 = " << token2 << endl;
-	      attributesFound_.push_back(token2);
-	      attributesIncluded_.push_back(false);
-	      MRSWARN("Incompatible datatype " + token3 + " found in file '" + filename + "'.  " + 
-		      "attribute " + token2 + "will be ignored!");
-	    }//else
-	}//while
 
-	//Now we parse the attributes to include string and decide which attributes
-	//are to be extracted from the arff file. An empty include list means all
-	//attributes.
+	      classesFound_.push_back(cp);
+	      cp = strtok(NULL, ",");
+	    }//while
+	}
+      else
+	{
+	  attributesFound_.push_back(token2);
+	  attributesIncluded_.push_back(false);
+	  MRSWARN("Incompatible datatype " + token3 + " found in file '" + filename + "'.  " + 
+		  "attribute " + token2 + "will be ignored!");
+	}//else
+    }//while
+
+  //Now we parse the attributes to include string and decide which attributes
+  //are to be extracted from the arff file. An empty include list means all
+  //attributes.
 	
 	
-	for(vector<string>::const_iterator citer = attributesFound_.begin(); citer!= attributesFound_.end(); citer++)
-	  {
-	    cout << "Attributes = " << *citer << endl;
-	  }
+  for(vector<string>::const_iterator citer = attributesFound_.begin(); citer!= attributesFound_.end(); citer++)
+    {
+
+    }
 	
 	
 	
 	
-	parseAttributesToInclude(attributesToInclude_);
+  parseAttributesToInclude(attributesToInclude_);
 	
 }//parseHeader
 
@@ -513,7 +506,7 @@ void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data
 {
 
 
-  cout << "WekaSource::parseData" << endl;
+
   MRSASSERT(!mis.eof());
   
   data.Create(attributesIncludedList_.size()+1);
@@ -523,13 +516,13 @@ void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data
   while (mis.peek() == '%') 
     {
       mis.getline(str, 1023);
-      cout << "Skipping" << str << endl;
+
     }
   
   
   string token;
   mis >> token;
-  cout << "token in parseData = " << token << endl;
+
 
 
   mrs_natural lineCount = 0;
@@ -551,7 +544,7 @@ void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data
 	      if(attributesIncluded_[ii])
 		{
 		  lineBuffer->at(index++) = ::atof( cp );
-		  cout << "Num = " << ::atof(cp) << endl;
+
 		}
 	      cp = strtok(NULL, ",");
 	    }//for index
@@ -560,7 +553,7 @@ void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data
 	  //now extract the class name for this record
 	  MRSASSERT( cp!=NULL );
 	  mrs_natural classIndex = findClass(cp);
-	  cout << "class " << cp << endl;
+
 	  MRSASSERT(classIndex>=0);
 	  lineBuffer->at(index) = (mrs_real)classIndex;
 	  
@@ -575,29 +568,29 @@ void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data
 //If it is, return its index, otherwise return -1
 mrs_natural WekaSource::findClass(const char *className) const
 {
-	MRSASSERT(className!=NULL);
-	mrs_natural index = 0;
-	for(vector<string>::const_iterator citer = classesFound_.begin(); citer!= classesFound_.end(); citer++,index++)
-	{
-		if(*citer == className)
-			return index;
-	}//for citer
-	return -1;
+  MRSASSERT(className!=NULL);
+  mrs_natural index = 0;
+  for(vector<string>::const_iterator citer = classesFound_.begin(); citer!= classesFound_.end(); citer++,index++)
+    {
+      if(*citer == className)
+	return index;
+    }//for citer
+  return -1;
 }//FindClass
 
 //Given a string, check if it is an attribute found in the arff file header.
 //If it is, return its index, otherwise return -1
 mrs_natural WekaSource::findAttribute(const char *attribute) const
 {
-	MRSASSERT(attribute!=NULL);
+  MRSASSERT(attribute!=NULL);
 
-	mrs_natural index = 0;
-	for(vector<string>::const_iterator citer = attributesFound_.begin(); citer!= attributesFound_.end(); citer++,index++)
-	{
-		if(*citer == attribute)
-			return index;
-	}//for citer
-	return -1;
+  mrs_natural index = 0;
+  for(vector<string>::const_iterator citer = attributesFound_.begin(); citer!= attributesFound_.end(); citer++,index++)
+    {
+      if(*citer == attribute)
+	return index;
+    }//for citer
+  return -1;
 }//FindAttribute
 
 //Given a string, determine if it is an attribute name or an integer
@@ -606,20 +599,20 @@ mrs_natural WekaSource::findAttribute(const char *attribute) const
 //If it is neither
 mrs_natural WekaSource::parseAttribute(const char *attribute) const
 {
-	MRSASSERT(attribute!=NULL);
+  MRSASSERT(attribute!=NULL);
 
-	//check for attribute in list found in header and if found,
-	//return its index.
-	mrs_natural ret = findAttribute(attribute);
-	if(ret >= 0) return ret;
+  //check for attribute in list found in header and if found,
+  //return its index.
+  mrs_natural ret = findAttribute(attribute);
+  if(ret >= 0) return ret;
 
-	//otherwise, check if the string is a valid integer. If not return -1
-	for(mrs_natural ii=0; attribute[ii]!='\0'; ii++)
-		if(!isdigit(attribute[ii]))
-			return -1;
+  //otherwise, check if the string is a valid integer. If not return -1
+  for(mrs_natural ii=0; attribute[ii]!='\0'; ii++)
+    if(!isdigit(attribute[ii]))
+      return -1;
 
-	//otherwise return the index.
-	return ::atoi(attribute);
+  //otherwise return the index.
+  return ::atoi(attribute);
 }//parseAttribute
 
 //Given an attribute string check if it is a single attribute name, or range of attributes.
@@ -633,76 +626,76 @@ mrs_natural WekaSource::parseAttribute(const char *attribute) const
 // Once the indexes are known, set those index values to true in the attributes to include array
 void WekaSource::parseAttributesToInclude(const std::string& attributesToInclude)
 {
-	//resize the included attribute bool array to the same size as the actual number of attributes
-	//in the arff file.
-	attributesIncluded_.resize(attributesFound_.size());
+  //resize the included attribute bool array to the same size as the actual number of attributes
+  //in the arff file.
+  attributesIncluded_.resize(attributesFound_.size());
 
-	//if null string specified, set all attributes to include to true
-	//and set attributes to include list the same as attributes found
-	if(attributesToInclude_.size()==0)
+  //if null string specified, set all attributes to include to true
+  //and set attributes to include list the same as attributes found
+  if(attributesToInclude_.size()==0)
+    {
+
+      attributesIncludedList_.assign(attributesFound_.begin(), attributesFound_.end());
+      for(mrs_natural ii=0; ii<(mrs_natural)attributesIncluded_.size(); ii++)
 	{
-	  cout << "attributesToInclude empty use all" << endl;
-	  attributesIncludedList_.assign(attributesFound_.begin(), attributesFound_.end());
-	  for(mrs_natural ii=0; ii<(mrs_natural)attributesIncluded_.size(); ii++)
-	    {
-	      attributesIncluded_[ii] = true;
-	      cout << "Setting to true" << endl;
-	    }
-	  cout << "ok with attributes" << endl;
-	  return;
+	  attributesIncluded_[ii] = true;
+
+	}
+
+      return;
+    }//if
+
+  //Otherwise lets assume all attributes are out for now
+  for(mrs_natural ii=0; ii<(mrs_natural)attributesIncluded_.size(); ii++)
+    attributesIncluded_[ii] = false;
+
+  //get a copy of the attributes to include list and start parsing for the "," seperators
+  string str = attributesToInclude_;
+  char *cp = strtok((char *)str.c_str(), ",");
+
+  //find each string seperated by a "," and parse it for attributes
+  while(cp)
+    {
+      //check if this string has a "-" seperator
+      char *mp = strstr(cp,"-");
+      if(mp)
+	{
+	  //yes it does, so lets parse each side of the "-"
+	  *mp++ = '\0';
+
+	  //check the left side. Check for valid
+	  mrs_natural left = parseAttribute(cp);
+	  MRSASSERT(left>=0&&left<(mrs_natural)attributesFound_.size());
+
+	  //check the right side. Check for valid
+	  mrs_natural right = parseAttribute(mp);
+	  MRSASSERT(right>=0&&right<(mrs_natural)attributesFound_.size());
+
+	  //make sure numbers are in the right order
+	  MRSASSERT(right>=left);
+
+	  //and set the attributes included flag for this range of attributes
+	  for(mrs_natural ii=left; ii<=right; ii++)
+	    attributesIncluded_[ii] = true;
 	}//if
-
-	//Otherwise lets assume all attributes are out for now
-	for(mrs_natural ii=0; ii<(mrs_natural)attributesIncluded_.size(); ii++)
-		attributesIncluded_[ii] = false;
-
-	//get a copy of the attributes to include list and start parsing for the "," seperators
-	string str = attributesToInclude_;
-	char *cp = strtok((char *)str.c_str(), ",");
-
-	//find each string seperated by a "," and parse it for attributes
-	while(cp)
+      //No "-" seperator, just parse this one attribute or index
+      else
 	{
-		//check if this string has a "-" seperator
-		char *mp = strstr(cp,"-");
-		if(mp)
-		{
-			//yes it does, so lets parse each side of the "-"
-			*mp++ = '\0';
+	  mrs_natural index = parseAttribute(cp);
+	  MRSASSERT(index>=0&&index<(mrs_natural)attributesFound_.size());
+	  attributesIncluded_[index] = true;
+	}//else
 
-			//check the left side. Check for valid
-			mrs_natural left = parseAttribute(cp);
-			MRSASSERT(left>=0&&left<(mrs_natural)attributesFound_.size());
+      //next token
+      cp = strtok(NULL, ",");
+    }//while
 
-			//check the right side. Check for valid
-			mrs_natural right = parseAttribute(mp);
-			MRSASSERT(right>=0&&right<(mrs_natural)attributesFound_.size());
-
-			//make sure numbers are in the right order
-			MRSASSERT(right>=left);
-
-			//and set the attributes included flag for this range of attributes
-			for(mrs_natural ii=left; ii<=right; ii++)
-				attributesIncluded_[ii] = true;
-		}//if
-		//No "-" seperator, just parse this one attribute or index
-		else
-		{
-			mrs_natural index = parseAttribute(cp);
-			MRSASSERT(index>=0&&index<(mrs_natural)attributesFound_.size());
-			attributesIncluded_[index] = true;
-		}//else
-
-		//next token
-		cp = strtok(NULL, ",");
-	}//while
-
-	//Now build the attributes included list from the original attributes found list.
-	//Use the included flags array to determine which attributes to copy
-	attributesIncludedList_.clear();
-	for(mrs_natural ii=0; ii<(mrs_natural)attributesIncluded_.size(); ii++)
-	{
-		if(attributesIncluded_[ii])
-			attributesIncludedList_.push_back(attributesFound_[ii]);
-	}//for ii
+  //Now build the attributes included list from the original attributes found list.
+  //Use the included flags array to determine which attributes to copy
+  attributesIncludedList_.clear();
+  for(mrs_natural ii=0; ii<(mrs_natural)attributesIncluded_.size(); ii++)
+    {
+      if(attributesIncluded_[ii])
+	attributesIncludedList_.push_back(attributesFound_[ii]);
+    }//for ii
 }//parseAttributesToExtract

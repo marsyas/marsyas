@@ -136,10 +136,11 @@ public:
   
 	MarSystem *clone()const;
 	void myProcess(realvec& in, realvec& out);
+
+private:
 	void addControls();
 	void myUpdate(MarControlPtr sender);
 
-private:
 	//control values
 	std::string filename_;						//name of arff file to read
 	std::string attributesToInclude_;			//list of attributes to include in dataset

@@ -111,6 +111,7 @@ MP3FileSource::addControls()
 void 
 MP3FileSource::PrintFrameInfo(struct mad_header *Header)
 {
+  #ifdef MARSYAS_MAD
   const char	*Layer,
     *Mode,
     *Emphasis;
@@ -183,6 +184,8 @@ MP3FileSource::PrintFrameInfo(struct mad_header *Header)
 	 Header->bitrate,Layer,
 	 Header->flags&MAD_FLAG_PROTECTION?"with":"without",
 	 Mode,Emphasis,Header->samplerate);
+
+  #endif
 }
 
 
