@@ -33,75 +33,28 @@ Transcriber::~Transcriber()
 }
 
 void
-Transcriber::appendRealvec(realvec* orig, const realvec* newValues)
-{
-	mrs_natural origSize = orig->getSize();
-//   don't get cute unless everything else is working.  -gp
-//	if (origSize == 0)
-//	{
-//		(*orig) = (*newValues);
-//	}
-//	else {
-	mrs_natural newSize = origSize + newValues->getSize();
-	//cout<<newSize<<endl;
-	orig->stretch( newSize );
-	for (mrs_natural i=0; i<newValues->getSize(); i++)
-		(*orig)(origSize + i) = (*newValues)(i);
-//	}
-	delete newValues;
-}
-
-realvec*
-Transcriber::getSubVector(const realvec* list, mrs_natural start,
-                          mrs_natural length)
-{
-	realvec *subVector = new realvec(length);
-	for (mrs_natural i=0; i<length; i++)
-		(*subVector)(i) = (*list)(start + i);
-	return subVector;
-}
-
-realvec*
-Transcriber::getSubVectorNoZeros(const realvec* list, mrs_natural start,
-                          mrs_natural length)
-{
-	realvec *subVector = new realvec(length);
-	mrs_natural subIndex=0;
-	for (mrs_natural i=0; i<length; i++)
-	{
-		if ((*list)(start+i) > 0)
-		{
-			(*subVector)(subIndex) = (*list)(start + i);
-			subIndex++;
-		}
-	}
-	subVector->stretch(subIndex);
-	return subVector;
-}
-
-void
 Transcriber::pitchSegment(realvec* pitchList, realvec* boundaries)
 {
-	realvec *region, *newBoundaries, *regionBounds;
+	realvec region, *newBoundaries, *regionBounds;
 	mrs_natural start, length;
 	newBoundaries = new realvec;
 	for (mrs_natural i=0; i<boundaries->getSize()-1; i++)
 	{
 		start = (mrs_natural) (*boundaries)(i);
 		length = (mrs_natural) ((*boundaries)(i+1) - (*boundaries)(i));
-		region = getSubVector(pitchList, start, length);
-		regionBounds = findPitchBoundaries(region);
+		region = pitchList->getSubVector(start, length);
+		regionBounds = findPitchBoundaries(&region);
 		(*regionBounds) += start;
 		/*
 				cout<<"i ="<<i<<endl;
 				cout<<(*newBoundaries);
 				cout<<(*regionBounds);
 		*/
-		appendRealvec(newBoundaries, regionBounds);
+		newBoundaries->appendRealvec(*regionBounds);
 //		cout<<"done i ="<<i<<endl;
 	}
 //	cout<<"blah"<<endl;
-	appendRealvec(boundaries, newBoundaries);
+	boundaries->appendRealvec(*newBoundaries);
 	boundaries->sort();
 }
 
@@ -172,20 +125,20 @@ Transcriber::findPitchBoundaries(const realvec* pitchList)
 void
 Transcriber::ampSegment(realvec* ampList, realvec* boundaries)
 {
-	realvec *region, *newBoundaries, *regionBounds;
+	realvec region, *newBoundaries, *regionBounds;
 	mrs_natural start, length;
 	newBoundaries = new realvec;
 	for (mrs_natural i=0; i<boundaries->getSize()-1; i++)
 	{
 		start = (mrs_natural) (*boundaries)(i);
 		length = (mrs_natural) ((*boundaries)(i+1) - (*boundaries)(i));
-		region = getSubVector(ampList, start, length);
-		regionBounds = findValleys(region);
-		findAmpBoundaries(region, regionBounds);
+		region = ampList->getSubVector(start, length);
+		regionBounds = findValleys((&region));
+		findAmpBoundaries(&region, regionBounds);
 		(*regionBounds) += start;
-		appendRealvec(newBoundaries, regionBounds);
+		newBoundaries->appendRealvec(*regionBounds);
 	}
-	appendRealvec(boundaries, newBoundaries);
+	boundaries->appendRealvec(*newBoundaries);
 	boundaries->sort();
 }
 
@@ -202,18 +155,18 @@ Transcriber::findAmpBoundaries(realvec* ampList, realvec* &boundaries)
 
 //	mrs_natural window = 10;
 	mrs_real peakRatio = 0.8;
-	realvec *region;
+	realvec region;
 	mrs_natural start, length;
 	mrs_real valley;
 	for (mrs_natural i=0; i<boundaries->getSize()-1; i++)
 	{
 		start = (mrs_natural) (*boundaries)(i);
 		length = (mrs_natural) ((*boundaries)(i+1) - (*boundaries)(i));
-		region = getSubVector(ampList, start, length);
+		region = ampList->getSubVector(start, length);
 		valley = (*ampList)(start);
 		//cout<<start<<"\t"<<findNextPeakValue(region, 0)<<endl;
-		if ( (valley < peakRatio*findNextPeakValue(region, 0)) &&
-			(region->mean() > 0.01) )
+		if ( (valley < peakRatio*findNextPeakValue(&region, 0)) &&
+			(region.mean() > 0.01) )
 		{
 			(*newBounds)(newIndex) = start;
 			newIndex++;
