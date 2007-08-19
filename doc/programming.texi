@@ -26,21 +26,34 @@ build his programs.
 Create a @file{my_program_name.pro} file:
 
 @example
+#  your files
 SOURCES = my_program_name.cpp
-
-#HEADERS = extra_file.h
+#HEADERS += extra_file.h
 #SOURCES += extra_file.cpp
 
 
-### copy and paste these lines into every project
-# change these lines to match your Marsyas installation:
-# INCLUDEPATH += $@{HOME@}/usr/include/marsyas/
-# LIBPATH += $@{HOME@}/usr/lib/
+DEPTH += ../../
 
-unix:LIBS += -lmarsyas
-unix:!macx:LIBS += -lasound
-macx:LIBS += -framework CoreAudio -framework CoreMidi
-macx:LIBS += -framework CoreFoundation
+#  these files are common to every Marsyas/QT app 
+#  you will need to update these paths (and the paths in backend.h)
+#  if you copy this directory elsewhere.
+HEADERS += $$DEPTH/apps/Qt4Apps/MarSystemQtWrapper.h
+SOURCES += $$DEPTH/apps/Qt4Apps/MarSystemQtWrapper.cpp
+
+
+#MARSYAS_INSTALL_DIR  = $@{HOME@}/usr/
+MARSYAS_INSTALL_DIR  = /usr/local
+message("If Marsyas was installed, it went into $$MARSYAS_INSTALL_DIR, right?")
+INCLUDEPATH += $$MARSYAS_INSTALL_DIR/include/marsyas
+# in case you have not installed Marsyas
+INCLUDEPATH += $$DEPTH/lib/release
+LIBPATH += $$DEPTH/lib/release
+INCLUDEPATH += $$DEPTH/marsyas/
+
+
+unix:LIBS += -lmarsyas -L$$MARSYAS_INSTALL_DIR/lib # -lmad -lvorbis -lvorbisfile
+!macx:LIBS += -lasound
+macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
 @end example
 
 Then type @code{qmake} to generate a Makefile.  Now you many compile
@@ -51,7 +64,7 @@ normally.
 
 We @emph{highly} recommend that you use qmake to create a Makefile.
 However, if you enjoy swearing at your computer and cursing k&r, rms,
-gnu, and every other three-letter programmer acronym in existance, you
+gnu, and every other three-letter programmer acronym in existence, you
 may create a file called @file{Makefile} which contains
 
 @example
