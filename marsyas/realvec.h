@@ -94,12 +94,15 @@ public:
   void stretchWrite(const mrs_natural r, const mrs_natural c, const mrs_real val);
 	//@}
   
-	/** \name Initialize array */
+	/** \name Modify values in array */
 	//@{
 	/// set all entries to val 
   void setval(mrs_natural start, mrs_natural end, mrs_real val);
 	/// set all entries to val 
   void setval(mrs_real val);
+	/// appends values from the newValues realvec.  Resizes the original
+	/// realvec to make space for the new values.
+  void appendRealvec(const realvec newValues);
 	//@}
   
 	/** \name other */
@@ -113,7 +116,10 @@ public:
   mrs_natural getSize() const;
   mrs_natural getCols() const;
   mrs_natural getRows() const;
-  mrs_real *getData() const;// dirty for easy integration 
+	/// extracts a subset of a realvec.  One-dimensional realvecs only.
+  realvec getSubVector(mrs_natural startPos, mrs_natural length);
+	/// dirty for easy integration 
+  mrs_real *getData() const;
 	//@}
 
 

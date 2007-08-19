@@ -134,6 +134,31 @@ realvec::getData() const
 }
 
 void
+realvec::appendRealvec(const realvec newValues)
+{
+//   don't get cute until everything else is working.  -gp
+//  if (origSize == 0)
+//  {
+//      (*orig) = (*newValues);
+//  }
+//  else {
+	mrs_natural origSize = size_;
+    stretch( origSize + newValues.getSize() );
+    for (mrs_natural i=0; i<newValues.getSize(); i++)
+		data_[origSize + i] = newValues.data_[i];
+//  }
+}
+
+realvec
+realvec::getSubVector(mrs_natural startPos, mrs_natural length)
+{
+	realvec subVector(length);
+	for (mrs_natural i=0; i<length; i++)
+		subVector.data_[i] = data_[startPos + i];
+	return subVector;
+}
+
+void
 realvec::transpose()
 {
 	mrs_real *tmp_ = new mrs_real[size_];
@@ -941,6 +966,7 @@ realvec::operator()(std::string r, std::string c)
 	MRSASSERT( (r_c == 0 && r_l == 1) || (r_c == string::npos) || (r_c>0 && r_l-r_c>1) );
 	MRSASSERT( (c_c == 0 && c_l == 1) || (c_c == string::npos) || (c_c>0 && c_l-c_c>1) );
 
+/// \bug Comparison between signed and unsigned integer expressions
 	if( r_c != string::npos && r_l > 1 )
 	{
 		r_a = (mrs_natural)strtol( r.substr(0,r_c).c_str() , &endptr , 10  );
@@ -1010,6 +1036,7 @@ realvec::operator()(std::string c)
 
 	MRSASSERT( (c_c == 0 && c_l == 1) || (c_c == string::npos) || (c_c>0 && c_l-c_c>1) );
 
+/// \bug Comparison between signed and unsigned integer expressions
 	if( c_c != string::npos && c_l > 1 )
 	{
 		c_a = (mrs_natural)strtol( c.substr(0,c_c).c_str() , &endptr , 10  );
