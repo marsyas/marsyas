@@ -1,5 +1,7 @@
 include( $$quote( "$$BASEDIR/marsyasConfig.pri" ) )
 
+message( Configuring Marsyas Apps build )
+	
 TEMPLATE = subdirs
 
 marsyasConsoleApps {
@@ -17,7 +19,7 @@ marsyasConsoleApps {
 		#msl \
 		#muggle \
 		#orcarecord \
-		#peakSynth \
+		peakSynth \
 		peakClustering \
 		phasevocoder \
 		pitchextract \
@@ -34,6 +36,7 @@ marsyasConsoleApps {
 		tutorial \
 		#virtualsensor \
 		vocalEffort \
+		WHaSp
 }
 
 marsyasQt4Apps:SUBDIRS += Qt4Apps

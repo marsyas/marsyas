@@ -1,5 +1,7 @@
 TEMPLATE = subdirs
 
+message( Configuring Marsyas Qt4Apps build )
+	
 SUBDIRS += \
 	#MarEditor \
 	MarGrid \

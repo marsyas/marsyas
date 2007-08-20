@@ -1,5 +1,7 @@
 include( $$quote( "$$BASEDIR/marsyasConfig.pri" ) )
 
+message( Configuring Marsyas Lib build )
+
 TEMPLATE = lib
 CONFIG += staticlib
 TARGET = marsyas

@@ -71,7 +71,7 @@ unix:!macx:CONFIG += marsyasAUDIOIO_ALSA
 ######################################################################
 
 CONFIG	+= marsyasMATLABdebug
-# CONFIG	+= marsyasMATLABrelease
+#CONFIG	+= marsyasMATLABrelease
 
 ######################################################################
 # Adds support for MP3 MAD
@@ -160,6 +160,39 @@ marsyasConsoleApps:message ( -> build Console Apps )
 marsyasQt4Apps:message(  -> build Qt4 Apps )
 marsyasQGLVIEWER:message (-> QGVVIEWER support) 
 
+marsyasASSERTS {
+	message ( -> Assertions turned on )
+	DEFINES += MARSYAS_ASSERTS
+}
+marsyasPROFILING {
+	message ( -> Profiling turned on )
+	DEFINES += MARSYAS_PROFILING
+}
+marsyasLOGWARNINGS {
+	message ( -> Warning messages in log )
+	DEFINES += MARSYAS_LOG_WARNINGS
+}
+marsyasLOGDEBUGS {
+	message ( -> Debug messages in log )
+	DEFINES += MARSYAS_LOG_DEBUGS
+}
+marsyasLOGDIAGNOSTICS {
+	message ( -> Diagnostic messages in log )
+	DEFINES += MARSYAS_LOG_DIAGNOSTICS
+}
+marsyasLOG2FILE {
+	message ( --> Log to file )
+	DEFINES += MARSYAS_LOG2FILE
+}
+marsyasLOG2STDOUT {
+	message ( --> Log to stdout )
+	DEFINES += MARSYAS_LOG2STDOUT
+}
+marsyasLOG2GUI {
+	message ( --> Log to GUI )
+	DEFINES += MARSYAS_LOG2GUI
+}
+
 unix:{
 !macx {    # qmake detects osx as "unix" in 4.2.2.  :/
 	DEFINES += MARSYAS_LINUX
@@ -214,11 +247,7 @@ unix:{
 		LIBS += -lmad
 		DEFINES += MARSYAS_MAD
 	}
-}
-
-   # For all unix, including macx
-   
-   
+  }  
 }
 
 macx {
@@ -343,51 +372,16 @@ win32 {
 		INCLUDEPATH += $$quote( "$$(LIBMAD)" )
 		DEFINES += MARSYAS_MAD
 		CONFIG(release, debug|release){
-			message(Building with libMAD MP3 support (release).)
 			LIBS += libmad.lib 
 			LIBPATH += $$quote( \"$$(LIBMAD)/msvc++/Release\" )
 		}
 		CONFIG(debug, debug|release){
-			message(Building with libMAD MP3 support (debug).)
 			LIBS += libmad.lib 
 			LIBPATH += $$quote( \"$$(LIBMAD)/msvc++/Debug\" )
 		}
 	}
 }
 
-marsyasASSERTS {
-	message ( -> Assertions turned on )
-	DEFINES += MARSYAS_ASSERTS
-}
-marsyasPROFILING {
-	message ( -> Profiling turned on )
-	DEFINES += MARSYAS_PROFILING
-}
-
-marsyasLOGWARNINGS {
-	message ( -> Warning messages in log )
-	DEFINES += MARSYAS_LOG_WARNINGS
-}
-marsyasLOGDEBUGS {
-	message ( -> Debug messages in log )
-	DEFINES += MARSYAS_LOG_DEBUGS
-}
-marsyasLOGDIAGNOSTICS {
-	message ( -> Diagnostic messages in log )
-	DEFINES += MARSYAS_LOG_DIAGNOSTICS
-}
-marsyasLOG2FILE {
-	message ( --> Log to file )
-	DEFINES += MARSYAS_LOG2FILE
-}
-marsyasLOG2STDOUT {
-	message ( --> Log to stdout )
-	DEFINES += MARSYAS_LOG2STDOUT
-}
-marsyasLOG2GUI {
-	message ( --> Log to GUI )
-	DEFINES += MARSYAS_LOG2GUI
-}
 
 
 
