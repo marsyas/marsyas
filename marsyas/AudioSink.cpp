@@ -176,7 +176,7 @@ AudioSink::stop()
 {
   if ( !stopped_ && audio_) {
 
-		audio_->abortStream();
+    audio_->abortStream();
     stopped_ = true;
 
 
@@ -199,12 +199,12 @@ AudioSink::myProcess(realvec& in, realvec& out)
   //check MUTE
   if(ctrl_mute_->isTrue())
     {
-  	for (t=0; t < inSamples_; t++)
+      for (t=0; t < inSamples_; t++)
     	{
-      	   for (o=0; o < inObservations_; o++)
-		{
-  		    out(o,t) = in(o,t);
-		}
+	  for (o=0; o < inObservations_; o++)
+	    {
+	      out(o,t) = in(o,t);
+	    }
 	}
       for (t=0; t < rsize_; t++) 
 	{
@@ -217,17 +217,17 @@ AudioSink::myProcess(realvec& in, realvec& out)
   
   // copy to output and into reservoir
 
-
+  
   for (t=0; t < inSamples_; t++)
     {
       for (o=0; o < inObservations_; o++)
 	{
-	    reservoir_(o, end_) = in(o,t);
-	    out(o,t) = in(o,t);
+	  reservoir_(o, end_) = in(o,t);
+	  out(o,t) = in(o,t);
 	}
       end_ ++; 
       if (end_ == reservoirSize_) 
-	      end_ = 0;
+	end_ = 0;
     }
   
       
@@ -262,52 +262,67 @@ AudioSink::myProcess(realvec& in, realvec& out)
   //send audio data in reservoir to RtAudio
   while (diff_ >= rsize_)  
     {
-      for (t=0; t < rsize_; t++) 
+      t = 0;
+      int rsize_tmp = rsize_;
+       
+      while (t < rsize_tmp) 
 	{
+	  
+	  if ((start_ + t) > reservoirSize_)
+	    {
+	      t -= reservoirSize_;
+	      rsize_tmp -= reservoirSize_;
+	    }
+	  const int t2 = 2 * t;
+	  const int t4 = 4 * t;
+	  const int rt = start_ + t;
+	  t++;
+	  
+	  
 #ifndef MARSYAS_MACOSX
 	  if (inObservations_ == 1) 
 	    {
-	      data_[2*t] = reservoir_(0, (start_+t)%reservoirSize_);
-	      data_[2*t+1] = reservoir_(0, (start_+t)%reservoirSize_);
+	      data_[t2] = reservoir_(0, rt);
+	      data_[t2+1] = reservoir_(0, rt);
 	    }
 	  else 
 	    {
-	      data_[2*t] = reservoir_(0,   (start_+t)%reservoirSize_);
-	      data_[2*t+1] = reservoir_(1, (start_+t)%reservoirSize_);
+	      data_[t2] = reservoir_(0,   rt);
+	      data_[t2+1] = reservoir_(1, rt);
 	    }
 	  
-	    
+	  
 #else
 	  if (srate_ == 22050)
 	    {
-		if (inObservations_ == 1) 
-		 {
-	     	    data_[4*t] = reservoir_(0,(start_+t) % reservoirSize_);
-	            data_[4*t+1] = reservoir_(0,(start_+t)%reservoirSize_);
-	            data_[4*t+2] = reservoir_(0,(start_+t) % reservoirSize_);
-	            data_[4*t+3] = reservoir_(0,(start_+t) % reservoirSize_);
-	         }
-		 else
-		 {
-		   data_[4*t] = reservoir_(0,(start_+t) % reservoirSize_);
-		   data_[4*t+1]= reservoir_(1,(start_+t) % reservoirSize_);
-		   data_[4*t+2] = reservoir_(0,(start_+t) % reservoirSize_);
-		   data_[4*t+3] = reservoir_(1,(start_+t) % reservoirSize_);
-	         }
-
-	     }
+	      if (inObservations_ == 1) 
+		{
+		  data_[t4] = reservoir_(0,rt);
+		  data_[t4+1] = reservoir_(0,rt);
+		  data_[t4+2] = reservoir_(0,rt);
+		  data_[t4+3] = reservoir_(0,rt);
+		}
+	      else
+		{
+		  data_[t4] = reservoir_(0,rt);
+		  data_[t4+1]= reservoir_(1,rt);
+		  data_[t4+2] = reservoir_(0,rt);
+		  data_[t4+3] = reservoir_(1,rt);
+		}
+	      
+	    }
 	  else
 	    {
-	  if (inObservations_ == 1) 
-	    {
-	      data_[2*t] = reservoir_(0, (start_+t)%reservoirSize_);
-	      data_[2*t+1] = reservoir_(0, (start_+t)%reservoirSize_);
-	    }
-	  else 
-	    {
-	      data_[2*t] = reservoir_(0,   (start_+t)%reservoirSize_);
-	      data_[2*t+1] = reservoir_(1, (start_+t)%reservoirSize_);
-	    }
+	      if (inObservations_ == 1) 
+		{
+		  data_[t2] = reservoir_(0, rt);
+		  data_[t2+1] = reservoir_(0, rt);
+		}
+	      else 
+		{
+		  data_[t2] = reservoir_(0,   rt);
+		  data_[t2+1] = reservoir_(1, rt);
+		}
 	    }
 #endif 
 	}
