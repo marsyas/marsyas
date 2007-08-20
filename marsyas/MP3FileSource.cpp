@@ -681,20 +681,7 @@ MP3FileSource::fillStream( mrs_natural target )
 
 
 
-float 
-MP3FileSource::fixed2float(mad_fixed_t Fixed) 
-{
-  float f;
-  if (Fixed & (1<<31)) {
-    // negative
-    Fixed = Fixed & ((1<<31)-1); // strip sign
-    f = -(float)Fixed / (1<<MAD_F_FRACBITS);
-  }
-  else {
-    f = (float)Fixed / (1<<MAD_F_FRACBITS);
-  }
-  return f;  
-}
+
 
 
 

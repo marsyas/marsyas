@@ -69,7 +69,6 @@ private:
   void fillStream( mrs_natural offset = 0 );
   void closeFile(); 
 
-  float fixed2float(mad_fixed_t Fixed);
   void  PrintFrameInfo(struct mad_header *Header);
   
   // MAD stuff

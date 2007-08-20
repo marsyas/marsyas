@@ -94,144 +94,143 @@ WekaSource::myUpdate(MarControlPtr sender)
       
       loadFile(filename_, attributesToInclude_, data_);
       data_.Dump("org.txt", classesFound_);
-      
+    }
 
-      string names;
-      bool first = true;
-      for(vector<string>::const_iterator citer = classesFound_.begin(); citer!= classesFound_.end(); citer++)
+  string names;
+  bool first = true;
+  for(vector<string>::const_iterator citer = classesFound_.begin(); citer!= classesFound_.end(); citer++)
+    {
+      if(!first)
+	names += ",";
+      
+      names += (*citer);
+      first = false;
+    }
+  setctrl("mrs_string/classNames", names);
+  setctrl("mrs_natural/nClasses", (mrs_natural)classesFound_.size());
+  
+  
+  names = "";
+  first = true;
+  mrs_natural index = 0;
+  for(vector<string>::const_iterator citer = attributesFound_.begin(); citer!= attributesFound_.end(); citer++,index++)
+    {
+      if(attributesIncluded_[index])
 	{
 	  if(!first)
 	    names += ",";
 	  
 	  names += (*citer);
 	  first = false;
-	}
-      setctrl("mrs_string/classNames", names);
-      setctrl("mrs_natural/nClasses", (mrs_natural)classesFound_.size());
-
+	}//if
+    }
+  MRSASSERT(index==attributesIncluded_.size());
+  
+  
+  
+  setctrl("mrs_string/attributeNames", names);
+  
+  setctrl("mrs_natural/onSamples", 1);
+  setctrl("mrs_natural/nAttributes", (mrs_natural)attributesFound_.size());
+  setctrl("mrs_natural/onObservations", (mrs_natural)attributesFound_.size()+1);
+  
+  
+  
+  
+  
+  string mode = getctrl("mrs_string/validationMode")->toString();
+  validationMode_ = mode;
+  
+  if (validationMode_ == "") 
+    {
+      validationModeEnum_ = None;
+      currentIndex_ = 0;
+      return;
+    }
+  
+  
+  
+  char *cp = strtok((char *)mode.c_str(), ",");
+  MRSASSERT(cp!=NULL);
+  
+  
+  
+  if(strcmp(cp ,"kFold")==0)
+    {//Validation mode is Folding, now extract the fold count.
+      data_.Shuffle();
+      data_.Dump("shuffle.txt", classesFound_);
       
-      names = "";
-      first = true;
-      mrs_natural index = 0;
-      for(vector<string>::const_iterator citer = attributesFound_.begin(); citer!= attributesFound_.end(); citer++,index++)
-	{
-	  if(attributesIncluded_[index])
-	    {
-	      if(!first)
-		names += ",";
-	      
-	      names += (*citer);
-	      first = false;
-	    }//if
-	}
-      MRSASSERT(index==attributesIncluded_.size());
-      
-
-
-      setctrl("mrs_string/attributeNames", names);
-
-      setctrl("mrs_natural/onSamples", 1);
-      setctrl("mrs_natural/nAttributes", (mrs_natural)attributesFound_.size());
-      setctrl("mrs_natural/onObservations", (mrs_natural)attributesFound_.size()+1);
-      
-
-
-      
-
-      string mode = getctrl("mrs_string/validationMode")->toString();
-      validationMode_ = mode;
-
-      if (validationMode_ == "") 
-	{
-	  validationModeEnum_ = None;
-	  currentIndex_ = 0;
-	  return;
-	}
-
-
-
-      char *cp = strtok((char *)mode.c_str(), ",");
+      cp = (char *)strtok(NULL, ",");
       MRSASSERT(cp!=NULL);
-
-
       
-      if(strcmp(cp ,"kFold")==0)
-	{//Validation mode is Folding, now extract the fold count.
-	  data_.Shuffle();
-	  data_.Dump("shuffle.txt", classesFound_);
-
-	  cp = (char *)strtok(NULL, ",");
-	  MRSASSERT(cp!=NULL);
+      validationModeEnum_ = kFoldStratified;
+      if(strcmp(cp,"NS")==0)
+	validationModeEnum_ = kFoldNonStratified;
+      else if(strcmp(cp,"S")==0)
+	validationModeEnum_ = kFoldStratified;
+      else
+	MRSASSERT(0);
+      
+      cp = (char *)strtok(NULL, ",");
+      MRSASSERT(cp!=NULL);
+      
+      foldCount_ = ::atol(cp);
+      MRSASSERT(foldCount_>=2&&foldCount_<=10);
+      
+      if( validationModeEnum_ == kFoldStratified)
+	{//in stratified mode we simply use all the available data
+	  cout << "=== Stratified cross-validation (" <<  foldCount_ << " folds) ===" << endl;
+	  foldData_.SetupkFoldSections(data_, foldCount_);
+	}
+      else
+	{//in non-stratified we seperate the data according to class
+	  cout << "=== Non-Stratified cross-validation (" <<  foldCount_ << " folds) ===" << endl;
+	  foldClassData_.clear();
+	  foldClassData_.resize(classesFound_.size());
 	  
-	  validationModeEnum_ = kFoldStratified;
-	  if(strcmp(cp,"NS")==0)
-	    validationModeEnum_ = kFoldNonStratified;
-	  else if(strcmp(cp,"S")==0)
-	    validationModeEnum_ = kFoldStratified;
-	  else
-	    MRSASSERT(0);
-	  
-	  cp = (char *)strtok(NULL, ",");
-	  MRSASSERT(cp!=NULL);
-	  
-	  foldCount_ = ::atol(cp);
-	  MRSASSERT(foldCount_>=2&&foldCount_<=10);
-	  
-	  if( validationModeEnum_ == kFoldStratified)
-	    {//in stratified mode we simply use all the available data
-	      cout << "=== Stratified cross-validation (" <<  foldCount_ << " folds) ===" << endl;
-	      foldData_.SetupkFoldSections(data_, foldCount_);
+	  //load each dataset with rows for each class
+	  for(mrs_natural ii=0; ii<(mrs_natural)classesFound_.size(); ii++)
+	    {
+	      WekaFoldData data;
+	      data.SetupkFoldSections(data_, foldCount_, ii);
+	      foldClassData_[ii] = data;
 	    }
-	  else
-	    {//in non-stratified we seperate the data according to class
-	      cout << "=== Non-Stratified cross-validation (" <<  foldCount_ << " folds) ===" << endl;
-	      foldClassData_.clear();
-	      foldClassData_.resize(classesFound_.size());
-	      
-	      //load each dataset with rows for each class
-	      for(mrs_natural ii=0; ii<(mrs_natural)classesFound_.size(); ii++)
-		{
-		  WekaFoldData data;
-		  data.SetupkFoldSections(data_, foldCount_, ii);
-		  foldClassData_[ii] = data;
-		}
-	      foldClassDataIndex_ = 0;
-	    }
-	  
-	}//if "kFold"
-      else if(strcmp(cp ,"UseTestSet")==0)
-	{
-	  validationModeEnum_ = UseTestSet;
-	  
-	  cp = (char *)strtok(NULL, ",");
-	  MRSASSERT(cp!=NULL);
-	  useTestSetFilename_ = cp;
-	  loadFile(cp, attributesToInclude_, useTestSetData_);
-	  MRSASSERT(data_.getCols()==useTestSetData_.getCols());
-	  currentIndex_ = 0;
-	  
-	  cout << "=== Evaluation on test set === (" <<  useTestSetFilename_.c_str() << ") ===" << endl;
-	  
-	}//else if "UseTestSet"
-      else if(strcmp(cp ,"PercentageSplit")==0)
-	{
-	  cout << "=== Evaluation on test split ===" << endl;
-	  validationModeEnum_ = PercentageSplit;
-	  
-	  cp = (char *)strtok(NULL, ",");
-	  MRSASSERT(cp!=NULL);
-	  percentageSplit_ = ::atoi(cp);
-	  MRSASSERT(percentageSplit_>0&&percentageSplit_<100);
-	  
-	  percentageIndex_ = ((mrs_natural)data_.size() * percentageSplit_) / 100;
-	  if(percentageIndex_ < 1) percentageIndex_ = 1;
-	  currentIndex_ = 0;
-	  
-	}//else if "PercentageSplit"
+	  foldClassDataIndex_ = 0;
+	}
       
-      //		cout << "=== Summary ===" << endl << endl;
+    }//if "kFold"
+  else if(strcmp(cp ,"UseTestSet")==0)
+    {
+      validationModeEnum_ = UseTestSet;
       
-    }//if
+      cp = (char *)strtok(NULL, ",");
+      MRSASSERT(cp!=NULL);
+      useTestSetFilename_ = cp;
+      loadFile(cp, attributesToInclude_, useTestSetData_);
+      MRSASSERT(data_.getCols()==useTestSetData_.getCols());
+      currentIndex_ = 0;
+      
+      cout << "=== Evaluation on test set === (" <<  useTestSetFilename_.c_str() << ") ===" << endl;
+      
+    }//else if "UseTestSet"
+  else if(strcmp(cp ,"PercentageSplit")==0)
+    {
+      cout << "=== Evaluation on test split ===" << endl;
+      validationModeEnum_ = PercentageSplit;
+      
+      cp = (char *)strtok(NULL, ",");
+      MRSASSERT(cp!=NULL);
+      percentageSplit_ = ::atoi(cp);
+      MRSASSERT(percentageSplit_>0&&percentageSplit_<100);
+      
+      percentageIndex_ = ((mrs_natural)data_.size() * percentageSplit_) / 100;
+      if(percentageIndex_ < 1) percentageIndex_ = 1;
+      currentIndex_ = 0;
+      
+    }//else if "PercentageSplit"
+  
+  //		cout << "=== Summary ===" << endl << endl;
+  
 
 }//myUpdate
 

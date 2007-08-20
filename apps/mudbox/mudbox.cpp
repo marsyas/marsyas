@@ -2604,13 +2604,12 @@ toy_with_weka(string fname)
   net = mng.create("Series", "net");
   net->addMarSystem(mng.create("WekaSource", "wsrc"));
   net->addMarSystem(mng.create("Gain", "gain"));
-  
+
+  net->updctrl("WekaSource/wsrc/mrs_string/attributesToInclude", "1,2,3");
+  // net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "PercentageSplit,50%");
   net->updctrl("WekaSource/wsrc/mrs_string/filename", fname);
 
   // doesn't seem to work - check at some point
-  // net->updctrl("WekaSource/wsrc/mrs_string/attributesToInclude", "1,2,3");
-  
-  net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "PercentageSplit,50%");
   net->updctrl("mrs_natural/inSamples", 1);
 
 
