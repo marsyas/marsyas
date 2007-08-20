@@ -12,7 +12,7 @@ marsyasBaseDir = os.path.join(marsyasBaseDir+os.sep+'..'+os.sep)
 marsyasBaseDir = os.path.abspath( marsyasBaseDir )
 os.chdir (marsyasBaseDir + os.sep + 'regressionTests')
 
-print os.getcwd()
+#print os.getcwd()
 
 # setup release/debug/installed mode
 if len(sys.argv) > 1:
