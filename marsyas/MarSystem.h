@@ -215,22 +215,42 @@ public:
 	bool updControl(char* cname, MarControlPtr newcontrol, bool upd = true)
 	{
 		MarControlPtr control = getControl(cname);
+		if(control.isInvalid())
+		{
+			MRSWARN("MarSystem::updControl - " + std::string(cname) + " is an invalid control @ " + getAbsPath());
+			return false;
+		}
 		return updControl(control, newcontrol, upd);
 	}
 	bool updControl(std::string cname, MarControlPtr newcontrol, bool upd = true)
 	{
 		MarControlPtr control = getControl(cname);
+		if(control.isInvalid())
+		{
+			MRSWARN("MarSystem::updControl - " + cname + " is an invalid control @ " + getAbsPath());
+			return false;
+		}
 		return updControl(control, newcontrol, upd);
 	}
 	bool updctrl(MarControlPtr control, MarControlPtr newcontrol, bool upd = true) {return updControl(control, newcontrol, upd);}
   bool updctrl(char *cname, MarControlPtr newcontrol, bool upd = true) 
   {
     MarControlPtr control = getControl(cname);
+		if(control.isInvalid())
+		{
+			MRSWARN("MarSystem::updctrl - " + std::string(cname) + " is an invalid control @ " + getAbsPath());
+			return false;
+		}
     return updControl(control, newcontrol, upd);
   }
   bool updctrl(std::string cname, MarControlPtr newcontrol, bool upd = true) 
   {
     MarControlPtr control = getControl(cname);
+		if(control.isInvalid())
+		{
+			MRSWARN("MarSystem::updctrl - " + cname + " is an invalid control @ " + getAbsPath());
+			return false;
+		}
     return updControl(control, newcontrol, upd);
   }
 
