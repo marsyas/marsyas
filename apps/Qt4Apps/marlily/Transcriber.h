@@ -22,66 +22,47 @@ public:
 	Transcriber();
 	~Transcriber();
 
-	static void pitchSegment(realvec* pitchList, realvec* boundaries);
-	static void ampSegment(realvec* ampList, realvec* boundaries);
-
-	static realvec* findPitchBoundaries(const realvec* pitchList);
+	/** \name General fuctions */
+/// non-Transcriber-specific functions, but I don't think they're
+/// useful enough to add to realvec.
+	//@{
+	static realvec* segmentRealvec(const realvec* list,
+	                               const realvec* boundaries);
+	static mrs_real findMedianWithoutZeros(const mrs_natural start,
+	                                       const mrs_natural length,
+	                                       const realvec* array);
 	static realvec* findValleys(const realvec* list);
+	static mrs_real findNextPeakValue(const realvec* list,
+	                                  const mrs_natural start);
+	//@}
+
+
+	/** \name Pitch stuff */
+	//@{
+	static void pitchSegment(realvec* pitchList, realvec* boundaries);
+	static realvec* findPitchBoundaries(const realvec* pitchList);
+
+	//@}
+
+
+	/** \name Amplitude stuff */
+	//@{
+	static void ampSegment(realvec* ampList, realvec* boundaries);
 	static void findAmpBoundaries(realvec* ampList, realvec*
 	                              &boundaries);
-	static mrs_real findNextPeakValue(const realvec* list, const mrs_natural
-	                                  start);
-
-	static mrs_real findMedian(const mrs_natural start, const
-	                           mrs_natural length, const realvec* array);
-
-	static realvec* segmentRealvec(const realvec* list, const realvec* boundaries);
+	//@}
 
 
+	/** \name Note stuff */
+	//@{
 	static realvec* getNotes(const realvec* pitchList, const realvec*
 	                         ampList, const realvec* boundaries);
 	static void getRelativeDurations(const realvec *boundaries,
 	                                 realvec* &durations);
-
-	/*
-		void setOptions(mrs_natural getRadius, mrs_real getNewNote, mrs_real getCertantyDiv);
-
-		void setPitchList(realvec newPitchList);
-		realvec getAmplitudesFromAudio(string audioFilename);
-
-		void calcOnsets();
-		void calcRelativeDurations();
-		void calcNotes();
-
-		realvec getOnsets();
-		realvec getDurations();
-		realvec getNotes();
-
-		void clearPitches();
-		void setOnsets(string fileName);
-	*/
+	//@}
 
 private:
-	/*
-		mrs_real notePitch(realvec curNote);
 
-		string outputFilename;
-		realvec pitchList;
-		realvec ampList;
-		realvec fretList;
-
-		realvec onsets;
-		realvec durations;
-		realvec notes;
-
-		mrs_natural median_radius;
-		mrs_real new_note_midi;
-		mrs_real pitch_certainty_div;
-
-		mrs_natural IMPULSE_HIGHT;
-		mrs_natural LOWEST_NOTE;
-		mrs_natural HIGHEST_NOTE;
-	*/
 };
 }
 #endif
