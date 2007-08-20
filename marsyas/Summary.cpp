@@ -57,113 +57,123 @@ void Summary::addControls()
 
 void Summary::myUpdate(MarControlPtr sender)
 {
-	MRSDIAG("Summary.cpp - Summary:myUpdate");
+  cout << "Summary::myUpdate" << endl;
+  MRSDIAG("Summary.cpp - Summary:myUpdate");
   
-	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-	setctrl("mrs_natural/onObservations", (mrs_natural)2);
-	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-   
-	mrs_natural nClasses = getctrl("mrs_natural/nClasses")->toNatural();
-	if (confusionMatrix.getRows() != nClasses)
-	{
-		//cout << "nlabels =" << nlabels<<endl;
-		confusionMatrix.create(nClasses, nClasses);
-	}//if
-	classNames = getctrl("mrs_string/classNames")->toString();
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", (mrs_natural)2);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+  
+  mrs_natural nClasses = getctrl("mrs_natural/nClasses")->toNatural();
+  if (confusionMatrix.getRows() != nClasses)
+    {
+      //cout << "nlabels =" << nlabels<<endl;
+      confusionMatrix.create(nClasses, nClasses);
+    }//if
+  classNames = getctrl("mrs_string/classNames")->toString();
 }//myUpdate
 
 void Summary::myProcess(realvec& in, realvec& out)
 {
-	string mode = getctrl("mrs_string/mode")->toString();
-
-	//modified this code to check the done flag-dale
-	bool done = getctrl("mrs_bool/done")->toBool();
-
-	if (strcmp(mode.c_str(), "train") == 0 && !done)
-	{
-		for (t=0; t < inSamples_; t++)
-		{
-			mrs_real label = in(inObservations_-1, t);
-			out(0,t) = label;
-			out(1,t) = label;
-		}//for t
-	}//if train
-	else if (strcmp(mode.c_str(), "predict") == 0 && !done)
-	{
-		for (t=0; t < inObservations_; t++)
-		{    
-			//swapped the x and y values-dale
-			mrs_natural prediction = (mrs_natural)in(t, inSamples_-2);	//prediction  
-			mrs_natural actual = (mrs_natural)in(t, inSamples_-1);	//actual
-
-			confusionMatrix(actual,prediction)++;	  
-			//cout << "(y,x) (" << y << ","<< x << ")"<< endl;
+  cout << "Summary::myProcess" << endl;
+  string mode = getctrl("mrs_string/mode")->toString();
   
-			out(0,t) = prediction;
-			out(1,t) = actual;
-		}//for t
-	}//if
+  cout << "Summary mode = " << mode << endl;
+  //modified this code to check the done flag-dale
+  bool done = getctrl("mrs_bool/done")->toBool();
+  cout << "Summary done = " << done << endl;
   
-	if (done)
+  if (strcmp(mode.c_str(), "train") == 0 && !done)
+    {
+      for (t=0; t < inSamples_; t++)
 	{
-		summaryStatistics stats = computeSummaryStatistics(confusionMatrix);
-		cout << "=== Summary ===" << endl << endl;
+	  mrs_real label = in(inObservations_-1, t);
+	  out(0,t) = label;
+	  out(1,t) = label;
+	}//for t
+    }//if train
+  else if (strcmp(mode.c_str(), "predict") == 0 && !done)
+    {
+      cout << "Summary predict " << endl;
+      for (t=0; t < inSamples_; t++)
+	{    
+	  //swapped the x and y values-dale
+	  mrs_natural prediction = (mrs_natural)in(inObservations_-2, t);	//prediction  
+	  mrs_natural actual = (mrs_natural)in(inObservations_-1, t);	//actual
+	  
+	  confusionMatrix(actual,prediction)++;	  
+	  //cout << "(y,x) (" << y << ","<< x << ")"<< endl;
+	  
+	  out(0,t) = prediction;
+	  out(1,t) = actual;
+	}
 
-		cout << "Correctly Classified Instances" << "\t\t" << stats.correctInstances << "\t";
-		cout << (((mrs_real)stats.correctInstances / (mrs_real)stats.instances)*100.0);
-		cout << " %" << endl;
 
-		cout << "Incorrectly Classified Instances" << "\t" << (stats.instances - stats.correctInstances) << "\t";
-		cout << (((mrs_real)(stats.instances - stats.correctInstances) / (mrs_real)stats.instances)*100.0);
-		cout << " %" << endl;
+      cout << "After Summary predict " << endl;
+    }//if
+  
+  if (done)
+    {
+      cout << "Summary done" << endl;
 
-		cout << "Kappa statistic" << "\t\t\t\t" << stats.kappa << "\t" << endl;
-		cout << "Mean absolute error" << "\t\t\t" << stats.meanAbsoluteError << endl;
-		cout << "Root mean squared error" << "\t\t\t" << stats.rootMeanSquaredError << endl;
-		cout << "Relative absolute error" << "\t\t\t" << stats.relativeAbsoluteError << endl;
-		cout << "Root relative squared error" << "\t\t" << stats.rootRelativeSquaredError << endl;
-		cout << "Total Number of Instances" << "\t\t" << stats.instances << endl << endl;
-
-		cout << "=== Confusion Matrix ===";
-		cout << endl; cout << endl;
-
-		if(!classNames.size())
-			classNames = ",";
-		
-		string::size_type from = 0;
-		string::size_type to = classNames.find(",");
-		
-		mrs_natural correct = 0;
-		mrs_natural total = 0;
-		for (mrs_natural x = 0;x<confusionMatrix.getCols();x++)
-			cout << "\t" << (char)(x+'a');
-		cout << "\t" << "<-- classified as";
-		cout << endl;
-
-		for(mrs_natural y = 0;y<confusionMatrix.getRows();y++)
-		{
-			for(mrs_natural x = 0;x<confusionMatrix.getCols();x++)
-			{
-				mrs_natural value = (mrs_natural)confusionMatrix(y, x);
-				total += value;
-				if(x == y)
-					correct += value;
-
-				cout << "\t" << value;
-			}//for x
-			cout << "\t" << "| ";
-			if(from < classNames.size())
-			{
-				cout << (char)(y+'a') << " = " << classNames.substr(from, to - from);
-				from = to + 1;
-				to = classNames.find(",", from);
-				if(to == string::npos)
-					to = classNames.size();
-			}//if
-			cout << endl;
-		}//for y
-		cout << (total > 0 ? correct * 100 / total: 0) << "% classified correctly (" << correct << "/" << total << ")" << endl;
-	}//if done
+      summaryStatistics stats = computeSummaryStatistics(confusionMatrix);
+      cout << "=== Summary ===" << endl << endl;
+      
+      cout << "Correctly Classified Instances" << "\t\t" << stats.correctInstances << "\t";
+      cout << (((mrs_real)stats.correctInstances / (mrs_real)stats.instances)*100.0);
+      cout << " %" << endl;
+      
+      cout << "Incorrectly Classified Instances" << "\t" << (stats.instances - stats.correctInstances) << "\t";
+      cout << (((mrs_real)(stats.instances - stats.correctInstances) / (mrs_real)stats.instances)*100.0);
+      cout << " %" << endl;
+      
+      cout << "Kappa statistic" << "\t\t\t\t" << stats.kappa << "\t" << endl;
+      cout << "Mean absolute error" << "\t\t\t" << stats.meanAbsoluteError << endl;
+      cout << "Root mean squared error" << "\t\t\t" << stats.rootMeanSquaredError << endl;
+      cout << "Relative absolute error" << "\t\t\t" << stats.relativeAbsoluteError << endl;
+      cout << "Root relative squared error" << "\t\t" << stats.rootRelativeSquaredError << endl;
+      cout << "Total Number of Instances" << "\t\t" << stats.instances << endl << endl;
+      
+      cout << "=== Confusion Matrix ===";
+      cout << endl; cout << endl;
+      
+      if(!classNames.size())
+	classNames = ",";
+      
+      string::size_type from = 0;
+      string::size_type to = classNames.find(",");
+      
+      mrs_natural correct = 0;
+      mrs_natural total = 0;
+      for (mrs_natural x = 0;x<confusionMatrix.getCols();x++)
+	cout << "\t" << (char)(x+'a');
+      cout << "\t" << "<-- classified as";
+      cout << endl;
+      
+      for(mrs_natural y = 0;y<confusionMatrix.getRows();y++)
+	{
+	  for(mrs_natural x = 0;x<confusionMatrix.getCols();x++)
+	    {
+	      mrs_natural value = (mrs_natural)confusionMatrix(y, x);
+	      total += value;
+	      if(x == y)
+		correct += value;
+	      
+	      cout << "\t" << value;
+	    }//for x
+	  cout << "\t" << "| ";
+	  if(from < classNames.size())
+	    {
+	      cout << (char)(y+'a') << " = " << classNames.substr(from, to - from);
+	      from = to + 1;
+	      to = classNames.find(",", from);
+	      if(to == string::npos)
+		to = classNames.size();
+	    }//if
+	  cout << endl;
+	}//for y
+      cout << (total > 0 ? correct * 100 / total: 0) << "% classified correctly (" << correct << "/" << total << ")" << endl;
+    }//if done
 }//myProcess
 
 summaryStatistics Summary::computeSummaryStatistics(const realvec& mat)

@@ -54,6 +54,7 @@
 #include "Mono2Stereo.h"
 #include "PeakConvert.h"
 #include "OverlapAdd.h"
+#include "Summary.h"
 #include "PeakSynthOsc.h"
 #include "PeakSynthOscBank.h"
 #include "PeakSynthFFT.h"
@@ -295,6 +296,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("NormCut", new NormCut("normcutpr"));
 	registerPrototype("PeakViewSource", new PeakViewSource("peakviewsourcepr"));
 	registerPrototype("OneRClassifier", new OneRClassifier("onerclassifierpr"));
+	registerPrototype("Summary", new Summary("summaryp"));
 	registerPrototype("Gain", new Gain("gp"));
 	// Please leave Gain at the end; it makes scripts happy.
 

@@ -55,60 +55,69 @@ void OneRClassifier::addControls()
 void OneRClassifier::myUpdate()
 {
 	MRSDIAG("OneRClassifier.cpp - OneRClassifier:myUpdate");
-	setctrl("mrs_natural/onSamples", 2);
+	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
+	setctrl("mrs_natural/onObservations", 2);
 }//myUpdate
 
 void OneRClassifier::myProcess(realvec& in, realvec& out)
 {
-	//get the current mode, either train of predict mode
-	bool trainMode = (getctrl("mrs_string/mode")->toString() == "train");
-	row_.stretch(in.getCols());
-	if (trainMode)
-	{//train mode
-		if(lastModePredict_ || instances_.getCols()<=0)
-		{
-			mrs_natural nAttributes = getctrl("mrs_natural/inSamples")->toNatural();
-				instances_.Create(nAttributes);
-		}//if
-
-		lastModePredict_ = false;
-
-		//get the incoming data and append it to the data table
-		for (mrs_natural ii=0; ii<inObservations_; ii++)
-		{
-			mrs_real label = in(ii, inSamples_-1);
-			instances_.Append(in);
-			out(ii,0) = label;
-			out(ii,1) = label;
-		}//for t
-	}//if
-	else
+  cout << "OneRClassifier::myProcess" << endl;
+  cout << "in.getCols() = " << in.getCols() << endl;
+  cout << "in.getRows() = " << in.getRows() << endl;
+  //get the current mode, either train of predict mode
+  bool trainMode = (getctrl("mrs_string/mode")->toString() == "train");
+  row_.stretch(in.getRows());
+  if (trainMode)
+    {
+      if(lastModePredict_ || instances_.getCols()<=0)
+	{
+	  mrs_natural nAttributes = getctrl("mrs_natural/inObservations")->toNatural();
+	  cout << "nAttributes = " << nAttributes << endl;
+	  instances_.Create(nAttributes);
+	}
+      
+      lastModePredict_ = false;
+      
+      //get the incoming data and append it to the data table
+      for (mrs_natural ii=0; ii< inSamples_; ii++)
+	{
+	  mrs_real label = in(inObservations_-1, ii);
+	  instances_.Append(in);
+	  out(0,ii) = label;
+	  out(1,ii) = label;
+	}//for t
+    }//if
+  else
 	{//predict mode
-		if(!lastModePredict_)
-		{
-			//get the number of class labels and build the classifier
-			mrs_natural nAttributes = getctrl("mrs_natural/inSamples")->toNatural();
-			Build(nAttributes);
-		}//if
-		lastModePredict_ = true;
 
-		//foreach row of predict data, extract the actual class, then call the
-		//classifier predict method. Output the actual and predicted classes.
-		for (mrs_natural ii=0; ii<inObservations_; ii++)
-		{
-			//extract the actual class
-			mrs_natural label = (mrs_natural)in(ii, inSamples_-1);
+	  cout << "OneRClassifier::predict" << endl;
+	  if(!lastModePredict_)
+	    {
+	      //get the number of class labels and build the classifier
+	      mrs_natural nAttributes = getctrl("mrs_natural/inSamples")->toNatural();
+	      Build(nAttributes);
+	    }//if
+	  lastModePredict_ = true;
+	  cout << "After lastModePredict" << endl;
 
-			//invoke the classifier predict method to predict the class
-			in.getRow(ii,row_);
-			mrs_natural prediction = Predict(row_);
 
-			//and output actual/predicted classes
-			out(ii,0) = (mrs_real)prediction;
-			out(ii,1) = (mrs_real)label;
-		}//for t
+	  //foreach row of predict data, extract the actual class, then call the
+	  //classifier predict method. Output the actual and predicted classes.
+	  for (mrs_natural ii=0; ii<inSamples_; ii++)
+	    {
+	      //extract the actual class
+	      mrs_natural label = (mrs_natural)in(inObservations_-1, ii);
+	      
+	      //invoke the classifier predict method to predict the class
+	      in.getCol(ii,row_);
+	      mrs_natural prediction = Predict(row_);
+	      
+	      //and output actual/predicted classes
+	      out(0,ii) = (mrs_real)prediction;
+	      out(1,ii) = (mrs_real)label;
+	    }//for t
 	}//if
-  
+	
 }//myProcess
 
 //Create a new rule for this attribute.
@@ -235,3 +244,4 @@ mrs_natural OneRClassifier::Predict(const realvec& in)
 	//return the class for this prediction.
 	return rule_->getClassifications()[vv];
 }//Predict
+

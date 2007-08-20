@@ -54,7 +54,7 @@ WekaSource::addControls()
 
   //The mode that the weka source is currently in.
   //Can be  "train" or "predict"
-  addctrl("mrs_string/mode", "");
+  addctrl("mrs_string/mode", "train");
 
   //number of output samples will always be 1, regardless of the input samples
   setctrl("mrs_natural/onSamples", 1 );
@@ -266,6 +266,7 @@ void WekaSource::myProcess(realvec& in,realvec &out)
 void 
 WekaSource::handleDefault(bool trainMode, realvec &out)
 {
+  cout << "trainMode = " << trainMode << endl;
   vector<mrs_real> *row = NULL;
   row = data_.at(currentIndex_++);
   if(currentIndex_ >= (mrs_natural)data_.size())
@@ -285,7 +286,9 @@ void WekaSource::handlePercentageSplit(bool trainMode, realvec &out)
   if(trainMode)
     {
       MRSASSERT(currentIndex_<percentageIndex_);
+      cout << "percentageSplit:: currentIndex_ = " << currentIndex_ << endl;
       row = data_.at(currentIndex_++);
+
 
       if(currentIndex_>=percentageIndex_)
 	{
@@ -418,7 +421,7 @@ void WekaSource::loadFile(const std::string& filename, const std::string& attrib
   
   parseHeader(*mis, filename, attributesToExtract);
   parseData(*mis, filename, data);
-  
+  cout << "Done with parse data" << endl;
   mis->close();
   delete mis;
   

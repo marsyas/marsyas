@@ -127,7 +127,7 @@ void WekaData::Append(const realvec& in)
 	vector<mrs_real> *data = new vector<mrs_real>(cols_);
 	for(mrs_natural ii=0; ii<in.getCols(); ii++)
 	{
-		data->at(ii) = in(0, ii);
+	  data->at(ii) = in(ii, 0);
 	}
 	Append(data);
 }//Append
