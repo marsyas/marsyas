@@ -260,6 +260,8 @@ pkginclude_HEADERS = \
 	PeakViewSource.h \
 	OneRClassifier.h \
 	WekaData.h \
+	TranscriberExtract.h \
+	Transcriber.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 

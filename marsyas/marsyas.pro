@@ -280,6 +280,8 @@ HEADERS += \
 	PeakViewSource.h \
 	OneRClassifier.h \
 	WekaData.h \
+	TranscriberExtract.h \
+	Transcriber.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 	 
@@ -503,6 +505,8 @@ SOURCES += \
 	PeakViewSource.cpp \
 	OneRClassifier.cpp \
 	WekaData.cpp \
+	TranscriberExtract.cpp \
+	Transcriber.cpp \
 	Gain.cpp
 # please leave Gain.cpp at the end like this; it makes scripts happy.
 

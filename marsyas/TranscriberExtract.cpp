@@ -1,7 +1,9 @@
 #include "TranscriberExtract.h"
-static MarSystemManager mng;
-
 #include <iostream>
+using namespace Marsyas;
+using namespace std;
+
+static MarSystemManager mng;
 
 TranscriberExtract::TranscriberExtract()
 {
@@ -10,6 +12,21 @@ TranscriberExtract::TranscriberExtract()
 TranscriberExtract::~TranscriberExtract()
 {
 }
+
+mrs_real TranscriberExtract::addFileSource(MarSystem* net, const string infile)
+{
+        if (infile == EMPTYSTRING)
+        {
+                MRSERR("Please specify a sound file.");
+                return 0;
+        }
+        net->addMarSystem(mng.create("SoundFileSource", "src"));
+        net->updctrl("SoundFileSource/src/mrs_string/filename", infile);
+        net->linkControl("mrs_bool/notEmpty",
+                         "SoundFileSource/src/mrs_bool/notEmpty");
+        return net->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
+}
+
 
 MarSystem*
 TranscriberExtract::makePitchNet(const mrs_real srate, const mrs_real lowFreq, MarSystem* rvSink)
@@ -60,7 +77,7 @@ TranscriberExtract::getAllFromAudio(const string audioFilename, realvec* &
 	MarSystem* ampSink = mng.create("RealvecSink", "ampSink");
 
 	MarSystem* pnet = mng.create("Series", "pnet");
-	mrs_real srate = Easymar::addFileSource(pnet, audioFilename);
+	mrs_real srate = addFileSource(pnet, audioFilename);
 // TODO: double the number of observations?
 //	pnet->updctrl("SoundFileSource/src/mrs_natural/inSamples",256);
 //	pnet->addMarSystem(mng.create("ShiftInput", "shift"));
@@ -83,7 +100,7 @@ realvec*
 TranscriberExtract::getPitchesFromAudio(const string audioFilename)
 {
 	MarSystem* pnet = mng.create("Series", "pnet");
-	mrs_real srate = Easymar::addFileSource(pnet, audioFilename);
+	mrs_real srate = addFileSource(pnet, audioFilename);
 	MarSystem* rvSink = mng.create("RealvecSink", "rvSink");
 	pnet->addMarSystem(makePitchNet(srate, 100.0, rvSink));
 

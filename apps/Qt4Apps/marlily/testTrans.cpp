@@ -1,6 +1,7 @@
-#include "Transcriber.h"
 #include <fstream>
 #include <iostream>
+#include "Transcriber.h"
+using namespace Marsyas;
 
 //    ./marlily filename.wav
 void writeOnsets(string filename, realvec* boundaries)

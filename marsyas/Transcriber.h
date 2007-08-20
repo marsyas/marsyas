@@ -2,13 +2,9 @@
 #define MARSYAS_TRANSCRIBER_H
 
 #include "MarSystemManager.h"
-#include "Easymar.h"
 #include "TranscriberExtract.h"
 using namespace std;
 namespace Marsyas
-{
-
-class Transcriber: public TranscriberExtract
 {
 	/**
 		\class Transcriber
@@ -17,6 +13,9 @@ class Transcriber: public TranscriberExtract
 	(detecting onsets via pitch and amplitudes, calculating notes, etc).
 
 	*/
+
+class Transcriber: public TranscriberExtract
+{
 
 public:
 	Transcriber();

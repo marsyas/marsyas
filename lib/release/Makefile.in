@@ -139,7 +139,8 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	PeakLabeler.$(OBJEXT) peakView.$(OBJEXT) \
 	PeakViewSource.$(OBJEXT) PeakViewSink.$(OBJEXT) \
 	PeakClusterSelect.$(OBJEXT) OneRClassifier.$(OBJEXT) \
-	WekaData.$(OBJEXT) Gain.$(OBJEXT)
+	WekaData.$(OBJEXT) TranscriberExtract.$(OBJEXT) \
+	Transcriber.$(OBJEXT) Gain.$(OBJEXT)
 libmarsyas_a_OBJECTS = $(am_libmarsyas_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
@@ -279,8 +280,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/TmControlValue.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TmGetTime.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TmSampleCount.Po ./$(DEPDIR)/TmTime.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/TmTimer.Po ./$(DEPDIR)/VScheduler.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Vibrato.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/TmTimer.Po ./$(DEPDIR)/Transcriber.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/TranscriberExtract.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/VScheduler.Po ./$(DEPDIR)/Vibrato.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ViconFileSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/WHaSp.Po ./$(DEPDIR)/WavFileSink.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/WavFileSource.Po \
@@ -622,6 +624,8 @@ libmarsyas_a_SOURCES = \
 	$(top_srcdir)/marsyas/PeakClusterSelect.cpp \
 	$(top_srcdir)/marsyas/OneRClassifier.cpp \
 	$(top_srcdir)/marsyas/WekaData.cpp \
+	$(top_srcdir)/marsyas/TranscriberExtract.cpp \
+	$(top_srcdir)/marsyas/Transcriber.cpp \
 	$(top_srcdir)/marsyas/Gain.cpp
 
 all: all-am
@@ -888,6 +892,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TmSampleCount.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TmTime.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TmTimer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Transcriber.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TranscriberExtract.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/VScheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Vibrato.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ViconFileSource.Po@am__quote@
@@ -4318,6 +4324,38 @@ WekaData.obj: $(top_srcdir)/marsyas/WekaData.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/WekaData.Po' tmpdepfile='$(DEPDIR)/WekaData.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o WekaData.obj `if test -f '$(top_srcdir)/marsyas/WekaData.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/WekaData.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/WekaData.cpp'; fi`
+
+TranscriberExtract.o: $(top_srcdir)/marsyas/TranscriberExtract.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT TranscriberExtract.o -MD -MP -MF "$(DEPDIR)/TranscriberExtract.Tpo" -c -o TranscriberExtract.o `test -f '$(top_srcdir)/marsyas/TranscriberExtract.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/TranscriberExtract.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/TranscriberExtract.Tpo" "$(DEPDIR)/TranscriberExtract.Po"; else rm -f "$(DEPDIR)/TranscriberExtract.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/TranscriberExtract.cpp' object='TranscriberExtract.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/TranscriberExtract.Po' tmpdepfile='$(DEPDIR)/TranscriberExtract.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TranscriberExtract.o `test -f '$(top_srcdir)/marsyas/TranscriberExtract.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/TranscriberExtract.cpp
+
+TranscriberExtract.obj: $(top_srcdir)/marsyas/TranscriberExtract.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT TranscriberExtract.obj -MD -MP -MF "$(DEPDIR)/TranscriberExtract.Tpo" -c -o TranscriberExtract.obj `if test -f '$(top_srcdir)/marsyas/TranscriberExtract.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/TranscriberExtract.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/TranscriberExtract.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/TranscriberExtract.Tpo" "$(DEPDIR)/TranscriberExtract.Po"; else rm -f "$(DEPDIR)/TranscriberExtract.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/TranscriberExtract.cpp' object='TranscriberExtract.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/TranscriberExtract.Po' tmpdepfile='$(DEPDIR)/TranscriberExtract.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TranscriberExtract.obj `if test -f '$(top_srcdir)/marsyas/TranscriberExtract.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/TranscriberExtract.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/TranscriberExtract.cpp'; fi`
+
+Transcriber.o: $(top_srcdir)/marsyas/Transcriber.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Transcriber.o -MD -MP -MF "$(DEPDIR)/Transcriber.Tpo" -c -o Transcriber.o `test -f '$(top_srcdir)/marsyas/Transcriber.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/Transcriber.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/Transcriber.Tpo" "$(DEPDIR)/Transcriber.Po"; else rm -f "$(DEPDIR)/Transcriber.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/Transcriber.cpp' object='Transcriber.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/Transcriber.Po' tmpdepfile='$(DEPDIR)/Transcriber.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Transcriber.o `test -f '$(top_srcdir)/marsyas/Transcriber.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/Transcriber.cpp
+
+Transcriber.obj: $(top_srcdir)/marsyas/Transcriber.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Transcriber.obj -MD -MP -MF "$(DEPDIR)/Transcriber.Tpo" -c -o Transcriber.obj `if test -f '$(top_srcdir)/marsyas/Transcriber.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/Transcriber.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/Transcriber.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/Transcriber.Tpo" "$(DEPDIR)/Transcriber.Po"; else rm -f "$(DEPDIR)/Transcriber.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/marsyas/Transcriber.cpp' object='Transcriber.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/Transcriber.Po' tmpdepfile='$(DEPDIR)/Transcriber.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Transcriber.obj `if test -f '$(top_srcdir)/marsyas/Transcriber.cpp'; then $(CYGPATH_W) '$(top_srcdir)/marsyas/Transcriber.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/marsyas/Transcriber.cpp'; fi`
 
 Gain.o: $(top_srcdir)/marsyas/Gain.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Gain.o -MD -MP -MF "$(DEPDIR)/Gain.Tpo" -c -o Gain.o `test -f '$(top_srcdir)/marsyas/Gain.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/Gain.cpp; \

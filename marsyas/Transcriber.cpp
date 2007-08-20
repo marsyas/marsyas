@@ -1,7 +1,9 @@
 #include "Transcriber.h"
-static MarSystemManager mng;
-
 #include <iostream>
+using namespace Marsyas;
+using namespace std;
+
+static MarSystemManager mng;
 
 Transcriber::Transcriber()
 {
