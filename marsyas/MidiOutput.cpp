@@ -84,9 +84,9 @@ MidiOutput::myUpdate(MarControlPtr sender)
 
     initMidi = getctrl("mrs_bool/initMidi")->toBool();
     initMidi = !initMidi;
-
+    
     if (!initMidi)
-    {
+      {
         if (midiout == NULL) 
         {
             try { 
@@ -125,23 +125,20 @@ MidiOutput::myUpdate(MarControlPtr sender)
                     message.push_back(0);
                 }
             }
-
         }
-
         mrs_bool sendMessage = ctrl_sendMessage_->to<mrs_bool>();
-
         if (sendMessage) 
         {
-
-            message[0] = ctrl_byte1_->to<mrs_natural>();
-            message[1] = ctrl_byte2_->to<mrs_natural>();
-            message[2] = ctrl_byte3_->to<mrs_natural>();
-
-            midiout->sendMessage( &message );
-            updctrl(ctrl_sendMessage_, false);
+	  message[0] = ctrl_byte1_->to<mrs_natural>();
+	  message[1] = ctrl_byte2_->to<mrs_natural>();
+	  message[2] = ctrl_byte3_->to<mrs_natural>();
+	  
+	  midiout->sendMessage( &message );
+	  updctrl(ctrl_sendMessage_, false);
         }
+      }
 #endif
-    }
+
 }
 
 void MidiOutput::myProcess(realvec& in, realvec& out)
