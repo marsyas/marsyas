@@ -61,6 +61,8 @@ CD/DVD, or download.
 Strongly recommended:
 
 @itemize
+@item X11: unix windowing system, included as an extra on your OSX
+installation CD/DVD.
 @item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech}
 development platform, version 4.2.3 or above.
 @end itemize
