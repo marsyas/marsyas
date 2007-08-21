@@ -134,7 +134,7 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 			pvseries->updctrl("SoundFileSource/src/mrs_real/repetitions", -1.0);
 	}
   
-	pvseries->updctrl("ShiftInput/si/mrs_natural/Decimation", D);
+	//pvseries->updctrl("ShiftInput/si/mrs_natural/Decimation", D);
   pvseries->updctrl("ShiftInput/si/mrs_natural/WindowSize", Nw);
   pvseries->updctrl("PvFold/fo/mrs_natural/FFTSize", N);
   pvseries->updctrl("PvFold/fo/mrs_natural/WindowSize", Nw);
@@ -223,7 +223,7 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 				if ((type == 176) && (byte2 == 101)&& (byte3 > 4))
 				{
 					pvseries->updctrl("mrs_natural/inSamples", byte3);
-					pvseries->updctrl("ShiftInput/si/mrs_natural/Decimation", byte3); 
+					//pvseries->updctrl("ShiftInput/si/mrs_natural/Decimation", byte3); 
 					pvseries->updctrl("PvFold/fo/mrs_natural/Decimation", byte3);
 					pvseries->updctrl("PvConvert/conv/mrs_natural/Decimation", byte3 );
 					pvseries->updctrl("ShiftOutput/so/mrs_natural/Decimation", byte3 );
@@ -450,13 +450,13 @@ phasevocCrossSynth(string sfName, mrs_natural N, mrs_natural Nw,
 	total->linkctrl("mrs_natural/inSamples2", 
 		"Fanout/pvfan/Series/branch2/SoundFileSource/src2/mrs_natural/inSamples");
 
-	total->linkctrl("mrs_natural/Decimation", 
-		"Fanout/pvfan/Series/branch1/ShiftInput/si1/mrs_natural/Decimation");
+	//total->linkctrl("mrs_natural/Decimation", 
+	//	"Fanout/pvfan/Series/branch1/ShiftInput/si1/mrs_natural/Decimation");
 	total->linkctrl("mrs_natural/Decimation", 
 		"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/Decimation");
 
-	total->linkctrl("mrs_natural/Decimation", 
-		"Fanout/pvfan/Series/branch2/ShiftInput/si2/mrs_natural/Decimation");
+	//total->linkctrl("mrs_natural/Decimation", 
+	//	"Fanout/pvfan/Series/branch2/ShiftInput/si2/mrs_natural/Decimation");
 	total->linkctrl("mrs_natural/Decimation", 
 		"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/Decimation");
 
@@ -574,14 +574,14 @@ phasevocConvolve(string sfName, mrs_natural N, mrs_natural Nw,
 	total->linkctrl("mrs_natural/inSamples2", 
 		"Fanout/pvfan/Series/branch2/AudioSource/src2/mrs_natural/inSamples");
 
-	total->linkctrl("mrs_natural/Decimation", 
-		"Fanout/pvfan/Series/branch1/ShiftInput/si1/mrs_natural/Decimation");
+	//total->linkctrl("mrs_natural/Decimation", 
+	//	"Fanout/pvfan/Series/branch1/ShiftInput/si1/mrs_natural/Decimation");
 	
 	total->linkctrl("mrs_natural/Decimation", 
 		"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/Decimation");
 
-	total->linkctrl("mrs_natural/Decimation", 
-		"Fanout/pvfan/Series/branch2/ShiftInput/si2/mrs_natural/Decimation");
+	//total->linkctrl("mrs_natural/Decimation", 
+	//	"Fanout/pvfan/Series/branch2/ShiftInput/si2/mrs_natural/Decimation");
 
 	total->linkctrl("mrs_natural/Decimation", 
 		"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/Decimation");

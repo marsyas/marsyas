@@ -1456,7 +1456,7 @@ toy_with_LPC_LSP(string sfName)
   input->updctrl("mrs_natural/inSamples", hopSize);
 
   input->addMarSystem(mng.create("ShiftInput", "si"));
-  input->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
+  //input->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
   input->updctrl("ShiftInput/si/mrs_natural/WindowSize", hopSize);
 
   input->addMarSystem(mng.create("LPC", "LPC"));
