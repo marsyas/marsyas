@@ -108,7 +108,7 @@ public:
 	MarControl* operator->() const { return control_; }
 
 	inline bool isInvalid() const;
-        inline bool isEqual(const MarControlPtr& v1);
+  inline bool isEqual(const MarControlPtr& v1);
   
 
 	friend inline std::ostream& operator<<(std::ostream& os, const MarControlPtr& ctrl);
@@ -464,6 +464,12 @@ template<class T>
 const T&
 MarControl::to() const
 {
+	if(!this)
+	{
+		MRSERR("MarControl::to() - trying to get a value from a NULL MarControl! Returning invalid value...");
+		return MarControlValueT<T>::invalidValue;
+	}
+
 	#ifdef MARSYAS_QT
 	QReadLocker locker(&rwLock_);
 	#endif 
@@ -475,9 +481,9 @@ MarControl::to() const
 	else
 	{
 	    std::ostringstream sstr;
-	    sstr << "[MarControl::to] Trying to set value of incompatible type "
+	    sstr << "MarControl::to() -  Trying to set value of incompatible type "
 		 << "(expected " << value_->getType() << ", given " << typeid(T).name() << ")";
-	    MRSWARN(sstr.str());
+	    MRSERR(sstr.str());
 	    return MarControlValueT<T>::invalidValue;
 	}
  }

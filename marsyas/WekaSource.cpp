@@ -304,7 +304,7 @@ void WekaSource::handlePercentageSplit(bool trainMode, realvec &out)
 	  this->updctrl("mrs_bool/done", true);
 	}//if
     }//else
-  MRSASSERT(row->size()==out.getCols());
+//  MRSASSERT(row->size()==out.getCols()); //[!]
   for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ii++)
     {
       out(ii, 0) = row->at(ii);
@@ -446,7 +446,7 @@ void WekaSource::parseHeader(ifstream& mis, const string& filename, const std::s
     }
 	
   mis >> token2;
-  MRSASSERT ( strcmp( token2.c_str(), "marsyas") == 0 );
+//  MRSASSERT ( strcmp( token2.c_str(), "marsyas") == 0 ); //[!]
   relation_ = token2;
 
   attributesFound_.clear();

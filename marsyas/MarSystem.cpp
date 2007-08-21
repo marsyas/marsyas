@@ -887,7 +887,10 @@ MarSystem::getControl(string cname, bool searchParent, bool searchChildren)
 		if(controls_.find(localcname) != controls_.end())
 			return controls_[localcname]; //control found
 		else
+		{
+			//MRSWARN("MarSystem::getControl - Unsupported control name: " + cname + " @ " + absPath_ + " -> THIS MAY BE NORMAL DURING CLONING!");
 			return MarControlPtr(); //no control found with this name => return invalid control 
+		}
 	}
 	//definitely not a local control pathname. It can only be a relative control path.
 	//So search in children (if allowed).
@@ -909,10 +912,14 @@ MarSystem::getControl(string cname, bool searchParent, bool searchChildren)
 					return (*msysIter)->getControl(childcname);
 				}
 			}
+			//MRSWARN("MarSystem::getControl - Unsupported control name: " + cname + " @ " + absPath_ + " -> THIS MAY BE NORMAL DURING CLONING!");
 			return MarControlPtr();//no child found with corresponding prefix...
 		}
 		else
+		{
+			//MRSWARN("MarSystem::getControl - Unsupported control name: " + cname + " @ " + absPath_ + " -> THIS MAY BE NORMAL DURING CLONING!");
 			return MarControlPtr();
+		}
 	}
 }
 
