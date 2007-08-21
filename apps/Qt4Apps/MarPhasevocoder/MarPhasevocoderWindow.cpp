@@ -170,7 +170,7 @@ MarPhasevocoderWindow::createNetwork()
 	pvoc_->updctrl("mrs_natural/inSamples", D);
 	pvoc_->updctrl("mrs_natural/inObservations", 1);
 	pvoc_->updctrl("SoundFileSource/src/mrs_real/repetitions", -1.0);
-	//pvoc_->updctrl("ShiftInput/si/mrs_natural/Decimation", D);
+
 	pvoc_->updctrl("ShiftInput/si/mrs_natural/WindowSize", Nw);
 	pvoc_->updctrl("PvFold/fo/mrs_natural/FFTSize", N);
 	pvoc_->updctrl("PvFold/fo/mrs_natural/WindowSize", Nw);

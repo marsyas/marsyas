@@ -126,7 +126,7 @@ void tempo_medianMultiBands(string sfName, string resName)
   total->updctrl("mrs_natural/inSamples", hopSize);
   total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
   total->updctrl("ShiftInput/si/mrs_natural/WindowSize", winSize);
-  //total->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
+
 
   // wavelt filterbank envelope extraction controls 
   total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", true);
@@ -310,7 +310,7 @@ tempo_new(string sfName, string resName)
 
   
   total->updctrl("ShiftInput/si/mrs_natural/WindowSize", winSize);
-  //total->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
+
 
 
   // wavelt filterbank envelope extraction controls 
@@ -581,7 +581,7 @@ tempo_histoSumBands(string sfName, string resName)
   total->updctrl("mrs_natural/inSamples", hopSize);
   total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
   total->updctrl("ShiftInput/si/mrs_natural/WindowSize", winSize);
-  //total->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
+
 
   // wavelt filterbank envelope extraction controls 
   total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", true);
@@ -702,7 +702,7 @@ tempo_medianSumBands(string sfName, string resName)
   total->updctrl("mrs_natural/inSamples", hopSize);
   total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
   total->updctrl("ShiftInput/si/mrs_natural/WindowSize", winSize);
-  //total->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
+
 
   // wavelt filterbank envelope extraction controls 
   total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", true);

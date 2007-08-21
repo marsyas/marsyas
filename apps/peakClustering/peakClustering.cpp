@@ -408,7 +408,7 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/mixseries/Gain/noiseGain/mrs_real/gain", noiseGain_);
 	}
 
-	//mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/spectrumNet/ShiftInput/si/mrs_natural/Decimation", D);
+
 	mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/spectrumNet/ShiftInput/si/mrs_natural/WindowSize", Nw+1);
 	mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/spectrumNet/Windowing/wi/mrs_natural/size", N);
 	mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/spectrumNet/Windowing/wi/mrs_string/type", "Hanning");

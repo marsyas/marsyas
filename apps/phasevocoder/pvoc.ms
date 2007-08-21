@@ -20,7 +20,7 @@ add gt > pvseries1
 
 
 
-updctrl pvseries1 PvShiftInput/si/mrs_natural/Decimation 512
+
 updctrl pvseries1 PvShiftInput/si/mrs_natural/WindowSize 2048
 updctrl pvseries1 PvFold/fo/mrs_natural/FFTSize 2048
 updctrl pvseries1 PvFold/fo/mrs_natural/WindowSize 2048
@@ -54,7 +54,7 @@ add so1 > pvseries2
 add gt1 > pvseries2 
 
 
-updctrl pvseries2 PvShiftInput/si1/mrs_natural/Decimation 512
+
 updctrl pvseries2 PvShiftInput/si1/mrs_natural/WindowSize 2048
 updctrl pvseries2 PvFold/fo1/mrs_natural/FFTSize 2048
 updctrl pvseries2 PvFold/fo1/mrs_natural/WindowSize 2048

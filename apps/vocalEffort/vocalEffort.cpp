@@ -53,7 +53,7 @@ int process(string inName, string outName)
 
 	input->updctrl("SoundFileSource/src/mrs_string/filename", inName);
 	input->updctrl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
-	//input->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
+
 	input->updctrl("ShiftInput/si/mrs_natural/WindowSize", windowSize);
 	input->updctrl("Windowing/winSyn/mrs_string/type", "Hanning");
 	//input->updctrl("ShiftOutput/so/mrs_natural/Interpolation", hopSize);

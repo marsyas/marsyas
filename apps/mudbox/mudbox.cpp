@@ -1456,7 +1456,7 @@ toy_with_LPC_LSP(string sfName)
   input->updctrl("mrs_natural/inSamples", hopSize);
 
   input->addMarSystem(mng.create("ShiftInput", "si"));
-  //input->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
+
   input->updctrl("ShiftInput/si/mrs_natural/WindowSize", hopSize);
 
   input->addMarSystem(mng.create("LPC", "LPC"));
@@ -1490,7 +1490,7 @@ toy_with_LPC_LSP(string sfName)
 	input->updctrl("mrs_natural/inSamples", hopSize);
 
 	//input->addMarSystem(mng.create("ShiftInput", "si"));
-	//input->updctrl("ShiftInput/si/mrs_natural/Decimation", hopSize);
+
 	//input->updctrl("ShiftInput/si/mrs_natural/WindowSize", hopSize);
 
 	MarSystem* lspS = mng.create("Series","lspS");
@@ -3037,7 +3037,7 @@ toy_with_pitch(string sfName)
   //  is 40 ms and padded with zeros to reach a power of two.
   mrs_real windowSize = 3/lowPitch*pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
   pnet->updctrl("mrs_natural/inSamples", 512);
-	// pnet->updctrl("ShiftInput/sfi/mrs_natural/Decimation", 256);
+
 	pnet->updctrl("ShiftInput/sfi/mrs_natural/WindowSize", powerOfTwo(windowSize));
 	//pnet->updctrl("ShiftInput/sfi/mrs_natural/WindowSize", 1024);
 
