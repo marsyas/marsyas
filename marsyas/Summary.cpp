@@ -19,7 +19,7 @@
 /** 
     \class Summary
     When the mode control is set to "predict" then then classifications are tracked
-	when done control is set, then the confusion matrix is shown
+    when done control is set, then the confusion matrix is shown
 */
 
 #include "Summary.h"
@@ -29,7 +29,7 @@ using namespace Marsyas;
 
 Summary::Summary(string name) : MarSystem("Summary", name)
 {
-	addControls();
+  addControls();
 }
 
 
@@ -39,25 +39,22 @@ Summary::~Summary()
 
 MarSystem *Summary::clone() const
 {
-	return new Summary(*this);
+  return new Summary(*this);
 }
 
 void Summary::addControls()
 {
-	addctrl("mrs_string/mode", "train");
-
-	addctrl("mrs_natural/nClasses", 2);
-	setctrlState("mrs_natural/nClasses", true);
-
-	addctrl("mrs_string/classNames", "Music,Speech");
-	setctrlState("mrs_string/classNames", true);
-
-	addctrl("mrs_bool/done", false);
+  addctrl("mrs_string/mode", "train");
+  setctrlState("mrs_string/mode", true);
+  addctrl("mrs_natural/nClasses", 2);
+  setctrlState("mrs_natural/nClasses", true);
+  addctrl("mrs_string/classNames", "Music,Speech");
+  setctrlState("mrs_string/classNames", true);
+  addctrl("mrs_bool/done", false);
 }
 
 void Summary::myUpdate(MarControlPtr sender)
 {
-  cout << "Summary::myUpdate" << endl;
   MRSDIAG("Summary.cpp - Summary:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
@@ -67,21 +64,19 @@ void Summary::myUpdate(MarControlPtr sender)
   mrs_natural nClasses = getctrl("mrs_natural/nClasses")->toNatural();
   if (confusionMatrix.getRows() != nClasses)
     {
-      //cout << "nlabels =" << nlabels<<endl;
       confusionMatrix.create(nClasses, nClasses);
     }//if
   classNames = getctrl("mrs_string/classNames")->toString();
+  
 }//myUpdate
 
 void Summary::myProcess(realvec& in, realvec& out)
 {
-  cout << "Summary::myProcess" << endl;
   string mode = getctrl("mrs_string/mode")->toString();
   
-  cout << "Summary mode = " << mode << endl;
   //modified this code to check the done flag-dale
   bool done = getctrl("mrs_bool/done")->toBool();
-  cout << "Summary done = " << done << endl;
+
   
   if (strcmp(mode.c_str(), "train") == 0 && !done)
     {
@@ -94,12 +89,11 @@ void Summary::myProcess(realvec& in, realvec& out)
     }//if train
   else if (strcmp(mode.c_str(), "predict") == 0 && !done)
     {
-      cout << "Summary predict " << endl;
       for (t=0; t < inSamples_; t++)
 	{    
 	  //swapped the x and y values-dale
-	  mrs_natural prediction = (mrs_natural)in(inObservations_-2, t);	//prediction  
-	  mrs_natural actual = (mrs_natural)in(inObservations_-1, t);	//actual
+	  mrs_natural prediction = (mrs_natural)in(0, t);	//prediction  
+	  mrs_natural actual = (mrs_natural)in(1, t);	//actual
 	  
 	  confusionMatrix(actual,prediction)++;	  
 	  //cout << "(y,x) (" << y << ","<< x << ")"<< endl;
@@ -109,12 +103,12 @@ void Summary::myProcess(realvec& in, realvec& out)
 	}
 
 
-      cout << "After Summary predict " << endl;
+
+      
     }//if
   
   if (done)
     {
-      cout << "Summary done" << endl;
 
       summaryStatistics stats = computeSummaryStatistics(confusionMatrix);
       cout << "=== Summary ===" << endl << endl;
@@ -178,70 +172,70 @@ void Summary::myProcess(realvec& in, realvec& out)
 
 summaryStatistics Summary::computeSummaryStatistics(const realvec& mat)
 {
-	MRSASSERT(mat.getCols()==mat.getRows());
+  MRSASSERT(mat.getCols()==mat.getRows());
 
-	summaryStatistics stats;
+  summaryStatistics stats;
 
-	mrs_natural size = mat.getCols();
+  mrs_natural size = mat.getCols();
 
-	vector<mrs_natural>rowSums(size);
-	for(int ii=0; ii<size; ii++) rowSums[ii] = 0;
-	vector<mrs_natural>colSums(size);
-	for(int ii=0; ii<size; ii++) colSums[ii] = 0;
-	mrs_natural diagonalSum = 0;
+  vector<mrs_natural>rowSums(size);
+  for(int ii=0; ii<size; ii++) rowSums[ii] = 0;
+  vector<mrs_natural>colSums(size);
+  for(int ii=0; ii<size; ii++) colSums[ii] = 0;
+  mrs_natural diagonalSum = 0;
 
-	mrs_natural instanceCount = 0;
-	for(mrs_natural row=0; row<size; row++)
+  mrs_natural instanceCount = 0;
+  for(mrs_natural row=0; row<size; row++)
+    {
+      for(mrs_natural col=0; col<size; col++)
 	{
-		for(mrs_natural col=0; col<size; col++)
-		{
-			mrs_natural num = (mrs_natural)mat(row,col);
-			instanceCount += num;
+	  mrs_natural num = (mrs_natural)mat(row,col);
+	  instanceCount += num;
 
-			rowSums[row] += num;
-			colSums[col] += num;
+	  rowSums[row] += num;
+	  colSums[col] += num;
 
-			if(row==col)
-				diagonalSum += num;
-		}
+	  if(row==col)
+	    diagonalSum += num;
 	}
-	//printf("row1 sum:%d\n",rowSums[0]);
-	//printf("row2 sum:%d\n",rowSums[1]);
-	//printf("col1 sum:%d\n",colSums[0]);
-	//printf("col2 sum:%d\n",colSums[1]);
-	//printf("diagonal sum:%d\n",diagonalSum);
-	//printf("instanceCount:%d\n",instanceCount);
+    }
+  //printf("row1 sum:%d\n",rowSums[0]);
+  //printf("row2 sum:%d\n",rowSums[1]);
+  //printf("col1 sum:%d\n",colSums[0]);
+  //printf("col2 sum:%d\n",colSums[1]);
+  //printf("diagonal sum:%d\n",diagonalSum);
+  //printf("instanceCount:%d\n",instanceCount);
 
-	mrs_natural N = instanceCount;
-	mrs_natural N2 = (N*N);
-	stats.instances = instanceCount;
-	stats.correctInstances = diagonalSum;
+  mrs_natural N = instanceCount;
+  mrs_natural N2 = (N*N);
+  stats.instances = instanceCount;
+  stats.correctInstances = diagonalSum;
 
-	mrs_natural sum = 0;
-	for(mrs_natural ii=0; ii<size; ii++)
-	{
-		sum += (rowSums[ii] * colSums[ii]);
-	}
-	mrs_real PE = (mrs_real)sum / (mrs_real)N2;
-	mrs_real PA = (mrs_real)diagonalSum / (mrs_real)N;
-	stats.kappa = (PA - PE) / (1.0 - PE);
+  mrs_natural sum = 0;
+  for(mrs_natural ii=0; ii<size; ii++)
+    {
+      sum += (rowSums[ii] * colSums[ii]);
+    }
+  mrs_real PE = (mrs_real)sum / (mrs_real)N2;
+  mrs_real PA = (mrs_real)diagonalSum / (mrs_real)N;
+  stats.kappa = (PA - PE) / (1.0 - PE);
 
-	mrs_natural not_diagonal_sum = instanceCount - diagonalSum;
-	mrs_real MeanAbsoluteError = (mrs_real)not_diagonal_sum / (mrs_real)instanceCount;
-	//printf("MeanAbsoluteError:%f\n",MeanAbsoluteError);
-	stats.meanAbsoluteError = MeanAbsoluteError;
+  mrs_natural not_diagonal_sum = instanceCount - diagonalSum;
+  mrs_real MeanAbsoluteError = (mrs_real)not_diagonal_sum / (mrs_real)instanceCount;
+  //printf("MeanAbsoluteError:%f\n",MeanAbsoluteError);
+  stats.meanAbsoluteError = MeanAbsoluteError;
 
-	mrs_real RootMeanSquaredError = sqrt(MeanAbsoluteError);
-	//printf("RootMeanSquaredError:%f\n",RootMeanSquaredError);
-	stats.rootMeanSquaredError = RootMeanSquaredError;
+  mrs_real RootMeanSquaredError = sqrt(MeanAbsoluteError);
+  //printf("RootMeanSquaredError:%f\n",RootMeanSquaredError);
+  stats.rootMeanSquaredError = RootMeanSquaredError;
 
-	mrs_real RelativeAbsoluteError = (MeanAbsoluteError / 0.5) * 100.0;
-	//printf("RelativeAbsoluteError:%f%%\n",RelativeAbsoluteError);
-	stats.relativeAbsoluteError = RelativeAbsoluteError;
+  mrs_real RelativeAbsoluteError = (MeanAbsoluteError / 0.5) * 100.0;
+  //printf("RelativeAbsoluteError:%f%%\n",RelativeAbsoluteError);
+  stats.relativeAbsoluteError = RelativeAbsoluteError;
 
-	mrs_real RootRelativeSquaredError = (RootMeanSquaredError / (0.5)) * 100.0;
-	//printf("RootRelativeSquaredError:%f%%\n",RootRelativeSquaredError);
-	stats.rootRelativeSquaredError = RootRelativeSquaredError;
+  mrs_real RootRelativeSquaredError = (RootMeanSquaredError / (0.5)) * 100.0;
+  //printf("RootRelativeSquaredError:%f%%\n",RootRelativeSquaredError);
+  stats.rootRelativeSquaredError = RootRelativeSquaredError;
 
-	return stats;
+  return stats;
 }//computeSummaryStatistics

@@ -130,6 +130,7 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 	{
 	  label = in(inObservations_-1, t);
 
+
 	  for (o=0; o < inObservations_-1; o++)
 	    {
 	      v = in(o,t);
@@ -160,6 +161,8 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 		{
 		  v = in(o,t);
 		  diff = (v - means_(l,o));
+
+		  
 		  sq_sum += (diff * covars_(l,o) * diff);
 		}
 	      if (sq_sum < min)
@@ -168,6 +171,7 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 		  prediction = l;
 		}
 	    }
+	  
 	  out(0,t) = (mrs_real)prediction;
 	  out(1,t) = (mrs_real)label;
 	}
@@ -175,9 +179,11 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 
   if (ctrl_done_->to<mrs_bool>())
     {
+      
       for (l=0; l < nlabels; l++)
 	for (o=0; o < inObservations_; o++)
 	  {
+	    
 	    means_(l,o) = means_(l,o) / labelSizes_(l);
 	    covars_(l,o) = covars_(l,o) / labelSizes_(l);
 	    covars_(l, o) = covars_(l,o) - 
@@ -190,6 +196,7 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
       
       ctrl_means_->setValue(means_);
       ctrl_covars_->setValue(covars_);
+      ctrl_done_->setValue(false);
     }
 }
 

@@ -448,15 +448,14 @@ MP3FileSource::myUpdate(MarControlPtr sender)
  *
  */
 mrs_natural 
-MP3FileSource::getLinear16(realvec& slice) {
-
-		
-
+MP3FileSource::getLinear16(realvec& slice) 
+{
+  
 #ifdef MARSYAS_MAD  
   register double peak = 1.0/32767; // normalize 24-bit sample
   register mad_fixed_t left_ch, right_ch;
   register mrs_real sample;
-	 
+  
   // decode a frame if necessary 
   while (ri_ < inSamples_) {
     
@@ -507,7 +506,7 @@ MP3FileSource::getLinear16(realvec& slice) {
 	frameCount_++;
       }
     
-
+    
     mad_synth_frame(&synth, &frame);  
 
 

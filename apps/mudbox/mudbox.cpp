@@ -2603,7 +2603,8 @@ toy_with_weka(string fname)
   MarSystem* net;
   net = mng.create("Series", "net");
   net->addMarSystem(mng.create("WekaSource", "wsrc"));
-  net->addMarSystem(mng.create("OneRClassifier", "ocl"));
+  // net->addMarSystem(mng.create("OneRClassifier", "ocl"));
+  net->addMarSystem(mng.create("GaussianClassifier", "gcl"));
   net->addMarSystem(mng.create("Summary", "summary"));
   // net->updctrl("WekaSource/wsrc/mrs_string/attributesToInclude", "1,2,3");
 
@@ -2611,18 +2612,31 @@ toy_with_weka(string fname)
   net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "PercentageSplit,50%");
   net->updctrl("mrs_natural/inSamples", 1);
 
+  net->updctrl("Summary/summary/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+  net->updctrl("Summary/summary/mrs_string/classNames", 
+	       net->getctrl("WekaSource/wsrc/mrs_string/classNames"));
   
-
+  
+  net->updctrl("GaussianClassifier/gcl/mrs_natural/nLabels", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+  
+  mrs_bool training_done = false;
+  
   while(net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>() == false)
-     {
-       net->tick();
-       cout << "MODE = " << net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>() << endl;
+    {
+      string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
+      
+      // net->updctrl("OneRClassifier/ocl/mrs_string/mode", mode);
+      
+      if ((mode == "predict") && (!training_done))
+	{
+	  net->updctrl("GaussianClassifier/gcl/mrs_bool/done", true);
+	  training_done = true;
+	  net->tick();
+	}
 
-       net->updctrl("OneRClassifier/ocl/mrs_string/mode", net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>());
-       
-       net->updctrl("Summary/summary/mrs_string/mode", net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>());
-
-       cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>() << endl;       
+      net->updctrl("GaussianClassifier/gcl/mrs_string/mode", mode);
+      net->updctrl("Summary/summary/mrs_string/mode", mode);
+      net->tick();
      }
   
   net->updctrl("Summary/summary/mrs_bool/done", true);

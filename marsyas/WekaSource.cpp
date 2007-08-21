@@ -215,6 +215,9 @@ WekaSource::myUpdate(MarControlPtr sender)
     }//else if "UseTestSet"
   else if(strcmp(cp ,"PercentageSplit")==0)
     {
+      data_.Shuffle();
+      data_.Dump("shuffle.txt", classesFound_);
+
       cout << "=== Evaluation on test split ===" << endl;
       validationModeEnum_ = PercentageSplit;
       
@@ -266,7 +269,7 @@ void WekaSource::myProcess(realvec& in,realvec &out)
 void 
 WekaSource::handleDefault(bool trainMode, realvec &out)
 {
-  cout << "trainMode = " << trainMode << endl;
+
   vector<mrs_real> *row = NULL;
   row = data_.at(currentIndex_++);
   if(currentIndex_ >= (mrs_natural)data_.size())
@@ -281,12 +284,10 @@ WekaSource::handleDefault(bool trainMode, realvec &out)
 
 void WekaSource::handlePercentageSplit(bool trainMode, realvec &out)
 {
-  cout << "WekaSource::handlePercentageSplit" << endl;
   vector<mrs_real> *row = NULL;
   if(trainMode)
     {
       MRSASSERT(currentIndex_<percentageIndex_);
-      cout << "percentageSplit:: currentIndex_ = " << currentIndex_ << endl;
       row = data_.at(currentIndex_++);
 
 
@@ -421,7 +422,6 @@ void WekaSource::loadFile(const std::string& filename, const std::string& attrib
   
   parseHeader(*mis, filename, attributesToExtract);
   parseData(*mis, filename, data);
-  cout << "Done with parse data" << endl;
   mis->close();
   delete mis;
   
