@@ -263,7 +263,6 @@ HEADERS += \
 	Vibrato.h \
 	Panorama.h \
 	Biquad.h \
-	peakView.h \
 	FlowThru.h \
 	FanOutIn.h \
 	MarSystemTemplateMedium.h \
@@ -274,7 +273,6 @@ HEADERS += \
 	RBF.h \
 	NormMatrix.h \
 	WHaSp.h \
-	FanOutIn.h \
 	PeakLabeler.h \
 	PeakClusterSelect.h \
 	peakView.h \
@@ -488,9 +486,7 @@ SOURCES += \
 	Vibrato.cpp \
 	Panorama.cpp \
 	Biquad.cpp \
-	peakView.cpp \
 	FlowThru.cpp \
-	FanOutIn.cpp \
 	MarSystemTemplateMedium.cpp \
 	PeakFeatureSelect.cpp \
 	SimilarityMatrix.cpp \
