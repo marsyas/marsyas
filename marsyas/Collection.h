@@ -42,6 +42,7 @@ class Collection
 private:
   std::vector<std::string> collectionList_;
   std::vector<std::string> labelList_;
+  std::vector<std::string> labelNames_;
   std::string name_;
   bool hasLabels_;
 public:
@@ -52,6 +53,9 @@ public:
   std::string entry(unsigned int i);
   std::string labelEntry(unsigned int i);
   mrs_natural getSize();
+  mrs_natural getNumLabels();
+  mrs_string getLabelNames();
+  mrs_natural labelNum(mrs_string label); 
   mrs_bool hasLabels(); 
   void add(std::string entry);
   std::string name();

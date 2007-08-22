@@ -1084,6 +1084,7 @@ void bextract_train(vector<Collection> cls,
       mrs_natural samplesPlayed =0;
       mrs_natural onSamples = featureNetwork->getctrl("mrs_natural/onSamples")->toNatural();
 
+
       if (classifierName == "GS")
 	featureNetwork->updctrl("GaussianClassifier/gaussian/mrs_natural/nLabels", (mrs_natural)cls.size());
       else if (classifierName == "ZeroR")
@@ -1097,10 +1098,15 @@ void bextract_train(vector<Collection> cls,
       featureNetwork->updctrl("Confidence/confidence/mrs_string/labelNames",classNames);
       featureNetwork->updctrl("Confidence/confidence/mrs_bool/print",true);
 
+
       //configure WEKA sink
       if (wekafname != EMPTYSTRING)
-	featureNetwork->updctrl("WekaSink/wsink/mrs_string/labelNames",classNames);
-
+	{
+	  featureNetwork->updctrl("WekaSink/wsink/mrs_string/labelNames",classNames);
+	  featureNetwork->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
+	  featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 40);
+	  featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  			
+	}
       //iterate over collections (i.e. classes)
 
 
@@ -1110,16 +1116,7 @@ void bextract_train(vector<Collection> cls,
 	    {
 	      Collection l = cls[cj];
 	      featureNetwork->updctrl("Annotator/annotator/mrs_natural/label", cj);
-	      
-	      if (wekafname != EMPTYSTRING)
-		{
-		  featureNetwork->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
-		  featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 40);
-		  featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  			
-		}
-	      
 	      cout << "Class " << cj << " is " << l.name() << endl;
-	      
 	      //reset texture analysis stats between (i.e. classes)
 	      if(memSize != 0)
 		featureNetwork->updctrl("TextureStats/tStats/mrs_bool/reset", true);
@@ -1142,28 +1139,57 @@ void bextract_train(vector<Collection> cls,
 		}
 	    }
 	}
-      else 
+      else // collection has labels
 	{
-
 	  cout << "Collection has labels" << endl;
-	  return;
+	  Collection l = cls[0];
+	  mrs_natural nLabels = l.getNumLabels();
+	  
+	  if (wekafname != EMPTYSTRING)
+	    {
+	      featureNetwork->updctrl("WekaSink/wsink/mrs_string/labelNames", l.getLabelNames());
+	      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/nLabels", nLabels);
+	      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 40);
+	      featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  			
+	    }
+	  
+
+	  if (classifierName == "GS")
+	    featureNetwork->updctrl("GaussianClassifier/gaussian/mrs_natural/nLabels", nLabels);
+	  else if (classifierName == "ZeroR")
+	    featureNetwork->updctrl("ZeroRClassifier/zeror/mrs_natural/nLabels", nLabels);
+	  else if (classifierName == "KNN")
+	    featureNetwork->updctrl("KNNClassifier/knn/mrs_natural/nLabels", nLabels);
+	  
+	  //configure Confidence
+	  featureNetwork->updctrl("Confidence/confidence/mrs_natural/nLabels", nLabels);
+	  featureNetwork->updctrl("Confidence/confidence/mrs_bool/mute", true);
+	  featureNetwork->updctrl("Confidence/confidence/mrs_string/labelNames", l.getLabelNames());
+	  featureNetwork->updctrl("Confidence/confidence/mrs_bool/print",true);
+	  
+	  
+	  //iterate over audio files, extract features and label
+	  for (mrs_natural i=0; i < l.size(); i++)
+	    {
+	      //reset texture analysis stats between files
+	      if(memSize != 0)
+		featureNetwork->updctrl("TextureStats/tStats/mrs_bool/reset", true);
+
+	      featureNetwork->updctrl("Annotator/annotator/mrs_natural/label", l.labelNum(l.labelEntry(i)));	
+	      
+	      featureNetwork->updctrl(ctrl_filename_, l.entry(i));
+	      wc = 0;  	  
+	      samplesPlayed = 0;
+	      while (ctrl_notEmpty_->to<mrs_bool>() && (duration > samplesPlayed))
+		{
+		  featureNetwork->tick();
+		  wc++;
+		  samplesPlayed = wc * onSamples;
+		}
+	      featureNetwork->tick();
+	      cout << "Processed " << l.entry(i) << endl;
+	    }
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
   //**********************
   // if using timelines

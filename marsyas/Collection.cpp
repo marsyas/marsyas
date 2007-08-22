@@ -117,6 +117,22 @@ Collection::getSize()
   return size;
 }
 
+mrs_natural 
+Collection::getNumLabels() 
+{
+  return labelNames_.size();
+}
+
+mrs_string 
+Collection::getLabelNames() 
+{
+  mrs_string labelNames;
+  vector<string>::iterator vi;
+  for (vi = labelNames_.begin(); vi != labelNames_.end(); ++vi)
+    labelNames += (*vi + ',');
+  return labelNames;
+}
+
 mrs_bool 
 Collection::hasLabels() 
 {
@@ -161,6 +177,17 @@ Collection::toLongString()
   return result;
 }
 
+mrs_natural 
+Collection::labelNum(mrs_string label) 
+{
+  int i;
+  for (i=0; i < labelNames_.size(); i++) 
+    {
+      if (labelNames_[i] == label) 
+	return i;
+    }
+  return 0;
+}
 
 string 
 Collection::labelEntry(unsigned int i) 
@@ -204,7 +231,19 @@ Marsyas::operator>>(istream& i, Collection& l)
 	      if (c != '#') 
 		{
 		  l.collectionList_.push_back(fileEntry.substr(0, loc));
-		  l.labelList_.push_back(fileEntry.substr(loc+1, fileEntry.size()));
+		  string label = fileEntry.substr(loc+1, fileEntry.size());
+		  l.labelList_.push_back(label);
+
+		  vector<string>::const_iterator it;
+		  it = find(l.labelNames_.begin(), l.labelNames_.end(), label);
+		  if (it != l.labelNames_.end())
+		    cout << "Found label " << label << endl;
+		  else 
+		    {
+		      cout << "Not found label" << label << endl;
+		      l.labelNames_.push_back(label);
+		    }
+		  
 		  l.hasLabels_ = true;
 		}
 	      
