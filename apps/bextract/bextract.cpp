@@ -60,6 +60,8 @@ string filefeaturename = EMPTYSTRING;
 string extractorName = EMPTYSTRING;
 string classifierName = EMPTYSTRING;
 string collectionName = EMPTYSTRING;
+string predictCollection = EMPTYSTRING;
+
 
 CommandLineOptions cmd_options;
 
@@ -694,6 +696,15 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
     cout << "with beat features" << endl;
 
 
+
+  mrs_bool collection_has_labels = false;
+  
+  if ((cls.size() == 1)&&(cls[0].hasLabels()))
+    {
+      collection_has_labels = true;
+    }
+
+
   
 
 
@@ -840,12 +851,11 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
   wsink->updctrl("mrs_natural/inSamples", annotator->getctrl("mrs_natural/onSamples"));
   wsink->updctrl("mrs_natural/inObservations", annotator->getctrl("mrs_natural/onObservations")->toNatural());
   wsink->updctrl("mrs_real/israte", annotator->getctrl("mrs_real/israte"));
-  wsink->updctrl("mrs_string/labelNames",classNames);
 
   mrs_natural timbreSize = total->getctrl("mrs_natural/onObservations")->toNatural();
   mrs_natural beatSize = 8;
 
-  wsink->updctrl("mrs_natural/nLabels", (mrs_natural)cls.size());  
+
 
   MarSystem *total1 = NULL;
 
@@ -858,23 +868,79 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
     {
       annotator->updctrl("mrs_string/inObsNames", total->getctrl("mrs_string/onObsNames"));  
     }
-
   wsink->updctrl("mrs_string/inObsNames", annotator->getctrl("mrs_string/onObsNames"));
 
   realvec iwin;
-  if (wekafname == EMPTYSTRING) 
-    wsink->updctrl("mrs_string/filename", "weka.arff");
-  else 
-    wsink->updctrl("mrs_string/filename", wekafname);
 
 
 
 
 
   //iterate over collections
-  for (cj=0; cj < (mrs_natural)cls.size(); cj++)
+
+  
+
+
+  if (!collection_has_labels) 
     {
-      Collection l = cls[cj];
+
+      wsink->updctrl("mrs_string/labelNames",classNames);
+      wsink->updctrl("mrs_natural/nLabels", (mrs_natural)cls.size());  
+      
+      if (wekafname != EMPTYSTRING) 
+	wsink->updctrl("mrs_string/filename", wekafname);
+      
+
+      for (cj=0; cj < (mrs_natural)cls.size(); cj++)
+	{
+	  Collection l = cls[cj];
+	  for (i=0; i < l.size(); i++)//iterate over collection files
+	    {
+	      // cout << beatfeatures << endl;
+	      total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", l.entry(i));
+	      if (withBeatFeatures) 
+		{
+		  srate = total->getctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_real/osrate")->toReal();
+		  iwin.create((mrs_natural)1, (mrs_natural)(((srate / 22050.0) * 2 * 65536) / 16)); // [!] hardcoded!
+		  tempo_histoSumBands(total1, l.entry(i), beatfeatures, 
+				      iwin, estimate);
+		}
+	      total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/pos", offset);
+	      wc = 0;  	  
+	      samplesPlayed = 0;
+	      // total->updctrl("WekaSink/wsink/mrs_natural/label", cj);
+	      annotator->updctrl("mrs_natural/label", cj);
+	      // wsink->updctrl("mrs_natural/label", cj);
+	      total->process(in, timbreres);
+	      
+	      // concatenate timbre and beat vectors 
+	      for (int t=0; t < timbreSize; t++)
+		fullres(t,0) = timbreres(t,0);
+	      
+	      if (withBeatFeatures)
+		{
+		  for (int t=0; t < beatSize; t++)
+		    fullres(t+timbreSize, 0) = beatfeatures(t,0);
+		}
+	      annotator->process(fullres, afullres);
+	      if (wekafname != EMPTYSTRING) 
+		wsink->process(afullres, afullres);
+	      cerr << "Processed " << l.entry(i) << endl;
+	    }
+
+	}
+    }
+  else 
+    {
+      cout << "bextract_trainAccumulator has labels" << endl;
+      Collection l = cls[0];
+
+      wsink->updctrl("mrs_string/labelNames",l.getLabelNames());
+      wsink->updctrl("mrs_natural/nLabels", (mrs_natural)l.getNumLabels());  
+      if (wekafname != EMPTYSTRING) 
+	wsink->updctrl("mrs_string/filename", wekafname);
+      
+
       for (i=0; i < l.size(); i++)//iterate over collection files
 	{
 	  // cout << beatfeatures << endl;
@@ -889,36 +955,27 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 	  total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/pos", offset);
 	  wc = 0;  	  
 	  samplesPlayed = 0;
-	  // total->updctrl("WekaSink/wsink/mrs_natural/label", cj);
-	  annotator->updctrl("mrs_natural/label", cj);
-	  // wsink->updctrl("mrs_natural/label", cj);
+	  annotator->updctrl("mrs_natural/label", l.labelNum(l.labelEntry(i)));
 	  total->process(in, timbreres);
-
+	  
 	  // concatenate timbre and beat vectors 
 	  for (int t=0; t < timbreSize; t++)
 	    fullres(t,0) = timbreres(t,0);
-
+	  
 	  if (withBeatFeatures)
 	    {
 	      for (int t=0; t < beatSize; t++)
 		fullres(t+timbreSize, 0) = beatfeatures(t,0);
 	    }
-
 	  annotator->process(fullres, afullres);
-	  wsink->process(afullres, afullres);
-
+	  if (wekafname != EMPTYSTRING) 
+	    wsink->process(afullres, afullres);
 	  cerr << "Processed " << l.entry(i) << endl;
 	}
     }
+  
 
 
-  if (pluginName == EMPTYSTRING) // output to stdout 
-    cout << (*total) << endl;      
-  else 
-    {
-      ofstream oss(pluginName.c_str());
-      oss << (*total) << endl;
-    }
   
   delete featureNetwork;
 }
@@ -1716,6 +1773,7 @@ initOptions()
   cmd_options.addBoolOption("tline", "t", false);
   cmd_options.addBoolOption("pluginmute", "pm", false);
   cmd_options.addStringOption("outdir", "od", EMPTYSTRING);
+  cmd_options.addStringOption("predict", "pr", EMPTYSTRING);
 }
 
 void 

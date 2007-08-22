@@ -237,13 +237,8 @@ Marsyas::operator>>(istream& i, Collection& l)
 
 		  vector<string>::const_iterator it;
 		  it = find(l.labelNames_.begin(), l.labelNames_.end(), label);
-		  if (it != l.labelNames_.end())
-		    cout << "Found label " << label << endl;
-		  else 
-		    {
-		      cout << "Not found label" << label << endl;
-		      l.labelNames_.push_back(label);
-		    }
+		  if (it == l.labelNames_.end()) // label not found add it to list 
+		    l.labelNames_.push_back(label);
 		  
 		  l.hasLabels_ = true;
 		}
