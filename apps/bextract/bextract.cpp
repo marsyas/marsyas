@@ -932,6 +932,15 @@ void bextract_train(vector<Collection> cls,
 		    string classifierName)
 {
   MRSDIAG("bextract.cpp - bextract_train");
+  
+  mrs_bool collection_has_labels = false;
+  
+  if ((cls.size() == 1)&&(cls[0].hasLabels()))
+    {
+      collection_has_labels = true;
+    }
+    
+
 
   MarSystemManager mng;
 
@@ -1093,41 +1102,68 @@ void bextract_train(vector<Collection> cls,
 	featureNetwork->updctrl("WekaSink/wsink/mrs_string/labelNames",classNames);
 
       //iterate over collections (i.e. classes)
-      for (cj=0; cj < (mrs_natural)cls.size(); cj++)
+
+
+      if (!collection_has_labels)
 	{
-	  Collection l = cls[cj];
-	  featureNetwork->updctrl("Annotator/annotator/mrs_natural/label", cj);
-
-	  if (wekafname != EMPTYSTRING)
+	  for (cj=0; cj < (mrs_natural)cls.size(); cj++)
 	    {
-	      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
-	      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 40);
-	      featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  			
-	    }
-
-	  cout << "Class " << cj << " is " << l.name() << endl;
-
-	  //reset texture analysis stats between (i.e. classes)
-	  if(memSize != 0)
-	    featureNetwork->updctrl("TextureStats/tStats/mrs_bool/reset", true);
-
-	  //iterate over audio files (in each collection) and extract features
-	  for (mrs_natural i=0; i < l.size(); i++)
-	    {
-	      //  featureNetwork->updctrl("SoundFileSource/src/mrs_string/filename", l.entry(i));
-	      featureNetwork->updctrl(ctrl_filename_, l.entry(i));
-	      wc = 0;  	  
-	      samplesPlayed = 0;
-	      while (ctrl_notEmpty_->to<mrs_bool>() && (duration > samplesPlayed))
+	      Collection l = cls[cj];
+	      featureNetwork->updctrl("Annotator/annotator/mrs_natural/label", cj);
+	      
+	      if (wekafname != EMPTYSTRING)
 		{
-		  featureNetwork->tick();
-		  wc++;
-		  samplesPlayed = wc * onSamples;
+		  featureNetwork->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
+		  featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 40);
+		  featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  			
 		}
-	      featureNetwork->tick();
-	      cerr << "Processed " << l.entry(i) << endl;
+	      
+	      cout << "Class " << cj << " is " << l.name() << endl;
+	      
+	      //reset texture analysis stats between (i.e. classes)
+	      if(memSize != 0)
+		featureNetwork->updctrl("TextureStats/tStats/mrs_bool/reset", true);
+	      
+	      //iterate over audio files (in each collection) and extract features
+	      for (mrs_natural i=0; i < l.size(); i++)
+		{
+		  //  featureNetwork->updctrl("SoundFileSource/src/mrs_string/filename", l.entry(i));
+		  featureNetwork->updctrl(ctrl_filename_, l.entry(i));
+		  wc = 0;  	  
+		  samplesPlayed = 0;
+		  while (ctrl_notEmpty_->to<mrs_bool>() && (duration > samplesPlayed))
+		    {
+		      featureNetwork->tick();
+		      wc++;
+		      samplesPlayed = wc * onSamples;
+		    }
+		  featureNetwork->tick();
+		  cerr << "Processed " << l.entry(i) << endl;
+		}
 	    }
 	}
+      else 
+	{
+
+	  cout << "Collection has labels" << endl;
+	  return;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
   //**********************
   // if using timelines

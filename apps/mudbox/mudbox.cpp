@@ -16,7 +16,9 @@
 #include "CommandLineOptions.h"
 #include "FileName.h"
 #include "RtAudio.h"
+#ifdef MARSYAS_MIDIIO
 #include "RtMidi.h"
+#endif 
 #include "MarSystemTemplateBasic.h"
 #include "MarSystemTemplateAdvanced.h"
 #include "EvValUpd.h"
@@ -290,10 +292,12 @@ void drumClassify( string drumFile) {
     out2.create(extractNet->getctrl("mrs_natural/onObservations")->toNatural(),
             extractNet->getctrl("mrs_natural/onSamples")->toNatural());
 
+#ifdef MARSYAS_MIDIIO
     RtMidiOut *midiout = new RtMidiOut();
     midiout->openPort(0);
-    vector<unsigned char> message;
+#endif 
 
+    vector<unsigned char> message;
     message.push_back(144);
     message.push_back(60);
     message.push_back(0);

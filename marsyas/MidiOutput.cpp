@@ -74,7 +74,7 @@ MidiOutput::addControls()
     setctrlState("mrs_natural/port", true);
 }
 
-    void
+ void
 MidiOutput::myUpdate(MarControlPtr sender)
 {
     MRSDIAG("MidiOutput.cpp - MidiOutput:myUpdate");
