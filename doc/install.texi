@@ -578,10 +578,9 @@ qmake -t vclib
 @node Vim editor support
 @subsection Vim editor support
 
-A syntax file for vim color highlighting is at the top of the source
-tree, @file{marsyas.vim}.  To use this file, copy it to
-@file{$HOME/.vim/syntax} add the following lines to
-@file{$HOME/.vim/filetype.vim}:
+A syntax file for vim color highlighting is in @file{misc/marsyas.vim}.
+To use this file, copy it to @file{$HOME/.vim/syntax} add the following
+lines to @file{$HOME/.vim/filetype.vim}:
 
 @example
 if exists("did_load_filetypes")

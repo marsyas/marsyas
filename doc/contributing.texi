@@ -65,11 +65,10 @@ programs}.  You don't have to write any English at all!
 @item
 We use the @code{ansi} style defined in
 @uref{http://astyle.sourceforge.net/,Artistic Style}; our exact style
-file is in the top of the Marsyas source directory as a @file{astylerc}.
-To use the file, call
+file is in @file{misc/astylerc}.  To use the file, call
 
 @example
-astyle --options=@emph{/path/to/marsyas_topdir}/astylerc filename.cpp
+astyle --options=@emph{/path/to/marsyas_topdir}/misc/astylerc filename.cpp
 @end example
 
 @samp{filename.cpp} can include wildcards, ie @samp{*.h} and
