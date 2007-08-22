@@ -675,6 +675,8 @@ MADLIB
 OGGLIB
 MslLibs
 MATLABLIBS
+QT_PRESENT_TRUE
+QT_PRESENT_FALSE
 Audio
 Libs
 INCLUDES
@@ -4477,6 +4479,17 @@ _ACEOF
 	;;
 esac
 
+# check is qmake is in the path.  I think.  -gp
+
+
+if test x$QMAKE = x; then
+  QT_PRESENT_TRUE=
+  QT_PRESENT_FALSE='#'
+else
+  QT_PRESENT_TRUE='#'
+  QT_PRESENT_FALSE=
+fi
+
 
 
 if test "x$prefix" = xNONE; then
@@ -4642,6 +4655,13 @@ if test -z "${am__fastdepCXX_TRUE}" && test -z "${am__fastdepCXX_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"am__fastdepCXX\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"am__fastdepCXX\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${QT_PRESENT_TRUE}" && test -z "${QT_PRESENT_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"QT_PRESENT\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"QT_PRESENT\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -5311,6 +5331,8 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+QT_PRESENT_TRUE!$QT_PRESENT_TRUE$ac_delim
+QT_PRESENT_FALSE!$QT_PRESENT_FALSE$ac_delim
 Audio!$Audio$ac_delim
 Libs!$Libs$ac_delim
 INCLUDES!$INCLUDES$ac_delim
@@ -5318,7 +5340,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 5; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 7; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

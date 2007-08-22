@@ -354,6 +354,8 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+QT_PRESENT_FALSE = @QT_PRESENT_FALSE@
+QT_PRESENT_TRUE = @QT_PRESENT_TRUE@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
@@ -409,12 +411,6 @@ target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
 MAINTAINERCLEANFILES = Makefile.in
-
-#install-data-local:
-#	cd $(top_srcdir)/marsyas/MarQtLib && qmake && make
-#	cp $(top_srcdir)/lib/release/libmarqtlib.a $(DESTDIR)$(libdir)
-#	mkdir -p $(DESTDIR)$(includedir)/marsyas/MarQtLib/
-#	cp $(top_srcdir)/marsyas/MarQtLib/*.h $(DESTDIR)$(includedir)/marsyas/MarQtLib/
 lib_LIBRARIES = libmarsyas.a
 libmarsyas_a_SOURCES = \
 	$(top_srcdir)/marsyas/MrsLog.cpp \
@@ -4507,7 +4503,7 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-data-local
 
 install-exec-am: install-libLIBRARIES
 
@@ -4540,13 +4536,20 @@ uninstall-am: uninstall-info-am uninstall-libLIBRARIES
 	clean-libLIBRARIES ctags distclean distclean-compile \
 	distclean-generic distclean-tags distdir dvi dvi-am html \
 	html-am info info-am install install-am install-data \
-	install-data-am install-exec install-exec-am install-info \
-	install-info-am install-libLIBRARIES install-man install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
+	install-data-am install-data-local install-exec \
+	install-exec-am install-info install-info-am \
+	install-libLIBRARIES install-man install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-info-am uninstall-libLIBRARIES
 
+
+@QT_PRESENT_TRUE@install-data-local:
+@QT_PRESENT_TRUE@	cd $(top_srcdir)/marsyas/MarQtLib && qmake && make
+@QT_PRESENT_TRUE@	cp $(top_srcdir)/lib/release/libmarqtlib.a $(DESTDIR)$(libdir)
+@QT_PRESENT_TRUE@	mkdir -p $(DESTDIR)$(includedir)/marsyas/MarQtLib/
+@QT_PRESENT_TRUE@	cp $(top_srcdir)/marsyas/MarQtLib/*.h $(DESTDIR)$(includedir)/marsyas/MarQtLib/
 # please leave Gain.cpp at the end like this; it make scripts happy.
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
