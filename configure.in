@@ -322,6 +322,9 @@ fi
 	;;
 esac
 
+# check is qmake is in the path.  I think.  -gp
+AM_CONDITIONAL(QT_PRESENT,
+	test x$QMAKE = x)
 
 
 if test "x$prefix" = xNONE; then
