@@ -23,9 +23,7 @@ using namespace Marsyas;
 
 GaussianClassifier::GaussianClassifier(string name):MarSystem("GaussianClassifier",name)
 {
-  //type_ = "GaussianClassifier";
-  //name_ = name;
-
+  prev_mode_= "predict";
   addControls();
 }
 
@@ -34,10 +32,10 @@ GaussianClassifier::GaussianClassifier(const GaussianClassifier& a):MarSystem(a)
 {
   ctrl_mode_ = getctrl("mrs_string/mode");
   ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
-  ctrl_done_ = getctrl("mrs_bool/done");
   ctrl_means_ = getctrl("mrs_realvec/means");
   ctrl_covars_ = getctrl("mrs_realvec/covars");
   
+  prev_mode_ = "predict";
 }
 
 
@@ -146,6 +144,31 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 	}
     }
 
+
+  if ((prev_mode_ == "train") && (mode == "predict"))
+    {
+      
+      for (l=0; l < nlabels; l++)
+	for (o=0; o < inObservations_; o++)
+	  {
+	    
+	    means_(l,o) = means_(l,o) / labelSizes_(l);
+	    covars_(l,o) = covars_(l,o) / labelSizes_(l);
+	    covars_(l, o) = covars_(l,o) - 
+	      (means_(l,o) * means_(l,o));
+	    if (covars_(l,o) != 0.0)
+	      {
+		covars_(l,o) = (mrs_real)(1.0 / covars_(l,o));
+	      }
+	  }
+      
+      ctrl_means_->setValue(means_);
+      ctrl_covars_->setValue(covars_);
+    }
+
+
+
+
   if (mode == "predict")
     {
       mrs_real min = MAXREAL;
@@ -176,28 +199,11 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 	  out(1,t) = (mrs_real)label;
 	}
     }
+  
+  prev_mode_ = mode;
 
-  if (ctrl_done_->to<mrs_bool>())
-    {
-      
-      for (l=0; l < nlabels; l++)
-	for (o=0; o < inObservations_; o++)
-	  {
-	    
-	    means_(l,o) = means_(l,o) / labelSizes_(l);
-	    covars_(l,o) = covars_(l,o) / labelSizes_(l);
-	    covars_(l, o) = covars_(l,o) - 
-	      (means_(l,o) * means_(l,o));
-	    if (covars_(l,o) != 0.0)
-	      {
-		covars_(l,o) = (mrs_real)(1.0 / covars_(l,o));
-	      }
-	  }
-      
-      ctrl_means_->setValue(means_);
-      ctrl_covars_->setValue(covars_);
-      ctrl_done_->setValue(false);
-    }
+
+
 }
 
 

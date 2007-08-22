@@ -53,6 +53,8 @@ private:
   void addControls();
 	void myUpdate(MarControlPtr sender);
 
+
+       
   realvec means_;
   realvec covars_;
   realvec labelSizes_;
@@ -62,6 +64,7 @@ private:
   MarControlPtr ctrl_means_;
   MarControlPtr ctrl_covars_;
 
+  mrs_string prev_mode_;
 public:
   GaussianClassifier(std::string name);
   GaussianClassifier(const GaussianClassifier& a);

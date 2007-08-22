@@ -1050,8 +1050,6 @@ void bextract_train(vector<Collection> cls,
   //////////////////////////////////////////////////////////////////////////
   featureNetwork->linkctrl("mrs_string/filename", "SoundFileSource/src/mrs_string/filename");
   featureNetwork->linkctrl("SoundFileSource/src/mrs_string/currentlyPlaying", "Confidence/confidence/mrs_string/fileName");
-  //  featureNetwork->linkctrl("SoundFileSource/src/mrs_string/filename", "Confidence/confidence/mrs_string/fileName");
-
   featureNetwork->linkctrl("mrs_real/israte", "SoundFileSource/src/mrs_real/israte");
   featureNetwork->linkctrl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
   
@@ -1260,37 +1258,24 @@ void bextract_train(vector<Collection> cls,
     }
 
   //////////////////////////////////////////////////////////////////////////
-  // update and train classifier after feature extraction is complete
-  //////////////////////////////////////////////////////////////////////////
-  if (classifierName == "GS")
-    featureNetwork->updctrl("GaussianClassifier/gaussian/mrs_bool/done",true);
-  else if (classifierName == "ZeroR")  
-    featureNetwork->updctrl("ZeroRClassifier/zeror/mrs_bool/done",true);
-  else if (classifierName == "KNN")  
-    featureNetwork->updctrl("KNNClassifier/knn/mrs_bool/done",true);
-	
-  // train classifier
-  featureNetwork->tick();		
-
-  //////////////////////////////////////////////////////////////////////////
   // prepare network for classification
   //////////////////////////////////////////////////////////////////////////
   if (classifierName == "GS")
     {
-      featureNetwork->updctrl("GaussianClassifier/gaussian/mrs_bool/done",false);  
       featureNetwork->updctrl("GaussianClassifier/gaussian/mrs_string/mode","predict"); 
     }
   else if (classifierName == "ZeroR")  
     {
-      featureNetwork->updctrl("ZeroRClassifier/zeror/mrs_bool/done",false);  
       featureNetwork->updctrl("ZeroRClassifier/zeror/mrs_string/mode","predict") ;
     }
   else if (classifierName == "KNN")  
     {
-      featureNetwork->updctrl("KNNClassifier/knn/mrs_bool/done",false);  
       featureNetwork->updctrl("KNNClassifier/knn/mrs_string/mode","predict");
       featureNetwork->updctrl("KNNClassifier/knn/mrs_natural/k",3); //[!] hardcoded!!!
     }  
+
+  featureNetwork->tick();		
+
 
   if (pluginName != EMPTYSTRING && !pluginMute) 
     {

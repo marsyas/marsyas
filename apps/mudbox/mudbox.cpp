@@ -2618,25 +2618,16 @@ toy_with_weka(string fname)
   
   
   net->updctrl("GaussianClassifier/gcl/mrs_natural/nLabels", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
-  
+  net->linkctrl("GaussianClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
   mrs_bool training_done = false;
   
   while(net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>() == false)
     {
       string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
       
-      // net->updctrl("OneRClassifier/ocl/mrs_string/mode", mode);
-      
-      if ((mode == "predict") && (!training_done))
-	{
-	  net->updctrl("GaussianClassifier/gcl/mrs_bool/done", true);
-	  training_done = true;
-	  net->tick();
-	}
-
-      net->updctrl("GaussianClassifier/gcl/mrs_string/mode", mode);
-      net->updctrl("Summary/summary/mrs_string/mode", mode);
       net->tick();
+      net->updctrl("GaussianClassifier/gcl/mrs_string/mode", mode);
+      // net->updctrl("Summary/summary/mrs_string/mode", mode);
      }
   
   net->updctrl("Summary/summary/mrs_bool/done", true);
