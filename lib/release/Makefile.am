@@ -18,6 +18,11 @@
 
 MAINTAINERCLEANFILES    = Makefile.in
 
+#install-data-local:
+#	cd $(top_srcdir)/marsyas/MarQtLib && qmake && make
+#	cp $(top_srcdir)/lib/release/libmarqtlib.a $(DESTDIR)$(libdir)
+#	mkdir -p $(DESTDIR)$(includedir)/marsyas/MarQtLib/
+#	cp $(top_srcdir)/marsyas/MarQtLib/*.h $(DESTDIR)$(includedir)/marsyas/MarQtLib/
 
 
 lib_LIBRARIES         = libmarsyas.a
