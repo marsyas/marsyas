@@ -80,6 +80,8 @@ Confidence::addControls()
   setctrlState("mrs_natural/write", true);
   addctrl("mrs_natural/hopSize", 512);
   setctrlState("mrs_natural/hopSize", true);
+  addctrl("mrs_bool/fileOutput", false);
+  setctrlState("mrs_bool/fileOutput", true);
 }
 
 void
@@ -110,24 +112,26 @@ Confidence::myUpdate(MarControlPtr sender)
     }  
 
 
-  if(getctrl("mrs_string/fileName")->toString().compare(oriName_))
+  if (getctrl("mrs_bool/fileOutput")->to<mrs_bool>())
     {
-      if(write_)
+      if(getctrl("mrs_string/fileName")->toString().compare(oriName_))
 	{
-	  outputFileSyn_.close();
-	  outputFileTran_.close();
+	  if(write_)
+	    {
+	      outputFileSyn_.close();
+	      outputFileTran_.close();
+	    }
+	  oriName_ = getctrl("mrs_string/fileName")->toString();
+	  FileName Sfname(oriName_);
+	  string tmp = Sfname.nameNoExt() +"_synSeg.txt";
+	  cout << Sfname.nameNoExt() << endl;
+	  //      getchar();
+	  outputFileSyn_.open(tmp.c_str(), ios::out);
+	  tmp = Sfname.nameNoExt() +"_tranSeg.txt";
+	  outputFileTran_.open(tmp.c_str(), ios::out);
+	  write_ = 1;
 	}
-      oriName_ = getctrl("mrs_string/fileName")->toString();
-      FileName Sfname(oriName_);
-      string tmp = Sfname.nameNoExt() +"_synSeg.txt";
-      cout << Sfname.nameNoExt() << endl;
-      //      getchar();
-      outputFileSyn_.open(tmp.c_str(), ios::out);
-      tmp = Sfname.nameNoExt() +"_tranSeg.txt";
-      outputFileTran_.open(tmp.c_str(), ios::out);
-      write_ = 1;
-  }
-
+    }
   hopDuration_ = getctrl("mrs_natural/hopSize")->toNatural() / getctrl("mrs_real/osrate")->toReal();
   nbFrames_ = -getctrl("mrs_natural/memSize")->toNatural()+1;
   lastLabel_ = "MARSYAS_EMPTY";
@@ -175,16 +179,21 @@ Confidence::myProcess(realvec& in, realvec& out)
 	  if (print_) 
 	    cout << nbFrames_*hopDuration_ << "\t" << labelNames_[max_l] << "\t" << 
 	      ((confidences_(max_l) / count_)) * 100.0 << endl;
-          if (write_)
-	    { 
-	    outputFileSyn_ << nbFrames_*hopDuration_ << "\t" << labelNames_[max_l] << "\t" << 
-	      ((confidences_(max_l) / count_)) * 100.0 << endl;
 
-	    if(lastLabel_ == "MARSYAS_EMPTY" || lastLabel_ != labelNames_[max_l])
-	      {
-	    outputFileTran_ << nbFrames_*hopDuration_ << "\t" << labelNames_[max_l] << endl;
-	    lastLabel_ = labelNames_[max_l];
-	      }
+
+	  if (getctrl("mrs_bool/fileOutput")->to<mrs_bool>())
+	    {
+	      if (write_)
+		{ 
+		  outputFileSyn_ << nbFrames_*hopDuration_ << "\t" << labelNames_[max_l] << "\t" << 
+		    ((confidences_(max_l) / count_)) * 100.0 << endl;
+		  
+		  if(lastLabel_ == "MARSYAS_EMPTY" || lastLabel_ != labelNames_[max_l])
+		    {
+		      outputFileTran_ << nbFrames_*hopDuration_ << "\t" << labelNames_[max_l] << endl;
+		      lastLabel_ = labelNames_[max_l];
+		    }
+		}
 	    }
 	  if (cond || forcePrint_)
 	    {
