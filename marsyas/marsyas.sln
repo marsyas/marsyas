@@ -1,27 +1,24 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vocalEffort", "..\apps\vocalEffort\vocalEffort.vcproj", "{D98C1DD4-008F-34B2-A980-0998ECF8427E}"
-	ProjectSection(ProjectDependencies) = postProject
-		{2E06386D-B62B-4B61-8156-40E68693CC92} = {2E06386D-B62B-4B61-8156-40E68693CC92}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "marsyas", "marsyas.vcproj", "{2E06386D-B62B-4B61-8156-40E68693CC92}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "marsyas", "marsyas.vcproj", "{C61BE8CD-A21B-3AA8-8217-8FF70ADF27C5}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
 EndProject
 Global
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D98C1DD4-008F-34B2-A980-0998ECF8427E}.Debug|Win32.ActiveCfg = Debug|Win32
-		{D98C1DD4-008F-34B2-A980-0998ECF8427E}.Debug|Win32.Build.0 = Debug|Win32
-		{D98C1DD4-008F-34B2-A980-0998ECF8427E}.Release|Win32.ActiveCfg = Release|Win32
-		{D98C1DD4-008F-34B2-A980-0998ECF8427E}.Release|Win32.Build.0 = Release|Win32
-		{2E06386D-B62B-4B61-8156-40E68693CC92}.Debug|Win32.ActiveCfg = Debug|Win32
-		{2E06386D-B62B-4B61-8156-40E68693CC92}.Debug|Win32.Build.0 = Debug|Win32
-		{2E06386D-B62B-4B61-8156-40E68693CC92}.Release|Win32.ActiveCfg = Release|Win32
-		{2E06386D-B62B-4B61-8156-40E68693CC92}.Release|Win32.Build.0 = Release|Win32
+		{C61BE8CD-A21B-3AA8-8217-8FF70ADF27C5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C61BE8CD-A21B-3AA8-8217-8FF70ADF27C5}.Debug|Win32.Build.0 = Debug|Win32
+		{C61BE8CD-A21B-3AA8-8217-8FF70ADF27C5}.Release|Win32.ActiveCfg = Release|Win32
+		{C61BE8CD-A21B-3AA8-8217-8FF70ADF27C5}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

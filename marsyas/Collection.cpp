@@ -18,6 +18,7 @@
 
 
 #include "Collection.h"
+#include <algorithm>
 
 using namespace std;
 using namespace Marsyas;
