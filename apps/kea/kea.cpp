@@ -14,6 +14,9 @@ int usageopt_;
 string wekafname_;
 string mode_;
 CommandLineOptions cmd_options_;
+string workdir_;
+string distancematrix_;
+
  
 void 
 printUsage(string progName)
@@ -39,6 +42,8 @@ printHelp(string progName)
   cerr << "-w --wekafname : .arff file for training " << endl;
   cerr << "-c --classifier : classifier to use " << endl;
   cerr << "-m --mode: mode of operation" << endl;
+  cerr << "-wd --workdir: workspace directory" << endl;
+  cerr << "-dm --distancematrix: distance matrix in MIREX format" << endl;
   exit(1);
 }
 
@@ -46,7 +51,14 @@ printHelp(string progName)
 void 
 distance_matrix() 
 {
-  cout << "Distance matrix calculation" << endl;
+  cout << "Distance matrix calculation using " << wekafname_ << endl;
+
+  if (workdir_ != EMPTYSTRING) 
+    wekafname_  = workdir_ + wekafname_;
+
+
+
+
   MarSystemManager mng; 
 
   MarSystem* net = mng.create("Series", "net");
@@ -68,20 +80,54 @@ distance_matrix()
 
   net->tick();
 
+  if (workdir_ != EMPTYSTRING) 
+    distancematrix_ = workdir_ + distancematrix_;
+
+  ofstream oss;
+  oss.open(distancematrix_.c_str());
+
   
-  cout << "Marsyas-kea distance matrix for MIREX 2007 Audio Similarity Exchange " << endl;
-  cout << "Q/R";
+  oss << "Marsyas-kea distance matrix for MIREX 2007 Audio Similarity Exchange " << endl;
 
-  for (int i=0; i < nInstances; i++) 
+  Collection l;
+  l.read(workdir_ + "extract.txt");
+  
+
+
+  for (int i=1; i <= l.size(); i++) 
     {
-      cout << "\t" << i;
+      oss << i << "\t" << l.entry(i-1) << endl;
     }
-  cout << endl;
+
+
+
+  oss << "Q/R";
+  const mrs_realvec& dmx = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
 
 
 
+  for (int i=1; i <= nInstances; i++) 
+    {
+      oss << "\t" << i;
+    }
+  oss << endl;
 
+  for (int i=1; i <= nInstances; i++) 
+    {
+      oss << i;
+      for (int j=0; j < nInstances; j++)
+	oss <<"\t" << dmx(i-1, j);
+      oss << endl;
+    }
+
+
+  oss << endl;
+
+
+
+
+    
 
 
 
@@ -91,6 +137,13 @@ distance_matrix()
 void train()
 {
   cout << "Training classifier using .arff file: " << wekafname_ << endl;
+
+  if (workdir_ != EMPTYSTRING) 
+    wekafname_  = workdir_ + wekafname_;
+
+  cout << "Training classifier using .arff file: " << wekafname_ << endl;
+  
+
   
   MarSystemManager mng;
   
@@ -138,6 +191,8 @@ initOptions()
   cmd_options_.addBoolOption("usage", "u", false);
   cmd_options_.addStringOption("wekafname", "w", EMPTYSTRING);
   cmd_options_.addStringOption("mode", "m", "train");
+  cmd_options_.addStringOption("workdir", "wd", EMPTYSTRING);
+  cmd_options_.addStringOption("distancematrix", "dm", EMPTYSTRING);
 }
 
 
@@ -148,6 +203,8 @@ loadOptions()
   usageopt_ = cmd_options_.getBoolOption("usage");
   wekafname_ = cmd_options_.getStringOption("wekafname");
   mode_ = cmd_options_.getStringOption("mode");
+  workdir_ = cmd_options_.getStringOption("workdir");
+  distancematrix_ = cmd_options_.getStringOption("distancematrix");
 }
 
 

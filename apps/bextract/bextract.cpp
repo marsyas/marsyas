@@ -53,7 +53,7 @@ mrs_bool pluginMute = 0.0;
 #define DEFAULT_EXTRACTOR "STFT" 
 #define DEFAULT_CLASSIFIER  "GS"
 
-string outDirName = EMPTYSTRING;
+string workspaceDir = EMPTYSTRING;
 string pluginName = EMPTYSTRING;
 string wekafname = EMPTYSTRING;
 string filefeaturename = EMPTYSTRING;
@@ -302,6 +302,7 @@ printHelp(string progName)
   cerr << "-m --memory      : memory size " << endl;
   cerr << "-sr --samplingrate : sampling rate " << endl;
   cerr << "-w --weka        : weka .arff filename " << endl;
+  cerr << "-wd --workdir : working directory for input/output of files" << endl;
   cerr << "-ws --nwinsamples: analysis window size in samples " << endl;
   cerr << "-hp --nhopsamples: analysis hop size in samples " << endl;
   cerr << "-t --timeline    : flag 2nd input collection as timelines for the 1st collection";
@@ -910,6 +911,24 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
       for (cj=0; cj < (mrs_natural)cls.size(); cj++)
 	{
 	  Collection l = cls[cj];
+
+	  if (workspaceDir != EMPTYSTRING) 
+	    {
+	      string outCollection = workspaceDir + "extract.txt";
+	      l.write(outCollection);
+	      cout << "Writing extract collection to :" << outCollection << endl;
+	    }
+
+	  if (wekafname != EMPTYSTRING) 
+	    {
+	      if (workspaceDir != EMPTYSTRING) 
+		wekafname = workspaceDir + wekafname;
+	      wsink->updctrl("mrs_string/filename", wekafname);
+	      cout << "Writing weka .arff file to :" << wekafname << endl;
+	    }
+	  
+
+
 	  for (i=0; i < l.size(); i++)//iterate over collection files
 	    {
 	      // cout << beatfeatures << endl;
@@ -948,14 +967,26 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
     }
   else 
     {
-      cout << "bextract_trainAccumulator has labels" << endl;
       l = cls[0];
+
+
+      if (workspaceDir != EMPTYSTRING) 
+	{
+	  string outCollection = workspaceDir + "extract.txt";
+	  l.write(outCollection);
+	  cout << "Writing extract collection to :" << outCollection << endl;
+	}
+      
 
       wsink->updctrl("mrs_string/labelNames",l.getLabelNames());
       wsink->updctrl("mrs_natural/nLabels", (mrs_natural)l.getNumLabels());  
       if (wekafname != EMPTYSTRING) 
-	wsink->updctrl("mrs_string/filename", wekafname);
-      
+	{
+	  if (workspaceDir != EMPTYSTRING) 
+	    wekafname = workspaceDir + wekafname;
+	  wsink->updctrl("mrs_string/filename", wekafname);
+	  cout << "Writing weka .arff file to :" << wekafname << endl;
+	}
 
       gcl->updctrl("mrs_natural/nLabels", (mrs_natural)l.getNumLabels());
       gcl->updctrl("mrs_string/mode", "train");
@@ -1834,7 +1865,7 @@ initOptions()
   cmd_options.addStringOption("classifier", "cl", EMPTYSTRING);
   cmd_options.addBoolOption("tline", "t", false);
   cmd_options.addBoolOption("pluginmute", "pm", false);
-  cmd_options.addStringOption("outdir", "od", EMPTYSTRING);
+  cmd_options.addStringOption("workdir", "wd", EMPTYSTRING);
   cmd_options.addStringOption("predict", "pr", EMPTYSTRING);
 }
 
@@ -1859,7 +1890,7 @@ loadOptions()
   accSize_ = cmd_options.getNaturalOption("accSize");
   tline = cmd_options.getBoolOption("tline");
   pluginMute  = cmd_options.getBoolOption("pluginmute");
-  outDirName = cmd_options.getStringOption("outdir");
+  workspaceDir = cmd_options.getStringOption("workdir");
   predictCollection = cmd_options.getStringOption("predict");
 }
 
@@ -2029,8 +2060,8 @@ mirex_bextract()
 		     
   total->updctrl("mrs_natural/inSamples", winSize);
 
-  if (outDirName != EMPTYSTRING) 
-    wekafname = outDirName + wekafname;
+  if (workspaceDir != EMPTYSTRING) 
+    wekafname = workspaceDir + wekafname;
 
   if (wekafname == EMPTYSTRING) 
     total->updctrl("WekaSink/wsink/mrs_string/filename", "weka.arff");
@@ -2050,8 +2081,8 @@ mirex_bextract()
 
   cout << "Extracted features to: " << wekafname << endl;
   string outCollection; 
-  if (outDirName != EMPTYSTRING) 
-    outCollection = outDirName + "extract.txt";
+  if (workspaceDir != EMPTYSTRING) 
+    outCollection = workspaceDir + "extract.txt";
   else 
     outCollection = "extract.txt";
   l.write(outCollection);
