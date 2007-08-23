@@ -56,6 +56,7 @@ public:
   mrs_natural getNumLabels();
   mrs_string getLabelNames();
   mrs_natural labelNum(mrs_string label); 
+  mrs_string labelName(mrs_natural i);
   mrs_bool hasLabels(); 
   void add(std::string entry);
   std::string name();

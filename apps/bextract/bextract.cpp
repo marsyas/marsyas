@@ -848,9 +848,24 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
   annotator->updctrl("mrs_natural/inSamples", total->getctrl("mrs_natural/onSamples"));
   annotator->updctrl("mrs_real/israte", total->getctrl("mrs_real/israte"));
 
+
+  MarSystem* gcl = mng.create("GaussianClassifier" ,"gcl");
+  
+
   wsink->updctrl("mrs_natural/inSamples", annotator->getctrl("mrs_natural/onSamples"));
   wsink->updctrl("mrs_natural/inObservations", annotator->getctrl("mrs_natural/onObservations")->toNatural());
   wsink->updctrl("mrs_real/israte", annotator->getctrl("mrs_real/israte"));
+
+
+  gcl->updctrl("mrs_natural/inSamples", annotator->getctrl("mrs_natural/onSamples"));
+  gcl->updctrl("mrs_natural/inObservations", annotator->getctrl("mrs_natural/onObservations")->toNatural());
+  gcl->updctrl("mrs_real/israte", annotator->getctrl("mrs_real/israte"));
+
+  realvec gclres;
+  gclres.create(gcl->getctrl("mrs_natural/onObservations")->toNatural(),
+		gcl->getctrl("mrs_natural/onSamples")->toNatural());  
+
+
 
   mrs_natural timbreSize = total->getctrl("mrs_natural/onObservations")->toNatural();
   mrs_natural beatSize = 8;
@@ -878,6 +893,7 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 
   //iterate over collections
 
+  Collection m,l; 
   
 
 
@@ -933,13 +949,16 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
   else 
     {
       cout << "bextract_trainAccumulator has labels" << endl;
-      Collection l = cls[0];
+      l = cls[0];
 
       wsink->updctrl("mrs_string/labelNames",l.getLabelNames());
       wsink->updctrl("mrs_natural/nLabels", (mrs_natural)l.getNumLabels());  
       if (wekafname != EMPTYSTRING) 
 	wsink->updctrl("mrs_string/filename", wekafname);
       
+
+      gcl->updctrl("mrs_natural/nLabels", (mrs_natural)l.getNumLabels());
+      gcl->updctrl("mrs_string/mode", "train");
 
       for (i=0; i < l.size(); i++)//iterate over collection files
 	{
@@ -970,14 +989,57 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 	  annotator->process(fullres, afullres);
 	  if (wekafname != EMPTYSTRING) 
 	    wsink->process(afullres, afullres);
+	  gcl->process(afullres, gclres);
 	  cerr << "Processed " << l.entry(i) << endl;
 	}
     }
+
   
+  if (predictCollection != EMPTYSTRING) 
+    {
+      cout << "bextract_trainAccumulator has labels" << endl;
 
+      m.read(predictCollection);
+      wsink->updctrl("mrs_string/filename", "predict.arff");
+      gcl->updctrl("mrs_string/mode", "predict");
 
+      for (i=0; i < m.size(); i++)//iterate over collection files
+	{
+	  // cout << beatfeatures << endl;
+	  total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", m.entry(i));
+	  if (withBeatFeatures) 
+	    {
+	      srate = total->getctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_real/osrate")->toReal();
+	      iwin.create((mrs_natural)1, (mrs_natural)(((srate / 22050.0) * 2 * 65536) / 16)); // [!] hardcoded!
+	      tempo_histoSumBands(total1, m.entry(i), beatfeatures, 
+				  iwin, estimate);
+	    }
+	  total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/pos", offset);
+	  wc = 0;  	  
+	  samplesPlayed = 0;
+	  annotator->updctrl("mrs_natural/label", 0);
+	  total->process(in, timbreres);
+	  
+	  // concatenate timbre and beat vectors 
+	  for (int t=0; t < timbreSize; t++)
+	    fullres(t,0) = timbreres(t,0);
+	  
+	  if (withBeatFeatures)
+	    {
+	      for (int t=0; t < beatSize; t++)
+		fullres(t+timbreSize, 0) = beatfeatures(t,0);
+	    }
+	  annotator->process(fullres, afullres);
+	  if (wekafname != EMPTYSTRING) 
+	    wsink->process(afullres, afullres);
+	  gcl->process(afullres, gclres);
+	  
+	  cout << m.entry(i) << "\t" << l.labelName(gclres(0,0)) << endl;
+	}
+    }
   
   delete featureNetwork;
+  
 }
 
 // train with multiple feature vectors/file 
@@ -1798,6 +1860,7 @@ loadOptions()
   tline = cmd_options.getBoolOption("tline");
   pluginMute  = cmd_options.getBoolOption("pluginmute");
   outDirName = cmd_options.getStringOption("outdir");
+  predictCollection = cmd_options.getStringOption("predict");
 }
 
 void bextract(vector<string> soundfiles, mrs_natural label, 

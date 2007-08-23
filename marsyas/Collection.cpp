@@ -125,6 +125,15 @@ Collection::getNumLabels()
 }
 
 mrs_string 
+Collection::labelName(mrs_natural i) 
+{
+  if (i < labelNames_.size())
+    return labelNames_[i];
+      
+  return EMPTYSTRING;
+}
+
+mrs_string 
 Collection::getLabelNames() 
 {
   mrs_string labelNames;
