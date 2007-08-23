@@ -1,4 +1,4 @@
-include (../Qt4Apps.pri)
+#include (../Qt4Apps.pri)
 
 SOURCES = start.cpp mainwindow.cpp
 HEADERS = defs.h mainwindow.h
@@ -19,14 +19,20 @@ SOURCES += backend.cpp
 HEADERS += ../QtMarPlot.h
 SOURCES += ../QtMarPlot.cpp
 
-HEADERS += ../MarSystemQtWrapper.h
-SOURCES += ../MarSystemQtWrapper.cpp
+#HEADERS += ../MarSystemQtWrapper.h
+#SOURCES += ../MarSystemQtWrapper.cpp
 
 
 RESOURCES = icons.qrc
 TARGET = meaws
 VERSION = 0.5
 #CONFIG = qt
+
+
+MARSYAS_INSTALL_DIR = ../../../
+#MARSYAS_INSTALL_DIR = ${HOME}/usr/
+#MARSYAS_INSTALL_DIR = /usr/local
+message("Marsyas was installed in $$MARSYAS_INSTALL_DIR, right?")
 
 
 unix {
@@ -44,30 +50,19 @@ INSTALLS += data
 
 INCLUDEPATH += ../../../lib/release/
 
+INCLUDEPATH += $$MARSYAS_INSTALL_DIR/marsyas/
+LIBPATH += $$MARSYAS_INSTALL_DIR/lib/release
+
+unix:LIBS += -lmarsyas -lmarqtactual -L$$MARSYAS_INSTALL_DIR/lib
+!macx:LIBS += -lasound
+macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
 
 
-unix {
-!macx {
-	LIBS += -lmarsyas -L../../../lib/release/
-	LIBS += -lasound
-}
-}
-
-macx {
-	LIBS += -lmarsyas -L../../../lib/release/
-	LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
-}
 
 win32 {
 	INCLUDEPATH += ../../../lib/release/
 	INCLUDEPATH += . ..
 	CONFIG += console
 }
-
-# needs to be upddate:   (or deleted?)
-# win32:DEFINES += __WINDOWS_DS__
-# win32:LIBS += -lmarsyas  -ldsound  
-# win32:LIBPATH += ..\..\marsyasVisualStudio2005\marsyas\Release "$$(DXSDK_DIR)Lib\x86\"
-# win32:INCLUDEPATH += ../../marsyas "$$(DXSDK_DIR)"Include\ #include path for dsound.h
 
 

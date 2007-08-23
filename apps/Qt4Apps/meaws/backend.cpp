@@ -250,6 +250,7 @@ bool MarBackend::analyze() {
 			break;
 		case TYPE_INTONATION: {
 			getMidiPitches();
+/*
 			Transcriber *trans = new Transcriber();
 			trans->setPitchList( getMidiPitches() );
 			trans->calcOnsets();
@@ -258,6 +259,7 @@ bool MarBackend::analyze() {
 			durations = trans->getDurations();
 			notes = trans->getNotes();
 			delete trans;
+*/
 			break;
 		}
 		case TYPE_CONTROL:
