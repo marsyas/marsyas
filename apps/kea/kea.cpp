@@ -80,9 +80,6 @@ distance_matrix()
 
   net->tick();
 
-  if (workdir_ != EMPTYSTRING) 
-    distancematrix_ = workdir_ + distancematrix_;
-
   ofstream oss;
   oss.open(distancematrix_.c_str());
 
