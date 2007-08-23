@@ -15,7 +15,7 @@ message("Marsyas was installed in $$MARSYAS_INSTALL_DIR, right?")
 INCLUDEPATH += $$MARSYAS_INSTALL_DIR/marsyas/
 LIBPATH += $$MARSYAS_INSTALL_DIR/lib/release
 
-unix:LIBS += -lmarsyas -lmarqtlib -L$$MARSYAS_INSTALL_DIR/lib
+unix:LIBS += -lmarsyas -lmarqtactual -L$$MARSYAS_INSTALL_DIR/lib
 !macx:LIBS += -lasound
 macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
 

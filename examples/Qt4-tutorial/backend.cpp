@@ -17,7 +17,7 @@
 */
 
 #include "backend.h"
-using namespace Marsyas;
+//using namespace Marsyas;
 
 MarBackend::MarBackend()
 {

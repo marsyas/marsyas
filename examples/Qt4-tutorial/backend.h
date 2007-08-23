@@ -19,11 +19,12 @@
 #include <QObject>
 #include <QTimer>
 #include "MarSystemManager.h"
-#include "MarQtLib/MarSystemQtWrapper.h"
+#include "MarQtActual/MarSystemQtWrapper.h"
 
 #include <iostream>
 using namespace std;
 using namespace Marsyas;
+using namespace MarQtActual;
 
 class MarBackend: public QObject
 {
