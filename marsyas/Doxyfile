@@ -72,7 +72,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = ./
+INPUT                  = ./ MarQtActual/
 FILE_PATTERNS          = *.h *.cpp *.doxy
 RECURSIVE              = NO
 EXCLUDE                = 

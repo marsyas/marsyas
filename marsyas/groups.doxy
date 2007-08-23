@@ -97,6 +97,12 @@
  *
  */
 
+/**  @defgroup MarQtActual MarQtActual
+ *
+ * \brief The non-Meta-GUI Marsyas/Qt interaction.
+ *
+ */
+
 
 
 /**  @defgroup none Undocumented

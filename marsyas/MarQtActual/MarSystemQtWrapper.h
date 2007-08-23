@@ -21,6 +21,15 @@
 
 using namespace std;
 using namespace Marsyas;
+namespace MarQtActual
+{
+/**
+	\ingroup MarQtActual
+	\brief This is the basic wrapper which allows MarSystems to function
+inside a multithreaded Qt app.
+
+	TODO: Long descr of MarQtActual.
+*/
 
 class MarSystemQtWrapper: public QThread
 {
@@ -78,5 +87,5 @@ private:
 
 	bool running_;
 };
-
+} // namespace
 #endif // MARSYSTEMWRAPPER_H

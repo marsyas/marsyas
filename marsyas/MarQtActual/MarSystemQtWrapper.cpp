@@ -1,7 +1,5 @@
-/* Filename: MarSystemQtWrapper.h
-*/
-
 #include "MarSystemQtWrapper.h"
+using namespace MarQtActual;
 
 MarSystemQtWrapper::MarSystemQtWrapper(MarSystem* msys, bool withTimer)
 {
