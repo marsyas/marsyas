@@ -4,5 +4,5 @@ TEMPLATE = app
 CONFIG += console
 TARGET = train
 
-SOURCES += train.cpp
+SOURCES += kea.cpp
 	

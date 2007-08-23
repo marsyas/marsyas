@@ -39,6 +39,7 @@ public:
 
 	//return the number of columns(including the class attribute)
 	inline mrs_natural getCols()const{return cols_;}
+	inline mrs_natural getRows()const{return rows_;}
 
 	//get the class attribute for a row and convert to a int
 	mrs_natural GetClass(mrs_natural row)const;
@@ -48,7 +49,7 @@ public:
 
 private:
 	mrs_natural cols_;
-
+	mrs_natural rows_;
 	//some sorting private functions
 	void quickSort(mrs_natural attIndex, mrs_natural left, mrs_natural right);
 	void swapRows(mrs_natural l, mrs_natural r);

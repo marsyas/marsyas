@@ -1,2 +1,2 @@
-EXTRA_DIST = train.pro
+EXTRA_DIST = kea.pro
  

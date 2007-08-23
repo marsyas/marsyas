@@ -11,7 +11,7 @@ using namespace Marsyas;
 //It is also assumed that the last column of each row is the class attribute.
 //All data items are mrs_real, including the class attribute, however the class
 //attribute should be interpreted as an mrs_natural.
-WekaData::WekaData():cols_(0)
+WekaData::WekaData():cols_(0),rows_(0)
 {
 }
 
@@ -25,12 +25,14 @@ void WekaData::Create(mrs_natural cols)
 	MRSASSERT(cols>=0);
 	this->Clear();
 	cols_ = cols;
+	rows_ = 0;
 }
 
 //clear all data from the table
 //Requires that the vector rows be freed
 void WekaData::Clear()
 {
+  
 	for(vector<vector<mrs_real>*>::iterator iter = this->begin(); iter!=this->end(); iter++)
 	{
 		delete (*iter);
@@ -123,6 +125,7 @@ void WekaData::Sort(mrs_natural attr)
 //add rows of data to the table
 void WekaData::Append(const realvec& in)
 {
+  rows_++;
 	MRSASSERT(in.getCols()==cols_);
 	vector<mrs_real> *data = new vector<mrs_real>(cols_);
 	for(mrs_natural ii=0; ii<in.getCols(); ii++)
@@ -135,6 +138,7 @@ void WekaData::Append(const realvec& in)
 //add rows of data to the table
 void WekaData::Append(vector<mrs_real> *data)
 {
+  rows_++;
 	MRSASSERT(data!=NULL&&data->size()==cols_);
 	this->push_back(data);
 }//Append

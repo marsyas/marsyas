@@ -75,6 +75,8 @@ WekaSource::addControls()
   addctrl("mrs_string/validationMode", "");
   addctrl("mrs_bool/done", false);
 
+  addctrl("mrs_natural/nInstances", 0);
+
 }
 
 void 
@@ -93,8 +95,9 @@ WekaSource::myUpdate(MarControlPtr sender)
 
       
       loadFile(filename_, attributesToInclude_, data_);
-      data_.Dump("org.txt", classesFound_);
+      // data_.Dump("org.txt", classesFound_);
     }
+
 
   string names;
   bool first = true;
@@ -134,7 +137,7 @@ WekaSource::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/nAttributes", (mrs_natural)attributesFound_.size());
   setctrl("mrs_natural/onObservations", (mrs_natural)attributesFound_.size()+1);
   
-  
+  setctrl("mrs_natural/nInstances", (mrs_natural)data_.getRows());
   
   
   
@@ -158,7 +161,7 @@ WekaSource::myUpdate(MarControlPtr sender)
   if(strcmp(cp ,"kFold")==0)
     {//Validation mode is Folding, now extract the fold count.
       data_.Shuffle();
-      data_.Dump("shuffle.txt", classesFound_);
+      // data_.Dump("shuffle.txt", classesFound_);
       
       cp = (char *)strtok(NULL, ",");
       MRSASSERT(cp!=NULL);
