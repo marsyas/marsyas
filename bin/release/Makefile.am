@@ -23,7 +23,7 @@ INCLUDES += -I$(top_srcdir)/marsyas -I$(top_srcdir)/marsyas/MATLAB
 bin_PROGRAMS = sfplay phasevocoder sfplugin bextract mkcollection \
 	mudbox record classifyFile peakSynth peakClustering sfinfo \
 	extract midiTest boomchick pitchextract orcarecord \
-	virtualsensor train scheduler msl regressionChecks
+	virtualsensor kea scheduler msl regressionChecks
 
 sfplay_SOURCES = $(top_srcdir)/apps/sfplay/sfplay.cpp
 sfplay_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
@@ -109,8 +109,8 @@ msl_SOURCES = $(top_srcdir)/apps/msl/msl.cpp
 msl_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 		$(Libs) $(MslLibs)
 
-train_SOURCES = $(top_srcdir)/apps/train/train.cpp
-train_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
+kea_SOURCES = $(top_srcdir)/apps/kea/kea.cpp
+kea_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 		$(Libs) 
 
 #gettingdata_SOURCES = $(top_srcdir)/examples/gettingdata.cpp
