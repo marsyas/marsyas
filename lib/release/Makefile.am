@@ -18,15 +18,20 @@
 
 MAINTAINERCLEANFILES    = Makefile.in
 
+lib_LIBRARIES         = libmarsyas.a
+
 if QT_PRESENT
+lib_LIBRARIES += libmarqtactual.a
+
+libmarqtactual.a:
+	cd $(top_srcdir)/marsyas/MarQtActual && qmake && make
+
 install-data-local:
-	cd $(top_srcdir)/marsyas/MarQtLib && qmake && make
-	cp $(top_srcdir)/lib/release/libmarqtlib.a $(DESTDIR)$(libdir)
-	mkdir -p $(DESTDIR)$(includedir)/marsyas/MarQtLib/
-	cp $(top_srcdir)/marsyas/MarQtLib/*.h $(DESTDIR)$(includedir)/marsyas/MarQtLib/
+	cp $(top_srcdir)/lib/release/libmarqtactual.a $(DESTDIR)$(libdir)
+	mkdir -p $(DESTDIR)$(includedir)/marsyas/MarQtActual/
+	cp $(top_srcdir)/marsyas/MarQtActual/*.h $(DESTDIR)$(includedir)/marsyas/MarQtActual/
 endif
 
-lib_LIBRARIES         = libmarsyas.a
 
 INCLUDES += -I@top_srcdir@/marsyas -I@top_srcdir@/marsyas/MATLAB
  
