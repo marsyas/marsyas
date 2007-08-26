@@ -4,10 +4,9 @@
 #include "defs.h"
 #include <QObject>
 #include "MarSystemManager.h"
-#include "MarQtActual/MarSystemQtWrapper.h"
-//#include "Transcriber.h"
+#include "../MarSystemQtWrapper.h"
+#include "Transcriber.h"
 using namespace Marsyas;
-using namespace MarQtActual;
 
 class MarBackend: public QObject {
 	Q_OBJECT

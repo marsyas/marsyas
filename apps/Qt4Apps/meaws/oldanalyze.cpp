@@ -123,7 +123,7 @@ void Analyze::getPitches(string audioFilename) {
   //  is 40 ms and padded with zeros to reach a power of two.
   mrs_real windowSize = 3/lowPitch*pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
   pnet->updctrl("mrs_natural/inSamples", 512);
-
+	// pnet->updctrl("ShiftInput/sfi/mrs_natural/Decimation", 256);
 	pnet->updctrl("ShiftInput/sfi/mrs_natural/WindowSize", powerOfTwo(windowSize));
 	//pnet->updctrl("ShiftInput/sfi/mrs_natural/WindowSize", 1024);
 
