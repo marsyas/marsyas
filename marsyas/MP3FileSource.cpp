@@ -254,7 +254,7 @@ MP3FileSource::getHeader(string filename)
  
 
   // if there is nothing in the stream...
-  notEmpty_ = getctrl("mrs_bool/notEmpty")->toBool(); 
+  notEmpty_ = getctrl("mrs_bool/notEmpty")->to<mrs_bool>(); 
   if (!notEmpty_) {
     pos_ = 0;
     return;
@@ -326,8 +326,8 @@ MP3FileSource::getHeader(string filename)
   
   // only works for a constant bitrate, duration is (bits in file / bitrate)
   mrs_real duration_ = 2 * (fileSize_ * 8) / bitRate;
-  advance_ = getctrl("mrs_bool/advance")->toBool();
-  cindex_ = getctrl("mrs_natural/cindex")->toNatural();
+  advance_ = getctrl("mrs_bool/advance")->to<mrs_bool>();
+  cindex_ = getctrl("mrs_natural/cindex")->to<mrs_natural>();
   
   
   size_ = (mrs_natural) ((duration_ * sampleRate) / nChannels);
@@ -374,10 +374,10 @@ MP3FileSource::myUpdate(MarControlPtr sender)
   MRSDIAG("MP3FileSource::myUpdate");
   
   
-  israte_ = ctrl_israte_->toReal();
-  inSamples_ = ctrl_inSamples_->toNatural();
-  pos_ = getctrl("mrs_natural/pos")->toNatural();
-  mrs_natural nChannels = ctrl_onObservations_->toNatural();
+  israte_ = ctrl_israte_->to<mrs_real>();
+  inSamples_ = ctrl_inSamples_->to<mrs_natural>();
+  pos_ = getctrl("mrs_natural/pos")->to<mrs_natural>();
+  mrs_natural nChannels = ctrl_onObservations_->to<mrs_natural>();
   
   setctrl("mrs_natural/onSamples", inSamples_);
   setctrl("mrs_real/osrate", israte_);
@@ -407,19 +407,19 @@ MP3FileSource::myUpdate(MarControlPtr sender)
       currentPos_ = pos_;
     }
   
-  filename_ = getctrl("mrs_string/filename")->toString();    
-  duration_ = getctrl("mrs_real/duration")->toReal();
-  advance_ = getctrl("mrs_bool/advance")->toBool();
+  filename_ = getctrl("mrs_string/filename")->to<mrs_string>();    
+  duration_ = getctrl("mrs_real/duration")->to<mrs_real>();
+  advance_ = getctrl("mrs_bool/advance")->to<mrs_bool>();
   //rewindpos_ = pos_;
   
-  repetitions_ = getctrl("mrs_real/repetitions")->toReal();
+  repetitions_ = getctrl("mrs_real/repetitions")->to<mrs_real>();
   
   if (duration_ != -1.0)
     {
       csize_ = (mrs_natural)(duration_ * israte_);
     }
 	
-	inSamples_ = ctrl_inSamples_->toNatural();
+	inSamples_ = ctrl_inSamples_->to<mrs_natural>();
   	
   if (inSamples_ < bufferSize_/2) {
     reservoirSize_ = 2 * nChannels * bufferSize_;
@@ -548,7 +548,7 @@ MP3FileSource::getLinear16(realvec& slice)
   }
 	
   // keep track of where we are
-  pos_ += inSamples_; // (inSamples_ * getctrl("mrs_natural/nChannels")->toNatural());
+  pos_ += inSamples_; // (inSamples_ * getctrl("mrs_natural/nChannels")->to<mrs_natural>());
   currentPos_ = pos_;	
 	
 	

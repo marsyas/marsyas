@@ -64,10 +64,10 @@ WaveletBands::myUpdate(MarControlPtr sender)
 {
   
   MRSDIAG("WaveletBands.cpp - WaveletBands:myUpdate");
-  mrs_natural nBands = getctrl("mrs_natural/nBands")->toNatural();
+  mrs_natural nBands = getctrl("mrs_natural/nBands")->to<mrs_natural>();
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural() * nBands);
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->to<mrs_natural>() * nBands);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
   if (!iwvpt_) 
@@ -80,10 +80,10 @@ WaveletBands::myUpdate(MarControlPtr sender)
   iwvpt_->updctrl("mrs_real/israte", getctrl("mrs_real/israte"));
 
 
-  band_.create(getctrl("mrs_natural/inObservations")->toNatural(), 
-	       getctrl("mrs_natural/inSamples")->toNatural());
-  tband_.create(getctrl("mrs_natural/inObservations")->toNatural(), 
-		getctrl("mrs_natural/inSamples")->toNatural());
+  band_.create(getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+	       getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+  tband_.create(getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+		getctrl("mrs_natural/inSamples")->to<mrs_natural>());
    
 }
 
@@ -95,7 +95,7 @@ WaveletBands::myProcess(realvec& in, realvec& out)
 
   mrs_natural level;
   mrs_natural hlevel, llevel;
-  mrs_natural base = getctrl("mrs_natural/startBand")->toNatural();
+  mrs_natural base = getctrl("mrs_natural/startBand")->to<mrs_natural>();
 
   for (o = 0; o < onObservations_; o++)
     {

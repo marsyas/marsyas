@@ -56,7 +56,7 @@ OnePole::myUpdate(MarControlPtr sender)
   
   MarSystem::myUpdate(sender);
   
-  alpha_ = getctrl("mrs_real/alpha")->toReal();
+  alpha_ = getctrl("mrs_real/alpha")->to<mrs_real>();
   gain_ = (mrs_real)(1.0 - alpha_);
 }
 

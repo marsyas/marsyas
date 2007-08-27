@@ -235,7 +235,7 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 		pvseries->tick();
 
 		if (!microphone_) 
-			if (pvseries->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() == false)
+			if (pvseries->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>() == false)
 				break;
 	}
 }
@@ -450,8 +450,6 @@ phasevocCrossSynth(string sfName, mrs_natural N, mrs_natural Nw,
 	total->linkctrl("mrs_natural/inSamples2", 
 		"Fanout/pvfan/Series/branch2/SoundFileSource/src2/mrs_natural/inSamples");
 
-	//total->linkctrl("mrs_natural/Decimation", 
-
 	total->linkctrl("mrs_natural/Decimation", 
 		"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/Decimation");
 
@@ -574,13 +572,9 @@ phasevocConvolve(string sfName, mrs_natural N, mrs_natural Nw,
 	total->linkctrl("mrs_natural/inSamples2", 
 		"Fanout/pvfan/Series/branch2/AudioSource/src2/mrs_natural/inSamples");
 
-	//total->linkctrl("mrs_natural/Decimation", 
-
 	
 	total->linkctrl("mrs_natural/Decimation", 
 		"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/Decimation");
-
-	//total->linkctrl("mrs_natural/Decimation", 
 
 
 	total->linkctrl("mrs_natural/Decimation", 
@@ -946,8 +940,8 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
   
   in.create( (long)1, (long)D);
   min.create((long)1, (long)D);
-  out.create(total->getctrl("mrs_natural/onObservations")->toNatural(), 
-	     total->getctrl("mrs_natural/inSamples")->toNatural());
+  out.create(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+	     total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
   
   pin.create((long)1, (long)512);
 
@@ -998,10 +992,10 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
   MarSystem* gainExtractor = mng.create("MaxArgMax", "mgain");
   gainExtractor->updctrl("mrs_natural/inSamples", 512);
   
-  realvec pitchres(pitchExtractor->getctrl("mrs_natural/onObservations")->toNatural(), pitchExtractor->getctrl("mrs_natural/onSamples")->toNatural());
+  realvec pitchres(pitchExtractor->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), pitchExtractor->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
   
-  realvec mgres(gainExtractor->getctrl("mrs_natural/onObservations")->toNatural(), 
-		gainExtractor->getctrl("mrs_natural/onSamples")->toNatural());
+  realvec mgres(gainExtractor->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+		gainExtractor->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
    
   mrs_real pitch = 0.0;
   mrs_real prev_pitch = 0.0;

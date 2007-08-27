@@ -66,12 +66,12 @@ Windowing::addcontrols()
 void
 Windowing::myUpdate(MarControlPtr sender)
 {
-	string type = ctrl_type_->toString();
+	string type = ctrl_type_->to<mrs_string>();
 	
 	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 	ostringstream oss;
-	string inObsNames = ctrl_inObsNames_->toString();
+	string inObsNames = ctrl_inObsNames_->to<mrs_string>();
 	string inObsName;
 	string temps;
 	for (int i = 0; i < inObservations_; i++)
@@ -163,7 +163,7 @@ Windowing::myUpdate(MarControlPtr sender)
 		{
 			for (t=0;t< inSamples_; t++)
 			{
-				temp = (t-(inSamples_-1.0)/2.0 )/(ctrl_variance_->toReal()*(inSamples_-1.0)/2.0);
+				temp = (t-(inSamples_-1.0)/2.0 )/(ctrl_variance_->to<mrs_real>()*(inSamples_-1.0)/2.0);
 				temp = temp * temp;
 				envelope_(t) = exp(-0.5*temp);
 			}

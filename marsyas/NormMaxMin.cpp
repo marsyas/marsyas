@@ -75,11 +75,11 @@ NormMaxMin::myUpdate(MarControlPtr sender)
 
 	MarSystem::myUpdate(sender);
 
-	inObservations_ = ctrl_inObservations_->toNatural();
+	inObservations_ = ctrl_inObservations_->to<mrs_natural>();
 
-	init_ = initPtr_->toBool();
+	init_ = initPtr_->to<mrs_bool>();
 
-	mrs_natural msize = maximumsPtr_->toVec().getSize();
+	mrs_natural msize = maximumsPtr_->to<mrs_realvec>().getSize();
 	mrs_natural nsize = maximums_.getSize();
 
 	if (msize != nsize) 
@@ -98,12 +98,12 @@ NormMaxMin::myUpdate(MarControlPtr sender)
 		maximumsPtr_->setValue(maximums_, NOUPDATE);
 		minimumsPtr_->setValue(minimums_, NOUPDATE);  
 	}
-	train_ = trainPtr_->toBool();
+	train_ = trainPtr_->to<mrs_bool>();
 
 	if (!train_)
 	{
-		maximums_ = maximumsPtr_->toVec();
-		minimums_ = minimumsPtr_->toVec();
+		maximums_ = maximumsPtr_->to<mrs_realvec>();
+		minimums_ = minimumsPtr_->to<mrs_realvec>();
 	} 
 }
 
@@ -113,9 +113,9 @@ NormMaxMin::myProcess(realvec& in, realvec& out)
 	init_ = true;
 	setctrl(initPtr_, init_);
 
-	lower_ = lowerPtr_->toReal();
-	upper_ = upperPtr_->toReal();
-	train_ = trainPtr_->toBool();
+	lower_ = lowerPtr_->to<mrs_real>();
+	upper_ = upperPtr_->to<mrs_real>();
+	train_ = trainPtr_->to<mrs_bool>();
 
 	if (lower_ > upper_) 
 	{

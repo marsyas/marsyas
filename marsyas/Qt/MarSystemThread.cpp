@@ -92,9 +92,9 @@ void MarSystemThread::run()
 		msys_->tick();
 		
     //check for EOF //[!][?]
-		if (msys_->getctrl("mrs_bool/notEmpty")->toBool() == false) 
+		if (msys_->getctrl("mrs_bool/notEmpty")->to<mrs_bool>() == false) 
 		{
-			if(msys_->getctrl("mrs_bool/active")->toBool())
+			if(msys_->getctrl("mrs_bool/active")->to<mrs_bool>())
 			{
 				emit Empty();
 			}

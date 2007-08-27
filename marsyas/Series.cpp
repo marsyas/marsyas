@@ -106,12 +106,12 @@ Series::myUpdate(MarControlPtr sender)
 		{
 			if (slices_[i] != NULL) 
 			{
-				if ((slices_[i])->getRows() != marsystems_[i]->ctrl_onObservations_->toNatural()  ||
-					(slices_[i])->getCols() != marsystems_[i]->ctrl_onSamples_->toNatural())
+				if ((slices_[i])->getRows() != marsystems_[i]->ctrl_onObservations_->to<mrs_natural>()  ||
+					(slices_[i])->getCols() != marsystems_[i]->ctrl_onSamples_->to<mrs_natural>())
 				{
 					delete slices_[i];
-					slices_[i] = new realvec(marsystems_[i]->ctrl_onObservations_->toNatural(), 
-						marsystems_[i]->ctrl_onSamples_->toNatural());
+					slices_[i] = new realvec(marsystems_[i]->ctrl_onObservations_->to<mrs_natural>(), 
+						marsystems_[i]->ctrl_onSamples_->to<mrs_natural>());
 
 					marsystems_[i]->ctrl_processedData_->setValue(*(slices_[i])); // [WTF] ?!?!?!?!?!?!?!?!?!?!??!!?!?!?!? [?]
 
@@ -122,8 +122,8 @@ Series::myUpdate(MarControlPtr sender)
 			}
 			else 
 			{
-				slices_[i] = new realvec(marsystems_[i]->ctrl_onObservations_->toNatural(), 
-					marsystems_[i]->ctrl_onSamples_->toNatural());
+				slices_[i] = new realvec(marsystems_[i]->ctrl_onObservations_->to<mrs_natural>(), 
+					marsystems_[i]->ctrl_onSamples_->to<mrs_natural>());
 
 				marsystems_[i]->ctrl_processedData_->setValue(*(slices_[i]));// [WTF] ?!?!?!?!?!?!?!?!?!?!??!!?!?!?!? [?]
 				

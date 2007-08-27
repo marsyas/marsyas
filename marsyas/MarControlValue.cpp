@@ -17,7 +17,10 @@
 */
 
 #include "MarControlValue.h"
+#include "MarControl.h"
 #include "MarControlManager.h"
+
+#include <algorithm>
 
 using namespace std;
 using namespace Marsyas;
@@ -25,6 +28,81 @@ using namespace Marsyas;
 /************************************************************************/
 /* MarControlValue implementation                                       */
 /************************************************************************/
+void
+MarControlValue::addLink(MarControl* newlink)
+{
+	#ifdef MARSYAS_QT
+	rwLock_.lockForWrite(); //[!]
+	#endif
+
+	lit_ = find(links_.begin(), links_.end(), newlink);
+	if(lit_ != links_.end())
+	{
+		MRSWARN("MarControlValue::addLink() - link already exists!");
+		#ifdef MARSYAS_QT
+		rwLock_.unlock(); //[!]
+		#endif
+		return;
+	}
+	links_.push_back(newlink);
+
+	#ifdef MARSYAS_QT
+	rwLock_.unlock(); //[!]
+	#endif
+}
+
+void
+MarControlValue::removeLink(MarControl* link)
+{
+#ifdef MARSYAS_QT
+	rwLock_.lockForWrite(); //[!]
+#endif
+
+	lit_ = find(links_.begin(), links_.end(), link);
+	if(lit_ == links_.end())
+	{
+		MRSWARN("MarControlValue::removeLink() - trying to remove a non-link MarControl!");
+		#ifdef MARSYAS_QT
+		rwLock_.unlock(); //[!]
+		#endif
+		return;
+	}
+	links_.erase(lit_);
+
+	//check if there is at least one link,
+	//otherwise, no one else is using this object
+	//meaning it should be destructed
+	if(links_.size() == 0)
+	{
+		#ifdef MARSYAS_QT
+		rwLock_.unlock(); //[!]
+		#endif
+		delete this;
+		return;
+	}
+
+#ifdef MARSYAS_QT
+	rwLock_.unlock(); //[!]
+#endif
+}
+
+void
+MarControlValue::callMarSystemsUpdate()
+{
+#ifdef MARSYAS_QT
+	rwLock_.lockForRead(); //[!]
+#endif
+
+	//iterate over all the MarControls that own this MarControlValue
+	//and call any necessary MarSystem updates after this value change
+	for(lit_ = links_.begin(); lit_ != links_.end(); ++lit_)
+		(*lit_)->callMarSystemUpdate(); //lit_ is a pointer to a MarControl*
+
+#ifdef MARSYAS_QT
+	rwLock_.unlock(); //[!]
+#endif
+}
+
 string
 MarControlValue::getType() const
 {
@@ -49,10 +127,18 @@ MarControlValueT<realvec>::MarControlValueT(realvec value)
 	type_ = "mrs_realvec";
 }
 
-MarControlValueT<realvec>::MarControlValueT(const MarControlValueT& val)
+MarControlValueT<realvec>::MarControlValueT(const MarControlValueT& a):MarControlValue(a)
 {
-	value_ = val.value_;
+	#ifdef MARSYAS_QT
+	val.rwLock_.lockForRead(); //[!]
+	#endif
+
+	value_ = a.value_;
 	type_ = "mrs_realvec";
+
+	#ifdef MARSYAS_QT
+	val.rwLock_.unlock(); //[!]
+	#endif
 }
 
 MarControlValueT<realvec>& 
@@ -60,8 +146,16 @@ MarControlValueT<realvec>::operator=(const MarControlValueT& a)
 {
 	if (this != &a)
 	{
+		#ifdef MARSYAS_QT
+		a.rwLock_.lockForRead(); //[!]
+		#endif
+
 		value_ = a.value_;
 		type_ = a.type_;
+
+		#ifdef MARSYAS_QT
+		a.rwLock_.lockForRead(); //[!]
+		#endif
 	}
 	return *this;
 }
@@ -81,6 +175,10 @@ MarControlValueT<realvec>::create()
 const realvec&
 MarControlValueT<realvec>::get() const
 {
+#ifdef MARSYAS_QT
+	QReadLocker locker(&rwLock_); //[!]
+#endif 
+
 	return value_;
 }
 
@@ -97,10 +195,20 @@ MarControlValueT<realvec>::isNotEqual(MarControlValue *v)
 	{
 		if (type_ != "mrs_realvec")
 		{
-			MRSWARN("Types of MarControlValue are different");
+			MRSWARN("MarControlValueT::isNotEqual() - Types of MarControlValue are different");
 		}
 
-		return value_ != dynamic_cast<MarControlValueT<realvec>*>(v)->get();
+		#ifdef MARSYAS_QT
+		rwLock_.lockForRead(); //[!]
+		#endif
+
+		bool res = (value_ != dynamic_cast<MarControlValueT<realvec>*>(v)->get());
+
+		#ifdef MARSYAS_QT
+		rwLock_.unlock(); //[!]
+		#endif
+
+		return res;//value_ != dynamic_cast<MarControlValueT<realvec>*>(v)->get();
 	}
 	else //if v1 and v2 refer to the same object, they must be equal (=> return false)
 		return false;
@@ -109,13 +217,30 @@ MarControlValueT<realvec>::isNotEqual(MarControlValue *v)
 void
 MarControlValueT<realvec>::createFromStream(std::istream& in)
 {
+#ifdef MARSYAS_QT
+	rwLock_.lockForWrite(); //[!]
+#endif
+
 	in >> value_;
+
+#ifdef MARSYAS_QT
+	rwLock_.unlock(); //[!]
+#endif
 }
 
 std::ostream&
 MarControlValueT<realvec>::serialize(std::ostream& os)
 {
+#ifdef MARSYAS_QT
+	rwLock_.lockForRead(); //[!]
+#endif
+	
 	os << value_;
+
+#ifdef MARSYAS_QT
+	rwLock_.unlock(); //[!]
+#endif
+	
 	return os;
 }
 
@@ -159,10 +284,18 @@ MarControlValueT<bool>::MarControlValueT(bool value)
 	type_ = "mrs_bool";
 }
 
-MarControlValueT<bool>::MarControlValueT(const MarControlValueT& val)
+MarControlValueT<bool>::MarControlValueT(const MarControlValueT& a):MarControlValue(a)
 {
-	value_ = val.value_;
+#ifdef MARSYAS_QT
+	val.rwLock_.lockForRead(); //[!]
+#endif
+
+	value_ = a.value_;
 	type_ = "mrs_bool";
+
+#ifdef MARSYAS_QT
+	val.rwLock_.unlock(); //[!]
+#endif
 }
 
 MarControlValueT<bool>& 
@@ -170,8 +303,16 @@ MarControlValueT<bool>::operator=(const MarControlValueT& a)
 {
 	if (this != &a)
 	{
+#ifdef MARSYAS_QT
+		a.rwLock_.lockForRead(); //[!]
+#endif
+
 		value_ = a.value_;
 		type_ = a.type_;
+
+#ifdef MARSYAS_QT
+		a.rwLock_.unlock(); //[!]
+#endif
 	}
 	return *this;
 }
@@ -191,13 +332,25 @@ MarControlValueT<bool>::create()
 const bool&
 MarControlValueT<bool>::get() const
 {
+#ifdef MARSYAS_QT
+	QReadLocker locker(&rwLock_); //[!]
+#endif 
+
 	return value_;
 }
 
 void
 MarControlValueT<bool>::createFromStream(std::istream& in)
 {
+#ifdef MARSYAS_QT
+	rwLock_.lockForWrite(); //[!]
+#endif
+
 	in >> value_;
+
+#ifdef MARSYAS_QT
+	rwLock_.unlock(); //[!]
+#endif
 }
 
 bool
@@ -205,7 +358,17 @@ MarControlValueT<bool>::isNotEqual(MarControlValue *v)
 {
 	if(this != v)//if referring to different objects, check if their contents is different...
 	{
-	  return value_ != dynamic_cast<MarControlValueT<bool>*>(v)->get();
+#ifdef MARSYAS_QT
+		rwLock_.lockForRead(); //[!]
+#endif
+		
+		bool res = (value_ != dynamic_cast<MarControlValueT<bool>*>(v)->get());
+
+#ifdef MARSYAS_QT
+		rwLock_.unlock(); //[!]
+#endif
+
+	  return res;//value_ != dynamic_cast<MarControlValueT<bool>*>(v)->get();
 	}
 	else //if v1 and v2 refer to the same object, they must be equal (=> return false)
 	  return false;
@@ -214,7 +377,16 @@ MarControlValueT<bool>::isNotEqual(MarControlValue *v)
 std::ostream&
 MarControlValueT<bool>::serialize(std::ostream& os)
 {
+#ifdef MARSYAS_QT
+	rwLock_.lockForRead(); //[!]
+#endif
+
 	os << value_;
+	
+#ifdef MARSYAS_QT
+	rwLock_.unlock(); //[!]
+#endif
+
 	return os;
 }
 

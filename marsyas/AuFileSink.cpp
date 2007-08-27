@@ -103,21 +103,21 @@ AuFileSink::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  nChannels_ = getctrl("mrs_natural/inObservations")->toNatural();      
+  nChannels_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();      
     
   delete [] sdata_;
   delete [] cdata_;
   
-  sdata_ = new short[getctrl("mrs_natural/inSamples")->toNatural() * nChannels_];
-  cdata_ = new unsigned char[getctrl("mrs_natural/inSamples")->toNatural() * nChannels_];
+  sdata_ = new short[getctrl("mrs_natural/inSamples")->to<mrs_natural>() * nChannels_];
+  cdata_ = new unsigned char[getctrl("mrs_natural/inSamples")->to<mrs_natural>() * nChannels_];
 
-  filename_ = getctrl("mrs_string/filename")->toString();
+  filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
 }
   
 void 
 AuFileSink::putHeader(string filename)
 {
-  mrs_natural nChannels = (mrs_natural)getctrl("mrs_natural/inObservations")->toNatural();
+  mrs_natural nChannels = (mrs_natural)getctrl("mrs_natural/inObservations")->to<mrs_natural>();
   
   written_ = 0;
   char *comment = "MARSYAS 2001, George Tzanetakis.\n";
@@ -132,13 +132,13 @@ AuFileSink::putHeader(string filename)
 	  hdr_.hdrLength = 24 + commentSize;
 	  hdr_.fileLength = 0;
 	  hdr_.mode = SND_FORMAT_LINEAR_16;                           
-	  hdr_.srate = (mrs_natural)getctrl("mrs_real/israte")->toReal();
+	  hdr_.srate = (mrs_natural)getctrl("mrs_real/israte")->to<mrs_real>();
 	  hdr_.channels = nChannels;
 #else
 	  hdr_.hdrLength = ByteSwapLong(24 + (unsigned long)commentSize);
 	  hdr_.fileLength = ByteSwapLong(0);
 	  hdr_.mode = ByteSwapLong(SND_FORMAT_LINEAR_16);                           
-	  hdr_.srate = ByteSwapLong((mrs_natural)getctrl("mrs_real/israte")->toReal());
+	  hdr_.srate = ByteSwapLong((mrs_natural)getctrl("mrs_real/israte")->to<mrs_real>());
 	  hdr_.channels = ByteSwapLong(nChannels);
 #endif 
 

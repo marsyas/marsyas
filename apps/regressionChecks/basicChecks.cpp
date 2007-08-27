@@ -10,7 +10,7 @@ basic_vibrato(string infile, string outfile)
 	addDest( pnet, outfile);
 
 	pnet->updctrl("Vibrato/vib/mrs_real/mod_freq", 10.0);
-	while (pnet->getctrl("mrs_bool/notEmpty")->toBool())
+	while (pnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
 	{
 		pnet->tick();
 	}
@@ -27,7 +27,7 @@ basic_windowing(string infile, string outfile)
 	pnet->updctrl("Windowing/win/mrs_string/type", "Hanning");
 	addDest( pnet, outfile);
 
-	while (pnet->getctrl("mrs_bool/notEmpty")->toBool())
+	while (pnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
 	{
 		pnet->tick();
 	}

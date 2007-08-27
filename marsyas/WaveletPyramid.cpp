@@ -89,7 +89,7 @@ WaveletPyramid::myProcess(realvec& in, realvec& out)
   mrs_bool forward;
   
   
-  n = getctrl("mrs_natural/inSamples")->toNatural();
+  n = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
   
 
 

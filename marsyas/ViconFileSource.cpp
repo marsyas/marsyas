@@ -85,13 +85,13 @@ ViconFileSource::getHeader(string filename)
 void
 ViconFileSource::myUpdate(MarControlPtr sender)
 {
-  inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
-  israte_ = getctrl("mrs_real/israte")->toReal();
+  inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+  israte_ = getctrl("mrs_real/israte")->to<mrs_real>();
 
 
-  if (filename_ != getctrl("mrs_string/filename")->toString())
+  if (filename_ != getctrl("mrs_string/filename")->to<mrs_string>())
     {
-      filename_ = getctrl("mrs_string/filename")->toString();
+      filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
       getHeader(filename_);
       
     }

@@ -70,7 +70,7 @@ RawFileSource::addControls()
 void RawFileSource::openFile(string filename) 
 {
   getHeader(filename);
-  rate_ = fileSize_ * getctrl("mrs_real/frequency")->toReal() / getctrl("mrs_real/israte")->toReal();
+  rate_ = fileSize_ * getctrl("mrs_real/frequency")->to<mrs_real>() / getctrl("mrs_real/israte")->to<mrs_real>();
 }
 
 
@@ -112,7 +112,7 @@ void RawFileSource::getHeader(string fileName)
   }
   
   // allocate storage for the buffer
-  mrs_natural samples = (bufferSize_+1)* getctrl("mrs_natural/nChannels")->toNatural();
+  mrs_natural samples = (bufferSize_+1)* getctrl("mrs_natural/nChannels")->to<mrs_natural>();
   data_.create(samples);
 
 	if(buffer_)
@@ -190,19 +190,19 @@ void RawFileSource::readData(unsigned long index)//[!]
 void RawFileSource::myUpdate(MarControlPtr sender) 
 {
  
-  nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();  
-  inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
-  inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
-  israte_ = getctrl("mrs_real/israte")->toReal();
+  nChannels_ = getctrl("mrs_natural/nChannels")->to<mrs_natural>();  
+  inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+  inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+  israte_ = getctrl("mrs_real/israte")->to<mrs_real>();
   
   setctrl("mrs_natural/onSamples", inSamples_);
   setctrl("mrs_natural/onObservations", inObservations_);
   setctrl("mrs_real/osrate", israte_);
   
-  filename_ = getctrl("mrs_string/filename")->toString();    
-  pos_ = getctrl("mrs_natural/pos")->toNatural();
+  filename_ = getctrl("mrs_string/filename")->to<mrs_string>();    
+  pos_ = getctrl("mrs_natural/pos")->to<mrs_natural>();
 
-  rate_ = fileSize_ * getctrl("mrs_real/frequency")->toReal() / israte_;
+  rate_ = fileSize_ * getctrl("mrs_real/frequency")->to<mrs_real>() / israte_;
 }	
 
 

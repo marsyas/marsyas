@@ -57,7 +57,7 @@ SpectralSNR::myUpdate(MarControlPtr sender)
 {
   ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
   ctrl_onObservations_->setValue((mrs_natural)1, NOUPDATE);
-  ctrl_osrate_->setValue(ctrl_israte_->toReal());
+  ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>());
   ctrl_onObsNames_->setValue(ctrl_inObsNames_);
   
 }

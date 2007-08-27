@@ -68,9 +68,9 @@ RealvecSink::myUpdate(MarControlPtr sender)
 {
 	MRSDIAG("RealvecSink.cpp - RealvecSink:myUpdate");
 
-	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural());
-	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples")->toNatural());
-	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
+	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->to<mrs_natural>());
+	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->to<mrs_real>());
 
 	if( getctrl("mrs_bool/done")->isTrue()){
 		if(write_)
@@ -113,18 +113,20 @@ RealvecSink::myUpdate(MarControlPtr sender)
 		}
 		else
 		{
-			ctrl_data_->stretch(0);
+			MarControlAccessor acc(ctrl_data_, NOUPDATE);
+			realvec& data = acc.to<mrs_realvec>();
+			data.stretch(0);
 		}
 		count_=0;
 		setctrl("mrs_bool/done", false);
 	}
 
 
-	if(getctrl("mrs_string/fileName")->toString().compare(oriName_))
+	if(getctrl("mrs_string/fileName")->to<mrs_string>().compare(oriName_))
 	{
 		if(write_)
 			outputFile_.close();
-		oriName_ = getctrl("mrs_string/fileName")->toString();
+		oriName_ = getctrl("mrs_string/fileName")->to<mrs_string>();
 		outputFile_.open(oriName_.c_str(), ios::out);
 		write_ = 1;
 	}
@@ -146,11 +148,17 @@ RealvecSink::myProcess(realvec& in, realvec& out)
 	}
 	else
 	{
-		ctrl_data_->stretch(inObservations_, count_+inSamples_);
+		{
+			MarControlAccessor acc(ctrl_data_);
+			realvec& data = acc.to<mrs_realvec>();
+			data.stretch(inObservations_, count_+inSamples_);
+		}
 		for (o=0; o < inObservations_; o++)
 			for (t=0; t < inSamples_; t++)
 			{
-				ctrl_data_->setValue(o, count_+t, in(o, t));
+				MarControlAccessor acc(ctrl_data_);
+				realvec& data = acc.to<mrs_realvec>();
+				data(o, count_+t) = in(o, t);
 			}
 
 			//out.dump();

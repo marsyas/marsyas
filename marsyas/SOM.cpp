@@ -83,7 +83,7 @@ SOM::init_grid_map()
 	grid_map_(x * grid_height_ + y, o) = randD(1.0);
       }
   
-  alpha_ = getctrl("mrs_real/alpha")->toReal();
+  alpha_ = getctrl("mrs_real/alpha")->to<mrs_real>();
   neigh_std_ = ((0.5*(grid_width_+grid_height_)) /  4.0);
   
 }
@@ -116,17 +116,17 @@ SOM::myUpdate(MarControlPtr sender)
   grid_pos_.create(2);
   
   //defaultUpdate();[!]
-	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
+	inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
   
-  mrs_natural nlabels = getctrl("mrs_natural/nLabels")->toNatural();
+  mrs_natural nlabels = getctrl("mrs_natural/nLabels")->to<mrs_natural>();
 
-  grid_width_ = getctrl("mrs_natural/grid_width")->toNatural();
-  grid_height_ = getctrl("mrs_natural/grid_height")->toNatural();
+  grid_width_ = getctrl("mrs_natural/grid_width")->to<mrs_natural>();
+  grid_height_ = getctrl("mrs_natural/grid_height")->to<mrs_natural>();
   
   mrs_natural grid_size = grid_width_ * grid_height_;
   
-  mrs_natural mrows = (getctrl("mrs_realvec/grid_map")->toVec()).getRows();
-  mrs_natural mcols = (getctrl("mrs_realvec/grid_map")->toVec()).getCols();
+  mrs_natural mrows = (getctrl("mrs_realvec/grid_map")->to<mrs_realvec>()).getRows();
+  mrs_natural mcols = (getctrl("mrs_realvec/grid_map")->to<mrs_realvec>()).getCols();
 
   mrs_natural nrows = grid_map_.getRows();
   mrs_natural ncols = grid_map_.getCols();
@@ -156,11 +156,11 @@ SOM::myUpdate(MarControlPtr sender)
 		}
   }
   
-  string mode = getctrl("mrs_string/mode")->toString();
+  string mode = getctrl("mrs_string/mode")->to<mrs_string>();
   
   if (mode == "predict")
     {
-      grid_map_ = getctrl("mrs_realvec/grid_map")->toVec();
+      grid_map_ = getctrl("mrs_realvec/grid_map")->to<mrs_realvec>();
     }  
 }
 
@@ -210,7 +210,7 @@ void
 SOM::myProcess(realvec& in, realvec& out)
 {
   //checkFlow(in,out);
-  string mode = getctrl("mrs_string/mode")->toString();
+  string mode = getctrl("mrs_string/mode")->to<mrs_string>();
 
 
   mrs_real geom_dist;
@@ -221,7 +221,7 @@ SOM::myProcess(realvec& in, realvec& out)
   
 
 
-  if (getctrl("mrs_bool/done")->toBool())
+  if (getctrl("mrs_bool/done")->to<mrs_bool>())
     {
       updctrl("mrs_realvec/grid_map", grid_map_);
       setctrl("mrs_bool/done", false);

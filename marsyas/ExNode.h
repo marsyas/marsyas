@@ -405,10 +405,10 @@ class ExNode_GetCtrl##_T : public ExNode { public: \
     ExNode_GetCtrl##_T(std::string n, MarControlPtr p) : ExNode(OP_GETCTRL,_TP) { nm=n; ptr=p; } \
     virtual ExVal calc() { return ptr->_METHOD; } \
 };
-GETCTRL(Real,toReal(),"mrs_real");
-GETCTRL(String,toString(),"mrs_string");
-GETCTRL(Natural,toNatural(),"mrs_natural");
-GETCTRL(Bool,toBool(),"mrs_bool");
+GETCTRL(Real,to<mrs_real>(),"mrs_real");
+GETCTRL(String,to<mrs_string>(),"mrs_string");
+GETCTRL(Natural,to<mrs_natural>(),"mrs_natural");
+GETCTRL(Bool,to<mrs_bool>(),"mrs_bool");
 //}}}
 // SetCtrl //{{{
 #define SETCTRL(_N,_METHOD,_TP) \

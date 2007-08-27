@@ -44,9 +44,9 @@ InvSpectrum::myUpdate(MarControlPtr sender)
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal() * getctrl("mrs_natural/inObservations")->toNatural());
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->to<mrs_real>() * getctrl("mrs_natural/inObservations")->to<mrs_natural>());
   
- tempVec_.create(getctrl("mrs_natural/onSamples")->toNatural());
+ tempVec_.create(getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 }
 
 void 

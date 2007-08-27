@@ -183,7 +183,7 @@ void mugle(string queryName, string collectionName)
   
   mrs_natural l=0;
 
-  while (total->getctrl("mrs_bool/notEmpty")->toBool())
+  while (total->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
     {
       total->updctrl("mrs_natural/label", l);
       total->tick();

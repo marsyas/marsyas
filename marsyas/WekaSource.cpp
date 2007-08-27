@@ -87,11 +87,11 @@ WekaSource::myUpdate(MarControlPtr sender)
 
   // If 'filename' was updated, or the attributes desired from the Weka file has changed,
   // parse the header portion of the file to get the required attribute names and possible output labels (if any)...
-  if (strcmp(filename_.c_str(), getctrl("mrs_string/filename")->toString().c_str()) != 0)
+  if (strcmp(filename_.c_str(), getctrl("mrs_string/filename")->to<mrs_string>().c_str()) != 0)
     {
       
-      filename_ = getctrl("mrs_string/filename")->toString();
-      attributesToInclude_ = getctrl("mrs_string/attributesToInclude")->toString();
+      filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
+      attributesToInclude_ = getctrl("mrs_string/attributesToInclude")->to<mrs_string>();
 
       
       loadFile(filename_, attributesToInclude_, data_);
@@ -141,7 +141,7 @@ WekaSource::myUpdate(MarControlPtr sender)
   
   
   
-  string mode = getctrl("mrs_string/validationMode")->toString();
+  string mode = getctrl("mrs_string/validationMode")->to<mrs_string>();
   validationMode_ = mode;
   
   if (validationMode_ == "") 
@@ -243,8 +243,8 @@ WekaSource::myUpdate(MarControlPtr sender)
 void WekaSource::myProcess(realvec& in,realvec &out)
 {
 
-  if(getctrl("mrs_bool/done")->toBool()) return;
-  bool trainMode = (strcmp(getctrl("mrs_string/mode")->toString().c_str(), "train") == 0);
+  if(getctrl("mrs_bool/done")->to<mrs_bool>()) return;
+  bool trainMode = (strcmp(getctrl("mrs_string/mode")->to<mrs_string>().c_str(), "train") == 0);
   switch(validationModeEnum_)
     {
     case kFoldNonStratified:

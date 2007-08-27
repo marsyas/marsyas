@@ -78,7 +78,7 @@ WekaSink::putHeader(string inObsNames)
   //updctrl(ctrl_putHeader_, false);
   ctrl_putHeader_->setValue(true);
   
-  if ((filename_ != ctrl_filename_->toString()))
+  if ((filename_ != ctrl_filename_->to<mrs_string>()))
     {
       if (mos_ != NULL) 
 	{
@@ -87,14 +87,14 @@ WekaSink::putHeader(string inObsNames)
 	  if (filename_ == "weka.arff")
 	    remove(filename_.c_str());
 	}
-      filename_ = ctrl_filename_->toString();
+      filename_ = ctrl_filename_->to<mrs_string>();
       
       mos_ = new ofstream;
       mos_->open(filename_.c_str());
       
       (*mos_) << "@relation marsyas" << endl;
-      mrs_natural nAttributes = ctrl_inObservations_->toNatural()-1;
-      mrs_natural nLabels = ctrl_nLabels_->toNatural();
+      mrs_natural nAttributes = ctrl_inObservations_->to<mrs_natural>()-1;
+      mrs_natural nLabels = ctrl_nLabels_->to<mrs_natural>();
       
       mrs_natural i;
       for (i =0; i < nAttributes; i++)
@@ -141,11 +141,11 @@ WekaSink::myUpdate(MarControlPtr sender)
   MarSystem::myUpdate(sender);
   
   
-  string labelNames = ctrl_labelNames_->toString();
+  string labelNames = ctrl_labelNames_->to<mrs_string>();
   
   labelNames_.clear();
   
-  for (int i = 0; i < ctrl_nLabels_->toNatural(); i++)
+  for (int i = 0; i < ctrl_nLabels_->to<mrs_natural>(); i++)
     {
       string labelName;
       string temp;
@@ -156,21 +156,21 @@ WekaSink::myUpdate(MarControlPtr sender)
       labelNames_.push_back(labelName);
     }
   
-  string onObsNames = ctrl_onObsNames_->toString();
+  string onObsNames = ctrl_onObsNames_->to<mrs_string>();
   
-  //if(!(getctrl("mrs_bool/mute")->toBool()))
+  //if(!(getctrl("mrs_bool/mute")->to<mrs_bool>()))
   if(!ctrl_mute_->isTrue())
     putHeader(onObsNames);
   
-  precision_ = ctrl_precision_->toNatural();
-  downsample_ = ctrl_downsample_->toNatural();
+  precision_ = ctrl_precision_->to<mrs_natural>();
+  downsample_ = ctrl_downsample_->to<mrs_natural>();
 }
 
 void 
 WekaSink::myProcess(realvec& in, realvec& out)
 {
   //if (mute_) copy input to output
-  //if(getctrl("mrs_bool/mute")->toBool())
+  //if(getctrl("mrs_bool/mute")->to<mrs_bool>())
   if(ctrl_mute_->isTrue())
     {
       for (o=0; o < inObservations_; o++)

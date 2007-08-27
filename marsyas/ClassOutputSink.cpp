@@ -61,7 +61,7 @@ ClassOutputSink::addControls()
 void 
 ClassOutputSink::putHeader()
 {
-  if ((filename_ != getctrl("mrs_string/filename")->toString()))
+  if ((filename_ != getctrl("mrs_string/filename")->to<mrs_string>()))
     {
       if (mos_ != NULL) 
 	{
@@ -72,7 +72,7 @@ ClassOutputSink::putHeader()
 	}
 
       
-      filename_ = getctrl("mrs_string/filename")->toString();
+      filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
   
       mos_ = new ofstream;
       mos_->open(filename_.c_str());
@@ -90,13 +90,13 @@ ClassOutputSink::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-  string labelNames = getctrl("mrs_string/labelNames")->toString();
+  string labelNames = getctrl("mrs_string/labelNames")->to<mrs_string>();
   
   labelNames_.clear();
 
   string temp;  
 
-  for (int i = 0; i < getctrl("mrs_natural/nLabels")->toNatural(); i++)
+  for (int i = 0; i < getctrl("mrs_natural/nLabels")->to<mrs_natural>(); i++)
     {
       string labelName;
 

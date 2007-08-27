@@ -95,7 +95,7 @@ AudioSource::myUpdate(MarControlPtr sender)
   
   inObservations_ = ctrl_inObservations_->to<mrs_natural>();
   
-  gain_ = getctrl("mrs_real/gain")->toReal();
+  gain_ = getctrl("mrs_real/gain")->to<mrs_real>();
   
   //resize reservoir if necessary
   if (inSamples_ * inObservations_ < bufferSize_) 
@@ -114,11 +114,11 @@ AudioSource::myUpdate(MarControlPtr sender)
 void 
 AudioSource::initRtAudio()
 {
-  bufferSize_ = (int)getctrl("mrs_natural/bufferSize")->toNatural();
-  nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();
-  rtSrate_ = (int)getctrl("mrs_real/israte")->toReal();
-  rtChannels_ = (int)getctrl("mrs_natural/nChannels")->toNatural();
-  nBuffers_ = (int)getctrl("mrs_natural/nBuffers")->toNatural();
+  bufferSize_ = (int)getctrl("mrs_natural/bufferSize")->to<mrs_natural>();
+  nChannels_ = getctrl("mrs_natural/nChannels")->to<mrs_natural>();
+  rtSrate_ = (int)getctrl("mrs_real/israte")->to<mrs_real>();
+  rtChannels_ = (int)getctrl("mrs_natural/nChannels")->to<mrs_natural>();
+  nBuffers_ = (int)getctrl("mrs_natural/nBuffers")->to<mrs_natural>();
 
 
   

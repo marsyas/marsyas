@@ -53,18 +53,18 @@ void
 PvUnconvert::myUpdate(MarControlPtr sender)
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural() - 2);
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->to<mrs_natural>() - 2);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
   
-  mrs_natural inObservations = getctrl("mrs_natural/inObservations")->toNatural();
-  mrs_natural onObservations = getctrl("mrs_natural/onObservations")->toNatural();
-  mrs_real israte = getctrl("mrs_real/israte")->toReal();
+  mrs_natural inObservations = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+  mrs_natural onObservations = getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+  mrs_real israte = getctrl("mrs_real/israte")->to<mrs_real>();
   
   N2_ = onObservations/2;
   lastphase_.create(N2_+1);
   
   fundamental_ = (mrs_real) (israte  / inObservations);
-  factor_ = (((getctrl("mrs_natural/Interpolation")->toNatural()* TWOPI)/(israte * onObservations)));
+  factor_ = (((getctrl("mrs_natural/Interpolation")->to<mrs_natural>()* TWOPI)/(israte * onObservations)));
   
 	//lmartins: This was missing the defaultUpdate() call which could be havoc!! [!]
 	//with the MarSystem refactoring the chances for such a issue are greatly reduced now!

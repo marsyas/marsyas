@@ -396,7 +396,7 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_string/filename", sfName);
 		mainNet->updctrl("mrs_natural/inSamples", D);
 		mainNet->updctrl("mrs_natural/inObservations", 1);
-		samplingFrequency_ = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_real/osrate")->toReal();
+		samplingFrequency_ = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 	}
 
 	if(noiseName != EMPTYSTRING)
@@ -474,7 +474,7 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		
 		if(synthetize > -1 && residual_)
 		{
-			mrs_real snr = mainNet->getctrl("PeSynthetize/synthNet/Series/postNet/PeakResidual/res/mrs_real/SNR")->toReal();
+			mrs_real snr = mainNet->getctrl("PeSynthetize/synthNet/Series/postNet/PeakResidual/res/mrs_real/SNR")->to<mrs_real>();
 			globalSnr += snr;
 			frameCount++;
 			// cout << "Frame " << frameCount << " SNR : "<< snr << endl;
@@ -482,26 +482,26 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 
 		if (!microphone_)
 		{
-			bool temp = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
-			bool temp1 = textWinNet->getctrl("Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
-			bool temp2 = analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
+			bool temp = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
+			bool temp1 = textWinNet->getctrl("Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
+			bool temp2 = analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
 
-			mrs_real timeRead =  analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_natural/pos")->toNatural()/samplingFrequency_;
+			mrs_real timeRead =  analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_natural/pos")->to<mrs_natural>()/samplingFrequency_;
 			mrs_real timeLeft;
 			if(!stopAnalyse_)
-				timeLeft =  analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_natural/size")->toNatural()/samplingFrequency_;
+				timeLeft =  analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_natural/size")->to<mrs_natural>()/samplingFrequency_;
 			else
 				timeLeft = stopAnalyse_;
-			// string fname = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_string/filename")->toString();
+			// string fname = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_string/filename")->to<mrs_string>();
 
 			printf("  %.2f / %.2f \r", timeRead, timeLeft);
 			fflush(stdout);
 
 			//cout << fixed << setprecision(2) << timeRead << "/" <<  setprecision(2) << timeLeft;
-			///*bool*/ temp = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/SoundFileSource/src/mrs_bool/notEmpty")->toBool();
+			///*bool*/ temp = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
 
 			//[TODO]
-// 			mrs_real density = mainNet->getctrl("PeClust/peClust/mrs_real/clusterDensity")->toReal();
+// 			mrs_real density = mainNet->getctrl("PeClust/peClust/mrs_real/clusterDensity")->to<mrs_real>();
 // 			cfile << density << " " << oriGain << endl;
 // 			//cout << oriGain << endl;
 

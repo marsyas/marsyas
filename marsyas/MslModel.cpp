@@ -440,7 +440,7 @@ bool MslCommandUpdateControl::execute()
   if ( control.rfind( "mrs_real", control.length()) != string::npos ) 
     {
       if ( workingSet.find(name) != workingSet.end() ) {
-	mrs_real val = (mrs_real)atof( value->toString().c_str() );
+	mrs_real val = (mrs_real)atof( value->to<mrs_string>().c_str() );
 	
 	workingSet[name]->updctrl( control, val );
 	return true;
@@ -452,7 +452,7 @@ bool MslCommandUpdateControl::execute()
   else if ( control.rfind( "mrs_string", control.length() ) != string::npos ) {
     
     if ( workingSet.find(name) != workingSet.end() ) {
-      workingSet[name]->updctrl( control, value->toString() );
+      workingSet[name]->updctrl( control, value->to<mrs_string>() );
       return true;
     } else {
       
@@ -461,7 +461,7 @@ bool MslCommandUpdateControl::execute()
   } 
   else if ( control.rfind( "mrs_natural", control.length()) != string::npos ) {
     if ( workingSet.find(name) != workingSet.end() ) {
-      mrs_natural val = atoi( value->toString().c_str() );
+      mrs_natural val = atoi( value->to<mrs_string>().c_str() );
       workingSet[name]->updctrl( control, val );
       return true;
     } else {
@@ -472,7 +472,7 @@ bool MslCommandUpdateControl::execute()
   else if ( control.rfind( "mrs_bool", control.length()) != string::npos ) {
 		
     if( workingSet.find(name) != workingSet.end() ) {
-      mrs_natural val = atoi( value->toString().c_str() );
+      mrs_natural val = atoi( value->to<mrs_string>().c_str() );
       if ( val == 0 ) {
 	workingSet[name]->updctrl( control, false );
       }
@@ -524,7 +524,7 @@ bool MslCommandRun::execute()
   
   mrs_natural wc=0;
   mrs_natural samplesPlayed = 0;
-  mrs_natural onSamples = msys->getctrl("mrs_natural/onSamples")->toNatural();
+  mrs_natural onSamples = msys->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
   
   mrs_real* controls = 0;
   
@@ -537,9 +537,9 @@ bool MslCommandRun::execute()
 	if ( controls != 0 ) {
 			
 			// get some reference controls, so if they have changed we update them
-		mrs_natural inSamples = msys->getctrl("mrs_natural/inSamples")->toNatural();
-		mrs_natural inObservations = msys->getctrl("mrs_natural/inObservations")->toNatural();
-		mrs_real israte = msys->getctrl("mrs_real/israte")->toReal();
+		mrs_natural inSamples = msys->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+		mrs_natural inObservations = msys->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+		mrs_real israte = msys->getctrl("mrs_real/israte")->to<mrs_real>();
 			
 		if ( (mrs_natural)controls[1] != inSamples || (mrs_natural)controls[2] != inObservations 
 				|| controls[3] != israte ) {

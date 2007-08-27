@@ -69,11 +69,11 @@ PeakerAdaptive::myProcess(realvec& in, realvec& out)
   mrs_real    peakDecay;
   
 
-  peakSpacing = getctrl("mrs_real/peakSpacing")->toReal();
-  peakStrength = getctrl("mrs_real/peakStrength")->toReal();
-  peakStart = getctrl("mrs_natural/peakStart")->toNatural();
-  peakEnd = getctrl("mrs_natural/peakEnd")->toNatural();
-  peakGain = getctrl("mrs_real/peakGain")->toReal();
+  peakSpacing = getctrl("mrs_real/peakSpacing")->to<mrs_real>();
+  peakStrength = getctrl("mrs_real/peakStrength")->to<mrs_real>();
+  peakStart = getctrl("mrs_natural/peakStart")->to<mrs_natural>();
+  peakEnd = getctrl("mrs_natural/peakEnd")->to<mrs_natural>();
+  peakGain = getctrl("mrs_real/peakGain")->to<mrs_real>();
   peakStrengthReset = getctrl("mrs_natural/peakStrengthReset")->to<mrs_natural>();
   peakDecay = getctrl("mrs_real/peakDecay")->to<mrs_real>();
   

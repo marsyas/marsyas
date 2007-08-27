@@ -12,7 +12,7 @@ void recognize(string sfName)
 	pnet->addMarSystem(mng.create("Spectrum","spk"));
 	pnet->addMarSystem(mng.create("Gain", "g2"));
 
-	while ( pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() )
+	while ( pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>() )
 	{
 		pnet->tick();
 		// gets data from the Spectrum

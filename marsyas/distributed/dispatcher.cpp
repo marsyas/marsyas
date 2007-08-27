@@ -74,7 +74,7 @@ void* run(void * arg)
   playbacknet->updctrl("mrs_natural/inSamples", 512);
     
   mrs_natural wc = 0;
-  mrs_natural onSamples = playbacknet->getctrl("mrs_natural/onSamples")->toNatural();
+  mrs_natural onSamples = playbacknet->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
   char sf_buffer[256];
   
   while ( true ) {
@@ -103,7 +103,7 @@ void* run(void * arg)
 	playbacknet->updctrl("mrs_bool/notEmpty", true);
 	
 	// play the sound 
-  	while ( playbacknet->getctrl("mrs_bool/notEmpty")->toBool() )
+  	while ( playbacknet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>() )
   	  {
 		try {
 	      		playbacknet->tick(); // everything happens here 

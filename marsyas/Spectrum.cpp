@@ -63,12 +63,12 @@ Spectrum::myUpdate(MarControlPtr sender)
 {
   ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
   ctrl_onObservations_->setValue(ctrl_inSamples_, NOUPDATE);
-  ctrl_osrate_->setValue(ctrl_israte_->toReal() / ctrl_inSamples_->toNatural());
+  ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>() / ctrl_inSamples_->to<mrs_natural>());
   
-  cutoff_ = ctrl_cutoff_->toReal();
-  lowcutoff_ = ctrl_lowcutoff_->toReal();
+  cutoff_ = ctrl_cutoff_->to<mrs_real>();
+  lowcutoff_ = ctrl_lowcutoff_->to<mrs_real>();
 
-  onObservations_ = ctrl_onObservations_->toNatural();
+  onObservations_ = ctrl_onObservations_->to<mrs_natural>();
 
   if (ponObservations_ != onObservations_)
     {

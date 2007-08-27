@@ -69,10 +69,10 @@ void MidiInput::myUpdate(MarControlPtr sender)
 #ifdef MARSYAS_MIDIIO
     midiin = NULL;
 
-    initMidi= getctrl("mrs_bool/initmidi")->toBool();
+    initMidi= getctrl("mrs_bool/initmidi")->to<mrs_bool>();
     initMidi = !initMidi;
 
-    virtualPort = getctrl("mrs_bool/virtualPort")->toBool();
+    virtualPort = getctrl("mrs_bool/virtualPort")->to<mrs_bool>();
 
     if (!initMidi){
         try { 
@@ -100,7 +100,7 @@ void MidiInput::myUpdate(MarControlPtr sender)
         else
 	  {
             try { 
-	      midiin->openPort(getctrl("mrs_natural/port")->toNatural());
+	      midiin->openPort(getctrl("mrs_natural/port")->to<mrs_natural>());
             }
             catch (RtError &error) 
 	      {

@@ -49,15 +49,15 @@ Shifter::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("Shifter.cpp - Shifter:myUpdate");
 
-	shift_ = getctrl("mrs_natural/shift")->toNatural();
+	shift_ = getctrl("mrs_natural/shift")->to<mrs_natural>();
 
-	mrs_natural onsamples = getctrl("mrs_natural/inSamples")->toNatural()- shift_;
+	mrs_natural onsamples = getctrl("mrs_natural/inSamples")->to<mrs_natural>()- shift_;
 	//for too big shifts (> inSamples), do a zero shift
 	if(onsamples < 0)
 		onsamples = inSamples_;
   
 	setctrl("mrs_natural/onSamples", onsamples);
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural()*2);
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->to<mrs_natural>()*2);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
 }

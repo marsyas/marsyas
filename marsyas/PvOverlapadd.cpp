@@ -59,9 +59,9 @@ PvOverlapadd::myUpdate(MarControlPtr sender)
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));    
 
   mrs_natural N,Nw,I;
-  N = getctrl("mrs_natural/inSamples")->toNatural();
-  Nw = getctrl("mrs_natural/onSamples")->toNatural();
-  I = getctrl("mrs_natural/Interpolation")->toNatural();
+  N = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+  Nw = getctrl("mrs_natural/onSamples")->to<mrs_natural>();
+  I = getctrl("mrs_natural/Interpolation")->to<mrs_natural>();
   // create synthesis window 
   
   swin_.create(Nw);
@@ -130,9 +130,9 @@ PvOverlapadd::myProcess(realvec& in, realvec& out)
   mrs_natural N,Nw;
   int n;
   
-  N = getctrl("mrs_natural/inSamples")->toNatural();
-  Nw = getctrl("mrs_natural/onSamples")->toNatural();
-  n  = getctrl("mrs_natural/Time")->toNatural();
+  N = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+  Nw = getctrl("mrs_natural/onSamples")->to<mrs_natural>();
+  n  = getctrl("mrs_natural/Time")->to<mrs_natural>();
   
   while (n < 0) 
     n += N;

@@ -75,21 +75,21 @@ WavFileSink::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  nChannels_ = getctrl("mrs_natural/inObservations")->toNatural();      
+  nChannels_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();      
   
   delete [] sdata_;
   delete [] cdata_;
   
-  sdata_ = new short[getctrl("mrs_natural/inSamples")->toNatural() * nChannels_];
-  cdata_ = new unsigned char[getctrl("mrs_natural/inSamples")->toNatural() * nChannels_];
+  sdata_ = new short[getctrl("mrs_natural/inSamples")->to<mrs_natural>() * nChannels_];
+  cdata_ = new unsigned char[getctrl("mrs_natural/inSamples")->to<mrs_natural>() * nChannels_];
   
-  filename_ = getctrl("mrs_string/filename")->toString();
+  filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
 }
   
 void 
 WavFileSink::putHeader(string filename)
 {
-  mrs_natural nChannels = (mrs_natural)getctrl("mrs_natural/inObservations")->toNatural();
+  mrs_natural nChannels = (mrs_natural)getctrl("mrs_natural/inObservations")->to<mrs_natural>();
   sfp_ = fopen(filename.c_str(), "wb");
   
   written_ = 0;
@@ -116,7 +116,7 @@ WavFileSink::putHeader(string filename)
   hdr_.chunk_size = ByteSwapLong(16);
   hdr_.format_tag = ByteSwapShort(1);
   hdr_.num_chans = ByteSwapShort((signed short)nChannels);
-  hdr_.sample_rate = ByteSwapLong((mrs_natural)getctrl("mrs_real/israte")->toReal());
+  hdr_.sample_rate = ByteSwapLong((mrs_natural)getctrl("mrs_real/israte")->to<mrs_real>());
   hdr_.bytes_per_sec = ByteSwapLong(hdr_.sample_rate * 2);
   hdr_.bytes_per_samp = ByteSwapShort(2);
   hdr_.bits_per_samp = ByteSwapShort(16);
@@ -125,7 +125,7 @@ WavFileSink::putHeader(string filename)
   hdr_.chunk_size = 16;
   hdr_.format_tag = 1;
   hdr_.num_chans = (signed short)nChannels;
-  hdr_.sample_rate = (mrs_natural)getctrl("mrs_real/israte")->toReal();
+  hdr_.sample_rate = (mrs_natural)getctrl("mrs_real/israte")->to<mrs_real>();
   hdr_.bytes_per_sec = hdr_.sample_rate * 2;
   hdr_.bytes_per_samp = 2;
   hdr_.bits_per_samp = 16;

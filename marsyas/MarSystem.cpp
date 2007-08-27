@@ -78,7 +78,7 @@ MarSystem::MarSystem(const MarSystem& a)
 	prefix_ = a.prefix_;
 	absPath_ = a.absPath_;
 	active_ = true;
-	
+
 
 	MATLABscript_ = a.MATLABscript_;
 
@@ -86,18 +86,18 @@ MarSystem::MarSystem(const MarSystem& a)
 
 	//clone controls
 	{
-		#ifdef MARSYAS_QT
+#ifdef MARSYAS_QT
 		QWriteLocker locker_w(&rwLock_);
 		QReadLocker locker_r(&(a.rwLock_));
-		#endif
+#endif
 
 		controls_.clear();
 		for(ctrlIter_ = a.controls_.begin(); ctrlIter_ != a.controls_.end(); ++ctrlIter_)
 		{
-		  //clone all controls
-		  controls_[ctrlIter_->first] = ctrlIter_->second->clone();		
-		  //set new MarSystem parent
-		  controls_[ctrlIter_->first]->setMarSystem(this);
+			//clone all controls
+			controls_[ctrlIter_->first] = ctrlIter_->second->clone();		
+			//set new MarSystem parent
+			controls_[ctrlIter_->first]->setMarSystem(this);
 		}
 	}
 
@@ -123,7 +123,7 @@ MarSystem::MarSystem(const MarSystem& a)
 		for (mrs_natural i=0; i< a.marsystemsSize_; i++)
 		{
 			addMarSystem((*a.marsystems_[i]).clone());
-			
+
 			//relink any controls of this child that are linked
 			//to sibling MarSystems (this can only be done after the cloned
 			//child gets assigned a parent (i.e. this composite), as done by addMarSystem())
@@ -131,10 +131,6 @@ MarSystem::MarSystem(const MarSystem& a)
 			{
 				// get original links...
 				vector<MarControlPtr> protolinks = ctrlIter_->second->getLinks();
-								
-				// clear clone's links - not needed here!!!
-				//marsystems_[i]->controls_[ctrlIter_->first]->getLinks().clear(); 
-				
 				//... and re-establish any missing links between controls of siblings
 				vector<MarControlPtr>::const_iterator ci;
 				for (ci = protolinks.begin(); ci != protolinks.end(); ++ci)
@@ -142,7 +138,7 @@ MarSystem::MarSystem(const MarSystem& a)
 					MarControlPtr ctrl = marsystems_[i]->getControl((*ci)->getMarSystem()->getAbsPath() + (*ci)->getName(), true);
 					if (!ctrl.isInvalid())
 					{
-						//linking controls already linked, does nothing,
+						//linking controls already linked does nothing,
 						//so only the missing sibling links will be done now...
 						marsystems_[i]->getctrl(ctrlIter_->first)->linkTo(ctrl);
 					}
@@ -156,8 +152,11 @@ MarSystem::MarSystem(const MarSystem& a)
 	{
 		// get original links...
 		vector<MarControlPtr> protolinks = ctrlIter_->second->getLinks();
+
+		// ...clear clone's links...
+		controls_[ctrlIter_->first]->unlink(); //[?] is this realy necessary? 
+
 		//... and re-establish links between the new cloned controls
-		controls_[ctrlIter_->first]->getLinks().clear(); // clear clone's links table
 		vector<MarControlPtr>::const_iterator ci;
 		for (ci = protolinks.begin(); ci != protolinks.end(); ++ci)
 		{
@@ -184,17 +183,11 @@ MarSystem::~MarSystem()
 		delete marsystems_[i];
 	} 
 
-	// disconnect all links
-	for (ctrlIter_ = controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
-	{
-		ctrlIter_->second->clearLinks();
-	}
-
 #ifdef MARSYAS_QT
 	delete processMutex_;
 	delete msysNetGUI_;
 	delete MATLABeditorGUI_;
-	
+
 	//this closes all opened GUIs when the MarSystem is destroyed
 	//and clears the internal hash table used to store its pointers
 	QList<MarSystemControlsGUI*> controlsGUIs = activeControlsGUIs_.values();
@@ -260,18 +253,18 @@ MarSystem::addMarSystem(MarSystem *marsystem)
 	if(this == marsystem)
 	{
 		MRSWARN("MarSystem::addMarSystem - Trying to add MarSystem to itself - failing...");
-		#ifdef MARSYAS_QT
+#ifdef MARSYAS_QT
 		rwLock_.unlock();
-		#endif
+#endif
 		return false;
 	}
 
 	if (marsystem == NULL) 
-	  {
-	    MRSWARN("MarSystem::addMarSystem - Adding a NULL MarSystem - failing...");
-	    return false;
-	  }
-	
+	{
+		MRSWARN("MarSystem::addMarSystem - Adding a NULL MarSystem - failing...");
+		return false;
+	}
+
 	//idiot proof 2 
 	MarSystem* msys = parent_;
 	while(msys)
@@ -279,9 +272,9 @@ MarSystem::addMarSystem(MarSystem *marsystem)
 		if(msys == marsystem)
 		{
 			MRSWARN("MarSystem::addMarSystem - Trying to add an ancestor MarSystem as a child - failing...");
-			#ifdef MARSYAS_QT
+#ifdef MARSYAS_QT
 			rwLock_.unlock();
-			#endif
+#endif
 			return false;
 		}
 		msys = msys->parent_;
@@ -290,10 +283,10 @@ MarSystem::addMarSystem(MarSystem *marsystem)
 	//it's only possible to add MarSystems to Composites
 	if(isComposite_)
 	{
-		#ifdef MARSYAS_QT
+#ifdef MARSYAS_QT
 		rwLock_.unlock();
 		rwLock_.lockForWrite();
-		#endif
+#endif
 		vector<MarSystem*>::iterator it;
 		bool replaced = false;
 		//check if a child MarSystem with the same type/name
@@ -318,12 +311,12 @@ MarSystem::addMarSystem(MarSystem *marsystem)
 			marsystems_.push_back(marsystem);
 			marsystemsSize_ = (mrs_natural)marsystems_.size();
 		}
-		#ifdef MARSYAS_QT
+#ifdef MARSYAS_QT
 		rwLock_.unlock();
-		#endif
+#endif
 		//set parent for the new child MarSystem
 		marsystem->setParent(this);
-		
+
 		//update child MarSystem
 		//marsystem->update(); //superfluous update call! It will be called by this->update() [!]
 		//update parent MarSystem
@@ -333,9 +326,9 @@ MarSystem::addMarSystem(MarSystem *marsystem)
 	else
 	{
 		MRSWARN("MarSystem::addMarSystem - Trying to add MarSystem to a non-Composite - failing...");
-		#ifdef MARSYAS_QT
+#ifdef MARSYAS_QT
 		rwLock_.unlock();
-		#endif
+#endif
 		return false;
 	}
 }
@@ -363,7 +356,7 @@ MarSystem::getChildMarSystem(std::string childPath)
 		}
 	}
 	//from this point, childPath is for sure a relative path.
-	
+
 	//start by checking if childPath is not empty (or resulted from an absolute
 	//path pointing to this MarSystem itself and not to any of its children)
 	if(childPath == "")
@@ -520,30 +513,30 @@ MarSystem::updatePath() // => mutexes [?]
 void 
 MarSystem::checkFlow(realvec& in, realvec& out)
 {
-  irows_ = in.getRows();
-  icols_ = in.getCols();
-  orows_ = out.getRows();
-  ocols_ = out.getCols();
+	irows_ = in.getRows();
+	icols_ = in.getCols();
+	orows_ = out.getRows();
+	ocols_ = out.getCols();
 
-  if(ctrl_debug_->isTrue())
-    {
-      MRSWARN("Debug CheckFlow Information");
-      MRSWARN("MarSystem Type    = " << type_); 
-      MRSWARN("MarSystem Name    = " << name_);
-      MRSWARN("inObservations_ = " << inObservations_);
-      MRSWARN("inSamples_ = " << inSamples_);
-      MRSWARN("onObservations_ = " << onObservations_);
-      MRSWARN("onSamples_ = " << onSamples_);      
-      MRSWARN("Input  Slice Rows = " << irows_ ); 
-      MRSWARN("Input  Slice Cols = " << icols_ ); 
-      MRSWARN("Output Slice Rows = " << orows_ );
-      MRSWARN("Output Slice Cols = " << ocols_ );      
-    }
-  
-  MRSASSERT(irows_ == inObservations_);
-  MRSASSERT(icols_ == inSamples_);
-  MRSASSERT(orows_ == onObservations_);
-  MRSASSERT(ocols_ == onSamples_);
+	if(ctrl_debug_->isTrue())
+	{
+		MRSWARN("Debug CheckFlow Information");
+		MRSWARN("MarSystem Type    = " << type_); 
+		MRSWARN("MarSystem Name    = " << name_);
+		MRSWARN("inObservations_ = " << inObservations_);
+		MRSWARN("inSamples_ = " << inSamples_);
+		MRSWARN("onObservations_ = " << onObservations_);
+		MRSWARN("onSamples_ = " << onSamples_);      
+		MRSWARN("Input  Slice Rows = " << irows_ ); 
+		MRSWARN("Input  Slice Cols = " << icols_ ); 
+		MRSWARN("Output Slice Rows = " << orows_ );
+		MRSWARN("Output Slice Cols = " << ocols_ );      
+	}
+
+	MRSASSERT(irows_ == inObservations_);
+	MRSASSERT(icols_ == inSamples_);
+	MRSASSERT(orows_ == onObservations_);
+	MRSASSERT(ocols_ == onSamples_);
 }
 
 void
@@ -554,7 +547,7 @@ MarSystem::process(realvec& in, realvec& out)
 #endif
 
 	checkFlow(in, out); //shouldn't this be only active when MARSYAS_DEBUG if defined?
-	
+
 	myProcess(in, out);
 
 #ifdef MARSYAS_MATLAB
@@ -613,7 +606,7 @@ MarSystem::isUpdating()
 #ifdef MARSYAS_QT
 	QReadLocker locker(&processMutex_);
 #endif
-	
+
 	return isUpdating_;
 }
 
@@ -648,7 +641,7 @@ MarSystem::update(MarControlPtr sender)
 	onSamples_ = ctrl_onSamples_->to<mrs_natural>();
 	osrate_ = ctrl_osrate_->to<mrs_real>();
 	onObsNames_ = ctrl_onObsNames_->to<mrs_string>();
-	
+
 	//call derived class specific update
 	myUpdate(sender);
 
@@ -674,16 +667,18 @@ MarSystem::update(MarControlPtr sender)
 
 	//resize input and output realvec if necessary
 	if ((inObservations_ != inTick_.getRows()) ||
-			(inSamples_ != inTick_.getCols())      ||
-			(onObservations_ != outTick_.getRows()) ||
-			(onSamples_ != outTick_.getCols()))
+		(inSamples_ != inTick_.getCols())      ||
+		(onObservations_ != outTick_.getRows()) ||
+		(onSamples_ != outTick_.getCols()))
 	{
 		inTick_.create(inObservations_, inSamples_);
-		
+
 		// Fixed resizing of ctrl_processedData 
-		//realvec& v = (realvec &)ctrl_processedData_->to<mrs_realvec>();
-		//v.create(onObservations_, onSamples_);		// this may break MarControl encapsulation!!!!!! [!]
-		ctrl_processedData_->create(onObservations_, onSamples_);
+		{
+			MarControlAccessor acc(ctrl_processedData_);
+			realvec& processedData = acc.to<mrs_realvec>();
+			processedData.create(onObservations_, onSamples_);
+		}
 	}
 
 	//check for OUT-FLOW modifications without parent knowledge!!
@@ -693,8 +688,8 @@ MarSystem::update(MarControlPtr sender)
 			tonSamples_ != onSamples_ ||
 			tosrate_ != osrate_ ||
 			tonObsNames_ != onObsNames_)
-				if(!parent_->isUpdating())
-					parent_->update(sender);
+			if(!parent_->isUpdating())
+				parent_->update(sender);
 	}
 
 	isUpdating_ = false;
@@ -763,7 +758,7 @@ MarSystem::getControlLocalPath(string cname) const
 	cname = getControlRelativePath(cname);
 	if(cname == "")
 		return ""; //not a control from this MarSystem or its children
-	
+
 	//a local path should have only one '/' (e.g. "mrs_xxx/nnnn"), 
 	//otherwise it's probably a control from a child MarSystem
 	if(cname.find_first_of('/') == cname.find_last_of('/') && 
@@ -787,7 +782,7 @@ MarSystem::linkControl(string cname1, string cname2)
 	//cname 2 must be a valid absolute, relative or local control pathname
 	//to an EXISTING control.
 	// When linking ctrl1 to ctrl2, ctrl1 will get the current value of ctrl2!
-		
+
 	//try to get the controls
 	MarControlPtr ctrl1 = getControl(cname1, false, true);//search local and child controls
 	MarControlPtr ctrl2 = getControl(cname2, true, true);//search everywhere in the network (including locally, at parent and among children)
@@ -795,7 +790,7 @@ MarSystem::linkControl(string cname1, string cname2)
 	//a control is inherently connected to itself!
 	if(ctrl1() == ctrl2())
 		return true;
-	
+
 	//make sure 2nd control exists somewhere in the network
 	if(ctrl2.isInvalid())
 	{
@@ -826,7 +821,7 @@ MarSystem::linkControl(string cname1, string cname2)
 			//get the MarSystem path from relativecname
 			string::size_type pos = relativecname.find("/mrs_", 0);
 			string relativepath = relativecname.substr(0, pos);
-			
+
 			MarSystem* msys = getChildMarSystem(relativepath);
 			if(msys)
 			{
@@ -876,51 +871,44 @@ MarSystem::getControl(string cname, bool searchParent, bool searchChildren)
 			return MarControlPtr();
 		}
 
-	//check if this relative control path points to a possible local control
-	string localcname = getControlLocalPath(relativecname);
-	if(localcname != "")
-	{
-		//This may be a local control, so look for it
-		#ifdef MARSYAS_QT
-		QReadLocker locker(&rwLock_); //reading controls_ [!]
-		#endif
-		if(controls_.find(localcname) != controls_.end())
-			return controls_[localcname]; //control found
-		else
+		//check if this relative control path points to a possible local control
+		string localcname = getControlLocalPath(relativecname);
+		if(localcname != "")
 		{
-			//MRSWARN("MarSystem::getControl - Unsupported control name: " + cname + " @ " + absPath_ + " -> THIS MAY BE NORMAL DURING CLONING!");
-			return MarControlPtr(); //no control found with this name => return invalid control 
+			//This may be a local control, so look for it
+#ifdef MARSYAS_QT
+			QReadLocker locker(&rwLock_); //reading controls_ [!]
+#endif
+			if(controls_.find(localcname) != controls_.end())
+				return controls_[localcname]; //control found
+			else
+				return MarControlPtr(); //no control found with this name => return invalid control 
 		}
-	}
-	//definitely not a local control pathname. It can only be a relative control path.
-	//So search in children (if allowed).
-	else 
-	{
-		if(searchChildren)
+		//definitely not a local control pathname. It can only be a relative control path.
+		//So search in children (if allowed).
+		else 
 		{
-			//search for a child that has a corresponding prefix
-			vector<MarSystem*>::const_iterator msysIter;
-			for(msysIter = marsystems_.begin(); msysIter != marsystems_.end(); ++msysIter) // => mutexes [?]
+			if(searchChildren)
 			{
-				string prefix = (*msysIter)->getPrefix();
-				prefix = prefix.substr(1, prefix.length()); //ignore leading "/"
-				if(relativecname.substr(0, prefix.length()) == prefix)
+				//search for a child that has a corresponding prefix
+				vector<MarSystem*>::const_iterator msysIter;
+				for(msysIter = marsystems_.begin(); msysIter != marsystems_.end(); ++msysIter) // => mutexes [?]
 				{
-					//a matching child was found!
-					//check if the control exists in the child
-					string childcname = relativecname.substr(prefix.length(),relativecname.length());
-					return (*msysIter)->getControl(childcname);
+					string prefix = (*msysIter)->getPrefix();
+					prefix = prefix.substr(1, prefix.length()); //ignore leading "/"
+					if(relativecname.substr(0, prefix.length()) == prefix)
+					{
+						//a matching child was found!
+						//check if the control exists in the child
+						string childcname = relativecname.substr(prefix.length(),relativecname.length());
+						return (*msysIter)->getControl(childcname);
+					}
 				}
+				return MarControlPtr();//no child found with corresponding prefix...
 			}
-			//MRSWARN("MarSystem::getControl - Unsupported control name: " + cname + " @ " + absPath_ + " -> THIS MAY BE NORMAL DURING CLONING!");
-			return MarControlPtr();//no child found with corresponding prefix...
+			else
+				return MarControlPtr();
 		}
-		else
-		{
-			//MRSWARN("MarSystem::getControl - Unsupported control name: " + cname + " @ " + absPath_ + " -> THIS MAY BE NORMAL DURING CLONING!");
-			return MarControlPtr();
-		}
-	}
 }
 
 bool 
@@ -959,9 +947,9 @@ MarSystem::hasControl(string cname, bool searchChildren)
 bool
 MarSystem::hasControl(MarControlPtr control, bool searchChildren)
 {
-	#ifdef MARSYAS_QT
+#ifdef MARSYAS_QT
 	QReadLocker locker(&rwLock_);
-	#endif
+#endif
 
 	//search local controls
 	for(ctrlIter_=controls_.begin(); ctrlIter_!=controls_.end();++ctrlIter_)
@@ -991,14 +979,14 @@ MarSystem::updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd)
 		MRSWARN("MarSystem::updControl - Invalid control ptr @ " + getAbsPath());
 		return false;
 	}
-// 	//check if control exists locally or among children
-// 	if(!hasControl(control))
-// 	{
-// 		MRSWARN("MarSystem::updControl - " + control->getName() +" @ "+getAbsPath()+ " does not exist locally or in children!");
-// 		return false;
-// 	}
+	// 	//check if control exists locally or among children
+	// 	if(!hasControl(control))
+	// 	{
+	// 		MRSWARN("MarSystem::updControl - " + control->getName() +" @ "+getAbsPath()+ " does not exist locally or in children!");
+	// 		return false;
+	// 	}
 
-		return control->setValue(newcontrol, upd);
+	return control->setValue(newcontrol, upd);
 }
 
 //get local controls only (i.e. no child controls included)
@@ -1017,13 +1005,13 @@ MarSystem::getLocalControls()
 map<string, MarControlPtr>
 MarSystem::getControls(map<string, MarControlPtr>* cmap)
 {
-	#ifdef MARSYAS_QT
+#ifdef MARSYAS_QT
 	QReadLocker locker(&rwLock_);
-	#endif
+#endif
 
 	if(!cmap)
 	{
-	  map<string, MarControlPtr> controlsmap;
+		map<string, MarControlPtr> controlsmap;
 
 		cmap = &controlsmap;
 
@@ -1066,9 +1054,9 @@ MarSystem::getControls(map<string, MarControlPtr>* cmap)
 vector<MarSystem*>
 MarSystem::getChildren()
 {
-	#ifdef MARSYAS_QT
+#ifdef MARSYAS_QT
 	QReadLocker locker(&rwLock_);
-	#endif
+#endif
 	return marsystems_;
 }
 
@@ -1100,7 +1088,7 @@ MarSystem::addControl(string cname, MarControlPtr v)
 		MRSWARN("MarSystem::addControl - absolute path: " + absPath_); // => mutexes [?]
 		return false; 
 	}
-	
+
 	//check for type mismatch between cname string (which include type information)
 	//and the actual control type passed as an argument
 	string::size_type pos = cname.find("/", 0);
@@ -1263,9 +1251,9 @@ const MarSystem::recvControls()
 ostream&
 MarSystem::put(ostream &o) 
 {
-	#ifdef MARSYAS_QT
+#ifdef MARSYAS_QT
 	QReadLocker locker(&rwLock_);
-	#endif
+#endif
 
 	if(isComposite_)
 	{
@@ -1339,9 +1327,9 @@ Marsyas::operator>> (istream& is, MarSystem& msys)
 	string cname;
 	map<string, MarControlPtr>::iterator iter;
 
-	#ifdef MARSYAS_QT
+#ifdef MARSYAS_QT
 	msys.rwLock_.lockForWrite();
-	#endif
+#endif
 
 	// if composite, clear all children to avoid bad links to prototype children
 	if (msys.isComposite_)
@@ -1354,10 +1342,10 @@ Marsyas::operator>> (istream& is, MarSystem& msys)
 		msys.marsystemsSize_ = 0;
 	}
 
-	#ifdef MARSYAS_QT
+#ifdef MARSYAS_QT
 	msys.rwLock_.unlock();
 	QReadLocker lock(&(msys.rwLock_));
-	#endif
+#endif
 
 	for (i=0; i < nControls; i++)
 	{
@@ -1430,7 +1418,7 @@ Marsyas::operator>> (istream& is, MarSystem& msys)
 		is >> nLinks;
 		//clean all links for current control
 		MarControlPtr curCtrl = msys.getControlLocal(cname);
-		curCtrl->getLinks().clear();
+		curCtrl->unlink();
 		//remake all links
 		for (int i=0; i<nLinks; i++)
 		{

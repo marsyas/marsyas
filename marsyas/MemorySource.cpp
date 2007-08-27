@@ -60,8 +60,8 @@ MemorySource::myUpdate(MarControlPtr sender)
   MRSDIAG("MemorySource.cpp - MemorySource:myUpdate");
   
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")  );
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
-  samplesToUse_ = getctrl("mrs_natural/samplesToUse")->toNatural();
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->to<mrs_real>());
+  samplesToUse_ = getctrl("mrs_natural/samplesToUse")->to<mrs_natural>();
   
   if( getctrl("mrs_bool/done")->isTrue()){
     count_ = 0;

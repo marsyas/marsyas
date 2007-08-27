@@ -117,7 +117,7 @@ void tempo_medianMultiBands(string sfName, string resName)
   
   // update the controls 
 
-  mrs_real srate = total->getctrl("SoundFileSource/src/mrs_real/israte")->toReal();
+  mrs_real srate = total->getctrl("SoundFileSource/src/mrs_real/israte")->to<mrs_real>();
 
   // input filename with hopSize/winSize 
   mrs_natural winSize = (mrs_natural)(srate / 22050.0) * 65536;
@@ -136,7 +136,7 @@ void tempo_medianMultiBands(string sfName, string resName)
   
   // Peak picker 4BPMs at 60BPM resolution from 50 BPM to 250 BPM 
 
-  mrs_natural pkinS = total->getctrl("Peaker/pkr/mrs_natural/onSamples")->toNatural();
+  mrs_natural pkinS = total->getctrl("Peaker/pkr/mrs_natural/onSamples")->to<mrs_natural>();
   mrs_real peakSpacing = ((mrs_natural)(srate * 60.0 / (factor *60.0)) - 
 		      (mrs_natural)(srate * 60.0 / (factor*64.0))) / pkinS;
   mrs_natural peakStart = (mrs_natural)(srate * 60.0 / (factor * 180.0));
@@ -152,10 +152,10 @@ void tempo_medianMultiBands(string sfName, string resName)
   
   
   // prepare vectors for processing 
-  realvec iwin(total->getctrl("mrs_natural/inObservations")->toNatural(), 
-	       total->getctrl("mrs_natural/inSamples")->toNatural());
-  realvec estimate(total->getctrl("mrs_natural/onObservations")->toNatural(), 
-		   total->getctrl("mrs_natural/onSamples")->toNatural());
+  realvec iwin(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+	       total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+  realvec estimate(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+		   total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
   mrs_natural bin;
   mrs_natural onSamples, nChannels;
   int numPlayed =0;
@@ -165,8 +165,8 @@ void tempo_medianMultiBands(string sfName, string resName)
   // vector of bpm estimate used to calculate median 
   vector<int> bpms;
   
-  onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->toNatural();
-  nChannels = total->getctrl("SoundFileSource/src/mrs_natural/nChannels")->toNatural();
+  onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->to<mrs_natural>();
+  nChannels = total->getctrl("SoundFileSource/src/mrs_natural/nChannels")->to<mrs_natural>();
 
   // playback offset & duration
   offset = (mrs_natural) (start * srate * nChannels);
@@ -196,7 +196,7 @@ void tempo_medianMultiBands(string sfName, string resName)
       wc ++;
       samplesPlayed += onSamples;
       // no duration specified so use all of source input 
-      if (!(total->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool()) && (repeatId == 1))
+      if (!(total->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>()) && (repeatId == 1))
 	{ 
 	  duration = samplesPlayed-onSamples;
 	}
@@ -278,9 +278,9 @@ tempo_new(string sfName, string resName)
   total->updctrl("DownSampler/initds/mrs_natural/factor", ifactor);  
   
   total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-  nChannels = total->getctrl("SoundFileSource/src/mrs_natural/nChannels")->toNatural();
-  srate = total->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
-  // srate = total->getctrl("DownSampler/initds/mrs_real/osrate")->toReal();
+  nChannels = total->getctrl("SoundFileSource/src/mrs_natural/nChannels")->to<mrs_natural>();
+  srate = total->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+  // srate = total->getctrl("DownSampler/initds/mrs_real/osrate")->to<mrs_real>();
   // cout << "srate = " << srate << endl;
   
 
@@ -319,10 +319,10 @@ tempo_new(string sfName, string resName)
   mrs_natural factor = 32;
   total->updctrl("DownSampler/ds/mrs_natural/factor", factor);  
 
-  srate = total->getctrl("DownSampler/initds/mrs_real/osrate")->toReal();  
+  srate = total->getctrl("DownSampler/initds/mrs_real/osrate")->to<mrs_real>();  
 
   // Peak picker 4BPMs at 60BPM resolution from 50 BPM to 250 BPM 
-  mrs_natural pkinS = total->getctrl("Peaker/pkr/mrs_natural/onSamples")->toNatural();
+  mrs_natural pkinS = total->getctrl("Peaker/pkr/mrs_natural/onSamples")->to<mrs_natural>();
   mrs_real peakSpacing = ((mrs_natural)(srate * 60.0 / (factor *60.0)) - 
 		      (mrs_natural)(srate * 60.0 / (factor*62.0))) / (pkinS * 1.0);
 
@@ -351,10 +351,10 @@ tempo_new(string sfName, string resName)
   total->updctrl("Histogram/histo/mrs_natural/endBin", 230);
   
   // prepare vectors for processing 
-  realvec iwin(total->getctrl("mrs_natural/inObservations")->toNatural(), 
-	       total->getctrl("mrs_natural/inSamples")->toNatural());
-  realvec estimate(total->getctrl("mrs_natural/onObservations")->toNatural(), 
-		   total->getctrl("mrs_natural/onSamples")->toNatural());
+  realvec iwin(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+	       total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+  realvec estimate(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+		   total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
   
   // mrs_natural bin;
   mrs_natural onSamples;
@@ -364,11 +364,11 @@ tempo_new(string sfName, string resName)
   mrs_natural samplesPlayed = 0;
   mrs_natural repeatId = 1;
 
-  onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->toNatural();
+  onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->to<mrs_natural>();
 
 
 
-  while (total->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
+  while (total->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
     {
       total->process(iwin, estimate);
 
@@ -394,8 +394,8 @@ tempo_new(string sfName, string resName)
   total1->addMarSystem(mng.create("DownSampler", "ds1"));
   total1->updctrl("SoundFileSource/src1/mrs_string/filename", sfName);
 
-  nChannels = total1->getctrl("SoundFileSource/src1/mrs_natural/nChannels")->toNatural();
-  srate = total1->getctrl("SoundFileSource/src1/mrs_real/osrate")->toReal();
+  nChannels = total1->getctrl("SoundFileSource/src1/mrs_natural/nChannels")->to<mrs_natural>();
+  srate = total1->getctrl("SoundFileSource/src1/mrs_real/osrate")->to<mrs_real>();
   
 
   
@@ -418,10 +418,10 @@ tempo_new(string sfName, string resName)
   
   
 
-  realvec iwin1(total1->getctrl("mrs_natural/inObservations")->toNatural(), 
-	       total1->getctrl("mrs_natural/inSamples")->toNatural());
-  realvec estimate1(total1->getctrl("mrs_natural/onObservations")->toNatural(), 
-		    total1->getctrl("mrs_natural/onSamples")->toNatural());
+  realvec iwin1(total1->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+	       total1->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+  realvec estimate1(total1->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+		    total1->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
   
   total1->process(iwin1, estimate1);
@@ -571,8 +571,8 @@ tempo_histoSumBands(string sfName, string resName)
   mrs_natural hopSize = winSize / 8;
   total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 
-  nChannels = total->getctrl("SoundFileSource/src/mrs_natural/nChannels")->toNatural();
-  srate = total->getctrl("SoundFileSource/src/mrs_real/israte")->toReal();
+  nChannels = total->getctrl("SoundFileSource/src/mrs_natural/nChannels")->to<mrs_natural>();
+  srate = total->getctrl("SoundFileSource/src/mrs_real/israte")->to<mrs_real>();
 
   offset = (mrs_natural) (start * srate * nChannels);
   duration = (mrs_natural) (length * srate * nChannels);
@@ -590,7 +590,7 @@ tempo_histoSumBands(string sfName, string resName)
   total->updctrl("DownSampler/ds/mrs_natural/factor", factor);  
   
   // Peak picker 4BPMs at 60BPM resolution from 50 BPM to 250 BPM 
-  mrs_natural pkinS = total->getctrl("Peaker/pkr/mrs_natural/onSamples")->toNatural();
+  mrs_natural pkinS = total->getctrl("Peaker/pkr/mrs_natural/onSamples")->to<mrs_natural>();
   mrs_real peakSpacing = ((mrs_natural)(srate * 60.0 / (factor *60.0)) - 
 		      (mrs_natural)(srate * 60.0 / (factor*64.0))) / pkinS;
   mrs_natural peakStart = (mrs_natural)(srate * 60.0 / (factor * 180.0));
@@ -607,10 +607,10 @@ tempo_histoSumBands(string sfName, string resName)
   total->updctrl("Histogram/histo/mrs_natural/endBin", 180);
   
   // prepare vectors for processing 
-  realvec iwin(total->getctrl("mrs_natural/inObservations")->toNatural(), 
-	       total->getctrl("mrs_natural/inSamples")->toNatural());
-  realvec estimate(total->getctrl("mrs_natural/onObservations")->toNatural(), 
-		   total->getctrl("mrs_natural/onSamples")->toNatural());
+  realvec iwin(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+	       total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+  realvec estimate(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+		   total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
   
   mrs_natural bin;
   mrs_natural onSamples;
@@ -622,7 +622,7 @@ tempo_histoSumBands(string sfName, string resName)
 
   // vector of bpm estimate used to calculate median 
   vector<int> bpms;
-  onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->toNatural();
+  onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->to<mrs_natural>();
 
   while (repetitions * duration > samplesPlayed)
     {
@@ -641,7 +641,7 @@ tempo_histoSumBands(string sfName, string resName)
       wc ++;
       samplesPlayed += onSamples;
       // no duration specified so use all of source input 
-      if (!(total->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool()) && (repeatId == 1))
+      if (!(total->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>()) && (repeatId == 1))
 	{
 	  duration = samplesPlayed-onSamples;
 	}
@@ -690,8 +690,8 @@ tempo_medianSumBands(string sfName, string resName)
 
   total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 
-  nChannels = total->getctrl("SoundFileSource/src/mrs_natural/nChannels")->toNatural();
-  srate = total->getctrl("SoundFileSource/src/mrs_real/israte")->toReal();
+  nChannels = total->getctrl("SoundFileSource/src/mrs_natural/nChannels")->to<mrs_natural>();
+  srate = total->getctrl("SoundFileSource/src/mrs_real/israte")->to<mrs_real>();
 
   mrs_natural winSize = (mrs_natural)(srate / 22050.0) * 65536;
   mrs_natural hopSize = winSize / 8;
@@ -711,7 +711,7 @@ tempo_medianSumBands(string sfName, string resName)
   total->updctrl("DownSampler/ds/mrs_natural/factor", factor);  
   
   // Peak picker 4BPMs at 60BPM resolution from 50 BPM to 250 BPM 
-  mrs_natural pkinS = total->getctrl("Peaker/pkr/mrs_natural/onSamples")->toNatural();
+  mrs_natural pkinS = total->getctrl("Peaker/pkr/mrs_natural/onSamples")->to<mrs_natural>();
   mrs_real peakSpacing = ((mrs_natural)(srate * 60.0 / (factor *60.0)) - 
 		      (mrs_natural)(srate * 60.0 / (factor*64.0))) / pkinS;
   mrs_natural peakStart = (mrs_natural)(srate * 60.0 / (factor * 180.0));
@@ -726,10 +726,10 @@ tempo_medianSumBands(string sfName, string resName)
 
   
   // prepare vectors for processing 
-  realvec iwin(total->getctrl("mrs_natural/inObservations")->toNatural(), 
-	       total->getctrl("mrs_natural/inSamples")->toNatural());
-  realvec estimate(total->getctrl("mrs_natural/onObservations")->toNatural(), 
-		   total->getctrl("mrs_natural/onSamples")->toNatural());
+  realvec iwin(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+	       total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+  realvec estimate(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+		   total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
   mrs_natural bin;
   mrs_natural onSamples;
@@ -740,7 +740,7 @@ tempo_medianSumBands(string sfName, string resName)
   mrs_natural repeatId = 1;
   // vector of bpm estimate used to calculate median 
   vector<int> bpms;
-  onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->toNatural();
+  onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->to<mrs_natural>();
 
   while (repetitions * duration > samplesPlayed)
     {
@@ -759,7 +759,7 @@ tempo_medianSumBands(string sfName, string resName)
       wc ++;
       samplesPlayed += onSamples;
       // no duration specified so use all of source input 
-      if (!(total->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool()) && (repeatId == 1))
+      if (!(total->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>()) && (repeatId == 1))
 	{
 	  duration = samplesPlayed-onSamples;
 	}
@@ -807,11 +807,11 @@ tempo_bcWavelet(string sfName, string resName)
   
   // prepare filename for reading 
   total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-  srate = total->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
+  srate = total->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
   mrs_natural winSize = (mrs_natural)(srate / 22050.0) * 65536;
   mrs_natural hopSize = winSize;
-  nChannels = total->getctrl("SoundFileSource/src/mrs_natural/nChannels")->toNatural();
-  srate = total->getctrl("SoundFileSource/src/mrs_real/israte")->toReal();
+  nChannels = total->getctrl("SoundFileSource/src/mrs_natural/nChannels")->to<mrs_natural>();
+  srate = total->getctrl("SoundFileSource/src/mrs_real/israte")->to<mrs_real>();
   offset = (mrs_natural) (start * srate * nChannels);
   duration = (mrs_natural) (length * srate * nChannels);
   total->updctrl("mrs_natural/inSamples", hopSize);
@@ -822,20 +822,20 @@ tempo_bcWavelet(string sfName, string resName)
   total->updctrl("OnePole/lpf/mrs_real/alpha", 0.99f);
 
   // prepare vectors for processing 
-  realvec iwin(total->getctrl("mrs_natural/inObservations")->toNatural(), 
-	       total->getctrl("mrs_natural/inSamples")->toNatural());
-  realvec lowwin(total->getctrl("mrs_natural/inObservations")->toNatural(), 
-		 total->getctrl("mrs_natural/inSamples")->toNatural());
-  realvec hiwin(total->getctrl("mrs_natural/inObservations")->toNatural(), 
-		total->getctrl("mrs_natural/inSamples")->toNatural());
+  realvec iwin(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+	       total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+  realvec lowwin(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+		 total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+  realvec hiwin(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+		total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
   realvec plowwin(1,
-		  total->getctrl("mrs_natural/inSamples")->toNatural());
+		  total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 
   realvec phiwin(1,
-		 total->getctrl("mrs_natural/inSamples")->toNatural());
+		 total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 
-  realvec bands(total->getctrl("mrs_natural/onObservations")->toNatural(), 
-		total->getctrl("mrs_natural/onSamples")->toNatural());
+  realvec bands(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+		total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
   
   mrs_natural samplesPlayed = 0;
@@ -848,10 +848,10 @@ tempo_bcWavelet(string sfName, string resName)
   MarSystem* phidest = mng.create("SoundFileSink", "phidest");
   
 
-  mrs_natural onSamples = total->getctrl("mrs_natural/onSamples")->toNatural();
-  mrs_natural inSamples = total->getctrl("mrs_natural/inSamples")->toNatural();
-  // mrs_natural onObs = total->getctrl("mrs_natural/onObservations")->toNatural();
-  // mrs_natural inObs = total->getctrl("mrs_natural/inObservations")->toNatural();
+  mrs_natural onSamples = total->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
+  mrs_natural inSamples = total->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+  // mrs_natural onObs = total->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+  // mrs_natural inObs = total->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
   
 
   // Peak pickers for high and low band
@@ -898,7 +898,7 @@ tempo_bcWavelet(string sfName, string resName)
   vector<mrs_natural> lowtimes;
   vector<mrs_natural> hitimes;
   
-  while (total->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
+  while (total->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
     {
       total->process(iwin, bands);
       for (mrs_natural t=0; t < onSamples; t++)
@@ -970,7 +970,7 @@ tempo_bcWavelet(string sfName, string resName)
 
   
   samplesPlayed = 0;
-  onSamples = playback->getctrl("Fanout/mix/SoundFileSource/orsrc/mrs_natural/onSamples")->toNatural();
+  onSamples = playback->getctrl("Fanout/mix/SoundFileSource/orsrc/mrs_natural/onSamples")->to<mrs_natural>();
   mrs_natural lowtindex = 0;
   mrs_natural hitindex = 0;
 
@@ -981,7 +981,7 @@ tempo_bcWavelet(string sfName, string resName)
   
   cout << "******PLAYBACK******" << endl;
   
-  while(playback->getctrl("Fanout/mix/SoundFileSource/orsrc/mrs_bool/notEmpty")->toBool()) 
+  while(playback->getctrl("Fanout/mix/SoundFileSource/orsrc/mrs_bool/notEmpty")->to<mrs_bool>()) 
     {
       if (lowtimes[lowtindex] < samplesPlayed) 
 	{
@@ -1083,35 +1083,35 @@ tempo_bcFilter(string sfName, string resName)
   total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
   // total->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
-  srate = total->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
+  srate = total->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
   mrs_natural ch = total->getctrl("SoundFileSource/src/mrs_natural/onObservations")->to<mrs_natural>();
   mrs_real tg = 1.0 / ch;
   total->updctrl("Gain/tgain/mrs_real/gain", tg);
   mrs_natural winSize = (mrs_natural)(srate / 22050.0) * 2048;
 
   mrs_natural hopSize = winSize;
-  nChannels = total->getctrl("SoundFileSource/src/mrs_natural/nChannels")->toNatural();
-  srate = total->getctrl("SoundFileSource/src/mrs_real/israte")->toReal();
+  nChannels = total->getctrl("SoundFileSource/src/mrs_natural/nChannels")->to<mrs_natural>();
+  srate = total->getctrl("SoundFileSource/src/mrs_real/israte")->to<mrs_real>();
   offset = (mrs_natural) (start * srate * nChannels);
   duration = (mrs_natural) (length * srate * nChannels);
   total->updctrl("mrs_natural/inSamples", hopSize);
   total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
   
   // prepare vectors for processing 
-  realvec iwin(total->getctrl("mrs_natural/inObservations")->toNatural(), 
-	       total->getctrl("mrs_natural/inSamples")->toNatural());
-  realvec lowwin(total->getctrl("mrs_natural/inObservations")->toNatural(), 
-		 total->getctrl("mrs_natural/inSamples")->toNatural());
-  realvec hiwin(total->getctrl("mrs_natural/inObservations")->toNatural(), 
-		total->getctrl("mrs_natural/inSamples")->toNatural());
+  realvec iwin(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+	       total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+  realvec lowwin(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+		 total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+  realvec hiwin(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+		total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
   realvec plowwin(1,
-		  total->getctrl("mrs_natural/inSamples")->toNatural());
+		  total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
   
   realvec phiwin(1,
-		 total->getctrl("mrs_natural/inSamples")->toNatural());
+		 total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
   
-  realvec bands(total->getctrl("mrs_natural/onObservations")->toNatural(), 
-		total->getctrl("mrs_natural/onSamples")->toNatural());
+  realvec bands(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+		total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
   
   mrs_natural samplesPlayed = 0;
@@ -1123,8 +1123,8 @@ tempo_bcFilter(string sfName, string resName)
   MarSystem* phidest = mng.create("SoundFileSink", "phidest");
   
 
-  mrs_natural onSamples = total->getctrl("mrs_natural/onSamples")->toNatural();
-  mrs_natural inSamples = total->getctrl("mrs_natural/inSamples")->toNatural();
+  mrs_natural onSamples = total->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
+  mrs_natural inSamples = total->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
   
   // Peak pickers for high and low band
   MarSystem* lowpkr = mng.create("PeakerAdaptive", "lowpkr");
@@ -1178,7 +1178,7 @@ tempo_bcFilter(string sfName, string resName)
   //len = 5500;
   //realvec thumb(len);
 
-  while (total->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
+  while (total->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
     {
       total->process(iwin, bands);
       
@@ -1274,7 +1274,7 @@ tempo_bcFilter(string sfName, string resName)
 
   
   samplesPlayed = 0;
-  onSamples = playback->getctrl("Fanout/mix/SoundFileSource/orsrc/mrs_natural/onSamples")->toNatural();
+  onSamples = playback->getctrl("Fanout/mix/SoundFileSource/orsrc/mrs_natural/onSamples")->to<mrs_natural>();
   mrs_natural lowtindex = 0;
   mrs_natural hitindex = 0;
 
@@ -1287,7 +1287,7 @@ tempo_bcFilter(string sfName, string resName)
 
 
   playback->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-  while(playback->getctrl("Fanout/mix/SoundFileSource/orsrc/mrs_bool/notEmpty")->toBool()) 
+  while(playback->getctrl("Fanout/mix/SoundFileSource/orsrc/mrs_bool/notEmpty")->to<mrs_bool>()) 
     {
        if (lowtimes[lowtindex] < samplesPlayed) 
 	{

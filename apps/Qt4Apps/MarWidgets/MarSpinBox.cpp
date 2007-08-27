@@ -19,7 +19,7 @@ void MarSpinBox::setValue(MarControlPtr cname)
 {
   if (mycname->getName() == cname->getName())
     {
-      int val = floor(cname->toReal() * 100.0 + 0.5);
+      int val = floor(cname->to<mrs_real>() * 100.0 + 0.5);
       blockSignals(true);
       QSpinBox::setValue(val);
       blockSignals(false);

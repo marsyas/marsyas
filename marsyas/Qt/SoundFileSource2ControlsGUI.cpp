@@ -72,14 +72,14 @@ SoundFileSource2ControlsGUI::createCustomControlsWindow()
 	//---------------------------------------------------------
 	//create opened AudioFileName label
 	//---------------------------------------------------------
-	filenameLbl_ = new QLabel(QString::fromStdString(msys_->getctrl("mrs_string/filename")->toString()));
+	filenameLbl_ = new QLabel(QString::fromStdString(msys_->getctrl("mrs_string/filename")->to<mrs_string>()));
 	layout->addWidget(filenameLbl_, 0, 1, 1, 1);
 
 	//---------------------------------------------------------
 	//create playing position slider
 	//---------------------------------------------------------
 	posSlider_ = new QSlider(Qt::Horizontal);
-	posSlider_->setRange(0, (int)(msys_->getctrl("mrs_natural/size")->toNatural()));
+	posSlider_->setRange(0, (int)(msys_->getctrl("mrs_natural/size")->to<mrs_natural>()));
 	posSlider_->setTracking(false);
 	
 	connect(posSlider_, SIGNAL(valueChanged(int)),
@@ -134,7 +134,7 @@ SoundFileSource2ControlsGUI::updateCustomControlsWindow(MarControl* control)
 	//update pos slider
 	if(cname == "mrs_natural/pos" && !posSliderPressed_)
 	{
-		int value = (int)control->toNatural();
+		int value = (int)control->to<mrs_natural>();
 		if(posSlider_->value() != value )
 		{
 			posSlider_->setValue(value);
@@ -145,7 +145,7 @@ SoundFileSource2ControlsGUI::updateCustomControlsWindow(MarControl* control)
 	//update pos slider range
 	if(cname == "mrs_natural/size")
 	{
-		int value = (int)control->toNatural();
+		int value = (int)control->to<mrs_natural>();
 		if(posSlider_->maximum() != value)
 		{
 			posSlider_->setMaximum(value);
@@ -156,7 +156,7 @@ SoundFileSource2ControlsGUI::updateCustomControlsWindow(MarControl* control)
 	//update filename label
 	if(cname == "mrs_string/filename")
 	{
-		filenameLbl_->setText(QString::fromStdString(control->toString()));
+		filenameLbl_->setText(QString::fromStdString(control->to<mrs_string>()));
 		return;
 	}
 }

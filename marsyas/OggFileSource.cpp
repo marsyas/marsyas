@@ -158,8 +158,8 @@ OggFileSource::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  mrs_natural pos = getctrl("mrs_natural/pos")->toNatural();
-  mrs_natural size = getctrl("mrs_natural/size")->toNatural();
+  mrs_natural pos = getctrl("mrs_natural/pos")->to<mrs_natural>();
+  mrs_natural size = getctrl("mrs_natural/size")->to<mrs_natural>();
 
 #ifdef MARSYAS_OGG
   // if the user has seeked somewhere in the file
@@ -183,12 +183,12 @@ void OggFileSource::myProcess(realvec& in, realvec& out)
   if (notEmpty_)
   {
 #ifdef MARSYAS_OGG
-    /*mrs_real duration = getctrl("mrs_real/duration")->toReal();
-    mrs_real rate = getctrl("mrs_real/israte")->toReal();
+    /*mrs_real duration = getctrl("mrs_real/duration")->to<mrs_real>();
+    mrs_real rate = getctrl("mrs_real/israte")->to<mrs_real>();
     */
-    mrs_natural observations = getctrl("mrs_natural/inObservations")->toNatural();
-    mrs_natural samples = getctrl("mrs_natural/inSamples")->toNatural();
-    mrs_natural israte = (mrs_natural)getctrl("mrs_real/israte")->toReal();
+    mrs_natural observations = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+    mrs_natural samples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+    mrs_natural israte = (mrs_natural)getctrl("mrs_real/israte")->to<mrs_real>();
 
     //size_t size = (size_t)(duration * rate);
     size_t size = vi->channels*sizeof(short int)*((size_t)(observations * samples));

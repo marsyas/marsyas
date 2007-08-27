@@ -81,15 +81,15 @@ AutoCorrelation::myUpdate(MarControlPtr sender)
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
 
-	scratch_.create(2*getctrl("mrs_natural/onSamples")->toNatural());
+	scratch_.create(2*getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
 	// only working for hanning window
 	normalize_ = 0;
-	if(getctrl("mrs_natural/normalize")->toNatural())
+	if(getctrl("mrs_natural/normalize")->to<mrs_natural>())
 	{
-		realvec tmp(getctrl("mrs_natural/onSamples")->toNatural());
+		realvec tmp(getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 		normalize_ = 1;
-		norm_.create(getctrl("mrs_natural/onSamples")->toNatural());
+		norm_.create(getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 		norm_.setval(1);
 		Windowing win("Windowing");
 		win.updctrl("mrs_string/type", "Hanning");
@@ -109,8 +109,8 @@ AutoCorrelation::myUpdate(MarControlPtr sender)
 	}
 
 
-	octaveCost_ = getctrl("mrs_real/octaveCost")->toReal();
-	voicing_ = getctrl("mrs_real/voicingThreshold")->toReal();
+	octaveCost_ = getctrl("mrs_real/octaveCost")->to<mrs_real>();
+	voicing_ = getctrl("mrs_real/voicingThreshold")->to<mrs_real>();
 
 	if(octaveCost_)
 	{
@@ -125,7 +125,7 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 	//checkFlow(in,out);
 	mrs_real re,im,am;
 	mrs_real k;
-	k = getctrl("mrs_real/magcompress")->toReal();
+	k = getctrl("mrs_real/magcompress")->to<mrs_real>();
 
 	// Copy to output to perform inplace fft and zeropad to double size
 

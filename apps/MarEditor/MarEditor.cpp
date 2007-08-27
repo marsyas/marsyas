@@ -399,7 +399,7 @@ MarEditor::rewind()
 	if(GUIstate() == PLAYING || GUIstate() == STOPPED || GUIstate() == PAUSED)
 	{
 		msysNet_->updctrl("mrs_natural/pos",0);
-		msysNet_->updctrl("mrs_bool/notEmpty", (bool)msysNet_->getctrl("mrs_natural/size")->toNatural());
+		msysNet_->updctrl("mrs_bool/notEmpty", (bool)msysNet_->getctrl("mrs_natural/size")->to<mrs_natural>());
 	}
 }
 

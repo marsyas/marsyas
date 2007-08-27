@@ -142,13 +142,13 @@ PeakConvert::myUpdate(MarControlPtr sender)
 	factor_ = timeSrate;
 	factor_ /= TWOPI;
 	fundamental_ = israte_;
-	skip_ = getctrl("mrs_natural/nbFramesSkipped")->toNatural();
-	prec_ = getctrl("mrs_bool/improvedPrecision")->toBool();
-	pick_ = getctrl("mrs_bool/picking")->toBool(); 
-	if(getctrl("mrs_string/frequencyInterval")->toString() != "MARSYAS_EMPTY")
+	skip_ = getctrl("mrs_natural/nbFramesSkipped")->to<mrs_natural>();
+	prec_ = getctrl("mrs_bool/improvedPrecision")->to<mrs_bool>();
+	pick_ = getctrl("mrs_bool/picking")->to<mrs_bool>(); 
+	if(getctrl("mrs_string/frequencyInterval")->to<mrs_string>() != "MARSYAS_EMPTY")
 	{
 		realvec conv(2);
-		string2parameters(getctrl("mrs_string/frequencyInterval")->toString(), conv, '_'); //[!]
+		string2parameters(getctrl("mrs_string/frequencyInterval")->to<mrs_string>(), conv, '_'); //[!]
 		downFrequency_ = (mrs_natural) floor(conv(0)/timeSrate*size_*2) ;
 		upFrequency_ = (mrs_natural) floor(conv(1)/timeSrate*size_*2);	
 	}
@@ -389,7 +389,7 @@ PeakConvert::myProcess(realvec& in, realvec& out)
 				/*	mrs_real lastmag = sqrt(c*c + d*d);
 				mrs_real rap = (mag_(o)-lastmag)/(lastmag*2);
 				f=asin(rap);
-				f *= (getctrl("mrs_real/israte")->toReal()*inObservations/2.0)/PI;
+				f *= (getctrl("mrs_real/israte")->to<mrs_real>()*inObservations/2.0)/PI;
 				*/
 				// rough frequency and amplitude
 				//frequency_(o) = o * fundamental_;
@@ -438,7 +438,7 @@ PeakConvert::myProcess(realvec& in, realvec& out)
 			}
 
 			// keep only the frameMaxNumPeaks_ highest amplitude local maxima
-			//if(getctrl("mrs_natural/frameMaxNumPeaks")->toNatural())
+			//if(getctrl("mrs_natural/frameMaxNumPeaks")->to<mrs_natural>())
 			if(ctrl_frameMaxNumPeaks_->to<mrs_natural>())
 			{
 				tmp_.stretch(frameMaxNumPeaks_*2);

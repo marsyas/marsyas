@@ -232,12 +232,12 @@ TopPanelNew::tick()
       pnet->updctrl("mrs_bool/probe", true);
 
 //       realvec out(512);
-//       out = pnet->getctrl("mrs_realvec/input0")->toVec();
+//       out = pnet->getctrl("mrs_realvec/input0")->to<mrs_realvec>();
 
       realvec out(256, 12);
 //       cout << out.getRows() << "\t";
 //       cout << out.getCols() << "\n";
-      out = pnet->getctrl("mrs_realvec/input5")->toVec();
+      out = pnet->getctrl("mrs_realvec/input5")->to<mrs_realvec>();
 
 //       out.setval(0.0);
 //       for (int g=0; g < 12; g++)

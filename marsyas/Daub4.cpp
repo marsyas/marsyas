@@ -55,7 +55,7 @@ Daub4::myUpdate(MarControlPtr sender)
   c1_ = 0.8365163037378079f;
   c2_ = 0.2241438680420143f;
   c3_ = -0.1294095225512604f;
-  workspace_.create(getctrl("mrs_natural/inSamples")->toNatural());
+  workspace_.create(getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 }
 
 void 

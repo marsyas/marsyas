@@ -71,11 +71,11 @@ AudioSource2::myUpdate(MarControlPtr sender)
 
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-	nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();
+	nChannels_ = getctrl("mrs_natural/nChannels")->to<mrs_natural>();
 	setctrl("mrs_natural/inObservations", nChannels_);
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 
-	bufferSize_ = (mrs_natural)getctrl("mrs_natural/bufferSize")->toNatural();
+	bufferSize_ = (mrs_natural)getctrl("mrs_natural/bufferSize")->to<mrs_natural>();
 #ifdef MARSYAS_MACOSX
 	bufferSize_ = 8 * bufferSize_; //[!]
 #endif	
@@ -83,8 +83,8 @@ AudioSource2::myUpdate(MarControlPtr sender)
 	initRtAudio(); 
 
 	//resize reservoir if necessary
-	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
-	inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
+	inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
 	if (inSamples_ * inObservations_ < bufferSize_) 
 		reservoirSize_ = 2 * inObservations_ * bufferSize_;
@@ -104,8 +104,8 @@ AudioSource2::initRtAudio()
 	//marsyas represents audio data as float numbers
 	RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
 
-	int rtSrate = (int)getctrl("mrs_real/israte")->toReal();
-	int rtChannels = (int)getctrl("mrs_natural/nChannels")->toNatural();
+	int rtSrate = (int)getctrl("mrs_real/israte")->to<mrs_real>();
+	int rtChannels = (int)getctrl("mrs_natural/nChannels")->to<mrs_natural>();
 
 	//create new RtAudio object (delete any existing one)
 	delete audio_;
@@ -166,7 +166,7 @@ AudioSource2::myProcess(realvec& in, realvec& out)
 		return;
 
 	//check MUTE
-	if(getctrl("mrs_bool/mute")->toBool()) return;
+	if(getctrl("mrs_bool/mute")->to<mrs_bool>()) return;
 
 	//assure that RtAudio thread is running
 	//(this may be needed by if an explicit call to start()
@@ -196,7 +196,7 @@ AudioSource2::myProcess(realvec& in, realvec& out)
 	for (o=0; o < inObservations_; o++)
 		for (t=0; t < inSamples_; t++)
 		{
-			out(o,t) = getctrl("mrs_real/gain")->toReal() * reservoir_(inObservations_ * t + o);
+			out(o,t) = getctrl("mrs_real/gain")->to<mrs_real>() * reservoir_(inObservations_ * t + o);
 		}
 
 		for (t=inSamples_*inObservations_; t < ri_; t++)

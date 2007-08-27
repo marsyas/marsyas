@@ -55,19 +55,19 @@ main(int argc, const char **argv)
   realvec src_in, dest_in;
   realvec src_out, erb_out, dest_out;
   
-  src_in.create(src->getctrl("mrs_natural/inObservations")->toNatural(), src->getctrl("mrs_natural/inSamples")->toNatural());
-  src_out.create(src->getctrl("mrs_natural/onObservations")->toNatural(), src->getctrl("mrs_natural/onSamples")->toNatural());
+  src_in.create(src->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), src->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+  src_out.create(src->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), src->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
   
-  erb_out.create(erb->getctrl("mrs_natural/onObservations")->toNatural(), erb->getctrl("mrs_natural/onSamples")->toNatural());
+  erb_out.create(erb->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), erb->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
   
-  dest_in.create(dest->getctrl("mrs_natural/inObservations")->toNatural(), dest->getctrl("mrs_natural/inSamples")->toNatural());
-  dest_out.create(dest->getctrl("mrs_natural/onObservations")->toNatural(), dest->getctrl("mrs_natural/onSamples")->toNatural());
+  dest_in.create(dest->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), dest->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+  dest_out.create(dest->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), dest->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
   
-  while (src->getctrl("mrs_bool/notEmpty")->toBool()){
+  while (src->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()){
     src->process(src_in, src_out);
     erb->process(src_out, erb_out);
     
-    for (mrs_natural i = 0; i < erb->getctrl("mrs_natural/onSamples")->toNatural(); i++){
+    for (mrs_natural i = 0; i < erb->getctrl("mrs_natural/onSamples")->to<mrs_natural>(); i++){
       dest_in(i) = gain*erb_out(channel,i);
     }
     dest->process(dest_in, dest_out);

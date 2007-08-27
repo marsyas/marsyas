@@ -102,8 +102,8 @@ void sfplugin(vector<string> soundfiles, string pluginName)
 		msys->updctrl("mrs_bool/initAudio", true);     
 
 		// hack for teligence 
-		//    mrs_natural size = msys->getctrl("SoundFileSource/src/mrs_natural/size")->toNatural();
-		//    mrs_natural inSamples = msys->getctrl("SoundFileSource/src/mrs_natural/inSamples")->toNatural();
+		//    mrs_natural size = msys->getctrl("SoundFileSource/src/mrs_natural/size")->to<mrs_natural>();
+		//    mrs_natural inSamples = msys->getctrl("SoundFileSource/src/mrs_natural/inSamples")->to<mrs_natural>();
 		//  cout << "size = " << size << endl;
 		//  cout << "inSamples = " << inSamples << endl;
 		//  mrs_natural memSize = size / inSamples;
@@ -112,7 +112,7 @@ void sfplugin(vector<string> soundfiles, string pluginName)
 		//  cout << (*msys) << endl;      
 		// end of hack 
 
-		srate = msys->getctrl("mrs_real/israte")->toReal();
+		srate = msys->getctrl("mrs_real/israte")->to<mrs_real>();
 
 		// playback offset and duration 
 		offset = (mrs_natural) (start * srate);
@@ -121,7 +121,7 @@ void sfplugin(vector<string> soundfiles, string pluginName)
 		msys->updctrl("mrs_natural/pos", offset);     
 
 		mrs_natural samplesPlayed = 0;
-		mrs_natural onSamples = msys->getctrl("mrs_natural/onSamples")->toNatural();
+		mrs_natural onSamples = msys->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
 		mrs_natural wc = 0;
 
 		if (onetick) 
@@ -137,7 +137,7 @@ void sfplugin(vector<string> soundfiles, string pluginName)
 				samplesPlayed += onSamples;
 
 				// rewind 
-				if (msys->getctrl("mrs_bool/notEmpty")->toBool() == false)
+				if (msys->getctrl("mrs_bool/notEmpty")->to<mrs_bool>() == false)
 				{
 					if (loop) 
 						msys->updctrl("mrs_natural/pos", 0);

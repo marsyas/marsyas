@@ -227,7 +227,7 @@ WavFileSource::getHeader(string filename)
 			#endif 
 		  
 			//size in number of samples per channel
-			size_ = bytes / (bits_ / 8)/ (getctrl("mrs_natural/onObservations")->toNatural());
+			size_ = bytes / (bits_ / 8)/ (getctrl("mrs_natural/onObservations")->to<mrs_natural>());
 			csize_ = size_;
 			setctrl("mrs_natural/size", size_);
 			ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
@@ -249,25 +249,25 @@ WavFileSource::getHeader(string filename)
     pos_ = 0;
   }
   
-  nChannels_ = getctrl("mrs_natural/onObservations")->toNatural();  
+  nChannels_ = getctrl("mrs_natural/onObservations")->to<mrs_natural>();  
 }
 
 void
 WavFileSource::myUpdate(MarControlPtr sender)
 {
-  inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
-  inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
-  israte_ = getctrl("mrs_real/israte")->toReal();
-	osrate_ = getctrl("mrs_real/osrate")->toReal();
+  inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+  inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+  israte_ = getctrl("mrs_real/israte")->to<mrs_real>();
+	osrate_ = getctrl("mrs_real/osrate")->to<mrs_real>();
   
-  nChannels_ = getctrl("mrs_natural/onObservations")->toNatural();
+  nChannels_ = getctrl("mrs_natural/onObservations")->to<mrs_natural>();
 
   setctrl("mrs_natural/onSamples", inSamples_);
   setctrl("mrs_natural/onObservations", nChannels_);
   //setctrl("mrs_real/osrate", osrate_);
-  //osrate_ = getctrl("mrs_real/osrate")->toReal();
-  pos_ = getctrl("mrs_natural/pos")->toNatural();
-  rewindpos_ = getctrl("mrs_natural/loopPos")->toNatural();
+  //osrate_ = getctrl("mrs_real/osrate")->to<mrs_real>();
+  pos_ = getctrl("mrs_natural/pos")->to<mrs_natural>();
+  rewindpos_ = getctrl("mrs_natural/loopPos")->to<mrs_natural>();
   
   delete [] sdata_;
   delete [] cdata_;
@@ -275,8 +275,8 @@ WavFileSource::myUpdate(MarControlPtr sender)
   sdata_ = new short[inSamples_ * nChannels_];
   cdata_ = new unsigned char[inSamples_ * nChannels_];   
   
-  repetitions_ = getctrl("mrs_real/repetitions")->toReal();
-  duration_ = getctrl("mrs_real/duration")->toReal();
+  repetitions_ = getctrl("mrs_real/repetitions")->to<mrs_real>();
+  duration_ = getctrl("mrs_real/duration")->to<mrs_real>();
 
   if (duration_ != -1.0)
     {
@@ -289,8 +289,8 @@ WavFileSource::myUpdate(MarControlPtr sender)
 mrs_natural 
 WavFileSource::getLinear8(mrs_natural c, realvec& slice)
 {
-  mrs_natural nChannels = getctrl("mrs_natural/onObservations")->toNatural();
-  mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
+  mrs_natural nChannels = getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+  mrs_natural inSamples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
   
   samplesToRead_ = inSamples * nChannels;
 

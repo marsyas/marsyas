@@ -65,22 +65,22 @@ KNNClassifier::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("KNNClassifier.cpp - KNNClassifier:myUpdate");
   
-  nPredictions_ = getctrl("mrs_natural/nPredictions")->toNatural();
+  nPredictions_ = getctrl("mrs_natural/nPredictions")->to<mrs_natural>();
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", (mrs_natural) nPredictions_ + 1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
-  grow_ = getctrl("mrs_natural/grow")->toNatural();
-  nPoints_ = getctrl("mrs_natural/nPoints")->toNatural();
-  k_ = getctrl("mrs_natural/k")->toNatural();
-  string mode = getctrl("mrs_string/mode")->toString();
+  inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+  grow_ = getctrl("mrs_natural/grow")->to<mrs_natural>();
+  nPoints_ = getctrl("mrs_natural/nPoints")->to<mrs_natural>();
+  k_ = getctrl("mrs_natural/k")->to<mrs_natural>();
+  string mode = getctrl("mrs_string/mode")->to<mrs_string>();
 
   if (mode == "train")
     {
       if (inObservations_ != trainSet_.getCols())
 	{
-	  trainSet_.stretch(1, getctrl("mrs_natural/inObservations")->toNatural());
+	  trainSet_.stretch(1, getctrl("mrs_natural/inObservations")->to<mrs_natural>());
 	  setctrl("mrs_realvec/trainSet", trainSet_);
 	}
     }
@@ -89,13 +89,13 @@ KNNClassifier::myUpdate(MarControlPtr sender)
 
   if (mode == "predict")
     {
-      trainSet_.create(getctrl("mrs_realvec/trainSet")->toVec().getRows(), 
-		       getctrl("mrs_realvec/trainSet")->toVec().getCols());
-      trainSet_ = getctrl("mrs_realvec/trainSet")->toVec();
+      trainSet_.create(getctrl("mrs_realvec/trainSet")->to<mrs_realvec>().getRows(), 
+		       getctrl("mrs_realvec/trainSet")->to<mrs_realvec>().getCols());
+      trainSet_ = getctrl("mrs_realvec/trainSet")->to<mrs_realvec>();
     }
   
 
-  if (getctrl("mrs_bool/done")->toBool())
+  if (getctrl("mrs_bool/done")->to<mrs_bool>())
     { 
       setctrl("mrs_bool/done", false);
       setctrl("mrs_realvec/trainSet", trainSet_);
@@ -109,9 +109,9 @@ KNNClassifier::myProcess(realvec& in, realvec& out)
   //checkFlow(in,out);
   
   mrs_real v;
-  string mode = getctrl("mrs_string/mode")->toString();
+  string mode = getctrl("mrs_string/mode")->to<mrs_string>();
   mrs_real label;
-  mrs_natural nlabels = getctrl("mrs_natural/nLabels")->toNatural();
+  mrs_natural nlabels = getctrl("mrs_natural/nLabels")->to<mrs_natural>();
   mrs_natural prediction;
   int x, y;  
   int p;

@@ -55,7 +55,7 @@ SilenceRemove::myUpdate(MarControlPtr sender)
 {
 	MRSDIAG("SilenceRemove.cpp - SilenceRemove:myUpdate");
 
-	threshold_ = ctrl_threshold_->toReal();
+	threshold_ = ctrl_threshold_->to<mrs_real>();
 
 	if (marsystemsSize_ > 0)
 	{

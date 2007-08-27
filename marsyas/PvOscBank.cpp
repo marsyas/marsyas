@@ -61,10 +61,10 @@ PvOscBank::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
 
-  // mrs_natural inObservations = getctrl("mrs_natural/inObservations")->toNatural();
+  // mrs_natural inObservations = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 
   //defaultUpdate();
-	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
+	inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 
   size_ = inObservations_/2 + 1;
   
@@ -86,10 +86,10 @@ PvOscBank::myUpdate(MarControlPtr sender)
   
   psize_ = size_;
   
-  P_ = getctrl("mrs_real/PitchShift")->toReal();
-  I_ = getctrl("mrs_natural/Interpolation")->toNatural();
-  S_ = getctrl("mrs_real/SynthesisThreshold")->toReal();
-  R_ = getctrl("mrs_real/osrate")->toReal();
+  P_ = getctrl("mrs_real/PitchShift")->to<mrs_real>();
+  I_ = getctrl("mrs_natural/Interpolation")->to<mrs_natural>();
+  S_ = getctrl("mrs_real/SynthesisThreshold")->to<mrs_real>();
+  R_ = getctrl("mrs_real/osrate")->to<mrs_real>();
 }
 	
 void 

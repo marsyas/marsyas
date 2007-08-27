@@ -62,11 +62,11 @@ void* run(void * arg)
   
   mrs_real* controls = 0;
   
-  mrs_natural onSamples = featureNetwork->getctrl("mrs_natural/onSamples")->toNatural();
+  mrs_natural onSamples = featureNetwork->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
   
   
   // start the network 
-  while ( featureNetwork->getctrl("mrs_bool/notEmpty")->toBool() ) {
+  while ( featureNetwork->getctrl("mrs_bool/notEmpty")->to<mrs_bool>() ) {
 
 	try {
 		
@@ -74,9 +74,9 @@ void* run(void * arg)
       		if ( controls != 0 ) {
 			
 			// get some reference controls, so if they have changed we update them
-			mrs_natural inSamples = featureNetwork->getctrl("mrs_natural/inSamples")->toNatural();
-			mrs_natural inObservations = featureNetwork->getctrl("mrs_natural/inObservations")->toNatural();
-			mrs_real israte = featureNetwork->getctrl("mrs_real/israte")->toReal();
+			mrs_natural inSamples = featureNetwork->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+			mrs_natural inObservations = featureNetwork->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+			mrs_real israte = featureNetwork->getctrl("mrs_real/israte")->to<mrs_real>();
 			
 			if ( (mrs_natural)controls[1] != inSamples || (mrs_natural)controls[2] != inObservations 
 					|| controls[3] != israte ) {

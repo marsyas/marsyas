@@ -62,10 +62,10 @@ PCA::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/npc"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
-  onObservations_ = getctrl("mrs_natural/onObservations")->toNatural();
+  inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+  onObservations_ = getctrl("mrs_natural/onObservations")->to<mrs_natural>();
   
-  npc_ = getctrl("mrs_natural/npc")->toNatural();
+  npc_ = getctrl("mrs_natural/npc")->to<mrs_natural>();
     
   if( npcs_.getRows() != inObservations_ || npcs_.getCols() != npc_ )
       npcs_.create(inObservations_,npc_);

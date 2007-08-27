@@ -69,14 +69,14 @@ SineSource::myProcess(realvec &in, realvec &out)
   //checkFlow(in,out);
 
   //lmartins: if (mute_)
-	if(getctrl("mrs_bool/mute")->toBool())
+	if(getctrl("mrs_bool/mute")->to<mrs_bool>())
 	{
 		out.setval(0.0);
 		return;
 	}
    
-  mrs_real incr = (getctrl("mrs_real/frequency")->toReal() * wavetableSize_) / (getctrl("mrs_real/israte")->toReal());
-  mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
+  mrs_real incr = (getctrl("mrs_real/frequency")->to<mrs_real>() * wavetableSize_) / (getctrl("mrs_real/israte")->to<mrs_real>());
+  mrs_natural inSamples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
   
 	for (t=0; t < inSamples; t++)
 	{

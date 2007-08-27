@@ -64,15 +64,15 @@ ShiftOutput::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/WindowSize",getctrl("mrs_natural/inSamples"));
 
   //defaultUpdate(); [!]
-	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
-	inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
+	inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
   
   tmpSlice_.stretch(inObservations_, inSamples_);
   
-  I_ = getctrl("mrs_natural/onSamples")->toNatural();
-  N_ = getctrl("mrs_natural/inSamples")->toNatural();
-  Nw_ = getctrl("mrs_natural/WindowSize")->toNatural();
-  D_ = getctrl("mrs_natural/Decimation")->toNatural();
+  I_ = getctrl("mrs_natural/onSamples")->to<mrs_natural>();
+  N_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+  Nw_ = getctrl("mrs_natural/WindowSize")->to<mrs_natural>();
+  D_ = getctrl("mrs_natural/Decimation")->to<mrs_natural>();
 }
 
 void 

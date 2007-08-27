@@ -19,7 +19,7 @@ void MarLineEdit::setValue(MarControlPtr cname)
 {
   if (mycname->getName() == cname->getName())
     {
-      QString qtest(cname->toString().c_str());
+      QString qtest(cname->to<mrs_string>().c_str());
       blockSignals(true);
       QLineEdit::setText(qtest);
       blockSignals(false);

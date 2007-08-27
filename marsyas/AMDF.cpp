@@ -56,7 +56,7 @@ AMDF::myProcess(realvec& in, realvec& out)
 {
   //checkFlow(in,out);
   
-  mrs_real gain = getctrl("mrs_real/gain")->toReal();
+  mrs_real gain = getctrl("mrs_real/gain")->to<mrs_real>();
   mrs_natural i,k;
   mrs_real temp;
   

@@ -241,7 +241,7 @@ TopPanelNew::tick()
       pnet->tick();
       pnet->updctrl("mrs_bool/probe", true);
       realvec out(512);
-      out = pnet->getctrl("mrs_realvec/input0")->toVec();
+      out = pnet->getctrl("mrs_realvec/input0")->to<mrs_realvec>();
 
 
       graph->setBuffer( out );

@@ -20,8 +20,13 @@
 #define __MARCONTROLVALUE__
 
 #include <string>
+#include <vector>
 #include "common.h"
 #include "realvec.h"
+
+#ifdef MARSYAS_QT
+#include <QtCore>
+#endif
 
 namespace Marsyas
 {
@@ -31,20 +36,38 @@ namespace Marsyas
 	Created by lfpt@inescporto.pt and lmartins@inescporto.pt
 */
 
+	class MarControl; //forward declaration
 
 class MarControlValue
 {
 protected:
 	std::string type_;
 
+	//MarControls that use this MarControlValue
+	//(i.e. linked MarControls)
+	std::vector<MarControl*> links_;
+	std::vector<MarControl*>::iterator lit_;
+
+#ifdef MARSYAS_QT
+	mutable QReadWriteLock rwLock_; //[!]
+#endif
+
 protected:
 	MarControlValue() {} // can't be directly created (use MarControl or MarControlValueT)
+	MarControlValue(const MarControlValue& a) {type_ = a.type_;};
+	void callMarSystemsUpdate();
 
 public:
 	virtual ~MarControlValue() {}
 
 	virtual MarControlValue* clone() = 0;
 	virtual MarControlValue* create() = 0;
+
+	//Link management (i.e. MarControl Linking mechanism)
+	void addLink(MarControl* newlink);
+	void removeLink(MarControl* const link);
+	std::vector<MarControl*> getLinks() const {return links_;};
+	mrs_natural getNumLinks() const {return links_.size();};
 
 	virtual std::string getTypeID() = 0;
 	// workaround method to avoid circular dependencies
@@ -95,8 +118,8 @@ public:
 	virtual std::string getTypeID();
 
 	//setters
-	void set(MarControlValue *val);
-	void set(T &re);
+	void set(MarControlValue *val, bool update);
+	void set(T &re, bool update);
 
 	//getters
 	const T& get() const;
@@ -136,8 +159,8 @@ public:
 	virtual std::string getTypeID();
 
 	//setters
-	inline void set(MarControlValue *val);
-	inline void set(realvec &re);
+	inline void set(MarControlValue *val, bool update);
+	inline void set(realvec &re, bool update);
 
 	//getters
 	const realvec& get() const;
@@ -179,8 +202,8 @@ public:
 	virtual MarControlValue* create();
 
 	//setters
-	inline void set(MarControlValue *val);
-	inline void set(bool &re);
+	inline void set(MarControlValue *val, bool update);
+	inline void set(bool &re, bool update);
 
 	//getters
 	const bool& get() const;
@@ -253,8 +276,16 @@ MarControlValueT<T>::MarControlValueT(T value)
 template<class T>
 MarControlValueT<T>::MarControlValueT(const MarControlValueT& a):MarControlValue(a)
 {
+#ifdef MARSYAS_QT
+	a.rwLock_.lockForRead(); //[!]
+#endif
+
 	value_ = a.value_;
 	type_ = a.type_;
+
+#ifdef MARSYAS_QT
+	a.rwLock_.unlock(); //[!]
+#endif
 }
 
 template<class T>
@@ -263,8 +294,16 @@ MarControlValueT<T>::operator=(const MarControlValueT& a)
 {
 	if (this != &a)
 	{
+		#ifdef MARSYAS_QT
+		a.rwLock_.lockForRead(); //[!]
+		#endif
+
 		value_ = a.value_;
 		type_ = a.type_;
+
+		#ifdef MARSYAS_QT
+		a.rwLock_.unlock(); //[!]
+		#endif
 	}
 	return *this;
 }
@@ -306,29 +345,85 @@ MarControlValueT<bool>::getTypeID()
 
 template<class T>
 void
-MarControlValueT<T>::set(T &val)
+MarControlValueT<T>::set(T &val, bool update)
 {
+	#ifdef MARSYAS_QT
+	rwLock_.lockForWrite(); //[!]
+	#endif
+
 	value_ = val;
+
+	#ifdef MARSYAS_QT
+	rwLock_.unlock();
+	rwLock_.lockForRead();
+	#endif
+
+	if(update)
+	{
+		callMarSystemsUpdate();
+	}
+
+	#ifdef MARSYAS_QT
+	rwLock_.unlock();
+	#endif
 }
 
 inline
 void
-MarControlValueT<realvec>::set(realvec &val)
+MarControlValueT<realvec>::set(realvec &val, bool update)
 {
+#ifdef MARSYAS_QT
+	rwLock_.lockForWrite(); //[!]
+#endif
+
 	value_ = val;
+
+#ifdef MARSYAS_QT
+	rwLock_.unlock();
+	rwLock_.lockForRead();
+#endif
+
+	if(update)
+	{
+		callMarSystemsUpdate();
+	}
+
+#ifdef MARSYAS_QT
+	rwLock_.unlock();
+#endif
 }
 
 inline
 void
-MarControlValueT<bool>::set(bool &val)
+MarControlValueT<bool>::set(bool &val, bool update)
 {
+#ifdef MARSYAS_QT
+	rwLock_.lockForWrite(); //[!]
+#endif
+
 	value_ = val;
+
+#ifdef MARSYAS_QT
+	rwLock_.unlock();
+	rwLock_.lockForRead();
+#endif
+
+	if(update)
+		callMarSystemsUpdate();
+
+#ifdef MARSYAS_QT
+	rwLock_.unlock();
+#endif
 }
 
 template<class T>
 const T&
 MarControlValueT<T>::get() const
 {
+#ifdef MARSYAS_QT
+	QReadLocker locker(&rwLock_); //[!]
+#endif 
+
 	return value_;
 }
 
@@ -336,7 +431,15 @@ template<class T>
 void
 MarControlValueT<T>::createFromStream(std::istream& in)
 {
+#ifdef MARSYAS_QT
+	rwLock_.lockForWrite(); //[!]
+#endif
+
 	in >> value_;
+
+#ifdef MARSYAS_QT
+	rwLock_.unlock(); //[!]
+#endif
 }
 
 template<class T>
@@ -348,13 +451,23 @@ MarControlValueT<T>::isNotEqual(MarControlValue *v)
 		if (type_ != v->getType())
 		{
 			std::ostringstream sstr;
-			sstr << "[MarControlValueT::isNotEqual] Trying to compare different types of MarControlValue. "
+			sstr << "MarControlValueT::isNotEqual() - Trying to compare different types of MarControlValue. "
 				<< "(" << this->getType() << " with " << v->getType() << ")";
 			MRSWARN(sstr.str());
 			return false;
 		}
 
-		return value_ != dynamic_cast<MarControlValueT<T>*>(v)->get();
+		#ifdef MARSYAS_QT
+		rwLock_.lockForRead(); //[!]
+		#endif
+		
+		bool res = (value_ != dynamic_cast<MarControlValueT<T>*>(v)->get());
+		
+		#ifdef MARSYAS_QT
+		rwLock_.unlock(); //[!]
+		#endif
+		
+		return res;
 	}
 	else //if v1 and v2 refer to the same object, they must be equal (=> return false)
 		return false;
@@ -368,13 +481,25 @@ MarControlValueT<T>::sum(MarControlValue *v)
 	if(!ptr)
 	{
 		std::ostringstream sstr;
-		sstr << "[MarControlValueT::sum] Trying to sum different types of MarControlValue. "
+		sstr << "MarControlValueT::sum() - Trying to sum different types of MarControlValue. "
 			<< "(" << this->getType() << " with " << v->getType() << ")";
 		MRSWARN(sstr.str());
 		return false;
 	}
 
-	return new MarControlValueT<T>(value_+ptr->value_);
+	#ifdef MARSYAS_QT
+	rwLock_.lockForRead(); //[!]
+	ptr_->rwLock_.lockForRead();
+	#endif
+	
+	MarControlValue* res = new MarControlValueT<T>(value_+ptr->value_);
+	
+	#ifdef MARSYAS_QT
+	rwLock_.unlock(); //[!]
+	ptr_->rwLock_.unlock();
+	#endif
+
+	return res;//new MarControlValueT<T>(value_+ptr->value_);
 }
 
 template<class T>
@@ -385,13 +510,25 @@ MarControlValueT<T>::subtract(MarControlValue *v)
 	if(!ptr)
 	{
 		std::ostringstream sstr;
-		sstr << "[MarControlValueT::subtract] Trying to subtract different types of MarControlValue. "
+		sstr << "MarControlValueT::subtract() - Trying to subtract different types of MarControlValue. "
 			<< "(" << this->getType() << " with " << v->getType() << ")";
 		MRSWARN(sstr.str());
 		return false;
 	}
 
-	return new MarControlValueT<T>(value_+ptr->value_);
+	#ifdef MARSYAS_QT
+	rwLock_.lockForRead(); //[!]
+	ptr_->rwLock_.lockForRead();
+	#endif
+
+	MarControlValue* res = new MarControlValueT<T>(value_-ptr->value_);
+	
+	#ifdef MARSYAS_QT
+	rwLock_.unlock(); //[!]
+	ptr_->rwLock_.unlock();
+	#endif
+
+	return res;//new MarControlValueT<T>(value_-ptr->value_);
 }
 
 template<class T>
@@ -402,13 +539,25 @@ MarControlValueT<T>::multiply(MarControlValue *v)
 	if(!ptr)
 	{
 		std::ostringstream sstr;
-		sstr << "[MarControlValueT::multiply] Trying to multiply different types of MarControlValue. "
+		sstr << "MarControlValueT::multiply() - Trying to multiply different types of MarControlValue. "
 			<< "(" << this->getType() << " with " << v->getType() << ")";
 		MRSWARN(sstr.str());
 		return false;
 	}
 
-	return new MarControlValueT<T>(value_*ptr->value_);
+	#ifdef MARSYAS_QT
+	rwLock_.lockForRead(); //[!]
+	ptr_->rwLock_.lockForRead();
+	#endif
+
+	MarControlValue* res = new MarControlValueT<T>(value_*ptr->value_);
+	
+	#ifdef MARSYAS_QT
+	rwLock_.unlock(); //[!]
+	ptr_->rwLock_.unlock();
+	#endif
+
+	return res; //new MarControlValueT<T>(value_*ptr->value_);
 }
 
 template<class T>
@@ -425,14 +574,35 @@ MarControlValueT<T>::divide(MarControlValue *v)
 		return false;
 	}
 
-	return new MarControlValueT<T>(value_/ptr->value_);
+	#ifdef MARSYAS_QT
+	rwLock_.lockForRead(); //[!]
+	ptr_->rwLock_.lockForRead();
+	#endif
+
+	MarControlValue* res = new MarControlValueT<T>(value_/ptr->value_);
+	
+	#ifdef MARSYAS_QT
+	rwLock_.unlock(); //[!]
+	ptr_->rwLock_.unlock();
+	#endif
+
+	return res;//new MarControlValueT<T>(value_/ptr->value_);
 }
 
 template<class T>
 std::ostream&
 MarControlValueT<T>::serialize(std::ostream& os)
 {
+	#ifdef MARSYAS_QT
+	rwLock_.lockForRead(); //[!]
+	#endif
+
 	os << value_;
+
+	#ifdef MARSYAS_QT
+	rwLock_.unlock(); //[!]
+	#endif
+
 	return os;
 }
 

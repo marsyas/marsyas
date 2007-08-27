@@ -57,11 +57,11 @@ PeakSynthOsc::myUpdate(MarControlPtr sender)
 {
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/synSize"));
 	setctrl("mrs_natural/onObservations", (mrs_natural)1);
-	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal()); //HACK!! [!] - see PeakConvert::myUpdate()
+	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->to<mrs_real>()); //HACK!! [!] - see PeakConvert::myUpdate()
 
-	delay_ = getctrl("mrs_natural/delay")->toNatural();
+	delay_ = getctrl("mrs_natural/delay")->to<mrs_natural>();
 
-	mrs_real fs = getctrl("mrs_real/osrate")->toReal();
+	mrs_real fs = getctrl("mrs_real/osrate")->to<mrs_real>();
 	factor_ = TWOPI/fs;
 }
 
@@ -84,17 +84,17 @@ PeakSynthOsc::myProcess(realvec& in, realvec& out)
 	mrs_natural N, Nb, nbH;
 	int i;
 
-	Nb = in.getSize()/peakView::nbPkParameters ; //getctrl("mrs_natural/nbSinusoids")->toNatural();
+	Nb = in.getSize()/peakView::nbPkParameters ; //getctrl("mrs_natural/nbSinusoids")->to<mrs_natural>();
 	N= out.getSize();
 
 	out.setval(0);
 	//cout << in;
-	nbH = ctrl_harmonize_->toVec().getSize();
+	nbH = ctrl_harmonize_->to<mrs_realvec>().getSize();
 	if(nbH)
 		for(mrs_natural j=0 ; j<(nbH-1)/2 ; j++)
 		{
-			mrs_real mulF = ctrl_harmonize_->toVec()(1+j*2); 
-			mrs_real mulA = ctrl_harmonize_->toVec()(2+j*2);
+			mrs_real mulF = ctrl_harmonize_->to<mrs_realvec>()(1+j*2); 
+			mrs_real mulA = ctrl_harmonize_->to<mrs_realvec>()(2+j*2);
 			//	cout << "mulF" << mulF << "mulA" << mulA << endl;
 			for (i=0; i < Nb; i++)
 			{

@@ -90,7 +90,7 @@ MarControlGUI::realWidget()
 {
 	//delete realWidget_;
 	realWidget_ = new QLineEdit(this);
-	realWidget_->setText(QString::number(double(control_->toReal())));
+	realWidget_->setText(QString::number(double(control_->to<mrs_real>())));
 	
 	sizeHint_ = realWidget_->sizeHint();
 
@@ -106,7 +106,7 @@ MarControlGUI::boolWidget()
 {
 	//delete boolWidget_;
 	boolWidget_ = new QCheckBox(this);
-	boolWidget_->setChecked(control_->toBool());
+	boolWidget_->setChecked(control_->to<mrs_bool>());
 	sizeHint_ = boolWidget_->sizeHint();
 	
 	connect(boolWidget_, SIGNAL(toggled(bool)), 
@@ -118,7 +118,7 @@ MarControlGUI::naturalWidget()
 {
 	//delete naturalWidget_;
 	naturalWidget_ = new QLineEdit(this);
-	naturalWidget_->setText(QString::number((int)(control_->toNatural())));
+	naturalWidget_->setText(QString::number((int)(control_->to<mrs_natural>())));
 
 	sizeHint_ = naturalWidget_->sizeHint();
 
@@ -134,7 +134,7 @@ MarControlGUI::stringWidget()
 {
 	//delete stringWidget_;
 	stringWidget_ = new QLineEdit(this);
-	stringWidget_->setText(QString::fromStdString(control_->toString()));
+	stringWidget_->setText(QString::fromStdString(control_->to<mrs_string>()));
 	sizeHint_ = stringWidget_->sizeHint();
 
 	connect(stringWidget_, SIGNAL(textEdited(const QString &)), 
@@ -162,7 +162,7 @@ MarControlGUI::showVectorTable()
 	if(control_->getType() != "mrs_realvec") //if not a vector, do nothing
 		return;
 	
-	realvec vec = control_->toVec();
+	realvec vec = control_->to<mrs_realvec>();
 
 	if(vec.getSize() == 0)
 	{
@@ -212,7 +212,7 @@ MarControlGUI::double2MarControl()
 {
 	double val = realWidget_->text().toDouble();
 
-	if(val == (double)control_->toReal())
+	if(val == (double)control_->to<mrs_real>())
 		return;
 
 	control_->setValue(val); //this is thread safe!
@@ -224,7 +224,7 @@ MarControlGUI::double2MarControl()
 void
 MarControlGUI::toMarControl(bool val)
 {
-	if(val == control_->toBool())
+	if(val == control_->to<mrs_bool>())
 		return;
 
 	control_->setValue(val);//this is thread safe!
@@ -236,7 +236,7 @@ MarControlGUI::int2MarControl()
 {
 	int val = naturalWidget_->text().toInt();
 	
-	if(val == (int)control_->toNatural())
+	if(val == (int)control_->to<mrs_natural>())
 		return;
 
 	control_->setValue((mrs_natural)val);//this is thread safe!
@@ -250,7 +250,7 @@ MarControlGUI::string2MarControl()
 {
 	string val = stringWidget_->text().toStdString();
 	
-	if(val == control_->toString())
+	if(val == control_->to<mrs_string>())
 		return;
 
 	control_->setValue(val); //this is thread safe!
@@ -266,7 +266,7 @@ MarControlGUI::toMarControl(QTableWidgetItem* cell)
 	int col = table->column(cell);
 	int row = table->row(cell);
 	
-	realvec vec = control_->toVec();
+	realvec vec = control_->to<mrs_realvec>();
 	vec(row, col) = (mrs_real)(cell->text().toDouble());
 	
 	control_->setValue(vec);//this is thread safe!
@@ -298,12 +298,12 @@ MarControlGUI::updControl(MarControlPtr control)
 	string ctype = control_->getType();
 	if(ctype == "mrs_real")
 	{
-		realWidget_->setText(QString::number((double)control_->toReal()));//does not trigger a signal!
+		realWidget_->setText(QString::number((double)control_->to<mrs_real>()));//does not trigger a signal!
 		return;
 	}
 	if(ctype == "mrs_natural")
 	{
-		naturalWidget_->setText(QString::number((int)control_->toNatural()));//does not trigger a signal!
+		naturalWidget_->setText(QString::number((int)control_->to<mrs_natural>()));//does not trigger a signal!
 		return;
 	}
 	if(ctype == "mrs_bool")
@@ -312,14 +312,14 @@ MarControlGUI::updControl(MarControlPtr control)
 		//we'll enter an infinite signal->slot loop...
 		disconnect(boolWidget_, SIGNAL(toggled(bool)), 
 			this, SLOT(toMarControl(bool))); //[!]
-		boolWidget_->setChecked(control_->toBool());//This does trigger a signal!!
+		boolWidget_->setChecked(control_->to<mrs_bool>());//This does trigger a signal!!
 		connect(boolWidget_, SIGNAL(toggled(bool)), 
 			this, SLOT(toMarControl(bool)));
 		return;
 	}
 	if(ctype == "mrs_string")
 	{
-		stringWidget_->setText(QString::fromStdString(control_->toString()));//does not trigger a signal!
+		stringWidget_->setText(QString::fromStdString(control_->to<mrs_string>()));//does not trigger a signal!
 		return;
 	}
 	if(ctype == "mrs_realvec")
@@ -329,7 +329,7 @@ MarControlGUI::updControl(MarControlPtr control)
 		// 			Q_ASSERT(disconnect(vecTable_, SIGNAL(itemChanged(QTableWidgetItem*)),
 		// 				this, SLOT(toMarControl(QTableWidgetItem*))));
 		// 
-		// 			realvec vec = control_->toVec();
+		// 			realvec vec = control_->to<mrs_realvec>();
 		// 			int rows = (int)(vec.getRows());
 		// 			int cols = (int)(vec.getCols());
 		// 

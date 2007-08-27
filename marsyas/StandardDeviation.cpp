@@ -46,12 +46,12 @@ StandardDeviation::myUpdate(MarControlPtr sender)
   ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
   ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 
-  obsrow_.create(ctrl_inSamples_->toNatural());
+  obsrow_.create(ctrl_inSamples_->to<mrs_natural>());
   
-  inObservations_ = ctrl_inObservations_->toNatural();
+  inObservations_ = ctrl_inObservations_->to<mrs_natural>();
   
   ostringstream oss;
-  string inObsNames = ctrl_inObsNames_->toString();
+  string inObsNames = ctrl_inObsNames_->to<mrs_string>();
   for (int i = 0; i < inObservations_; i++)
     {
       string inObsName;

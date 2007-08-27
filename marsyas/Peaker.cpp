@@ -69,13 +69,13 @@ Peaker::myProcess(realvec& in, realvec& out)
 
 
 
-	peakSpacing = getctrl("mrs_real/peakSpacing")->toReal();
-	peakStrength = getctrl("mrs_real/peakStrength")->toReal();
-	peakStart = getctrl("mrs_natural/peakStart")->toNatural();
-	peakEnd = getctrl("mrs_natural/peakEnd")->toNatural();
-	interpolationMode = getctrl("mrs_natural/interpolation")->toNatural();
-	peakGain = getctrl("mrs_real/peakGain")->toReal();
-	mrs_real srate = getctrl("mrs_real/israte")->toReal();
+	peakSpacing = getctrl("mrs_real/peakSpacing")->to<mrs_real>();
+	peakStrength = getctrl("mrs_real/peakStrength")->to<mrs_real>();
+	peakStart = getctrl("mrs_natural/peakStart")->to<mrs_natural>();
+	peakEnd = getctrl("mrs_natural/peakEnd")->to<mrs_natural>();
+	interpolationMode = getctrl("mrs_natural/interpolation")->to<mrs_natural>();
+	peakGain = getctrl("mrs_real/peakGain")->to<mrs_real>();
+	mrs_real srate = getctrl("mrs_real/israte")->to<mrs_real>();
 
 
 	out.setval(0.0);

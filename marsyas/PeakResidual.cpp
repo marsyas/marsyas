@@ -56,7 +56,7 @@ PeakResidual::myUpdate(MarControlPtr sender)
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 
 	ostringstream oss;
-	string inObsNames = ctrl_inObsNames_->toString();
+	string inObsNames = ctrl_inObsNames_->to<mrs_string>();
 	string inObsName;
 	string temp;
 	for(o=0; o < ctrl_onObservations_->to<mrs_natural>(); o++)

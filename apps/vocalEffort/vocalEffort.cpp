@@ -76,12 +76,12 @@ int process(string inName, string outName)
 	input->updctrl("NoiseSource/ns/mrs_string/mode", "truc");
 
 	int i = 0;
-	while(input->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
+	while(input->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
 	{
 		input->tick();
 		i++;
-		//	cout << input->getctrl("Filter/analysis/mrs_realvec/ncoeffs")->toVec() << endl;
-		//	cout << input->getctrl("LPC/lpc/mrs_realvec/coeffs")->toVec() << endl;
+		//	cout << input->getctrl("Filter/analysis/mrs_realvec/ncoeffs")->to<mrs_realvec>() << endl;
+		//	cout << input->getctrl("LPC/lpc/mrs_realvec/coeffs")->to<mrs_realvec>() << endl;
 	}
 
 	cout << endl << "LPC processing finished!";

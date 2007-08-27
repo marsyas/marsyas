@@ -26,7 +26,7 @@ addSource(MarSystem* net, string infile)
 	net->updctrl("SoundFileSource/src/mrs_string/filename", infile);
 	net->linkControl("mrs_bool/notEmpty",
 	                 "SoundFileSource/src/mrs_bool/notEmpty");
-	return net->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
+	return net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 }
 
 void

@@ -201,7 +201,7 @@ AuFileSource::getHeader(string filename)
     setctrl("mrs_bool/notEmpty", false);
     pos_ = 0;
   }
-  nChannels_ = getctrl("mrs_natural/onObservations")->toNatural();
+  nChannels_ = getctrl("mrs_natural/onObservations")->to<mrs_natural>();
   samplesRead_ = 0;
 }
 
@@ -251,19 +251,19 @@ AuFileSource::getLinear16(realvec& slice)
 void
 AuFileSource::myUpdate(MarControlPtr sender)
 {
-  nChannels_ = getctrl("mrs_natural/onObservations")->toNatural();  
-  inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
-  inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
-  israte_ = getctrl("mrs_real/israte")->toReal();
+  nChannels_ = getctrl("mrs_natural/onObservations")->to<mrs_natural>();  
+  inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+  inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+  israte_ = getctrl("mrs_real/israte")->to<mrs_real>();
   
   setctrl("mrs_natural/onSamples", inSamples_);
   setctrl("mrs_natural/onObservations", nChannels_);
   
   setctrl("mrs_real/osrate", israte_);
    
-  filename_ = getctrl("mrs_string/filename")->toString();    
-  pos_ = getctrl("mrs_natural/pos")->toNatural();
-  rewindpos_ = getctrl("mrs_natural/loopPos")->toNatural();
+  filename_ = getctrl("mrs_string/filename")->to<mrs_string>();    
+  pos_ = getctrl("mrs_natural/pos")->to<mrs_natural>();
+  rewindpos_ = getctrl("mrs_natural/loopPos")->to<mrs_natural>();
   
   delete [] sdata_;
   delete [] cdata_;
@@ -271,11 +271,11 @@ AuFileSource::myUpdate(MarControlPtr sender)
   sdata_ = new short[inSamples_ * nChannels_];
   cdata_ = new unsigned char[inSamples_ * nChannels_];   
 
-  repetitions_ = getctrl("mrs_real/repetitions")->toReal();
+  repetitions_ = getctrl("mrs_real/repetitions")->to<mrs_real>();
 
-  duration_ = getctrl("mrs_real/duration")->toReal();
-  advance_ = getctrl("mrs_bool/advance")->toBool();
-  cindex_ = getctrl("mrs_natural/cindex")->toNatural();
+  duration_ = getctrl("mrs_real/duration")->to<mrs_real>();
+  advance_ = getctrl("mrs_bool/advance")->to<mrs_bool>();
+  cindex_ = getctrl("mrs_natural/cindex")->to<mrs_natural>();
  
   if (duration_ != -1.0)
   {

@@ -83,12 +83,12 @@ void FM::myUpdate(MarControlPtr sender)
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
   // update the controls for the FM  
-  cFrequency_ = getctrl("mrs_real/cFrequency")->toReal();
-  isRate_ = getctrl("mrs_real/israte")->toReal();
-  mSpeed_ = getctrl("mrs_real/mSpeed")->toReal();
-  mDepth_ = getctrl("mrs_real/mDepth")->toReal();
-  mRate_ = (mSpeed_ * wavetableSize_) / getctrl("mrs_real/israte")->toReal();
-  inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
+  cFrequency_ = getctrl("mrs_real/cFrequency")->to<mrs_real>();
+  isRate_ = getctrl("mrs_real/israte")->to<mrs_real>();
+  mSpeed_ = getctrl("mrs_real/mSpeed")->to<mrs_real>();
+  mDepth_ = getctrl("mrs_real/mDepth")->to<mrs_real>();
+  mRate_ = (mSpeed_ * wavetableSize_) / getctrl("mrs_real/israte")->to<mrs_real>();
+  inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 }	
 
 void FM::myProcess( realvec& in, realvec& out ) 
@@ -99,7 +99,7 @@ void FM::myProcess( realvec& in, realvec& out )
   register mrs_real mSample_;
   register mrs_real oFrequency_;								
 											
-  if (getctrl("mrs_bool/noteon")->toBool() == false) {
+  if (getctrl("mrs_bool/noteon")->to<mrs_bool>() == false) {
   	return;
   }
   

@@ -114,7 +114,7 @@ MarPeaks::open()
 	QString fileName = QFileDialog::getOpenFileName(this);
 	mwr_->updctrl("SoundFileSource/src/mrs_string/filename", fileName.toStdString());
 
-	mrs_natural size = mwr_->getctrl("SoundFileSource/src/mrs_natural/size")->toNatural();
+	mrs_natural size = mwr_->getctrl("SoundFileSource/src/mrs_natural/size")->to<mrs_natural>();
 	posSlider_->setMaximum(size);
 
 	// setup marsyas network for just reading the entire file and 
@@ -169,7 +169,7 @@ MarPeaks::ctrlChanged(MarControlPtr ctrl)
 
 // 	if(ctrl.isEqual(ctrl_notEmpty_))
 // 	{
-// 		if(!ctrl_notEmpty_->toBool())
+// 		if(!ctrl_notEmpty_->to<mrs_bool>())
 // 		{
 // 			ctrl_pos_->setValue(0);
 // 			spectrogram_->setData(data_);

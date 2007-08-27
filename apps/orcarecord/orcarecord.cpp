@@ -166,8 +166,8 @@ void record_orcas(mrs_real length, mrs_natural year,
 
 
 
-    mrs_real srate = asrc->getctrl("mrs_real/israte")->toReal();
-    mrs_natural inSamples = asrc->getctrl("mrs_natural/inSamples")->toNatural();
+    mrs_real srate = asrc->getctrl("mrs_real/israte")->to<mrs_real>();
+    mrs_natural inSamples = asrc->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
     mrs_natural iterations = (mrs_natural)((srate * length * 60.0) / inSamples);
 
     realvec rin;

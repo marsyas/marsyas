@@ -80,7 +80,7 @@ PlotSink::myProcess(realvec& in, realvec& out)
 	}
 	else 
 	{
-		string sep =ctrl_separator_->toString();
+		string sep =ctrl_separator_->to<mrs_string>();
 		//output input content as a Marsyas Message (stdout by default)
 		for (t = 0; t < inSamples_; t++)
 		{

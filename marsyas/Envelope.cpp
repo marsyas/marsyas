@@ -67,16 +67,16 @@ Envelope::update()
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte")); 
   setctrl("string/onObsNames", getctrl("string/inObsNames"));
 
-  sampleRate_= getctrl("mrs_real/israte")->toReal();
-  target_ = getctrl("mrs_real/target")->toReal();
-  //rate_ = getctrl("mrs_real/rate")->toReal();
-  time_ = getctrl("mrs_real/time")->toReal();
+  sampleRate_= getctrl("mrs_real/israte")->to<mrs_real>();
+  target_ = getctrl("mrs_real/target")->to<mrs_real>();
+  //rate_ = getctrl("mrs_real/rate")->to<mrs_real>();
+  time_ = getctrl("mrs_real/time")->to<mrs_real>();
   
   rate_ = 1.0 / (time_ * sampleRate_);
   
 
-  noteon_ = getctrl("mrs_real/nton")->toReal();
-  noteoff_ = getctrl("mrs_real/ntoff")->toReal();
+  noteon_ = getctrl("mrs_real/nton")->to<mrs_real>();
+  noteoff_ = getctrl("mrs_real/ntoff")->to<mrs_real>();
 
   if(noteon_){
     value_=0.0;

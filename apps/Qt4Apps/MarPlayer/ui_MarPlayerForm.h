@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'MarPlayerForm.ui'
 **
-** Created: Sat 23. Jun 10:51:12 2007
+** Created: Mon 27. Aug 16:41:25 2007
 **      by: Qt User Interface Compiler version 4.3.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!

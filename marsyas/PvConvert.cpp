@@ -59,11 +59,11 @@ void
 PvConvert::myUpdate(MarControlPtr sender)
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural() + 2);
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal() * getctrl("mrs_natural/inObservations")->toNatural());  
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->to<mrs_natural>() + 2);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->to<mrs_real>() * getctrl("mrs_natural/inObservations")->to<mrs_natural>());  
 
   //defaultUpdate(); [!]
-	onObservations_ = getctrl("mrs_natural/onObservations")->toNatural();
+	onObservations_ = getctrl("mrs_natural/onObservations")->to<mrs_natural>();
   
   size_ = onObservations_ /2 +1;
   
@@ -78,10 +78,10 @@ PvConvert::myUpdate(MarControlPtr sender)
   
   psize_ = size_;
   
-  factor_ = ((getctrl("mrs_real/osrate")->toReal()) / 
-	     (mrs_real)( getctrl("mrs_natural/Decimation")->toNatural()* TWOPI));
-  fundamental_ = (mrs_real) (getctrl("mrs_real/osrate")->toReal() / (mrs_real)getctrl("mrs_natural/inObservations")->toNatural());
-  kmax_ = getctrl("mrs_natural/Sinusoids")->toNatural();
+  factor_ = ((getctrl("mrs_real/osrate")->to<mrs_real>()) / 
+	     (mrs_real)( getctrl("mrs_natural/Decimation")->to<mrs_natural>()* TWOPI));
+  fundamental_ = (mrs_real) (getctrl("mrs_real/osrate")->to<mrs_real>() / (mrs_real)getctrl("mrs_natural/inObservations")->to<mrs_natural>());
+  kmax_ = getctrl("mrs_natural/Sinusoids")->to<mrs_natural>();
 
 }
 

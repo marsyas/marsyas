@@ -65,8 +65,8 @@ MFCC::myUpdate(MarControlPtr sender)
 
   mrs_natural i,j;
 
-  fftSize_ = 2 * ctrl_inObservations_->toNatural();
-  samplingRate_ = (mrs_natural) (ctrl_israte_->toReal() * ctrl_inObservations_->toNatural() * 2);
+  fftSize_ = 2 * ctrl_inObservations_->to<mrs_natural>();
+  samplingRate_ = (mrs_natural) (ctrl_israte_->to<mrs_real>() * ctrl_inObservations_->to<mrs_natural>() * 2);
  
   if ((pfftSize_ != fftSize_) || (psamplingRate_ != samplingRate_))
   {
@@ -171,7 +171,7 @@ MFCC::myUpdate(MarControlPtr sender)
   pfftSize_ = fftSize_;
   psamplingRate_ = samplingRate_;
   
-  mrs_natural inSize = ctrl_inObservations_->toNatural();  
+  mrs_natural inSize = ctrl_inObservations_->to<mrs_natural>();  
   fmagnitude_.stretch(inSize*2);
   earMagnitude_.stretch(totalFilters_);
 }

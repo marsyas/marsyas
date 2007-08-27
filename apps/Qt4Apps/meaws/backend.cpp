@@ -86,7 +86,7 @@ void MarBackend::setFileName(string filename) {
 
 void MarBackend::playFile() {
 	if (hasAudio) {
-		string filename = sourceNet->getctrl("SoundFileSource/srcFile/mrs_string/filename")->toString();
+		string filename = sourceNet->getctrl("SoundFileSource/srcFile/mrs_string/filename")->to<mrs_string>();
 		delNet();
 		sourceNet = makeSourceNet(filename);
 		method = TYPE_PLAYBACK;
@@ -126,7 +126,7 @@ void MarBackend::stop() {
 
 mrs_real MarBackend::getRate() {
 	if (sourceNet != NULL)
-		return sourceNet->getctrl("mrs_real/osrate")->toReal();
+		return sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
 	else
 		return 0;
 }
@@ -140,7 +140,7 @@ mrs_real MarBackend::getRate() {
  */
 
 void MarBackend::setupAllNet() {
-	mrs_real osrate = sourceNet->getctrl("mrs_real/osrate")->toReal();
+	mrs_real osrate = sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
 	allNet = mng.create("Series", "allNet");
 	allNet->addMarSystem(sourceNet);
 	allNet->linkctrl("mrs_bool/notEmpty", "Series/sourceNet/mrs_bool/notEmpty");
@@ -280,9 +280,9 @@ bool MarBackend::analyze() {
 realvec MarBackend::getPitches() {
 	// if we haven't calculated them already, do it now
 	if (pitchList.getSize()==0) {
-		mrs_real osrate = sourceNet->getctrl("mrs_real/osrate")->toReal();
+		mrs_real osrate = sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
 
-		realvec data = pitchesSink->getctrl("mrs_realvec/data")->toVec();
+		realvec data = pitchesSink->getctrl("mrs_realvec/data")->to<mrs_realvec>();
 		for (mrs_natural i=1; i<data.getSize();i+=2)
 			data(i) = samples2hertz(data(i), osrate);
 		pitchesSink->updctrl("mrs_bool/done", true); 
@@ -318,7 +318,7 @@ realvec MarBackend::getMidiPitches() {
 realvec MarBackend::getAmplitudes() {
 	if(amplitudeList.getSize()==0)
 	{
-	amplitudeList = amplitudesSink->getctrl("mrs_realvec/data")->toVec();
+	amplitudeList = amplitudesSink->getctrl("mrs_realvec/data")->to<mrs_realvec>();
     amplitudesSink->updctrl("mrs_bool/done", true); 
 	}
 	

@@ -68,14 +68,13 @@ OneRClassifier::myProcess(realvec& in, realvec& out)
   cout << "in.getCols() = " << in.getCols() << endl;
   cout << "in.getRows() = " << in.getRows() << endl;
   //get the current mode, either train of predict mode
-  
-  bool trainMode = (getctrl("mrs_string/mode")->toString() == "train");
+  bool trainMode = (getctrl("mrs_string/mode")->to<mrs_string>() == "train");
   row_.stretch(in.getRows());
   if (trainMode)
     {
       if(lastModePredict_ || instances_.getCols()<=0)
 	{
-	  mrs_natural nAttributes = getctrl("mrs_natural/inObservations")->toNatural();
+	  mrs_natural nAttributes = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 	  cout << "nAttributes = " << nAttributes << endl;
 	  instances_.Create(nAttributes);
 	}
@@ -94,15 +93,15 @@ OneRClassifier::myProcess(realvec& in, realvec& out)
   else
     {//predict mode
 
-      cout << "OneRClassifier::predict" << endl;
-      if(!lastModePredict_)
-	{
-	  //get the number of class labels and build the classifier
-	  mrs_natural nAttributes = getctrl("mrs_natural/inSamples")->toNatural();
-	  Build(nAttributes);
-	}//if
-      lastModePredict_ = true;
-      cout << "After lastModePredict" << endl;
+	  cout << "OneRClassifier::predict" << endl;
+	  if(!lastModePredict_)
+	    {
+	      //get the number of class labels and build the classifier
+	      mrs_natural nAttributes = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+	      Build(nAttributes);
+	    }//if
+	  lastModePredict_ = true;
+	  cout << "After lastModePredict" << endl;
 
 
       //foreach row of predict data, extract the actual class, then call the

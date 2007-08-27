@@ -132,11 +132,11 @@ void simple_extract(string sfName)
   
 
   
-  realvec in(fnet->getctrl("mrs_natural/inObservations")->toNatural(),
-             fnet->getctrl("mrs_natural/inSamples")->toNatural());
+  realvec in(fnet->getctrl("mrs_natural/inObservations")->to<mrs_natural>(),
+             fnet->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 
-  realvec out(fnet->getctrl("mrs_natural/onObservations")->toNatural(),
-              fnet->getctrl("mrs_natural/onSamples")->toNatural());
+  realvec out(fnet->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
+              fnet->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
   for (mrs_natural i=0; i < 400; i++) 
     {
@@ -327,20 +327,20 @@ void extract_trainAccumulator(string sfName, mrs_natural memSize,
 
   // Calculate duration, offest parameters if necessary 
   offset = (mrs_natural) (start 
-		      * src->getctrl("mrs_real/israte")->toReal() 
-		      * src->getctrl("mrs_natural/nChannels")->toNatural());
+		      * src->getctrl("mrs_real/israte")->to<mrs_real>() 
+		      * src->getctrl("mrs_natural/nChannels")->to<mrs_natural>());
   duration = (mrs_natural) (length 
-			* src->getctrl("mrs_real/israte")->toReal() 
-			* src->getctrl("mrs_natural/nChannels")->toNatural());
+			* src->getctrl("mrs_real/israte")->to<mrs_real>() 
+			* src->getctrl("mrs_natural/nChannels")->to<mrs_natural>());
   
 
   realvec in;
   realvec featureRes;
   
-  in.create(total->getctrl("mrs_natural/inObservations")->toNatural(), 
-	    total->getctrl("mrs_natural/inSamples")->toNatural());
-  featureRes.create(total->getctrl("mrs_natural/onObservations")->toNatural(), 
-		    total->getctrl("mrs_natural/onSamples")->toNatural());
+  in.create(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+	    total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+  featureRes.create(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+		    total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
   
 

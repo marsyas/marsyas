@@ -86,8 +86,8 @@ void NetworkUDPSource::refresh()
 
   cout << "Waiting for data on port: " << getctrl("mrs_natural/dataPort") << endl;
 
-  mrs_natural dataPort = getctrl("mrs_natural/dataPort")->toNatural();
-  mrs_natural controlsPort = getctrl("mrs_natural/controlsPort")->toNatural();
+  mrs_natural dataPort = getctrl("mrs_natural/dataPort")->to<mrs_natural>();
+  mrs_natural controlsPort = getctrl("mrs_natural/controlsPort")->to<mrs_natural>();
 
   if ( ! NetworkSocket::setupSource ( dataPort, controlsPort ) ) {
     throw SocketException ( "Could not bind to port." );

@@ -61,21 +61,21 @@ void Summary::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/onObservations", (mrs_natural)2);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-  mrs_natural nClasses = getctrl("mrs_natural/nClasses")->toNatural();
+  mrs_natural nClasses = getctrl("mrs_natural/nClasses")->to<mrs_natural>();
   if (confusionMatrix.getRows() != nClasses)
     {
       confusionMatrix.create(nClasses, nClasses);
     }//if
-  classNames = getctrl("mrs_string/classNames")->toString();
+  classNames = getctrl("mrs_string/classNames")->to<mrs_string>();
   
 }//myUpdate
 
 void Summary::myProcess(realvec& in, realvec& out)
 {
-  string mode = getctrl("mrs_string/mode")->toString();
+  string mode = getctrl("mrs_string/mode")->to<mrs_string>();
   
   //modified this code to check the done flag-dale
-  bool done = getctrl("mrs_bool/done")->toBool();
+  bool done = getctrl("mrs_bool/done")->to<mrs_bool>();
 
   
   if (strcmp(mode.c_str(), "train") == 0 && !done)

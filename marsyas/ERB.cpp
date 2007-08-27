@@ -65,8 +65,8 @@ ERB::myUpdate(MarControlPtr sender)
   MRSDIAG("ERB.cpp - ERB:myUpdate");
 
   //FilterBank creation
-  if (numChannels != getctrl("mrs_natural/numChannels")->toNatural()){
-    numChannels = getctrl("mrs_natural/numChannels")->toNatural();
+  if (numChannels != getctrl("mrs_natural/numChannels")->to<mrs_natural>()){
+    numChannels = getctrl("mrs_natural/numChannels")->to<mrs_natural>();
     if (filterBank) delete filterBank;
     filterBank = new Fanout("filterBank");
     stringstream name;
@@ -97,12 +97,12 @@ ERB::myUpdate(MarControlPtr sender)
   }
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", numChannels*getctrl("mrs_natural/inObservations")->toNatural());
+  setctrl("mrs_natural/onObservations", numChannels*getctrl("mrs_natural/inObservations")->to<mrs_natural>());
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
   //Coefficients computation
-  lowFreq = getctrl("mrs_real/lowFreq")->toReal();
-  fs = getctrl("mrs_real/israte")->toReal();
+  lowFreq = getctrl("mrs_real/lowFreq")->to<mrs_real>();
+  fs = getctrl("mrs_real/israte")->to<mrs_real>();
   highFreq = fs/2;
   EarQ = 9.26449f;
   minBW = 24.7f;
@@ -302,7 +302,7 @@ ERB::myProcess(realvec& in, realvec& out)
 {
   //checkFlow(in,out);
   //lmartins: if (mute_) return;
-	if(getctrl("mrs_bool/mute")->toBool()) return;
+	if(getctrl("mrs_bool/mute")->to<mrs_bool>()) return;
   
   filterBank->process(in, out);
 }

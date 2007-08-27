@@ -74,11 +74,11 @@ GaussianClassifier::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/onObservations", (mrs_natural)2);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  mrs_natural inObservations = getctrl("mrs_natural/inObservations")->toNatural();
-  mrs_natural nlabels = getctrl("mrs_natural/nLabels")->toNatural();
+  mrs_natural inObservations = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+  mrs_natural nlabels = getctrl("mrs_natural/nLabels")->to<mrs_natural>();
 
-  mrs_natural mrows = (getctrl("mrs_realvec/means")->toVec()).getRows();
-  mrs_natural mcols = (getctrl("mrs_realvec/means")->toVec()).getCols();
+  mrs_natural mrows = (getctrl("mrs_realvec/means")->to<mrs_realvec>()).getRows();
+  mrs_natural mcols = (getctrl("mrs_realvec/means")->to<mrs_realvec>()).getCols();
   mrs_natural nrows = means_.getRows();
   mrs_natural ncols = means_.getCols();
 
@@ -99,11 +99,11 @@ GaussianClassifier::myUpdate(MarControlPtr sender)
       covars_.create(nlabels, inObservations);
     }
 
-  string mode = getctrl("mrs_string/mode")->toString();
+  string mode = getctrl("mrs_string/mode")->to<mrs_string>();
   if (mode == "predict")
     {
-      means_ = getctrl("mrs_realvec/means")->toVec();
-      covars_ = getctrl("mrs_realvec/covars")->toVec();
+      means_ = getctrl("mrs_realvec/means")->to<mrs_realvec>();
+      covars_ = getctrl("mrs_realvec/covars")->to<mrs_realvec>();
     }
 }
 

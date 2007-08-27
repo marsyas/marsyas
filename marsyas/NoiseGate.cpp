@@ -67,7 +67,7 @@ NoiseGate::myUpdate(MarControlPtr sender)
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
 	//defaultUpdate(); [!]
-	inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
+	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
   
 	xd_.create(inSamples_);
   gains_.create(inSamples_);
@@ -79,12 +79,12 @@ NoiseGate::myProcess(realvec& in, realvec& out)
 {
   //checkFlow(in,out);
   
-  mrs_real thresh = getctrl("mrs_real/thresh")->toReal();
-  mrs_real release = getctrl("mrs_real/release")->toReal();
-  mrs_real rolloff = getctrl("mrs_real/rolloff")->toReal();
-  mrs_real at = getctrl("mrs_real/at")->toReal();
-  mrs_real rt = getctrl("mrs_real/rt")->toReal();
-  mrs_real slope = getctrl("mrs_real/slope")->toReal();
+  mrs_real thresh = getctrl("mrs_real/thresh")->to<mrs_real>();
+  mrs_real release = getctrl("mrs_real/release")->to<mrs_real>();
+  mrs_real rolloff = getctrl("mrs_real/rolloff")->to<mrs_real>();
+  mrs_real at = getctrl("mrs_real/at")->to<mrs_real>();
+  mrs_real rt = getctrl("mrs_real/rt")->to<mrs_real>();
+  mrs_real slope = getctrl("mrs_real/slope")->to<mrs_real>();
   
     // calculate rolloff, at and rt time
   at = 1 - exp(-2.2/(22050*at));

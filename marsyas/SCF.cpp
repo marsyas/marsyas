@@ -84,11 +84,11 @@ SCF::myUpdate(MarControlPtr sender)
 		bandHiEdge_(i) = edge_(i+1) * 1.05f; //band overlapping (MPEG7)
 	}
 
-	fftSize_ = getctrl("mrs_natural/inObservations")->toNatural();
+	fftSize_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 	//fftBinFreqs_.create(fftSize_);
 
 	// spectrum sampling rate - not audio 
-	df_ = getctrl("mrs_real/israte")->toReal();
+	df_ = getctrl("mrs_real/israte")->to<mrs_real>();
 
 	//calculate the frequency (Hz) of each FFT bin
 	//for (mrs_natural k=0; k < fftSize_ ; k++)

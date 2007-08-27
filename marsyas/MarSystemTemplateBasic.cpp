@@ -101,7 +101,7 @@ MarSystemTemplateBasic::myProcess(realvec& in, realvec& out)
 	const mrs_real& gainValueEXAMPLE = ctrl_gain_EXAMPLE_->to<mrs_real>();
 	// this is equivalent (although slightly more efficient) than:
 	//
-	// mrs_real& gainValue = ctrl_gain_EXAMPLE_->toReal();
+	// mrs_real& gainValue = ctrl_gain_EXAMPLE_->to<mrs_real>();
 	//   // ::toReal() calls ::to<mrs_real>()
 	//
 	// This reference will not allow writing directly to the

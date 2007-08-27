@@ -63,12 +63,12 @@ void Biquad::myUpdate(MarControlPtr sender)
         Last retrieved March 20, 2007.
     */
 
-    mrs_string type = getctrl("mrs_string/type")->toString();
+    mrs_string type = getctrl("mrs_string/type")->to<mrs_string>();
 
-    freq_ = getctrl("mrs_real/frequency")->toReal();
-    q_ = getctrl("mrs_real/resonance")->toReal();
+    freq_ = getctrl("mrs_real/frequency")->to<mrs_real>();
+    q_ = getctrl("mrs_real/resonance")->to<mrs_real>();
 
-    fs_ = getctrl("mrs_real/israte")->toReal();
+    fs_ = getctrl("mrs_real/israte")->to<mrs_real>();
     w0_ = 2 * PI * freq_ / fs_;
 
     if (type == "lowpass")
@@ -94,11 +94,11 @@ void Biquad::myUpdate(MarControlPtr sender)
     }
     filter->setctrl("mrs_real/israte", fs_);
     filter->setctrl("mrs_real/osrate", fs_);
-    //filter->setctrl("mrs_real/osrate", getctrl("mrs_real/osrate")->toReal());
-    filter->setctrl("mrs_natural/inObs", getctrl("mrs_natural/inObs")->toNatural());
-    filter->setctrl("mrs_natural/onObs", getctrl("mrs_natural/onObs")->toNatural());
-    filter->setctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples")->toNatural());
-    filter->setctrl("mrs_natural/onSamples", getctrl("mrs_natural/onSamples")->toNatural());
+    //filter->setctrl("mrs_real/osrate", getctrl("mrs_real/osrate")->to<mrs_real>());
+    filter->setctrl("mrs_natural/inObs", getctrl("mrs_natural/inObs")->to<mrs_natural>());
+    filter->setctrl("mrs_natural/onObs", getctrl("mrs_natural/onObs")->to<mrs_natural>());
+    filter->setctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+    filter->setctrl("mrs_natural/onSamples", getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 }
 
 

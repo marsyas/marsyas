@@ -71,20 +71,20 @@ ShiftInput::addControls()
 void
 ShiftInput::myUpdate(MarControlPtr sender)
 {
-  reset_ = getctrl("mrs_bool/reset")->toBool();  
+  reset_ = getctrl("mrs_bool/reset")->to<mrs_bool>();  
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/WindowSize"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
 
-  W_ = getctrl("mrs_natural/WindowSize")->toNatural();
+  W_ = getctrl("mrs_natural/WindowSize")->to<mrs_natural>();
 
   if (PW_ != W_) 
     pout_.stretch(W_);
 
   PW_ = W_;  
-  N_ = getctrl("mrs_natural/onSamples")->toNatural();
-  D_ = getctrl("mrs_natural/inSamples")->toNatural();
+  N_ = getctrl("mrs_natural/onSamples")->to<mrs_natural>();
+  D_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 }
 
 void 

@@ -71,8 +71,8 @@ RealvecSource::myUpdate(MarControlPtr sender)
 
   setctrl("mrs_natural/onObservations", data.getRows());
 	setctrl("mrs_natural/onSamples", 1);
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
-//  samplesToUse_ = getctrl("mrs_natural/samplesToUse")->toNatural();
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->to<mrs_real>());
+//  samplesToUse_ = getctrl("mrs_natural/samplesToUse")->to<mrs_natural>();
  
 	samplesToUse_ = data.getCols();
  count_ = 0;

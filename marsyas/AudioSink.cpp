@@ -84,13 +84,13 @@ AudioSink::myUpdate(MarControlPtr sender)
   MarSystem::myUpdate(sender);
   
   
-  nChannels_ = getctrl("mrs_natural/inObservations")->toNatural();//does nothing... [?]
+  nChannels_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();//does nothing... [?]
 
   if (getctrl("mrs_bool/initAudio")->to<mrs_bool>())
     initRtAudio();
   
   //Resize reservoir if necessary
-  inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
+  inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
   if (inSamples_ < bufferSize_) 
     reservoirSize_ = 2 * bufferSize_;
   else 
@@ -107,9 +107,9 @@ void
 AudioSink::initRtAudio()
 {
 
-  rtSrate_ = (int)getctrl("mrs_real/israte")->toReal();
+  rtSrate_ = (int)getctrl("mrs_real/israte")->to<mrs_real>();
   srate_ = rtSrate_;
-  bufferSize_ = (int)getctrl("mrs_natural/bufferSize")->toNatural();
+  bufferSize_ = (int)getctrl("mrs_natural/bufferSize")->to<mrs_natural>();
 
 #ifdef MARSYAS_MACOSX
   if (rtSrate_ == 22050) 

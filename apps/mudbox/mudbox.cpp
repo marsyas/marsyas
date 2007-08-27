@@ -283,14 +283,14 @@ void drumClassify( string drumFile) {
     realvec out1;
     realvec out2;
 
-    in1.create(TimeLoop->getctrl("mrs_natural/inObservations")->toNatural(), 
-            TimeLoop->getctrl("mrs_natural/inSamples")->toNatural());
+    in1.create(TimeLoop->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+            TimeLoop->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 
-    out1.create(TimeLoop->getctrl("mrs_natural/onObservations")->toNatural(), 
-            TimeLoop->getctrl("mrs_natural/onSamples")->toNatural());
+    out1.create(TimeLoop->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+            TimeLoop->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
-    out2.create(extractNet->getctrl("mrs_natural/onObservations")->toNatural(),
-            extractNet->getctrl("mrs_natural/onSamples")->toNatural());
+    out2.create(extractNet->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
+            extractNet->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
 #ifdef MARSYAS_MIDIIO
     RtMidiOut *midiout = new RtMidiOut();
@@ -304,7 +304,7 @@ void drumClassify( string drumFile) {
 
     // PeakerAdaptive looks for hits and then if it finds one reports a non-zero value
     // When a non-zero value is found extractNet is ticked
-    while ( TimeLoop->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() )
+    while ( TimeLoop->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>() )
     {
         TimeLoop->process(in1,out1);
         for (int i = 0; i < windowsize;i++)
@@ -352,7 +352,7 @@ toy_with_simpleSFPlay(string sfName)
   
   mrs_bool isEmpty;
   //cout << *playbacknet << endl;
-  while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->toBool()) 
+  while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
     {
       //cout << "pos " << playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() << endl;
       
@@ -592,7 +592,7 @@ toy_with_fft(string sfName)
 
   mrs_natural i =0;
   
-  while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
+  while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
     {
       series->tick();
       i++; 
@@ -708,7 +708,7 @@ toy_with_CollectionFileSource(string sfName)
   mrs_bool isEmpty;
   //cout << *playbacknet << endl;
   int cindex = 0;
-  while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->toBool()) 
+  while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
     {
       cout << "tick " << isEmpty << endl;
       
@@ -778,7 +778,7 @@ toy_with_knn()
   knn->updctrl("mrs_natural/inSamples", inS);
   knn->updctrl("mrs_natural/inObservations", inO);
   
-  realvec output(knn->getctrl("mrs_natural/onObservations")->toNatural(), knn->getctrl("mrs_natural/onSamples")->toNatural());
+  realvec output(knn->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), knn->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
  
   cout << "INPUT: " << input << endl;
   
@@ -805,7 +805,7 @@ toy_with_knn()
   knn->updctrl("mrs_natural/inSamples", inS);
   knn->updctrl("mrs_natural/inObservations", inO);
  
-  realvec output2(knn->getctrl("mrs_natural/onObservations")->toNatural(), knn->getctrl("mrs_natural/onSamples")->toNatural());
+  realvec output2(knn->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), knn->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
   cout << "Predict" << endl; 
   knn->process(input2, output2);
@@ -918,7 +918,7 @@ toy_with_panorama(string sfName)
   mrs_natural t = 0;	
   mrs_real angle = -PI/4.0;
   playbacknet->updctrl("Panorama/pan/mrs_real/angle", angle);
-  while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->toBool()) 
+  while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
     {
       playbacknet->tick();
       t++;
@@ -1017,7 +1017,7 @@ toy_with_reverb(string sfName)
 
   playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
 
-  while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->toBool()) 
+  while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
     {
       playbacknet->tick();
     }
@@ -1049,7 +1049,7 @@ toy_with_vibrato(string sfName)
 
   
   mrs_bool isEmpty;
-  while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->toBool()) 
+  while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
     {
       playbacknet->tick();
     }
@@ -1100,10 +1100,10 @@ toy_with_vicon(string vfName)
   playbacknet->addMarSystem(mng.create("Sum", "sum"));
   playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
 
-  realvec in(viconNet->getctrl("mrs_natural/inObservations")->toNatural(), 
-	     viconNet->getctrl("mrs_natural/inSamples")->toNatural());
-  realvec out(viconNet->getctrl("mrs_natural/onObservations")->toNatural(), 
-	      viconNet->getctrl("mrs_natural/onSamples")->toNatural());
+  realvec in(viconNet->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+	     viconNet->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+  realvec out(viconNet->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+	      viconNet->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
   
   playbacknet->updctrl("mrs_natural/inSamples", 184);
 
@@ -1118,7 +1118,7 @@ toy_with_vicon(string vfName)
      cout << "NoteOn           0.0 1 64.000000 64.000000" << endl;
   */ 
 
-  while (viconNet->getctrl("ViconFileSource/vsrc/mrs_bool/notEmpty")->toBool()) 
+  while (viconNet->getctrl("ViconFileSource/vsrc/mrs_bool/notEmpty")->to<mrs_bool>()) 
     {
       viconNet->process(in,out);
       
@@ -1473,7 +1473,7 @@ toy_with_LPC_LSP(string sfName)
   input->updctrl("LSP/lsp/mrs_real/gamma",1.0);
 
   int i = 0;
-  while(input->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
+  while(input->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
     {
       input->tick();
       cout << "Processed frame " << i << endl;
@@ -1508,7 +1508,7 @@ toy_with_LPC_LSP(string sfName)
 // 	input->updctrl("Series/lspS/LSP/lsp/mrs_real/gamma",1.0);
 
 	int i = 0;
-	while(input->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
+	while(input->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
 	{
 		input->tick();
 		cout << "Processed frame " << i << endl;
@@ -2310,7 +2310,7 @@ toy_with_stereo2mono(string fname)
 
   mrs_bool isEmpty;
   
-  while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->toBool()) 
+  while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
     {
       playbacknet->tick();
     }
@@ -2579,8 +2579,8 @@ void toy_with_Windowing()
 		//series->updctrl("Windowing/win/mrs_natural/zeroPadding", 200);
 		//series->updctrl("Windowing/win/mrs_bool/zeroPhasing", true);
 
-		in.create(series->getctrl("mrs_natural/inSamples")->toNatural());
-		out.create(series->getctrl("mrs_natural/onSamples")->toNatural());
+		in.create(series->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+		out.create(series->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 		in.setval(1.0);
 
     for (unsigned int i = 0 ; i < winname.size(); i++)
@@ -2589,8 +2589,8 @@ void toy_with_Windowing()
         series->updctrl("PlotSink/plot/mrs_string/filename", "marsyas" + winname[i]); 
 				
 				MRSMSG(winname[i]);
-				MRSMSG("size: " << series->getctrl("Windowing/win/mrs_natural/size")->toNatural());
-				MRSMSG("zero-padding: " << series->getctrl("Windowing/win/mrs_natural/zeroPadding")->toNatural());
+				MRSMSG("size: " << series->getctrl("Windowing/win/mrs_natural/size")->to<mrs_natural>());
+				MRSMSG("zero-padding: " << series->getctrl("Windowing/win/mrs_natural/zeroPadding")->to<mrs_natural>());
 
         series->process(in,out); 
     }
@@ -2722,10 +2722,10 @@ Pluck(mrs_real pos, mrs_real fre, mrs_real loz, mrs_real stret, string name)
 
   cout << (*series) << endl;
 
-	realvec in(series->getctrl("mrs_natural/inObservations")->toNatural(), 
-	     series->getctrl("mrs_natural/inSamples")->toNatural());
-  realvec out(series->getctrl("mrs_natural/onObservations")->toNatural(), 
-	      series->getctrl("mrs_natural/onSamples")->toNatural());
+	realvec in(series->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+	     series->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+  realvec out(series->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+	      series->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
   mrs_natural t=0;
   
@@ -2735,7 +2735,7 @@ Pluck(mrs_real pos, mrs_real fre, mrs_real loz, mrs_real stret, string name)
 		t++;
 	}	      
  
-  //while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
+  //while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
   //{
   //  series->tick();
   //}
@@ -2785,10 +2785,10 @@ series->getctrl("Plucked/src/mrs_real/osrate"));
   cout << (*series) << endl;
 
 
- realvec in(series->getctrl("mrs_natural/inObservations")->toNatural(), 
-	     series->getctrl("mrs_natural/inSamples")->toNatural());
-  realvec out(series->getctrl("mrs_natural/onObservations")->toNatural(), 
-	      series->getctrl("mrs_natural/onSamples")->toNatural());
+ realvec in(series->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+	     series->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+  realvec out(series->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+	      series->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
   mrs_natural t=0;
   
@@ -2804,7 +2804,7 @@ series->getctrl("Plucked/src/mrs_real/osrate"));
 
 
   
-  //while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
+  //while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
   //{
   //  series->tick();
   //}
@@ -2872,7 +2872,7 @@ tempotoy_with_sfplay(string sfName)
     series->updctrl("mrs_natural/inSamples", 128);
     series->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 
-    while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
+    while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
         series->tick();
 
     delete series;
@@ -3019,9 +3019,9 @@ toy_with_pitch(string sfName)
   mrs_real highFreq = pitch2hertz(highPitch);
 
   mrs_natural lowSamples = 
-     hertz2samples(highFreq, pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
+     hertz2samples(highFreq, pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>());
   mrs_natural highSamples = 
-     hertz2samples(lowFreq, pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
+     hertz2samples(lowFreq, pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>());
  
   pnet->updctrl("PitchPraat/pitch/mrs_natural/lowSamples", lowSamples);
   pnet->updctrl("PitchPraat/pitch/mrs_natural/highSamples", highSamples);
@@ -3030,18 +3030,18 @@ toy_with_pitch(string sfName)
   //  enough to contain three periods (for pitch detection) 
   //  of MinimumPitch. E.g. if MinimumPitch is 75 Hz, the window length
   //  is 40 ms and padded with zeros to reach a power of two.
-  mrs_real windowSize = 3/lowPitch*pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
+  mrs_real windowSize = 3/lowPitch*pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
   pnet->updctrl("mrs_natural/inSamples", 512);
 
 	pnet->updctrl("ShiftInput/sfi/mrs_natural/WindowSize", powerOfTwo(windowSize));
 	//pnet->updctrl("ShiftInput/sfi/mrs_natural/WindowSize", 1024);
 
-  while (pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
+  while (pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
    pnet->tick();
 
-	realvec data = pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->toVec();
+	realvec data = pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->to<mrs_realvec>();
    for (mrs_natural i=1; i<data.getSize();i+=2)
-	   data(i) = samples2hertz(data(i), pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
+	   data(i) = samples2hertz(data(i), pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>());
    
    pnet->updctrl("RealvecSink/rvSink/mrs_bool/done", true); 
 	
@@ -3078,11 +3078,11 @@ toy_with_confidence(string sfName)
   
   mrs_bool isEmpty;
   //cout << *pnet << endl;
-  while (isEmpty = pnet->getctrl("mrs_bool/notEmpty")->toBool()) 
+  while (isEmpty = pnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
     {
       //cout << "pos " << pnet->getctrl("mrs_natural/pos")->to<mrs_natural>() << endl;
-      cout << pnet->getctrl("SoundFileSource/src/mrs_string/currentlyPlaying")->toString() << endl;
-      cout << pnet->getctrl("Confidence/confidence/mrs_string/fileName")->toString() << endl;
+      cout << pnet->getctrl("SoundFileSource/src/mrs_string/currentlyPlaying")->to<mrs_string>() << endl;
+      cout << pnet->getctrl("Confidence/confidence/mrs_string/fileName")->to<mrs_string>() << endl;
       
       pnet->tick();
       
@@ -3111,7 +3111,7 @@ toy_with_realvecCtrl(string sfName)
   pnet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
   pnet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
   
-  while ( pnet->getctrl("mrs_bool/notEmpty")->toBool()) 
+  while ( pnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
     {
       
       pnet->tick();
@@ -3141,13 +3141,13 @@ toy_with_power(string sfName)
   pnet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
   
 //  cout << *pnet;
-  while ( pnet->getctrl("mrs_bool/notEmpty")->toBool()) 
+  while ( pnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
     {
-      cout << pnet->getctrl("mrs_natural/pos")->toNatural();
+      cout << pnet->getctrl("mrs_natural/pos")->to<mrs_natural>();
       pnet->tick();
       
     }
-  realvec data = pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->toVec();
+  realvec data = pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->to<mrs_realvec>();
 
   // dB conversion
   for (mrs_natural i=0 ; i<data.getSize() ; i++)
@@ -3182,7 +3182,7 @@ toy_with_shredder(string sfName)
 	pnet->updctrl("Shredder/shred/mrs_natural/nTimes", 10);
 
 
-  while (pnet->getctrl("mrs_bool/notEmpty")->toBool()) 
+  while (pnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
     {      
       pnet->tick(); 
     }

@@ -10,7 +10,7 @@ analysis_pitch(string infile)
 	// sets up SoundFileSource, links notEmpty, and sets srate
 	mrs_real srate = addSource( pnet, infile );
 	pnet->addMarSystem(Transcriber::makePitchNet(srate, 100.0));
-	while (pnet->getctrl("mrs_bool/notEmpty")->toBool())
+	while (pnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
 	{
 		pnet->tick();
 		const realvec& processedData =

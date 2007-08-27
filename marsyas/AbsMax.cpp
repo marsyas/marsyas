@@ -43,7 +43,7 @@ AbsMax::myUpdate(MarControlPtr sender)
 {
   setctrl("mrs_natural/onSamples",  (mrs_natural)1);
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal() / (mrs_real)getctrl("mrs_natural/inSamples")->toNatural());  
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->to<mrs_real>() / (mrs_real)getctrl("mrs_natural/inSamples")->to<mrs_natural>());  
 }
 
 void 

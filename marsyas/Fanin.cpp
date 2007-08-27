@@ -63,14 +63,14 @@ Fanin::myUpdate(MarControlPtr sender)
 		ostringstream oss;
 		oss << name_ <<"_mix_0, ";
 
-		mrs_natural inObservations = marsystems_[0]->getctrl("mrs_natural/inObservations")->toNatural();
+		mrs_natural inObservations = marsystems_[0]->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 
 		for (mrs_natural i=1; i < marsystemsSize_; i++) 
 		{
 			marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
 			marsystems_[i]->setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte")); //[!] israte
 			marsystems_[i]->update(sender);
-			inObservations += marsystems_[i]->getctrl("mrs_natural/inObservations")->toNatural();
+			inObservations += marsystems_[i]->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 			oss << name_ << "_mix_" << i << ", ";
 		}
 
@@ -88,18 +88,18 @@ Fanin::myUpdate(MarControlPtr sender)
 		{
 			if (slices_[i] != NULL) 
 			{
-				if ((slices_[i])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural()  ||
-					(slices_[i])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural())
+				if ((slices_[i])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>()  ||
+					(slices_[i])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>())
 				{
 					delete slices_[i];
-					slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
-						marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
+					slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+						marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 				}
 			}
 			else 
 			{
-				slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
-					marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
+				slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+					marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 			}
 			(slices_[i])->setval(0.0);
 		}

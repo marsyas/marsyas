@@ -111,7 +111,7 @@ void textract_trainAccumulator(string sfName, mrs_natural offset, mrs_natural du
 
 	if (tlineName == EMPTYSTRING)
 	{
-		mrs_natural hops = src->getctrl("mrs_natural/size")->toNatural() * src->getctrl("mrs_natural/nChannels")->toNatural() / 2048 + 1;
+		mrs_natural hops = src->getctrl("mrs_natural/size")->to<mrs_natural>() * src->getctrl("mrs_natural/nChannels")->to<mrs_natural>() / 2048 + 1;
 		tline.regular(100, hops);
 	}
 
@@ -123,17 +123,17 @@ void textract_trainAccumulator(string sfName, mrs_natural offset, mrs_natural du
 	series->addMarSystem(dest_);
 
 	series->updctrl("AudioSink/dest/mrs_natural/nChannels", 
-		series->getctrl("SoundFileSource/src/mrs_natural/nChannels")->toNatural());  
+		series->getctrl("SoundFileSource/src/mrs_natural/nChannels")->to<mrs_natural>());  
 
 	// Calculate duration, offset parameters if necessary 
 	if (start > 0.0f) 
 		offset = (mrs_natural) (start 
-		* src->getctrl("mrs_real/israte")->toReal() 
-		* src->getctrl("mrs_natural/nChannels")->toNatural());
+		* src->getctrl("mrs_real/israte")->to<mrs_real>() 
+		* src->getctrl("mrs_natural/nChannels")->to<mrs_natural>());
 	if (length != 30.0f) 
 		duration = (mrs_natural) (length 
-		* src->getctrl("mrs_real/israte")->toReal() 
-		* src->getctrl("mrs_natural/nChannels")->toNatural());
+		* src->getctrl("mrs_real/israte")->to<mrs_real>() 
+		* src->getctrl("mrs_natural/nChannels")->to<mrs_natural>());
 
 	// accumulate feature vectors over 30 seconds 
 	MarSystem* acc = mng.create("Accumulator", "acc");

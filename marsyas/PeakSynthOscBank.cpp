@@ -65,15 +65,17 @@ PeakSynthOscBank::myUpdate(MarControlPtr sender)
 	setctrl("mrs_natural/onObservations", (mrs_natural)1);
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
 
-	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
+	inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 
-	nbH_ = (ctrl_harmonize_->toVec().getSize()-1)/2;
+	nbH_ = (ctrl_harmonize_->to<mrs_realvec>().getSize()-1)/2;
 	// replace this !!
 	if (!nbH_)
 	{
-		ctrl_harmonize_->stretch(3);
-		ctrl_harmonize_->setValue(1, 1.0);
-		ctrl_harmonize_->setValue(2, 1.0);
+		MarControlAccessor acc(ctrl_harmonize_, NOUPDATE);
+		realvec& harmonize = acc.to<mrs_realvec>();
+		harmonize.stretch(3);
+		harmonize(1) = 1.0;
+		harmonize(2) = 1.0;
 	}
 
 	size_ = 2048*nbH_;
@@ -98,10 +100,10 @@ PeakSynthOscBank::myUpdate(MarControlPtr sender)
 		psize_ = size_;
 	}
 	// N_ = inObservations_/nbPkParameters;
-	P_ = getctrl("mrs_real/PitchShift")->toReal();
-	I_ = getctrl("mrs_natural/Interpolation")->toNatural();
-	S_ = getctrl("mrs_real/SynthesisThreshold")->toReal();
-	R_ = getctrl("mrs_real/osrate")->toReal();
+	P_ = getctrl("mrs_real/PitchShift")->to<mrs_real>();
+	I_ = getctrl("mrs_natural/Interpolation")->to<mrs_natural>();
+	S_ = getctrl("mrs_real/SynthesisThreshold")->to<mrs_real>();
+	R_ = getctrl("mrs_real/osrate")->to<mrs_real>();
 }
 
 void 
@@ -127,8 +129,8 @@ PeakSynthOscBank::myProcess(realvec& in, realvec& out)
 	{
 		for(mrs_natural j=0 ; j<nbH_ ; j++)
 		{
-			mrs_real mulF = ctrl_harmonize_->toVec()(1+j*2); 
-			mrs_real mulA = ctrl_harmonize_->toVec()(2+j*2);
+			mrs_real mulF = ctrl_harmonize_->to<mrs_realvec>()(1+j*2); 
+			mrs_real mulA = ctrl_harmonize_->to<mrs_realvec>()(2+j*2);
 
 			for (t=0; t < NP_; t++)
 			{

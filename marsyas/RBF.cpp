@@ -100,7 +100,7 @@ RBF::myUpdate(MarControlPtr sender)
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE); //[?]
 	ostringstream oss;
-	string inObsNames = ctrl_inObsNames_->toString();
+	string inObsNames = ctrl_inObsNames_->to<mrs_string>();
 	for (mrs_natural i = 0; i < inObservations_; i++)
 	{
 		string inObsName;

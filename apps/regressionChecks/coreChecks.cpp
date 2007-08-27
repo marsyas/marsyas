@@ -112,8 +112,8 @@ core_isClose(string infile1, string infile2)
 
 	mrs_natural i;
 	mrs_natural samples =
-	    pnet->getctrl("mrs_natural/inSamples")->toNatural();
-	while ( pnet->getctrl("mrs_bool/notEmpty")->toBool() )
+	    pnet->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+	while ( pnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>() )
 	{
 		pnet->tick();
 		const realvec& processedData =

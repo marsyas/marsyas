@@ -123,11 +123,11 @@ void record(mrs_real length, mrs_real gain, string filename)
 
     recordNet->updctrl("SoundFileSink/dest/mrs_string/filename", filename);
 
-    mrs_real srate = recordNet->getctrl("mrs_real/israte")->toReal();
-    mrs_natural nChannels = recordNet->getctrl("AudioSource/asrc/mrs_natural/nChannels")->toNatural();
+    mrs_real srate = recordNet->getctrl("mrs_real/israte")->to<mrs_real>();
+    mrs_natural nChannels = recordNet->getctrl("AudioSource/asrc/mrs_natural/nChannels")->to<mrs_natural>();
     cout << "AudioSource srate =  " << srate << endl; 
     cout << "AudioSource nChannels = " << nChannels << endl;
-    mrs_natural inSamples = recordNet->getctrl("mrs_natural/inSamples")->toNatural();
+    mrs_natural inSamples = recordNet->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
 
     mrs_natural iterations = (mrs_natural)((srate * length) / inSamples);
@@ -210,8 +210,8 @@ void record_orcas(mrs_real length, mrs_natural year,
 
 
 
-    mrs_real srate = asrc->getctrl("mrs_real/israte")->toReal();
-    mrs_natural inSamples = asrc->getctrl("mrs_natural/inSamples")->toNatural();
+    mrs_real srate = asrc->getctrl("mrs_real/israte")->to<mrs_real>();
+    mrs_natural inSamples = asrc->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
     mrs_natural iterations = (mrs_natural)((srate * length * 60.0) / inSamples);
 
     realvec rin;

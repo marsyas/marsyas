@@ -59,18 +59,18 @@ Memory::myUpdate(MarControlPtr sender)
 {
 	MRSDIAG("Memory.cpp - Memory:myUpdate");
 
-	mrs_natural memSize = ctrl_memSize_->toNatural();
+	mrs_natural memSize = ctrl_memSize_->to<mrs_natural>();
 
-	ctrl_onSamples_->setValue(ctrl_inSamples_->toNatural() * memSize, NOUPDATE);
+	ctrl_onSamples_->setValue(ctrl_inSamples_->to<mrs_natural>() * memSize, NOUPDATE);
 	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 
-	reset_ = ctrl_reset_->toBool();
+	reset_ = ctrl_reset_->to<mrs_bool>();
 
-	inObservations_ = ctrl_inObservations_->toNatural();
+	inObservations_ = ctrl_inObservations_->to<mrs_natural>();
 
 	ostringstream oss;
-	string inObsNames = ctrl_inObsNames_->toString();
+	string inObsNames = ctrl_inObsNames_->to<mrs_string>();
 	for (int i = 0; i < inObservations_; i++)
 	{
 		string inObsName;

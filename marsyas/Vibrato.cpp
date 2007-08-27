@@ -54,8 +54,8 @@ Vibrato::myUpdate(MarControlPtr sender)
   MarSystem::myUpdate(sender);
 
   mrs_real mod_freq;
-  mod_freq = getctrl("mrs_real/mod_freq")->toReal();
-  width_ = getctrl("mrs_real/width")->toReal();
+  mod_freq = getctrl("mrs_real/mod_freq")->to<mrs_real>();
+  width_ = getctrl("mrs_real/width")->to<mrs_real>();
 
   delay_ = floor(width_ * israte_);
   width_ = floor(width_ * israte_);

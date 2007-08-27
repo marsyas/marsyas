@@ -71,13 +71,13 @@ Accumulator::myUpdate(MarControlPtr sender)
 
 		// forward flow propagation 
 		setctrl(ctrl_onSamples_, 
-			nTimes_ * marsystems_[0]->getctrl("mrs_natural/onSamples")->toNatural());
+			nTimes_ * marsystems_[0]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 		setctrl(ctrl_onObservations_, 
-			marsystems_[0]->getctrl("mrs_natural/onObservations")->toNatural());
+			marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
 		setctrl(ctrl_osrate_, 
 			marsystems_[0]->getctrl("mrs_real/osrate"));
 
-		onObsNames = marsystems_[0]->getctrl("mrs_string/onObsNames")->toString();
+		onObsNames = marsystems_[0]->getctrl("mrs_string/onObsNames")->to<mrs_string>();
 	}
 	else
 	{

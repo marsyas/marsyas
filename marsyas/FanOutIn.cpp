@@ -76,13 +76,13 @@ FanOutIn::myUpdate(MarControlPtr sender)
 		enabled_.setval(1.0);
 	}
 
-	disable_ = getctrl("mrs_natural/disable")->toNatural();
+	disable_ = getctrl("mrs_natural/disable")->to<mrs_natural>();
 	if (disable_ != -1) 
 	{
 		enabled_(disable_) = 0.0;
 		setctrl("mrs_natural/disable", -1);
 	}
-	enable_ = getctrl("mrs_natural/enable")->toNatural();
+	enable_ = getctrl("mrs_natural/enable")->to<mrs_natural>();
 	if (enable_ != -1) 
 	{
 		enabled_(enable_) = 1.0;
@@ -122,9 +122,9 @@ FanOutIn::myUpdate(MarControlPtr sender)
 		}
 
 		// forward flow propagation
-		setctrl(ctrl_onSamples_, marsystems_[0]->getctrl("mrs_natural/onSamples")->toNatural());
-		setctrl(ctrl_onObservations_, marsystems_[0]->getctrl("mrs_natural/onObservations")->toNatural());
-		setctrl(ctrl_osrate_, marsystems_[0]->getctrl("mrs_real/osrate")->toReal());
+		setctrl(ctrl_onSamples_, marsystems_[0]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+		setctrl(ctrl_onObservations_, marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
+		setctrl(ctrl_osrate_, marsystems_[0]->getctrl("mrs_real/osrate")->to<mrs_real>());
 		ostringstream oss;
 		oss << marsystems_[0]->getctrl("mrs_string/onObsNames");
 		setctrl(ctrl_onObsNames_, oss.str());
@@ -136,18 +136,18 @@ FanOutIn::myUpdate(MarControlPtr sender)
 		{
 			if (slices_[i] != NULL) 
 			{
-				if ((slices_[i])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural()  ||
-					(slices_[i])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural())
+				if ((slices_[i])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>()  ||
+					(slices_[i])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>())
 				{
 					delete slices_[i];
-					slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
-						marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
+					slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+						marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 				}
 			}
 			else 
 			{
-				slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
-					marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
+				slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+					marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 			}
 			(slices_[i])->setval(0.0);
 		}

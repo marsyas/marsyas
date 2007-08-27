@@ -73,7 +73,7 @@ WavFileSource2::getHeader()
 	unsigned short channels, srate;
 	mrs_natural size;
 
-	string filename = getctrl("mrs_string/filename")->toString();
+	string filename = getctrl("mrs_string/filename")->to<mrs_string>();
 	//if an empty filename, return error and default configuration
 	if(filename == "defaultfile")
 	{
@@ -144,7 +144,7 @@ WavFileSource2::getHeader()
 			#endif 
 			// access directly controls to avoid update() recursion
 			setctrl("mrs_natural/nChannels", (mrs_natural)channels);
-			//nChannels_ = channels; //getctrl("mrs_natural/nChannels")->toNatural();//[!]
+			//nChannels_ = channels; //getctrl("mrs_natural/nChannels")->to<mrs_natural>();//[!]
 
 			fread(&srate, 2,1,sfp_);
 			#if defined(MARSYAS_BIGENDIAN)	      
@@ -211,18 +211,18 @@ void
 WavFileSource2::myUpdate(MarControlPtr sender)
 {
 	//if not a new audiofile, no need to read header again
-	string filename = getctrl("mrs_string/filename")->toString();
+	string filename = getctrl("mrs_string/filename")->to<mrs_string>();
 	if(filename_ != filename)
 	{
 		getHeader();//sets controls filename, nChannels, israte and size
-		filename_ = getctrl("mrs_string/filename")->toString();
-		nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();
-		israte_ = getctrl("mrs_real/israte")->toReal();
-		size_ = getctrl("mrs_natural/size")->toNatural();
+		filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
+		nChannels_ = getctrl("mrs_natural/nChannels")->to<mrs_natural>();
+		israte_ = getctrl("mrs_real/israte")->to<mrs_real>();
+		size_ = getctrl("mrs_natural/size")->to<mrs_natural>();
 	}
 
 	//update internal vars
-	inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
+	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 	osrate_ = israte_;
 
 	//update output pin config
@@ -248,8 +248,8 @@ WavFileSource2::myUpdate(MarControlPtr sender)
 // mrs_natural 
 // WavFileSource2::getLinear8(mrs_natural c, realvec& slice)//this does not seem to be working!!! [!][?]
 // {
-// 	mrs_natural nChannels = getctrl("nChannels")->toNatural();
-// 	mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
+// 	mrs_natural nChannels = getctrl("nChannels")->to<mrs_natural>();
+// 	mrs_natural inSamples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 // 
 // 	samplesToRead_ = inSamples * nChannels;
 // 
@@ -290,7 +290,7 @@ WavFileSource2::ByteSwapShort (unsigned short nValue)
 mrs_natural
 WavFileSource2::getLinear16(realvec& slice)
 {
-	mrs_natural pos = getctrl("mrs_natural/pos")->toNatural();
+	mrs_natural pos = getctrl("mrs_natural/pos")->to<mrs_natural>();
 
 	fseek(sfp_, 2 * pos * nChannels_ + sfp_begin_, SEEK_SET);
 
@@ -350,7 +350,7 @@ WavFileSource2::myProcess(realvec& in, realvec& out)
 {
 	//in case of problems opening the .wav file,
 	//or no audiodata available to read, just send silence
-	if(!getctrl("mrs_bool/notEmpty")->toBool())
+	if(!getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
 	{
 		out.setval(0.0);
 		return;
@@ -372,7 +372,7 @@ WavFileSource2::myProcess(realvec& in, realvec& out)
 	}
 
 	//if reached end of file, signal it!
-	if(getctrl("mrs_natural/pos")->toNatural() >= size_)
+	if(getctrl("mrs_natural/pos")->to<mrs_natural>() >= size_)
 		setctrl("mrs_bool/notEmpty", false);
 }
 

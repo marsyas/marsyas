@@ -49,7 +49,7 @@ HarmonicEnhancer::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/onObservations", (mrs_natural)4);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  flag_.create(getctrl("mrs_natural/inSamples")->toNatural());
+  flag_.create(getctrl("mrs_natural/inSamples")->to<mrs_natural>());
     
   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
 }

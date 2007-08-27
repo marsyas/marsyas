@@ -11,8 +11,8 @@ static VALUE STR2VAL (string s) { return rb_str_new(s.c_str(),s.size()); }
 static VALUE MCP2VAL (MarControlPtr mcp)
 {
 	if (mcp.isInvalid()) return Qnil;
-	if (mcp->getType() == "mrs_natural") return INT2NUM(mcp->toNatural());
-	if (mcp->getType() == "mrs_real" ) return rb_float_new(mcp->toReal());
+	if (mcp->getType() == "mrs_natural") return INT2NUM(mcp->to<mrs_natural>()());
+	if (mcp->getType() == "mrs_real" ) return rb_float_new(mcp->to<mrs_real>()()());
 	if (mcp->getType() == "mrs_string" ) return STR2VAL(mcp->toString());
 	if (mcp->getType() == "mrs_bool" ) return mcp->toBool() ? Qtrue : Qfalse ;
 	return Qnil;

@@ -110,12 +110,12 @@ SoundFileSource::myUpdate(MarControlPtr sender)
   ctrl_onObsNames_->setValue("audio,", NOUPDATE);
   ctrl_inObsNames_->setValue("audio,", NOUPDATE);
 
-  if (filename_ != ctrl_filename_->toString())
+  if (filename_ != ctrl_filename_->to<mrs_string>())
     {
       if (checkType() == true)
 	{
 	  getHeader();
-	  filename_ = ctrl_filename_->toString();
+	  filename_ = ctrl_filename_->to<mrs_string>();
 	  ctrl_currentlyPlaying_->setValue(src_->getctrl("mrs_string/currentlyPlaying"));		  
 	  ctrl_onObservations_->setValue(src_->ctrl_onObservations_, NOUPDATE);
 
@@ -124,7 +124,7 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 		  
 	  ctrl_notEmpty_->setValue(true, NOUPDATE);
 		  
-	  if (src_->getctrl("mrs_natural/size")->toNatural() != 0)
+	  if (src_->getctrl("mrs_natural/size")->to<mrs_natural>() != 0)
 	    src_->notEmpty_ = true; //[!]
 	}
       else
@@ -147,9 +147,9 @@ SoundFileSource::myUpdate(MarControlPtr sender)
       src_->setctrl("mrs_bool/shuffle", getctrl("mrs_bool/shuffle"));
       src_->setctrl("mrs_bool/notEmpty", getctrl("mrs_bool/notEmpty"));
       src_->setctrl("mrs_natural/pos", getctrl("mrs_natural/pos"));
-      src_->pos_ = getctrl("mrs_natural/pos")->toNatural();//[!]
+      src_->pos_ = getctrl("mrs_natural/pos")->to<mrs_natural>();//[!]
       src_->setctrl("mrs_natural/loopPos", getctrl("mrs_natural/loopPos"));
-      src_->rewindpos_ = getctrl("mrs_natural/loopPos")->toNatural();//[!]
+      src_->rewindpos_ = getctrl("mrs_natural/loopPos")->to<mrs_natural>();//[!]
       src_->update();
 
       //sync local controls with the controls from the audio source object 
@@ -165,7 +165,7 @@ SoundFileSource::myUpdate(MarControlPtr sender)
       setctrl("mrs_real/repetitions", src_->getctrl("mrs_real/repetitions"));
       setctrl("mrs_real/duration", src_->getctrl("mrs_real/duration"));
     
-      advance_ = ctrl_advance_->toBool();//?!?!!? [!][?]
+      advance_ = ctrl_advance_->to<mrs_bool>();//?!?!!? [!][?]
       setctrl("mrs_bool/advance", src_->getctrl("mrs_bool/advance"));
     
       setctrl("mrs_bool/shuffle", src_->getctrl("mrs_bool/shuffle"));
@@ -174,7 +174,7 @@ SoundFileSource::myUpdate(MarControlPtr sender)
       setctrl("mrs_string/allfilenames", src_->getctrl("mrs_string/allfilenames"));
       setctrl("mrs_natural/numFiles", src_->getctrl("mrs_natural/numFiles"));
     
-      if (src_->getctrl("mrs_string/filetype")->toString() == "raw")
+      if (src_->getctrl("mrs_string/filetype")->to<mrs_string>() == "raw")
 	{
 	  setctrl("mrs_real/frequency", src_->getctrl("mrs_real/frequency"));
 	  setctrl("mrs_bool/noteon", src_->getctrl("mrs_bool/noteon"));
@@ -185,7 +185,7 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 bool 
 SoundFileSource::checkType()
 {
-  string filename = getctrl("mrs_string/filename")->toString();
+  string filename = getctrl("mrs_string/filename")->to<mrs_string>();
   // check if file exists
   if (filename != "defaultfile")
     {
@@ -265,7 +265,7 @@ SoundFileSource::checkType()
 void
 SoundFileSource::getHeader()
 {
-  string filename = ctrl_filename_->toString();
+  string filename = ctrl_filename_->to<mrs_string>();
  
   src_->getHeader(filename);
   ctrl_pos_->setValue(0, NOUPDATE);

@@ -115,12 +115,12 @@ FlowThru::myUpdate(MarControlPtr sender)
 		{
 			if (slices_[i] != NULL) 
 			{
-				if ((slices_[i])->getRows() != marsystems_[i]->ctrl_onObservations_->toNatural()  ||
-					(slices_[i])->getCols() != marsystems_[i]->ctrl_onSamples_->toNatural())
+				if ((slices_[i])->getRows() != marsystems_[i]->ctrl_onObservations_->to<mrs_natural>()  ||
+					(slices_[i])->getCols() != marsystems_[i]->ctrl_onSamples_->to<mrs_natural>())
 				{
 					delete slices_[i];
-					slices_[i] = new realvec(marsystems_[i]->ctrl_onObservations_->toNatural(), 
-						marsystems_[i]->ctrl_onSamples_->toNatural());
+					slices_[i] = new realvec(marsystems_[i]->ctrl_onObservations_->to<mrs_natural>(), 
+						marsystems_[i]->ctrl_onSamples_->to<mrs_natural>());
 
 					(marsystems_[i])->ctrl_processedData_->setValue(*(slices_[i]));// [WTF] ?!?!?!?!?!?!?!?!?!?!??!!?!?!?!? [?]
 
@@ -131,8 +131,8 @@ FlowThru::myUpdate(MarControlPtr sender)
 			}
 			else 
 			{
-				slices_[i] = new realvec(marsystems_[i]->ctrl_onObservations_->toNatural(), 
-					marsystems_[i]->ctrl_onSamples_->toNatural());
+				slices_[i] = new realvec(marsystems_[i]->ctrl_onObservations_->to<mrs_natural>(), 
+					marsystems_[i]->ctrl_onSamples_->to<mrs_natural>());
 
 				marsystems_[i]->ctrl_processedData_->setValue(*(slices_[i]));// [WTF] ?!?!?!?!?!?!?!?!?!?!??!!?!?!?!? [?]
 				
@@ -143,7 +143,9 @@ FlowThru::myUpdate(MarControlPtr sender)
 
 			if(i==marsystemsSize_-1)
 			{
-				ctrl_innerOut_->create(marsystems_[i]->ctrl_onObservations_->toNatural(),marsystems_[i]->ctrl_onSamples_->toNatural());
+				MarControlAccessor acc(ctrl_innerOut_, NOUPDATE);
+				realvec& innerOut = acc.to<mrs_realvec>();
+				innerOut.create(marsystems_[i]->ctrl_onObservations_->to<mrs_natural>(),marsystems_[i]->ctrl_onSamples_->to<mrs_natural>());
 			}
 		}
 	}
@@ -168,8 +170,8 @@ FlowThru::myProcess(realvec& in, realvec& out)
 			else if (i == marsystemsSize_-1)//!!!!!!!!!!!!!!!!!!!!!!!! [!]
 			{
 				mrs_realvec outVec;
-				outVec.allocate(marsystems_[i]->ctrl_onObservations_->toNatural(),
-												marsystems_[i]->ctrl_onSamples_->toNatural());
+				outVec.allocate(marsystems_[i]->ctrl_onObservations_->to<mrs_natural>(),
+												marsystems_[i]->ctrl_onSamples_->to<mrs_natural>());
 				marsystems_[i]->process((realvec &) slPtrs_[i-1]->to<mrs_realvec>(),outVec); 
 				ctrl_innerOut_->setValue(outVec); //COPYING INVOLVED! ONLY WAY TO GET AROUND BREAK IN INCAPSULATION (so we can use links to this control)
 			}

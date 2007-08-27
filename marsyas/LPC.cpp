@@ -62,7 +62,7 @@ LPC::myUpdate(MarControlPtr sender)
 { 
 	MRSDIAG("LPC.cpp - LPC:myUpdate");
 
-	order_ = getctrl("mrs_natural/order")->toNatural();
+	order_ = getctrl("mrs_natural/order")->to<mrs_natural>();
 
 	setctrl("mrs_natural/onObservations", (mrs_natural)(order_+2)); // <order_> coefs + pitch value + power value
 	setctrl("mrs_natural/onSamples", (mrs_natural)1);
@@ -78,7 +78,11 @@ LPC::myUpdate(MarControlPtr sender)
 	temp_.create(order_ ,order_);
 	Zs_.create(order_);
 
-	ctrl_coeffs_->stretch(order_+1);
+	{
+		MarControlAccessor acc(ctrl_coeffs_, NOUPDATE);
+		realvec& coeffs = acc.to<mrs_realvec>();
+		coeffs.stretch(order_+1);
+	}
 
 	//MATLAB engine stuff - for testing and validation purposes only!
 #ifdef _MATLAB_LPC_
@@ -385,7 +389,7 @@ LPC::myProcess(realvec& in, realvec& out)
 	MATLAB_PUT(featureMode_, "featureMode");
 	MATLAB_PUT(in, "LPC_in");
 	MATLAB_PUT(order_, "LPC_order");
-	MATLAB_PUT(getctrl("mrs_real/gamma")->toReal(), "LPC_gamma");
+	MATLAB_PUT(getctrl("mrs_real/gamma")->to<mrs_real>(), "LPC_gamma");
 #endif 
 
 	//-------------------------
@@ -414,13 +418,13 @@ LPC::myProcess(realvec& in, realvec& out)
 	//cout << LevinsonError << endl;
 
 	//this also estimates the pitch - does it work if lambda != 0 [?] [ML] normalization issue 
-	autocorrelationWarped(in, r, lag, getctrl("mrs_real/lambda")->toReal()); 
+	autocorrelationWarped(in, r, lag, getctrl("mrs_real/lambda")->to<mrs_real>()); 
 	LevinsonError = SPcorXpc (r.getData(), a.getData(), a.getSize()-1);
 
 	// LevinsonError /= in.getSize(); [ML] add this if SPautoc used
 	LevinsonError = sqrt(LevinsonError);
 	// pitch in Hz
-	pitch = getctrl("mrs_real/israte")->toReal()/lag ;
+	pitch = getctrl("mrs_real/israte")->to<mrs_real>()/lag ;
 
 	//--------------------------
 	// LPC coeffs
@@ -445,7 +449,7 @@ LPC::myProcess(realvec& in, realvec& out)
 	// LPC Pole-shifting
 	//--------------------------
 	//verify if Z-Plane pole-shifting should be performed...
-	mrs_real gamma = getctrl("mrs_real/gamma")->toReal();
+	mrs_real gamma = getctrl("mrs_real/gamma")->to<mrs_real>();
 	if(gamma != 1.0)
 	{
 		for(mrs_natural j = 0; j < order_; j++)
@@ -466,9 +470,9 @@ LPC::myProcess(realvec& in, realvec& out)
 	//MATLAB engine stuff - for testing and validation purposes only!
 #ifdef _MATLAB_LPC_
 	MATLAB_PUT(out, "LPC_out");
-	MATLAB_PUT(getctrl("mrs_real/pitch")->toReal(), "pitch_MARS");
-	MATLAB_PUT(getctrl("mrs_real/power")->toReal(), "g_MARS");
-	MATLAB_PUT(ctrl_coeffs_->toVec(), "a_MARS");
+	MATLAB_PUT(getctrl("mrs_real/pitch")->to<mrs_real>(), "pitch_MARS");
+	MATLAB_PUT(getctrl("mrs_real/power")->to<mrs_real>(), "g_MARS");
+	MATLAB_PUT(ctrl_coeffs_->to<mrs_realvec>(), "a_MARS");
 	MATLAB_EVAL("LPC_test");
 	mrs_real matlabGain;
 	MATLAB_GET("LPCgain", matlabGain);

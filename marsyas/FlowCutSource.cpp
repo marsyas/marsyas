@@ -60,12 +60,12 @@ FlowCutSource::myUpdate(MarControlPtr sender)
 {
 	MarSystem::myUpdate(sender);
 
-if(getctrl("mrs_natural/setSamples")->toNatural())
-	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/setSamples")->toNatural());
-if(getctrl("mrs_natural/setObservations")->toNatural()) 
-	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/setObservations")->toNatural());
-  if(getctrl("mrs_real/setRate")->toReal())
-		setctrl("mrs_real/osrate", getctrl("mrs_real/setRate")->toReal());
+if(getctrl("mrs_natural/setSamples")->to<mrs_natural>())
+	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/setSamples")->to<mrs_natural>());
+if(getctrl("mrs_natural/setObservations")->to<mrs_natural>()) 
+	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/setObservations")->to<mrs_natural>());
+  if(getctrl("mrs_real/setRate")->to<mrs_real>())
+		setctrl("mrs_real/osrate", getctrl("mrs_real/setRate")->to<mrs_real>());
 }
 
 

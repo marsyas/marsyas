@@ -66,11 +66,11 @@ void
 PowerSpectrum::myUpdate(MarControlPtr sender)
 {
   ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
-  ctrl_onObservations_->setValue((ctrl_inObservations_->toNatural() /2), NOUPDATE);
-  ctrl_osrate_->setValue(ctrl_israte_->toReal() / ctrl_inSamples_->toNatural());
+  ctrl_onObservations_->setValue((ctrl_inObservations_->to<mrs_natural>() /2), NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>() / ctrl_inSamples_->to<mrs_natural>());
   ctrl_onObsNames_->setValue(ctrl_inObsNames_);
 
-  stype_ = ctrl_spectrumType_->toString();
+  stype_ = ctrl_spectrumType_->to<mrs_string>();
   if (stype_ == "power")
     ntype_ = PSD_POWER;
   else if (stype_ == "magnitude") 
@@ -80,7 +80,7 @@ PowerSpectrum::myUpdate(MarControlPtr sender)
   else if (stype_ == "powerdensity")
     ntype_ = PSD_PD;
   
-  inObservations_ = ctrl_inObservations_->toNatural();
+  inObservations_ = ctrl_inObservations_->to<mrs_natural>();
 
   N2_ = inObservations_ / 2;
   ostringstream oss;

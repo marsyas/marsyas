@@ -50,7 +50,7 @@ Reassign::myUpdate(MarControlPtr sender)
 //   setctrl("mrs_real/osrate", getctrl("mrs_real/israte")); 
 	MarSystem::myUpdate(sender);
 
-  flag_.create(getctrl("mrs_natural/inSamples")->toNatural());
+  flag_.create(getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 
   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
 }

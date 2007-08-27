@@ -59,10 +59,10 @@ ANN_node::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
  
-  weights_.create(getctrl("mrs_realvec/weights")->toVec().getSize());
-  weights_ = getctrl("mrs_realvec/weights")->toVec(); 
+  weights_.create(getctrl("mrs_realvec/weights")->to<mrs_realvec>().getSize());
+  weights_ = getctrl("mrs_realvec/weights")->to<mrs_realvec>(); 
 
-  bias_ = getctrl("mrs_real/bias")->toReal(); 
+  bias_ = getctrl("mrs_real/bias")->to<mrs_real>(); 
 }
 
 void 

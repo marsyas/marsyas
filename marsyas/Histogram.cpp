@@ -56,9 +56,9 @@ Histogram::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("Histogram.cpp - Histogram:myUpdate");
 
-  startBin_ = getctrl("mrs_natural/startBin")->toNatural();
-  endBin_ = getctrl("mrs_natural/endBin")->toNatural();
-  reset_ = getctrl("mrs_bool/reset")->toBool();  
+  startBin_ = getctrl("mrs_natural/startBin")->to<mrs_natural>();
+  endBin_ = getctrl("mrs_natural/endBin")->to<mrs_natural>();
+  reset_ = getctrl("mrs_bool/reset")->to<mrs_bool>();  
   
   setctrl("mrs_natural/onSamples", endBin_ - startBin_);
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));

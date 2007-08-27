@@ -191,7 +191,7 @@ TopPanelNew::tick()
   for (int i = 0; i < graphs.size(); ++i) 
     {
       
-      out_ = pnet_->getControl(probes_[i])->toVec();
+      out_ = pnet_->getControl(probes_[i])->to<mrs_realvec>();
       graphs[i]->setBuffer( out_ );
     }
   

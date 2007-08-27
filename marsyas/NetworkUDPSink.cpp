@@ -49,9 +49,9 @@ void NetworkUDPSink::myProcess( realvec& in, realvec& out ) {
   if ( !valid(s_sock) )
 	  refresh();
   
-  if ( !NetworkSocket::sendUDP( in, getctrl("mrs_natural/inSamples")->toNatural(), 
-				getctrl("mrs_natural/inObservations")->toNatural(), 
-				getctrl("mrs_real/israte")->toReal() ) ) {
+  if ( !NetworkSocket::sendUDP( in, getctrl("mrs_natural/inSamples")->to<mrs_natural>(), 
+				getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+				getctrl("mrs_real/israte")->to<mrs_real>() ) ) {
     throw SocketException ( "Could not write to socket." );
   }
 
@@ -69,10 +69,10 @@ void NetworkUDPSink::refresh() {
     throw SocketException ( "Could not create client socket." );
   }
 
-  mrs_natural dataPort = getctrl("mrs_natural/dataPort")->toNatural();
-  mrs_natural controlsPort = getctrl("mrs_natural/controlsPort")->toNatural();
+  mrs_natural dataPort = getctrl("mrs_natural/dataPort")->to<mrs_natural>();
+  mrs_natural controlsPort = getctrl("mrs_natural/controlsPort")->to<mrs_natural>();
   
-  if ( ! NetworkSocket::setupSink ( getctrl("mrs_string/host")->toString(),
+  if ( ! NetworkSocket::setupSink ( getctrl("mrs_string/host")->to<mrs_string>(),
    		dataPort, controlsPort ) ) {
     throw SocketException ( "Could not setup address structure." );
   }

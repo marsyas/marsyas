@@ -24,7 +24,7 @@ mrs_real TranscriberExtract::addFileSource(MarSystem* net, const string infile)
         net->updctrl("SoundFileSource/src/mrs_string/filename", infile);
         net->linkControl("mrs_bool/notEmpty",
                          "SoundFileSource/src/mrs_bool/notEmpty");
-        return net->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
+        return net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 }
 
 
@@ -88,7 +88,7 @@ TranscriberExtract::getAllFromAudio(const string audioFilename, realvec* &
 	fanout->addMarSystem(makeAmplitudeNet(ampSink));
 	pnet->addMarSystem(fanout);
 
-	while ( pnet->getctrl("mrs_bool/notEmpty")->toBool() )
+	while ( pnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>() )
 		pnet->tick();
 
 	pitchList = getPitchesFromRealvecSink(pitchSink, srate);
@@ -104,7 +104,7 @@ TranscriberExtract::getPitchesFromAudio(const string audioFilename)
 	MarSystem* rvSink = mng.create("RealvecSink", "rvSink");
 	pnet->addMarSystem(makePitchNet(srate, 100.0, rvSink));
 
-	while ( pnet->getctrl("mrs_bool/notEmpty")->toBool() )
+	while ( pnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>() )
 		pnet->tick();
 
 	realvec* pitchList = getPitchesFromRealvecSink(rvSink, srate);
@@ -115,7 +115,7 @@ TranscriberExtract::getPitchesFromAudio(const string audioFilename)
 realvec*
 TranscriberExtract::getPitchesFromRealvecSink(MarSystem* rvSink, const mrs_real srate)
 {
-	realvec data = rvSink->getctrl("mrs_realvec/data")->toVec();
+	realvec data = rvSink->getctrl("mrs_realvec/data")->to<mrs_realvec>();
 	rvSink->updctrl("mrs_bool/done", true);
 
 	realvec* pitchList = new realvec(data.getSize()/2);
@@ -136,7 +136,7 @@ TranscriberExtract::getPitchesFromRealvecSink(MarSystem* rvSink, const mrs_real 
 realvec*
 TranscriberExtract::getAmpsFromRealvecSink(MarSystem* rvSink)
 {
-	realvec data = rvSink->getctrl("mrs_realvec/data")->toVec();
+	realvec data = rvSink->getctrl("mrs_realvec/data")->to<mrs_realvec>();
 	rvSink->updctrl("mrs_bool/done", true);
 	realvec* ampList = new realvec(data.getSize());
 	(*ampList) = data;

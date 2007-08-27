@@ -51,7 +51,7 @@ MinArgMin::addControls()
 void
 MinArgMin::myUpdate(MarControlPtr sender)
 {
-  mrs_natural k = getctrl("mrs_natural/nMinimums")->toNatural();
+  mrs_natural k = getctrl("mrs_natural/nMinimums")->to<mrs_natural>();
 
   setctrl("mrs_natural/onSamples",  2 * k);
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
@@ -64,8 +64,8 @@ void
 MinArgMin::myProcess(realvec& in, realvec& out)
 {
   out.setval(MAXREAL);
-  mrs_natural k = getctrl("mrs_natural/nMinimums")->toNatural();
-  mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
+  mrs_natural k = getctrl("mrs_natural/nMinimums")->to<mrs_natural>();
+  mrs_natural inSamples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
   
   
   for (t=0; t < inSamples; t++)

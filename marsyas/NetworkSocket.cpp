@@ -366,8 +366,8 @@ int NetworkSocket::recvUDP ( realvec& out )  {
     int status = 0; 
 	  	
     // assume a size 512 vector
-    mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
-    mrs_natural inObservations = getctrl("mrs_natural/inObservations")->toNatural();
+    mrs_natural inSamples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+    mrs_natural inObservations = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
     
     
     mrs_real* buffer = new mrs_real[(inSamples*inObservations)+3];
@@ -450,9 +450,9 @@ mrs_real* const NetworkSocket::recvControls() {
         updctrl("mrs_real/israte", swap(controls[3]));
 	
 	// return proper values
-	controls[1] = getctrl("mrs_natural/inSamples")->toNatural();
-	controls[2] = getctrl("mrs_natural/inObservations")->toNatural();
-	controls[3] = getctrl("mrs_real/israte")->toReal();
+	controls[1] = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+	controls[2] = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+	controls[3] = getctrl("mrs_real/israte")->to<mrs_real>();
       
     } else 
       {
@@ -472,8 +472,8 @@ int NetworkSocket::recvTCP ( realvec& out )
 {
   
   // create our slice with updated controls
-  mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
-  mrs_natural inObservations = getctrl("mrs_natural/inObservations")->toNatural();
+  mrs_natural inSamples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+  mrs_natural inObservations = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
   
   out.create(inObservations, inSamples);  
   mrs_real* data = out.getData();
@@ -541,7 +541,7 @@ int NetworkSocket :: accept( void )
 	return client_d;
       
       cout << "Client connected on data port: " << 
-	getctrl("mrs_natural/dataPort")->toNatural() << endl;
+	getctrl("mrs_natural/dataPort")->to<mrs_natural>() << endl;
       
       
       // if we're a MarSystem, accept a connection for controls also
@@ -557,7 +557,7 @@ int NetworkSocket :: accept( void )
 	  }
 	  
 	  cout << "Client connected on controls port: " << 
-	    getctrl("mrs_natural/controlsPort")->toNatural() << endl;
+	    getctrl("mrs_natural/controlsPort")->to<mrs_natural>() << endl;
 	  
 	}
     } 

@@ -69,7 +69,7 @@ mrs_natural TmSampleCount::readTimeSrc()
         return 0;
     }
 //    mrs_natural m = (read_src_->getctrl(read_cname_)).toNatural();
-    mrs_natural m = read_ctrl_->toNatural();
+    mrs_natural m = read_ctrl_->to<mrs_natural>();
     return m;
 //    return (read_src_->getctrl(read_cname_)).toNatural() + getTime();
 }
@@ -80,7 +80,7 @@ void TmSampleCount::trigger()
 mrs_natural TmSampleCount::intervalsize(string interval)
 {
     return (read_src_==NULL) ? 0 :
-        time2samples(interval,read_src_->getctrl("mrs_real/israte")->toReal());
+        time2samples(interval,read_src_->getctrl("mrs_real/israte")->to<mrs_real>());
 }
 void
 TmSampleCount::updtimer(std::string cname, TmControlValue value)

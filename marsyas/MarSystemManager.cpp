@@ -447,9 +447,9 @@ MarSystemManager::MarSystemManager()
 	mrs_real lowFreq = pitch2hertz(lowPitch);
 	mrs_real highFreq = pitch2hertz(highPitch);
 	mrs_natural lowSamples = 
-		hertz2samples(highFreq, pitchSACF->getctrl("mrs_real/osrate")->toReal());
+		hertz2samples(highFreq, pitchSACF->getctrl("mrs_real/osrate")->to<mrs_real>());
 	mrs_natural highSamples = 
-		hertz2samples(lowFreq, pitchSACF->getctrl("mrs_real/osrate")->toReal());
+		hertz2samples(lowFreq, pitchSACF->getctrl("mrs_real/osrate")->to<mrs_real>());
 	pitchSACF->updctrl("mrs_natural/lowSamples", lowSamples);
 	pitchSACF->updctrl("mrs_natural/highSamples", highSamples);
 	registerPrototype("PitchSACF", pitchSACF);
@@ -487,9 +487,9 @@ MarSystemManager::MarSystemManager()
 	lowFreq = pitch2hertz(lowPitch);
 	highFreq = pitch2hertz(highPitch);
 	lowSamples = 
-		hertz2samples(highFreq, pitchPraat->getctrl("mrs_real/osrate")->toReal());
+		hertz2samples(highFreq, pitchPraat->getctrl("mrs_real/osrate")->to<mrs_real>());
 	highSamples = 
-		hertz2samples(lowFreq, pitchPraat->getctrl("mrs_real/osrate")->toReal());
+		hertz2samples(lowFreq, pitchPraat->getctrl("mrs_real/osrate")->to<mrs_real>());
 	pitchPraat->updctrl("mrs_natural/lowSamples", lowSamples);
 	pitchPraat->updctrl("mrs_natural/highSamples", highSamples);
 	registerPrototype("PitchPraat", pitchPraat);

@@ -71,7 +71,7 @@ SoundFileSink::addControls()
 void
 SoundFileSink::putHeader()
 {
-  string filename = getctrl("mrs_string/filename")->toString();
+  string filename = getctrl("mrs_string/filename")->to<mrs_string>();
   dest_->putHeader(filename);
 }
 
@@ -80,7 +80,7 @@ SoundFileSink::putHeader()
 bool 
 SoundFileSink::checkType()
 {
-  string filename = getctrl("mrs_string/filename")->toString();
+  string filename = getctrl("mrs_string/filename")->to<mrs_string>();
   // check if file exists
   if (filename != "defaultfile")
     {
@@ -135,7 +135,7 @@ void
 SoundFileSink::myUpdate(MarControlPtr sender)
 {
   
-  if (filename_ != getctrl("mrs_string/filename")->toString())
+  if (filename_ != getctrl("mrs_string/filename")->to<mrs_string>())
     {
       if (checkType() == true)
 	{
@@ -145,7 +145,7 @@ SoundFileSink::myUpdate(MarControlPtr sender)
 	  dest_->update();
 
 	  putHeader();
-	  filename_ = getctrl("mrs_string/filename")->toString();
+	  filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
 	  
 	  setctrl("mrs_real/israte", dest_->getctrl("mrs_real/israte"));
 	}

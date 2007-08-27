@@ -43,8 +43,8 @@ void
 PvConvolve::myUpdate(MarControlPtr sender)
 {
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->toNatural() / 2);
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->toReal());
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->to<mrs_natural>() / 2);
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->to<mrs_real>());
 }
 
 void 

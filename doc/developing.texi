@@ -226,7 +226,7 @@ Taking a real-world example, consider a simple one-pole high/low-pass
 filter where we wish to perform the following operations:
 
 @example
-mrs_real fc = ctrl_fc ->to<mrs_real>();
+mrs_real fc = ctrl_fc ->to<mrs_real>()();
 mrs_real tanf = tan( PI * fc / 44100.0);
 mrs_real c = (tanf - 1.0) / (tanf + 1.0);
 

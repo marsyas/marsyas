@@ -13,8 +13,8 @@ void sfplay(string sfName, float gain, float start)
 	playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
 
 // calculate the starting position.
-	mrs_natural nChannels = playbacknet->getctrl("SoundFileSource/src/mrs_natural/nChannels")->toNatural();
-	mrs_real srate = playbacknet->getctrl("SoundFileSource/src/mrs_real/israte")->toReal();
+	mrs_natural nChannels = playbacknet->getctrl("SoundFileSource/src/mrs_natural/nChannels")->to<mrs_natural>();
+	mrs_real srate = playbacknet->getctrl("SoundFileSource/src/mrs_real/israte")->to<mrs_real>();
 	mrs_natural startPosition = (mrs_natural) (start * srate * nChannels);
 
 	playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
@@ -24,7 +24,7 @@ void sfplay(string sfName, float gain, float start)
 // set the starting position of the source
 	playbacknet->updctrl("SoundFileSource/src/mrs_natural/pos", startPosition);
 
-	while ( playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() )
+	while ( playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>() )
 	{
 		playbacknet->tick();
 	}

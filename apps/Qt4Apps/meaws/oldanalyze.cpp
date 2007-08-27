@@ -110,9 +110,9 @@ void Analyze::getPitches(string audioFilename) {
   mrs_real highFreq = pitch2hertz(highPitch);
 
   mrs_natural lowSamples = 
-     hertz2samples(highFreq, pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
+     hertz2samples(highFreq, pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>());
   mrs_natural highSamples = 
-     hertz2samples(lowFreq, pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
+     hertz2samples(lowFreq, pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>());
  
   pnet->updctrl("PitchPraat/pitch/mrs_natural/lowSamples", lowSamples);
   pnet->updctrl("PitchPraat/pitch/mrs_natural/highSamples", highSamples);
@@ -121,18 +121,18 @@ void Analyze::getPitches(string audioFilename) {
   //  enough to contain three periods (for pitch detection) 
   //  of MinimumPitch. E.g. if MinimumPitch is 75 Hz, the window length
   //  is 40 ms and padded with zeros to reach a power of two.
-  mrs_real windowSize = 3/lowPitch*pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
+  mrs_real windowSize = 3/lowPitch*pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
   pnet->updctrl("mrs_natural/inSamples", 512);
 	// pnet->updctrl("ShiftInput/sfi/mrs_natural/Decimation", 256);
 	pnet->updctrl("ShiftInput/sfi/mrs_natural/WindowSize", powerOfTwo(windowSize));
 	//pnet->updctrl("ShiftInput/sfi/mrs_natural/WindowSize", 1024);
 
-  while (pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
+  while (pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
    pnet->tick();
 
-	realvec data = pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->toVec();
+	realvec data = pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->to<mrs_realvec>();
    for (mrs_natural i=1; i<data.getSize();i+=2)
-	   data(i) = samples2hertz(data(i), pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal());
+	   data(i) = samples2hertz(data(i), pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>());
    
    pnet->updctrl("RealvecSink/rvSink/mrs_bool/done", true); 
 
@@ -180,10 +180,10 @@ Analyze::getAmplitudes(string audioFilename)
 	pnet->addMarSystem(mng.create("Power", "pw"));
   pnet->addMarSystem(mng.create("RealvecSink", "rvSink")); 
 
-  while (pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool())
+  while (pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
    pnet->tick();
 
-	realvec data = pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->toVec();
+	realvec data = pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->to<mrs_realvec>();
 	mrs_natural i;
 	ampList.allocate( data.getSize() );
   for (i=0; i<data.getSize(); i++) {

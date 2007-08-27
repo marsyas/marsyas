@@ -51,7 +51,7 @@ Skewness::myUpdate(MarControlPtr sender)
   setctrl("mrs_string/onObsNames", "Skewness,");
   
 	//defaultUpdate();[!]
-	inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
+	inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 
   obsrow_.create(inObservations_);
 }

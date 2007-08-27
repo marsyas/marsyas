@@ -250,7 +250,7 @@ MarMonitors::tick()
     {
       cout << "probes_[i] " << probes_[i] << endl;
       
-      out_ = (mycontrols_[probes_[i]])->toVec();
+      out_ = (mycontrols_[probes_[i]])->to<mrs_realvec>();
       cout << out_ << endl;
       
       graphs[i]->setBuffer( out_ );

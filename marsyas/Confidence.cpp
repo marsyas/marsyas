@@ -92,15 +92,15 @@ Confidence::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-  confidences_.stretch(getctrl("mrs_natural/nLabels")->toNatural());
-  string labelNames = getctrl("mrs_string/labelNames")->toString();
+  confidences_.stretch(getctrl("mrs_natural/nLabels")->to<mrs_natural>());
+  string labelNames = getctrl("mrs_string/labelNames")->to<mrs_string>();
   
   labelNames_.clear();
 
-  print_ = getctrl("mrs_bool/print")->toBool();
-  forcePrint_ = getctrl("mrs_bool/forcePrint")->toBool();
+  print_ = getctrl("mrs_bool/print")->to<mrs_bool>();
+  forcePrint_ = getctrl("mrs_bool/forcePrint")->to<mrs_bool>();
     
-  for (mrs_natural i = 0; i < getctrl("mrs_natural/nLabels")->toNatural(); i++)
+  for (mrs_natural i = 0; i < getctrl("mrs_natural/nLabels")->to<mrs_natural>(); i++)
     {
       string labelName;
       string temp;
@@ -114,14 +114,14 @@ Confidence::myUpdate(MarControlPtr sender)
 
   if (getctrl("mrs_bool/fileOutput")->to<mrs_bool>())
     {
-      if(getctrl("mrs_string/fileName")->toString().compare(oriName_))
+      if(getctrl("mrs_string/fileName")->to<mrs_string>().compare(oriName_))
 	{
 	  if(write_)
 	    {
 	      outputFileSyn_.close();
 	      outputFileTran_.close();
 	    }
-	  oriName_ = getctrl("mrs_string/fileName")->toString();
+	  oriName_ = getctrl("mrs_string/fileName")->to<mrs_string>();
 	  FileName Sfname(oriName_);
 	  string tmp = Sfname.nameNoExt() +"_synSeg.txt";
 	  cout << Sfname.nameNoExt() << endl;
@@ -132,8 +132,8 @@ Confidence::myUpdate(MarControlPtr sender)
 	  write_ = 1;
 	}
     }
-  hopDuration_ = getctrl("mrs_natural/hopSize")->toNatural() / getctrl("mrs_real/osrate")->toReal();
-  nbFrames_ = -getctrl("mrs_natural/memSize")->toNatural()+1;
+  hopDuration_ = getctrl("mrs_natural/hopSize")->to<mrs_natural>() / getctrl("mrs_real/osrate")->to<mrs_real>();
+  nbFrames_ = -getctrl("mrs_natural/memSize")->to<mrs_natural>()+1;
   lastLabel_ = "MARSYAS_EMPTY";
 }
 

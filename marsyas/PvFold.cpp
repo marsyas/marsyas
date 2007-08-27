@@ -66,9 +66,9 @@ PvFold::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
   
-  N_ = getctrl("mrs_natural/onSamples")->toNatural();
-  Nw_ = getctrl("mrs_natural/inSamples")->toNatural();
-  D_ = getctrl("mrs_natural/Decimation")->toNatural();
+  N_ = getctrl("mrs_natural/onSamples")->to<mrs_natural>();
+  Nw_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+  D_ = getctrl("mrs_natural/Decimation")->to<mrs_natural>();
 
   // create analysis window if necessary
   if (Nw_ != PNw_)

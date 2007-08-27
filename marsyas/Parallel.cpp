@@ -56,8 +56,8 @@ void Parallel::myUpdate(MarControlPtr sender)
 		//marsystems_[0]->setctrl("mrs_string/inObsNames", inObsNames_);
 		marsystems_[0]->update();
 
-		mrs_natural inObservations = marsystems_[0]->getctrl("mrs_natural/inObservations")->toNatural();
-		mrs_natural onObservations = marsystems_[0]->getctrl("mrs_natural/onObservations")->toNatural();
+		mrs_natural inObservations = marsystems_[0]->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+		mrs_natural onObservations = marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
 
 		ostringstream oss;
 		oss << marsystems_[0]->getctrl("mrs_string/onObsNames");
@@ -69,8 +69,8 @@ void Parallel::myUpdate(MarControlPtr sender)
 			marsystems_[i]->update();
 			oss << marsystems_[i]->getctrl("mrs_string/onObsNames");
 
-			inObservations += marsystems_[i]->getctrl("mrs_natural/inObservations")->toNatural();
-			onObservations += marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural();
+			inObservations += marsystems_[i]->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+			onObservations += marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
 		}
 
 		//forward flow propagation
@@ -89,33 +89,33 @@ void Parallel::myUpdate(MarControlPtr sender)
 		{
 			if (slices_[2*i] != NULL) 
 			{
-				if ((slices_[2*i])->getRows() != marsystems_[i]->getctrl("mrs_natural/inObservations")->toNatural() ||
-					  (slices_[2*i])->getCols() != marsystems_[i]->getctrl("mrs_natural/inSamples")->toNatural()) 
+				if ((slices_[2*i])->getRows() != marsystems_[i]->getctrl("mrs_natural/inObservations")->to<mrs_natural>() ||
+					  (slices_[2*i])->getCols() != marsystems_[i]->getctrl("mrs_natural/inSamples")->to<mrs_natural>()) 
 				{
 					delete slices_[2*i];
-					slices_[2*i] = new realvec(marsystems_[i]->getctrl("mrs_natural/inObservations")->toNatural(), 
-																		 marsystems_[i]->getctrl("mrs_natural/inSamples")->toNatural());
+					slices_[2*i] = new realvec(marsystems_[i]->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+																		 marsystems_[i]->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 				}
 			}
 			else 
-				slices_[2*i] = new realvec(marsystems_[i]->getctrl("mrs_natural/inObservations")->toNatural(), 
-																	 marsystems_[i]->getctrl("mrs_natural/inSamples")->toNatural());
+				slices_[2*i] = new realvec(marsystems_[i]->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+																	 marsystems_[i]->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 
 			(slices_[2*i])->setval(0.0);
 
 			if (slices_[2*i+1] != NULL) 
 			{
-				if ((slices_[2*i+1])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural() ||
-					  (slices_[2*i+1])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural()) 
+				if ((slices_[2*i+1])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>() ||
+					  (slices_[2*i+1])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>()) 
 				{
 					delete slices_[2*i+1];
-					slices_[2*i+1] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
-																			 marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
+					slices_[2*i+1] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+																			 marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 				}
 			}
 			else 
-				slices_[2*i+1] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
-																		 marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
+				slices_[2*i+1] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+																		 marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 			
 			(slices_[2*i+1])->setval(0.0);
 		}
@@ -138,7 +138,7 @@ void Parallel::myProcess(realvec& in, realvec& out)
 	{
 		for (mrs_natural i = 0; i < marsystemsSize_; i++) 
 		{
-			localIndex = marsystems_[i]->getctrl("mrs_natural/inObservations")->toNatural();
+			localIndex = marsystems_[i]->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 			for (o = 0; o < localIndex; o++) 
 			{
 				for (t = 0; t < inSamples_; t++) //lmartins: was t < onSamples [!]
@@ -148,7 +148,7 @@ void Parallel::myProcess(realvec& in, realvec& out)
 			}
 			inIndex += localIndex;
 			marsystems_[i]->process(*(slices_[2*i]), *(slices_[2*i+1]));
-			localIndex = marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural();
+			localIndex = marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
 			for (o = 0; o < localIndex; o++) 
 			{
 				for (t = 0; t < onSamples_; t++) 

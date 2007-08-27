@@ -62,7 +62,7 @@ Cascade::myUpdate(MarControlPtr sender)
 		// update dataflow component MarSystems in order 
 		ostringstream oss;
 		oss << marsystems_[0]->getctrl("mrs_string/onObsNames");   
-    mrs_natural onObservations = marsystems_[0]->getctrl("mrs_natural/onObservations")->toNatural();
+    mrs_natural onObservations = marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
     for (mrs_natural i=1; i < marsystemsSize_; i++) 
 		{
 			marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/onSamples"));
@@ -70,7 +70,7 @@ Cascade::myUpdate(MarControlPtr sender)
       marsystems_[i]->setctrl("mrs_real/israte", marsystems_[i-1]->getctrl("mrs_real/osrate"));
       marsystems_[i]->update();
 			oss << marsystems_[i]->getctrl("mrs_string/onObsNames");
-      onObservations += marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural();
+      onObservations += marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
     }
     
 		//forward flow propagation
@@ -89,18 +89,18 @@ Cascade::myUpdate(MarControlPtr sender)
 		{
       if (slices_[i] != NULL) 
 			{
-				if ((slices_[i])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural() || 
-						(slices_[i])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural()) 
+				if ((slices_[i])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>() || 
+						(slices_[i])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>()) 
 				{
 					delete slices_[i];
-					slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
-																	 marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
+					slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+																	 marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 				}
       }
       else 
 			{
-				slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural(), 
-																 marsystems_[i]->getctrl("mrs_natural/onSamples")->toNatural());
+				slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+																 marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
       }
 
       (slices_[i])->setval(0.0);
@@ -123,7 +123,7 @@ Cascade::myProcess(realvec& in, realvec& out)
   else if (marsystemsSize_ > 1) 
 	{
     marsystems_[0]->process(in, *(slices_[0]));
-    localIndex = marsystems_[0]->getctrl("mrs_natural/onObservations")->toNatural();
+    localIndex = marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
     for (o = 0; o < localIndex; o++) 
 		{
       for (t = 0; t < onSamples_; t++) 
@@ -135,7 +135,7 @@ Cascade::myProcess(realvec& in, realvec& out)
     for (mrs_natural i = 1; i < marsystemsSize_; i++) 
 		{
       marsystems_[i]->process(*(slices_[i-1]), *(slices_[i]));
-      localIndex = marsystems_[i]->getctrl("mrs_natural/onObservations")->toNatural();
+      localIndex = marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
       for (o = 0; o < localIndex; o++) 
 			{
 				for (t = 0; t < onSamples_; t++) 

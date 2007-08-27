@@ -107,11 +107,11 @@ CollectionFileSource::getHeader(string filename)
 void
 CollectionFileSource::myUpdate(MarControlPtr sender)
 {
-  inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
-  inObservations_ = getctrl("mrs_natural/inObservations")->toNatural();
+  inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+  inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
   
-  filename_ = getctrl("mrs_string/filename")->toString();    
-  pos_ = getctrl("mrs_natural/pos")->toNatural();
+  filename_ = getctrl("mrs_string/filename")->to<mrs_string>();    
+  pos_ = getctrl("mrs_natural/pos")->to<mrs_natural>();
   
   if (mngCreated_ == false) 
   {
@@ -120,10 +120,10 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
     downsampler_ = new DownSampler("downsampler_"); 
   }
   
-  repetitions_ = getctrl("mrs_real/repetitions")->toReal();
-  duration_ = getctrl("mrs_real/duration")->toReal();
-  advance_ = getctrl("mrs_bool/advance")->toBool();
-  cindex_ = getctrl("mrs_natural/cindex")->toNatural();
+  repetitions_ = getctrl("mrs_real/repetitions")->to<mrs_real>();
+  duration_ = getctrl("mrs_real/duration")->to<mrs_real>();
+  advance_ = getctrl("mrs_bool/advance")->to<mrs_bool>();
+  cindex_ = getctrl("mrs_natural/cindex")->to<mrs_natural>();
 
   if (getctrl("mrs_bool/shuffle")->isTrue())
   {
@@ -138,8 +138,8 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
 
   }
   
-  myIsrate_ = isrc_->getctrl("mrs_real/israte")->toReal();
-  onObservations_ = isrc_->getctrl("mrs_natural/onObservations")->toNatural();
+  myIsrate_ = isrc_->getctrl("mrs_real/israte")->to<mrs_real>();
+  onObservations_ = isrc_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
 
   setctrl("mrs_real/israte", myIsrate_);
   setctrl("mrs_real/osrate", myIsrate_);
@@ -174,7 +174,7 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
   isrc_->updctrl("mrs_bool/advance", advance_);
   isrc_->updctrl("mrs_natural/cindex", cindex_);
   
-  cindex_ = getctrl("mrs_natural/cindex")->toNatural();  
+  cindex_ = getctrl("mrs_natural/cindex")->to<mrs_natural>();  
 }
 
 void
@@ -196,8 +196,8 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
     
     isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));   
     updctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));   
-    myIsrate_ = isrc_->getctrl("mrs_real/israte")->toReal();
-    onObservations_ = isrc_->getctrl("mrs_natural/onObservations")->toNatural();
+    myIsrate_ = isrc_->getctrl("mrs_real/israte")->to<mrs_real>();
+    onObservations_ = isrc_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
     
 
     setctrl("mrs_real/israte", myIsrate_);
@@ -252,8 +252,8 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 	      isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));      
 	      isrc_->updctrl("mrs_natural/pos", 0);     
 	      pos_ = 0;
-	      myIsrate_ = isrc_->getctrl("mrs_real/israte")->toReal();
-	      onObservations_ = isrc_->getctrl("mrs_natural/onObservations")->toNatural();
+	      myIsrate_ = isrc_->getctrl("mrs_real/israte")->to<mrs_real>();
+	      onObservations_ = isrc_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
 	      
 
 	      setctrl("mrs_real/israte", myIsrate_);

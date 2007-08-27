@@ -80,12 +80,12 @@ AudioSink2::myUpdate(MarControlPtr sender)
 	*/
 	MarSystem::myUpdate(sender);
 
-	rtSrate_ = (int)getctrl("mrs_real/israte")->toReal();
+	rtSrate_ = (int)getctrl("mrs_real/israte")->to<mrs_real>();
 	srate_ = rtSrate_;
 
-	nChannels_ = getctrl("mrs_natural/nChannels")->toNatural();
+	nChannels_ = getctrl("mrs_natural/nChannels")->to<mrs_natural>();
 
-	bufferSize_ = (int)getctrl("mrs_natural/bufferSize")->toNatural();
+	bufferSize_ = (int)getctrl("mrs_natural/bufferSize")->to<mrs_natural>();
 
 #ifdef __OS_MACOSX__
 	if (rtSrate_ == 22050) 
@@ -99,7 +99,7 @@ AudioSink2::myUpdate(MarControlPtr sender)
 	initRtAudio(); 
 
 	//Resize reservoir if necessary
-	inSamples_ = getctrl("mrs_natural/inSamples")->toNatural();
+	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 	if (inSamples_ < bufferSize_) 
 		reservoirSize_ = 2 * bufferSize_;
 	else 
@@ -112,7 +112,7 @@ AudioSink2::myUpdate(MarControlPtr sender)
 
 	//if audio was playing (i.e.this was a re-init), keep it playing
 	//if (!stopped_ && audio_)
-	if(!getctrl("mrs_bool/stopped")->toBool() && getctrl("mrs_bool/initialized")->toBool())//thread safe!
+	if(!getctrl("mrs_bool/stopped")->to<mrs_bool>() && getctrl("mrs_bool/initialized")->to<mrs_bool>())//thread safe!
 		audio_->startStream();
 }
 
@@ -151,7 +151,7 @@ void
 AudioSink2::start()
 {
 	//if ( stopped_ )
-	if(getctrl("mrs_bool/stopped")->toBool())//thread safe!
+	if(getctrl("mrs_bool/stopped")->to<mrs_bool>())//thread safe!
 	{
 		audio_->startStream();
 		//stopped_ = false;
@@ -163,7 +163,7 @@ void
 AudioSink2::stop()
 {
 	//if ( !stopped_ ) 
-	if(!getctrl("mrs_bool/stopped")->toBool())//thread safe!
+	if(!getctrl("mrs_bool/stopped")->to<mrs_bool>())//thread safe!
 	{
 		audio_->stopStream();
 		//stopped_ = true;
@@ -197,18 +197,18 @@ AudioSink2::myProcess(realvec& in, realvec& out)
 
 	//check if RtAudio is initialized
 	//if (!isInitialized_)
-	if(!getctrl("mrs_bool/initialized")->toBool())//thread safe!
+	if(!getctrl("mrs_bool/initialized")->to<mrs_bool>())//thread safe!
 		return;
 
 	//check MUTE
-	if(getctrl("mrs_bool/mute")->toBool())//thread safe!
+	if(getctrl("mrs_bool/mute")->to<mrs_bool>())//thread safe!
 		return;
 
 	//assure that RtAudio thread is running
 	//(this may be needed by if an explicit call to start()
 	//is not done before ticking or calling process() )
 	//if ( stopped_ )
-	if(getctrl("mrs_bool/stopped")->toBool())//thread safe!
+	if(getctrl("mrs_bool/stopped")->to<mrs_bool>())//thread safe!
 	{
 		start();
 	}

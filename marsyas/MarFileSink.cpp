@@ -42,8 +42,8 @@ void
 MarFileSink::myProcess(realvec& in, realvec& out)
 {
   
-  mrs_natural nObservations = getctrl("mrs_natural/inObservations")->toNatural();
-  mrs_natural nSamples = getctrl("mrs_natural/inSamples")->toNatural();
+  mrs_natural nObservations = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+  mrs_natural nSamples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
   checkFlow(in, out);
   

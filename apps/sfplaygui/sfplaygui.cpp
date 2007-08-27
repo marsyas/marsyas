@@ -104,8 +104,8 @@ void sfplaygui(Collection l, mrs_natural offset, mrs_natural duration, mrs_real 
       int type;
       mrs_natural i;
       
-      mrs_natural nChannels = playbacknet->getctrl("SoundFileSource/src/mrs_natural/nChannels")->toNatural();
-      mrs_real srate = playbacknet->getctrl("SoundFileSource/src/mrs_real/israte")->toReal();
+      mrs_natural nChannels = playbacknet->getctrl("SoundFileSource/src/mrs_natural/nChannels")->to<mrs_natural>();
+      mrs_real srate = playbacknet->getctrl("SoundFileSource/src/mrs_real/israte")->to<mrs_real>();
       
       
       // playback offset & duration
@@ -120,8 +120,8 @@ void sfplaygui(Collection l, mrs_natural offset, mrs_natural duration, mrs_real 
 	  
 		  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 
-	  mrs_natural nChannels = src->getctrl("mrs_natural/nChannels")->toNatural();
-	  mrs_real srate = src->getctrl("mrs_real/israte")->toReal();
+	  mrs_natural nChannels = src->getctrl("mrs_natural/nChannels")->to<mrs_natural>();
+	  mrs_real srate = src->getctrl("mrs_real/israte")->to<mrs_real>();
       
 	  // playback offset & duration
 	  offset = (mrs_natural) (start * srate * nChannels);
@@ -134,15 +134,15 @@ void sfplaygui(Collection l, mrs_natural offset, mrs_natural duration, mrs_real 
 	  
 	  playbacknet->updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
 	  playbacknet->updctrl(dest->getType() + "/dest/mrs_natural/nChannels", 
-			      src->getctrl("mrs_natural/nChannels")->toNatural());
+			      src->getctrl("mrs_natural/nChannels")->to<mrs_natural>());
 	  
 	  mrs_natural wc=0;
 	  mrs_natural samplesPlayed = 0;
-	  mrs_natural onSamples = playbacknet->getctrl("mrs_natural/onSamples")->toNatural();
+	  mrs_natural onSamples = playbacknet->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
 	  string message;
 	  bool done = false;
 	  
-	  while ((playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool()) && (duration > samplesPlayed) && !done)
+	  while ((playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>()) && (duration > samplesPlayed) && !done)
 	    {
 
 	      

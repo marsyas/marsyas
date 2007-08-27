@@ -68,7 +68,7 @@ MeddisHairCell::myUpdate(MarControlPtr sender)
   h = 50000;
 
   //internal constants
-  dt = 1/getctrl("mrs_real/israte")->toReal();
+  dt = 1/getctrl("mrs_real/israte")->to<mrs_real>();
   gdt = g*dt;
   ydt = y*dt;
   ldt = l*dt;
@@ -79,8 +79,8 @@ MeddisHairCell::myUpdate(MarControlPtr sender)
   kt = g*A/(A + B);
   spont = M*y*kt/(l*kt+y*(l + r));
   
-  if (numChannels != getctrl("mrs_natural/inSamples")->toNatural()){
-    numChannels = getctrl("mrs_natural/inSamples")->toNatural();
+  if (numChannels != getctrl("mrs_natural/inSamples")->to<mrs_natural>()){
+    numChannels = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
     c.create(numChannels);
     q.create(numChannels);
     w.create(numChannels);
@@ -97,7 +97,7 @@ MeddisHairCell::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in, out);
   //lmartins: if (mute_) return;
-	if(getctrl("mrs_bool/mute")->toBool()) return;
+	if(getctrl("mrs_bool/mute")->to<mrs_bool>()) return;
   
   mrs_real limitedSt;
   mrs_real replenish;
@@ -105,9 +105,9 @@ MeddisHairCell::myProcess(realvec& in, realvec& out)
   mrs_real loss;
   mrs_real reuptake;
   mrs_real reprocess;
-  bool subtractSpont = getctrl("mrs_bool/subtractSpont")->toBool();
-  for (mrs_natural j = 0; j < getctrl("mrs_natural/inSamples")->toNatural(); j++){
-    for (mrs_natural i = 0; i < getctrl("mrs_natural/inObservations")->toNatural(); i++){
+  bool subtractSpont = getctrl("mrs_bool/subtractSpont")->to<mrs_bool>();
+  for (mrs_natural j = 0; j < getctrl("mrs_natural/inSamples")->to<mrs_natural>(); j++){
+    for (mrs_natural i = 0; i < getctrl("mrs_natural/inObservations")->to<mrs_natural>(); i++){
       limitedSt = max(in(i,j) + A, (mrs_real)0.0);
       kt = gdt*limitedSt/(limitedSt + B);
       replenish = max(ydt*(M - q(i)), (mrs_real)0.0);

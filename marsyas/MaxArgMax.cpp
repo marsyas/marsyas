@@ -54,7 +54,7 @@ MaxArgMax::addControls()
 void
 MaxArgMax::myUpdate(MarControlPtr sender)
 {
-	mrs_natural k = getctrl("mrs_natural/nMaximums")->toNatural();
+	mrs_natural k = getctrl("mrs_natural/nMaximums")->to<mrs_natural>();
 
 	setctrl("mrs_natural/onSamples",  2 * k);
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
@@ -78,8 +78,8 @@ MaxArgMax::myProcess(realvec& in, realvec& out)
 	//cout << in;
 
 	out.setval(0.0);
-	mrs_natural k = getctrl("mrs_natural/nMaximums")->toNatural();
-	mrs_natural interpolationMode = getctrl("mrs_natural/interpolation")->toNatural();
+	mrs_natural k = getctrl("mrs_natural/nMaximums")->to<mrs_natural>();
+	mrs_natural interpolationMode = getctrl("mrs_natural/interpolation")->to<mrs_natural>();
 
 
 	// ML should replace 0 by o [?]

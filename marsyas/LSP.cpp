@@ -58,7 +58,7 @@ LSP::myUpdate(MarControlPtr sender)
 { 
 	MRSDIAG("LSP.cpp - LSP:myUpdate");
 
-	order_ = getctrl("mrs_natural/inObservations")->toNatural() - 2;
+	order_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>() - 2;
 	setctrl("mrs_natural/order", order_);//read-only control
 
 	setctrl("mrs_natural/onObservations", order_);
@@ -79,7 +79,7 @@ LSP::myProcess(realvec& in, realvec& out)
 	
 	//checkFlow(in,out);
 
-	mrs_real gamma = getctrl("mrs_real/gamma")->toReal();
+	mrs_real gamma = getctrl("mrs_real/gamma")->to<mrs_real>();
 	vector<mrs_real> ak(order_);
 
 	if( gamma != 1.0)

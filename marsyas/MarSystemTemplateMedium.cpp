@@ -137,7 +137,7 @@ MarSystemTemplateMedium::myProcess(realvec& in, realvec& out)
 	const mrs_real& gainValue = ctrl_gain_EXAMPLE_->to<mrs_real>();
 	// this is equivalent (although slightly more efficient) to:
   //
-	// mrs_real& gainValue = ctrl_gain_EXAMPLE_->toReal(); // ::toReal() calls ::to<mrs_real>()
+	// mrs_real& gainValue = ctrl_gain_EXAMPLE_->to<mrs_real>(); // ::toReal() calls ::to<mrs_real>()
 	//
 	// This reference will not allow writing directly to the control, but
 	// avoids a copy (which can hurt if the control is a big realvec)

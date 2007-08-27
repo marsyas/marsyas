@@ -58,21 +58,21 @@ void
 PeakSynthFFT::myUpdate(MarControlPtr sender)
 {
 	MarSystem::myUpdate(sender);
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples")->toNatural()*getctrl("mrs_natural/nbChannels")->toNatural());
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples")->to<mrs_natural>()*getctrl("mrs_natural/nbChannels")->to<mrs_natural>());
 
 	realvec conv(4);
 	conv.setval(-1);
-	if(getctrl("mrs_string/panning")->toString() != "MARSYAS_EMPTY")
+	if(getctrl("mrs_string/panning")->to<mrs_string>() != "MARSYAS_EMPTY")
 	{
-	string2parameters(getctrl("mrs_string/panning")->toString(), conv, '_');
+	string2parameters(getctrl("mrs_string/panning")->to<mrs_string>(), conv, '_');
 	}
 	fgVolume_ = conv(0); 
   fgPanning_ = conv(1);
 	bgVolume_ = conv(2); 
   bgPanning_ = conv(3);
 
-	mask_ = realvec(getctrl("mrs_natural/inObservations")->toNatural()/2);
-	lastMask_ = realvec(getctrl("mrs_natural/inObservations")->toNatural()/2);
+	mask_ = realvec(getctrl("mrs_natural/inObservations")->to<mrs_natural>()/2);
+	lastMask_ = realvec(getctrl("mrs_natural/inObservations")->to<mrs_natural>()/2);
 	lastMask_.setval(0);
 }
 
@@ -80,7 +80,7 @@ void
 PeakSynthFFT::generateMask(mrs_natural type)
 {
 	mrs_natural i, j;
-	realvec peaks = ctrl_Peaks_->toVec();
+	realvec peaks = ctrl_Peaks_->to<mrs_realvec>();
 
 	//cout << peaks;
 	mrs_natural nbPeaks = peaks.getSize()/peakView::nbPkParameters;
@@ -150,9 +150,9 @@ PeakSynthFFT::lpfMask()
 void 
 PeakSynthFFT::myProcess(realvec& in, realvec& out)
 {	
-	mrs_natural nbChannels = ctrl_NbChannels_->toNatural();
+	mrs_natural nbChannels = ctrl_NbChannels_->to<mrs_natural>();
 
-	cout << ctrl_Peaks_->toVec();
+	cout << ctrl_Peaks_->to<mrs_realvec>();
 	for (t = 0; t < onSamples_; t++)
 	{
 		generateMask(t+(nbChannels-1));

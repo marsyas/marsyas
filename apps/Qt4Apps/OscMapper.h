@@ -91,21 +91,21 @@ public:
 
 			QVariant oscData;
 			if(oscPath.contains("mrs_natural/"))
-				oscData = (int) ctrl->toNatural();
+				oscData = (int) ctrl->to<mrs_natural>();
 			else if(oscPath.contains("mrs_bool/"))
-				oscData = ctrl->toBool();
+				oscData = ctrl->to<mrs_bool>();
 			else if(oscPath.contains("mrs_string/"))
-				oscData = QString().fromStdString(ctrl->toString());
+				oscData = QString().fromStdString(ctrl->to<mrs_string>());
 			else if(oscPath.contains("mrs_realvec/"))
 			{
-				realvec vec = ctrl->toVec();
+				realvec vec = ctrl->to<mrs_realvec>();
 				QList<QVariant> list;
 				for (mrs_natural i=0 ; i< vec.getSize() ; i++)
 					list.push_back(vec(i));
 				oscData = QVariant(list);
 			}
 			else if(oscPath.contains("mrs_real/"))
-				oscData = ctrl->toReal();
+				oscData = ctrl->to<mrs_real>();
 
 			oscClient_->sendData(oscPath, oscData);
 		}

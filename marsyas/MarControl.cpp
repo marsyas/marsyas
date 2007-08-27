@@ -79,14 +79,6 @@ MarControl::setMarSystem(MarSystem* msys)
   QWriteLocker locker(&rwLock_);
 #endif
   
-//   if(msys_) //[!]
-//     {
-//       //if this is a change in the parent MarSystem, 
-//       //then the control name must be updated accordingly
-//       string oldPrefix = msys_->getPrefix();
-//       string shortcname = cname_.substr(oldPrefix.length(), cname_.length());
-//       cname_ = msys->getPrefix() + shortcname;
-//     }
   msys_ = msys;
 }
 
@@ -153,14 +145,13 @@ MarControl::getType() const
 void MarControl::callMarSystemUpdate()
 {
 	#ifdef MARSYAS_QT
-	rwLock_.lockForRead(); //too many lockers?!?
+	rwLock_.lockForRead(); //too many lockers?!? [!]
 	#endif
 	if (state_ && msys_)
 	{
 		#ifdef MARSYAS_QT
 		rwLock_.unlock();
 		#endif
-		//msys_->controlUpdate(this);
 		msys_->update(this);
 		return;
 	}
@@ -175,7 +166,7 @@ MarControl::linkTo(MarControlPtr ctrl)
 	if (ctrl.isInvalid())
 	{
 		ostringstream oss;
-		oss << "[MarControl::linkTo] Linking to an invalid control ";
+		oss << "MarControl::linkTo() - Linking to an invalid control ";
 		oss << "(" << ctrl->getName() << " with " << this->getName() << ").";
 		MRSWARN(oss.str());
 		return false;
@@ -186,23 +177,19 @@ MarControl::linkTo(MarControlPtr ctrl)
 #endif
 
 	//check if these controls are already linked
-	vector<MarControlPtr>::const_iterator ci;
-	for(ci = linkedTo_.begin(); ci != linkedTo_.end(); ++ci) //iterator may become invalid without a lock!! [!][?] 
+	//(i.e. they own the same MarControlValue) 
+	if(value_ == ctrl->value_)
 	{
-		//compare MarControl* (the actual pointer and not its value)
-		if((*ci)() == ctrl())
-		{
-			#ifdef MARSYAS_QT
-			rwLock_.unlock();
-			#endif
-			return true;//already linked! :-)
-		}
+		#ifdef MARSYAS_QT
+		rwLock_.unlock();
+		#endif
+		return true;//already linked! :-)
 	}
 	
 	if (ctrl->getType() != value_->getType())
 	{
 		ostringstream oss;
-		oss << "[MarControl::linkTo] Linking two controls of different types ";
+		oss << "MarControl::linkTo() - Linking two controls of different types ";
 		oss << "(" << ctrl->getName() << " with " << this->getName() << ").";
 		MRSWARN(oss.str());
 		#ifdef MARSYAS_QT
@@ -214,80 +201,90 @@ MarControl::linkTo(MarControlPtr ctrl)
 #ifdef MARSYAS_QT
 	rwLock_.unlock();
 	rwLock_.lockForWrite();
-	ctrl->rwLock_.lockForWrite();
+	ctrl->rwLock_.lockForRead();
 #endif
 
-	linkedTo_.push_back(ctrl);
-	isLinked_ = true;
-
-	//the linked control should also be linked to this one!
-	ctrl->linkedTo_.push_back(this);
-	ctrl->isLinked_ = true;
+	//get all the links of our current MarControlValue so we can also
+	//re-link them to the passed ctrl
+	vector<MarControl*> links = value_->getLinks();
+	vector<MarControl*>::iterator lit;
+	for(lit=links.begin(); lit!=links.end(); ++lit)
+	{
+		//linked controls will now point to the same MarControlValue
+		//pointed by ctrl (i.e. they will take the same value as ctrl)
+		(*lit)->value_->removeLink(*lit);
+		(*lit)->value_ = ctrl->value_;
+		(*lit)->value_->addLink(*lit);
+		//(*lit)->callMarSystemUpdate();
+	}
+	links = value_->getLinks();
+	for(lit=links.begin(); lit!=links.end(); ++lit)
+	{
+		(*lit)->callMarSystemUpdate();
+	}
 
 #ifdef MARSYAS_QT
 	ctrl->rwLock_.unlock();
 	rwLock_.unlock();
 #endif
-	
-	//sync control values (and sizes in case of mrs_vector controls)
-	//operator= is protected by mutexes
-	*this = *ctrl;
-	
+		
 	return true;
 }
 
 void
-MarControl::clearLinks()
+MarControl::unlink()
 {
 #ifdef MARSYAS_QT
-	rwLock_.lockForRead();
-#endif
-
-	for (size_t i=0; i<linkedTo_.size(); i++)
-	{
-		linkedTo_[i]->removeLink(this);
-	}
-
-#ifdef MARSYAS_QT
-	rwLock_.unlock();
 	rwLock_.lockForWrite();
 #endif
 
-	linkedTo_.clear();
+	//check if this MarControl is linked
+	//(i.e. more than one MarControl linking
+	//to the MarControlValue).
+	//if not, no point doing unlink - just return.
+	if(value_->getNumLinks() <= 1)
+	{
+		#ifdef MARSYAS_QT
+		rwLock_.unlock();
+		#endif
+		return;
+	}
+
+	MarControlValue* clonedvalue = value_->clone();
+	value_->removeLink(this);
+	value_ = clonedvalue;
+	value_->addLink(this);
 
 #ifdef MARSYAS_QT
 	rwLock_.unlock();
 #endif
 }
 
-void
-MarControl::removeLink(MarControlPtr link)
+bool
+MarControl::isLinked() const
 {
-#ifdef MARSYAS_QT
-	rwLock_.lockForRead();
-	link->rwLock_.lockForRead();
-#endif
+	#ifdef MARSYAS_QT
+	QReadLocker r_locker(&rwLock_);
+	#endif
+	
+	//if there is only one link (i.e. this control itself),
+	//it means that there are no other linked controls
+	// => return false (i.e. 0)
+	if(value_->getNumLinks()-1 == 0)
+		return false;
+	else
+		return true;
+}
 
-	std::vector<MarControlPtr> temp;
-	for (size_t i=0; i<linkedTo_.size(); i++)
-	{
-		if (linkedTo_[i]() != link()) // same pointer?
-		{
-			temp.push_back(linkedTo_[i]);
-		}
-	}
-
-#ifdef MARSYAS_QT
-	link->rwLock_.unlock();
-	rwLock_.unlock();
-	rwLock_.lockForWrite();
-#endif
-
-	linkedTo_=temp;
-
-#ifdef MARSYAS_QT
-	rwLock_.unlock();
-#endif
+vector<MarControlPtr>
+MarControl::getLinks()
+{
+	vector<MarControlPtr> res;
+	vector<MarControl*> links = value_->getLinks();
+	vector<MarControl*>::const_iterator lit;
+	for(lit=links.begin(); lit != links.end(); ++lit)
+		res.push_back(MarControlPtr(*lit));
+	return res;
 }
 
 #ifdef MARSYAS_QT

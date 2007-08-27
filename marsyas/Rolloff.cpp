@@ -63,9 +63,9 @@ Rolloff::myUpdate(MarControlPtr sender)
   ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
   ctrl_onObsNames_->setValue("Rolloff,", NOUPDATE);
 
-  sumWindow_.create(ctrl_inObservations_->toNatural());
+  sumWindow_.create(ctrl_inObservations_->to<mrs_natural>());
 
-  perc_ = ctrl_percentage_->toReal();
+  perc_ = ctrl_percentage_->to<mrs_real>();
 }
 
 void 

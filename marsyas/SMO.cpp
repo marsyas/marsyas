@@ -65,11 +65,11 @@ SMO::myUpdate(MarControlPtr sender)
   ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
   
   
-  mrs_natural inObservations = ctrl_inObservations_->toNatural();
-  mrs_natural nlabels = getctrl("mrs_natural/nLabels")->toNatural();
+  mrs_natural inObservations = ctrl_inObservations_->to<mrs_natural>();
+  mrs_natural nlabels = getctrl("mrs_natural/nLabels")->to<mrs_natural>();
 
 
-  mrs_natural mcols = (getctrl("mrs_realvec/weights")->toVec()).getCols();
+  mrs_natural mcols = (getctrl("mrs_realvec/weights")->to<mrs_realvec>()).getCols();
   mrs_natural ncols = weights_.getCols();
   
   
@@ -86,10 +86,10 @@ SMO::myUpdate(MarControlPtr sender)
       weights_.create(inObservations);
     }
   
-  string mode = getctrl("mrs_string/mode")->toString();
+  string mode = getctrl("mrs_string/mode")->to<mrs_string>();
   if (mode == "predict")
     {
-      weights_ = getctrl("mrs_realvec/weights")->toVec();
+      weights_ = getctrl("mrs_realvec/weights")->to<mrs_realvec>();
     }
 }
 
@@ -99,8 +99,8 @@ SMO::myProcess(realvec& in, realvec& out)
 {
   //checkFlow(in,out);
 //  mrs_real v;
-  string mode = modePtr_->toString();
-  mrs_natural nlabels = nlabelsPtr_->toNatural();
+  string mode = modePtr_->to<mrs_string>();
+  mrs_natural nlabels = nlabelsPtr_->to<mrs_natural>();
 //  mrs_natural l;
   mrs_natural prediction = 0;
   mrs_real label;
@@ -259,7 +259,7 @@ SMO::myProcess(realvec& in, realvec& out)
       
     }
   
-  if (donePtr_->toBool())
+  if (donePtr_->to<mrs_bool>())
     {
       updctrl(weightsPtr_, weights_);
     }

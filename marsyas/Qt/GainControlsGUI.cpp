@@ -64,7 +64,7 @@ GainControlsGUI::createCustomControlsWindow()
 	//---------------------------------------------------------
 	//create a VUmeter for input channels
 	//---------------------------------------------------------
-	inChannels_ = msys_->getctrl("mrs_natural/inObservations")->toNatural();
+	inChannels_ = msys_->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 	inVUmeters_.clear();
 	for(mrs_natural i = 0; i < inChannels_; i++)
 	{
@@ -81,7 +81,7 @@ GainControlsGUI::createCustomControlsWindow()
 	//---------------------------------------------------------
 	gainSlider_ = new QSlider(Qt::Vertical);
 	gainSlider_->setRange(0,100);
-	gainSlider_->setValue((int)(msys_->getctrl("mrs_real/gain")->toReal()*100));
+	gainSlider_->setValue((int)(msys_->getctrl("mrs_real/gain")->to<mrs_real>()*100));
 	gainSlider_->setSingleStep(1);
 	layout->addWidget(gainSlider_);
 	connect(gainSlider_, SIGNAL(valueChanged(int)),
@@ -90,7 +90,7 @@ GainControlsGUI::createCustomControlsWindow()
 	//---------------------------------------------------------
 	//create a VUmeter for output channels
 	//---------------------------------------------------------
-	onChannels_ = msys_->getctrl("mrs_natural/inObservations")->toNatural();
+	onChannels_ = msys_->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 	outVUmeters_.clear();
 	for(mrs_natural i = 0; i < onChannels_; i++)
 	{
@@ -123,7 +123,7 @@ GainControlsGUI::updateCustomControlsWindow(MarControl* control)
 	//update Gain Slider value
 	if(cname == "mrs_real/gain")
 	{
-		int svalue = (int)(control->toReal()*100);
+		int svalue = (int)(control->to<mrs_real>()*100);
 		if(gainSlider_->value() != svalue)
 		{
 			disconnect(gainSlider_, SIGNAL(valueChanged(int)),
@@ -138,7 +138,7 @@ GainControlsGUI::updateCustomControlsWindow(MarControl* control)
 	//update input VU meter (using a dB scale)
 	if(cname == "mrs_realvec/inRMS")
 	{
-		realvec inRMS = control->toVec();
+		realvec inRMS = control->to<mrs_realvec>();
 		mrs_real RMSdB;
 		for(int i = 0; i < inChannels_; i++)
 		{
@@ -155,7 +155,7 @@ GainControlsGUI::updateCustomControlsWindow(MarControl* control)
 	//update output VU meter (using a dB scale)
 	if(cname == "mrs_realvec/outRMS")
 	{
-		realvec outRMS = control->toVec();
+		realvec outRMS = control->to<mrs_realvec>();
 		mrs_real RMSdB;
 		for(int i = 0; i < onChannels_; i++)
 		{
@@ -171,7 +171,7 @@ GainControlsGUI::updateCustomControlsWindow(MarControl* control)
 
 	//update number of input VUmeters if nr of input channels has changed
 	if(cname == "mrs_natural/inObservations" &&
-		 (inChannels_ != control->toNatural()))
+		 (inChannels_ != control->to<mrs_natural>()))
 	{
 		delete customControlsWindow_; 	
 		customControlsWindow_ = createCustomControlsWindow();
@@ -182,7 +182,7 @@ GainControlsGUI::updateCustomControlsWindow(MarControl* control)
 
 	//update number of output VUmeters if nr of output channels has changed
 	if(cname == "mrs_natural/onObservations" &&
-		onChannels_ != control->toNatural())
+		onChannels_ != control->to<mrs_natural>())
 	{
 		delete customControlsWindow_; 	
 		customControlsWindow_ = createCustomControlsWindow();

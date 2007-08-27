@@ -49,8 +49,8 @@ Flux::myUpdate(MarControlPtr sender)
   ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
   ctrl_onObsNames_->setValue("Flux,", NOUPDATE);
 
-  prevWindow_.create(ctrl_inObservations_->toNatural(),
-		     ctrl_inSamples_->toNatural());
+  prevWindow_.create(ctrl_inObservations_->to<mrs_natural>(),
+		     ctrl_inSamples_->to<mrs_natural>());
 }
 
 void 

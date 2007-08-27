@@ -50,7 +50,7 @@ void
 HalfWaveRectifier::myProcess(realvec& in, realvec& out)
 {
   
-  mrs_natural inSamples = getctrl("mrs_natural/inSamples")->toNatural();
+  mrs_natural inSamples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
   
   
   for (t=0; t < inSamples; t++)

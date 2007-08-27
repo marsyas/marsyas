@@ -135,7 +135,7 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 			pvseries->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 			pvseries->updctrl("mrs_natural/inSamples", D);
 			pvseries->updctrl("mrs_natural/inObservations", 1);
-			samplingFrequency_ = pvseries->getctrl("SoundFileSource/src/mrs_real/osrate")->toReal();
+			samplingFrequency_ = pvseries->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 		}
 
 
@@ -185,8 +185,10 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 
 	if(harmonize_)
 	{
-	ctrl_harmonize_= pvseries->getctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOscBank/pso/mrs_realvec/harmonize");
-		 ctrl_harmonize_->stretch(harmonizeData_.getCols());
+		ctrl_harmonize_= pvseries->getctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOscBank/pso/mrs_realvec/harmonize");
+		MarControlAccessor acc(ctrl_harmonize_);
+		realvec& harmonize = acc.to<mrs_realvec>();
+		harmonize.stretch(harmonizeData_.getCols());
 	}
 
 	mrs_real globalSnr = 0;
@@ -219,17 +221,17 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 				bool temp;
 				if(analyse_)
 				{
-					temp = pvseries->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool();
-					mrs_real timeRead =  pvseries->getctrl("SoundFileSource/src/mrs_natural/pos")->toNatural()/samplingFrequency_;
-					mrs_real timeLeft =  pvseries->getctrl("SoundFileSource/src/mrs_natural/size")->toNatural()/samplingFrequency_;
+					temp = pvseries->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
+					mrs_real timeRead =  pvseries->getctrl("SoundFileSource/src/mrs_natural/pos")->to<mrs_natural>()/samplingFrequency_;
+					mrs_real timeLeft =  pvseries->getctrl("SoundFileSource/src/mrs_natural/size")->to<mrs_natural>()/samplingFrequency_;
 					printf("Reading Audio File: %.2f / %.2f \r", timeRead, timeLeft);
 				}
 				else 
 				{
-					temp =	pvseries->getctrl("PeakViewSource/peSource/mrs_bool/notEmpty")->toBool();
+					temp =	pvseries->getctrl("PeakViewSource/peSource/mrs_bool/notEmpty")->to<mrs_bool>();
 					samplingFrequency_ = pvseries->getctrl("PeakViewSource/peSource/mrs_real/osrate")->to<mrs_real>();
-					mrs_real timeRead =  pvseries->getctrl("PeakViewSource/peSource/mrs_natural/pos")->toNatural()/samplingFrequency_;
-					mrs_real timeLeft =  pvseries->getctrl("PeakViewSource/peSource/mrs_natural/size")->toNatural()/samplingFrequency_;
+					mrs_real timeRead =  pvseries->getctrl("PeakViewSource/peSource/mrs_natural/pos")->to<mrs_natural>()/samplingFrequency_;
+					mrs_real timeLeft =  pvseries->getctrl("PeakViewSource/peSource/mrs_natural/size")->to<mrs_natural>()/samplingFrequency_;
 					printf("Readinf peak file: %.2f / %.2f \r", timeRead, timeLeft);
 				}
 

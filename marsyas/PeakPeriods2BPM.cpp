@@ -49,7 +49,7 @@ PeakPeriods2BPM::myUpdate(MarControlPtr sender)
 //   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 	MarSystem::myUpdate(sender);
 
-  srate_ = getctrl("mrs_real/israte")->toReal();
+  srate_ = getctrl("mrs_real/israte")->to<mrs_real>();
 
 }
 

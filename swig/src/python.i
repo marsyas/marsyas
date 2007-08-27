@@ -7,8 +7,8 @@ static PyObject *STR2PY (string s) { return PyString_FromStringAndSize(s.c_str()
 
 static PyObject *MCP2PY (MarControlPtr mcp) {
 	if (mcp.isInvalid()) { Py_RETURN_NONE; }
-	if (mcp->getType() == "mrs_natural") return PyLong_FromLong(mcp->toNatural());
-	if (mcp->getType() == "mrs_real" ) return PyFloat_FromDouble(mcp->toReal());
+	if (mcp->getType() == "mrs_natural") return PyLong_FromLong(mcp->to<mrs_natural>()());
+	if (mcp->getType() == "mrs_real" ) return PyFloat_FromDouble(mcp->to<mrs_real>()()());
 	if (mcp->getType() == "mrs_string" ) return STR2PY(mcp->toString());
 	if (mcp->getType() == "mrs_bool" ) if(mcp->toBool()) { Py_RETURN_TRUE; } else { Py_RETURN_FALSE; }
 	Py_RETURN_NONE;

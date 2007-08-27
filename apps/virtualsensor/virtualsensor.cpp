@@ -122,8 +122,8 @@ void drumExtract(vector<Collection> cls, string classNames)
     src->updctrl("mrs_natural/inSamples", 4096);
 
 
-    mrs_natural inObservations = src->getctrl("mrs_natural/inObservations")->toNatural();
-    mrs_natural inSamples = src->getctrl("mrs_natural/inSamples")->toNatural();  
+    mrs_natural inObservations = src->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+    mrs_natural inSamples = src->getctrl("mrs_natural/inSamples")->to<mrs_natural>();  
 
     realvec in(inObservations, inSamples);
     realvec out(inObservations, inSamples);
@@ -188,7 +188,7 @@ void drumExtract(vector<Collection> cls, string classNames)
 
             src->updctrl("mrs_natural/inSamples", 4096);
 
-            while(src->getctrl("mrs_bool/notEmpty")->toBool()) 
+            while(src->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
             {
                 src->process(in,out);
 
@@ -229,7 +229,7 @@ void drumExtract(vector<Collection> cls, string classNames)
     cout << (*extractNet) << endl;
 
 
-    cout << "Wrote " << extractNet->getctrl("WekaSink/wsink/mrs_string/filename")->toString() << endl;
+    cout << "Wrote " << extractNet->getctrl("WekaSink/wsink/mrs_string/filename")->to<mrs_string>() << endl;
 
 
     return;
@@ -329,8 +329,8 @@ void recordVirtualSensor(mrs_real length)
     //pnet->updctrl("mrs_real/osrate", 44100.0); 
     pnet->updctrl("SoundFileSink/dest/mrs_string/filename", "vsens.au");   
 
-    mrs_real srate = recordNet->getctrl("AudioSource/asrc/mrs_real/israte")->toReal();
-    mrs_natural inSamples = recordNet->getctrl("AudioSource/asrc/mrs_natural/inSamples")->toNatural();
+    mrs_real srate = recordNet->getctrl("AudioSource/asrc/mrs_real/israte")->to<mrs_real>();
+    mrs_natural inSamples = recordNet->getctrl("AudioSource/asrc/mrs_natural/inSamples")->to<mrs_natural>();
     mrs_natural iterations = (mrs_natural)((srate * length) / inSamples);
 
     int r;
@@ -803,8 +803,8 @@ void recordSitarSensors(mrs_real length)
     pnet->updctrl("SoundFileSink/dest/mrs_real/osrate", 44100.0); 
     pnet->updctrl("SoundFileSink/dest/mrs_string/filename", "vsens.au");   
 
-    mrs_real srate = recordNet->getctrl("AudioSource/asrc/mrs_real/israte")->toReal();
-    mrs_natural inSamples = recordNet->getctrl("AudioSource/asrc/mrs_natural/inSamples")->toNatural();
+    mrs_real srate = recordNet->getctrl("AudioSource/asrc/mrs_real/israte")->to<mrs_real>();
+    mrs_natural inSamples = recordNet->getctrl("AudioSource/asrc/mrs_natural/inSamples")->to<mrs_natural>();
     mrs_natural iterations = (mrs_natural)((srate * length) / inSamples);
 
     int r,f;

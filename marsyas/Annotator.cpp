@@ -64,14 +64,14 @@ Annotator::myUpdate(MarControlPtr sender)
   MRSDIAG("Annotator.cpp - Annotator:myUpdate");
 
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
-  ctrl_onObservations_->setValue(ctrl_inObservations_->toNatural()+1, NOUPDATE);
+  ctrl_onObservations_->setValue(ctrl_inObservations_->to<mrs_natural>()+1, NOUPDATE);
   ctrl_osrate_->setValue(ctrl_osrate_, NOUPDATE);
   ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);  
 
 
-  /* if( labels_str_.compare( getctrl("mrs_string/labels")->toString() ) != 0 )
+  /* if( labels_str_.compare( getctrl("mrs_string/labels")->to<mrs_string>() ) != 0 )
   {     
-  labels_str_ = getctrl("mrs_string/labels")->toString();
+  labels_str_ = getctrl("mrs_string/labels")->to<mrs_string>();
   labels_.clear();
 	  
 	  while( labels_str_.length() != 0 )

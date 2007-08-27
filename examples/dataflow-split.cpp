@@ -13,7 +13,7 @@ void sfplay(string sfName, float gain1, float gain2)
 	playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
 	playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 // get the sample rate
-	mrs_real sample_rate = playbacknet->getctrl("mrs_real/israte")->toReal();
+	mrs_real sample_rate = playbacknet->getctrl("mrs_real/israte")->to<mrs_real>();
 
 	playbacknet->addMarSystem(mng.create("SoundFileSink", "snk"));
 	playbacknet->updctrl("SoundFileSink/snk/mrs_string/filename", "both.wav");
@@ -39,7 +39,7 @@ void sfplay(string sfName, float gain1, float gain2)
 	para->addMarSystem(right);
 	playbacknet->addMarSystem(para);
 
-	while ( playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->toBool() )
+	while ( playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>() )
 	{
 		playbacknet->tick();
 	}

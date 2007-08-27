@@ -71,16 +71,16 @@ Shredder::myUpdate(MarControlPtr sender)
 
 		// forward flow propagation
 		setctrl("mrs_natural/onSamples", 
-			marsystems_[0]->getctrl("mrs_natural/onSamples")->toNatural());
+			marsystems_[0]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 		setctrl("mrs_natural/onObservations", 
-			marsystems_[0]->getctrl("mrs_natural/onObservations")->toNatural());
+			marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
 		setctrl("mrs_real/osrate", 
 			marsystems_[0]->getctrl("mrs_real/osrate"));
 		setctrl("mrs_string/onObsNames", 
 			marsystems_[0]->getctrl("mrs_string/onObsNames"));
 
-		tin_.create(marsystems_[0]->getctrl("mrs_natural/inObservations")->toNatural(), 
-			marsystems_[0]->getctrl("mrs_natural/inSamples")->toNatural());
+		tin_.create(marsystems_[0]->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+			marsystems_[0]->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 	}
 	else //if composite is empty...
 		MarSystem::myUpdate(sender);

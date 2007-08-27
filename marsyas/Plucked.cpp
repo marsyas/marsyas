@@ -72,16 +72,16 @@ Plucked::myUpdate(MarControlPtr sender)
   gain_->updctrl("mrs_real/israte", getctrl("mrs_real/israte"));
   gain_->updctrl("mrs_real/gain", 2.0);
    
-  gout_.create(gain_->getctrl("mrs_natural/inObservations")->toNatural(), 
-	       gain_->getctrl("mrs_natural/inSamples")->toNatural());
+  gout_.create(gain_->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+	       gain_->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
    
-  mrs_real freq = getctrl("mrs_real/frequency")->toReal();
-  mrs_real pos = getctrl("mrs_real/pluckpos")->toReal();
-  noteon_ = getctrl("mrs_real/nton")->toReal();
+  mrs_real freq = getctrl("mrs_real/frequency")->to<mrs_real>();
+  mrs_real pos = getctrl("mrs_real/pluckpos")->to<mrs_real>();
+  noteon_ = getctrl("mrs_real/nton")->to<mrs_real>();
 
-  loss_ = getctrl("mrs_real/loss")->toReal();  
+  loss_ = getctrl("mrs_real/loss")->to<mrs_real>();  
   
-  s_ = getctrl("mrs_real/stretch")->toReal();
+  s_ = getctrl("mrs_real/stretch")->to<mrs_real>();
 
   // loweset frequency on a piano is 27.5Hz ... 22050/27.5 ~= 802*2 for commute
   // this is the longest delay line required
