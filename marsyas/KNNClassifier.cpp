@@ -23,10 +23,8 @@ using namespace Marsyas;
 
 KNNClassifier::KNNClassifier(string name):MarSystem("KNNClassifier",name)
 {
-  //type_ = "KNNClassifier";
-  //name_ = name;
-
-	addControls();
+  prev_mode_ = "predict";
+  addControls();
 }
 
 
@@ -75,7 +73,7 @@ KNNClassifier::myUpdate(MarControlPtr sender)
   nPoints_ = getctrl("mrs_natural/nPoints")->to<mrs_natural>();
   k_ = getctrl("mrs_natural/k")->to<mrs_natural>();
   string mode = getctrl("mrs_string/mode")->to<mrs_string>();
-
+  
   if (mode == "train")
     {
       if (inObservations_ != trainSet_.getCols())
@@ -115,8 +113,21 @@ KNNClassifier::myProcess(realvec& in, realvec& out)
   mrs_natural prediction;
   int x, y;  
   int p;
-  
 
+
+  if ((prev_mode_ == "predict")&&(mode == "train"))
+    {
+
+      // reset 
+	  for (p = 0; p < nPoints_; p++)
+	    {
+	      for (o=0; o < inObservations_-1; o++)
+		trainSet_(p,o) = 0.0;
+	    }
+	  nPoints_ = 0;
+    }
+
+  
   if (mode == "train")  
     {
       for (t = 0; t < inSamples_; t++)  
@@ -145,6 +156,7 @@ KNNClassifier::myProcess(realvec& in, realvec& out)
 	  updctrl("mrs_natural/nPoints", nPoints_);
 	}
     }
+
   
   
   if (mode == "predict")
@@ -249,7 +261,7 @@ KNNClassifier::myProcess(realvec& in, realvec& out)
   
   
   
-
+  prev_mode_ = mode;
 }
 
 

@@ -97,7 +97,8 @@ OneRClassifier::myProcess(realvec& in, realvec& out)
 	  if(!lastModePredict_)
 	    {
 	      //get the number of class labels and build the classifier
-	      mrs_natural nAttributes = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+	      mrs_natural nAttributes = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+	      cout << "BUILD nAttributes = " << nAttributes << endl;
 	      Build(nAttributes);
 	    }//if
 	  lastModePredict_ = true;
@@ -114,7 +115,9 @@ OneRClassifier::myProcess(realvec& in, realvec& out)
 	  //invoke the classifier predict method to predict the class
 	  in.getCol(ii,row_);
 	  mrs_natural prediction = Predict(row_);
-	      
+	  cout << "PREDICTION = " << prediction << endl;
+	  cout << "row_ " << row_ << endl;
+
 	  //and output actual/predicted classes
 	  out(0,ii) = (mrs_real)prediction;
 	  out(1,ii) = (mrs_real)label;

@@ -912,12 +912,6 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 	{
 	  Collection l = cls[cj];
 
-	  if (workspaceDir != EMPTYSTRING) 
-	    {
-	      string outCollection = workspaceDir + "extract.txt";
-	      l.write(outCollection);
-	      cout << "Writing extract collection to :" << outCollection << endl;
-	    }
 
 	  if (wekafname != EMPTYSTRING) 
 	    {

@@ -58,7 +58,7 @@ private:
   mrs_natural nPoints_;
   mrs_natural grow_;
   mrs_natural nPredictions_;
-  
+  mrs_string prev_mode_;
 
 public:
   KNNClassifier(std::string name);

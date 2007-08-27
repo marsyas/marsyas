@@ -230,6 +230,7 @@ WekaSource::myUpdate(MarControlPtr sender)
       MRSASSERT(percentageSplit_>0&&percentageSplit_<100);
       
       percentageIndex_ = ((mrs_natural)data_.size() * percentageSplit_) / 100;
+      percentageIndex_--; //adjust to count from 0 
       if(percentageIndex_ < 1) percentageIndex_ = 1;
       currentIndex_ = 0;
       

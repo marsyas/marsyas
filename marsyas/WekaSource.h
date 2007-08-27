@@ -12,6 +12,8 @@
 #include "WekaData.h"
 #include <list>
 #include <vector>
+#include <iostream> 
+using namespace std;
 
 namespace Marsyas
 {
@@ -79,7 +81,7 @@ namespace Marsyas
 		std::vector<mrs_real> *Next(nextMode& next)
 		{
 			std::vector<mrs_real> *ret = this->at(currentIndex_);
-
+			
 			if(currentIndex_ == excludeSectionEnd_)
 			{
 				iteration_++;
@@ -100,6 +102,8 @@ namespace Marsyas
 					excludeSectionEnd_ = ((mrs_natural)((iteration_+1) * rstep_)) - 1;
 					currentIndex_ = excludeSectionEnd_ + 1;
 				}
+
+
 				next = Training;
 				return ret;
 			}//if

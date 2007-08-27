@@ -147,8 +147,9 @@ void train()
   MarSystem* net;
   net = mng.create("Series", "net");
   net->addMarSystem(mng.create("WekaSource", "wsrc"));
-  // net->addMarSystem(mng.create("OneRClassifier", "ocl"));
-  net->addMarSystem(mng.create("GaussianClassifier", "gcl"));
+  // net->addMarSystem(mng.create("OneRClassifier", "gcl"));
+  // net->addMarSystem(mng.create("GaussianClassifier", "gcl"));
+  net->addMarSystem(mng.create("KNNClassifier", "gcl"));
   net->addMarSystem(mng.create("Summary", "summary"));
   // net->updctrl("WekaSource/wsrc/mrs_string/attributesToInclude", "1,2,3");
 
@@ -162,8 +163,18 @@ void train()
 	       net->getctrl("WekaSource/wsrc/mrs_string/classNames"));
   
   
-  net->updctrl("GaussianClassifier/gcl/mrs_natural/nLabels", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
-  net->linkctrl("GaussianClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
+  // net->updctrl("GaussianClassifier/gcl/mrs_natural/nLabels", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+  // net->linkctrl("GaussianClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
+
+
+  /*   net->updctrl("OneRClassifier/gcl/mrs_natural/nLabels", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+  net->linkctrl("OneRClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
+  */ 
+
+
+  net->updctrl("KNNClassifier/gcl/mrs_natural/nLabels", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+  net->linkctrl("KNNClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
+
   mrs_bool training_done = false;
   
 
@@ -173,7 +184,9 @@ void train()
     {
       string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
       net->tick();
-      net->updctrl("GaussianClassifier/gcl/mrs_string/mode", mode);
+      // net->updctrl("GaussianClassifier/gcl/mrs_string/mode", mode);
+      // net->updctrl("OneRClassifier/gcl/mrs_string/mode", mode);
+      net->updctrl("KNNClassifier/gcl/mrs_string/mode", mode);
     }
   
   net->updctrl("Summary/summary/mrs_bool/done", true);

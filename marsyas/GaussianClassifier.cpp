@@ -122,6 +122,21 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
   mrs_real diff;
   mrs_real sq_sum=0.0;
 
+
+
+  // reset 
+  if ((prev_mode_ == "predict") && (mode == "train"))
+    {
+      means_.setval(0.0);
+      covars_.setval(0.0);
+      labelSizes_.setval(0.0);
+      ctrl_means_->setValue(means_);
+      ctrl_covars_->setValue(covars_);
+    }
+
+
+
+
   if (mode == "train")  
     {
       for (t = 0; t < inSamples_; t++)  
@@ -147,7 +162,6 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 
   if ((prev_mode_ == "train") && (mode == "predict"))
     {
-      cout << "Finished with training - ready for prediction" << endl;
       for (l=0; l < nlabels; l++)
 	for (o=0; o < inObservations_; o++)
 	  {
@@ -162,17 +176,6 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 	      }
 	  }
       
-      ctrl_means_->setValue(means_);
-      ctrl_covars_->setValue(covars_);
-    }
-
-  // reset 
-  if ((prev_mode_ == "predict") && (mode == "train"))
-    {
-      cout << "reset statistics" << endl;
-      means_.setval(0.0);
-      covars_.setval(0.0);
-      labelSizes_.setval(0.0);
       ctrl_means_->setValue(means_);
       ctrl_covars_->setValue(covars_);
     }
