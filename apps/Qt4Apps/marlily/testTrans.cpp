@@ -23,10 +23,14 @@ int main(int argc, char *argv[])
 	boundaries = new realvec(2);
 	(*boundaries)(0) = 0;
 	(*boundaries)(1) = pitchList->getSize();
+	cout<<pitchList->getSize()<<endl;
+	cout<<ampList->getSize()<<endl;
+
 	std::string writefile;
 	writefile = file;
 	writefile.append(".pitches.txt");
 	pitchList->writeText(writefile);
+/*
 	writefile = file;
 	writefile.append(".amps.txt");
 	ampList->writeText(writefile);
@@ -42,5 +46,6 @@ int main(int argc, char *argv[])
 	realvec* notes;
 	notes = Transcriber::getNotes(pitchList, ampList, boundaries);
 	cout<<(*notes);
+*/
 }
 

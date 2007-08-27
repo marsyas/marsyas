@@ -1,6 +1,7 @@
 #include ( ../Qt4Apps.pri )
 
-SOURCES = testTrans.cpp
+SOURCES = testShift.cpp
+#SOURCES = testTrans.cpp
 #SOURCES = start.cpp
 #SOURCES = temp.cpp
 
