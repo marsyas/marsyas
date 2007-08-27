@@ -41,16 +41,8 @@ canonical example of a MarSystem that is what I use as a template when I
 write a new Marsystem is @file{Gain.h} and @file{Gain.cpp}  or
 @file{MarSystemTemplateBasic .h .cpp}.
 
-@ignore 
-Gtzan change - I get problem about incorrect sectioning 
-@end ignore 
-
-@ignore
-Gtzan - error non-existent node Creating a Marsystem 
-
 There is a Python script which automates this process; see @ref{Creating
 a MarSystem}.
-@end ignore
 
 
 @node Using your MarSystem
@@ -118,13 +110,9 @@ void MyName::myProcess(realvec& in, realvec& out)
 
 @end itemize
 
-@ignore 
-Gtzan change - I get problem about incorrect sectioning 
-
 Most of the changes that you make to the basic template (created with
 the script in @ref{Creating a MarSystem}) will be to the @ref{Handling
 controls} methods and the @ref{myProcess} method.
-@end ignore 
 
 
 @node Constructors / destructor

@@ -7,7 +7,7 @@ others may use it.
 @menu
 * Contributing documentation::  
 * Code style::                  
-* Adding to mudbox::      
+* Adding to mudbox::            
 * Contributing applications::   
 * Contributing system code::    
 * Sending a patch::             
