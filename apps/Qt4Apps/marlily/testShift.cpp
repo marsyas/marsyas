@@ -14,14 +14,13 @@ int main(int argc, char *argv[])
     pnet->linkControl("mrs_bool/notEmpty",
                      "SoundFileSource/src/mrs_bool/notEmpty");
 
-    pnet->updctrl("SoundFileSource/src/mrs_natural/inSamples",128);
-//    pnet->updctrl("SoundFileSource/src/mrs_natural/inSamples",2048);
+    pnet->updctrl("mrs_natural/inSamples",256);
 
-//	pnet->addMarSystem(mng.create("ShiftInput", "shift"));
-//	pnet->updctrl("ShiftInput/shift/mrs_natural/WindowSize",512);
+	pnet->addMarSystem(mng.create("ShiftInput", "shift"));
+	pnet->updctrl("ShiftInput/shift/mrs_natural/WindowSize",512);
 
 	int i=0;
-    while ( pnet->getctrl("mrs_bool/notEmpty")->toBool() )
+    while ( pnet->getctrl("mrs_bool/notEmpty")->to<bool>() )
 	{
         pnet->tick();
 		i++;
