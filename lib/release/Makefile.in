@@ -321,6 +321,8 @@ libmarsyas_a_SOURCES = \
 	$(top_srcdir)/marsyas/WekaData.cpp \
 	$(top_srcdir)/marsyas/TranscriberExtract.cpp \
 	$(top_srcdir)/marsyas/Transcriber.cpp \
+		$(top_srcdir)/marsyas/PhiSEMSource.cpp \
+	$(top_srcdir)/marsyas/PhiSEMFilter.cpp \
 	$(top_srcdir)/marsyas/Gain.cpp
 
 subdir = lib/release
@@ -415,7 +417,8 @@ am_libmarsyas_a_OBJECTS = svm.$(OBJEXT) RtAudio.$(OBJEXT) \
 	PeakViewSource.$(OBJEXT) PeakViewSink.$(OBJEXT) \
 	PeakClusterSelect.$(OBJEXT) OneRClassifier.$(OBJEXT) \
 	WekaData.$(OBJEXT) TranscriberExtract.$(OBJEXT) \
-	Transcriber.$(OBJEXT) Gain.$(OBJEXT)
+	Transcriber.$(OBJEXT) PhiSEMSource.$(OBJEXT) \
+	PhiSEMFilter.$(OBJEXT) Gain.$(OBJEXT)
 libmarsyas_a_OBJECTS = $(am_libmarsyas_a_OBJECTS)
 
 DEFS = @DEFS@
@@ -513,7 +516,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/PeakViewSink.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PeakViewSource.Po ./$(DEPDIR)/Peaker.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PeakerAdaptive.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/PlotSink.Po ./$(DEPDIR)/Plucked.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/PhiSEMFilter.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/PhiSEMSource.Po ./$(DEPDIR)/PlotSink.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Plucked.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Polar2Cartesian.Po ./$(DEPDIR)/Power.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PowerSpectrum.Po ./$(DEPDIR)/Product.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PvConvert.Po ./$(DEPDIR)/PvConvolve.Po \
@@ -846,6 +851,8 @@ WekaData.$(OBJEXT): $(top_srcdir)/marsyas/WekaData.cpp
 TranscriberExtract.$(OBJEXT): \
 	$(top_srcdir)/marsyas/TranscriberExtract.cpp
 Transcriber.$(OBJEXT): $(top_srcdir)/marsyas/Transcriber.cpp
+PhiSEMSource.$(OBJEXT): $(top_srcdir)/marsyas/PhiSEMSource.cpp
+PhiSEMFilter.$(OBJEXT): $(top_srcdir)/marsyas/PhiSEMFilter.cpp
 Gain.$(OBJEXT): $(top_srcdir)/marsyas/Gain.cpp
 libmarsyas.a: $(libmarsyas_a_OBJECTS) $(libmarsyas_a_DEPENDENCIES) 
 	-rm -f libmarsyas.a
@@ -986,6 +993,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeakViewSource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peaker.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeakerAdaptive.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PhiSEMFilter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PhiSEMSource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PlotSink.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Plucked.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Polar2Cartesian.Po@am__quote@
@@ -3669,6 +3678,30 @@ Transcriber.obj: $(top_srcdir)/marsyas/Transcriber.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/Transcriber.Po' tmpdepfile='$(DEPDIR)/Transcriber.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Transcriber.obj `cygpath -w $(top_srcdir)/marsyas/Transcriber.cpp`
+
+PhiSEMSource.o: $(top_srcdir)/marsyas/PhiSEMSource.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/PhiSEMSource.cpp' object='PhiSEMSource.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/PhiSEMSource.Po' tmpdepfile='$(DEPDIR)/PhiSEMSource.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PhiSEMSource.o `test -f '$(top_srcdir)/marsyas/PhiSEMSource.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PhiSEMSource.cpp
+
+PhiSEMSource.obj: $(top_srcdir)/marsyas/PhiSEMSource.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/PhiSEMSource.cpp' object='PhiSEMSource.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/PhiSEMSource.Po' tmpdepfile='$(DEPDIR)/PhiSEMSource.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PhiSEMSource.obj `cygpath -w $(top_srcdir)/marsyas/PhiSEMSource.cpp`
+
+PhiSEMFilter.o: $(top_srcdir)/marsyas/PhiSEMFilter.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/PhiSEMFilter.cpp' object='PhiSEMFilter.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/PhiSEMFilter.Po' tmpdepfile='$(DEPDIR)/PhiSEMFilter.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PhiSEMFilter.o `test -f '$(top_srcdir)/marsyas/PhiSEMFilter.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/PhiSEMFilter.cpp
+
+PhiSEMFilter.obj: $(top_srcdir)/marsyas/PhiSEMFilter.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/PhiSEMFilter.cpp' object='PhiSEMFilter.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/PhiSEMFilter.Po' tmpdepfile='$(DEPDIR)/PhiSEMFilter.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PhiSEMFilter.obj `cygpath -w $(top_srcdir)/marsyas/PhiSEMFilter.cpp`
 
 Gain.o: $(top_srcdir)/marsyas/Gain.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/marsyas/Gain.cpp' object='Gain.o' libtool=no @AMDEPBACKSLASH@

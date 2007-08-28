@@ -73,8 +73,8 @@ PhiSEMFilter::myUpdate(MarControlPtr sender) {
 	MRSDIAG("PhiSEMFilter.cpp - PhiSEMFilter::myUpdate()");
 
 	setctrl("mrs_natural/numFilters",	getctrl("mrs_natural/numFilters"));
-	freqVec_ = getctrl("mrs_realvec/frequencies")->toVec();
-	resVec_ = getctrl("mrs_realvec/resonances")->toVec();
+	freqVec_ = getctrl("mrs_realvec/frequencies")->to<mrs_realvec>();
+	resVec_ = getctrl("mrs_realvec/resonances")->to<mrs_realvec>();
 
 	mrs_natural numFilters = getctrl("mrs_natural/numFilters")->to<mrs_natural>();
 	//mrs_natural numFilters = numFilters_->to<mrs_natural>();
