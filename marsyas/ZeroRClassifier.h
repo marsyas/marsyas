@@ -41,7 +41,7 @@ private:
 	void addControls();
 	void myUpdate(MarControlPtr sender);
 	realvec labelSizes_;
-
+	mrs_string prev_mode_;
 public:
 	ZeroRClassifier(std::string name);
 	~ZeroRClassifier();

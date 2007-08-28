@@ -149,10 +149,11 @@ void train()
   net->addMarSystem(mng.create("WekaSource", "wsrc"));
   // net->addMarSystem(mng.create("OneRClassifier", "gcl"));
   // net->addMarSystem(mng.create("GaussianClassifier", "gcl"));
-  net->addMarSystem(mng.create("KNNClassifier", "gcl"));
+  // net->addMarSystem(mng.create("KNNClassifier", "gcl"));
+  net->addMarSystem(mng.create("ZeroRClassifier", "gcl"));
   net->addMarSystem(mng.create("Summary", "summary"));
   // net->updctrl("WekaSource/wsrc/mrs_string/attributesToInclude", "1,2,3");
-
+  
   net->updctrl("WekaSource/wsrc/mrs_string/filename", wekafname_);
   // net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "PercentageSplit,50%");
   net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "kFold,[NS],10");
@@ -172,8 +173,13 @@ void train()
   */ 
 
 
-  net->updctrl("KNNClassifier/gcl/mrs_natural/nLabels", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
-  net->linkctrl("KNNClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
+		    /* net->updctrl("KNNClassifier/gcl/mrs_natural/nLabels", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+		       net->linkctrl("KNNClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
+		    */ 
+		    
+		    net->updctrl("ZeroRClassifier/gcl/mrs_natural/nLabels", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+		    net->linkctrl("ZeroRClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
+		    
 
   mrs_bool training_done = false;
   
@@ -186,7 +192,8 @@ void train()
       net->tick();
       // net->updctrl("GaussianClassifier/gcl/mrs_string/mode", mode);
       // net->updctrl("OneRClassifier/gcl/mrs_string/mode", mode);
-      net->updctrl("KNNClassifier/gcl/mrs_string/mode", mode);
+      // net->updctrl("KNNClassifier/gcl/mrs_string/mode", mode);
+      net->updctrl("ZeroRClassifier/gcl/mrs_string/mode", mode);
     }
   
   net->updctrl("Summary/summary/mrs_bool/done", true);

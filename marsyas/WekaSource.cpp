@@ -221,12 +221,13 @@ WekaSource::myUpdate(MarControlPtr sender)
       data_.Shuffle();
       data_.Dump("shuffle.txt", classesFound_);
 
-      cout << "=== Evaluation on test split ===" << endl;
+
       validationModeEnum_ = PercentageSplit;
       
       cp = (char *)strtok(NULL, ",");
       MRSASSERT(cp!=NULL);
       percentageSplit_ = ::atoi(cp);
+      cout << "=== Evaluation on percentage split " << percentageSplit_ << "% ===" << endl;
       MRSASSERT(percentageSplit_>0&&percentageSplit_<100);
       
       percentageIndex_ = ((mrs_natural)data_.size() * percentageSplit_) / 100;
