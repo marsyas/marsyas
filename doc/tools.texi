@@ -29,6 +29,13 @@ Many Marsyas tools can operate on individual soundfiles or
 collections of soundfiles.  A collection is a simple text
 file which contain lists of soundfiles. 
 
+@menu
+* Creating collections manually::  
+* mkcollection::                
+@end menu
+
+
+@node Creating collections manually
 @subsection Creating collections manually
 
 A simple way to create a collection is the unix ls command. 
@@ -53,6 +60,26 @@ collections file must have a @code{.mf} extension such as
 line starting with the @code{#} character is ignored.  For Windows Visual
 Studio, change the slash character separating directories appropriately.
 
+
+@subsection Labels
+
+Labels may be added to collections by appending tab-seperated labels
+after each sound file:
+
+@example
+/home/gtzan/data/sound/reggae/foo.wav \t music
+/home/gtzan/data/sound/reggae/bar.wav \t speech
+@end example
+
+This allows you to create a @qq{master} collection which includes
+different kinds of labelled sound files:
+
+@example
+cat music.mf speech.mf > all.mf
+@end example
+
+
+@node mkcollection
 @subsection @code{mkcollection}
 @cindex mkcollection     
  
@@ -61,8 +88,10 @@ files. To create a collection of all the audio files residing
 in a directory the following command can be used: 
 
 @example 
-mkcollection reggae.mf /home/gtzan/data/sound/ 
+mkcollection -c reggae.mf -l music /home/gtzan/data/sound/
 @end example
+
+This also labels the data as @samp{music}.
 
 All the soundfiles residing in that directory or any subdirectories
 will be added to the collection.  @code{mkcollection} only will add
@@ -220,7 +249,7 @@ into Marsyas but it will be some time until that happens.
 
 
 @example 
-bextract -e STFT music.mf speech.mf -w wekaOut.arff -p musp_classify.mpl
+bextract -e STFTMFCC all.mf -p classify.mpl -w wekaOut.arff
 sfplugin -p musp_classify.mpl new.wav 
 @end example
 
