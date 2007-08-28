@@ -3228,7 +3228,77 @@ toy_with_scheduler(string sfName)
 }
 
 
+mrs_natural randomInt(mrs_natural max) {
+        return (mrs_natural)((float)max * rand() / (RAND_MAX + 1.0));
+}
 
+mrs_real randomFloat(mrs_real max) {
+        return (mrs_real)(max * rand() / (RAND_MAX + 1.0));
+}
+
+
+
+void toy_phisem()
+{
+	mrs_real israte;
+	MarSystemManager mng;
+
+	MarSystem* playbacknet = mng.create("Series", "playbacknet");
+	playbacknet->addMarSystem(mng.create("PhiSEMSource", "src"));	
+	playbacknet->addMarSystem(mng.create("PhiSEMFilter", "filter"));
+	playbacknet->addMarSystem(mng.create("Gain", "gain"));
+	playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
+
+	playbacknet->updctrl("Gain/gain/mrs_real/gain", 0.05);
+	playbacknet->updctrl("AudioSink/dest/mrs_natural/bufferSize", 256);
+	playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	playbacknet->updctrl("mrs_natural/inSamples", 1024);
+
+	realvec resonances;
+	realvec frequencies;
+	resonances.create(10);
+	frequencies.create(10);
+
+	israte = playbacknet->getctrl("mrs_real/israte")->to<mrs_real>();
+	cout << "Sample Rate: " << israte << endl;
+	for (;;) {
+
+		mrs_natural numObjects = 1 + randomInt(10);
+		mrs_real systemDecay = 0.5 + randomFloat(0.5); //0.999
+		mrs_real soundDecay = 0.5 + randomFloat(0.5); //0.95;
+		mrs_real baseGain = 10.0 + randomFloat(10.0);
+		mrs_natural numFilters = 1 + randomInt(5); 
+
+		cout << "===========================" << endl;
+		cout << "numObjects:  " << numObjects << endl
+		     << "baseGain:    " << baseGain << endl
+		     << "systemDecay: " << systemDecay << endl
+		     << "soundDecay:  " << soundDecay << endl
+		     << "numFilters:  " << numFilters << endl;
+
+		for(int i=0; i < numFilters; i++) {
+			resonances(i) = 0.9 + randomFloat(0.1);
+			frequencies(i) = 200.0 * (1 + randomInt(30));
+			cout << "  filter(" << i << ") freq=" << frequencies(i)
+			     << " res=" << resonances(i) << endl;
+		}
+
+		playbacknet->updctrl("PhiSEMSource/src/mrs_natural/numObjects", numObjects);
+		playbacknet->updctrl("PhiSEMSource/src/mrs_real/systemDecay", systemDecay);
+		playbacknet->updctrl("PhiSEMSource/src/mrs_real/soundDecay", soundDecay);
+		playbacknet->updctrl("PhiSEMSource/src/mrs_real/baseGain", baseGain);
+	
+		playbacknet->updctrl("PhiSEMFilter/filter/mrs_realvec/resonances", resonances);
+		playbacknet->updctrl("PhiSEMFilter/filter/mrs_realvec/frequencies", frequencies);
+		playbacknet->updctrl("PhiSEMFilter/filter/mrs_natural/numFilters", numFilters);
+	
+		for(int i=0; i < 2*israte/1024; i++) {
+			playbacknet->tick();
+		}
+	}
+	delete playbacknet;
+
+}
 
 
 
@@ -3348,7 +3418,9 @@ main(int argc, const char **argv)
    else if (toy_withName == "power")
     toy_with_power(fname0);
   else if (toy_withName == "drumclassify")
-    drumClassify(fname0);
+    drumClassify(fname0); 
+  else if (toy_withName == "phisem")
+    toy_phisem();
 else 
     {
       cout << "Unsupported toy_with " << endl;

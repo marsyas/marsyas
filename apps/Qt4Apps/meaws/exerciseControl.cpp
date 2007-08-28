@@ -74,7 +74,7 @@ void ExerciseControl::open(QString exerciseFilename) {
 	QPixmap image;
 
 	notes = new QButtonGroup;
-	instructionArea->setHorizontalSpacing(0);
+//	instructionArea->setHorizontalSpacing(0);
 	for (int i=0; i<5; i++) {
 		noteButton[i] = new QToolButton;
 		noteImageFilename = noteImageBaseFilename+"-"+QString::number(i+1)+".png";

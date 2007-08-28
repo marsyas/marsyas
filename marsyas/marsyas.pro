@@ -282,7 +282,9 @@ HEADERS += \
 	WekaData.h \
 	TranscriberExtract.h \
 	Transcriber.h \
-	MarControlAccessor.h \
+	PhiSEMSource.h \
+	PhiSEMFilter.h \
+		MarControlAccessor.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 	 
@@ -506,6 +508,9 @@ SOURCES += \
 	WekaData.cpp \
 	TranscriberExtract.cpp \
 	Transcriber.cpp \
+	PhiSEMSource.cpp \
+	PhiSEMFilter.cpp \
+		MarControlAccessor.cpp \
 	Gain.cpp
 # please leave Gain.cpp at the end like this; it makes scripts happy.
 

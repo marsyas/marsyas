@@ -25,6 +25,7 @@ SOURCES += ../MarSystemQtWrapper.cpp
 
 RESOURCES = icons.qrc
 TARGET = meaws
+TEMPLATE = app
 VERSION = 0.5
 #CONFIG = qt
 
@@ -45,6 +46,9 @@ INSTALLS += data
 INCLUDEPATH += ../../../lib/release/
 
 
+unix:LIBS += -lmarsyas -lmarqtactual -L$$MARSYAS_INSTALL_DIR/lib
+unix&!macx:LIBS += -lasound
+macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
 
 unix {
 !macx {
@@ -61,7 +65,7 @@ macx {
 win32 {
 	INCLUDEPATH += ../../../lib/release/
 	INCLUDEPATH += . ..
-	CONFIG += console
+#	CONFIG += console
 }
 
 # needs to be upddate:   (or deleted?)
