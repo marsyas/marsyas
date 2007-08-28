@@ -33,7 +33,7 @@ lib_LIBRARIES         = libmarsyas.a
 ## endif
 
 
-INCLUDES += -I$(top_srcdir)/marsyas -I$(top_srcdir)/otherlibs/RtAudio -I$(top_srcdir)/otherlibs/RtMidi -I$(top_srcdir)/marsyas/MATLAB 
+INCLUDES += -I$(top_srcdir)/marsyas -I$(top_srcdir)/otherlibs/RtAudio -I$(top_srcdir)/otherlibs/RtMidi -I$(top_srcdir)/otherlibs/libsvm -I$(top_srcdir)/marsyas/MATLAB 
 
 libmarsyas_a_SOURCES    = \
 	$(top_srcdir)/otherlibs/libsvm/svm.cpp \
