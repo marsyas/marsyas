@@ -77,7 +77,7 @@ CXX = @CXX@
 DEPDIR = @DEPDIR@
 DISTRIBUTED = @DISTRIBUTED@
 
-INCLUDES = @INCLUDES@ -I@top_srcdir@/marsyas -I@top_srcdir@/marsyas/MATLAB
+INCLUDES = @INCLUDES@ -I$(top_srcdir)/marsyas -I$(top_srcdir)/otherlibs/RtAudio -I$(top_srcdir)/otherlibs/RtMidi -I$(top_srcdir)/marsyas/MATLAB 
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 Libs = @Libs@
 MADLIB = @MADLIB@
@@ -105,6 +105,9 @@ MAINTAINERCLEANFILES = Makefile.in
 lib_LIBRARIES = libmarsyas.a
 
 libmarsyas_a_SOURCES = \
+	$(top_srcdir)/otherlibs/libsvm/svm.cpp \
+	$(top_srcdir)/otherlibs/RtAudio/RtAudio.cpp \
+	$(top_srcdir)/otherlibs/RtMidi/RtMidi.cpp \
 	$(top_srcdir)/marsyas/MrsLog.cpp \
 	$(top_srcdir)/marsyas/VScheduler.cpp \
 	$(top_srcdir)/marsyas/Scheduler.cpp \
@@ -215,7 +218,6 @@ libmarsyas_a_SOURCES = \
 	$(top_srcdir)/marsyas/WaveletStep.cpp \
 	$(top_srcdir)/marsyas/Daub4.cpp \
 	$(top_srcdir)/marsyas/OnePole.cpp \
-	$(top_srcdir)/marsyas/RtAudio.cpp \
 	$(top_srcdir)/marsyas/Accumulator.cpp \
 	$(top_srcdir)/marsyas/Shredder.cpp \
 	$(top_srcdir)/marsyas/Messager.cpp \
@@ -267,7 +269,6 @@ libmarsyas_a_SOURCES = \
 	$(top_srcdir)/marsyas/ClassOutputSink.cpp \
 	$(top_srcdir)/marsyas/ClipAudioRange.cpp \
 	$(top_srcdir)/marsyas/SilenceRemove.cpp \
-	$(top_srcdir)/marsyas/RtMidi.cpp \
 	$(top_srcdir)/marsyas/SpectralSNR.cpp \
 	$(top_srcdir)/marsyas/Stk.cpp \
 	$(top_srcdir)/marsyas/StereoSpectrum.cpp \
@@ -329,7 +330,8 @@ LIBRARIES = $(lib_LIBRARIES)
 
 libmarsyas_a_AR = $(AR) cru
 libmarsyas_a_LIBADD =
-am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
+am_libmarsyas_a_OBJECTS = svm.$(OBJEXT) RtAudio.$(OBJEXT) \
+	RtMidi.$(OBJEXT) MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	Scheduler.$(OBJEXT) ScheduledEvent.$(OBJEXT) \
 	SchedulerManager.$(OBJEXT) TmTimer.$(OBJEXT) TmTime.$(OBJEXT) \
 	TmSampleCount.$(OBJEXT) TmGetTime.$(OBJEXT) \
@@ -374,16 +376,16 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	Confidence.$(OBJEXT) MarFileSink.$(OBJEXT) WekaSink.$(OBJEXT) \
 	MFCC.$(OBJEXT) SCF.$(OBJEXT) SFM.$(OBJEXT) \
 	WaveletPyramid.$(OBJEXT) WaveletStep.$(OBJEXT) Daub4.$(OBJEXT) \
-	OnePole.$(OBJEXT) RtAudio.$(OBJEXT) Accumulator.$(OBJEXT) \
-	Shredder.$(OBJEXT) Messager.$(OBJEXT) Talk.$(OBJEXT) \
-	TimeLine.$(OBJEXT) Color.$(OBJEXT) Communicator.$(OBJEXT) \
-	Server.$(OBJEXT) AbsMax.$(OBJEXT) FullWaveRectifier.$(OBJEXT) \
-	Norm.$(OBJEXT) DownSampler.$(OBJEXT) WaveletBands.$(OBJEXT) \
-	Sum.$(OBJEXT) Product.$(OBJEXT) PeakPeriods2BPM.$(OBJEXT) \
-	Histogram.$(OBJEXT) BeatHistoFeatures.$(OBJEXT) \
-	MslModel.$(OBJEXT) CommandLineOptions.$(OBJEXT) \
-	RawFileSource.$(OBJEXT) FM.$(OBJEXT) ANN_node.$(OBJEXT) \
-	Annotator.$(OBJEXT) Summary.$(OBJEXT) ZeroRClassifier.$(OBJEXT) \
+	OnePole.$(OBJEXT) Accumulator.$(OBJEXT) Shredder.$(OBJEXT) \
+	Messager.$(OBJEXT) Talk.$(OBJEXT) TimeLine.$(OBJEXT) \
+	Color.$(OBJEXT) Communicator.$(OBJEXT) Server.$(OBJEXT) \
+	AbsMax.$(OBJEXT) FullWaveRectifier.$(OBJEXT) Norm.$(OBJEXT) \
+	DownSampler.$(OBJEXT) WaveletBands.$(OBJEXT) Sum.$(OBJEXT) \
+	Product.$(OBJEXT) PeakPeriods2BPM.$(OBJEXT) Histogram.$(OBJEXT) \
+	BeatHistoFeatures.$(OBJEXT) MslModel.$(OBJEXT) \
+	CommandLineOptions.$(OBJEXT) RawFileSource.$(OBJEXT) \
+	FM.$(OBJEXT) ANN_node.$(OBJEXT) Annotator.$(OBJEXT) \
+	Summary.$(OBJEXT) ZeroRClassifier.$(OBJEXT) \
 	KNNClassifier.$(OBJEXT) Filter.$(OBJEXT) Biquad.$(OBJEXT) \
 	Kurtosis.$(OBJEXT) Skewness.$(OBJEXT) AMDF.$(OBJEXT) \
 	SMO.$(OBJEXT) SOM.$(OBJEXT) LPC.$(OBJEXT) LSP.$(OBJEXT) \
@@ -393,14 +395,13 @@ am_libmarsyas_a_OBJECTS = MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	Cascade.$(OBJEXT) Parallel.$(OBJEXT) SeneffEar.$(OBJEXT) \
 	MP3FileSource.$(OBJEXT) OggFileSource.$(OBJEXT) \
 	ClassOutputSink.$(OBJEXT) ClipAudioRange.$(OBJEXT) \
-	SilenceRemove.$(OBJEXT) RtMidi.$(OBJEXT) SpectralSNR.$(OBJEXT) \
-	Stk.$(OBJEXT) StereoSpectrum.$(OBJEXT) \
-	StereoSpectrumFeatures.$(OBJEXT) Limiter.$(OBJEXT) \
-	NoiseSource.$(OBJEXT) CompExp.$(OBJEXT) NoiseGate.$(OBJEXT) \
-	Plucked.$(OBJEXT) ADSR.$(OBJEXT) Envelope.$(OBJEXT) \
-	Delay.$(OBJEXT) Vibrato.$(OBJEXT) NormMaxMin.$(OBJEXT) \
-	HarmonicEnhancer.$(OBJEXT) Reassign.$(OBJEXT) \
-	Normalize.$(OBJEXT) WekaSource.$(OBJEXT) \
+	SilenceRemove.$(OBJEXT) SpectralSNR.$(OBJEXT) Stk.$(OBJEXT) \
+	StereoSpectrum.$(OBJEXT) StereoSpectrumFeatures.$(OBJEXT) \
+	Limiter.$(OBJEXT) NoiseSource.$(OBJEXT) CompExp.$(OBJEXT) \
+	NoiseGate.$(OBJEXT) Plucked.$(OBJEXT) ADSR.$(OBJEXT) \
+	Envelope.$(OBJEXT) Delay.$(OBJEXT) Vibrato.$(OBJEXT) \
+	NormMaxMin.$(OBJEXT) HarmonicEnhancer.$(OBJEXT) \
+	Reassign.$(OBJEXT) Normalize.$(OBJEXT) WekaSource.$(OBJEXT) \
 	RealvecSource.$(OBJEXT) RealvecSink.$(OBJEXT) \
 	Panorama.$(OBJEXT) Power.$(OBJEXT) MemorySource.$(OBJEXT) \
 	MidiInput.$(OBJEXT) Esitar.$(OBJEXT) MidiOutput.$(OBJEXT) \
@@ -568,7 +569,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/ZeroRClassifier.Po ./$(DEPDIR)/basis.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/fft.Po ./$(DEPDIR)/lu.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/peakView.Po ./$(DEPDIR)/realvec.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/vmblock.Po
+@AMDEP_TRUE@	./$(DEPDIR)/svm.Po ./$(DEPDIR)/vmblock.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -620,6 +621,9 @@ uninstall-libLIBRARIES:
 
 clean-libLIBRARIES:
 	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
+svm.$(OBJEXT): $(top_srcdir)/otherlibs/libsvm/svm.cpp
+RtAudio.$(OBJEXT): $(top_srcdir)/otherlibs/RtAudio/RtAudio.cpp
+RtMidi.$(OBJEXT): $(top_srcdir)/otherlibs/RtMidi/RtMidi.cpp
 MrsLog.$(OBJEXT): $(top_srcdir)/marsyas/MrsLog.cpp
 VScheduler.$(OBJEXT): $(top_srcdir)/marsyas/VScheduler.cpp
 Scheduler.$(OBJEXT): $(top_srcdir)/marsyas/Scheduler.cpp
@@ -735,7 +739,6 @@ WaveletPyramid.$(OBJEXT): $(top_srcdir)/marsyas/WaveletPyramid.cpp
 WaveletStep.$(OBJEXT): $(top_srcdir)/marsyas/WaveletStep.cpp
 Daub4.$(OBJEXT): $(top_srcdir)/marsyas/Daub4.cpp
 OnePole.$(OBJEXT): $(top_srcdir)/marsyas/OnePole.cpp
-RtAudio.$(OBJEXT): $(top_srcdir)/marsyas/RtAudio.cpp
 Accumulator.$(OBJEXT): $(top_srcdir)/marsyas/Accumulator.cpp
 Shredder.$(OBJEXT): $(top_srcdir)/marsyas/Shredder.cpp
 Messager.$(OBJEXT): $(top_srcdir)/marsyas/Messager.cpp
@@ -789,7 +792,6 @@ OggFileSource.$(OBJEXT): $(top_srcdir)/marsyas/OggFileSource.cpp
 ClassOutputSink.$(OBJEXT): $(top_srcdir)/marsyas/ClassOutputSink.cpp
 ClipAudioRange.$(OBJEXT): $(top_srcdir)/marsyas/ClipAudioRange.cpp
 SilenceRemove.$(OBJEXT): $(top_srcdir)/marsyas/SilenceRemove.cpp
-RtMidi.$(OBJEXT): $(top_srcdir)/marsyas/RtMidi.cpp
 SpectralSNR.$(OBJEXT): $(top_srcdir)/marsyas/SpectralSNR.cpp
 Stk.$(OBJEXT): $(top_srcdir)/marsyas/Stk.cpp
 StereoSpectrum.$(OBJEXT): $(top_srcdir)/marsyas/StereoSpectrum.cpp
@@ -1070,6 +1072,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lu.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/peakView.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/realvec.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/svm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vmblock.Po@am__quote@
 
 distclean-depend:
@@ -1086,6 +1089,42 @@ distclean-depend:
 @AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXXCOMPILE) -c -o $@ `cygpath -w $<`
+
+svm.o: $(top_srcdir)/otherlibs/libsvm/svm.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/otherlibs/libsvm/svm.cpp' object='svm.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/svm.Po' tmpdepfile='$(DEPDIR)/svm.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o svm.o `test -f '$(top_srcdir)/otherlibs/libsvm/svm.cpp' || echo '$(srcdir)/'`$(top_srcdir)/otherlibs/libsvm/svm.cpp
+
+svm.obj: $(top_srcdir)/otherlibs/libsvm/svm.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/otherlibs/libsvm/svm.cpp' object='svm.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/svm.Po' tmpdepfile='$(DEPDIR)/svm.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o svm.obj `cygpath -w $(top_srcdir)/otherlibs/libsvm/svm.cpp`
+
+RtAudio.o: $(top_srcdir)/otherlibs/RtAudio/RtAudio.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/otherlibs/RtAudio/RtAudio.cpp' object='RtAudio.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RtAudio.Po' tmpdepfile='$(DEPDIR)/RtAudio.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RtAudio.o `test -f '$(top_srcdir)/otherlibs/RtAudio/RtAudio.cpp' || echo '$(srcdir)/'`$(top_srcdir)/otherlibs/RtAudio/RtAudio.cpp
+
+RtAudio.obj: $(top_srcdir)/otherlibs/RtAudio/RtAudio.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/otherlibs/RtAudio/RtAudio.cpp' object='RtAudio.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RtAudio.Po' tmpdepfile='$(DEPDIR)/RtAudio.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RtAudio.obj `cygpath -w $(top_srcdir)/otherlibs/RtAudio/RtAudio.cpp`
+
+RtMidi.o: $(top_srcdir)/otherlibs/RtMidi/RtMidi.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/otherlibs/RtMidi/RtMidi.cpp' object='RtMidi.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RtMidi.Po' tmpdepfile='$(DEPDIR)/RtMidi.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RtMidi.o `test -f '$(top_srcdir)/otherlibs/RtMidi/RtMidi.cpp' || echo '$(srcdir)/'`$(top_srcdir)/otherlibs/RtMidi/RtMidi.cpp
+
+RtMidi.obj: $(top_srcdir)/otherlibs/RtMidi/RtMidi.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/otherlibs/RtMidi/RtMidi.cpp' object='RtMidi.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RtMidi.Po' tmpdepfile='$(DEPDIR)/RtMidi.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RtMidi.obj `cygpath -w $(top_srcdir)/otherlibs/RtMidi/RtMidi.cpp`
 
 MrsLog.o: $(top_srcdir)/marsyas/MrsLog.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/marsyas/MrsLog.cpp' object='MrsLog.o' libtool=no @AMDEPBACKSLASH@
@@ -2407,18 +2446,6 @@ OnePole.obj: $(top_srcdir)/marsyas/OnePole.cpp
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o OnePole.obj `cygpath -w $(top_srcdir)/marsyas/OnePole.cpp`
 
-RtAudio.o: $(top_srcdir)/marsyas/RtAudio.cpp
-@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/RtAudio.cpp' object='RtAudio.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/RtAudio.Po' tmpdepfile='$(DEPDIR)/RtAudio.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RtAudio.o `test -f '$(top_srcdir)/marsyas/RtAudio.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/RtAudio.cpp
-
-RtAudio.obj: $(top_srcdir)/marsyas/RtAudio.cpp
-@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/RtAudio.cpp' object='RtAudio.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/RtAudio.Po' tmpdepfile='$(DEPDIR)/RtAudio.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RtAudio.obj `cygpath -w $(top_srcdir)/marsyas/RtAudio.cpp`
-
 Accumulator.o: $(top_srcdir)/marsyas/Accumulator.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/marsyas/Accumulator.cpp' object='Accumulator.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@	depfile='$(DEPDIR)/Accumulator.Po' tmpdepfile='$(DEPDIR)/Accumulator.TPo' @AMDEPBACKSLASH@
@@ -3030,18 +3057,6 @@ SilenceRemove.obj: $(top_srcdir)/marsyas/SilenceRemove.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/SilenceRemove.Po' tmpdepfile='$(DEPDIR)/SilenceRemove.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SilenceRemove.obj `cygpath -w $(top_srcdir)/marsyas/SilenceRemove.cpp`
-
-RtMidi.o: $(top_srcdir)/marsyas/RtMidi.cpp
-@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/RtMidi.cpp' object='RtMidi.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/RtMidi.Po' tmpdepfile='$(DEPDIR)/RtMidi.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RtMidi.o `test -f '$(top_srcdir)/marsyas/RtMidi.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/RtMidi.cpp
-
-RtMidi.obj: $(top_srcdir)/marsyas/RtMidi.cpp
-@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/RtMidi.cpp' object='RtMidi.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/RtMidi.Po' tmpdepfile='$(DEPDIR)/RtMidi.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RtMidi.obj `cygpath -w $(top_srcdir)/marsyas/RtMidi.cpp`
 
 SpectralSNR.o: $(top_srcdir)/marsyas/SpectralSNR.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/marsyas/SpectralSNR.cpp' object='SpectralSNR.o' libtool=no @AMDEPBACKSLASH@

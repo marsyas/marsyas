@@ -149,7 +149,6 @@ pkginclude_HEADERS = \
 	WaveletStep.h \
 	Daub4.h \
 	OnePole.h \
-	RtAudio.h \
 	RtError.h \
 	Accumulator.h \
 	Shredder.h \
@@ -200,7 +199,6 @@ pkginclude_HEADERS = \
 	ClassOutputSink.h \
 	ClipAudioRange.h \
 	SilenceRemove.h \
-	RtMidi.h \
 	Stk.h \
 	Limiter.h \
 	CompExp.h \

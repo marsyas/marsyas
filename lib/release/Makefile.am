@@ -33,10 +33,12 @@ lib_LIBRARIES         = libmarsyas.a
 ## endif
 
 
-INCLUDES += -I@top_srcdir@/marsyas -I@top_srcdir@/marsyas/MATLAB
- 
+INCLUDES += -I$(top_srcdir)/marsyas -I$(top_srcdir)/otherlibs/RtAudio -I$(top_srcdir)/otherlibs/RtMidi -I$(top_srcdir)/marsyas/MATLAB 
 
 libmarsyas_a_SOURCES    = \
+	$(top_srcdir)/otherlibs/libsvm/svm.cpp \
+	$(top_srcdir)/otherlibs/RtAudio/RtAudio.cpp \
+	$(top_srcdir)/otherlibs/RtMidi/RtMidi.cpp \
 	$(top_srcdir)/marsyas/MrsLog.cpp \
 	$(top_srcdir)/marsyas/VScheduler.cpp \
 	$(top_srcdir)/marsyas/Scheduler.cpp \
@@ -147,7 +149,6 @@ libmarsyas_a_SOURCES    = \
 	$(top_srcdir)/marsyas/WaveletStep.cpp \
 	$(top_srcdir)/marsyas/Daub4.cpp \
 	$(top_srcdir)/marsyas/OnePole.cpp \
-	$(top_srcdir)/marsyas/RtAudio.cpp \
 	$(top_srcdir)/marsyas/Accumulator.cpp \
 	$(top_srcdir)/marsyas/Shredder.cpp \
 	$(top_srcdir)/marsyas/Messager.cpp \
@@ -199,7 +200,6 @@ libmarsyas_a_SOURCES    = \
 	$(top_srcdir)/marsyas/ClassOutputSink.cpp \
 	$(top_srcdir)/marsyas/ClipAudioRange.cpp \
 	$(top_srcdir)/marsyas/SilenceRemove.cpp \
-	$(top_srcdir)/marsyas/RtMidi.cpp \
 	$(top_srcdir)/marsyas/SpectralSNR.cpp \
 	$(top_srcdir)/marsyas/Stk.cpp \
 	$(top_srcdir)/marsyas/StereoSpectrum.cpp \

@@ -3577,6 +3577,7 @@ esac
 
 
 
+
 # Check whether --with-mad or --without-mad was given.
 if test "${with_mad+set}" = set; then
   withval="$with_mad"
@@ -3639,6 +3640,11 @@ _ACEOF
                echo Ogg vorbis decoding enabled
        ;;
 esac
+
+
+
+
+
 
 
 
@@ -3754,6 +3760,9 @@ case "${host}" in
 	cat >>confdefs.h <<\_ACEOF
 #define MARSYAS_LINUX 1
 _ACEOF
+
+
+
 
 
 if test "$enable_oss" = yes; then

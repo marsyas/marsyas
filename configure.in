@@ -161,7 +161,8 @@ case "$enable_distributed" in
        *) echo Distributed support disabled ;;
 esac
 AC_SUBST([DISTRIBUTED])
- 
+
+
 
 
 AC_ARG_WITH([mad],[AC_HELP_STRING([--with-mad],[Link to libmad (mp3
@@ -203,6 +204,11 @@ case "x$with_vorbis" in
        ;;
 esac
 AC_SUBST([OGGLIB])
+
+
+
+
+
 
 
 
@@ -281,6 +287,9 @@ case "${host}" in
 case "${host}" in
  	*-*-linux-gnu*) 
 	AC_DEFINE([MARSYAS_LINUX])
+
+
+
 
 if test "$enable_oss" = yes; then 
 	AC_DEFINE([__LINUX_OSS__],[1], [LINUX SYSTEM FOR RTAUDIO])	
