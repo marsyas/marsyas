@@ -17,6 +17,49 @@ CONFIG(debug, debug|release) {
 }
 
 ######################################################################
+# RtAudio Sources
+######################################################################
+marsyasAUDIOIO {
+	SOURCES += \
+		$$quote( "$$BASEDIR/otherlibs/RtAudio/RtAudio.cpp" )
+		
+	HEADERS += \
+		$$quote( "$$BASEDIR/otherlibs/RtAudio/RtAudio.h" ) \
+		$$quote( "$$BASEDIR/otherlibs/RtAudio/RtError.h" )
+		
+	win32{
+		marsyasAUDIOIO_ASIO {
+			SOURCES += 
+				$$quote( "$$BASEDIR/otherlibs/asio/asio.cpp" ) \
+				$$quote( "$$BASEDIR/otherlibs/asio/asiodrivers.cpp" ) \
+				$$quote( "$$BASEDIR/otherlibs/asio/asiolist.cpp" ) \
+				$$quote( "$$BASEDIR/otherlibs/asio/iasiothiscallresolver.cpp" )
+			HEADERS += \ 
+				$$quote( "$$BASEDIR/otherlibs/asio/asio.h" ) \
+				$$quote( "$$BASEDIR/otherlibs/asio/asiodrivers.h" ) \
+				$$quote( "$$BASEDIR/otherlibs/asio/asiodrvr.h" ) \
+				$$quote( "$$BASEDIR/otherlibs/asio/asiolist.h" ) \
+				$$quote( "$$BASEDIR/otherlibs/asio/asiosys.h" ) \
+				$$quote( "$$BASEDIR/otherlibs/asio/ginclude.h" ) \
+				$$quote( "$$BASEDIR/otherlibs/asio/iasiodrv.h" ) \
+				$$quote( "$$BASEDIR/otherlibs/asio/iasiothiscallresolver.h" )
+		}
+	}	
+}
+
+######################################################################
+# RtMidi Sources
+######################################################################
+marsyasMIDIIO {
+	SOURCES += \
+		$$quote( "$$BASEDIR/otherlibs/RtMidi/RtMidi.cpp" )
+		
+	HEADERS += \
+		$$quote( "$$BASEDIR/otherlibs/RtMidi/RtMidi.h" ) \
+		$$quote( "$$BASEDIR/otherlibs/RtMidi/RtError.h" )
+}
+
+######################################################################
 # Marsyas GUI source files
 ######################################################################
 marsyasQT {
@@ -52,6 +95,13 @@ marsyasMATLABrelease {
 	HEADERS += ./MATLAB/MATLABengine.h
 	SOURCES += ./MATLAB/MATLABengine.cpp
 }
+
+######################################################################
+# libSVM
+######################################################################
+INCLUDEPATH += $$quote( "$$BASEDIR/otherlibs/libsvm" )
+HEADERS += $$quote( "$$BASEDIR/otherlibs/libsvm/svm.h" )
+SOURCES += $$quote( "$$BASEDIR/otherlibs/libsvm/svm.cpp" )
 
 ######################################################################
 # Marsyas Core input files
@@ -185,9 +235,6 @@ HEADERS += \
 	Repeat.h \
 	Rms.h \
 	Rolloff.h \
-	RtAudio.h \
-	RtError.h \
-	RtMidi.h \
 	SCF.h \
 	SFM.h \
 	SMO.h \
@@ -284,7 +331,7 @@ HEADERS += \
 	Transcriber.h \
 	PhiSEMSource.h \
 	PhiSEMFilter.h \
-		MarControlAccessor.h \
+	MarControlAccessor.h \
 	SVMClassifier.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
@@ -417,8 +464,6 @@ SOURCES += \
 	Repeat.cpp \
 	Rms.cpp \
 	Rolloff.cpp \
-	RtAudio.cpp \
-	RtMidi.cpp \
 	SCF.cpp \
 	SFM.cpp \
 	SMO.cpp \
@@ -511,7 +556,6 @@ SOURCES += \
 	Transcriber.cpp \
 	PhiSEMSource.cpp \
 	PhiSEMFilter.cpp \
-		MarControlAccessor.cpp \
 	SVMClassifier.cpp \
 	Gain.cpp
 # please leave Gain.cpp at the end like this; it makes scripts happy.

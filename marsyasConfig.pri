@@ -143,16 +143,25 @@ marsyasMATLABrelease {
 	}
 }
 
+marsyasAUDIOIO {
+	message( -> AUDIO I/O support (RtAudio) )
+	DEFINES += MARSYAS_AUDIOIO
+	INCLUDEPATH += $$quote( "$$BASEDIR/otherlibs/RtAudio" )
 
-marsyasAUDIOIO:message( -> AUDIO I/O support (RtAudio) )
-marsyasAUDIOIO_ALSA:message ( --> ALSA  )
-marsyasAUDIOIO_JACK:message ( --> JACK )
-marsyasAUDIOIO_OSS:message ( --> OSS )
-marsyasAUDIOIO_COREAUDIO:message( --> CORE AUDIO )
-marsyasAUDIOIO_DS:message( --> DIRECT SHOW )
-marsyasAUDIOIO_ASIO:message( --> ASIO )
+	marsyasAUDIOIO_ALSA:message ( --> ALSA  )
+	marsyasAUDIOIO_JACK:message ( --> JACK )
+	marsyasAUDIOIO_OSS:message ( --> OSS )
+	marsyasAUDIOIO_COREAUDIO:message( --> CORE AUDIO )
+	marsyasAUDIOIO_DS:message( --> DIRECT SHOW )
+	marsyasAUDIOIO_ASIO:message( --> ASIO )	
+}
 
-marsyasMIDIIO:message ( -> MIDI I/O support (RtMIDI) )
+marsyasMIDIIO {
+	message ( -> MIDI I/O support (RtMIDI) )
+	DEFINES += MARSYAS_MIDIIO
+	INCLUDEPATH += $$quote( "$$BASEDIR/otherlibs/RtMidi" )
+}
+
 marsyasMAD:message( -> MP3 MAD support )
 marsyasOGG:message( -> Ogg Vorbis support )
 
@@ -199,7 +208,6 @@ unix:{
 	LIBS += -lm
 			
 	marsyasAUDIOIO {
-		DEFINES += MARSYAS_AUDIOIO
 		marsyasAUDIOIO_ALSA {
 			DEFINES += \
 				MARSYAS_ALSA \
@@ -222,7 +230,6 @@ unix:{
 	
 	marsyasMIDIIO {
 		DEFINES += \
-			MARSYAS_MIDIIO \
 			MARSYAS_ALSASEQ \
 			__LINUX_ALSASEQ__
 		LIBS += -lasound -lpthread
@@ -256,7 +263,6 @@ macx {
 	
 	marsyasAUDIOIO {
 		DEFINES += \
-			MARSYAS_AUDIOIO \
 			MARSYAS_COREAUDIO \
 			__MACOSX_CORE__
 		LIBS += -framework CoreAudio -lpthread
@@ -264,7 +270,6 @@ macx {
 	
 	marsyasMIDIIO {
 		DEFINES += \
-			MARSYAS_MIDIIO \
 			MARSYAS_COREMIDI \
 			__MACOSX_CORE__
 		LIBS += -framework CoreMidi -framework CoreAudio
@@ -312,7 +317,6 @@ win32 {
 	}
 	
 	marsyasAUDIOIO {
-		DEFINES += MARSYAS_AUDIOIO
 		marsyasAUDIOIO_DS {
 			DEFINES += \
 				MARSYAS_DS \
@@ -326,26 +330,11 @@ win32 {
 				MARSYAS_ASIO \
 				__WINDOWS_ASIO_
 			DEFINES -= UNICODE
-			SOURCES += 
-				$$quote( "$$BASEDIR/otherlibs/asio/asio.cpp" ) \
-				$$quote( "$$BASEDIR/otherlibs/asio/asiodrivers.cpp" ) \
-				$$quote( "$$BASEDIR/otherlibs/asio/asiolist.cpp" ) \
-				$$quote( "$$BASEDIR/otherlibs/asio/iasiothiscallresolver.cpp" )
-			HEADERS += \ 
-				$$quote( "$$BASEDIR/otherlibs/asio/asio.h" ) \
-				$$quote( "$$BASEDIR/otherlibs/asio/asiodrivers.h" ) \
-				$$quote( "$$BASEDIR/otherlibs/asio/asiodrvr.h" ) \
-				$$quote( "$$BASEDIR/otherlibs/asio/asiolist.h" ) \
-				$$quote( "$$BASEDIR/otherlibs/asio/asiosys.h" ) \
-				$$quote( "$$BASEDIR/otherlibs/asio/ginclude.h" ) \
-				$$quote( "$$BASEDIR/otherlibs/asio/iasiodrv.h" ) \
-				$$quote( "$$BASEDIR/otherlibs/asio/iasiothiscallresolver.h" )
 		}
 	}
 	
 	marsyasMIDIIO {
 		DEFINES += \
-			MARSYAS_MIDIIO \
 			MARSYAS_WINMM \
 			__WINDOWS_MM__
 		LIBS += -lwinmm		
