@@ -82,6 +82,7 @@ WekaSource::addControls()
 void 
 WekaSource::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("WekaSource.cpp - WekaSource:myUpdate");
   
 
@@ -172,7 +173,10 @@ WekaSource::myUpdate(MarControlPtr sender)
       else if(strcmp(cp,"S")==0)
 	validationModeEnum_ = kFoldStratified;
       else
+      {
 	MRSASSERT(0);
+	(void)42;
+      }
       
       cp = (char *)strtok(NULL, ",");
       MRSASSERT(cp!=NULL);
@@ -244,6 +248,7 @@ WekaSource::myUpdate(MarControlPtr sender)
 
 void WekaSource::myProcess(realvec& in,realvec &out)
 {
+	(void) in;
 
   if(getctrl("mrs_bool/done")->to<mrs_bool>()) return;
   bool trainMode = (strcmp(getctrl("mrs_string/mode")->to<mrs_string>().c_str(), "train") == 0);
@@ -274,6 +279,8 @@ void WekaSource::myProcess(realvec& in,realvec &out)
 void 
 WekaSource::handleDefault(bool trainMode, realvec &out)
 {
+	// FIXME Unused parameter
+	(void) trainMode;
 
   vector<mrs_real> *row = NULL;
   row = data_.at(currentIndex_++);
@@ -388,6 +395,9 @@ void WekaSource::handleFoldingNonStratifiedValidation(bool trainMode, realvec &o
 	      }
 	  }
       }break;
+      // FIXME There are unhandled cases in this switch;
+    default:
+      (void) 42;
     }//switch
 
   MRSASSERT(row->size()==out.getCols());
@@ -434,6 +444,8 @@ void WekaSource::loadFile(const std::string& filename, const std::string& attrib
 
 void WekaSource::parseHeader(ifstream& mis, const string& filename, const std::string& attributesToExtract)
 {
+	// FIXME Unused parameter
+	(void) attributesToExtract;
   char str[1024];
   // skip comment lines 
   while (mis.peek() == '%') 
@@ -511,6 +523,8 @@ void WekaSource::parseHeader(ifstream& mis, const string& filename, const std::s
 
 void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data)
 {
+	// FIXME Unused parameter
+	(void) filename;
 
 
 
@@ -633,6 +647,8 @@ mrs_natural WekaSource::parseAttribute(const char *attribute) const
 // Once the indexes are known, set those index values to true in the attributes to include array
 void WekaSource::parseAttributesToInclude(const std::string& attributesToInclude)
 {
+	// FIXME Unused parameter.
+	(void) attributesToInclude;
   //resize the included attribute bool array to the same size as the actual number of attributes
   //in the arff file.
   attributesIncluded_.resize(attributesFound_.size());

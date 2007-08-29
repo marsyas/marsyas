@@ -58,6 +58,7 @@ SMO::addControls()
 void
 SMO::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("SMO.cpp - SMO:myUpdate");
 
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
@@ -66,7 +67,8 @@ SMO::myUpdate(MarControlPtr sender)
   
   
   mrs_natural inObservations = ctrl_inObservations_->to<mrs_natural>();
-  mrs_natural nlabels = getctrl("mrs_natural/nLabels")->to<mrs_natural>();
+  // FIXME This variable is being defined but (possibly) not used.
+  // mrs_natural nlabels = getctrl("mrs_natural/nLabels")->to<mrs_natural>();
 
 
   mrs_natural mcols = (getctrl("mrs_realvec/weights")->to<mrs_realvec>()).getCols();
@@ -100,14 +102,14 @@ SMO::myProcess(realvec& in, realvec& out)
   //checkFlow(in,out);
 //  mrs_real v;
   string mode = modePtr_->to<mrs_string>();
-  mrs_natural nlabels = nlabelsPtr_->to<mrs_natural>();
+  // mrs_natural nlabels = nlabelsPtr_->to<mrs_natural>();
 //  mrs_natural l;
   mrs_natural prediction = 0;
   mrs_real label;
   
 
 //  mrs_real diff;
-  mrs_real sq_sum=0.0;
+  // mrs_real sq_sum=0.0;
 
   mrs_real thres;
   

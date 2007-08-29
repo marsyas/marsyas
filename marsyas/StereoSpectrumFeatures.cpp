@@ -43,6 +43,7 @@ StereoSpectrumFeatures::clone() const
 void
 StereoSpectrumFeatures::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   
   MRSDIAG("StereoSpectrumFeatures.cpp - StereoSpectrumFeatures:myUpdate");
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
@@ -53,8 +54,9 @@ StereoSpectrumFeatures::myUpdate(MarControlPtr sender)
   ctrl_onObsNames_->setValue("StereoSpectrumFeatures,", NOUPDATE);
   audioBW_ = ctrl_israte_->to<mrs_real>() * ctrl_inObservations_->to<mrs_natural>();
 
-  mrs_real lowBounday = 250.0; // Hz
-  mrs_real highBounday = 2800.0; // Hz
+  // FIXME These variables are defined but unused.
+  // mrs_real lowBounday = 250.0; // Hz
+  // mrs_real highBounday = 2800.0; // Hz
 
   low_ = (mrs_natural)250.0 / ctrl_israte_->to<mrs_real>();
   high_ = (mrs_natural)2800.0 / ctrl_israte_->to<mrs_real>();

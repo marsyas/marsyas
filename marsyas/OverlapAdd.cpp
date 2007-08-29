@@ -43,6 +43,7 @@ OverlapAdd::clone() const
 void
 OverlapAdd::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
 	setctrl("mrs_natural/onSamples", ctrl_inSamples_->to<mrs_natural>()/2);
 	setctrl("mrs_natural/onObservations", ctrl_inObservations_->to<mrs_natural>());
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->to<mrs_real>());    

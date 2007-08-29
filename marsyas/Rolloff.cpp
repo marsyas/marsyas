@@ -56,6 +56,7 @@ Rolloff::addControls()
 void
 Rolloff::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("Rolloff.cpp - Rolloff:myUpdate");
 
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);

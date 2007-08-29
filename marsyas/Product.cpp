@@ -39,6 +39,7 @@ Product::clone() const
 void
 Product::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural,inObservations"));

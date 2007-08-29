@@ -91,7 +91,7 @@ Server::get_connection(int s)
   unsigned int i;               	// size of address
   
   
-  unsigned int t;				// socket of connection
+  int t;				// socket of connection
   
   
   i = sizeof(isa);			// find socket address
@@ -170,6 +170,8 @@ static void
 fireman(int ignore)
 { 
   int wstatus;
+  (void) ignore;
+  (void) fireman; // This function is no longer used, so warning is raised
   while(wait3((int *)&wstatus, WNOHANG, NULL) >= 0);
 }
 
@@ -199,6 +201,7 @@ Server::send_message(string message)
 void
 Server::start(char *machine, int port_num)
 {
+	(void) machine;
   
   if ((socket_ = establish(port_num)) < 0) 
     {

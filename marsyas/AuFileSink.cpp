@@ -98,6 +98,7 @@ AuFileSink::checkExtension(string filename)
 void 
 AuFileSink::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("AudioFileSink::myUpdate");
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
@@ -120,7 +121,7 @@ AuFileSink::putHeader(string filename)
   mrs_natural nChannels = (mrs_natural)getctrl("mrs_natural/inObservations")->to<mrs_natural>();
   
   written_ = 0;
-  char *comment = "MARSYAS 2001, George Tzanetakis.\n";
+  const char *comment = "MARSYAS 2001, George Tzanetakis.\n";
   size_t commentSize = strlen(comment);
   sfp_ = fopen(filename.c_str(), "wb");
   hdr_.pref[0] = '.';

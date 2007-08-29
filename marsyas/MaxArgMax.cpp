@@ -54,6 +54,7 @@ MaxArgMax::addControls()
 void
 MaxArgMax::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
 	mrs_natural k = getctrl("mrs_natural/nMaximums")->to<mrs_natural>();
 
 	setctrl("mrs_natural/onSamples",  2 * k);

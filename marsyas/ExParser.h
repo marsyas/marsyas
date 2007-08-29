@@ -593,6 +593,7 @@ ExNode* tree;
     }//}}}
     ExNode* do_name(bool is_fun, std::string key, ExNode* params)//{{{
     {
+	    (void) is_fun; // FIXME Unused parameter
         if (is_alias(key)) return do_getctrl(aliases_[key]);
         int kind=getKind(key); ExNode* u=NULL;
         if (kind==T_FUN) {

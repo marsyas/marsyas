@@ -27,7 +27,7 @@ using namespace Marsyas;
 TmGetTime::TmGetTime() { name_="System"; init(); last_usecs=readTimeSrc(); }
 TmGetTime::TmGetTime(string name) { name_=name; init(); last_usecs=readTimeSrc(); }
 TmGetTime::TmGetTime(Scheduler* s) { name_="System"; setScheduler(s); init(); last_usecs=readTimeSrc(); }
-TmGetTime::TmGetTime(const TmGetTime& t) { name_=t.name_; scheduler=t.scheduler; }
+TmGetTime::TmGetTime(const TmGetTime& t) : TmTimer(t) {  ; name_=t.name_; scheduler=t.scheduler; }
 TmGetTime::~TmGetTime(){ }
 TmTimer* TmGetTime::clone() { return new TmGetTime(*this); }
 

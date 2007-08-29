@@ -55,6 +55,7 @@ void Summary::addControls()
 
 void Summary::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("Summary.cpp - Summary:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

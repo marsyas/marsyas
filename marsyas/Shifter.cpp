@@ -47,6 +47,7 @@ Shifter::addControls()
 void
 Shifter::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("Shifter.cpp - Shifter:myUpdate");
 
 	shift_ = getctrl("mrs_natural/shift")->to<mrs_natural>();

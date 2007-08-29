@@ -62,6 +62,7 @@ Delay::addControls()
 void
 Delay::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("Delay.cpp - Delay:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

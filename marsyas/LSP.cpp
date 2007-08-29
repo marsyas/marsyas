@@ -56,6 +56,7 @@ LSP::addControls()
 void
 LSP::myUpdate(MarControlPtr sender)
 { 
+	(void) sender;
 	MRSDIAG("LSP.cpp - LSP:myUpdate");
 
 	order_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>() - 2;

@@ -40,6 +40,7 @@ SFM::clone() const
 void
 SFM::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
 	MRSDIAG("SFM.cpp - SFM:myUpdate");
 
 	//MPEG-7 audio standard:

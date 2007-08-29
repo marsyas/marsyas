@@ -65,6 +65,7 @@ Filter::addControls()
 
 void Filter::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
 	MRSDIAG("Filter.cpp - Filter:myUpdate");
 
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

@@ -67,6 +67,7 @@ AudioSource2::addControls()
 void 
 AudioSource2::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
 	MRSDIAG("AudioSource2::localUpdate");
 
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

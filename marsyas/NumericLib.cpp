@@ -342,6 +342,8 @@ NumericLib::initialize(mrs_complex *pred,mrs_complex *xb,mrs_real *epsilon)
 /*            *xb;       best x-value                                  */
 /*mrs_real    *epsilon;  bound for |q2MULLER_|                          */
 {
+	// FIXME Unused parameter;
+	(void) pred;
 	/* initial estimations for x0MULLER_,...,x2MULLER_ and its values */
 	/* ml, 12-21-94 changed                                         */
 
@@ -1082,7 +1084,7 @@ mrs_real NumericLib::pow_di(mrs_real *ap, mrs_natural *bp)
 //    'M' | 'm' --> digits in the mantissa
 //    'R' | 'r' --> approximation method : 1=rounding 0=chopping
 //    'E' | 'e' --> eps
-mrs_real NumericLib::machp(char *cmach)
+mrs_real NumericLib::machp(const char *cmach)
 {
    mrs_real zero, one, two, half, sixth, third, a, b, c, f, d__1, d__2, d__3, d__4, d__5, qtr, eps;
    mrs_real base;
@@ -1863,6 +1865,10 @@ NumericLib::euclideanDistance(const realvec& Vi, const realvec& Vj, const realve
 mrs_real
 NumericLib::mahalanobisDistance(const realvec& Vi, const realvec& Vj, const realvec& covMatrix)
 {
+	// These remove warnings about unused parameters.
+	(void) Vi;
+	(void) Vj;
+	(void) covMatrix;
 	//realvec invCovMatrix;
 	//covMatrix.invert(invCovMatrix);
 
@@ -1873,6 +1879,7 @@ NumericLib::mahalanobisDistance(const realvec& Vi, const realvec& Vj, const real
 mrs_real
 NumericLib::cosineDistance(const realvec& Vi, const realvec& Vj, const realvec& dummy)
 {
+	(void) dummy;
 	//as defined in: 
 	//http://www.mathworks.com/access/helpdesk/help/toolbox/stats/index.html?/access/helpdesk/help/toolbox/stats/pdist.html
 	mrs_real res1 = 0;
@@ -1905,18 +1912,21 @@ NumericLib::cosineDistance(const realvec& Vi, const realvec& Vj, const realvec& 
 mrs_real
 NumericLib::cityblockDistance(const realvec& Vi, const realvec& Vj, const realvec& dummy)
 {
+	(void) Vi; (void) Vj; (void) dummy; // Remove warnings about unused parameters
 	return MINREAL; //NOT IMPLEMENTED YET!!!! [!]
 }
 
 mrs_real
 NumericLib::correlationDistance(const realvec& Vi, const realvec& Vj, const realvec& dummy)
 {
+	(void) Vi; (void) Vj; (void) dummy; // Remove warnings about unused parameters
 	return MINREAL; //NOT IMPLEMENTED YET!!!! [!]
 }
 
 mrs_real
 NumericLib::divergenceShape(const realvec& Ci, const realvec& Cj, const realvec& dummy)
 {
+	(void) dummy;
 	///matrices should be square and equal sized
 	if(Ci.getCols() != Cj.getCols() && Ci.getRows() != Cj.getRows() &&
 		Ci.getCols()!= Ci.getRows())
@@ -1983,6 +1993,7 @@ NumericLib::divergenceShape(const realvec& Ci, const realvec& Cj, const realvec&
 mrs_real
 NumericLib::bhattacharyyaShape(const realvec& Ci, const realvec& Cj, const realvec& dummy)
 {
+	(void) dummy;
 	///matrices should be square and equal sized
 	if(Ci.getCols() != Cj.getCols() && Ci.getRows() != Cj.getRows() &&
 		Ci.getCols()!= Ci.getRows())

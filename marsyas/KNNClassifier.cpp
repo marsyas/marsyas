@@ -61,6 +61,7 @@ KNNClassifier::addControls()
 void
 KNNClassifier::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("KNNClassifier.cpp - KNNClassifier:myUpdate");
   
   nPredictions_ = getctrl("mrs_natural/nPredictions")->to<mrs_natural>();

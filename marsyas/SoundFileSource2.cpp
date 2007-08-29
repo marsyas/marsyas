@@ -110,6 +110,7 @@ SoundFileSource2::addControls()
 void
 SoundFileSource2::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
 	MRSDIAG("SoundFileSource2::localUpdate");
 
 	//if file name changed, open new audio file

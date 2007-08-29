@@ -287,6 +287,8 @@ realvec*
 Transcriber::getNotes(const realvec* pitchList, const realvec* ampList,
                       const realvec* boundaries)
 {
+	// FIXME Unused parameter
+	(void) ampList;
 	mrs_natural numNotes = boundaries->getSize();
 	realvec* notes = new realvec(numNotes-1, 2);
 //	realvec* notes = new realvec(1, 2);

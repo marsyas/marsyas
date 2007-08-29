@@ -66,6 +66,7 @@ Windowing::addcontrols()
 void
 Windowing::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
 	string type = ctrl_type_->to<mrs_string>();
 	
 	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);

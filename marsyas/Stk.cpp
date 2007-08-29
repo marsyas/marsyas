@@ -124,7 +124,7 @@ void Stk :: sleep(unsigned long milliseconds)
 {
 #if defined(MARSYAS_WIN32)
   Sleep((DWORD) milliseconds);
-#elif (defined(MARSYAS_IRIX) || defined(MARSYAS_CYGWIN) || defined(MARSYAS_MACOSX))
+#elif (defined(MARSYAS_IRIX) || defined(MARSYAS_CYGWIN) || defined(MARSYAS_LINUX) || defined(MARSYAS_MACOSX))
   usleep( (unsigned long) (milliseconds * 1000.0) );
 #endif
 }

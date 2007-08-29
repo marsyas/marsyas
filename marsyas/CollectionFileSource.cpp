@@ -107,6 +107,7 @@ CollectionFileSource::getHeader(string filename)
 void
 CollectionFileSource::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
   inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
   

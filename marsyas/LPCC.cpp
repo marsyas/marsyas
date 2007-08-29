@@ -51,6 +51,7 @@ LPCC::addControls()
 void
 LPCC::myUpdate(MarControlPtr sender)
 { 
+	(void) sender;
 	MRSDIAG("LPCC.cpp - LPCC:myUpdate");
 
 	ctrl_onSamples_->setValue(ctrl_inSamples_);

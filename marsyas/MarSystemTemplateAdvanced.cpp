@@ -172,6 +172,7 @@ Marsyas::operator!=(const MyHeader& hdr1, const MyHeader& hdr2)
 MyHeader
 Marsyas::operator+(MyHeader& hdr1, MyHeader& hdr2)
 {
+	(void) hdr1; (void) hdr2;
 	MRSASSERT(0);	// not a valid operation for this example header control
 	return MyHeader();
 }
@@ -179,6 +180,7 @@ Marsyas::operator+(MyHeader& hdr1, MyHeader& hdr2)
 MyHeader
 Marsyas::operator-(MyHeader& hdr1, MyHeader& hdr2)
 {
+	(void) hdr1; (void) hdr2;
 	MRSASSERT(0);	// not a valid operation for this example header control
 	return MyHeader();
 }
@@ -186,6 +188,7 @@ Marsyas::operator-(MyHeader& hdr1, MyHeader& hdr2)
 MyHeader
 Marsyas::operator*(MyHeader& hdr1, MyHeader& hdr2)
 {
+	(void) hdr1; (void) hdr2;
 	MRSASSERT(0);	// not a valid operation for this example header control
 	return MyHeader();
 }
@@ -193,6 +196,7 @@ Marsyas::operator*(MyHeader& hdr1, MyHeader& hdr2)
 MyHeader
 Marsyas::operator/(MyHeader& hdr1, MyHeader& hdr2)
 {
+	(void) hdr1; (void) hdr2;
 	MRSASSERT(0);	// not a valid operation for this example header control
 	return MyHeader();
 }

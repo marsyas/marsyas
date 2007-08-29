@@ -39,7 +39,7 @@ Thread :: ~Thread()
 bool Thread :: start( THREAD_FUNCTION routine, void * ptr )
 {
   bool result = false;
-#if (defined(MARSYAS_CYGWIN) || defined(MARSYAS_CYGWIN) || defined(MARSYAS_MACOSX))
+#if (defined(MARSYAS_CYGWIN) || defined(MARSYAS_LINUX) || defined(MARSYAS_MACOSX))
 
   if ( pthread_create(&thread, NULL, *routine, ptr) == 0 )
     result = true;
@@ -49,6 +49,10 @@ bool Thread :: start( THREAD_FUNCTION routine, void * ptr )
   thread = _beginthreadex(NULL, 0, routine, ptr, 0, &thread_id);
   if ( thread ) result = true;
 
+#else
+  (void) routine;
+  (void) ptr;
+
 #endif
   return result;
 }
@@ -56,8 +60,9 @@ bool Thread :: start( THREAD_FUNCTION routine, void * ptr )
 bool Thread :: wait( long milliseconds )
 {
   bool result = false;
-#if (defined(MARSYAS_CYGWIN) || defined(MARSYAS_CYGWIN) || defined(MARSYAS_MACOSX))
+#if (defined(MARSYAS_CYGWIN) || defined(MARSYAS_LINUX) || defined(MARSYAS_MACOSX))
 
+  (void) milliseconds;
   pthread_cancel(thread);
   pthread_join(thread, NULL);
 

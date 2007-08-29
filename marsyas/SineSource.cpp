@@ -66,6 +66,7 @@ SineSource::myUpdate(MarControlPtr sender)
 void 
 SineSource::myProcess(realvec &in, realvec &out)
 {
+	(void) in;
   //checkFlow(in,out);
 
   //lmartins: if (mute_)

@@ -40,6 +40,7 @@ StandardDeviation::clone() const
 void
 StandardDeviation::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("StandardDeviation.cpp - StandardDeviation:myUpdate");
   
   ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);

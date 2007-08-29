@@ -55,6 +55,7 @@ SpectralSNR::clone() const
 void 
 SpectralSNR::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
   ctrl_onObservations_->setValue((mrs_natural)1, NOUPDATE);
   ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>());
@@ -69,7 +70,7 @@ SpectralSNR::myProcess(realvec& in, realvec& out)
  
   mrs_real orig;
   mrs_real extr;
-  mrs_real ratio;
+  // mrs_real ratio;
   mrs_natural N2 = inObservations_/2;
   mrs_real sum = 0.0;
   cout << "N2 = " << N2 << endl;

@@ -66,6 +66,7 @@ RealvecSink::addControls()
 void
 RealvecSink::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
 	MRSDIAG("RealvecSink.cpp - RealvecSink:myUpdate");
 
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->to<mrs_natural>());

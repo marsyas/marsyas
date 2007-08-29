@@ -65,6 +65,7 @@ RealvecSource::addControls()
 void
 RealvecSource::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("RealvecSource.cpp - RealvecSource:myUpdate");
   
 		const realvec& data = ctrl_data_->to<realvec> ();
@@ -86,6 +87,7 @@ RealvecSource::myUpdate(MarControlPtr sender)
 void 
 RealvecSource::myProcess(realvec& in, realvec& out)
 {
+	(void) in;
 	//checkFlow(in,out);
 	const realvec& data = ctrl_data_->to<realvec> ();
 

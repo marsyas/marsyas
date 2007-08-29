@@ -99,6 +99,7 @@ HWPS::discretize(const realvec& peakSetWarpFreqs, const realvec& peakAmps,
 void
 HWPS::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
 	if(inSamples_ > 1)
 		MRSWARN("HWPS::myUpdate - inSamples > 1 : only first column will be processed!");
 	

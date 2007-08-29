@@ -580,12 +580,16 @@ MarSystem::tick()
 		process(inTick_, (realvec &) ctrl_processedData_->to<mrs_realvec>()); //THIS BREAKS INCAPSULATION!!!! [!]
 	}
 	else
+	{
 		MRSDIAG("MarSystem::tick() : MarSystem is not active! Ignoring tick command.");
+		(void)42;
+	}
 }
 
 void 
 MarSystem::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
 	MRSDIAG("MarSystem.cpp - MarSystem:myUpdate");
 
 	//lmartins:
@@ -762,7 +766,7 @@ MarSystem::getControlLocalPath(string cname) const
 	//a local path should have only one '/' (e.g. "mrs_xxx/nnnn"), 
 	//otherwise it's probably a control from a child MarSystem
 	if(cname.find_first_of('/') == cname.find_last_of('/') && 
-		cname.find_first_of('/') != -1)
+		cname.find_first_of('/') != string::npos)
 	{
 		//this is a relative and local path, so just return it
 		return cname;

@@ -70,6 +70,7 @@ BeatHistoFeatures::clone() const
 void
 BeatHistoFeatures::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("BeatHistoFeatures.cpp - BeatHistoFeatures:myUpdate");
   
 	delete mxr_;//[!]

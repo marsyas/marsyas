@@ -87,6 +87,7 @@ Confidence::addControls()
 void
 Confidence::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("Confidence.cpp - Confidence:myUpdate");
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));

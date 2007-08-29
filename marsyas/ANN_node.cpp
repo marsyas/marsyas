@@ -53,6 +53,7 @@ ANN_node::addControls()
 void
 ANN_node::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("ANN_node.cpp - ANN_node:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

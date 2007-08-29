@@ -107,6 +107,7 @@ SOM::randD(double max)
 void
 SOM::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("SOM.cpp - SOM:myUpdate");
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
@@ -118,7 +119,8 @@ SOM::myUpdate(MarControlPtr sender)
   //defaultUpdate();[!]
 	inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
   
-  mrs_natural nlabels = getctrl("mrs_natural/nLabels")->to<mrs_natural>();
+	// FIXME This variable is defined but (possibly) unused.
+  // mrs_natural nlabels = getctrl("mrs_natural/nLabels")->to<mrs_natural>();
 
   grid_width_ = getctrl("mrs_natural/grid_width")->to<mrs_natural>();
   grid_height_ = getctrl("mrs_natural/grid_height")->to<mrs_natural>();

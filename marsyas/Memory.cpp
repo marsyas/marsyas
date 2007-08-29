@@ -57,6 +57,7 @@ Memory::addControls()
 void
 Memory::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
 	MRSDIAG("Memory.cpp - Memory:myUpdate");
 
 	mrs_natural memSize = ctrl_memSize_->to<mrs_natural>();

@@ -46,6 +46,7 @@ Daub4::addControls()
 void
 Daub4::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("Daub4.cpp - Daub4:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

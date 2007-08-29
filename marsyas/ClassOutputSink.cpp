@@ -84,6 +84,7 @@ ClassOutputSink::putHeader()
 void
 ClassOutputSink::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("ClassOutputSink.cpp - ClassOutputSink:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

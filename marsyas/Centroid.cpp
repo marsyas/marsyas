@@ -43,6 +43,7 @@ Centroid::clone() const
 void
 Centroid::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
 
     MRSDIAG("Centroid.cpp - Centroid:myUpdate");
     ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);

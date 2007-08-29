@@ -43,6 +43,7 @@ HarmonicEnhancer::clone() const
 void
 HarmonicEnhancer::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("HarmonicEnhancer.cpp - HarmonicEnhancer:myUpdate");
    
   setctrl("mrs_natural/onSamples", (mrs_natural)1);

@@ -152,16 +152,17 @@ OggFileSource::getHeader(string filename)
 void
 OggFileSource::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("OggFileSource::myUpdate");
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
+#ifdef MARSYAS_OGG
   mrs_natural pos = getctrl("mrs_natural/pos")->to<mrs_natural>();
   mrs_natural size = getctrl("mrs_natural/size")->to<mrs_natural>();
 
-#ifdef MARSYAS_OGG
   // if the user has seeked somewhere in the file
   if ( pos < size && pos != ov_pcm_tell(&vf))
   {
@@ -178,6 +179,7 @@ OggFileSource::myUpdate(MarControlPtr sender)
  */
 void OggFileSource::myProcess(realvec& in, realvec& out)
 {
+	(void) in;
   //checkFlow(in,out);
 
   if (notEmpty_)

@@ -55,6 +55,7 @@ SimilarityMatrix::addControls()
 void
 SimilarityMatrix::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
 	// The output similarity matrix is a squared matrix with
 	// dimension equal to the number of elements (i.e. samples)
 	// in the input

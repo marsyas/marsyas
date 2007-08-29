@@ -60,6 +60,7 @@ NoiseGate::addControls()
 void
 NoiseGate::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("NoiseGate.cpp - NoiseGate:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
@@ -84,7 +85,8 @@ NoiseGate::myProcess(realvec& in, realvec& out)
   mrs_real rolloff = getctrl("mrs_real/rolloff")->to<mrs_real>();
   mrs_real at = getctrl("mrs_real/at")->to<mrs_real>();
   mrs_real rt = getctrl("mrs_real/rt")->to<mrs_real>();
-  mrs_real slope = getctrl("mrs_real/slope")->to<mrs_real>();
+  // FIXME This variable is defined but unused.
+  // mrs_real slope = getctrl("mrs_real/slope")->to<mrs_real>();
   
     // calculate rolloff, at and rt time
   at = 1 - exp(-2.2/(22050*at));

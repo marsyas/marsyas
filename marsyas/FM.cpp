@@ -76,6 +76,7 @@ FM::addControls()
 
 void FM::myUpdate(MarControlPtr sender) 
 {
+	(void) sender;
   MRSDIAG("FM.cpp - FM:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
@@ -93,6 +94,7 @@ void FM::myUpdate(MarControlPtr sender)
 
 void FM::myProcess( realvec& in, realvec& out ) 
 {
+	(void) in;
   //checkFlow(in,out);
   
 

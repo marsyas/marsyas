@@ -51,6 +51,7 @@ Panorama::addControls()
 void 
 Panorama::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/onSamples"));
   
   mrs_natural inObservations = getctrl("mrs_natural/inObservations")->to<mrs_natural>();

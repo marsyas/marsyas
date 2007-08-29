@@ -45,6 +45,7 @@ Kurtosis::clone() const
 void
 Kurtosis::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("Kurtosis.cpp - Kurtosis:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

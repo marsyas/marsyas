@@ -51,6 +51,7 @@ DownSampler::addControls()
 void
 DownSampler::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("DownSampler.cpp - DownSampler:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples")->to<mrs_natural>() / getctrl("mrs_natural/factor")->to<mrs_natural>());

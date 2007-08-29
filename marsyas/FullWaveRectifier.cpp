@@ -43,6 +43,7 @@ FullWaveRectifier::clone() const
 void
 FullWaveRectifier::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("FullWaveRectifier.cpp - FullWaveRectifier:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

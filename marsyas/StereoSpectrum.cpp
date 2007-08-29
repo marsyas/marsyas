@@ -55,6 +55,7 @@ StereoSpectrum::clone() const
 void 
 StereoSpectrum::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
   ctrl_onObservations_->setValue((ctrl_inObservations_->to<mrs_natural>() /4), NOUPDATE);
   ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>() / ctrl_inSamples_->to<mrs_natural>());

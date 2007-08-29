@@ -146,7 +146,9 @@ long Messager :: nextMessage()
 bool Messager :: socketMessage()
 {
 	
-  register fd_set rmask;
+	// FIXME Should rmask have storage-type register? It's address is passed to select.
+	// register fd_set rmask; // Old Line
+  fd_set rmask; // New Line
   static struct timeval timeout = {0, 0};
   rmask = mask;
   int mys = select(maxfd+1, &rmask, (fd_set *)0, (fd_set *)0, &timeout);

@@ -54,6 +54,7 @@ MFCC::clone() const
 void
 MFCC::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   
   MRSDIAG("MFCC.cpp - MFCC:localUpdate");
   

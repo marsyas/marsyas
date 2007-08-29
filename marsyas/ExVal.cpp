@@ -61,6 +61,7 @@ void ExVal::set(mrs_natural len, ExNode** xs, std::string t)
 }
 void ExVal::set(mrs_natural len, std::string t) // what is this ??
 {
+	(void) len; // FIXME Unused parameter
     clear(); type_=t; natural_=0; list_=NULL;
 }
 void ExVal::set(const ExVal& v)

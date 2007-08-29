@@ -210,6 +210,7 @@ WavFileSource2::getHeader()
 void
 WavFileSource2::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
 	//if not a new audiofile, no need to read header again
 	string filename = getctrl("mrs_string/filename")->to<mrs_string>();
 	if(filename_ != filename)
@@ -338,6 +339,9 @@ WavFileSource2::getLinear16(realvec& slice)
 realvec&
 WavFileSource2::getAudioRegion(mrs_natural startSample, mrs_natural endSample)
 {
+	(void) startSample; // FIXME Unused parameters
+	(void) endSample;
+
 	//fill audioRegion_ with corresponding audio data!
 	// ...
 	// ...
@@ -348,6 +352,7 @@ WavFileSource2::getAudioRegion(mrs_natural startSample, mrs_natural endSample)
 void
 WavFileSource2::myProcess(realvec& in, realvec& out)
 {
+	(void) in; 
 	//in case of problems opening the .wav file,
 	//or no audiodata available to read, just send silence
 	if(!getctrl("mrs_bool/notEmpty")->to<mrs_bool>())

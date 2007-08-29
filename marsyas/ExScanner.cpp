@@ -311,6 +311,7 @@ ExScanner::ExScanner(FILE* s) {
 }
 
 ExScanner::ExScanner(char* s, int i) {
+	(void) i; // FIXME This parameter is unused
 	buffer = new Buffer(s);
 	Init();
 }
@@ -363,18 +364,18 @@ void ExScanner::Init() {
 	start.set(93, 50);
 	start.set(58, 51);
 		start.set(Buffer::EoF, -1);
-	keywords.set("/", 26);
-	keywords.set(".", 47);
-	keywords.set("Stream", 51);
-	keywords.set("true", 52);
-	keywords.set("false", 53);
-	keywords.set("map", 54);
-	keywords.set("iter", 55);
-	keywords.set("for", 56);
-	keywords.set("rfor", 57);
-	keywords.set("in", 58);
-	keywords.set("use", 59);
-	keywords.set("load", 60);
+	keywords.set((char *)"/", 26);
+	keywords.set((char *)".", 47);
+	keywords.set((char *)"Stream", 51);
+	keywords.set((char *)"true", 52);
+	keywords.set((char *)"false", 53);
+	keywords.set((char *)"map", 54);
+	keywords.set((char *)"iter", 55);
+	keywords.set((char *)"for", 56);
+	keywords.set((char *)"rfor", 57);
+	keywords.set((char *)"in", 58);
+	keywords.set((char *)"use", 59);
+	keywords.set((char *)"load", 60);
 
 
 	tvalLength = 128;
@@ -429,6 +430,7 @@ void ExScanner::AddCh() {
 
 bool ExScanner::Comment0() {
 	int level = 1, pos0 = pos, line0 = line, col0 = col;
+	(void) pos0; (void) col0; // FIXME Unused variables
 	NextCh();
 		for(;;) {
 			if (ch == 10) {

@@ -149,7 +149,7 @@ void RawFileSource::readData(unsigned long index)//[!]
     return;
   }
   
-  if (int x = fread(buffer_, length, 2, sfp_) != 2 ) {
+  if (fread(buffer_, length, 2, sfp_) != 2 ) {
     MRSWARN("ERROR(fread): could not read raw file data");
     return;
   }
@@ -189,6 +189,7 @@ void RawFileSource::readData(unsigned long index)//[!]
 
 void RawFileSource::myUpdate(MarControlPtr sender) 
 {
+	(void) sender;
  
   nChannels_ = getctrl("mrs_natural/nChannels")->to<mrs_natural>();  
   inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
@@ -208,6 +209,7 @@ void RawFileSource::myUpdate(MarControlPtr sender)
 
 void RawFileSource::myProcess(realvec& in,realvec &out)
 {
+	(void) in;
   //checkFlow(in,out);
 
   mrs_real alpha;

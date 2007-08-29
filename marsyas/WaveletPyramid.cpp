@@ -59,6 +59,7 @@ WaveletPyramid::addControls()
 void
 WaveletPyramid::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
  
   if (!waveletStep_) 
     {

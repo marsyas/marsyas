@@ -68,6 +68,7 @@ GaussianClassifier::addControls()
 void
 GaussianClassifier::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("GaussianClassifier.cpp - GaussianClassifier:myUpdate");
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

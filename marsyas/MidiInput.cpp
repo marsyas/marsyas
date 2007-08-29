@@ -115,6 +115,8 @@ void MidiInput::myUpdate(MarControlPtr sender)
 
 void MidiInput::mycallback(double deltatime, std::vector< unsigned char > * message, void *userData) 
 {
+	// FIXME Unused parameter
+	(void) deltatime;
   int nBytes = 0;
   nBytes = message->size();
   

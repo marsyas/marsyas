@@ -53,6 +53,7 @@ SVMClassifier::addControls()
 void
 SVMClassifier::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
 	MRSDIAG("SVMClassifier.cpp - SVMClassifier:myUpdate");
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 	setctrl("mrs_natural/onObservations", 2);
@@ -152,8 +153,10 @@ SVMClassifier::myProcess(realvec& in, realvec& out)
 
   if (mode_ == "predict") 
     {
-      mrs_natural nAttributes = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
-      struct svm_node* xv = new svm_node[nAttributes];
+      // FIXME These variables are unused (and one is allocating memory!)
+      // mrs_natural nAttributes = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+      // struct svm_node* xv = new svm_node[nAttributes];
+      (void) 42; // avoid warnings
     }
 
 

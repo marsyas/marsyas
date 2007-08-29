@@ -116,6 +116,7 @@ PeakViewSink::done()
 void
 PeakViewSink::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
 	MRSDIAG("PeakViewSink.cpp - PeakViewSink:myUpdate");
 
 	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);

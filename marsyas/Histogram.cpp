@@ -54,6 +54,7 @@ Histogram::addControls()
 void
 Histogram::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("Histogram.cpp - Histogram:myUpdate");
 
   startBin_ = getctrl("mrs_natural/startBin")->to<mrs_natural>();

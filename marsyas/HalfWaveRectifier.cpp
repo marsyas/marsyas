@@ -41,6 +41,7 @@ HalfWaveRectifier::clone() const
 void 
 HalfWaveRectifier::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));

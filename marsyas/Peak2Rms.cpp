@@ -42,6 +42,7 @@ Peak2Rms::clone() const
 void 
 Peak2Rms::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
     setctrl("mrs_natural/onObservations",1);
     setctrl("mrs_natural/onSamples",1);
     setctrl("mrs_real/osRate", israte_ / inSamples_);

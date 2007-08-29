@@ -86,6 +86,7 @@ AbsSoundFileSource2::getHeader()
 realvec&
 AbsSoundFileSource2::getAudioRegion(mrs_natural startSample, mrs_natural endSample)
 {
+	(void) startSample; (void) endSample;
 	//return empty realvec
 	return audioRegion_;
 }
@@ -93,6 +94,7 @@ AbsSoundFileSource2::getAudioRegion(mrs_natural startSample, mrs_natural endSamp
 void
 AbsSoundFileSource2::myProcess(realvec& in,realvec &out)
 {
+	(void) in;
 	//send silence to the output => used to create a "DummyFileSource"
 	out.setval(0.0);
 }

@@ -59,6 +59,7 @@ std::string EvExpr::repeat_interval()
 
 void EvExpr::updctrl(std::string cname, TmControlValue value)
 {
+	(void) cname; (void) value; // FIXME These values are unused
     MRSWARN("EvExpr:updctrl(string,TmControlValue)  updctrl not supported");
 }
 

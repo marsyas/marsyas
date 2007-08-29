@@ -71,6 +71,7 @@ ShiftInput::addControls()
 void
 ShiftInput::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   reset_ = getctrl("mrs_bool/reset")->to<mrs_bool>();  
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/WindowSize"));

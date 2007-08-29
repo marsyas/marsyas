@@ -274,7 +274,6 @@ AudioSink::myProcess(realvec& in, realvec& out)
 	      rsize_tmp -= reservoirSize_;
 	    }
 	  const int t2 = 2 * t;
-	  const int t4 = 4 * t;
 	  const int rt = start_ + t;
 	  t++;
 	  
@@ -293,6 +292,7 @@ AudioSink::myProcess(realvec& in, realvec& out)
 	  
 	  
 #else
+	  const int t4 = 4 * t;
 	  if (srate_ == 22050)
 	    {
 	      if (inObservations_ == 1) 

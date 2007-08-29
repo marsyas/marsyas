@@ -233,7 +233,7 @@ public:
 		return updControl(control, newcontrol, upd);
 	}
 	bool updctrl(MarControlPtr control, MarControlPtr newcontrol, bool upd = true) {return updControl(control, newcontrol, upd);}
-  bool updctrl(char *cname, MarControlPtr newcontrol, bool upd = true) 
+  bool updctrl(const char *cname, MarControlPtr newcontrol, bool upd = true) 
   {
     MarControlPtr control = getControl(cname);
 		if(control.isInvalid())
@@ -256,7 +256,7 @@ public:
 
 	// set controls (does not call update())
 	bool setControl(std::string cname, MarControlPtr newcontrol) {return updctrl(cname, newcontrol, NOUPDATE);}
-	bool setctrl(char *cname, MarControlPtr newcontrol) {return updctrl(std::string(cname), newcontrol, NOUPDATE);}
+	bool setctrl(const char *cname, MarControlPtr newcontrol) {return updctrl(std::string(cname), newcontrol, NOUPDATE);}
 	bool setctrl(std::string cname, MarControlPtr newcontrol) {return updctrl(cname, newcontrol, NOUPDATE);}
 	bool setctrl(MarControlPtr control, MarControlPtr newcontrol) {return updctrl(control, newcontrol, NOUPDATE);}
 
@@ -283,7 +283,7 @@ public:
 	// set control state
 	void setControlState(std::string cname, bool state);
 	void setctrlState(std::string cname, bool state) {setControlState(cname, state);}
-	void setctrlState(char * cname, bool state){setControlState(std::string(cname), state);}
+	void setctrlState(const char * cname, bool state){setControlState(std::string(cname), state);}
 	void setctrlState(MarControlPtr control, bool state) {control->setState(state);}
 
 	// get control state

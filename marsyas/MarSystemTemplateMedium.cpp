@@ -131,7 +131,8 @@ MarSystemTemplateMedium::myUpdate(MarControlPtr sender)
 void 
 MarSystemTemplateMedium::myProcess(realvec& in, realvec& out)
 {
-	static mrs_natural rep = 1;
+	// FIXME Variable (rep) appears to be unused.
+	// static mrs_natural rep = 1;
 	static realvec vec;
 
 	const mrs_real& gainValue = ctrl_gain_EXAMPLE_->to<mrs_real>();

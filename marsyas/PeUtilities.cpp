@@ -536,6 +536,9 @@ void
 Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname, string ressfname, std::string panningInfo, mrs_natural nbChannels, mrs_natural Nw, 
 													 mrs_natural D, mrs_natural S, mrs_natural accSize, bool microphone, mrs_natural synType, mrs_natural bopt, mrs_natural delay, bool residual)
 {
+	// FIXME Unused parameters
+	(void) nbChannels;
+	(void) S;
 	pvseries->updctrl("PeSynthetize/synthNet/mrs_natural/nTimes", accSize);
 
 	if (synType < 3)

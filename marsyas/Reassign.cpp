@@ -65,7 +65,7 @@ Reassign::myProcess(realvec& in, realvec& out)
   
 
   
-  mrs_real pmax = DBL_MIN;
+  // mrs_real pmax = DBL_MIN;
 //  mrs_natural t1;
 //  mrs_natural t2;
 //  mrs_real s1;

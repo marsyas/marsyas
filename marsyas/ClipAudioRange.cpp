@@ -42,6 +42,7 @@ ClipAudioRange::clone() const
 void
 ClipAudioRange::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("ClipAudioRange.cpp - ClipAudioRange:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

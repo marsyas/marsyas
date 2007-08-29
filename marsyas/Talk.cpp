@@ -50,6 +50,12 @@ struct ltstr
 void
 Talk::cmd_colorgram(string collection, string system, unsigned int start, unsigned int end, unsigned int winSize)
 {
+	// FIXME All the code to this function is commented out, so none of the parameters are used.
+	(void) collection;
+	(void) system;
+	(void) start;
+	(void) end;
+	(void) winSize;
 
   // fmatrix projectMatrix;
 //   fvec statVector;
@@ -176,6 +182,8 @@ Talk::cmd_colorgram(string collection, string system, unsigned int start, unsign
 void
 Talk::cmd_fullfft(unsigned int winSize)
 {
+	// FIXME The code to this function is gone, winSize is unused.
+	(void) winSize;
   
 //   src_->initWindow(winSize, winSize, 0, 0);
 //   unsigned int iterations  = src_->iterations();
@@ -198,6 +206,9 @@ Talk::cmd_fullfft(unsigned int winSize)
 void
 Talk::cmd_fft(unsigned int start, unsigned int winSize)
 {
+	// FIXME Missing code (again).
+	(void) start;
+	(void) winSize;
 //   fvec win(winSize);
 //   fvec fftmag(winSize/2);
 //   src_->initWindow(winSize, winSize, 0, 0);
@@ -299,6 +310,10 @@ Talk::cmd_load(string fname, mrs_natural lineSize)
 void 
 Talk::cmd_extract(string systemName, string fileName, TimeLine tline)
 {
+	// FIXME See above.
+	(void) systemName;
+	(void) fileName;
+	(void) tline;
 //   cerr << "cmd_extract::systemName " << systemName << endl;
 //   cerr << "cmd_extract::fileName   " << fileName << endl;
 
@@ -358,6 +373,13 @@ Talk::cmd_extract(string systemName, string fileName, TimeLine tline)
 void 
 Talk::cmd_segment(string systemName, unsigned int memSize, unsigned int numPeaks, unsigned int peakSpacing, unsigned int start, unsigned int end, unsigned int winSize)
 {
+	// FIXME Unused parameters
+	(void) memSize;
+	(void) numPeaks;
+	(void) peakSpacing;
+	(void) start;
+	(void) end;
+	(void) winSize;
 
   TimeLine tline;
   
@@ -461,6 +483,13 @@ void
 Talk::cmd_merge(string systemName, unsigned int pstart, unsigned int pend, 
 		unsigned int start, unsigned int end, unsigned int winSize)
 {
+	// FIXME See above (missing function body)
+	(void) systemName;
+	(void) pstart;
+	(void) pend;
+	(void) start;
+	(void) end;
+	(void) winSize;
 
 //   string extractorstr = systemName;
 //   if (winSize != DEFAULT_WIN_SIZE)
@@ -581,6 +610,13 @@ Talk::cmd_merge(string systemName, unsigned int pstart, unsigned int pend,
 void 
 Talk::cmd_classify(string systemName, string classifierName, unsigned int start, unsigned int end, unsigned int winSize)
 {
+	// FIXME See above.
+	(void) systemName;
+	(void) classifierName;
+	(void) start;
+	(void) end;
+	(void) winSize;
+
 //   Gaussian classifier;
 //   classifier.read(classifierName);
 

@@ -61,6 +61,7 @@ Annotator::addControls()
 void
 Annotator::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("Annotator.cpp - Annotator:myUpdate");
 
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);

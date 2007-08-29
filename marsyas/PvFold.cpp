@@ -62,6 +62,7 @@ PvFold::addControls()
 void
 PvFold::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/FFTSize"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  

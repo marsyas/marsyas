@@ -134,6 +134,7 @@ SoundFileSink::checkType()
 void 
 SoundFileSink::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   
   if (filename_ != getctrl("mrs_string/filename")->to<mrs_string>())
     {
@@ -192,6 +193,8 @@ SoundFileSink::myProcess(realvec& in, realvec& out)
 void 
 SoundFileSink::putFloat(mrs_natural c, realvec& win)
 {
+	(void) c;
+	(void) win;
   MRSWARN("SoundFileSink::putFloat not implemented");
 }
 

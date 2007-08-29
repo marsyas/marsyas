@@ -50,6 +50,7 @@ Power::addControls()
 void
 Power::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("Power.cpp - Power:myUpdate");
   
  setctrl("mrs_natural/onSamples", 1);

@@ -55,6 +55,7 @@ Sum::clone() const
 void
 Sum::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("Sum.cpp - Sum:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

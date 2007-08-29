@@ -74,6 +74,7 @@ AutoCorrelation::clone() const
 void
 AutoCorrelation::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
 	delete myfft_; //[!]
 	myfft_ = new fft();//[!]
 

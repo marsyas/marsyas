@@ -106,6 +106,7 @@ PeakConvert::addControls()
 void
 PeakConvert::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
 	//if picking is disabled (==false), the nr of sinusoids should be set
 	//to the size of half of the FFTs (i.e. the 1/4 of inObservations) [!]
 	if(!pick_ && ctrl_frameMaxNumPeaks_->to<mrs_natural>() == 0)

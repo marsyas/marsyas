@@ -56,6 +56,7 @@ CompExp::addControls()
 void
 CompExp::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("CompExp.cpp - CompExp:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

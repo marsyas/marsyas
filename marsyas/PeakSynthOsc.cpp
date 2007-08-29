@@ -55,6 +55,7 @@ PeakSynthOsc::addControls()
 void
 PeakSynthOsc::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/synSize"));
 	setctrl("mrs_natural/onObservations", (mrs_natural)1);
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->to<mrs_real>()); //HACK!! [!] - see PeakConvert::myUpdate()

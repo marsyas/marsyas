@@ -84,6 +84,7 @@ PeakViewSource::defaultConfig()
 void
 PeakViewSource::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
 	//check for a new filename (this is also true for the first call to myUpdate())
 	if(ctrl_filename_->to<mrs_string>() != filename_)
 	{
@@ -136,6 +137,7 @@ PeakViewSource::myUpdate(MarControlPtr sender)
 void 
 PeakViewSource::myProcess(realvec& in, realvec& out)
 {
+	(void) in;
 	//at each tick, output peaks for corresponding frame
 	if(ctrl_notEmpty_->isTrue())
 	{

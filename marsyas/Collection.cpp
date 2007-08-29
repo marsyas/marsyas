@@ -131,7 +131,7 @@ Collection::getNumLabels()
 mrs_string 
 Collection::labelName(mrs_natural i) 
 {
-  if (i < labelNames_.size())
+  if ((unsigned)i < labelNames_.size())
     return labelNames_[i];
       
   return EMPTYSTRING;
@@ -194,7 +194,7 @@ Collection::toLongString()
 mrs_natural 
 Collection::labelNum(mrs_string label) 
 {
-  int i;
+  unsigned int i;
   for (i=0; i < labelNames_.size(); i++) 
     {
       if (labelNames_[i] == label) 

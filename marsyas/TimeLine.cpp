@@ -183,7 +183,7 @@ TimeLine::numRegions()
 unsigned int
 TimeLine::numClasses()
 {
-	vector<int> classes;
+	vector<unsigned int> classes;
 	bool found = false;
 	
 	for(mrs_natural i = 0; i < numRegions_; ++i)

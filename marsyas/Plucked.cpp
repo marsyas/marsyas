@@ -127,6 +127,7 @@ Plucked::myUpdate(MarControlPtr sender)
 void 
 Plucked::myProcess(realvec &in, realvec &out)
 {
+	(void)in;
   
   if (noteon_ > 0)
     {

@@ -61,6 +61,7 @@ PeakSynthOscBank::addControls()
 void
 PeakSynthOscBank::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/Interpolation"));
 	setctrl("mrs_natural/onObservations", (mrs_natural)1);
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
@@ -123,7 +124,8 @@ PeakSynthOscBank::myProcess(realvec& in, realvec& out)
 	nextfreq_.setval(0);
 	nextindex_.setval(0);
 
-	bool flag = false;
+	// FIXME This line defines a (possibly) unused variable
+	// bool flag = false;
 
 	if(nbH_)
 	{

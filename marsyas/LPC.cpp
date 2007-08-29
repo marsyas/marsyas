@@ -60,6 +60,7 @@ LPC::addControls()
 void
 LPC::myUpdate(MarControlPtr sender)
 { 
+	(void) sender;
 	MRSDIAG("LPC.cpp - LPC:myUpdate");
 
 	order_ = getctrl("mrs_natural/order")->to<mrs_natural>();
@@ -381,7 +382,8 @@ LPC::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural i;
 	mrs_real LevinsonError = 0.0;
-	mrs_real PredictionError = 0.0;
+	// FIXME This variable is defined but (possibly) never used.
+	// mrs_real PredictionError = 0.0;
 	mrs_real pitch = 0.0, lag = 0.0;
 
 	//MATLAB engine stuff - for testing and validation purposes only!

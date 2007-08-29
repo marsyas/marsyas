@@ -173,7 +173,7 @@ void Socket :: setBlocking( int socket, bool enable )
 {
   if ( !isValid( socket ) ) return;
 
-#if (defined(MARSYAS_IRIX) || defined(MARSYAS_CYGWIN) || defined(MARSYAS_MACOSX))
+#if (defined(MARSYAS_IRIX) || defined(MARSYAS_CYGWIN) || defined(MARSYAS_LINUX) || defined(MARSYAS_MACOSX))
 
   int tmp = ::fcntl(socket, F_GETFL, 0);
   if ( tmp >= 0 )

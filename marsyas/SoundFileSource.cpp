@@ -105,6 +105,7 @@ SoundFileSource::addControls()
 void
 SoundFileSource::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("SoundFileSource::myUpdate");
   
   ctrl_onObsNames_->setValue("audio,", NOUPDATE);

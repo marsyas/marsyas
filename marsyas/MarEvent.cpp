@@ -35,6 +35,7 @@ MarEvent::~MarEvent()
 void
 MarEvent::updctrl(std::string cname, TmControlValue value)
 {
+	(void) cname; (void) value; // FIXME These values are unused
     MRSWARN("MarEvent::updctrl(string,TmControlValue)  not supported by this event");
 }
 bool

@@ -93,6 +93,8 @@ void TmTimer::tick()
 void
 TmTimer::updtimer(std::string cname, TmControlValue value)
 {
+	(void)cname; // FIXME These values are unused
+	(void)value;
     MRSWARN("TmTimer::updtimer(string,TmControlValue)  updtimer not supported for this timer");
 }
 

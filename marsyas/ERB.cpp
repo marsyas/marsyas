@@ -62,6 +62,7 @@ ERB::addControls()
 void 
 ERB::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("ERB.cpp - ERB:myUpdate");
 
   //FilterBank creation

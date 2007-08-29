@@ -51,6 +51,7 @@ ZeroRClassifier::addControls()
 void
 ZeroRClassifier::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
 	MRSDIAG("ZeroRClassifier.cpp - ZeroRClassifier:myUpdate");
 
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

@@ -40,6 +40,7 @@ ZeroCrossings::clone() const
 void
 ZeroCrossings::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("ZeroCrossings.cpp - ZeroCrossings:myUpdate");
   ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
   ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);

@@ -52,6 +52,7 @@ PeakClusterSelect::addControls()
 void
 PeakClusterSelect::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("PeakClusterSelect.cpp - PeakClusterSelect:myUpdate");
   
 	ctrl_onObservations_->setValue(1, NOUPDATE);

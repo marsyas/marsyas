@@ -57,6 +57,7 @@ PvOscBank::addControls()
 void
 PvOscBank::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/Interpolation"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
@@ -109,7 +110,8 @@ PvOscBank::myProcess(realvec& in, realvec& out)
   Pinc_ = P_ * L_ / R_;
   
 
-  bool flag = false;
+  // FIXME This variable is defined but (possibly) unused.
+  // bool flag = false;
   
   for (t=0; t < NP_; t++)
     {

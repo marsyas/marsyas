@@ -93,7 +93,7 @@ public:
 	inline MarControlPtr(float ne);
 	inline MarControlPtr(mrs_natural ne);
 	inline MarControlPtr(mrs_real re);
-	inline MarControlPtr(char *c);
+	inline MarControlPtr(const char *c);
 	inline MarControlPtr(std::string st);
 	inline MarControlPtr(bool be);
 	inline MarControlPtr(realvec ve);
@@ -298,7 +298,7 @@ inline MarControlPtr::MarControlPtr(mrs_real re)
 	TRACE_ADDCONTROL;
 }
 
-inline MarControlPtr::MarControlPtr(char *c)
+inline MarControlPtr::MarControlPtr(const char *c)
 {
 	control_ = new MarControl(std::string(c));
 	control_->ref();

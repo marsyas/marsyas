@@ -85,6 +85,7 @@ ViconFileSource::getHeader(string filename)
 void
 ViconFileSource::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
   israte_ = getctrl("mrs_real/israte")->to<mrs_real>();
 
@@ -106,6 +107,7 @@ ViconFileSource::myUpdate(MarControlPtr sender)
 void
 ViconFileSource::myProcess(realvec& in, realvec& out)
 {
+	(void) in;
   //checkFlow(in,out);
 
   

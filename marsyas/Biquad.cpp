@@ -57,6 +57,7 @@ void Biquad::addControls()
 
 void Biquad::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
     /* 
         Formula utilized is from "Audio-EQ-Cookbook" by Robert Bristow-Johnson
         http://www.musicdsp.org/files/Audio-EQ-Cookbook.txt

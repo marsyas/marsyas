@@ -62,6 +62,7 @@ WaveletBands::addControls()
 void
 WaveletBands::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   
   MRSDIAG("WaveletBands.cpp - WaveletBands:myUpdate");
   mrs_natural nBands = getctrl("mrs_natural/nBands")->to<mrs_natural>();

@@ -371,6 +371,7 @@ MP3FileSource::getHeader(string filename)
 void 
 MP3FileSource::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("MP3FileSource::myUpdate");
   
   
@@ -578,6 +579,7 @@ MP3FileSource::getLinear16(realvec& slice)
  */
 void MP3FileSource::myProcess(realvec& in, realvec& out)
 {
+	(void) in;
   //checkFlow(in,out);
 
   if (notEmpty_) 

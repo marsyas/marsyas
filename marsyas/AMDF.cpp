@@ -42,6 +42,7 @@ AMDF::clone() const
 void
 AMDF::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("AMDF.cpp - AMDF:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
@@ -56,7 +57,8 @@ AMDF::myProcess(realvec& in, realvec& out)
 {
   //checkFlow(in,out);
   
-  mrs_real gain = getctrl("mrs_real/gain")->to<mrs_real>();
+	// FIXME This value is defined but (possibly) not used
+  // mrs_real gain = getctrl("mrs_real/gain")->to<mrs_real>();
   mrs_natural i,k;
   mrs_real temp;
   

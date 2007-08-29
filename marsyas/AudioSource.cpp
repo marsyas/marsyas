@@ -77,6 +77,7 @@ AudioSource::addControls()
 void 
 AudioSource::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("AudioSource::myUpdate");
 
 
@@ -189,6 +190,7 @@ AudioSource::localActivate(bool state)
 void 
 AudioSource::myProcess(realvec& in, realvec& out)
 {
+	(void) in;
 
   //check if RtAudio is initialized
   if (!isInitialized_)

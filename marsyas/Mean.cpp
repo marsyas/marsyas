@@ -42,6 +42,7 @@ Mean::clone() const
 void
 Mean::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
 	MRSDIAG("Mean.cpp - Mean:myUpdate");
 
 	ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);

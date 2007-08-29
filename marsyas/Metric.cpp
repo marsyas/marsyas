@@ -56,6 +56,7 @@ Metric::addControls()
 void
 Metric::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
 	if(inSamples_ > 1)
 		MRSWARN("Metric::myUpdate - inSamples > 1 : only first column will be processed!");
 		

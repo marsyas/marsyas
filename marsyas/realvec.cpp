@@ -951,24 +951,23 @@ operator>>(istream& is, realvec& vec)
 realvec
 realvec::operator()(std::string r, std::string c)
 {
-	mrs_natural r_l = r.length();
-	mrs_natural c_l = c.length();
+	unsigned int r_l = r.length();
+	unsigned int c_l = c.length();
 
-	mrs_natural r_c = r.find(":");
-	mrs_natural c_c = c.find(":");
+	unsigned int r_c = r.find(":");
+	unsigned int c_c = c.find(":");
 
-	mrs_natural r_a;
-	mrs_natural r_b;
+	unsigned int r_a;
+	unsigned int r_b;
 
-	mrs_natural c_a;
-	mrs_natural c_b;
+	unsigned int c_a;
+	unsigned int c_b;
 
 	char *endptr;
 
 	MRSASSERT( (r_c == 0 && r_l == 1) || (r_c == string::npos) || (r_c>0 && r_l-r_c>1) );
 	MRSASSERT( (c_c == 0 && c_l == 1) || (c_c == string::npos) || (c_c>0 && c_l-c_c>1) );
 
-/// \bug Comparison between signed and unsigned integer expressions
 	if( r_c != string::npos && r_l > 1 )
 	{
 		r_a = (mrs_natural)strtol( r.substr(0,r_c).c_str() , &endptr , 10  );
@@ -1030,15 +1029,14 @@ realvec::operator()(std::string r, std::string c)
 realvec
 realvec::operator()(std::string c)
 {
-	mrs_natural c_l = c.length();
-	mrs_natural c_c = c.find(":");
-	mrs_natural c_a;
-	mrs_natural c_b;
+	unsigned int c_l = c.length();
+	unsigned int c_c = c.find(":");
+	unsigned int c_a;
+	unsigned int c_b;
 	char *endptr;
 
 	MRSASSERT( (c_c == 0 && c_l == 1) || (c_c == string::npos) || (c_c>0 && c_l-c_c>1) );
 
-/// \bug Comparison between signed and unsigned integer expressions
 	if( c_c != string::npos && c_l > 1 )
 	{
 		c_a = (mrs_natural)strtol( c.substr(0,c_c).c_str() , &endptr , 10  );

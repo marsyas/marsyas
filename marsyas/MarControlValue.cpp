@@ -247,6 +247,7 @@ MarControlValueT<realvec>::serialize(std::ostream& os)
 MarControlValue*
 MarControlValueT<realvec>::sum(MarControlValue *v)
 {
+	(void) v;
 	MRSASSERT(0); //not implemented
 	return 0;
 }
@@ -254,6 +255,7 @@ MarControlValueT<realvec>::sum(MarControlValue *v)
 MarControlValue*
 MarControlValueT<realvec>::subtract(MarControlValue *v)
 {
+	(void) v;
 	MRSASSERT(0); //not implemented
 	return 0;
 }
@@ -261,6 +263,7 @@ MarControlValueT<realvec>::subtract(MarControlValue *v)
 MarControlValue*
 MarControlValueT<realvec>::multiply(MarControlValue *v)
 {
+	(void) v;
 	MRSASSERT(0); //not implemented
 	return 0;
 }
@@ -268,6 +271,7 @@ MarControlValueT<realvec>::multiply(MarControlValue *v)
 MarControlValue*
 MarControlValueT<realvec>::divide(MarControlValue *v)
 {
+	(void) v;
 	MRSASSERT(0); //not implemented
 	return 0;
 }
@@ -393,6 +397,7 @@ MarControlValueT<bool>::serialize(std::ostream& os)
 MarControlValue*
 MarControlValueT<bool>::sum(MarControlValue *v)
 {
+	(void) v;
 	MRSASSERT(0); //not implemented
 	return 0;
 }
@@ -400,6 +405,7 @@ MarControlValueT<bool>::sum(MarControlValue *v)
 MarControlValue*
 MarControlValueT<bool>::subtract(MarControlValue *v)
 {
+	(void) v;
 	MRSASSERT(0); //not implemented
 	return 0;
 }
@@ -407,6 +413,7 @@ MarControlValueT<bool>::subtract(MarControlValue *v)
 MarControlValue*
 MarControlValueT<bool>::multiply(MarControlValue *v)
 {
+	(void) v;
 	MRSASSERT(0); //not implemented
 	return 0;
 }
@@ -414,6 +421,7 @@ MarControlValueT<bool>::multiply(MarControlValue *v)
 MarControlValue*
 MarControlValueT<bool>::divide(MarControlValue *v)
 {
+	(void) v;
 	MRSASSERT(0); //not implemented
 	return 0;
 }

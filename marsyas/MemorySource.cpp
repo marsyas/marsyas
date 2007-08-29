@@ -57,6 +57,7 @@ MemorySource::addControls()
 void
 MemorySource::myUpdate(MarControlPtr sender)
 {
+	(void) sender;
   MRSDIAG("MemorySource.cpp - MemorySource:myUpdate");
   
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")  );
