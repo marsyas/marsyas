@@ -14,7 +14,7 @@ void @b{recognize}(string sfName)
        pnet->@b{addMarSystem}(mng.@b{create}(@t{"Spectrum"},@t{"spk"}));
        pnet->@b{addMarSystem}(mng.@b{create}(@t{"Gain"}, @t{"g2"}));
 
-       @b{while} ( pnet->@b{getctrl}(@t{"SoundFileSource/src/mrs_bool/notEmpty"})->@b{toBool}() )
+       @b{while} ( pnet->@b{getctrl}(@t{"SoundFileSource/src/mrs_bool/notEmpty"})->to<mrs_bool>() )
        @{
               pnet->@b{tick}();
               @i{// gets data from the Spectrum}

@@ -40,8 +40,8 @@
        void @b{setMainPosition}(int newPos);
 
 @b{private}:
-       MarBackend *marBackend;
-       QLCDNumber *lcd;
+       MarBackend *marBackend_;
+       QLCDNumber *lcd_;
 @};
 
 

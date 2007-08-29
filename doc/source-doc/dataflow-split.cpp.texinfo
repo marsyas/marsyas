@@ -15,7 +15,7 @@ void @b{sfplay}(string sfName, float gain1, float gain2)
        playbacknet->@b{addMarSystem}(mng.@b{create}(@t{"SoundFileSource"}, @t{"src"}));
        playbacknet->@b{updctrl}(@t{"SoundFileSource/src/mrs_string/filename"}, sfName);
 @i{// get the sample rate}
-       mrs_real sample_rate = playbacknet->@b{getctrl}(@t{"mrs_real/israte"})->@b{toReal}();
+       mrs_real sample_rate = playbacknet->@b{getctrl}(@t{"mrs_real/israte"})->to<mrs_real>();
 
        playbacknet->@b{addMarSystem}(mng.@b{create}(@t{"SoundFileSink"}, @t{"snk"}));
        playbacknet->@b{updctrl}(@t{"SoundFileSink/snk/mrs_string/filename"}, @t{"both.wav"});
@@ -41,7 +41,7 @@ void @b{sfplay}(string sfName, float gain1, float gain2)
        para->@b{addMarSystem}(right);
        playbacknet->@b{addMarSystem}(para);
 
-       @b{while} ( playbacknet->@b{getctrl}(@t{"SoundFileSource/src/mrs_bool/notEmpty"})->@b{toBool}() )
+       @b{while} ( playbacknet->@b{getctrl}(@t{"SoundFileSource/src/mrs_bool/notEmpty"})->to<mrs_bool>() )
        @{
               playbacknet->@b{tick}();
        @}

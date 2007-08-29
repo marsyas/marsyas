@@ -17,8 +17,8 @@ http://www.gnu.org/software/src-highlite -->
 	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">addMarSystem</font></b><font color="#990000">(</font>mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"AudioSink"</font><font color="#990000">,</font> <font color="#FF0000">"dest"</font><font color="#990000">));</font>
 
 <i><font color="#9A1900">// calculate the starting position.</font></i>
-	mrs_natural nChannels <font color="#990000">=</font> playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_natural/nChannels"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toNatural</font></b><font color="#990000">();</font>
-	mrs_real srate <font color="#990000">=</font> playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_real/israte"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toReal</font></b><font color="#990000">();</font>
+	mrs_natural nChannels <font color="#990000">=</font> playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_natural/nChannels"</font><font color="#990000">)-&gt;</font>to<font color="#990000">&lt;</font>mrs_natural<font color="#990000">&gt;();</font>
+	mrs_real srate <font color="#990000">=</font> playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_real/israte"</font><font color="#990000">)-&gt;</font>to<font color="#990000">&lt;</font>mrs_real<font color="#990000">&gt;();</font>
 	mrs_natural startPosition <font color="#990000">=</font> <font color="#990000">(</font>mrs_natural<font color="#990000">)</font> <font color="#990000">(</font>start <font color="#990000">*</font> srate <font color="#990000">*</font> nChannels<font color="#990000">);</font>
 
 	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_string/filename"</font><font color="#990000">,</font> sfName<font color="#990000">);</font>
@@ -28,7 +28,7 @@ http://www.gnu.org/software/src-highlite -->
 <i><font color="#9A1900">// set the starting position of the source</font></i>
 	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_natural/pos"</font><font color="#990000">,</font> startPosition<font color="#990000">);</font>
 
-	<b><font color="#0000FF">while</font></b> <font color="#990000">(</font> playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_bool/notEmpty"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toBool</font></b><font color="#990000">()</font> <font color="#990000">)</font>
+	<b><font color="#0000FF">while</font></b> <font color="#990000">(</font> playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_bool/notEmpty"</font><font color="#990000">)-&gt;</font>to<font color="#990000">&lt;</font>mrs_bool<font color="#990000">&gt;()</font> <font color="#990000">)</font>
 	<font color="#FF0000">{</font>
 		playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">tick</font></b><font color="#990000">();</font>
 	<font color="#FF0000">}</font>

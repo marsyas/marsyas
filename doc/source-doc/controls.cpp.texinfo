@@ -15,8 +15,8 @@ void @b{sfplay}(string sfName, float gain, float start)
        playbacknet->@b{addMarSystem}(mng.@b{create}(@t{"AudioSink"}, @t{"dest"}));
 
 @i{// calculate the starting position.}
-       mrs_natural nChannels = playbacknet->@b{getctrl}(@t{"SoundFileSource/src/mrs_natural/nChannels"})->@b{toNatural}();
-       mrs_real srate = playbacknet->@b{getctrl}(@t{"SoundFileSource/src/mrs_real/israte"})->@b{toReal}();
+       mrs_natural nChannels = playbacknet->@b{getctrl}(@t{"SoundFileSource/src/mrs_natural/nChannels"})->to<mrs_natural>();
+       mrs_real srate = playbacknet->@b{getctrl}(@t{"SoundFileSource/src/mrs_real/israte"})->to<mrs_real>();
        mrs_natural startPosition = (mrs_natural) (start * srate * nChannels);
 
        playbacknet->@b{updctrl}(@t{"SoundFileSource/src/mrs_string/filename"}, sfName);
@@ -26,7 +26,7 @@ void @b{sfplay}(string sfName, float gain, float start)
 @i{// set the starting position of the source}
        playbacknet->@b{updctrl}(@t{"SoundFileSource/src/mrs_natural/pos"}, startPosition);
 
-       @b{while} ( playbacknet->@b{getctrl}(@t{"SoundFileSource/src/mrs_bool/notEmpty"})->@b{toBool}() )
+       @b{while} ( playbacknet->@b{getctrl}(@t{"SoundFileSource/src/mrs_bool/notEmpty"})->to<mrs_bool>() )
        @{
               playbacknet->@b{tick}();
        @}

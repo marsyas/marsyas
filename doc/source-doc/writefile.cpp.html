@@ -17,9 +17,9 @@ http://www.gnu.org/software/src-highlite -->
 
 <i><font color="#9A1900">// add a PlotSink wherever we want to get data from</font></i>
 	pnet<font color="#990000">-&gt;</font><b><font color="#000000">addMarSystem</font></b><font color="#990000">(</font>mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"PlotSink"</font><font color="#990000">,</font><font color="#FF0000">"plot"</font><font color="#990000">));</font>
-	pnet<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"PlotSink/plot/mrs_string/outputFilename"</font><font color="#990000">,</font> <font color="#FF0000">"out"</font><font color="#990000">);</font>
+	pnet<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"PlotSink/plot/mrs_string/filename"</font><font color="#990000">,</font> <font color="#FF0000">"out"</font><font color="#990000">);</font>
 
-	<b><font color="#0000FF">while</font></b> <font color="#990000">(</font> pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_bool/notEmpty"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toBool</font></b><font color="#990000">()</font> <font color="#990000">)</font>
+	<b><font color="#0000FF">while</font></b> <font color="#990000">(</font> pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_bool/notEmpty"</font><font color="#990000">)-&gt;</font>to<font color="#990000">&lt;</font>mrs_bool<font color="#990000">&gt;()</font> <font color="#990000">)</font>
 	<font color="#FF0000">{</font>
 		pnet<font color="#990000">-&gt;</font><b><font color="#000000">tick</font></b><font color="#990000">();</font>
 	<font color="#FF0000">}</font>

@@ -20,7 +20,7 @@ http://www.gnu.org/software/src-highlite -->
 	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"Gain/gt/mrs_real/gain"</font><font color="#990000">,</font> gain<font color="#990000">);</font>
 	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"AudioSink/dest/mrs_bool/initAudio"</font><font color="#990000">,</font> <b><font color="#0000FF">true</font></b><font color="#990000">);</font>
 
-	<b><font color="#0000FF">while</font></b> <font color="#990000">(</font> playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_bool/notEmpty"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toBool</font></b><font color="#990000">()</font> <font color="#990000">)</font>
+	<b><font color="#0000FF">while</font></b> <font color="#990000">(</font> playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_bool/notEmpty"</font><font color="#990000">)-&gt;</font>to<font color="#990000">&lt;</font>mrs_bool<font color="#990000">&gt;()</font> <font color="#990000">)</font>
 	<font color="#FF0000">{</font>
 		playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">tick</font></b><font color="#990000">();</font>
 	<font color="#FF0000">}</font>

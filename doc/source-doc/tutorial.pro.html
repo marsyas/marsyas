@@ -9,21 +9,17 @@ SOURCES <font color="#990000">+=</font> mainwindow<font color="#990000">.</font>
 HEADERS <font color="#990000">+=</font> backend<font color="#990000">.</font>h
 SOURCES <font color="#990000">+=</font> backend<font color="#990000">.</font>cpp
 
-<i><font color="#9A1900">#  these files are common to every Marsyas/QT app </font></i>
-<i><font color="#9A1900">#  you will need to update these paths (and the paths in backend.h)</font></i>
-<i><font color="#9A1900">#  if you copy this directory elsewhere.</font></i>
-HEADERS <font color="#990000">+=</font> <font color="#990000">..</font><font color="#FF0000">/../apps/Qt4Apps/MarSystemQtWrapper</font><font color="#990000">.</font>h
-SOURCES <font color="#990000">+=</font> <font color="#990000">..</font><font color="#FF0000">/../apps/Qt4Apps/MarSystemQtWrapper</font><font color="#990000">.</font>cpp
 
-<i><font color="#9A1900">#  basic system variables</font></i>
-TARGET <font color="#990000">=</font> runme
-
-MARSYAS_INSTALL_DIR  <font color="#990000">=</font> $<font color="#FF0000">{</font>HOME<font color="#FF0000">}</font><font color="#FF0000">/usr/</font>
-<i><font color="#9A1900">#MARSYAS_INSTALL_DIR  = /usr/local</font></i>
+MARSYAS_INSTALL_DIR <font color="#990000">=</font> <font color="#990000">..</font><font color="#FF0000">/../</font>
+<i><font color="#9A1900">#MARSYAS_INSTALL_DIR = ${HOME}/usr/</font></i>
+<i><font color="#9A1900">#MARSYAS_INSTALL_DIR = /usr/local</font></i>
 <b><font color="#000000">message</font></b><font color="#990000">(</font><font color="#FF0000">"Marsyas was installed in $$MARSYAS_INSTALL_DIR, right?"</font><font color="#990000">)</font>
 
-INCLUDEPATH <font color="#990000">+=</font> $<font color="#009900">$MARSYAS_INSTALL_DIR</font><font color="#FF0000">/include/marsyas</font>
-unix<font color="#990000">:</font>LIBS <font color="#990000">+=</font> <font color="#990000">-</font>lmarsyas <font color="#990000">-</font>L$<font color="#009900">$MARSYAS_INSTALL_DIR</font><font color="#990000">/</font>lib <i><font color="#9A1900"># -lmad -lvorbis -lvorbisfile</font></i>
+
+INCLUDEPATH <font color="#990000">+=</font> $<font color="#009900">$MARSYAS_INSTALL_DIR</font><font color="#FF0000">/marsyas/</font>
+LIBPATH <font color="#990000">+=</font> $<font color="#009900">$MARSYAS_INSTALL_DIR</font><font color="#FF0000">/lib/release</font>
+
+unix<font color="#990000">:</font>LIBS <font color="#990000">+=</font> <font color="#990000">-</font>lmarsyas <font color="#990000">-</font>lmarqtactual <font color="#990000">-</font>L$<font color="#009900">$MARSYAS_INSTALL_DIR</font><font color="#990000">/</font>lib
 <font color="#990000">!</font>macx<font color="#990000">:</font>LIBS <font color="#990000">+=</font> <font color="#990000">-</font>lasound
 macx<font color="#990000">:</font>LIBS <font color="#990000">+=</font> <font color="#990000">-</font>framework CoreAudio <font color="#990000">-</font>framework CoreMidi <font color="#990000">-</font>framework CoreFoundation
 

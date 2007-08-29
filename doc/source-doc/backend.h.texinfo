@@ -21,11 +21,12 @@
 @b{#include} @t{<QObject>}
 @b{#include} @t{<QTimer>}
 @b{#include} @t{"MarSystemManager.h"}
-@b{#include} @t{"../../apps/Qt4Apps/MarSystemQtWrapper.h"}
+@b{#include} @t{"MarQtActual/MarSystemQtWrapper.h"}
 
 @b{#include} @t{<iostream>}
 @b{using} @b{namespace} std;
 @b{using} @b{namespace} Marsyas;
+@b{using} @b{namespace} MarQtActual;
 
 @b{class} MarBackend: @b{public} QObject
 @{

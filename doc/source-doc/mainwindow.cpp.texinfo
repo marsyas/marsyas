@@ -32,43 +32,43 @@ MarQTwindow::@b{MarQTwindow}(string fileName)
        volume->@b{setRange}(0,100);
        volume->@b{setValue}(50);
 
-       lcd = @b{new} @b{QLCDNumber}();
-       lcd->@b{setNumDigits}(10);
+       lcd_ = @b{new} @b{QLCDNumber}();
+       lcd_->@b{setNumDigits}(10);
 
        QVBoxLayout *layout = @b{new} QVBoxLayout;
        layout->@b{addWidget}(volume);
        layout->@b{addWidget}(updatePos);
-       layout->@b{addWidget}(lcd);
+       layout->@b{addWidget}(lcd_);
        layout->@b{addWidget}(quit);
        @b{setLayout}(layout);
 
 @i{// make the Marsyas backend}
-       marBackend = @b{new} @b{MarBackend}();
-       marBackend->@b{openBackendSoundfile}(fileName);
+       marBackend_ = @b{new} @b{MarBackend}();
+       marBackend_->@b{openBackendSoundfile}(fileName);
 
 @i{// make connections between the Qt front-end and the Marsyas backend:}
 
 @i{//              Qt -> Marsyas}
        @b{connect}(volume, @b{SIGNAL}(@b{valueChanged}(int)),
-               marBackend, @b{SLOT}(@b{setBackendVolume}(int)));
+               marBackend_, @b{SLOT}(@b{setBackendVolume}(int)));
 
 @i{//              Marsyas -> Qt}
-       @b{connect}(marBackend, @b{SIGNAL}(@b{changedBackendPosition}(int)),
+       @b{connect}(marBackend_, @b{SIGNAL}(@b{changedBackendPosition}(int)),
                @b{this}, @b{SLOT}(@b{setMainPosition}(int)));
 
 @i{//              Qt -> Marsyas (getBackendPosition) -> Qt (changedBackendPosition)}
        @b{connect}(updatePos, @b{SIGNAL}(@b{clicked}()),
-               marBackend, @b{SLOT}(@b{getBackendPosition}()));
+               marBackend_, @b{SLOT}(@b{getBackendPosition}()));
 @}
 
 MarQTwindow::~@b{MarQTwindow}()
 @{
-       @b{delete} marBackend;
+       @b{delete} marBackend_;
 @}
 
 void MarQTwindow::@b{setMainPosition}(int newPos)
 @{
-       lcd->@b{display}(newPos);
+       lcd_->@b{display}(newPos);
 @}
 
 

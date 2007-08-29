@@ -34,43 +34,43 @@ MarQTwindow<font color="#990000">::</font><b><font color="#000000">MarQTwindow</
 	volume<font color="#990000">-&gt;</font><b><font color="#000000">setRange</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">,</font><font color="#993399">100</font><font color="#990000">);</font>
 	volume<font color="#990000">-&gt;</font><b><font color="#000000">setValue</font></b><font color="#990000">(</font><font color="#993399">50</font><font color="#990000">);</font>
 
-	lcd <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> <b><font color="#000000">QLCDNumber</font></b><font color="#990000">();</font>
-	lcd<font color="#990000">-&gt;</font><b><font color="#000000">setNumDigits</font></b><font color="#990000">(</font><font color="#993399">10</font><font color="#990000">);</font>
+	lcd_ <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> <b><font color="#000000">QLCDNumber</font></b><font color="#990000">();</font>
+	lcd_<font color="#990000">-&gt;</font><b><font color="#000000">setNumDigits</font></b><font color="#990000">(</font><font color="#993399">10</font><font color="#990000">);</font>
 
 	QVBoxLayout <font color="#990000">*</font>layout <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> QVBoxLayout<font color="#990000">;</font>
 	layout<font color="#990000">-&gt;</font><b><font color="#000000">addWidget</font></b><font color="#990000">(</font>volume<font color="#990000">);</font>
 	layout<font color="#990000">-&gt;</font><b><font color="#000000">addWidget</font></b><font color="#990000">(</font>updatePos<font color="#990000">);</font>
-	layout<font color="#990000">-&gt;</font><b><font color="#000000">addWidget</font></b><font color="#990000">(</font>lcd<font color="#990000">);</font>
+	layout<font color="#990000">-&gt;</font><b><font color="#000000">addWidget</font></b><font color="#990000">(</font>lcd_<font color="#990000">);</font>
 	layout<font color="#990000">-&gt;</font><b><font color="#000000">addWidget</font></b><font color="#990000">(</font>quit<font color="#990000">);</font>
 	<b><font color="#000000">setLayout</font></b><font color="#990000">(</font>layout<font color="#990000">);</font>
 
 <i><font color="#9A1900">// make the Marsyas backend</font></i>
-	marBackend <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> <b><font color="#000000">MarBackend</font></b><font color="#990000">();</font>
-	marBackend<font color="#990000">-&gt;</font><b><font color="#000000">openBackendSoundfile</font></b><font color="#990000">(</font>fileName<font color="#990000">);</font>
+	marBackend_ <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> <b><font color="#000000">MarBackend</font></b><font color="#990000">();</font>
+	marBackend_<font color="#990000">-&gt;</font><b><font color="#000000">openBackendSoundfile</font></b><font color="#990000">(</font>fileName<font color="#990000">);</font>
 
 <i><font color="#9A1900">// make connections between the Qt front-end and the Marsyas backend:</font></i>
 
 <i><font color="#9A1900">//		Qt -&gt; Marsyas</font></i>
 	<b><font color="#000000">connect</font></b><font color="#990000">(</font>volume<font color="#990000">,</font> <b><font color="#000000">SIGNAL</font></b><font color="#990000">(</font><b><font color="#000000">valueChanged</font></b><font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)),</font>
-	        marBackend<font color="#990000">,</font> <b><font color="#000000">SLOT</font></b><font color="#990000">(</font><b><font color="#000000">setBackendVolume</font></b><font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)));</font>
+	        marBackend_<font color="#990000">,</font> <b><font color="#000000">SLOT</font></b><font color="#990000">(</font><b><font color="#000000">setBackendVolume</font></b><font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)));</font>
 
 <i><font color="#9A1900">//		Marsyas -&gt; Qt</font></i>
-	<b><font color="#000000">connect</font></b><font color="#990000">(</font>marBackend<font color="#990000">,</font> <b><font color="#000000">SIGNAL</font></b><font color="#990000">(</font><b><font color="#000000">changedBackendPosition</font></b><font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)),</font>
+	<b><font color="#000000">connect</font></b><font color="#990000">(</font>marBackend_<font color="#990000">,</font> <b><font color="#000000">SIGNAL</font></b><font color="#990000">(</font><b><font color="#000000">changedBackendPosition</font></b><font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)),</font>
 	        <b><font color="#0000FF">this</font></b><font color="#990000">,</font> <b><font color="#000000">SLOT</font></b><font color="#990000">(</font><b><font color="#000000">setMainPosition</font></b><font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)));</font>
 
 <i><font color="#9A1900">//		Qt -&gt; Marsyas (getBackendPosition) -&gt; Qt (changedBackendPosition)</font></i>
 	<b><font color="#000000">connect</font></b><font color="#990000">(</font>updatePos<font color="#990000">,</font> <b><font color="#000000">SIGNAL</font></b><font color="#990000">(</font><b><font color="#000000">clicked</font></b><font color="#990000">()),</font>
-	        marBackend<font color="#990000">,</font> <b><font color="#000000">SLOT</font></b><font color="#990000">(</font><b><font color="#000000">getBackendPosition</font></b><font color="#990000">()));</font>
+	        marBackend_<font color="#990000">,</font> <b><font color="#000000">SLOT</font></b><font color="#990000">(</font><b><font color="#000000">getBackendPosition</font></b><font color="#990000">()));</font>
 <font color="#FF0000">}</font>
 
 MarQTwindow<font color="#990000">::~</font><b><font color="#000000">MarQTwindow</font></b><font color="#990000">()</font>
 <font color="#FF0000">{</font>
-	<b><font color="#0000FF">delete</font></b> marBackend<font color="#990000">;</font>
+	<b><font color="#0000FF">delete</font></b> marBackend_<font color="#990000">;</font>
 <font color="#FF0000">}</font>
 
 <font color="#009900">void</font> MarQTwindow<font color="#990000">::</font><b><font color="#000000">setMainPosition</font></b><font color="#990000">(</font><font color="#009900">int</font> newPos<font color="#990000">)</font>
 <font color="#FF0000">{</font>
-	lcd<font color="#990000">-&gt;</font><b><font color="#000000">display</font></b><font color="#990000">(</font>newPos<font color="#990000">);</font>
+	lcd_<font color="#990000">-&gt;</font><b><font color="#000000">display</font></b><font color="#990000">(</font>newPos<font color="#990000">);</font>
 <font color="#FF0000">}</font>
 
 </tt></pre>

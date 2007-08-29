@@ -15,9 +15,9 @@ void @b{recognize}(string sfName)
 
 @i{// add a PlotSink wherever we want to get data from}
        pnet->@b{addMarSystem}(mng.@b{create}(@t{"PlotSink"},@t{"plot"}));
-       pnet->@b{updctrl}(@t{"PlotSink/plot/mrs_string/outputFilename"}, @t{"out"});
+       pnet->@b{updctrl}(@t{"PlotSink/plot/mrs_string/filename"}, @t{"out"});
 
-       @b{while} ( pnet->@b{getctrl}(@t{"SoundFileSource/src/mrs_bool/notEmpty"})->@b{toBool}() )
+       @b{while} ( pnet->@b{getctrl}(@t{"SoundFileSource/src/mrs_bool/notEmpty"})->to<mrs_bool>() )
        @{
               pnet->@b{tick}();
        @}

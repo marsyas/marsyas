@@ -19,7 +19,7 @@
 @i{*/}
 
 @b{#include} @t{"backend.h"}
-@b{using} @b{namespace} Marsyas;
+@i{//using namespace Marsyas;}
 
 MarBackend::@b{MarBackend}()
 @{

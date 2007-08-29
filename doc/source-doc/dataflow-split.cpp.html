@@ -17,7 +17,7 @@ http://www.gnu.org/software/src-highlite -->
 	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">addMarSystem</font></b><font color="#990000">(</font>mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource"</font><font color="#990000">,</font> <font color="#FF0000">"src"</font><font color="#990000">));</font>
 	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_string/filename"</font><font color="#990000">,</font> sfName<font color="#990000">);</font>
 <i><font color="#9A1900">// get the sample rate</font></i>
-	mrs_real sample_rate <font color="#990000">=</font> playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"mrs_real/israte"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toReal</font></b><font color="#990000">();</font>
+	mrs_real sample_rate <font color="#990000">=</font> playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"mrs_real/israte"</font><font color="#990000">)-&gt;</font>to<font color="#990000">&lt;</font>mrs_real<font color="#990000">&gt;();</font>
 
 	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">addMarSystem</font></b><font color="#990000">(</font>mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSink"</font><font color="#990000">,</font> <font color="#FF0000">"snk"</font><font color="#990000">));</font>
 	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSink/snk/mrs_string/filename"</font><font color="#990000">,</font> <font color="#FF0000">"both.wav"</font><font color="#990000">);</font>
@@ -43,7 +43,7 @@ http://www.gnu.org/software/src-highlite -->
 	para<font color="#990000">-&gt;</font><b><font color="#000000">addMarSystem</font></b><font color="#990000">(</font>right<font color="#990000">);</font>
 	playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">addMarSystem</font></b><font color="#990000">(</font>para<font color="#990000">);</font>
 
-	<b><font color="#0000FF">while</font></b> <font color="#990000">(</font> playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_bool/notEmpty"</font><font color="#990000">)-&gt;</font><b><font color="#000000">toBool</font></b><font color="#990000">()</font> <font color="#990000">)</font>
+	<b><font color="#0000FF">while</font></b> <font color="#990000">(</font> playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_bool/notEmpty"</font><font color="#990000">)-&gt;</font>to<font color="#990000">&lt;</font>mrs_bool<font color="#990000">&gt;()</font> <font color="#990000">)</font>
 	<font color="#FF0000">{</font>
 		playbacknet<font color="#990000">-&gt;</font><b><font color="#000000">tick</font></b><font color="#990000">();</font>
 	<font color="#FF0000">}</font>

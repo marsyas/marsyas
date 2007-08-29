@@ -7,21 +7,17 @@ SOURCES += mainwindow.cpp
 HEADERS += backend.h
 SOURCES += backend.cpp
 
-@i{#  these files are common to every Marsyas/QT app }
-@i{#  you will need to update these paths (and the paths in backend.h)}
-@i{#  if you copy this directory elsewhere.}
-HEADERS += ..@t{/../apps/Qt4Apps/MarSystemQtWrapper}.h
-SOURCES += ..@t{/../apps/Qt4Apps/MarSystemQtWrapper}.cpp
 
-@i{#  basic system variables}
-TARGET = runme
-
-MARSYAS_INSTALL_DIR  = $@{HOME@}@t{/usr/}
-@i{#MARSYAS_INSTALL_DIR  = /usr/local}
+MARSYAS_INSTALL_DIR = ..@t{/../}
+@i{#MARSYAS_INSTALL_DIR = $@{HOME@}/usr/}
+@i{#MARSYAS_INSTALL_DIR = /usr/local}
 @b{message}(@t{"Marsyas was installed in $$MARSYAS_INSTALL_DIR, right?"})
 
-INCLUDEPATH += $$MARSYAS_INSTALL_DIR@t{/include/marsyas}
-unix:LIBS += -lmarsyas -L$$MARSYAS_INSTALL_DIR/lib @i{# -lmad -lvorbis -lvorbisfile}
+
+INCLUDEPATH += $$MARSYAS_INSTALL_DIR@t{/marsyas/}
+LIBPATH += $$MARSYAS_INSTALL_DIR@t{/lib/release}
+
+unix:LIBS += -lmarsyas -lmarqtactual -L$$MARSYAS_INSTALL_DIR/lib
 !macx:LIBS += -lasound
 macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
 

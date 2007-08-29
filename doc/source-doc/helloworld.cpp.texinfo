@@ -18,7 +18,7 @@ void @b{sfplay}(string sfName, float gain)
        playbacknet->@b{updctrl}(@t{"Gain/gt/mrs_real/gain"}, gain);
        playbacknet->@b{updctrl}(@t{"AudioSink/dest/mrs_bool/initAudio"}, @b{true});
 
-       @b{while} ( playbacknet->@b{getctrl}(@t{"SoundFileSource/src/mrs_bool/notEmpty"})->@b{toBool}() )
+       @b{while} ( playbacknet->@b{getctrl}(@t{"SoundFileSource/src/mrs_bool/notEmpty"})->to<mrs_bool>() )
        @{
               playbacknet->@b{tick}();
        @}
