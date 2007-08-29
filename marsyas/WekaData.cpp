@@ -40,6 +40,57 @@ void WekaData::Clear()
 	this->clear();
 }//Clear
 
+
+void 
+WekaData::NormMaxMinRow(realvec& in)
+{
+  int ii;
+  for(ii=0; ii<(int)in.getSize()-1; ii++)
+    {
+      in(ii) =  (in(ii) - minimums_(ii)) / (maximums_(ii) - minimums_(ii));
+    }
+}
+
+void 
+WekaData::NormMaxMin()
+{
+  minimums_.create(cols_-1);
+  maximums_.create(cols_-1);
+  maximums_.setval(DBL_MIN);
+  minimums_.setval(DBL_MAX);
+  
+  // find minimums_ and maximums_ 
+  for(vector<vector<mrs_real>*>::const_iterator citer = this->begin(); citer!=this->end(); citer++)
+    {
+      const vector<mrs_real> *row = (*citer);
+      int ii;
+      for(ii=0; ii<(int)row->size()-1; ii++)
+	{
+	  if (row->at(ii) > maximums_(ii))
+	    maximums_(ii) = row->at(ii);
+	  if (row->at(ii) < minimums_(ii))
+	    minimums_(ii) = row->at(ii);
+	}
+    }
+  
+
+  // normalize 
+  for(vector<vector<mrs_real>*>::const_iterator citer = this->begin(); citer!=this->end(); citer++)
+    {
+      vector<mrs_real> *row = (*citer);
+      int ii;
+      for(ii=0; ii<(int)row->size()-1; ii++)
+	{
+	  row->at(ii) =  ((row->at(ii) - minimums_(ii)) / (maximums_(ii) - minimums_(ii)));
+	}
+    }
+
+
+
+
+}
+
+
 //randomly shuffle the data in the table
 //Need only to swap the pointers to row data, nice and fast!
 void WekaData::Shuffle()

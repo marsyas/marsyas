@@ -4,6 +4,7 @@
 #include "MarSystem.h"
 #include <list>
 #include <vector>
+#include <cfloat> 
  
 namespace Marsyas
 {
@@ -30,6 +31,11 @@ public:
 	//randomly shuffle the data in the table
 	void Shuffle();
 
+	// NormMaxMin normalize the data with minimums and maximums
+	void NormMaxMin();
+
+	void NormMaxMinRow(realvec& in);
+	
 	//sort the table based on an attribute. sorts in ascending order.
 	void Sort(mrs_natural attIndex);
 
@@ -50,6 +56,8 @@ public:
 private:
 	mrs_natural cols_;
 	mrs_natural rows_;
+	realvec minimums_;
+	realvec maximums_;
 	//some sorting private functions
 	void quickSort(mrs_natural attIndex, mrs_natural left, mrs_natural right);
 	void swapRows(mrs_natural l, mrs_natural r);

@@ -42,6 +42,8 @@ private:
   mrs_real range_;
   bool train_;
   bool init_;
+  mrs_string mode_;
+  mrs_string prev_mode_;	
   
   void addControls();
   void myUpdate(MarControlPtr sender);

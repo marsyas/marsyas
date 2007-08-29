@@ -61,13 +61,14 @@ SVMClassifier::myUpdate(MarControlPtr sender)
 
 	// default values
         svm_param_.svm_type = C_SVC;
-        svm_param_.kernel_type = RBF;
+        svm_param_.kernel_type = LINEAR;
+        // svm_param_.kernel_type = RBF;
         svm_param_.degree = 3;
-        svm_param_.gamma = 0;        // 1/k
+        svm_param_.gamma = 4;        // 1/k
         svm_param_.coef0 = 0;
         svm_param_.nu = 0.5;
         svm_param_.cache_size = 100;
-        svm_param_.C = 1;
+        svm_param_.C = 1.0;
         svm_param_.eps = 1e-3;
         svm_param_.p = 0.1;
         svm_param_.shrinking = 1;
@@ -83,17 +84,13 @@ void
 SVMClassifier::myProcess(realvec& in, realvec& out)
 {
   mode_ = getctrl("mrs_string/mode")->to<mrs_string>();
-  /* cout << "SVMClassifier::myProcess" << endl;
-  cout << "mode_ = " << mode_ << endl;
-  cout << "prev_mode_ = " << prev_mode_  << endl;
-  */ 
+
 
   if (mode_ == "train")
     {
       if (prev_mode_ == "predict")
 	{
 	  mrs_natural nAttributes = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
-	  cout << "nAttributes = " << nAttributes << endl;
 	  instances_.Create(nAttributes);
 	}
       instances_.Append(in);
@@ -104,9 +101,10 @@ SVMClassifier::myProcess(realvec& in, realvec& out)
   
   if ((prev_mode_ == "train") && (mode_ == "predict"))
     {
+      instances_.NormMaxMin();
+
       mrs_natural nInstances = instances_.getRows(); 
       mrs_natural nAttributes = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
-      cout << "nInstances = " << nInstances << endl;
       svm_prob_.l = nInstances;
       svm_prob_.y = new double[svm_prob_.l];
       svm_prob_.x = new svm_node*[nInstances];
@@ -140,23 +138,35 @@ SVMClassifier::myProcess(realvec& in, realvec& out)
 	  exit(1);
         }
       
-      cout << "starting training" << endl;
       svm_model_ = svm_train(&svm_prob_, &svm_param_);
-      cout << "end training" << endl;
-      
-      std::vector<std::string>classesFound;      
-      classesFound.push_back("iris_1");
-      classesFound.push_back("iris_2");
-      classesFound.push_back("iris_3");      
-      instances_.Dump("svmdump.txt", classesFound);
+
     }
 
   if (mode_ == "predict") 
     {
-      // FIXME These variables are unused (and one is allocating memory!)
-      // mrs_natural nAttributes = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
-      // struct svm_node* xv = new svm_node[nAttributes];
-      (void) 42; // avoid warnings
+      mrs_natural nAttributes = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+      struct svm_node* xv = new svm_node[nAttributes];
+      instances_.NormMaxMinRow(in);
+
+      for (int j=0; j < nAttributes; j++)
+	{
+	  if (j < nAttributes -1) 
+	    {
+	      xv[j].index = j+1;
+	      xv[j].value = in(j, 0);
+	    }
+	  else 
+	    {
+	      xv[j].index = -1;
+	      xv[j].value = 0.0;
+	    }
+	}
+      double prediction = svm_predict(svm_model_, xv);
+
+      mrs_natural label = (mrs_natural)in(inObservations_-1, 0);
+      out(0,0) = (mrs_real)prediction;
+      out(1,0) = (mrs_real)label;
+
     }
 
 

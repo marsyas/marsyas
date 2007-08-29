@@ -237,9 +237,9 @@ MarGrid::train()
   norm_->updctrl("mrs_natural/inSamples", train_som_fmatrix.getCols());
   norm_->updctrl("mrs_natural/inObservations", 
 		total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
-  norm_->updctrl("mrs_bool/train", true);
+  norm_->updctrl("mrs_string/mode", "train");
   norm_->process(train_som_fmatrix, norm_som_fmatrix);
-  norm_->updctrl("mrs_bool/train", false);  
+  norm_->updctrl("mrs_string/mode", "predict");  
   norm_->process(train_som_fmatrix, norm_som_fmatrix);
 
   // Create netork for training the self-organizing map 

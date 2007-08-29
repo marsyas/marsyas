@@ -1760,7 +1760,7 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
     featureNetwork->updctrl("SMO/smo/mrs_bool/done",true);
 
   if (classifierName == "SMO")
-    featureNetwork->updctrl("NormMaxMin/norm/mrs_bool/train", false);
+    featureNetwork->updctrl("NormMaxMin/norm/mrs_string/mode", "predict");
   featureNetwork->tick();		// train classifier
 
   // prepare network for classification
