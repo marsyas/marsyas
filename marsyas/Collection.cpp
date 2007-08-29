@@ -21,7 +21,11 @@
 #include <algorithm>
 
 using namespace std;
-using namespace Marsyas;
+
+
+
+namespace Marsyas 
+{
 
 Collection::Collection()
 {
@@ -74,7 +78,7 @@ Collection::labelAll(string label)
 }
 
 ostream& 
-Marsyas::operator<<(ostream& o, const Collection& l)
+operator<<(ostream& o, const Collection& l)
 {
   // o << "# MARSYAS Collection " << endl;
   // o << "# name = " << l.name_ << endl << endl;
@@ -216,7 +220,7 @@ Collection::entry(unsigned int i)
 
 
 istream& 
-Marsyas::operator>>(istream& i, Collection& l)
+operator>>(istream& i, Collection& l)
 {
   
   MRSDIAG("Collection.cpp - operator>>");
@@ -267,3 +271,4 @@ Marsyas::operator>>(istream& i, Collection& l)
   return i;
 }
 
+}

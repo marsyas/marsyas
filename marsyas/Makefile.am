@@ -149,7 +149,6 @@ pkginclude_HEADERS = \
 	WaveletStep.h \
 	Daub4.h \
 	OnePole.h \
-	RtError.h \
 	Accumulator.h \
 	Shredder.h \
 	NetworkSocket.h \

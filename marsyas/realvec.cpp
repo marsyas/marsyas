@@ -26,7 +26,9 @@
 #endif
 
 using namespace std;
-using namespace Marsyas;
+
+namespace Marsyas 
+{
 
 /// constructor
 realvec::realvec()
@@ -651,7 +653,7 @@ realvec::sqroot()
 }
 
 realvec 
-Marsyas::operator+(const realvec& vec1, const realvec& vec2)
+operator+(const realvec& vec1, const realvec& vec2)
 {
 	mrs_natural size;
 	mrs_natural i;
@@ -677,7 +679,7 @@ Marsyas::operator+(const realvec& vec1, const realvec& vec2)
 }
 
 realvec 
-Marsyas::operator-(const realvec& vec1, const realvec& vec2)
+operator-(const realvec& vec1, const realvec& vec2)
 {
 	mrs_natural size;
 	mrs_natural i;
@@ -703,7 +705,7 @@ Marsyas::operator-(const realvec& vec1, const realvec& vec2)
 }
 
 bool
-Marsyas::operator!=(const realvec& v1, const realvec& v2)
+operator!=(const realvec& v1, const realvec& v2)
 {
 	//if vectors have the same dimensions, compare all their values
 	if(v1.cols_ == v2.cols_ && v1.rows_ == v2.rows_)
@@ -849,7 +851,7 @@ realvec::writeText(string filename)
 }
 
 ostream& 
-Marsyas::operator<< (ostream& o, const realvec& vec)
+operator<< (ostream& o, const realvec& vec)
 {
 	o << "# MARSYAS mrs_realvec" << endl;
 	o << "# Size = " << vec.size_ << endl << endl;
@@ -875,7 +877,7 @@ Marsyas::operator<< (ostream& o, const realvec& vec)
 }
 
 istream& 
-Marsyas::operator>>(istream& is, realvec& vec)
+operator>>(istream& is, realvec& vec)
 {   
 	// [WTF] ... is this necessary?  doesn't allocate() delete the data array, and reallocate? (Jen)
 	//  if (vec.size_ != 0)
@@ -1499,3 +1501,4 @@ realvec::det() const
 
 
 
+}
