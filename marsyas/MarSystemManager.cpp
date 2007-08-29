@@ -157,6 +157,7 @@
 #include "WekaData.h"
 #include "PhiSEMSource.h"
 #include "PhiSEMFilter.h"
+#include "SVMClassifier.h"
 #include "Gain.h"
 // please leave Gain at the end; it makes scripts happy.
 
@@ -301,6 +302,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Summary", new Summary("summaryp"));
 	registerPrototype("PhiSEMSource", new PhiSEMSource("phisemsourcepr"));
 	registerPrototype("PhiSEMFilter", new PhiSEMFilter("phisemfilterpr"));
+	registerPrototype("SVMClassifier", new SVMClassifier("svmclassifierpr"));
 	registerPrototype("Gain", new Gain("gp"));
 	// Please leave Gain at the end; it makes scripts happy.
 

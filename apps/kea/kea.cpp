@@ -150,13 +150,14 @@ void train()
   // net->addMarSystem(mng.create("OneRClassifier", "gcl"));
   // net->addMarSystem(mng.create("GaussianClassifier", "gcl"));
   // net->addMarSystem(mng.create("KNNClassifier", "gcl"));
-  net->addMarSystem(mng.create("ZeroRClassifier", "gcl"));
+  // net->addMarSystem(mng.create("ZeroRClassifier", "gcl"));
+  net->addMarSystem(mng.create("SVMClassifier", "gcl"));
   net->addMarSystem(mng.create("Summary", "summary"));
   // net->updctrl("WekaSource/wsrc/mrs_string/attributesToInclude", "1,2,3");
   
   net->updctrl("WekaSource/wsrc/mrs_string/filename", wekafname_);
-  // net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "PercentageSplit,50%");
-  net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "kFold,[NS],10");
+  net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "PercentageSplit,50%");
+  // net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "kFold,[NS],10");
   net->updctrl("mrs_natural/inSamples", 1);
 
   net->updctrl("Summary/summary/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
@@ -177,15 +178,22 @@ void train()
 		       net->linkctrl("KNNClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
 		    */ 
 		    
-		    net->updctrl("ZeroRClassifier/gcl/mrs_natural/nLabels", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+  /* net->updctrl("ZeroRClassifier/gcl/mrs_natural/nLabels", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
 		    net->linkctrl("ZeroRClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
+  */ 
+
+
+  // net->updctrl("ZeroRClassifier/gcl/mrs_natural/nLabels", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+  net->linkctrl("SVMClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
+
+
 		    
 
   mrs_bool training_done = false;
   
 
   cout << "Instances = " <<  net->getctrl("WekaSource/wsrc/mrs_natural/nInstances")->to<mrs_natural>() << endl;
-
+  int i = 0;
   while(net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>() == false)
     {
       string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
@@ -193,9 +201,12 @@ void train()
       // net->updctrl("GaussianClassifier/gcl/mrs_string/mode", mode);
       // net->updctrl("OneRClassifier/gcl/mrs_string/mode", mode);
       // net->updctrl("KNNClassifier/gcl/mrs_string/mode", mode);
-      net->updctrl("ZeroRClassifier/gcl/mrs_string/mode", mode);
+      // net->updctrl("ZeroRClassifier/gcl/mrs_string/mode", mode);
+      net->updctrl("SVMClassifier/gcl/mrs_string/mode", mode);
+      i++;
     }
-  
+
+  net->updctrl("SVMClassifier/gcl/mrs_string/mode", "predict");
   net->updctrl("Summary/summary/mrs_bool/done", true);
   net->tick();
 

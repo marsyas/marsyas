@@ -323,6 +323,7 @@ libmarsyas_a_SOURCES = \
 	$(top_srcdir)/marsyas/Transcriber.cpp \
 		$(top_srcdir)/marsyas/PhiSEMSource.cpp \
 	$(top_srcdir)/marsyas/PhiSEMFilter.cpp \
+	$(top_srcdir)/marsyas/SVMClassifier.cpp \
 	$(top_srcdir)/marsyas/Gain.cpp
 
 subdir = lib/release
@@ -418,7 +419,7 @@ am_libmarsyas_a_OBJECTS = svm.$(OBJEXT) RtAudio.$(OBJEXT) \
 	PeakClusterSelect.$(OBJEXT) OneRClassifier.$(OBJEXT) \
 	WekaData.$(OBJEXT) TranscriberExtract.$(OBJEXT) \
 	Transcriber.$(OBJEXT) PhiSEMSource.$(OBJEXT) \
-	PhiSEMFilter.$(OBJEXT) Gain.$(OBJEXT)
+	PhiSEMFilter.$(OBJEXT) SVMClassifier.$(OBJEXT) Gain.$(OBJEXT)
 libmarsyas_a_OBJECTS = $(am_libmarsyas_a_OBJECTS)
 
 DEFS = @DEFS@
@@ -533,6 +534,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/RtAudio.Po ./$(DEPDIR)/RtMidi.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SCF.Po ./$(DEPDIR)/SFM.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SMO.Po ./$(DEPDIR)/SOM.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/SVMClassifier.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ScheduledEvent.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Scheduler.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SchedulerManager.Po \
@@ -853,6 +855,7 @@ TranscriberExtract.$(OBJEXT): \
 Transcriber.$(OBJEXT): $(top_srcdir)/marsyas/Transcriber.cpp
 PhiSEMSource.$(OBJEXT): $(top_srcdir)/marsyas/PhiSEMSource.cpp
 PhiSEMFilter.$(OBJEXT): $(top_srcdir)/marsyas/PhiSEMFilter.cpp
+SVMClassifier.$(OBJEXT): $(top_srcdir)/marsyas/SVMClassifier.cpp
 Gain.$(OBJEXT): $(top_srcdir)/marsyas/Gain.cpp
 libmarsyas.a: $(libmarsyas_a_OBJECTS) $(libmarsyas_a_DEPENDENCIES) 
 	-rm -f libmarsyas.a
@@ -1022,6 +1025,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SFM.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SMO.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SOM.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SVMClassifier.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ScheduledEvent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Scheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SchedulerManager.Po@am__quote@
@@ -3702,6 +3706,18 @@ PhiSEMFilter.obj: $(top_srcdir)/marsyas/PhiSEMFilter.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/PhiSEMFilter.Po' tmpdepfile='$(DEPDIR)/PhiSEMFilter.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PhiSEMFilter.obj `cygpath -w $(top_srcdir)/marsyas/PhiSEMFilter.cpp`
+
+SVMClassifier.o: $(top_srcdir)/marsyas/SVMClassifier.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/SVMClassifier.cpp' object='SVMClassifier.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/SVMClassifier.Po' tmpdepfile='$(DEPDIR)/SVMClassifier.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SVMClassifier.o `test -f '$(top_srcdir)/marsyas/SVMClassifier.cpp' || echo '$(srcdir)/'`$(top_srcdir)/marsyas/SVMClassifier.cpp
+
+SVMClassifier.obj: $(top_srcdir)/marsyas/SVMClassifier.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/marsyas/SVMClassifier.cpp' object='SVMClassifier.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/SVMClassifier.Po' tmpdepfile='$(DEPDIR)/SVMClassifier.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SVMClassifier.obj `cygpath -w $(top_srcdir)/marsyas/SVMClassifier.cpp`
 
 Gain.o: $(top_srcdir)/marsyas/Gain.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/marsyas/Gain.cpp' object='Gain.o' libtool=no @AMDEPBACKSLASH@
