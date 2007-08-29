@@ -23,29 +23,41 @@ int main(int argc, char *argv[])
 	boundaries = new realvec(2);
 	(*boundaries)(0) = 0;
 	(*boundaries)(1) = pitchList->getSize();
-	cout<<pitchList->getSize()<<endl;
-	cout<<ampList->getSize()<<endl;
+//	cout<<pitchList->getSize()<<endl;
+//	cout<<ampList->getSize()<<endl;
 
 	std::string writefile;
 	writefile = file;
 	writefile.append(".pitches.txt");
 	pitchList->writeText(writefile);
-/*
-	writefile = file;
-	writefile.append(".amps.txt");
-	ampList->writeText(writefile);
-	writefile = file;
-	writefile.append(".bounds.txt");
-	boundaries->writeText(writefile);
 
 	Transcriber::pitchSegment(pitchList, boundaries);
 	writeOnsets("onsets.pitch.txt", boundaries);
+	// relativize the amps in each pitch region
+	int start, length;
+	realvec region;
+	mrs_real maxAmp;
+	for (int i=0; i<boundaries->getSize()-1; i++)
+	{
+		start = (*boundaries)(i);
+		length = (*boundaries)(i+1) - (*boundaries)(i);
+		region = ampList->getSubVector(start, length);
+		maxAmp = region.maxval();
+//		cout<<maxAmp<<endl;
+		for (int j=start; j<start+length; j++)
+		{
+			(*ampList)(j) = (*ampList)(j)/maxAmp;
+		}
+	}
+	writefile = file;
+	writefile.append(".amps.txt");
+	ampList->writeText(writefile);
+
 	Transcriber::ampSegment(ampList, boundaries);
 	writeOnsets("onsets.amps.txt", boundaries);
 
-	realvec* notes;
-	notes = Transcriber::getNotes(pitchList, ampList, boundaries);
-	cout<<(*notes);
-*/
+//	realvec* notes;
+//	notes = Transcriber::getNotes(pitchList, ampList, boundaries);
+//	cout<<(*notes);
 }
 

@@ -1,15 +1,18 @@
 #include ( ../Qt4Apps.pri )
 
-SOURCES = testShift.cpp
-#SOURCES = testTrans.cpp
+#SOURCES = testShift.cpp
+SOURCES = testTrans.cpp
 #SOURCES = start.cpp
 #SOURCES = temp.cpp
 
 #HEADERS += mainwindow.h
 #SOURCES += mainwindow.cpp
 
-#HEADERS += Transcriber.h TranscriberExtract.h
-#SOURCES += Transcriber.cpp TranscriberExtract.cpp
+HEADERS += Transcriber.h
+SOURCES += Transcriber.cpp
+
+#HEADERS += TranscriberExtract.h
+#SOURCES += TranscriberExtract.cpp
 
 #HEADERS += Easymar.h
 #SOURCES += Easymar.cpp
