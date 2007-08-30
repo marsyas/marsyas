@@ -208,6 +208,7 @@ WekaSource::myUpdate(MarControlPtr sender)
     }//if "kFold"
   else if(strcmp(cp ,"UseTestSet")==0)
     {
+      cout << "WekaSource:UseTestSet" << endl;
       validationModeEnum_ = UseTestSet;
       
       cp = (char *)strtok(NULL, ",");

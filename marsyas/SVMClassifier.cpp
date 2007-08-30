@@ -91,11 +91,12 @@ SVMClassifier::myProcess(realvec& in, realvec& out)
       if (prev_mode_ == "predict")
 	{
 	  mrs_natural nAttributes = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+	  cout << "nAttributes = " << nAttributes << endl;
 	  instances_.Create(nAttributes);
 	}
       instances_.Append(in);
-      out(0,t) = in(inObservations_-1, t);
-      out(1,t) = in(inObservations_-1, t);
+      out(0,0) = in(inObservations_-1, 0);
+      out(1,0) = in(inObservations_-1, 0);
     }
   
   

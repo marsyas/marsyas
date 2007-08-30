@@ -61,7 +61,7 @@ string extractorName = EMPTYSTRING;
 string classifierName = EMPTYSTRING;
 string collectionName = EMPTYSTRING;
 string predictCollection = EMPTYSTRING;
-
+string testCollection = EMPTYSTRING;
 
 CommandLineOptions cmd_options;
 
@@ -396,7 +396,6 @@ tempo_histoSumBands(MarSystem* total1, string sfName, realvec& beatfeatures,
   int numPlayed =0;
   mrs_natural wc=0;
   mrs_natural samplesPlayed = 0;
-  mrs_natural repeatId = 1;
 
   // vector of bpm estimate used to calculate median 
   onSamples = total1->getctrl("ShiftInput/si/mrs_natural/onSamples")->to<mrs_natural>();
@@ -476,14 +475,14 @@ bextract_trainStereoSPS(vector<Collection> cls, string classNames,
 
   total->updctrl("mrs_natural/inSamples", 1024);
 
-  mrs_bool isEmpty;
-
+  
   // cout << *total << endl;
-  int cj,i;
+  unsigned int cj;
+  int i;
   for (cj=0; cj < cls.size(); cj++)
     {
       Collection l = cls[cj];
-      total->updctrl("Annotator/ann/mrs_natural/label", cj); 
+      total->updctrl("Annotator/ann/mrs_natural/label", (mrs_natural)cj); 
       for (i=0; i < l.size(); i++)
 	{
 	  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));	  
@@ -579,14 +578,13 @@ bextract_trainStereoSPSMFCC(vector<Collection> cls, string classNames,
 
   total->updctrl("mrs_natural/inSamples", 1024);
 
-  mrs_bool isEmpty;
-
   // cout << *total << endl;
-  int cj,i;
+  unsigned int cj;
+  int i;
   for (cj=0; cj < cls.size(); cj++)
     {
       Collection l = cls[cj];
-      total->updctrl("Annotator/ann/mrs_natural/label", cj); 
+      total->updctrl("Annotator/ann/mrs_natural/label", (mrs_natural)cj); 
       for (i=0; i < l.size(); i++)
 	{
 	  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));	  
@@ -662,14 +660,14 @@ bextract_trainStereoMFCC(vector<Collection> cls, string classNames,
 
   total->updctrl("mrs_natural/inSamples", 1024);
 
-  mrs_bool isEmpty;
 
   // cout << *total << endl;
-  int cj,i;
+  unsigned int cj;
+  int i;
   for (cj=0; cj < cls.size(); cj++)
     {
       Collection l = cls[cj];
-      total->updctrl("Annotator/ann/mrs_natural/label", cj); 
+      total->updctrl("Annotator/ann/mrs_natural/label", (mrs_natural)cj); 
       for (i=0; i < l.size(); i++)
 	{
 	  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));	  
@@ -850,7 +848,7 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
   annotator->updctrl("mrs_real/israte", total->getctrl("mrs_real/israte"));
 
 
-  MarSystem* gcl = mng.create("GaussianClassifier" ,"gcl");
+  MarSystem* gcl = mng.create("SVMClassifier" ,"gcl");
   
 
   wsink->updctrl("mrs_natural/inSamples", annotator->getctrl("mrs_natural/onSamples"));
@@ -982,9 +980,10 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 	  cout << "Writing weka .arff file to :" << wekafname << endl;
 	}
 
-      gcl->updctrl("mrs_natural/nLabels", (mrs_natural)l.getNumLabels());
+      // gcl->updctrl("mrs_natural/nLabels", (mrs_natural)l.getNumLabels());
       gcl->updctrl("mrs_string/mode", "train");
 
+      
       for (i=0; i < l.size(); i++)//iterate over collection files
 	{
 	  // cout << beatfeatures << endl;
@@ -1020,13 +1019,14 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
     }
 
   
-  if (predictCollection != EMPTYSTRING) 
+  if (testCollection != EMPTYSTRING) 
     {
-      cout << "bextract_trainAccumulator has labels" << endl;
-
-      m.read(predictCollection);
+      m.read(testCollection);
       wsink->updctrl("mrs_string/filename", "predict.arff");
       gcl->updctrl("mrs_string/mode", "predict");
+
+      ofstream prout;
+      prout.open(predictCollection.c_str());
 
       for (i=0; i < m.size(); i++)//iterate over collection files
 	{
@@ -1058,8 +1058,8 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 	  if (wekafname != EMPTYSTRING) 
 	    wsink->process(afullres, afullres);
 	  gcl->process(afullres, gclres);
-	  
-	  cout << m.entry(i) << "\t" << l.labelName(gclres(0,0)) << endl;
+	  cout << "Predicting " << m.entry(i) << "\t" << l.labelName(gclres(0,0)) << endl;
+	  prout << m.entry(i) << "\t" << l.labelName(gclres(0,0)) << endl;
 	}
     }
   
@@ -1248,7 +1248,7 @@ void bextract_train(vector<Collection> cls,
 	{
 	  featureNetwork->updctrl("WekaSink/wsink/mrs_string/labelNames",classNames);
 	  featureNetwork->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
-	  featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 40);
+	  featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
 	  featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  			
 	}
       //iterate over collections (i.e. classes)
@@ -1293,7 +1293,7 @@ void bextract_train(vector<Collection> cls,
 	    {
 	      featureNetwork->updctrl("WekaSink/wsink/mrs_string/labelNames", l.getLabelNames());
 	      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/nLabels", nLabels);
-	      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 40);
+	      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
 	      featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  			
 	    }
 	  
@@ -1388,7 +1388,7 @@ void bextract_train(vector<Collection> cls,
 	    {
 	      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/nLabels", numClasses);
 	      featureNetwork->updctrl("WekaSink/wsink/mrs_string/labelNames",classNames);
-	      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 40);
+	      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
 	      string name = audioColl.entry(i).substr(0, audioColl.entry(i).length()-4) + "_" + extractorStr + ".arff";
 	      featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", name);
 	    }
@@ -1861,6 +1861,7 @@ initOptions()
   cmd_options.addBoolOption("pluginmute", "pm", false);
   cmd_options.addStringOption("workdir", "wd", EMPTYSTRING);
   cmd_options.addStringOption("predict", "pr", EMPTYSTRING);
+  cmd_options.addStringOption("test", "tc", EMPTYSTRING);
 }
 
 void 
@@ -1886,6 +1887,7 @@ loadOptions()
   pluginMute  = cmd_options.getBoolOption("pluginmute");
   workspaceDir = cmd_options.getStringOption("workdir");
   predictCollection = cmd_options.getStringOption("predict");
+  testCollection = cmd_options.getStringOption("test");
 }
 
 void bextract(vector<string> soundfiles, mrs_natural label, 
@@ -2002,6 +2004,7 @@ mirex_bextract()
 {
   cout << "MIREX 2007 bextract" << endl;
   cout << "Extracting features for files in collection : " << collectionName << endl;
+  cout << "Predicting class for files in collection : " << predictCollection << endl;
 
   // Get the first filename just to initialize correctly the network 
   Collection l; 
@@ -2057,17 +2060,24 @@ mirex_bextract()
   if (workspaceDir != EMPTYSTRING) 
     wekafname = workspaceDir + wekafname;
 
-  if (wekafname == EMPTYSTRING) 
-    total->updctrl("WekaSink/wsink/mrs_string/filename", "weka.arff");
-  else 
-    total->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);
 
-
-
+  mrs_natural nLabels = l.getNumLabels();
+  
+  if (wekafname != EMPTYSTRING)
+    {
+      cout << "WekaSink nLabels = " << nLabels << endl;
+      total->updctrl("WekaSink/wsink/mrs_string/labelNames", l.getLabelNames());
+      total->updctrl("WekaSink/wsink/mrs_natural/nLabels", nLabels);
+      total->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  			
+    }
+  
   int i;
   for (i=0; i < l.size(); i++) 
     {
       total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", l.entry(i));
+      cout << "Label = " << l.labelEntry(i) << endl;
+      cout << "LabelID = " << l.labelNum(l.labelEntry(i)) << endl;
+      total->updctrl("Annotator/ann/mrs_natural/label", l.labelNum(l.labelEntry(i)));
       cout << "Extracting: " << l.entry(i) << endl;
       total->tick();
     }
@@ -2161,6 +2171,8 @@ main(int argc, const char **argv)
   cout << "collectionName = " << collectionName << endl;
   if (collectionName != EMPTYSTRING) 
     {
+      if (extractorName.substr(0,2) == "SV") 
+	extractorName = extractorName.substr(2, extractorName.length());
       mirex_bextract();
       exit(0);
     }
