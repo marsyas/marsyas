@@ -1,8 +1,11 @@
 #include "Transcriber.h"
 #include <iostream>
-using namespace Marsyas;
 using namespace std;
 
+namespace Marsyas
+{
+
+static const mrs_natural MIN_NOTE_FRAMES = 6; // note length
 static MarSystemManager mng;
 
 Transcriber::Transcriber()
@@ -74,7 +77,7 @@ Transcriber::findValleys(const realvec* list)
 	mrs_natural valIndex = 0;
 
 	mrs_real localMin;
-	mrs_natural minSpace = 8;
+	mrs_natural minSpace = MIN_NOTE_FRAMES;
 	mrs_natural prevValIndex = 0;
 	mrs_real prevValValue = 1.0;
 	for (mrs_natural i=minSpace; i<list->getSize()-minSpace; i++)
@@ -160,7 +163,7 @@ Transcriber::pitchSegment(realvec* pitchList, realvec* boundaries)
 realvec*
 Transcriber::findPitchBoundaries(const realvec* pitchList)
 {
-	mrs_natural minSpace = 10;
+	mrs_natural minSpace = MIN_NOTE_FRAMES;
 	mrs_real noteBoundary = 0.5;
 
 	realvec* boundaries = new realvec(1);
@@ -372,5 +375,5 @@ Transcriber::getNotes(const realvec* pitchList, const realvec* ampList,
 	return notes;
 }
 
-
+} //namespace
 
