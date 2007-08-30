@@ -178,7 +178,7 @@ pkginclude_HEADERS = \
 	RawFileSource.h \
 	FM.h \
 	ANN_node.h \
-	Annotator.h 
+	Annotator.h \
 	ZeroRClassifier.h \
 	Summary.h \
 	KNNClassifier.h \
