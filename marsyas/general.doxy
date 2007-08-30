@@ -1,5 +1,12 @@
 
 /** \file general.doxy
+\todo all .cpp files should be inside the Marsyas namespace, instead of
+importing it.
+
+\todo all Foo::Foo(string blah) need to change to Foo::Foo(std::string
+blah);  In other words, the argument list in .cpp needs to be the same
+as .h
+
 \bug sfplay portability  (see sourceforge).   Not fixed yet, despite
 previous reports.
 
