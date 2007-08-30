@@ -1027,6 +1027,7 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
   if (testCollection != EMPTYSTRING) 
     {
       m.read(testCollection);
+      if (wekafname != EMPTYSTRING) 
       wsink->updctrl("mrs_string/filename", "predict.arff");
       gcl->updctrl("mrs_string/mode", "predict");
 
