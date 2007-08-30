@@ -850,11 +850,12 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 
   MarSystem* gcl = mng.create("SVMClassifier" ,"gcl");
   
-
-  wsink->updctrl("mrs_natural/inSamples", annotator->getctrl("mrs_natural/onSamples"));
-  wsink->updctrl("mrs_natural/inObservations", annotator->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
-  wsink->updctrl("mrs_real/israte", annotator->getctrl("mrs_real/israte"));
-
+  if (wekafname != EMPTYSTRING) 
+    {
+      wsink->updctrl("mrs_natural/inSamples", annotator->getctrl("mrs_natural/onSamples"));
+      wsink->updctrl("mrs_natural/inObservations", annotator->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
+      wsink->updctrl("mrs_real/israte", annotator->getctrl("mrs_real/israte"));
+    }
 
   gcl->updctrl("mrs_natural/inSamples", annotator->getctrl("mrs_natural/onSamples"));
   gcl->updctrl("mrs_natural/inObservations", annotator->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
@@ -882,7 +883,8 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
     {
       annotator->updctrl("mrs_string/inObsNames", total->getctrl("mrs_string/onObsNames"));  
     }
-  wsink->updctrl("mrs_string/inObsNames", annotator->getctrl("mrs_string/onObsNames"));
+  if (wekafname != EMPTYSTRING)
+    wsink->updctrl("mrs_string/inObsNames", annotator->getctrl("mrs_string/onObsNames"));
 
   realvec iwin;
 
@@ -899,12 +901,14 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
   if (!collection_has_labels) 
     {
 
-      wsink->updctrl("mrs_string/labelNames",classNames);
-      wsink->updctrl("mrs_natural/nLabels", (mrs_natural)cls.size());  
+      
       
       if (wekafname != EMPTYSTRING) 
-	wsink->updctrl("mrs_string/filename", wekafname);
-      
+	{
+	  wsink->updctrl("mrs_string/labelNames",classNames);
+	  wsink->updctrl("mrs_natural/nLabels", (mrs_natural)cls.size());  
+	  wsink->updctrl("mrs_string/filename", wekafname);
+	}
 
       for (cj=0; cj < (mrs_natural)cls.size(); cj++)
 	{
@@ -970,16 +974,17 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 	}
       
 
-      wsink->updctrl("mrs_string/labelNames",l.getLabelNames());
-      wsink->updctrl("mrs_natural/nLabels", (mrs_natural)l.getNumLabels());  
+
       if (wekafname != EMPTYSTRING) 
 	{
+	  wsink->updctrl("mrs_string/labelNames",l.getLabelNames());
+	  wsink->updctrl("mrs_natural/nLabels", (mrs_natural)l.getNumLabels());  
 	  if (workspaceDir != EMPTYSTRING) 
 	    wekafname = workspaceDir + wekafname;
 	  wsink->updctrl("mrs_string/filename", wekafname);
 	  cout << "Writing weka .arff file to :" << wekafname << endl;
 	}
-
+      
       // gcl->updctrl("mrs_natural/nLabels", (mrs_natural)l.getNumLabels());
       gcl->updctrl("mrs_string/mode", "train");
 
