@@ -77,11 +77,13 @@ doTests('text-tests.txt', 'out.txt')
 logfile.close()
 
 print "*********   TEST RESULTS *********"
-if not(problem):
-	print "All tests passed.  Congratulations, you didn't",
-	print "break Marsyas!  (this time)"
-else:
+if (problem):
 	print "Some test(s) failed.  Please see regressionTests/" + LOG_FILE,
 	print "for an account of the damage."
 	print "  (tests are 0-indexed)"
+	sys.exit(1)
+else:
+	print "All tests passed.  Congratulations, you didn't",
+	print "break Marsyas!  (this time)"
+	sys.exit(0)
 
