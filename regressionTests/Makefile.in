@@ -99,10 +99,10 @@ am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
 
-EXTRA_DIST = audio-tests.txt text-tests.txt
-SUBDIRS = audio
+EXTRA_DIST = commit-audio.txt commit-text.txt coffee-text.txt
+SUBDIRS = input answers
 
-CLEANFILES = results.log audio/out.au audio/out.txt audio/marsyas*.plot audio/coll.mf
+CLEANFILES = results.log input/coll.mf
 subdir = regressionTests
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_CLEAN_FILES =

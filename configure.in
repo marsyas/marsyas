@@ -360,7 +360,8 @@ AC_CONFIG_FILES([Makefile marsyas/Makefile
 		 doc/Makefile
 		 examples/Makefile
 		 regressionTests/Makefile
-		 regressionTests/audio/Makefile
+		 regressionTests/input/Makefile
+		 regressionTests/answers/Makefile
 		 bin/Makefile
 		 bin/debug/Makefile
 		 bin/release/Makefile])
