@@ -8,7 +8,6 @@
 #include "AudioSink.h"
 #include "SoundFileSink.h"
 #include "SoundFileSource.h"
-#include "Messager.h"
 #include "Conversions.h"
 #include "CommandLineOptions.h"
 #include "PeakFeatureSelect.h"
