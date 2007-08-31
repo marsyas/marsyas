@@ -46,6 +46,7 @@ printHelp(string progName)
 	cerr << "vibrato         : test vibrato" << endl;
 	cerr << endl << "    *** Analysis tests ***" << endl;
 	cerr << "pitch           : do pitch extraction" << endl;
+	cerr << "transcriber     : do music transcription" << endl;
 	exit(1);
 }
 
@@ -114,12 +115,14 @@ main(int argc, const char **argv)
 	// Basic audio processing
 	else if (testName == "vibrato")
 		basic_vibrato(fname0, outputFilename);
-	else if (testName == "pitch")
-		analysis_pitch(fname0);
-
-	// Analysis
 	else if (testName == "windowing")
 		basic_windowing(fname0,outputFilename);
+
+	// Analysis
+	else if (testName == "pitch")
+		analysis_pitch(fname0);
+	else if (testName == "transcriber")
+		analysis_transcriber(fname0);
 
 
 	else
