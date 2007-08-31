@@ -99,7 +99,7 @@ am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
 
-EXTRA_DIST = README right.wav right-phasevocoder.au right-sfplay.au coll-triad.au right-pitchextract.txt right-sfinfo.txt coll/
+EXTRA_DIST = right.wav sine1000-5.wav coll/
 subdir = regressionTests/input
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_CLEAN_FILES =

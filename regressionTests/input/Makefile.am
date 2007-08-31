@@ -1,8 +1,4 @@
-
-EXTRA_DIST = README right.wav
-EXTRA_DIST += right-phasevocoder.au right-sfplay.au coll-triad.au
-EXTRA_DIST += right-pitchextract.txt right-sfinfo.txt
-
+EXTRA_DIST = right.wav sine1000-5.wav
 
 EXTRA_DIST += coll/
 
