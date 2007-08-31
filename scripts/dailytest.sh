@@ -23,7 +23,7 @@ then
 	echo Build succeeded...
 else
 	echo Build FAILED!
-	mail -s "Daily Marsyas Autotester" gperciva@uvic.ca < $buildLog
+	mail -s "Daily Marsyas Autotester" gperciva@uvic.ca < tail -n 50 $buildLog
 	exit
 fi
 
