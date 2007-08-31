@@ -188,7 +188,7 @@ protected:
 	
 	virtual void myProcess(realvec& in, realvec& out) = 0;
 
-	MarSystem& operator=(const MarSystem&) { assert(0); } // copy assignment (should never be called!) [!]
+	MarSystem& operator=(const MarSystem&) { assert(0); return *this;} // copy assignment (should never be called!) [!]
 
 public:
 	MarSystem(std::string type, std::string name);
