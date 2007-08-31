@@ -4,7 +4,8 @@ baseDir=~/usr/src/marsyas
 newDir=~/usr/src/dailytest-marsyas
 logBase=~/usr/src/dailytest-`date +%y%m%d`
 buildLog=$logBase-build.log
-regtestLog=$logBase-regtest.log
+regtest_commitLog=$logBase-regcommit.log
+regtest_coffeeLog=$logBase-regcoffee.log
 lastGoodVersion=~/usr/src/dailytest-lastgood.txt
 
 
@@ -25,26 +26,33 @@ then
 	echo Build succeeded...
 else
 	echo Build FAILED!
-	mail -s "Daily Marsyas Autotester" gperciva@uvic.ca < tail -n 50 $buildLog
+	mail -s "Daily Marsyas Autotester: build FAILED" gperciva@uvic.ca < tail -n 50 $buildLog
 	exit
 fi
 
-scripts/regression_tests.py &> $regtestLog
+scripts/regtest_commit.py &> $regtest_commitLog
 PASS=$?
 if [ "$PASS" = "0" ]
 then
-	echo Regression tests succeeded...
+	echo Commit regression tests succeeded...
 else
-	echo Regression tests FAILED!
-	mail -s "Daily Marsyas Autotester" gperciva@uvic.ca < $regtestLog
+	echo Commit regression tests FAILED!
+	mail -s "Daily Marsyas Autotester: commit regtest FAILED" gperciva@uvic.ca < $regtest_commitLog
 	exit
 fi
 
+scripts/regtest_coffee.py &> $regtest_coffeeLog
+PASS=$?
+if [ "$PASS" = "0" ]
+then
+	echo Coffee regression tests succeeded...
+else
+	echo Coffee regression tests FAILED!
+	mail -s "Daily Marsyas Autotester: coffee regtest FAILED" gperciva@uvic.ca < $regtest_coffeeLog
+	exit
+fi
 
 echo $version > $lastGoodVersion
-
-# temporary end here.  Once the other testing system is in place, we'll
-# have another test (of course).
-mail -s "Daily Marsyas Autotester" gperciva@uvic.ca < $regtestLog
+mail -s "Daily Marsyas Autotester" gperciva@uvic.ca < "Everything is good"
 
 
