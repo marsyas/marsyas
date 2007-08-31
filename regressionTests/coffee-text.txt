@@ -1,0 +1,6 @@
+# two columns: command	<TAB>	answer file
+# comments are #, obviously.
+#     %CD = coffee_dir
+regressionChecks -t transcriber %CD/transcription/studentscale.wav > out.txt	../answers/transcriber-studentscale.txt
+
+
