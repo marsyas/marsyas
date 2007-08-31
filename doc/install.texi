@@ -398,7 +398,7 @@ Useful programs:
 @itemize
 @uref{http://python.org, Python}: Installed by default on Linux and MacOS X
 machines; Windows users may install it from this site.  Marsyas contains
-some very useful @ref{Scripts} which are written in Python.
+some very useful scripts which are written in Python.
 
 @uref{http://www.mathworks.com/products/matlab/, Matlab}: information
 may be easily passed to and from Matlab and Marsyas; this allows easy
@@ -417,11 +417,11 @@ prototyping.
 
 Marsyas is hosted at SourceForge:
 
-@quotation
+@example
 @uref{http://marsyas.sourceforge.net/}
 
 @uref{http://www.sourceforge.net/projects/marsyas}
-@end quotation
+@end example
 
 Marsyas is open source software and is distributed 
 as a tarball (something like @file{marsyas-0.2.8.tar.gz}).  Uncompress

@@ -56,6 +56,8 @@ translation approved by the Free Software Foundation.
 @top Marsyas Manual
 @end ifnottex
 
+@c  TODO: split into User, Programmer, and Developer "books"
+
 @menu
 * Introduction::                History, related work, and goals.
 * Installation::                Installation instructions for different operating systems.

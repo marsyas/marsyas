@@ -18,7 +18,7 @@ source code for those files is in @file{apps/@{DIR@}/}.
 * Feature Extraction::          
 * Synthesis::                   
 * Marsystem Interaction::       
-* Scripts::                     
+* Regression tests::            
 @end menu
 
 
@@ -364,22 +364,8 @@ to come up with some alternative syntax (I have some ideas
 in that direction). 
 
 
-@node Scripts
-@section Scripts
-
-Marsyas contains a few python scripts which can make life much more
-pleasant.  Python is installed by default on Linux and MacOS X machines;
-Windows users may install it from @uref{http://python.org}.
-
-
-@menu
-* Regression tests::            
-* Creating a MarSystem::        
-* Adding/removing to/from the build system::  
-@end menu
-
 @node Regression tests
-@subsection Regression tests
+@section Regression tests
 
 Marsyas contains a suite of tests to ensure that new functionality (or
 bug fixes) do not cause bugs in existing (working) code.  Running these
@@ -389,10 +375,30 @@ The tests do not require the marsyas executables to be installed (by
 default they execute @file{../../bin/release/PROGNAME} ), but marsyas
 must be compiled (ie @code{make}).
 
-Simply execute
+The tests also require Python to be installed.  Python is installed by
+default on Linux and MacOS X machines; Windows users may install it from
+@uref{http://python.org}.
+
+@menu
+* Commit tests::                
+* Coffee tests::                
+* It won't work::               
+@end menu
+
+
+@node Commit tests
+@subsection Commit tests
+
+These are short, quick tests; on modern hardware, they will take less
+than 10 seconds to run.  Some people might call these @qq{sanity tests}
+or @qq{smoke tests}.  I call them @qq{commit tests}, since you should
+run these before every major commit.  Since these tests are so fast, you
+have no excuse for committing something that breaks these tests.
+
+To test, simply run
 
 @example
-scripts/marsyas_tests.py
+scripts/commit_tests.py
 @end example
 
 You will see many messages scroll by; this is normal.  At the end, you
@@ -400,44 +406,25 @@ will see the test results.  More information about these tests is
 available in the file @file{tests/results.log}.
 
 
-@node Creating a MarSystem
-@subsection Creating a MarSystem
 
-To create a @qq{blank} MarSystem to begin programming, use
+@node Coffee tests
+@subsection Coffee tests
 
+These are a longer set of tests; they may take up to 5 minutes to run.
+They also require files that are not part of the Marsyas svn or
+tarballs.  You may download the Marsyas Coffee Data at
+
+@c  TODO: find better location for Coffee Data
 @example
-createMarSystem.py foo
+@uref{http://opihi.cs.uvic.ca/~gperciva/index.html}
 @end example
 
-@noindent
-where @code{foo} is the name of your MarSystem.  This script will create
-@file{foo.h} and @file{foo.cpp} in your @emph{current} directory.
 
-If you want to create these new MarSystems in the @file{marsyas/}
-directory, you would execute @code{../scripts/createMarSystem.py foo}
-(on *nix).  If you want to create these new MarSystems in a different
-directory, simply change to that directory, then execute
-@code{/path/to/marsyas/scripts/createMarSystem.py foo}
+@node It won't work
+@subsection @qq{It won't work}
+
+Sweet Mao, you guys are a bunch of whiners.
 
 
-@node Adding/removing to/from the build system
-@subsection Adding/removing to/from the build system
-
-To add files to the Marsyas build system, use
-
-@example
-addMarsystem foo
-addClass foo
-@end example
-
-To remove files from the build system, use
-
-@example
-removeMarsystem foo
-removeClass foo
-@end example
-
-Not that removing files from the build system does not actually remove
-the files themselves.
 
 

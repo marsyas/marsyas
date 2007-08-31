@@ -158,10 +158,54 @@ greater than 0.
 
 
 @menu
+* Creating a MarSystem::        
+* Adding/removing to/from the build system::  
 * Contributing source documentation::  
 * Contributing non-MarSystem system code::  
 * Contributing MarSystems::     
 @end menu
+
+
+
+@node Creating a MarSystem
+@subsection Creating a MarSystem
+
+To create a @qq{blank} MarSystem to begin programming, use
+
+@example
+createMarSystem.py foo
+@end example
+
+@noindent
+where @code{foo} is the name of your MarSystem.  This script will create
+@file{foo.h} and @file{foo.cpp} in your @emph{current} directory.
+
+If you want to create these new MarSystems in the @file{marsyas/}
+directory, you would execute @code{../scripts/createMarSystem.py foo}
+(on *nix).  If you want to create these new MarSystems in a different
+directory, simply change to that directory, then execute
+@code{/path/to/marsyas/scripts/createMarSystem.py foo}
+
+
+@node Adding/removing to/from the build system
+@subsection Adding/removing to/from the build system
+
+To add files to the Marsyas build system, use
+
+@example
+addMarsystem foo
+addClass foo
+@end example
+
+To remove files from the build system, use
+
+@example
+removeMarsystem foo
+removeClass foo
+@end example
+
+Not that removing files from the build system does not actually remove
+the files themselves.
 
 
 @node Contributing source documentation
