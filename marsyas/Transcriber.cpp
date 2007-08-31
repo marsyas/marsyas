@@ -1,8 +1,11 @@
 #include "Transcriber.h"
 #include <iostream>
-using namespace Marsyas;
 using namespace std;
 
+namespace Marsyas
+{
+
+static const mrs_natural MIN_NOTE_FRAMES = 6; // note length
 static MarSystemManager mng;
 
 Transcriber::Transcriber()
@@ -74,7 +77,7 @@ Transcriber::findValleys(const realvec* list)
 	mrs_natural valIndex = 0;
 
 	mrs_real localMin;
-	mrs_natural minSpace = 8;
+	mrs_natural minSpace = MIN_NOTE_FRAMES;
 	mrs_natural prevValIndex = 0;
 	mrs_real prevValValue = 1.0;
 	for (mrs_natural i=minSpace; i<list->getSize()-minSpace; i++)
@@ -105,7 +108,9 @@ Transcriber::findValleys(const realvec* list)
 			}
 		}
 	}
+	//cout<<(*valleys);
 	valleys->stretch(valIndex);
+	//cout<<(*valleys);
 	return valleys;
 }
 
@@ -158,7 +163,7 @@ Transcriber::pitchSegment(realvec* pitchList, realvec* boundaries)
 realvec*
 Transcriber::findPitchBoundaries(const realvec* pitchList)
 {
-	mrs_natural minSpace = 10;
+	mrs_natural minSpace = MIN_NOTE_FRAMES;
 	mrs_real noteBoundary = 0.5;
 
 	realvec* boundaries = new realvec(1);
@@ -204,6 +209,7 @@ Transcriber::ampSegment(realvec* ampList, realvec* boundaries)
 		length = (mrs_natural) ((*boundaries)(i+1) - (*boundaries)(i));
 		region = ampList->getSubVector(start, length);
 		regionBounds = findValleys((&region));
+		//cout<<"************ new region at: "<<start<<endl;
 		findAmpBoundaries(&region, regionBounds);
 		(*regionBounds) += start;
 		newBoundaries->appendRealvec(*regionBounds);
@@ -216,42 +222,67 @@ Transcriber::ampSegment(realvec* ampList, realvec* boundaries)
 void
 Transcriber::findAmpBoundaries(realvec* ampList, realvec* &boundaries)
 {
-	if (boundaries->getSize() <2)
+	if (boundaries->getSize() < 2)
 		return;
+
+	// create empty list of boundaries to keep
 	mrs_natural numSamples = boundaries->getSize();
-	realvec *newBounds = new realvec(numSamples);
-//	(*newBounds)(0) = 0;
+	realvec *newBounds = new realvec;
+	newBounds->create(numSamples);
 	mrs_natural newIndex=0;
 
-//	mrs_natural window = 10;
-	mrs_real peakRatio = 0.8;
-	realvec region;
+	// ignore quiet parts
+	mrs_real regionMinVal = 0.1;
+	if ( ampList->mean() < regionMinVal )
+	{
+		newBounds->stretch(newIndex);
+		delete boundaries;
+		boundaries = newBounds;
+	}
+
+	// normalize amps in pitch region
+	realvec pitchRegion;
 	mrs_natural start, length;
+	start = (mrs_natural) (*boundaries)(0);
+	length = ampList->getSize();
+	pitchRegion = ampList->getSubVector(start, length);
+	pitchRegion /= pitchRegion.maxval();
+
+
+	mrs_real valleyMinVal = 0.5;
 	mrs_real valley;
-	for (mrs_natural i=0; i<boundaries->getSize()-1; i++)
+	realvec region;
+	for (mrs_natural i=0; i<boundaries->getSize(); i++)
 	{
 		start = (mrs_natural) (*boundaries)(i);
-		length = (mrs_natural) ((*boundaries)(i+1) - (*boundaries)(i));
-		region = ampList->getSubVector(start, length);
-		valley = (*ampList)(start);
-		//cout<<start<<"\t"<<findNextPeakValue(region, 0)<<endl;
-		if ( (valley < peakRatio*findNextPeakValue(&region, 0)) &&
-		        (region.mean() > 0.01) )
+		if (i < boundaries->getSize()-1 )
+			length = (mrs_natural) ((*boundaries)(i+1) - (*boundaries)(i));
+		else
+			length = pitchRegion.getSize() - i;
+		region = pitchRegion.getSubVector(start, length);
+
+		valley = pitchRegion(start);
+		if ( (valley < valleyMinVal) &&
+//		if ( (valley < peakRatio*findNextPeakValue(&region, 0)) &&
+		        (region.mean() > regionMinVal) )
 		{
+//			cout<<"at frame "<<start<<" keep valley: "<<valley<<endl;
 			(*newBounds)(newIndex) = start;
 			newIndex++;
 		}
 		else
 		{
-			//cout<<"Removed "<<start<<endl;
-			//cout<<valley<<"\t"<<findNextPeakValue(region, 0)<<endl;
+//			cout<<"Removed "<<start<<endl;
+//			cout<<valley<<"\t"<<region.mean()<<endl;
+//			cout<<region;
 		}
 	}
-	(*newBounds)(newIndex) = (*boundaries)( numSamples-1 );
-	newBounds->stretch(newIndex+1);
+	newBounds->stretch(newIndex);
 	delete boundaries;
 	boundaries = newBounds;
 }
+//zz
+
 
 
 // note stuff
@@ -287,27 +318,37 @@ realvec*
 Transcriber::getNotes(const realvec* pitchList, const realvec* ampList,
                       const realvec* boundaries)
 {
-	// FIXME Unused parameter
-	(void) ampList;
 	mrs_natural numNotes = boundaries->getSize();
 	realvec* notes = new realvec(numNotes-1, 2);
 //	realvec* notes = new realvec(1, 2);
 
 	mrs_natural start, length;
 //	realvec* region;
-//	mrs_natural same=1;
+	mrs_natural oldPitch;
+	oldPitch = (mrs_natural) (*ampList)(0); // to suppress warning
 //	mrs_natural prevSample=0;
 //	mrs_real prevPitch=0.0;
 	realvec* durations = new realvec();
 	getRelativeDurations(boundaries, durations);
 	//cout<<(*durations);
+	mrs_real notePitch;
 	for (mrs_natural i=0; i<numNotes-1; i++)
 	{
 		(*notes)(i,1) = (*durations)(i);
 
 		start = (mrs_natural) (*boundaries)(i);
 		length = (mrs_natural) ((*boundaries)(i+1) - (*boundaries)(i));
-		(*notes)(i,0) = findMedianWithoutZeros(start, length, pitchList);
+		notePitch = findMedianWithoutZeros(start, length, pitchList);
+		notePitch = max( floor(notePitch), floor(notePitch+0.5) );
+		if ( notePitch != oldPitch)
+		{
+			cout<<endl<<notePitch;
+		} else
+		{
+			cout<<" "<<notePitch;
+		}
+		(*notes)(i,0) = notePitch;
+		oldPitch = (mrs_natural) notePitch;
 		//region = getSubVector(pitchList, start, length);
 		/*
 				if (region->getSize() > 0)
@@ -330,8 +371,9 @@ Transcriber::getNotes(const realvec* pitchList, const realvec* ampList,
 		//(*notes)(i,1) = (*boundaries)(i+1)-(*boundaries)(i);
 	}
 //cout<<(*notes);
+	cout<<endl;
 	return notes;
 }
 
-
+} //namespace
 
