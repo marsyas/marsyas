@@ -41,7 +41,7 @@ else
 	exit
 fi
 
-scripts/regtest_coffee.py &> $regtest_coffeeLog
+scripts/regtest_coffee.py ../marsyas-coffee &> $regtest_coffeeLog
 PASS=$?
 if [ "$PASS" = "0" ]
 then
@@ -53,6 +53,7 @@ else
 fi
 
 echo $version > $lastGoodVersion
-mail -s "Daily Marsyas Autotester" gperciva@uvic.ca < "Everything is good"
-
+echo "Everything is good" > email.txt
+mail -s "Daily Marsyas Autotester" gperciva@uvic.ca < email.txt
+rm email.txt
 
