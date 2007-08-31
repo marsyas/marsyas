@@ -5,11 +5,13 @@ newDir=~/usr/src/dailytest-marsyas
 logBase=~/usr/src/dailytest-`date +%y%m%d`
 buildLog=$logBase-build.log
 regtestLog=$logBase-regtest.log
+lastGoodVersion=~/usr/src/dailytest-lastgood.txt
 
 
 ### actual script
 rm -rf $newDir
 cd $baseDir
+version=`svn info | grep Revision | cut -c 11-`
 svn export . $newDir
 
 cd $newDir
@@ -38,6 +40,8 @@ else
 	exit
 fi
 
+
+echo $version > $lastGoodVersion
 
 # temporary end here.  Once the other testing system is in place, we'll
 # have another test (of course).
