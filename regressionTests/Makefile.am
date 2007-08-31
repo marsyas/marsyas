@@ -1,7 +1,7 @@
 
-EXTRA_DIST = audio-tests.txt text-tests.txt
-SUBDIRS = audio
+EXTRA_DIST = commit-audio.txt commit-text.txt coffee-text.txt
+SUBDIRS = input answers
 
-CLEANFILES = results.log audio/out.au audio/out.txt
-CLEANFILES += audio/marsyas*.plot audio/coll.mf
+CLEANFILES = results.log
+CLEANFILES += input/coll.mf
 
