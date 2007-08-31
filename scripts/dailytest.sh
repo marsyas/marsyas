@@ -21,11 +21,13 @@ then
 	echo Build succeeded...
 else
 	echo Build FAILED!
+	mail -s "Daily Marsyas Autotester" gperciva@uvic.ca < $logfile-testbuild.log
 	exit
 fi
 
 scripts/regression_tests.py &> $logfile-regtests.log
 PASS=$?
+mail -s "Daily Marsyas Autotester" gperciva@uvic.ca < $logfile-regtests.log
 if [ "$PASS" = "0" ]
 then
 	echo Regression tests succeeded...
@@ -33,5 +35,4 @@ else
 	echo Regression tests FAILED!
 	exit
 fi
-
 
