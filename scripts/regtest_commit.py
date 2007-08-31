@@ -54,6 +54,7 @@ def doTests(test_filename, temp_filename):
 		if (os.system(command) != 0): # if something went wrong
 			problem = 1
 			logfile.write("Test " + str(i) + " FAILED:   " + test_commands[i]+'\n')
+			os.remove( temp_filename )
 			break
 		if not(test_answers[i] == ''):
 			# use .au files because identical-sounding .wav files can have
@@ -66,10 +67,10 @@ def doTests(test_filename, temp_filename):
 		else:
 			# we would have found a problem above
 			logfile.write("Test " + str(i) + " successful\n")
+	os.remove( temp_filename )
 
-#test_file = 'testlist.txt'
 logfile = open(LOG_FILE, 'w')
-os.chdir('audio')
+os.chdir('input')
 logfile.write("--------- Audio tests\n")
 doTests('commit-audio.txt', 'out.au')
 logfile.write("--------- Text output tests\n")
