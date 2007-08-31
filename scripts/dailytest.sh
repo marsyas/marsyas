@@ -2,7 +2,9 @@
 ### update as necessary
 baseDir=~/usr/src/marsyas
 newDir=~/usr/src/dailytest-marsyas
-logfile=~/usr/src/dailytest-`date +%y%m%d`
+logBase=~/usr/src/dailytest-`date +%y%m%d`
+buildLog=$logBase-build.log
+regtestLog=$logBase-regtest.log
 
 
 ### actual script
@@ -13,7 +15,7 @@ svn export . $newDir
 cd $newDir
 ./configure
 
-make &> $logfile-testbuild.log
+make &> $buildLog
 PASS=$?
 
 if [ "$PASS" = "0" ]
@@ -21,18 +23,24 @@ then
 	echo Build succeeded...
 else
 	echo Build FAILED!
-	mail -s "Daily Marsyas Autotester" gperciva@uvic.ca < $logfile-testbuild.log
+	mail -s "Daily Marsyas Autotester" gperciva@uvic.ca < $buildLog
 	exit
 fi
 
-scripts/regression_tests.py &> $logfile-regtests.log
+scripts/regression_tests.py &> $regtestLog
 PASS=$?
-mail -s "Daily Marsyas Autotester" gperciva@uvic.ca < $logfile-regtests.log
 if [ "$PASS" = "0" ]
 then
 	echo Regression tests succeeded...
 else
 	echo Regression tests FAILED!
+	mail -s "Daily Marsyas Autotester" gperciva@uvic.ca < $regtestLog
 	exit
 fi
+
+
+# temporary end here.  Once the other testing system is in place, we'll
+# have another test (of course).
+mail -s "Daily Marsyas Autotester" gperciva@uvic.ca < $regtestLog
+
 
