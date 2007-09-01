@@ -72,9 +72,9 @@ def doTests(test_filename, temp_filename):
 logfile = open(LOG_FILE, 'w')
 os.chdir('input')
 logfile.write("--------- Audio tests\n")
-doTests('commit-audio.txt', 'out.au')
+doTests('sanity-audio.txt', 'out.au')
 logfile.write("--------- Text output tests\n")
-doTests('commit-text.txt', 'out.txt')
+doTests('sanity-text.txt', 'out.txt')
 logfile.close()
 
 print "*********   TEST RESULTS *********"

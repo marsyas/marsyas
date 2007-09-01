@@ -15,8 +15,8 @@ logBase=$logDir/`date +%y%m%d`
 
 configLog=$logBase-config.log
 buildLog=$logBase-build.log
-regtest_commitLog=$logBase-regcommit.log
-regtest_coffeeLog=$logBase-regcoffee.log
+sanityLog=$logBase-sanity.log
+coffeeLog=$logBase-coffee.log
 
 report=$logBase-report.txt
 lastGoodVersion=$matDir/lastworking.txt
@@ -72,10 +72,9 @@ cd $buildDir
 ./configure &> $configLog
 testthing make $buildLog "Build"
 
-testthing "scripts/regtest_commit.py" $regtest_commitLog Commit
+testthing "scripts/regtest_sanity.py" $sanityLog Commit
 
-testthing "scripts/regtest_coffee.py ../../marsyas-coffee" \
-	$regtest_coffeeLog Coffee
+testthing "scripts/regtest_coffee.py ../../marsyas-coffee" $coffeeLog Coffee
 
 sendreport "Pass"
 
