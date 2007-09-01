@@ -30,7 +30,7 @@ sendreport() {
 	echo "$subject"
 	cat $report
 	mail -s "$subject" gperciva@uvic.ca < $report
-#	mail -s "$subject" gtzan@cs.uvic.ca < $report
+	mail -s "$subject" gtzan@cs.uvic.ca < $report
 }
 
 #  $1 is the command
