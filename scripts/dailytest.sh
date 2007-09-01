@@ -24,7 +24,9 @@ lastGoodVersion=$matDir/lastworking.txt
 #  $1 is the "pass/fail" on the subject line
 sendreport() {
 	subject="$subjectBase $1"
-	mail -s $subject gperciva@uvic.ca < $report
+	echo "$subject"
+	cat $report
+	mail -s "$subject" gperciva@uvic.ca < $report
 }
 
 #  $1 is the command
@@ -67,6 +69,7 @@ echo >> $report
 
 ### Do tests
 cd $buildDir
+./configure &> $configLog
 testthing make $buildLog "Build"
 
 testthing "scripts/regtest_commit.py" $regtest_commitLog Commit
