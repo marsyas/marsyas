@@ -51,7 +51,7 @@ write a new Marsystem is @file{Gain.h} and @file{Gain.cpp}  or
 
 Suppose that you have created a MarSystem called @code{MyMar}, which
 implements a filter.  To use this MarSystem in a network (see
-@ref{Programming applications}), simply register the MarSystem with the
+@ref{Writing applications}), simply register the MarSystem with the
 manager:
 
 @example

@@ -56,7 +56,6 @@ translation approved by the Free Software Foundation.
 @top Marsyas Manual
 @end ifnottex
 
-@c  TODO: split into User, Programmer, and Developer "books"
 
 @menu
 * Introduction::                History, related work, and goals.
@@ -65,7 +64,7 @@ translation approved by the Free Software Foundation.
 components.
 * Architecture concepts::       Important concepts about Marsyas.
 * System details::              Details about Marsyas.
-* Programming applications::    Writing programs that use MarSystems.
+* Writing applications::        Writing programs that use MarSystems.
 * Developing MarSystems::       Writing new basic MarSystem blocks.
 * Interoperability::            Using Marsyas with other projects.
 * The Index::                   The Index.
@@ -78,7 +77,7 @@ components.
 @include tools.texi
 @include architecture.texi
 @include system.texi
-@include programming.texi
+@include writing.texi
 @include developing.texi
 @include interoperability.texi
 
