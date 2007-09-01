@@ -1,59 +1,78 @@
 #!/bin/sh
-### update as necessary
+######### update as necessary
 baseDir=~/usr/src/marsyas
-newDir=~/usr/src/dailytest-marsyas
-logBase=~/usr/src/dailytest-`date +%y%m%d`
+matDir=~/usr/src/marsyas-mat
+
+
+######### non-changing definitions
+cd $baseDir
+version=`svn info | grep Revision | cut -c 11-`
+subjectBase="Marsyas Auto-Tester ("`date +%y%m%d`", rev $version):"
+
+buildDir=$matDir/testbuild
+logDir=$matDir/logs
+logBase=$logDir/`date +%y%m%d`
+
+configLog=$logBase-config.log
 buildLog=$logBase-build.log
 regtest_commitLog=$logBase-regcommit.log
 regtest_coffeeLog=$logBase-regcoffee.log
-lastGoodVersion=~/usr/src/dailytest-lastgood.txt
+
+report=$logBase-report.txt
+lastGoodVersion=$matDir/lastworking.txt
+
+#  $1 is the "pass/fail" on the subject line
+sendreport() {
+	subject="$subjectBase $1"
+	mail -s $subject gperciva@uvic.ca < $report
+}
+
+#  $1 is the command
+#  $2 is the log file for the command
+#  $3 is the step name (ie Build, Sanity, Coffee, Dist)
+testthing() {
+$1 &> $2
+PASS=$?
+
+if [ "$PASS" = "0" ]
+then
+	echo "$3 succeeded..." >> $report
+else
+	echo "$3 FAILED!   *********" >> $report
+	echo >> $report
+	tail -n 50 $2 >> $report
+	sendreport "FAILED"
+	exit
+fi
+
+}
 
 
-### actual script
-rm -rf $newDir
+
+######## actual script
+
+### setup clean dir
+mkdir -p $matDir
 cd $baseDir
-version=`svn info | grep Revision | cut -c 11-`
-svn export . $newDir
+rm -rf $buildDir
+svn export . $buildDir
 
-cd $newDir
-./configure
 
-make &> $buildLog
-PASS=$?
+### setup report
+rm -rf $logDir
+mkdir -p $logDir
+echo "Marsyas Automatic Test, svn revision $version" >> $report
+echo >> $report
 
-if [ "$PASS" = "0" ]
-then
-	echo Build succeeded...
-else
-	echo Build FAILED!
-	mail -s "Daily Marsyas Autotester: build FAILED" gperciva@uvic.ca < tail -n 50 $buildLog
-	exit
-fi
 
-scripts/regtest_commit.py &> $regtest_commitLog
-PASS=$?
-if [ "$PASS" = "0" ]
-then
-	echo Commit regression tests succeeded...
-else
-	echo Commit regression tests FAILED!
-	mail -s "Daily Marsyas Autotester: commit regtest FAILED" gperciva@uvic.ca < $regtest_commitLog
-	exit
-fi
+### Do tests
+cd $buildDir
+testthing make $buildLog "Build"
 
-scripts/regtest_coffee.py ../marsyas-coffee &> $regtest_coffeeLog
-PASS=$?
-if [ "$PASS" = "0" ]
-then
-	echo Coffee regression tests succeeded...
-else
-	echo Coffee regression tests FAILED!
-	mail -s "Daily Marsyas Autotester: coffee regtest FAILED" gperciva@uvic.ca < $regtest_coffeeLog
-	exit
-fi
+testthing "scripts/regtest_commit.py" $regtest_commitLog Commit
 
-echo $version > $lastGoodVersion
-echo "Everything is good" > email.txt
-mail -s "Daily Marsyas Autotester" gperciva@uvic.ca < email.txt
-rm email.txt
+testthing "scripts/regtest_coffee.py ../../marsyas-coffee" \
+	$regtest_coffeeLog Coffee
+
+sendreport "Pass"
 
