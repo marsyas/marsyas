@@ -368,43 +368,42 @@ in that direction).
 @section Regression tests
 
 Marsyas contains a suite of tests to ensure that new functionality (or
-bug fixes) do not cause bugs in existing (working) code.  Running these
-tests should only take a few seconds.
-
-The tests do not require the marsyas executables to be installed (by
-default they execute @file{../../bin/release/PROGNAME} ), but marsyas
-must be compiled (ie @code{make}).
+bug fixes) do not cause bugs in existing (working) code.  The tests do
+not require the marsyas executables to be installed (by default they
+execute @file{../../bin/release/PROGNAME} ), but marsyas must be
+compiled (ie @code{make}).
 
 The tests also require Python to be installed.  Python is installed by
 default on Linux and MacOS X machines; Windows users may install it from
 @uref{http://python.org}.
 
 @menu
-* Commit tests::                
+* Sanity tests::                
 * Coffee tests::                
-* It won't work::               
 @end menu
 
 
-@node Commit tests
-@subsection Commit tests
+@node Sanity tests
+@subsection Sanity tests
 
-These are short, quick tests; on modern hardware, they will take less
-than 10 seconds to run.  Some people might call these @qq{sanity tests}
-or @qq{smoke tests}.  I call them @qq{commit tests}, since you should
-run these before every major commit.  Since these tests are so fast, you
-have no excuse for committing something that breaks these tests.
+These are short, quick tests; on modern hardware they will take less
+than 10 seconds to run.
 
 To test, simply run
 
 @example
-scripts/commit_tests.py
+scripts/regtests_sanity.py
 @end example
 
-You will see many messages scroll by; this is normal.  At the end, you
-will see the test results.  More information about these tests is
-available in the file @file{tests/results.log}.
+Results will be printed on the command line, with more information in
+the file @file{tests/results.log}.
 
+@sp 1
+
+These tests are not complete by any means, nor are they intended to be.
+They are simply a quick test to see if anything fundamental is broken.
+Since they @emph{are} so quick and easy to run, please run these tests
+often.
 
 
 @node Coffee tests
@@ -412,19 +411,19 @@ available in the file @file{tests/results.log}.
 
 These are a longer set of tests; they may take up to 5 minutes to run.
 They also require files that are not part of the Marsyas svn or
-tarballs.  You may download the Marsyas Coffee Data at
+tarballs.  They are available on the web, see @ref{Optional programs and
+datasets}.  The location of these files must be passed to the script,
+for example
 
-@c  TODO: find better location for Coffee Data
 @example
-@uref{http://opihi.cs.uvic.ca/~gperciva/index.html}
+scripts/commit_tests.py ../../marsyas-coffee/
 @end example
 
+Results will be printed on the command line, with more information in
+the file @file{tests/results.log}.
 
-@node It won't work
-@subsection It won't work
+@sp 1
 
-Sweet Mao, you guys are a bunch of whiners.
-
-
+These tests are useful to run when you take a coffee break.
 
 

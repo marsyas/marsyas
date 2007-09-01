@@ -51,10 +51,12 @@ def doTests(test_filename, temp_filename):
 			command = '..%(sep)s..%(sep)sbin%(sep)s%(mode)s%(sep)s' % {'sep': os.sep, 'mode': mode}
 		command += test_commands[i]
 		#print command
-		if (os.system(command) != 0): # if something went wrong
+		result = os.system(command)
+		if (result != 0): # if something went wrong
 			problem = 1
 			logfile.write("Test " + str(i) + " FAILED:   " + test_commands[i]+'\n')
-			os.remove( temp_filename )
+			if (os.path.exists( temp_filename) ):
+				os.remove( temp_filename )
 			break
 		if not(test_answers[i] == ''):
 			# use .au files because identical-sounding .wav files can have
@@ -67,7 +69,8 @@ def doTests(test_filename, temp_filename):
 		else:
 			# we would have found a problem above
 			logfile.write("Test " + str(i) + " successful\n")
-	os.remove( temp_filename )
+	if (os.path.exists( temp_filename) ):
+		os.remove( temp_filename )
 
 logfile = open(LOG_FILE, 'w')
 os.chdir('input')

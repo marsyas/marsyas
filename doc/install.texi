@@ -580,6 +580,13 @@ qmake -t vclib
 @end example
 
 
+@subsection Testing the build
+
+After you have compiled Marsyas, it is highly recommended to perform our
+automatic tests.  For more information, see @ref{Regression tests}.
+
+
+
 @node Post-install optional configuration
 @section Post-install optional configuration
 
@@ -587,6 +594,7 @@ qmake -t vclib
 * Vim editor support::          
 * MATLAB setup::                
 @end menu
+
 
 @node Vim editor support
 @subsection Vim editor support
@@ -609,10 +617,10 @@ augroup END
 @node MATLAB setup
 @subsection MATLAB setup
 
-@c TODO: fill in blurb.
 MATLAB is a general blurb and whatnot.
+TODO: fill in blurb.
 
-@c TODO: get docs for other operating systems.
+TODO: get docs for other operating systems.
 @subsubsection ... on OSX (Intel)
 
 (the powerPC version is slightly different)
