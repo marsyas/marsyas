@@ -108,7 +108,7 @@ TEXI2HTML = makeinfo --html  # -o out-www/manual/
 TEXI2PDF = texi2pdf  #  -o out-www/
 info_TEXINFOS = marsyas-user.texi marsyas-devel.texi
 
-EXTRA_DIST = marsyas.pdf intro.texi tools.texi architecture.texi programming.texi install.texi unsorted.texi interoperability.texi macros.itexi README images/*.eps images/*.pdf images/*.txt images/*.png source-doc/*.texinfo source-doc/*.html out-www/*.html out-www/images/*.png
+EXTRA_DIST = marsyas.pdf intro.texi tools.texi architecture.texi programming.texi install.texi unsorted.texi interoperability.texi macros.itexi README images/*.eps images/*.pdf images/*.txt images/*.png source-doc/*.texinfo source-doc/*.html
 
 CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
              marsyas.ats  marsyas.evs  marsyas.fns  marsyas.ovs \
@@ -227,7 +227,7 @@ top_distdir = ..
 distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
-	$(mkinstalldirs) $(distdir)/images $(distdir)/out-www $(distdir)/out-www/images $(distdir)/source-doc
+	$(mkinstalldirs) $(distdir)/images $(distdir)/source-doc
 	@list='$(DISTFILES)'; for file in $$list; do \
 	  if test -f $$file || test -d $$file; then d=.; else d=$(srcdir); fi; \
 	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
@@ -372,13 +372,17 @@ doxy:
 	rmdir out-www/doxy/html
 	rmdir out-www/doxy/
 
+# ugly ugly ugly.  :(
 html: marsyas-user.texi marsyas-devel.texi
 	mkdir -p out-www/manual/
-	cp source-doc/*.html out-www/manual/
+	mkdir -p out-www/manual/examples/
+	cp source-doc/*.html out-www/manual/examples/
 	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas-user.texi -o out-www/manual/marsyas-user/
 	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas-devel.texi -o out-www/manual/marsyas-devel/
 	mkdir -p out-www/manual/images/
 	cp images/*.png out-www/manual/images/
+	cd out-www/manual/marsyas-user/ ; ln -s ../images/ images
+	cd out-www/manual/marsyas-devel/ ; ln -s ../images/ images
 	cp index.html.in out-www/index.html
 
 pdf: marsyas-user.texi marsyas-devel.texi
