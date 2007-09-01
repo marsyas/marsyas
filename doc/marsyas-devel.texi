@@ -59,6 +59,7 @@ translation approved by the Free Software Foundation.
 
 @menu
 * Contributing to Marsyas::     How to add your own code to Marsyas.
+* Automatic testing::           An attempt at stability.
 * The Index::                   The Index.
 @end menu
 
@@ -66,6 +67,7 @@ translation approved by the Free Software Foundation.
 @include macros.itexi 
 
 @include contributing.texi
+@include tests.texi
 
 
 

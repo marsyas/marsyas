@@ -583,7 +583,8 @@ qmake -t vclib
 @subsection Testing the build
 
 After you have compiled Marsyas, it is highly recommended to perform our
-automatic tests.  For more information, see @ref{Regression tests}.
+automatic tests.  For more information, see @ref{Regression testing
+scripts}.
 
 
 
