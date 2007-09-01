@@ -354,12 +354,12 @@ AC_CONFIG_FILES([Makefile
 		 src/Makefile
 		 src/marsyas/Makefile
 		 src/examples/Makefile
+		 src/apps/Makefile
+		 src/apps/sfplay/Makefile
+		 src/apps/sfinfo/Makefile
 		 lib/Makefile 
 		 lib/debug/Makefile
 		 lib/release/Makefile
-		 apps/Makefile
-		 apps/sfplay/Makefile
-		 apps/sfinfo/Makefile
 		 doc/Makefile
 		 regressionTests/Makefile
 		 regressionTests/input/Makefile
