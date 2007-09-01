@@ -1,11 +1,14 @@
-#!/bin/sh
+#!/bin/bash
 ######### update as necessary
 baseDir=~/usr/src/marsyas
 matDir=~/usr/src/marsyas-mat
 
 
-######### non-changing definitions
+### get latest SVN
 cd $baseDir
+svn update
+
+######### non-changing definitions
 version=`svn info | grep Revision | cut -c 11-`
 subjectBase="Marsyas Auto-Tester ("`date +%y%m%d`", rev $version):"
 
