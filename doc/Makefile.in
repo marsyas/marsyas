@@ -127,7 +127,7 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_CLEAN_FILES =
 DIST_SOURCES =
 TEXINFO_TEX = $(top_srcdir)/config/texinfo.tex
-INFO_DEPS = marsyas-user.info marsyas-developers.info
+INFO_DEPS = marsyas-user.info marsyas-devel.info
 DVIS = marsyas-user.dvi marsyas-devel.dvi
 TEXINFOS = marsyas-user.texi marsyas-devel.texi
 DIST_COMMON = README Makefile.am Makefile.in texinfo.tex
@@ -144,7 +144,7 @@ Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 marsyas-user.info: marsyas-user.texi
 marsyas-user.dvi: marsyas-user.texi
 
-marsyas-developers.info: marsyas-devel.texi
+marsyas-devel.info: marsyas-devel.texi
 marsyas-devel.dvi: marsyas-devel.texi
 
 .texi.info:
@@ -375,8 +375,8 @@ doxy:
 html: marsyas-user.texi marsyas-devel.texi
 	mkdir -p out-www/manual/
 	cp source-doc/*.html out-www/manual/
-	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas-user.texi -o out-www/manual/user/
-	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas-devel.texi -o out-www/manual/devel/
+	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas-user.texi -o out-www/manual/marsyas-user/
+	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas-devel.texi -o out-www/manual/marsyas-devel/
 	mkdir -p out-www/manual/images/
 	cp images/*.png out-www/manual/images/
 	cp index.html.in out-www/index.html
