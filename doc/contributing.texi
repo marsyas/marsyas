@@ -54,8 +54,9 @@ to the second paragraph.
 
 Small, easy-to-understand examples are also great.  If you have some
 source code that illustrates something, we can add it to
-@file{examples/}.  We use these examples to generate the @ref{Example
-programs}.  You don't have to write any English at all!
+@c  TODO: compile
+@c @file{examples/}.  We use these examples to generate the @ref{Example
+@c programs}.  You don't have to write any English at all!
 
 
 @node Code style
@@ -244,8 +245,9 @@ The @code{[w]} indicates that the control should be written and not
 
 The @code{\ingroup GROUP} will generally be @code{Processing},
 @code{Analysis}, or @code{Synthesis}.  For details about these
-categories, see @ref{List of available MarSystems}.  For a complete list
-of all available groups, see the file @file{marsyas/groups.doxy}.
+@c  TODO
+@c categories, see @ref{List of available MarSystems}.  For a complete list
+@c of all available groups, see the file @file{marsyas/groups.doxy}.
 
 There is one special group: @code{Basic} Processing.  This is a subset
 of the @code{Processing} group.  No MarSystem should only be in the
@@ -309,9 +311,10 @@ use.
 @subsection Contributing MarSystems
 
 If you have created a useful MarSystem which you want to share with
-others, you may add it to the Marsyas source code.  @strong{THIS IS NOT
-REQUIRED FOR BUILDING YOUR OWN APPLICATONS!!!}  See @ref{Compiling and
-using a new MarSystem}.
+@c  TODO
+@c others, you may add it to the Marsyas source code.  @strong{THIS IS NOT
+@c REQUIRED FOR BUILDING YOUR OWN APPLICATONS!!!}  See @ref{Compiling and
+@c using a new MarSystem}.
 
 @subheading Automatically
 
@@ -362,8 +365,9 @@ use.
 
 @itemize
 @item Does Marsyas still compile?
-@item Do the @ref{Regression tests} still pass successfully?
-@item Did you add @ref{Contributing source documentation} (if applicable)?
+@c  TODO
+@c @item Do the @ref{Regression tests} still pass successfully?
+@c @item Did you add @ref{Contributing source documentation} (if applicable)?
 @item Did you add your file(s) to the @code{autotools} and @code{qmake}
 build precess?
 @end itemize

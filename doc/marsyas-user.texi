@@ -1,6 +1,6 @@
 \input texinfo   @c -*-texinfo-*-
 @comment %**start of header
-@setfilename marsyas.info
+@setfilename marsyas-user.info
 @settitle Marsyas 0.2
 @comment %**end of header
      
@@ -68,7 +68,6 @@ components.
 * Programming applications::    Writing programs that use MarSystems.
 * Developing MarSystems::       Writing new basic MarSystem blocks.
 * Interoperability::            Using Marsyas with other projects.
-* Contributing to Marsyas::     How to add your own code to Marsyas.
 * The Index::                   The Index.
 @end menu
 
@@ -82,7 +81,6 @@ components.
 @include programming.texi
 @include developing.texi
 @include interoperability.texi
-@include contributing.texi
 
 @c to be scrapped soon.   -gp
 @c @include unsorted.texi

@@ -421,7 +421,7 @@ tarballs.  You may download the Marsyas Coffee Data at
 
 
 @node It won't work
-@subsection @qq{It won't work}
+@subsection It won't work
 
 Sweet Mao, you guys are a bunch of whiners.
 

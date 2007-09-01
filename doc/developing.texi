@@ -41,8 +41,9 @@ canonical example of a MarSystem that is what I use as a template when I
 write a new Marsystem is @file{Gain.h} and @file{Gain.cpp}  or
 @file{MarSystemTemplateBasic .h .cpp}.
 
-There is a Python script which automates this process; see @ref{Creating
-a MarSystem}.
+@c TODO: temp
+@c There is a Python script which automates this process; see @ref{Creating
+@c a MarSystem}.
 
 
 @node Using your MarSystem
@@ -110,9 +111,10 @@ void MyName::myProcess(realvec& in, realvec& out)
 
 @end itemize
 
-Most of the changes that you make to the basic template (created with
-the script in @ref{Creating a MarSystem}) will be to the @ref{Handling
-controls} methods and the @ref{myProcess} method.
+@c TODO: temp compile
+@c Most of the changes that you make to the basic template (created with
+@c the script in @ref{Creating a MarSystem}) will be to the @ref{Handling
+@c controls} methods and the @ref{myProcess} method.
 
 
 @node Constructors / destructor

@@ -16,9 +16,14 @@
 ## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 
-TEXI2HTML = makeinfo --html -o out-www/manual/
-TEXI2PDF  = texi2pdf -o out-www/
-info_TEXINFOS   = marsyas.texi 
+# temporary ugly hack to deal with multiple manuals.  I really hope we
+# move to waf soon.  :/
+#     (not that automake can't do this; I just don't want to spend
+#     enough time to figure out how to do it, since we'll probably
+#     change to waf in 2008)
+TEXI2HTML = makeinfo --html  # -o out-www/manual/
+TEXI2PDF  = texi2pdf  #  -o out-www/
+info_TEXINFOS   = marsyas-user.texi marsyas-devel.texi
 
 EXTRA_DIST = marsyas.pdf intro.texi tools.texi architecture.texi programming.texi install.texi unsorted.texi interoperability.texi
 
@@ -58,16 +63,19 @@ doxy:
 	rmdir out-www/doxy/html
 	rmdir out-www/doxy/
 
-html: marsyas.texi
+html: marsyas-user.texi marsyas-devel.texi
 	mkdir -p out-www/manual/
 	cp source-doc/*.html out-www/manual/
-	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas.texi 
+	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas-user.texi -o out-www/manual/user/
+	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas-devel.texi -o out-www/manual/devel/
 	mkdir -p out-www/manual/images/
 	cp images/*.png out-www/manual/images/
+	cp index.html.in out-www/index.html
 
-pdf: marsyas.texi
+pdf: marsyas-user.texi marsyas-devel.texi
 	mkdir -p out-www/
-	$(TEXI2PDF) $(TEXI2PDF_FLAGS) $(srcdir)/marsyas.texi
+	$(TEXI2PDF) $(TEXI2PDF_FLAGS) $(srcdir)/marsyas-user.texi -o out-www/manual/
+	$(TEXI2PDF) $(TEXI2PDF_FLAGS) $(srcdir)/marsyas-devel.texi -o out-www/manual/
 
 .PHONY: html pdf
 
