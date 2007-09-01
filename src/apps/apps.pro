@@ -39,5 +39,5 @@ marsyasConsoleApps {
 		WHaSp
 }
 
-marsyasQt4Apps:SUBDIRS += Qt4Apps
+#marsyasQt4Apps:SUBDIRS += Qt4Apps
 	

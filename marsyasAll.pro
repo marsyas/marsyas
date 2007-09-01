@@ -3,12 +3,14 @@ include( marsyasConfig.pri )
 TEMPLATE = subdirs
 CONFIG += ordered
 
-marsyasLib {
-	SUBDIRS += src
-}
-marsyasConsoleApps {
-	SUBDIRS += apps
-}
+SUBDIRS += src
+
+#marsyasLib {
+#	SUBDIRS += src
+#}
+#marsyasConsoleApps {
+#	SUBDIRS += apps
+#}
 
 message ( ***************************************************** )
 unix:message ( Done! Run make now to build Marsyas... )

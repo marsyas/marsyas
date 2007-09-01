@@ -1,3 +1,15 @@
+include( $$quote( "$$BASEDIR/marsyasConfig.pri" ) )
+
 TEMPLATE = subdirs
-SUBDIRS = marsyas
+CONFIG += ordered
+
+SUBDIRS += src
+
+marsyasLib {
+	SUBDIRS += src
+}
+marsyasConsoleApps {
+	SUBDIRS += apps
+}
+
 
