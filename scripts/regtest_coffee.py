@@ -25,7 +25,7 @@ version_file = os.path.abspath( version_file )
 if not( os.path.exists(version_file)):
 	print "Please specify location of extra data files!"
 	sys.exit(1)
-version = open( version_file ).readline()
+version = float( open( version_file ).readline() )
 if (version < MIN_VERSION):
 	print "Please upgrade your version of the Marsyas Coffee Data"
 	sys.exit(1)
