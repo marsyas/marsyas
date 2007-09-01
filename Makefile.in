@@ -196,7 +196,7 @@ EXTRA_DIST = bootstrap TODO marsyasAll.pro marsyasConfig.pri \
 AUTOMAKE_OPTIONS = foreign
 
 #SUBDIRS			= marsyas lib apps bin doc
-SUBDIRS = src lib apps bin doc examples regressionTests
+SUBDIRS = src lib apps bin doc regressionTests
 
 # we must now explicitly define subdirs to be included in the dist
 #DIST_SUBDIRS		= marsyas lib apps bin doc

@@ -4543,8 +4543,7 @@ fi
 
 
 
-#		 marsyas/Makefile
-ac_config_files="$ac_config_files Makefile src/Makefile src/marsyas/Makefile lib/Makefile lib/debug/Makefile lib/release/Makefile apps/Makefile apps/sfplay/Makefile apps/sfinfo/Makefile doc/Makefile examples/Makefile regressionTests/Makefile regressionTests/input/Makefile regressionTests/answers/Makefile bin/Makefile bin/debug/Makefile bin/release/Makefile"
+ac_config_files="$ac_config_files Makefile src/Makefile src/marsyas/Makefile src/examples/Makefile lib/Makefile lib/debug/Makefile lib/release/Makefile apps/Makefile apps/sfplay/Makefile apps/sfinfo/Makefile doc/Makefile regressionTests/Makefile regressionTests/input/Makefile regressionTests/answers/Makefile bin/Makefile bin/debug/Makefile bin/release/Makefile"
 
 
 
@@ -5159,6 +5158,7 @@ do
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
     "src/marsyas/Makefile") CONFIG_FILES="$CONFIG_FILES src/marsyas/Makefile" ;;
+    "src/examples/Makefile") CONFIG_FILES="$CONFIG_FILES src/examples/Makefile" ;;
     "lib/Makefile") CONFIG_FILES="$CONFIG_FILES lib/Makefile" ;;
     "lib/debug/Makefile") CONFIG_FILES="$CONFIG_FILES lib/debug/Makefile" ;;
     "lib/release/Makefile") CONFIG_FILES="$CONFIG_FILES lib/release/Makefile" ;;
@@ -5166,7 +5166,6 @@ do
     "apps/sfplay/Makefile") CONFIG_FILES="$CONFIG_FILES apps/sfplay/Makefile" ;;
     "apps/sfinfo/Makefile") CONFIG_FILES="$CONFIG_FILES apps/sfinfo/Makefile" ;;
     "doc/Makefile") CONFIG_FILES="$CONFIG_FILES doc/Makefile" ;;
-    "examples/Makefile") CONFIG_FILES="$CONFIG_FILES examples/Makefile" ;;
     "regressionTests/Makefile") CONFIG_FILES="$CONFIG_FILES regressionTests/Makefile" ;;
     "regressionTests/input/Makefile") CONFIG_FILES="$CONFIG_FILES regressionTests/input/Makefile" ;;
     "regressionTests/answers/Makefile") CONFIG_FILES="$CONFIG_FILES regressionTests/answers/Makefile" ;;

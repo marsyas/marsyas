@@ -166,9 +166,10 @@ top_srcdir = @top_srcdir@
 SUBDIRS = sfplay sfinfo
 # isn't working.  :(   -gp
 #SUBDIRS += regressionChecks
+#EXTRA_DIST += Qt4Apps/
 
 # I wish there was a better way of doing this.  :(
-EXTRA_DIST = apps.pro consoleApps.pri ERBTest/ MarEditor/ Qt4Apps/ \
+EXTRA_DIST = apps.pro consoleApps.pri ERBTest/ MarEditor/ \
 	SeneffEarTest/ backup/ regressionChecks/ bextract/ boomchick/ \
 	classifyFile/ extract/ mudbox/ midiTest/ mixer/ mkcollection/ \
 	msl/ muggle/ orcarecord/ peakEval/ peakSynth/ peakClustering/ \

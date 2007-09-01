@@ -163,7 +163,8 @@ target_os = @target_os@
 target_vendor = @target_vendor@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = marsyas
+SUBDIRS = marsyas examples
+EXTRA_DIST = Qt4Apps
 all: all-recursive
 
 .SUFFIXES:

@@ -24,7 +24,7 @@ EXTRA_DIST = apps.pro
 EXTRA_DIST += consoleApps.pri
 EXTRA_DIST += ERBTest/
 EXTRA_DIST += MarEditor/
-EXTRA_DIST += Qt4Apps/
+#EXTRA_DIST += Qt4Apps/
 EXTRA_DIST += SeneffEarTest/
 EXTRA_DIST += backup/
 

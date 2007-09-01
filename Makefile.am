@@ -28,7 +28,7 @@ EXTRA_DIST += .qmake.cache
 
 #SUBDIRS			= marsyas lib apps bin doc
 SUBDIRS			= src lib apps bin doc
-SUBDIRS			+= examples regressionTests
+SUBDIRS			+= regressionTests
  
 # we must now explicitly define subdirs to be included in the dist
 #DIST_SUBDIRS		= marsyas lib apps bin doc
