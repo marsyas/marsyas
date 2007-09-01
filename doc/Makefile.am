@@ -71,8 +71,8 @@ html: marsyas-user.texi marsyas-devel.texi
 	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas-devel.texi -o out-www/manual/marsyas-devel/
 	mkdir -p out-www/manual/images/
 	cp images/*.png out-www/manual/images/
-	cd out-www/manual/marsyas-user/ ; ln -s ../images/ images
-	cd out-www/manual/marsyas-devel/ ; ln -s ../images/ images
+	cd out-www/manual/marsyas-user/ ; ln -sf ../images images
+	cd out-www/manual/marsyas-devel/ ; ln -sf ../images images
 	cp index.html.in out-www/index.html
 
 pdf: marsyas-user.texi marsyas-devel.texi
