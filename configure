@@ -3879,7 +3879,7 @@ fi
 
 
 
-                                                                                                                                                                ac_config_files="$ac_config_files Makefile marsyas/Makefile lib/Makefile lib/debug/Makefile lib/release/Makefile apps/Makefile apps/sfplay/Makefile apps/sfinfo/Makefile doc/Makefile examples/Makefile regressionTests/Makefile regressionTests/input/Makefile regressionTests/answers/Makefile bin/Makefile bin/debug/Makefile bin/release/Makefile"
+                                                                                                                                                                          ac_config_files="$ac_config_files Makefile src/Makefile marsyas/Makefile lib/Makefile lib/debug/Makefile lib/release/Makefile apps/Makefile apps/sfplay/Makefile apps/sfinfo/Makefile doc/Makefile examples/Makefile regressionTests/Makefile regressionTests/input/Makefile regressionTests/answers/Makefile bin/Makefile bin/debug/Makefile bin/release/Makefile"
 
 
 
@@ -4460,6 +4460,7 @@ do
   case "$ac_config_target" in
   # Handling of arguments.
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
+  "src/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
   "marsyas/Makefile" ) CONFIG_FILES="$CONFIG_FILES marsyas/Makefile" ;;
   "lib/Makefile" ) CONFIG_FILES="$CONFIG_FILES lib/Makefile" ;;
   "lib/debug/Makefile" ) CONFIG_FILES="$CONFIG_FILES lib/debug/Makefile" ;;
