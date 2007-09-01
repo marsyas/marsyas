@@ -41,7 +41,7 @@
           <td class="left-column">
 	  <ul>
 	    <li>
-	    <a class="title" href="manual/user/index.html">User manual</a>
+	    <a class="title" href="manual/marsyas-user/index.html">User manual</a>
 	      <br>(start here)
 
 	</ul>
@@ -49,7 +49,7 @@
 	  <td class="right-column">
 	  <ul>
 	    <li>
-	    <a class="title" href="manual/devel/index.html">Developer's manual</a>
+	    <a class="title" href="manual/marsyas-devel/index.html">Developer's manual</a>
 	      <br>(start here)
 
 	  </ul>

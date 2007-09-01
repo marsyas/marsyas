@@ -33,3 +33,12 @@
 @end ifnothtml
 @end macro
 
+@macro userref{TEXT}
+@ref{\TEXT\,,,marsyas-user,Marsyas User Manual}
+@end macro
+
+@macro develref{TEXT}
+@ref{\TEXT\,,,marsyas-devel,Marsyas Developer's Manual}
+@end macro
+
+

@@ -1,6 +1,6 @@
 \input texinfo   @c -*-texinfo-*-
 @comment %**start of header
-@setfilename marsyas-developers.info
+@setfilename marsyas-devel.info
 @settitle Marsyas 0.2
 @comment %**end of header
      
@@ -56,7 +56,6 @@ translation approved by the Free Software Foundation.
 @top Marsyas Manual
 @end ifnottex
 
-@c  TODO: split into User, Programmer, and Developer "books"
 
 @menu
 * Contributing to Marsyas::     How to add your own code to Marsyas.

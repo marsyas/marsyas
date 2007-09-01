@@ -66,8 +66,8 @@ doxy:
 html: marsyas-user.texi marsyas-devel.texi
 	mkdir -p out-www/manual/
 	cp source-doc/*.html out-www/manual/
-	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas-user.texi -o out-www/manual/user/
-	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas-devel.texi -o out-www/manual/devel/
+	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas-user.texi -o out-www/manual/marsyas-user/
+	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas-devel.texi -o out-www/manual/marsyas-devel/
 	mkdir -p out-www/manual/images/
 	cp images/*.png out-www/manual/images/
 	cp index.html.in out-www/index.html
