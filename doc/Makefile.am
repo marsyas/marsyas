@@ -55,7 +55,7 @@ sources:
 doxy:
 	mkdir -p out-www/doxy/html/
 # all on one line to stay in that directory
-	cd ../marsyas/ ; doxygen
+	cd ../src/marsyas/ ; doxygen
 # now I'm automagically back in  doc/
 	mkdir -p out-www/sourceDoc/
 	mv out-www/doxy/html/* out-www/sourceDoc/
