@@ -3,6 +3,11 @@
 sfplay -s 0.25 -l 0.1 -g 0.7 right.wav -f out.au	../answers/right-sfplay.au
 phasevocoder -q -p 1.5 -s 50 right.wav -g 0.9 -f out.au	../answers/right-phasevocoder.au
 regressionChecks -t vibrato right.wav -o out.au -a ../answers/right-vibrato.au
+regressionChecks -t delay sine1000-5.wav -o out.au -a ../answers/sine-delay.au
+#regressionChecks -t downsample sine1000-5.wav -o out.au -a ../answers/sine-downsample.au
+regressionChecks -t negative sine1000-5.wav -o out.au -a ../answers/sine-negative.au
+regressionChecks -t shifter sine1000-5.wav -o out.au -a ../answers/sine-shifter.au
+regressionChecks -t windowing sine1000-5.wav -o out.au -a ../answers/sine-windowing.au
 
 # not working
 #mkcollection coll.mf coll &>/dev/null
