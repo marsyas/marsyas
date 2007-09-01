@@ -27,6 +27,7 @@ sendreport() {
 	echo "$subject"
 	cat $report
 	mail -s "$subject" gperciva@uvic.ca < $report
+#	mail -s "$subject" gtzan@cs.uvic.ca < $report
 }
 
 #  $1 is the command
@@ -75,6 +76,8 @@ testthing make $buildLog "Build"
 testthing "scripts/regtest_sanity.py" $sanityLog Commit
 
 testthing "scripts/regtest_coffee.py ../../marsyas-coffee" $coffeeLog Coffee
+
+echo "Make dist... not implemented" >> $report
 
 sendreport "Pass"
 
