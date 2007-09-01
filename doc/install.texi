@@ -20,7 +20,7 @@ Complete each section fully before attempting the next section.
 @menu
 * Requirements on *nix (including MacOS X)::  
 * Requirements on Windows::     
-* Optional programs and libraries::  
+* Optional programs and datasets::  
 @end menu
 
 @node Requirements on *nix (including MacOS X)
@@ -384,25 +384,38 @@ marsyas-developers@@lists.sourceforge.net
 
 
 
-@node Optional programs and libraries
-@subsection Optional programs and libraries
+@node Optional programs and datasets
+@subsection Optional programs and datasets
 
 Useful libraries:
 
 @itemize
-@item @uref{http://sourceforge.net/projects/mad/, LibMAD}: mp3 support
+@item
+@uref{http://sourceforge.net/projects/mad/, LibMAD}: mp3 support
+
 @end itemize
 
 Useful programs:
 
 @itemize
+@item
 @uref{http://python.org, Python}: Installed by default on Linux and MacOS X
 machines; Windows users may install it from this site.  Marsyas contains
 some very useful scripts which are written in Python.
 
+@item
 @uref{http://www.mathworks.com/products/matlab/, Matlab}: information
 may be easily passed to and from Matlab and Marsyas; this allows easy
 prototyping.
+
+@end itemize
+
+Useful datasets:
+
+@itemize
+@item
+@uref{http://opihi.cs.uvic.ca/~gperciva/,marsyas-coffee}: data set used
+for large regression tests in Marsyas.
 
 @end itemize
 
