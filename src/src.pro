@@ -6,7 +6,7 @@ CONFIG += ordered
 SUBDIRS += src
 
 marsyasLib {
-	SUBDIRS += src
+	SUBDIRS += marsyas
 }
 marsyasConsoleApps {
 	SUBDIRS += apps
