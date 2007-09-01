@@ -67,7 +67,7 @@ translation approved by the Free Software Foundation.
 @include macros.itexi 
 
 @include contributing.texi
-@include tests.texi
+@include autotest.texi
 
 
 

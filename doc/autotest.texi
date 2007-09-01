@@ -1,0 +1,206 @@
+@node Automatic testing
+@chapter Automatic testing
+
+In an attempt to reduce the number of times we break working code, we
+have added some testing mechanisms to Marsyas.
+
+@menu
+* Regression tests::            
+* Daily Auto-tester::           
+@end menu
+
+
+@node Regression tests
+@section Regression tests
+
+These tests are deliberately simple and easy to understand.
+
+@menu
+* What does regression mean?::  
+* How do the tests work?::      
+* Where are functions defined in regressionChecks?::  
+* When a test fails...::        
+* Why should I care?::          
+* They won't work!::            
+@end menu
+
+@node What does regression mean?
+@subsection What does "regression" mean?
+
+The term @qq{regression testing} seems to mean something different to
+each project, website, and software engineering academic.  So I shall
+define what we mean by @qq{regression testing} in this context:
+
+@quotation
+Does this work the way it used to?
+@end quotation
+
+This is checked as follows:
+
+@enumerate
+@item
+Write a program.  Find some input for the program (in this case, a sound
+file).  Store the input.
+
+@item
+Run the program with that input.  Save the output (either another sound
+file, or some text).
+
+@item
+Wait / change stuff / let other people change stuff.
+
+@item
+Run the program with the initial input.  Compare the current output to
+the initially stored output.  If they are different, the test fails.
+
+@item
+Goto step 3.
+
+@end enumerate
+
+In other words, these tests do not check for @emph{correctness}; they
+simply check for @emph{consistency}.  Fixing a bug could result in a
+test @qq{failing}.  For more information, see @ref{When a test fails...}
+
+
+@node How do the tests work?
+@subsection How do the tests work?
+
+@unnumberedsubsubsec List of tests
+
+Tests are stored in the files
+
+@example
+regressionTests/sanity-audio.txt
+regressionTests/sanity-text.txt
+regressionTests/coffee-audio.txt
+regressionTests/coffee-text.txt
+@end example
+
+
+@unnumberedsubsubsec Normal app tests
+
+Let's examine the first line in @file{sanity-audio.txt}:
+
+@example
+sfplay -s 0.25 -l 0.1 -g 0.7 right.wav -f out.au <tab> ../answers/right-sfplay.au
+@end example
+
+@noindent
+(the @code{<tab>} was added to make the line more legible in this
+manual)
+
+The test system runs this command (prefixing it with
+@code{/path/to/bin/release/}).  The input file is @file{right.wav}, and
+the output will be stored in @file{out.au}.  This output is compared
+with the previously-stored output file,
+@file{../answers/right-sfplay.au}.
+
+
+@unnumberedsubsubsec regressionCheck tests
+
+Let's examine the first line in @file{sanity-text.txt}:
+
+@example
+regressionChecks -t pitch sine1000-5.wav > out.txt <tab> ../answers/sine-pitch.txt
+@end example
+
+@noindent
+(again, @code{<tab>} was added for legibility)
+
+This test uses a special program, @code{regressionChecks}.  The source
+for this program is in @file{src/apps/regressionChecks}.  Special care
+was taken to make the source code as legible as possible, so don't be
+scared of looking at the source.  For information about the organization
+of the source for this program, see @ref{Where are functions defined in
+regressionChecks?}.
+
+In this case, @code{regressionChecks} will extract pitch information
+from @file{sine1000-5.wav} (a file containing 5 sine waves at 1000 Hz).
+The pitch (hopefully something close to 1000!) is stored in the file
+@file{out.txt}.  This file is compared to the previously-stored output
+file, @file{../answers/sine-pitch.txt}.
+
+
+@node Where are functions defined in regressionChecks?
+@subsection Where are functions defined in regressionChecks?
+
+The program source is divided into files:
+
+@itemize
+@item
+@code{regressionChecks.cpp}: the main executable.  This file handles the
+command-line options and running the correct test functions, but no
+actual sound processing.
+
+@item
+@code{common-reg.h}: common definitions and includes for the source
+files.
+
+@item
+@code{coreChecks.cpp}: test fundamental things.  Particularly
+interesting tests are core_null() and core_isClose(...).
+
+@item
+@code{basicChecks.cpp}: tests basic audio processing, such as windowing.
+
+@item
+@code{analysisChecks.cpp}: tests gathering info from audio, such as
+pitch extraction.
+
+@end itemize
+
+TODO: more info about core_null(), core_isClose()
+
+
+@node When a test fails...
+@subsection When a test fails...
+
+
+
+@node Why should I care?
+@subsection  Why should I care?
+
+
+
+@node They won't work!
+@subsection They won't work!
+
+Marsyas developers are such a bunch of whiners.
+
+TODO: list all the complaints I've gotten, with rebuttals.
+
+
+@node Daily Auto-tester
+@section Daily Auto-tester
+
+We run the script
+
+@example
+scripts/dailytest.sh
+@end example
+
+@noindent
+every day.  This script performs a few tasks:
+
+@enumerate
+@item
+Exports a clean copy of the source tree from svn.
+
+@item
+Builds the tree using autotools.
+
+@item
+Runs the sanity tests.
+
+@item
+Runs the coffee tests.
+
+@item
+Runs make distcheck.  TODO: not currently implemented.
+
+@end enumerate
+
+An email is sent to some developers with the results of these tests.
+
+
