@@ -350,9 +350,10 @@ AC_SUBST(MslLibs)
 
 
 
+#		 marsyas/Makefile 
 AC_CONFIG_FILES([Makefile
 		 src/Makefile
-		 marsyas/Makefile 
+		 src/marsyas/Makefile
 		 lib/Makefile 
 		 lib/debug/Makefile
 		 lib/release/Makefile
