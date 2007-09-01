@@ -100,7 +100,7 @@ unix:!macx:CONFIG += marsyasAUDIOIO_ALSA
 message ( ***************************************************** )
 message ( Configuring Marsyas build with the following options: )
 
-INCLUDEPATH += $$quote( "$$BASEDIR/marsyas" ) 
+INCLUDEPATH += $$quote( "$$BASEDIR/src/marsyas" ) 
 
 CONFIG(debug, debug|release) {
 	message ( -> DEBUG building )
@@ -124,14 +124,14 @@ marsyasQT {
 	message ( -> Qt support in marsyas.lib )
 	CONFIG += qt
 	DEFINES += MARSYAS_QT
-	INCLUDEPATH += $$quote( "$$BASEDIR/marsyas/Qt" ) 
+	INCLUDEPATH += $$quote( "$$BASEDIR/src/marsyas/Qt" ) 
 }
 
 marsyasMATLABdebug {
 	CONFIG(debug, debug|release) {
 		message ( -> MATLAB support  for debug builds)
 		DEFINES += MARSYAS_MATLAB
-		INCLUDEPATH += $$quote( "$$BASEDIR/marsyas/MATLAB" ) 
+		INCLUDEPATH += $$quote( "$$BASEDIR/src/marsyas/MATLAB" ) 
 	}
 }
 
@@ -139,7 +139,7 @@ marsyasMATLABrelease {
 	CONFIG(release, debug|release) {
 		message ( -> MATLAB support  for release builds)
 		DEFINES += MARSYAS_MATLAB
-		INCLUDEPATH += $$quote( "$$BASEDIR/marsyas/MATLAB" ) 
+		INCLUDEPATH += $$quote( "$$BASEDIR/src/marsyas/MATLAB" ) 
 	}
 }
 
