@@ -25,7 +25,7 @@ namespace Marsyas
 {
 /** 
 \class Windowing
-\ingroup Processing
+\ingroup Processing Basic
 \brief window the input signal
 
 */

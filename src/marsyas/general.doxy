@@ -1,5 +1,7 @@
 
 /** \file general.doxy
+\bug ShiftInput appears to only work with inSamples=256
+
 \todo all .cpp files should be inside the Marsyas namespace, instead of
 importing it.
 

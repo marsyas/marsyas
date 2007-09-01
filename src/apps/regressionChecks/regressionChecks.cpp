@@ -43,6 +43,13 @@ printHelp(string progName)
 	cerr << "isClose         : test if two sound files are (almost) equal" << endl;
 	cerr << "realvec         : test realvec" << endl;
 	cerr << endl << "    *** Basic Audio Processing tests ***" << endl;
+	cerr << "delay           : delay" << endl;
+	cerr << "downsample      : downsample" << endl;
+	cerr << "negative        : inverts samples" << endl;
+	cerr << "shifter         : shifter" << endl;
+	cerr << "shiftInput      : shift input" << endl;
+	cerr << "windowing       : windows" <<endl;
+// TODO: move vibrato test somewhere else
 	cerr << "vibrato         : test vibrato" << endl;
 	cerr << endl << "    *** Analysis tests ***" << endl;
 	cerr << "pitch           : do pitch extraction" << endl;
@@ -113,10 +120,21 @@ main(int argc, const char **argv)
 		core_realvec();
 
 	// Basic audio processing
+// TODO: move
 	else if (testName == "vibrato")
 		basic_vibrato(fname0, outputFilename);
+	else if (testName == "delay")
+		basic_delay(fname0, outputFilename);
+	else if (testName == "downsample")
+		basic_downsample(fname0, outputFilename);
+	else if (testName == "negative")
+		basic_negative(fname0, outputFilename);
+	else if (testName == "shifter")
+		basic_shifter(fname0, outputFilename);
+	else if (testName == "shiftInput")
+		basic_shiftInput(fname0, outputFilename);
 	else if (testName == "windowing")
-		basic_windowing(fname0,outputFilename);
+		basic_windowing(fname0, outputFilename);
 
 	// Analysis
 	else if (testName == "pitch")
