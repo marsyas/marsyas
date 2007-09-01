@@ -194,13 +194,10 @@ AUX_DIST = $(auxdir)/install-sh $(auxdir)/missing \
 EXTRA_DIST = bootstrap TODO marsyasAll.pro marsyasConfig.pri \
 	.qmake.cache ToDeprecate/ otherlibs/ scripts/ swig/ tools/
 AUTOMAKE_OPTIONS = foreign
-
-#SUBDIRS			= marsyas lib apps bin doc
-SUBDIRS = src lib bin doc regressionTests
+SUBDIRS = src lib bin doc regressionTests misc
 
 # we must now explicitly define subdirs to be included in the dist
-#DIST_SUBDIRS		= marsyas lib apps bin doc
-DIST_SUBDIRS = src lib bin doc regressionTests
+DIST_SUBDIRS = src lib bin doc regressionTests misc
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure marsyas/config-h.in \
 			  marsyas/stamp-h.in 
 
