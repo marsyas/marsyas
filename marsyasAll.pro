@@ -4,7 +4,7 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 marsyasLib {
-	SUBDIRS += marsyas
+	SUBDIRS += src
 }
 marsyasConsoleApps {
 	SUBDIRS += apps
