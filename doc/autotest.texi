@@ -94,7 +94,8 @@ The test system runs this command (prefixing it with
 @code{/path/to/bin/release/}).  The input file is @file{right.wav}, and
 the output will be stored in @file{out.au}.  This output is compared
 with the previously-stored output file,
-@file{../answers/right-sfplay.au}.
+@file{../answers/right-sfplay.au}.  In this case, we are looking for an
+exact match.
 
 
 @unnumberedsubsubsec regressionCheck tests
@@ -120,6 +121,21 @@ from @file{sine1000-5.wav} (a file containing 5 sine waves at 1000 Hz).
 The pitch (hopefully something close to 1000!) is stored in the file
 @file{out.txt}.  This file is compared to the previously-stored output
 file, @file{../answers/sine-pitch.txt}.
+
+
+@unnumberedsubsubsec Approximate matching (no rounding errors)
+
+When an audio file is specified as an @qq{answer} file,
+
+@example
+regressionChecks -t delay sine1000-5.wav -o out.au -a ../answers/sine-delay.au
+@end example
+
+@noindent
+we attempt to match the files approximately, to avoid rounding
+mismatches on different operating systems.  Each sample must be very
+close to the corresponding sample in the answer file, but they need not
+be exact.
 
 
 @node Where are functions defined in regressionChecks?
@@ -156,6 +172,33 @@ TODO: more info about core_null(), core_isClose()
 @node When a test fails...
 @subsection When a test fails...
 
+@unnumberedsubsubsec Don't panic!
+
+If a test fails as a result of your work, remember that these are
+@emph{consistency} tests, not @emph{correctness} tests.  Do you expect
+your work to produce any different output for that particular test?
+
+For example, if you discover (and fix) a bug in the inverse FFT, the
+phasevocoder test will probably @qq{fail}.  This is to be expected: the
+previously-recorded output of the phasevocoder faithfully archived the
+buggy output, so the bug-free output is detected as different.
+
+On the other hand, suppose you are adding a new classifier for machine
+learning, and the Windowing test breaks.  This is not expected; a new
+feature should not impact basic functions like taking a Hanning window!
+In this case, you should investigate before committing your changes to
+svn.
+
+@unnumberedsubsubsec Updating the test
+
+If you are certain that your patch (and new output file) are good, then
+you should update the answer file.  This is simply a matter of copying
+your new output file over the old answer file.
+
+Please commit the changed
+@file{regressionTests/answers/@emph{<FILE.au>}} in a separate svn
+commit, and make sure the log message explains that your new output is
+superior to the old one.
 
 
 @node Why should I care?
