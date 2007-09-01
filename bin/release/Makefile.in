@@ -188,11 +188,11 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EXEEXT = @EXEEXT@
-INCLUDES = @INCLUDES@ -I$(top_srcdir)/marsyas \
+INCLUDES = @INCLUDES@ -I$(top_srcdir)/src/marsyas \
 	-I$(top_srcdir)/otherlibs/RtAudio \
 	-I$(top_srcdir)/otherlibs/RtMidi \
 	-I$(top_srcdir)/otherlibs/libsvm \
-	-I$(top_srcdir)/marsyas/MATLAB
+	-I$(top_srcdir)/src/marsyas/MATLAB
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@

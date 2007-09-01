@@ -33,7 +33,7 @@ SUBDIRS			+= regressionTests
 # we must now explicitly define subdirs to be included in the dist
 #DIST_SUBDIRS		= marsyas lib apps bin doc
 DIST_SUBDIRS		= src lib apps bin doc
-DIST_SUBDIRS		+= examples regressionTests
+DIST_SUBDIRS		+= regressionTests
 
 
 #  There's no point writing Makefiles for temporary holding areas.
