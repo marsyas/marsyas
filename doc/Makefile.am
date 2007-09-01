@@ -30,7 +30,6 @@ EXTRA_DIST = marsyas.pdf intro.texi tools.texi architecture.texi programming.tex
 EXTRA_DIST += macros.itexi README
 EXTRA_DIST += images/*.eps images/*.pdf images/*.txt images/*.png
 EXTRA_DIST += source-doc/*.texinfo source-doc/*.html
-EXTRA_DIST += out-www/*.html out-www/images/*.png
 
 CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
              marsyas.ats  marsyas.evs  marsyas.fns  marsyas.ovs \
@@ -65,7 +64,8 @@ doxy:
 
 html: marsyas-user.texi marsyas-devel.texi
 	mkdir -p out-www/manual/
-	cp source-doc/*.html out-www/manual/
+	mkdir -p out-www/manual/examples/
+	cp source-doc/*.html out-www/manual/examples/
 	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas-user.texi -o out-www/manual/marsyas-user/
 	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(srcdir)/marsyas-devel.texi -o out-www/manual/marsyas-devel/
 	mkdir -p out-www/manual/images/

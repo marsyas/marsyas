@@ -4,6 +4,7 @@
 @menu
 * Including libraries and linking::  
 * Example programs::            
+* Writing Qt4 applications::    
 * Other programming issues::    
 @end menu
 
@@ -174,6 +175,76 @@ Getting options from the command-line is fairly easy; Marsyas provides
 a handy object which parses the command-line for you.
 
 @examplefile{commandOptions.cpp}
+
+
+@node Writing Qt4 applications
+@section Writing Qt4 applications
+
+
+
+@menu
+* libmarqt::                    
+* Qt4 example::                 
+* Other Qt4 issues::            
+@end menu
+
+
+@node libmarqt
+@subsection libmarqt
+
+TODO: like 6.1.
+
+
+@node Qt4 example
+@subsection Qt4 example
+
+To get started, look at the Qt4 tutorial files:
+
+@examplefilenewpage{tutorial.pro}
+@examplefilenewpage{main.cpp}
+@examplefilenewpage{mainwindow.h}
+@examplefilenewpage{mainwindow.cpp}
+@examplefilenewpage{backend.h}
+@examplefilenewpage{backend.cpp}
+
+After examining that project, see @file{apps/Qt4Apps/MarPlayer/}, followed by
+the other examples in the @file{apps/Qt4Apps/} directory.
+
+
+@node Other Qt4 issues
+@subsection Other Qt4 issues
+
+TODO: beautify
+
+Question and answer:
+
+@example
+I'd like to analyze sound file to extract pitches and amplitudes.  I
+have working code without using MarSystemQtWrapper, but for GUI display
+reasons, I'd like to do this analysis in a separate thread.  (ie a
+MarSystemQtWrapper)
+
+Is there any way to do this kind of thing inside a MarSystemQtWrapper?
+
+        while (allNet->getctrl("mrs_bool/notEmpty")->toBool())
+                allNet->tick(); 
+@end example
+
+add the control you are interested to the monitored
+controls by calling trackctrl  (or something like that)
+in MarSystemQtWrapper. The  MarSystemQtWrapper
+will emit a signal either any time the control is changed
+or at period intervals depending on the withTimer
+settting. Either way you can connect the signal
+ctrlChanged(MarControlPtr cname);
+
+to a slot in your GUI and then call allnet->pause()
+when that happens. 
+
+-----
+this is working on Meaws, but I'll need to read my code again to figure
+out how it works.  Fortunately, I write nice clean readable code. :) -gp
+
 
 
 @node Other programming issues

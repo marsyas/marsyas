@@ -14,7 +14,7 @@
 
 @macro examplefilenewpage{FILENAME}
 @ifhtml
-@uref{\FILENAME\.html, \FILENAME\}
+@uref{../examples/\FILENAME\.html, \FILENAME\}
 @end ifhtml
 @ifnothtml
 @subsubheading \FILENAME\

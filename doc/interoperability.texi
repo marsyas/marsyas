@@ -8,7 +8,6 @@ Intro text
 * WEKA::                        
 * MATLAB::                      
 * Python::                      
-* Trolltech Qt4::               
 * OCaml::                       
 @end menu
 
@@ -102,50 +101,6 @@ to your MATLAB file.
 @section Python
 
 It @emph{can} be done; read the source code.
-
-@node Trolltech Qt4
-@section Trolltech Qt4
-
-To get started, look at the tutorial files:
-
-@examplefilenewpage{tutorial.pro}
-@examplefilenewpage{main.cpp}
-@examplefilenewpage{mainwindow.h}
-@examplefilenewpage{mainwindow.cpp}
-@examplefilenewpage{backend.h}
-@examplefilenewpage{backend.cpp}
-
-After examining that project, see @file{apps/Qt4Apps/MarPlayer/}, followed by
-the other examples in the @file{apps/Qt4Apps/} directory.
-
-@c  TODO: add this info:
-@ignore
-> I'd like to analyze sound file to extract pitches and amplitudes.  I
-> have working code without using MarSystemQtWrapper, but for GUI display
-> reasons, I'd like to do this analysis in a separate thread.  (ie a
-> MarSystemQtWrapper)
-
-> Is there any way to do this kind of thing inside a MarSystemQtWrapper?
-
->         while (allNet->getctrl("mrs_bool/notEmpty")->toBool())
->                 allNet->tick(); 
-
-
-add the control you are interested to the monitored
-controls by calling trackctrl  (or something like that)
-in MarSystemQtWrapper. The  MarSystemQtWrapper
-will emit a signal either any time the control is changed
-or at period intervals depending on the withTimer
-settting. Either way you can connect the signal
-ctrlChanged(MarControlPtr cname);
-
-to a slot in your GUI and then call allnet->pause()
-when that happens. 
-
------
-this is working on Meaws, but I'll need to read my code again to figure
-out how it works.  Fortunately, I write nice clean readable code. :) -gp
-@end ignore
 
 @node OCaml
 @section OCaml
