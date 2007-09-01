@@ -1,5 +1,5 @@
-@node Developing MarSystems
-@chapter Developing MarSystems
+@node Programming MarSystems
+@chapter Programming MarSystems
 
 The main method that each MarSystem must support is @b{process} which
 takes two arguments both arrays of floating point numbers used to

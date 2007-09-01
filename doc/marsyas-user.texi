@@ -65,7 +65,7 @@ components.
 * Architecture concepts::       Important concepts about Marsyas.
 * System details::              Details about Marsyas.
 * Writing applications::        Writing programs that use MarSystems.
-* Developing MarSystems::       Writing new basic MarSystem blocks.
+* Programming MarSystems::      Writing new basic MarSystem blocks.
 * Interoperability::            Using Marsyas with other projects.
 * The Index::                   The Index.
 @end menu
@@ -78,7 +78,7 @@ components.
 @include architecture.texi
 @include system.texi
 @include writing.texi
-@include developing.texi
+@include programming.texi
 @include interoperability.texi
 
 @c to be scrapped soon.   -gp

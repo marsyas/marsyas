@@ -13,7 +13,7 @@ programmer can also write directly her/his own building blocks directly
 in C++ following a certain API and coding conventions offering the so
 called @qq{White-Box} functionality.  Building networks is described in
 @ref{Writing applications}, and writing new MarSystems is described
-in @ref{Developing MarSystems}.
+in @ref{Programming MarSystems}.
 
 @menu
 * Architecture overview::       
