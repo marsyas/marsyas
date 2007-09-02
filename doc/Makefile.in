@@ -106,8 +106,8 @@ install_sh = @install_sh@
 #     change to waf in 2008)
 TEXI2HTML = makeinfo --html  # -o out-www/manual/
 TEXI2PDF = texi2pdf  #  -o out-www/
-info_TEXINFOS = marsyas-user.texi marsyas-devel.texi
 
+#info_TEXINFOS   = marsyas-user.texi marsyas-devel.texi
 EXTRA_DIST = marsyas.pdf intro.texi tools.texi architecture.texi programming.texi install.texi unsorted.texi interoperability.texi macros.itexi README images/*.eps images/*.pdf images/*.txt images/*.png source-doc/*.texinfo source-doc/*.html
 
 CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
@@ -126,98 +126,16 @@ subdir = doc
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_CLEAN_FILES =
 DIST_SOURCES =
-TEXINFO_TEX = $(top_srcdir)/config/texinfo.tex
-INFO_DEPS = marsyas-user.info marsyas-devel.info
-DVIS = marsyas-user.dvi marsyas-devel.dvi
-TEXINFOS = marsyas-user.texi marsyas-devel.texi
 DIST_COMMON = README Makefile.am Makefile.in texinfo.tex
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .dvi .info .ps .texi
 $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
 	  $(AUTOMAKE) --gnu  doc/Makefile
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
-
-marsyas-user.info: marsyas-user.texi
-marsyas-user.dvi: marsyas-user.texi
-
-marsyas-devel.info: marsyas-devel.texi
-marsyas-devel.dvi: marsyas-devel.texi
-
-.texi.info:
-	@cd $(srcdir) && rm -f $@ $@-[0-9] $@-[0-9][0-9]
-	cd $(srcdir) \
-	  && $(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) \
-	       `echo $< | sed 's,.*/,,'`
-
-.texi.dvi:
-	TEXINPUTS="$(top_srcdir)/config$(PATH_SEPARATOR)$$TEXINPUTS" \
-	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I $(srcdir)' \
-	$(TEXI2DVI) $<
-
-.texi:
-	@cd $(srcdir) && rm -f $@ $@-[0-9] $@-[0-9][0-9]
-	cd $(srcdir) \
-	  && $(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) \
-	       `echo $< | sed 's,.*/,,'`
-
-MAKEINFO = @MAKEINFO@
-TEXI2DVI = texi2dvi
-DVIPS = dvips
-.dvi.ps:
-	$(DVIPS) $< -o $@
-
 uninstall-info-am:
-	$(PRE_UNINSTALL)
-	@if (install-info --version && \
-	     install-info --version | fgrep -i -v debian) >/dev/null 2>&1; then \
-	  list='$(INFO_DEPS)'; \
-	  for file in $$list; do \
-	    echo " install-info --info-dir=$(DESTDIR)$(infodir) --remove $(DESTDIR)$(infodir)/$$file"; \
-	    install-info --info-dir=$(DESTDIR)$(infodir) --remove $(DESTDIR)$(infodir)/$$file; \
-	  done; \
-	else :; fi
-	@$(NORMAL_UNINSTALL)
-	@list='$(INFO_DEPS)'; \
-	for file in $$list; do \
-	  (if cd $(DESTDIR)$(infodir); then \
-	     echo " rm -f $$file $$file-[0-9] $$file-[0-9][0-9])"; \
-	     rm -f $$file $$file-[0-9] $$file-[0-9][0-9]; \
-	   else :; fi); \
-	done
-
-dist-info: $(INFO_DEPS)
-	list='$(INFO_DEPS)'; \
-	for base in $$list; do \
-	  d=$(srcdir); \
-	  for file in $$d/$$base*; do \
-	    relfile=`expr "$$file" : "$$d/\(.*\)"`; \
-	    test -f $(distdir)/$$relfile || \
-	      cp -p $$file $(distdir)/$$relfile; \
-	  done; \
-	done
-
-mostlyclean-aminfo:
-	-rm -f marsyas-user.aux marsyas-user.cp marsyas-user.dvi marsyas-user.fn \
-	  marsyas-user.ky marsyas-user.log marsyas-user.pg \
-	  marsyas-user.ps marsyas-user.tmp marsyas-user.toc \
-	  marsyas-user.tp marsyas-user.vr marsyas-devel.aux \
-	  marsyas-devel.cp marsyas-devel.dvi marsyas-devel.fn \
-	  marsyas-devel.ky marsyas-devel.log marsyas-devel.pg \
-	  marsyas-devel.ps marsyas-devel.tmp marsyas-devel.toc \
-	  marsyas-devel.tp marsyas-devel.vr
-
-maintainer-clean-aminfo:
-	cd $(srcdir) && \
-	list='$(INFO_DEPS)'; for i in $$list; do \
-	  rm -f $$i; \
-	  if test "`echo $$i-[0-9]*`" != "$$i-[0-9]*"; then \
-	    rm -f $$i-[0-9]*; \
-	  fi; \
-	done
 tags: TAGS
 TAGS:
 
@@ -248,15 +166,11 @@ distdir: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
-	$(MAKE) $(AM_MAKEFLAGS) \
-	  top_distdir="${top_distdir}" distdir="$(distdir)" \
-	  dist-info
 check-am: all-am
 check: check-am
-all-am: Makefile $(INFO_DEPS)
+all-am: Makefile
 
 installdirs:
-	$(mkinstalldirs) $(DESTDIR)$(infodir)
 
 install: install-am
 install-exec: install-exec-am
@@ -293,63 +207,38 @@ distclean-am: clean-am distclean-generic
 
 dvi: dvi-am
 
-dvi-am: $(DVIS)
+dvi-am:
 
 info: info-am
 
-info-am: $(INFO_DEPS)
+info-am:
 
-install-data-am: install-info-am
+install-data-am:
 
 install-exec-am:
 
 install-info: install-info-am
 
-install-info-am: $(INFO_DEPS)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(infodir)
-	@list='$(INFO_DEPS)'; \
-	for file in $$list; do \
-	  d=$(srcdir); \
-	  for ifile in echo $$d/$$file $$d/$$file-[0-9] $$d/$$file-[0-9][0-9]; do \
-	    if test -f $$ifile; then \
-	      relfile=`expr "$$ifile" : "$$d/\(.*\)"`; \
-	      echo " $(INSTALL_DATA) $$ifile $(DESTDIR)$(infodir)/$$relfile"; \
-	      $(INSTALL_DATA) $$ifile $(DESTDIR)$(infodir)/$$relfile; \
-	    else : ; fi; \
-	  done; \
-	done
-	@$(POST_INSTALL)
-	@if (install-info --version && \
-	     install-info --version | fgrep -i -v debian) >/dev/null 2>&1; then \
-	  list='$(INFO_DEPS)'; \
-	  for file in $$list; do \
-	    echo " install-info --info-dir=$(DESTDIR)$(infodir) $(DESTDIR)$(infodir)/$$file";\
-	    install-info --info-dir=$(DESTDIR)$(infodir) $(DESTDIR)$(infodir)/$$file || :;\
-	  done; \
-	else : ; fi
 install-man:
 
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
 
-maintainer-clean-am: distclean-am maintainer-clean-aminfo \
-	maintainer-clean-generic
+maintainer-clean-am: distclean-am maintainer-clean-generic
 
 mostlyclean: mostlyclean-am
 
-mostlyclean-am: mostlyclean-aminfo mostlyclean-generic
+mostlyclean-am: mostlyclean-generic
 
 uninstall-am: uninstall-info-am
 
-.PHONY: all all-am check check-am clean clean-generic dist-info \
-	distclean distclean-generic distdir dvi dvi-am info info-am \
-	install install-am install-data install-data-am install-exec \
+.PHONY: all all-am check check-am clean clean-generic distclean \
+	distclean-generic distdir dvi dvi-am info info-am install \
+	install-am install-data install-data-am install-exec \
 	install-exec-am install-info install-info-am install-man \
 	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-aminfo \
-	maintainer-clean-generic mostlyclean mostlyclean-aminfo \
+	maintainer-clean maintainer-clean-generic mostlyclean \
 	mostlyclean-generic uninstall uninstall-am uninstall-info-am
 
 
