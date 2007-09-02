@@ -60,42 +60,4 @@ EXTRA_DIST += virtualsensor/
 EXTRA_DIST += vocalEffort/
 EXTRA_DIST += WHaSp/
 
-dist-hook:
-	rm -rf `find $(distdir)/regressionChecks/ -name .svn`
-	rm -rf `find $(distdir)/ERBTest/ -name .svn`
-	rm -rf `find $(distdir)/MarEditor/ -name .svn`
-	rm -rf `find $(distdir)/Qt4Apps/ -name .svn`
-	rm -rf `find $(distdir)/SeneffEarTest/ -name .svn`
-	rm -rf `find $(distdir)/backup/ -name .svn`
-	rm -rf `find $(distdir)/bextract/ -name .svn`
-	rm -rf `find $(distdir)/boomchick/ -name .svn`
-	rm -rf `find $(distdir)/classifyFile/ -name .svn`
-	rm -rf `find $(distdir)/extract/ -name .svn`
-	rm -rf `find $(distdir)/mudbox/ -name .svn`
-	rm -rf `find $(distdir)/midiTest/ -name .svn`
-	rm -rf `find $(distdir)/mixer/ -name .svn`
-	rm -rf `find $(distdir)/mkcollection/ -name .svn`
-	rm -rf `find $(distdir)/msl/ -name .svn`
-	rm -rf `find $(distdir)/muggle/ -name .svn`
-	rm -rf `find $(distdir)/orcarecord/ -name .svn`
-	rm -rf `find $(distdir)/peakSynth/ -name .svn`
-	rm -rf `find $(distdir)/peakClustering/ -name .svn`
-	rm -rf `find $(distdir)/phasevocoder/ -name .svn`
-	rm -rf `find $(distdir)/pitchextract/ -name .svn`
-	rm -rf `find $(distdir)/record/ -name .svn`
-	rm -rf `find $(distdir)/scheduler/ -name .svn`
-	rm -rf `find $(distdir)/server_main/ -name .svn`
-	rm -rf `find $(distdir)/sfinfo/ -name .svn`
-	rm -rf `find $(distdir)/sfplaygui/ -name .svn`
-	rm -rf `find $(distdir)/sfplugin/ -name .svn`
-	rm -rf `find $(distdir)/speakerSeg/ -name .svn`
-	rm -rf `find $(distdir)/tempo/ -name .svn`
-	rm -rf `find $(distdir)/textract/ -name .svn`
-	rm -rf `find $(distdir)/train// -name .svn`
-	rm -rf `find $(distdir)/tutorial/ -name .svn`
-	rm -rf `find $(distdir)/virtualsensor/ -name .svn`
-	rm -rf `find $(distdir)/vocalEffort/ -name .svn`
-	rm -rf `find $(distdir)/WHaSp/ -name .svn`
-	rm -rf `find $(distdir)/peakEval/ -name .svn`
-	rm -rf `find $(distdir)/peakSynth/ -name .svn`
 

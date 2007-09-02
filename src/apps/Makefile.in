@@ -385,9 +385,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-	$(MAKE) $(AM_MAKEFLAGS) \
-	  top_distdir="$(top_distdir)" distdir="$(distdir)" \
-	  dist-hook
 check-am: all-am
 check: check-recursive
 all-am: Makefile
@@ -476,9 +473,9 @@ uninstall-am:
 
 .PHONY: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) CTAGS GTAGS \
 	all all-am check check-am clean clean-generic ctags \
-	ctags-recursive dist-hook distclean distclean-generic \
-	distclean-tags distdir dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-dvi \
+	ctags-recursive distclean distclean-generic distclean-tags \
+	distdir dvi dvi-am html html-am info info-am install \
+	install-am install-data install-data-am install-dvi \
 	install-dvi-am install-exec install-exec-am install-html \
 	install-html-am install-info install-info-am install-man \
 	install-pdf install-pdf-am install-ps install-ps-am \
@@ -487,45 +484,6 @@ uninstall-am:
 	mostlyclean mostlyclean-generic pdf pdf-am ps ps-am tags \
 	tags-recursive uninstall uninstall-am
 
-
-dist-hook:
-	rm -rf `find $(distdir)/regressionChecks/ -name .svn`
-	rm -rf `find $(distdir)/ERBTest/ -name .svn`
-	rm -rf `find $(distdir)/MarEditor/ -name .svn`
-	rm -rf `find $(distdir)/Qt4Apps/ -name .svn`
-	rm -rf `find $(distdir)/SeneffEarTest/ -name .svn`
-	rm -rf `find $(distdir)/backup/ -name .svn`
-	rm -rf `find $(distdir)/bextract/ -name .svn`
-	rm -rf `find $(distdir)/boomchick/ -name .svn`
-	rm -rf `find $(distdir)/classifyFile/ -name .svn`
-	rm -rf `find $(distdir)/extract/ -name .svn`
-	rm -rf `find $(distdir)/mudbox/ -name .svn`
-	rm -rf `find $(distdir)/midiTest/ -name .svn`
-	rm -rf `find $(distdir)/mixer/ -name .svn`
-	rm -rf `find $(distdir)/mkcollection/ -name .svn`
-	rm -rf `find $(distdir)/msl/ -name .svn`
-	rm -rf `find $(distdir)/muggle/ -name .svn`
-	rm -rf `find $(distdir)/orcarecord/ -name .svn`
-	rm -rf `find $(distdir)/peakSynth/ -name .svn`
-	rm -rf `find $(distdir)/peakClustering/ -name .svn`
-	rm -rf `find $(distdir)/phasevocoder/ -name .svn`
-	rm -rf `find $(distdir)/pitchextract/ -name .svn`
-	rm -rf `find $(distdir)/record/ -name .svn`
-	rm -rf `find $(distdir)/scheduler/ -name .svn`
-	rm -rf `find $(distdir)/server_main/ -name .svn`
-	rm -rf `find $(distdir)/sfinfo/ -name .svn`
-	rm -rf `find $(distdir)/sfplaygui/ -name .svn`
-	rm -rf `find $(distdir)/sfplugin/ -name .svn`
-	rm -rf `find $(distdir)/speakerSeg/ -name .svn`
-	rm -rf `find $(distdir)/tempo/ -name .svn`
-	rm -rf `find $(distdir)/textract/ -name .svn`
-	rm -rf `find $(distdir)/train// -name .svn`
-	rm -rf `find $(distdir)/tutorial/ -name .svn`
-	rm -rf `find $(distdir)/virtualsensor/ -name .svn`
-	rm -rf `find $(distdir)/vocalEffort/ -name .svn`
-	rm -rf `find $(distdir)/WHaSp/ -name .svn`
-	rm -rf `find $(distdir)/peakEval/ -name .svn`
-	rm -rf `find $(distdir)/peakSynth/ -name .svn`
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
