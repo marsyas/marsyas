@@ -25,7 +25,10 @@ TEXI2HTML = makeinfo --html  # -o out-www/manual/
 TEXI2PDF  = texi2pdf  #  -o out-www/
 #info_TEXINFOS   = marsyas-user.texi marsyas-devel.texi
 
-EXTRA_DIST = marsyas.pdf intro.texi tools.texi architecture.texi programming.texi install.texi unsorted.texi interoperability.texi
+EXTRA_DIST = intro.texi install.texi tools.texi
+EXTRA_DIST += architecture.texi system.texi writing.texi programming.texi
+EXTRA_DIST += contributing.texi autotest.texi
+EXTRA_DIST += unsorted.texi
 
 EXTRA_DIST += macros.itexi README
 EXTRA_DIST += images/*.eps images/*.pdf images/*.txt images/*.png

@@ -1,5 +1,5 @@
 
-EXTRA_DIST = commit-audio.txt commit-text.txt coffee-text.txt
+EXTRA_DIST = sanity-audio.txt sanity-text.txt coffee-text.txt coffee-audio.txt
 SUBDIRS = input answers
 
 CLEANFILES = results.log

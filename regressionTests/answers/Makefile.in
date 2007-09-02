@@ -154,7 +154,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 EXTRA_DIST = right-phasevocoder.au right-sfplay.au right-vibrato.au \
 	right-pitchextract.txt right-sfinfo.txt sine-pitch.txt \
-	transcription-studentscale.txt
+	transcriber-studentscale.txt
 all: all-am
 
 .SUFFIXES:
