@@ -97,7 +97,7 @@
  *
  */
 
-/**  @defgroup MarQtActual MarQtActual
+/**  @defgroup MarsyasQt MarsyasQt
  *
  * \brief The non-Meta-GUI Marsyas/Qt interaction.
  *

@@ -72,14 +72,14 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = ./ MarQtActual/
+INPUT                  = ./ ../marsyasqt_wrapper/
 FILE_PATTERNS          = *.h *.cpp *.doxy
 RECURSIVE              = NO
 EXCLUDE                = 
 EXCLUDE_SYMLINKS       = NO
-EXCLUDE_PATTERNS       = 
+EXCLUDE_PATTERNS       = moc_*
 EXAMPLE_PATH           = 
-EXAMPLE_PATTERNS       = 
+EXAMPLE_PATTERNS       =
 EXAMPLE_RECURSIVE      = NO
 IMAGE_PATH             = 
 INPUT_FILTER           = 

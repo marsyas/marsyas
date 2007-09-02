@@ -24,11 +24,11 @@ using namespace Marsyas;
 namespace MarQtActual
 {
 /**
-	\ingroup MarQtActual
+	\ingroup MarsyasQt
 	\brief This is the basic wrapper which allows MarSystems to function
 inside a multithreaded Qt app.
 
-	TODO: Long descr of MarQtActual.
+	TODO: Long descr of libmarsyasqt.
 */
 
 class MarSystemQtWrapper: public QThread
