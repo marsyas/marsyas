@@ -21,13 +21,11 @@ MAINTAINERCLEANFILES    = Makefile.in
 
 EXTRA_DIST 		= Doxyfile
 EXTRA_DIST += Qt/
-EXTRA_DIST += MarQtLib/
 EXTRA_DIST += MATLAB/
 EXTRA_DIST += distributed/
 
 dist-hook:
 	rm -rf `find $(distdir)/Qt/ -name .svn`
-	rm -rf `find $(distdir)/MarQtLib/ -name .svn`
 	rm -rf `find $(distdir)/MATLAB/ -name .svn`
 	rm -rf `find $(distdir)/distributed/ -name .svn`
 
