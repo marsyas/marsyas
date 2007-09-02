@@ -86,7 +86,8 @@ void MarBackend::setFileName(string filename) {
 
 void MarBackend::playFile() {
 	if (hasAudio) {
-		string filename = sourceNet->getctrl("SoundFileSource/srcFile/mrs_string/filename")->to<mrs_string>();
+		string filename =
+sourceNet->getctrl("SoundFileSource/srcFile/mrs_string/filename")->to<mrs_string>();
 		delNet();
 		sourceNet = makeSourceNet(filename);
 		method = TYPE_PLAYBACK;
@@ -140,7 +141,8 @@ mrs_real MarBackend::getRate() {
  */
 
 void MarBackend::setupAllNet() {
-	mrs_real osrate = sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
+	mrs_real osrate =
+sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
 	allNet = mng.create("Series", "allNet");
 	allNet->addMarSystem(sourceNet);
 	allNet->linkctrl("mrs_bool/notEmpty", "Series/sourceNet/mrs_bool/notEmpty");
@@ -250,6 +252,7 @@ bool MarBackend::analyze() {
 			break;
 		case TYPE_INTONATION: {
 			getMidiPitches();
+/*
 			Transcriber *trans = new Transcriber();
 			trans->setPitchList( getMidiPitches() );
 			trans->calcOnsets();
@@ -258,6 +261,7 @@ bool MarBackend::analyze() {
 			durations = trans->getDurations();
 			notes = trans->getNotes();
 			delete trans;
+*/
 			break;
 		}
 		case TYPE_CONTROL:
@@ -280,9 +284,11 @@ bool MarBackend::analyze() {
 realvec MarBackend::getPitches() {
 	// if we haven't calculated them already, do it now
 	if (pitchList.getSize()==0) {
-		mrs_real osrate = sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
+		mrs_real osrate =
+sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
 
-		realvec data = pitchesSink->getctrl("mrs_realvec/data")->to<mrs_realvec>();
+		realvec data =
+pitchesSink->getctrl("mrs_realvec/data")->to<realvec>();
 		for (mrs_natural i=1; i<data.getSize();i+=2)
 			data(i) = samples2hertz(data(i), osrate);
 		pitchesSink->updctrl("mrs_bool/done", true); 
@@ -318,7 +324,8 @@ realvec MarBackend::getMidiPitches() {
 realvec MarBackend::getAmplitudes() {
 	if(amplitudeList.getSize()==0)
 	{
-	amplitudeList = amplitudesSink->getctrl("mrs_realvec/data")->to<mrs_realvec>();
+	amplitudeList =
+amplitudesSink->getctrl("mrs_realvec/data")->to<realvec>();
     amplitudesSink->updctrl("mrs_bool/done", true); 
 	}
 	

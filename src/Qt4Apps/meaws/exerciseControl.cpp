@@ -74,7 +74,7 @@ void ExerciseControl::open(QString exerciseFilename) {
 	QPixmap image;
 
 	notes = new QButtonGroup;
-//	instructionArea->setHorizontalSpacing(0);
+	instructionArea->setHorizontalSpacing(0);
 	for (int i=0; i<5; i++) {
 		noteButton[i] = new QToolButton;
 		noteImageFilename = noteImageBaseFilename+"-"+QString::number(i+1)+".png";
@@ -235,7 +235,9 @@ realvec spectrum(2048, 1), power(1);
 	vibSeries.updctrl("mrs_natural/inSamples", window.getCols());
 	vibSeries.updctrl("mrs_natural/inObservations", window.getRows());
 	vibSeries.updctrl("Windowing/window/mrs_string/type", "Hanning");
-	vibSeries.updctrl("Windowing/window/mrs_natural/zeroPadding", 4096); lmartins: THIS IS NOW DIFFERENTLY IMPLEMENTED IN Windowing.cpp -> go there and figure out how ;-)
+	vibSeries.updctrl("Windowing/window/mrs_natural/zeroPadding", 4096);
+// FIXME!!!
+//lmartins: THIS IS NOW DIFFERENTLY IMPLEMENTED IN Windowing.cpp -> go there and figure out how ;-)
 
 	Power p("Power");
 	p.updctrl("mrs_natural/inSamples", windowWeight.getCols());
