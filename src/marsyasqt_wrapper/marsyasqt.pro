@@ -1,6 +1,6 @@
 TEMPLATE = lib
 CONFIG += staticlib
-TARGET = marqtlib
+TARGET = marsyasqt
 
 HEADERS = MarSystemQtWrapper.h
 SOURCES = MarSystemQtWrapper.cpp
@@ -18,9 +18,7 @@ DESTDIR = $$quote( "$$BASEDIR/lib/release" )
 #}
 
 
-DEPTH = ../../
-INCLUDEPATH += $$DEPTH/marsyas/
-LIBS += -lmarsyas -L$$DEPTH/lib/release/
-
+INCLUDEPATH += $$BASEDIR/src/marsyas/
+LIBS += -lmarsyas -L$$BASEDIR/lib/release/
 
 
