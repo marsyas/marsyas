@@ -331,9 +331,52 @@ fi
 	;;
 esac
 
-# check is qmake is in the path.  I think.  -gp
+
+### check for qmake.  Code from
+# http://trac.vidalia-project.net/browser/trunk/configure.in
+# Find Qt or use one specified to ./configure
+AC_ARG_WITH([qt-dir],
+  AC_HELP_STRING([--with-qt-dir=/path/to/Qt],
+                 [Path to Qt 4.1.0 or later.]),
+  [QTPATHS="$withval"],
+  [ # There can be multiple versions of Qt under these directories
+    QTPATHS="/usr/local/Trolltech /usr/Trolltech /usr"
+    VERLIST=`ls -rm /usr/local/Trolltech/ 2> /dev/null | sed -e s/,//`
+    for ver in $VERLIST; do
+      QTPATHS="$QTPATHS /usr/local/Trolltech/$ver"
+    done
+    VERLIST=`ls -rm /usr/Trolltech/ 2> /dev/null | sed -e s/,//`
+    for ver in $VERLIST; do
+      QTPATHS="$QTPATHS /usr/Trolltech/$ver"
+    done
+  ])
+
+AC_MSG_CHECKING([for Qt >= 4.1.0])
+for path in $QTPATHS; do
+  # "qmake" is sometimes spelled "qmake-qt4"
+  if test -x $path/bin/qmake-qt4; then
+    QMAKE=$path/bin/qmake-qt4
+  else
+    if test -x $path/bin/qmake; then
+      QMAKE=$path/bin/qmake
+    fi
+  fi
+  if test x$QMAKE != x; then
+    # Ask qmake if we have the right version
+    QTVERSION=`$QMAKE -query QT_VERSION`
+    case $QTVERSION in
+      4.1.*|4.2.*|4.3.*)
+        QTDIR=`$QMAKE -query QT_INSTALL_PREFIX`
+        break
+        ;;
+      *);;
+    esac
+  fi
+done
+
 AM_CONDITIONAL(QT_PRESENT,
 	test x$QMAKE = x)
+
 
 
 if test "x$prefix" = xNONE; then

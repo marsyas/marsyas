@@ -1306,6 +1306,8 @@ Optional Packages:
   --with-readline         Readline functionality for Marsyas scriping language
                           (MSL)
   --with-matlab           Activate MATLAB engine interface
+  --with-qt-dir=/path/to/Qt
+                          Path to Qt 4.1.0 or later.
 
 Some influential environment variables:
   CC          C compiler command
@@ -4518,7 +4520,53 @@ _ACEOF
 	;;
 esac
 
-# check is qmake is in the path.  I think.  -gp
+
+### check for qmake.  Code from
+# http://trac.vidalia-project.net/browser/trunk/configure.in
+# Find Qt or use one specified to ./configure
+
+# Check whether --with-qt-dir was given.
+if test "${with_qt_dir+set}" = set; then
+  withval=$with_qt_dir; QTPATHS="$withval"
+else
+   # There can be multiple versions of Qt under these directories
+    QTPATHS="/usr/local/Trolltech /usr/Trolltech /usr"
+    VERLIST=`ls -rm /usr/local/Trolltech/ 2> /dev/null | sed -e s/,//`
+    for ver in $VERLIST; do
+      QTPATHS="$QTPATHS /usr/local/Trolltech/$ver"
+    done
+    VERLIST=`ls -rm /usr/Trolltech/ 2> /dev/null | sed -e s/,//`
+    for ver in $VERLIST; do
+      QTPATHS="$QTPATHS /usr/Trolltech/$ver"
+    done
+
+fi
+
+
+{ echo "$as_me:$LINENO: checking for Qt >= 4.1.0" >&5
+echo $ECHO_N "checking for Qt >= 4.1.0... $ECHO_C" >&6; }
+for path in $QTPATHS; do
+  # "qmake" is sometimes spelled "qmake-qt4"
+  if test -x $path/bin/qmake-qt4; then
+    QMAKE=$path/bin/qmake-qt4
+  else
+    if test -x $path/bin/qmake; then
+      QMAKE=$path/bin/qmake
+    fi
+  fi
+  if test x$QMAKE != x; then
+    # Ask qmake if we have the right version
+    QTVERSION=`$QMAKE -query QT_VERSION`
+    case $QTVERSION in
+      4.1.*|4.2.*|4.3.*)
+        QTDIR=`$QMAKE -query QT_INSTALL_PREFIX`
+        break
+        ;;
+      *);;
+    esac
+  fi
+done
+
  if test x$QMAKE = x; then
   QT_PRESENT_TRUE=
   QT_PRESENT_FALSE='#'
@@ -4526,6 +4574,7 @@ else
   QT_PRESENT_TRUE='#'
   QT_PRESENT_FALSE=
 fi
+
 
 
 
