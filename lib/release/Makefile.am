@@ -34,6 +34,12 @@ else
 lib_LIBRARIES         = libmarsyas.a
 endif
 
+pkginclude_HEADERS = \
+			  $(top_srcdir)/otherlibs/libsvm/svm.h \
+			  $(top_srcdir)/otherlibs/RtAudio/RtAudio.h \
+			  $(top_srcdir)/otherlibs/RtAudio/RtError.h \
+			  $(top_srcdir)/otherlibs/RtMidi/RtMidi.h \
+			  $(top_srcdir)/otherlibs/RtMidi/RtError.h
 
 INCLUDES += -I$(top_srcdir)/src/marsyas -I$(top_srcdir)/otherlibs/RtAudio -I$(top_srcdir)/otherlibs/RtMidi -I$(top_srcdir)/otherlibs/libsvm -I$(top_srcdir)/src/marsyas/MATLAB 
 
