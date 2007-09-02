@@ -21,9 +21,14 @@ MAINTAINERCLEANFILES    = Makefile.in
 if QT_PRESENT
 lib_LIBRARIES = libmarsyas.a libmarsyasqt.a
 
-libmarsyasqt.a:
-	cd $(top_srcdir)/src/marsyasqt_wrapper/ && qmake && make
+libmarsyasqt.a: libmarsyasqt_Makefile
+	cd $(top_srcdir)/src/marsyasqt_wrapper/ && make
+#	cd $(top_srcdir)/src/marsyasqt_wrapper/ && qmake && make
 # libmarsyasqt.a is placed in lib/release/  from the qmake .pro file
+
+libmarsyasqt_Makefile:
+	cd $(top_srcdir)/src/marsyasqt_wrapper/ && qmake
+
 
 libmarsyasqt_a_SOURCES =
 
