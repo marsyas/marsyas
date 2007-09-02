@@ -6,6 +6,7 @@
 * Example programs::            
 * Writing Qt4 applications::    
 * Other programming issues::    
+* Interoperability::            
 @end menu
 
 
@@ -292,4 +293,84 @@ may be plotted with gnuplot.
 @example
 gnuplot> plot "dataToPlot.txt"
 @end example
+
+
+
+@node Interoperability
+@section Interoperability
+
+@menu
+* Open Sound Control (OSC)::    
+* WEKA::                        
+* MATLAB::                      
+* Python::                      
+* OCaml::                       
+@end menu
+
+@node Open Sound Control (OSC)
+@subsection Open Sound Control (OSC)
+
+@WANTED{@emph{can} be done; read the source code.}
+
+
+@node WEKA
+@subsection WEKA
+
+@WANTED{@emph{can} be done; read the source code.}
+
+@node MATLAB
+@subsection MATLAB
+
+MATLAB is a
+@WANTED{general blurb and whatnot.}
+
+@subheading Marsyas -> MATLAB
+
+To export data from Marsyas into MATLAB, simply add
+
+@example
+@WANTED{code here}
+@end example
+
+@noindent
+to your .cpp source file, and
+
+@example
+@WANTED{code here}
+@end example
+
+@noindent
+to your MATLAB file.
+
+
+@subheading Marsyas <- MATLAB
+
+To import data into Marsyas from MATLAB, simply add
+
+@example
+@WANTED{code here}
+@end example
+
+@noindent
+to your .cpp source file, and
+
+@example
+@WANTED{code here}
+@end example
+
+@noindent
+to your MATLAB file.
+
+
+@node Python
+@subsection Python
+
+It @emph{can} be done; read the source code.
+
+@node OCaml
+@subsection OCaml
+
+To combine Marsyas and OCaml, see the MarsyasOCaml documentation at
+@uref{http://www.cs.uvic.ca/~inb/work/marsyasOCaml/}
+
 
