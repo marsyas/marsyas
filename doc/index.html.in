@@ -55,18 +55,24 @@
 	    <a class="title" href="manual/marsyas-devel/index.html">Developer's manual</a>
 	      <br>(for developers working on marsyas)
 
+		<li>FIXME: find something to put here.
+		<br>(otherwise this looks bad)
+
 	  </ul>
 	  </td>
         </tr>
         <tr>
-          <td valign="baseline" class="left-column">
-          &nbsp;
+          <td class="left-column">
 	  <ul>
             <li> <a class="title"  href="http://marsyas.sourceforge.net/">
 marsyas.sourceforge.net</a>
               <br>(the website)
 	</ul>
 	  </td>
+	  <td class="right-column">
+            <li> <a class="title"  href="marsyas-docs.tar.gz">
+Documentation tarball</a>  (approximately 2 Mb)
+              <br>(for offline browsing)
         </tr>
       </tbody>
     </table>
