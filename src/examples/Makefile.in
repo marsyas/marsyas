@@ -98,6 +98,7 @@ ac_aux_dir = @ac_aux_dir@
 am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
+qmake = @qmake@
 
 EXTRA_DIST = README-devel README-users *.cpp Qt4-tutorial/*
 subdir = src/examples

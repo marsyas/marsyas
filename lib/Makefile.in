@@ -98,6 +98,7 @@ ac_aux_dir = @ac_aux_dir@
 am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
+qmake = @qmake@
 
 SUBDIRS = debug release  
 subdir = lib
