@@ -33,6 +33,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
+@QT_PRESENT_TRUE@am__append_1 = libmarsyasqt.a
 subdir = lib/release
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -144,16 +145,24 @@ am_libmarsyas_a_OBJECTS = svm.$(OBJEXT) RtAudio.$(OBJEXT) \
 	Transcriber.$(OBJEXT) PhiSEMSource.$(OBJEXT) \
 	PhiSEMFilter.$(OBJEXT) SVMClassifier.$(OBJEXT) Gain.$(OBJEXT)
 libmarsyas_a_OBJECTS = $(am_libmarsyas_a_OBJECTS)
+libmarsyasqt_a_AR = $(AR) $(ARFLAGS)
+libmarsyasqt_a_LIBADD =
+libmarsyasqt_a_SOURCES = libmarsyasqt.c
+libmarsyasqt_a_OBJECTS = libmarsyasqt.$(OBJEXT)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-SOURCES = $(libmarsyas_a_SOURCES)
-DIST_SOURCES = $(libmarsyas_a_SOURCES)
+SOURCES = $(libmarsyas_a_SOURCES) libmarsyasqt.c
+DIST_SOURCES = $(libmarsyas_a_SOURCES) libmarsyasqt.c
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -179,6 +188,9 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EXEEXT = @EXEEXT@
+# don't bother with this
+#	mkdir -p $(DESTDIR)$(includedir)/marsyas/marsyasqt/
+#	cp $(top_srcdir)/src/marsyasqt_wrapper/*.h $(DESTDIR)$(includedir)/marsyas/marsyasqt/
 INCLUDES = @INCLUDES@ -I$(top_srcdir)/src/marsyas \
 	-I$(top_srcdir)/otherlibs/RtAudio \
 	-I$(top_srcdir)/otherlibs/RtMidi \
@@ -269,7 +281,7 @@ target_vendor = @target_vendor@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 MAINTAINERCLEANFILES = Makefile.in
-lib_LIBRARIES = libmarsyas.a
+lib_LIBRARIES = libmarsyas.a $(am__append_1)
 libmarsyas_a_SOURCES = \
 			  $(top_srcdir)/otherlibs/libsvm/svm.cpp \
 			  $(top_srcdir)/otherlibs/RtAudio/RtAudio.cpp \
@@ -495,7 +507,7 @@ $(top_srcdir)/src/marsyas/SVMClassifier.cpp \
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .cpp .o .obj
+.SUFFIXES: .c .cpp .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -558,6 +570,10 @@ libmarsyas.a: $(libmarsyas_a_OBJECTS) $(libmarsyas_a_DEPENDENCIES)
 	-rm -f libmarsyas.a
 	$(libmarsyas_a_AR) libmarsyas.a $(libmarsyas_a_OBJECTS) $(libmarsyas_a_LIBADD)
 	$(RANLIB) libmarsyas.a
+@QT_PRESENT_FALSE@libmarsyasqt.a: $(libmarsyasqt_a_OBJECTS) $(libmarsyasqt_a_DEPENDENCIES) 
+@QT_PRESENT_FALSE@	-rm -f libmarsyasqt.a
+@QT_PRESENT_FALSE@	$(libmarsyasqt_a_AR) libmarsyasqt.a $(libmarsyasqt_a_OBJECTS) $(libmarsyasqt_a_LIBADD)
+@QT_PRESENT_FALSE@	$(RANLIB) libmarsyasqt.a
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -779,11 +795,26 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZeroRClassifier.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/basis.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fft.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmarsyasqt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lu.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/peakView.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/realvec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/svm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vmblock.Po@am__quote@
+
+.c.o:
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(COMPILE) -c $<
+
+.c.obj:
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -3971,6 +4002,7 @@ maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
+@QT_PRESENT_FALSE@install-data-local:
 clean: clean-am
 
 clean-am: clean-generic clean-libLIBRARIES mostlyclean-am
@@ -3991,7 +4023,7 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-data-local
 
 install-dvi: install-dvi-am
 
@@ -4034,15 +4066,23 @@ uninstall-am: uninstall-libLIBRARIES
 	clean-libLIBRARIES ctags distclean distclean-compile \
 	distclean-generic distclean-tags distdir dvi dvi-am html \
 	html-am info info-am install install-am install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-libLIBRARIES install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
-	uninstall-am uninstall-libLIBRARIES
+	install-data-am install-data-local install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-libLIBRARIES install-man \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-libLIBRARIES
 
+
+@QT_PRESENT_TRUE@libmarsyasqt.a:
+@QT_PRESENT_TRUE@	cd $(top_srcdir)/src/marsyasqt_wrapper/ && qmake && make
+# libmarsyasqt.a is placed in lib/release/  from the qmake .pro file
+
+@QT_PRESENT_TRUE@install-data-local:
+@QT_PRESENT_TRUE@	cp $(top_srcdir)/lib/release/libmarsyasqt.a $(DESTDIR)$(libdir)
+@QT_PRESENT_TRUE@	cp $(top_srcdir)/src/marsyasqt_wrapper/*.h $(DESTDIR)$(includedir)/marsyas/
 # please leave Gain.cpp at the end like this; it make scripts happy.
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

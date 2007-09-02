@@ -20,17 +20,20 @@ MAINTAINERCLEANFILES    = Makefile.in
 
 lib_LIBRARIES         = libmarsyas.a
 
-## if QT_PRESENT
-## lib_LIBRARIES += libmarqtactual.a
-## 
-## libmarqtactual.a:
-## 	cd $(top_srcdir)/src/marsyas/MarQtActual && qmake && make
-## 
-## install-data-local:
-## 	cp $(top_srcdir)/lib/release/libmarqtactual.a $(DESTDIR)$(libdir)
-## 	mkdir -p $(DESTDIR)$(includedir)/marsyas/MarQtActual/
-## 	cp $(top_srcdir)/src/marsyas/MarQtActual/*.h $(DESTDIR)$(includedir)/marsyas/MarQtActual/
-## endif
+if QT_PRESENT
+lib_LIBRARIES += libmarsyasqt.a
+
+libmarsyasqt.a:
+	cd $(top_srcdir)/src/marsyasqt_wrapper/ && qmake && make
+# libmarsyasqt.a is placed in lib/release/  from the qmake .pro file
+
+install-data-local:
+	cp $(top_srcdir)/lib/release/libmarsyasqt.a $(DESTDIR)$(libdir)
+	cp $(top_srcdir)/src/marsyasqt_wrapper/*.h $(DESTDIR)$(includedir)/marsyas/
+# don't bother with this
+#	mkdir -p $(DESTDIR)$(includedir)/marsyas/marsyasqt/
+#	cp $(top_srcdir)/src/marsyasqt_wrapper/*.h $(DESTDIR)$(includedir)/marsyas/marsyasqt/
+endif
 
 
 INCLUDES += -I$(top_srcdir)/src/marsyas -I$(top_srcdir)/otherlibs/RtAudio -I$(top_srcdir)/otherlibs/RtMidi -I$(top_srcdir)/otherlibs/libsvm -I$(top_srcdir)/src/marsyas/MATLAB 
