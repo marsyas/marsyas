@@ -28,7 +28,6 @@ TEXI2PDF  = texi2pdf  #  -o out-www/
 EXTRA_DIST = intro.texi install.texi tools.texi
 EXTRA_DIST += architecture.texi system.texi writing.texi programming.texi
 EXTRA_DIST += contributing.texi autotest.texi
-EXTRA_DIST += unsorted.texi
 
 EXTRA_DIST += macros.itexi README
 EXTRA_DIST += images/*.eps images/*.pdf images/*.txt images/*.png

@@ -1,6 +1,75 @@
 
 AT some point I must cleanup this
 
+
+
+---- info that used to be in doc/unsorted.texi (ie really old documentation)
+@node Future Work
+@chapter Future Work
+
+As is the case with most software projects, there is a lot of future
+work that I would like to do and I welcome any assistance, feedback,
+requests for features you might have. Most of my plans can be found in
+the TODO file of the distribution. However it is not clearly written
+and intended for my own personal use.
+
+Some of the more long-term and ambitious plans for the future will be
+described in this section. If you would like to contribute some code
+to the project and you don't know where to start this section might
+give you some ideas.
+
+python bindings msl interpreter with vertical syntax msl interpreter
+with chuck-like syntax SDIFF IO Open Sound Control (OSC)
+
+
+
+@node Users and Projects
+@chapter Users and Projects
+
+One of the greatest feelings a researcher/programmer can have is
+learning about people around the world doing exciting things with
+her/his software. There have been many amazing projects done with
+Marsyas and I hope to include them all in this section.  If you are
+working on Marsyas and your name is not here, I would love to learn
+about your project and include it in this section. Also send me an
+email if you are one of the people mentioned in this section and you
+have some more information about how marsyas was used in your project.
+I would also like to thank all of you who have found Marsyas 
+useful and helped me make it a better software framework.
+
+
+
+(NOTES TO MYSELF about what I should write) 
+
+Mark Cardle
+Moodlogic 
+AllMusic Inc. The Netherlands
+IslandGame 
+Luis Gustavo Martins 
+Stephaan Lippens 
+Tao Li 
+Karin Koshina ??? (spelling) 
+Chris West  ??? (spelling) 
+George Tourtellot 
+Corrie Elder 
+Kris West
+
+
+
+@c  was in "tools" chapter.  Doesn't belong.  Since this stuff is
+@c  probably hopelessly broken anyway, I nominate we just delete it. -gp
+The subdirectory distributed contains sources and sinks that can 
+be used to transmit sound and in general marsyas data over 
+the network using TCP and UDP protocols. It enables cool 
+thing like reading soundfiles on one computer sending fft 
+frames for analysis to multiple computers and then 
+assembling the results. The actual code has only be tested 
+under Linux and is under construction so you at your own risk 
+or even better fix the problems. 
+
+
+----
+
 Think about disable/enable MFCC coefficients 
 Fix up and incorporate MarSystemBuilder
 Port eigenvector/eigenvalue calculation from 
