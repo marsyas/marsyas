@@ -41,4 +41,10 @@
 @ref{\TEXT\,,,marsyas-devel,Marsyas Developer's Manual}
 @end macro
 
+@macro WANTED{TEXT}
+@cartouche
+@subsubheading Help wanted!
+\TEXT\
+@end cartouche
+@end macro
 

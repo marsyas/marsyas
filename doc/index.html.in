@@ -42,7 +42,10 @@
 	  <ul>
 	    <li>
 	    <a class="title" href="manual/marsyas-user/index.html">User manual</a>
-	      <br>(start here)
+	      <br>(using marsyas as a user and programmer)
+	    <li>
+	    <a class="title" href="sourceDoc/index.html">Marsystem reference</a>
+	      <br>(library reference)
 
 	</ul>
 	  </td>
@@ -50,7 +53,7 @@
 	  <ul>
 	    <li>
 	    <a class="title" href="manual/marsyas-devel/index.html">Developer's manual</a>
-	      <br>(start here)
+	      <br>(for developers working on marsyas)
 
 	  </ul>
 	  </td>

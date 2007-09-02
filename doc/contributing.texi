@@ -11,6 +11,7 @@ others may use it.
 * Contributing applications::   
 * Contributing system code::    
 * Sending a patch::             
+* Building documentation::      
 @end menu
 
 
@@ -388,5 +389,39 @@ If you have SVN write access, you may simply type
 @example
 svn ci
 @end example
+
+
+@node Building documentation
+@section Building documentation
+
+This manual is built with texinfo, and the source code documentation is
+created with doxygen.  These software packages may be installed from
+
+@itemize
+@item @uref{http://www.gnu.org/software/texinfo/}
+@item @uref{http://www.doxygen.org/}
+@end itemize
+
+The latest version of the manual is in the SVN tree , and can be built
+by running these commands from the @file{doc/} directory:
+
+@example
+make html
+make pdf
+make doxy
+@end example
+
+Source-highlighted examples are stored in the @file{doc/source-doc/}
+directory.  These may be built with this additional program and the
+following command:
+
+@itemize
+@item @uref{http://www.gnu.org/software/src-highlite/}
+@end itemize
+
+@example
+make sources
+@end example
+
 
 

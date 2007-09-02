@@ -1,6 +1,8 @@
 @node Interoperability
 @chapter Interoperability
 
+FIXME:   this will be junked soon.  -gp
+
 Intro text
 
 @menu

@@ -1,5 +1,6 @@
-@node Tools
-@chapter Tools
+@node Available tools
+@chapter Available tools
+@c TODO: I don't like this title.  -gp
 
 The main goal of Marsyas is to provide an extensible framework that
 can be used to quickly design and experiment with audio analysis and

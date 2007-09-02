@@ -58,9 +58,9 @@ translation approved by the Free Software Foundation.
 
 
 @menu
-* Introduction::                History, related work, and goals.
-* Installation::                Installation instructions for different operating systems.
-* Tools::                       Various sample tools built using marsyas
+* General information::         Introduction, history, related work, and goals.
+* Source installation::         Installation instructions for different operating systems.
+* Available tools::             Various sample tools built using marsyas
 components.
 * Architecture concepts::       Important concepts about Marsyas.
 * System details::              Details about Marsyas.
