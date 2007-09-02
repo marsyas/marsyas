@@ -141,6 +141,8 @@ be exact.
 @node Where are functions defined in regressionChecks?
 @subsection Where are functions defined in regressionChecks?
 
+@unnumberedsubsubsec General organization
+
 The program source is divided into files:
 
 @itemize
@@ -166,7 +168,23 @@ pitch extraction.
 
 @end itemize
 
-FIXME: more info about core_null(), core_isClose()
+@unnumberedsubsubsec @code{addSource(...)} and @code{addDest(...)}
+
+These useful functions are defined in @file{common-reg.h}.  Since
+virtually every regression test needs to read and write sound files, we
+wrote these files to handle the operation.  This is useful, because
+
+@itemize
+@item it eliminates duplication of code (avoids typos and other basic
+mistakes), and
+
+@item it makes each test easier to read (addSource, the actual test,
+addDest)
+
+@end itemize
+
+In addition to setting up the file input, @code{addSource(...)} returns
+the sample rate of the input file as a @code{mrs_real}.
 
 
 @node When a test fails...
@@ -248,7 +266,13 @@ Runs the sanity tests.
 Runs the coffee tests.
 
 @item
-Runs make distcheck.  TODO: not currently implemented.
+Builds the documentation.
+
+@item
+Builds the Doxygen source documentation.
+
+@item
+Runs make distcheck.  FIXME: not currently implemented.
 
 @end enumerate
 
