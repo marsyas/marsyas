@@ -166,7 +166,7 @@ pitch extraction.
 
 @end itemize
 
-TODO: more info about core_null(), core_isClose()
+FIXME: more info about core_null(), core_isClose()
 
 
 @node When a test fails...
@@ -200,9 +200,17 @@ Please commit the changed
 commit, and make sure the log message explains that your new output is
 superior to the old one.
 
+@unnumberedsubsubsec Temporarily disabling a test
+
+If you are planning on doing a lot of work on part of Marsyas (which
+would result in tests failing, but having no working output yet), tests
+may be commented out in the @file{regressionTests/<TEST-TYPE>.txt} file.
+Again, please commit this change in a separate svn commit with a log
+message that explains this.
+
 
 @node Why should I care?
-@subsection  Why should I care?
+@subsection Why should I care?
 
 
 
@@ -211,7 +219,7 @@ superior to the old one.
 
 Marsyas developers are such a bunch of whiners.
 
-TODO: list all the complaints I've gotten, with rebuttals.
+FIXME: list all the complaints I've gotten, with rebuttals.
 
 
 @node Daily Auto-tester

@@ -22,6 +22,10 @@ do anything explicitly.
 @node Compiling and using a new MarSystem
 @section Compiling and using a new MarSystem
 
+Writing a new MarSystem is relatively straightforward if you begin with
+a working example and modify it for your needs.  Fortunately, there is a
+python script which does precisely this.
+
 @menu
 * Writing your own MarSystems::  
 * Using your MarSystem::        
@@ -31,19 +35,21 @@ do anything explicitly.
 @node Writing your own MarSystems
 @subsection Writing your own MarSystems
 
-It's relatively straightforward to extend Marsyas by writing your own
-Marsystems. As mentioned before each MarSystems must basically support
-the process method that handles the dataflow and the update method that
-handles the control messages.  There are certain conventions that need
-to be followed so typically it is a better idea to copy and modify an
-existing Marsystem rather than writing one from scratch. The simple
-canonical example of a MarSystem that is what I use as a template when I
-write a new Marsystem is @file{Gain.h} and @file{Gain.cpp}  or
-@file{MarSystemTemplateBasic .h .cpp}.
+To create a @qq{blank} MarSystem to begin programming, use
 
-@c TODO: temp
-@c There is a Python script which automates this process; see @ref{Creating
-@c a MarSystem}.
+@example
+@emph{path/to/marsyas}/scripts/createMarSystem.py MyMar
+@end example
+
+@noindent
+where @code{MyMar} is the name of your new MarSystem.  This script will
+create @file{MyMar.h} and @file{foo.cpp} in your @strong{current}
+directory.
+
+If you want to create these new MarSystems in the @file{src/marsyas/}
+directory, go to that directory and call the script.  Relative paths are
+fine, for example @code{../../scripts/createMarSystem.py MyMar}
+(on *nix).
 
 
 @node Using your MarSystem
@@ -77,8 +83,8 @@ playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 * Methods of the object::       
 * Constructors / destructor::   
 * Handling controls::           
-* myProcess::                   
-* myUpdate vs. myProcess::      
+* myProcess()::                 
+* myUpdate() vs. myProcess()::  
 * More details about MarSystems::  
 @end menu
 
@@ -111,10 +117,9 @@ void MyName::myProcess(realvec& in, realvec& out)
 
 @end itemize
 
-@c TODO: temp compile
-@c Most of the changes that you make to the basic template (created with
-@c the script in @ref{Creating a MarSystem}) will be to the @ref{Handling
-@c controls} methods and the @ref{myProcess} method.
+Most of the changes that you make to the basic template will be to the
+@samp{Handling controls} methods and the @code{myProcess} method.  For
+more information, see @ref{Handling controls} and @ref{myProcess()}.
 
 
 @node Constructors / destructor
@@ -187,8 +192,8 @@ initial example), then setting this control would automatically call
 @code{MyName::myUpdate()}.
 
 
-@node myProcess
-@subsection myProcess
+@node myProcess()
+@subsection @code{myProcess()}
 
 @code{myProcess()} is called every time the MarSystem receives a
 @code{tick()} (ie all the time the program is running).
@@ -196,8 +201,8 @@ initial example), then setting this control would automatically call
 Resource-intensive operations (such as changing the buffer size,
 computing trigonomic functions, etc) that only depend on the controls
 (not the actual dataflow input) should be performed inside
-@code{myUpdate()}.  See @ref{myUpdate vs. myProcess} for more
-information.
+@code{myUpdate()}.  For more information, see @ref{myUpdate() vs.
+myProcess()}
 
 Most @code{myProcess()} functions will look like this:
 
@@ -221,8 +226,8 @@ MyMar::myProcess(realvec& in, realvec& out)
 @end example
 
 
-@node myUpdate vs. myProcess
-@subsection myUpdate vs. myProcess
+@node myUpdate() vs. myProcess()
+@subsection @code{myUpdate()} vs. @code{myProcess()}
 
 Taking a real-world example, consider a simple one-pole high/low-pass
 filter where we wish to perform the following operations:
@@ -250,7 +255,7 @@ then @code{c} will be recomputed inside @code{myUpdate()}.
 @node More details about MarSystems
 @subsection More details about MarSystems
 
-The files have useful comments:
+These files have useful comments:
 
 @example
 marsyas/MarSystemTemplateBasic .h .cpp

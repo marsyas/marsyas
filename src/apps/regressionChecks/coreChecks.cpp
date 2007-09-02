@@ -134,12 +134,17 @@ core_realvec()
 {
 	realvec test;
 	test.create(0);
+	test.setval(1);
 	for (mrs_natural i=0; i<14; i++)
 	{
 		test.stretchWrite(i,1);
 		cout<<test;
 	}
-
+	realvec foo(5);
+	foo.setval(2);
+	realvec baz;
+	baz = foo+test;
+	cout<<baz;
 }
 
 

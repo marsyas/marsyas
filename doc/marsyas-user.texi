@@ -64,8 +64,8 @@ translation approved by the Free Software Foundation.
 components.
 * Architecture concepts::       Important concepts about Marsyas.
 * System details::              Details about Marsyas.
-* Writing applications::        Writing programs that use MarSystems.
-* Programming MarSystems::      Writing new basic MarSystem blocks.
+* Writing applications::        Writing programs that use Marsyas.
+* Programming MarSystems::      Writing new MarSystem blocks.
 * The Index::                   The Index.
 @end menu
 

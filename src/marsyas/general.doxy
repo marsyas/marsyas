@@ -1,5 +1,8 @@
 
 /** \file general.doxy
+\todo Move any useful comments out of Gain.h / Gain.cpp and into the
+MarSystemTemplate stuff.
+
 \bug ShiftInput appears to only work with inSamples=256
 
 \todo all .cpp files should be inside the Marsyas namespace, instead of
