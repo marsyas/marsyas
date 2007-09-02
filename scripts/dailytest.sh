@@ -21,6 +21,9 @@ buildLog=$logBase-build.log
 sanityLog=$logBase-sanity.log
 coffeeLog=$logBase-coffee.log
 
+manualsLog=$logBase-manuals.log
+doxyLog=$logBase-doxy.log
+
 report=$logBase-report.txt
 lastGoodVersion=$matDir/lastworking.txt
 
@@ -29,8 +32,11 @@ sendreport() {
 	subject="$subjectBase $1"
 	echo "$subject"
 	cat $report
-	mail -s "$subject" gperciva@uvic.ca < $report
-#	mail -s "$subject" gtzan@cs.uvic.ca < $report
+	if [ `which mail` ]
+	then
+		mail -s "$subject" gperciva@uvic.ca < $report
+		mail -s "$subject" gtzan@cs.uvic.ca < $report
+	fi
 }
 
 #  $1 is the command
@@ -80,11 +86,13 @@ testthing "scripts/regtest_sanity.py" $sanityLog Sanity
 
 testthing "scripts/regtest_coffee.py ../../marsyas-coffee" $coffeeLog Coffee
 
+cd doc/
+testthing "make html" $manualsLog "HTML manuals"
+testthing "make pdf" $manualsLog "PDF manuals"
+testthing "make pdf" $doxyLog "Doxygen docs"
+cd ..
+
 echo "Make dist... not implemented" >> $report
-
-echo "Make docs... not implemented" >> $report
-
-echo "Make doxygen... not implemented" >> $report
 
 sendreport "Pass"
 
