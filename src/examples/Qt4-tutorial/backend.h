@@ -19,7 +19,7 @@
 #include <QObject>
 #include <QTimer>
 #include "MarSystemManager.h"
-#include "MarQtActual/MarSystemQtWrapper.h"
+#include "MarSystemQtWrapper.h"
 
 #include <iostream>
 using namespace std;
