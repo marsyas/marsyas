@@ -701,6 +701,8 @@ is important for any serious work with the framework.
 The main marsyas directory consists of the following 
 important files: 
 
+@c  FIXME: this is incorrect now.
+
 @c  TODO: clean up these files.  -gp
 @itemize
 @item @b{INSTALL, COPYING, THANKS, README, AUTHORS, TODO, Changelog:} text

@@ -52,6 +52,7 @@ is welcome and will help further improve the framework.
 * History::                     
 * Context and Related Work::    
 * About the documentation::     
+* Beyond the manuals::          
 @end menu
 
 @node History
@@ -186,7 +187,34 @@ The documentation is uploaded regularly to
 @uref{http://marsyas.sourceforge.net/}
 
 
+@subsection User manual and Developer's manual
 
+This manual (the User manual) is the main documentation for Marsyas; it
+covers the use of existing tools, creating your own tools, and even how
+to create new MarSystems.
+
+The Developer's manual is aimed at people who commit material back to
+Marsyas.  It covers tips and tools which make contributing easier,
+explains the automatic testing (and how to include your code in these
+tests), and how to write documentation.
+
+
+@subsection Help wanted!
+
+Although Marsyas documentation has improved an incredible amount in the
+past year, we do not have the resources (time / energy / interest /
+money) to cover everything.  When the documentation team has identified
+a particular need in the manual which they cannot fulfill themselves,
+they place a 
+
+@WANTED{brief note indicating the lack}
+
+If you can fill in any details for these sections, @emph{please} see
+@develref{Contributing documentation}.
+
+
+@node Beyond the manuals
+@section Beyond the manuals
 
 @subsection Examples
 
@@ -196,10 +224,14 @@ manual, but you may prefer to examine these files in your favorite
 text editor with your own syntax highlighting.
 
 @itemize
-@item @file{examples/}: the simplest examples are here.  These files
-are provided only for learning; they have little purpose as actual programs.
-@item @file{examples/Qt4-tutorial/}: a simple Qt4/Marsyas program.  Just like
-the files in @file{examples/}, it has little value as a standalone program.
+@item @file{src/examples/}: the simplest examples are here.  These files
+are provided only for learning; they have little purpose as actual
+programs.
+
+@item @file{src/examples/Qt4-tutorial/}: a simple Qt4/Marsyas program.
+Just like the files in @file{examples/}, it has little value as a
+standalone program.
+
 @end itemize
 
 
@@ -216,13 +248,19 @@ complete.  Once you are familiar with everything covered in this manual,
 you should examine the source code:
 
 @itemize
-@item @file{apps/}: the source code for real Marsyas executables.  These
-are real, working programs.  This means that they have poor comments,
-bad variable names, and are difficult to read.  :)
-@item @file{marsyas/}: the source code for MarSystems.  These are the
-basic building blocks of Marsyas, and are even more difficult to read.
+@item @file{src/apps/}: the source code for real Marsyas executables.
+These are real, working programs.  This means that they have poor
+comments, bad variable names, and are difficult to read.  :)
+
+@item @file{src/marsyas/}: the source code for MarSystems.  These are
+the basic building blocks of Marsyas, and are even more difficult to
+read.
+
 @end itemize
 
+If you gain any knowledge from the source files that is not covered in
+the manual, please help improve the documentation.  For more
+information, see @develref{Contributing documentation}.
 
 
 

@@ -1,7 +1,7 @@
 \input texinfo   @c -*-texinfo-*-
 @comment %**start of header
 @setfilename marsyas-devel.info
-@settitle Marsyas 0.2
+@settitle Marsyas Developer's Manual
 @comment %**end of header
      
 
