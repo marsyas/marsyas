@@ -18,10 +18,8 @@
 
 MAINTAINERCLEANFILES    = Makefile.in
 
-lib_LIBRARIES         = libmarsyas.a
-
 if QT_PRESENT
-lib_LIBRARIES += libmarsyasqt.a
+lib_LIBRARIES = libmarsyas.a libmarsyasqt.a
 
 libmarsyasqt.a:
 	cd $(top_srcdir)/src/marsyasqt_wrapper/ && qmake && make
@@ -33,6 +31,9 @@ install-data-local:
 # don't bother with this
 #	mkdir -p $(DESTDIR)$(includedir)/marsyas/marsyasqt/
 #	cp $(top_srcdir)/src/marsyasqt_wrapper/*.h $(DESTDIR)$(includedir)/marsyas/marsyasqt/
+else
+lib_LIBRARIES         = libmarsyas.a
+
 endif
 
 

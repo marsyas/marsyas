@@ -367,6 +367,7 @@ for path in $QTPATHS; do
     case $QTVERSION in
       4.1.*|4.2.*|4.3.*)
         QTDIR=`$QMAKE -query QT_INSTALL_PREFIX`
+	AM_CONDITIONAL(QT_PRESENT, test "x$QMAKE" != "")
         break
         ;;
       *);;
@@ -374,8 +375,6 @@ for path in $QTPATHS; do
   fi
 done
 
-AM_CONDITIONAL(QT_PRESENT,
-	test x$QMAKE = x)
 
 
 
