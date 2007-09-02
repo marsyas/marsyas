@@ -361,19 +361,21 @@ for path in $QTPATHS; do
       QMAKE=$path/bin/qmake
     fi
   fi
-  if test x$QMAKE != x; then
-    # Ask qmake if we have the right version
-    QTVERSION=`$QMAKE -query QT_VERSION`
-    case $QTVERSION in
-      4.1.*|4.2.*|4.3.*)
-        QTDIR=`$QMAKE -query QT_INSTALL_PREFIX`
-	AM_CONDITIONAL(QT_PRESENT, test "x$QMAKE" != "")
-        break
-        ;;
-      *);;
-    esac
-  fi
+#  if test x$QMAKE_DDD != x; then
+#     AM_CONDITIONAL(QT_PRESENT, test x$QMAKE != x)
+#    # Ask qmake if we have the right version
+#    QTVERSION=`$QMAKE -query QT_VERSION`
+#    case $QTVERSION in
+#      4.1.*|4.2.*|4.3.*)
+#        QTDIR=`$QMAKE -query QT_INSTALL_PREFIX`
+#        break
+#        ;;
+#      *);;
+#    esac
+#  fi
 done
+
+AM_CONDITIONAL(QT_PRESENT, test x$QMAKE != x)
 
 
 
