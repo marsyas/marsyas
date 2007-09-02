@@ -369,11 +369,11 @@ in that direction).
 @section Regression testing scripts
 
 Marsyas contains a suite of tests which attempt@footnote{Somewhat
-unsuccessfully, unfortunately} that new functionality (or bug fixes) do
-not cause bugs in existing (working) code.  The tests do not require the
-marsyas executables to be installed (by default they execute
-@file{../../bin/release/PROGNAME} ), but marsyas must be compiled (ie
-@code{make}).
+unsuccessfully, unfortunately.} to make sure that new functionality (or
+bug fixes) do not cause bugs in existing (working) code.  The tests do
+not require the marsyas executables to be installed (by default they
+execute @file{bin/release/PROGNAME} ), but marsyas must be
+compiled.
 
 The tests also require Python to be installed.  Python is installed by
 default on Linux and MacOS X machines; Windows users may install it from

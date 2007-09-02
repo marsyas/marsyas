@@ -703,7 +703,7 @@ important files:
 
 @c  FIXME: this is incorrect now.
 
-@c  TODO: clean up these files.  -gp
+@c  FIXME: clean up the toplevel files.
 @itemize
 @item @b{INSTALL, COPYING, THANKS, README, AUTHORS, TODO, Changelog:} text
 files with important information in theory.  However, these have not

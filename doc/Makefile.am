@@ -23,7 +23,7 @@
 #     change to waf in 2008)
 TEXI2HTML = makeinfo --html  # -o out-www/manual/
 TEXI2PDF  = texi2pdf  #  -o out-www/
-info_TEXINFOS   = marsyas-user.texi marsyas-devel.texi
+#info_TEXINFOS   = marsyas-user.texi marsyas-devel.texi
 
 EXTRA_DIST = marsyas.pdf intro.texi tools.texi architecture.texi programming.texi install.texi unsorted.texi interoperability.texi
 

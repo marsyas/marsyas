@@ -161,7 +161,7 @@ realvec bar;
 bar = foo;
 // bar is now the same size and contains the same data
 
-// TODO: this might work?  Or might not?
+// arithmetic
 baz = foo + bar;
 baz = foo + 3;
 @end example
@@ -170,7 +170,15 @@ baz = foo + 3;
 @node Applying a function to a realvec
 @subsection Applying a function to a realvec
 
-Use apply().  Somehow.  TODO: figure out how.
+Use apply().
+
+@example
+void
+TranscriberExtract::toMidi(realvec* pitchList)
+@{
+    pitchList->apply( hertz2pitch );
+@}
+@end example
 
 
 @node Realvec input and output to a file
@@ -272,10 +280,10 @@ The @qq{main} MarSystems are fairly well documented, but many MarSystems
 lack even basic documentation.  In this case, the only option is to read
 the source code.
 
-@c  TODO: temp
-@c Once you have learned how to use an undocumented MarSystem,
-@c @emph{please} send some documentation.  See @ref{Contributing
-@c documentation} and @ref{Contributing source documentation} for details.
+Once you have learned how to use an undocumented MarSystem,
+@emph{please} send some documentation.  For more information, see
+@develref{Contributing documentation} and @develref{Contributing source
+documentation}.
 
 
 
