@@ -201,6 +201,7 @@ SUBDIRS = src lib bin doc regressionTests misc
 DIST_SUBDIRS = src lib bin doc regressionTests misc
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure \
 	src/marsyas/config-h.in src/marsyas/stamp-h.in
+DISTCHECK_CONFIGURE_FLAGS = "--disable-marsyasqt"
 all: all-recursive
 
 .SUFFIXES:
