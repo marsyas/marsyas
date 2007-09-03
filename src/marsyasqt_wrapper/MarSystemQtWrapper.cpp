@@ -1,5 +1,6 @@
 #include "MarSystemQtWrapper.h"
-using namespace MarQtActual;
+namespace MarsyasQt
+{
 
 MarSystemQtWrapper::MarSystemQtWrapper(MarSystem* msys, bool withTimer)
 {
@@ -174,5 +175,5 @@ MarSystemQtWrapper::run()
 	}
 }
 
-
+} // namespace
 

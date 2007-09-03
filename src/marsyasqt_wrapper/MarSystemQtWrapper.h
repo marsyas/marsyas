@@ -21,7 +21,7 @@
 
 using namespace std;
 using namespace Marsyas;
-namespace MarQtActual
+namespace MarsyasQt
 {
 /**
 	\ingroup MarsyasQt

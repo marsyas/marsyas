@@ -9,7 +9,7 @@ SOURCES += backend.cpp
 MARSYAS_INSTALL_DIR = ../../../  # works in the svn tree
 #MARSYAS_INSTALL_DIR = /usr/local
 #MARSYAS_INSTALL_DIR = ${HOME}/usr/
-message("Marsyas was installed in $$MARSYAS_INSTALL_DIR, right?")
+message("Hopefully, Marsyas was installed in $$MARSYAS_INSTALL_DIR")
 
 
 INCLUDEPATH += $$MARSYAS_INSTALL_DIR/src/marsyas/

@@ -12,6 +12,7 @@
 
 #include "MarControl.h"
 #include "MarSystemQtWrapper.h"
+using namespace MarsyasQt;
 
 namespace Marsyas
 {

@@ -7,7 +7,7 @@
 #include "MarSystemQtWrapper.h"
 //#include "Transcriber.h"
 using namespace Marsyas;
-using namespace MarQtActual;
+using namespace MarsyasQt;
 
 class MarBackend: public QObject {
 	Q_OBJECT
