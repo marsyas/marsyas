@@ -328,15 +328,15 @@ MATLAB is a
 
 To export data from Marsyas into MATLAB, simply add
 
-@example
 @WANTED{code here}
+@example
 @end example
 
 @noindent
 to your .cpp source file, and
 
-@example
 @WANTED{code here}
+@example
 @end example
 
 @noindent
@@ -347,15 +347,15 @@ to your MATLAB file.
 
 To import data into Marsyas from MATLAB, simply add
 
-@example
 @WANTED{code here}
+@example
 @end example
 
 @noindent
 to your .cpp source file, and
 
-@example
 @WANTED{code here}
+@example
 @end example
 
 @noindent

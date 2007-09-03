@@ -44,6 +44,7 @@
 @macro WANTED{TEXT}
 @cartouche
 @subsubheading Help wanted: missing info!
+
 @quotation
 \TEXT\
 @end quotation
