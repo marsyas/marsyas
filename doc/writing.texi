@@ -181,19 +181,110 @@ a handy object which parses the command-line for you.
 @node Writing Qt4 applications
 @section Writing Qt4 applications
 
-
+Writing applications that use Marsyas and Qt4 is quite simple, thanks to
+@file{libmarsasqt}.
 
 @menu
-* libmarqt::                    
+* Including and linking to libmarsyasqt::  
+* MarSystemQtWrapper::          
+* Passing controls to a MarSystemQtWrapper::  
 * Qt4 example::                 
 * Other Qt4 issues::            
 @end menu
 
 
-@node libmarqt
-@subsection libmarqt
+@node Including and linking to libmarsyasqt
+@subsection Including and linking to libmarsyasqt
 
-TODO: like 6.1.
+Create a @file{.pro} file based on this template:
+
+@example
+###  your files
+SOURCES = main.cpp
+HEADERS = mainwindow.h
+SOURCES += mainwindow.cpp
+HEADERS += backend.h
+SOURCES += backend.cpp
+
+
+### if running inside the source tree
+MARSYAS_INSTALL_DIR = ../../../
+INCLUDEPATH += $$MARSYAS_INSTALL_DIR/src/marsyasqt_wrapper/
+LIBPATH += $$MARSYAS_INSTALL_DIR/lib/release/
+
+
+### if installed elsewhere
+#MARSYAS_INSTALL_DIR = /usr/local
+#MARSYAS_INSTALL_DIR = $@{HOME@}/usr/
+#INCLUDEPATH += $$MARSYAS_INSTALL_DIR/src/marsyas/
+#LIBPATH += $$MARSYAS_INSTALL_DIR/lib/
+
+
+unix:LIBS += -lmarsyas -lmarsyasqt
+unix:!macx:LIBS += -lasound
+macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
+@end example
+
+It is @strong{highly} recommended that you separate the Qt code (ie
+@code{mainwindow.cpp}) from the Marsyas code (ie @code{backend.cpp}).
+
+
+@node MarSystemQtWrapper
+@subsection MarSystemQtWrapper
+
+The actual interaction between Qt and Marsyas is performed with a
+@code{MarSystemQtWrapper} object.  Add the following lines to your
+header file that deals with Marsyas:
+
+@example
+#include "MarSystemQtWrapper.h"
+using namespace MarsyasQt;
+@end example
+
+You may now create a pointer to a MarSystemQtWrapper in your object:
+
+@example
+MarSystemQtWrapper *mrsWrapper;
+@end example
+
+To use this object in your source file, create a MarSystem like normal,
+then pass it to a new @code{MarSystemQtWrapper} object:
+
+@example
+MarSystemManager mng;
+playbacknet = mng.create("Series", "playbacknet");
+... set up playbacknet...
+
+// wrap it up to make it pretend to be a Qt object:
+mrsWrapper = new MarSystemQtWrapper(playbacknet);
+mrsWrapper->start();
+mrsWrapper->play();
+
+... do something for a while...
+mrsWrapper->stop();
+delete mrsWrapper;
+@end example
+
+
+@node Passing controls to a MarSystemQtWrapper
+@subsection Passing controls to a MarSystemQtWrapper
+
+@cindex MarControlPtr
+
+Since your MarSystem is wrapped up, you cannot access controls using the
+normal methods.  Instead, you must use a MarControlPtr:
+
+@example
+MarControlPtr filenamePtr;
+MarControlPtr positionPtr;
+
+filenamePtr = mrsWrapper->getctrl("SoundFileSource/src/mrs_string/filename");   
+positionPtr = mrsWrapper->getctrl("SoundFileSource/src/mrs_natural/pos");
+
+mrsWrapper->updctrl(filenamePtr,fileName);
+... wait a bit...
+newPos = (mrs_natural) positionPtr->to<mrs_natural>();
+@end example
 
 
 @node Qt4 example
