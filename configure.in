@@ -332,19 +332,19 @@ fi
 esac
 
 
-AC_ARG_ENABLE([marsyasqt],[AC_HELP_STRING([--disable-marsyasqt],[Disable
-building libmarsyasqt]),[enable_marsyas=$enableval],[enable_marsyasqt="yes"]])
+AC_ARG_ENABLE([marsyasqt],[AC_HELP_STRING([--enable-marsyasqt],[Enable building libmarsyasqt]),[enable_marsyas=$enableval],[enable_marsyasqt="no"]])
 case "$enable_marsyasqt" in
-       no)
-               AM_CONDITIONAL(QT_PRESENT, false)
-               echo Libmarsyasqt disabled
-       ;;
-       *) AC_CHECK_PROG(qmake, [qmake], yes, no)
+       yes)
+        AC_CHECK_PROG(qmake, [qmake], yes, no)
 		if test $qmake = yes; then
 			AM_CONDITIONAL(QT_PRESENT, true)
 		else
 			AM_CONDITIONAL(QT_PRESENT, false)
 		fi
+       ;;
+       *)
+               AM_CONDITIONAL(QT_PRESENT, false)
+               echo Libmarsyasqt disabled
 		;;
 esac
 
