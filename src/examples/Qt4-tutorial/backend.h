@@ -36,17 +36,17 @@ public:
 	void openBackendSoundfile(string fileName);
 
 public slots:
-	void setBackendVolume(int value);
+	void setBackendVolume(mrs_natural value);
 	void getBackendPosition();
 
 signals:
-	void changedBackendPosition(int value);
+	void changedBackendPosition(mrs_natural value);
 
 private:
 // in order to make the MarSystem act like a Qt object,
 // we use this wrapper:
 	MarSystemQtWrapper *mrsWrapper;
-// ... and these pointers:
+// ... and these pomrs_naturalers:
 	MarControlPtr filenamePtr;
 	MarControlPtr gainPtr;
 	MarControlPtr positionPtr;
