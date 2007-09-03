@@ -182,9 +182,8 @@ the advantages of dataflow computation.
 
 @subsection Latest version
 
-@c  FIXME: change url after discussing with sness.
 The documentation is uploaded regularly to
-@uref{http://marsyas.sourceforge.net/}
+@uref{http://marsyas.sness.net/docs/index.html}
 
 
 @subsection User manual and Developer's manual

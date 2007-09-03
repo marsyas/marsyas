@@ -413,11 +413,11 @@ prototyping.
 
 Useful datasets:
 
-@c  FIXME: update this dir.
 @itemize
 @item
-@uref{http://opihi.cs.uvic.ca/~gperciva/,marsyas-coffee}: data set used
-for large regression tests in Marsyas.
+@uref{http://marsyas.sness.net/marsyas-coffee/marsyas-coffee-0.1.tar.bz2,
+marsyas-coffee}:
+data set used for large regression tests in Marsyas.
 
 @end itemize
 
