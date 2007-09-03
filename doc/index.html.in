@@ -41,7 +41,8 @@
           <td class="left-column">
 	  <ul>
 	    <li>
-	    <a class="title" href="manual/marsyas-user/index.html">User manual</a>
+	    <a class="title" href="manual/marsyas-user/index.html">User
+manual</a> (also in <a href="manual/marsyas-user.pdf">PDF</a> ~ 1.5 Mb)
 	      <br>(using marsyas as a user and programmer)
 	    <li>
 	    <a class="title" href="sourceDoc/index.html">Marsystem reference</a>
@@ -52,7 +53,9 @@
 	  <td class="right-column">
 	  <ul>
 	    <li>
-	    <a class="title" href="manual/marsyas-devel/index.html">Developer's manual</a>
+	    <a class="title"
+href="manual/marsyas-devel/index.html">Developer's manual</a> (also in
+<a href="manual/marsyas-devel.pdf">PDF</a> ~ 0.5 Mb)
 	      <br>(for developers working on marsyas)
 
 		<li>FIXME: find something to put here.
@@ -70,9 +73,12 @@ marsyas.sourceforge.net</a>
 	</ul>
 	  </td>
 	  <td class="right-column">
+			<ul>
             <li> <a class="title"  href="marsyas-docs.tar.gz">
-Documentation tarball</a>  (approximately 2 Mb)
+Documentation tarball</a>  (~ 2 Mb)
               <br>(for offline browsing)
+			</ul>
+		</td>
         </tr>
       </tbody>
     </table>
