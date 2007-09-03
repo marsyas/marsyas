@@ -1,8 +1,5 @@
 // core/fundamental  Marsyas checks
-#include "common-reg.h"
-#include "RtAudio.h"
-//#include "RtMidi.h"
-
+#include "coreChecks.h"
 
 // possibly useful as a basis for new tests
 void

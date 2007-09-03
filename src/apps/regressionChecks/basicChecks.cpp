@@ -1,5 +1,5 @@
 // Basic Audio Processing checks
-#include "common-reg.h"
+#include "basicChecks.h"
 
 // TODO: move
 void
