@@ -30,8 +30,8 @@ EXTRA_DIST += architecture.texi system.texi writing.texi programming.texi
 EXTRA_DIST += contributing.texi autotest.texi
 
 EXTRA_DIST += macros.itexi README
-EXTRA_DIST += images/*.eps images/*.pdf images/*.txt images/*.png
-EXTRA_DIST += source-doc/*.texinfo source-doc/*.html
+EXTRA_DIST += images/
+EXTRA_DIST += source-doc/
 
 CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
              marsyas.ats  marsyas.evs  marsyas.fns  marsyas.ovs \

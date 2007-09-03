@@ -109,7 +109,7 @@ TEXI2HTML = makeinfo --html --css-include=marsyas.css # -o out-www/manual/
 TEXI2PDF = texi2pdf  #  -o out-www/
 
 #info_TEXINFOS   = marsyas-user.texi marsyas-devel.texi
-EXTRA_DIST = intro.texi install.texi tools.texi architecture.texi system.texi writing.texi programming.texi contributing.texi autotest.texi macros.itexi README images/*.eps images/*.pdf images/*.txt images/*.png source-doc/*.texinfo source-doc/*.html
+EXTRA_DIST = intro.texi install.texi tools.texi architecture.texi system.texi writing.texi programming.texi contributing.texi autotest.texi macros.itexi README images/ source-doc/
 
 CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
              marsyas.ats  marsyas.evs  marsyas.fns  marsyas.ovs \
@@ -146,7 +146,6 @@ top_distdir = ..
 distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
-	$(mkinstalldirs) $(distdir)/images $(distdir)/source-doc
 	@list='$(DISTFILES)'; for file in $$list; do \
 	  if test -f $$file || test -d $$file; then d=.; else d=$(srcdir); fi; \
 	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
