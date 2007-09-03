@@ -2,6 +2,7 @@
 ######### update as necessary
 baseDir=~/usr/src/marsyas
 matDir=~/usr/src/marsyas-mat
+coffeeDir=~/usr/src/marsyas-coffee
 
 
 ### get latest SVN
@@ -86,7 +87,7 @@ testthing make $buildLog "Build"
 
 testthing "scripts/regtest_sanity.py" $sanityLog Sanity
 
-testthing "scripts/regtest_coffee.py ../../marsyas-coffee" $coffeeLog Coffee
+testthing "scripts/regtest_coffee.py $coffeeDir" $coffeeLog Coffee
 
 cd doc/
 testthing "make html" $manualsLog "HTML manuals"

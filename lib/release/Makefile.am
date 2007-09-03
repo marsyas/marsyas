@@ -26,8 +26,6 @@ libmarsyasqt.a: libmarsyasqt_Makefile
 #	cd $(top_srcdir)/src/marsyasqt_wrapper/ && qmake && make
 # libmarsyasqt.a is placed in lib/release/  from the qmake .pro file
 
-dist-hook: libmarsyasqt_Makefile
-
 libmarsyasqt_Makefile:
 	cd $(top_srcdir)/src/marsyasqt_wrapper/ && chmod u+w ../marsyasqt_wrapper/ && qmake
 

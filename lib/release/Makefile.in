@@ -3856,9 +3856,6 @@ distdir: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
-	$(MAKE) $(AM_MAKEFLAGS) \
-	  top_distdir="${top_distdir}" distdir="$(distdir)" \
-	  dist-hook
 check-am: all-am
 check: check-am
 all-am: Makefile $(LIBRARIES) $(HEADERS)
@@ -3947,8 +3944,6 @@ uninstall-am: uninstall-info-am uninstall-libLIBRARIES \
 @QT_PRESENT_TRUE@	cd $(top_srcdir)/src/marsyasqt_wrapper/ && make
 #	cd $(top_srcdir)/src/marsyasqt_wrapper/ && qmake && make
 # libmarsyasqt.a is placed in lib/release/  from the qmake .pro file
-
-@QT_PRESENT_TRUE@dist-hook: libmarsyasqt_Makefile
 
 @QT_PRESENT_TRUE@libmarsyasqt_Makefile:
 @QT_PRESENT_TRUE@	cd $(top_srcdir)/src/marsyasqt_wrapper/ && chmod u+w ../marsyasqt_wrapper/ && qmake
