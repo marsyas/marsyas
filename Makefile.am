@@ -31,12 +31,12 @@ SUBDIRS			= src lib bin doc regressionTests misc
 # we must now explicitly define subdirs to be included in the dist
 DIST_SUBDIRS		= src lib bin doc regressionTests misc
 
-
-#  There's no point writing Makefiles for temporary holding areas.
-EXTRA_DIST += ToDeprecate/
 EXTRA_DIST += otherlibs/
 EXTRA_DIST += scripts/
 EXTRA_DIST += swig/
+
+#  There's no point writing Makefiles for temporary holding areas.
+EXTRA_DIST += ToDeprecate/
 
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure
