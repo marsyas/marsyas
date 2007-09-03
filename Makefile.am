@@ -45,6 +45,8 @@ MAINTAINERCLEANFILES += src/marsyas/config-h.in src/marsyas/stamp-h.in
 ACLOCAL                 = aclocal -I $(auxdir)
 
 
+DISTCHECK_CONFIGURE_FLAGS="--disable-marsyasqt"
+
 
 
 ## dist-hook:

@@ -164,9 +164,8 @@ target_vendor = @target_vendor@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = marsyas apps examples
-#SUBDIRS += marsyasqt_wrapper
-DIST_SUBDIRS = marsyas apps examples marsyasqt_wrapper
-EXTRA_DIST = Qt4Apps
+DIST_SUBDIRS = marsyas apps examples
+EXTRA_DIST = Qt4Apps marsyasqt_wrapper
 all: all-recursive
 
 .SUFFIXES:

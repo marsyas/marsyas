@@ -4102,7 +4102,7 @@ uninstall-am: uninstall-libLIBRARIES uninstall-pkgincludeHEADERS
 @QT_PRESENT_TRUE@dist-hook: libmarsyasqt_Makefile
 
 @QT_PRESENT_TRUE@libmarsyasqt_Makefile:
-@QT_PRESENT_TRUE@	cd $(top_srcdir)/src/marsyasqt_wrapper/ && chmod u+x ../marsyasqt_wrapper/ && qmake
+@QT_PRESENT_TRUE@	cd $(top_srcdir)/src/marsyasqt_wrapper/ && chmod u+w ../marsyasqt_wrapper/ && qmake
 
 @QT_PRESENT_TRUE@install-data-local:
 @QT_PRESENT_TRUE@	cp $(top_srcdir)/lib/release/libmarsyasqt.a $(DESTDIR)$(libdir)

@@ -678,9 +678,9 @@ MADLIB
 OGGLIB
 MslLibs
 MATLABLIBS
-qmake
 QT_PRESENT_TRUE
 QT_PRESENT_FALSE
+qmake
 Audio
 Libs
 INCLUDES
@@ -1297,6 +1297,7 @@ Optional Features:
   --enable-bindings       Enables SWIG generated bindings
 
 
+  --disable-marsyasqt     Disable building libmarsyasqt,enable_marsyas=$enableval,enable_marsyasqt="yes"
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -4520,7 +4521,24 @@ _ACEOF
 esac
 
 
-# Extract the first word of "qmake", so it can be a program name with args.
+# Check whether --enable-marsyasqt was given.
+if test "${enable_marsyasqt+set}" = set; then
+  enableval=$enable_marsyasqt;
+fi
+
+case "$enable_marsyasqt" in
+       no)
+                if false; then
+  QT_PRESENT_TRUE=
+  QT_PRESENT_FALSE='#'
+else
+  QT_PRESENT_TRUE='#'
+  QT_PRESENT_FALSE=
+fi
+
+               echo Libmarsyasqt disabled
+       ;;
+       *) # Extract the first word of "qmake", so it can be a program name with args.
 set dummy qmake; ac_word=$2
 { echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
@@ -4558,8 +4576,8 @@ echo "${ECHO_T}no" >&6; }
 fi
 
 
-if test $qmake = yes; then
-	 if true; then
+		if test $qmake = yes; then
+			 if true; then
   QT_PRESENT_TRUE=
   QT_PRESENT_FALSE='#'
 else
@@ -4567,8 +4585,8 @@ else
   QT_PRESENT_FALSE=
 fi
 
-else
-	 if false; then
+		else
+			 if false; then
   QT_PRESENT_TRUE=
   QT_PRESENT_FALSE='#'
 else
@@ -4576,7 +4594,9 @@ else
   QT_PRESENT_FALSE=
 fi
 
-fi
+		fi
+		;;
+esac
 
 
 
@@ -4743,6 +4763,13 @@ if test -z "${am__fastdepCXX_TRUE}" && test -z "${am__fastdepCXX_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"am__fastdepCXX\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"am__fastdepCXX\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${QT_PRESENT_TRUE}" && test -z "${QT_PRESENT_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"QT_PRESENT\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"QT_PRESENT\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -5433,9 +5460,9 @@ for ac_last_try in false false false false false :; do
 OGGLIB!$OGGLIB$ac_delim
 MslLibs!$MslLibs$ac_delim
 MATLABLIBS!$MATLABLIBS$ac_delim
-qmake!$qmake$ac_delim
 QT_PRESENT_TRUE!$QT_PRESENT_TRUE$ac_delim
 QT_PRESENT_FALSE!$QT_PRESENT_FALSE$ac_delim
+qmake!$qmake$ac_delim
 Audio!$Audio$ac_delim
 Libs!$Libs$ac_delim
 INCLUDES!$INCLUDES$ac_delim
