@@ -21,7 +21,7 @@
 
 #include "AbsSoundFileSource.h"
 
-#ifdef WIN32
+#ifdef MARSYAS_WIN32
 #ifndef MARSYAS_CYGWIN
 typedef __int32 int32_t;
 #endif
