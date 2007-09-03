@@ -59,7 +59,7 @@ void MarBackend::openBackendSoundfile(string fileName)
 
 void MarBackend::setBackendVolume(mrs_natural vol)
 {
-	float newGain = vol/100.0f;
+	mrs_real newGain = vol/100.0;
 	mrsWrapper->updctrl(gainPtr, newGain);
 }
 
