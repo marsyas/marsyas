@@ -43,8 +43,13 @@
 
 @macro WANTED{TEXT}
 @cartouche
-@subsubheading Help wanted!
+@subsubheading Help wanted: missing info!
+@quotation
 \TEXT\
+@end quotation
+
+@emph{If you can fill in any details, please see @develref{Contributing
+documentation}}
 @end cartouche
 @end macro
 

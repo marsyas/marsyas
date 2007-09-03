@@ -199,6 +199,7 @@ explains the automatic testing (and how to include your code in these
 tests), and how to write documentation.
 
 
+@anchor{Help wanted!}
 @subsection Help wanted!
 
 Although Marsyas documentation has improved an incredible amount in the
@@ -207,10 +208,7 @@ money) to cover everything.  When the documentation team has identified
 a particular need in the manual which they cannot fulfill themselves,
 they place a 
 
-@WANTED{brief note indicating the lack}
-
-If you can fill in any details for these sections, @emph{please} see
-@develref{Contributing documentation}.
+@WANTED{Brief note explaining what is missing.}
 
 
 @node Beyond the manuals
