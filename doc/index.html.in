@@ -1,15 +1,20 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
 <html>
-  <head>
-    <title>Marsyas Documentation</title>
-    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
-    <meta name="aesop" content="links">
-    <meta name="description"
-          content="Top-level index to the standard documentation for
-                   Marsyas@">
-    <style type="text/css">
-    .navigation         { background-color: #e8ffe8;
-   	                  padding: 2; border: #c0ffc0 1px solid;
-			  text-align: center;
+<head>
+  <meta name="generator" content=
+  "HTML Tidy for Linux/x86 (vers 1 September 2005), see www.w3.org">
+
+  <title>Marsyas Documentation</title>
+  <meta http-equiv="Content-Type" content=
+  "text/html; charset=us-ascii">
+  <meta name="aesop" content="links">
+  <meta name="description" content=
+  "Top-level index to the standard documentation for Marsyas@">
+<style type="text/css">
+    .navigation { background-color: #e8ffe8;
+                          padding: 2; border: #c0ffc0 1px solid;
+                          text-align: center;
                           font-weight: bold;
                           font-family: avantgarde, sans-serif;
                           font-size: 110%; }
@@ -19,68 +24,69 @@
       td.left-column { padding-right: 1em; }
       td.right-column { padding-left: 1em; }
       hr { border:0; height:1; color: #000000; background-color: #000000; }
-    </style> 
-  </head>
-  
-  <body>
-        
-	<div class="navigation">
-	  <h1>Marsyas documentation</h1>
-	</div>
-    <div align="center" class="titlepage">
+</style>
+</head>
 
-      <p>
-	<strong>Version 0.2.12<strong>
-	<br>
-      </p>
-    </div>
+<body>
+  <div class="navigation">
+    <h1>Marsyas documentation</h1>
+  </div>
 
-    <table align="center">
-      <tbody>
-        <tr>
-          <td class="left-column">
-	  <ul>
-	    <li>
-	    <a class="title" href="manual/marsyas-user/index.html">User
-manual</a> (also in <a href="manual/marsyas-user.pdf">PDF</a> ~ 1.5 Mb)
-	      <br>(using marsyas as a user and programmer)
-	    <li>
-	    <a class="title" href="sourceDoc/index.html">Marsystem reference</a>
-	      <br>(library reference)
+  <div align="center" class="titlepage">
+    <p><strong>Version 0.2.12</strong><br></p>
+  </div>
 
-	</ul>
-	  </td>
-	  <td class="right-column">
-	  <ul>
-	    <li>
-	    <a class="title"
-href="manual/marsyas-devel/index.html">Developer's manual</a> (also in
-<a href="manual/marsyas-devel.pdf">PDF</a> ~ 0.5 Mb)
-	      <br>(for developers working on marsyas)
+  <table align="center">
+    <tbody>
+      <tr>
+        <td class="left-column">
+          <ul>
+            <li><a class="title" href=
+            "manual/marsyas-user/index.html">User manual</a> (also
+            in <a href="manual/marsyas-user.pdf">PDF</a> ~ 1.5
+            Mb)<br>
+            (using marsyas as a user and programmer)</li>
 
-		<li>FIXME: find something to put here.
-		<br>(otherwise this looks bad)
+            <li><a class="title" href=
+            "sourceDoc/index.html">Marsystem reference</a><br>
+            (library reference)</li>
+          </ul>
+        </td>
 
-	  </ul>
-	  </td>
-        </tr>
-        <tr>
-          <td class="left-column">
-	  <ul>
-            <li> <a class="title"  href="http://marsyas.sourceforge.net/">
-marsyas.sourceforge.net</a>
-              <br>(the website)
-	</ul>
-	  </td>
-	  <td class="right-column">
-			<ul>
-            <li> <a class="title"  href="marsyas-docs.tar.gz">
-Documentation tarball</a>  (~ 2 Mb)
-              <br>(for offline browsing)
-			</ul>
-		</td>
-        </tr>
-      </tbody>
-    </table>
-  </body>
+        <td class="right-column">
+          <ul>
+            <li><a class="title" href=
+            "manual/marsyas-devel/index.html">Developer's
+            manual</a> (also in <a href=
+            "manual/marsyas-devel.pdf">PDF</a> ~ 0.5 Mb)<br>
+            (for developers working on marsyas)</li>
+
+            <li>find something to put here.<br>
+            (otherwise this looks bad)</li>
+          </ul>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="left-column">
+          <ul>
+            <li><a class="title" href=
+            "http://marsyas.sourceforge.net/">marsyas.sourceforge.net</a><br>
+
+            (the website)</li>
+          </ul>
+        </td>
+
+        <td class="right-column">
+          <ul>
+            <li><a class="title" href=
+            "marsyas-docs.tar.gz">Documentation tarball</a> (~ 2
+            Mb)<br>
+            (for offline browsing)</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</body>
 </html>
