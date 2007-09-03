@@ -141,17 +141,20 @@ mudbox_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 
 regressionChecks_SOURCES = \
 	$(top_srcdir)/src/apps/regressionChecks/regressionChecks.cpp \
+	$(top_srcdir)/src/apps/regressionChecks/coreChecks.h \
 	$(top_srcdir)/src/apps/regressionChecks/coreChecks.cpp \
+	$(top_srcdir)/src/apps/regressionChecks/basicChecks.h \
 	$(top_srcdir)/src/apps/regressionChecks/basicChecks.cpp \
+	$(top_srcdir)/src/apps/regressionChecks/analysisChecks.h \
 	$(top_srcdir)/src/apps/regressionChecks/analysisChecks.cpp \
-	$(top_srcdir)/src/apps/regressionChecks/common-reg.h
+	$(top_srcdir)/src/apps/regressionChecks/common-reg.h \
+	$(top_srcdir)/src/apps/regressionChecks/common-reg.cpp
 
 
-#regressionChecks_DIR = \
-#	$(top_srcdir)/src/apps/regressionChecks/
-#regressionChecks_HEADERS = \
-#regressionChecks_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
-#	       $(Libs)
+regressionChecks_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
+	       $(Libs)
+
+
 record_SOURCES = $(top_srcdir)/src/apps/record/record.cpp
 record_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 	       $(Libs)
@@ -299,10 +302,9 @@ record_DEPENDENCIES = $(top_builddir)/lib/release/libmarsyas.a
 record_LDFLAGS =
 am_regressionChecks_OBJECTS = regressionChecks.$(OBJEXT) \
 	coreChecks.$(OBJEXT) basicChecks.$(OBJEXT) \
-	analysisChecks.$(OBJEXT)
+	analysisChecks.$(OBJEXT) common-reg.$(OBJEXT)
 regressionChecks_OBJECTS = $(am_regressionChecks_OBJECTS)
-regressionChecks_LDADD = $(LDADD)
-regressionChecks_DEPENDENCIES =
+regressionChecks_DEPENDENCIES = $(top_builddir)/lib/release/libmarsyas.a
 regressionChecks_LDFLAGS =
 am_scheduler_OBJECTS = scheduler.$(OBJEXT)
 scheduler_OBJECTS = $(am_scheduler_OBJECTS)
@@ -336,10 +338,11 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/basicChecks.Po ./$(DEPDIR)/bextract.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/boomchick.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/classifyFile.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/coreChecks.Po ./$(DEPDIR)/extract.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/kea.Po ./$(DEPDIR)/midiTest.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/mkcollection.Po ./$(DEPDIR)/msl.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/mudbox.Po ./$(DEPDIR)/orcarecord.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/common-reg.Po ./$(DEPDIR)/coreChecks.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/extract.Po ./$(DEPDIR)/kea.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/midiTest.Po ./$(DEPDIR)/mkcollection.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/msl.Po ./$(DEPDIR)/mudbox.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/orcarecord.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/peakClustering.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/peakSynth.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/phasevocoder.Po \
@@ -477,6 +480,8 @@ basicChecks.$(OBJEXT): \
 	$(top_srcdir)/src/apps/regressionChecks/basicChecks.cpp
 analysisChecks.$(OBJEXT): \
 	$(top_srcdir)/src/apps/regressionChecks/analysisChecks.cpp
+common-reg.$(OBJEXT): \
+	$(top_srcdir)/src/apps/regressionChecks/common-reg.cpp
 regressionChecks$(EXEEXT): $(regressionChecks_OBJECTS) $(regressionChecks_DEPENDENCIES) 
 	@rm -f regressionChecks$(EXEEXT)
 	$(CXXLINK) $(regressionChecks_LDFLAGS) $(regressionChecks_OBJECTS) $(regressionChecks_LDADD) $(LIBS)
@@ -513,6 +518,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bextract.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/boomchick.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/classifyFile.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/common-reg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/coreChecks.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/extract.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kea.Po@am__quote@
@@ -775,6 +781,18 @@ analysisChecks.obj: $(top_srcdir)/src/apps/regressionChecks/analysisChecks.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/analysisChecks.Po' tmpdepfile='$(DEPDIR)/analysisChecks.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o analysisChecks.obj `cygpath -w $(top_srcdir)/src/apps/regressionChecks/analysisChecks.cpp`
+
+common-reg.o: $(top_srcdir)/src/apps/regressionChecks/common-reg.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/src/apps/regressionChecks/common-reg.cpp' object='common-reg.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/common-reg.Po' tmpdepfile='$(DEPDIR)/common-reg.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o common-reg.o `test -f '$(top_srcdir)/src/apps/regressionChecks/common-reg.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/apps/regressionChecks/common-reg.cpp
+
+common-reg.obj: $(top_srcdir)/src/apps/regressionChecks/common-reg.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/src/apps/regressionChecks/common-reg.cpp' object='common-reg.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/common-reg.Po' tmpdepfile='$(DEPDIR)/common-reg.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o common-reg.obj `cygpath -w $(top_srcdir)/src/apps/regressionChecks/common-reg.cpp`
 
 scheduler.o: $(top_srcdir)/src/apps/scheduler/scheduler.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/src/apps/scheduler/scheduler.cpp' object='scheduler.o' libtool=no @AMDEPBACKSLASH@
