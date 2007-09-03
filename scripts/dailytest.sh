@@ -38,7 +38,8 @@ sendreport() {
 	then
 		mail -s "$subject" gperciva@uvic.ca < $report
 		mail -s "$subject" gtzan@cs.uvic.ca < $report
-		mail -s "$subject" lgmartins@sourceforge.net < $report
+# can't deliver to this address
+#		mail -s "$subject" lgmartins@sourceforge.net < $report
 	fi
 }
 
