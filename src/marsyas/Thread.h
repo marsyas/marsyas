@@ -24,8 +24,11 @@
   typedef void * THREAD_RETURN;
   typedef void * (*THREAD_FUNCTION)(void *);
   typedef pthread_mutex_t MUTEX;
+#endif 
 
-#elif defined(MARSYAS_WIN32)
+
+
+#if defined(MARSYAS_WIN32)
 
 #define _WINSOCKAPI_
 #define NOMINMAX
@@ -38,6 +41,24 @@
   typedef CRITICAL_SECTION MUTEX;
 
 #endif
+
+
+#if defined(MARSYAS_MINGW)
+
+#define _WINSOCKAPI_
+#define NOMINMAX
+  #include <windows.h>
+  #include <process.h>
+  #define THREAD_TYPE __stdcall
+  typedef unsigned long THREAD_HANDLE;
+  typedef unsigned THREAD_RETURN;
+  typedef unsigned (__stdcall *THREAD_FUNCTION)(void *);
+  typedef CRITICAL_SECTION MUTEX;
+
+#endif
+
+
+
 
 namespace Marsyas
 {

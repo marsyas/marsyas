@@ -23,6 +23,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <fcntl.h> // for Mathieu's unlink :-) 
 
 using namespace std;
 

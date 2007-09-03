@@ -11,13 +11,13 @@ CONFIG(debug, debug|release) {
 }
 
 CONFIG(release, debug|release){
-	win32: LIBS  += marsyas.lib
-	!win32: LIBS += -lmarsyas
+	win32-msvc2005: LIBS  += marsyas.lib
+	!win32-msvc2005: LIBS += -lmarsyas
 	LIBPATH +=  $$quote( "$$BASEDIR/lib/release" )
 }
 CONFIG(debug, debug|release){
-	win32:LIBS 	+= 	marsyas.lib
-	!win32: += -lmarsyas 	
+	win32-msvc2005:LIBS 	+= 	marsyas.lib
+	!win32-msvc2005: += -lmarsyas 	
 	LIBPATH += $$quote( "$$BASEDIR/lib/debug" )
 }
 

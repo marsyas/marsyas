@@ -113,7 +113,7 @@ namespace Marsyas
 //only  relevant for WIN32 MSVC (and ignored by all other platforms)
 //For more info about the reason for this #pragma consult:
 //http://msdn2.microsoft.com/en-us/library/ttcz0bys.aspx
-#ifdef WIN32
+#ifdef MARSYAS_WIN32
 #pragma warning(disable : 4996)
 #endif
 

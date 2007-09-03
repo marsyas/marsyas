@@ -31,7 +31,7 @@
 //only  relevant for WIN32 MSVC (and ignored by all other platforms)
 //For more info about the reason for this #pragma consult:
 //http://msdn2.microsoft.com/en-us/library/sa28fef8.aspx
-#ifdef WIN32
+#ifdef MARSYAS_WIN32
 #pragma warning( disable : 4290 )
 #endif 
 
@@ -187,6 +187,6 @@ private:
 //only  relevant for WIN32 MSVC (and ignored by all other platforms)
 //For more info about the reason for this #pragma consult:
 //http://msdn2.microsoft.com/en-us/library/sa28fef8.aspx
-#ifdef WIN32
+#ifdef MARSYAS_WIN32
 #pragma warning( default : 4290 )
 #endif 
