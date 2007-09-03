@@ -1,9 +1,9 @@
-#include "common-reg.h"
 #include "CommandLineOptions.h"
 
-#include "coreChecks.cpp"
-#include "basicChecks.cpp"
-#include "analysisChecks.cpp"
+#include "common-reg.h"
+#include "coreChecks.h"
+#include "basicChecks.h"
+#include "analysisChecks.h"
 
 
 CommandLineOptions cmd_options;

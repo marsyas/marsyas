@@ -1,5 +1,5 @@
-#ifndef REGCHECK_CORE
-#define REGCHECK_CORE
+#ifndef REGCHECK_CORE_H
+#define REGCHECK_CORE_H
 
 // core/fundamental  Marsyas checks
 #include "common-reg.h"

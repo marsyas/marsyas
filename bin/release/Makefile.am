@@ -51,14 +51,10 @@ mudbox_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 
 regressionChecks_SOURCES = \
 	$(top_srcdir)/src/apps/regressionChecks/regressionChecks.cpp \
-	$(top_srcdir)/src/apps/regressionChecks/coreChecks.h \
+	$(top_srcdir)/src/apps/regressionChecks/common-reg.cpp \
 	$(top_srcdir)/src/apps/regressionChecks/coreChecks.cpp \
-	$(top_srcdir)/src/apps/regressionChecks/basicChecks.h \
 	$(top_srcdir)/src/apps/regressionChecks/basicChecks.cpp \
-	$(top_srcdir)/src/apps/regressionChecks/analysisChecks.h \
-	$(top_srcdir)/src/apps/regressionChecks/analysisChecks.cpp \
-	$(top_srcdir)/src/apps/regressionChecks/common-reg.h \
-	$(top_srcdir)/src/apps/regressionChecks/common-reg.cpp
+	$(top_srcdir)/src/apps/regressionChecks/analysisChecks.cpp 
 
 regressionChecks_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 	       $(Libs)

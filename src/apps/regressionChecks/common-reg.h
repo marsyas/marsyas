@@ -11,7 +11,7 @@
 using namespace std;
 using namespace Marsyas;
 
-MarSystemManager mng;
+static MarSystemManager mng;
 
 // really useful global functions
 mrs_real addSource(MarSystem* net, string infile);
