@@ -300,13 +300,85 @@ macx {
 	}
 }
 
-win32 {
+win32-msvc2005 {
+	message(Using win32-msvc2005 configuration)
 	win32-msvc2005:QMAKE_CXXFLAGS_DEBUG += /ZI /Od
 	win32-msvc2005:QMAKE_LFLAGS_DEBUG += /INCREMENTAL
 
 	DEFINES += 	MARSYAS_WIN32 \
 				WIN32 \
 				_WINDOWS 	
+	LIBS 	+= 	-luser32
+
+	CONFIG(release, debug|release){
+		DEFINES += NDEBUG
+	}
+	CONFIG(debug, debug|release){
+		DEFINES += _DEBUG
+	}
+	
+	marsyasAUDIOIO {
+		marsyasAUDIOIO_DS {
+			DEFINES += \
+				MARSYAS_DS \
+				__WINDOWS_DS__
+			LIBS += dsound.lib 
+			LIBPATH += $$quote( "$$(DXSDK_DIR)Lib/x86" ) #DXSDK_DIR must be defined as an environment variable in windows!
+			INCLUDEPATH += $$quote( "$$(DXSDK_DIR)Include" ) #include path for dsound.h
+		}
+		marsyasAUDIOIO_ASIO {
+			DEFINES += \
+				MARSYAS_ASIO \
+				__WINDOWS_ASIO_
+			DEFINES -= UNICODE
+		}
+	}
+	
+	marsyasMIDIIO {
+		DEFINES += \
+			MARSYAS_WINMM \
+			__WINDOWS_MM__
+		LIBS += -lwinmm		
+	}
+	
+	marsyasMATLABdebug{
+		CONFIG(debug, debug|release) {
+			DEFINES += MARSYAS_MATLAB
+			INCLUDEPATH += $$quote( "$$(MATLAB)/extern/include" )
+			LIBS += libeng.lib libmx.lib libut.lib 
+			LIBPATH += $$quote( \"$$(MATLAB)/extern/lib/win32/microsoft\" )
+		}
+	}
+	marsyasMATLABrelease{
+		CONFIG(release, debug|release) {
+			DEFINES += MARSYAS_MATLAB
+			INCLUDEPATH += $$quote( "$$(MATLAB)/extern/include" )
+			LIBS += libeng.lib libmx.lib libut.lib 
+			LIBPATH += $$quote( \"$$(MATLAB)/extern/lib/win32/microsoft\" )
+		}
+	}
+	
+	marsyasMAD {
+		INCLUDEPATH += $$quote( "$$(LIBMAD)" )
+		DEFINES += MARSYAS_MAD
+		CONFIG(release, debug|release){
+			LIBS += libmad.lib 
+			LIBPATH += $$quote( \"$$(LIBMAD)/msvc++/Release\" )
+		}
+		CONFIG(debug, debug|release){
+			LIBS += libmad.lib 
+			LIBPATH += $$quote( \"$$(LIBMAD)/msvc++/Debug\" )
+		}
+	}
+}
+
+
+
+win32-g++ {
+	message(Using win32-g++ configuration)
+
+
+	DEFINES += 	MARSYAS_MINGW 
 	LIBS 	+= 	-luser32
 
 	CONFIG(release, debug|release){
