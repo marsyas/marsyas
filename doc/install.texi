@@ -413,6 +413,7 @@ prototyping.
 
 Useful datasets:
 
+@c  FIXME: update this dir.
 @itemize
 @item
 @uref{http://opihi.cs.uvic.ca/~gperciva/,marsyas-coffee}: data set used
@@ -507,11 +508,11 @@ current list of available options can be viewed by typing:
 ./configure --help 
 @end example
 
-For example, to compile Marsyas with assertions enabled, mp3
-support through libmad, and writing warnings to a file, one would do: 
+For example, to compile Marsyas and MarsyasQt with mp3 support through
+libmad and writing warnings to a file, one would do: 
 
 @example 
-./configure --enable-assert --with-mad --enable-log2file
+./configure --enable-marsyasqt --with-mad --enable-log2file
 @end example 
 
 @c shouldn't be in this manual; ./configure --help is the most

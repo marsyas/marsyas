@@ -184,6 +184,10 @@ a handy object which parses the command-line for you.
 Writing applications that use Marsyas and Qt4 is quite simple, thanks to
 @file{libmarsasqt}.
 
+@strong{Warning:} Marsyas compiled with autotools does not compile
+@file{libmarsyasqt} by default.  To enable it, please pass
+@code{--enable-marsyasqt} to configure.
+
 @menu
 * Including and linking to libmarsyasqt::  
 * MarSystemQtWrapper::          
