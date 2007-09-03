@@ -20,6 +20,7 @@ configLog=$logBase-config.log
 buildLog=$logBase-build.log
 sanityLog=$logBase-sanity.log
 coffeeLog=$logBase-coffee.log
+distLog=$logBase-dist.log
 
 manualsLog=$logBase-manuals.log
 doxyLog=$logBase-doxy.log
@@ -36,6 +37,7 @@ sendreport() {
 	then
 		mail -s "$subject" gperciva@uvic.ca < $report
 		mail -s "$subject" gtzan@cs.uvic.ca < $report
+		mail -s "$subject" lgmartins@sourceforge.net < $report
 	fi
 }
 
@@ -92,7 +94,9 @@ testthing "make pdf" $manualsLog "PDF manuals"
 testthing "make pdf" $doxyLog "Doxygen docs"
 cd ..
 
-echo "Make dist... not implemented" >> $report
+testthing "make dist" $distLog "Make dist"
+
+echo "Make distcheck... not implemented" >> $report
 
 sendreport "Pass"
 
