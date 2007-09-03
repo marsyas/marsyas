@@ -34,7 +34,7 @@ FlowThru::FlowThru(const FlowThru& a):MarSystem(a)
 
 FlowThru::~FlowThru()
 {
-	deleteSlices();
+
 }
 
 MarSystem* 
@@ -49,18 +49,6 @@ FlowThru::addControls()
 	addctrl("mrs_realvec/innerOut", realvec(), ctrl_innerOut_);
 }
 
-void 
-FlowThru::deleteSlices()
-{
-	vector<realvec *>::const_iterator iter;
-	for (iter= slices_.begin(); iter != slices_.end(); ++iter)
-	{
-		delete *(iter);
-	}
-	slices_.clear();
-}
-
-// STU
 mrs_real* 
 const FlowThru::recvControls()
 {
@@ -107,38 +95,16 @@ FlowThru::myUpdate(MarControlPtr sender)
 		//ctrl_innerOut_->clearLinks();
 		//ctrl_innerOut_->linkTo(marsystems_[marsystemsSize_-1]->getctrl("mrs_realvec/processedData"));
 
-		// update buffers (aka slices) between components 
-		if ((mrs_natural)slices_.size() < marsystemsSize_) 
-			slices_.resize(marsystemsSize_, NULL);
-
 		for (mrs_natural i=0; i< marsystemsSize_; i++)
 		{
-			if (slices_[i] != NULL) 
-			{
-				if ((slices_[i])->getRows() != marsystems_[i]->ctrl_onObservations_->to<mrs_natural>()  ||
-					(slices_[i])->getCols() != marsystems_[i]->ctrl_onSamples_->to<mrs_natural>())
-				{
-					delete slices_[i];
-					slices_[i] = new realvec(marsystems_[i]->ctrl_onObservations_->to<mrs_natural>(), 
-						marsystems_[i]->ctrl_onSamples_->to<mrs_natural>());
+			MarControlAccessor acc(marsystems_[i]->ctrl_processedData_, NOUPDATE);
+			realvec& processedData = acc.to<mrs_realvec>();
 
-					(marsystems_[i])->ctrl_processedData_->setValue(*(slices_[i]));// [WTF] ?!?!?!?!?!?!?!?!?!?!??!!?!?!?!? [?]
-
-					slPtrs_.push_back(marsystems_[i]->ctrl_processedData_);
-					
-					(slices_[i])->setval(0.0);// [WTF] ?!?!?!?!?!?!?!?!?!?!??!!?!?!?!? [?]
-				}
-			}
-			else 
+			if (processedData.getRows() != marsystems_[i]->ctrl_onObservations_->to<mrs_natural>()  ||
+				processedData.getCols() != marsystems_[i]->ctrl_onSamples_->to<mrs_natural>())
 			{
-				slices_[i] = new realvec(marsystems_[i]->ctrl_onObservations_->to<mrs_natural>(), 
+				processedData.create(marsystems_[i]->ctrl_onObservations_->to<mrs_natural>(), 
 					marsystems_[i]->ctrl_onSamples_->to<mrs_natural>());
-
-				marsystems_[i]->ctrl_processedData_->setValue(*(slices_[i]));// [WTF] ?!?!?!?!?!?!?!?!?!?!??!!?!?!?!? [?]
-				
-				slPtrs_.push_back(marsystems_[i]->ctrl_processedData_);
-
-				(slices_[i])->setval(0.0);// [WTF] ?!?!?!?!?!?!?!?!?!?!??!!?!?!?!? [?]
 			}
 
 			if(i==marsystemsSize_-1)
@@ -165,19 +131,26 @@ FlowThru::myProcess(realvec& in, realvec& out)
 		{
 			if (i==0)
 			{
-				marsystems_[i]->process(in, (realvec &) slPtrs_[i]->to<mrs_realvec>());
+				MarControlAccessor acc(marsystems_[i]->ctrl_processedData_);
+				realvec& slice = acc.to<mrs_realvec>();
+				marsystems_[i]->process(in, slice);	
 			}
-			else if (i == marsystemsSize_-1)//!!!!!!!!!!!!!!!!!!!!!!!! [!]
+			else if (i == marsystemsSize_-1)
 			{
-				mrs_realvec outVec;
-				outVec.allocate(marsystems_[i]->ctrl_onObservations_->to<mrs_natural>(),
-												marsystems_[i]->ctrl_onSamples_->to<mrs_natural>());
-				marsystems_[i]->process((realvec &) slPtrs_[i-1]->to<mrs_realvec>(),outVec); 
-				ctrl_innerOut_->setValue(outVec); //COPYING INVOLVED! ONLY WAY TO GET AROUND BREAK IN INCAPSULATION (so we can use links to this control)
+				MarControlAccessor accSlice(marsystems_[i-1]->ctrl_processedData_, true, true);
+				realvec& slice = accSlice.to<mrs_realvec>();
+				MarControlAccessor accInnerOut(ctrl_innerOut_);
+				realvec& innerOut = accInnerOut.to<mrs_realvec>();
+				marsystems_[i]->process(slice, innerOut);
 			}
 			else
-				marsystems_[i]->process((realvec &) slPtrs_[i-1]->to<mrs_realvec>(), 
-																(realvec &) slPtrs_[i]->to<mrs_realvec>());
+			{
+				MarControlAccessor acc1(marsystems_[i-1]->ctrl_processedData_, true, true);
+				realvec& slice1 = acc1.to<mrs_realvec>();
+				MarControlAccessor acc2(marsystems_[i]->ctrl_processedData_);
+				realvec& slice2 = acc2.to<mrs_realvec>();
+				marsystems_[i]->process(slice1, slice2);	
+			}
 		}
 	}
 	else if(marsystemsSize_ == 0) //composite has no children!

@@ -29,7 +29,6 @@ Series::Series(string name):MarSystem("Series",name)
 
 Series::~Series()
 {
-	deleteSlices();
 }
 
 MarSystem* 
@@ -43,18 +42,6 @@ Series::addControls()
 {
 }
 
-void 
-Series::deleteSlices()
-{
-	vector<realvec *>::const_iterator iter;
-	for (iter= slices_.begin(); iter != slices_.end(); ++iter)
-	{
-		delete *(iter);
-	}
-	slices_.clear();
-}
-
-// STU
 mrs_real* 
 const Series::recvControls()
 {
@@ -98,38 +85,16 @@ Series::myUpdate(MarControlPtr sender)
 		updctrl(ctrl_onObservations_, marsystems_[marsystemsSize_-1]->ctrl_onObservations_, NOUPDATE);
 		updctrl(ctrl_osrate_, marsystems_[marsystemsSize_-1]->ctrl_osrate_, NOUPDATE);
 
-		// update buffers (aka slices) between components 
-		if ((mrs_natural)slices_.size() < marsystemsSize_-1) 
-			slices_.resize(marsystemsSize_-1, NULL);
-
 		for (mrs_natural i=0; i< marsystemsSize_-1; i++)
 		{
-			if (slices_[i] != NULL) 
-			{
-				if ((slices_[i])->getRows() != marsystems_[i]->ctrl_onObservations_->to<mrs_natural>()  ||
-					(slices_[i])->getCols() != marsystems_[i]->ctrl_onSamples_->to<mrs_natural>())
-				{
-					delete slices_[i];
-					slices_[i] = new realvec(marsystems_[i]->ctrl_onObservations_->to<mrs_natural>(), 
-						marsystems_[i]->ctrl_onSamples_->to<mrs_natural>());
+			MarControlAccessor acc(marsystems_[i]->ctrl_processedData_, NOUPDATE);
+			realvec& processedData = acc.to<mrs_realvec>();
 
-					marsystems_[i]->ctrl_processedData_->setValue(*(slices_[i])); // [WTF] ?!?!?!?!?!?!?!?!?!?!??!!?!?!?!? [?]
-
-					slPtrs_.push_back(marsystems_[i]->ctrl_processedData_);
-					
-					(slices_[i])->setval(0.0); // [WTF]?!?!?!?!?!?!?!? [?]
-				}
-			}
-			else 
+			if (processedData.getRows() != marsystems_[i]->ctrl_onObservations_->to<mrs_natural>()  ||
+				  processedData.getCols() != marsystems_[i]->ctrl_onSamples_->to<mrs_natural>())
 			{
-				slices_[i] = new realvec(marsystems_[i]->ctrl_onObservations_->to<mrs_natural>(), 
+				processedData.create(marsystems_[i]->ctrl_onObservations_->to<mrs_natural>(), 
 					marsystems_[i]->ctrl_onSamples_->to<mrs_natural>());
-
-				marsystems_[i]->ctrl_processedData_->setValue(*(slices_[i]));// [WTF] ?!?!?!?!?!?!?!?!?!?!??!!?!?!?!? [?]
-				
-				slPtrs_.push_back(marsystems_[i]->ctrl_processedData_);
-
-				(slices_[i])->setval(0.0);// [WTF] ?!?!?!?!?!?!?!?!?!?!??!!?!?!?!? [?]
 			}
 		}
 	}
@@ -150,15 +115,24 @@ Series::myProcess(realvec& in, realvec& out)
 		{
 			if (i==0)
 			{
-				marsystems_[i]->process(in, (realvec &) slPtrs_[i]->to<mrs_realvec>()); //breaks encapsulation!!!! [!]
+				MarControlAccessor acc(marsystems_[i]->ctrl_processedData_);
+				realvec& slice = acc.to<mrs_realvec>();
+				marsystems_[i]->process(in, slice);	
 			}
 			else if (i == marsystemsSize_-1)
 			{
-				marsystems_[i]->process((realvec &) slPtrs_[i-1]->to<mrs_realvec>(), out); 
+				MarControlAccessor acc(marsystems_[i-1]->ctrl_processedData_, true, true);
+				realvec& slice = acc.to<mrs_realvec>();
+				marsystems_[i]->process(slice, out);	
 			}
 			else
-				marsystems_[i]->process((realvec &) slPtrs_[i-1]->to<mrs_realvec>(), //breaks encapsulation!!!! [!]
-				(realvec &) slPtrs_[i]->to<mrs_realvec>()); //breaks encapsulation!!!! [!]
+			{
+				MarControlAccessor acc1(marsystems_[i-1]->ctrl_processedData_, true, true);
+				realvec& slice1 = acc1.to<mrs_realvec>();
+				MarControlAccessor acc2(marsystems_[i]->ctrl_processedData_);
+				realvec& slice2 = acc2.to<mrs_realvec>();
+				marsystems_[i]->process(slice1, slice2);	
+			}
 		}
 	}
 	else if(marsystemsSize_ == 0) //composite has no children!

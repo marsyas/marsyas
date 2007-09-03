@@ -45,7 +45,6 @@ in sequence, but forwards the original composite input flow to the output.
 
 		void addControls();
 		void myUpdate(MarControlPtr sender);
-		void deleteSlices();
 
 	public:
 		FlowThru(std::string name);

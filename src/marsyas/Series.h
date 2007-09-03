@@ -39,11 +39,8 @@ namespace Marsyas
 class Series: public MarSystem
 {
 private:
-	realvec empty_;
-
 	void addControls();
 	void myUpdate(MarControlPtr sender);
-	void deleteSlices();
 
 public:
   Series(std::string name);

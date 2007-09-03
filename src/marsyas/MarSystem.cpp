@@ -235,7 +235,7 @@ MarSystem::addControls()
 	inTick_.create(inObservations_, inSamples_);
 	outTick_.create(onObservations_, onSamples_);
 
-	addctrl("mrs_realvec/processedData", outTick_, ctrl_processedData_); //[!]
+	addctrl("mrs_realvec/processedData", outTick_, ctrl_processedData_);
 
 	ctrl_active_->setState(true);
 
@@ -577,7 +577,11 @@ MarSystem::tick()
 	if(ctrl_active_->isTrue())
 	{
 		scheduler_.tick();
-		process(inTick_, (realvec &) ctrl_processedData_->to<mrs_realvec>()); //THIS BREAKS INCAPSULATION!!!! [!]
+		{
+			MarControlAccessor acc(ctrl_processedData_);
+			realvec& processedData = acc.to<mrs_realvec>();
+			process(inTick_, processedData);
+		}
 	}
 	else
 	{
@@ -676,8 +680,6 @@ MarSystem::update(MarControlPtr sender)
 		(onSamples_ != outTick_.getCols()))
 	{
 		inTick_.create(inObservations_, inSamples_);
-
-		// Fixed resizing of ctrl_processedData 
 		{
 			MarControlAccessor acc(ctrl_processedData_);
 			realvec& processedData = acc.to<mrs_realvec>();
