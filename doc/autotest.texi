@@ -21,30 +21,32 @@ These tests are deliberately simple and easy to understand.
 * Where are functions defined in regressionChecks?::  
 * When a test fails...::        
 * Why should I care?::          
-* They won't work!::            
 @end menu
 
 @node What does regression mean?
 @subsection What does "regression" mean?
 
+@unnumberedsubsubsec Definition
+
 The term @qq{regression testing} seems to mean something different to
 each project, website, and software engineering academic.  So I shall
-define what we mean by @qq{regression testing} in this context:
+define what we mean by @qq{regression testing} in the context of Marsyas
+@qq{regression testing}:
 
 @quotation
-Does this work the way it used to?
+Does it work the way it used to?
 @end quotation
 
 This is checked as follows:
 
 @enumerate
 @item
-Write a program.  Find some input for the program (in this case, a sound
-file).  Store the input.
+Pick a program to test.  Find some input for the program (generally a
+sound file).  Save the input.
 
 @item
-Run the program with that input.  Save the output (either another sound
-file, or some text).
+Run the program on the saved input.  Save the output (either another
+sound file, or some text).
 
 @item
 Wait / change stuff / let other people change stuff.
@@ -60,7 +62,8 @@ Goto step 3.
 
 In other words, these tests do not check for @emph{correctness}; they
 simply check for @emph{consistency}.  Fixing a bug could result in a
-test @qq{failing}.  For more information, see @ref{When a test fails...}
+test @qq{failing}.  However, this is not a problem: see @ref{When a test
+fails...}
 
 
 @node How do the tests work?
@@ -77,6 +80,13 @@ regressionTests/coffee-audio.txt
 regressionTests/coffee-text.txt
 @end example
 
+@noindent
+The general format of these files is
+
+@example
+<command> <tab> <saved output file>
+@end example
+
 
 @unnumberedsubsubsec Normal app tests
 
@@ -91,9 +101,9 @@ sfplay -s 0.25 -l 0.1 -g 0.7 right.wav -f out.au <tab> ../answers/right-sfplay.a
 manual)
 
 The test system runs this command (prefixing it with
-@code{/path/to/bin/release/}).  The input file is @file{right.wav}, and
-the output will be stored in @file{out.au}.  This output is compared
-with the previously-stored output file,
+@code{@emph{/path/to}/bin/release/}).  The input file is
+@file{right.wav}, and the output will be stored in @file{out.au}.  This
+output is compared with the previously-stored output file,
 @file{../answers/right-sfplay.au}.  In this case, we are looking for an
 exact match.
 
@@ -230,14 +240,47 @@ message that explains this.
 @node Why should I care?
 @subsection Why should I care?
 
+@unnumberedsubsubsec Developers
+
+Think of these tests as a mutual assistance pact: you should care about
+not breaking other people's code, because other people will care about
+not breaking @emph{your} code.
+
+Of course, this requires that you create regression tests for your own
+code.  Due to practicality, we can't check every single case of every
+single program.  So instead, create one or two tests which investigate
+as many things as possible.  For example, instead of simply testing if
+sfplay can output a sound file, we test changing the gain, starting at a
+specific time, and only playing for a specific length.
+
+We recommend discussing potential regression tests on the developer
+mailist.
+
+@unnumberedsubsubsec New users
+
+These tests are also very useful if you start investigating a new aspect
+of Marsyas.  Currently there are many unmaintained MarSystems,
+applications, and projects in Marsyas.  New users can easily waste hours
+trying to use part of the codebase which has been broken for months.
+
+Having a testing mechanism means that users know that the code is
+working -- at least, working for the exact command and input that the
+test uses.  If (when?) a user has problems getting something to work in
+Marsyas, he can turn to the regtests: if a regtest passes but his own
+code doesn't work, he can compare his code against the regtest code.
+
+Trust me, by now I've probably spent 20 hours trying to make broken code
+to work -- sometimes when the developers already knew it was broken!
+Quite apart from the waste of time, it's incredibly demoralizing.  It
+was this problem that inspired me to create these tests.
 
 
-@node They won't work!
-@subsection They won't work!
+@c  I'll resurrect this section if people raise any bogus complaints
+@c  that aren't covered above.  -gp
+@c @n ode They won't work!
+@c @s ubsection They won't work!
 
-Marsyas developers are such a bunch of whiners.
 
-FIXME: list all the complaints I've gotten, with rebuttals.
 
 
 @node Daily Auto-tester
@@ -272,10 +315,12 @@ Builds the documentation.
 Builds the Doxygen source documentation.
 
 @item
-Runs make distcheck.  FIXME: not currently implemented.
+Performs @code{make distcheck}.
 
 @end enumerate
 
 An email is sent to some developers with the results of these tests.
+If you would like to receive these daily emails, please enquire on the
+developer mailist.
 
 
