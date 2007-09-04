@@ -136,33 +136,28 @@ RealvecSink::myUpdate(MarControlPtr sender)
 void 
 RealvecSink::myProcess(realvec& in, realvec& out)
 {
-	//checkFlow(in,out);
 	out=in;
 
 	if(write_)
 	{
 		for (t=0; t < inSamples_; t++)
-		{for (o=0 ; o<inObservations_ ; o++)
-		outputFile_ << in(o, t) << " " ;
-		outputFile_ << endl;
+		{
+			for (o=0 ; o<inObservations_ ; o++)
+				outputFile_ << in(o, t) << " " ;
+			outputFile_ << endl;
 		}
 	}
 	else
 	{
-		{
-			MarControlAccessor acc(ctrl_data_);
-			realvec& data = acc.to<mrs_realvec>();
-			data.stretch(inObservations_, count_+inSamples_);
-		}
+		MarControlAccessor acc(ctrl_data_);
+		realvec& data = acc.to<mrs_realvec>();
+		data.stretch(inObservations_, count_+inSamples_);
+
 		for (o=0; o < inObservations_; o++)
 			for (t=0; t < inSamples_; t++)
-			{
-				MarControlAccessor acc(ctrl_data_);
-				realvec& data = acc.to<mrs_realvec>();
 				data(o, count_+t) = in(o, t);
-			}
 
-			//out.dump();
+		//out.dump();
 	}
 
 	count_+=inSamples_;
