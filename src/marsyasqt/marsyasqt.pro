@@ -2,6 +2,7 @@ include( $$quote( "$$BASEDIR/marsyasConfig.pri" ) )
 
 TEMPLATE = lib
 CONFIG += staticlib
+CONFIG += Qt
 TARGET = marsyasqt
 
 INCLUDEPATH += $$quote( "$$BASEDIR/src/marsyas" )

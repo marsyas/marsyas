@@ -8,7 +8,7 @@ SOURCES += backend.cpp
 
 ### if running inside the source tree
 MARSYAS_INSTALL_DIR = ../../../
-INCLUDEPATH += $$MARSYAS_INSTALL_DIR/src/marsyasqt_wrapper/
+INCLUDEPATH += $$MARSYAS_INSTALL_DIR/src/marsyasqt/
 LIBPATH += $$MARSYAS_INSTALL_DIR/lib/release/
 
 
