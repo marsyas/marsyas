@@ -18797,7 +18797,7 @@ ALSA_LIBS=""
 # Check whether --enable-bindings or --disable-bindings was given.
 if test "${enable_bindings+set}" = set; then
   enableval="$enable_bindings"
-  MRS_LIBS="$MAD_LIBS $ALSA_LIBS -L\$(top_builddir)/../marsyas -lmarsyas"
+  MRS_LIBS="$MAD_LIBS $ALSA_LIBS -L\$(top_builddir)/../marsyas -lmarsyas -Framework CorAudio -Framework CoreFoundation -Framework CoreMidi"
 	       MRS_INCS="-I\$(top_srcdir)/.. -I\$(top_builddir)/.."
 
 else

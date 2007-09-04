@@ -5,16 +5,6 @@ require "marsyas"
 
 include Marsyas # Avoid typing Marsyas:: all the time
 
-# Create the MarSystems using the automatic Classes
-pipe = Series.new "pipe"
-file = SoundFileSource.new "file"
-gain = Gain.new "gain"
-down = DownSampler.new "down"
-sink = AudioSink.new "sink"
-
-# Attach all the MarSystems together
-[file,gain,down,sink].each {|x| pipe.addMarSystem x }
-
 def usage
 	puts <<END ; exit
 usage: #{$0} [options] filename
@@ -51,15 +41,23 @@ if arg_file.nil? then fail "Have to provide a file name!" end
 if not File.exists? arg_file then fail "#{arg_file} must exist!" end
 if not File.file? arg_file then fail "#{arg_file} must be a file!" end
 
-# Set control values using automatic properties
-file.filename = arg_file
-down.factor = arg_down
-gain.gain = arg_gain
+# Create the MarSystems using the automatic Classes
+pipe = Series.new "pipe"
+file = SoundFileSource.new "file"
+gain = Gain.new "gain"
+down = DownSampler.new "down"
+sink = AudioSink.new "sink"
+
+# Attach all the MarSystems together
+[file,gain,sink].each {|x| pipe.addMarSystem x }
 
 # Update all MarSystems to handle changes
-pipe.update
+pipe.updControl("SoundFileSource/file/mrs_string/filename", arg_file);
+pipe.updControl("Gain/gain/mrs_real/gain", arg_gain);
+pipe.updControl("DownSampler/down/mrs_real/factor", arg_down);
+pipe.updControl("AudioSink/sink/mrs_bool/initAudio", true);
 
 # Loop untill file is finished
-while file.notEmpty
+while pipe.getControl("SoundFileSource/file/mrs_bool/notEmpty")
 	pipe.tick()
 end

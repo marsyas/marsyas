@@ -11,10 +11,10 @@ static VALUE STR2VAL (string s) { return rb_str_new(s.c_str(),s.size()); }
 static VALUE MCP2VAL (MarControlPtr mcp)
 {
 	if (mcp.isInvalid()) return Qnil;
-	if (mcp->getType() == "mrs_natural") return INT2NUM(mcp->to<mrs_natural>()());
-	if (mcp->getType() == "mrs_real" ) return rb_float_new(mcp->to<mrs_real>()()());
-	if (mcp->getType() == "mrs_string" ) return STR2VAL(mcp->toString());
-	if (mcp->getType() == "mrs_bool" ) return mcp->toBool() ? Qtrue : Qfalse ;
+	if (mcp->getType() == "mrs_natural") return INT2NUM(mcp->to<mrs_natural>());
+	if (mcp->getType() == "mrs_real" ) return rb_float_new(mcp->to<mrs_real>());
+	if (mcp->getType() == "mrs_string" ) return STR2VAL(mcp->to<mrs_string>());
+	if (mcp->getType() == "mrs_bool" ) return mcp->to<mrs_bool>() ? Qtrue : Qfalse ;
 	return Qnil;
 }
 
@@ -56,7 +56,7 @@ static MarControlPtr VAL2MCP (VALUE val)
                 rb_ary_push($result,STR2VAL($1.at(i)));
 }
 
-%typemap(in) string = char*;
+%typemap(in) string { $1 = VAL2STR($input); }
 %typemap(typecheck) string = char *;
 %typemap(out) string { $result = STR2VAL($1); };
 

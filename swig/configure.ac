@@ -18,7 +18,7 @@ ALSA_LIBS=""
 
 AC_ARG_ENABLE([bindings],
 	      [AS_HELP_STRING([--enable-bindings],[Use containing folder as Marsyas source])],
-	      [MRS_LIBS="$MAD_LIBS $ALSA_LIBS -L\$(top_builddir)/../marsyas -lmarsyas"
+	      [MRS_LIBS="$MAD_LIBS $ALSA_LIBS -L\$(top_builddir)/../marsyas -lmarsyas -Framework CorAudio -Framework CoreFoundation -Framework CoreMidi"
 	       MRS_INCS="-I\$(top_srcdir)/.. -I\$(top_builddir)/.."
 	      ],
 	      [MRS_LIBS="$MAD_LIBS $ALSA_LIBS -lmarsyas"

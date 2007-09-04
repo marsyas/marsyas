@@ -10,7 +10,7 @@ rubysitelib_DATA = marsyas.rb
 rubysitearch_LTLIBRARIES = marsyas_ruby.la
 
 marsyas_ruby_la_SOURCES = marsyas_ruby.cxx
-marsyas_ruby_la_LDFLAGS = -module -avoid-version
+marsyas_ruby_la_LDFLAGS = -Framework CoreAudio -module -avoid-version
 
 endif
 
@@ -19,7 +19,7 @@ dist_python_DATA = marsyas_python.py
 python_LTLIBRARIES = _marsyas_python.la
 
 _marsyas_python_la_SOURCES = marsyas_python.cxx
-_marsyas_python_la_LDFLAGS = -module -avoid-version
+_marsyas_python_la_LDFLAGS = -framework CoreAudio -framework CoreMidi -framework CoreFoundation -module -avoid-version
 
 endif
 

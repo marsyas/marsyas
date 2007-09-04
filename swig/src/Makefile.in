@@ -120,13 +120,13 @@ AM_CPPFLAGS = @MRS_INCS@ @RUBY_INCLUDE@ @PYTHON_INCLUDE@
 @RUBY_TRUE@rubysitearch_LTLIBRARIES = marsyas_ruby.la
 
 @RUBY_TRUE@marsyas_ruby_la_SOURCES = marsyas_ruby.cxx
-@RUBY_TRUE@marsyas_ruby_la_LDFLAGS = -module -avoid-version
+@RUBY_TRUE@marsyas_ruby_la_LDFLAGS = -Framework CoreAudio -module -avoid-version
 
 @PYTHON_TRUE@dist_python_DATA = marsyas_python.py
 @PYTHON_TRUE@python_LTLIBRARIES = _marsyas_python.la
 
 @PYTHON_TRUE@_marsyas_python_la_SOURCES = marsyas_python.cxx
-@PYTHON_TRUE@_marsyas_python_la_LDFLAGS = -module -avoid-version
+@PYTHON_TRUE@_marsyas_python_la_LDFLAGS = -framework CoreAudio -framework CoreMidi -framework CoreFoundation -module -avoid-version
 
 EXTRA_DIST = marsyas.i ruby.i python.i marsyas.rb test.rb
 subdir = src

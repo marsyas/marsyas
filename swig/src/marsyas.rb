@@ -14,19 +14,6 @@ module Marsyas
 		def cls.new name
 			cname = class_variable_get :@@name
 			o = @@msm.create(cname,name)
-			# add control properties
-			o.getControls.each do |name,_|
-				gname = name.split("/").last
-				sname = gname+"="
-				o.instance_eval <<END;
-				def #{gname}
-					getControl("#{name}")
-				end
-				def #{sname} val
-					updControl("#{name}",val)
-				end
-END
-			end
 			return o
 		end
 		return cls
