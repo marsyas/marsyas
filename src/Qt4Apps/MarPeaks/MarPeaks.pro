@@ -25,14 +25,12 @@ CONFIG(debug, debug|release){
 
 # Input
 HEADERS += \
-	../MarSystemQtWrapper.h \
 	MarPeaks.h \
 	SpectrogramData.h \
 	plot.h
 
 SOURCES += \
 	main.cpp \
-    ../MarSystemQtWrapper.cpp \
 	MarPeaks.cpp \
 	SpectrogramData.cpp \
 	plot.cpp

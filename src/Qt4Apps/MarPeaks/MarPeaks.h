@@ -16,6 +16,7 @@
 
 #include "plot.h"
 #include "SpectrogramData.h"
+using namespace MarsyasQt;
 
 class MarPeaks : public QMainWindow
 {
