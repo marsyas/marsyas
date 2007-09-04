@@ -1,6 +1,8 @@
+include( $$quote( "$$BASEDIR/marsyasConfig.pri" ) )
+
 TEMPLATE = lib
 CONFIG += staticlib
-TARGET = marsyasqt_wrapper
+TARGET = marsyasqt
 
 INCLUDEPATH += $$quote( "$$BASEDIR/src/marsyas" )
 
