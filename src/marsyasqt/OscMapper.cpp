@@ -1,6 +1,7 @@
 
 #include "OscMapper.h"
-
+namespace MarsyasQt
+{
 OscMapper::OscMapper(QHostAddress inputHost, quint16 inputPort, QHostAddress outputHost, quint16 outputPort, QObject* p, MarSystemQtWrapper *mwr)
 {
 	mwr_=mwr;
@@ -60,3 +61,5 @@ void OscMapper::registerOutputQtSlot(QObject *object, QString path, QVariant::Ty
 		break;
 	}
 }
+} //namespace
+

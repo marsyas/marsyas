@@ -19,7 +19,7 @@
 #ifndef QOSCSERVER_H
 #define QOSCSERVER_H
 
-#include <../qosctypes.h>
+#include <qosctypes.h>
 
 /*
  * will contain the definitions/classes of osc servers

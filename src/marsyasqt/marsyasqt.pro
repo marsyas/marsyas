@@ -7,10 +7,20 @@ TARGET = marsyasqt
 
 INCLUDEPATH += $$quote( "$$BASEDIR/src/marsyas" )
 
-HEADERS = MarSystemQtWrapper.h
-SOURCES = MarSystemQtWrapper.cpp
-HEADERS += QtMarPlot.h
-SOURCES += QtMarPlot.cpp
+HEADERS += MarSystemQtWrapper.h \
+	QtMarPlot.h \
+	OscMapper.h \
+	qoscclient.h \
+	qoscserver.h \
+	qosctypes.h
+
+SOURCES += MarSystemQtWrapper.cpp \
+	QtMarPlot.cpp \
+	OscMapper.cpp \
+	qoscclient.cpp \
+	qoscserver.cpp \
+	qosctypes.cpp 
+
 
 CONFIG(release, debug|release) {
   message(Building with release support.)

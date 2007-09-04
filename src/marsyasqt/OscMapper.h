@@ -9,12 +9,17 @@
 
 using namespace std;
 using namespace Marsyas;
-using namespace MarsyasQt;
+namespace MarsyasQt
+{
+/**
+	\brief Interface between OSC and Marsyas and Qt
+	\ingroup MarsyasQt
 
+	Long description
+*/
 class OscMapper: public QObject
 {
 	Q_OBJECT
-
 public:
 
 	// create an OscMapper (both osc client/server) attached to the specified MarSystemQtWrapper
@@ -116,5 +121,5 @@ private:
 	QOscServer *oscServer_;
 	QOscClient *oscClient_;
 };
-
+} //namespace
 #endif

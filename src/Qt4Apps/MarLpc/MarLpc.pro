@@ -4,24 +4,25 @@ CONFIG += console
 
 TEMPLATE = app
 TARGET = MarLpc
-INCLUDEPATH += . ..
+#INCLUDEPATH += . ..
 
 QT += network
 
 # Input
 HEADERS += \
-	../OscMapper.h \
+#	../OscMapper.h \
 	MarLpcWindow.h \
 	MarControlGUI.h \
-	../qoscclient.h \
-	../qoscserver.h \
-	../qosctypes.h
+#	../qoscclient.h \
+#	../qoscserver.h \
+#	../qosctypes.h
 
 SOURCES += \
 	main.cpp \
-	../OscMapper.cpp \
+#	../OscMapper.cpp \
 	MarLpcWindow.cpp \
 	MarControlGUI.cpp \
-	../qoscclient.cpp \
-	../qoscserver.cpp \
-	../qosctypes.cpp 
+#	../qoscclient.cpp \
+#	../qoscserver.cpp \
+#	../qosctypes.cpp 
+

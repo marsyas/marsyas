@@ -7,7 +7,7 @@
 #include "MarLpcWindow.h"
 #include "CommandLineOptions.h"
 
-#include "../OscMapper.h"
+#include "OscMapper.h"
 
 mrs_natural inputOscPort_;
 mrs_natural outputOscPort_;
