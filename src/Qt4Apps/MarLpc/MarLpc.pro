@@ -10,7 +10,6 @@ QT += network
 
 # Input
 HEADERS += \
-	../MarSystemQtWrapper.h \
 	../OscMapper.h \
 	MarLpcWindow.h \
 	MarControlGUI.h \
@@ -20,7 +19,6 @@ HEADERS += \
 
 SOURCES += \
 	main.cpp \
-    ../MarSystemQtWrapper.cpp \
 	../OscMapper.cpp \
 	MarLpcWindow.cpp \
 	MarControlGUI.cpp \
