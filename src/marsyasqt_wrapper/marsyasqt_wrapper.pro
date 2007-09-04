@@ -1,24 +1,23 @@
 TEMPLATE = lib
 CONFIG += staticlib
-TARGET = marsyasqt
+TARGET = marsyasqt_wrapper
+
+INCLUDEPATH += $$quote( "$$BASEDIR/src/marsyas" )
 
 HEADERS = MarSystemQtWrapper.h
 SOURCES = MarSystemQtWrapper.cpp
 
+CONFIG(release, debug|release) {
+  message(Building with release support.)
+  DESTDIR = $$quote( "$$BASEDIR/lib/release/" )
+}
 
-DESTDIR = $$quote( "$$BASEDIR/lib/release" )
-#CONFIG(release, debug|release) {
-#  message(Building with release support.)
-#  DESTDIR = $$quote( "$$BASEDIR/lib/release/" )
-#}
-
-#CONFIG(debug, debug|release) {
-#  message(Building with debug support.)
-#  DESTDIR = $$quote( "$$BASEDIR/lib/debug/" )
-#}
+CONFIG(debug, debug|release) {
+  message(Building with debug support.)
+  DESTDIR = $$quote( "$$BASEDIR/lib/debug/" )
+}
 
 
-INCLUDEPATH += $$BASEDIR/src/marsyas/
-LIBS += -lmarsyas -L$$BASEDIR/lib/release/
+
 
 
