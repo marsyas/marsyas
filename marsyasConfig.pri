@@ -19,7 +19,7 @@ CONFIG += marsyasLib
 ######################################################################
 
 CONFIG += marsyasConsoleApps
-#CONFIG += marsyasQt4Apps
+CONFIG += marsyasQt4Apps
 
 ######################################################################
 # release/debug mode
