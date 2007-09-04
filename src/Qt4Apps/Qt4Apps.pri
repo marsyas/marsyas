@@ -14,17 +14,17 @@ CONFIG(debug, debug|release) {
   DESTDIR = $$quote( "$$BASEDIR/bin/debug" )
 }
 
-INCLUDEPATH += $$quote( "$$BASEDIR/src/marsyasqt_wrapper" )
+INCLUDEPATH += $$quote( "$$BASEDIR/src/marsyasqt" )
 
 CONFIG(release, debug|release){
-	win32:LIBS 	+= 	marsyas.lib marsyasqt_wrapper.lib
-	!win32:LIBS += 	-lmarsyas -lmarsyasqt_wrapper
+	win32:LIBS 	+= 	marsyas.lib marsyasqt.lib
+	!win32:LIBS += 	-lmarsyas -lmarsyasqt
 	LIBPATH += $$quote( "$$BASEDIR/lib/release" )
 }
 CONFIG(debug, debug|release){
 	CONFIGURE	+= console
-	win32:LIBS 	+= 	marsyas.lib marsyasqt_wrapper.lib
-	!win32:LIBS += 	-lmarsyas -lmarsyasqt_wrapper
+	win32:LIBS 	+= 	marsyas.lib marsyasqt.lib
+	!win32:LIBS += 	-lmarsyas -lmarsyasqt
 	LIBPATH += $$quote( "$$BASEDIR/lib/debug" )
 }
 
