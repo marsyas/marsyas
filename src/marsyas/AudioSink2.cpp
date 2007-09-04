@@ -29,7 +29,9 @@ AudioSink2::AudioSink2(string name):MarSystem("AudioSink2", name)
 	preservoirSize_ = 0;
 
 	data_ = NULL;
+#ifdef MARSYAS_AUDIOIO
 	audio_ = NULL;
+#endif 
 
 	//isInitialized_ = false;
 	//stopped_ = true;//lmartins
@@ -39,7 +41,9 @@ AudioSink2::AudioSink2(string name):MarSystem("AudioSink2", name)
 
 AudioSink2::~AudioSink2()
 {
+#ifdef MARSYAS_AUDIOIO
 	delete audio_;
+#endif 
 	data_ = 0; // RtAudio deletes the buffer itself.
 }
 
@@ -110,15 +114,18 @@ AudioSink2::myUpdate(MarControlPtr sender)
 
 	preservoirSize_ = reservoirSize_;
 
+#ifdef MARSYAS_AUDIOIO
 	//if audio was playing (i.e.this was a re-init), keep it playing
 	//if (!stopped_ && audio_)
 	if(!getctrl("mrs_bool/stopped")->to<mrs_bool>() && getctrl("mrs_bool/initialized")->to<mrs_bool>())//thread safe!
 		audio_->startStream();
+#endif MARSYAS_AUDIOIO
 }
 
 void 
 AudioSink2::initRtAudio()
 {
+#ifdef MARSYAS_AUDIOIO
 	//marsyas represents audio data as float numbers
 	RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
 
@@ -145,30 +152,35 @@ AudioSink2::initRtAudio()
 
 	//isInitialized_ = true;
 	setctrl("mrs_bool/initialized", true);//thread safe!
+#endif 
 }
 
 void 
 AudioSink2::start()
 {
+#ifdef MARSYAS_AUDIOIO
 	//if ( stopped_ )
 	if(getctrl("mrs_bool/stopped")->to<mrs_bool>())//thread safe!
-	{
+	  {
 		audio_->startStream();
 		//stopped_ = false;
 		setctrl("mrs_bool/stopped", false);//thread safe!
 	}
+#endif 
 }
 
 void 
 AudioSink2::stop()
 {
+#ifdef MARSYAS_AUDIOIO
 	//if ( !stopped_ ) 
 	if(!getctrl("mrs_bool/stopped")->to<mrs_bool>())//thread safe!
 	{
-		audio_->stopStream();
-		//stopped_ = true;
-		setctrl("mrs_bool/stopped", true);//thread safe!
+	  audio_->stopStream();
+	  //stopped_ = true;
+	  setctrl("mrs_bool/stopped", true);//thread safe!
 	}
+#endif 
 }
 
 void
@@ -251,16 +263,17 @@ AudioSink2::myProcess(realvec& in, realvec& out)
 #endif 
 		}
 
+#ifdef MARSYAS_AUDIOIO
 		//tick RtAudio
 		try 
 		{
-			audio_->tickStream();
+		  audio_->tickStream();
 		}
 		catch (RtError &error) 
 		{
 			error.printMessage();
 		}
-
+#endif 
 		//update reservoir pointers
 		start_ = (start_ + rsize_) % reservoirSize_;
 		if (end_ >= start_) 

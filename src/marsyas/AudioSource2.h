@@ -19,7 +19,9 @@
 #ifndef MARSYAS_AUDIOSOURCE2_H
 #define MARSYAS_AUDIOSOURCE2_H
 
+#ifdef MARSYAS_AUDIOIO
 #include "RtAudio.h"
+#endif 
 #include "MarSystem.h" 
 
 namespace Marsyas
@@ -36,7 +38,9 @@ Real-time Audio Source based on RtAudio
 class AudioSource2:public MarSystem
 {
 	private:
+#ifdef MARSYAS_AUDIOIO
 		RtAudio *audio_;
+#endif 
 		int bufferSize_;
 
 		mrs_natural ri_;

@@ -24,7 +24,9 @@ using namespace Marsyas;
 AudioSource::AudioSource(string name):MarSystem("AudioSource", name)
 {
   data_ = NULL;
+#ifdef MARSYAS_AUDIOIO
   audio_ = NULL;
+#endif 
 
   ri_ = 0;
   preservoirSize_ = 0;
@@ -42,7 +44,9 @@ AudioSource::AudioSource(string name):MarSystem("AudioSource", name)
 
 AudioSource::~AudioSource()
 {
+#ifdef MARSYAS_AUDIOIO
   delete audio_;
+#endif 
   data_ = NULL; // RtAudio deletes the buffer itself.
 }
 
@@ -124,14 +128,15 @@ AudioSource::initRtAudio()
 
   
   //marsyas represents audio data as float numbers
+#ifdef MARSYAS_AUDIOIO
   RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
-
+#endif 
 
 
   
   //Create new RtAudio object (delete any existing one)
 
-
+#ifdef MARSYAS_AUDIOIO
   if (audio_ != NULL) 
     {
       audio_->stopStream(); 
@@ -155,7 +160,7 @@ AudioSource::initRtAudio()
   if (audio_ != NULL)
       audio_->stopStream(); 
 
-  
+#endif 
   isInitialized_ = true;
   setctrl("mrs_bool/initAudio", false);
 }
@@ -163,19 +168,23 @@ AudioSource::initRtAudio()
 void 
 AudioSource::start()
 {
+#ifdef MARSYAS_AUDIOIO
   if ( stopped_ && audio_) {
     audio_->startStream();
     stopped_ = false;
   }
+#endif 
 }
 
 void 
 AudioSource::stop()
 {
+#ifdef MARSYAS_AUDIOIO
   if ( !stopped_ && audio_) {
     audio_->stopStream();
     stopped_ = true;
   }
+#endif 
 }
 
 void
@@ -208,6 +217,7 @@ AudioSource::myProcess(realvec& in, realvec& out)
   int ssize = inSamples_ * inObservations_;  
   
   //send audio to output
+#ifdef MARSYAS_AUDIOIO
   while (ri_ < ssize)
     {
       try 
@@ -238,6 +248,7 @@ AudioSource::myProcess(realvec& in, realvec& out)
     reservoir_(t-ssize) = reservoir_(t);
   
   ri_ = ri_ - ssize;
+#endif 
   
  /* MATLAB_PUT(out, "AudioSource_out");
   MATLAB_EVAL("plot(AudioSource_out)");*/

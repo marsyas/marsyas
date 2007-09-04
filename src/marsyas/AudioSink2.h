@@ -19,7 +19,9 @@
 #ifndef MARSYAS_AudioSink2_H
 #define MARSYAS_AudioSink2_H
 
+#ifdef MARSYAS_AUDIOIO
 #include "RtAudio.h"
+#endif 
 #include "MarSystem.h"
 
 namespace Marsyas
@@ -36,7 +38,9 @@ Real-time Audio Sink for Linux based on the OSS sound API.
 	class AudioSink2:public MarSystem
 	{
 	private:
+#ifdef MARSYAS_AUDIOIO
 		RtAudio *audio_;
+#endif 
 		int bufferSize_;
 		int rtSrate_;
 		int srate_;

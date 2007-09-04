@@ -31,7 +31,9 @@ AudioSink::AudioSink(string name):MarSystem("AudioSink", name)
   preservoirSize_ = 0;
 
   data_ = NULL;
+#ifdef MARSYAS_AUDIOIO
   audio_ = NULL;
+#endif 
 
   rtSrate_ = 0;
   bufferSize_ = 0;
@@ -50,7 +52,9 @@ AudioSink::AudioSink(string name):MarSystem("AudioSink", name)
 
 AudioSink::~AudioSink()
 {
+#ifdef MARSYAS_AUDIOIO
   delete audio_;
+#endif
   data_ = NULL; // RtAudio deletes the buffer itself.
 }
 
@@ -122,7 +126,7 @@ AudioSink::initRtAudio()
   
 
 
-
+#ifdef MARSYAS_AUDIOIO
   //marsyas represents audio data as float numbers
   RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
   
@@ -152,7 +156,7 @@ AudioSink::initRtAudio()
     {
       audio_->startStream();
     }
-
+#endif 
 
   //update bufferSize control which may have been changed
   //by RtAudio (see RtAudio documentation)
@@ -165,15 +169,21 @@ AudioSink::initRtAudio()
 void 
 AudioSink::start()
 {
+#ifdef MARSYAS_AUDIOIO
+
   if ( stopped_ && audio_) {
     audio_->startStream();
     stopped_ = false;
   }
+
+    
+#endif
 }
 
 void 
 AudioSink::stop()
 {
+#ifdef MARSYAS_AUDIOIO
   if ( !stopped_ && audio_) {
 
     audio_->abortStream();
@@ -181,6 +191,7 @@ AudioSink::stop()
 
 
   }
+#endif 
 }
 
 void
@@ -327,6 +338,7 @@ AudioSink::myProcess(realvec& in, realvec& out)
 #endif 
 	}
       
+#ifdef MARSYAS_AUDIOIO
       //tick RtAudio
       try 
 	{
@@ -343,6 +355,8 @@ AudioSink::myProcess(realvec& in, realvec& out)
 	diff_ = end_ - start_;
       else 
 	diff_ = reservoirSize_ - (start_ - end_);
+
+#endif
     }
 }
 

@@ -43,7 +43,9 @@ namespace Marsyas
 class AudioSink:public MarSystem
 {
 private:
+#ifdef MARSYAS_AUDIOIO
   RtAudio *audio_;
+#endif 
   int bufferSize_;
   int rtSrate_;
   int rtChannels_;

@@ -24,7 +24,9 @@ using namespace Marsyas;
 AudioSource2::AudioSource2(string name):MarSystem("AudioSource2", name)
 {
 	data_ = NULL;
+#ifdef MARSYAS_AUDIOIO
 	audio_ = NULL;
+#endif 
 
 	ri_ = 0;
 	preservoirSize_ = 0;
@@ -37,7 +39,9 @@ AudioSource2::AudioSource2(string name):MarSystem("AudioSource2", name)
 
 AudioSource2::~AudioSource2()
 {
+#ifdef MARSYAS_AUDIOIO
 	delete audio_;
+#endif 
 	data_ = 0; // RtAudio deletes the buffer itself.
 }
 
@@ -103,7 +107,9 @@ void
 AudioSource2::initRtAudio()
 {
 	//marsyas represents audio data as float numbers
+#ifdef MARSYAS_AUDIOIO
 	RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
+
 
 	int rtSrate = (int)getctrl("mrs_real/israte")->to<mrs_real>();
 	int rtChannels = (int)getctrl("mrs_natural/nChannels")->to<mrs_natural>();
@@ -120,7 +126,7 @@ AudioSource2::initRtAudio()
 	{
 		error.printMessage();
 	}
-
+#endif 
 	//update bufferSize control which may have been changed
 	//by RtAudio (see RtAudio documentation)
 	setctrl("mrs_natural/bufferSize", (mrs_natural)bufferSize_);
@@ -132,20 +138,24 @@ AudioSource2::initRtAudio()
 void 
 AudioSource2::start()
 {
+#ifdef MARSYAS_AUDIOIO
 	if ( stopped_ ) {
-		audio_->startStream();
-		stopped_ = false;
+	  audio_->startStream();
+	  stopped_ = false;
 	}
+#endif 
 }
 
 
 void 
 AudioSource2::stop()
 {
+#ifdef MARSYAS_AUDIOIO
 	if ( !stopped_ ) {
 		audio_->stopStream();
 		stopped_ = true;
 	}
+#endif 
 }
 
 void
@@ -178,20 +188,22 @@ AudioSource2::myProcess(realvec& in, realvec& out)
 	//send audio to output
 	while (ri_ < inSamples_ * inObservations_)
 	{
-		try 
-		{
-			audio_->tickStream();
-		}
-		catch (RtError &error) 
-		{
-			error.printMessage();
-		}
-
-		for (t=0; t < inObservations_ * bufferSize_; t++)
-		{
-			reservoir_(ri_) = data_[t];
-			ri_++;
-		}
+#ifdef MARSYAS_AUDIOIO
+	  try 
+	    {
+	      audio_->tickStream();
+	    }
+	  catch (RtError &error) 
+	    {
+	      error.printMessage();
+	    }
+	  
+	  for (t=0; t < inObservations_ * bufferSize_; t++)
+	    {
+	      reservoir_(ri_) = data_[t];
+	      ri_++;
+	    }
+#endif 
 	}
 
 	for (o=0; o < inObservations_; o++)
