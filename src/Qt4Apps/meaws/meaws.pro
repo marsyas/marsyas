@@ -44,7 +44,7 @@ INCLUDEPATH += ../../../lib/release/
 
 INCLUDEPATH += $$MARSYAS_INSTALL_DIR/src/marsyas/
 INCLUDEPATH += $$MARSYAS_INSTALL_DIR/marsyas/
-INCLUDEPATH += $$MARSYAS_INSTALL_DIR/src/marsyasqt_wrapper/  # in svn
+INCLUDEPATH += $$MARSYAS_INSTALL_DIR/src/marsyasqt/  # in svn
 LIBPATH += $$MARSYAS_INSTALL_DIR/lib/release
 LIBPATH += $$MARSYAS_INSTALL_DIR/lib/
 

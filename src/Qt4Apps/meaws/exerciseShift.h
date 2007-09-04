@@ -3,7 +3,7 @@
 
 #include "defs.h"
 #include "exerciseAbstract.h"
-#include "../QtMarPlot.h"
+#include "QtMarPlot.h"
 
 class ExerciseShift : public Exercise {
 public:

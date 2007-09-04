@@ -7,8 +7,7 @@
 #include <QToolButton>
 #include <QButtonGroup>
 
-//temporary  ??? [ML] for how long ;-)
-#include "../QtMarPlot.h"
+#include "QtMarPlot.h"
 
 typedef enum {
 	straightPiano,
