@@ -52,6 +52,7 @@ core_isClose(string infile1, string infile2)
 void
 core_audiodevices()
 {
+#ifdef MARSYAS_AUDIOIO
 	std::cout << "Testing audio devices" << endl;
 
 	RtAudio *audio = 0;
@@ -124,6 +125,7 @@ core_audiodevices()
 	std::cout << std::endl;
 
 	delete audio;
+#endif 
 }
 
 void

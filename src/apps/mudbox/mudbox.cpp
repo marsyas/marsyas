@@ -15,7 +15,9 @@
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"
 #include "FileName.h"
+#ifdef MARSYAS_AUDIOIO
 #include "RtAudio.h"
+#endif 
 #ifdef MARSYAS_MIDIIO
 #include "RtMidi.h"
 #endif 

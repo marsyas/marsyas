@@ -3,7 +3,9 @@
 
 // core/fundamental  Marsyas checks
 #include "common-reg.h"
+#ifdef MARSYAS_AUDIOIO
 #include "RtAudio.h"
+#endif
 //#include "RtMidi.h"
 
 
