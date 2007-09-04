@@ -22,18 +22,17 @@ if QT_PRESENT
 lib_LIBRARIES = libmarsyas.a libmarsyasqt.a
 
 libmarsyasqt.a: libmarsyasqt_Makefile
-	cd $(top_srcdir)/src/marsyasqt_wrapper/ && make
-#	cd $(top_srcdir)/src/marsyasqt_wrapper/ && qmake && make
+	cd $(top_srcdir)/src/marsyasqt/ && make
 # libmarsyasqt.a is placed in lib/release/  from the qmake .pro file
 
 libmarsyasqt_Makefile:
-	cd $(top_srcdir)/src/marsyasqt_wrapper/ && chmod u+w ../marsyasqt_wrapper/ && qmake
+	cd $(top_srcdir)/src/marsyasqt/ && chmod u+w ../marsyasqt/ && qmake
 
 libmarsyasqt_a_SOURCES =
 
 install-data-local:
 	cp $(top_srcdir)/lib/release/libmarsyasqt.a $(DESTDIR)$(libdir)
-	cp $(top_srcdir)/src/marsyasqt_wrapper/*.h $(DESTDIR)$(includedir)/marsyas/
+	cp $(top_srcdir)/src/marsyasqt/*.h $(DESTDIR)$(includedir)/marsyas/
 else
 lib_LIBRARIES         = libmarsyas.a
 endif
