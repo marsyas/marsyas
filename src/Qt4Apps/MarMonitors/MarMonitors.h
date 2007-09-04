@@ -3,7 +3,7 @@
 
 #include "Marx2DGraph.h"
 #include "MarSystemManager.h" 
-#include "../MarSystemQtWrapper.h"
+#include "MarSystemQtWrapper.h"
 #include "MarSystem.h"
 #include "MarControl.h" 
 #include <QPushButton> 
@@ -16,6 +16,7 @@
 #include <QMainWindow>
 #include <QApplication> 
 #include <QFileDialog> 
+using namespace MarsyasQt;
 
 class MarMonitors : public QMainWindow
 {

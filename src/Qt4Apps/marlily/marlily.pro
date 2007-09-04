@@ -17,9 +17,6 @@ SOURCES += Transcriber.cpp
 #HEADERS += Easymar.h
 #SOURCES += Easymar.cpp
 
-#HEADERS += ../QtMarPlot.h
-#SOURCES += ../QtMarPlot.cpp
-
 DEPTH = ../../../
 
 win32 {
@@ -28,12 +25,8 @@ win32 {
 	CONFIG += console
 }
 
-#  these files are common to every Marsyas/QT app 
-#  you will need to update these paths (and the paths in backend.h)
-#  if you copy this directory elsewhere.
-#HEADERS += $$DEPTH/apps/Qt4Apps/MarSystemQtWrapper.h
-#SOURCES += $$DEPTH/apps/Qt4Apps/MarSystemQtWrapper.cpp
 
+#  update this junk from  src/examples/Qt4tutorial
 
 #MARSYAS_INSTALL_DIR  = ${HOME}/usr/
 MARSYAS_INSTALL_DIR  = /usr/local
