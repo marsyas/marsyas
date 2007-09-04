@@ -10,5 +10,8 @@ marsyasLib {
 marsyasConsoleApps {
 	SUBDIRS += apps
 }
+marsyasQt4Apps {
+	SUBDIRS += Qt4Apps
+}
 
 
