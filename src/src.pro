@@ -5,7 +5,7 @@ CONFIG += ordered
 
 marsyasLib {
 	SUBDIRS += marsyas
-	SUBDIRS += marsyasqt_wrapper
+	SUBDIRS += marsyasqt
 }
 marsyasConsoleApps {
 	SUBDIRS += apps
