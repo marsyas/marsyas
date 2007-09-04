@@ -2,7 +2,7 @@
 
 using namespace std;
 using namespace Marsyas;
-
+using namespace MarsyasQt;
 
 TopPanelNew::TopPanelNew(string au, QWidget *parent)
   : QWidget(parent)

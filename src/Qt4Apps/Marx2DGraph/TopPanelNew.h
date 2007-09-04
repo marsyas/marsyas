@@ -31,8 +31,8 @@ private:
       
       
   realvec out_;
-  QVector<Marx2DGraph*> graphs;
-  Marx2DGraph* graph3;
+  QVector<MarsyasQt::Marx2DGraph*> graphs;
+  MarsyasQt::Marx2DGraph* graph3;
   Marsyas::MarSystem* pnet_;
   MarSystemWrapper* mwr_;
   QGridLayout *gridLayout_;
