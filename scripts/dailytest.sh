@@ -39,8 +39,7 @@ sendreport() {
 	then
 		mail -s "$subject" gperciva@uvic.ca < $report
 #		mail -s "$subject" gtzan@cs.uvic.ca < $report
-# can't deliver to this address
-#		mail -s "$subject" lgmartins@sourceforge.net < $report
+#		mail -s "$subject" lgmartins@users.sourceforge.net < $report
 	fi
 }
 
@@ -72,6 +71,10 @@ fi
 mkdir -p $matDir
 cd $baseDir
 rm -rf $buildDir
+# play games because make dist marks stuff read-only
+chmod -R u+x $buildDir
+rm -rf $buildDir
+
 svn export . $buildDir
 
 
