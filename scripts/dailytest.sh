@@ -38,8 +38,8 @@ sendreport() {
 	if [ `which mail` ]
 	then
 		mail -s "$subject" gperciva@uvic.ca < $report
-#		mail -s "$subject" gtzan@cs.uvic.ca < $report
-#		mail -s "$subject" lgmartins@users.sourceforge.net < $report
+		mail -s "$subject" gtzan@cs.uvic.ca < $report
+		mail -s "$subject" lgmartins@users.sourceforge.net < $report
 	fi
 }
 
@@ -102,7 +102,7 @@ cd ..
 
 testthing "make dist" $distLog "Make dist"
 
-#testthing "make distcheck" $distcheckLog "Make distcheck"
+testthing "make distcheck" $distcheckLog "Make distcheck"
 
 sendreport "Pass"
 

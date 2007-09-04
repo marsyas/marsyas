@@ -273,6 +273,7 @@ html: marsyas-user.texi marsyas-devel.texi
 	cd out-www/manual/marsyas-user/ ; ln -sf ../images images
 	cd out-www/manual/marsyas-devel/ ; ln -sf ../images images
 	cp index.html.in out-www/index.html
+	cp ../NEWS out-www/
 
 pdf: marsyas-user.texi marsyas-devel.texi
 	mkdir -p out-www/

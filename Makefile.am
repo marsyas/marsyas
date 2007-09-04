@@ -45,6 +45,9 @@ MAINTAINERCLEANFILES += src/marsyas/config-h.in src/marsyas/stamp-h.in
 ACLOCAL                 = aclocal -I $(auxdir)
 
 
+# disable distcleancheck
+distcleancheck:
+	@:
 
 
 
