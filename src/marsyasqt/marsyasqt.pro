@@ -12,14 +12,16 @@ HEADERS += MarSystemQtWrapper.h \
 	OscMapper.h \
 	qoscclient.h \
 	qoscserver.h \
-	qosctypes.h
+	qosctypes.h \
+	Marx2DGraph.h
 
 SOURCES += MarSystemQtWrapper.cpp \
 	QtMarPlot.cpp \
 	OscMapper.cpp \
 	qoscclient.cpp \
 	qoscserver.cpp \
-	qosctypes.cpp 
+	qosctypes.cpp \
+	Marx2DGraph.cpp
 
 
 CONFIG(release, debug|release) {

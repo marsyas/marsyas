@@ -5,7 +5,6 @@ TARGET = MarMonitors
 INCLUDEPATH += . ..
 
 # Input
-HEADERS += Marx2DGraph.h MarMonitors.h
+HEADERS += MarMonitors.h
 SOURCES += main.cpp \
-           Marx2DGraph.cpp \
            MarMonitors.cpp
