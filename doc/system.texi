@@ -33,9 +33,9 @@ mrs_complex
 The use of these variable types instead of normal C++ like @code{int}
 and @code{double} is @strong{strongly} recommended.
 
-@strong{Warning:} a number like @samp{100} is interpreted as a
+@warning{a number like @samp{100} is interpreted as a
 @emph{mrs_natural}.  If you want to pass this value to a
-@emph{mrs_real}, you must specify @samp{100.0}.
+@emph{mrs_real}, you must specify @samp{100.0}.}
 
 
 @subsection Constants

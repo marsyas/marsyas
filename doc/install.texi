@@ -9,6 +9,7 @@ Complete each section fully before attempting the next section.
 * Download::                    
 * Configuring Marsyas::         
 * Compiling Marsyas::           
+* Installing::                  
 * Post-install optional configuration::  
 * Platform-specific notes while running Marsyas::  
 * Structure of distribution::   
@@ -415,7 +416,7 @@ Useful datasets:
 
 @itemize
 @item
-@uref{http://marsyas.sness.net/marsyas-coffee/marsyas-coffee-0.1.tar.bz2,
+@uref{http://marsyas.sness.net/marsyas-coffee/marsyas-coffee-latest.tar.bz2,
 marsyas-coffee}:
 data set used for large regression tests in Marsyas.
 
@@ -468,31 +469,6 @@ the sourceforge website.
 @node Configuring Marsyas
 @section Configuring Marsyas
 
-@subsection ...with qmake
-
-Marsyas can be built with qmake, which is the Makefile generator in
-Qt.  To build Marsyas, go to the base of the source tree and edit
-@file{marsyasConfig.pri}.  You will probably want to change the settings
-for @emph{release/debug mode}, @emph{WARNINGS/LOGS}, and @emph{MATLAB
-engine classes}, and @emph{MP3 MAD}.
-
-Once you have selected the options you want, simply type
-
-@example
-qmake
-@end example
-
-@strong{Warning:} on MacOS X and when using Qt-4.3.0 or higher, you
-must set this environment variable:
-
-@example
-export QMAKESPEC=/usr/local/Qt4.3/mkspecs/macx-g++/
-@end example
-
-The easiest (and safest) way to set this is to add that line to your
-@file{~/.profile} and then close (and re-open) your terminal window.
-
-
 @subsection ...with autotools
 
 Marsyas may be compiled using the standard GNU configure script:
@@ -515,18 +491,17 @@ libmad and writing warnings to a file, one would do:
 ./configure --enable-marsyasqt --with-mad --enable-log2file
 @end example 
 
-@c shouldn't be in this manual; ./configure --help is the most
-@c up-to-date source of this info, so people should read that. -gp
+@warning{If you want to write Marsyas/Qt programs, you must configure
+with @code{--enable-marsyasqt}}
 
-@noindent
+
 A frequent variation (if you don't have root priviledges) 
 is to install Marsyas in your home directory:
 
 @example
 ./configure --prefix=$HOME
-make 
-make install 
 @end example
+
 
 @subsubsection Debugging options
 
@@ -540,18 +515,36 @@ make
 The resulting program can be run under @code{gdb} to track down problems.
 
 
+@subsection ...with qmake
+
+Marsyas can be built with qmake, which is the Makefile generator in
+Qt.  To build Marsyas, go to the base of the source tree and edit
+@file{marsyasConfig.pri}.  You will probably want to change the settings
+for @emph{release/debug mode}, @emph{WARNINGS/LOGS}, and @emph{MATLAB
+engine classes}, and @emph{MP3 MAD}.
+
+Once you have selected the options you want, simply type
+
+@example
+qmake
+@end example
+
+
+@c  the @warning{} needs everything on one line.  :(
+@warning{on MacOS X and when using Qt-4.3.0 or higher, you must add
+@w{@code{export QMAKESPEC=/usr/local/Qt4.3/mkspecs/macx-g++/}} to your
+@file{~/.profile} and then close (and re-open) your terminal window}
+
+
 @node Compiling Marsyas
 @section Compiling Marsyas
 
-@subsection ...on *nix (Linux, FreeBSD, MacOSX, and Cygwin)
+@subsection ...on *nix (including MacOS X)
 
 After @ref{Configuring Marsyas}, simply type
 
 @example
 make
-
-(optional, as root unless you changed the installation directory)
-make install
 @end example
 
 
@@ -587,6 +580,26 @@ qmake -t vclib
 After you have compiled Marsyas, it is highly recommended to perform our
 automatic tests.  For more information, see @ref{Regression testing
 scripts}.
+
+
+@node Installing
+@section Installing
+
+@subsection ...with autotools
+
+To install, type
+
+@example
+make install
+@end example
+
+If you are trying to write to a system-wide location (such as the
+default value of @file{/usr/local} ), you must be be root.  To change
+the installation directory, configure with @code{--prefix=DIR}.
+
+@subsection ...with qmake
+
+Marsyas built with qmake cannot be installed.
 
 
 @node Post-install optional configuration

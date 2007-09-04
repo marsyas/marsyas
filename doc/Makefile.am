@@ -22,7 +22,7 @@
 #     enough time to figure out how to do it, since we'll probably
 #     change to waf in 2008)
 TEXI2HTML = makeinfo --html --css-include=marsyas.css # -o out-www/manual/
-TEXI2PDF  = texi2pdf  #  -o out-www/
+TEXI2PDF  = texi2pdf -b #  -o out-www/
 #info_TEXINFOS   = marsyas-user.texi marsyas-devel.texi
 
 EXTRA_DIST = intro.texi install.texi tools.texi
