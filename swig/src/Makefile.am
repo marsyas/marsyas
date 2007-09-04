@@ -10,7 +10,7 @@ rubysitelib_DATA = marsyas.rb
 rubysitearch_LTLIBRARIES = marsyas_ruby.la
 
 marsyas_ruby_la_SOURCES = marsyas_ruby.cxx
-marsyas_ruby_la_LDFLAGS = -Framework CoreAudio -module -avoid-version
+marsyas_ruby_la_LDFLAGS = -framework CoreAudio -framework CoreMidi -framework CoreFoundation -module -avoid-version
 
 endif
 
