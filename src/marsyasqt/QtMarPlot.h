@@ -10,10 +10,17 @@ using namespace Marsyas;
 
 namespace MarsyasQt
 {
+/**
+	\brief A realvec plotting widget.
+	\ingroup MarsyasQt
+
+	Plots a realvec.  Is simple to use, but lacks many features of the
+other plotting widget.
+
+*/
 class QtMarPlot : public QWidget
 {
 	Q_OBJECT
-
 public:
 	QtMarPlot(QWidget *parent = 0);
 	~QtMarPlot();
