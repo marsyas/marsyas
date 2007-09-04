@@ -22,6 +22,7 @@ buildLog=$logBase-build.log
 sanityLog=$logBase-sanity.log
 coffeeLog=$logBase-coffee.log
 distLog=$logBase-dist.log
+distcheckLog=$logBase-distcheck.log
 
 manualsLog=$logBase-manuals.log
 doxyLog=$logBase-doxy.log
@@ -37,7 +38,7 @@ sendreport() {
 	if [ `which mail` ]
 	then
 		mail -s "$subject" gperciva@uvic.ca < $report
-		mail -s "$subject" gtzan@cs.uvic.ca < $report
+#		mail -s "$subject" gtzan@cs.uvic.ca < $report
 # can't deliver to this address
 #		mail -s "$subject" lgmartins@sourceforge.net < $report
 	fi
@@ -52,9 +53,9 @@ PASS=$?
 
 if [ "$PASS" = "0" ]
 then
-	echo "$3 succeeded..." >> $report
+	echo "$3... succeeded." >> $report
 else
-	echo "$3 FAILED!   *********" >> $report
+	echo "$3... FAILED!   *********" >> $report
 	echo >> $report
 	tail -n 50 $2 >> $report
 	sendreport "FAILED"
@@ -98,7 +99,7 @@ cd ..
 
 testthing "make dist" $distLog "Make dist"
 
-echo "Make distcheck... not implemented" >> $report
+#testthing "make distcheck" $distcheckLog "Make distcheck"
 
 sendreport "Pass"
 
