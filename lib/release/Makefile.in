@@ -3941,16 +3941,15 @@ uninstall-am: uninstall-info-am uninstall-libLIBRARIES \
 
 
 @QT_PRESENT_TRUE@libmarsyasqt.a: libmarsyasqt_Makefile
-@QT_PRESENT_TRUE@	cd $(top_srcdir)/src/marsyasqt_wrapper/ && make
-#	cd $(top_srcdir)/src/marsyasqt_wrapper/ && qmake && make
+@QT_PRESENT_TRUE@	cd $(top_srcdir)/src/marsyasqt/ && make
 # libmarsyasqt.a is placed in lib/release/  from the qmake .pro file
 
 @QT_PRESENT_TRUE@libmarsyasqt_Makefile:
-@QT_PRESENT_TRUE@	cd $(top_srcdir)/src/marsyasqt_wrapper/ && chmod u+w ../marsyasqt_wrapper/ && qmake
+@QT_PRESENT_TRUE@	cd $(top_srcdir)/src/marsyasqt/ && chmod u+w ../marsyasqt/ && qmake
 
 @QT_PRESENT_TRUE@install-data-local:
 @QT_PRESENT_TRUE@	cp $(top_srcdir)/lib/release/libmarsyasqt.a $(DESTDIR)$(libdir)
-@QT_PRESENT_TRUE@	cp $(top_srcdir)/src/marsyasqt_wrapper/*.h $(DESTDIR)$(includedir)/marsyas/
+@QT_PRESENT_TRUE@	cp $(top_srcdir)/src/marsyasqt/*.h $(DESTDIR)$(includedir)/marsyas/
 # please leave Gain.cpp at the end like this; it make scripts happy.
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
