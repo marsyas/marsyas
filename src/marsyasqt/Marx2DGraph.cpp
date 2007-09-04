@@ -16,24 +16,14 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
                                                                                         
-/**
-   \class Marx2DGraph.cpp
-   \brief 2D Graphing
-                                                                                        
-Marx2DGraph provides 2D graphing for Marsyas where the ordinates are
-given by a marsyas realvec object and the abscissa a per sample spacing.
-Plot types are give in Marx2DGraph.h and include points, precsion,
-linear and polynomial interpolation.
-
-*/
-
 
 #include "Marx2DGraph.h"
 
 using namespace std;
 using namespace Marsyas;
 
-
+namespace MarsyasQt
+{
 //! A default constructor
 /*!
   A default constructor when buffer size isn't otherwise specified.
@@ -752,3 +742,5 @@ Marx2DGraph::mouseReleaseEvent(QMouseEvent *)
 {
   update();
 }
+
+} //namespace

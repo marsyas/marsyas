@@ -20,6 +20,18 @@
 #include <string>
 
 #include "realvec.h"
+namespace MarsyasQt
+{
+/**
+	\brief Fully-featured realvec plotting Qt object
+	\ingroup MarsyasQt
+
+Marx2DGraph provides 2D graphing for Marsyas where the ordinates are
+given by a marsyas realvec object and the abscissa a per sample spacing.
+Plot types are give in Marx2DGraph.h and include points, precsion,
+linear and polynomial interpolation.
+*/
+
 
 class Marx2DGraph : public QWidget
 {
@@ -124,6 +136,6 @@ class Marx2DGraph : public QWidget
   std::string label;
 
 };
-
+} // namespace
 
 #endif
