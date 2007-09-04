@@ -40,10 +40,10 @@ CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
 #clean-local:
 #	-rm -rf out-www
 
-QT_EXAMPLES = ../examples/Qt4-tutorial/*.h ../examples/Qt4-tutorial/*.cpp
-QT_EXAMPLES_AS_PERL = ../examples/Qt4-tutorial/*.pro
+QT_EXAMPLES = ../src/examples/Qt4-tutorial/*.h ../src/examples/Qt4-tutorial/*.cpp
+QT_EXAMPLES_AS_PERL = ../src/examples/Qt4-tutorial/*.pro
 
-EXAMPLES = ../examples/*.cpp
+EXAMPLES = ../src/examples/*.cpp
 
 #DIST_COMMON = sources pdf html
 
