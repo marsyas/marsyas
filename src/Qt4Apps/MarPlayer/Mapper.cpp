@@ -31,6 +31,7 @@ which it signals to MainWindow to update the GUI.
 #include "Mapper.h" 
 
 using namespace Marsyas;
+using namespace MarsyasQt;
 
 Mapper::Mapper()
 {

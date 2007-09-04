@@ -34,7 +34,7 @@ which it signals to MainWindow to update the GUI.
 #include <QObject> 
 #include <QTimer>
 #include "MarSystemManager.h" 
-#include "../MarSystemQtWrapper.h"
+#include "MarSystemQtWrapper.h"
 
 class Mapper: public QObject
 {
@@ -71,7 +71,7 @@ private:
   
   
   
-  MarSystemQtWrapper* mwr_;   // the wrapper that turns 
+  MarsyasQt::MarSystemQtWrapper* mwr_;   // the wrapper that turns 
                             // any MarSystem into 
                             // Qt-like object with 
                             // signals and slots 
