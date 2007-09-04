@@ -61,8 +61,8 @@
             "manual/marsyas-devel.pdf">PDF</a> ~ 0.5 Mb)<br>
             (for developers working on marsyas)</li>
 
-            <li>find something to put here.<br>
-            (otherwise this looks bad)</li>
+            <li><a class="title" href="NEWS">NEWS</a><br>
+            (major changes since last release)</li>
           </ul>
         </td>
       </tr>
