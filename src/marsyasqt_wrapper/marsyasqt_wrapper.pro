@@ -6,6 +6,8 @@ INCLUDEPATH += $$quote( "$$BASEDIR/src/marsyas" )
 
 HEADERS = MarSystemQtWrapper.h
 SOURCES = MarSystemQtWrapper.cpp
+HEADERS += QtMarPlot.h
+SOURCES += QtMarPlot.cpp
 
 CONFIG(release, debug|release) {
   message(Building with release support.)
