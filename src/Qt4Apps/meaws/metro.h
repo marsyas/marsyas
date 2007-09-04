@@ -22,9 +22,10 @@
 #include <QDialog>
 #include <QPainter>
 #include "MarSystemManager.h"
-#include "../MarSystemQtWrapper.h"
+#include "MarSystemQtWrapper.h"
 
 using namespace Marsyas;
+using namespace MarsyasQt;
 
 class Metro: public QWidget {
 	Q_OBJECT

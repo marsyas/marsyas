@@ -16,9 +16,9 @@
  
 
 #include <string> 
-#include "MarSystemQtWrapper.h" 
 #include <iostream>
 using namespace std;
+using namespace MarsyasQt;
 
 	
 class MarControlWidget: public QWidget

@@ -15,14 +15,6 @@ SOURCES += exerciseShift.cpp
 HEADERS += backend.h
 SOURCES += backend.cpp
 
-#temporary?  maybe?
-HEADERS += ../QtMarPlot.h
-SOURCES += ../QtMarPlot.cpp
-
-#HEADERS += ../MarSystemQtWrapper.h
-#SOURCES += ../MarSystemQtWrapper.cpp
-
-
 RESOURCES = icons.qrc
 TARGET = meaws
 VERSION = 0.5

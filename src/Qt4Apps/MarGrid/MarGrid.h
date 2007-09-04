@@ -36,7 +36,8 @@ class QDragEnterEvent;
 class QDropEvent;
 class QMouseEvent;
 #include "MarSystemManager.h"
-#include "../MarSystemQtWrapper.h" 
+#include "MarSystemQtWrapper.h" 
+using namespace MarsyasQt;
 
 class MarGrid : public QWidget
 {
