@@ -2,7 +2,7 @@
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
-<pre><tt><i><font color="#9A1900">#  your files</font></i>
+<pre><tt><i><font color="#9A1900">###  your files</font></i>
 SOURCES <font color="#990000">=</font> main<font color="#990000">.</font>cpp
 HEADERS <font color="#990000">=</font> mainwindow<font color="#990000">.</font>h
 SOURCES <font color="#990000">+=</font> mainwindow<font color="#990000">.</font>cpp
@@ -10,17 +10,21 @@ HEADERS <font color="#990000">+=</font> backend<font color="#990000">.</font>h
 SOURCES <font color="#990000">+=</font> backend<font color="#990000">.</font>cpp
 
 
-MARSYAS_INSTALL_DIR <font color="#990000">=</font> <font color="#990000">..</font><font color="#FF0000">/../</font>
-<i><font color="#9A1900">#MARSYAS_INSTALL_DIR = ${HOME}/usr/</font></i>
+<i><font color="#9A1900">### if running inside the source tree</font></i>
+MARSYAS_INSTALL_DIR <font color="#990000">=</font> <font color="#990000">..</font><font color="#FF0000">/../../</font>
+INCLUDEPATH <font color="#990000">+=</font> $<font color="#009900">$MARSYAS_INSTALL_DIR</font><font color="#FF0000">/src/marsyasqt/</font>
+LIBPATH <font color="#990000">+=</font> $<font color="#009900">$MARSYAS_INSTALL_DIR</font><font color="#FF0000">/lib/release/</font>
+
+
+<i><font color="#9A1900">### if installed elsewhere</font></i>
 <i><font color="#9A1900">#MARSYAS_INSTALL_DIR = /usr/local</font></i>
-<b><font color="#000000">message</font></b><font color="#990000">(</font><font color="#FF0000">"Marsyas was installed in $$MARSYAS_INSTALL_DIR, right?"</font><font color="#990000">)</font>
+<i><font color="#9A1900">#MARSYAS_INSTALL_DIR = ${HOME}/usr/</font></i>
+<i><font color="#9A1900">#INCLUDEPATH += $$MARSYAS_INSTALL_DIR/src/marsyas/</font></i>
+<i><font color="#9A1900">#LIBPATH += $$MARSYAS_INSTALL_DIR/lib/</font></i>
 
 
-INCLUDEPATH <font color="#990000">+=</font> $<font color="#009900">$MARSYAS_INSTALL_DIR</font><font color="#FF0000">/marsyas/</font>
-LIBPATH <font color="#990000">+=</font> $<font color="#009900">$MARSYAS_INSTALL_DIR</font><font color="#FF0000">/lib/release</font>
-
-unix<font color="#990000">:</font>LIBS <font color="#990000">+=</font> <font color="#990000">-</font>lmarsyas <font color="#990000">-</font>lmarqtactual <font color="#990000">-</font>L$<font color="#009900">$MARSYAS_INSTALL_DIR</font><font color="#990000">/</font>lib
-<font color="#990000">!</font>macx<font color="#990000">:</font>LIBS <font color="#990000">+=</font> <font color="#990000">-</font>lasound
+unix<font color="#990000">:</font>LIBS <font color="#990000">+=</font> <font color="#990000">-</font>lmarsyas <font color="#990000">-</font>lmarsyasqt
+unix<font color="#990000">:!</font>macx<font color="#990000">:</font>LIBS <font color="#990000">+=</font> <font color="#990000">-</font>lasound
 macx<font color="#990000">:</font>LIBS <font color="#990000">+=</font> <font color="#990000">-</font>framework CoreAudio <font color="#990000">-</font>framework CoreMidi <font color="#990000">-</font>framework CoreFoundation
 
 </tt></pre>

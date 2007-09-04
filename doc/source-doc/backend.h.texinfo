@@ -21,12 +21,12 @@
 @b{#include} @t{<QObject>}
 @b{#include} @t{<QTimer>}
 @b{#include} @t{"MarSystemManager.h"}
-@b{#include} @t{"MarQtActual/MarSystemQtWrapper.h"}
+@b{#include} @t{"MarSystemQtWrapper.h"}
 
 @b{#include} @t{<iostream>}
 @b{using} @b{namespace} std;
 @b{using} @b{namespace} Marsyas;
-@b{using} @b{namespace} MarQtActual;
+@b{using} @b{namespace} MarsyasQt;
 
 @b{class} MarBackend: @b{public} QObject
 @{
@@ -38,17 +38,17 @@
        void @b{openBackendSoundfile}(string fileName);
 
 @b{public} slots:
-       void @b{setBackendVolume}(int value);
+       void @b{setBackendVolume}(mrs_natural value);
        void @b{getBackendPosition}();
 
 signals:
-       void @b{changedBackendPosition}(int value);
+       void @b{changedBackendPosition}(mrs_natural value);
 
 @b{private}:
 @i{// in order to make the MarSystem act like a Qt object,}
 @i{// we use this wrapper:}
        MarSystemQtWrapper *mrsWrapper;
-@i{// ... and these pointers:}
+@i{// ... and these pomrs_naturalers:}
        MarControlPtr filenamePtr;
        MarControlPtr gainPtr;
        MarControlPtr positionPtr;

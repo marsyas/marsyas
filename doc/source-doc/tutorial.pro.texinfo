@@ -1,6 +1,6 @@
 @c Generator: GNU source-highlight, by Lorenzo Bettini, http://www.gnu.org/software/src-highlite
 @example
-@i{#  your files}
+@i{###  your files}
 SOURCES = main.cpp
 HEADERS = mainwindow.h
 SOURCES += mainwindow.cpp
@@ -8,17 +8,21 @@ HEADERS += backend.h
 SOURCES += backend.cpp
 
 
-MARSYAS_INSTALL_DIR = ..@t{/../}
-@i{#MARSYAS_INSTALL_DIR = $@{HOME@}/usr/}
+@i{### if running inside the source tree}
+MARSYAS_INSTALL_DIR = ..@t{/../../}
+INCLUDEPATH += $$MARSYAS_INSTALL_DIR@t{/src/marsyasqt/}
+LIBPATH += $$MARSYAS_INSTALL_DIR@t{/lib/release/}
+
+
+@i{### if installed elsewhere}
 @i{#MARSYAS_INSTALL_DIR = /usr/local}
-@b{message}(@t{"Marsyas was installed in $$MARSYAS_INSTALL_DIR, right?"})
+@i{#MARSYAS_INSTALL_DIR = $@{HOME@}/usr/}
+@i{#INCLUDEPATH += $$MARSYAS_INSTALL_DIR/src/marsyas/}
+@i{#LIBPATH += $$MARSYAS_INSTALL_DIR/lib/}
 
 
-INCLUDEPATH += $$MARSYAS_INSTALL_DIR@t{/marsyas/}
-LIBPATH += $$MARSYAS_INSTALL_DIR@t{/lib/release}
-
-unix:LIBS += -lmarsyas -lmarqtactual -L$$MARSYAS_INSTALL_DIR/lib
-!macx:LIBS += -lasound
+unix:LIBS += -lmarsyas -lmarsyasqt
+unix:!macx:LIBS += -lasound
 macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
 
 

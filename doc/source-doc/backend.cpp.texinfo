@@ -35,7 +35,7 @@ MarBackend::@b{MarBackend}()
        mrsWrapper = @b{new} @b{MarSystemQtWrapper}(playbacknet);
        mrsWrapper->@b{start}();
 
-@i{// make these pointers so that we can interface with the network}
+@i{// make these pomrs_naturalers so that we can mrs_naturalerface with the network}
 @i{// in a thread-safe manner:}
        filenamePtr = mrsWrapper->@b{getctrl}(@t{"SoundFileSource/src/mrs_string/filename"});
        gainPtr = mrsWrapper->@b{getctrl}(@t{"Gain/gain/mrs_real/gain"});
@@ -59,15 +59,15 @@ void MarBackend::@b{openBackendSoundfile}(string fileName)
        mrsWrapper->@b{play}();
 @}
 
-void MarBackend::@b{setBackendVolume}(int vol)
+void MarBackend::@b{setBackendVolume}(mrs_natural vol)
 @{
-       float newGain = vol/100.0f;
+       mrs_real newGain = vol/100.0;
        mrsWrapper->@b{updctrl}(gainPtr, newGain);
 @}
 
 void MarBackend::@b{getBackendPosition}()
 @{
-       int newPos = (int) positionPtr->to<mrs_natural>();
+       mrs_natural newPos = (mrs_natural) positionPtr->to<mrs_natural>();
        emit @b{changedBackendPosition}(newPos);
 @}
 

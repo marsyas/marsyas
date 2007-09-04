@@ -37,7 +37,7 @@ MarBackend<font color="#990000">::</font><b><font color="#000000">MarBackend</fo
 	mrsWrapper <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> <b><font color="#000000">MarSystemQtWrapper</font></b><font color="#990000">(</font>playbacknet<font color="#990000">);</font>
 	mrsWrapper<font color="#990000">-&gt;</font><b><font color="#000000">start</font></b><font color="#990000">();</font>
 
-<i><font color="#9A1900">// make these pointers so that we can interface with the network</font></i>
+<i><font color="#9A1900">// make these pomrs_naturalers so that we can mrs_naturalerface with the network</font></i>
 <i><font color="#9A1900">// in a thread-safe manner:</font></i>
 	filenamePtr <font color="#990000">=</font> mrsWrapper<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_string/filename"</font><font color="#990000">);</font>
 	gainPtr <font color="#990000">=</font> mrsWrapper<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"Gain/gain/mrs_real/gain"</font><font color="#990000">);</font>
@@ -61,15 +61,15 @@ MarBackend<font color="#990000">::~</font><b><font color="#000000">MarBackend</f
 	mrsWrapper<font color="#990000">-&gt;</font><b><font color="#000000">play</font></b><font color="#990000">();</font>
 <font color="#FF0000">}</font>
 
-<font color="#009900">void</font> MarBackend<font color="#990000">::</font><b><font color="#000000">setBackendVolume</font></b><font color="#990000">(</font><font color="#009900">int</font> vol<font color="#990000">)</font>
+<font color="#009900">void</font> MarBackend<font color="#990000">::</font><b><font color="#000000">setBackendVolume</font></b><font color="#990000">(</font>mrs_natural vol<font color="#990000">)</font>
 <font color="#FF0000">{</font>
-	<font color="#009900">float</font> newGain <font color="#990000">=</font> vol<font color="#990000">/</font><font color="#993399">100</font><font color="#990000">.</font>0f<font color="#990000">;</font>
+	mrs_real newGain <font color="#990000">=</font> vol<font color="#990000">/</font><font color="#993399">100.0</font><font color="#990000">;</font>
 	mrsWrapper<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font>gainPtr<font color="#990000">,</font> newGain<font color="#990000">);</font>
 <font color="#FF0000">}</font>
 
 <font color="#009900">void</font> MarBackend<font color="#990000">::</font><b><font color="#000000">getBackendPosition</font></b><font color="#990000">()</font>
 <font color="#FF0000">{</font>
-	<font color="#009900">int</font> newPos <font color="#990000">=</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font> positionPtr<font color="#990000">-&gt;</font>to<font color="#990000">&lt;</font>mrs_natural<font color="#990000">&gt;();</font>
+	mrs_natural newPos <font color="#990000">=</font> <font color="#990000">(</font>mrs_natural<font color="#990000">)</font> positionPtr<font color="#990000">-&gt;</font>to<font color="#990000">&lt;</font>mrs_natural<font color="#990000">&gt;();</font>
 	emit <b><font color="#000000">changedBackendPosition</font></b><font color="#990000">(</font>newPos<font color="#990000">);</font>
 <font color="#FF0000">}</font>
 

@@ -23,12 +23,12 @@ http://www.gnu.org/software/src-highlite -->
 <b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;QObject&gt;</font>
 <b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;QTimer&gt;</font>
 <b><font color="#000080">#include</font></b> <font color="#FF0000">"MarSystemManager.h"</font>
-<b><font color="#000080">#include</font></b> <font color="#FF0000">"MarQtActual/MarSystemQtWrapper.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"MarSystemQtWrapper.h"</font>
 
 <b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;iostream&gt;</font>
 <b><font color="#0000FF">using</font></b> <b><font color="#0000FF">namespace</font></b> std<font color="#990000">;</font>
 <b><font color="#0000FF">using</font></b> <b><font color="#0000FF">namespace</font></b> Marsyas<font color="#990000">;</font>
-<b><font color="#0000FF">using</font></b> <b><font color="#0000FF">namespace</font></b> MarQtActual<font color="#990000">;</font>
+<b><font color="#0000FF">using</font></b> <b><font color="#0000FF">namespace</font></b> MarsyasQt<font color="#990000">;</font>
 
 <b><font color="#0000FF">class</font></b> MarBackend<font color="#990000">:</font> <b><font color="#0000FF">public</font></b> QObject
 <font color="#FF0000">{</font>
@@ -40,17 +40,17 @@ http://www.gnu.org/software/src-highlite -->
 	<font color="#009900">void</font> <b><font color="#000000">openBackendSoundfile</font></b><font color="#990000">(</font>string fileName<font color="#990000">);</font>
 
 <b><font color="#0000FF">public</font></b> slots<font color="#990000">:</font>
-	<font color="#009900">void</font> <b><font color="#000000">setBackendVolume</font></b><font color="#990000">(</font><font color="#009900">int</font> value<font color="#990000">);</font>
+	<font color="#009900">void</font> <b><font color="#000000">setBackendVolume</font></b><font color="#990000">(</font>mrs_natural value<font color="#990000">);</font>
 	<font color="#009900">void</font> <b><font color="#000000">getBackendPosition</font></b><font color="#990000">();</font>
 
 signals<font color="#990000">:</font>
-	<font color="#009900">void</font> <b><font color="#000000">changedBackendPosition</font></b><font color="#990000">(</font><font color="#009900">int</font> value<font color="#990000">);</font>
+	<font color="#009900">void</font> <b><font color="#000000">changedBackendPosition</font></b><font color="#990000">(</font>mrs_natural value<font color="#990000">);</font>
 
 <b><font color="#0000FF">private</font></b><font color="#990000">:</font>
 <i><font color="#9A1900">// in order to make the MarSystem act like a Qt object,</font></i>
 <i><font color="#9A1900">// we use this wrapper:</font></i>
 	MarSystemQtWrapper <font color="#990000">*</font>mrsWrapper<font color="#990000">;</font>
-<i><font color="#9A1900">// ... and these pointers:</font></i>
+<i><font color="#9A1900">// ... and these pomrs_naturalers:</font></i>
 	MarControlPtr filenamePtr<font color="#990000">;</font>
 	MarControlPtr gainPtr<font color="#990000">;</font>
 	MarControlPtr positionPtr<font color="#990000">;</font>
