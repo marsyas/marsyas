@@ -38,7 +38,7 @@ translation approved by the Free Software Foundation.
 @title Marsyas User Manual 
 @subtitle For version 0.2 
 @subtitle @b{M}usic @b{A}nalysis @b{R}etrieval and @b{SY}nthesis for @b{A}udio @b{S}ignals 
-@author George Tzanetakis 
+@author Graham Percival and George Tzanetakis 
      
 @c  The following two commands
 @c  start the copyright page.
@@ -53,7 +53,7 @@ translation approved by the Free Software Foundation.
       
 @ifnottex
 @node Top
-@top Marsyas Manual
+@top Marsyas User Manual
 @end ifnottex
 
 

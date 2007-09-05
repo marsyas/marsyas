@@ -192,6 +192,7 @@ Writing applications that use Marsyas and Qt4 is quite simple, thanks to
 * Including and linking to libmarsyasqt::  
 * MarSystemQtWrapper::          
 * Passing controls to a MarSystemQtWrapper::  
+* Other classes in MarsyasQt::  
 * Qt4 example::                 
 * Other Qt4 issues::            
 @end menu
@@ -289,6 +290,13 @@ mrsWrapper->updctrl(filenamePtr,fileName);
 ... wait a bit...
 newPos = (mrs_natural) positionPtr->to<mrs_natural>();
 @end example
+
+
+@node Other classes in MarsyasQt
+@subsection Other classes in MarsyasQt
+
+MarsyasQt includes more than just @code{MarSystemQtWrapper}.  Please
+refer to source documentation in @ref{MarSystem reference}.
 
 
 @node Qt4 example
