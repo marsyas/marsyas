@@ -7,7 +7,7 @@ others may use it.
 @menu
 * Contributing documentation::  
 * Code style::                  
-* Adding to mudbox::            
+* Playing in the mudbox::       
 * Contributing applications::   
 * Contributing system code::    
 * Sending a patch::             
@@ -105,8 +105,8 @@ program should return a number greater than 0.
 @end itemize
 
 
-@node Adding to mudbox
-@section Adding to mudbox
+@node Playing in the mudbox
+@section Playing in the mudbox
 
 The easiest way to add code to Marsyas is to add a test to
 @file{apps/mudbox/mudbox.cpp}.  This file is a huge mess of short

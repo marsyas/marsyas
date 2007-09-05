@@ -21,6 +21,7 @@ source code for those files is in @file{apps/@{DIR@}/}.
 * Feature Extraction::          
 * Synthesis::                   
 * Marsystem Interaction::       
+* All of the above::            
 * Regression tests::            
 @end menu
 
@@ -365,6 +366,17 @@ a project to do for Marsyas it would be to use the GNU readline
 utility for it's commandline editing capabilities and try 
 to come up with some alternative syntax (I have some ideas 
 in that direction). 
+
+
+@node All of the above
+@section All of the above
+
+@subsection Mudbox
+
+@WANTED{funny description of mudbox -- I'm look at you, George}
+
+Developers interested in contributing to this mess should read
+@develref{Playing in the mudbox}.
 
 
 @node Regression tests
