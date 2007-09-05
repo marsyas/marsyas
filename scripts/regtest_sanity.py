@@ -62,15 +62,11 @@ def doTests(test_filename, temp_filename):
 			# use .au files because identical-sounding .wav files can have
 			# different headers
 			if (temp_filename == 'out.txt'):
-			# avoid end-of-line problems.
-			# FIXME: Only works for a single-line answer.
+				# avoid end-of-line problems.
 				temp_answer = open(temp_filename).readlines();
 				test_answer = open(test_answers[i]).readlines();
-				print temp_answer;
-				print test_answer;
 				if (temp_answer != test_answer):
-					#  FIXME: remove goofiness after testing
-					print "PROBLEM!  DANGER!  EVACUATE!"
+					problem = 1
 			else:
 				if filecmp.cmp(temp_filename, test_answers[i]):
 					logfile.write("Test " + str(i) + " successful\n")
