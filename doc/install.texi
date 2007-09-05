@@ -506,7 +506,9 @@ is to install Marsyas in your home directory:
 @unnumberedsubsubsec Debugging options
 
 @example
-./configure --enable-marsyasqt --enable-debug --enable-assert --enable-warnings --enable-diagnostics --enable-log2file
+./configure --enable-marsyasqt --enable-debug \
+  --enable-assert --enable-warnings --enable-diagnostics \
+  --enable-log2file
 make clean
 make
 @end example
