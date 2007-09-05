@@ -6,6 +6,7 @@ others may use it.
 
 @menu
 * Contributing documentation::  
+* Contributing source documentation::  
 * Code style::                  
 * Playing in the mudbox::       
 * Contributing applications::   
@@ -59,10 +60,87 @@ source code that illustrates something, we can add it to
 @userref{Example programs}.  You don't have to write any English at all!
 
 
+@node Contributing source documentation
+@section Contributing source documentation
+
+In your @code{.h} file, just after the @code{namespace Marsyas \n @{}
+line, please include a short documentation snippet:
+
+@example
+namespace Marsyas
+@{
+/**
+    \ingroup Processing
+    \brief Multiply input realvec with gain
+
+	Simple MarSystem example.  Just multiply the values of the input
+realvec with gain and put them in the output vector.  This object can be
+used as a prototype template for building more complicated MarSystems. 
+
+    Controls:
+    - \b mrs_real/gain [w] : adjust the gain multiplier.
+*/
+
+class Gain: public MarSystem
+@{
+@end example
+
+@strong{Warning: } the old convention included a @code{\class Gain};
+this was a mistake in our understanding of Doxygen.  Please @strong{do
+not} include an explicit class name; just make sure that the doc snippet
+occurs above the class.
+
+The @code{[w]} indicates that the control should be written and not
+(usefully) read.  Valid options are @code{[r]}, @code{[w]}, and
+@code{[rw]}.
+
+The @code{\ingroup GROUP} will generally be @code{Processing},
+@code{Analysis}, or @code{Synthesis}.  For details about these
+categories, see @userref{MarSystem reference}.  For a complete list
+of all available groups, see the file @file{marsyas/groups.doxy}.
+
+There is one special group: @code{Basic} Processing.  This is a subset
+of the @code{Processing} group.  No MarSystem should only be in the
+@code{Basic} group; it should be placed in both groups, with
+
+@example
+\ingroup Processing Basic
+@end example
+
+Code which is not a MarSystem should be placed in the @code{Notmar}
+group.
+
+A complete list of groups can be found in the @file{marsyas/groups.doxy}
+file.  The main groups are @code{Composites}, @code{Basic}, @code{IO},
+@code{Processing}, @code{Analysis}, and @code{Synthesis}.
+
+
 @node Code style
 @section Code style
 
 @itemize
+@item
+We strongly encourage the use of underscores@code{_} after member
+variables (@qq{member variables} are variables which can be used
+throughout the class).  In other words, in your @file{.h} files use:
+
+@example
+class MyMar: public MarSystem
+@{
+private:
+	mrs_real varname_;  // don't use a plain "varname"
+	...
+@}
+@end example
+
+@item
+By convention, a program (not a MarSystem) should return
+@code{exit(0)} upon successful completion.  If any problems arise, the
+program should return a number greater than 0.
+
+@item
+Files should use unix line endings.
+
 @item
 We use the @code{ansi} style defined in
 @uref{http://astyle.sourceforge.net/,Artistic Style}; our exact style
@@ -83,26 +161,11 @@ understand (and fix bugs in!) unfamiliar code.  You do not need to
 format your source code according to this file, but don't complain if
 your file is modified accordingly.
 
-@item
-We strongly encourage the use of underscores@code{_} after member
-variables (@qq{member variables} are variables which can be used
-throughout the class).  In other words, in your @file{.h} files use:
-
-@example
-class MyMar: public MarSystem
-@{
-private:
-	mrs_real varname_;  // don't use a plain "varname"
-	...
-@}
-@end example
-
-@item  By convention, a program (not a MarSystem) should return
-@code{exit(0)} upon successful completion.  If any problems arise, the
-program should return a number greater than 0.
-
 
 @end itemize
+
+Unfortunately due to historical reasons these last two points are not
+consistant within the Marsyas source code.
 
 
 @node Playing in the mudbox
@@ -160,7 +223,6 @@ greater than 0.
 
 @menu
 * Adding/removing to/from the build system::  
-* Contributing source documentation::  
 * Contributing non-MarSystem system code::  
 * Contributing MarSystems::     
 @end menu
@@ -186,61 +248,6 @@ removeClass foo
 
 Not that removing files from the build system does not actually remove
 the files themselves.
-
-
-@node Contributing source documentation
-@subsection Contributing source documentation
-
-In your @code{.h} file, just after the @code{namespace Marsyas \n @{}
-line, please include a short documentation snippet:
-
-@example
-namespace Marsyas
-@{
-/**
-    \ingroup Processing
-    \brief Multiply input realvec with gain
-
-	Simple MarSystem example.  Just multiply the values of the input
-realvec with gain and put them in the output vector.  This object can be
-used as a prototype template for building more complicated MarSystems. 
-
-    Controls:
-    - \b mrs_real/gain [w] : adjust the gain multiplier.
-*/
-
-class Gain: public MarSystem
-@{
-@end example
-
-@strong{Warning: } the old convention included a @code{\class Gain};
-this was a mistake in our understanding of Doxygen.  Please @strong{do
-not} include an explicit class name; just make sure that the doc snippet
-occurs above the class.
-
-The @code{[w]} indicates that the control should be written and not
-(usefully) read.  Valid options are @code{[r]}, @code{[w]}, and
-@code{[rw]}.
-
-The @code{\ingroup GROUP} will generally be @code{Processing},
-@code{Analysis}, or @code{Synthesis}.  For details about these
-categories, see @userref{List of available MarSystems}.  For a complete list
-of all available groups, see the file @file{marsyas/groups.doxy}.
-
-There is one special group: @code{Basic} Processing.  This is a subset
-of the @code{Processing} group.  No MarSystem should only be in the
-@code{Basic} group; it should be placed in both groups, with
-
-@example
-\ingroup Processing Basic
-@end example
-
-Code which is not a MarSystem should be placed in the @code{Notmar}
-group.
-
-A complete list of groups can be found in the @file{marsyas/groups.doxy}
-file.  The main groups are @code{Composites}, @code{Basic}, @code{IO},
-@code{Processing}, @code{Analysis}, and @code{Synthesis}.
 
 
 @node Contributing non-MarSystem system code

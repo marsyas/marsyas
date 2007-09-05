@@ -2,13 +2,55 @@
 @chapter System details
 
 
-
 @menu
+* MarSystem reference::         
 * Predefined types::            
 * Realvec::                     
-* List of available MarSystems::  
 * Systems limitations::         
 @end menu
+
+
+@node MarSystem reference
+@section MarSystem reference
+
+@subsection Source documentation
+
+MarSystems are documented in the @uref{../sourceDoc/index.html,source
+documentation}.  Most MarSystems are organized into groups.
+
+@subsection MarSystem groups
+
+The groups are fairly self-explanatory, but we should clarify a few
+groupings:
+
+@itemize
+@item @strong{Processing}: audio block => audio block.  Examples are
+@code{Gain} and @code{Filter}
+
+@item @strong{Analysis}: audio block => other block.  Examples are
+@code{Spectrum} and @code{Rms}.
+
+@item @strong{Synthesis}: other block => audio block.  Examples are
+@code{SineSource} and @code{NoiseSource}.
+
+@end itemize
+
+There is one special group: @code{Basic} Processing.  This is a subset
+of the @code{Processing} group.
+
+To see all MarSystems, look at @emph{Data Structures} instead of
+@emph{Main Page}.
+
+@subsection Limited documentation
+
+The @qq{main} MarSystems are fairly well documented, but many MarSystems
+lack even basic documentation.  In this case, the only option is to read
+the source code.
+
+@WANTED{ Once you have learned how to use an undocumented MarSystem,
+please help document it.  The source documentation only requires adding
+a special comment in the source file, so it is very easy! Please see
+@develref{Contributing source documentation}.}
 
 
 @node Predefined types
@@ -243,51 +285,7 @@ For a complete (and up-to-date) list of all realvec functions, please
 see the file @file{marsyas/realvec.h}
 
 
-@node List of available MarSystems
-@section List of available MarSystems
 
-@subsection Source documentation
-
-MarSystems are documented in the @uref{../sourceDoc/index.html,source
-documentation}.  Most MarSystems are organized into groups.
-
-@subsection MarSystem groups
-
-The groups are fairly self-explanatory, but we should clarify a few
-groupings:
-
-@itemize
-@item @strong{Processing}: audio block => audio block.  Examples are
-@code{Gain} and @code{Filter}
-
-@item @strong{Analysis}: audio block => other block.  Examples are
-@code{Spectrum} and @code{Rms}.
-
-@item @strong{Synthesis}: other block => audio block.  Examples are
-@code{SineSource} and @code{NoiseSource}.
-
-@end itemize
-
-There is one special group: @code{Basic} Processing.  This is a subset
-of the @code{Processing} group.
-
-To see all MarSystems, look at @emph{Data Structures} instead of
-@emph{Main Page}.
-
-@subsection Limited documentation
-
-The @qq{main} MarSystems are fairly well documented, but many MarSystems
-lack even basic documentation.  In this case, the only option is to read
-the source code.
-
-Once you have learned how to use an undocumented MarSystem,
-@emph{please} send some documentation.  For more information, see
-@develref{Contributing documentation} and @develref{Contributing source
-documentation}.
-
-
-
-@c  TODO: where to put this?
 @node Systems limitations
 @section System limitations
 

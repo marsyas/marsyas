@@ -179,6 +179,8 @@ Series1->addMarSystem(mng.create("classifier", "Classifier"));
 @node MarSystem composites
 @section MarSystem composites
 
+@WANTED{ descriptions of composites, add the other composites }
+
 
 @menu
 * Series::                      

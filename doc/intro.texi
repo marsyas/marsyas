@@ -232,10 +232,10 @@ standalone program.
 @end itemize
 
 
-@subsection Marsystem reference
+@subsection Marsystem source documentation
 
-Many MarSystems have been documented; see @ref{List of available
-MarSystems} for more information.
+Many MarSystems have been documented; see @ref{MarSystem reference}
+for more information.
 
 
 @subsection Source code
