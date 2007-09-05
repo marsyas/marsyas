@@ -1,14 +1,21 @@
-###  your files
-SOURCES = main.cpp
-HEADERS = mainwindow.h
-SOURCES += mainwindow.cpp
-HEADERS += backend.h
-SOURCES += backend.cpp
+#  your main file.  (uncomment **ONE** of these lines)
+#SOURCES = helloworld.cpp
+SOURCES = gettingdata.cpp
+#SOURCES = controls.cpp
+#SOURCES = commandOptions.cpp
+#SOURCES = dataflow-split.cpp
+#SOURCES = gettingdata.cpp
+#SOURCES = writefile.cpp
 
+# add as necessary
+#HEADERS += extra_file.h
+#SOURCES += extra_file.cpp
+
+
+TARGET = my_program
 
 ### if running inside the source tree
-MARSYAS_INSTALL_DIR = ../../../
-INCLUDEPATH += $$MARSYAS_INSTALL_DIR/src/marsyasqt/
+MARSYAS_INSTALL_DIR = ../../
 INCLUDEPATH += $$MARSYAS_INSTALL_DIR/src/marsyas/
 LIBPATH += $$MARSYAS_INSTALL_DIR/lib/release/
 
@@ -21,8 +28,8 @@ LIBPATH += $$MARSYAS_INSTALL_DIR/lib/release/
 
 
 ### basic OS stuff; do not change!
-win32-msvc2005:LIBS += marsyas.lib marsyasqt.lib
-unix:LIBS += -lmarsyas -lmarsyasqt -L$$MARSYAS_INSTALL_DIR/lib
+win32-msvc2005:LIBS += marsyas.lib
+unix:LIBS += -lmarsyas -L$$MARSYAS_INSTALL_DIR/lib
 !macx:LIBS += -lasound
 macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
 
