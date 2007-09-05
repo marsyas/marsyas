@@ -413,18 +413,33 @@ gnuplot> plot "dataToPlot.txt"
 
 @WANTED{@emph{can} be done; read the source code.}
 
+
 @node MATLAB
 @subsection MATLAB
 
-MATLAB is a high-level technical computing language and interactive environment for algorithm development, data visualization, data analysis, and numeric computation (http://www.mathworks.com). 
-Marsyas supports the use of the MATLAB engine API for exchanging data at runtime between Marsyas C++ code and MATLAB enviroment. This allows effortlessly passing and getting data to/from MATLAB inside Marsyas, and have access to MATLAB plotting facilities, numerical routines, toolboxes, etc. 
-More information about the MATLAB engine can be found at http://www.mathworks.com/access/helpdesk/help/techdoc/matlab_external/f39903.html.
+MATLAB is a high-level technical computing language and interactive
+environment for algorithm development, data visualization, data
+analysis, and numeric computation @uref{http://www.mathworks.com/}
+
+Marsyas supports the use of the MATLAB engine API for exchanging data at
+runtime between Marsyas C++ code and MATLAB enviroment. This allows
+effortlessly passing and getting data to/from MATLAB inside Marsyas, and
+have access to MATLAB plotting facilities, numerical routines,
+toolboxes, etc.  More information about the MATLAB engine can be found
+at
+@uref{http://www.mathworks.com/access/helpdesk/help/techdoc/matlab_external/f39903.html,
+in their technical documentation}.
 
 @subheading Passing data from Marsyas to MATLAB => MATLAB_PUT()
 
-To export data from Marsyas into MATLAB, simply use the macro MATLAB_PUT(marsyasVar, MATLABvarName).
-MATLAB_PUT() can be used with C++ int, float, double, mrs_real, mrs_natural, mrs_complex, std::string, std::vector, Marsyas::realvec, among other data types. For a complete list of the types supported, please refer to src/marsyas/MATLAB/MATLABengine.h. 
-Example:
+To export data from Marsyas into MATLAB, simply use the macro
+@code{MATLAB_PUT(marsyasVar, MATLABvarName)}.
+
+MATLAB_PUT() can be used with C++ int, float, double, mrs_real,
+mrs_natural, mrs_complex, std::string, std::vector, Marsyas::realvec,
+among other data types. For a complete list of the types supported,
+please refer to @file{src/marsyas/MATLAB/MATLABengine.h}.
+
 @example
 //create a Marsyas realvec (i.e. a 2 by 3 matrix):
 realvec marsyas_realvec(2,3);
@@ -435,16 +450,21 @@ marsyas_realvec(1,0) = 1.0;
 marsyas_realvec(1,1) = 1.1;
 marsyas_realvec(1,2) = 1.2;
 
-//Send the realvec to MATLAB, and call it marsyasMatrix in MATLAB
+// Send the realvec to MATLAB, and call it marsyasMatrix in MATLAB
 MATLAB_PUT(marsyas_realvec,"marsyasMatrix");
-//marsyasMatrix is now a normal matrix of doubles in MATLAB environment, which can be used as any regular MATLAB matrix.
+// marsyasMatrix is now a normal matrix of doubles in MATLAB
+// environment, which can be used as any regular MATLAB matrix.
 @end example
 
-Please refer to src/apps/mudbox/mudbox.cpp for more examples of using the MATLAB engine API in Marsyas (look for the toy_with_MATLABengine() function).
+Please refer to @file{src/apps/mudbox/mudbox.cpp} for more examples of
+using the MATLAB engine API in Marsyas (look for the
+toy_with_MATLABengine() function).
 
 @subheading Executing commands in MATLAB from Marsyas C++ code => MATLAB_EVAL()
 
-It is possible to execute commands in MATLAB from Marsyas C++ code, as if they were being input into the MATLAB command line. For this use the macro MATLAB_EVAL(command).
+It is possible to execute commands in MATLAB from Marsyas C++ code, as
+if they were being input into the MATLAB command line. For this use the
+macro @code{MATLAB_EVAL(command)}.
 
 @example
 //create a Marsyas realvec (i.e. a 2 by 3 matrix):
@@ -456,26 +476,33 @@ marsyas_realvec(1,0) = 1.0;
 marsyas_realvec(1,1) = 1.1;
 marsyas_realvec(1,2) = 1.2;
 
-//Send the realvec to MATLAB, and call it marsyasMatrix in MATLAB
+// Send the realvec to MATLAB, and call it marsyasMatrix in MATLAB
 MATLAB_PUT(marsyas_realvec,"marsyasMatrix");
 
-//now we can, for e.g., ask MATLAB to transpose the passed matrix...
+// now we can, for e.g., ask MATLAB to transpose the passed matrix...
 MATLAB_EVAL("marsyasMatrix = marsyasMatrix'");
-//and, why not, plot the matrix...
+// and, why not, plot the matrix...
 MATLAB_EVAL("imagesc(marsyasMatrix)");
-//run our own m.files...
+// run our own m.files...
 MATLAB_EVAL("myFunction(marsyasMatrix);");
-//or execute any other MATLAB command!
+// or execute any other MATLAB command!
 MATLAB_EVAL("whos");
-//Pretty cool, hum? ;-)
+// Pretty cool, hum? ;-)
 @end example
 
-Please refer to src/apps/mudbox/mudbox.cpp for more examples of using the MATLAB engine API in Marsyas (look for the toy_with_MATLABengine() function).
+Please refer to src/apps/mudbox/mudbox.cpp for more examples of using
+the MATLAB engine API in Marsyas (look for the toy_with_MATLABengine()
+function).
 
 @subheading Getting data from MATLAB into Marsyas => MATLAB_GET()
 
-To import data into Marsyas from MATLAB, simply use the macro MATLAB_GET(MATLABvarName, marsyasVar);
-MATLAB_GET() can be used for getting data from MATLAB into C++ int, float, double, mrs_real, mrs_natural, mrs_complex, std::vector, Marsyas::realvec, among other data types. For a complete list of the types supported, please refer to src/marsyas/MATLAB/MATLABengine.h. 
+To import data into Marsyas from MATLAB, simply use the macro
+@code{MATLAB_GET(MATLABvarName, marsyasVar);}
+
+MATLAB_GET() can be used for getting data from MATLAB into C++ int,
+float, double, mrs_real, mrs_natural, mrs_complex, std::vector,
+Marsyas::realvec, among other data types. For a complete list of the
+types supported, please refer to src/marsyas/MATLAB/MATLABengine.h. 
 
 @example
 //create a Marsyas realvec (i.e. a 2 by 2 matrix):
@@ -485,28 +512,30 @@ marsyas_realvec(0,1) = 0.1;
 marsyas_realvec(1,0) = 1.0;
 marsyas_realvec(1,1) = 1.1;
 
-//Send the realvec to MATLAB, and call it marsyasMatrix in MATLAB
+// Send the realvec to MATLAB, and call it marsyasMatrix in MATLAB
 MATLAB_PUT(marsyas_realvec,"marsyasMatrix");
 
-//now we can, for e.g., ask MATLAB to transpose the passed matrix...
+// now we can, for e.g., ask MATLAB to transpose the passed matrix...
 MATLAB_EVAL("marsyasMatrix = marsyasMatrix'");
-//and calculate its determinant
+// and calculate its determinant
 MATLAB_EVAL("matrixDet = det(marsyasMatrix);");
 
-//we can now get the determinant value back into Marsyas 
-//(note: Marsyas already has its own efficient C++ 
-//implementation for determinant calculation of realvecs!
-//This is just an example of what can be done with the Marsyas MATLAB engine.
+// we can now get the determinant value back into Marsyas 
+// (note: Marsyas already has its own efficient C++ 
+// implementation for determinant calculation of realvecs!
+// This is just an example of what can be done with the Marsyas MATLAB engine.
 mrs_real det;
 MATLAB_GET("matrixDet", det);
 cout << det << endl;
 
-//but we can also get the (now transposed) matrix back into Marsyas:
+// but we can also get the (now transposed) matrix back into Marsyas:
 MATLAB_GET("marsyasMatrix", marsyas_realvec);
 cout << marsyas_realvec << endl;
 @end example
 
-Please refer to src/apps/mudbox/mudbox.cpp for more examples of using the MATLAB engine API in Marsyas (look for the toy_with_MATLABengine() function).
+Please refer to src/apps/mudbox/mudbox.cpp for more examples of using
+the MATLAB engine API in Marsyas (look for the toy_with_MATLABengine()
+function).
 
 @node Python
 @subsection Python
