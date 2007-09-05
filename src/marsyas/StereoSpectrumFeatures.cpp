@@ -58,8 +58,8 @@ StereoSpectrumFeatures::myUpdate(MarControlPtr sender)
   // mrs_real lowBounday = 250.0; // Hz
   // mrs_real highBounday = 2800.0; // Hz
 
-  low_ = (mrs_natural)250.0 / ctrl_israte_->to<mrs_real>();
-  high_ = (mrs_natural)2800.0 / ctrl_israte_->to<mrs_real>();
+  low_ = (mrs_natural)(250.0 / ctrl_israte_->to<mrs_real>());
+  high_ = (mrs_natural)(2800.0 / ctrl_israte_->to<mrs_real>());
 
 
 }

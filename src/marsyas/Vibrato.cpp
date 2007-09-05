@@ -61,7 +61,7 @@ Vibrato::myUpdate(MarControlPtr sender)
   width_ = floor(width_ * israte_);
   mod_freq = mod_freq / israte_;     // mod_freq in samples
   
-  mrs_natural L = 2 + delay_ + width_ * 2;
+  mrs_natural L = mrs_natural(2 + delay_ + width_ * 2);
 //  cout << "L = " << L << endl;
 
   if (delaylineSize_ == 0) 
@@ -89,7 +89,7 @@ Vibrato::myProcess(realvec &in, realvec &out)
       tmod_ ++ ;
       
       mrs_real Z = 1 + delay_ + width_ * MOD;
-      mrs_natural i = floor(Z);
+      mrs_natural i = (mrs_natural)floor(Z);
       mrs_real frac = Z - i;
 
       // put samples in delay line
