@@ -3952,7 +3952,7 @@ fi
 
 
 
-                                                                                                                                                                                    ac_config_files="$ac_config_files Makefile src/Makefile src/marsyas/Makefile src/examples/Makefile src/apps/Makefile src/apps/sfplay/Makefile src/apps/sfinfo/Makefile lib/Makefile lib/debug/Makefile lib/release/Makefile doc/Makefile regressionTests/Makefile regressionTests/input/Makefile regressionTests/answers/Makefile misc/Makefile bin/Makefile bin/debug/Makefile bin/release/Makefile"
+                                                                                                                                                                                              ac_config_files="$ac_config_files Makefile src/Makefile src/marsyas/Makefile src/examples/Makefile src/apps/Makefile src/apps/sfplay/Makefile src/apps/sfinfo/Makefile lib/Makefile lib/debug/Makefile lib/release/Makefile doc/Makefile scripts/Makefile regressionTests/Makefile regressionTests/input/Makefile regressionTests/answers/Makefile misc/Makefile bin/Makefile bin/debug/Makefile bin/release/Makefile"
 
 
 
@@ -4557,6 +4557,7 @@ do
   "lib/debug/Makefile" ) CONFIG_FILES="$CONFIG_FILES lib/debug/Makefile" ;;
   "lib/release/Makefile" ) CONFIG_FILES="$CONFIG_FILES lib/release/Makefile" ;;
   "doc/Makefile" ) CONFIG_FILES="$CONFIG_FILES doc/Makefile" ;;
+  "scripts/Makefile" ) CONFIG_FILES="$CONFIG_FILES scripts/Makefile" ;;
   "regressionTests/Makefile" ) CONFIG_FILES="$CONFIG_FILES regressionTests/Makefile" ;;
   "regressionTests/input/Makefile" ) CONFIG_FILES="$CONFIG_FILES regressionTests/input/Makefile" ;;
   "regressionTests/answers/Makefile" ) CONFIG_FILES="$CONFIG_FILES regressionTests/answers/Makefile" ;;

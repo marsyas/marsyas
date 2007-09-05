@@ -113,7 +113,7 @@ AUX_DIST = $(auxdir)/install-sh $(auxdir)/missing \
 
 
 #  There's no point writing Makefiles for temporary holding areas.
-EXTRA_DIST = bootstrap TODO marsyasAll.pro marsyasConfig.pri .qmake.cache otherlibs/ scripts/ swig/ ToDeprecate/
+EXTRA_DIST = bootstrap TODO marsyasAll.pro marsyasConfig.pri .qmake.cache otherlibs/ swig/ ToDeprecate/
 
 AUTOMAKE_OPTIONS = foreign
 

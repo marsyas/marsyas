@@ -32,7 +32,6 @@ SUBDIRS			= src lib bin doc regressionTests misc
 DIST_SUBDIRS		= src lib bin doc regressionTests misc
 
 EXTRA_DIST += otherlibs/
-EXTRA_DIST += scripts/
 EXTRA_DIST += swig/
 
 #  There's no point writing Makefiles for temporary holding areas.
