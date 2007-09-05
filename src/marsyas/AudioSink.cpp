@@ -301,7 +301,7 @@ AudioSink::myProcess(realvec& in, realvec& out)
 	      data_[t2+1] = reservoir_(1, rt);
 	    }
 	  
-	  
+	  t++;
 #else
 	  const int t4 = 4 * t;
 	  if (srate_ == 22050)
