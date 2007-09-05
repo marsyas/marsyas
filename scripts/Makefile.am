@@ -1,4 +1,7 @@
-EXTRA_DIST = LPC_test.m LSP_test.m
-
-EXTRA_DIST = marsyas_tests.py makeMyMar.py addMyMar.py
+EXTRA_DIST = modifyBuild.py addClass.py removeClass.py
+EXTRA_DIST += addMarSystem.py removeMarSystem.py
+EXTRA_DIST += createMarSystem.py
+EXTRA_DIST += regtest_sanity.py regtest_coffee.py dailtest.sh
+EXTRA_DIST += buildscripts/
+EXTRA_DIST += MATLAB/ Python/ PureData
 
