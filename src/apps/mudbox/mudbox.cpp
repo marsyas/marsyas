@@ -1154,7 +1154,7 @@ toy_with_vicon(string vfName)
       playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc5/mrs_real/frequency", fabs(out(8,0)));
       playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc6/mrs_real/frequency", fabs(out(9,0)));
 
-			playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc7/mrs_real/frequency", fabs(out(10,0)));
+	  playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc7/mrs_real/frequency", fabs(out(10,0)));
       playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc8/mrs_real/frequency", fabs(out(11,0)));
       playbacknet->updctrl("Fanout/sinebank/SineSource/ssrc9/mrs_real/frequency", fabs(out(12,0)));
 
@@ -1201,13 +1201,13 @@ toy_with_MATLABengine()
   cout << "  TOY_WITH evaluate MATLAB command" << endl;
   cout << "******************************************************" << endl;
   cout << endl << "Run MATLAB benchmark utility..." << endl;
-  MATLABengine::getMatlabEng()->evalString("bench;");
+  MATLAB_EVAL("bench;");
   cout << endl << "Press any key to continue..." << endl;
   cout << endl << "Run other MATLAB stuff..." << endl;
-  MATLABengine::getMatlabEng()->evalString("a = magic(10);");
-  MATLABengine::getMatlabEng()->evalString("figure(3)");
-  MATLABengine::getMatlabEng()->evalString("imagesc(a);");
-  MATLABengine::getMatlabEng()->evalString("clear a;");
+  MATLAB_EVAL("a = magic(10);");
+  MATLAB_EVAL("figure(3)");
+  MATLAB_EVAL("imagesc(a);");
+  MATLAB_EVAL("clear a;");
   getchar();
 
   //-------------------------------------------------------------------------------------------
@@ -1216,11 +1216,11 @@ toy_with_MATLABengine()
   cout << "******************************************************" << endl;
   mrs_natural Marsyas_natural = 123456789;
   cout << "Send a mrs_natural to MATLAB: " << Marsyas_natural << endl;
-  MATLABengine::getMatlabEng()->putVariable(Marsyas_natural,"Marsyas_natural");
+  MATLAB_PUT(Marsyas_natural,"Marsyas_natural");
   cout << endl << "Variable sent. Check MATLAB variable 'Marsyas_natural' and compare values..." << endl;
   getchar();
   Marsyas_natural = 0;
-  if(MATLABengine::getMatlabEng()->getVariable("Marsyas_natural", Marsyas_natural) == 0)
+  if(MATLAB_GET("Marsyas_natural", Marsyas_natural) == 0)
     cout << "Get it from MATLAB back to Marsyas: " << Marsyas_natural << endl;
   else
     cout << "Error getting value back from MATLAB!" << endl;
@@ -1232,11 +1232,11 @@ toy_with_MATLABengine()
   cout << "******************************************************" << endl;
   mrs_real Marsyas_real = 3.123456789;
   cout << "Send a mrs_real to MATLAB: " << Marsyas_real << endl;
-  MATLABengine::getMatlabEng()->putVariable(Marsyas_real,"Marsyas_real");
+  MATLAB_PUT(Marsyas_real,"Marsyas_real");
   cout << endl << "Variable sent: check MATLAB variable 'Marsyas_real' and compare values..." << endl;
   getchar();
   Marsyas_real = 0.0;
-  if(MATLABengine::getMatlabEng()->getVariable("Marsyas_real", Marsyas_real)== 0)
+  if(MATLAB_GET("Marsyas_real", Marsyas_real)== 0)
     cout << "Get it from MATLAB back to Marsyas: " << Marsyas_real << endl;
   else
     cout << "Error getting value back from MATLAB!" << endl;
@@ -1248,11 +1248,11 @@ toy_with_MATLABengine()
   cout << "******************************************************" << endl;
   mrs_complex Marsyas_complex = mrs_complex(1.123456789, 2.123456789);
   cout << "Send a mrs_complex to MATLAB: " << Marsyas_complex.real() << " + j" << Marsyas_complex.imag() << endl;
-  MATLABengine::getMatlabEng()->putVariable(Marsyas_complex,"Marsyas_complex");
+  MATLAB_PUT(Marsyas_complex,"Marsyas_complex");
   cout << endl << "Variable sent: check MATLAB variable 'Marsyas_complex' and compare values..." << endl;
   getchar();
   Marsyas_complex = mrs_complex(0.0, 0.0);
-  if(MATLABengine::getMatlabEng()->getVariable("Marsyas_complex", Marsyas_complex) == 0)
+  if(MATLAB_GET("Marsyas_complex", Marsyas_complex) == 0)
     cout << "Get it from MATLAB back to Marsyas: " << Marsyas_complex.real() << " + j" << Marsyas_complex.imag() << endl;
   else
     cout << "Error getting value back from MATLAB!" << endl;
@@ -1269,11 +1269,11 @@ toy_with_MATLABengine()
   marRow_realvec1D(3) = 4.123456789;
   cout << "Send a realvec to MATLAB: " << endl;
   cout << endl << marRow_realvec1D  << endl;
-  MATLABengine::getMatlabEng()->putVariable(marRow_realvec1D,"marRow_realvec1D");
+  MATLAB_PUT(marRow_realvec1D,"marRow_realvec1D");
   cout << endl << "Variable sent: check MATLAB variable 'marRow_realvec1D' and compare values..." << endl;
   getchar();
   marRow_realvec1D.setval(0.0);
-  if(MATLABengine::getMatlabEng()->getVariable("marRow_realvec1D", marRow_realvec1D) == 0)
+  if(MATLAB_GET("marRow_realvec1D", marRow_realvec1D) == 0)
     cout << "Get it from MATLAB back to Marsyas: " << endl << endl << marRow_realvec1D << endl;
   else
     cout << "Error getting value back from MATLAB!" << endl;
@@ -1290,11 +1290,11 @@ toy_with_MATLABengine()
   marCol_realvec1D(3) = 4.123456789;
   cout << "Send a realvec to MATLAB: " << endl;
   cout << endl << marCol_realvec1D  << endl;
-  MATLABengine::getMatlabEng()->putVariable(marCol_realvec1D,"marCol_realvec1D");
+  MATLAB_PUT(marCol_realvec1D,"marCol_realvec1D");
   cout << endl << "Variable sent: check MATLAB variable 'marCol_realvec1D' and compare values..." << endl;
   getchar();
   marCol_realvec1D.setval(0.0);
-  if(MATLABengine::getMatlabEng()->getVariable("marCol_realvec1D", marCol_realvec1D) == 0)
+  if(MATLAB_GET("marCol_realvec1D", marCol_realvec1D) == 0)
     cout << "Get it from MATLAB back to Marsyas: " << endl << endl << marCol_realvec1D << endl;
   else
     cout << "Error getting value back from MATLAB!" << endl;
@@ -1313,11 +1313,11 @@ toy_with_MATLABengine()
   marsyas_realvec2D(1,2) = 1.2;
   cout << "Send a realvec to MATLAB: " << endl;
   cout << endl << marsyas_realvec2D  << endl;
-  MATLABengine::getMatlabEng()->putVariable(marsyas_realvec2D,"marsyas_realvec2D");
+  MATLAB_PUT(marsyas_realvec2D,"marsyas_realvec2D");
   cout << endl << "Variable sent: check MATLAB variable 'marsyas_realvec2D' and compare values..." << endl;
   getchar();
   marsyas_realvec2D.setval(0.0);
-  if(MATLABengine::getMatlabEng()->getVariable("marsyas_realvec2D", marsyas_realvec2D)==0)
+  if(MATLAB_GET("marsyas_realvec2D", marsyas_realvec2D)==0)
     cout << "Get it from MATLAB back to Marsyas: " << endl << endl << marsyas_realvec2D << endl;
   else
     cout << "Error getting value back from MATLAB!" << endl;
@@ -1338,11 +1338,11 @@ toy_with_MATLABengine()
   cout << "vector_natural[2] = " << vector_natural[2] << endl;
   cout << "vector_natural[3] = " << vector_natural[3] << endl;
 
-  MATLABengine::getMatlabEng()->putVariable(vector_natural,"vector_natural");
+  MATLAB_PUT(vector_natural,"vector_natural");
   cout << endl << "Variable sent: check MATLAB variable 'vector_natural' and compare values..." << endl;
   getchar();
   vector_natural.clear();
-  if(MATLABengine::getMatlabEng()->getVariable("vector_natural", vector_natural)==0)
+  if(MATLAB_GET("vector_natural", vector_natural)==0)
     {
       cout << "Get it from MATLAB back to Marsyas: " << endl;
       cout << "vector_natural[0] = " << vector_natural[0] << endl;
@@ -1369,11 +1369,11 @@ toy_with_MATLABengine()
   cout << "vector_real[2] = " << vector_real[2] << endl;
   cout << "vector_real[3] = " << vector_real[3] << endl;
 	
-  MATLABengine::getMatlabEng()->putVariable(vector_real,"vector_real");
+  MATLAB_PUT(vector_real,"vector_real");
   cout << endl << "Variable sent: check MATLAB variable 'vector_real' and compare values..." << endl;
   getchar();
   vector_real.clear();
-  if(MATLABengine::getMatlabEng()->getVariable("vector_real", vector_real)==0)
+  if(MATLAB_GET("vector_real", vector_real)==0)
     {
       cout << "Get it from MATLAB back to Marsyas: " << endl;
       cout << "vector_real[0] = " << vector_real[0] << endl;
@@ -1400,11 +1400,11 @@ toy_with_MATLABengine()
   cout << "vector_complex[2] = " << vector_complex[2].real() << " + j" << vector_complex[2].imag() << endl;
   cout << "vector_complex[3] = " << vector_complex[3].real() << " + j" << vector_complex[3].imag() << endl;
 
-  MATLABengine::getMatlabEng()->putVariable(vector_complex,"vector_complex");
+  MATLAB_PUT(vector_complex,"vector_complex");
   cout << endl << "Variable sent: check MATLAB variable 'vector_complex' and compare values..." << endl;
   getchar();
   vector_complex.clear();
-  if(MATLABengine::getMatlabEng()->getVariable("vector_complex", vector_complex)==0)
+  if(MATLAB_GET("vector_complex", vector_complex)==0)
     {
       cout << "Get it from MATLAB back to Marsyas: " << endl;
       cout << "vector_complex[0] = " << vector_complex[0].real() << " + j" << vector_complex[0].imag() << endl;
@@ -1718,7 +1718,7 @@ toy_with_realvec()
   cout << ">>>>>>>> ...done! Get it to a realvec." << endl;
   getchar();
   matrixA.setval(0.0);
-  MATLAB_GET	("invMatrix", matrixA);
+  MATLAB_GET("invMatrix", matrixA);
   cout << matrixA << endl;
   getchar();
   cout << "Compare results: difference should be a zero (or infinitesimal) valued matrix: " << endl << endl;

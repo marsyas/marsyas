@@ -3,18 +3,16 @@ MARSYAS 0.2
 
 CORE DEVELOPMENT TEAM
 
-George Tzanetakis     : main designer and programmer behind Marsyas.
-Luis Gustavo Martins  : refactoring, design
+George Tzanetakis     : creator and main designer and programmer behind Marsyas.
+Luis Gustavo Martins  : programming, refactoring, design
+Luis F. Teixeria      : programming, MarsyasX main developer and designer
 Graham Percival       : documentation and QA
-
 
 
 DEVELOPERS
 
 Mathieu Lagrange      : programming
-Luis F. Teixeria      : programming
 Jennifer Murdoch      : programming
-
 
 
 THANKS
@@ -29,5 +27,6 @@ Ari Lazier
 Kris West
 Neil Burroughs
 Adam Parkin
+All the anonymous people who dare to download and play with Marsyas (we would be even more thankful if they send us any feedback about such experience!) ;-)
 
 
