@@ -111,16 +111,14 @@ AUX_DIST = $(auxdir)/install-sh $(auxdir)/missing \
 			$(auxdir)/ltmain.sh
 
 
-
 #  There's no point writing Makefiles for temporary holding areas.
-EXTRA_DIST = bootstrap TODO marsyasAll.pro marsyasConfig.pri .qmake.cache otherlibs/ swig/ ToDeprecate/
+EXTRA_DIST = bootstrap TODO marsyasAll.pro marsyasConfig.pri .qmake.cache swig/ ToDeprecate/
 
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = src lib bin doc regressionTests misc
-
+SUBDIRS = src lib bin doc regressionTests misc scripts otherlibs
 # we must now explicitly define subdirs to be included in the dist
-DIST_SUBDIRS = src lib bin doc regressionTests misc
+DIST_SUBDIRS = src lib bin doc regressionTests misc scripts otherlibs
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure src/marsyas/config-h.in src/marsyas/stamp-h.in 
 subdir = .
