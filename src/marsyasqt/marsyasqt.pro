@@ -1,7 +1,7 @@
 include( $$quote( "$$BASEDIR/marsyasConfig.pri" ) )
 
 TEMPLATE = lib
-# CONFIG += staticlib
+CONFIG += staticlib
 CONFIG += Qt  
 QT += network
 TARGET = marsyasqt
