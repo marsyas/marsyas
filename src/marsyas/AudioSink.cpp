@@ -286,7 +286,7 @@ AudioSink::myProcess(realvec& in, realvec& out)
 	    }
 	  const int t2 = 2 * t;
 	  const int rt = start_ + t;
-	  t++;
+
 	  
 	  
 #ifndef MARSYAS_MACOSX
@@ -305,7 +305,8 @@ AudioSink::myProcess(realvec& in, realvec& out)
 #else
 	  const int t4 = 4 * t;
 	  if (srate_ == 22050)
-	    {
+	    {	      
+
 	      if (inObservations_ == 1) 
 		{
 		  data_[t4] = reservoir_(0,rt);
@@ -335,6 +336,7 @@ AudioSink::myProcess(realvec& in, realvec& out)
 		  data_[t2+1] = reservoir_(1, rt);
 		}
 	    }
+	  t++;
 #endif 
 	}
       
