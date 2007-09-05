@@ -1,5 +1,7 @@
 include( $$quote( "$$BASEDIR/marsyasConfig.pri" ) )
 
+
+
 CONFIG(release, debug|release) {
   message(Building with release support.)
   DESTDIR = $$quote( "$$BASEDIR/bin/release" )
