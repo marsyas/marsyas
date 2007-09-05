@@ -380,6 +380,7 @@ AC_CONFIG_FILES([Makefile
 		 regressionTests/input/Makefile
 		 regressionTests/answers/Makefile
 		 misc/Makefile
+		 otherlibs/Makefile
 		 bin/Makefile
 		 bin/debug/Makefile
 		 bin/release/Makefile])

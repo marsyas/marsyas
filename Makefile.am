@@ -26,17 +26,13 @@ EXTRA_DIST              = bootstrap TODO marsyasAll.pro marsyasConfig.pri
 AUTOMAKE_OPTIONS        = foreign
 EXTRA_DIST += .qmake.cache
 
-SUBDIRS			= src lib bin doc regressionTests misc
- 
+SUBDIRS	     = src lib bin doc regressionTests misc scripts otherlibs
 # we must now explicitly define subdirs to be included in the dist
-DIST_SUBDIRS		= src lib bin doc regressionTests misc
+DIST_SUBDIRS = src lib bin doc regressionTests misc scripts otherlibs
 
-EXTRA_DIST += otherlibs/
 EXTRA_DIST += swig/
-
 #  There's no point writing Makefiles for temporary holding areas.
 EXTRA_DIST += ToDeprecate/
-
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure
 MAINTAINERCLEANFILES += src/marsyas/config-h.in src/marsyas/stamp-h.in 
