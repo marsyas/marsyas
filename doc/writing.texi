@@ -34,28 +34,26 @@ SOURCES = my_program_name.cpp
 #SOURCES += extra_file.cpp
 
 
-DEPTH += ../../
-
-#  these files are common to every Marsyas/QT app 
-#  you will need to update these paths (and the paths in backend.h)
-#  if you copy this directory elsewhere.
-HEADERS += $$DEPTH/apps/Qt4Apps/MarSystemQtWrapper.h
-SOURCES += $$DEPTH/apps/Qt4Apps/MarSystemQtWrapper.cpp
+### if running inside the source tree
+### adjust as necessary:
+MARSYAS_INSTALL_DIR = ../../
+INCLUDEPATH += $$MARSYAS_INSTALL_DIR/src/marsyas/
+LIBPATH += $$MARSYAS_INSTALL_DIR/lib/release/
 
 
-#MARSYAS_INSTALL_DIR  = $@{HOME@}/usr/
-MARSYAS_INSTALL_DIR  = /usr/local
-message("If Marsyas was installed, it went into $$MARSYAS_INSTALL_DIR, right?")
-INCLUDEPATH += $$MARSYAS_INSTALL_DIR/include/marsyas
-# in case you have not installed Marsyas
-INCLUDEPATH += $$DEPTH/lib/release
-LIBPATH += $$DEPTH/lib/release
-INCLUDEPATH += $$DEPTH/marsyas/
+### if installed elsewhere
+#MARSYAS_INSTALL_DIR = /usr/local
+#MARSYAS_INSTALL_DIR = $@{HOME@}/usr/
+#INCLUDEPATH += $$MARSYAS_INSTALL_DIR/marsyas/
+#LIBPATH += $$MARSYAS_INSTALL_DIR/lib/
 
 
-unix:LIBS += -lmarsyas -L$$MARSYAS_INSTALL_DIR/lib # -lmad -lvorbis -lvorbisfile
+### basic OS stuff; do not change!
+win32-msvc2005:LIBS += marsyas.lib
+unix:LIBS += -lmarsyas -L$$MARSYAS_INSTALL_DIR/lib
 !macx:LIBS += -lasound
 macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
+
 @end example
 
 Then type @code{qmake} to generate a Makefile.  Now you many compile
@@ -101,6 +99,8 @@ in other *nixes, but replace the final line with
 
 Please see the documentation for your compiler / development
 environment.
+
+@WANTED{ instructions for msvc }
 
 
 @node Example programs
