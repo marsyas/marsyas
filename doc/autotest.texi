@@ -5,13 +5,13 @@ In an attempt to reduce the number of times we break working code, we
 have added some testing mechanisms to Marsyas.
 
 @menu
-* Regression tests::            
+* Regression tests (devel)::    
 * Daily Auto-tester::           
 @end menu
 
 
-@node Regression tests
-@section Regression tests
+@node Regression tests (devel)
+@section Regression tests (devel)
 
 These tests are deliberately simple and easy to understand.
 

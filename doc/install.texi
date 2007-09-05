@@ -7,8 +7,8 @@ Complete each section fully before attempting the next section.
 @menu
 * System preparation::          
 * Download::                    
-* Configuring Marsyas::         
-* Compiling Marsyas::           
+* Configuring::                 
+* Compiling::                   
 * Installing::                  
 * Post-install optional configuration::  
 * Platform-specific notes while running Marsyas::  
@@ -28,7 +28,7 @@ Complete each section fully before attempting the next section.
 @node Requirements on *nix (including MacOS X)
 @subsection Requirements on *nix (including MacOS X)
 
-@subsubsection Linux
+@unnumberedsubsubsec Linux
 
 Required:
 
@@ -49,7 +49,7 @@ development platform, version 4.2.3 or above.
 @end itemize
 
 
-@subsubsection MacOS X
+@unnumberedsubsubsec MacOS X
 
 Required:
 
@@ -76,7 +76,7 @@ development platform, version 4.2.3 or above.
 On Windows, you may use either MinGW, Microsoft Visual Studio, or
 Cygwin.
 
-@subsubsection MinGW
+@unnumberedsubsubsec MinGW
 
 MinGW is a collection of compilers, compiler tools, libraries, and
 header files, which can compile code on Windows.  This is the main
@@ -94,7 +94,7 @@ development platform, version 4.2.3 or above.
 @end itemize
 
 
-@subsubsection Cygwin
+@unnumberedsubsubsec Cygwin
 
 Cygwin is a unix environment for Windows.
 
@@ -115,7 +115,7 @@ development platform, version 4.2.3 or above.
 
 
 
-@subsubsection Microsoft Visual Studio
+@unnumberedsubsubsec Microsoft Visual Studio
 
 Windows XP SP2 has been tested; in theory other versions of Windows
 should work, but they have not been tested.
@@ -466,8 +466,8 @@ from subversion revisions and the latest can be found by checking
 the sourceforge website. 
 
 
-@node Configuring Marsyas
-@section Configuring Marsyas
+@node Configuring
+@section Configuring
 
 @subsection ...with autotools
 
@@ -499,15 +499,14 @@ A frequent variation (if you don't have root priviledges)
 is to install Marsyas in your home directory:
 
 @example
-./configure --prefix=$HOME
+./configure --enable-marsyasqt --prefix=$HOME
 @end example
 
 
-@subsubsection Debugging options
+@unnumberedsubsubsec Debugging options
 
 @example
-./configure --enable-debug --enable-assert --enable-warnings
---enable-diagnostics --enable-log2file
+./configure --enable-marsyasqt --enable-debug --enable-assert --enable-warnings --enable-diagnostics --enable-log2file
 make clean
 make
 @end example
@@ -536,12 +535,12 @@ qmake
 @file{~/.profile} and then close (and re-open) your terminal window}
 
 
-@node Compiling Marsyas
-@section Compiling Marsyas
+@node Compiling
+@section Compiling
 
 @subsection ...on *nix (including MacOS X)
 
-After @ref{Configuring Marsyas}, simply type
+After @ref{Configuring}, simply type
 
 @example
 make
@@ -551,7 +550,7 @@ make
 
 @subsection ...on Windows (MinGW or Visual Studio)
 
-After @ref{Configuring Marsyas}, simply type
+After @ref{Configuring}, simply type
 
 @example
 nmake (nmake debug or nmake all for debug or debug and release builds)
@@ -578,8 +577,7 @@ qmake -t vclib
 @subsection Testing the build
 
 After you have compiled Marsyas, it is highly recommended to perform our
-automatic tests.  For more information, see @ref{Regression testing
-scripts}.
+automatic tests.  For more information, see @ref{Regression tests}.
 
 
 @node Installing
@@ -599,7 +597,8 @@ the installation directory, configure with @code{--prefix=DIR}.
 
 @subsection ...with qmake
 
-Marsyas built with qmake cannot be installed.
+Marsyas built with qmake cannot be installed; you must link to the
+library directly in the source tree.
 
 
 @node Post-install optional configuration
@@ -637,7 +636,7 @@ MATLAB is a blah blah blah.
 
 @WANTED{docs for matlab on other OS}
 
-@subsubsection ... on OSX (Intel)
+@unnumberedsubsubsec ... on OSX (Intel)
 
 (the powerPC version is slightly different)
 
@@ -679,14 +678,14 @@ icon in your /Applications/util/ folder.
 
 @subsection Linux
 
-@cindex Linux
+@cindex Linux notes
 
 No specific notes.
 
 
 @subsection Mac OSX
 
-@cindex Mac OSX
+@cindex Mac OSX notes
 
 When trying to record audio, the sample rate must be specified
 explicitly:
@@ -700,11 +699,15 @@ pnet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
 
 @subsection Windows
 
+@cindex Window notes
+
 No specific notes.
 
 
 @node Structure of distribution
 @section Structure of distribution 
+
+@c file structure
 
 Marsyas is primarily targeted to researchers and software developers who
 want to build new systems and applications using existing building

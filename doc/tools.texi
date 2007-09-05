@@ -13,13 +13,15 @@ examples is to provide source code of working applications.
 The executable files may be found in @file{bin/release/}, while the
 source code for those files is in @file{apps/@{DIR@}/}.
 
+@WANTED{descriptions of all programs; I think we cover about 30% of them}
+
 @menu
 * Collections and input files::  
 * Simple Soundfile Interaction::  
 * Feature Extraction::          
 * Synthesis::                   
 * Marsystem Interaction::       
-* Regression testing scripts::  
+* Regression tests::            
 @end menu
 
 
@@ -365,8 +367,8 @@ to come up with some alternative syntax (I have some ideas
 in that direction). 
 
 
-@node Regression testing scripts
-@section Regression testing scripts
+@node Regression tests
+@section Regression tests
 
 Marsyas contains a suite of tests which attempt@footnote{Somewhat
 unsuccessfully, unfortunately.} to make sure that new functionality (or
@@ -378,6 +380,9 @@ compiled.
 The tests also require Python to be installed.  Python is installed by
 default on Linux and MacOS X machines; Windows users may install it from
 @uref{http://python.org}.
+
+Developers interested in the inner workings of these tests may find the
+information in @develref{Regression tests (devel)}.
 
 @menu
 * Sanity tests::                
@@ -399,8 +404,6 @@ scripts/regtests_sanity.py
 
 Results will be printed on the command line, with more information in
 the file @file{tests/results.log}.
-
-@sp 1
 
 These tests are not complete by any means, nor are they intended to be.
 They are simply a quick test to see if anything fundamental is broken.
@@ -424,8 +427,6 @@ scripts/commit_tests.py ../../marsyas-coffee/
 Results will be printed on the command line, with more information in
 the file @file{tests/results.log}.
 
-@sp 1
-
-These tests are useful to run when you take a coffee break.
+These tests are a useful excuse for taking a coffee break.
 
 
