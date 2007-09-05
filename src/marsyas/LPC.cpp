@@ -459,15 +459,19 @@ LPC::myProcess(realvec& in, realvec& out)
 			out(j) = (out(j) * pow(gamma, (double)j+1));
 		}
 	}
-
-		ctrl_coeffs_->setValue(0, 1.0);
-	for(i=1; i < order_+1; i++) {
-		// ctrl_coeffs_->setValue(i, -a(i)); // musicDsp implementation  
-		ctrl_coeffs_->setValue(i, out(i-1));  
-		ctrl_pitch_->setValue(pitch);
-		ctrl_power_->setValue(LevinsonError);
+	
+	{
+		MarControlAccessor acc(ctrl_coeffs_);
+		realvec& coeffs = acc.to<mrs_realvec>();
+		coeffs(0) = 1.0;
+		for(i=1; i < order_+1; i++) 
+		{
+			// coeffs(i) = -a(i); // musicDsp implementation  
+			coeffs(i) = out(i-1);  
+			ctrl_pitch_->setValue(pitch);
+			ctrl_power_->setValue(LevinsonError);
+		}
 	}
-
 
 	//MATLAB engine stuff - for testing and validation purposes only!
 #ifdef _MATLAB_LPC_
