@@ -393,7 +393,7 @@ win32-g++ {
 			DEFINES += \
 				MARSYAS_DS \
 				__WINDOWS_DS__
-			LIBS += dsound.lib
+			LIBS += -ldsound
 			INCLUDEPATH += $$quote( "$$(DXSDK_DIR)Include" ) #include path for dsound.h
 		}
 		marsyasAUDIOIO_ASIO {

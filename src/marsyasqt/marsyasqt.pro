@@ -1,8 +1,8 @@
 include( $$quote( "$$BASEDIR/marsyasConfig.pri" ) )
 
 TEMPLATE = lib
-CONFIG += staticlib
-CONFIG += Qt
+# CONFIG += staticlib
+CONFIG += Qt 
 TARGET = marsyasqt
 
 INCLUDEPATH += $$quote( "$$BASEDIR/src/marsyas" )
@@ -33,6 +33,18 @@ CONFIG(debug, debug|release) {
   message(Building with debug support.)
   DESTDIR = $$quote( "$$BASEDIR/lib/debug/" )
 }
+
+CONFIG(release, debug|release){
+	win32-msvc2005: LIBS  += marsyas.lib
+	!win32-msvc2005: LIBS += -lmarsyas
+	LIBPATH +=  $$quote( "$$BASEDIR/lib/release" )
+}
+CONFIG(debug, debug|release){
+	win32-msvc2005:LIBS 	+= 	marsyas.lib
+	!win32-msvc2005: += -lmarsyas 	
+	LIBPATH += $$quote( "$$BASEDIR/lib/debug" )
+}
+
 
 
 
