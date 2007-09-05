@@ -323,7 +323,7 @@ win32-msvc2005 {
 				MARSYAS_DS \
 				__WINDOWS_DS__
 			LIBS += dsound.lib 
-			LIBPATH += $$quote( "$$(DXSDK_DIR)Lib/x86" ) #DXSDK_DIR must be defined as an environment variable in windows!
+			LIBPATH += $$quote( \"$$(DXSDK_DIR)Lib/x86\" ) #DXSDK_DIR must be defined as an environment variable in windows!
 			INCLUDEPATH += $$quote( "$$(DXSDK_DIR)Include" ) #include path for dsound.h
 		}
 		marsyasAUDIOIO_ASIO {

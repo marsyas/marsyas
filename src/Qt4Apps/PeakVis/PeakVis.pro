@@ -23,10 +23,10 @@ marsyasQGLVIEWER {
 		INCLUDEPATH += $$quote( "$$(QGLVIEWER)/QGLViewer" )	
 		LIBS +=	-lQGLViewer
 		CONFIG(release, debug|release) {
-			LIBPATH += $$quote( "$$(QGLVIEWER)/QGLViewer/release" )
+			LIBPATH += $$quote( \"$$(QGLVIEWER)/QGLViewer/release\" )
 		}
 		CONFIG(debug, debug|release) {
-			LIBPATH += $$quote( "$$(QGLVIEWER)/QGLViewer/debug" )
+			LIBPATH += $$quote( \"$$(QGLVIEWER)/QGLViewer/debug\" )
 		}
 	}             
 
