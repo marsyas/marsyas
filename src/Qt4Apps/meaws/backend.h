@@ -26,8 +26,8 @@ public:
 	realvec getAmplitudes();
 
 // transcriber
-	realvec getDurations();
-	realvec getNotes();
+//	realvec getDurations();
+//	realvec getNotes();
 
 	mrs_real getRate();
 
@@ -43,8 +43,8 @@ private:
 	MarSystemManager mng;
 	MarSystem *sourceNet;
 	MarSystem *allNet;
-	MarSystem *amplitudesSink;
-	MarSystem *pitchesSink;
+	MarSystem *pitchSink;
+	MarSystem *ampSink;
 	MarSystemQtWrapper *mrsWrapper;
 	MarControlPtr isEmptyPtr;
 	bool isEmptyState;
@@ -60,11 +60,14 @@ private:
 // for playback
 	bool hasAudio;
 
+
+
 	realvec *pitchList;
+	realvec *ampList;
 // pitch stuff
 	realvec pitchOld;
 	realvec pitchMidiList;
-    realvec amplitudeList;
+    realvec amplitudeOld;
 
 // transcribed stuff
 	realvec durations;

@@ -49,7 +49,9 @@ QString ExerciseIntonation::getMessage() {
 
 bool ExerciseIntonation::displayAnalysis(MarBackend *results) {
 	realvec pitches = results->getMidiPitches();
+	realvec amps = results->getAmplitudes();
 	cout<<pitches<<endl;
+	cout<<amps<<endl;
 	// TODO: this is a totally fake demo for the MISTIC talk.
 //	resultLabel->setPixmap(QPixmap::fromImage(QImage(MEAWS_DIR+"data/scale1.preview.png")));
 

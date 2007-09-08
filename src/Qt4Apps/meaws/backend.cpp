@@ -14,6 +14,8 @@ MarBackend::MarBackend(int getType) {
 	allNet = NULL;
 	sourceNet = makeSourceNet("");
 
+	pitchList = NULL;
+	ampList = NULL;
 	isEmptyState = false;
 	hasAudio = false;
 
@@ -139,8 +141,8 @@ sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
 	allNet->addMarSystem(sourceNet);
 	allNet->linkctrl("mrs_bool/notEmpty", "Series/sourceNet/mrs_bool/notEmpty");
 	
-	pitchesSink = mng.create("RealvecSink", "rvSink");
-	amplitudesSink = mng.create("RealvecSink", "amplitudeData");
+	pitchSink = mng.create("RealvecSink", "rvSink");
+	ampSink = mng.create("RealvecSink", "amplitudeData");
 
 	switch (method) {
 	case TYPE_PLAYBACK:
@@ -148,9 +150,14 @@ sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
 		allNet->updctrl("AudioSink/audioDest/mrs_bool/initAudio", true);
 		break;
 	case TYPE_INTONATION:
-		allNet->addMarSystem( TranscriberExtract::makePitchNet(osrate, 200.0, pitchesSink));
-		//allNet->addMarSystem( makePitchNet(osrate) );
+	{
+		MarSystem *fanout = mng.create("Fanout", "fanout");
+		fanout->addMarSystem( TranscriberExtract::makePitchNet(osrate, 200.0, pitchSink));
+		fanout->addMarSystem(
+TranscriberExtract::makeAmplitudeNet( ampSink ));
+		allNet->addMarSystem(fanout);
 		break;
+	}
 	case TYPE_CONTROL:
 	{
 /*
@@ -180,54 +187,6 @@ sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
 }
 
 
-MarSystem* MarBackend::makePitchNet(mrs_real source_osrate) {
-	MarSystem *pnet = mng.create("Series", "pitchNet");
-	pnet->addMarSystem(mng.create("ShiftInput", "sfi"));
-	pnet->addMarSystem(mng.create("PitchPraat", "pitch")); 
-	
-	pnet->addMarSystem(pitchesSink); 
-
-	mrs_real lowPitch = 36;
-	mrs_real highPitch = 79;
-	mrs_real lowFreq = pitch2hertz(lowPitch);
-	mrs_real highFreq = pitch2hertz(highPitch);
-
-	mrs_natural lowSamples = hertz2samples(highFreq, source_osrate);
- 	mrs_natural highSamples = hertz2samples(lowFreq, source_osrate);
-
-	pnet->updctrl("PitchPraat/pitch/mrs_natural/lowSamples", lowSamples);
-	pnet->updctrl("PitchPraat/pitch/mrs_natural/highSamples", highSamples);
-
-	/*
-	The window should be just long
-	enough to contain three periods (for pitch detection) 
-	of MinimumPitch. E.g. if MinimumPitch is 75 Hz, the window length
-	is 40 ms and padded with zeros to reach a power of two.
-	*/
-	mrs_real windowSize = 3/lowPitch*source_osrate;
-	pnet->updctrl("mrs_natural/inSamples", 512);
-	pnet->updctrl("ShiftInput/sfi/mrs_natural/WindowSize", powerOfTwo(windowSize));
-
-	return pnet;
-}
-
-MarSystem* MarBackend::makeAmplitudeNet(mrs_real source_osrate) {
-	MarSystem *pnet = mng.create("Series", "amplitudeNet");
-    // should be done with the source
-	pnet->addMarSystem(mng.create("ShiftInput", "sfiAmp"));
-	pnet->addMarSystem(mng.create("Power", "power")); 
-	
-	pnet->addMarSystem(amplitudesSink); 
-    pnet->addMarSystem(mng.create("FlowCutSource", "fcs")); 
-	
-	pnet->updctrl("mrs_natural/inSamples", 512);
-	pnet->updctrl("ShiftInput/sfi/mrs_natural/WindowSize", 512);
-    pnet->updctrl("FlowCutSource/fcs/mrs_natural/setSamples", 2);
-    pnet->updctrl("FlowCutSource/fcs/mrs_natural/setObservations", 1);
-
-	return pnet;
-}
-
 /*   ***************************
  *   ***                     ***
  *   *** Test-specific stuff ***
@@ -248,21 +207,10 @@ sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
 		case TYPE_PLAYBACK:
 			break;
 		case TYPE_INTONATION:
-		{
-			pitchList = TranscriberExtract::getPitchesFromRealvecSink(pitchesSink, osrate);
-			TranscriberExtract::toMidi(pitchList);
-/*
-			Transcriber *trans = new Transcriber();
-			trans->setPitchList( getMidiPitches() );
-			trans->calcOnsets();
-			trans->calcNotes();
-			trans->calcRelativeDurations();
-			durations = trans->getDurations();
-			notes = trans->getNotes();
-			delete trans;
-*/
+			pitchList = TranscriberExtract::getPitchesFromRealvecSink(pitchSink, osrate);
+			ampList =
+TranscriberExtract::getAmpsFromRealvecSink(ampSink);
 			break;
-		}
 		case TYPE_CONTROL:
 			getPitches();
 			getAmplitudes();
@@ -280,47 +228,30 @@ sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
 }
 
 realvec MarBackend::getPitches() {
-	// if we haven't calculated them already, do it now
-	if (pitchOld.getSize()==0) {
-		mrs_real osrate =
-sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
-
-		realvec data =
-pitchesSink->getctrl("mrs_realvec/data")->to<realvec>();
-		for (mrs_natural i=1; i<data.getSize();i+=2)
-			data(i) = samples2hertz(data(i), osrate);
-		pitchesSink->updctrl("mrs_bool/done", true); 
-
-// my addition to the marsyasTest pitch stuff:
-		int numPitches = data.getSize()/2;
-		pitchOld.create(numPitches); // fills with 0s as well
-		for (int i=0; i<numPitches; i++) {
-			// extra check is for low-/big-endian chips
-			if (( data(2*i+1)>0 ) && (data(2*i+1)<10000)) {
-				// the conversion should be done afterwrads hertz2pitch(
-				pitchOld(i) =  data(2*i+1);
-			}
-		}
-	}
-	
-	return pitchOld;
+	if (pitchList != NULL)
+		return (*pitchList);
+	else
+		return NULL;
 }
 
 realvec MarBackend::getMidiPitches() {
-	return (*pitchList);
+	if (pitchList != NULL)
+	{
+		TranscriberExtract::toMidi( pitchList );
+		return (*pitchList);
+	}
+	else
+		return NULL;
 }
 
 realvec MarBackend::getAmplitudes() {
-	if(amplitudeList.getSize()==0)
-	{
-	amplitudeList =
-amplitudesSink->getctrl("mrs_realvec/data")->to<realvec>();
-    amplitudesSink->updctrl("mrs_bool/done", true); 
-	}
-	
-	return amplitudeList;
+	if (ampList != NULL)
+		return (*ampList);
+	else
+		return NULL;
 }
 
+/*
 realvec MarBackend::getDurations()
 {
 	return durations;
@@ -330,5 +261,5 @@ realvec MarBackend::getNotes()
 {
 	return notes;
 }
-
+*/
 

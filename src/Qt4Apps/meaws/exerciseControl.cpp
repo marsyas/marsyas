@@ -116,6 +116,9 @@ QString ExerciseControl::getMessage() {
 
 bool ExerciseControl::displayAnalysis(MarBackend *results) {
 	mrs_natural i, j=0;
+	// TODO: stops warning messages
+	(void) i;
+	(void) j;
 
 	// import results
 	if(results)
@@ -317,6 +320,8 @@ mrs_real ExerciseControl::weightedDeviation(realvec &vec, realvec &weight)
 void ExerciseControl::selectExercisePerformance()
 {
 	mrs_natural startSectionSilence=0, endSectionSilence=0, accSilence=0, delaySilence = 10, i;
+	// TODO: avoids warning
+	(void) endSectionSilence;
 	mrs_natural startSectionActivity=0, endSectionActivity=0, accActivity=0, delayActivity = 10;
 	mrs_natural currentType= -1;
 
