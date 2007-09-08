@@ -58,7 +58,7 @@ namespace Marsyas
 {
 /** 
 \class NumericLib
-	\ingroup Notmar
+	\ingroup NotmarCore
 \brief Assorted Numerical Routines
 
 	Numerical routines ported and adapted from several sources (indicated where appropriated).

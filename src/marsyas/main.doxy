@@ -20,10 +20,10 @@
  * audio classification and machine learning.
  * - \ref Scheduler "Scheduler": MarSystems relating to the scheduler.
  *
- * Marsyas/Qt interaction:
+ * Not MarSystems, but still useful:
+ * - \ref NotmarCore "Core classes": fundamental classes for Marsyas.
+ * - \ref Notmar "Other classes": other non-MarSystem classes.
  * - \ref MarsyasQt "MarsyasQt": Library for Marsyas/Qt interaction.
  *
- * Source files which are not MarSystems:
- * - \ref Notmar "Not MarSystems"
  *
  */

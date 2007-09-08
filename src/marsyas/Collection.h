@@ -30,7 +30,7 @@ namespace Marsyas
 {
 /**
 	\class Collection
-	\ingroup Notmar
+	\ingroup NotmarCore
 	\brief List of files
 
 List of files used for batch processing.

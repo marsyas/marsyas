@@ -296,7 +296,7 @@ newPos = (mrs_natural) positionPtr->to<mrs_natural>();
 @subsection Other classes in MarsyasQt
 
 MarsyasQt includes more than just @code{MarSystemQtWrapper}.  Please
-refer to source documentation in @ref{MarSystem reference}.
+refer to source documentation in @ref{Library reference}.
 
 
 @node Qt4 example

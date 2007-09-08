@@ -3,20 +3,28 @@
 
 
 @menu
-* MarSystem reference::         
+* Library reference::           
 * Predefined types::            
 * Realvec::                     
 * Systems limitations::         
 @end menu
 
 
-@node MarSystem reference
-@section MarSystem reference
+@node Library reference
+@section Library reference
 
 @subsection Source documentation
 
-MarSystems are documented in the @uref{../sourceDoc/index.html,source
-documentation}.  Most MarSystems are organized into groups.
+MarSystems are documented in the
+@ifhtml
+@uref{../../sourceDoc/index.html,
+source documentation}.
+@end ifhtml
+@ifnothtml
+source documentation available at
+@code{@uref{http://marsyas.sness.net/docs/index.html}}.
+@end ifnothtml
+Most MarSystems are organized into groups.
 
 @subsection MarSystem groups
 

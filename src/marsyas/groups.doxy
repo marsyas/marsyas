@@ -91,9 +91,17 @@
  *
  */
 
+/**  @defgroup NotmarCore Core classes which are not MarSystems
+ *
+ * \brief These classes are not MarSystems, but are fundamental classes
+ * for Marsyas.
+ *
+ */
+
 /**  @defgroup Notmar Classes which are not MarSystems
  *
- * \brief These classes are not MarSystems, but are still useful.
+ * \brief These classes are not MarSystems, nor fundamental classes of
+ * Marsyas.
  *
  */
 

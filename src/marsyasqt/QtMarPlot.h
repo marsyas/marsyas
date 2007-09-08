@@ -11,7 +11,7 @@ using namespace Marsyas;
 namespace MarsyasQt
 {
 /**
-	\brief A realvec plotting widget.
+	\brief A simple realvec plotting widget.
 	\ingroup MarsyasQt
 
 	Plots a realvec.  Is simple to use, but lacks many features of the

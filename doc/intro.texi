@@ -233,7 +233,7 @@ standalone program.
 
 @subsection Marsystem source documentation
 
-Many MarSystems have been documented; see @ref{MarSystem reference}
+Many MarSystems have been documented; see @ref{Library reference}
 for more information.
 
 

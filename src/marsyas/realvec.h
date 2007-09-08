@@ -32,7 +32,7 @@ namespace Marsyas
 {
 /** 
     \class realvec
-	\ingroup Notmar
+	\ingroup NotmarCore
     \brief Vector of mrs_real values
 
     Array (vector in the numerical sense) of mrs_real values. Basic 
