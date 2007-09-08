@@ -60,8 +60,9 @@ private:
 // for playback
 	bool hasAudio;
 
+	realvec *pitchList;
 // pitch stuff
-	realvec pitchList;
+	realvec pitchOld;
 	realvec pitchMidiList;
     realvec amplitudeList;
 
