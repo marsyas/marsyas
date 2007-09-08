@@ -13,7 +13,7 @@ TranscriberExtract::~TranscriberExtract()
 {
 }
 
-mrs_real TranscriberExtract::addFileSource(MarSystem* net, const string infile)
+mrs_real TranscriberExtract::addFileSource(MarSystem* net, const std::string infile)
 {
         if (infile == EMPTYSTRING)
         {
@@ -70,7 +70,7 @@ MarSystem* TranscriberExtract::makeAmplitudeNet(MarSystem* rvSink)
 }
 
 void
-TranscriberExtract::getAllFromAudio(const string audioFilename, realvec* &
+TranscriberExtract::getAllFromAudio(const std::string audioFilename, realvec* &
                                     pitchList, realvec* &ampList)
 {
 	MarSystem* pitchSink = mng.create("RealvecSink", "pitchSink");
@@ -97,7 +97,7 @@ TranscriberExtract::getAllFromAudio(const string audioFilename, realvec* &
 }
 
 realvec*
-TranscriberExtract::getPitchesFromAudio(const string audioFilename)
+TranscriberExtract::getPitchesFromAudio(const std::string audioFilename)
 {
 	MarSystem* pnet = mng.create("Series", "pnet");
 	mrs_real srate = addFileSource(pnet, audioFilename);
