@@ -5,7 +5,7 @@
 #include <QObject>
 #include "MarSystemManager.h"
 #include "MarSystemQtWrapper.h"
-//#include "Transcriber.h"
+#include "TranscriberExtract.h"
 using namespace Marsyas;
 using namespace MarsyasQt;
 

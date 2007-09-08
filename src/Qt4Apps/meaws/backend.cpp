@@ -1,9 +1,3 @@
-// C++ testing
-#include <iostream>
-using namespace std;
-
-
-
 #include "backend.h"
 
 /*   ***************************
@@ -53,13 +47,13 @@ void MarBackend::delNet() {
 MarSystem* MarBackend::makeSourceNet(std::string filename) {
 	MarSystem *pnet = mng.create("Series", "sourceNet");
 	if (filename != "") {
-		//cout<<"DEBUG: getting from file"<<endl;
+		MRSERR("DEBUG: getting from file");
 		pnet->addMarSystem(mng.create("SoundFileSource", "srcFile"));
 		pnet->updctrl("SoundFileSource/srcFile/mrs_string/filename", filename);
 		pnet->linkctrl("mrs_real/osrate", "SoundFileSource/srcFile/mrs_real/osrate");
 		pnet->linkctrl("mrs_bool/notEmpty", "SoundFileSource/srcFile/mrs_bool/notEmpty");
 	} else {
-		//cout<<"DEBUG: getting audio"<<endl;
+		MRSERR("DEBUG: getting audio");
 		pnet->addMarSystem(mng.create("AudioSource", "srcRec"));
 		pnet->updctrl("mrs_real/israte", 44100.0);
 		pnet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
@@ -111,14 +105,12 @@ void MarBackend::ctrlChanged(MarControlPtr changed) {
 }
 
 void MarBackend::start() {
-//	cout<<"start"<<endl;
 	emit setAttempt(true);
 	if (mrsWrapper != NULL)
 		mrsWrapper->play();
 }
 
 void MarBackend::stop() {
-//	cout<<"stop"<<endl;
 	emit setAttempt(false);
 	if (mrsWrapper != NULL)
 		mrsWrapper->pause();
@@ -167,7 +159,7 @@ sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
 		allNet->addMarSystem( makePitchNet(osrate) );
 		break;
 	default:
-		cout<<"**** SOMETHING IS BROKEN ****"<<endl;
+		MRSERR("backend var method is broken");
 		break;
 	}
 
@@ -179,7 +171,6 @@ sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
 	mrsWrapper->start();
 	mrsWrapper->pause();
 //	emit setAttempt(false);
-//	cout<<"finished setupAllNet"<<endl;
 }
 
 
@@ -270,10 +261,9 @@ bool MarBackend::analyze() {
 			break;
 		case TYPE_SHIFT:
 			getMidiPitches();
-			//cout<<getMidiPitches();
 			break;
 		default:
-			cout<<"**** SOMETHING IS BROKEN ****"<<endl;
+			MRSERR("backend var method is broken 2");
 			break;
 		}
 		return true;
