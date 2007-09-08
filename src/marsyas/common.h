@@ -1,6 +1,11 @@
 #ifndef MARSYAS_COMMON_H
 #define MARSYAS_COMMON_H
 
+/**
+  \file common.h
+  \ingroup NotmarCore
+*/
+
 /************************************************************************/
 /*      common includes			                                            */
 /************************************************************************/
