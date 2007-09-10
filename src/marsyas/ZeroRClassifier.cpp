@@ -42,8 +42,8 @@ void
 ZeroRClassifier::addControls()
 {
 	addctrl("mrs_string/mode", "train");
-	addctrl("mrs_natural/nLabels", 1);
-	setctrlState("mrs_natural/nLabels", true);
+	addctrl("mrs_natural/nClasses", 1);
+	setctrlState("mrs_natural/nClasses", true);
 	addctrl("mrs_bool/done", false);
 	addctrl("mrs_natural/prediction", 0);
 }
@@ -58,7 +58,7 @@ ZeroRClassifier::myUpdate(MarControlPtr sender)
 	setctrl("mrs_natural/onObservations", (mrs_natural)2);
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-	mrs_natural nlabels = getctrl("mrs_natural/nLabels")->to<mrs_natural>();
+	mrs_natural nlabels = getctrl("mrs_natural/nClasses")->to<mrs_natural>();
 
 	if (labelSizes_.getSize() != nlabels)
 		labelSizes_.create(nlabels);
@@ -73,7 +73,7 @@ void
 ZeroRClassifier::myProcess(realvec& in, realvec& out)
 {
 	string mode = getctrl("mrs_string/mode")->to<mrs_string>();
-	mrs_natural nlabels = getctrl("mrs_natural/nLabels")->to<mrs_natural>();
+	mrs_natural nlabels = getctrl("mrs_natural/nClasses")->to<mrs_natural>();
 	mrs_natural l;
 	mrs_natural prediction = 0;
 

@@ -91,7 +91,7 @@ Classifier::myUpdate(MarControlPtr sender)
       classifierSwitch_->setctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
       classifierSwitch_->setctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
       classifierSwitch_->setctrl("mrs_real/israte", getctrl("mrs_real/israte"));
-      classifierSwitch_->updctrl("mrs_natural/disable", 1);      
+      classifierSwitch_->updctrl("mrs_natural/disable", 0);      
       mode_ = getctrl("mrs_string/mode")->to<mrs_string>(); 
       cout << "mode_ = " << mode_ << endl;
       mrs_natural nClasses = getctrl("mrs_natural/nClasses")->to<mrs_natural>();
