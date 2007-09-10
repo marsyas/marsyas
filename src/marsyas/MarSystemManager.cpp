@@ -158,6 +158,7 @@
 #include "PhiSEMSource.h"
 #include "PhiSEMFilter.h"
 #include "SVMClassifier.h"
+#include "Classifier.h"
 #include "Gain.h"
 // please leave Gain at the end; it makes scripts happy.
 
@@ -303,6 +304,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PhiSEMSource", new PhiSEMSource("phisemsourcepr"));
 	registerPrototype("PhiSEMFilter", new PhiSEMFilter("phisemfilterpr"));
 	registerPrototype("SVMClassifier", new SVMClassifier("svmclassifierpr"));
+	registerPrototype("Classifier", new Classifier("classifierpr"));
 	registerPrototype("Gain", new Gain("gp"));
 	// Please leave Gain at the end; it makes scripts happy.
 

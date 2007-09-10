@@ -21,8 +21,8 @@ string distancematrix_;
 void 
 printUsage(string progName)
 {
-  MRSDIAG("train.cpp - printUsage");
-  cerr << "Usage : " << progName << " [-w weka file] " << endl;
+  MRSDIAG("kea.cpp - printUsage");
+  cerr << "Usage : " << progName << " [-m mode -c classifier -wd workdir -w weka file] " << endl;
   cerr << endl;
   exit(1);
 }
@@ -30,10 +30,10 @@ printUsage(string progName)
 void 
 printHelp(string progName)
 {
-  MRSDIAG("train.cpp - printHelp");
-  cerr << "train, MARSYAS, Copyright George Tzanetakis " << endl;
+  MRSDIAG("kea.cpp - printHelp");
+  cerr << "kea, MARSYAS, Copyright George Tzanetakis " << endl;
   cerr << "--------------------------------------------" << endl;
-  cerr << "Train a classifier " << endl;
+  cerr << "Kea - machine learning ala Weka " << endl;
   cerr << endl;
   cerr << "Usage : " << progName << endl;
   cerr << "Help Options:" << endl;
@@ -130,10 +130,17 @@ distance_matrix()
 
 }
 
-// Play a collection l of soundfiles
-void train()
+
+void 
+train()
 {
   cout << "Training classifier using .arff file: " << wekafname_ << endl;
+
+  if (wekafname_ == EMPTYSTRING) 
+    {
+      cout << "Weka .arff file not specified" << endl;
+      return;
+    }
 
   if (workdir_ != EMPTYSTRING) 
     wekafname_  = workdir_ + wekafname_;
@@ -151,14 +158,17 @@ void train()
   // net->addMarSystem(mng.create("GaussianClassifier", "gcl"));
   // net->addMarSystem(mng.create("KNNClassifier", "gcl"));
   // net->addMarSystem(mng.create("ZeroRClassifier", "gcl"));
-  net->addMarSystem(mng.create("SVMClassifier", "gcl"));
+  // net->addMarSystem(mng.create("SVMClassifier", "gcl"));
+  cout << "Before addding classifier " << endl;
+  net->addMarSystem(mng.create("Classifier", "gcl"));
+  cout << "Added classifier" << endl;
   net->addMarSystem(mng.create("Summary", "summary"));
   // net->updctrl("WekaSource/wsrc/mrs_string/attributesToInclude", "1,2,3");
   
   net->updctrl("WekaSource/wsrc/mrs_string/filename", wekafname_);
   // net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "PercentageSplit,50%");
-  // net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "kFold,[NS],10");
-  net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "UseTestSet,lg.arff");
+  net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "kFold,[NS],10");
+  // net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "UseTestSet,lg.arff");
   net->updctrl("mrs_natural/inSamples", 1);
 
 
@@ -167,7 +177,7 @@ void train()
 	       net->getctrl("WekaSource/wsrc/mrs_string/classNames"));
   
   
-  // net->updctrl("GaussianClassifier/gcl/mrs_natural/nLabels", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+  net->updctrl("Classifier/gcl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
   // net->linkctrl("GaussianClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
 
 
@@ -186,29 +196,29 @@ void train()
 
 
   // net->updctrl("ZeroRClassifier/gcl/mrs_natural/nLabels", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
-  net->linkctrl("SVMClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
+  // net->linkctrl("SVMClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
 
+  net->linkctrl("Classifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
 
 		    
 
-  mrs_bool training_done = false;
-  
-
-  cout << "Instances = " <<  net->getctrl("WekaSource/wsrc/mrs_natural/nInstances")->to<mrs_natural>() << endl;
+  cout << "ready to print out statistics" << endl;
   int i = 0;
   while(net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>() == false)
     {
       string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
       net->tick();
-      // net->updctrl("GaussianClassifier/gcl/mrs_string/mode", mode);
+      net->updctrl("Classifier/gcl/mrs_string/mode", mode);
       // net->updctrl("OneRClassifier/gcl/mrs_string/mode", mode);
       // net->updctrl("KNNClassifier/gcl/mrs_string/mode", mode);
       // net->updctrl("ZeroRClassifier/gcl/mrs_string/mode", mode);
-      net->updctrl("SVMClassifier/gcl/mrs_string/mode", mode);
+      // net->updctrl("SVMClassifier/gcl/mrs_string/mode", mode);
+      // net->updctrl("Classifier/gcl/mrs_string/mode", mode);
       i++;
     }
 
-  net->updctrl("SVMClassifier/gcl/mrs_string/mode", "predict");
+  // net->updctrl("SVMClassifier/gcl/mrs_string/mode", "predict");
+  net->updctrl("Classifier/gcl/mrs_string/mode", "predict");
   net->updctrl("Summary/summary/mrs_bool/done", true);
   net->tick();
 

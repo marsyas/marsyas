@@ -15,7 +15,7 @@ marsyasBaseDir = os.path.abspath( marsyasBaseDir )
 marsyasBaseDir = os.path.join(marsyasBaseDir+os.sep+'..'+os.sep)
 marsyasBaseDir = os.path.abspath( marsyasBaseDir )
 
-#print marsyasBaseDir
+print marsyasBaseDir
 writeDir = os.getcwd()
 
 def copyWithSub( oldFile, newFile ):
@@ -23,7 +23,7 @@ def copyWithSub( oldFile, newFile ):
 		print newFile + " already exists!!!  I will not"
 		print "overwrite an existing file!"
 		sys.exit();
-	oldFile = open( os.path.join( marsyasBaseDir, 'marsyas', oldFile)).readlines()
+	oldFile = open( os.path.join( marsyasBaseDir, 'src/marsyas', oldFile)).readlines()
 	file = open( os.path.join(writeDir, newFile), 'w')
 	for line in oldFile:
 		newLine = line

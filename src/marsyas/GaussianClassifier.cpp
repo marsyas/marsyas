@@ -31,7 +31,7 @@ GaussianClassifier::GaussianClassifier(string name):MarSystem("GaussianClassifie
 GaussianClassifier::GaussianClassifier(const GaussianClassifier& a):MarSystem(a)
 {
   ctrl_mode_ = getctrl("mrs_string/mode");
-  ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
+  ctrl_nClasses_ = getctrl("mrs_natural/nClasses");
   ctrl_means_ = getctrl("mrs_realvec/means");
   ctrl_covars_ = getctrl("mrs_realvec/covars");
   
@@ -54,21 +54,19 @@ void
 GaussianClassifier::addControls()
 {
   addctrl("mrs_string/mode", "train", ctrl_mode_);
-  addctrl("mrs_natural/nLabels", 1, ctrl_nLabels_);
-  setctrlState("mrs_natural/nLabels", true);
+  addctrl("mrs_natural/nClasses", 1, ctrl_nClasses_);
+  setctrlState("mrs_natural/nClasses", true);
   means_.create(1);
   covars_.create(1);
   addctrl("mrs_realvec/means", means_, ctrl_means_);
   addctrl("mrs_realvec/covars", covars_, ctrl_covars_);
-  addctrl("mrs_bool/done", false);
-  setctrlState("mrs_bool/done", true);
 }
 
 
 void
 GaussianClassifier::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+  (void) sender;
   MRSDIAG("GaussianClassifier.cpp - GaussianClassifier:myUpdate");
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
@@ -76,7 +74,7 @@ GaussianClassifier::myUpdate(MarControlPtr sender)
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
   mrs_natural inObservations = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
-  mrs_natural nlabels = getctrl("mrs_natural/nLabels")->to<mrs_natural>();
+  mrs_natural nlabels = getctrl("mrs_natural/nClasses")->to<mrs_natural>();
 
   mrs_natural mrows = (getctrl("mrs_realvec/means")->to<mrs_realvec>()).getRows();
   mrs_natural mcols = (getctrl("mrs_realvec/means")->to<mrs_realvec>()).getCols();
@@ -111,10 +109,10 @@ GaussianClassifier::myUpdate(MarControlPtr sender)
 void 
 GaussianClassifier::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
+
   mrs_real v;
   string mode = ctrl_mode_->to<string>();
-  mrs_natural nlabels = ctrl_nLabels_->to<mrs_natural>();
+  mrs_natural nlabels = ctrl_nClasses_->to<mrs_natural>();
   
   mrs_natural l;
   mrs_natural prediction = 0;
@@ -209,7 +207,9 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 		}
 	    }
 	  
+	  cout << "prediction = " << prediction << endl;
 	  out(0,t) = (mrs_real)prediction;
+
 	  out(1,t) = (mrs_real)label;
 	}
     }

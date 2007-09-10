@@ -260,12 +260,13 @@ libmarsyas_a_SOURCES    = \
 			  $(top_srcdir)/src/marsyas/PeakViewSink.cpp \
 			  $(top_srcdir)/src/marsyas/PeakClusterSelect.cpp \
 			  $(top_srcdir)/src/marsyas/OneRClassifier.cpp \
-$(top_srcdir)/src/marsyas/WekaData.cpp \
-$(top_srcdir)/src/marsyas/TranscriberExtract.cpp \
-$(top_srcdir)/src/marsyas/Transcriber.cpp \
-$(top_srcdir)/src/marsyas/PhiSEMSource.cpp \
-$(top_srcdir)/src/marsyas/PhiSEMFilter.cpp \
-$(top_srcdir)/src/marsyas/SVMClassifier.cpp \
-	$(top_srcdir)/src/marsyas/Gain.cpp
+			  $(top_srcdir)/src/marsyas/WekaData.cpp \
+			  $(top_srcdir)/src/marsyas/TranscriberExtract.cpp \
+			  $(top_srcdir)/src/marsyas/Transcriber.cpp \
+			  $(top_srcdir)/src/marsyas/PhiSEMSource.cpp \
+			  $(top_srcdir)/src/marsyas/PhiSEMFilter.cpp \
+			$(top_srcdir)/src/marsyas/SVMClassifier.cpp \
+			$(top_srcdir)/src/marsyas/Classifier.cpp \
+			$(top_srcdir)/src/marsyas/Gain.cpp
 # please leave Gain.cpp at the end like this; it make scripts happy.
 

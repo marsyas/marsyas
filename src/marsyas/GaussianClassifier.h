@@ -59,7 +59,7 @@ private:
   realvec covars_;
   realvec labelSizes_;
   MarControlPtr ctrl_mode_;
-  MarControlPtr ctrl_nLabels_;
+  MarControlPtr ctrl_nClasses_;
   MarControlPtr ctrl_done_;
   MarControlPtr ctrl_means_;
   MarControlPtr ctrl_covars_;

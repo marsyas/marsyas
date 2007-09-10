@@ -258,6 +258,7 @@ pkginclude_HEADERS = \
 	PhiSEMFilter.h \
 	MarControlAccessor.h \
 	SVMClassifier.h \
+	Classifier.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 

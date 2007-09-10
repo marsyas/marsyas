@@ -332,6 +332,7 @@ pkginclude_HEADERS = \
 	PhiSEMFilter.h \
 	MarControlAccessor.h \
 	SVMClassifier.h \
+	Classifier.h \
 	Gain.h
 
 subdir = src/marsyas

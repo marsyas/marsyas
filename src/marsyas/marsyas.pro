@@ -333,6 +333,7 @@ HEADERS += \
 	PhiSEMFilter.h \
 	MarControlAccessor.h \
 	SVMClassifier.h \
+	Classifier.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 	 
@@ -557,6 +558,7 @@ SOURCES += \
 	PhiSEMSource.cpp \
 	PhiSEMFilter.cpp \
 	SVMClassifier.cpp \
+	Classifier.cpp \
 	Gain.cpp
 # please leave Gain.cpp at the end like this; it makes scripts happy.
 

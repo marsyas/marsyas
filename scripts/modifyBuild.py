@@ -16,7 +16,7 @@ marsyasBaseDir = os.path.join(marsyasBaseDir+os.sep+'..'+os.sep)
 marsyasBaseDir = os.path.abspath( marsyasBaseDir )
 
 def modify_manager(filename,action):
-	fileToEdit = os.path.join(marsyasBaseDir, 'marsyas', 'MarSystemManager.cpp')
+	fileToEdit = os.path.join(marsyasBaseDir, 'src/marsyas', 'MarSystemManager.cpp')
 	filelines = open( fileToEdit ).readlines()
 	if (action==1):
 		for line in filelines:
@@ -91,7 +91,7 @@ def modify_lib_release_makefile(source_file,action):
 	for line in filelines:
 		if (action==1):
 			if (line[23:31] == 'Gain.cpp'):
-				insertLine = '\t$(top_srcdir)/marsyas/'+source_file+'.cpp \\'
+				insertLine = '\t$(top_srcdir)/src/marsyas/'+source_file+'.cpp \\'
 				print "Adding line 1 of 1 to " + fileToEdit
 				newfile.write(insertLine+'\n')
 			newfile.write(line)
@@ -110,13 +110,13 @@ def process(source_filename, marsystem, action):
 
 	modify_lib_release_makefile(source_filename,action)
 
-	buildfile = os.path.join(marsyasBaseDir, 'marsyas', 'Makefile.am')
+	buildfile = os.path.join(marsyasBaseDir, 'src/marsyas', 'Makefile.am')
 	modify_h_file(source_filename, buildfile, action)
 
-	buildfile = os.path.join(marsyasBaseDir, 'marsyas', 'marsyas.pro')
+	buildfile = os.path.join(marsyasBaseDir, 'src/marsyas', 'marsyas.pro')
 	modify_h_file(source_filename, buildfile, action)
 
-	buildfile = os.path.join(marsyasBaseDir, 'marsyas', 'marsyas.pro')
+	buildfile = os.path.join(marsyasBaseDir, 'src/marsyas', 'marsyas.pro')
 	modify_cpp_file(source_filename, buildfile, action)
 
 	print "All done; please renerate autools with:"

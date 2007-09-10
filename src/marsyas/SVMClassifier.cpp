@@ -91,7 +91,6 @@ SVMClassifier::myProcess(realvec& in, realvec& out)
       if (prev_mode_ == "predict")
 	{
 	  mrs_natural nAttributes = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
-	  cout << "nAttributes = " << nAttributes << endl;
 	  instances_.Create(nAttributes);
 	}
       instances_.Append(in);
