@@ -62,7 +62,7 @@ WaveletBands::addControls()
 void
 WaveletBands::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+  (void) sender;
   
   MRSDIAG("WaveletBands.cpp - WaveletBands:myUpdate");
   mrs_natural nBands = getctrl("mrs_natural/nBands")->to<mrs_natural>();
@@ -80,6 +80,12 @@ WaveletBands::myUpdate(MarControlPtr sender)
   iwvpt_->updctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
   iwvpt_->updctrl("mrs_real/israte", getctrl("mrs_real/israte"));
 
+  cout << "Wavelet::myUpdate inObservations = " << 
+    getctrl("mrs_natural/inObservations")->to<mrs_natural>() << endl;
+
+  cout << "Wavelet::myUpdate inSamples = " << 
+    getctrl("mrs_natural/inSamples")->to<mrs_natural>() << endl;
+  
 
   band_.create(getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
 	       getctrl("mrs_natural/inSamples")->to<mrs_natural>());
@@ -107,6 +113,8 @@ WaveletBands::myProcess(realvec& in, realvec& out)
       level = 7 + o;
       hlevel = base << level;
       llevel = base << (level -1);
+
+
       band_.setval(hlevel, inSamples_, 0.0);
       band_.setval(0, llevel, 0.0);
       

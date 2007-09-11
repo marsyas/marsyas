@@ -1236,9 +1236,9 @@ void bextract_train(vector<Collection> cls,
 
 
       if (classifierName == "GS")
-	featureNetwork->updctrl("GaussianClassifier/gaussian/mrs_natural/nLabels", (mrs_natural)cls.size());
+	featureNetwork->updctrl("GaussianClassifier/gaussian/mrs_natural/nClasses", (mrs_natural)cls.size());
       else if (classifierName == "ZeroR")
-	featureNetwork->updctrl("ZeroRClassifier/zeror/mrs_natural/nLabels", (mrs_natural)cls.size());
+	featureNetwork->updctrl("ZeroRClassifier/zeror/mrs_natural/nClasses", (mrs_natural)cls.size());
       else if (classifierName == "KNN")
 	featureNetwork->updctrl("KNNClassifier/knn/mrs_natural/nLabels", (mrs_natural)cls.size());
 
@@ -1305,9 +1305,9 @@ void bextract_train(vector<Collection> cls,
 	  
 
 	  if (classifierName == "GS")
-	    featureNetwork->updctrl("GaussianClassifier/gaussian/mrs_natural/nLabels", nLabels);
+	    featureNetwork->updctrl("GaussianClassifier/gaussian/mrs_natural/nClasses", nLabels);
 	  else if (classifierName == "ZeroR")
-	    featureNetwork->updctrl("ZeroRClassifier/zeror/mrs_natural/nLabels", nLabels);
+	    featureNetwork->updctrl("ZeroRClassifier/zeror/mrs_natural/nClasses", nLabels);
 	  else if (classifierName == "KNN")
 	    featureNetwork->updctrl("KNNClassifier/knn/mrs_natural/nLabels", nLabels);
 	  
@@ -1670,9 +1670,9 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
 
   // update controls II 
   if (classifierName == "GS")
-    featureNetwork->updctrl("GaussianClassifier/gaussian/mrs_natural/nLabels", (mrs_natural)cls.size());
+    featureNetwork->updctrl("GaussianClassifier/gaussian/mrs_natural/nClasses", (mrs_natural)cls.size());
   else if (classifierName == "ZeroR")
-    featureNetwork->updctrl("ZeroRClassifier/zeror/mrs_natural/nLabels", (mrs_natural)cls.size());
+    featureNetwork->updctrl("ZeroRClassifier/zeror/mrs_natural/nClasses", (mrs_natural)cls.size());
   else if (classifierName == "KNN")
     featureNetwork->updctrl("KNNClassifier/knn/mrs_natural/nLabels", (mrs_natural)cls.size());
   else if (classifierName == "SMO")
@@ -1962,7 +1962,7 @@ void bextract(vector<string> soundfiles, mrs_natural label,
   else 
     spectralShape->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);
 
-  spectralShape->updctrl("GaussianClassifier/gsc/mrs_natural/nLabels", (mrs_natural)soundfiles.size());
+  spectralShape->updctrl("GaussianClassifier/gsc/mrs_natural/nClasses", (mrs_natural)soundfiles.size());
 
   spectralShape->linkctrl("mrs_bool/notEmpty", 
 			  "SoundFileSource/src/mrs_bool/notEmpty");
@@ -2215,7 +2215,7 @@ main(int argc, const char **argv)
     {
       bool withBeatFeatures = false;
       string extrName;
-
+ 
       //BEAT Extractor
       if (extractorName.substr(extractorName.length()-4, extractorName.length()) == "BEAT")
 	{
@@ -2227,7 +2227,7 @@ main(int argc, const char **argv)
 
 
       cout << "extrName = " << extrName << endl;
-      
+     
 
       if(featExtractors.find(extrName)== featExtractors.end())
 	{
@@ -2262,6 +2262,15 @@ main(int argc, const char **argv)
   else if (extractorStr == "STEREOSPSMFCC")
     {
       bextract_trainStereoSPSMFCC(cls, classNames, wekafname, memSize);            
+    }
+  else if (extractorStr == "BEAT") 
+    {
+      bool withBeatFeatures = true;
+      string extrName;
+      extrName = extractorStr;
+      cout << "extrName = " << extrName << endl;
+      bextract_trainAccumulator(cls, i, pluginName, classNames, wekafname, filefeaturename, memSize, extrName,
+				withBeatFeatures);
     }
 
   //NORMAL Extractor
