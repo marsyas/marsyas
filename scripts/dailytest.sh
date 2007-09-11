@@ -71,7 +71,6 @@ fi
 ### setup clean dir
 mkdir -p $matDir
 cd $baseDir
-rm -rf $buildDir
 # play games because make dist marks stuff read-only
 chmod -R u+w $buildDir
 rm -rf $buildDir
