@@ -80,11 +80,6 @@ WaveletBands::myUpdate(MarControlPtr sender)
   iwvpt_->updctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
   iwvpt_->updctrl("mrs_real/israte", getctrl("mrs_real/israte"));
 
-  cout << "Wavelet::myUpdate inObservations = " << 
-    getctrl("mrs_natural/inObservations")->to<mrs_natural>() << endl;
-
-  cout << "Wavelet::myUpdate inSamples = " << 
-    getctrl("mrs_natural/inSamples")->to<mrs_natural>() << endl;
   
 
   band_.create(getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
