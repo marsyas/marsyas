@@ -159,6 +159,7 @@
 #include "PhiSEMFilter.h"
 #include "SVMClassifier.h"
 #include "Classifier.h"
+#include "Spectrum2Chroma.h"
 #include "Gain.h"
 // please leave Gain at the end; it makes scripts happy.
 
@@ -305,6 +306,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PhiSEMFilter", new PhiSEMFilter("phisemfilterpr"));
 	registerPrototype("SVMClassifier", new SVMClassifier("svmclassifierpr"));
 	registerPrototype("Classifier", new Classifier("classifierpr"));
+	registerPrototype("Spectrum2Chroma", new Spectrum2Chroma("spectrum2chromapr"));
 	registerPrototype("Gain", new Gain("gp"));
 	// Please leave Gain at the end; it makes scripts happy.
 

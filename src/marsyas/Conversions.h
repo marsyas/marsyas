@@ -45,6 +45,7 @@ mrs_natural time2usecs(std::string time);
 mrs_real amplitude2dB(mrs_real a);
 mrs_real dB2amplitude(mrs_real a);
 
+mrs_real hertz2octs(mrs_real f, mrs_real middleAfreq);
 mrs_real hertz2bark(mrs_real f);
 mrs_real bark2hertz(mrs_real f);
 

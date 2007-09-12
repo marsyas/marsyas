@@ -334,6 +334,7 @@ HEADERS += \
 	MarControlAccessor.h \
 	SVMClassifier.h \
 	Classifier.h \
+	Spectrum2Chroma.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 	 
@@ -559,6 +560,7 @@ SOURCES += \
 	PhiSEMFilter.cpp \
 	SVMClassifier.cpp \
 	Classifier.cpp \
+	Spectrum2Chroma.cpp \
 	Gain.cpp
 # please leave Gain.cpp at the end like this; it makes scripts happy.
 

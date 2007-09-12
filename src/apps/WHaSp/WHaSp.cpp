@@ -247,10 +247,20 @@ HWPSanalyse(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 					//ctrl_harmonize_->setValue(1, 1.0);
 					//ctrl_harmonize_->setValue(2, 0.1);
 					if (harmonizeData_.getRows() > nbFrames_)
-						ctrl_harmonize_->setValue(i, harmonizeData_(nbFrames_, i));
+					{
+						//ctrl_harmonize_->setValue(i, harmonizeData_(nbFrames_, i));
+						ctrl_harmonize_= pvseries->getctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOscBank/pso/mrs_realvec/harmonize");
+						MarControlAccessor acc(ctrl_harmonize_);
+						realvec& harmonize = acc.to<mrs_realvec>();
+						harmonize(i) = harmonizeData_(nbFrames_, i);
+					}
 					else 
 					{
-						ctrl_harmonize_->setValue(i, 0);
+						//ctrl_harmonize_->setValue(i, 0);
+						ctrl_harmonize_= pvseries->getctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOscBank/pso/mrs_realvec/harmonize");
+						MarControlAccessor acc(ctrl_harmonize_);
+						realvec& harmonize = acc.to<mrs_realvec>();
+						harmonize(i) = 0;
 						cout << "Harmonize file too short" << endl;
 					}
 			}
