@@ -337,6 +337,7 @@ libmarsyas_a_SOURCES = \
 			  $(top_srcdir)/src/marsyas/PhiSEMFilter.cpp \
 			$(top_srcdir)/src/marsyas/SVMClassifier.cpp \
 			$(top_srcdir)/src/marsyas/Classifier.cpp \
+			$(top_srcdir)/src/marsyas/Spectrum2Chroma.cpp \
 			$(top_srcdir)/src/marsyas/Gain.cpp
 
 subdir = lib/release
@@ -433,7 +434,7 @@ am_libmarsyas_a_OBJECTS = svm.$(OBJEXT) RtAudio.$(OBJEXT) \
 	WekaData.$(OBJEXT) TranscriberExtract.$(OBJEXT) \
 	Transcriber.$(OBJEXT) PhiSEMSource.$(OBJEXT) \
 	PhiSEMFilter.$(OBJEXT) SVMClassifier.$(OBJEXT) \
-	Classifier.$(OBJEXT) Gain.$(OBJEXT)
+	Classifier.$(OBJEXT) Spectrum2Chroma.$(OBJEXT) Gain.$(OBJEXT)
 libmarsyas_a_OBJECTS = $(am_libmarsyas_a_OBJECTS)
 libmarsyasqt_a_AR = $(AR) cru
 libmarsyasqt_a_LIBADD =
@@ -568,6 +569,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/SoundFileSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SoundFileSource2.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SpectralSNR.Po ./$(DEPDIR)/Spectrum.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Spectrum2Chroma.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/StandardDeviation.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/StereoSpectrum.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/StereoSpectrumFeatures.Po \
@@ -899,6 +901,7 @@ PhiSEMSource.$(OBJEXT): $(top_srcdir)/src/marsyas/PhiSEMSource.cpp
 PhiSEMFilter.$(OBJEXT): $(top_srcdir)/src/marsyas/PhiSEMFilter.cpp
 SVMClassifier.$(OBJEXT): $(top_srcdir)/src/marsyas/SVMClassifier.cpp
 Classifier.$(OBJEXT): $(top_srcdir)/src/marsyas/Classifier.cpp
+Spectrum2Chroma.$(OBJEXT): $(top_srcdir)/src/marsyas/Spectrum2Chroma.cpp
 Gain.$(OBJEXT): $(top_srcdir)/src/marsyas/Gain.cpp
 libmarsyas.a: $(libmarsyas_a_OBJECTS) $(libmarsyas_a_DEPENDENCIES) 
 	-rm -f libmarsyas.a
@@ -1094,6 +1097,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SoundFileSource2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpectralSNR.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Spectrum.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Spectrum2Chroma.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StandardDeviation.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StereoSpectrum.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StereoSpectrumFeatures.Po@am__quote@
@@ -3778,6 +3782,18 @@ Classifier.obj: $(top_srcdir)/src/marsyas/Classifier.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/Classifier.Po' tmpdepfile='$(DEPDIR)/Classifier.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Classifier.obj `cygpath -w $(top_srcdir)/src/marsyas/Classifier.cpp`
+
+Spectrum2Chroma.o: $(top_srcdir)/src/marsyas/Spectrum2Chroma.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/Spectrum2Chroma.cpp' object='Spectrum2Chroma.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/Spectrum2Chroma.Po' tmpdepfile='$(DEPDIR)/Spectrum2Chroma.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Spectrum2Chroma.o `test -f '$(top_srcdir)/src/marsyas/Spectrum2Chroma.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/marsyas/Spectrum2Chroma.cpp
+
+Spectrum2Chroma.obj: $(top_srcdir)/src/marsyas/Spectrum2Chroma.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/Spectrum2Chroma.cpp' object='Spectrum2Chroma.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/Spectrum2Chroma.Po' tmpdepfile='$(DEPDIR)/Spectrum2Chroma.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Spectrum2Chroma.obj `cygpath -w $(top_srcdir)/src/marsyas/Spectrum2Chroma.cpp`
 
 Gain.o: $(top_srcdir)/src/marsyas/Gain.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/Gain.cpp' object='Gain.o' libtool=no @AMDEPBACKSLASH@
