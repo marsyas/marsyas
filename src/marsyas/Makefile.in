@@ -333,6 +333,7 @@ pkginclude_HEADERS = \
 	MarControlAccessor.h \
 	SVMClassifier.h \
 	Classifier.h \
+	Spectrum2Chroma.h \
 	Gain.h
 
 subdir = src/marsyas
