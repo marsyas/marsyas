@@ -111,7 +111,7 @@ MarSystem* createBEATextrator()
   // extractor->addMarSystem(mng.create("PlotSink", "psink"));
   // extractor->addMarSystem(mng.create("Reassign", "reassign"));
   extractor->addMarSystem(mng.create("BeatHistoFeatures", "bhf"));
-	
+  extractor->linkctrl("mrs_natural/WindowSize", "ShiftInput/si/mrs_natural/WindowSize");
   return extractor;
 }
 
@@ -690,7 +690,6 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 			       mrs_natural memSize, string extractorStr,
 			       bool withBeatFeatures)
 {
-  cout << "bextractTrainAccumulator::extractorStr = " << extractorStr << endl;
   if (withBeatFeatures)
     cout << "with beat features" << endl;
 
@@ -828,11 +827,22 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 
   if (withBeatFeatures)
     {
-      fullres.create(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>() + 8, 
-		     total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
-      afullres.create(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>() + 8 + 1, 
-		      total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
-      annotator->updctrl("mrs_natural/inObservations", total->getctrl("mrs_natural/onObservations")->to<mrs_natural>()+8);      
+      
+      if (extractorStr == "BEAT") 
+	{
+	  fullres.create(8, 1);
+	  afullres.create(8+1, 1);
+	  annotator->updctrl("mrs_natural/inObservations", 8);      
+	  
+	}
+      else 
+	{
+	  fullres.create(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>() + 8, 
+			 total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+	  afullres.create(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>() + 8 + 1, 
+			  total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+	  annotator->updctrl("mrs_natural/inObservations", total->getctrl("mrs_natural/onObservations")->to<mrs_natural>()+8);      
+	}
     }
   else
     {
@@ -876,8 +886,16 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 
   if (withBeatFeatures) 
     {
-      total1 = createBEATextrator();
-      annotator->updctrl("mrs_string/inObsNames", total->getctrl("mrs_string/onObsNames")->to<mrs_string>() + total1->getctrl("mrs_string/onObsNames")->to<mrs_string>());
+      if (extractorStr == "BEAT")
+	{
+	  total1 = createBEATextrator();
+	  annotator->updctrl("mrs_string/inObsNames", total1->getctrl("mrs_string/onObsNames")->to<mrs_string>());
+	}
+      else
+	{
+	  total1 = createBEATextrator();
+	  annotator->updctrl("mrs_string/inObsNames", total->getctrl("mrs_string/onObsNames")->to<mrs_string>() + total1->getctrl("mrs_string/onObsNames")->to<mrs_string>());
+	}
     }
   else
     {
@@ -942,16 +960,25 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 	      // total->updctrl("WekaSink/wsink/mrs_natural/label", cj);
 	      annotator->updctrl("mrs_natural/label", cj);
 	      // wsink->updctrl("mrs_natural/label", cj);
-	      total->process(in, timbreres);
-	      
-	      // concatenate timbre and beat vectors 
-	      for (int t=0; t < timbreSize; t++)
-		fullres(t,0) = timbreres(t,0);
+	      if (extractorStr != "BEAT") 
+		{
+		  total->process(in, timbreres);
+		  for (int t=0; t < timbreSize; t++)
+		    fullres(t,0) = timbreres(t,0);
+		}
 	      
 	      if (withBeatFeatures)
 		{
-		  for (int t=0; t < beatSize; t++)
-		    fullres(t+timbreSize, 0) = beatfeatures(t,0);
+		  if (extractorStr == "BEAT")
+		    {
+		      for (int t=0; t < beatSize; t++)
+			fullres(t, 0) = beatfeatures(t,0);
+		    }
+		  else
+		    {
+		      for (int t=0; t < beatSize; t++)
+			fullres(t+timbreSize, 0) = beatfeatures(t,0);
+		    }
 		}
 	      annotator->process(fullres, afullres);
 	      if (wekafname != EMPTYSTRING) 
@@ -1004,16 +1031,28 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 	  wc = 0;  	  
 	  samplesPlayed = 0;
 	  annotator->updctrl("mrs_natural/label", l.labelNum(l.labelEntry(i)));
-	  total->process(in, timbreres);
-	  
-	  // concatenate timbre and beat vectors 
-	  for (int t=0; t < timbreSize; t++)
-	    fullres(t,0) = timbreres(t,0);
-	  
+
+
+	  if (extractorStr != "BEAT")
+	    {
+	      total->process(in, timbreres);
+	      
+	      // concatenate timbre and beat vectors 
+	      for (int t=0; t < timbreSize; t++)
+		fullres(t,0) = timbreres(t,0);
+	    }
 	  if (withBeatFeatures)
 	    {
-	      for (int t=0; t < beatSize; t++)
-		fullres(t+timbreSize, 0) = beatfeatures(t,0);
+	      if (extractorStr == "BEAT") 
+		{
+		  for (int t=0; t < beatSize; t++)
+		    fullres(t, 0) = beatfeatures(t,0);
+		}
+	      else 
+		{
+		  for (int t=0; t < beatSize; t++)
+		    fullres(t+timbreSize, 0) = beatfeatures(t,0);
+		}
 	    }
 	  annotator->process(fullres, afullres);
 	  if (wekafname != EMPTYSTRING) 
@@ -1049,16 +1088,27 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 	  wc = 0;  	  
 	  samplesPlayed = 0;
 	  annotator->updctrl("mrs_natural/label", 0);
-	  total->process(in, timbreres);
-	  
-	  // concatenate timbre and beat vectors 
-	  for (int t=0; t < timbreSize; t++)
-	    fullres(t,0) = timbreres(t,0);
-	  
+
+	  if (extractorStr != "BEAT") 
+	    {
+	      total->process(in, timbreres);
+	      
+	      // concatenate timbre and beat vectors 
+	      for (int t=0; t < timbreSize; t++)
+		fullres(t,0) = timbreres(t,0);
+	    }
 	  if (withBeatFeatures)
 	    {
-	      for (int t=0; t < beatSize; t++)
-		fullres(t+timbreSize, 0) = beatfeatures(t,0);
+	      if (extractorStr == "BEAT") 
+		{
+		  for (int t=0; t < beatSize; t++)
+		    fullres(t, 0) = beatfeatures(t,0);
+		}
+	      else 
+		{
+		  for (int t=0; t < beatSize; t++)
+		    fullres(t+timbreSize, 0) = beatfeatures(t,0);
+		}
 	    }
 	  annotator->process(fullres, afullres);
 	  if (wekafname != EMPTYSTRING) 
