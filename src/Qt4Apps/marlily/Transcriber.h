@@ -27,9 +27,9 @@ public:
 	//@{
 	static mrs_real findMedianWithoutZeros(const mrs_natural start,
 	                                       const mrs_natural length,
-	                                       const realvec* array);
-	static realvec* findValleys(const realvec* list);
-	static mrs_real findNextPeakValue(const realvec* list,
+	                                       const realvec& array);
+	static realvec findValleys(const realvec& list);
+	static mrs_real findNextPeakValue(const realvec& list,
 	                                  const mrs_natural start);
 	//@}
 
@@ -44,18 +44,18 @@ public:
 
 	/** \name Amplitude stuff */
 	//@{
-	static void ampSegment(realvec* ampList, realvec* boundaries);
-	static void findAmpBoundaries(realvec* ampList, realvec*
-	                              &boundaries);
+	static void ampSegment(const realvec& ampList, realvec& boundaries);
+	static void findAmpBoundaries(const realvec& ampList, realvec&
+	                              boundaries);
 	//@}
 
 
 	/** \name Note stuff */
 	//@{
-	static realvec* getNotes(const realvec* pitchList, const realvec*
-	                         ampList, const realvec* boundaries);
-	static void getRelativeDurations(const realvec *boundaries,
-	                                 realvec* &durations);
+	static realvec getNotes(const realvec& pitchList, const realvec&
+	                         ampList, const realvec& boundaries);
+	static void getRelativeDurations(const realvec& boundaries,
+	                                 realvec &durations);
 	//@}
 
 
