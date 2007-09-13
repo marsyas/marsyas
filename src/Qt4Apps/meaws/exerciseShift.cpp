@@ -14,12 +14,12 @@ ExerciseShift::ExerciseShift() {
 
 ExerciseShift::~ExerciseShift() {
 	if (instructionImageLabel != NULL) {
-		instructionArea->removeWidget(instructionImageLabel);
+		instructionLayout->removeWidget(instructionImageLabel);
 		delete instructionImageLabel;
 		instructionImageLabel = NULL;
 	}
     if (displayPitches != NULL) {
-        resultArea->removeWidget(displayPitches);
+        resultLayout->removeWidget(displayPitches);
         delete displayPitches;
         displayPitches = NULL;
     }
@@ -35,7 +35,7 @@ void ExerciseShift::setupDisplay() {
     displayPitches->setBackgroundColor(QColor(255,255,255));
     displayPitches->setPixelWidth(2);
 
-	resultArea->addWidget(displayPitches);
+	resultLayout->addWidget(displayPitches);
 }
 
 QString ExerciseShift::exercisesDir() {

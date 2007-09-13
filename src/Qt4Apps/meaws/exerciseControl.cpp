@@ -22,17 +22,17 @@ ExerciseControl::ExerciseControl() {
 
 ExerciseControl::~ExerciseControl() {
 	if (instructionImageLabel != NULL) {
-		instructionArea->removeWidget(instructionImageLabel);
+		instructionLayout->removeWidget(instructionImageLabel);
 		delete (instructionImageLabel);
 		instructionImageLabel = NULL;
 	}
 	if (displayPitches != NULL) {
-		resultArea->removeWidget(displayPitches);
+		resultLayout->removeWidget(displayPitches);
 		delete displayPitches;
 		displayPitches = NULL;
 	}
 	if (displayAmplitudes != NULL) {
-		resultArea->removeWidget(displayAmplitudes);
+		resultLayout->removeWidget(displayAmplitudes);
 		delete displayAmplitudes;
 		displayAmplitudes = NULL;
 	}
@@ -56,13 +56,15 @@ void ExerciseControl::setupDisplay() {
 	displayAmplitude = new QLabel;
 	displayPitches->setText("Display Pitches here");
 	displayAmplitude->setText("Display Ampitudes here");
-	resultArea->addWidget(displayPitches,0,0);
-	resultArea->addWidget(displayAmplitude,0,1);
+	resultLayout->addWidget(displayPitches,0,0);
+	resultLayout->addWidget(displayAmplitude,0,1);
 	*/
 	//QHBoxLayout *displayLayout = new QHBoxLayout;
-	resultArea->addWidget(displayPitches,0,0);
-	resultArea->addWidget(displayAmplitudes,0,1);
-	//resultArea->addLayout(displayLayout);
+	resultLayout = new QHBoxLayout;
+	resultLayout->addWidget(displayPitches);
+	resultLayout->addWidget(displayAmplitudes);
+	resultArea->setLayout(resultLayout);
+	//resultLayout->addLayout(displayLayout);
 
 	//	resultsDisplay = new MeawsDisplay();
 	//	mainLayout->addLayout(resultsDisplay);
@@ -73,8 +75,9 @@ void ExerciseControl::open(QString exerciseFilename) {
 	QString noteImageFilename;
 	QPixmap image;
 
+	instructionLayout = new QHBoxLayout;
 	notes = new QButtonGroup;
-	instructionArea->setHorizontalSpacing(0);
+	instructionLayout->setSpacing(0);
 	for (int i=0; i<5; i++) {
 		noteButton[i] = new QToolButton;
 		noteImageFilename = noteImageBaseFilename+"-"+QString::number(i+1)+".png";
@@ -88,10 +91,12 @@ void ExerciseControl::open(QString exerciseFilename) {
 		noteButton[i]->setMaximumHeight(120);
 		notes->addButton(noteButton[i]);
 		notes->setId( noteButton[i],i);
-		instructionArea->addWidget(noteButton[i],0,i,Qt::AlignLeft|Qt::AlignTop);
+		instructionLayout->addWidget(noteButton[i]);
+//,0,i,Qt::AlignLeft|Qt::AlignTop);
+//		instructionLayout->addWidget(noteButton[i],0,i,Qt::AlignLeft|Qt::AlignTop);
 	}
 
-	//	instructionArea->addWidget(notes);
+	//	instructionLayout->addWidget(notes);
 	connect(notes, SIGNAL(buttonClicked(int)), this, SLOT(setNote(int)));
 }
 //zz

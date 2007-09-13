@@ -1,5 +1,6 @@
 #include <iostream>
 using namespace std;
+#include "QtMarPlot.h"
 
 #include "exerciseIntonation.h"
 #include <QFile>
@@ -13,12 +14,12 @@ ExerciseIntonation::ExerciseIntonation() {
 
 ExerciseIntonation::~ExerciseIntonation() {
 	if (instructionImageLabel != NULL) {
-		instructionArea->removeWidget(instructionImageLabel);
+		instructionLayout->removeWidget(instructionImageLabel);
 		delete instructionImageLabel;
 		instructionImageLabel = NULL;
 	}
 	if (resultLabel != NULL) {
-		resultArea->removeWidget(resultLabel);
+		resultLayout->removeWidget(resultLabel);
 		delete resultLabel;
 		resultLabel = NULL;
 	}
@@ -32,7 +33,12 @@ void ExerciseIntonation::setupDisplay() {
 	resultLabel = new QLabel;
 	resultLabel->setText("Intonation Exercise");
 
-	resultArea->addWidget(resultLabel);
+	resultLayout = new QVBoxLayout;
+//	resultArea->addWidget(resultLabel,0,0);
+	QtMarPlot *foo = new QtMarPlot();
+	foo->setBackgroundColor(QColor(255,0,0));
+	resultLayout->addWidget(foo);
+	resultArea->setLayout(resultLayout);
 }
 
 QString ExerciseIntonation::exercisesDir() {

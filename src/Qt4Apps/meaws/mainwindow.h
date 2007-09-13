@@ -59,8 +59,8 @@ private:
 // main interface objects
 	QFrame* centralFrame;
 	QVBoxLayout *mainLayout;
-	QGridLayout *instructionArea;
-	QGridLayout *resultArea;
+	QFrame *instructionArea;
+	QFrame *resultArea;
 
 // menu and toolbar objects
 	QMenu *fileMenu;

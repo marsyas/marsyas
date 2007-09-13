@@ -9,17 +9,28 @@ Exercise::Exercise() {
 	instructionImageLabel = NULL;
 }
 
-void Exercise::setArea(QGridLayout *getInstructionArea, QGridLayout *getResultArea) {
+void Exercise::setArea(QFrame *getInstructionArea, QFrame *getResultArea) {
 	instructionArea = getInstructionArea;
 	resultArea = getResultArea;
 }
 
 void Exercise::open(QString exerciseFilename) {
 	instructionImageLabel = new QLabel;
-	instructionImageLabel->setPixmap(QPixmap::fromImage(QImage(exerciseFilename)));
-	instructionImageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+	QPixmap *instructPixmap = new QPixmap(exerciseFilename);
+	instructionImageLabel->setPixmap(*instructPixmap);
 	instructionImageLabel->setScaledContents(false);
-	instructionImageLabel->setMaximumHeight(120);
-	instructionArea->addWidget(instructionImageLabel,0,0,Qt::AlignTop);
+	instructionImageLabel->setMaximumHeight(instructPixmap->height());
+	instructionImageLabel->setMinimumHeight(instructPixmap->height());
+	instructionLayout = new QVBoxLayout;
+	instructionLayout->addWidget(instructionImageLabel);
+	instructionArea->setLayout(instructionLayout);
+	int ml, mt, mr, mb;
+	instructionLayout->getContentsMargins(&ml, &mt, &mr, &mb);
+	mt = 0;
+	mb = 0;
+	instructionLayout->setContentsMargins(ml, mt, mr, mb);
+
+	instructionArea->setMaximumHeight(instructPixmap->height()+mt+mb);
+	instructionArea->setMinimumHeight(instructPixmap->height()+mt+mb);
 }
 

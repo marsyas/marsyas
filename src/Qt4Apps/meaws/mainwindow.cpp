@@ -63,15 +63,16 @@ void MainWindow::createMain() {
 	QFrame* centralFrame = new QFrame;
 	setCentralWidget(centralFrame);
 
-	instructionArea = new QGridLayout;
-	resultArea = new QGridLayout;
+	instructionArea = new QFrame;
+	resultArea = new QFrame;
 	exercise->setArea(instructionArea, resultArea);
 
 	mainLayout = new QVBoxLayout;
-	mainLayout->addLayout(instructionArea);
-	mainLayout->addLayout(resultArea);
+	mainLayout->addWidget(instructionArea);
+	mainLayout->addWidget(resultArea);
 	centralFrame->setLayout(mainLayout);
 }
+//zz
 
 void MainWindow::createMenus()
 {
@@ -287,7 +288,6 @@ void MainWindow::enableActions(int state) {
 		tempoToolBar->setEnabled(true);
 		testingMenu ->setEnabled(true);
 
-//zzz
 /*
 		metro = new Metro(visualMetroBeat, this, audioFile);
 		connect(toggleAttemptAct, SIGNAL(triggered()), this, SLOT(toggleExercise()));

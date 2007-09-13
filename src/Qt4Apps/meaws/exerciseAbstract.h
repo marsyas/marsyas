@@ -15,7 +15,7 @@ class Exercise : public QObject {
 
 public:
 	Exercise();
-	void setArea(QGridLayout *getInstructionArea, QGridLayout *getResultArea);
+	void setArea(QFrame *getInstructionArea, QFrame *getResultArea);
 	virtual void setupDisplay() = 0;
 	virtual QString exercisesDir() = 0;
 	virtual int getType() = 0;
@@ -27,9 +27,11 @@ signals:
 	void analysisDone();
 
 protected:
-    QGridLayout *instructionArea;
-    QGridLayout *resultArea;
+    QFrame *instructionArea;
+    QFrame *resultArea;
 	QLabel *instructionImageLabel;
+	QLayout *instructionLayout;
+	QLayout *resultLayout;
 };
 #endif
 

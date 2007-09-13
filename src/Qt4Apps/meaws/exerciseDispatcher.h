@@ -25,7 +25,7 @@ public:
 public slots:
 	void open();
 	void close();
-	void setArea(QGridLayout *getInstructionArea, QGridLayout *getResultArea);
+	void setArea(QFrame *getInstructionArea, QFrame *getResultArea);
 	void toggleAttempt();
 	void setAttempt(bool running);
 	void openAttempt();
@@ -43,8 +43,8 @@ private:
 	bool chooseEvaluation();
 
 	QString exerciseName;
-	QGridLayout *instructionArea;
-	QGridLayout *resultArea;
+	QFrame *instructionArea;
+	QFrame *resultArea;
 
 	Exercise *evaluation;
 	bool attemptRunningBool;

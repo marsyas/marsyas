@@ -14,7 +14,7 @@ ExerciseDispatcher::~ExerciseDispatcher() {
 	close();
 }
 
-void ExerciseDispatcher::setArea(QGridLayout *getInstructionArea, QGridLayout *getResultArea){
+void ExerciseDispatcher::setArea(QFrame *getInstructionArea, QFrame *getResultArea){
 	instructionArea = getInstructionArea;
 	resultArea = getResultArea;
 }
