@@ -39,13 +39,17 @@ multiplying each sample with a real number.
 class Spectrum2Chroma: public MarSystem
 {
 private:
-	mrs_natural pnumbins_;
-	mrs_real srate_;
 	realvec chromaMap_;
 
-	MarControlPtr ctrl_numBins_;
+	MarControlPtr ctrl_nbins_;
+	MarControlPtr ctrl_middleAfreq_;
 	MarControlPtr ctrl_weightCenterFreq_;
 	MarControlPtr ctrl_weightStdDev_;
+
+	mrs_natural pnbins_;
+	mrs_real pmiddleAfreq_;
+	mrs_real pweightCenterFreq_;
+	mrs_real pweightStdDev_;
 
 	void addControls();
 	void myUpdate(MarControlPtr sender);

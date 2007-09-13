@@ -102,7 +102,7 @@ PowerSpectrum::myProcess(realvec& in, realvec& out)
 				re_ = in(0,t);
 				im_ = 0.0;
 			}
-			else if (o == N2_) 
+			else if (o == N2_) //never happens because we are not outputting the due N/2+1 points, but only N/2 points...
 			{
 				re_ = in(1,t);
 				im_ = 0.0;
