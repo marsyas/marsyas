@@ -45,13 +45,13 @@ int ExerciseControl::getType() {
 void ExerciseControl::setupDisplay() {
 	displayPitches = new QtMarPlot();
 	displayPitches->setPlotName("Pitch");
-//	displayPitches->setBackgroundColor(QColor(255,255,255));
-	displayPitches->setBackgroundColor(QColor(0,255,0));
+	displayPitches->setBackgroundColor(QColor(255,255,255));
+//	displayPitches->setBackgroundColor(QColor(0,255,0));
 	displayPitches->setPixelWidth(3);
 	displayAmplitudes = new QtMarPlot();
 	displayAmplitudes->setPlotName("Amplitude");
-//	displayAmplitudes->setBackgroundColor(QColor(255,255,255));
-	displayAmplitudes->setBackgroundColor(QColor(0,0,255));
+	displayAmplitudes->setBackgroundColor(QColor(255,255,255));
+//	displayAmplitudes->setBackgroundColor(QColor(0,0,255));
 	displayAmplitudes->setPixelWidth(3);
 	/*
 	displayPitches = new QLabel;

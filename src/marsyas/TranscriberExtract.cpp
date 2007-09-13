@@ -1,7 +1,5 @@
 #include "TranscriberExtract.h"
-#include <iostream>
 using namespace Marsyas;
-using namespace std;
 
 static MarSystemManager mng;
 

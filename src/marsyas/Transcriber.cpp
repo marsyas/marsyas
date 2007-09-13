@@ -1,6 +1,4 @@
 #include "Transcriber.h"
-#include <iostream>
-using namespace std;
 
 namespace Marsyas
 {
@@ -193,6 +191,15 @@ Transcriber::findPitchBoundaries(const realvec* pitchList)
 	}
 	boundaries->stretch(onsetIndex);
 	return boundaries;
+}
+
+void
+Transcriber::ignoreOctaves(realvec* pitchList)
+{
+	for (mrs_natural i=0; i<pitchList->getSize(); i++)
+	{
+		(*pitchList)(i) = fmod( (*pitchList)(i), 12);
+	}
 }
 
 

@@ -4,6 +4,9 @@
 #include "defs.h"
 #include "exerciseAbstract.h"
 
+
+#include "QtMarPlot.h"
+
 class ExerciseIntonation : public Exercise {
 public:
 	ExerciseIntonation();
@@ -18,6 +21,7 @@ public:
 
 private:
 	QLabel *resultLabel;
+	QtMarPlot *foo;
 
 };
 #endif

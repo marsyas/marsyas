@@ -1,10 +1,10 @@
 #include <iostream>
 using namespace std;
-#include "QtMarPlot.h"
 
 #include "exerciseIntonation.h"
 #include <QFile>
 #include <QTextStream>
+#include "Transcriber.h"
 
 
 
@@ -30,12 +30,13 @@ int ExerciseIntonation::getType() {
 }
 
 void ExerciseIntonation::setupDisplay() {
-	resultLabel = new QLabel;
-	resultLabel->setText("Intonation Exercise");
-
 	resultLayout = new QVBoxLayout;
+
+//	resultLabel = new QLabel;
+//	resultLabel->setText("Intonation Exercise");
 //	resultArea->addWidget(resultLabel,0,0);
-	QtMarPlot *foo = new QtMarPlot();
+
+	foo = new QtMarPlot();
 	foo->setBackgroundColor(QColor(255,0,0));
 	resultLayout->addWidget(foo);
 	resultArea->setLayout(resultLayout);
@@ -56,10 +57,24 @@ QString ExerciseIntonation::getMessage() {
 bool ExerciseIntonation::displayAnalysis(MarBackend *results) {
 	realvec pitches = results->getMidiPitches();
 	realvec amps = results->getAmplitudes();
-	cout<<pitches<<endl;
-	cout<<amps<<endl;
-	// TODO: this is a totally fake demo for the MISTIC talk.
-//	resultLabel->setPixmap(QPixmap::fromImage(QImage(MEAWS_DIR+"data/scale1.preview.png")));
+
+	realvec *bounds = new realvec(2);
+	(*bounds)(0) = 0;
+	(*bounds)(1) = pitches.getSize();
+	Transcriber::ignoreOctaves(&pitches);
+	Transcriber::pitchSegment(&pitches, bounds);
+	realvec *notes;
+	notes = Transcriber::getNotes(&pitches, &amps, bounds);
+	cout<<(*notes);
+
+	realvec *data = new realvec;
+	(*data) = pitches;
+	foo->setData(data);
+	foo->setVertical(0,12);
+	foo->setPlotName("pitches");
+
+//	cout<<pitches<<endl;
+//	cout<<amps<<endl;
 
 
 /*
