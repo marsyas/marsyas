@@ -25,15 +25,18 @@ namespace Marsyas
 {
 /**
 	\class Spectrum2Chroma
-	\ingroup Special
-	\brief Basic example on how to use controls efficiently in MarSystems
+	\ingroup Analysis
+	\brief Convert spectrum magnitude (e.g. output from PowerSpectrum MarSystem) 
+	into a Chroma vector representation.  
 
-	This example is the same as Gain; it scales the output by
-multiplying each sample with a real number.
+	Based in the fft2chromamx.m MATLAB script by Dan Ellis:
+	http://www.ee.columbia.edu/~dpwe/resources/matlab/chroma-ansyn/#1
 
 	Controls:
-	- \b mrs_real/gain [w] : sets the gain multiplier.
-	- \b mrs_bool/dummy [rw] : does nothing.
+	- \b mrs_natural/nbins [w] : sets the number of chroma bins to output (default = 12, i.e. chromatic diatonic)
+	- \b mrs_real/middleAfreq [w] : sets the frequency (in Hz) to be used for the middle A pitch (A4)
+	- \b mrs_real/weightCenterFreq [w] : sets the Gaussian weighting center frequency (in Hz)
+	- \b mrs_real/weightStdDev [w] : sets the Gaussian weighting StdDev (in octaves)
 */
 
 class Spectrum2Chroma: public MarSystem
