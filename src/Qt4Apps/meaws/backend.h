@@ -62,8 +62,8 @@ private:
 
 
 
-	realvec *pitchList;
-	realvec *ampList;
+	realvec pitchList;
+	realvec ampList;
 // pitch stuff
 	realvec pitchOld;
 	realvec pitchMidiList;

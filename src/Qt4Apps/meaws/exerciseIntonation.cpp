@@ -67,16 +67,15 @@ bool ExerciseIntonation::displayAnalysis(MarBackend *results) {
 	realvec *notes;
 	notes = Transcriber::getNotes(&pitches, &amps, bounds);
 	cout<<(*notes);
-
+*/
 	realvec *data = new realvec;
 	(*data) = pitches;
 	foo->setData(data);
-	foo->setVertical(0,12);
+	foo->setVertical(0,80);
 	foo->setPlotName("pitches");
 
 //	cout<<pitches<<endl;
 //	cout<<amps<<endl;
-*/
 
 
 

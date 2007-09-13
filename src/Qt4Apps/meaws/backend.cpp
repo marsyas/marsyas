@@ -14,8 +14,6 @@ MarBackend::MarBackend(int getType) {
 	allNet = NULL;
 	sourceNet = makeSourceNet("");
 
-	pitchList = NULL;
-	ampList = NULL;
 	isEmptyState = false;
 	hasAudio = false;
 
@@ -208,8 +206,7 @@ sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
 			break;
 		case TYPE_INTONATION:
 			pitchList = TranscriberExtract::getPitchesFromRealvecSink(pitchSink, osrate);
-			ampList =
-TranscriberExtract::getAmpsFromRealvecSink(ampSink);
+			ampList = TranscriberExtract::getAmpsFromRealvecSink(ampSink);
 			break;
 		case TYPE_CONTROL:
 			getPitches();
@@ -228,27 +225,16 @@ TranscriberExtract::getAmpsFromRealvecSink(ampSink);
 }
 
 realvec MarBackend::getPitches() {
-	if (pitchList != NULL)
-		return (*pitchList);
-	else
-		return NULL;
+	return pitchList;
 }
 
 realvec MarBackend::getMidiPitches() {
-	if (pitchList != NULL)
-	{
-		TranscriberExtract::toMidi( pitchList );
-		return (*pitchList);
-	}
-	else
-		return NULL;
+	TranscriberExtract::toMidi( pitchList );
+	return pitchList;
 }
 
 realvec MarBackend::getAmplitudes() {
-	if (ampList != NULL)
-		return (*ampList);
-	else
-		return NULL;
+	return ampList;
 }
 
 /*
