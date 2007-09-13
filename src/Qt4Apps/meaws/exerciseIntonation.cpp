@@ -58,6 +58,7 @@ bool ExerciseIntonation::displayAnalysis(MarBackend *results) {
 	realvec pitches = results->getMidiPitches();
 	realvec amps = results->getAmplitudes();
 
+/*
 	realvec *bounds = new realvec(2);
 	(*bounds)(0) = 0;
 	(*bounds)(1) = pitches.getSize();
@@ -75,6 +76,8 @@ bool ExerciseIntonation::displayAnalysis(MarBackend *results) {
 
 //	cout<<pitches<<endl;
 //	cout<<amps<<endl;
+*/
+
 
 
 /*

@@ -13,16 +13,16 @@ TranscriberExtract::~TranscriberExtract()
 
 mrs_real TranscriberExtract::addFileSource(MarSystem* net, const std::string infile)
 {
-        if (infile == EMPTYSTRING)
-        {
-                MRSERR("Please specify a sound file.");
-                return 0;
-        }
-        net->addMarSystem(mng.create("SoundFileSource", "src"));
-        net->updctrl("SoundFileSource/src/mrs_string/filename", infile);
-        net->linkControl("mrs_bool/notEmpty",
-                         "SoundFileSource/src/mrs_bool/notEmpty");
-        return net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+	if (infile == EMPTYSTRING)
+	{
+		MRSERR("Please specify a sound file.");
+		return 0;
+	}
+	net->addMarSystem(mng.create("SoundFileSource", "src"));
+	net->updctrl("SoundFileSource/src/mrs_string/filename", infile);
+	net->linkControl("mrs_bool/notEmpty",
+	                 "SoundFileSource/src/mrs_bool/notEmpty");
+	return net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 }
 
 
@@ -68,8 +68,8 @@ MarSystem* TranscriberExtract::makeAmplitudeNet(MarSystem* rvSink)
 }
 
 void
-TranscriberExtract::getAllFromAudio(const std::string audioFilename, realvec* &
-                                    pitchList, realvec* &ampList)
+TranscriberExtract::getAllFromAudio(const std::string audioFilename, realvec&
+                                    pitchList, realvec& ampList)
 {
 	MarSystem* pitchSink = mng.create("RealvecSink", "pitchSink");
 	MarSystem* ampSink = mng.create("RealvecSink", "ampSink");
@@ -94,7 +94,7 @@ TranscriberExtract::getAllFromAudio(const std::string audioFilename, realvec* &
 	delete pnet;
 }
 
-realvec*
+realvec
 TranscriberExtract::getPitchesFromAudio(const std::string audioFilename)
 {
 	MarSystem* pnet = mng.create("Series", "pnet");
@@ -105,47 +105,49 @@ TranscriberExtract::getPitchesFromAudio(const std::string audioFilename)
 	while ( pnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>() )
 		pnet->tick();
 
-	realvec* pitchList = getPitchesFromRealvecSink(rvSink, srate);
+	realvec pitchList = getPitchesFromRealvecSink(rvSink, srate);
 	delete pnet;
 	return pitchList;
 }
 
-realvec*
-TranscriberExtract::getPitchesFromRealvecSink(MarSystem* rvSink, const mrs_real srate)
+realvec
+TranscriberExtract::getPitchesFromRealvecSink(MarSystem* rvSink,
+        const mrs_real srate)
 {
 	realvec data = rvSink->getctrl("mrs_realvec/data")->to<mrs_realvec>();
 	rvSink->updctrl("mrs_bool/done", true);
 
-	realvec* pitchList = new realvec(data.getSize()/2);
+	realvec pitchList(data.getSize()/2);
 	mrs_real pitchOutput;
-	for (mrs_natural i=0; i<pitchList->getSize(); i++)
+	for (mrs_natural i=0; i<pitchList.getSize(); i++)
 	{
 		// on linux (but not OSX), we have pitchOutput of 0.5 if the pitch
 		// detection can't decide on a pitch.
 		pitchOutput = data(2*i+1);
 		if (pitchOutput > 1)
-			(*pitchList)(i) = samples2hertz( pitchOutput, srate);
+			pitchList(i) = samples2hertz( pitchOutput, srate);
 		else
-			(*pitchList)(i) = 0;
+			pitchList(i) = 0;
 	}
 	return pitchList;
 }
 
-realvec*
+realvec
 TranscriberExtract::getAmpsFromRealvecSink(MarSystem* rvSink)
 {
 	realvec data = rvSink->getctrl("mrs_realvec/data")->to<mrs_realvec>();
 	rvSink->updctrl("mrs_bool/done", true);
-	realvec* ampList = new realvec(data.getSize());
-	(*ampList) = data;
-	(*ampList) /= ampList->maxval();
+	realvec ampList(data.getSize());
+	ampList = data;
+	// normalize amplitudes
+	ampList /= ampList.maxval();
 	return ampList;
 }
 
 void
-TranscriberExtract::toMidi(realvec* pitchList)
+TranscriberExtract::toMidi(realvec& pitchList)
 {
-	pitchList->apply( hertz2pitch );
+	pitchList.apply( hertz2pitch );
 }
 
 

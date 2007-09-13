@@ -20,20 +20,21 @@ public:
 	TranscriberExtract();
 	~TranscriberExtract();
 
-	static mrs_real addFileSource(MarSystem* net, const std::string
-infile);
+	static mrs_real addFileSource(MarSystem* net,
+	                              const std::string infile);
 
-	static realvec* getPitchesFromAudio(const std::string audioFilename);
-	static MarSystem* makePitchNet(const mrs_real srate, const mrs_real
-	                               lowFreq = 100.0, MarSystem* rvSink = NULL);
-	static realvec* getPitchesFromRealvecSink(MarSystem* rvSink, const mrs_real
-	        srate);
+	static realvec getPitchesFromAudio(const std::string audioFilename);
+	static MarSystem* makePitchNet(const mrs_real srate,
+	                               const mrs_real lowFreq = 100.0,
+	                               MarSystem* rvSink = NULL);
+	static realvec getPitchesFromRealvecSink(MarSystem* rvSink,
+	        const mrs_real srate);
 	static MarSystem* makeAmplitudeNet(MarSystem* rvSink = NULL);
-	static realvec* getAmpsFromRealvecSink(MarSystem* rvSink);
+	static realvec getAmpsFromRealvecSink(MarSystem* rvSink);
 
-	static void getAllFromAudio(const std::string audioFilename, realvec* &
-	                            pitchList, realvec* &ampList);
-	static void toMidi(realvec* pitchList);
+	static void getAllFromAudio(const std::string audioFilename, realvec&
+	                            pitchList, realvec& ampList);
+	static void toMidi(realvec& pitchList);
 
 private:
 

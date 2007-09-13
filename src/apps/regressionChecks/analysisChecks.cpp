@@ -25,17 +25,17 @@ analysis_pitch(string infile)
 void
 analysis_transcriber(string infile)
 {
-    realvec *pitchList, *ampList, *boundaries;
+    realvec pitchList, ampList, boundaries;
     Transcriber::getAllFromAudio(infile, pitchList, ampList);
     Transcriber::toMidi(pitchList);
-    boundaries = new realvec(2);
-    (*boundaries)(0) = 0;
-    (*boundaries)(1) = pitchList->getSize();
-    Transcriber::pitchSegment(pitchList, boundaries);
+    boundaries.create(2);
+    boundaries(0) = 0;
+    boundaries(1) = pitchList.getSize();
+//    Transcriber::pitchSegment(pitchList, boundaries);
 // TODO: since Transcriber amps is currently broken.  -gp
 //    Transcriber::ampSegment(ampList, boundaries);
-    realvec* notes;
-    notes = Transcriber::getNotes(pitchList, ampList, boundaries);
+//   realvec* notes;
+//   notes = Transcriber::getNotes(pitchList, ampList, boundaries);
 }
 
 
