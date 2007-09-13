@@ -26,11 +26,8 @@ void
 analysis_transcriber(string infile)
 {
     realvec pitchList, ampList, boundaries;
-    Transcriber::getAllFromAudio(infile, pitchList, ampList);
+    Transcriber::getAllFromAudio(infile, pitchList, ampList, boundaries);
     Transcriber::toMidi(pitchList);
-    boundaries.create(2);
-    boundaries(0) = 0;
-    boundaries(1) = pitchList.getSize();
 //    Transcriber::pitchSegment(pitchList, boundaries);
 // TODO: since Transcriber amps is currently broken.  -gp
 //    Transcriber::ampSegment(ampList, boundaries);

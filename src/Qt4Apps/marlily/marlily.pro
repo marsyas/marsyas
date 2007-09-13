@@ -1,21 +1,12 @@
 #include ( ../Qt4Apps.pri )
 
-#SOURCES = testShift.cpp
 SOURCES = testTrans.cpp
-#SOURCES = start.cpp
-#SOURCES = temp.cpp
 
 #HEADERS += mainwindow.h
 #SOURCES += mainwindow.cpp
 
 HEADERS += Transcriber.h
 SOURCES += Transcriber.cpp
-
-#HEADERS += TranscriberExtract.h
-#SOURCES += TranscriberExtract.cpp
-
-#HEADERS += Easymar.h
-#SOURCES += Easymar.cpp
 
 DEPTH = ../../../
 
@@ -29,11 +20,11 @@ win32 {
 #  update this junk from  src/examples/Qt4tutorial
 
 #MARSYAS_INSTALL_DIR  = ${HOME}/usr/
-MARSYAS_INSTALL_DIR  = /usr/local
+MARSYAS_INSTALL_DIR  = ../../../
 message("If Marsyas was installed, it went into $$MARSYAS_INSTALL_DIR, right?")
 INCLUDEPATH += $$MARSYAS_INSTALL_DIR/include/marsyas/
 # in case you have not installed Marsyas
-INCLUDEPATH += $$DEPTH/marsyas/
+INCLUDEPATH += $$DEPTH/src/marsyas/
 LIBPATH += $$DEPTH/lib/release/
 
 

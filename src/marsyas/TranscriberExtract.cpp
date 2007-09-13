@@ -69,7 +69,8 @@ MarSystem* TranscriberExtract::makeAmplitudeNet(MarSystem* rvSink)
 
 void
 TranscriberExtract::getAllFromAudio(const std::string audioFilename, realvec&
-                                    pitchList, realvec& ampList)
+                                    pitchList, realvec& ampList,
+                                    realvec& boundaries)
 {
 	MarSystem* pitchSink = mng.create("RealvecSink", "pitchSink");
 	MarSystem* ampSink = mng.create("RealvecSink", "ampSink");
@@ -91,6 +92,9 @@ TranscriberExtract::getAllFromAudio(const std::string audioFilename, realvec&
 
 	pitchList = getPitchesFromRealvecSink(pitchSink, srate);
 	ampList = getAmpsFromRealvecSink(ampSink);
+	boundaries.create(2);
+	boundaries(0) = 0;
+	boundaries(1) = pitchList.getSize();
 	delete pnet;
 }
 

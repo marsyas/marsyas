@@ -40,7 +40,7 @@ public:
 	//@{
 	static void pitchSegment(realvec* pitchList, realvec* boundaries);
 	static realvec* findPitchBoundaries(const realvec* pitchList);
-
+	static void ignoreOctaves(realvec* pitchList);
 	//@}
 
 

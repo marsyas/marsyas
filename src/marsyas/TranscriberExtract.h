@@ -19,7 +19,6 @@ class TranscriberExtract
 public:
 	TranscriberExtract();
 	~TranscriberExtract();
-
 	static mrs_real addFileSource(MarSystem* net,
 	                              const std::string infile);
 
@@ -33,7 +32,8 @@ public:
 	static realvec getAmpsFromRealvecSink(MarSystem* rvSink);
 
 	static void getAllFromAudio(const std::string audioFilename, realvec&
-	                            pitchList, realvec& ampList);
+	                            pitchList, realvec& ampList, realvec&
+	                            boundaries);
 	static void toMidi(realvec& pitchList);
 
 private:
