@@ -117,7 +117,7 @@ public:
   mrs_natural getCols() const;
   mrs_natural getRows() const;
 	/// extracts a subset of a realvec.  One-dimensional realvecs only.
-  realvec getSubVector(mrs_natural startPos, mrs_natural length);
+  realvec getSubVector(mrs_natural startPos, mrs_natural length) const;
 	/// dirty for easy integration 
   mrs_real *getData() const;
 	//@}

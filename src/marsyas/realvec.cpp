@@ -152,7 +152,7 @@ realvec::appendRealvec(const realvec newValues)
 }
 
 realvec
-realvec::getSubVector(mrs_natural startPos, mrs_natural length)
+realvec::getSubVector(mrs_natural startPos, mrs_natural length) const
 {
 	realvec subVector(length);
 	for (mrs_natural i=0; i<length; i++)
