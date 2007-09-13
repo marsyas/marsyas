@@ -140,39 +140,39 @@ Transcriber::findNextPeakValue(const realvec* list, const mrs_natural
 // pitch stuff
 
 void
-Transcriber::pitchSegment(realvec* pitchList, realvec* boundaries)
+Transcriber::pitchSegment(const realvec& pitchList, realvec& boundaries)
 {
-	realvec region, *newBoundaries, *regionBounds;
+	realvec region, *newBoundaries, regionBounds;
 	mrs_natural start, length;
 	newBoundaries = new realvec;
-	for (mrs_natural i=0; i<boundaries->getSize()-1; i++)
+	for (mrs_natural i=0; i<boundaries.getSize()-1; i++)
 	{
-		start = (mrs_natural) (*boundaries)(i);
-		length = (mrs_natural) ((*boundaries)(i+1) - (*boundaries)(i));
-		region = pitchList->getSubVector(start, length);
-		regionBounds = findPitchBoundaries(&region);
-		(*regionBounds) += start;
-		newBoundaries->appendRealvec(*regionBounds);
+		start = (mrs_natural) boundaries(i);
+		length = (mrs_natural) (boundaries(i+1) - boundaries(i));
+		region = pitchList.getSubVector(start, length);
+		regionBounds = findPitchBoundaries(region);
+		regionBounds += start;
+		newBoundaries->appendRealvec(regionBounds);
 	}
-	boundaries->appendRealvec(*newBoundaries);
-	boundaries->sort();
+	boundaries.appendRealvec(*newBoundaries);
+	boundaries.sort();
 }
 
-realvec*
-Transcriber::findPitchBoundaries(const realvec* pitchList)
+realvec
+Transcriber::findPitchBoundaries(const realvec& pitchList)
 {
 	mrs_natural minSpace = MIN_NOTE_FRAMES;
 	mrs_real noteBoundary = 0.5;
 
-	realvec* boundaries = new realvec(1);
+	realvec boundaries(1);
 	mrs_natural onsetIndex=0;
 
 	mrs_real median;
 	mrs_real prevNote=0.0;
 	mrs_natural prevSamp=0;
-	for (mrs_natural i=minSpace; i<pitchList->getSize()-minSpace; i++)
+	for (mrs_natural i=minSpace; i<pitchList.getSize()-minSpace; i++)
 	{
-		median = findMedianWithoutZeros(i-minSpace, 2*minSpace, pitchList);
+		median = findMedianWithoutZeros(i-minSpace, 2*minSpace, &pitchList);
 //		cout<<i<<"\t"<<(*pitchList)(i)<<"\t"<<median<<endl;
 		if ( fabs(median-prevNote) > noteBoundary )
 		{
@@ -180,7 +180,7 @@ Transcriber::findPitchBoundaries(const realvec* pitchList)
 			{
 				prevNote = median;
 				prevSamp = i;
-				boundaries->stretchWrite( onsetIndex, i);
+				boundaries.stretchWrite( onsetIndex, i);
 				onsetIndex++;
 			}
 			else
@@ -189,16 +189,16 @@ Transcriber::findPitchBoundaries(const realvec* pitchList)
 			}
 		}
 	}
-	boundaries->stretch(onsetIndex);
+	boundaries.stretch(onsetIndex);
 	return boundaries;
 }
 
 void
-Transcriber::ignoreOctaves(realvec* pitchList)
+Transcriber::ignoreOctaves(realvec& pitchList)
 {
-	for (mrs_natural i=0; i<pitchList->getSize(); i++)
+	for (mrs_natural i=0; i<pitchList.getSize(); i++)
 	{
-		(*pitchList)(i) = fmod( (*pitchList)(i), 12);
+		pitchList(i) = fmod( pitchList(i), 12);
 	}
 }
 

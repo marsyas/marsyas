@@ -4,12 +4,12 @@
 using namespace Marsyas;
 
 //    ./marlily filename.wav
-void writeOnsets(string filename, realvec* boundaries)
+void writeOnsets(string filename, realvec boundaries)
 {
 	ofstream file;
 	file.open(filename.c_str());
-	for (int i=0; i<boundaries->getSize(); i++)
-		file<<(*boundaries)(i)<<"\t"<<90<<endl;
+	for (int i=0; i<boundaries.getSize(); i++)
+		file<<boundaries(i)<<"\t"<<90<<endl;
 	file.close();
 }
 
@@ -20,11 +20,6 @@ int main(int argc, char *argv[])
 	realvec pitchList, ampList, boundaries;
 	Transcriber::getAllFromAudio(file, pitchList, ampList, boundaries);
 	Transcriber::toMidi(pitchList);
-	boundaries = new realvec(2);
-	(*boundaries)(0) = 0;
-	(*boundaries)(1) = pitchList.getSize();
-//	cout<<pitchList->getSize()<<endl;
-//	cout<<ampList->getSize()<<endl;
 
 	std::string writefile;
 	writefile = file;

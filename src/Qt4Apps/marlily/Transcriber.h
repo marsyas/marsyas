@@ -25,8 +25,6 @@ public:
 /// non-Transcriber-specific functions, but I don't think they're
 /// useful enough to add to realvec.
 	//@{
-	static realvec* segmentRealvec(const realvec* list,
-	                               const realvec* boundaries);
 	static mrs_real findMedianWithoutZeros(const mrs_natural start,
 	                                       const mrs_natural length,
 	                                       const realvec* array);
@@ -38,9 +36,9 @@ public:
 
 	/** \name Pitch stuff */
 	//@{
-	static void pitchSegment(realvec* pitchList, realvec* boundaries);
-	static realvec* findPitchBoundaries(const realvec* pitchList);
-	static void ignoreOctaves(realvec* pitchList);
+	static void pitchSegment(const realvec& pitchList, realvec& boundaries);
+	static realvec findPitchBoundaries(const realvec& pitchList);
+	static void ignoreOctaves(realvec& pitchList);
 	//@}
 
 
@@ -60,6 +58,14 @@ public:
 	                                 realvec* &durations);
 	//@}
 
+
+
+
+	/** \name ToDelete ToDelete */
+	//@{
+	static realvec* segmentRealvec(const realvec* list,
+	                               const realvec* boundaries);
+	//@}
 private:
 
 };
