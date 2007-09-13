@@ -35,7 +35,9 @@ void ExerciseShift::setupDisplay() {
     displayPitches->setBackgroundColor(QColor(255,255,255));
     displayPitches->setPixelWidth(2);
 
+	resultLayout = new QVBoxLayout();
 	resultLayout->addWidget(displayPitches);
+	resultArea->setLayout(resultLayout);
 }
 
 QString ExerciseShift::exercisesDir() {

@@ -63,9 +63,6 @@ void MainWindow::createMain() {
 	QFrame* centralFrame = new QFrame;
 	setCentralWidget(centralFrame);
 
-	instructionArea = new QFrame;
-	resultArea = new QFrame;
-	exercise->setArea(instructionArea, resultArea);
 
 	mainLayout = new QVBoxLayout;
 	mainLayout->addWidget(instructionArea);
@@ -233,7 +230,10 @@ void MainWindow::createActions() {
 void MainWindow::createObjects() {
 	user = new User();
 	connect(user, SIGNAL(enableActions(int)), this, SLOT(enableActions(int)));
-	exercise = new ExerciseDispatcher();
+
+	instructionArea = new QFrame;
+	resultArea = new QFrame;
+	exercise = new ExerciseDispatcher(instructionArea, resultArea);
 	connect(exercise, SIGNAL(enableActions(int)), this, SLOT(enableActions(int)));
 	connect(exercise, SIGNAL(attemptRunning(bool)), this, SLOT(attemptRunning(bool)));
 }

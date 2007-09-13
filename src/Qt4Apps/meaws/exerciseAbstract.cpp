@@ -3,13 +3,13 @@ using namespace std;
 
 #include "exerciseAbstract.h"
 
-Exercise::Exercise() {
-	instructionArea = NULL;
-	resultArea = NULL;
+Exercise::Exercise()
+{
 	instructionImageLabel = NULL;
 }
 
-void Exercise::setArea(QFrame *getInstructionArea, QFrame *getResultArea) {
+void Exercise::setArea(QFrame *getInstructionArea, QFrame *getResultArea)
+{
 	instructionArea = getInstructionArea;
 	resultArea = getResultArea;
 }

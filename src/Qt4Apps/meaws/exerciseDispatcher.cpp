@@ -3,7 +3,10 @@ using namespace std;
 
 #include "exerciseDispatcher.h"
 
-ExerciseDispatcher::ExerciseDispatcher() {
+ExerciseDispatcher::ExerciseDispatcher(QFrame *getInstructionArea, QFrame *getResultArea)
+{
+	instructionArea = getInstructionArea;
+	resultArea = getResultArea;
 	attemptRunningBool = false;
 	marBackend = NULL;
 	evaluation = NULL;
@@ -12,11 +15,6 @@ ExerciseDispatcher::ExerciseDispatcher() {
 
 ExerciseDispatcher::~ExerciseDispatcher() {
 	close();
-}
-
-void ExerciseDispatcher::setArea(QFrame *getInstructionArea, QFrame *getResultArea){
-	instructionArea = getInstructionArea;
-	resultArea = getResultArea;
 }
 
 bool ExerciseDispatcher::chooseEvaluation() {

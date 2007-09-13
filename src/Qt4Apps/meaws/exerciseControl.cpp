@@ -45,11 +45,13 @@ int ExerciseControl::getType() {
 void ExerciseControl::setupDisplay() {
 	displayPitches = new QtMarPlot();
 	displayPitches->setPlotName("Pitch");
-	displayPitches->setBackgroundColor(QColor(255,255,255));
+//	displayPitches->setBackgroundColor(QColor(255,255,255));
+	displayPitches->setBackgroundColor(QColor(0,255,0));
 	displayPitches->setPixelWidth(3);
 	displayAmplitudes = new QtMarPlot();
 	displayAmplitudes->setPlotName("Amplitude");
-	displayAmplitudes->setBackgroundColor(QColor(255,255,255));
+//	displayAmplitudes->setBackgroundColor(QColor(255,255,255));
+	displayAmplitudes->setBackgroundColor(QColor(0,0,255));
 	displayAmplitudes->setPixelWidth(3);
 	/*
 	displayPitches = new QLabel;
@@ -88,7 +90,7 @@ void ExerciseControl::open(QString exerciseFilename) {
 		noteButton[i]->setIcon( image );
 		noteButton[i]->setIconSize( image.size() );
 		// noteButton[i]->setScaledContents(false);
-		noteButton[i]->setMaximumHeight(120);
+//		noteButton[i]->setMaximumHeight(120);
 		notes->addButton(noteButton[i]);
 		notes->setId( noteButton[i],i);
 		instructionLayout->addWidget(noteButton[i]);
@@ -97,7 +99,18 @@ void ExerciseControl::open(QString exerciseFilename) {
 	}
 
 	//	instructionLayout->addWidget(notes);
+	instructionArea->setLayout(instructionLayout);
 	connect(notes, SIGNAL(buttonClicked(int)), this, SLOT(setNote(int)));
+
+	// set size
+	int ml, mt, mr, mb;
+	instructionLayout->getContentsMargins(&ml, &mt, &mr, &mb);
+	mt = 0;
+	mb = 0;
+	instructionLayout->setContentsMargins(ml, mt, mr, mb);
+
+	instructionArea->setMaximumHeight(image.height()+mt+mb);
+	instructionArea->setMinimumHeight(image.height()+mt+mb);
 }
 //zz
 

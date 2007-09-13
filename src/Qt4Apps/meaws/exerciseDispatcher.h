@@ -17,7 +17,7 @@ class ExerciseDispatcher : public QDialog {
 	Q_OBJECT
 
 public:
-	ExerciseDispatcher();
+	ExerciseDispatcher(QFrame *getInstructionArea, QFrame *getResultArea);
 	~ExerciseDispatcher();
 
 	QString getMessage();
@@ -25,7 +25,6 @@ public:
 public slots:
 	void open();
 	void close();
-	void setArea(QFrame *getInstructionArea, QFrame *getResultArea);
 	void toggleAttempt();
 	void setAttempt(bool running);
 	void openAttempt();

@@ -29,9 +29,9 @@ signals:
 protected:
     QFrame *instructionArea;
     QFrame *resultArea;
-	QLabel *instructionImageLabel;
 	QLayout *instructionLayout;
 	QLayout *resultLayout;
+	QLabel *instructionImageLabel;
 };
 #endif
 
