@@ -32,12 +32,13 @@ namespace Marsyas
     \brief Various conversion functions
 */
 
-
 mrs_real pitch2hertz(mrs_real pitch);
+mrs_real hertz2pitch(mrs_real hz);
+
 mrs_natural hertz2samples(mrs_real hz, mrs_real srate);
+
 mrs_real samples2hertz(mrs_natural samples, mrs_real srate);
 mrs_real samples2hertz(mrs_real samples, mrs_real srate);
-mrs_real hertz2pitch(mrs_real hz);
 
 mrs_natural time2samples(std::string time, mrs_real srate);
 mrs_natural time2usecs(std::string time);
@@ -45,9 +46,13 @@ mrs_natural time2usecs(std::string time);
 mrs_real amplitude2dB(mrs_real a);
 mrs_real dB2amplitude(mrs_real a);
 
-mrs_real hertz2octs(mrs_real f, mrs_real middleAfreq);
+mrs_real hertz2octs(mrs_real f, mrs_real middleAfreq = 440.0);
+
 mrs_real hertz2bark(mrs_real f);
 mrs_real bark2hertz(mrs_real f);
+
+mrs_real hertz2mel(mrs_real f, bool htk = false);
+mrs_real mel2hertz(mrs_real z, bool htk = false);
 
 mrs_natural powerOfTwo(mrs_real v);
 

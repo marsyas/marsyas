@@ -165,7 +165,7 @@ mrs_real Marsyas::dB2amplitude(mrs_real a)
 }
 
 mrs_real
-Marsyas::hertz2octs(mrs_real f, mrs_real middleAfreq = 440.0)
+Marsyas::hertz2octs(mrs_real f, mrs_real middleAfreq)
 {
 	//adapted from Dan Ellis fft2chromamx.m MATLAB routine
 	//
@@ -189,6 +189,77 @@ mrs_real Marsyas::hertz2bark(mrs_real f)
 mrs_real Marsyas::bark2hertz(mrs_real f)
 {
 	return 600*sinh(f/6);
+}
+
+mrs_real 
+Marsyas::hertz2mel(mrs_real f, bool htk)
+{
+	//  z = hertz2mel(f,htk)
+	//  Convert frequencies f (in Hz) to mel 'scale'.
+	//  Optional htk = 1 uses the mel axis defined in the HTKBook
+	//  otherwise use Slaney's formula.
+	//
+	//  adapted from Dan Ellis fft2melmx.m MATLAB code
+
+	if(htk)
+	{
+		return 2595.0 * log10(1.0 + f / 700.0);
+	}
+	else
+	{
+		// Mel fn to match Slaney's Auditory Toolbox mfcc.m
+		mrs_real f_0 = 0.0; //133.33333;
+		mrs_real f_sp = 200.0/3.0; //66.66667;
+		mrs_real brkfrq = 1000.0;
+		mrs_real brkpt  = (brkfrq - f_0)/f_sp;  //starting mel value for log region
+		
+		//the magic 1.0711703 which is the ratio needed to get from
+		//1000 Hz to 6400 Hz in 27 steps, and is *almost* the ratio between
+		//1000 Hz and the preceding linear filter center at 933.33333 Hz 
+		//(actually 1000/933.33333 = 1.07142857142857 and  
+		//exp(log(6.4)/27) = 1.07117028749447)
+		mrs_real logstep = exp(log(6.4)/27.0);
+
+		if(f < brkfrq)
+			return (f - f_0) / f_sp; //linear
+		else
+			return brkpt + log(f / brkfrq) / log(logstep); //non-linear
+	}
+}
+
+mrs_real
+Marsyas::mel2hertz(mrs_real z, bool htk)
+{
+	//   f = mel2hz(z, htk)
+	//   Convert 'mel scale' frequencies into Hz
+	//   Optional htk = 1 means use the HTK formula
+	//   else use the formula from Slaney's mfcc.m
+	//
+	//	 Adapted from Dan Ellis fft2melmx.m MATLAB code
+
+	if(htk)
+	{
+		return 700.0 * (pow(10.0, z/2595.0) - 1.0);
+	}
+	else
+	{
+		mrs_real f_0 = 0.0; //133.33333;
+		mrs_real f_sp = 200.0 / 3.0; //66.66667;
+		mrs_real brkfrq = 1000.0;
+		mrs_real brkpt  = (brkfrq - f_0)/f_sp; //starting mel value for log region
+		
+		//the magic 1.0711703 which is the ratio needed to get from 1000 Hz
+		//to 6400 Hz in 27 steps, and is *almost* the ratio between 1000 Hz
+		//and the preceding linear filter center at 933.33333 Hz 
+		//(actually 1000/933.33333 = 1.07142857142857 and  
+		//exp(log(6.4)/27) = 1.07117028749447)
+		mrs_real logstep = exp(log(6.4)/27.0);
+
+		if(z < brkpt)
+			return f_0 + f_sp * z;
+		else
+			return brkfrq * exp(log(logstep)*(z-brkpt));
+	}
 }
 
 mrs_natural Marsyas::powerOfTwo(mrs_real v)
