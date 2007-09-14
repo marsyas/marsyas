@@ -6,13 +6,13 @@
 using namespace std;
 namespace Marsyas
 {
-	/**
-		\class Transcriber
-		\ingroup Notmar
-		\brief A collection of functions which simplify transcription
-	(detecting onsets via pitch and amplitudes, calculating notes, etc).
+/**
+	\class Transcriber
+	\ingroup Notmar
+	\brief A collection of functions which simplify transcription
+(detecting onsets via pitch and amplitudes, calculating notes, etc).
 
-	*/
+*/
 
 class Transcriber: public TranscriberExtract
 {
@@ -25,42 +25,37 @@ public:
 /// non-Transcriber-specific functions, but I don't think they're
 /// useful enough to add to realvec.
 	//@{
-	static realvec* segmentRealvec(const realvec* list,
-	                               const realvec* boundaries);
 	static mrs_real findMedianWithoutZeros(const mrs_natural start,
 	                                       const mrs_natural length,
-	                                       const realvec* array);
-	static realvec* findValleys(const realvec* list);
-	static mrs_real findNextPeakValue(const realvec* list,
+	                                       const realvec& array);
+	static realvec findValleys(const realvec& list);
+	static mrs_real findNextPeakValue(const realvec& list,
 	                                  const mrs_natural start);
 	//@}
 
 
 	/** \name Pitch stuff */
 	//@{
-	static void pitchSegment(realvec* pitchList, realvec* boundaries);
-	static realvec* findPitchBoundaries(const realvec* pitchList);
-	static void ignoreOctaves(realvec* pitchList);
+	static void pitchSegment(const realvec& pitchList, realvec& boundaries);
+	static realvec findPitchBoundaries(const realvec& pitchList);
 	//@}
 
 
 	/** \name Amplitude stuff */
 	//@{
-	static void ampSegment(realvec* ampList, realvec* boundaries);
-	static void findAmpBoundaries(realvec* ampList, realvec*
-	                              &boundaries);
+	static void ampSegment(const realvec& ampList, realvec& boundaries);
+	static void filterAmpBoundaries(realvec& ampList, realvec&
+	                                boundaries);
 	//@}
 
 
 	/** \name Note stuff */
 	//@{
-	static realvec* getNotes(const realvec* pitchList, const realvec*
-	                         ampList, const realvec* boundaries);
-	static void getRelativeDurations(const realvec *boundaries,
-	                                 realvec* &durations);
+	static realvec getNotes(const realvec& pitchList, const realvec&
+	                        ampList, const realvec& boundaries);
+	static void getRelativeDurations(const realvec& boundaries,
+	                                 realvec &durations);
 	//@}
-
-private:
 
 };
 }

@@ -15,38 +15,10 @@ Transcriber::~Transcriber()
 }
 
 // general functions
-realvec*
-Transcriber::segmentRealvec(const realvec* list, const realvec* boundaries)
-{
-	mrs_natural maxCols=0;
-	realvec* newList = new realvec(boundaries->getSize()-1,10);
-
-	if (boundaries->getSize() == 1)
-		return NULL;
-
-	mrs_natural note = 0;
-	mrs_natural prevBound = (mrs_natural) (*boundaries)(note);
-	mrs_natural nextBound = (mrs_natural) (*boundaries)(note+1);
-	for (mrs_natural i=0; i<list->getSize(); i++)
-	{
-		if (i == nextBound )
-		{
-			if ((i-prevBound) > maxCols)
-				maxCols = (i-prevBound);
-			note++;
-			prevBound = nextBound;
-			nextBound = (mrs_natural) (*boundaries)(note+1);
-		}
-		newList->stretchWrite(note, i - prevBound, (*list)(i) );
-	}
-	newList->stretch(boundaries->getSize(), maxCols);
-	return newList;
-}
-
 mrs_real
 Transcriber::findMedianWithoutZeros(const mrs_natural start,
                                     const mrs_natural length,
-                                    const realvec* array)
+                                    const realvec& array)
 {
 	if ( length<=0 )
 		return 0;
@@ -56,9 +28,9 @@ Transcriber::findMedianWithoutZeros(const mrs_natural start,
 	// don't include 0s
 	for (mrs_natural i=0; i<length; i++)
 	{
-		if ( (*array)(start+i) > 0 )
+		if ( array(start+i) > 0 )
 		{
-			noZeros(j)=(*array)(start+i);
+			noZeros(j)=array(start+i);
 			j++;
 		}
 	}
@@ -68,52 +40,48 @@ Transcriber::findMedianWithoutZeros(const mrs_natural start,
 	return noZeros.median();
 }
 
-realvec*
-Transcriber::findValleys(const realvec* list)
+realvec
+Transcriber::findValleys(const realvec& list)
 {
-	realvec* valleys = new realvec(1);
+	realvec valleys(1);
 	mrs_natural valIndex = 0;
 
 	mrs_real localMin;
 	mrs_natural minSpace = MIN_NOTE_FRAMES;
 	mrs_natural prevValIndex = 0;
 	mrs_real prevValValue = 1.0;
-	for (mrs_natural i=minSpace; i<list->getSize()-minSpace; i++)
+	for (mrs_natural i=minSpace; i<list.getSize()-minSpace; i++)
 	{
-		if ( ((*list)(i) < (*list)(i-1)) &&
-		        ((*list)(i) < (*list)(i+1)))
+		if ( (list(i) < list(i-1)) &&
+		        (list(i) < list(i+1)))
 		{
-			localMin = (*list)(i);
+			localMin = list(i);
 			if (i < prevValIndex+minSpace)
 			{
 				if (localMin < prevValValue)
 				{
 					// replace previous valley with this one
-					(*valleys)(valIndex-1) = i;
+					valleys(valIndex-1) = i;
 					prevValIndex = i;
 					prevValValue = localMin;
-					//cout<<"***** fix bound "<<i<<endl;
 				}
 			}
 			else
 			{
 				// new valley found
-				valleys->stretchWrite(valIndex, i);
+				valleys.stretchWrite(valIndex, i);
 				valIndex++;
 				prevValIndex = i;
 				prevValValue = localMin;
-				//cout<<"*** new bound "<<i<<endl;
 			}
 		}
 	}
-	//cout<<(*valleys);
-	valleys->stretch(valIndex);
-	//cout<<(*valleys);
+	valleys.stretch(valIndex);
 	return valleys;
 }
 
 mrs_real
-Transcriber::findNextPeakValue(const realvec* list, const mrs_natural
+Transcriber::findNextPeakValue(const realvec& list, const mrs_natural
                                start)
 {
 	mrs_natural i = start;
@@ -122,17 +90,17 @@ Transcriber::findNextPeakValue(const realvec* list, const mrs_natural
 	do
 	{
 		i++;
-		if (i == list->getSize())
+		if (i == list.getSize())
 			return 0.0;
-		if ( ((*list)(i) > (*list)(i-1)) &&
-		        ((*list)(i) > (*list)(i+1)) &&
-		        ( (*list)(i) > minValue) )
+		if ( (list(i) > list(i-1)) &&
+		        (list(i) > list(i+1)) &&
+		        ( list(i) > minValue) )
 		{
 			isPeak = true;
 		}
 	}
 	while ( isPeak == false );
-	return (*list)(i);
+	return list(i);
 }
 
 
@@ -140,47 +108,46 @@ Transcriber::findNextPeakValue(const realvec* list, const mrs_natural
 // pitch stuff
 
 void
-Transcriber::pitchSegment(realvec* pitchList, realvec* boundaries)
+Transcriber::pitchSegment(const realvec& pitchList, realvec& boundaries)
 {
-	realvec region, *newBoundaries, *regionBounds;
+	realvec region, *newBoundaries, regionBounds;
 	mrs_natural start, length;
 	newBoundaries = new realvec;
-	for (mrs_natural i=0; i<boundaries->getSize()-1; i++)
+	for (mrs_natural i=0; i<boundaries.getSize()-1; i++)
 	{
-		start = (mrs_natural) (*boundaries)(i);
-		length = (mrs_natural) ((*boundaries)(i+1) - (*boundaries)(i));
-		region = pitchList->getSubVector(start, length);
-		regionBounds = findPitchBoundaries(&region);
-		(*regionBounds) += start;
-		newBoundaries->appendRealvec(*regionBounds);
+		start = (mrs_natural) boundaries(i);
+		length = (mrs_natural) (boundaries(i+1) - boundaries(i));
+		region = pitchList.getSubVector(start, length);
+		regionBounds = findPitchBoundaries(region);
+		regionBounds += start;
+		newBoundaries->appendRealvec(regionBounds);
 	}
-	boundaries->appendRealvec(*newBoundaries);
-	boundaries->sort();
+	boundaries.appendRealvec(*newBoundaries);
+	boundaries.sort();
 }
 
-realvec*
-Transcriber::findPitchBoundaries(const realvec* pitchList)
+realvec
+Transcriber::findPitchBoundaries(const realvec& pitchList)
 {
 	mrs_natural minSpace = MIN_NOTE_FRAMES;
 	mrs_real noteBoundary = 0.5;
 
-	realvec* boundaries = new realvec(1);
+	realvec boundaries(1);
 	mrs_natural onsetIndex=0;
 
 	mrs_real median;
 	mrs_real prevNote=0.0;
 	mrs_natural prevSamp=0;
-	for (mrs_natural i=minSpace; i<pitchList->getSize()-minSpace; i++)
+	for (mrs_natural i=minSpace; i<pitchList.getSize()-minSpace; i++)
 	{
 		median = findMedianWithoutZeros(i-minSpace, 2*minSpace, pitchList);
-//		cout<<i<<"\t"<<(*pitchList)(i)<<"\t"<<median<<endl;
 		if ( fabs(median-prevNote) > noteBoundary )
 		{
 			if (i>prevSamp+minSpace)
 			{
 				prevNote = median;
 				prevSamp = i;
-				boundaries->stretchWrite( onsetIndex, i);
+				boundaries.stretchWrite( onsetIndex, i);
 				onsetIndex++;
 			}
 			else
@@ -189,92 +156,76 @@ Transcriber::findPitchBoundaries(const realvec* pitchList)
 			}
 		}
 	}
-	boundaries->stretch(onsetIndex);
+	boundaries.stretch(onsetIndex);
 	return boundaries;
 }
 
-void
-Transcriber::ignoreOctaves(realvec* pitchList)
-{
-	for (mrs_natural i=0; i<pitchList->getSize(); i++)
-	{
-		(*pitchList)(i) = fmod( (*pitchList)(i), 12);
-	}
-}
 
 
 // amplitude stuff
 void
-Transcriber::ampSegment(realvec* ampList, realvec* boundaries)
+Transcriber::ampSegment(const realvec& ampList, realvec& boundaries)
 {
-	realvec region, *newBoundaries, *regionBounds;
+	realvec region, *newBoundaries, regionBounds;
 	mrs_natural start, length;
 	newBoundaries = new realvec;
-	for (mrs_natural i=0; i<boundaries->getSize()-1; i++)
+	for (mrs_natural i=0; i<boundaries.getSize()-1; i++)
 	{
-		start = (mrs_natural) (*boundaries)(i);
-		length = (mrs_natural) ((*boundaries)(i+1) - (*boundaries)(i));
-		region = ampList->getSubVector(start, length);
-		regionBounds = findValleys((&region));
-		//cout<<"************ new region at: "<<start<<endl;
-		findAmpBoundaries(&region, regionBounds);
-		(*regionBounds) += start;
-		newBoundaries->appendRealvec(*regionBounds);
+		start = (mrs_natural) boundaries(i);
+		length = (mrs_natural) (boundaries(i+1) - boundaries(i));
+		region = ampList.getSubVector(start, length);
+		regionBounds = findValleys(region);
+		filterAmpBoundaries(region, regionBounds);
+		regionBounds += start;
+		newBoundaries->appendRealvec(regionBounds);
 	}
-	boundaries->appendRealvec(*newBoundaries);
-	boundaries->sort();
+	boundaries.appendRealvec(*newBoundaries);
+	boundaries.sort();
 }
 
-// filter list of valleys
 void
-Transcriber::findAmpBoundaries(realvec* ampList, realvec* &boundaries)
+Transcriber::filterAmpBoundaries(realvec& regionAmps, realvec &regionBounds)
 {
-	if (boundaries->getSize() < 2)
+	if (regionBounds.getSize() < 2)
 		return;
 
-	// create empty list of boundaries to keep
-	mrs_natural numSamples = boundaries->getSize();
-	realvec *newBounds = new realvec;
-	newBounds->create(numSamples);
+	// create empty list of regionBounds to keep
+	mrs_natural numSamples = regionBounds.getSize();
+	realvec newBounds(numSamples);
 	mrs_natural newIndex=0;
 
 	// ignore quiet parts
 	mrs_real regionMinVal = 0.1;
-	if ( ampList->mean() < regionMinVal )
+	if ( regionAmps.mean() < regionMinVal )
 	{
-		newBounds->stretch(newIndex);
-		delete boundaries;
-		boundaries = newBounds;
+		newBounds.stretch(0);
+		regionBounds = newBounds;
+		return;
 	}
 
 	// normalize amps in pitch region
-	realvec pitchRegion;
+	regionAmps /= regionAmps.maxval();
+
 	mrs_natural start, length;
-	start = (mrs_natural) (*boundaries)(0);
-	length = ampList->getSize();
-	pitchRegion = ampList->getSubVector(start, length);
-	pitchRegion /= pitchRegion.maxval();
-
-
-	mrs_real valleyMinVal = 0.5;
+	mrs_real valleyMinVal = 0.3;
 	mrs_real valley;
 	realvec region;
-	for (mrs_natural i=0; i<boundaries->getSize(); i++)
+	for (mrs_natural i=0; i<regionBounds.getSize(); i++)
 	{
-		start = (mrs_natural) (*boundaries)(i);
-		if (i < boundaries->getSize()-1 )
-			length = (mrs_natural) ((*boundaries)(i+1) - (*boundaries)(i));
+		start = (mrs_natural) regionBounds(i);
+		if (i < regionBounds.getSize()-1 )
+			length = (mrs_natural) (regionBounds(i+1) - regionBounds(i));
 		else
-			length = pitchRegion.getSize() - i;
-		region = pitchRegion.getSubVector(start, length);
+			length = regionAmps.getSize() - i;
+		region = regionAmps.getSubVector(start, length);
 
-		valley = pitchRegion(start);
+		valley = regionAmps(start);
 		if ( (valley < valleyMinVal) &&
 //		if ( (valley < peakRatio*findNextPeakValue(&region, 0)) &&
 		        (region.mean() > regionMinVal) )
 		{
 //			cout<<"at frame "<<start<<" keep valley: "<<valley<<endl;
-			(*newBounds)(newIndex) = start;
+			newBounds(newIndex) = start;
 			newIndex++;
 		}
 		else
@@ -284,101 +235,75 @@ Transcriber::findAmpBoundaries(realvec* ampList, realvec* &boundaries)
 //			cout<<region;
 		}
 	}
-	newBounds->stretch(newIndex);
-	delete boundaries;
-	boundaries = newBounds;
+	newBounds.stretch(newIndex);
+//	cout<<"in: "<<regionBounds.getSize();
+//	cout<<"\t out: "<<newBounds.getSize()<<endl;
+	regionBounds = newBounds;
 }
-//zz
 
 
 
 // note stuff
 void
-Transcriber::getRelativeDurations(const realvec* boundaries, realvec*
+Transcriber::getRelativeDurations(const realvec& boundaries, realvec
                                   &durations)
 {
-	durations = new realvec( boundaries->getSize()-1 );
+	mrs_natural numNotes = boundaries.getSize()-1;
+	durations.create(numNotes);
 
 	mrs_natural i;
 	mrs_natural min = 99999; // infinity
 	// calculate durations in samples
 	// and find smallest
-	for (i=0; i<boundaries->getSize()-1; i++)
+	for (i=0; i<numNotes; i++)
 	{
-		(*durations)(i) = (*boundaries)(i+1) - (*boundaries)(i);
+		durations(i) = boundaries(i+1) - boundaries(i);
 //		cout<<"duration: "<<(*durations)(i)<<endl;
 		// we don't care about silent durations
-		if ((*durations)(i) < min)
-			min = (mrs_natural) (*durations)(i);
+		if (durations(i) < min)
+			min = (mrs_natural) durations(i);
 	}
 //	cout<<"min: "<<min<<endl;
 	// find relative durations
 	// yes, we want to truncate the division.
-	for (i=0; i<boundaries->getSize()-1; i++)
+	for (i=0; i<numNotes; i++)
 	{
-		(*durations)(i) = (mrs_natural) ( (*durations)(i) / (min) );
+		durations(i) = (mrs_natural) ( durations(i) / (min) );
 	}
-//	cout<<(*durations);
 }
 
-realvec*
-Transcriber::getNotes(const realvec* pitchList, const realvec* ampList,
-                      const realvec* boundaries)
+
+// this will not include relative durations
+realvec
+Transcriber::getNotes(const realvec& pitchList, const realvec& ampList,
+                      const realvec& boundaries)
 {
-	mrs_natural numNotes = boundaries->getSize();
-	realvec* notes = new realvec(numNotes-1, 2);
-//	realvec* notes = new realvec(1, 2);
+	mrs_natural numNotes = boundaries.getSize()-1;
+	realvec notes(numNotes, 2);
 
 	mrs_natural start, length;
-//	realvec* region;
-	mrs_natural oldPitch;
-	oldPitch = (mrs_natural) (*ampList)(0); // to suppress warning
-//	mrs_natural prevSample=0;
-//	mrs_real prevPitch=0.0;
-	realvec* durations = new realvec();
-	getRelativeDurations(boundaries, durations);
-	//cout<<(*durations);
 	mrs_real notePitch;
-	for (mrs_natural i=0; i<numNotes-1; i++)
-	{
-		(*notes)(i,1) = (*durations)(i);
 
-		start = (mrs_natural) (*boundaries)(i);
-		length = (mrs_natural) ((*boundaries)(i+1) - (*boundaries)(i));
+	mrs_natural boundIndex = 0;
+	notePitch = findMedianWithoutZeros(0, (mrs_natural) boundaries(1),
+	                                   pitchList);
+	if (notePitch == 0)
+		boundIndex++;
+	mrs_natural firstFrame = (mrs_natural) boundaries(boundIndex);
+	for (mrs_natural i=0; i<numNotes; i++)
+	{
+		notes(i,1) = boundaries(boundIndex) - firstFrame;
+
+		// get approximate pitch
+		start = (mrs_natural) boundaries(boundIndex);
+		length = (mrs_natural) (boundaries(boundIndex+1) -
+		                        boundaries(boundIndex));
 		notePitch = findMedianWithoutZeros(start, length, pitchList);
-		notePitch = max( floor(notePitch), floor(notePitch+0.5) );
-		if ( notePitch != oldPitch)
-		{
-			cout<<endl<<notePitch;
-		} else
-		{
-			cout<<" "<<notePitch;
-		}
-		(*notes)(i,0) = notePitch;
-		oldPitch = (mrs_natural) notePitch;
-		//region = getSubVector(pitchList, start, length);
-		/*
-				if (region->getSize() > 0)
-				{
-					mrs_real regionPitch = round( region->median() );
-					if (regionPitch == prevPitch)
-						same++;
-					else
-					{
-						prevPitch = regionPitch;
-						same=1;
-						prevSample = start;
-						//cout<<"-----"<<endl;
-					}
-		*/
-		//	cout<<(*boundaries)(i)<<"\t"<<length<<"\t"<<regionPitch<<"\t"<<same<<"\t"<<start-prevSample<<endl;
-		//cout<<(*boundaries)(i)<<"\t"<<length<<"\t"<<regionPitch<<"\t"<<regionSTD<<"\t"<<same<<"\t"<<start-prevSample<<endl;
-		//cout<<(*boundaries)(i)<<"\t"<<regionSTD<<endl;
-		//(*notes)(i,0) = findMedianWithoutZeros(0, length, region);
-		//(*notes)(i,1) = (*boundaries)(i+1)-(*boundaries)(i);
+
+		notes(i,0) = notePitch;
+		boundIndex++;
 	}
-//cout<<(*notes);
-	cout<<endl;
+	notes.stretch(boundIndex-2,2);
 	return notes;
 }
 
