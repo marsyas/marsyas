@@ -270,66 +270,40 @@ Transcriber::getRelativeDurations(const realvec& boundaries, realvec
 	{
 		durations(i) = (mrs_natural) ( durations(i) / (min) );
 	}
-	cout<<durations;
 }
 
+
+// this will not include relative durations
 realvec
 Transcriber::getNotes(const realvec& pitchList, const realvec& ampList,
                       const realvec& boundaries)
 {
-	(void) pitchList;
-	(void) ampList;
 	mrs_natural numNotes = boundaries.getSize()-1;
 	realvec notes(numNotes, 2);
-	mrs_natural start, length;
-	mrs_natural oldPitch;
-	realvec durations;
-	getRelativeDurations(boundaries, durations);
-	cout<<durations;
-	/*
-		mrs_real notePitch;
-		for (mrs_natural i=0; i<numNotes; i++)
-		{
-			(*notes)(i,1) = (*durations)(i);
 
-			start = (mrs_natural) (*boundaries)(i);
-			length = (mrs_natural) ((*boundaries)(i+1) - (*boundaries)(i));
-			notePitch = findMedianWithoutZeros(start, length, pitchList);
-			notePitch = max( floor(notePitch), floor(notePitch+0.5) );
-			if ( notePitch != oldPitch)
-			{
-				cout<<endl<<notePitch;
-			} else
-			{
-				cout<<" "<<notePitch;
-			}
-			(*notes)(i,0) = notePitch;
-			oldPitch = (mrs_natural) notePitch;
-			//region = getSubVector(pitchList, start, length);
-	*/
-	/*
-			if (region->getSize() > 0)
-			{
-				mrs_real regionPitch = round( region->median() );
-				if (regionPitch == prevPitch)
-					same++;
-				else
-				{
-					prevPitch = regionPitch;
-					same=1;
-					prevSample = start;
-					//cout<<"-----"<<endl;
-				}
-	*/
-	//	cout<<(*boundaries)(i)<<"\t"<<length<<"\t"<<regionPitch<<"\t"<<same<<"\t"<<start-prevSample<<endl;
-	//cout<<(*boundaries)(i)<<"\t"<<length<<"\t"<<regionPitch<<"\t"<<regionSTD<<"\t"<<same<<"\t"<<start-prevSample<<endl;
-	//cout<<(*boundaries)(i)<<"\t"<<regionSTD<<endl;
-	//(*notes)(i,0) = findMedianWithoutZeros(0, length, region);
-	//(*notes)(i,1) = (*boundaries)(i+1)-(*boundaries)(i);
-//	}
-//cout<<(*notes);
-//	cout<<endl;
-	cout<<notes;
+	mrs_natural start, length;
+	mrs_real notePitch;
+
+	mrs_natural boundIndex = 0;
+	notePitch = findMedianWithoutZeros(0, (mrs_natural) boundaries(1),
+	                                   pitchList);
+	if (notePitch == 0)
+		boundIndex++;
+	mrs_natural firstFrame = (mrs_natural) boundaries(boundIndex+1);
+	for (mrs_natural i=0; i<numNotes; i++)
+	{
+		notes(i,1) = boundaries(boundIndex+1) - firstFrame;
+
+		// get approximate pitch
+		start = (mrs_natural) boundaries(boundIndex);
+		length = (mrs_natural) (boundaries(boundIndex+1) -
+		                        boundaries(boundIndex));
+		notePitch = findMedianWithoutZeros(start, length, pitchList);
+
+		notes(i,0) = notePitch;
+		boundIndex++;
+	}
+	notes.stretch(boundIndex-2,2);
 	return notes;
 }
 

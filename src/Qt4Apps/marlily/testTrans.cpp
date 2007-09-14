@@ -34,9 +34,8 @@ int main(int argc, char *argv[])
 	Transcriber::ampSegment(ampList, boundaries);
 	writeOnsets("onsets.amps.txt", boundaries);
 
-/*
 	realvec notes;
 	notes = Transcriber::getNotes(pitchList, ampList, boundaries);
-*/
+	cout<<notes;
 }
 
