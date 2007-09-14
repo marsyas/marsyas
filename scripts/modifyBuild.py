@@ -90,13 +90,13 @@ def modify_lib_release_makefile(source_file,action):
 	newfile = open( fileToEdit, 'w')
 	for line in filelines:
 		if (action==1):
-			if (line[23:31] == 'Gain.cpp'):
+			if (line[29:37] == 'Gain.cpp'):
 				insertLine = '\t$(top_srcdir)/src/marsyas/'+source_file+'.cpp \\'
 				print "Adding line 1 of 1 to " + fileToEdit
 				newfile.write(insertLine+'\n')
 			newfile.write(line)
 		if (action==2):
-			if (line[23:].find(source_file)>=0):
+			if (line[29:].find(source_file)>=0):
 				print "Removed line 1 of 1 from " + fileToEdit
 				continue
 			newfile.write(line)
