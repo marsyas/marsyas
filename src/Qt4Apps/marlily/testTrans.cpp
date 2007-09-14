@@ -25,20 +25,18 @@ int main(int argc, char *argv[])
 	writefile = file;
 	writefile.append(".pitches.txt");
 	pitchList.writeText(writefile);
-
 	Transcriber::pitchSegment(pitchList, boundaries);
 	writeOnsets("onsets.pitch.txt", boundaries);
 
 	writefile = file;
 	writefile.append(".amps.txt");
 	ampList.writeText(writefile);
-/*
 	Transcriber::ampSegment(ampList, boundaries);
 	writeOnsets("onsets.amps.txt", boundaries);
 
-	realvec* notes;
+/*
+	realvec notes;
 	notes = Transcriber::getNotes(pitchList, ampList, boundaries);
-//	cout<<(*notes);
 */
 }
 

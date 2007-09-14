@@ -15,34 +15,6 @@ Transcriber::~Transcriber()
 }
 
 // general functions
-realvec*
-Transcriber::segmentRealvec(const realvec* list, const realvec* boundaries)
-{
-	mrs_natural maxCols=0;
-	realvec* newList = new realvec(boundaries->getSize()-1,10);
-
-	if (boundaries->getSize() == 1)
-		return NULL;
-
-	mrs_natural note = 0;
-	mrs_natural prevBound = (mrs_natural) (*boundaries)(note);
-	mrs_natural nextBound = (mrs_natural) (*boundaries)(note+1);
-	for (mrs_natural i=0; i<list->getSize(); i++)
-	{
-		if (i == nextBound )
-		{
-			if ((i-prevBound) > maxCols)
-				maxCols = (i-prevBound);
-			note++;
-			prevBound = nextBound;
-			nextBound = (mrs_natural) (*boundaries)(note+1);
-		}
-		newList->stretchWrite(note, i - prevBound, (*list)(i) );
-	}
-	newList->stretch(boundaries->getSize(), maxCols);
-	return newList;
-}
-
 mrs_real
 Transcriber::findMedianWithoutZeros(const mrs_natural start,
                                     const mrs_natural length,
@@ -92,7 +64,6 @@ Transcriber::findValleys(const realvec& list)
 					valleys(valIndex-1) = i;
 					prevValIndex = i;
 					prevValValue = localMin;
-					//cout<<"***** fix bound "<<i<<endl;
 				}
 			}
 			else
@@ -102,13 +73,10 @@ Transcriber::findValleys(const realvec& list)
 				valIndex++;
 				prevValIndex = i;
 				prevValValue = localMin;
-				//cout<<"*** new bound "<<i<<endl;
 			}
 		}
 	}
-	//cout<<(*valleys);
 	valleys.stretch(valIndex);
-	//cout<<(*valleys);
 	return valleys;
 }
 
@@ -173,7 +141,6 @@ Transcriber::findPitchBoundaries(const realvec& pitchList)
 	for (mrs_natural i=minSpace; i<pitchList.getSize()-minSpace; i++)
 	{
 		median = findMedianWithoutZeros(i-minSpace, 2*minSpace, pitchList);
-//		cout<<i<<"\t"<<(*pitchList)(i)<<"\t"<<median<<endl;
 		if ( fabs(median-prevNote) > noteBoundary )
 		{
 			if (i>prevSamp+minSpace)
@@ -193,14 +160,6 @@ Transcriber::findPitchBoundaries(const realvec& pitchList)
 	return boundaries;
 }
 
-void
-Transcriber::ignoreOctaves(realvec& pitchList)
-{
-	for (mrs_natural i=0; i<pitchList.getSize(); i++)
-	{
-		pitchList(i) = fmod( pitchList(i), 12);
-	}
-}
 
 
 // amplitude stuff
@@ -216,8 +175,7 @@ Transcriber::ampSegment(const realvec& ampList, realvec& boundaries)
 		length = (mrs_natural) (boundaries(i+1) - boundaries(i));
 		region = ampList.getSubVector(start, length);
 		regionBounds = findValleys(region);
-		//cout<<"************ new region at: "<<start<<endl;
-		findAmpBoundaries(region, regionBounds);
+		filterAmpBoundaries(region, regionBounds);
 		regionBounds += start;
 		newBoundaries->appendRealvec(regionBounds);
 	}
@@ -225,48 +183,43 @@ Transcriber::ampSegment(const realvec& ampList, realvec& boundaries)
 	boundaries.sort();
 }
 
-// filter list of valleys
 void
-Transcriber::findAmpBoundaries(const realvec& ampList, realvec &boundaries)
+Transcriber::filterAmpBoundaries(realvec& regionAmps, realvec &regionBounds)
 {
-	if (boundaries.getSize() < 2)
+	if (regionBounds.getSize() < 2)
 		return;
 
-	// create empty list of boundaries to keep
-	mrs_natural numSamples = boundaries.getSize();
+	// create empty list of regionBounds to keep
+	mrs_natural numSamples = regionBounds.getSize();
 	realvec newBounds(numSamples);
 	mrs_natural newIndex=0;
 
 	// ignore quiet parts
 	mrs_real regionMinVal = 0.1;
-	if ( ampList.mean() < regionMinVal )
+	if ( regionAmps.mean() < regionMinVal )
 	{
-		newBounds.stretch(newIndex);
-		boundaries = newBounds;
+		newBounds.stretch(0);
+		regionBounds = newBounds;
+		return;
 	}
 
 	// normalize amps in pitch region
-	realvec pitchRegion;
+	regionAmps /= regionAmps.maxval();
+
 	mrs_natural start, length;
-	start = (mrs_natural) boundaries(0);
-	length = ampList.getSize();
-	pitchRegion = ampList.getSubVector(start, length);
-	pitchRegion /= pitchRegion.maxval();
-
-
-	mrs_real valleyMinVal = 0.5;
+	mrs_real valleyMinVal = 0.3;
 	mrs_real valley;
 	realvec region;
-	for (mrs_natural i=0; i<boundaries.getSize(); i++)
+	for (mrs_natural i=0; i<regionBounds.getSize(); i++)
 	{
-		start = (mrs_natural) boundaries(i);
-		if (i < boundaries.getSize()-1 )
-			length = (mrs_natural) (boundaries(i+1) - boundaries(i));
+		start = (mrs_natural) regionBounds(i);
+		if (i < regionBounds.getSize()-1 )
+			length = (mrs_natural) (regionBounds(i+1) - regionBounds(i));
 		else
-			length = pitchRegion.getSize() - i;
-		region = pitchRegion.getSubVector(start, length);
+			length = regionAmps.getSize() - i;
+		region = regionAmps.getSubVector(start, length);
 
-		valley = pitchRegion(start);
+		valley = regionAmps(start);
 		if ( (valley < valleyMinVal) &&
 //		if ( (valley < peakRatio*findNextPeakValue(&region, 0)) &&
 		        (region.mean() > regionMinVal) )
@@ -283,9 +236,10 @@ Transcriber::findAmpBoundaries(const realvec& ampList, realvec &boundaries)
 		}
 	}
 	newBounds.stretch(newIndex);
-	boundaries = newBounds;
+//	cout<<"in: "<<regionBounds.getSize();
+//	cout<<"\t out: "<<newBounds.getSize()<<endl;
+	regionBounds = newBounds;
 }
-//zz
 
 
 
@@ -316,6 +270,7 @@ Transcriber::getRelativeDurations(const realvec& boundaries, realvec
 	{
 		durations(i) = (mrs_natural) ( durations(i) / (min) );
 	}
+	cout<<durations;
 }
 
 realvec
@@ -324,21 +279,16 @@ Transcriber::getNotes(const realvec& pitchList, const realvec& ampList,
 {
 	(void) pitchList;
 	(void) ampList;
-	mrs_natural numNotes = boundaries.getSize();
-	realvec notes(numNotes-1, 2);
-//	realvec* notes = new realvec(1, 2);
+	mrs_natural numNotes = boundaries.getSize()-1;
+	realvec notes(numNotes, 2);
+	mrs_natural start, length;
+	mrs_natural oldPitch;
+	realvec durations;
+	getRelativeDurations(boundaries, durations);
+	cout<<durations;
 	/*
-		mrs_natural start, length;
-	//	realvec* region;
-		mrs_natural oldPitch;
-		oldPitch = (mrs_natural) ampList(0); // to suppress warning
-	//	mrs_natural prevSample=0;
-	//	mrs_real prevPitch=0.0;
-		realvec durations;
-		getRelativeDurations(boundaries, durations);
-		//cout<<(*durations);
 		mrs_real notePitch;
-		for (mrs_natural i=0; i<numNotes-1; i++)
+		for (mrs_natural i=0; i<numNotes; i++)
 		{
 			(*notes)(i,1) = (*durations)(i);
 
@@ -379,6 +329,7 @@ Transcriber::getNotes(const realvec& pitchList, const realvec& ampList,
 //	}
 //cout<<(*notes);
 //	cout<<endl;
+	cout<<notes;
 	return notes;
 }
 
