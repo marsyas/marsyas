@@ -160,6 +160,7 @@
 #include "SVMClassifier.h"
 #include "Classifier.h"
 #include "Spectrum2Chroma.h"
+#include "Spectrum2Mel.h"
 #include "Gain.h"
 // please leave Gain at the end; it makes scripts happy.
 
@@ -307,6 +308,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("SVMClassifier", new SVMClassifier("svmclassifierpr"));
 	registerPrototype("Classifier", new Classifier("classifierpr"));
 	registerPrototype("Spectrum2Chroma", new Spectrum2Chroma("spectrum2chromapr"));
+	registerPrototype("Spectrum2Mel", new Spectrum2Mel("spectrum2melpr"));
 	registerPrototype("Gain", new Gain("gp"));
 	// Please leave Gain at the end; it makes scripts happy.
 

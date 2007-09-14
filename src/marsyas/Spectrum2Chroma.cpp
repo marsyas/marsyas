@@ -77,7 +77,7 @@ Spectrum2Chroma::myUpdate(MarControlPtr sender)
 
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 	ctrl_onObservations_->setValue(ctrl_nbins_, NOUPDATE);
-	ctrl_osrate_->setValue(ctrl_israte_);
+	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 	
 	if (pnbins_ != ctrl_nbins_->to<mrs_natural>())
 	{
