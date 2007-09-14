@@ -548,7 +548,65 @@ function).
 @node Python
 @subsection Python
 
-It @emph{can} be done; read the source code.
+Here are instructions for python/ruby SWIG bindings.  These instructions
+assume the following:
+
+@enumerate
+@item
+You have installed from source python 2.5.1 and ruby 1.8.6 (the python
+and ruby that come bundled with OS X won't work
+
+@item
+python and ruby should be located in /usr/local/bin/python and
+/usr/local/bin/ruby
+
+@end enumerate
+
+here we go (they are kind of clunky as we are ironing things out with
+libool/autotools and OS X):
+
+@enumerate
+@item
+go into the swig subdirectory
+
+@item
+./configure --with-ruby --with-python
+
+@item
+make
+
+@item
+sudo make install
+
+@item
+For ruby:
+@example
+cd /usr/local/lib/ruby/site_ruby/1.8/
+sudo cp i686-darwin8.10.1/* .
+sudo cp marsyas_ruby marsyas_ruby.bundle
+@end example
+
+@item
+For python:
+@example
+cd /usr/local/lib/python2.5/site-packages
+sudo cp _marsyas_python _marsyas_python.so
+@end example
+
+@item
+go back to the marsyas installation directory
+
+@item
+cd swig/src
+
+@item
+ruby test.rb somesound.wav
+
+@item
+python test.python
+
+@end enumerate
+
 
 @node OCaml
 @subsection OCaml
