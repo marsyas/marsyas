@@ -13,6 +13,7 @@ public:
 	~ExerciseIntonation();
 	int getType();
 
+	void open(QString exerciseFilename);
 	void setupDisplay();
 	QString exercisesDir();
 	QString getMessage();
@@ -22,6 +23,7 @@ public:
 private:
 	QLabel *resultLabel;
 	QtMarPlot *foo;
+	realvec exerCorrect;
 
 };
 #endif

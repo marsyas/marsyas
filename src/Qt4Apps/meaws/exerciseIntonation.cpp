@@ -29,6 +29,16 @@ int ExerciseIntonation::getType() {
 	return TYPE_INTONATION;
 }
 
+void ExerciseIntonation::open(QString exerciseFilename) {
+	Exercise::open(exerciseFilename);
+
+	// load exercise answers
+	QString answerFile = exerciseFilename;
+	int size = answerFile.size();
+	answerFile.replace(size-4,4,".txt");
+	cout<<qPrintable(answerFile)<<endl;
+}
+
 void ExerciseIntonation::setupDisplay() {
 	resultLayout = new QVBoxLayout;
 
