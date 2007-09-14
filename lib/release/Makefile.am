@@ -268,7 +268,6 @@ libmarsyas_a_SOURCES    = \
 			$(top_srcdir)/src/marsyas/SVMClassifier.cpp \
 			$(top_srcdir)/src/marsyas/Classifier.cpp \
 			$(top_srcdir)/src/marsyas/Spectrum2Chroma.cpp \
-			$(top_srcdir)/src/marsyas/Spectrum2Mel.cpp \
 			$(top_srcdir)/src/marsyas/Gain.cpp
 # please leave Gain.cpp at the end like this; it make scripts happy.
 

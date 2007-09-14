@@ -260,7 +260,6 @@ pkginclude_HEADERS = \
 	SVMClassifier.h \
 	Classifier.h \
 	Spectrum2Chroma.h \
-	Spectrum2Mel.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 
