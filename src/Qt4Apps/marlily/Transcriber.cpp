@@ -289,10 +289,10 @@ Transcriber::getNotes(const realvec& pitchList, const realvec& ampList,
 	                                   pitchList);
 	if (notePitch == 0)
 		boundIndex++;
-	mrs_natural firstFrame = (mrs_natural) boundaries(boundIndex+1);
+	mrs_natural firstFrame = (mrs_natural) boundaries(boundIndex);
 	for (mrs_natural i=0; i<numNotes; i++)
 	{
-		notes(i,1) = boundaries(boundIndex+1) - firstFrame;
+		notes(i,1) = boundaries(boundIndex) - firstFrame;
 
 		// get approximate pitch
 		start = (mrs_natural) boundaries(boundIndex);
