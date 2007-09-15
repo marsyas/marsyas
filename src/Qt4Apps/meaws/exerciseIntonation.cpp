@@ -108,6 +108,11 @@ bool ExerciseIntonation::displayAnalysis(MarBackend *results) {
 	foo->setVertical(0,80);
 	foo->setPlotName("pitches");
 
+	realvec mistakes;
+	mistakes.create(exerAnswer.getRows());
+	mrs_natural expected;
+	mrs_real detected;
+	mrs_real mistake;
 	int j=0;
 	int start;
 	for (int i=0; i<notes.getRows(); i++)
@@ -117,11 +122,21 @@ bool ExerciseIntonation::displayAnalysis(MarBackend *results) {
 		{
 			if (j>exerAnswer.getRows()-1)
 				break;
-			cout<<"Correct: "<<exerAnswer(j,0)<<"  "<<exerAnswer(j,1)<<endl;
+			expected = (mrs_natural) exerAnswer(j,0);
+			//cout<<"Correct: "<<exerAnswer(j,0)<<"  "<<exerAnswer(j,1)<<endl;
 			j++;
 		}
-		cout<<"\t"<<notes(i,0)<<" "<<notes(i,1)<<endl;
+		//cout<<"\t"<<notes(i,0)<<" "<<notes(i,1)<<endl;
+		detected = notes(i,0);
+		mistake = fmod(detected,12.0) - (expected % 12);
+		if (mistake > 6)
+			mistake -= 12.0;
+		//cout<<"**** "<<j<<"   "<<mistake<<endl;
+		if (j>exerAnswer.getRows()-1)
+			break;
+		mistakes(j) += mistake;
 	}
+	cout<<mistakes;
 
 //	cout<<pitches<<endl;
 //	cout<<amps<<endl;
