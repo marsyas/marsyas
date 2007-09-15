@@ -17,17 +17,21 @@ void recognize(string sfName)
 		pnet->tick();
 		// gets data from the Spectrum for read only!
 		const realvec& processedData =
-			pnet->getctrl("Spectrum/spk/mrs_realvec/processedData")->to<mrs_realvec>();
+		    pnet->getctrl("Spectrum/spk/mrs_realvec/processedData")->to<mrs_realvec>();
 		cout << "Original Spectrum = " << processedData << endl;
 
-		//if we need to get the Spectrum and modify it, here is the way to do it.
-		//Notice that we must open a new scope using curly brackets so that MarControlAccessor
-		//is automatically destroyed when we are finished modifing the realvec control.
+		// if we need to get the Spectrum and modify it, here is the way
+		// to do it.  Notice that we must open a new scope using curly
+		// brackets so that MarControlAccessor is automatically destroyed
+		// when we are finished modifing the realvec control.
 		{
-			MarControlAccessor acc(pnet->getctrl("Spectrum/spk/mrs_realvec/processedData"));
-			realvec& processedData2 = acc.to<mrs_realvec>();
+			MarControlAccessor
+			acc(pnet->getctrl("Spectrum/spk/mrs_realvec/processedData"));
+			realvec&
+			processedData2 = acc.to<mrs_realvec>();
 
-			//we can now write to processedData without worries of breaking encapsulation
+			// we can now write to processedData without worries of
+			// breaking encapsulation
 			processedData2 *= 2.0;
 			cout << "Modified Spectrum = " << processedData2 << endl;
 		}
