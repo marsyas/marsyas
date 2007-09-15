@@ -23,6 +23,10 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 		if ( !user->close() )
 			event->ignore();
 		else {
+			if (exercise != NULL) {
+				delete exercise;
+				exercise = NULL;
+			}
 			writeSettings();
 			event->accept();
 		}

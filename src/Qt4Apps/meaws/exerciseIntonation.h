@@ -23,7 +23,7 @@ public:
 private:
 	QLabel *resultLabel;
 	QtMarPlot *foo;
-	realvec exerCorrect;
+	realvec exerAnswer;
 
 };
 #endif

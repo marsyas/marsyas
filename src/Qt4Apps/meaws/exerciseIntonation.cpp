@@ -33,10 +33,37 @@ void ExerciseIntonation::open(QString exerciseFilename) {
 	Exercise::open(exerciseFilename);
 
 	// load exercise answers
-	QString answerFile = exerciseFilename;
-	int size = answerFile.size();
-	answerFile.replace(size-4,4,".txt");
-	cout<<qPrintable(answerFile)<<endl;
+	mrs_natural one, two;
+	mrs_natural frameSum=0;
+	mrs_natural frame;
+	int i=0;
+	exerAnswer.create(100,2);
+	QString answerFilename = exerciseFilename;
+	int size = answerFilename.size();
+	answerFilename.replace(size-4,4,".txt");
+	QFile answerFile(answerFilename);
+	if (answerFile.open(QFile::ReadOnly))
+	{
+		QTextStream answerText(&answerFile);
+		while (!answerText.atEnd())
+		{
+			answerText>>one>>two;
+			exerAnswer(i,0) = one;
+			exerAnswer(i,1) = two;
+//			exerAnswer.stretchWrite(i,0,one);
+//			exerAnswer.stretchWrite(i,1,two);
+			i++;
+		}
+	}
+	answerFile.close();
+	exerAnswer.stretch(i-1,2);
+	for (i=0; i<exerAnswer.getRows(); i++)
+	{
+		frame = (mrs_natural) ( exerAnswer(i,1)*44100.0/512.0 /2.0);
+		exerAnswer(i,1) = frameSum;
+		frameSum += frame;
+	}
+//	cout<<exerAnswer;
 }
 
 void ExerciseIntonation::setupDisplay() {
@@ -67,22 +94,34 @@ QString ExerciseIntonation::getMessage() {
 bool ExerciseIntonation::displayAnalysis(MarBackend *results) {
 	realvec pitches = results->getMidiPitches();
 	realvec amps = results->getAmplitudes();
+	realvec bounds(2);
+	bounds(0) = 0;
+	bounds(1) = pitches.getSize();
+	Transcriber::pitchSegment(pitches, bounds);
+	realvec notes;
+	notes = Transcriber::getNotes(pitches, amps, bounds);
+//	cout<<notes;
 
-/*
-	realvec *bounds = new realvec(2);
-	(*bounds)(0) = 0;
-	(*bounds)(1) = pitches.getSize();
-	Transcriber::ignoreOctaves(&pitches);
-	Transcriber::pitchSegment(&pitches, bounds);
-	realvec *notes;
-	notes = Transcriber::getNotes(&pitches, &amps, bounds);
-	cout<<(*notes);
-*/
 	realvec *data = new realvec;
 	(*data) = pitches;
 	foo->setData(data);
 	foo->setVertical(0,80);
 	foo->setPlotName("pitches");
+
+	int j=0;
+	int start;
+	for (int i=0; i<notes.getRows(); i++)
+	{
+		start = notes(i,1);
+		while ( exerAnswer(j,1) <= notes(i,1) )
+		{
+			if (j>exerAnswer.getRows()-1)
+				break;
+			cout<<"Correct: "<<exerAnswer(j,0)<<"  "<<exerAnswer(j,1)<<endl;
+			j++;
+		}
+		cout<<"\t"<<notes(i,0)<<" "<<notes(i,1)<<endl;
+	}
 
 //	cout<<pitches<<endl;
 //	cout<<amps<<endl;
