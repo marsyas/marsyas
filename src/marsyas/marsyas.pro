@@ -335,6 +335,7 @@ HEADERS += \
 	SVMClassifier.h \
 	Classifier.h \
 	Spectrum2Chroma.h \
+	Spectrum2Mel.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 	 
@@ -561,6 +562,7 @@ SOURCES += \
 	SVMClassifier.cpp \
 	Classifier.cpp \
 	Spectrum2Chroma.cpp \
+	Spectrum2Mel.cpp \
 	Gain.cpp
 # please leave Gain.cpp at the end like this; it makes scripts happy.
 
