@@ -8,28 +8,21 @@
 #include <QLabel>
 #include <QDir>
 #include "abstract-try.h"
+#include "QtMarPlot.h"
 
 class IntonationTry : public Try {
 public:
 	IntonationTry();
 	~IntonationTry();
-	QLabel* getDisplay();
+//	QLabel* getDisplay();
+	void setAnswer(const realvec answers);
 
-/*
-	void setArea(QFrame *getInstructionArea, QFrame *getResultArea);
-	virtual void setupDisplay() = 0;
-	virtual QString exercisesDir() = 0;
-	virtual int getType() = 0;
-	virtual bool displayAnalysis(MarBackend *results) = 0;
-	virtual QString getMessage() = 0;
-	virtual void open(QString exerciseFilename);
-*/
-
-//signals:
-//	void analysisDone();
+	bool displayAnalysis(MarBackend *results);
 
 protected:
 	QLabel *resultDisplay;
+	QtMarPlot *foo;
+	realvec exerAnswer;
 };
 #endif
 

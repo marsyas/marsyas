@@ -9,7 +9,11 @@ using namespace std;
 
 
 IntonationExercise::IntonationExercise() {
-	resultLabel = NULL;
+	tries = new QList<IntonationTry *>;
+
+	// to move
+	IntonationTry *newTry = new IntonationTry();
+	tries->append(newTry);
 }
 
 IntonationExercise::~IntonationExercise() {
@@ -18,11 +22,13 @@ IntonationExercise::~IntonationExercise() {
 		delete instructionImageLabel;
 		instructionImageLabel = NULL;
 	}
+/*
 	if (resultLabel != NULL) {
 		resultLayout->removeWidget(resultLabel);
 		delete resultLabel;
 		resultLabel = NULL;
 	}
+*/
 }
 
 int IntonationExercise::getType() {
@@ -64,6 +70,7 @@ void IntonationExercise::open(QString exerciseFilename) {
 		frameSum += frame;
 	}
 //	cout<<exerAnswer;
+	tries->at(0)->setAnswer(exerAnswer);
 }
 
 void IntonationExercise::setupDisplay() {
@@ -73,16 +80,8 @@ void IntonationExercise::setupDisplay() {
 //	resultLabel->setText("Intonation Exercise");
 //	resultArea->addWidget(resultLabel,0,0);
 
-	foo = new QtMarPlot();
-	foo->setBackgroundColor(QColor(255,0,0));
-	resultLayout->addWidget(foo);
+	resultLayout->addWidget( tries->at(0)->getDisplay() );
 	resultArea->setLayout(resultLayout);
-
-	IntonationTry *newTry = new IntonationTry();
-	tries = new QList<Try *>;
-	tries->append(newTry);
-
-	resultLayout->addWidget( (tries->takeFirst())->getDisplay() );
 //zz
 }
 
@@ -99,6 +98,8 @@ QString IntonationExercise::getMessage() {
 }
 
 bool IntonationExercise::displayAnalysis(MarBackend *results) {
+	tries->at(0)->displayAnalysis(results);
+/*
 	realvec pitches = results->getMidiPitches();
 	realvec amps = results->getAmplitudes();
 	realvec bounds(2);
@@ -149,7 +150,7 @@ bool IntonationExercise::displayAnalysis(MarBackend *results) {
 //	cout<<amps<<endl;
 
 
-
+*/
 /*
 	realvec durations = results->getDurations();
 	realvec notes = results->getNotes();

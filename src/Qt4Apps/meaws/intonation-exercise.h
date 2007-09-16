@@ -22,10 +22,8 @@ public:
 	bool displayAnalysis(MarBackend *results);
 
 private:
-	QLabel *resultLabel;
-	QtMarPlot *foo;
 	realvec exerAnswer;
-
+	QList<IntonationTry *> *tries;
 };
 #endif
 
