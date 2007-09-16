@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-#include "exerciseIntonation.h"
+#include "intonation-exercise.h"
 #include <QFile>
 #include <QTextStream>
 #include "Transcriber.h"

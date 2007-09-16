@@ -2,7 +2,7 @@
 #define MEAWS_EXERCISE_INTONATION_H
 
 #include "defs.h"
-#include "exerciseAbstract.h"
+#include "abstract-exercise.h"
 
 
 #include "QtMarPlot.h"

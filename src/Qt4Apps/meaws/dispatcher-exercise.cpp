@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-#include "exerciseDispatcher.h"
+#include "dispatcher-exercise.h"
 
 ExerciseDispatcher::ExerciseDispatcher(QFrame *getInstructionArea, QFrame *getResultArea)
 {
@@ -28,8 +28,8 @@ tr("Shifting test");
 		if (evaluation != NULL)
 			delete evaluation;
 		if (item=="Intonation test") evaluation = new ExerciseIntonation();
-		if (item=="Sound control test") evaluation = new ExerciseControl();
-		if (item=="Shifting test") evaluation = new ExerciseShift();
+//		if (item=="Sound control test") evaluation = new ExerciseControl();
+//		if (item=="Shifting test") evaluation = new ExerciseShift();
 		connect(evaluation,SIGNAL(analysisDone()), this,
 SLOT(analysisDone()));
 		evaluation->setArea(instructionArea, resultArea);

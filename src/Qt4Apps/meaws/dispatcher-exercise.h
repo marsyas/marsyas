@@ -2,9 +2,9 @@
 #define MEAWS_EXERCISE_DISPATCHER_H
 
 #include "defs.h"
-#include "exerciseIntonation.h"
-#include "exerciseControl.h"
-#include "exerciseShift.h"
+#include "intonation-exercise.h"
+//#include "exerciseControl.h"
+//#include "exerciseShift.h"
 #include "backend.h"
 
 #include <QDialog>

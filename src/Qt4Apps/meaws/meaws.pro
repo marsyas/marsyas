@@ -3,17 +3,17 @@
 SOURCES = start.cpp mainwindow.cpp
 HEADERS = defs.h mainwindow.h
 
-HEADERS += user.h exerciseDispatcher.h
-SOURCES += user.cpp exerciseDispatcher.cpp
+HEADERS += user.h dispatcher-exercise.h
+SOURCES += user.cpp dispatcher-exercise.cpp
 
-HEADERS += exerciseAbstract.h tryAbstract.h
-SOURCES += exerciseAbstract.cpp tryAbstract.cpp
+HEADERS += abstract-exercise.h abstract-try.h
+SOURCES += abstract-exercise.cpp abstract-try.cpp
 
-HEADERS += exerciseIntonation.h exerciseControl.h
-SOURCES += exerciseIntonation.cpp exerciseControl.cpp
+HEADERS += intonation-exercise.h
+SOURCES += intonation-exercise.cpp
 
-HEADERS += exerciseShift.h
-SOURCES += exerciseShift.cpp
+#HEADERS += exerciseShift.h exerciseControl.h
+#SOURCES += exerciseShift.cpp exerciseControl.cpp
 
 HEADERS += backend.h
 SOURCES += backend.cpp

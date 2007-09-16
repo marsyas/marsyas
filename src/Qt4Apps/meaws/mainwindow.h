@@ -18,7 +18,7 @@ class QLabel;
 // Meaws stuff
 #include "defs.h"
 #include "user.h"
-#include "exerciseDispatcher.h"
+#include "dispatcher-exercise.h"
 /*
 #include "backend.h"
 #include "metro.h"
