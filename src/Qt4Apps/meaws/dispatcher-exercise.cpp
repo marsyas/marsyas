@@ -27,7 +27,7 @@ tr("Shifting test");
 	if (ok && !item.isEmpty()) {
 		if (evaluation != NULL)
 			delete evaluation;
-		if (item=="Intonation test") evaluation = new ExerciseIntonation();
+		if (item=="Intonation test") evaluation = new IntonationExercise();
 //		if (item=="Sound control test") evaluation = new ExerciseControl();
 //		if (item=="Shifting test") evaluation = new ExerciseShift();
 		connect(evaluation,SIGNAL(analysisDone()), this,

@@ -3,14 +3,15 @@
 
 #include "defs.h"
 #include "abstract-exercise.h"
+#include "intonation-try.h"
 
 
 #include "QtMarPlot.h"
 
-class ExerciseIntonation : public Exercise {
+class IntonationExercise : public Exercise {
 public:
-	ExerciseIntonation();
-	~ExerciseIntonation();
+	IntonationExercise();
+	~IntonationExercise();
 	int getType();
 
 	void open(QString exerciseFilename);

@@ -9,8 +9,8 @@ SOURCES += user.cpp dispatcher-exercise.cpp
 HEADERS += abstract-exercise.h abstract-try.h
 SOURCES += abstract-exercise.cpp abstract-try.cpp
 
-HEADERS += intonation-exercise.h
-SOURCES += intonation-exercise.cpp
+HEADERS += intonation-exercise.h intonation-try.h
+SOURCES += intonation-exercise.cpp intonation-try.cpp
 
 #HEADERS += exerciseShift.h exerciseControl.h
 #SOURCES += exerciseShift.cpp exerciseControl.cpp

@@ -8,11 +8,11 @@ using namespace std;
 
 
 
-ExerciseIntonation::ExerciseIntonation() {
+IntonationExercise::IntonationExercise() {
 	resultLabel = NULL;
 }
 
-ExerciseIntonation::~ExerciseIntonation() {
+IntonationExercise::~IntonationExercise() {
 	if (instructionImageLabel != NULL) {
 		instructionLayout->removeWidget(instructionImageLabel);
 		delete instructionImageLabel;
@@ -25,11 +25,11 @@ ExerciseIntonation::~ExerciseIntonation() {
 	}
 }
 
-int ExerciseIntonation::getType() {
+int IntonationExercise::getType() {
 	return TYPE_INTONATION;
 }
 
-void ExerciseIntonation::open(QString exerciseFilename) {
+void IntonationExercise::open(QString exerciseFilename) {
 	Exercise::open(exerciseFilename);
 
 	// load exercise answers
@@ -66,7 +66,7 @@ void ExerciseIntonation::open(QString exerciseFilename) {
 //	cout<<exerAnswer;
 }
 
-void ExerciseIntonation::setupDisplay() {
+void IntonationExercise::setupDisplay() {
 	resultLayout = new QVBoxLayout;
 
 //	resultLabel = new QLabel;
@@ -78,7 +78,7 @@ void ExerciseIntonation::setupDisplay() {
 	resultLayout->addWidget(foo);
 	resultArea->setLayout(resultLayout);
 
-	Try *newTry = new Try();
+	IntonationTry *newTry = new IntonationTry();
 	tries = new QList<Try *>;
 	tries->append(newTry);
 
@@ -86,19 +86,19 @@ void ExerciseIntonation::setupDisplay() {
 //zz
 }
 
-QString ExerciseIntonation::exercisesDir() {
+QString IntonationExercise::exercisesDir() {
 	QString toReturn(MEAWS_DIR);
 	toReturn.append("data/intonation/");
 	return toReturn;
 }
 
-QString ExerciseIntonation::getMessage() {
+QString IntonationExercise::getMessage() {
 	// TODO: another totally fake demo for MISTIC.
 	QString toReturn("Grade: 76\%");
 	return toReturn;
 }
 
-bool ExerciseIntonation::displayAnalysis(MarBackend *results) {
+bool IntonationExercise::displayAnalysis(MarBackend *results) {
 	realvec pitches = results->getMidiPitches();
 	realvec amps = results->getAmplitudes();
 	realvec bounds(2);
