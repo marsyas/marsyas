@@ -6,8 +6,11 @@ HEADERS = defs.h mainwindow.h
 HEADERS += user.h exerciseDispatcher.h
 SOURCES += user.cpp exerciseDispatcher.cpp
 
-HEADERS += exerciseAbstract.h exerciseIntonation.h exerciseControl.h
-SOURCES += exerciseAbstract.cpp exerciseIntonation.cpp exerciseControl.cpp
+HEADERS += exerciseAbstract.h tryAbstract.h
+SOURCES += exerciseAbstract.cpp tryAbstract.cpp
+
+HEADERS += exerciseIntonation.h exerciseControl.h
+SOURCES += exerciseIntonation.cpp exerciseControl.cpp
 
 HEADERS += exerciseShift.h
 SOURCES += exerciseShift.cpp

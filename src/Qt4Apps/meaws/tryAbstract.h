@@ -1,5 +1,5 @@
-#ifndef MEAWS_EXERCISE_ABSTRACT_H
-#define MEAWS_EXERCISE_ABSTRACT_H
+#ifndef MEAWS_TRY_ABSTRACT_H
+#define MEAWS_TRY_ABSTRACT_H
 
 #include "defs.h"
 #include <QObject>
@@ -7,15 +7,15 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QDir>
-#include "tryAbstract.h"
 
-#include "backend.h"
-
-class Exercise : public QObject {
+class Try : public QObject {
 	Q_OBJECT
 
 public:
-	Exercise();
+	Try();
+	QLabel* getDisplay();
+
+/*
 	void setArea(QFrame *getInstructionArea, QFrame *getResultArea);
 	virtual void setupDisplay() = 0;
 	virtual QString exercisesDir() = 0;
@@ -23,19 +23,13 @@ public:
 	virtual bool displayAnalysis(MarBackend *results) = 0;
 	virtual QString getMessage() = 0;
 	virtual void open(QString exerciseFilename);
+*/
 
-signals:
-	void analysisDone();
+//signals:
+//	void analysisDone();
 
 protected:
-    QFrame *instructionArea;
-	QLayout *instructionLayout;
-	QLabel *instructionImageLabel;
-
-    QFrame *resultArea;
-	QLayout *resultLayout;
-
-	QList<Try *> *tries;
+	QLabel *resultDisplay;
 };
 #endif
 

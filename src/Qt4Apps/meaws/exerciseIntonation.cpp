@@ -77,6 +77,13 @@ void ExerciseIntonation::setupDisplay() {
 	foo->setBackgroundColor(QColor(255,0,0));
 	resultLayout->addWidget(foo);
 	resultArea->setLayout(resultLayout);
+
+	Try *newTry = new Try();
+	tries = new QList<Try *>;
+	tries->append(newTry);
+
+	resultLayout->addWidget( (tries->takeFirst())->getDisplay() );
+//zz
 }
 
 QString ExerciseIntonation::exercisesDir() {
@@ -117,7 +124,7 @@ bool ExerciseIntonation::displayAnalysis(MarBackend *results) {
 	int start;
 	for (int i=0; i<notes.getRows(); i++)
 	{
-		start = notes(i,1);
+		start = (mrs_natural) notes(i,1);
 		while ( exerAnswer(j,1) <= notes(i,1) )
 		{
 			if (j>exerAnswer.getRows()-1)
