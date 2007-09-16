@@ -36,7 +36,7 @@ Spectrum2Mel::Spectrum2Mel(string name):MarSystem("Spectrum2Mel", name)
 Spectrum2Mel::Spectrum2Mel(const Spectrum2Mel& a) : MarSystem(a)
 {
 	ctrl_melBands_ = getctrl("mrs_natural/melBands");
-	ctrl_bandWidth_ = getctrl("mrs_natural/bandWidth");
+	ctrl_bandWidth_ = getctrl("mrs_real/bandWidth");
 	ctrl_bandLowEdge_ = getctrl("mrs_real/bandLowEdge");
 	ctrl_bandHighEdge_ = getctrl("mrs_real/bandHighEdge");
 	ctrl_htkMel_ = getctrl("mrs_bool/htkMel");
@@ -66,7 +66,7 @@ void
 Spectrum2Mel::addControls()
 {
 	addctrl("mrs_natural/melBands", 40, ctrl_melBands_);
-	addctrl("mrs_natural/bandWidth", 1.0, ctrl_bandWidth_);
+	addctrl("mrs_real/bandWidth", 1.0, ctrl_bandWidth_);
 	addctrl("mrs_real/bandLowEdge", 0.0, ctrl_bandLowEdge_);
 	addctrl("mrs_real/bandHighEdge", -1.0, ctrl_bandHighEdge_);
 	addctrl("mrs_bool/htkMel", false, ctrl_htkMel_);
