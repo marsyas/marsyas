@@ -17,8 +17,11 @@ class ExerciseDispatcher : public QDialog {
 	Q_OBJECT
 
 public:
-	ExerciseDispatcher(QFrame *getInstructionArea, QFrame *getResultArea);
+	ExerciseDispatcher();
 	~ExerciseDispatcher();
+
+	QFrame* getInstructionArea() { return instructionArea; };
+	QFrame* getResultArea() { return resultArea; };
 
 	QString getMessage();
 
@@ -41,13 +44,17 @@ signals:
 private:
 	bool chooseEvaluation();
 
-	QString exerciseName;
+	// basic GUI frames
 	QFrame *instructionArea;
 	QFrame *resultArea;
 
+	// actual Meaws objects
 	Exercise *evaluation;
-	bool attemptRunningBool;
 	MarBackend *marBackend;
+
+	// left-over garbage (?)
+	QString exerciseName;
+	bool attemptRunningBool;
 
 	QString statusMessage;
 };

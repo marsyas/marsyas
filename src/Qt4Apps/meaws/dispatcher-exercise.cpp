@@ -3,10 +3,11 @@ using namespace std;
 
 #include "dispatcher-exercise.h"
 
-ExerciseDispatcher::ExerciseDispatcher(QFrame *getInstructionArea, QFrame *getResultArea)
+ExerciseDispatcher::ExerciseDispatcher()
 {
-	instructionArea = getInstructionArea;
-	resultArea = getResultArea;
+	instructionArea = new QFrame;
+	resultArea = new QFrame;
+
 	attemptRunningBool = false;
 	marBackend = NULL;
 	evaluation = NULL;
@@ -32,8 +33,6 @@ tr("Shifting test");
 //		if (item=="Shifting test") evaluation = new ExerciseShift();
 		connect(evaluation,SIGNAL(analysisDone()), this,
 SLOT(analysisDone()));
-		evaluation->setArea(instructionArea, resultArea);
-		evaluation->setupDisplay();
 		return true;
 	}
 	return false;
@@ -45,6 +44,8 @@ void ExerciseDispatcher::open() {
 			evaluation->exercisesDir(), tr("Exercises (*.png)"));
 		if (!openFilename.isEmpty()) {
 			evaluation->open(openFilename);
+			evaluation->setupDisplay(instructionArea, resultArea);
+			evaluation->blah();
 			if (marBackend != NULL)
 				delete marBackend;
 			marBackend = new MarBackend(evaluation->getType());

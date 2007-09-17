@@ -15,7 +15,7 @@ public:
 	int getType();
 
 	void open(QString exerciseFilename);
-	void setupDisplay();
+	void blah();
 	QString exercisesDir();
 	QString getMessage();
 

@@ -7,15 +7,11 @@ Exercise::Exercise()
 {
 	instructionLayout = NULL;
 	instructionImageLabel = NULL;
-
-	instructionArea = new QFrame;
-	resultArea = new QFrame;
+	resultLayout = NULL;
 }
 
 Exercise::~Exercise()
 {
-	cout<<"abs delete"<<endl;
-
 	if (instructionLayout != NULL)
 	{
 		if (instructionImageLabel != NULL) {
@@ -27,12 +23,6 @@ Exercise::~Exercise()
 	}
 }
 
-void Exercise::setArea(QFrame *getInstructionArea, QFrame *getResultArea)
-{
-	instructionArea = getInstructionArea;
-	resultArea = getResultArea;
-}
-
 void Exercise::open(QString exerciseFilename) {
 	instructionImageLabel = new QLabel;
 	QPixmap *instructPixmap = new QPixmap(exerciseFilename);
@@ -42,6 +32,10 @@ void Exercise::open(QString exerciseFilename) {
 	instructionImageLabel->setMinimumHeight(instructPixmap->height());
 	instructionLayout = new QVBoxLayout;
 	instructionLayout->addWidget(instructionImageLabel);
+	foo = instructPixmap->height();
+}
+
+void Exercise::setupDisplay(QFrame* instructionArea, QFrame* resultArea) {
 	instructionArea->setLayout(instructionLayout);
 	int ml, mt, mr, mb;
 	instructionLayout->getContentsMargins(&ml, &mt, &mr, &mb);
@@ -49,8 +43,19 @@ void Exercise::open(QString exerciseFilename) {
 	mb = 0;
 	instructionLayout->setContentsMargins(ml, mt, mr, mb);
 
-	instructionArea->setMaximumHeight(instructPixmap->height()+mt+mb);
-	instructionArea->setMinimumHeight(instructPixmap->height()+mt+mb);
-}
+			// somehow figure out height.  :(
+//	const QLabel* instructionLabel = (QLabel*) instructionLayout->itemAt(0);
+	//const int height = instructionLabel->height();
+	//cout<<instructionLabel->height()<<endl;
+	//cout<<foo->pixmap()->height()<<endl;
+	//const QPixmap* foo = ( (QLabel*) instructionLayout->itemAt(0) )->pixmap();
+	//const QPixmap *instructPixmap = ( (QLabel*) instructionLayout->itemAt(0) )->pixmap();
+	//cout<<instructPixmap->height()<<endl;
 
+	instructionArea->setMaximumHeight(foo);
+	instructionArea->setMinimumHeight(foo);
+
+	resultLayout = new QVBoxLayout;
+	resultArea->setLayout(resultLayout);
+}
 

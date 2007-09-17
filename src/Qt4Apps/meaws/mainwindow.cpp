@@ -69,11 +69,10 @@ void MainWindow::createMain() {
 
 
 	mainLayout = new QVBoxLayout;
-	mainLayout->addWidget(instructionArea);
-	mainLayout->addWidget(resultArea);
+	mainLayout->addWidget( exercise->getInstructionArea() );
+	mainLayout->addWidget( exercise->getResultArea() );
 	centralFrame->setLayout(mainLayout);
 }
-//zz
 
 void MainWindow::createMenus()
 {
@@ -235,9 +234,7 @@ void MainWindow::createObjects() {
 	user = new User();
 	connect(user, SIGNAL(enableActions(int)), this, SLOT(enableActions(int)));
 
-	instructionArea = new QFrame;
-	resultArea = new QFrame;
-	exercise = new ExerciseDispatcher(instructionArea, resultArea);
+	exercise = new ExerciseDispatcher();
 	connect(exercise, SIGNAL(enableActions(int)), this, SLOT(enableActions(int)));
 	connect(exercise, SIGNAL(attemptRunning(bool)), this, SLOT(attemptRunning(bool)));
 }

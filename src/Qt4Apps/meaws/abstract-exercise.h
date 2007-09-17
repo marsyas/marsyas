@@ -13,26 +13,28 @@ class Exercise : public QObject {
 public:
 	Exercise();
 	~Exercise();
-	void setArea(QFrame *getInstructionArea, QFrame *getResultArea);
 
 	virtual void open(QString exerciseFilename);
+	virtual void setupDisplay(QFrame* instructionArea, QFrame*
+resultArea);
 
-	virtual void setupDisplay() = 0;
 	virtual QString exercisesDir() = 0;
 	virtual int getType() = 0;
 	virtual bool displayAnalysis(MarBackend *results) = 0;
 	virtual QString getMessage() = 0;
+	virtual void blah() = 0;
 
 signals:
 	void analysisDone();
 
 protected:
-    QFrame *instructionArea;
 	QLayout *instructionLayout;
 	QLabel *instructionImageLabel;
 
-    QFrame *resultArea;
 	QLayout *resultLayout;
+
+	// figure out how to find the height.  :(
+	int foo;
 };
 #endif
 

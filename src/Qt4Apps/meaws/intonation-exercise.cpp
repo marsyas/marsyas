@@ -14,6 +14,7 @@ IntonationExercise::IntonationExercise() {
 	// to move
 	IntonationTry *newTry = new IntonationTry();
 	tries->append(newTry);
+
 }
 
 IntonationExercise::~IntonationExercise() {
@@ -73,15 +74,15 @@ void IntonationExercise::open(QString exerciseFilename) {
 	tries->at(0)->setAnswer(exerAnswer);
 }
 
-void IntonationExercise::setupDisplay() {
-	resultLayout = new QVBoxLayout;
+void IntonationExercise::blah() {
+	//resultLayout = new QVBoxLayout;
 
 //	resultLabel = new QLabel;
 //	resultLabel->setText("Intonation Exercise");
 //	resultArea->addWidget(resultLabel,0,0);
 
 	resultLayout->addWidget( tries->at(0)->getDisplay() );
-	resultArea->setLayout(resultLayout);
+//	resultArea->setLayout(resultLayout);
 //zz
 }
 
