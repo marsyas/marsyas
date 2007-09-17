@@ -4,26 +4,32 @@
 #include "defs.h"
 #include "abstract-exercise.h"
 #include "intonation-try.h"
+#include <QButtonGroup>
 
-
-#include "QtMarPlot.h"
 
 class IntonationExercise : public Exercise {
 public:
 	IntonationExercise();
 	~IntonationExercise();
+
 	int getType();
+	QString exercisesDir();
 
 	void open(QString exerciseFilename);
 	void addTry();
-	QString exercisesDir();
-	QString getMessage();
 
+	QString getMessage();
 	bool displayAnalysis(MarBackend *results);
+
+public slots:
+	void button(mrs_natural selected);
 
 private:
 	realvec exerAnswer;
 	QList<IntonationTry *> *tries;
+
+	QButtonGroup* resultGroup;
+	int nextNumber;
 };
 #endif
 

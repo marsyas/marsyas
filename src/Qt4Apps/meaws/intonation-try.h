@@ -14,7 +14,7 @@ class IntonationTry : public Try {
 public:
 	IntonationTry();
 	~IntonationTry();
-//	QLabel* getDisplay();
+	QtMarPlot* getPlot() { return foo; };
 	void setAnswer(const realvec answers);
 
 	bool displayAnalysis(MarBackend *results);

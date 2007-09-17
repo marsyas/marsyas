@@ -9,21 +9,14 @@ using namespace std;
 
 IntonationExercise::IntonationExercise() {
 	tries = new QList<IntonationTry *>;
+
+	resultGroup = new QButtonGroup;
+
+	nextNumber = 0;
 }
 
 IntonationExercise::~IntonationExercise() {
-	if (instructionImageLabel != NULL) {
-		instructionLayout->removeWidget(instructionImageLabel);
-		delete instructionImageLabel;
-		instructionImageLabel = NULL;
-	}
-/*
-	if (resultLabel != NULL) {
-		resultLayout->removeWidget(resultLabel);
-		delete resultLabel;
-		resultLabel = NULL;
-	}
-*/
+	delete tries;
 }
 
 int IntonationExercise::getType() {
@@ -38,7 +31,8 @@ void IntonationExercise::open(QString exerciseFilename) {
 	mrs_natural frameSum=0;
 	mrs_natural frame;
 	int i=0;
-	exerAnswer.create(100,2);
+	exerAnswer.create(16,2);
+	//exerAnswer.create(100,2);
 	QString answerFilename = exerciseFilename;
 	int size = answerFilename.size();
 	answerFilename.replace(size-4,4,".txt");
@@ -49,10 +43,10 @@ void IntonationExercise::open(QString exerciseFilename) {
 		while (!answerText.atEnd())
 		{
 			answerText>>one>>two;
-			exerAnswer(i,0) = one;
-			exerAnswer(i,1) = two;
-//			exerAnswer.stretchWrite(i,0,one);
-//			exerAnswer.stretchWrite(i,1,two);
+//			exerAnswer(i,0) = one;
+//			exerAnswer(i,1) = two;
+			exerAnswer.stretchWrite(i,0,one);
+			exerAnswer.stretchWrite(i,1,two);
 			i++;
 		}
 	}
@@ -72,6 +66,18 @@ void IntonationExercise::addTry() {
 	resultLayout->addWidget( newTry->getDisplay() );
 	tries->append(newTry);
 	tries->at(0)->setAnswer(exerAnswer);
+
+	nextNumber++;
+	newTry->getPlot()->setReportNumber(nextNumber);
+
+	connect(newTry->getPlot(), SIGNAL(report(mrs_natural)),
+		this, SLOT(button(mrs_natural)));
+}
+
+void IntonationExercise::button(mrs_natural selected)
+{
+	cout<<selected<<endl;
+	//cout<<resultGroup->checkedButton()<<endl;
 }
 
 QString IntonationExercise::exercisesDir() {
@@ -88,85 +94,7 @@ QString IntonationExercise::getMessage() {
 
 bool IntonationExercise::displayAnalysis(MarBackend *results) {
 	tries->at(0)->displayAnalysis(results);
-/*
-	realvec pitches = results->getMidiPitches();
-	realvec amps = results->getAmplitudes();
-	realvec bounds(2);
-	bounds(0) = 0;
-	bounds(1) = pitches.getSize();
-	Transcriber::pitchSegment(pitches, bounds);
-	realvec notes;
-	notes = Transcriber::getNotes(pitches, amps, bounds);
-//	cout<<notes;
-
-	realvec *data = new realvec;
-	(*data) = pitches;
-	foo->setData(data);
-	foo->setVertical(0,80);
-	foo->setPlotName("pitches");
-
-	realvec mistakes;
-	mistakes.create(exerAnswer.getRows());
-	mrs_natural expected;
-	mrs_real detected;
-	mrs_real mistake;
-	int j=0;
-	int start;
-	for (int i=0; i<notes.getRows(); i++)
-	{
-		start = (mrs_natural) notes(i,1);
-		while ( exerAnswer(j,1) <= notes(i,1) )
-		{
-			if (j>exerAnswer.getRows()-1)
-				break;
-			expected = (mrs_natural) exerAnswer(j,0);
-			//cout<<"Correct: "<<exerAnswer(j,0)<<"  "<<exerAnswer(j,1)<<endl;
-			j++;
-		}
-		//cout<<"\t"<<notes(i,0)<<" "<<notes(i,1)<<endl;
-		detected = notes(i,0);
-		mistake = fmod(detected,12.0) - (expected % 12);
-		if (mistake > 6)
-			mistake -= 12.0;
-		//cout<<"**** "<<j<<"   "<<mistake<<endl;
-		if (j>exerAnswer.getRows()-1)
-			break;
-		mistakes(j) += mistake;
-	}
-	cout<<mistakes;
-
-//	cout<<pitches<<endl;
-//	cout<<amps<<endl;
-
-
-*/
-/*
-	realvec durations = results->getDurations();
-	realvec notes = results->getNotes();
-
-	QFile out_file("/tmp/notes.txt");
-	out_file.open(QIODevice::WriteOnly | QIODevice::Text);
-	QTextStream out(&out_file);
-
-	for (int i=0; i<durations.getSize(); i++) {
-		if (notes(i)>0) {
-			out<<(int) floor(notes(i)+0.5)<<"\t"<<durations(i)<<endl;;
-			cout<<(int) floor(notes(i)+0.5)<<"\t"<<durations(i)<<endl;;
-		}
-	}
-	out_file.close();
-*/
-
-/*
-#ifndef MARSYAS_WIN32 // [ML] this is ugly and sleep does not exist in Win32 !!
-	system("/Users/gperciva/progs/python/libbabelpond/reldurs.py /tmp/notes.txt");
-	sleep(1);
-	system("cd /tmp; lilypond -dpreview tempscore.ly");
-	sleep(5);
-#endif
-
-	resultLabel->setPixmap(QPixmap::fromImage(QImage("/tmp/tempscore.preview.png")));
-*/
+	addTry();
 	return true;
 }
 

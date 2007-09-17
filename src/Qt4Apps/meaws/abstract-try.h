@@ -14,7 +14,7 @@ class Try : public QObject {
 
 public:
 	Try();
-	virtual QFrame* getDisplay();
+	virtual QFrame* getDisplay() { return tryArea; };
 
 	virtual bool displayAnalysis(MarBackend *results) = 0;
 

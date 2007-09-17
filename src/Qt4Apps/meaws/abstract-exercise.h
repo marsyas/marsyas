@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QString>
 #include "abstract-try.h"
+#include "result-list.h"
 
 
 class Exercise : public QObject {
@@ -20,12 +21,15 @@ resultArea);
 
 	virtual QString exercisesDir() = 0;
 	virtual int getType() = 0;
-	virtual bool displayAnalysis(MarBackend *results) = 0;
 	virtual QString getMessage() = 0;
 	virtual void addTry() = 0;
+	virtual bool displayAnalysis(MarBackend *results) = 0;
 
 signals:
 	void analysisDone();
+
+public slots:
+	virtual void button(mrs_natural selected) = 0;
 
 protected:
 	QLayout *instructionLayout;
@@ -33,7 +37,7 @@ protected:
 
 	QLayout *resultLayout;
 
-	// figure out how to find the height.  :(
+	// TODO: figure out how to find the height.  :(
 	int foo;
 };
 #endif

@@ -8,9 +8,4 @@ Try::Try()
 	tryArea = new QFrame();
 }
 
-QFrame* Try::getDisplay()
-{
-	return tryArea;
-}
-
 
