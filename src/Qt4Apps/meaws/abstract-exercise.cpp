@@ -8,6 +8,9 @@ Exercise::Exercise()
 	instructionLayout = NULL;
 	instructionImageLabel = NULL;
 	resultLayout = NULL;
+
+	tries = new QList<Try *>;
+
 }
 
 Exercise::~Exercise()
@@ -59,4 +62,10 @@ void Exercise::setupDisplay(QFrame* instructionArea, QFrame* resultArea) {
 	resultLayout = new QVBoxLayout;
 	resultArea->setLayout(resultLayout);
 }
+
+/*
+void Exercise::addTry(Try* newTry) {
+
+}
+*/
 

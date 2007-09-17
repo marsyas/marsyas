@@ -12,6 +12,8 @@ IntonationTry::IntonationTry()
     foo->setBackgroundColor(QColor(255,0,0));
     tryLayout->addWidget(foo);
     tryArea->setLayout(tryLayout);
+
+	connect(foo, SIGNAL(clicked()), this, SLOT(clicked()));
 }
 
 IntonationTry::~IntonationTry()

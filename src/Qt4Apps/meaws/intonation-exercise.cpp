@@ -8,8 +8,6 @@ using namespace std;
 
 
 IntonationExercise::IntonationExercise() {
-//	tries = new QList<IntonationTry *>;
-	tries = new QList<Try *>;
 }
 
 IntonationExercise::~IntonationExercise() {
@@ -60,13 +58,16 @@ void IntonationExercise::open(QString exerciseFilename) {
 
 void IntonationExercise::addTry() {
 	IntonationTry *newTry = new IntonationTry();
+	connect(newTry, SIGNAL(reportNumber(mrs_natural)),
+		this, SLOT(button(mrs_natural)));
+	
+
+
 	resultLayout->addWidget( newTry->getDisplay() );
 	tries->append(newTry);
 	newTry->setAnswer(exerAnswer);
-	newTry->getPlot()->setReportNumber(tries->count()-1);
+	newTry->setReportNumber(tries->count()-1);
 	current_ = tries->count()-1;
-	connect(newTry->getPlot(), SIGNAL(report(mrs_natural)),
-		this, SLOT(button(mrs_natural)));
 }
 
 void IntonationExercise::button(mrs_natural selected)

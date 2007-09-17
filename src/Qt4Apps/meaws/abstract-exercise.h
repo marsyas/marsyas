@@ -5,7 +5,6 @@
 #include <QObject>
 #include <QString>
 #include "abstract-try.h"
-#include "result-list.h"
 
 
 class Exercise : public QObject {
