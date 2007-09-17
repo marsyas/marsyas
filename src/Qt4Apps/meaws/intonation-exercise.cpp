@@ -8,11 +8,8 @@ using namespace std;
 
 
 IntonationExercise::IntonationExercise() {
-	tries = new QList<IntonationTry *>;
-
-	resultGroup = new QButtonGroup;
-
-	nextNumber = 0;
+//	tries = new QList<IntonationTry *>;
+	tries = new QList<Try *>;
 }
 
 IntonationExercise::~IntonationExercise() {
@@ -65,19 +62,17 @@ void IntonationExercise::addTry() {
 	IntonationTry *newTry = new IntonationTry();
 	resultLayout->addWidget( newTry->getDisplay() );
 	tries->append(newTry);
-	tries->at(0)->setAnswer(exerAnswer);
-
-	nextNumber++;
-	newTry->getPlot()->setReportNumber(nextNumber);
-
+	newTry->setAnswer(exerAnswer);
+	newTry->getPlot()->setReportNumber(tries->count()-1);
+	current_ = tries->count()-1;
 	connect(newTry->getPlot(), SIGNAL(report(mrs_natural)),
 		this, SLOT(button(mrs_natural)));
 }
 
 void IntonationExercise::button(mrs_natural selected)
 {
-	cout<<selected<<endl;
-	//cout<<resultGroup->checkedButton()<<endl;
+	current_ = selected;
+	emit analysisDone();
 }
 
 QString IntonationExercise::exercisesDir() {
@@ -87,8 +82,7 @@ QString IntonationExercise::exercisesDir() {
 }
 
 QString IntonationExercise::getMessage() {
-	// TODO: another totally fake demo for MISTIC.
-	QString toReturn("Grade: 76\%");
+	QString toReturn( "Selected attempt " + QString::number(current_) );
 	return toReturn;
 }
 

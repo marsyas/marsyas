@@ -26,10 +26,9 @@ public slots:
 
 private:
 	realvec exerAnswer;
-	QList<IntonationTry *> *tries;
+//	QList<IntonationTry *> *tries;
 
-	QButtonGroup* resultGroup;
-	int nextNumber;
+	mrs_natural current_;
 };
 #endif
 

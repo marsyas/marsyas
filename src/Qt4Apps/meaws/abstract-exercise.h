@@ -36,6 +36,7 @@ protected:
 	QLabel *instructionImageLabel;
 
 	QLayout *resultLayout;
+	QList<Try *> *tries;
 
 	// TODO: figure out how to find the height.  :(
 	int foo;
