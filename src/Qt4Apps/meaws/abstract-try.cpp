@@ -7,12 +7,12 @@ Try::Try()
 {
 	tryArea = new QFrame();
 	tryLayout = NULL;
-	reportNumber_ = 0;
+	tryNumber_ = 0;
 }
 
 void Try::clicked()
 {
-	emit reportNumber(reportNumber_);
+	emit tryNumber(tryNumber_);
 }
 
 

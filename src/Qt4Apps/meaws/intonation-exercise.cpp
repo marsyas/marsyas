@@ -58,7 +58,7 @@ void IntonationExercise::open(QString exerciseFilename) {
 
 void IntonationExercise::addTry() {
 	IntonationTry *newTry = new IntonationTry();
-	connect(newTry, SIGNAL(reportNumber(mrs_natural)),
+	connect(newTry, SIGNAL(tryNumber(mrs_natural)),
 		this, SLOT(button(mrs_natural)));
 	
 

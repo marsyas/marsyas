@@ -15,7 +15,7 @@ class Try : public QObject {
 public:
 	Try();
 	virtual QFrame* getDisplay() { return tryArea; };
-	virtual void setReportNumber(mrs_natural num) { reportNumber_ = num;
+	virtual void setReportNumber(mrs_natural num) { tryNumber_ = num;
 };
 
 	virtual bool displayAnalysis(MarBackend *results) = 0;
@@ -24,7 +24,7 @@ public slots:
 	virtual void clicked();
 
 signals:
-	void reportNumber(mrs_natural);
+	void tryNumber(mrs_natural);
 
 //signals:
 //	void analysisDone();
@@ -33,7 +33,7 @@ protected:
 	QFrame *tryArea;
 	QLayout *tryLayout;
 
-	mrs_natural reportNumber_;
+	mrs_natural tryNumber_;
 };
 #endif
 
