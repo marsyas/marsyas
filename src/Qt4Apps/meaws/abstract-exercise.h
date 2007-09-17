@@ -22,7 +22,7 @@ resultArea);
 	virtual int getType() = 0;
 	virtual bool displayAnalysis(MarBackend *results) = 0;
 	virtual QString getMessage() = 0;
-	virtual void blah() = 0;
+	virtual void addTry() = 0;
 
 signals:
 	void analysisDone();

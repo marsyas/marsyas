@@ -45,7 +45,7 @@ void ExerciseDispatcher::open() {
 		if (!openFilename.isEmpty()) {
 			evaluation->open(openFilename);
 			evaluation->setupDisplay(instructionArea, resultArea);
-			evaluation->blah();
+			evaluation->addTry();
 			if (marBackend != NULL)
 				delete marBackend;
 			marBackend = new MarBackend(evaluation->getType());

@@ -7,14 +7,8 @@ using namespace std;
 #include "Transcriber.h"
 
 
-
 IntonationExercise::IntonationExercise() {
 	tries = new QList<IntonationTry *>;
-
-	// to move
-	IntonationTry *newTry = new IntonationTry();
-	tries->append(newTry);
-
 }
 
 IntonationExercise::~IntonationExercise() {
@@ -71,19 +65,13 @@ void IntonationExercise::open(QString exerciseFilename) {
 		frameSum += frame;
 	}
 //	cout<<exerAnswer;
-	tries->at(0)->setAnswer(exerAnswer);
 }
 
-void IntonationExercise::blah() {
-	//resultLayout = new QVBoxLayout;
-
-//	resultLabel = new QLabel;
-//	resultLabel->setText("Intonation Exercise");
-//	resultArea->addWidget(resultLabel,0,0);
-
-	resultLayout->addWidget( tries->at(0)->getDisplay() );
-//	resultArea->setLayout(resultLayout);
-//zz
+void IntonationExercise::addTry() {
+	IntonationTry *newTry = new IntonationTry();
+	resultLayout->addWidget( newTry->getDisplay() );
+	tries->append(newTry);
+	tries->at(0)->setAnswer(exerAnswer);
 }
 
 QString IntonationExercise::exercisesDir() {
