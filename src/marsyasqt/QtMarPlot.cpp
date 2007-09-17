@@ -1,6 +1,4 @@
 #include "QtMarPlot.h"
-//#include <iostream>
-//using namespace std;
 
 namespace MarsyasQt
 {
@@ -14,6 +12,7 @@ QtMarPlot::QtMarPlot(QWidget *parent)
 	width_ = 1;
 	drawCenter_ = true;
 	setAutoFillBackground(true);
+	setMouseTracking(true);
 }
 
 QtMarPlot::~QtMarPlot()
@@ -26,7 +25,6 @@ void
 QtMarPlot::setData(realvec *getData)
 {
 	data_ = getData;
-//	cout<<*data_;
 	update();
 }
 
@@ -62,31 +60,25 @@ QtMarPlot::setPixelWidth(mrs_natural width)
 }
 
 void
+QtMarPlot::mousePressEvent(QMouseEvent *event)
+{
+	emit report(reportNumber_);
+	QWidget::mousePressEvent(event);
+}
+
+void
+QtMarPlot::setReportNumber(mrs_natural newNumber)
+{
+	reportNumber_ = newNumber;
+}
+
+void
 QtMarPlot::paintEvent(QPaintEvent *)
 {
 	if (data_==NULL)
 		return;
 	plot1d();
 }
-
-/*
-void
-QtMarPlot::plot2d()
-{
-	QPamrs_naturaler painter(this);
-	//cout<<"drawing 2D matrix"<<endl;
-	mrs_natural i, j;
-	mrs_natural myi, myj;
-	for (i=0; i<width(); i++) {
-		for (j=0; j<height(); j++) {
-			myi = i / ( width()/ (data_->getRows()-1) );
-			myj = j / ( height()/ (data_->getCols()-1) );
-			if ( (*data_)(myi,myj) != 0)
-				painter.drawPoint( i,j);
-		}
-	}
-}
-*/
 
 void
 QtMarPlot::plot1d()
@@ -125,3 +117,4 @@ QtMarPlot::plot1d()
 }
 
 } //namespace
+
