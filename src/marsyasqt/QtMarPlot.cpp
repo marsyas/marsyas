@@ -62,14 +62,8 @@ QtMarPlot::setPixelWidth(mrs_natural width)
 void
 QtMarPlot::mousePressEvent(QMouseEvent *event)
 {
-	emit report(reportNumber_);
+	emit clicked();
 	QWidget::mousePressEvent(event);
-}
-
-void
-QtMarPlot::setReportNumber(mrs_natural newNumber)
-{
-	reportNumber_ = newNumber;
 }
 
 void

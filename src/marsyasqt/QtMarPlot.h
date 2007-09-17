@@ -32,14 +32,12 @@ public:
 	void setData(realvec* getData);
 	void setCenterLine(bool drawit);
 
-	void setReportNumber(mrs_natural newNumber);
-
 protected:
 	void paintEvent(QPaintEvent *event);
 	void mousePressEvent(QMouseEvent *event);
 
 signals:
-	void report(mrs_natural number);
+	void clicked();
 
 private:
 	realvec *data_;
@@ -47,8 +45,6 @@ private:
 	mrs_real minVal_, highVal_;
 	mrs_natural width_;
 	bool drawCenter_;
-
-	mrs_natural reportNumber_;
 
 	void plot1d();
 	//void plot2d(); // not implemented yet
