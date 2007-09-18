@@ -58,15 +58,13 @@ namespace Marsyas
 		mrs_natural frameMaxNumPeaks_;
 		mrs_natural numFrames_;
 
-	
-		void fromTable(const realvec& vecTable);
-
 	public:
-
-			void toTable(realvec& vecTable);
 
 		peakView(realvec& vec);
 		~peakView();
+
+		void fromTable(const realvec& vecTable);
+		void toTable(realvec& vecTable);
 
 		mrs_real getFs() const {return fs_;};
 		mrs_natural getFrameSize() const {return frameSize_;};
