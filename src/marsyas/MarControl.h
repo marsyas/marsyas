@@ -202,7 +202,7 @@ public:
 	std::string getType() const; // { return value_->getType(); }
 
 	// for link controls
-	bool linkTo(MarControlPtr ctrl);
+	bool linkTo(MarControlPtr ctrl, bool update = true);
 	void unlink();
 	bool isLinked() const;
 	std::vector<MarControlPtr> getLinks();

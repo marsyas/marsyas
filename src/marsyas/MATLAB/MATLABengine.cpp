@@ -73,9 +73,9 @@ MATLABengine::getMatlabEng()
 //					setters
 //-------------------------------------------------------------------
 void
-MATLABengine::evalString(string MATLABcmd)
+MATLABengine::evalString(const std::ostringstream& MATLABcmd)
 {
-  engEvalString(engine_, MATLABcmd.c_str());
+  engEvalString(engine_, MATLABcmd.str().c_str());
   // cout << buffer_ << endl;
 }
 

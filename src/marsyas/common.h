@@ -105,7 +105,7 @@ namespace Marsyas
 	#include "MATLABengine.h"
   #define MATLAB_PUT(var, name) {MATLABengine::getMatlabEng()->putVariable(var, name);}
 	#define MATLAB_GET(name, var) MATLABengine::getMatlabEng()->getVariable(name, var)
-	#define MATLAB_EVAL(s) {MATLABengine::getMatlabEng()->evalString(s);} 
+	#define MATLAB_EVAL(s) {std::ostringstream oss; MATLABengine::getMatlabEng()->evalString((std::ostringstream&)(oss << s));}
 #else
 	#define MATLAB_PUT(var, name)
 	#define MATLAB_GET(name, var) -1

@@ -200,6 +200,8 @@ Spectrum2Chroma::myUpdate(MarControlPtr sender)
 				}
 			}
 		}
+		MATLAB_PUT(chromaMap_, "marCM");
+		MATLAB_EVAL("CM = fft2chromamx("<<N<<","<<nbins<<","<<srate<<","<<pmiddleAfreq_<<","<<pweightCenterFreq_<<","<<pweightStdDev_<<");");
 	}
 }
 
@@ -220,6 +222,9 @@ Spectrum2Chroma::myProcess(realvec& in, realvec& out)
 			}
 		}
 	}
+	MATLAB_PUT(in, "spectrum");
+	MATLAB_PUT(out,"marChromaVec");
+	MATLAB_EVAL("chromaVec = CM*spectrum;");
 }
 
 

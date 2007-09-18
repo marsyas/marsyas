@@ -27,8 +27,9 @@ using namespace Marsyas;
 
 WHaSp::WHaSp(string name):MarSystem("WHaSp", name)
 {
+	HWPSnet_ = NULL;
+
 	addControls();
-	createSimMatrixNet();
 }
 
 WHaSp::WHaSp(const WHaSp& a) : MarSystem(a)
@@ -37,7 +38,10 @@ WHaSp::WHaSp(const WHaSp& a) : MarSystem(a)
 	ctrl_totalNumPeaks_ = getctrl("mrs_natural/totalNumPeaks");
 	ctrl_frameMaxNumPeaks_ = getctrl("mrs_natural/frameMaxNumPeaks");
 	
-	createSimMatrixNet();
+	if(a.HWPSnet_)
+		createSimMatrixNet();
+	else
+		HWPSnet_ = NULL;
 }
 
 WHaSp::~WHaSp()
@@ -62,6 +66,9 @@ WHaSp::addControls()
 void
 WHaSp::createSimMatrixNet()
 {
+	if(HWPSnet_)
+		return;
+
 	HWPSnet_ = new Series("HWPSnet");
 
 	//add a feat selector and 
@@ -87,7 +94,7 @@ WHaSp::createSimMatrixNet()
 	ctrl_histSize_->setValue(20, NOUPDATE);
 
 	HWPSnet_->setctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_bool/calcDistance", true);
- //   HWPSnet_->setctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize", 100);
+	//HWPSnet_->setctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize", 100);
 }
 
 void
@@ -95,6 +102,9 @@ WHaSp::myUpdate(MarControlPtr sender)
 {
 	//output has the same flow format as input (see myProcess())
 	MarSystem::myUpdate(sender);
+
+	if(!HWPSnet_)
+			createSimMatrixNet();
 
 	//pass input flow configuration to internal MarSystem
 	HWPSnet_->setctrl("mrs_natural/inSamples",ctrl_inSamples_);

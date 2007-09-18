@@ -161,7 +161,7 @@ void MarControl::callMarSystemUpdate()
 }
 
 bool
-MarControl::linkTo(MarControlPtr ctrl)
+MarControl::linkTo(MarControlPtr ctrl, bool update)
 {
 	if (ctrl.isInvalid())
 	{
@@ -217,11 +217,17 @@ MarControl::linkTo(MarControlPtr ctrl)
 		(*lit)->value_->addLink(*lit);
 		//(*lit)->callMarSystemUpdate();
 	}
-	links = value_->getLinks();
-	for(lit=links.begin(); lit!=links.end(); ++lit)
+	
+	//call update on all MarSystems
+	if(update)
 	{
-		(*lit)->callMarSystemUpdate();
+		links = value_->getLinks();
+		for(lit=links.begin(); lit!=links.end(); ++lit)
+		{
+			(*lit)->callMarSystemUpdate();
+		}
 	}
+
 
 #ifdef MARSYAS_QT
 	ctrl->rwLock_.unlock();

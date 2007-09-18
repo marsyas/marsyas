@@ -35,6 +35,7 @@ Code by Luís Gustavo Martins <lmartins@inescporto.pt>
 #define __MATLABENGINE_H__
 
 #include <string>
+#include <sstream> 
 #include <vector>
 
 #include "common.h"
@@ -69,7 +70,7 @@ public:
   
   static MATLABengine *getMatlabEng();
   
-  void evalString(std::string MATLABcmd);
+  void evalString(const std::ostringstream& oss);
   
   //------------------------------------------------
   //					setters

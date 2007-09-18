@@ -207,8 +207,8 @@ public:
 	void updatePath();
 
 	// link controls
-	bool linkControl(std::string cname1, std::string cname2);
-	bool linkctrl(std::string cname1, std::string cname2) {return linkControl(cname1, cname2);}
+	bool linkControl(std::string cname1, std::string cname2, bool update = true);
+	bool linkctrl(std::string cname1, std::string cname2, bool update = true) {return linkControl(cname1, cname2, update);}
   
 	// update controls
   bool updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd = true);

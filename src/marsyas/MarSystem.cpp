@@ -778,7 +778,7 @@ MarSystem::getControlLocalPath(string cname) const
 }
 
 bool
-MarSystem::linkControl(string cname1, string cname2) 
+MarSystem::linkControl(string cname1, string cname2, bool update) 
 {
 	//links the control cname1 (which must be local or from a child) with the   
 	//control cname2 (which must exist somewhere). cname1 must be a valid absolute 
@@ -855,7 +855,7 @@ MarSystem::linkControl(string cname1, string cname2)
 
 	//now both controls exist 
 	//just link them (ctrl1 will be synced with the value of ctrl2).
-	return ctrl1->linkTo(ctrl2);
+	return ctrl1->linkTo(ctrl2, update);
 }
 
 MarControlPtr
