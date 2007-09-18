@@ -64,14 +64,15 @@ void MainWindow::createStatusBar() {
 }
 
 void MainWindow::createMain() {
-	QFrame* centralFrame = new QFrame;
-	setCentralWidget(centralFrame);
-
-
 	mainLayout = new QVBoxLayout;
 	mainLayout->addWidget( exercise->getInstructionArea() );
 	mainLayout->addWidget( exercise->getResultArea() );
+	mainLayout->setContentsMargins(1,1,1,1);
+
+	QFrame* centralFrame = new QFrame;
+	centralFrame->setFrameStyle(QFrame::NoFrame);
 	centralFrame->setLayout(mainLayout);
+	setCentralWidget(centralFrame);
 }
 
 void MainWindow::createMenus()

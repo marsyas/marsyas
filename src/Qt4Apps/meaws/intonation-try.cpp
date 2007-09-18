@@ -7,6 +7,7 @@ using namespace std;
 IntonationTry::IntonationTry()
 {
 	tryLayout = new QVBoxLayout();
+	tryLayout->setContentsMargins(0,0,0,0);
 	
     pitchPlot = new QtMarPlot();
 	pitchPlot->setBackgroundColor(QColor(255,0,0));
