@@ -58,10 +58,13 @@ namespace Marsyas
 		mrs_natural frameMaxNumPeaks_;
 		mrs_natural numFrames_;
 
-		void toTable(realvec& vecTable);
+	
 		void fromTable(const realvec& vecTable);
 
 	public:
+
+			void toTable(realvec& vecTable);
+
 		peakView(realvec& vec);
 		~peakView();
 

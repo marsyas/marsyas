@@ -61,24 +61,33 @@ HWPS::harmonicWrap(mrs_real peak1Freq, mrs_real peak2Freq, realvec& peak1SetFreq
 	mrs_real hF = min(peak1Freq, peak2Freq);
 	//mrs_real mhF = min(hF, abs(peak1Freq-peak2Freq));
 
+		MATLAB_PUT(peak1SetFreqs, "P1");
+		MATLAB_PUT(peak2SetFreqs, "P2");
+		MATLAB_EVAL("clf ; subplot(3, 1, 1);  hold ; stem(P1, A1); stem(P2, A2, 'r')");
+
+
 	// wrap frequencies around fundamental freq estimate
 	peak1SetFreqs /= hF;
 	peak2SetFreqs /= hF;
 
+
+
 	for (mrs_natural k=0 ; k<peak1SetFreqs.getSize() ; k++)
 	{
 		peak1SetFreqs(k)=fmod(peak1SetFreqs(k), 1);
-		//if(peak1Set(k)<0)
+		//if(peak1SetFreqs(k)<0)
 		while(peak1SetFreqs(k)<0)//replacing "if" in case of strongly negative (=> multiple wraps)
 			peak1SetFreqs(k)+=1;
 	}
 	for (mrs_natural k=0 ; k<peak2SetFreqs.getSize() ; k++)
 	{
 		peak2SetFreqs(k)=fmod(peak2SetFreqs(k), 1);
-		//if(peak2Set(k)<0)
+		//if(peak2SetFreqs(k)<0)
 		while(peak2SetFreqs(k)<0) //replacing "if" in case of strongly negative (=> multiple wraps)
 			peak2SetFreqs(k)+=1;
 	}
+
+	
 }
 
 void
@@ -156,15 +165,30 @@ HWPS::myProcess(realvec& in, realvec& out)
 	pkSet_j_WrapFreqs_ = pkSet_j_Freqs_;
 	harmonicWrap(pk_i_freq_, pk_j_freq_, pkSet_i_WrapFreqs_, pkSet_j_WrapFreqs_);
 
+		MATLAB_PUT(pkSet_i_WrapFreqs_, "P1");
+		MATLAB_PUT(pkSet_j_WrapFreqs_, "P2");
+		MATLAB_PUT(pkSet_i_Amps_, "A1");
+		MATLAB_PUT(pkSet_j_Amps_, "A2");
+		MATLAB_EVAL(" subplot(3, 1, 2);  hold ; stem(P1, A1); stem(P2, A2, 'r')");
+
+
 	//create histograms for both peaks
 	histSize_ = ctrl_histSize_->to<mrs_natural>();
 	discretize(pkSet_i_WrapFreqs_, pkSet_i_Amps_, histSize_, histogram_i_);
 	discretize(pkSet_j_WrapFreqs_, pkSet_j_Amps_, histSize_, histogram_j_);
 
+	
+		MATLAB_PUT(histogram_i_, "H1");
+		MATLAB_PUT(histogram_j_, "H2");
+		MATLAB_EVAL("subplot(3, 1, 3); bar([H1; H2]')");
+
+
+
 	if(ctrl_calcDistance_->isTrue())
 	{
 		//return the cosine DISTANCE between the two histograms and we get the HWPDistance!
-		out(0) = NumericLib::cosineDistance(histogram_i_, histogram_j_);
+		mrs_real res = NumericLib::cosineDistance(histogram_i_, histogram_j_);
+	out(0)=res;
 	}
 	else
 	{

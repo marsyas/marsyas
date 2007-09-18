@@ -85,6 +85,9 @@ WHaSp::createSimMatrixNet()
 	//link histSize control to HWPS metric
 	ctrl_histSize_->linkTo(HWPSnet_->getctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize"));
 	ctrl_histSize_->setValue(20, NOUPDATE);
+
+	HWPSnet_->setctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_bool/calcDistance", true);
+ //   HWPSnet_->setctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize", 100);
 }
 
 void
@@ -135,10 +138,15 @@ WHaSp::myProcess(realvec& in, realvec& out)
 		for(mrs_natural i=0; i < numPeaks; ++i)
 		{
 			dist = outPkView(i, peakView::pkVolume)/maxDist;
-			if(dist < 0.75)
-				outPkView(i, peakView::pkAmplitude) = 0;
+			//if(dist < 0.75)
+			//	outPkView(i, peakView::pkAmplitude) = 0;
 		}
 	}
+
+	realvec table;
+	outPkView.toTable(table);
+	MATLAB_PUT(table, "P");
+	MATLAB_EVAL("stemPeaks(P)");
 }
 
 
