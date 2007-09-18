@@ -85,12 +85,12 @@ WHaSp::createSimMatrixNet()
 	HWPSnet_->addMarSystem(simMat);
 
 	//link totalNumPeaks control to PeakFeatureSelect
-	ctrl_totalNumPeaks_->linkTo(HWPSnet_->getctrl("PeakFeatureSelect/peFeatSelect/mrs_natural/totalNumPeaks"));
+	ctrl_totalNumPeaks_->linkTo(HWPSnet_->getctrl("PeakFeatureSelect/peFeatSelect/mrs_natural/totalNumPeaks"), NOUPDATE);
 	//link frameMaxNumPeaks control to PeakFeatureSelect
-	ctrl_frameMaxNumPeaks_->linkTo(HWPSnet_->getctrl("PeakFeatureSelect/peFeatSelect/mrs_natural/frameMaxNumPeaks"));
+	ctrl_frameMaxNumPeaks_->linkTo(HWPSnet_->getctrl("PeakFeatureSelect/peFeatSelect/mrs_natural/frameMaxNumPeaks"), NOUPDATE);
 
 	//link histSize control to HWPS metric
-	ctrl_histSize_->linkTo(HWPSnet_->getctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize"));
+	ctrl_histSize_->linkTo(HWPSnet_->getctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize"), NOUPDATE);
 	ctrl_histSize_->setValue(20, NOUPDATE);
 
 	HWPSnet_->setctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_bool/calcDistance", true);

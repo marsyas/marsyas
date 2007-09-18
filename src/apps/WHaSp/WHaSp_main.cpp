@@ -68,7 +68,7 @@ CommandLineOptions cmd_options;
 void 
 printUsage(string progName)
 {
-	MRSDIAG("WHaSp.cpp - printUsage");
+	MRSDIAG("WHaSp_main.cpp - printUsage");
 	cerr << "Usage : " << progName << " [file]" << endl;
 	cerr << endl;
 	cerr << "If no filename is given the default live audio input is used. " << endl;
@@ -77,7 +77,7 @@ printUsage(string progName)
 void 
 printHelp(string progName)
 {
-	MRSDIAG("WHaSp.cpp - printHelp");
+	MRSDIAG("WHaSp_main.cpp - printHelp");
 	cerr << "WHaSp, MARSYAS" << endl;
 	cerr << "report bugs to lmartins@inescporto.pt" << endl;
 	cerr << "--------------------------------------------" << endl;
@@ -353,7 +353,7 @@ loadOptions()
 int
 main(int argc, const char **argv)
 {
-	MRSDIAG("WHaSp.cpp - main");
+	MRSDIAG("WHaSp_main.cpp - main");
 
 	initOptions();
 	cmd_options.readOptions(argc, argv);

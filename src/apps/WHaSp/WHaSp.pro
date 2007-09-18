@@ -4,4 +4,4 @@ TEMPLATE = app
 CONFIG += console
 TARGET = WHaSp
 
-SOURCES += WHaSp.cpp
+SOURCES += WHaSp_main.cpp
