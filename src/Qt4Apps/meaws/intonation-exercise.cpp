@@ -87,8 +87,7 @@ QString IntonationExercise::getMessage() {
 }
 
 bool IntonationExercise::displayAnalysis(MarBackend *results) {
-	tries->at(0)->displayAnalysis(results);
-	addTry();
+	tries->at(current_)->displayAnalysis(results);
 	return true;
 }
 

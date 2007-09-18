@@ -14,14 +14,14 @@ class IntonationTry : public Try {
 public:
 	IntonationTry();
 	~IntonationTry();
-	QtMarPlot* getPlot() { return foo; };
+//	QtMarPlot* getPlot() { return foo; };
 	void setAnswer(const realvec answers);
 
 	bool displayAnalysis(MarBackend *results);
 
 protected:
 	QLabel *resultDisplay;
-	QtMarPlot *foo;
+	QtMarPlot *pitchPlot;
 	realvec exerAnswer;
 };
 #endif

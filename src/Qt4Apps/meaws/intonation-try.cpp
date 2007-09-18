@@ -8,12 +8,12 @@ IntonationTry::IntonationTry()
 {
 	tryLayout = new QVBoxLayout();
 	
-    foo = new QtMarPlot();
-    foo->setBackgroundColor(QColor(255,0,0));
-    tryLayout->addWidget(foo);
+    pitchPlot = new QtMarPlot();
+	pitchPlot->setBackgroundColor(QColor(255,0,0));
+    tryLayout->addWidget(pitchPlot);
     tryArea->setLayout(tryLayout);
 
-	connect(foo, SIGNAL(clicked()), this, SLOT(clicked()));
+	connect(pitchPlot, SIGNAL(clicked()), this, SLOT(clicked()));
 }
 
 IntonationTry::~IntonationTry()
@@ -39,9 +39,11 @@ bool IntonationTry::displayAnalysis(MarBackend *results) {
 
 	realvec *data = new realvec;
 	(*data) = pitches;
-	foo->setData(data);
-	foo->setVertical(0,80);
-	foo->setPlotName("pitches");
+
+	pitchPlot->setData(data);
+	pitchPlot->setVertical(57,73);
+	pitchPlot->setPlotName("pitches");
+	pitchPlot->setCenterLine(false);
 
 	realvec mistakes;
 	mistakes.create(exerAnswer.getRows());
