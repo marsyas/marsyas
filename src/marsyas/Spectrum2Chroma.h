@@ -20,6 +20,8 @@
 #define MARSYAS_SPECTRUM2CHROMA_H
 
 #include "MarSystem.h"
+#include <vector>
+#include <string>
 
 namespace Marsyas
 {
@@ -43,6 +45,7 @@ class Spectrum2Chroma: public MarSystem
 {
 private:
 	realvec chromaMap_;
+	std::vector<std::string> noteNames_;
 
 	MarControlPtr ctrl_nbins_;
 	MarControlPtr ctrl_middleAfreq_;

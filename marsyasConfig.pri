@@ -70,7 +70,7 @@ unix:!macx:CONFIG += marsyasAUDIOIO_ALSA
 # Adds support for MATLAB engine classes, for debug/release builds
 ######################################################################
 
-#CONFIG	+= marsyasMATLABdebug
+CONFIG	+= marsyasMATLABdebug
 #CONFIG	+= marsyasMATLABrelease
 
 ######################################################################

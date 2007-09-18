@@ -25,6 +25,19 @@ Spectrum2Chroma::Spectrum2Chroma(string name):MarSystem("Spectrum2Chroma", name)
 {
 	addControls();
 
+	noteNames_.push_back("A");
+	noteNames_.push_back("A#");
+	noteNames_.push_back("B");
+	noteNames_.push_back("C");
+	noteNames_.push_back("C#");
+	noteNames_.push_back("D");
+	noteNames_.push_back("D#");
+	noteNames_.push_back("E");
+	noteNames_.push_back("F");
+	noteNames_.push_back("F#");
+	noteNames_.push_back("G");
+	noteNames_.push_back("G#");
+
 	pnbins_ = 0;
 	pmiddleAfreq_ = 0.0;
 	pweightCenterFreq_ = 0.0;
@@ -38,6 +51,7 @@ Spectrum2Chroma::Spectrum2Chroma(const Spectrum2Chroma& a) : MarSystem(a)
 	ctrl_weightCenterFreq_ = getctrl("mrs_real/weightCenterFreq");
 	ctrl_weightStdDev_ = getctrl("mrs_real/weightStdDev");
 
+	noteNames_ = a.noteNames_;
 	chromaMap_ = a.chromaMap_;
 	pnbins_ = a.pnbins_;
 	pmiddleAfreq_ = a.pmiddleAfreq_;
@@ -85,7 +99,7 @@ Spectrum2Chroma::myUpdate(MarControlPtr sender)
 		ostringstream oss;
 		for (mrs_natural n=0; n < pnbins_; n++)
 		{
-			oss << "ChromaBin_" << n << ",";
+			oss << "Chroma_" << noteNames_[n] << ",";
 		}
 		ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 	}

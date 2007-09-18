@@ -78,8 +78,8 @@ void
 printHelp(string progName)
 {
 	MRSDIAG("WHaSp.cpp - printHelp");
-	cerr << "WHaSp, MARSYAS, Copyright Mathieu Lagrange " << endl;
-	cerr << "report bugs to lagrange@uvic.ca" << endl;
+	cerr << "WHaSp, MARSYAS" << endl;
+	cerr << "report bugs to lmartins@inescporto.pt" << endl;
 	cerr << "--------------------------------------------" << endl;
 	cerr << "Usage : " << progName << " [file]" << endl;
 	cerr << endl;
@@ -101,10 +101,8 @@ printHelp(string progName)
 	exit(1);
 }
 
-
-// original monophonic PeVocoding
 void
-HWPSanalyse(string sfName, string outsfname, mrs_natural N, mrs_natural Nw, 
+WHaSp(string sfName, string outsfname, mrs_natural N, mrs_natural Nw, 
 						mrs_natural D, mrs_natural S, mrs_natural synthetize)
 {
 	mrs_natural nbFrames_=0, harmonize_=0;
@@ -372,7 +370,6 @@ main(int argc, const char **argv)
 	if (usageopt_)
 		printUsage(progName);
 
-
 	cerr << "WHaSp configuration (-h show the options): " << endl;
 	cerr << "fft size (-n)      = " << fftSize_ << endl;
 	cerr << "win size (-w)      = " << winSize_ << endl;
@@ -412,18 +409,19 @@ main(int argc, const char **argv)
 			else
 				path =Sfname.path();
 
-			fileName = path + "/" + Sfname.nameNoExt() + "Syn.wav" ;
+			fileName = path + "/" + Sfname.nameNoExt() + "_WHaSp_Syn.wav" ;
 			filePeakName = path + "/" + Sfname.nameNoExt() + ".peak" ;
 			cout << "WHaSp " << Sfname.name() << endl; 
 
-			HWPSanalyse(*sfi, fileName, fftSize_, winSize_, hopSize_, nbSines_, synthetize_);
+			WHaSp(*sfi, fileName, fftSize_, winSize_, hopSize_, nbSines_, synthetize_);
 		}
 	}
 	else
 	{
-		cout << "Using live microphone input" << endl;
-		microphone_ = true;
-		HWPSanalyse("microphone", fileName, fftSize_, winSize_, hopSize_, nbSines_, synthetize_);
+		cout << "Use of live microphone input not yet tested... exiting!" << endl;
+		//cout << "Using live microphone input" << endl;
+		//microphone_ = true;
+		//WHaSp("microphone", fileName, fftSize_, winSize_, hopSize_, nbSines_, synthetize_);
 	}
 
 
