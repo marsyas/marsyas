@@ -122,30 +122,29 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 
 			//normalize input features if necessary
 			if(ctrl_normalize_->to<mrs_string>() == "MinMax")
-				in.normObsMinMax(); // (x-min)/max
+				in.normObsMinMax(); // (x - min)/max
 			else if(ctrl_normalize_->to<mrs_string>() == "MeanStd")
-				in.normObs(); // (x-mean)/std
+				in.normObs(); // (x - mean)/std
 
 			//calculate the Covariance Matrix from the input, if defined
 			if(ctrl_calcCovMatrix_->to<mrs_natural>() & SimilarityMatrix::diagCovMatrix)
 			{
-				//FASTER -> only get the vars for each feature
-				in.varObs(vars_);
+				in.varObs(vars_); //FASTER -> only get the vars for each feature
 				mrs_natural dim = vars_.getSize();
-				covMatrix_.create(dim, dim);
-				//fill covMatrix diagonal with var values
+				//fill covMatrix diagonal with var values (remaining values are zero)
+				MarControlAccessor acc(ctrl_covMatrix_);
+				realvec& covMatrix = acc.to<mrs_realvec>();
+				covMatrix.create(dim, dim);
 				for(mrs_natural i=0; i< dim; ++i)
 				{
-					covMatrix_(i,i) = vars_(i);
+					covMatrix(i,i) = vars_(i);
 				}
-				ctrl_covMatrix_->setValue(covMatrix_);
 			}
 			else if(ctrl_calcCovMatrix_->to<mrs_natural>() & SimilarityMatrix::fullCovMatrix)
 			{
-				//SLOWER -> estimate the full cov matrix
-				realvec tmp;
-				in.covariance(tmp);
-				ctrl_covMatrix_->setValue(tmp); // SLOWWWWWWW!!! [TODO]
+				MarControlAccessor acc(ctrl_covMatrix_);
+				realvec& covMatrix = acc.to<mrs_realvec>(); 
+				in.covariance(covMatrix); //SLOWER -> estimate the full cov matrix
 			}
 			else if(ctrl_calcCovMatrix_->to<mrs_natural>() == SimilarityMatrix::noCovMatrix)
 			{

@@ -30,7 +30,7 @@ namespace Marsyas
 
 	Controls:
 	- \b mrs_bool/calcDistance [w] :when true, outputs Harmonically Wrapped Peak Distance instead of the Similarity (i.e. out = 1-HWPS)
-	- \b mrs_natural/hitSize [w] : histogram number of bins when discretizing for cosine distance computation
+	- \b mrs_natural/histSize [w] : histogram number of bins when discretizing for cosine distance computation
 */
   
   class HWPS: public MarSystem

@@ -177,7 +177,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Fanin", new Fanin("finp"));
 	registerPrototype("Fanout", new Fanout("fonp"));
 	registerPrototype("Parallel", new Parallel("parallelp"));
-	  registerPrototype("Cascade", new Cascade("cascadep"));
+	registerPrototype("Cascade", new Cascade("cascadep"));
 	registerPrototype("TimeStretch", new TimeStretch("tscp"));
 	registerPrototype("Peaker", new Peaker("pkrp"));
 	registerPrototype("PeakerAdaptive", new PeakerAdaptive("pkr1pr"));
