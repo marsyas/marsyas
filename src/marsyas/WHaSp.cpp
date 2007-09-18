@@ -38,10 +38,7 @@ WHaSp::WHaSp(const WHaSp& a) : MarSystem(a)
 	ctrl_totalNumPeaks_ = getctrl("mrs_natural/totalNumPeaks");
 	ctrl_frameMaxNumPeaks_ = getctrl("mrs_natural/frameMaxNumPeaks");
 	
-	if(a.HWPSnet_)
-		createSimMatrixNet();
-	else
-		HWPSnet_ = NULL;
+	HWPSnet_ = NULL;
 }
 
 WHaSp::~WHaSp()
@@ -85,16 +82,25 @@ WHaSp::createSimMatrixNet()
 	HWPSnet_->addMarSystem(simMat);
 
 	//link totalNumPeaks control to PeakFeatureSelect
-	ctrl_totalNumPeaks_->linkTo(HWPSnet_->getctrl("PeakFeatureSelect/peFeatSelect/mrs_natural/totalNumPeaks"), NOUPDATE);
+	HWPSnet_->getctrl("PeakFeatureSelect/peFeatSelect/mrs_natural/totalNumPeaks")->linkTo(ctrl_totalNumPeaks_, NOUPDATE);
+	HWPSnet_->update(); //only call update to HWPSnet_ since this is being called from WHaSp::update()! -> avoid potential infinite recursion!
+	
 	//link frameMaxNumPeaks control to PeakFeatureSelect
-	ctrl_frameMaxNumPeaks_->linkTo(HWPSnet_->getctrl("PeakFeatureSelect/peFeatSelect/mrs_natural/frameMaxNumPeaks"), NOUPDATE);
+	HWPSnet_->getctrl("PeakFeatureSelect/peFeatSelect/mrs_natural/frameMaxNumPeaks")->linkTo(ctrl_frameMaxNumPeaks_, NOUPDATE);
+	HWPSnet_->update(); //only call update to HWPSnet_ since this is being called from WHaSp::update()! -> avoid potential infinite recursion!
 
 	//link histSize control to HWPS metric
-	ctrl_histSize_->linkTo(HWPSnet_->getctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize"), NOUPDATE);
-	ctrl_histSize_->setValue(20, NOUPDATE);
+	HWPSnet_->getctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize")->linkTo(ctrl_histSize_, NOUPDATE);
+	HWPSnet_->update(); //only call update to HWPSnet_ since this is being called from WHaSp::update()! -> avoid potential infinite recursion!
+	
+	HWPSnet_->setctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize", 20);
+	HWPSnet_->update(); //only call update to HWPSnet_ since this is being called from WHaSp::update()! -> avoid potential infinite recursion!
 
-	HWPSnet_->setctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_bool/calcDistance", true);
-	//HWPSnet_->setctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize", 100);
+	//HWPSnet_->updctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_bool/calcDistance", true);
+
+	HWPSnet_->setctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize", 100);
+	//HWPSnet_->update(); //only call update to HWPSnet_ since this is being called from WHaSp::update()! -> avoid potential infinite recursion!
+
 }
 
 void
@@ -143,11 +149,17 @@ WHaSp::myProcess(realvec& in, realvec& out)
 			if(outPkView(r, peakView::pkVolume) > maxDist)
 				maxDist = outPkView(r, peakView::pkVolume);
 		}
-		//filter peaks with Volumes below a defined threshold [!]
+		
 		mrs_real dist;
 		for(mrs_natural i=0; i < numPeaks; ++i)
 		{
-			dist = outPkView(i, peakView::pkVolume)/maxDist;
+			//"enhance" all spectral peaks that have a high harmonicity
+			//similarity with other peaks (i.e. high HWPS)
+			outPkView(i, peakView::pkAmplitude) *= outPkView(i, peakView::pkVolume)/maxDist;
+
+			//filter peaks with Volumes below a defined threshold
+			//
+			//dist = outPkView(i, peakView::pkVolume)/maxDist;
 			//if(dist < 0.75)
 			//	outPkView(i, peakView::pkAmplitude) = 0;
 		}

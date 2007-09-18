@@ -91,13 +91,11 @@ printHelp(string progName)
 	cerr << "-b --buffersize      : audio buffer size" << endl;
 	cerr << "-o --outputdirectoryname   : output directory path" << endl;
 	cerr << "-p --panning : panning informations <foreground level (0..1)>-<foreground pan (-1..1)>-<background level>-<background pan> " << endl;
-	cerr << "-S --synthetise : synthetize using an oscillator bank (0), an IFFT mono (1), or an IFFT stereo (2)" << endl;
-	cerr << "-H --harmonize : change the frequency accoring to the file provided" << endl;	
+	cerr << "-S --synthesize : synthetize using an oscillator bank (0), an IFFT mono (1), or an IFFT stereo (2)" << endl;
+	cerr << "-H --harmonize : change the frequency according to the file provided" << endl;	
 	cerr << "" << endl;
 	cerr << "-u --usage           : display short usage info" << endl;
 	cerr << "-h --help            : display this information " << endl;
-
-
 	exit(1);
 }
 
@@ -108,10 +106,10 @@ WHaSp(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 	mrs_natural nbFrames_=0, harmonize_=0;
 	realvec harmonizeData_;
 	MarControlPtr ctrl_harmonize_;
-	cout << "Extracting Peaks and Clusters" << endl;
+
 	MarSystemManager mng;
 
-	// create the phasevocoder network
+	// create the main network
 	MarSystem* pvseries = mng.create("Series", "pvseries");
 
 	if(analyse_)
@@ -121,8 +119,7 @@ WHaSp(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 			pvseries->addMarSystem(mng.create("AudioSource", "src"));
 		else 
 			pvseries->addMarSystem(mng.create("SoundFileSource", "src"));
-		
-		
+				
 		//create analyzer (using composite prototype)
 		pvseries->addMarSystem(mng.create("WHaSpnet", "whaspnet"));
 		pvseries->linkctrl("mrs_natural/frameMaxNumPeaks","WHaSpnet/whaspnet/PeAnalyse/analyse/mrs_natural/frameMaxNumPeaks");
