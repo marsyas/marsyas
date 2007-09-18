@@ -37,6 +37,9 @@ public slots:
 	void analyze(); // temp
 	void analysisDone(); // even tempier
 
+	void addTry() { evaluation->addTry(); };
+	void delTry() { evaluation->delTry(); };
+
 signals:
 	void enableActions(int state);
 	void attemptRunning(bool running);

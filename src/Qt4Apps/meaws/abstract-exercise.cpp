@@ -8,9 +8,8 @@ Exercise::Exercise()
 	instructionLayout = NULL;
 	instructionImageLabel = NULL;
 	resultLayout = NULL;
-
+	current_ = -1;
 	tries = new QList<Try *>;
-
 }
 
 Exercise::~Exercise()
@@ -63,9 +62,25 @@ void Exercise::setupDisplay(QFrame* instructionArea, QFrame* resultArea) {
 	resultArea->setLayout(resultLayout);
 }
 
-/*
-void Exercise::addTry(Try* newTry) {
-
+void Exercise::addTryAbstract(Try* newTry) {
+    resultLayout->addWidget( newTry->getDisplay() );
+    newTry->setTryNumber( tries->count() );
+	current_ = tries->count();
+    tries->append(newTry);
 }
-*/
+
+void Exercise::delTryAbstract() {
+	Try* oldTry = tries->takeAt(current_);
+	resultLayout->removeWidget( oldTry->getDisplay() );
+	delete oldTry;
+	resultLayout->activate();
+
+	// renumber the remaining exercises
+	for (int i=current_; i<tries->count(); i++) {
+		//cout<<i<<endl;
+		(*tries)[i]->setTryNumber(i);
+	}
+	current_ = -1;
+}
+
 

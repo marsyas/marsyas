@@ -21,8 +21,12 @@ resultArea);
 	virtual QString exercisesDir() = 0;
 	virtual int getType() = 0;
 	virtual QString getMessage() = 0;
-	virtual void addTry() = 0;
 	virtual bool displayAnalysis(MarBackend *results) = 0;
+
+	virtual void addTry() = 0;
+	void addTryAbstract(Try* newTry);
+	virtual void delTry() = 0;
+	void delTryAbstract();
 
 signals:
 	void analysisDone();
@@ -36,6 +40,8 @@ protected:
 
 	QLayout *resultLayout;
 	QList<Try *> *tries;
+
+	mrs_natural current_;
 
 	// TODO: figure out how to find the height.  :(
 	int foo;

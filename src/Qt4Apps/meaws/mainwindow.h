@@ -88,6 +88,8 @@ private:
 	QAction *playFileAct;
 	QSlider *tempoSlider;
 	QSpinBox *tempoBox;
+	QAction *addTryAct;
+	QAction *delTryAct;
 
 	QMenu *testingMenu;
 

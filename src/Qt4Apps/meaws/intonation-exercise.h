@@ -17,6 +17,7 @@ public:
 
 	void open(QString exerciseFilename);
 	void addTry();
+	void delTry();
 
 	QString getMessage();
 	bool displayAnalysis(MarBackend *results);
@@ -28,7 +29,7 @@ private:
 	realvec exerAnswer;
 //	QList<IntonationTry *> *tries;
 
-	mrs_natural current_;
+//	mrs_natural current_;
 };
 #endif
 

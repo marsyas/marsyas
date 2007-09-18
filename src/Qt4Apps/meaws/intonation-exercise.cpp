@@ -60,14 +60,13 @@ void IntonationExercise::addTry() {
 	IntonationTry *newTry = new IntonationTry();
 	connect(newTry, SIGNAL(tryNumber(mrs_natural)),
 		this, SLOT(button(mrs_natural)));
-	
-
-
-	resultLayout->addWidget( newTry->getDisplay() );
-	tries->append(newTry);
 	newTry->setAnswer(exerAnswer);
-	newTry->setReportNumber(tries->count()-1);
-	current_ = tries->count()-1;
+	Exercise::addTryAbstract(newTry);
+}
+
+void IntonationExercise::delTry() {
+//	cout<<"del"<<endl;
+	Exercise::delTryAbstract();
 }
 
 void IntonationExercise::button(mrs_natural selected)

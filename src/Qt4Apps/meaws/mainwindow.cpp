@@ -95,6 +95,8 @@ void MainWindow::createMenus()
 	testingMenu->addAction(testingFileAct);
 	testingMenu->addAction(calcExerciseAct);
 	testingMenu->addAction(playFileAct);
+	testingMenu->addAction(addTryAct);
+	testingMenu->addAction(delTryAct);
 
 
 	menuBar()->addSeparator();
@@ -228,6 +230,12 @@ void MainWindow::createActions() {
 	playFileAct->setIcon(QIcon(":/icons/play.png"));
 	playFileAct->setStatusTip(tr("Play test audio file"));
 	connect(playFileAct, SIGNAL(triggered()), exercise, SLOT(playFile()));
+
+	addTryAct = new QAction(tr("Add a try"), this);
+	connect(addTryAct, SIGNAL(triggered()), exercise, SLOT(addTry()));
+
+	delTryAct = new QAction(tr("Delete a try"), this);
+	connect(delTryAct, SIGNAL(triggered()), exercise, SLOT(delTry()));
 }
 
 void MainWindow::createObjects() {
