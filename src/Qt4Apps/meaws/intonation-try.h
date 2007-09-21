@@ -20,6 +20,7 @@ public:
 
 	void setAnswer(const realvec answers);
 	void setLily(const QStringList);
+	void calcErrors(const realvec& pitch, const realvec& bounds);
 
 private:
 	void colorNote(int note, double error, double direction);
