@@ -336,6 +336,7 @@ HEADERS += \
 	Classifier.h \
 	Spectrum2Chroma.h \
 	Spectrum2Mel.h \
+	ADRess.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 	 
@@ -563,6 +564,7 @@ SOURCES += \
 	Classifier.cpp \
 	Spectrum2Chroma.cpp \
 	Spectrum2Mel.cpp \
+	ADRess.cpp \
 	Gain.cpp
 # please leave Gain.cpp at the end like this; it makes scripts happy.
 

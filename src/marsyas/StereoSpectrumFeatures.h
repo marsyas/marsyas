@@ -26,7 +26,7 @@ namespace Marsyas
 {
 /** 
     \class StereoSpectrumFeatures
-		\ingroup none
+		\ingroup Analysis
     \brief StereoSpectrumFeatures capture panning information 
 
     After computing the Stereo Spectrum we can summarize 

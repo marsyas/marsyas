@@ -26,7 +26,7 @@ namespace Marsyas
 {
 /** 
     \class StereoSpectrum
-		\ingroup none
+		\ingroup Analysis
     \brief StereoSpectrum computes the panning index for each spectrum 
     bin of a stereo input (i.e. input is expected to be the output of a
 		parallel of two Spectrum MarSystems, one for each stereo channel).

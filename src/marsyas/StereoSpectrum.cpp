@@ -52,10 +52,9 @@ StereoSpectrum::myUpdate(MarControlPtr sender)
 	(void) sender;
 	ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
 	ctrl_onObservations_->setValue((ctrl_inObservations_->to<mrs_natural>() /4), NOUPDATE);
-	ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>() / ctrl_inSamples_->to<mrs_natural>(), NOUPDATE);
-	ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
+	ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>(), NOUPDATE);// / ctrl_inSamples_->to<mrs_natural>(), NOUPDATE); [!]
 
-	inObservations_ = ctrl_inObservations_->to<mrs_natural>();
+	//inObservations_ = ctrl_inObservations_->to<mrs_natural>();
 
 	N4_ = inObservations_ / 4;
 	N2_ = inObservations_ / 2;
