@@ -53,6 +53,8 @@ public:
 	//@{
 	static realvec getNotes(const realvec& pitchList, const realvec&
 	                        ampList, const realvec& boundaries);
+	static void discardBeginEndSilences(const realvec& pitchList, const
+	                                    realvec& ampList, realvec& boundaries);
 	static void getRelativeDurations(const realvec& boundaries,
 	                                 realvec &durations);
 	//@}
