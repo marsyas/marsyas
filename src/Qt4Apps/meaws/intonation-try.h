@@ -4,6 +4,8 @@
 #include "defs.h"
 #include <QObject>
 #include <QString>
+#include <QStringList>
+#include <QTextStream>
 #include <QGridLayout>
 #include <QLabel>
 #include <QDir>
@@ -14,15 +16,20 @@ class IntonationTry : public Try {
 public:
 	IntonationTry();
 	~IntonationTry();
-//	QtMarPlot* getPlot() { return foo; };
-	void setAnswer(const realvec answers);
-
 	bool displayAnalysis(MarBackend *results);
 
-protected:
+	void setAnswer(const realvec answers);
+	void setLily(const QStringList);
+
+private:
+	void colorNote(int note, double error, double direction);
+
 	QLabel *resultDisplay;
 	QtMarPlot *pitchPlot;
+
 	realvec exerAnswer;
+	QStringList lilyInput_;
+
 };
 #endif
 

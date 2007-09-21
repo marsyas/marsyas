@@ -8,13 +8,15 @@ IntonationTry::IntonationTry()
 {
 	tryLayout = new QVBoxLayout();
 	tryLayout->setContentsMargins(0,0,0,0);
-	
+    tryArea->setLayout(tryLayout);
+
+/*
     pitchPlot = new QtMarPlot();
 	pitchPlot->setBackgroundColor(QColor(255,0,0));
     tryLayout->addWidget(pitchPlot);
-    tryArea->setLayout(tryLayout);
 
 	connect(pitchPlot, SIGNAL(clicked()), this, SLOT(clicked()));
+*/
 }
 
 IntonationTry::~IntonationTry()
@@ -25,6 +27,44 @@ void IntonationTry::setAnswer(const realvec answers)
 {
 	exerAnswer = answers;
 }
+
+void IntonationTry::setLily(const QStringList lilyInput)
+{
+	lilyInput_ = QStringList( lilyInput );
+}
+
+void IntonationTry::colorNote(int note, double error, double direction)
+{
+	int line=note+10;
+    QString color = "black";
+
+    if (error < -0.01) { color = "Medium Blue"; }
+  if (error < -0.2) { color = "Dodger Blue"; }
+  if (error < -0.5) { color = "Light Sky Blue"; }
+  
+  if (error > 0.001) { color = "Light Salmon"; }
+  if (error > 0.05) { color = "tomato"; }
+  if (error > 0.1) { color = "red"; }
+    
+    color.insert(0,"\\colorNote #\"");
+    color.append("\" ");
+//  cout<<qPrintable(color)<<endl;
+    QString lily_line = lilyInput_.at(line);
+    lily_line.insert(0,color);
+
+	if (direction>0)
+    	color="^\\down";
+//^\\markup{ \\hspace #0.5 \\arrow-head #Y #LEFT ##f }";
+	if (direction<0)
+    	color="_\\up";
+//_\\markup{ \\hspace #0.5 \\arrow-head #Y #LEFT ##f }";
+
+    lily_line.append(color);
+
+    lilyInput_.replace(line,lily_line);
+//	cout<<qPrintable( lilyInput_.at(note+8) )<<endl;
+}
+
 
 bool IntonationTry::displayAnalysis(MarBackend *results) {
 
@@ -38,6 +78,7 @@ bool IntonationTry::displayAnalysis(MarBackend *results) {
 	notes = Transcriber::getNotes(pitches, amps, bounds);
 	cout<<notes;
 
+/*
 	realvec *data = new realvec;
 	(*data) = pitches;
 
@@ -45,15 +86,17 @@ bool IntonationTry::displayAnalysis(MarBackend *results) {
 	pitchPlot->setVertical(57,73);
 	pitchPlot->setPlotName("pitches");
 	pitchPlot->setCenterLine(false);
+*/
 
 	realvec mistakes;
 	mistakes.create(exerAnswer.getRows());
 	mrs_natural expected;
 	mrs_real detected;
 	mrs_real mistake;
+	int i;
 	int j=0;
 	int start;
-	for (int i=0; i<notes.getRows(); i++)
+	for (i=0; i<notes.getRows(); i++)
 	{
 		start = (mrs_natural) notes(i,1);
 		while ( exerAnswer(j,1) <= notes(i,1) )
@@ -79,7 +122,24 @@ bool IntonationTry::displayAnalysis(MarBackend *results) {
 //	cout<<pitches<<endl;
 //	cout<<amps<<endl;
 
+	for (i=0; i<8; i++)
+//	for (i=0; i<notes.getRows(); i++)
+	{
+		colorNote(i,mistakes(i),mistakes(i));
+	}
 
+	// WRITE LILYPOND FILE OUT
+	// FIXME: filename
+	QString temp;
+    QFile out_file("/tmp/out.ly");
+    out_file.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream out(&out_file);
+
+    for (int i = 0; i < lilyInput_.size(); ++i) {
+        temp = lilyInput_.at(i);
+        out<<qPrintable(temp)<<endl;
+    }
+    out_file.close();
 
 /*
 	realvec durations = results->getDurations();
@@ -102,12 +162,13 @@ bool IntonationTry::displayAnalysis(MarBackend *results) {
 #ifndef MARSYAS_WIN32 // [ML] this is ugly and sleep does not exist in Win32 !!
 	system("/Users/gperciva/progs/python/libbabelpond/reldurs.py /tmp/notes.txt");
 	sleep(1);
-	system("cd /tmp; lilypond -dpreview tempscore.ly");
-	sleep(5);
 #endif
-
-	resultLabel->setPixmap(QPixmap::fromImage(QImage("/tmp/tempscore.preview.png")));
 */
+	system("cd /tmp; lilypond -dpreview out.ly");
+	
+	QLabel* resultLabel = new QLabel;
+	resultLabel->setPixmap(QPixmap::fromImage(QImage("/tmp/out.preview.png")));
+	tryLayout->addWidget(resultLabel);
 	return true;
 }
 

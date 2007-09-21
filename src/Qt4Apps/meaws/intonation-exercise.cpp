@@ -54,6 +54,20 @@ void IntonationExercise::open(QString exerciseFilename) {
 		frameSum += frame;
 	}
 //	cout<<exerAnswer;
+
+	// **** read lilypond input
+	// FIXME: filename
+    QFile in_file("/tmp/scale.ly");
+    in_file.open(QIODevice::ReadOnly | QIODevice::Text);
+    lily_input = (QTextStream(&in_file).readAll()).split('\n');
+    in_file.close();
+/*
+	QString temp;
+    for (int i = 0; i < lily_input.size(); ++i) {
+        temp = lily_input.at(i);
+        cout<<qPrintable(temp)<<endl;
+    }
+*/
 }
 
 void IntonationExercise::addTry() {
@@ -61,6 +75,7 @@ void IntonationExercise::addTry() {
 	connect(newTry, SIGNAL(tryNumber(mrs_natural)),
 		this, SLOT(button(mrs_natural)));
 	newTry->setAnswer(exerAnswer);
+	newTry->setLily(lily_input);
 	Exercise::addTryAbstract(newTry);
 }
 
