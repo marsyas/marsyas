@@ -1,4 +1,5 @@
 #include "Transcriber.h"
+#include <iostream>
 
 namespace Marsyas
 {
@@ -110,6 +111,12 @@ Transcriber::findNextPeakValue(const realvec& list, const mrs_natural
 void
 Transcriber::pitchSegment(const realvec& pitchList, realvec& boundaries)
 {
+	if (boundaries.getSize() == 0)
+	{
+		boundaries.create(2);
+		boundaries(0) = 0.0;
+		boundaries(1) = pitchList.getSize();
+	}
 	realvec region, *newBoundaries, regionBounds;
 	mrs_natural start, length;
 	newBoundaries = new realvec;
@@ -166,6 +173,12 @@ Transcriber::findPitchBoundaries(const realvec& pitchList)
 void
 Transcriber::ampSegment(const realvec& ampList, realvec& boundaries)
 {
+	if (boundaries.getSize() == 0)
+	{
+		boundaries.create(2);
+		boundaries(0) = 0.0;
+		boundaries(1) = ampList.getSize();
+	}
 	realvec region, *newBoundaries, regionBounds;
 	mrs_natural start, length;
 	newBoundaries = new realvec;
@@ -272,6 +285,47 @@ Transcriber::getRelativeDurations(const realvec& boundaries, realvec
 	}
 }
 
+void
+Transcriber::discardBeginEndSilences(const realvec& pitchList, const realvec&
+                                     ampList, realvec& boundaries)
+{
+	// could be useful for an improved function.
+	(void) ampList;
+
+	mrs_real notePitch;
+	mrs_natural i,j;
+	mrs_natural start,length;
+	// Remove beginning silences.
+	i=0;
+	start = (mrs_natural) boundaries(i);
+	length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
+	notePitch = findMedianWithoutZeros(start, length, pitchList);
+	while ( (notePitch == 0) && (i < boundaries.getSize()-1) )
+	{
+		for (j=i; j<boundaries.getSize()-1; j++)
+			boundaries(j) = boundaries(j+1);
+		boundaries.stretch(j);
+		i++;
+		start = (mrs_natural) boundaries(i);
+		length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
+		notePitch = findMedianWithoutZeros(start, length, pitchList);
+	}
+	// Remove ending silences.
+	i=boundaries.getSize()-2;
+	start = (mrs_natural) boundaries(i);
+	length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
+	notePitch = findMedianWithoutZeros(start, length, pitchList);
+	cout<<i<<"\t"<<notePitch;
+	while ( (notePitch == 0) && (i < boundaries.getSize()-1) )
+	{
+		cout<<"reduce"<<endl;
+		boundaries.stretch(i+1);
+		i--;
+		start = (mrs_natural) boundaries(i);
+		length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
+		notePitch = findMedianWithoutZeros(start, length, pitchList);
+	}
+}
 
 // this will not include relative durations
 realvec

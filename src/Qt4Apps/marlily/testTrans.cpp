@@ -28,6 +28,21 @@ int main(int argc, char *argv[])
 	Transcriber::pitchSegment(pitchList, boundaries);
 	writeOnsets("onsets.pitch.txt", boundaries);
 
+	cout<<boundaries;
+	Transcriber::discardBeginEndSilences(pitchList, ampList,
+boundaries);
+	cout<<boundaries;
+
+/*
+	cout<<"***********************"<<endl;
+	for (int i=0; i<boundaries.getSize()-1; i++){
+		realvec foo = pitchList.getSubVector( (mrs_natural)boundaries(i),
+(mrs_natural) (boundaries(i+1)-boundaries(i)));	
+		cout<<foo;
+
+	}
+*/
+/*
 	writefile = file;
 	writefile.append(".amps.txt");
 	ampList.writeText(writefile);
@@ -37,5 +52,6 @@ int main(int argc, char *argv[])
 	realvec notes;
 	notes = Transcriber::getNotes(pitchList, ampList, boundaries);
 	cout<<notes;
+*/
 }
 
