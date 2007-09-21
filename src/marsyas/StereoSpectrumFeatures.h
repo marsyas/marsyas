@@ -26,28 +26,26 @@ namespace Marsyas
 {
 /** 
     \class StereoSpectrumFeatures
-	\ingroup none
+		\ingroup none
     \brief StereoSpectrumFeatures capture panning information 
 
     After computing the Stereo Spectrum we can summarize 
 it by extracting features using the StereoSpectrumFeatures. 
 */
 
-
-
 class StereoSpectrumFeatures: public MarSystem
 {
 private: 
-  void myUpdate(MarControlPtr sender);
-  
   mrs_real m0_;
   mrs_real m1_;
   mrs_real audioBW_;
   mrs_natural low_;
   mrs_natural high_;
+
+	void myUpdate(MarControlPtr sender);
+
 public:
   StereoSpectrumFeatures(std::string name);
-  
   ~StereoSpectrumFeatures();
   MarSystem* clone() const;  
   

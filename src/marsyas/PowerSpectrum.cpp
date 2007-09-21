@@ -67,8 +67,7 @@ PowerSpectrum::myUpdate(MarControlPtr sender)
 	(void) sender;
 	ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
 	ctrl_onObservations_->setValue((ctrl_inObservations_->to<mrs_natural>() /2), NOUPDATE);
-	ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>());// / ctrl_inSamples_->to<mrs_natural>());
-	ctrl_onObsNames_->setValue(ctrl_inObsNames_);
+	ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>(), NOUPDATE);// / ctrl_inSamples_->to<mrs_natural>());
 
 	stype_ = ctrl_spectrumType_->to<mrs_string>();
 	if (stype_ == "power")
@@ -83,10 +82,10 @@ PowerSpectrum::myUpdate(MarControlPtr sender)
 	inObservations_ = ctrl_inObservations_->to<mrs_natural>();
 
 	N2_ = inObservations_ / 2;
-	ostringstream oss;
 
+	ostringstream oss;
 	for (mrs_natural n=0; n < N2_; n++)
-		oss << "mbin_" << n << ",";
+		oss << stype_ << "_bin_" << n << ",";
 	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 }
 

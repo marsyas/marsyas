@@ -74,14 +74,15 @@ Spectrum::myUpdate(MarControlPtr sender)
 	if (ponObservations_ != onObservations_)
 	{
 		ostringstream oss;
-		for (mrs_natural n=0; n < onObservations_/2; n++)
+		oss << "rbin_0" << ","; //DC bin (only has real part)
+		oss << "rbin_" << onObservations_/2 << ","; //Nyquist bin (only has real part)
+		for (mrs_natural n=2; n < onObservations_/2; n++)
 		{
-			oss << "rbin_" << n << ",";
-			oss << "ibin_" << n << ",";
+			oss << "rbin_" << n-1 << ",";
+			oss << "ibin_" << n-1 << ",";
 		}
 		ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 	}
-
 	ponObservations_ = onObservations_;
 }
 
@@ -117,7 +118,7 @@ Spectrum::myProcess(realvec& in, realvec& out)
 		}
 	}
 
-	// [!] compare with matlab fft   
+	//compare with matlab fft   
 	//	 MATLAB_PUT(in, "vec");
 	//	 MATLAB_EVAL("out=fft(vec);");
 	//   MATLAB_GET("vec", out);

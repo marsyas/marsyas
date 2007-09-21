@@ -26,10 +26,18 @@ namespace Marsyas
 {
 /** 
     \class PowerSpectrum
-	\ingroup Analysis
+		\ingroup Analysis
     \brief PowerSpectrum computes the magnitude/power of the complex spectrum 
 
-    Computes the magnitude/power of a complex spectrum 
+    Computes the magnitude/power of a complex spectrum (as output from the
+		Spectrum MarSystem - see its documentation for info about the spectrum
+		format used in Marsyas). PowerSpectrum takes N/2+1 complex spectrum bins
+		and computes the power/magnitude/decibels/powerdensity real spectrum of 
+		N points (NOTE: this misses the value for the last N/2+1 Nyquist bin, which
+		for precision's sake, should also be output...[?]).
+
+		Controls:
+		- \b mrs_string/spectrumType [w] : choose between "power", "magnitude", "decibels" and "powerdensity" computations
 */
 
 
@@ -44,12 +52,9 @@ private:
   mrs_real dB_, pwr_;
   MarControlPtr ctrl_spectrumType_;
   
-
   void addControls();
   void myUpdate(MarControlPtr sender);
   
-
-
 public:
   PowerSpectrum(std::string name);
   PowerSpectrum(const PowerSpectrum&);
@@ -57,7 +62,6 @@ public:
   MarSystem* clone() const;
 
   void myProcess(realvec& in, realvec& out);
-  
 };
 
 }//namespace Marsyas

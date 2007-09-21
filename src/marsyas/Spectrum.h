@@ -26,13 +26,21 @@ namespace Marsyas
 {
 /** 
     \class Spectrum
-	\ingroup Analysis
+		\ingroup Analysis
     \brief Compute the complex spectrum of input window 
 
     Computes the complex spectrum of the input window 
-    using the Fast Fourier Transform (FFT). 
-*/
+    using the Fast Fourier Transform (FFT). The output is 
+		a N-sized column vector (where N is the size of the input
+		audio vector), using the following format:
 
+		[Re(0), Re(N/2), Re(1), Im(1), Re(2), Im(2), ..., Re(N/2-1), Im(N/2-1)]
+
+		Note that the DC and Nyquist frequencies only have real part,
+		and are output as the two first coefficients in the vector. 
+		Overall, the output spectrum has N/2+1 unique points, corresponding
+		to the positive half of the complex spectrum. 
+*/
 
 class Spectrum: public MarSystem
 {
@@ -57,7 +65,6 @@ public:
   MarSystem* clone() const;
 
   void myProcess(realvec& in, realvec& out);
-  
 };
 
 }//namespace Marsyas

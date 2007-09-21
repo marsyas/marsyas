@@ -26,28 +26,22 @@ namespace Marsyas
 {
 /** 
     \class StereoSpectrum
-	\ingroup none
+		\ingroup none
     \brief StereoSpectrum computes the panning index for each spectrum 
-    bin of a stereo input.
+    bin of a stereo input (i.e. input is expected to be the output of a
+		parallel of two Spectrum MarSystems, one for each stereo channel).
 
 */
-
-
 
 class StereoSpectrum: public MarSystem
 {
 private:
-  
   mrs_natural N4_, N2_;
-  
   mrs_real rel_, iml_, rer_, imr_;
   
-
   void addControls();
   void myUpdate(MarControlPtr sender);
   
-
-
 public:
   StereoSpectrum(std::string name);
   StereoSpectrum(const StereoSpectrum&);
@@ -55,7 +49,6 @@ public:
   MarSystem* clone() const;
 
   void myProcess(realvec& in, realvec& out);
-  
 };
 
 }//namespace Marsyas
