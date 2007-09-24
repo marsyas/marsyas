@@ -276,7 +276,7 @@ MarGrid::train()
 
   ofstream noss;
   noss.open("norm.mpl");
-  oss << *norm_ << endl;
+  noss << *norm_ << endl;
   delete norm_;
   
 }
@@ -300,7 +300,7 @@ MarGrid::predict()
 
   ifstream niss;
   niss.open("norm.mpl");
-  norm_ = mng.getMarSystem(iss);
+  norm_ = mng.getMarSystem(niss);
 
   resetPredict();
   cout << "Starting prediction" << endl;
@@ -310,6 +310,8 @@ MarGrid::predict()
   l1.read(predictFname.toStdString());
   cout << "Read collection" << endl;
 
+
+
   total_->updctrl("mrs_natural/pos", 0);  
   total_->updctrl("mrs_string/filename", predictFname.toStdString());    
   
@@ -317,8 +319,11 @@ MarGrid::predict()
 
   realvec predict_res(som_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
 		      som_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
-
   norm_->updctrl("mrs_natural/inSamples", 1);
+
+
+
+
   
   realvec som_in;
   realvec som_res;
@@ -333,6 +338,9 @@ MarGrid::predict()
 
   norm_som_res.create(total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
 		      total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+
+
+
 
   
   for (int index = 0; index < l1.size(); index++)

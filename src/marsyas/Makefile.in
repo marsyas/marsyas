@@ -335,6 +335,7 @@ pkginclude_HEADERS = \
 	Classifier.h \
 	Spectrum2Chroma.h \
 	Spectrum2Mel.h \
+	ADRess.h \
 	Gain.h
 
 subdir = src/marsyas

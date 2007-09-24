@@ -99,6 +99,14 @@ NormMaxMin::myUpdate(MarControlPtr sender)
       maximumsPtr_->setValue(maximums_, NOUPDATE);
       minimumsPtr_->setValue(minimums_, NOUPDATE);  
     }
+
+  string mode = getctrl("mrs_string/mode")->to<mrs_string>();
+  if (mode == "predict")
+    {
+      minimums_ = minimumsPtr_->to<mrs_realvec>();
+      maximums_ = maximumsPtr_->to<mrs_realvec>();
+    }
+
 }
 
 void 
@@ -124,7 +132,6 @@ NormMaxMin::myProcess(realvec& in, realvec& out)
   
   if ((prev_mode_ == "predict") && (mode_ == "train"))
     {
-      cout << "NormMaxMin - Init" << endl;
       maximums_.setval(DBL_MIN);
       minimums_.setval(DBL_MAX);
       maximumsPtr_->setValue(maximums_, NOUPDATE);
@@ -133,7 +140,6 @@ NormMaxMin::myProcess(realvec& in, realvec& out)
   
   if (mode_ == "train")
     {
-      cout << "NormMaxMin - Train" << endl;
       // first pass calculate min/max limits
       for (o=0; o < inObservations_; o++)
 	for (t = 0; t < inSamples_; t++)
@@ -153,7 +159,6 @@ NormMaxMin::myProcess(realvec& in, realvec& out)
 
   if ((prev_mode_ == "train")&&(mode_ == "predict"))	
     {
-      cout << "NormMaxMin - Changing from train to predict" << endl;
       maximums_ = maximumsPtr_->to<mrs_realvec>();
       minimums_ = minimumsPtr_->to<mrs_realvec>();
     }
@@ -161,13 +166,10 @@ NormMaxMin::myProcess(realvec& in, realvec& out)
 
   if (mode_ == "predict")
     {
-      cout << "NormMaxMin - Predict" << endl;
       // second pass for normalization 
       for (o=0; o < inObservations_; o++)
 	for (t = 0; t < inSamples_; t++)
 	  {
-	    cout << "minimums_(o) " << minimums_(o) << endl;
-	    cout << "maximums_(o) " << maximums_(o) << endl;
 	    
 	    if (ignoreLast) 
 	      {
