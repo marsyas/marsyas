@@ -468,10 +468,6 @@ bextract_trainStereoSPS(vector<Collection> cls, string classNames,
   total->addMarSystem(mng.create("WekaSink", "wsink"));
 
   
-  total->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
-  total->updctrl("WekaSink/wsink/mrs_natural/downsample", 1); 
-  total->updctrl("WekaSink/wsink/mrs_string/labelNames", classNames);
-  total->updctrl("WekaSink/wsink/mrs_string/filename", wekafname); 
 
   total->updctrl("mrs_natural/inSamples", 1024);
 
@@ -488,6 +484,10 @@ bextract_trainStereoSPS(vector<Collection> cls, string classNames,
 
   if (!collection_has_labels)
     {
+       total->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
+       total->updctrl("WekaSink/wsink/mrs_natural/downsample", 1); 
+       total->updctrl("WekaSink/wsink/mrs_string/labelNames", classNames);
+       total->updctrl("WekaSink/wsink/mrs_string/filename", wekafname); 
       unsigned int cj;
       int i;
       for (cj=0; cj < cls.size(); cj++)
@@ -508,6 +508,12 @@ bextract_trainStereoSPS(vector<Collection> cls, string classNames,
       Collection l;
       int i;
       l = cls[0];
+
+       total->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
+       total->updctrl("WekaSink/wsink/mrs_natural/downsample", 1); 
+       total->updctrl("WekaSink/wsink/mrs_string/labelNames", classNames);
+       total->updctrl("WekaSink/wsink/mrs_string/filename", wekafname); 
+
       for (i=0; i < l.size(); i++) 
 	{
 	  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));	  	  
