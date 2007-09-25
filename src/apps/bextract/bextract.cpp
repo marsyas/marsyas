@@ -476,22 +476,46 @@ bextract_trainStereoSPS(vector<Collection> cls, string classNames,
   total->updctrl("mrs_natural/inSamples", 1024);
 
   
-  // cout << *total << endl;
-  unsigned int cj;
-  int i;
-  for (cj=0; cj < cls.size(); cj++)
+  mrs_bool collection_has_labels = false;
+  
+  if ((cls.size() == 1)&&(cls[0].hasLabels()))
     {
-      Collection l = cls[cj];
-      total->updctrl("Annotator/ann/mrs_natural/label", (mrs_natural)cj); 
-      for (i=0; i < l.size(); i++)
+      collection_has_labels = true;
+    }
+
+
+  // cout << *total << endl;
+
+  if (!collection_has_labels)
+    {
+      unsigned int cj;
+      int i;
+      for (cj=0; cj < cls.size(); cj++)
 	{
-	  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));	  
-	  cout << "Processing" << l.entry(i) << endl;
-	  total->tick();	  
+	  Collection l = cls[cj];
+
+	  total->updctrl("Annotator/ann/mrs_natural/label", (mrs_natural)cj); 
+	  for (i=0; i < l.size(); i++)
+	    {
+	      total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));	  
+	      cout << "Processing" << l.entry(i) << endl;
+	      total->tick();	  
+	    }
 	}
     }
-  
-  
+  else 
+    {
+      Collection l;
+      int i;
+      l = cls[0];
+      for (i=0; i < l.size(); i++) 
+	{
+	  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));	  	  
+	  total->updctrl("Annotator/ann/mrs_natural/label", l.labelNum(l.labelEntry(i)));
+	  cout << "Processing" << l.entry(i) << endl;
+	  total->tick();	  	  
+	}
+    }
 }
 
 
