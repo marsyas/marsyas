@@ -54,10 +54,10 @@ private:
 	mrs_real rel_, iml_, rer_, imr_;
 	realvec AZr_;
 	realvec AZl_;
-	realvec minAZr_;
-	realvec minAZl_;
-	realvec maxAZr_;
-	realvec maxAZl_;
+	mrs_real minAZr_;
+	mrs_real minAZl_;
+	mrs_real maxAZr_;
+	mrs_real maxAZl_;
 
 	MarControlPtr ctrl_beta_;
 	MarControlPtr ctrl_d_;

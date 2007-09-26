@@ -82,6 +82,7 @@ printHelp(string progName)
   cerr << "stereoMFCC      : toy_with stereo MFCC " << endl;
   cerr << "stereoFeaturesMFCC : toy_with stereo features and MFCCs" << endl;
   cerr << "stereo2mono     : toy_with stereo to mono conversion " << endl;
+	cerr << "ADRess					 : toy_with stereo ADRess algorithm " << endl;
   cerr << "tempo	         : toy_with tempo estimation " << endl;
   cerr << "vibrato       : toy_with vibrato using time-varying delay line" << endl;
   cerr << "vicon           : toy_with processing of vicon motion capture data" << endl;
@@ -2285,16 +2286,135 @@ toy_with_stereoFeatures(string fname0, string fname1)
       total->tick();
       cout << "i=" << i << endl;
     }
-  
-     
-      
-
-
 }
 
+void
+toy_with_ADRess(string fname0, string fname1)
+{
+	cout << "TOY_WITHING ADRess STEREO FEATURES" << endl;
+
+	MarSystemManager mng;
+
+	MarSystem* playbacknet = mng.create("Series", "playbacknet");
+	playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+	// playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
+
+
+	MarSystem* stereobranches = mng.create("Parallel", "stereobranches");
+	MarSystem* left = mng.create("Series", "left");
+	MarSystem* right = mng.create("Series", "right");
+
+	left->addMarSystem(mng.create("Windowing", "hamleft"));
+	left->addMarSystem(mng.create("Spectrum", "spkleft"));
+	right->addMarSystem(mng.create("Windowing", "hamright"));
+	right->addMarSystem(mng.create("Spectrum", "spkright"));
+
+	stereobranches->addMarSystem(left);
+	stereobranches->addMarSystem(right);
+	playbacknet->addMarSystem(stereobranches);
+
+	//playbacknet->addMarSystem(mng.create("StereoSpectrum", "sspk"));
+	//playbacknet->addMarSystem(mng.create("StereoSpectrumFeatures", "sspkf"));
+	//playbacknet->addMarSystem(mng.create("TextureStats", "texturests"));
+	playbacknet->addMarSystem(mng.create("ADRess", "adress"));
+	
+	
+	MarSystem* acc = mng.create("Accumulator", "acc");
+	acc->addMarSystem(playbacknet);
+
+	//MarSystem* statistics2 = mng.create("Fanout", "statistics2");
+	//statistics2->addMarSystem(mng.create("Mean", "mn"));
+	//statistics2->addMarSystem(mng.create("StandardDeviation", "std"));
+
+	MarSystem* total = mng.create("Series", "total");
+	total->addMarSystem(acc);
+	total->updctrl("Accumulator/acc/mrs_natural/nTimes", 1000);
+	//total->addMarSystem(statistics2);
+
+	total->addMarSystem(mng.create("Annotator", "ann"));
+	total->addMarSystem(mng.create("WekaSink", "wsink"));
+
+
+	total->updctrl("WekaSink/wsink/mrs_natural/nLabels", 4);
+	total->updctrl("WekaSink/wsink/mrs_natural/downsample", 1); 
+	total->updctrl("WekaSink/wsink/mrs_string/labelNames", "garage,grunge,jazz,ojazz");
+	total->updctrl("WekaSink/wsink/mrs_string/filename", "stereoFeatures.arff"); 
+
+	playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", fname0);
+	playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+
+
+	total->updctrl("mrs_natural/inSamples", 1024);
+
+	mrs_bool isEmpty;
+
+	// cout << *total << endl;
+
+//	Collection l;
+//	l.read(fname0);
+
+	int i,t;
+
+	total->updctrl("Annotator/ann/mrs_natural/label", 0); 
+	//for (i=0; i < l.size(); i++) 
+	//{
+		total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", fname0);//l.entry(i));
+		/* if (i==0) 
+		total->updctrl("Accumulator/acc/Series/playbacknet/AudioSink/dest/mrs_bool/initAudio", true);
+		*/ 
+		//cout << "Processing " << l.entry(i) << endl;
+		total->tick();
+		cout << "i = " << i << endl;
+
+//	}
+
+	/*
+	Collection n;
+	n.read(fname1);
+
+	total->updctrl("Annotator/ann/mrs_natural/label", 1); 
+
+
+	for (i=0; i < n.size(); i++)
+	{
+		total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", n.entry(i));
+		cout << "Processing " << n.entry(i) << endl;
+		total->tick();
+		cout << "i=" << i << endl;
+	}
+
+
+	Collection m;
+	m.read("j.mf");
+
+	total->updctrl("Annotator/ann/mrs_natural/label", 2); 
+
+
+	for (i=0; i < m.size(); i++)
+	{
+		total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", m.entry(i));
+		cout << "Processing " << m.entry(i) << endl;
+		total->tick();
+		cout << "i=" << i << endl;
+	}
 
 
 
+	Collection w;
+	w.read("oj.mf");
+
+	total->updctrl("Annotator/ann/mrs_natural/label", 3); 
+
+
+	for (i=0; i < w.size(); i++)
+	{
+		total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", w.entry(i));
+		cout << "Processing " << w.entry(i) << endl;
+		total->tick();
+		cout << "i=" << i << endl;
+	}
+*/
+}
 
 void 
 toy_with_stereo2mono(string fname)
@@ -3375,6 +3495,8 @@ main(int argc, const char **argv)
     toy_with_scheduler(fname0);
   else if (toy_withName == "stereoFeatures")
     toy_with_stereoFeatures(fname0, fname1);
+	else if (toy_withName == "ADRess")
+		toy_with_ADRess(fname0, fname1);
   else if (toy_withName == "stereoFeaturesVisualization")
     toy_with_stereoFeaturesVisualization(fname0);
   else if (toy_withName == "stereoMFCC") 

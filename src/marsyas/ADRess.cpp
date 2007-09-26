@@ -47,7 +47,7 @@ ADRess::clone() const
 void
 ADRess::addControls()
 {
-	addctrl("mrs_natural/beta", 10, ctrl_beta_);
+	addctrl("mrs_natural/beta", 100, ctrl_beta_);
 	addctrl("mrs_real/d", 0.5, ctrl_d_);
 	addctrl("mrs_natural/H", 2, ctrl_H_);
 }
@@ -88,6 +88,8 @@ ADRess::myUpdate(MarControlPtr sender)
 void
 ADRess::myProcess(realvec& in, realvec& out)
 {
+	MATLAB_PUT(in, "in");
+
 	mrs_real a, b, g;
 	mrs_natural beta = ctrl_beta_->to<mrs_natural>();
 
@@ -98,10 +100,10 @@ ADRess::myProcess(realvec& in, realvec& out)
 	{
 		g = i*1.0/beta;
 
-		minAZr_.create(MAXREAL, N4_, 0);
-		minAZl_.create(MAXREAL, N4_, 0);
-		maxAZr_.create(MINREAL, N4_, 0);
-		maxAZl_.create(MINREAL, N4_, 0);
+		minAZr_ = MAXREAL;
+		minAZl_ = MAXREAL;
+		maxAZr_ = MINREAL;
+		maxAZl_ = MINREAL;
 
 		for (mrs_natural k=0; k < N4_; k++)
 		{
@@ -143,38 +145,42 @@ ADRess::myProcess(realvec& in, realvec& out)
 			b = iml_ - g*imr_;
 			AZr_(k,i) = sqrt(a*a + b*b);
 			//get maximums and minimums
-			if(AZr_(k,i) > maxAZr_(k))
-				maxAZr_(k) = AZr_(k,i);
-			if(AZr_(k,i) < minAZr_(k))
-				minAZr_(k) = AZr_(k,i);
+			if(AZr_(k,i) > maxAZr_)
+				maxAZr_ = AZr_(k,i);
+			if(AZr_(k,i) < minAZr_)
+				minAZr_ = AZr_(k,i);
 
 			//left freq-azimuth spectrogram
 			a = rer_ - g*rel_;
 			b = imr_ - g*iml_;
 			AZl_(k,i) = sqrt(a*a + b*b);
 			//get maximums and minimums
-			if(AZl_(k,i) > maxAZl_(k))
-				maxAZl_(k) = AZl_(k,i);
-			if(AZl_(k,i) < minAZl_(k))
-				minAZl_(k) = AZl_(k,i);
+			if(AZl_(k,i) > maxAZl_)
+				maxAZl_ = AZl_(k,i);
+			if(AZl_(k,i) < minAZl_)
+				minAZl_ = AZl_(k,i);
 		}
 
 		//compute the magnitudes of the frequency dependent nulls 
 		for (mrs_natural k=0; k < N4_; k++)
 		{
 			//right channel
-			if(AZr_(k,i)== minAZr_(k))
-				AZr_(k,i) = maxAZr_(k)-minAZr_(k);
+			if(AZr_(k,i)== minAZr_)
+				AZr_(k,i) = maxAZr_-minAZr_;
 			else
 				AZr_(k,i) = 0.0;
 
 			//left channel
-			if(AZl_(k,i)== minAZl_(k))
-				AZl_(k,i) = maxAZl_(k)-minAZl_(k);
+			if(AZl_(k,i)== minAZl_)
+				AZl_(k,i) = maxAZl_-minAZl_;
 			else
 				AZl_(k,i) = 0.0;
 		}
 	}
+
+	MATLAB_PUT(AZr_, "AZr");
+	MATLAB_PUT(AZl_, "AZl");
+	MATLAB_EVAL("figure(1);imagesc(AZl);figure(2);imagesc(AZr)");
 
 	//get the "selected" source, given d and H
 	mrs_natural H = ctrl_H_->to<mrs_natural>();
