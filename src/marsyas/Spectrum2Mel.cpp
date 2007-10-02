@@ -116,12 +116,10 @@ Spectrum2Mel::myUpdate(MarControlPtr sender)
 	{
 		mrs_natural nfilts = ctrl_melBands_->to<mrs_natural>();
 		bool htkmel = ctrl_htkMel_->to<mrs_bool>();
-		mrs_natural N2 = inObservations_;
-		mrs_natural N = N2*2;
+		mrs_natural N2 = inObservations_;// we get N/2+1 spectrum points at the input...
+		mrs_natural N = (N2-1)*2; //fft size
 		
 		//get the original audio sampling rate
-		//NOTE: this assumes that the input only has the magnitudes for the first N/2 spectrum points
-		//(and not the usual N/2+1 spectrum points) -> see PowerSpectrum.cpp
 		mrs_real srate = israte_*N;
 
 		if(ctrl_bandHighEdge_->to<mrs_real>() == -1.0)

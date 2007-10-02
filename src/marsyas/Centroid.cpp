@@ -28,11 +28,9 @@ Centroid::Centroid(string name):MarSystem("Centroid", name)
     m1_ = 0.0;
 }
 
-
 Centroid::~Centroid()
 {
 }
-
 
 MarSystem*
 Centroid::clone() const
@@ -45,35 +43,31 @@ Centroid::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
 
-    MRSDIAG("Centroid.cpp - Centroid:myUpdate");
-    ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
-    ctrl_onObservations_->setValue((mrs_natural)1, NOUPDATE);
-    ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
-    ctrl_onObsNames_->setValue("Centroid,", NOUPDATE);
+  MRSDIAG("Centroid.cpp - Centroid:myUpdate");
+  ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
+  ctrl_onObservations_->setValue((mrs_natural)1, NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
+  ctrl_onObsNames_->setValue("Centroid,", NOUPDATE);
 }
 
 void
 Centroid::myProcess(realvec& in, realvec& out)
 {
-    //checkFlow(in,out);
-
-
-    // computer centroid of observations for each time sample
-    // using zero and first-order moments
-    for (t = 0; t < inSamples_; t++)
-    {
-        m0_ = 0.0;
-        m1_ = 0.0;
-        for (o=0; o < inObservations_; o++)
-        {
-            m1_ += o * in(o,t);
-            m0_ += in(o,t);
-        }
-        if (m0_ != 0.0)
-            out(0,t) = (m1_ / m0_) / inObservations_;
-        else
-            out(0,t) = 0.5;
-    }
-
+	// computer centroid of observations for each time sample
+	// using zero and first-order moments
+	for (t = 0; t < inSamples_; t++)
+	{
+			m0_ = 0.0;
+			m1_ = 0.0;
+			for (o=0; o < inObservations_; o++)
+			{
+					m1_ += o * in(o,t);
+					m0_ += in(o,t);
+			}
+			if (m0_ != 0.0)
+					out(0,t) = (m1_ / m0_) / inObservations_;
+			else
+					out(0,t) = 0.5;
+	}
 }
 

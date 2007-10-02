@@ -50,9 +50,9 @@ private:
   realvec bandLoEdge_;
   realvec bandHiEdge_;
 
-  mrs_natural fftSize_;
+  mrs_natural spectrumSize_;
   mrs_real df_;
-  //realvec fftBinFreqs_;
+  //realvec spectrumBinFreqs_;
   std::vector<mrs_natural> il_;
   std::vector<mrs_natural> ih_;
 

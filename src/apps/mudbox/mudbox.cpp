@@ -2317,6 +2317,7 @@ toy_with_ADRess(string fname0, string fname1)
 	//playbacknet->addMarSystem(mng.create("StereoSpectrumFeatures", "sspkf"));
 	//playbacknet->addMarSystem(mng.create("TextureStats", "texturests"));
 	playbacknet->addMarSystem(mng.create("ADRess", "adress"));
+	playbacknet->addMarSystem(mng.create("ADRessStereoSpectrum", "adressstereospec"));
 	
 	
 	MarSystem* acc = mng.create("Accumulator", "acc");
@@ -2439,32 +2440,21 @@ toy_with_stereo2mono(string fname)
 
 }
 
-
-
 void toy_with_spectralSNR(string fname0, string fname1) 
 {
   cout << "Toy_Withing spectral SNR" << endl;
   cout << "Original  signal: " << fname0 << endl;  
   cout << "Extracted signal: " << fname1 << endl;  
   
-  
-  
-  
   MarSystemManager mng;
-
 
   MarSystem* total = mng.create("Series", "total");
   
-  
-
   MarSystem* acc = mng.create("Accumulator", "acc");
   acc->updctrl("mrs_natural/nTimes", 100);
   
-  
-
   MarSystem* snet = mng.create("Series", "snet");
-  
-  
+    
   MarSystem* net = mng.create("Parallel", "net");
   
   MarSystem* branch1 = mng.create("Series", "branch1");

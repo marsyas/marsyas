@@ -23,18 +23,17 @@ using namespace Marsyas;
 
 Rolloff::Rolloff(string name):MarSystem("Rolloff",name)
 {
-  perc_ = 0.0;
-  sum_ = 0.0;
-  total_ = 0.0;
-  
-  addControls();
+	perc_ = 0.0;
+	sum_ = 0.0;
+	total_ = 0.0;
+
+	addControls();
 }
 
 Rolloff::Rolloff(const Rolloff& a):MarSystem(a) 
 {
-  ctrl_percentage_ = getctrl("mrs_real/percentage");
+	ctrl_percentage_ = getctrl("mrs_real/percentage");
 }
-
 
 Rolloff::~Rolloff()
 {
@@ -43,71 +42,54 @@ Rolloff::~Rolloff()
 MarSystem* 
 Rolloff::clone() const 
 {
-  return new Rolloff(*this);
+	return new Rolloff(*this);
 }
 
 void 
 Rolloff::addControls()
 {
-  addctrl("mrs_real/percentage", 0.9, ctrl_percentage_);
-  setctrlState("mrs_real/percentage", true);
+	addctrl("mrs_real/percentage", 0.9, ctrl_percentage_);
+	setctrlState("mrs_real/percentage", true);
 }
 
 void
 Rolloff::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
-  MRSDIAG("Rolloff.cpp - Rolloff:myUpdate");
+	MRSDIAG("Rolloff.cpp - Rolloff:myUpdate");
 
-  ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
-  ctrl_onObservations_->setValue((mrs_natural)1, NOUPDATE);
-  ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
-  ctrl_onObsNames_->setValue("Rolloff,", NOUPDATE);
+	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
+	ctrl_onObservations_->setValue((mrs_natural)1, NOUPDATE);
+	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
+	ctrl_onObsNames_->setValue("Rolloff,", NOUPDATE);
 
-  sumWindow_.create(ctrl_inObservations_->to<mrs_natural>());
+	sumWindow_.create(ctrl_inObservations_->to<mrs_natural>());
 
-  perc_ = ctrl_percentage_->to<mrs_real>();
+	perc_ = ctrl_percentage_->to<mrs_real>();
 }
 
 void 
 Rolloff::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
-  
-
-  
-  // computer rolloff of observations for each time sample 
-  for (t = 0; t < inSamples_; t++)
-    {
-      sum_ = 0.0;
-      sumWindow_.setval(0.0);
-      for (o=0; o < inObservations_; o++)
+	// computer rolloff of observations for each time sample 
+	for (t = 0; t < inSamples_; t++)
 	{
-	  sum_ += in(o,t);
-	  sumWindow_(o) = sum_;
+		sum_ = 0.0;
+		sumWindow_.setval(0.0);
+		for (o=0; o < inObservations_; o++)
+		{
+			sum_ += in(o,t);
+			sumWindow_(o) = sum_;
+		}
+		total_ = sumWindow_(inObservations_-1);
+		for (o=inObservations_-1; o>1; o--)
+		{
+			if (sumWindow_(o) < perc_ *total_)
+			{
+				out(0,t) = (mrs_real)o / inObservations_;
+				return;
+			}
+		}
+		out(0,t) = 1.0;			// default 
 	}
-      total_ = sumWindow_(inObservations_-1);
-      for (o=inObservations_-1; o>1; o--)
-	{
-	  if (sumWindow_(o) < perc_ *total_)
-	    {
-	      out(0,t) = (mrs_real)o / inObservations_;
-	      return;
-	    }
-	}
-      out(0,t) = 1.0;			// default 
-    }
 }
-
-      
-      
-
-
-
-
-
-
-
-	
-	
-	

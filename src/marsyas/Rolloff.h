@@ -25,7 +25,7 @@ namespace Marsyas
 {
 /** 
     \class Rolloff
-	\ingroup Analysis
+		\ingroup Analysis
     \brief Rolloff of each time slice of observations
 
     Rolloff computes the rolloff of the observations for each 
@@ -34,7 +34,6 @@ namespace Marsyas
     percentage of the sum of magnitudes of its higher frequencies. 
 
 */
-
 
 class Rolloff: public MarSystem
 {

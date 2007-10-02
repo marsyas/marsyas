@@ -28,7 +28,12 @@ namespace Marsyas
 	\ingroup Analysis
 	\brief Azimuth Discrimination and Resynthesis (ADRess) implementation, 
 	which takes a stereo input (i.e. input is expected to be the output of a
-	parallel of two Spectrum MarSystems, one for each stereo channel).
+	parallel of two Spectrum MarSystems, one for each stereo channel), and
+	outputs the phase vector and frequency dependent nulls matrix for each channel
+	using the following format:
+	
+	[bin_phases_l][AZl]
+	[bin_phases_r][AZr]
 
 	This algorithm was proposed by Dan Barry et al at the DAfX04, 
 	"Sound Source Separation: azimuth discrimination and resynthesis".
@@ -41,10 +46,6 @@ namespace Marsyas
 
 	Controls:
 	- \b mrs_natural/beta [w] : Sets the azimuth resolution
-	- \b mrs_real/d			  [w] : value between 0.0~1.0, used for selecting the 
-	portion of the azimuth-frequency plane to be extracted
-	- \b mrs_natural/H    [w] : sets the azimuth subspace width
-
 */
 
 class ADRess: public MarSystem
@@ -52,16 +53,12 @@ class ADRess: public MarSystem
 private:
 	mrs_natural N4_, N2_;
 	mrs_real rel_, iml_, rer_, imr_;
-	realvec AZr_;
-	realvec AZl_;
 	mrs_real minAZr_;
 	mrs_real minAZl_;
 	mrs_real maxAZr_;
 	mrs_real maxAZl_;
 
 	MarControlPtr ctrl_beta_;
-	MarControlPtr ctrl_d_;
-	MarControlPtr ctrl_H_;
 
 	void addControls();
 	void myUpdate(MarControlPtr sender);

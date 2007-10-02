@@ -30,7 +30,7 @@ namespace Marsyas
     \brief Centroid of each time slice of observations
 
     Centroid computes the centroid of the observations for each
-time samle. The center is defined as the normalized first moment
+time sample. The center is defined as the normalized first moment
 (center of gravity) of the observation vector.
 */
 

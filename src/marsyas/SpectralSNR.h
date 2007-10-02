@@ -20,28 +20,27 @@
 #define MARSYAS_SPECTRALSNR_H
 
 #include "MarSystem.h"	
-#include "fft.h"
 
 namespace Marsyas
 {
 /** 
-    \class SpectralSNR
+  \class SpectralSNR
 	\ingroup none
-    \brief SpectralSNR computes a frequency domain signal-to-noise ratio
+	\brief SpectralSNR computes a frequency domain signal-to-noise ratio. 
+	Takes as input two stacked PowerSpectrums. 
 
 */
-
 
 class SpectralSNR: public MarSystem
 {
 private:
-  
-  
+	mrs_natural N2_;
+	mrs_real orig_;
+	mrs_real extr_;
+	mrs_real sum_;
 
   void addControls();
   void myUpdate(MarControlPtr sender);
-  
-
 
 public:
   SpectralSNR(std::string name);

@@ -29,7 +29,7 @@ namespace Marsyas
 		\ingroup Analysis
     \brief Compute the complex spectrum of input window 
 
-    Computes the complex spectrum of the input window 
+    Computes the complex spectrum (N/2+1 points) of the input window 
     using the Fast Fourier Transform (FFT). The output is 
 		a N-sized column vector (where N is the size of the input
 		audio vector), using the following format:

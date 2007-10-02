@@ -23,8 +23,6 @@ using namespace Marsyas;
 
 SCF::SCF(string name):MarSystem("SCF",name)
 {
-	//type_ = "SCF";
-	//name_ = name;
 }
 
 SCF::~SCF()
@@ -54,19 +52,19 @@ SCF::myUpdate(MarControlPtr sender)
 
 	//nrBands_ = getctrl("mrs_natural/nrbands");// can this be received as a control value?
 	nrBands_ = 24;
-	//can this parameter be dinamically modified, depending on the
+	//can this parameter be dynamically modified, depending on the
 	//sampling frequency?!?
 	nrValidBands_ = nrBands_; 
 
-	setctrl("mrs_natural/onSamples", (mrs_natural)1);
-	setctrl("mrs_natural/onObservations", (mrs_natural)nrBands_); 
-	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+	setctrl(ctrl_onSamples_, 1);
+	setctrl(ctrl_onObservations_, nrBands_); 
+	setctrl(ctrl_osrate_, ctrl_israte_);
 
 	//features names
 	ostringstream oss;
 	for (i = 0; i < nrBands_; i++)
 		oss << "SCF_" << i+1 << ",";
-	setctrl("mrs_string/onObsNames", oss.str());
+	setctrl(ctrl_onObsNames_, oss.str());
 
 	edge_.create(nrBands_ + 1);
 	bandLoEdge_.create(nrBands_);
@@ -85,15 +83,15 @@ SCF::myUpdate(MarControlPtr sender)
 		bandHiEdge_(i) = edge_(i+1) * 1.05f; //band overlapping (MPEG7)
 	}
 
-	fftSize_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
-	//fftBinFreqs_.create(fftSize_);
+	spectrumSize_ = ctrl_inObservations_->to<mrs_natural>();//PowerSpectrum returns N/2+1 spectral points
+	//spectrumBinFreqs_.create(spectrumSize_);
 
 	// spectrum sampling rate - not audio 
-	df_ = getctrl("mrs_real/israte")->to<mrs_real>();
+	df_ = ctrl_israte_->to<mrs_real>();
 
 	//calculate the frequency (Hz) of each FFT bin
-	//for (mrs_natural k=0; k < fftSize_ ; k++)
-	//	fftBinFreqs_(k) = (float) k * df_;
+	//for (mrs_natural k=0; k < spectrumSize_ ; k++)
+	//	spectrumBinFreqs_(k) = (float) k * df_;
 
 	//calculate FFT bin indexes for each band's edges
 	il_.resize(nrBands_);
@@ -107,7 +105,7 @@ SCF::myUpdate(MarControlPtr sender)
 		//must verify if sampling rate is enough
 		//for the specified nr of bands. If not, 
 		//reduce nr of valid freq. bands
-		if(ih_[i] >= fftSize_/2) //marsyas FFT returns fftSize/2 points  
+		if(ih_[i] >= spectrumSize_) //if ih_[i] >= N/2+1 = spectrumSize_ = inObservations ...
 		{
 			nrValidBands_ = i;
 			il_.resize(nrValidBands_);
@@ -120,8 +118,6 @@ SCF::myUpdate(MarControlPtr sender)
 void 
 SCF::myProcess(realvec& in, realvec& out)
 {
-	//checkFlow(in,out);
-
 	mrs_natural i, k, bandwidth;
 	double c, maxc;
 	double aritMean ;
@@ -139,7 +135,7 @@ SCF::myProcess(realvec& in, realvec& out)
 		bandwidth = ih_[i] - il_[i] + 1;
 		for(k = il_[i]; k <= ih_[i]; k++)
 		{
-			c = in(k); //power spectrum coef
+			c = in(k); //power spectrum coeff
 			aritMean += c / bandwidth;
 			if(c > maxc)
 				maxc = c;
@@ -151,6 +147,7 @@ SCF::myProcess(realvec& in, realvec& out)
 		//else //mean power = 0 => silence...
 		//  out(i) = 1.0; //as used for the SFM (MPEG-7)...
 	}
+
 	//for freq bands above the nyquist freq
 	//return SFM value defined in MPEG7 for silence
 	//for(i = nrValidBands_; i < nrBands_; i++)

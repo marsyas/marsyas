@@ -162,6 +162,8 @@
 #include "Spectrum2Chroma.h"
 #include "Spectrum2Mel.h"
 #include "ADRess.h"
+#include "ADRessSpectrum.h"
+#include "ADRessStereoSpectrum.h"
 #include "Gain.h"
 // please leave Gain at the end; it makes scripts happy.
 
@@ -311,6 +313,8 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Spectrum2Chroma", new Spectrum2Chroma("spectrum2chromapr"));
 	registerPrototype("Spectrum2Mel", new Spectrum2Mel("spectrum2melpr"));
 	registerPrototype("ADRess", new ADRess("adresspr"));
+	registerPrototype("ADRessSpectrum", new ADRessSpectrum("adressspectrumpr"));
+	registerPrototype("ADRessStereoSpectrum", new ADRessStereoSpectrum("adressstereospectrumpr"));
 	registerPrototype("Gain", new Gain("gp"));
 	// Please leave Gain at the end; it makes scripts happy.
 

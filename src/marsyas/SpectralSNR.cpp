@@ -15,26 +15,21 @@
 ** along with this program; if not, write to the Free Software 
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
- 
-
-
 
 #include "SpectralSNR.h"
 
 using namespace std;
 using namespace Marsyas;
 
-
-
 SpectralSNR::SpectralSNR(string name):MarSystem("SpectralSNR",name)
 {
-  addControls();
+	addControls();
 }
 
 SpectralSNR::SpectralSNR(const SpectralSNR& a):MarSystem(a)
 {
+	N2_ = a.N2_;
 }
-
 
 SpectralSNR::~SpectralSNR()
 {
@@ -48,68 +43,41 @@ SpectralSNR::addControls()
 MarSystem* 
 SpectralSNR::clone() const 
 {
-  return new SpectralSNR(*this);
+	return new SpectralSNR(*this);
 }
-
 
 void 
 SpectralSNR::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
-  ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
-  ctrl_onObservations_->setValue((mrs_natural)1, NOUPDATE);
-  ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>());
-  ctrl_onObsNames_->setValue(ctrl_inObsNames_);
-  
+	ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
+	ctrl_onObservations_->setValue((mrs_natural)1, NOUPDATE);
+	ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>(), NOUPDATE);
+	ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
+
+	N2_ = inObservations_/2;
 }
 
 void 
 SpectralSNR::myProcess(realvec& in, realvec& out)
 {
-  cout << "SpectralSNR called" << endl;
- 
-  mrs_real orig;
-  mrs_real extr;
-  // mrs_real ratio;
-  mrs_natural N2 = inObservations_/2;
-  mrs_real sum = 0.0;
-  cout << "N2 = " << N2 << endl;
-  
-  
-  
-  for (t = 0; t < inSamples_; t++)
-    {
-      for (o=0; o < N2; o++)
+	for (t = 0; t < inSamples_; t++)
 	{
-	  orig = in(o,0);
-	  extr = in(N2+o, 0);
-	  if (orig != 0.0) 
-	    sum += (orig * orig) / ((orig-extr) * (orig-extr));
+		sum_ = 0.0;
+
+		for (o=0; o < N2_; o++)
+		{
+			orig_ = in(o,t);
+			extr_ = in(N2_+o, t);
+			if (orig_ != 0.0) 
+				sum_ += (orig_ * orig_) / ((orig_-extr_) * (orig_-extr_));
+		}
+		
+		if (sum_ != 0.0) 
+			sum_ /= N2_;
+		out(0,t) = 10.0 * log10(sqrt(sum_));
+
+		MRSMSG("sum("<<t<<") = " << sum_ << endl);
+		MRSMSG("SpectralSNR (for frame "<<t<<") = " << out(0,t) << endl);
 	}
-    }
-  if (sum != 0.0) sum /= N2;
-  
-  
-  out(0,0) = 10.0 * log10(sqrt(sum));
-
-  cout << "sum = " << sum << endl;
-  cout << "out = " << out(0,0) << endl;
-  
 }
-
-
-
-
-
-
-
-
-
-	
-
-	
-	
-
-	
-
-	

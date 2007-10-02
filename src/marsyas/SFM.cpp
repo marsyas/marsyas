@@ -23,8 +23,6 @@ using namespace Marsyas;
 
 SFM::SFM(string name):MarSystem("SFM",name)
 {
-	//type_ = "SFM";
-	//name_ = name;
 }
 
 SFM::~SFM()
@@ -84,15 +82,15 @@ SFM::myUpdate(MarControlPtr sender)
 		bandHiEdge_(i) = edge_(i+1) * 1.05f; //band overlapping (MPEG7)
 	}
 
-	fftSize_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
-	//fftBinFreqs_.create(fftSize_);
+	spectrumSize_ = ctrl_inObservations_->to<mrs_natural>();//PowerSpectrum returns N/2+1 spectral points
+	//spectrumBinFreqs_.create(spectrumSize_);
 
 	// spectrum sampling rate - not audio 
-	df_ = getctrl("mrs_real/israte")->to<mrs_real>();
+	df_ = ctrl_israte_->to<mrs_real>();
 
 	//calculate the frequency (Hz) of each FFT bin
-	//for (mrs_natural k=0; k < fftSize_ ; k++)
-	//  fftBinFreqs_(k) = (float) k * df_;
+	//for (mrs_natural k=0; k < spectrumSize_ ; k++)
+	//  spectrumBinFreqs_(k) = (float) k * df_;
 
 	//calculate FFT bin indexes for each band's edges
 	il_.resize(nrBands_);
@@ -106,7 +104,7 @@ SFM::myUpdate(MarControlPtr sender)
 		//must verify if sampling rate is enough
 		//for the specified nr of bands. If not, 
 		//reduce nr of valid freq. bands
-		if(ih_[i] >= fftSize_/2) //marsyas FFT returns fftSize/2 points  
+		if(ih_[i] >= spectrumSize_) //if ih_[i] >= N/2+1 = spectrumSize_ = inObservations ...  
 		{
 			nrValidBands_ = i;
 			il_.resize(nrValidBands_);
@@ -119,8 +117,6 @@ SFM::myUpdate(MarControlPtr sender)
 void 
 SFM::myProcess(realvec& in, realvec& out)
 {
-	//checkFlow(in,out);
-
 	mrs_natural i, k, bandwidth;
 	mrs_real c;
 	mrs_real aritMean;
@@ -139,7 +135,7 @@ SFM::myProcess(realvec& in, realvec& out)
 		bandwidth = ih_[i] - il_[i] + 1;
 		for(k = il_[i]; k <= ih_[i]; k++)
 		{
-			c = in(k); //power spectrum coef
+			c = in(k); //power spectrum coeff
 			aritMean += c / bandwidth;
 			geoMean *= pow(c, 1.0/bandwidth);
 		}
@@ -150,6 +146,7 @@ SFM::myProcess(realvec& in, realvec& out)
 		//else //mean power = 0 => silence...
 		//  out(i) = 1.0; //MPEG-7
 	}
+
 	//for freq bands above the nyquist freq
 	//return SFM value defined in MPEG7 for silence
 	//for(i = nrValidBands_; i < nrBands_; i++)

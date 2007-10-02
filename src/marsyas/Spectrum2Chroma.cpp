@@ -97,9 +97,19 @@ Spectrum2Chroma::myUpdate(MarControlPtr sender)
 	{
 		pnbins_ = ctrl_nbins_->to<mrs_natural>();
 		ostringstream oss;
-		for (mrs_natural n=0; n < pnbins_; n++)
+		if(pnbins_ == 12)
 		{
-			oss << "Chroma_" << noteNames_[n] << ",";
+			for (mrs_natural n=0; n < pnbins_; n++)
+			{
+				oss << "Chroma_" << noteNames_[n] << ",";
+			}
+		}
+		else
+		{
+			for (mrs_natural n=0; n < pnbins_; n++)
+			{
+				oss << "Chroma_" << n << ",";
+			}
 		}
 		ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 	}
@@ -122,12 +132,10 @@ Spectrum2Chroma::myUpdate(MarControlPtr sender)
 				
 		mrs_natural nbins = ctrl_nbins_->to<mrs_natural>();
 		mrs_natural nbins2 = (mrs_natural)floor(nbins/2.0+0.5); //equivalent to round()
-		mrs_natural N2 = inObservations_;
-		mrs_natural N = N2*2;
+		mrs_natural N2 = inObservations_; // we get N/2+1 spectrum points at the input...
+		mrs_natural N = (N2-1)*2; //fft size
 
 		//get the original audio sampling rate
-		//NOTE: this assumes that the input only has the magnitudes for the first N/2 spectrum points
-		//(and not the usual N/2+1 spectrum points) -> see PowerSpectrum.cpp
 		mrs_real srate = israte_*N;
 
 		//calculate the frequencies (in octaves) for each spectrum bin

@@ -65,9 +65,14 @@ void
 PowerSpectrum::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
-	ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
-	ctrl_onObservations_->setValue((ctrl_inObservations_->to<mrs_natural>() /2), NOUPDATE);
-	ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>(), NOUPDATE);// / ctrl_inSamples_->to<mrs_natural>());
+
+	//Spectrum outputs N values, corresponding to N/2+1
+	//complex and unique spectrum points - see Spectrum.h documentation
+	N2_ = ctrl_inObservations_->to<mrs_natural>()/2 + 1; 
+
+	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
+	ctrl_onObservations_->setValue(N2_, NOUPDATE); //outputs N/2+1 real values
+	ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>(), NOUPDATE);
 
 	stype_ = ctrl_spectrumType_->to<mrs_string>();
 	if (stype_ == "power")
@@ -78,10 +83,6 @@ PowerSpectrum::myUpdate(MarControlPtr sender)
 		ntype_ = PSD_DB;
 	else if (stype_ == "powerdensity")
 		ntype_ = PSD_PD;
-
-	inObservations_ = ctrl_inObservations_->to<mrs_natural>();
-
-	N2_ = inObservations_ / 2;
 
 	ostringstream oss;
 	for (mrs_natural n=0; n < N2_; n++)
@@ -96,17 +97,17 @@ PowerSpectrum::myProcess(realvec& in, realvec& out)
 	{
 		for (o=0; o < N2_; o++)
 		{
-			if (o==0)
+			if (o==0) //DC bin (i.e. 0)
 			{
 				re_ = in(0,t);
 				im_ = 0.0;
 			}
-			else if (o == N2_) //never happens because we are not outputting the due N/2+1 points, but only N/2 points...
+			else if (o == N2_-1) //Nyquist bin (i.e. N/2)
 			{
 				re_ = in(1,t);
 				im_ = 0.0;
 			}
-			else
+			else //all other bins
 			{
 				re_ = in(2*o, t);
 				im_ = in(2*o+1, t);
@@ -132,6 +133,8 @@ PowerSpectrum::myProcess(realvec& in, realvec& out)
 			}
 		} 
 	}
+
+	MATLAB_PUT(out, "PowerSpectrum");
 }
 
 

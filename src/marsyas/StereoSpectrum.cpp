@@ -50,14 +50,13 @@ void
 StereoSpectrum::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
+	
+	N2_ = ctrl_inObservations_->to<mrs_natural>()/2;
+	N4_ = N2_/2+1; //i.e. N/2+1
+	
 	ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
-	ctrl_onObservations_->setValue((ctrl_inObservations_->to<mrs_natural>() /4), NOUPDATE);
-	ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>(), NOUPDATE);// / ctrl_inSamples_->to<mrs_natural>(), NOUPDATE); [!]
-
-	//inObservations_ = ctrl_inObservations_->to<mrs_natural>();
-
-	N4_ = inObservations_ / 4;
-	N2_ = inObservations_ / 2;
+	ctrl_onObservations_->setValue(N4_, NOUPDATE);// N/2+1
+	ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>(), NOUPDATE);
 
 	ostringstream oss;
 	for (mrs_natural n=0; n < N4_; n++)
@@ -70,37 +69,39 @@ StereoSpectrum::myProcess(realvec& in, realvec& out)
 {
 	for (t=0; t < N4_; t++)
 	{
-		if (t==0)
+		//left channel
+		if (t==0) //DC bin (i.e. 0)
 		{
 			rel_ = in(0,0);
 			iml_ = 0.0;
 		}
-		else if (t == N4_) 
+		else if (t == N4_-1) //Nyquist bin (i.e. N/2)
 		{
 			rel_ = in(1, 0);
 			iml_ = 0.0;
 		}
-		else
+		else //all other bins
 		{
 			rel_ = in(2*t, 0);
 			iml_ = in(2*t+1, 0);
 		}
-
-		if (t==0)
+		//right channel
+		if (t==0) //DC bin (i.e. 0)
 		{
 			rer_ = in(N2_,0);
 			imr_ = 0.0;
 		}
-		else if (t == N2_) 
+		else if (t == N4_-1) //Nyquist bin (i.e. N/2)
 		{
 			rer_ = in(N2_+1, 0);
 			imr_ = 0.0;
 		}
-		else
+		else //all other bins
 		{
 			rer_ = in(N2_ + 2*t, 0);
 			imr_ = in(N2_ + 2*t+1, 0);
 		}
+
 		mrs_real f1 = (rel_ * rer_)*(rel_ * rer_);
 		mrs_real f2 = (iml_ * imr_)*(iml_ * imr_);
 		mrs_real f3 = (iml_ * rer_)*(iml_ * rer_);
@@ -121,6 +122,8 @@ StereoSpectrum::myProcess(realvec& in, realvec& out)
 		else 
 			out(t,0) = 0.0;
 	}
+
+	MATLAB_PUT(out, "stereoSpectrum");
 }
 
 

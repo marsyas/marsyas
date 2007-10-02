@@ -25,11 +25,12 @@ namespace Marsyas
 {
 /** 
     \class MFCC
-	\ingroup Analysis
-    \brief MFCC Mel-Frequency Cepstral Coefficients
+		\ingroup Analysis
+    \brief MFCC Mel-Frequency Cepstral Coefficients. 
+		Takes as input the N/2+1 spectrum Magnitude points output by PowerSpectrum.
 
     Mel-Frequency cepstral coefficients are features frequently 
-used in Speech Recognition. The code is based on the correspdonging 
+used in Speech Recognition. The code is based on the corresponding 
 function in the Auditory Toolbox by Malcolm Slaney. 
 */
 
@@ -62,9 +63,11 @@ private:
   realvec earMagnitude_;
   realvec fmagnitude_;
 
+	// NEIL's filter weight speedup
+	int* mfcc_offsets_;
+
   bool init_;
-  // NEIL's filter weight speedup
-  int* mfcc_offsets;
+
 public:
   MFCC(std::string name);
   MFCC(const MFCC& a);
