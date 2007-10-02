@@ -270,6 +270,9 @@ libmarsyas_a_SOURCES    = \
 			$(top_srcdir)/src/marsyas/Spectrum2Chroma.cpp \
 	$(top_srcdir)/src/marsyas/Spectrum2Mel.cpp \
 	$(top_srcdir)/src/marsyas/ADRess.cpp \
+	$(top_srcdir)/src/marsyas/StereoSpectrumADRess.cpp \
+	$(top_srcdir)/src/marsyas/ADRessSpectrum.cpp \
+	$(top_srcdir)/src/marsyas/ADRessStereoSpectrum.cpp \
 			$(top_srcdir)/src/marsyas/Gain.cpp
 # please leave Gain.cpp at the end like this; it make scripts happy.
 

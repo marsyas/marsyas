@@ -70,8 +70,6 @@ ADRessStereoSpectrum::myUpdate(MarControlPtr sender)
 void
 ADRessStereoSpectrum::myProcess(realvec& in, realvec& out)
 {
-	MATLAB_PUT(in, "in");
-
 	for(o=0; o < N2_; ++o)
 	{
 		//look for the maximum in the azimuth plane
