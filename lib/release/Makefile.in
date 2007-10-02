@@ -340,6 +340,8 @@ libmarsyas_a_SOURCES = \
 			$(top_srcdir)/src/marsyas/Spectrum2Chroma.cpp \
 	$(top_srcdir)/src/marsyas/Spectrum2Mel.cpp \
 	$(top_srcdir)/src/marsyas/ADRess.cpp \
+	$(top_srcdir)/src/marsyas/ADRessSpectrum.cpp \
+	$(top_srcdir)/src/marsyas/ADRessStereoSpectrum.cpp \
 			$(top_srcdir)/src/marsyas/Gain.cpp
 
 subdir = lib/release
@@ -437,7 +439,9 @@ am_libmarsyas_a_OBJECTS = svm.$(OBJEXT) RtAudio.$(OBJEXT) \
 	Transcriber.$(OBJEXT) PhiSEMSource.$(OBJEXT) \
 	PhiSEMFilter.$(OBJEXT) SVMClassifier.$(OBJEXT) \
 	Classifier.$(OBJEXT) Spectrum2Chroma.$(OBJEXT) \
-	Spectrum2Mel.$(OBJEXT) ADRess.$(OBJEXT) Gain.$(OBJEXT)
+	Spectrum2Mel.$(OBJEXT) ADRess.$(OBJEXT) \
+	ADRessSpectrum.$(OBJEXT) ADRessStereoSpectrum.$(OBJEXT) \
+	Gain.$(OBJEXT)
 libmarsyas_a_OBJECTS = $(am_libmarsyas_a_OBJECTS)
 libmarsyasqt_a_AR = $(AR) cru
 libmarsyasqt_a_LIBADD =
@@ -451,9 +455,11 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/ADRess.Po ./$(DEPDIR)/ADSR.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/AMDF.Po ./$(DEPDIR)/ANN_node.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/AbsMax.Po \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/ADRess.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ADRessSpectrum.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ADRessStereoSpectrum.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ADSR.Po ./$(DEPDIR)/AMDF.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ANN_node.Po ./$(DEPDIR)/AbsMax.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbsSoundFileSink.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbsSoundFileSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbsSoundFileSource2.Po \
@@ -909,6 +915,9 @@ Classifier.$(OBJEXT): $(top_srcdir)/src/marsyas/Classifier.cpp
 Spectrum2Chroma.$(OBJEXT): $(top_srcdir)/src/marsyas/Spectrum2Chroma.cpp
 Spectrum2Mel.$(OBJEXT): $(top_srcdir)/src/marsyas/Spectrum2Mel.cpp
 ADRess.$(OBJEXT): $(top_srcdir)/src/marsyas/ADRess.cpp
+ADRessSpectrum.$(OBJEXT): $(top_srcdir)/src/marsyas/ADRessSpectrum.cpp
+ADRessStereoSpectrum.$(OBJEXT): \
+	$(top_srcdir)/src/marsyas/ADRessStereoSpectrum.cpp
 Gain.$(OBJEXT): $(top_srcdir)/src/marsyas/Gain.cpp
 libmarsyas.a: $(libmarsyas_a_OBJECTS) $(libmarsyas_a_DEPENDENCIES) 
 	-rm -f libmarsyas.a
@@ -926,6 +935,8 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ADRess.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ADRessSpectrum.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ADRessStereoSpectrum.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ADSR.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AMDF.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ANN_node.Po@am__quote@
@@ -3827,6 +3838,30 @@ ADRess.obj: $(top_srcdir)/src/marsyas/ADRess.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/ADRess.Po' tmpdepfile='$(DEPDIR)/ADRess.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ADRess.obj `cygpath -w $(top_srcdir)/src/marsyas/ADRess.cpp`
+
+ADRessSpectrum.o: $(top_srcdir)/src/marsyas/ADRessSpectrum.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/ADRessSpectrum.cpp' object='ADRessSpectrum.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/ADRessSpectrum.Po' tmpdepfile='$(DEPDIR)/ADRessSpectrum.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ADRessSpectrum.o `test -f '$(top_srcdir)/src/marsyas/ADRessSpectrum.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/marsyas/ADRessSpectrum.cpp
+
+ADRessSpectrum.obj: $(top_srcdir)/src/marsyas/ADRessSpectrum.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/ADRessSpectrum.cpp' object='ADRessSpectrum.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/ADRessSpectrum.Po' tmpdepfile='$(DEPDIR)/ADRessSpectrum.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ADRessSpectrum.obj `cygpath -w $(top_srcdir)/src/marsyas/ADRessSpectrum.cpp`
+
+ADRessStereoSpectrum.o: $(top_srcdir)/src/marsyas/ADRessStereoSpectrum.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/ADRessStereoSpectrum.cpp' object='ADRessStereoSpectrum.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/ADRessStereoSpectrum.Po' tmpdepfile='$(DEPDIR)/ADRessStereoSpectrum.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ADRessStereoSpectrum.o `test -f '$(top_srcdir)/src/marsyas/ADRessStereoSpectrum.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/marsyas/ADRessStereoSpectrum.cpp
+
+ADRessStereoSpectrum.obj: $(top_srcdir)/src/marsyas/ADRessStereoSpectrum.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/ADRessStereoSpectrum.cpp' object='ADRessStereoSpectrum.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/ADRessStereoSpectrum.Po' tmpdepfile='$(DEPDIR)/ADRessStereoSpectrum.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ADRessStereoSpectrum.obj `cygpath -w $(top_srcdir)/src/marsyas/ADRessStereoSpectrum.cpp`
 
 Gain.o: $(top_srcdir)/src/marsyas/Gain.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/Gain.cpp' object='Gain.o' libtool=no @AMDEPBACKSLASH@
