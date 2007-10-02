@@ -145,7 +145,7 @@ ADRess::myProcess(realvec& in, realvec& out)
 		}
 
 		//compute the magnitudes of the frequency dependent nulls
-		for(i=0; i <= beta; ++i)
+		for(mrs_natural i=0; i <= beta; ++i)
 		{
 			//left channel
 			if(out(k,i+1)== min(minAZl_, minAZr_))// && 20.0*log10(out(k,i+1)*out(k,i+1)+0.000000001)>=-100.0)
