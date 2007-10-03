@@ -108,7 +108,7 @@ PeakSynthOsc::myProcess(realvec& in, realvec& out)
 		{
 			if(in(i+peakView::pkGroup*Nb) > -1)
 				sine(out, in(i), in(i+Nb), in(i+2*Nb));
-			//	cout << "truc" << endl;
+			//		       	cout << "truc" << in(i) << " " << in(i+Nb) << "  " << in(i+2*Nb) << endl;
 		}
 }
 

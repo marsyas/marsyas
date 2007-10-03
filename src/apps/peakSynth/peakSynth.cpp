@@ -180,7 +180,8 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		synthNetCreate(&mng, outsfname, microphone_, synthetize);
 		MarSystem *peSynth = mng.create("PeSynthetize", "synthNet");
 		pvseries->addMarSystem(peSynth);
-		synthNetConfigure (pvseries, sfName, outsfname, fileResName, panningInfo, 1, Nw, D, S, 1, microphone_, synthetize, bopt_, Nw+1-D);
+		cout << Nw << " " << D << " " << Nw+1-D << endl;
+		synthNetConfigure (pvseries, sfName, outsfname, fileResName, panningInfo, 1, Nw, D, S, 1, microphone_, synthetize, bopt_, -D);
 	}
 
 	if(harmonize_)

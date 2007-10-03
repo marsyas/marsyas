@@ -546,7 +546,7 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 	if(synType==0)
 	{
 	//pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/nbSinusoids", S);
-	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/delay", Nw/2+1);
+	  pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/delay", delay); // Nw/2+1 
 	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/synSize", D*2);
 	}
 	else 

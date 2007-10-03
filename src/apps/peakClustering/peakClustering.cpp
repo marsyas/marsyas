@@ -447,7 +447,7 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	if(synthetize>-1)
 	{
 		//[TODO]
-		synthNetConfigure(mainNet, sfName, outsfname, fileResName, panningInfo, 1, Nw, D, S, accSize, microphone_, synthetize_, bopt_, Nw+1-D, residual_);
+		synthNetConfigure(mainNet, sfName, outsfname, fileResName, panningInfo, 1, Nw, D, S, accSize, microphone_, synthetize_, bopt_, -D, residual_);
 	}
 
 	if(noiseDuration_) //[WTF]

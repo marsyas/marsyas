@@ -96,10 +96,10 @@ WHaSp::createSimMatrixNet()
 	HWPSnet_->setctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize", 20);
 	HWPSnet_->update(); //only call update to HWPSnet_ since this is being called from WHaSp::update()! -> avoid potential infinite recursion!
 
-	//HWPSnet_->updctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_bool/calcDistance", true);
+       	HWPSnet_->updctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_bool/calcDistance", true);
 
-	HWPSnet_->setctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize", 100);
-	//HWPSnet_->update(); //only call update to HWPSnet_ since this is being called from WHaSp::update()! -> avoid potential infinite recursion!
+	//HWPSnet_->setctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize", 100);
+	HWPSnet_->update(); //only call update to HWPSnet_ since this is being called from WHaSp::update()! -> avoid potential infinite recursion!
 
 }
 
@@ -138,24 +138,41 @@ WHaSp::myProcess(realvec& in, realvec& out)
 		HWPSnet_->process(in, simMatrix_);
 		
 		mrs_real maxDist = MINREAL;
+		realvec volumes(numPeaks);
+
 		for(mrs_natural r=0; r<numPeaks; ++r)
 		{
 			outPkView(r, peakView::pkVolume) = 0;
 			for(mrs_natural c=0; c < numPeaks; ++c)
 			{
 				if(r != c)
-					outPkView(r, peakView::pkVolume) += simMatrix_(r, c); 
+					outPkView(r, peakView::pkVolume) += simMatrix_(r, c)*outPkView(c, peakView::pkAmplitude); 
 			}
 			if(outPkView(r, peakView::pkVolume) > maxDist)
 				maxDist = outPkView(r, peakView::pkVolume);
+			volumes(r) = outPkView(r, peakView::pkVolume);
 		}
 		
+		volumes.sort();
+		//	cout << "Number of Peaks considered" << numPeaks << endl;
+		// cout << volumes ; 
+		mrs_natural nbSelected = 10;
 		mrs_real dist;
+
 		for(mrs_natural i=0; i < numPeaks; ++i)
 		{
+
+		  mrs_bool found=false;
+		  for (mrs_natural j=0 ; j< nbSelected ; j++)
+		    if(volumes(nbSelected-j-1) == outPkView(i, peakView::pkVolume))
+		      found=true;
+
+		  if(!found)
+		    	outPkView(i, peakView::pkAmplitude) = 0;
+
 			//"enhance" all spectral peaks that have a high harmonicity
 			//similarity with other peaks (i.e. high HWPS)
-			outPkView(i, peakView::pkAmplitude) *= outPkView(i, peakView::pkVolume)/maxDist;
+		  //			 outPkView(i, peakView::pkAmplitude) *= outPkView(i, peakView::pkVolume)/maxDist;
 
 			//filter peaks with Volumes below a defined threshold
 			//
@@ -165,10 +182,10 @@ WHaSp::myProcess(realvec& in, realvec& out)
 		}
 	}
 
-	realvec table;
-	outPkView.toTable(table);
-	MATLAB_PUT(table, "P");
-	MATLAB_EVAL("stemPeaks(P)");
+//  	realvec table;
+// 	outPkView.toTable(table);
+// 	MATLAB_PUT(table, "P");
+// 	MATLAB_EVAL("stemPeaks(P)");
 }
 
 
