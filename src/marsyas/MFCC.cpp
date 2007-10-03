@@ -59,6 +59,8 @@ MFCC::myUpdate(MarControlPtr sender)
 	// Initialize frequency boundaries for filters 
 	mrs_natural i,j;
 	fftSize_ = 2 * (ctrl_inObservations_->to<mrs_natural>()-1); //PowerSpectrum outputs N/2+1 "magnitude" spectral points!
+	if (fftSize_ == 0) return; // skip unnecessary updates 
+	
 	samplingRate_ = (mrs_natural) (ctrl_israte_->to<mrs_real>() * fftSize_);
 
 	if ((pfftSize_ != fftSize_) || (psamplingRate_ != samplingRate_))

@@ -160,7 +160,6 @@ MarSystem* createSTFTMFCCextractor()
 	MarSystemManager mng;
 
 	MarSystem* extractor = mng.create("Series", "STFTMFCCextractor");
-
 	extractor->addMarSystem(mng.create("PowerSpectrumNet","powerSpect"));
 	// Spectrum Shape descriptors
 	MarSystem* spectrumFeatures = mng.create("Fanout", "spectrumFeatures");
@@ -169,7 +168,6 @@ MarSystem* createSTFTMFCCextractor()
 	spectrumFeatures->addMarSystem(mng.create("Flux", "flux"));
 	spectrumFeatures->addMarSystem(mng.create("MFCC", "mfcc"));
 	extractor->addMarSystem(spectrumFeatures);
-
 	extractor->linkctrl("mrs_natural/WindowSize", "PowerSpectrumNet/powerSpect/mrs_natural/WindowSize");
 
 	return extractor;
@@ -457,8 +455,9 @@ bextract_trainStereoSPS(vector<Collection> cls, string classNames,
 	total->addMarSystem(statistics2);
 
 	total->addMarSystem(mng.create("Annotator", "ann"));
-	total->addMarSystem(mng.create("SVMClassifier", "svmcl"));
 	total->addMarSystem(mng.create("WekaSink", "wsink"));
+	total->addMarSystem(mng.create("SVMClassifier", "svmcl"));
+
 	total->updctrl("mrs_natural/inSamples", 1024);
 	
 	mrs_bool collection_has_labels = false;
@@ -615,6 +614,7 @@ bextract_trainStereoSPSMFCC(vector<Collection> cls, string classNames,
 
 	total->addMarSystem(mng.create("Annotator", "ann"));
 	total->addMarSystem(mng.create("WekaSink", "wsink"));
+	total->addMarSystem(mng.create("SVMClassifier", "svmcl"));
 
 	total->updctrl("mrs_natural/inSamples", 1024);
 
@@ -624,6 +624,8 @@ bextract_trainStereoSPSMFCC(vector<Collection> cls, string classNames,
 	{
 		collection_has_labels = true;
 	}
+	Collection l;
+		
 
 	if (!collection_has_labels)
 	{
@@ -650,7 +652,6 @@ bextract_trainStereoSPSMFCC(vector<Collection> cls, string classNames,
 	}
 	else 
 	{
-		Collection l;
 		int i;
 		l = cls[0];
 
@@ -658,6 +659,7 @@ bextract_trainStereoSPSMFCC(vector<Collection> cls, string classNames,
 		total->updctrl("WekaSink/wsink/mrs_natural/downsample", 1); 
 		total->updctrl("WekaSink/wsink/mrs_string/labelNames", l.getLabelNames());
 		total->updctrl("WekaSink/wsink/mrs_string/filename", wekafname); 
+		total->updctrl("SVMClassifier/svmcl/mrs_string/mode", "train");
 
 		for (i=0; i < l.size(); i++) 
 		{
@@ -667,6 +669,31 @@ bextract_trainStereoSPSMFCC(vector<Collection> cls, string classNames,
 			total->tick();	  	  
 		}
 	}
+	
+	
+	int i;
+	if (testCollection != EMPTYSTRING) 
+	  {
+	  Collection m;
+	  m.read(testCollection);
+	  if (wekafname != EMPTYSTRING) 
+	    total->updctrl("WekaSink/wsink/mrs_string/filename", "predict.arff");
+	  total->updctrl("SVMClassifier/svmcl/mrs_string/mode", "predict");
+	  
+	  ofstream prout;
+	  prout.open(predictCollection.c_str());
+	  
+	  for (i=0; i < m.size(); i++)//iterate over collection files
+	    {
+	      total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", m.entry(i));
+	      total->tick();
+	      mrs_realvec pr = total->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	      cout << "Predicting " << m.entry(i) << "\t" << l.labelName(pr(0,0)) << endl;
+	      prout << m.entry(i) << "\t" << l.labelName(pr(0,0)) << endl;
+	    }
+	}
+
+
 }
 
 void 
@@ -717,7 +744,7 @@ bextract_trainStereoMFCC(vector<Collection> cls, string classNames,
 
 	total->addMarSystem(mng.create("Annotator", "ann"));
 	total->addMarSystem(mng.create("WekaSink", "wsink"));
-
+	total->addMarSystem(mng.create("SVMClassifier", "svmcl"));
 	playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
 
 
@@ -732,6 +759,7 @@ bextract_trainStereoMFCC(vector<Collection> cls, string classNames,
 	}
 
 	// cout << *total << endl;
+	Collection l;
 
 	if (!collection_has_labels)
 	{
@@ -757,7 +785,7 @@ bextract_trainStereoMFCC(vector<Collection> cls, string classNames,
 	}
 	else 
 	{
-		Collection l;
+
 		int i;
 		l = cls[0];
 
@@ -765,6 +793,7 @@ bextract_trainStereoMFCC(vector<Collection> cls, string classNames,
 		total->updctrl("WekaSink/wsink/mrs_natural/downsample", 1); 
 		total->updctrl("WekaSink/wsink/mrs_string/labelNames", l.getLabelNames());
 		total->updctrl("WekaSink/wsink/mrs_string/filename", wekafname); 
+		total->updctrl("SVMClassifier/svmcl/mrs_string/mode", "train");
 
 		for (i=0; i < l.size(); i++) 
 		{
@@ -774,6 +803,32 @@ bextract_trainStereoMFCC(vector<Collection> cls, string classNames,
 			total->tick();	  	  
 		}
 	}
+
+	
+	int i;
+	if (testCollection != EMPTYSTRING) 
+	  {
+	  Collection m;
+	  m.read(testCollection);
+	  if (wekafname != EMPTYSTRING) 
+	    total->updctrl("WekaSink/wsink/mrs_string/filename", "predict.arff");
+	  total->updctrl("SVMClassifier/svmcl/mrs_string/mode", "predict");
+	  
+	  ofstream prout;
+	  prout.open(predictCollection.c_str());
+	  
+	  for (i=0; i < m.size(); i++)//iterate over collection files
+	    {
+	      total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", m.entry(i));
+	      total->tick();
+	      mrs_realvec pr = total->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	      cout << "Predicting " << m.entry(i) << "\t" << l.labelName(pr(0,0)) << endl;
+	      prout << m.entry(i) << "\t" << l.labelName(pr(0,0)) << endl;
+	    }
+	}
+
+
+
 }
 //---------------------------------------------------------------------------------------------------------
 void 
@@ -1001,400 +1056,456 @@ bextract_trainADRessStereoSPSMFCC(vector<Collection> cls, string classNames,
 	}
 }
 
-//---------------------------------------------------------------------------------------------------------
 void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label, 
-															 string pluginName, string classNames, 
-															 string wekafname, string filefeaturename, 
-															 mrs_natural memSize, string extractorStr,
-															 bool withBeatFeatures)
+			       string pluginName, string classNames, 
+			       string wekafname, string filefeaturename, 
+			       mrs_natural memSize, string extractorStr,
+			       bool withBeatFeatures)
 {
-	if (withBeatFeatures)
-		cout << "with beat features" << endl;
+  if (withBeatFeatures)
+    cout << "with beat features" << endl;
 
-	mrs_bool collection_has_labels = false;
 
-	if ((cls.size() == 1)&&(cls[0].hasLabels()))
+  mrs_bool collection_has_labels = false;
+  
+  if ((cls.size() == 1)&&(cls[0].hasLabels()))
+    {
+      collection_has_labels = true;
+    }
+
+
+  
+
+
+  MRSDIAG("bextract.cpp - bextract_trainAccumulator");
+  mrs_natural i;
+  mrs_natural cj;
+
+  Collection linitial = cls[0];
+  string sfName = linitial.entry(0);
+
+  if (normopt) 
+    cout << "NORMALIZE ENABLED" << endl;
+
+  MarSystemManager mng;  
+
+		
+  ////////////////////////////////////////////////
+//////////////////////////
+  // create the file source
+  //////////////////////////////////////////////////////////////////////////
+  MarSystem* src = mng.create("SoundFileSource", "src");
+
+  //////////////////////////////////////////////////////////////////////////
+  // Feature Extractor
+  //////////////////////////////////////////////////////////////////////////
+  // create the correct feature extractor using the table of known
+  // feature extractors:
+
+  MarSystem* featExtractor = (*featExtractors[extractorStr])();
+  featExtractor->updctrl("mrs_natural/WindowSize", winSize);
+
+
+
+	
+  //////////////////////////////////////////////////////////////////////////
+  // Build the overall feature calculation network
+  //////////////////////////////////////////////////////////////////////////
+  MarSystem* featureNetwork = mng.create("Series", "featureNetwork");
+  featureNetwork->addMarSystem(src);
+  
+  // convert stereo files to mono 
+  featureNetwork->addMarSystem(mng.create("Stereo2Mono", "s2m"));
+  featureNetwork->addMarSystem(featExtractor);
+
+  //////////////////////////////////////////////////////////////////////////
+  // Texture Window Statistics (if any)
+  //////////////////////////////////////////////////////////////////////////
+  if(memSize != 0)
+    {
+      featureNetwork->addMarSystem(mng.create("TextureStats", "tStats"));
+      featureNetwork->updctrl("TextureStats/tStats/mrs_natural/memSize", memSize);
+    }
+
+  //////////////////////////////////////////////////////////////////////////
+  // update controls
+  //////////////////////////////////////////////////////////////////////////
+  featureNetwork->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  featureNetwork->updctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
+
+  //////////////////////////////////////////////////////////////////////////
+  // accumulate feature vectors over 30 seconds 
+  //////////////////////////////////////////////////////////////////////////
+  MarSystem* acc = mng.create("Accumulator", "acc");
+  acc->updctrl("mrs_natural/nTimes", accSize_);
+	
+  //////////////////////////////////////////////////////////////////////////
+  // add network to accumulator
+  //////////////////////////////////////////////////////////////////////////
+  acc->addMarSystem(featureNetwork->clone());
+
+  //////////////////////////////////////////////////////////////////////////
+  // WEKA output
+  //////////////////////////////////////////////////////////////////////////
+  MarSystem* wsink = mng.create("WekaSink", "wsink");
+
+  //////////////////////////////////////////////////////////////////////////
+  // Annotator
+  //////////////////////////////////////////////////////////////////////////
+  MarSystem* annotator = mng.create("Annotator", "annotator");
+
+  //////////////////////////////////////////////////////////////////////////
+  // 30-second statistics 
+  //////////////////////////////////////////////////////////////////////////
+  MarSystem* statistics = mng.create("Fanout", "statistics2");
+  statistics->addMarSystem(mng.create("Mean", "mn"));
+  statistics->addMarSystem(mng.create("StandardDeviation", "std"));
+	
+  //////////////////////////////////////////////////////////////////////////
+  // Final network compute 30-second statistics 
+  //////////////////////////////////////////////////////////////////////////
+  MarSystem* total = mng.create("Series", "total");
+  total->addMarSystem(acc);
+  total->addMarSystem(statistics);
+  
+
+  // get parameters
+  mrs_real srate = samplingRate_;
+
+
+
+  total->updctrl("mrs_natural/inSamples", winSize);
+
+  total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/mrs_natural/pos", offset);      
+
+  // Calculate duration, offset parameters if necessary 
+  offset = (mrs_natural) (start * samplingRate_ );
+  duration = (mrs_natural) (length * samplingRate_);
+
+  //////////////////////////////////////////////////////////////////////////
+  // main loop for extracting the features 
+  //////////////////////////////////////////////////////////////////////////
+  mrs_natural wc = 0;
+  mrs_natural samplesPlayed =0;
+  string className = "";
+  realvec beatfeatures;
+  beatfeatures.create((mrs_natural)8,(mrs_natural)1);
+  realvec estimate;
+  estimate.create((mrs_natural)8,(mrs_natural)1);
+  realvec in;
+  realvec timbreres;
+  realvec fullres;
+  realvec afullres;
+
+  in.create(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+	    total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+  timbreres.create(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+		   total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+
+  if (withBeatFeatures)
+    {
+      
+      if (extractorStr == "BEAT") 
 	{
-		collection_has_labels = true;
+	  fullres.create(8, 1);
+	  afullres.create(8+1, 1);
+	  annotator->updctrl("mrs_natural/inObservations", 8);      
+	  
 	}
-
-	MRSDIAG("bextract.cpp - bextract_trainAccumulator");
-	mrs_natural i;
-	mrs_natural cj;
-
-	Collection linitial = cls[0];
-	string sfName = linitial.entry(0);
-
-	if (normopt) 
-		cout << "NORMALIZE ENABLED" << endl;
-
-	MarSystemManager mng;  
-
-	////////////////////////////////////////////////
-	//////////////////////////
-	// create the file source
-	//////////////////////////////////////////////////////////////////////////
-	MarSystem* src = mng.create("SoundFileSource", "src");
-
-	//////////////////////////////////////////////////////////////////////////
-	// Feature Extractor
-	//////////////////////////////////////////////////////////////////////////
-	// create the correct feature extractor using the table of known
-	// feature extractors:
-	MarSystem* featExtractor = (*featExtractors[extractorStr])();
-	featExtractor->updctrl("mrs_natural/WindowSize", winSize);
-
-	//////////////////////////////////////////////////////////////////////////
-	// Build the overall feature calculation network
-	//////////////////////////////////////////////////////////////////////////
-	MarSystem* featureNetwork = mng.create("Series", "featureNetwork");
-	featureNetwork->addMarSystem(src);
-
-	// convert stereo files to mono 
-	featureNetwork->addMarSystem(mng.create("Stereo2Mono", "s2m"));
-	featureNetwork->addMarSystem(featExtractor);
-
-	//////////////////////////////////////////////////////////////////////////
-	// Texture Window Statistics (if any)
-	//////////////////////////////////////////////////////////////////////////
-	if(memSize != 0)
+      else 
 	{
-		featureNetwork->addMarSystem(mng.create("TextureStats", "tStats"));
-		featureNetwork->updctrl("TextureStats/tStats/mrs_natural/memSize", memSize);
+	  fullres.create(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>() + 8, 
+			 total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+	  afullres.create(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>() + 8 + 1, 
+			  total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+	  annotator->updctrl("mrs_natural/inObservations", total->getctrl("mrs_natural/onObservations")->to<mrs_natural>()+8);      
 	}
+    }
+  else
+    {
+      fullres.create(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+		     total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
-	//////////////////////////////////////////////////////////////////////////
-	// update controls
-	//////////////////////////////////////////////////////////////////////////
-	featureNetwork->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-	featureNetwork->updctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
+      afullres.create(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>() + 1,
+		      total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());  
+      annotator->updctrl("mrs_natural/inObservations", total->getctrl("mrs_natural/onObservations")->to<mrs_natural>());      
+    }
 
-	//////////////////////////////////////////////////////////////////////////
-	// accumulate feature vectors over 30 seconds 
-	//////////////////////////////////////////////////////////////////////////
-	MarSystem* acc = mng.create("Accumulator", "acc");
-	acc->updctrl("mrs_natural/nTimes", accSize_);
 
-	//////////////////////////////////////////////////////////////////////////
-	// add network to accumulator
-	//////////////////////////////////////////////////////////////////////////
-	acc->addMarSystem(featureNetwork->clone());
 
-	//////////////////////////////////////////////////////////////////////////
-	// WEKA output
-	//////////////////////////////////////////////////////////////////////////
-	MarSystem* wsink = mng.create("WekaSink", "wsink");
+  annotator->updctrl("mrs_natural/inSamples", total->getctrl("mrs_natural/onSamples"));
+  annotator->updctrl("mrs_real/israte", total->getctrl("mrs_real/israte"));
 
-	//////////////////////////////////////////////////////////////////////////
-	// Annotator
-	//////////////////////////////////////////////////////////////////////////
-	MarSystem* annotator = mng.create("Annotator", "annotator");
 
-	//////////////////////////////////////////////////////////////////////////
-	// 30-second statistics 
-	//////////////////////////////////////////////////////////////////////////
-	MarSystem* statistics = mng.create("Fanout", "statistics2");
-	statistics->addMarSystem(mng.create("Mean", "mn"));
-	statistics->addMarSystem(mng.create("StandardDeviation", "std"));
 
-	//////////////////////////////////////////////////////////////////////////
-	// Final network compute 30-second statistics 
-	//////////////////////////////////////////////////////////////////////////
-	MarSystem* total = mng.create("Series", "total");
-	total->addMarSystem(acc);
-	total->addMarSystem(statistics);
 
-	// get parameters
-	mrs_real srate = samplingRate_;
+  MarSystem* gcl = mng.create("SVMClassifier" ,"gcl");
+  
+  if (wekafname != EMPTYSTRING) 
+    {
+      wsink->updctrl("mrs_natural/inSamples", annotator->getctrl("mrs_natural/onSamples"));
+      wsink->updctrl("mrs_natural/inObservations", annotator->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
+      wsink->updctrl("mrs_real/israte", annotator->getctrl("mrs_real/israte"));
+    }
 
-	total->updctrl("mrs_natural/inSamples", winSize);
+  gcl->updctrl("mrs_natural/inSamples", annotator->getctrl("mrs_natural/onSamples"));
+  gcl->updctrl("mrs_natural/inObservations", annotator->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
+  gcl->updctrl("mrs_real/israte", annotator->getctrl("mrs_real/israte"));
 
-	total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/mrs_natural/pos", offset);      
-
-	// Calculate duration, offset parameters if necessary 
-	offset = (mrs_natural) (start * samplingRate_ );
-	duration = (mrs_natural) (length * samplingRate_);
-
-	//////////////////////////////////////////////////////////////////////////
-	// main loop for extracting the features 
-	//////////////////////////////////////////////////////////////////////////
-	mrs_natural wc = 0;
-	mrs_natural samplesPlayed =0;
-	string className = "";
-	realvec beatfeatures;
-	beatfeatures.create((mrs_natural)8,(mrs_natural)1);
-	realvec estimate;
-	estimate.create((mrs_natural)8,(mrs_natural)1);
-	realvec in;
-	realvec timbreres;
-	realvec fullres;
-	realvec afullres;
-
-	in.create(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
-		total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
-	timbreres.create(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-		total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
-
-	if (withBeatFeatures)
-	{
-		if (extractorStr == "BEAT") 
-		{
-			fullres.create(8, 1);
-			afullres.create(8+1, 1);
-			annotator->updctrl("mrs_natural/inObservations", 8);      
-		}
-		else 
-		{
-			fullres.create(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>() + 8, 
-				total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
-			afullres.create(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>() + 8 + 1, 
-				total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
-			annotator->updctrl("mrs_natural/inObservations", total->getctrl("mrs_natural/onObservations")->to<mrs_natural>()+8);      
-		}
-	}
-	else
-	{
-		fullres.create(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-			total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
-		afullres.create(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>() + 1,
-			total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());  
-		annotator->updctrl("mrs_natural/inObservations", total->getctrl("mrs_natural/onObservations")->to<mrs_natural>());      
-	}
-
-	annotator->updctrl("mrs_natural/inSamples", total->getctrl("mrs_natural/onSamples"));
-	annotator->updctrl("mrs_real/israte", total->getctrl("mrs_real/israte"));
-
-	MarSystem* gcl = mng.create("SVMClassifier" ,"gcl");
-
-	if (wekafname != EMPTYSTRING) 
-	{
-		wsink->updctrl("mrs_natural/inSamples", annotator->getctrl("mrs_natural/onSamples"));
-		wsink->updctrl("mrs_natural/inObservations", annotator->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
-		wsink->updctrl("mrs_real/israte", annotator->getctrl("mrs_real/israte"));
-	}
-
-	gcl->updctrl("mrs_natural/inSamples", annotator->getctrl("mrs_natural/onSamples"));
-	gcl->updctrl("mrs_natural/inObservations", annotator->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
-	gcl->updctrl("mrs_real/israte", annotator->getctrl("mrs_real/israte"));
-
-	realvec gclres;
-	gclres.create(gcl->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
+  realvec gclres;
+  gclres.create(gcl->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
 		gcl->getctrl("mrs_natural/onSamples")->to<mrs_natural>());  
 
-	mrs_natural timbreSize = total->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
-	mrs_natural beatSize = 8;
 
-	MarSystem *total1 = NULL;
 
-	if (withBeatFeatures) 
+  mrs_natural timbreSize = total->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+  mrs_natural beatSize = 8;
+
+
+
+  MarSystem *total1 = NULL;
+
+  if (withBeatFeatures) 
+    {
+      if (extractorStr == "BEAT")
 	{
-		if (extractorStr == "BEAT")
-		{
-			total1 = createBEATextrator();
-			annotator->updctrl("mrs_string/inObsNames", total1->getctrl("mrs_string/onObsNames")->to<mrs_string>());
-		}
-		else
-		{
-			total1 = createBEATextrator();
-			annotator->updctrl("mrs_string/inObsNames", total->getctrl("mrs_string/onObsNames")->to<mrs_string>() + total1->getctrl("mrs_string/onObsNames")->to<mrs_string>());
-		}
+	  total1 = createBEATextrator();
+	  annotator->updctrl("mrs_string/inObsNames", total1->getctrl("mrs_string/onObsNames")->to<mrs_string>());
 	}
-	else
+      else
 	{
-		annotator->updctrl("mrs_string/inObsNames", total->getctrl("mrs_string/onObsNames"));  
+	  total1 = createBEATextrator();
+	  annotator->updctrl("mrs_string/inObsNames", total->getctrl("mrs_string/onObsNames")->to<mrs_string>() + total1->getctrl("mrs_string/onObsNames")->to<mrs_string>());
 	}
-	if (wekafname != EMPTYSTRING)
-		wsink->updctrl("mrs_string/inObsNames", annotator->getctrl("mrs_string/onObsNames"));
+    }
+  else
+    {
+      annotator->updctrl("mrs_string/inObsNames", total->getctrl("mrs_string/onObsNames"));  
+    }
+  if (wekafname != EMPTYSTRING)
+    wsink->updctrl("mrs_string/inObsNames", annotator->getctrl("mrs_string/onObsNames"));
 
-	realvec iwin;
+  realvec iwin;
 
-	//iterate over collections
-	Collection m,l; 
-	if (!collection_has_labels) 
+
+
+
+
+  //iterate over collections
+
+  Collection m,l; 
+  
+
+
+  if (!collection_has_labels) 
+    {
+
+      
+      
+      if (wekafname != EMPTYSTRING) 
 	{
-		if (wekafname != EMPTYSTRING) 
-		{
-			wsink->updctrl("mrs_string/labelNames",classNames);
-			wsink->updctrl("mrs_natural/nLabels", (mrs_natural)cls.size());  
-			wsink->updctrl("mrs_string/filename", wekafname);
-		}
-
-		for (cj=0; cj < (mrs_natural)cls.size(); cj++)
-		{
-			Collection l = cls[cj];
-			if (wekafname != EMPTYSTRING) 
-			{
-				if (workspaceDir != EMPTYSTRING) 
-					wekafname = workspaceDir + wekafname;
-				wsink->updctrl("mrs_string/filename", wekafname);
-				cout << "Writing weka .arff file to :" << wekafname << endl;
-			}
-			for (i=0; i < l.size(); i++)//iterate over collection files
-			{
-				// cout << beatfeatures << endl;
-				total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", l.entry(i));
-				if (withBeatFeatures) 
-				{
-					srate = total->getctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
-					iwin.create((mrs_natural)1, (mrs_natural)(((srate / 22050.0) * 2 * 65536) / 16)); // [!] hardcoded!
-					tempo_histoSumBands(total1, l.entry(i), beatfeatures, 
-						iwin, estimate);
-				}
-				total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/pos", offset);
-				wc = 0;  	  
-				samplesPlayed = 0;
-				// total->updctrl("WekaSink/wsink/mrs_natural/label", cj);
-				annotator->updctrl("mrs_natural/label", cj);
-				// wsink->updctrl("mrs_natural/label", cj);
-				if (extractorStr != "BEAT") 
-				{
-					total->process(in, timbreres);
-					for (int t=0; t < timbreSize; t++)
-						fullres(t,0) = timbreres(t,0);
-				}
-				if (withBeatFeatures)
-				{
-					if (extractorStr == "BEAT")
-					{
-						for (int t=0; t < beatSize; t++)
-							fullres(t, 0) = beatfeatures(t,0);
-					}
-					else
-					{
-						for (int t=0; t < beatSize; t++)
-							fullres(t+timbreSize, 0) = beatfeatures(t,0);
-					}
-				}
-				annotator->process(fullres, afullres);
-				if (wekafname != EMPTYSTRING) 
-					wsink->process(afullres, afullres);
-				cerr << "Processed " << l.entry(i) << endl;
-			}
-		}
-	}
-	else 
-	{
-		l = cls[0];
-		if (workspaceDir != EMPTYSTRING) 
-		{
-			string outCollection = workspaceDir + "extract.txt";
-			l.write(outCollection);
-			cout << "Writing extract collection to :" << outCollection << endl;
-		}
-		if (wekafname != EMPTYSTRING) 
-		{
-			wsink->updctrl("mrs_string/labelNames",l.getLabelNames());
-			wsink->updctrl("mrs_natural/nLabels", (mrs_natural)l.getNumLabels());  
-			if (workspaceDir != EMPTYSTRING) 
-				wekafname = workspaceDir + wekafname;
-			wsink->updctrl("mrs_string/filename", wekafname);
-			cout << "Writing weka .arff file to :" << wekafname << endl;
-		}
-		// gcl->updctrl("mrs_natural/nLabels", (mrs_natural)l.getNumLabels());
-		gcl->updctrl("mrs_string/mode", "train");
-
-		for (i=0; i < l.size(); i++)//iterate over collection files
-		{
-			// cout << beatfeatures << endl;
-			total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", l.entry(i));
-			if (withBeatFeatures) 
-			{
-				srate = total->getctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
-				iwin.create((mrs_natural)1, (mrs_natural)(((srate / 22050.0) * 2 * 65536) / 16)); // [!] hardcoded!
-				tempo_histoSumBands(total1, l.entry(i), beatfeatures, 
-					iwin, estimate);
-			}
-			total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/pos", offset);
-			wc = 0;  	  
-			samplesPlayed = 0;
-			annotator->updctrl("mrs_natural/label", l.labelNum(l.labelEntry(i)));
-
-			if (extractorStr != "BEAT")
-			{
-				total->process(in, timbreres);
-
-				// concatenate timbre and beat vectors 
-				for (int t=0; t < timbreSize; t++)
-					fullres(t,0) = timbreres(t,0);
-			}
-			if (withBeatFeatures)
-			{
-				if (extractorStr == "BEAT") 
-				{
-					for (int t=0; t < beatSize; t++)
-						fullres(t, 0) = beatfeatures(t,0);
-				}
-				else 
-				{
-					for (int t=0; t < beatSize; t++)
-						fullres(t+timbreSize, 0) = beatfeatures(t,0);
-				}
-			}
-			annotator->process(fullres, afullres);
-			if (wekafname != EMPTYSTRING) 
-				wsink->process(afullres, afullres);
-			gcl->process(afullres, gclres);
-			cerr << "Processed " << l.entry(i) << endl;
-		}
+	  wsink->updctrl("mrs_string/labelNames",classNames);
+	  wsink->updctrl("mrs_natural/nLabels", (mrs_natural)cls.size());  
+	  wsink->updctrl("mrs_string/filename", wekafname);
 	}
 
-	if (testCollection != EMPTYSTRING) 
+      for (cj=0; cj < (mrs_natural)cls.size(); cj++)
 	{
-		m.read(testCollection);
-		if (wekafname != EMPTYSTRING) 
-			wsink->updctrl("mrs_string/filename", "predict.arff");
-		gcl->updctrl("mrs_string/mode", "predict");
+	  Collection l = cls[cj];
 
-		ofstream prout;
-		prout.open(predictCollection.c_str());
 
-		for (i=0; i < m.size(); i++)//iterate over collection files
+	  if (wekafname != EMPTYSTRING) 
+	    {
+	      if (workspaceDir != EMPTYSTRING) 
+		wekafname = workspaceDir + wekafname;
+	      wsink->updctrl("mrs_string/filename", wekafname);
+	      cout << "Writing weka .arff file to :" << wekafname << endl;
+	    }
+	  
+
+
+	  for (i=0; i < l.size(); i++)//iterate over collection files
+	    {
+	      // cout << beatfeatures << endl;
+	      total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", l.entry(i));
+	      if (withBeatFeatures) 
 		{
-			// cout << beatfeatures << endl;
-			total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", m.entry(i));
-			if (withBeatFeatures) 
-			{
-				srate = total->getctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
-				iwin.create((mrs_natural)1, (mrs_natural)(((srate / 22050.0) * 2 * 65536) / 16)); // [!] hardcoded!
-				tempo_histoSumBands(total1, m.entry(i), beatfeatures, 
-					iwin, estimate);
-			}
-			total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/pos", offset);
-			wc = 0;  	  
-			samplesPlayed = 0;
-			annotator->updctrl("mrs_natural/label", 0);
-
-			if (extractorStr != "BEAT") 
-			{
-				total->process(in, timbreres);
-
-				// concatenate timbre and beat vectors 
-				for (int t=0; t < timbreSize; t++)
-					fullres(t,0) = timbreres(t,0);
-			}
-			if (withBeatFeatures)
-			{
-				if (extractorStr == "BEAT") 
-				{
-					for (int t=0; t < beatSize; t++)
-						fullres(t, 0) = beatfeatures(t,0);
-				}
-				else 
-				{
-					for (int t=0; t < beatSize; t++)
-						fullres(t+timbreSize, 0) = beatfeatures(t,0);
-				}
-			}
-			annotator->process(fullres, afullres);
-			if (wekafname != EMPTYSTRING) 
-				wsink->process(afullres, afullres);
-			gcl->process(afullres, gclres);
-			cout << "Predicting " << m.entry(i) << "\t" << l.labelName(gclres(0,0)) << endl;
-			prout << m.entry(i) << "\t" << l.labelName(gclres(0,0)) << endl;
+		  srate = total->getctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+		  iwin.create((mrs_natural)1, (mrs_natural)(((srate / 22050.0) * 2 * 65536) / 16)); // [!] hardcoded!
+		  tempo_histoSumBands(total1, l.entry(i), beatfeatures, 
+				      iwin, estimate);
 		}
+	      total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/pos", offset);
+	      wc = 0;  	  
+	      samplesPlayed = 0;
+	      // total->updctrl("WekaSink/wsink/mrs_natural/label", cj);
+	      annotator->updctrl("mrs_natural/label", cj);
+	      // wsink->updctrl("mrs_natural/label", cj);
+	      if (extractorStr != "BEAT") 
+		{
+		  total->process(in, timbreres);
+		  for (int t=0; t < timbreSize; t++)
+		    fullres(t,0) = timbreres(t,0);
+		}
+	      
+	      if (withBeatFeatures)
+		{
+		  if (extractorStr == "BEAT")
+		    {
+		      for (int t=0; t < beatSize; t++)
+			fullres(t, 0) = beatfeatures(t,0);
+		    }
+		  else
+		    {
+		      for (int t=0; t < beatSize; t++)
+			fullres(t+timbreSize, 0) = beatfeatures(t,0);
+		    }
+		}
+	      annotator->process(fullres, afullres);
+	      if (wekafname != EMPTYSTRING) 
+		wsink->process(afullres, afullres);
+	      cerr << "Processed " << l.entry(i) << endl;
+	    }
+
 	}
-	delete featureNetwork;
+    }
+  else 
+    {
+      l = cls[0];
+
+
+      if (workspaceDir != EMPTYSTRING) 
+	{
+	  string outCollection = workspaceDir + "extract.txt";
+	  l.write(outCollection);
+	  cout << "Writing extract collection to :" << outCollection << endl;
+	}
+      
+
+
+      if (wekafname != EMPTYSTRING) 
+	{
+	  wsink->updctrl("mrs_string/labelNames",l.getLabelNames());
+	  wsink->updctrl("mrs_natural/nLabels", (mrs_natural)l.getNumLabels());  
+	  if (workspaceDir != EMPTYSTRING) 
+	    wekafname = workspaceDir + wekafname;
+	  wsink->updctrl("mrs_string/filename", wekafname);
+	  cout << "Writing weka .arff file to :" << wekafname << endl;
+	}
+      
+      // gcl->updctrl("mrs_natural/nLabels", (mrs_natural)l.getNumLabels());
+      gcl->updctrl("mrs_string/mode", "train");
+
+      
+      for (i=0; i < l.size(); i++)//iterate over collection files
+	{
+	  // cout << beatfeatures << endl;
+	  total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", l.entry(i));
+	  if (withBeatFeatures) 
+	    {
+	      srate = total->getctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+	      iwin.create((mrs_natural)1, (mrs_natural)(((srate / 22050.0) * 2 * 65536) / 16)); // [!] hardcoded!
+	      tempo_histoSumBands(total1, l.entry(i), beatfeatures, 
+				  iwin, estimate);
+	    }
+	  total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/pos", offset);
+	  wc = 0;  	  
+	  samplesPlayed = 0;
+	  annotator->updctrl("mrs_natural/label", l.labelNum(l.labelEntry(i)));
+
+
+	  if (extractorStr != "BEAT")
+	    {
+	      total->process(in, timbreres);
+	      
+	      // concatenate timbre and beat vectors 
+	      for (int t=0; t < timbreSize; t++)
+		fullres(t,0) = timbreres(t,0);
+	    }
+	  if (withBeatFeatures)
+	    {
+	      if (extractorStr == "BEAT") 
+		{
+		  for (int t=0; t < beatSize; t++)
+		    fullres(t, 0) = beatfeatures(t,0);
+		}
+	      else 
+		{
+		  for (int t=0; t < beatSize; t++)
+		    fullres(t+timbreSize, 0) = beatfeatures(t,0);
+		}
+	    }
+	  annotator->process(fullres, afullres);
+	  if (wekafname != EMPTYSTRING) 
+	    wsink->process(afullres, afullres);
+	  gcl->process(afullres, gclres);
+	  cerr << "Processed " << l.entry(i) << endl;
+	}
+    }
+
+  
+  if (testCollection != EMPTYSTRING) 
+    {
+      m.read(testCollection);
+      if (wekafname != EMPTYSTRING) 
+      wsink->updctrl("mrs_string/filename", "predict.arff");
+      gcl->updctrl("mrs_string/mode", "predict");
+
+      ofstream prout;
+      prout.open(predictCollection.c_str());
+
+      for (i=0; i < m.size(); i++)//iterate over collection files
+	{
+	  // cout << beatfeatures << endl;
+	  total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", m.entry(i));
+	  if (withBeatFeatures) 
+	    {
+	      srate = total->getctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+	      iwin.create((mrs_natural)1, (mrs_natural)(((srate / 22050.0) * 2 * 65536) / 16)); // [!] hardcoded!
+	      tempo_histoSumBands(total1, m.entry(i), beatfeatures, 
+				  iwin, estimate);
+	    }
+	  total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/pos", offset);
+	  wc = 0;  	  
+	  samplesPlayed = 0;
+	  annotator->updctrl("mrs_natural/label", 0);
+
+	  if (extractorStr != "BEAT") 
+	    {
+	      total->process(in, timbreres);
+	      
+	      // concatenate timbre and beat vectors 
+	      for (int t=0; t < timbreSize; t++)
+		fullres(t,0) = timbreres(t,0);
+	    }
+	  if (withBeatFeatures)
+	    {
+	      if (extractorStr == "BEAT") 
+		{
+		  for (int t=0; t < beatSize; t++)
+		    fullres(t, 0) = beatfeatures(t,0);
+		}
+	      else 
+		{
+		  for (int t=0; t < beatSize; t++)
+		    fullres(t+timbreSize, 0) = beatfeatures(t,0);
+		}
+	    }
+	  annotator->process(fullres, afullres);
+	  if (wekafname != EMPTYSTRING) 
+	    wsink->process(afullres, afullres);
+	  gcl->process(afullres, gclres);
+	  cout << "Predicting " << m.entry(i) << "\t" << l.labelName(gclres(0,0)) << endl;
+	  prout << m.entry(i) << "\t" << l.labelName(gclres(0,0)) << endl;
+	}
+    }
+  
+  delete featureNetwork;
+  
 }
+
+
+
 
 // train with multiple feature vectors/file 
 void bextract_train(vector<Collection> cls, 
