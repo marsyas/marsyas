@@ -457,11 +457,16 @@ bextract_trainStereoSPS(vector<Collection> cls, string classNames,
 	total->addMarSystem(statistics2);
 
 	total->addMarSystem(mng.create("Annotator", "ann"));
+	total->addMarSystem(mng.create("SVMClassifier", "svmcl"));
 	total->addMarSystem(mng.create("WekaSink", "wsink"));
-
 	total->updctrl("mrs_natural/inSamples", 1024);
-
+	
 	mrs_bool collection_has_labels = false;
+
+
+
+
+
 
 	if ((cls.size() == 1)&&(cls[0].hasLabels()))
 	{
@@ -469,6 +474,9 @@ bextract_trainStereoSPS(vector<Collection> cls, string classNames,
 	}
 
 	// cout << *total << endl;
+	Collection l;
+
+
 
 	if (!collection_has_labels)
 	{
@@ -493,7 +501,6 @@ bextract_trainStereoSPS(vector<Collection> cls, string classNames,
 	}
 	else 
 	{
-		Collection l;
 		int i;
 		l = cls[0];
 
@@ -501,15 +508,39 @@ bextract_trainStereoSPS(vector<Collection> cls, string classNames,
 		total->updctrl("WekaSink/wsink/mrs_natural/downsample", 1); 
 		total->updctrl("WekaSink/wsink/mrs_string/labelNames", l.getLabelNames());
 		total->updctrl("WekaSink/wsink/mrs_string/filename", wekafname); 
-
+		total->updctrl("SVMClassifier/svmcl/mrs_string/mode", "train");
+		
 		for (i=0; i < l.size(); i++) 
-		{
-			total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));	  	  
-			total->updctrl("Annotator/ann/mrs_natural/label", l.labelNum(l.labelEntry(i)));
-			cout << "Processing" << l.entry(i) << endl;
-			total->tick();	  	  
-		}
+		  {
+		    total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));	  	  
+		    total->updctrl("Annotator/ann/mrs_natural/label", l.labelNum(l.labelEntry(i)));
+		    cout << "Processing" << l.entry(i) << endl;
+		    total->tick();	  	  
+		  }
 	}
+			    
+	int i;
+	if (testCollection != EMPTYSTRING) 
+	{
+	  Collection m;
+	  m.read(testCollection);
+	  if (wekafname != EMPTYSTRING) 
+	    total->updctrl("WekaSink/wsink/mrs_string/filename", "predict.arff");
+	  total->updctrl("SVMClassifier/svmcl/mrs_string/mode", "predict");
+	  
+	  ofstream prout;
+	  prout.open(predictCollection.c_str());
+	  
+	  for (i=0; i < m.size(); i++)//iterate over collection files
+	    {
+	      total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", m.entry(i));
+	      total->tick();
+	      mrs_realvec pr = total->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	      cout << "Predicting " << m.entry(i) << "\t" << l.labelName(pr(0,0)) << endl;
+	      prout << m.entry(i) << "\t" << l.labelName(pr(0,0)) << endl;
+	    }
+	}
+       
 }
 
 
