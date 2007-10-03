@@ -148,7 +148,7 @@ ADRess::myProcess(realvec& in, realvec& out)
 		for(mrs_natural i=0; i <= beta; ++i)
 		{
 			//left channel
-			if(out(k,i+1)== min(minAZl_, minAZr_))// && 20.0*log10(out(k,i+1)*out(k,i+1)+0.000000001)>=-100.0)
+			if(out(k,i+1)== min(minAZl_, minAZr_))
 			{
 				out(k,i+1) = max(maxAZl_, maxAZr_) - min(minAZl_,minAZr_);
 				//just filter out bins with amplitude inferior to -100dB
@@ -158,7 +158,7 @@ ADRess::myProcess(realvec& in, realvec& out)
 			else
 				out(k,i+1) = 0.0;
 			//right channel
-			if(out(k+N4_,i+1) == min(minAZl_, minAZr_))// && 20.0*log10(out(k+N4_,i+1)*out(k+N4_,i+1)+0.000000001)>=-100.0)
+			if(out(k+N4_,i+1) == min(minAZl_, minAZr_))
 			{
 				out(k+N4_,i+1) = max(maxAZl_, maxAZr_) - min(minAZl_,minAZr_);
 				//just filter out bins with amplitude inferior to -100dB
