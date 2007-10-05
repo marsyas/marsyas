@@ -264,6 +264,8 @@ pkginclude_HEADERS = \
 	ADRess.h \
 	ADRessSpectrum.h \
 	ADRessStereoSpectrum.h \
+	enhADRess.h \
+	StereoSpectrumSources.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 

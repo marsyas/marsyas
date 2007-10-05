@@ -30,8 +30,15 @@ namespace Marsyas
 
 Peaker is used to select peaks(or valleys) from the input vector. Various 
 parameters of the peak selection process can be adjusted.
-*/
 
+Controls:
+- \b mrs_real/peakSpacing [w] : expressed in percentage of total vector length and is how much spacing you allow between the peaks
+- \b mrs_real/peakStrength [w] : threshold compared to the RMS of the vector
+- \b mrs_natural/peakStart [w] : expressed in absolute positions of the vector and it just to adjust what part of the vector will be considered
+- \b mrs_natural/peakEnd [w] : expressed in absolute positions of the vector length and it just to adjust what part of the vector will be considered
+- \b mrs_natural/interpolation [w] : TODO - mlagrange? [!] 
+- \b mrs_real/peakGain [w] : TODO - mlagrange? [!]
+*/
 
 class Peaker: public MarSystem
 {

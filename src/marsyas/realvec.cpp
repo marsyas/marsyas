@@ -198,9 +198,8 @@ realvec::mean() const
 	return sum;
 }
 
-// [ML] assumes one dimesional vector !! [!]
 void
-realvec::sort()
+realvec::sort() //assumes one dimensional vector only!
 {
 	std::sort(data_, data_+size_);
 }

@@ -164,6 +164,8 @@
 #include "ADRess.h"
 #include "ADRessSpectrum.h"
 #include "ADRessStereoSpectrum.h"
+#include "enhADRess.h"
+#include "StereoSpectrumSources.h"
 #include "Gain.h"
 // please leave Gain at the end; it makes scripts happy.
 
@@ -315,6 +317,8 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("ADRess", new ADRess("adresspr"));
 	registerPrototype("ADRessSpectrum", new ADRessSpectrum("adressspectrumpr"));
 	registerPrototype("ADRessStereoSpectrum", new ADRessStereoSpectrum("adressstereospectrumpr"));
+	registerPrototype("enhADRess", new enhADRess("enhadresspr"));
+	registerPrototype("StereoSpectrumSources", new StereoSpectrumSources("stereospectrumsourcespr"));
 	registerPrototype("Gain", new Gain("gp"));
 	// Please leave Gain at the end; it makes scripts happy.
 

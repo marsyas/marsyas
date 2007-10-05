@@ -16,7 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 #include "Peaker.h"
 
 using namespace std;
@@ -24,12 +23,8 @@ using namespace Marsyas;
 
 Peaker::Peaker(string name):MarSystem("Peaker",name)
 {
-	//type_ = "Peaker";
-	//name_ = name;
-
 	addControls();
 }
-
 
 Peaker::~Peaker()
 {
@@ -55,9 +50,6 @@ Peaker::addControls()
 void 
 Peaker::myProcess(realvec& in, realvec& out)
 {
-	//checkFlow(in,out);
-
-
 	mrs_real peakSpacing;
 	mrs_real peakStrength;
 	mrs_real peakGain;
@@ -66,18 +58,15 @@ Peaker::myProcess(realvec& in, realvec& out)
 	mrs_natural peakEnd;
 	mrs_natural interpolationMode;
 
-
-
-
 	peakSpacing = getctrl("mrs_real/peakSpacing")->to<mrs_real>();
 	peakStrength = getctrl("mrs_real/peakStrength")->to<mrs_real>();
 	peakStart = getctrl("mrs_natural/peakStart")->to<mrs_natural>();
 	peakEnd = getctrl("mrs_natural/peakEnd")->to<mrs_natural>();
 	interpolationMode = getctrl("mrs_natural/interpolation")->to<mrs_natural>();
 	peakGain = getctrl("mrs_real/peakGain")->to<mrs_real>();
+	
 	// FIXME This line defines an unused variable
 	// mrs_real srate = getctrl("mrs_real/israte")->to<mrs_real>();
-
 
 	out.setval(0.0);
 
@@ -98,9 +87,6 @@ Peaker::myProcess(realvec& in, realvec& out)
 
 		bool peakFound = false;
 
-
-
-
 		for (t=peakStart+1; t < peakEnd-1; t++)
 		{
 			// peak has to be larger than neighbors 
@@ -112,8 +98,6 @@ Peaker::myProcess(realvec& in, realvec& out)
 				// check for another peak in the peakSpacing area
 				max = in(o,t);
 				maxIndex = t;
-
-
 
 				for (int j=0; j < (mrs_natural)peakSpacing; j++)
 				{
@@ -160,15 +144,9 @@ Peaker::myProcess(realvec& in, realvec& out)
 				}
 
 				*/ 
-
-
-
-
 				peakFound = true;
 			}
 		}
-
-
 	}
 }
 
