@@ -560,6 +560,14 @@ MarSystemManager::MarSystemManager()
 	WHaSpnetpr->updctrl("mrs_natural/frameMaxNumPeaks", 20);
 	//
 	registerPrototype("WHaSpnet", WHaSpnetpr);
+
+	//--------------------------------------------------------------------------------
+	// prototype for Stereo Features
+	//--------------------------------------------------------------------------------
+	MarSystem* stereoFeats = new Fanout("StereoFeaturespr");
+	stereoFeats->addMarSystem(create("StereoSpectrumFeatures","stereospkfeats"));
+	stereoFeats->addMarSystem(create("StereoSpectrumSources","stereospksources"));
+	registerPrototype("StereoFeatures", stereoFeats);
 }
 
 MarSystemManager::~MarSystemManager()

@@ -2318,7 +2318,9 @@ toy_with_ADRess(string fname0, string fname1)
 	//playbacknet->addMarSystem(mng.create("TextureStats", "texturests"));
 	playbacknet->addMarSystem(mng.create("ADRess", "adress"));
 	playbacknet->addMarSystem(mng.create("ADRessStereoSpectrum", "adressstereospec"));
-	playbacknet->addMarSystem(mng.create("StereoSpectrumSources", "sspks"));
+	
+	//playbacknet->addMarSystem(mng.create("StereoSpectrumSources", "sspks"));
+	playbacknet->addMarSystem(mng.create("StereoFeatures", "sfeats"));
 	
 	
 	MarSystem* acc = mng.create("Accumulator", "acc");

@@ -58,7 +58,7 @@ StereoSpectrumSources::myUpdate(MarControlPtr sender)
 	panPeaker_->updctrl("mrs_natural/inObservations", 1);
 	panPeaker_->updctrl("mrs_natural/peakStart", 0);
 	panPeaker_->updctrl("mrs_natural/peakEnd", inObservations_-2);
-	panPeaker_->updctrl("mrs_real/peakStrength", 1.1);
+	panPeaker_->updctrl("mrs_real/peakStrength", 1.0);
 }
 
 void 
