@@ -3,6 +3,7 @@
 #define CLICKFRAME_H
 
 #include <QFrame>
+#include <QTime>
 
 #include "MarSystemManager.h"
 using namespace Marsyas;
@@ -11,12 +12,10 @@ using namespace Marsyas;
 //{
 
 /*
-	\brief A simple realvec plotting widget.
+	\brief Adds click (and double-click) detection to a QFrame.
 	\ingroup MarsyasQt
 
-	Plots a realvec.  Is simple to use, but lacks many features of the
-other plotting widget.
-
+	Adds click (and double-click) detection to a QFrame.
 */
 class QClickFrame : public QFrame
 {
@@ -29,7 +28,10 @@ protected:
 
 signals:
 	void clicked();
+	void doubleclicked();
 
+private:
+	QTime timer;
 };
 
 //} //namespace

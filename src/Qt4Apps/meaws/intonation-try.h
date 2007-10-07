@@ -22,6 +22,9 @@ public:
 	void setLily(const QStringList);
 	void calcErrors(const realvec& pitch, const realvec& bounds);
 
+public slots:
+	void doubleclicked();
+
 private:
 	void colorNote(int note, double error, double direction);
 

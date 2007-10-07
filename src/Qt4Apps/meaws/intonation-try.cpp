@@ -11,7 +11,7 @@ IntonationTry::IntonationTry()
 	tryArea->setLayout(tryLayout);
 
 	pitchPlot = new QtMarPlot();
-	pitchPlot->setBackgroundColor(QColor(0,0,0));
+	pitchPlot->setBackgroundColor(QColor(255,255,255));
 //	tryLayout->addWidget(pitchPlot);
 //	connect(pitchPlot, SIGNAL(clicked()), this, SLOT(clicked()));
 }
@@ -191,4 +191,11 @@ bool IntonationTry::displayAnalysis(MarBackend *results)
 	tryLayout->addWidget(resultLabel);
 	return true;
 }
+
+void
+IntonationTry::doubleclicked()
+{
+	pitchPlot->show();
+}
+
 

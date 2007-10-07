@@ -22,6 +22,7 @@ public:
 
 public slots:
 	virtual void clicked();
+	virtual void doubleclicked();
 
 signals:
 	void tryNumber(mrs_natural);
