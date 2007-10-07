@@ -12,7 +12,6 @@ QtMarPlot::QtMarPlot(QWidget *parent)
 	width_ = 1;
 	drawCenter_ = true;
 	setAutoFillBackground(true);
-	setMouseTracking(true);
 }
 
 QtMarPlot::~QtMarPlot()
@@ -57,13 +56,6 @@ void
 QtMarPlot::setPixelWidth(mrs_natural width)
 {
 	width_ = width;
-}
-
-void
-QtMarPlot::mousePressEvent(QMouseEvent *event)
-{
-	emit clicked();
-	QWidget::mousePressEvent(event);
 }
 
 void

@@ -3,7 +3,6 @@
 #define QTMARPLOT_H
 
 #include <QWidget>
-#include <QAbstractButton>
 #include <QPainter>
 
 #include "MarSystemManager.h"
@@ -34,10 +33,6 @@ public:
 
 protected:
 	void paintEvent(QPaintEvent *event);
-	void mousePressEvent(QMouseEvent *event);
-
-signals:
-	void clicked();
 
 private:
 	realvec *data_;
