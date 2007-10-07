@@ -116,9 +116,6 @@ CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
              marsyas.tmp  marsyas.toc  marsyas.info marsyas.cps 
 
 
-
-#clean-local:
-#	-rm -rf out-www
 QT_EXAMPLES = ../src/examples/Qt4-tutorial/*.h ../src/examples/Qt4-tutorial/*.cpp
 QT_EXAMPLES_AS_PERL = ../src/examples/Qt4-tutorial/*.pro
 
@@ -199,7 +196,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic mostlyclean-am
+clean-am: clean-generic clean-local mostlyclean-am
 
 distclean: distclean-am
 
@@ -233,14 +230,17 @@ mostlyclean-am: mostlyclean-generic
 
 uninstall-am: uninstall-info-am
 
-.PHONY: all all-am check check-am clean clean-generic distclean \
-	distclean-generic distdir dvi dvi-am info info-am install \
-	install-am install-data install-data-am install-exec \
+.PHONY: all all-am check check-am clean clean-generic clean-local \
+	distclean distclean-generic distdir dvi dvi-am info info-am \
+	install install-am install-data install-data-am install-exec \
 	install-exec-am install-info install-info-am install-man \
 	install-strip installcheck installcheck-am installdirs \
 	maintainer-clean maintainer-clean-generic mostlyclean \
 	mostlyclean-generic uninstall uninstall-am uninstall-info-am
 
+
+clean-local:
+	-rm -rf out-www
 
 #DIST_COMMON = sources pdf html
 
