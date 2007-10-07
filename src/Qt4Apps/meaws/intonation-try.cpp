@@ -11,8 +11,8 @@ IntonationTry::IntonationTry()
 	tryArea->setLayout(tryLayout);
 
 	pitchPlot = new QtMarPlot();
-	pitchPlot->setBackgroundColor(QColor(255,0,0));
-	tryLayout->addWidget(pitchPlot);
+	pitchPlot->setBackgroundColor(QColor(0,0,0));
+//	tryLayout->addWidget(pitchPlot);
 //	connect(pitchPlot, SIGNAL(clicked()), this, SLOT(clicked()));
 }
 
@@ -54,11 +54,14 @@ void IntonationTry::colorNote(int note, double error, double direction)
 	QString lily_line = lilyInput_.at(line);
 	lily_line.insert(0,color);
 
-	if (direction<0)
-		color="^\\down";
-	if (direction>0)
-		color="_\\up";
-	lily_line.append(color);
+	if (color != "\\colorNote #\"black\" ")
+	{
+		if (direction<0)
+			color="^\\down";
+		if (direction>0)
+			color="_\\up";
+		lily_line.append(color);
+	}
 
 	lilyInput_.replace(line,lily_line);
 }
