@@ -13,7 +13,7 @@ IntonationTry::IntonationTry()
 	pitchPlot = new QtMarPlot();
 	pitchPlot->setBackgroundColor(QColor(255,0,0));
 	tryLayout->addWidget(pitchPlot);
-	connect(pitchPlot, SIGNAL(clicked()), this, SLOT(clicked()));
+//	connect(pitchPlot, SIGNAL(clicked()), this, SLOT(clicked()));
 }
 
 IntonationTry::~IntonationTry()

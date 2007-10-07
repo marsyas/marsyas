@@ -8,6 +8,7 @@
 #include <QLabel>
 #include <QDir>
 #include "backend.h"
+#include "QClickFrame.h"
 
 class Try : public QObject {
 	Q_OBJECT
@@ -29,7 +30,7 @@ signals:
 //	void analysisDone();
 
 protected:
-	QFrame *tryArea;
+	QClickFrame *tryArea;
 	QLayout *tryLayout;
 
 	mrs_natural tryNumber_;

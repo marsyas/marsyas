@@ -3,6 +3,9 @@
 SOURCES = start.cpp mainwindow.cpp
 HEADERS = defs.h mainwindow.h
 
+HEADERS += QClickFrame.h
+SOURCES += QClickFrame.cpp
+
 HEADERS += user.h dispatcher-exercise.h
 SOURCES += user.cpp dispatcher-exercise.cpp
 

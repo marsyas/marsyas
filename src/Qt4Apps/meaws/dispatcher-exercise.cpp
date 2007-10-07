@@ -20,8 +20,9 @@ ExerciseDispatcher::~ExerciseDispatcher() {
 
 bool ExerciseDispatcher::chooseEvaluation() {
 	QStringList items;
-	items << tr("Intonation test") << tr("Sound control test") <<
-tr("Shifting test");
+	items << tr("Intonation test");
+//	items << tr("Intonation test") << tr("Sound control test") <<
+//tr("Shifting test");
 	bool ok;
 	QString item = QInputDialog::getItem(this, tr("Choose testing method"),
 		tr("TestingMethod:"), items, 0, false, &ok);
