@@ -15,6 +15,9 @@ SOURCES += abstract-exercise.cpp abstract-try.cpp
 HEADERS += intonation-exercise.h intonation-try.h
 SOURCES += intonation-exercise.cpp intonation-try.cpp
 
+HEADERS += rhythm-exercise.h rhythm-try.h
+SOURCES += rhythm-exercise.cpp rhythm-try.cpp
+
 #HEADERS += exerciseShift.h exerciseControl.h
 #SOURCES += exerciseShift.cpp exerciseControl.cpp
 

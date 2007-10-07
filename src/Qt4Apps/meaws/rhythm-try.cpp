@@ -1,10 +1,10 @@
 #include <iostream>
 using namespace std;
 
-#include "intonation-try.h"
+#include "rhythm-try.h"
 #include "Transcriber.h"
 
-IntonationTry::IntonationTry()
+RhythmTry::RhythmTry()
 {
 	tryLayout = new QVBoxLayout();
 	tryLayout->setContentsMargins(0,0,0,0);
@@ -20,21 +20,21 @@ IntonationTry::IntonationTry()
 //	graph->setGraphDataLineSize( 1.0 );
 }
 
-IntonationTry::~IntonationTry()
+RhythmTry::~RhythmTry()
 {
 }
 
-void IntonationTry::setAnswer(const realvec answers)
+void RhythmTry::setAnswer(const realvec answers)
 {
 	exerAnswer = answers;
 }
 
-void IntonationTry::setLily(const QStringList lilyInput)
+void RhythmTry::setLily(const QStringList lilyInput)
 {
 	lilyInput_ = QStringList( lilyInput );
 }
 
-void IntonationTry::colorNote(int note, double error, double direction)
+void RhythmTry::colorNote(int note, double error, double direction)
 {
 	int line=note+10;
 	QString color = "black";
@@ -70,7 +70,7 @@ void IntonationTry::colorNote(int note, double error, double direction)
 	lilyInput_.replace(line,lily_line);
 }
 
-void IntonationTry::calcErrors(const realvec& pitches, const realvec&
+void RhythmTry::calcErrors(const realvec& pitches, const realvec&
                                bounds)
 {
 	mrs_real expected;
@@ -142,7 +142,7 @@ void IntonationTry::calcErrors(const realvec& pitches, const realvec&
 }
 
 
-bool IntonationTry::displayAnalysis(MarBackend *results)
+bool RhythmTry::displayAnalysis(MarBackend *results)
 {
 // get info from backend
 	realvec pitches = results->getMidiPitches();
@@ -199,7 +199,7 @@ bool IntonationTry::displayAnalysis(MarBackend *results)
 }
 
 void
-IntonationTry::doubleclicked()
+RhythmTry::doubleclicked()
 {
 	pitchPlot->show();
 //	graph->show();

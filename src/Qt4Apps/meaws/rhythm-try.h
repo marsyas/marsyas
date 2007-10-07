@@ -13,10 +13,10 @@
 #include "QtMarPlot.h"
 #include "Marx2DGraph.h"
 
-class IntonationTry : public Try {
+class RhythmTry : public Try {
 public:
-	IntonationTry();
-	~IntonationTry();
+	RhythmTry();
+	~RhythmTry();
 	bool displayAnalysis(MarBackend *results);
 
 	void setAnswer(const realvec answers);
