@@ -100,6 +100,8 @@ am__quote = @am__quote@
 install_sh = @install_sh@
 qmake = @qmake@
 EXTRA_DIST = modifyBuild.py addClass.py removeClass.py addMarSystem.py removeMarSystem.py createMarSystem.py regtest_sanity.py regtest_coffee.py dailytest.sh buildscripts/ MATLAB/ Python/ PureData
+
+CLEANFILES = modifyBuild.pyc
 subdir = scripts
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_CLEAN_FILES =
@@ -166,6 +168,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)

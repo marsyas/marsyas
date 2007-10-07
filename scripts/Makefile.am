@@ -5,3 +5,5 @@ EXTRA_DIST += regtest_sanity.py regtest_coffee.py dailytest.sh
 EXTRA_DIST += buildscripts/
 EXTRA_DIST += MATLAB/ Python/ PureData
 
+CLEANFILES = modifyBuild.pyc
+
