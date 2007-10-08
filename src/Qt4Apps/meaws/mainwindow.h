@@ -73,7 +73,7 @@ private:
 	QToolBar *tempoToolBar;
 	QAction *setMetroIntroAct;
 	QAction *calcExerciseAct;
-	QAction *visualMetroBeat;
+	QAction *visualMetroBeatAct;
 
 	QToolBar *otherToolBar;
 	QAction *testingFileAct;

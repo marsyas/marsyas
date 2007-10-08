@@ -31,10 +31,11 @@ class Metro: public QWidget {
 	Q_OBJECT
 
 public:
-	Metro(QAction *getVisualMetroBeat, QWidget *parent, string audioFilename);
+	Metro(QWidget *parent, string audioFilename);
 	~Metro();
 	void stopMetro();
 	void startMetro();
+	void setIcon(QAction* getVisualAct);
 
 // communication with the QT front-end
 public slots:
@@ -52,7 +53,7 @@ private:
 	int introBeats;
 
 	QTimer *timer;
-	QAction *visualMetroBeat;
+	QAction *visualMetroBeatAct; // from mainwindow
 	QTimer *flashSpeed;
 	bool bigDisplay;
 

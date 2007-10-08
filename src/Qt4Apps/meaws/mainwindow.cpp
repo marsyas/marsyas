@@ -133,7 +133,7 @@ void MainWindow::createToolBars() {
 //	tempoSlider->setMaximumWidth(250);
 	tempoToolBar->addWidget(tempoSlider);
 
-	tempoToolBar->addAction(visualMetroBeat);
+	tempoToolBar->addAction(visualMetroBeatAct);
 
 	connect(tempoSlider, SIGNAL(valueChanged(int)),
 		tempoBox, SLOT(setValue(int)));
@@ -216,8 +216,11 @@ void MainWindow::createActions() {
 	setMetroIntroAct = new QAction(QIcon(":/icons/triangle.png"), tr("Set metronome introduction"), this);
 //	connect(setMetroIntroAct, SIGNAL(triggered()), this, SLOT(setMetroIntro()));
 
-	visualMetroBeat = new QAction(QIcon(":/icons/circle.png"), tr("Visual metronome"), this);
-	visualMetroBeat->setStatusTip(tr("Shows the beat"));
+	visualMetroBeatAct = new QAction(QIcon(":/icons/circle.png"), tr("Visual metronome"), this);
+	visualMetroBeatAct->setStatusTip(tr("Shows the beat"));
+	connect(visualMetroBeatAct, SIGNAL(triggered()), metro,
+SLOT(toggleBigMetro()));
+	metro->setIcon(visualMetroBeatAct);
 
 	calcExerciseAct = new QAction(QIcon(":/icons/square.png"), tr("Calculate exercise results"), this);
 	connect(calcExerciseAct, SIGNAL(triggered()), exercise, SLOT(analyze()));
@@ -246,6 +249,9 @@ void MainWindow::createObjects() {
 	exercise = new ExerciseDispatcher();
 	connect(exercise, SIGNAL(enableActions(int)), this, SLOT(enableActions(int)));
 	connect(exercise, SIGNAL(attemptRunning(bool)), this, SLOT(attemptRunning(bool)));
+
+	string audioFile = "data/sd.wav";
+	metro = new Metro(this, audioFile);
 }
 
 void MainWindow::attemptRunning(bool running) {
@@ -293,7 +299,6 @@ void MainWindow::enableActions(int state) {
 		testingMenu    ->setEnabled(false);
 		break;
 	case MEAWS_READY_EXERCISE:	 // exercise loaded
-	{
 		toggleAttemptAct->setEnabled(true);
 		closeExerciseAct->setEnabled(true);
 
@@ -301,11 +306,7 @@ void MainWindow::enableActions(int state) {
 		tempoToolBar->setEnabled(true);
 		testingMenu ->setEnabled(true);
 
-		string audioFile = "data/sd.wav";
-		metro = new Metro(visualMetroBeat, this, audioFile);
-//		connect(toggleAttemptAct, SIGNAL(triggered()), metro, SLOT(toggleExercise()));
 		break;
-	}
 	case MEAWS_READY_AUDIO:    // ready to analyze
 
 		//statusBar()->showMessage(exercise->getMessage(),100000);

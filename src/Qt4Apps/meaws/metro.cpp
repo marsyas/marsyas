@@ -21,11 +21,7 @@
 #include <iostream>
 using namespace std;
 
-Metro::Metro(QAction *getVisualMetroBeat, QWidget *parent, string audioFilename) {
-//	cout<<"begun making metro"<<endl;
-	visualMetroBeat = getVisualMetroBeat;
-  connect(visualMetroBeat, SIGNAL(triggered()), this, SLOT(toggleBigMetro()));
-
+Metro::Metro(QWidget *parent, string audioFilename) {
 	resize(200, 200);
 	setWindowTitle("Visual metronome");
 //	setParent(parent);
@@ -35,7 +31,7 @@ Metro::Metro(QAction *getVisualMetroBeat, QWidget *parent, string audioFilename)
 
 	introBeats=0;
 	bigDisplay=false;
-	audio=true;   // for testing
+	audio=false;   // for testing
 
 	if (audio) {
 		setupAudio(audioFilename);
@@ -79,6 +75,10 @@ void Metro::setTempo(int getTempo) {
 	timer->setInterval(timeBetweenBeats);
 }
 
+void Metro::setIcon(QAction* getVisualAction) {
+	visualMetroBeatAct = getVisualAction;
+}
+
 void Metro::startMetro() {
 	timer->start();
 	beat();
@@ -102,7 +102,7 @@ void Metro::beatFinished() {
 		drawBeatColor = normalBeatColor;
 		update();
 	}
-	visualMetroBeat->setIcon(QIcon(":/icons/circle.png"));
+	visualMetroBeatAct->setIcon(QIcon(":/icons/circle.png"));
 }
 
 void Metro::beat() {
@@ -114,7 +114,7 @@ void Metro::beat() {
 		drawBeatColor = activeBeatColor;
 		update();
 	}
-	visualMetroBeat->setIcon(QIcon(":/icons/circle-beat.png"));
+	visualMetroBeatAct->setIcon(QIcon(":/icons/circle-beat.png"));
 	flashSpeed->start();
 }
 
