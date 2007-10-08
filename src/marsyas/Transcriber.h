@@ -29,6 +29,7 @@ public:
 	                                       const mrs_natural length,
 	                                       const realvec& array);
 	static realvec findValleys(const realvec& list);
+	static realvec findPeaks(const realvec& list);
 	static mrs_real findNextPeakValue(const realvec& list,
 	                                  const mrs_natural start);
 	//@}
@@ -55,6 +56,8 @@ public:
 	                        ampList, const realvec& boundaries);
 	static void discardBeginEndSilences(const realvec& pitchList, const
 	                                    realvec& ampList, realvec& boundaries);
+	static void discardBeginEndSilencesAmpsOnly(const realvec& ampList,
+	        realvec& boundaries);
 	static void getRelativeDurations(const realvec& boundaries,
 	                                 realvec &durations);
 	//@}
