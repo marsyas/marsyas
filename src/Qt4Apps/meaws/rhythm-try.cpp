@@ -144,11 +144,12 @@ void RhythmTry::calcErrors(const realvec& pitches, const realvec&
 
 bool RhythmTry::displayAnalysis(MarBackend *results)
 {
+	cout<<"in ur displayanayrlya rhythm"<<endl;
 // get info from backend
-	realvec pitches = results->getMidiPitches();
 	realvec amps = results->getAmplitudes();
 	realvec bounds;
-	Transcriber::pitchSegment(pitches, bounds);
+	cout<<amps<<endl;
+/*
 	// shift the exercise times to match the beginning of audio exercise
 	Transcriber::discardBeginEndSilences(pitches, amps, bounds);
 	for (int i=0; i<exerAnswer.getRows(); i++)
@@ -162,7 +163,7 @@ bool RhythmTry::displayAnalysis(MarBackend *results)
 	pitchPlot->setVertical(57,73);
 	pitchPlot->setPlotName("pitches");
 	pitchPlot->setCenterLine(false);
-
+*/
 //	graph->setBuffer(*data);
 
 	/*
@@ -189,12 +190,13 @@ bool RhythmTry::displayAnalysis(MarBackend *results)
 	#endif
 	*/
 
-
+/*
 	system("cd /tmp; lilypond -dpreview out.ly");
 
 	QLabel* resultLabel = new QLabel;
 	resultLabel->setPixmap(QPixmap::fromImage(QImage("/tmp/out.preview.png")));
 	tryLayout->addWidget(resultLabel);
+*/
 	return true;
 }
 

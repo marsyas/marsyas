@@ -142,31 +142,29 @@ sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
 	pitchSink = mng.create("RealvecSink", "rvSink");
 	ampSink = mng.create("RealvecSink", "amplitudeData");
 
+//zz
+	MarSystem *fanout = mng.create("Fanout", "fanout");
+
 	switch (method) {
 	case (BACKEND_PLAYBACK):
-		allNet->addMarSystem(mng.create("AudioSink", "audioDest"));
-		allNet->updctrl("AudioSink/audioDest/mrs_bool/initAudio", true);
+		fanout->addMarSystem(mng.create("AudioSink", "audioDest"));
+		fanout->updctrl("AudioSink/audioDest/mrs_bool/initAudio", true);
 		break;
 	case (BACKEND_PITCHES): {
-		MarSystem *fanout = mng.create("Fanout", "fanout");
 		fanout->addMarSystem( TranscriberExtract::makePitchNet(osrate, 200.0, pitchSink));
-		allNet->addMarSystem(fanout);
 		break;
 	}
 	case (BACKEND_AMPLITUDES): {
-		cout<<"currnetly borken"<<endl;
+		fanout->addMarSystem(
+TranscriberExtract::makeAmplitudeNet( ampSink ));
 		break;
 	}
 	case (BACKEND_PITCHES_AMPLITUDES): {
-		MarSystem *fanout = mng.create("Fanout", "fanout");
 		fanout->addMarSystem( TranscriberExtract::makePitchNet(osrate, 200.0, pitchSink));
 		fanout->addMarSystem(
 TranscriberExtract::makeAmplitudeNet( ampSink ));
-		allNet->addMarSystem(fanout);
 		break;
 	}
-
-
 //	case TYPE_CONTROL:
 //	{
 /*
@@ -184,6 +182,7 @@ TranscriberExtract::makeAmplitudeNet( ampSink ));
 		MRSERR("backend var method is broken");
 		break;
 	}
+	allNet->addMarSystem(fanout);
 
 	mrsWrapper = new MarSystemQtWrapper(allNet);
 	isEmptyPtr = mrsWrapper->getctrl("mrs_bool/notEmpty");
