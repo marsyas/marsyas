@@ -144,24 +144,31 @@ void RhythmTry::calcErrors(const realvec& pitches, const realvec&
 
 bool RhythmTry::displayAnalysis(MarBackend *results)
 {
+	//cout<<"im in ur beat tinko"<<endl;
 // get info from backend
 	realvec amps = results->getAmplitudes();
 	realvec bounds;
+	Transcriber::ampSegment(amps, bounds);
+	// shift the exercise times to match the beginning of audio exercise
 	Transcriber::discardBeginEndSilencesAmpsOnly(amps, bounds);
+	for (int i=0; i<exerAnswer.getRows(); i++)
+		exerAnswer(i,1) = exerAnswer(i,1) + bounds(0);
+	//cout<<"divided"<<endl;
 
+	mrs_natural start = (mrs_natural) bounds(0);
+	mrs_natural length = (mrs_natural) (bounds(bounds.getSize()-1)
+- bounds(0));
 	realvec *data = new realvec;
-	(*data) = amps;
+	(*data) = amps.getSubVector(start,length);
 	
 	pitchPlot->setData(data);
 	pitchPlot->setVertical(0,1);
 	pitchPlot->setPlotName("onsets");
 	pitchPlot->setCenterLine(false);
 	pitchPlot->setImpulses(true);
+	//cout<<"plot done"<<endl;
+
 /*
-	// shift the exercise times to match the beginning of audio exercise
-	Transcriber::discardBeginEndSilences(pitches, amps, bounds);
-	for (int i=0; i<exerAnswer.getRows(); i++)
-		exerAnswer(i,1) = exerAnswer(i,1) + bounds(0);
 
 	calcErrors(pitches, bounds);
 
