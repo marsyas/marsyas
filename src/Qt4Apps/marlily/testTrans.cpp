@@ -25,13 +25,17 @@ int main(int argc, char *argv[])
 	writefile = file;
 	writefile.append(".pitches.txt");
 	pitchList.writeText(writefile);
+	writefile = file;
+	writefile.append(".amps.txt");
+	ampList.writeText(writefile);
+
 //	Transcriber::pitchSegment(pitchList, boundaries);
 //	writeOnsets("onsets.pitch.txt", boundaries);
 	Transcriber::ampSegment(ampList, boundaries);
 	writeOnsets("onsets.amps.txt", boundaries);
+	Transcriber::discardBeginEndSilencesAmpsOnly(ampList, boundaries);
 	cout<<boundaries;
 
-//	Transcriber::discardBeginEndSilencesAmpsOnly(pitchList, ampList, boundaries);
 //	cout<<boundaries;
 
 /*

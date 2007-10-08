@@ -42,6 +42,48 @@ Transcriber::findMedianWithoutZeros(const mrs_natural start,
 }
 
 realvec
+Transcriber::findPeaks(const realvec& list)
+{
+	realvec peaks(1);
+	mrs_natural valIndex = 0;
+
+	mrs_real localMax;
+	mrs_natural minSpace = MIN_NOTE_FRAMES;
+	mrs_natural prevValIndex = 0;
+	mrs_real prevValValue = 1.0;
+	mrs_real minPeakValue = 0.1;
+	for (mrs_natural i=minSpace; i<list.getSize()-minSpace; i++)
+	{
+		if ( (list(i) > list(i-1)) &&
+		        (list(i) > list(i+1)) &&
+		        (list(i) > minPeakValue) )
+		{
+			localMax = list(i);
+			if (i < prevValIndex+minSpace)
+			{
+				if (localMax > prevValValue)
+				{
+					// replace previous valley with this one
+					peaks(valIndex-1) = i;
+					prevValIndex = i;
+					prevValValue = localMax;
+				}
+			}
+			else
+			{
+				// new valley found
+				peaks.stretchWrite(valIndex, i);
+				valIndex++;
+				prevValIndex = i;
+				prevValValue = localMax;
+			}
+		}
+	}
+	peaks.stretch(valIndex);
+	return peaks;
+}
+
+realvec
 Transcriber::findValleys(const realvec& list)
 {
 	realvec valleys(1);
@@ -187,7 +229,8 @@ Transcriber::ampSegment(const realvec& ampList, realvec& boundaries)
 		start = (mrs_natural) boundaries(i);
 		length = (mrs_natural) (boundaries(i+1) - boundaries(i));
 		region = ampList.getSubVector(start, length);
-		regionBounds = findValleys(region);
+		//regionBounds = findValleys(region);
+		regionBounds = findPeaks(region);
 //		filterAmpBoundaries(region, regionBounds);
 		regionBounds += start;
 		newBoundaries->appendRealvec(regionBounds);
@@ -208,15 +251,15 @@ Transcriber::filterAmpBoundaries(realvec& regionAmps, realvec &regionBounds)
 	mrs_natural newIndex=0;
 
 	mrs_real regionMinVal = 0.1;
-/*
-	// ignore quiet parts
-	if ( regionAmps.mean() < regionMinVal )
-	{
-		newBounds.stretch(0);
-		regionBounds = newBounds;
-		return;
-	}
-*/
+	/*
+		// ignore quiet parts
+		if ( regionAmps.mean() < regionMinVal )
+		{
+			newBounds.stretch(0);
+			regionBounds = newBounds;
+			return;
+		}
+	*/
 
 	// normalize amps in pitch region
 	regionAmps /= regionAmps.maxval();
@@ -331,43 +374,36 @@ void
 Transcriber::discardBeginEndSilencesAmpsOnly(const realvec& ampList,
         realvec& boundaries)
 {
-	mrs_real notePitch;
+	mrs_real sampleAmp;
 	mrs_natural i,j;
-	// Remove beginning silences.
 	i=0;
-/*
-	while ((ampList(i)< 0.1) && (i<ampList.getSize()-1))
+	// Remove beginning silences.
+	mrs_natural start = (mrs_natural) boundaries(i);
+	mrs_natural length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
+	sampleAmp = ampList(start);
+	while ( (sampleAmp < 0.1) && (i < boundaries.getSize()-1) )
+	{
+		for (j=i; j<boundaries.getSize()-1; j++)
+			boundaries(j) = boundaries(j+1);
+		boundaries.stretch(j);
 		i++;
-	for (j=0; j<i; j++)
-		ampList(j) = ampList(i+j);
-	ampList.stretch( ampList.getSize()-i );
-*/
-	/*
-		notePitch = findMedianWithoutZeros(start, length, pitchList);
-		while ( (notePitch == 0) && (i < boundaries.getSize()-1) )
-		{
-			for (j=i; j<boundaries.getSize()-1; j++)
-				boundaries(j) = boundaries(j+1);
-			boundaries.stretch(j);
-			i++;
-			start = (mrs_natural) boundaries(i);
-			length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
-			notePitch = findMedianWithoutZeros(start, length, pitchList);
-		}
-		// Remove ending silences.
-		i=boundaries.getSize()-2;
 		start = (mrs_natural) boundaries(i);
 		length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
-		notePitch = findMedianWithoutZeros(start, length, pitchList);
-		while ( (notePitch == 0) && (i < boundaries.getSize()-1) )
-		{
-			boundaries.stretch(i+1);
-			i--;
-			start = (mrs_natural) boundaries(i);
-			length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
-			notePitch = findMedianWithoutZeros(start, length, pitchList);
-		}
-	*/
+		sampleAmp = ampList(start);
+	}
+	// Remove ending silences.
+	i=boundaries.getSize()-2;
+	start = (mrs_natural) boundaries(i);
+	length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
+	sampleAmp = ampList(start);
+	while ( (sampleAmp < 0.1) && (i < boundaries.getSize()-1) )
+	{
+		boundaries.stretch(i+1);
+		i--;
+		start = (mrs_natural) boundaries(i);
+		length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
+		sampleAmp = ampList(start);
+	}
 }
 
 

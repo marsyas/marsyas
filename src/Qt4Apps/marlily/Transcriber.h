@@ -29,6 +29,7 @@ public:
 	                                       const mrs_natural length,
 	                                       const realvec& array);
 	static realvec findValleys(const realvec& list);
+	static realvec findPeaks(const realvec& list);
 	static mrs_real findNextPeakValue(const realvec& list,
 	                                  const mrs_natural start);
 	//@}
