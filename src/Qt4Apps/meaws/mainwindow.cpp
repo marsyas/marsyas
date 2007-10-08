@@ -249,12 +249,14 @@ void MainWindow::createObjects() {
 }
 
 void MainWindow::attemptRunning(bool running) {
-	if (running) {
+	if (running) { // start try
 		toggleAttemptAct->setStatusTip(tr("Stop"));
 		toggleAttemptAct->setIcon(QIcon(":/icons/player_pause.png"));
-	} else {
+		metro->startMetro();
+	} else { // stop try
 		toggleAttemptAct->setStatusTip(tr("Start"));
 		toggleAttemptAct->setIcon(QIcon(":/icons/player_play.png"));
+		metro->stopMetro();
 	}
 }
 
@@ -291,6 +293,7 @@ void MainWindow::enableActions(int state) {
 		testingMenu    ->setEnabled(false);
 		break;
 	case MEAWS_READY_EXERCISE:	 // exercise loaded
+	{
 		toggleAttemptAct->setEnabled(true);
 		closeExerciseAct->setEnabled(true);
 
@@ -298,11 +301,11 @@ void MainWindow::enableActions(int state) {
 		tempoToolBar->setEnabled(true);
 		testingMenu ->setEnabled(true);
 
-/*
+		string audioFile = "data/sd.wav";
 		metro = new Metro(visualMetroBeat, this, audioFile);
-		connect(toggleAttemptAct, SIGNAL(triggered()), this, SLOT(toggleExercise()));
-*/
+//		connect(toggleAttemptAct, SIGNAL(triggered()), metro, SLOT(toggleExercise()));
 		break;
+	}
 	case MEAWS_READY_AUDIO:    // ready to analyze
 
 		//statusBar()->showMessage(exercise->getMessage(),100000);

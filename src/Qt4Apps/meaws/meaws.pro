@@ -6,8 +6,8 @@ HEADERS = defs.h mainwindow.h
 HEADERS += QClickFrame.h
 SOURCES += QClickFrame.cpp
 
-HEADERS += user.h dispatcher-exercise.h
-SOURCES += user.cpp dispatcher-exercise.cpp
+HEADERS += user.h dispatcher-exercise.h metro.h
+SOURCES += user.cpp dispatcher-exercise.cpp metro.cpp
 
 HEADERS += abstract-exercise.h abstract-try.h
 SOURCES += abstract-exercise.cpp abstract-try.cpp

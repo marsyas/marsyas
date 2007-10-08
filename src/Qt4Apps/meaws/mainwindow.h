@@ -8,8 +8,6 @@
 #include <QFrame>
 #include <QtGui>
 
-// #include <QPainter>
-// #include <QTemporaryFile>
 class QAction;
 class QMenu;
 class QTextEdit;
@@ -19,13 +17,7 @@ class QLabel;
 #include "defs.h"
 #include "user.h"
 #include "dispatcher-exercise.h"
-/*
-#include "backend.h"
 #include "metro.h"
-#include "exercise.h"
-#include "analyze.h"
-#include "display.h"
-*/
 
 class MainWindow : public QMainWindow
 {
@@ -104,9 +96,9 @@ private:
 
 // other stuff that appears to be necessary... for now
 	QLabel *exerciseTitle;
-	std::string dataDir;
-	QLabel *imageLabel;
 	bool exerciseRunning;
+//	std::string dataDir;
+//	QLabel *imageLabel;
 
 // user functions
 //	bool chooseUserInfo();
@@ -114,21 +106,8 @@ private:
 // main object variables
 	User *user;
 	ExerciseDispatcher *exercise;
+	Metro *metro;
 
-
-// testingMethod = 0  not chosen
-//               = 1  Intonation
-//               = 2  Sound control
-
-/*
-	int testingMethod;
-	bool maybeTestingMethod();
-	bool chooseTestingMethod();
-	void updateTestingMethod();
-
-
-	QString exerciseName;
-*/
 
 /*
 	bool maybeSave();
@@ -138,29 +117,7 @@ private:
 	QString strippedName(const QString &fullFileName);
 */
 
-/*
-	QTextEdit *textEdit;
-	//MeawsDisplay *resultsDisplay;
-//	QtMarPlot *displayResults;
-//	QtMarPlot *displayAmplitude;
-	QHBoxLayout *displayLayout;
 
-	QString curFile;
-
-
-	int metroIntroBeats;
-
-	QString audioFileName;
-*/
-  //MarBackend *marBackend;
-//	void setupMarBackend();
-
-
-/*
-	Metro *metro;
-	Exercise *exercise;
-	Analyze *analyze;
-*/
 
 };
 
