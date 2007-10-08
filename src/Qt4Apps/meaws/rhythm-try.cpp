@@ -12,7 +12,7 @@ RhythmTry::RhythmTry()
 
 	pitchPlot = new QtMarPlot();
 	pitchPlot->setBackgroundColor(QColor(255,255,255));
-//	tryLayout->addWidget(pitchPlot);
+	tryLayout->addWidget(pitchPlot);
 
 
 //	graph = new Marx2DGraph(0);
@@ -144,11 +144,19 @@ void RhythmTry::calcErrors(const realvec& pitches, const realvec&
 
 bool RhythmTry::displayAnalysis(MarBackend *results)
 {
-	cout<<"in ur displayanayrlya rhythm"<<endl;
 // get info from backend
 	realvec amps = results->getAmplitudes();
 	realvec bounds;
-	cout<<amps<<endl;
+	Transcriber::discardBeginEndSilencesAmpsOnly(amps, bounds);
+
+	realvec *data = new realvec;
+	(*data) = amps;
+	
+	pitchPlot->setData(data);
+	pitchPlot->setVertical(0,1);
+	pitchPlot->setPlotName("onsets");
+	pitchPlot->setCenterLine(false);
+	pitchPlot->setImpulses(true);
 /*
 	// shift the exercise times to match the beginning of audio exercise
 	Transcriber::discardBeginEndSilences(pitches, amps, bounds);
@@ -156,8 +164,6 @@ bool RhythmTry::displayAnalysis(MarBackend *results)
 		exerAnswer(i,1) = exerAnswer(i,1) + bounds(0);
 
 	calcErrors(pitches, bounds);
-	realvec *data = new realvec;
-	(*data) = pitches;
 
 	pitchPlot->setData(data);
 	pitchPlot->setVertical(57,73);
@@ -203,7 +209,7 @@ bool RhythmTry::displayAnalysis(MarBackend *results)
 void
 RhythmTry::doubleclicked()
 {
-	pitchPlot->show();
+//	pitchPlot->show();
 //	graph->show();
 }
 
