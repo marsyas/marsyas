@@ -188,7 +188,7 @@ Transcriber::ampSegment(const realvec& ampList, realvec& boundaries)
 		length = (mrs_natural) (boundaries(i+1) - boundaries(i));
 		region = ampList.getSubVector(start, length);
 		regionBounds = findValleys(region);
-		filterAmpBoundaries(region, regionBounds);
+//		filterAmpBoundaries(region, regionBounds);
 		regionBounds += start;
 		newBoundaries->appendRealvec(regionBounds);
 	}
@@ -207,20 +207,22 @@ Transcriber::filterAmpBoundaries(realvec& regionAmps, realvec &regionBounds)
 	realvec newBounds(numSamples);
 	mrs_natural newIndex=0;
 
-	// ignore quiet parts
 	mrs_real regionMinVal = 0.1;
+/*
+	// ignore quiet parts
 	if ( regionAmps.mean() < regionMinVal )
 	{
 		newBounds.stretch(0);
 		regionBounds = newBounds;
 		return;
 	}
+*/
 
 	// normalize amps in pitch region
 	regionAmps /= regionAmps.maxval();
 
 	mrs_natural start, length;
-	mrs_real valleyMinVal = 0.3;
+	mrs_real valleyMinVal = 0.2;
 	mrs_real valley;
 	realvec region;
 	for (mrs_natural i=0; i<regionBounds.getSize(); i++)
@@ -315,10 +317,8 @@ Transcriber::discardBeginEndSilences(const realvec& pitchList, const realvec&
 	start = (mrs_natural) boundaries(i);
 	length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
 	notePitch = findMedianWithoutZeros(start, length, pitchList);
-	cout<<i<<"\t"<<notePitch;
 	while ( (notePitch == 0) && (i < boundaries.getSize()-1) )
 	{
-		cout<<"reduce"<<endl;
 		boundaries.stretch(i+1);
 		i--;
 		start = (mrs_natural) boundaries(i);
@@ -326,6 +326,50 @@ Transcriber::discardBeginEndSilences(const realvec& pitchList, const realvec&
 		notePitch = findMedianWithoutZeros(start, length, pitchList);
 	}
 }
+
+void
+Transcriber::discardBeginEndSilencesAmpsOnly(const realvec& ampList,
+        realvec& boundaries)
+{
+	mrs_real notePitch;
+	mrs_natural i,j;
+	// Remove beginning silences.
+	i=0;
+/*
+	while ((ampList(i)< 0.1) && (i<ampList.getSize()-1))
+		i++;
+	for (j=0; j<i; j++)
+		ampList(j) = ampList(i+j);
+	ampList.stretch( ampList.getSize()-i );
+*/
+	/*
+		notePitch = findMedianWithoutZeros(start, length, pitchList);
+		while ( (notePitch == 0) && (i < boundaries.getSize()-1) )
+		{
+			for (j=i; j<boundaries.getSize()-1; j++)
+				boundaries(j) = boundaries(j+1);
+			boundaries.stretch(j);
+			i++;
+			start = (mrs_natural) boundaries(i);
+			length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
+			notePitch = findMedianWithoutZeros(start, length, pitchList);
+		}
+		// Remove ending silences.
+		i=boundaries.getSize()-2;
+		start = (mrs_natural) boundaries(i);
+		length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
+		notePitch = findMedianWithoutZeros(start, length, pitchList);
+		while ( (notePitch == 0) && (i < boundaries.getSize()-1) )
+		{
+			boundaries.stretch(i+1);
+			i--;
+			start = (mrs_natural) boundaries(i);
+			length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
+			notePitch = findMedianWithoutZeros(start, length, pitchList);
+		}
+	*/
+}
+
 
 // this will not include relative durations
 realvec

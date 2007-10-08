@@ -55,6 +55,8 @@ public:
 	                        ampList, const realvec& boundaries);
 	static void discardBeginEndSilences(const realvec& pitchList, const
 	                                    realvec& ampList, realvec& boundaries);
+	static void discardBeginEndSilencesAmpsOnly(const realvec& ampList,
+	        realvec& boundaries);
 	static void getRelativeDurations(const realvec& boundaries,
 	                                 realvec &durations);
 	//@}
