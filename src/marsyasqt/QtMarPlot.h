@@ -30,6 +30,7 @@ public:
 	void setVertical(mrs_real minVal, mrs_real highVal); // scales data
 	void setData(realvec* getData);
 	void setCenterLine(bool drawit);
+	void setImpulses(bool drawit);
 
 protected:
 	void paintEvent(QPaintEvent *event);
@@ -40,6 +41,7 @@ private:
 	mrs_real minVal_, highVal_;
 	mrs_natural width_;
 	bool drawCenter_;
+	bool drawImpulses_;
 
 	void plot1d();
 	//void plot2d(); // not implemented yet

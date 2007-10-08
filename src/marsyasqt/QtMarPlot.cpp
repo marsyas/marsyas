@@ -34,6 +34,12 @@ QtMarPlot::setCenterLine(bool drawit)
 }
 
 void
+QtMarPlot::setImpulses(bool drawit)
+{
+	drawImpulses_ = drawit;
+}
+
+void
 QtMarPlot::setVertical(mrs_real minVal, mrs_real highVal)
 {
 	minVal_ = minVal;
@@ -98,7 +104,10 @@ QtMarPlot::plot1d()
 		y = mrs_natural ( ((*data_)(i)-vMean) * vScale );
 		if ( (y>-midY) && (y<midY))
 			painter.drawPoint( x, -y+midY);
-
+		if (drawImpulses_) {
+			for (y=y; y>-height()/2; y--)
+				painter.drawPoint( x, -y+midY);
+		}
 	}
 }
 
