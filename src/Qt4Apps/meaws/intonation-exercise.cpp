@@ -15,7 +15,7 @@ IntonationExercise::~IntonationExercise() {
 }
 
 int IntonationExercise::getBackend() {
-	return (BACKEND_PITCHES | BACKEND_AMPLITUDES);
+	return BACKEND_PITCHES_AMPLITUDES;
 }
 
 void IntonationExercise::open(QString exerciseFilename) {

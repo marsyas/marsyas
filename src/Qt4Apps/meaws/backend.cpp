@@ -84,7 +84,7 @@ void MarBackend::playFile() {
 sourceNet->getctrl("SoundFileSource/srcFile/mrs_string/filename")->to<mrs_string>();
 		delNet();
 		sourceNet = makeSourceNet(filename);
-		method = TYPE_PLAYBACK;
+		method = BACKEND_PLAYBACK;
 		setupAllNet();
 	}
 }
@@ -142,14 +142,22 @@ sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
 	pitchSink = mng.create("RealvecSink", "rvSink");
 	ampSink = mng.create("RealvecSink", "amplitudeData");
 
-	cout<<method<<endl;
 	switch (method) {
-	case TYPE_PLAYBACK:
+	case (BACKEND_PLAYBACK):
 		allNet->addMarSystem(mng.create("AudioSink", "audioDest"));
 		allNet->updctrl("AudioSink/audioDest/mrs_bool/initAudio", true);
 		break;
-	case TYPE_INTONATION:
-	{
+	case (BACKEND_PITCHES): {
+		MarSystem *fanout = mng.create("Fanout", "fanout");
+		fanout->addMarSystem( TranscriberExtract::makePitchNet(osrate, 200.0, pitchSink));
+		allNet->addMarSystem(fanout);
+		break;
+	}
+	case (BACKEND_AMPLITUDES): {
+		cout<<"currnetly borken"<<endl;
+		break;
+	}
+	case (BACKEND_PITCHES_AMPLITUDES): {
 		MarSystem *fanout = mng.create("Fanout", "fanout");
 		fanout->addMarSystem( TranscriberExtract::makePitchNet(osrate, 200.0, pitchSink));
 		fanout->addMarSystem(
@@ -157,19 +165,21 @@ TranscriberExtract::makeAmplitudeNet( ampSink ));
 		allNet->addMarSystem(fanout);
 		break;
 	}
-	case TYPE_CONTROL:
-	{
+
+
+//	case TYPE_CONTROL:
+//	{
 /*
 	MarSystem *fanout = mng.create("Fanout", "fanout");
 		fanout->addMarSystem(makePitchNet(osrate));
 		fanout->addMarSystem(makeAmplitudeNet(osrate));
 		allNet->addMarSystem(fanout);
 */
-		break;
-	}
-	case TYPE_SHIFT:
+//		break;
+//	}
+//	case TYPE_SHIFT:
 //		allNet->addMarSystem( makePitchNet(osrate) );
-		break;
+//		break;
 	default:
 		MRSERR("backend var method is broken");
 		break;
@@ -203,12 +213,19 @@ bool MarBackend::analyze() {
 		mrs_real osrate =
 sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
 		switch (method) {
-		case TYPE_PLAYBACK:
+		case BACKEND_PLAYBACK:
 			break;
-		case TYPE_INTONATION:
+		case BACKEND_PITCHES:
+			pitchList = TranscriberExtract::getPitchesFromRealvecSink(pitchSink, osrate);
+			break;
+		case BACKEND_AMPLITUDES:
+			ampList = TranscriberExtract::getAmpsFromRealvecSink(ampSink);
+			break;
+		case BACKEND_PITCHES_AMPLITUDES:
 			pitchList = TranscriberExtract::getPitchesFromRealvecSink(pitchSink, osrate);
 			ampList = TranscriberExtract::getAmpsFromRealvecSink(ampSink);
 			break;
+/*
 		case TYPE_CONTROL:
 			getPitches();
 			getAmplitudes();
@@ -216,6 +233,7 @@ sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
 		case TYPE_SHIFT:
 			getMidiPitches();
 			break;
+*/
 		default:
 			MRSERR("backend var method is broken 2");
 			break;

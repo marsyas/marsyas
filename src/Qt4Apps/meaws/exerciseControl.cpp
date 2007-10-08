@@ -39,7 +39,7 @@ ExerciseControl::~ExerciseControl() {
 }
 
 int ExerciseControl::getType() {
-	return TYPE_CONTROL;
+	return TYPE_CONTROL; // FIXME
 }
 
 void ExerciseControl::setupDisplay() {

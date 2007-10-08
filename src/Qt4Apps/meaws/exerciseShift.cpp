@@ -26,7 +26,7 @@ ExerciseShift::~ExerciseShift() {
 }
 
 int ExerciseShift::getType() {
-	return TYPE_SHIFT;
+	return TYPE_SHIFT; // FIXME
 }
 
 void ExerciseShift::setupDisplay() {
