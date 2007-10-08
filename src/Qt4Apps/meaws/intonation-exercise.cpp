@@ -11,7 +11,6 @@ IntonationExercise::IntonationExercise() {
 }
 
 IntonationExercise::~IntonationExercise() {
-	delete tries;
 }
 
 int IntonationExercise::getBackend() {

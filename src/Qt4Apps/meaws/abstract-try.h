@@ -12,6 +12,7 @@ class Try : public QObject {
 
 public:
 	Try();
+	~Try();
 	virtual QFrame* getDisplay() { return tryArea; };
 	virtual void setTryNumber(mrs_natural num) { tryNumber_ = num; };
 	virtual bool displayAnalysis(MarBackend *results) = 0;

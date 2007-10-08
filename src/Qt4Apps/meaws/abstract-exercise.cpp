@@ -23,6 +23,11 @@ Exercise::~Exercise()
 		}
 		delete instructionLayout;
 	}
+	if (resultLayout != NULL)
+		delete resultLayout;
+	while (!tries->isEmpty())
+		delete tries->takeFirst();
+	delete tries;
 }
 
 void Exercise::open(QString exerciseFilename) {

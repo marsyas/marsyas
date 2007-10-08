@@ -9,4 +9,10 @@ Try::Try()
 	tryNumber_ = 0;
 }
 
+Try::~Try()
+{
+	if (tryLayout != NULL)
+		delete tryLayout;
+	delete tryArea;
+}
 
