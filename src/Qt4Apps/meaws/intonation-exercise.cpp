@@ -73,22 +73,13 @@ void IntonationExercise::open(QString exerciseFilename) {
 
 void IntonationExercise::addTry() {
 	IntonationTry *newTry = new IntonationTry();
-	connect(newTry, SIGNAL(tryNumber(mrs_natural)),
-		this, SLOT(button(mrs_natural)));
 	newTry->setAnswer(exerAnswer);
 	newTry->setLily(lily_input);
 	Exercise::addTryAbstract(newTry);
 }
 
 void IntonationExercise::delTry() {
-//	cout<<"del"<<endl;
 	Exercise::delTryAbstract();
-}
-
-void IntonationExercise::button(mrs_natural selected)
-{
-	current_ = selected;
-	emit analysisDone();
 }
 
 QString IntonationExercise::exercisesDir() {

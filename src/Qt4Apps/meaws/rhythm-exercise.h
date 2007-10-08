@@ -22,9 +22,6 @@ public:
 	QString getMessage();
 	bool displayAnalysis(MarBackend *results);
 
-public slots:
-	void button(mrs_natural selected);
-
 private:
 	realvec exerAnswer;
 //	QList<RhythmTry *> *tries;

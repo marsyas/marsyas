@@ -73,22 +73,13 @@ void RhythmExercise::open(QString exerciseFilename) {
 
 void RhythmExercise::addTry() {
 	RhythmTry *newTry = new RhythmTry();
-	connect(newTry, SIGNAL(tryNumber(mrs_natural)),
-		this, SLOT(button(mrs_natural)));
 	newTry->setAnswer(exerAnswer);
 	newTry->setLily(lily_input);
 	Exercise::addTryAbstract(newTry);
 }
 
 void RhythmExercise::delTry() {
-//	cout<<"del"<<endl;
 	Exercise::delTryAbstract();
-}
-
-void RhythmExercise::button(mrs_natural selected)
-{
-	current_ = selected;
-	emit analysisDone();
 }
 
 QString RhythmExercise::exercisesDir() {

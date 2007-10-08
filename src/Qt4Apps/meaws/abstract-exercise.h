@@ -32,7 +32,7 @@ signals:
 	void analysisDone();
 
 public slots:
-	virtual void button(mrs_natural selected) = 0;
+	virtual void selectTry(mrs_natural selected);
 
 protected:
 	QLayout *instructionLayout;

@@ -1,5 +1,5 @@
-#include <iostream>
-using namespace std;
+//#include <iostream>
+//using namespace std;
 
 #include "abstract-exercise.h"
 
@@ -63,6 +63,8 @@ void Exercise::addTryAbstract(Try* newTry) {
     resultLayout->addWidget( newTry->getDisplay() );
     newTry->setTryNumber( tries->count() );
 	current_ = tries->count();
+    connect(newTry, SIGNAL(selectTry(mrs_natural)),
+        this, SLOT(selectTry(mrs_natural)));
     tries->append(newTry);
 }
 
@@ -74,10 +76,15 @@ void Exercise::delTryAbstract() {
 
 	// renumber the remaining exercises
 	for (int i=current_; i<tries->count(); i++) {
-		//cout<<i<<endl;
 		(*tries)[i]->setTryNumber(i);
 	}
 	current_ = -1;
+}
+
+void Exercise::selectTry(mrs_natural selected)
+{
+    current_ = selected;
+    emit analysisDone();
 }
 
 

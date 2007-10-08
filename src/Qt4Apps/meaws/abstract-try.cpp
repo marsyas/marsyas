@@ -12,15 +12,4 @@ Try::Try()
 	tryNumber_ = 0;
 }
 
-void Try::clicked()
-{
-//	cout<<"clicked "<<tryNumber_<<endl;
-	emit tryNumber(tryNumber_);
-}
-
-void Try::doubleclicked()
-{
-//	cout<<"double clicked "<<tryNumber_<<endl;
-//	emit tryNumber(tryNumber_);
-}
 
