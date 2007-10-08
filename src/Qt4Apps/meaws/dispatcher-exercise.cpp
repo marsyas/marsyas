@@ -20,7 +20,7 @@ ExerciseDispatcher::~ExerciseDispatcher() {
 
 bool ExerciseDispatcher::chooseEvaluation() {
 	QStringList items;
-	items << tr("Intonation test");
+	items << tr("Intonation test") << tr("Rhythm test");
 //	items << tr("Intonation test") << tr("Sound control test") <<
 //tr("Shifting test");
 	bool ok;
@@ -30,6 +30,7 @@ bool ExerciseDispatcher::chooseEvaluation() {
 		if (evaluation != NULL)
 			delete evaluation;
 		if (item=="Intonation test") evaluation = new IntonationExercise();
+		if (item=="Rhythm test") evaluation = new RhythmExercise();
 //		if (item=="Sound control test") evaluation = new ExerciseControl();
 //		if (item=="Shifting test") evaluation = new ExerciseShift();
 		connect(evaluation,SIGNAL(analysisDone()), this,

@@ -1,5 +1,5 @@
-#ifndef MEAWS_EXERCISE_INTONATION_H
-#define MEAWS_EXERCISE_INTONATION_H
+#ifndef MEAWS_EXERCISE_RHYTHM_H
+#define MEAWS_EXERCISE_RHYTHM_H
 
 #include "defs.h"
 #include "abstract-exercise.h"

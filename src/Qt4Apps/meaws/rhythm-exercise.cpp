@@ -15,7 +15,9 @@ RhythmExercise::~RhythmExercise() {
 }
 
 int RhythmExercise::getType() {
-	return TYPE_RHYTHM;
+//	return TYPE_RHYTHM;
+// FIXME: temp hack for broken backend.
+	return TYPE_INTONATION;
 }
 
 void RhythmExercise::open(QString exerciseFilename) {
