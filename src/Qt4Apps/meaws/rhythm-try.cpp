@@ -226,11 +226,12 @@ bool RhythmTry::displayAnalysis(MarBackend *results)
 	return true;
 }
 
+/*
 void
 RhythmTry::doubleclicked()
 {
 //	pitchPlot->show();
 //	graph->show();
 }
-
+*/
 

@@ -9,6 +9,7 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QDir>
+#include <QVBoxLayout>
 #include "abstract-try.h"
 #include "QtMarPlot.h"
 #include "Marx2DGraph.h"

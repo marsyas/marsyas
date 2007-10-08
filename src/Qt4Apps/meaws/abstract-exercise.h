@@ -4,6 +4,7 @@
 #include "defs.h"
 #include <QObject>
 #include <QString>
+#include <QLabel>
 #include "abstract-try.h"
 
 
@@ -44,7 +45,7 @@ protected:
 	mrs_natural current_;
 
 	// TODO: figure out how to find the height.  :(
-	int foo;
+	int height;
 };
 #endif
 

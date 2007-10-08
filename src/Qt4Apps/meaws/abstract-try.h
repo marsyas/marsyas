@@ -3,12 +3,9 @@
 
 #include "defs.h"
 #include <QObject>
-#include <QString>
-#include <QGridLayout>
-#include <QLabel>
-#include <QDir>
-#include "backend.h"
+#include <QVBoxLayout>
 #include "QClickFrame.h"
+#include "backend.h"
 
 class Try : public QObject {
 	Q_OBJECT
@@ -21,7 +18,7 @@ public:
 
 public slots:
 	virtual void clicked() { emit selectTry(tryNumber_); };
-	virtual void doubleclicked()=0;
+	virtual void doubleclicked() {};
 
 signals:
 	void selectTry(mrs_natural);

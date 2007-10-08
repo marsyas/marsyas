@@ -33,9 +33,8 @@ void Exercise::open(QString exerciseFilename) {
 	instructionImageLabel->setMaximumHeight(instructPixmap->height());
 	instructionImageLabel->setMinimumHeight(instructPixmap->height());
 	instructionLayout = new QVBoxLayout;
-	//instructionLayout = new ResultList;
 	instructionLayout->addWidget(instructionImageLabel);
-	foo = instructPixmap->height()+4;
+	height = instructPixmap->height()+4;
 }
 
 void Exercise::setupDisplay(QFrame* instructionArea, QFrame* resultArea) {
@@ -46,13 +45,13 @@ void Exercise::setupDisplay(QFrame* instructionArea, QFrame* resultArea) {
 //	const QLabel* instructionLabel = (QLabel*) instructionLayout->itemAt(0);
 	//const int height = instructionLabel->height();
 	//cout<<instructionLabel->height()<<endl;
-	//cout<<foo->pixmap()->height()<<endl;
-	//const QPixmap* foo = ( (QLabel*) instructionLayout->itemAt(0) )->pixmap();
+	//cout<<height->pixmap()->height()<<endl;
+	//const QPixmap* height = ( (QLabel*) instructionLayout->itemAt(0) )->pixmap();
 	//const QPixmap *instructPixmap = ( (QLabel*) instructionLayout->itemAt(0) )->pixmap();
 	//cout<<instructPixmap->height()<<endl;
 
-	instructionArea->setMaximumHeight(foo);
-	instructionArea->setMinimumHeight(foo);
+	instructionArea->setMaximumHeight(height);
+	instructionArea->setMinimumHeight(height);
 
 	resultLayout = new QVBoxLayout;
 	resultLayout->setContentsMargins(2,2,2,2);
