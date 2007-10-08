@@ -28,6 +28,13 @@ QtMarPlot::setData(realvec *getData)
 }
 
 void
+QtMarPlot::setOtherData(realvec *getData)
+{
+	otherData_ = getData;
+	update();
+}
+
+void
 QtMarPlot::setCenterLine(bool drawit)
 {
 	drawCenter_ = drawit;
@@ -102,6 +109,19 @@ QtMarPlot::plot1d()
 	for (i=0; i<data_->getSize(); i++) {
 		x = mrs_natural (i * hScale);
 		y = mrs_natural ( ((*data_)(i)-vMean) * vScale );
+		if ( (y>-midY) && (y<midY))
+			painter.drawPoint( x, -y+midY);
+		if (drawImpulses_) {
+			for (y=y; y>-height()/2; y--)
+				painter.drawPoint( x, -y+midY);
+		}
+	}
+	pen.setColor(QColor(255,0,0));
+	painter.setPen(pen);
+	// iterates over the otherData_
+	for (i=0; i<otherData_->getSize(); i++) {
+		x = mrs_natural (i * hScale);
+		y = mrs_natural ( ((*otherData_)(i)-vMean) * vScale );
 		if ( (y>-midY) && (y<midY))
 			painter.drawPoint( x, -y+midY);
 		if (drawImpulses_) {

@@ -28,15 +28,17 @@ public:
 	void setBackgroundColor(QPalette color);
 	void setPixelWidth(mrs_natural width);
 	void setVertical(mrs_real minVal, mrs_real highVal); // scales data
-	void setData(realvec* getData);
 	void setCenterLine(bool drawit);
 	void setImpulses(bool drawit);
+	void setData(realvec* getData);
+	void setOtherData(realvec* getData);
 
 protected:
 	void paintEvent(QPaintEvent *event);
 
 private:
 	realvec *data_;
+	realvec *otherData_;
 	QString plotName_;
 	mrs_real minVal_, highVal_;
 	mrs_natural width_;
