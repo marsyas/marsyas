@@ -14,10 +14,8 @@ RhythmExercise::~RhythmExercise() {
 	delete tries;
 }
 
-int RhythmExercise::getType() {
-//	return TYPE_RHYTHM;
-// FIXME: temp hack for broken backend.
-	return TYPE_INTONATION;
+int RhythmExercise::getBackend() {
+	return (BACKEND_AMPLITUDES);
 }
 
 void RhythmExercise::open(QString exerciseFilename) {

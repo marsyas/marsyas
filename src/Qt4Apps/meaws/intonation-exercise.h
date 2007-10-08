@@ -12,7 +12,7 @@ public:
 	IntonationExercise();
 	~IntonationExercise();
 
-	int getType();
+	int getBackend();
 	QString exercisesDir();
 
 	void open(QString exerciseFilename);

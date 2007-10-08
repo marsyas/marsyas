@@ -19,7 +19,7 @@ public:
 resultArea);
 
 	virtual QString exercisesDir() = 0;
-	virtual int getType() = 0;
+	virtual int getBackend() = 0;
 	virtual QString getMessage() = 0;
 	virtual bool displayAnalysis(MarBackend *results) = 0;
 

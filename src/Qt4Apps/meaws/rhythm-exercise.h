@@ -12,7 +12,7 @@ public:
 	RhythmExercise();
 	~RhythmExercise();
 
-	int getType();
+	int getBackend();
 	QString exercisesDir();
 
 	void open(QString exerciseFilename);

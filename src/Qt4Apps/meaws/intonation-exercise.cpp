@@ -14,8 +14,8 @@ IntonationExercise::~IntonationExercise() {
 	delete tries;
 }
 
-int IntonationExercise::getType() {
-	return TYPE_INTONATION;
+int IntonationExercise::getBackend() {
+	return (BACKEND_PITCHES | BACKEND_AMPLITUDES);
 }
 
 void IntonationExercise::open(QString exerciseFilename) {

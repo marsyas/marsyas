@@ -142,6 +142,7 @@ sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
 	pitchSink = mng.create("RealvecSink", "rvSink");
 	ampSink = mng.create("RealvecSink", "amplitudeData");
 
+	cout<<method<<endl;
 	switch (method) {
 	case TYPE_PLAYBACK:
 		allNet->addMarSystem(mng.create("AudioSink", "audioDest"));

@@ -50,7 +50,7 @@ void ExerciseDispatcher::open() {
 			evaluation->addTry();
 			if (marBackend != NULL)
 				delete marBackend;
-			marBackend = new MarBackend(evaluation->getType());
+			marBackend = new MarBackend(evaluation->getBackend());
 			connect(marBackend, SIGNAL(setAttempt(bool)), this, SLOT(setAttempt(bool)));
 			enableActions(MEAWS_READY_EXERCISE);
 		} else {
