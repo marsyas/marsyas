@@ -31,7 +31,7 @@ ADRessSpectrum::ADRessSpectrum(const ADRessSpectrum& a) : MarSystem(a)
 {
 	N2_ = a.N2_;
 	ctrl_d_ = getctrl("mrs_real/d");
-	ctrl_H_ = getctrl("mrs_natural/H");
+	ctrl_H_ = getctrl("mrs_real/H");
 }
 
 ADRessSpectrum::~ADRessSpectrum()
@@ -48,7 +48,7 @@ void
 ADRessSpectrum::addControls()
 {
 	addctrl("mrs_real/d", 0.5, ctrl_d_);
-	addctrl("mrs_natural/H", 2, ctrl_H_);
+	addctrl("mrs_real/H", 0.5, ctrl_H_);
 }
 
 void
@@ -62,27 +62,19 @@ ADRessSpectrum::myUpdate(MarControlPtr sender)
 	N2_ = ctrl_inObservations_->to<mrs_natural>() / 2; // = N/2+1 spectrum points for each channel
 
 	ctrl_onSamples_->setValue(1, NOUPDATE);
-	//output a complex spectrum for each each channel, stacked vertically
-	ctrl_onObservations_->setValue(((N2_-1)*2)*2); //2*N
+	//output a complex spectrum for a single channel
+	ctrl_onObservations_->setValue(((N2_-1)*2)); //N
 
 	if(pN2 != N2_)
 	{
 		ostringstream oss;
 		//Left channel
-		oss << "LeftADRess_rbin_0" << ","; //DC bin (only has real part)
-		oss << "LeftADRess_rbin_" << N2_-1 << ","; // = N/2, i.e. Nyquist bin (only has real part)
+		oss << "ADRessSpectrum_rbin_0" << ","; //DC bin (only has real part)
+		oss << "ADRessSpectrum_rbin_" << N2_-1 << ","; // = N/2, i.e. Nyquist bin (only has real part)
 		for (mrs_natural n=2; n < N2_; n++)
 		{
-			oss << "LeftADRess_rbin_" << n-1 << ",";
-			oss << "LeftADRess_ibin_" << n-1 << ",";
-		}
-		//right channel
-		oss << "RightADRess_rbin_0" << ","; //DC bin (only has real part)
-		oss << "RightADRess_rbin_" << N2_-1 << ","; // = N/2, i.e. Nyquist bin (only has real part)
-		for (mrs_natural n=2; n < N2_; n++)
-		{
-			oss << "RightADRess_rbin_" << n-1 << ",";
-			oss << "RightADRess_ibin_" << n-1 << ",";
+			oss << "ADRessSpectrum_rbin_" << n-1 << ",";
+			oss << "ADRessSpectrum_ibin_" << n-1 << ",";
 		}
 		ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 	}
@@ -93,115 +85,92 @@ ADRessSpectrum::myUpdate(MarControlPtr sender)
 void
 ADRessSpectrum::myProcess(realvec& in, realvec& out)
 {
-// 	//output spectrum of the "selected" source, given d and H
-// 	mrs_natural H = ctrl_H_->to<mrs_natural>();
-// 	if(H < 1)
-// 	{
-// 		H = 1;
-// 		ctrl_H_->setValue(1);
-// 	}
-// 	if(H > beta_)
-// 	{
-// 		H = beta_;
-// 		ctrl_H_->setValue(beta_);
-// 	}
-// 	mrs_natural H2 = H/2;
-// 
-// 	mrs_natural d = (mrs_natural)(beta_*ctrl_d_->to<mrs_real>());
-// 	if(d < 0)
-// 	{
-// 		d = 0;
-// 		ctrl_d_->setValue(0.0);
-// 	}
-// 	if(d > beta_)
-// 	{
-// 		d = beta_;
-// 		ctrl_d_->setValue(1.0);
-// 	}
-// 
-// 	mrs_real ampL, ampR, phaseL, phaseR;
-// 	for(mrs_natural k=0; k < N2_; ++k)
-// 	{
-// 		//get left channel spectrum bin
-// 		if (k==0)
-// 		{
-// 			rel_ = in(0,0);
-// 			iml_ = 0.0;
-// 		}
-// 		else if (k == N4_) 
-// 		{
-// 			rel_ = in(1, 0);
-// 			iml_ = 0.0;
-// 		}
-// 		else
-// 		{
-// 			rel_ = in(2*k, 0);
-// 			iml_ = in(2*k+1, 0);
-// 		}
-// 		//get right channel spectrum bin
-// 		if (k==0)
-// 		{
-// 			rer_ = in(N2_,0);
-// 			imr_ = 0.0;
-// 		}
-// 		else if (k == N2_) 
-// 		{
-// 			rer_ = in(N2_+1, 0);
-// 			imr_ = 0.0;
-// 		}
-// 		else
-// 		{
-// 			rer_ = in(N2_ + 2*k, 0);
-// 			imr_ = in(N2_ + 2*k+1, 0);
-// 		}
-// 
-// 		//calculate the separated "source" magnitudes
-// 		ampL = ampR = 0.0;
-// 		for(mrs_natural i=d-H2; i <= d+H2; ++i)
-// 		{
-// 			ampL += AZl_(k,i);
-// 			ampR += AZr_(k,i);
-// 		}
-// 
-// 		//calculate the phases from original spectrum
-// 		phaseL = atan2(iml_, rel_);
-// 		phaseR = atan2(imr_, rer_);
-// 
-// 		//convert back to rectangular form
-// 		rel_ = ampL*cos(phaseL);
-// 		iml_ = ampL*sin(phaseL);
-// 		rer_ = ampR*cos(phaseR);
-// 		imr_ = ampR*sin(phaseR);
-// 
-// 		//write left channel spectrum bin to output
-// 		if (k==0)
-// 		{
-// 			out(0,0) = rel_;
-// 		}
-// 		else if (k == N4_) 
-// 		{
-// 			out(1, 0) = rel_;
-// 		}
-// 		else
-// 		{
-// 			out(2*k, 0) = rel_;
-// 			out(2*k+1, 0) = iml_;
-// 		}
-// 		//write right channel spectrum bin to output
-// 		if (k==0)
-// 		{
-// 			out(N2_,0) = rer_;
-// 		}
-// 		else if (k == N2_) 
-// 		{
-// 			out(N2_+1, 0) = rer_;
-// 		}
-// 		else
-// 		{
-// 			out(N2_ + 2*k, 0) = rer_;
-// 			out(N2_ + 2*k+1, 0) = imr_;
-// 		}
-// 	}
+	out.setval(0.0);
+
+	//output spectrum of the "selected" source, given d and H
+	mrs_natural H = (mrs_natural)(beta_* ctrl_H_->to<mrs_natural>());
+	if(H < 0)
+	{
+		H = 0;
+		ctrl_H_->setValue(0.0);
+	}
+	if(H > beta_)
+	{
+		H = beta_;
+		ctrl_H_->setValue(1.0);
+	}
+
+	mrs_natural H2 = H/2;
+	
+	mrs_natural d = (mrs_natural)(beta_*ctrl_d_->to<mrs_real>());
+	if(d < 0)
+	{
+		d = 0;
+		ctrl_d_->setValue(0.0);
+	}
+	if(d > beta_)
+	{
+		d = beta_;
+		ctrl_d_->setValue(1.0);
+	}
+
+	mrs_real mag, phase, azim;
+	
+	for(mrs_natural k=0; k < N2_; ++k)
+	{
+		//get magnitude, phase and azimuth of bin k from input
+		mag = 0.0;
+		for(t=0; t <= beta_; ++t)
+		{
+			//search for non-zero values in azimuth plane
+			azim = -1;
+			if(in(k,t+1) > 0.0)
+			{
+				azim = t;
+				mag = in(k,t+1);
+				phase = in(k, 0);
+				break;
+			}
+			if(in(k+N2_,t+1) > 0.0)
+			{
+				azim = beta_*2-t;
+				mag = in(k+N2_,t+1);
+				phase = in(k+N2_, 0);
+				break;
+			}
+		}
+
+		if(azim < 0)
+		{
+			//no sound at this bin,
+			//so do not send anything to output
+			continue;
+		}
+		
+		//check if bin is inside specified range,
+		//otherwise, send nothing to output
+		if(abs(d-azim) <= H2)
+		{
+			//convert back to rectangular form
+			re_ = mag*cos(phase);
+			im_ = mag*sin(phase);
+
+			//write bin to output
+			if (k==0)
+			{
+				out(0,0) = re_; //DC
+			}
+			else if (k == N2_-1) 
+			{
+				out(1, 0) = re_; //Nyquist
+			}
+			else
+			{
+				out(2*k, 0) = re_;  //all other bins
+				out(2*k+1, 0) = im_;
+			}
+		}
+	}
 }
 
 

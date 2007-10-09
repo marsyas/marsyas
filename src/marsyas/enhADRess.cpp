@@ -189,10 +189,10 @@ enhADRess::myProcess(realvec& in, realvec& out)
 		}
 	}
 
-	MATLAB_PUT(out, "out");
-	MATLAB_EVAL("AZl = out(1:end/2,2:end);");
-	MATLAB_EVAL("AZr = out(end/2+1:end,2:end);");
-	MATLAB_EVAL("panMap = [AZl(:,1:end-1),AZr(:,end:-1:1)];figure(1);imagesc(panMap);");
+	//MATLAB_PUT(out, "out");
+	//MATLAB_EVAL("AZl = out(1:end/2,2:end);");
+	//MATLAB_EVAL("AZr = out(end/2+1:end,2:end);");
+	//MATLAB_EVAL("panMap = [AZl(:,1:end-1),AZr(:,end:-1:1)];figure(1);imagesc(panMap);");
 }
 
 
