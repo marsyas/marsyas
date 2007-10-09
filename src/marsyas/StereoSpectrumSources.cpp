@@ -71,30 +71,30 @@ StereoSpectrumSources::myProcess(realvec& in, realvec& out)
 		in.getCol(t, orderedPans_);
 		orderedPans_.sort();
 
-		//MATLAB_PUT(orderedPans_, "orderedPans");
-		//MATLAB_EVAL("plot(orderedPans)");
+		MATLAB_PUT(orderedPans_, "orderedPans");
+		MATLAB_EVAL("plot(orderedPans)");
 
 		//calculate derivative, i.e changes of panning
 		panChanges_.create(inObservations_-1);
 		for(o=0; o<inObservations_-1; ++o)
 			panChanges_(o) = orderedPans_(o+1)-orderedPans_(o);
 
-		//MATLAB_PUT(panChanges_, "panChanges");
-		//MATLAB_EVAL("plot(panChanges)");
+		MATLAB_PUT(panChanges_, "panChanges");
+		MATLAB_EVAL("plot(panChanges)");
 
 		//look for peaks in pan changes, i.e. a good estimate of
 		//the number of stereo sources in the signal
 		panPeaks_.create(inObservations_-1);
 		panPeaker_->process(panChanges_, panPeaks_);
 
-		//MATLAB_PUT(panPeaks_, "panPeaks");
-		//MATLAB_EVAL("plot(panPeaks)");
+		MATLAB_PUT(panPeaks_, "panPeaks");
+		MATLAB_EVAL("plot(panPeaks)");
 
 		out(0, t) = 0.0;
 		for(o=0; o < inObservations_-1; ++o)
 			out(0,t) += (panPeaks_(o) != 0.0);//peaks are the non-zero values in panPeaks_
-		 
-		cout << out(0,t) << endl;
+		
+		//cout << out(0,t) << endl;
 		
 		// other option for calculating this (pseudo-code):
 		// if abs(running-average - current_value) > 0.3 * running_average

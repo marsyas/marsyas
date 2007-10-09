@@ -341,6 +341,7 @@ HEADERS += \
 	ADRessStereoSpectrum.h \
 	enhADRess.h \
 	StereoSpectrumSources.h \
+	enhADRessStereoSpectrum.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 	 
@@ -573,6 +574,7 @@ SOURCES += \
 	ADRessStereoSpectrum.cpp \
 	enhADRess.cpp \
 	StereoSpectrumSources.cpp \
+	enhADRessStereoSpectrum.cpp \
 	Gain.cpp
 # please leave Gain.cpp at the end like this; it makes scripts happy.
 

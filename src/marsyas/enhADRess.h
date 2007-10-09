@@ -29,23 +29,17 @@ namespace Marsyas
 	\brief Azimuth Discrimination and Resynthesis (enhADRess) implementation, 
 	which takes a stereo input (i.e. input is expected to be the output of a
 	parallel of two Spectrum MarSystems, one for each stereo channel), and
-	outputs the phase vector and frequency dependent nulls matrix for each channel
-	using the following format:
+	outputs the magnitudes, phases and panning indexes for N/2+1 bins, 
+	stacked vertically:
 
-	[bin_phases_l][AZl]
-	[bin_phases_r][AZr]
+	[Mag]
+	[Phases]
+	[Pan]
 
-	This algorithm was proposed by Dan Barry et al at the DAfX04, 
-	"Sound Source Separation: azimuth discrimination and resynthesis".
-	The algorithm exploits the use of pan pot as a means to achieve image 
-	localisation within stereophonic recordings, assuming only an interaural
-	intensity difference exists between left and right channels for a single
-	source. A gain scaling and phase cancellation technique is then used to
-	expose frequency dependent nulls across the azimuth domain, from which
-	source separation and resynthesis may be  carried out.
+	This enhanced version of the ADRess algorithm was proposed by Cooney et al,
+	"An Enhanced implemantation of the ADRess Music Source Separation Algorithm",
+	121st AES Convention, October 2006. 
 
-	Controls:
-	- \b mrs_natural/beta [w] : Sets the azimuth resolution
 	*/
 
 	class enhADRess: public MarSystem
@@ -57,9 +51,10 @@ namespace Marsyas
 		mrs_real Rk_;
 		mrs_real minLk_;
 		mrs_real minRk_;
+		mrs_real phaseL_;
+		mrs_real phaseR_;
 		mrs_real deltaPhase_;
-
-		MarControlPtr ctrl_beta_;
+		mrs_real azim_;
 
 		void addControls();
 		void myUpdate(MarControlPtr sender);

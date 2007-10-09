@@ -28,7 +28,7 @@ enhADRess::enhADRess(string name):MarSystem("enhADRess", name)
 
 enhADRess::enhADRess(const enhADRess& a) : MarSystem(a)
 {
-	ctrl_beta_ = getctrl("mrs_natural/beta");
+
 }
 
 enhADRess::~enhADRess()
@@ -44,7 +44,6 @@ enhADRess::clone() const
 void
 enhADRess::addControls()
 {
-	addctrl("mrs_natural/beta", 100, ctrl_beta_);
 }
 
 void
@@ -56,15 +55,23 @@ enhADRess::myUpdate(MarControlPtr sender)
 	N2_ = inObservations_ / 2; //i.e. we get two vertically stacked spectrums at the input
 	N4_ = N2_/2 + 1; //i.e. for each spectrum, we have N/2+1 spectral bins
 
-	ctrl_onSamples_->setValue(1 + ctrl_beta_->to<mrs_natural>()+1, NOUPDATE);//one column for the phases, the others for the panning map [0:beta]
-	ctrl_onObservations_->setValue(N4_*2, NOUPDATE); //output data for N/2+1 spectral bins, stacked vertically for each channel
+	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
+	ctrl_onObservations_->setValue(N4_*3, NOUPDATE); //output data for N/2+1 spectral bins, stacked vertically for Mag, phase and pan
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 
 	ostringstream oss;
 	for(mrs_natural n=0; n< N4_; ++n)
-		oss << "Left_bin_" << n <<",";
+	{
+		oss << "enhADRess_Mag_bin_" << n <<",";
+	}
 	for(mrs_natural n=0; n< N4_; ++n)
-		oss << "Right_bin_" << n <<",";
+	{
+		oss << "enhADRess_Phase_bin_" << n <<",";
+	}
+	for(mrs_natural n=0; n< N4_; ++n)
+	{
+		oss << "enhADRess_Pan_bin_" << n <<",";
+	}
 	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 }
 
@@ -73,126 +80,143 @@ enhADRess::myProcess(realvec& in, realvec& out)
 {
 	out.setval(0.0);
 
-	mrs_natural beta = ctrl_beta_->to<mrs_natural>();
-
-	for (mrs_natural k=0; k < N4_; k++)
+	for(t=0; t < inSamples_; ++t)
 	{
-		//get left channel spectrum bin
-		if (k==0) //DC bin (i.e. 0)
+		for (mrs_natural k=0; k < N4_; k++)
 		{
-			rel_ = in(0,0);
-			iml_ = 0.0;
-		}
-		else if (k == N4_-1) //Nyquist bin (i.e. N/2)
-		{
-			rel_ = in(1, 0);
-			iml_ = 0.0;
-		}
-		else //all other bins
-		{
-			rel_ = in(2*k, 0);
-			iml_ = in(2*k+1, 0);
-		}
-
-		//get right channel spectrum bin
-		if (k==0) //DC bin (i.e. 0)
-		{
-			rer_ = in(N2_,0);
-			imr_ = 0.0;
-		}
-		else if (k == N4_-1) //Nyquist bin (i.e. N/2)
-		{
-			rer_ = in(N2_+1, 0);
-			imr_ = 0.0;
-		}
-		else //all other bins
-		{
-			rer_ = in(N2_ + 2*k, 0);
-			imr_ = in(N2_ + 2*k+1, 0);
-		}
-
-		//store phases in first column of the output
-		out(k,0) = atan2(iml_, rel_);		//left channel phases
-		out(k+N4_, 0) = atan2(imr_, rer_); //right channel phases
-		
-		deltaPhase_ = abs(out(k,0)-out(k+N4_, 0));
-
-		//left amplitude value
-		Lk_ = sqrt(rel_*rel_ + iml_*iml_);
-
-		//right amplitude value
-		mrs_real Rk_ = sqrt(rer_*rer_ + imr_*imr_);
-
-		//wrap phase into the 0~2*PI range
-		deltaPhase_ = fmod(deltaPhase_, 2*PI);
-		
-		if(deltaPhase_ < PI/2)
-		{
-			minLk_ = Lk_ * sin(deltaPhase_);
-			minRk_ = Rk_ * sin(deltaPhase_);
-
-			if(Lk_ < Rk_) // i.e. minLk < minRk --> sound panned right
+			//get left channel spectrum bin
+			if (k==0) //DC bin (i.e. 0)
 			{
-				mrs_real g = Lk_ * cos(deltaPhase_) / Rk_; //0 -> R; 1-> C; 
-				mrs_natural i = mrs_natural(g*beta);
-
-				out(k+N4_,i+1) = Rk_ - minLk_;
-
-				//just filter out bins with amplitude inferior to -100dB
-				if(20.0*log10(out(k+N4_,i+1)*out(k+N4_,i+1)+0.000000001) < -100.0)
-					out(k+N4_,i+1) = 0.0;
-				
+				rel_ = in(0,t);
+				iml_ = 0.0;
 			}
-			if(Lk_ > Rk_) // i.e. minLk > minRk --> sound panned left
+			else if (k == N4_-1) //Nyquist bin (i.e. N/2)
 			{
-				mrs_real g = Rk_ * cos(deltaPhase_) / Lk_; //0 -> R; 1-> C; 
-				mrs_natural i = mrs_natural(g*beta);
-
-				out(k,i+1) = Lk_ - minRk_;
-
-				//just filter out bins with amplitude inferior to -100dB
-				if(20.0*log10(out(k,i+1)*out(k,i+1)+0.000000001) < -100.0)
-					out(k,i+1) = 0.0;
+				rel_ = in(1, t);
+				iml_ = 0.0;
 			}
-			if(Lk_ == Rk_) //sound panned at the CENTER
+			else //all other bins
 			{
-				mrs_real g = Rk_ * cos(deltaPhase_) / Lk_; //0 -> R; 1-> C; 
-				mrs_natural i = mrs_natural(g*beta);
-
-				out(k,i+1) = Lk_ - minRk_;
-				//just filter out bins with amplitude inferior to -100dB
-				if(20.0*log10(out(k,i+1)*out(k,i+1)+0.000000001) < -100.0)
-					out(k,i+1) = 0.0;
-
-				out(k+N4_,i+1) = Rk_ - minLk_;
-				//just filter out bins with amplitude inferior to -100dB
-				if(20.0*log10(out(k+N4_,i+1)*out(k+N4_,i+1)+0.000000001) < -100.0)
-					out(k+N4_,i+1) = 0.0;
+				rel_ = in(2*k, t);
+				iml_ = in(2*k+1, t);
 			}
-		}
-		else
-		{
-			if(20.0*log10(Lk_*Lk_+0.000000001) < -100.0)
-				Lk_ = 0.0;
-			if(20.0*log10(Rk_*Rk_+0.000000001) < -100.0)
-				Rk_ = 0.0;
+
+			//get right channel spectrum bin
+			if (k==0) //DC bin (i.e. 0)
+			{
+				rer_ = in(N2_,t);
+				imr_ = 0.0;
+			}
+			else if (k == N4_-1) //Nyquist bin (i.e. N/2)
+			{
+				rer_ = in(N2_+1, t);
+				imr_ = 0.0;
+			}
+			else //all other bins
+			{
+				rer_ = in(N2_ + 2*k, t);
+				imr_ = in(N2_ + 2*k+1, t);
+			}
+
+			phaseL_ = atan2(iml_, rel_);		//left channel phases
+			phaseR_ = atan2(imr_, rer_); //right channel phases
 			
-			if(Lk_ > Rk_)
-				out(k,1) = Lk_;
-			if(Rk_ > Lk_)
-				out(k+N4_,1) = Rk_;
-			if(Lk_ == Rk_ && Lk_ != 0.0)
+			deltaPhase_ = abs(phaseL_ - phaseR_);
+			
+			//wrap phase into the 0~2*PI range
+			deltaPhase_ = fmod(deltaPhase_, 2*PI);
+
+			//left amplitude value
+			Lk_ = sqrt(rel_*rel_ + iml_*iml_);
+
+			//right amplitude value
+			Rk_ = sqrt(rer_*rer_ + imr_*imr_);
+
+			if(deltaPhase_ < PI/2)
 			{
-				out(k,beta+1) = Lk_;
-				out(k+N4_,beta+1) = Rk_;
+				minLk_ = Lk_ * sin(deltaPhase_);
+				minRk_ = Rk_ * sin(deltaPhase_);
+
+				if(Lk_ < Rk_) // i.e. minLk < minRk --> sound panned right
+				{
+					//store magnitude to output
+					mrs_real mag = Rk_ - minLk_;
+					// bins with amplitude inferior to -100dB are discarded
+					if(20.0*log10(mag*mag+0.000000001) > -100.0)
+					{
+						out(k,t) = mag;
+
+						//store phase to output
+						out(k+N4_,t) = phaseR_;
+
+						//store azimuth to output
+						out(k+N4_*2,t) = 1.0 - Lk_ * cos(deltaPhase_) / Rk_ ; //-1.0-> L; 0.0-> C;
+					}
+				}
+				else if(Lk_ > Rk_) // i.e. minLk > minRk --> sound panned left
+				{
+					//store magnitude to output
+					mrs_real mag = Lk_ - minRk_;
+					// bins with amplitude inferior to -100dB are discarded
+					if(20.0*log10(mag*mag+0.000000001) > -100.0)
+					{
+						out(k,t) = mag;
+
+						//store phase to output
+						out(k+N4_,t) = phaseL_;
+
+						//store azimuth to output
+						out(k+N4_*2,t) = Rk_ * cos(deltaPhase_) / Lk_ -1.0; //0.0 -> C; 1.0-> R;
+					}
+				}
+				else if(Lk_ == Rk_) //sound panned at the CENTER
+				{
+					//store magnitude to output
+					mrs_real mag = Lk_ - minRk_;
+					// bins with amplitude inferior to -100dB are discarded
+					if(20.0*log10(mag*mag+0.000000001) > -100.0)
+					{
+						out(k,t) = mag;
+
+						//store phase to output
+						out(k+N4_,t) = phaseL_; //could have been phaseR_...
+
+						//store azimuth to output
+						out(k+N4_*2,t) = 0.0; //0.0 -> C;
+					}
+				}
+			}
+			else
+			{
+				if(20.0*log10(Lk_*Lk_+0.000000001) < -100.0)
+					Lk_ = 0.0;
+				if(20.0*log10(Rk_*Rk_+0.000000001) < -100.0)
+					Rk_ = 0.0;
+
+				if(Lk_ > Rk_)
+				{
+					out(k,t) = Lk_;
+					out(k+N4_,t) = phaseL_;
+					out(k+N4_*2,t) = 0.0; //-1.0;
+				}
+				else if(Rk_ > Lk_)
+				{
+					out(k,t) = Rk_;
+					out(k+N4_,t) = phaseR_;
+					out(k+N4_*2,t) = 0.0; //1.0;
+				}
+				else if(Lk_ == Rk_ && Lk_ != 0.0)
+				{
+					out(k,t) = Lk_;
+					out(k+N4_,t) = phaseL_;
+					out(k+N4_*2,t) = 0.0;
+				}
 			}
 		}
 	}
-
 	//MATLAB_PUT(out, "out");
-	//MATLAB_EVAL("AZl = out(1:end/2,2:end);");
-	//MATLAB_EVAL("AZr = out(end/2+1:end,2:end);");
-	//MATLAB_EVAL("panMap = [AZl(:,1:end-1),AZr(:,end:-1:1)];figure(1);imagesc(panMap);");
+	//MATLAB_EVAL("figure(1);plot(out);figure(2)");
+	//MATLAB_EVAL("plot(out(length(out)/3*2+1:end))")
 }
 
 
