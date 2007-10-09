@@ -75,7 +75,7 @@ ADRessStereoSpectrum::myProcess(realvec& in, realvec& out)
 		//look for the maximum in the azimuth plane
 		//NOTE: first column of input is dedicated to bin phases...
 		maxVal_ = 0.0;
-		maxIndex_ = 100;
+		maxIndex_ = beta_;
 		for(t=0;t<=beta_; ++t)
 		{
 			if(in(o,t+1) > maxVal_)//AZl

@@ -77,11 +77,6 @@ enhADRess::myProcess(realvec& in, realvec& out)
 
 	for (mrs_natural k=0; k < N4_; k++)
 	{
-		minAZr_ = MAXREAL;
-		minAZl_ = MAXREAL;
-		maxAZr_ = MINREAL;
-		maxAZl_ = MINREAL;
-
 		//get left channel spectrum bin
 		if (k==0) //DC bin (i.e. 0)
 		{
@@ -120,53 +115,77 @@ enhADRess::myProcess(realvec& in, realvec& out)
 		out(k,0) = atan2(iml_, rel_);		//left channel phases
 		out(k+N4_, 0) = atan2(imr_, rer_); //right channel phases
 		
-		mrs_real deltaPhase = abs(out(k,0)-out(k+N4_, 0));
+		deltaPhase_ = abs(out(k,0)-out(k+N4_, 0));
 
 		//left amplitude value
-		mrs_real Lk = sqrt(rel_*rel_ + iml_*iml_);
+		Lk_ = sqrt(rel_*rel_ + iml_*iml_);
 
 		//right amplitude value
-		mrs_real Rk = sqrt(rer_*rer_ + imr_*imr_);
+		mrs_real Rk_ = sqrt(rer_*rer_ + imr_*imr_);
 
-		//compute the minimums
-		if(fmod(deltaPhase, 2*PI) < PI/2)
+		//wrap phase into the 0~2*PI range
+		deltaPhase_ = fmod(deltaPhase_, 2*PI);
+		
+		if(deltaPhase_ < PI/2)
 		{
-			minAZl_ = Lk * sin(deltaPhase);
-			minAZr_ = Rk * sin(deltaPhase);
+			minLk_ = Lk_ * sin(deltaPhase_);
+			minRk_ = Rk_ * sin(deltaPhase_);
+
+			if(Lk_ < Rk_) // i.e. minLk < minRk --> sound panned right
+			{
+				mrs_real g = Lk_ * cos(deltaPhase_) / Rk_; //0 -> R; 1-> C; 
+				mrs_natural i = mrs_natural(g*beta);
+
+				out(k+N4_,i+1) = Rk_ - minLk_;
+
+				//just filter out bins with amplitude inferior to -100dB
+				if(20.0*log10(out(k+N4_,i+1)*out(k+N4_,i+1)+0.000000001) < -100.0)
+					out(k+N4_,i+1) = 0.0;
+				
+			}
+			if(Lk_ > Rk_) // i.e. minLk > minRk --> sound panned left
+			{
+				mrs_real g = Rk_ * cos(deltaPhase_) / Lk_; //0 -> R; 1-> C; 
+				mrs_natural i = mrs_natural(g*beta);
+
+				out(k,i+1) = Lk_ - minRk_;
+
+				//just filter out bins with amplitude inferior to -100dB
+				if(20.0*log10(out(k,i+1)*out(k,i+1)+0.000000001) < -100.0)
+					out(k,i+1) = 0.0;
+			}
+			if(Lk_ == Rk_) //sound panned at the CENTER
+			{
+				mrs_real g = Rk_ * cos(deltaPhase_) / Lk_; //0 -> R; 1-> C; 
+				mrs_natural i = mrs_natural(g*beta);
+
+				out(k,i+1) = Lk_ - minRk_;
+				//just filter out bins with amplitude inferior to -100dB
+				if(20.0*log10(out(k,i+1)*out(k,i+1)+0.000000001) < -100.0)
+					out(k,i+1) = 0.0;
+
+				out(k+N4_,i+1) = Rk_ - minLk_;
+				//just filter out bins with amplitude inferior to -100dB
+				if(20.0*log10(out(k+N4_,i+1)*out(k+N4_,i+1)+0.000000001) < -100.0)
+					out(k+N4_,i+1) = 0.0;
+			}
 		}
 		else
 		{
-			minAZl_ = Lk;
-			minAZr_ = Rk;
-		}
-
-		//estimate nearest panning indexes for each channel
-		mrs_real gl = (Lk - minAZl_)/Rk;
-		mrs_real gr = (Rk - minAZr_)/Lk;
-		mrs_natural il = mrs_natural(gl*beta);
-		mrs_natural ir = mrs_natural(gr*beta);
-		mrs_natural i = min(il, ir);
-
-		cout << "ir = " << ir << endl;
-		cout << "il = " << il << endl;
-		cout << "------------------" << endl;
-
-		//compute the magnitudes of the frequency dependent nulls
-		if(il > beta)
-		{
-			//right channel
-			out(k+N4_,i+1) = Rk-minAZr_;
-			//just filter out bins with amplitude inferior to -100dB
-			if(20.0*log10(out(k+N4_,i+1)*out(k+N4_,i+1)+0.000000001)<-100.0)
-				out(k+N4_,i+1) = 0.0;
-		}
-		if(ir > beta)
-		{
-			//left channel
-			out(k,i+1) = Lk-minAZl_;
-			//just filter out bins with amplitude inferior to -100dB
-			if(20.0*log10(out(k,i+1)*out(k,i+1)+0.000000001)<-100.0)
-				out(k,i+1) = 0.0;
+			if(20.0*log10(Lk_*Lk_+0.000000001) < -100.0)
+				Lk_ = 0.0;
+			if(20.0*log10(Rk_*Rk_+0.000000001) < -100.0)
+				Rk_ = 0.0;
+			
+			if(Lk_ > Rk_)
+				out(k,1) = Lk_;
+			if(Rk_ > Lk_)
+				out(k+N4_,1) = Rk_;
+			if(Lk_ == Rk_ && Lk_ != 0.0)
+			{
+				out(k,beta+1) = Lk_;
+				out(k+N4_,beta+1) = Rk_;
+			}
 		}
 	}
 

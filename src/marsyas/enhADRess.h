@@ -53,10 +53,11 @@ namespace Marsyas
 	private:
 		mrs_natural N4_, N2_;
 		mrs_real rel_, iml_, rer_, imr_;
-		mrs_real minAZr_;
-		mrs_real minAZl_;
-		mrs_real maxAZr_;
-		mrs_real maxAZl_;
+		mrs_real Lk_;
+		mrs_real Rk_;
+		mrs_real minLk_;
+		mrs_real minRk_;
+		mrs_real deltaPhase_;
 
 		MarControlPtr ctrl_beta_;
 
