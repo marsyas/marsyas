@@ -340,6 +340,7 @@ pkginclude_HEADERS = \
 	ADRessStereoSpectrum.h \
 	enhADRess.h \
 	StereoSpectrumSources.h \
+	enhADRessStereoSpectrum.h \
 	Gain.h
 
 subdir = src/marsyas
