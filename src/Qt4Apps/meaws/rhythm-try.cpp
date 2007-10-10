@@ -144,7 +144,7 @@ void RhythmTry::calcErrors(const realvec& pitches, const realvec&
 
 bool RhythmTry::displayAnalysis(MarBackend *results)
 {
-	//cout<<"im in ur beat tinko"<<endl;
+	cout<<"LOLCAT SEZ: im in ur beat analysis"<<endl;
 
 // get info from backend
 	realvec amps = results->getAmplitudes();
