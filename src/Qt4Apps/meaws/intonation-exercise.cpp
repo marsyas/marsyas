@@ -57,7 +57,9 @@ void IntonationExercise::open(QString exerciseFilename) {
 
 	// **** read lilypond input
 	// FIXME: filename
-    QFile in_file("/tmp/scale.ly");
+	QString lilyFile(MEAWS_DIR);
+	lilyFile.append("data/intonation/scale.ly");
+    QFile in_file(lilyFile);
     in_file.open(QIODevice::ReadOnly | QIODevice::Text);
     lily_input = (QTextStream(&in_file).readAll()).split('\n');
     in_file.close();
