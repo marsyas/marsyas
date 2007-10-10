@@ -3,9 +3,10 @@
 namespace MarsyasQt
 {
 QtMarPlot::QtMarPlot(QWidget *parent)
-	: QWidget(parent)
+		: QWidget(parent)
 {
 	data_ = NULL;
+	otherData_ = NULL;
 	plotName_ = "";
 	minVal_ = -0.5;
 	highVal_ = 0.5;
@@ -106,27 +107,34 @@ QtMarPlot::plot1d()
 	mrs_natural midY = height()/2;
 
 	// iterates over the data_
-	for (i=0; i<data_->getSize(); i++) {
+	for (i=0; i<data_->getSize(); i++)
+	{
 		x = mrs_natural (i * hScale);
 		y = mrs_natural ( ((*data_)(i)-vMean) * vScale );
 		if ( (y>-midY) && (y<midY))
 			painter.drawPoint( x, -y+midY);
-		if (drawImpulses_) {
+		if (drawImpulses_)
+		{
 			for (y=y; y>-height()/2; y--)
 				painter.drawPoint( x, -y+midY);
 		}
 	}
-	pen.setColor(QColor(255,0,0));
-	painter.setPen(pen);
-	// iterates over the otherData_
-	for (i=0; i<otherData_->getSize(); i++) {
-		x = mrs_natural (i * hScale);
-		y = mrs_natural ( ((*otherData_)(i)-vMean) * vScale );
-		if ( (y>-midY) && (y<midY))
-			painter.drawPoint( x, -y+midY);
-		if (drawImpulses_) {
-			for (y=y; y>-height()/2; y--)
+	if (otherData_ != NULL)
+	{
+		pen.setColor(QColor(255,0,0));
+		painter.setPen(pen);
+		// iterates over the otherData_
+		for (i=0; i<otherData_->getSize(); i++)
+		{
+			x = mrs_natural (i * hScale);
+			y = mrs_natural ( ((*otherData_)(i)-vMean) * vScale );
+			if ( (y>-midY) && (y<midY))
 				painter.drawPoint( x, -y+midY);
+			if (drawImpulses_)
+			{
+				for (y=y; y>-height()/2; y--)
+					painter.drawPoint( x, -y+midY);
+			}
 		}
 	}
 }
