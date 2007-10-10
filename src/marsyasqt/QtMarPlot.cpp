@@ -12,6 +12,7 @@ QtMarPlot::QtMarPlot(QWidget *parent)
 	highVal_ = 0.5;
 	width_ = 1;
 	drawCenter_ = true;
+	drawImpulses_ = false;
 	setAutoFillBackground(true);
 }
 
