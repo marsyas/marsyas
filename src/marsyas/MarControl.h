@@ -27,9 +27,9 @@
 #include "MarControlValue.h"
 #include "realvec.h"
 
-#ifdef MARSYAS_DEBUG
-#include <sstream>
-#endif
+//#ifdef MARSYAS_DEBUG
+//#include <sstream>
+//#endif
 
 //#define TRACECONTROLS
 #ifdef TRACECONTROLS
@@ -142,6 +142,7 @@ class MarControl
 #endif
 {
 	friend class MarControlManager;
+	friend class MarControlAccessor;
 
 #ifdef MARSYAS_QT
 	Q_OBJECT
@@ -153,17 +154,12 @@ protected:
 #endif
 
 protected:
-	int refCount_; //protect with a MUTEX?!? [?]
-
+	int refCount_;
 	MarControlValue *value_;
 	MarSystem* msys_;
 	std::string cname_;
 	bool state_;
 	std::string desc_;
-
-#ifdef MARSYAS_DEBUG
-	std::string value_debug_;
-#endif
 
 	// default constructor
 	MarControl() {} // not allowed
@@ -189,9 +185,27 @@ public:
 
 	MarControl* clone();
 
-	inline void ref() { refCount_++; }
-	inline void unref() {	if (--refCount_ <= 0) delete this; }
-	int getRefCount() const { return refCount_; }
+	inline void ref() 
+	{ 
+		#ifdef MARSYAS_QT
+		QWriteLocker locker(&rwLock_);
+		#endif
+		refCount_++; 
+	}
+	inline void unref() 
+	{
+		#ifdef MARSYAS_QT
+		QWriteLocker locker(&rwLock_);
+		#endif
+		if (--refCount_ <= 0) delete this; 
+	}
+	int getRefCount() const 
+	{ 
+		#ifdef MARSYAS_QT
+		QReadLocker locker(&rwLock_);
+		#endif
+		return refCount_; 
+	}
 
 	void setMarSystem(MarSystem* msys);
 	MarSystem* getMarSystem();
@@ -468,10 +482,11 @@ MarControl::to() const
 	}
 	
 	#ifdef MARSYAS_QT
-	QReadLocker locker(&rwLock_);
+	QReadLocker locker(&rwLock_); //access value_
 	#endif 
 
 	const MarControlValueT<T> *ptr = dynamic_cast<const MarControlValueT<T>*>(value_);
+	
 	if(ptr)
 	{
 		return ptr->get();
@@ -480,7 +495,7 @@ MarControl::to() const
 	{
 	    std::ostringstream sstr;
 	    sstr << "MarControl::to() -  Trying to set value of incompatible type "
-		 << "(expected " << value_->getType() << ", given " << typeid(T).name() << ")";
+				<< "(expected " << value_->getType() << ", given " << typeid(T).name() << ")";
 	    MRSERR(sstr.str());
 	    return MarControlValueT<T>::invalidValue;
 	}
@@ -504,13 +519,6 @@ MarControl::MarControl(const MarControl& a)
 	desc_			= a.desc_;
 	value_		= a.value_->clone();
 	value_->addLink(this);
-	
-	#ifdef MARSYAS_DEBUG
-	std::ostringstream oss;
-	value_->serialize(oss);
-	value_debug_ = oss.str();
-	#endif
-	//isLinked_ = false;
 }
 
 inline
@@ -527,13 +535,6 @@ MarControl::MarControl(MarControlValue *value, std::string cname, MarSystem* msy
 	desc_			= "";
 	value_		= value->clone();
 	value_->addLink(this);
-	
-	#ifdef MARSYAS_DEBUG
-	std::ostringstream oss;
-	value_->serialize(oss);
-	value_debug_ = oss.str();
-	#endif
-	//isLinked_ = false;
 }
 
 inline
@@ -550,13 +551,6 @@ MarControl::MarControl(mrs_real re, std::string cname, MarSystem* msys, bool sta
 	desc_			= "";
 	value_		= new MarControlValueT<mrs_real>(re);
 	value_->addLink(this);
-	
-#ifdef MARSYAS_DEBUG
-	std::ostringstream oss;
-	value_->serialize(oss);
-	value_debug_ = oss.str();
-	#endif
-	//isLinked_ = false;
 }
 
 inline
@@ -573,13 +567,6 @@ MarControl::MarControl(mrs_natural ne, std::string cname, MarSystem* msys, bool 
 	desc_			= "";
 	value_		= new MarControlValueT<mrs_natural>(ne);
 	value_->addLink(this);
-	
-#ifdef MARSYAS_DEBUG
-	std::ostringstream oss;
-	value_->serialize(oss);
-	value_debug_ = oss.str();
-	#endif
-	//isLinked_ = false;
 }
 
 inline
@@ -596,13 +583,6 @@ MarControl::MarControl(std::string st, std::string cname, MarSystem* msys, bool 
 	desc_			= "";
 	value_		= new MarControlValueT<std::string>(st);
 	value_->addLink(this);
-
-	#ifdef MARSYAS_DEBUG
-	std::ostringstream oss;
-	value_->serialize(oss);
-	value_debug_ = oss.str();
-	#endif
-	//isLinked_ = false;
 }
 
 inline
@@ -619,13 +599,6 @@ MarControl::MarControl(mrs_bool be, std::string cname, MarSystem* msys, bool sta
 	desc_			= "";
 	value_		= new MarControlValueT<bool>(be);
 	value_->addLink(this);
-
-	#ifdef MARSYAS_DEBUG
-	std::ostringstream oss;
-	value_->serialize(oss);
-	value_debug_ = oss.str();
-	#endif
-	//isLinked_ = false;
 }
 
 inline
@@ -642,18 +615,14 @@ MarControl::MarControl(realvec& ve, std::string cname, MarSystem* msys, bool sta
 	desc_			= "";
 	value_		= new MarControlValueT<realvec>(ve);
 	value_->addLink(this);
-
-	#ifdef MARSYAS_DEBUG
-	std::ostringstream oss;
-	value_->serialize(oss);
-	value_debug_ = oss.str();
-	#endif
-	//isLinked_ = false;
 }
 
 inline
 MarControl::~MarControl()
 {
+#ifdef MARSYAS_QT
+	QReadLocker locker_r(&rwLock_);
+#endif
 	if (value_)
 	{
 		value_->removeLink(this);
@@ -692,33 +661,19 @@ MarControl::setValue(T& t, bool update)
 	#endif
 
 	MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(value_);
+	
+	#ifdef MARSYAS_QT
+	rwLock_.unlock();
+	#endif	
+
 	if(ptr)
 	{
 		if (ptr->get() == t)
-		{
-			#ifdef MARSYAS_QT
-			rwLock_.unlock();
-			#endif	
 			return true;
-		}
-
-		#ifdef MARSYAS_QT
-		rwLock_.unlock();
-		rwLock_.lockForWrite();
-		#endif
 
 		ptr->set(t, update);
 
-		#ifdef MARSYAS_DEBUG
-		std::ostringstream oss;
-		value_->serialize(oss);
-		value_debug_ = oss.str();
-		#endif
-
 		#ifdef MARSYAS_QT
-		rwLock_.unlock();
-
-		//emit controlChanged(this);
 		emitControlChanged(this);
 		#endif
 
@@ -726,15 +681,14 @@ MarControl::setValue(T& t, bool update)
 	}
 	else
 	{
+		#ifdef MARSYAS_QT
+		QReadLocker(&rwLock_);
+		#endif
+
 		std::ostringstream sstr;
 		sstr << "MarControl::setValue() - Trying to set value of incompatible type "
 			<< "(expected " << value_->getType() << ", given " << typeid(T).name() << ")";
 		MRSWARN(sstr.str());
-
-		#ifdef MARSYAS_QT
-		rwLock_.unlock();
-		#endif
-
 		return false;
 	}
 }
@@ -749,48 +703,34 @@ MarControl::setValue(const T& t, bool update)
 	#endif
 
 	MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(value_);
+	
+	#ifdef MARSYAS_QT
+	rwLock_.unlock();
+	#endif
+
 	if(ptr)
 	{
 		if (ptr->get() == t)
-		{
-			#ifdef MARSYAS_QT
-			rwLock_.unlock();
-			#endif	
 			return true;
-		}
-
-		#ifdef MARSYAS_QT
-		rwLock_.unlock();
-		rwLock_.lockForWrite();
-		#endif
 
 		ptr->set(const_cast<T&>(t), update);
 
-		#ifdef MARSYAS_DEBUG
-		std::ostringstream oss;
-		value_->serialize(oss);
-		value_debug_ = oss.str();
-		#endif
-
 		#ifdef MARSYAS_QT
-		rwLock_.unlock();
-
-		//emit controlChanged(this);
 		emitControlChanged(this);
 		#endif
+
 		return true;
 	}
 	else
 	{
+		#ifdef MARSYAS_QT
+		QReadLocker(&rwLock_);
+		#endif
+
 		std::ostringstream sstr;
 		sstr << "MarControl::setValue() - Trying to set value of incompatible type "
 			<< "(expected " << value_->getType() << ", given " << typeid(T).name() << ")";
 		MRSWARN(sstr.str());
-
-		#ifdef MARSYAS_QT
-		rwLock_.unlock();
-		#endif
-
 		return false;
 	}
 }
@@ -799,59 +739,47 @@ inline
 bool
 MarControl::setValue(MarControlPtr mc, bool update)
 {
-	if (value_->getType() != mc->value_->getType())
+	#ifdef MARSYAS_QT
+	QReadLocker(&(mc->rwLock_));
+	QReadLocker(&(mc->value_->rwLock_));
+	QReadLocker(&rwLock_);
+	#endif
+
+	if (value_->type_ != mc->value_->type_)
 	{
 		std::ostringstream sstr;
 		sstr << "MarControl::setValue() - Trying to set value of incompatible type "
-			<< "(expected " << value_->getType() << ", given " << mc->value_->getType() << ")";
+			<< "(expected " << value_->type_ << ", given " << mc->value_->type_ << ")";
 		MRSWARN(sstr.str());
 		return false;
 	}
 
 	if (MarControlPtr(this) == mc)
 		return true;
-
+	
 	#ifdef MARSYAS_QT
-	rwLock_.lockForWrite();
+	value_->rwLock_.lockForWrite();
 	#endif
 
-	//get a clone of the passed mc control value
-	MarControlValue* clonedvalue = mc->value_->clone();
+	value_->copyValue(*(mc->value_));
 
-	//get all linked MarControls and replace their current
-	//MarControlValue with the one cloned from mc
-	std::vector<MarControl*> links = value_->getLinks();
-	std::vector<MarControl*>::iterator lit;
-	for(lit=links.begin(); lit!=links.end(); ++lit)
-	{
-		//linked controls will now point to the cloned MarControlValue
-		//from the passed mc
-		(*lit)->value_->removeLink(*lit);
-		(*lit)->value_ = clonedvalue;
-		(*lit)->value_->addLink(*lit);
-		//this can not be called here! -> update() may call setValue() again,
-		//who will mess up this linking table and shared MarControlValue
-		//if(update)
-		//	(*lit)->callMarSystemUpdate(); 
-	}
+#ifdef MARSYAS_QT
+	value_->rwLock_.unlock();
+#endif
+
+#ifdef MARSYAS_DEBUG
+	value_->setDebugValue();
+#endif
+	
 	//check if it's needed to call update()
-	links = value_->getLinks();
-	for(lit=links.begin(); lit!=links.end(); ++lit)
+	std::vector<MarControl*>::iterator lit;
+	for(lit=value_->links_.begin(); lit!=value_->links_.end(); lit++)
 	{
 		if(update)
 			(*lit)->callMarSystemUpdate();
 	}
 
-	#ifdef MARSYAS_DEBUG
-	std::ostringstream oss;
-	value_->serialize(oss);
-	value_debug_ = oss.str();
-	#endif
-
 	#ifdef MARSYAS_QT
-	rwLock_.unlock();
-
-	//emit controlChanged(this);
 	emitControlChanged(this);
 	#endif
 
@@ -862,19 +790,22 @@ inline
 bool
 MarControl::setValue(MarControlValue *mcv, bool update)
 {
-	#ifdef MARSYAS_QT
-	rwLock_.lockForRead();
-	#endif
+#ifdef MARSYAS_QT
+	QReadLocker(&(mcv->rwLock_)); 
+	QReadLocker(&rwLock_);
+#endif
 
-	if (value_->getType() != mcv->getType())
+	if (value_->type_ != mcv->type_)
 	{
 		std::ostringstream sstr;
 		sstr << "MarControl::setValue() - Trying to set value of incompatible type "
-			<< "(expected " << value_->getType() << ", given " << mcv->getType() << ")";
+			<< "(expected " << value_->type_ << ", given " << mcv->type_ << ")";
 		MRSWARN(sstr.str());
+		
 		#ifdef MARSYAS_QT
 		rwLock_.unlock();
 		#endif
+
 		return false;
 	}
 
@@ -887,47 +818,28 @@ MarControl::setValue(MarControlValue *mcv, bool update)
 	}
 
 	#ifdef MARSYAS_QT
-	rwLock_.unlock();
-	rwLock_.lockForWrite();
+	value_->rwLock_.lockForWrite();
 	#endif
 
-	//get a clone of the passed mcv control value
-	MarControlValue* clonedvalue = mcv->clone();
+	value_->copyValue(*(mcv));
 
-	//get all linked MarControls and replace their current
-	//MarControlValue with the one cloned from mcv
-	std::vector<MarControl*> links = value_->getLinks();
-	std::vector<MarControl*>::iterator lit;
-	for(lit=links.begin(); lit!=links.end(); ++lit)
-	{
-		//linked controls will now point to the cloned MarControlValue
-		//from the passed mc
-		(*lit)->value_->removeLink(*lit);
-		(*lit)->value_ = clonedvalue;
-		(*lit)->value_->addLink(*lit);
-		//this can not be called here! -> update() may call setValue() again,
-		//who will mess up this linking table and shared MarControlValue
-		//if(update)
-		//	(*lit)->callMarSystemUpdate(); 
-	}
+	#ifdef MARSYAS_QT
+	value_->rwLock_.unlock();
+	#endif
+
+#ifdef MARSYAS_DEBUG
+	value_->setDebugValue();
+#endif
+	
 	//check if it's needed to call update()
-	links = value_->getLinks();
-	for(lit=links.begin(); lit!=links.end(); ++lit)
+	std::vector<MarControl*>::iterator lit;
+	for(lit=value_->links_.begin(); lit!=value_->links_.end(); ++lit)
 	{
 		if(update)
 			(*lit)->callMarSystemUpdate();
 	}
 
-	#ifdef MARSYAS_DEBUG
-	std::ostringstream oss;
-	value_->serialize(oss);
-	value_debug_ = oss.str();
-	#endif
-
 	#ifdef MARSYAS_QT
-	rwLock_.unlock();
-
-	//emit controlChanged(this);
 	emitControlChanged(this);
 	#endif
 
@@ -947,8 +859,6 @@ MarControl::setValue(int t, bool update)
 {
 	return this->setValue((mrs_natural)t, update);
 }
-
-
 
 inline
 bool
@@ -979,6 +889,7 @@ operator<<(std::ostream& os, const MarControl& ctrl)
 	#ifdef MARSYAS_QT
 	QReadLocker locker(&(ctrl.rwLock_));
 	#endif
+
 	return ctrl.value_->serialize(os);
 }
 
@@ -990,6 +901,7 @@ operator==(const MarControl& v1, const MarControl& v2)
 	QReadLocker locker1(&(v1.rwLock_));
 	QReadLocker locker2(&(v2.rwLock_));
 	#endif
+
 	return !(v1.value_->isNotEqual(v2.value_));
 }
 
@@ -1001,6 +913,7 @@ operator!=(const MarControl& v1, const MarControl& v2)
 	QReadLocker locker1(&(v1.rwLock_));
 	QReadLocker locker2(&(v2.rwLock_));
 	#endif
+
 	return v1.value_->isNotEqual(v2.value_);
 }
 

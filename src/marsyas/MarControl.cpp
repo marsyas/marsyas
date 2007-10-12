@@ -142,7 +142,8 @@ MarControl::getType() const
 	return value_->getType(); 
 }
 
-void MarControl::callMarSystemUpdate()
+void 
+MarControl::callMarSystemUpdate()
 {
 	#ifdef MARSYAS_QT
 	rwLock_.lockForRead(); //too many lockers?!? [!]
@@ -167,14 +168,15 @@ MarControl::linkTo(MarControlPtr ctrl, bool update)
 	{
 		ostringstream oss;
 		oss << "MarControl::linkTo() - Linking to an invalid control ";
-		oss << "(" << ctrl->getName() << " with " << this->getName() << ").";
+		oss << "(" << ctrl->cname_ << " with " << cname_ << ").";
 		MRSWARN(oss.str());
 		return false;
 	}
 
-#ifdef MARSYAS_QT
-	rwLock_.lockForRead();
-#endif
+	#ifdef MARSYAS_QT
+	rwLock_.lockForWrite();
+	ctrl->rwLock_.lockForRead();
+	#endif
 
 	//check if these controls are already linked
 	//(i.e. they own the same MarControlValue) 
@@ -182,67 +184,96 @@ MarControl::linkTo(MarControlPtr ctrl, bool update)
 	{
 		#ifdef MARSYAS_QT
 		rwLock_.unlock();
+		ctrl->rwLock_.unlock();
 		#endif
 		return true;//already linked! :-)
 	}
 	
-	if (ctrl->getType() != value_->getType())
+	if (ctrl->value_->type_ != value_->type_)
 	{
 		ostringstream oss;
-		oss << "MarControl::linkTo() - Linking two controls of different types ";
-		oss << "(" << ctrl->getName() << " with " << this->getName() << ").";
+		oss << "MarControl::linkTo() - Linking controls of different types ";
+		oss << "(" << ctrl->cname_ << " with " << cname_ << ").";
 		MRSWARN(oss.str());
 		#ifdef MARSYAS_QT
 		rwLock_.unlock();
+		ctrl->rwLock_.unlock();
 		#endif
 		return false;
 	}
 
-#ifdef MARSYAS_QT
-	rwLock_.unlock();
-	rwLock_.lockForWrite();
-	ctrl->rwLock_.lockForRead();
-#endif
+	//store a pointer to the (soon to be old) MarControlValue object
+	MarControlValue* oldvalue = value_;
+
+	#ifdef MARSYAS_QT
+	ctrl->value_->rwLock_.lockForWrite();
+	oldvalue->rwLock.lockForWrite();
+	#endif
 
 	//get all the links of our current MarControlValue so we can also
 	//re-link them to the passed ctrl
-	vector<MarControl*> links = value_->getLinks();
 	vector<MarControl*>::iterator lit;
-	for(lit=links.begin(); lit!=links.end(); ++lit)
+	for(lit=oldvalue->links_.begin(); lit!=oldvalue->links_.end(); ++lit)
 	{
-		//linked controls will now point to the same MarControlValue
-		//pointed by ctrl (i.e. they will take the same value as ctrl)
-		(*lit)->value_->removeLink(*lit);
-		(*lit)->value_ = ctrl->value_;
-		(*lit)->value_->addLink(*lit);
-		//(*lit)->callMarSystemUpdate();
-	}
-	
-	//call update on all MarSystems
-	if(update)
-	{
-		links = value_->getLinks();
-		for(lit=links.begin(); lit!=links.end(); ++lit)
-		{
-			(*lit)->callMarSystemUpdate();
-		}
-	}
+		#ifdef MARSYAS_QT
+		//we must lock each linked MarControl, so we can
+		//safely make it point to the new cloned MarControlValue
+		//without interferences from other threads
+		if(MarControlPtr(this) != (*lit)) //this MarControl is already locked, so we must avoid a deadlock!
+			(*lit)->rwLock_.lockForWrite(); 
+		#endif
 
-
-#ifdef MARSYAS_QT
-	ctrl->rwLock_.unlock();
-	rwLock_.unlock();
-#endif
+// 		//remove each link from the old MarControlValue...
+// 		//oldvalue->removeLink(*lit); //==> THIS WOULD CREATE A DEADLOCK!! 
+// 		//We must implement the remove link procedure, as next:
+// 		oldvalue->links_.erase(lit);
+// 		if(oldvalue->links_.size() == 0)
+// 		{
+// 			#ifdef MARSYAS_QT
+// 			oldvalue->rwLock_.unlock();
+// 			#endif
+// 			delete oldvalue;
+// 		}
 		
+		//... and relink them to the new cloned MarControlValue
+		(*lit)->value_ = ctrl->value_;
+		//(*lit)->value_->addLink(*lit); ==> deadlock!!
+		(*lit)->value_->links_.push_back(*lit); //no need for further checks since we already checked above if the controls were already linked...
+	}
+
+	delete oldvalue;
+
+	#ifdef MARSYAS_QT
+	//all controls now linked to the new value, so we may release the locks
+	ctrl->value_->rwLock_.unlock();
+	ctrl->rwLock_.unlock();
+	#endif
+
+	//check if it's needed to call update()
+	for(lit=value_->links_.begin(); lit!=value_->links_.end(); ++lit)
+	{
+		#ifdef MARSYAS_QT
+		(*lit)->rwLock_.unlock();
+		#endif
+
+		if(update)
+			(*lit)->callMarSystemUpdate();
+	}
+
+	#ifdef MARSYAS_QT
+	emitControlChanged(this);
+	#endif
+
 	return true;
 }
 
 void
 MarControl::unlink()
 {
-#ifdef MARSYAS_QT
+	#ifdef MARSYAS_QT
 	rwLock_.lockForWrite();
-#endif
+	value_->rwLock_.lockForRead();
+	#endif
 
 	//check if this MarControl is linked
 	//(i.e. more than one MarControl linking
@@ -252,18 +283,25 @@ MarControl::unlink()
 	{
 		#ifdef MARSYAS_QT
 		rwLock_.unlock();
+		value_->rwLock_.unlock();
 		#endif
 		return;
 	}
 
-	MarControlValue* clonedvalue = value_->clone();
-	value_->removeLink(this);
+	MarControlValue* oldvalue = value_;
+	MarControlValue* clonedvalue = oldvalue->clone();
+
+#ifdef MARSYAS_QT
+	oldvalue->rwLock_.unlock();
+#endif
+
+	oldvalue->removeLink(this);
 	value_ = clonedvalue;
 	value_->addLink(this);
 
-#ifdef MARSYAS_QT
+	#ifdef MARSYAS_QT
 	rwLock_.unlock();
-#endif
+	#endif
 }
 
 bool
@@ -285,10 +323,14 @@ MarControl::isLinked() const
 vector<MarControlPtr>
 MarControl::getLinks()
 {
+#ifdef MARSYAS_QT
+	QReadLocker r_locker(&rwLock_);
+	QReadLocker (&(value_->rwLock_));
+#endif
+
 	vector<MarControlPtr> res;
-	vector<MarControl*> links = value_->getLinks();
 	vector<MarControl*>::const_iterator lit;
-	for(lit=links.begin(); lit != links.end(); ++lit)
+	for(lit=value_->links_.begin(); lit != value_->links_.end(); ++lit)
 		res.push_back(MarControlPtr(*lit));
 	return res;
 }

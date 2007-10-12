@@ -45,17 +45,28 @@ namespace Marsyas
 			readOnlyAccess_ = readOnlyAccess;
 			
 			#ifdef MARSYAS_QT
-			if(readOnlyAccess_)
-				rwLock_.lockForRead(); //more efficient: allows multiple readers
-			else
-				rwLock_.lockForWrite();//only a single writer/reader
+			if(readOnlyAccess_) //more efficient: allows multiple readers
+			{
+				ctrl_->rwLock.lockForRead();
+				ctrl_->value_->rwLock_.lockForRead(); 
+			}
+			else //only a single writer/reader
+			{
+				ctrl_->rwLock.lockForWrite();
+				ctrl_->value_->rwLock_.lockForWrite();
+			}
 			#endif
 		}
 
 		~MarControlAccessor()
 		{
 			#ifdef MARSYAS_QT
-			rwLock_.unlock(); 
+			ctrl_->value_->rwLock_.unlock();
+			ctrl_->rwLock_.unlock(); 
+			#endif
+
+			#if MARSYAS_DEBUG
+			ctrl_->value_->setDebugValue();
 			#endif
 
 			if(update_)
@@ -71,14 +82,16 @@ namespace Marsyas
 				return const_cast<T&>(ctrl_->to<T>());
 			else //this means we have an active write lock...
 			{
-				#ifdef MARSYAS_QT
-				rwLock_.unlock(); //unlock write mutex so to() does not deadlock
+				#ifdef MARSYAS_QT //unlock write mutex so to() does not deadlock
+				//ctrl_->value_->rwLock_.unlock();
+				ctrl_->rwLock_.unlock(); 
 				#endif
 				
 				T& res = const_cast<T&>(ctrl_->to<T>());
 				
-				#ifdef MARSYAS_QT
-				rwLock_.lockForWrite(); //lock again
+				#ifdef MARSYAS_QT //lock again
+				ctrl_->rwLock_.lockForWrite(); 
+				//ctrl_->value_->rwLock_.lockForWrite(); 
 				#endif
 				
 				return res; 

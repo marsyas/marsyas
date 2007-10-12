@@ -28,6 +28,21 @@ using namespace Marsyas;
 /************************************************************************/
 /* MarControlValue implementation                                       */
 /************************************************************************/
+#ifdef MARSYAS_DEBUG
+void
+MarControlValue::setDebugValue()
+{
+	ostringstream oss;
+	serialize(oss);
+
+#ifdef MARSYAS_QT
+	QWriteLocker(&rwLock_);
+#endif
+
+	value_debug_ = oss.str();
+}
+#endif
+
 void
 MarControlValue::addLink(MarControl* newlink)
 {
@@ -125,19 +140,27 @@ MarControlValueT<realvec>::MarControlValueT(realvec value)
 {
 	value_ = value;
 	type_ = "mrs_realvec";
+
+#ifdef MARSYAS_DEBUG
+	setDebugValue();
+#endif
 }
 
 MarControlValueT<realvec>::MarControlValueT(const MarControlValueT& a):MarControlValue(a)
 {
 	#ifdef MARSYAS_QT
-	val.rwLock_.lockForRead(); //[!]
+	a.rwLock_.lockForRead(); //[!]
 	#endif
 
 	value_ = a.value_;
 	type_ = "mrs_realvec";
 
+#ifdef MARSYAS_DEBUG
+	setDebugValue();
+#endif
+
 	#ifdef MARSYAS_QT
-	val.rwLock_.unlock(); //[!]
+	a.rwLock_.unlock(); //[!]
 	#endif
 }
 
@@ -153,6 +176,10 @@ MarControlValueT<realvec>::operator=(const MarControlValueT& a)
 		value_ = a.value_;
 		type_ = a.type_;
 
+#ifdef MARSYAS_DEBUG
+		setDebugValue();
+#endif
+
 		#ifdef MARSYAS_QT
 		a.rwLock_.lockForRead(); //[!]
 		#endif
@@ -164,6 +191,13 @@ MarControlValue*
 MarControlValueT<realvec>::clone()
 {
 	return new MarControlValueT<realvec>(*this);
+}
+
+void
+MarControlValueT<realvec>::copyValue(MarControlValue& value)
+{
+	MarControlValueT<realvec> &v = dynamic_cast<MarControlValueT<realvec>&>(value);
+	value_ = v.value_;
 }
 
 MarControlValue*
@@ -185,6 +219,10 @@ MarControlValueT<realvec>::get() const
 realvec&
 MarControlValueT<realvec>::getRef()
 {
+#ifdef MARSYAS_QT
+	QReadLocker locker(&rwLock_); //[!]
+#endif 
+
 	return value_;
 }
 
@@ -225,6 +263,10 @@ MarControlValueT<realvec>::createFromStream(std::istream& in)
 
 #ifdef MARSYAS_QT
 	rwLock_.unlock(); //[!]
+#endif
+
+#ifdef MARSYAS_DEBUG
+	setDebugValue();
 #endif
 }
 
@@ -286,19 +328,27 @@ MarControlValueT<bool>::MarControlValueT(bool value)
 {
 	value_ = value;
 	type_ = "mrs_bool";
+
+#ifdef MARSYAS_DEBUG
+	setDebugValue();
+#endif
 }
 
 MarControlValueT<bool>::MarControlValueT(const MarControlValueT& a):MarControlValue(a)
 {
 #ifdef MARSYAS_QT
-	val.rwLock_.lockForRead(); //[!]
+	a.rwLock_.lockForRead(); //[!]
 #endif
 
 	value_ = a.value_;
 	type_ = "mrs_bool";
 
+#ifdef MARSYAS_DEBUG
+	setDebugValue();
+#endif
+
 #ifdef MARSYAS_QT
-	val.rwLock_.unlock(); //[!]
+	a.rwLock_.unlock(); //[!]
 #endif
 }
 
@@ -314,6 +364,10 @@ MarControlValueT<bool>::operator=(const MarControlValueT& a)
 		value_ = a.value_;
 		type_ = a.type_;
 
+#ifdef MARSYAS_DEBUG
+		setDebugValue();
+#endif
+
 #ifdef MARSYAS_QT
 		a.rwLock_.unlock(); //[!]
 #endif
@@ -325,6 +379,13 @@ MarControlValue*
 MarControlValueT<bool>::clone()
 {
 	return new MarControlValueT<bool>(*this);
+}
+
+void
+MarControlValueT<bool>::copyValue(MarControlValue& value)
+{
+	MarControlValueT<bool> &v = dynamic_cast<MarControlValueT<bool>&>(value);
+	value_ = v.value_;
 }
 
 MarControlValue*
@@ -351,6 +412,10 @@ MarControlValueT<bool>::createFromStream(std::istream& in)
 #endif
 
 	in >> value_;
+
+#ifdef MARSYAS_DEBUG
+	setDebugValue();
+#endif
 
 #ifdef MARSYAS_QT
 	rwLock_.unlock(); //[!]

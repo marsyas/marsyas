@@ -40,8 +40,15 @@ namespace Marsyas
 
 class MarControlValue
 {
+	friend class MarControl;
+	friend class MarControlAccessor;
+
 protected:
 	std::string type_;
+
+#ifdef MARSYAS_DEBUG
+	std::string value_debug_;
+#endif
 
 	//MarControls that use this MarControlValue
 	//(i.e. linked MarControls)
@@ -55,12 +62,19 @@ protected:
 protected:
 	MarControlValue() {} // can't be directly created (use MarControl or MarControlValueT)
 	MarControlValue(const MarControlValue& a) {type_ = a.type_;};
-	void callMarSystemsUpdate();
+	
+	//for debugging purposes only
+	#ifdef MARSYAS_DEBUG
+	void setDebugValue();
+	#endif
 
+	void callMarSystemsUpdate();
+	
 public:
 	virtual ~MarControlValue() {}
 
 	virtual MarControlValue* clone() = 0;
+	virtual void copyValue(MarControlValue& value) = 0;
 	virtual MarControlValue* create() = 0;
 
 	//Link management (i.e. MarControl Linking mechanism)
@@ -96,6 +110,7 @@ template<class T>
 class MarControlValueT : public MarControlValue
 {
 	friend class MarControl;
+	friend class MarControlAccessor;
 
 protected:
 	T value_;
@@ -113,6 +128,7 @@ public:
 	MarControlValueT& operator=(const MarControlValueT& a);
 
 	virtual MarControlValue* clone();
+	virtual void copyValue(MarControlValue& value);
 	virtual MarControlValue* create();
 	
 	virtual std::string getTypeID();
@@ -138,6 +154,7 @@ template<>
 class MarControlValueT<realvec> : public MarControlValue
 {
 	friend class MarControl;
+	friend class MarControlAccessor;
 
 protected:
 	realvec value_;
@@ -154,6 +171,7 @@ public:
 	MarControlValueT& operator=(const MarControlValueT& a);
 
 	virtual MarControlValue* clone();
+	virtual void copyValue(MarControlValue& value);
 	virtual MarControlValue* create();
 
 	virtual std::string getTypeID();
@@ -181,6 +199,7 @@ template<>
 class MarControlValueT<bool> : public MarControlValue
 {
 	friend class MarControl;
+	friend class MarControlAccessor;
 
 protected:
 	bool value_;
@@ -199,6 +218,7 @@ public:
 	virtual std::string getTypeID();
 
 	virtual MarControlValue* clone();
+	virtual void copyValue(MarControlValue& value);
 	virtual MarControlValue* create();
 
 	//setters
@@ -256,6 +276,10 @@ MarControlValueT<T>::MarControlValueT(T value)
 {
 	value_ = value;
 
+	#ifdef MARSYAS_DEBUG
+	setDebugValue();
+	#endif
+
 	// simple tests are used for basic types for efficiency purposes
 	if (typeid(T) == typeid(mrs_real))
 		type_ = "mrs_real";
@@ -283,6 +307,10 @@ MarControlValueT<T>::MarControlValueT(const MarControlValueT& a):MarControlValue
 	value_ = a.value_;
 	type_ = a.type_;
 
+	#ifdef MARSYAS_DEBUG
+	setDebugValue();
+	#endif
+
 #ifdef MARSYAS_QT
 	a.rwLock_.unlock(); //[!]
 #endif
@@ -296,12 +324,20 @@ MarControlValueT<T>::operator=(const MarControlValueT& a)
 	{
 		#ifdef MARSYAS_QT
 		a.rwLock_.lockForRead(); //[!]
+		rwLock_.lockForWrite();
 		#endif
 
 		value_ = a.value_;
 		type_ = a.type_;
 
+		#ifdef MARSYAS_DEBUG
+		setDebugValue();
+		#endif
+
+		//call MarSystemUpdate() ?!?! [?]
+
 		#ifdef MARSYAS_QT
+		rwLock_.unlock();
 		a.rwLock_.unlock(); //[!]
 		#endif
 	}
@@ -313,6 +349,14 @@ MarControlValue*
 MarControlValueT<T>::clone()
 {
 	return new MarControlValueT<T>(*this);
+}
+
+template<class T>
+void
+MarControlValueT<T>::copyValue(MarControlValue& value)
+{
+	MarControlValueT<T> &v = dynamic_cast<MarControlValueT<T>&>(value);
+	value_ = v.value_;
 }
 
 template<class T>
@@ -355,17 +399,16 @@ MarControlValueT<T>::set(T &val, bool update)
 
 	#ifdef MARSYAS_QT
 	rwLock_.unlock();
-	rwLock_.lockForRead();
+	#endif
+
+	#ifdef MARSYAS_DEBUG
+	setDebugValue();
 	#endif
 
 	if(update)
 	{
 		callMarSystemsUpdate();
 	}
-
-	#ifdef MARSYAS_QT
-	rwLock_.unlock();
-	#endif
 }
 
 inline
@@ -378,19 +421,18 @@ MarControlValueT<realvec>::set(realvec &val, bool update)
 
 	value_ = val;
 
-#ifdef MARSYAS_QT
+	#ifdef MARSYAS_QT
 	rwLock_.unlock();
-	rwLock_.lockForRead();
-#endif
+	#endif
+
+	#ifdef MARSYAS_DEBUG
+	setDebugValue();
+	#endif
 
 	if(update)
 	{
 		callMarSystemsUpdate();
 	}
-
-#ifdef MARSYAS_QT
-	rwLock_.unlock();
-#endif
 }
 
 inline
@@ -405,15 +447,14 @@ MarControlValueT<bool>::set(bool &val, bool update)
 
 #ifdef MARSYAS_QT
 	rwLock_.unlock();
-	rwLock_.lockForRead();
+#endif
+
+#ifdef MARSYAS_DEBUG
+	setDebugValue();
 #endif
 
 	if(update)
 		callMarSystemsUpdate();
-
-#ifdef MARSYAS_QT
-	rwLock_.unlock();
-#endif
 }
 
 template<class T>
@@ -440,6 +481,12 @@ MarControlValueT<T>::createFromStream(std::istream& in)
 #ifdef MARSYAS_QT
 	rwLock_.unlock(); //[!]
 #endif
+
+#ifdef MARSYAS_DEBUG
+	setDebugValue();
+#endif
+
+	//callMarSystemsUpdate();?!?!?!? [?]
 }
 
 template<class T>
