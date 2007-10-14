@@ -36,6 +36,7 @@ public slots:
 
 private slots:
 	void about();
+	bool closeUser();
 
 private:
 // basic application functions
@@ -46,11 +47,13 @@ private:
 	void createStatusBar();
 	void readSettings();
 	void writeSettings();
-	void createObjects();
+
+	void createUser();
+	void createExercise();
 
 // main interface objects
 	QFrame* centralFrame;
-	QVBoxLayout *mainLayout;
+//	QVBoxLayout *mainLayout;
 
 // menu and toolbar objects
 	QMenu *fileMenu;

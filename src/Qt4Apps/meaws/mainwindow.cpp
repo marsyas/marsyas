@@ -5,7 +5,9 @@ using namespace std;
 #include "mainwindow.h"
 
 MainWindow::MainWindow() {
-	createObjects();
+	user = NULL;
+	exercise = NULL;
+	metro = NULL;
 	createMain();
 	createActions();
 	createMenus();
@@ -19,18 +21,24 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
+	if (!closeUser())
+		event->ignore();
+	event->accept();
+}
+
+bool MainWindow::closeUser()
+{
 	if (user != NULL) {
-		if ( !user->close() )
-			event->ignore();
-		else {
-			if (exercise != NULL) {
-				delete exercise;
-				exercise = NULL;
-			}
-			writeSettings();
-			event->accept();
+		if ( !user->close() ) {
+			return false;
 		}
 	}
+	if (exercise != NULL) {
+		delete exercise;
+		exercise = NULL;
+	}
+	writeSettings();
+	return true;
 }
 
 void MainWindow::about() {
@@ -64,14 +72,8 @@ void MainWindow::createStatusBar() {
 }
 
 void MainWindow::createMain() {
-	mainLayout = new QVBoxLayout;
-	mainLayout->addWidget( exercise->getInstructionArea() );
-	mainLayout->addWidget( exercise->getResultArea() );
-	mainLayout->setContentsMargins(1,1,1,1);
-
-	QFrame* centralFrame = new QFrame;
+	centralFrame = new QFrame;
 	centralFrame->setFrameStyle(QFrame::NoFrame);
-	centralFrame->setLayout(mainLayout);
 	setCentralWidget(centralFrame);
 }
 
@@ -155,30 +157,29 @@ void MainWindow::createActions() {
 	newUserAct = new QAction(QIcon(":/icons/new.png"), tr("&New user"), this);
 	newUserAct->setShortcut(tr("Ctrl+N"));
 	newUserAct->setStatusTip(tr("Create a new session"));
-	connect(newUserAct, SIGNAL(triggered()), user, SLOT(newUser()));
 
-	openUserAct = new QAction(QIcon(":/icons/open.png"), tr("&Open user..."), this);
+	openUserAct = new QAction(QIcon(":/icons/open.png"),
+		tr("&Open user..."), this);
 	openUserAct->setShortcut(tr("Ctrl+O"));
 	openUserAct->setStatusTip(tr("Open an existing session"));
-	connect(openUserAct, SIGNAL(triggered()), user, SLOT(open()));
 
-	saveUserAct = new QAction(QIcon(":/icons/save.png"), tr("&Save user"), this);
+	saveUserAct = new QAction(QIcon(":/icons/save.png"),
+		tr("&Save user"), this);
 	saveUserAct->setShortcut(tr("Ctrl+S"));
 	saveUserAct->setStatusTip(tr("Save the session to disk"));
-	connect(saveUserAct, SIGNAL(triggered()), user, SLOT(save()));
 
 	saveAsUserAct = new QAction(tr("Save user &As..."), this);
 	saveAsUserAct->setStatusTip(tr("Save the session under a new name"));
-	connect(saveAsUserAct, SIGNAL(triggered()), user, SLOT(saveAs()));
 
-	closeUserAct = new QAction(QIcon(":/icons/quit.png"), tr("&Close user"), this);
+	closeUserAct = new QAction(QIcon(":/icons/quit.png"),
+		tr("&Close user"), this);
 	closeUserAct->setShortcut(tr("Ctrl+W"));
 	closeUserAct->setStatusTip(tr("Close user"));
-	connect(closeUserAct, SIGNAL(triggered()), user, SLOT(close()));
+	connect(closeUserAct, SIGNAL(triggered()), this, SLOT(closeUser()));
 
-	setUserInfoAct = new QAction(QIcon(":/icons/new.png"), tr("&User info"), this);
+	setUserInfoAct = new QAction(QIcon(":/icons/new.png"),
+		tr("&User info"), this);
 	setUserInfoAct->setShortcut(tr("Ctrl+U"));
-	connect(setUserInfoAct, SIGNAL(triggered()), user, SLOT(setUserInfo()));
 
 
 	exitAct = new QAction(tr("E&xit"), this);
@@ -197,18 +198,15 @@ void MainWindow::createActions() {
 	openExerciseAct = new QAction(QIcon(":/icons/open.png"), tr("Open &Exercise..."), this);
 	openExerciseAct->setShortcut(tr("Ctrl+R"));
 	openExerciseAct->setStatusTip(tr("Open a new exercise"));
-	connect(openExerciseAct, SIGNAL(triggered()), exercise, SLOT(open()));
 
 	toggleAttemptAct = new QAction(this);
 	toggleAttemptAct->setShortcut(tr("Space"));
 	toggleAttemptAct->setStatusTip(tr("Start"));
 	toggleAttemptAct->setIcon(QIcon(":/icons/player_play.png"));
-	connect(toggleAttemptAct, SIGNAL(triggered()), exercise, SLOT(toggleAttempt()));
 
 	closeExerciseAct = new QAction(QIcon(":/icons/quit.png"), tr("&Close exercise"), this);
 	closeExerciseAct->setShortcut(tr("Ctrl+E"));
 	closeExerciseAct->setStatusTip(tr("Close exercise"));
-	connect(closeExerciseAct, SIGNAL(triggered()), exercise, SLOT(close()));
 
 
 
@@ -218,40 +216,20 @@ void MainWindow::createActions() {
 
 	visualMetroBeatAct = new QAction(QIcon(":/icons/circle.png"), tr("Visual metronome"), this);
 	visualMetroBeatAct->setStatusTip(tr("Shows the beat"));
-	connect(visualMetroBeatAct, SIGNAL(triggered()), metro,
-SLOT(toggleBigMetro()));
-	metro->setIcon(visualMetroBeatAct);
 
 	calcExerciseAct = new QAction(QIcon(":/icons/square.png"), tr("Calculate exercise results"), this);
-	connect(calcExerciseAct, SIGNAL(triggered()), exercise, SLOT(analyze()));
 
 	testingFileAct = new QAction(QIcon(":/icons/open.png"), tr("&Open test audio file..."), this);
 	testingFileAct->setShortcut(tr("Ctrl+T"));
 	testingFileAct->setStatusTip(tr("Open test audio file"));
-	connect(testingFileAct, SIGNAL(triggered()), exercise, SLOT(openAttempt()));
 
 	playFileAct = new QAction(QIcon(":/icons/open.png"), tr("&Play test audio file..."), this);
 	playFileAct->setIcon(QIcon(":/icons/play.png"));
 	playFileAct->setStatusTip(tr("Play test audio file"));
-	connect(playFileAct, SIGNAL(triggered()), exercise, SLOT(playFile()));
 
 	addTryAct = new QAction(tr("Add a try"), this);
-	connect(addTryAct, SIGNAL(triggered()), exercise, SLOT(addTry()));
 
 	delTryAct = new QAction(tr("Delete a try"), this);
-	connect(delTryAct, SIGNAL(triggered()), exercise, SLOT(delTry()));
-}
-
-void MainWindow::createObjects() {
-	user = new User();
-	connect(user, SIGNAL(enableActions(int)), this, SLOT(enableActions(int)));
-
-	exercise = new ExerciseDispatcher();
-	connect(exercise, SIGNAL(enableActions(int)), this, SLOT(enableActions(int)));
-	connect(exercise, SIGNAL(attemptRunning(bool)), this, SLOT(attemptRunning(bool)));
-
-	string audioFile = "data/sd.wav";
-	metro = new Metro(this, audioFile);
 }
 
 void MainWindow::attemptRunning(bool running) {
@@ -266,10 +244,43 @@ void MainWindow::attemptRunning(bool running) {
 	}
 }
 
+void MainWindow::createUser() {
+	user = new User();
+	connect(user, SIGNAL(enableActions(int)), this, SLOT(enableActions(int)));
+	connect(newUserAct, SIGNAL(triggered()), user, SLOT(newUser()));
+	connect(openUserAct, SIGNAL(triggered()), user, SLOT(open()));
+	connect(saveUserAct, SIGNAL(triggered()), user, SLOT(save()));
+	connect(saveAsUserAct, SIGNAL(triggered()), user, SLOT(saveAs()));
+	connect(setUserInfoAct, SIGNAL(triggered()), user, SLOT(setUserInfo()));
+}
+
+void MainWindow::createExercise() {
+		exercise = new ExerciseDispatcher(centralFrame);
+		connect(exercise, SIGNAL(enableActions(int)),
+			this, SLOT(enableActions(int)));
+		connect(exercise, SIGNAL(attemptRunning(bool)),
+			this, SLOT(attemptRunning(bool)));
+
+		string audioFile = "data/sd.wav";
+		metro = new Metro(this, audioFile);
+	connect(openExerciseAct, SIGNAL(triggered()), exercise, SLOT(open()));
+	connect(toggleAttemptAct, SIGNAL(triggered()), exercise, SLOT(toggleAttempt()));
+	connect(closeExerciseAct, SIGNAL(triggered()), exercise, SLOT(close()));
+
+	connect(calcExerciseAct, SIGNAL(triggered()), exercise, SLOT(analyze()));
+	connect(testingFileAct, SIGNAL(triggered()), exercise, SLOT(openAttempt()));
+	connect(playFileAct, SIGNAL(triggered()), exercise, SLOT(playFile()));
+	connect(addTryAct, SIGNAL(triggered()), exercise, SLOT(addTry()));
+	connect(delTryAct, SIGNAL(triggered()), exercise, SLOT(delTry()));
+
+	connect(visualMetroBeatAct, SIGNAL(triggered()), metro,
+SLOT(toggleBigMetro()));
+	metro->setIcon(visualMetroBeatAct);
+}
 
 void MainWindow::enableActions(int state) {
 	switch (state) {
-	case MEAWS_READY_NOTHING:	// just opened app
+	case MEAWS_READY_NOTHING: {   // just opened app
 		setWindowTitle(tr("Meaws"));
 
 		saveUserAct   ->setEnabled(false);
@@ -281,8 +292,12 @@ void MainWindow::enableActions(int state) {
 		exerciseToolBar->setEnabled(false);
 		tempoToolBar   ->setEnabled(false);
 		testingMenu    ->setEnabled(false);
+
+		if (user == NULL)
+			createUser();
 		break;
-	case MEAWS_READY_USER:	 // user selected
+	}
+	case MEAWS_READY_USER: {   // user selected
 		setWindowTitle(tr("Meaws - %1").arg(user->getName()));
 
 		saveUserAct   ->setEnabled(true);
@@ -297,7 +312,11 @@ void MainWindow::enableActions(int state) {
 
 		tempoToolBar   ->setEnabled(false);
 		testingMenu    ->setEnabled(false);
+
+		if (exercise == NULL)
+			createExercise();
 		break;
+	}
 	case MEAWS_READY_EXERCISE:	 // exercise loaded
 		toggleAttemptAct->setEnabled(true);
 		closeExerciseAct->setEnabled(true);

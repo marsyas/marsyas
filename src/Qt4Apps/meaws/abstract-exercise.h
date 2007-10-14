@@ -13,7 +13,7 @@ class Exercise : public QObject {
 
 public:
 	Exercise();
-	~Exercise();
+	virtual ~Exercise();
 
 	virtual void open(QString exerciseFilename);
 	virtual void setupDisplay(QFrame* instructionArea, QFrame*

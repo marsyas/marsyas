@@ -18,11 +18,8 @@ class ExerciseDispatcher : public QDialog {
 	Q_OBJECT
 
 public:
-	ExerciseDispatcher();
+	ExerciseDispatcher(QFrame *getCentralFrame);
 	~ExerciseDispatcher();
-
-	QFrame* getInstructionArea() { return instructionArea; };
-	QFrame* getResultArea() { return resultArea; };
 
 	QString getMessage();
 
@@ -49,6 +46,7 @@ private:
 	bool chooseEvaluation();
 
 	// basic GUI frames
+	QVBoxLayout *layout;
 	QFrame *instructionArea;
 	QFrame *resultArea;
 

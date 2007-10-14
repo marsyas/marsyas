@@ -11,7 +11,6 @@ RhythmExercise::RhythmExercise() {
 }
 
 RhythmExercise::~RhythmExercise() {
-	delete tries;
 }
 
 int RhythmExercise::getBackend() {

@@ -3,10 +3,18 @@ using namespace std;
 
 #include "dispatcher-exercise.h"
 
-ExerciseDispatcher::ExerciseDispatcher()
+ExerciseDispatcher::ExerciseDispatcher(QFrame *centralFrame)
 {
+	cout<<"in exerdisplatch"<<endl;
+	layout = new QVBoxLayout();
+	layout->setContentsMargins(1,1,1,1);
+	centralFrame->setLayout(layout);
+
+// move?
 	instructionArea = new QFrame;
 	resultArea = new QFrame;
+	layout->addWidget(instructionArea);
+	layout->addWidget(resultArea);
 
 	attemptRunningBool = false;
 	marBackend = NULL;
@@ -16,6 +24,8 @@ ExerciseDispatcher::ExerciseDispatcher()
 
 ExerciseDispatcher::~ExerciseDispatcher() {
 	close();
+	if (layout != NULL)
+		delete layout;
 }
 
 bool ExerciseDispatcher::chooseEvaluation() {
