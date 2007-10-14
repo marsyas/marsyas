@@ -4,6 +4,7 @@
 #include "defs.h"
 
 #include <QDialog>
+#include <QErrorMessage>
 #include <QString>
 #include <QtGui>
 
@@ -13,7 +14,8 @@ class QTextEdit;
 class QLabel;
 class QErrorMessage;
 
-class User : public QDialog {
+class User : public QDialog
+{
 	Q_OBJECT
 
 public:
@@ -31,6 +33,9 @@ public slots:
 
 signals:
 	void enableActions(int state);
+
+private slots:
+	bool setName();
 
 private:
 	bool maybeSave();
