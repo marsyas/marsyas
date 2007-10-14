@@ -7,19 +7,37 @@ using namespace std;
 User::User()
 {
 	isModified_ = false;
-	levels_ << "Novice" << "Beginner" << "Moderate" << "Good"
+	levelList_ << "Novice" << "Beginner" << "Moderate" << "Good"
 		<< "Expert" << "Fantastic";
+	weekPracticeList_ << "Never" << "0-1" << "2-4" << "5-9" <<
+"10-14" << "15-19" << "20+";
+	weekPlayList_ << "Never" << "0-1" << "2-4" << "5-9" <<
+"10-14" << "15-19" << "20+";
+	yearsPlayingList_ << "0" << "1" << "2" << "3-4" << "5-6" << "7-10"
+<< "11-14" << "15-19" << "20+";
 
 	username_ = "";
 	level_ = "Novice";
+	weekPractice_ = "Never";
+	weekPlay_ = "Never";
+	yearsPlaying_= "0";
 
-	usernameButton = new QPushButton(tr("Username: %1").arg(username_));
+
+	usernameButton = new QPushButton;
 	connect(usernameButton, SIGNAL(clicked()), this,
-	        SLOT(setName()));
-
-	levelButton = new QPushButton(tr("Level: %1").arg(level_));
+	        SLOT(queryName()));
+	levelButton = new QPushButton;
 	connect(levelButton, SIGNAL(clicked()), this,
-	        SLOT(setLevel()));
+	        SLOT(queryLevel()));
+	weekPracticeButton = new QPushButton;
+	connect(weekPracticeButton, SIGNAL(clicked()), this,
+	        SLOT(queryWeekPractice()));
+	weekPlayButton = new QPushButton;
+	connect(weekPlayButton, SIGNAL(clicked()), this,
+	        SLOT(queryWeekPlay()));
+	yearsPlayingButton = new QPushButton;
+	connect(yearsPlayingButton, SIGNAL(clicked()), this,
+	        SLOT(queryYearsPlaying()));
 }
 
 
@@ -31,7 +49,7 @@ void User::newUser()
 {
 	if (maybeSave())
 	{
-		if (setName())
+		if (queryName())
 		{
 			emit enableActions(MEAWS_READY_USER);
 		}
@@ -61,12 +79,19 @@ void User::openFile(const QString &openFilename)
 		return;
 	}
 
-	QDataStream in(&file);
+	QTextStream in(&file);
 	QApplication::setOverrideCursor(Qt::WaitCursor);
-	in>>username_;
-	QApplication::restoreOverrideCursor();
 
 	filename_ = openFilename;
+	in>>username_;
+	in>>level_;
+	in>>weekPractice_;
+	in>>weekPlay_;
+	in>>yearsPlaying_;
+
+	updateUserInfoDisplay();
+	isModified_ = false;
+	QApplication::restoreOverrideCursor();
 	emit enableActions(MEAWS_READY_USER);
 }
 
@@ -103,9 +128,13 @@ bool User::saveFile(const QString &saveFilename)
 		return false;
 	}
 
-	QDataStream out(&file);
+	QTextStream out(&file);
 	QApplication::setOverrideCursor(Qt::WaitCursor);
-	out << username_;
+	out << username_ << "\n";
+	out << level_ << "\n";
+	out << weekPractice_ << "\n";
+	out << weekPlay_ << "\n";
+	out << yearsPlaying_ << "\n";
 	QApplication::restoreOverrideCursor();
 
 	filename_ = saveFilename;
@@ -154,57 +183,120 @@ void User::setUserInfo()
 	userInfoWindow = new QDialog(this);
 	userInfoWindow->setWindowTitle(tr("User Info"));
 	QGridLayout *layout = new QGridLayout;
-
-//	int frameStyle = QFrame::Sunken | QFrame::Panel;
 	QPushButton *okButton = new QPushButton(tr("Ok"));
 	okButton->setDefault(true);
 
 	layout->addWidget(usernameButton);
 	layout->addWidget(levelButton);
+	layout->addWidget(weekPracticeButton);
+	layout->addWidget(weekPlayButton);
+	layout->addWidget(yearsPlayingButton);
+
 
 	layout->addWidget(okButton);
 	connect(okButton, SIGNAL(clicked()), userInfoWindow,
 	        SLOT(accept()));
-
 	userInfoWindow->setLayout(layout);
 	userInfoWindow->exec();
 }
 
+void
+User::updateUserInfoDisplay()
+{
+		usernameButton->setText(tr("Username: %1").arg(username_));
+		levelButton->setText(tr("Level: %1").arg(level_));
+
+		weekPracticeButton->setText(
+			tr("Weekly pratice: %1 hours").arg(weekPractice_));
+		weekPlayButton->setText(
+			tr("Weekly playing : %1 hours").arg(weekPlay_));
+		yearsPlayingButton->setText(
+			tr("Years playing:%1").arg(yearsPlaying_));
+}
+
 bool
-User::setName()
+User::queryName()
 {
 	bool ok;
-	QString text = QInputDialog::getText(this, tr("User info"),
+	QString text = QInputDialog::getText(this, tr("Name"),
 	                                     tr("User name:"), QLineEdit::Normal,
 	                                     QDir::home().dirName(), &ok);
 	if (ok && !text.isEmpty())
 	{
 		username_ = text;
 		isModified_ = true;
-		usernameButton->setText(tr("Username: %1").arg(username_));
+		updateUserInfoDisplay();
 	}
 	return true;
 }
 
 bool
-User::setLevel()
+User::queryLevel()
 {
-//	QStringList items = levels;
-	
-	//items << LEVEL;
-	//items << tr("Spring") << tr("Summer") << tr("Fall") <<
-// tr("Winter");
-
 	bool ok;
 	QString item = QInputDialog::getItem(this,
-	                                     tr("QInputDialog::getLevel()"),
-	                                     tr("Level:"), levels_, 0,
+	                                     tr("Level"),
+	                                     tr("How would you "
+	"describe your ability?"), levelList_, 0,
 	                                     false, &ok);
 	if (ok && !item.isEmpty()) {
 		level_ = item;
-		levelButton->setText(tr("Level: %1").arg(level_));
+		isModified_ = true;
+		updateUserInfoDisplay();
 	}
 	return true;
 }
 
+
+bool
+User::queryWeekPractice()
+{
+	bool ok;
+	QString item = QInputDialog::getItem(this,
+	                                     tr("Weekly practice"),
+	                                     tr("How many hours a "
+	"week do you practice (not simply playing)?"), weekPracticeList_,
+										 0, false, &ok);
+	if (ok && !item.isEmpty()) {
+		weekPractice_ = item;
+		isModified_ = true;
+		updateUserInfoDisplay();
+	}
+	return true;
+}
+
+bool
+User::queryWeekPlay()
+{
+	bool ok;
+	QString item = QInputDialog::getItem(this,
+	                                     tr("Weekly playing"),
+	                                     tr("How many hours a "
+	"week do you play (for fun, not individual practice."),
+	weekPlayList_, 0,
+	                                     false, &ok);
+	if (ok && !item.isEmpty()) {
+		weekPlay_ = item;
+		isModified_ = true;
+		updateUserInfoDisplay();
+	}
+	return true;
+}
+
+bool
+User::queryYearsPlaying()
+{
+	bool ok;
+	QString item = QInputDialog::getItem(this,
+	                                     tr("Years playing"),
+	                                     tr("How long have you "
+	"been playing this instrument?"), yearsPlayingList_, 0,
+	                                     false, &ok);
+	if (ok && !item.isEmpty()) {
+		yearsPlaying_ = item;
+		isModified_ = true;
+		updateUserInfoDisplay();
+	}
+	return true;
+}
 
