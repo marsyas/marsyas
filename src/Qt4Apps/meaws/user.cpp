@@ -6,8 +6,22 @@ using namespace std;
 
 User::User()
 {
-	isModified = false;
+	isModified_ = false;
+	levels_ << "Novice" << "Beginner" << "Moderate" << "Good"
+		<< "Expert" << "Fantastic";
+
+	username_ = "";
+	level_ = "Novice";
+
+	usernameButton = new QPushButton(tr("Username: %1").arg(username_));
+	connect(usernameButton, SIGNAL(clicked()), this,
+	        SLOT(setName()));
+
+	levelButton = new QPushButton(tr("Level: %1").arg(level_));
+	connect(levelButton, SIGNAL(clicked()), this,
+	        SLOT(setLevel()));
 }
+
 
 User::~User()
 {
@@ -49,22 +63,22 @@ void User::openFile(const QString &openFilename)
 
 	QDataStream in(&file);
 	QApplication::setOverrideCursor(Qt::WaitCursor);
-	in>>username;
+	in>>username_;
 	QApplication::restoreOverrideCursor();
 
-	filename = openFilename;
+	filename_ = openFilename;
 	emit enableActions(MEAWS_READY_USER);
 }
 
 bool User::save()
 {
-	if (filename.isEmpty())
+	if (filename_.isEmpty())
 	{
 		return saveAs();
 	}
 	else
 	{
-		return saveFile(filename);
+		return saveFile(filename_);
 	}
 }
 
@@ -91,11 +105,11 @@ bool User::saveFile(const QString &saveFilename)
 
 	QDataStream out(&file);
 	QApplication::setOverrideCursor(Qt::WaitCursor);
-	out << username;
+	out << username_;
 	QApplication::restoreOverrideCursor();
 
-	filename = saveFilename;
-	isModified = false;
+	filename_ = saveFilename;
+	isModified_ = false;
 	return true;
 }
 
@@ -103,8 +117,8 @@ bool User::close()
 {
 	if (maybeSave())
 	{
-		username = "";
-		isModified = false;
+		username_ = "";
+		isModified_ = false;
 		emit enableActions(MEAWS_READY_NOTHING);
 		return true;
 	}
@@ -113,7 +127,7 @@ bool User::close()
 
 bool User::maybeSave()
 {
-	if (isModified)
+	if (isModified_)
 	{
 		QMessageBox::StandardButton ret;
 		ret = QMessageBox::warning(this, tr("Meaws"),
@@ -131,7 +145,7 @@ bool User::maybeSave()
 
 QString User::getName()
 {
-	return username;
+	return username_;
 }
 
 void User::setUserInfo()
@@ -142,18 +156,15 @@ void User::setUserInfo()
 	QGridLayout *layout = new QGridLayout;
 
 //	int frameStyle = QFrame::Sunken | QFrame::Panel;
-
-	QPushButton *textButton = new
-		QPushButton(tr("Username: %1").arg(username));
-	connect(textButton, SIGNAL(clicked()), this,
-	        SLOT(setName()));
-	layout->addWidget(textButton);
-
 	QPushButton *okButton = new QPushButton(tr("Ok"));
+	okButton->setDefault(true);
+
+	layout->addWidget(usernameButton);
+	layout->addWidget(levelButton);
+
+	layout->addWidget(okButton);
 	connect(okButton, SIGNAL(clicked()), userInfoWindow,
 	        SLOT(accept()));
-	layout->addWidget(okButton);
-	okButton->setDefault(true);
 
 	userInfoWindow->setLayout(layout);
 	userInfoWindow->exec();
@@ -168,8 +179,30 @@ User::setName()
 	                                     QDir::home().dirName(), &ok);
 	if (ok && !text.isEmpty())
 	{
-		username = text;
-		isModified = true;
+		username_ = text;
+		isModified_ = true;
+		usernameButton->setText(tr("Username: %1").arg(username_));
+	}
+	return true;
+}
+
+bool
+User::setLevel()
+{
+//	QStringList items = levels;
+	
+	//items << LEVEL;
+	//items << tr("Spring") << tr("Summer") << tr("Fall") <<
+// tr("Winter");
+
+	bool ok;
+	QString item = QInputDialog::getItem(this,
+	                                     tr("QInputDialog::getLevel()"),
+	                                     tr("Level:"), levels_, 0,
+	                                     false, &ok);
+	if (ok && !item.isEmpty()) {
+		level_ = item;
+		levelButton->setText(tr("Level: %1").arg(level_));
 	}
 	return true;
 }
