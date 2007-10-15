@@ -53,7 +53,6 @@ private:
 
 // main interface objects
 	QFrame* centralFrame;
-//	QVBoxLayout *mainLayout;
 
 // menu and toolbar objects
 	QMenu *fileMenu;
@@ -74,7 +73,6 @@ private:
 
 
 	QToolBar *tempoToolBar;
-	QAction *setMetroIntroAct;
 	QAction *calcExerciseAct;
 	QAction *visualMetroBeatAct;
 
@@ -100,27 +98,11 @@ private:
 // other stuff that appears to be necessary... for now
 	QLabel *exerciseTitle;
 	bool exerciseRunning;
-//	std::string dataDir;
-//	QLabel *imageLabel;
-
-// user functions
-//	bool chooseUserInfo();
 
 // main object variables
 	User *user;
 	ExerciseDispatcher *exercise;
 	Metro *metro;
-
-
-/*
-	bool maybeSave();
-	void loadFile(const QString &userName);
-	bool saveFile(const QString &userName);
-	void setCurrentFile(const QString &userName);
-	QString strippedName(const QString &fullFileName);
-*/
-
-
 
 };
 

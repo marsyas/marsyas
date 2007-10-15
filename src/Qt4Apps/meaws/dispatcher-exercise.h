@@ -14,7 +14,8 @@
 #include <QLabel>
 #include <QtGui>
 
-class ExerciseDispatcher : public QDialog {
+class ExerciseDispatcher : public QDialog
+{
 	Q_OBJECT
 
 public:
@@ -35,8 +36,14 @@ public slots:
 	void analyze(); // temp
 	void analysisDone(); // even tempier
 
-	void addTry() { evaluation->addTry(); };
-	void delTry() { evaluation->delTry(); };
+	void addTry()
+	{
+		evaluation->addTry();
+	};
+	void delTry()
+	{
+		evaluation->delTry();
+	};
 
 signals:
 	void enableActions(int state);

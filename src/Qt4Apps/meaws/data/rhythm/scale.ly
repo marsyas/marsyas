@@ -6,8 +6,10 @@ colorNote = #(define-music-function (parser location color) (string?)
 up = \markup{ \hspace #0.5 \arrow-head #Y #LEFT ##f }
 down = \markup{ \hspace #0.5 \arrow-head #Y #RIGHT ##f }
 \version "2.10.0"
+\paper{ragged-right=##t}
 \score{
 \new RhythmicStaff {
+\set Score.proportionalNotationDuration = #(ly:make-moment 1 8)
 c'4
 d'8
 e'
