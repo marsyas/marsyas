@@ -90,10 +90,10 @@ FlowThru::myUpdate(MarControlPtr sender)
 			marsystems_[i]->update();
 		}
 		
-		//THIS DOES NOT WORK DUE TO BREAKS IN ENCAPSULATION!!!! [!]
-		//link mrs_realvec/innerOut control to the output control of the last child
-		//ctrl_innerOut_->clearLinks();
-		//ctrl_innerOut_->linkTo(marsystems_[marsystemsSize_-1]->getctrl("mrs_realvec/processedData"));
+		//link the output of the last child MarSystem to the innerOut of FlowThru Composite
+		//(linkTo() will automatically unlink ctrl_innerOut from any previous link target before
+		//relinking it to the last MarSystem)
+		ctrl_innerOut_->linkTo(marsystems_[marsystemsSize_-1]->ctrl_processedData_);
 
 		for (mrs_natural i=0; i< marsystemsSize_; i++)
 		{
@@ -107,12 +107,12 @@ FlowThru::myUpdate(MarControlPtr sender)
 					marsystems_[i]->ctrl_onSamples_->to<mrs_natural>());
 			}
 
-			if(i==marsystemsSize_-1)
-			{
-				MarControlAccessor acc(ctrl_innerOut_, NOUPDATE);
-				realvec& innerOut = acc.to<mrs_realvec>();
-				innerOut.create(marsystems_[i]->ctrl_onObservations_->to<mrs_natural>(),marsystems_[i]->ctrl_onSamples_->to<mrs_natural>());
-			}
+// 			if(i==marsystemsSize_-1)
+// 			{
+// 				MarControlAccessor acc(ctrl_innerOut_, NOUPDATE);
+// 				realvec& innerOut = acc.to<mrs_realvec>();
+// 				innerOut.create(marsystems_[i]->ctrl_onObservations_->to<mrs_natural>(),marsystems_[i]->ctrl_onSamples_->to<mrs_natural>());
+// 			}
 		}
 	}
 }
@@ -137,11 +137,11 @@ FlowThru::myProcess(realvec& in, realvec& out)
 			}
 			else if (i == marsystemsSize_-1)
 			{
-				MarControlAccessor accSlice(marsystems_[i-1]->ctrl_processedData_, true, true);
-				realvec& slice = accSlice.to<mrs_realvec>();
-				MarControlAccessor accInnerOut(ctrl_innerOut_);
-				realvec& innerOut = accInnerOut.to<mrs_realvec>();
-				marsystems_[i]->process(slice, innerOut);
+// 				MarControlAccessor accSlice(marsystems_[i-1]->ctrl_processedData_, true, true);
+// 				realvec& slice = accSlice.to<mrs_realvec>();
+// 				MarControlAccessor accInnerOut(ctrl_innerOut_);
+// 				realvec& innerOut = accInnerOut.to<mrs_realvec>();
+// 				marsystems_[i]->process(slice, innerOut);
 			}
 			else
 			{

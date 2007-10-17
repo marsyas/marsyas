@@ -22,6 +22,7 @@
 #include <string> 
 #include <iostream>
 #include <vector>
+#include <utility>
 
 #include "common.h"
 #include "MarControlValue.h"
@@ -217,9 +218,10 @@ public:
 
 	// for link controls
 	bool linkTo(MarControlPtr ctrl, bool update = true);
-	void unlink();
+	void unlinkFromAll();
+	void unlinkFromTarget();
 	bool isLinked() const;
-	std::vector<MarControlPtr> getLinks();
+	std::vector<std::pair<MarControlPtr, MarControlPtr> > getLinks();
 
 	// setters
 	template<class T> inline bool setValue(const T& t, bool update = true);
@@ -518,7 +520,7 @@ MarControl::MarControl(const MarControl& a)
 	state_		= a.state_;
 	desc_			= a.desc_;
 	value_		= a.value_->clone();
-	value_->addLink(this);
+	value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
 }
 
 inline
@@ -534,7 +536,7 @@ MarControl::MarControl(MarControlValue *value, std::string cname, MarSystem* msy
 	state_		= state;
 	desc_			= "";
 	value_		= value->clone();
-	value_->addLink(this);
+	value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
 }
 
 inline
@@ -550,7 +552,7 @@ MarControl::MarControl(mrs_real re, std::string cname, MarSystem* msys, bool sta
 	state_		= state;
 	desc_			= "";
 	value_		= new MarControlValueT<mrs_real>(re);
-	value_->addLink(this);
+	value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
 }
 
 inline
@@ -566,7 +568,7 @@ MarControl::MarControl(mrs_natural ne, std::string cname, MarSystem* msys, bool 
 	state_		= state;
 	desc_			= "";
 	value_		= new MarControlValueT<mrs_natural>(ne);
-	value_->addLink(this);
+	value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
 }
 
 inline
@@ -582,7 +584,7 @@ MarControl::MarControl(std::string st, std::string cname, MarSystem* msys, bool 
 	state_		= state;
 	desc_			= "";
 	value_		= new MarControlValueT<std::string>(st);
-	value_->addLink(this);
+	value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
 }
 
 inline
@@ -598,7 +600,7 @@ MarControl::MarControl(mrs_bool be, std::string cname, MarSystem* msys, bool sta
 	state_		= state;
 	desc_			= "";
 	value_		= new MarControlValueT<bool>(be);
-	value_->addLink(this);
+	value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
 }
 
 inline
@@ -614,19 +616,19 @@ MarControl::MarControl(realvec& ve, std::string cname, MarSystem* msys, bool sta
 	state_		= state;
 	desc_			= "";
 	value_		= new MarControlValueT<realvec>(ve);
-	value_->addLink(this);
+	value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this)); 
 }
 
 inline
 MarControl::~MarControl()
 {
-#ifdef MARSYAS_QT
+	#ifdef MARSYAS_QT
 	QReadLocker locker_r(&rwLock_);
-#endif
-	if (value_)
-	{
-		value_->removeLink(this);
-	}
+	#endif
+	//first unlink this control from everything
+	this->unlinkFromAll();
+	//now we can safely delete its uniquely owned MarControlValue
+	delete value_;
 }
 
 inline
@@ -772,11 +774,13 @@ MarControl::setValue(MarControlPtr mc, bool update)
 #endif
 	
 	//check if it's needed to call update()
-	std::vector<MarControl*>::iterator lit;
-	for(lit=value_->links_.begin(); lit!=value_->links_.end(); lit++)
+	if(update)
 	{
-		if(update)
-			(*lit)->callMarSystemUpdate();
+		std::vector<std::pair<MarControl*, MarControl*> >::iterator lit;
+		for(lit=value_->links_.begin(); lit!=value_->links_.end(); lit++)
+		{
+			lit->first->callMarSystemUpdate();
+		}
 	}
 
 	#ifdef MARSYAS_QT
@@ -832,11 +836,13 @@ MarControl::setValue(MarControlValue *mcv, bool update)
 #endif
 	
 	//check if it's needed to call update()
-	std::vector<MarControl*>::iterator lit;
-	for(lit=value_->links_.begin(); lit!=value_->links_.end(); ++lit)
+	if(update)
 	{
-		if(update)
-			(*lit)->callMarSystemUpdate();
+		std::vector<std::pair<MarControl*, MarControl*> >::iterator lit;
+		for(lit=value_->links_.begin(); lit!=value_->links_.end(); ++lit)
+		{
+			lit->first->callMarSystemUpdate();
+		}
 	}
 
 	#ifdef MARSYAS_QT

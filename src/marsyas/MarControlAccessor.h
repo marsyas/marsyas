@@ -70,7 +70,7 @@ namespace Marsyas
 			#endif
 
 			if(update_)
-				ctrl_->callMarSystemUpdate();
+				ctrl_->value_->callMarSystemsUpdate();
 		}
 
 		void enableUpdates() {update_ = true;};
@@ -79,7 +79,7 @@ namespace Marsyas
 		template<class T> T& to()
 		{
 			if(readOnlyAccess_)
-				return const_cast<T&>(ctrl_->to<T>());
+				return const_cast<T&>(ctrl_->to<T>()); //[?]
 			else //this means we have an active write lock...
 			{
 				#ifdef MARSYAS_QT //unlock write mutex so to() does not deadlock

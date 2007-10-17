@@ -66,11 +66,11 @@ MarSystem::MarSystem(string type, string name)
 // copy constructor 
 MarSystem::MarSystem(const MarSystem& a)
 {
-#ifdef MARSYAS_QT
+	#ifdef MARSYAS_QT
 	processMutex_ = new QMutex(QMutex::Recursive);
 	msysNetGUI_ = NULL;
 	MATLABeditorGUI_ = NULL;
-#endif
+	#endif
 
 	parent_ = NULL;
 	type_ = a.type_;
@@ -84,12 +84,12 @@ MarSystem::MarSystem(const MarSystem& a)
 
 	isUpdating_ = false;
 
-	//clone controls
+	//clone controls (cloned controls will have no links! - they have to be relinked as done below)
 	{
-#ifdef MARSYAS_QT
+		#ifdef MARSYAS_QT
 		QWriteLocker locker_w(&rwLock_);
 		QReadLocker locker_r(&(a.rwLock_));
-#endif
+		#endif
 
 		controls_.clear();
 		for(ctrlIter_ = a.controls_.begin(); ctrlIter_ != a.controls_.end(); ++ctrlIter_)
@@ -121,49 +121,51 @@ MarSystem::MarSystem(const MarSystem& a)
 	if(isComposite_)
 	{
 		for (mrs_natural i=0; i< a.marsystemsSize_; i++)
-		{
 			addMarSystem((*a.marsystems_[i]).clone());
-
-			//relink any controls of this child that are linked
-			//to sibling MarSystems (this can only be done after the cloned
-			//child gets assigned a parent (i.e. this composite), as done by addMarSystem())
-			for(ctrlIter_ = a.marsystems_[i]->controls_.begin(); ctrlIter_ != a.marsystems_[i]->controls_.end(); ++ctrlIter_)
-			{
-				// get original links...
-				vector<MarControlPtr> protolinks = ctrlIter_->second->getLinks();
-				//... and re-establish any missing links between controls of siblings
-				vector<MarControlPtr>::const_iterator ci;
-				for (ci = protolinks.begin(); ci != protolinks.end(); ++ci)
-				{
-					MarControlPtr ctrl = marsystems_[i]->getControl((*ci)->getMarSystem()->getAbsPath() + (*ci)->getName(), true);
-					if (!ctrl.isInvalid())
-					{
-						//linking controls already linked does nothing,
-						//so only the missing sibling links will be done now...
-						marsystems_[i]->getctrl(ctrlIter_->first)->linkTo(ctrl);
-					}
-				}
-			}
-		}
 	}
 
 	// "re-link" controls  => mutexes [?]
 	for(ctrlIter_ = a.controls_.begin(); ctrlIter_ != a.controls_.end(); ++ctrlIter_)
 	{
 		// get original links...
-		vector<MarControlPtr> protolinks = ctrlIter_->second->getLinks();
+		vector<pair<MarControlPtr, MarControlPtr> > originalLinks = ctrlIter_->second->getLinks();
 
 		// ...clear clone's links...
-		controls_[ctrlIter_->first]->unlink(); //[?] is this realy necessary? 
+		//controls_[ctrlIter_->first]->unlinkFromAll(); //[?] is this really necessary? 
 
 		//... and re-establish links between the new cloned controls
-		vector<MarControlPtr>::const_iterator ci;
-		for (ci = protolinks.begin(); ci != protolinks.end(); ++ci)
+		vector<pair<MarControlPtr, MarControlPtr> >::const_iterator linksIter;
+		for (linksIter = originalLinks.begin(); linksIter != originalLinks.end(); ++linksIter)
 		{
-			MarControlPtr ctrl = this->getControl((*ci)->getMarSystem()->getAbsPath() + (*ci)->getName(), true);
-			if (!ctrl.isInvalid())
+			//ignore the root link (not important for relinking)
+			if(linksIter->first() == linksIter->second())
+				continue;
+						
+			//check if this control links to someone, and link them accordingly...
+			if(linksIter->first() == ctrlIter_->second())
 			{
-				controls_[ctrlIter_->first]->linkTo(ctrl);
+				MarControlPtr ctrl2Link2 = this->getControl(linksIter->second->getMarSystem()->getAbsPath() + linksIter->second->getName(), true);
+				//controls from siblings may not exist yet at this time, so we must not try to link
+				//to their yet invalid controls. Just link with controls from
+				//the parent or already existing siblings and children. The remaining ones will be linked
+				//by the siblings when they get created.
+				if (!ctrl2Link2.isInvalid())
+				{
+					controls_[ctrlIter_->first]->linkTo(ctrl2Link2);
+				}
+			}
+			//...or check if someone links to this control, and link them accordingly
+			else if(linksIter->second() == ctrlIter_->second())
+			{
+				MarControlPtr linkedCtrl = this->getControl(linksIter->first->getMarSystem()->getAbsPath() + linksIter->first->getName(), true);
+				//controls from siblings may not exist yet at this time, so we must not try to link
+				//to their yet invalid controls. Just link with controls from
+				//the parent or already existing siblings and children. The remaining ones will be linked
+				//by the siblings when they get created.
+				if (!linkedCtrl.isInvalid())
+				{
+					linkedCtrl->linkTo(controls_[ctrlIter_->first]);
+				}
 			}
 		}
 	}
@@ -1277,12 +1279,35 @@ MarSystem::put(ostream &o)
 	for (ctrlIter_=controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
 	{
 		o << "# " << ctrlIter_->first << " = " << ctrlIter_->second << endl;
-		std::vector<MarControlPtr> links = ctrlIter_->second->getLinks();
-		o << "# Links = " << links.size() << endl;
+		
+		//serialize links
+		ostringstream oss;
+		std::vector<std::pair<MarControlPtr, MarControlPtr> > links = ctrlIter_->second->getLinks();
+		mrs_natural numLinks = 0;
+		//links to:
 		for (size_t i=0; i<links.size(); i++)
 		{
-			o << "# " << links[i]->getMarSystem()->getAbsPath() << links[i]->getName() << endl;
+			//check where to this control is linking, but avoid outputting root link info 
+			if(ctrlIter_->second() == links[i].first() && links[i].first() != links[i].second())
+			{
+				oss << "# " << links[i].second->getMarSystem()->getAbsPath() << links[i].second->getName() << endl;
+				numLinks++;
+			}
 		}
+		o << "# LinksTo = " << numLinks << endl << oss.str();
+		//linked from:
+		numLinks = 0;
+		oss.str(""); //clear the stringstream
+		for (size_t i=0; i<links.size(); i++)
+		{
+			//check who is linking to this control, but avoid outputting root link info 
+			if(ctrlIter_->second() == links[i].second() && links[i].first() != links[i].second())
+			{
+				oss << "# " << links[i].first->getMarSystem()->getAbsPath() << links[i].first->getName() << endl;
+				numLinks++;
+			}
+		}
+		o << "# LinkedFrom = " << numLinks << endl << oss.str();
 	}
 
 	if(isComposite_)
@@ -1308,6 +1333,9 @@ Marsyas::operator<< (ostream& o, MarSystem& sys)
 istream& 
 Marsyas::operator>> (istream& is, MarSystem& msys)  
 {
+	//Read Controls (values, links, etc) to the msys marsystem from an .mpl file.
+	//(see also MarSystemManager::getMarSystem() )
+	
 	// #ifdef MARSYAS_QT
 	// 	QWriteLocker locker(&(c.rwLock_)); // this would create deadlocks with the code below...
 	// #endif 
@@ -1417,20 +1445,49 @@ Marsyas::operator>> (istream& is, MarSystem& msys)
 				msys.updControl(cname, ctrl);
 		}
 
+		//clean all links for current control (if any)
+		MarControlPtr curCtrl = msys.getControlLocal(cname);
+		curCtrl->unlinkFromAll();
+
 		// read links
 		int nLinks;
 		string linkto;
+		string linkedfrom;
+		//
+		//# LinksTo :
+		//
 		is >> skipstr >> skipstr >> skipstr;
 		is >> nLinks;
-		//clean all links for current control
-		MarControlPtr curCtrl = msys.getControlLocal(cname);
-		curCtrl->unlink();
-		//remake all links
-		for (int i=0; i<nLinks; i++)
+		//relink
+		if(nLinks > 0)
 		{
+			//read link absolute path
 			is >> skipstr >> linkto;
 			msys.linkControl(cname, linkto);
 		}
+		//
+		//# LinksFrom :
+		//
+		is >> skipstr >> skipstr >> skipstr;
+		is >> nLinks;
+		//relink
+		if(nLinks > 0)
+		{
+			//read link absolute path
+			is >> skipstr >> linkedfrom;
+
+			//look for control in the entire network
+			MarControlPtr ctrl = msys.getControl(linkedfrom, true, true);
+			//if found, just link it to this control.
+			//if not, this link will be done when the sibling or child MarSystem
+			//owning the missing control is created
+			if(!ctrl.isInvalid())
+			{
+				//ctrl->getMarSystem()->linkControl(linkedfrom, cname);
+				ctrl->linkTo(curCtrl);
+			}
+		}
+
 	}
 	return is;
 }

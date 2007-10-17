@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "peakClustering", "peakClustering.vcproj", "{2464036C-5DD1-380A-B5B3-2DD99454E0B2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "peakClustering", "peakClustering.vcproj", "{F05BF3DC-0BA8-3BB1-84E1-419F9D95EA14}"
 	GlobalSection(Qt) = preSolution
 		Integration = True
 	EndGlobalSection
 	ProjectSection(ProjectDependencies) = postProject
-		{C61BE8CD-A21B-3AA8-8217-8FF70ADF27C5} = {C61BE8CD-A21B-3AA8-8217-8FF70ADF27C5}
+		{F288F15B-E6EB-3886-966D-173AD4A15796} = {F288F15B-E6EB-3886-966D-173AD4A15796}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "marsyas", "..\..\marsyas\marsyas.vcproj", "{C61BE8CD-A21B-3AA8-8217-8FF70ADF27C5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "marsyas", "..\..\marsyas\marsyas.vcproj", "{F288F15B-E6EB-3886-966D-173AD4A15796}"
 	GlobalSection(Qt) = preSolution
 		Integration = True
 	EndGlobalSection
@@ -23,14 +23,14 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2464036C-5DD1-380A-B5B3-2DD99454E0B2}.Debug|Win32.ActiveCfg = Debug|Win32
-		{2464036C-5DD1-380A-B5B3-2DD99454E0B2}.Debug|Win32.Build.0 = Debug|Win32
-		{2464036C-5DD1-380A-B5B3-2DD99454E0B2}.Release|Win32.ActiveCfg = Release|Win32
-		{2464036C-5DD1-380A-B5B3-2DD99454E0B2}.Release|Win32.Build.0 = Release|Win32
-		{C61BE8CD-A21B-3AA8-8217-8FF70ADF27C5}.Debug|Win32.ActiveCfg = Debug|Win32
-		{C61BE8CD-A21B-3AA8-8217-8FF70ADF27C5}.Debug|Win32.Build.0 = Debug|Win32
-		{C61BE8CD-A21B-3AA8-8217-8FF70ADF27C5}.Release|Win32.ActiveCfg = Release|Win32
-		{C61BE8CD-A21B-3AA8-8217-8FF70ADF27C5}.Release|Win32.Build.0 = Release|Win32
+		{F05BF3DC-0BA8-3BB1-84E1-419F9D95EA14}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F05BF3DC-0BA8-3BB1-84E1-419F9D95EA14}.Debug|Win32.Build.0 = Debug|Win32
+		{F05BF3DC-0BA8-3BB1-84E1-419F9D95EA14}.Release|Win32.ActiveCfg = Release|Win32
+		{F05BF3DC-0BA8-3BB1-84E1-419F9D95EA14}.Release|Win32.Build.0 = Release|Win32
+		{F288F15B-E6EB-3886-966D-173AD4A15796}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F288F15B-E6EB-3886-966D-173AD4A15796}.Debug|Win32.Build.0 = Debug|Win32
+		{F288F15B-E6EB-3886-966D-173AD4A15796}.Release|Win32.ActiveCfg = Release|Win32
+		{F288F15B-E6EB-3886-966D-173AD4A15796}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

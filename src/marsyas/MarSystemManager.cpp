@@ -552,10 +552,10 @@ MarSystemManager::MarSystemManager()
 	WHaSpnetpr->addMarSystem(create("PeAnalyse", "analyse"));
 	WHaSpnetpr->addMarSystem(create("WHaSp", "whasp"));
 	//
-	WHaSpnetpr->linkctrl("PeAnalyse/analyse/PeakConvert/conv/mrs_natural/totalNumPeaks",
-		"WHaSp/whasp/mrs_natural/totalNumPeaks");
-	WHaSpnetpr->linkctrl("PeAnalyse/analyse/PeakConvert/conv/mrs_natural/frameMaxNumPeaks",
-		"WHaSp/whasp/mrs_natural/frameMaxNumPeaks");
+	WHaSpnetpr->linkctrl("WHaSp/whasp/mrs_natural/totalNumPeaks",
+		"PeAnalyse/analyse/PeakConvert/conv/mrs_natural/totalNumPeaks");
+	WHaSpnetpr->linkctrl("WHaSp/whasp/mrs_natural/frameMaxNumPeaks",
+		"PeAnalyse/analyse/PeakConvert/conv/mrs_natural/frameMaxNumPeaks");
 	//
 	WHaSpnetpr->linkctrl("mrs_natural/frameMaxNumPeaks", 
 		"PeAnalyse/analyse/mrs_natural/frameMaxNumPeaks");
@@ -660,12 +660,17 @@ MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 	{
 		msys->setName(mname);
 		msys->setParent(parent);
-		is >> *msys; //read controls into MarSystem [!]
+		
+		//delete all children MarSystems in a (prototype) Composite 
+		//and read and link (as possible) local controls
+		is >> *msys; 
 
 		msys->update();
 
 		workingSet_[msys->getName()] = msys; // add to workingSet
 
+		//recreate the Composite destroyed above, relinking all
+		//linked controls in its way
 		if (isComposite == true)
 		{
 			is >> skipstr >> skipstr >> skipstr;

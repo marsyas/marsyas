@@ -252,7 +252,7 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	fsimMat->updctrl("Metric/FreqL2Norm/mrs_string/metric","euclideanDistance");
 	//fsimMat->updctrl("mrs_natural/calcCovMatrix", SimilarityMatrix::diagCovMatrix);
 	fsimMat->updctrl("mrs_string/normalize", "MinMax");
-	fsimMat->linkctrl("Metric/FreqL2Norm/mrs_realvec/covMatrix", "mrs_realvec/covMatrix");
+	fsimMat->linkctrl("mrs_realvec/covMatrix", "Metric/FreqL2Norm/mrs_realvec/covMatrix");
 	freqSim->addMarSystem(fsimMat);	
 	//--------
 	freqSim->addMarSystem(mng.create("RBF","FREQrbf"));
@@ -274,7 +274,7 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	asimMat->updctrl("Metric/AmpL2Norm/mrs_string/metric","euclideanDistance");
 	//asimMat->updctrl("mrs_natural/calcCovMatrix", SimilarityMatrix::diagCovMatrix);
 	asimMat->updctrl("mrs_string/normalize", "MinMax");
-	asimMat->linkctrl("Metric/AmpL2Norm/mrs_realvec/covMatrix", "mrs_realvec/covMatrix");
+	asimMat->linkctrl("mrs_realvec/covMatrix", "Metric/AmpL2Norm/mrs_realvec/covMatrix");
 	ampSim->addMarSystem(asimMat);	
 	//--------
 	ampSim->addMarSystem(mng.create("RBF","AMPrbf"));
@@ -313,28 +313,16 @@ clusterExtract(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		"Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks");
 	simNet->linkctrl("Series/HWPSim/PeakFeatureSelect/HWPSfeatSelect/mrs_natural/frameMaxNumPeaks",
 		"Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks");
-	//---- create an "alias" link for the above two controls in the simNet
-	simNet->linkctrl("mrs_natural/totalNumPeaks",
-		"Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/totalNumPeaks");
-	simNet->linkctrl("mrs_natural/frameMaxNumPeaks",
-		"Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks");
-	simNet->linkctrl("mrs_natural/totalNumPeaks",
-		"Series/ampSim/PeakFeatureSelect/AMPfeatSelect/mrs_natural/totalNumPeaks");
-	simNet->linkctrl("mrs_natural/frameMaxNumPeaks",
-		"Series/ampSim/PeakFeatureSelect/AMPfeatSelect/mrs_natural/frameMaxNumPeaks");
-	simNet->linkctrl("mrs_natural/totalNumPeaks",
-		"Series/HWPSim/PeakFeatureSelect/HWPSfeatSelect/mrs_natural/totalNumPeaks");
-	simNet->linkctrl("mrs_natural/frameMaxNumPeaks",
-		"Series/HWPSim/PeakFeatureSelect/HWPSfeatSelect/mrs_natural/frameMaxNumPeaks");
+	
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//add simNet to clustNet
 	clustNet->addMarSystem(simNet);
 	//
 	// LINK controls related to variable number of peak from PeakConvert to simNet
 	//
-	mainNet->linkctrl("FlowThru/clustNet/FanOutIn/simNet/mrs_natural/totalNumPeaks",
+	mainNet->linkctrl("FlowThru/clustNet/FanOutIn/simNet/Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/totalNumPeaks",
 		"PeakConvert/conv/mrs_natural/totalNumPeaks");
-	mainNet->linkctrl("FlowThru/clustNet/FanOutIn/simNet/mrs_natural/frameMaxNumPeaks",
+	mainNet->linkctrl("FlowThru/clustNet/FanOutIn/simNet/Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks",
 		"PeakConvert/conv/mrs_natural/frameMaxNumPeaks");
 
 	//***************************************************************

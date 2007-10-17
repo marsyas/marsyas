@@ -21,6 +21,8 @@
 
 #include <string>
 #include <vector>
+#include <utility>
+
 #include "common.h"
 #include "realvec.h"
 
@@ -46,18 +48,18 @@ class MarControlValue
 protected:
 	std::string type_;
 
-#ifdef MARSYAS_DEBUG
+	#ifdef MARSYAS_DEBUG
 	std::string value_debug_;
-#endif
+	#endif
 
 	//MarControls that use this MarControlValue
 	//(i.e. linked MarControls)
-	std::vector<MarControl*> links_;
-	std::vector<MarControl*>::iterator lit_;
+	std::vector<std::pair<MarControl*, MarControl*> > links_;
+	std::vector<std::pair<MarControl*, MarControl*> >::iterator lit_;
 
-#ifdef MARSYAS_QT
+	#ifdef MARSYAS_QT
 	mutable QReadWriteLock rwLock_; //[!]
-#endif
+	#endif
 
 protected:
 	MarControlValue() {} // can't be directly created (use MarControl or MarControlValueT)
@@ -76,12 +78,6 @@ public:
 	virtual MarControlValue* clone() = 0;
 	virtual void copyValue(MarControlValue& value) = 0;
 	virtual MarControlValue* create() = 0;
-
-	//Link management (i.e. MarControl Linking mechanism)
-	void addLink(MarControl* newlink);
-	void removeLink(MarControl* const link);
-	std::vector<MarControl*> getLinks() const {return links_;};
-	mrs_natural getNumLinks() const {return links_.size();};
 
 	virtual std::string getTypeID() = 0;
 	// workaround method to avoid circular dependencies

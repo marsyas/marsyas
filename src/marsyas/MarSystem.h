@@ -35,6 +35,7 @@
 #include <map>
 #include <string>
 #include <cassert>
+#include <utility>
 
 #ifdef MARSYAS_QT
 #include <QtCore>

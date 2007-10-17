@@ -96,7 +96,7 @@ WHaSp::createSimMatrixNet()
 	HWPSnet_->setctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize", 20);
 	HWPSnet_->update(); //only call update to HWPSnet_ since this is being called from WHaSp::update()! -> avoid potential infinite recursion!
 
-       	HWPSnet_->updctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_bool/calcDistance", true);
+  HWPSnet_->updctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_bool/calcDistance", true);
 
 	//HWPSnet_->setctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize", 100);
 	HWPSnet_->update(); //only call update to HWPSnet_ since this is being called from WHaSp::update()! -> avoid potential infinite recursion!
