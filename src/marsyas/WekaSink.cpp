@@ -200,13 +200,14 @@ WekaSink::myProcess(realvec& in, realvec& out)
 		      // (*mos_) << fixed << setprecision(precision_) << 0. << ",";
 		      // DO NOT OUTPUT FEATUERS 
 		      // (*mos_) << fixed << setprecision(precision_) << 0. << ",";
-		      notPrint = true;
+              //notPrint = true;
+              (*mos_) << "?" << ",";
 		    }
 		  
 		  else
 		    {
 		      (*mos_) << fixed << setprecision(precision_) << out(o,t) << ",";
-		      notPrint = false;
+		      //notPrint = false;
 		    }
 		}
 	    }
@@ -218,19 +219,17 @@ WekaSink::myProcess(realvec& in, realvec& out)
 	{
 	  if(!ctrl_regression_->isTrue())
 	    {
-	      if (!notPrint) 
-		{
+	    //  if (!notPrint) 
+		//{
 		  oss << labelNames_[label];
 		  (*mos_) << oss.str();
 		  (*mos_) << endl;
 		}
-	      else 
-		{
-		  cout << "skipping instance" << endl;
-		}
-	      
-	      
-	    }
+	    //  else 
+		//{
+		//  cout << "skipping instance" << endl;
+		//}
+	    //}
 	  else
 	    {
 	      (*mos_) << in(inObservations_-1, t);
