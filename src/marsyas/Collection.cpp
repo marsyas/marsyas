@@ -114,6 +114,23 @@ Collection::add(string entry)
   collectionList_.push_back(entry);
 }
 
+void 
+Collection::add(string entry, string label)
+{
+  collectionList_.push_back(entry);
+  labelList_.push_back(label);
+  
+
+  vector<string>::const_iterator it;
+  it = find(labelNames_.begin(), labelNames_.end(), label);
+  if (it == labelNames_.end()) // label not found add it to list 
+    labelNames_.push_back(label);
+  
+  
+}
+
+  
+
 
 mrs_natural 
 Collection::getSize() 
@@ -215,6 +232,25 @@ string
 Collection::entry(unsigned int i)
 {
   return collectionList_[i];
+}
+
+
+void 
+Collection::concatenate(vector<Collection> cls) 
+{
+  unsigned int cj;
+  unsigned int i;
+  
+  for (cj = 0; cj < cls.size(); cj++)
+    {
+      Collection l = cls[cj];
+      if (l.hasLabels_)
+	{
+	  hasLabels_ = true;
+	}
+      for (i=0; i < l.size(); i++) 
+	add(l.entry(i), l.labelEntry(i));
+    }
 }
 
 

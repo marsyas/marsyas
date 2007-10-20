@@ -59,12 +59,16 @@ public:
   mrs_string labelName(mrs_natural i);
   mrs_bool hasLabels(); 
   void add(std::string entry);
+  void add(std::string entry, std::string label);
   std::string name();
   void shuffle();
   void read(std::string filename);
   void write(std::string filename);
   void labelAll(std::string label);
   std::string toLongString();
+
+  void concatenate(std::vector<Collection> cls);
+  
   
   friend std::ostream& operator<<(std::ostream&, const Collection&);
   friend std::istream& operator>>(std::istream&, Collection&);
