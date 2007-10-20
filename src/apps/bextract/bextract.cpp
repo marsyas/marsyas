@@ -1522,7 +1522,6 @@ bextract_train(vector<Collection> cls, Collection cl,
 
   MarSystemManager mng;
   vector<TimeLine> timeLines;
-
   if (classifierName == EMPTYSTRING) 
     classifierName = DEFAULT_CLASSIFIER;
 
@@ -1669,13 +1668,14 @@ bextract_train(vector<Collection> cls, Collection cl,
       featureNetwork->updctrl("Confidence/confidence/mrs_bool/print",true);
       
       //configure WEKA sink
-      if (wekafname != EMPTYSTRING)
+      /*       if (wekafname != EMPTYSTRING)
 	{
-	  featureNetwork->updctrl("WekaSink/wsink/mrs_string/labelNames",classNames);
-	  featureNetwork->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
-	  featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
-	  featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  			
+	featureNetwork->updctrl("WekaSink/wsink/mrs_string/labelNames",classNames);
+	featureNetwork->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
+	featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
+	featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  			
 	}
+      */ 
       //iterate over collections (i.e. classes)
       
       //       if (!collection_has_labels)
@@ -2573,8 +2573,14 @@ main(int argc, const char **argv)
       string sfname = *sfi;
       Collection l;
       readCollection(l,sfname);
-      classNames += (l.name()+',');
-      l.labelAll(l.name());
+
+      if (!l.hasLabels())
+	{
+	  l.labelAll(l.name());
+	  classNames += (l.name()+',');
+	}
+      
+
       cls.push_back(l);
       i++;
     }
@@ -2665,6 +2671,8 @@ main(int argc, const char **argv)
 	  cout << extractorStr << ": Unsupported extractor!" << endl;
 	  return 1;
 	}
+
+      
 
       bextract_train(cls, single, i, pluginName, classNames, wekafname, memSize, 
 		     extractorName, classifierName);
