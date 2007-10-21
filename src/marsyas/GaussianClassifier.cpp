@@ -161,10 +161,10 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 
   if ((prev_mode_ == "train") && (mode == "predict"))
     {
+
       for (l=0; l < nlabels; l++)
 	for (o=0; o < inObservations_; o++)
 	  {
-	    
 	    means_(l,o) = means_(l,o) / labelSizes_(l);
 	    covars_(l,o) = covars_(l,o) / labelSizes_(l);
 	    covars_(l, o) = covars_(l,o) - 
