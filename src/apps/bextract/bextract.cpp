@@ -1946,8 +1946,7 @@ bextract_train_refactored(vector<Collection> cls, Collection cl,
       // it is stored in the output plugin 
       // which can be used for real-time classification 
       MarSystem* dest = mng.create("AudioSink", "dest");
-      // dest->updctrl("mrs_bool/mute", true);
-      // dest->updctrl("mrs_bool/initAudio", true);
+      dest->updctrl("mrs_bool/mute", true);
       featureNetwork->addMarSystem(dest);
     }
 

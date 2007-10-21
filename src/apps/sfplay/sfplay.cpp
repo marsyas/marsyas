@@ -95,8 +95,10 @@ void sfplay(vector<string> soundfiles)
   playbacknet->linkctrl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
   playbacknet->linkctrl("mrs_natural/loopPos", "SoundFileSource/src/mrs_natural/loopPos");
   playbacknet->linkctrl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
-
-
+  
+  
+  if (fileName == EMPTYSTRING)	// audio output
+    playbacknet->linkctrl("mrs_bool/initAudio", "AudioSink/dest/mrs_bool/initAudio");
   
 
 	// play each collection or soundfile 
