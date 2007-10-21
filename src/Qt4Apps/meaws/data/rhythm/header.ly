@@ -18,7 +18,8 @@ down = \markup{ \hspace #0.5 \arrow-head #Y #RIGHT ##f }
 
 \layout {
   \context { \Score
-    proportionalNotationDuration = #(ly:make-moment 1 8)
+    proportionalNotationDuration = #(ly:make-moment 1 20)
+    \override SpacingSpanner #'strict-note-spacing = ##t
   }
 }
 

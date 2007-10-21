@@ -36,7 +36,7 @@ void RhythmTry::setLily(const QStringList lilyInput)
 
 void RhythmTry::colorNote(int note, double error, double direction)
 {
-	int line=note+10;
+	int line=note+3;
 	QString color = "black";
 
 	if (error < -0.002)
@@ -160,22 +160,26 @@ bool RhythmTry::displayAnalysis(MarBackend *results)
 	realvec *data = new realvec;
 	(*data) = amps.getSubVector(start,length);
 	
-	pitchPlot->setData(data);
 	pitchPlot->setVertical(0,1);
 	pitchPlot->setPlotName("onsets");
 	pitchPlot->setCenterLine(false);
 	pitchPlot->setImpulses(true);
 	//cout<<"plot done"<<endl;
 
+	mrs_natural exerLength = exerAnswer(exerAnswer.getRows()-1,1);
+
 	mrs_natural j=0;
-	realvec* answerVec = new realvec(data->getSize());
-	for (int i=0; i<data->getSize(); i++)
+	realvec* answerVec = new realvec(exerLength);
+	for (int i=0; i<exerLength; i++)
 		if ( i==(exerAnswer(j,1)) ) {
 			j++;
 			(*answerVec)(i)=1.0;
 		} else {
 			(*answerVec)(i)=0.0;
 		}
+	data->stretch(answerVec->getSize());
+
+	pitchPlot->setData(data);
 	pitchPlot->setOtherData(answerVec);
 //	cout<<(*answerVec);
 

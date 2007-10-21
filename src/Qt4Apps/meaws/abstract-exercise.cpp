@@ -63,8 +63,8 @@ void Exercise::setupDisplay(QFrame* instructionArea, QFrame* resultArea) {
 	resultArea->setLayout(resultLayout);
 
 	// FIXME: temp
-	resultLayout->setContentsMargins(30,2,2,2);
-	resultArea->setMaximumWidth(200);
+	resultLayout->setContentsMargins(40,2,2,2);
+	resultArea->setMaximumWidth(628+2+2);
 }
 
 void Exercise::addTryAbstract(Try* newTry) {
