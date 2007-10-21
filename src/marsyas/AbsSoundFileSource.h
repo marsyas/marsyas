@@ -47,6 +47,7 @@ public:
   bool notEmpty_;
 
   MarControlPtr ctrl_currentlyPlaying_;
+  MarControlPtr ctrl_currentLabel_;
 };
 
 }//namespace Marsyas

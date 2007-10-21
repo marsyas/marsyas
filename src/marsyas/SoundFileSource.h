@@ -88,6 +88,7 @@ private:
   MarControlPtr ctrl_advance_; 
   MarControlPtr ctrl_filename_;
   MarControlPtr ctrl_currentlyPlaying_;
+  MarControlPtr ctrl_currentLabel_;
   
   AbsSoundFileSource* src_;
 

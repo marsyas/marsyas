@@ -82,7 +82,7 @@ AuFileSource::AuFileSource(const AuFileSource& a): AbsSoundFileSource(a)
   ctrl_pos_ = getctrl("mrs_natural/pos");
   ctrl_size_ = getctrl("mrs_natural/size");
   ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
-  
+  ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
 }
 
 
@@ -124,6 +124,7 @@ AuFileSource::addControls()
   addctrl("mrs_natural/numFiles", 1);
       
   addctrl("mrs_string/currentlyPlaying", "daufile", ctrl_currentlyPlaying_);
+  addctrl("mrs_natural/currentLabel", 0, ctrl_currentLabel_);
 }
 
 unsigned long 
@@ -185,6 +186,7 @@ AuFileSource::getHeader(string filename)
 			setctrl("mrs_real/israte", (mrs_real)hdr_.srate);
 			setctrl("mrs_natural/size", size_);
 			ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
+			ctrl_currentLabel_->setValue(0, NOUPDATE);
 			setctrl("mrs_bool/notEmpty", true);
 			notEmpty_ = true;
 			samplesOut_ = 0;

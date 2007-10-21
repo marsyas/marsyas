@@ -50,7 +50,7 @@ SoundFileSource::SoundFileSource(const SoundFileSource& a):MarSystem(a)
   ctrl_advance_ = getctrl("mrs_bool/advance"); 
   ctrl_filename_ = getctrl("mrs_string/filename");
   ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
-
+  ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
 }
 
 void
@@ -96,7 +96,7 @@ SoundFileSource::addControls()
   setctrlState("mrs_natural/cindex", true);
   
   addctrl("mrs_string/currentlyPlaying", "daufile", ctrl_currentlyPlaying_);
-  
+  addctrl("mrs_natural/currentLabel", 0, ctrl_currentLabel_);
   ctrl_mute_ = getctrl("mrs_bool/mute");
   
 
@@ -117,7 +117,8 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 	{
 	  getHeader();
 	  filename_ = ctrl_filename_->to<mrs_string>();
-	  ctrl_currentlyPlaying_->setValue(src_->getctrl("mrs_string/currentlyPlaying"));		  
+	  ctrl_currentlyPlaying_->setValue(src_->getctrl("mrs_string/currentlyPlaying"));		
+	  ctrl_currentLabel_->setValue(src_->getctrl("mrs_natural/currentLabel"));
 	  ctrl_onObservations_->setValue(src_->ctrl_onObservations_, NOUPDATE);
 
 	  ctrl_israte_->setValue(src_->ctrl_israte_, NOUPDATE);
@@ -172,6 +173,7 @@ SoundFileSource::myUpdate(MarControlPtr sender)
       setctrl("mrs_bool/shuffle", src_->getctrl("mrs_bool/shuffle"));
       setctrl("mrs_natural/cindex", src_->getctrl("mrs_natural/cindex"));
       setctrl("mrs_string/currentlyPlaying", src_->getctrl("mrs_string/currentlyPlaying"));
+      setctrl("mrs_natural/currentLabel", src_->getctrl("mrs_natural/currentLabel"));
       setctrl("mrs_string/allfilenames", src_->getctrl("mrs_string/allfilenames"));
       setctrl("mrs_natural/numFiles", src_->getctrl("mrs_natural/numFiles"));
     
@@ -295,7 +297,7 @@ SoundFileSource::myProcess(realvec& in, realvec &out)
       ctrl_loop_->setValue(src_->rewindpos_, NOUPDATE);
       ctrl_notEmpty_->setValue(src_->notEmpty_, NOUPDATE);
       ctrl_currentlyPlaying_->setValue(src_->getctrl("mrs_string/currentlyPlaying"));
-      
+      ctrl_currentLabel_->setValue(src_->getctrl("mrs_natural/currentLabel"));
    
 
     }
