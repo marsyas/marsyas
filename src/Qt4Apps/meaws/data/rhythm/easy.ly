@@ -2,12 +2,12 @@
 \include "header.ly"
 \new RhythmicStaff {
   c'4
-  d'8
-  e'
-  f'4
-  g'
-  a'4.
-  b'8
-  c''2
+  c'8
+  c'
+  c'4
+  c'
+  c'4.
+  c'8
+  c'2
 }
 
