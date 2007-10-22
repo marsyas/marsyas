@@ -1,18 +1,18 @@
 /*
 ** Copyright (C) 2007 Graham Percival <gperciva@uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
@@ -27,11 +27,12 @@
 using namespace Marsyas;
 using namespace MarsyasQt;
 
-class Metro: public QWidget {
+class Metro: public QWidget
+{
 	Q_OBJECT
 
 public:
-	Metro(QWidget *parent, string audioFilename);
+	Metro(QWidget *parent, string audio_Filename);
 	~Metro();
 	void stopMetro();
 	void startMetro();
@@ -39,33 +40,31 @@ public:
 
 // communication with the QT front-end
 public slots:
-  void setTempo(int tempo);
-	void setIntro(int beats);
+	void setTempo(int tempo);
 	void beat();
 	void beatFinished();
 	void toggleBigMetro();
 
 protected:
-  void paintEvent(QPaintEvent *);
+	void paintEvent(QPaintEvent *);
 
 private:
-	int tempo;
-	int introBeats;
+	int tempo_;
 
-	QTimer *timer;
-	QAction *visualMetroBeatAct; // from mainwindow
-	QTimer *flashSpeed;
-	bool bigDisplay;
+	QTimer *timer_;
+	QAction *visualMetroBeatAct_; // from mainwindow
+	QTimer *flashSpeed_;
+	bool bigDisplay_;
 
-	QColor normalBeatColor;
-	QColor activeBeatColor;
-	QColor drawBeatColor;
+	QColor normalBeatColor_;
+	QColor activeBeatColor_;
+	QColor drawBeatColor_;
 
-// audio stuff
-	bool audio;
-	void setupAudio(string audioFilename);
-	MarSystemQtWrapper *mrsWrapper;
-  MarSystem *metroNet;
-  MarControlPtr positionPtr;
+// audio_ stuff
+	void setupAudio(string audio_Filename);
+	bool audio_;
+	MarSystemQtWrapper *mrsWrapper_;
+	MarSystem *metroNet_;
+	MarControlPtr positionPtr_;
 };
 

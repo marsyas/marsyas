@@ -8,13 +8,13 @@ User::User()
 {
 	isModified_ = false;
 	levelList_ << "Novice" << "Beginner" << "Moderate" << "Good"
-		<< "Expert" << "Fantastic";
+	<< "Expert" << "Fantastic";
 	weekPracticeList_ << "Never" << "0-1" << "2-4" << "5-9" <<
-"10-14" << "15-19" << "20+";
+	"10-14" << "15-19" << "20+";
 	weekPlayList_ << "Never" << "0-1" << "2-4" << "5-9" <<
-"10-14" << "15-19" << "20+";
+	"10-14" << "15-19" << "20+";
 	yearsPlayingList_ << "0" << "1" << "2" << "3-4" << "5-6" << "7-10"
-<< "11-14" << "15-19" << "20+";
+	<< "11-14" << "15-19" << "20+";
 
 	username_ = "";
 	level_ = "Novice";
@@ -23,20 +23,20 @@ User::User()
 	yearsPlaying_= "0";
 
 
-	usernameButton = new QPushButton;
-	connect(usernameButton, SIGNAL(clicked()), this,
+	usernameButton_ = new QPushButton;
+	connect(usernameButton_, SIGNAL(clicked()), this,
 	        SLOT(queryName()));
-	levelButton = new QPushButton;
-	connect(levelButton, SIGNAL(clicked()), this,
+	levelButton_ = new QPushButton;
+	connect(levelButton_, SIGNAL(clicked()), this,
 	        SLOT(queryLevel()));
-	weekPracticeButton = new QPushButton;
-	connect(weekPracticeButton, SIGNAL(clicked()), this,
+	weekPracticeButton_ = new QPushButton;
+	connect(weekPracticeButton_, SIGNAL(clicked()), this,
 	        SLOT(queryWeekPractice()));
-	weekPlayButton = new QPushButton;
-	connect(weekPlayButton, SIGNAL(clicked()), this,
+	weekPlayButton_ = new QPushButton;
+	connect(weekPlayButton_, SIGNAL(clicked()), this,
 	        SLOT(queryWeekPlay()));
-	yearsPlayingButton = new QPushButton;
-	connect(yearsPlayingButton, SIGNAL(clicked()), this,
+	yearsPlayingButton_ = new QPushButton;
+	connect(yearsPlayingButton_, SIGNAL(clicked()), this,
 	        SLOT(queryYearsPlaying()));
 }
 
@@ -183,18 +183,18 @@ void User::setUserInfo()
 	userInfoWindow = new QDialog(this);
 	userInfoWindow->setWindowTitle(tr("User Info"));
 	QGridLayout *layout = new QGridLayout;
-	QPushButton *okButton = new QPushButton(tr("Ok"));
-	okButton->setDefault(true);
+	QPushButton *okButton_ = new QPushButton(tr("Ok"));
+	okButton_->setDefault(true);
 
-	layout->addWidget(usernameButton);
-	layout->addWidget(levelButton);
-	layout->addWidget(weekPracticeButton);
-	layout->addWidget(weekPlayButton);
-	layout->addWidget(yearsPlayingButton);
+	layout->addWidget(usernameButton_);
+	layout->addWidget(levelButton_);
+	layout->addWidget(weekPracticeButton_);
+	layout->addWidget(weekPlayButton_);
+	layout->addWidget(yearsPlayingButton_);
 
 
-	layout->addWidget(okButton);
-	connect(okButton, SIGNAL(clicked()), userInfoWindow,
+	layout->addWidget(okButton_);
+	connect(okButton_, SIGNAL(clicked()), userInfoWindow,
 	        SLOT(accept()));
 	userInfoWindow->setLayout(layout);
 	userInfoWindow->exec();
@@ -203,15 +203,15 @@ void User::setUserInfo()
 void
 User::updateUserInfoDisplay()
 {
-		usernameButton->setText(tr("Username: %1").arg(username_));
-		levelButton->setText(tr("Level: %1").arg(level_));
+	usernameButton_->setText(tr("Username: %1").arg(username_));
+	levelButton_->setText(tr("Level: %1").arg(level_));
 
-		weekPracticeButton->setText(
-			tr("Weekly pratice: %1 hours").arg(weekPractice_));
-		weekPlayButton->setText(
-			tr("Weekly playing : %1 hours").arg(weekPlay_));
-		yearsPlayingButton->setText(
-			tr("Years playing:%1").arg(yearsPlaying_));
+	weekPracticeButton_->setText(
+	    tr("Weekly pratice: %1 hours").arg(weekPractice_));
+	weekPlayButton_->setText(
+	    tr("Weekly playing : %1 hours").arg(weekPlay_));
+	yearsPlayingButton_->setText(
+	    tr("Years playing:%1").arg(yearsPlaying_));
 }
 
 bool
@@ -237,9 +237,10 @@ User::queryLevel()
 	QString item = QInputDialog::getItem(this,
 	                                     tr("Level"),
 	                                     tr("How would you "
-	"describe your ability?"), levelList_, 0,
+	                                        "describe your ability?"), levelList_, 0,
 	                                     false, &ok);
-	if (ok && !item.isEmpty()) {
+	if (ok && !item.isEmpty())
+	{
 		level_ = item;
 		isModified_ = true;
 		updateUserInfoDisplay();
@@ -255,9 +256,10 @@ User::queryWeekPractice()
 	QString item = QInputDialog::getItem(this,
 	                                     tr("Weekly practice"),
 	                                     tr("How many hours a "
-	"week do you practice (not simply playing)?"), weekPracticeList_,
-										 0, false, &ok);
-	if (ok && !item.isEmpty()) {
+	                                        "week do you practice (not simply playing)?"), weekPracticeList_,
+	                                     0, false, &ok);
+	if (ok && !item.isEmpty())
+	{
 		weekPractice_ = item;
 		isModified_ = true;
 		updateUserInfoDisplay();
@@ -272,10 +274,11 @@ User::queryWeekPlay()
 	QString item = QInputDialog::getItem(this,
 	                                     tr("Weekly playing"),
 	                                     tr("How many hours a "
-	"week do you play (for fun, not individual practice."),
-	weekPlayList_, 0,
+	                                        "week do you play (for fun, not individual practice."),
+	                                     weekPlayList_, 0,
 	                                     false, &ok);
-	if (ok && !item.isEmpty()) {
+	if (ok && !item.isEmpty())
+	{
 		weekPlay_ = item;
 		isModified_ = true;
 		updateUserInfoDisplay();
@@ -290,9 +293,10 @@ User::queryYearsPlaying()
 	QString item = QInputDialog::getItem(this,
 	                                     tr("Years playing"),
 	                                     tr("How long have you "
-	"been playing this instrument?"), yearsPlayingList_, 0,
+	                                        "been playing this instrument?"), yearsPlayingList_, 0,
 	                                     false, &ok);
-	if (ok && !item.isEmpty()) {
+	if (ok && !item.isEmpty())
+	{
 		yearsPlaying_ = item;
 		isModified_ = true;
 		updateUserInfoDisplay();

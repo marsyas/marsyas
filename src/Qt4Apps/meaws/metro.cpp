@@ -1,18 +1,18 @@
 /*
 ** Copyright (C) 2007 Graham Percival <gperciva@uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
@@ -21,122 +21,136 @@
 #include <iostream>
 using namespace std;
 
-Metro::Metro(QWidget *parent, string audioFilename) {
+Metro::Metro(QWidget *parent, string audioFilename)
+{
 	resize(200, 200);
 	setWindowTitle("Visual metronome");
 //	setParent(parent);
 
-	normalBeatColor=Qt::cyan;
-	activeBeatColor=Qt::red;
+	normalBeatColor_=Qt::cyan;
+	activeBeatColor_=Qt::red;
 
-	introBeats=0;
-	bigDisplay=false;
-	audio=false;   // for testing
+	bigDisplay_=false;
+	audio_=false;   // for testing
 
-	if (audio) {
+	if (audio_)
+	{
 		setupAudio(audioFilename);
 	}
 
-	timer = new QTimer();
-	connect(timer, SIGNAL(timeout()), this, SLOT(beat()));
+	timer_ = new QTimer();
+	connect(timer_, SIGNAL(timeout()), this, SLOT(beat()));
 	setTempo(60);
 
-	flashSpeed = new QTimer();
-	connect(flashSpeed, SIGNAL(timeout()), this, SLOT(beatFinished()));
-	flashSpeed->setInterval(100);
+	flashSpeed_ = new QTimer();
+	connect(flashSpeed_, SIGNAL(timeout()), this, SLOT(beatFinished()));
+	flashSpeed_->setInterval(100);
 }
 
-Metro::~Metro() {
+Metro::~Metro()
+{
 //	cout<<"deleting Metro"<<endl;
-	delete mrsWrapper;
-	delete metroNet;
-	delete flashSpeed;
-	delete timer;
+	delete mrsWrapper_;
+	delete metroNet_;
+	delete flashSpeed_;
+	delete timer_;
 }
 
-void Metro::setupAudio(string audioFilename) {
+void Metro::setupAudio(string audioFilename)
+{
 //	cout<<audioFilename<<endl;
-  MarSystemManager mng;
-  metroNet = mng.create("Series", "metroNet");
-  metroNet->addMarSystem(mng.create("SoundFileSource", "srcMetro"));
-  metroNet->addMarSystem(mng.create("AudioSink", "dest"));
-	metroNet->updctrl("SoundFileSource/srcMetro/mrs_string/filename", audioFilename);
-  metroNet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	MarSystemManager mng;
+	metroNet_ = mng.create("Series", "metroNet_");
+	metroNet_->addMarSystem(mng.create("SoundFileSource", "srcMetro"));
+	metroNet_->addMarSystem(mng.create("AudioSink", "dest"));
+	metroNet_->updctrl("SoundFileSource/srcMetro/mrs_string/filename", audioFilename);
+	metroNet_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
-	mrsWrapper = new MarSystemQtWrapper(metroNet);
-	mrsWrapper->start();
-	positionPtr = mrsWrapper->getctrl("SoundFileSource/srcMetro/mrs_natural/pos");
+	mrsWrapper_ = new MarSystemQtWrapper(metroNet_);
+	mrsWrapper_->start();
+	positionPtr_ = mrsWrapper_->getctrl("SoundFileSource/srcMetro/mrs_natural/pos");
 }
 
-void Metro::setTempo(int getTempo) {
-	tempo = getTempo;
-	// in QT 4.2, the timer interval (in ms) must be an integer 
-	int timeBetweenBeats = 60000/tempo;
-	timer->setInterval(timeBetweenBeats);
+void Metro::setTempo(int getTempo)
+{
+	tempo_ = getTempo;
+	// in QT 4.2, the timer_ interval (in ms) must be an integer
+	int timeBetweenBeats = 60000/tempo_;
+	timer_->setInterval(timeBetweenBeats);
 }
 
-void Metro::setIcon(QAction* getVisualAction) {
-	visualMetroBeatAct = getVisualAction;
+void Metro::setIcon(QAction* getVisualAction)
+{
+	visualMetroBeatAct_ = getVisualAction;
 }
 
-void Metro::startMetro() {
-	timer->start();
+void Metro::startMetro()
+{
+	timer_->start();
 	beat();
-	if (audio) {
-		mrsWrapper->updctrl(positionPtr, 0);
-		mrsWrapper->play();
+	if (audio_)
+	{
+		mrsWrapper_->updctrl(positionPtr_, 0);
+		mrsWrapper_->play();
 	}
 }
 
-void Metro::stopMetro() {
-	timer->stop();
-	flashSpeed->stop();
+void Metro::stopMetro()
+{
+	timer_->stop();
+	flashSpeed_->stop();
 }
 
-void Metro::setIntro(int beats) {
-	introBeats = beats;
-}
-
-void Metro::beatFinished() {
-	if (bigDisplay) {
-		drawBeatColor = normalBeatColor;
+void Metro::beatFinished()
+{
+	if (bigDisplay_)
+	{
+		drawBeatColor_ = normalBeatColor_;
 		update();
 	}
-	visualMetroBeatAct->setIcon(QIcon(":/icons/circle.png"));
+	visualMetroBeatAct_->setIcon(QIcon(":/icons/circle.png"));
 }
 
-void Metro::beat() {
-	if (audio) {
-		mrsWrapper->updctrl(positionPtr, 0);
-		mrsWrapper->play();
+void Metro::beat()
+{
+	if (audio_)
+	{
+		mrsWrapper_->updctrl(positionPtr_, 0);
+		mrsWrapper_->play();
 	}
-	if (bigDisplay) {
-		drawBeatColor = activeBeatColor;
+	if (bigDisplay_)
+	{
+		drawBeatColor_ = activeBeatColor_;
 		update();
 	}
-	visualMetroBeatAct->setIcon(QIcon(":/icons/circle-beat.png"));
-	flashSpeed->start();
+	visualMetroBeatAct_->setIcon(QIcon(":/icons/circle-beat.png"));
+	flashSpeed_->start();
 }
 
-void Metro::toggleBigMetro() {
-	bigDisplay=!bigDisplay;
-	if (bigDisplay) {
+void Metro::toggleBigMetro()
+{
+	bigDisplay_=!bigDisplay_;
+	if (bigDisplay_)
+	{
 // pop up the window, draw big circle, etc
 		show();
-		drawBeatColor = normalBeatColor;
+		drawBeatColor_ = normalBeatColor_;
 		update();
-	} else {
+	}
+	else
+	{
 // kill big window
 		hide();
 	}
 }
 
-void Metro::paintEvent(QPaintEvent *) {
+void Metro::paintEvent(QPaintEvent *)
+{
 	QPainter painter(this);
 	painter.setRenderHint(QPainter::Antialiasing);
 
 	QRectF area(5, 5, width()-10, height()-10);
-	painter.setBrush(drawBeatColor);
+	painter.setBrush(drawBeatColor_);
 	painter.drawEllipse(area);
 }
 

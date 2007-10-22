@@ -62,13 +62,13 @@ private:
 	QString weekPlay_;
 	QString yearsPlaying_;
 
-	QPushButton *usernameButton;
-	QPushButton *levelButton;
-	QPushButton *weekPracticeButton;
-	QPushButton *weekPlayButton;
-	QPushButton *yearsPlayingButton;
-	QPushButton *okButton;
-	
+	QPushButton *usernameButton_;
+	QPushButton *levelButton_;
+	QPushButton *weekPracticeButton_;
+	QPushButton *weekPlayButton_;
+	QPushButton *yearsPlayingButton_;
+	QPushButton *okButton_;
+
 };
 #endif
 
