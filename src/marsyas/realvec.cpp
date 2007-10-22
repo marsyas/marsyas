@@ -901,10 +901,6 @@ operator>>(istream& is, realvec& vec)
 	is >> str1;
 	is >> str2;
 
-	cout << "start realvec str0 " << str0 << endl;
-	cout << "start realvec str1 " << str1 << endl;
-	cout << "start realvec str2 " << str2 << endl;
-	
 
 	if ((str0 != "#") || (str1 != "MARSYAS") || (str2 != "mrs_realvec"))
 	{
@@ -918,9 +914,6 @@ operator>>(istream& is, realvec& vec)
 	is >> str1;
 	is >> str2;
 
-	cout << "snd realvec str0 " << str0 << endl;
-	cout << "snd realvec str1 " << str1 << endl;
-	cout << "snd realvec str2 " << str2 << endl;
 
 	if ((str0 != "#") || (str1 != "Size") || (str2 != "="))
 	{
@@ -928,8 +921,6 @@ operator>>(istream& is, realvec& vec)
 		return is;
 	}
 	is >> size;
-
-	cout << "third size = " << size << endl;
 
 	vec.allocate(size);  
 	for (i=0; i<3; i++)
@@ -951,17 +942,9 @@ operator>>(istream& is, realvec& vec)
 	if ((str0 != "#") || (str1 != "Size") || (str2 != "="))
 	{
 		MRSERR("realvec::operator>>: Problem3 reading realvec object from istream");
-		cout << "vec.rows = " << vec.rows_ << endl;
-		cout << "vec.cols = " << vec.cols_ << endl;
-		cout << "----" << str0 << endl;
-		cout << "----" << str1 << endl;
-		cout << "----" << str2 << endl;
 		is >> str0;				
 		is >> str1;
 		is >> str2;
-		cout << "----" << str0 << endl;
-		cout << "----" << str1 << endl;
-		cout << "----" << str2 << endl;
 		return is;
 	}
 	is >> size;
