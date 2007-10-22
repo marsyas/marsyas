@@ -95,7 +95,7 @@ QString RhythmExercise::getMessage() {
 }
 
 bool RhythmExercise::displayAnalysis(MarBackend *results) {
-	tries->at(current_)->displayAnalysis(results);
+	tries_->at(current_)->displayAnalysis(results);
 	return true;
 }
 

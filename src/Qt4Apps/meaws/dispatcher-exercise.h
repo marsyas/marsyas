@@ -38,11 +38,11 @@ public slots:
 
 	void addTry()
 	{
-		evaluation->addTry();
+		evaluation_->addTry();
 	};
 	void delTry()
 	{
-		evaluation->delTry();
+		evaluation_->delTry();
 	};
 
 signals:
@@ -53,19 +53,19 @@ private:
 	bool chooseEvaluation();
 
 	// basic GUI frames
-	QVBoxLayout *layout;
-	QFrame *instructionArea;
-	QFrame *resultArea;
+	QVBoxLayout *layout_;
+	QFrame *instructionArea_;
+	QFrame *resultArea_;
 
 	// actual Meaws objects
-	Exercise *evaluation;
-	MarBackend *marBackend;
+	Exercise *evaluation_;
+	MarBackend *marBackend_;
 
 	// left-over garbage (?)
-	QString exerciseName;
-	bool attemptRunningBool;
+	QString exerciseName_;
+	bool attemptRunningBool_;
 
-	QString statusMessage;
+	QString statusMessage_;
 };
 #endif
 

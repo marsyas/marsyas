@@ -5,94 +5,100 @@
 
 Exercise::Exercise()
 {
-	instructionLayout = NULL;
-	instructionImageLabel = NULL;
-	resultLayout = NULL;
+	instructionLayout_ = NULL;
+	instructionImageLabel_ = NULL;
+	resultLayout_ = NULL;
 	current_ = -1;
-	tries = new QList<Try *>;
+	tries_ = new QList<Try *>;
 }
 
 Exercise::~Exercise()
 {
-	if (instructionLayout != NULL)
+	if (instructionLayout_ != NULL)
 	{
-		if (instructionImageLabel != NULL) {
-			instructionLayout->removeWidget(instructionImageLabel);
-			delete instructionImageLabel;
-			instructionImageLabel = NULL;
+		if (instructionImageLabel_ != NULL)
+		{
+			instructionLayout_->removeWidget(instructionImageLabel_);
+			delete instructionImageLabel_;
+			instructionImageLabel_ = NULL;
 		}
-		delete instructionLayout;
+		delete instructionLayout_;
 	}
-	if (resultLayout != NULL)
-		delete resultLayout;
-	while (!tries->isEmpty())
-		delete tries->takeFirst();
-	delete tries;
+	if (resultLayout_ != NULL)
+		delete resultLayout_;
+	while (!tries_->isEmpty())
+		delete tries_->takeFirst();
+	delete tries_;
 }
 
-void Exercise::open(QString exerciseFilename) {
-	instructionImageLabel = new QLabel;
+void Exercise::open(QString exerciseFilename)
+{
+	instructionImageLabel_ = new QLabel;
 	QPixmap *instructPixmap = new QPixmap(exerciseFilename);
-	instructionImageLabel->setPixmap(*instructPixmap);
-	instructionImageLabel->setScaledContents(false);
-	instructionImageLabel->setMaximumHeight(instructPixmap->height());
-	instructionImageLabel->setMinimumHeight(instructPixmap->height());
-	instructionLayout = new QVBoxLayout;
-	instructionLayout->addWidget(instructionImageLabel);
-	height = instructPixmap->height()+4;
+	instructionImageLabel_->setPixmap(*instructPixmap);
+	instructionImageLabel_->setScaledContents(false);
+	instructionImageLabel_->setMaximumHeight(instructPixmap->height());
+	instructionImageLabel_->setMinimumHeight(instructPixmap->height());
+	instructionLayout_ = new QVBoxLayout;
+	instructionLayout_->addWidget(instructionImageLabel_);
+	height_ = instructPixmap->height()+4;
 }
 
-void Exercise::setupDisplay(QFrame* instructionArea, QFrame* resultArea) {
-	instructionArea->setLayout(instructionLayout);
-	instructionLayout->setContentsMargins(2,2,2,2);
+void Exercise::setupDisplay(QFrame* instructionArea, QFrame* resultArea)
+{
+	instructionArea->setLayout(instructionLayout_);
+	instructionLayout_->setContentsMargins(2,2,2,2);
 
-			// TODO: somehow figure out height.  :(
-//	const QLabel* instructionLabel = (QLabel*) instructionLayout->itemAt(0);
-	//const int height = instructionLabel->height();
-	//cout<<instructionLabel->height()<<endl;
-	//cout<<height->pixmap()->height()<<endl;
-	//const QPixmap* height = ( (QLabel*) instructionLayout->itemAt(0) )->pixmap();
-	//const QPixmap *instructPixmap = ( (QLabel*) instructionLayout->itemAt(0) )->pixmap();
-	//cout<<instructPixmap->height()<<endl;
+	// TODO: somehow figure out height_.  :(
+//	const QLabel* instructionLabel = (QLabel*) instructionLayout_->itemAt(0);
+	//const int height_ = instructionLabel->height_();
+	//cout<<instructionLabel->height_()<<endl;
+	//cout<<height_->pixmap()->height_()<<endl;
+	//const QPixmap* height_ = ( (QLabel*) instructionLayout_->itemAt(0) )->pixmap();
+	//const QPixmap *instructPixmap = ( (QLabel*) instructionLayout_->itemAt(0) )->pixmap();
+	//cout<<instructPixmap->height_()<<endl;
 
-	instructionArea->setMaximumHeight(height);
-	instructionArea->setMinimumHeight(height);
+	instructionArea->setMaximumHeight(height_);
+	instructionArea->setMinimumHeight(height_);
 
-	resultLayout = new QVBoxLayout;
-	resultLayout->setContentsMargins(2,2,2,2);
-	resultArea->setLayout(resultLayout);
+	resultLayout_ = new QVBoxLayout;
+	resultLayout_->setContentsMargins(2,2,2,2);
+	resultArea->setLayout(resultLayout_);
 
 	// FIXME: temp
-	resultLayout->setContentsMargins(40,2,2,2);
+	resultLayout_->setContentsMargins(40,2,2,2);
 	resultArea->setMaximumWidth(628+2+2);
 }
 
-void Exercise::addTryAbstract(Try* newTry) {
-    resultLayout->addWidget( newTry->getDisplay() );
-    newTry->setTryNumber( tries->count() );
-	current_ = tries->count();
-    connect(newTry, SIGNAL(selectTry(mrs_natural)),
-        this, SLOT(selectTry(mrs_natural)));
-    tries->append(newTry);
+void Exercise::addTryAbstract(Try* newTry)
+{
+	resultLayout_->addWidget( newTry->getDisplay() );
+	newTry->setTryNumber( tries_->count() );
+	current_ = tries_->count();
+	connect(newTry, SIGNAL(selectTry(mrs_natural)),
+	        this, SLOT(selectTry(mrs_natural)));
+	tries_->append(newTry);
 }
 
-void Exercise::delTryAbstract() {
-	Try* oldTry = tries->takeAt(current_);
-	resultLayout->removeWidget( oldTry->getDisplay() );
+void Exercise::delTryAbstract()
+{
+	Try* oldTry = tries_->takeAt(current_);
+	resultLayout_->removeWidget( oldTry->getDisplay() );
 	delete oldTry;
-	resultLayout->activate();
+	resultLayout_->activate();
 
 	// renumber the remaining exercises
-	for (int i=current_; i<tries->count(); i++) {
-		(*tries)[i]->setTryNumber(i);
+	for (int i=current_; i<tries_->count(); i++)
+	{
+		(*tries_)[i]->setTryNumber(i);
 	}
 	current_ = -1;
 }
 
 void Exercise::selectTry(mrs_natural selected)
 {
-    current_ = selected;
-    emit analysisDone();
+	current_ = selected;
+	emit analysisDone();
 }
 
 

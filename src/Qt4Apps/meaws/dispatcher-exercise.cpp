@@ -6,27 +6,27 @@ using namespace std;
 ExerciseDispatcher::ExerciseDispatcher(QFrame *centralFrame)
 {
 	cout<<"in exerdisplatch"<<endl;
-	layout = new QVBoxLayout();
-	layout->setContentsMargins(1,1,1,1);
-	centralFrame->setLayout(layout);
+	layout_ = new QVBoxLayout();
+	layout_->setContentsMargins(1,1,1,1);
+	centralFrame->setLayout(layout_);
 
 // move?
-	instructionArea = new QFrame;
-	resultArea = new QFrame;
-	layout->addWidget(instructionArea);
-	layout->addWidget(resultArea);
+	instructionArea_ = new QFrame;
+	resultArea_ = new QFrame;
+	layout_->addWidget(instructionArea_);
+	layout_->addWidget(resultArea_);
 
-	attemptRunningBool = false;
-	marBackend = NULL;
-	evaluation = NULL;
-	statusMessage = "ready";
+	attemptRunningBool_ = false;
+	marBackend_ = NULL;
+	evaluation_ = NULL;
+	statusMessage_ = "ready";
 }
 
 ExerciseDispatcher::~ExerciseDispatcher()
 {
 	close();
-	if (layout != NULL)
-		delete layout;
+	if (layout_ != NULL)
+		delete layout_;
 }
 
 bool ExerciseDispatcher::chooseEvaluation()
@@ -40,13 +40,13 @@ bool ExerciseDispatcher::chooseEvaluation()
 	                                     tr("TestingMethod:"), items, 0, false, &ok);
 	if (ok && !item.isEmpty())
 	{
-		if (evaluation != NULL)
-			delete evaluation;
-		if (item=="Intonation test") evaluation = new IntonationExercise();
-		if (item=="Rhythm test") evaluation = new RhythmExercise();
-//		if (item=="Sound control test") evaluation = new ExerciseControl();
-//		if (item=="Shifting test") evaluation = new ExerciseShift();
-		connect(evaluation,SIGNAL(analysisDone()), this,
+		if (evaluation_ != NULL)
+			delete evaluation_;
+		if (item=="Intonation test") evaluation_ = new IntonationExercise();
+		if (item=="Rhythm test") evaluation_ = new RhythmExercise();
+//		if (item=="Sound control test") evaluation_ = new ExerciseControl();
+//		if (item=="Shifting test") evaluation_ = new ExerciseShift();
+		connect(evaluation_,SIGNAL(analysisDone()), this,
 		        SLOT(analysisDone()));
 		return true;
 	}
@@ -58,16 +58,16 @@ void ExerciseDispatcher::open()
 	if (chooseEvaluation())
 	{
 		QString openFilename = QFileDialog::getOpenFileName(0,tr("Open file"),
-		                       evaluation->exercisesDir(), tr("Exercises (*.png)"));
+		                       evaluation_->exercisesDir(), tr("Exercises (*.png)"));
 		if (!openFilename.isEmpty())
 		{
-			evaluation->open(openFilename);
-			evaluation->setupDisplay(instructionArea, resultArea);
-			evaluation->addTry();
-			if (marBackend != NULL)
-				delete marBackend;
-			marBackend = new MarBackend(evaluation->getBackend());
-			connect(marBackend, SIGNAL(setAttempt(bool)), this, SLOT(setAttempt(bool)));
+			evaluation_->open(openFilename);
+			evaluation_->setupDisplay(instructionArea_, resultArea_);
+			evaluation_->addTry();
+			if (marBackend_ != NULL)
+				delete marBackend_;
+			marBackend_ = new MarBackend(evaluation_->getBackend());
+			connect(marBackend_, SIGNAL(setAttempt(bool)), this, SLOT(setAttempt(bool)));
 			enableActions(MEAWS_READY_EXERCISE);
 		}
 		else
@@ -79,40 +79,40 @@ void ExerciseDispatcher::open()
 
 void ExerciseDispatcher::close()
 {
-	if (marBackend != NULL)
+	if (marBackend_ != NULL)
 	{
-		delete marBackend;
-		marBackend = NULL;
+		delete marBackend_;
+		marBackend_ = NULL;
 	}
-	if (evaluation != NULL)
+	if (evaluation_ != NULL)
 	{
-		delete evaluation;
-		evaluation = NULL;
+		delete evaluation_;
+		evaluation_ = NULL;
 	}
 	enableActions(MEAWS_READY_USER);
 }
 
 void ExerciseDispatcher::toggleAttempt()
 {
-	setAttempt(!attemptRunningBool);
+	setAttempt(!attemptRunningBool_);
 }
 
 void ExerciseDispatcher::setAttempt(bool running)
 {
 	// if the attempt state has changed
-	if (running != attemptRunningBool)
+	if (running != attemptRunningBool_)
 	{
 		if (running)
 		{
-			attemptRunningBool = true;
-			marBackend->start();
+			attemptRunningBool_ = true;
+			marBackend_->start();
 		}
 		else
 		{
-			attemptRunningBool = false;
-			marBackend->stop();
+			attemptRunningBool_ = false;
+			marBackend_->stop();
 		}
-		attemptRunning(attemptRunningBool);
+		attemptRunning(attemptRunningBool_);
 	}
 }
 
@@ -123,7 +123,7 @@ void ExerciseDispatcher::openAttempt()
 	                       "/home/gperciva/data/");
 	if (!openFilename.isEmpty())
 	{
-		marBackend->open( qPrintable(openFilename) );
+		marBackend_->open( qPrintable(openFilename) );
 	}
 
 }
@@ -131,13 +131,13 @@ void ExerciseDispatcher::openAttempt()
 
 void ExerciseDispatcher::playFile()
 {
-	marBackend->playFile();
+	marBackend_->playFile();
 	setAttempt(true);
 }
 
 QString ExerciseDispatcher::getMessage()
 {
-	return statusMessage;
+	return statusMessage_;
 }
 
 void ExerciseDispatcher::analyze()
@@ -145,16 +145,16 @@ void ExerciseDispatcher::analyze()
 	// to be removed DEBUG   -Mathieu
 // what's to be removed?  Was this already removed?  -gp
 // stuff that mght be accidentally commiited -gp.
-	if ( marBackend->analyze() )
+	if ( marBackend_->analyze() )
 	{
-		evaluation->displayAnalysis( marBackend );
+		evaluation_->displayAnalysis( marBackend_ );
 		analysisDone();
 	}
 }
 
 void ExerciseDispatcher::analysisDone()
 {
-	statusMessage = evaluation->getMessage();
+	statusMessage_ = evaluation_->getMessage();
 	enableActions(MEAWS_READY_AUDIO);
 }
 

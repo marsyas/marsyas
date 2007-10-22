@@ -6,13 +6,13 @@ using namespace std;
 
 RhythmTry::RhythmTry()
 {
-	tryLayout = new QVBoxLayout();
-	tryLayout->setContentsMargins(0,0,0,0);
-	tryArea->setLayout(tryLayout);
+	tryLayout_ = new QVBoxLayout();
+	tryLayout_->setContentsMargins(0,0,0,0);
+	tryArea_->setLayout(tryLayout_);
 
 	pitchPlot = new QtMarPlot();
 	pitchPlot->setBackgroundColor(QColor(255,255,255));
-	tryLayout->addWidget(pitchPlot);
+	tryLayout_->addWidget(pitchPlot);
 
 
 //	graph = new Marx2DGraph(0);
@@ -166,7 +166,7 @@ bool RhythmTry::displayAnalysis(MarBackend *results)
 	pitchPlot->setImpulses(true);
 	//cout<<"plot done"<<endl;
 
-	mrs_natural exerLength = exerAnswer(exerAnswer.getRows()-1,1);
+	mrs_natural exerLength = (mrs_natural) exerAnswer(exerAnswer.getRows()-1,1);
 
 	mrs_natural j=0;
 	realvec* answerVec = new realvec(exerLength);

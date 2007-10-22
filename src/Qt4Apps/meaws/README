@@ -48,3 +48,8 @@ data/ : data to be installed
 data/music/ : exercises for the students.
 
 
+
+ADD _ TO VAR NAMES:
+
+sed -i 's/\(tryLayout\)/\1_/g' abstract-try.*
+

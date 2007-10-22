@@ -7,26 +7,36 @@
 #include "QClickFrame.h"
 #include "backend.h"
 
-class Try : public QObject {
+class Try : public QObject
+{
 	Q_OBJECT
 
 public:
 	Try();
 	~Try();
-	virtual QFrame* getDisplay() { return tryArea; };
-	virtual void setTryNumber(mrs_natural num) { tryNumber_ = num; };
+	virtual QFrame* getDisplay()
+	{
+		return tryArea_;
+	};
+	virtual void setTryNumber(mrs_natural num)
+	{
+		tryNumber_ = num;
+	};
 	virtual bool displayAnalysis(MarBackend *results) = 0;
 
 public slots:
-	virtual void clicked() { emit selectTry(tryNumber_); };
+	virtual void clicked()
+	{
+		emit selectTry(tryNumber_);
+	};
 	virtual void doubleclicked() {};
 
 signals:
 	void selectTry(mrs_natural);
 
 protected:
-	QClickFrame *tryArea;
-	QLayout *tryLayout;
+	QClickFrame *tryArea_;
+	QLayout *tryLayout_;
 
 	mrs_natural tryNumber_;
 };

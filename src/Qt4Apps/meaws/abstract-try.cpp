@@ -2,17 +2,17 @@
 
 Try::Try()
 {
-	tryArea = new QClickFrame();
-	connect(tryArea, SIGNAL(clicked()), this, SLOT(clicked()));
-	connect(tryArea, SIGNAL(doubleclicked()), this, SLOT(doubleclicked()));
-	tryLayout = NULL;
+	tryArea_ = new QClickFrame();
+	connect(tryArea_, SIGNAL(clicked()), this, SLOT(clicked()));
+	connect(tryArea_, SIGNAL(doubleclicked()), this, SLOT(doubleclicked()));
+	tryLayout_ = NULL;
 	tryNumber_ = 0;
 }
 
 Try::~Try()
 {
-	if (tryLayout != NULL)
-		delete tryLayout;
-	delete tryArea;
+	if (tryLayout_ != NULL)
+		delete tryLayout_;
+	delete tryArea_;
 }
 

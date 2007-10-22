@@ -6,9 +6,9 @@ using namespace std;
 
 IntonationTry::IntonationTry()
 {
-	tryLayout = new QVBoxLayout();
-	tryLayout->setContentsMargins(0,0,0,0);
-	tryArea->setLayout(tryLayout);
+	tryLayout_ = new QVBoxLayout();
+	tryLayout_->setContentsMargins(0,0,0,0);
+	tryArea_->setLayout(tryLayout_);
 
 	pitchPlot = new QtMarPlot();
 	pitchPlot->setBackgroundColor(QColor(255,255,255));
@@ -194,7 +194,7 @@ bool IntonationTry::displayAnalysis(MarBackend *results)
 
 	QLabel* resultLabel = new QLabel;
 	resultLabel->setPixmap(QPixmap::fromImage(QImage("/tmp/out.preview.png")));
-	tryLayout->addWidget(resultLabel);
+	tryLayout_->addWidget(resultLabel);
 	return true;
 }
 

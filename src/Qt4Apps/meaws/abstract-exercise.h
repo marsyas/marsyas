@@ -8,7 +8,8 @@
 #include "abstract-try.h"
 
 
-class Exercise : public QObject {
+class Exercise : public QObject
+{
 	Q_OBJECT
 
 public:
@@ -17,7 +18,7 @@ public:
 
 	virtual void open(QString exerciseFilename);
 	virtual void setupDisplay(QFrame* instructionArea, QFrame*
-resultArea);
+	                          resultArea);
 
 	virtual QString exercisesDir() = 0;
 	virtual int getBackend() = 0;
@@ -36,16 +37,16 @@ public slots:
 	virtual void selectTry(mrs_natural selected);
 
 protected:
-	QLayout *instructionLayout;
-	QLabel *instructionImageLabel;
+	QLayout *instructionLayout_;
+	QLabel *instructionImageLabel_;
 
-	QLayout *resultLayout;
-	QList<Try *> *tries;
+	QLayout *resultLayout_;
+	QList<Try *> *tries_;
 
 	mrs_natural current_;
 
-	// TODO: figure out how to find the height.  :(
-	int height;
+	// TODO: figure out how to find the height_.  :(
+	int height_;
 };
 #endif
 
