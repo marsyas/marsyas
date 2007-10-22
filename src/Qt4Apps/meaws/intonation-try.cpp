@@ -12,12 +12,7 @@ IntonationTry::IntonationTry()
 
 	pitchPlot = new QtMarPlot();
 	pitchPlot->setBackgroundColor(QColor(255,255,255));
-//	tryLayout->addWidget(pitchPlot);
-
-
-//	graph = new Marx2DGraph(0);
-//	graph->setPlotType(Marx2DGraph::LINEAR_INTERPOLATION);
-//	graph->setGraphDataLineSize( 1.0 );
+	tryLayout_->addWidget(pitchPlot);
 }
 
 IntonationTry::~IntonationTry()
@@ -97,11 +92,7 @@ void IntonationTry::calcErrors(const realvec& pitches, const realvec&
 
 
 		notePitches = pitches.getSubVector(noteStart, noteLength);
-		/*
-				cout<<"note "<<exerNote<<"\t"<<noteStart<<"\t"<<noteLength+noteStart<<endl;
-				cout<<"\t"<<Transcriber::findMedianWithoutZeros(0,notePitches.getSize(),notePitches)<<"\t"<<exerAnswer(exerNote,0)<<endl;
-				cout<<endl;
-		*/
+
 		expected = exerAnswer(exerNote,0);
 		noteError = 0;
 		for (i=0; i<notePitches.getSize(); i++)
@@ -125,7 +116,7 @@ void IntonationTry::calcErrors(const realvec& pitches, const realvec&
 		colorNote(exerNote,noteError,noteError);
 	}
 
-
+/*
 	// WRITE LILYPOND FILE OUT
 	// FIXME: filename
 	QString temp;
@@ -139,6 +130,7 @@ void IntonationTry::calcErrors(const realvec& pitches, const realvec&
 		out<<qPrintable(temp)<<endl;
 	}
 	out_file.close();
+*/
 }
 
 
@@ -161,40 +153,18 @@ bool IntonationTry::displayAnalysis(MarBackend *results)
 	pitchPlot->setData(data);
 	pitchPlot->setVertical(57,73);
 	pitchPlot->setPlotName("pitches");
-	pitchPlot->setCenterLine(false);
+	pitchPlot->setCenterLine(true);
 
-//	graph->setBuffer(*data);
+	pitchPlot->setBars(true);
 
-	/*
-		realvec durations = results->getDurations();
-		realvec notes = results->getNotes();
-
-		QFile out_file("/tmp/notes.txt");
-		out_file.open(QIODevice::WriteOnly | QIODevice::Text);
-		QTextStream out(&out_file);
-
-		for (int i=0; i<durations.getSize(); i++) {
-			if (notes(i)>0) {
-				out<<(int) floor(notes(i)+0.5)<<"\t"<<durations(i)<<endl;;
-				cout<<(int) floor(notes(i)+0.5)<<"\t"<<durations(i)<<endl;;
-			}
-		}
-		out_file.close();
-	*/
-
-	/*
-	#ifndef MARSYAS_WIN32 // [ML] this is ugly and sleep does not exist in Win32 !!
-		system("/Users/gperciva/progs/python/libbabelpond/reldurs.py /tmp/notes.txt");
-		sleep(1);
-	#endif
-	*/
-
-
+// LILYPOND STUFF
+/*
 	system("cd /tmp; lilypond -dpreview out.ly");
 
 	QLabel* resultLabel = new QLabel;
 	resultLabel->setPixmap(QPixmap::fromImage(QImage("/tmp/out.preview.png")));
 	tryLayout_->addWidget(resultLabel);
+*/
 	return true;
 }
 

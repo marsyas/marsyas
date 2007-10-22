@@ -22,8 +22,6 @@ void RhythmExercise::open(QString exerciseFilename) {
 
 	// load exercise answers
 	mrs_natural one, two;
-	mrs_natural frameSum=0;
-	mrs_natural frame;
 	int i=0;
 	exerAnswer.create(16,2);
 	//exerAnswer.create(100,2);
@@ -47,13 +45,8 @@ void RhythmExercise::open(QString exerciseFilename) {
 	answerFile.close();
 	exerAnswer.stretch(i-1,2);
 	for (i=0; i<exerAnswer.getRows(); i++)
-	{
 		exerAnswer(i,1) =
 			(mrs_natural) (exerAnswer(i,1)*44100.0/512.0/384.00);
-//		exerAnswer(i,1) = frameSum;
-//		frameSum += frame;
-	}
-//	exerAnswer(i,1) = frameSum;
 	cout<<exerAnswer;
 
 	// **** read lilypond input

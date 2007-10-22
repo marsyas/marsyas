@@ -24,6 +24,11 @@ SOURCES += rhythm-exercise.cpp rhythm-try.cpp
 HEADERS += backend.h
 SOURCES += backend.cpp
 
+
+# temp testing
+HEADERS += QtMarPlot.h
+SOURCES += QtMarPlot.cpp
+
 RESOURCES = icons.qrc
 TARGET = meaws
 VERSION = 0.5
