@@ -1,5 +1,9 @@
 
 /** \file general.doxy
+\todo document how to use MRSDEBUG and similar stuff.
+
+\todo configure should check for alsa headers.
+
 \todo Move any useful comments out of Gain.h / Gain.cpp and into the
 MarSystemTemplate stuff.
 
