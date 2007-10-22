@@ -104,7 +104,7 @@ DIST_SUBDIRS = marsyas apps examples
 
 EXTRA_DIST = Qt4Apps marsyasqt src.pro
 
-CLEANFILES = marsyasqt/*.o
+CLEANFILES = marsyasqt/*.o marsyasqt/moc_*.cpp
 subdir = src
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_CLEAN_FILES =
