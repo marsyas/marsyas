@@ -20,13 +20,6 @@ time = 0
 for i in range(len(inlines)):
 	line = inlines[i]
 	if ( line.find("NOTE_ON") > 0 ):
-		splitline = line.split()
-		for element in splitline:
-			if ( element[:6] == 'pitch='):
-				pitch = int( element[7:-1] )
-				print str(pitch) + " " + str(time)
-				time = 0
-	if ( line.find("NOTE_ON") > 0 ):
 		splitline = inlines[i-1].split()
 #		print splitline
 		for element in splitline:
@@ -38,6 +31,12 @@ for i in range(len(inlines)):
 		for element in splitline:
 			if ( element[:2] == 't='):
 				time += int( element[3:-1] )
+	if ( line.find("NOTE_ON") > 0 ):
+		splitline = line.split()
+		for element in splitline:
+			if ( element[:6] == 'pitch='):
+				pitch = int( element[7:-1] )
+				print str(pitch) + " " + str(time)
 
 print str(0) + " " + str(time)
 

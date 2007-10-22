@@ -45,14 +45,15 @@ void RhythmExercise::open(QString exerciseFilename) {
 		}
 	}
 	answerFile.close();
-	exerAnswer.stretch(i,2);
-	for (i=0; i<exerAnswer.getRows()-1; i++)
+	exerAnswer.stretch(i-1,2);
+	for (i=0; i<exerAnswer.getRows(); i++)
 	{
-		frame = (mrs_natural) ( exerAnswer(i,1)*44100.0/512.0/384);
-		exerAnswer(i,1) = frameSum;
-		frameSum += frame;
+		exerAnswer(i,1) =
+			(mrs_natural) (exerAnswer(i,1)*44100.0/512.0/384.00);
+//		exerAnswer(i,1) = frameSum;
+//		frameSum += frame;
 	}
-	exerAnswer(i,1) = frameSum;
+//	exerAnswer(i,1) = frameSum;
 	cout<<exerAnswer;
 
 	// **** read lilypond input
