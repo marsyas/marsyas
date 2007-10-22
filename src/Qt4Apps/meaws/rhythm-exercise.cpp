@@ -48,12 +48,12 @@ void RhythmExercise::open(QString exerciseFilename) {
 	exerAnswer.stretch(i,2);
 	for (i=0; i<exerAnswer.getRows()-1; i++)
 	{
-		frame = (mrs_natural) ( exerAnswer(i,1)*44100.0/512.0 /2.0);
+		frame = (mrs_natural) ( exerAnswer(i,1)*44100.0/512.0/384);
 		exerAnswer(i,1) = frameSum;
 		frameSum += frame;
 	}
 	exerAnswer(i,1) = frameSum;
-//	cout<<exerAnswer;
+	cout<<exerAnswer;
 
 	// **** read lilypond input
 	// FIXME: filename
