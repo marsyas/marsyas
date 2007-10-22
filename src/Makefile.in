@@ -103,6 +103,8 @@ SUBDIRS = marsyas apps examples
 DIST_SUBDIRS = marsyas apps examples
 
 EXTRA_DIST = Qt4Apps marsyasqt src.pro
+
+CLEANFILES = marsyasqt/*.o
 subdir = src
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_CLEAN_FILES =
@@ -280,6 +282,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
