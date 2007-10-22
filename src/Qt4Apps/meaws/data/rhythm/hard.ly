@@ -7,6 +7,7 @@
   r16 c8 c16 ~ c c8 r c16 c8 |
   \times 2/3 {c4 c8} c8[ c] \times 2/3 {c8. c16 c8 } |
 }
+\layout{}
 \midi{}
 }
 
