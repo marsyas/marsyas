@@ -8,6 +8,7 @@ down = \markup{ \hspace #0.5 \arrow-head #Y #RIGHT ##f }
 \version "2.10.0"
 \score{
 {
+\override NoteHead #'color = #'(0.0 0.0 0.001)
 c'4
 d'8
 e'

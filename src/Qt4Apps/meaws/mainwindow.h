@@ -52,57 +52,57 @@ private:
 	void createExercise();
 
 // main interface objects
-	QFrame* centralFrame;
+	QFrame* centralFrame_;
 
 // menu and toolbar objects
-	QMenu *fileMenu;
-	QToolBar *fileToolBar;
-	QAction *newUserAct;
-	QAction *openUserAct;
-	QAction *saveUserAct;
-	QAction *saveAsUserAct;
-	QAction *setUserInfoAct;
-	QAction *closeUserAct;
-	QAction *exitAct;
+	QMenu *fileMenu_;
+	QToolBar *fileToolBar_;
+	QAction *newUserAct_;
+	QAction *openUserAct_;
+	QAction *saveUserAct_;
+	QAction *saveAsUserAct_;
+	QAction *setUserInfoAct_;
+	QAction *closeUserAct_;
+	QAction *exitAct_;
 
-	QMenu *exerciseMenu;
-	QToolBar *exerciseToolBar;
-	QAction *openExerciseAct;
+	QMenu *exerciseMenu_;
+	QToolBar *exerciseToolBar_;
+	QAction *openExerciseAct_;
 	QAction *toggleAttemptAct;
-	QAction *closeExerciseAct;
+	QAction *closeExerciseAct_;
 
 
-	QToolBar *tempoToolBar;
-	QAction *calcExerciseAct;
-	QAction *visualMetroBeatAct;
+	QToolBar *tempoToolBar_;
+	QAction *calcExerciseAct_;
+	QAction *visualMetroBeatAct_;
 
-	QToolBar *otherToolBar;
-	QAction *testingFileAct;
-	QAction *playFileAct;
-	QSlider *tempoSlider;
-	QSpinBox *tempoBox;
-	QAction *addTryAct;
-	QAction *delTryAct;
+	QToolBar *otherToolBar_;
+	QAction *testingFileAct_;
+	QAction *playFileAct_;
+	QSlider *tempoSlider_;
+	QSpinBox *tempoBox_;
+	QAction *addTryAct_;
+	QAction *delTryAct_;
 
-	QMenu *testingMenu;
+	QMenu *testingMenu_;
 
-	QMenu *helpMenu;
-	QAction *aboutAct;
-	QAction *aboutQtAct;
+	QMenu *helpMenu_;
+	QAction *aboutAct_;
+	QAction *aboutQtAct_;
 
 	// status bar
-	QLabel *normalStatusMessage;
-	QLabel *permanentStatusMessage;
+	QLabel *normalStatusMessage_;
+	QLabel *permanentStatusMessage_;
 
 
 // other stuff that appears to be necessary... for now
-	QLabel *exerciseTitle;
-	bool exerciseRunning;
+	QLabel *exerciseTitle_;
+	bool exerciseRunning_;
 
 // main object variables
-	User *user;
-	ExerciseDispatcher *exercise;
-	Metro *metro;
+	User *user_;
+	ExerciseDispatcher *exercise_;
+	Metro *metro_;
 
 };
 
