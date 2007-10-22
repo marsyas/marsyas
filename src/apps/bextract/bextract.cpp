@@ -1954,7 +1954,7 @@ bextract_train_refactored(vector<Collection> cls, Collection cl,
   // src has to be configured with hopSize frame length in case a ShiftInput
   // is used in the feature extraction network
   featureNetwork->updctrl("mrs_natural/inSamples", hopSize);
-  featureNetwork->updctrl(src->getType() + "/src/mrs_natural/pos", offset);      
+  featureNetwork->updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
   // add the Annotator
   featureNetwork->addMarSystem(mng.create("Annotator", "annotator"));
 
@@ -1966,25 +1966,18 @@ bextract_train_refactored(vector<Collection> cls, Collection cl,
   featureNetwork->addMarSystem(mng.create("GaussianClassifier", "cl"));
   featureNetwork->addMarSystem(mng.create("Confidence", "confidence"));
 
-
-
-  //////////////////////////////////////////////////////////////////////////
   // link controls
-  //////////////////////////////////////////////////////////////////////////
-  featureNetwork->linkctrl("mrs_string/filename", "SoundFileSource/src/mrs_string/filename");
-  featureNetwork->linkctrl("SoundFileSource/src/mrs_string/currentlyPlaying", "Confidence/confidence/mrs_string/fileName");
+  featureNetwork->linkctrl("mrs_string/filename", 
+			   "SoundFileSource/src/mrs_string/filename");
+  featureNetwork->linkctrl("SoundFileSource/src/mrs_string/currentlyPlaying", 
+			   "Confidence/confidence/mrs_string/fileName");
   featureNetwork->linkctrl("mrs_real/israte", "SoundFileSource/src/mrs_real/israte");
   featureNetwork->linkctrl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
-
   featureNetwork->linkctrl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
   featureNetwork->linkctrl("mrs_bool/initAudio", "AudioSink/dest/mrs_bool/initAudio");
   featureNetwork->linkctrl("SoundFileSource/src/mrs_natural/currentLabel", 
 			   "Annotator/annotator/mrs_natural/label");
 
-
-  
-
-  MarControlPtr ctrl_filename_ = featureNetwork->getctrl("SoundFileSource/src/mrs_string/filename");
   MarControlPtr ctrl_notEmpty_ = featureNetwork->getctrl("SoundFileSource/src/mrs_bool/notEmpty");
 
   // main loop for extracting features 
