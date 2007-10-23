@@ -43,14 +43,14 @@ the overlapped windows with size adjusted by the WindowSize control.
 class ShiftInput: public MarSystem
 {
 private:
-  realvec pout_;
-  void addControls();
-  void myUpdate(MarControlPtr sender);
-  
-  mrs_natural N_, D_, W_, PW_;
-  bool reset_;
+  mrs_natural winSize_, hopSize_;
+	realvec outSavedData_;
   
   MarControlPtr ctrl_reset_;
+	MarControlPtr ctrl_WindowSize_;
+
+	void addControls();
+	void myUpdate(MarControlPtr sender);
   
 public:
   ShiftInput(std::string name);

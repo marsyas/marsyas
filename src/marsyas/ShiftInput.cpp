@@ -23,13 +23,9 @@ using namespace Marsyas;
 
 ShiftInput::ShiftInput(string name):MarSystem("ShiftInput",name)
 {
-
-  PW_ = 0;
-  W_ = 0;
-  N_ = 0;
-  D_ = 0;
-  reset_ = false;
-  addControls();
+	winSize_ = 0;
+	hopSize_ = 0;
+	addControls();
 }
 
 ShiftInput::~ShiftInput()
@@ -38,80 +34,85 @@ ShiftInput::~ShiftInput()
 
 ShiftInput::ShiftInput(const ShiftInput& a):MarSystem(a)
 {
-  PW_ = 0;
-  W_ = 0;
-  N_ = 0;
-  D_ = 0;
-  reset_ = false;
-  
-  ctrl_reset_ = getctrl("mrs_bool/reset");
-  
-}
+	winSize_ = 0;
+	hopSize_ = 0;
 
+	ctrl_reset_ = getctrl("mrs_bool/reset");
+	ctrl_WindowSize_ = getctrl("mrs_natural/WindowSize");
+}
 
 MarSystem* 
 ShiftInput::clone() const 
 {
-  return new ShiftInput(*this);
+	return new ShiftInput(*this);
 }
-
-
-
 
 void
 ShiftInput::addControls()
 {
-  addctrl("mrs_natural/WindowSize", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES);
-  setctrlState("mrs_natural/WindowSize", true);
+	addctrl("mrs_natural/WindowSize", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES, ctrl_WindowSize_);
+	setctrlState("mrs_natural/WindowSize", true);
 
-  addctrl("mrs_bool/reset", true, ctrl_reset_);
-  setctrlState("mrs_bool/reset", true);
+	//must be set true so we set the internal buffer to zeros the first
+	//time it is used (it will be set to false after that)
+	addctrl("mrs_bool/reset", true, ctrl_reset_);
 }
 
 void
 ShiftInput::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
-  reset_ = getctrl("mrs_bool/reset")->to<mrs_bool>();  
 
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/WindowSize"));
-  setctrl("mrs_natural/onObservations", (mrs_natural)1);
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
+	winSize_ = ctrl_WindowSize_->to<mrs_natural>();
+	hopSize_ = ctrl_inSamples_->to<mrs_natural>();
+	
+	if(hopSize_ < winSize_)
+		outSavedData_.stretch(ctrl_inObservations_->to<mrs_natural>(), winSize_- hopSize_);
 
-  W_ = getctrl("mrs_natural/WindowSize")->to<mrs_natural>();
-
-  if (PW_ != W_) 
-    pout_.stretch(W_);
-
-  PW_ = W_;  
-  N_ = getctrl("mrs_natural/onSamples")->to<mrs_natural>();
-  D_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+	ctrl_onSamples_->setValue(ctrl_WindowSize_, NOUPDATE);
+	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
+	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
+	ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
 }
 
 void 
 ShiftInput::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
-
-  if (reset_) 
-    {
-      pout_.setval(0.0);
-      reset_ = false;
-      ctrl_reset_->setValue(false, NOUPDATE);
-    }
-
-  for (t = 0; t < N_-D_; t++)
-    out(t) = pout_(t+D_);
-  for (t=N_-D_; t < N_; t++)
-    {
-      out(t) = in(t-(N_-D_));
-    }
-  for (t = 0; t < N_; t++) 
-    pout_(t) = out(t);
-
-	/*MATLAB_PUT(in, "ShiftInput_in");
+	for(o=0; o<inObservations_; ++o)
+	{
+		if(hopSize_ < winSize_)
+		{
+			//check if we must clear the audio buffer (due to a reset call)
+			if (ctrl_reset_->to<mrs_bool>()) 
+			{
+				outSavedData_.setval(0.0);
+				ctrl_reset_->setValue(false);
+			}
+			//copy previous output stored data to the output
+			for (t = 0; t < winSize_-hopSize_; t++)
+			{
+				out(o,t) = outSavedData_(o, t);
+			}
+			//add new hopSize samples from input to the end of output
+			for (t=winSize_-hopSize_; t < winSize_; t++)
+			{
+				out(o, t) = in(o, t-(winSize_-hopSize_));
+			}
+			//store current output for next time
+			for (t = 0; t < winSize_-hopSize_; t++) 
+				outSavedData_(o, t) = out(o, t+hopSize_);
+		}
+		else
+		{
+			for(t=0; t<onSamples_; ++t)
+				out(o,t) = in(o,t);
+		}
+	}
+	/*
+	MATLAB_PUT(in, "ShiftInput_in");
 	MATLAB_PUT(out, "ShiftInput_out");
-	MATLAB_EVAL("plot([zeros(1,length(ShiftInput_in)) ShiftInput_in]); hold on; plot(ShiftInput_out, 'r'); hold off");*/
+	MATLAB_EVAL("plot([zeros(1,length(ShiftInput_in)) ShiftInput_in]); hold on; plot(ShiftInput_out, 'r'); hold off");
+	*/
 }
 
 
