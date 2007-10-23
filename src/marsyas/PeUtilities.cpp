@@ -583,8 +583,6 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOscBank/pso/mrs_natural/Interpolation", D);
 
 	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Interpolation", D); //[WTF]
-	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/WindowSize", Nw);    //[WTF]  
-	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Decimation", D);	//[WTF]
 
 	if (outsfname == "MARSYAS_EMPTY") 
 		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/AudioSink/dest/mrs_natural/bufferSize", bopt);

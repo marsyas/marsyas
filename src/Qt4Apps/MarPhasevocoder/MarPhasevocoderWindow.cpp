@@ -179,8 +179,6 @@ MarPhasevocoderWindow::createNetwork()
 	pvoc_->updctrl("PvOscBank/ob/mrs_natural/Interpolation", I);
 	pvoc_->updctrl("PvOscBank/ob/mrs_real/PitchShift", P);
 	pvoc_->updctrl("ShiftOutput/so/mrs_natural/Interpolation", I);
-	pvoc_->updctrl("ShiftOutput/so/mrs_natural/WindowSize", Nw);      
-	pvoc_->updctrl("ShiftOutput/so/mrs_natural/Decimation", D);
 	pvoc_->updctrl("Gain/gain/mrs_real/gain", gopt_);
 
 	mwr_ = new MarSystemQtWrapper(pvoc_, true);

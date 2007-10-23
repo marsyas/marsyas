@@ -34,26 +34,23 @@ into the right-hand end of the outputSlice.
 with gain and put them in the output vector. 
 
 	Controls:
-	- \b mrs_natural/Interpolation [rw] : DOCME
-	- \b mrs_natural/WindowSize [rw] : DOCME
-	- \b mrs_natural/Decimation [rw] : DOCME
+	- \b mrs_natural/Interpolation [rw] : sets the hop size used by the data arriving at the input
+	so that only this number of samples is sent to the output (i.e. this control sets the number of samples
+	in the output).
 */
 
 
 class ShiftOutput: public MarSystem
 {
 private:
-
-  realvec tmpSlice_;
-  mrs_natural N_,Nw_,I_,D_;  
-  mrs_natural n_;
-
+	MarControlPtr ctrl_Interpolation_;
 
   void addControls();
   void myUpdate(MarControlPtr sender);  
 
 public:
   ShiftOutput(std::string name);
+	ShiftOutput(const ShiftOutput& a);
   ~ShiftOutput();
   MarSystem* clone() const;  
 

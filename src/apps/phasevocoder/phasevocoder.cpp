@@ -144,8 +144,6 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
   pvseries->updctrl("PvOscBank/ob/mrs_natural/Interpolation", I);
   pvseries->updctrl("PvOscBank/ob/mrs_real/PitchShift", P);
   pvseries->updctrl("ShiftOutput/so/mrs_natural/Interpolation", I);
-  pvseries->updctrl("ShiftOutput/so/mrs_natural/WindowSize", Nw);      
-  pvseries->updctrl("ShiftOutput/so/mrs_natural/Decimation", D);
   pvseries->updctrl("Gain/gain/mrs_real/gain", gopt_);
 
 
@@ -226,7 +224,6 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 
 					pvseries->updctrl("PvFold/fo/mrs_natural/Decimation", byte3);
 					pvseries->updctrl("PvConvert/conv/mrs_natural/Decimation", byte3 );
-					pvseries->updctrl("ShiftOutput/so/mrs_natural/Decimation", byte3 );
 				} 
 			}
 		}
@@ -460,8 +457,6 @@ phasevocCrossSynth(string sfName, mrs_natural N, mrs_natural Nw,
 
 	total->linkctrl("mrs_natural/Decimation", 
 		"PvConvert/conv/mrs_natural/Decimation");
-	total->linkctrl("mrs_natural/Decimation", 
-		"ShiftOutput/so/mrs_natural/Decimation");
 	total->linkctrl("mrs_natural/Sinusoids",
 		"PvConvert/conv/mrs_natural/Sinusoids");
 
@@ -474,9 +469,6 @@ phasevocCrossSynth(string sfName, mrs_natural N, mrs_natural Nw,
 		"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/WindowSize");
 	total->linkctrl("mrs_natural/WindowSize", 
 		"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/WindowSize");  
-
-	total->linkctrl("mrs_natural/WindowSize",
-		"ShiftOutput/so/mrs_natural/WindowSize");  
 
 	total->linkctrl("mrs_natural/Interpolation",
 		"ShiftOutput/so/mrs_natural/Interpolation");  
@@ -583,9 +575,6 @@ phasevocConvolve(string sfName, mrs_natural N, mrs_natural Nw,
 	total->linkctrl("mrs_natural/Decimation", 
 		"PvConvert/conv/mrs_natural/Decimation");
 
-	total->linkctrl("mrs_natural/Decimation", 
-		"ShiftOutput/so/mrs_natural/Decimation");
-
 	total->linkctrl("mrs_natural/Sinusoids",
 		"PvConvert/conv/mrs_natural/Sinusoids");
 
@@ -600,9 +589,6 @@ phasevocConvolve(string sfName, mrs_natural N, mrs_natural Nw,
 
 	total->linkctrl("mrs_natural/WindowSize", 
 		"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/WindowSize");  
-
-	total->linkctrl("mrs_natural/WindowSize",
-		"ShiftOutput/so/mrs_natural/WindowSize");  
 
 	total->linkctrl("mrs_natural/Interpolation",
 		"ShiftOutput/so/mrs_natural/Interpolation");  

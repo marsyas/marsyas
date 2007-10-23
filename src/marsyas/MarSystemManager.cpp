@@ -414,16 +414,12 @@ MarSystemManager::MarSystemManager()
 		"PvFold/fo/mrs_natural/Decimation");
 	pvocpr->linkctrl("mrs_natural/Decimation", 
 		"PvConvert/conv/mrs_natural/Decimation");
-	pvocpr->linkctrl("mrs_natural/Decimation", 
-		"ShiftOutput/so/mrs_natural/Decimation");
 	pvocpr->linkctrl("mrs_natural/Sinusoids", 
 		"PvConvert/conv/mrs_natural/Sinusoids");
 	pvocpr->linkctrl("mrs_natural/FFTSize", 
 		"PvFold/fo/mrs_natural/FFTSize");
 	pvocpr->linkctrl("mrs_natural/WindowSize", 
 		"PvFold/fo/mrs_natural/WindowSize");
-	pvocpr->linkctrl("mrs_natural/WindowSize", 
-		"ShiftOutput/so/mrs_natural/WindowSize");
 	pvocpr->linkctrl("mrs_natural/Interpolation", 
 		"PvOscBank/ob/mrs_natural/Interpolation");
 	pvocpr->linkctrl("mrs_natural/Interpolation", 

@@ -23,17 +23,13 @@ using namespace Marsyas;
 
 ShiftOutput::ShiftOutput(string name):MarSystem("ShiftOutput",name)
 {
-  
-  N_ = 0;
-  Nw_ =0;
-  I_ = 0;
-  D_ = 0;
-  n_ = 0;
   addControls();
-  
-
 }
 
+ShiftOutput::ShiftOutput(const ShiftOutput& a):MarSystem(a)
+{
+	ctrl_Interpolation_ = getctrl("mrs_natural/Interpolation");
+}
 
 ShiftOutput::~ShiftOutput()
 {
@@ -48,60 +44,27 @@ ShiftOutput::clone() const
 void
 ShiftOutput::addControls()
 {
-  addctrl("mrs_natural/Interpolation", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES / 2);
+  addctrl("mrs_natural/Interpolation", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES / 2, ctrl_Interpolation_);
   setctrlState("mrs_natural/Interpolation", true);
-  addctrl("mrs_natural/WindowSize", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES);
-  addctrl("mrs_natural/Decimation", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES/2);
 }
 
 void
 ShiftOutput::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/Interpolation"));
-  setctrl("mrs_natural/onObservations", (mrs_natural)1);
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
-  
-  setctrl("mrs_natural/WindowSize",getctrl("mrs_natural/inSamples"));
 
-  //defaultUpdate(); [!]
-	inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
-	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
-  
-  tmpSlice_.stretch(inObservations_, inSamples_);
-  
-  I_ = getctrl("mrs_natural/onSamples")->to<mrs_natural>();
-  N_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
-  Nw_ = getctrl("mrs_natural/WindowSize")->to<mrs_natural>();
-  D_ = getctrl("mrs_natural/Decimation")->to<mrs_natural>();
+	ctrl_onSamples_->setValue(ctrl_Interpolation_, NOUPDATE);
+	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
+	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
+	ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);  
 }
 
 void 
 ShiftOutput::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
-    
-  n_ += 2*D_ + Nw_ / 2;
-    
-  for (o=0; o < inObservations_; o++)
-    for (t =0; t < inSamples_; t++)
-    {
-			tmpSlice_(o,t) = in(o,t);
-    }
-
-  if (n_ >= 0.0)
-    for (t = 0; t < I_; t++)
-    {
-			out(t) = in(t);
-    }
-	/*
-	MATLAB_PUT(in, "Schredder_in");
-	MATLAB_PUT(out, "Schredder_out");
-	MATLAB_EVAL("figure(1);plot(Schredder_in(1:2:end, :))");
-	MATLAB_EVAL("figure(2);plot(Schredder_out)");
-	*/
-	//MATLAB_PUT(out, "vec");
-	//MATLAB_EVAL("figure(1);clf;plot(vec);");
+  for(o=0; o< onObservations_; ++o)
+		for (t = 0; t < onSamples_; t++)
+			out(o,t) = in(o,t);
 }
 
 
