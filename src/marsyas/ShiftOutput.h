@@ -43,6 +43,8 @@ with gain and put them in the output vector.
 class ShiftOutput: public MarSystem
 {
 private:
+	mrs_natural interp_;
+
 	MarControlPtr ctrl_Interpolation_;
 
   void addControls();

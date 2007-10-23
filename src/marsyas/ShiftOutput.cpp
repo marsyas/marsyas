@@ -53,6 +53,8 @@ ShiftOutput::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
 
+	interp_ = ctrl_Interpolation_->to<mrs_natural>();
+
 	ctrl_onSamples_->setValue(ctrl_Interpolation_, NOUPDATE);
 	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
@@ -62,8 +64,11 @@ ShiftOutput::myUpdate(MarControlPtr sender)
 void 
 ShiftOutput::myProcess(realvec& in, realvec& out)
 {
-  for(o=0; o< onObservations_; ++o)
-		for (t = 0; t < onSamples_; t++)
+	if(interp_ > inSamples_)
+		out.setval(0.0);
+
+  for(o=0; o< inObservations_; ++o)
+		for (t = 0; t < min(inSamples_,interp_); t++)
 			out(o,t) = in(o,t);
 }
 
