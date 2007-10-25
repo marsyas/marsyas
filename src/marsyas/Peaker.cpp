@@ -47,6 +47,8 @@ Peaker::addControls()
 	addctrl("mrs_real/peakGain", 1.0);
 }
 
+
+
 void 
 Peaker::myProcess(realvec& in, realvec& out)
 {
@@ -64,7 +66,11 @@ Peaker::myProcess(realvec& in, realvec& out)
 	peakEnd = getctrl("mrs_natural/peakEnd")->to<mrs_natural>();
 	interpolationMode = getctrl("mrs_natural/interpolation")->to<mrs_natural>();
 	peakGain = getctrl("mrs_real/peakGain")->to<mrs_real>();
+
+
 	
+	if (peakEnd == 0)
+	  peakEnd = inSamples_;
 	// FIXME This line defines an unused variable
 	// mrs_real srate = getctrl("mrs_real/israte")->to<mrs_real>();
 

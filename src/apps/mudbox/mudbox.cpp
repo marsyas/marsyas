@@ -335,6 +335,48 @@ void drumClassify( string drumFile) {
 
 
 
+void 
+toy_with_onsets(string sfName) 
+{
+  cout << "toying with onsets" << endl;
+  MarSystemManager mng;
+
+  // assemble the processing network 
+  MarSystem* onset_network = mng.create("Series", "onsetnetwork");
+  onset_network->addMarSystem(mng.create("SoundFileSource", "src"));
+  onset_network->addMarSystem(mng.create("FullWaveRectifier", "fwr"));
+  onset_network->addMarSystem(mng.create("OnePole", "lpf"));
+  onset_network->addMarSystem(mng.create("Peaker", "pkr"));
+  onset_network->addMarSystem(mng.create("SoundFileSink", "fdest"));
+  onset_network->addMarSystem(mng.create("AudioSink", "dest"));
+  
+  // update/link controls 
+  onset_network->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  onset_network->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+  // low pass filter coefficient
+  onset_network->updctrl("OnePole/lpf/mrs_real/alpha", 0.99f);
+  // parameters of Peaker 
+  onset_network->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.95);
+  onset_network->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.8);
+  // soundfile containing the onsets 
+  onset_network->updctrl("SoundFileSink/fdest/mrs_string/filename", "onsets.wav");
+  // adjust the window size 
+  onset_network->updctrl("mrs_natural/inSamples", 8192);
+  // link notEmpty to a top-level control 
+  onset_network->linkctrl("mrs_bool/notEmpty", 
+			  "SoundFileSource/src/mrs_bool/notEmpty");
+  
+
+  while(onset_network->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
+    {
+      onset_network->tick();
+    }
+  
+    
+
+
+}
+
 
 
 void
@@ -3524,6 +3566,8 @@ main(int argc, const char **argv)
     toy_with_getControls(fname0);
   else if (toy_withName == "mono2stereo")
     toy_with_mono2stereo(fname0);
+  else if (toy_withName == "onsets") 
+    toy_with_onsets(fname0);
  else if (toy_withName == "pitch")
    toy_with_pitch(fname0);
   else if (toy_withName == "confidence")
