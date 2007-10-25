@@ -54,7 +54,7 @@ FileName::name()
   size_t loc;
 
 #ifdef MARSYAS_WIN32
-  loc = filename_.rfind("\\", filename_.lenth()-1);
+  loc = filename_.rfind("\\", filename_.length()-1);
 #else 
   loc = filename_.rfind("/", filename_.length()-1);
 #endif
@@ -94,7 +94,7 @@ FileName::path()
   size_t loc;
 
 #ifdef MARSYAS_WIN32
-  loc = filename_.rfind("\\", filename_.lenth()-1);
+  loc = filename_.rfind("\\", filename_.length()-1);
 #else 
   loc = filename_.rfind("/", filename_.length()-1);
 #endif

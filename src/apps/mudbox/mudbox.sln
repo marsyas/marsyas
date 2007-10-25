@@ -1,18 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "marsyas", "..\..\marsyas\marsyas.vcproj", "{F288F15B-E6EB-3886-966D-173AD4A15796}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "marsyas", "..\..\marsyas\marsyas.vcproj", "{A25F3CDB-66D9-3769-8405-BA82EDE1B6C4}"
 	GlobalSection(Qt) = preSolution
 		Integration = True
 	EndGlobalSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mudbox", "mudbox.vcproj", "{1B5DCF38-3272-31CE-815C-AADC1C37631B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mudbox", "mudbox.vcproj", "{5D4FE77E-D0B7-360B-9FBC-0EA5554EF6AA}"
 	GlobalSection(Qt) = preSolution
 		Integration = True
 	EndGlobalSection
-	ProjectSection(ProjectDependencies) = postProject
-		{F288F15B-E6EB-3886-966D-173AD4A15796} = {F288F15B-E6EB-3886-966D-173AD4A15796}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(Qt) = preSolution
@@ -23,14 +20,14 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F288F15B-E6EB-3886-966D-173AD4A15796}.Debug|Win32.ActiveCfg = Debug|Win32
-		{F288F15B-E6EB-3886-966D-173AD4A15796}.Debug|Win32.Build.0 = Debug|Win32
-		{F288F15B-E6EB-3886-966D-173AD4A15796}.Release|Win32.ActiveCfg = Release|Win32
-		{F288F15B-E6EB-3886-966D-173AD4A15796}.Release|Win32.Build.0 = Release|Win32
-		{1B5DCF38-3272-31CE-815C-AADC1C37631B}.Debug|Win32.ActiveCfg = Debug|Win32
-		{1B5DCF38-3272-31CE-815C-AADC1C37631B}.Debug|Win32.Build.0 = Debug|Win32
-		{1B5DCF38-3272-31CE-815C-AADC1C37631B}.Release|Win32.ActiveCfg = Release|Win32
-		{1B5DCF38-3272-31CE-815C-AADC1C37631B}.Release|Win32.Build.0 = Release|Win32
+		{A25F3CDB-66D9-3769-8405-BA82EDE1B6C4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A25F3CDB-66D9-3769-8405-BA82EDE1B6C4}.Debug|Win32.Build.0 = Debug|Win32
+		{A25F3CDB-66D9-3769-8405-BA82EDE1B6C4}.Release|Win32.ActiveCfg = Release|Win32
+		{A25F3CDB-66D9-3769-8405-BA82EDE1B6C4}.Release|Win32.Build.0 = Release|Win32
+		{5D4FE77E-D0B7-360B-9FBC-0EA5554EF6AA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5D4FE77E-D0B7-360B-9FBC-0EA5554EF6AA}.Debug|Win32.Build.0 = Debug|Win32
+		{5D4FE77E-D0B7-360B-9FBC-0EA5554EF6AA}.Release|Win32.ActiveCfg = Release|Win32
+		{5D4FE77E-D0B7-360B-9FBC-0EA5554EF6AA}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
