@@ -38,7 +38,6 @@ class FileName
 {
 private:
   std::string filename_;
-  char* rindex(const char *s, int c);
   
 public:
   FileName();

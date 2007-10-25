@@ -38,16 +38,6 @@ FileName::~FileName()
 
 
 
-char* 
-FileName::rindex(const char *s, int c) {
-  size_t len = strlen(s);
-  int i;
-  for (i= (int) len-1; i >=0; i--) {
-    if (s[i] == c)
-      break;
-  }
-  return (char *)((i < 0) ? NULL : (s+i));
-}
 
 
 string 
@@ -60,82 +50,64 @@ FileName::fullname()
 string 
 FileName::name()
 {
-	const char *str = filename_.c_str();
-	const char *tmp = rindex(str, '/'); 
-	// [!] may not work with gcc <- convert with stl
-	const char *tmp2 = rindex(str, '\\');
+  string name;
+  size_t loc;
 
-	if(tmp2 && !tmp)
-		tmp = tmp2;
-	else
-	if(tmp2 && strlen(tmp2) < strlen(tmp))
-		tmp = tmp2;
-	
-	if (tmp==NULL) 
-		return filename_;
-	else
-	{
-		string res(tmp+1);
-		return res;
-	}
-
+#ifdef MARSYAS_WIN32
+  loc = filename_.rfind("\\", filename_.lenth()-1);
+#else 
+  loc = filename_.rfind("/", filename_.length()-1);
+#endif
+  
+  if (loc != string::npos)
+    name = filename_.substr(loc+1, filename_.length()-1);
+  else 
+    name = filename_;			// file in current directory 
+  
+  return name;
+  
 }
 
 string
 FileName::nameNoExt()
 {
-	string str = name();
-const	char *tmp = str.c_str();
-		 
-	char *tmp2 = rindex(tmp, '.');
-	if(tmp2)
-	*tmp2 = '\0';
-	string res(tmp);
-return res;
+  string str = name();
+  size_t loc;  
+
+  loc = str.rfind(".", str.length()-1);
+  return str.substr(0,loc);
 }
 
 string
 FileName::ext()
 {
-  const char *str = filename_.c_str();
-  const char *tmp = rindex(str, '.');
-  if (tmp==NULL) 
-    return filename_;
-  else
-    {
-      string res(tmp+1);
-      return res;
-    }
+  size_t loc;
+  loc = filename_.rfind(".", filename_.length()-1);
+  return filename_.substr(loc+1, filename_.length()-1);
 }
 
 string
 FileName::path()
 {
-  const char *str = filename_.c_str();
-	 char *tmp = rindex(str, '/'); 
-	// [!] may not work with gcc <- convert with stl
-	char *tmp2 = rindex(str, '\\');
 
-	if(tmp2 && !tmp)
-		tmp = tmp2;
-	else
-	if(tmp2 && strlen(tmp2) < strlen(tmp))
-		tmp = tmp2;
-	
-	if (tmp==NULL) 
-		return filename_;
-	else
-	{
-		char tmpChar = *(tmp+1);
-		*(tmp+1) = '\0';
-		string res(str);
-*(tmp+1) = tmpChar;
-		return res;
-	}
-	
-	//string res("path"); [????]
-  //return res;
+  string name;
+  size_t loc;
+
+#ifdef MARSYAS_WIN32
+  loc = filename_.rfind("\\", filename_.lenth()-1);
+#else 
+  loc = filename_.rfind("/", filename_.length()-1);
+#endif
+  
+  if (loc != string::npos)
+    name = filename_.substr(0, loc+1);
+  else 
+    name = "";			// file in current directory no path
+  
+  return name;
+  
 }
+
 	
       
   
