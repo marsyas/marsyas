@@ -65,6 +65,9 @@ void IntonationTry::colorNote(int note, double error, double direction)
 	lilyInput_.replace(line,lily_line);
 }
 
+
+// format of errors:
+// [ absolute intonation mistake, end frame, error direction ]
 void IntonationTry::calcErrors(const realvec& pitches, const realvec&
                                bounds, realvec& errors)
 {
@@ -122,7 +125,7 @@ void IntonationTry::calcErrors(const realvec& pitches, const realvec&
 		errors(exerNote,0) = noteError;
 
 		// set onset
-		errors(exerNote,1) = noteStart - bounds(0);
+		errors(exerNote,1) = noteStart - bounds(0) + noteLength -1;
 
 		//cout<<noteError<<"\t"<<noteDirectionError<<endl;
 		// set note direction

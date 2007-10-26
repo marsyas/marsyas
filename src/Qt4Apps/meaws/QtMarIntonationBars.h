@@ -2,6 +2,7 @@
 #ifndef QTMARINTONATIONBARS_H
 #define QTMARINTONATIONBARS_H
 
+//#include <QBrush>
 #include "QtMarPlot.h"
 
 #include "MarSystemManager.h"
