@@ -79,7 +79,6 @@ Fanout::myUpdate(MarControlPtr sender)
     {
       string s;
       s = marsystems_[i]->getType() + "/" + marsystems_[i]->getName();
-      cout << s << endl;
       if (disableChild_ == s) 
 	disableChildIndex_ = i;
     }
@@ -110,15 +109,13 @@ Fanout::myUpdate(MarControlPtr sender)
     {
       string s;
       s = marsystems_[i]->getType() + "/" + marsystems_[i]->getName();
-      cout << s << endl;
-      cout << "enableChild_ " << enableChild_ << endl;
+
       
       if (enableChild_ == s) 
 	enableChildIndex_ = i;
     }
   if (enableChildIndex_ != -1) 
     {
-      cout << "*** ENABLING " << enableChildIndex_ << endl;
       
       enabled_(enableChildIndex_) = 1.0;
       localIndices_(enableChildIndex_) = 1.0;
