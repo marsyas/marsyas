@@ -1,9 +1,8 @@
 //  Graham Percival  <gperciva@uvic.ca>
-#ifndef QTMARPLOT_H
-#define QTMARPLOT_H
+#ifndef QTMARINTONATIONBARS_H
+#define QTMARINTONATIONBARS_H
 
-#include <QWidget>
-#include <QPainter>
+#include "QtMarPlot.h"
 
 #include "MarSystemManager.h"
 using namespace Marsyas;
@@ -18,37 +17,34 @@ namespace MarsyasQt
 other plotting widget.
 
 */
-class QtMarPlot : public QWidget
+class QtMarIntonationBars : public QtMarPlot
 {
 	Q_OBJECT
 public:
-	QtMarPlot(QWidget *parent = 0);
-	~QtMarPlot();
-	void setPlotName(QString plotName);
-	void setBackgroundColor(QPalette color);
-	void setPixelWidth(mrs_natural width);
-	void setVertical(mrs_real minVal, mrs_real highVal); // scales data
-	void setCenterLine(bool drawit);
-	void setImpulses(bool drawit);
-	void setData(realvec* getData);
-	void setOtherData(realvec* getData);
-
-	void setBars(bool drawit); // hack
+	QtMarIntonationBars(QWidget *parent = 0);
+	~QtMarIntonationBars();
+	void setBarData(realvec *getData); // hack
 
 protected:
 	void paintEvent(QPaintEvent *event);
 
+private:
 	realvec *data_;
+	bool drawBars_;
+	void plot1d();
+/*
 	realvec *otherData_;
 	QString plotName_;
 	mrs_real minVal_, highVal_;
 	mrs_natural width_;
 	bool drawCenter_;
 	bool drawImpulses_;
+	bool drawBars_;
 
-	void plot1d();
 	//void plot2d(); // not implemented yet
 	void putBlob(int x, int y, QPainter painter); // for a 2x2 blob of pixels
+//	void plotBars();
+*/
 };
 
 } //namespace

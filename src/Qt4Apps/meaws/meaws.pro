@@ -24,10 +24,8 @@ SOURCES += rhythm-exercise.cpp rhythm-try.cpp
 HEADERS += backend.h
 SOURCES += backend.cpp
 
-
-# temp testing
-HEADERS += QtMarPlot.h
-SOURCES += QtMarPlot.cpp
+HEADERS += QtMarIntonationBars.h
+SOURCES += QtMarIntonationBars.cpp
 
 RESOURCES = icons.qrc
 TARGET = meaws
