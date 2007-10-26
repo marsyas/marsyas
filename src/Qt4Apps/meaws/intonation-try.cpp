@@ -65,13 +65,15 @@ void IntonationTry::colorNote(int note, double error, double direction)
 	lilyInput_.replace(line,lily_line);
 }
 
-void IntonationTry::calcErrors(const realvec& pitches, const realvec&
+realvec IntonationTry::calcErrors(const realvec& pitches, const realvec&
                                bounds)
 {
+	realvec errors(exerAnswer.getRows()-1,3);
 	mrs_real expected;
 	realvec notePitches;
 	mrs_natural noteStart, noteLength;
 	mrs_real noteError;
+	mrs_real noteDirectionError;
 	mrs_real deltaError;
 
 	mrs_natural exerNote, i;
@@ -79,13 +81,13 @@ void IntonationTry::calcErrors(const realvec& pitches, const realvec&
 	{
 		// find the boundaires of the note
 		i = exerNote;
-		while ( (bounds(i) < exerAnswer(exerNote,1)) &&
+		while ( (bounds(i) < exerAnswer(exerNote,1)+bounds(0)) &&
 		        (i < bounds.getSize()) )
 			i++;
 		noteStart = (mrs_natural) bounds(i);
 		i = exerNote;
 
-		while ( (bounds(i) <= exerAnswer(exerNote+1,1)) &&
+		while ( (bounds(i) <= exerAnswer(exerNote+1,1)+bounds(0)) &&
 		        (i < bounds.getSize()) )
 			i++;
 		noteLength = (mrs_natural) (bounds(i) - noteStart);
@@ -95,6 +97,7 @@ void IntonationTry::calcErrors(const realvec& pitches, const realvec&
 
 		expected = exerAnswer(exerNote,0);
 		noteError = 0;
+		noteDirectionError = 0;
 		for (i=0; i<notePitches.getSize(); i++)
 		{
 			if (notePitches(i) == 0)
@@ -105,15 +108,32 @@ void IntonationTry::calcErrors(const realvec& pitches, const realvec&
 				deltaError += 12;
 			if (deltaError > 6)
 				deltaError -= 12;
-			noteError += deltaError;
+			//    I don't understand this, and it's my own code.
+			//    :(  -gp
+			// normalize display of error: 1.0 = 1/4 tone wrong.
+			deltaError /= (6.0*noteLength);
+
+			noteError += fabs(deltaError);
+			noteDirectionError += deltaError;
 //			cout<<notePitches(i)<<"\t"<<deltaError<<endl;
 		}
-		// normalize display of error: 1.0= 1/4 tone wrong.
-		noteError = noteError / (6.0*noteLength);
-		cout<<exerNote<<" "<<noteError<<endl;
 
-// TODO: fix direction of error
-		colorNote(exerNote,noteError,noteError);
+		// set note error
+		errors(exerNote,0) = noteError;
+
+		// set onset
+		errors(exerNote,1) = noteStart - bounds(0);
+
+		//cout<<noteError<<"\t"<<noteDirectionError<<endl;
+		// set note direction
+		if (noteDirectionError < -0.5*noteError)
+			errors(exerNote,2) = -1;
+		else if (noteDirectionError > 0.5*noteError)
+			errors(exerNote,2) = 1;
+		else
+			errors(exerNote,2) = 0;
+
+		//colorNote(exerNote,noteError,noteError);
 	}
 
 /*
@@ -131,6 +151,8 @@ void IntonationTry::calcErrors(const realvec& pitches, const realvec&
 	}
 	out_file.close();
 */
+//	cout<<errors;
+	return errors;
 }
 
 
@@ -143,20 +165,48 @@ bool IntonationTry::displayAnalysis(MarBackend *results)
 	Transcriber::pitchSegment(pitches, bounds);
 	// shift the exercise times to match the beginning of audio exercise
 	Transcriber::discardBeginEndSilences(pitches, amps, bounds);
+	realvec errors = calcErrors(pitches, bounds);
+
+	cout<<errors;
+/*
 	for (int i=0; i<exerAnswer.getRows(); i++)
 		exerAnswer(i,1) = exerAnswer(i,1) + bounds(0);
 
-	calcErrors(pitches, bounds);
+
+	cout<<errors;
+*/
+
+/*
 	realvec *data = new realvec;
 	(*data) = pitches;
 
-	pitchPlot->setData(data);
-	pitchPlot->setVertical(57,73);
+//	pitchPlot->setData(data);
+//	pitchPlot->setVertical(57,73);
 	pitchPlot->setPlotName("pitches");
 	pitchPlot->setCenterLine(true);
 
 	pitchPlot->setBars(true);
 
+    mrs_natural exerLength = (mrs_natural)
+		exerAnswer(exerAnswer.getRows()-1,1);
+
+    mrs_natural j=0;
+    realvec* answerVec = new realvec(exerLength);
+    for (mrs_natural i=0; i<exerLength; i++)
+        if ( i==(exerAnswer(j,1)) ) {
+            j++;
+            (*answerVec)(i)=1.0;
+        } else {
+            (*answerVec)(i)=0.0;
+        }
+    data->stretch(answerVec->getSize());
+//	cout<<(*answerVec)<<endl;
+//	pitchPlot->setOtherData(answerVec);
+	cout<<errors;
+	errors.stretch(errors.getSize(), 3);
+	cout<<errors;
+	//pitchPlot->setData(&errors);
+*/
 // LILYPOND STUFF
 /*
 	system("cd /tmp; lilypond -dpreview out.ly");

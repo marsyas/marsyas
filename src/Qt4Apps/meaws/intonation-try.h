@@ -22,7 +22,7 @@ public:
 
 	void setAnswer(const realvec answers);
 	void setLily(const QStringList);
-	void calcErrors(const realvec& pitch, const realvec& bounds);
+	realvec calcErrors(const realvec& pitch, const realvec& bounds);
 
 public slots:
 	void doubleclicked();

@@ -5,7 +5,6 @@ using namespace std;
 
 ExerciseDispatcher::ExerciseDispatcher(QFrame *centralFrame)
 {
-	cout<<"in exerdisplatch"<<endl;
 	layout_ = new QVBoxLayout();
 	layout_->setContentsMargins(1,1,1,1);
 	centralFrame->setLayout(layout_);

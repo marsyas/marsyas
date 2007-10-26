@@ -156,6 +156,8 @@ bool User::close()
 
 bool User::maybeSave()
 {
+// TODO: disable temporarily.
+/*
 	if (isModified_)
 	{
 		QMessageBox::StandardButton ret;
@@ -168,6 +170,7 @@ bool User::maybeSave()
 		else if (ret == QMessageBox::Cancel)
 			return false;
 	}
+*/
 	return true;
 }
 
