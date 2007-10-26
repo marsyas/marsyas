@@ -10,7 +10,7 @@ IntonationTry::IntonationTry()
 	tryLayout_->setContentsMargins(0,0,0,0);
 	tryArea_->setLayout(tryLayout_);
 
-	pitchPlot = new QtMarPlot();
+	pitchPlot = new QtMarIntonationBars();
 	pitchPlot->setBackgroundColor(QColor(255,255,255));
 	tryLayout_->addWidget(pitchPlot);
 }
@@ -167,7 +167,9 @@ bool IntonationTry::displayAnalysis(MarBackend *results)
 	Transcriber::discardBeginEndSilences(pitches, amps, bounds);
 	realvec errors = calcErrors(pitches, bounds);
 
-	cout<<errors;
+	pitchPlot->setBarData(&errors);
+	//cout<<errors;
+
 /*
 	for (int i=0; i<exerAnswer.getRows(); i++)
 		exerAnswer(i,1) = exerAnswer(i,1) + bounds(0);

@@ -32,19 +32,19 @@ private:
 	realvec *data_;
 	bool drawBars_;
 	void plot1d();
-/*
-	realvec *otherData_;
-	QString plotName_;
-	mrs_real minVal_, highVal_;
-	mrs_natural width_;
-	bool drawCenter_;
-	bool drawImpulses_;
-	bool drawBars_;
+	/*
+		realvec *otherData_;
+		QString plotName_;
+		mrs_real minVal_, highVal_;
+		mrs_natural width_;
+		bool drawCenter_;
+		bool drawImpulses_;
+		bool drawBars_;
 
-	//void plot2d(); // not implemented yet
-	void putBlob(int x, int y, QPainter painter); // for a 2x2 blob of pixels
-//	void plotBars();
-*/
+		//void plot2d(); // not implemented yet
+		void putBlob(int x, int y, QPainter painter); // for a 2x2 blob of pixels
+	//	void plotBars();
+	*/
 };
 
 } //namespace

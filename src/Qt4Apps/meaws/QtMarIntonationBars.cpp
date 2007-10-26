@@ -56,67 +56,26 @@ QtMarIntonationBars::plot1d()
 	float vMean = (minVal_+highVal_)/2;
 	mrs_natural midY = height()/2;
 
-	if (drawBars_)
+	pen.setColor(QColor(255,0,0));
+	painter.setPen(pen);
+	painter.drawRect(20,20,100,100);
+
+	cout<<data_;
+/*
+	// iterates over the otherData_
+	for (i=0; i<otherData_->getSize(); i++)
 	{
-		if (otherData_ == NULL)
+		x = mrs_natural (i * hScale);
+		y = mrs_natural ( ((*otherData_)(i)-vMean) * vScale );
+		if ( (y>-midY) && (y<midY))
+			painter.drawPoint( x, -y+midY);
+		if (drawImpulses_)
 		{
-			MRSERR("QtMarIntonationBars doesn't have other data to plot");
-			return;
-		}
-
-		pen.setColor(QColor(255,0,0));
-		painter.setPen(pen);
-		painter.drawRect(20,20,100,100);
-
-		// iterates over the otherData_
-		for (i=0; i<otherData_->getSize(); i++)
-		{
-			x = mrs_natural (i * hScale);
-			y = mrs_natural ( ((*otherData_)(i)-vMean) * vScale );
-			if ( (y>-midY) && (y<midY))
+			for (y=y; y>-height()/2; y--)
 				painter.drawPoint( x, -y+midY);
-			if (drawImpulses_)
-			{
-				for (y=y; y>-height()/2; y--)
-					painter.drawPoint( x, -y+midY);
-			}
-		}
-
-	}
-	else
-	{
-		// iterates over the data_
-		for (i=0; i<data_->getSize(); i++)
-		{
-			x = mrs_natural (i * hScale);
-			y = mrs_natural ( ((*data_)(i)-vMean) * vScale );
-			if ( (y>-midY) && (y<midY))
-				painter.drawPoint( x, -y+midY);
-			if (drawImpulses_)
-			{
-				for (y=y; y>-height()/2; y--)
-					painter.drawPoint( x, -y+midY);
-			}
-		}
-		if (otherData_ != NULL)
-		{
-			pen.setColor(QColor(255,0,0));
-			painter.setPen(pen);
-			// iterates over the otherData_
-			for (i=0; i<otherData_->getSize(); i++)
-			{
-				x = mrs_natural (i * hScale);
-				y = mrs_natural ( ((*otherData_)(i)-vMean) * vScale );
-				if ( (y>-midY) && (y<midY))
-					painter.drawPoint( x, -y+midY);
-				if (drawImpulses_)
-				{
-					for (y=y; y>-height()/2; y--)
-						painter.drawPoint( x, -y+midY);
-				}
-			}
 		}
 	}
+*/
 }
 
 } //namespace

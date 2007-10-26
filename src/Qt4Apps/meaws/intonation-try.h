@@ -11,7 +11,7 @@
 #include <QDir>
 #include <QVBoxLayout>
 #include "abstract-try.h"
-#include "QtMarPlot.h"
+#include "QtMarIntonationBars.h"
 #include "Marx2DGraph.h"
 
 class IntonationTry : public Try {
@@ -31,7 +31,7 @@ private:
 	void colorNote(int note, double error, double direction);
 
 	QLabel *resultDisplay;
-	QtMarPlot *pitchPlot;
+	QtMarIntonationBars *pitchPlot;
 
 	realvec exerAnswer;
 	QStringList lilyInput_;
