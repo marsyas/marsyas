@@ -506,16 +506,24 @@ toy_with_fanoutswitch()
   
   pnet->addMarSystem(mix);
   pnet->addMarSystem(mng.create("PlotSink", "psink2"));
+  pnet->updctrl("PlotSink/psink2/mrs_string/filename", "out");
   
   // Disable subset of Fanout branches 
-  pnet->updctrl("Fanout/mix/mrs_natural/disable", 2);
   pnet->updctrl("Fanout/mix/mrs_natural/disable", 0);
+  pnet->updctrl("Fanout/mix/mrs_natural/disable", 1);
+  pnet->updctrl("Fanout/mix/mrs_natural/disable", 2);
+  pnet->updctrl("Fanout/mix/mrs_natural/disable", 3);
+
+  pnet->updctrl("Fanout/mix/mrs_string/enableChild", "Gain/g2");  
+  pnet->updctrl("Fanout/mix/mrs_string/enableChild", "Gain/g4");
+
+  
   
   // tick to check the result 
   // PlotSinks are used for output 
   pnet->tick();
-
-	delete pnet;
+  
+  delete pnet;
 }
 
 void 

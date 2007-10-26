@@ -48,56 +48,58 @@ PlotSink::clone() const
 void 
 PlotSink::addControls()
 {
-	addctrl("mrs_string/separator", ",", ctrl_separator_);
-	addctrl("mrs_bool/sequence", true, ctrl_sequence_);
-	addctrl("mrs_string/filename", "defaultfile", ctrl_filename_);
+  addctrl("mrs_string/separator", ",", ctrl_separator_);
+  addctrl("mrs_bool/sequence", true, ctrl_sequence_);
+  addctrl("mrs_string/filename", "defaultfile", ctrl_filename_);
 }
 
 void 
 PlotSink::myProcess(realvec& in, realvec& out)
 {
-	out = in;
-
-	//if using MATLABengine, plot the input data in MATLAB
-	#ifdef MARSYAS_MATLAB
-	// create in the matlab variable containing the data
-	MATLAB_PUT(in, "in_data")
-	// tentatively plot it
-	MATLAB_EVAL("plot(in_data); axis([1 length(in_data) 0 1])");
-	return;
-	#endif
-
-	counter_++;
-
-	if (ctrl_sequence_->isTrue()) 
+  out = in;
+  
+  //if using MATLABengine, plot the input data in MATLAB
+#ifdef MARSYAS_MATLAB
+  // create in the matlab variable containing the data
+  MATLAB_PUT(in, "in_data")
+    // tentatively plot it
+    MATLAB_EVAL("plot(in_data); axis([1 length(in_data) 0 1])");
+  return;
+#endif
+  
+  counter_++;
+  
+  if (ctrl_sequence_->isTrue()) 
+    {
+      //save current input to a sequence of numbered output files
+      ostringstream oss;
+      oss << ctrl_filename_->to<mrs_string>() <<
+	setfill('0') << setw(4) << counter_ << ".plot";
+      cout << "name = " << name_ << " " << oss.str() << endl;
+      
+      MRSMSG("Writing " << oss.str() << endl);
+      in.write(oss.str());
+    }
+  else 
+    {
+      string sep =ctrl_separator_->to<mrs_string>();
+      //output input content as a Marsyas Message (stdout by default)
+      for (t = 0; t < inSamples_; t++)
 	{
-		//save current input to a sequence of numbered output files
-		ostringstream oss;
-		oss << ctrl_filename_->to<mrs_string>() <<
-			setfill('0') << setw(4) << counter_ << ".plot";
-		MRSMSG("Writing " << oss.str() << endl);
-		in.write(oss.str());
-	}
-	else 
-	{
-		string sep =ctrl_separator_->to<mrs_string>();
-		//output input content as a Marsyas Message (stdout by default)
-		for (t = 0; t < inSamples_; t++)
+	  for (o=0; o < inObservations_; o++)
+	    {
+	      if (o < inObservations_ - 1)
 		{
-			for (o=0; o < inObservations_; o++)
-			{
-				if (o < inObservations_ - 1)
-				{
-					MRSMSG(out(o,t) << sep);
-				}
-				else
-				{
-					MRSMSG(out(o,t));
-				}
-			}
-			MRSMSG(endl);
+		  MRSMSG(out(o,t) << sep);
 		}
+	      else
+		{
+		  MRSMSG(out(o,t));
+		}
+	    }
+	  MRSMSG(endl);
 	}
+    }
 }
 
 

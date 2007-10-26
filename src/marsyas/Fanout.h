@@ -28,15 +28,18 @@ namespace Marsyas
 \ingroup Composites
 \brief Fanout of MarSystem objects
 
-Combines a series of MarSystem objects to a single MarSystem 
-corresponding to executing the System objects one after the other 
-in sequence. 
+All the children Marsystems of this composite receive the same 
+input and their outputs are stacked as rows of observations. 
 
 Controls:
 - \b mrs_natural/disable [w] : passes in the number of the child
   MarSystem to disable.
 - \b mrs_natural/enable	[w] : pass in the number of the child MarSystem to
   enable.  (by default all children are enabled)
+- \b mrs_natural/enableChild	[w] : pass in the type/name of the child MarSystem to
+  enable.  (by default all children are enabled)
+- \b mrs_natural/disableChild	[w] : pass in the type/name of the child MarSystem to
+  disable.
 */
 
 
@@ -44,14 +47,19 @@ class Fanout: public MarSystem
 {
 private:
   void addControls();
-	void myUpdate(MarControlPtr sender);
+  void myUpdate(MarControlPtr sender);
   void deleteSlices();  
 
   realvec enabled_;
   realvec localIndices_;
   
-  mrs_natural disable_;
-	mrs_natural enable_;
+  mrs_natural enable_, enableChildIndex_;
+  mrs_natural disable_, disableChildIndex_;
+  
+  mrs_string enableChild_;
+  mrs_string disableChild_;
+  
+  
   
 public:
   Fanout(std::string name);
