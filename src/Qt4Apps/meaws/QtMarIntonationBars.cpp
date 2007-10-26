@@ -9,6 +9,7 @@ namespace MarsyasQt
 QtMarIntonationBars::QtMarIntonationBars(QWidget *parent)
 		: QtMarPlot(parent)
 {
+	data_ = NULL;
 }
 
 QtMarIntonationBars::~QtMarIntonationBars()
@@ -60,7 +61,8 @@ QtMarIntonationBars::plot1d()
 	painter.setPen(pen);
 	painter.drawRect(20,20,100,100);
 
-	cout<<data_;
+	if (data_ != NULL)
+		cout<<(*data_);
 /*
 	// iterates over the otherData_
 	for (i=0; i<otherData_->getSize(); i++)

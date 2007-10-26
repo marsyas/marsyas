@@ -65,10 +65,10 @@ void IntonationTry::colorNote(int note, double error, double direction)
 	lilyInput_.replace(line,lily_line);
 }
 
-realvec IntonationTry::calcErrors(const realvec& pitches, const realvec&
-                               bounds)
+void IntonationTry::calcErrors(const realvec& pitches, const realvec&
+                               bounds, realvec& errors)
 {
-	realvec errors(exerAnswer.getRows()-1,3);
+	errors.allocate(exerAnswer.getRows()-1,3);
 	mrs_real expected;
 	realvec notePitches;
 	mrs_natural noteStart, noteLength;
@@ -152,7 +152,7 @@ realvec IntonationTry::calcErrors(const realvec& pitches, const realvec&
 	out_file.close();
 */
 //	cout<<errors;
-	return errors;
+//	return errors;
 }
 
 
@@ -165,7 +165,7 @@ bool IntonationTry::displayAnalysis(MarBackend *results)
 	Transcriber::pitchSegment(pitches, bounds);
 	// shift the exercise times to match the beginning of audio exercise
 	Transcriber::discardBeginEndSilences(pitches, amps, bounds);
-	realvec errors = calcErrors(pitches, bounds);
+	calcErrors(pitches, bounds, errors);
 
 	pitchPlot->setBarData(&errors);
 	//cout<<errors;

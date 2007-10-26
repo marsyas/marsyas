@@ -22,7 +22,8 @@ public:
 
 	void setAnswer(const realvec answers);
 	void setLily(const QStringList);
-	realvec calcErrors(const realvec& pitch, const realvec& bounds);
+	void calcErrors(const realvec& pitch, const realvec& bounds,
+		realvec& errors);
 
 public slots:
 	void doubleclicked();
@@ -34,6 +35,7 @@ private:
 	QtMarIntonationBars *pitchPlot;
 
 	realvec exerAnswer;
+	realvec errors;
 	QStringList lilyInput_;
 
 
