@@ -58,12 +58,21 @@ protected:
 	std::vector<std::pair<MarControl*, MarControl*> >::iterator lit_;
 
 	#ifdef MARSYAS_QT
-	mutable QReadWriteLock rwLock_; //[!]
+	mutable QReadWriteLock valuerwLock_;
+	mutable QReadWriteLock linksrwLock_;
+	#else
+	char valuerwLock_; //dummy for macros
+	char linksrwLock_; //dummy for macros
 	#endif
 
 protected:
 	MarControlValue() {} // can't be directly created (use MarControl or MarControlValueT)
-	MarControlValue(const MarControlValue& a) {type_ = a.type_;};
+	MarControlValue(const MarControlValue& a) 
+	{
+		//READ_LOCKER(a.valuerwLock_);
+		//READ_LOCKER(a.linksrwLock_);
+		type_ = a.type_;
+	};
 	
 	//for debugging purposes only
 	#ifdef MARSYAS_DEBUG
@@ -84,8 +93,6 @@ public:
 	std::string getRegisteredType();
 
 	virtual std::string	getType() const ;
-
-	//virtual MarControlValue*(*)(std::istream&) getStreamCreationFunc() = 0;
 
 	// workaround - virtual member functions to overload friend operators
 	virtual void createFromStream(std::istream&) = 0;
@@ -296,20 +303,12 @@ MarControlValueT<T>::MarControlValueT(T value)
 template<class T>
 MarControlValueT<T>::MarControlValueT(const MarControlValueT& a):MarControlValue(a)
 {
-#ifdef MARSYAS_QT
-	a.rwLock_.lockForRead(); //[!]
-#endif
-
 	value_ = a.value_;
 	type_ = a.type_;
 
 	#ifdef MARSYAS_DEBUG
 	setDebugValue();
 	#endif
-
-#ifdef MARSYAS_QT
-	a.rwLock_.unlock(); //[!]
-#endif
 }
 
 template<class T>
@@ -318,11 +317,6 @@ MarControlValueT<T>::operator=(const MarControlValueT& a)
 {
 	if (this != &a)
 	{
-		#ifdef MARSYAS_QT
-		a.rwLock_.lockForRead(); //[!]
-		rwLock_.lockForWrite();
-		#endif
-
 		value_ = a.value_;
 		type_ = a.type_;
 
@@ -330,12 +324,7 @@ MarControlValueT<T>::operator=(const MarControlValueT& a)
 		setDebugValue();
 		#endif
 
-		//call MarSystemUpdate() ?!?! [?]
-
-		#ifdef MARSYAS_QT
-		rwLock_.unlock();
-		a.rwLock_.unlock(); //[!]
-		#endif
+		//callMarSystemsUpdate(); //[?]
 	}
 	return *this;
 }
@@ -387,15 +376,7 @@ template<class T>
 void
 MarControlValueT<T>::set(T &val, bool update)
 {
-	#ifdef MARSYAS_QT
-	rwLock_.lockForWrite(); //[!]
-	#endif
-
 	value_ = val;
-
-	#ifdef MARSYAS_QT
-	rwLock_.unlock();
-	#endif
 
 	#ifdef MARSYAS_DEBUG
 	setDebugValue();
@@ -411,15 +392,7 @@ inline
 void
 MarControlValueT<realvec>::set(realvec &val, bool update)
 {
-#ifdef MARSYAS_QT
-	rwLock_.lockForWrite(); //[!]
-#endif
-
 	value_ = val;
-
-	#ifdef MARSYAS_QT
-	rwLock_.unlock();
-	#endif
 
 	#ifdef MARSYAS_DEBUG
 	setDebugValue();
@@ -435,15 +408,7 @@ inline
 void
 MarControlValueT<bool>::set(bool &val, bool update)
 {
-#ifdef MARSYAS_QT
-	rwLock_.lockForWrite(); //[!]
-#endif
-
 	value_ = val;
-
-#ifdef MARSYAS_QT
-	rwLock_.unlock();
-#endif
 
 #ifdef MARSYAS_DEBUG
 	setDebugValue();
@@ -457,10 +422,6 @@ template<class T>
 const T&
 MarControlValueT<T>::get() const
 {
-#ifdef MARSYAS_QT
-	QReadLocker locker(&rwLock_); //[!]
-#endif 
-
 	return value_;
 }
 
@@ -468,15 +429,7 @@ template<class T>
 void
 MarControlValueT<T>::createFromStream(std::istream& in)
 {
-#ifdef MARSYAS_QT
-	rwLock_.lockForWrite(); //[!]
-#endif
-
 	in >> value_;
-
-#ifdef MARSYAS_QT
-	rwLock_.unlock(); //[!]
-#endif
 
 #ifdef MARSYAS_DEBUG
 	setDebugValue();
@@ -499,18 +452,8 @@ MarControlValueT<T>::isNotEqual(MarControlValue *v)
 			MRSWARN(sstr.str());
 			return false;
 		}
-
-		#ifdef MARSYAS_QT
-		rwLock_.lockForRead(); //[!]
-		#endif
 		
-		bool res = (value_ != dynamic_cast<MarControlValueT<T>*>(v)->get());
-		
-		#ifdef MARSYAS_QT
-		rwLock_.unlock(); //[!]
-		#endif
-		
-		return res;
+		return (value_ != dynamic_cast<MarControlValueT<T>*>(v)->get());
 	}
 	else //if v1 and v2 refer to the same object, they must be equal (=> return false)
 		return false;
@@ -529,20 +472,7 @@ MarControlValueT<T>::sum(MarControlValue *v)
 		MRSWARN(sstr.str());
 		return false;
 	}
-
-	#ifdef MARSYAS_QT
-	rwLock_.lockForRead(); //[!]
-	ptr_->rwLock_.lockForRead();
-	#endif
-	
-	MarControlValue* res = new MarControlValueT<T>(value_+ptr->value_);
-	
-	#ifdef MARSYAS_QT
-	rwLock_.unlock(); //[!]
-	ptr_->rwLock_.unlock();
-	#endif
-
-	return res;//new MarControlValueT<T>(value_+ptr->value_);
+	return new MarControlValueT<T>(value_+ptr->value_);
 }
 
 template<class T>
@@ -558,20 +488,7 @@ MarControlValueT<T>::subtract(MarControlValue *v)
 		MRSWARN(sstr.str());
 		return false;
 	}
-
-	#ifdef MARSYAS_QT
-	rwLock_.lockForRead(); //[!]
-	ptr_->rwLock_.lockForRead();
-	#endif
-
-	MarControlValue* res = new MarControlValueT<T>(value_-ptr->value_);
-	
-	#ifdef MARSYAS_QT
-	rwLock_.unlock(); //[!]
-	ptr_->rwLock_.unlock();
-	#endif
-
-	return res;//new MarControlValueT<T>(value_-ptr->value_);
+	return new MarControlValueT<T>(value_-ptr->value_);
 }
 
 template<class T>
@@ -587,20 +504,7 @@ MarControlValueT<T>::multiply(MarControlValue *v)
 		MRSWARN(sstr.str());
 		return false;
 	}
-
-	#ifdef MARSYAS_QT
-	rwLock_.lockForRead(); //[!]
-	ptr_->rwLock_.lockForRead();
-	#endif
-
-	MarControlValue* res = new MarControlValueT<T>(value_*ptr->value_);
-	
-	#ifdef MARSYAS_QT
-	rwLock_.unlock(); //[!]
-	ptr_->rwLock_.unlock();
-	#endif
-
-	return res; //new MarControlValueT<T>(value_*ptr->value_);
+	return new MarControlValueT<T>(value_*ptr->value_);
 }
 
 template<class T>
@@ -616,36 +520,14 @@ MarControlValueT<T>::divide(MarControlValue *v)
 		MRSWARN(sstr.str());
 		return false;
 	}
-
-	#ifdef MARSYAS_QT
-	rwLock_.lockForRead(); //[!]
-	ptr_->rwLock_.lockForRead();
-	#endif
-
-	MarControlValue* res = new MarControlValueT<T>(value_/ptr->value_);
-	
-	#ifdef MARSYAS_QT
-	rwLock_.unlock(); //[!]
-	ptr_->rwLock_.unlock();
-	#endif
-
-	return res;//new MarControlValueT<T>(value_/ptr->value_);
+	return new MarControlValueT<T>(value_/ptr->value_);
 }
 
 template<class T>
 std::ostream&
 MarControlValueT<T>::serialize(std::ostream& os)
 {
-	#ifdef MARSYAS_QT
-	rwLock_.lockForRead(); //[!]
-	#endif
-
 	os << value_;
-
-	#ifdef MARSYAS_QT
-	rwLock_.unlock(); //[!]
-	#endif
-
 	return os;
 }
 

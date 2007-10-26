@@ -113,6 +113,35 @@ namespace Marsyas
 #endif
 
 /************************************************************************/
+/*  Mutex MACROS for Multi-threaded Marsyas                             */
+/************************************************************************/
+#ifdef MARSYAS_QT
+	#define MARSYAS_MT //[!]
+	#define READ_LOCKER(mutex) QReadLocker locker(&mutex)
+	#define WRITE_LOCKER(mutex) QWriteLocker locker(&mutex)
+	#define LOCK_FOR_READ(mutex) mutex.lockForRead()
+	#define TRY_LOCK_FOR_READ(mutex, timeout) mutex.tryLockForRead(timeout)
+	#define LOCK_FOR_WRITE(mutex) mutex.lockForWrite()
+	#define TRY_LOCK_FOR_WRITE(mutex, timeout) mutex.tryLockForWrite(timeout)
+	#define LOCK(mutex) mutex.lock()
+	#define TRY_LOCK(mutex, timeout) mutex.tryLock(timeout)
+	#define UNLOCK(mutex) mutex.unlock()
+#else
+	#define READ_LOCKER(mutex) 
+	#define WRITE_LOCKER(mutex)
+	#define LOCK_FOR_READ(mutex)
+	#define TRY_LOCK_FOR_READ(mutex, timeout) true
+	#define LOCK_FOR_WRITE(mutex)
+	#define TRY_LOCK_FOR_WRITE(mutex, timeout) true
+	#define LOCK(mutex)
+	#define TRY_LOCK(mutex, timeout) true
+	#define UNLOCK(mutex)
+#endif
+
+
+
+
+/************************************************************************/
 /*		WIN32 specific                                                    */
 /************************************************************************/
 //only  relevant for WIN32 MSVC (and ignored by all other platforms)

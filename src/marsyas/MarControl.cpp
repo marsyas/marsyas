@@ -69,123 +69,98 @@ MarControlPtr::~MarControlPtr()
 MarControl*
 MarControl::clone()
 {
+	READ_LOCKER(rwLock_);
 	return new MarControl(*this);
 }
 
 void
 MarControl::setMarSystem(MarSystem* msys) 
 {
-#ifdef MARSYAS_QT
-  QWriteLocker locker(&rwLock_);
-#endif
-  
+	WRITE_LOCKER(rwLock_);
   msys_ = msys;
 }
 
 MarSystem*
 MarControl::getMarSystem() 
 {
-#ifdef MARSYAS_QT
-  QReadLocker locker(&rwLock_);
-#endif
-  
+	READ_LOCKER(rwLock_); 
   return msys_;
 }
 
 void
 MarControl::setName(std::string cname)
 {
-#ifdef MARSYAS_QT
-  QWriteLocker locker(&rwLock_);
-#endif
-
+	WRITE_LOCKER(rwLock_);
   cname_ = cname; 
 }
 
 std::string 
 MarControl::getName() const
 {
-
-#ifdef MARSYAS_QT
-  QReadLocker locker(&rwLock_);
-#endif
+	READ_LOCKER(rwLock_);
   return cname_;
 }
 
 void 
 MarControl::setState(bool state) 
 {
-#ifdef MARSYAS_QT
-  QWriteLocker locker(&rwLock_);
-#endif
-  
+	WRITE_LOCKER(rwLock_);  
   state_ = state;
 }
 
 bool 
 MarControl::hasState() const
 {
-#ifdef MARSYAS_QT
-  QReadLocker locker(&rwLock_);
-#endif
-  
+	READ_LOCKER(rwLock_);
   return state_;
 }
 
 string
 MarControl::getType() const
 { 
-#ifdef MARSYAS_QT
-	QReadLocker locker(&rwLock_);
-#endif
-
+	READ_LOCKER(rwLock_);
+	READ_LOCKER(value_->valuerwLock_);
 	return value_->getType(); 
 }
 
 void 
 MarControl::callMarSystemUpdate()
 {
-	#ifdef MARSYAS_QT
-	rwLock_.lockForRead(); //too many lockers?!? [!]
-	#endif
+	LOCK_FOR_READ(rwLock_);
 	if (state_ && msys_)
 	{
-		#ifdef MARSYAS_QT
-		rwLock_.unlock();
-		#endif
-		msys_->update(this);
+		MarSystem* msys = msys_;
+		UNLOCK(rwLock_);
+		msys->update(this);
 		return;
 	}
-	#ifdef MARSYAS_QT
-	rwLock_.unlock();
-	#endif
+	UNLOCK(rwLock_);
 }
 
 bool
 MarControl::linkTo(MarControlPtr ctrl, bool update)
 {
+	lockAllLinkedControls(ctrl());
+	lockAllLinkedControls(this);
+
 	if (ctrl.isInvalid())
 	{
 		ostringstream oss;
 		oss << "MarControl::linkTo() - Linking to an invalid control ";
 		oss << "(" << ctrl->cname_ << " with " << cname_ << ").";
 		MRSWARN(oss.str());
+
+		unlockAllLinkedControls(ctrl());
+		unlockAllLinkedControls(this);
 		return false;
 	}
-
-	#ifdef MARSYAS_QT
-	rwLock_.lockForWrite();
-	ctrl->rwLock_.lockForRead();
-	#endif
 
 	//check if these controls are already linked
 	//(i.e. they own the same MarControlValue) 
 	if(value_ == ctrl->value_)
 	{
-		#ifdef MARSYAS_QT
-		rwLock_.unlock();
-		ctrl->rwLock_.unlock();
-		#endif
+		unlockAllLinkedControls(ctrl());
+		unlockAllLinkedControls(this);
 		return true;//already linked! :-)
 	}
 	
@@ -195,40 +170,27 @@ MarControl::linkTo(MarControlPtr ctrl, bool update)
 		oss << "MarControl::linkTo() - Linking controls of different types ";
 		oss << "(" << ctrl->cname_ << " with " << cname_ << ").";
 		MRSWARN(oss.str());
-		#ifdef MARSYAS_QT
-		rwLock_.unlock();
-		ctrl->rwLock_.unlock();
-		#endif
+
+		unlockAllLinkedControls(ctrl());
+		unlockAllLinkedControls(this);
 		return false;
 	}
 
 	//unlink this control (but keeping all links to it) 
 	//before linking it again to the passed control
-	this->unlinkFromTarget();
+	this->unlinkFromTargetNonReentrant();
 
-	//store a pointer to the (soon to be old) MarControlValue object
+	//store a pointer to the (soon to be old) MarControlValue object,
+	//so we can later delete it from memory
 	MarControlValue* oldvalue = value_;
-	//and a pointer to the new value
+	//and get a pointer to the new value
 	MarControlValue* newvalue = ctrl->value_;
-
-	#ifdef MARSYAS_QT
-	newvalue->rwLock_.lockForWrite();
-	oldvalue->rwLock_.lockForWrite();
-	#endif
 
 	//get all the links of our current MarControlValue so we can also
 	//re-link them to the passed ctrl
 	vector<pair<MarControl*, MarControl*> >::iterator lit;
 	for(lit=oldvalue->links_.begin(); lit!=oldvalue->links_.end(); ++lit)
 	{
-		#ifdef MARSYAS_QT
-		//we must lock each linked MarControl, so we can
-		//safely make it point to the new cloned MarControlValue
-		//without interferences from other threads
-		if(MarControlPtr(this) != lit->first) //this MarControl is already locked, so we must avoid a deadlock!
-			lit->first->rwLock_.lockForWrite(); 
-		#endif
-
 		//make each linked control now point to the "passed" MarControlValue
 		lit->first->value_ = newvalue;
 
@@ -240,26 +202,31 @@ MarControl::linkTo(MarControlPtr ctrl, bool update)
 		}
 		else //if not a root link, just copy the table entry unchanged into the new MarControlValue
 			newvalue->links_.push_back(*lit); 
-
-		#ifdef MARSYAS_QT
-		lit->first->rwLock_.unlock();
-		#endif
 	}
-	//old MarControlValue can and should now be deleted from memory
-	#ifdef MARSYAS_QT
-	oldvalue->rwLock_.unlock();
-	#endif
+
+	//unlockAllLinkedControls(ctrl());
+	//unLockAllLinkedControls(this);
+
+	//unlock the old MarControlValue object before deleting it
+	UNLOCK(oldvalue->linksrwLock_);
+	//old MarControlValue can and should now be safely deleted from memory
 	delete oldvalue;
 
-	#ifdef MARSYAS_QT
-	//all controls now linked to the new value, so we may release the locks
-	newvalue->rwLock_.unlock();
-	ctrl->rwLock_.unlock();
-	#endif
+	//unlock all the linked controls, so we can call update without deadlocks
+	//(since the links table is still locked, no changes can happen to value_ - these
+	//would only happen in case of an unlink/link operation, which is never possible
+	//to happen with the links table locked)
+	for(lit=value_->links_.begin(); lit!=value_->links_.end(); ++lit)
+	{
+		UNLOCK(lit->first->rwLock_);
+	}
 
 	//check if it's needed to call update()
 	if(update)
-		newvalue->callMarSystemsUpdate();
+		value_->callMarSystemsUpdate();//newvalue->callMarSystemsUpdate();
+
+	//finally unlock the links table of the new anc current value and we are done
+	UNLOCK(value_->linksrwLock_);
 
 	#ifdef MARSYAS_QT
 	emitControlChanged(this);
@@ -271,16 +238,13 @@ MarControl::linkTo(MarControlPtr ctrl, bool update)
 void
 MarControl::unlinkFromAll()
 {
+	lockAllLinkedControls(this);
+		
 	//first unlink this control from all the controls to which
 	//it links to
-	this->unlinkFromTarget();
-
-	#ifdef MARSYAS_QT
-	rwLock_.lockForWrite();
-	value_->rwLock_.lockForWrite(); //this will deadlock!!!! [!][?]
-	#endif
-
-	//now unlink all controls that link directly to this control
+	this->unlinkFromTargetNonReentrant();
+	
+	//get a list of all the controls that target this controls...
 	vector<pair<MarControl*, MarControl*> >::iterator lit;
 	vector<MarControl*> linkedControls;
 	for(lit=value_->links_.begin(); lit!=value_->links_.end(); ++lit)
@@ -288,39 +252,85 @@ MarControl::unlinkFromAll()
 		if(lit->second == this && lit->first != lit->second)
 			linkedControls.push_back(lit->first);
 	}
-
+	//... and now unlink them all from this
 	for(mrs_natural i=0; i < (mrs_natural)linkedControls.size(); ++i)
-		linkedControls[i]->unlinkFromTarget();
+		linkedControls[i]->unlinkFromTargetNonReentrant();
 
-	#ifdef MARSYAS_QT
-	value_->rwLock_.unlock();
-	rwLock_.unlock();
-	#endif
+	unlockAllLinkedControls(this);
 }
 
 void
 MarControl::unlinkFromTarget()
 {
-	#ifdef MARSYAS_QT
-	rwLock_.lockForWrite();
-	value_->rwLock_.lockForWrite();
-	#endif
+	lockAllLinkedControls(this);
 
+	unlinkFromTargetNonReentrant();
+
+	unlockAllLinkedControls(this);
+}
+
+void
+MarControl::lockAllLinkedControls(MarControl* ctrl)
+{
+#ifdef MARSYAS_MT
+	lockedMutexes_.clear()
+	vector<pair<MarControl*, MarControl*> >::iterator lit;
+	LOCK_FOR_WRITE(ctrl->rwLock_);
+	while(TRY_LOCK_FOR_READ(ctrl->value_->linksrwLock_, 500) == false)
+	{
+		//if this lock fails, we should unlock momentarily rwLock_ 
+		//so we allow other blocked threads to continue, avoiding potential
+		//deadlocks
+		UNLOCK(ctrl->rwLock_);
+		LOCK_FOR_WRITE(ctrl->rwLock_);
+	}
+	
+	lockedMutexes_.push_back(&(ctrl_->rwLock_));
+
+	//lock all linked controls for write
+	for(lit=ctrl->value_->links_.begin(); lit!=ctrl->value_->links_.end(); ++lit)
+	{
+		//avoid locking again this control, which is already locked!
+		if(lit->first != this)
+		{
+			LOCK_FOR_WRITE(lit->first->rwLock_);
+			lockedMutexes_.push_back(&(lit->first->rwLock_));
+		}
+	}
+
+	lockedMutexes_.push_back(&(ctrl->value_->linksrwLock_));
+#endif
+}
+
+void
+MarControl::unlockAllLinkedControls(MarControl* ctrl)
+{
+#ifdef MARSYAS_MT 
+	for(mrs_natural i=0; i<ctrl->lockedMutexes.size(); ++i)
+	{
+		UNLOCK(*(ctrl->lockedMutexes_[i]));
+	}
+	ctrl->lockedMutexes_.clear();
+#endif
+}
+
+void
+MarControl::unlinkFromTargetNonReentrant()
+{
+	vector<pair<MarControl*, MarControl*> >::iterator lit;
+	
 	//check if this MarControl is linked
 	//(i.e. more than one MarControl linking
 	//to the MarControlValue).
 	//if not, no point doing unlink - just return.
 	if(value_->links_.size() <= 1)
-	{
-		#ifdef MARSYAS_QT
-		rwLock_.unlock();
-		value_->rwLock_.unlock();
-		#endif
 		return;
-	}
 
 	MarControlValue* oldvalue = value_;
 	MarControlValue* newvalue = oldvalue->clone();
+
+	//WRITE_LOCKER(newvalue->linksrwLock_);
+	//WRITE_LOCKER(newvalue->valuerwLock_);
 
 	vector<pair<MarControl*, MarControl*> >* inSet = new vector<pair<MarControl*, MarControl*> >;
 	vector<pair<MarControl*, MarControl*> >* outSet = new vector<pair<MarControl*, MarControl*> >;
@@ -332,7 +342,7 @@ MarControl::unlinkFromTarget()
 
 	//iterate over all the links
 	MarControl* oldRootLink = NULL;
-	vector<pair<MarControl*, MarControl*> >::iterator lit;
+	//vector<pair<MarControl*, MarControl*> >::iterator lit;
 	lit = oldvalue->links_.begin();
 	mrs_natural idx = 0;
 	while(toProcess > 0)
@@ -352,22 +362,10 @@ MarControl::unlinkFromTarget()
 			//and set it as the root link of the inSet
 			else if(lit->first == this)
 			{
-				#ifdef MARSYAS_QT
-				//we must lock each linked MarControl, so we can
-				//safely make it point to the new cloned MarControlValue
-				//without interferences from other threads
-				if(MarControlPtr(this) != lit->first) //this MarControl is already locked, so we must avoid a deadlock!
-					lit->first->rwLock_.lockForWrite(); 
-				#endif
-
-				lit->first->value_ = newvalue;
+				lit->first->value_ = newvalue; //"this" is already locked for writing
 				inSet->push_back(pair<MarControl*, MarControl*>(lit->first, lit->first));
 				toProcess--;
 				processed[idx]=true;
-
-				#ifdef MARSYAS_QT
-				lit->first->rwLock_.unlock();
-				#endif
 			}
 			//check if this is directly linked to the old root link and if so,
 			//send it to the outSet
@@ -380,22 +378,10 @@ MarControl::unlinkFromTarget()
 			//if this control links directly to the control we want to unlink, send it to the inSet
 			else if(lit->second == this)
 			{
-				#ifdef MARSYAS_QT
-				//we must lock each linked MarControl, so we can
-				//safely make it point to the new cloned MarControlValue
-				//without interferences from other threads
-				if(MarControlPtr(this) != lit->first) //this MarControl is already locked, so we must avoid a deadlock!
-					lit->first->rwLock_.lockForWrite(); 
-				#endif
-				
 				lit->first->value_ = newvalue;
 				inSet->push_back(*lit);
 				toProcess--;
 				processed[idx]=true;
-
-				#ifdef MARSYAS_QT
-				lit->first->rwLock_.unlock();
-				#endif
 			}
 			//This control is not directly connected to any root link, so we have
 			//to check to which set belongs the control it links to and assign it to
@@ -413,23 +399,11 @@ MarControl::unlinkFromTarget()
 				{
 					if(lit->second == sit->first)
 					{
-						#ifdef MARSYAS_QT
-						//we must lock each linked MarControl, so we can
-						//safely make it point to the new cloned MarControlValue
-						//without interferences from other threads
-						if(MarControlPtr(this) != lit->first) //this MarControl is already locked, so we must avoid a deadlock!
-							lit->first->rwLock_.lockForWrite(); 
-						#endif
-
 						lit->first->value_ = newvalue;
 						inSet->push_back(*lit);
 						toProcess--;
 						processed[idx]=true;
 						found = true;
-
-						#ifdef MARSYAS_QT
-						lit->first->rwLock_.unlock();
-						#endif
 					}
 				}
 				//if not found there, look for it in the outSet...
@@ -475,20 +449,13 @@ MarControl::unlinkFromTarget()
 	//linking to it
 	if(newvalue->links_.size() == 0)
 		delete newvalue;
-
-	#ifdef MARSYAS_QT
-	oldvalue->rwLock_.unlock();
-	rwLock_.unlock();
-	#endif
 }
 
 bool
 MarControl::isLinked() const
 {
-	#ifdef MARSYAS_QT
-	QReadLocker r_locker(&rwLock_);
-	#endif
-	
+	READ_LOCKER(rwLock_);
+	READ_LOCKER(value_->linksrwLock_);
 	//if there is only one link (i.e. this control itself),
 	//it means that there are no other linked controls
 	// => return false (i.e. 0)
@@ -501,10 +468,8 @@ MarControl::isLinked() const
 vector<pair<MarControlPtr, MarControlPtr> >
 MarControl::getLinks()
 {
-#ifdef MARSYAS_QT
-	QReadLocker r_locker(&rwLock_);
-	QReadLocker (&(value_->rwLock_));
-#endif
+	READ_LOCKER(rwLock_);
+	READ_LOCKER(value_->linksrwLock_);
 
 	vector<pair<MarControlPtr, MarControlPtr> > res;
 	vector<pair<MarControl*, MarControl*> >::const_iterator lit;
