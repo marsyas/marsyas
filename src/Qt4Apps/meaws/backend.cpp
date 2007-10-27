@@ -133,8 +133,9 @@ mrs_real MarBackend::getRate() {
  */
 
 void MarBackend::setupAllNet() {
+cout<<"begin setupallnet"<<endl;
 	mrs_real osrate =
-sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
+	  sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
 	allNet = mng.create("Series", "allNet");
 	allNet->addMarSystem(sourceNet);
 	allNet->linkctrl("mrs_bool/notEmpty", "Series/sourceNet/mrs_bool/notEmpty");
@@ -151,18 +152,20 @@ sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
 		fanout->updctrl("AudioSink/audioDest/mrs_bool/initAudio", true);
 		break;
 	case (BACKEND_PITCHES): {
-		fanout->addMarSystem( TranscriberExtract::makePitchNet(osrate, 200.0, pitchSink));
+		fanout->addMarSystem( TranscriberExtract::makePitchNet(
+		  osrate, 200.0, pitchSink));
 		break;
 	}
 	case (BACKEND_AMPLITUDES): {
 		fanout->addMarSystem(
-TranscriberExtract::makeAmplitudeNet( ampSink ));
+		  TranscriberExtract::makeAmplitudeNet( ampSink ));
 		break;
 	}
 	case (BACKEND_PITCHES_AMPLITUDES): {
-		fanout->addMarSystem( TranscriberExtract::makePitchNet(osrate, 200.0, pitchSink));
+		fanout->addMarSystem( TranscriberExtract::makePitchNet(
+		  osrate, 200.0, pitchSink));
 		fanout->addMarSystem(
-TranscriberExtract::makeAmplitudeNet( ampSink ));
+		  TranscriberExtract::makeAmplitudeNet( ampSink ));
 		break;
 	}
 //	case TYPE_CONTROL:
@@ -187,11 +190,14 @@ TranscriberExtract::makeAmplitudeNet( ampSink ));
 	mrsWrapper = new MarSystemQtWrapper(allNet);
 	isEmptyPtr = mrsWrapper->getctrl("mrs_bool/notEmpty");
 	mrsWrapper->trackctrl( isEmptyPtr );
-	connect(mrsWrapper, SIGNAL(ctrlChanged(MarControlPtr)), this, SLOT(ctrlChanged(MarControlPtr)));
+	connect(mrsWrapper, SIGNAL(ctrlChanged(MarControlPtr)),
+	  this, SLOT(ctrlChanged(MarControlPtr)));
 
 	mrsWrapper->start();
 	mrsWrapper->pause();
 //	emit setAttempt(false);
+	sleep(2);
+cout<<"made all net"<<endl;
 }
 
 
