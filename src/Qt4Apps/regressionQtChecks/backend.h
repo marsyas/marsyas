@@ -7,6 +7,7 @@
 using namespace Marsyas;
 using namespace MarsyasQt;
 
+// temp for debugging
 using namespace std;
 #include <iostream>
 
@@ -21,6 +22,8 @@ public slots:
 	void ctrlChanged(MarControlPtr changed);
 
 private:
+	void stop();
+
 	MarSystemManager mng;
 	MarSystemQtWrapper *mrsWrapper;
 	MarSystem *pnet;

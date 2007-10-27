@@ -1,3 +1,12 @@
+/*
+  Reads a file and writes it to a file.  Really boring and simple.
+  the MarSystemQtWrapper should stop() going when it reaches the
+  end of the input file.
+
+  Currently does not detect any SIGNAL(ctrlChanged(MarControlPtr))
+  from mrsWrapper.  :(
+*/
+
 #include "backend.h"
 
 MarBackend::MarBackend(string infile, string outfile)
@@ -24,7 +33,7 @@ MarBackend::MarBackend(string infile, string outfile)
 
 	mrsWrapper->start();
 	mrsWrapper->play();
-	cout<<"going"<<endl;
+	cout<<"mrsWrapper running"<<endl;
 }
 
 MarBackend::~MarBackend()
@@ -39,12 +48,16 @@ void MarBackend::ctrlChanged(MarControlPtr changed)
 	{
 		if (changed->to<mrs_bool>() == false)
 		{
-			cout<<"stop!"<<endl;
-			mrsWrapper->pause();
-			delete mrsWrapper;
-			delete pnet;
+			stop();
 		}
 	}
 }
 
+void MarBackend::stop()
+{
+	cout<<"stop!"<<endl;
+	mrsWrapper->pause();
+	delete mrsWrapper;
+	delete pnet;
+}
 
