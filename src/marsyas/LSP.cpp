@@ -30,9 +30,6 @@ using namespace Marsyas;
 
 LSP::LSP(string name):MarSystem("LSP",name)
 {
-	//type_ = "LSP";
-	//name_ = name;
-
 	addControls();
 }
 
@@ -78,20 +75,18 @@ LSP::myProcess(realvec& in, realvec& out)
 {
 	NumericLib numLib;
 	
-	//checkFlow(in,out);
-
 	mrs_real gamma = getctrl("mrs_real/gamma")->to<mrs_real>();
 	vector<mrs_real> ak(order_);
 
 	if( gamma != 1.0)
 		for(mrs_natural j = 0; j < order_ ; j++)
 		{
-			ak[j] = in(j)*pow(gamma, (double)j+1)*(-1.0);//apply pole-shifting
+			ak[j] = in(j)*pow(gamma, (double)j+1);//*(-1.0);//apply pole-shifting
 		}
 	else
 		for(mrs_natural j = 0; j < order_ ; j++)
 		{
-			ak[j] = in(j)*(-1.0); //no pole-shifting applied
+			ak[j] = in(j);//*(-1.0); //no pole-shifting applied
 		}
 
 		vector<mrs_complex> P(order_+2);

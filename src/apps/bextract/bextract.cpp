@@ -222,7 +222,7 @@ MarSystem* createLSPextractor()
 {
 	MarSystemManager mng;
 
-	mrs_natural order = 18; //12 order LSP
+	mrs_natural order = 18; 
 	cout << "LSP order = " << order << endl;
 
 	MarSystem* extractor = mng.create("Series","LSPextractor");
