@@ -24,31 +24,58 @@ class QtMarPlot : public QWidget
 public:
 	QtMarPlot(QWidget *parent = 0);
 	~QtMarPlot();
-	void setPlotName(QString plotName);
-	void setBackgroundColor(QPalette color);
-	void setPixelWidth(mrs_natural width);
-	void setVertical(mrs_real minVal, mrs_real highVal); // scales data
-	void setCenterLine(bool drawit);
-	void setImpulses(bool drawit);
-	void setData(realvec* getData);
-	void setOtherData(realvec* getData);
 
-	void setBars(bool drawit); // hack
+	void setPlotName(QString plotName)
+	{
+		plotName_ = plotName;
+	}
+	void setBackgroundColor(QPalette color)
+	{
+		setPalette(color);
+	}
+	void setPixelWidth(mrs_natural width)
+	{
+		width_ = width;
+	}
+	void setCenterLine(bool drawCenter)
+	{
+		drawCenter_ = drawCenter;
+	}
+	void setImpulses(bool drawImpulses)
+	{
+		drawImpulses_ = drawImpulses;
+	}
+
+	/// scales data
+	void setVertical(mrs_real minVal, mrs_real highVal)
+	{
+		minVal_ = minVal;
+		highVal_ = highVal;
+	}
+
+	void setData(realvec* getData)
+	{
+		data_ = getData;
+		update();
+	}
+	void setOtherData(realvec* getData)
+	{
+		otherData_ = getData;
+		update();
+	}
+
 
 protected:
 	void paintEvent(QPaintEvent *event);
 
-	realvec *data_;
-	realvec *otherData_;
 	QString plotName_;
 	mrs_real minVal_, highVal_;
 	mrs_natural width_;
 	bool drawCenter_;
 	bool drawImpulses_;
 
-	void plot1d();
-	//void plot2d(); // not implemented yet
-	void putBlob(int x, int y, QPainter painter); // for a 2x2 blob of pixels
+	realvec *data_;
+	realvec *otherData_;
 };
 
 } //namespace

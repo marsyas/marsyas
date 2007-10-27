@@ -8,10 +8,10 @@ QtMarPlot::QtMarPlot(QWidget *parent)
 	data_ = NULL;
 	otherData_ = NULL;
 	plotName_ = "";
-	minVal_ = -0.5;
-	highVal_ = 0.5;
+	minVal_ = -1;
+	highVal_ = 1;
 	width_ = 1;
-	drawCenter_ = true;
+	drawCenter_ = false;
 	drawImpulses_ = false;
 	setAutoFillBackground(true);
 }
@@ -23,67 +23,11 @@ QtMarPlot::~QtMarPlot()
 }
 
 void
-QtMarPlot::setData(realvec *getData)
-{
-	data_ = getData;
-	update();
-}
-
-void
-QtMarPlot::setOtherData(realvec *getData)
-{
-	otherData_ = getData;
-	update();
-}
-
-void
-QtMarPlot::setCenterLine(bool drawit)
-{
-	drawCenter_ = drawit;
-}
-
-void
-QtMarPlot::setImpulses(bool drawit)
-{
-	drawImpulses_ = drawit;
-}
-
-void
-QtMarPlot::setVertical(mrs_real minVal, mrs_real highVal)
-{
-	minVal_ = minVal;
-	highVal_ = highVal;
-}
-
-void
-QtMarPlot::setPlotName(QString plotName)
-{
-	plotName_ = plotName;
-}
-
-void
-QtMarPlot::setBackgroundColor(QPalette color)
-{
-	setPalette(color);
-}
-
-void
-QtMarPlot::setPixelWidth(mrs_natural width)
-{
-	width_ = width;
-}
-
-void
 QtMarPlot::paintEvent(QPaintEvent *)
 {
 	if (data_==NULL)
 		return;
-	plot1d();
-}
 
-void
-QtMarPlot::plot1d()
-{
 	QPainter painter(this);
 	// plot name
 	painter.drawText( 4, 14, plotName_);
@@ -102,9 +46,9 @@ QtMarPlot::plot1d()
 
 	mrs_natural i;
 	mrs_natural x,y;
-	float hScale = width() / float(data_->getSize());
-	float vScale = height() / (highVal_ - minVal_); // maximum scaled pitch/median
-	float vMean = (minVal_+highVal_)/2;
+	mrs_real hScale = width() / mrs_real(data_->getSize());
+	mrs_real vScale = height() / (highVal_ - minVal_); // maximum scaled pitch/median
+	mrs_real vMean = (minVal_+highVal_)/2;
 	mrs_natural midY = height()/2;
 
 	// iterates over the data_
