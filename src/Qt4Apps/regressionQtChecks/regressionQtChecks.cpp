@@ -1,18 +1,14 @@
-#include "backend.h"
+#include "MarBackend.h"
+#include <QApplication> 
 
 // usage: ./regressionQtChecks infile.wav
-int main(int argc, const char **argv)
+int main(int argc, char *argv[])
 {
 	string infile = argv[1];
 	string outfile = "qtcheck.au";
+	QApplication app(argc, argv);
 
 	MarBackend* marBackend = new MarBackend(infile, outfile);
-
-// temp, to give it time to finish.
-// doesn't work on win32 ?  should be replaced with something
-// else.
-	sleep(2);
-
-	delete marBackend;
+	return app.exec();
 }
 

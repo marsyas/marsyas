@@ -1,7 +1,8 @@
 #ifndef QTCHECK_BACKEND_H
 #define QTCHECK_BACKEND_H
 
-#include <QObject>
+#include <QMainWindow>
+#include <QObject> 
 #include "MarSystemManager.h"
 #include "MarSystemQtWrapper.h"
 using namespace Marsyas;
@@ -23,11 +24,11 @@ public slots:
 
 private:
 	void stop();
-
 	MarSystemManager mng;
 	MarSystemQtWrapper *mrsWrapper;
 	MarSystem *pnet;
 	MarControlPtr isEmptyPtr;
+	MarControlPtr posPtr;
 };
 #endif
 

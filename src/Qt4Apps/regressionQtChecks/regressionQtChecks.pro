@@ -1,13 +1,13 @@
 ###  your files
 SOURCES = regressionQtChecks.cpp
-HEADERS += backend.h
-SOURCES += backend.cpp
+HEADERS += MarBackend.h
+SOURCES += MarBackend.cpp
 
 
 ### if running inside the source tree
 MARSYAS_INSTALL_DIR = ../../../
 INCLUDEPATH += $$MARSYAS_INSTALL_DIR/src/marsyas/
-INCLUDEPATH += $$MARSYAS_INSTALL_DIR/src/marsyasqt_wrapper/
+INCLUDEPATH += $$MARSYAS_INSTALL_DIR/src/marsyasqt/
 LIBPATH += $$MARSYAS_INSTALL_DIR/lib/release/
 
 ### if installed elsewhere

@@ -116,14 +116,14 @@ MarSystemQtWrapper::play()
 void 
 MarSystemQtWrapper::emitTrackedControls()
 {
-	mutex_.lock();
-	QVector<MarControlPtr>::iterator vsi;
-	for (vsi = tracked_controls_.begin();
-		vsi != tracked_controls_.end(); ++vsi)
-	{
-		emit ctrlChanged(*vsi);
-	}
-	mutex_.unlock();
+  mutex_.lock();
+  QVector<MarControlPtr>::iterator vsi;
+  for (vsi = tracked_controls_.begin();
+       vsi != tracked_controls_.end(); ++vsi)
+    {
+      emit ctrlChanged(*vsi);
+    }
+  mutex_.unlock();
 }
 
 QVector<MarControlPtr> MarSystemQtWrapper::getTrackedControls()
