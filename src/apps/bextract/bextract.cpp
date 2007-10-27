@@ -132,12 +132,15 @@ MarSystem* createSTFTextractor()
 	spectrumFeatures->addMarSystem(mng.create("Centroid", "cntrd"));
 	spectrumFeatures->addMarSystem(mng.create("Rolloff", "rlf"));      
 	spectrumFeatures->addMarSystem(mng.create("Flux", "flux"));
-
+	spectrumFeatures->addMarSystem(mng.create("MFCC", "mfcc"));
+	
+	// MarSystem* spectrumFeatures = mng.create("STFT_features", "spectrumFeatures");
 	spectralShape->addMarSystem(spectrumFeatures);
-
 	extractor->addMarSystem(spectralShape);
 
-	extractor->linkctrl("mrs_natural/WindowSize", "PowerSpectrumNet/powerSpect/mrs_natural/WindowSize");
+	extractor->linkctrl("mrs_natural/WindowSize", "Series/spectralShape/PowerSpectrumNet/powerSpect/mrs_natural/WindowSize");
+	extractor->linkctrl("mrs_string/enableChild", "Series/spectralShape/Fanout/spectrumFeatures/mrs_string/enableChild");
+	extractor->linkctrl("mrs_string/disableChild", "Series/spectralShape/Fanout/spectrumFeatures/mrs_string/disableChild");
 
 	return extractor;
 }
@@ -1925,6 +1928,10 @@ bextract_train_refactored(vector<Collection> cls, Collection cl,
   // feature extractors:
   MarSystem* featExtractor = (*featExtractors[extractorStr])();
   featExtractor->updctrl("mrs_natural/WindowSize", winSize);
+  
+  featExtractor->updctrl("mrs_string/disableChild", "Centroid/cntrd");
+  featExtractor->updctrl("mrs_string/disableChild", "MFCC/mfcc");
+
 
   // Build the overall feature calculation network 
   MarSystem* featureNetwork = mng.create("Series", "featureNetwork");
@@ -1999,6 +2006,9 @@ bextract_train_refactored(vector<Collection> cls, Collection cl,
   featureNetwork->updctrl("Confidence/confidence/mrs_string/labelNames", l.getLabelNames());
   featureNetwork->updctrl("Confidence/confidence/mrs_bool/print",true);
       
+
+
+
   while (ctrl_notEmpty_->to<mrs_bool>())
     {
       featureNetwork->tick();

@@ -373,6 +373,13 @@ MarSystemManager::MarSystemManager()
 	pspectpr->linkctrl("mrs_natural/WindowSize","ShiftInput/si/mrs_natural/WindowSize");
 	registerPrototype("PowerSpectrumNet", pspectpr);
 
+	// STFT_features prototype 
+	MarSystem* stft_features_pr = new Fanout("stft_features_pr");
+	stft_features_pr->addMarSystem(create("Centroid", "cntrd"));
+	stft_features_pr->addMarSystem(create("Rolloff", "rlf"));
+	stft_features_pr->addMarSystem(create("Flux", "flux"));
+	registerPrototype("STFT_features", stft_features_pr);
+
 	//--------------------------------------------------------------------------------
 	// LPC composite prototype
 	//--------------------------------------------------------------------------------
