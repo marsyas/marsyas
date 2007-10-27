@@ -50,13 +50,17 @@ mrs_real length = 30.0;
 mrs_real gain = 1.0;
 mrs_bool pluginMute = 0.0;
 
+mrs_bool mfcc_ = false;
+mrs_bool ctd_ = false;
+mrs_bool rlf_ = false;
+mrs_bool flx_ = false;
+
 #define DEFAULT_EXTRACTOR "STFT" 
 #define DEFAULT_CLASSIFIER  "GS"
 
 string workspaceDir = EMPTYSTRING;
 string pluginName = EMPTYSTRING;
 string wekafname = EMPTYSTRING;
-string filefeaturename = EMPTYSTRING;
 string extractorName = EMPTYSTRING;
 string classifierName = EMPTYSTRING;
 string collectionName = EMPTYSTRING;
@@ -1061,7 +1065,7 @@ bextract_trainADRessStereoSPSMFCC(vector<Collection> cls, string classNames,
 
 void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label, 
 			       string pluginName, string classNames, 
-			       string wekafname, string filefeaturename, 
+			       string wekafname, 
 			       mrs_natural memSize, string extractorStr,
 			       bool withBeatFeatures)
 {
@@ -1930,8 +1934,15 @@ bextract_train_refactored(vector<Collection> cls, Collection cl,
   featExtractor->updctrl("mrs_natural/WindowSize", winSize);
   
   featExtractor->updctrl("mrs_string/disableChild", "Centroid/cntrd");
+  featExtractor->updctrl("mrs_string/disableChild", "Rolloff/rlf");
+  featExtractor->updctrl("mrs_string/disableChild", "Flux/flux");
   featExtractor->updctrl("mrs_string/disableChild", "MFCC/mfcc");
 
+  if (mfcc_) 
+    featExtractor->updctrl("mrs_string/enableChild", "MFCC/mfcc");
+  if (flx_)
+    featExtractor->updctrl("mrs_string/enableChild", "Flux/flux");
+    
 
   // Build the overall feature calculation network 
   MarSystem* featureNetwork = mng.create("Series", "featureNetwork");
@@ -2370,7 +2381,6 @@ initOptions()
 	cmd_options.addRealOption("length", "l", 1000.0f);
 	cmd_options.addStringOption("plugin", "p", EMPTYSTRING);
 	cmd_options.addStringOption("wekafile", "w", EMPTYSTRING);
-	cmd_options.addStringOption("filefeature", "f", EMPTYSTRING);
 	cmd_options.addStringOption("extractor", "e", EMPTYSTRING);
 	cmd_options.addNaturalOption("memory", "m", 40);
 	cmd_options.addNaturalOption("nwinsamples", "ws", 512);
@@ -2383,6 +2393,13 @@ initOptions()
 	cmd_options.addStringOption("workdir", "wd", EMPTYSTRING);
 	cmd_options.addStringOption("predict", "pr", EMPTYSTRING);
 	cmd_options.addStringOption("test", "tc", EMPTYSTRING);
+	
+	// feature selection options
+	cmd_options.addBoolOption("MelFrequencyCepstralCoefficients","mfcc", false);
+	cmd_options.addBoolOption("SpectralCentroid","ctd", false);
+	cmd_options.addBoolOption("SpectralRolloff","rlf", false);
+	cmd_options.addBoolOption("SpectralFlux","flx", false);
+	
 }
 
 void 
@@ -2395,7 +2412,6 @@ loadOptions()
 	normopt = cmd_options.getBoolOption("normalize");
 	collectionName = cmd_options.getStringOption("collection");
 	pluginName = cmd_options.getStringOption("plugin");
-	filefeaturename   = cmd_options.getStringOption("filefeature");
 	wekafname = cmd_options.getStringOption("wekafile");
 	extractorName = cmd_options.getStringOption("extractor");
 	classifierName = cmd_options.getStringOption("classifier");
@@ -2409,6 +2425,14 @@ loadOptions()
 	workspaceDir = cmd_options.getStringOption("workdir");
 	predictCollection = cmd_options.getStringOption("predict");
 	testCollection = cmd_options.getStringOption("test");
+
+	// feature selection options 
+	mfcc_ = cmd_options.getBoolOption("MelFrequencyCepstralCoefficients");
+	ctd_ = cmd_options.getBoolOption("SpectralCentroid");
+	rlf_ = cmd_options.getBoolOption("SpectralRolloff");
+	flx_ = cmd_options.getBoolOption("SpectralFlux");
+
+
 }
 
 void bextract(vector<string> soundfiles, mrs_natural label, 
@@ -2735,7 +2759,7 @@ main(int argc, const char **argv)
 	  return 1;
 	}
 
-      bextract_trainAccumulator(cls, i, pluginName, classNames, wekafname, filefeaturename, memSize, extrName,
+      bextract_trainAccumulator(cls, i, pluginName, classNames, wekafname, memSize, extrName,
 				withBeatFeatures);
     }
   //REMOVE_SILENCE Extractor
@@ -2778,7 +2802,7 @@ main(int argc, const char **argv)
       string extrName;
       extrName = extractorStr;
       cout << "extrName = " << extrName << endl;
-      bextract_trainAccumulator(cls, i, pluginName, classNames, wekafname, filefeaturename, memSize, extrName,
+      bextract_trainAccumulator(cls, i, pluginName, classNames, wekafname, memSize, extrName,
 				withBeatFeatures);
     }
 
