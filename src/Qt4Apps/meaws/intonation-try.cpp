@@ -170,7 +170,8 @@ bool IntonationTry::displayAnalysis(MarBackend *results)
 	Transcriber::discardBeginEndSilences(pitches, amps, bounds);
 	calcErrors(pitches, bounds, errors);
 
-	pitchPlot->setBarData(&errors);
+	pitchPlot->setVertical(0, 0.05);
+	pitchPlot->setData(&errors);
 	//cout<<errors;
 
 /*

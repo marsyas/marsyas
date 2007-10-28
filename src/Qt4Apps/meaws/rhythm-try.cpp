@@ -119,7 +119,7 @@ void RhythmTry::calcErrors(const realvec& pitches, const realvec&
 		}
 		// normalize display of error: 1.0= 1/4 tone wrong.
 		noteError = noteError / (6.0*noteLength);
-		cout<<exerNote<<" "<<noteError<<endl;
+		//cout<<exerNote<<" "<<noteError<<endl;
 
 // TODO: fix direction of error
 		colorNote(exerNote,noteError,noteError);
@@ -144,7 +144,7 @@ void RhythmTry::calcErrors(const realvec& pitches, const realvec&
 
 bool RhythmTry::displayAnalysis(MarBackend *results)
 {
-	cout<<"LOLCAT SEZ: im in ur beat analysis"<<endl;
+	//cout<<"LOLCAT SEZ: im in ur beat analysis"<<endl;
 
 // get info from backend
 	realvec amps = results->getAmplitudes();

@@ -133,7 +133,6 @@ mrs_real MarBackend::getRate() {
  */
 
 void MarBackend::setupAllNet() {
-cout<<"begin setupallnet"<<endl;
 	mrs_real osrate =
 	  sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
 	allNet = mng.create("Series", "allNet");
@@ -196,8 +195,6 @@ cout<<"begin setupallnet"<<endl;
 	mrsWrapper->start();
 	mrsWrapper->pause();
 //	emit setAttempt(false);
-	sleep(2);
-cout<<"made all net"<<endl;
 }
 
 
