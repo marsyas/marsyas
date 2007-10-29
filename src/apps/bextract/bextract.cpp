@@ -1909,10 +1909,6 @@ bextract_train_refactored(vector<Collection> cls, Collection cl,
   if (extractorStr == EMPTYSTRING) 
     extractorStr = DEFAULT_EXTRACTOR; 
 
-  // Find proper sound file format and create SignalSource
-  Collection linitial = cls[0];
-  string sfName = linitial.entry(0);
-
   MarSystem *src = mng.create("SoundFileSource", "src");
   src->updctrl("mrs_string/filename", "bextract_single.mf");
 
@@ -1929,10 +1925,10 @@ bextract_train_refactored(vector<Collection> cls, Collection cl,
 
   // create the correct feature extractor using the table of known
   // feature extractors:
-  MarSystem* featExtractor = (*featExtractors[extractorStr])();
+  MarSystem* featExtractor = mng.create("TimbreFeatures", "featExtractor");
   featExtractor->updctrl("mrs_natural/WindowSize", winSize);
+  
   featExtractor->updctrl("mrs_string/disableChild", "all");
-
   if (mfcc_) 
     featExtractor->updctrl("mrs_string/enableChild", "MFCC/mfcc");
   if (flx_)
@@ -1957,11 +1953,11 @@ bextract_train_refactored(vector<Collection> cls, Collection cl,
   featureNetwork->addMarSystem(featExtractor);
 
   //texture window statistics (optional)
-  if(memSize != 0)
-    {
+  // if(memSize != 0)
+  // {
       featureNetwork->addMarSystem(mng.create("TextureStats", "tStats"));
       featureNetwork->updctrl("TextureStats/tStats/mrs_natural/memSize", memSize);
-    }
+      // }
 
   // update controls I
   // src has to be configured with hopSize frame length in case a ShiftInput
