@@ -89,7 +89,15 @@ Fanout::myUpdate(MarControlPtr sender)
       setctrl("mrs_string/disableChild", "");
     }  
 
-
+  if (disableChild_ == "all")
+    {
+      for (unsigned int i=0; i < marsystems_.size(); i++) 
+	{
+	  enabled_(i) = 0.0;
+	  localIndices_(disable_) = 0.0;
+	  setctrl("mrs_string/disableChild", "");
+	}
+    }
 
   disable_ = getctrl("mrs_natural/disable")->to<mrs_natural>();
   if (disable_ != -1) 
@@ -114,9 +122,9 @@ Fanout::myUpdate(MarControlPtr sender)
       if (enableChild_ == s) 
 	enableChildIndex_ = i;
     }
+  
   if (enableChildIndex_ != -1) 
     {
-      
       enabled_(enableChildIndex_) = 1.0;
       localIndices_(enableChildIndex_) = 1.0;
       setctrl("mrs_string/enableChild", "");

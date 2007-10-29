@@ -123,7 +123,7 @@ MarSystem* createSTFTextractor()
 {
 	MarSystemManager mng;
 
-	MarSystem* extractor = mng.create("Fanout", "STFTextractor");
+	/* 	MarSystem* extractor = mng.create("Fanout", "STFTextractor");
 
 	// Time domain features
 	extractor->addMarSystem(mng.create("ZeroCrossings", "zcrs"));
@@ -131,21 +131,20 @@ MarSystem* createSTFTextractor()
 	// Frequency domain features
 	MarSystem* spectralShape = mng.create("Series", "spectralShape");
 	spectralShape->addMarSystem(mng.create("PowerSpectrumNet","powerSpect"));
-	// Spectrum Shape descriptors
-	MarSystem* spectrumFeatures = mng.create("Fanout", "spectrumFeatures");
-	spectrumFeatures->addMarSystem(mng.create("Centroid", "cntrd"));
-	spectrumFeatures->addMarSystem(mng.create("Rolloff", "rlf"));      
-	spectrumFeatures->addMarSystem(mng.create("Flux", "flux"));
-	spectrumFeatures->addMarSystem(mng.create("MFCC", "mfcc"));
 	
-	// MarSystem* spectrumFeatures = mng.create("STFT_features", "spectrumFeatures");
+	
+	MarSystem* spectrumFeatures = mng.create("STFT_features", "spectrumFeatures");
 	spectralShape->addMarSystem(spectrumFeatures);
 	extractor->addMarSystem(spectralShape);
 
 	extractor->linkctrl("mrs_natural/WindowSize", "Series/spectralShape/PowerSpectrumNet/powerSpect/mrs_natural/WindowSize");
-	extractor->linkctrl("mrs_string/enableChild", "Series/spectralShape/Fanout/spectrumFeatures/mrs_string/enableChild");
-	extractor->linkctrl("mrs_string/disableChild", "Series/spectralShape/Fanout/spectrumFeatures/mrs_string/disableChild");
+	extractor->linkctrl("mrs_string/enableChild", "Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/enableChild");
+	extractor->linkctrl("mrs_string/disableChild", "Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/disableChild");
+	*/ 
 
+
+	MarSystem* extractor = mng.create("TimbreFeatures", "STFTextractor");
+	
 	return extractor;
 }
 
@@ -1932,11 +1931,7 @@ bextract_train_refactored(vector<Collection> cls, Collection cl,
   // feature extractors:
   MarSystem* featExtractor = (*featExtractors[extractorStr])();
   featExtractor->updctrl("mrs_natural/WindowSize", winSize);
-  
-  featExtractor->updctrl("mrs_string/disableChild", "Centroid/cntrd");
-  featExtractor->updctrl("mrs_string/disableChild", "Rolloff/rlf");
-  featExtractor->updctrl("mrs_string/disableChild", "Flux/flux");
-  featExtractor->updctrl("mrs_string/disableChild", "MFCC/mfcc");
+  featExtractor->updctrl("mrs_string/disableChild", "all");
 
   if (mfcc_) 
     featExtractor->updctrl("mrs_string/enableChild", "MFCC/mfcc");

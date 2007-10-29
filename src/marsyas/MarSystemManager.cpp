@@ -362,7 +362,7 @@ MarSystemManager::MarSystemManager()
 	//--------------------------------------------------------------------------------
 	// Power spectrum composite prototype
 	//--------------------------------------------------------------------------------
-	MarSystem* pspectpr = new Series("pspectpr");
+	MarSystem* pspectpr = create("Series", "pspectpr");
 	pspectpr->addMarSystem(create("ShiftInput", "si"));
 	pspectpr->addMarSystem(create("Windowing", "hamming"));
 	pspectpr->addMarSystem(create("Spectrum","spk"));
@@ -374,11 +374,27 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PowerSpectrumNet", pspectpr);
 
 	// STFT_features prototype 
-	MarSystem* stft_features_pr = new Fanout("stft_features_pr");
+	MarSystem* stft_features_pr = create("Fanout", "stft_features_pr");
 	stft_features_pr->addMarSystem(create("Centroid", "cntrd"));
 	stft_features_pr->addMarSystem(create("Rolloff", "rlf"));
 	stft_features_pr->addMarSystem(create("Flux", "flux"));
+	stft_features_pr->addMarSystem(create("MFCC", "mfcc"));	
 	registerPrototype("STFT_features", stft_features_pr);
+
+	// timbre_features prototype 
+	MarSystem* timbre_features_pr = new Fanout("timbre_features_pr");
+	timbre_features_pr->addMarSystem(create("ZeroCrossings", "zcrs"));
+	MarSystem* spectralShape = create("Series", "spectralShape");
+	spectralShape->addMarSystem(create("PowerSpectrumNet", "powerSpect"));
+	MarSystem* spectrumFeatures = create("STFT_features", "spectrumFeatures");
+	spectralShape->addMarSystem(spectrumFeatures);
+	timbre_features_pr->addMarSystem(spectralShape);
+
+	timbre_features_pr->linkctrl("mrs_natural/WindowSize", "Series/spectralShape/PowerSpectrumNet/powerSpect/mrs_natural/WindowSize");
+	timbre_features_pr->linkctrl("mrs_string/enableChild", "Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/enableChild");
+	timbre_features_pr->linkctrl("mrs_string/disableChild", "Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/disableChild");
+	registerPrototype("TimbreFeatures", timbre_features_pr);
+
 
 	//--------------------------------------------------------------------------------
 	// LPC composite prototype
