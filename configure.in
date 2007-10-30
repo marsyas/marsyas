@@ -298,7 +298,7 @@ if test "$enable_oss" = yes; then
 else 
 	case "$enable_audio" in 
 	yes)
-       AC_CHECK_HEADERS([alsa/asoundlib.h])
+	   AC_CHECK_HEADERS([alsa/asoundlib.h],,AC_MSG_ERROR([Cannot find ALSA headers]))
 	   AC_DEFINE([__LINUX_ALSA__],[1], [LINUX SYSTEM FOR RTAUDIO])	
 	   AC_DEFINE([__LINUX_ALSASEQ__],[1], [LINUX SYSTEM FOR RTAUDIO])
 	   Libs="-lpthread -lasound ${MADLIB} ${MATLABLIBS} ${OGGLIB}"
