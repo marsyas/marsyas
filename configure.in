@@ -297,7 +297,8 @@ if test "$enable_oss" = yes; then
 	echo "Using OSS audio"
 else 
 	case "$enable_audio" in 
-	yes) 
+	yes)
+       AC_CHECK_HEADERS([alsa/asoundlib.h])
 	   AC_DEFINE([__LINUX_ALSA__],[1], [LINUX SYSTEM FOR RTAUDIO])	
 	   AC_DEFINE([__LINUX_ALSASEQ__],[1], [LINUX SYSTEM FOR RTAUDIO])
 	   Libs="-lpthread -lasound ${MADLIB} ${MATLABLIBS} ${OGGLIB}"
