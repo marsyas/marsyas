@@ -49,6 +49,7 @@ private:
   realvec deltamag_;
 	realvec deltafrequency_;
 
+	mrs_natural N_;
   mrs_real fundamental_;
   mrs_real factor_;
   mrs_natural downFrequency_;
@@ -63,6 +64,8 @@ private:
 	bool prec_;
 
 	mrs_natural frame_;
+
+	bool useStereoSpectrum_;
 
 	Peaker* peaker_;
 	MaxArgMax* max_;

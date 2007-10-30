@@ -34,11 +34,14 @@ PeakConvert::PeakConvert(string name):MarSystem("PeakConvert",name)
 	nbParameters_ = peakView::nbPkParameters; 
 	skip_=0;
 	frame_ = 0;
+	N_ = 0;
 
 	fundamental_ = 0.0;
 	factor_ = 0.0;
 	nbPeaks_ = 0;
-	frameMaxNumPeaks_  = 0;
+	frameMaxNumPeaks_ = 0;
+
+	useStereoSpectrum_ = false;
 
 	peaker_ = new Peaker("Peaker");
 	max_ = new MaxArgMax("MaxArgMax");
@@ -53,11 +56,14 @@ PeakConvert::PeakConvert(const PeakConvert& a) : MarSystem(a)
 	nbParameters_ = a.nbParameters_; 
 	skip_ = a.skip_;
 	frame_ = a.frame_;
+	N_ = a.N_;
 
 	fundamental_ = a.fundamental_;
 	factor_ = a.factor_;
 	nbPeaks_ = a.nbPeaks_;
 	frameMaxNumPeaks_  = a.frameMaxNumPeaks_;
+
+	useStereoSpectrum_ = a.useStereoSpectrum_;
 
 	peaker_ = new Peaker("Peaker");
 	max_ = new MaxArgMax("MaxArgMax");
@@ -81,9 +87,6 @@ PeakConvert::clone() const
 void 
 PeakConvert::addControls()
 {
-	addctrl("mrs_natural/Decimation",MRS_DEFAULT_SLICE_NSAMPLES/4);
-	setctrlState("mrs_natural/Decimation", true);
-
 	addctrl("mrs_natural/frameMaxNumPeaks", 0);
 	setctrlState("mrs_natural/frameMaxNumPeaks", true);
 	
@@ -100,23 +103,42 @@ PeakConvert::addControls()
 	setctrlState("mrs_bool/picking", true);
 
 	addctrl("mrs_natural/totalNumPeaks", 0, ctrl_totalNumPeaks_);
-
 }
 
 void
 PeakConvert::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
-	//if picking is disabled (==false), the nr of sinusoids should be set
-	//to the size of half of the FFTs (i.e. the 1/4 of inObservations) [!]
+
+	//check the input to see if we are also getting stereo information
+	//(N_ is the FFT size)
+	if (fmod(inObservations_, 2.0) == 0.0)
+	{
+		//we just have the two shifted spectrums stacked vertically
+		//(input has N + N observations)
+		N_ = inObservations_/2;
+		useStereoSpectrum_ = false; 
+	}
+	else if(fmod(inObservations_, 2.5) == 0.0)
+	{
+		//we also have stereo spectrum info at the bottom
+		//(input has N + N + N/2+1 observations)
+		N_ = (mrs_natural)((inObservations_-1) / 2.5);
+		useStereoSpectrum_ = true; 
+	}
+
+	//if picking is disabled (==false), the number of sinusoids should be set
+	//to the number of unique bins of the spectrums at the input (i.e. N/2+1)
 	if(!pick_ && ctrl_frameMaxNumPeaks_->to<mrs_natural>() == 0)
-		frameMaxNumPeaks_ = inObservations_/4+1;
+		frameMaxNumPeaks_ = N_/2+1; //inObservations_/4+1;
 	else
 		frameMaxNumPeaks_ = ctrl_frameMaxNumPeaks_->to<mrs_natural>();
 
 	setctrl(ctrl_onSamples_, ctrl_inSamples_);
 	setctrl(ctrl_onObservations_, frameMaxNumPeaks_*nbParameters_);
+	
 	setctrl(ctrl_osrate_, ctrl_israte_); //see HACK at the end of this routine... [!] [TODO]
+	
 	ostringstream oss;
 	for(mrs_natural j=0; j< nbParameters_; ++j) //j = param index
 	{
@@ -125,8 +147,9 @@ PeakConvert::myUpdate(MarControlPtr sender)
 	}
 	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 	
-	mrs_real timeSrate = israte_*(mrs_real)inObservations_/2.0;
-	size_ = inObservations_ /4 +1;
+	mrs_real timeSrate = israte_*(mrs_real)N_;//israte_*(mrs_real)inObservations_/2.0;
+	
+	size_ = N_/2+1;//inObservations_ /4 +1;
 	if (size_ != psize_)
 	{
 		lastphase_.stretch(size_);
@@ -140,12 +163,14 @@ PeakConvert::myUpdate(MarControlPtr sender)
 		deltafrequency_.stretch(size_);
 		psize_ = size_;
 	}
-	factor_ = timeSrate;
-	factor_ /= TWOPI;
+	
+	factor_ = timeSrate / TWOPI;
 	fundamental_ = israte_;
+	
 	skip_ = getctrl("mrs_natural/nbFramesSkipped")->to<mrs_natural>();
 	prec_ = getctrl("mrs_bool/improvedPrecision")->to<mrs_bool>();
 	pick_ = getctrl("mrs_bool/picking")->to<mrs_bool>(); 
+	
 	if(getctrl("mrs_string/frequencyInterval")->to<mrs_string>() != "MARSYAS_EMPTY")
 	{
 		realvec conv(2);
@@ -160,7 +185,7 @@ PeakConvert::myUpdate(MarControlPtr sender)
 	}
 
 	//HACK [!] - see PeakSynthOsc::myUpdate() //[TODO]
-	setctrl("mrs_real/osrate", timeSrate);
+	setctrl(ctrl_osrate_, timeSrate);
 
 }
 
@@ -326,8 +351,6 @@ PeakConvert::getLargeBinInterval(realvec& interval, realvec& index, realvec& mag
 void 
 PeakConvert::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural N2 = inObservations_/4;
-
 	mrs_real a, c;
 	mrs_real b, d;
 	mrs_real phasediff;
@@ -339,29 +362,29 @@ PeakConvert::myProcess(realvec& in, realvec& out)
 	{
 		if(frame_ >= skip_)
 		{
-			// handle amplitudes
-			for (o=0; o <= N2; o++)
+			// handle amplitudes from shifted spectrums at input
+			for (o=0; o < size_; o++)
 			{
-				if (o==0)
+				if (o==0) //DC bins
 				{
-					a = in(2*o,f);
-					b = 0.0;
-					c = in(2*N2+2*o, f);
+					a = in(0,f); 
+					b = 0.0; 
+					c = in(N_, f);
 					d = 0.0;
 				}
-				else if (o == N2)
+				else if (o == size_-1) //Nyquist bins
 				{
 					a = in(1, f);
 					b = 0.0;
-					c = in(2*N2+1, f);
+					c = in(N_+1, f);
 					d = 0.0;
 				}
-				else
+				else //all other bins
 				{
 					a = in(2*o, f);
 					b = in(2*o+1, f);
-					c = in(2*N2+2*o, f);
-					d = in(2*N2+2*o+1, f);
+					c = in(N_+2*o, f);
+					d = in(N_+2*o+1, f);
 				}
 
 				// computer magnitude value 
@@ -383,7 +406,7 @@ PeakConvert::myProcess(realvec& in, realvec& out)
 
 				// compute precise amplitude
 				mag_(o) = sqrt((a*a + b*b))*2; //*4/0.884624;//*50/3); // [!]
-				mrs_real mag = lobe_value_compute ((o * fundamental_-frequency_(o))/factor_, 1, N2*2);
+				mrs_real mag = lobe_value_compute((o * fundamental_-frequency_(o))/factor_, 1, N_);
 				magCorr_(o) = mag_(o)/mag;
 
 				// computing precise frequency using the derivative method // use at your own risk	[?]
@@ -403,55 +426,53 @@ PeakConvert::myProcess(realvec& in, realvec& out)
 
 				// remove potential peak if frequency too irrelevant
 				if(abs(frequency_(o)-o*fundamental_) > 0.5*fundamental_)
-					frequency_(o)=0;
+					frequency_(o)=0.0;
 
 				lastfrequency_(o) = frequency_(o);
 				lastmag_(o) = mag_(o);
 			}
 
-			// select local maxima
+			// select bins with local maxima in magnitude (--> peaks)
 			realvec peaks_ = mag_;
 			realvec tmp_;
-
-			peaker_->updctrl("mrs_real/peakStrength", 0.2);
-			// to be set as a control
+			peaker_->updctrl("mrs_real/peakStrength", 0.2);// to be set as a control [!]
 			peaker_->updctrl("mrs_natural/peakStart", downFrequency_);   // 0
 			peaker_->updctrl("mrs_natural/peakEnd", upFrequency_);  // size_
 			peaker_->updctrl("mrs_natural/inSamples", mag_.getCols());
 			peaker_->updctrl("mrs_natural/inObservations", mag_.getRows());
 			peaker_->updctrl("mrs_natural/onSamples", peaks_.getCols());
 			peaker_->updctrl("mrs_natural/onObservations", peaks_.getRows());
-
 			if(pick_)
 				peaker_->process(mag_, peaks_);
 			else
 			{
-				peaks_ = mag_;
+				//peaks_ = mag_;
 				for (o = 0 ; o < downFrequency_ ; o++)
-					peaks_(o)=0;
+					peaks_(o)=0.0;
 				for (o = upFrequency_ ; o < peaks_.getSize() ; o++)
-					peaks_(o)=0;		
+					peaks_(o)=0.0;		
 			}
-			for(o=0 ; o<N2 ; o++)
+
+			//discard bins whose frequency was set as irrelevant...
+			for(o=0 ; o < size_ ; o++)
 			{
-				if(!frequency_(o))// || frequency_(o)>500)  // 250 2500 [?]
-					peaks_(o) = 0;
+				if(frequency_(o) == 0)
+					peaks_(o) = 0.0;
 			}
 
 			// keep only the frameMaxNumPeaks_ highest amplitude local maxima
-			//if(getctrl("mrs_natural/frameMaxNumPeaks")->to<mrs_natural>())
-			if(ctrl_frameMaxNumPeaks_->to<mrs_natural>())
+			if(ctrl_frameMaxNumPeaks_->to<mrs_natural>() != 0) //?????????????????? is this check needed?!? See myUpdate
 			{
 				tmp_.stretch(frameMaxNumPeaks_*2);
 				max_->updctrl("mrs_natural/nMaximums", frameMaxNumPeaks_);
 			}
-			else
+			else //?????????????????? is this check needed?!? See myUpdate
 			{
 				tmp_.stretch((upFrequency_-downFrequency_)*2);
 				max_->updctrl("mrs_natural/nMaximums", upFrequency_-downFrequency_);
 			}
-			max_->updctrl("mrs_natural/inSamples", size_);
-			max_->updctrl("mrs_natural/inObservations", 1);
+			max_->setctrl("mrs_natural/inSamples", size_);
+			max_->setctrl("mrs_natural/inObservations", 1);
 			max_->update();
 			max_->process(peaks_, tmp_);
 
@@ -478,24 +499,10 @@ PeakConvert::myProcess(realvec& in, realvec& out)
 			MATLAB_EVAL("stem(int+1, peaks(int+1), 'k')");
 			*/
 
-			interval_ /= N2*2;
+			interval_ /= N_*2;
 
 			for (mrs_natural i = 0; i < nbPeaks_; i++)
 			{
-				/*
-				out(i+pkFrequency*frameMaxNumPeaks_) = frequency_((mrs_natural) index_(i));
-				out(i+pkAmplitude*frameMaxNumPeaks_) = magCorr_((mrs_natural) index_(i));
-				out(i+pkPhase*frameMaxNumPeaks_) = -phase_((mrs_natural) index_(i));
-				out(i+pkDeltaFrequency*frameMaxNumPeaks_) = deltafrequency_((mrs_natural) index_(i));
-				out(i+pkDeltaAmplitude*frameMaxNumPeaks_) = deltamag_((mrs_natural) index_(i));
-				out(i+pkFrame*frameMaxNumPeaks_) = time_;
-				out(i+pkGroup*frameMaxNumPeaks_) = 0;
-				out(i+pkVolume*frameMaxNumPeaks_) = 1;
-				out(i+pkPan*frameMaxNumPeaks_) = 0;
-				out(i+pkBinLow*frameMaxNumPeaks_) = interval_(2*i);
-				out(i+pkBin*frameMaxNumPeaks_) = index_(i);
-				out(i+pkBinHigh*frameMaxNumPeaks_) = interval_(2*i+1);
-				*/
 				pkViewOut(i, peakView::pkFrequency, f) = frequency_((mrs_natural) index_(i));
 				pkViewOut(i, peakView::pkAmplitude, f) = magCorr_((mrs_natural) index_(i));
 				pkViewOut(i, peakView::pkPhase, f) = -phase_((mrs_natural) index_(i));
@@ -504,13 +511,17 @@ PeakConvert::myProcess(realvec& in, realvec& out)
 				pkViewOut(i, peakView::pkFrame, f) = frame_; 
 				pkViewOut(i, peakView::pkGroup, f) = 0;
 				pkViewOut(i, peakView::pkVolume, f) = 1;
-				pkViewOut(i, peakView::pkPan, f) = 0;
 				pkViewOut(i, peakView::pkBinLow, f) = interval_(2*i);
 				pkViewOut(i, peakView::pkBin, f) = index_(i);
 				pkViewOut(i, peakView::pkBinHigh, f) = interval_(2*i+1);
+
+				if(useStereoSpectrum_)
+					pkViewOut(i, peakView::pkPan, f) = in((mrs_natural)index_(i)+2*N_, f);
+				else
+					pkViewOut(i, peakView::pkPan, f) = 0.0;
 			}
 		}
-		else
+		else //if not yet reached "skip" number of frames...
 		{
 			for(mrs_natural i=0; i< frameMaxNumPeaks_; ++i)
 			{
