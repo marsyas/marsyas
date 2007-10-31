@@ -32,14 +32,14 @@ private:
 	void colorNote(int note, double error, double direction);
 
 	QLabel *resultDisplay;
-	QtMarIntonationBars *pitchPlot;
+	QtMarIntonationBars *barPlot_;
+	QtMarPlot *pitchPlot_;
 
 	realvec exerAnswer;
 	realvec errors;
+
+	void doLilyStuff();
 	QStringList lilyInput_;
-
-
-	Marx2DGraph* graph;
 };
 #endif
 

@@ -21,18 +21,17 @@ void IntonationExercise::open(QString exerciseFilename) {
 
 	// load exercise answers
 	mrs_natural one, two;
-	mrs_natural frameSum=0;
-	mrs_natural frame;
 	int i=0;
 	exerAnswer.create(16,2);
 	//exerAnswer.create(100,2);
-	QString answerFilename = exerciseFilename;
-	answerFilename.replace(answerFilename.size()-4,4,".txt");
-	QFile answerFile(answerFilename);
+	QString loadFilename;
+	loadFilename = exerciseFilename;
+	loadFilename.replace(loadFilename.size()-4,4,".txt");
+	QFile loadFile(loadFilename);
 
-	if (answerFile.open(QFile::ReadOnly))
+	if (loadFile.open(QFile::ReadOnly))
 	{
-		QTextStream answerText(&answerFile);
+		QTextStream answerText(&loadFile);
 		while (!answerText.atEnd())
 		{
 			answerText>>one>>two;
@@ -41,35 +40,20 @@ void IntonationExercise::open(QString exerciseFilename) {
 			i++;
 		}
 	}
-	answerFile.close();
+	loadFile.close();
 	exerAnswer.stretch(i,2);
-/*
-	for (i=0; i<exerAnswer.getRows()-1; i++)
-	{
-		frame = (mrs_natural) ( exerAnswer(i,1)*44100.0/512.0 /2.0);
-		exerAnswer(i,1) = frameSum;
-		frameSum += frame;
-	}
-	exerAnswer(i,1) = frameSum;
-*/
 
-	cout<<exerAnswer;
 
+	//  TODO: probably remove.
 	// **** read lilypond input
-	// FIXME: filename
-	QString lilyFile(MEAWS_DIR);
-	lilyFile.append("data/intonation/scale.ly");
-    QFile in_file(lilyFile);
-    in_file.open(QIODevice::ReadOnly | QIODevice::Text);
-    lily_input = (QTextStream(&in_file).readAll()).split('\n');
-    in_file.close();
-/*
-	QString temp;
-    for (int i = 0; i < lily_input.size(); ++i) {
-        temp = lily_input.at(i);
-        cout<<qPrintable(temp)<<endl;
-    }
-*/
+	loadFilename = exerciseFilename;
+	loadFilename.replace(loadFilename.size()-4,4,".ly");
+	loadFile.setFileName(loadFilename);
+
+    loadFile.open(QIODevice::ReadOnly | QIODevice::Text);
+    lily_input = (QTextStream(&loadFile).readAll()).split('\n');
+    loadFile.close();
+
 }
 
 void IntonationExercise::addTry() {

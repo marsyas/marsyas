@@ -11,13 +11,8 @@ RhythmTry::RhythmTry()
 	tryArea_->setLayout(tryLayout_);
 
 	pitchPlot = new QtMarPlot();
-	pitchPlot->setBackgroundColor(QColor(255,255,255));
 	tryLayout_->addWidget(pitchPlot);
 
-
-//	graph = new Marx2DGraph(0);
-//	graph->setPlotType(Marx2DGraph::LINEAR_INTERPOLATION);
-//	graph->setGraphDataLineSize( 1.0 );
 }
 
 RhythmTry::~RhythmTry()

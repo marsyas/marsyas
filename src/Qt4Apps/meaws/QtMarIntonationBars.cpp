@@ -55,11 +55,11 @@ QtMarIntonationBars::paintEvent(QPaintEvent *)
 		errorMagnitude *= 20;
 
 		if (errorDirection == 1)
-			colorR = (mrs_natural) (errorMagnitude*255);
+			colorR = (mrs_natural) (255-errorMagnitude*255);
 		if (errorDirection == 0)
-			colorG = (mrs_natural) (errorMagnitude*255);
+			colorG = (mrs_natural) (255-errorMagnitude*255);
 		if (errorDirection == -1)
-			colorB = (mrs_natural) (errorMagnitude*255);
+			colorB = (mrs_natural) (255-errorMagnitude*255);
 		//cout<<colorR<<"\t"<<colorG<<"\t"<<colorB<<endl;
 		painter.setBrush(QColor(colorR,colorG,colorB));
 
