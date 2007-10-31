@@ -36,8 +36,10 @@ for i in range(len(inlines)):
 		for element in splitline:
 			if ( element[:6] == 'pitch='):
 				pitch = int( element[7:-1] )
-				print str(pitch) + " " + str(time)
+				onset = int( time * 44100.0/512.0/384.0 )
+				print str(pitch) + " " + str(onset)
 
-print str(0) + " " + str(time)
+onset = int( time * 44100.0/512.0/384.0 )
+print str(0) + " " + str(onset)
 
 

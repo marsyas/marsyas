@@ -1,0 +1,17 @@
+PITCH	ONSET
+PITCH	ONSET
+PITCH	ONSET
+
+
+where PITCH is a midi pitch value, and
+where ONSET is the beginning _frame_.  (cumulative)
+
+If converting from lilypond MIDI,
+	384 midi ticks / second
+	44100 samples / second
+	512 samples / frame
+
+The samples/frame might change in the future.  512 is the current
+number in Meaws.
+
+
