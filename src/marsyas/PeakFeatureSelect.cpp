@@ -90,6 +90,11 @@ PeakFeatureSelect::myUpdate(MarControlPtr sender)
 			numFeats_++;
 			oss << "pkFrame,";
 		}
+		if(selectedFeatures_ & PeakFeatureSelect::pkPan)
+		{
+			numFeats_++;
+			oss << "pkPan,";
+		}
 		//-----------------------------------------------------
 		if(selectedFeatures_ & (PeakFeatureSelect::pkSetFrequencies |
 			PeakFeatureSelect::pkSetAmplitudes | 
@@ -173,6 +178,11 @@ PeakFeatureSelect::myProcess(realvec& in, realvec& out)
 				if(selectedFeatures_ & PeakFeatureSelect::pkFrame)
 				{
 					out(feat_index, peak_index) = inPeakView(p, peakView::pkFrame, f);
+					feat_index++;
+				}
+				if(selectedFeatures_ & PeakFeatureSelect::pkPan)
+				{
+					out(feat_index, peak_index) = inPeakView(p, peakView::pkPan, f);
 					feat_index++;
 				}
 				//-----------------------------------------------------------------------------

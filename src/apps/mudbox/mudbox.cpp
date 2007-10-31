@@ -1994,10 +1994,6 @@ toy_with_stereoFeaturesMFCC(string fname0, string fname1)
   secondbranch->addMarSystem(mng.create("StereoSpectrumFeatures", "sspkf"));
   secondbranch->addMarSystem(mng.create("TextureStats", "texturests"));
 
-
-
-
-
   playbacknet->addMarSystem(ffanout);
   ffanout->addMarSystem(stereobranches);
   ffanout->addMarSystem(secondbranch);
@@ -2079,26 +2075,11 @@ toy_with_stereoFeaturesMFCC(string fname0, string fname1)
       total->tick();
       cout << "i=" << i << endl;
     }
-  
-
-
-
- 
 }
-
-
-
-
-
-
-
 
 void 
 toy_with_stereoMFCC(string fname0, string fname1)
 {
-  
-
-
   MarSystemManager mng;
 
   MarSystem* playbacknet = mng.create("Series", "playbacknet");
@@ -2201,13 +2182,7 @@ toy_with_stereoMFCC(string fname0, string fname1)
       total->tick();
       cout << "i=" << i << endl;
     }
-  
-
-
-
-
 }
-
 
 void 
 toy_with_mp3convert(string fname0)
@@ -2217,8 +2192,7 @@ toy_with_mp3convert(string fname0)
 
   convertNet->addMarSystem(mng.create("SoundFileSource", "src"));
   convertNet->addMarSystem(mng.create("SoundFileSink", "dest"));
-  
-
+ 
   Collection l;
   l.read(fname0);
 
@@ -2236,16 +2210,7 @@ toy_with_mp3convert(string fname0)
 	}
 
     }
-
-
-
-
-
-
 }
-
-
-
 
 void
 toy_with_stereoFeaturesVisualization(string fname0)
@@ -2254,13 +2219,11 @@ toy_with_stereoFeaturesVisualization(string fname0)
 
   MarSystem* total = mng.create("Series", "total");
   MarSystem* acc = mng.create("Accumulator", "acc");
-  
-  
+    
   MarSystem* playbacknet = mng.create("Series", "playbacknet");
   playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
   playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
-  
-  
+    
   MarSystem* stereobranches = mng.create("Parallel", "stereobranches");
   MarSystem* left = mng.create("Series", "left");
   MarSystem* right = mng.create("Series", "right");
@@ -2278,7 +2241,6 @@ toy_with_stereoFeaturesVisualization(string fname0)
   // playbacknet->addMarSystem(mng.create("Memory", "mem"));
   // playbacknet->addMarSystem(mng.create("PlotSink", "psink"));
   
-
   playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", fname0);
   playbacknet->updctrl("mrs_natural/inSamples", 1024);
   playbacknet->updctrl("mrs_bool/initAudio", true);
@@ -2290,15 +2252,11 @@ toy_with_stereoFeaturesVisualization(string fname0)
   total->addMarSystem(mng.create("PlotSink", "psink"));
 
   total->tick();
-  
-  
 }
-
 
 void 
 toy_with_stereoFeatures(string fname0, string fname1)
 {
-  
   cout << "TOY_WITHING STEREO FEATURES" << endl;
 
   MarSystemManager mng;
@@ -2306,8 +2264,7 @@ toy_with_stereoFeatures(string fname0, string fname1)
   MarSystem* playbacknet = mng.create("Series", "playbacknet");
   playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
   // playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
-  
-  
+    
   MarSystem* stereobranches = mng.create("Parallel", "stereobranches");
   MarSystem* left = mng.create("Series", "left");
   MarSystem* right = mng.create("Series", "right");
@@ -2339,7 +2296,6 @@ toy_with_stereoFeatures(string fname0, string fname1)
 
   total->addMarSystem(mng.create("Annotator", "ann"));
   total->addMarSystem(mng.create("WekaSink", "wsink"));
-
   
   total->updctrl("WekaSink/wsink/mrs_natural/nLabels", 4);
   total->updctrl("WekaSink/wsink/mrs_natural/downsample", 1); 
@@ -2348,7 +2304,6 @@ toy_with_stereoFeatures(string fname0, string fname1)
   
   playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", fname0);
   playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
-
 
   total->updctrl("mrs_natural/inSamples", 1024);
 
@@ -2378,7 +2333,6 @@ toy_with_stereoFeatures(string fname0, string fname1)
   n.read(fname1);
   
   total->updctrl("Annotator/ann/mrs_natural/label", 1); 
-
 
   for (i=0; i < n.size(); i++)
     {

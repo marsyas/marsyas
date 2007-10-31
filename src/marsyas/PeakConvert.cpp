@@ -119,7 +119,7 @@ PeakConvert::myUpdate(MarControlPtr sender)
 		N_ = inObservations_/2;
 		useStereoSpectrum_ = false; 
 	}
-	else if(fmod(inObservations_, 2.5) == 0.0)
+	else if(fmod(inObservations_-1, 2.5) == 0.0)
 	{
 		//we also have stereo spectrum info at the bottom
 		//(input has N + N + N/2+1 observations)

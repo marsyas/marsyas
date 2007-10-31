@@ -1848,7 +1848,7 @@ NumericLib::euclideanDistance(const realvec& Vi, const realvec& Vj, const realve
 	}
 	else 
 	{
-		// do a standardized euclidean distance 
+		// do a standardized L2 euclidean distance 
 		//(i.e. just use the diagonal elements of covMatrix)
 		for (mrs_natural r=0 ; r < Vi.getSize()  ; r++)
 		{

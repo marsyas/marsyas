@@ -64,6 +64,11 @@ FanOutIn::addControls()
 	addctrl("mrs_natural/enable", -1);
 	setctrlState("mrs_natural/enable", true);
 
+	addctrl("mrs_string/enableChild", "");
+	setctrlState("mrs_string/enableChild", true);
+	addctrl("mrs_string/disableChild", "");
+	setctrlState("mrs_string/disableChild", true);
+
 	addctrl("mrs_string/combinator", "+", ctrl_combinator_);
 }
 
@@ -76,18 +81,64 @@ FanOutIn::myUpdate(MarControlPtr sender)
 		enabled_.setval(1.0);
 	}
 
+	//check child MarSystems to disable (passed as a string) 
+	disableChild_ = getctrl("mrs_string/disableChild")->to<mrs_string>();
+	disableChildIndex_ = -1;
+	for (unsigned int i=0; i < marsystems_.size(); i++) 
+	{
+		string s;
+		s = marsystems_[i]->getType() + "/" + marsystems_[i]->getName();
+		if (disableChild_ == s) 
+			disableChildIndex_ = i;
+	}
+	if (disableChildIndex_ != -1) 
+	{
+		enabled_(disableChildIndex_) = 0.0;
+		setctrl("mrs_string/disableChild", "");
+	}  
+	if (disableChild_ == "all")
+	{
+		for (unsigned int i=0; i < marsystems_.size(); i++) 
+		{
+			enabled_(i) = 0.0;
+			setctrl("mrs_string/disableChild", "");
+		}
+	}
+
+	//check child MarSystem to disable (passed as an index)
 	disable_ = getctrl("mrs_natural/disable")->to<mrs_natural>();
-	if (disable_ != -1) 
+	if (disable_ != -1 && disable_ < marsystemsSize_) 
 	{
 		enabled_(disable_) = 0.0;
 		setctrl("mrs_natural/disable", -1);
 	}
+	else
+		setctrl("mrs_natural/disable", -1);
+
+	//check child MarSystems to enable (passed as a string) 
+	enableChild_ = getctrl("mrs_string/enableChild")->to<mrs_string>();
+	enableChildIndex_ = -1;
+	for (unsigned int i=0; i < marsystems_.size(); i++) 
+	{
+		string s;
+		s = marsystems_[i]->getType() + "/" + marsystems_[i]->getName();
+		if (enableChild_ == s) 
+			enableChildIndex_ = i;
+	}
+	if (enableChildIndex_ != -1) 
+	{
+		enabled_(enableChildIndex_) = 1.0;
+		setctrl("mrs_string/enableChild", "");
+	} 
+	//check child MarSystem to enable (passed as an index)
 	enable_ = getctrl("mrs_natural/enable")->to<mrs_natural>();
-	if (enable_ != -1) 
+	if (enable_ != -1 && enable_ < marsystemsSize_) 
 	{
 		enabled_(enable_) = 1.0;
 		setctrl("mrs_natural/enable", -1);
 	}
+	else
+		setctrl("mrs_natural/enable", -1);
 
 	if (marsystemsSize_ != 0)
 	{

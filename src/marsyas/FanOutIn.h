@@ -38,14 +38,16 @@ Controls:
 
 */
 
-
 	class FanOutIn: public MarSystem
 	{
 	private:
 		realvec enabled_;
 
-		mrs_natural disable_;
-		mrs_natural enable_;
+		mrs_natural enable_, enableChildIndex_;
+		mrs_natural disable_, disableChildIndex_;
+
+		mrs_string enableChild_;
+		mrs_string disableChild_;
 
 		bool wrongOutConfig_;
 

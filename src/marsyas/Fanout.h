@@ -58,9 +58,7 @@ private:
   
   mrs_string enableChild_;
   mrs_string disableChild_;
-  
-  
-  
+    
 public:
   Fanout(std::string name);
   ~Fanout();

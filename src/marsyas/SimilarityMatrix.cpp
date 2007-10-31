@@ -122,7 +122,7 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 
 			//normalize input features if necessary
 			if(ctrl_normalize_->to<mrs_string>() == "MinMax")
-				in.normObsMinMax(); // (x - min)/max
+				in.normObsMinMax(); // (x - min)/(max - min)
 			else if(ctrl_normalize_->to<mrs_string>() == "MeanStd")
 				in.normObs(); // (x - mean)/std
 
@@ -186,6 +186,8 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 			}
 		}
 	}
+	MATLAB_PUT(out, "simMatrix");
+	MATLAB_EVAL("figure(1);imagesc(simMatrix);");
 }
 
 

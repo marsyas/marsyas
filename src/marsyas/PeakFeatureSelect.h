@@ -63,8 +63,9 @@ namespace Marsyas
 			pkSetAmplitudes = 16,
 			pkSetFrames = 32,
 			barkPkFreq = 64,
-			dBPkAmp = 128, //should we also add standardization options here?!? [?]
-		};
+			dBPkAmp = 128,
+			pkPan = 256,
+		};//should we also add standardization options here?!? [?]
 
     PeakFeatureSelect(std::string name);
     PeakFeatureSelect(const PeakFeatureSelect& a);
