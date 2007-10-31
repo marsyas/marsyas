@@ -1,14 +1,22 @@
 #include (../Qt4Apps.pri)
 
+# main stuff
 SOURCES = start.cpp mainwindow.cpp
 HEADERS = defs.h mainwindow.h
 
-HEADERS += QClickFrame.h
-SOURCES += QClickFrame.cpp
+# qt objects
+HEADERS += QClickFrame.h QtMarIntonationBars.h
+SOURCES += QClickFrame.cpp QtMarIntonationBars.cpp
 
+# meaws top-level objects
 HEADERS += user.h dispatcher-exercise.h metro.h
 SOURCES += user.cpp dispatcher-exercise.cpp metro.cpp
 
+# audio I/O and feature extraction
+HEADERS += backend.h
+SOURCES += backend.cpp
+
+# exercises
 HEADERS += abstract-exercise.h abstract-try.h
 SOURCES += abstract-exercise.cpp abstract-try.cpp
 
@@ -18,14 +26,11 @@ SOURCES += intonation-exercise.cpp intonation-try.cpp
 HEADERS += rhythm-exercise.h rhythm-try.h
 SOURCES += rhythm-exercise.cpp rhythm-try.cpp
 
+
+# old exercises, not working in current code
 #HEADERS += exerciseShift.h exerciseControl.h
 #SOURCES += exerciseShift.cpp exerciseControl.cpp
 
-HEADERS += backend.h
-SOURCES += backend.cpp
-
-HEADERS += QtMarIntonationBars.h
-SOURCES += QtMarIntonationBars.cpp
 
 RESOURCES = icons.qrc
 TARGET = meaws

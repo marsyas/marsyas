@@ -7,7 +7,7 @@
 MainWindow::MainWindow()
 {
 	user_ = NULL;
-	exercise_ = NULL;
+	exerciseDispatcher_ = NULL;
 	metro_ = NULL;
 	createMain();
 	createActions();
@@ -38,10 +38,10 @@ bool MainWindow::closeUser()
 			return false;
 		}
 	}
-	if (exercise_ != NULL)
+	if (exerciseDispatcher_ != NULL)
 	{
-		delete exercise_;
-		exercise_ = NULL;
+		delete exerciseDispatcher_;
+		exerciseDispatcher_ = NULL;
 	}
 	writeSettings();
 	return true;
@@ -50,7 +50,8 @@ bool MainWindow::closeUser()
 void MainWindow::about()
 {
 	QMessageBox::about(this, tr("About Meaws"),
-	                   tr("Meaws (Musician Evaulation and Audition for Winds and Strings) "
+	                   tr("Meaws (Musician Evaulation and "
+		"Audition for Winds and Strings) "
 	                      "is a learning tool for musicians.	It listens to a musician and "
 	                      "provides feedback on their performance."
 	                     ));
@@ -205,23 +206,23 @@ void MainWindow::createActions()
 
 	openExerciseAct_ = new QAction(QIcon(":/icons/open.png"), tr("Open &Exercise..."), this);
 	openExerciseAct_->setShortcut(tr("Ctrl+R"));
-	openExerciseAct_->setStatusTip(tr("Open a new exercise_"));
+	openExerciseAct_->setStatusTip(tr("Open a new exerciseDispatcher_"));
 
 	toggleAttemptAct = new QAction(this);
 	toggleAttemptAct->setShortcut(tr("Space"));
 	toggleAttemptAct->setStatusTip(tr("Start"));
 	toggleAttemptAct->setIcon(QIcon(":/icons/player_play.png"));
 
-	closeExerciseAct_ = new QAction(QIcon(":/icons/quit.png"), tr("&Close exercise_"), this);
+	closeExerciseAct_ = new QAction(QIcon(":/icons/quit.png"), tr("&Close exerciseDispatcher_"), this);
 	closeExerciseAct_->setShortcut(tr("Ctrl+E"));
-	closeExerciseAct_->setStatusTip(tr("Close exercise_"));
+	closeExerciseAct_->setStatusTip(tr("Close exerciseDispatcher_"));
 
 
 
 	visualMetroBeatAct_ = new QAction(QIcon(":/icons/circle.png"), tr("Visual metro_nome"), this);
 	visualMetroBeatAct_->setStatusTip(tr("Shows the beat"));
 
-	calcExerciseAct_ = new QAction(QIcon(":/icons/square.png"), tr("Calculate exercise_ results"), this);
+	calcExerciseAct_ = new QAction(QIcon(":/icons/square.png"), tr("Calculate exerciseDispatcher_ results"), this);
 
 	testingFileAct_ = new QAction(QIcon(":/icons/open.png"), tr("&Open test audio file..."), this);
 	testingFileAct_->setShortcut(tr("Ctrl+T"));
@@ -264,27 +265,27 @@ void MainWindow::createUser()
 
 void MainWindow::createExercise()
 {
-	exercise_ = new ExerciseDispatcher(centralFrame_);
-	connect(exercise_, SIGNAL(enableActions(int)),
+	exerciseDispatcher_ = new ExerciseDispatcher(centralFrame_);
+	connect(exerciseDispatcher_, SIGNAL(enableActions(int)),
 	        this, SLOT(enableActions(int)));
-	connect(exercise_, SIGNAL(attemptRunning(bool)),
+	connect(exerciseDispatcher_, SIGNAL(attemptRunning(bool)),
 	        this, SLOT(attemptRunning(bool)));
 
 	connect(openExerciseAct_, SIGNAL(triggered()),
-	        exercise_, SLOT(open()));
+	        exerciseDispatcher_, SLOT(open()));
 	connect(toggleAttemptAct, SIGNAL(triggered()),
-	        exercise_, SLOT(toggleAttempt()));
+	        exerciseDispatcher_, SLOT(toggleAttempt()));
 	connect(closeExerciseAct_, SIGNAL(triggered()),
-	        exercise_, SLOT(close()));
+	        exerciseDispatcher_, SLOT(close()));
 
 	connect(calcExerciseAct_, SIGNAL(triggered()),
-	        exercise_, SLOT(analyze()));
+	        exerciseDispatcher_, SLOT(analyze()));
 	connect(testingFileAct_, SIGNAL(triggered()),
-	        exercise_, SLOT(openAttempt()));
+	        exerciseDispatcher_, SLOT(openAttempt()));
 	connect(playFileAct_, SIGNAL(triggered()),
-	        exercise_, SLOT(playFile()));
-	connect(addTryAct_, SIGNAL(triggered()), exercise_, SLOT(addTry()));
-	connect(delTryAct_, SIGNAL(triggered()), exercise_, SLOT(delTry()));
+	        exerciseDispatcher_, SLOT(playFile()));
+	connect(addTryAct_, SIGNAL(triggered()), exerciseDispatcher_, SLOT(addTry()));
+	connect(delTryAct_, SIGNAL(triggered()), exerciseDispatcher_, SLOT(delTry()));
 
 
 	string audioFile = "data/sd.wav";
@@ -339,11 +340,11 @@ void MainWindow::enableActions(int state)
 		tempoToolBar_   ->setEnabled(false);
 		testingMenu_    ->setEnabled(false);
 
-		if (exercise_ == NULL)
+		if (user_ == NULL)
 			createExercise();
 		break;
 	}
-	case MEAWS_READY_EXERCISE:	 // exercise_ loaded
+	case MEAWS_READY_EXERCISE:	 // exerciseDispatcher_ loaded
 		toggleAttemptAct->setEnabled(true);
 		closeExerciseAct_->setEnabled(true);
 
@@ -354,8 +355,8 @@ void MainWindow::enableActions(int state)
 		break;
 	case MEAWS_READY_AUDIO:    // ready to analyze
 
-		//statusBar()->showMessage(exercise_->getMessage(),100000);
-		permanentStatusMessage_->setText(exercise_->getMessage());
+		//statusBar()->showMessage(exerciseDispatcher_->getMessage(),100000);
+		permanentStatusMessage_->setText(exerciseDispatcher_->getMessage());
 		break;
 	}
 }

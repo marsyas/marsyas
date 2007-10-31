@@ -47,7 +47,8 @@ private:
 	bool maybeSave();
 	bool saveFile(const QString &saveFilename);
 	void openFile(const QString &openFilename);
-	void updateUserInfoDisplay();
+	void setupInfoWindow();
+	void updateUserInfoWindow();
 
 	QStringList levelList_;
 	QStringList weekPracticeList_;

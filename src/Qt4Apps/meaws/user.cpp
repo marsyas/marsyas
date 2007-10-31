@@ -6,7 +6,10 @@ using namespace std;
 
 User::User()
 {
+	setupInfoWindow();
 	isModified_ = false;
+
+	// move these somewhere else.  (enum?)
 	levelList_ << "Novice" << "Beginner" << "Moderate" << "Good"
 	<< "Expert" << "Fantastic";
 	weekPracticeList_ << "Never" << "0-1" << "2-4" << "5-9" <<
@@ -15,14 +18,15 @@ User::User()
 	"10-14" << "15-19" << "20+";
 	yearsPlayingList_ << "0" << "1" << "2" << "3-4" << "5-6" << "7-10"
 	<< "11-14" << "15-19" << "20+";
-
-	username_ = "";
-	level_ = "Novice";
-	weekPractice_ = "Never";
-	weekPlay_ = "Never";
-	yearsPlaying_= "0";
+}
 
 
+User::~User()
+{
+}
+
+void User::setupInfoWindow()
+{
 	usernameButton_ = new QPushButton;
 	connect(usernameButton_, SIGNAL(clicked()), this,
 	        SLOT(queryName()));
@@ -40,17 +44,17 @@ User::User()
 	        SLOT(queryYearsPlaying()));
 }
 
-
-User::~User()
-{
-}
-
 void User::newUser()
 {
 	if (maybeSave())
 	{
 		if (queryName())
 		{
+			level_ = "Novice";
+			weekPractice_ = "Never";
+			weekPlay_ = "Never";
+			yearsPlaying_= "0";
+
 			emit enableActions(MEAWS_READY_USER);
 		}
 	}
@@ -89,7 +93,7 @@ void User::openFile(const QString &openFilename)
 	in>>weekPlay_;
 	in>>yearsPlaying_;
 
-	updateUserInfoDisplay();
+	updateUserInfoWindow();
 	isModified_ = false;
 	QApplication::restoreOverrideCursor();
 	emit enableActions(MEAWS_READY_USER);
@@ -204,7 +208,7 @@ void User::setUserInfo()
 }
 
 void
-User::updateUserInfoDisplay()
+User::updateUserInfoWindow()
 {
 	usernameButton_->setText(tr("Username: %1").arg(username_));
 	levelButton_->setText(tr("Level: %1").arg(level_));
@@ -228,7 +232,7 @@ User::queryName()
 	{
 		username_ = text;
 		isModified_ = true;
-		updateUserInfoDisplay();
+		updateUserInfoWindow();
 	}
 	return true;
 }
@@ -246,7 +250,7 @@ User::queryLevel()
 	{
 		level_ = item;
 		isModified_ = true;
-		updateUserInfoDisplay();
+		updateUserInfoWindow();
 	}
 	return true;
 }
@@ -265,7 +269,7 @@ User::queryWeekPractice()
 	{
 		weekPractice_ = item;
 		isModified_ = true;
-		updateUserInfoDisplay();
+		updateUserInfoWindow();
 	}
 	return true;
 }
@@ -284,7 +288,7 @@ User::queryWeekPlay()
 	{
 		weekPlay_ = item;
 		isModified_ = true;
-		updateUserInfoDisplay();
+		updateUserInfoWindow();
 	}
 	return true;
 }
@@ -302,7 +306,7 @@ User::queryYearsPlaying()
 	{
 		yearsPlaying_ = item;
 		isModified_ = true;
-		updateUserInfoDisplay();
+		updateUserInfoWindow();
 	}
 	return true;
 }

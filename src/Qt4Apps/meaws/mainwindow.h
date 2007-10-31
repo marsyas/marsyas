@@ -101,7 +101,7 @@ private:
 
 // main object variables
 	User *user_;
-	ExerciseDispatcher *exercise_;
+	ExerciseDispatcher *exerciseDispatcher_;
 	Metro *metro_;
 
 };
