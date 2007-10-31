@@ -14,6 +14,7 @@ QtMarPlot::QtMarPlot(QWidget *parent)
 	drawCenter_ = false;
 	drawImpulses_ = false;
 	setAutoFillBackground(true);
+	setBackgroundColor(QColor(255,255,255));
 }
 
 QtMarPlot::~QtMarPlot()
