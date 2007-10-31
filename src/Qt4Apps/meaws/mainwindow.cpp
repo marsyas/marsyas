@@ -14,6 +14,7 @@ MainWindow::MainWindow()
 	createMenus();
 	createToolBars();
 	createStatusBar();
+	createMeawsObjects();
 	readSettings();
 	enableActions(MEAWS_READY_NOTHING);
 }
@@ -31,18 +32,19 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 bool MainWindow::closeUser()
 {
-	if (user_ != NULL)
+//	if (user_ != NULL)
+//	{
+	if ( !user_->close() )
 	{
-		if ( !user_->close() )
-		{
-			return false;
-		}
+		return false;
 	}
-	if (exerciseDispatcher_ != NULL)
-	{
-		delete exerciseDispatcher_;
-		exerciseDispatcher_ = NULL;
-	}
+	exerciseDispatcher_->close();
+//	}
+//	if (exerciseDispatcher_ != NULL)
+//	{
+//		delete exerciseDispatcher_;
+//		exerciseDispatcher_ = NULL;
+//	}
 	writeSettings();
 	return true;
 }
@@ -222,7 +224,7 @@ void MainWindow::createActions()
 	visualMetroBeatAct_ = new QAction(QIcon(":/icons/circle.png"), tr("Visual metro_nome"), this);
 	visualMetroBeatAct_->setStatusTip(tr("Shows the beat"));
 
-	calcExerciseAct_ = new QAction(QIcon(":/icons/square.png"), tr("Calculate exerciseDispatcher_ results"), this);
+	calcExerciseAct_ = new QAction(QIcon(":/icons/square.png"), tr("Calculate exercise results"), this);
 
 	testingFileAct_ = new QAction(QIcon(":/icons/open.png"), tr("&Open test audio file..."), this);
 	testingFileAct_->setShortcut(tr("Ctrl+T"));
@@ -236,7 +238,7 @@ void MainWindow::createActions()
 	delTryAct_ = new QAction(tr("Delete a try"), this);
 }
 
-void MainWindow::createUser()
+void MainWindow::createMeawsObjects()
 {
 	user_ = new User();
 	connect(user_, SIGNAL(enableActions(int)), this, SLOT(enableActions(int)));
@@ -245,10 +247,8 @@ void MainWindow::createUser()
 	connect(saveUserAct_, SIGNAL(triggered()), user_, SLOT(save()));
 	connect(saveAsUserAct_, SIGNAL(triggered()), user_, SLOT(saveAs()));
 	connect(setUserInfoAct_, SIGNAL(triggered()), user_, SLOT(setUserInfo()));
-}
 
-void MainWindow::createExercise()
-{
+
 	exerciseDispatcher_ = new ExerciseDispatcher(centralFrame_);
 	connect(exerciseDispatcher_, SIGNAL(enableActions(int)),
 	        this, SLOT(enableActions(int)));
@@ -275,12 +275,6 @@ void MainWindow::createExercise()
 	connect(visualMetroBeatAct_, SIGNAL(triggered()), metro_,
 	        SLOT(toggleBigMetro()));
 	metro_->setIcon(visualMetroBeatAct_);
-	/*
-		connect(slider, SIGNAL(valueChanged(int)),
-			this, SLOT(setMetroTempo(int)));
-		connect(tempoBox_, SIGNAL(valueChanged(int)),
-			this, SLOT(setMetroTempo(int)));
-	*/
 }
 
 void MainWindow::enableActions(int state)
@@ -301,8 +295,6 @@ void MainWindow::enableActions(int state)
 		tempoToolBar_   ->setEnabled(false);
 		testingMenu_    ->setEnabled(false);
 
-		if (user_ == NULL)
-			createUser();
 		break;
 	}
 	case MEAWS_READY_USER:     // user_ selected
@@ -322,8 +314,6 @@ void MainWindow::enableActions(int state)
 		tempoToolBar_   ->setEnabled(false);
 		testingMenu_    ->setEnabled(false);
 
-		if (exerciseDispatcher_ == NULL)
-			createExercise();
 		break;
 	}
 	case MEAWS_READY_EXERCISE:	 // exerciseDispatcher_ loaded

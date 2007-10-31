@@ -38,11 +38,11 @@ public slots:
 
 	void addTry()
 	{
-		evaluation_->addTry();
+		exercise_->addTry();
 	};
 	void delTry()
 	{
-		evaluation_->delTry();
+		exercise_->delTry();
 	};
 
 signals:
@@ -58,7 +58,7 @@ private:
 	QFrame *resultArea_;
 
 	// actual Meaws objects
-	Exercise *evaluation_;
+	Exercise *exercise_;
 	MarBackend *marBackend_;
 
 	// left-over garbage (?)

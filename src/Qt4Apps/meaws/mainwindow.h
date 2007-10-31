@@ -47,8 +47,7 @@ private:
 	void readSettings();
 	void writeSettings();
 
-	void createUser();
-	void createExercise();
+	void createMeawsObjects();
 
 // main interface objects
 	QFrame* centralFrame_;

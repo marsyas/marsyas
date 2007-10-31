@@ -17,7 +17,7 @@ ExerciseDispatcher::ExerciseDispatcher(QFrame *centralFrame)
 
 	attemptRunningBool_ = false;
 	marBackend_ = NULL;
-	evaluation_ = NULL;
+	exercise_ = NULL;
 	statusMessage_ = "ready";
 }
 
@@ -39,13 +39,13 @@ bool ExerciseDispatcher::chooseEvaluation()
 	                                     tr("TestingMethod:"), items, 0, false, &ok);
 	if (ok && !item.isEmpty())
 	{
-		if (evaluation_ != NULL)
-			delete evaluation_;
-		if (item=="Intonation test") evaluation_ = new IntonationExercise();
-		if (item=="Rhythm test") evaluation_ = new RhythmExercise();
-//		if (item=="Sound control test") evaluation_ = new ExerciseControl();
-//		if (item=="Shifting test") evaluation_ = new ExerciseShift();
-		connect(evaluation_,SIGNAL(analysisDone()), this,
+		if (exercise_ != NULL)
+			delete exercise_;
+		if (item=="Intonation test") exercise_ = new IntonationExercise();
+		if (item=="Rhythm test") exercise_ = new RhythmExercise();
+//		if (item=="Sound control test") exercise_ = new ExerciseControl();
+//		if (item=="Shifting test") exercise_ = new ExerciseShift();
+		connect(exercise_,SIGNAL(analysisDone()), this,
 		        SLOT(analysisDone()));
 		return true;
 	}
@@ -57,15 +57,15 @@ void ExerciseDispatcher::open()
 	if (chooseEvaluation())
 	{
 		QString openFilename = QFileDialog::getOpenFileName(0,tr("Open file"),
-		                       evaluation_->exercisesDir(), tr("Exercises (*.png)"));
+		                       exercise_->exercisesDir(), tr("Exercises (*.png)"));
 		if (!openFilename.isEmpty())
 		{
-			evaluation_->open(openFilename);
-			evaluation_->setupDisplay(instructionArea_, resultArea_);
-			evaluation_->addTry();
+			exercise_->open(openFilename);
+			exercise_->setupDisplay(instructionArea_, resultArea_);
+			exercise_->addTry();
 			if (marBackend_ != NULL)
 				delete marBackend_;
-			marBackend_ = new MarBackend(evaluation_->getBackend());
+			marBackend_ = new MarBackend(exercise_->getBackend());
 			connect(marBackend_, SIGNAL(setAttempt(bool)), this, SLOT(setAttempt(bool)));
 			enableActions(MEAWS_READY_EXERCISE);
 		}
@@ -83,10 +83,10 @@ void ExerciseDispatcher::close()
 		delete marBackend_;
 		marBackend_ = NULL;
 	}
-	if (evaluation_ != NULL)
+	if (exercise_ != NULL)
 	{
-		delete evaluation_;
-		evaluation_ = NULL;
+		delete exercise_;
+		exercise_ = NULL;
 	}
 	enableActions(MEAWS_READY_USER);
 }
@@ -126,7 +126,14 @@ void ExerciseDispatcher::openAttempt()
 	{
 		marBackend_->open( qPrintable(openFilename) );
 	}
-
+	// TODO: need to wait for analysis to be done!
+/*
+	if ( marBackend_->analyze() )
+	{
+		exercise_->displayAnalysis( marBackend_ );
+		analysisDone();
+	}
+*/
 }
 
 
@@ -148,14 +155,14 @@ void ExerciseDispatcher::analyze()
 // stuff that mght be accidentally commiited -gp.
 	if ( marBackend_->analyze() )
 	{
-		evaluation_->displayAnalysis( marBackend_ );
+		exercise_->displayAnalysis( marBackend_ );
 		analysisDone();
 	}
 }
 
 void ExerciseDispatcher::analysisDone()
 {
-	statusMessage_ = evaluation_->getMessage();
+	statusMessage_ = exercise_->getMessage();
 	enableActions(MEAWS_TRY_PAUSED);
 }
 
