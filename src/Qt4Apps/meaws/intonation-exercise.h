@@ -27,10 +27,10 @@ public slots:
 
 private:
 	realvec exerAnswer;
-//	QList<IntonationTry *> *tries;
 
-//	mrs_natural current_;
+
 	QStringList lily_input;
+
 };
 #endif
 

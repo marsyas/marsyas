@@ -161,13 +161,9 @@ void IntonationTry::calcErrors(const realvec& pitches, const realvec&
 
 bool IntonationTry::displayAnalysis(MarBackend *results)
 {
-	cout<<"in try disp"<<endl;
 // get info from backend
 	realvec pitches = results->getMidiPitches();
 	realvec amps = results->getAmplitudes();
-	cout<<"die"<<endl;
-	cout<<pitches.getSize()<<endl;
-	cout<<amps.getSize()<<endl;
 	realvec bounds;
 	Transcriber::pitchSegment(pitches, bounds);
 	// shift the exercise times to match the beginning of audio exercise
@@ -177,7 +173,6 @@ bool IntonationTry::displayAnalysis(MarBackend *results)
 	pitchPlot->setVertical(0, 0.05);
 	pitchPlot->setData(&errors);
 	//cout<<errors;
-	cout<<"done disp"<<endl;
 /*
 	for (int i=0; i<exerAnswer.getRows(); i++)
 		exerAnswer(i,1) = exerAnswer(i,1) + bounds(0);

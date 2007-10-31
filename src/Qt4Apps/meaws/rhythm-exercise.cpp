@@ -44,10 +44,12 @@ void RhythmExercise::open(QString exerciseFilename) {
 	}
 	answerFile.close();
 	exerAnswer.stretch(i-1,2);
+/*
 	for (i=0; i<exerAnswer.getRows(); i++)
 		exerAnswer(i,1) =
 			(mrs_natural) (exerAnswer(i,1)*44100.0/512.0/384.00);
 	cout<<exerAnswer;
+*/
 
 	// **** read lilypond input
 	// FIXME: filename

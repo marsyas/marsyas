@@ -127,13 +127,13 @@ void ExerciseDispatcher::openAttempt()
 		marBackend_->open( qPrintable(openFilename) );
 	}
 	// TODO: need to wait for analysis to be done!
-/*
+	sleep(1);
+
 	if ( marBackend_->analyze() )
 	{
 		exercise_->displayAnalysis( marBackend_ );
 		analysisDone();
 	}
-*/
 }
 
 

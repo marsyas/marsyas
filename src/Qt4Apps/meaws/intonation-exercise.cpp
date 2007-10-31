@@ -6,7 +6,6 @@ using namespace std;
 #include <QTextStream>
 #include "Transcriber.h"
 
-
 IntonationExercise::IntonationExercise() {
 }
 
@@ -28,17 +27,15 @@ void IntonationExercise::open(QString exerciseFilename) {
 	exerAnswer.create(16,2);
 	//exerAnswer.create(100,2);
 	QString answerFilename = exerciseFilename;
-	int size = answerFilename.size();
-	answerFilename.replace(size-4,4,".txt");
+	answerFilename.replace(answerFilename.size()-4,4,".txt");
 	QFile answerFile(answerFilename);
+
 	if (answerFile.open(QFile::ReadOnly))
 	{
 		QTextStream answerText(&answerFile);
 		while (!answerText.atEnd())
 		{
 			answerText>>one>>two;
-//			exerAnswer(i,0) = one;
-//			exerAnswer(i,1) = two;
 			exerAnswer.stretchWrite(i,0,one);
 			exerAnswer.stretchWrite(i,1,two);
 			i++;
@@ -46,6 +43,7 @@ void IntonationExercise::open(QString exerciseFilename) {
 	}
 	answerFile.close();
 	exerAnswer.stretch(i,2);
+/*
 	for (i=0; i<exerAnswer.getRows()-1; i++)
 	{
 		frame = (mrs_natural) ( exerAnswer(i,1)*44100.0/512.0 /2.0);
@@ -53,7 +51,9 @@ void IntonationExercise::open(QString exerciseFilename) {
 		frameSum += frame;
 	}
 	exerAnswer(i,1) = frameSum;
-//	cout<<exerAnswer;
+*/
+
+	cout<<exerAnswer;
 
 	// **** read lilypond input
 	// FIXME: filename
