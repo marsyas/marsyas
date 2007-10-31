@@ -47,7 +47,7 @@ public slots:
 
 signals:
 	void enableActions(int state);
-	void attemptRunning(bool running);
+//	void attemptRunning(bool running);
 
 private:
 	bool chooseEvaluation();

@@ -9,7 +9,8 @@
 #define MEAWS_READY_NOTHING 1
 #define MEAWS_READY_USER 2
 #define MEAWS_READY_EXERCISE 3
-#define MEAWS_READY_AUDIO 4
+#define MEAWS_TRY_PAUSED 4
+#define MEAWS_TRY_RUNNING 5
 
 // might work?  might not.  Can't check by myself.
 #ifdef WIN32

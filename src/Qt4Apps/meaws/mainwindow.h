@@ -32,7 +32,6 @@ protected:
 
 public slots:
 	void enableActions(int state);
-	void attemptRunning(bool running);
 
 private slots:
 	void about();

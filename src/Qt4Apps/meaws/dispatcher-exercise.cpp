@@ -105,13 +105,15 @@ void ExerciseDispatcher::setAttempt(bool running)
 		{
 			attemptRunningBool_ = true;
 			marBackend_->start();
+			enableActions(MEAWS_TRY_RUNNING);
 		}
 		else
 		{
 			attemptRunningBool_ = false;
 			marBackend_->stop();
+			enableActions(MEAWS_TRY_PAUSED);
 		}
-		attemptRunning(attemptRunningBool_);
+		//attemptRunning(attemptRunningBool_);
 	}
 }
 
@@ -154,6 +156,6 @@ void ExerciseDispatcher::analyze()
 void ExerciseDispatcher::analysisDone()
 {
 	statusMessage_ = evaluation_->getMessage();
-	enableActions(MEAWS_READY_AUDIO);
+	enableActions(MEAWS_TRY_PAUSED);
 }
 

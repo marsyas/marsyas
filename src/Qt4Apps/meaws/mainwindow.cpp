@@ -236,22 +236,6 @@ void MainWindow::createActions()
 	delTryAct_ = new QAction(tr("Delete a try"), this);
 }
 
-void MainWindow::attemptRunning(bool running)
-{
-	if (running)   // start try
-	{
-		toggleAttemptAct->setStatusTip(tr("Stop"));
-		toggleAttemptAct->setIcon(QIcon(":/icons/player_pause.png"));
-		metro_->startMetro();
-	}
-	else   // stop try
-	{
-		toggleAttemptAct->setStatusTip(tr("Start"));
-		toggleAttemptAct->setIcon(QIcon(":/icons/player_play.png"));
-		metro_->stopMetro();
-	}
-}
-
 void MainWindow::createUser()
 {
 	user_ = new User();
@@ -268,8 +252,6 @@ void MainWindow::createExercise()
 	exerciseDispatcher_ = new ExerciseDispatcher(centralFrame_);
 	connect(exerciseDispatcher_, SIGNAL(enableActions(int)),
 	        this, SLOT(enableActions(int)));
-	connect(exerciseDispatcher_, SIGNAL(attemptRunning(bool)),
-	        this, SLOT(attemptRunning(bool)));
 
 	connect(openExerciseAct_, SIGNAL(triggered()),
 	        exerciseDispatcher_, SLOT(open()));
@@ -340,7 +322,7 @@ void MainWindow::enableActions(int state)
 		tempoToolBar_   ->setEnabled(false);
 		testingMenu_    ->setEnabled(false);
 
-		if (user_ == NULL)
+		if (exerciseDispatcher_ == NULL)
 			createExercise();
 		break;
 	}
@@ -348,17 +330,25 @@ void MainWindow::enableActions(int state)
 		toggleAttemptAct->setEnabled(true);
 		closeExerciseAct_->setEnabled(true);
 
-
 		tempoToolBar_->setEnabled(true);
 		testingMenu_ ->setEnabled(true);
 
 		break;
-	case MEAWS_READY_AUDIO:    // ready to analyze
+	case MEAWS_TRY_PAUSED:    // ready to analyze
+		toggleAttemptAct->setStatusTip(tr("Start"));
+		toggleAttemptAct->setIcon(QIcon(":/icons/player_play.png"));
+		metro_->stopMetro();
 
 		//statusBar()->showMessage(exerciseDispatcher_->getMessage(),100000);
 		permanentStatusMessage_->setText(exerciseDispatcher_->getMessage());
 		break;
+
+	case MEAWS_TRY_RUNNING:
+		toggleAttemptAct->setStatusTip(tr("Stop"));
+		toggleAttemptAct->setIcon(QIcon(":/icons/player_pause.png"));
+		metro_->startMetro();
+
+		break;
 	}
 }
-
 
