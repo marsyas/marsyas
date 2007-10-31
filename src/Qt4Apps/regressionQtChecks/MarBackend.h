@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QObject> 
+#include <QWaitCondition>
 #include "MarSystemManager.h"
 #include "MarSystemQtWrapper.h"
 using namespace Marsyas;
@@ -18,6 +19,7 @@ class MarBackend: public QObject
 public:
 	MarBackend(string infile, string outfile);
 	~MarBackend();
+	void waitUntilFinished();
 
 public slots:
 	void ctrlChanged(MarControlPtr changed);
@@ -29,6 +31,9 @@ private:
 	MarSystem *pnet;
 	MarControlPtr isEmptyPtr;
 	MarControlPtr posPtr;
+
+
+	QWaitCondition *wake; // maybe?
 };
 #endif
 
