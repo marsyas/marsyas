@@ -29,7 +29,7 @@ public slots:
 	void close();
 	void toggleAttempt();
 	void setAttempt(bool running);
-	void openAttempt();
+	bool openAttempt();
 
 	void playFile();
 

@@ -118,22 +118,24 @@ void ExerciseDispatcher::setAttempt(bool running)
 }
 
 
-void ExerciseDispatcher::openAttempt()
+bool ExerciseDispatcher::openAttempt()
 {
 	QString openFilename = QFileDialog::getOpenFileName(0,tr("Open Attempt"),
 	                       "/home/gperciva/data/");
 	if (!openFilename.isEmpty())
 	{
 		marBackend_->open( qPrintable(openFilename) );
-	}
-	// TODO: need to wait for analysis to be done!
-	sleep(1);
+		// TODO: need to wait for analysis to be done!
+		sleep(1);
 
-	if ( marBackend_->analyze() )
-	{
-		exercise_->displayAnalysis( marBackend_ );
-		analysisDone();
+		if ( marBackend_->analyze() )
+		{
+			exercise_->displayAnalysis( marBackend_ );
+			analysisDone();
+		}
+		return true;
 	}
+	return false;
 }
 
 
