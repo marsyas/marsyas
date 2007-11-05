@@ -23,16 +23,15 @@ using namespace Marsyas;
 
 CollectionFileSource::CollectionFileSource(string name):AbsSoundFileSource("SoundFileSource", name)
 {
-  //type_ = "SoundFileSource";
-  //name_ = name;
-
-	addControls();
+  addControls();
 }
 
 CollectionFileSource::CollectionFileSource(const CollectionFileSource& a):AbsSoundFileSource(a)
 {
   ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
   ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
+  ctrl_labelNames_ = getctrl("mrs_string/labelNames");
+  ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
 }
 
 
@@ -86,6 +85,8 @@ CollectionFileSource::addControls()
 
   addctrl("mrs_string/currentlyPlaying", "daufile", ctrl_currentlyPlaying_);
   addctrl("mrs_natural/currentLabel", 0, ctrl_currentLabel_);
+  addctrl("mrs_string/labelNames", "", ctrl_labelNames_);
+  addctrl("mrs_natural/nLabels", 0, ctrl_nLabels_);
   mngCreated_ = false; 
 }
 
@@ -101,7 +102,11 @@ CollectionFileSource::getHeader(string filename)
   setctrl("mrs_bool/notEmpty", true);
   ctrl_currentlyPlaying_->setValue(col_.entry(0), NOUPDATE);
   if (col_.hasLabels())
-    ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry(0)), NOUPDATE);
+    {
+      ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry(0)), NOUPDATE);
+      ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
+      ctrl_nLabels_->setValue(col_.getNumLabels(), NOUPDATE);
+    }
   addctrl("mrs_natural/size", 1); // just so it's not zero 
   setctrl("mrs_natural/pos", 0);
   pos_ = 0;
@@ -140,6 +145,8 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
     isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));
     ctrl_currentlyPlaying_->setValue(col_.entry(cindex_), NOUPDATE);
     ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry(cindex_)), NOUPDATE);
+    ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
+    ctrl_nLabels_->setValue(col_.getNumLabels(), NOUPDATE);
   }
   
   myIsrate_ = isrc_->getctrl("mrs_real/israte")->to<mrs_real>();
@@ -267,6 +274,10 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 	      ctrl_currentlyPlaying_->setValue(col_.entry(cindex_), NOUPDATE);
 	      setctrl("mrs_natural/currentLabel", col_.labelNum(col_.labelEntry(cindex_)));
 	      ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry(cindex_)), NOUPDATE);
+	      
+	      ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
+	      ctrl_nLabels_->setValue(col_.getNumLabels(), NOUPDATE);
+
 	    }
 	  else 
 	    {

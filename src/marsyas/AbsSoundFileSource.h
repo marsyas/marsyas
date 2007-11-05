@@ -48,6 +48,8 @@ public:
 
   MarControlPtr ctrl_currentlyPlaying_;
   MarControlPtr ctrl_currentLabel_;
+  MarControlPtr ctrl_nLabels_;
+  MarControlPtr ctrl_labelNames_;
 };
 
 }//namespace Marsyas

@@ -37,6 +37,8 @@ WavFileSource::WavFileSource(const WavFileSource& a): AbsSoundFileSource(a)
   ctrl_pos_ = getctrl("mrs_natural/pos");
   ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
   ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
+  ctrl_labelNames_ = getctrl("mrs_string/labelNames");
+  ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
 }
 
 
@@ -95,6 +97,8 @@ WavFileSource::addControls()
 	addctrl("mrs_natural/numFiles", 1);
   addctrl("mrs_string/currentlyPlaying", "daufile", ctrl_currentlyPlaying_); //"dwavfile" [?]
   addctrl("mrs_natural/currentLabel", 0, ctrl_currentLabel_);
+  addctrl("mrs_natural/nLabels", 0, ctrl_nLabels_);
+  addctrl("mrs_string/labelNames", "", ctrl_labelNames_);
 }
 
 void 
@@ -233,6 +237,8 @@ WavFileSource::getHeader(string filename)
 			setctrl("mrs_natural/size", size_);
 			ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
 			ctrl_currentLabel_->setValue(0, NOUPDATE);
+			ctrl_labelNames_->setValue("", NOUPDATE);
+			ctrl_nLabels_->setValue(0, NOUPDATE);
 			sfp_begin_ = ftell(sfp_);
 			notEmpty_ = true;
 			pos_ = 0;

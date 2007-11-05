@@ -62,6 +62,8 @@ MP3FileSource::MP3FileSource(const MP3FileSource& a):AbsSoundFileSource(a)
   currentPos_ = 0;
   ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
   ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
+  ctrl_labelNames_ = getctrl("mrs_string/labelNames");
+  ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
 }
 
 MarSystem* 
@@ -105,6 +107,9 @@ MP3FileSource::addControls()
 	
   addctrl("mrs_string/currentlyPlaying", "daufile", ctrl_currentlyPlaying_);
   addctrl("mrs_natural/currentLabel", 0, ctrl_currentLabel_);
+  addctrl("mrs_natural/labelNames","", ctrl_currentLabel_);
+  addctrl("mrs_natural/nLabels", 0, ctrl_currentLabel_);
+  
 }
 
 
@@ -349,6 +354,8 @@ MP3FileSource::getHeader(string filename)
   
   ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
   ctrl_currentLabel_->setValue(0, NOUPDATE);
+  ctrl_nLabels_->setValue(0, NOUPDATE);
+  ctrl_labelNames_->setValue("", NOUPDATE);
 
   offset = 0;
   pos_ = samplesOut_ = frameCount_ = 0;

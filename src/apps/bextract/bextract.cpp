@@ -39,7 +39,7 @@ int normopt;
 bool tline;
 
 mrs_natural offset = 0;
-mrs_natural duration = 1000 * 44100;
+mrs_real duration = 30.0f;
 mrs_natural memSize = 1;
 mrs_natural winSize = 512;
 mrs_natural hopSize = 512;
@@ -278,7 +278,7 @@ void
 printUsage(string progName)
 {
 	MRSDIAG("bextract.cpp - printUsage");
-	cerr << "Usage : " << progName << " [-e extractor] [-h help] [-o offset(samples)] [-d duration(samples)] [-s start(seconds)] [-l length(seconds)] [-m memory]  [-u usage] collection1 collection2 ... collectionN" << endl;
+	cerr << "Usage : " << progName << " [-e extractor] [-h help] [-s start(seconds)] [-l length(seconds)] [-m memory]  [-u usage] collection1 collection2 ... collectionN" << endl;
 	cerr << endl;
 }
 
@@ -297,10 +297,8 @@ printHelp(string progName)
 	cerr << "-u --usage       : display short usage info" << endl;
 	cerr << "-h --help        : display this information " << endl;
 	cerr << "-e --extractor   : exactor " << endl;
-	cerr << "-o --offset      : playback start offset in samples " << endl;
 	cerr << "-p --plugin      : output plugin name " << endl;
 	cerr << "-pm --pluginmute : mute the plugin " << endl;
-	cerr << "-d --duration    : playback duration in samples     " << endl;
 	cerr << "-s --start       : playback start offest in seconds " << endl;
 	cerr << "-l --length      : playback length in seconds " << endl;
 	cerr << "-m --memory      : memory size " << endl;
@@ -1912,19 +1910,9 @@ bextract_train_refactored(vector<Collection> cls, Collection cl,
   MarSystem *src = mng.create("SoundFileSource", "src");
   src->updctrl("mrs_string/filename", "bextract_single.mf");
 
-  // Calculate duration, offset parameters if necessary 
   if (start > 0.0) 
-    offset = (mrs_natural) (start 
-			    * src->getctrl("mrs_real/israte")->to<mrs_real>() 
-			    * src->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
+    offset = (mrs_natural) (start * src->getctrl("mrs_real/israte")->to<mrs_real>());
 
-  if (length != 30.0) 
-    duration = (mrs_natural) (length 
-			      * src->getctrl("mrs_real/israte")->to<mrs_real>() 
-			      * src->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
-
-  // create the correct feature extractor using the table of known
-  // feature extractors:
   MarSystem* featExtractor = mng.create("TimbreFeatures", "featExtractor");
   featExtractor->updctrl("mrs_natural/WindowSize", winSize);
   
@@ -1946,32 +1934,25 @@ bextract_train_refactored(vector<Collection> cls, Collection cl,
       // which can be used for real-time classification 
       MarSystem* dest = mng.create("AudioSink", "dest");
       dest->updctrl("mrs_bool/mute", true);
+      // dest->updctrl("mrs_bool/initAudio", true);
       featureNetwork->addMarSystem(dest);
     }
 
   //add the feature extraction network
   featureNetwork->addMarSystem(featExtractor);
-
-  //texture window statistics (optional)
-  // if(memSize != 0)
-  // {
-      featureNetwork->addMarSystem(mng.create("TextureStats", "tStats"));
-      featureNetwork->updctrl("TextureStats/tStats/mrs_natural/memSize", memSize);
-      // }
-
+  featureNetwork->addMarSystem(mng.create("TextureStats", "tStats"));
+  featureNetwork->updctrl("TextureStats/tStats/mrs_natural/memSize", memSize);
+  
   // update controls I
   // src has to be configured with hopSize frame length in case a ShiftInput
   // is used in the feature extraction network
   featureNetwork->updctrl("mrs_natural/inSamples", hopSize);
   featureNetwork->updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
-  // add the Annotator
+  featureNetwork->updctrl("SoundFileSource/src/mrs_real/duration", length);
+  
   featureNetwork->addMarSystem(mng.create("Annotator", "annotator"));
-
-  // add WEKA sink
   if (wekafname != EMPTYSTRING)
     featureNetwork->addMarSystem(mng.create("WekaSink", "wsink"));
-
-  // add classifier and confidence majority calculation 
   featureNetwork->addMarSystem(mng.create("GaussianClassifier", "cl"));
   featureNetwork->addMarSystem(mng.create("Confidence", "confidence"));
 
@@ -1986,30 +1967,28 @@ bextract_train_refactored(vector<Collection> cls, Collection cl,
   featureNetwork->linkctrl("mrs_bool/initAudio", "AudioSink/dest/mrs_bool/initAudio");
   featureNetwork->linkctrl("SoundFileSource/src/mrs_natural/currentLabel", 
 			   "Annotator/annotator/mrs_natural/label");
-
-  MarControlPtr ctrl_notEmpty_ = featureNetwork->getctrl("SoundFileSource/src/mrs_bool/notEmpty");
-
-  // main loop for extracting features 
-  Collection l = cl;
-  mrs_natural nLabels = l.getNumLabels();
+  featureNetwork->linkctrl("SoundFileSource/src/mrs_natural/nLabels", 
+			   "GaussianClassifier/cl/mrs_natural/nClasses");
+  featureNetwork->linkctrl("SoundFileSource/src/mrs_natural/nLabels", 
+			   "Confidence/confidence/mrs_natural/nLabels");
+  featureNetwork->linkctrl("SoundFileSource/src/mrs_string/labelNames", 
+			   "Confidence/confidence/mrs_string/labelNames");
   
   if (wekafname != EMPTYSTRING)
     {
-      featureNetwork->updctrl("WekaSink/wsink/mrs_string/labelNames", l.getLabelNames());
-      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/nLabels", nLabels);
+      featureNetwork->linkctrl("SoundFileSource/src/mrs_string/labelNames", 
+			       "WekaSink/wsink/mrs_string/labelNames");
+      featureNetwork->linkctrl("SoundFileSource/src/mrs_natural/nLabels", 
+			       "WekaSink/wsink/mrs_natural/nLabels");
       featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
       featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  			
     }
   
-  featureNetwork->updctrl("GaussianClassifier/cl/mrs_natural/nClasses", nLabels);
   //configure Confidence
-  featureNetwork->updctrl("Confidence/confidence/mrs_natural/nLabels", nLabels);
   featureNetwork->updctrl("Confidence/confidence/mrs_bool/mute", true);
-  featureNetwork->updctrl("Confidence/confidence/mrs_string/labelNames", l.getLabelNames());
   featureNetwork->updctrl("Confidence/confidence/mrs_bool/print",true);
-      
 
-
+  MarControlPtr ctrl_notEmpty_ = featureNetwork->getctrl("SoundFileSource/src/mrs_bool/notEmpty");
 
   while (ctrl_notEmpty_->to<mrs_bool>())
     {
@@ -2369,7 +2348,7 @@ initOptions()
 	cmd_options.addStringOption("collection", "c", EMPTYSTRING);
 	cmd_options.addBoolOption("normalize", "n", false);
 	cmd_options.addRealOption("start", "s", 0);
-	cmd_options.addRealOption("length", "l", 1000.0f);
+	cmd_options.addRealOption("length", "l", 30.0f);
 	cmd_options.addStringOption("plugin", "p", EMPTYSTRING);
 	cmd_options.addStringOption("wekafile", "w", EMPTYSTRING);
 	cmd_options.addStringOption("extractor", "e", EMPTYSTRING);

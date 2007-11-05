@@ -51,6 +51,8 @@ SoundFileSource::SoundFileSource(const SoundFileSource& a):MarSystem(a)
   ctrl_filename_ = getctrl("mrs_string/filename");
   ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
   ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
+  ctrl_labelNames_ = getctrl("mrs_string/labelNames");
+  ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
 }
 
 void
@@ -97,6 +99,8 @@ SoundFileSource::addControls()
   
   addctrl("mrs_string/currentlyPlaying", "daufile", ctrl_currentlyPlaying_);
   addctrl("mrs_natural/currentLabel", 0, ctrl_currentLabel_);
+  addctrl("mrs_natural/nLabels", 0, ctrl_nLabels_);
+  addctrl("mrs_string/labelNames", "", ctrl_labelNames_);
   ctrl_mute_ = getctrl("mrs_bool/mute");
   
 
@@ -119,6 +123,8 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 	  filename_ = ctrl_filename_->to<mrs_string>();
 	  ctrl_currentlyPlaying_->setValue(src_->getctrl("mrs_string/currentlyPlaying"));		
 	  ctrl_currentLabel_->setValue(src_->getctrl("mrs_natural/currentLabel"));
+	  ctrl_labelNames_->setValue(src_->getctrl("mrs_string/labelNames"));
+	  ctrl_nLabels_->setValue(src_->getctrl("mrs_natural/nLabels"));
 	  ctrl_onObservations_->setValue(src_->ctrl_onObservations_, NOUPDATE);
 
 	  ctrl_israte_->setValue(src_->ctrl_israte_, NOUPDATE);
@@ -174,6 +180,8 @@ SoundFileSource::myUpdate(MarControlPtr sender)
       setctrl("mrs_natural/cindex", src_->getctrl("mrs_natural/cindex"));
       setctrl("mrs_string/currentlyPlaying", src_->getctrl("mrs_string/currentlyPlaying"));
       setctrl("mrs_natural/currentLabel", src_->getctrl("mrs_natural/currentLabel"));
+      setctrl("mrs_natural/nLabels", src_->getctrl("mrs_natural/nLabels"));
+      setctrl("mrs_string/labelNames", src_->getctrl("mrs_string/labelNames"));
       setctrl("mrs_string/allfilenames", src_->getctrl("mrs_string/allfilenames"));
       setctrl("mrs_natural/numFiles", src_->getctrl("mrs_natural/numFiles"));
     
@@ -298,8 +306,8 @@ SoundFileSource::myProcess(realvec& in, realvec &out)
       ctrl_notEmpty_->setValue(src_->notEmpty_, NOUPDATE);
       ctrl_currentlyPlaying_->setValue(src_->getctrl("mrs_string/currentlyPlaying"));
       ctrl_currentLabel_->setValue(src_->getctrl("mrs_natural/currentLabel"));
-   
-
+      ctrl_labelNames_->setValue(src_->getctrl("mrs_string/labelNames"));
+      ctrl_nLabels_->setValue(src_->getctrl("mrs_natural/nLabels"));
     }
   
   if (advance_) 
