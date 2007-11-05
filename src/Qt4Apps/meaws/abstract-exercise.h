@@ -43,7 +43,7 @@ protected:
 	QLayout *resultLayout_;
 	QList<Try *> *tries_;
 
-	mrs_natural current_;
+	mrs_natural currentTry_;
 
 	// TODO: figure out how to find the height_.  :(
 	int height_;

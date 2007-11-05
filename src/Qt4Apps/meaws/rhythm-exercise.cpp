@@ -86,12 +86,12 @@ QString RhythmExercise::exercisesDir() {
 }
 
 QString RhythmExercise::getMessage() {
-	QString toReturn( "Selected attempt " + QString::number(current_) );
+	QString toReturn( "Selected attempt " + QString::number(currentTry_) );
 	return toReturn;
 }
 
 bool RhythmExercise::displayAnalysis(MarBackend *results) {
-	tries_->at(current_)->displayAnalysis(results);
+	tries_->at(currentTry_)->displayAnalysis(results);
 	return true;
 }
 

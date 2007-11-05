@@ -24,15 +24,13 @@ QtMarIntonationBars::paintEvent(QPaintEvent *)
 	// plot name
 	painter.drawText( 4, 14, plotName_);
 
-	painter.setPen(Qt::NoPen);
-
 	// constants
 	mrs_real hScale = width() / (*data_)(data_->getRows()-1,1);
 	mrs_real vScale = height() / (highVal_ - minVal_);
 	mrs_natural midY = height()/2;
 
 	// variables from data
-	mrs_natural start, end = 0;
+	mrs_natural start, end;
 	mrs_natural errorDirection;
 	mrs_real errorMagnitude;
 
@@ -40,6 +38,9 @@ QtMarIntonationBars::paintEvent(QPaintEvent *)
 	mrs_natural colorR, colorG, colorB;
 	mrs_natural y;
 
+	// fill in the bars
+	painter.setPen(Qt::NoPen);
+	end = 0;
 	for (mrs_natural i=0; i<data_->getRows(); i++) {
 		start = end;
 		end = (mrs_natural) ( (*data_)(i,1) * hScale );
@@ -74,6 +75,16 @@ QtMarIntonationBars::paintEvent(QPaintEvent *)
 	// dotted center line
 	painter.setPen(QPen(Qt::SolidPattern, 1, Qt::DashLine));
 	painter.drawLine( 0, height()/2, width(), height()/2);
+
+	// draws the vertical lines
+	painter.setPen(QColor(Qt::black));
+	end = 0;
+	for (mrs_natural i=0; i<data_->getRows(); i++) {
+		start = end;
+		end = (mrs_natural) ( (*data_)(i,1) * hScale );
+		painter.drawLine(start, 0, start, height()-1);
+	}
+
 }
 
 } //namespace

@@ -74,12 +74,12 @@ QString IntonationExercise::exercisesDir() {
 }
 
 QString IntonationExercise::getMessage() {
-	QString toReturn( "Selected attempt " + QString::number(current_) );
+	QString toReturn( "Selected attempt " + QString::number(currentTry_) );
 	return toReturn;
 }
 
 bool IntonationExercise::displayAnalysis(MarBackend *results) {
-	tries_->at(current_)->displayAnalysis(results);
+	tries_->at(currentTry_)->displayAnalysis(results);
 	return true;
 }
 

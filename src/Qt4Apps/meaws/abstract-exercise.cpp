@@ -8,7 +8,7 @@ Exercise::Exercise()
 	instructionLayout_ = NULL;
 	instructionImageLabel_ = NULL;
 	resultLayout_ = NULL;
-	current_ = -1;
+	currentTry_ = -1;
 	tries_ = new QList<Try *>;
 }
 
@@ -74,7 +74,7 @@ void Exercise::addTryAbstract(Try* newTry)
 {
 	resultLayout_->addWidget( newTry->getDisplay() );
 	newTry->setTryNumber( tries_->count() );
-	current_ = tries_->count();
+	currentTry_ = tries_->count();
 	connect(newTry, SIGNAL(selectTry(mrs_natural)),
 	        this, SLOT(selectTry(mrs_natural)));
 	tries_->append(newTry);
@@ -82,22 +82,22 @@ void Exercise::addTryAbstract(Try* newTry)
 
 void Exercise::delTryAbstract()
 {
-	Try* oldTry = tries_->takeAt(current_);
+	Try* oldTry = tries_->takeAt(currentTry_);
 	resultLayout_->removeWidget( oldTry->getDisplay() );
 	delete oldTry;
 	resultLayout_->activate();
 
 	// renumber the remaining exercises
-	for (int i=current_; i<tries_->count(); i++)
+	for (int i=currentTry_; i<tries_->count(); i++)
 	{
 		(*tries_)[i]->setTryNumber(i);
 	}
-	current_ = -1;
+	currentTry_ = -1;
 }
 
 void Exercise::selectTry(mrs_natural selected)
 {
-	current_ = selected;
+	currentTry_ = selected;
 	emit analysisDone();
 }
 
