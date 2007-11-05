@@ -30,7 +30,7 @@ void IntonationTry::setAnswer(const realvec answers)
 void IntonationTry::calcErrors(const realvec& pitches, const realvec&
                                bounds, realvec& errors)
 {
-	errors.allocate(exerAnswer.getRows()-1,3);
+	errors.allocate(exerAnswer.getRows()-2,3);
 	mrs_real expected;
 	realvec notePitches;
 	mrs_natural noteStart, noteLength;
@@ -39,7 +39,7 @@ void IntonationTry::calcErrors(const realvec& pitches, const realvec&
 	mrs_real deltaError;
 
 	mrs_natural exerNote, i;
-	for (exerNote=0; exerNote < exerAnswer.getRows()-1; exerNote++)
+	for (exerNote=0; exerNote < errors.getRows(); exerNote++)
 	{
 		// find the boundaires of the note
 		i = exerNote;
@@ -112,6 +112,7 @@ bool IntonationTry::displayAnalysis(MarBackend *results)
 	Transcriber::discardBeginEndSilences(pitches, amps, bounds);
 	calcErrors(pitches, bounds, errors);
 
+	cout<<errors;
 	barPlot_->setVertical(0, 0.05);
 	barPlot_->setData(&errors);
 
