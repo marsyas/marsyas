@@ -1987,35 +1987,31 @@ bextract_train_refactored(string pluginName,  string wekafname,
   featureNetwork->linkctrl("mrs_bool/initAudio", "AudioSink/dest/mrs_bool/initAudio");
   featureNetwork->linkctrl("SoundFileSource/src/mrs_natural/currentLabel", 
 			   "Annotator/annotator/mrs_natural/label");
-  featureNetwork->linkctrl("SoundFileSource/src/mrs_natural/nLabels", 
-			   "GaussianClassifier/cl/mrs_natural/nClasses");
-  featureNetwork->linkctrl("SoundFileSource/src/mrs_natural/nLabels", 
+  featureNetwork->linkctrl("GaussianClassifier/cl/mrs_natural/nClasses", 
 			   "Confidence/confidence/mrs_natural/nLabels");
-  featureNetwork->linkctrl("SoundFileSource/src/mrs_string/labelNames", 
-			   "Confidence/confidence/mrs_string/labelNames");
-
-
-  // linkctrl of labelNames with Confidence works 
-  // cout << *featureNetwork << endl;
-  // exit(1);
-
+  
   if (wekafname != EMPTYSTRING)
     {
-      featureNetwork->linkctrl("SoundFileSource/src/mrs_string/labelNames", 
+      featureNetwork->linkctrl("Confidence/confidence/mrs_string/labelNames",  
 			       "WekaSink/wsink/mrs_string/labelNames");
       featureNetwork->linkctrl("SoundFileSource/src/mrs_natural/nLabels", 
 			       "WekaSink/wsink/mrs_natural/nLabels");
     }
-
-  // linkctrl of labelNames with Confidence doesn't work after second linkctrl with WekaSink 
-  // cout << *featureNetwork << endl;
-  // exit(1);
 
   
   // update controls
   featureNetwork->updctrl("Confidence/confidence/mrs_bool/mute", true);
   featureNetwork->updctrl("Confidence/confidence/mrs_bool/print",true);
   featureNetwork->updctrl("mrs_string/filename", "bextract_single.mf");
+
+  // don't use linkctrl so that only value is copied once and linking doesn't 
+  // remain for the plugin 
+  featureNetwork->updctrl("Confidence/confidence/mrs_string/labelNames", 
+			  featureNetwork->getctrl("SoundFileSource/src/mrs_string/labelNames"));
+  featureNetwork->updctrl("GaussianClassifier/cl/mrs_natural/nClasses", 
+			  featureNetwork->getctrl("SoundFileSource/src/mrs_natural/nLabels"));
+
+
   if (wekafname != EMPTYSTRING)
     {
       featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);

@@ -141,7 +141,6 @@ Confidence::myUpdate(MarControlPtr sender)
 void 
 Confidence::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
   bool mute = ctrl_mute_->to<mrs_bool>();
   mrs_natural memSize = ctrl_memSize_->to<mrs_natural>();
   mrs_natural nLabels = ctrl_nLabels_->to<mrs_natural>();
