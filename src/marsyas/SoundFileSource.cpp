@@ -100,7 +100,7 @@ SoundFileSource::addControls()
   addctrl("mrs_string/currentlyPlaying", "daufile", ctrl_currentlyPlaying_);
   addctrl("mrs_natural/currentLabel", 0, ctrl_currentLabel_);
   addctrl("mrs_natural/nLabels", 0, ctrl_nLabels_);
-  addctrl("mrs_string/labelNames", "", ctrl_labelNames_);
+  addctrl("mrs_string/labelNames", ",", ctrl_labelNames_);
   ctrl_mute_ = getctrl("mrs_bool/mute");
   
 

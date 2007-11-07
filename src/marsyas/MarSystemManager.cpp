@@ -668,6 +668,8 @@ MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 	string mname;
 	is >> mname;
 
+
+
 	MarSystem* msys = getPrototype(mtype);
 
 	if (msys == 0)
@@ -695,6 +697,7 @@ MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 			is >> skipstr >> skipstr >> skipstr;
 			mrs_natural nComponents;
 			is >> nComponents;
+
 			for (i=0; i < nComponents; i++)
 			{
 				MarSystem* cmsys = getMarSystem(is, msys);

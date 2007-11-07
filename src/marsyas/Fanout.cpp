@@ -57,9 +57,9 @@ Fanout::addControls()
 	addctrl("mrs_natural/enable", -1);
 	setctrlState("mrs_natural/enable", true);
 
-	addctrl("mrs_string/enableChild", "");
+	addctrl("mrs_string/enableChild", ",");
 	setctrlState("mrs_string/enableChild", true);
-	addctrl("mrs_string/disableChild", "");
+	addctrl("mrs_string/disableChild", ",");
 	setctrlState("mrs_string/disableChild", true);
 }
 
@@ -87,7 +87,7 @@ Fanout::myUpdate(MarControlPtr sender)
 	{
 		enabled_(disableChildIndex_) = 0.0;
 		localIndices_(disableChildIndex_) = 0.0;
-		setctrl("mrs_string/disableChild", "");
+		setctrl("mrs_string/disableChild", ",");
 	}  
 	if (disableChild_ == "all")
 	{
@@ -95,7 +95,7 @@ Fanout::myUpdate(MarControlPtr sender)
 		{
 			enabled_(i) = 0.0;
 			localIndices_(disable_) = 0.0;
-			setctrl("mrs_string/disableChild", "");
+			setctrl("mrs_string/disableChild", ",");
 		}
 	}
 	//check child MarSystem to disable (passed as an index) 
@@ -123,7 +123,7 @@ Fanout::myUpdate(MarControlPtr sender)
 	{
 		enabled_(enableChildIndex_) = 1.0;
 		localIndices_(enableChildIndex_) = 1.0;
-		setctrl("mrs_string/enableChild", "");
+		setctrl("mrs_string/enableChild", ",");
 	}  
 	//check child MarSystem to enable (passed as an index)
 	enable_ = getctrl("mrs_natural/enable")->to<mrs_natural>();  

@@ -705,7 +705,7 @@ bextract_trainStereoSPSMFCC(vector<Collection> cls, string classNames,
 
 void 
 bextract_trainStereoMFCC(vector<Collection> cls, string classNames, 
-												 string wekafname, mrs_natural memSize)
+			 string wekafname, mrs_natural memSize)
 {
 	cout << "STEREO MFCC" << endl;
 	cout << "classNames = "  << classNames << endl;
@@ -1927,10 +1927,8 @@ selectFeatureSet(MarSystem *featExtractor)
 
 
 void 
-bextract_train_refactored(string pluginName, 
-	       string wekafname,  mrs_natural memSize, 
-	       string extractorStr,
-	       string classifierName)
+bextract_train_refactored(string pluginName,  string wekafname,  
+			  mrs_natural memSize, string classifierName)
 {
   MRSDIAG("bextract.cpp - bextract_train_refactored");
   cout << "BEXTRACT REFACTORED" << endl;
@@ -1995,6 +1993,8 @@ bextract_train_refactored(string pluginName,
 			   "Confidence/confidence/mrs_natural/nLabels");
   featureNetwork->linkctrl("SoundFileSource/src/mrs_string/labelNames", 
 			   "Confidence/confidence/mrs_string/labelNames");
+
+
   if (wekafname != EMPTYSTRING)
     {
       featureNetwork->linkctrl("SoundFileSource/src/mrs_string/labelNames", 
@@ -2002,6 +2002,9 @@ bextract_train_refactored(string pluginName,
       featureNetwork->linkctrl("SoundFileSource/src/mrs_natural/nLabels", 
 			       "WekaSink/wsink/mrs_natural/nLabels");
     }
+
+  cout << *featureNetwork << endl;
+  exit(1);
 
   
   // update controls
@@ -2827,10 +2830,7 @@ main(int argc, const char **argv)
 	{
 	  if (classifierName == EMPTYSTRING) 
 	    classifierName = DEFAULT_CLASSIFIER;
-	  if (extractorStr == EMPTYSTRING) 
-	    extractorStr = DEFAULT_EXTRACTOR; 
-	  bextract_train_refactored(pluginName, wekafname, memSize, 
-				    extractorName, classifierName);
+	  bextract_train_refactored(pluginName, wekafname, memSize, classifierName);
 	}
     }
 

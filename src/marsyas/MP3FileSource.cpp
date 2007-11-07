@@ -107,7 +107,7 @@ MP3FileSource::addControls()
 	
   addctrl("mrs_string/currentlyPlaying", "daufile", ctrl_currentlyPlaying_);
   addctrl("mrs_natural/currentLabel", 0, ctrl_currentLabel_);
-  addctrl("mrs_natural/labelNames","", ctrl_currentLabel_);
+  addctrl("mrs_natural/labelNames",",", ctrl_currentLabel_);
   addctrl("mrs_natural/nLabels", 0, ctrl_currentLabel_);
   
 }
@@ -355,7 +355,7 @@ MP3FileSource::getHeader(string filename)
   ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
   ctrl_currentLabel_->setValue(0, NOUPDATE);
   ctrl_nLabels_->setValue(0, NOUPDATE);
-  ctrl_labelNames_->setValue("", NOUPDATE);
+  ctrl_labelNames_->setValue(",", NOUPDATE);
 
   offset = 0;
   pos_ = samplesOut_ = frameCount_ = 0;
