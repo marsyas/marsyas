@@ -1995,6 +1995,10 @@ bextract_train_refactored(string pluginName,  string wekafname,
 			   "Confidence/confidence/mrs_string/labelNames");
 
 
+  // linkctrl of labelNames with Confidence works 
+  // cout << *featureNetwork << endl;
+  // exit(1);
+
   if (wekafname != EMPTYSTRING)
     {
       featureNetwork->linkctrl("SoundFileSource/src/mrs_string/labelNames", 
@@ -2003,8 +2007,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
 			       "WekaSink/wsink/mrs_natural/nLabels");
     }
 
-  cout << *featureNetwork << endl;
-  exit(1);
+  // linkctrl of labelNames with Confidence doesn't work after second linkctrl with WekaSink 
+  // cout << *featureNetwork << endl;
+  // exit(1);
 
   
   // update controls
