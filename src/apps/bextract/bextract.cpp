@@ -54,6 +54,9 @@ mrs_bool mfcc_ = false;
 mrs_bool ctd_ = false;
 mrs_bool rlf_ = false;
 mrs_bool flx_ = false;
+mrs_bool spectralFeatures_ = false;
+mrs_bool zcrs_ = false;
+mrs_bool timbralFeatures_ = false;
 
 #define DEFAULT_EXTRACTOR "STFT" 
 #define DEFAULT_CLASSIFIER  "GS"
@@ -1891,9 +1894,40 @@ bextract_train(vector<Collection> cls, Collection cl,
 }
 
 void 
-bextract_train_refactored(vector<Collection> cls, Collection cl, 
-	       mrs_natural label, 
-	       string pluginName, string classNames, 
+selectFeatureSet(MarSystem *featExtractor)
+{
+  featExtractor->updctrl("mrs_string/disableChild", "all");
+  featExtractor->updctrl("mrs_string/disableChild", "ZeroCrossings/zcrs");
+  if (mfcc_) 
+    featExtractor->updctrl("mrs_string/enableChild", "MFCC/mfcc");
+  if (rlf_)
+    featExtractor->updctrl("mrs_string/enableChild", "Rolloff/rlf");
+  if (flx_)
+    featExtractor->updctrl("mrs_string/enableChild", "Flux/flux");
+  if (ctd_) 
+    featExtractor->updctrl("mrs_string/enableChild", "Centroid/cntrd");
+  if (zcrs_) 
+        featExtractor->updctrl("mrs_string/enableChild", "ZeroCrossings/zcrs");
+  if (spectralFeatures_) 
+    {
+      featExtractor->updctrl("mrs_string/enableChild", "Centroid/cntrd");
+      featExtractor->updctrl("mrs_string/enableChild", "Flux/flux");
+      featExtractor->updctrl("mrs_string/enableChild", "Rolloff/rlf");
+    }
+  if (timbralFeatures_) 
+    {
+      featExtractor->updctrl("mrs_string/enableChild", "ZeroCrossings/zcrs");
+      featExtractor->updctrl("mrs_string/enableChild", "MFCC/mfcc");
+      featExtractor->updctrl("mrs_string/enableChild", "Centroid/cntrd");
+      featExtractor->updctrl("mrs_string/enableChild", "Flux/flux");
+      featExtractor->updctrl("mrs_string/enableChild", "Rolloff/rlf");
+    }
+  
+}
+
+
+void 
+bextract_train_refactored(string pluginName, 
 	       string wekafname,  mrs_natural memSize, 
 	       string extractorStr,
 	       string classifierName)
@@ -1902,26 +1936,14 @@ bextract_train_refactored(vector<Collection> cls, Collection cl,
   cout << "BEXTRACT REFACTORED" << endl;
   MarSystemManager mng;
   
-  if (classifierName == EMPTYSTRING) 
-    classifierName = DEFAULT_CLASSIFIER;
-  if (extractorStr == EMPTYSTRING) 
-    extractorStr = DEFAULT_EXTRACTOR; 
-
   MarSystem *src = mng.create("SoundFileSource", "src");
-  src->updctrl("mrs_string/filename", "bextract_single.mf");
-
   if (start > 0.0) 
     offset = (mrs_natural) (start * src->getctrl("mrs_real/israte")->to<mrs_real>());
 
   MarSystem* featExtractor = mng.create("TimbreFeatures", "featExtractor");
   featExtractor->updctrl("mrs_natural/WindowSize", winSize);
-  
-  featExtractor->updctrl("mrs_string/disableChild", "all");
-  if (mfcc_) 
-    featExtractor->updctrl("mrs_string/enableChild", "MFCC/mfcc");
-  if (flx_)
-    featExtractor->updctrl("mrs_string/enableChild", "Flux/flux");
-    
+
+  selectFeatureSet(featExtractor);
 
   // Build the overall feature calculation network 
   MarSystem* featureNetwork = mng.create("Series", "featureNetwork");
@@ -1973,22 +1995,29 @@ bextract_train_refactored(vector<Collection> cls, Collection cl,
 			   "Confidence/confidence/mrs_natural/nLabels");
   featureNetwork->linkctrl("SoundFileSource/src/mrs_string/labelNames", 
 			   "Confidence/confidence/mrs_string/labelNames");
-  
   if (wekafname != EMPTYSTRING)
     {
       featureNetwork->linkctrl("SoundFileSource/src/mrs_string/labelNames", 
 			       "WekaSink/wsink/mrs_string/labelNames");
       featureNetwork->linkctrl("SoundFileSource/src/mrs_natural/nLabels", 
 			       "WekaSink/wsink/mrs_natural/nLabels");
-      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
-      featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  			
     }
+
   
-  //configure Confidence
+  // update controls
   featureNetwork->updctrl("Confidence/confidence/mrs_bool/mute", true);
   featureNetwork->updctrl("Confidence/confidence/mrs_bool/print",true);
+  featureNetwork->updctrl("mrs_string/filename", "bextract_single.mf");
+  if (wekafname != EMPTYSTRING)
+    {
+      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
+      featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  			
 
-  MarControlPtr ctrl_notEmpty_ = featureNetwork->getctrl("SoundFileSource/src/mrs_bool/notEmpty");
+    }
+
+
+
+  MarControlPtr ctrl_notEmpty_ = featureNetwork->getctrl("mrs_bool/notEmpty");
 
   while (ctrl_notEmpty_->to<mrs_bool>())
     {
@@ -2369,7 +2398,9 @@ initOptions()
 	cmd_options.addBoolOption("SpectralCentroid","ctd", false);
 	cmd_options.addBoolOption("SpectralRolloff","rlf", false);
 	cmd_options.addBoolOption("SpectralFlux","flx", false);
-	
+	cmd_options.addBoolOption("SpectralFeatures", "spfe", false);
+	cmd_options.addBoolOption("ZeroCrossings", "zcrs", false);
+	cmd_options.addBoolOption("TimbralFeatures", "timbral", false);
 }
 
 void 
@@ -2401,7 +2432,10 @@ loadOptions()
 	ctd_ = cmd_options.getBoolOption("SpectralCentroid");
 	rlf_ = cmd_options.getBoolOption("SpectralRolloff");
 	flx_ = cmd_options.getBoolOption("SpectralFlux");
-
+	spectralFeatures_ = cmd_options.getBoolOption("SpectralFeatures");
+	zcrs_ = cmd_options.getBoolOption("ZeroCrossings");
+	timbralFeatures_ = cmd_options.getBoolOption("TimbralFeatures");
+	
 
 }
 
@@ -2790,9 +2824,14 @@ main(int argc, const char **argv)
 	bextract_train(cls, single, i, pluginName, classNames, wekafname, memSize, 
 		       extractorName, classifierName);
       else 
-	bextract_train_refactored(cls, single, i, pluginName, classNames, wekafname, memSize, 
-		       extractorName, classifierName);
-	
+	{
+	  if (classifierName == EMPTYSTRING) 
+	    classifierName = DEFAULT_CLASSIFIER;
+	  if (extractorStr == EMPTYSTRING) 
+	    extractorStr = DEFAULT_EXTRACTOR; 
+	  bextract_train_refactored(pluginName, wekafname, memSize, 
+				    extractorName, classifierName);
+	}
     }
 
   return 0;

@@ -392,6 +392,7 @@ MarSystemManager::MarSystemManager()
 	timbre_features_pr->linkctrl("mrs_natural/WindowSize", "Series/spectralShape/PowerSpectrumNet/powerSpect/mrs_natural/WindowSize");
 	timbre_features_pr->linkctrl("mrs_string/enableChild", "Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/enableChild");
 	timbre_features_pr->linkctrl("mrs_string/disableChild", "Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/disableChild");
+
 	registerPrototype("TimbreFeatures", timbre_features_pr);
 
 
