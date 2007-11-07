@@ -31,9 +31,11 @@ private:
 	MarSystem *pnet;
 	MarControlPtr isEmptyPtr;
 	MarControlPtr posPtr;
+	bool isRunning;
 
 
-	QWaitCondition *wake; // maybe?
+	QWaitCondition wait;
+	QMutex mutex;
 };
 #endif
 

@@ -19,73 +19,79 @@ MarBackend::MarBackend(string infile, string outfile)
 	pnet->linkControl("mrs_bool/notEmpty",
 	                  "SoundFileSource/src/mrs_bool/notEmpty");
 	// output
-	pnet->addMarSystem(mng.create("SoundFileSink", "dest"));
+//	pnet->addMarSystem(mng.create("SoundFileSink", "dest"));
 	// pnet->addMarSystem(mng.create("AudioSink", "dest"));
 
-	pnet->updctrl("SoundFileSink/dest/mrs_string/filename",
-	              outfile);
+//	pnet->updctrl("SoundFileSink/dest/mrs_string/filename",
+//	              outfile);
 	// pnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
 
 	// wrap it up to make it pretend to be a Qt object:
 	mrsWrapper = new MarSystemQtWrapper(pnet);
-
 	connect(mrsWrapper, SIGNAL(ctrlChanged(MarControlPtr)),
 	        this, SLOT(ctrlChanged(MarControlPtr)));
 
 	isEmptyPtr = mrsWrapper->getctrl("SoundFileSource/src/mrs_bool/notEmpty");
 	posPtr = mrsWrapper->getctrl("SoundFileSource/src/mrs_natural/pos");
 
-	mrsWrapper->start();
-//	mrsWrapper->tickForever();
-	mrsWrapper->pause();
-
 	mrsWrapper->trackctrl( isEmptyPtr );
 
-	mrsWrapper->play();
-	ctrlChanged(isEmptyPtr);
+	mrsWrapper->start();
+//	mrsWrapper->tickForever();
+//	mrsWrapper->pause();
 
+	isRunning = true;
+	mrsWrapper->play();
+
+//	ctrlChanged(isEmptyPtr);
+
+//	wait = new QWaitCondition();
 	cout<<"mrsWrapper running"<<endl;
 }
 
 MarBackend::~MarBackend()
 {
-	delete pnet;
 }
 
 void MarBackend::ctrlChanged(MarControlPtr changed)
 {
+	mutex.lock();
 	if ( changed.isEqual( isEmptyPtr ) )
 	{
 		if (changed->to<mrs_bool>() == false)
 		{
-			stop();
-			return;
+			if (isRunning == true) {
+				stop();
+				cout<<"unlocked"<<endl;
+			}
 		}
 	}
+	mutex.unlock();
 }
 
 void MarBackend::stop()
 {
 	cout<<"stopping"<<endl;
+	isRunning = false;
 	mrsWrapper->pause();
-/*
-	if (mrsWrapper != NULL) {
-		delete mrsWrapper;
-		mrsWrapper = NULL;
-		delete pnet;
-	}
-*/
+	delete mrsWrapper;
+	mrsWrapper = NULL;
+	delete pnet;
+	cout<<"stopped"<<endl;
 
 	// signal to waitUntilFinished() that it can stop waiting
+	wait.wakeAll();
 }
 
 
 void MarBackend::waitUntilFinished()
 {
-	//wait = new QWaitCondition(); // maybe?
-	//   or maybe a qmutex?  or qsemaphore?
-
-	sleep(1);
+	QMutex mutex2;
+	mutex2.lock();
+	wait.wait(&mutex2);
+	cout<<"signaled"<<endl;
+	mutex2.unlock();
 }
 
 
