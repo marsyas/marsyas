@@ -378,6 +378,8 @@ MarSystemManager::MarSystemManager()
 	stft_features_pr->addMarSystem(create("Rolloff", "rlf"));
 	stft_features_pr->addMarSystem(create("Flux", "flux"));
 	stft_features_pr->addMarSystem(create("MFCC", "mfcc"));	
+	stft_features_pr->addMarSystem(create("SCF", "scf"));
+	stft_features_pr->addMarSystem(create("SFM", "sfm"));
 	registerPrototype("STFT_features", stft_features_pr);
 
 	// timbre_features prototype 
