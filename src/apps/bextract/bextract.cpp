@@ -1980,7 +1980,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
   featureNetwork->addMarSystem(mng.create("Annotator", "annotator"));
   if (wekafname != EMPTYSTRING)
     featureNetwork->addMarSystem(mng.create("WekaSink", "wsink"));
-  featureNetwork->addMarSystem(mng.create("GaussianClassifier", "cl"));
+  featureNetwork->addMarSystem(mng.create("Classifier", "cl"));
   featureNetwork->addMarSystem(mng.create("Confidence", "confidence"));
 
   // link controls

@@ -311,7 +311,6 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PhiSEMSource", new PhiSEMSource("phisemsourcepr"));
 	registerPrototype("PhiSEMFilter", new PhiSEMFilter("phisemfilterpr"));
 	registerPrototype("SVMClassifier", new SVMClassifier("svmclassifierpr"));
-	registerPrototype("Classifier", new Classifier("classifierpr"));
 	registerPrototype("Spectrum2Chroma", new Spectrum2Chroma("spectrum2chromapr"));
 	registerPrototype("Spectrum2Mel", new Spectrum2Mel("spectrum2melpr"));
 	registerPrototype("ADRess", new ADRess("adresspr"));
@@ -591,6 +590,15 @@ MarSystemManager::MarSystemManager()
 	stereoFeats->addMarSystem(create("StereoSpectrumFeatures","stereospkfeats"));
 	stereoFeats->addMarSystem(create("StereoSpectrumSources","stereospksources"));
 	registerPrototype("StereoFeatures", stereoFeats);
+
+
+
+	// prototype for Classifier 
+	MarSystem* classifierpr = create("Fanout", "Classifierpr");
+	classifierpr->addMarSystem(create("ZeroRClassifier", "zerorcl"));
+	classifierpr->addMarSystem(create("GaussianClassifier", "gaussiancl"));
+	registerPrototype("Classifier", classifierpr);
+	
 }
 
 MarSystemManager::~MarSystemManager()
