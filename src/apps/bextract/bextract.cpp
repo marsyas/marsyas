@@ -1994,8 +1994,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
   featureNetwork->linkctrl("mrs_bool/initAudio", "AudioSink/dest/mrs_bool/initAudio");
   featureNetwork->linkctrl("SoundFileSource/src/mrs_natural/currentLabel", 
 			   "Annotator/annotator/mrs_natural/label");
-  featureNetwork->linkctrl("GaussianClassifier/cl/mrs_natural/nClasses", 
-			   "Confidence/confidence/mrs_natural/nLabels");
+
+  // featureNetwork->linkctrl("Classifier/cl/mrs_natural/nClasses", 
+  // "Confidence/confidence/mrs_natural/nLabels");
   
   if (wekafname != EMPTYSTRING)
     {
@@ -2015,7 +2016,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
   // remain for the plugin 
   featureNetwork->updctrl("Confidence/confidence/mrs_string/labelNames", 
 			  featureNetwork->getctrl("SoundFileSource/src/mrs_string/labelNames"));
-  featureNetwork->updctrl("GaussianClassifier/cl/mrs_natural/nClasses", 
+  featureNetwork->updctrl("Classifier/cl/mrs_natural/nClasses", 
 			  featureNetwork->getctrl("SoundFileSource/src/mrs_natural/nLabels"));
 
 
@@ -2050,7 +2051,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 
   // prepare network for classification
-  featureNetwork->updctrl("GaussianClassifier/cl/mrs_string/mode","predict"); 
+  featureNetwork->updctrl("Classifier/cl/mrs_string/mode","predict"); 
   featureNetwork->tick();		
       
   if (pluginName != EMPTYSTRING && !pluginMute) 

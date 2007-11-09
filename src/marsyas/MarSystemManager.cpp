@@ -597,6 +597,14 @@ MarSystemManager::MarSystemManager()
 	MarSystem* classifierpr = create("Fanout", "Classifierpr");
 	classifierpr->addMarSystem(create("ZeroRClassifier", "zerorcl"));
 	classifierpr->addMarSystem(create("GaussianClassifier", "gaussiancl"));
+	classifierpr->linkctrl("mrs_natural/nClasses", "GaussianClassifier/gaussiancl/mrs_natural/nClasses");
+	classifierpr->linkctrl("mrs_natural/nClasses", "ZeroRClassifier/zerorcl/mrs_natural/nClasses");
+
+	classifierpr->linkctrl("mrs_string/mode", "GaussianClassifier/gaussiancl/mrs_string/mode");
+	classifierpr->linkctrl("mrs_string/mode", "ZeroRClassifier/zerorcl/mrs_string/mode");
+
+
+	classifierpr->updctrl("mrs_string/disableChild", "ZeroRClassifier/zerocl");
 	registerPrototype("Classifier", classifierpr);
 	
 }
