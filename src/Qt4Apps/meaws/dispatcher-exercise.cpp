@@ -66,7 +66,10 @@ void ExerciseDispatcher::open()
 			if (marBackend_ != NULL)
 				delete marBackend_;
 			marBackend_ = new MarBackend(exercise_->getBackend());
-			connect(marBackend_, SIGNAL(setAttempt(bool)), this, SLOT(setAttempt(bool)));
+			connect(marBackend_, SIGNAL(setAttempt(bool)),
+				this, SLOT(setAttempt(bool)));
+			connect(marBackend_, SIGNAL(gotAudio()),
+				this, SLOT(analyze()));
 			enableActions(MEAWS_READY_EXERCISE);
 		}
 		else
@@ -125,14 +128,6 @@ bool ExerciseDispatcher::openAttempt()
 	if (!openFilename.isEmpty())
 	{
 		marBackend_->open( qPrintable(openFilename) );
-		// TODO: need to wait for analysis to be done!
-		sleep(1);
-
-		if ( marBackend_->analyze() )
-		{
-			exercise_->displayAnalysis( marBackend_ );
-			analysisDone();
-		}
 		return true;
 	}
 	return false;
@@ -152,9 +147,6 @@ QString ExerciseDispatcher::getMessage()
 
 void ExerciseDispatcher::analyze()
 {
-	// to be removed DEBUG   -Mathieu
-// what's to be removed?  Was this already removed?  -gp
-// stuff that mght be accidentally commiited -gp.
 	if ( marBackend_->analyze() )
 	{
 		exercise_->displayAnalysis( marBackend_ );

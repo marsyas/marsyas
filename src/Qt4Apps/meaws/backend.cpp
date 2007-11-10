@@ -115,6 +115,8 @@ void MarBackend::stop() {
 	if (mrsWrapper != NULL)
 		mrsWrapper->pause();
 	hasAudio = true;
+	cout<<"stopped"<<endl;
+	emit gotAudio();
 }
 
 mrs_real MarBackend::getRate() {
@@ -194,6 +196,7 @@ void MarBackend::setupAllNet() {
 
 	mrsWrapper->start();
 	mrsWrapper->pause();
+	ctrlChanged(isEmptyPtr);
 //	emit setAttempt(false);
 }
 

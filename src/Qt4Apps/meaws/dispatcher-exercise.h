@@ -33,7 +33,7 @@ public slots:
 
 	void playFile();
 
-	void analyze(); // temp
+	void analyze();
 	void analysisDone(); // even tempier
 
 	void addTry()

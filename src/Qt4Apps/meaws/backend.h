@@ -38,6 +38,7 @@ public slots:
 
 signals:
 	void setAttempt(bool running);
+	void gotAudio();
 
 private:
 	MarSystemManager mng;
