@@ -8,7 +8,6 @@
 */
 
 #include "MarBackend.h"
-
 MarBackend::MarBackend(string infile, string outfile)
 {
 	pnet = mng.create("Series", "pnet");
@@ -19,11 +18,11 @@ MarBackend::MarBackend(string infile, string outfile)
 	pnet->linkControl("mrs_bool/notEmpty",
 	                  "SoundFileSource/src/mrs_bool/notEmpty");
 	// output
-//	pnet->addMarSystem(mng.create("SoundFileSink", "dest"));
+	pnet->addMarSystem(mng.create("SoundFileSink", "dest"));
 	// pnet->addMarSystem(mng.create("AudioSink", "dest"));
 
-//	pnet->updctrl("SoundFileSink/dest/mrs_string/filename",
-//	              outfile);
+	pnet->updctrl("SoundFileSink/dest/mrs_string/filename",
+	              outfile);
 	// pnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
 
@@ -38,16 +37,11 @@ MarBackend::MarBackend(string infile, string outfile)
 	mrsWrapper->trackctrl( isEmptyPtr );
 
 	mrsWrapper->start();
-//	mrsWrapper->tickForever();
-//	mrsWrapper->pause();
 
 	isRunning = true;
 	mrsWrapper->play();
 
-//	ctrlChanged(isEmptyPtr);
-
-//	wait = new QWaitCondition();
-	cout<<"mrsWrapper running"<<endl;
+	ctrlChanged(isEmptyPtr);
 }
 
 MarBackend::~MarBackend()
@@ -57,13 +51,16 @@ MarBackend::~MarBackend()
 void MarBackend::ctrlChanged(MarControlPtr changed)
 {
 	mutex.lock();
-	if ( changed.isEqual( isEmptyPtr ) )
+	if (mrsWrapper != NULL)
 	{
-		if (changed->to<mrs_bool>() == false)
+		if ( changed.isEqual( isEmptyPtr ) )
 		{
-			if (isRunning == true) {
-				stop();
-				cout<<"unlocked"<<endl;
+			if (changed->to<mrs_bool>() == false)
+			{
+				if (isRunning == true)
+				{
+					stop();
+				}
 			}
 		}
 	}
@@ -72,28 +69,12 @@ void MarBackend::ctrlChanged(MarControlPtr changed)
 
 void MarBackend::stop()
 {
-	cout<<"stopping"<<endl;
 	isRunning = false;
 	mrsWrapper->pause();
 	delete mrsWrapper;
 	mrsWrapper = NULL;
 	delete pnet;
-	cout<<"stopped"<<endl;
-
-	// signal to waitUntilFinished() that it can stop waiting
-	wait.wakeAll();
+	emit quit();
 }
-
-
-void MarBackend::waitUntilFinished()
-{
-	QMutex mutex2;
-	mutex2.lock();
-	wait.wait(&mutex2);
-	cout<<"signaled"<<endl;
-	mutex2.unlock();
-}
-
-
 
 

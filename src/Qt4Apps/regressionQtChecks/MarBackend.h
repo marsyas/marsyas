@@ -2,10 +2,12 @@
 #define QTCHECK_BACKEND_H
 
 #include <QMainWindow>
-#include <QObject> 
+#include <QObject>
 #include <QWaitCondition>
 #include "MarSystemManager.h"
 #include "MarSystemQtWrapper.h"
+
+// #include "global.h"
 using namespace Marsyas;
 using namespace MarsyasQt;
 
@@ -24,6 +26,9 @@ public:
 public slots:
 	void ctrlChanged(MarControlPtr changed);
 
+signals:
+	void quit();
+
 private:
 	void stop();
 	MarSystemManager mng;
@@ -34,7 +39,6 @@ private:
 	bool isRunning;
 
 
-	QWaitCondition wait;
 	QMutex mutex;
 };
 #endif

@@ -3,6 +3,10 @@ SOURCES = regressionQtChecks.cpp
 HEADERS += MarBackend.h
 SOURCES += MarBackend.cpp
 
+#HEADERS += Waiter.h
+#SOURCES += Waiter.cpp
+#HEADERS += global.h
+
 
 ### if running inside the source tree
 MARSYAS_INSTALL_DIR = ../../../
