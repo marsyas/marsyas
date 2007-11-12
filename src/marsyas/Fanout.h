@@ -50,7 +50,7 @@ private:
   void myUpdate(MarControlPtr sender);
   void deleteSlices();  
 
-  realvec enabled_;
+
   realvec localIndices_;
   
   mrs_natural enable_, enableChildIndex_;
@@ -58,9 +58,13 @@ private:
   
   mrs_string enableChild_;
   mrs_string disableChild_;
+
+
+  MarControlPtr ctrl_enabled_;
     
 public:
   Fanout(std::string name);
+  Fanout(const Fanout& a); 
   ~Fanout();
   MarSystem* clone() const;    
  

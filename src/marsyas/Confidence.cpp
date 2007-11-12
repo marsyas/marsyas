@@ -87,11 +87,12 @@ Confidence::addControls()
 void
 Confidence::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+  (void) sender;
   MRSDIAG("Confidence.cpp - Confidence:myUpdate");
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+
   
   confidences_.stretch(getctrl("mrs_natural/nLabels")->to<mrs_natural>());
   string labelNames = getctrl("mrs_string/labelNames")->to<mrs_string>();

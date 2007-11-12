@@ -126,6 +126,7 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 
 
 
+
   // reset 
   if ((prev_mode_ == "predict") && (mode == "train"))
     {
@@ -206,7 +207,6 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 		  prediction = l;
 		}
 	    }
-	  
 
 	  out(0,t) = (mrs_real)prediction;
 

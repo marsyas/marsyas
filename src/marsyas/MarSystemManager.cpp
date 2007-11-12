@@ -373,12 +373,12 @@ MarSystemManager::MarSystemManager()
 
 	// STFT_features prototype 
 	MarSystem* stft_features_pr = create("Fanout", "stft_features_pr");
-	// stft_features_pr->addMarSystem(create("Centroid", "cntrd"));
-	// stft_features_pr->addMarSystem(create("Rolloff", "rlf"));
-	// stft_features_pr->addMarSystem(create("Flux", "flux"));
+	stft_features_pr->addMarSystem(create("Centroid", "cntrd"));
+	stft_features_pr->addMarSystem(create("Rolloff", "rlf"));
+	stft_features_pr->addMarSystem(create("Flux", "flux"));
 	stft_features_pr->addMarSystem(create("MFCC", "mfcc"));	
-	// stft_features_pr->addMarSystem(create("SCF", "scf"));
-	// stft_features_pr->addMarSystem(create("SFM", "sfm"));
+	stft_features_pr->addMarSystem(create("SCF", "scf"));
+	stft_features_pr->addMarSystem(create("SFM", "sfm"));
 	registerPrototype("STFT_features", stft_features_pr);
 
 	// timbre_features prototype 
@@ -601,7 +601,7 @@ MarSystemManager::MarSystemManager()
 
 	// Direct way with creating control 
 
-	classifierpr->addctrl("mrs_natural/nClasses", 1);
+	/* classifierpr->addctrl("mrs_natural/nClasses", 1);
 	classifierpr->addctrl("mrs_string/mode", "predict");
 	classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_natural/nClasses", 
 			       "mrs_natural/nClasses");
@@ -613,20 +613,19 @@ MarSystemManager::MarSystemManager()
 			       "mrs_string/mode");
 	classifierpr->linkctrl("GaussianClassifier/gaussiancl/mrs_string/mode", 
 			       "mrs_string/mode");
+	*/ 
 	
 
 	// Indirect way 
-	/* classifierpr->linkctrl("GaussianClassifier/gaussiancl/mrs_natural/nClasses", 
-			       "ZeroRClassifier/zerorcl/mrs_natural/nClasses");
-	classifierpr->linkctrl("GaussianClassifier/gaussiancl/mrs_string/mode", 
-			       "ZeroRClassifier/zerorcl/mrs_string/mode");
+	classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_natural/nClasses", 
+			       "GaussianClassifier/gaussiancl/mrs_natural/nClasses");
+	classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_string/mode", 
+			       "GaussianClassifier/gaussiancl/mrs_string/mode");
 	classifierpr->linkctrl("mrs_natural/nClasses", 
-			       "ZeroRClassifier/zerorcl/mrs_natural/nClasses");
+			       "GaussianClassifier/gaussiancl/mrs_natural/nClasses");
 	classifierpr->linkctrl("mrs_string/mode", 
-			       "ZeroRClassifier/zerorcl/mrs_string/mode");
-	*/ 
-			       
-	classifierpr->updctrl("mrs_string/disableChild", "ZeroRClassifier/zerorcl");
+			       "GaussianClassifier/gaussiancl/mrs_string/mode");
+	
 	registerPrototype("Classifier", classifierpr);
 	
 }

@@ -1923,11 +1923,11 @@ selectFeatureSet(MarSystem *featExtractor)
     }
   if (timbralFeatures_) 
     {
-      // featExtractor->updctrl("mrs_string/enableChild", "ZeroCrossings/zcrs");
+      featExtractor->updctrl("mrs_string/enableChild", "ZeroCrossings/zcrs");
       featExtractor->updctrl("mrs_string/enableChild", "MFCC/mfcc");
-      // featExtractor->updctrl("mrs_string/enableChild", "Centroid/cntrd");
-      // featExtractor->updctrl("mrs_string/enableChild", "Flux/flux");
-      // featExtractor->updctrl("mrs_string/enableChild", "Rolloff/rlf");
+      featExtractor->updctrl("mrs_string/enableChild", "Centroid/cntrd");
+      featExtractor->updctrl("mrs_string/enableChild", "Flux/flux");
+      featExtractor->updctrl("mrs_string/enableChild", "Rolloff/rlf");
     }
   
 }
@@ -1994,9 +1994,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
   featureNetwork->linkctrl("mrs_bool/initAudio", "AudioSink/dest/mrs_bool/initAudio");
   featureNetwork->linkctrl("SoundFileSource/src/mrs_natural/currentLabel", 
 			   "Annotator/annotator/mrs_natural/label");
-
-  featureNetwork->linkctrl("Confidence/confidence/mrs_natural/nLabels", 
-			   "Classifier/cl/mrs_natural/nClasses");
+  
   
   if (wekafname != EMPTYSTRING)
     {
@@ -2018,7 +2016,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
 			  featureNetwork->getctrl("SoundFileSource/src/mrs_string/labelNames"));
   featureNetwork->updctrl("Classifier/cl/mrs_natural/nClasses", 
 			  featureNetwork->getctrl("SoundFileSource/src/mrs_natural/nLabels"));
-
+  featureNetwork->updctrl("Confidence/confidence/mrs_natural/nLabels", 
+			  featureNetwork->getctrl("SoundFileSource/src/mrs_natural/nLabels"));
+  
 
   if (wekafname != EMPTYSTRING)
     {
@@ -2026,6 +2026,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
       featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  			
     }
 
+  featureNetwork->updctrl("Classifier/cl/mrs_natural/disable",0); 
 
 
   MarControlPtr ctrl_notEmpty = featureNetwork->getctrl("mrs_bool/notEmpty");
@@ -2064,7 +2065,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
     featureNetwork->updctrl("WekaSink/wsink/mrs_bool/mute", true);  
   
   featureNetwork->updctrl("Confidence/confidence/mrs_bool/mute", false);
-  
+
+    
   // output trained classifier models
   if (pluginName == EMPTYSTRING) // output to stdout 
     cout << (*featureNetwork) << endl;      

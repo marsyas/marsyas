@@ -564,7 +564,7 @@ toy_with_fanoutswitch()
   
   MarSystem* pnet = mng.create("Series", "src");
   MarSystem* src = mng.create("SoundFileSource", "src");
-  src->updctrl("mrs_string/filename", "/home/gtzan/data/sound/music_speech/music/gravity.au");
+  src->updctrl("mrs_string/filename", "/Users/gtzan/data/sound/music_speech/music/gravity.au");
 
   pnet->addMarSystem(src);
   pnet->addMarSystem(mng.create("PlotSink", "psink1"));  
