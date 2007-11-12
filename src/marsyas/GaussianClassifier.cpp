@@ -81,6 +81,15 @@ GaussianClassifier::myUpdate(MarControlPtr sender)
   mrs_natural nrows = means_.getRows();
   mrs_natural ncols = means_.getCols();
 
+
+  string mode = getctrl("mrs_string/mode")->to<mrs_string>();
+  if (mode == "predict")
+    {
+      means_ = getctrl("mrs_realvec/means")->to<mrs_realvec>();
+      covars_ = getctrl("mrs_realvec/covars")->to<mrs_realvec>();
+      return;
+    }
+
   if ((nlabels != mrows) || 
       (inObservations != mcols))
     {
@@ -98,12 +107,6 @@ GaussianClassifier::myUpdate(MarControlPtr sender)
       covars_.create(nlabels, inObservations);
     }
 
-  string mode = getctrl("mrs_string/mode")->to<mrs_string>();
-  if (mode == "predict")
-    {
-      means_ = getctrl("mrs_realvec/means")->to<mrs_realvec>();
-      covars_ = getctrl("mrs_realvec/covars")->to<mrs_realvec>();
-    }
 }
 
 void 
@@ -132,8 +135,6 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
       ctrl_means_->setValue(means_);
       ctrl_covars_->setValue(covars_);
     }
-
-
 
 
   if (mode == "train")  
@@ -183,6 +184,7 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 
   if (mode == "predict")
     {
+      
       mrs_real min = MAXREAL;
       for (t = 0; t < inSamples_; t++)  
 	{
@@ -196,8 +198,6 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 		{
 		  v = in(o,t);
 		  diff = (v - means_(l,o));
-
-		  
 		  sq_sum += (diff * covars_(l,o) * diff);
 		}
 	      if (sq_sum < min)
@@ -207,6 +207,7 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 		}
 	    }
 	  
+
 	  out(0,t) = (mrs_real)prediction;
 
 	  out(1,t) = (mrs_real)label;

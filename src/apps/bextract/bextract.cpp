@@ -1923,11 +1923,11 @@ selectFeatureSet(MarSystem *featExtractor)
     }
   if (timbralFeatures_) 
     {
-      featExtractor->updctrl("mrs_string/enableChild", "ZeroCrossings/zcrs");
+      // featExtractor->updctrl("mrs_string/enableChild", "ZeroCrossings/zcrs");
       featExtractor->updctrl("mrs_string/enableChild", "MFCC/mfcc");
-      featExtractor->updctrl("mrs_string/enableChild", "Centroid/cntrd");
-      featExtractor->updctrl("mrs_string/enableChild", "Flux/flux");
-      featExtractor->updctrl("mrs_string/enableChild", "Rolloff/rlf");
+      // featExtractor->updctrl("mrs_string/enableChild", "Centroid/cntrd");
+      // featExtractor->updctrl("mrs_string/enableChild", "Flux/flux");
+      // featExtractor->updctrl("mrs_string/enableChild", "Rolloff/rlf");
     }
   
 }
@@ -1995,8 +1995,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
   featureNetwork->linkctrl("SoundFileSource/src/mrs_natural/currentLabel", 
 			   "Annotator/annotator/mrs_natural/label");
 
-  // featureNetwork->linkctrl("Classifier/cl/mrs_natural/nClasses", 
-  // "Confidence/confidence/mrs_natural/nLabels");
+  featureNetwork->linkctrl("Confidence/confidence/mrs_natural/nLabels", 
+			   "Classifier/cl/mrs_natural/nClasses");
   
   if (wekafname != EMPTYSTRING)
     {
