@@ -117,8 +117,53 @@ development platform, version 4.2.3 or above.
 
 @unnumberedsubsubsec Microsoft Visual Studio
 
-Windows XP SP2 has been tested; in theory other versions of Windows
-should work, but they have not been tested.
+Windows XP SP2 and Vista has been tested; in theory other versions
+of Windows should work, but they have not been tested.
+
+
+@subheading Vista
+
+@verbatim
+
+1) Obtain an svn client for Windows (I have used
+Tortoise svn (nice GUI integration with explorer) and
+the svn command-line in Cygwin)
+
+Check out the latest trunk by:
+svn co https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk
+
+2) Download and install Microsoft Visual Studio Express
+(free IDE/compiler from Microsoft)
+
+3) Download and install the Microsoft Windows SDK
+(seems to be what has replaced the Platform SDK in Vista)
+
+4) On my machine it is installed in c:\Program Files\Microsoft
+SDKs\Windows\v6.0
+
+5) You will need to add the Bin, Lib, and Include directories of
+the SDK to the corresponding environment variables so that nmake
+can compile Marsyas. The easiest way to do that is to copy the
+vcvars32.bat found in
+c:\Program Files\Microsoft Visual Studio 8\Common7\Tools
+in order to edit it appropriately to set the PATH, LIB, INCLUDE
+variables to include the corresponding directories in the SDK (the
+file is read-only by default) and then execute the corresponding
+batch file.
+
+6) Then download and install Qt 4.3.2
+Follow the instructions to compile and install
+
+7) Once all these steps are completed you can compile Marsyas by
+doing
+qmake
+nmake
+from the command line. The Visual Studio Express has a special
+command-line terminal that's much better than the default one.
+
+@end verbatim
+
+@subheading Windows XP SP2
 
 Required:
 
