@@ -87,6 +87,9 @@ QString RhythmExercise::exercisesDir() {
 
 QString RhythmExercise::getMessage() {
 	QString toReturn( "Selected attempt " + QString::number(currentTry_) );
+	toReturn.append(". Score: " +
+		QString::number( tries_->at(currentTry_)->getScore()) );
+	toReturn.append("%");
 	return toReturn;
 }
 

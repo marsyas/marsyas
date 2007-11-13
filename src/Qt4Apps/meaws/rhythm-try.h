@@ -1,5 +1,5 @@
-#ifndef MEAWS_TRY_INTONATION_H
-#define MEAWS_TRY_INTONATION_H
+#ifndef MEAWS_TRY_RHYTHM_H
+#define MEAWS_TRY_RHYTHM_H
 
 #include "defs.h"
 #include <QObject>
@@ -23,6 +23,7 @@ public:
 	void setLily(const QStringList);
 	void calcErrors(const realvec& pitch, const realvec& bounds);
 	void selected(bool selected);
+	mrs_real getScore();
 
 //public slots:
 //	void doubleclicked();
@@ -35,7 +36,7 @@ private:
 
 	realvec exerAnswer;
 	QStringList lilyInput_;
-
+	mrs_real score;
 
 	Marx2DGraph* graph;
 };

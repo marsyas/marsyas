@@ -26,6 +26,7 @@ public:
 	virtual void selected(bool selected) {
 		(void) selected;
 	};
+	virtual mrs_real getScore() { return 0; };
 
 public slots:
 	virtual void clicked()

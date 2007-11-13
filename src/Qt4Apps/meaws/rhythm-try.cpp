@@ -13,6 +13,7 @@ RhythmTry::RhythmTry()
 	pitchPlot = new QtMarPlot();
 	tryLayout_->addWidget(pitchPlot);
 
+	score = -1;
 }
 
 RhythmTry::~RhythmTry()
@@ -27,9 +28,11 @@ void RhythmTry::setAnswer(const realvec answers)
 void RhythmTry::selected(bool selected)
 {
 	if (selected) {
-		pitchPlot->setBackgroundColor(QColor(0,172,172));
-	} else {
 		pitchPlot->setBackgroundColor(QColor(255,255,255));
+//		pitchPlot->setBackgroundColor(QColor(0,172,172));
+	} else {
+//		pitchPlot->setBackgroundColor(QColor(255,255,255));
+		pitchPlot->setBackgroundColor(QColor(0,0,0));
 	}
 }
 
@@ -148,15 +151,18 @@ void RhythmTry::calcErrors(const realvec& pitches, const realvec&
 
 bool RhythmTry::displayAnalysis(MarBackend *results)
 {
-	//cout<<"LOLCAT SEZ: im in ur beat analysis"<<endl;
-
 // get info from backend
 	realvec amps = results->getAmplitudes();
 	realvec bounds;
 	Transcriber::ampSegment(amps, bounds);
 	// shift the exercise times to match the beginning of audio exercise
 	Transcriber::discardBeginEndSilencesAmpsOnly(amps, bounds);
-	//cout<<"divided"<<endl;
+
+	// basic plot setup
+	pitchPlot->setVertical(0,1);
+	pitchPlot->setPlotName("onsets");
+	pitchPlot->setCenterLine(false);
+	pitchPlot->setImpulses(true);
 
 	mrs_natural start = (mrs_natural) bounds(0);
 	mrs_natural length = (mrs_natural) (bounds(bounds.getSize()-1)
@@ -164,12 +170,6 @@ bool RhythmTry::displayAnalysis(MarBackend *results)
 	realvec *data = new realvec;
 	(*data) = amps.getSubVector(start,length);
 	
-	pitchPlot->setVertical(0,1);
-	pitchPlot->setPlotName("onsets");
-	pitchPlot->setCenterLine(false);
-	pitchPlot->setImpulses(true);
-	//cout<<"plot done"<<endl;
-
 	mrs_natural exerLength = (mrs_natural) exerAnswer(exerAnswer.getRows()-1,1);
 
 	mrs_natural j=0;
@@ -178,19 +178,34 @@ bool RhythmTry::displayAnalysis(MarBackend *results)
 		if ( i==(exerAnswer(j,1)) ) {
 			j++;
 			(*answerVec)(i)=1.0;
+			(*answerVec)(i+1)=1.0;
 		} else {
 			(*answerVec)(i)=0.0;
 		}
+	cout<<(*answerVec);
 	data->stretch(answerVec->getSize());
 
 	pitchPlot->setData(data);
 	pitchPlot->setOtherData(answerVec);
-//	cout<<(*answerVec);
 
-	for (int i=0; i<exerAnswer.getRows(); i++)
-		exerAnswer(i,1) = exerAnswer(i,1) + bounds(0);
+	score = 100.0;
+	mrs_real SCALE = 0.1;
+	mrs_real noteScore;
+	mrs_natural expected;
+	for (int i=0; i<exerAnswer.getRows()-1; i++) {
+		expected = (mrs_natural) (exerAnswer(i,1) + bounds(0));
+		//cout<<expected<<"\t"<<bounds(i)<<endl;
+		noteScore = fabs( expected - bounds(i) );
+		noteScore = pow(noteScore,1.5) * SCALE;
+
+		cout<<noteScore<<endl;
+		score = score - noteScore;
+	}
+	if (score < 0)
+		score = 0;
+	cout<<score<<endl;
+
 /*
-
 	calcErrors(pitches, bounds);
 
 	pitchPlot->setData(data);
@@ -242,4 +257,13 @@ RhythmTry::doubleclicked()
 //	graph->show();
 }
 */
+
+
+mrs_real
+RhythmTry::getScore() {
+	if (score >= 0)
+		return score;
+	else
+		return -1;
+}
 
