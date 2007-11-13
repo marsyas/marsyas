@@ -32,6 +32,7 @@ public:
 
 signals:
 	void analysisDone();
+	void newTry();
 
 public slots:
 	virtual void selectTry(mrs_natural selected);

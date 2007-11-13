@@ -18,7 +18,8 @@ public:
 
 //	void setFileName(std::string filename);
 	void playFile();
-	void open(std::string filename);
+	void openTry(std::string filename);
+	void newTry();
 
 	bool analyze();
 	realvec getPitches();

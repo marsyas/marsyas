@@ -24,6 +24,15 @@ void RhythmTry::setAnswer(const realvec answers)
 	exerAnswer = answers;
 }
 
+void RhythmTry::selected(bool selected)
+{
+	if (selected) {
+		pitchPlot->setBackgroundColor(QColor(0,172,172));
+	} else {
+		pitchPlot->setBackgroundColor(QColor(255,255,255));
+	}
+}
+
 void RhythmTry::setLily(const QStringList lilyInput)
 {
 	lilyInput_ = QStringList( lilyInput );

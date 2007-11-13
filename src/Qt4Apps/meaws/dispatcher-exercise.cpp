@@ -45,8 +45,10 @@ bool ExerciseDispatcher::chooseEvaluation()
 		if (item=="Rhythm test") exercise_ = new RhythmExercise();
 //		if (item=="Sound control test") exercise_ = new ExerciseControl();
 //		if (item=="Shifting test") exercise_ = new ExerciseShift();
-		connect(exercise_,SIGNAL(analysisDone()), this,
-		        SLOT(analysisDone()));
+		connect(exercise_,SIGNAL(analysisDone()),
+			this, SLOT(analysisDone()));
+		connect(exercise_,SIGNAL(newTry()),
+			this, SLOT(newTry()));
 		return true;
 	}
 	return false;
@@ -77,6 +79,11 @@ void ExerciseDispatcher::open()
 			close();
 		}
 	}
+}
+
+void ExerciseDispatcher::newTry() {
+	if (marBackend_ != NULL)
+		marBackend_->newTry();
 }
 
 void ExerciseDispatcher::close()
@@ -127,7 +134,7 @@ bool ExerciseDispatcher::openAttempt()
 	                       "/home/gperciva/data/");
 	if (!openFilename.isEmpty())
 	{
-		marBackend_->open( qPrintable(openFilename) );
+		marBackend_->openTry( qPrintable(openFilename) );
 		return true;
 	}
 	return false;

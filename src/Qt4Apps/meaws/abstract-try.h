@@ -23,6 +23,9 @@ public:
 		tryNumber_ = num;
 	};
 	virtual bool displayAnalysis(MarBackend *results) = 0;
+	virtual void selected(bool selected) {
+		(void) selected;
+	};
 
 public slots:
 	virtual void clicked()

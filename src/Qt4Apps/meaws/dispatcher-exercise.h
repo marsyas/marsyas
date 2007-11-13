@@ -36,6 +36,8 @@ public slots:
 	void analyze();
 	void analysisDone(); // even tempier
 
+	void newTry();
+
 	void addTry()
 	{
 		exercise_->addTry();

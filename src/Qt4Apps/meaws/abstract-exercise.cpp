@@ -74,10 +74,10 @@ void Exercise::addTryAbstract(Try* newTry)
 {
 	resultLayout_->addWidget( newTry->getDisplay() );
 	newTry->setTryNumber( tries_->count() );
-	currentTry_ = tries_->count();
 	connect(newTry, SIGNAL(selectTry(mrs_natural)),
 	        this, SLOT(selectTry(mrs_natural)));
 	tries_->append(newTry);
+	selectTry( tries_->count()-1 );
 }
 
 void Exercise::delTryAbstract()
@@ -92,12 +92,17 @@ void Exercise::delTryAbstract()
 	{
 		(*tries_)[i]->setTryNumber(i);
 	}
-	currentTry_ = -1;
+	selectTry(-1);
 }
 
 void Exercise::selectTry(mrs_natural selected)
 {
+	if (currentTry_ > -1)
+		(*tries_)[currentTry_]->selected(false);
 	currentTry_ = selected;
+	if (currentTry_ > -1)
+		(*tries_)[currentTry_]->selected(true);
+	emit newTry();
 	emit analysisDone();
 }
 

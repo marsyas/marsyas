@@ -12,12 +12,9 @@ MarBackend::MarBackend(int getType) {
 
 	mrsWrapper = NULL;
 	allNet = NULL;
-	sourceNet = makeSourceNet("");
+	sourceNet = NULL;
 
-	isEmptyState = false;
-	hasAudio = false;
-
-	setupAllNet();
+	newTry();
 }
 
 MarBackend::~MarBackend() {
@@ -64,12 +61,20 @@ MarSystem* MarBackend::makeSourceNet(std::string filename) {
 }
 
 
-void MarBackend::open(std::string filename) {
+void MarBackend::openTry(std::string filename) {
 	delNet();
 	sourceNet = makeSourceNet(filename);
 	hasAudio = true;
 	setupAllNet();
 	mrsWrapper->play();
+}
+
+void MarBackend::newTry() {
+	delNet();
+	sourceNet = makeSourceNet("");
+	isEmptyState = false;
+	hasAudio = false;
+	setupAllNet();
 }
 
 /*
