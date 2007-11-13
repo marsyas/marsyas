@@ -601,7 +601,7 @@ MarSystemManager::MarSystemManager()
 
 	// Direct way with creating control 
 	classifierpr->addctrl("mrs_natural/nClasses", 1);
-	classifierpr->addctrl("mrs_string/mode", "predict");
+	classifierpr->addctrl("mrs_string/mode", "train");
 	
 	classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_natural/nClasses", 
 			       "mrs_natural/nClasses");
@@ -614,8 +614,7 @@ MarSystemManager::MarSystemManager()
 			       "mrs_string/mode");
 	
 	// Indirect way 
-	/*
-	classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_natural/nClasses", 
+	/* classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_natural/nClasses", 
 			       "GaussianClassifier/gaussiancl/mrs_natural/nClasses");
 	classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_string/mode", 
 			       "GaussianClassifier/gaussiancl/mrs_string/mode");
@@ -623,8 +622,8 @@ MarSystemManager::MarSystemManager()
 			       "GaussianClassifier/gaussiancl/mrs_natural/nClasses");
 	classifierpr->linkctrl("mrs_string/mode", 
 			       "GaussianClassifier/gaussiancl/mrs_string/mode");
-	*/
-
+	*/ 
+	
 	registerPrototype("Classifier", classifierpr);
 	
 }
