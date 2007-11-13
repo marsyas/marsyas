@@ -591,32 +591,30 @@ MarSystemManager::MarSystemManager()
 	stereoFeats->addMarSystem(create("StereoSpectrumSources","stereospksources"));
 	registerPrototype("StereoFeatures", stereoFeats);
 
-
-
+	//--------------------------------------------------------------------------------
 	// prototype for Classifier 
+	//--------------------------------------------------------------------------------
 	MarSystem* classifierpr = create("Fanout", "Classifierpr");
 	classifierpr->addMarSystem(create("ZeroRClassifier", "zerorcl"));
 	classifierpr->addMarSystem(create("GaussianClassifier", "gaussiancl"));
 
 
 	// Direct way with creating control 
-
-	/* classifierpr->addctrl("mrs_natural/nClasses", 1);
+	classifierpr->addctrl("mrs_natural/nClasses", 1);
 	classifierpr->addctrl("mrs_string/mode", "predict");
+	
 	classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_natural/nClasses", 
 			       "mrs_natural/nClasses");
 	classifierpr->linkctrl("GaussianClassifier/gaussiancl/mrs_natural/nClasses", 
 			       "mrs_natural/nClasses");
 
-
 	classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_string/mode", 
 			       "mrs_string/mode");
 	classifierpr->linkctrl("GaussianClassifier/gaussiancl/mrs_string/mode", 
 			       "mrs_string/mode");
-	*/ 
 	
-
 	// Indirect way 
+	/*
 	classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_natural/nClasses", 
 			       "GaussianClassifier/gaussiancl/mrs_natural/nClasses");
 	classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_string/mode", 
@@ -625,7 +623,8 @@ MarSystemManager::MarSystemManager()
 			       "GaussianClassifier/gaussiancl/mrs_natural/nClasses");
 	classifierpr->linkctrl("mrs_string/mode", 
 			       "GaussianClassifier/gaussiancl/mrs_string/mode");
-	
+	*/
+
 	registerPrototype("Classifier", classifierpr);
 	
 }
@@ -706,8 +705,6 @@ MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 	is >> skipstr >> skipstr >> skipstr;
 	string mname;
 	is >> mname;
-
-
 
 	MarSystem* msys = getPrototype(mtype);
 

@@ -1471,7 +1471,7 @@ Marsyas::operator>> (istream& is, MarSystem& msys)
 		is >> skipstr >> skipstr >> skipstr;
 		is >> nLinks;
 		//relink
-		if(nLinks > 0)
+		for(mrs_natural link=0; link < nLinks; ++link)
 		{
 			//read link absolute path
 			is >> skipstr >> linkedfrom;
@@ -1487,7 +1487,6 @@ Marsyas::operator>> (istream& is, MarSystem& msys)
 				ctrl->linkTo(curCtrl);
 			}
 		}
-
 	}
 	return is;
 }
