@@ -26,8 +26,7 @@ CONFIG += marsyasQt4Apps
 ######################################################################
 
 unix:CONFIG	+= release
-win32:win32-msvc2005:CONFIG += release
-#win32:win32-msvc2005:CONFIG += debug_and_release
+win32:win32-msvc2005:CONFIG += debug_and_release
 
 ######################################################################
 # enable/disable ASSERTIONS/WARNINGS/DIAGNOSTICS/LOGS, etc
