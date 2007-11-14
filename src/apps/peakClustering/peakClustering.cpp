@@ -94,7 +94,11 @@ mrs_natural synthetize_ = 0;
 mrs_natural clusterSynthetize_ = -1;
 bool peakStore_= true;
 bool residual_ = false;
-bool ignoreStereo = false;
+
+bool ignoreFrequency = false;
+bool ignoreAmplitude = false;
+bool ignoreHWPS = false;
+bool ignorePan = false;
 
 CommandLineOptions cmd_options;
 
@@ -111,8 +115,8 @@ void
 printHelp(string progName)
 {
 	MRSDIAG("peakClustering.cpp - printHelp");
-	cerr << "peakClustering, MARSYAS, Copyright Mathieu Lagrange " << endl;
-	cerr << "report bugs to marsyas" << endl;
+	cerr << "peakClustering, MARSYAS" << endl;
+	cerr << "report bugs to marsyas-users@lists.sourceforge.net" << endl;
 	cerr << "--------------------------------------------" << endl;
 	cerr << "Usage : " << progName << " [file]" << endl;
 	cerr << endl;
@@ -136,7 +140,12 @@ printHelp(string progName)
 	cerr << "-f --fileInfo : provide clustering parameters in the output name (s20t10i250_2500c2k1uTabfbho means 20 sines per frames in the 250_2500 Hz frequency Interval, 1 cluster selected among 2 in one texture window of 10 frames, no precise parameter estimation and using a combination of similarities abfbho)" << endl;
 	cerr << "-npp --noPeakPicking : do not perform peak picking in the spectrum" << endl;
 	cerr << "-u --unprecise : do not perform precise estimation of sinusoidal parameters" << endl;
-	cerr << "-ist --ignoreStereo: even if reading a stereo audio file, ignore stereo information" << endl;
+	
+	cerr << "-if --ignoreFrequency: ignore frequency similarity between peaks" << endl;
+	cerr << "-ia --ignoreAmplitude: ignore amplitude similarity between peaks" << endl;
+	cerr << "-ih --ignoreHWPS: ignore harmonicity (HWPS) similarity between peaks" << endl;
+	cerr << "-ip --ignorePan: ignore panning similarity between peaks" << endl;
+
 	cerr << "" << endl;
 	cerr << "-h --help            : display this information " << endl;
 
@@ -153,9 +162,10 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 							 mrs_natural D, mrs_natural S, mrs_natural C,
 							 mrs_natural accSize, mrs_natural synthetize, mrs_real *snr0)
 {
-	cout << "Extracting Peaks and Clusters" << endl;
 	MarSystemManager mng;
 
+	cout << "Extracting Peaks and Computing Clusters..." << endl;
+	
 	//**************************************************
 	// create the peakClustering network
 	//**************************************************
@@ -247,7 +257,9 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	stereoSpkNet->addMarSystem(LRnet);
 	//
 	//add stereo spectrum object to stereo spectrum net
-	stereoSpkNet->addMarSystem(mng.create("StereoSpectrum","stereoSpk"));
+	//stereoSpkNet->addMarSystem(mng.create("StereoSpectrum","stereoSpk")); //AVENDANO
+	stereoSpkNet->addMarSystem(mng.create("enhADRess","ADRess"));//enhADRess_1
+	stereoSpkNet->addMarSystem(mng.create("enhADRessStereoSpectrum","stereoSpk")); //enhADRess_2
 	//
 	// add the stereo Spectrum net to the Fanout
 	stereoFo->addMarSystem(stereoSpkNet);
@@ -409,7 +421,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	mainNet->linkctrl("PeakLabeler/labeler/mrs_realvec/peakLabels", "FlowThru/clustNet/mrs_realvec/innerOut");
 
 	//***************************************************************
-	// create PeakLabeler MarSystem and add it to mainNet
+	// create PeakViewSink MarSystem and add it to mainNet
 	//***************************************************************
 	if(peakStore_)
 	{
@@ -428,6 +440,9 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		mainNet->addMarSystem(peSynth);
 	}
 
+	//****************************************************************
+
+	
 	////////////////////////////////////////////////////////////////
 	// update the controls
 	////////////////////////////////////////////////////////////////
@@ -475,14 +490,17 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		mainNet->updctrl("PeakConvert/conv/mrs_bool/improvedPrecision", false);      
 	else
 		mainNet->updctrl("PeakConvert/conv/mrs_bool/improvedPrecision", true);  
+	
 	if(noPeakPicking_)
 		mainNet->updctrl("PeakConvert/conv/mrs_bool/picking", false);      
+	
 	mainNet->updctrl("PeakConvert/conv/mrs_natural/frameMaxNumPeaks", S); 
 	mainNet->updctrl("PeakConvert/conv/mrs_string/frequencyInterval", intervalFrequency);  
 	// mainNet->updctrl("PeakConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
 
 	mainNet->updctrl("FlowThru/clustNet/Series/NCutNet/Fanout/stack/NormCut/NCut/mrs_natural/numClusters", C); 
 	mainNet->updctrl("FlowThru/clustNet/Series/NCutNet/PeakClusterSelect/clusterSelect/mrs_natural/numClustersToKeep", nbSelectedClusters_);
+	
 	// 	//[TODO]
 	// 	mainNet->setctrl("PeClust/peClust/mrs_natural/selectedClusters", nbSelectedClusters_); 
 	// 	mainNet->setctrl("PeClust/peClust/mrs_natural/hopSize", D); 
@@ -500,11 +518,43 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 
 	mainNet->update();
 
-	//check if input signal is stereo
-	if(mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/mrs_natural/onObservations")->to<mrs_natural>() == 2 &&
-		!ignoreStereo)
+
+	//------------------------------------------------------------------------
+	//check which similarity computations should be disabled (if any)
+	//------------------------------------------------------------------------
+	// Frequency Similarity
+	if(ignoreFrequency)
 	{
-		cout << "Using stereo information..." << endl;
+		cout << "** Frequency Similarity Computation disabled!" << endl;
+		mainNet->updctrl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/disableChild",
+			"Series/freqSim");
+	}
+	else
+		cout << "** Frequency Similarity Computation enabled!" << endl;
+	// amplitude similarity
+	if(ignoreAmplitude)
+	{
+		cout << "** Amplitude Similarity Computation disabled!" << endl;
+		mainNet->updctrl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/disableChild",
+			"Series/ampSim");
+	}
+	else
+		cout << "** Amplitude Similarity Computation enabled!" << endl;
+	// HWPS similarity
+	if(ignoreHWPS)
+	{
+		cout << "** HWPS (harmonicity) Similarity Computation disabled!" << endl;
+		mainNet->updctrl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/disableChild",
+			"Series/HWPSim");
+	}
+	else
+		cout << "** HWPS (harmonicity) Similarity Computation enabled!" << endl;
+	//
+	//Panning Similarity
+	if(mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/mrs_natural/onObservations")->to<mrs_natural>() == 2 &&
+		!ignorePan)
+	{
+		cout << "** Panning Similarity Computation enabled!" << endl;
 		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/mrs_string/enableChild",
 			"Series/stereoSpkNet");
 		mainNet->updctrl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/enableChild",
@@ -512,12 +562,15 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	}
 	else //if not stereo or if stereo to be ignored, disable some branches 
 	{
+		cout << "** Panning Similarity Computation disabled!" << endl;
 		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/mrs_string/disableChild",
 			"Series/stereoSpkNet");
 		mainNet->updctrl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/disableChild",
 			"Series/panSim");
 	}
-	mainNet->update(); //not necessary, I think... [!]
+	//
+	mainNet->update(); //probably not necessary... [!]
+	//------------------------------------------------------------------------
 
 	if(synthetize>-1)
 	{
@@ -630,7 +683,11 @@ initOptions()
 	cmd_options.addBoolOption("noPeakPicking", "npp", 0);
 	cmd_options.addNaturalOption("clusterSynthetize", "SC", clusterSynthetize_);
 	cmd_options.addBoolOption("peakStore", "P", peakStore_);
-	cmd_options.addBoolOption("ignoreStereo", "ist", ignoreStereo);
+
+	cmd_options.addBoolOption("ignoreFrequency", "if", ignoreFrequency);
+	cmd_options.addBoolOption("ignoreAmplitude", "ia", ignoreAmplitude);
+	cmd_options.addBoolOption("ignoreHWPS", "ih", ignoreHWPS);
+	cmd_options.addBoolOption("ignorePan", "ip", ignorePan);
 }
 
 void 
@@ -664,7 +721,11 @@ loadOptions()
 	peakStore_ = cmd_options.getBoolOption("peakStore"); 
 	residual_ = cmd_options.getBoolOption("residual");
 	unprecise_ = cmd_options.getBoolOption("unprecise");
-	ignoreStereo = cmd_options.getBoolOption("ignoreStereo");
+
+	ignoreFrequency = cmd_options.getBoolOption("ignoreFrequency");
+	ignoreAmplitude = cmd_options.getBoolOption("ignoreAmplitude");
+	ignoreHWPS = cmd_options.getBoolOption("ignoreHWPS");
+	ignorePan = cmd_options.getBoolOption("ignorePan");
 }
 
 int
@@ -720,7 +781,7 @@ main(int argc, const char **argv)
 				outputInf << "i" << intervalFrequency;
 				outputInf << "T" << accSize_; 
 				outputInf << "c" << nbClusters_;
-				outputInf <<"k" << nbSelectedClusters_;
+				outputInf << "k" << nbSelectedClusters_;
 				if(unprecise_)
 					outputInf << "u";
 				outputInf << "t" << similarityType_;

@@ -100,7 +100,9 @@ SimilarityMatrix::myUpdate(MarControlPtr sender)
 		//check if the child is a valid metric MarSystem
 		if(marsystems_[0]->getctrl("mrs_natural/onObservations") != 1 ||
 			marsystems_[0]->getctrl("mrs_natural/onSamples") != 1)
+		{
 			 MRSWARN("SimilarityMatrix::myUpdate - invalid Child Metric MarSystem (does not output a real value)!");
+		}
 	}
 	else if(marsystemsSize_ > 1)
 	{
@@ -186,8 +188,8 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 			}
 		}
 	}
-	MATLAB_PUT(out, "simMatrix");
-	MATLAB_EVAL("figure(1);imagesc(simMatrix);");
+	//MATLAB_PUT(out, "simMatrix");
+	//MATLAB_EVAL("figure(1);imagesc(simMatrix);");
 }
 
 

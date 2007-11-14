@@ -37,16 +37,15 @@ namespace Marsyas
   {
   private:    
     MarControlPtr ctrl_numClustersToKeep_;
-    //mrs_natural numClustersToKeep_;
 
-    void addControls();    
-    void myUpdate(MarControlPtr sender);
-    
-    // Driver method for quick sort
+	   // Driver method for quick sort
     void sort(realvec& rv, mrs_natural dimension, mrs_natural left, mrs_natural right, mrs_bool sortColumns=true);
-    // Helper meethods for quick sort
+    // Helper methods for quick sort
     int partition(realvec& rv, mrs_natural dimension, mrs_natural left, mrs_natural right, mrs_bool sortColumns=true);
     void swap(realvec& rv, mrs_natural sample1, mrs_natural sample2, mrs_bool swapColumns=true);
+
+		void addControls();    
+		void myUpdate(MarControlPtr sender);
     
   public:
     PeakClusterSelect(std::string name);

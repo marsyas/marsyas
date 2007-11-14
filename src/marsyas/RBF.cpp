@@ -172,8 +172,8 @@ RBF::myProcess(realvec& in, realvec& out)
 			}
 		}
 	}
-	MATLAB_PUT(out, "RBFMatrix");
-	MATLAB_EVAL("figure(2);imagesc(RBFMatrix);");
+	//MATLAB_PUT(out, "RBFMatrix");
+	//MATLAB_EVAL("figure(2);imagesc(RBFMatrix);");
 }
 
 

@@ -137,11 +137,11 @@ FlowThru::myProcess(realvec& in, realvec& out)
 			}
 			else if (i == marsystemsSize_-1)
 			{
-// 				MarControlAccessor accSlice(marsystems_[i-1]->ctrl_processedData_, true, true);
-// 				realvec& slice = accSlice.to<mrs_realvec>();
-// 				MarControlAccessor accInnerOut(ctrl_innerOut_);
-// 				realvec& innerOut = accInnerOut.to<mrs_realvec>();
-// 				marsystems_[i]->process(slice, innerOut);
+				MarControlAccessor accSlice(marsystems_[i-1]->ctrl_processedData_, true, true);
+				realvec& slice = accSlice.to<mrs_realvec>();
+				MarControlAccessor accInnerOut(ctrl_innerOut_);
+				realvec& innerOut = accInnerOut.to<mrs_realvec>();
+				marsystems_[i]->process(slice, innerOut);
 			}
 			else
 			{

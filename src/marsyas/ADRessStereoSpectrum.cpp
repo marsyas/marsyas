@@ -99,8 +99,8 @@ ADRessStereoSpectrum::myProcess(realvec& in, realvec& out)
 		out(o,0) = (mrs_real)maxIndex_/(beta_*2.0)*2.0 - 1.0;
 	}
 
-	//MATLAB_PUT(out, "ADRessBinPan");
-	//MATLAB_EVAL("figure(2);plot(ADRessBinPan);");
+	MATLAB_PUT(out, "ADRessBinPan");
+	MATLAB_EVAL("figure(3);plot(ADRessBinPan);");
 }
 
 

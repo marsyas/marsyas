@@ -61,8 +61,8 @@ PeakLabeler::myProcess(realvec& in, realvec& out)
 	out = in;
 
 	peakView outPeakView(out);
-
-	const realvec& peakLabels = ctrl_peakLabels_->to<mrs_realvec>();
+	
+	const realvec& peakLabels = ctrl_peakLabels_->to<mrs_realvec>(); //reading unlocked and linked control!!! --> should use MarControlAccessor [TODO][!]
 
 	if(peakLabels.getSize() != outPeakView.getTotalNumPeaks())
 	{

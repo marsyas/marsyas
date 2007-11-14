@@ -32,7 +32,6 @@ PeakSynthOsc::PeakSynthOsc(const PeakSynthOsc& a):MarSystem(a)
 	ctrl_harmonize_ = getctrl("mrs_realvec/harmonize");
 }
 
-
 PeakSynthOsc::~PeakSynthOsc()
 {
 }
