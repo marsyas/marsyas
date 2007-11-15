@@ -518,6 +518,12 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 
 	mainNet->update();
 
+	//check if input is a stereo signal
+	if(mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/mrs_natural/onObservations")->to<mrs_natural>() == 1)
+	{
+		//if a not a stereo signal, we must set the Stereo2Mono weight to 1.0 (i.e. do no mixing)!
+		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/spectrumNet/Stereo2Mono/s2m/mrs_real/weight", 1.0);
+	}
 
 	//------------------------------------------------------------------------
 	//check which similarity computations should be disabled (if any)
