@@ -24,7 +24,6 @@ void RhythmExercise::open(QString exerciseFilename) {
 	mrs_natural one, two;
 	int i=0;
 	exerAnswer.create(16,2);
-	//exerAnswer.create(100,2);
 	QString answerFilename = exerciseFilename;
 	int size = answerFilename.size();
 	answerFilename.replace(size-4,4,".txt");
@@ -35,8 +34,6 @@ void RhythmExercise::open(QString exerciseFilename) {
 		while (!answerText.atEnd())
 		{
 			answerText>>one>>two;
-//			exerAnswer(i,0) = one;
-//			exerAnswer(i,1) = two;
 			exerAnswer.stretchWrite(i,0,one);
 			exerAnswer.stretchWrite(i,1,two);
 			i++;
@@ -44,34 +41,11 @@ void RhythmExercise::open(QString exerciseFilename) {
 	}
 	answerFile.close();
 	exerAnswer.stretch(i-1,2);
-/*
-	for (i=0; i<exerAnswer.getRows(); i++)
-		exerAnswer(i,1) =
-			(mrs_natural) (exerAnswer(i,1)*44100.0/512.0/384.00);
-	cout<<exerAnswer;
-*/
-
-	// **** read lilypond input
-	// FIXME: filename
-	QString lilyFile(MEAWS_DIR);
-	lilyFile.append("data/rhythm/scale.ly");
-    QFile in_file(lilyFile);
-    in_file.open(QIODevice::ReadOnly | QIODevice::Text);
-    lily_input = (QTextStream(&in_file).readAll()).split('\n');
-    in_file.close();
-/*
-	QString temp;
-    for (int i = 0; i < lily_input.size(); ++i) {
-        temp = lily_input.at(i);
-        cout<<qPrintable(temp)<<endl;
-    }
-*/
 }
 
 void RhythmExercise::addTry() {
 	RhythmTry *newTry = new RhythmTry();
 	newTry->setAnswer(exerAnswer);
-	newTry->setLily(lily_input);
 	Exercise::addTryAbstract(newTry);
 }
 
@@ -86,6 +60,8 @@ QString RhythmExercise::exercisesDir() {
 }
 
 QString RhythmExercise::getMessage() {
+	if (currentTry_ < 0)
+		return "";
 	QString toReturn( "Selected attempt " + QString::number(currentTry_) );
 	toReturn.append(". Score: " +
 		QString::number( tries_->at(currentTry_)->getScore()) );

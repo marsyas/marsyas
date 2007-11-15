@@ -72,6 +72,7 @@ void Exercise::setupDisplay(QFrame* instructionArea, QFrame* resultArea)
 
 void Exercise::addTryAbstract(Try* newTry)
 {
+	cout<<"addTryAbstract"<<endl;
 	resultLayout_->addWidget( newTry->getDisplay() );
 	newTry->setTryNumber( tries_->count() );
 	connect(newTry, SIGNAL(selectTry(mrs_natural)),
@@ -97,8 +98,7 @@ void Exercise::delTryAbstract()
 
 void Exercise::selectTry(mrs_natural selected)
 {
-	// FIXME: crashes if deleting final Try.
-	if (currentTry_ > -1)
+	if ((currentTry_ > -1) && (currentTry_ < tries_->count()))
 		(*tries_)[currentTry_]->selected(false);
 	currentTry_ = selected;
 	if (currentTry_ > -1)
