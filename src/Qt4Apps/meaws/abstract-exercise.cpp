@@ -97,6 +97,7 @@ void Exercise::delTryAbstract()
 
 void Exercise::selectTry(mrs_natural selected)
 {
+	// FIXME: crashes if deleting final Try.
 	if (currentTry_ > -1)
 		(*tries_)[currentTry_]->selected(false);
 	currentTry_ = selected;

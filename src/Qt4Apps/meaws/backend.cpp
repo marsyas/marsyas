@@ -14,6 +14,8 @@ MarBackend::MarBackend(int getType) {
 	allNet = NULL;
 	sourceNet = NULL;
 
+	filename_ = "foo.wav";
+
 	newTry();
 }
 
@@ -41,21 +43,30 @@ void MarBackend::delNet() {
 	}
 }
 
-MarSystem* MarBackend::makeSourceNet(std::string filename) {
+MarSystem* MarBackend::makeSourceNet(bool fromFile) {
 	MarSystem *pnet = mng.create("Series", "sourceNet");
-	if (filename != "") {
+	if (fromFile) {
 		MRSERR("DEBUG: getting from file");
 		pnet->addMarSystem(mng.create("SoundFileSource", "srcFile"));
-		pnet->updctrl("SoundFileSource/srcFile/mrs_string/filename", filename);
-		pnet->linkctrl("mrs_real/osrate", "SoundFileSource/srcFile/mrs_real/osrate");
-		pnet->linkctrl("mrs_bool/notEmpty", "SoundFileSource/srcFile/mrs_bool/notEmpty");
+		pnet->updctrl("SoundFileSource/srcFile/mrs_string/filename",
+			filename_);
+		pnet->linkctrl("mrs_real/osrate",
+			"SoundFileSource/srcFile/mrs_real/osrate");
+		pnet->linkctrl("mrs_bool/notEmpty",
+			"SoundFileSource/srcFile/mrs_bool/notEmpty");
 	} else {
 		MRSERR("DEBUG: getting audio");
 		pnet->addMarSystem(mng.create("AudioSource", "srcRec"));
 		pnet->updctrl("mrs_real/israte", 44100.0);
 		pnet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
-		pnet->linkctrl("mrs_bool/notEmpty", "AudioSource/srcRec/mrs_bool/notEmpty");
-		//pnet->linkctrl("mrs_real/osrate", "AudioSource/srcRec/mrs_real/osrate");
+		pnet->linkctrl("mrs_bool/notEmpty",
+			"AudioSource/srcRec/mrs_bool/notEmpty");
+		pnet->addMarSystem(mng.create("SoundFileSink", "saveFile"));
+		cout<<filename_<<endl;
+		pnet->updctrl("SoundFileSink/saveFile/mrs_string/filename",
+			filename_);
+		//pnet->linkctrl("mrs_real/osrate",
+		//	"AudioSource/srcRec/mrs_real/osrate");
 	}
 	return pnet;
 }
@@ -63,7 +74,8 @@ MarSystem* MarBackend::makeSourceNet(std::string filename) {
 
 void MarBackend::openTry(std::string filename) {
 	delNet();
-	sourceNet = makeSourceNet(filename);
+	filename_ = filename;
+	sourceNet = makeSourceNet(true);
 	hasAudio = true;
 	setupAllNet();
 	mrsWrapper->play();
@@ -71,7 +83,7 @@ void MarBackend::openTry(std::string filename) {
 
 void MarBackend::newTry() {
 	delNet();
-	sourceNet = makeSourceNet("");
+	sourceNet = makeSourceNet(false);
 	isEmptyState = false;
 	hasAudio = false;
 	setupAllNet();
@@ -85,10 +97,10 @@ void MarBackend::setFileName(string filename) {
 
 void MarBackend::playFile() {
 	if (hasAudio) {
-		string filename =
-sourceNet->getctrl("SoundFileSource/srcFile/mrs_string/filename")->to<mrs_string>();
+//		string filename =
+//sourceNet->getctrl("SoundFileSource/srcFile/mrs_string/filename")->to<mrs_string>();
 		delNet();
-		sourceNet = makeSourceNet(filename);
+		sourceNet = makeSourceNet(true);
 		method = BACKEND_PLAYBACK;
 		setupAllNet();
 	}
@@ -155,6 +167,7 @@ void MarBackend::setupAllNet() {
 	switch (method) {
 	case (BACKEND_PLAYBACK):
 		fanout->addMarSystem(mng.create("AudioSink", "audioDest"));
+		fanout->updctrl("mrs_real/israte", osrate);
 		fanout->updctrl("AudioSink/audioDest/mrs_bool/initAudio", true);
 		break;
 	case (BACKEND_PITCHES): {
@@ -265,16 +278,4 @@ realvec MarBackend::getMidiPitches() {
 realvec MarBackend::getAmplitudes() {
 	return ampList;
 }
-
-/*
-realvec MarBackend::getDurations()
-{
-	return durations;
-}
-
-realvec MarBackend::getNotes()
-{
-	return notes;
-}
-*/
 

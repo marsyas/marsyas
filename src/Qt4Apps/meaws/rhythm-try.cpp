@@ -178,11 +178,11 @@ bool RhythmTry::displayAnalysis(MarBackend *results)
 		if ( i==(exerAnswer(j,1)) ) {
 			j++;
 			(*answerVec)(i)=1.0;
-			(*answerVec)(i+1)=1.0;
+//			(*answerVec)(i+1)=1.0;
 		} else {
 			(*answerVec)(i)=0.0;
 		}
-	cout<<(*answerVec);
+//	cout<<(*answerVec);
 	data->stretch(answerVec->getSize());
 
 	pitchPlot->setData(data);
@@ -198,12 +198,12 @@ bool RhythmTry::displayAnalysis(MarBackend *results)
 		noteScore = fabs( expected - bounds(i) );
 		noteScore = pow(noteScore,1.5) * SCALE;
 
-		cout<<noteScore<<endl;
+		//cout<<noteScore<<endl;
 		score = score - noteScore;
 	}
 	if (score < 0)
 		score = 0;
-	cout<<score<<endl;
+//	cout<<score<<endl;
 
 /*
 	calcErrors(pitches, bounds);

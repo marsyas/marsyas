@@ -34,7 +34,7 @@ signals:
 	void analysisDone();
 	void newTry();
 
-public slots:
+protected slots:
 	virtual void selectTry(mrs_natural selected);
 
 protected:

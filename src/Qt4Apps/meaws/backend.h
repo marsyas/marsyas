@@ -8,6 +8,7 @@
 #include "TranscriberExtract.h"
 using namespace Marsyas;
 using namespace MarsyasQt;
+using namespace std;
 
 class MarBackend: public QObject {
 	Q_OBJECT
@@ -16,7 +17,7 @@ public:
 	MarBackend(int getType);
 	~MarBackend();
 
-//	void setFileName(std::string filename);
+	void setFileName(std::string filename);
 	void playFile();
 	void openTry(std::string filename);
 	void newTry();
@@ -25,10 +26,6 @@ public:
 	realvec getPitches();
 	realvec getMidiPitches();
 	realvec getAmplitudes();
-
-// transcriber
-//	realvec getDurations();
-//	realvec getNotes();
 
 	mrs_real getRate();
 
@@ -53,7 +50,7 @@ private:
 
 // constructor, destructor
 	int method;
-	MarSystem* makeSourceNet(std::string filename);
+	MarSystem* makeSourceNet(bool fromFile);
 	MarSystem* makePitchNet(mrs_real source_osrate);
 	MarSystem* makeAmplitudeNet(mrs_real source_osrate);
 	void setupAllNet();
@@ -62,6 +59,8 @@ private:
 // for playback
 	bool hasAudio;
 
+// depending on usage, could be input OR output!
+	string filename_;
 
 
 	realvec pitchList;
@@ -70,10 +69,6 @@ private:
 	realvec pitchOld;
 	realvec pitchMidiList;
     realvec amplitudeOld;
-
-// transcribed stuff
-	realvec durations;
-	realvec notes;
 
 // not used
  	MarControlPtr filenamePtr;
