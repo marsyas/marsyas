@@ -15,11 +15,9 @@ class Exercise : public QObject
 public:
 	Exercise();
 	virtual ~Exercise();
+	virtual void setupDisplay(QLayout* centralLayout);
 
 	virtual void open(QString exerciseFilename);
-	virtual void setupDisplay(QFrame* instructionArea, QFrame*
-	                          resultArea);
-
 	virtual QString exercisesDir() = 0;
 	virtual int getBackend() = 0;
 	virtual QString getMessage() = 0;
@@ -38,6 +36,9 @@ protected slots:
 	virtual void selectTry(mrs_natural selected);
 
 protected:
+    QFrame *instructionArea_;
+    QFrame *resultArea_;
+
 	QLayout *instructionLayout_;
 	QLabel *instructionImageLabel_;
 

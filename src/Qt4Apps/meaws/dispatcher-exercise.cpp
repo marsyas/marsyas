@@ -5,15 +5,9 @@ using namespace std;
 
 ExerciseDispatcher::ExerciseDispatcher(QFrame *centralFrame)
 {
-	layout_ = new QVBoxLayout();
-	layout_->setContentsMargins(1,1,1,1);
-	centralFrame->setLayout(layout_);
-
-// move?
-	instructionArea_ = new QFrame;
-	resultArea_ = new QFrame;
-	layout_->addWidget(instructionArea_);
-	layout_->addWidget(resultArea_);
+	centralLayout_ = new QVBoxLayout();
+	centralLayout_->setContentsMargins(1,1,1,1);
+	centralFrame->setLayout(centralLayout_);
 
 	attemptRunningBool_ = false;
 	marBackend_ = NULL;
@@ -24,8 +18,8 @@ ExerciseDispatcher::ExerciseDispatcher(QFrame *centralFrame)
 ExerciseDispatcher::~ExerciseDispatcher()
 {
 	close();
-	if (layout_ != NULL)
-		delete layout_;
+	if (centralLayout_ != NULL)
+		delete centralLayout_;
 }
 
 bool ExerciseDispatcher::chooseEvaluation()
@@ -63,7 +57,7 @@ void ExerciseDispatcher::open()
 		if (!openFilename.isEmpty())
 		{
 			exercise_->open(openFilename);
-			exercise_->setupDisplay(instructionArea_, resultArea_);
+			exercise_->setupDisplay(centralLayout_);
 			exercise_->addTry();
 			if (marBackend_ != NULL)
 				delete marBackend_;
@@ -123,7 +117,6 @@ void ExerciseDispatcher::setAttempt(bool running)
 			marBackend_->stop();
 			enableActions(MEAWS_TRY_PAUSED);
 		}
-		//attemptRunning(attemptRunningBool_);
 	}
 }
 

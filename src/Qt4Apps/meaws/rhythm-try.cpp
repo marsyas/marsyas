@@ -28,7 +28,7 @@ void RhythmTry::setAnswer(const realvec answers)
 void RhythmTry::selected(bool selected)
 {
 	if (selected) {
-		pitchPlot->setBackgroundColor(QColor(0,172,172));
+		pitchPlot->setBackgroundColor(QColor(0,234,234));
 	} else {
 		pitchPlot->setBackgroundColor(QColor(255,255,255));
 	}

@@ -44,9 +44,15 @@ void Exercise::open(QString exerciseFilename)
 	height_ = instructPixmap->height()+4;
 }
 
-void Exercise::setupDisplay(QFrame* instructionArea, QFrame* resultArea)
+void Exercise::setupDisplay(QLayout* centralLayout)
 {
-	instructionArea->setLayout(instructionLayout_);
+    instructionArea_ = new QFrame;
+    resultArea_ = new QFrame;
+    centralLayout->addWidget(instructionArea_);
+    centralLayout->addWidget(resultArea_);
+
+
+	instructionArea_->setLayout(instructionLayout_);
 	instructionLayout_->setContentsMargins(2,2,2,2);
 
 	// TODO: somehow figure out height_.  :(
@@ -58,16 +64,16 @@ void Exercise::setupDisplay(QFrame* instructionArea, QFrame* resultArea)
 	//const QPixmap *instructPixmap = ( (QLabel*) instructionLayout_->itemAt(0) )->pixmap();
 	//cout<<instructPixmap->height_()<<endl;
 
-	instructionArea->setMaximumHeight(height_);
-	instructionArea->setMinimumHeight(height_);
+	instructionArea_->setMaximumHeight(height_);
+	instructionArea_->setMinimumHeight(height_);
 
 	resultLayout_ = new QVBoxLayout;
 	resultLayout_->setContentsMargins(2,2,2,2);
-	resultArea->setLayout(resultLayout_);
+	resultArea_->setLayout(resultLayout_);
 
 	// FIXME: temp
 	resultLayout_->setContentsMargins(40,2,2,2);
-	resultArea->setMaximumWidth(628+2+2);
+	resultArea_->setMaximumWidth(628+2+2);
 }
 
 void Exercise::addTryAbstract(Try* newTry)

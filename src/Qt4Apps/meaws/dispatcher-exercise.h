@@ -8,11 +8,8 @@
 //#include "exerciseShift.h"
 #include "backend.h"
 
-#include <QDialog>
+#include <QInputDialog>
 #include <QFileDialog>
-#include <QImage>
-#include <QLabel>
-#include <QtGui>
 
 class ExerciseDispatcher : public QDialog
 {
@@ -33,7 +30,7 @@ public slots:
 
 	void playFile();
 
-	void analyze();
+	void analyze();  // temp ?
 	void analysisDone(); // even tempier
 
 	void newTry();
@@ -49,15 +46,12 @@ public slots:
 
 signals:
 	void enableActions(int state);
-//	void attemptRunning(bool running);
 
 private:
 	bool chooseEvaluation();
 
-	// basic GUI frames
-	QVBoxLayout *layout_;
-	QFrame *instructionArea_;
-	QFrame *resultArea_;
+	// basic GUI frame
+	QVBoxLayout *centralLayout_;
 
 	// actual Meaws objects
 	Exercise *exercise_;
