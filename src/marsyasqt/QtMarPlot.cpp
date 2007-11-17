@@ -5,7 +5,7 @@ namespace MarsyasQt
 QtMarPlot::QtMarPlot(QWidget *parent)
 		: QWidget(parent)
 {
-	data_ = NULL;
+//	data_ = NULL;
 	plotName_ = "";
 	minVal_ = -1;
 	highVal_ = 1;
@@ -18,14 +18,12 @@ QtMarPlot::QtMarPlot(QWidget *parent)
 
 QtMarPlot::~QtMarPlot()
 {
-	if (data_ != NULL)
-		data_->~realvec();
 }
 
 void
 QtMarPlot::paintEvent(QPaintEvent *)
 {
-	if (data_==NULL)
+	if (data_.getSize()==0)
 		return;
 
 	QPainter painter(this);
@@ -46,16 +44,16 @@ QtMarPlot::paintEvent(QPaintEvent *)
 
 	mrs_natural i;
 	mrs_natural x,y;
-	mrs_real hScale = width() / mrs_real(data_->getSize());
+	mrs_real hScale = width() / mrs_real(data_.getSize());
 	mrs_real vScale = height() / (highVal_ - minVal_); // maximum scaled pitch/median
 	mrs_real vMean = (minVal_+highVal_)/2;
 	mrs_natural midY = height()/2;
 
 	// iterates over the data_
-	for (i=0; i<data_->getSize(); i++)
+	for (i=0; i<data_.getSize(); i++)
 	{
 		x = mrs_natural (i * hScale);
-		y = mrs_natural ( ((*data_)(i)-vMean) * vScale );
+		y = mrs_natural ( (data_(i)-vMean) * vScale );
 		if ( (y>-midY) && (y<midY))
 			painter.drawPoint( x, -y+midY);
 		if (drawImpulses_)

@@ -53,7 +53,7 @@ public:
 		highVal_ = highVal;
 	}
 
-	void setData(realvec* getData)
+	void setData(realvec getData)
 	{
 		data_ = getData;
 		update();
@@ -68,7 +68,7 @@ protected:
 	bool drawCenter_;
 	bool drawImpulses_;
 
-	realvec *data_;
+	realvec data_;
 };
 
 } //namespace
