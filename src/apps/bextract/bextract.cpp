@@ -1900,6 +1900,7 @@ void
 selectFeatureSet(MarSystem *featExtractor)
 {
   featExtractor->updctrl("mrs_string/disableChild", "all");
+
   featExtractor->updctrl("mrs_string/disableChild", "ZeroCrossings/zcrs");
   if (mfcc_) 
     featExtractor->updctrl("mrs_string/enableChild", "MFCC/mfcc");
@@ -1940,6 +1941,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
   MRSDIAG("bextract.cpp - bextract_train_refactored");
   cout << "BEXTRACT REFACTORED" << endl;
   MarSystemManager mng;
+
+
+  
   
   MarSystem *src = mng.create("SoundFileSource", "src");
   if (start > 0.0) 
@@ -1947,12 +1951,15 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
   MarSystem* featExtractor = mng.create("TimbreFeatures", "featExtractor");
   featExtractor->updctrl("mrs_natural/WindowSize", winSize);
-
   selectFeatureSet(featExtractor);
-
+  
+  
   // Build the overall feature calculation network 
   MarSystem* featureNetwork = mng.create("Series", "featureNetwork");
   featureNetwork->addMarSystem(src);
+
+
+
 
   if (pluginName != EMPTYSTRING)
     {

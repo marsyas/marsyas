@@ -107,7 +107,7 @@ Fanout::myUpdate(MarControlPtr sender)
       for (unsigned int i=0; i < marsystems_.size(); i++) 
 	{
 	  enabled(i) = 0.0;
-	  localIndices_(disable_) = 0.0;
+	  localIndices_(i) = 0.0;
 	  setctrl("mrs_string/disableChild", ",");
 	}
     }
