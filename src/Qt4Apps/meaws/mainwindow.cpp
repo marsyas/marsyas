@@ -323,6 +323,10 @@ void MainWindow::enableActions(int state)
 		tempoToolBar_->setEnabled(true);
 		testingMenu_ ->setEnabled(true);
 
+		// temp ?
+		tempoBox_->clearFocus();
+		tempoSlider_->setFocus();
+
 		break;
 	case MEAWS_TRY_PAUSED:    // ready to analyze
 		toggleAttemptAct->setStatusTip(tr("Start"));
@@ -331,12 +335,20 @@ void MainWindow::enableActions(int state)
 
 		//statusBar()->showMessage(exerciseDispatcher_->getMessage(),100000);
 		permanentStatusMessage_->setText(exerciseDispatcher_->getMessage());
+
+		// temp ?
+		tempoBox_->clearFocus();
+		tempoSlider_->setFocus();
 		break;
 
 	case MEAWS_TRY_RUNNING:
 		toggleAttemptAct->setStatusTip(tr("Stop"));
 		toggleAttemptAct->setIcon(QIcon(":/icons/player_pause.png"));
 		metro_->startMetro();
+
+		// temp ?
+		tempoBox_->clearFocus();
+		tempoSlider_->setFocus();
 
 		break;
 	}

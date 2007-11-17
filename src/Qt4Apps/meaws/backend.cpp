@@ -134,6 +134,7 @@ void MarBackend::stop() {
 	hasAudio = true;
 	cout<<"stopped"<<endl;
 	emit gotAudio();
+	playFile();
 }
 
 mrs_real MarBackend::getRate() {

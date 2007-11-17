@@ -25,24 +25,21 @@ ExerciseDispatcher::~ExerciseDispatcher()
 bool ExerciseDispatcher::chooseEvaluation()
 {
 	QStringList items;
-	items << tr("Intonation test") << tr("Rhythm test");
+	items << tr("Rhythm test") << tr("Intonation test");
 //	items << tr("Intonation test") << tr("Sound control test") <<
 //tr("Shifting test");
 	bool ok;
 	QString item = QInputDialog::getItem(this, tr("Choose testing method"),
-	                                     tr("TestingMethod:"), items, 0, false, &ok);
+	                                     tr("TestingMethod:"), items,
+					0, false, &ok);
 	if (ok && !item.isEmpty())
 	{
 		if (exercise_ != NULL)
 			delete exercise_;
-		if (item=="Intonation test") exercise_ = new IntonationExercise();
 		if (item=="Rhythm test") exercise_ = new RhythmExercise();
+		if (item=="Intonation test") exercise_ = new IntonationExercise();
 //		if (item=="Sound control test") exercise_ = new ExerciseControl();
 //		if (item=="Shifting test") exercise_ = new ExerciseShift();
-		connect(exercise_,SIGNAL(analysisDone()),
-			this, SLOT(analysisDone()));
-		connect(exercise_,SIGNAL(newTry()),
-			this, SLOT(newTry()));
 		return true;
 	}
 	return false;
@@ -52,10 +49,15 @@ void ExerciseDispatcher::open()
 {
 	if (chooseEvaluation())
 	{
-		QString openFilename = QFileDialog::getOpenFileName(0,tr("Open file"),
-		                       exercise_->exercisesDir(), tr("Exercises (*.png)"));
+		QString openFilename = QFileDialog::getOpenFileName(
+				0,tr("Open file"), exercise_->exercisesDir(),
+				tr("Exercises (*.png)"));
 		if (!openFilename.isEmpty())
 		{
+			connect(exercise_,SIGNAL(analysisDone()),
+				this, SLOT(analysisDone()));
+			connect(exercise_,SIGNAL(newTry()),
+				this, SLOT(newTry()));
 			exercise_->open(openFilename);
 			exercise_->setupDisplay(centralLayout_);
 			exercise_->addTry();
@@ -89,6 +91,9 @@ void ExerciseDispatcher::close()
 	}
 	if (exercise_ != NULL)
 	{
+		QLayoutItem* child;
+		while ((child = centralLayout_->takeAt(0)) != 0)
+   			delete child;
 		delete exercise_;
 		exercise_ = NULL;
 	}
