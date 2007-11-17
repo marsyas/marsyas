@@ -29,6 +29,8 @@ public:
 //	void doubleclicked();
 
 private:
+	mrs_natural calcOffsetAndScore(
+		realvec exerciseOnsets, realvec& audioOnsets);
 	void colorNote(int note, double error, double direction);
 
 	QLabel *resultDisplay;
@@ -36,7 +38,7 @@ private:
 
 	realvec exerAnswer;
 	QStringList lilyInput_;
-	mrs_real score;
+	mrs_real score_;
 
 	Marx2DGraph* graph;
 };

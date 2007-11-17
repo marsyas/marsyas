@@ -13,7 +13,7 @@ RhythmTry::RhythmTry()
 	pitchPlot = new QtMarPlot();
 	tryLayout_->addWidget(pitchPlot);
 
-	score = -1;
+	score_ = -1;
 }
 
 RhythmTry::~RhythmTry()
@@ -146,15 +146,50 @@ void RhythmTry::calcErrors(const realvec& pitches, const realvec&
 	out_file.close();
 }
 
+mrs_natural
+RhythmTry::calcOffsetAndScore(realvec exerciseOnsets, realvec& audioOnsets)
+{
+	mrs_real SCALE = 0.1;
+	mrs_real bestOffset = 0;
+
+	for (mrs_natural j=0; j<audioOnsets.getSize()-1; j++) {
+		mrs_real offset = exerciseOnsets(j) - audioOnsets(j);
+		mrs_real offsetScore = 100.0;
+		for (mrs_natural i=0; i<exerciseOnsets.getSize()-1; i++) {
+			mrs_real expected = exerciseOnsets(i);
+			mrs_real detected = ( audioOnsets(i) + offset);
+
+			mrs_real noteScore = fabs( expected - detected );
+			noteScore = pow(noteScore,1.5) * SCALE;
+			//cout<<expected<<"\t"<<detected<<"\t"<<noteScore<<endl;
+			offsetScore -= noteScore;
+		}
+		if (offsetScore > score_) {
+			score_ = offsetScore;
+			bestOffset = offset;
+			//cout<<"shifting by "<<bestOffset<<endl;
+		}
+		//cout<<"score: "<<offsetScore<<endl;
+	}
+	if (score_ < 0)
+		score_ = 0;
+	return (mrs_natural) bestOffset;
+}
 
 bool RhythmTry::displayAnalysis(MarBackend *results)
 {
-// get info from backend
+	// get info from backend
 	realvec amps = results->getAmplitudes();
 	realvec bounds;
 	Transcriber::ampSegment(amps, bounds);
 	// shift the exercise times to match the beginning of audio exercise
 	Transcriber::discardBeginEndSilencesAmpsOnly(amps, bounds);
+
+	// shift detected onsets to produce highest score
+	// TODO: exerAnswer  doesn't need two columns.
+	realvec tempanswers;
+	exerAnswer.getCol(1, tempanswers);
+	mrs_natural offset = calcOffsetAndScore(tempanswers, bounds);
 
 	// basic plot setup
 	pitchPlot->setVertical(0,1);
@@ -162,88 +197,33 @@ bool RhythmTry::displayAnalysis(MarBackend *results)
 	pitchPlot->setCenterLine(false);
 	pitchPlot->setImpulses(true);
 
-	mrs_natural start = (mrs_natural) bounds(0);
-	mrs_natural length = (mrs_natural) (bounds(bounds.getSize()-1)
-- bounds(0));
-	realvec *data = new realvec;
-	(*data) = amps.getSubVector(start,length);
-	
-	mrs_natural exerLength = (mrs_natural) exerAnswer(exerAnswer.getRows()-1,1);
-
+	// display expected onsets
 	mrs_natural j=0;
+	mrs_natural exerLength = (mrs_natural) exerAnswer(exerAnswer.getRows()-1,1);
 	realvec* answerVec = new realvec(exerLength);
 	for (int i=0; i<exerLength; i++)
 		if ( i==(exerAnswer(j,1)) ) {
 			j++;
 			(*answerVec)(i)=1.0;
-//			(*answerVec)(i+1)=1.0;
 		} else {
 			(*answerVec)(i)=0.0;
 		}
-//	cout<<(*answerVec);
-	data->stretch(answerVec->getSize());
-
-	pitchPlot->setData(data);
 	pitchPlot->setOtherData(answerVec);
 
-	score = 100.0;
-	mrs_real SCALE = 0.1;
-	mrs_real noteScore;
-	mrs_natural expected;
-	for (int i=0; i<exerAnswer.getRows()-1; i++) {
-		expected = (mrs_natural) (exerAnswer(i,1) + bounds(0));
-		//cout<<expected<<"\t"<<bounds(i)<<endl;
-		noteScore = fabs( expected - bounds(i) );
-		noteScore = pow(noteScore,1.5) * SCALE;
+	// display the detected onsets
+	// TODO: this works, but figure out why.
+	// display the shifted onsets
+	offset += (mrs_natural) bounds(0);
+	bounds -= offset;
+	mrs_natural start = (mrs_natural) bounds(0);
+	mrs_natural length = (mrs_natural) (bounds(bounds.getSize()-1)
+- bounds(0));
+	realvec *data = new realvec;
+	(*data) = amps.getSubVector(start,length);
 
-		//cout<<noteScore<<endl;
-		score = score - noteScore;
-	}
-	if (score < 0)
-		score = 0;
-//	cout<<score<<endl;
-
-/*
-	calcErrors(pitches, bounds);
-
+	data->stretch(answerVec->getSize());
 	pitchPlot->setData(data);
-	pitchPlot->setVertical(57,73);
-	pitchPlot->setPlotName("pitches");
-	pitchPlot->setCenterLine(false);
-*/
-//	graph->setBuffer(*data);
 
-	/*
-		realvec durations = results->getDurations();
-		realvec notes = results->getNotes();
-
-		QFile out_file("/tmp/notes.txt");
-		out_file.open(QIODevice::WriteOnly | QIODevice::Text);
-		QTextStream out(&out_file);
-
-		for (int i=0; i<durations.getSize(); i++) {
-			if (notes(i)>0) {
-				out<<(int) floor(notes(i)+0.5)<<"\t"<<durations(i)<<endl;;
-				cout<<(int) floor(notes(i)+0.5)<<"\t"<<durations(i)<<endl;;
-			}
-		}
-		out_file.close();
-	*/
-
-	/*
-	#ifndef MARSYAS_WIN32 // [ML] this is ugly and sleep does not exist in Win32 !!
-		system("/Users/gperciva/progs/python/libbabelpond/reldurs.py /tmp/notes.txt");
-		sleep(1);
-	#endif
-	*/
-
-/*
-	system("cd /tmp; lilypond -dpreview out.ly");
-
-	QLabel* resultLabel = new QLabel;
-	resultLabel->setPixmap(QPixmap::fromImage(QImage("/tmp/out.preview.png")));
-	tryLayout->addWidget(resultLabel);
-*/
 	return true;
 }
 
@@ -259,9 +239,6 @@ RhythmTry::doubleclicked()
 
 mrs_real
 RhythmTry::getScore() {
-	if (score >= 0)
-		return score;
-	else
-		return -1;
+	return score_;
 }
 
