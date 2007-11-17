@@ -24,7 +24,7 @@ public:
 	QtMarRhythmLines(QWidget *parent = 0);
 	~QtMarRhythmLines();
 
-    void setExpectedLines(realvec* expectedLines)
+    void setExpectedLines(realvec expectedLines)
     {
         expectedLines_ = expectedLines;
         update();
@@ -33,7 +33,7 @@ public:
 protected:
 	void paintEvent(QPaintEvent *event);
 
-	realvec *expectedLines_;
+	realvec expectedLines_;
 };
 
 } //namespace

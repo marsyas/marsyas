@@ -114,12 +114,12 @@ bool IntonationTry::displayAnalysis(MarBackend *results)
 
 	cout<<errors;
 	barPlot_->setVertical(0, 0.05);
-	barPlot_->setData(&errors);
+	barPlot_->setData(errors);
 
-	realvec *data = new realvec;
+	realvec data;
 	mrs_natural totalSamples =
 	  (mrs_natural) (bounds(bounds.getSize()-1)-bounds(0));
-	(*data) = pitches.getSubVector(
+	data = pitches.getSubVector(
 	  (mrs_natural) bounds(0),totalSamples);
 	pitchPlot_->setData(data);
 	pitchPlot_->setVertical(57,73);

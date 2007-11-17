@@ -8,6 +8,8 @@ namespace MarsyasQt
 QtMarRhythmLines::QtMarRhythmLines(QWidget *parent)
 		: QtMarPlot(parent)
 {
+	setVertical(0,1);
+	setPlotName("onsets");
 }
 
 QtMarRhythmLines::~QtMarRhythmLines()
@@ -17,7 +19,7 @@ QtMarRhythmLines::~QtMarRhythmLines()
 void
 QtMarRhythmLines::paintEvent(QPaintEvent *)
 {
-	if (data_==NULL)
+	if (data_.getSize()==0)
 		return;
 
 	QPainter painter(this);
@@ -35,41 +37,34 @@ QtMarRhythmLines::paintEvent(QPaintEvent *)
 
 	// constants
 	mrs_real hScale =
-		width() / (*expectedLines_)(expectedLines_->getSize()-1);
+		width() / expectedLines_(expectedLines_.getSize()-1);
 	mrs_real vScale = height() / (highVal_ - minVal_);
-	mrs_natural midY = height()/2;
+	cout<<vScale<<endl;
+	//mrs_natural midY = height()/2;
 
 	// variables from data
 	mrs_natural start, end;
-	mrs_natural errorDirection;
-	mrs_real errorMagnitude;
+	//mrs_natural errorDirection;
+	//mrs_real errorMagnitude;
 
 	// variables
-	mrs_natural colorR, colorG, colorB;
 	mrs_natural y;
 
-/*
+	mrs_natural x;
 	// iterates over the data_
-	for (i=0; i<data_->getSize(); i++)
+	for (mrs_natural i=0; i<data_.getSize(); i++)
 	{
 		x = mrs_natural (i * hScale);
-		y = mrs_natural ( ((*data_)(i)-vMean) * vScale );
-		if ( (y>-midY) && (y<midY))
-			painter.drawPoint( x, -y+midY);
-		if (drawImpulses_)
-		{
-			for (y=y; y>-height()/2; y--)
-				painter.drawPoint( x, -y+midY);
-		}
+		y = mrs_natural ( data_(i) * vScale );
+		painter.drawLine(x, height()-y, x, height()-1);
 	}
-*/
 
 	// draws the expected lines
 	painter.setPen(QColor(Qt::red));
 	end = 0;
-	for (mrs_natural i=1; i<expectedLines_->getSize(); i++) {
+	for (mrs_natural i=1; i<expectedLines_.getSize(); i++) {
 		start = end;
-		end = (mrs_natural) ( (*expectedLines_)(i) * hScale );
+		end = (mrs_natural) ( expectedLines_(i) * hScale );
 		painter.drawLine(start, 0, start, height()-1);
 	}
 

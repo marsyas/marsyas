@@ -17,7 +17,7 @@ QtMarIntonationBars::~QtMarIntonationBars()
 void
 QtMarIntonationBars::paintEvent(QPaintEvent *)
 {
-	if (data_==NULL)
+	if (data_.getSize()==0)
 		return;
 
 	QPainter painter(this);
@@ -25,7 +25,7 @@ QtMarIntonationBars::paintEvent(QPaintEvent *)
 	painter.drawText( 4, 14, plotName_);
 
 	// constants
-	mrs_real hScale = width() / (*data_)(data_->getRows()-1,1);
+	mrs_real hScale = width() / data_(data_.getRows()-1,1);
 	mrs_real vScale = height() / (highVal_ - minVal_);
 	mrs_natural midY = height()/2;
 
@@ -41,11 +41,11 @@ QtMarIntonationBars::paintEvent(QPaintEvent *)
 	// fill in the bars
 	painter.setPen(Qt::NoPen);
 	end = 0;
-	for (mrs_natural i=0; i<data_->getRows(); i++) {
+	for (mrs_natural i=0; i<data_.getRows(); i++) {
 		start = end;
-		end = (mrs_natural) ( (*data_)(i,1) * hScale );
-		errorDirection = (mrs_natural) (*data_)(i,2);
-		errorMagnitude = (*data_)(i,0);
+		end = (mrs_natural) ( data_(i,1) * hScale );
+		errorDirection = (mrs_natural) data_(i,2);
+		errorMagnitude = data_(i,0);
 
 		y = (mrs_natural) (errorMagnitude*vScale/2.0);
 
@@ -79,9 +79,9 @@ QtMarIntonationBars::paintEvent(QPaintEvent *)
 	// draws the vertical lines
 	painter.setPen(QColor(Qt::black));
 	end = 0;
-	for (mrs_natural i=0; i<data_->getRows(); i++) {
+	for (mrs_natural i=0; i<data_.getRows(); i++) {
 		start = end;
-		end = (mrs_natural) ( (*data_)(i,1) * hScale );
+		end = (mrs_natural) ( data_(i,1) * hScale );
 		painter.drawLine(start, 0, start, height()-1);
 	}
 

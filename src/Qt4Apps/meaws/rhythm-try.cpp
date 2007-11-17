@@ -188,14 +188,8 @@ bool RhythmTry::displayAnalysis(MarBackend *results)
 	// shift detected onsets to produce highest score
 	mrs_natural offset = calcOffsetAndScore(exerAnswer, bounds);
 
-	// basic plot setup
-	pitchPlot->setVertical(0,1);
-	pitchPlot->setPlotName("onsets");
-	pitchPlot->setCenterLine(false);
-	pitchPlot->setImpulses(true);
-
 	// display expected onsets
-	pitchPlot->setExpectedLines(&exerAnswer);
+	pitchPlot->setExpectedLines(exerAnswer);
 
 
 	mrs_natural exerLength = (mrs_natural) exerAnswer(exerAnswer.getRows()-1,1);
@@ -208,10 +202,10 @@ bool RhythmTry::displayAnalysis(MarBackend *results)
 	mrs_natural start = (mrs_natural) bounds(0);
 	mrs_natural length = (mrs_natural) (bounds(bounds.getSize()-1)
 - bounds(0));
-	realvec *data = new realvec;
-	(*data) = amps.getSubVector(start,length);
+	realvec data;
+	data = amps.getSubVector(start,length);
 
-	data->stretch(exerLength);
+	data.stretch(exerLength);
 	pitchPlot->setData(data);
 
 	return true;
