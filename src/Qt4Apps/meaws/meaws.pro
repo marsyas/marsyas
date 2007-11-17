@@ -5,8 +5,8 @@ SOURCES = start.cpp mainwindow.cpp
 HEADERS = defs.h mainwindow.h
 
 # qt objects
-HEADERS += QClickFrame.h QtMarIntonationBars.h
-SOURCES += QClickFrame.cpp QtMarIntonationBars.cpp
+HEADERS += QClickFrame.h
+SOURCES += QClickFrame.cpp
 
 # meaws top-level objects
 HEADERS += user.h dispatcher-exercise.h metro.h
@@ -20,11 +20,11 @@ SOURCES += backend.cpp
 HEADERS += abstract-exercise.h abstract-try.h
 SOURCES += abstract-exercise.cpp abstract-try.cpp
 
-HEADERS += intonation-exercise.h intonation-try.h
-SOURCES += intonation-exercise.cpp intonation-try.cpp
+HEADERS += intonation-exercise.h intonation-try.h QtMarIntonationBars.h
+SOURCES += intonation-exercise.cpp intonation-try.cpp QtMarIntonationBars.cpp
 
-HEADERS += rhythm-exercise.h rhythm-try.h
-SOURCES += rhythm-exercise.cpp rhythm-try.cpp
+HEADERS += rhythm-exercise.h rhythm-try.h QtMarRhythmLines.h
+SOURCES += rhythm-exercise.cpp rhythm-try.cpp QtMarRhythmLines.cpp
 
 
 # old exercises, not working in current code

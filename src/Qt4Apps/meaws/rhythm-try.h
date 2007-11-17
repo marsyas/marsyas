@@ -10,8 +10,8 @@
 #include <QLabel>
 #include <QDir>
 #include "abstract-try.h"
-#include "QtMarPlot.h"
-#include "Marx2DGraph.h"
+#include "QtMarRhythmLines.h"
+//#include "Marx2DGraph.h"
 
 class RhythmTry : public Try {
 public:
@@ -34,13 +34,13 @@ private:
 	void colorNote(int note, double error, double direction);
 
 	QLabel *resultDisplay;
-	QtMarPlot *pitchPlot;
+	QtMarRhythmLines *pitchPlot;
 
 	realvec exerAnswer;
 	QStringList lilyInput_;
 	mrs_real score_;
 
-	Marx2DGraph* graph;
+//	Marx2DGraph* graph;
 };
 #endif
 

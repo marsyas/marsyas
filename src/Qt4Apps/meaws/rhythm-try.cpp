@@ -10,7 +10,7 @@ RhythmTry::RhythmTry()
 	tryLayout_->setContentsMargins(0,0,0,0);
 	tryArea_->setLayout(tryLayout_);
 
-	pitchPlot = new QtMarPlot();
+	pitchPlot = new QtMarRhythmLines();
 	tryLayout_->addWidget(pitchPlot);
 
 	score_ = -1;
