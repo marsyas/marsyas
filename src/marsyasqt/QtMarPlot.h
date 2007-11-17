@@ -58,12 +58,6 @@ public:
 		data_ = getData;
 		update();
 	}
-	void setOtherData(realvec* getData)
-	{
-		otherData_ = getData;
-		update();
-	}
-
 
 protected:
 	void paintEvent(QPaintEvent *event);
@@ -75,7 +69,6 @@ protected:
 	bool drawImpulses_;
 
 	realvec *data_;
-	realvec *otherData_;
 };
 
 } //namespace

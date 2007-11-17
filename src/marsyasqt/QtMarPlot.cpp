@@ -6,7 +6,6 @@ QtMarPlot::QtMarPlot(QWidget *parent)
 		: QWidget(parent)
 {
 	data_ = NULL;
-	otherData_ = NULL;
 	plotName_ = "";
 	minVal_ = -1;
 	highVal_ = 1;
@@ -63,24 +62,6 @@ QtMarPlot::paintEvent(QPaintEvent *)
 		{
 			for (y=y; y>-height()/2; y--)
 				painter.drawPoint( x, -y+midY);
-		}
-	}
-	if (otherData_ != NULL)
-	{
-		pen.setColor(QColor(255,0,0));
-		painter.setPen(pen);
-		// iterates over the otherData_
-		for (i=0; i<otherData_->getSize(); i++)
-		{
-			x = mrs_natural (i * hScale);
-			y = mrs_natural ( ((*otherData_)(i)-vMean) * vScale );
-			if ( (y>-midY) && (y<midY))
-				painter.drawPoint( x, -y+midY);
-			if (drawImpulses_)
-			{
-				for (y=y; y>-height()/2; y--)
-					painter.drawPoint( x, -y+midY);
-			}
 		}
 	}
 }
