@@ -24,16 +24,16 @@ public:
 	QtMarRhythmLines(QWidget *parent = 0);
 	~QtMarRhythmLines();
 
-    void setOtherData(realvec* getData)
+    void setExpectedLines(realvec* expectedLines)
     {
-        otherData_ = getData;
+        expectedLines_ = expectedLines;
         update();
     }
 
 protected:
 	void paintEvent(QPaintEvent *event);
 
-	realvec *otherData_;
+	realvec *expectedLines_;
 };
 
 } //namespace

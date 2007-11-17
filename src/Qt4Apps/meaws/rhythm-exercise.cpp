@@ -23,7 +23,7 @@ void RhythmExercise::open(QString exerciseFilename) {
 	// load exercise answers
 	mrs_natural one, two;
 	int i=0;
-	exerAnswer.create(16,2);
+	exerAnswer.create(16);
 	QString answerFilename = exerciseFilename;
 	int size = answerFilename.size();
 	answerFilename.replace(size-4,4,".txt");
@@ -34,13 +34,14 @@ void RhythmExercise::open(QString exerciseFilename) {
 		while (!answerText.atEnd())
 		{
 			answerText>>one>>two;
-			exerAnswer.stretchWrite(i,0,one);
-			exerAnswer.stretchWrite(i,1,two);
+			//  not needed for rhythms
+			//exerAnswer.stretchWrite(i,0,one);
+			exerAnswer.stretchWrite(i,two);
 			i++;
 		}
 	}
 	answerFile.close();
-	exerAnswer.stretch(i-1,2);
+	exerAnswer.stretch(i-1);
 }
 
 void RhythmExercise::addTry() {

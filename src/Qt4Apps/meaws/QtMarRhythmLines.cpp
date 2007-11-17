@@ -33,9 +33,9 @@ QtMarRhythmLines::paintEvent(QPaintEvent *)
 	pen.setJoinStyle(Qt::RoundJoin);
 	painter.setPen(pen);
 
-/*
 	// constants
-	mrs_real hScale = width() / (*data_)(data_->getRows()-1,1);
+	mrs_real hScale =
+		width() / (*expectedLines_)(expectedLines_->getSize()-1);
 	mrs_real vScale = height() / (highVal_ - minVal_);
 	mrs_natural midY = height()/2;
 
@@ -47,62 +47,8 @@ QtMarRhythmLines::paintEvent(QPaintEvent *)
 	// variables
 	mrs_natural colorR, colorG, colorB;
 	mrs_natural y;
-*/
+
 /*
-	// fill in the bars
-	painter.setPen(Qt::NoPen);
-	end = 0;
-	for (mrs_natural i=0; i<data_->getRows(); i++) {
-		start = end;
-		end = (mrs_natural) ( (*data_)(i,1) * hScale );
-		errorDirection = (mrs_natural) (*data_)(i,2);
-		errorMagnitude = (*data_)(i,0);
-
-		y = (mrs_natural) (errorMagnitude*vScale/2.0);
-
-		colorR = 0;
-		colorG = 0;
-		colorB = 0;
-		// TODO: deal with this scaling.
-		errorMagnitude *= 20;
-
-		if (errorDirection == 1)
-			colorR = (mrs_natural) (255-errorMagnitude*255);
-		if (errorDirection == 0)
-			colorG = (mrs_natural) (255-errorMagnitude*255);
-		if (errorDirection == -1)
-			colorB = (mrs_natural) (255-errorMagnitude*255);
-		//cout<<colorR<<"\t"<<colorG<<"\t"<<colorB<<endl;
-		painter.setBrush(QColor(colorR,colorG,colorB));
-
-		if ( errorDirection == 0) {
-			painter.drawRect(start,midY-y,end-start,y*2);
-		} else {
-			y = -y*errorDirection;
-			painter.drawRect(start,midY,end-start,y);
-		}
-	}
-
-	// dotted center line
-	painter.setPen(QPen(Qt::SolidPattern, 1, Qt::DashLine));
-	painter.drawLine( 0, height()/2, width(), height()/2);
-
-	// draws the vertical lines
-	painter.setPen(QColor(Qt::black));
-	end = 0;
-	for (mrs_natural i=0; i<data_->getRows(); i++) {
-		start = end;
-		end = (mrs_natural) ( (*data_)(i,1) * hScale );
-		painter.drawLine(start, 0, start, height()-1);
-	}
-*/
-	mrs_natural i;
-	mrs_natural x,y;
-	mrs_real hScale = width() / mrs_real(data_->getSize());
-	mrs_real vScale = height() / (highVal_ - minVal_); // maximum scaled pitch/median
-	mrs_real vMean = (minVal_+highVal_)/2;
-	mrs_natural midY = height()/2;
-
 	// iterates over the data_
 	for (i=0; i<data_->getSize(); i++)
 	{
@@ -116,24 +62,17 @@ QtMarRhythmLines::paintEvent(QPaintEvent *)
 				painter.drawPoint( x, -y+midY);
 		}
 	}
-	if (otherData_ != NULL)
-	{
-		pen.setColor(QColor(255,0,0));
-		painter.setPen(pen);
-		// iterates over the otherData_
-		for (i=0; i<otherData_->getSize(); i++)
-		{
-			x = mrs_natural (i * hScale);
-			y = mrs_natural ( ((*otherData_)(i)-vMean) * vScale );
-			if ( (y>-midY) && (y<midY))
-				painter.drawPoint( x, -y+midY);
-			if (drawImpulses_)
-			{
-				for (y=y; y>-height()/2; y--)
-					painter.drawPoint( x, -y+midY);
-			}
-		}
+*/
+
+	// draws the expected lines
+	painter.setPen(QColor(Qt::red));
+	end = 0;
+	for (mrs_natural i=1; i<expectedLines_->getSize(); i++) {
+		start = end;
+		end = (mrs_natural) ( (*expectedLines_)(i) * hScale );
+		painter.drawLine(start, 0, start, height()-1);
 	}
+
 }
 
 } //namespace

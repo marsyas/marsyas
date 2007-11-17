@@ -186,10 +186,7 @@ bool RhythmTry::displayAnalysis(MarBackend *results)
 	Transcriber::discardBeginEndSilencesAmpsOnly(amps, bounds);
 
 	// shift detected onsets to produce highest score
-	// TODO: exerAnswer  doesn't need two columns.
-	realvec tempanswers;
-	exerAnswer.getCol(1, tempanswers);
-	mrs_natural offset = calcOffsetAndScore(tempanswers, bounds);
+	mrs_natural offset = calcOffsetAndScore(exerAnswer, bounds);
 
 	// basic plot setup
 	pitchPlot->setVertical(0,1);
@@ -198,17 +195,10 @@ bool RhythmTry::displayAnalysis(MarBackend *results)
 	pitchPlot->setImpulses(true);
 
 	// display expected onsets
-	mrs_natural j=0;
+	pitchPlot->setExpectedLines(&exerAnswer);
+
+
 	mrs_natural exerLength = (mrs_natural) exerAnswer(exerAnswer.getRows()-1,1);
-	realvec* answerVec = new realvec(exerLength);
-	for (int i=0; i<exerLength; i++)
-		if ( i==(exerAnswer(j,1)) ) {
-			j++;
-			(*answerVec)(i)=1.0;
-		} else {
-			(*answerVec)(i)=0.0;
-		}
-	pitchPlot->setOtherData(answerVec);
 
 	// display the detected onsets
 	// TODO: this works, but figure out why.
@@ -221,7 +211,7 @@ bool RhythmTry::displayAnalysis(MarBackend *results)
 	realvec *data = new realvec;
 	(*data) = amps.getSubVector(start,length);
 
-	data->stretch(answerVec->getSize());
+	data->stretch(exerLength);
 	pitchPlot->setData(data);
 
 	return true;
