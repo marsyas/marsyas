@@ -191,21 +191,15 @@ bool RhythmTry::displayAnalysis(MarBackend *results)
 	// display expected onsets
 	pitchPlot->setExpectedLines(exerAnswer);
 
-
-	mrs_natural exerLength = (mrs_natural) exerAnswer(exerAnswer.getRows()-1,1);
-
 	// display the detected onsets
-	// TODO: this works, but figure out why.
-	// display the shifted onsets
-	offset += (mrs_natural) bounds(0);
-	bounds -= offset;
-	mrs_natural start = (mrs_natural) bounds(0);
+	mrs_natural start = (mrs_natural) bounds(0)-1;
+	if (start < 0)
+		start = 0;
 	mrs_natural length = (mrs_natural) (bounds(bounds.getSize()-1)
 - bounds(0));
-	realvec data;
-	data = amps.getSubVector(start,length);
-
-	data.stretch(exerLength);
+	realvec data = amps.getSubVector(start,length);
+	offset = (mrs_natural) ( -1*(offset + bounds(0)) );
+	pitchPlot->setDetectedOffset(offset);
 	pitchPlot->setData(data);
 
 	return true;

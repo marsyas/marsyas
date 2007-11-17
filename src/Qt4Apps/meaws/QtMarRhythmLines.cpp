@@ -10,6 +10,8 @@ QtMarRhythmLines::QtMarRhythmLines(QWidget *parent)
 {
 	setVertical(0,1);
 	setPlotName("onsets");
+	expectedOffset_ = 0;
+	detectedOffset_ = 0;
 }
 
 QtMarRhythmLines::~QtMarRhythmLines()
@@ -39,7 +41,6 @@ QtMarRhythmLines::paintEvent(QPaintEvent *)
 	mrs_real hScale =
 		width() / expectedLines_(expectedLines_.getSize()-1);
 	mrs_real vScale = height() / (highVal_ - minVal_);
-	cout<<vScale<<endl;
 	//mrs_natural midY = height()/2;
 
 	// variables from data
@@ -52,10 +53,13 @@ QtMarRhythmLines::paintEvent(QPaintEvent *)
 
 	mrs_natural x;
 	// iterates over the data_
-	for (mrs_natural i=0; i<data_.getSize(); i++)
+	for (mrs_natural i=0; i<data_.getSize() - detectedOffset_; i++)
 	{
 		x = mrs_natural (i * hScale);
-		y = mrs_natural ( data_(i) * vScale );
+		if ( (i+detectedOffset_)<0)
+			y=0;
+		else
+			y = mrs_natural ( data_(i+detectedOffset_) * vScale );
 		painter.drawLine(x, height()-y, x, height()-1);
 	}
 

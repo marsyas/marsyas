@@ -30,10 +30,23 @@ public:
         update();
     }
 
+	void setExpectedOffset(mrs_natural offset)
+	{
+		expectedOffset_ = offset;
+	}
+
+	void setDetectedOffset(mrs_natural offset)
+	{
+		detectedOffset_ = offset;
+	}
+
+
 protected:
 	void paintEvent(QPaintEvent *event);
 
 	realvec expectedLines_;
+	mrs_natural expectedOffset_;
+	mrs_natural detectedOffset_;
 };
 
 } //namespace
