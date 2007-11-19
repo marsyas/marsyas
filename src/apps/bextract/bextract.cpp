@@ -1896,6 +1896,21 @@ bextract_train(vector<Collection> cls, Collection cl,
   delete featureNetwork;
 }
 
+
+
+void 
+selectClassifier(MarSystem *msys,string classifierName ) 
+{
+  cout << "classifierName = " << classifierName << endl;
+  
+  msys->updctrl("Classifier/cl/mrs_string/disableChild","all"); 
+  if (classifierName == "GS")
+    msys->updctrl("Classifier/cl/mrs_string/enableChild", "GaussianClassifier/gaussiancl");
+  
+  
+}
+
+  
 void 
 selectFeatureSet(MarSystem *featExtractor)
 {
@@ -2033,7 +2048,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
       featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  			
     }
 
-  featureNetwork->updctrl("Classifier/cl/mrs_natural/disable",0); 
+  selectClassifier(featureNetwork, classifierName);
+  
 
 
   MarControlPtr ctrl_notEmpty = featureNetwork->getctrl("mrs_bool/notEmpty");

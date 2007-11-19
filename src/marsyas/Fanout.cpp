@@ -224,18 +224,18 @@ Fanout::myProcess(realvec& in, realvec& out)
       mrs_natural outIndex = 0;
       MarControlAccessor acc(ctrl_enabled_);
       mrs_realvec& enabled = acc.to<mrs_realvec>();
-
-
+      
+      
       for (mrs_natural i = 0; i < marsystemsSize_; i++)
 	{
 	  if (enabled(i))
 	    {
 	      marsystems_[i]->process(in, *(slices_[i]));
-
+	      
 	      for (o=0; o < localIndices_(i); o++)
 		for (t=0; t < onSamples_; t++)
 		  out(outIndex + o,t) = (*(slices_[i]))(o,t);
-
+	      
 	      outIndex += (mrs_natural)localIndices_(i);      
 	    }
 	}

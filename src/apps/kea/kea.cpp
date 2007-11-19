@@ -160,7 +160,7 @@ train()
   // net->addMarSystem(mng.create("ZeroRClassifier", "gcl"));
   // net->addMarSystem(mng.create("SVMClassifier", "gcl"));
   cout << "Before addding classifier " << endl;
-  net->addMarSystem(mng.create("Classifier", "gcl"));
+  net->addMarSystem(mng.create("GaussianClassifier", "gcl"));
   cout << "Added classifier" << endl;
   net->addMarSystem(mng.create("Summary", "summary"));
   // net->updctrl("WekaSource/wsrc/mrs_string/attributesToInclude", "1,2,3");
@@ -177,7 +177,7 @@ train()
 	       net->getctrl("WekaSource/wsrc/mrs_string/classNames"));
   
   
-  net->updctrl("Classifier/gcl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+  net->updctrl("GaussianClassifier/gcl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
   // net->linkctrl("GaussianClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
 
 
@@ -198,7 +198,7 @@ train()
   // net->updctrl("ZeroRClassifier/gcl/mrs_natural/nLabels", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
   // net->linkctrl("SVMClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
 
-  net->linkctrl("Classifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
+  net->linkctrl("GaussianClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
 
 		    
 
@@ -208,7 +208,7 @@ train()
     {
       string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
       net->tick();
-      net->updctrl("Classifier/gcl/mrs_string/mode", mode);
+      net->updctrl("GaussianClassifier/gcl/mrs_string/mode", mode);
       // net->updctrl("OneRClassifier/gcl/mrs_string/mode", mode);
       // net->updctrl("KNNClassifier/gcl/mrs_string/mode", mode);
       // net->updctrl("ZeroRClassifier/gcl/mrs_string/mode", mode);
@@ -218,7 +218,7 @@ train()
     }
 
   // net->updctrl("SVMClassifier/gcl/mrs_string/mode", "predict");
-  net->updctrl("Classifier/gcl/mrs_string/mode", "predict");
+  net->updctrl("GaussianClassifier/gcl/mrs_string/mode", "predict");
   net->updctrl("Summary/summary/mrs_bool/done", true);
   net->tick();
 
