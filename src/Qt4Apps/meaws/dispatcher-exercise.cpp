@@ -63,7 +63,7 @@ void ExerciseDispatcher::open()
 			exercise_->addTry();
 			if (marBackend_ != NULL)
 				delete marBackend_;
-			marBackend_ = new MarBackend(exercise_->getBackend());
+			marBackend_ = new MarBackend();
 			connect(marBackend_, SIGNAL(setAttempt(bool)),
 				this, SLOT(setAttempt(bool)));
 			connect(marBackend_, SIGNAL(gotAudio()),
@@ -79,7 +79,7 @@ void ExerciseDispatcher::open()
 
 void ExerciseDispatcher::newTry() {
 	if (marBackend_ != NULL)
-		marBackend_->newTry();
+		marBackend_->newTry(exercise_->getBackend());
 }
 
 void ExerciseDispatcher::close()
@@ -132,7 +132,7 @@ bool ExerciseDispatcher::openAttempt()
 	                       "/home/gperciva/data/");
 	if (!openFilename.isEmpty())
 	{
-		marBackend_->openTry( qPrintable(openFilename) );
+		marBackend_->openTry(exercise_->getBackend(), qPrintable(openFilename) );
 		return true;
 	}
 	return false;

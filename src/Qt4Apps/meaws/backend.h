@@ -14,13 +14,13 @@ class MarBackend: public QObject {
 	Q_OBJECT
 
 public:
-	MarBackend(int getType);
+	MarBackend();
 	~MarBackend();
 
 	void setFileName(std::string filename);
 	void playFile();
-	void openTry(std::string filename);
-	void newTry();
+	void openTry(mrs_natural getType, std::string filename);
+	void newTry(mrs_natural getType);
 
 	bool analyze();
 	realvec getPitches();
@@ -49,7 +49,7 @@ private:
 	bool isEmptyState;
 
 // constructor, destructor
-	int method;
+	mrs_natural method_;
 	MarSystem* makeSourceNet(bool fromFile);
 	MarSystem* makePitchNet(mrs_real source_osrate);
 	MarSystem* makeAmplitudeNet(mrs_real source_osrate);

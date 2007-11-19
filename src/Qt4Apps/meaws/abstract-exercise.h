@@ -43,9 +43,13 @@ protected:
 	QLabel *instructionImageLabel_;
 
 	QLayout *resultLayout_;
-	QList<Try *> *tries_;
 
-	mrs_natural currentTry_;
+	QList<Try *> *tries_;
+	mrs_natural currentTryNumber_;
+		// this only points to
+		// tries[currentTryNumber_].  Do not delete this!
+	Try* currentTry_;
+
 
 	// TODO: figure out how to find the height_.  :(
 	int height_;

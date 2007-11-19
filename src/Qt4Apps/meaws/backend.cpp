@@ -7,16 +7,12 @@
  *   ***************************
  */
 
-MarBackend::MarBackend(int getType) {
-	method=getType;
-
+MarBackend::MarBackend() {
 	mrsWrapper = NULL;
 	allNet = NULL;
 	sourceNet = NULL;
 
-	filename_ = "foo.wav";
-
-	newTry();
+	filename_ = "";
 }
 
 MarBackend::~MarBackend() {
@@ -44,6 +40,8 @@ void MarBackend::delNet() {
 }
 
 MarSystem* MarBackend::makeSourceNet(bool fromFile) {
+	cout<<"makeSourceNet"<<endl;
+	cout<<"method: "<<method_<<" fromFile? "<<fromFile<<endl;
 	MarSystem *pnet = mng.create("Series", "sourceNet");
 	if (fromFile) {
 		MRSERR("DEBUG: getting from file");
@@ -71,9 +69,9 @@ MarSystem* MarBackend::makeSourceNet(bool fromFile) {
 	return pnet;
 }
 
-
-void MarBackend::openTry(std::string filename) {
+void MarBackend::openTry(mrs_natural getType, std::string filename) {
 	delNet();
+	method_ = getType;
 	filename_ = filename;
 	sourceNet = makeSourceNet(true);
 	hasAudio = true;
@@ -81,8 +79,9 @@ void MarBackend::openTry(std::string filename) {
 	mrsWrapper->play();
 }
 
-void MarBackend::newTry() {
+void MarBackend::newTry(mrs_natural getType) {
 	delNet();
+	method_ = getType;
 	sourceNet = makeSourceNet(false);
 	isEmptyState = false;
 	hasAudio = false;
@@ -101,7 +100,7 @@ void MarBackend::playFile() {
 //sourceNet->getctrl("SoundFileSource/srcFile/mrs_string/filename")->to<mrs_string>();
 		delNet();
 		sourceNet = makeSourceNet(true);
-		method = BACKEND_PLAYBACK;
+		method_ = BACKEND_PLAYBACK;
 		setupAllNet();
 	}
 }
@@ -134,8 +133,7 @@ void MarBackend::stop() {
 	hasAudio = true;
 	cout<<"stopped"<<endl;
 	emit gotAudio();
-	// TODO: fix this.
-	//playFile();
+	playFile();
 }
 
 mrs_real MarBackend::getRate() {
@@ -166,7 +164,7 @@ void MarBackend::setupAllNet() {
 //zz
 	MarSystem *fanout = mng.create("Fanout", "fanout");
 
-	switch (method) {
+	switch (method_) {
 	case (BACKEND_PLAYBACK):
 		fanout->addMarSystem(mng.create("AudioSink", "audioDest"));
 		fanout->updctrl("mrs_real/israte", osrate);
@@ -237,7 +235,7 @@ bool MarBackend::analyze() {
 	if (allNet != NULL) {
 		mrs_real osrate =
 sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
-		switch (method) {
+		switch (method_) {
 		case BACKEND_PLAYBACK:
 			break;
 		case BACKEND_PITCHES:

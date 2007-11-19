@@ -15,18 +15,17 @@ public:
 	Try();
 	~Try();
 	virtual QFrame* getDisplay()
-	{
-		return tryArea_;
-	};
+		{ return tryArea_; };
 	virtual void setTryNumber(mrs_natural num)
-	{
-		tryNumber_ = num;
-	};
-	virtual bool displayAnalysis(MarBackend *results) = 0;
-	virtual void selected(bool selected) {
-		(void) selected;
-	};
-	virtual mrs_real getScore() { return 0; };
+		{ tryNumber_ = num; };
+	virtual void displayAnalysis(MarBackend *results)
+		{ (void) results; hasAudio_ = true; };
+	virtual void selected(bool selected)
+		{ (void) selected; };
+	virtual mrs_real getScore()
+		{ return 0; };
+	virtual mrs_bool hasAudio()
+		{ return hasAudio_; };
 
 public slots:
 	virtual void clicked()
@@ -43,6 +42,7 @@ protected:
 	QLayout *tryLayout_;
 
 	mrs_natural tryNumber_;
+	mrs_bool hasAudio_;
 };
 #endif
 

@@ -17,7 +17,7 @@ class RhythmTry : public Try {
 public:
 	RhythmTry();
 	~RhythmTry();
-	bool displayAnalysis(MarBackend *results);
+	void displayAnalysis(MarBackend *results);
 
 	void setAnswer(const realvec answers);
 	void setLily(const QStringList);
@@ -30,7 +30,7 @@ public:
 
 private:
 	mrs_natural calcOffsetAndScore(
-		realvec exerciseOnsets, realvec& audioOnsets);
+		realvec exerciseOnsets, realvec audioOnsets);
 	void colorNote(int note, double error, double direction);
 
 	QLabel *resultDisplay;

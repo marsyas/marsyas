@@ -61,17 +61,18 @@ QString RhythmExercise::exercisesDir() {
 }
 
 QString RhythmExercise::getMessage() {
-	if (currentTry_ < 0)
+	if (currentTry_ == NULL)
 		return "";
-	QString toReturn( "Selected attempt " + QString::number(currentTry_) );
+	QString toReturn( "Selected attempt " +
+QString::number(currentTryNumber_) );
 	toReturn.append(". Score: " +
-		QString::number( tries_->at(currentTry_)->getScore()) );
+		QString::number( currentTry_->getScore()) );
 	toReturn.append("%");
 	return toReturn;
 }
 
 bool RhythmExercise::displayAnalysis(MarBackend *results) {
-	tries_->at(currentTry_)->displayAnalysis(results);
+	currentTry_->displayAnalysis(results);
 	return true;
 }
 

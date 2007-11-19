@@ -18,7 +18,7 @@ class IntonationTry : public Try {
 public:
 	IntonationTry();
 	~IntonationTry();
-	bool displayAnalysis(MarBackend *results);
+	void displayAnalysis(MarBackend *results);
 
 	void setAnswer(const realvec answers);
 	void setLily(const QStringList);

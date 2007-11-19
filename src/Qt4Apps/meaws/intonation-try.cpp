@@ -101,7 +101,7 @@ void IntonationTry::calcErrors(const realvec& pitches, const realvec&
 }
 
 
-bool IntonationTry::displayAnalysis(MarBackend *results)
+void IntonationTry::displayAnalysis(MarBackend *results)
 {
 // get info from backend
 	realvec pitches = results->getMidiPitches();
@@ -124,8 +124,6 @@ bool IntonationTry::displayAnalysis(MarBackend *results)
 	pitchPlot_->setData(data);
 	pitchPlot_->setVertical(57,73);
 	pitchPlot_->setPlotName("pitches");
-
-	return true;
 }
 
 void

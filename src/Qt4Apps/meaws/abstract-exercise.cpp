@@ -8,8 +8,9 @@ Exercise::Exercise()
 	instructionLayout_ = NULL;
 	instructionImageLabel_ = NULL;
 	resultLayout_ = NULL;
-	currentTry_ = -1;
 	tries_ = new QList<Try *>;
+	currentTryNumber_ = -1;
+	currentTry_ = NULL;
 }
 
 Exercise::~Exercise()
@@ -78,7 +79,7 @@ void Exercise::setupDisplay(QLayout* centralLayout)
 
 void Exercise::addTryAbstract(Try* newTry)
 {
-	cout<<"addTryAbstract"<<endl;
+//	cout<<"addTryAbstract"<<endl;
 	resultLayout_->addWidget( newTry->getDisplay() );
 	newTry->setTryNumber( tries_->count() );
 	connect(newTry, SIGNAL(selectTry(mrs_natural)),
@@ -89,13 +90,15 @@ void Exercise::addTryAbstract(Try* newTry)
 
 void Exercise::delTryAbstract()
 {
-	Try* oldTry = tries_->takeAt(currentTry_);
-	resultLayout_->removeWidget( oldTry->getDisplay() );
-	delete oldTry;
+	// already set, but this removes it from tries_
+	currentTry_ = tries_->takeAt(currentTryNumber_);
+	resultLayout_->removeWidget( currentTry_->getDisplay() );
+	delete currentTry_;
+	currentTry_ = NULL;
 	resultLayout_->activate();
 
 	// renumber the remaining exercises
-	for (int i=currentTry_; i<tries_->count(); i++)
+	for (int i=currentTryNumber_; i<tries_->count(); i++)
 	{
 		(*tries_)[i]->setTryNumber(i);
 	}
@@ -104,12 +107,24 @@ void Exercise::delTryAbstract()
 
 void Exercise::selectTry(mrs_natural selected)
 {
-	if ((currentTry_ > -1) && (currentTry_ < tries_->count()))
-		(*tries_)[currentTry_]->selected(false);
-	currentTry_ = selected;
-	if (currentTry_ > -1)
-		(*tries_)[currentTry_]->selected(true);
-	emit newTry();
+	if (currentTry_ != NULL)
+		currentTry_->selected(false);
+	currentTryNumber_ = selected;
+	if (currentTryNumber_ >= 0)
+	{
+		currentTry_ = (*tries_)[currentTryNumber_];
+		currentTry_->selected(true);
+	} else {
+		currentTry_ = NULL;
+	}
+	if (currentTry_->hasAudio())
+	{
+		cout<<"already has audio"<<endl;
+	} else {
+		cout<<"no audio"<<endl;
+// FIXME.
+//		emit newTry();
+	}
 	emit analysisDone();
 }
 
