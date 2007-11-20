@@ -24,14 +24,14 @@
 namespace Marsyas
 {
 	/**
-	\class enhADRessStereoSpectrum
+	\class EnhADRessStereoSpectrum
 	\ingroup Analysis
 	\brief Takes the output of the enhADRess
 	and outputs the panning coefficient for each spectral bin (N/2+1 bins). 
 	*/
 
 
-class enhADRessStereoSpectrum: public MarSystem
+class EnhADRessStereoSpectrum: public MarSystem
 {
 private:
 	mrs_natural N2_;
@@ -40,9 +40,9 @@ private:
 	void myUpdate(MarControlPtr sender);
 
 public:
-	enhADRessStereoSpectrum(std::string name);
-	enhADRessStereoSpectrum(const enhADRessStereoSpectrum& a);
-	~enhADRessStereoSpectrum();
+	EnhADRessStereoSpectrum(std::string name);
+	EnhADRessStereoSpectrum(const EnhADRessStereoSpectrum& a);
+	~EnhADRessStereoSpectrum();
 	MarSystem* clone() const;
 
 	void myProcess(realvec& in, realvec& out);

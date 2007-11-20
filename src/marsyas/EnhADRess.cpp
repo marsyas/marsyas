@@ -16,40 +16,40 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "enhADRess.h"
+#include "EnhADRess.h"
 
 using namespace std;
 using namespace Marsyas;
 
-enhADRess::enhADRess(string name):MarSystem("enhADRess", name)
+EnhADRess::EnhADRess(string name):MarSystem("EnhADRess", name)
 {
 	addControls();
 }
 
-enhADRess::enhADRess(const enhADRess& a) : MarSystem(a)
+EnhADRess::EnhADRess(const EnhADRess& a) : MarSystem(a)
 {
 
 }
 
-enhADRess::~enhADRess()
+EnhADRess::~EnhADRess()
 {
 }
 
 MarSystem*
-enhADRess::clone() const
+EnhADRess::clone() const
 {
-	return new enhADRess(*this);
+	return new EnhADRess(*this);
 }
 
 void
-enhADRess::addControls()
+EnhADRess::addControls()
 {
 }
 
 void
-enhADRess::myUpdate(MarControlPtr sender)
+EnhADRess::myUpdate(MarControlPtr sender)
 {
-	MRSDIAG("enhADRess.cpp - enhADRess:myUpdate");
+	MRSDIAG("EnhADRess.cpp - EnhADRess:myUpdate");
 	(void) sender;
 
 	N2_ = inObservations_ / 2; //i.e. we get two vertically stacked spectrums at the input
@@ -62,21 +62,21 @@ enhADRess::myUpdate(MarControlPtr sender)
 	ostringstream oss;
 	for(mrs_natural n=0; n< N4_; ++n)
 	{
-		oss << "enhADRess_Mag_bin_" << n <<",";
+		oss << "EnhADRess_Mag_bin_" << n <<",";
 	}
 	for(mrs_natural n=0; n< N4_; ++n)
 	{
-		oss << "enhADRess_Phase_bin_" << n <<",";
+		oss << "EnhADRess_Phase_bin_" << n <<",";
 	}
 	for(mrs_natural n=0; n< N4_; ++n)
 	{
-		oss << "enhADRess_Pan_bin_" << n <<",";
+		oss << "EnhADRess_Pan_bin_" << n <<",";
 	}
 	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 }
 
 void
-enhADRess::myProcess(realvec& in, realvec& out)
+EnhADRess::myProcess(realvec& in, realvec& out)
 {
 	out.setval(0.0);
 

@@ -148,8 +148,8 @@ am_libmarsyas_a_OBJECTS = svm.$(OBJEXT) RtAudio.$(OBJEXT) \
 	Classifier.$(OBJEXT) Spectrum2Chroma.$(OBJEXT) \
 	Spectrum2Mel.$(OBJEXT) ADRess.$(OBJEXT) \
 	ADRessSpectrum.$(OBJEXT) ADRessStereoSpectrum.$(OBJEXT) \
-	enhADRess.$(OBJEXT) StereoSpectrumSources.$(OBJEXT) \
-	enhADRessStereoSpectrum.$(OBJEXT) Gain.$(OBJEXT)
+	EnhADRess.$(OBJEXT) StereoSpectrumSources.$(OBJEXT) \
+	EnhADRessStereoSpectrum.$(OBJEXT) Gain.$(OBJEXT)
 libmarsyas_a_OBJECTS = $(am_libmarsyas_a_OBJECTS)
 libmarsyasqt_a_AR = $(AR) $(ARFLAGS)
 libmarsyasqt_a_LIBADD =
@@ -526,9 +526,9 @@ libmarsyas_a_SOURCES = \
 	$(top_srcdir)/src/marsyas/ADRess.cpp \
 	$(top_srcdir)/src/marsyas/ADRessSpectrum.cpp \
 	$(top_srcdir)/src/marsyas/ADRessStereoSpectrum.cpp \
-	$(top_srcdir)/src/marsyas/enhADRess.cpp \
+	$(top_srcdir)/src/marsyas/EnhADRess.cpp \
 	$(top_srcdir)/src/marsyas/StereoSpectrumSources.cpp \
-	$(top_srcdir)/src/marsyas/enhADRessStereoSpectrum.cpp \
+	$(top_srcdir)/src/marsyas/EnhADRessStereoSpectrum.cpp \
 			$(top_srcdir)/src/marsyas/Gain.cpp
 
 all: all-am
@@ -649,6 +649,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Delay.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownSampler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ERB.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/EnhADRess.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/EnhADRessStereoSpectrum.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Envelope.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Esitar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/EvExpr.Po@am__quote@
@@ -828,8 +830,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZeroCrossings.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZeroRClassifier.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/basis.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enhADRess.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enhADRessStereoSpectrum.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fft.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lu.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/peakView.Po@am__quote@
@@ -3987,19 +3987,19 @@ ADRessStereoSpectrum.obj: $(top_srcdir)/src/marsyas/ADRessStereoSpectrum.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ADRessStereoSpectrum.obj `if test -f '$(top_srcdir)/src/marsyas/ADRessStereoSpectrum.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/marsyas/ADRessStereoSpectrum.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/marsyas/ADRessStereoSpectrum.cpp'; fi`
 
-enhADRess.o: $(top_srcdir)/src/marsyas/enhADRess.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT enhADRess.o -MD -MP -MF $(DEPDIR)/enhADRess.Tpo -c -o enhADRess.o `test -f '$(top_srcdir)/src/marsyas/enhADRess.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/marsyas/enhADRess.cpp
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/enhADRess.Tpo $(DEPDIR)/enhADRess.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/src/marsyas/enhADRess.cpp' object='enhADRess.o' libtool=no @AMDEPBACKSLASH@
+EnhADRess.o: $(top_srcdir)/src/marsyas/EnhADRess.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT EnhADRess.o -MD -MP -MF $(DEPDIR)/EnhADRess.Tpo -c -o EnhADRess.o `test -f '$(top_srcdir)/src/marsyas/EnhADRess.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/marsyas/EnhADRess.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/EnhADRess.Tpo $(DEPDIR)/EnhADRess.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/src/marsyas/EnhADRess.cpp' object='EnhADRess.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o enhADRess.o `test -f '$(top_srcdir)/src/marsyas/enhADRess.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/marsyas/enhADRess.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o EnhADRess.o `test -f '$(top_srcdir)/src/marsyas/EnhADRess.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/marsyas/EnhADRess.cpp
 
-enhADRess.obj: $(top_srcdir)/src/marsyas/enhADRess.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT enhADRess.obj -MD -MP -MF $(DEPDIR)/enhADRess.Tpo -c -o enhADRess.obj `if test -f '$(top_srcdir)/src/marsyas/enhADRess.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/marsyas/enhADRess.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/marsyas/enhADRess.cpp'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/enhADRess.Tpo $(DEPDIR)/enhADRess.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/src/marsyas/enhADRess.cpp' object='enhADRess.obj' libtool=no @AMDEPBACKSLASH@
+EnhADRess.obj: $(top_srcdir)/src/marsyas/EnhADRess.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT EnhADRess.obj -MD -MP -MF $(DEPDIR)/EnhADRess.Tpo -c -o EnhADRess.obj `if test -f '$(top_srcdir)/src/marsyas/EnhADRess.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/marsyas/EnhADRess.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/marsyas/EnhADRess.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/EnhADRess.Tpo $(DEPDIR)/EnhADRess.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/src/marsyas/EnhADRess.cpp' object='EnhADRess.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o enhADRess.obj `if test -f '$(top_srcdir)/src/marsyas/enhADRess.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/marsyas/enhADRess.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/marsyas/enhADRess.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o EnhADRess.obj `if test -f '$(top_srcdir)/src/marsyas/EnhADRess.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/marsyas/EnhADRess.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/marsyas/EnhADRess.cpp'; fi`
 
 StereoSpectrumSources.o: $(top_srcdir)/src/marsyas/StereoSpectrumSources.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT StereoSpectrumSources.o -MD -MP -MF $(DEPDIR)/StereoSpectrumSources.Tpo -c -o StereoSpectrumSources.o `test -f '$(top_srcdir)/src/marsyas/StereoSpectrumSources.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/marsyas/StereoSpectrumSources.cpp
@@ -4015,19 +4015,19 @@ StereoSpectrumSources.obj: $(top_srcdir)/src/marsyas/StereoSpectrumSources.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o StereoSpectrumSources.obj `if test -f '$(top_srcdir)/src/marsyas/StereoSpectrumSources.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/marsyas/StereoSpectrumSources.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/marsyas/StereoSpectrumSources.cpp'; fi`
 
-enhADRessStereoSpectrum.o: $(top_srcdir)/src/marsyas/enhADRessStereoSpectrum.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT enhADRessStereoSpectrum.o -MD -MP -MF $(DEPDIR)/enhADRessStereoSpectrum.Tpo -c -o enhADRessStereoSpectrum.o `test -f '$(top_srcdir)/src/marsyas/enhADRessStereoSpectrum.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/marsyas/enhADRessStereoSpectrum.cpp
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/enhADRessStereoSpectrum.Tpo $(DEPDIR)/enhADRessStereoSpectrum.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/src/marsyas/enhADRessStereoSpectrum.cpp' object='enhADRessStereoSpectrum.o' libtool=no @AMDEPBACKSLASH@
+EnhADRessStereoSpectrum.o: $(top_srcdir)/src/marsyas/EnhADRessStereoSpectrum.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT EnhADRessStereoSpectrum.o -MD -MP -MF $(DEPDIR)/EnhADRessStereoSpectrum.Tpo -c -o EnhADRessStereoSpectrum.o `test -f '$(top_srcdir)/src/marsyas/EnhADRessStereoSpectrum.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/marsyas/EnhADRessStereoSpectrum.cpp
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/EnhADRessStereoSpectrum.Tpo $(DEPDIR)/EnhADRessStereoSpectrum.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/src/marsyas/EnhADRessStereoSpectrum.cpp' object='EnhADRessStereoSpectrum.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o enhADRessStereoSpectrum.o `test -f '$(top_srcdir)/src/marsyas/enhADRessStereoSpectrum.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/marsyas/enhADRessStereoSpectrum.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o EnhADRessStereoSpectrum.o `test -f '$(top_srcdir)/src/marsyas/EnhADRessStereoSpectrum.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/marsyas/EnhADRessStereoSpectrum.cpp
 
-enhADRessStereoSpectrum.obj: $(top_srcdir)/src/marsyas/enhADRessStereoSpectrum.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT enhADRessStereoSpectrum.obj -MD -MP -MF $(DEPDIR)/enhADRessStereoSpectrum.Tpo -c -o enhADRessStereoSpectrum.obj `if test -f '$(top_srcdir)/src/marsyas/enhADRessStereoSpectrum.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/marsyas/enhADRessStereoSpectrum.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/marsyas/enhADRessStereoSpectrum.cpp'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/enhADRessStereoSpectrum.Tpo $(DEPDIR)/enhADRessStereoSpectrum.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/src/marsyas/enhADRessStereoSpectrum.cpp' object='enhADRessStereoSpectrum.obj' libtool=no @AMDEPBACKSLASH@
+EnhADRessStereoSpectrum.obj: $(top_srcdir)/src/marsyas/EnhADRessStereoSpectrum.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT EnhADRessStereoSpectrum.obj -MD -MP -MF $(DEPDIR)/EnhADRessStereoSpectrum.Tpo -c -o EnhADRessStereoSpectrum.obj `if test -f '$(top_srcdir)/src/marsyas/EnhADRessStereoSpectrum.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/marsyas/EnhADRessStereoSpectrum.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/marsyas/EnhADRessStereoSpectrum.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/EnhADRessStereoSpectrum.Tpo $(DEPDIR)/EnhADRessStereoSpectrum.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/src/marsyas/EnhADRessStereoSpectrum.cpp' object='EnhADRessStereoSpectrum.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o enhADRessStereoSpectrum.obj `if test -f '$(top_srcdir)/src/marsyas/enhADRessStereoSpectrum.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/marsyas/enhADRessStereoSpectrum.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/marsyas/enhADRessStereoSpectrum.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o EnhADRessStereoSpectrum.obj `if test -f '$(top_srcdir)/src/marsyas/EnhADRessStereoSpectrum.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/marsyas/EnhADRessStereoSpectrum.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/marsyas/EnhADRessStereoSpectrum.cpp'; fi`
 
 Gain.o: $(top_srcdir)/src/marsyas/Gain.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Gain.o -MD -MP -MF $(DEPDIR)/Gain.Tpo -c -o Gain.o `test -f '$(top_srcdir)/src/marsyas/Gain.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/marsyas/Gain.cpp

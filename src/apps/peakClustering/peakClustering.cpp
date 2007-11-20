@@ -258,8 +258,8 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	//
 	//add stereo spectrum object to stereo spectrum net
 	//stereoSpkNet->addMarSystem(mng.create("StereoSpectrum","stereoSpk")); //AVENDANO
-	stereoSpkNet->addMarSystem(mng.create("enhADRess","ADRess"));//enhADRess_1
-	stereoSpkNet->addMarSystem(mng.create("enhADRessStereoSpectrum","stereoSpk")); //enhADRess_2
+	stereoSpkNet->addMarSystem(mng.create("EnhADRess","ADRess"));//enhADRess_1
+	stereoSpkNet->addMarSystem(mng.create("EnhADRessStereoSpectrum","stereoSpk")); //enhADRess_2
 	//
 	// add the stereo Spectrum net to the Fanout
 	stereoFo->addMarSystem(stereoSpkNet);

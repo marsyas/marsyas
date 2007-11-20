@@ -16,41 +16,41 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "enhADRessStereoSpectrum.h"
+#include "EnhADRessStereoSpectrum.h"
 
 using namespace std;
 using namespace Marsyas;
 
-enhADRessStereoSpectrum::enhADRessStereoSpectrum(string name):MarSystem("enhADRessStereoSpectrum", name)
+EnhADRessStereoSpectrum::EnhADRessStereoSpectrum(string name):MarSystem("EnhADRessStereoSpectrum", name)
 {
 	addControls();
 }
 
-enhADRessStereoSpectrum::enhADRessStereoSpectrum(const enhADRessStereoSpectrum& a) : MarSystem(a)
+EnhADRessStereoSpectrum::EnhADRessStereoSpectrum(const EnhADRessStereoSpectrum& a) : MarSystem(a)
 {
 
 }
 
-enhADRessStereoSpectrum::~enhADRessStereoSpectrum()
+EnhADRessStereoSpectrum::~EnhADRessStereoSpectrum()
 {
 }
 
 MarSystem*
-enhADRessStereoSpectrum::clone() const
+EnhADRessStereoSpectrum::clone() const
 {
-	return new enhADRessStereoSpectrum(*this);
+	return new EnhADRessStereoSpectrum(*this);
 }
 
 void
-enhADRessStereoSpectrum::addControls()
+EnhADRessStereoSpectrum::addControls()
 {
 
 }
 
 void
-enhADRessStereoSpectrum::myUpdate(MarControlPtr sender)
+EnhADRessStereoSpectrum::myUpdate(MarControlPtr sender)
 {
-	MRSDIAG("enhADRessStereoSpectrum.cpp - enhADRessStereoSpectrum:myUpdate");
+	MRSDIAG("EnhADRessStereoSpectrum.cpp - EnhADRessStereoSpectrum:myUpdate");
 	(void) sender;
 
 	N2_ = ctrl_inObservations_->to<mrs_natural>()/3; //i.e. N/2+1
@@ -66,7 +66,7 @@ enhADRessStereoSpectrum::myUpdate(MarControlPtr sender)
 }
 
 void
-enhADRessStereoSpectrum::myProcess(realvec& in, realvec& out)
+EnhADRessStereoSpectrum::myProcess(realvec& in, realvec& out)
 {
 	for(t=0; t < inSamples_; ++t)
 	{

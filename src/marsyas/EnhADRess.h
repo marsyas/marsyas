@@ -24,9 +24,9 @@
 namespace Marsyas
 {
 	/**
-	\class enhADRess
+	\class EnhADRess
 	\ingroup Analysis
-	\brief Azimuth Discrimination and Resynthesis (enhADRess) implementation, 
+	\brief Azimuth Discrimination and Resynthesis (EnhADRess) implementation, 
 	which takes a stereo input (i.e. input is expected to be the output of a
 	parallel of two Spectrum MarSystems, one for each stereo channel), and
 	outputs the magnitudes, phases and panning indexes for N/2+1 bins, 
@@ -42,7 +42,7 @@ namespace Marsyas
 
 	*/
 
-	class enhADRess: public MarSystem
+	class EnhADRess: public MarSystem
 	{
 	private:
 		mrs_natural N4_, N2_;
@@ -60,9 +60,9 @@ namespace Marsyas
 		void myUpdate(MarControlPtr sender);
 
 	public:
-		enhADRess(std::string name);
-		enhADRess(const enhADRess& a);
-		~enhADRess();
+		EnhADRess(std::string name);
+		EnhADRess(const EnhADRess& a);
+		~EnhADRess();
 		MarSystem* clone() const;
 
 		void myProcess(realvec& in, realvec& out);

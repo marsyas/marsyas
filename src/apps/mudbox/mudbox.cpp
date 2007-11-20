@@ -2402,8 +2402,8 @@ toy_with_ADRess(string fname0, string fname1)
 	//playbacknet->addMarSystem(mng.create("StereoSpectrum", "sspk"));
 	//playbacknet->addMarSystem(mng.create("StereoSpectrumFeatures", "sspkf"));
 	//playbacknet->addMarSystem(mng.create("TextureStats", "texturests"));
-	playbacknet->addMarSystem(mng.create("enhADRess", "adress"));
-	playbacknet->addMarSystem(mng.create("enhADRessStereoSpectrum", "adressstereospec"));
+	playbacknet->addMarSystem(mng.create("EnhADRess", "adress"));
+	playbacknet->addMarSystem(mng.create("EnhADRessStereoSpectrum", "adressstereospec"));
 	
 	//playbacknet->addMarSystem(mng.create("StereoSpectrumSources", "sspks"));
 	playbacknet->addMarSystem(mng.create("StereoFeatures", "sfeats"));

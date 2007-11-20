@@ -339,9 +339,9 @@ HEADERS += \
 	ADRess.h \
 	ADRessSpectrum.h \
 	ADRessStereoSpectrum.h \
-	enhADRess.h \
+	EnhADRess.h \
 	StereoSpectrumSources.h \
-	enhADRessStereoSpectrum.h \
+	EnhADRessStereoSpectrum.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 	 
