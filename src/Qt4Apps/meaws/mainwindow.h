@@ -46,6 +46,9 @@ private:
 	void readSettings();
 	void writeSettings();
 
+// something
+	void displayMessages();
+
 
 
 // main interface objects

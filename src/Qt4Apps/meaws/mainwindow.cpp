@@ -35,10 +35,13 @@ void MainWindow::closeEvent(QCloseEvent *event)
 void MainWindow::about()
 {
 	QMessageBox::about(this, tr("About Meaws"),
-		tr("Meaws (Musician Evaulation and Audition for Winds and Strings) "
-		"is a learning tool for musicians.  It listens to a musician and "
-		"provides feedback on their performance."
-		));
+	                   tr("Meaws (Musician Evaulation and "
+	                      "Audition for Winds and Strings) "
+	                      "is a learning tool for "
+	                      "musicians.  It listens to a "
+	                      "musician and provides feedback on "
+	                      "their performance."
+	                     ));
 }
 
 void MainWindow::readSettings()
@@ -119,26 +122,26 @@ void MainWindow::createToolBars()
 
 	tempoToolBar_ = addToolBar(tr("Tempo"));
 
-/*
+	/*
 	tempoBox_ = new QSpinBox();
 	tempoBox_->setRange(30,240);
 	tempoBox_->setValue(60);
 	tempoToolBar_->addWidget(tempoBox_);
-*/
+	*/
 
 	tempoSlider_ = new QSlider(Qt::Horizontal);
 	tempoSlider_->setRange(30, 240);
 	tempoSlider_->setValue(60);
-//	tempoSlider_->setMinimumWidth(150);
-//	tempoSlider_->setMaximumWidth(250);
+	//	tempoSlider_->setMinimumWidth(150);
+	//	tempoSlider_->setMaximumWidth(250);
 
 	tempoToolBar_->addWidget(tempoSlider_);
 	tempoToolBar_->addAction(visualMetroBeatAct_);
 
-//	connect(tempoSlider_, SIGNAL(valueChanged(int)),
-//	        tempoBox_, SLOT(setValue(int)));
-//	connect(tempoBox_, SIGNAL(valueChanged(int)),
-//	        tempoSlider_, SLOT(setValue(int)));
+	//	connect(tempoSlider_, SIGNAL(valueChanged(int)),
+	//	        tempoBox_, SLOT(setValue(int)));
+	//	connect(tempoBox_, SIGNAL(valueChanged(int)),
+	//	        tempoSlider_, SLOT(setValue(int)));
 
 	// TODO: keep or not?
 	exerciseTitle_ = new QLabel();
@@ -160,27 +163,27 @@ void MainWindow::createActions()
 	aboutQtAct_->setStatusTip(tr("Show the Qt library's About box"));
 
 	// user
-	newUserAct_ = new QAction(QIcon(":/icons/new.png"), tr("&New user_"), this);
+	newUserAct_ = new QAction(QIcon(":/icons/new.png"), tr("&New user"), this);
 	newUserAct_->setShortcut(tr("Ctrl+N"));
 	newUserAct_->setStatusTip(tr("Create a new session"));
 
 	openUserAct_ = new QAction(QIcon(":/icons/open.png"),
-	                           tr("&Open user_..."), this);
+	                           tr("&Open user..."), this);
 	openUserAct_->setShortcut(tr("Ctrl+O"));
 	openUserAct_->setStatusTip(tr("Open an existing session"));
 
 	saveUserAct_ = new QAction(QIcon(":/icons/save.png"),
-	                           tr("&Save user_"), this);
+	                           tr("&Save user"), this);
 	saveUserAct_->setShortcut(tr("Ctrl+S"));
 	saveUserAct_->setStatusTip(tr("Save the session to disk"));
 
-	saveAsUserAct_ = new QAction(tr("Save user_ &As..."), this);
+	saveAsUserAct_ = new QAction(tr("Save user &As..."), this);
 	saveAsUserAct_->setStatusTip(tr("Save the session under a new name"));
 
 	closeUserAct_ = new QAction(QIcon(":/icons/quit.png"),
-	                            tr("&Close user_"), this);
+	                            tr("&Close user"), this);
 	closeUserAct_->setShortcut(tr("Ctrl+W"));
-	closeUserAct_->setStatusTip(tr("Close user_"));
+	closeUserAct_->setStatusTip(tr("Close user"));
 
 	setUserInfoAct_ = new QAction(QIcon(":/icons/new.png"),
 	                              tr("&User info"), this);
@@ -189,7 +192,7 @@ void MainWindow::createActions()
 	// exercise
 	openExerciseAct_ = new QAction(QIcon(":/icons/open.png"), tr("Open &Exercise..."), this);
 	openExerciseAct_->setShortcut(tr("Ctrl+R"));
-	openExerciseAct_->setStatusTip(tr("Open a new dispatcher_"));
+	openExerciseAct_->setStatusTip(tr("Open a new exercise"));
 
 	toggleAttemptAct = new QAction(this);
 	toggleAttemptAct->setShortcut(tr("Space"));
@@ -198,7 +201,7 @@ void MainWindow::createActions()
 
 	closeExerciseAct_ = new QAction(QIcon(":/icons/quit.png"), tr("&Close dispatcher_"), this);
 	closeExerciseAct_->setShortcut(tr("Ctrl+E"));
-	closeExerciseAct_->setStatusTip(tr("Close dispatcher_"));
+	closeExerciseAct_->setStatusTip(tr("Close exercise"));
 
 	// metronome + other
 	visualMetroBeatAct_ = new QAction(QIcon(":/icons/circle.png"), tr("Visual metro_nome"), this);
@@ -226,13 +229,13 @@ void MainWindow::connectObjects()
 	connect(aboutQtAct_, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
 
-//	connect(closeUserAct_, SIGNAL(triggered()), this, SLOT(closeUser()));
 
 
 	// Meaws objects
 	QObject* user = dispatcher_->getUserPointer();
-
 	connect(user, SIGNAL(updateMain(int)), this, SLOT(updateMain(int)));
+
+	connect(closeUserAct_, SIGNAL(triggered()), user, SLOT(close()));
 	connect(newUserAct_, SIGNAL(triggered()), user, SLOT(newUser()));
 	connect(openUserAct_, SIGNAL(triggered()), user, SLOT(open()));
 	connect(saveUserAct_, SIGNAL(triggered()), user, SLOT(save()));
@@ -240,40 +243,47 @@ void MainWindow::connectObjects()
 	connect(setUserInfoAct_, SIGNAL(triggered()), user, SLOT(setUserInfo()));
 
 
-/*
+	/*
 	connect(dispatcher_, SIGNAL(updateMain(int)),
-	        this, SLOT(updateMain(int)));
+	this, SLOT(updateMain(int)));
 
 	connect(openExerciseAct_, SIGNAL(triggered()),
-	        dispatcher_, SLOT(open()));
+	dispatcher_, SLOT(open()));
 	connect(toggleAttemptAct, SIGNAL(triggered()),
-	        dispatcher_, SLOT(toggleAttempt()));
+	dispatcher_, SLOT(toggleAttempt()));
 	connect(closeExerciseAct_, SIGNAL(triggered()),
-	        dispatcher_, SLOT(close()));
+	dispatcher_, SLOT(close()));
 
 	connect(calcExerciseAct_, SIGNAL(triggered()),
-	        dispatcher_, SLOT(analyze()));
+	dispatcher_, SLOT(analyze()));
 	connect(testingFileAct_, SIGNAL(triggered()),
-	        dispatcher_, SLOT(openAttempt()));
+	dispatcher_, SLOT(openAttempt()));
 	connect(playFileAct_, SIGNAL(triggered()),
-	        dispatcher_, SLOT(playFile()));
+	dispatcher_, SLOT(playFile()));
 	connect(addTryAct_, SIGNAL(triggered()), dispatcher_, SLOT(addTry()));
 	connect(delTryAct_, SIGNAL(triggered()), dispatcher_, SLOT(delTry()));
 
 
-*/
+	*/
 }
 
+void MainWindow::displayMessages()
+{
+	setWindowTitle(dispatcher_->getTitle());
 
+}
 
 void MainWindow::updateMain(int state)
 {
 	switch (state)
 	{
+	case 0:
+	{
+		displayMessages();
+		break;
+	}
 	case MEAWS_READY_NOTHING:     // just opened app
 	{
-		setWindowTitle(tr("Meaws"));
-
 		saveUserAct_   ->setEnabled(false);
 		saveAsUserAct_ ->setEnabled(false);
 		closeUserAct_  ->setEnabled(false);
@@ -284,12 +294,11 @@ void MainWindow::updateMain(int state)
 		tempoToolBar_   ->setEnabled(false);
 		testingMenu_    ->setEnabled(false);
 
+		displayMessages();
 		break;
 	}
 	case MEAWS_READY_USER:     // user_ selected
 	{
-//		setWindowTitle(tr("Meaws - %1").arg(user_->getName()));
-
 		saveUserAct_   ->setEnabled(true);
 		saveAsUserAct_ ->setEnabled(true);
 		closeUserAct_  ->setEnabled(true);
@@ -303,6 +312,7 @@ void MainWindow::updateMain(int state)
 		tempoToolBar_   ->setEnabled(false);
 		testingMenu_    ->setEnabled(false);
 
+		displayMessages();
 		break;
 	}
 	case MEAWS_READY_EXERCISE:	 // dispatcher_ loaded
@@ -313,17 +323,17 @@ void MainWindow::updateMain(int state)
 		testingMenu_ ->setEnabled(true);
 
 		// temp ?
-		tempoBox_->clearFocus();
-		tempoSlider_->setFocus();
+//		tempoBox_->clearFocus();
+//		tempoSlider_->setFocus();
 
 		break;
 	case MEAWS_TRY_PAUSED:    // ready to analyze
 		toggleAttemptAct->setStatusTip(tr("Start"));
 		toggleAttemptAct->setIcon(QIcon(":/icons/player_play.png"));
-//		metro_->stopMetro();
+		//		metro_->stopMetro();
 
 		//statusBar()->showMessage(dispatcher_->getMessage(),100000);
-//		permanentStatusMessage_->setText(dispatcher_->getMessage());
+		//		permanentStatusMessage_->setText(dispatcher_->getMessage());
 
 		// temp ?
 		tempoBox_->clearFocus();
@@ -333,7 +343,7 @@ void MainWindow::updateMain(int state)
 	case MEAWS_TRY_RUNNING:
 		toggleAttemptAct->setStatusTip(tr("Stop"));
 		toggleAttemptAct->setIcon(QIcon(":/icons/player_pause.png"));
-//		metro_->startMetro();
+		//		metro_->startMetro();
 
 		// temp ?
 		tempoBox_->clearFocus();

@@ -46,6 +46,15 @@ bool Dispatcher::close()
 	return true;
 }
 
+QString Dispatcher::getTitle()
+{
+	QString title = "Meaws";
+	QString next = user_->getName();
+	if (!next.isEmpty())
+		title.append(QString(" - %1").arg(next));
+	return title;
+}
+
 /*
 bool Dispatcher::chooseEvaluation()
 {

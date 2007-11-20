@@ -27,6 +27,7 @@ public:
 
 	bool close();
 
+	QString getTitle();
 	QString getMessage();
 /*
 public slots:
