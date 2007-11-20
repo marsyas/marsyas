@@ -52,10 +52,10 @@ void Exercise::setupDisplay(QFrame* centralFrame)
 	centralLayout_->setContentsMargins(1,1,1,1);
 	centralFrame->setLayout(centralLayout_);
 
-    instructionArea_ = new QFrame;
-    resultArea_ = new QFrame;
-    centralLayout_->addWidget(instructionArea_);
-    centralLayout_->addWidget(resultArea_);
+	instructionArea_ = new QFrame;
+	resultArea_ = new QFrame;
+	centralLayout_->addWidget(instructionArea_);
+	centralLayout_->addWidget(resultArea_);
 
 	instructionArea_->setLayout(instructionLayout_);
 	instructionLayout_->setContentsMargins(2,2,2,2);
@@ -114,23 +114,28 @@ void Exercise::selectTry(mrs_natural selected)
 	if (currentTry_ != NULL)
 		currentTry_->selected(false);
 	currentTryNumber_ = selected;
-	if (currentTryNumber_ >= 0)
+	if (currentTryNumber_ < 0)
+	{
+		currentTry_ = NULL;
+	}
+	else
 	{
 		currentTry_ = (*tries_)[currentTryNumber_];
 		currentTry_->selected(true);
-	} else {
-		currentTry_ = NULL;
-	}
-	if (currentTry_->hasAudio())
-	{
-		cout<<"already has audio"<<endl;
-		emit setBackend(BACKEND_PLAYBACK);
-	} else {
-		cout<<"no audio"<<endl;
+		if (currentTry_->hasAudio())
+		{
+			cout<<"already has audio"<<endl;
+			//	emit setBackend(BACKEND_PLAYBACK);
+		}
+		else
+		{
+			cout<<"no audio"<<endl;
 // FIXME.
-		emit setBackend(getBackend());
+//		emit setBackend(getBackend());
+		}
+		//emit analysisDone();
 	}
-	emit analysisDone();
+	emit updateMain(0);
 }
 
 

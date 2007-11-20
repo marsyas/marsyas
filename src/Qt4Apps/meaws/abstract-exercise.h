@@ -23,23 +23,26 @@ public:
 	virtual QString getMessage() = 0;
 	virtual bool displayAnalysis(MarBackend *results) = 0;
 
+public slots:
 	virtual void addTry() = 0;
-	void addTryAbstract(Try* newTry);
 	virtual void delTry() = 0;
-	void delTryAbstract();
 
 signals:
 	void analysisDone();
 	void setBackend(mrs_natural action);
+	void updateMain(int state);
 
 protected slots:
 	virtual void selectTry(mrs_natural selected);
 
 protected:
+	void addTryAbstract(Try* newTry);
+	void delTryAbstract();
+
 	QVBoxLayout *centralLayout_;
 
-    QFrame *instructionArea_;
-    QFrame *resultArea_;
+	QFrame *instructionArea_;
+	QFrame *resultArea_;
 
 	QLayout *instructionLayout_;
 	QLabel *instructionImageLabel_;
@@ -48,8 +51,8 @@ protected:
 
 	QList<Try *> *tries_;
 	mrs_natural currentTryNumber_;
-		// this only points to
-		// tries[currentTryNumber_].  Do not delete this!
+	// this only points to
+	// tries[currentTryNumber_].  Do not delete this!
 	Try* currentTry_;
 
 

@@ -20,11 +20,13 @@ public:
 
 	QObject* getUserPointer()
 		{ return user_; };
+	QObject* getExercisePointer()
+		{ return exercise_; };
 
 	bool close();
 
 	QString getTitle();
-	QString getMessage();
+	QString getStatus();
 
 public slots:
 	void openExercise();

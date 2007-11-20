@@ -233,8 +233,6 @@ void MainWindow::connectObjects()
 	dispatcher_, SLOT(analyze()));
 	connect(playFileAct_, SIGNAL(triggered()),
 	dispatcher_, SLOT(playFile()));
-	connect(addTryAct_, SIGNAL(triggered()), dispatcher_, SLOT(addTry()));
-	connect(delTryAct_, SIGNAL(triggered()), dispatcher_, SLOT(delTry()));
 
 	*/
 
@@ -255,10 +253,20 @@ void MainWindow::connectObjects()
 
 }
 
+void MainWindow::connectExercise()
+{
+	QObject* exercise = dispatcher_->getExercisePointer();
+	connect(exercise, SIGNAL(updateMain(int)), this, SLOT(updateMain(int)));
+
+	connect(addTryAct_, SIGNAL(triggered()), exercise, SLOT(addTry()));
+	connect(delTryAct_, SIGNAL(triggered()), exercise, SLOT(delTry()));
+
+}
+
 void MainWindow::displayMessages()
 {
 	setWindowTitle(dispatcher_->getTitle());
-
+	permanentStatusMessage_->setText(dispatcher_->getStatus());
 }
 
 void MainWindow::updateMain(int state)
@@ -298,6 +306,7 @@ void MainWindow::updateMain(int state)
 		displayMessages();
 		break;
 	case MEAWS_READY_EXERCISE:
+		connectExercise();
 		toggleAttemptAct->setEnabled(true);
 		closeExerciseAct_->setEnabled(true);
 

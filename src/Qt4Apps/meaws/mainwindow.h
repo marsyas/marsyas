@@ -43,10 +43,11 @@ private:
 	void createMenus();
 	void createToolBars();
 	void createStatusBar();
-	void connectObjects();
 	void readSettings();
 	void writeSettings();
 
+	void connectObjects();
+	void connectExercise();
 // something
 	void displayMessages();
 

@@ -108,6 +108,15 @@ void Dispatcher::analyze()
 	}
 }
 
+
+QString Dispatcher::getStatus()
+{
+	if (exercise_ == NULL)
+		return "";
+	return exercise_->getMessage();
+}
+
+
 /*
 void Dispatcher::analysisDone()
 {
@@ -172,11 +181,6 @@ void Dispatcher::playFile()
 {
 	marBackend_->playFile();
 	setAttempt(true);
-}
-
-QString Dispatcher::getMessage()
-{
-	return statusMessage_;
 }
 
 */
