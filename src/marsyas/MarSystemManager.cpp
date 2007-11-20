@@ -316,9 +316,9 @@ MarSystemManager::MarSystemManager()
   registerPrototype("ADRess", new ADRess("adresspr"));
   registerPrototype("ADRessSpectrum", new ADRessSpectrum("adressspectrumpr"));
   registerPrototype("ADRessStereoSpectrum", new ADRessStereoSpectrum("adressstereospectrumpr"));
-  registerPrototype("enhADRess", new enhADRess("enhadresspr"));
+  // registerPrototype("enhADRess", new enhADRess("enhadresspr"));
   registerPrototype("StereoSpectrumSources", new StereoSpectrumSources("stereospectrumsourcespr"));
-  registerPrototype("enhADRessStereoSpectrum", new enhADRessStereoSpectrum("enhadressstereospectrumpr"));
+  // registerPrototype("enhADRessStereoSpectrum", new enhADRessStereoSpectrum("enhadressstereospectrumpr"));
   registerPrototype("Gain", new Gain("gp"));
   // Please leave Gain at the end; it makes scripts happy.
 
