@@ -12,8 +12,8 @@ pnet = mng.create("Series", "pnet")
 src = mng.create("SineSource", "src")
 # src = mng.create("SoundFileSource", "src");
 gain = mng.create("Gain", "gain") 
-dest = mng.create("SoundFileSink", "dest") 
-# dest = mng.create("AudioSink", "dest")     
+#dest = mng.create("SoundFileSink", "dest") 
+dest = mng.create("AudioSink", "dest")     
 
 pnet.addMarSystem(src)
 pnet.addMarSystem(gain) 
@@ -27,10 +27,10 @@ pnet.updControl("SineSource/src/mrs_real/frequency", 999.0)
 print pnet.getControl("SineSource/src/mrs_real/frequency")
 
 # Audio has lots of clicks and seems to crash - not sure why 
-# pnet.updControl("AudioSink/dest/mrs_bool/initAudio", True)
+pnet.updControl("AudioSink/dest/mrs_bool/initAudio", True)
 
-pnet.updControl("SoundFileSink/dest/mrs_string/filename", "foo.wav")
-print pnet.getControl("SoundFileSink/dest/mrs_string/filename")
+# pnet.updControl("SoundFileSink/dest/mrs_string/filename", "foo.wav")
+# print pnet.getControl("SoundFileSink/dest/mrs_string/filename")
 
 for j in range (1,8): 
     pnet.updControl("SineSource/src/mrs_real/frequency", j * 220.0)
