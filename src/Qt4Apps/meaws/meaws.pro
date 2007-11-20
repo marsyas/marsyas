@@ -1,20 +1,18 @@
 #include (../Qt4Apps.pri)
 
 # main stuff
-SOURCES = start.cpp mainwindow.cpp
-HEADERS = defs.h mainwindow.h
+SOURCES = start.cpp
+HEADERS = defs.h
+HEADERS += mainwindow.h dispatcher.h
+SOURCES += mainwindow.cpp dispatcher.cpp
 
 # qt objects
 HEADERS += QClickFrame.h
 SOURCES += QClickFrame.cpp
 
-# meaws top-level objects
-HEADERS += user.h dispatcher-exercise.h metro.h
-SOURCES += user.cpp dispatcher-exercise.cpp metro.cpp
-
-# audio I/O and feature extraction
-HEADERS += backend.h
-SOURCES += backend.cpp
+# owned by dispatcher
+HEADERS += backend.h user.h metro.h
+SOURCES += backend.cpp user.cpp metro.cpp
 
 # exercises
 HEADERS += abstract-exercise.h abstract-try.h

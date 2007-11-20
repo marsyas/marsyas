@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-#include "dispatcher-exercise.h"
+#include "dispatcher.h"
 
 ExerciseDispatcher::ExerciseDispatcher(QFrame *centralFrame)
 {
@@ -64,6 +64,10 @@ void ExerciseDispatcher::open()
 			if (marBackend_ != NULL)
 				delete marBackend_;
 			marBackend_ = new MarBackend();
+			// FIXME: order of creation
+			marBackend_->newTry(exercise_->getBackend());
+
+			cout<<"made backend"<<endl;
 			connect(marBackend_, SIGNAL(setAttempt(bool)),
 				this, SLOT(setAttempt(bool)));
 			connect(marBackend_, SIGNAL(gotAudio()),
@@ -78,8 +82,11 @@ void ExerciseDispatcher::open()
 }
 
 void ExerciseDispatcher::newTry() {
-	if (marBackend_ != NULL)
+	cout<<"dispatcher: new try"<<endl;
+	if (marBackend_ != NULL) {
 		marBackend_->newTry(exercise_->getBackend());
+		cout<<"use backend: "<<exercise_->getBackend();
+	}
 }
 
 void ExerciseDispatcher::close()

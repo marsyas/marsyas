@@ -7,6 +7,7 @@ Try::Try()
 	connect(tryArea_, SIGNAL(doubleclicked()), this, SLOT(doubleclicked()));
 	tryLayout_ = NULL;
 	tryNumber_ = 0;
+	hasAudio_ = false;
 }
 
 Try::~Try()

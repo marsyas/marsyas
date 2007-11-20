@@ -71,6 +71,7 @@ MarSystem* MarBackend::makeSourceNet(bool fromFile) {
 
 void MarBackend::openTry(mrs_natural getType, std::string filename) {
 	delNet();
+	cout<<"get type: "<<getType<<endl;
 	method_ = getType;
 	filename_ = filename;
 	sourceNet = makeSourceNet(true);
@@ -81,6 +82,7 @@ void MarBackend::openTry(mrs_natural getType, std::string filename) {
 
 void MarBackend::newTry(mrs_natural getType) {
 	delNet();
+	cout<<"get type: "<<getType<<endl;
 	method_ = getType;
 	sourceNet = makeSourceNet(false);
 	isEmptyState = false;
@@ -133,7 +135,7 @@ void MarBackend::stop() {
 	hasAudio = true;
 	cout<<"stopped"<<endl;
 	emit gotAudio();
-	playFile();
+//	playFile();
 }
 
 mrs_real MarBackend::getRate() {

@@ -123,7 +123,7 @@ void Exercise::selectTry(mrs_natural selected)
 	} else {
 		cout<<"no audio"<<endl;
 // FIXME.
-//		emit newTry();
+		emit newTry();
 	}
 	emit analysisDone();
 }
