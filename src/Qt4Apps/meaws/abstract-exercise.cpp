@@ -8,6 +8,7 @@ Exercise::Exercise()
 	instructionLayout_ = NULL;
 	instructionImageLabel_ = NULL;
 	resultLayout_ = NULL;
+
 	tries_ = new QList<Try *>;
 	currentTryNumber_ = -1;
 	currentTry_ = NULL;
@@ -45,13 +46,16 @@ void Exercise::open(QString exerciseFilename)
 	height_ = instructPixmap->height()+4;
 }
 
-void Exercise::setupDisplay(QLayout* centralLayout)
+void Exercise::setupDisplay(QFrame* centralFrame)
 {
+	centralLayout_ = new QVBoxLayout;
+	centralLayout_->setContentsMargins(1,1,1,1);
+	centralFrame->setLayout(centralLayout_);
+
     instructionArea_ = new QFrame;
     resultArea_ = new QFrame;
-    centralLayout->addWidget(instructionArea_);
-    centralLayout->addWidget(resultArea_);
-
+    centralLayout_->addWidget(instructionArea_);
+    centralLayout_->addWidget(resultArea_);
 
 	instructionArea_->setLayout(instructionLayout_);
 	instructionLayout_->setContentsMargins(2,2,2,2);

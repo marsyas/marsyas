@@ -11,8 +11,8 @@ HEADERS += QClickFrame.h
 SOURCES += QClickFrame.cpp
 
 # owned by dispatcher
-HEADERS += backend.h user.h metro.h
-SOURCES += backend.cpp user.cpp metro.cpp
+HEADERS += backend.h user.h metro.h choose-exercise.h
+SOURCES += backend.cpp user.cpp metro.cpp choose-exercise.cpp
 
 # exercises
 HEADERS += abstract-exercise.h abstract-try.h

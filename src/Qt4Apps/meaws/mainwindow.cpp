@@ -7,13 +7,13 @@
 MainWindow::MainWindow()
 {
 	// create objects
-	dispatcher_ = new Dispatcher(this);
 	createMain();
 	createActions();
 	createMenus();
 	createToolBars();
 	createStatusBar();
 	// connect objects
+	dispatcher_ = new Dispatcher(this, centralFrame_);
 	connectObjects();
 	// begin operation
 	readSettings();
@@ -243,12 +243,12 @@ void MainWindow::connectObjects()
 	connect(setUserInfoAct_, SIGNAL(triggered()), user, SLOT(setUserInfo()));
 
 
+	connect(openExerciseAct_, SIGNAL(triggered()),
+	        dispatcher_, SLOT(openExercise()));
 	/*
 	connect(dispatcher_, SIGNAL(updateMain(int)),
 	this, SLOT(updateMain(int)));
 
-	connect(openExerciseAct_, SIGNAL(triggered()),
-	dispatcher_, SLOT(open()));
 	connect(toggleAttemptAct, SIGNAL(triggered()),
 	dispatcher_, SLOT(toggleAttempt()));
 	connect(closeExerciseAct_, SIGNAL(triggered()),

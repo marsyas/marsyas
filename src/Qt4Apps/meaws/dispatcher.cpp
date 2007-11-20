@@ -3,12 +3,13 @@ using namespace std;
 
 #include "dispatcher.h"
 
-Dispatcher::Dispatcher(QObject* mainWindow)
+Dispatcher::Dispatcher(QObject* mainWindow, QFrame* centralFrame)
 {
 	user_ = new User();
 //	metro_ = new Metro();
+	exercise_ = NULL;
 
-	string audioFile = "data/sd.wav";
+//	string audioFile = "data/sd.wav";
 //	metro_ = new Metro(this, audioFile);
 //	connect(visualMetroBeatAct_, SIGNAL(triggered()), metro_,
 //	        SLOT(toggleBigMetro()));
@@ -16,25 +17,19 @@ Dispatcher::Dispatcher(QObject* mainWindow)
 
 //	connectMain(mainWindow);
 
-/*
-	centralLayout_ = new QVBoxLayout();
-	centralLayout_->setContentsMargins(1,1,1,1);
-	centralFrame->setLayout(centralLayout_);
-*/
+	centralFrame_ = centralFrame;
 
-/*
-	attemptRunningBool_ = false;
-	marBackend_ = NULL;
-	exercise_ = NULL;
-	statusMessage_ = "ready";
-*/
+	/*
+		attemptRunningBool_ = false;
+		marBackend_ = NULL;
+		exercise_ = NULL;
+		statusMessage_ = "ready";
+	*/
 }
 
 Dispatcher::~Dispatcher()
 {
 	close();
-//	if (centralLayout_ != NULL)
-//		delete centralLayout_;
 }
 
 //void Dispatcher::connectMain(QObject* mainWindow)
@@ -55,66 +50,52 @@ QString Dispatcher::getTitle()
 	return title;
 }
 
+
+
+void Dispatcher::openExercise()
+{
+	if (exercise_ != NULL)
+		delete exercise_;
+	exercise_ = ChooseExercise::chooseType();
+	if (exercise_ == NULL)
+		return;
+
+	QString filename =
+		ChooseExercise::chooseFile(exercise_->exercisesDir());
+	if (filename.isEmpty())
+		return;
+
+	exercise_->open(filename);
+	setupExercise();
+}
+
+
+void Dispatcher::setupExercise()
+{
+//	connect(exercise_,SIGNAL(analysisDone()),
+//	        this, SLOT(analysisDone()));
+//	connect(exercise_,SIGNAL(newTry()),
+//	        this, SLOT(newTry()));
+	exercise_->setupDisplay(centralFrame_);
 /*
-bool Dispatcher::chooseEvaluation()
-{
-	QStringList items;
-	items << tr("Rhythm test") << tr("Intonation test");
-//	items << tr("Intonation test") << tr("Sound control test") <<
-//tr("Shifting test");
-	bool ok;
-	QString item = QInputDialog::getItem(this, tr("Choose testing method"),
-	                                     tr("TestingMethod:"), items,
-					0, false, &ok);
-	if (ok && !item.isEmpty())
-	{
-		if (exercise_ != NULL)
-			delete exercise_;
-		if (item=="Rhythm test") exercise_ = new RhythmExercise();
-		if (item=="Intonation test") exercise_ = new IntonationExercise();
-//		if (item=="Sound control test") exercise_ = new ExerciseControl();
-//		if (item=="Shifting test") exercise_ = new ExerciseShift();
-		return true;
-	}
-	return false;
+	exercise_->addTry();
+	if (marBackend_ != NULL)
+		delete marBackend_;
+	marBackend_ = new MarBackend();
+	// FIXME: order of creation
+	marBackend_->newTry(exercise_->getBackend());
+
+	cout<<"made backend"<<endl;
+	connect(marBackend_, SIGNAL(setAttempt(bool)),
+	        this, SLOT(setAttempt(bool)));
+	connect(marBackend_, SIGNAL(gotAudio()),
+	        this, SLOT(analyze()));
+	updateMain(MEAWS_READY_EXERCISE);
+*/
 }
 
-void Dispatcher::open()
-{
-	if (chooseEvaluation())
-	{
-		QString openFilename = QFileDialog::getOpenFileName(
-				0,tr("Open file"), exercise_->exercisesDir(),
-				tr("Exercises (*.png)"));
-		if (!openFilename.isEmpty())
-		{
-			connect(exercise_,SIGNAL(analysisDone()),
-				this, SLOT(analysisDone()));
-			connect(exercise_,SIGNAL(newTry()),
-				this, SLOT(newTry()));
-			exercise_->open(openFilename);
-			//exercise_->setupDisplay(centralLayout_);
-			exercise_->addTry();
-			if (marBackend_ != NULL)
-				delete marBackend_;
-			marBackend_ = new MarBackend();
-			// FIXME: order of creation
-			marBackend_->newTry(exercise_->getBackend());
 
-			cout<<"made backend"<<endl;
-			connect(marBackend_, SIGNAL(setAttempt(bool)),
-				this, SLOT(setAttempt(bool)));
-			connect(marBackend_, SIGNAL(gotAudio()),
-				this, SLOT(analyze()));
-			updateMain(MEAWS_READY_EXERCISE);
-		}
-		else
-		{
-			close();
-		}
-	}
-}
-
+/*
 void Dispatcher::newTry() {
 	cout<<"dispatcher: new try"<<endl;
 	if (marBackend_ != NULL) {

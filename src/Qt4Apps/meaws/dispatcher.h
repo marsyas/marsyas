@@ -6,20 +6,16 @@
 #include "metro.h"
 #include "backend.h"
 
-#include "rhythm-exercise.h"
-#include "intonation-exercise.h"
-//#include "exerciseControl.h"
-//#include "exerciseShift.h"
+#include "choose-exercise.h"
 
-#include <QInputDialog>
-#include <QFileDialog>
+#include <QObject>
 
-class Dispatcher : public QDialog
+class Dispatcher : public QObject
 {
 	Q_OBJECT
 
 public:
-	Dispatcher(QObject* mainWindow);
+	Dispatcher(QObject* mainWindow, QFrame* centralFrame);
 	~Dispatcher();
 
 	QObject* getUserPointer()
@@ -29,8 +25,10 @@ public:
 
 	QString getTitle();
 	QString getMessage();
-/*
+
 public slots:
+	void openExercise();
+/*
 	void open();
 	void close();
 	void toggleAttempt();
@@ -53,26 +51,26 @@ public slots:
 		exercise_->delTry();
 	};
 
+*/
 signals:
 	void updateMain(int state);
-*/
 
 private:
 // main object variables
 	User *user_;
 	Metro *metro_;
+	Exercise *exercise_;
+	MarBackend *marBackend_;
 
+// setup
+	void setupExercise();
 
+	// basic GUI frame
+	QFrame *centralFrame_;
 /*
 //	void connectMain(QObject* mainWindow);
 	bool chooseEvaluation();
 
-	// basic GUI frame
-	QVBoxLayout *centralLayout_;
-
-	// actual Meaws objects
-	Exercise *exercise_;
-	MarBackend *marBackend_;
 
 	// left-over garbage (?)
 	QString exerciseName_;
