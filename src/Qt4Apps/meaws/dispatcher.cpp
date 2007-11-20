@@ -3,26 +3,51 @@ using namespace std;
 
 #include "dispatcher.h"
 
-ExerciseDispatcher::ExerciseDispatcher(QFrame *centralFrame)
+Dispatcher::Dispatcher(QObject* mainWindow)
 {
+	user_ = new User();
+//	metro_ = new Metro();
+
+	string audioFile = "data/sd.wav";
+//	metro_ = new Metro(this, audioFile);
+//	connect(visualMetroBeatAct_, SIGNAL(triggered()), metro_,
+//	        SLOT(toggleBigMetro()));
+//	metro_->setIcon(visualMetroBeatAct_);
+
+//	connectMain(mainWindow);
+
+/*
 	centralLayout_ = new QVBoxLayout();
 	centralLayout_->setContentsMargins(1,1,1,1);
 	centralFrame->setLayout(centralLayout_);
+*/
 
+/*
 	attemptRunningBool_ = false;
 	marBackend_ = NULL;
 	exercise_ = NULL;
 	statusMessage_ = "ready";
+*/
 }
 
-ExerciseDispatcher::~ExerciseDispatcher()
+Dispatcher::~Dispatcher()
 {
 	close();
-	if (centralLayout_ != NULL)
-		delete centralLayout_;
+//	if (centralLayout_ != NULL)
+//		delete centralLayout_;
 }
 
-bool ExerciseDispatcher::chooseEvaluation()
+//void Dispatcher::connectMain(QObject* mainWindow)
+//{
+//}
+
+bool Dispatcher::close()
+{
+	return true;
+}
+
+/*
+bool Dispatcher::chooseEvaluation()
 {
 	QStringList items;
 	items << tr("Rhythm test") << tr("Intonation test");
@@ -45,7 +70,7 @@ bool ExerciseDispatcher::chooseEvaluation()
 	return false;
 }
 
-void ExerciseDispatcher::open()
+void Dispatcher::open()
 {
 	if (chooseEvaluation())
 	{
@@ -59,7 +84,7 @@ void ExerciseDispatcher::open()
 			connect(exercise_,SIGNAL(newTry()),
 				this, SLOT(newTry()));
 			exercise_->open(openFilename);
-			exercise_->setupDisplay(centralLayout_);
+			//exercise_->setupDisplay(centralLayout_);
 			exercise_->addTry();
 			if (marBackend_ != NULL)
 				delete marBackend_;
@@ -72,7 +97,7 @@ void ExerciseDispatcher::open()
 				this, SLOT(setAttempt(bool)));
 			connect(marBackend_, SIGNAL(gotAudio()),
 				this, SLOT(analyze()));
-			enableActions(MEAWS_READY_EXERCISE);
+			updateMain(MEAWS_READY_EXERCISE);
 		}
 		else
 		{
@@ -81,7 +106,7 @@ void ExerciseDispatcher::open()
 	}
 }
 
-void ExerciseDispatcher::newTry() {
+void Dispatcher::newTry() {
 	cout<<"dispatcher: new try"<<endl;
 	if (marBackend_ != NULL) {
 		marBackend_->newTry(exercise_->getBackend());
@@ -89,7 +114,7 @@ void ExerciseDispatcher::newTry() {
 	}
 }
 
-void ExerciseDispatcher::close()
+void Dispatcher::close()
 {
 	if (marBackend_ != NULL)
 	{
@@ -104,15 +129,15 @@ void ExerciseDispatcher::close()
 		delete exercise_;
 		exercise_ = NULL;
 	}
-	enableActions(MEAWS_READY_USER);
+	updateMain(MEAWS_READY_USER);
 }
 
-void ExerciseDispatcher::toggleAttempt()
+void Dispatcher::toggleAttempt()
 {
 	setAttempt(!attemptRunningBool_);
 }
 
-void ExerciseDispatcher::setAttempt(bool running)
+void Dispatcher::setAttempt(bool running)
 {
 	// if the attempt state has changed
 	if (running != attemptRunningBool_)
@@ -121,19 +146,19 @@ void ExerciseDispatcher::setAttempt(bool running)
 		{
 			attemptRunningBool_ = true;
 			marBackend_->start();
-			enableActions(MEAWS_TRY_RUNNING);
+			updateMain(MEAWS_TRY_RUNNING);
 		}
 		else
 		{
 			attemptRunningBool_ = false;
 			marBackend_->stop();
-			enableActions(MEAWS_TRY_PAUSED);
+			updateMain(MEAWS_TRY_PAUSED);
 		}
 	}
 }
 
 
-bool ExerciseDispatcher::openAttempt()
+bool Dispatcher::openAttempt()
 {
 	QString openFilename = QFileDialog::getOpenFileName(0,tr("Open Attempt"),
 	                       "/home/gperciva/data/");
@@ -146,18 +171,18 @@ bool ExerciseDispatcher::openAttempt()
 }
 
 
-void ExerciseDispatcher::playFile()
+void Dispatcher::playFile()
 {
 	marBackend_->playFile();
 	setAttempt(true);
 }
 
-QString ExerciseDispatcher::getMessage()
+QString Dispatcher::getMessage()
 {
 	return statusMessage_;
 }
 
-void ExerciseDispatcher::analyze()
+void Dispatcher::analyze()
 {
 	if ( marBackend_->analyze() )
 	{
@@ -166,9 +191,10 @@ void ExerciseDispatcher::analyze()
 	}
 }
 
-void ExerciseDispatcher::analysisDone()
+void Dispatcher::analysisDone()
 {
 	statusMessage_ = exercise_->getMessage();
-	enableActions(MEAWS_TRY_PAUSED);
+	updateMain(MEAWS_TRY_PAUSED);
 }
+*/
 

@@ -55,7 +55,7 @@ void User::newUser()
 			weekPlay_ = "Never";
 			yearsPlaying_= "0";
 
-			emit enableActions(MEAWS_READY_USER);
+			emit updateMain(MEAWS_READY_USER);
 		}
 	}
 }
@@ -96,7 +96,7 @@ void User::openFile(const QString &openFilename)
 	updateUserInfoWindow();
 	isModified_ = false;
 	QApplication::restoreOverrideCursor();
-	emit enableActions(MEAWS_READY_USER);
+	emit updateMain(MEAWS_READY_USER);
 }
 
 bool User::save()
@@ -152,7 +152,7 @@ bool User::close()
 	{
 		username_ = "";
 		isModified_ = false;
-		emit enableActions(MEAWS_READY_NOTHING);
+		emit updateMain(MEAWS_READY_NOTHING);
 		return true;
 	}
 	return false;

@@ -15,9 +15,7 @@ class QLabel;
 
 // Meaws stuff
 #include "defs.h"
-#include "user.h"
 #include "dispatcher.h"
-#include "metro.h"
 
 class MainWindow : public QMainWindow
 {
@@ -31,11 +29,11 @@ protected:
 	void closeEvent(QCloseEvent *event);
 
 public slots:
-	void enableActions(int state);
+	void updateMain(int state = 0);
 
 private slots:
 	void about();
-	bool closeUser();
+//	bool close();
 
 private:
 // basic application functions
@@ -44,10 +42,11 @@ private:
 	void createMenus();
 	void createToolBars();
 	void createStatusBar();
+	void connectObjects();
 	void readSettings();
 	void writeSettings();
 
-	void createMeawsObjects();
+
 
 // main interface objects
 	QFrame* centralFrame_;
@@ -97,11 +96,7 @@ private:
 	QLabel *exerciseTitle_;
 	bool exerciseRunning_;
 
-// main object variables
-	User *user_;
-	ExerciseDispatcher *exerciseDispatcher_;
-	Metro *metro_;
-
+	Dispatcher *dispatcher_;
 };
 
 #endif

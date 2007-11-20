@@ -34,7 +34,7 @@ public slots:
 	void setUserInfo();
 
 signals:
-	void enableActions(int state);
+	void updateMain(int state);
 
 private slots:
 	bool queryName();
