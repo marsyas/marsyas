@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2007 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -23,8 +23,8 @@ using namespace Marsyas;
 
 Series::Series(string name):MarSystem("Series",name)
 {
-  isComposite_ = true;
-  addControls();
+	isComposite_ = true;
+	addControls();
 }
 
 Series::~Series()
@@ -34,7 +34,7 @@ Series::~Series()
 MarSystem* 
 Series::clone() const 
 {
-  return new Series(*this);
+	return new Series(*this);
 }
 
 void 
@@ -45,101 +45,101 @@ Series::addControls()
 mrs_real* 
 const Series::recvControls()
 {
-  if ( marsystemsSize_ != 0 ) {
-    if (marsystems_[0]->getType() == "NetworkTCPSource" ) {
-      return marsystems_[0]->recvControls();
-    }
-  }
-  return 0;
+	if ( marsystemsSize_ != 0 ) {
+		if (marsystems_[0]->getType() == "NetworkTCPSource" ) {
+			return marsystems_[0]->recvControls();
+		}
+	}
+	return 0;
 }
 
 void 
 Series::myUpdate(MarControlPtr sender)
 {
-  if (marsystemsSize_ != 0) 
-    {
-      //propagate in flow controls to first child
-      marsystems_[0]->setctrl("mrs_natural/inObservations", inObservations_);
-      marsystems_[0]->setctrl("mrs_natural/inSamples", inSamples_);
-      marsystems_[0]->setctrl("mrs_real/israte", israte_);
-      marsystems_[0]->setctrl("mrs_string/inObsNames", inObsNames_);
-      marsystems_[0]->update();
+	if (marsystemsSize_ != 0) 
+	{
+		//propagate in flow controls to first child
+		marsystems_[0]->setctrl("mrs_natural/inObservations", inObservations_);
+		marsystems_[0]->setctrl("mrs_natural/inSamples", inSamples_);
+		marsystems_[0]->setctrl("mrs_real/israte", israte_);
+		marsystems_[0]->setctrl("mrs_string/inObsNames", inObsNames_);
+		marsystems_[0]->update();
 
-      // update dataflow component MarSystems in order 
-      for (mrs_natural i=1; i < marsystemsSize_; i++)
-	{
-	  marsystems_[i]->setctrl(marsystems_[i]->ctrl_inObsNames_, 
-				  marsystems_[i-1]->ctrl_onObsNames_);
-	  marsystems_[i]->setctrl(marsystems_[i]->ctrl_inObservations_, 
-				  marsystems_[i-1]->ctrl_onObservations_);
-	  marsystems_[i]->setctrl(marsystems_[i]->ctrl_inSamples_, 
-				  marsystems_[i-1]->ctrl_onSamples_);
-	  marsystems_[i]->setctrl(marsystems_[i]->ctrl_israte_, 
-				  marsystems_[i-1]->ctrl_osrate_);
-	  marsystems_[i]->update();
-	}
+		// update dataflow component MarSystems in order 
+		for (mrs_natural i=1; i < marsystemsSize_; i++)
+		{
+			marsystems_[i]->setctrl(marsystems_[i]->ctrl_inObsNames_, 
+									marsystems_[i-1]->ctrl_onObsNames_);
+			marsystems_[i]->setctrl(marsystems_[i]->ctrl_inObservations_, 
+									marsystems_[i-1]->ctrl_onObservations_);
+			marsystems_[i]->setctrl(marsystems_[i]->ctrl_inSamples_, 
+									marsystems_[i-1]->ctrl_onSamples_);
+			marsystems_[i]->setctrl(marsystems_[i]->ctrl_israte_, 
+									marsystems_[i-1]->ctrl_osrate_);
+			marsystems_[i]->update();
+		}
 	  
-      //forward flow propagation
-      updctrl(ctrl_onObsNames_, marsystems_[marsystemsSize_-1]->ctrl_onObsNames_, NOUPDATE);
-      updctrl(ctrl_onSamples_, marsystems_[marsystemsSize_-1]->ctrl_onSamples_, NOUPDATE);
-      updctrl(ctrl_onObservations_, marsystems_[marsystemsSize_-1]->ctrl_onObservations_, NOUPDATE);
-      updctrl(ctrl_osrate_, marsystems_[marsystemsSize_-1]->ctrl_osrate_, NOUPDATE);
+		//forward flow propagation
+		updctrl(ctrl_onObsNames_, marsystems_[marsystemsSize_-1]->ctrl_onObsNames_, NOUPDATE);
+		updctrl(ctrl_onSamples_, marsystems_[marsystemsSize_-1]->ctrl_onSamples_, NOUPDATE);
+		updctrl(ctrl_onObservations_, marsystems_[marsystemsSize_-1]->ctrl_onObservations_, NOUPDATE);
+		updctrl(ctrl_osrate_, marsystems_[marsystemsSize_-1]->ctrl_osrate_, NOUPDATE);
 	  
-      for (mrs_natural i=0; i< marsystemsSize_-1; i++)
-	{
-	  MarControlAccessor acc(marsystems_[i]->ctrl_processedData_, NOUPDATE);
-	  realvec& processedData = acc.to<mrs_realvec>();
+		for (mrs_natural i=0; i< marsystemsSize_-1; i++)
+		{
+			MarControlAccessor acc(marsystems_[i]->ctrl_processedData_, NOUPDATE);
+			realvec& processedData = acc.to<mrs_realvec>();
 	      
-	  if (processedData.getRows() != marsystems_[i]->ctrl_onObservations_->to<mrs_natural>()  ||
-	      processedData.getCols() != marsystems_[i]->ctrl_onSamples_->to<mrs_natural>())
-	    {
-	      processedData.create(marsystems_[i]->ctrl_onObservations_->to<mrs_natural>(), 
-				   marsystems_[i]->ctrl_onSamples_->to<mrs_natural>());
-	    }
+			if (processedData.getRows() != marsystems_[i]->ctrl_onObservations_->to<mrs_natural>()  ||
+				processedData.getCols() != marsystems_[i]->ctrl_onSamples_->to<mrs_natural>())
+			{
+				processedData.create(marsystems_[i]->ctrl_onObservations_->to<mrs_natural>(), 
+									 marsystems_[i]->ctrl_onSamples_->to<mrs_natural>());
+			}
+		}
 	}
-    }
-  else //if composite is empty...
-    MarSystem::myUpdate(sender);
+	else //if composite is empty...
+		MarSystem::myUpdate(sender);
 }
 
 void
 Series::myProcess(realvec& in, realvec& out)
 {
-  // Add assertions about sizes [!]
+	// Add assertions about sizes [!]
   
-  if (marsystemsSize_ == 1)
-    marsystems_[0]->process(in,out);
-  else if(marsystemsSize_ > 1)
-    {
-      for (mrs_natural i = 0; i < marsystemsSize_; i++)
+	if (marsystemsSize_ == 1)
+		marsystems_[0]->process(in,out);
+	else if(marsystemsSize_ > 1)
 	{
-	  if (i==0)
-	    {
-	      MarControlAccessor acc(marsystems_[i]->ctrl_processedData_);
-	      realvec& slice = acc.to<mrs_realvec>();
-	      marsystems_[i]->process(in, slice);	
-	    }
-	  else if (i == marsystemsSize_-1)
-	    {
-	      MarControlAccessor acc(marsystems_[i-1]->ctrl_processedData_, true, true);
-	      realvec& slice = acc.to<mrs_realvec>();
-	      marsystems_[i]->process(slice, out);	
-	    }
-	  else
-	    {
-	      MarControlAccessor acc1(marsystems_[i-1]->ctrl_processedData_, true, true);
-	      realvec& slice1 = acc1.to<mrs_realvec>();
-	      MarControlAccessor acc2(marsystems_[i]->ctrl_processedData_);
-	      realvec& slice2 = acc2.to<mrs_realvec>();
-	      marsystems_[i]->process(slice1, slice2);	
-	    }
+		for (mrs_natural i = 0; i < marsystemsSize_; i++)
+		{
+			if (i==0)
+			{
+				MarControlAccessor acc(marsystems_[i]->ctrl_processedData_);
+				realvec& slice = acc.to<mrs_realvec>();
+				marsystems_[i]->process(in, slice);	
+			}
+			else if (i == marsystemsSize_-1)
+			{
+				MarControlAccessor acc(marsystems_[i-1]->ctrl_processedData_, true, true);
+				realvec& slice = acc.to<mrs_realvec>();
+				marsystems_[i]->process(slice, out);	
+			}
+			else
+			{
+				MarControlAccessor acc1(marsystems_[i-1]->ctrl_processedData_, true, true);
+				realvec& slice1 = acc1.to<mrs_realvec>();
+				MarControlAccessor acc2(marsystems_[i]->ctrl_processedData_);
+				realvec& slice2 = acc2.to<mrs_realvec>();
+				marsystems_[i]->process(slice1, slice2);	
+			}
+		}
 	}
-    }
-  else if(marsystemsSize_ == 0) //composite has no children!
-    {
-      MRSWARN("Series::process: composite has no children MarSystems - passing input to output without changes.");
-      out = in;
-    }
+	else if(marsystemsSize_ == 0) //composite has no children!
+	{
+		MRSWARN("Series::process: composite has no children MarSystems - passing input to output without changes.");
+		out = in;
+	}
 
 
 }
