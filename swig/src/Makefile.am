@@ -19,7 +19,7 @@ dist_python_DATA = marsyas_python.py
 python_LTLIBRARIES = _marsyas_python.la
 
 _marsyas_python_la_SOURCES = marsyas_python.cxx
-_marsyas_python_la_LDFLAGS = -framework CoreAudio -framework CoreMidi -framework CoreFoundation -module -avoid-version
+_marsyas_python_la_LDFLAGS = @MRS_LIBS@ -module -avoid-version
 
 endif
 

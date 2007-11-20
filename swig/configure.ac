@@ -8,14 +8,6 @@ AC_PROG_CXX
 AC_DISABLE_STATIC
 AC_PROG_LIBTOOL
 
-AC_ARG_WITH([mad],
-	    [AS_HELP_STRING([--with-mad],[Links agains libmad])],
-	    [MAD_LIBS="-lmad"],
-	    [MAD_LIBS=""])
-
-# ALSA_LIBS="-lpthread -lm -ldl -lasound"
-ALSA_LIBS=""
-
 AC_ARG_ENABLE([bindings],
 	      [AS_HELP_STRING([--enable-bindings],[Use containing folder as Marsyas source])],
 	      [MRS_LIBS="$MAD_LIBS $ALSA_LIBS -L\$(top_builddir)/../marsyas -lmarsyas -framework CorAudio -framework CoreFoundation -framework CoreMidi"
@@ -24,6 +16,59 @@ AC_ARG_ENABLE([bindings],
 	      [MRS_LIBS="$MAD_LIBS $ALSA_LIBS -lmarsyas"
 	       MRS_INCS=
 	      ])
+
+
+# System specific
+
+#  cpu config
+case "${host}" in
+	powerpc-*) 
+	AC_DEFINE([MARSYAS_BIGENDIAN], [1], [IS BIG ENDIAN])
+	AC_DEFINE([__BIG_ENDIAN__], [1], [IS BIG ENDIAN])
+	;;
+	i386-*) 
+	;;
+	i686-*) 
+	;;
+	esac
+
+#  operating system config
+case "${host}" in
+ 	*-*-linux-gnu*) 
+	AC_DEFINE([MARSYAS_LINUX], [1], [LINUX])
+    echo "Linux system" 
+
+
+
+	   AC_CHECK_HEADERS([alsa/asoundlib.h],,AC_MSG_ERROR([Cannot find ALSA headers]))
+	   AC_DEFINE([__LINUX_ALSA__],[1], [LINUX SYSTEM FOR RTAUDIO])	
+	   AC_DEFINE([__LINUX_ALSASEQ__],[1], [LINUX SYSTEM FOR RTAUDIO])
+	   MRS_LIBS="-lpthread -lasound -lmarsyas ${MADLIB} ${MATLABLIBS} ${OGGLIB}"
+	   echo "Using ALSA audio"
+
+	;;
+
+
+
+	*-*-darwin*) 
+	MRS_LIBS="-lpthread ${MADLIB} ${OGGLIB} ${MATLABLIBS} -framework CoreAudio -framework CoreMidi -framework CoreFoundation -lmarsyas"
+	AC_DEFINE([MARSYAS_MACOSX],[1], [MACOSX SYSTEM])		
+	AC_DEFINE([__MACOSX_CORE__],[1], [MACOSX SYSTEM FOR RTAUDIO])		
+	;;
+	*-*-cygwin*) 
+	AC_DEFINE([MARSYAS_CYGWIN], [1], [CYGWIN])
+	MRS_LIBS="-lpthread -ldsound -lwinmm -lmarsyas ${MADLIB} ${OGGLIB} ${MATLABLIBS}"
+	# INCLUDES="$INCLUDES /usr/include/directx"
+	AC_DEFINE([__WINDOWS_DS__],[1], [WINDOWS SYSTEM FOR RTAUDIO])		
+	AC_DEFINE([__WINDOWS_MM__],[1], [WINDOWS SYSTEM FOR RTAUDIO])		
+	AC_DEFINE([__CYGWIN__], [1], [CYGWIN FOR THREAD STUFF])
+	AC_DEFINE([__OS_WINDOWS__RTMIDI__], [1], [WINDOWS SYSTEM FOR RTMIDI])
+	AC_DEFINE([CYGWIN],[1], [WINDOWS STUFF])
+	;;
+esac
+
+
+
 
 AC_SUBST([MRS_LIBS])
 AC_SUBST([MRS_INCS])
