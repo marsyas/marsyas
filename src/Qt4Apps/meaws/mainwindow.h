@@ -29,7 +29,7 @@ protected:
 	void closeEvent(QCloseEvent *event);
 
 public slots:
-	void updateMain(int state = 0);
+	void updateMain(int state);
 
 private slots:
 	void about();

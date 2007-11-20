@@ -30,7 +30,7 @@ public:
 
 signals:
 	void analysisDone();
-	void newTry();
+	void setBackend(mrs_natural action);
 
 protected slots:
 	virtual void selectTry(mrs_natural selected);

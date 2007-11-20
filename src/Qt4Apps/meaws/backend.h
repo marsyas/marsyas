@@ -33,6 +33,7 @@ public slots:
 	void ctrlChanged(MarControlPtr changed);
 	void start();
 	void stop();
+	void setBackend(mrs_natural action);
 
 signals:
 	void setAttempt(bool running);

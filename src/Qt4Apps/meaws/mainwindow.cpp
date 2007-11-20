@@ -221,6 +221,8 @@ void MainWindow::connectObjects()
 	connect(openExerciseAct_, SIGNAL(triggered()),
 	        dispatcher_, SLOT(openExercise()));
 
+	connect(testingFileAct_, SIGNAL(triggered()),
+	        dispatcher_, SLOT(openAttempt()));
 	/*
 	connect(toggleAttemptAct, SIGNAL(triggered()),
 	dispatcher_, SLOT(toggleAttempt()));
@@ -229,8 +231,6 @@ void MainWindow::connectObjects()
 
 	connect(calcExerciseAct_, SIGNAL(triggered()),
 	dispatcher_, SLOT(analyze()));
-	connect(testingFileAct_, SIGNAL(triggered()),
-	dispatcher_, SLOT(openAttempt()));
 	connect(playFileAct_, SIGNAL(triggered()),
 	dispatcher_, SLOT(playFile()));
 	connect(addTryAct_, SIGNAL(triggered()), dispatcher_, SLOT(addTry()));

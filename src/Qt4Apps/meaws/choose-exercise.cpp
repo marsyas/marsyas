@@ -31,3 +31,12 @@ QString ChooseExercise::chooseFile(QString dir)
 }
 
 
+QString ChooseExercise::chooseAttempt()
+{
+	// FIXME: directory
+	QString openFilename = QFileDialog::getOpenFileName(0,tr("Open Attempt"),
+	                       "/home/gperciva/data/");
+	return openFilename;
+}
+
+

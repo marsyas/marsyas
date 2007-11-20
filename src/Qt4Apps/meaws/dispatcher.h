@@ -28,6 +28,9 @@ public:
 
 public slots:
 	void openExercise();
+
+	void openAttempt();
+	void analyze();  // temp ?
 /*
 	void open();
 	void close();
@@ -37,7 +40,6 @@ public slots:
 
 	void playFile();
 
-	void analyze();  // temp ?
 	void analysisDone(); // even tempier
 
 	void newTry();

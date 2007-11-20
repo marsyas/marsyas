@@ -9,6 +9,12 @@ Dispatcher::Dispatcher(QObject* mainWindow, QFrame* centralFrame)
 //	metro_ = new Metro();
 	exercise_ = NULL;
 
+	marBackend_ = new MarBackend();
+//	connect(marBackend_, SIGNAL(setAttempt(bool)),
+//	        this, SLOT(setAttempt(bool)));
+	connect(marBackend_, SIGNAL(gotAudio()),
+	        this, SLOT(analyze()));
+
 //	string audioFile = "data/sd.wav";
 //	metro_ = new Metro(this, audioFile);
 //	connect(visualMetroBeatAct_, SIGNAL(triggered()), metro_,
@@ -77,25 +83,38 @@ void Dispatcher::setupExercise()
 //	connect(exercise_,SIGNAL(newTry()),
 //	        this, SLOT(newTry()));
 	exercise_->setupDisplay(centralFrame_);
-/*
 	exercise_->addTry();
-	if (marBackend_ != NULL)
-		delete marBackend_;
-	marBackend_ = new MarBackend();
+	updateMain(MEAWS_READY_EXERCISE);
+/*
 	// FIXME: order of creation
 	marBackend_->newTry(exercise_->getBackend());
 
-	cout<<"made backend"<<endl;
-	connect(marBackend_, SIGNAL(setAttempt(bool)),
-	        this, SLOT(setAttempt(bool)));
-	connect(marBackend_, SIGNAL(gotAudio()),
-	        this, SLOT(analyze()));
-	updateMain(MEAWS_READY_EXERCISE);
 */
 }
 
+void Dispatcher::openAttempt()
+{
+	QString filename =
+		ChooseExercise::chooseAttempt();
+	marBackend_->openTry(exercise_->getBackend(), qPrintable(filename) );
+}
+
+void Dispatcher::analyze()
+{
+	if ( marBackend_->analyze() )
+	{
+		exercise_->displayAnalysis( marBackend_ );
+		emit updateMain(MEAWS_UPDATE);
+	}
+}
 
 /*
+void Dispatcher::analysisDone()
+{
+	statusMessage_ = exercise_->getMessage();
+	updateMain(MEAWS_TRY_PAUSED);
+}
+
 void Dispatcher::newTry() {
 	cout<<"dispatcher: new try"<<endl;
 	if (marBackend_ != NULL) {
@@ -148,18 +167,6 @@ void Dispatcher::setAttempt(bool running)
 }
 
 
-bool Dispatcher::openAttempt()
-{
-	QString openFilename = QFileDialog::getOpenFileName(0,tr("Open Attempt"),
-	                       "/home/gperciva/data/");
-	if (!openFilename.isEmpty())
-	{
-		marBackend_->openTry(exercise_->getBackend(), qPrintable(openFilename) );
-		return true;
-	}
-	return false;
-}
-
 
 void Dispatcher::playFile()
 {
@@ -172,19 +179,5 @@ QString Dispatcher::getMessage()
 	return statusMessage_;
 }
 
-void Dispatcher::analyze()
-{
-	if ( marBackend_->analyze() )
-	{
-		exercise_->displayAnalysis( marBackend_ );
-		analysisDone();
-	}
-}
-
-void Dispatcher::analysisDone()
-{
-	statusMessage_ = exercise_->getMessage();
-	updateMain(MEAWS_TRY_PAUSED);
-}
 */
 

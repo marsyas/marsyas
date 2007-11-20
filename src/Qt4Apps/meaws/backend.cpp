@@ -69,6 +69,13 @@ MarSystem* MarBackend::makeSourceNet(bool fromFile) {
 	return pnet;
 }
 
+void MarBackend::setBackend(mrs_natural action)
+{
+	method_ = action;
+	if (method_ > 1)
+		newTry(method_);
+}
+
 void MarBackend::openTry(mrs_natural getType, std::string filename) {
 	delNet();
 	cout<<"get type: "<<getType<<endl;

@@ -21,6 +21,7 @@ public:
 
 	static Exercise* chooseType();
 	static QString chooseFile(QString dir);
+	static QString chooseAttempt();
 
 };
 #endif
