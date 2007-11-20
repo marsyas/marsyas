@@ -33,7 +33,7 @@ lastGoodVersion=$matDir/lastworking.txt
 #  $1 is the "pass/fail" on the subject line
 sendreport() {
 	subject="$subjectBase $1"
-	echo "$subject"
+#	echo "$subject"
 	cat $report
 	if [ `which mail` ]
 	then
@@ -56,6 +56,10 @@ then
 	echo "$3... succeeded." >> $report
 else
 	echo "$3... FAILED!   *********" >> $report
+	echo >> $report
+	last=`cat $lastGoodVersion`
+	echo "Last good build... $last" >> $report
+	echo >> $report
 	echo >> $report
 	tail -n 50 $2 >> $report
 	sendreport "FAILED"
@@ -105,4 +109,5 @@ testthing "make dist" $distLog "Make dist"
 testthing "make distcheck" $distcheckLog "Make distcheck"
 
 sendreport "Pass"
+echo $version > $lastGoodVersion
 
