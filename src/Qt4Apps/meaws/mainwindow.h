@@ -33,9 +33,10 @@ public slots:
 
 private slots:
 	void about();
-//	bool close();
 
 private:
+	Dispatcher *dispatcher_;
+
 // basic application functions
 	void createActions();
 	void createMain();
@@ -53,6 +54,9 @@ private:
 
 // main interface objects
 	QFrame* centralFrame_;
+	QLabel *normalStatusMessage_;
+	QLabel *permanentStatusMessage_;
+
 
 // menu and toolbar objects
 	QMenu *fileMenu_;
@@ -80,7 +84,6 @@ private:
 	QAction *testingFileAct_;
 	QAction *playFileAct_;
 	QSlider *tempoSlider_;
-	QSpinBox *tempoBox_;
 	QAction *addTryAct_;
 	QAction *delTryAct_;
 
@@ -89,17 +92,6 @@ private:
 	QMenu *helpMenu_;
 	QAction *aboutAct_;
 	QAction *aboutQtAct_;
-
-	// status bar
-	QLabel *normalStatusMessage_;
-	QLabel *permanentStatusMessage_;
-
-
-// other stuff that appears to be necessary... for now
-	QLabel *exerciseTitle_;
-	bool exerciseRunning_;
-
-	Dispatcher *dispatcher_;
 };
 
 #endif

@@ -69,8 +69,6 @@ private:
 	QFrame *centralFrame_;
 /*
 //	void connectMain(QObject* mainWindow);
-	bool chooseEvaluation();
-
 
 	// left-over garbage (?)
 	QString exerciseName_;

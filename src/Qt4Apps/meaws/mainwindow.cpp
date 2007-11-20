@@ -122,32 +122,18 @@ void MainWindow::createToolBars()
 
 	tempoToolBar_ = addToolBar(tr("Tempo"));
 
-	/*
-	tempoBox_ = new QSpinBox();
-	tempoBox_->setRange(30,240);
-	tempoBox_->setValue(60);
-	tempoToolBar_->addWidget(tempoBox_);
-	*/
-
 	tempoSlider_ = new QSlider(Qt::Horizontal);
 	tempoSlider_->setRange(30, 240);
 	tempoSlider_->setValue(60);
-	//	tempoSlider_->setMinimumWidth(150);
-	//	tempoSlider_->setMaximumWidth(250);
+	tempoSlider_->setMinimumWidth(100);
+	//tempoSlider_->setMaximumWidth(200);
 
 	tempoToolBar_->addWidget(tempoSlider_);
 	tempoToolBar_->addAction(visualMetroBeatAct_);
 
-	//	connect(tempoSlider_, SIGNAL(valueChanged(int)),
-	//	        tempoBox_, SLOT(setValue(int)));
-	//	connect(tempoBox_, SIGNAL(valueChanged(int)),
-	//	        tempoSlider_, SLOT(setValue(int)));
-
-	// TODO: keep or not?
-	exerciseTitle_ = new QLabel();
-	exerciseTitle_->setText("");
 	otherToolBar_ = addToolBar(tr("Other"));
-	otherToolBar_->addWidget(exerciseTitle_);
+	otherToolBar_->addAction(addTryAct_);
+	otherToolBar_->addAction(delTryAct_);
 }
 
 void MainWindow::createActions()
@@ -229,26 +215,13 @@ void MainWindow::connectObjects()
 	connect(aboutQtAct_, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
 
-
-
-	// Meaws objects
-	QObject* user = dispatcher_->getUserPointer();
-	connect(user, SIGNAL(updateMain(int)), this, SLOT(updateMain(int)));
-
-	connect(closeUserAct_, SIGNAL(triggered()), user, SLOT(close()));
-	connect(newUserAct_, SIGNAL(triggered()), user, SLOT(newUser()));
-	connect(openUserAct_, SIGNAL(triggered()), user, SLOT(open()));
-	connect(saveUserAct_, SIGNAL(triggered()), user, SLOT(save()));
-	connect(saveAsUserAct_, SIGNAL(triggered()), user, SLOT(saveAs()));
-	connect(setUserInfoAct_, SIGNAL(triggered()), user, SLOT(setUserInfo()));
-
-
+	// Dispatcher objects
+	connect(dispatcher_, SIGNAL(updateMain(int)),
+	        this, SLOT(updateMain(int)));
 	connect(openExerciseAct_, SIGNAL(triggered()),
 	        dispatcher_, SLOT(openExercise()));
-	/*
-	connect(dispatcher_, SIGNAL(updateMain(int)),
-	this, SLOT(updateMain(int)));
 
+	/*
 	connect(toggleAttemptAct, SIGNAL(triggered()),
 	dispatcher_, SLOT(toggleAttempt()));
 	connect(closeExerciseAct_, SIGNAL(triggered()),
@@ -263,8 +236,23 @@ void MainWindow::connectObjects()
 	connect(addTryAct_, SIGNAL(triggered()), dispatcher_, SLOT(addTry()));
 	connect(delTryAct_, SIGNAL(triggered()), dispatcher_, SLOT(delTry()));
 
-
 	*/
+
+
+
+	// Sub-dispatcher objects
+	QObject* user = dispatcher_->getUserPointer();
+	connect(user, SIGNAL(updateMain(int)), this, SLOT(updateMain(int)));
+
+	connect(closeUserAct_, SIGNAL(triggered()), user, SLOT(close()));
+	connect(newUserAct_, SIGNAL(triggered()), user, SLOT(newUser()));
+	connect(openUserAct_, SIGNAL(triggered()), user, SLOT(open()));
+	connect(saveUserAct_, SIGNAL(triggered()), user, SLOT(save()));
+	connect(saveAsUserAct_, SIGNAL(triggered()), user, SLOT(saveAs()));
+	connect(setUserInfoAct_, SIGNAL(triggered()), user, SLOT(setUserInfo()));
+
+	// metro ?
+
 }
 
 void MainWindow::displayMessages()
@@ -278,12 +266,9 @@ void MainWindow::updateMain(int state)
 	switch (state)
 	{
 	case 0:
-	{
 		displayMessages();
 		break;
-	}
-	case MEAWS_READY_NOTHING:     // just opened app
-	{
+	case MEAWS_READY_NOTHING:
 		saveUserAct_   ->setEnabled(false);
 		saveAsUserAct_ ->setEnabled(false);
 		closeUserAct_  ->setEnabled(false);
@@ -296,9 +281,7 @@ void MainWindow::updateMain(int state)
 
 		displayMessages();
 		break;
-	}
-	case MEAWS_READY_USER:     // user_ selected
-	{
+	case MEAWS_READY_USER:
 		saveUserAct_   ->setEnabled(true);
 		saveAsUserAct_ ->setEnabled(true);
 		closeUserAct_  ->setEnabled(true);
@@ -314,18 +297,14 @@ void MainWindow::updateMain(int state)
 
 		displayMessages();
 		break;
-	}
-	case MEAWS_READY_EXERCISE:	 // dispatcher_ loaded
+	case MEAWS_READY_EXERCISE:
 		toggleAttemptAct->setEnabled(true);
 		closeExerciseAct_->setEnabled(true);
 
 		tempoToolBar_->setEnabled(true);
 		testingMenu_ ->setEnabled(true);
 
-		// temp ?
-//		tempoBox_->clearFocus();
-//		tempoSlider_->setFocus();
-
+		displayMessages();
 		break;
 	case MEAWS_TRY_PAUSED:    // ready to analyze
 		toggleAttemptAct->setStatusTip(tr("Start"));
@@ -335,19 +314,12 @@ void MainWindow::updateMain(int state)
 		//statusBar()->showMessage(dispatcher_->getMessage(),100000);
 		//		permanentStatusMessage_->setText(dispatcher_->getMessage());
 
-		// temp ?
-		tempoBox_->clearFocus();
-		tempoSlider_->setFocus();
 		break;
 
 	case MEAWS_TRY_RUNNING:
 		toggleAttemptAct->setStatusTip(tr("Stop"));
 		toggleAttemptAct->setIcon(QIcon(":/icons/player_pause.png"));
 		//		metro_->startMetro();
-
-		// temp ?
-		tempoBox_->clearFocus();
-		tempoSlider_->setFocus();
 
 		break;
 	}
