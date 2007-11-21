@@ -14,6 +14,7 @@ MarBackend::MarBackend() {
 	method_ = -1;
 	filename_ = "";
 	setupChanged = true;
+	hasAudio = false;
 }
 
 MarBackend::~MarBackend() {
@@ -144,8 +145,11 @@ void MarBackend::start() {
 		setup();
 	}
 	emit setAttempt(true);
-	if (mrsWrapper != NULL)
+	if (mrsWrapper != NULL) {
 		mrsWrapper->play();
+	} else {
+		cout<<"REALLY should not happen"<<endl;
+	}
 }
 
 void MarBackend::stop() {

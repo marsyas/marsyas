@@ -10,10 +10,14 @@ Dispatcher::Dispatcher(QObject* mainWindow, QFrame* centralFrame)
 	exercise_ = NULL;
 
 	marBackend_ = new MarBackend();
-//	connect(marBackend_, SIGNAL(setAttempt(bool)),
-//	        this, SLOT(setAttempt(bool)));
 	connect(marBackend_, SIGNAL(gotAudio()),
 	        this, SLOT(analyze()));
+	connect(marBackend_, SIGNAL(setAttempt(bool)),
+	        this, SLOT(setAttempt(bool)));
+	marBackend_->setFileName("foo.wav");
+	
+
+	attemptRunningBool_ = false;
 
 //	string audioFile = "data/sd.wav";
 //	metro_ = new Metro(this, audioFile);
@@ -116,11 +120,13 @@ QString Dispatcher::getStatus()
 // temp
 void Dispatcher::toggleAttempt()
 {
-//	setAttempt(!attemptRunningBool_);
+	cout<<"toggleAttempt"<<endl;
+	setAttempt(!attemptRunningBool_);
 }
-/*
+
 void Dispatcher::setAttempt(bool running)
 {
+	cout<<"setAttempt: "<<running<<endl;
 	// if the attempt state has changed
 	if (running != attemptRunningBool_)
 	{
@@ -138,7 +144,6 @@ void Dispatcher::setAttempt(bool running)
 		}
 	}
 }
-*/
 
 /*
 void Dispatcher::analysisDone()

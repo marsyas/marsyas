@@ -33,12 +33,15 @@ public slots:
 
 	void openAttempt();
 	void analyze();
+
+
+
 	void toggleAttempt();
+	void setAttempt(bool running);
 
 /*
 	void open();
 	void close();
-	void setAttempt(bool running);
 	bool openAttempt();
 
 	void playFile();
