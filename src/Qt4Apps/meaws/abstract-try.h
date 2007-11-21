@@ -14,18 +14,24 @@ class Try : public QObject
 public:
 	Try();
 	~Try();
-	virtual QFrame* getDisplay()
+	QFrame* getDisplay()
 		{ return tryArea_; };
-	virtual void setTryNumber(mrs_natural num)
+	void setTryNumber(mrs_natural num)
 		{ tryNumber_ = num; };
+	mrs_real getScore()
+		{ return 0; };
+	mrs_bool hasAudio()
+		{ return hasAudio_; };
+	void setFilename(mrs_string filename)
+		{ filename_ = filename; };
+	mrs_string getFilename()
+		{ return filename_; };
+
+
 	virtual void displayAnalysis(MarBackend *results)
 		{ (void) results; hasAudio_ = true; };
 	virtual void selected(bool selected)
 		{ (void) selected; };
-	virtual mrs_real getScore()
-		{ return 0; };
-	virtual mrs_bool hasAudio()
-		{ return hasAudio_; };
 
 public slots:
 	virtual void clicked()
@@ -43,6 +49,7 @@ protected:
 
 	mrs_natural tryNumber_;
 	mrs_bool hasAudio_;
+	mrs_string filename_;
 };
 #endif
 

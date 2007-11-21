@@ -250,7 +250,7 @@ void MainWindow::connectObjects()
 	connect(saveAsUserAct_, SIGNAL(triggered()), user, SLOT(saveAs()));
 	connect(setUserInfoAct_, SIGNAL(triggered()), user, SLOT(setUserInfo()));
 
-	// metro ?
+	// metro
 	QObject* metro = dispatcher_->getMetroPointer();
 
 	connect(visualMetroBeatAct_, SIGNAL(triggered()), metro,
@@ -322,21 +322,18 @@ void MainWindow::updateMain(int state)
 
 		displayMessages();
 		break;
-	case MEAWS_TRY_PAUSED:    // ready to analyze
+	case MEAWS_TRY_PAUSED:
 		toggleAttemptAct->setStatusTip(tr("Start"));
 		toggleAttemptAct->setIcon(QIcon(":/icons/player_play.png"));
-		//		metro_->stopMetro();
 
-		//statusBar()->showMessage(dispatcher_->getMessage(),100000);
-		//		permanentStatusMessage_->setText(dispatcher_->getMessage());
-
+		displayMessages();
 		break;
 
 	case MEAWS_TRY_RUNNING:
 		toggleAttemptAct->setStatusTip(tr("Stop"));
 		toggleAttemptAct->setIcon(QIcon(":/icons/player_pause.png"));
-		//		metro_->startMetro();
 
+		displayMessages();
 		break;
 	}
 }

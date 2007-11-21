@@ -23,6 +23,10 @@ public:
 	virtual QString getMessage() = 0;
 	virtual bool displayAnalysis(MarBackend *results) = 0;
 
+	void setFilename(mrs_string filename);
+	mrs_string getFilename();
+	bool hasAudio();
+
 public slots:
 	virtual void addTry() = 0;
 	virtual void delTry() = 0;

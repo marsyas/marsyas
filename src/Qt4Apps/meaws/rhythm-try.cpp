@@ -167,7 +167,7 @@ RhythmTry::calcOffsetAndScore(realvec exerciseOnsets, realvec audioOnsets)
 		if (offsetScore > score_) {
 			score_ = offsetScore;
 			bestOffset = offset;
-			//cout<<"shifting by "<<offset<<" score: "<<offsetScore<<endl;
+			cout<<"shifting by "<<offset<<" score: "<<offsetScore<<endl;
 		}
 		//cout<<"score: "<<offsetScore<<endl;
 	}
@@ -185,8 +185,8 @@ void RhythmTry::displayAnalysis(MarBackend *results)
 	// shift the exercise times to match the beginning of audio exercise
 	Transcriber::discardBeginEndSilencesAmpsOnly(amps, bounds);
 
-	cout<<"Notes founds: "<<bounds.getSize()-1<<endl;
-	cout<<"    expected: "<<exerAnswer.getSize()-1<<endl;
+	cout<<"Notes found: "<<bounds.getSize()-1<<endl;
+	cout<<"   expected: "<<exerAnswer.getSize()-1<<endl;
 	// shift detected onsets to produce highest score
 	mrs_natural offset = calcOffsetAndScore(exerAnswer, bounds);
 
@@ -204,6 +204,7 @@ void RhythmTry::displayAnalysis(MarBackend *results)
 	pitchPlot->setDetectedOffset(offset);
 	pitchPlot->setData(data);
 
+	cout<<"rhythm try analysis score: "<<score_<<endl;
 	hasAudio_ = true;
 }
 

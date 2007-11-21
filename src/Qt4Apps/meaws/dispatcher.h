@@ -18,6 +18,7 @@ public:
 	Dispatcher(QFrame* centralFrame);
 	~Dispatcher();
 
+	// to setup connections in MainWindow
 	QObject* getUserPointer()
 	{
 		return user_;
@@ -31,43 +32,18 @@ public:
 		return metro_;
 	};
 
+	// communication with MainWindow
 	bool close();
-
 	QString getTitle();
 	QString getStatus();
 
 public slots:
 	void openExercise();
-
 	void openAttempt();
 	void analyze();
-
-
-
 	void toggleAttempt();
 	void setAttempt(bool running);
 
-	/*
-		void open();
-		void close();
-		bool openAttempt();
-
-		void playFile();
-
-		void analysisDone(); // even tempier
-
-		void newTry();
-
-		void addTry()
-		{
-			exercise_->addTry();
-		};
-		void delTry()
-		{
-			exercise_->delTry();
-		};
-
-	*/
 signals:
 	void updateMain(int state);
 
@@ -86,14 +62,7 @@ private:
 
 	// current exercise state
 	bool attemptRunningBool_;
-	/*
-	//	void connectMain(QObject* mainWindow);
 
-		// left-over garbage (?)
-		QString exerciseName_;
-
-		QString statusMessage_;
-	*/
 };
 #endif
 

@@ -6,7 +6,6 @@ using namespace std;
 Dispatcher::Dispatcher(QFrame* centralFrame)
 {
 	user_ = new User();
-//	metro_ = new Metro();
 	exercise_ = NULL;
 
 	marBackend_ = new MarBackend();
@@ -14,34 +13,21 @@ Dispatcher::Dispatcher(QFrame* centralFrame)
 	        this, SLOT(analyze()));
 	connect(marBackend_, SIGNAL(setAttempt(bool)),
 	        this, SLOT(setAttempt(bool)));
-	marBackend_->setFileName("foo.wav");
 
-
-	attemptRunningBool_ = false;
 
 	string audioFile = "data/sd.wav";
 	metro_ = new Metro(0, audioFile);
 
 
-
 	centralFrame_ = centralFrame;
+	attemptRunningBool_ = false;
 
-	/*
-		attemptRunningBool_ = false;
-		marBackend_ = NULL;
-		exercise_ = NULL;
-		statusMessage_ = "ready";
-	*/
 }
 
 Dispatcher::~Dispatcher()
 {
 	close();
 }
-
-//void Dispatcher::connectMain(QObject* mainWindow)
-//{
-//}
 
 bool Dispatcher::close()
 {
@@ -58,7 +44,15 @@ QString Dispatcher::getTitle()
 	return title;
 }
 
+QString Dispatcher::getStatus()
+{
+	if (exercise_ == NULL)
+		return "";
+	return exercise_->getMessage();
+}
 
+
+// Actions
 
 void Dispatcher::openExercise()
 {
@@ -77,56 +71,56 @@ void Dispatcher::openExercise()
 	setupExercise();
 }
 
-
 void Dispatcher::setupExercise()
 {
 	connect(exercise_,SIGNAL(setBackend(mrs_natural)),
 	        marBackend_,SLOT(setBackend(mrs_natural)));
 	exercise_->setupDisplay(centralFrame_);
 	exercise_->addTry();
+	marBackend_->setFilename( exercise_->getFilename() );
+	marBackend_->setup();
 	updateMain(MEAWS_READY_EXERCISE);
 }
+
 
 void Dispatcher::openAttempt()
 {
 	QString filename =
 	    ChooseExercise::chooseAttempt();
+	exercise_->setFilename( qPrintable(filename) );
 	marBackend_->setBackend(exercise_->getBackend());
+//	marBackend_->setFilename( exercise_->getFilename() );
 	marBackend_->openTry( qPrintable(filename) );
 }
 
+
 void Dispatcher::analyze()
 {
-	if ( marBackend_->analyze() )
+	if ( !exercise_->hasAudio() )
 	{
-		exercise_->displayAnalysis( marBackend_ );
-		emit updateMain(MEAWS_UPDATE);
+		if ( marBackend_->analyze() )
+		{
+			exercise_->displayAnalysis( marBackend_ );
+			cout<<"DISPATCHER done display analysis"<<endl;
+			emit updateMain(MEAWS_UPDATE);
+			cout<<"DISPATCHER main updated"<<endl;
+		}
 	}
 }
 
 
-QString Dispatcher::getStatus()
-{
-	if (exercise_ == NULL)
-		return "";
-	return exercise_->getMessage();
-}
-
-
-
-// temp
 void Dispatcher::toggleAttempt()
 {
-	cout<<"toggleAttempt"<<endl;
+	cout<<"DISPATCHER toggleAttempt"<<endl;
 	setAttempt(!attemptRunningBool_);
 }
 
 void Dispatcher::setAttempt(bool running)
 {
-	cout<<"setAttempt: "<<running<<endl;
 	// if the attempt state has changed
 	if (running != attemptRunningBool_)
 	{
+		cout<<"DISPATCHER setAttempt: "<<running<<endl;
 		if (running)
 		{
 			attemptRunningBool_ = true;
@@ -145,20 +139,6 @@ void Dispatcher::setAttempt(bool running)
 }
 
 /*
-void Dispatcher::analysisDone()
-{
-	statusMessage_ = exercise_->getMessage();
-	updateMain(MEAWS_TRY_PAUSED);
-}
-
-void Dispatcher::newTry() {
-	cout<<"dispatcher: new try"<<endl;
-	if (marBackend_ != NULL) {
-		marBackend_->newTry(exercise_->getBackend());
-		cout<<"use backend: "<<exercise_->getBackend();
-	}
-}
-
 void Dispatcher::close()
 {
 	if (marBackend_ != NULL)
@@ -175,14 +155,6 @@ void Dispatcher::close()
 		exercise_ = NULL;
 	}
 	updateMain(MEAWS_READY_USER);
-}
-
-
-
-void Dispatcher::playFile()
-{
-	marBackend_->playFile();
-	setAttempt(true);
 }
 
 */

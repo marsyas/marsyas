@@ -86,6 +86,8 @@ void Exercise::addTryAbstract(Try* newTry)
 //	cout<<"addTryAbstract"<<endl;
 	resultLayout_->addWidget( newTry->getDisplay() );
 	newTry->setTryNumber( tries_->count() );
+	// FIXME: make this a temporary file.
+	newTry->setFilename( "foo.wav" );
 	connect(newTry, SIGNAL(selectTry(mrs_natural)),
 	        this, SLOT(selectTry(mrs_natural)));
 	tries_->append(newTry);
@@ -137,4 +139,27 @@ void Exercise::selectTry(mrs_natural selected)
 	emit updateMain(0);
 }
 
+mrs_string Exercise::getFilename()
+{
+	if (currentTry_ != NULL)
+		return currentTry_->getFilename();
+	cout<<"SHOULD NEVER HAPPEN getFilename"<<endl;
+	return "";
+}
+
+void Exercise::setFilename(mrs_string filename)
+{
+	if (currentTry_ != NULL)
+		currentTry_->setFilename(filename);
+	else
+		cout<<"SHOULD NEVER HAPPEN getFilename"<<endl;
+
+}
+
+bool Exercise::hasAudio()
+{
+	if (currentTry_ != NULL)
+		return currentTry_->hasAudio();
+	return false;
+}
 

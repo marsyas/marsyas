@@ -19,7 +19,7 @@ public:
 
 	// communication
 
-	void setFileName(std::string filename);
+	void setFilename(std::string filename);
 //	void playFile();
 	void openTry(std::string filename);
 	void newTry();

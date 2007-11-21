@@ -31,12 +31,12 @@ void MarBackend::delNet() {
 		delete allNet;
 		allNet = NULL;
 		sourceNet = NULL;
-		hasAudio = false;
+//		hasAudio = false;
 	} else {
 		if (sourceNet != NULL) {
 			delete sourceNet;
 			sourceNet = NULL;
-			hasAudio = false;
+//			hasAudio = false;
 		}
 	}
 }
@@ -92,10 +92,10 @@ void MarBackend::setBackend(mrs_natural action)
 void MarBackend::openTry(std::string filename) {
 	cout<<"openTry: "<<filename<<endl;
 	hasAudio = true;
-	setFileName(filename);
-	setupChanged = true;
-
+	setFilename(filename);
+//	setupChanged = true;
 	setup();
+
 	start();
 }
 
@@ -105,7 +105,7 @@ void MarBackend::newTry() {
 	setupChanged = true;
 }
 
-void MarBackend::setFileName(string filename) {
+void MarBackend::setFilename(string filename) {
 	cout<<"setFilename: "<<filename<<endl;
 	filename_ = filename;
 //	mrsWrapper->updctrl(filenamePtr, filename_);
@@ -114,6 +114,7 @@ void MarBackend::setFileName(string filename) {
 
 void MarBackend::setup() {
 	cout<<"setup"<<endl;
+//	cout<<"  hasaudio: "<<hasAudio<<endl;
 	delNet();
 	sourceNet = makeSourceNet(hasAudio);
 	setupAllNet();
@@ -131,7 +132,8 @@ void MarBackend::ctrlChanged(MarControlPtr changed) {
 				//start();
 				isEmptyState=true;
 			} else {
-				stop();
+//				stop();
+				emit setAttempt(false);
 				isEmptyState=false;
 			}
 		}
