@@ -3,7 +3,7 @@ using namespace std;
 
 #include "dispatcher.h"
 
-Dispatcher::Dispatcher(QObject* mainWindow, QFrame* centralFrame)
+Dispatcher::Dispatcher(QFrame* centralFrame)
 {
 	user_ = new User();
 //	metro_ = new Metro();
@@ -15,17 +15,14 @@ Dispatcher::Dispatcher(QObject* mainWindow, QFrame* centralFrame)
 	connect(marBackend_, SIGNAL(setAttempt(bool)),
 	        this, SLOT(setAttempt(bool)));
 	marBackend_->setFileName("foo.wav");
-	
+
 
 	attemptRunningBool_ = false;
 
-//	string audioFile = "data/sd.wav";
-//	metro_ = new Metro(this, audioFile);
-//	connect(visualMetroBeatAct_, SIGNAL(triggered()), metro_,
-//	        SLOT(toggleBigMetro()));
-//	metro_->setIcon(visualMetroBeatAct_);
+	string audioFile = "data/sd.wav";
+	metro_ = new Metro(0, audioFile);
 
-//	connectMain(mainWindow);
+
 
 	centralFrame_ = centralFrame;
 
@@ -72,7 +69,7 @@ void Dispatcher::openExercise()
 		return;
 
 	QString filename =
-		ChooseExercise::chooseFile(exercise_->exercisesDir());
+	    ChooseExercise::chooseFile(exercise_->exercisesDir());
 	if (filename.isEmpty())
 		return;
 
@@ -84,7 +81,7 @@ void Dispatcher::openExercise()
 void Dispatcher::setupExercise()
 {
 	connect(exercise_,SIGNAL(setBackend(mrs_natural)),
-		marBackend_,SLOT(setBackend(mrs_natural)));
+	        marBackend_,SLOT(setBackend(mrs_natural)));
 	exercise_->setupDisplay(centralFrame_);
 	exercise_->addTry();
 	updateMain(MEAWS_READY_EXERCISE);
@@ -93,7 +90,7 @@ void Dispatcher::setupExercise()
 void Dispatcher::openAttempt()
 {
 	QString filename =
-		ChooseExercise::chooseAttempt();
+	    ChooseExercise::chooseAttempt();
 	marBackend_->setBackend(exercise_->getBackend());
 	marBackend_->openTry( qPrintable(filename) );
 }
@@ -134,12 +131,14 @@ void Dispatcher::setAttempt(bool running)
 		{
 			attemptRunningBool_ = true;
 			marBackend_->start();
+			metro_->start();
 			updateMain(MEAWS_TRY_RUNNING);
 		}
 		else
 		{
 			attemptRunningBool_ = false;
 			marBackend_->stop();
+			metro_->stop();
 			updateMain(MEAWS_TRY_PAUSED);
 		}
 	}

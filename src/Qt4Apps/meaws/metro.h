@@ -34,8 +34,8 @@ class Metro: public QWidget
 public:
 	Metro(QWidget *parent, string audio_Filename);
 	~Metro();
-	void stopMetro();
-	void startMetro();
+	void start();
+	void stop();
 	void setIcon(QAction* getVisualAct);
 
 // communication with the QT front-end

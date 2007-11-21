@@ -15,13 +15,21 @@ class Dispatcher : public QObject
 	Q_OBJECT
 
 public:
-	Dispatcher(QObject* mainWindow, QFrame* centralFrame);
+	Dispatcher(QFrame* centralFrame);
 	~Dispatcher();
 
 	QObject* getUserPointer()
-		{ return user_; };
+	{
+		return user_;
+	};
 	QObject* getExercisePointer()
-		{ return exercise_; };
+	{
+		return exercise_;
+	};
+	QObject* getMetroPointer()
+	{
+		return metro_;
+	};
 
 	bool close();
 
@@ -39,27 +47,27 @@ public slots:
 	void toggleAttempt();
 	void setAttempt(bool running);
 
-/*
-	void open();
-	void close();
-	bool openAttempt();
+	/*
+		void open();
+		void close();
+		bool openAttempt();
 
-	void playFile();
+		void playFile();
 
-	void analysisDone(); // even tempier
+		void analysisDone(); // even tempier
 
-	void newTry();
+		void newTry();
 
-	void addTry()
-	{
-		exercise_->addTry();
-	};
-	void delTry()
-	{
-		exercise_->delTry();
-	};
+		void addTry()
+		{
+			exercise_->addTry();
+		};
+		void delTry()
+		{
+			exercise_->delTry();
+		};
 
-*/
+	*/
 signals:
 	void updateMain(int state);
 
@@ -78,14 +86,14 @@ private:
 
 	// current exercise state
 	bool attemptRunningBool_;
-/*
-//	void connectMain(QObject* mainWindow);
+	/*
+	//	void connectMain(QObject* mainWindow);
 
-	// left-over garbage (?)
-	QString exerciseName_;
+		// left-over garbage (?)
+		QString exerciseName_;
 
-	QString statusMessage_;
-*/
+		QString statusMessage_;
+	*/
 };
 #endif
 

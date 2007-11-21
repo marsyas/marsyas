@@ -84,7 +84,7 @@ void Metro::setIcon(QAction* getVisualAction)
 	visualMetroBeatAct_ = getVisualAction;
 }
 
-void Metro::startMetro()
+void Metro::start()
 {
 	timer_->start();
 	beat();
@@ -95,7 +95,7 @@ void Metro::startMetro()
 	}
 }
 
-void Metro::stopMetro()
+void Metro::stop()
 {
 	timer_->stop();
 	flashSpeed_->stop();

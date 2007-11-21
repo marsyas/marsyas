@@ -13,7 +13,7 @@ MainWindow::MainWindow()
 	createToolBars();
 	createStatusBar();
 	// connect objects
-	dispatcher_ = new Dispatcher(this, centralFrame_);
+	dispatcher_ = new Dispatcher(centralFrame_);
 	connectObjects();
 	// begin operation
 	readSettings();
@@ -251,6 +251,12 @@ void MainWindow::connectObjects()
 	connect(setUserInfoAct_, SIGNAL(triggered()), user, SLOT(setUserInfo()));
 
 	// metro ?
+	QObject* metro = dispatcher_->getMetroPointer();
+
+	connect(visualMetroBeatAct_, SIGNAL(triggered()), metro,
+	        SLOT(toggleBigMetro()));
+	// TODO: icky
+	((Metro*) metro)->setIcon(visualMetroBeatAct_);
 
 }
 
