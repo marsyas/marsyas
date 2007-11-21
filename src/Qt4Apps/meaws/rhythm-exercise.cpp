@@ -67,7 +67,7 @@ QString RhythmExercise::getMessage() {
 QString::number(currentTryNumber_) );
 	// TODO:
 	cout<<"current number: "<<currentTryNumber_<<endl;
-	cout<<"rhythm exercise score: "<<currentTry_->getScore();
+	cout<<"rhythm exercise score: "<<currentTry_->getScore()<<endl;;
 	toReturn.append(". Score: " +
 		QString::number( currentTry_->getScore()) );
 	toReturn.append("%");

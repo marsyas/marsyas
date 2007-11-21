@@ -19,7 +19,7 @@ public:
 	void setTryNumber(mrs_natural num)
 		{ tryNumber_ = num; };
 	mrs_real getScore()
-		{ return 0; };
+		{ return score_; };
 	mrs_bool hasAudio()
 		{ return hasAudio_; };
 	void setFilename(mrs_string filename)
@@ -50,6 +50,7 @@ protected:
 	mrs_natural tryNumber_;
 	mrs_bool hasAudio_;
 	mrs_string filename_;
+	mrs_real score_;
 };
 #endif
 

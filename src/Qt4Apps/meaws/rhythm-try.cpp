@@ -217,9 +217,3 @@ RhythmTry::doubleclicked()
 }
 */
 
-
-mrs_real
-RhythmTry::getScore() {
-	return score_;
-}
-

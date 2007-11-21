@@ -23,7 +23,6 @@ public:
 	void setLily(const QStringList);
 	void calcErrors(const realvec& pitch, const realvec& bounds);
 	void selected(bool selected);
-	mrs_real getScore();
 
 //public slots:
 //	void doubleclicked();
@@ -38,7 +37,6 @@ private:
 
 	realvec exerAnswer;
 	QStringList lilyInput_;
-	mrs_real score_;
 
 //	Marx2DGraph* graph;
 };
