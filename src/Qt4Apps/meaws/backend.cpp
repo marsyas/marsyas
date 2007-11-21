@@ -167,7 +167,8 @@ void MarBackend::stop() {
 	hasAudio = true;
 	cout<<"stopped"<<endl;
 	emit gotAudio();
-//	playFile();
+	setBackend( BACKEND_PLAYBACK );
+	setupChanged = true;
 }
 
 mrs_real MarBackend::getRate() {
@@ -187,6 +188,7 @@ mrs_real MarBackend::getRate() {
 
 void MarBackend::setupAllNet() {
 	cout<<"setupAllNet"<<endl;
+	cout<<"\t "<<method_<<" "<<hasAudio<<endl;
 
 	mrs_real osrate =
 	  sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();

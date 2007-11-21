@@ -84,7 +84,6 @@ void Dispatcher::setBackend()
 {
 	if ( exercise_->hasAudio() )
 	{
-		cout<<"DISPATCHER has audio"<<endl;
 		marBackend_->setBackend( BACKEND_PLAYBACK );
 		marBackend_->setHasAudio( true );
 	} else {
