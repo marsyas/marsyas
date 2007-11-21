@@ -32,11 +32,12 @@ public slots:
 	void openExercise();
 
 	void openAttempt();
-	void analyze();  // temp ?
+	void analyze();
+	void toggleAttempt();
+
 /*
 	void open();
 	void close();
-	void toggleAttempt();
 	void setAttempt(bool running);
 	bool openAttempt();
 
@@ -60,23 +61,25 @@ signals:
 	void updateMain(int state);
 
 private:
-// main object variables
+	// main object variables
 	User *user_;
 	Metro *metro_;
 	Exercise *exercise_;
 	MarBackend *marBackend_;
 
-// setup
+	// setup
 	void setupExercise();
 
 	// basic GUI frame
 	QFrame *centralFrame_;
+
+	// current exercise state
+	bool attemptRunningBool_;
 /*
 //	void connectMain(QObject* mainWindow);
 
 	// left-over garbage (?)
 	QString exerciseName_;
-	bool attemptRunningBool_;
 
 	QString statusMessage_;
 */

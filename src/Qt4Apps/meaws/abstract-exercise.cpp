@@ -125,13 +125,12 @@ void Exercise::selectTry(mrs_natural selected)
 		if (currentTry_->hasAudio())
 		{
 			cout<<"already has audio"<<endl;
-			//	emit setBackend(BACKEND_PLAYBACK);
+			emit setBackend(BACKEND_PLAYBACK);
 		}
 		else
 		{
 			cout<<"no audio"<<endl;
-// FIXME.
-//		emit setBackend(getBackend());
+			emit setBackend(getBackend());
 		}
 		//emit analysisDone();
 	}

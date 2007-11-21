@@ -204,6 +204,7 @@ void RhythmTry::displayAnalysis(MarBackend *results)
 	pitchPlot->setDetectedOffset(offset);
 	pitchPlot->setData(data);
 
+	hasAudio_ = true;
 }
 
 /*

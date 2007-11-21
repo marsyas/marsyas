@@ -11,8 +11,9 @@ MarBackend::MarBackend() {
 	mrsWrapper = NULL;
 	allNet = NULL;
 	sourceNet = NULL;
-
+	method_ = -1;
 	filename_ = "";
+	setupChanged = true;
 }
 
 MarBackend::~MarBackend() {
@@ -52,6 +53,8 @@ MarSystem* MarBackend::makeSourceNet(bool fromFile) {
 			"SoundFileSource/srcFile/mrs_real/osrate");
 		pnet->linkctrl("mrs_bool/notEmpty",
 			"SoundFileSource/srcFile/mrs_bool/notEmpty");
+//		pnet->linkctrl("mrs_string/filename",
+//			"SoundFileSource/srcFile/mrs_string/filename");
 	} else {
 		MRSERR("DEBUG: getting audio");
 		pnet->addMarSystem(mng.create("AudioSource", "srcRec"));
@@ -60,58 +63,63 @@ MarSystem* MarBackend::makeSourceNet(bool fromFile) {
 		pnet->linkctrl("mrs_bool/notEmpty",
 			"AudioSource/srcRec/mrs_bool/notEmpty");
 		pnet->addMarSystem(mng.create("SoundFileSink", "saveFile"));
-		cout<<filename_<<endl;
 		pnet->updctrl("SoundFileSink/saveFile/mrs_string/filename",
 			filename_);
+//		pnet->linkctrl("mrs_string/filename",
+//			"SoundFileSource/saveFile/mrs_string/filename");
 		//pnet->linkctrl("mrs_real/osrate",
 		//	"AudioSource/srcRec/mrs_real/osrate");
 	}
 	return pnet;
 }
 
+/*   ***************************
+ *   ***                    ***
+ *   *** Communication with ***
+ *   *** the rest  of MEAWS ***
+ *   ***                    ***
+ *   ***************************
+ */
+
 void MarBackend::setBackend(mrs_natural action)
 {
+	cout<<"setBackend: "<<action<<endl;
 	method_ = action;
-	if (method_ > 1)
-		newTry(method_);
+	setupChanged = true;
 }
 
-void MarBackend::openTry(mrs_natural getType, std::string filename) {
-	delNet();
-	cout<<"get type: "<<getType<<endl;
-	method_ = getType;
-	filename_ = filename;
-	sourceNet = makeSourceNet(true);
+void MarBackend::openTry(std::string filename) {
+	cout<<"openTry: "<<filename<<endl;
 	hasAudio = true;
-	setupAllNet();
-	mrsWrapper->play();
+	setFileName(filename);
+	setupChanged = true;
+
+	setup();
+	start();
 }
 
-void MarBackend::newTry(mrs_natural getType) {
-	delNet();
-	cout<<"get type: "<<getType<<endl;
-	method_ = getType;
-	sourceNet = makeSourceNet(false);
-	isEmptyState = false;
+void MarBackend::newTry() {
+	cout<<"newTry"<<endl;
 	hasAudio = false;
-	setupAllNet();
+	setupChanged = true;
 }
 
-/*
 void MarBackend::setFileName(string filename) {
-	mrsWrapper->updctrl(filenamePtr, filename);
+	cout<<"setFilename: "<<filename<<endl;
+	filename_ = filename;
+//	mrsWrapper->updctrl(filenamePtr, filename_);
+	setupChanged = true;
 }
-*/
 
-void MarBackend::playFile() {
-	if (hasAudio) {
-//		string filename =
-//sourceNet->getctrl("SoundFileSource/srcFile/mrs_string/filename")->to<mrs_string>();
-		delNet();
-		sourceNet = makeSourceNet(true);
-		method_ = BACKEND_PLAYBACK;
-		setupAllNet();
-	}
+void MarBackend::setup() {
+	cout<<"setup"<<endl;
+	delNet();
+	sourceNet = makeSourceNet(hasAudio);
+	setupAllNet();
+	isEmptyState = false;
+	setupChanged = false;
+
+	cout<<"done setup"<<endl;
 }
 
 void MarBackend::ctrlChanged(MarControlPtr changed) {
@@ -130,6 +138,11 @@ void MarBackend::ctrlChanged(MarControlPtr changed) {
 }
 
 void MarBackend::start() {
+	cout<<"start"<<endl;
+	if (setupChanged) {
+		cout<<"should not happen!"<<endl;
+		setup();
+	}
 	emit setAttempt(true);
 	if (mrsWrapper != NULL)
 		mrsWrapper->play();
@@ -161,6 +174,8 @@ mrs_real MarBackend::getRate() {
  */
 
 void MarBackend::setupAllNet() {
+	cout<<"setupAllNet"<<endl;
+
 	mrs_real osrate =
 	  sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();
 	allNet = mng.create("Series", "allNet");
@@ -217,6 +232,17 @@ void MarBackend::setupAllNet() {
 
 	mrsWrapper = new MarSystemQtWrapper(allNet);
 	isEmptyPtr = mrsWrapper->getctrl("mrs_bool/notEmpty");
+
+//zz
+/*
+	if (method_ == BACKEND_PLAYBACK)
+		filenamePtr = mrsWrapper->getctrl(
+			"Series/sourceNet/mrs_string/filename");
+	else
+		filenamePtr = mrsWrapper->getctrl(
+			"Series/sourceNet/mrs_string/filename");
+*/
+
 	mrsWrapper->trackctrl( isEmptyPtr );
 	connect(mrsWrapper, SIGNAL(ctrlChanged(MarControlPtr)),
 	  this, SLOT(ctrlChanged(MarControlPtr)));
@@ -225,6 +251,7 @@ void MarBackend::setupAllNet() {
 	mrsWrapper->pause();
 	ctrlChanged(isEmptyPtr);
 //	emit setAttempt(false);
+	cout<<"done setupallnet"<<endl;
 }
 
 

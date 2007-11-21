@@ -44,6 +44,7 @@ Dispatcher::~Dispatcher()
 
 bool Dispatcher::close()
 {
+	// FIXME: check user and exercise first!
 	return true;
 }
 
@@ -78,25 +79,19 @@ void Dispatcher::openExercise()
 
 void Dispatcher::setupExercise()
 {
-//	connect(exercise_,SIGNAL(analysisDone()),
-//	        this, SLOT(analysisDone()));
-//	connect(exercise_,SIGNAL(newTry()),
-//	        this, SLOT(newTry()));
+	connect(exercise_,SIGNAL(setBackend(mrs_natural)),
+		marBackend_,SLOT(setBackend(mrs_natural)));
 	exercise_->setupDisplay(centralFrame_);
 	exercise_->addTry();
 	updateMain(MEAWS_READY_EXERCISE);
-/*
-	// FIXME: order of creation
-	marBackend_->newTry(exercise_->getBackend());
-
-*/
 }
 
 void Dispatcher::openAttempt()
 {
 	QString filename =
 		ChooseExercise::chooseAttempt();
-	marBackend_->openTry(exercise_->getBackend(), qPrintable(filename) );
+	marBackend_->setBackend(exercise_->getBackend());
+	marBackend_->openTry( qPrintable(filename) );
 }
 
 void Dispatcher::analyze()
@@ -116,6 +111,34 @@ QString Dispatcher::getStatus()
 	return exercise_->getMessage();
 }
 
+
+
+// temp
+void Dispatcher::toggleAttempt()
+{
+//	setAttempt(!attemptRunningBool_);
+}
+/*
+void Dispatcher::setAttempt(bool running)
+{
+	// if the attempt state has changed
+	if (running != attemptRunningBool_)
+	{
+		if (running)
+		{
+			attemptRunningBool_ = true;
+			marBackend_->start();
+			updateMain(MEAWS_TRY_RUNNING);
+		}
+		else
+		{
+			attemptRunningBool_ = false;
+			marBackend_->stop();
+			updateMain(MEAWS_TRY_PAUSED);
+		}
+	}
+}
+*/
 
 /*
 void Dispatcher::analysisDone()
@@ -148,31 +171,6 @@ void Dispatcher::close()
 		exercise_ = NULL;
 	}
 	updateMain(MEAWS_READY_USER);
-}
-
-void Dispatcher::toggleAttempt()
-{
-	setAttempt(!attemptRunningBool_);
-}
-
-void Dispatcher::setAttempt(bool running)
-{
-	// if the attempt state has changed
-	if (running != attemptRunningBool_)
-	{
-		if (running)
-		{
-			attemptRunningBool_ = true;
-			marBackend_->start();
-			updateMain(MEAWS_TRY_RUNNING);
-		}
-		else
-		{
-			attemptRunningBool_ = false;
-			marBackend_->stop();
-			updateMain(MEAWS_TRY_PAUSED);
-		}
-	}
 }
 
 

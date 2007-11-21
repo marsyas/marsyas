@@ -17,10 +17,12 @@ public:
 	MarBackend();
 	~MarBackend();
 
+	// communication
+
 	void setFileName(std::string filename);
-	void playFile();
-	void openTry(mrs_natural getType, std::string filename);
-	void newTry(mrs_natural getType);
+//	void playFile();
+	void openTry(std::string filename);
+	void newTry();
 
 	bool analyze();
 	realvec getPitches();
@@ -30,14 +32,18 @@ public:
 	mrs_real getRate();
 
 public slots:
-	void ctrlChanged(MarControlPtr changed);
+	// communication
+	void setBackend(mrs_natural action);
 	void start();
 	void stop();
-	void setBackend(mrs_natural action);
+	void setup();
 
 signals:
 	void setAttempt(bool running);
 	void gotAudio();
+
+private slots:
+	void ctrlChanged(MarControlPtr changed);
 
 private:
 	MarSystemManager mng;
@@ -59,9 +65,11 @@ private:
 
 // for playback
 	bool hasAudio;
+	bool setupChanged;
 
 // depending on usage, could be input OR output!
 	string filename_;
+// 	MarControlPtr filenamePtr;
 
 
 	realvec pitchList;
@@ -70,9 +78,6 @@ private:
 	realvec pitchOld;
 	realvec pitchMidiList;
     realvec amplitudeOld;
-
-// not used
- 	MarControlPtr filenamePtr;
 };
 #endif
 

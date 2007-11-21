@@ -223,9 +223,10 @@ void MainWindow::connectObjects()
 
 	connect(testingFileAct_, SIGNAL(triggered()),
 	        dispatcher_, SLOT(openAttempt()));
-	/*
 	connect(toggleAttemptAct, SIGNAL(triggered()),
-	dispatcher_, SLOT(toggleAttempt()));
+	        dispatcher_, SLOT(toggleAttempt()));
+
+	/*
 	connect(closeExerciseAct_, SIGNAL(triggered()),
 	dispatcher_, SLOT(close()));
 

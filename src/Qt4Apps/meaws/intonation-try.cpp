@@ -124,6 +124,8 @@ void IntonationTry::displayAnalysis(MarBackend *results)
 	pitchPlot_->setData(data);
 	pitchPlot_->setVertical(57,73);
 	pitchPlot_->setPlotName("pitches");
+
+	hasAudio_ = true;
 }
 
 void
