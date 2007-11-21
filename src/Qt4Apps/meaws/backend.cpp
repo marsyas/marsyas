@@ -89,6 +89,12 @@ void MarBackend::setBackend(mrs_natural action)
 	setupChanged = true;
 }
 
+void MarBackend::setHasAudio(mrs_bool getAudio)
+{
+	cout<<"setHasAudio: "<<getAudio<<endl;
+	hasAudio = getAudio;
+}
+
 void MarBackend::openTry(std::string filename) {
 	cout<<"openTry: "<<filename<<endl;
 	hasAudio = true;

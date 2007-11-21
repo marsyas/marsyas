@@ -43,6 +43,7 @@ public slots:
 	void analyze();
 	void toggleAttempt();
 	void setAttempt(bool running);
+	void setBackend();
 
 signals:
 	void updateMain(int state);

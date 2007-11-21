@@ -33,7 +33,7 @@ public slots:
 
 signals:
 	void analysisDone();
-	void setBackend(mrs_natural action);
+	void setBackend();
 	void updateMain(int state);
 
 protected slots:

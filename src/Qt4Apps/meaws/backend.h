@@ -30,13 +30,15 @@ public:
 	realvec getAmplitudes();
 
 	mrs_real getRate();
+	void setBackend(mrs_natural action);
+	void setup();
+
+	void setHasAudio(mrs_bool getAudio);
 
 public slots:
 	// communication
-	void setBackend(mrs_natural action);
 	void start();
 	void stop();
-	void setup();
 
 signals:
 	void setAttempt(bool running);

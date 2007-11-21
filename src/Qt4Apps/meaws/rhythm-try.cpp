@@ -167,7 +167,7 @@ RhythmTry::calcOffsetAndScore(realvec exerciseOnsets, realvec audioOnsets)
 		if (offsetScore > score_) {
 			score_ = offsetScore;
 			bestOffset = offset;
-			cout<<"shifting by "<<offset<<" score: "<<offsetScore<<endl;
+			//cout<<"shifting by "<<offset<<" score: "<<offsetScore<<endl;
 		}
 		//cout<<"score: "<<offsetScore<<endl;
 	}
@@ -204,7 +204,6 @@ void RhythmTry::displayAnalysis(MarBackend *results)
 	pitchPlot->setDetectedOffset(offset);
 	pitchPlot->setData(data);
 
-	cout<<"rhythm try analysis score: "<<score_<<endl;
 	hasAudio_ = true;
 }
 

@@ -73,13 +73,25 @@ void Dispatcher::openExercise()
 
 void Dispatcher::setupExercise()
 {
-	connect(exercise_,SIGNAL(setBackend(mrs_natural)),
-	        marBackend_,SLOT(setBackend(mrs_natural)));
+	connect(exercise_, SIGNAL(setBackend()),
+	        this, SLOT(setBackend()));
 	exercise_->setupDisplay(centralFrame_);
 	exercise_->addTry();
+	updateMain(MEAWS_READY_EXERCISE);
+}
+
+void Dispatcher::setBackend()
+{
+	if ( exercise_->hasAudio() )
+	{
+		cout<<"DISPATCHER has audio"<<endl;
+		marBackend_->setBackend( BACKEND_PLAYBACK );
+		marBackend_->setHasAudio( true );
+	} else {
+		marBackend_->setBackend( exercise_->getBackend() );
+	}
 	marBackend_->setFilename( exercise_->getFilename() );
 	marBackend_->setup();
-	updateMain(MEAWS_READY_EXERCISE);
 }
 
 
