@@ -18,11 +18,9 @@ public:
 	~MarBackend();
 
 	// communication
+	void setBackend(mrs_natural method, mrs_bool hasAudio,
+		std::string filename);
 
-	void setFilename(std::string filename);
-//	void playFile();
-	void openTry(std::string filename);
-	void newTry();
 
 	bool analyze();
 	realvec getPitches();
@@ -30,10 +28,7 @@ public:
 	realvec getAmplitudes();
 
 	mrs_real getRate();
-	void setBackend(mrs_natural action);
 	void setup();
-
-	void setHasAudio(mrs_bool getAudio);
 
 public slots:
 	// communication
@@ -66,8 +61,8 @@ private:
 	void delNet();
 
 // for playback
-	bool hasAudio;
-	bool setupChanged;
+	bool hasAudio_;
+	bool setupChanged_;
 
 // depending on usage, could be input OR output!
 	string filename_;

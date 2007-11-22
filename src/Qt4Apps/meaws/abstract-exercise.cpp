@@ -124,20 +124,7 @@ void Exercise::selectTry(mrs_natural selected)
 	{
 		currentTry_ = (*tries_)[currentTryNumber_];
 		currentTry_->selected(true);
-		setBackend();
-/*
-		if (currentTry_->hasAudio())
-		{
-			cout<<"already has audio"<<endl;
-			emit setBackend();
-		}
-		else
-		{
-			cout<<"no audio"<<endl;
-			emit setBackend();
-		}
-*/
-		//emit analysisDone();
+		setupBackend();
 	}
 	emit updateMain(0);
 }
@@ -152,11 +139,11 @@ mrs_string Exercise::getFilename()
 
 void Exercise::setFilename(mrs_string filename)
 {
-	if (currentTry_ != NULL)
+	if (currentTry_ != NULL) {
 		currentTry_->setFilename(filename);
+	}
 	else
 		cout<<"SHOULD NEVER HAPPEN getFilename"<<endl;
-
 }
 
 bool Exercise::hasAudio()

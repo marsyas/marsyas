@@ -13,8 +13,8 @@ MarBackend::MarBackend() {
 	sourceNet = NULL;
 	method_ = -1;
 	filename_ = "";
-	setupChanged = true;
-	hasAudio = false;
+	setupChanged_ = true;
+	hasAudio_ = false;
 }
 
 MarBackend::~MarBackend() {
@@ -82,50 +82,24 @@ MarSystem* MarBackend::makeSourceNet(bool fromFile) {
  *   ***************************
  */
 
-void MarBackend::setBackend(mrs_natural action)
+void MarBackend::setBackend(mrs_natural method, mrs_bool hasAudio,
+		std::string filename)
 {
-	cout<<"setBackend: "<<action<<endl;
-	method_ = action;
-	setupChanged = true;
-}
-
-void MarBackend::setHasAudio(mrs_bool getAudio)
-{
-	cout<<"setHasAudio: "<<getAudio<<endl;
-	hasAudio = getAudio;
-}
-
-void MarBackend::openTry(std::string filename) {
-	cout<<"openTry: "<<filename<<endl;
-	hasAudio = true;
-	setFilename(filename);
-//	setupChanged = true;
-	setup();
-
-	start();
-}
-
-void MarBackend::newTry() {
-	cout<<"newTry"<<endl;
-	hasAudio = false;
-	setupChanged = true;
-}
-
-void MarBackend::setFilename(string filename) {
-	cout<<"setFilename: "<<filename<<endl;
+	method_ = method;
+	hasAudio_ = hasAudio;
 	filename_ = filename;
-//	mrsWrapper->updctrl(filenamePtr, filename_);
-	setupChanged = true;
+	setupChanged_ = true;
 }
+
 
 void MarBackend::setup() {
 	cout<<"setup"<<endl;
 //	cout<<"  hasaudio: "<<hasAudio<<endl;
 	delNet();
-	sourceNet = makeSourceNet(hasAudio);
+	sourceNet = makeSourceNet(hasAudio_);
 	setupAllNet();
 	isEmptyState = false;
-	setupChanged = false;
+	setupChanged_ = false;
 
 	cout<<"done setup"<<endl;
 }
@@ -148,7 +122,7 @@ void MarBackend::ctrlChanged(MarControlPtr changed) {
 
 void MarBackend::start() {
 	cout<<"start"<<endl;
-	if (setupChanged) {
+	if (setupChanged_) {
 		cout<<"should not happen!"<<endl;
 		setup();
 	}
@@ -164,11 +138,11 @@ void MarBackend::stop() {
 	emit setAttempt(false);
 	if (mrsWrapper != NULL)
 		mrsWrapper->pause();
-	hasAudio = true;
+	hasAudio_ = true;
 	cout<<"stopped"<<endl;
 	emit gotAudio();
-	setBackend( BACKEND_PLAYBACK );
-	setupChanged = true;
+	method_ = BACKEND_PLAYBACK;
+	setupChanged_ = true;
 }
 
 mrs_real MarBackend::getRate() {
@@ -188,7 +162,7 @@ mrs_real MarBackend::getRate() {
 
 void MarBackend::setupAllNet() {
 	cout<<"setupAllNet"<<endl;
-	cout<<"\t "<<method_<<" "<<hasAudio<<endl;
+	cout<<"\t "<<method_<<" "<<hasAudio_<<endl;
 
 	mrs_real osrate =
 	  sourceNet->getctrl("mrs_real/osrate")->to<mrs_real>();

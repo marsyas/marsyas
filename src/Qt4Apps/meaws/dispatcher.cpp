@@ -73,35 +73,35 @@ void Dispatcher::openExercise()
 
 void Dispatcher::setupExercise()
 {
-	connect(exercise_, SIGNAL(setBackend()),
-	        this, SLOT(setBackend()));
+	connect(exercise_, SIGNAL(setupBackend()),
+	        this, SLOT(setupBackend()));
 	exercise_->setupDisplay(centralFrame_);
 	exercise_->addTry();
 	updateMain(MEAWS_READY_EXERCISE);
 }
 
-void Dispatcher::setBackend()
+void Dispatcher::setupBackend()
 {
 	if ( exercise_->hasAudio() )
 	{
-		marBackend_->setBackend( BACKEND_PLAYBACK );
-		marBackend_->setHasAudio( true );
+		marBackend_->setBackend( BACKEND_PLAYBACK, true,
+			exercise_->getFilename() );
 	} else {
-		marBackend_->setBackend( exercise_->getBackend() );
+		marBackend_->setBackend( exercise_->getBackend(), false,
+			exercise_->getFilename() );
 	}
-	marBackend_->setFilename( exercise_->getFilename() );
 	marBackend_->setup();
 }
 
 
 void Dispatcher::openAttempt()
 {
-	QString filename =
-	    ChooseExercise::chooseAttempt();
+	QString filename = ChooseExercise::chooseAttempt();
 	exercise_->setFilename( qPrintable(filename) );
-	marBackend_->setBackend(exercise_->getBackend());
-//	marBackend_->setFilename( exercise_->getFilename() );
-	marBackend_->openTry( qPrintable(filename) );
+	marBackend_->setBackend( exercise_->getBackend(), true,
+		exercise_->getFilename());
+	marBackend_->setup();
+	marBackend_->start();
 }
 
 

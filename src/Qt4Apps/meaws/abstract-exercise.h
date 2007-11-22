@@ -33,7 +33,7 @@ public slots:
 
 signals:
 	void analysisDone();
-	void setBackend();
+	void setupBackend();
 	void updateMain(int state);
 
 protected slots:
