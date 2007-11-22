@@ -197,17 +197,17 @@ Fanout::myUpdate(MarControlPtr sender)
 			if (slices_[i] != NULL)
 			{
 				if ((slices_[i])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>()  ||
-				        (slices_[i])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>())
+					(slices_[i])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>())
 				{
 					delete slices_[i];
 					slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
-					                         marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+											 marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 				}
 			}
 			else
 			{
 				slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
-				                         marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+										 marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 			}
 			(slices_[i])->setval(0.0);
 		}

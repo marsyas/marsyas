@@ -84,7 +84,7 @@ void sfplay(vector<string> soundfiles)
 
 
   // update controls 
-  playbacknet->updctrl("mrs_natural/inSamples", 100);
+  playbacknet->updctrl("mrs_natural/inSamples", 2048);
   playbacknet->updctrl("SoundFileSource/src/mrs_real/repetitions", repetitions);
   playbacknet->updctrl("SoundFileSource/src/mrs_real/duration", length);
   playbacknet->updctrl("Gain/gt/mrs_real/gain", gain);

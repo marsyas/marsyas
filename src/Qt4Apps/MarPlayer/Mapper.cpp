@@ -42,6 +42,8 @@ Mapper::Mapper()
   pnet_->addMarSystem(mng.create("SoundFileSource", "src"));
   pnet_->addMarSystem(mng.create("Gain", "gain"));
   pnet_->addMarSystem(mng.create("AudioSink", "dest"));
+  pnet_->updctrl("mrs_natural/inSamples", 2048);
+  
   pnet_->linkctrl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
   
   
@@ -58,7 +60,7 @@ Mapper::Mapper()
   sizePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/size");  
   osratePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_real/osrate");  
   initPtr_ = mwr_->getctrl("AudioSink/dest/mrs_bool/initAudio");
- 
+  
 
 }
 
