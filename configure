@@ -4407,8 +4407,7 @@ fi
 MATLABLIBS=""
 case "x$with_matlab" in
        xyes)
-               MATLABLIBS="-L${MATLAB}/bin/maci -L${MATLAB}/sys/os/maci -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz -lhdf5"
-	       INCLUDES="-I${MATLAB}/extern/include"
+			   MATLABPREFIX="${MATLAB}"
 
 cat >>confdefs.h <<\_ACEOF
 #define MARSYAS_MATLAB 1
@@ -4419,8 +4418,7 @@ _ACEOF
        xno|x)  echo MATLAB engine not activated ;;
        *)
                # Passed a prefix for MATLAB
-               MATLABLIB="-L${with_matlab}/bin/maci -L${MATLAB}/sys/os/maci -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz -lhdf5"
-	       INCLUDES="-I${MATLAB}/extern/include"
+			   MATLABPREFIX="${with_matlab}"
 
 cat >>confdefs.h <<\_ACEOF
 #define MARSYAS_MATLAB 1
@@ -4469,6 +4467,11 @@ case "${host}" in
 	cat >>confdefs.h <<\_ACEOF
 #define MARSYAS_LINUX 1
 _ACEOF
+
+
+
+	MATLABLIBS="-L${MATLABPREFIX}/bin/glnxa64 -L${MATLAB}/sys/os/glnxa64 -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz -lhdf5"
+	INCLUDES="-I${MATLAB}/extern/include"
 
 
 
@@ -5310,6 +5313,13 @@ _ACEOF
 cat >>confdefs.h <<\_ACEOF
 #define __MACOSX_CORE__ 1
 _ACEOF
+
+
+	MATLABLIB="-L${with_matlab}/bin/maci -L${with_matlab}/sys/os/maci -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz -lhdf5"
+	INCLUDES="-I${MATLAB}/extern/include"
+
+
+
 
 	;;
 	*-*-cygwin*)
