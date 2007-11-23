@@ -27,6 +27,9 @@ Dispatcher::Dispatcher(QFrame* centralFrame)
 Dispatcher::~Dispatcher()
 {
 	close();
+	delete exercise_;
+	delete metro_;
+	delete marBackend_;
 }
 
 bool Dispatcher::close()

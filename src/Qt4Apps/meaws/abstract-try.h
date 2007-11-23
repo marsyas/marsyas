@@ -4,6 +4,7 @@
 #include "defs.h"
 #include <QObject>
 #include <QVBoxLayout>
+#include <QTemporaryFile>
 #include "QClickFrame.h"
 #include "backend.h"
 
@@ -49,8 +50,10 @@ protected:
 
 	mrs_natural tryNumber_;
 	mrs_bool hasAudio_;
-	mrs_string filename_;
 	mrs_real score_;
+
+	QTemporaryFile* file_;
+	mrs_string filename_;
 };
 #endif
 

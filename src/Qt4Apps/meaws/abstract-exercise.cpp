@@ -86,8 +86,6 @@ void Exercise::addTryAbstract(Try* newTry)
 //	cout<<"addTryAbstract"<<endl;
 	resultLayout_->addWidget( newTry->getDisplay() );
 	newTry->setTryNumber( tries_->count() );
-	// FIXME: make this a temporary file.
-	newTry->setFilename( "foo.wav" );
 	connect(newTry, SIGNAL(selectTry(mrs_natural)),
 	        this, SLOT(selectTry(mrs_natural)));
 	tries_->append(newTry);

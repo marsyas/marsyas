@@ -22,6 +22,7 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
+	delete dispatcher_;
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
