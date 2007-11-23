@@ -13,6 +13,7 @@ RhythmTry::RhythmTry()
 	pitchPlot = new QtMarRhythmLines();
 	tryLayout_->addWidget(pitchPlot);
 
+	fullPlot = new QtMarRhythmLines();
 }
 
 RhythmTry::~RhythmTry()
@@ -22,7 +23,6 @@ RhythmTry::~RhythmTry()
 void RhythmTry::reset()
 {
 	Try::reset();
-	cout<<"RHYTHMTRY reset"<<endl;
 	pitchPlot->reset();
 }
 
@@ -46,124 +46,12 @@ void RhythmTry::display(mrs_natural state)
 	}
 }
 
-void RhythmTry::setLily(const QStringList lilyInput)
-{
-	lilyInput_ = QStringList( lilyInput );
-}
-
-void RhythmTry::colorNote(int note, double error, double direction)
-{
-	int line=note+3;
-	QString color = "black";
-
-	if (error < -0.002)
-		color = "Medium Blue";
-	if (error < -0.006)
-		color = "Dodger Blue";
-	if (error < -0.02)
-		color = "Light Sky Blue";
-
-	if (error > 0.002)
-		color = "Light Salmon";
-	if (error > 0.006)
-		color = "tomato";
-	if (error > 0.02)
-		color = "red";
-
-	color.insert(0,"\\colorNote #\"");
-	color.append("\" ");
-	QString lily_line = lilyInput_.at(line);
-	lily_line.insert(0,color);
-
-	if (color != "\\colorNote #\"black\" ")
-	{
-		if (direction<0)
-			color="^\\down";
-		if (direction>0)
-			color="_\\up";
-		lily_line.append(color);
-	}
-
-	lilyInput_.replace(line,lily_line);
-}
-
-void RhythmTry::calcErrors(const realvec& pitches, const realvec&
-                           bounds)
-{
-	mrs_real expected;
-	realvec notePitches;
-	mrs_natural noteStart, noteLength;
-	mrs_real noteError;
-	mrs_real deltaError;
-
-	mrs_natural exerNote, i;
-	for (exerNote=0; exerNote < exerAnswer.getRows()-1; exerNote++)
-	{
-		// find the boundaires of the note
-		i = exerNote;
-		while ( (bounds(i) < exerAnswer(exerNote,1)) &&
-		        (i < bounds.getSize()) )
-			i++;
-		noteStart = (mrs_natural) bounds(i);
-		i = exerNote;
-
-		while ( (bounds(i) <= exerAnswer(exerNote+1,1)) &&
-		        (i < bounds.getSize()) )
-			i++;
-		noteLength = (mrs_natural) (bounds(i) - noteStart);
-
-
-		notePitches = pitches.getSubVector(noteStart, noteLength);
-		/*
-				cout<<"note "<<exerNote<<"\t"<<noteStart<<"\t"<<noteLength+noteStart<<endl;
-				cout<<"\t"<<Transcriber::findMedianWithoutZeros(0,notePitches.getSize(),notePitches)<<"\t"<<exerAnswer(exerNote,0)<<endl;
-				cout<<endl;
-		*/
-		expected = exerAnswer(exerNote,0);
-		noteError = 0;
-		for (i=0; i<notePitches.getSize(); i++)
-		{
-			if (notePitches(i) == 0)
-				continue;
-			deltaError = notePitches(i)-expected;
-			deltaError = fmod( deltaError, 12);
-			if (deltaError < -6)
-				deltaError += 12;
-			if (deltaError > 6)
-				deltaError -= 12;
-			noteError += deltaError;
-//			cout<<notePitches(i)<<"\t"<<deltaError<<endl;
-		}
-		// normalize display of error: 1.0= 1/4 tone wrong.
-		noteError = noteError / (6.0*noteLength);
-		//cout<<exerNote<<" "<<noteError<<endl;
-
-// TODO: fix direction of error
-		colorNote(exerNote,noteError,noteError);
-	}
-
-
-	// WRITE LILYPOND FILE OUT
-	// FIXME: filename
-	QString temp;
-	QFile out_file("/tmp/out.ly");
-	out_file.open(QIODevice::WriteOnly | QIODevice::Text);
-	QTextStream out(&out_file);
-
-	for (i = 0; i < lilyInput_.size(); ++i)
-	{
-		temp = lilyInput_.at(i);
-		out<<qPrintable(temp)<<endl;
-	}
-	out_file.close();
-}
-
 void RhythmTry::calcScore(const realvec exerciseOnsets,
                     const realvec audioOnsets, mrs_natural& offset,
                     mrs_real& score)
 {
-	cout<<"Notes found: "<<exerciseOnsets.getSize()-1<<endl;
-	cout<<"   expected: "<<audioOnsets.getSize()-1<<endl;
+//	cout<<"Notes found: "<<exerciseOnsets.getSize()-1<<endl;
+//	cout<<"   expected: "<<audioOnsets.getSize()-1<<endl;
 	mrs_real SCALE = 0.1;
 	offset = 0;
 	score = 0.0;
@@ -187,7 +75,7 @@ void RhythmTry::calcScore(const realvec exerciseOnsets,
 			offset = (mrs_natural) offsetPos;
 			//cout<<"shifting by "<<offset<<" score: "<<offsetScore<<endl;
 		}
-		cout<<"score: "<<offsetScore<<endl;
+		//cout<<"score: "<<offsetScore<<endl;
 	}
 
 }
@@ -195,19 +83,19 @@ void RhythmTry::calcScore(const realvec exerciseOnsets,
 
 mrs_natural
 RhythmTry::calcOffsetAndScore(const realvec exerciseOnsets,
-	const realvec audioOnsets)
+	realvec& audioOnsets)
 {
-	cout<<"Notes found: "<<exerciseOnsets.getSize()-1<<endl;
-	cout<<"   expected: "<<audioOnsets.getSize()-1<<endl;
+//	cout<<"Notes found: "<<exerciseOnsets.getSize()-1<<endl;
+//	cout<<"   expected: "<<audioOnsets.getSize()-1<<endl;
 
 	mrs_natural testOffset;
 	mrs_real testScore;
 
 	calcScore(exerciseOnsets, audioOnsets, testOffset, testScore);
 	if ( audioOnsets.getSize()-1 > exerciseOnsets.getSize()-1) {
-		realvec testOnsets =
+		audioOnsets =
 			audioOnsets.getSubVector(1,audioOnsets.getSize()-1);
-		calcScore(exerciseOnsets, testOnsets, testOffset, testScore);
+		calcScore(exerciseOnsets, audioOnsets, testOffset, testScore);
 	}
 	if (testScore < 0)
 		testScore = 0;
@@ -240,19 +128,25 @@ void RhythmTry::displayAnalysis(MarBackend *results)
 	mrs_natural length = (mrs_natural) (bounds(bounds.getSize()-1)
 	                                    - bounds(0));
 	realvec data = amps.getSubVector(start,length);
-	offset = (mrs_natural) ( -1*(offset + bounds(0)) );
-	pitchPlot->setDetectedOffset(offset);
+
+	cout<<offset<<endl;
+	offset = (mrs_natural) (bounds(0) + offset);
+	cout<<offset<<endl;
+
+//	pitchPlot->setDetectedOffset(offset);
 	pitchPlot->setData(data);
+
+	pitchPlot->setHorizontal(offset,
+		(mrs_natural) (exerAnswer(exerAnswer.getSize()-1)+offset));
+
+	fullPlot->setData(amps);
 
 	hasAudio_ = true;
 }
 
-/*
 void
 RhythmTry::doubleclicked()
 {
-//	pitchPlot->show();
-//	graph->show();
+	fullPlot->show();
 }
-*/
 

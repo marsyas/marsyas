@@ -22,26 +22,25 @@ public:
 	void displayAnalysis(MarBackend *results);
 
 	void setAnswer(const realvec answers);
-	void setLily(const QStringList);
 	void calcErrors(const realvec& pitch, const realvec& bounds);
 
 	void display(mrs_natural state);
-//public slots:
-//	void doubleclicked();
+
+public slots:
+	void doubleclicked();
 
 private:
 	mrs_natural calcOffsetAndScore(
-	    const realvec exerciseOnsets, const realvec audioOnsets);
+	    const realvec exerciseOnsets, realvec& audioOnsets);
 	void calcScore(const realvec exerciseOnsets,
 	               const realvec audioOnsets, mrs_natural& offset,
 	               mrs_real& score);
-	void colorNote(int note, double error, double direction);
 
 	QLabel *resultDisplay;
 	QtMarRhythmLines *pitchPlot;
+	QtMarRhythmLines *fullPlot;
 
 	realvec exerAnswer;
-	QStringList lilyInput_;
 
 //	Marx2DGraph* graph;
 };

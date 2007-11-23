@@ -20,6 +20,7 @@ QtMarRhythmLines::~QtMarRhythmLines()
 
 void QtMarRhythmLines::reset()
 {
+	cout<<"QTMAR reset"<<endl;
 	data_.stretch(0);
 	expectedLines_.stretch(0);
 	update();
@@ -38,16 +39,16 @@ QtMarRhythmLines::paintEvent(QPaintEvent *)
 	// dotted line
 	QPen pen(Qt::SolidPattern);
 
-	pen.setWidth(width_);
+	pen.setWidth(pixelWidth_);
 	pen.setStyle(Qt::SolidLine);
 	pen.setCapStyle(Qt::RoundCap);
 	pen.setJoinStyle(Qt::RoundJoin);
 	painter.setPen(pen);
 
+
 	// constants
-	mrs_real hScale =
-		width() / expectedLines_(expectedLines_.getSize()-1);
-	mrs_real vScale = height() / (highVal_ - minVal_);
+	mrs_real hScale = (mrs_real) width() / (endOffset_ - startOffset_);
+	mrs_real vScale = (mrs_real) height() / (highVal_ - minVal_);
 	//mrs_natural midY = height()/2;
 
 	// variables from data
@@ -57,28 +58,27 @@ QtMarRhythmLines::paintEvent(QPaintEvent *)
 
 	// variables
 	mrs_natural y;
-
 	mrs_natural x;
+
 	// iterates over the data_
-	for (mrs_natural i=0; i<data_.getSize() - detectedOffset_; i++)
+	for (mrs_natural i=startOffset_; i<endOffset_; i++)
 	{
 		x = mrs_natural (i * hScale);
-		if ( (i+detectedOffset_)<0)
-			y=0;
-		else
-			y = mrs_natural ( data_(i+detectedOffset_) * vScale );
+		y = mrs_natural ( data_(i) * vScale );
 		painter.drawLine(x, height()-y, x, height()-1);
 	}
 
 	// draws the expected lines
+	if (expectedLines_.getSize()==0)
+		return;
 	painter.setPen(QColor(Qt::red));
 	end = 0;
 	for (mrs_natural i=1; i<expectedLines_.getSize(); i++) {
 		start = end;
 		end = (mrs_natural) ( expectedLines_(i) * hScale );
+//		cout<<start<<endl;
 		painter.drawLine(start, 0, start, height()-1);
 	}
-
 }
 
 } //namespace
