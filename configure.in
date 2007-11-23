@@ -243,9 +243,26 @@ AC_ARG_WITH([matlab],[AC_HELP_STRING([--with-matlab],[Activate MATLAB engine int
 MATLABLIBS=""
 case "x$with_matlab" in
        xyes)
-			   MATLABPREFIX="${MATLAB}"
+               MATLABPREFIX="${MATLAB}"
                AC_DEFINE([MARSYAS_MATLAB],[1],[Activate MATLAB engine interface])
                echo MATLAB engine activated 
+
+	       case "${host}" 	 in
+ 	           *-*-linux-gnu*)    	       
+
+		   	MATLABLIBS="-L${MATLABPREFIX}/bin/glnxa64 -L${MATLAB}/sys/os/glnxa64 -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz -lhdf5"
+			INCLUDES="-I${MATLAB}/extern/include" 
+	;;
+	      *-*-darwin*) 	
+	 MATLABLIB="-L${with_matlab}/bin/maci -L${with_matlab}/sys/os/maci -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz -lhdf5"
+	INCLUDES="-I${MATLAB}/extern/include"
+		;;
+
+		esac
+
+
+
+
        ;;
        xno|x)  echo MATLAB engine not activated ;;
        *)
@@ -253,6 +270,20 @@ case "x$with_matlab" in
 			   MATLABPREFIX="${with_matlab}"
                AC_DEFINE([MARSYAS_MATLAB],[1],[Activate MATLAB engine interface])
                echo MATLAB engine activated 
+
+	       case "${host}" 	 in
+ 	           *-*-linux-gnu*)    	       
+
+		   	MATLABLIBS="-L${MATLABPREFIX}/bin/glnxa64 -L${MATLAB}/sys/os/glnxa64 -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz -lhdf5"
+			INCLUDES="-I${MATLAB}/extern/include" 
+	;;
+	      *-*-darwin*) 	
+	 MATLABLIB="-L${with_matlab}/bin/maci -L${with_matlab}/sys/os/maci -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz -lhdf5"
+	INCLUDES="-I${MATLAB}/extern/include"
+		;;
+		esac
+
+
        ;;
 esac
 AC_SUBST([MATLABLIBS])
@@ -287,8 +318,7 @@ case "${host}" in
 	AC_DEFINE([MARSYAS_LINUX])
 
 
-	MATLABLIBS="-L${MATLABPREFIX}/bin/glnxa64 -L${MATLAB}/sys/os/glnxa64 -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz -lhdf5"
-	INCLUDES="-I${MATLAB}/extern/include" 
+
 
 
 
@@ -322,11 +352,6 @@ fi
 	Libs="-lpthread ${MADLIB} ${OGGLIB} ${MATLABLIBS} -framework CoreAudio -framework CoreMidi -framework CoreFoundation"
 	AC_DEFINE([MARSYAS_MACOSX],[1], [MACOSX SYSTEM])		
 	AC_DEFINE([__MACOSX_CORE__],[1], [MACOSX SYSTEM FOR RTAUDIO])		
-
-	MATLABLIB="-L${with_matlab}/bin/maci -L${with_matlab}/sys/os/maci -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz -lhdf5"
-	INCLUDES="-I${MATLAB}/extern/include"
-
-
 
 
 	;;
