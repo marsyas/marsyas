@@ -13,6 +13,11 @@
 #define MEAWS_TRY_PAUSED 4
 #define MEAWS_TRY_RUNNING 5
 
+#define TRY_NOTHING 0
+#define TRY_SELECTED 1
+#define TRY_BADNOTES 2
+
+
 // might work?  might not.  Can't check by myself.
 #ifdef WIN32
 #define MEAWS_DIR "c:\\temp\\meaws"

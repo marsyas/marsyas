@@ -23,8 +23,8 @@ public:
 	void setAnswer(const realvec answers);
 	void setLily(const QStringList);
 	void calcErrors(const realvec& pitch, const realvec& bounds);
-	void selected(bool selected);
 
+	void display(mrs_natural state);
 //public slots:
 //	void doubleclicked();
 

@@ -25,15 +25,18 @@ void RhythmTry::setAnswer(const realvec answers)
 	exerAnswer = answers;
 }
 
-void RhythmTry::selected(bool selected)
+void RhythmTry::display(mrs_natural state)
 {
-	if (selected)
-	{
-		pitchPlot->setBackgroundColor(QColor(0,234,234));
-	}
-	else
-	{
+	switch (state) {
+	case ( TRY_NOTHING ):
 		pitchPlot->setBackgroundColor(QColor(255,255,255));
+		break;
+	case ( TRY_SELECTED ):
+		pitchPlot->setBackgroundColor(QColor(0,234,234));
+		break;
+	case ( TRY_BADNOTES ):
+		pitchPlot->setBackgroundColor(QColor(255,0,0));
+		break;
 	}
 }
 
@@ -215,6 +218,9 @@ void RhythmTry::displayAnalysis(MarBackend *results)
 	// shift the exercise times to match the beginning of audio exercise
 	Transcriber::discardBeginEndSilencesAmpsOnly(amps, bounds);
 
+	if (bounds.getSize() > exerAnswer.getSize() + 2) {
+		display(TRY_BADNOTES);
+	}
 	// shift detected onsets to produce highest score
 	mrs_natural offset = calcOffsetAndScore(exerAnswer, bounds);
 

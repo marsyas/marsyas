@@ -23,6 +23,7 @@ public:
 	virtual QString getMessage() = 0;
 	virtual bool displayAnalysis(MarBackend *results) = 0;
 
+	// individual access.  replace with getCurrent ?
 	void setFilename(mrs_string filename);
 	mrs_string getFilename();
 	bool hasAudio();

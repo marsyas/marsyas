@@ -30,6 +30,8 @@ public slots:
 
 private:
 	void colorNote(int note, double error, double direction);
+	void display(mrs_natural state)
+		{; };
 
 	QLabel *resultDisplay;
 	QtMarIntonationBars *barPlot_;

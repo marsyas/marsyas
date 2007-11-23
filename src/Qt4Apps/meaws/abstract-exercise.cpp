@@ -112,7 +112,7 @@ void Exercise::delTryAbstract()
 void Exercise::selectTry(mrs_natural selected)
 {
 	if (currentTry_ != NULL)
-		currentTry_->selected(false);
+		currentTry_->display(TRY_NOTHING);
 	currentTryNumber_ = selected;
 	if (currentTryNumber_ < 0)
 	{
@@ -121,7 +121,7 @@ void Exercise::selectTry(mrs_natural selected)
 	else
 	{
 		currentTry_ = (*tries_)[currentTryNumber_];
-		currentTry_->selected(true);
+		currentTry_->display(TRY_SELECTED);
 		setupBackend();
 	}
 	emit updateMain(0);

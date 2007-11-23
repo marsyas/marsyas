@@ -27,11 +27,13 @@ public:
 		{ return filename_; };
 	void setFilename(mrs_string filename);
 
+//	virtual void selected(bool selected)
+//		{ (void) selected; };
+	virtual void display(mrs_natural state) = 0;
+
 
 	virtual void displayAnalysis(MarBackend *results)
 		{ (void) results; hasAudio_ = true; };
-	virtual void selected(bool selected)
-		{ (void) selected; };
 
 public slots:
 	virtual void clicked()
