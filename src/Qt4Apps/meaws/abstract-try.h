@@ -23,10 +23,9 @@ public:
 		{ return score_; };
 	mrs_bool hasAudio()
 		{ return hasAudio_; };
-	void setFilename(mrs_string filename)
-		{ filename_ = filename; };
 	mrs_string getFilename()
 		{ return filename_; };
+	void setFilename(mrs_string filename);
 
 
 	virtual void displayAnalysis(MarBackend *results)

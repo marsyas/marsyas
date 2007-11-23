@@ -18,12 +18,23 @@ Try::Try()
 
 Try::~Try()
 {
-//	cout<<"removing "<<endl;
-//	cout<<file_->remove()<<endl;;
-	delete file_;
-	//file_->close();
-	if (tryLayout_ != NULL)
+	if (file_ != NULL) {
+		delete file_;
+		file_ = NULL;
+	}
+	if (tryLayout_ != NULL) {
 		delete tryLayout_;
+		tryLayout_ = NULL;
+	}
 	delete tryArea_;
 }
+
+void Try::setFilename(mrs_string filename)
+{
+	if (file_ != NULL) {
+		delete file_;
+		file_ = NULL;
+	}
+	filename_ = filename;
+};
 

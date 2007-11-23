@@ -13,7 +13,8 @@
 #include "QtMarRhythmLines.h"
 //#include "Marx2DGraph.h"
 
-class RhythmTry : public Try {
+class RhythmTry : public Try
+{
 public:
 	RhythmTry();
 	~RhythmTry();
@@ -29,7 +30,10 @@ public:
 
 private:
 	mrs_natural calcOffsetAndScore(
-		realvec exerciseOnsets, realvec audioOnsets);
+	    const realvec exerciseOnsets, const realvec audioOnsets);
+	void calcScore(const realvec exerciseOnsets,
+	               const realvec audioOnsets, mrs_natural& offset,
+	               mrs_real& score);
 	void colorNote(int note, double error, double direction);
 
 	QLabel *resultDisplay;
