@@ -31,6 +31,7 @@ public:
 public slots:
 	virtual void addTry() = 0;
 	virtual void delTry() = 0;
+	virtual void resetTry();
 
 signals:
 	void analysisDone();

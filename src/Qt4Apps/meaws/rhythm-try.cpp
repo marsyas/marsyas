@@ -13,11 +13,17 @@ RhythmTry::RhythmTry()
 	pitchPlot = new QtMarRhythmLines();
 	tryLayout_->addWidget(pitchPlot);
 
-	score_ = -1;
 }
 
 RhythmTry::~RhythmTry()
 {
+}
+
+void RhythmTry::reset()
+{
+	Try::reset();
+	cout<<"RHYTHMTRY reset"<<endl;
+	pitchPlot->reset();
 }
 
 void RhythmTry::setAnswer(const realvec answers)

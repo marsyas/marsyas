@@ -151,3 +151,12 @@ bool Exercise::hasAudio()
 	return false;
 }
 
+void Exercise::resetTry()
+{
+	cout<<"EXERCISE resetTry"<<endl;
+	if (currentTry_ != NULL) {
+		currentTry_->reset();
+		updateMain(0);
+	}
+}
+

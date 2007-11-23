@@ -100,6 +100,7 @@ void MainWindow::createMenus()
 	testingMenu_->addAction(playFileAct_);
 	testingMenu_->addAction(addTryAct_);
 	testingMenu_->addAction(delTryAct_);
+	testingMenu_->addAction(resetTryAct_);
 
 
 	menuBar()->addSeparator();
@@ -135,6 +136,7 @@ void MainWindow::createToolBars()
 	otherToolBar_ = addToolBar(tr("Other"));
 	otherToolBar_->addAction(addTryAct_);
 	otherToolBar_->addAction(delTryAct_);
+	otherToolBar_->addAction(resetTryAct_);
 }
 
 void MainWindow::createActions()
@@ -206,6 +208,7 @@ void MainWindow::createActions()
 
 	addTryAct_ = new QAction(tr("Add a try"), this);
 	delTryAct_ = new QAction(tr("Delete a try"), this);
+	resetTryAct_ = new QAction(tr("Reset try"), this);
 }
 
 void MainWindow::connectObjects()
@@ -268,6 +271,7 @@ void MainWindow::connectExercise()
 
 	connect(addTryAct_, SIGNAL(triggered()), exercise, SLOT(addTry()));
 	connect(delTryAct_, SIGNAL(triggered()), exercise, SLOT(delTry()));
+	connect(resetTryAct_, SIGNAL(triggered()), exercise, SLOT(resetTry()));
 
 }
 

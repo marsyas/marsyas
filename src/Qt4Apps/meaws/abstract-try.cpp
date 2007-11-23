@@ -7,13 +7,8 @@ Try::Try()
 	connect(tryArea_, SIGNAL(doubleclicked()), this, SLOT(doubleclicked()));
 	tryLayout_ = NULL;
 	tryNumber_ = 0;
-	hasAudio_ = false;
-
-	file_ = new QTemporaryFile("meaws-XXXXXXXX.wav");
-	file_->open();
-//	file_->setAutoRemove(true);
-	filename_ = qPrintable(file_->fileName());
-	cout<<"temp file is: "<<filename_<<endl;
+	file_ = NULL;
+	reset();
 }
 
 Try::~Try()
@@ -27,6 +22,20 @@ Try::~Try()
 		tryLayout_ = NULL;
 	}
 	delete tryArea_;
+}
+
+void Try::reset()
+{
+	cout<<"abstract try reset"<<endl;
+	if (file_ != NULL) {
+		delete file_;
+		file_ = NULL;
+	}
+	file_ = new QTemporaryFile("meaws-XXXXXXXX.wav");
+	file_->open();
+	filename_ = qPrintable(file_->fileName());
+	hasAudio_ = false;
+	score_ = -1;
 }
 
 void Try::setFilename(mrs_string filename)

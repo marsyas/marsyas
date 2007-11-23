@@ -18,6 +18,13 @@ QtMarRhythmLines::~QtMarRhythmLines()
 {
 }
 
+void QtMarRhythmLines::reset()
+{
+	data_.stretch(0);
+	expectedLines_.stretch(0);
+	update();
+}
+
 void
 QtMarRhythmLines::paintEvent(QPaintEvent *)
 {

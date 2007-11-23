@@ -87,6 +87,7 @@ private:
 	QSlider *tempoSlider_;
 	QAction *addTryAct_;
 	QAction *delTryAct_;
+	QAction *resetTryAct_;
 
 	QMenu *testingMenu_;
 

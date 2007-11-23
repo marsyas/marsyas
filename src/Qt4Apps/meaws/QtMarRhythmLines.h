@@ -23,6 +23,7 @@ class QtMarRhythmLines : public QtMarPlot
 public:
 	QtMarRhythmLines(QWidget *parent = 0);
 	~QtMarRhythmLines();
+	void reset();
 
     void setExpectedLines(realvec expectedLines)
     {

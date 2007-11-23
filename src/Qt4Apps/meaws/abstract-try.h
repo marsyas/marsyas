@@ -26,9 +26,8 @@ public:
 	mrs_string getFilename()
 		{ return filename_; };
 	void setFilename(mrs_string filename);
+	virtual void reset();
 
-//	virtual void selected(bool selected)
-//		{ (void) selected; };
 	virtual void display(mrs_natural state) = 0;
 
 

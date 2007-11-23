@@ -18,6 +18,7 @@ class RhythmTry : public Try
 public:
 	RhythmTry();
 	~RhythmTry();
+	void reset();
 	void displayAnalysis(MarBackend *results);
 
 	void setAnswer(const realvec answers);
