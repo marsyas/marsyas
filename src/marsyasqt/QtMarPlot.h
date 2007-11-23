@@ -52,7 +52,7 @@ public:
 		minVal_ = minVal;
 		highVal_ = highVal;
 	}
-	/// scales data
+	/// scales data.  DO AFTER setData() !
 	void setHorizontal(mrs_natural start, mrs_natural end)
 	{
 		startOffset_ = start;
@@ -62,6 +62,7 @@ public:
 	void setData(realvec getData)
 	{
 		data_ = getData;
+		setHorizontal(0, data_.getSize()-1);
 		update();
 	}
 
