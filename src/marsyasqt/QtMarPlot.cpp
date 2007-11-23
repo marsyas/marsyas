@@ -9,7 +9,9 @@ QtMarPlot::QtMarPlot(QWidget *parent)
 	plotName_ = "";
 	minVal_ = -1;
 	highVal_ = 1;
-	width_ = 1;
+	pixelWidth_ = 1;
+	startOffset_ = 0;
+	endOffset_ = -1;
 	drawCenter_ = false;
 	drawImpulses_ = false;
 	setAutoFillBackground(true);
@@ -36,7 +38,7 @@ QtMarPlot::paintEvent(QPaintEvent *)
 	if (drawCenter_)
 		painter.drawLine( 0, height()/2, width(), height()/2);
 
-	pen.setWidth(width_);
+	pen.setWidth(pixelWidth_);
 	pen.setStyle(Qt::SolidLine);
 	pen.setCapStyle(Qt::RoundCap);
 	pen.setJoinStyle(Qt::RoundJoin);
@@ -44,7 +46,12 @@ QtMarPlot::paintEvent(QPaintEvent *)
 
 	mrs_natural i;
 	mrs_natural x,y;
-	mrs_real hScale = width() / mrs_real(data_.getSize());
+	mrs_real hScale;
+	if (endOffset_ >= 0) {
+		hScale = width() / endOffset_ - startOffset_;
+	} else {
+		hScale = width() / mrs_real(data_.getSize());
+	}
 	mrs_real vScale = height() / (highVal_ - minVal_); // maximum scaled pitch/median
 	mrs_real vMean = (minVal_+highVal_)/2;
 	mrs_natural midY = height()/2;

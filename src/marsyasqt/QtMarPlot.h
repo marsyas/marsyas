@@ -35,7 +35,7 @@ public:
 	}
 	void setPixelWidth(mrs_natural width)
 	{
-		width_ = width;
+		pixelWidth_ = width;
 	}
 	void setCenterLine(bool drawCenter)
 	{
@@ -52,6 +52,12 @@ public:
 		minVal_ = minVal;
 		highVal_ = highVal;
 	}
+	/// scales data
+	void setHorizontal(mrs_natural start, mrs_natural end)
+	{
+		startOffset_ = start;
+		endOffset_ = end;
+	}
 
 	void setData(realvec getData)
 	{
@@ -64,7 +70,8 @@ protected:
 
 	QString plotName_;
 	mrs_real minVal_, highVal_;
-	mrs_natural width_;
+	mrs_natural startOffset_, endOffset_;
+	mrs_natural pixelWidth_;
 	bool drawCenter_;
 	bool drawImpulses_;
 
