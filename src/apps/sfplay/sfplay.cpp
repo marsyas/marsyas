@@ -20,13 +20,14 @@ float gain = 1.0f;
 float repetitions = 1;
 mrs_natural offset;
 mrs_natural duration;
+mrs_natural windowsize;
 CommandLineOptions cmd_options;
 
 void 
 printUsage(string progName)
 {
   MRSDIAG("sfplay.cpp - printUsage");
-  cerr << "Usage : " << progName << " [-g gain] [-s start(seconds)] [-l length(seconds)] [-f outputfile] [-p pluginName] [-r repetitions] file1 file2 file3" << endl;
+  cerr << "Usage : " << progName << " [-g gain] [-s start(seconds)] [-l length(seconds)] [-f outputfile] [-p pluginName] [-r repetitions] [-ws windowsize(samples)] file1 file2 file3" << endl;
   cerr << endl;
   cerr << "where file1, ..., fileN are sound files in a MARSYAS supported format or collections " << endl;
   exit(1);
@@ -52,6 +53,7 @@ printHelp(string progName)
   cerr << "-l --length     : playback length in seconds " << endl;
   cerr << "-p --plugin     : output plugin name " << endl;
   cerr << "-r --repetitions: number of repetitions " << endl;
+  cerr << "--ws --windowsize: windows size in samples " << endl;
   exit(1);
 }
 
@@ -84,7 +86,7 @@ void sfplay(vector<string> soundfiles)
 
 
   // update controls 
-  playbacknet->updctrl("mrs_natural/inSamples", 2048);
+  playbacknet->updctrl("mrs_natural/inSamples", windowsize);
   playbacknet->updctrl("SoundFileSource/src/mrs_real/repetitions", repetitions);
   playbacknet->updctrl("SoundFileSource/src/mrs_real/duration", length);
   playbacknet->updctrl("Gain/gt/mrs_real/gain", gain);
@@ -161,6 +163,7 @@ initOptions()
   cmd_options.addRealOption("gain", "g", 1.0);
   cmd_options.addStringOption("plugin", "p", EMPTYSTRING);
   cmd_options.addRealOption("repetitions", "r", 1.0);
+  cmd_options.addNaturalOption("windowsize", "ws", 2048);
 }
 
 
@@ -176,6 +179,7 @@ loadOptions()
   gain = cmd_options.getRealOption("gain");
   pluginName = cmd_options.getStringOption("plugin");
   fileName   = cmd_options.getStringOption("filename");
+  windowsize = cmd_options.getNaturalOption("windowsize");
 }
 
 
