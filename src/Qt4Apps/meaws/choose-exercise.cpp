@@ -22,6 +22,14 @@ Exercise* ChooseExercise::chooseType()
 	return NULL;
 }
 
+QString ChooseExercise::chooseCampaign(QString dir)
+{
+	QString openCampaign = QFileDialog::getOpenFileName(
+	                           0,tr("Open Campaign"), dir,
+	                           tr("Campaigns (*.txt)"));
+	return openCampaign;
+}
+
 QString ChooseExercise::chooseFile(QString dir)
 {
 	QString openFilename = QFileDialog::getOpenFileName(

@@ -5,6 +5,7 @@
 #include "user.h"
 #include "metro.h"
 #include "backend.h"
+#include "campaign.h"
 
 #include "choose-exercise.h"
 

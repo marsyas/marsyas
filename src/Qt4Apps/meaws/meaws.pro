@@ -12,7 +12,9 @@ SOURCES += QClickFrame.cpp
 
 # owned by dispatcher
 HEADERS += backend.h user.h metro.h choose-exercise.h
+HEADERS += campaign.h
 SOURCES += backend.cpp user.cpp metro.cpp choose-exercise.cpp
+SOURCES += campaign.cpp
 
 # exercises
 HEADERS += abstract-exercise.h abstract-try.h

@@ -74,10 +74,17 @@ void Dispatcher::openExercise()
 	setupExercise();
 }
 
+//zz
 void Dispatcher::openCampaign()
 {
-	cout<<"DISPATCHER openCampaign"<<endl;
+	QString dir(MEAWS_DIR);
+	dir.append("data/campaign");
+	QString filename =
+	    ChooseExercise::chooseCampaign( dir );
+	if (filename.isEmpty())
+		return;
 
+	Campaign foo(filename);
 }
 
 void Dispatcher::setupExercise()
