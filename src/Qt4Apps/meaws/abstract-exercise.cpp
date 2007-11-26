@@ -36,6 +36,8 @@ Exercise::~Exercise()
 void Exercise::open(QString exerciseFilename)
 {
 	//cout<<qPrintable(exerciseFilename)<<endl;
+	exerciseFilename_ = std::string(
+		exerciseFilename.remove(MEAWS_DIR).toAscii() );
 
 	instructionImageLabel_ = new QLabel;
 	QPixmap *instructPixmap = new QPixmap(exerciseFilename);
@@ -46,6 +48,11 @@ void Exercise::open(QString exerciseFilename)
 	instructionLayout_ = new QVBoxLayout;
 	instructionLayout_->addWidget(instructionImageLabel_);
 	height_ = instructPixmap->height()+4;
+}
+
+mrs_string Exercise::getExerciseFilename()
+{
+	return exerciseFilename_;
 }
 
 void Exercise::setupDisplay(QFrame* centralFrame)

@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QString>
 #include <QLabel>
+#include <QDir> // for MEAWS_DIR
 #include "abstract-try.h"
 
 
@@ -22,6 +23,8 @@ public:
 	virtual int getBackend() = 0;
 	virtual QString getMessage() = 0;
 	virtual bool displayAnalysis(MarBackend *results) = 0;
+
+	mrs_string getExerciseFilename();
 
 	// individual access.  replace with getCurrent ?
 	void setFilename(mrs_string filename);
@@ -62,6 +65,7 @@ protected:
 	// tries[currentTryNumber_].  Do not delete this!
 	Try* currentTry_;
 
+	mrs_string exerciseFilename_;
 
 	// TODO: figure out how to find the height_.  :(
 	int height_;

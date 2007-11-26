@@ -8,7 +8,6 @@
 #include <QErrorMessage>
 #include <QStringList>
 #include <QtGui>
-//#include <QList>
 
 class QAction;
 class QMenu;
@@ -24,6 +23,7 @@ public:
 	User();
 	~User();
 	QString getName();
+	void reset();
 
 public slots:
 	void newUser();
@@ -32,6 +32,8 @@ public slots:
 	bool saveAs();
 	bool close();
 	void setUserInfo();
+
+	void saveExercise(std::string exerciseName, double score);
 
 signals:
 	void updateMain(int state);
@@ -56,6 +58,8 @@ private:
 	QStringList yearsPlayingList_;
 
 	bool isModified_;
+
+	// User info
 	QString username_;
 	QString filename_;
 	QString level_;
@@ -70,6 +74,8 @@ private:
 	QPushButton *yearsPlayingButton_;
 	QPushButton *okButton_;
 
+	QStringList exercises_;
+	QList<double> scores_;
 };
 #endif
 

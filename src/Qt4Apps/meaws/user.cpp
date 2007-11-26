@@ -25,6 +25,17 @@ User::~User()
 {
 }
 
+void
+User::reset()
+{
+	isModified_ = false;
+	username_ = "";
+	level_ = "Novice";
+	weekPractice_ = "Never";
+	weekPlay_ = "Never";
+	yearsPlaying_= "0";
+}
+
 void User::setupInfoWindow()
 {
 	usernameButton_ = new QPushButton;
@@ -93,6 +104,15 @@ void User::openFile(const QString &openFilename)
 	in>>weekPlay_;
 	in>>yearsPlaying_;
 
+	QString exerciseName;
+	double score;
+	while (!in.atEnd())
+	{
+		in>>exerciseName>>score;
+		exercises_.append(exerciseName);
+		scores_.append(score);
+	}
+
 	updateUserInfoWindow();
 	isModified_ = false;
 	QApplication::restoreOverrideCursor();
@@ -139,6 +159,12 @@ bool User::saveFile(const QString &saveFilename)
 	out << weekPractice_ << "\n";
 	out << weekPlay_ << "\n";
 	out << yearsPlaying_ << "\n";
+
+	for (int i=0; i<exercises_.size(); i++)
+	{
+		out<<qPrintable(exercises_.at(i))<<" ";
+		out<<scores_.at(i)<<endl;
+	}
 	QApplication::restoreOverrideCursor();
 
 	filename_ = saveFilename;
@@ -160,21 +186,18 @@ bool User::close()
 
 bool User::maybeSave()
 {
-// TODO: disable temporarily.
-	/*
-		if (isModified_)
-		{
-			QMessageBox::StandardButton ret;
-			ret = QMessageBox::warning(this, tr("Meaws"),
-			                           tr("This user has unsaved data.\n"
-			                              "Do you want to save your changes?"),
-			                           QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-			if (ret == QMessageBox::Save)
-				return save();
-			else if (ret == QMessageBox::Cancel)
-				return false;
-		}
-	*/
+	if (isModified_)
+	{
+		QMessageBox::StandardButton ret;
+		ret = QMessageBox::warning(this, tr("Meaws"),
+		                           tr("This user has unsaved data.\n"
+		                              "Do you want to save your changes?"),
+		                           QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+		if (ret == QMessageBox::Save)
+			return save();
+		else if (ret == QMessageBox::Cancel)
+			return false;
+	}
 	return true;
 }
 
@@ -225,13 +248,14 @@ bool
 User::queryName()
 {
 	bool ok;
-	QString text = QInputDialog::getText(this, tr("Name"),
-	                                     tr("User name:"), QLineEdit::Normal,
-	                                     QDir::home().dirName(), &ok);
+	QString text =
+	    QInputDialog::getText(this, tr("Name"),
+	                          tr("User name:"), QLineEdit::Normal,
+	                          QDir::home().dirName(), &ok);
 	if (ok && !text.isEmpty())
 	{
 		username_ = text;
-		isModified_ = true;
+//		isModified_ = true;
 		updateUserInfoWindow();
 	}
 	return true;
@@ -241,11 +265,12 @@ bool
 User::queryLevel()
 {
 	bool ok;
-	QString item = QInputDialog::getItem(this,
-	                                     tr("Level"),
-	                                     tr("How would you "
-	                                        "describe your ability?"), levelList_, 0,
-	                                     false, &ok);
+	QString item =
+	    QInputDialog::getItem(this,
+	                          tr("Level"),
+	                          tr("How would you "
+	                             "describe your ability?"), levelList_, 0,
+	                          false, &ok);
 	if (ok && !item.isEmpty())
 	{
 		level_ = item;
@@ -260,11 +285,12 @@ bool
 User::queryWeekPractice()
 {
 	bool ok;
-	QString item = QInputDialog::getItem(this,
-	                                     tr("Weekly practice"),
-	                                     tr("How many hours a "
-	                                        "week do you practice (not simply playing)?"), weekPracticeList_,
-	                                     0, false, &ok);
+	QString item =
+	    QInputDialog::getItem(this,
+	                          tr("Weekly practice"),
+	                          tr("How many hours a "
+	                             "week do you practice (not simply playing)?"), weekPracticeList_,
+	                          0, false, &ok);
 	if (ok && !item.isEmpty())
 	{
 		weekPractice_ = item;
@@ -278,12 +304,13 @@ bool
 User::queryWeekPlay()
 {
 	bool ok;
-	QString item = QInputDialog::getItem(this,
-	                                     tr("Weekly playing"),
-	                                     tr("How many hours a "
-	                                        "week do you play (for fun, not individual practice."),
-	                                     weekPlayList_, 0,
-	                                     false, &ok);
+	QString item =
+	    QInputDialog::getItem(this,
+	                          tr("Weekly playing"),
+	                          tr("How many hours a "
+	                             "week do you play (for fun, not individual practice."),
+	                          weekPlayList_, 0,
+	                          false, &ok);
 	if (ok && !item.isEmpty())
 	{
 		weekPlay_ = item;
@@ -297,11 +324,13 @@ bool
 User::queryYearsPlaying()
 {
 	bool ok;
-	QString item = QInputDialog::getItem(this,
-	                                     tr("Years playing"),
-	                                     tr("How long have you "
-	                                        "been playing this instrument?"), yearsPlayingList_, 0,
-	                                     false, &ok);
+	QString item =
+	    QInputDialog::getItem(this,
+	                          tr("Years playing"),
+	                          tr("How long have you "
+	                             "been playing this instrument?"),
+	                          yearsPlayingList_, 0,
+	                          false, &ok);
 	if (ok && !item.isEmpty())
 	{
 		yearsPlaying_ = item;
@@ -309,5 +338,14 @@ User::queryYearsPlaying()
 		updateUserInfoWindow();
 	}
 	return true;
+}
+
+void
+User::saveExercise(std::string exerciseName, double score)
+{
+	QString temp(exerciseName.c_str());
+	exercises_.append(temp);
+	scores_.append(score);
+	isModified_ = true;
 }
 

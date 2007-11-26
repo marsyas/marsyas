@@ -76,6 +76,8 @@ private:
 	QAction *openCampaignAct_;
 	QAction *toggleAttemptAct;
 	QAction *closeExerciseAct_;
+	QAction *saveExerciseScoreAct_;
+	QAction *saveExerciseAudioAct_;
 
 
 	QToolBar *tempoToolBar_;

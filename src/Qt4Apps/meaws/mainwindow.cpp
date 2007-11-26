@@ -94,6 +94,8 @@ void MainWindow::createMenus()
 	exerciseMenu_->addAction(openExerciseAct_);
 	exerciseMenu_->addAction(openCampaignAct_);
 	exerciseMenu_->addAction(closeExerciseAct_);
+	exerciseMenu_->addAction(saveExerciseScoreAct_);
+	exerciseMenu_->addAction(saveExerciseAudioAct_);
 
 	testingMenu_ = menuBar()->addMenu(tr("Testing"));
 	testingMenu_->addAction(testingFileAct_);
@@ -202,6 +204,9 @@ void MainWindow::createActions()
 	closeExerciseAct_->setShortcut(tr("Ctrl+D"));
 	closeExerciseAct_->setStatusTip(tr("Close exercise"));
 
+	saveExerciseScoreAct_ = new QAction(tr("Save exercise score"),this);
+	saveExerciseAudioAct_ = new QAction(tr("Save exercise audio"),this);
+
 	// metronome + other
 	visualMetroBeatAct_ = new QAction(QIcon(":/icons/circle.png"),
 	                                  tr("Visual metro_nome"), this);
@@ -249,6 +254,10 @@ void MainWindow::connectObjects()
 	        dispatcher_, SLOT(closeExercise()));
 	connect(closeUserAct_, SIGNAL(triggered()),
 	        dispatcher_, SLOT(closeUser()));
+	connect(saveExerciseScoreAct_, SIGNAL(triggered()),
+	        dispatcher_, SLOT(saveExerciseScore()));
+	connect(saveExerciseAudioAct_, SIGNAL(triggered()),
+	        dispatcher_, SLOT(saveExerciseAudio()));
 
 	// Sub-dispatcher objects
 	QObject* user = dispatcher_->getUserPointer();

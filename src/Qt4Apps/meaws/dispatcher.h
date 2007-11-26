@@ -44,6 +44,8 @@ public slots:
 	void openAttempt();
 	bool closeExercise();
 	bool closeUser();
+	void saveExerciseScore();
+	void saveExerciseAudio();
 
 	void analyze();
 	void toggleAttempt();

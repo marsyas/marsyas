@@ -32,9 +32,14 @@ Dispatcher::~Dispatcher()
 
 bool Dispatcher::close()
 {
-	cout<<"close"<<endl;
+	cout<<"dispatcher close()"<<endl;
 	if ( closeUser() )
 	{
+		if (user_ != NULL)
+		{
+			delete user_;
+			user_ = NULL;
+		}
 		if (campaign_ != NULL)
 		{
 			delete campaign_;
@@ -59,12 +64,10 @@ bool Dispatcher::closeUser()
 {
 	if (user_ == NULL)
 		return true;
-	cout<<"closeUser"<<endl;
 	if ( closeExercise() )
 		if ( user_->close() )
 		{
-			delete user_;
-			user_ = NULL;
+			user_->reset();
 			return true;
 		}
 	return false;
@@ -74,7 +77,6 @@ bool Dispatcher::closeExercise()
 {
 	if (exercise_ == NULL)
 		return true;
-	cout<<"closeExercise"<<endl;
 	delete exercise_;
 	exercise_ = NULL;
 	return true;
@@ -179,6 +181,16 @@ void Dispatcher::analyze()
 	}
 }
 
+void Dispatcher::saveExerciseScore()
+{
+	user_->saveExercise(exercise_->getExerciseFilename(),
+	                    exercise_->getScore());
+}
+
+void Dispatcher::saveExerciseAudio()
+{
+	cout<<"DISPAT save exercise audio"<<endl;
+}
 
 void Dispatcher::toggleAttempt()
 {
@@ -187,6 +199,7 @@ void Dispatcher::toggleAttempt()
 		setAttempt(!attemptRunningBool_);
 	else
 	{
+		saveExerciseScore();
 		delete exercise_;
 		exercise_ = campaign_->getNextExercise(score);
 		setupExercise();
