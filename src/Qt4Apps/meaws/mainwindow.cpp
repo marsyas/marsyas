@@ -154,7 +154,8 @@ void MainWindow::createActions()
 	aboutQtAct_->setStatusTip(tr("Show the Qt library's About box"));
 
 	// user
-	newUserAct_ = new QAction(QIcon(":/icons/new.png"), tr("&New user"), this);
+	newUserAct_ = new QAction(QIcon(":/icons/new.png"),
+	                          tr("&New user"), this);
 	newUserAct_->setShortcut(tr("Ctrl+N"));
 	newUserAct_->setStatusTip(tr("Create a new session"));
 
@@ -181,11 +182,13 @@ void MainWindow::createActions()
 	setUserInfoAct_->setShortcut(tr("Ctrl+U"));
 
 	// exercise
-	openExerciseAct_ = new QAction(QIcon(":/icons/open.png"), tr("Open Exe&rcise..."), this);
+	openExerciseAct_ = new QAction(QIcon(":/icons/open.png"),
+	                               tr("Open Exe&rcise..."), this);
 	openExerciseAct_->setShortcut(tr("Ctrl+R"));
 	openExerciseAct_->setStatusTip(tr("Open a new exercise"));
 
-	openCampaignAct_ = new QAction(QIcon(":/icons/open.png"), tr("Open Campaign... &E"), this);
+	openCampaignAct_ = new QAction(QIcon(":/icons/open.png"),
+	                               tr("Open Campaign... &E"), this);
 	openCampaignAct_->setShortcut(tr("Ctrl+E"));
 	openCampaignAct_->setStatusTip(tr("Open a new campaign"));
 
@@ -194,21 +197,26 @@ void MainWindow::createActions()
 	toggleAttemptAct->setStatusTip(tr("Start"));
 	toggleAttemptAct->setIcon(QIcon(":/icons/player_play.png"));
 
-	closeExerciseAct_ = new QAction(QIcon(":/icons/quit.png"), tr("&Close dispatcher_"), this);
+	closeExerciseAct_ = new QAction(QIcon(":/icons/quit.png"),
+	                                tr("&Close exercise"), this);
 	closeExerciseAct_->setShortcut(tr("Ctrl+D"));
-	closeExerciseAct_->setStatusTip(tr("Close dispatcher"));
+	closeExerciseAct_->setStatusTip(tr("Close exercise"));
 
 	// metronome + other
-	visualMetroBeatAct_ = new QAction(QIcon(":/icons/circle.png"), tr("Visual metro_nome"), this);
+	visualMetroBeatAct_ = new QAction(QIcon(":/icons/circle.png"),
+	                                  tr("Visual metro_nome"), this);
 	visualMetroBeatAct_->setStatusTip(tr("Shows the beat"));
 
-	calcExerciseAct_ = new QAction(QIcon(":/icons/square.png"), tr("Calculate exercise results"), this);
+	calcExerciseAct_ = new QAction(QIcon(":/icons/square.png"),
+	                               tr("Calculate exercise results"), this);
 
-	testingFileAct_ = new QAction(QIcon(":/icons/open.png"), tr("&Open test audio file..."), this);
+	testingFileAct_ = new QAction(QIcon(":/icons/open.png"),
+	                              tr("&Open test audio file..."), this);
 	testingFileAct_->setShortcut(tr("Ctrl+T"));
 	testingFileAct_->setStatusTip(tr("Open test audio file"));
 
-	playFileAct_ = new QAction(QIcon(":/icons/open.png"), tr("&Play test audio file..."), this);
+	playFileAct_ = new QAction(QIcon(":/icons/open.png"),
+	                           tr("&Play test audio file..."), this);
 	playFileAct_->setIcon(QIcon(":/icons/play.png"));
 	playFileAct_->setStatusTip(tr("Play test audio file"));
 
@@ -237,30 +245,26 @@ void MainWindow::connectObjects()
 	        dispatcher_, SLOT(openAttempt()));
 	connect(toggleAttemptAct, SIGNAL(triggered()),
 	        dispatcher_, SLOT(toggleAttempt()));
-
-	/*
 	connect(closeExerciseAct_, SIGNAL(triggered()),
-	dispatcher_, SLOT(close()));
-
-	connect(calcExerciseAct_, SIGNAL(triggered()),
-	dispatcher_, SLOT(analyze()));
-	connect(playFileAct_, SIGNAL(triggered()),
-	dispatcher_, SLOT(playFile()));
-
-	*/
-
-
+	        dispatcher_, SLOT(closeExercise()));
+	connect(closeUserAct_, SIGNAL(triggered()),
+	        dispatcher_, SLOT(closeUser()));
 
 	// Sub-dispatcher objects
 	QObject* user = dispatcher_->getUserPointer();
-	connect(user, SIGNAL(updateMain(int)), this, SLOT(updateMain(int)));
+	connect(user, SIGNAL(updateMain(int)),
+	        this, SLOT(updateMain(int)));
 
-	connect(closeUserAct_, SIGNAL(triggered()), user, SLOT(close()));
-	connect(newUserAct_, SIGNAL(triggered()), user, SLOT(newUser()));
-	connect(openUserAct_, SIGNAL(triggered()), user, SLOT(open()));
-	connect(saveUserAct_, SIGNAL(triggered()), user, SLOT(save()));
-	connect(saveAsUserAct_, SIGNAL(triggered()), user, SLOT(saveAs()));
-	connect(setUserInfoAct_, SIGNAL(triggered()), user, SLOT(setUserInfo()));
+	connect(newUserAct_, SIGNAL(triggered()),
+	        user, SLOT(newUser()));
+	connect(openUserAct_, SIGNAL(triggered()),
+	        user, SLOT(open()));
+	connect(saveUserAct_, SIGNAL(triggered()),
+	        user, SLOT(save()));
+	connect(saveAsUserAct_, SIGNAL(triggered()),
+	        user, SLOT(saveAs()));
+	connect(setUserInfoAct_, SIGNAL(triggered()),
+	        user, SLOT(setUserInfo()));
 
 	// metro
 	QObject* metro = dispatcher_->getMetroPointer();
@@ -275,11 +279,15 @@ void MainWindow::connectObjects()
 void MainWindow::connectExercise()
 {
 	QObject* exercise = dispatcher_->getExercisePointer();
-	connect(exercise, SIGNAL(updateMain(int)), this, SLOT(updateMain(int)));
+	connect(exercise, SIGNAL(updateMain(int)),
+	        this, SLOT(updateMain(int)));
 
-	connect(addTryAct_, SIGNAL(triggered()), exercise, SLOT(addTry()));
-	connect(delTryAct_, SIGNAL(triggered()), exercise, SLOT(delTry()));
-	connect(resetTryAct_, SIGNAL(triggered()), exercise, SLOT(resetTry()));
+	connect(addTryAct_, SIGNAL(triggered()),
+	        exercise, SLOT(addTry()));
+	connect(delTryAct_, SIGNAL(triggered()),
+	        exercise, SLOT(delTry()));
+	connect(resetTryAct_, SIGNAL(triggered()),
+	        exercise, SLOT(resetTry()));
 
 }
 

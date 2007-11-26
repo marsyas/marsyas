@@ -28,14 +28,55 @@ Dispatcher::Dispatcher(QFrame* centralFrame)
 Dispatcher::~Dispatcher()
 {
 	close();
-	delete exercise_;
-	delete metro_;
-	delete marBackend_;
 }
 
 bool Dispatcher::close()
 {
-	// FIXME: check user and exercise first!
+	cout<<"close"<<endl;
+	if ( closeUser() )
+	{
+		if (campaign_ != NULL)
+		{
+			delete campaign_;
+			campaign_ = NULL;
+		}
+		if (metro_ != NULL)
+		{
+			delete metro_;
+			metro_ = NULL;
+		}
+		if (marBackend_ != NULL)
+		{
+			delete marBackend_;
+			marBackend_ = NULL;
+		}
+		return true;
+	}
+	return false;
+}
+
+bool Dispatcher::closeUser()
+{
+	if (user_ == NULL)
+		return true;
+	cout<<"closeUser"<<endl;
+	if ( closeExercise() )
+		if ( user_->close() )
+		{
+			delete user_;
+			user_ = NULL;
+			return true;
+		}
+	return false;
+}
+
+bool Dispatcher::closeExercise()
+{
+	if (exercise_ == NULL)
+		return true;
+	cout<<"closeExercise"<<endl;
+	delete exercise_;
+	exercise_ = NULL;
 	return true;
 }
 

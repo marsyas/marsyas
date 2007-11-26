@@ -42,6 +42,9 @@ public slots:
 	void openExercise();
 	void openCampaign();
 	void openAttempt();
+	bool closeExercise();
+	bool closeUser();
+
 	void analyze();
 	void toggleAttempt();
 	void setAttempt(bool running);
