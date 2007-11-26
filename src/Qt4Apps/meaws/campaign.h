@@ -18,7 +18,9 @@ public:
 
 private:
 	void openFile(QString filename);
-	QStringList levels;
+	int passPercent;
+	QList<QStringList> adventures;
+
 	//QStringList
 };
 #endif
