@@ -33,22 +33,23 @@ void RhythmTry::setAnswer(const realvec answers)
 
 void RhythmTry::display(mrs_natural state)
 {
-	switch (state) {
+	switch (state)
+	{
 	case ( TRY_NOTHING ):
-		pitchPlot->setBackgroundColor(QColor(255,255,255));
+					pitchPlot->setBackgroundColor(QColor(255,255,255));
 		break;
 	case ( TRY_SELECTED ):
-		pitchPlot->setBackgroundColor(QColor(0,234,234));
+					pitchPlot->setBackgroundColor(QColor(0,234,234));
 		break;
 	case ( TRY_BADNOTES ):
-		pitchPlot->setBackgroundColor(QColor(255,0,0));
+					pitchPlot->setBackgroundColor(QColor(255,0,0));
 		break;
 	}
 }
 
 void RhythmTry::calcScore(const realvec exerciseOnsets,
-                    const realvec audioOnsets, mrs_natural& offset,
-                    mrs_real& score)
+                          const realvec audioOnsets, mrs_natural& offset,
+                          mrs_real& score)
 {
 //	cout<<"Notes found: "<<exerciseOnsets.getSize()-1<<endl;
 //	cout<<"   expected: "<<audioOnsets.getSize()-1<<endl;
@@ -83,7 +84,7 @@ void RhythmTry::calcScore(const realvec exerciseOnsets,
 
 mrs_natural
 RhythmTry::calcOffsetAndScore(const realvec exerciseOnsets,
-	realvec& audioOnsets)
+                              realvec& audioOnsets)
 {
 //	cout<<"Notes found: "<<exerciseOnsets.getSize()-1<<endl;
 //	cout<<"   expected: "<<audioOnsets.getSize()-1<<endl;
@@ -92,9 +93,10 @@ RhythmTry::calcOffsetAndScore(const realvec exerciseOnsets,
 	mrs_real testScore;
 
 	calcScore(exerciseOnsets, audioOnsets, testOffset, testScore);
-	if ( audioOnsets.getSize()-1 > exerciseOnsets.getSize()-1) {
+	if ( audioOnsets.getSize()-1 > exerciseOnsets.getSize()-1)
+	{
 		audioOnsets =
-			audioOnsets.getSubVector(1,audioOnsets.getSize()-1);
+		    audioOnsets.getSubVector(1,audioOnsets.getSize()-1);
 		calcScore(exerciseOnsets, audioOnsets, testOffset, testScore);
 	}
 	if (testScore < 0)
@@ -112,7 +114,8 @@ void RhythmTry::displayAnalysis(MarBackend *results)
 	// shift the exercise times to match the beginning of audio exercise
 	Transcriber::discardBeginEndSilencesAmpsOnly(amps, bounds);
 
-	if (bounds.getSize() > exerAnswer.getSize() + 2) {
+	if (bounds.getSize() > exerAnswer.getSize() + 2)
+	{
 		display(TRY_BADNOTES);
 	}
 	// shift detected onsets to produce highest score
@@ -129,16 +132,13 @@ void RhythmTry::displayAnalysis(MarBackend *results)
 	                                    - bounds(0));
 	realvec data = amps.getSubVector(start,length);
 
-	cout<<offset<<endl;
+	// find the interesting part
 	offset = (mrs_natural) (bounds(0) + offset);
-	cout<<offset<<endl;
-
-//	pitchPlot->setDetectedOffset(offset);
 	pitchPlot->setData(data);
-
 	pitchPlot->setHorizontal(offset,
-		(mrs_natural) (exerAnswer(exerAnswer.getSize()-1)+offset));
+	                         (mrs_natural) (exerAnswer(exerAnswer.getSize()-1)+offset));
 
+	// but display everything for the double-click version
 	fullPlot->setData(amps);
 
 	hasAudio_ = true;

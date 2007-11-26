@@ -13,11 +13,13 @@ Try::Try()
 
 Try::~Try()
 {
-	if (file_ != NULL) {
+	if (file_ != NULL)
+	{
 		delete file_;
 		file_ = NULL;
 	}
-	if (tryLayout_ != NULL) {
+	if (tryLayout_ != NULL)
+	{
 		delete tryLayout_;
 		tryLayout_ = NULL;
 	}
@@ -26,22 +28,22 @@ Try::~Try()
 
 void Try::reset()
 {
-	cout<<"abstract try reset"<<endl;
-	if (file_ != NULL) {
+	if (file_ != NULL)
+	{
 		delete file_;
 		file_ = NULL;
 	}
 	file_ = new QTemporaryFile("meaws-XXXXXXXX.wav");
 	file_->open();
 	filename_ = qPrintable(file_->fileName());
-	cout<<"reset abs try filename: "<<filename_<<endl;
 	hasAudio_ = false;
 	score_ = -1;
 }
 
 void Try::setFilename(mrs_string filename)
 {
-	if (file_ != NULL) {
+	if (file_ != NULL)
+	{
 		delete file_;
 		file_ = NULL;
 	}

@@ -141,7 +141,8 @@ mrs_string Exercise::getFilename()
 
 void Exercise::setFilename(mrs_string filename)
 {
-	if (currentTry_ != NULL) {
+	if (currentTry_ != NULL)
+	{
 		currentTry_->setFilename(filename);
 	}
 	else
@@ -157,8 +158,9 @@ bool Exercise::hasAudio()
 
 void Exercise::resetTry()
 {
-	cout<<"EXERCISE resetTry"<<endl;
-	if (currentTry_ != NULL) {
+//	cout<<"EXERCISE resetTry"<<endl;
+	if (currentTry_ != NULL)
+	{
 		currentTry_->reset();
 		updateMain(0);
 	}

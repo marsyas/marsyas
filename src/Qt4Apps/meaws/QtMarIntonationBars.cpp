@@ -41,7 +41,8 @@ QtMarIntonationBars::paintEvent(QPaintEvent *)
 	// fill in the bars
 	painter.setPen(Qt::NoPen);
 	end = 0;
-	for (mrs_natural i=0; i<data_.getRows(); i++) {
+	for (mrs_natural i=0; i<data_.getRows(); i++)
+	{
 		start = end;
 		end = (mrs_natural) ( data_(i,1) * hScale );
 		errorDirection = (mrs_natural) data_(i,2);
@@ -64,9 +65,12 @@ QtMarIntonationBars::paintEvent(QPaintEvent *)
 		//cout<<colorR<<"\t"<<colorG<<"\t"<<colorB<<endl;
 		painter.setBrush(QColor(colorR,colorG,colorB));
 
-		if ( errorDirection == 0) {
+		if ( errorDirection == 0)
+		{
 			painter.drawRect(start,midY-y,end-start,y*2);
-		} else {
+		}
+		else
+		{
 			y = -y*errorDirection;
 			painter.drawRect(start,midY,end-start,y);
 		}
@@ -79,7 +83,8 @@ QtMarIntonationBars::paintEvent(QPaintEvent *)
 	// draws the vertical lines
 	painter.setPen(QColor(Qt::black));
 	end = 0;
-	for (mrs_natural i=0; i<data_.getRows(); i++) {
+	for (mrs_natural i=0; i<data_.getRows(); i++)
+	{
 		start = end;
 		end = (mrs_natural) ( data_(i,1) * hScale );
 		painter.drawLine(start, 0, start, height()-1);

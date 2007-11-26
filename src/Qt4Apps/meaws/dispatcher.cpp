@@ -133,9 +133,7 @@ void Dispatcher::analyze()
 		if ( marBackend_->analyze() )
 		{
 			exercise_->displayAnalysis( marBackend_ );
-			cout<<"DISPATCHER done display analysis"<<endl;
 			emit updateMain(MEAWS_UPDATE);
-			cout<<"DISPATCHER main updated"<<endl;
 		}
 	}
 }
@@ -143,13 +141,11 @@ void Dispatcher::analyze()
 
 void Dispatcher::toggleAttempt()
 {
-	cout<<"DISPATCHER toggleAttempt"<<endl;
 	double score = exercise_->getScore();
 	if ( score < 0 )
 		setAttempt(!attemptRunningBool_);
 	else
 	{
-		cout<<"SCORE OVER 0"<<endl;
 		delete exercise_;
 		exercise_ = campaign_->getNextExercise(score);
 		setupExercise();
@@ -161,7 +157,6 @@ void Dispatcher::setAttempt(bool running)
 	// if the attempt state has changed
 	if (running != attemptRunningBool_)
 	{
-		cout<<"DISPATCHER setAttempt: "<<running<<endl;
 		if (running)
 		{
 			attemptRunningBool_ = true;

@@ -73,7 +73,8 @@ QtMarRhythmLines::paintEvent(QPaintEvent *)
 		return;
 	painter.setPen(QColor(Qt::red));
 	end = 0;
-	for (mrs_natural i=1; i<expectedLines_.getSize(); i++) {
+	for (mrs_natural i=1; i<expectedLines_.getSize(); i++)
+	{
 		start = end;
 		end = (mrs_natural) ( expectedLines_(i) * hScale );
 //		cout<<start<<endl;

@@ -10,7 +10,8 @@ using namespace Marsyas;
 using namespace MarsyasQt;
 using namespace std;
 
-class MarBackend: public QObject {
+class MarBackend: public QObject
+{
 	Q_OBJECT
 
 public:
@@ -19,7 +20,7 @@ public:
 
 	// communication
 	void setBackend(mrs_natural method, mrs_bool hasAudio,
-		std::string filename);
+	                std::string filename);
 
 
 	bool analyze();
@@ -74,7 +75,7 @@ private:
 // pitch stuff
 	realvec pitchOld;
 	realvec pitchMidiList;
-    realvec amplitudeOld;
+	realvec amplitudeOld;
 };
 #endif
 

@@ -16,15 +16,25 @@ public:
 	Try();
 	~Try();
 	QFrame* getDisplay()
-		{ return tryArea_; };
+	{
+		return tryArea_;
+	};
 	void setTryNumber(mrs_natural num)
-		{ tryNumber_ = num; };
+	{
+		tryNumber_ = num;
+	};
 	mrs_real getScore()
-		{ return score_; };
+	{
+		return score_;
+	};
 	mrs_bool hasAudio()
-		{ return hasAudio_; };
+	{
+		return hasAudio_;
+	};
 	mrs_string getFilename()
-		{ return filename_; };
+	{
+		return filename_;
+	};
 	void setFilename(mrs_string filename);
 	virtual void reset();
 
@@ -32,7 +42,10 @@ public:
 
 
 	virtual void displayAnalysis(MarBackend *results)
-		{ (void) results; hasAudio_ = true; };
+	{
+		(void) results;
+		hasAudio_ = true;
+	};
 
 public slots:
 	virtual void clicked()

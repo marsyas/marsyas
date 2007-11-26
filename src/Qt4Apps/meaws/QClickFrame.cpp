@@ -3,7 +3,7 @@
 //namespace MarsyasQt
 //{
 QClickFrame::QClickFrame(QWidget *parent)
-	: QFrame(parent)
+		: QFrame(parent)
 {
 	setMouseTracking(true);
 	timer.start();

@@ -7,7 +7,8 @@
 #include <QButtonGroup>
 
 
-class RhythmExercise : public Exercise {
+class RhythmExercise : public Exercise
+{
 public:
 	RhythmExercise();
 	~RhythmExercise();

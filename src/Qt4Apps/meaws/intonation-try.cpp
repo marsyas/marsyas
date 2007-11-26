@@ -118,9 +118,9 @@ void IntonationTry::displayAnalysis(MarBackend *results)
 
 	realvec data;
 	mrs_natural totalSamples =
-	  (mrs_natural) (bounds(bounds.getSize()-1)-bounds(0));
+	    (mrs_natural) (bounds(bounds.getSize()-1)-bounds(0));
 	data = pitches.getSubVector(
-	  (mrs_natural) bounds(0),totalSamples);
+	           (mrs_natural) bounds(0),totalSamples);
 	pitchPlot_->setData(data);
 	pitchPlot_->setVertical(57,73);
 	pitchPlot_->setPlotName("pitches");

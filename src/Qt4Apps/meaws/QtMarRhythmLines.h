@@ -25,11 +25,11 @@ public:
 	~QtMarRhythmLines();
 	void reset();
 
-    void setExpectedLines(realvec expectedLines)
-    {
-        expectedLines_ = expectedLines;
-        update();
-    }
+	void setExpectedLines(realvec expectedLines)
+	{
+		expectedLines_ = expectedLines;
+		update();
+	}
 
 	void setExpectedOffset(mrs_natural offset)
 	{

@@ -7,17 +7,21 @@ using namespace std;
 #include "Transcriber.h"
 
 
-RhythmExercise::RhythmExercise() {
+RhythmExercise::RhythmExercise()
+{
 }
 
-RhythmExercise::~RhythmExercise() {
+RhythmExercise::~RhythmExercise()
+{
 }
 
-int RhythmExercise::getBackend() {
+int RhythmExercise::getBackend()
+{
 	return (BACKEND_AMPLITUDES);
 }
 
-void RhythmExercise::open(QString exerciseFilename) {
+void RhythmExercise::open(QString exerciseFilename)
+{
 	Exercise::open(exerciseFilename);
 
 	// load exercise answers
@@ -44,34 +48,39 @@ void RhythmExercise::open(QString exerciseFilename) {
 	exerAnswer.stretch(i-1);
 }
 
-void RhythmExercise::addTry() {
+void RhythmExercise::addTry()
+{
 	RhythmTry *newTry = new RhythmTry();
 	newTry->setAnswer(exerAnswer);
 	Exercise::addTryAbstract(newTry);
 }
 
-void RhythmExercise::delTry() {
+void RhythmExercise::delTry()
+{
 	Exercise::delTryAbstract();
 }
 
-QString RhythmExercise::exercisesDir() {
+QString RhythmExercise::exercisesDir()
+{
 	QString toReturn(MEAWS_DIR);
 	toReturn.append("data/rhythm/");
 	return toReturn;
 }
 
-QString RhythmExercise::getMessage() {
+QString RhythmExercise::getMessage()
+{
 	if (currentTry_ == NULL)
 		return "";
 	QString toReturn( "Selected attempt " +
-QString::number(currentTryNumber_) );
+	                  QString::number(currentTryNumber_) );
 	toReturn.append(". Score: " +
-		QString::number( currentTry_->getScore()) );
+	                QString::number( currentTry_->getScore()) );
 	toReturn.append("%");
 	return toReturn;
 }
 
-bool RhythmExercise::displayAnalysis(MarBackend *results) {
+bool RhythmExercise::displayAnalysis(MarBackend *results)
+{
 	currentTry_->displayAnalysis(results);
 	return true;
 }

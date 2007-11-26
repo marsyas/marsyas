@@ -6,17 +6,21 @@ using namespace std;
 #include <QTextStream>
 #include "Transcriber.h"
 
-IntonationExercise::IntonationExercise() {
+IntonationExercise::IntonationExercise()
+{
 }
 
-IntonationExercise::~IntonationExercise() {
+IntonationExercise::~IntonationExercise()
+{
 }
 
-int IntonationExercise::getBackend() {
+int IntonationExercise::getBackend()
+{
 	return BACKEND_PITCHES_AMPLITUDES;
 }
 
-void IntonationExercise::open(QString exerciseFilename) {
+void IntonationExercise::open(QString exerciseFilename)
+{
 	Exercise::open(exerciseFilename);
 
 	// load exercise answers
@@ -50,36 +54,41 @@ void IntonationExercise::open(QString exerciseFilename) {
 	loadFilename.replace(loadFilename.size()-4,4,".ly");
 	loadFile.setFileName(loadFilename);
 
-    loadFile.open(QIODevice::ReadOnly | QIODevice::Text);
-    lily_input = (QTextStream(&loadFile).readAll()).split('\n');
-    loadFile.close();
+	loadFile.open(QIODevice::ReadOnly | QIODevice::Text);
+	lily_input = (QTextStream(&loadFile).readAll()).split('\n');
+	loadFile.close();
 
 }
 
-void IntonationExercise::addTry() {
+void IntonationExercise::addTry()
+{
 	IntonationTry *newTry = new IntonationTry();
 	newTry->setAnswer(exerAnswer);
 	newTry->setLily(lily_input);
 	Exercise::addTryAbstract(newTry);
 }
 
-void IntonationExercise::delTry() {
+void IntonationExercise::delTry()
+{
 	Exercise::delTryAbstract();
 }
 
-QString IntonationExercise::exercisesDir() {
+QString IntonationExercise::exercisesDir()
+{
 	QString toReturn(MEAWS_DIR);
 	toReturn.append("data/intonation/");
 	return toReturn;
 }
 
-QString IntonationExercise::getMessage() {
+QString IntonationExercise::getMessage()
+{
 	QString toReturn( "Selected attempt " +
-QString::number(currentTryNumber_) );
+	                  QString::number(currentTryNumber_) );
 	return toReturn;
 }
 
-bool IntonationExercise::displayAnalysis(MarBackend *results) {
+bool IntonationExercise::displayAnalysis(MarBackend *results)
+{
 	currentTry_->displayAnalysis(results);
 	return true;
 }

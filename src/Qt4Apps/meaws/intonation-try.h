@@ -14,7 +14,8 @@
 #include "QtMarIntonationBars.h"
 #include "Marx2DGraph.h"
 
-class IntonationTry : public Try {
+class IntonationTry : public Try
+{
 public:
 	IntonationTry();
 	~IntonationTry();
@@ -23,7 +24,7 @@ public:
 	void setAnswer(const realvec answers);
 	void setLily(const QStringList);
 	void calcErrors(const realvec& pitch, const realvec& bounds,
-		realvec& errors);
+	                realvec& errors);
 
 public slots:
 	void doubleclicked();
@@ -31,7 +32,9 @@ public slots:
 private:
 	void colorNote(int note, double error, double direction);
 	void display(mrs_natural state)
-		{; };
+	{
+		;
+	};
 
 	QLabel *resultDisplay;
 	QtMarIntonationBars *barPlot_;

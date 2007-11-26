@@ -7,7 +7,8 @@
 #include <QButtonGroup>
 
 
-class IntonationExercise : public Exercise {
+class IntonationExercise : public Exercise
+{
 public:
 	IntonationExercise();
 	~IntonationExercise();

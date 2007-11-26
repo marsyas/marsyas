@@ -161,20 +161,20 @@ bool User::close()
 bool User::maybeSave()
 {
 // TODO: disable temporarily.
-/*
-	if (isModified_)
-	{
-		QMessageBox::StandardButton ret;
-		ret = QMessageBox::warning(this, tr("Meaws"),
-		                           tr("This user has unsaved data.\n"
-		                              "Do you want to save your changes?"),
-		                           QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-		if (ret == QMessageBox::Save)
-			return save();
-		else if (ret == QMessageBox::Cancel)
-			return false;
-	}
-*/
+	/*
+		if (isModified_)
+		{
+			QMessageBox::StandardButton ret;
+			ret = QMessageBox::warning(this, tr("Meaws"),
+			                           tr("This user has unsaved data.\n"
+			                              "Do you want to save your changes?"),
+			                           QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+			if (ret == QMessageBox::Save)
+				return save();
+			else if (ret == QMessageBox::Cancel)
+				return false;
+		}
+	*/
 	return true;
 }
 

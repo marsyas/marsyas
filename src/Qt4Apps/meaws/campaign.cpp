@@ -65,8 +65,9 @@ Exercise* Campaign::getNextExercise(double lastScore)
 	// pick next exercise
 	if (lastScore > passPercent)
 		currentLevel++;
-	cout<<"CAMPAIGN level: "<<currentLevel;
-	cout<<lastScore<<" "<<passPercent<<endl;
+	if (currentLevel > (adventures.size()-1))
+		currentLevel = adventures.size();
+
 	QStringList level = adventures[currentLevel];
 	int chooseFrom = level.size()-1;
 	int number = rand() % chooseFrom + 1;
