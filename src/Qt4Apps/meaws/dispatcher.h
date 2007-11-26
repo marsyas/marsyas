@@ -39,6 +39,7 @@ public:
 
 public slots:
 	void openExercise();
+	void openCampaign();
 	void openAttempt();
 	void analyze();
 	void toggleAttempt();

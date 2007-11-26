@@ -74,6 +74,12 @@ void Dispatcher::openExercise()
 	setupExercise();
 }
 
+void Dispatcher::openCampaign()
+{
+	cout<<"DISPATCHER openCampaign"<<endl;
+
+}
+
 void Dispatcher::setupExercise()
 {
 	connect(exercise_, SIGNAL(setupBackend()),
@@ -88,10 +94,12 @@ void Dispatcher::setupBackend()
 	if ( exercise_->hasAudio() )
 	{
 		marBackend_->setBackend( BACKEND_PLAYBACK, true,
-			exercise_->getFilename() );
-	} else {
+		                         exercise_->getFilename() );
+	}
+	else
+	{
 		marBackend_->setBackend( exercise_->getBackend(), false,
-			exercise_->getFilename() );
+		                         exercise_->getFilename() );
 	}
 	marBackend_->setup();
 }
@@ -102,7 +110,7 @@ void Dispatcher::openAttempt()
 	QString filename = ChooseExercise::chooseAttempt();
 	exercise_->setFilename( qPrintable(filename) );
 	marBackend_->setBackend( exercise_->getBackend(), true,
-		exercise_->getFilename());
+	                         exercise_->getFilename());
 	marBackend_->setup();
 	marBackend_->start();
 }

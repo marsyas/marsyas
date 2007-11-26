@@ -34,6 +34,7 @@ void Try::reset()
 	file_ = new QTemporaryFile("meaws-XXXXXXXX.wav");
 	file_->open();
 	filename_ = qPrintable(file_->fileName());
+	cout<<"reset abs try filename: "<<filename_<<endl;
 	hasAudio_ = false;
 	score_ = -1;
 }

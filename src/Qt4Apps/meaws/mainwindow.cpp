@@ -92,6 +92,7 @@ void MainWindow::createMenus()
 
 	exerciseMenu_ = menuBar()->addMenu(tr("Exercise"));
 	exerciseMenu_->addAction(openExerciseAct_);
+	exerciseMenu_->addAction(openCampaignAct_);
 	exerciseMenu_->addAction(closeExerciseAct_);
 
 	testingMenu_ = menuBar()->addMenu(tr("Testing"));
@@ -119,6 +120,7 @@ void MainWindow::createToolBars()
 
 	exerciseToolBar_ = addToolBar(tr("Exercise"));
 	exerciseToolBar_->addAction(openExerciseAct_);
+	exerciseToolBar_->addAction(openCampaignAct_);
 	exerciseToolBar_->addAction(toggleAttemptAct);
 	exerciseToolBar_->addAction(closeExerciseAct_);
 
@@ -179,9 +181,13 @@ void MainWindow::createActions()
 	setUserInfoAct_->setShortcut(tr("Ctrl+U"));
 
 	// exercise
-	openExerciseAct_ = new QAction(QIcon(":/icons/open.png"), tr("Open &Exercise..."), this);
+	openExerciseAct_ = new QAction(QIcon(":/icons/open.png"), tr("Open Exe&rcise..."), this);
 	openExerciseAct_->setShortcut(tr("Ctrl+R"));
 	openExerciseAct_->setStatusTip(tr("Open a new exercise"));
+
+	openCampaignAct_ = new QAction(QIcon(":/icons/open.png"), tr("Open Campaign... &E"), this);
+	openCampaignAct_->setShortcut(tr("Ctrl+E"));
+	openCampaignAct_->setStatusTip(tr("Open a new campaign"));
 
 	toggleAttemptAct = new QAction(this);
 	toggleAttemptAct->setShortcut(tr("Space"));
@@ -189,8 +195,8 @@ void MainWindow::createActions()
 	toggleAttemptAct->setIcon(QIcon(":/icons/player_play.png"));
 
 	closeExerciseAct_ = new QAction(QIcon(":/icons/quit.png"), tr("&Close dispatcher_"), this);
-	closeExerciseAct_->setShortcut(tr("Ctrl+E"));
-	closeExerciseAct_->setStatusTip(tr("Close exercise"));
+	closeExerciseAct_->setShortcut(tr("Ctrl+D"));
+	closeExerciseAct_->setStatusTip(tr("Close dispatcher"));
 
 	// metronome + other
 	visualMetroBeatAct_ = new QAction(QIcon(":/icons/circle.png"), tr("Visual metro_nome"), this);
@@ -224,6 +230,8 @@ void MainWindow::connectObjects()
 	        this, SLOT(updateMain(int)));
 	connect(openExerciseAct_, SIGNAL(triggered()),
 	        dispatcher_, SLOT(openExercise()));
+	connect(openCampaignAct_, SIGNAL(triggered()),
+	        dispatcher_, SLOT(openCampaign()));
 
 	connect(testingFileAct_, SIGNAL(triggered()),
 	        dispatcher_, SLOT(openAttempt()));

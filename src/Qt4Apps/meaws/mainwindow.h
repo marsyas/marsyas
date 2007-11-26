@@ -73,6 +73,7 @@ private:
 	QMenu *exerciseMenu_;
 	QToolBar *exerciseToolBar_;
 	QAction *openExerciseAct_;
+	QAction *openCampaignAct_;
 	QAction *toggleAttemptAct;
 	QAction *closeExerciseAct_;
 
