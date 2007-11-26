@@ -1,0 +1,3 @@
+../rhythm/novice.png
+../rhythm/easy.png
+../rhythm/hard.png
