@@ -34,6 +34,7 @@ EXTRA_DIST += bextract/
 EXTRA_DIST += boomchick/
 EXTRA_DIST += classifyFile/
 EXTRA_DIST += extract/
+EXTRA_DIST += kea/
 EXTRA_DIST += mudbox/
 EXTRA_DIST += midiTest/
 EXTRA_DIST += mixer/
