@@ -108,7 +108,7 @@ SUBDIRS = sfplay sfinfo
 
 # I wish there was a better way of doing this.  :(
 #EXTRA_DIST += train/
-EXTRA_DIST = apps.pro consoleApps.pri ERBTest/ MarEditor/ SeneffEarTest/ backup/ regressionChecks/ bextract/ boomchick/ classifyFile/ extract/ mudbox/ midiTest/ mixer/ mkcollection/ msl/ muggle/ orcarecord/ peakEval/ peakSynth/ peakClustering/ phasevocoder/ pitchextract/ record/ scheduler/ server_main/ sfplaygui/ sfplugin/ speakerSeg/ tempo/ textract/ tutorial/ virtualsensor/ vocalEffort/ WHaSp/
+EXTRA_DIST = apps.pro consoleApps.pri ERBTest/ MarEditor/ SeneffEarTest/ backup/ regressionChecks/ bextract/ boomchick/ classifyFile/ extract/ kea/ mudbox/ midiTest/ mixer/ mkcollection/ msl/ muggle/ orcarecord/ peakEval/ peakSynth/ peakClustering/ phasevocoder/ pitchextract/ record/ scheduler/ server_main/ sfplaygui/ sfplugin/ speakerSeg/ tempo/ textract/ tutorial/ virtualsensor/ vocalEffort/ WHaSp/
 subdir = src/apps
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_CLEAN_FILES =
