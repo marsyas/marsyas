@@ -1,3 +1,11 @@
+80
+Novice
+Easy
+Hard
+
 ../rhythm/novice.png
+
 ../rhythm/easy.png
+
 ../rhythm/hard.png
+

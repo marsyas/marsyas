@@ -5,7 +5,16 @@ using namespace std;
 
 Campaign::Campaign(QString campaignFile)
 {
-	QFile file(campaignFile);
+	openFile(campaignFile);
+}
+
+Campaign::~Campaign()
+{
+}
+
+void Campaign::openFile(QString filename)
+{
+	QFile file(filename);
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
 		return;
 
@@ -13,11 +22,16 @@ Campaign::Campaign(QString campaignFile)
 	while (!in.atEnd())
 	{
 		QString line = in.readLine();
-		cout<<qPrintable( line )<<endl;;
+		cout<<qPrintable( line );
+		cout<<endl;
 		//process_line(line);
 	}
 
 }
 
+QString Campaign::getNextExercise()
+{
 
+	return "";
+}
 

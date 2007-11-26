@@ -85,6 +85,7 @@ void Dispatcher::openCampaign()
 		return;
 
 	Campaign foo(filename);
+	cout<<qPrintable( foo.getNextExercise() );
 }
 
 void Dispatcher::setupExercise()

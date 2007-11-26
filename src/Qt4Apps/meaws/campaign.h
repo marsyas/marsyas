@@ -4,6 +4,7 @@
 #include "defs.h"
 #include <QFile>
 #include <QTextStream>
+#include <QStringList>
 
 class Campaign: public QObject
 {
@@ -11,10 +12,14 @@ class Campaign: public QObject
 
 public:
 	Campaign(QString campaignFile);
+	~Campaign();
 
+	QString getNextExercise();
 
-//private:
-
+private:
+	void openFile(QString filename);
+	QStringList levels;
+	//QStringList
 };
 #endif
 
