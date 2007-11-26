@@ -22,6 +22,7 @@ Dispatcher::Dispatcher(QFrame* centralFrame)
 	centralFrame_ = centralFrame;
 	attemptRunningBool_ = false;
 
+	campaign_ = NULL;
 }
 
 Dispatcher::~Dispatcher()
@@ -84,8 +85,9 @@ void Dispatcher::openCampaign()
 	if (filename.isEmpty())
 		return;
 
-	Campaign foo(filename);
-	cout<<qPrintable( foo.getNextExercise() );
+	campaign_ = new Campaign(filename);
+	exercise_ = campaign_->getNextExercise(-1);
+	setupExercise();
 }
 
 void Dispatcher::setupExercise()
@@ -142,7 +144,16 @@ void Dispatcher::analyze()
 void Dispatcher::toggleAttempt()
 {
 	cout<<"DISPATCHER toggleAttempt"<<endl;
-	setAttempt(!attemptRunningBool_);
+	double score = exercise_->getScore();
+	if ( score < 0 )
+		setAttempt(!attemptRunningBool_);
+	else
+	{
+		cout<<"SCORE OVER 0"<<endl;
+		delete exercise_;
+		exercise_ = campaign_->getNextExercise(score);
+		setupExercise();
+	}
 }
 
 void Dispatcher::setAttempt(bool running)

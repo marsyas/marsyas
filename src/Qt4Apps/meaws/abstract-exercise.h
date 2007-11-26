@@ -27,6 +27,7 @@ public:
 	void setFilename(mrs_string filename);
 	mrs_string getFilename();
 	bool hasAudio();
+	mrs_real getScore();
 
 public slots:
 	virtual void addTry() = 0;

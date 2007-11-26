@@ -6,6 +6,13 @@
 #include <QTextStream>
 #include <QStringList>
 
+#include "rhythm-exercise.h"
+#include "intonation-exercise.h"
+//#include "exerciseControl.h"
+//#include "exerciseShift.h"
+
+
+
 class Campaign: public QObject
 {
 	Q_OBJECT
@@ -14,14 +21,14 @@ public:
 	Campaign(QString campaignFile);
 	~Campaign();
 
-	QString getNextExercise();
+	Exercise* getNextExercise(double lastScore);
 
 private:
 	void openFile(QString filename);
 	int passPercent;
 	QList<QStringList> adventures;
 
-	//QStringList
+	int currentLevel;
 };
 #endif
 

@@ -35,6 +35,8 @@ Exercise::~Exercise()
 
 void Exercise::open(QString exerciseFilename)
 {
+	//cout<<qPrintable(exerciseFilename)<<endl;
+
 	instructionImageLabel_ = new QLabel;
 	QPixmap *instructPixmap = new QPixmap(exerciseFilename);
 	instructionImageLabel_->setPixmap(*instructPixmap);
@@ -48,6 +50,8 @@ void Exercise::open(QString exerciseFilename)
 
 void Exercise::setupDisplay(QFrame* centralFrame)
 {
+	if (centralFrame->layout() != NULL)
+		delete centralFrame->layout();
 	centralLayout_ = new QVBoxLayout;
 	centralLayout_->setContentsMargins(1,1,1,1);
 	centralFrame->setLayout(centralLayout_);
@@ -158,5 +162,12 @@ void Exercise::resetTry()
 		currentTry_->reset();
 		updateMain(0);
 	}
+}
+
+mrs_real Exercise::getScore()
+{
+	if (currentTry_ != NULL)
+		return currentTry_->getScore();
+	return -1;
 }
 

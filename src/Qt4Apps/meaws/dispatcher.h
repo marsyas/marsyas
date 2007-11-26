@@ -56,6 +56,7 @@ private:
 	Metro *metro_;
 	Exercise *exercise_;
 	MarBackend *marBackend_;
+	Campaign *campaign_;
 
 	// setup
 	void setupExercise();
