@@ -27,7 +27,7 @@ build his programs.
 
 Create a @file{my_program_name.pro} file:
 
-@example
+@verbatim
 #  your files
 SOURCES = my_program_name.cpp
 #HEADERS += extra_file.h
@@ -43,7 +43,7 @@ LIBPATH += $$MARSYAS_INSTALL_DIR/lib/release/
 
 ### if installed elsewhere
 #MARSYAS_INSTALL_DIR = /usr/local
-#MARSYAS_INSTALL_DIR = $@{HOME@}/usr/
+#MARSYAS_INSTALL_DIR = ${HOME}/usr/
 #INCLUDEPATH += $$MARSYAS_INSTALL_DIR/marsyas/
 #LIBPATH += $$MARSYAS_INSTALL_DIR/lib/
 
@@ -54,7 +54,7 @@ unix:LIBS += -lmarsyas -L$$MARSYAS_INSTALL_DIR/lib
 !macx:LIBS += -lasound
 macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
 
-@end example
+@end verbatim
 
 Then type @code{qmake} to generate a Makefile.  Now you many compile
 normally.
@@ -203,7 +203,7 @@ Writing applications that use Marsyas and Qt4 is quite simple, thanks to
 
 Create a @file{.pro} file based on this template:
 
-@example
+@verbatim
 ###  your files
 SOURCES = main.cpp
 HEADERS = mainwindow.h
@@ -220,7 +220,7 @@ LIBPATH += $$MARSYAS_INSTALL_DIR/lib/release/
 
 ### if installed elsewhere
 #MARSYAS_INSTALL_DIR = /usr/local
-#MARSYAS_INSTALL_DIR = $@{HOME@}/usr/
+#MARSYAS_INSTALL_DIR = ${HOME}/usr/
 #INCLUDEPATH += $$MARSYAS_INSTALL_DIR/src/marsyas/
 #LIBPATH += $$MARSYAS_INSTALL_DIR/lib/
 
@@ -228,7 +228,7 @@ LIBPATH += $$MARSYAS_INSTALL_DIR/lib/release/
 unix:LIBS += -lmarsyas -lmarsyasqt
 unix:!macx:LIBS += -lasound
 macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
-@end example
+@end verbatim
 
 It is @strong{highly} recommended that you separate the Qt code (ie
 @code{mainwindow.cpp}) from the Marsyas code (ie @code{backend.cpp}).
@@ -348,6 +348,19 @@ when that happens.
 -----
 this is working on Meaws, but I'll need to read my code again to figure
 out how it works.  Fortunately, I write nice clean readable code. :) -gp
+
+UPDATE: look at src/qt4apps/regressionChecks instead.
+
+
+ANOTHER ISSUE
+
+- convert between QString and mrs_string:
+QString qs = "Hello world!"; 
+mrs_string mrs_s = qs.toStdString();
+
+- mrs_string to QString:
+mrs_string mrs_s = "foo.wav";
+QString qs = QString( mrs_s.c_str() );
 
 
 
