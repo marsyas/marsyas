@@ -35,9 +35,16 @@ Exercise::~Exercise()
 
 void Exercise::open(QString exerciseFilename)
 {
-	//cout<<qPrintable(exerciseFilename)<<endl;
-	exerciseFilename_ = std::string(
-		exerciseFilename.remove(MEAWS_DIR).toAscii() );
+	exerciseFilename_ =
+	  exerciseFilename.remove(MEAWS_DIR).toStdString();
+/*
+	cout<<"TOTEMP string test"<<endl;
+	cout<<exerciseFilename_<<endl;
+	QString foo;
+	foo = QString(exerciseFilename_.c_str());
+	cout<<qPrintable(foo)<<endl;
+*/
+
 
 	instructionImageLabel_ = new QLabel;
 	QPixmap *instructPixmap = new QPixmap(exerciseFilename);
