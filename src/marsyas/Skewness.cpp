@@ -78,7 +78,7 @@ Skewness::myProcess(realvec& in, realvec& out)
 		  // take x - mean to the third power into the sum
 		  z_ += (b_ * b_ * b_); 
 		}
-      if (z_ < 1.0e-45)
+      if (z_ > 1.0e-45)
 		z_ /= inObservations_;
       else
 		z_ = 0.0;
