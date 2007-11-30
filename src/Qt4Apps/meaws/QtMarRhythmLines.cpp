@@ -20,7 +20,6 @@ QtMarRhythmLines::~QtMarRhythmLines()
 
 void QtMarRhythmLines::reset()
 {
-	cout<<"QTMAR reset"<<endl;
 	data_.stretch(0);
 	expectedLines_.stretch(0);
 	update();

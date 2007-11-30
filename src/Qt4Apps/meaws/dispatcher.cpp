@@ -27,12 +27,11 @@ Dispatcher::Dispatcher(QFrame* centralFrame)
 
 Dispatcher::~Dispatcher()
 {
-	close();
+//	close();
 }
 
 bool Dispatcher::close()
 {
-	cout<<"dispatcher close()"<<endl;
 	if ( closeUser() )
 	{
 		if (user_ != NULL)
@@ -227,25 +226,4 @@ void Dispatcher::setAttempt(bool running)
 		}
 	}
 }
-
-/*
-void Dispatcher::close()
-{
-	if (marBackend_ != NULL)
-	{
-		delete marBackend_;
-		marBackend_ = NULL;
-	}
-	if (exercise_ != NULL)
-	{
-		QLayoutItem* child;
-		while ((child = centralLayout_->takeAt(0)) != 0)
-   			delete child;
-		delete exercise_;
-		exercise_ = NULL;
-	}
-	updateMain(MEAWS_READY_USER);
-}
-
-*/
 
