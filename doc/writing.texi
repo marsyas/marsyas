@@ -352,15 +352,17 @@ out how it works.  Fortunately, I write nice clean readable code. :) -gp
 UPDATE: look at src/qt4apps/regressionChecks instead.
 
 
-ANOTHER ISSUE
+@subheading Converting between QString and mrs_string
 
-- convert between QString and mrs_string:
+@example
 QString qs = "Hello world!"; 
 mrs_string mrs_s = qs.toStdString();
+@end example
 
-- mrs_string to QString:
+@example
 mrs_string mrs_s = "foo.wav";
 QString qs = QString( mrs_s.c_str() );
+@end example
 
 
 
