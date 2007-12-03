@@ -1525,6 +1525,8 @@ bextract_train(vector<Collection> cls, Collection cl,
 {
   MRSDIAG("bextract.cpp - bextract_train");
 
+  cout << "Old bextract_train" << endl;
+  
 
 
   MarSystemManager mng;
@@ -1554,10 +1556,16 @@ bextract_train(vector<Collection> cls, Collection cl,
 			    * src->getctrl("mrs_real/israte")->to<mrs_real>() 
 			    * src->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
 
-  if (length != 30.0) 
-    duration = (mrs_natural) (length 
-			      * src->getctrl("mrs_real/israte")->to<mrs_real>() 
-			      * src->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
+  duration = (mrs_natural) (length 
+							* src->getctrl("mrs_real/israte")->to<mrs_real>() 
+							* src->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
+  
+  
+  cout << "duration = " << duration << endl;
+  cout << "offset = " << offset << endl;
+  
+
+
 
   //////////////////////////////////////////////////////////////////////////
   // Feature Extractor
