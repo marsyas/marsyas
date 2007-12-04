@@ -250,12 +250,12 @@ case "x$with_matlab" in
 	       case "${host}" 	 in
  	           *-*-linux-gnu*)    	       
 
-		   	MATLABLIBS="-L${MATLABPREFIX}/bin/glnxa64 -L${MATLAB}/sys/os/glnxa64 -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz -lhdf5"
-			INCLUDES="-I${MATLAB}/extern/include" 
+		   	MATLABLIBS="-L${MATLABPREFIX}/bin/glnxa64 -L${MATLABPREFIX}/sys/os/glnxa64 -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz -lhdf5"
+			INCLUDES="-I${MATLABPREFIX}/extern/include" 
 	;;
 	      *-*-darwin*) 	
-	 MATLABLIB="-L${with_matlab}/bin/maci -L${with_matlab}/sys/os/maci -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz -lhdf5"
-	INCLUDES="-I${MATLAB}/extern/include"
+	 MATLABLIBS="-L${MATLABPREFIX}/bin/maci -L${MATLABPREFIX}/sys/os/maci -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz -lhdf5"
+	INCLUDES="-I${MATLABPREFIX}/extern/include"
 		;;
 
 		esac
@@ -267,19 +267,19 @@ case "x$with_matlab" in
        xno|x)  echo MATLAB engine not activated ;;
        *)
                # Passed a prefix for MATLAB
-			   MATLABPREFIX="${with_matlab}"
+	       MATLABPREFIX="${with_matlab}"
                AC_DEFINE([MARSYAS_MATLAB],[1],[Activate MATLAB engine interface])
                echo MATLAB engine activated 
 
 	       case "${host}" 	 in
  	           *-*-linux-gnu*)    	       
 
-		   	MATLABLIBS="-L${MATLABPREFIX}/bin/glnxa64 -L${MATLAB}/sys/os/glnxa64 -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz -lhdf5"
-			INCLUDES="-I${MATLAB}/extern/include" 
+		   	MATLABLIBS="-L${MATLABPREFIX}/bin/glnxa64 -L${MATLABPREFIX}/sys/os/glnxa64 -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz -lhdf5"
+			INCLUDES="-I${MATLABPREFIX}/extern/include" 
 	;;
 	      *-*-darwin*) 	
-	 MATLABLIB="-L${with_matlab}/bin/maci -L${with_matlab}/sys/os/maci -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz -lhdf5"
-	INCLUDES="-I${MATLAB}/extern/include"
+	 MATLABLIBS="-L${MATLABPREFIX}/bin/maci -L${MATLABPREFIX}/sys/os/maci -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz -lhdf5"
+	INCLUDES="-I${MATLABPREFIX}/extern/include"
 		;;
 		esac
 
