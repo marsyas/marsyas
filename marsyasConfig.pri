@@ -4,7 +4,7 @@
 
 CONFIG	+= warn_on
 CONFIG	+= thread	 # multithreaded
-CONFIG += qt         # by default do not include any Qt stuff
+CONFIG	-= qt         # by default do not include any Qt stuff
 
 ######################################################################
 # Build marsyas lib

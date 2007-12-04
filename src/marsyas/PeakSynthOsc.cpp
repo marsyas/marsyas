@@ -95,7 +95,7 @@ PeakSynthOsc::myProcess(realvec& in, realvec& out)
 		{
 			mrs_real mulF = ctrl_harmonize_->to<mrs_realvec>()(1+j*2); 
 			mrs_real mulA = ctrl_harmonize_->to<mrs_realvec>()(2+j*2);
-			//	cout << "mulF" << mulF << "mulA" << mulA << endl;
+			//cout << "mulF" << mulF << "mulA" << mulA << endl;
 			for (i=0; i < Nb; i++)
 			{
 				if(in(i+peakView::pkGroup*Nb) > -1)
@@ -107,7 +107,7 @@ PeakSynthOsc::myProcess(realvec& in, realvec& out)
 		{
 			if(in(i+peakView::pkGroup*Nb) > -1)
 				sine(out, in(i), in(i+Nb), in(i+2*Nb));
-			//		       	cout << "truc" << in(i) << " " << in(i+Nb) << "  " << in(i+2*Nb) << endl;
+			//cout << "truc" << in(i) << " " << in(i+Nb) << "  " << in(i+2*Nb) << endl;
 		}
 }
 

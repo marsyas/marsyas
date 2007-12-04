@@ -538,50 +538,50 @@ MarSystemManager::MarSystemManager()
   pitchPraat->updctrl("mrs_natural/highSamples", highSamples);
   registerPrototype("PitchPraat", pitchPraat);
 
-  //--------------------------------------------------------------------------------
-  // prototype for Peak Extraction stuff
-  //--------------------------------------------------------------------------------
-  MarSystem* peAnalysePr = new Series("peAnalysePr");
-  peAnalysePr->addMarSystem(create("ShiftInput", "si"));
-  peAnalysePr->addMarSystem(create("Shifter", "sh"));
-  peAnalysePr->addMarSystem(create("Windowing", "wi"));
-  MarSystem *parallel = create("Parallel", "par");
-  parallel->addMarSystem(create("Spectrum", "spk1"));
-  parallel->addMarSystem(create("Spectrum", "spk2"));
-  peAnalysePr->addMarSystem(parallel);
-  peAnalysePr->addMarSystem(create("PeakConvert", "conv"));
-  peAnalysePr->linkctrl("mrs_natural/WindowSize", 
-			"ShiftInput/si/mrs_natural/WindowSize");
-  peAnalysePr->linkctrl("mrs_natural/FFTSize", 
-			"Windowing/wi/mrs_natural/size");
-  peAnalysePr->linkctrl("mrs_string/WindowType", 
-			"Windowing/wi/mrs_string/type");
-  peAnalysePr->linkctrl("mrs_bool/zeroPhasing", 
-			"Windowing/wi/mrs_bool/zeroPhasing");
-  peAnalysePr->linkctrl("mrs_natural/frameMaxNumPeaks", 
-			"PeakConvert/conv/mrs_natural/frameMaxNumPeaks");
-  peAnalysePr->linkctrl("mrs_natural/Decimation", 
-			"PeakConvert/conv/mrs_natural/Decimation");
-  peAnalysePr->updctrl("Shifter/sh/mrs_natural/shift", 1);
-  registerPrototype("PeAnalyse", peAnalysePr);
+	//--------------------------------------------------------------------------------
+	// prototype for Peak Extraction stuff
+	//--------------------------------------------------------------------------------
+	MarSystem* peAnalysePr = new Series("PeakAnalysePr");
+	peAnalysePr->addMarSystem(create("ShiftInput", "si"));
+	peAnalysePr->addMarSystem(create("Shifter", "sh"));
+	peAnalysePr->addMarSystem(create("Windowing", "wi"));
+	MarSystem *parallel = create("Parallel", "par");
+	parallel->addMarSystem(create("Spectrum", "spk1"));
+	parallel->addMarSystem(create("Spectrum", "spk2"));
+	peAnalysePr->addMarSystem(parallel);
+	peAnalysePr->addMarSystem(create("PeakConvert", "conv"));
+	peAnalysePr->linkctrl("mrs_natural/WindowSize", 
+		"ShiftInput/si/mrs_natural/WindowSize");
+	peAnalysePr->linkctrl("mrs_natural/FFTSize", 
+		"Windowing/wi/mrs_natural/size");
+	peAnalysePr->linkctrl("mrs_string/WindowType", 
+		"Windowing/wi/mrs_string/type");
+	peAnalysePr->linkctrl("mrs_bool/zeroPhasing", 
+		"Windowing/wi/mrs_bool/zeroPhasing");
+	peAnalysePr->linkctrl("mrs_natural/frameMaxNumPeaks", 
+		"PeakConvert/conv/mrs_natural/frameMaxNumPeaks");
+	peAnalysePr->linkctrl("mrs_natural/Decimation", 
+		"PeakConvert/conv/mrs_natural/Decimation");
+	peAnalysePr->updctrl("Shifter/sh/mrs_natural/shift", 1);
+	registerPrototype("PeakAnalyse", peAnalysePr);
 
-  //--------------------------------------------------------------------------------
-  // prototype for WHaSp calculation
-  //--------------------------------------------------------------------------------
-  MarSystem* WHaSpnetpr = new Series("WHaSpnetpr");
-  WHaSpnetpr->addMarSystem(create("PeAnalyse", "analyse"));
-  WHaSpnetpr->addMarSystem(create("WHaSp", "whasp"));
-  //
-  WHaSpnetpr->linkctrl("WHaSp/whasp/mrs_natural/totalNumPeaks",
-		       "PeAnalyse/analyse/PeakConvert/conv/mrs_natural/totalNumPeaks");
-  WHaSpnetpr->linkctrl("WHaSp/whasp/mrs_natural/frameMaxNumPeaks",
-		       "PeAnalyse/analyse/PeakConvert/conv/mrs_natural/frameMaxNumPeaks");
-  //
-  WHaSpnetpr->linkctrl("mrs_natural/frameMaxNumPeaks", 
-		       "PeAnalyse/analyse/mrs_natural/frameMaxNumPeaks");
-  WHaSpnetpr->updctrl("mrs_natural/frameMaxNumPeaks", 20);
-  //
-  registerPrototype("WHaSpnet", WHaSpnetpr);
+	//--------------------------------------------------------------------------------
+	// prototype for WHaSp calculation
+	//--------------------------------------------------------------------------------
+	MarSystem* WHaSpnetpr = new Series("WHaSpnetpr");
+	WHaSpnetpr->addMarSystem(create("PeakAnalyse", "analyse"));
+	WHaSpnetpr->addMarSystem(create("WHaSp", "whasp"));
+	//
+	WHaSpnetpr->linkctrl("WHaSp/whasp/mrs_natural/totalNumPeaks",
+		"PeakAnalyse/analyse/PeakConvert/conv/mrs_natural/totalNumPeaks");
+	WHaSpnetpr->linkctrl("WHaSp/whasp/mrs_natural/frameMaxNumPeaks",
+		"PeakAnalyse/analyse/PeakConvert/conv/mrs_natural/frameMaxNumPeaks");
+	//
+	WHaSpnetpr->linkctrl("mrs_natural/frameMaxNumPeaks", 
+		"PeakAnalyse/analyse/mrs_natural/frameMaxNumPeaks");
+	WHaSpnetpr->updctrl("mrs_natural/frameMaxNumPeaks", 20);
+	//
+	registerPrototype("WHaSpnet", WHaSpnetpr);
 
   //--------------------------------------------------------------------------------
   // prototype for Stereo Features

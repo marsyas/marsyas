@@ -120,7 +120,7 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		else 
 			pvseries->addMarSystem(mng.create("SoundFileSource", "src"));
 		// create analyser
-		pvseries->addMarSystem(mng.create("PeAnalyse", "peA"));
+		pvseries->addMarSystem(mng.create("PeakAnalyse", "peA"));
 
 		////////////////////////////////////////////////////////////////
 		// update the controls
@@ -138,16 +138,15 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 			samplingFrequency_ = pvseries->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 		}
 
-
-		pvseries->updctrl("PeAnalyse/peA/ShiftInput/si/mrs_natural/WindowSize", Nw+1);
-		pvseries->updctrl("PeAnalyse/peA/Windowing/wi/mrs_natural/size", N);
-		pvseries->updctrl("PeAnalyse/peA/Windowing/wi/mrs_string/type", "Hanning");
-		pvseries->updctrl("PeAnalyse/peA/Windowing/wi/mrs_bool/zeroPhasing", true);
-		pvseries->updctrl("PeAnalyse/peA/Shifter/sh/mrs_natural/shift", 1);
-		pvseries->updctrl("PeAnalyse/peA/PvFold/fo/mrs_natural/Decimation", D); // useless ?
-		pvseries->updctrl("PeAnalyse/peA/PeakConvert/conv/mrs_natural/Decimation", D);      
-		pvseries->updctrl("PeAnalyse/peA/PeakConvert/conv/mrs_natural/frameMaxNumPeaks", S);  
-		pvseries->updctrl("PeAnalyse/peA/PeakConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
+		pvseries->updctrl("PeakAnalyse/peA/ShiftInput/si/mrs_natural/WindowSize", Nw+1);
+		pvseries->updctrl("PeakAnalyse/peA/Windowing/wi/mrs_natural/size", N);
+		pvseries->updctrl("PeakAnalyse/peA/Windowing/wi/mrs_string/type", "Hanning");
+		pvseries->updctrl("PeakAnalyse/peA/Windowing/wi/mrs_bool/zeroPhasing", true);
+		pvseries->updctrl("PeakAnalyse/peA/Shifter/sh/mrs_natural/shift", 1);
+		pvseries->updctrl("PeakAnalyse/peA/PvFold/fo/mrs_natural/Decimation", D); // useless ?
+		pvseries->updctrl("PeakAnalyse/peA/PeakConvert/conv/mrs_natural/Decimation", D);      
+		pvseries->updctrl("PeakAnalyse/peA/PeakConvert/conv/mrs_natural/frameMaxNumPeaks", S);  
+		pvseries->updctrl("PeakAnalyse/peA/PeakConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
 	}
 	else //read analysis data (i.e. peaks) from a .peak file
 	{
@@ -169,7 +168,6 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 			if(!harmonizeData_.getSize())
 				cout << "Unable to open "<< harmonizeFileName << endl;
 			harmonize_=1;
-
 		
 	   // ctrl_harmonize_->setValue(0, 0.);
      synthetize = 3;
@@ -309,8 +307,6 @@ loadOptions()
 	peakStore_ = cmd_options.getBoolOption("PeakStore");
 }
 
-
-
 int
 main(int argc, const char **argv)
 {
@@ -330,7 +326,6 @@ main(int argc, const char **argv)
 
 	if (usageopt_)
 		printUsage(progName);
-
 
 	cerr << "peakSynth configuration (-h show the options): " << endl;
 	cerr << "fft size (-n)      = " << fftSize_ << endl;
@@ -357,7 +352,7 @@ main(int argc, const char **argv)
 			{
 				analyse_ = 0;
 				if(synthetize_ == -1)
-				synthetize_ = 0;
+					synthetize_ = 0;
 				peakStore_=0;
 			}
 			if(Sfname.ext() == "wav")
@@ -365,7 +360,7 @@ main(int argc, const char **argv)
 				analyse_ = 1;
 			}
 
-					string path;
+			string path;
 			if(outputDirectoryName != EMPTYSTRING)
 				path = outputDirectoryName;
 			else
@@ -384,8 +379,6 @@ main(int argc, const char **argv)
 		microphone_ = true;
 		peVocode("microphone", fileName, fftSize_, winSize_, hopSize_, nbSines_, synthetize_);
 	}
-
-
 
 	exit(0);
 }

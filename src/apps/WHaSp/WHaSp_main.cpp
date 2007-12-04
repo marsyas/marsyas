@@ -122,7 +122,7 @@ WHaSp(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 				
       //create analyzer (using composite prototype)
       pvseries->addMarSystem(mng.create("WHaSpnet", "whaspnet"));
-      pvseries->linkctrl("mrs_natural/frameMaxNumPeaks","WHaSpnet/whaspnet/PeAnalyse/analyse/mrs_natural/frameMaxNumPeaks");
+      pvseries->linkctrl("mrs_natural/frameMaxNumPeaks","WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_natural/frameMaxNumPeaks");
 		
       ////////////////////////////////////////////////////////////////
       // update the controls
@@ -145,15 +145,15 @@ WHaSp(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 	}
 
 
-      pvseries->updctrl("WHaSpnet/whaspnet/PeAnalyse/analyse/mrs_natural/Decimation", D);
-      pvseries->updctrl("WHaSpnet/whaspnet/PeAnalyse/analyse/mrs_natural/WindowSize", Nw+1);
-      pvseries->updctrl("WHaSpnet/whaspnet/PeAnalyse/analyse/mrs_natural/FFTSize", N);
-      pvseries->updctrl("WHaSpnet/whaspnet/PeAnalyse/analyse/mrs_string/WindowType", "Hanning");
-      pvseries->updctrl("WHaSpnet/whaspnet/PeAnalyse/analyse/mrs_bool/zeroPhasing", true);
-      pvseries->updctrl("WHaSpnet/whaspnet/PeAnalyse/analyse/Shifter/sh/mrs_natural/shift", 1);
-      pvseries->updctrl("WHaSpnet/whaspnet/PeAnalyse/analyse/mrs_natural/Decimation", D);      
+      pvseries->updctrl("WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_natural/Decimation", D);
+      pvseries->updctrl("WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_natural/WindowSize", Nw+1);
+      pvseries->updctrl("WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_natural/FFTSize", N);
+      pvseries->updctrl("WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_string/WindowType", "Hanning");
+      pvseries->updctrl("WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_bool/zeroPhasing", true);
+      pvseries->updctrl("WHaSpnet/whaspnet/PeakAnalyse/analyse/Shifter/sh/mrs_natural/shift", 1);
+      pvseries->updctrl("WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_natural/Decimation", D);      
       pvseries->updctrl("mrs_natural/frameMaxNumPeaks", S);  
-      pvseries->updctrl("WHaSpnet/whaspnet/PeAnalyse/analyse/PeakConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
+      pvseries->updctrl("WHaSpnet/whaspnet/PeakAnalyse/analyse/PeakConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
     }
   else
     {
@@ -248,7 +248,7 @@ WHaSp(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 	    else 
 	      temp =	!pvseries->getctrl("RealvecSource/peSource/mrs_bool/done")->to<mrs_bool>();
 
-	    ///*bool*/ temp = pvseries->getctrl("PeAnalyse/peA/SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
+	    ///*bool*/ temp = pvseries->getctrl("PeakAnalyse/peA/SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
 	    if (temp == false)
 	      break;
 	  }
