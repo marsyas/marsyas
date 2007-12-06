@@ -46,9 +46,11 @@ mrs_natural hopSize = 512;
 mrs_real samplingRate_ = 22050.0;
 mrs_natural accSize_ = 1298;
 mrs_real start = 0.0;
-mrs_real length = 30.0;
+mrs_real length = -1.0;
 mrs_real gain = 1.0;
 mrs_bool pluginMute = 0.0;
+mrs_bool playback = false;
+
 
 mrs_bool mfcc_ = false;
 mrs_bool sfm_ = false;
@@ -305,6 +307,7 @@ printHelp(string progName)
 	cerr << "-e --extractor   : exactor " << endl;
 	cerr << "-p --plugin      : output plugin name " << endl;
 	cerr << "-pm --pluginmute : mute the plugin " << endl;
+	cerr << "-pb --playback   : playback during feature extraction " << endl;
 	cerr << "-s --start       : playback start offest in seconds " << endl;
 	cerr << "-l --length      : playback length in seconds " << endl;
 	cerr << "-m --memory      : memory size " << endl;
@@ -1971,6 +1974,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
   MarSystem *src = mng.create("SoundFileSource", "src");
   if (start > 0.0) 
     offset = (mrs_natural) (start * src->getctrl("mrs_real/israte")->to<mrs_real>());
+  
 
   MarSystem* featExtractor = mng.create("TimbreFeatures", "featExtractor");
   featExtractor->updctrl("mrs_natural/WindowSize", winSize);
@@ -1982,16 +1986,13 @@ bextract_train_refactored(string pluginName,  string wekafname,
   featureNetwork->addMarSystem(src);
 
 
-
-
   if (pluginName != EMPTYSTRING)
     {
       // create audio sink and mute it 
       // it is stored in the output plugin 
       // which can be used for real-time classification 
-      MarSystem* dest = mng.create("AudioSink", "dest");
-      dest->updctrl("mrs_bool/mute", true);
-      // dest->updctrl("mrs_bool/initAudio", true);
+      MarSystem* dest = mng.create("AudioSink", "dest");      
+	  dest->updctrl("mrs_bool/mute", true);
       featureNetwork->addMarSystem(dest);
     }
 
@@ -2036,9 +2037,21 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
   
   // update controls
+  
+
+
+
   featureNetwork->updctrl("Confidence/confidence/mrs_bool/mute", true);
   featureNetwork->updctrl("Confidence/confidence/mrs_bool/print",true);
   featureNetwork->updctrl("mrs_string/filename", "bextract_single.mf");
+
+
+  if (pluginName != EMPTYSTRING && playback) 
+  {
+	  featureNetwork->updctrl("AudioSink/dest/mrs_bool/mute", false);
+	  featureNetwork->updctrl("mrs_bool/initAudio", true);
+  }
+  
 
   // don't use linkctrl so that only value is copied once and linking doesn't 
   // remain for the plugin 
@@ -2447,6 +2460,7 @@ initOptions()
   cmd_options.addStringOption("classifier", "cl", EMPTYSTRING);
   cmd_options.addBoolOption("tline", "t", false);
   cmd_options.addBoolOption("pluginmute", "pm", false);
+  cmd_options.addBoolOption("playback", "pb", false);
   cmd_options.addStringOption("workdir", "wd", EMPTYSTRING);
   cmd_options.addStringOption("predict", "pr", EMPTYSTRING);
   cmd_options.addStringOption("test", "tc", EMPTYSTRING);
@@ -2483,6 +2497,7 @@ loadOptions()
   accSize_ = cmd_options.getNaturalOption("accSize");
   tline = cmd_options.getBoolOption("tline");
   pluginMute  = cmd_options.getBoolOption("pluginmute");
+  playback = cmd_options.getBoolOption("playback");
   workspaceDir = cmd_options.getStringOption("workdir");
   predictCollection = cmd_options.getStringOption("predict");
   testCollection = cmd_options.getStringOption("test");
