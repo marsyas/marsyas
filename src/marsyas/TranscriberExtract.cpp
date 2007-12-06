@@ -47,7 +47,7 @@ TranscriberExtract::makePitchNet(const mrs_real srate, const mrs_real lowFreq, M
 	// (for pitch detection) of MinimumPitch.
 	mrs_real windowSize = 3.0/lowFreq*srate;
 	net->updctrl("mrs_natural/inSamples", 512);
-	net->updctrl("ShiftInput/sfi/mrs_natural/WindowSize",
+	net->updctrl("ShiftInput/sfi/mrs_natural/winSize",
 	             powerOfTwo(windowSize));
 
 	return net;
@@ -62,7 +62,7 @@ MarSystem* TranscriberExtract::makeAmplitudeNet(MarSystem* rvSink)
 		net->addMarSystem(rvSink);
 
 	net->updctrl("mrs_natural/inSamples", 512);
-	net->updctrl("ShiftInput/sfiAmp/mrs_natural/WindowSize", 512);
+	net->updctrl("ShiftInput/sfiAmp/mrs_natural/winSize", 512);
 
 	return net;
 }
@@ -80,7 +80,7 @@ TranscriberExtract::getAllFromAudio(const std::string audioFilename, realvec&
 // TODO: double the number of observations?
 //	pnet->updctrl("SoundFileSource/src/mrs_natural/inSamples",256);
 //	pnet->addMarSystem(mng.create("ShiftInput", "shift"));
-//	pnet->updctrl("ShiftInput/shift/mrs_natural/WindowSize",512);
+//	pnet->updctrl("ShiftInput/shift/mrs_natural/winSize",512);
 
 	MarSystem* fanout = mng.create("Fanout", "fanout");
 	fanout->addMarSystem(makePitchNet(srate, 100.0, pitchSink));

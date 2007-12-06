@@ -146,7 +146,7 @@ WHaSp(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 
 
       pvseries->updctrl("WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_natural/Decimation", D);
-      pvseries->updctrl("WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_natural/WindowSize", Nw+1);
+      pvseries->updctrl("WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_natural/winSize", Nw+1);
       pvseries->updctrl("WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_natural/FFTSize", N);
       pvseries->updctrl("WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_string/WindowType", "Hanning");
       pvseries->updctrl("WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_bool/zeroPhasing", true);

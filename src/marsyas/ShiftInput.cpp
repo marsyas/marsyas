@@ -38,7 +38,7 @@ ShiftInput::ShiftInput(const ShiftInput& a):MarSystem(a)
 	hopSize_ = 0;
 
 	ctrl_reset_ = getctrl("mrs_bool/reset");
-	ctrl_WindowSize_ = getctrl("mrs_natural/WindowSize");
+	ctrl_winSize_ = getctrl("mrs_natural/winSize");
 }
 
 MarSystem* 
@@ -50,8 +50,8 @@ ShiftInput::clone() const
 void
 ShiftInput::addControls()
 {
-	addctrl("mrs_natural/WindowSize", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES, ctrl_WindowSize_);
-	setctrlState("mrs_natural/WindowSize", true);
+	addctrl("mrs_natural/winSize", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES, ctrl_winSize_);
+	setctrlState("mrs_natural/winSize", true);
 
 	//must be set true so we set the internal buffer to zeros the first
 	//time it is used (it will be set to false after that)
@@ -63,13 +63,13 @@ ShiftInput::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
 
-	winSize_ = ctrl_WindowSize_->to<mrs_natural>();
+	winSize_ = ctrl_winSize_->to<mrs_natural>();
 	hopSize_ = ctrl_inSamples_->to<mrs_natural>();
 	
 	if(hopSize_ < winSize_)
 		outSavedData_.stretch(ctrl_inObservations_->to<mrs_natural>(), winSize_- hopSize_);
 
-	ctrl_onSamples_->setValue(ctrl_WindowSize_, NOUPDATE);
+	ctrl_onSamples_->setValue(ctrl_winSize_, NOUPDATE);
 	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 	ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);

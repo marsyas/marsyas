@@ -335,6 +335,18 @@ MarSystemManager::MarSystemManager()
   devibotpr->updctrl("mrs_natural/byte1", 144);
   registerPrototype("DeviBot", devibotpr);
 
+
+
+  // WindowedSoundFileSource 
+  MarSystem* wsrc = create("Series", "wsrc");
+  wsrc->addMarSystem(create("SoundFileSource", "src"));
+  wsrc->addMarSystem(create("ShiftInput", "si"));
+  wsrc->addMarSystem(create("Windowing", "hamming"));
+  
+  wsrc->linkctrl("mrs_natural/hopSize", "mrs_natural/inSamples");
+  wsrc->linkctrl("mrs_natural/winSize", "mrs_natural/winSize");
+
+
   //--------------------------------------------------------------------------------
   // Stereo2Mono MarSystem 
   //--------------------------------------------------------------------------------
@@ -368,7 +380,7 @@ MarSystemManager::MarSystemManager()
   pspectpr->addMarSystem(create("PowerSpectrum", "pspk"));
   pspectpr->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","power");
   pspectpr->linkctrl("mrs_real/cutoff","Spectrum/spk/mrs_real/cutoff");
-  pspectpr->linkctrl("mrs_natural/WindowSize","ShiftInput/si/mrs_natural/WindowSize");
+  pspectpr->linkctrl("mrs_natural/winSize","ShiftInput/si/mrs_natural/winSize");
   registerPrototype("PowerSpectrumNet", pspectpr);
 
   // STFT_features prototype 
@@ -390,7 +402,7 @@ MarSystemManager::MarSystemManager()
   spectralShape->addMarSystem(spectrumFeatures);
   timbre_features_pr->addMarSystem(spectralShape);
 
-  timbre_features_pr->linkctrl("mrs_natural/WindowSize", "Series/spectralShape/PowerSpectrumNet/powerSpect/mrs_natural/WindowSize");
+  timbre_features_pr->linkctrl("mrs_natural/winSize", "Series/spectralShape/PowerSpectrumNet/powerSpect/mrs_natural/winSize");
   timbre_features_pr->linkctrl("mrs_string/enableChild", "Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/enableChild");
   timbre_features_pr->linkctrl("mrs_string/disableChild", "Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/disableChild");
 
@@ -415,7 +427,7 @@ MarSystemManager::MarSystemManager()
   LPCnetpr->addMarSystem(create("Windowing", "ham"));
   LPCnetpr->addMarSystem(create("LPC", "lpc"));
   LPCnetpr->linkctrl("mrs_realvec/preEmphFIR","Filter/preEmph/mrs_realvec/ncoeffs");
-  LPCnetpr->linkctrl("mrs_natural/WindowSize","ShiftInput/si/mrs_natural/WindowSize");
+  LPCnetpr->linkctrl("mrs_natural/winSize","ShiftInput/si/mrs_natural/winSize");
   LPCnetpr->linkctrl("mrs_natural/order","LPC/lpc/mrs_natural/order");
   LPCnetpr->linkctrl("mrs_real/lambda","LPC/lpc/mrs_real/lambda");
   LPCnetpr->linkctrl("mrs_real/gamma","LPC/lpc/mrs_real/gamma");
@@ -432,8 +444,8 @@ MarSystemManager::MarSystemManager()
   pvocpr->addMarSystem(new PvOscBank("ob"));
   pvocpr->addMarSystem(new ShiftOutput("so"));
   pvocpr->addMarSystem(new Gain("gt")); 
-  pvocpr->linkctrl("mrs_natural/WindowSize", 
-		   "ShiftInput/si/mrs_natural/WindowSize");
+  pvocpr->linkctrl("mrs_natural/winSize", 
+		   "ShiftInput/si/mrs_natural/winSize");
   pvocpr->linkctrl("mrs_natural/Decimation", 
 		   "PvFold/fo/mrs_natural/Decimation");
   pvocpr->linkctrl("mrs_natural/Decimation", 
@@ -442,8 +454,8 @@ MarSystemManager::MarSystemManager()
 		   "PvConvert/conv/mrs_natural/Sinusoids");
   pvocpr->linkctrl("mrs_natural/FFTSize", 
 		   "PvFold/fo/mrs_natural/FFTSize");
-  pvocpr->linkctrl("mrs_natural/WindowSize", 
-		   "PvFold/fo/mrs_natural/WindowSize");
+  pvocpr->linkctrl("mrs_natural/winSize", 
+		   "PvFold/fo/mrs_natural/winSize");
   pvocpr->linkctrl("mrs_natural/Interpolation", 
 		   "PvOscBank/ob/mrs_natural/Interpolation");
   pvocpr->linkctrl("mrs_natural/Interpolation", 
@@ -550,8 +562,8 @@ MarSystemManager::MarSystemManager()
 	parallel->addMarSystem(create("Spectrum", "spk2"));
 	peAnalysePr->addMarSystem(parallel);
 	peAnalysePr->addMarSystem(create("PeakConvert", "conv"));
-	peAnalysePr->linkctrl("mrs_natural/WindowSize", 
-		"ShiftInput/si/mrs_natural/WindowSize");
+	peAnalysePr->linkctrl("mrs_natural/winSize", 
+		"ShiftInput/si/mrs_natural/winSize");
 	peAnalysePr->linkctrl("mrs_natural/FFTSize", 
 		"Windowing/wi/mrs_natural/size");
 	peAnalysePr->linkctrl("mrs_string/WindowType", 

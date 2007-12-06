@@ -92,7 +92,7 @@ cout<<"CURRENTLY BROKEN!";
 	addSource( pnet, infile );
 	pnet->addMarSystem(mng.create("ShiftInput", "shift"));
 	pnet->updctrl("mrs_natural/inSamples", 256);
-	pnet->updctrl("ShiftInput/shift/mrs_natural/WindowSize", 512);
+	pnet->updctrl("ShiftInput/shift/mrs_natural/winSize", 512);
 	addDest( pnet, outfile);
 
 	while (pnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())

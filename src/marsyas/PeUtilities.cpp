@@ -562,7 +562,7 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_natural/nbChannels", synType);
 			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_string/panning", panningInfo);
 			// setting the FFT size
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftInput/siSyn/mrs_natural/WindowSize", D*2);
+			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftInput/siSyn/mrs_natural/winSize", D*2);
 			// setting the name of the original file
 			if (microphone) 
 			{

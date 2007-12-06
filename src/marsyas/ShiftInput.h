@@ -29,38 +29,38 @@ namespace Marsyas
     \brief ShiftInput (hopSize, winSize)
 
     The ShiftInput MarSystem is used for performing efficient overlap
-input from a source. The hop size between the overlapped windows is
-controlled by the inSamples control which needs to be set by the <b>
-preceding </b> source or MarSystem. The output of the MarSystem is
-the overlapped windows with size adjusted by the WindowSize control.
+	input from a source. The hop size between the overlapped windows is
+	controlled by the inSamples control which needs to be set by the <b>
+	preceding </b> source or MarSystem. The output of the MarSystem is
+	the overlapped windows with size adjusted by the winSize control.
  
 	Controls:
-	- \b mrs_natural/WindowSize [rw] : The window size of the overlapped windows
+	- \b mrs_natural/winSize [rw] : The window size of the overlapped windows
 	- \b mrs_bool/reset [??] : [DOCME]
 */
 
 
-class ShiftInput: public MarSystem
-{
-private:
-  mrs_natural winSize_, hopSize_;
-	realvec outSavedData_;
+	class ShiftInput: public MarSystem
+	{
+		private:
+			mrs_natural winSize_, hopSize_;
+			realvec outSavedData_;
   
-  MarControlPtr ctrl_reset_;
-	MarControlPtr ctrl_WindowSize_;
+			MarControlPtr ctrl_reset_;
+			MarControlPtr ctrl_winSize_;
 
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+			void addControls();
+			void myUpdate(MarControlPtr sender);
   
-public:
-  ShiftInput(std::string name);
-  ShiftInput(const ShiftInput& a);
-  ~ShiftInput();
-  MarSystem* clone() const;    
+		public:
+			ShiftInput(std::string name);
+			ShiftInput(const ShiftInput& a);
+			~ShiftInput();
+			MarSystem* clone() const;    
 
-  void myProcess(realvec& in, realvec& out);
+			void myProcess(realvec& in, realvec& out);
   
-};
+	};
 
 }//namespace Marsyas
 

@@ -45,8 +45,8 @@ void
 PvOverlapadd::addControls()
 {
   addctrl("mrs_natural/Time",0);
-  addctrl("mrs_natural/WindowSize", MRS_DEFAULT_SLICE_NSAMPLES);
-  setctrlState("mrs_natural/WindowSize", true);
+  addctrl("mrs_natural/winSize", MRS_DEFAULT_SLICE_NSAMPLES);
+  setctrlState("mrs_natural/winSize", true);
   addctrl("mrs_natural/FFTSize", MRS_DEFAULT_SLICE_NSAMPLES);
   addctrl("mrs_natural/Interpolation", MRS_DEFAULT_SLICE_NSAMPLES /4);
 }
@@ -55,7 +55,7 @@ void
 PvOverlapadd::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/WindowSize"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/winSize"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));    
 

@@ -138,7 +138,7 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 			samplingFrequency_ = pvseries->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 		}
 
-		pvseries->updctrl("PeakAnalyse/peA/ShiftInput/si/mrs_natural/WindowSize", Nw+1);
+		pvseries->updctrl("PeakAnalyse/peA/ShiftInput/si/mrs_natural/winSize", Nw+1);
 		pvseries->updctrl("PeakAnalyse/peA/Windowing/wi/mrs_natural/size", N);
 		pvseries->updctrl("PeakAnalyse/peA/Windowing/wi/mrs_string/type", "Hanning");
 		pvseries->updctrl("PeakAnalyse/peA/Windowing/wi/mrs_bool/zeroPhasing", true);

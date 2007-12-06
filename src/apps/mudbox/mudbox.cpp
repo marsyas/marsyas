@@ -1596,7 +1596,7 @@ toy_with_LPC_LSP(string sfName)
 
   input->addMarSystem(mng.create("ShiftInput", "si"));
 
-  input->updctrl("ShiftInput/si/mrs_natural/WindowSize", hopSize);
+  input->updctrl("ShiftInput/si/mrs_natural/winSize", hopSize);
 
   input->addMarSystem(mng.create("LPC", "LPC"));
   input->updctrl("LPC/LPC/mrs_natural/order",lpcOrder);
@@ -1630,7 +1630,7 @@ toy_with_LPC_LSP(string sfName)
 
 	//input->addMarSystem(mng.create("ShiftInput", "si"));
 
-	//input->updctrl("ShiftInput/si/mrs_natural/WindowSize", hopSize);
+	//input->updctrl("ShiftInput/si/mrs_natural/winSize", hopSize);
 
 	MarSystem* lspS = mng.create("Series","lspS");
 	lspS->addMarSystem(mng.create("LPC", "LPC"));
@@ -3234,8 +3234,8 @@ toy_with_pitch(string sfName)
   mrs_real windowSize = 3/lowPitch*pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
   pnet->updctrl("mrs_natural/inSamples", 512);
 
-	pnet->updctrl("ShiftInput/sfi/mrs_natural/WindowSize", powerOfTwo(windowSize));
-	//pnet->updctrl("ShiftInput/sfi/mrs_natural/WindowSize", 1024);
+	pnet->updctrl("ShiftInput/sfi/mrs_natural/winSize", powerOfTwo(windowSize));
+	//pnet->updctrl("ShiftInput/sfi/mrs_natural/winSize", 1024);
 
   while (pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
    pnet->tick();
@@ -3336,7 +3336,7 @@ toy_with_power(string sfName)
 
   pnet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
   pnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-  pnet->updctrl("ShiftInput/si/mrs_natural/WindowSize", 2048);
+  pnet->updctrl("ShiftInput/si/mrs_natural/winSize", 2048);
 
   pnet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
   pnet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");

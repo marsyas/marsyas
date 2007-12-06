@@ -123,7 +123,7 @@ MarSystem* createBEATextrator()
 	// extractor->addMarSystem(mng.create("PlotSink", "psink"));
 	// extractor->addMarSystem(mng.create("Reassign", "reassign"));
 	extractor->addMarSystem(mng.create("BeatHistoFeatures", "bhf"));
-	extractor->linkctrl("mrs_natural/WindowSize", "ShiftInput/si/mrs_natural/WindowSize");
+	extractor->linkctrl("mrs_natural/winSize", "ShiftInput/si/mrs_natural/winSize");
 	return extractor;
 }
 
@@ -145,7 +145,7 @@ MarSystem* createSTFTextractor()
 	spectralShape->addMarSystem(spectrumFeatures);
 	extractor->addMarSystem(spectralShape);
 
-	extractor->linkctrl("mrs_natural/WindowSize", "Series/spectralShape/PowerSpectrumNet/powerSpect/mrs_natural/WindowSize");
+	extractor->linkctrl("mrs_natural/winSize", "Series/spectralShape/PowerSpectrumNet/powerSpect/mrs_natural/winSize");
 	extractor->linkctrl("mrs_string/enableChild", "Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/enableChild");
 	extractor->linkctrl("mrs_string/disableChild", "Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/disableChild");
 	*/ 
@@ -164,7 +164,7 @@ MarSystem* createMFCCextractor()
 	extractor->addMarSystem(mng.create("PowerSpectrumNet","powerSpect"));
 	extractor->addMarSystem(mng.create("MFCC", "mfcc"));
 
-	extractor->linkctrl("mrs_natural/WindowSize", "PowerSpectrumNet/powerSpect/mrs_natural/WindowSize");
+	extractor->linkctrl("mrs_natural/winSize", "PowerSpectrumNet/powerSpect/mrs_natural/winSize");
 
 	return extractor;
 }
@@ -182,7 +182,7 @@ MarSystem* createSTFTMFCCextractor()
 	spectrumFeatures->addMarSystem(mng.create("Flux", "flux"));
 	spectrumFeatures->addMarSystem(mng.create("MFCC", "mfcc"));
 	extractor->addMarSystem(spectrumFeatures);
-	extractor->linkctrl("mrs_natural/WindowSize", "PowerSpectrumNet/powerSpect/mrs_natural/WindowSize");
+	extractor->linkctrl("mrs_natural/winSize", "PowerSpectrumNet/powerSpect/mrs_natural/winSize");
 
 	return extractor;
 }
@@ -195,7 +195,7 @@ MarSystem* createSCFextractor()
 	extractor->addMarSystem(mng.create("PowerSpectrumNet","powerSpect"));
 	extractor->addMarSystem(mng.create("SCF", "scf"));
 
-	extractor->linkctrl("mrs_natural/WindowSize", "PowerSpectrumNet/powerSpect/mrs_natural/WindowSize");
+	extractor->linkctrl("mrs_natural/winSize", "PowerSpectrumNet/powerSpect/mrs_natural/winSize");
 
 	return extractor;
 }
@@ -208,7 +208,7 @@ MarSystem* createSFMextractor()
 	extractor->addMarSystem(mng.create("PowerSpectrumNet","powerSpect"));
 	extractor->addMarSystem(mng.create("SFM", "sfm"));
 
-	extractor->linkctrl("mrs_natural/WindowSize", "PowerSpectrumNet/powerSpect/mrs_natural/WindowSize");
+	extractor->linkctrl("mrs_natural/winSize", "PowerSpectrumNet/powerSpect/mrs_natural/winSize");
 
 	return extractor;
 }
@@ -227,7 +227,7 @@ MarSystem* createSFMSCFextractor()
 
 	extractor->addMarSystem(spectrumFeatures);
 
-	extractor->linkctrl("mrs_natural/WindowSize", "PowerSpectrumNet/powerSpect/mrs_natural/WindowSize");
+	extractor->linkctrl("mrs_natural/winSize", "PowerSpectrumNet/powerSpect/mrs_natural/winSize");
 
 	return extractor;
 }
@@ -252,7 +252,7 @@ MarSystem* createLSPextractor()
 	extractor->linkctrl("mrs_natural/order", "LPCnet/lpcNet/mrs_natural/order");
 	extractor->updctrl("mrs_natural/order", order); 
 
-	extractor->linkctrl("mrs_natural/WindowSize", "LPCnet/lpcNet/mrs_natural/WindowSize");
+	extractor->linkctrl("mrs_natural/winSize", "LPCnet/lpcNet/mrs_natural/winSize");
 
 	return extractor;
 }
@@ -277,7 +277,7 @@ MarSystem* createLPCCextractor()
 	extractor->linkctrl("mrs_natural/order", "LPCnet/lpcNet/mrs_natural/order");
 	extractor->updctrl("mrs_natural/order", order);
 
-	extractor->linkctrl("mrs_natural/WindowSize", "LPCnet/lpcNet/mrs_natural/WindowSize");
+	extractor->linkctrl("mrs_natural/winSize", "LPCnet/lpcNet/mrs_natural/winSize");
 
 	return extractor;
 }
@@ -365,7 +365,7 @@ tempo_histoSumBands(MarSystem* total1, string sfName, realvec& beatfeatures,
 	total1->updctrl("mrs_natural/inSamples", hopSize);
 	total1->updctrl("SoundFileSource/src1/mrs_natural/pos", offset);      
 	total1->updctrl("SoundFileSource/src1/mrs_natural/inSamples", hopSize);
-	total1->updctrl("ShiftInput/si/mrs_natural/WindowSize", winSize);
+	total1->updctrl("ShiftInput/si/mrs_natural/winSize", winSize);
 	total1->updctrl("ShiftInput/si/mrs_bool/reset", true);
 	total1->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 3);  
 
@@ -1116,7 +1116,7 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
   // feature extractors:
 
   MarSystem* featExtractor = (*featExtractors[extractorStr])();
-  featExtractor->updctrl("mrs_natural/WindowSize", winSize);
+  featExtractor->updctrl("mrs_natural/winSize", winSize);
 
 
 
@@ -1577,7 +1577,7 @@ bextract_train(vector<Collection> cls, Collection cl,
   // feature extractors:
   MarSystem* featExtractor = (*featExtractors[extractorStr])();
 
-  featExtractor->updctrl("mrs_natural/WindowSize", winSize);
+  featExtractor->updctrl("mrs_natural/winSize", winSize);
 
   //////////////////////////////////////////////////////////////////////////
   // Build the overall feature calculation network 
@@ -1977,7 +1977,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
   
 
   MarSystem* featExtractor = mng.create("TimbreFeatures", "featExtractor");
-  featExtractor->updctrl("mrs_natural/WindowSize", winSize);
+  featExtractor->updctrl("mrs_natural/winSize", winSize);
   selectFeatureSet(featExtractor);
   
   
@@ -2655,7 +2655,7 @@ mirex_bextract()
 	MarSystem* src = mng.create("SoundFileSource", "src");
 
 	MarSystem* featExtractor = (*featExtractors[extractorName])();
-	featExtractor->updctrl("mrs_natural/WindowSize", winSize);
+	featExtractor->updctrl("mrs_natural/winSize", winSize);
 
 	MarSystem* featureNetwork = mng.create("Series", "featureNetwork");
 	featureNetwork->addMarSystem(src);

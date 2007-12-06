@@ -135,9 +135,9 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 	}
   
 
-  pvseries->updctrl("ShiftInput/si/mrs_natural/WindowSize", Nw);
+  pvseries->updctrl("ShiftInput/si/mrs_natural/winSize", Nw);
   pvseries->updctrl("PvFold/fo/mrs_natural/FFTSize", N);
-  pvseries->updctrl("PvFold/fo/mrs_natural/WindowSize", Nw);
+  pvseries->updctrl("PvFold/fo/mrs_natural/winSize", Nw);
   pvseries->updctrl("PvFold/fo/mrs_natural/Decimation", D);
   pvseries->updctrl("PvConvert/conv/mrs_natural/Decimation",D);      
   pvseries->updctrl("PvConvert/conv/mrs_natural/Sinusoids", (mrs_natural) sopt);  
@@ -265,7 +265,7 @@ phasevocPoly(string sfName, mrs_natural N, mrs_natural Nw,
 		// utilizes linkctrl when the phasevocoder 
 		// prototype is added to the MarSystemManager
 		pvoices[i]->updctrl("mrs_natural/Decimation", D);
-		pvoices[i]->updctrl("mrs_natural/WindowSize", Nw);
+		pvoices[i]->updctrl("mrs_natural/winSize", Nw);
 		pvoices[i]->updctrl("mrs_natural/FFTSize", N);
 		pvoices[i]->updctrl("mrs_natural/Interpolation", I);
 		pvoices[i]->updctrl("mrs_real/PitchShift", P);
@@ -465,10 +465,10 @@ phasevocCrossSynth(string sfName, mrs_natural N, mrs_natural Nw,
 	total->linkctrl("mrs_natural/FFTSize", 
 		"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/FFTSize");  
 
-	total->linkctrl("mrs_natural/WindowSize", 
-		"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/WindowSize");
-	total->linkctrl("mrs_natural/WindowSize", 
-		"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/WindowSize");  
+	total->linkctrl("mrs_natural/winSize", 
+		"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/winSize");
+	total->linkctrl("mrs_natural/winSize", 
+		"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/winSize");  
 
 	total->linkctrl("mrs_natural/Interpolation",
 		"ShiftOutput/so/mrs_natural/Interpolation");  
@@ -486,7 +486,7 @@ phasevocCrossSynth(string sfName, mrs_natural N, mrs_natural Nw,
 	total->updctrl("mrs_natural/inSamples1", D);
 	total->updctrl("mrs_natural/inSamples2", D);
 	total->updctrl("mrs_natural/Decimation", D);
-	total->updctrl("mrs_natural/WindowSize", Nw);
+	total->updctrl("mrs_natural/winSize", Nw);
 	total->updctrl("mrs_natural/FFTSize", N);
 	total->updctrl("mrs_natural/Interpolation", I);
 	total->updctrl("mrs_real/PitchShift", P);
@@ -584,11 +584,11 @@ phasevocConvolve(string sfName, mrs_natural N, mrs_natural Nw,
 	total->linkctrl("mrs_natural/FFTSize", 
 		"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/FFTSize");  
 
-	total->linkctrl("mrs_natural/WindowSize", 
-		"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/WindowSize");
+	total->linkctrl("mrs_natural/winSize", 
+		"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/winSize");
 
-	total->linkctrl("mrs_natural/WindowSize", 
-		"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/WindowSize");  
+	total->linkctrl("mrs_natural/winSize", 
+		"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/winSize");  
 
 	total->linkctrl("mrs_natural/Interpolation",
 		"ShiftOutput/so/mrs_natural/Interpolation");  
@@ -606,7 +606,7 @@ phasevocConvolve(string sfName, mrs_natural N, mrs_natural Nw,
 	total->updctrl("mrs_natural/inSamples1", D);
 	total->updctrl("mrs_natural/inSamples2", D);
 	total->updctrl("mrs_natural/Decimation", D);
-	total->updctrl("mrs_natural/WindowSize", Nw);
+	total->updctrl("mrs_natural/winSize", Nw);
 	total->updctrl("mrs_natural/FFTSize", N);
 	total->updctrl("mrs_natural/Interpolation", I);
 	total->updctrl("mrs_real/PitchShift", P);
@@ -664,7 +664,7 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
 			pvoices[i]->addMarSystem(bpvoc0);
 			pvoices[i]->updctrl("Gain/bgain0/mrs_real/gain", 1.0);
 			bpvoc0->updctrl("mrs_natural/Decimation", D);
-			bpvoc0->updctrl("mrs_natural/WindowSize", Nw);
+			bpvoc0->updctrl("mrs_natural/winSize", Nw);
 			bpvoc0->updctrl("mrs_natural/FFTSize", N);
 			bpvoc0->updctrl("mrs_natural/Interpolation", I);
 			bpvoc0->updctrl("mrs_real/PitchShift", 1.0);
@@ -683,7 +683,7 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
 			pvoices[i]->addMarSystem(bpvoc1);
 			pvoices[i]->updctrl("Gain/bgain1/mrs_real/gain", 1.0);
 			bpvoc1->updctrl("mrs_natural/Decimation", D);
-			bpvoc1->updctrl("mrs_natural/WindowSize", Nw);
+			bpvoc1->updctrl("mrs_natural/winSize", Nw);
 			bpvoc1->updctrl("mrs_natural/FFTSize", N);
 			bpvoc1->updctrl("mrs_natural/Interpolation", I);
 			bpvoc1->updctrl("mrs_real/PitchShift", 1.0);
@@ -864,7 +864,7 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 			oss << "pvseries" << i;
 			pvoices.push_back(mng.create("PhaseVocoder", oss.str()));
 			pvoices[i]->updctrl("mrs_natural/Decimation", D);
-			pvoices[i]->updctrl("mrs_natural/WindowSize", Nw);
+			pvoices[i]->updctrl("mrs_natural/winSize", Nw);
 			pvoices[i]->updctrl("mrs_natural/FFTSize", N);
 			pvoices[i]->updctrl("mrs_natural/Interpolation", I);
 			pvoices[i]->updctrl("mrs_real/PitchShift", P);
@@ -883,7 +883,7 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 			pvoices[i]->addMarSystem(bpvoc);
 			pvoices[i]->updctrl("Gain/bgain/mrs_real/gain", 1.0);
 			bpvoc->updctrl("mrs_natural/Decimation", D);
-			bpvoc->updctrl("mrs_natural/WindowSize", Nw);
+			bpvoc->updctrl("mrs_natural/winSize", Nw);
 			bpvoc->updctrl("mrs_natural/FFTSize", N);
 			bpvoc->updctrl("mrs_natural/Interpolation", I);
 			bpvoc->updctrl("mrs_real/PitchShift", 1.0);

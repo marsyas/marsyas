@@ -49,7 +49,6 @@ PvFold::clone() const
 void 
 PvFold::addControls()
 {
-  addctrl("mrs_natural/WindowSize", MRS_DEFAULT_SLICE_NSAMPLES);
   addctrl("mrs_natural/FFTSize", MRS_DEFAULT_SLICE_NSAMPLES);
   setctrlState("mrs_natural/FFTSize", true);
   addctrl("mrs_natural/Decimation", MRS_DEFAULT_SLICE_NSAMPLES/2);
