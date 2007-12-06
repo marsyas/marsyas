@@ -341,11 +341,19 @@ MarSystemManager::MarSystemManager()
   MarSystem* wsrc = create("Series", "wsrc");
   wsrc->addMarSystem(create("SoundFileSource", "src"));
   wsrc->addMarSystem(create("ShiftInput", "si"));
-  wsrc->addMarSystem(create("Windowing", "hamming"));
-  
-  wsrc->linkctrl("mrs_natural/hopSize", "mrs_natural/inSamples");
-  wsrc->linkctrl("mrs_natural/winSize", "mrs_natural/winSize");
 
+  
+  wsrc->linkctrl("mrs_natural/winSize", "ShiftInput/si/mrs_natural/winSize");
+  wsrc->linkctrl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
+  wsrc->linkctrl("mrs_real/duration", "SoundFileSource/src/mrs_real/duration");
+  wsrc->linkctrl("mrs_natural/currentLabel", "SoundFileSource/src/mrs_natural/currentLabel");
+  wsrc->linkctrl("mrs_natural/nLabels", "SoundFileSource/src/mrs_natural/nLabels");
+  wsrc->linkctrl("mrs_string/filename", "SoundFileSource/src/mrs_string/filename");
+  wsrc->linkctrl("mrs_string/labelNames", "SoundFileSource/src/mrs_string/labelNames");
+  wsrc->linkctrl("mrs_string/currentlyPlaying", "SoundFileSource/src/mrs_string/currentlyPlaying");
+  wsrc->linkctrl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+  registerPrototype("OverlapSoundFileSource", wsrc);
+  
 
   //--------------------------------------------------------------------------------
   // Stereo2Mono MarSystem 
@@ -380,8 +388,19 @@ MarSystemManager::MarSystemManager()
   pspectpr->addMarSystem(create("PowerSpectrum", "pspk"));
   pspectpr->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","power");
   pspectpr->linkctrl("mrs_real/cutoff","Spectrum/spk/mrs_real/cutoff");
-  pspectpr->linkctrl("mrs_natural/winSize","ShiftInput/si/mrs_natural/winSize");
-  registerPrototype("PowerSpectrumNet", pspectpr);
+  pspectpr->linkctrl("mrs_natural/winSize","ShiftInput/si/mrs_natural/winSize");  registerPrototype("PowerSpectrumNet", pspectpr);
+
+
+  MarSystem* pspectpr1 = create("Series", "pspectpr1");
+  pspectpr1->addMarSystem(create("Spectrum","spk"));
+  pspectpr1->updctrl("Spectrum/spk/mrs_real/cutoff", 1.0);
+  pspectpr1->addMarSystem(create("PowerSpectrum", "pspk"));
+  pspectpr1->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","power");
+  pspectpr1->linkctrl("mrs_real/cutoff","Spectrum/spk/mrs_real/cutoff");
+  registerPrototype("PowerSpectrumNet1", pspectpr1);
+
+  
+
 
   // STFT_features prototype 
   MarSystem* stft_features_pr = create("Fanout", "stft_features_pr");
@@ -397,7 +416,7 @@ MarSystemManager::MarSystemManager()
   MarSystem* timbre_features_pr = new Fanout("timbre_features_pr");
   timbre_features_pr->addMarSystem(create("ZeroCrossings", "zcrs"));
   MarSystem* spectralShape = create("Series", "spectralShape");
-  spectralShape->addMarSystem(create("PowerSpectrumNet", "powerSpect"));
+  spectralShape->addMarSystem(create("PowerSpectrumNet1", "powerSpect"));
   MarSystem* spectrumFeatures = create("STFT_features", "spectrumFeatures");
   spectralShape->addMarSystem(spectrumFeatures);
   timbre_features_pr->addMarSystem(spectralShape);
@@ -454,8 +473,6 @@ MarSystemManager::MarSystemManager()
 		   "PvConvert/conv/mrs_natural/Sinusoids");
   pvocpr->linkctrl("mrs_natural/FFTSize", 
 		   "PvFold/fo/mrs_natural/FFTSize");
-  pvocpr->linkctrl("mrs_natural/winSize", 
-		   "PvFold/fo/mrs_natural/winSize");
   pvocpr->linkctrl("mrs_natural/Interpolation", 
 		   "PvOscBank/ob/mrs_natural/Interpolation");
   pvocpr->linkctrl("mrs_natural/Interpolation", 

@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 2000 George Tzanetakis <gtzan@cs.princeton.edu>
+** Copyright (C) 2000-2007 George Tzanetakis <gtzan@cs.princeton.edu>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -1966,151 +1966,152 @@ bextract_train_refactored(string pluginName,  string wekafname,
 {
   MRSDIAG("bextract.cpp - bextract_train_refactored");
   cout << "BEXTRACT REFACTORED" << endl;
+  
   MarSystemManager mng;
 
-
-  
-  
-  MarSystem *src = mng.create("SoundFileSource", "src");
-  if (start > 0.0) 
-    offset = (mrs_natural) (start * src->getctrl("mrs_real/israte")->to<mrs_real>());
-  
-
-  MarSystem* featExtractor = mng.create("TimbreFeatures", "featExtractor");
-  featExtractor->updctrl("mrs_natural/winSize", winSize);
-  selectFeatureSet(featExtractor);
-  
-  
   // Build the overall feature calculation network 
   MarSystem* featureNetwork = mng.create("Series", "featureNetwork");
+  
+  // Windowed SoundFileSource with hopSize and winSize 
+  MarSystem *src = mng.create("OverlapSoundFileSource", "src");
   featureNetwork->addMarSystem(src);
-
-
+  
+  // create audio sink and mute it it is stored in the output plugin 
+  // which can be used for real-time classification 
   if (pluginName != EMPTYSTRING)
-    {
-      // create audio sink and mute it 
-      // it is stored in the output plugin 
-      // which can be used for real-time classification 
-      MarSystem* dest = mng.create("AudioSink", "dest");      
+  {
+	  MarSystem* dest = mng.create("AudioSink", "dest");      
 	  dest->updctrl("mrs_bool/mute", true);
-      featureNetwork->addMarSystem(dest);
-    }
-
-  //add the feature extraction network
+	  featureNetwork->addMarSystem(dest);
+  }
+  // window after audio playback to avoid artifacts 
+  featureNetwork->addMarSystem(mng.create("Windowing", "hamming"));
+  
+  // Select feature set(s) to use 
+  MarSystem* featExtractor = mng.create("TimbreFeatures", "featExtractor");
+  selectFeatureSet(featExtractor);
   featureNetwork->addMarSystem(featExtractor);
+  
+  // texture statistics 
   featureNetwork->addMarSystem(mng.create("TextureStats", "tStats"));
   featureNetwork->updctrl("TextureStats/tStats/mrs_natural/memSize", memSize);
+
   
-  // update controls I
-  // src has to be configured with hopSize frame length in case a ShiftInput
-  // is used in the feature extraction network
-  featureNetwork->updctrl("mrs_natural/inSamples", hopSize);
-  featureNetwork->updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
-  featureNetwork->updctrl("SoundFileSource/src/mrs_real/duration", length);
-  
+  // labeling, weka output, classifier and confidence for real-time output 
   featureNetwork->addMarSystem(mng.create("Annotator", "annotator"));
   if (wekafname != EMPTYSTRING)
     featureNetwork->addMarSystem(mng.create("WekaSink", "wsink"));
   featureNetwork->addMarSystem(mng.create("Classifier", "cl"));
   featureNetwork->addMarSystem(mng.create("Confidence", "confidence"));
 
+  
+
   // link controls
   featureNetwork->linkctrl("mrs_string/filename", 
-			   "SoundFileSource/src/mrs_string/filename");
-  featureNetwork->linkctrl("SoundFileSource/src/mrs_string/currentlyPlaying", 
-			   "Confidence/confidence/mrs_string/fileName");
-  featureNetwork->linkctrl("mrs_real/israte", "SoundFileSource/src/mrs_real/israte");
-  featureNetwork->linkctrl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
-  featureNetwork->linkctrl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+			   "OverlapSoundFileSource/src/mrs_string/filename");
+  featureNetwork->linkctrl("mrs_bool/notEmpty", "OverlapSoundFileSource/src/mrs_bool/notEmpty");
+  featureNetwork->linkctrl("mrs_natural/pos", "OverlapSoundFileSource/src/mrs_natural/pos");
+
   featureNetwork->linkctrl("mrs_bool/initAudio", "AudioSink/dest/mrs_bool/initAudio");
-  featureNetwork->linkctrl("SoundFileSource/src/mrs_natural/currentLabel", 
-			   "Annotator/annotator/mrs_natural/label");
+
+  // link confidence and annotation with SoundFileSource that plays the collection 
+  featureNetwork->linkctrl("Confidence/confidence/mrs_string/fileName", 
+						   "OverlapSoundFileSource/src/mrs_string/currentlyPlaying");
+  featureNetwork->linkctrl("Annotator/annotator/mrs_natural/label",
+						   "OverlapSoundFileSource/src/mrs_natural/currentLabel");
   
-  
+  // links with WekaSink
   if (wekafname != EMPTYSTRING)
     {
       featureNetwork->linkctrl("Confidence/confidence/mrs_string/labelNames",  
 			       "WekaSink/wsink/mrs_string/labelNames");
-      featureNetwork->linkctrl("SoundFileSource/src/mrs_natural/nLabels", 
+      featureNetwork->linkctrl("OverlapSoundFileSource/src/mrs_natural/nLabels", 
 			       "WekaSink/wsink/mrs_natural/nLabels");
     }
-
   
-  // update controls
-  
+  // src has to be configured with hopSize frame length in case a ShiftInput
+  // is used in the feature extraction network
+  featureNetwork->updctrl("mrs_natural/inSamples", hopSize);
+  featureNetwork->updctrl("OverlapSoundFileSource/src/mrs_natural/winSize", 
+						  winSize);
+  if (start > 0.0) 
+	  offset = (mrs_natural) (start * src->getctrl("mrs_real/israte")->to<mrs_real>());
+  featureNetwork->updctrl("OverlapSoundFileSource/src/mrs_natural/pos", 
+						  offset);      
+  featureNetwork->updctrl("OverlapSoundFileSource/src/mrs_real/duration", 
+						  length);
 
-
-
+  // confidence is silent during training
   featureNetwork->updctrl("Confidence/confidence/mrs_bool/mute", true);
   featureNetwork->updctrl("Confidence/confidence/mrs_bool/print",true);
-  featureNetwork->updctrl("mrs_string/filename", "bextract_single.mf");
-
-
-  if (pluginName != EMPTYSTRING && playback) 
-  {
-	  featureNetwork->updctrl("AudioSink/dest/mrs_bool/mute", false);
-	  featureNetwork->updctrl("mrs_bool/initAudio", true);
-  }
   
-
-  // don't use linkctrl so that only value is copied once and linking doesn't 
-  // remain for the plugin 
-  featureNetwork->updctrl("Confidence/confidence/mrs_string/labelNames", 
-			  featureNetwork->getctrl("SoundFileSource/src/mrs_string/labelNames"));
-  featureNetwork->updctrl("Classifier/cl/mrs_natural/nClasses", 
-			  featureNetwork->getctrl("SoundFileSource/src/mrs_natural/nLabels"));
-  featureNetwork->updctrl("Confidence/confidence/mrs_natural/nLabels", 
-			  featureNetwork->getctrl("SoundFileSource/src/mrs_natural/nLabels"));
-  
-
+  // setup WekaSink 
   if (wekafname != EMPTYSTRING)
     {
       featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
       featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  			
     }
 
+  // select classifier to be used 
   selectClassifier(featureNetwork, classifierName);
   
+  // load the collection which is automatically created by bextract 
+  // based on the command-line arguments 
+  featureNetwork->updctrl("mrs_string/filename", "bextract_single.mf");
+  
+  // play sound if playback is enabled 
+  if (pluginName != EMPTYSTRING && playback) 
+  {
+	  featureNetwork->updctrl("AudioSink/dest/mrs_bool/mute", false);
+	  featureNetwork->updctrl("mrs_bool/initAudio", true);
+  }
+  
+  // don't use linkctrl so that only value is copied once and linking doesn't 
+  // remain for the plugin 
+  featureNetwork->updctrl("Confidence/confidence/mrs_string/labelNames", 
+			  featureNetwork->getctrl("OverlapSoundFileSource/src/mrs_string/labelNames"));
+  featureNetwork->updctrl("Classifier/cl/mrs_natural/nClasses", 
+			  featureNetwork->getctrl("OverlapSoundFileSource/src/mrs_natural/nLabels"));
+  featureNetwork->updctrl("Confidence/confidence/mrs_natural/nLabels", 
+			  featureNetwork->getctrl("OverlapSoundFileSource/src/mrs_natural/nLabels"));
+  
 
 
+  // main processing loop for training
   MarControlPtr ctrl_notEmpty = featureNetwork->getctrl("mrs_bool/notEmpty");
-  MarControlPtr ctrl_currentlyPlaying = featureNetwork->getctrl("SoundFileSource/src/mrs_string/currentlyPlaying");
-  
-  mrs_string previouslyPlaying;
-  mrs_string currentlyPlaying;
-  
+  MarControlPtr ctrl_currentlyPlaying = featureNetwork->getctrl("OverlapSoundFileSource/src/mrs_string/currentlyPlaying");
+  mrs_string previouslyPlaying, currentlyPlaying;
 
-  
   while (ctrl_notEmpty->to<mrs_bool>())
     {
-      currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
+	  currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
       if (currentlyPlaying != previouslyPlaying) 
-	cout << "Processing : " << currentlyPlaying << endl;
+		  cout << "Processing : " << currentlyPlaying << endl;
+
       featureNetwork->tick();
       previouslyPlaying = currentlyPlaying;
       
     }
-
-  cout << "Finished feature extraction" << endl;
+  cout << "Finished feature extraction and classifier training" << endl;
   
-
-
-  // prepare network for classification
+  // prepare network for real-time playback/prediction
   featureNetwork->updctrl("Classifier/cl/mrs_string/mode","predict"); 
   featureNetwork->tick();		
-      
+  
+  // have the plugin play audio 
   if (pluginName != EMPTYSTRING && !pluginMute) 
     {
       featureNetwork->updctrl("AudioSink/dest/mrs_bool/mute", false);
-      featureNetwork->updctrl("AudioSink/dest/mrs_bool/initAudio", true);//[!][?] this still does not solves the problem of sfplugin being unable to play audio... 
+      featureNetwork->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
     }
   
+  // don't output to WekaSink
   if (wekafname != EMPTYSTRING)
     featureNetwork->updctrl("WekaSink/wsink/mrs_bool/mute", true);  
   
+  // enable confidence 
   featureNetwork->updctrl("Confidence/confidence/mrs_bool/mute", false);
-
-    
+  
   // output trained classifier models
   if (pluginName == EMPTYSTRING) // output to stdout 
     cout << (*featureNetwork) << endl;      

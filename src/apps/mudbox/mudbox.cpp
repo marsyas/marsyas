@@ -2529,6 +2529,43 @@ toy_with_stereo2mono(string fname)
 
 }
 
+void 
+toy_with_windowedsource(string fname0) 
+{
+	cout << "Toying with " << fname0 << endl;
+	
+	
+	MarSystemManager mng;
+	MarSystem* pnet = mng.create("Series", "pnet");
+	pnet->addMarSystem(mng.create("WindowedSoundFileSource","src"));
+	pnet->addMarSystem(mng.create("AudioSink", "dest"));
+
+	
+	
+	pnet->updctrl("WindowedSoundFileSource/src/mrs_string/filename", fname0);
+	pnet->updctrl("mrs_natural/inSamples", 1024);	                          // hopSize
+	pnet->updctrl("WindowedSoundFileSource/src/mrs_natural/winSize", 2048);   // winSize
+	pnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	
+	
+	
+	MarControlPtr ctrl_currentlyPlaying = pnet->getctrl("WindowedSoundFileSource/src/mrs_string/currentlyPlaying");
+
+	string currentlyPlaying;
+	
+	while(1)
+	{
+		currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
+		cout << "Processing : " << currentlyPlaying << endl;		
+		pnet->tick();
+	}
+	
+
+	
+}
+
+
+
 void toy_with_spectralSNR(string fname0, string fname1) 
 {
   cout << "Toy_Withing spectral SNR" << endl;
@@ -3626,6 +3663,9 @@ main(int argc, const char **argv)
     drumClassify(fname0); 
   else if (toy_withName == "phisem")
     toy_phisem();
+  else if (toy_withName == "windowedsource")
+	  toy_with_windowedsource(fname0);
+  
 else 
     {
       cout << "Unsupported toy_with " << endl;
