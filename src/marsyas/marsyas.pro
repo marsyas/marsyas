@@ -2,6 +2,8 @@ include( $$quote( "$$BASEDIR/marsyasConfig.pri" ) )
 
 message( Configuring Marsyas Lib build )
 
+macx:CONFIG -= app_bundle
+
 TEMPLATE = lib
 CONFIG += staticlib
 TARGET = marsyas
