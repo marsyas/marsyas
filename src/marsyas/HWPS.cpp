@@ -133,8 +133,8 @@ HWPS::myProcess(realvec& in, realvec& out)
 
 	//parse data from the input vectors.
 	//format:
-	//[peakFreq, frameNumPeaks, pkSetFreq0,...,pkSetFreqN, pkSetAmp0,..., pkSetAmpN]' 
-	//where N-1=maxFrameNumPeaks
+	//[peakFreq, frameNumPeaks, pkSetFreq0,...,pkSetFreqN, pkSetAmp0,..., pkSetAmpN, dummyPad, dummyPad, ...]' 
+	//where N = frameNumPeaks-1, and dummyPad are dummy values used for filling the vector when frameNumPeaks < maxFrameNumPeaks.
 	pk_i_freq_ = vec_i_(HWPS::pkFreqIdx); //peak i frequency
 	pk_j_freq_ = vec_j_(HWPS::pkFreqIdx); //peak j frequency
 	i_frameNumPeaks_ = (mrs_natural)vec_i_(HWPS::frameNumPeaksIdx); //peakSet i frameNumPeaks

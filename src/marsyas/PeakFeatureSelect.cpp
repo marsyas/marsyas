@@ -105,19 +105,19 @@ PeakFeatureSelect::myUpdate(MarControlPtr sender)
 		}
 		if(selectedFeatures_ & PeakFeatureSelect::pkSetFrequencies)
 		{
-			for(mrs_natural i = 0; i < frameMaxNumPeaks_; ++i)
+			for(mrs_natural i = 0; i < frameMaxNumPeaks_; ++i)//These obsNames are incorrect when frameNumPeaks < maxFrameNumPeaks!! [TODO] 
 				oss << "pk_"<< i << "_Frequency,";
 			numFeats_ += frameMaxNumPeaks_;
 		}
 		if(selectedFeatures_ & PeakFeatureSelect::pkSetAmplitudes)
 		{
-			for(mrs_natural i = 0; i < frameMaxNumPeaks_; ++i)
+			for(mrs_natural i = 0; i < frameMaxNumPeaks_; ++i) //These obsNames are incorrect when frameNumPeaks < maxFrameNumPeaks!! [TODO]
 				oss << "pk_"<< i << "_Amplitude,";
 			numFeats_ += frameMaxNumPeaks_;
 		}
 		if(selectedFeatures_ & PeakFeatureSelect::pkSetFrames)
 		{
-			for(mrs_natural i = 0; i < frameMaxNumPeaks_; ++i)
+			for(mrs_natural i = 0; i < frameMaxNumPeaks_; ++i) //These obsNames are incorrect when frameNumPeaks < maxFrameNumPeaks!! [TODO]
 				oss << "pk_"<< i << "_Frame,";
 			numFeats_ += frameMaxNumPeaks_;
 		}

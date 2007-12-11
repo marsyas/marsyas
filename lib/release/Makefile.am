@@ -275,6 +275,7 @@ libmarsyas_a_SOURCES    = \
 	$(top_srcdir)/src/marsyas/EnhADRess.cpp \
 	$(top_srcdir)/src/marsyas/StereoSpectrumSources.cpp \
 	$(top_srcdir)/src/marsyas/EnhADRessStereoSpectrum.cpp \
+	$(top_srcdir)/src/marsyas/McAuleyQuatieri.cpp \
 			$(top_srcdir)/src/marsyas/Gain.cpp
 # please leave Gain.cpp at the end like this; it make scripts happy.
 

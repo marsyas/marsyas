@@ -166,6 +166,7 @@
 #include "EnhADRess.h"
 #include "StereoSpectrumSources.h"
 #include "EnhADRessStereoSpectrum.h"
+#include "McAuleyQuatieri.h"
 #include "Gain.h"
 // please leave Gain at the end; it makes scripts happy.
 

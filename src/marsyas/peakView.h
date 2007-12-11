@@ -46,6 +46,7 @@ namespace Marsyas
 			pkBinLow,
 			pkBin,
 			pkBinHigh,
+			pkTrack,
 			nbPkParameters
 		};
 

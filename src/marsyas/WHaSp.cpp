@@ -157,7 +157,7 @@ WHaSp::myProcess(realvec& in, realvec& out)
 		//	cout << "Number of Peaks considered" << numPeaks << endl;
 		// cout << volumes ; 
 		mrs_natural nbSelected = 10;
-		mrs_real dist;
+		//mrs_real dist;
 
 		for(mrs_natural i=0; i < numPeaks; ++i)
 		{
