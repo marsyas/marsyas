@@ -204,7 +204,7 @@ McAulayQuatieri::myProcess(realvec& in, realvec& out)
 		if(memory_.getSize() != 0)
 		{
 			//if using a non-empty memory, we should now fill the trackID parameters
-			//computed above (and sotred in the tmp realvec) into the actual output
+			//computed above (and stored in the tmp realvec) into the actual output
 			peakView outPeakView(out);
 			for(c = 0; c < outPeakView.getNumFrames(); ++c)
 				for(o = 0; o < outPeakView.getFrameNumPeaks(c); ++o)
@@ -214,7 +214,7 @@ McAulayQuatieri::myProcess(realvec& in, realvec& out)
 		//store the last frame of current output for next time 
 		memory_.stretch(onObservations_);
 		for(o = 0; o < onObservations_; ++o)
-			memory_(o) = out(o, onSamples_-1); //save last frame of current iteration for next time
+			memory_(o) = out(o, onSamples_-1); 
 	}
 }
 
