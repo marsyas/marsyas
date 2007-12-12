@@ -176,8 +176,7 @@ bool User::close()
 {
 	if (maybeSave())
 	{
-		username_ = "";
-		isModified_ = false;
+		reset();
 		emit updateMain(MEAWS_READY_NOTHING);
 		return true;
 	}

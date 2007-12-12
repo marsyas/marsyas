@@ -69,6 +69,7 @@ unix:LIBS += -lmarsyas -lmarsyasqt
 !macx:LIBS += -lasound
 macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
 
+macx:CONFIG -= app_bundle
 
 
 win32 {

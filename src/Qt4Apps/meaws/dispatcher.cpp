@@ -7,6 +7,7 @@ Dispatcher::Dispatcher(QFrame* centralFrame)
 {
 	user_ = new User();
 	exercise_ = NULL;
+	campaign_ = NULL;
 
 	marBackend_ = new MarBackend();
 	connect(marBackend_, SIGNAL(gotAudio()),
@@ -22,7 +23,6 @@ Dispatcher::Dispatcher(QFrame* centralFrame)
 	centralFrame_ = centralFrame;
 	attemptRunningBool_ = false;
 
-	campaign_ = NULL;
 }
 
 Dispatcher::~Dispatcher()

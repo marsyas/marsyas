@@ -33,6 +33,7 @@ Metro::Metro(QWidget *parent, string audioFilename)
 	bigDisplay_=false;
 	audio_=false;   // for testing
 
+	mrsWrapper_ = NULL;
 	if (audio_)
 	{
 		setupAudio(audioFilename);
@@ -50,10 +51,20 @@ Metro::Metro(QWidget *parent, string audioFilename)
 Metro::~Metro()
 {
 //	cout<<"deleting Metro"<<endl;
-	delete mrsWrapper_;
+	if (mrsWrapper_ != NULL) {
+		delete mrsWrapper_;
+		mrsWrapper_ = NULL;
+	}
+//	cout<<"done mrs"<<endl;
+// TODO: fix this sutff.
+/*
 	delete metroNet_;
+	cout<<"done mrs"<<endl;
 	delete flashSpeed_;
+	cout<<"done mrs"<<endl;
 	delete timer_;
+*/
+//	cout<<"done deleting Metro"<<endl;
 }
 
 void Metro::setupAudio(string audioFilename)
