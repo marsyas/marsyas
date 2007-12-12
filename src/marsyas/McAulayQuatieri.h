@@ -56,6 +56,7 @@ private:
 	MarControlPtr ctrl_delta_;
 
 	realvec memory_;
+	realvec tmp_;
 
 	void addControls();
 	void myUpdate(MarControlPtr sender);

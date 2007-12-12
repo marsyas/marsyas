@@ -65,15 +65,13 @@ McAulayQuatieri::myUpdate(MarControlPtr sender)
 {
 	MRSDIAG("McAulayQuatieri.cpp - McAulayQuatieri:myUpdate");
 
-	MarSystem::myUpdate(sender);
+	MarSystem::myUpdate(sender);	
 
-
-
-// 	if(ctrl_reset_->to<mrs_bool>())
-// 	{
-// 		ctrl_reset_->setValue(false, NOUPDATE);
-// 		memory_.setval(-1.0);
-// 	}
+ 	if(ctrl_reset_->to<mrs_bool>())
+ 	{
+ 		ctrl_reset_->setValue(false, NOUPDATE);
+ 		memory_.stretch(0);
+ 	}
 }
 
 void
@@ -82,46 +80,66 @@ McAulayQuatieri::myProcess(realvec& in, realvec& out)
 	mrs_real dist;
 	mrs_natural candidate;
 	mrs_natural lastMatched = 0;
-	mrs_natural currentTrack;
-
-	out(o,t) = in(o,t);
-	peakView outPeakView(out);
-
+	mrs_natural nextTrack;
+	realvec* outPtr;
 
 	mrs_real delta = ctrl_delta_->to<mrs_real>();
 
-	//initial track IDs for peaks in first frame (BIRTH)
-	for(mrs_natural n = 0; n < outPeakView.getFrameNumPeaks(0); ++n)
-		outPeakView(n, peakView::pkTrack, 0) = (mrs_real) n;
+	out(o,t) = in(o,t);
+	
+	//if memory is not empty and set to be used...
+	if(ctrl_useMemory_->to<mrs_bool>() && memory_.getSize() != 0)
+	{
+		//concatenate memory column vector with current input
+		//so we can continue peak tracking from previous input
+		tmp_.stretch(onObservations_, onSamples_+1);
+		for(o = 0; o < onObservations_; ++o)
+			tmp_(o, 0) = memory_(o);
+		for(o = 0; o < onObservations_; ++o)
+			for(c = 0; c < onSamples_; ++c)
+				tmp_(o,c+1) = in(o,c);
+		outPtr = &tmp_;
+	}
+	else
+	{
+		//no need to concatenate memory information with
+		//current input. Just do it inplace in the output realvec (avoid extra copy)!
+		outPtr = &out;
+	}
+		
+	peakView tmpPeakView(*outPtr);
 
-	//all the peaks in the first frame are new tracks (BIRTH)
-	currentTrack = outPeakView.getFrameNumPeaks(0); //any new born track will get this track ID
+	//if no memory being used (or no memory stored yet), we must use peaks in
+	//first frame to give birth to new tracks
+	if(!ctrl_useMemory_->to<mrs_bool>() || memory_.getSize() == 0)
+	{
+		for(mrs_natural n = 0; n < tmpPeakView.getFrameNumPeaks(0); ++n)
+			tmpPeakView(n, peakView::pkTrack, 0) = (mrs_real) n;
+	}
+	
+	//get the trackID for any future track to be born (in STEP 3 - see below)
+	nextTrack = tmpPeakView.getFrameNumPeaks(0);
 
-	
-	
-	
-	
-	
-	//iterate over input frames
-	for(mrs_natural k=0; k < outPeakView.getNumFrames()-1; ++k)
+		//iterate over input frames
+	for(mrs_natural k=0; k < tmpPeakView.getNumFrames()-1; ++k)
 	{
 		lastMatched = 0;
 
 		//iterate over peaks in current frame
-		for(mrs_natural n = 0; n < outPeakView.getFrameNumPeaks(k); ++n)
+		for(mrs_natural n = 0; n < tmpPeakView.getFrameNumPeaks(k); ++n)
 		{
 			mrs_real lastdist = MAXREAL;
 			candidate = -1;
 
 			// STEP 1
 			// find a candidate match on the next frame for each peak (i.e. track) in current frame
-			for(mrs_natural m = lastMatched + 1; m < outPeakView.getFrameNumPeaks(k+1); ++m)
+			for(mrs_natural m = lastMatched + 1; m < tmpPeakView.getFrameNumPeaks(k+1); ++m)
 			{
 				//set track parameter of all peaks of next frame to -1 so we know later
 				//which ones were not matched (=> BIRTH of new tracks)
-				outPeakView(m, peakView::pkTrack, k+1) = -1.0;
+				tmpPeakView(m, peakView::pkTrack, k+1) = -1.0;
 				
-				dist = abs(outPeakView(n, peakView::pkFrequency, k) - outPeakView(m, peakView::pkFrequency, k+1));
+				dist = abs(tmpPeakView(n, peakView::pkFrequency, k) - tmpPeakView(m, peakView::pkFrequency, k+1));
 				if (dist < delta && dist < lastdist)
 				{
 					//found a candidate!
@@ -135,10 +153,10 @@ McAulayQuatieri::myProcess(realvec& in, realvec& out)
 			if(candidate >= 0) //check if a candidate was found
 			{
 				//confirm if this is not the last peak in current frame
-				if(n < outPeakView.getFrameNumPeaks(k)-1)
+				if(n < tmpPeakView.getFrameNumPeaks(k)-1)
 				{
 					//check the next remaining peak in current frame and see if it is a better match for the found candidate
-					dist = abs(outPeakView(n+1, peakView::pkFrequency, k) - outPeakView(candidate, peakView::pkFrequency, k+1));
+					dist = abs(tmpPeakView(n+1, peakView::pkFrequency, k) - tmpPeakView(candidate, peakView::pkFrequency, k+1));
 					if(dist < lastdist)
 					{
 						// it is a better match! Check two additional conditions: 
@@ -146,10 +164,10 @@ McAulayQuatieri::myProcess(realvec& in, realvec& out)
 						// 2. it is inside the frequency interval specified by delta
 						if(candidate - 1 > lastMatched)
 						{
-							if(abs(outPeakView(n, peakView::pkFrequency, k) - outPeakView(candidate-1, peakView::pkFrequency, k+1)) < delta)
+							if(abs(tmpPeakView(n, peakView::pkFrequency, k) - tmpPeakView(candidate-1, peakView::pkFrequency, k+1)) < delta)
 							{
 								//found a peak to continue the track -> confirm candidate!
-								outPeakView(candidate-1, peakView::pkTrack, k+1) = outPeakView(n, peakView::pkTrack, k);
+								tmpPeakView(candidate-1, peakView::pkTrack, k+1) = tmpPeakView(n, peakView::pkTrack, k);
 								lastMatched = candidate-1;
 							}
 						}
@@ -157,7 +175,7 @@ McAulayQuatieri::myProcess(realvec& in, realvec& out)
 					else
 					{
 						//no better match than this one, so confirm candidate!
-						outPeakView(candidate, peakView::pkTrack, k+1) = outPeakView(n, peakView::pkTrack, k);
+						tmpPeakView(candidate, peakView::pkTrack, k+1) = tmpPeakView(n, peakView::pkTrack, k);
 						lastMatched = candidate;
 					}
 				}
@@ -165,7 +183,7 @@ McAulayQuatieri::myProcess(realvec& in, realvec& out)
 				{
 					//if this was the last peak in current frame, so inherently it was the best match.
 					//Candidate is therefore automatically confirmed and can be propagated.
-					outPeakView(candidate, peakView::pkTrack, k+1) = outPeakView(n, peakView::pkTrack, k);
+					tmpPeakView(candidate, peakView::pkTrack, k+1) = tmpPeakView(n, peakView::pkTrack, k);
 					lastMatched = candidate;
 				}
 			}
@@ -173,12 +191,31 @@ McAulayQuatieri::myProcess(realvec& in, realvec& out)
 
 		// STEP 3
 		// check for any unmatched peaks in the next frame and give BIRTH to new tracks!
-		for(mrs_natural m = 0; m < outPeakView.getFrameNumPeaks(k+1); ++m)
+		for(mrs_natural m = 0; m < tmpPeakView.getFrameNumPeaks(k+1); ++m)
 		{
-			if(outPeakView(m, peakView::pkTrack, k+1) == -1.0)
-				outPeakView(m, peakView::pkTrack, k+1) = currentTrack++; //BIRTH of new track
+			if(tmpPeakView(m, peakView::pkTrack, k+1) == -1.0)
+				tmpPeakView(m, peakView::pkTrack, k+1) = nextTrack++; //BIRTH of new track
 		}
-	}		
+	}	
+
+	//if using memory...
+	if(ctrl_useMemory_->to<mrs_bool>())
+	{
+		if(memory_.getSize() != 0)
+		{
+			//if using a non-empty memory, we should now fill the trackID parameters
+			//computed above (and sotred in the tmp realvec) into the actual output
+			peakView outPeakView(out);
+			for(c = 0; c < outPeakView.getNumFrames(); ++c)
+				for(o = 0; o < outPeakView.getFrameNumPeaks(c); ++o)
+					outPeakView(o, peakView::pkTrack, c) = tmpPeakView(o, peakView::pkTrack, c+1);
+		}
+		
+		//store the last frame of current output for next time 
+		memory_.stretch(onObservations_);
+		for(o = 0; o < onObservations_; ++o)
+			memory_(o) = out(o, onSamples_-1); //save last frame of current iteration for next time
+	}
 }
 
 
