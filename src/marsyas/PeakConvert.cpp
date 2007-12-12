@@ -360,7 +360,7 @@ PeakConvert::myProcess(realvec& in, realvec& out)
 
 	for(mrs_natural f=0 ; f < inSamples_; ++f)
 	{
-		if(frame_ >= skip_)
+		if(frame_ >= skip_) //[WTF][?]
 		{
 			// handle amplitudes from shifted spectrums at input
 			for (o=0; o < size_; o++)
@@ -509,11 +509,12 @@ PeakConvert::myProcess(realvec& in, realvec& out)
 				pkViewOut(i, peakView::pkDeltaFrequency, f) = deltafrequency_((mrs_natural) index_(i));
 				pkViewOut(i, peakView::pkDeltaAmplitude, f) = deltamag_((mrs_natural) index_(i));
 				pkViewOut(i, peakView::pkFrame, f) = frame_; 
-				pkViewOut(i, peakView::pkGroup, f) = 0;
-				pkViewOut(i, peakView::pkVolume, f) = 1;
+				pkViewOut(i, peakView::pkGroup, f) = 0.0;
+				pkViewOut(i, peakView::pkVolume, f) = 1.0;
 				pkViewOut(i, peakView::pkBinLow, f) = interval_(2*i);
 				pkViewOut(i, peakView::pkBin, f) = index_(i);
 				pkViewOut(i, peakView::pkBinHigh, f) = interval_(2*i+1);
+				pkViewOut(i, peakView::pkTrack, f) = -1.0; //null-track ID
 
 				if(useStereoSpectrum_)
 					pkViewOut(i, peakView::pkPan, f) = in((mrs_natural)index_(i)+2*N_, f);
@@ -521,7 +522,7 @@ PeakConvert::myProcess(realvec& in, realvec& out)
 					pkViewOut(i, peakView::pkPan, f) = 0.0;
 			}
 		}
-		else //if not yet reached "skip" number of frames...
+		else //if not yet reached "skip" number of frames... //[WTF][?]
 		{
 			for(mrs_natural i=0; i< frameMaxNumPeaks_; ++i)
 			{

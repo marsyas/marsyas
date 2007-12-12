@@ -344,7 +344,7 @@ HEADERS += \
 	EnhADRess.h \
 	StereoSpectrumSources.h \
 	EnhADRessStereoSpectrum.h \
-	McAuleyQuatieri.h \
+	McAulayQuatieri.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 	 
@@ -578,7 +578,7 @@ SOURCES += \
 	enhADRess.cpp \
 	StereoSpectrumSources.cpp \
 	enhADRessStereoSpectrum.cpp \
-	McAuleyQuatieri.cpp \
+	McAulayQuatieri.cpp \
 	Gain.cpp
 # please leave Gain.cpp at the end like this; it makes scripts happy.
 

@@ -16,20 +16,23 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#ifndef MARSYAS_MCAULEYQUATIERI_H
-#define MARSYAS_MCAULEYQUATIERI_H
+#ifndef MARSYAS_MCAULAYQUATIERI_H
+#define MARSYAS_MCAULAYQUATIERI_H
 
 #include "MarSystem.h"
 
 namespace Marsyas
 {
 /**
-	\class McAuleyQuatieri
-	\ingroup Special
-	\brief Basic example on how to use controls efficiently in MarSystems
+	\class McAulayQuatieri
+	\ingroup MarSystem
+	\brief Performs McAulay-Quatieri frame-to-frame peak matching
 
-	This example is the same as Gain; it scales the output by
-multiplying each sample with a real number.
+	This MarSystem takes as input a peakView realvec with peak information, and performs McAulay-Quatieri
+	frame-to-frame peak matching (i.e. peak continuation), as described in the following paper:
+
+	R. McAulay and T. Quatieri, "Speech analysis/Synthesis based on a sinusoidal representation,"
+	IEEE Transactions on Acoustics, Speech, and Signal Processing vol. 34, pp. 744-754, August 1986.
 
 	Controls:
 	- \b mrs_bool/reset [w]: resets internal memory.
@@ -37,7 +40,7 @@ multiplying each sample with a real number.
 	- \b mrs_bool/useGroups [w] : take into consideration the assigned groups (i.e. clusters from NCut) in the input peaks.
 */
 
-class McAuleyQuatieri: public MarSystem
+class McAulayQuatieri: public MarSystem
 {
 private:
 	void addControls();
@@ -49,9 +52,9 @@ private:
 	MarControlPtr ctrl_delta_;
 
 public:
-	McAuleyQuatieri(std::string name);
-	McAuleyQuatieri(const McAuleyQuatieri& a);
-	~McAuleyQuatieri();
+	McAulayQuatieri(std::string name);
+	McAulayQuatieri(const McAulayQuatieri& a);
+	~McAulayQuatieri();
 	MarSystem* clone() const;
 
 	void myProcess(realvec& in, realvec& out);

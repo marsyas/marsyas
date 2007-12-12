@@ -98,14 +98,14 @@ PeakSynthOsc::myProcess(realvec& in, realvec& out)
 			//cout << "mulF" << mulF << "mulA" << mulA << endl;
 			for (i=0; i < Nb; i++)
 			{
-				if(in(i+peakView::pkGroup*Nb) > -1)
+				if(in(i+peakView::pkGroup*Nb) > -1) //only synthesize peaks with a GroupID > -1 !!!
 					sine(out, in(i)*mulF, in(i+Nb)*mulA, in(i+2*Nb));
 			}
 		}
 	else
 		for (i=0; i < Nb; i++)
 		{
-			if(in(i+peakView::pkGroup*Nb) > -1)
+			if(in(i+peakView::pkGroup*Nb) > -1) //only synthesize peaks with a GroupID > -1 !!!
 				sine(out, in(i), in(i+Nb), in(i+2*Nb));
 			//cout << "truc" << in(i) << " " << in(i+Nb) << "  " << in(i+2*Nb) << endl;
 		}

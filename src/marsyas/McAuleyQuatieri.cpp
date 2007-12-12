@@ -16,18 +16,18 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "McAuleyQuatieri.h"
+#include "McAulayQuatieri.h"
 #include "peakView.h"
 
 using namespace std;
 using namespace Marsyas;
 
-McAuleyQuatieri::McAuleyQuatieri(string name):MarSystem("McAuleyQuatieri", name)
+McAulayQuatieri::McAulayQuatieri(string name):MarSystem("McAulayQuatieri", name)
 {
 	addControls();
 }
 
-McAuleyQuatieri::McAuleyQuatieri(const McAuleyQuatieri& a) : MarSystem(a)
+McAulayQuatieri::McAulayQuatieri(const McAulayQuatieri& a) : MarSystem(a)
 {
 	ctrl_reset_ = getctrl("mrs_bool/reset");
 	ctrl_useGroups_ = getctrl("mrs_bool/useGroups");
@@ -35,18 +35,18 @@ McAuleyQuatieri::McAuleyQuatieri(const McAuleyQuatieri& a) : MarSystem(a)
 	ctrl_delta_ = getctrl("mrs_real/delta");
 }
 
-McAuleyQuatieri::~McAuleyQuatieri()
+McAulayQuatieri::~McAulayQuatieri()
 {
 }
 
 MarSystem*
-McAuleyQuatieri::clone() const
+McAulayQuatieri::clone() const
 {
-	return new McAuleyQuatieri(*this);
+	return new McAulayQuatieri(*this);
 }
 
 void
-McAuleyQuatieri::addControls()
+McAulayQuatieri::addControls()
 {
 	addctrl("mrs_bool/reset", false);
 	setctrlState("mrs_bool/reset", true);
@@ -61,15 +61,15 @@ McAuleyQuatieri::addControls()
 }
 
 void
-McAuleyQuatieri::myUpdate(MarControlPtr sender)
+McAulayQuatieri::myUpdate(MarControlPtr sender)
 {
-	MRSDIAG("McAuleyQuatieri.cpp - McAuleyQuatieri:myUpdate");
+	MRSDIAG("McAulayQuatieri.cpp - McAulayQuatieri:myUpdate");
 
 	MarSystem::myUpdate(sender);
 }
 
 void
-McAuleyQuatieri::myProcess(realvec& in, realvec& out)
+McAulayQuatieri::myProcess(realvec& in, realvec& out)
 {
 	mrs_real dist;
 	mrs_natural candidate;
