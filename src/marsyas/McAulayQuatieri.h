@@ -34,6 +34,13 @@ namespace Marsyas
 	R. McAulay and T. Quatieri, "Speech analysis/Synthesis based on a sinusoidal representation,"
 	IEEE Transactions on Acoustics, Speech, and Signal Processing vol. 34, pp. 744-754, August 1986.
 
+	Each peak is then associated to a "partial track", whose number ID is stored in the peakView::pkTrack.
+	The peak tracking can start from the last frame from the previous texture window received by the Marsystem 
+	(when useMemory control is set to true) or perform peak tracking only in the current input peakView. 
+	It is also possible to perform peak tracking independently for each cluster (i.e. group) of peaks 
+	(for that, set useGroups control to true), in casethey have already been clustered and their 
+	peakView::pkGroup field filled correspondingly.
+
 	Controls:
 	- \b mrs_bool/reset [w]: resets internal memory.
 	- \b mrs_bool/useMemory [w] : when true, uses the last frame of the previous input for continuing peak tracking.
@@ -43,13 +50,15 @@ namespace Marsyas
 class McAulayQuatieri: public MarSystem
 {
 private:
-	void addControls();
-	void myUpdate(MarControlPtr sender);
-
 	MarControlPtr ctrl_useMemory_;
 	MarControlPtr ctrl_reset_;
 	MarControlPtr ctrl_useGroups_;
 	MarControlPtr ctrl_delta_;
+
+	realvec memory_;
+
+	void addControls();
+	void myUpdate(MarControlPtr sender);
 
 public:
 	McAulayQuatieri(std::string name);

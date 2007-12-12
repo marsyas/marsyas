@@ -66,6 +66,14 @@ McAulayQuatieri::myUpdate(MarControlPtr sender)
 	MRSDIAG("McAulayQuatieri.cpp - McAulayQuatieri:myUpdate");
 
 	MarSystem::myUpdate(sender);
+
+
+
+// 	if(ctrl_reset_->to<mrs_bool>())
+// 	{
+// 		ctrl_reset_->setValue(false, NOUPDATE);
+// 		memory_.setval(-1.0);
+// 	}
 }
 
 void
@@ -79,7 +87,6 @@ McAulayQuatieri::myProcess(realvec& in, realvec& out)
 	out(o,t) = in(o,t);
 	peakView outPeakView(out);
 
-	//no memory and no groups !!!!! (Yet)
 
 	mrs_real delta = ctrl_delta_->to<mrs_real>();
 
@@ -90,6 +97,11 @@ McAulayQuatieri::myProcess(realvec& in, realvec& out)
 	//all the peaks in the first frame are new tracks (BIRTH)
 	currentTrack = outPeakView.getFrameNumPeaks(0); //any new born track will get this track ID
 
+	
+	
+	
+	
+	
 	//iterate over input frames
 	for(mrs_natural k=0; k < outPeakView.getNumFrames()-1; ++k)
 	{
@@ -122,23 +134,31 @@ McAulayQuatieri::myProcess(realvec& in, realvec& out)
 			// must confirm candidate (if any)
 			if(candidate >= 0) //check if a candidate was found
 			{
-				//only need to confirm if this is not the last peak in current frame
+				//confirm if this is not the last peak in current frame
 				if(n < outPeakView.getFrameNumPeaks(k)-1)
 				{
 					//check the next remaining peak in current frame and see if it is a better match for the found candidate
 					dist = abs(outPeakView(n+1, peakView::pkFrequency, k) - outPeakView(candidate, peakView::pkFrequency, k+1));
-					if (dist < lastdist)
+					if(dist < lastdist)
 					{
 						// it is a better match! Check two additional conditions: 
+						// 1. an unmatched lower freq candidate should exist
+						// 2. it is inside the frequency interval specified by delta
 						if(candidate - 1 > lastMatched)
 						{
 							if(abs(outPeakView(n, peakView::pkFrequency, k) - outPeakView(candidate-1, peakView::pkFrequency, k+1)) < delta)
 							{
 								//found a peak to continue the track -> confirm candidate!
-								outPeakView(candidate, peakView::pkTrack, k+1) = outPeakView(n, peakView::pkTrack, k);
-								lastMatched = candidate;
+								outPeakView(candidate-1, peakView::pkTrack, k+1) = outPeakView(n, peakView::pkTrack, k);
+								lastMatched = candidate-1;
 							}
 						}
+					}
+					else
+					{
+						//no better match than this one, so confirm candidate!
+						outPeakView(candidate, peakView::pkTrack, k+1) = outPeakView(n, peakView::pkTrack, k);
+						lastMatched = candidate;
 					}
 				}
 				else
@@ -152,7 +172,7 @@ McAulayQuatieri::myProcess(realvec& in, realvec& out)
 		} //end of loop on peaks of current frame
 
 		// STEP 3
-		// check for any unmatched peaks in the next frame -> give BIRTH to new tracks!
+		// check for any unmatched peaks in the next frame and give BIRTH to new tracks!
 		for(mrs_natural m = 0; m < outPeakView.getFrameNumPeaks(k+1); ++m)
 		{
 			if(outPeakView(m, peakView::pkTrack, k+1) == -1.0)
