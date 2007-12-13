@@ -345,6 +345,7 @@ libmarsyas_a_SOURCES = \
 	$(top_srcdir)/src/marsyas/EnhADRess.cpp \
 	$(top_srcdir)/src/marsyas/StereoSpectrumSources.cpp \
 	$(top_srcdir)/src/marsyas/EnhADRessStereoSpectrum.cpp \
+	$(top_srcdir)/src/marsyas/McAulayQuatieri.cpp \
 			$(top_srcdir)/src/marsyas/Gain.cpp
 
 subdir = lib/release
@@ -445,7 +446,8 @@ am_libmarsyas_a_OBJECTS = svm.$(OBJEXT) RtAudio.$(OBJEXT) \
 	Spectrum2Mel.$(OBJEXT) ADRess.$(OBJEXT) \
 	ADRessSpectrum.$(OBJEXT) ADRessStereoSpectrum.$(OBJEXT) \
 	EnhADRess.$(OBJEXT) StereoSpectrumSources.$(OBJEXT) \
-	EnhADRessStereoSpectrum.$(OBJEXT) Gain.$(OBJEXT)
+	EnhADRessStereoSpectrum.$(OBJEXT) McAulayQuatieri.$(OBJEXT) \
+	Gain.$(OBJEXT)
 libmarsyas_a_OBJECTS = $(am_libmarsyas_a_OBJECTS)
 libmarsyasqt_a_AR = $(AR) cru
 libmarsyasqt_a_LIBADD =
@@ -525,7 +527,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/MarSystemTemplateAdvanced.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MarSystemTemplateBasic.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MarSystemTemplateMedium.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/MaxArgMax.Po ./$(DEPDIR)/Mean.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/MaxArgMax.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/McAulayQuatieri.Po ./$(DEPDIR)/Mean.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MeddisHairCell.Po ./$(DEPDIR)/Memory.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MemorySource.Po ./$(DEPDIR)/Messager.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Metric.Po ./$(DEPDIR)/MidiInput.Po \
@@ -930,6 +933,7 @@ StereoSpectrumSources.$(OBJEXT): \
 	$(top_srcdir)/src/marsyas/StereoSpectrumSources.cpp
 EnhADRessStereoSpectrum.$(OBJEXT): \
 	$(top_srcdir)/src/marsyas/EnhADRessStereoSpectrum.cpp
+McAulayQuatieri.$(OBJEXT): $(top_srcdir)/src/marsyas/McAulayQuatieri.cpp
 Gain.$(OBJEXT): $(top_srcdir)/src/marsyas/Gain.cpp
 libmarsyas.a: $(libmarsyas_a_OBJECTS) $(libmarsyas_a_DEPENDENCIES) 
 	-rm -f libmarsyas.a
@@ -1038,6 +1042,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MarSystemTemplateBasic.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MarSystemTemplateMedium.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MaxArgMax.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/McAulayQuatieri.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Mean.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MeddisHairCell.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Memory.Po@am__quote@
@@ -3913,6 +3918,18 @@ EnhADRessStereoSpectrum.obj: $(top_srcdir)/src/marsyas/EnhADRessStereoSpectrum.c
 @AMDEP_TRUE@	depfile='$(DEPDIR)/EnhADRessStereoSpectrum.Po' tmpdepfile='$(DEPDIR)/EnhADRessStereoSpectrum.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o EnhADRessStereoSpectrum.obj `cygpath -w $(top_srcdir)/src/marsyas/EnhADRessStereoSpectrum.cpp`
+
+McAulayQuatieri.o: $(top_srcdir)/src/marsyas/McAulayQuatieri.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/McAulayQuatieri.cpp' object='McAulayQuatieri.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/McAulayQuatieri.Po' tmpdepfile='$(DEPDIR)/McAulayQuatieri.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o McAulayQuatieri.o `test -f '$(top_srcdir)/src/marsyas/McAulayQuatieri.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/marsyas/McAulayQuatieri.cpp
+
+McAulayQuatieri.obj: $(top_srcdir)/src/marsyas/McAulayQuatieri.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/McAulayQuatieri.cpp' object='McAulayQuatieri.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/McAulayQuatieri.Po' tmpdepfile='$(DEPDIR)/McAulayQuatieri.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o McAulayQuatieri.obj `cygpath -w $(top_srcdir)/src/marsyas/McAulayQuatieri.cpp`
 
 Gain.o: $(top_srcdir)/src/marsyas/Gain.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/Gain.cpp' object='Gain.o' libtool=no @AMDEPBACKSLASH@

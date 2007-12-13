@@ -115,10 +115,10 @@ Memory::myProcess(realvec& in, realvec& out)
 	      {
 		for (o=0; o < inObservations_; o++)
 		  {
-		    out(o, end_ * inSamples_) = in(o,t);
+		    out(o, end_) = in(o,t);
 		  }
+		end_ = (end_ + 1) % memSize; 		// circular buffer index  		
 	      }
-	    end_ = (end_ + 1) % memSize; 		// circular buffer index  
 	  }
 	else // memSize == 0 
 	  {

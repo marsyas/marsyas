@@ -176,7 +176,7 @@ void WekaData::Sort(mrs_natural attr)
 //add rows of data to the table
 void WekaData::Append(const realvec& in)
 {
-  MRSASSERT(in.getCols()==cols_);
+  MRSASSERT(in.getRows()==cols_);
   vector<mrs_real> *data = new vector<mrs_real>(cols_);
   for(mrs_natural ii=0; ii<in.getRows(); ii++)
     {
