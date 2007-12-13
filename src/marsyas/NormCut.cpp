@@ -101,13 +101,22 @@ NormCut::myUpdate(MarControlPtr sender)
 void 
 NormCut::myProcess(realvec& in, realvec& out)
 {
+	out.setval(0);
+
 	//ncut( n, W, nbcluster, NcutEigenvectors, NcutEigenvalues, params );      
 	//discretisation( n, nbcluster, NcutEigenvectors, NcutDiscrete, params );
+
+	//check if there is any data at the input, otherwise do nothing
+	if(in.getSize() == 0)
+	{
+		//MRSWARN("NormCut::myProcess - empty input!");
+		return;
+	}
 
 	ncut(inObservations_, in, numClusters_, nCutEigVectors_, nCutDiscrete_ );
 	discretisation(inObservations_, numClusters_, nCutEigVectors_, nCutDiscrete_ );
 
-	out.setval(0);
+	
 
 	for( o=0 ; o<inObservations_ ; o++ )
 	{      
