@@ -1530,6 +1530,12 @@ bextract_train(vector<Collection> cls, Collection cl,
 
   cout << "Old bextract_train" << endl;
   
+  // hack for backward compatibility 
+  // this function is being depracated 
+  // use instead bextract_train_refactored 
+  if (length == -1.0f) 
+    length = 30.0f;
+
 
 
   MarSystemManager mng;
@@ -2038,6 +2044,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	  offset = (mrs_natural) (start * src->getctrl("mrs_real/israte")->to<mrs_real>());
   featureNetwork->updctrl("OverlapSoundFileSource/src/mrs_natural/pos", 
 						  offset);      
+
+
+  cout << "length = " << length << endl;
   featureNetwork->updctrl("OverlapSoundFileSource/src/mrs_real/duration", 
 						  length);
 
@@ -2449,7 +2458,7 @@ initOptions()
   cmd_options.addStringOption("collection", "c", EMPTYSTRING);
   cmd_options.addBoolOption("normalize", "n", false);
   cmd_options.addRealOption("start", "s", 0);
-  cmd_options.addRealOption("length", "l", 30.0f);
+  cmd_options.addRealOption("length", "l", -1.0f);
   cmd_options.addStringOption("plugin", "p", EMPTYSTRING);
   cmd_options.addStringOption("wekafile", "w", EMPTYSTRING);
   cmd_options.addStringOption("extractor", "e", EMPTYSTRING);
