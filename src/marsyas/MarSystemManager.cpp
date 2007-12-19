@@ -338,23 +338,6 @@ MarSystemManager::MarSystemManager()
 
 
 
-  // WindowedSoundFileSource 
-  MarSystem* wsrc = create("Series", "wsrc");
-  wsrc->addMarSystem(create("SoundFileSource", "src"));
-  wsrc->addMarSystem(create("ShiftInput", "si"));
-
-  
-  wsrc->linkctrl("mrs_natural/winSize", "ShiftInput/si/mrs_natural/winSize");
-  wsrc->linkctrl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
-  wsrc->linkctrl("mrs_real/duration", "SoundFileSource/src/mrs_real/duration");
-  wsrc->linkctrl("mrs_natural/currentLabel", "SoundFileSource/src/mrs_natural/currentLabel");
-  wsrc->linkctrl("mrs_natural/nLabels", "SoundFileSource/src/mrs_natural/nLabels");
-  wsrc->linkctrl("mrs_string/filename", "SoundFileSource/src/mrs_string/filename");
-  wsrc->linkctrl("mrs_string/labelNames", "SoundFileSource/src/mrs_string/labelNames");
-  wsrc->linkctrl("mrs_string/currentlyPlaying", "SoundFileSource/src/mrs_string/currentlyPlaying");
-  wsrc->linkctrl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
-  registerPrototype("OverlapSoundFileSource", wsrc);
-  
 
   //--------------------------------------------------------------------------------
   // Stereo2Mono MarSystem 
@@ -401,6 +384,7 @@ MarSystemManager::MarSystemManager()
   registerPrototype("PowerSpectrumNet1", pspectpr1);
 
   
+  
 
 
   // STFT_features prototype 
@@ -415,16 +399,33 @@ MarSystemManager::MarSystemManager()
 
   // timbre_features prototype 
   MarSystem* timbre_features_pr = new Fanout("timbre_features_pr");
-  timbre_features_pr->addMarSystem(create("ZeroCrossings", "zcrs"));
+
+  // time domain branch 
+  MarSystem* timeDomainFeatures = create("Series", "timeDomain");
+  timeDomainFeatures->addMarSystem(create("ShiftInput", "si"));
+  MarSystem* tdf = create("Fanout", "tdf");
+  tdf->addMarSystem(create("ZeroCrossings", "zcrs"));
+  timeDomainFeatures->addMarSystem(tdf);
+  timbre_features_pr->addMarSystem(timeDomainFeatures);
+  
+  // FFT branch 
   MarSystem* spectralShape = create("Series", "spectralShape");
-  spectralShape->addMarSystem(create("PowerSpectrumNet1", "powerSpect"));
+  spectralShape->addMarSystem(create("ShiftInput", "si"));
+  spectralShape->addMarSystem(create("Windowing", "hamming"));
+  spectralShape->addMarSystem(create("PowerSpectrumNet1", "powerSpect1"));
   MarSystem* spectrumFeatures = create("STFT_features", "spectrumFeatures");
   spectralShape->addMarSystem(spectrumFeatures);
   timbre_features_pr->addMarSystem(spectralShape);
+  
+  timbre_features_pr->linkctrl("mrs_natural/winSize", "Series/timeDomain/ShiftInput/si/mrs_natural/winSize");
+  timbre_features_pr->linkctrl("mrs_natural/winSize", "Series/spectralShape/ShiftInput/si/mrs_natural/winSize");
 
-  timbre_features_pr->linkctrl("mrs_natural/winSize", "Series/spectralShape/PowerSpectrumNet/powerSpect/mrs_natural/winSize");
-  timbre_features_pr->linkctrl("mrs_string/enableChild", "Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/enableChild");
-  timbre_features_pr->linkctrl("mrs_string/disableChild", "Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/disableChild");
+  
+  timbre_features_pr->linkctrl("mrs_string/enableSPChild", "Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/enableChild");
+  timbre_features_pr->linkctrl("mrs_string/enableTDChild", 
+			       "Series/timeDomain/Fanout/tdf/mrs_string/enableChild");
+  timbre_features_pr->linkctrl("mrs_string/disableSPChild", "Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/disableChild");  
+  timbre_features_pr->linkctrl("mrs_string/disableTDChild", "Series/timeDomain/Fanout/tdf/mrs_string/disableChild");
 
   registerPrototype("TimbreFeatures", timbre_features_pr);
 

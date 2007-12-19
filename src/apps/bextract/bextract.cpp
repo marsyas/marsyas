@@ -1931,36 +1931,36 @@ selectClassifier(MarSystem *msys,string classifierName )
 void 
 selectFeatureSet(MarSystem *featExtractor)
 {
-  featExtractor->updctrl("mrs_string/disableChild", "all");
-
-  featExtractor->updctrl("mrs_string/disableChild", "ZeroCrossings/zcrs");
+  featExtractor->updctrl("mrs_string/disableSPChild", "all");
+  featExtractor->updctrl("mrs_string/disableTDChild", "all");
+  
   if (mfcc_) 
-    featExtractor->updctrl("mrs_string/enableChild", "MFCC/mfcc");
+    featExtractor->updctrl("mrs_string/enableSPChild", "MFCC/mfcc");
   if (sfm_) 
-    featExtractor->updctrl("mrs_string/enableChild", "SFM/sfm");
+    featExtractor->updctrl("mrs_string/enableSPChild", "SFM/sfm");
   if (scf_) 
-    featExtractor->updctrl("mrs_string/enableChild", "SCF/scf");
+    featExtractor->updctrl("mrs_string/enableSPChild", "SCF/scf");
   if (rlf_)
-    featExtractor->updctrl("mrs_string/enableChild", "Rolloff/rlf");
+    featExtractor->updctrl("mrs_string/enableSPChild", "Rolloff/rlf");
   if (flx_)
-    featExtractor->updctrl("mrs_string/enableChild", "Flux/flux");
+    featExtractor->updctrl("mrs_string/enableSPChild", "Flux/flux");
   if (ctd_) 
-    featExtractor->updctrl("mrs_string/enableChild", "Centroid/cntrd");
+    featExtractor->updctrl("mrs_string/enableSPChild", "Centroid/cntrd");
   if (zcrs_) 
-    featExtractor->updctrl("mrs_string/enableChild", "ZeroCrossings/zcrs");
+    featExtractor->updctrl("mrs_string/enableTDChild", "ZeroCrossings/zcrs");
   if (spectralFeatures_) 
     {
-      featExtractor->updctrl("mrs_string/enableChild", "Centroid/cntrd");
-      featExtractor->updctrl("mrs_string/enableChild", "Flux/flux");
-      featExtractor->updctrl("mrs_string/enableChild", "Rolloff/rlf");
+      featExtractor->updctrl("mrs_string/enableSPChild", "Centroid/cntrd");
+      featExtractor->updctrl("mrs_string/enableSPChild", "Flux/flux");
+      featExtractor->updctrl("mrs_string/enableSPChild", "Rolloff/rlf");
     }
   if (timbralFeatures_) 
     {
-      featExtractor->updctrl("mrs_string/enableChild", "ZeroCrossings/zcrs");
-      featExtractor->updctrl("mrs_string/enableChild", "MFCC/mfcc");
-      featExtractor->updctrl("mrs_string/enableChild", "Centroid/cntrd");
-      featExtractor->updctrl("mrs_string/enableChild", "Flux/flux");
-      featExtractor->updctrl("mrs_string/enableChild", "Rolloff/rlf");
+      featExtractor->updctrl("mrs_string/enableTDChild", "ZeroCrossings/zcrs");
+      featExtractor->updctrl("mrs_string/enableSPChild", "MFCC/mfcc");
+      featExtractor->updctrl("mrs_string/enableSPChild", "Centroid/cntrd");
+      featExtractor->updctrl("mrs_string/enableSPChild", "Flux/flux");
+      featExtractor->updctrl("mrs_string/enableSPChild", "Rolloff/rlf");
     }
   
 }
@@ -1974,12 +1974,11 @@ bextract_train_refactored(string pluginName,  string wekafname,
   cout << "BEXTRACT REFACTORED" << endl;
   
   MarSystemManager mng;
-
   // Build the overall feature calculation network 
   MarSystem* featureNetwork = mng.create("Series", "featureNetwork");
   
   // Windowed SoundFileSource with hopSize and winSize 
-  MarSystem *src = mng.create("OverlapSoundFileSource", "src");
+  MarSystem *src = mng.create("SoundFileSource", "src");
   featureNetwork->addMarSystem(src);
   
   // create audio sink and mute it it is stored in the output plugin 
@@ -1990,8 +1989,6 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	  dest->updctrl("mrs_bool/mute", true);
 	  featureNetwork->addMarSystem(dest);
   }
-  // window after audio playback to avoid artifacts 
-  featureNetwork->addMarSystem(mng.create("Windowing", "hamming"));
   
   // Select feature set(s) to use 
   MarSystem* featExtractor = mng.create("TimbreFeatures", "featExtractor");
@@ -2001,7 +1998,6 @@ bextract_train_refactored(string pluginName,  string wekafname,
   // texture statistics 
   featureNetwork->addMarSystem(mng.create("TextureStats", "tStats"));
   featureNetwork->updctrl("TextureStats/tStats/mrs_natural/memSize", memSize);
-
   
   // labeling, weka output, classifier and confidence for real-time output 
   featureNetwork->addMarSystem(mng.create("Annotator", "annotator"));
@@ -2010,57 +2006,46 @@ bextract_train_refactored(string pluginName,  string wekafname,
   featureNetwork->addMarSystem(mng.create("Classifier", "cl"));
   featureNetwork->addMarSystem(mng.create("Confidence", "confidence"));
 
-  
-
   // link controls
   featureNetwork->linkctrl("mrs_string/filename", 
-			   "OverlapSoundFileSource/src/mrs_string/filename");
-  featureNetwork->linkctrl("mrs_bool/notEmpty", "OverlapSoundFileSource/src/mrs_bool/notEmpty");
-  featureNetwork->linkctrl("mrs_natural/pos", "OverlapSoundFileSource/src/mrs_natural/pos");
+			   "SoundFileSource/src/mrs_string/filename");
+  featureNetwork->linkctrl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+  featureNetwork->linkctrl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
 
   featureNetwork->linkctrl("mrs_bool/initAudio", "AudioSink/dest/mrs_bool/initAudio");
 
   // link confidence and annotation with SoundFileSource that plays the collection 
   featureNetwork->linkctrl("Confidence/confidence/mrs_string/fileName", 
-						   "OverlapSoundFileSource/src/mrs_string/currentlyPlaying");
+						   "SoundFileSource/src/mrs_string/currentlyPlaying");
   featureNetwork->linkctrl("Annotator/annotator/mrs_natural/label",
-						   "OverlapSoundFileSource/src/mrs_natural/currentLabel");
+						   "SoundFileSource/src/mrs_natural/currentLabel");
   
   // links with WekaSink
   if (wekafname != EMPTYSTRING)
     {
       featureNetwork->linkctrl("Confidence/confidence/mrs_string/labelNames",  
 			       "WekaSink/wsink/mrs_string/labelNames");
-      featureNetwork->linkctrl("OverlapSoundFileSource/src/mrs_natural/nLabels", 
+      featureNetwork->linkctrl("SoundFileSource/src/mrs_natural/nLabels", 
 			       "WekaSink/wsink/mrs_natural/nLabels");
     }
   
   // src has to be configured with hopSize frame length in case a ShiftInput
   // is used in the feature extraction network
   featureNetwork->updctrl("mrs_natural/inSamples", hopSize);
-  featureNetwork->updctrl("OverlapSoundFileSource/src/mrs_natural/winSize", 
-						  winSize);
+  featureNetwork->updctrl("TimbreFeatures/featExtractor/mrs_natural/winSize", 
+			  winSize);
   if (start > 0.0) 
 	  offset = (mrs_natural) (start * src->getctrl("mrs_real/israte")->to<mrs_real>());
-  featureNetwork->updctrl("OverlapSoundFileSource/src/mrs_natural/pos", 
+  featureNetwork->updctrl("SoundFileSource/src/mrs_natural/pos", 
 						  offset);      
-
-
-  cout << "length = " << length << endl;
-  featureNetwork->updctrl("OverlapSoundFileSource/src/mrs_real/duration", 
+  featureNetwork->updctrl("SoundFileSource/src/mrs_real/duration", 
 						  length);
 
   // confidence is silent during training
   featureNetwork->updctrl("Confidence/confidence/mrs_bool/mute", true);
   featureNetwork->updctrl("Confidence/confidence/mrs_bool/print",true);
   
-  // setup WekaSink 
-  if (wekafname != EMPTYSTRING)
-    {
-      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
-      featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  			
-    }
-
+  
   // select classifier to be used 
   selectClassifier(featureNetwork, classifierName);
   
@@ -2068,6 +2053,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
   // based on the command-line arguments 
   featureNetwork->updctrl("mrs_string/filename", "bextract_single.mf");
   
+
   // play sound if playback is enabled 
   if (pluginName != EMPTYSTRING && playback) 
   {
@@ -2078,17 +2064,24 @@ bextract_train_refactored(string pluginName,  string wekafname,
   // don't use linkctrl so that only value is copied once and linking doesn't 
   // remain for the plugin 
   featureNetwork->updctrl("Confidence/confidence/mrs_string/labelNames", 
-			  featureNetwork->getctrl("OverlapSoundFileSource/src/mrs_string/labelNames"));
+			  featureNetwork->getctrl("SoundFileSource/src/mrs_string/labelNames"));
   featureNetwork->updctrl("Classifier/cl/mrs_natural/nClasses", 
-			  featureNetwork->getctrl("OverlapSoundFileSource/src/mrs_natural/nLabels"));
+			  featureNetwork->getctrl("SoundFileSource/src/mrs_natural/nLabels"));
   featureNetwork->updctrl("Confidence/confidence/mrs_natural/nLabels", 
-			  featureNetwork->getctrl("OverlapSoundFileSource/src/mrs_natural/nLabels"));
+			  featureNetwork->getctrl("SoundFileSource/src/mrs_natural/nLabels"));
+
+  // setup WekaSink - has to be done after all updates so that changes are correctly 
+  // written to file
+  if (wekafname != EMPTYSTRING)
+    {
+      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
+      featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  			
+    }
+
   
-
-
   // main processing loop for training
   MarControlPtr ctrl_notEmpty = featureNetwork->getctrl("mrs_bool/notEmpty");
-  MarControlPtr ctrl_currentlyPlaying = featureNetwork->getctrl("OverlapSoundFileSource/src/mrs_string/currentlyPlaying");
+  MarControlPtr ctrl_currentlyPlaying = featureNetwork->getctrl("SoundFileSource/src/mrs_string/currentlyPlaying");
   mrs_string previouslyPlaying, currentlyPlaying;
 
   while (ctrl_notEmpty->to<mrs_bool>())
@@ -2128,6 +2121,27 @@ bextract_train_refactored(string pluginName,  string wekafname,
     {
       ofstream oss(pluginName.c_str());
       oss << (*featureNetwork) << endl;
+    }
+
+
+  // predict optional test collection 
+
+  if (testCollection != EMPTYSTRING) 
+    {
+      cout << "bextract_train_refactored: predicting test collection: " << testCollection << endl;
+
+      featureNetwork->updctrl("mrs_string/filename", testCollection);
+      
+      while (ctrl_notEmpty->to<mrs_bool>())
+	{
+	  currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
+	  if (currentlyPlaying != previouslyPlaying) 
+	    cout << "Processing : " << currentlyPlaying << endl;
+	  
+	  featureNetwork->tick();
+	  previouslyPlaying = currentlyPlaying;
+	  
+	}
     }
   
 }
