@@ -513,7 +513,7 @@ PeakConvert::myProcess(realvec& in, realvec& out)
 				pkViewOut(i, peakView::pkDeltaFrequency, f) = deltafrequency_((mrs_natural) index_(i));
 				pkViewOut(i, peakView::pkDeltaAmplitude, f) = deltamag_((mrs_natural) index_(i));
 				pkViewOut(i, peakView::pkFrame, f) = frame_; 
-				pkViewOut(i, peakView::pkGroup, f) = 0.0;
+				pkViewOut(i, peakView::pkGroup, f) = 0.0; //This should be -1!!!! [TODO]
 				pkViewOut(i, peakView::pkVolume, f) = 1.0;
 				pkViewOut(i, peakView::pkBinLow, f) = interval_(2*i);
 				pkViewOut(i, peakView::pkBin, f) = index_(i);

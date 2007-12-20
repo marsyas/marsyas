@@ -55,6 +55,7 @@ private:
 	MarControlPtr ctrl_useGroups_;
 	MarControlPtr ctrl_delta_;
 
+	mrs_natural nextGroup_;
 	realvec memory_;
 	realvec tmp_;
 
