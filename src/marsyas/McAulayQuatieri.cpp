@@ -120,10 +120,10 @@ McAulayQuatieri::myProcess(realvec& in, realvec& out)
 	//get the trackID for any future track to be born (in STEP 3 - see below)
 	nextTrack = tmpPeakView.getFrameNumPeaks(0);
 
-		//iterate over input frames
+	//iterate over input frames
 	for(mrs_natural k=0; k < tmpPeakView.getNumFrames()-1; ++k)
 	{
-		lastMatched = 0;
+		lastMatched = -1;
 
 		//iterate over peaks in current frame
 		for(mrs_natural n = 0; n < tmpPeakView.getFrameNumPeaks(k); ++n)

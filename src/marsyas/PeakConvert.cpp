@@ -360,7 +360,11 @@ PeakConvert::myProcess(realvec& in, realvec& out)
 
 	for(mrs_natural f=0 ; f < inSamples_; ++f)
 	{
-		if(frame_ >= skip_) //[WTF][?]
+		//we should avoid the first empty frames, 
+		//that will contain silence and consequently create 
+		//discontinuities in the signal, ruining the peak calculation!
+		//only process if we have a full data vector (i.e. no zeros)
+		if(frame_ >= skip_) 
 		{
 			// handle amplitudes from shifted spectrums at input
 			for (o=0; o < size_; o++)
@@ -522,7 +526,7 @@ PeakConvert::myProcess(realvec& in, realvec& out)
 					pkViewOut(i, peakView::pkPan, f) = 0.0;
 			}
 		}
-		else //if not yet reached "skip" number of frames... //[WTF][?]
+		else //if not yet reached "skip" number of frames...
 		{
 			for(mrs_natural i=0; i< frameMaxNumPeaks_; ++i)
 			{
