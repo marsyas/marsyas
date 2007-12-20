@@ -58,6 +58,7 @@ namespace Marsyas
 		
 		mrs_natural frameMaxNumPeaks_;
 		mrs_natural numFrames_;
+		mrs_natural numGroups_;
 
 	public:
 
@@ -71,9 +72,11 @@ namespace Marsyas
 		mrs_natural getFrameSize() const {return frameSize_;};
 
 		mrs_natural getNumFrames() const {return numFrames_;};
+		mrs_natural getNumGroups();
+
 		mrs_natural getFrameMaxNumPeaks() const {return frameMaxNumPeaks_;};
-		mrs_natural getFrameNumPeaks(const mrs_natural frame=0) const;
-		mrs_natural getTotalNumPeaks() const;
+		mrs_natural getFrameNumPeaks(const mrs_natural frame=0, const mrs_natural group=-1) const;
+		mrs_natural getTotalNumPeaks(const mrs_natural group=-1) const;
 		
 		void getPeaksParam(std::vector<realvec>& result, const pkParameter param, mrs_natural startFrame = 0, mrs_natural endFrame = 0) const;
 		

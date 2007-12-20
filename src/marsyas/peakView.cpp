@@ -27,6 +27,7 @@ peakView::peakView(realvec& vec): vec_(vec)
 	//max number of peaks in each frame
 	frameMaxNumPeaks_ = vec_.getRows() / nbPkParameters;
 	numFrames_ = vec_.getCols();
+	numGroups_ = -1;
 }
 
 peakView::~peakView()
@@ -34,29 +35,61 @@ peakView::~peakView()
 
 }
 
-mrs_natural 
-peakView::getFrameNumPeaks(const mrs_natural frame) const
+mrs_natural
+peakView::getNumGroups()
 {
-	//count the number of detected peaks in the frame
-	//
-	//"peaks" with freq == 0 are considered non-existent
-	//so just count peaks until we get the first "peak" with freq!=0
-	mrs_natural p;
-	for(p=0; p < frameMaxNumPeaks_; ++p)
+	if(numGroups_ != -1) //use cached value
+		return numGroups_;
+
+	for(mrs_natural f=0; f < numFrames_; ++f)
+		for(mrs_natural p = 0; p < this->getFrameNumPeaks(f); ++p)
+		{
+			if((*this)(p, pkGroup, f) > numGroups_)
+				numGroups_ = (mrs_natural)(*this)(p, pkGroup, f);
+		}
+	numGroups_++;
+	return numGroups_;
+}
+
+mrs_natural 
+peakView::getFrameNumPeaks(const mrs_natural frame, const mrs_natural group) const
+{
+	if(group==-1)//ignore group information
 	{
-		if((*this)(p, pkFrequency, frame) == 0)
-			return p;
+		//count the number of detected peaks in the frame
+		//
+		//"peaks" with freq == 0 are considered non-existent
+		//so just count peaks until we get the first "peak" with freq!=0
+		mrs_natural p;
+		for(p=0; p < frameMaxNumPeaks_; ++p)
+		{
+			if((*this)(p, pkFrequency, frame) == 0)
+				return p;
+		}
+		return frameMaxNumPeaks_;
 	}
-	return frameMaxNumPeaks_;
+	else //count peaks from "group" that exist in "frame"
+	{
+		mrs_natural numPeaks = 0;
+		for(mrs_natural p = 0; p < frameMaxNumPeaks_; ++p)
+		{
+			if((*this)(p, pkFrequency, frame) == 0)
+				return numPeaks;
+
+			if((*this)(p, pkGroup, frame) == group)
+				numPeaks++;
+		}
+		return numPeaks;
+	}
 }
 
 mrs_natural
-peakView::getTotalNumPeaks() const
+peakView::getTotalNumPeaks(const mrs_natural group) const
 {
 	mrs_natural numPeaks = 0;
 	for(mrs_natural f=0; f < numFrames_; ++f)
 	{
-		numPeaks += this->getFrameNumPeaks(f);
+		numPeaks += this->getFrameNumPeaks(f, group);
 	}
 	return numPeaks;
 }
