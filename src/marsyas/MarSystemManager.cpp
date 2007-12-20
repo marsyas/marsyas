@@ -361,6 +361,33 @@ MarSystemManager::MarSystemManager()
   textureStatspr->linkctrl("mrs_bool/reset", "Memory/mempr/mrs_bool/reset");
   registerPrototype("TextureStats", textureStatspr);
 
+
+  //--------------------------------------------------------------------------------
+  // LPC composite prototype
+  //--------------------------------------------------------------------------------
+  MarSystem* LPCnetpr = new Series("lpcnetpr");
+  // create and configure the pre-emphasis filter as a FIR:
+  // H(z) = 1 + aZ-1 ; a = -0.97
+  LPCnetpr->addMarSystem(create("Filter", "preEmph"));
+  realvec ncoeffs(2);
+  realvec dcoeffs(1);
+  ncoeffs(0) = 1.0;
+  ncoeffs(1) = -0.97;
+  dcoeffs(0) = 1.0;
+  LPCnetpr->updctrl("Filter/preEmph/mrs_realvec/ncoeffs", ncoeffs);
+  LPCnetpr->updctrl("Filter/preEmph/mrs_realvec/dcoeffs", dcoeffs);
+  LPCnetpr->addMarSystem(create("ShiftInput", "si"));
+  LPCnetpr->addMarSystem(create("Windowing", "ham"));
+  LPCnetpr->addMarSystem(create("LPC", "lpc"));
+  LPCnetpr->linkctrl("mrs_realvec/preEmphFIR","Filter/preEmph/mrs_realvec/ncoeffs");
+  LPCnetpr->linkctrl("mrs_natural/winSize","ShiftInput/si/mrs_natural/winSize");
+  LPCnetpr->linkctrl("mrs_natural/order","LPC/lpc/mrs_natural/order");
+  LPCnetpr->linkctrl("mrs_real/lambda","LPC/lpc/mrs_real/lambda");
+  LPCnetpr->linkctrl("mrs_real/gamma","LPC/lpc/mrs_real/gamma");
+  registerPrototype("LPCnet", LPCnetpr);
+
+
+
   //--------------------------------------------------------------------------------
   // Power spectrum composite prototype
   //--------------------------------------------------------------------------------
@@ -374,7 +401,7 @@ MarSystemManager::MarSystemManager()
   pspectpr->linkctrl("mrs_real/cutoff","Spectrum/spk/mrs_real/cutoff");
   pspectpr->linkctrl("mrs_natural/winSize","ShiftInput/si/mrs_natural/winSize");  registerPrototype("PowerSpectrumNet", pspectpr);
 
-
+  
   MarSystem* pspectpr1 = create("Series", "pspectpr1");
   pspectpr1->addMarSystem(create("Spectrum","spk"));
   pspectpr1->updctrl("Spectrum/spk/mrs_real/cutoff", 1.0);
@@ -382,10 +409,6 @@ MarSystemManager::MarSystemManager()
   pspectpr1->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","power");
   pspectpr1->linkctrl("mrs_real/cutoff","Spectrum/spk/mrs_real/cutoff");
   registerPrototype("PowerSpectrumNet1", pspectpr1);
-
-  
-  
-
 
   // STFT_features prototype 
   MarSystem* stft_features_pr = create("Fanout", "stft_features_pr");
@@ -416,43 +439,58 @@ MarSystemManager::MarSystemManager()
   MarSystem* spectrumFeatures = create("STFT_features", "spectrumFeatures");
   spectralShape->addMarSystem(spectrumFeatures);
   timbre_features_pr->addMarSystem(spectralShape);
-  
-  timbre_features_pr->linkctrl("mrs_natural/winSize", "Series/timeDomain/ShiftInput/si/mrs_natural/winSize");
-  timbre_features_pr->linkctrl("mrs_natural/winSize", "Series/spectralShape/ShiftInput/si/mrs_natural/winSize");
 
+  // LPC branch 
+  MarSystem* lpcFeatures = create("Series", "lpcFeatures");
+  lpcFeatures->addMarSystem(create("Filter", "preEmph"));
+  lpcFeatures->updctrl("Filter/preEmph/mrs_realvec/ncoeffs", ncoeffs);
+  lpcFeatures->updctrl("Filter/preEmph/mrs_realvec/dcoeffs", dcoeffs);
+  lpcFeatures->addMarSystem(create("ShiftInput", "si"));
+  lpcFeatures->addMarSystem(create("Windowing", "ham"));
+  
+  MarSystem* lpcf = create("Fanout", "lpcf");
+  
+  MarSystem* lspbranch = create("Series", "lspbranch");
+  MarSystem* lpccbranch = create("Series","lpccbranch");
+  
+  lspbranch->addMarSystem(create("LPC", "lpc"));
+  lspbranch->updctrl("LPC/lpc/mrs_natural/order", 18);
+  lspbranch->addMarSystem(create("LSP", "lsp"));
+  
+  lpccbranch->addMarSystem(create("LPC", "lpc"));
+  lpccbranch->updctrl("LPC/lpc/mrs_natural/order", 12);
+  lpccbranch->addMarSystem(create("LPCC", "lpcc"));
+  
+  
+  lpcf->addMarSystem(lspbranch);
+  lpcf->addMarSystem(lpccbranch);
+  lpcFeatures->addMarSystem(lpcf);
+  timbre_features_pr->addMarSystem(lpcFeatures);
+  
+
+  
+  timbre_features_pr->linkctrl("mrs_natural/winSize","Series/timeDomain/ShiftInput/si/mrs_natural/winSize");
+  timbre_features_pr->linkctrl("mrs_natural/winSize","Series/spectralShape/ShiftInput/si/mrs_natural/winSize");
+  timbre_features_pr->linkctrl("mrs_natural/winSize","Series/lpcFeatures/ShiftInput/si/mrs_natural/winSize");
+  
   
   timbre_features_pr->linkctrl("mrs_string/enableSPChild", "Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/enableChild");
   timbre_features_pr->linkctrl("mrs_string/enableTDChild", 
 			       "Series/timeDomain/Fanout/tdf/mrs_string/enableChild");
+  timbre_features_pr->linkctrl("mrs_string/enableLPCChild", 
+							   "Series/lpcFeatures/Fanout/lpcf/mrs_string/enableChild");
+  
   timbre_features_pr->linkctrl("mrs_string/disableSPChild", "Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/disableChild");  
   timbre_features_pr->linkctrl("mrs_string/disableTDChild", "Series/timeDomain/Fanout/tdf/mrs_string/disableChild");
+  timbre_features_pr->linkctrl("mrs_string/disableLPCChild", 
+							   "Series/lpcFeatures/Fanout/lpcf/mrs_string/disableChild");
+
+  
+
 
   registerPrototype("TimbreFeatures", timbre_features_pr);
 
 
-  //--------------------------------------------------------------------------------
-  // LPC composite prototype
-  //--------------------------------------------------------------------------------
-  MarSystem* LPCnetpr = new Series("lpcnetpr");
-  // create and configure the pre-emphasis filter as a FIR:
-  // H(z) = 1 + aZ-1 ; a = -0.97
-  LPCnetpr->addMarSystem(create("Filter", "preEmph"));
-  realvec ncoeffs(2);
-  realvec dcoeffs(1);
-  ncoeffs(0) = 1.0;
-  ncoeffs(1) = -0.97;
-  dcoeffs(0) = 1.0;
-  LPCnetpr->updctrl("Filter/preEmph/mrs_realvec/ncoeffs", ncoeffs);
-  LPCnetpr->updctrl("Filter/preEmph/mrs_realvec/dcoeffs", dcoeffs);
-  LPCnetpr->addMarSystem(create("ShiftInput", "si"));
-  LPCnetpr->addMarSystem(create("Windowing", "ham"));
-  LPCnetpr->addMarSystem(create("LPC", "lpc"));
-  LPCnetpr->linkctrl("mrs_realvec/preEmphFIR","Filter/preEmph/mrs_realvec/ncoeffs");
-  LPCnetpr->linkctrl("mrs_natural/winSize","ShiftInput/si/mrs_natural/winSize");
-  LPCnetpr->linkctrl("mrs_natural/order","LPC/lpc/mrs_natural/order");
-  LPCnetpr->linkctrl("mrs_real/lambda","LPC/lpc/mrs_real/lambda");
-  LPCnetpr->linkctrl("mrs_real/gamma","LPC/lpc/mrs_real/gamma");
-  registerPrototype("LPCnet", LPCnetpr);
 
   //--------------------------------------------------------------------------------
   // Phase Vocoder composite prototype

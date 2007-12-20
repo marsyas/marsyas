@@ -59,6 +59,9 @@ mrs_bool scf_ = false;
 mrs_bool ctd_ = false;
 mrs_bool rlf_ = false;
 mrs_bool flx_ = false;
+mrs_bool lsp_ = false;
+mrs_bool lpcc_ = false;
+
 mrs_bool spectralFeatures_ = false;
 mrs_bool zcrs_ = false;
 mrs_bool timbralFeatures_ = false;
@@ -1931,38 +1934,43 @@ selectClassifier(MarSystem *msys,string classifierName )
 void 
 selectFeatureSet(MarSystem *featExtractor)
 {
-  featExtractor->updctrl("mrs_string/disableSPChild", "all");
-  featExtractor->updctrl("mrs_string/disableTDChild", "all");
-  
-  if (mfcc_) 
-    featExtractor->updctrl("mrs_string/enableSPChild", "MFCC/mfcc");
-  if (sfm_) 
-    featExtractor->updctrl("mrs_string/enableSPChild", "SFM/sfm");
-  if (scf_) 
-    featExtractor->updctrl("mrs_string/enableSPChild", "SCF/scf");
-  if (rlf_)
-    featExtractor->updctrl("mrs_string/enableSPChild", "Rolloff/rlf");
-  if (flx_)
-    featExtractor->updctrl("mrs_string/enableSPChild", "Flux/flux");
-  if (ctd_) 
-    featExtractor->updctrl("mrs_string/enableSPChild", "Centroid/cntrd");
-  if (zcrs_) 
-    featExtractor->updctrl("mrs_string/enableTDChild", "ZeroCrossings/zcrs");
-  if (spectralFeatures_) 
+	featExtractor->updctrl("mrs_string/disableSPChild", "all");
+	featExtractor->updctrl("mrs_string/disableTDChild", "all");
+	featExtractor->updctrl("mrs_string/disableLPCChild", "all");
+	
+	if (mfcc_) 
+		featExtractor->updctrl("mrs_string/enableSPChild", "MFCC/mfcc");
+	if (sfm_) 
+		featExtractor->updctrl("mrs_string/enableSPChild", "SFM/sfm");
+	if (scf_) 
+		featExtractor->updctrl("mrs_string/enableSPChild", "SCF/scf");
+	if (rlf_)
+		featExtractor->updctrl("mrs_string/enableSPChild", "Rolloff/rlf");
+	if (flx_)
+		featExtractor->updctrl("mrs_string/enableSPChild", "Flux/flux");
+	if (lsp_) 
+		featExtractor->updctrl("mrs_string/enableLPCChild", "Series/lspbranch");
+	if (lpcc_) 
+		featExtractor->updctrl("mrs_string/enableLPCChild", "Series/lpccbranch");
+	if (ctd_)
+		featExtractor->updctrl("mrs_string/enableSPChild", "Centroid/cntrd");
+	if (zcrs_) 
+		featExtractor->updctrl("mrs_string/enableTDChild", "ZeroCrossings/zcrs");
+	if (spectralFeatures_) 
     {
-      featExtractor->updctrl("mrs_string/enableSPChild", "Centroid/cntrd");
-      featExtractor->updctrl("mrs_string/enableSPChild", "Flux/flux");
-      featExtractor->updctrl("mrs_string/enableSPChild", "Rolloff/rlf");
+		featExtractor->updctrl("mrs_string/enableSPChild", "Centroid/cntrd");
+		featExtractor->updctrl("mrs_string/enableSPChild", "Flux/flux");
+		featExtractor->updctrl("mrs_string/enableSPChild", "Rolloff/rlf");
     }
-  if (timbralFeatures_) 
+	if (timbralFeatures_) 
     {
-      featExtractor->updctrl("mrs_string/enableTDChild", "ZeroCrossings/zcrs");
-      featExtractor->updctrl("mrs_string/enableSPChild", "MFCC/mfcc");
-      featExtractor->updctrl("mrs_string/enableSPChild", "Centroid/cntrd");
-      featExtractor->updctrl("mrs_string/enableSPChild", "Flux/flux");
-      featExtractor->updctrl("mrs_string/enableSPChild", "Rolloff/rlf");
+		featExtractor->updctrl("mrs_string/enableTDChild", "ZeroCrossings/zcrs");
+		featExtractor->updctrl("mrs_string/enableSPChild", "MFCC/mfcc");
+		featExtractor->updctrl("mrs_string/enableSPChild", "Centroid/cntrd");
+		featExtractor->updctrl("mrs_string/enableSPChild", "Flux/flux");
+		featExtractor->updctrl("mrs_string/enableSPChild", "Rolloff/rlf");
     }
-  
+	
 }
 
 
@@ -2498,6 +2506,9 @@ initOptions()
   cmd_options.addBoolOption("SpectralFlux","flx", false);
   cmd_options.addBoolOption("SpectralFeatures", "spfe", false);
   cmd_options.addBoolOption("ZeroCrossings", "zcrs", false);
+  cmd_options.addBoolOption("LinearSpectralPair", "lsp", false);
+  cmd_options.addBoolOption("LinearPredictionCepstralCoefficients", "lpcc", false);
+  
   cmd_options.addBoolOption("TimbralFeatures", "timbral", false);
 }
 
@@ -2533,6 +2544,9 @@ loadOptions()
   ctd_ = cmd_options.getBoolOption("SpectralCentroid");
   rlf_ = cmd_options.getBoolOption("SpectralRolloff");
   flx_ = cmd_options.getBoolOption("SpectralFlux");
+  lsp_ = cmd_options.getBoolOption("LinearSpectralPair");
+  lpcc_ = cmd_options.getBoolOption("LinearPredictionCepstralCoefficients");
+  
   spectralFeatures_ = cmd_options.getBoolOption("SpectralFeatures");
   zcrs_ = cmd_options.getBoolOption("ZeroCrossings");
   timbralFeatures_ = cmd_options.getBoolOption("TimbralFeatures");
@@ -2547,7 +2561,10 @@ loadOptions()
       (flx_ == false)  && 
       (spectralFeatures_ == false) &&
       (zcrs_ == false) &&
-      (timbralFeatures_ == false))
+      (timbralFeatures_ == false) &&
+	  (lsp_ == false) &&
+	  (lpcc_ == false))
+		  
     {
       timbralFeatures_ = true;
     }
