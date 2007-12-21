@@ -18,6 +18,7 @@
 
 #include "McAulayQuatieri.h"
 #include "peakView.h"
+#include "NumericLib.h"
 
 using namespace std;
 using namespace Marsyas;
@@ -260,7 +261,7 @@ McAulayQuatieri::myProcess(realvec& in, realvec& out)
 				for(c=0; c < matchScores.getCols(); ++ c)
 					matchScores(o,c) = maxScore - matchScores(o,c);
 
-			//NumericLib::hungarian(matchScores, assignedGrp); //!!!!!!!!!!!!!!! [TODO][!]
+			NumericLib::hungarianAssignment(matchScores, assignedGrp); //!!!!!!!!!!!!!!! [TODO][!]
 
 			// given the assignments, try to propagate the group IDs
 			// to the groups in the current input 

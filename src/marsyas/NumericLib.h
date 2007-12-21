@@ -253,6 +253,22 @@ private:
 	static mrs_real add(mrs_real *a, mrs_real *b);
 	static mrs_real pow_di(mrs_real *ap, mrs_natural *bp);
 
+	////////////////////////////////////////////////
+	//hungarianAssignemt private methods
+	////////////////////////////////////////////////
+	static mrs_real mxGetInf();
+	static bool mxIsInf(mrs_real s);
+	static void mxFree( void * s ); 
+	static void mexErrMsgTxt(const char * s); 
+	static void assignmentoptimal(mrs_natural *assignment, mrs_real *cost, mrs_real *distMatrix, mrs_natural nOfRows, mrs_natural nOfColumns);
+	static void buildassignmentvector(mrs_natural *assignment, bool *starMatrix, mrs_natural nOfRows, mrs_natural nOfColumns);
+	static void computeassignmentcost(mrs_natural *assignment, mrs_real *cost, mrs_real *distMatrix, mrs_natural nOfRows, mrs_natural nOfColumns);
+	static void step2a(mrs_natural *assignment, mrs_real *distMatrix, bool *starMatrix, bool *newStarMatrix, bool *primeMatrix, bool *coveredColumns, bool *coveredRows, mrs_natural nOfRows, mrs_natural nOfColumns, mrs_natural minDim);
+	static void step2b(mrs_natural *assignment, mrs_real *distMatrix, bool *starMatrix, bool *newStarMatrix, bool *primeMatrix, bool *coveredColumns, bool *coveredRows, mrs_natural nOfRows, mrs_natural nOfColumns, mrs_natural minDim);
+	static void step3 (mrs_natural *assignment, mrs_real *distMatrix, bool *starMatrix, bool *newStarMatrix, bool *primeMatrix, bool *coveredColumns, bool *coveredRows, mrs_natural nOfRows, mrs_natural nOfColumns, mrs_natural minDim);
+	static void step4 (mrs_natural *assignment, mrs_real *distMatrix, bool *starMatrix, bool *newStarMatrix, bool *primeMatrix, bool *coveredColumns, bool *coveredRows, mrs_natural nOfRows, mrs_natural nOfColumns, mrs_natural minDim, mrs_natural row, mrs_natural col);
+	static void step5 (mrs_natural *assignment, mrs_real *distMatrix, bool *starMatrix, bool *newStarMatrix, bool *primeMatrix, bool *coveredColumns, bool *coveredRows, mrs_natural nOfRows, mrs_natural nOfColumns, mrs_natural minDim);
+
 public:
 
 	NumericLib();
@@ -314,6 +330,12 @@ public:
 	//    'R' | 'r' --> approximation method : 1=rounding 0=chopping
 	//    'E' | 'e' --> eps
 	static double machp(const char *cmach);
+
+	//////////////////////////////////////////////////
+	//Hungarian assignment routine
+	//////////////////////////////////////////////////
+	static mrs_real hungarianAssignment(realvec& matrixdist, realvec& matrixAssign);
+
 };
 
 }//namespace Marsyas
