@@ -80,8 +80,8 @@ namespace Marsyas
 		
 		void getPeaksParam(std::vector<realvec>& result, const pkParameter param, mrs_natural startFrame = 0, mrs_natural endFrame = 0) const;
 		
-		mrs_real& operator()(const mrs_natural peakIndex, const pkParameter param, const mrs_natural frame=0);
-		mrs_real operator()(const mrs_natural peakIndex, const pkParameter param, const mrs_natural frame=0) const;
+		mrs_real& operator()(const mrs_natural peakIndex, const pkParameter param, const mrs_natural frame=0, const mrs_natural group=-1);
+		mrs_real operator()(const mrs_natural peakIndex, const pkParameter param, const mrs_natural frame=0, const mrs_natural group=-1) const;
 
 		static std::string getParamName(mrs_natural paramIdx);
 
@@ -90,15 +90,59 @@ namespace Marsyas
 	};
 
 	inline
-	mrs_real& peakView::operator()(const mrs_natural peakIndex, const pkParameter param, const mrs_natural frame)
+	mrs_real& peakView::operator()(const mrs_natural peakIndex, const pkParameter param, const mrs_natural frame, const mrs_natural group)
 	{
-		return vec_(peakIndex + param * frameMaxNumPeaks_, frame);
+		//if peakIndex is a global index (i.e. independent of the group)
+		//just return the corresponding parameter value
+		if(group == -1)
+			return vec_(peakIndex + param * frameMaxNumPeaks_, frame);
+		else
+		{
+			//if peakIndex is an index of a peak belonging to the passed group
+			//we have to convert it to the absolute (i.e. unrelated to any group) index first
+			mrs_natural gp = 0;
+			for(mrs_natural p = 0; p < this->getFrameNumPeaks(frame); ++p)
+			{
+				if(vec_(p + pkGroup * frameMaxNumPeaks_, frame) == group)
+				{
+					if(peakIndex == gp)
+						return vec_(p + param * frameMaxNumPeaks_, frame);
+					gp++;
+				}
+			}
+			//if the passed peakIndex does not exist in the passed group
+			//return an "invalid" value and issue an error...
+			MRSERR("peakView::operator() - peakIndex " << peakIndex << " not found in passed group " << group);
+			return vec_(peakIndex + param * frameMaxNumPeaks_, frame);
+		}
 	}
 
 	inline
-	mrs_real peakView::operator()(const mrs_natural peakIndex, const pkParameter param, const mrs_natural frame) const
+	mrs_real peakView::operator()(const mrs_natural peakIndex, const pkParameter param, const mrs_natural frame, const mrs_natural group) const
 	{
-		return vec_(peakIndex + param * frameMaxNumPeaks_, frame);
+		//if peakIndex is a global index (i.e. independent of the group)
+		//just return the corresponding parameter value
+		if(group == -1)
+			return vec_(peakIndex + param * frameMaxNumPeaks_, frame);
+		else
+		{
+			//if peakIndex is an index of a peak belonging to the passed group
+			//we have to convert it to the absolute (i.e. unrelated to any group) index first
+			mrs_natural gp = 0;
+			for(mrs_natural p = 0; p < this->getFrameNumPeaks(frame); ++p)
+			{
+				if(vec_(p + pkGroup * frameMaxNumPeaks_, frame) == group)
+				{
+					if(peakIndex == gp)
+						return vec_(p + param * frameMaxNumPeaks_, frame);
+					gp++;
+				}
+			}
+			//if the passed peakIndex does not exist in the passed group
+			//return a "dummy" value and issue an error...
+			MRSERR("peakView::operator() - peakIndex " << peakIndex << " not found in passed group " << group);
+			return -1.0;
+		}
 	}
 
 }//namespace Marsyas
