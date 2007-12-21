@@ -34,6 +34,7 @@ McAulayQuatieri::McAulayQuatieri(const McAulayQuatieri& a) : MarSystem(a)
 	ctrl_useGroups_ = getctrl("mrs_bool/useGroups");
 	ctrl_useMemory_ = getctrl("mrs_bool/useMemory");
 	ctrl_delta_ = getctrl("mrs_real/delta");
+	ctrl_matchThres_ = getctrl("mrs_real/matchThres");
 
 	nextGroup_ = a.nextGroup_;
 }
@@ -61,6 +62,7 @@ McAulayQuatieri::addControls()
 	//setctrlState("mrs_bool/useGroups", true);
 
 	addctrl("mrs_real/delta", 0.5); //[TODO][!]
+	addctrl("mrs_real/matchThres", 0.5);//[TODO][!]
 }
 
 void
@@ -73,25 +75,119 @@ McAulayQuatieri::myUpdate(MarControlPtr sender)
  	if(ctrl_reset_->to<mrs_bool>())
  	{
  		ctrl_reset_->setValue(false, NOUPDATE);
- 		memory_.stretch(0);
+ 		memory_.stretch(0,0);
 		nextGroup_ = 0;
  	}
+}
+
+mrs_real
+McAulayQuatieri::peakTrack(realvec& vec, mrs_natural frame, mrs_natural grp1, mrs_natural grp2)
+{
+	mrs_real dist;
+	mrs_natural candidate;
+	mrs_natural lastMatched = -1;
+	mrs_natural matchedTracks = 0;
+
+	mrs_real delta = ctrl_delta_->to<mrs_real>();
+
+	if(frame+1 >= vec.getCols())
+	{
+		MRSERR("McAulayQuatieri::peakTrack - frame index is bigger than the input vector!");
+		return -1.0;
+	}
+
+	peakView tmpPeakView(vec);
+
+	//get the trackID for any future track to be born (in STEP 3 - see below)
+	mrs_natural nextTrack = tmpPeakView.getFrameNumPeaks(0, grp1);
+
+	//iterate over peaks in current frame
+	for(mrs_natural n = 0; n < tmpPeakView.getFrameNumPeaks(frame, grp1); ++n)
+	{
+		mrs_real lastdist = MAXREAL;
+		candidate = -1;
+
+		// STEP 1
+		// find a candidate match on the next frame for each peak (i.e. track) in current frame
+		for(mrs_natural m = lastMatched + 1; m < tmpPeakView.getFrameNumPeaks(frame+1, grp2); ++m)
+		{
+			//set track parameter of all peaks of next frame to -1 so we know later
+			//which ones were not matched (=> BIRTH of new tracks)
+			tmpPeakView(m, peakView::pkTrack, frame+1, grp2) = -1.0;
+
+			dist = abs(tmpPeakView(n, peakView::pkFrequency, frame, grp1) - tmpPeakView(m, peakView::pkFrequency, frame+1, grp2));
+			if (dist < delta && dist < lastdist)
+			{
+				//found a candidate!
+				lastdist  = dist;
+				candidate = m;
+			}
+		}
+
+		// STEP 2
+		// must confirm candidate (if any)
+		if(candidate >= 0) //check if a candidate was found
+		{
+			//confirm if this is not the last peak in current frame
+			if(n < tmpPeakView.getFrameNumPeaks(frame, grp1)-1)
+			{
+				//check the next remaining peak in current frame and see if it is a better match for the found candidate
+				dist = abs(tmpPeakView(n+1, peakView::pkFrequency, frame, grp1) - tmpPeakView(candidate, peakView::pkFrequency, frame+1, grp2));
+				if(dist < lastdist)
+				{
+					// it is a better match! Check two additional conditions: 
+					// 1. an unmatched lower freq candidate should exist
+					// 2. it is inside the frequency interval specified by delta
+					if(candidate - 1 > lastMatched)
+					{
+						if(abs(tmpPeakView(n, peakView::pkFrequency, frame, grp1) - tmpPeakView(candidate-1, peakView::pkFrequency, frame+1, grp2)) < delta)
+						{
+							//found a peak to continue the track -> confirm candidate!
+							tmpPeakView(candidate-1, peakView::pkTrack, frame+1, grp2) = tmpPeakView(n, peakView::pkTrack, frame, grp1);
+							lastMatched = candidate-1;
+							matchedTracks++;
+						}
+					}
+				}
+				else
+				{
+					//no better match than this one, so confirm candidate!
+					tmpPeakView(candidate, peakView::pkTrack, frame+1, grp2) = tmpPeakView(n, peakView::pkTrack, frame, grp1);
+					lastMatched = candidate;
+					matchedTracks++;
+				}
+			}
+			else
+			{
+				//if this was the last peak in current frame, so inherently it was the best match.
+				//Candidate is therefore automatically confirmed and can be propagated.
+				tmpPeakView(candidate, peakView::pkTrack, frame+1, grp2) = tmpPeakView(n, peakView::pkTrack, frame, grp1);
+				lastMatched = candidate;
+				matchedTracks++;
+			}
+		}
+	} //end of loop on peaks of current frame
+
+	// STEP 3
+	// check for any unmatched peaks in the next frame and give BIRTH to new tracks!
+	for(mrs_natural m = 0; m < tmpPeakView.getFrameNumPeaks(frame+1, grp2); ++m)
+	{
+		if(tmpPeakView(m, peakView::pkTrack, frame+1, grp2) == -1.0)
+			tmpPeakView(m, peakView::pkTrack, frame+1, grp2) = nextTrack++; //BIRTH of new track
+	}
+
+	return matchedTracks;
 }
 
 void
 McAulayQuatieri::myProcess(realvec& in, realvec& out)
 {
-	mrs_real dist;
-	mrs_natural candidate;
-	mrs_natural lastMatched;
-	mrs_natural nextTrack;
 	realvec* outPtr;
-
-	mrs_real delta = ctrl_delta_->to<mrs_real>();
-
+	
 	out(o,t) = in(o,t);
 	
-	//if memory is not empty and set to be used...
+	//if we want to use memory and we already have data from
+	//past inputs (i.e. memory is not empty)...
 	if(ctrl_useMemory_->to<mrs_bool>() && memory_.getSize() != 0)
 	{
 		//concatenate memory column vector with current input
@@ -104,10 +200,21 @@ McAulayQuatieri::myProcess(realvec& in, realvec& out)
 				tmp_(o,c+1) = in(o,c);
 		outPtr = &tmp_;
 
+		//attempt matching of groups between the frame in memory
+		//and the first frame from current input
 		if(ctrl_useGroups_->to<mrs_bool>())
 		{
-			//Prepare for Group MATCHING
+			peakView inPV(in);
+			mrs_realvec inFirstFrame;
+			in.getCol(0, inFirstFrame);
+			peakView inFirstFramePV(inFirstFrame);
+			peakView memPV(memory_);
 			peakView tmpPV(tmp_);
+
+			//mrs_natural numInGroups = inPV.getNumGroups();
+			mrs_natural numInFirstFrameGroups = inFirstFramePV.getNumGroups();
+			mrs_natural numMemGroups = memPV.getNumGroups();
+			
 			//we must update the group numbers of the groups
 			//in tmp realvec (i.e. [mem|current input])
 			//so they do not clash with the previous ones
@@ -116,7 +223,78 @@ McAulayQuatieri::myProcess(realvec& in, realvec& out)
 					for(mrs_natural p = 0; p < tmpPV.getFrameNumPeaks(f); ++p)
 						tmpPV(p, peakView::pkGroup, f) = tmpPV(p, peakView::pkGroup, f) + nextGroup_;
 			
-			//must update nextGroup_ at the end !!!!!!!!! [TODO]
+			// Try matching previous groups (in memory from last input) 
+			// with groups in current input
+			
+			// create a tmp copy of the frame in memory and the first frame
+			// of current input, so we can do the group matching without
+			// destroying the input values
+			realvec frames2Match(inObservations_, 2);
+			
+			// calculate the matching score for all pairs of groups under matching
+			realvec matchScores(numInFirstFrameGroups, numMemGroups);
+			for(mrs_natural mg=0; mg < numMemGroups; ++mg)
+			{
+				for(mrs_natural ig = nextGroup_; ig < nextGroup_ + numInFirstFrameGroups; ++ig)
+				{
+					//since peakTrack(...) is destructible, we must reset frames2Match everytime... [!]
+					for(o=0; o<inObservations_; ++o)
+						for(c=0; c < 2; ++c)
+							frames2Match(o, c) = tmp_(o, c);
+
+					//use McAulay-Quatieri num of successful peak continuations as a score
+					//for the group matching (may be replaced by some other metric in future)
+					matchScores(ig-nextGroup_, mg) = peakTrack(frames2Match, 0, ig, mg);
+				}
+			}
+
+			//Given the matchScores, try to find the optimal assignment
+			//of the groups coming from previous input (stored in memory)
+			//and the new groups in the current input
+			//(using, for e.g. the hungarian method)
+			realvec assignedGrp(numInFirstFrameGroups);
+			
+			//convert matchScores to costs
+			mrs_real maxScore = matchScores.maxval();
+			for(o=0; o < matchScores.getRows(); ++o)
+				for(c=0; c < matchScores.getCols(); ++ c)
+					matchScores(o,c) = maxScore - matchScores(o,c);
+
+			//NumericLib::hungarian(matchScores, assignedGrp); //!!!!!!!!!!!!!!! [TODO][!]
+
+			// given the assignments, try to propagate the group IDs
+			// to the groups in the current input 
+			mrs_natural ig;
+			for(mrs_natural f=1; f < tmpPV.getNumFrames(); ++f)
+			{
+				for(mrs_natural p = 0; p < tmpPV.getFrameNumPeaks(f); ++p)
+				{
+					//get input group ID (converted to the range [0:...])
+					ig = (mrs_natural)(tmpPV(p, peakView::pkGroup, f)) - nextGroup_;
+
+					if(assignedGrp(ig) > -1) //a match was found for this group (ig)
+					{
+						//check if match is higher than the specified threshold
+						if((maxScore - matchScores(ig, (mrs_natural)assignedGrp(ig))) / memPV.getFrameNumPeaks(0,(mrs_natural)assignedGrp(ig)) > ctrl_matchThres_->to<mrs_real>())
+						{
+							//match confirmed --> propagate group ID
+							tmpPV(p, peakView::pkGroup, f) = assignedGrp(ig);
+						}
+						else //match below threshold --> set as new group
+						{
+							tmpPV(p, peakView::pkGroup, f) = nextGroup_;
+							assignedGrp(ig) = nextGroup_;
+							nextGroup_++;
+						}
+					}
+					else //no match found for this group! --> set as new group
+					{
+						tmpPV(p, peakView::pkGroup, f) = nextGroup_;
+						assignedGrp(ig) = nextGroup_;
+						nextGroup_++;
+					}
+				}
+			}
 		}
 	}
 	else
@@ -151,113 +329,32 @@ McAulayQuatieri::myProcess(realvec& in, realvec& out)
 			for(mrs_natural n = 0; n < tmpPeakView.getFrameNumPeaks(0, g); ++n)
 				tmpPeakView(n, peakView::pkTrack, 0) = (mrs_real) n;
 		}
-		
-		//get the trackID for any future track to be born (in STEP 3 - see below) !!!!!!!!!!!!!!!!!!!
-		nextTrack = tmpPeakView.getFrameNumPeaks(0, g);
 
-		//[TODO] MATCHING of groups from frame 0 and frame 1...
-
-		///////////////////////////////////////////////////////////////////////////////////////////////
 		//iterate over input frames
-		///////////////////////////////////////////////////////////////////////////////////////////////
-		for(mrs_natural k=0; k < tmpPeakView.getNumFrames()-1; ++k)
-		{
-			lastMatched = -1;
-
-			//iterate over peaks in current frame
-			for(mrs_natural n = 0; n < tmpPeakView.getFrameNumPeaks(k, g); ++n)
-			{
-				mrs_real lastdist = MAXREAL;
-				candidate = -1;
-
-				// STEP 1
-				// find a candidate match on the next frame for each peak (i.e. track) in current frame
-				for(mrs_natural m = lastMatched + 1; m < tmpPeakView.getFrameNumPeaks(k+1, g); ++m)
-				{
-					//set track parameter of all peaks of next frame to -1 so we know later
-					//which ones were not matched (=> BIRTH of new tracks)
-					tmpPeakView(m, peakView::pkTrack, k+1) = -1.0;
-
-					dist = abs(tmpPeakView(n, peakView::pkFrequency, k) - tmpPeakView(m, peakView::pkFrequency, k+1));
-					if (dist < delta && dist < lastdist)
-					{
-						//found a candidate!
-						lastdist  = dist;
-						candidate = m;
-					}
-				}
-
-				// STEP 2
-				// must confirm candidate (if any)
-				if(candidate >= 0) //check if a candidate was found
-				{
-					//confirm if this is not the last peak in current frame
-					if(n < tmpPeakView.getFrameNumPeaks(k, g)-1)
-					{
-						//check the next remaining peak in current frame and see if it is a better match for the found candidate
-						dist = abs(tmpPeakView(n+1, peakView::pkFrequency, k) - tmpPeakView(candidate, peakView::pkFrequency, k+1));
-						if(dist < lastdist)
-						{
-							// it is a better match! Check two additional conditions: 
-							// 1. an unmatched lower freq candidate should exist
-							// 2. it is inside the frequency interval specified by delta
-							if(candidate - 1 > lastMatched)
-							{
-								if(abs(tmpPeakView(n, peakView::pkFrequency, k) - tmpPeakView(candidate-1, peakView::pkFrequency, k+1)) < delta)
-								{
-									//found a peak to continue the track -> confirm candidate!
-									tmpPeakView(candidate-1, peakView::pkTrack, k+1) = tmpPeakView(n, peakView::pkTrack, k);
-									lastMatched = candidate-1;
-								}
-							}
-						}
-						else
-						{
-							//no better match than this one, so confirm candidate!
-							tmpPeakView(candidate, peakView::pkTrack, k+1) = tmpPeakView(n, peakView::pkTrack, k);
-							lastMatched = candidate;
-						}
-					}
-					else
-					{
-						//if this was the last peak in current frame, so inherently it was the best match.
-						//Candidate is therefore automatically confirmed and can be propagated.
-						tmpPeakView(candidate, peakView::pkTrack, k+1) = tmpPeakView(n, peakView::pkTrack, k);
-						lastMatched = candidate;
-					}
-				}
-			} //end of loop on peaks of current frame
-
-			// STEP 3
-			// check for any unmatched peaks in the next frame and give BIRTH to new tracks!
-			for(mrs_natural m = 0; m < tmpPeakView.getFrameNumPeaks(k+1, g); ++m)
-			{
-				if(tmpPeakView(m, peakView::pkTrack, k+1) == -1.0)
-					tmpPeakView(m, peakView::pkTrack, k+1) = nextTrack++; //BIRTH of new track
-			}
-		}	
-
+		for(mrs_natural f=0; f < tmpPeakView.getNumFrames()-1; ++f)
+			peakTrack(*outPtr, f, g, g);
 	}
-
-	///////////////////////////////////////////////////////////////////////////////
 
 	//if using memory...
 	if(ctrl_useMemory_->to<mrs_bool>())
 	{
 		if(memory_.getSize() != 0)
 		{
-			//if using a non-empty memory, we should now fill the trackID parameters
+			//if using a non-empty memory, we should now fill the trackID and GroupID parameters
 			//computed above (and stored in the tmp realvec) into the actual output
 			peakView outPeakView(out);
-			for(c = 0; c < outPeakView.getNumFrames(); ++c)
-				for(o = 0; o < outPeakView.getFrameNumPeaks(c); ++o)
-					outPeakView(o, peakView::pkTrack, c) = tmpPeakView(o, peakView::pkTrack, c+1);
+			for(mrs_natural f=0; f < outPeakView.getNumFrames(); ++f)
+				for(mrs_natural p = 0; p < outPeakView.getFrameNumPeaks(f); ++p)
+				{
+					outPeakView(p, peakView::pkTrack, f) = tmpPeakView(p, peakView::pkTrack, f+1);
+					outPeakView(p, peakView::pkGroup, f) = tmpPeakView(p, peakView::pkGroup, f+1);
+				}
 		}
 		
 		//store the last frame of current output for next time 
-		memory_.stretch(onObservations_);
+		memory_.stretch(onObservations_, 1);
 		for(o = 0; o < onObservations_; ++o)
-			memory_(o) = out(o, onSamples_-1); 
+			memory_(o, 0) = out(o, onSamples_-1); 
 	}
 }
 

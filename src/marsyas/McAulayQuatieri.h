@@ -54,10 +54,13 @@ private:
 	MarControlPtr ctrl_reset_;
 	MarControlPtr ctrl_useGroups_;
 	MarControlPtr ctrl_delta_;
+	MarControlPtr ctrl_matchThres_;
 
 	mrs_natural nextGroup_;
 	realvec memory_;
 	realvec tmp_;
+
+	mrs_real peakTrack(realvec& vec, mrs_natural frame, mrs_natural group1, mrs_natural group2);
 
 	void addControls();
 	void myUpdate(MarControlPtr sender);
