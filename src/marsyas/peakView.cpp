@@ -27,7 +27,6 @@ peakView::peakView(realvec& vec): vec_(vec)
 	//max number of peaks in each frame
 	frameMaxNumPeaks_ = vec_.getRows() / nbPkParameters;
 	numFrames_ = vec_.getCols();
-	numGroups_ = -1;
 }
 
 peakView::~peakView()
@@ -38,17 +37,16 @@ peakView::~peakView()
 mrs_natural
 peakView::getNumGroups()
 {
-	if(numGroups_ != -1) //use cached value
-		return numGroups_;
+	mrs_natural numGroups = 0;
 
 	for(mrs_natural f=0; f < numFrames_; ++f)
 		for(mrs_natural p = 0; p < this->getFrameNumPeaks(f); ++p)
 		{
-			if((*this)(p, pkGroup, f) > numGroups_)
-				numGroups_ = (mrs_natural)(*this)(p, pkGroup, f);
+			if((*this)(p, pkGroup, f) > numGroups)
+				numGroups = (mrs_natural)(*this)(p, pkGroup, f);
 		}
-	numGroups_++;
-	return numGroups_;
+	numGroups++;
+	return numGroups;
 }
 
 mrs_natural 

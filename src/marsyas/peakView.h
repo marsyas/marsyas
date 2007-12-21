@@ -58,7 +58,6 @@ namespace Marsyas
 		
 		mrs_natural frameMaxNumPeaks_;
 		mrs_natural numFrames_;
-		mrs_natural numGroups_;
 
 	public:
 
