@@ -467,8 +467,8 @@ MarSystemManager::MarSystemManager()
   lpcFeatures->addMarSystem(lpcf);
   timbre_features_pr->addMarSystem(lpcFeatures);
   
-
   
+ 
   timbre_features_pr->linkctrl("mrs_natural/winSize","Series/timeDomain/ShiftInput/si/mrs_natural/winSize");
   timbre_features_pr->linkctrl("mrs_natural/winSize","Series/spectralShape/ShiftInput/si/mrs_natural/winSize");
   timbre_features_pr->linkctrl("mrs_natural/winSize","Series/lpcFeatures/ShiftInput/si/mrs_natural/winSize");
