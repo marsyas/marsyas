@@ -29,6 +29,7 @@ LIBPATH += $$MARSYAS_INSTALL_DIR/lib/release/
 
 ### basic OS stuff; do not change!
 win32-msvc2005:LIBS += marsyas.lib
+win32:LIBS += -lpthread -ldsound -lwinmm
 unix:LIBS += -lmarsyas -L$$MARSYAS_INSTALL_DIR/lib
 !macx:LIBS += -lasound
 macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
