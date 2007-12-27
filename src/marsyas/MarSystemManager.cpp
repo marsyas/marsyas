@@ -465,6 +465,8 @@ MarSystemManager::MarSystemManager()
   lpcf->addMarSystem(lspbranch);
   lpcf->addMarSystem(lpccbranch);
   lpcFeatures->addMarSystem(lpcf);
+
+
   timbre_features_pr->addMarSystem(lpcFeatures);
   
   
@@ -801,7 +803,6 @@ MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 	  is >> skipstr >> skipstr >> skipstr;
 	  mrs_natural nComponents;
 	  is >> nComponents;
-
 	  for (i=0; i < nComponents; i++)
 	    {
 	      MarSystem* cmsys = getMarSystem(is, msys);

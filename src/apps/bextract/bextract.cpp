@@ -50,7 +50,7 @@ mrs_real length = -1.0;
 mrs_real gain = 1.0;
 mrs_bool pluginMute = 0.0;
 mrs_bool playback = false;
-
+mrs_bool stereo_ = false;
 
 mrs_bool mfcc_ = false;
 mrs_bool sfm_ = false;
@@ -1988,7 +1988,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
   // Windowed SoundFileSource with hopSize and winSize 
   MarSystem *src = mng.create("SoundFileSource", "src");
   featureNetwork->addMarSystem(src);
-  
+
   // create audio sink and mute it it is stored in the output plugin 
   // which can be used for real-time classification 
   if (pluginName != EMPTYSTRING)
@@ -1998,6 +1998,16 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	  featureNetwork->addMarSystem(dest);
   }
   
+  if (stereo_ == true) 
+    {
+      cout << "Stereo Feature Extraction enabled" << endl;
+    }
+  else 
+    {
+      // featureNetwork->addMarSystem(mng.create("Stereo2Mono", "m2s"));
+    }
+
+
   // Select feature set(s) to use 
   MarSystem* featExtractor = mng.create("TimbreFeatures", "featExtractor");
   selectFeatureSet(featExtractor);
@@ -2496,7 +2506,8 @@ initOptions()
   cmd_options.addStringOption("workdir", "wd", EMPTYSTRING);
   cmd_options.addStringOption("predict", "pr", EMPTYSTRING);
   cmd_options.addStringOption("test", "tc", EMPTYSTRING);
-	
+  cmd_options.addBoolOption("stereo", "st", false);
+
   // feature selection options
   cmd_options.addBoolOption("MelFrequencyCepstralCoefficients","mfcc", false);
   cmd_options.addBoolOption("SpectralFlatnessMeasure","sfm", false);
@@ -2536,6 +2547,8 @@ loadOptions()
   workspaceDir = cmd_options.getStringOption("workdir");
   predictCollection = cmd_options.getStringOption("predict");
   testCollection = cmd_options.getStringOption("test");
+
+  stereo_ = cmd_options.getBoolOption("stereo");
 
   // feature selection options 
   mfcc_ = cmd_options.getBoolOption("MelFrequencyCepstralCoefficients");

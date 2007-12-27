@@ -187,6 +187,9 @@ Fanout::myUpdate(MarControlPtr sender)
 		setctrl(ctrl_onSamples_, marsystems_[0]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 		setctrl(ctrl_onObservations_, onObservations);
 		setctrl(ctrl_osrate_, marsystems_[0]->getctrl("mrs_real/osrate")->to<mrs_real>());
+
+		if (oss.str() == "") 
+		  oss << ","; 
 		setctrl(ctrl_onObsNames_, oss.str());
 
 		// update buffers between components
