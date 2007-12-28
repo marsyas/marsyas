@@ -2066,7 +2066,6 @@ bextract_train_refactored(string pluginName,  string wekafname,
 			      winSize);
       featureNetwork->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_natural/winSize", 
 			      winSize);
-
     }
   else
     {
