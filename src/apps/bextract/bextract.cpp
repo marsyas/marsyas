@@ -2049,6 +2049,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
   // link confidence and annotation with SoundFileSource that plays the collection 
   featureNetwork->linkctrl("Confidence/confidence/mrs_string/fileName", 
 						   "SoundFileSource/src/mrs_string/currentlyPlaying");
+  featureNetwork->linkctrl("WekaSink/wsink/mrs_string/currentlyPlaying", 
+			   "SoundFileSource/src/mrs_string/currentlyPlaying");
   featureNetwork->linkctrl("Annotator/annotator/mrs_natural/label",
 						   "SoundFileSource/src/mrs_natural/currentLabel");
   

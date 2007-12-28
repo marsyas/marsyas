@@ -202,7 +202,6 @@ train()
 
 		    
 
-  cout << "ready to print out statistics" << endl;
   int i = 0;
   while(net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>() == false)
     {

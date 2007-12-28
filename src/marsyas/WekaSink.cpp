@@ -94,7 +94,8 @@ WekaSink::putHeader(string inObsNames)
       mos_ = new ofstream;
       mos_->open(filename_.c_str());
       
-      (*mos_) << "@relation marsyas" << endl;
+      (*mos_) << "% Created by Marsyas" << endl;
+      (*mos_) << "@relation " << filename_ << endl;
       mrs_natural nAttributes = ctrl_inObservations_->to<mrs_natural>()-1;
       mrs_natural nLabels = ctrl_nLabels_->to<mrs_natural>();
       
@@ -190,8 +191,11 @@ WekaSink::myProcess(realvec& in, realvec& out)
   
   for (t = 0; t < inSamples_; t++)
     {
-      if (ctrl_currentlyPlaying_->to<mrs_string>() != "") 
-	(*mos_) << "%" << "Just a comment" << endl;
+      if (ctrl_currentlyPlaying_->to<mrs_string>() != prev_playing_) 
+	{
+	  (*mos_) << "% " << ctrl_currentlyPlaying_->to<mrs_string>() << endl;
+	  prev_playing_ = ctrl_currentlyPlaying_->to<mrs_string>();
+	}
       for (o=0; o < inObservations_; o++)
 	{
 	  out(o,t) = in(o,t);

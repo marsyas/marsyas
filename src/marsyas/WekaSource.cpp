@@ -585,7 +585,6 @@ void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data
       else // skip comment line 
 	{
 	  mis.getline(str, 1023);
-	  cout << "Skipping comment" << str << endl;
 	}
       mis >> token;
     }//while
