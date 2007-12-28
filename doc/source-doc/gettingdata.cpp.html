@@ -10,7 +10,7 @@ http://www.gnu.org/software/src-highlite -->
 <font color="#FF0000">{</font>
 	MarSystemManager mng<font color="#990000">;</font>
 	MarSystem<font color="#990000">*</font> pnet <font color="#990000">=</font> mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"Series"</font><font color="#990000">,</font> <font color="#FF0000">"pnet"</font><font color="#990000">);</font>
-<i><font color="#9A1900">// standard network</font></i>
+	<i><font color="#9A1900">// standard network</font></i>
 	pnet<font color="#990000">-&gt;</font><b><font color="#000000">addMarSystem</font></b><font color="#990000">(</font>mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource"</font><font color="#990000">,</font> <font color="#FF0000">"src"</font><font color="#990000">));</font>
 	pnet<font color="#990000">-&gt;</font><b><font color="#000000">updctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_string/filename"</font><font color="#990000">,</font> sfName<font color="#990000">);</font>
 	pnet<font color="#990000">-&gt;</font><b><font color="#000000">addMarSystem</font></b><font color="#990000">(</font>mng<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font><font color="#FF0000">"Spectrum"</font><font color="#990000">,</font><font color="#FF0000">"spk"</font><font color="#990000">));</font>
@@ -19,13 +19,26 @@ http://www.gnu.org/software/src-highlite -->
 	<b><font color="#0000FF">while</font></b> <font color="#990000">(</font> pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"SoundFileSource/src/mrs_bool/notEmpty"</font><font color="#990000">)-&gt;</font>to<font color="#990000">&lt;</font>mrs_bool<font color="#990000">&gt;()</font> <font color="#990000">)</font>
 	<font color="#FF0000">{</font>
 		pnet<font color="#990000">-&gt;</font><b><font color="#000000">tick</font></b><font color="#990000">();</font>
-		<i><font color="#9A1900">// gets data from the Spectrum</font></i>
+		<i><font color="#9A1900">// gets data from the Spectrum for read only!</font></i>
 		<b><font color="#0000FF">const</font></b> realvec<font color="#990000">&amp;</font> processedData <font color="#990000">=</font>
-pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"Spectrum/spk/mrs_realvec/processedData"</font><font color="#990000">)-&gt;</font>to<font color="#990000">&lt;</font>mrs_realvec<font color="#990000">&gt;();</font>
-		<i><font color="#9A1900">// get data from the end of the MarSystem</font></i>
-		<i><font color="#9A1900">// TODO: clarify these two points.</font></i>
-		<i><font color="#9A1900">//const realvec&amp; processedData = pnet-&gt;getctrl("mrs_realvec/processedData")-&gt;to&lt;mrs_realvec&gt;();</font></i>
-		cout <font color="#990000">&lt;&lt;</font> processedData <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
+		    pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"Spectrum/spk/mrs_realvec/processedData"</font><font color="#990000">)-&gt;</font>to<font color="#990000">&lt;</font>mrs_realvec<font color="#990000">&gt;();</font>
+		cout <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"Original Spectrum = "</font> <font color="#990000">&lt;&lt;</font> processedData <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
+
+		<i><font color="#9A1900">// if we need to get the Spectrum and modify it, here is the way</font></i>
+		<i><font color="#9A1900">// to do it.  Notice that we must open a new scope using curly</font></i>
+		<i><font color="#9A1900">// brackets so that MarControlAccessor is automatically destroyed</font></i>
+		<i><font color="#9A1900">// when we are finished modifing the realvec control.</font></i>
+		<font color="#FF0000">{</font>
+			MarControlAccessor
+			<b><font color="#000000">acc</font></b><font color="#990000">(</font>pnet<font color="#990000">-&gt;</font><b><font color="#000000">getctrl</font></b><font color="#990000">(</font><font color="#FF0000">"Spectrum/spk/mrs_realvec/processedData"</font><font color="#990000">));</font>
+			realvec<font color="#990000">&amp;</font>
+			processedData2 <font color="#990000">=</font> acc<font color="#990000">.</font>to<font color="#990000">&lt;</font>mrs_realvec<font color="#990000">&gt;();</font>
+
+			<i><font color="#9A1900">// we can now write to processedData without worries of</font></i>
+			<i><font color="#9A1900">// breaking encapsulation</font></i>
+			processedData2 <font color="#990000">*=</font> <font color="#993399">2.0</font><font color="#990000">;</font>
+			cout <font color="#990000">&lt;&lt;</font> <font color="#FF0000">"Modified Spectrum = "</font> <font color="#990000">&lt;&lt;</font> processedData2 <font color="#990000">&lt;&lt;</font> endl<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
 	<font color="#FF0000">}</font>
 	<b><font color="#0000FF">delete</font></b> pnet<font color="#990000">;</font>
 <font color="#FF0000">}</font>

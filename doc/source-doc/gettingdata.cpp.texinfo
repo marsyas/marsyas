@@ -8,7 +8,7 @@ void @b{recognize}(string sfName)
 @{
        MarSystemManager mng;
        MarSystem* pnet = mng.@b{create}(@t{"Series"}, @t{"pnet"});
-@i{// standard network}
+       @i{// standard network}
        pnet->@b{addMarSystem}(mng.@b{create}(@t{"SoundFileSource"}, @t{"src"}));
        pnet->@b{updctrl}(@t{"SoundFileSource/src/mrs_string/filename"}, sfName);
        pnet->@b{addMarSystem}(mng.@b{create}(@t{"Spectrum"},@t{"spk"}));
@@ -17,13 +17,26 @@ void @b{recognize}(string sfName)
        @b{while} ( pnet->@b{getctrl}(@t{"SoundFileSource/src/mrs_bool/notEmpty"})->to<mrs_bool>() )
        @{
               pnet->@b{tick}();
-              @i{// gets data from the Spectrum}
+              @i{// gets data from the Spectrum for read only!}
               @b{const} realvec& processedData =
-pnet->@b{getctrl}(@t{"Spectrum/spk/mrs_realvec/processedData"})->to<mrs_realvec>();
-              @i{// get data from the end of the MarSystem}
-              @i{// TODO: clarify these two points.}
-              @i{//const realvec& processedData = pnet->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();}
-              cout << processedData << endl;
+                  pnet->@b{getctrl}(@t{"Spectrum/spk/mrs_realvec/processedData"})->to<mrs_realvec>();
+              cout << @t{"Original Spectrum = "} << processedData << endl;
+
+              @i{// if we need to get the Spectrum and modify it, here is the way}
+              @i{// to do it.  Notice that we must open a new scope using curly}
+              @i{// brackets so that MarControlAccessor is automatically destroyed}
+              @i{// when we are finished modifing the realvec control.}
+              @{
+                     MarControlAccessor
+                     @b{acc}(pnet->@b{getctrl}(@t{"Spectrum/spk/mrs_realvec/processedData"}));
+                     realvec&
+                     processedData2 = acc.to<mrs_realvec>();
+
+                     @i{// we can now write to processedData without worries of}
+                     @i{// breaking encapsulation}
+                     processedData2 *= 2.0;
+                     cout << @t{"Modified Spectrum = "} << processedData2 << endl;
+              @}
        @}
        @b{delete} pnet;
 @}

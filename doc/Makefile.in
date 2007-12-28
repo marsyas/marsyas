@@ -252,6 +252,7 @@ sources:
 	source-highlight --output-dir=source-doc/ -f texinfo $(QT_EXAMPLES) $(EXAMPLES)
 	source-highlight --output-dir=source-doc/ -f html --src-lang=perl $(QT_EXAMPLES_AS_PERL)
 	source-highlight --output-dir=source-doc/ -f texinfo --src-lang=perl $(QT_EXAMPLES_AS_PERL)
+	source-highlight --output-dir=source-doc/ -f html --src-lang=perl $(MAKEFILE_EXAMPLES)
 	source-highlight --output-dir=source-doc/ -f texinfo --src-lang=perl $(MAKEFILE_EXAMPLES)
 
 doxy:

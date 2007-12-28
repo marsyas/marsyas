@@ -64,36 +64,17 @@ normally.
 
 We @emph{highly} recommend that you use qmake to create a Makefile.
 However, if you enjoy swearing at your computer and cursing k&r, rms,
-gnu, and every other three-letter programmer acronym in existence, you
-may create a file called @file{Makefile} which contains
+gnu, and every other three-letter programmer acronym in existence, read
+on.
 
-@example
-all:
-	rm -f *.o
-	g++ -Wall -O2 -I./ -I/usr/local/include/marsyas -c -o myfile.o myfile.cpp
-	g++ -Lusr/local/lib -o myfile myfile.o -lmarsyas -lasound
-@end example
+Here are sample Makefiles to get you started:
 
-@noindent
-(place a tab in front of the three lower lines instead of spaces)
+@examplefilenewpage{Makefile.linux}
+@examplefilenewpage{Makefile.osx}
+@examplefilenewpage{Makefile.win32}
 
-If you installed marsyas in a location other than @file{/usr/local/}, then
-change the @code{-I} and @code{-L} directories accordingly.  For example,
-if you installed marsyas in @file{$@{HOME@}/usr/}, then you would use
-@code{-I$@{HOME@}/usr/include/marsyas} and @code{-L$@{HOME@}/usr/lib}.  Once
-the @file{Makefile} is written, simply type @code{make} to compile
-your file.
 
-@subsubheading MacOS X
-
-To compile Marsyas projects in OSX, use the same @file{Makefile} as is used
-in other *nixes, but replace the final line with
-
-@example
-	g++ -Lusr/local/lib -o myfile myfile.o -lmarsyas -framework CoreAudio \
-		-framework CoreMidi -framework CoreFoundation
-@end example
-
+@WANTED{ fix makefile for win32}
 
 @subsection ... on Windows Visual Studio
 

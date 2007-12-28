@@ -1,0 +1,16 @@
+@c Generator: GNU source-highlight, by Lorenzo Bettini, http://www.gnu.org/software/src-highlite
+@example
+SOURCE = helloworld.cpp
+TARGET = helloworld
+@i{#MARSYAS_INSTALL = /usr/local/}
+MARSYAS_INSTALL = $@{HOME@}@t{/usr/}
+
+all:
+       rm -f *.o
+       @b{g}++ -Wall -O2 -I.@t{/ -I$@{MARSYAS_INSTALL@}/include/marsyas} -c \
+              -o $@{TARGET@}.o $@{SOURCE@}
+       @b{g}++ -L$@{MARSYAS_INSTALL@}/lib -o $@{TARGET@} $@{TARGET@}.o -lmarsyas \
+              -lasound
+
+
+@end example
