@@ -64,7 +64,7 @@ private:
   MarControlPtr ctrl_nLabels_;
   MarControlPtr ctrl_labelNames_;
   MarControlPtr ctrl_filename_;
-  
+  MarControlPtr ctrl_currentlyPlaying_;
  
 public:
   WekaSink(std::string name);

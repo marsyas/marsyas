@@ -493,6 +493,23 @@ MarSystemManager::MarSystemManager()
   registerPrototype("TimbreFeatures", timbre_features_pr);
 
 
+  // StereoPanningSpectrumFeatures 
+  MarSystem *stereoFeatNet = create("Series", "stereoFeatNet");
+  MarSystem* stereobranches = create("Parallel", "stereobranches");
+  MarSystem* left = create("Series", "left");
+  MarSystem* right = create("Series", "right");
+  left->addMarSystem(create("Windowing", "hamleft"));
+  left->addMarSystem(create("Spectrum", "spkleft"));
+  right->addMarSystem(create("Windowing", "hamright"));
+  right->addMarSystem(create("Spectrum", "spkright"));
+  stereobranches->addMarSystem(left);
+  stereobranches->addMarSystem(right);
+  
+  stereoFeatNet->addMarSystem(stereobranches);
+  stereoFeatNet->addMarSystem(create("StereoSpectrum", "sspk"));
+  stereoFeatNet->addMarSystem(create("StereoSpectrumFeatures", "sspkf"));
+  registerPrototype("StereoPanningSpectrumFeatures", stereoFeatNet);
+  
 
   //--------------------------------------------------------------------------------
   // Phase Vocoder composite prototype

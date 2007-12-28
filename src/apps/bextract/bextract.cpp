@@ -2001,15 +2001,19 @@ bextract_train_refactored(string pluginName,  string wekafname,
   if (stereo_ == true) 
     {
       cout << "Stereo Feature Extraction enabled" << endl;
+      MarSystem* stereoFeatures = mng.create("Fanout", "stereoFeatures");
+
       MarSystem* stereoTimbreFeatures = mng.create("Parallel", "stereoTimbreFeatures");
-      
       MarSystem* featExtractorLeft = mng.create("TimbreFeatures", "featExtractorLeft");
       MarSystem* featExtractorRight = mng.create("TimbreFeatures", "featExtractorRight");
       selectFeatureSet(featExtractorLeft);
       selectFeatureSet(featExtractorRight);
       stereoTimbreFeatures->addMarSystem(featExtractorLeft);
       stereoTimbreFeatures->addMarSystem(featExtractorRight);
-      featureNetwork->addMarSystem(stereoTimbreFeatures);
+      stereoFeatures->addMarSystem(stereoTimbreFeatures);
+      stereoFeatures->addMarSystem(mng.create("StereoPanningSpectrumFeatures", "SPSFeatures"));
+      
+      featureNetwork->addMarSystem(stereoFeatures);
     }
   else 
     {
@@ -2062,9 +2066,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
   featureNetwork->updctrl("mrs_natural/inSamples", hopSize);
   if (stereo_) 
     {
-      featureNetwork->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_natural/winSize", 
+      featureNetwork->updctrl("Fanout/stereoFeatures/Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_natural/winSize", 
 			      winSize);
-      featureNetwork->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_natural/winSize", 
+      featureNetwork->updctrl("Fanout/stereoFeatures/Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_natural/winSize", 
 			      winSize);
     }
   else

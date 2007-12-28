@@ -533,13 +533,15 @@ void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data
   
   data.Create(attributesIncludedList_.size()+1);
 
-
   char str[1024];  
   while (mis.peek() == '%') 
     {
       mis.getline(str, 1023);
-
     }
+
+
+
+
   
   
   string token;
@@ -550,8 +552,6 @@ void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data
   mrs_natural lineCount = 0;
   while(!mis.eof())
     {
-
-      
       char *cp = (char *)token.c_str();
       if (cp[0] != '%')
 	{
@@ -581,6 +581,11 @@ void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data
 	  
 	  data.Append(lineBuffer);
 	  lineCount++;
+	}
+      else // skip comment line 
+	{
+	  mis.getline(str, 1023);
+	  cout << "Skipping comment" << str << endl;
 	}
       mis >> token;
     }//while

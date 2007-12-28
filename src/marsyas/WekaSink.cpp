@@ -45,6 +45,7 @@ WekaSink::WekaSink(const WekaSink& a):MarSystem(a)
   ctrl_precision_ = getControl("mrs_natural/precision");
   ctrl_downsample_ = getControl("mrs_natural/downsample");
   ctrl_filename_ = getControl("mrs_string/filename"); 
+  ctrl_currentlyPlaying_ = getControl("mrs_string/currentlyPlaying");
 }
 
 MarSystem* 
@@ -66,8 +67,9 @@ WekaSink::addControls()
   addctrl("mrs_string/labelNames", "Music,Speech", ctrl_labelNames_);
   setctrlState("mrs_string/labelNames", true);
 
-  addctrl("mrs_bool/regression", false, ctrl_regression_);
 
+  addctrl("mrs_bool/regression", false, ctrl_regression_);
+  addctrl("mrs_string/currentlyPlaying", "", ctrl_currentlyPlaying_);
   addctrl("mrs_bool/putHeader", false, ctrl_putHeader_);
   setctrlState(ctrl_putHeader_, true);
 }
@@ -188,6 +190,8 @@ WekaSink::myProcess(realvec& in, realvec& out)
   
   for (t = 0; t < inSamples_; t++)
     {
+      if (ctrl_currentlyPlaying_->to<mrs_string>() != "") 
+	(*mos_) << "%" << "Just a comment" << endl;
       for (o=0; o < inObservations_; o++)
 	{
 	  out(o,t) = in(o,t);
