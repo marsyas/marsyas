@@ -1,0 +1,12 @@
+SOURCE = helloworld.cpp
+TARGET = helloworld
+#MARSYAS_INSTALL = /usr/local/
+MARSYAS_INSTALL = ${HOME}/usr/
+
+all:
+	rm -f *.o
+	g++ -Wall -O2 -I./ -I${MARSYAS_INSTALL}/include/marsyas -c \
+		-o ${TARGET}.o ${SOURCE}
+	g++ -L${MARSYAS_INSTALL}/lib -o ${TARGET} ${TARGET}.o -lmarsyas \
+		-framework CoreAudio -framework CoreMidi -framework CoreFoundation
+

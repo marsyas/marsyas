@@ -45,6 +45,8 @@ QT_EXAMPLES_AS_PERL = ../src/examples/Qt4-tutorial/*.pro
 
 EXAMPLES = ../src/examples/*.cpp
 
+MAKEFILE_EXAMPLES = ../src/examples/Makefile.linux ../src/examples/Makefile.osx ../src/examples/Makefile.win32
+
 #DIST_COMMON = sources pdf html
 
 sources:
@@ -53,6 +55,7 @@ sources:
 	source-highlight --output-dir=source-doc/ -f texinfo $(QT_EXAMPLES) $(EXAMPLES)
 	source-highlight --output-dir=source-doc/ -f html --src-lang=perl $(QT_EXAMPLES_AS_PERL)
 	source-highlight --output-dir=source-doc/ -f texinfo --src-lang=perl $(QT_EXAMPLES_AS_PERL)
+	source-highlight --output-dir=source-doc/ -f texinfo --src-lang=perl $(MAKEFILE_EXAMPLES)
 
 doxy:
 	mkdir -p out-www/doxy/html/
