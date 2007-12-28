@@ -376,6 +376,8 @@ case "$enable_marsyasqt" in
 			AM_CONDITIONAL(QT_PRESENT, true)
 		else
 			AM_CONDITIONAL(QT_PRESENT, false)
+			echo qmake not found!
+			exit 1
 		fi
        ;;
        *)
