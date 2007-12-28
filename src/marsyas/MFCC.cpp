@@ -69,7 +69,7 @@ MFCC::myUpdate(MarControlPtr sender)
 		ostringstream oss;
 
 		for (i=0; i < cepstralCoefs_; i++)
-			oss << "MFCC_" << i << ",";
+		  oss << "MFCC" << i << "_" << ctrl_inObsNames_->to<mrs_string>();
 		ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 
 		freqs_.create(42);

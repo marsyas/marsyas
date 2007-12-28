@@ -68,6 +68,7 @@ Fanout::addControls()
 	setctrlState("mrs_string/disableChild", true);
 
 	addctrl("mrs_realvec/enabled", realvec(), ctrl_enabled_);
+
 }
 
 void
@@ -152,7 +153,7 @@ Fanout::myUpdate(MarControlPtr sender)
 
 	if (marsystemsSize_ != 0)
 	{
-		//propagate in flow controls to first child
+	  //propagate in flow controls to first child
 		marsystems_[0]->setctrl("mrs_natural/inObservations", inObservations_);
 		marsystems_[0]->setctrl("mrs_natural/inSamples", inSamples_);
 		marsystems_[0]->setctrl("mrs_real/israte", israte_);
@@ -179,6 +180,7 @@ Fanout::myUpdate(MarControlPtr sender)
 			{
 				onObservations += (marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
 				localIndices_(i) = marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+
 				oss << marsystems_[i]->getctrl("mrs_string/onObsNames");
 			}
 		}
@@ -187,9 +189,6 @@ Fanout::myUpdate(MarControlPtr sender)
 		setctrl(ctrl_onSamples_, marsystems_[0]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 		setctrl(ctrl_onObservations_, onObservations);
 		setctrl(ctrl_osrate_, marsystems_[0]->getctrl("mrs_real/osrate")->to<mrs_real>());
-
-		if (oss.str() == "") 
-		  oss << ","; 
 		setctrl(ctrl_onObsNames_, oss.str());
 
 		// update buffers between components

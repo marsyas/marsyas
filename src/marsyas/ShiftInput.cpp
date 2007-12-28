@@ -72,7 +72,9 @@ ShiftInput::myUpdate(MarControlPtr sender)
 	ctrl_onSamples_->setValue(ctrl_winSize_, NOUPDATE);
 	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
-	ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
+	ostringstream oss;
+	oss << "HopSize" << hopSize_ << "_WinSize" << winSize_ << "_" << ctrl_inObsNames_;
+	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 }
 
 void 

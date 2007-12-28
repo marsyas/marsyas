@@ -52,8 +52,15 @@ void Parallel::myUpdate(MarControlPtr sender)
 		//propagate in flow controls to first child
 		marsystems_[0]->setctrl("mrs_natural/inSamples", inSamples_);
 		marsystems_[0]->setctrl("mrs_real/israte", israte_);
-		//marsystems_[0]->updctrl("mrs_natural/inObservations", inObservations_);
-		//marsystems_[0]->setctrl("mrs_string/inObsNames", inObsNames_);
+
+		mrs_string inObsName;
+		mrs_string temp;
+		mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>(); 
+		
+		inObsName = inObsNames.substr(0, inObsNames.find(","));
+		temp = inObsNames.substr(inObsNames.find(",")+1, inObsNames.length());
+		inObsNames = temp;
+		marsystems_[0]->setctrl("mrs_string/inObsNames", inObsName + ",");
 		marsystems_[0]->update();
 
 		mrs_natural inObservations = marsystems_[0]->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
@@ -66,6 +73,13 @@ void Parallel::myUpdate(MarControlPtr sender)
 		{
 			marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
 			marsystems_[i]->setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte")); //[!] israte
+
+		
+			inObsName = inObsNames.substr(0, inObsNames.find(","));
+			temp = inObsNames.substr(inObsNames.find(",")+1, inObsNames.length());
+			inObsNames = temp;
+			marsystems_[i]->setctrl("mrs_string/inObsNames", inObsName + ",");
+			
 			marsystems_[i]->update();
 			oss << marsystems_[i]->getctrl("mrs_string/onObsNames");
 

@@ -2001,17 +2001,27 @@ bextract_train_refactored(string pluginName,  string wekafname,
   if (stereo_ == true) 
     {
       cout << "Stereo Feature Extraction enabled" << endl;
+      MarSystem* stereoTimbreFeatures = mng.create("Parallel", "stereoTimbreFeatures");
+      
+      MarSystem* featExtractorLeft = mng.create("TimbreFeatures", "featExtractorLeft");
+      MarSystem* featExtractorRight = mng.create("TimbreFeatures", "featExtractorRight");
+      selectFeatureSet(featExtractorLeft);
+      selectFeatureSet(featExtractorRight);
+      stereoTimbreFeatures->addMarSystem(featExtractorLeft);
+      stereoTimbreFeatures->addMarSystem(featExtractorRight);
+      featureNetwork->addMarSystem(stereoTimbreFeatures);
     }
   else 
     {
-      // featureNetwork->addMarSystem(mng.create("Stereo2Mono", "m2s"));
+      featureNetwork->addMarSystem(mng.create("Stereo2Mono", "m2s"));
+      // Select feature set(s) to use 
+      MarSystem* featExtractor = mng.create("TimbreFeatures", "featExtractor");
+      selectFeatureSet(featExtractor);
+      featureNetwork->addMarSystem(featExtractor);
     }
 
 
-  // Select feature set(s) to use 
-  MarSystem* featExtractor = mng.create("TimbreFeatures", "featExtractor");
-  selectFeatureSet(featExtractor);
-  featureNetwork->addMarSystem(featExtractor);
+
   
   // texture statistics 
   featureNetwork->addMarSystem(mng.create("TextureStats", "tStats"));
@@ -2050,8 +2060,20 @@ bextract_train_refactored(string pluginName,  string wekafname,
   // src has to be configured with hopSize frame length in case a ShiftInput
   // is used in the feature extraction network
   featureNetwork->updctrl("mrs_natural/inSamples", hopSize);
-  featureNetwork->updctrl("TimbreFeatures/featExtractor/mrs_natural/winSize", 
-			  winSize);
+  if (stereo_) 
+    {
+      featureNetwork->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_natural/winSize", 
+			      winSize);
+      featureNetwork->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_natural/winSize", 
+			      winSize);
+
+    }
+  else
+    {
+      featureNetwork->updctrl("TimbreFeatures/featExtractor/mrs_natural/winSize", 
+			      winSize);      
+    }
+
   if (start > 0.0) 
 	  offset = (mrs_natural) (start * src->getctrl("mrs_real/israte")->to<mrs_real>());
   featureNetwork->updctrl("SoundFileSource/src/mrs_natural/pos", 

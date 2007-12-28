@@ -1278,8 +1278,12 @@ MarSystem::put(ostream &o)
 	o << "# MarControls = " << controls_.size() << endl;
 	for (ctrlIter_=controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
 	{
-		o << "# " << ctrlIter_->first << " = " << ctrlIter_->second << endl;
-		
+	  ostringstream toss;
+	  toss << ctrlIter_->second;
+	  if (toss.str() != "") 
+	    o << "# " << ctrlIter_->first << " = " << ctrlIter_->second << endl;
+	  else 
+	    o << "# " << ctrlIter_->first << " = " << "MARSYAS_EMPTYSTRING" << endl;	    
 		//serialize links
 		ostringstream oss;
 		std::vector<std::pair<MarControlPtr, MarControlPtr> > links = ctrlIter_->second->getLinks();
@@ -1402,7 +1406,8 @@ Marsyas::operator>> (istream& is, MarSystem& msys)
 		else if (ctype == sstr)
 		{
 			is >> skipstr >> scvalue;
-
+			if (scvalue == "MARSYAS_EMPTYSTRING") 
+			  scvalue = "";
 			if (iter == msys.controls_.end())
 				msys.addControl(cname, scvalue);
 			else

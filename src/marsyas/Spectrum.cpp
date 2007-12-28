@@ -73,7 +73,7 @@ Spectrum::myUpdate(MarControlPtr sender)
 
 	if (ponObservations_ != onObservations_)
 	{
-		ostringstream oss;
+	  /* ostringstream oss;
 		oss << "rbin_0" << ","; //DC bin (only has real part)
 		oss << "rbin_" << onObservations_/2 << ","; //Nyquist bin (only has real part)
 		for (mrs_natural n=2; n < onObservations_/2; n++)
@@ -82,7 +82,16 @@ Spectrum::myUpdate(MarControlPtr sender)
 			oss << "ibin_" << n-1 << ",";
 		}
 		ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
+	  */ 
 	}
+
+
+	ostringstream oss; 
+	oss << onObservations_;	  
+	ctrl_onObsNames_->setValue("FFT" + oss.str() + "_" + ctrl_inObsNames_->to<mrs_string>(), NOUPDATE);
+
+
+
 	ponObservations_ = onObservations_;
 }
 

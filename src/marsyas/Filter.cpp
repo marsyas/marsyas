@@ -72,6 +72,8 @@ void Filter::myUpdate(MarControlPtr sender)
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
+	ctrl_onObsNames_->setValue("Filter_" + ctrl_inObsNames_->to<mrs_string>() + "," , NOUPDATE);
+
 	if (getctrl("mrs_realvec/ncoeffs")->to<mrs_realvec>().getSize() != norder_)
 	{
 		ncoeffs_.create(getctrl("mrs_realvec/ncoeffs")->to<mrs_realvec>().getSize());

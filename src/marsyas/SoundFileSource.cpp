@@ -110,7 +110,6 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 	(void) sender;
 	MRSDIAG("SoundFileSource::myUpdate");
 
-	ctrl_onObsNames_->setValue("audio,", NOUPDATE);
 	ctrl_inObsNames_->setValue("audio,", NOUPDATE);
 
 	if (filename_ != ctrl_filename_->to<mrs_string>())
@@ -124,6 +123,14 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 			ctrl_labelNames_->setValue(src_->getctrl("mrs_string/labelNames"));
 			ctrl_nLabels_->setValue(src_->getctrl("mrs_natural/nLabels"));
 			ctrl_onObservations_->setValue(src_->ctrl_onObservations_, NOUPDATE);
+
+			ostringstream oss;
+			for (int ch = 0; ch < ctrl_onObservations_->to<mrs_natural>(); ch++) 
+			  {
+			    oss << "AudioCh" << ch << ",";
+			  }
+			ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
+
 
 			ctrl_israte_->setValue(src_->ctrl_israte_, NOUPDATE);
 			ctrl_osrate_->setValue(src_->ctrl_osrate_, NOUPDATE);

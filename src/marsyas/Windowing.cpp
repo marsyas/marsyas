@@ -80,7 +80,7 @@ Windowing::myUpdate(MarControlPtr sender)
 		inObsName = inObsNames.substr(0, inObsNames.find(","));
 		temps = inObsNames.substr(inObsNames.find(",")+1, inObsNames.length());
 		inObsNames = temps;
-		oss << "Win_" << type <<"_" << inObsName << ",";
+		oss << "Win" << type <<"_" << inObsName << ",";
 	}
 	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 

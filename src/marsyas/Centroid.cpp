@@ -47,7 +47,7 @@ Centroid::myUpdate(MarControlPtr sender)
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
   ctrl_onObservations_->setValue((mrs_natural)1, NOUPDATE);
   ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
-  ctrl_onObsNames_->setValue("Centroid,", NOUPDATE);
+  ctrl_onObsNames_->setValue("Centroid_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
 }
 
 void
