@@ -51,7 +51,7 @@ mrs_real gain = 1.0;
 mrs_bool pluginMute = 0.0;
 mrs_bool playback = false;
 mrs_bool stereo_ = false;
-
+mrs_bool spsf_ = false;
 mrs_bool mfcc_ = false;
 mrs_bool sfm_ = false;
 mrs_bool scf_ = false;
@@ -2013,6 +2013,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
       stereoFeatures->addMarSystem(stereoTimbreFeatures);
       stereoFeatures->addMarSystem(mng.create("StereoPanningSpectrumFeatures", "SPSFeatures"));
       
+      if (!spsf_)
+	stereoFeatures->updctrl("mrs_string/disableChild", "StereoPanningSpectrumFeatures/SPSFeatures");
+
       featureNetwork->addMarSystem(stereoFeatures);
     }
   else 
@@ -2536,6 +2539,7 @@ initOptions()
   cmd_options.addBoolOption("stereo", "st", false);
 
   // feature selection options
+  cmd_options.addBoolOption("StereoPanningSpectrumFeatures", "spsf", false);
   cmd_options.addBoolOption("MelFrequencyCepstralCoefficients","mfcc", false);
   cmd_options.addBoolOption("SpectralFlatnessMeasure","sfm", false);
   cmd_options.addBoolOption("SpectralCrestFactor","scf", false);
@@ -2578,6 +2582,7 @@ loadOptions()
   stereo_ = cmd_options.getBoolOption("stereo");
 
   // feature selection options 
+  spsf_ = cmd_options.getBoolOption("StereoPanningSpectrumFeatures");
   mfcc_ = cmd_options.getBoolOption("MelFrequencyCepstralCoefficients");
   sfm_ = cmd_options.getBoolOption("SpectralFlatnessMeasure");
   scf_ = cmd_options.getBoolOption("SpectralCrestFactor");
