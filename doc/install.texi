@@ -579,7 +579,7 @@ qmake
 @c  the @warning{} needs everything on one line.  :(
 @warning{on MacOS X and when using Qt-4.3.0 or higher, you must add
 @w{@code{export QMAKESPEC=/usr/local/Qt4.3/mkspecs/macx-g++/}} to your
-@file{~/.profile} and then close (and re-open) your terminal window}
+@file{~/.bash_profile} and then close (and re-open) your terminal window}
 
 
 @node Compiling
