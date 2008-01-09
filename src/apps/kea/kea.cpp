@@ -16,7 +16,7 @@ string mode_;
 CommandLineOptions cmd_options_;
 string workdir_;
 string distancematrix_;
-
+string classifier_;
  
 void 
 printUsage(string progName)
@@ -146,7 +146,7 @@ train()
     wekafname_  = workdir_ + wekafname_;
 
   cout << "Training classifier using .arff file: " << wekafname_ << endl;
-  
+  cout << "Classifier type : " << classifier_ << endl;
 
   
   MarSystemManager mng;
@@ -154,15 +154,15 @@ train()
   MarSystem* net;
   net = mng.create("Series", "net");
   net->addMarSystem(mng.create("WekaSource", "wsrc"));
-  // net->addMarSystem(mng.create("OneRClassifier", "gcl"));
-  // net->addMarSystem(mng.create("GaussianClassifier", "gcl"));
-  // net->addMarSystem(mng.create("KNNClassifier", "gcl"));
-  // net->addMarSystem(mng.create("ZeroRClassifier", "gcl"));
-  // net->addMarSystem(mng.create("SVMClassifier", "gcl"));
-  cout << "Before addding classifier " << endl;
-  net->addMarSystem(mng.create("GaussianClassifier", "gcl"));
-  cout << "Added classifier" << endl;
+  net->addMarSystem(mng.create("Classifier", "cl"));
   net->addMarSystem(mng.create("Summary", "summary"));
+
+  if (classifier_ == "GS")
+    net->updctrl("Classifier/cl/mrs_string/enableChild", "GaussianClassifier/gaussiancl");
+  if (classifier_ == "ZEROR") 
+    net->updctrl("Classifier/cl/mrs_string/enableChild", "ZeroRClassifier/zerorcl");    
+  if (classifier_ == "SVM")   
+    net->updctrl("Classifier/cl/mrs_string/enableChild", "SVMClassifier/svmcl");    
   // net->updctrl("WekaSource/wsrc/mrs_string/attributesToInclude", "1,2,3");
   
   net->updctrl("WekaSource/wsrc/mrs_string/filename", wekafname_);
@@ -171,56 +171,25 @@ train()
   // net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "UseTestSet,lg.arff");
   net->updctrl("mrs_natural/inSamples", 1);
 
-
   net->updctrl("Summary/summary/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
   net->updctrl("Summary/summary/mrs_string/classNames", 
 	       net->getctrl("WekaSource/wsrc/mrs_string/classNames"));
   
-  
-  net->updctrl("GaussianClassifier/gcl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
-  // net->linkctrl("GaussianClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
-
-
-  /*   net->updctrl("OneRClassifier/gcl/mrs_natural/nLabels", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
-  net->linkctrl("OneRClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
-  */ 
-
-
-		    /* net->updctrl("KNNClassifier/gcl/mrs_natural/nLabels", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
-		       net->linkctrl("KNNClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
-		    */ 
-		    
-  /* net->updctrl("ZeroRClassifier/gcl/mrs_natural/nLabels", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
-		    net->linkctrl("ZeroRClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
-  */ 
-
-
-  // net->updctrl("ZeroRClassifier/gcl/mrs_natural/nLabels", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
-  // net->linkctrl("SVMClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
-
-  net->linkctrl("GaussianClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
-
-		    
+  net->updctrl("Classifier/cl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+  net->linkctrl("Classifier/cl/mrs_string/mode", "Summary/summary/mrs_string/mode");  
 
   int i = 0;
   while(net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>() == false)
     {
       string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
       net->tick();
-      net->updctrl("GaussianClassifier/gcl/mrs_string/mode", mode);
-      // net->updctrl("OneRClassifier/gcl/mrs_string/mode", mode);
-      // net->updctrl("KNNClassifier/gcl/mrs_string/mode", mode);
-      // net->updctrl("ZeroRClassifier/gcl/mrs_string/mode", mode);
-      // net->updctrl("SVMClassifier/gcl/mrs_string/mode", mode);
-      // net->updctrl("Classifier/gcl/mrs_string/mode", mode);
+      net->updctrl("Classifier/cl/mrs_string/mode", mode);
       i++;
     }
 
-  // net->updctrl("SVMClassifier/gcl/mrs_string/mode", "predict");
-  net->updctrl("GaussianClassifier/gcl/mrs_string/mode", "predict");
+  net->updctrl("Classifier/cl/mrs_string/mode", "predict");
   net->updctrl("Summary/summary/mrs_bool/done", true);
   net->tick();
-
 }
 
 
@@ -233,6 +202,7 @@ initOptions()
   cmd_options_.addStringOption("mode", "m", "train");
   cmd_options_.addStringOption("workdir", "wd", EMPTYSTRING);
   cmd_options_.addStringOption("distancematrix", "dm", EMPTYSTRING);
+  cmd_options_.addStringOption("classifier", "cl", "GS");
 }
 
 
@@ -245,6 +215,7 @@ loadOptions()
   mode_ = cmd_options_.getStringOption("mode");
   workdir_ = cmd_options_.getStringOption("workdir");
   distancematrix_ = cmd_options_.getStringOption("distancematrix");
+  classifier_ = cmd_options_.getStringOption("classifier");
 }
 
 

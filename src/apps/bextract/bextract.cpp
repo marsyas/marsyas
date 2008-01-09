@@ -1923,7 +1923,6 @@ selectClassifier(MarSystem *msys,string classifierName )
 {
   cout << "classifierName = " << classifierName << endl;
   
-  msys->updctrl("Classifier/cl/mrs_string/disableChild","all"); 
   if (classifierName == "GS")
     msys->updctrl("Classifier/cl/mrs_string/enableChild", "GaussianClassifier/gaussiancl");
   if (classifierName == "ZEROR")

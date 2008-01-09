@@ -705,7 +705,8 @@ MarSystemManager::MarSystemManager()
 			 "mrs_string/mode");
   classifierpr->linkctrl("SVMClassifier/svmcl/mrs_string/mode", 
 			 "mrs_string/mode");
-	
+
+  classifierpr->updctrl("mrs_string/disableChild", "all");
   // Indirect way 
   /* classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_natural/nClasses", 
      "GaussianClassifier/gaussiancl/mrs_natural/nClasses");
