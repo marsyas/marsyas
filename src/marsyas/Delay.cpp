@@ -24,13 +24,11 @@ using namespace Marsyas;
 
 Delay::Delay(string name):MarSystem("Delay",name)
 {
-  //type_ = "Delay";
-  //name_ = name;
   
-	delay_ = 0;
+  delay_ = 0;
   cursor_ = 0;
-
-	addControls();
+  
+  addControls();
 }
 
 
@@ -55,7 +53,7 @@ Delay::addControls()
   setctrlState("mrs_real/gain", true);
   setctrlState("mrs_real/feedback", true);
   setctrlState("mrs_real/delaySeconds", true);
-	setctrlState("mrs_natural/delaySamples", true);
+  setctrlState("mrs_natural/delaySamples", true);
 }
 
 
@@ -72,13 +70,13 @@ Delay::myUpdate(MarControlPtr sender)
   gain_ = getctrl("mrs_real/gain")->to<mrs_real>();
   feedback_ = getctrl("mrs_real/feedback")->to<mrs_real>();
 
-	if(getctrl("mrs_natural/delaySamples")->to<mrs_natural>())
-  delay_ = getctrl("mrs_natural/delaySamples")->to<mrs_natural>();
-
+  if(getctrl("mrs_natural/delaySamples")->to<mrs_natural>())
+    delay_ = getctrl("mrs_natural/delaySamples")->to<mrs_natural>();
+  
 	// cout << getctrl("mrs_real/delaySeconds")->to<mrs_real>() << " " << endl;
   if(getctrl("mrs_real/delaySeconds")->to<mrs_real>() != 0.0)
-		delay_ = (mrs_natural) ceil(getctrl("mrs_real/delaySeconds")->to<mrs_real>()*getctrl("mrs_real/osrate")->to<mrs_real>());
- 
+    delay_ = (mrs_natural) ceil(getctrl("mrs_real/delaySeconds")->to<mrs_real>()*getctrl("mrs_real/osrate")->to<mrs_real>());
+  
   cursor_ = 0;
 
   buffer_.stretch(delay_);
@@ -90,26 +88,25 @@ Delay::myUpdate(MarControlPtr sender)
 void 
 Delay::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
-
-	if(delay_ < onSamples_)
-	{
-		for (t = 0; t < delay_ ; t++)
-			out(t) = buffer_(t);
-		for (t = 0; t < onSamples_-delay_ ; t++)
-			out(t+delay_) = in(t);
-		for (t = 0; t < delay_ ; t++)
-			buffer_(t) = in(t+onSamples_-delay_);
-	}
-	else
-	{
-		for (t = 0; t < onSamples_ ; t++)
-			out(t) = buffer_(t);
-		for (t = 0; t < delay_-onSamples_ ; t++)
-			buffer_(t) = buffer_(t+onSamples_);
-		for (t = 0; t < onSamples_ ; t++)
-			buffer_(t+delay_-onSamples_) = in(t);
-	}
+  
+  if(delay_ < onSamples_)
+    {
+      for (t = 0; t < delay_ ; t++)
+	out(t) = buffer_(t);
+      for (t = 0; t < onSamples_-delay_ ; t++)
+	out(t+delay_) = in(t);
+      for (t = 0; t < delay_ ; t++)
+	buffer_(t) = in(t+onSamples_-delay_);
+    }
+  else
+    {
+      for (t = 0; t < onSamples_ ; t++)
+	out(t) = buffer_(t);
+      for (t = 0; t < delay_-onSamples_ ; t++)
+	buffer_(t) = buffer_(t+onSamples_);
+      for (t = 0; t < onSamples_ ; t++)
+	buffer_(t+delay_-onSamples_) = in(t);
+    }
 }
 
 

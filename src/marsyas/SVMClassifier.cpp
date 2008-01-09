@@ -94,6 +94,7 @@ SVMClassifier::myProcess(realvec& in, realvec& out)
 	  cout << "nAttributes = " << nAttributes << endl;
 	  instances_.Create(nAttributes);
 	}
+
       instances_.Append(in);
       out(0,0) = in(inObservations_-1, 0);
       out(1,0) = in(inObservations_-1, 0);

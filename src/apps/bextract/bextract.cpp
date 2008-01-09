@@ -1926,7 +1926,14 @@ selectClassifier(MarSystem *msys,string classifierName )
   msys->updctrl("Classifier/cl/mrs_string/disableChild","all"); 
   if (classifierName == "GS")
     msys->updctrl("Classifier/cl/mrs_string/enableChild", "GaussianClassifier/gaussiancl");
-  
+  if (classifierName == "ZEROR")
+    {
+      cout << "Selecting ZEROR" << endl;
+      msys->updctrl("Classifier/cl/mrs_string/enableChild", "ZeroRClassifier/zerorcl");
+      cout << *msys << endl;
+    }
+  if (classifierName == "SVM")
+    msys->updctrl("Classifier/cl/mrs_string/enableChild", "SVMClassifier/svmcl");
   
 }
 
@@ -2026,10 +2033,6 @@ bextract_train_refactored(string pluginName,  string wekafname,
       selectFeatureSet(featExtractor);
       featureNetwork->addMarSystem(featExtractor);
     }
-
-
-
-  
   // texture statistics 
   featureNetwork->addMarSystem(mng.create("TextureStats", "tStats"));
   featureNetwork->updctrl("TextureStats/tStats/mrs_natural/memSize", memSize);
@@ -2093,14 +2096,12 @@ bextract_train_refactored(string pluginName,  string wekafname,
   featureNetwork->updctrl("Confidence/confidence/mrs_bool/mute", true);
   featureNetwork->updctrl("Confidence/confidence/mrs_bool/print",true);
   
-  
   // select classifier to be used 
   selectClassifier(featureNetwork, classifierName);
   
   // load the collection which is automatically created by bextract 
   // based on the command-line arguments 
   featureNetwork->updctrl("mrs_string/filename", "bextract_single.mf");
-  
 
   // play sound if playback is enabled 
   if (pluginName != EMPTYSTRING && playback) 
@@ -2125,8 +2126,6 @@ bextract_train_refactored(string pluginName,  string wekafname,
       featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
       featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  			
     }
-
-  
   // main processing loop for training
   MarControlPtr ctrl_notEmpty = featureNetwork->getctrl("mrs_bool/notEmpty");
   MarControlPtr ctrl_currentlyPlaying = featureNetwork->getctrl("SoundFileSource/src/mrs_string/currentlyPlaying");
@@ -2142,11 +2141,12 @@ bextract_train_refactored(string pluginName,  string wekafname,
       previouslyPlaying = currentlyPlaying;
       
     }
-  cout << "Finished feature extraction and classifier training" << endl;
+  cout << "Finished feature extraction" << endl;
   
   // prepare network for real-time playback/prediction
   featureNetwork->updctrl("Classifier/cl/mrs_string/mode","predict"); 
   featureNetwork->tick();		
+  cout << "Finished classifier training" << endl;
   
   // have the plugin play audio 
   if (pluginName != EMPTYSTRING && !pluginMute) 
@@ -2173,11 +2173,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 
   // predict optional test collection 
-
   if (testCollection != EMPTYSTRING) 
     {
       cout << "bextract_train_refactored: predicting test collection: " << testCollection << endl;
-
       featureNetwork->updctrl("mrs_string/filename", testCollection);
       
       while (ctrl_notEmpty->to<mrs_bool>())
@@ -2188,10 +2186,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	  
 	  featureNetwork->tick();
 	  previouslyPlaying = currentlyPlaying;
-	  
 	}
     }
-  
 }
 
 

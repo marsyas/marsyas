@@ -685,6 +685,7 @@ MarSystemManager::MarSystemManager()
   MarSystem* classifierpr = create("Fanout", "Classifierpr");
   classifierpr->addMarSystem(create("ZeroRClassifier", "zerorcl"));
   classifierpr->addMarSystem(create("GaussianClassifier", "gaussiancl"));
+  classifierpr->addMarSystem(create("SVMClassifier", "svmcl"));
 
 
   // Direct way with creating control 
@@ -695,10 +696,14 @@ MarSystemManager::MarSystemManager()
 			 "mrs_natural/nClasses");
   classifierpr->linkctrl("GaussianClassifier/gaussiancl/mrs_natural/nClasses", 
 			 "mrs_natural/nClasses");
+  classifierpr->linkctrl("SVMClassifier/svmcl/mrs_natural/nClasses", 
+			 "mrs_natural/nClasses");
 
   classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_string/mode", 
 			 "mrs_string/mode");
   classifierpr->linkctrl("GaussianClassifier/gaussiancl/mrs_string/mode", 
+			 "mrs_string/mode");
+  classifierpr->linkctrl("SVMClassifier/svmcl/mrs_string/mode", 
 			 "mrs_string/mode");
 	
   // Indirect way 
