@@ -24,7 +24,7 @@ CONFIG(debug, debug|release){
 	!win32-msvc2005: += -lmarsyas 	
 	LIBPATH += $$quote( \"$$BASEDIR/lib/debug\" )
 	win32-msvc2005:PRE_TARGETDEPS += $$quote( \"$$BASEDIR/lib/debug/marsyas.lib\" )
-	!win32-msvc2005:PRE_TARGETDEPS += $$quote( \"$$BASEDIR/lib/debug/marsyas.a\" )
+	!win32-msvc2005:PRE_TARGETDEPS += $$quote( \"$$BASEDIR/lib/debug/libmarsyas.a\" )
 }
 
 
