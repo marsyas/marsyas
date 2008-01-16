@@ -21,11 +21,10 @@
 using namespace std;
 using namespace Marsyas;
 
-
 FullWaveRectifier::FullWaveRectifier(string name):MarSystem("FullWaveRectifier",name)
 {
-  //type_ = "FullWaveRectifier";
-  //name_ = name;
+	//type_ = "FullWaveRectifier";
+	//name_ = name;
 }
 
 
@@ -33,39 +32,34 @@ FullWaveRectifier::~FullWaveRectifier()
 {
 }
 
-
 MarSystem* 
 FullWaveRectifier::clone() const 
 {
-  return new FullWaveRectifier(*this);
+	return new FullWaveRectifier(*this);
 }
 
 void
 FullWaveRectifier::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
-  MRSDIAG("FullWaveRectifier.cpp - FullWaveRectifier:myUpdate");
-  
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-}
+	MRSDIAG("FullWaveRectifier.cpp - FullWaveRectifier:myUpdate");
 
+	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+}
 
 void 
 FullWaveRectifier::myProcess(realvec& in, realvec& out)
 {
-  
-  //checkFlow(in,out);
-
-  for (o=0; o < inObservations_; o++)
-    for (t = 0; t < inSamples_; t++)
-      {
-	if (in(o,t) < 0.0) 
-	  out(o,t) = -in(o,t);
-	else 
-	  out(o,t) = in(o,t);
-      }
+	for (o=0; o < inObservations_; o++)
+		for (t = 0; t < inSamples_; t++)
+		{
+			if (in(o,t) < 0.0) 
+				out(o,t) = -in(o,t);
+			else 
+				out(o,t) = in(o,t);
+		}
 }
 
 
@@ -74,6 +68,6 @@ FullWaveRectifier::myProcess(realvec& in, realvec& out)
 
 
 
-	
 
-	
+
+

@@ -45,8 +45,20 @@ Controls:
 class Accumulator: public MarSystem
 {
 private: 
-	mrs_natural nTimes_;
 	MarControlPtr ctrl_nTimes_;
+	MarControlPtr ctrl_maxTimes_;
+	MarControlPtr ctrl_minTimes_;
+	MarControlPtr ctrl_timesToKeep_;
+
+	MarControlPtr ctrl_flush_;
+	MarControlPtr ctrl_mode_;
+	
+	mrs_natural nTimes_;
+
+	mrs_natural childOnSamples_;
+	mrs_natural keptOnSamples_;
+
+	realvec childOut_;
 	realvec tout_;
 
 	void addControls();
