@@ -2921,10 +2921,9 @@ toy_with_duplex()
   
   dnet->updctrl("AudioSource/src/mrs_bool/initAudio", true);
   dnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-
   cout << *dnet << endl;
   
-  while(1) 
+  for (int i=0; i < 500; i++) 
     {
       dnet->tick();
     } 

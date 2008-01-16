@@ -94,8 +94,7 @@ AudioSource::myUpdate(MarControlPtr sender)
   //set output controls
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  setctrl("mrs_natural/inObservations", nChannels_);
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/nChannels"));
   
   
   inObservations_ = ctrl_inObservations_->to<mrs_natural>();

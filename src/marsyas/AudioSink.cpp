@@ -69,9 +69,9 @@ AudioSink::addControls()
 {
   
 #ifdef MARSYAS_MACOSX
-  addctrl("mrs_natural/bufferSize", 1024);
-#else
   addctrl("mrs_natural/bufferSize", 512);
+#else
+  addctrl("mrs_natural/bufferSize", 256);
 #endif
 
   addctrl("mrs_bool/initAudio", false);
