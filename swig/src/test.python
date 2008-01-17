@@ -1,7 +1,4 @@
-
-
 import marsyas_python 
-
 
 mng = marsyas_python.MarSystemManager() 
 
@@ -20,8 +17,6 @@ pnet.addMarSystem(gain)
 pnet.addMarSystem(dest)
 
 
-
-
 # pnet.updControl("SoundFileSource/src/mrs_string/filename", "/Users/gtzan/data/sound/music_speech/music/gravity.au")
 pnet.updControl("SineSource/src/mrs_real/frequency", 999.0)
 print pnet.getControl("SineSource/src/mrs_real/frequency")
@@ -32,8 +27,12 @@ pnet.updControl("AudioSink/dest/mrs_bool/initAudio", True)
 # pnet.updControl("SoundFileSink/dest/mrs_string/filename", "foo.wav")
 # print pnet.getControl("SoundFileSink/dest/mrs_string/filename")
 
+pnet.linkControl("mrs_real/frequency", "SineSource/src/mrs_real/frequency");
+
+
 for j in range (1,12): 
-    pnet.updControl("SineSource/src/mrs_real/frequency", j * 220.0)
+    pnet.updControl("mrs_real/frequency1", j * 220.0)
+#    pnet.updControl("SineSource/src/mrs_real/frequency", j * 220.0)
 
     for i in range (1,10):	
     	    	pnet.tick()
