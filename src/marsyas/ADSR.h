@@ -60,7 +60,7 @@ public:
   ~ADSR();
   MarSystem* clone() const;  
   
-  void myUpdate();
+  void myUpdate(MarControlPtr sender);
   void myProcess(realvec& in, realvec& out);
 };
 

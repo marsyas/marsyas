@@ -64,8 +64,11 @@ Accumulator::addControls()
 
 	addctrl("mrs_bool/flush", false, ctrl_flush_);
 
-	addctrl("mrs_natural/maxTimes", -1, ctrl_maxTimes_);
-	addctrl("mrs_natural/minTimes", -1, ctrl_minTimes_);
+	addctrl("mrs_natural/maxTimes", 5, ctrl_maxTimes_);
+	ctrl_maxTimes_->setState(true);
+
+	addctrl("mrs_natural/minTimes", 5, ctrl_minTimes_);
+	ctrl_minTimes_->setState(true);
 }
 
 void
@@ -80,7 +83,7 @@ Accumulator::myUpdate(MarControlPtr sender)
 
 	if (marsystemsSize_ > 0)
 	{
-		//propagate in flow controls to first child
+		//propagate in flow controls to first (and single) child
 		marsystems_[0]->setctrl("mrs_natural/inObservations", inObservations_);
 		marsystems_[0]->setctrl("mrs_natural/inSamples", inSamples_);
 		marsystems_[0]->setctrl("mrs_real/israte", israte_);
@@ -115,6 +118,7 @@ Accumulator::myUpdate(MarControlPtr sender)
 	else
 	{
 		MarSystem::myUpdate(sender);
+		nTimes_ = 1;
 		setctrl(ctrl_onSamples_, ctrl_inSamples_->to<mrs_natural>());//*nTimes_);
 	}
 
@@ -133,10 +137,18 @@ Accumulator::myUpdate(MarControlPtr sender)
 	}
 	setctrl(ctrl_onObsNames_, oss.str());
 
-	if(ctrl_maxTimes_ == -1)
-		ctrl_maxTimes_->setValue(nTimes_);
-	if(ctrl_minTimes_ == -1)
-		ctrl_minTimes_->setValue(nTimes_);
+	//if no values were set to minTimes and maxTimes
+	//set them equal to nTimes
+// 	if(ctrl_maxTimes_ == -1)
+// 		ctrl_maxTimes_->setValue(nTimes_);
+// 	if(ctrl_minTimes_ == -1)
+// 		ctrl_minTimes_->setValue(nTimes_);
+
+	if(ctrl_timesToKeep_->to<mrs_natural>() < ctrl_minTimes_->to<mrs_natural>())
+	{
+		MRSWARN("Accumulator::myUpdate() - timesToKeep < minTimes! Setting timesToKeep = minTimes");
+		ctrl_timesToKeep_->setValue(ctrl_minTimes_, NOUPDATE);
+	}
 
 	onSamples_ = ctrl_onSamples_->to<mrs_natural>();
 
@@ -146,9 +158,10 @@ Accumulator::myUpdate(MarControlPtr sender)
 	//create internal buffer for accumulating data to send to output
 	//(set it to the specified maximum + any kept old)
 	if(ctrl_mode_->to<mrs_string>() == "explicitFlush")
-		tout_.stretch(onObservations_, keptOnSamples_ + ctrl_maxTimes_->to<mrs_natural>() * childOnSamples_);
+		tout_.stretch(onObservations_, 
+			(ctrl_timesToKeep_->to<mrs_natural>() + ctrl_maxTimes_->to<mrs_natural>()) * childOnSamples_);
 	else
-		tout_.create(0,0); //no memory is needed for this
+		tout_.create(0,0); //no memory is needed in this mode
 }
 
 void 
@@ -197,8 +210,7 @@ Accumulator::myProcess(realvec& in, realvec& out)
 				tout_(o,t) = tout_(o, t + ctrl_onSamples_->to<mrs_natural>());
 
 		//reset flush flag
-		if(ctrl_flush_->to<mrs_bool>())
-			ctrl_flush_->setValue(false); 
+		ctrl_flush_->setValue(false); 
 	}
 	else if(ctrl_mode_->to<mrs_string>() == "countTicks")
 	{

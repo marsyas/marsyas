@@ -1,35 +1,38 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "marsyas", "..\..\marsyas\marsyas.vcproj", "{A25F3CDB-66D9-3769-8405-BA82EDE1B6C4}"
-	GlobalSection(Qt) = preSolution
-		Integration = True
-	EndGlobalSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "marsyas", "..\..\marsyas\marsyas.vcproj", "{9FCFBC27-E006-3BF5-A417-145B7E34ADBC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mudbox", "mudbox.vcproj", "{5D4FE77E-D0B7-360B-9FBC-0EA5554EF6AA}"
-	GlobalSection(Qt) = preSolution
-		Integration = True
-	EndGlobalSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mudbox", "mudbox.vcproj", "{0B2F189A-098F-3FED-B018-021411674055}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9FCFBC27-E006-3BF5-A417-145B7E34ADBC} = {9FCFBC27-E006-3BF5-A417-145B7E34ADBC}
+	EndProjectSection
 EndProject
 Global
-	GlobalSection(Qt) = preSolution
-		Integration = True
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A25F3CDB-66D9-3769-8405-BA82EDE1B6C4}.Debug|Win32.ActiveCfg = Debug|Win32
-		{A25F3CDB-66D9-3769-8405-BA82EDE1B6C4}.Debug|Win32.Build.0 = Debug|Win32
-		{A25F3CDB-66D9-3769-8405-BA82EDE1B6C4}.Release|Win32.ActiveCfg = Release|Win32
-		{A25F3CDB-66D9-3769-8405-BA82EDE1B6C4}.Release|Win32.Build.0 = Release|Win32
-		{5D4FE77E-D0B7-360B-9FBC-0EA5554EF6AA}.Debug|Win32.ActiveCfg = Debug|Win32
-		{5D4FE77E-D0B7-360B-9FBC-0EA5554EF6AA}.Debug|Win32.Build.0 = Debug|Win32
-		{5D4FE77E-D0B7-360B-9FBC-0EA5554EF6AA}.Release|Win32.ActiveCfg = Release|Win32
-		{5D4FE77E-D0B7-360B-9FBC-0EA5554EF6AA}.Release|Win32.Build.0 = Release|Win32
+		{9FCFBC27-E006-3BF5-A417-145B7E34ADBC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9FCFBC27-E006-3BF5-A417-145B7E34ADBC}.Debug|Win32.Build.0 = Debug|Win32
+		{9FCFBC27-E006-3BF5-A417-145B7E34ADBC}.Release|Win32.ActiveCfg = Release|Win32
+		{9FCFBC27-E006-3BF5-A417-145B7E34ADBC}.Release|Win32.Build.0 = Release|Win32
+		{0B2F189A-098F-3FED-B018-021411674055}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0B2F189A-098F-3FED-B018-021411674055}.Debug|Win32.Build.0 = Debug|Win32
+		{0B2F189A-098F-3FED-B018-021411674055}.Release|Win32.ActiveCfg = Release|Win32
+		{0B2F189A-098F-3FED-B018-021411674055}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
+	GlobalSection(Qt) = preSolution
+		Integration = True
 	EndGlobalSection
 EndGlobal
