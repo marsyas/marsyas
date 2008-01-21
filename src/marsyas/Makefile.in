@@ -342,6 +342,8 @@ pkginclude_HEADERS = \
 	StereoSpectrumSources.h \
 	EnhADRessStereoSpectrum.h \
 	McAulayQuatieri.h \
+	Flux2.h \
+	PeakerOnset.h \
 	Gain.h
 
 subdir = src/marsyas
