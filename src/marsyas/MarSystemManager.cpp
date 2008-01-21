@@ -167,6 +167,8 @@
 #include "StereoSpectrumSources.h"
 #include "EnhADRessStereoSpectrum.h"
 #include "McAulayQuatieri.h"
+#include "Flux2.h"
+#include "PeakerOnset.h"
 #include "Gain.h"
 // please leave Gain at the end; it makes scripts happy.
 
@@ -226,7 +228,7 @@ MarSystemManager::MarSystemManager()
   registerPrototype("PowerSpectrum", new PowerSpectrum("pspkp"));
   registerPrototype("Centroid", new Centroid("cntrp"));
   registerPrototype("Rolloff", new Rolloff("rlfp"));
-  registerPrototype("Flux", new Flux("flup"));
+  registerPrototype("Flux", new Flux("fluxp"));
   registerPrototype("ZeroCrossings", new ZeroCrossings("zcrsp"));
   registerPrototype("Memory", new Memory("memp"));
   registerPrototype("Mean", new Mean("meanp"));
@@ -320,6 +322,7 @@ MarSystemManager::MarSystemManager()
   registerPrototype("EnhADRess", new EnhADRess("Enhadresspr"));
   registerPrototype("StereoSpectrumSources", new StereoSpectrumSources("stereospectrumsourcespr"));
   registerPrototype("EnhADRessStereoSpectrum", new EnhADRessStereoSpectrum("enhadressstereospectrumpr"));
+	registerPrototype("Flux2", new Flux("flux2p"));
   registerPrototype("Gain", new Gain("gp"));
   // Please leave Gain at the end; it makes scripts happy.
 
@@ -335,9 +338,6 @@ MarSystemManager::MarSystemManager()
   devibotpr->linkctrl("mrs_bool/strike", "mrs_bool/sendMessage");
   devibotpr->updctrl("mrs_natural/byte1", 144);
   registerPrototype("DeviBot", devibotpr);
-
-
-
 
   //--------------------------------------------------------------------------------
   // Stereo2Mono MarSystem 
@@ -360,7 +360,6 @@ MarSystemManager::MarSystemManager()
   textureStatspr->linkctrl("mrs_natural/memSize", "Memory/mempr/mrs_natural/memSize");
   textureStatspr->linkctrl("mrs_bool/reset", "Memory/mempr/mrs_bool/reset");
   registerPrototype("TextureStats", textureStatspr);
-
 
   //--------------------------------------------------------------------------------
   // LPC composite prototype
@@ -386,8 +385,6 @@ MarSystemManager::MarSystemManager()
   LPCnetpr->linkctrl("mrs_real/gamma","LPC/lpc/mrs_real/gamma");
   registerPrototype("LPCnet", LPCnetpr);
 
-
-
   //--------------------------------------------------------------------------------
   // Power spectrum composite prototype
   //--------------------------------------------------------------------------------
@@ -400,7 +397,6 @@ MarSystemManager::MarSystemManager()
   pspectpr->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","power");
   pspectpr->linkctrl("mrs_real/cutoff","Spectrum/spk/mrs_real/cutoff");
   pspectpr->linkctrl("mrs_natural/winSize","ShiftInput/si/mrs_natural/winSize");  registerPrototype("PowerSpectrumNet", pspectpr);
-
   
   MarSystem* pspectpr1 = create("Series", "pspectpr1");
   pspectpr1->addMarSystem(create("Spectrum","spk"));
@@ -466,29 +462,19 @@ MarSystemManager::MarSystemManager()
   lpcf->addMarSystem(lpccbranch);
   lpcFeatures->addMarSystem(lpcf);
 
-
   timbre_features_pr->addMarSystem(lpcFeatures);
-  
-  
- 
   timbre_features_pr->linkctrl("mrs_natural/winSize","Series/timeDomain/ShiftInput/si/mrs_natural/winSize");
   timbre_features_pr->linkctrl("mrs_natural/winSize","Series/spectralShape/ShiftInput/si/mrs_natural/winSize");
   timbre_features_pr->linkctrl("mrs_natural/winSize","Series/lpcFeatures/ShiftInput/si/mrs_natural/winSize");
-  
-  
-  timbre_features_pr->linkctrl("mrs_string/enableSPChild", "Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/enableChild");
+  	timbre_features_pr->linkctrl("mrs_string/enableSPChild", "Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/enableChild");
   timbre_features_pr->linkctrl("mrs_string/enableTDChild", 
 			       "Series/timeDomain/Fanout/tdf/mrs_string/enableChild");
   timbre_features_pr->linkctrl("mrs_string/enableLPCChild", 
 							   "Series/lpcFeatures/Fanout/lpcf/mrs_string/enableChild");
-  
   timbre_features_pr->linkctrl("mrs_string/disableSPChild", "Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/disableChild");  
   timbre_features_pr->linkctrl("mrs_string/disableTDChild", "Series/timeDomain/Fanout/tdf/mrs_string/disableChild");
   timbre_features_pr->linkctrl("mrs_string/disableLPCChild", 
 							   "Series/lpcFeatures/Fanout/lpcf/mrs_string/disableChild");
-
-  
-
 
   registerPrototype("TimbreFeatures", timbre_features_pr);
 

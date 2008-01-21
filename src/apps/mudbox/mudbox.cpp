@@ -431,9 +431,9 @@ toy_with_onsets(string sfName)
 				MarSystem* onsetdetector = mng.create("FlowThru", "onsetdetector");
 					onsetdetector->addMarSystem(mng.create("Spectrum","spk"));
 					onsetdetector->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-					onsetdetector->addMarSystem(mng.create("Flux", "flux")); //use Flux2 from Fabien? [!]
+					onsetdetector->addMarSystem(mng.create("Flux2", "flux")); 
 					onsetdetector->addMarSystem(mng.create("Memory","mem"));
-					onsetdetector->addMarSystem(mng.create("Peaker","peaker")); //reimplement peaker from Dixon paper? [!] Must have a "onset detected" mrs_bool control
+					onsetdetector->addMarSystem(mng.create("PeakerOnset","peaker")); 
 				onsetseries->addMarSystem(onsetdetector);
 			onsetaccum->addMarSystem(onsetseries);
 		onsetnet->addMarSystem(onsetaccum);
@@ -457,39 +457,42 @@ toy_with_onsets(string sfName)
 	onsetnet->linkctrl("ShiftOutput/so/mrs_natural/Interpolation","mrs_natural/inSamples");
 	//
 	onsetnet->linkctrl("Accumulator/onsetaccum/mrs_bool/flush",
-		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Peaker/peaker/mrs_bool/onsetevent"); // Peaker: to create !!!!!!!
+		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_bool/onsetDetected"); 
 	//
 	onsetnet->linkctrl("Fanout/onsetmix/OnsetSynth/onsetsynth/mrs_real/gain",
-		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Peaker/peaker/mrs_real/confidence"); //Peaker: to create!!!!!!!
+		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/confidence");
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	// update controls
 	///////////////////////////////////////////////////////////////////////////////////////
 	mrs_natural winSize = 2048;
-	mrs_natural hopSize = 512;
-	mrs_natural onsetWindowSize = 7;
+	mrs_natural hopSize = 411;
+	mrs_natural onsetWinSize = 3;
 
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/SoundFileSource/src/mrs_string/filename", sfName);
 	onsetnet->updctrl("SoundFileSink/fdest/mrs_string/filename", sfName + "_onsets.wav");
 
-	onsetnet->updctrl("mrs_natural/inSamples", 512); //hopsize
-	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/ShiftInput/si/mrs_natural/winSize", 2048); //winSize
+	onsetnet->updctrl("mrs_natural/inSamples", hopSize);
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/ShiftInput/si/mrs_natural/winSize", winSize);
 
-	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Memory/mem/mrs_natural/memSize", onsetWindowSize);
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_natural/onsetWinSize", onsetWinSize);
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/threshold", 0.1); //!!!!!!!!!!!!!
 	
-	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/timesToKeep", (onsetWindowSize-1)/2);
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Memory/mem/mrs_natural/memSize", 4*onsetWinSize+1);
+	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/timesToKeep", onsetWinSize);
+	
 	onsetnet->updctrl("Accumulator/onsetaccum/mrs_string/mode","explicitFlush");
-	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/maxTimes", 100);
-	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/minTimes", 1);
+	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/maxTimes", 100); //!!!!!!!!!!!!!!!!!!
+	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/minTimes", 1); //!!!!!!!!!!!!!!!!!
 
 	//set audio/onset resynth balance and ADSR params for onset sound
 	mrs_real fs = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
 	onsetnet->updctrl("Fanout/onsetmix/Gain/gainaudio", 0.8);
 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/Gain/gainonsets", 1.0);
 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/mrs_real/aTarget", 1.0);
- 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/mrs_real/aTime", winSize/8/fs);
+ 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/mrs_real/aTime", winSize/8/fs); //!!!!!!!!!!!!!
  	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/mrs_real/dTarget", 0.0);
- 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/mrs_real/dTime", winSize/4/fs);
+ 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/mrs_real/dTime", winSize/4/fs); // !!!!!!!!!!!!!!!
 	
 	onsetnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 	
@@ -499,9 +502,9 @@ toy_with_onsets(string sfName)
 	///////////////////////////////////////////////////////////////////////////////////////
 	while(onsetnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
 	{
-		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/mrs_real/nton", 1.0);
+		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/mrs_real/nton", 1.0); //!!!!!!!!!!!!
 		onsetnet->tick();
-		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/mrs_real/ntoff", 0.0);
+		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/mrs_real/ntoff", 0.0); // !!!!!!!!!!!!!!!
 	}
 }
 

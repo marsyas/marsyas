@@ -346,6 +346,8 @@ HEADERS += \
 	StereoSpectrumSources.h \
 	EnhADRessStereoSpectrum.h \
 	McAulayQuatieri.h \
+	Flux2.h \
+	PeakerOnset.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 	 
@@ -580,6 +582,8 @@ SOURCES += \
 	StereoSpectrumSources.cpp \
 	enhADRessStereoSpectrum.cpp \
 	McAulayQuatieri.cpp \
+	Flux2.cpp \
+	PeakerOnset.cpp \
 	Gain.cpp
 # please leave Gain.cpp at the end like this; it makes scripts happy.
 
