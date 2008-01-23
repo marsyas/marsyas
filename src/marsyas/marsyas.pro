@@ -6,7 +6,6 @@ macx:CONFIG -= app_bundle
 
 TEMPLATE = lib
 CONFIG += staticlib
-win32-g++:CONFIG -= staticlib 
 TARGET = marsyas
 
 CONFIG(release, debug|release) {
