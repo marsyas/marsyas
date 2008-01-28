@@ -322,7 +322,8 @@ MarSystemManager::MarSystemManager()
   registerPrototype("EnhADRess", new EnhADRess("Enhadresspr"));
   registerPrototype("StereoSpectrumSources", new StereoSpectrumSources("stereospectrumsourcespr"));
   registerPrototype("EnhADRessStereoSpectrum", new EnhADRessStereoSpectrum("enhadressstereospectrumpr"));
-	registerPrototype("Flux2", new Flux("flux2p"));
+	registerPrototype("Flux2", new Flux2("flux2p"));
+	registerPrototype("PeakerOnset", new PeakerOnset("pkronsetp"));
   registerPrototype("Gain", new Gain("gp"));
   // Please leave Gain at the end; it makes scripts happy.
 
