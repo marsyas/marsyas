@@ -30,8 +30,8 @@ def modify_manager(filename,action):
 				insertLine = '#include \"' + filename + '.h\"'
 				print "Adding line 1 of 2 to " + fileToEdit
 				newfile.write(insertLine + '\n')
-			if (line[0:25] == '\tregisterPrototype(\"Gain\"'):
-				insertLine = '\tregisterPrototype(\"' + filename + '", new ' + filename +'(\"'+filename.lower()+'pr\"));'
+			if (line[0:26] == '  registerPrototype(\"Gain\"'):
+				insertLine = '  registerPrototype(\"' + filename + '", new ' + filename +'(\"'+filename.lower()+'pr\"));'
 				print "Adding line 2 of 2 to " + fileToEdit
 				newfile.write(insertLine + '\n')
 			newfile.write(line)
@@ -40,7 +40,7 @@ def modify_manager(filename,action):
 				if (line[0:8] == '#include'):
 					print "Removed line 1 of 2 from " + fileToEdit
 					continue
-				if (line[0:18] == '\tregisterPrototype'):
+				if (line[0:19] == '  registerPrototype'):
 					print "Removed line 2 of 2 from " + fileToEdit
 					continue
 			newfile.write(line)
