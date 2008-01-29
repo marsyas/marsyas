@@ -147,7 +147,6 @@ Accumulator::myUpdate(MarControlPtr sender)
 	if(ctrl_timesToKeep_->to<mrs_natural>() > ctrl_minTimes_->to<mrs_natural>())
 	{
 		MRSWARN("Accumulator::myUpdate() - timesToKeep > minTimes! Setting timesToKeep = minTimes");
-		cout << "Im HERE!" << endl;
 		ctrl_timesToKeep_->setValue(ctrl_minTimes_, NOUPDATE);
 	}
 

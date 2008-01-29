@@ -60,7 +60,9 @@ PeakerOnset::myUpdate(MarControlPtr sender)
 
 	ctrl_onSamples_->setValue(1, NOUPDATE);
 	if(inObservations_ > 1)
+	{
 		MRSWARN("PeakerOnset::myUpdate() - inObservations is bigget than 1. This MarSystem only takes the first observation into consideration...");
+	}
 	ctrl_onObservations_->setValue(1, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 	ctrl_onObsNames_->setValue("onset_confidence");
@@ -95,6 +97,7 @@ PeakerOnset::myProcess(realvec& in, realvec& out)
 		if(checkPointValue < in(t))
 		{
 			isOnset = false;
+			//cout << "failed 1st condition!" << endl;
 			break;
 		}
 	}
@@ -104,8 +107,11 @@ PeakerOnset::myProcess(realvec& in, realvec& out)
 	for(t=0; t < inSamples_; t++)
 		m += in(t);
 	m /= inSamples_;
-	if(checkPointValue < m * (1.0 + ctrl_threshold_->to<mrs_real>()))
+	if(checkPointValue < (m * ctrl_threshold_->to<mrs_real>()))
+	{
 		isOnset = false;
+		//cout << "failed 2nd condition!" << endl;
+	}
 
 	//third condition from Dixon2006 (DAFx paper) is not implemented
 	//since it was found on that paper that its impact is minimal...
