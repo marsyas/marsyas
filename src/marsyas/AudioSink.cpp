@@ -77,7 +77,7 @@ AudioSink::addControls()
   addctrl("mrs_bool/initAudio", false);
   setctrlState("mrs_bool/initAudio", true);
   
-
+  
 }
 
 void 
@@ -100,6 +100,7 @@ AudioSink::myUpdate(MarControlPtr sender)
   else 
     reservoirSize_ = 2 * inSamples_;
   
+
   if (reservoirSize_ > preservoirSize_)
     reservoir_.stretch(nChannels_, reservoirSize_);
   
@@ -164,6 +165,10 @@ AudioSink::initRtAudio()
   
   isInitialized_ = true;
   setctrl("mrs_bool/initAudio", false);
+
+  // allocate upper bound memory for reservoir_ 
+  reservoir_.create(4 * bufferSize_);
+
 }
 
 void 
@@ -273,21 +278,15 @@ AudioSink::myProcess(realvec& in, realvec& out)
   //send audio data in reservoir to RtAudio
   while (diff_ >= rsize_)  
     {
-      t = 0;
-      int rsize_tmp = rsize_;
-       
-      while (t < rsize_tmp) 
+      for (t =0; t < rsize_; t++) 
 	{
-	  
-	  if ((start_ + t) > reservoirSize_)
-	    {
-	      t -= reservoirSize_;
-	      rsize_tmp -= reservoirSize_;
-	    }
 	  const int t2 = 2 * t;
-	  const int rt = start_ + t;
-
+	  int rt = (start_ + t);
 	  
+	  while (rt >= reservoirSize_) 
+	    rt -= reservoirSize_;
+	  while (rt < 0) 
+	    rt += reservoirSize_;
 	  
 #ifndef MARSYAS_MACOSX
 	  if (inObservations_ == 1) 
@@ -327,8 +326,10 @@ AudioSink::myProcess(realvec& in, realvec& out)
 	    {
 	      if (inObservations_ == 1) 
 		{
-		  data_[t2] = reservoir_(0, rt);
-		  data_[t2+1] = reservoir_(0, rt);
+		  
+		  mrs_real foo = reservoir_(0, rt);
+		  data_[t2] = foo; 
+		  data_[t2+1] = foo;
 		}
 	      else 
 		{
@@ -336,7 +337,6 @@ AudioSink::myProcess(realvec& in, realvec& out)
 		  data_[t2+1] = reservoir_(1, rt);
 		}
 	    }
-	  t++;
 #endif 
 	}
       
@@ -350,7 +350,6 @@ AudioSink::myProcess(realvec& in, realvec& out)
 	{
 	  error.printMessage();
 	}
-      
       //update reservoir pointers
       start_ = (start_ + rsize_) % reservoirSize_;
       if (end_ >= start_) 

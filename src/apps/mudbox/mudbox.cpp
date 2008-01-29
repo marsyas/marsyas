@@ -56,13 +56,16 @@ printHelp(string progName)
 	cerr << "Usage : " << progName << "-t toy_withName file1 file2 file3" << endl;
 	cerr << endl;
 	cerr << "Supported toy_withs:" << endl;
-	cerr << "audiodevices : toy_with audio devices " << endl;
-	cerr << "cascade         : toy_with Cascade composite " << endl;
-	cerr << "CollectionFileSource: toy_with using Collection file1 as a SoundFileSource " << endl;
-	cerr << "drumclassify    : toy_with drumclassify (mplfile argument)" << endl;
+	cerr << "audiodevices     : enumerate audio devices " << endl;
+	cerr << "cascade          : check cascade composite " << endl;
+	cerr << "collection       : using collection file1 as a SoundFileSource " << endl;
+	cerr << "drumclassify     : drumclassify (mplfile argument)" << endl;
+	cerr << "duplex           : duplex audio input/output" << endl;
+
 	cerr << "fanoutswitch    : toy_with disabling fanout branches " << endl;
 	cerr << "filter          : toy_with filter MarSystem " << endl;
 	cerr << "fft             : toy_with fft analysis/resynthesis " << endl;
+	cerr << "inSamples  : changing inSamples at runtime " << endl;
 	cerr << "knn             : toy_with K-NearestNeighbor classifier " << endl;
 	cerr << "marsystemIO     : toy_with marsystem IO " << endl;
 	cerr << "mixer           : toy_with fanout for mixing " << endl;
@@ -89,7 +92,7 @@ printHelp(string progName)
 	cerr << "Windowing       : toy_with different window functions of Windowing marsystem" << endl;
 	cerr << "weka            : toy_with weka source and sink functionality" << endl;
 	cerr << "updctrl         : toy_with updating control with pointers " << endl;
-	cerr << "duplex          : toy_with duplex audio input/output" << endl;
+
 	cerr << "simpleSFPlay    : plays a sound file" << endl;
 	cerr << "getControls     : toy_with getControls functionality " << endl;
 	cerr << "mono2stereo     : toy_with mono2stereo MarSystem " << endl;
@@ -480,8 +483,9 @@ toy_with_onsets(string sfName)
 				onsetsynth->addMarSystem(mng.create("Gain", "gainonsets"));
 			onsetmix->addMarSystem(onsetsynth);
 	onsetnet->addMarSystem(onsetmix);
-	onsetnet->addMarSystem(mng.create("SoundFileSink", "fdest"));
-	//onsetnet->addMarSystem(mng.create("AudioSink", "dest"));
+	onsetnet->addMarSystem(mng.create("AudioSink", "dest"));
+	// onsetnet->addMarSystem(mng.create("SoundFileSink", "fdest"));
+
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	//link controls
@@ -502,7 +506,7 @@ toy_with_onsets(string sfName)
 	mrs_natural onsetWinSize = 3;
 
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/SoundFileSource/src/mrs_string/filename", sfName);
-	onsetnet->updctrl("SoundFileSink/fdest/mrs_string/filename", sfName + "_onsets.wav");
+	// onsetnet->updctrl("SoundFileSink/fdest/mrs_string/filename", sfName + "_onsets.wav");
 
 	onsetnet->updctrl("mrs_natural/inSamples", hopSize);
 	//onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/ShiftInput/si/mrs_natural/winSize", winSize);
@@ -526,7 +530,7 @@ toy_with_onsets(string sfName)
  	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/susLevel", 0.0);
  	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/dTime", winSize/4/fs); // !!!!!!!!!!!!!!!
 	
-	//onsetnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	onsetnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 	
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -787,6 +791,36 @@ toy_with_mixer(string sfName0, string sfName1)
 
 	delete pnet;
 }
+
+void 
+toy_with_inSamples(string sfName)
+{
+  cout << "toy_with_inSamples: sfName = " << sfName << endl;
+  MarSystemManager mng;
+  
+  MarSystem* playbacknet = mng.create("Series", "playbacknet");
+  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+  playbacknet->addMarSystem(mng.create("Gain", "gain"));
+  playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
+  // playbacknet->addMarSystem(mng.create("SoundFileSink", "dest"));
+  
+
+  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+  playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+  //  playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", "foo.wav");
+  
+  int i=1;
+  // increment in inSamples by 1 at every iteration 
+  while(playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+    {
+      playbacknet->updctrl("mrs_natural/inSamples", i);
+      playbacknet->tick();
+      i++;
+      cout << "processing " << i << " inSamples" << endl;
+    }
+  
+}
+
 
 void 
 toy_with_fft(string sfName) 
@@ -2451,7 +2485,6 @@ toy_with_ADRess(string fname0, string fname1)
 	//	Collection l;
 	//	l.read(fname0);
 
-	int i;
 
 	total->updctrl("Annotator/ann/mrs_natural/label", 0); 
 	//for (i=0; i < l.size(); i++) 
@@ -2462,8 +2495,7 @@ toy_with_ADRess(string fname0, string fname1)
 	*/ 
 	//cout << "Processing " << l.entry(i) << endl;
 	total->tick();
-	cout << "i = " << i << endl;
-
+	
 	//	}
 
 	/*
@@ -2634,9 +2666,6 @@ void toy_with_spectralSNR(string fname0, string fname1)
 	total->updctrl("mrs_natural/inSamples",	2048);
 
 
-	mrs_bool isEmpty;
-
-
 	total->tick();
 
 
@@ -2718,7 +2747,6 @@ void toy_with_SOM(string collectionName)
 
 	total->updctrl("mrs_string/filename", collectionName);
 
-	mrs_natural l=0;
 
 	mrs_natural trainSize = 20000;
 	mrs_natural grid_width = 10;
@@ -2869,7 +2897,6 @@ toy_with_weka(string fname)
 
 	net->updctrl("GaussianClassifier/gcl/mrs_natural/nLabels", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
 	net->linkctrl("GaussianClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
-	mrs_bool training_done = false;
 
 	while(net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>() == false)
 	{
@@ -3575,14 +3602,20 @@ main(int argc, const char **argv)
 		toy_with_audiodevices(); 
 	else if (toy_withName == "cascade") 
 		toy_with_cascade();
-	else if (toy_withName == "CollectionFileSource")
+	else if (toy_withName == "collection")
 		toy_with_CollectionFileSource(fname0);
+	else if (toy_withName == "drumclassify")
+		drumClassify(fname0); 
+	else if (toy_withName == "duplex") 
+		toy_with_duplex();
 	else if (toy_withName == "fanoutswitch")
 		toy_with_fanoutswitch();
 	else if (toy_withName == "filter") 
 		toy_with_filter();
 	else if (toy_withName == "fft") 
 		toy_with_fft(fname0);
+	else if (toy_withName == "inSamples")
+	  toy_with_inSamples(fname0);
 	else if (toy_withName == "knn")
 		toy_with_knn();
 	else if (toy_withName == "marsystemIO")
@@ -3641,8 +3674,6 @@ main(int argc, const char **argv)
 		toy_with_updctrl(fname0);
 	else if (toy_withName == "weka")
 		toy_with_weka(fname0);
-	else if (toy_withName == "duplex") 
-		toy_with_duplex();
 	else if (toy_withName == "simpleSFPlay") 
 		toy_with_simpleSFPlay(fname0);
 	else if (toy_withName == "getControls") 
@@ -3661,8 +3692,6 @@ main(int argc, const char **argv)
 		toy_with_realvecCtrl(fname0);
 	else if (toy_withName == "power")
 		toy_with_power(fname0);
-	else if (toy_withName == "drumclassify")
-		drumClassify(fname0); 
 	else if (toy_withName == "phisem")
 		toy_phisem();
 	else if (toy_withName == "windowedsource")
