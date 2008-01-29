@@ -480,7 +480,7 @@ toy_with_onsets(string sfName)
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/threshold", 0.0); //!!!!!!!!!!!!!
 	
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Memory/mem/mrs_natural/memSize", 4*onsetWinSize+1);
-	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/timesToKeep", onsetWinSize);
+	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/timesToKeep", onsetWinSize+1);
 	onsetnet->updctrl("Accumulator/onsetaccum/mrs_string/mode","explicitFlush");
 	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/maxTimes", 100); //!!!!!!!!!!!!!!!!!!
 	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/minTimes", 10); //!!!!!!!!!!!!!!!!!

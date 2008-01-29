@@ -147,6 +147,7 @@ Accumulator::myUpdate(MarControlPtr sender)
 	if(ctrl_timesToKeep_->to<mrs_natural>() > ctrl_minTimes_->to<mrs_natural>())
 	{
 		MRSWARN("Accumulator::myUpdate() - timesToKeep > minTimes! Setting timesToKeep = minTimes");
+		cout << "Im HERE!" << endl;
 		ctrl_timesToKeep_->setValue(ctrl_minTimes_, NOUPDATE);
 	}
 
@@ -176,7 +177,7 @@ Accumulator::myProcess(realvec& in, realvec& out)
 
 	if(ctrl_mode_->to<mrs_string>() == "explicitFlush")
 	{
-		mrs_natural timesCount = 0;
+		mrs_natural timesCount = keptOnSamples_/childOnSamples_;
 		while((!ctrl_flush_->to<mrs_bool>() && timesCount < ctrl_maxTimes_->to<mrs_natural>()) || timesCount < ctrl_minTimes_->to<mrs_natural>())
 		{
 			// child MarSystem should have a control linked to the Accumulator flush control
@@ -188,7 +189,7 @@ Accumulator::myProcess(realvec& in, realvec& out)
 			for (o=0; o < onObservations_; o++)
 				for (t = 0; t < childOnSamples_; t++)
 				{
-					tout_(o, keptOnSamples_ + t + timesCount * childOnSamples_) = childOut_(o,t);
+					tout_(o, t + timesCount * childOnSamples_) = childOut_(o,t);
 				}
 			timesCount++;
 		}
