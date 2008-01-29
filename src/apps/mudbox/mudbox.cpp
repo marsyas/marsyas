@@ -426,9 +426,11 @@ toy_with_onsets(string sfName)
 			MarSystem* onsetseries= mng.create("Series","onsetseries");
 				onsetseries->addMarSystem(mng.create("SoundFileSource", "src"));
 				onsetseries->addMarSystem(mng.create("Stereo2Mono", "src")); //replace by a "Monofier" MarSystem (to be created) [!]
-				onsetseries->addMarSystem(mng.create("ShiftInput", "si"));
-				onsetseries->addMarSystem(mng.create("Windowing", "win"));
+				//onsetseries->addMarSystem(mng.create("ShiftInput", "si"));
+				//onsetseries->addMarSystem(mng.create("Windowing", "win"));
 				MarSystem* onsetdetector = mng.create("FlowThru", "onsetdetector");
+					onsetdetector->addMarSystem(mng.create("ShiftInput", "si")); //<---
+					onsetdetector->addMarSystem(mng.create("Windowing", "win")); //<---
 					onsetdetector->addMarSystem(mng.create("Spectrum","spk"));
 					onsetdetector->addMarSystem(mng.create("PowerSpectrum", "pspk"));
 					onsetdetector->addMarSystem(mng.create("Flux2", "flux")); 
@@ -437,15 +439,15 @@ toy_with_onsets(string sfName)
 				onsetseries->addMarSystem(onsetdetector);
 			onsetaccum->addMarSystem(onsetseries);
 		onsetnet->addMarSystem(onsetaccum);
-	onsetnet->addMarSystem(mng.create("ShiftOutput","so"));
-		MarSystem* onsetmix = mng.create("Fanout","onsetmix");
-			onsetmix->addMarSystem(mng.create("Gain","gainaudio"));
-				MarSystem* onsetsynth = mng.create("Series","onsetsynth");
-					onsetsynth->addMarSystem(mng.create("Noise","noisesrc"));
-					onsetsynth->addMarSystem(mng.create("ADSR","env"));
-					onsetsynth->addMarSystem(mng.create("Gain", "gainonsets"));
-				onsetmix->addMarSystem(onsetsynth);
-		onsetnet->addMarSystem(onsetmix);
+	//onsetnet->addMarSystem(mng.create("ShiftOutput","so"));
+	MarSystem* onsetmix = mng.create("Fanout","onsetmix");
+		onsetmix->addMarSystem(mng.create("Gain","gainaudio"));
+			MarSystem* onsetsynth = mng.create("Series","onsetsynth");
+				onsetsynth->addMarSystem(mng.create("Noise","noisesrc"));
+				onsetsynth->addMarSystem(mng.create("ADSR","env"));
+				onsetsynth->addMarSystem(mng.create("Gain", "gainonsets"));
+			onsetmix->addMarSystem(onsetsynth);
+	onsetnet->addMarSystem(onsetmix);
 	onsetnet->addMarSystem(mng.create("SoundFileSink", "fdest"));
 	onsetnet->addMarSystem(mng.create("AudioSink", "dest"));
 
@@ -454,11 +456,9 @@ toy_with_onsets(string sfName)
 	///////////////////////////////////////////////////////////////////////////////////////
 	onsetnet->linkctrl("mrs_bool/notEmpty", 
 		"Accumulator/onsetaccum/Series/onsetseries/SoundFileSource/src/mrs_bool/notEmpty");
-	onsetnet->linkctrl("ShiftOutput/so/mrs_natural/Interpolation","mrs_natural/inSamples");
-	//
+	//onsetnet->linkctrl("ShiftOutput/so/mrs_natural/Interpolation","mrs_natural/inSamples");
 	onsetnet->linkctrl("Accumulator/onsetaccum/mrs_bool/flush",
 		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_bool/onsetDetected"); 
-	//
 	onsetnet->linkctrl("Fanout/onsetmix/OnsetSynth/onsetsynth/mrs_real/gain",
 		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/confidence");
 
@@ -473,7 +473,8 @@ toy_with_onsets(string sfName)
 	onsetnet->updctrl("SoundFileSink/fdest/mrs_string/filename", sfName + "_onsets.wav");
 
 	onsetnet->updctrl("mrs_natural/inSamples", hopSize);
-	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/ShiftInput/si/mrs_natural/winSize", winSize);
+	//onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/ShiftInput/si/mrs_natural/winSize", winSize);
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/ShiftInput/si/mrs_natural/winSize", winSize);
 
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_natural/onsetWinSize", onsetWinSize);
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/threshold", 0.1); //!!!!!!!!!!!!!
