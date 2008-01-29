@@ -58,8 +58,7 @@ printHelp(string progName)
 	cerr << "Supported toy_withs:" << endl;
 	cerr << "audiodevices : toy_with audio devices " << endl;
 	cerr << "cascade         : toy_with Cascade composite " << endl;
-	cerr << "collection      : toy_with Collection " << endl;
-	cerr << "CollectionFileSource: toy_with using Collection as SoundFileSources" << endl;
+	cerr << "CollectionFileSource: toy_with using Collection file1 as a SoundFileSource " << endl;
 	cerr << "drumclassify    : toy_with drumclassify (mplfile argument)" << endl;
 	cerr << "fanoutswitch    : toy_with disabling fanout branches " << endl;
 	cerr << "filter          : toy_with filter MarSystem " << endl;
@@ -204,8 +203,6 @@ toy_with_cascade()
 	MarSystemManager mng;
 	MarSystem* cascade = mng.create("Cascade", "cascade");
 
-
-
 	realvec a(3),b(3);
 	MarSystem* f0 = mng.create("Filter", "f0");
 	a(0) = 1.0f;
@@ -245,6 +242,41 @@ toy_with_cascade()
 	// TOCHECK: memory leak when calling process directly 
 	cascade->process(in, out);
 }
+
+
+void 
+toy_with_CollectionFileSource(string sfName)
+{  
+	MarSystemManager mng;
+
+	MarSystem* playbacknet = mng.create("Series", "playbacknet");
+	playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+	playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
+
+	playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+	playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	playbacknet->linkControl("mrs_bool/notEmpty", 
+				 "SoundFileSource/src/mrs_bool/notEmpty");
+	playbacknet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
+
+	mrs_bool isEmpty;
+	// int cindex = 0;
+	while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
+	{
+	  playbacknet->tick();
+	  // playbacknet->updctrl("SoundFileSource/src/mrs_natural/cindex", cindex);
+		cout << playbacknet->getctrl("SoundFileSource/src/mrs_string/currentlyPlaying")->to<mrs_string>() << endl;
+
+		// cindex++;
+		// cout << "cindex = " << cindex << endl;
+		//toy_with if setting "mrs_natural/pos" to 0 for rewinding is working
+		//if(playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() > 100000)
+		//	playbacknet->updctrl("mrs_natural/pos", 0);
+	}
+	delete playbacknet;
+}
+
+
 
 
 
@@ -849,68 +881,9 @@ toy_with_probe()
 }
 
 
-void 
-toy_with_collection(string sfName) 
-{
-	cout << "sfName = " << sfName << endl;
-	Collection l;
-	l.read(sfName);
-	cout << "Finished reading" << endl;
-	l.labelAll("music");
-	l.write("out.mf");
-	cout << "Finished writing" << endl;
-
-	int i;
-	for (i = 0; i < l.size() ; i++)
-	{
-		cout << "**" << l.entry(i) << "***" << endl;
-		cout << "**" << l.labelEntry(i) << "***" << endl;
-	}
-	return;
-}
 
 
 
-void 
-toy_with_CollectionFileSource(string sfName)
-{  
-	MarSystemManager mng;
-
-	MarSystem* playbacknet = mng.create("Series", "playbacknet");
-
-	playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
-	playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
-
-	playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-	playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-
-	playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
-	playbacknet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
-
-	mrs_bool isEmpty;
-	//cout << *playbacknet << endl;
-	int cindex = 0;
-	while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
-	{
-		cout << "tick " << isEmpty << endl;
-
-		// for (int i=0; i<100; i++)
-		playbacknet->tick();
-
-		// playbacknet->updctrl("SoundFileSource/src/mrs_natural/cindex", cindex);
-		cout << playbacknet->getctrl("SoundFileSource/src/mrs_string/currentlyPlaying")->to<mrs_string>() << endl;
-
-		// cindex++;
-		// cout << "cindex = " << cindex << endl;
-
-
-		//toy_with if setting "mrs_natural/pos" to 0 for rewinding is working
-		//if(playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() > 100000)
-		//	playbacknet->updctrl("mrs_natural/pos", 0);
-	}
-	cout << "tick " << isEmpty << endl;
-	delete playbacknet;
-}
 
 void 
 toy_with_knn()
@@ -2072,14 +2045,10 @@ toy_with_stereoFeaturesMFCC(string fname0, string fname1)
 
 	total->updctrl("mrs_natural/inSamples", 1024);
 
-	mrs_bool isEmpty;
-
-	// cout << *total << endl;
-
 	Collection l;
 	l.read(fname0);
 
-	int i,t;
+	int i;
 
 	total->updctrl("Annotator/ann/mrs_natural/label", 0); 
 	for (i=0; i < l.size(); i++) 
@@ -2180,15 +2149,11 @@ toy_with_stereoMFCC(string fname0, string fname1)
 
 	total->updctrl("mrs_natural/inSamples", 1024);
 
-	mrs_bool isEmpty;
-
-	// cout << *total << endl;
-
+	
 	Collection l;
 	l.read(fname0);
 
-	int i,t;
-
+	int i;
 	total->updctrl("Annotator/ann/mrs_natural/label", 0); 
 	for (i=0; i < l.size(); i++) 
 	{
@@ -2354,14 +2319,12 @@ toy_with_stereoFeatures(string fname0, string fname1)
 
 	total->updctrl("mrs_natural/inSamples", 1024);
 
-	mrs_bool isEmpty;
-
 	// cout << *total << endl;
 
 	Collection l;
 	l.read(fname0);
 
-	int i,t;
+	int i;
 
 	total->updctrl("Annotator/ann/mrs_natural/label", 0); 
 	for (i=0; i < l.size(); i++) 
@@ -2483,14 +2446,12 @@ toy_with_ADRess(string fname0, string fname1)
 
 	total->updctrl("mrs_natural/inSamples", 1024);
 
-	mrs_bool isEmpty;
-
 	// cout << *total << endl;
 
 	//	Collection l;
 	//	l.read(fname0);
 
-	int i,t;
+	int i;
 
 	total->updctrl("Annotator/ann/mrs_natural/label", 0); 
 	//for (i=0; i < l.size(); i++) 
@@ -2961,12 +2922,16 @@ toy_with_duplex()
 	dnet->addMarSystem(mng.create("AudioSource", "src"));
 	dnet->addMarSystem(mng.create("Gain", "gain"));
 	dnet->addMarSystem(mng.create("AudioSink", "dest"));
-  cout << *dnet << endl;
-  
-  for (int i=0; i < 500; i++) 
-    {
-      dnet->tick();
-    } 
+	
+	dnet->updctrl("mrs_real/israte", 44100.0);
+	dnet->updctrl("AudioSource/src/mrs_natural/nChannels", 2);
+	dnet->updctrl("AudioSource/src/mrs_bool/initAudio", true);
+	dnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	
+	for (int i=0; i < 500; i++) 
+	  {
+	    dnet->tick();
+	  } 
 }
 
 // Pluck(0,100,1.0,0.5,"Toy_WithPluckedRich0_100hz.wav");
@@ -3610,8 +3575,6 @@ main(int argc, const char **argv)
 		toy_with_audiodevices(); 
 	else if (toy_withName == "cascade") 
 		toy_with_cascade();
-	else if (toy_withName == "collection")
-		toy_with_collection(fname0);
 	else if (toy_withName == "CollectionFileSource")
 		toy_with_CollectionFileSource(fname0);
 	else if (toy_withName == "fanoutswitch")

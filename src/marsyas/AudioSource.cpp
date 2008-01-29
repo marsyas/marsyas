@@ -213,7 +213,7 @@ AudioSource::myProcess(realvec& in, realvec& out)
   if ( stopped_ )
     start();
   
-  int ssize = inSamples_ * inObservations_;  
+  int ssize = onSamples_ * onObservations_;  
   
   //send audio to output
 #ifdef MARSYAS_AUDIOIO
@@ -230,17 +230,18 @@ AudioSource::myProcess(realvec& in, realvec& out)
 	  error.printMessage();
 	}
 
-      for (t=0; t < inObservations_ * bufferSize_; t++)
+      for (t=0; t < onObservations_ * bufferSize_; t++)
 	{
 	  reservoir_(ri_) = data_[t];
+	  
 	  ri_++;
 	}
     }
   
-  for (o=0; o < inObservations_; o++)
-    for (t=0; t < inSamples_; t++)
+  for (o=0; o < onObservations_; o++)
+    for (t=0; t < onSamples_; t++)
       {
-	out(o,t) = gain_ * reservoir_(inObservations_ * t + o);
+	out(o,t) = gain_ * reservoir_(onObservations_ * t + o);
       }
   
   for (t=ssize; t < ri_; t++)
