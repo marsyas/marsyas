@@ -169,6 +169,7 @@
 #include "McAulayQuatieri.h"
 #include "Flux2.h"
 #include "PeakerOnset.h"
+#include "ADSR.h"
 #include "Gain.h"
 // please leave Gain at the end; it makes scripts happy.
 
@@ -323,7 +324,8 @@ MarSystemManager::MarSystemManager()
   registerPrototype("StereoSpectrumSources", new StereoSpectrumSources("stereospectrumsourcespr"));
   registerPrototype("EnhADRessStereoSpectrum", new EnhADRessStereoSpectrum("enhadressstereospectrumpr"));
 	registerPrototype("Flux2", new Flux2("flux2p"));
-	registerPrototype("PeakerOnset", new PeakerOnset("pkronsetp"));
+	registerPrototype("PeakerOnset", new PeakerOnset("pkronsetpr"));
+	registerPrototype("ADSR", new ADSR("adsrpr"));
   registerPrototype("Gain", new Gain("gp"));
   // Please leave Gain at the end; it makes scripts happy.
 

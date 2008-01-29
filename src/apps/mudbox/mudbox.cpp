@@ -443,13 +443,13 @@ toy_with_onsets(string sfName)
 	MarSystem* onsetmix = mng.create("Fanout","onsetmix");
 		onsetmix->addMarSystem(mng.create("Gain","gainaudio"));
 			MarSystem* onsetsynth = mng.create("Series","onsetsynth");
-				onsetsynth->addMarSystem(mng.create("Noise","noisesrc"));
+				onsetsynth->addMarSystem(mng.create("NoiseSource","noisesrc"));
 				onsetsynth->addMarSystem(mng.create("ADSR","env"));
 				onsetsynth->addMarSystem(mng.create("Gain", "gainonsets"));
 			onsetmix->addMarSystem(onsetsynth);
 	onsetnet->addMarSystem(onsetmix);
 	onsetnet->addMarSystem(mng.create("SoundFileSink", "fdest"));
-	onsetnet->addMarSystem(mng.create("AudioSink", "dest"));
+	//onsetnet->addMarSystem(mng.create("AudioSink", "dest"));
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	//link controls
@@ -459,7 +459,7 @@ toy_with_onsets(string sfName)
 	//onsetnet->linkctrl("ShiftOutput/so/mrs_natural/Interpolation","mrs_natural/inSamples");
 	onsetnet->linkctrl("Accumulator/onsetaccum/mrs_bool/flush",
 		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_bool/onsetDetected"); 
-	onsetnet->linkctrl("Fanout/onsetmix/OnsetSynth/onsetsynth/mrs_real/gain",
+	onsetnet->linkctrl("Fanout/onsetmix/Series/onsetsynth/Gain/gainonsets/mrs_real/gain",
 		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/confidence");
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -477,25 +477,24 @@ toy_with_onsets(string sfName)
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/ShiftInput/si/mrs_natural/winSize", winSize);
 
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_natural/onsetWinSize", onsetWinSize);
-	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/threshold", 0.1); //!!!!!!!!!!!!!
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/threshold", 0.0); //!!!!!!!!!!!!!
 	
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Memory/mem/mrs_natural/memSize", 4*onsetWinSize+1);
 	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/timesToKeep", onsetWinSize);
-	
 	onsetnet->updctrl("Accumulator/onsetaccum/mrs_string/mode","explicitFlush");
 	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/maxTimes", 100); //!!!!!!!!!!!!!!!!!!
-	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/minTimes", 1); //!!!!!!!!!!!!!!!!!
+	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/minTimes", 10); //!!!!!!!!!!!!!!!!!
 
 	//set audio/onset resynth balance and ADSR params for onset sound
 	mrs_real fs = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
-	onsetnet->updctrl("Fanout/onsetmix/Gain/gainaudio", 0.8);
-	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/Gain/gainonsets", 1.0);
-	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/mrs_real/aTarget", 1.0);
- 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/mrs_real/aTime", winSize/8/fs); //!!!!!!!!!!!!!
- 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/mrs_real/dTarget", 0.0);
- 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/mrs_real/dTime", winSize/4/fs); // !!!!!!!!!!!!!!!
+	onsetnet->updctrl("Fanout/onsetmix/Gain/gainaudio/mrs_real/gain", 1.0);
+	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/Gain/gainonsets/mrs_real/gain", 1.0);
+	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/aTarget", 1.0);
+ 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/aTime", winSize/80/fs); //!!!!!!!!!!!!!
+ 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/susLevel", 0.0);
+ 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/dTime", winSize/4/fs); // !!!!!!!!!!!!!!!
 	
-	onsetnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	//onsetnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 	
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -503,9 +502,9 @@ toy_with_onsets(string sfName)
 	///////////////////////////////////////////////////////////////////////////////////////
 	while(onsetnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
 	{
-		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/mrs_real/nton", 1.0); //!!!!!!!!!!!!
+		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/nton", 1.0); //!!!!!!!!!!!!
 		onsetnet->tick();
-		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/mrs_real/ntoff", 0.0); // !!!!!!!!!!!!!!!
+		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/ntoff", 0.0); // !!!!!!!!!!!!!!!
 	}
 }
 

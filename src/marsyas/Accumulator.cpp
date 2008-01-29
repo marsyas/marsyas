@@ -118,8 +118,8 @@ Accumulator::myUpdate(MarControlPtr sender)
 	else
 	{
 		MarSystem::myUpdate(sender);
+		ctrl_nTimes_->setValue(1, NOUPDATE);
 		nTimes_ = 1;
-		setctrl(ctrl_onSamples_, ctrl_inSamples_->to<mrs_natural>());//*nTimes_);
 	}
 
 	onObservations_ = ctrl_onObservations_->to<mrs_natural>();
@@ -144,9 +144,9 @@ Accumulator::myUpdate(MarControlPtr sender)
 // 	if(ctrl_minTimes_ == -1)
 // 		ctrl_minTimes_->setValue(nTimes_);
 
-	if(ctrl_timesToKeep_->to<mrs_natural>() < ctrl_minTimes_->to<mrs_natural>())
+	if(ctrl_timesToKeep_->to<mrs_natural>() > ctrl_minTimes_->to<mrs_natural>())
 	{
-		MRSWARN("Accumulator::myUpdate() - timesToKeep < minTimes! Setting timesToKeep = minTimes");
+		MRSWARN("Accumulator::myUpdate() - timesToKeep > minTimes! Setting timesToKeep = minTimes");
 		ctrl_timesToKeep_->setValue(ctrl_minTimes_, NOUPDATE);
 	}
 
@@ -169,15 +169,15 @@ Accumulator::myProcess(realvec& in, realvec& out)
 {
 	if(marsystemsSize_ == 0)
 	{
-		ctrl_nTimes_->setValue(1);
+		//ctrl_nTimes_->setValue(1);
 		out = in;
 		return;
 	}
 
 	if(ctrl_mode_->to<mrs_string>() == "explicitFlush")
 	{
-		mrs_natural count = 0;
-		while((!ctrl_flush_->to<mrs_bool>() && count < ctrl_maxTimes_->to<mrs_natural>()) || count < ctrl_minTimes_->to<mrs_natural>())
+		mrs_natural timesCount = 0;
+		while((!ctrl_flush_->to<mrs_bool>() && timesCount < ctrl_maxTimes_->to<mrs_natural>()) || timesCount < ctrl_minTimes_->to<mrs_natural>())
 		{
 			// child MarSystem should have a control linked to the Accumulator flush control
 			// so it can signal the end of this loop (e.g. when an onset is detected or something similar)
@@ -188,14 +188,15 @@ Accumulator::myProcess(realvec& in, realvec& out)
 			for (o=0; o < onObservations_; o++)
 				for (t = 0; t < childOnSamples_; t++)
 				{
-					tout_(o, keptOnSamples_ + t + count * childOnSamples_) = childOut_(o,t);
+					tout_(o, keptOnSamples_ + t + timesCount * childOnSamples_) = childOut_(o,t);
 				}
-			count++;
+			timesCount++;
 		}
 
 		//adjust output number of samples dynamically (this calls update()!!)
 		//to the number of accumulated samples (minus the ones to keep for next time)
-		ctrl_nTimes_->setValue(count - ctrl_timesToKeep_->to<mrs_natural>()); 
+		ctrl_nTimes_->setValue(timesCount - ctrl_timesToKeep_->to<mrs_natural>()); 
+		
 		keptOnSamples_ = ctrl_timesToKeep_->to<mrs_natural>() * childOnSamples_;
 		
 		//copy data in tmp buffer to the output

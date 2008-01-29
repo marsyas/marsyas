@@ -48,7 +48,7 @@ ADSR::addControls()
 	//addctrl("mrs_real/rRate", 0.001);//release rate
 	addctrl("mrs_real/rTime", 0.2);//release time
 	
-	addctrl("natural/state", 1);
+	addctrl("mrs_natural/state", 1);
 	
 	addctrl("mrs_real/nton", 0.0);
 	addctrl("mrs_real/ntoff", 0.0);
@@ -98,7 +98,7 @@ ADSR::myUpdate(MarControlPtr sender)
 
 	if(noteon_)
 	{
-		this->updctrl("mrs_real/nton",0.0);
+		this->setctrl("mrs_real/nton",0.0);
 		value_=0.0;
 		target_ = aTarget_;
 		state_ = 1;  
@@ -106,7 +106,7 @@ ADSR::myUpdate(MarControlPtr sender)
 
 	if(noteoff_)
 	{
-		this->updctrl("mrs_real/ntoff",0.0);
+		this->setctrl("mrs_real/ntoff",0.0);
 		//cout << "noteof ADSR" << endl;
 		target_ = 0.0;
 		state_ = 4;
