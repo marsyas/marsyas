@@ -121,7 +121,14 @@ PeakerOnset::myProcess(realvec& in, realvec& out)
 		ctrl_onsetDetected_->setValue(true);
 		ctrl_confidence_->setValue(1.0); //!!!!!!!!!!!!! [!] must still find a way to output a confidence...
 		out.setval(1.0);
+		cout<<"Onset Detected!" << endl;
 	}
+
+	//MATLAB_PUT(in, "PeakerOnset_in");
+	//MATLAB_EVAL("plot(PeakerOnset_in)");
+
+	MATLAB_PUT(out,"PeakerOnset_out");
+	MATLAB_EVAL("onsetTS = [onsetTS, PeakerOnset_out];");
 }
 
 

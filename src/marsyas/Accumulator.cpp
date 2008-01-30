@@ -193,6 +193,9 @@ Accumulator::myProcess(realvec& in, realvec& out)
 			timesCount++;
 		}
 
+		if(!ctrl_flush_->to<mrs_bool>())
+			cout << "Onset not detected... max length of segment reached!" << endl;
+
 		//adjust output number of samples dynamically (this calls update()!!)
 		//to the number of accumulated samples (minus the ones to keep for next time)
 		ctrl_nTimes_->setValue(timesCount - ctrl_timesToKeep_->to<mrs_natural>()); 
@@ -226,4 +229,7 @@ Accumulator::myProcess(realvec& in, realvec& out)
 				}
 		}
 	}
+
+	MATLAB_PUT(out, "Accum_out");
+	MATLAB_EVAL("segmentAudio = [segmentAudio, Accum_out];");
 }

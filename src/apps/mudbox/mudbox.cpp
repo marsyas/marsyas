@@ -469,7 +469,8 @@ toy_with_onsets(string sfName)
 					onsetdetector->addMarSystem(mng.create("Spectrum","spk"));
 					onsetdetector->addMarSystem(mng.create("PowerSpectrum", "pspk"));
 					onsetdetector->addMarSystem(mng.create("Flux2", "flux")); 
-					onsetdetector->addMarSystem(mng.create("Memory","mem"));
+					//onsetdetector->addMarSystem(mng.create("Memory","mem"));
+					onsetdetector->addMarSystem(mng.create("ShiftInput","sif"));
 					onsetdetector->addMarSystem(mng.create("PeakerOnset","peaker")); 
 				onsetseries->addMarSystem(onsetdetector);
 			onsetaccum->addMarSystem(onsetseries);
@@ -496,14 +497,17 @@ toy_with_onsets(string sfName)
 	//onsetnet->linkctrl("ShiftOutput/so/mrs_natural/Interpolation","mrs_natural/inSamples");
 	onsetnet->linkctrl("Accumulator/onsetaccum/mrs_bool/flush",
 		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_bool/onsetDetected"); 
-	onsetnet->linkctrl("Fanout/onsetmix/Series/onsetsynth/Gain/gainonsets/mrs_real/gain",
-		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/confidence");
+	//onsetnet->linkctrl("Fanout/onsetmix/Series/onsetsynth/Gain/gainonsets/mrs_real/gain",
+	//	"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/confidence");
+	
+	//onsetnet->linkctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Memory/mem/mrs_bool/reset",
+	//	"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_bool/onsetDetected");
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	// update controls
 	///////////////////////////////////////////////////////////////////////////////////////
-	mrs_natural winSize = 1024;
-	mrs_natural hopSize = 411;
+	mrs_natural winSize = 1024;//2048;
+	mrs_natural hopSize = 1024;//411;
 	mrs_natural onsetWinSize = 3;
 
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/SoundFileSource/src/mrs_string/filename", sfName);
@@ -514,13 +518,15 @@ toy_with_onsets(string sfName)
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/ShiftInput/si/mrs_natural/winSize", winSize);
 
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_natural/onsetWinSize", onsetWinSize);
-	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/threshold", 1.1); //!!!!!!!!!!!!!
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/threshold", 1.7); //!!!!!!!!!!!!!
 	
-	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Memory/mem/mrs_natural/memSize", 4*onsetWinSize+1);
+	//onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Memory/mem/mrs_natural/memSize", 4*onsetWinSize+1);
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/ShiftInput/sif/mrs_natural/winSize", 4*onsetWinSize+1);
+	
 	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/timesToKeep", onsetWinSize+1);
 	onsetnet->updctrl("Accumulator/onsetaccum/mrs_string/mode","explicitFlush");
-	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/maxTimes", 100); //!!!!!!!!!!!!!!!!!!
-	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/minTimes", 10); //!!!!!!!!!!!!!!!!!
+	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/maxTimes", 1000); //!!!!!!!!!!!!!!!!!!
+	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/minTimes", 15);//onsetWinSize+1); //!!!!!!!!!!!!!!!!!
 
 	//set audio/onset resynth balance and ADSR params for onset sound
 	mrs_real fs = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
@@ -534,9 +540,15 @@ toy_with_onsets(string sfName)
 	//onsetnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 	
 	//MATLAB Engine inits
+	MATLAB_EVAL("clear;");
+	MATLAB_PUT(winSize, "winSize");
+	MATLAB_PUT(hopSize, "hopSize");
+	MATLAB_PUT(onsetWinSize, "onsetWinSize");
 	MATLAB_EVAL("srcAudio = [];");
 	MATLAB_EVAL("onsetAudio = [];");
 	MATLAB_EVAL("FluxTS = [];");
+	MATLAB_EVAL("segmentAudio = [];");
+	MATLAB_EVAL("onsetTS = [];");
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	//process input file (till EOF)

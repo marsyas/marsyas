@@ -64,19 +64,19 @@ Memory::myUpdate(MarControlPtr sender)
 	mrs_natural memSize = ctrl_memSize_->to<mrs_natural>();
 
 	if (memSize != 0) 
-	  {
-	    ctrl_onSamples_->setValue(ctrl_inSamples_->to<mrs_natural>() * memSize, 
-				      NOUPDATE);
-	    ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
-	    ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
-	  }
+	{
+		ctrl_onSamples_->setValue(ctrl_inSamples_->to<mrs_natural>() * memSize, 
+			NOUPDATE);
+		ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
+		ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
+	}
 	else 
-	  {
-	    ctrl_onSamples_->setValue(ctrl_inSamples_->to<mrs_natural>(), NOUPDATE);
-	    ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
-	    ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
+	{
+		ctrl_onSamples_->setValue(ctrl_inSamples_->to<mrs_natural>(), NOUPDATE);
+		ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
+		ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 
-	  }
+	}
 	reset_ = ctrl_reset_->to<mrs_bool>();
 
 	inObservations_ = ctrl_inObservations_->to<mrs_natural>();
@@ -110,26 +110,29 @@ Memory::myProcess(realvec& in, realvec& out)
 	}
 
 	if (memSize != 0) 
-	  {
-	    for (t = 0; t < inSamples_; t++)
-	      {
-		for (o=0; o < inObservations_; o++)
-		  {
-		    out(o, end_) = in(o,t);
-		  }
-		end_ = (end_ + 1) % memSize; 		// circular buffer index  		
-	      }
-	  }
+	{
+		for (t = 0; t < inSamples_; t++)
+		{
+			for (o=0; o < inObservations_; o++)
+			{
+				out(o, end_) = in(o,t);
+			}
+			end_ = (end_ + 1) % memSize; 		// circular buffer index  		
+		}
+	}
 	else // memSize == 0 
-	  {
-	    for (t = 0; t < inSamples_; t++)
-	      {
-		for (o=0; o < inObservations_; o++)
-		  {
-		    out(o,t) = in(o,t);
-		  }
-	      }
-	  }
+	{
+		for (t = 0; t < inSamples_; t++)
+		{
+			for (o=0; o < inObservations_; o++)
+			{
+				out(o,t) = in(o,t);
+			}
+		}
+	}
+
+	//MATLAB_PUT(out, "Memory_out");
+	//MATLAB_EVAL("plot(Memory_out);");
 }
 
 
