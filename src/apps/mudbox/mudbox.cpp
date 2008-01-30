@@ -483,8 +483,9 @@ toy_with_onsets(string sfName)
 				onsetsynth->addMarSystem(mng.create("Gain", "gainonsets"));
 			onsetmix->addMarSystem(onsetsynth);
 	onsetnet->addMarSystem(onsetmix);
-	onsetnet->addMarSystem(mng.create("AudioSink", "dest"));
-	// onsetnet->addMarSystem(mng.create("SoundFileSink", "fdest"));
+	
+	//onsetnet->addMarSystem(mng.create("AudioSink", "dest"));
+	onsetnet->addMarSystem(mng.create("SoundFileSink", "fdest"));
 
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -506,7 +507,7 @@ toy_with_onsets(string sfName)
 	mrs_natural onsetWinSize = 3;
 
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/SoundFileSource/src/mrs_string/filename", sfName);
-	// onsetnet->updctrl("SoundFileSink/fdest/mrs_string/filename", sfName + "_onsets.wav");
+	onsetnet->updctrl("SoundFileSink/fdest/mrs_string/filename", sfName + "_onsets.wav");
 
 	onsetnet->updctrl("mrs_natural/inSamples", hopSize);
 	//onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/ShiftInput/si/mrs_natural/winSize", winSize);
@@ -530,8 +531,12 @@ toy_with_onsets(string sfName)
  	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/susLevel", 0.0);
  	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/dTime", winSize/4/fs); // !!!!!!!!!!!!!!!
 	
-	onsetnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	//onsetnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 	
+	//MATLAB Engine inits
+	MATLAB_EVAL("srcAudio = [];");
+	MATLAB_EVAL("onsetAudio = [];");
+	MATLAB_EVAL("FluxTS = [];");
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	//process input file (till EOF)

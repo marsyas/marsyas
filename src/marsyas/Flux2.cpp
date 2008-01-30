@@ -91,10 +91,9 @@ Flux2::myProcess(realvec& in, realvec& out)
 		//MATLAB_PUT(prevWindow_, "prevWindow_");
 	}
 
-	MATLAB_PUT(out, "fo_tmp");
-	MATLAB_EVAL("FluxOut = [FluxOut, fo_tmp];");
-//	MATLAB_EVAL("plot(FluxOut);");
-
+	MATLAB_PUT(out, "Flux2_out");
+	MATLAB_EVAL("FluxTS = [FluxTS, Flux2_out];");
+	//MATLAB_EVAL("plot(FluxTS);");
 }
 
 

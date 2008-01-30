@@ -47,9 +47,9 @@ ADSR::addControls()
 	addctrl("mrs_real/susLevel", 0.85);//sustain level 
 	//addctrl("mrs_real/rRate", 0.001);//release rate
 	addctrl("mrs_real/rTime", 0.2);//release time
-	
+
 	addctrl("mrs_natural/state", 1);
-	
+
 	addctrl("mrs_real/nton", 0.0);
 	addctrl("mrs_real/ntoff", 0.0);
 
@@ -123,37 +123,40 @@ ADSR::myProcess(realvec& in, realvec& out)
 		{
 			switch (state_) 
 			{
-				case 1://attack
-					value_ += aRate_;
-					if (value_ >= target_) 
-					{
-						value_ = target_;
-						rate_ = dRate_;
-						target_ = susLevel_;
-						state_ = 2;
-					}
-					break;
-				case 2://decay
-					value_ -= dRate_;
-					if (value_ <= susLevel_) 
-					{
-						value_ = susLevel_;
-						rate_ = 0.0;
-						state_ = 3;
-					}
-					break;
-				case 4://release
-					value_ -= rRate_;
-					if (value_ <= 0.0)       
-					{
-						value_ = 0.0;
-						state_ = 5;//done
-					}
+			case 1://attack
+				value_ += aRate_;
+				if (value_ >= target_) 
+				{
+					value_ = target_;
+					rate_ = dRate_;
+					target_ = susLevel_;
+					state_ = 2;
+				}
+				break;
+			case 2://decay
+				value_ -= dRate_;
+				if (value_ <= susLevel_) 
+				{
+					value_ = susLevel_;
+					rate_ = 0.0;
+					state_ = 3;
+				}
+				break;
+			case 4://release
+				value_ -= rRate_;
+				if (value_ <= 0.0)       
+				{
+					value_ = 0.0;
+					state_ = 5;//done
+				}
 			}//switch
 
 			out(o,t) =  value_* in(o,t);
 			//cout <<"output=" << out(o,t)<< endl;
 			//cout <<"val=" << value_<< endl;
 		}//for
+
+		MATLAB_PUT(out, "ADSR_out");
+		MATLAB_EVAL("OnsetAudio = [OnsetAudio, ADSR_out];");
 }//process
 

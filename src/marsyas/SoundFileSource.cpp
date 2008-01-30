@@ -316,7 +316,8 @@ SoundFileSource::myProcess(realvec& in, realvec &out)
 		ctrl_advance_->setValue(false);
 	}
 
-	//MATLAB_PUT(out, "SoundFileSource_out");
+	MATLAB_PUT(out, "SoundFileSource_out");
+	MATLAB_EVAL("srcAudio = [srcAudio, SoundFileSource_out];");
 	//MATLAB_EVAL("plot(SoundFileSource_out)");
 }
 
