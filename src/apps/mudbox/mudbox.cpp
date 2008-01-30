@@ -810,13 +810,14 @@ toy_with_inSamples(string sfName)
   //  playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", "foo.wav");
   
   int i=1;
-  // increment in inSamples by 1 at every iteration 
+  // increment inSamples by 1 at every iteration 
   while(playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
     {
       playbacknet->updctrl("mrs_natural/inSamples", i);
       playbacknet->tick();
       i++;
-      cout << "processing " << i << " inSamples" << endl;
+      cout << "inSamples = " << i << endl;
+	
     }
   
 }

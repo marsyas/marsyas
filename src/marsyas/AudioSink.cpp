@@ -95,15 +95,24 @@ AudioSink::myUpdate(MarControlPtr sender)
   
   //Resize reservoir if necessary
   inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+
+
+
   if (inSamples_ < bufferSize_) 
     reservoirSize_ = 2 * bufferSize_;
   else 
-    reservoirSize_ = 2 * inSamples_;
+    {
+      if (2 * inSamples_ > preservoirSize_) 
+	reservoirSize_ = 2 * inSamples_;
+    }
   
 
   if (reservoirSize_ > preservoirSize_)
     reservoir_.stretch(nChannels_, reservoirSize_);
-  
+
+
+
+    
   preservoirSize_ = reservoirSize_;
   
 }
@@ -245,7 +254,7 @@ AudioSink::myProcess(realvec& in, realvec& out)
       if (end_ == reservoirSize_) 
 	end_ = 0;
     }
-  
+
       
   //check if RtAudio is initialized
   if (!isInitialized_)
@@ -276,8 +285,10 @@ AudioSink::myProcess(realvec& in, realvec& out)
     diff_ = reservoirSize_ - (start_ - end_);
   
   //send audio data in reservoir to RtAudio
+
   while (diff_ >= rsize_)  
     {
+
       for (t =0; t < rsize_; t++) 
 	{
 	  const int t2 = 2 * t;
@@ -350,6 +361,8 @@ AudioSink::myProcess(realvec& in, realvec& out)
 	{
 	  error.printMessage();
 	}
+      
+      
       //update reservoir pointers
       start_ = (start_ + rsize_) % reservoirSize_;
       if (end_ >= start_) 
