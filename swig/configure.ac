@@ -126,5 +126,5 @@ END`
 MRS_PROG_RUBY
 MRS_PROG_PYTHON
 
-AC_CONFIG_FILES([Makefile src/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile new_src/Makefile])
 AC_OUTPUT
