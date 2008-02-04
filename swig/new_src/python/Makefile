@@ -6,6 +6,6 @@ _marsyas.so : setup.py marsyas_wrap.cxx marsyas.py
 %_wrap.c %.py : %.i
 	swig -c++ -python $<
 
-clean :
+clean distclean :
 	python setup.py clean -a
 	rm -rf _marsyas.so
