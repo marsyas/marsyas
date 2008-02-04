@@ -29,7 +29,7 @@
 #include "MP3FileSource.h"
 #endif
 
-#ifdef MARSYAS_OGG
+#ifdef MARSYAS_VORBIS
 #include "OggFileSource.h"
 #endif
 

@@ -19,6 +19,16 @@
 
 #include "OggFileSource.h"
 
+#include <cstdio>
+
+#ifndef WIN32
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/mman.h>
+#include <fcntl.h>
+#endif
+
+
 using namespace std;
 using namespace Marsyas;
 
@@ -26,9 +36,7 @@ OggFileSource::OggFileSource(string name):AbsSoundFileSource("OggFileSource", na
 {
   //type_ = "OggFileSource";
   //name_ = name;
-  
-	notEmpty_ = false;
-
+  notEmpty_ = false;
   addControls();
 }
 
@@ -49,6 +57,10 @@ OggFileSource::OggFileSource(const OggFileSource& a):AbsSoundFileSource(a)
 // 	onObservations_ = a.onObservations_;
 // 	dbg_ = a.dbg_;
 // 	mute_ = a.mute_;
+	ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
+	ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
+	ctrl_labelNames_ = getctrl("mrs_string/labelNames");
+	ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
 }
 
 MarSystem*
@@ -92,7 +104,12 @@ OggFileSource::addControls()
   addctrl("mrs_string/allfilenames", ",");
   addctrl("mrs_natural/numFiles", 1);
 
-  addctrl("mrs_string/currentlyPlaying", "daufile");
+  // addctrl("mrs_string/currentlyPlaying", "daufile");
+
+  addctrl("mrs_string/currentlyPlaying", "doggfile", ctrl_currentlyPlaying_);
+  addctrl("mrs_natural/currentLabel", 0, ctrl_currentLabel_);
+  addctrl("mrs_natural/nLabels", 0, ctrl_nLabels_);
+  addctrl("mrs_string/labelNames", ",", ctrl_labelNames_);
 }
 
 
@@ -113,10 +130,11 @@ OggFileSource::getHeader(string filename)
   notEmpty_ = false;
   mrs_natural bitRate = 128*1024;
   
-#ifdef MARSYAS_OGG
+#ifdef MARSYAS_VORBIS
   FILE* fp = fopen(filename.c_str(), "rb");
 
-  if(fp && ov_open(fp, &vf, NULL, 0) == 0)
+  /* Using ov_open_callbacks because ov_open fails under windows. */
+  if(fp && ov_open_callbacks(fp, &vf, NULL, 0, OV_CALLBACKS_DEFAULT) == 0)
   {
     vi=ov_info(&vf,-1);
     size = ov_pcm_total(&vf,-1);
@@ -159,7 +177,7 @@ OggFileSource::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-#ifdef MARSYAS_OGG
+#ifdef MARSYAS_VORBIS
   mrs_natural pos = getctrl("mrs_natural/pos")->to<mrs_natural>();
   mrs_natural size = getctrl("mrs_natural/size")->to<mrs_natural>();
 
@@ -184,7 +202,7 @@ void OggFileSource::myProcess(realvec& in, realvec& out)
 
   if (notEmpty_)
   {
-#ifdef MARSYAS_OGG
+#ifdef MARSYAS_VORBIS
     /*mrs_real duration = getctrl("mrs_real/duration")->to<mrs_real>();
     mrs_real rate = getctrl("mrs_real/israte")->to<mrs_real>();
     */
@@ -212,7 +230,7 @@ void OggFileSource::myProcess(realvec& in, realvec& out)
     while(read < size);
 
     //   getLinear16(out);  for (o=0; o < inObservations_; o++) {
-    const double peak = 1.0/32767; // normalize 24-bit sample
+    const double peak = 1.0/32768; // normalize 24-bit sample
     short int* src = (short int*)buf;
     for (o=0; o < observations; o++)
     {
@@ -230,7 +248,6 @@ void OggFileSource::myProcess(realvec& in, realvec& out)
       }
     }
     delete [] buf;
-    
     if(eof)
 	  closeFile();
         
@@ -258,7 +275,7 @@ void OggFileSource::myProcess(realvec& in, realvec& out)
  */
 void OggFileSource::closeFile()
 {
-#ifdef MARSYAS_OGG
+#ifdef MARSYAS_VORBIS
 
   if(notEmpty_)
     ov_clear(&vf);

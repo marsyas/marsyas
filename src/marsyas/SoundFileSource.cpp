@@ -253,7 +253,7 @@ SoundFileSource::checkType()
 		src_ = new MP3FileSource(getName());
 	}
 #endif 
-#ifdef MARSYAS_OGG
+#ifdef MARSYAS_VORBIS
 	else if (ext == ".ogg")
 	{
 		delete src_;

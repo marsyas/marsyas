@@ -19,21 +19,12 @@
 #ifndef MARSYAS_OGGSOURCE_H
 #define MARSYAS_OGGSOURCE_H
 
-#include <cstdio>
-
-#ifndef WIN32
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/mman.h>
-#include <fcntl.h>
-#endif 
-
 #include "common.h"
 #include "AbsSoundFileSource.h"
 
 
 
-#ifdef MARSYAS_OGG
+#ifdef MARSYAS_VORBIS
 #include "vorbis/codec.h"
 #include "vorbis/vorbisfile.h"
 #endif
@@ -55,10 +46,10 @@ class OggFileSource: public AbsSoundFileSource
 private:
  
   void addControls();
-	void myUpdate(MarControlPtr sender);
+  void myUpdate(MarControlPtr sender);
   void closeFile(); 
   
-#ifdef MARSYAS_OGG
+#ifdef MARSYAS_VORBIS
 	OggVorbis_File vf;
 	vorbis_info *vi;
 #endif
