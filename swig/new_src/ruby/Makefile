@@ -151,4 +151,3 @@ Makefile : extconf.rb
 	ruby $<
 %_wrap.cxx : %.i
 	swig -c++ -ruby $<
-distclean : clean
