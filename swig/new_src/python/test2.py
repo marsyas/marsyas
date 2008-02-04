@@ -19,7 +19,7 @@ pnet.addMarSystem(dest)
 
 # pnet.updControl("SoundFileSource/src/mrs_string/filename", "/Users/gtzan/data/sound/music_speech/music/gravity.au")
 pnet.updControl("SineSource/src/mrs_real/frequency", marsyas.MarControlPtr.from_real(999))
-print pnet.getControl("SineSource/src/mrs_real/frequency")
+print pnet.getControl("SineSource/src/mrs_real/frequency").to_real()
 
 # Audio has lots of clicks and seems to crash - not sure why 
 pnet.updControl("AudioSink/dest/mrs_bool/initAudio", marsyas.MarControlPtr.from_bool(True))
