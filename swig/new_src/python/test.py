@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from marsyas import MarSystemManager
+from marsyas import MarSystemManager,MarControlPtr
 
 msm = MarSystemManager()
 
@@ -15,9 +15,10 @@ pipe.addMarSystem(sink)
 
 filename = pipe.getControl("SoundFileSource/file/mrs_string/filename")
 notempty = pipe.getControl("SoundFileSource/file/mrs_bool/notEmpty")
+iniAudio = pipe.getControl("AudioSink/sink/mrs_bool/initAudio")
 
-filename.setValue("le-disko.ogg")
-pipe.updControl("AudioSink/sink/mrs_bool/initAudio",True)
+filename.setValue_string("test.ogg")
+iniAudio.setValue_bool(1)
 
 while notempty.to_bool():
-	pipe.tick
+	pipe.tick()

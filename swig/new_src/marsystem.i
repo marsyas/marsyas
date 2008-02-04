@@ -30,16 +30,20 @@ class MarSystem {
 
                 /* Methods for dealing with controls */
                 void            setControl(std::string,MarControlPtr);
+                /* These methods should be defined in a language-specific way
                 void            setControl(std::string,mrs_bool);
                 void            setControl(std::string,mrs_natural);
                 void            setControl(std::string,mrs_real);
                 void            setControl(std::string,mrs_string);
+                */
 
                 void            updControl(std::string,MarControlPtr);
+                /* These methods should be defined in a language-specific way
                 void            updControl(std::string,mrs_bool);
                 void            updControl(std::string,mrs_natural);
                 void            updControl(std::string,mrs_real);
                 void            updControl(std::string,mrs_string);
+                */
                 
                 MarControlPtr   getControl(std::string);
                 bool            hasControl(std::string);

@@ -15,7 +15,7 @@ marsyas_module = Extension(
 		sources=["marsyas_wrap.cxx"],
 		include_dirs=["../../../src"],
 		library_dirs=["../../../lib/release","/usr/lib"],
-		libraries=["marsyas","stdc++"],
+		libraries=["marsyas","stdc++","pthread","c","dl"],
 		extra_compile_args = pkg_config("vorbisfile mad","--cflags"),
 		extra_link_args = pkg_config("vorbisfile mad","--libs")
 		)

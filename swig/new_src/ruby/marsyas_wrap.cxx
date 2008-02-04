@@ -4558,6 +4558,8 @@ SWIG_AsVal_bool (VALUE obj, bool *val)
   return SWIG_TypeError;
 }
 
+SWIGINTERN void MarSystem_setControl__SWIG_1(MarSystem *self,std::string c,mrs_bool v){ self->setControl(c,v); }
+SWIGINTERN void MarSystem_setControl__SWIG_2(MarSystem *self,std::string c,mrs_natural v){ self->setControl(c,v); }
 
 /*@SWIG:/usr/share/swig/1.3.33/ruby/rubyprimtypes.swg,23,%ruby_aux_method@*/
 SWIGINTERN VALUE SWIG_AUX_NUM2DBL(VALUE *args)
@@ -4587,6 +4589,12 @@ SWIG_AsVal_double (VALUE obj, double *val)
   return SWIG_TypeError;
 }
 
+SWIGINTERN void MarSystem_setControl__SWIG_3(MarSystem *self,std::string c,mrs_real v){ self->setControl(c,v); }
+SWIGINTERN void MarSystem_setControl__SWIG_4(MarSystem *self,std::string c,mrs_string v){ self->setControl(c,v); }
+SWIGINTERN void MarSystem_updControl__SWIG_1(MarSystem *self,std::string c,mrs_bool v){ self->updControl(c,v); }
+SWIGINTERN void MarSystem_updControl__SWIG_2(MarSystem *self,std::string c,mrs_natural v){ self->updControl(c,v); }
+SWIGINTERN void MarSystem_updControl__SWIG_3(MarSystem *self,std::string c,mrs_real v){ self->updControl(c,v); }
+SWIGINTERN void MarSystem_updControl__SWIG_4(MarSystem *self,std::string c,mrs_string v){ self->updControl(c,v); }
 
 #include <marsyas/MarSystemManager.h>
 
@@ -4966,13 +4974,17 @@ SWIGINTERN VALUE std_vector_Sl_std_string_Sg____delete__(std::vector<std::string
 using namespace Marsyas;
 
 
+SWIGINTERN MarControlPtr MarControlPtr_from_natural(mrs_natural x){ return MarControlPtr(x); }
+SWIGINTERN MarControlPtr MarControlPtr_from_real(mrs_real x){ return MarControlPtr(x); }
+SWIGINTERN MarControlPtr MarControlPtr_from_bool(mrs_bool x){ return MarControlPtr(x); }
+SWIGINTERN MarControlPtr MarControlPtr_from_string(mrs_string x){ return MarControlPtr(x); }
 SWIGINTERN mrs_string MarControlPtr_getType(MarControlPtr *self){ return (*self)->getType(); }
 SWIGINTERN mrs_string MarControlPtr_getName(MarControlPtr *self){ return (*self)->getName(); }
-SWIGINTERN mrs_bool MarControlPtr_setValue__SWIG_0(MarControlPtr *self,mrs_natural x){ return (*self)->setValue(x); }
-SWIGINTERN mrs_bool MarControlPtr_setValue__SWIG_1(MarControlPtr *self,mrs_real x){ return (*self)->setValue(x); }
-SWIGINTERN mrs_bool MarControlPtr_setValue__SWIG_2(MarControlPtr *self,mrs_bool x){ return (*self)->setValue(x); }
-SWIGINTERN mrs_bool MarControlPtr_setValue__SWIG_3(MarControlPtr *self,mrs_string x){ return (*self)->setValue(x); }
-SWIGINTERN mrs_natural MarControlPtr_to_int(MarControlPtr *self){ return (*self)->to<mrs_natural>(); }
+SWIGINTERN mrs_bool MarControlPtr_setValue_natural(MarControlPtr *self,mrs_natural x){ return (*self)->setValue(x); }
+SWIGINTERN mrs_bool MarControlPtr_setValue_real(MarControlPtr *self,mrs_real x){ return (*self)->setValue(x); }
+SWIGINTERN mrs_bool MarControlPtr_setValue_bool(MarControlPtr *self,mrs_bool x){ return (*self)->setValue(x); }
+SWIGINTERN mrs_bool MarControlPtr_setValue_string(MarControlPtr *self,mrs_string x){ return (*self)->setValue(x); }
+SWIGINTERN mrs_natural MarControlPtr_to_natural(MarControlPtr *self){ return (*self)->to<mrs_natural>(); }
 
 SWIGINTERNINLINE VALUE
 SWIG_From_int  (int value)
@@ -8141,280 +8153,6 @@ fail:
 
 
 SWIGINTERN VALUE
-_wrap_MarSystem_setControl__SWIG_1(int argc, VALUE *argv, VALUE self) {
-  MarSystem *arg1 = (MarSystem *) 0 ;
-  std::string arg2 ;
-  mrs_bool arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  bool val3 ;
-  int ecode3 = 0 ;
-  
-  if ((argc < 2) || (argc > 2)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarSystem *","setControl", 1, self )); 
-  }
-  arg1 = reinterpret_cast< MarSystem * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(argv[0], &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), Ruby_Format_TypeError( "", "std::string","setControl", 2, argv[0] )); 
-    }
-    arg2 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
-  }
-  ecode3 = SWIG_AsVal_bool(argv[1], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "mrs_bool","setControl", 3, argv[1] ));
-  } 
-  arg3 = static_cast< mrs_bool >(val3);
-  (arg1)->setControl(arg2,arg3);
-  return Qnil;
-fail:
-  return Qnil;
-}
-
-
-SWIGINTERN VALUE
-_wrap_MarSystem_setControl__SWIG_2(int argc, VALUE *argv, VALUE self) {
-  MarSystem *arg1 = (MarSystem *) 0 ;
-  std::string arg2 ;
-  mrs_natural arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val3 ;
-  int ecode3 = 0 ;
-  
-  if ((argc < 2) || (argc > 2)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarSystem *","setControl", 1, self )); 
-  }
-  arg1 = reinterpret_cast< MarSystem * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(argv[0], &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), Ruby_Format_TypeError( "", "std::string","setControl", 2, argv[0] )); 
-    }
-    arg2 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
-  }
-  ecode3 = SWIG_AsVal_int(argv[1], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "mrs_natural","setControl", 3, argv[1] ));
-  } 
-  arg3 = static_cast< mrs_natural >(val3);
-  (arg1)->setControl(arg2,arg3);
-  return Qnil;
-fail:
-  return Qnil;
-}
-
-
-SWIGINTERN VALUE
-_wrap_MarSystem_setControl__SWIG_3(int argc, VALUE *argv, VALUE self) {
-  MarSystem *arg1 = (MarSystem *) 0 ;
-  std::string arg2 ;
-  mrs_real arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  double val3 ;
-  int ecode3 = 0 ;
-  
-  if ((argc < 2) || (argc > 2)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarSystem *","setControl", 1, self )); 
-  }
-  arg1 = reinterpret_cast< MarSystem * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(argv[0], &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), Ruby_Format_TypeError( "", "std::string","setControl", 2, argv[0] )); 
-    }
-    arg2 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
-  }
-  ecode3 = SWIG_AsVal_double(argv[1], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "mrs_real","setControl", 3, argv[1] ));
-  } 
-  arg3 = static_cast< mrs_real >(val3);
-  (arg1)->setControl(arg2,arg3);
-  return Qnil;
-fail:
-  return Qnil;
-}
-
-
-SWIGINTERN VALUE
-_wrap_MarSystem_setControl__SWIG_4(int argc, VALUE *argv, VALUE self) {
-  MarSystem *arg1 = (MarSystem *) 0 ;
-  std::string arg2 ;
-  mrs_string arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  
-  if ((argc < 2) || (argc > 2)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarSystem *","setControl", 1, self )); 
-  }
-  arg1 = reinterpret_cast< MarSystem * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(argv[0], &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), Ruby_Format_TypeError( "", "std::string","setControl", 2, argv[0] )); 
-    }
-    arg2 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(argv[1], &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), Ruby_Format_TypeError( "", "mrs_string","setControl", 3, argv[1] )); 
-    }
-    arg3 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
-  }
-  (arg1)->setControl(arg2,arg3);
-  return Qnil;
-fail:
-  return Qnil;
-}
-
-
-SWIGINTERN VALUE _wrap_MarSystem_setControl(int nargs, VALUE *args, VALUE self) {
-  int argc;
-  VALUE argv[4];
-  int ii;
-  
-  argc = nargs + 1;
-  argv[0] = self;
-  if (argc > 4) SWIG_fail;
-  for (ii = 1; (ii < argc); ++ii) {
-    argv[ii] = args[ii-1];
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        void *vptr = 0;
-        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_MarControlPtr, 0);
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_MarSystem_setControl__SWIG_0(nargs, args, self);
-        }
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_MarSystem_setControl__SWIG_2(nargs, args, self);
-        }
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_double(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_MarSystem_setControl__SWIG_3(nargs, args, self);
-        }
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_MarSystem_setControl__SWIG_4(nargs, args, self);
-        }
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_bool(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_MarSystem_setControl__SWIG_1(nargs, args, self);
-        }
-      }
-    }
-  }
-  
-fail:
-  Ruby_Format_OverloadedError( argc, 4, "MarSystem.setControl", 
-    "    void MarSystem.setControl(std::string, MarControlPtr)\n"
-    "    void MarSystem.setControl(std::string, mrs_bool)\n"
-    "    void MarSystem.setControl(std::string, mrs_natural)\n"
-    "    void MarSystem.setControl(std::string, mrs_real)\n"
-    "    void MarSystem.setControl(std::string, mrs_string)\n");
-  
-  return Qnil;
-}
-
-
-SWIGINTERN VALUE
 _wrap_MarSystem_updControl__SWIG_0(int argc, VALUE *argv, VALUE self) {
   MarSystem *arg1 = (MarSystem *) 0 ;
   std::string arg2 ;
@@ -8455,280 +8193,6 @@ _wrap_MarSystem_updControl__SWIG_0(int argc, VALUE *argv, VALUE self) {
   (arg1)->updControl(arg2,arg3);
   return Qnil;
 fail:
-  return Qnil;
-}
-
-
-SWIGINTERN VALUE
-_wrap_MarSystem_updControl__SWIG_1(int argc, VALUE *argv, VALUE self) {
-  MarSystem *arg1 = (MarSystem *) 0 ;
-  std::string arg2 ;
-  mrs_bool arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  bool val3 ;
-  int ecode3 = 0 ;
-  
-  if ((argc < 2) || (argc > 2)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarSystem *","updControl", 1, self )); 
-  }
-  arg1 = reinterpret_cast< MarSystem * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(argv[0], &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), Ruby_Format_TypeError( "", "std::string","updControl", 2, argv[0] )); 
-    }
-    arg2 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
-  }
-  ecode3 = SWIG_AsVal_bool(argv[1], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "mrs_bool","updControl", 3, argv[1] ));
-  } 
-  arg3 = static_cast< mrs_bool >(val3);
-  (arg1)->updControl(arg2,arg3);
-  return Qnil;
-fail:
-  return Qnil;
-}
-
-
-SWIGINTERN VALUE
-_wrap_MarSystem_updControl__SWIG_2(int argc, VALUE *argv, VALUE self) {
-  MarSystem *arg1 = (MarSystem *) 0 ;
-  std::string arg2 ;
-  mrs_natural arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val3 ;
-  int ecode3 = 0 ;
-  
-  if ((argc < 2) || (argc > 2)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarSystem *","updControl", 1, self )); 
-  }
-  arg1 = reinterpret_cast< MarSystem * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(argv[0], &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), Ruby_Format_TypeError( "", "std::string","updControl", 2, argv[0] )); 
-    }
-    arg2 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
-  }
-  ecode3 = SWIG_AsVal_int(argv[1], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "mrs_natural","updControl", 3, argv[1] ));
-  } 
-  arg3 = static_cast< mrs_natural >(val3);
-  (arg1)->updControl(arg2,arg3);
-  return Qnil;
-fail:
-  return Qnil;
-}
-
-
-SWIGINTERN VALUE
-_wrap_MarSystem_updControl__SWIG_3(int argc, VALUE *argv, VALUE self) {
-  MarSystem *arg1 = (MarSystem *) 0 ;
-  std::string arg2 ;
-  mrs_real arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  double val3 ;
-  int ecode3 = 0 ;
-  
-  if ((argc < 2) || (argc > 2)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarSystem *","updControl", 1, self )); 
-  }
-  arg1 = reinterpret_cast< MarSystem * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(argv[0], &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), Ruby_Format_TypeError( "", "std::string","updControl", 2, argv[0] )); 
-    }
-    arg2 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
-  }
-  ecode3 = SWIG_AsVal_double(argv[1], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "mrs_real","updControl", 3, argv[1] ));
-  } 
-  arg3 = static_cast< mrs_real >(val3);
-  (arg1)->updControl(arg2,arg3);
-  return Qnil;
-fail:
-  return Qnil;
-}
-
-
-SWIGINTERN VALUE
-_wrap_MarSystem_updControl__SWIG_4(int argc, VALUE *argv, VALUE self) {
-  MarSystem *arg1 = (MarSystem *) 0 ;
-  std::string arg2 ;
-  mrs_string arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  
-  if ((argc < 2) || (argc > 2)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarSystem *","updControl", 1, self )); 
-  }
-  arg1 = reinterpret_cast< MarSystem * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(argv[0], &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), Ruby_Format_TypeError( "", "std::string","updControl", 2, argv[0] )); 
-    }
-    arg2 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(argv[1], &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), Ruby_Format_TypeError( "", "mrs_string","updControl", 3, argv[1] )); 
-    }
-    arg3 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
-  }
-  (arg1)->updControl(arg2,arg3);
-  return Qnil;
-fail:
-  return Qnil;
-}
-
-
-SWIGINTERN VALUE _wrap_MarSystem_updControl(int nargs, VALUE *args, VALUE self) {
-  int argc;
-  VALUE argv[4];
-  int ii;
-  
-  argc = nargs + 1;
-  argv[0] = self;
-  if (argc > 4) SWIG_fail;
-  for (ii = 1; (ii < argc); ++ii) {
-    argv[ii] = args[ii-1];
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        void *vptr = 0;
-        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_MarControlPtr, 0);
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_MarSystem_updControl__SWIG_0(nargs, args, self);
-        }
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_MarSystem_updControl__SWIG_2(nargs, args, self);
-        }
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_double(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_MarSystem_updControl__SWIG_3(nargs, args, self);
-        }
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_MarSystem_updControl__SWIG_4(nargs, args, self);
-        }
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_bool(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_MarSystem_updControl__SWIG_1(nargs, args, self);
-        }
-      }
-    }
-  }
-  
-fail:
-  Ruby_Format_OverloadedError( argc, 4, "MarSystem.updControl", 
-    "    void MarSystem.updControl(std::string, MarControlPtr)\n"
-    "    void MarSystem.updControl(std::string, mrs_bool)\n"
-    "    void MarSystem.updControl(std::string, mrs_natural)\n"
-    "    void MarSystem.updControl(std::string, mrs_real)\n"
-    "    void MarSystem.updControl(std::string, mrs_string)\n");
-  
   return Qnil;
 }
 
@@ -8862,6 +8326,554 @@ _wrap_MarSystem_getControls(int argc, VALUE *argv, VALUE self) {
   vresult = swig::from(static_cast< std::map<std::string,MarControlPtr,std::less<std::string >,std::allocator<std::pair<std::string const,MarControlPtr > > > >(result));
   return vresult;
 fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_MarSystem_setControl__SWIG_1(int argc, VALUE *argv, VALUE self) {
+  MarSystem *arg1 = (MarSystem *) 0 ;
+  std::string arg2 ;
+  mrs_bool arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool val3 ;
+  int ecode3 = 0 ;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarSystem *","setControl", 1, self )); 
+  }
+  arg1 = reinterpret_cast< MarSystem * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(argv[0], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), Ruby_Format_TypeError( "", "std::string","setControl", 2, argv[0] )); 
+    }
+    arg2 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  ecode3 = SWIG_AsVal_bool(argv[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "mrs_bool","setControl", 3, argv[1] ));
+  } 
+  arg3 = static_cast< mrs_bool >(val3);
+  MarSystem_setControl__SWIG_1(arg1,arg2,arg3);
+  return Qnil;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_MarSystem_setControl__SWIG_2(int argc, VALUE *argv, VALUE self) {
+  MarSystem *arg1 = (MarSystem *) 0 ;
+  std::string arg2 ;
+  mrs_natural arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarSystem *","setControl", 1, self )); 
+  }
+  arg1 = reinterpret_cast< MarSystem * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(argv[0], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), Ruby_Format_TypeError( "", "std::string","setControl", 2, argv[0] )); 
+    }
+    arg2 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  ecode3 = SWIG_AsVal_int(argv[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "mrs_natural","setControl", 3, argv[1] ));
+  } 
+  arg3 = static_cast< mrs_natural >(val3);
+  MarSystem_setControl__SWIG_2(arg1,arg2,arg3);
+  return Qnil;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_MarSystem_setControl__SWIG_3(int argc, VALUE *argv, VALUE self) {
+  MarSystem *arg1 = (MarSystem *) 0 ;
+  std::string arg2 ;
+  mrs_real arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double val3 ;
+  int ecode3 = 0 ;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarSystem *","setControl", 1, self )); 
+  }
+  arg1 = reinterpret_cast< MarSystem * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(argv[0], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), Ruby_Format_TypeError( "", "std::string","setControl", 2, argv[0] )); 
+    }
+    arg2 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  ecode3 = SWIG_AsVal_double(argv[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "mrs_real","setControl", 3, argv[1] ));
+  } 
+  arg3 = static_cast< mrs_real >(val3);
+  MarSystem_setControl__SWIG_3(arg1,arg2,arg3);
+  return Qnil;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_MarSystem_setControl__SWIG_4(int argc, VALUE *argv, VALUE self) {
+  MarSystem *arg1 = (MarSystem *) 0 ;
+  std::string arg2 ;
+  mrs_string arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarSystem *","setControl", 1, self )); 
+  }
+  arg1 = reinterpret_cast< MarSystem * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(argv[0], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), Ruby_Format_TypeError( "", "std::string","setControl", 2, argv[0] )); 
+    }
+    arg2 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(argv[1], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), Ruby_Format_TypeError( "", "mrs_string","setControl", 3, argv[1] )); 
+    }
+    arg3 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  MarSystem_setControl__SWIG_4(arg1,arg2,arg3);
+  return Qnil;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_MarSystem_setControl(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[4];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 4) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_MarControlPtr, 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_MarSystem_setControl__SWIG_0(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_MarSystem_setControl__SWIG_2(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_double(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_MarSystem_setControl__SWIG_3(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_MarSystem_setControl__SWIG_4(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_bool(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_MarSystem_setControl__SWIG_1(nargs, args, self);
+        }
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 4, "MarSystem.setControl", 
+    "    void MarSystem.setControl(std::string, MarControlPtr)\n"
+    "    void MarSystem.setControl(std::string c, mrs_bool v)\n"
+    "    void MarSystem.setControl(std::string c, mrs_natural v)\n"
+    "    void MarSystem.setControl(std::string c, mrs_real v)\n"
+    "    void MarSystem.setControl(std::string c, mrs_string v)\n");
+  
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_MarSystem_updControl__SWIG_1(int argc, VALUE *argv, VALUE self) {
+  MarSystem *arg1 = (MarSystem *) 0 ;
+  std::string arg2 ;
+  mrs_bool arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool val3 ;
+  int ecode3 = 0 ;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarSystem *","updControl", 1, self )); 
+  }
+  arg1 = reinterpret_cast< MarSystem * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(argv[0], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), Ruby_Format_TypeError( "", "std::string","updControl", 2, argv[0] )); 
+    }
+    arg2 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  ecode3 = SWIG_AsVal_bool(argv[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "mrs_bool","updControl", 3, argv[1] ));
+  } 
+  arg3 = static_cast< mrs_bool >(val3);
+  MarSystem_updControl__SWIG_1(arg1,arg2,arg3);
+  return Qnil;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_MarSystem_updControl__SWIG_2(int argc, VALUE *argv, VALUE self) {
+  MarSystem *arg1 = (MarSystem *) 0 ;
+  std::string arg2 ;
+  mrs_natural arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarSystem *","updControl", 1, self )); 
+  }
+  arg1 = reinterpret_cast< MarSystem * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(argv[0], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), Ruby_Format_TypeError( "", "std::string","updControl", 2, argv[0] )); 
+    }
+    arg2 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  ecode3 = SWIG_AsVal_int(argv[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "mrs_natural","updControl", 3, argv[1] ));
+  } 
+  arg3 = static_cast< mrs_natural >(val3);
+  MarSystem_updControl__SWIG_2(arg1,arg2,arg3);
+  return Qnil;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_MarSystem_updControl__SWIG_3(int argc, VALUE *argv, VALUE self) {
+  MarSystem *arg1 = (MarSystem *) 0 ;
+  std::string arg2 ;
+  mrs_real arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double val3 ;
+  int ecode3 = 0 ;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarSystem *","updControl", 1, self )); 
+  }
+  arg1 = reinterpret_cast< MarSystem * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(argv[0], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), Ruby_Format_TypeError( "", "std::string","updControl", 2, argv[0] )); 
+    }
+    arg2 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  ecode3 = SWIG_AsVal_double(argv[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "mrs_real","updControl", 3, argv[1] ));
+  } 
+  arg3 = static_cast< mrs_real >(val3);
+  MarSystem_updControl__SWIG_3(arg1,arg2,arg3);
+  return Qnil;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_MarSystem_updControl__SWIG_4(int argc, VALUE *argv, VALUE self) {
+  MarSystem *arg1 = (MarSystem *) 0 ;
+  std::string arg2 ;
+  mrs_string arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarSystem *","updControl", 1, self )); 
+  }
+  arg1 = reinterpret_cast< MarSystem * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(argv[0], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), Ruby_Format_TypeError( "", "std::string","updControl", 2, argv[0] )); 
+    }
+    arg2 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(argv[1], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), Ruby_Format_TypeError( "", "mrs_string","updControl", 3, argv[1] )); 
+    }
+    arg3 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  MarSystem_updControl__SWIG_4(arg1,arg2,arg3);
+  return Qnil;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_MarSystem_updControl(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[4];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 4) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_MarControlPtr, 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_MarSystem_updControl__SWIG_0(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_MarSystem_updControl__SWIG_2(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_double(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_MarSystem_updControl__SWIG_3(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_MarSystem_updControl__SWIG_4(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_bool(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_MarSystem_updControl__SWIG_1(nargs, args, self);
+        }
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 4, "MarSystem.updControl", 
+    "    void MarSystem.updControl(std::string, MarControlPtr)\n"
+    "    void MarSystem.updControl(std::string c, mrs_bool v)\n"
+    "    void MarSystem.updControl(std::string c, mrs_natural v)\n"
+    "    void MarSystem.updControl(std::string c, mrs_real v)\n"
+    "    void MarSystem.updControl(std::string c, mrs_string v)\n");
+  
   return Qnil;
 }
 
@@ -11509,6 +11521,23 @@ fail:
 }
 
 
+#ifdef HAVE_RB_DEFINE_ALLOC_FUNC
+SWIGINTERN VALUE
+_wrap_MarControlPtr_allocate(VALUE self) {
+#else
+  SWIGINTERN VALUE
+  _wrap_MarControlPtr_allocate(int argc, VALUE *argv, VALUE self) {
+#endif
+    
+    
+    VALUE vresult = SWIG_NewClassInstance(self, SWIGTYPE_p_MarControlPtr);
+#ifndef HAVE_RB_DEFINE_ALLOC_FUNC
+    rb_obj_call_init(vresult, argc, argv);
+#endif
+    return vresult;
+  }
+  
+
 SWIGINTERN VALUE
 _wrap_new_MarControlPtr__SWIG_1(int argc, VALUE *argv, VALUE self) {
   MarControlPtr *arg1 = 0 ;
@@ -11528,117 +11557,6 @@ _wrap_new_MarControlPtr__SWIG_1(int argc, VALUE *argv, VALUE self) {
   }
   arg1 = reinterpret_cast< MarControlPtr * >(argp1);
   result = (MarControlPtr *)new MarControlPtr((MarControlPtr const &)*arg1);DATA_PTR(self) = result;
-  
-  return self;
-fail:
-  return Qnil;
-}
-
-
-SWIGINTERN VALUE
-_wrap_new_MarControlPtr__SWIG_2(int argc, VALUE *argv, VALUE self) {
-  mrs_natural arg1 ;
-  MarControlPtr *result = 0 ;
-  int val1 ;
-  int ecode1 = 0 ;
-  
-  if ((argc < 1) || (argc > 1)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
-  }
-  ecode1 = SWIG_AsVal_int(argv[0], &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), Ruby_Format_TypeError( "", "mrs_natural","MarControlPtr", 1, argv[0] ));
-  } 
-  arg1 = static_cast< mrs_natural >(val1);
-  result = (MarControlPtr *)new MarControlPtr(arg1);DATA_PTR(self) = result;
-  
-  return self;
-fail:
-  return Qnil;
-}
-
-
-SWIGINTERN VALUE
-_wrap_new_MarControlPtr__SWIG_3(int argc, VALUE *argv, VALUE self) {
-  mrs_real arg1 ;
-  MarControlPtr *result = 0 ;
-  double val1 ;
-  int ecode1 = 0 ;
-  
-  if ((argc < 1) || (argc > 1)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
-  }
-  ecode1 = SWIG_AsVal_double(argv[0], &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), Ruby_Format_TypeError( "", "mrs_real","MarControlPtr", 1, argv[0] ));
-  } 
-  arg1 = static_cast< mrs_real >(val1);
-  result = (MarControlPtr *)new MarControlPtr(arg1);DATA_PTR(self) = result;
-  
-  return self;
-fail:
-  return Qnil;
-}
-
-
-SWIGINTERN VALUE
-_wrap_new_MarControlPtr__SWIG_4(int argc, VALUE *argv, VALUE self) {
-  mrs_string arg1 ;
-  MarControlPtr *result = 0 ;
-  
-  if ((argc < 1) || (argc > 1)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(argv[0], &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), Ruby_Format_TypeError( "", "mrs_string","MarControlPtr", 1, argv[0] )); 
-    }
-    arg1 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
-  }
-  result = (MarControlPtr *)new MarControlPtr(arg1);DATA_PTR(self) = result;
-  
-  return self;
-fail:
-  return Qnil;
-}
-
-
-#ifdef HAVE_RB_DEFINE_ALLOC_FUNC
-SWIGINTERN VALUE
-_wrap_MarControlPtr_allocate(VALUE self) {
-#else
-  SWIGINTERN VALUE
-  _wrap_MarControlPtr_allocate(int argc, VALUE *argv, VALUE self) {
-#endif
-    
-    
-    VALUE vresult = SWIG_NewClassInstance(self, SWIGTYPE_p_MarControlPtr);
-#ifndef HAVE_RB_DEFINE_ALLOC_FUNC
-    rb_obj_call_init(vresult, argc, argv);
-#endif
-    return vresult;
-  }
-  
-
-SWIGINTERN VALUE
-_wrap_new_MarControlPtr__SWIG_5(int argc, VALUE *argv, VALUE self) {
-  mrs_bool arg1 ;
-  MarControlPtr *result = 0 ;
-  bool val1 ;
-  int ecode1 = 0 ;
-  
-  if ((argc < 1) || (argc > 1)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
-  }
-  ecode1 = SWIG_AsVal_bool(argv[0], &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), Ruby_Format_TypeError( "", "mrs_bool","MarControlPtr", 1, argv[0] ));
-  } 
-  arg1 = static_cast< mrs_bool >(val1);
-  result = (MarControlPtr *)new MarControlPtr(arg1);DATA_PTR(self) = result;
   
   return self;
 fail:
@@ -11668,53 +11586,11 @@ SWIGINTERN VALUE _wrap_new_MarControlPtr(int nargs, VALUE *args, VALUE self) {
       return _wrap_new_MarControlPtr__SWIG_1(nargs, args, self);
     }
   }
-  if (argc == 1) {
-    int _v;
-    {
-      int res = SWIG_AsVal_int(argv[0], NULL);
-      _v = SWIG_CheckState(res);
-    }
-    if (_v) {
-      return _wrap_new_MarControlPtr__SWIG_2(nargs, args, self);
-    }
-  }
-  if (argc == 1) {
-    int _v;
-    {
-      int res = SWIG_AsVal_double(argv[0], NULL);
-      _v = SWIG_CheckState(res);
-    }
-    if (_v) {
-      return _wrap_new_MarControlPtr__SWIG_3(nargs, args, self);
-    }
-  }
-  if (argc == 1) {
-    int _v;
-    int res = SWIG_AsPtr_std_string(argv[0], (std::string**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_new_MarControlPtr__SWIG_4(nargs, args, self);
-    }
-  }
-  if (argc == 1) {
-    int _v;
-    {
-      int res = SWIG_AsVal_bool(argv[0], NULL);
-      _v = SWIG_CheckState(res);
-    }
-    if (_v) {
-      return _wrap_new_MarControlPtr__SWIG_5(nargs, args, self);
-    }
-  }
   
 fail:
   Ruby_Format_OverloadedError( argc, 1, "MarControlPtr.new", 
     "    MarControlPtr.new()\n"
-    "    MarControlPtr.new(MarControlPtr const &a)\n"
-    "    MarControlPtr.new(mrs_natural)\n"
-    "    MarControlPtr.new(mrs_real)\n"
-    "    MarControlPtr.new(mrs_string)\n"
-    "    MarControlPtr.new(mrs_bool)\n");
+    "    MarControlPtr.new(MarControlPtr const &a)\n");
   
   return Qnil;
 }
@@ -11743,6 +11619,104 @@ _wrap_MarControlPtr_isInvalid(int argc, VALUE *argv, VALUE self) {
   arg1 = reinterpret_cast< MarControlPtr * >(argp1);
   result = (bool)((MarControlPtr const *)arg1)->isInvalid();
   vresult = SWIG_From_bool(static_cast< bool >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_MarControlPtr_from_natural(int argc, VALUE *argv, VALUE self) {
+  mrs_natural arg1 ;
+  MarControlPtr result;
+  int val1 ;
+  int ecode1 = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  ecode1 = SWIG_AsVal_int(argv[0], &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), Ruby_Format_TypeError( "", "mrs_natural","MarControlPtr_from_natural", 1, argv[0] ));
+  } 
+  arg1 = static_cast< mrs_natural >(val1);
+  result = MarControlPtr_from_natural(arg1);
+  vresult = SWIG_NewPointerObj((new MarControlPtr(static_cast< const MarControlPtr& >(result))), SWIGTYPE_p_MarControlPtr, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_MarControlPtr_from_real(int argc, VALUE *argv, VALUE self) {
+  mrs_real arg1 ;
+  MarControlPtr result;
+  double val1 ;
+  int ecode1 = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  ecode1 = SWIG_AsVal_double(argv[0], &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), Ruby_Format_TypeError( "", "mrs_real","MarControlPtr_from_real", 1, argv[0] ));
+  } 
+  arg1 = static_cast< mrs_real >(val1);
+  result = MarControlPtr_from_real(arg1);
+  vresult = SWIG_NewPointerObj((new MarControlPtr(static_cast< const MarControlPtr& >(result))), SWIGTYPE_p_MarControlPtr, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_MarControlPtr_from_bool(int argc, VALUE *argv, VALUE self) {
+  mrs_bool arg1 ;
+  MarControlPtr result;
+  bool val1 ;
+  int ecode1 = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  ecode1 = SWIG_AsVal_bool(argv[0], &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), Ruby_Format_TypeError( "", "mrs_bool","MarControlPtr_from_bool", 1, argv[0] ));
+  } 
+  arg1 = static_cast< mrs_bool >(val1);
+  result = MarControlPtr_from_bool(arg1);
+  vresult = SWIG_NewPointerObj((new MarControlPtr(static_cast< const MarControlPtr& >(result))), SWIGTYPE_p_MarControlPtr, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_MarControlPtr_from_string(int argc, VALUE *argv, VALUE self) {
+  mrs_string arg1 ;
+  MarControlPtr result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(argv[0], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), Ruby_Format_TypeError( "", "mrs_string","MarControlPtr_from_string", 1, argv[0] )); 
+    }
+    arg1 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  result = MarControlPtr_from_string(arg1);
+  vresult = SWIG_NewPointerObj((new MarControlPtr(static_cast< const MarControlPtr& >(result))), SWIGTYPE_p_MarControlPtr, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
   return Qnil;
@@ -11798,7 +11772,7 @@ fail:
 
 
 SWIGINTERN VALUE
-_wrap_MarControlPtr_setValue__SWIG_0(int argc, VALUE *argv, VALUE self) {
+_wrap_MarControlPtr_setValue_natural(int argc, VALUE *argv, VALUE self) {
   MarControlPtr *arg1 = (MarControlPtr *) 0 ;
   mrs_natural arg2 ;
   mrs_bool result;
@@ -11813,15 +11787,15 @@ _wrap_MarControlPtr_setValue__SWIG_0(int argc, VALUE *argv, VALUE self) {
   }
   res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MarControlPtr, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarControlPtr *","setValue", 1, self )); 
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarControlPtr *","setValue_natural", 1, self )); 
   }
   arg1 = reinterpret_cast< MarControlPtr * >(argp1);
   ecode2 = SWIG_AsVal_int(argv[0], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "mrs_natural","setValue", 2, argv[0] ));
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "mrs_natural","setValue_natural", 2, argv[0] ));
   } 
   arg2 = static_cast< mrs_natural >(val2);
-  result = MarControlPtr_setValue__SWIG_0(arg1,arg2);
+  result = MarControlPtr_setValue_natural(arg1,arg2);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -11830,7 +11804,7 @@ fail:
 
 
 SWIGINTERN VALUE
-_wrap_MarControlPtr_setValue__SWIG_1(int argc, VALUE *argv, VALUE self) {
+_wrap_MarControlPtr_setValue_real(int argc, VALUE *argv, VALUE self) {
   MarControlPtr *arg1 = (MarControlPtr *) 0 ;
   mrs_real arg2 ;
   mrs_bool result;
@@ -11845,15 +11819,15 @@ _wrap_MarControlPtr_setValue__SWIG_1(int argc, VALUE *argv, VALUE self) {
   }
   res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MarControlPtr, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarControlPtr *","setValue", 1, self )); 
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarControlPtr *","setValue_real", 1, self )); 
   }
   arg1 = reinterpret_cast< MarControlPtr * >(argp1);
   ecode2 = SWIG_AsVal_double(argv[0], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "mrs_real","setValue", 2, argv[0] ));
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "mrs_real","setValue_real", 2, argv[0] ));
   } 
   arg2 = static_cast< mrs_real >(val2);
-  result = MarControlPtr_setValue__SWIG_1(arg1,arg2);
+  result = MarControlPtr_setValue_real(arg1,arg2);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -11862,7 +11836,7 @@ fail:
 
 
 SWIGINTERN VALUE
-_wrap_MarControlPtr_setValue__SWIG_2(int argc, VALUE *argv, VALUE self) {
+_wrap_MarControlPtr_setValue_bool(int argc, VALUE *argv, VALUE self) {
   MarControlPtr *arg1 = (MarControlPtr *) 0 ;
   mrs_bool arg2 ;
   mrs_bool result;
@@ -11877,15 +11851,15 @@ _wrap_MarControlPtr_setValue__SWIG_2(int argc, VALUE *argv, VALUE self) {
   }
   res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MarControlPtr, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarControlPtr *","setValue", 1, self )); 
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarControlPtr *","setValue_bool", 1, self )); 
   }
   arg1 = reinterpret_cast< MarControlPtr * >(argp1);
   ecode2 = SWIG_AsVal_bool(argv[0], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "mrs_bool","setValue", 2, argv[0] ));
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "mrs_bool","setValue_bool", 2, argv[0] ));
   } 
   arg2 = static_cast< mrs_bool >(val2);
-  result = MarControlPtr_setValue__SWIG_2(arg1,arg2);
+  result = MarControlPtr_setValue_bool(arg1,arg2);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -11894,7 +11868,7 @@ fail:
 
 
 SWIGINTERN VALUE
-_wrap_MarControlPtr_setValue__SWIG_3(int argc, VALUE *argv, VALUE self) {
+_wrap_MarControlPtr_setValue_string(int argc, VALUE *argv, VALUE self) {
   MarControlPtr *arg1 = (MarControlPtr *) 0 ;
   mrs_string arg2 ;
   mrs_bool result;
@@ -11907,19 +11881,19 @@ _wrap_MarControlPtr_setValue__SWIG_3(int argc, VALUE *argv, VALUE self) {
   }
   res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MarControlPtr, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarControlPtr *","setValue", 1, self )); 
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarControlPtr *","setValue_string", 1, self )); 
   }
   arg1 = reinterpret_cast< MarControlPtr * >(argp1);
   {
     std::string *ptr = (std::string *)0;
     int res = SWIG_AsPtr_std_string(argv[0], &ptr);
     if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), Ruby_Format_TypeError( "", "mrs_string","setValue", 2, argv[0] )); 
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), Ruby_Format_TypeError( "", "mrs_string","setValue_string", 2, argv[0] )); 
     }
     arg2 = *ptr;
     if (SWIG_IsNewObj(res)) delete ptr;
   }
-  result = MarControlPtr_setValue__SWIG_3(arg1,arg2);
+  result = MarControlPtr_setValue_string(arg1,arg2);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -11927,89 +11901,8 @@ fail:
 }
 
 
-SWIGINTERN VALUE _wrap_MarControlPtr_setValue(int nargs, VALUE *args, VALUE self) {
-  int argc;
-  VALUE argv[3];
-  int ii;
-  
-  argc = nargs + 1;
-  argv[0] = self;
-  if (argc > 3) SWIG_fail;
-  for (ii = 1; (ii < argc); ++ii) {
-    argv[ii] = args[ii-1];
-  }
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarControlPtr, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_MarControlPtr_setValue__SWIG_0(nargs, args, self);
-      }
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarControlPtr, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_double(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_MarControlPtr_setValue__SWIG_1(nargs, args, self);
-      }
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarControlPtr, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_MarControlPtr_setValue__SWIG_3(nargs, args, self);
-      }
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarControlPtr, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_bool(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_MarControlPtr_setValue__SWIG_2(nargs, args, self);
-      }
-    }
-  }
-  
-fail:
-  Ruby_Format_OverloadedError( argc, 3, "setValue", 
-    "    mrs_bool setValue(mrs_natural x)\n"
-    "    mrs_bool setValue(mrs_real x)\n"
-    "    mrs_bool setValue(mrs_bool x)\n"
-    "    mrs_bool setValue(mrs_string x)\n");
-  
-  return Qnil;
-}
-
-
 SWIGINTERN VALUE
-_wrap_MarControlPtr_to_int(int argc, VALUE *argv, VALUE self) {
+_wrap_MarControlPtr_to_natural(int argc, VALUE *argv, VALUE self) {
   MarControlPtr *arg1 = (MarControlPtr *) 0 ;
   mrs_natural result;
   void *argp1 = 0 ;
@@ -12021,10 +11914,10 @@ _wrap_MarControlPtr_to_int(int argc, VALUE *argv, VALUE self) {
   }
   res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MarControlPtr, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarControlPtr *","to_int", 1, self )); 
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "MarControlPtr *","to_natural", 1, self )); 
   }
   arg1 = reinterpret_cast< MarControlPtr * >(argp1);
-  result = MarControlPtr_to_int(arg1);
+  result = MarControlPtr_to_natural(arg1);
   vresult = SWIG_From_int(static_cast< int >(result));
   return vresult;
 fail:
@@ -12558,12 +12451,12 @@ SWIGEXPORT void Init_marsyas(void) {
   rb_define_method(cMarSystem.klass, "getType", VALUEFUNC(_wrap_MarSystem_getType), -1);
   rb_define_method(cMarSystem.klass, "getName", VALUEFUNC(_wrap_MarSystem_getName), -1);
   rb_define_method(cMarSystem.klass, "getPrefix", VALUEFUNC(_wrap_MarSystem_getPrefix), -1);
-  rb_define_method(cMarSystem.klass, "setControl", VALUEFUNC(_wrap_MarSystem_setControl), -1);
-  rb_define_method(cMarSystem.klass, "updControl", VALUEFUNC(_wrap_MarSystem_updControl), -1);
   rb_define_method(cMarSystem.klass, "getControl", VALUEFUNC(_wrap_MarSystem_getControl), -1);
   rb_define_method(cMarSystem.klass, "hasControl", VALUEFUNC(_wrap_MarSystem_hasControl), -1);
   rb_define_method(cMarSystem.klass, "linkControl", VALUEFUNC(_wrap_MarSystem_linkControl), -1);
   rb_define_method(cMarSystem.klass, "getControls", VALUEFUNC(_wrap_MarSystem_getControls), -1);
+  rb_define_method(cMarSystem.klass, "setControl", VALUEFUNC(_wrap_MarSystem_setControl), -1);
+  rb_define_method(cMarSystem.klass, "updControl", VALUEFUNC(_wrap_MarSystem_updControl), -1);
   cMarSystem.mark = 0;
   cMarSystem.destroy = (void (*)(void *)) free_MarSystem;
   cMarSystem.trackObjects = 0;
@@ -12631,10 +12524,17 @@ SWIGEXPORT void Init_marsyas(void) {
   rb_define_alloc_func(cMarControlPtr.klass, _wrap_MarControlPtr_allocate);
   rb_define_method(cMarControlPtr.klass, "initialize", VALUEFUNC(_wrap_new_MarControlPtr), -1);
   rb_define_method(cMarControlPtr.klass, "isInvalid", VALUEFUNC(_wrap_MarControlPtr_isInvalid), -1);
+  rb_define_singleton_method(cMarControlPtr.klass, "from_natural", VALUEFUNC(_wrap_MarControlPtr_from_natural), -1);
+  rb_define_singleton_method(cMarControlPtr.klass, "from_real", VALUEFUNC(_wrap_MarControlPtr_from_real), -1);
+  rb_define_singleton_method(cMarControlPtr.klass, "from_bool", VALUEFUNC(_wrap_MarControlPtr_from_bool), -1);
+  rb_define_singleton_method(cMarControlPtr.klass, "from_string", VALUEFUNC(_wrap_MarControlPtr_from_string), -1);
   rb_define_method(cMarControlPtr.klass, "getType", VALUEFUNC(_wrap_MarControlPtr_getType), -1);
   rb_define_method(cMarControlPtr.klass, "getName", VALUEFUNC(_wrap_MarControlPtr_getName), -1);
-  rb_define_method(cMarControlPtr.klass, "setValue", VALUEFUNC(_wrap_MarControlPtr_setValue), -1);
-  rb_define_method(cMarControlPtr.klass, "to_int", VALUEFUNC(_wrap_MarControlPtr_to_int), -1);
+  rb_define_method(cMarControlPtr.klass, "setValue_natural", VALUEFUNC(_wrap_MarControlPtr_setValue_natural), -1);
+  rb_define_method(cMarControlPtr.klass, "setValue_real", VALUEFUNC(_wrap_MarControlPtr_setValue_real), -1);
+  rb_define_method(cMarControlPtr.klass, "setValue_bool", VALUEFUNC(_wrap_MarControlPtr_setValue_bool), -1);
+  rb_define_method(cMarControlPtr.klass, "setValue_string", VALUEFUNC(_wrap_MarControlPtr_setValue_string), -1);
+  rb_define_method(cMarControlPtr.klass, "to_natural", VALUEFUNC(_wrap_MarControlPtr_to_natural), -1);
   rb_define_method(cMarControlPtr.klass, "to_real", VALUEFUNC(_wrap_MarControlPtr_to_real), -1);
   rb_define_method(cMarControlPtr.klass, "to_string", VALUEFUNC(_wrap_MarControlPtr_to_string), -1);
   rb_define_method(cMarControlPtr.klass, "to_bool", VALUEFUNC(_wrap_MarControlPtr_to_bool), -1);

@@ -223,18 +223,30 @@ class MarControlPtr(_object):
     __swig_destroy__ = _marsyas.delete_MarControlPtr
     __del__ = lambda self : None;
     def isInvalid(*args): return _marsyas.MarControlPtr_isInvalid(*args)
+    __swig_getmethods__["from_natural"] = lambda x: _marsyas.MarControlPtr_from_natural
+    if _newclass:from_natural = staticmethod(_marsyas.MarControlPtr_from_natural)
+    __swig_getmethods__["from_real"] = lambda x: _marsyas.MarControlPtr_from_real
+    if _newclass:from_real = staticmethod(_marsyas.MarControlPtr_from_real)
+    __swig_getmethods__["from_bool"] = lambda x: _marsyas.MarControlPtr_from_bool
+    if _newclass:from_bool = staticmethod(_marsyas.MarControlPtr_from_bool)
+    __swig_getmethods__["from_string"] = lambda x: _marsyas.MarControlPtr_from_string
+    if _newclass:from_string = staticmethod(_marsyas.MarControlPtr_from_string)
     def getType(*args): return _marsyas.MarControlPtr_getType(*args)
     def getName(*args): return _marsyas.MarControlPtr_getName(*args)
-    def setValue(*args): return _marsyas.MarControlPtr_setValue(*args)
-    def to_int(*args): return _marsyas.MarControlPtr_to_int(*args)
+    def setValue_natural(*args): return _marsyas.MarControlPtr_setValue_natural(*args)
+    def setValue_real(*args): return _marsyas.MarControlPtr_setValue_real(*args)
+    def setValue_bool(*args): return _marsyas.MarControlPtr_setValue_bool(*args)
+    def setValue_string(*args): return _marsyas.MarControlPtr_setValue_string(*args)
+    def to_natural(*args): return _marsyas.MarControlPtr_to_natural(*args)
     def to_real(*args): return _marsyas.MarControlPtr_to_real(*args)
     def to_string(*args): return _marsyas.MarControlPtr_to_string(*args)
     def to_bool(*args): return _marsyas.MarControlPtr_to_bool(*args)
 MarControlPtr_swigregister = _marsyas.MarControlPtr_swigregister
 MarControlPtr_swigregister(MarControlPtr)
+MarControlPtr_from_natural = _marsyas.MarControlPtr_from_natural
+MarControlPtr_from_real = _marsyas.MarControlPtr_from_real
+MarControlPtr_from_bool = _marsyas.MarControlPtr_from_bool
+MarControlPtr_from_string = _marsyas.MarControlPtr_from_string
 
 
-cvar = _marsyas.cvar
-MRS_TRUE = cvar.MRS_TRUE
-MRS_FALSE = cvar.MRS_FALSE
 

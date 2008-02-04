@@ -4449,43 +4449,6 @@ SWIGINTERN void std_map_Sl_std_string_Sc_MarControlPtr_Sg____setitem__(std::map<
       (*self)[key] = x;
     }
 
-SWIGINTERN int
-SWIG_AsVal_bool (PyObject *obj, bool *val)
-{
-  int r = PyObject_IsTrue(obj);
-  if (r == -1)
-    return SWIG_ERROR;
-  if (val) *val = r ? true : false;
-  return SWIG_OK;
-}
-
-
-#include <limits.h>
-#if !defined(SWIG_NO_LLONG_MAX)
-# if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
-#   define LLONG_MAX __LONG_LONG_MAX__
-#   define LLONG_MIN (-LLONG_MAX - 1LL)
-#   define ULLONG_MAX (LLONG_MAX * 2ULL + 1ULL)
-# endif
-#endif
-
-
-SWIGINTERN int
-SWIG_AsVal_int (PyObject * obj, int *val)
-{
-  long v;
-  int res = SWIG_AsVal_long (obj, &v);
-  if (SWIG_IsOK(res)) {
-    if ((v < INT_MIN || v > INT_MAX)) {
-      return SWIG_OverflowError;
-    } else {
-      if (val) *val = static_cast< int >(v);
-    }
-  }  
-  return res;
-}
-
-
 #include <marsyas/MarSystemManager.h>
 
 using namespace Marsyas;
@@ -4564,13 +4527,54 @@ SWIGINTERN void std_vector_Sl_std_string_Sg__append(std::vector<std::string > *s
 using namespace Marsyas;
 
 
+
+#include <limits.h>
+#if !defined(SWIG_NO_LLONG_MAX)
+# if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
+#   define LLONG_MAX __LONG_LONG_MAX__
+#   define LLONG_MIN (-LLONG_MAX - 1LL)
+#   define ULLONG_MAX (LLONG_MAX * 2ULL + 1ULL)
+# endif
+#endif
+
+
+SWIGINTERN int
+SWIG_AsVal_int (PyObject * obj, int *val)
+{
+  long v;
+  int res = SWIG_AsVal_long (obj, &v);
+  if (SWIG_IsOK(res)) {
+    if ((v < INT_MIN || v > INT_MAX)) {
+      return SWIG_OverflowError;
+    } else {
+      if (val) *val = static_cast< int >(v);
+    }
+  }  
+  return res;
+}
+
+SWIGINTERN MarControlPtr MarControlPtr_from_natural(mrs_natural x){ return MarControlPtr(x); }
+SWIGINTERN MarControlPtr MarControlPtr_from_real(mrs_real x){ return MarControlPtr(x); }
+
+SWIGINTERN int
+SWIG_AsVal_bool (PyObject *obj, bool *val)
+{
+  int r = PyObject_IsTrue(obj);
+  if (r == -1)
+    return SWIG_ERROR;
+  if (val) *val = r ? true : false;
+  return SWIG_OK;
+}
+
+SWIGINTERN MarControlPtr MarControlPtr_from_bool(mrs_bool x){ return MarControlPtr(x); }
+SWIGINTERN MarControlPtr MarControlPtr_from_string(mrs_string x){ return MarControlPtr(x); }
 SWIGINTERN mrs_string MarControlPtr_getType(MarControlPtr *self){ return (*self)->getType(); }
 SWIGINTERN mrs_string MarControlPtr_getName(MarControlPtr *self){ return (*self)->getName(); }
-SWIGINTERN mrs_bool MarControlPtr_setValue__SWIG_0(MarControlPtr *self,mrs_natural x){ return (*self)->setValue(x); }
-SWIGINTERN mrs_bool MarControlPtr_setValue__SWIG_1(MarControlPtr *self,mrs_real x){ return (*self)->setValue(x); }
-SWIGINTERN mrs_bool MarControlPtr_setValue__SWIG_2(MarControlPtr *self,mrs_bool x){ return (*self)->setValue(x); }
-SWIGINTERN mrs_bool MarControlPtr_setValue__SWIG_3(MarControlPtr *self,mrs_string x){ return (*self)->setValue(x); }
-SWIGINTERN mrs_natural MarControlPtr_to_int(MarControlPtr *self){ return (*self)->to<mrs_natural>(); }
+SWIGINTERN mrs_bool MarControlPtr_setValue_natural(MarControlPtr *self,mrs_natural x){ return (*self)->setValue(x); }
+SWIGINTERN mrs_bool MarControlPtr_setValue_real(MarControlPtr *self,mrs_real x){ return (*self)->setValue(x); }
+SWIGINTERN mrs_bool MarControlPtr_setValue_bool(MarControlPtr *self,mrs_bool x){ return (*self)->setValue(x); }
+SWIGINTERN mrs_bool MarControlPtr_setValue_string(MarControlPtr *self,mrs_string x){ return (*self)->setValue(x); }
+SWIGINTERN mrs_natural MarControlPtr_to_natural(MarControlPtr *self){ return (*self)->to<mrs_natural>(); }
 
 SWIGINTERNINLINE PyObject *
 SWIG_From_int  (int value)
@@ -4584,10 +4588,6 @@ SWIGINTERN mrs_real MarControlPtr_to_real(MarControlPtr *self){ return (*self)->
 
 SWIGINTERN mrs_string MarControlPtr_to_string(MarControlPtr *self){ return (*self)->to<mrs_string>(); }
 SWIGINTERN mrs_bool MarControlPtr_to_bool(MarControlPtr *self){ return (*self)->to<mrs_bool>(); }
-
-const mrs_bool MRS_TRUE = true;
-const mrs_bool MRS_FALSE = false;
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -6850,7 +6850,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_MarSystem_setControl__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_MarSystem_setControl(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   MarSystem *arg1 = (MarSystem *) 0 ;
   std::string arg2 ;
@@ -6899,281 +6899,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_MarSystem_setControl__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  MarSystem *arg1 = (MarSystem *) 0 ;
-  std::string arg2 ;
-  mrs_bool arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  bool val3 ;
-  int ecode3 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOO:MarSystem_setControl",&obj0,&obj1,&obj2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarSystem_setControl" "', argument " "1"" of type '" "MarSystem *""'"); 
-  }
-  arg1 = reinterpret_cast< MarSystem * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(obj1, &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "MarSystem_setControl" "', argument " "2"" of type '" "std::string""'"); 
-    }
-    arg2 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
-  }
-  ecode3 = SWIG_AsVal_bool(obj2, &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "MarSystem_setControl" "', argument " "3"" of type '" "mrs_bool""'");
-  } 
-  arg3 = static_cast< mrs_bool >(val3);
-  (arg1)->setControl(arg2,arg3);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_MarSystem_setControl__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  MarSystem *arg1 = (MarSystem *) 0 ;
-  std::string arg2 ;
-  mrs_natural arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val3 ;
-  int ecode3 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOO:MarSystem_setControl",&obj0,&obj1,&obj2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarSystem_setControl" "', argument " "1"" of type '" "MarSystem *""'"); 
-  }
-  arg1 = reinterpret_cast< MarSystem * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(obj1, &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "MarSystem_setControl" "', argument " "2"" of type '" "std::string""'"); 
-    }
-    arg2 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
-  }
-  ecode3 = SWIG_AsVal_int(obj2, &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "MarSystem_setControl" "', argument " "3"" of type '" "mrs_natural""'");
-  } 
-  arg3 = static_cast< mrs_natural >(val3);
-  (arg1)->setControl(arg2,arg3);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_MarSystem_setControl__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  MarSystem *arg1 = (MarSystem *) 0 ;
-  std::string arg2 ;
-  mrs_real arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  double val3 ;
-  int ecode3 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOO:MarSystem_setControl",&obj0,&obj1,&obj2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarSystem_setControl" "', argument " "1"" of type '" "MarSystem *""'"); 
-  }
-  arg1 = reinterpret_cast< MarSystem * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(obj1, &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "MarSystem_setControl" "', argument " "2"" of type '" "std::string""'"); 
-    }
-    arg2 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
-  }
-  ecode3 = SWIG_AsVal_double(obj2, &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "MarSystem_setControl" "', argument " "3"" of type '" "mrs_real""'");
-  } 
-  arg3 = static_cast< mrs_real >(val3);
-  (arg1)->setControl(arg2,arg3);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_MarSystem_setControl__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  MarSystem *arg1 = (MarSystem *) 0 ;
-  std::string arg2 ;
-  mrs_string arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOO:MarSystem_setControl",&obj0,&obj1,&obj2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarSystem_setControl" "', argument " "1"" of type '" "MarSystem *""'"); 
-  }
-  arg1 = reinterpret_cast< MarSystem * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(obj1, &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "MarSystem_setControl" "', argument " "2"" of type '" "std::string""'"); 
-    }
-    arg2 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(obj2, &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "MarSystem_setControl" "', argument " "3"" of type '" "mrs_string""'"); 
-    }
-    arg3 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
-  }
-  (arg1)->setControl(arg2,arg3);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_MarSystem_setControl(PyObject *self, PyObject *args) {
-  int argc;
-  PyObject *argv[4];
-  int ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = (int)PyObject_Length(args);
-  for (ii = 0; (ii < argc) && (ii < 3); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        int res = SWIG_ConvertPtr(argv[2], 0, SWIGTYPE_p_MarControlPtr, 0);
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_MarSystem_setControl__SWIG_0(self, args);
-        }
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_MarSystem_setControl__SWIG_2(self, args);
-        }
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_double(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_MarSystem_setControl__SWIG_3(self, args);
-        }
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_MarSystem_setControl__SWIG_4(self, args);
-        }
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_bool(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_MarSystem_setControl__SWIG_1(self, args);
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number of arguments for overloaded function 'MarSystem_setControl'.\n  Possible C/C++ prototypes are:\n""    setControl(MarSystem *,std::string,MarControlPtr)\n""    setControl(MarSystem *,std::string,mrs_bool)\n""    setControl(MarSystem *,std::string,mrs_natural)\n""    setControl(MarSystem *,std::string,mrs_real)\n""    setControl(MarSystem *,std::string,mrs_string)\n");
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_MarSystem_updControl__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_MarSystem_updControl(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   MarSystem *arg1 = (MarSystem *) 0 ;
   std::string arg2 ;
@@ -7218,280 +6944,6 @@ SWIGINTERN PyObject *_wrap_MarSystem_updControl__SWIG_0(PyObject *SWIGUNUSEDPARM
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_MarSystem_updControl__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  MarSystem *arg1 = (MarSystem *) 0 ;
-  std::string arg2 ;
-  mrs_bool arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  bool val3 ;
-  int ecode3 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOO:MarSystem_updControl",&obj0,&obj1,&obj2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarSystem_updControl" "', argument " "1"" of type '" "MarSystem *""'"); 
-  }
-  arg1 = reinterpret_cast< MarSystem * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(obj1, &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "MarSystem_updControl" "', argument " "2"" of type '" "std::string""'"); 
-    }
-    arg2 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
-  }
-  ecode3 = SWIG_AsVal_bool(obj2, &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "MarSystem_updControl" "', argument " "3"" of type '" "mrs_bool""'");
-  } 
-  arg3 = static_cast< mrs_bool >(val3);
-  (arg1)->updControl(arg2,arg3);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_MarSystem_updControl__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  MarSystem *arg1 = (MarSystem *) 0 ;
-  std::string arg2 ;
-  mrs_natural arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val3 ;
-  int ecode3 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOO:MarSystem_updControl",&obj0,&obj1,&obj2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarSystem_updControl" "', argument " "1"" of type '" "MarSystem *""'"); 
-  }
-  arg1 = reinterpret_cast< MarSystem * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(obj1, &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "MarSystem_updControl" "', argument " "2"" of type '" "std::string""'"); 
-    }
-    arg2 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
-  }
-  ecode3 = SWIG_AsVal_int(obj2, &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "MarSystem_updControl" "', argument " "3"" of type '" "mrs_natural""'");
-  } 
-  arg3 = static_cast< mrs_natural >(val3);
-  (arg1)->updControl(arg2,arg3);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_MarSystem_updControl__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  MarSystem *arg1 = (MarSystem *) 0 ;
-  std::string arg2 ;
-  mrs_real arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  double val3 ;
-  int ecode3 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOO:MarSystem_updControl",&obj0,&obj1,&obj2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarSystem_updControl" "', argument " "1"" of type '" "MarSystem *""'"); 
-  }
-  arg1 = reinterpret_cast< MarSystem * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(obj1, &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "MarSystem_updControl" "', argument " "2"" of type '" "std::string""'"); 
-    }
-    arg2 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
-  }
-  ecode3 = SWIG_AsVal_double(obj2, &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "MarSystem_updControl" "', argument " "3"" of type '" "mrs_real""'");
-  } 
-  arg3 = static_cast< mrs_real >(val3);
-  (arg1)->updControl(arg2,arg3);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_MarSystem_updControl__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  MarSystem *arg1 = (MarSystem *) 0 ;
-  std::string arg2 ;
-  mrs_string arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOO:MarSystem_updControl",&obj0,&obj1,&obj2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarSystem_updControl" "', argument " "1"" of type '" "MarSystem *""'"); 
-  }
-  arg1 = reinterpret_cast< MarSystem * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(obj1, &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "MarSystem_updControl" "', argument " "2"" of type '" "std::string""'"); 
-    }
-    arg2 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(obj2, &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "MarSystem_updControl" "', argument " "3"" of type '" "mrs_string""'"); 
-    }
-    arg3 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
-  }
-  (arg1)->updControl(arg2,arg3);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_MarSystem_updControl(PyObject *self, PyObject *args) {
-  int argc;
-  PyObject *argv[4];
-  int ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = (int)PyObject_Length(args);
-  for (ii = 0; (ii < argc) && (ii < 3); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        int res = SWIG_ConvertPtr(argv[2], 0, SWIGTYPE_p_MarControlPtr, 0);
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_MarSystem_updControl__SWIG_0(self, args);
-        }
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_MarSystem_updControl__SWIG_2(self, args);
-        }
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_double(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_MarSystem_updControl__SWIG_3(self, args);
-        }
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_MarSystem_updControl__SWIG_4(self, args);
-        }
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarSystem, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_bool(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_MarSystem_updControl__SWIG_1(self, args);
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number of arguments for overloaded function 'MarSystem_updControl'.\n  Possible C/C++ prototypes are:\n""    updControl(MarSystem *,std::string,MarControlPtr)\n""    updControl(MarSystem *,std::string,mrs_bool)\n""    updControl(MarSystem *,std::string,mrs_natural)\n""    updControl(MarSystem *,std::string,mrs_real)\n""    updControl(MarSystem *,std::string,mrs_string)\n");
   return NULL;
 }
 
@@ -9479,96 +8931,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_new_MarControlPtr__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  mrs_natural arg1 ;
-  MarControlPtr *result = 0 ;
-  int val1 ;
-  int ecode1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:new_MarControlPtr",&obj0)) SWIG_fail;
-  ecode1 = SWIG_AsVal_int(obj0, &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_MarControlPtr" "', argument " "1"" of type '" "mrs_natural""'");
-  } 
-  arg1 = static_cast< mrs_natural >(val1);
-  result = (MarControlPtr *)new MarControlPtr(arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MarControlPtr, SWIG_POINTER_NEW |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_MarControlPtr__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  mrs_real arg1 ;
-  MarControlPtr *result = 0 ;
-  double val1 ;
-  int ecode1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:new_MarControlPtr",&obj0)) SWIG_fail;
-  ecode1 = SWIG_AsVal_double(obj0, &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_MarControlPtr" "', argument " "1"" of type '" "mrs_real""'");
-  } 
-  arg1 = static_cast< mrs_real >(val1);
-  result = (MarControlPtr *)new MarControlPtr(arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MarControlPtr, SWIG_POINTER_NEW |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_MarControlPtr__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  mrs_string arg1 ;
-  MarControlPtr *result = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:new_MarControlPtr",&obj0)) SWIG_fail;
-  {
-    std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(obj0, &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "new_MarControlPtr" "', argument " "1"" of type '" "mrs_string""'"); 
-    }
-    arg1 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
-  }
-  result = (MarControlPtr *)new MarControlPtr(arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MarControlPtr, SWIG_POINTER_NEW |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_MarControlPtr__SWIG_5(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  mrs_bool arg1 ;
-  MarControlPtr *result = 0 ;
-  bool val1 ;
-  int ecode1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:new_MarControlPtr",&obj0)) SWIG_fail;
-  ecode1 = SWIG_AsVal_bool(obj0, &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_MarControlPtr" "', argument " "1"" of type '" "mrs_bool""'");
-  } 
-  arg1 = static_cast< mrs_bool >(val1);
-  result = (MarControlPtr *)new MarControlPtr(arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MarControlPtr, SWIG_POINTER_NEW |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_new_MarControlPtr(PyObject *self, PyObject *args) {
   int argc;
   PyObject *argv[2];
@@ -9590,47 +8952,9 @@ SWIGINTERN PyObject *_wrap_new_MarControlPtr(PyObject *self, PyObject *args) {
       return _wrap_new_MarControlPtr__SWIG_1(self, args);
     }
   }
-  if (argc == 1) {
-    int _v;
-    {
-      int res = SWIG_AsVal_int(argv[0], NULL);
-      _v = SWIG_CheckState(res);
-    }
-    if (_v) {
-      return _wrap_new_MarControlPtr__SWIG_2(self, args);
-    }
-  }
-  if (argc == 1) {
-    int _v;
-    {
-      int res = SWIG_AsVal_double(argv[0], NULL);
-      _v = SWIG_CheckState(res);
-    }
-    if (_v) {
-      return _wrap_new_MarControlPtr__SWIG_3(self, args);
-    }
-  }
-  if (argc == 1) {
-    int _v;
-    int res = SWIG_AsPtr_std_string(argv[0], (std::string**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_new_MarControlPtr__SWIG_4(self, args);
-    }
-  }
-  if (argc == 1) {
-    int _v;
-    {
-      int res = SWIG_AsVal_bool(argv[0], NULL);
-      _v = SWIG_CheckState(res);
-    }
-    if (_v) {
-      return _wrap_new_MarControlPtr__SWIG_5(self, args);
-    }
-  }
   
 fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number of arguments for overloaded function 'new_MarControlPtr'.\n  Possible C/C++ prototypes are:\n""    MarControlPtr()\n""    MarControlPtr(MarControlPtr const &)\n""    MarControlPtr(mrs_natural)\n""    MarControlPtr(mrs_real)\n""    MarControlPtr(mrs_string)\n""    MarControlPtr(mrs_bool)\n");
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number of arguments for overloaded function 'new_MarControlPtr'.\n  Possible C/C++ prototypes are:\n""    MarControlPtr()\n""    MarControlPtr(MarControlPtr const &)\n");
   return NULL;
 }
 
@@ -9673,6 +8997,96 @@ SWIGINTERN PyObject *_wrap_MarControlPtr_isInvalid(PyObject *SWIGUNUSEDPARM(self
   arg1 = reinterpret_cast< MarControlPtr * >(argp1);
   result = (bool)((MarControlPtr const *)arg1)->isInvalid();
   resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MarControlPtr_from_natural(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  mrs_natural arg1 ;
+  MarControlPtr result;
+  int val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MarControlPtr_from_natural",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MarControlPtr_from_natural" "', argument " "1"" of type '" "mrs_natural""'");
+  } 
+  arg1 = static_cast< mrs_natural >(val1);
+  result = MarControlPtr_from_natural(arg1);
+  resultobj = SWIG_NewPointerObj((new MarControlPtr(static_cast< const MarControlPtr& >(result))), SWIGTYPE_p_MarControlPtr, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MarControlPtr_from_real(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  mrs_real arg1 ;
+  MarControlPtr result;
+  double val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MarControlPtr_from_real",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_double(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MarControlPtr_from_real" "', argument " "1"" of type '" "mrs_real""'");
+  } 
+  arg1 = static_cast< mrs_real >(val1);
+  result = MarControlPtr_from_real(arg1);
+  resultobj = SWIG_NewPointerObj((new MarControlPtr(static_cast< const MarControlPtr& >(result))), SWIGTYPE_p_MarControlPtr, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MarControlPtr_from_bool(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  mrs_bool arg1 ;
+  MarControlPtr result;
+  bool val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MarControlPtr_from_bool",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_bool(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MarControlPtr_from_bool" "', argument " "1"" of type '" "mrs_bool""'");
+  } 
+  arg1 = static_cast< mrs_bool >(val1);
+  result = MarControlPtr_from_bool(arg1);
+  resultobj = SWIG_NewPointerObj((new MarControlPtr(static_cast< const MarControlPtr& >(result))), SWIGTYPE_p_MarControlPtr, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MarControlPtr_from_string(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  mrs_string arg1 ;
+  MarControlPtr result;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MarControlPtr_from_string",&obj0)) SWIG_fail;
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(obj0, &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "MarControlPtr_from_string" "', argument " "1"" of type '" "mrs_string""'"); 
+    }
+    arg1 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  result = MarControlPtr_from_string(arg1);
+  resultobj = SWIG_NewPointerObj((new MarControlPtr(static_cast< const MarControlPtr& >(result))), SWIGTYPE_p_MarControlPtr, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -9723,7 +9137,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_MarControlPtr_setValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_MarControlPtr_setValue_natural(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   MarControlPtr *arg1 = (MarControlPtr *) 0 ;
   mrs_natural arg2 ;
@@ -9735,18 +9149,18 @@ SWIGINTERN PyObject *_wrap_MarControlPtr_setValue__SWIG_0(PyObject *SWIGUNUSEDPA
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:MarControlPtr_setValue",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:MarControlPtr_setValue_natural",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MarControlPtr, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarControlPtr_setValue" "', argument " "1"" of type '" "MarControlPtr *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarControlPtr_setValue_natural" "', argument " "1"" of type '" "MarControlPtr *""'"); 
   }
   arg1 = reinterpret_cast< MarControlPtr * >(argp1);
   ecode2 = SWIG_AsVal_int(obj1, &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MarControlPtr_setValue" "', argument " "2"" of type '" "mrs_natural""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MarControlPtr_setValue_natural" "', argument " "2"" of type '" "mrs_natural""'");
   } 
   arg2 = static_cast< mrs_natural >(val2);
-  result = MarControlPtr_setValue__SWIG_0(arg1,arg2);
+  result = MarControlPtr_setValue_natural(arg1,arg2);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -9754,7 +9168,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_MarControlPtr_setValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_MarControlPtr_setValue_real(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   MarControlPtr *arg1 = (MarControlPtr *) 0 ;
   mrs_real arg2 ;
@@ -9766,18 +9180,18 @@ SWIGINTERN PyObject *_wrap_MarControlPtr_setValue__SWIG_1(PyObject *SWIGUNUSEDPA
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:MarControlPtr_setValue",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:MarControlPtr_setValue_real",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MarControlPtr, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarControlPtr_setValue" "', argument " "1"" of type '" "MarControlPtr *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarControlPtr_setValue_real" "', argument " "1"" of type '" "MarControlPtr *""'"); 
   }
   arg1 = reinterpret_cast< MarControlPtr * >(argp1);
   ecode2 = SWIG_AsVal_double(obj1, &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MarControlPtr_setValue" "', argument " "2"" of type '" "mrs_real""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MarControlPtr_setValue_real" "', argument " "2"" of type '" "mrs_real""'");
   } 
   arg2 = static_cast< mrs_real >(val2);
-  result = MarControlPtr_setValue__SWIG_1(arg1,arg2);
+  result = MarControlPtr_setValue_real(arg1,arg2);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -9785,7 +9199,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_MarControlPtr_setValue__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_MarControlPtr_setValue_bool(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   MarControlPtr *arg1 = (MarControlPtr *) 0 ;
   mrs_bool arg2 ;
@@ -9797,18 +9211,18 @@ SWIGINTERN PyObject *_wrap_MarControlPtr_setValue__SWIG_2(PyObject *SWIGUNUSEDPA
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:MarControlPtr_setValue",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:MarControlPtr_setValue_bool",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MarControlPtr, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarControlPtr_setValue" "', argument " "1"" of type '" "MarControlPtr *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarControlPtr_setValue_bool" "', argument " "1"" of type '" "MarControlPtr *""'"); 
   }
   arg1 = reinterpret_cast< MarControlPtr * >(argp1);
   ecode2 = SWIG_AsVal_bool(obj1, &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MarControlPtr_setValue" "', argument " "2"" of type '" "mrs_bool""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MarControlPtr_setValue_bool" "', argument " "2"" of type '" "mrs_bool""'");
   } 
   arg2 = static_cast< mrs_bool >(val2);
-  result = MarControlPtr_setValue__SWIG_2(arg1,arg2);
+  result = MarControlPtr_setValue_bool(arg1,arg2);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -9816,7 +9230,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_MarControlPtr_setValue__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_MarControlPtr_setValue_string(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   MarControlPtr *arg1 = (MarControlPtr *) 0 ;
   mrs_string arg2 ;
@@ -9826,22 +9240,22 @@ SWIGINTERN PyObject *_wrap_MarControlPtr_setValue__SWIG_3(PyObject *SWIGUNUSEDPA
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:MarControlPtr_setValue",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:MarControlPtr_setValue_string",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MarControlPtr, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarControlPtr_setValue" "', argument " "1"" of type '" "MarControlPtr *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarControlPtr_setValue_string" "', argument " "1"" of type '" "MarControlPtr *""'"); 
   }
   arg1 = reinterpret_cast< MarControlPtr * >(argp1);
   {
     std::string *ptr = (std::string *)0;
     int res = SWIG_AsPtr_std_string(obj1, &ptr);
     if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "MarControlPtr_setValue" "', argument " "2"" of type '" "mrs_string""'"); 
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "MarControlPtr_setValue_string" "', argument " "2"" of type '" "mrs_string""'"); 
     }
     arg2 = *ptr;
     if (SWIG_IsNewObj(res)) delete ptr;
   }
-  result = MarControlPtr_setValue__SWIG_3(arg1,arg2);
+  result = MarControlPtr_setValue_string(arg1,arg2);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -9849,82 +9263,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_MarControlPtr_setValue(PyObject *self, PyObject *args) {
-  int argc;
-  PyObject *argv[3];
-  int ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = (int)PyObject_Length(args);
-  for (ii = 0; (ii < argc) && (ii < 2); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarControlPtr, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_MarControlPtr_setValue__SWIG_0(self, args);
-      }
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarControlPtr, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_double(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_MarControlPtr_setValue__SWIG_1(self, args);
-      }
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarControlPtr, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_MarControlPtr_setValue__SWIG_3(self, args);
-      }
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MarControlPtr, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_bool(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_MarControlPtr_setValue__SWIG_2(self, args);
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number of arguments for overloaded function 'MarControlPtr_setValue'.\n  Possible C/C++ prototypes are:\n""    setValue(MarControlPtr *,mrs_natural)\n""    setValue(MarControlPtr *,mrs_real)\n""    setValue(MarControlPtr *,mrs_bool)\n""    setValue(MarControlPtr *,mrs_string)\n");
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_MarControlPtr_to_int(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_MarControlPtr_to_natural(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   MarControlPtr *arg1 = (MarControlPtr *) 0 ;
   mrs_natural result;
@@ -9932,13 +9271,13 @@ SWIGINTERN PyObject *_wrap_MarControlPtr_to_int(PyObject *SWIGUNUSEDPARM(self), 
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:MarControlPtr_to_int",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:MarControlPtr_to_natural",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MarControlPtr, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarControlPtr_to_int" "', argument " "1"" of type '" "MarControlPtr *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarControlPtr_to_natural" "', argument " "1"" of type '" "MarControlPtr *""'"); 
   }
   arg1 = reinterpret_cast< MarControlPtr * >(argp1);
-  result = MarControlPtr_to_int(arg1);
+  result = MarControlPtr_to_natural(arg1);
   resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
@@ -10018,34 +9357,6 @@ SWIGINTERN PyObject *MarControlPtr_swigregister(PyObject *SWIGUNUSEDPARM(self), 
   SWIG_TypeNewClientData(SWIGTYPE_p_MarControlPtr, SWIG_NewClientData(obj));
   return SWIG_Py_Void();
 }
-
-SWIGINTERN int Swig_var_MRS_TRUE_set(PyObject *) {
-  SWIG_Error(SWIG_AttributeError,"Variable MRS_TRUE is read-only.");
-  return 1;
-}
-
-
-SWIGINTERN PyObject *Swig_var_MRS_TRUE_get(void) {
-  PyObject *pyobj = 0;
-  
-  pyobj = SWIG_From_bool(static_cast< bool >(MRS_TRUE));
-  return pyobj;
-}
-
-
-SWIGINTERN int Swig_var_MRS_FALSE_set(PyObject *) {
-  SWIG_Error(SWIG_AttributeError,"Variable MRS_FALSE is read-only.");
-  return 1;
-}
-
-
-SWIGINTERN PyObject *Swig_var_MRS_FALSE_get(void) {
-  PyObject *pyobj = 0;
-  
-  pyobj = SWIG_From_bool(static_cast< bool >(MRS_FALSE));
-  return pyobj;
-}
-
 
 static PyMethodDef SwigMethods[] = {
 	 { (char *)"delete_PySwigIterator", _wrap_delete_PySwigIterator, METH_VARARGS, NULL},
@@ -10150,10 +9461,17 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"new_MarControlPtr", _wrap_new_MarControlPtr, METH_VARARGS, NULL},
 	 { (char *)"delete_MarControlPtr", _wrap_delete_MarControlPtr, METH_VARARGS, NULL},
 	 { (char *)"MarControlPtr_isInvalid", _wrap_MarControlPtr_isInvalid, METH_VARARGS, NULL},
+	 { (char *)"MarControlPtr_from_natural", _wrap_MarControlPtr_from_natural, METH_VARARGS, NULL},
+	 { (char *)"MarControlPtr_from_real", _wrap_MarControlPtr_from_real, METH_VARARGS, NULL},
+	 { (char *)"MarControlPtr_from_bool", _wrap_MarControlPtr_from_bool, METH_VARARGS, NULL},
+	 { (char *)"MarControlPtr_from_string", _wrap_MarControlPtr_from_string, METH_VARARGS, NULL},
 	 { (char *)"MarControlPtr_getType", _wrap_MarControlPtr_getType, METH_VARARGS, NULL},
 	 { (char *)"MarControlPtr_getName", _wrap_MarControlPtr_getName, METH_VARARGS, NULL},
-	 { (char *)"MarControlPtr_setValue", _wrap_MarControlPtr_setValue, METH_VARARGS, NULL},
-	 { (char *)"MarControlPtr_to_int", _wrap_MarControlPtr_to_int, METH_VARARGS, NULL},
+	 { (char *)"MarControlPtr_setValue_natural", _wrap_MarControlPtr_setValue_natural, METH_VARARGS, NULL},
+	 { (char *)"MarControlPtr_setValue_real", _wrap_MarControlPtr_setValue_real, METH_VARARGS, NULL},
+	 { (char *)"MarControlPtr_setValue_bool", _wrap_MarControlPtr_setValue_bool, METH_VARARGS, NULL},
+	 { (char *)"MarControlPtr_setValue_string", _wrap_MarControlPtr_setValue_string, METH_VARARGS, NULL},
+	 { (char *)"MarControlPtr_to_natural", _wrap_MarControlPtr_to_natural, METH_VARARGS, NULL},
 	 { (char *)"MarControlPtr_to_real", _wrap_MarControlPtr_to_real, METH_VARARGS, NULL},
 	 { (char *)"MarControlPtr_to_string", _wrap_MarControlPtr_to_string, METH_VARARGS, NULL},
 	 { (char *)"MarControlPtr_to_bool", _wrap_MarControlPtr_to_bool, METH_VARARGS, NULL},
@@ -10766,8 +10084,5 @@ SWIGEXPORT void SWIG_init(void) {
   SWIG_InstallConstants(d,swig_const_table);
   
   
-  PyDict_SetItemString(d,(char*)"cvar", SWIG_globals());
-  SWIG_addvarlink(SWIG_globals(),(char*)"MRS_TRUE",Swig_var_MRS_TRUE_get, Swig_var_MRS_TRUE_set);
-  SWIG_addvarlink(SWIG_globals(),(char*)"MRS_FALSE",Swig_var_MRS_FALSE_get, Swig_var_MRS_FALSE_set);
 }
 

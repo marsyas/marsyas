@@ -18,10 +18,11 @@ pipe.addMarSystem sink
 
 filename = pipe.getControl "SoundFileSource/file/mrs_string/filename"
 notempty = pipe.getControl "SoundFileSource/file/mrs_bool/notEmpty"
+iniaudio = pipe.getControl "AudioSink/sink/mrs_bool/initAudio"
 
 ARGV.each do |arg|
-	filename.setValue arg
-	pipe.updControl "AudioSink/sink/mrs_bool/initAudio",true
+	filename.setValue_string arg
+	iniaudio.setValue_bool true
 
 	while notempty.to_bool
 		pipe.tick

@@ -8,9 +8,12 @@ AC_PROG_CXX
 AC_DISABLE_STATIC
 AC_PROG_LIBTOOL
 
+MADLIB="-lmad"
+OGGLIB="-lvorbisfile -lvorbis -logg"
+
 AC_ARG_ENABLE([bindings],
 	      [AS_HELP_STRING([--enable-bindings],[Use containing folder as Marsyas source])],
-	      [MRS_LIBS="$MAD_LIBS $ALSA_LIBS -L\$(top_builddir)/../marsyas -lmarsyas -framework CorAudio -framework CoreFoundation -framework CoreMidi"
+	      [MRS_LIBS="$MAD_LIBS $ALSA_LIBS -L\$(top_builddir)/../marsyas -lmarsyas -framework CorAudio -framework CoreFoundation -framework CoreMidi -lvorbisfile -lvorbis -logg"
 	       MRS_INCS="-I\$(top_srcdir)/.. -I\$(top_builddir)/.."
 	      ],
 	      [MRS_LIBS="$MAD_LIBS $ALSA_LIBS -lmarsyas"
