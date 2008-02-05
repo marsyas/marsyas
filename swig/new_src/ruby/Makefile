@@ -4,12 +4,12 @@ SHELL = /bin/sh
 #### Start of system configuration section. ####
 
 srcdir = .
-topdir = /usr/lib64/ruby/1.8/x86_64-linux
+topdir = /usr/local/lib/ruby/1.8/i686-darwin8.10.1
 hdrdir = $(topdir)
 VPATH = $(srcdir):$(topdir):$(hdrdir)
-prefix = $(DESTDIR)/usr
+prefix = $(DESTDIR)/usr/local
 exec_prefix = $(prefix)
-sitedir = $(DESTDIR)/usr/lib64/ruby/site_ruby
+sitedir = $(prefix)/lib/ruby/site_ruby
 rubylibdir = $(libdir)/ruby/$(ruby_version)
 docdir = $(datarootdir)/doc/$(PACKAGE)
 dvidir = $(docdir)
@@ -19,43 +19,43 @@ sbindir = $(exec_prefix)/sbin
 psdir = $(docdir)
 localedir = $(datarootdir)/locale
 htmldir = $(docdir)
-datadir = $(DESTDIR)/usr/share
+datadir = $(datarootdir)
 includedir = $(prefix)/include
-infodir = $(DESTDIR)/usr/share/info
-sysconfdir = $(DESTDIR)/etc
-mandir = $(DESTDIR)/usr/share/man
-libdir = $(DESTDIR)/usr/lib64
+infodir = $(datarootdir)/info
+sysconfdir = $(prefix)/etc
+mandir = $(datarootdir)/man
+libdir = $(exec_prefix)/lib
 sharedstatedir = $(prefix)/com
 oldincludedir = $(DESTDIR)/usr/include
 pdfdir = $(docdir)
 sitearchdir = $(sitelibdir)/$(sitearch)
 bindir = $(exec_prefix)/bin
-localstatedir = $(DESTDIR)/var/lib
+localstatedir = $(prefix)/var
 sitelibdir = $(sitedir)/$(ruby_version)
 libexecdir = $(exec_prefix)/libexec
 
-CC = x86_64-pc-linux-gnu-gcc
-LIBRUBY = $(LIBRUBY_SO)
+CC = gcc
+LIBRUBY = $(LIBRUBY_A)
 LIBRUBY_A = lib$(RUBY_SO_NAME)-static.a
-LIBRUBYARG_SHARED = -Wl,-R -Wl,$(libdir) -L$(libdir) -l$(RUBY_SO_NAME)
+LIBRUBYARG_SHARED = 
 LIBRUBYARG_STATIC = -l$(RUBY_SO_NAME)-static
 
 RUBY_EXTCONF_H = 
-CFLAGS   =  -fPIC -O3 -march=k8 -pipe -ftree-vectorize -fno-strict-aliasing  -fPIC     -I../../../src 
+CFLAGS   =  -fno-common -g -O2 -pipe -fno-common -I../../../src 
 INCFLAGS = -I. -I$(topdir) -I$(hdrdir) -I$(srcdir)
 CPPFLAGS =  
 CXXFLAGS = $(CFLAGS) 
-DLDFLAGS = -L.  -rdynamic -Wl,-export-dynamic   -L../../../lib/release -lmarsyas -lstdc++  
-LDSHARED = $(CC) -shared
-AR = x86_64-pc-linux-gnu-ar
+DLDFLAGS =  -L../../../lib/release -lmarsyas -lstdc++  
+LDSHARED = cc -dynamic -bundle -undefined suppress -flat_namespace
+AR = ar
 EXEEXT = 
 
-RUBY_INSTALL_NAME = ruby18
-RUBY_SO_NAME = ruby18
-arch = x86_64-linux
-sitearch = x86_64-linux
+RUBY_INSTALL_NAME = ruby
+RUBY_SO_NAME = ruby
+arch = i686-darwin8.10.1
+sitearch = i686-darwin8.10.1
 ruby_version = 1.8
-ruby = /usr/bin/ruby18
+ruby = /usr/local/bin/ruby
 RUBY = $(ruby)
 RM = rm -f
 MAKEDIRS = mkdir -p
@@ -68,22 +68,22 @@ COPY = cp
 
 preload = 
 
-libpath = . $(libdir)
-LIBPATH =  -L'.' -L'$(libdir)' -Wl,-R'$(libdir)'
+libpath = $(libdir)
+LIBPATH =  -L"$(libdir)"
 DEFFILE = 
 
-CLEANFILES = mkmf.log
+CLEANFILES = 
 DISTCLEANFILES = 
 
 extout = 
 extout_prefix = 
 target_prefix = 
 LOCAL_LIBS = 
-LIBS = $(LIBRUBYARG_SHARED)  -lvorbisfile -lvorbis -lm -logg   -lmad -lm   -lpthread -ldl -lcrypt -lm   -lc
+LIBS =   -ldl -lobjc  
 SRCS = marsyas_wrap.cxx
 OBJS = marsyas_wrap.o
 TARGET = marsyas
-DLLIB = $(TARGET).so
+DLLIB = $(TARGET).bundle
 EXTSTATIC = 
 STATIC_LIB = 
 
@@ -92,7 +92,7 @@ RUBYLIBDIR    = $(sitelibdir)$(target_prefix)
 RUBYARCHDIR   = $(sitearchdir)$(target_prefix)
 
 TARGET_SO     = $(DLLIB)
-CLEANLIBS     = $(TARGET).so $(TARGET).il? $(TARGET).tds $(TARGET).map
+CLEANLIBS     = $(TARGET).bundle $(TARGET).il? $(TARGET).tds $(TARGET).map
 CLEANOBJS     = *.o *.a *.s[ol] *.pdb *.exp *.bak
 
 all:		$(DLLIB)
@@ -142,7 +142,7 @@ site-install-rb: install-rb
 
 $(DLLIB): $(OBJS)
 	@-$(RM) $@
-	$(LDSHARED) -o $@ $(OBJS) $(LIBPATH) $(DLDFLAGS) $(LOCAL_LIBS) $(LIBS)
+	$(LDSHARED) $(DLDFLAGS) $(LIBPATH) -o $@ $(OBJS) $(LOCAL_LIBS) $(LIBS)
 
 
 

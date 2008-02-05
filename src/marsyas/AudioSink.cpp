@@ -108,10 +108,9 @@ AudioSink::myUpdate(MarControlPtr sender)
   
 
   if (reservoirSize_ > preservoirSize_)
-    reservoir_.stretch(nChannels_, reservoirSize_);
-
-
-
+    {
+      reservoir_.stretch(nChannels_, reservoirSize_);
+    }
     
   preservoirSize_ = reservoirSize_;
   
@@ -176,7 +175,7 @@ AudioSink::initRtAudio()
   setctrl("mrs_bool/initAudio", false);
 
   // allocate upper bound memory for reservoir_ 
-  reservoir_.create(4 * bufferSize_);
+  reservoir_.create(2, 4 * bufferSize_);
 
 }
 
@@ -242,7 +241,8 @@ AudioSink::myProcess(realvec& in, realvec& out)
   
   // copy to output and into reservoir
 
-  
+
+
   for (t=0; t < inSamples_; t++)
     {
       for (o=0; o < inObservations_; o++)
@@ -255,7 +255,7 @@ AudioSink::myProcess(realvec& in, realvec& out)
 	end_ = 0;
     }
 
-      
+       
   //check if RtAudio is initialized
   if (!isInitialized_)
     return;
