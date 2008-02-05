@@ -987,6 +987,12 @@ MarSystem::updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd)
 		MRSWARN("MarSystem::updControl - Invalid control ptr @ " + getAbsPath());
 		return false;
 	}
+
+	if (newcontrol.isInvalid())
+	{
+		MRSWARN("MarSystem::updControl - Invalid control ptr given for assignment");
+		return false;
+	}
 	// 	//check if control exists locally or among children
 	// 	if(!hasControl(control))
 	// 	{
