@@ -144,11 +144,11 @@ Accumulator::myUpdate(MarControlPtr sender)
 // 	if(ctrl_minTimes_ == -1)
 // 		ctrl_minTimes_->setValue(nTimes_);
 
-	if(ctrl_timesToKeep_->to<mrs_natural>() > ctrl_minTimes_->to<mrs_natural>())
-	{
-		MRSWARN("Accumulator::myUpdate() - timesToKeep > minTimes! Setting timesToKeep = minTimes");
-		ctrl_timesToKeep_->setValue(ctrl_minTimes_, NOUPDATE);
-	}
+// 	if(ctrl_timesToKeep_->to<mrs_natural>() > ctrl_minTimes_->to<mrs_natural>())
+// 	{
+// 		MRSWARN("Accumulator::myUpdate() - timesToKeep > minTimes! Setting minTimes = timesToKeep");
+// 		ctrl_minTimes_->setValue(ctrl_timesToKeep_, NOUPDATE);
+// 	}
 
 	onSamples_ = ctrl_onSamples_->to<mrs_natural>();
 

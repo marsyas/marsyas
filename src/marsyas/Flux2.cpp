@@ -65,8 +65,10 @@ Flux2::myProcess(realvec& in, realvec& out)
 			//Simon's version
 			tmp_ = in(o,t)  - prevWindow_(o,t);
 			diff_ = (tmp_+abs(tmp_))/2;
+			
 			if(diff_ > max_)
 				max_ = diff_;
+			
 			flux_ += diff_;
 			prevWindow_(o,t) = in(o,t);
 
@@ -81,12 +83,12 @@ Flux2::myProcess(realvec& in, realvec& out)
 		}
 
 		//Normalizing with max_ was a bad idea
-//		if(max_ != 0.0)
-//			flux_ /= (max_ * inObservations_);
-//		else
-//			flux_ = 0.0;
-
-		out(0,t) = flux_;
+// 		if(max_ != 0.0)
+// 			flux_ /= (max_ * inObservations_);
+// 		else
+// 			flux_ = 0.0;
+// 
+ 		out(0,t) = flux_;
 
 		//MATLAB_PUT(prevWindow_, "prevWindow_");
 	}

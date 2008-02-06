@@ -24,6 +24,8 @@ using namespace Marsyas;
 PeakerOnset::PeakerOnset(string name):MarSystem("PeakerOnset", name)
 {
 	addControls();
+
+	prevValue_ = 0.0;
 }
 
 PeakerOnset::PeakerOnset(const PeakerOnset& a) : MarSystem(a)
@@ -32,6 +34,8 @@ PeakerOnset::PeakerOnset(const PeakerOnset& a) : MarSystem(a)
 	ctrl_threshold_ = getctrl("mrs_real/threshold");
 	ctrl_onsetDetected_ = getctrl("mrs_bool/onsetDetected");
 	ctrl_confidence_ = getctrl("mrs_real/confidence");
+
+	prevValue_ = a.prevValue_;
 }
 
 PeakerOnset::~PeakerOnset()
@@ -80,7 +84,24 @@ PeakerOnset::myProcess(realvec& in, realvec& out)
 	ctrl_onsetDetected_->setValue(false);
 	ctrl_confidence_->setValue(0.0);
 	out.setval(0.0);
-	
+
+	//if using a filter before the input, compensate delay
+	mrs_natural delay = 2;
+	for(t=0;t<inSamples_-delay;++t)
+		in(t) = in(t+delay);
+	for(t=inSamples_-delay; t< inSamples_;++t)
+		in(t) = 0.0;
+
+	//filter input
+	//MATLAB_PUT(in, "PeakerOnset_in");
+	//
+	//MATLAB_EVAL("[b,a] = butter(2, 0.28);");
+	//MATLAB_EVAL("y = filtfilt(b,a,PeakerOnset_in);");
+	//MATLAB_GET("y", in);
+	//
+	//MATLAB_EVAL("plot(PeakerOnset_in);hold on;plot(y,'r');hold off;");
+	//MATLAB_EVAL("FluxTSfilt = filtfilt(b,a,FluxTS);");
+		
 	mrs_natural w = ctrl_onsetWinSize_->to<mrs_natural>();
 
 	if(w == 0)
@@ -101,6 +122,38 @@ PeakerOnset::myProcess(realvec& in, realvec& out)
 			break;
 		}
 	}
+
+// 	//new check proposed by Fabien Gouyon
+// 	mrs_real ww = w/2;
+// 	mrs_real maxVal = MINREAL;
+// 	for(t = inSamples_-1-ww; t > checkPoint; t--)
+// 	{
+// 		if(in(t) > maxVal)
+// 		{
+// 			maxVal = in(t);
+// 		}
+// 		else
+// 		{
+// 			isOnset = false;
+// 			//cout << "failed 1st condition!" << endl;
+// 			break;
+// 		}
+// 	}
+// 	maxVal = MINREAL;
+// 	for(t = inSamples_-1-2*ww; t < checkPoint; t++)
+// 	{
+// 		if(in(t) > maxVal)
+// 		{
+// 			maxVal = in(t);
+// 		}
+// 		else
+// 		{
+// 			isOnset = false;
+// 			//cout << "failed 1st condition!" << endl;
+// 			break;
+// 		}
+// 	}
+
 
 	//check second condition
 	mrs_real m = 0.0;
@@ -123,9 +176,6 @@ PeakerOnset::myProcess(realvec& in, realvec& out)
 		out.setval(1.0);
 		cout<<"Onset Detected!" << endl;
 	}
-
-	//MATLAB_PUT(in, "PeakerOnset_in");
-	//MATLAB_EVAL("plot(PeakerOnset_in)");
 
 	MATLAB_PUT(out,"PeakerOnset_out");
 	MATLAB_EVAL("onsetTS = [onsetTS, PeakerOnset_out];");

@@ -349,7 +349,7 @@ MATLABengine::getVariable(std::string MATLABname, realvec& value)
   mxArray* mxVector = engGetVariable(engine_, MATLABname.c_str());
   
   if (mxVector == NULL) {
-    MRSERR("MATLABengine::getVariable(std::string, realvec&) error: Get Array Failed");
+    MRSERR("MATLABengine::getVariable(std::string, realvec&) error: variable name does not exist in MATLAB...");
     return -1;
   }
   else {

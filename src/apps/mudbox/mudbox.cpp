@@ -471,6 +471,7 @@ toy_with_onsets(string sfName)
 					onsetdetector->addMarSystem(mng.create("Flux2", "flux")); 
 					//onsetdetector->addMarSystem(mng.create("Memory","mem"));
 					onsetdetector->addMarSystem(mng.create("ShiftInput","sif"));
+					onsetdetector->addMarSystem(mng.create("Filter","filt"));
 					onsetdetector->addMarSystem(mng.create("PeakerOnset","peaker")); 
 				onsetseries->addMarSystem(onsetdetector);
 			onsetaccum->addMarSystem(onsetseries);
@@ -506,30 +507,54 @@ toy_with_onsets(string sfName)
 	///////////////////////////////////////////////////////////////////////////////////////
 	// update controls
 	///////////////////////////////////////////////////////////////////////////////////////
-	mrs_natural winSize = 1024;//2048;
-	mrs_natural hopSize = 1024;//411;
-	mrs_natural onsetWinSize = 3;
-
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/SoundFileSource/src/mrs_string/filename", sfName);
 	onsetnet->updctrl("SoundFileSink/fdest/mrs_string/filename", sfName + "_onsets.wav");
+	mrs_real fs = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
+
+	mrs_natural winSize = 2048;//2048;
+	mrs_natural hopSize = 1024;//411;
+	mrs_natural onsetWinSize = 5;
+	mrs_real thres = 1.5;
+
+	mrs_real textureWinMinLen = 0.050; //ms
+	mrs_natural minTimes = textureWinMinLen*fs/winSize; //12;//onsetWinSize+1;//15;
+	cout << "MinTimes = " << minTimes << endl;
+	mrs_natural maxTimes = 1000;
+	
+	//configure Butterworth filter of Flux time series
+	realvec bcoeffs(1,3);
+	bcoeffs(0) = 0.1174;
+	bcoeffs(1) = 0.2347;
+	bcoeffs(2) = 0.1174;
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt/mrs_realvec/ncoeffs",
+		bcoeffs);
+	realvec acoeffs(1,3);
+	acoeffs(0) = 1.0;
+	acoeffs(1) = -0.8252;
+	acoeffs(2) = 0.2946;
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt/mrs_realvec/dcoeffs",
+		acoeffs);
+
+
 
 	onsetnet->updctrl("mrs_natural/inSamples", hopSize);
 	//onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/ShiftInput/si/mrs_natural/winSize", winSize);
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/ShiftInput/si/mrs_natural/winSize", winSize);
 
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_natural/onsetWinSize", onsetWinSize);
-	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/threshold", 1.7); //!!!!!!!!!!!!!
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/threshold", thres); //!!!!!!!!!!!!!
 	
 	//onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Memory/mem/mrs_natural/memSize", 4*onsetWinSize+1);
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/ShiftInput/sif/mrs_natural/winSize", 4*onsetWinSize+1);
 	
-	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/timesToKeep", onsetWinSize+1);
+	mrs_natural winds = onsetWinSize+mrs_natural(ceil(mrs_real(winSize)/hopSize/2.0));
+	cout << "timesToKeep = " << winds << endl;
+	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/timesToKeep", winds);
 	onsetnet->updctrl("Accumulator/onsetaccum/mrs_string/mode","explicitFlush");
-	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/maxTimes", 1000); //!!!!!!!!!!!!!!!!!!
-	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/minTimes", 15);//onsetWinSize+1); //!!!!!!!!!!!!!!!!!
+	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/maxTimes", maxTimes); 
+	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/minTimes", minTimes);
 
 	//set audio/onset resynth balance and ADSR params for onset sound
-	mrs_real fs = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
 	onsetnet->updctrl("Fanout/onsetmix/Gain/gainaudio/mrs_real/gain", 1.0);
 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/Gain/gainonsets/mrs_real/gain", 0.8);
 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/aTarget", 1.0);
