@@ -4039,7 +4039,7 @@ cat >>confdefs.h <<\_ACEOF
 #define MARSYAS_LOG_DEBUGS 1
 _ACEOF
 
-               CXXFLAGS="-O0 -g -ggdb "
+               CXXFLAGS="-O0 -g -ggdb -fPIC"
                echo Debugging enabled
        ;;
        *) echo Debugging disabled ;;
