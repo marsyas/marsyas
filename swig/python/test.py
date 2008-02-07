@@ -17,8 +17,13 @@ filename = pipe.getControl("SoundFileSource/file/mrs_string/filename")
 notempty = pipe.getControl("SoundFileSource/file/mrs_bool/notEmpty")
 iniAudio = pipe.getControl("AudioSink/sink/mrs_bool/initAudio")
 
-filename.setValue_string("test.ogg")
-iniAudio.setValue_bool(1)
+import sys
 
-while notempty.to_bool():
-	pipe.tick()
+for arg in sys.argv[1:] :
+	filename.setValue_string(arg)
+
+	if notempty.to_bool(): # If file has data
+		iniAudio.setValue_bool(1)
+
+		while notempty.to_bool(): # Play it
+			pipe.tick()

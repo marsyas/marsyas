@@ -704,6 +704,12 @@ MADLIB
 VORBISLIB
 MslLibs
 MATLABLIBS
+RUBY
+BINDINGS
+PYTHON
+LUA
+SWIG
+ECHO
 CPP
 GREP
 EGREP
@@ -1324,9 +1330,7 @@ Optional Features:
   --enable-log2GUI        Log messages to GUI
   --enable-distributed    Compile code for distributed audio processing
                           (experimental)
-  --enable-bindings       Enables SWIG generated bindings
-
-
+  --enable-bindings       Enable SWIG generated bindings.
   --enable-marsyasqt      Enable building libmarsyasqt,enable_marsyas=$enableval,enable_marsyasqt="no"
 
 Optional Packages:
@@ -3916,6 +3920,7 @@ fi
 
 
 
+
 # Check arguments
 
 # Check whether --enable-assert was given.
@@ -4239,12 +4244,6 @@ _ACEOF
 esac
 
 
-# Check whether --enable-bindings was given.
-if test "${enable_bindings+set}" = set; then
-  enableval=$enable_bindings;
-fi
-
-
 
 
 # Check whether --with-matlab was given.
@@ -4309,11 +4308,263 @@ esac
 
 
 
+## BINDINGS ##
 
 
 
 
+# Check whether --enable-binding was given.
+if test "${enable_binding+set}" = set; then
+  enableval=$enable_binding;
+fi
 
+if test "x${enable_bindings}" == "xyes" ; then
+
+	  if test "x" == "x" ; then
+		  APP=ruby
+	  else
+		  APP=
+	  fi
+	  # Extract the first word of "$APP", so it can be a program name with args.
+set dummy $APP; ac_word=$2
+{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+if test "${ac_cv_path_RUBY+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $RUBY in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_RUBY="$RUBY" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_RUBY="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+RUBY=$ac_cv_path_RUBY
+if test -n "$RUBY"; then
+  { echo "$as_me:$LINENO: result: $RUBY" >&5
+echo "${ECHO_T}$RUBY" >&6; }
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
+	  if test "x$RUBY" == "x" ; then
+		  { echo "$as_me:$LINENO: WARNING: No ruby found." >&5
+echo "$as_me: WARNING: No ruby found." >&2;}
+	  else
+		  BINDINGS="$BINDINGS ruby"
+
+	  fi
+
+
+	  if test "x" == "x" ; then
+		  APP=python
+	  else
+		  APP=
+	  fi
+	  # Extract the first word of "$APP", so it can be a program name with args.
+set dummy $APP; ac_word=$2
+{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+if test "${ac_cv_path_PYTHON+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $PYTHON in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_PYTHON="$PYTHON" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_PYTHON="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+PYTHON=$ac_cv_path_PYTHON
+if test -n "$PYTHON"; then
+  { echo "$as_me:$LINENO: result: $PYTHON" >&5
+echo "${ECHO_T}$PYTHON" >&6; }
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
+	  if test "x$PYTHON" == "x" ; then
+		  { echo "$as_me:$LINENO: WARNING: No python found." >&5
+echo "$as_me: WARNING: No python found." >&2;}
+	  else
+		  BINDINGS="$BINDINGS python"
+
+	  fi
+
+
+	  if test "x" == "x" ; then
+		  APP=lua
+	  else
+		  APP=
+	  fi
+	  # Extract the first word of "$APP", so it can be a program name with args.
+set dummy $APP; ac_word=$2
+{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+if test "${ac_cv_path_LUA+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $LUA in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_LUA="$LUA" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_LUA="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+LUA=$ac_cv_path_LUA
+if test -n "$LUA"; then
+  { echo "$as_me:$LINENO: result: $LUA" >&5
+echo "${ECHO_T}$LUA" >&6; }
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
+	  if test "x$LUA" == "x" ; then
+		  { echo "$as_me:$LINENO: WARNING: No lua found." >&5
+echo "$as_me: WARNING: No lua found." >&2;}
+	  else
+		  BINDINGS="$BINDINGS lua"
+
+	  fi
+
+	# Extract the first word of "swig", so it can be a program name with args.
+set dummy swig; ac_word=$2
+{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+if test "${ac_cv_path_SWIG+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $SWIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_SWIG="$SWIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_SWIG="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+SWIG=$ac_cv_path_SWIG
+if test -n "$SWIG"; then
+  { echo "$as_me:$LINENO: result: $SWIG" >&5
+echo "${ECHO_T}$SWIG" >&6; }
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
+	# Extract the first word of "echo", so it can be a program name with args.
+set dummy echo; ac_word=$2
+{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+if test "${ac_cv_path_ECHO+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $ECHO in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ECHO="$ECHO" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_ECHO="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+ECHO=$ac_cv_path_ECHO
+if test -n "$ECHO"; then
+  { echo "$as_me:$LINENO: result: $ECHO" >&5
+echo "${ECHO_T}$ECHO" >&6; }
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
+	ac_config_commands="$ac_config_commands ruby_setup"
+
+	# AC_MRS_LANG([JAVA],[java])
+fi
 
 
 
@@ -4346,10 +4597,6 @@ case "${host}" in
 	cat >>confdefs.h <<\_ACEOF
 #define MARSYAS_LINUX 1
 _ACEOF
-
-
-
-
 
 
 
@@ -5330,12 +5577,7 @@ fi
 
 
 
-
-
-
-ac_config_files="$ac_config_files Makefile src/Makefile src/marsyas/Makefile src/examples/Makefile src/apps/Makefile src/apps/sfplay/Makefile src/apps/sfinfo/Makefile lib/Makefile lib/debug/Makefile lib/release/Makefile doc/Makefile scripts/Makefile regressionTests/Makefile regressionTests/input/Makefile regressionTests/answers/Makefile misc/Makefile bin/Makefile bin/debug/Makefile bin/release/Makefile"
-
-
+ac_config_files="$ac_config_files Makefile src/Makefile src/marsyas/Makefile src/examples/Makefile src/apps/Makefile src/apps/sfplay/Makefile src/apps/sfinfo/Makefile lib/Makefile lib/debug/Makefile lib/release/Makefile doc/Makefile scripts/Makefile regressionTests/Makefile regressionTests/input/Makefile regressionTests/answers/Makefile misc/Makefile bin/Makefile bin/debug/Makefile bin/release/Makefile swig/Makefile swig/ruby/setup.sh swig/ruby/extconf.rb swig/python/setup.py swig/python/Makefile swig/lua/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -5944,6 +6186,7 @@ for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
+    "ruby_setup") CONFIG_COMMANDS="$CONFIG_COMMANDS ruby_setup" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
     "src/marsyas/Makefile") CONFIG_FILES="$CONFIG_FILES src/marsyas/Makefile" ;;
@@ -5963,6 +6206,12 @@ do
     "bin/Makefile") CONFIG_FILES="$CONFIG_FILES bin/Makefile" ;;
     "bin/debug/Makefile") CONFIG_FILES="$CONFIG_FILES bin/debug/Makefile" ;;
     "bin/release/Makefile") CONFIG_FILES="$CONFIG_FILES bin/release/Makefile" ;;
+    "swig/Makefile") CONFIG_FILES="$CONFIG_FILES swig/Makefile" ;;
+    "swig/ruby/setup.sh") CONFIG_FILES="$CONFIG_FILES swig/ruby/setup.sh" ;;
+    "swig/ruby/extconf.rb") CONFIG_FILES="$CONFIG_FILES swig/ruby/extconf.rb" ;;
+    "swig/python/setup.py") CONFIG_FILES="$CONFIG_FILES swig/python/setup.py" ;;
+    "swig/python/Makefile") CONFIG_FILES="$CONFIG_FILES swig/python/Makefile" ;;
+    "swig/lua/Makefile") CONFIG_FILES="$CONFIG_FILES swig/lua/Makefile" ;;
 
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
@@ -6114,13 +6363,13 @@ MADLIB!$MADLIB$ac_delim
 VORBISLIB!$VORBISLIB$ac_delim
 MslLibs!$MslLibs$ac_delim
 MATLABLIBS!$MATLABLIBS$ac_delim
+RUBY!$RUBY$ac_delim
+BINDINGS!$BINDINGS$ac_delim
+PYTHON!$PYTHON$ac_delim
+LUA!$LUA$ac_delim
+SWIG!$SWIG$ac_delim
+ECHO!$ECHO$ac_delim
 CPP!$CPP$ac_delim
-GREP!$GREP$ac_delim
-EGREP!$EGREP$ac_delim
-qmake!$qmake$ac_delim
-QT_PRESENT_TRUE!$QT_PRESENT_TRUE$ac_delim
-QT_PRESENT_FALSE!$QT_PRESENT_FALSE$ac_delim
-Audio!$Audio$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -6162,13 +6411,19 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+GREP!$GREP$ac_delim
+EGREP!$EGREP$ac_delim
+qmake!$qmake$ac_delim
+QT_PRESENT_TRUE!$QT_PRESENT_TRUE$ac_delim
+QT_PRESENT_FALSE!$QT_PRESENT_FALSE$ac_delim
+Audio!$Audio$ac_delim
 Libs!$Libs$ac_delim
 INCLUDES!$INCLUDES$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 4; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 10; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
@@ -6603,6 +6858,7 @@ echo "$as_me: error: cannot create directory $as_dir" >&2;}
   done
 done
  ;;
+    "ruby_setup":C) ( cd swig/ruby ; sh setup.sh ) ;;
 
   esac
 done # for ac_tag

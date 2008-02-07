@@ -60,12 +60,6 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-build_alias = @build_alias@
-build_triplet = @build@
-host_alias = @host_alias@
-host_triplet = @host@
-target_alias = @target_alias@
-target_triplet = @target@
 
 EXEEXT = @EXEEXT@
 OBJEXT = @OBJEXT@
@@ -75,10 +69,12 @@ ACLOCAL = aclocal -I $(auxdir)
 AMTAR = @AMTAR@
 AWK = @AWK@
 Audio = @Audio@
+BINDINGS = @BINDINGS@
 CC = @CC@
 CXX = @CXX@
 DEPDIR = @DEPDIR@
 DISTRIBUTED = @DISTRIBUTED@
+ECHO = @ECHO@
 INCLUDES = @INCLUDES@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 Libs = @Libs@
@@ -94,6 +90,7 @@ QT_GUILINK = @QT_GUILINK@
 QT_LDADD = @QT_LDADD@
 RANLIB = @RANLIB@
 STRIP = @STRIP@
+SWIG = @SWIG@
 UIC = @UIC@
 VERSION = @VERSION@
 VORBISLIB = @VORBISLIB@
@@ -116,15 +113,16 @@ EXTRA_DIST = bootstrap TODO marsyasAll.pro marsyasConfig.pri .qmake.cache swig o
 
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = src lib bin doc regressionTests misc scripts
+SUBDIRS = src lib bin doc regressionTests misc scripts swig
 # we must now explicitly define subdirs to be included in the dist
-DIST_SUBDIRS = src lib bin doc regressionTests misc scripts
+DIST_SUBDIRS = src lib bin doc regressionTests misc scripts swig
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure src/marsyas/config-h.in src/marsyas/stamp-h.in 
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
-CONFIG_CLEAN_FILES =
+CONFIG_CLEAN_FILES = swig/ruby/setup.sh swig/ruby/extconf.rb \
+	swig/python/setup.py swig/python/Makefile swig/lua/Makefile
 DIST_SOURCES =
 
 RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
@@ -157,6 +155,16 @@ $(srcdir)/configure:  $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENC
 
 $(ACLOCAL_M4):  configure.in acinclude.m4
 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
+swig/ruby/setup.sh: $(top_builddir)/config.status $(top_srcdir)/swig/ruby/setup.sh.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+swig/ruby/extconf.rb: $(top_builddir)/config.status $(top_srcdir)/swig/ruby/extconf.rb.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+swig/python/setup.py: $(top_builddir)/config.status $(top_srcdir)/swig/python/setup.py.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+swig/python/Makefile: $(top_builddir)/config.status $(top_srcdir)/swig/python/Makefile.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+swig/lua/Makefile: $(top_builddir)/config.status $(top_srcdir)/swig/lua/Makefile.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 uninstall-info-am:
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -270,7 +278,7 @@ distcleancheck_listfiles = find . -type f -print
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkinstalldirs) $(distdir)/config
+	$(mkinstalldirs) $(distdir)/config $(distdir)/swig/lua $(distdir)/swig/python $(distdir)/swig/ruby
 	@list='$(DISTFILES)'; for file in $$list; do \
 	  if test -f $$file || test -d $$file; then d=.; else d=$(srcdir); fi; \
 	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \

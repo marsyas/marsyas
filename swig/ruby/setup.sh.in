@@ -1,0 +1,9 @@
+#!/bin/sh
+
+@ECHO@ Creating Makefile for ruby extension
+
+if [ -x @RUBY@ ] ; then
+	@RUBY@ extconf.rb
+else
+	@ECHO@ No ruby interpreter found, skipping
+fi

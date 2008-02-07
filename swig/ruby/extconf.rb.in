@@ -1,7 +1,8 @@
 require 'mkmf'
-%w{vorbisfile mad}.each {|pkg| pkg_config pkg}
-$CFLAGS += " " << "-I../../../src"
-$LDFLAGS += " " << "-L../../../lib/release -lmarsyas -lstdc++"
+
+$CFLAGS += " " << "@CXXFLAGS@ @CPPFLAGS@ -I@top_srcdir@/src"
+$LDFLAGS += " " << "@LDFLAGS@ @LIBS@ @top_builddir@/lib/release/libmarsyas.a -lstdc++ @Libs@"
+
 create_makefile("marsyas")
 
 open("Makefile", "a") do |mf|

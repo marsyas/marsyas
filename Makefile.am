@@ -26,9 +26,9 @@ EXTRA_DIST              = bootstrap TODO marsyasAll.pro marsyasConfig.pri
 AUTOMAKE_OPTIONS        = foreign
 EXTRA_DIST += .qmake.cache
 
-SUBDIRS	     = src lib bin doc regressionTests misc scripts
+SUBDIRS	     = src lib bin doc regressionTests misc scripts swig
 # we must now explicitly define subdirs to be included in the dist
-DIST_SUBDIRS = src lib bin doc regressionTests misc scripts
+DIST_SUBDIRS = src lib bin doc regressionTests misc scripts swig
 
 EXTRA_DIST += swig
 EXTRA_DIST += otherlibs
