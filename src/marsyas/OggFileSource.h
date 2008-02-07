@@ -21,13 +21,11 @@
 
 #include "common.h"
 #include "AbsSoundFileSource.h"
-
-
-
-#ifdef MARSYAS_VORBIS
-#include "vorbis/codec.h"
-#include "vorbis/vorbisfile.h"
-#endif
+ 
+// So we don't need to include vorbis headers,
+// or create #ifdefs to hide them.
+struct OggVorbis_File;
+struct vorbis_info;
 
 namespace Marsyas
 {
@@ -49,10 +47,8 @@ private:
   void myUpdate(MarControlPtr sender);
   void closeFile(); 
   
-#ifdef MARSYAS_VORBIS
-	OggVorbis_File vf;
-	vorbis_info *vi;
-#endif
+  OggVorbis_File *vf;
+  vorbis_info *vi;
   
 public:
 

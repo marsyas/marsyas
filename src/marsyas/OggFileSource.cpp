@@ -28,6 +28,10 @@
 #include <fcntl.h>
 #endif
 
+#ifdef MARSYAS_VORBIS
+#include <vorbis/vorbisfile.h>
+#endif
+
 
 using namespace std;
 using namespace Marsyas;
@@ -115,7 +119,7 @@ OggFileSource::addControls()
 
 /**
  * Function: getHeader
- * Description: Opens the MP3 file and collects all the necessary
+ * Description: Opens the Ogg file and collects all the necessary
  *   information to update the MarSystem. 
  */
 void
@@ -132,17 +136,18 @@ OggFileSource::getHeader(string filename)
   
 #ifdef MARSYAS_VORBIS
   FILE* fp = fopen(filename.c_str(), "rb");
+  vf = new OggVorbis_File;
 
   /* Using ov_open_callbacks because ov_open fails under windows. */
-  if(fp && ov_open_callbacks(fp, &vf, NULL, 0, OV_CALLBACKS_DEFAULT) == 0)
+  if(fp && ov_open_callbacks(fp, vf, NULL, 0, OV_CALLBACKS_DEFAULT) == 0)
   {
-    vi=ov_info(&vf,-1);
-    size = ov_pcm_total(&vf,-1);
-    duration = ov_time_total(&vf,-1);
+    vi=ov_info(vf,-1);
+    size = ov_pcm_total(vf,-1);
+    duration = ov_time_total(vf,-1);
     nChannels = vi->channels;
     israte = vi->rate;
     notEmpty_ = true;
-    bitRate = ov_bitrate(&vf, -1);
+    bitRate = ov_bitrate(vf, -1);
   }
   else
 #endif
@@ -182,9 +187,9 @@ OggFileSource::myUpdate(MarControlPtr sender)
   mrs_natural size = getctrl("mrs_natural/size")->to<mrs_natural>();
 
   // if the user has seeked somewhere in the file
-  if ( pos < size && pos != ov_pcm_tell(&vf))
+  if ( pos < size && pos != ov_pcm_tell(vf))
   {
-    ov_pcm_seek(&vf, pos_);
+    ov_pcm_seek(vf, pos_);
   }
 #endif
 
@@ -219,7 +224,7 @@ void OggFileSource::myProcess(realvec& in, realvec& out)
     bool eof = false; 
     do
     {
-      r = ov_read(&vf, buf+read, size-read, 0, 2/*use 1 for 8bit samples..use 2 for 16*/, 1, &bitstream);
+      r = ov_read(vf, buf+read, size-read, 0, 2/*use 1 for 8bit samples..use 2 for 16*/, 1, &bitstream);
       if(r <= 0)
       {
         eof = true;
@@ -278,7 +283,10 @@ void OggFileSource::closeFile()
 #ifdef MARSYAS_VORBIS
 
   if(notEmpty_)
-    ov_clear(&vf);
+  {
+    ov_clear(vf);
+    delete vf;
+  }
 #endif
 
   notEmpty_ = false;
