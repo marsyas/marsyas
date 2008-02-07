@@ -1,7 +1,7 @@
 require 'mkmf'
 
 $CFLAGS += " " << "@CXXFLAGS@ @CPPFLAGS@ -I@top_srcdir@/src"
-$LDFLAGS += " " << "@LDFLAGS@ @LIBS@ @top_builddir@/lib/release/libmarsyas.a -lstdc++ @Libs@"
+$LIBS += " " << "-L@top_builddir@/lib/release -lmarsyas -lstdc++ @LIBS@ @Libs@"
 
 create_makefile("marsyas")
 

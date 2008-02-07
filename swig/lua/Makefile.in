@@ -1,5 +1,5 @@
 CXXFLAGS = @CXXFLAGS@ @CPPFLAGS@ -I@top_srcdir@/src
-LDFLAGS  = @LDFLAGS@ @LIBS@ @Libs@ -L@top_builddir@/lib/release -lmarsyas -lstdc++
+LDFLAGS  = -L@top_builddir@/lib/release -lmarsyas -lstdc++ @LDFLAGS@ @LIBS@ @Libs@ -llua
 CXX      = @CXX@
 
 all : marsyas.so

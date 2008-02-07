@@ -5,7 +5,7 @@ from distutils.core import setup,Extension
 import os
 
 cflags = "@CXXFLAGS@ @CPPFLAGS@ -I@top_srcdir@/src".split()
-ldflags = "@LDFLAGS@ @LIBS@ @Libs@ @top_builddir@/lib/release/libmarsyas.a -lstdc++".split()
+ldflags = "-L@top_builddir@/lib/release -lmarsyas -lstdc++ @LDFLAGS@ @LIBS@ @Libs@".split()
 
 marsyas_module = Extension(
 		"_marsyas",
