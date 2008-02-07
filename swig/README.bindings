@@ -1,0 +1,5 @@
+To generate SWIG based bindings for Marsyas in Lua, Python, and Ruby, pass --enable-bindings to configure.
+
+For each language it finds the interpreter for, it will build the associated binding. It is currently not possible to easily disable the building of the bindings for a language you have the interpreter for, nor is it possible to select a different interpreter.
+
+These bindings have been successfully built and tested on Linux. For other environments your mileage may vary.
