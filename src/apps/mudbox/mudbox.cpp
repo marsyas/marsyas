@@ -471,7 +471,10 @@ toy_with_onsets(string sfName)
 					onsetdetector->addMarSystem(mng.create("Flux2", "flux")); 
 					//onsetdetector->addMarSystem(mng.create("Memory","mem"));
 					onsetdetector->addMarSystem(mng.create("ShiftInput","sif"));
-					onsetdetector->addMarSystem(mng.create("Filter","filt"));
+					onsetdetector->addMarSystem(mng.create("Filter","filt1"));
+					onsetdetector->addMarSystem(mng.create("Reverse","rev1"));
+					onsetdetector->addMarSystem(mng.create("Filter","filt2"));
+					onsetdetector->addMarSystem(mng.create("Reverse","rev2"));
 					onsetdetector->addMarSystem(mng.create("PeakerOnset","peaker")); 
 				onsetseries->addMarSystem(onsetdetector);
 			onsetaccum->addMarSystem(onsetseries);
@@ -504,6 +507,12 @@ toy_with_onsets(string sfName)
 	//onsetnet->linkctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Memory/mem/mrs_bool/reset",
 	//	"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_bool/onsetDetected");
 
+	//link FILTERS coeffs
+	onsetnet->linkctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt2/mrs_realvec/ncoeffs",
+		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/ncoeffs");
+	onsetnet->linkctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt2/mrs_realvec/dcoeffs",
+		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/dcoeffs");
+
 	///////////////////////////////////////////////////////////////////////////////////////
 	// update controls
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -512,30 +521,32 @@ toy_with_onsets(string sfName)
 	mrs_real fs = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
 
 	mrs_natural winSize = 2048;//2048;
-	mrs_natural hopSize = 1024;//411;
-	mrs_natural onsetWinSize = 5;
+	mrs_natural hopSize = 512;//411;
+	mrs_natural onsetWinSize = 6;
 	mrs_real thres = 1.5;
 
-	mrs_real textureWinMinLen = 0.050; //ms
-	mrs_natural minTimes = textureWinMinLen*fs/winSize; //12;//onsetWinSize+1;//15;
+	mrs_real textureWinMinLen = 0.050; //secs
+	mrs_natural minTimes = textureWinMinLen*fs/hopSize; //12;//onsetWinSize+1;//15;
 	cout << "MinTimes = " << minTimes << endl;
-	mrs_natural maxTimes = 1000;
+	mrs_natural maxTimes = 1000; //whatever... just a big number for now...
+
+	//best result till now are using dB power Spectrum!
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PowerSpectrum/pspk/mrs_string/spectrumType",
+		"decibels");
 	
-	//configure Butterworth filter of Flux time series
+	//configure zero-phase Butterworth filter of Flux time series (from J.P.Bello TASLP paper)
 	realvec bcoeffs(1,3);
 	bcoeffs(0) = 0.1174;
 	bcoeffs(1) = 0.2347;
 	bcoeffs(2) = 0.1174;
-	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt/mrs_realvec/ncoeffs",
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/ncoeffs",
 		bcoeffs);
 	realvec acoeffs(1,3);
 	acoeffs(0) = 1.0;
 	acoeffs(1) = -0.8252;
 	acoeffs(2) = 0.2946;
-	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt/mrs_realvec/dcoeffs",
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/dcoeffs",
 		acoeffs);
-
-
 
 	onsetnet->updctrl("mrs_natural/inSamples", hopSize);
 	//onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/ShiftInput/si/mrs_natural/winSize", winSize);
@@ -547,7 +558,7 @@ toy_with_onsets(string sfName)
 	//onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Memory/mem/mrs_natural/memSize", 4*onsetWinSize+1);
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/ShiftInput/sif/mrs_natural/winSize", 4*onsetWinSize+1);
 	
-	mrs_natural winds = onsetWinSize+mrs_natural(ceil(mrs_real(winSize)/hopSize/2.0));
+	mrs_natural winds = 1+onsetWinSize+mrs_natural(ceil(mrs_real(winSize)/hopSize/2.0));
 	cout << "timesToKeep = " << winds << endl;
 	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/timesToKeep", winds);
 	onsetnet->updctrl("Accumulator/onsetaccum/mrs_string/mode","explicitFlush");

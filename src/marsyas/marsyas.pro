@@ -347,6 +347,7 @@ HEADERS += \
 	McAulayQuatieri.h \
 	Flux2.h \
 	PeakerOnset.h \
+	Reverse.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 	 
@@ -583,6 +584,7 @@ SOURCES += \
 	McAulayQuatieri.cpp \
 	Flux2.cpp \
 	PeakerOnset.cpp \
+	Reverse.cpp \
 	Gain.cpp
 # please leave Gain.cpp at the end like this; it makes scripts happy.
 

@@ -85,22 +85,9 @@ PeakerOnset::myProcess(realvec& in, realvec& out)
 	ctrl_confidence_->setValue(0.0);
 	out.setval(0.0);
 
-	//if using a filter before the input, compensate delay
-	mrs_natural delay = 2;
-	for(t=0;t<inSamples_-delay;++t)
-		in(t) = in(t+delay);
-	for(t=inSamples_-delay; t< inSamples_;++t)
-		in(t) = 0.0;
-
-	//filter input
-	//MATLAB_PUT(in, "PeakerOnset_in");
-	//
-	//MATLAB_EVAL("[b,a] = butter(2, 0.28);");
-	//MATLAB_EVAL("y = filtfilt(b,a,PeakerOnset_in);");
-	//MATLAB_GET("y", in);
-	//
-	//MATLAB_EVAL("plot(PeakerOnset_in);hold on;plot(y,'r');hold off;");
-	//MATLAB_EVAL("FluxTSfilt = filtfilt(b,a,FluxTS);");
+	//cout << "++++++++++++++++" << endl;
+	MATLAB_PUT(in, "PeakerOnset_in");
+	MATLAB_EVAL("plot(PeakerOnset_in,'r');hold on; plot(ShiftInput_out); hold off");
 		
 	mrs_natural w = ctrl_onsetWinSize_->to<mrs_natural>();
 
@@ -113,7 +100,9 @@ PeakerOnset::myProcess(realvec& in, realvec& out)
 	mrs_bool isOnset = true;
 
 	//check first condition
-	for (t = inSamples_-1; t >= inSamples_-1-2*w ; t--)
+	mrs_natural interval = mrs_natural(2.0/3.0*w);
+	//for (t = inSamples_-1; t >= inSamples_-1-2*w ; t--)
+	for(t=checkPoint-interval; t <= checkPoint+interval; t++)
 	{
 		if(checkPointValue < in(t))
 		{

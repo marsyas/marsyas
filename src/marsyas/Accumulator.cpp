@@ -144,11 +144,11 @@ Accumulator::myUpdate(MarControlPtr sender)
 // 	if(ctrl_minTimes_ == -1)
 // 		ctrl_minTimes_->setValue(nTimes_);
 
-// 	if(ctrl_timesToKeep_->to<mrs_natural>() > ctrl_minTimes_->to<mrs_natural>())
-// 	{
-// 		MRSWARN("Accumulator::myUpdate() - timesToKeep > minTimes! Setting minTimes = timesToKeep");
-// 		ctrl_minTimes_->setValue(ctrl_timesToKeep_, NOUPDATE);
-// 	}
+//  	if(ctrl_timesToKeep_->to<mrs_natural>() > ctrl_minTimes_->to<mrs_natural>())
+//  	{
+//  		MRSWARN("Accumulator::myUpdate() - timesToKeep > minTimes! Setting minTimes = timesToKeep = " << ctrl_timesToKeep_->to<mrs_natural>());
+//  		ctrl_minTimes_->setValue(ctrl_timesToKeep_, NOUPDATE);
+//  	}
 
 	onSamples_ = ctrl_onSamples_->to<mrs_natural>();
 
@@ -177,7 +177,9 @@ Accumulator::myProcess(realvec& in, realvec& out)
 	if(ctrl_mode_->to<mrs_string>() == "explicitFlush")
 	{
 		mrs_natural timesCount = keptOnSamples_/childOnSamples_;
-		while((!ctrl_flush_->to<mrs_bool>() && timesCount < ctrl_maxTimes_->to<mrs_natural>()) || timesCount < ctrl_minTimes_->to<mrs_natural>())
+		while((!ctrl_flush_->to<mrs_bool>() && timesCount < ctrl_maxTimes_->to<mrs_natural>()) 
+			|| timesCount < ctrl_minTimes_->to<mrs_natural>()
+			|| timesCount <= ctrl_timesToKeep_->to<mrs_natural>())
 		{
 			// child MarSystem should have a control linked to the Accumulator flush control
 			// so it can signal the end of this loop (e.g. when an onset is detected or something similar)

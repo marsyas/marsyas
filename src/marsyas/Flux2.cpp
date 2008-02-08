@@ -58,16 +58,20 @@ Flux2::myProcess(realvec& in, realvec& out)
 	for (t = 0; t < inSamples_; t++)
 	{
 		flux_ = 0.0;
-		diff_ = 0.0;
-		max_ = 0.0;
+		//diff_ = 0.0;
+		//max_ = 0.0;
 		for(o = 1; o < inObservations_; ++o)
 		{
 			//Simon's version
 			tmp_ = in(o,t)  - prevWindow_(o,t);
 			diff_ = (tmp_+abs(tmp_))/2;
 			
-			if(diff_ > max_)
-				max_ = diff_;
+			//lmartins version
+			//diff_ = in(o,t)*in(o,t) - prevWindow_(o,t)*prevWindow_(o,t);
+			//diff_ = (diff_+abs(diff_))/2.0;
+			
+			//if(diff_ > max_)
+			//	max_ = diff_;
 			
 			flux_ += diff_;
 			prevWindow_(o,t) = in(o,t);
