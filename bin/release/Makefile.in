@@ -73,7 +73,7 @@ DEPDIR = @DEPDIR@
 DISTRIBUTED = @DISTRIBUTED@
 ECHO = @ECHO@
 
-INCLUDES = @INCLUDES@ -I$(top_srcdir)/src/marsyas -I$(top_srcdir)/otherlibs/RtAudio -I$(top_srcdir)/otherlibs/RtMidi -I$(top_srcdir)/otherlibs/libsvm -I$(top_srcdir)/src/marsyas/MATLAB
+INCLUDES = @INCLUDES@ -I$(top_srcdir)/src/marsyas -I$(top_srcdir)/otherlibs/RtAudio -I$(top_srcdir)/otherlibs/RtMidi -I$(top_srcdir)/otherlibs/libsvm -I$(top_srcdir)/src/marsyas/MATLAB -I$(top_srcdir)/src/apps/regressionChecks/regressionChecks
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 Libs = @Libs@
 MADLIB = @MADLIB@

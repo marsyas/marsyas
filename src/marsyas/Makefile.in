@@ -341,6 +341,7 @@ pkginclude_HEADERS = \
 	McAulayQuatieri.h \
 	Flux2.h \
 	PeakerOnset.h \
+	Reverse.h \
 	Gain.h
 
 subdir = src/marsyas

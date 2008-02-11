@@ -345,6 +345,7 @@ libmarsyas_a_SOURCES = \
 	$(top_srcdir)/src/marsyas/McAulayQuatieri.cpp \
 	$(top_srcdir)/src/marsyas/Flux2.cpp \
 	$(top_srcdir)/src/marsyas/PeakerOnset.cpp \
+	$(top_srcdir)/src/marsyas/Reverse.cpp \
 			$(top_srcdir)/src/marsyas/Gain.cpp
 
 subdir = lib/release
@@ -446,7 +447,8 @@ am_libmarsyas_a_OBJECTS = svm.$(OBJEXT) RtAudio.$(OBJEXT) \
 	ADRessSpectrum.$(OBJEXT) ADRessStereoSpectrum.$(OBJEXT) \
 	EnhADRess.$(OBJEXT) StereoSpectrumSources.$(OBJEXT) \
 	EnhADRessStereoSpectrum.$(OBJEXT) McAulayQuatieri.$(OBJEXT) \
-	Flux2.$(OBJEXT) PeakerOnset.$(OBJEXT) Gain.$(OBJEXT)
+	Flux2.$(OBJEXT) PeakerOnset.$(OBJEXT) Reverse.$(OBJEXT) \
+	Gain.$(OBJEXT)
 libmarsyas_a_OBJECTS = $(am_libmarsyas_a_OBJECTS)
 libmarsyasqt_a_AR = $(AR) cru
 libmarsyasqt_a_LIBADD =
@@ -570,11 +572,11 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/RealvecSink.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RealvecSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Reassign.Po ./$(DEPDIR)/Repeat.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Rms.Po ./$(DEPDIR)/Rolloff.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/RtAudio.Po ./$(DEPDIR)/RtMidi.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/SCF.Po ./$(DEPDIR)/SFM.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/SMO.Po ./$(DEPDIR)/SOM.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/SVMClassifier.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Reverse.Po ./$(DEPDIR)/Rms.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Rolloff.Po ./$(DEPDIR)/RtAudio.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/RtMidi.Po ./$(DEPDIR)/SCF.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/SFM.Po ./$(DEPDIR)/SMO.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/SOM.Po ./$(DEPDIR)/SVMClassifier.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ScheduledEvent.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Scheduler.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SchedulerManager.Po \
@@ -937,6 +939,7 @@ EnhADRessStereoSpectrum.$(OBJEXT): \
 McAulayQuatieri.$(OBJEXT): $(top_srcdir)/src/marsyas/McAulayQuatieri.cpp
 Flux2.$(OBJEXT): $(top_srcdir)/src/marsyas/Flux2.cpp
 PeakerOnset.$(OBJEXT): $(top_srcdir)/src/marsyas/PeakerOnset.cpp
+Reverse.$(OBJEXT): $(top_srcdir)/src/marsyas/Reverse.cpp
 Gain.$(OBJEXT): $(top_srcdir)/src/marsyas/Gain.cpp
 libmarsyas.a: $(libmarsyas_a_OBJECTS) $(libmarsyas_a_DEPENDENCIES) 
 	-rm -f libmarsyas.a
@@ -1111,6 +1114,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RealvecSource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Reassign.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Repeat.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Reverse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Rms.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Rolloff.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RtAudio.Po@am__quote@
@@ -3959,6 +3963,18 @@ PeakerOnset.obj: $(top_srcdir)/src/marsyas/PeakerOnset.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/PeakerOnset.Po' tmpdepfile='$(DEPDIR)/PeakerOnset.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PeakerOnset.obj `cygpath -w $(top_srcdir)/src/marsyas/PeakerOnset.cpp`
+
+Reverse.o: $(top_srcdir)/src/marsyas/Reverse.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/Reverse.cpp' object='Reverse.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/Reverse.Po' tmpdepfile='$(DEPDIR)/Reverse.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Reverse.o `test -f '$(top_srcdir)/src/marsyas/Reverse.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/marsyas/Reverse.cpp
+
+Reverse.obj: $(top_srcdir)/src/marsyas/Reverse.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/Reverse.cpp' object='Reverse.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/Reverse.Po' tmpdepfile='$(DEPDIR)/Reverse.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Reverse.obj `cygpath -w $(top_srcdir)/src/marsyas/Reverse.cpp`
 
 Gain.o: $(top_srcdir)/src/marsyas/Gain.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/Gain.cpp' object='Gain.o' libtool=no @AMDEPBACKSLASH@
