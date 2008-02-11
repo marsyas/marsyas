@@ -1,3 +1,4 @@
-EXTRA_DIST = marsystemmanager.i marsystem.i marcontrolptr.i types.i ruby python lua java
+EXTRA_DIST = marsystemmanager.i marsystem.i marcontrolptr.i types.i
 
 SUBDIRS = @BINDINGS@
+DIST_SUBDIRS = java lua python ruby

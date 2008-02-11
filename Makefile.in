@@ -121,8 +121,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure src/marsyas/config-h.in 
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
-CONFIG_CLEAN_FILES = swig/ruby/setup.sh swig/ruby/extconf.rb \
-	swig/python/setup.py swig/python/Makefile swig/lua/Makefile
+CONFIG_CLEAN_FILES =
 DIST_SOURCES =
 
 RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
@@ -155,16 +154,6 @@ $(srcdir)/configure:  $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENC
 
 $(ACLOCAL_M4):  configure.in acinclude.m4
 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
-swig/ruby/setup.sh: $(top_builddir)/config.status $(top_srcdir)/swig/ruby/setup.sh.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-swig/ruby/extconf.rb: $(top_builddir)/config.status $(top_srcdir)/swig/ruby/extconf.rb.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-swig/python/setup.py: $(top_builddir)/config.status $(top_srcdir)/swig/python/setup.py.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-swig/python/Makefile: $(top_builddir)/config.status $(top_srcdir)/swig/python/Makefile.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-swig/lua/Makefile: $(top_builddir)/config.status $(top_srcdir)/swig/lua/Makefile.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
 uninstall-info-am:
 
 # This directory's subdirectories are mostly independent; you can cd

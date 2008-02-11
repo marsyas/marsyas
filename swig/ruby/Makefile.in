@@ -96,22 +96,24 @@ am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
 qmake = @qmake@
-EXTRA_DIST = Makefile.lua.in marsyas.i marsyas_wrap.cxx test.lua
-DISTCLEANFILES = Makefile.lua
-subdir = swig/lua
+EXTRA_DIST = extconf.rb.in marsyas.i marsyas_wrap.cxx setup.sh.in test.rb
+DISTCLEANFILES = Makefile.ruby setup.sh extconf.rb
+subdir = swig/ruby
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
-CONFIG_CLEAN_FILES = Makefile.lua
+CONFIG_CLEAN_FILES = setup.sh extconf.rb
 DIST_SOURCES =
-DIST_COMMON = Makefile.am Makefile.in Makefile.lua.in
+DIST_COMMON = Makefile.am Makefile.in extconf.rb.in setup.sh.in
 all: all-am
 
 .SUFFIXES:
 $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  swig/lua/Makefile
+	  $(AUTOMAKE) --gnu  swig/ruby/Makefile
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
-Makefile.lua: $(top_builddir)/config.status Makefile.lua.in
+setup.sh: $(top_builddir)/config.status setup.sh.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
+extconf.rb: $(top_builddir)/config.status extconf.rb.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 uninstall-info-am:
 tags: TAGS
@@ -219,8 +221,11 @@ uninstall-am: uninstall-info-am
 	mostlyclean-generic uninstall uninstall-am uninstall-info-am
 
 
-all install clean :
-	-make -f Makefile.lua $@
+all install clean : Makefile.ruby
+	-make -f Makefile.ruby $@
+
+Makefile.ruby : setup.sh
+	-$(SHELL) setup.sh
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

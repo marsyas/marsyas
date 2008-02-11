@@ -96,23 +96,20 @@ am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
 qmake = @qmake@
-EXTRA_DIST = Makefile.lua.in marsyas.i marsyas_wrap.cxx test.lua
-DISTCLEANFILES = Makefile.lua
-subdir = swig/lua
+EXTRA_DIST = edu Makefile.java marsyas.i marsyas_wrap.cxx Test.java
+subdir = swig/java
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
-CONFIG_CLEAN_FILES = Makefile.lua
+CONFIG_CLEAN_FILES =
 DIST_SOURCES =
-DIST_COMMON = Makefile.am Makefile.in Makefile.lua.in
+DIST_COMMON = Makefile.am Makefile.in
 all: all-am
 
 .SUFFIXES:
 $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  swig/lua/Makefile
+	  $(AUTOMAKE) --gnu  swig/java/Makefile
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
-Makefile.lua: $(top_builddir)/config.status Makefile.lua.in
-	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 uninstall-info-am:
 tags: TAGS
 TAGS:
@@ -169,7 +166,6 @@ clean-generic:
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
-	-test -z "$(DISTCLEANFILES)" || rm -f $(DISTCLEANFILES)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -220,7 +216,7 @@ uninstall-am: uninstall-info-am
 
 
 all install clean :
-	-make -f Makefile.lua $@
+	-make -f Makefile.java $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

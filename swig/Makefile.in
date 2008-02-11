@@ -96,9 +96,10 @@ am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
 qmake = @qmake@
-EXTRA_DIST = marsystemmanager.i marsystem.i marcontrolptr.i types.i ruby python lua java
+EXTRA_DIST = marsystemmanager.i marsystem.i marcontrolptr.i types.i
 
 SUBDIRS = @BINDINGS@
+DIST_SUBDIRS = java lua python ruby
 subdir = swig
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_CLEAN_FILES =
@@ -109,7 +110,6 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	install-exec-recursive installdirs-recursive install-recursive \
 	uninstall-recursive check-recursive installcheck-recursive
 DIST_COMMON = README Makefile.am Makefile.in
-DIST_SUBDIRS = $(SUBDIRS)
 all: all-recursive
 
 .SUFFIXES:
@@ -241,7 +241,7 @@ distdir: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
-	list='$(SUBDIRS)'; for subdir in $$list; do \
+	list='$(DIST_SUBDIRS)'; for subdir in $$list; do \
 	  if test "$$subdir" = .; then :; else \
 	    test -d $(distdir)/$$subdir \
 	    || mkdir $(distdir)/$$subdir \

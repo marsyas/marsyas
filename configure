@@ -5577,7 +5577,7 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile src/Makefile src/marsyas/Makefile src/examples/Makefile src/apps/Makefile src/apps/sfplay/Makefile src/apps/sfinfo/Makefile lib/Makefile lib/debug/Makefile lib/release/Makefile doc/Makefile scripts/Makefile regressionTests/Makefile regressionTests/input/Makefile regressionTests/answers/Makefile misc/Makefile bin/Makefile bin/debug/Makefile bin/release/Makefile swig/Makefile swig/ruby/setup.sh swig/ruby/extconf.rb swig/python/setup.py swig/python/Makefile swig/lua/Makefile"
+ac_config_files="$ac_config_files Makefile src/Makefile src/marsyas/Makefile src/examples/Makefile src/apps/Makefile src/apps/sfplay/Makefile src/apps/sfinfo/Makefile lib/Makefile lib/debug/Makefile lib/release/Makefile doc/Makefile scripts/Makefile regressionTests/Makefile regressionTests/input/Makefile regressionTests/answers/Makefile misc/Makefile bin/Makefile bin/debug/Makefile bin/release/Makefile swig/Makefile swig/ruby/Makefile swig/ruby/setup.sh swig/ruby/extconf.rb swig/python/Makefile swig/python/setup.py swig/python/Makefile.python swig/lua/Makefile swig/lua/Makefile.lua swig/java/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -6207,11 +6207,15 @@ do
     "bin/debug/Makefile") CONFIG_FILES="$CONFIG_FILES bin/debug/Makefile" ;;
     "bin/release/Makefile") CONFIG_FILES="$CONFIG_FILES bin/release/Makefile" ;;
     "swig/Makefile") CONFIG_FILES="$CONFIG_FILES swig/Makefile" ;;
+    "swig/ruby/Makefile") CONFIG_FILES="$CONFIG_FILES swig/ruby/Makefile" ;;
     "swig/ruby/setup.sh") CONFIG_FILES="$CONFIG_FILES swig/ruby/setup.sh" ;;
     "swig/ruby/extconf.rb") CONFIG_FILES="$CONFIG_FILES swig/ruby/extconf.rb" ;;
-    "swig/python/setup.py") CONFIG_FILES="$CONFIG_FILES swig/python/setup.py" ;;
     "swig/python/Makefile") CONFIG_FILES="$CONFIG_FILES swig/python/Makefile" ;;
+    "swig/python/setup.py") CONFIG_FILES="$CONFIG_FILES swig/python/setup.py" ;;
+    "swig/python/Makefile.python") CONFIG_FILES="$CONFIG_FILES swig/python/Makefile.python" ;;
     "swig/lua/Makefile") CONFIG_FILES="$CONFIG_FILES swig/lua/Makefile" ;;
+    "swig/lua/Makefile.lua") CONFIG_FILES="$CONFIG_FILES swig/lua/Makefile.lua" ;;
+    "swig/java/Makefile") CONFIG_FILES="$CONFIG_FILES swig/java/Makefile" ;;
 
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
