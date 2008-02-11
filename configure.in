@@ -426,11 +426,10 @@ AC_CONFIG_FILES([Makefile
 		 bin/debug/Makefile
 		 bin/release/Makefile
 		 swig/Makefile
-		 swig/ruby/setup.sh
-		 swig/ruby/extconf.rb
-		 swig/python/setup.py
-		 swig/python/Makefile
-		 swig/lua/Makefile
+		 swig/ruby/Makefile swig/ruby/setup.sh swig/ruby/extconf.rb
+		 swig/python/Makefile swig/python/setup.py swig/python/Makefile.python
+		 swig/lua/Makefile swig/lua/Makefile.lua
+		 swig/java/Makefile
 		 ])
 		 
 AC_OUTPUT
