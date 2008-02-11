@@ -18,7 +18,7 @@
 
 MAINTAINERCLEANFILES    = Makefile.in
   
-INCLUDES += -I$(top_srcdir)/src/marsyas -I$(top_srcdir)/otherlibs/RtAudio -I$(top_srcdir)/otherlibs/RtMidi -I$(top_srcdir)/otherlibs/libsvm -I$(top_srcdir)/src/marsyas/MATLAB
+INCLUDES += -I$(top_srcdir)/src/marsyas -I$(top_srcdir)/otherlibs/RtAudio -I$(top_srcdir)/otherlibs/RtMidi -I$(top_srcdir)/otherlibs/libsvm -I$(top_srcdir)/src/marsyas/MATLAB -I$(top_srcdir)/src/apps/regressionChecks/regressionChecks
 
 bin_PROGRAMS = sfplay phasevocoder sfplugin bextract mkcollection \
 	mudbox record classifyFile peakSynth peakClustering sfinfo \
