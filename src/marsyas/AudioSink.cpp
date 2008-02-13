@@ -23,45 +23,45 @@ using namespace Marsyas;
 
 AudioSink::AudioSink(string name):MarSystem("AudioSink", name)
 {
-  bufferSize_ = 0;
+	bufferSize_ = 0;
   
-  start_ = 0;
-  end_ = 0;
+	start_ = 0;
+	end_ = 0;
   
-  preservoirSize_ = 0;
+	preservoirSize_ = 0;
 
-  data_ = NULL;
+	data_ = NULL;
 #ifdef MARSYAS_AUDIOIO
-  audio_ = NULL;
+	audio_ = NULL;
 #endif 
 
-  rtSrate_ = 0;
-  bufferSize_ = 0;
+	rtSrate_ = 0;
+	bufferSize_ = 0;
   
-  isInitialized_ = false;
-  stopped_ = true;//lmartins
+	isInitialized_ = false;
+	stopped_ = true;//lmartins
   
-  rtSrate_ = 0;
-  bufferSize_ = 0;
-  rtChannels_ = 0;
+	rtSrate_ = 0;
+	bufferSize_ = 0;
+	rtChannels_ = 0;
   
 
 
-  addControls();
+	addControls();
 }
 
 AudioSink::~AudioSink()
 {
 #ifdef MARSYAS_AUDIOIO
-  delete audio_;
+	delete audio_;
 #endif
-  data_ = NULL; // RtAudio deletes the buffer itself.
+	data_ = NULL; // RtAudio deletes the buffer itself.
 }
 
 MarSystem* 
 AudioSink::clone() const
 {
-  return new AudioSink(*this);
+	return new AudioSink(*this);
 }
 
 void 
@@ -69,13 +69,13 @@ AudioSink::addControls()
 {
   
 #ifdef MARSYAS_MACOSX
-  addctrl("mrs_natural/bufferSize", 512);
+	addctrl("mrs_natural/bufferSize", 512);
 #else
-  addctrl("mrs_natural/bufferSize", 256);
+	addctrl("mrs_natural/bufferSize", 256);
 #endif
 
-  addctrl("mrs_bool/initAudio", false);
-  setctrlState("mrs_bool/initAudio", true);
+	addctrl("mrs_bool/initAudio", false);
+	setctrlState("mrs_bool/initAudio", true);
   
   
 }
@@ -83,36 +83,36 @@ AudioSink::addControls()
 void 
 AudioSink::myUpdate(MarControlPtr sender)
 {
-  MRSDIAG("AudioSink::myUpdate");
+	MRSDIAG("AudioSink::myUpdate");
 
-  MarSystem::myUpdate(sender);
+	MarSystem::myUpdate(sender);
   
   
-  nChannels_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();//does nothing... [?]
+	nChannels_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();//does nothing... [?]
 
-  if (getctrl("mrs_bool/initAudio")->to<mrs_bool>())
-    initRtAudio();
+	if (getctrl("mrs_bool/initAudio")->to<mrs_bool>())
+		initRtAudio();
   
-  //Resize reservoir if necessary
-  inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+	//Resize reservoir if necessary
+	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
 
 
-  if (inSamples_ < bufferSize_) 
-    reservoirSize_ = 2 * bufferSize_;
-  else 
+	if (inSamples_ < bufferSize_) 
+		reservoirSize_ = 2 * bufferSize_;
+	else 
     {
-      if (2 * inSamples_ > preservoirSize_) 
-	reservoirSize_ = 2 * inSamples_;
+		if (2 * inSamples_ > preservoirSize_) 
+			reservoirSize_ = 2 * inSamples_;
     }
   
 
-  if (reservoirSize_ > preservoirSize_)
+	if (reservoirSize_ > preservoirSize_)
     {
-      reservoir_.stretch(nChannels_, reservoirSize_);
+		reservoir_.stretch(nChannels_, reservoirSize_);
     }
     
-  preservoirSize_ = reservoirSize_;
+	preservoirSize_ = reservoirSize_;
   
 }
 
@@ -120,15 +120,15 @@ void
 AudioSink::initRtAudio()
 {
 
-  rtSrate_ = (int)getctrl("mrs_real/israte")->to<mrs_real>();
-  srate_ = rtSrate_;
-  bufferSize_ = (int)getctrl("mrs_natural/bufferSize")->to<mrs_natural>();
+	rtSrate_ = (int)getctrl("mrs_real/israte")->to<mrs_real>();
+	srate_ = rtSrate_;
+	bufferSize_ = (int)getctrl("mrs_natural/bufferSize")->to<mrs_natural>();
 
 #ifdef MARSYAS_MACOSX
-  if (rtSrate_ == 22050) 
+	if (rtSrate_ == 22050) 
     {
-      rtSrate_ = 44100;
-      bufferSize_ = 2 * bufferSize_;
+		rtSrate_ = 44100;
+		bufferSize_ = 2 * bufferSize_;
     }
 #endif	
   
@@ -136,46 +136,43 @@ AudioSink::initRtAudio()
 
 
 #ifdef MARSYAS_AUDIOIO
-  //marsyas represents audio data as float numbers
-  RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
+	//marsyas represents audio data as float numbers
+	RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
   
-  // hardwire channels to stereo playback even for mono
-  int rtChannels = 2;
+	// hardwire channels to stereo playback even for mono
+	int rtChannels = 2;
   
-  //create new RtAudio object (delete any existing one)
-  if (audio_ != NULL) 
+	//create new RtAudio object (delete any existing one)
+	if (audio_ != NULL) 
     {
-      audio_->stopStream();
-      delete audio_;
+		audio_->stopStream();
+		delete audio_;
     }
   
-  try 
+	try 
     {
-      audio_ = new RtAudio(0, rtChannels, 0, 0, rtFormat,
-			   rtSrate_, &bufferSize_, 4);
+		audio_ = new RtAudio(0, rtChannels, 0, 0, rtFormat,
+							 rtSrate_, &bufferSize_, 4);
 
-      data_ = (mrs_real *) audio_->getStreamBuffer();
+		data_ = (mrs_real *) audio_->getStreamBuffer();
     }
-  catch (RtError &error) 
+	catch (RtError &error) 
     {
-      error.printMessage();
+		error.printMessage();
     }
   
-  if (audio_ != NULL) 
+	if (audio_ != NULL) 
     {
-      audio_->startStream();
+		audio_->startStream();
     }
 #endif 
 
-  //update bufferSize control which may have been changed
-  //by RtAudio (see RtAudio documentation)
-  setctrl("mrs_natural/bufferSize", (mrs_natural)bufferSize_);
+	//update bufferSize control which may have been changed
+	//by RtAudio (see RtAudio documentation)
+	setctrl("mrs_natural/bufferSize", (mrs_natural)bufferSize_);
   
-  isInitialized_ = true;
-  setctrl("mrs_bool/initAudio", false);
-
-  // allocate upper bound memory for reservoir_ 
-  reservoir_.create(2, 4 * bufferSize_);
+	isInitialized_ = true;
+	setctrl("mrs_bool/initAudio", false);
 
 }
 
@@ -184,10 +181,10 @@ AudioSink::start()
 {
 #ifdef MARSYAS_AUDIOIO
 
-  if ( stopped_ && audio_) {
-    audio_->startStream();
-    stopped_ = false;
-  }
+	if ( stopped_ && audio_) {
+		audio_->startStream();
+		stopped_ = false;
+	}
 
     
 #endif
@@ -197,178 +194,178 @@ void
 AudioSink::stop()
 {
 #ifdef MARSYAS_AUDIOIO
-  if ( !stopped_ && audio_) {
+	if ( !stopped_ && audio_) {
 
-    audio_->abortStream();
-    stopped_ = true;
+		audio_->abortStream();
+		stopped_ = true;
 
 
-  }
+	}
 #endif 
 }
 
 void
 AudioSink::localActivate(bool state)
 {
-  if(state)
-    start();
-  else
-    stop();
+	if(state)
+		start();
+	else
+		stop();
 }
 
 void 
 AudioSink::myProcess(realvec& in, realvec& out)
 {
 
-  //check MUTE
-  if(ctrl_mute_->isTrue())
+	//check MUTE
+	if(ctrl_mute_->isTrue())
     {
-      for (t=0; t < inSamples_; t++)
+		for (t=0; t < inSamples_; t++)
     	{
-	  for (o=0; o < inObservations_; o++)
-	    {
-	      out(o,t) = in(o,t);
-	    }
-	}
-      for (t=0; t < rsize_; t++) 
-	{
-	  data_[2*t] = 0.0;
-	  data_[2*t+1] = 0.0;
-	}
-      return;
+			for (o=0; o < inObservations_; o++)
+			{
+				out(o,t) = in(o,t);
+			}
+		}
+		for (t=0; t < rsize_; t++) 
+		{
+			data_[2*t] = 0.0;
+			data_[2*t+1] = 0.0;
+		}
+		return;
     }
   
   
-  // copy to output and into reservoir
+	// copy to output and into reservoir
 
 
 
-  for (t=0; t < inSamples_; t++)
+	for (t=0; t < inSamples_; t++)
     {
-      for (o=0; o < inObservations_; o++)
-	{
-	  reservoir_(o, end_) = in(o,t);
-	  out(o,t) = in(o,t);
-	}
-      end_ ++; 
-      if (end_ == reservoirSize_) 
-	end_ = 0;
+		for (o=0; o < inObservations_; o++)
+		{
+			reservoir_(o, end_) = in(o,t);
+			out(o,t) = in(o,t);
+		}
+		end_ ++; 
+		if (end_ == reservoirSize_) 
+			end_ = 0;
     }
 
        
-  //check if RtAudio is initialized
-  if (!isInitialized_)
-    return;
+	//check if RtAudio is initialized
+	if (!isInitialized_)
+		return;
   
   
   
-  //assure that RtAudio thread is running
-  //(this may be needed by if an explicit call to start()
-  //is not done before ticking or calling process() )
-  if ( stopped_ )
+	//assure that RtAudio thread is running
+	//(this may be needed by if an explicit call to start()
+	//is not done before ticking or calling process() )
+	if ( stopped_ )
     {
-      start();
+		start();
     }
   
-  //update reservoir pointers 
-  rsize_ = bufferSize_;
+	//update reservoir pointers 
+	rsize_ = bufferSize_;
 #ifdef MARSYAS_MACOSX 
-  if (srate_ == 22050)
-    rsize_ = bufferSize_/2;		// upsample to 44100
-  else 
-    rsize_ = bufferSize_;
+	if (srate_ == 22050)
+		rsize_ = bufferSize_/2;		// upsample to 44100
+	else 
+		rsize_ = bufferSize_;
 #endif 
   
-  if (end_ >= start_) 
-    diff_ = end_ - start_;
-  else 
-    diff_ = reservoirSize_ - (start_ - end_);
+	if (end_ >= start_) 
+		diff_ = end_ - start_;
+	else 
+		diff_ = reservoirSize_ - (start_ - end_);
   
-  //send audio data in reservoir to RtAudio
+	//send audio data in reservoir to RtAudio
 
-  while (diff_ >= rsize_)  
-    {
-
-      for (t =0; t < rsize_; t++) 
+	while (diff_ >= rsize_)  
 	{
-	  const int t2 = 2 * t;
-	  int rt = (start_ + t);
 	  
-	  while (rt >= reservoirSize_) 
-	    rt -= reservoirSize_;
-	  while (rt < 0) 
-	    rt += reservoirSize_;
+		for (t =0; t < rsize_; t++) 
+		{
+			int rt = (start_ + t);
+	  
+			while (rt >= reservoirSize_) 
+				rt -= reservoirSize_;
+			while (rt < 0) 
+				rt += reservoirSize_;
 	  
 #ifndef MARSYAS_MACOSX
-	  if (inObservations_ == 1) 
-	    {
-	      data_[t2] = reservoir_(0, rt);
-	      data_[t2+1] = reservoir_(0, rt);
-	    }
-	  else 
-	    {
-	      data_[t2] = reservoir_(0,   rt);
-	      data_[t2+1] = reservoir_(1, rt);
-	    }
-	  
-	  t++;
-#else
-	  const int t4 = 4 * t;
-	  if (srate_ == 22050)
-	    {	      
+			const int t2 = 2 * t;
 
-	      if (inObservations_ == 1) 
-		{
-		  data_[t4] = reservoir_(0,rt);
-		  data_[t4+1] = reservoir_(0,rt);
-		  data_[t4+2] = reservoir_(0,rt);
-		  data_[t4+3] = reservoir_(0,rt);
-		}
-	      else
-		{
-		  data_[t4] = reservoir_(0,rt);
-		  data_[t4+1]= reservoir_(1,rt);
-		  data_[t4+2] = reservoir_(0,rt);
-		  data_[t4+3] = reservoir_(1,rt);
-		}
+			if (inObservations_ == 1) 
+			{
+				data_[t2] = reservoir_(0, rt);
+				data_[t2+1] = reservoir_(0, rt);
+			}
+			else 
+			{
+				data_[t2] = reservoir_(0,   rt);
+				data_[t2+1] = reservoir_(1, rt);
+			}
+	  
+#else
+			const int t4 = 4 * t;
+			if (srate_ == 22050)
+			{	      
+
+				if (inObservations_ == 1) 
+				{
+					data_[t4] = reservoir_(0,rt);
+					data_[t4+1] = reservoir_(0,rt);
+					data_[t4+2] = reservoir_(0,rt);
+					data_[t4+3] = reservoir_(0,rt);
+				}
+				else
+				{
+					data_[t4] = reservoir_(0,rt);
+					data_[t4+1]= reservoir_(1,rt);
+					data_[t4+2] = reservoir_(0,rt);
+					data_[t4+3] = reservoir_(1,rt);
+				}
 	      
-	    }
-	  else
-	    {
-	      if (inObservations_ == 1) 
-		{
-		  
-		  mrs_real foo = reservoir_(0, rt);
-		  data_[t2] = foo; 
-		  data_[t2+1] = foo;
-		}
-	      else 
-		{
-		  data_[t2] = reservoir_(0,   rt);
-		  data_[t2+1] = reservoir_(1, rt);
-		}
-	    }
+			}
+			else
+			{
+				if (inObservations_ == 1) 
+				{
+			  
+					mrs_real foo = reservoir_(0, rt);
+					data_[t2] = foo; 
+					data_[t2+1] = foo;
+				}
+				else 
+				{
+					data_[t2] = reservoir_(0,   rt);
+					data_[t2+1] = reservoir_(1, rt);
+				}
+			}
 #endif 
-	}
+		}
       
 #ifdef MARSYAS_AUDIOIO
-      //tick RtAudio
-      try 
-	{
-	  audio_->tickStream();
-	}
-      catch (RtError &error) 
-	{
-	  error.printMessage();
-	}
+		//tick RtAudio
+		try 
+		{
+			audio_->tickStream();
+		}
+		catch (RtError &error) 
+		{
+			error.printMessage();
+		}
       
       
-      //update reservoir pointers
-      start_ = (start_ + rsize_) % reservoirSize_;
-      if (end_ >= start_) 
-	diff_ = end_ - start_;
-      else 
-	diff_ = reservoirSize_ - (start_ - end_);
+		//update reservoir pointers
+		start_ = (start_ + rsize_) % reservoirSize_;
+		if (end_ >= start_) 
+			diff_ = end_ - start_;
+		else 
+			diff_ = reservoirSize_ - (start_ - end_);
 
 #endif
     }
