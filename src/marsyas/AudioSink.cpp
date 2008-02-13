@@ -295,8 +295,8 @@ AudioSink::myProcess(realvec& in, realvec& out)
 			while (rt < 0) 
 				rt += reservoirSize_;
 	  
-#ifndef MARSYAS_MACOSX
 			const int t2 = 2 * t;
+#ifndef MARSYAS_MACOSX
 
 			if (inObservations_ == 1) 
 			{
