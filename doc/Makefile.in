@@ -281,6 +281,8 @@ pdf: marsyas-user.texi marsyas-devel.texi
 	$(TEXI2PDF) $(TEXI2PDF_FLAGS) $(srcdir)/marsyas-user.texi -o out-www/manual/marsyas-user.pdf
 	$(TEXI2PDF) $(TEXI2PDF_FLAGS) $(srcdir)/marsyas-devel.texi -o out-www/manual/marsyas-devel.pdf
 
+all: sources doxy pdf html
+
 .PHONY: html pdf
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
