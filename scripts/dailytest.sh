@@ -1,8 +1,8 @@
 #!/bin/bash
 ######### update as necessary
-baseDir=~/usr/src/marsyas
-matDir=~/usr/src/marsyas-mat
-coffeeDir=~/usr/src/marsyas-coffee
+baseDir=~/marsyas-svn
+matDir=~/marsyas-autotest
+coffeeDir=~/marsyas-coffee
 
 
 ### get latest SVN
@@ -37,8 +37,8 @@ sendreport() {
 	cat $report
 	if [ `which mail` ]
 	then
-		mail -s "$subject" gperciva@uvic.ca < $report
-		mail -s "$subject" gtzan@cs.uvic.ca < $report
+		mail -s "$subject" gpermus@gmail.com < $report
+#		mail -s "$subject" gtzan@cs.uvic.ca < $report
 # can't deliver to this email address
 #		mail -s "$subject" lgmartins@users.sourceforge.net < $report
 	fi
