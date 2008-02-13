@@ -384,8 +384,9 @@ This manual is built with texinfo, and the source code documentation is
 created with doxygen.  These software packages may be installed from
 
 @itemize
-@item @uref{http://www.gnu.org/software/texinfo/}
-@item @uref{http://www.doxygen.org/}
+@item @uref{http://www.gnu.org/software/texinfo/, texinfo}
+@item @uref{http://www.doxygen.org/, dozygen}
+@item @uref{http://www.graphviz.org/, graphviz}
 @end itemize
 
 The latest version of the manual is in the SVN tree , and can be built
@@ -402,7 +403,7 @@ directory.  These may be built with this additional program and the
 following command:
 
 @itemize
-@item @uref{http://www.gnu.org/software/src-highlite/}
+@item @uref{http://www.gnu.org/software/src-highlite/, GNU/source-highlight}
 @end itemize
 
 @example

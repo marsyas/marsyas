@@ -6,12 +6,9 @@ Complete each section fully before attempting the next section.
 
 @menu
 * Download::                    
-* Linux with autotools::        
-* Linux with qmake::            
-* MacOS X with autotools::      
-* MaxOS X with qmake::          
-* Windows XP with MinGW and qmake::  
-* Windows Vista with Cygwin and autotools::  
+* Main Install::                
+* Optional Installs::           
+* Structure of distribution::   
 * Old::                         
 @end menu
 
@@ -56,24 +53,38 @@ assigned from subversion revisions and the latest can be found by
 checking the sourceforge website. 
 
 
+@node Main Install
+@section Main Install
+
+
+
+@menu
+* Linux with autotools::        
+* Linux with qmake::            
+* MacOS X with autotools::      
+* MaxOS X with qmake::          
+* Windows XP with MinGW and qmake::  
+* Windows Vista with Cygwin and autotools::  
+@end menu
+
 @node Linux with autotools
-@section Linux with autotools
+@subsection Linux with autotools
 
 
 @node Linux with qmake
-@section Linux with qmake 
+@subsection Linux with qmake 
 
 
 @node MacOS X with autotools
-@section MacOS X with autotools
+@subsection MacOS X with autotools
 
 
 @node MaxOS X with qmake
-@section MaxOS X with qmake
+@subsection MaxOS X with qmake
 
 
 @node Windows XP with MinGW and qmake
-@section Windows XP with MinGW and qmake
+@subsection Windows XP with MinGW and qmake
 
 @verbatim
 A) Compiling MARSYAS using MinGW compiler under Windows XP
@@ -130,7 +141,7 @@ mingw32-make.exe release
 @end verbatim
 
 @node Windows Vista with Cygwin and autotools
-@section Windows Vista with Cygwin and autotools
+@subsection Windows Vista with Cygwin and autotools
 
 @verbatim
 B) MARSYAS, Cygwin under Windows XP, Vista
@@ -166,6 +177,79 @@ make
 @end verbatim
 
 
+@node Optional Installs
+@section Optional Installs
+
+
+
+@node Structure of distribution
+@section Structure of distribution 
+
+@c file structure
+
+Marsyas is primarily targeted to researchers and software developers who
+want to build new systems and applications using existing building
+blocks.  Therefore familiarity with the directory structure of the
+Marsyas distribution is important for any serious work with the
+framework. 
+
+The main marsyas directory consists of the following important files: 
+
+@itemize
+@item @b{NEWS:} important changes in each release.
+
+@item @b{AUTHORS:} who we are, what we do.
+
+@item @b{marsyasConfig.pri:} edit this file to select your configure
+options when using qmake.
+
+@item @b{INSTALL, COPYING, README, Changelog:} standard text files for
+GNU projects, but not relevant to ours.  We use @code{svn log} messages
+instead of the Changelog, and the documentation is covered in this
+manual.
+
+@end itemize 
+
+
+@noindent
+In addition there are the following subdirectories: 
+
+@itemize 
+@item @b{src:} all the C++ source files.
+
+@item @b{src/marsyas:} the main directory containing all the important
+source code of Marsyas.  The source files in this subdirectory are
+compiled into a static library that other programs can use to access
+Marsyas functionality. 
+
+@item @b{src/apps:} the source code for executables.
+
+@item @b{src/examples:} easy-to-read source code for simple executables.
+
+@item @b{src/marsyasqt_wrapper:} source for the static library
+MarsyasQt, which allows the use of Marsyas in Qt applications.
+
+@item @b{src/Qt4Apps:} provides GUI interfaces using Qt4. These will not
+work with earlier versions of Qt. You must have Qt4 installed in order
+to use or compile these applications. A README file is supplied with
+each one that has instructions on how to compile and run it.
+
+@item @b{bin:} executable files are compiled in @file{bin/release} or
+@file{bin/debug}.
+
+@item @b{doc:} contains the user manual (which you are currently
+reading).
+
+@item @b{config:} configuration files used by autotools.
+
+@item @b{scripts:} useful scripts to help programming with Marsyas.
+
+@item @b{scripts/MATLAB:} MATLAB scripts.
+
+@item @b{regressionTests:} data files for our automatic tests.
+
+@end itemize 
+
 
 
 @node Old
@@ -178,7 +262,6 @@ make
 * Installing::                  
 * Post-install optional configuration::  
 * Platform-specific notes while running Marsyas::  
-* Structure of distribution::   
 @end menu
 
 @node System preparation
@@ -873,73 +956,5 @@ pnet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
 
 No specific notes.
 
-
-@node Structure of distribution
-@subsection Structure of distribution 
-
-@c file structure
-
-Marsyas is primarily targeted to researchers and software developers who
-want to build new systems and applications using existing building
-blocks.  Therefore familiarity with the directory structure of the
-Marsyas distribution is important for any serious work with the
-framework. 
-
-The main marsyas directory consists of the following important files: 
-
-@itemize
-@item @b{NEWS:} important changes in each release.
-
-@item @b{AUTHORS:} who we are, what we do.
-
-@item @b{marsyasConfig.pri:} edit this file to select your configure
-options when using qmake.
-
-@item @b{INSTALL, COPYING, README, Changelog:} standard text files for
-GNU projects, but not relevant to ours.  We use @code{svn log} messages
-instead of the Changelog, and the documentation is covered in this
-manual.
-
-@end itemize 
-
-
-@noindent
-In addition there are the following subdirectories: 
-
-@itemize 
-@item @b{src:} all the C++ source files.
-
-@item @b{src/marsyas:} the main directory containing all the important
-source code of Marsyas.  The source files in this subdirectory are
-compiled into a static library that other programs can use to access
-Marsyas functionality. 
-
-@item @b{src/apps:} the source code for executables.
-
-@item @b{src/examples:} easy-to-read source code for simple executables.
-
-@item @b{src/marsyasqt_wrapper:} source for the static library
-MarsyasQt, which allows the use of Marsyas in Qt applications.
-
-@item @b{src/Qt4Apps:} provides GUI interfaces using Qt4. These will not
-work with earlier versions of Qt. You must have Qt4 installed in order
-to use or compile these applications. A README file is supplied with
-each one that has instructions on how to compile and run it.
-
-@item @b{bin:} executable files are compiled in @file{bin/release} or
-@file{bin/debug}.
-
-@item @b{doc:} contains the user manual (which you are currently
-reading).
-
-@item @b{config:} configuration files used by autotools.
-
-@item @b{scripts:} useful scripts to help programming with Marsyas.
-
-@item @b{scripts/MATLAB:} MATLAB scripts.
-
-@item @b{regressionTests:} data files for our automatic tests.
-
-@end itemize 
 
 
