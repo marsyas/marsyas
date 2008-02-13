@@ -9,7 +9,7 @@ Complete each section fully before attempting the next section.
 * Main Install::                
 * Optional Installs::           
 * Structure of distribution::   
-* Old::                         
+* Old Windows Stuff::           
 @end menu
 
 @node Download
@@ -79,6 +79,18 @@ distributions, this is a package called @code{alsa-devel} or
 @code{libalsa-devel}.
 @end itemize
 
+Recommended:
+
+@itemize
+@item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech}
+development platform, version 4.2.3 or above.
+
+@item
+@uref{http://sourceforge.net/projects/mad/, LibMAD}: mp3 support
+
+@end itemize
+
+
 @subsubheading Configuring
 
 Marsyas may be compiled using the standard GNU configure script:
@@ -130,19 +142,228 @@ make install
 
 The second command may require you to be root.
 
+@subsubheading Testing the build
 
+After you have compiled Marsyas, it is highly recommended that you
+perform our automatic tests.  For more information, see
+@ref{Regression tests}.
 
 
 @node Linux with qmake
 @subsection Linux with qmake 
 
+@subsubheading Requirements
+
+@itemize
+@item Standard development environment (gcc, g++, etc): probably already
+installed.
+
+@item @uref{http://www.alsa-project.org/,ALSA} headers.  On most
+distributions, this is a package called @code{alsa-devel} or
+@code{libalsa-devel}.
+
+@item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech}
+development platform, version 4.2.3 or above.
+
+@end itemize
+
+Recommended:
+
+@itemize
+@item
+@uref{http://sourceforge.net/projects/mad/, LibMAD}: mp3 support
+
+@end itemize
+
+
+@subsubheading Configuring
+
+Marsyas can be built with qmake, which is the Makefile generator in
+Qt.  To build Marsyas, go to the base of the source tree and edit
+@file{marsyasConfig.pri}.  You will probably want to change the settings
+for @emph{release/debug mode}, @emph{WARNINGS/LOGS}, and @emph{MATLAB
+engine classes}, and @emph{MP3 MAD}.
+
+Once you have selected the options you want, simply type
+
+@example
+qmake
+@end example
+
+@subsubheading Compile and Install
+
+Simply run:
+
+@example
+make
+@end example
+
+Marsyas built with qmake cannot be installed; you must link to the
+library directly in the source tree.
+
+@subsubheading Testing the build
+
+After you have compiled Marsyas, it is highly recommended that you
+perform our automatic tests.  For more information, see
+@ref{Regression tests}.
+
 
 @node MacOS X with autotools
 @subsection MacOS X with autotools
 
+@subsubheading Requirements
+
+@itemize
+@item @uref{http://developer.apple.com/tools/xcode/, Xcode}: standard
+development platform on OSX.  Please install from your OSX installation
+CD/DVD, or download.
+
+@end itemize
+
+Recommended:
+
+@itemize
+@item X11: unix windowing system, included as an extra on your OSX
+installation CD/DVD.
+@item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech}
+development platform, version 4.2.3 or above.
+@item
+@uref{http://sourceforge.net/projects/mad/, LibMAD}: mp3 support
+
+@end itemize
+
+
+@subsubheading Configuring
+
+Marsyas may be compiled using the standard GNU configure script:
+
+@example
+./configure
+@end example
+
+Marsyas can be customized using various configuration options.  The
+current list of available options can be viewed by typing:
+
+@example 
+./configure --help 
+@end example
+
+For example, to compile Marsyas and MarsyasQt with mp3 support through
+libmad and writing warnings to a file, one would do: 
+
+@example 
+./configure --enable-marsyasqt --with-mad --enable-log2file
+@end example 
+
+@warning{If you want to write Marsyas/Qt programs, you must configure
+with @code{--enable-marsyasqt}}
+
+A frequent variation (if you don't have root priviledges) 
+is to install Marsyas in your home directory:
+
+@example
+./configure --enable-marsyasqt --prefix=$HOME
+@end example
+
+To run marsyas under @code{gdb}, add these debugging options:
+
+@example
+./configure --enable-marsyasqt --enable-debug \
+  --enable-assert --enable-warnings --enable-diagnostics \
+  --enable-log2file
+@end example
+
+@subsubheading Compile and Install
+
+Simply run:
+
+@example
+make
+make install
+@end example
+
+The second command may require you to be root.
+
+@subsubheading Testing the build
+
+After you have compiled Marsyas, it is highly recommended that you
+perform our automatic tests.  For more information, see
+@ref{Regression tests}.
+
+@subsubheading Post-install Warnings
+
+When trying to record audio, the sample rate must be specified
+explicitly:
+
+@example
+pnet->addMarSystem(mng.create("AudioSource", "srcRec"));
+pnet->updctrl("mrs_real/israte", 44100.0);
+pnet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
+@end example
+
 
 @node MaxOS X with qmake
 @subsection MaxOS X with qmake
+
+@subsubheading Requirements
+
+@itemize
+@item @uref{http://developer.apple.com/tools/xcode/, Xcode}: standard
+development platform on OSX.  Please install from your OSX installation
+CD/DVD, or download.
+
+@end itemize
+
+Recommended
+
+@itemize
+@item X11: unix windowing system, included as an extra on your OSX
+installation CD/DVD.
+@item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech}
+development platform, version 4.2.3 or above.
+@item
+@uref{http://sourceforge.net/projects/mad/, LibMAD}: mp3 support
+
+@end itemize
+
+@c  the @warning{} needs everything on one line.  :(
+@warning{on MacOS X and when using Qt-4.3.0 or higher, you must add
+@w{@code{export QMAKESPEC=/usr/local/Qt4.3/mkspecs/macx-g++/}} to your
+@file{~/.profile} and then close (and re-open) your terminal
+window before following the steps below!}
+
+@subsubheading Configuring
+
+Marsyas can be built with qmake, which is the Makefile generator in
+Qt.  To build Marsyas, go to the base of the source tree and edit
+@file{marsyasConfig.pri}.  You will probably want to change the settings
+for @emph{release/debug mode}, @emph{WARNINGS/LOGS}, and @emph{MATLAB
+engine classes}, and @emph{MP3 MAD}.
+
+Once you have selected the options you want, simply type
+
+@example
+qmake
+@end example
+
+@subsubheading Compile and Install
+
+Simply run:
+
+@example
+make
+@end example
+
+Marsyas built with qmake cannot be installed; you must link to the
+library directly in the source tree.
+
+@subsubheading Testing the build
+
+After you have compiled Marsyas, it is highly recommended that you
+perform our automatic tests.  For more information, see
+@ref{Regression tests}.
+
+
 
 
 @node Windows XP with MinGW and qmake
@@ -245,6 +466,7 @@ make
 @menu
 * Vim editor support::          
 * MATLAB setup::                
+* Datasets::                    
 @end menu
 
 @node Vim editor support
@@ -303,6 +525,20 @@ ln -s /Applications/MATLAB74/bin/matlab /usr/bin/matlab
 You must start X11 windows manually. "open -a X11", or click on the X11
 icon in your /Applications/util/ folder.
 @end enumerate
+
+
+@node Datasets
+@subsection Datasets
+
+Useful datasets:
+
+@itemize
+@item
+@uref{http://marsyas.sness.net/marsyas-coffee/marsyas-coffee-latest.tar.bz2,
+marsyas-coffee}:
+data set used for large regression tests in Marsyas.
+
+@end itemize
 
 
 
@@ -378,70 +614,21 @@ reading).
 
 
 
-@node Old
-@section Old
+@node Old Windows Stuff
+@section Old Windows Stuff
 
 @menu
 * System preparation::          
-* Configuring::                 
 * Compiling::                   
-* Installing::                  
-* Platform-specific notes while running Marsyas::  
 @end menu
 
 @node System preparation
 @subsection System preparation
 
 @menu
-* Requirements on *nix (including MacOS X)::  
 * Requirements on Windows::     
-* Optional programs and datasets::  
+* Optional programs::           
 @end menu
-
-@node Requirements on *nix (including MacOS X)
-@subsubsection Requirements on *nix (including MacOS X)
-
-@unnumberedsubsubsec Linux
-
-Required:
-
-@itemize
-@item Standard development environment (gcc, g++, etc): probably already
-installed.
-
-@item @uref{http://www.alsa-project.org/,ALSA} headers.  On most
-distributions, this is a package called @code{alsa-devel} or
-@code{libalsa-devel}.
-@end itemize
-
-Strongly recommended:
-
-@itemize
-@item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech}
-development platform, version 4.2.3 or above.
-@end itemize
-
-
-@unnumberedsubsubsec MacOS X
-
-Required:
-
-@itemize
-@item @uref{http://developer.apple.com/tools/xcode/, Xcode}: standard
-development platform on OSX.  Please install from your OSX installation
-CD/DVD, or download.
-
-@end itemize
-
-Strongly recommended:
-
-@itemize
-@item X11: unix windowing system, included as an extra on your OSX
-installation CD/DVD.
-@item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech}
-development platform, version 4.2.3 or above.
-@end itemize
-
 
 @node Requirements on Windows
 @subsubsection Requirements on Windows
@@ -803,17 +990,11 @@ marsyas-developers@@lists.sourceforge.net
 
 
 
+@c zz
 
-@node Optional programs and datasets
-@subsubsection Optional programs and datasets
 
-Useful libraries:
-
-@itemize
-@item
-@uref{http://sourceforge.net/projects/mad/, LibMAD}: mp3 support
-
-@end itemize
+@node Optional programs
+@subsubsection Optional programs
 
 Useful programs:
 
@@ -823,112 +1004,17 @@ Useful programs:
 machines; Windows users may install it from this site.  Marsyas contains
 some very useful scripts which are written in Python.
 
-@item
-@uref{http://www.mathworks.com/products/matlab/, Matlab}: information
-may be easily passed to and from Matlab and Marsyas; this allows easy
-prototyping.
-
-@end itemize
-
-Useful datasets:
-
-@itemize
-@item
-@uref{http://marsyas.sness.net/marsyas-coffee/marsyas-coffee-latest.tar.bz2,
-marsyas-coffee}:
-data set used for large regression tests in Marsyas.
-
 @end itemize
 
 
-
-@node Configuring
-@subsection Configuring
-
-@subsubsection ...with autotools
-
-Marsyas may be compiled using the standard GNU configure script:
-
-@example
-./configure
-@end example
-
-Marsyas can be customized using various configuration options.  The
-current list of available options can be viewed by typing:
-
-@example 
-./configure --help 
-@end example
-
-For example, to compile Marsyas and MarsyasQt with mp3 support through
-libmad and writing warnings to a file, one would do: 
-
-@example 
-./configure --enable-marsyasqt --with-mad --enable-log2file
-@end example 
-
-@warning{If you want to write Marsyas/Qt programs, you must configure
-with @code{--enable-marsyasqt}}
-
-
-A frequent variation (if you don't have root priviledges) 
-is to install Marsyas in your home directory:
-
-@example
-./configure --enable-marsyasqt --prefix=$HOME
-@end example
-
-
-@unnumberedsubsubsec Debugging options
-
-@example
-./configure --enable-marsyasqt --enable-debug \
-  --enable-assert --enable-warnings --enable-diagnostics \
-  --enable-log2file
-make clean
-make
-@end example
-
-The resulting program can be run under @code{gdb} to track down problems.
-
-
-@subsubsection ...with qmake
-
-Marsyas can be built with qmake, which is the Makefile generator in
-Qt.  To build Marsyas, go to the base of the source tree and edit
-@file{marsyasConfig.pri}.  You will probably want to change the settings
-for @emph{release/debug mode}, @emph{WARNINGS/LOGS}, and @emph{MATLAB
-engine classes}, and @emph{MP3 MAD}.
-
-Once you have selected the options you want, simply type
-
-@example
-qmake
-@end example
-
-
-@c  the @warning{} needs everything on one line.  :(
-@warning{on MacOS X and when using Qt-4.3.0 or higher, you must add
-@w{@code{export QMAKESPEC=/usr/local/Qt4.3/mkspecs/macx-g++/}} to your
-@file{~/.bash_profile} and then close (and re-open) your terminal window}
 
 
 @node Compiling
 @subsection Compiling
 
-@subsubsection ...on *nix (including MacOS X)
-
-After @ref{Configuring}, simply type
-
-@example
-make
-@end example
-
-
-
 @subsubsection ...on Windows (MinGW or Visual Studio)
 
-After @ref{Configuring}, simply type
+After Configuring, simply type
 
 @example
 nmake (nmake debug or nmake all for debug or debug and release builds)
@@ -951,64 +1037,6 @@ marsyas dir and do:
 qmake -t vclib
 @end example
 
-
-@subsubsection Testing the build
-
-After you have compiled Marsyas, it is highly recommended to perform our
-automatic tests.  For more information, see @ref{Regression tests}.
-
-
-@node Installing
-@subsection Installing
-
-@subsubsection ...with autotools
-
-To install, type
-
-@example
-make install
-@end example
-
-If you are trying to write to a system-wide location (such as the
-default value of @file{/usr/local} ), you must be be root.  To change
-the installation directory, configure with @code{--prefix=DIR}.
-
-@subsubsection ...with qmake
-
-Marsyas built with qmake cannot be installed; you must link to the
-library directly in the source tree.
-
-
-
-@node Platform-specific notes while running Marsyas
-@subsection Platform-specific notes while running Marsyas
-
-@subsubsection Linux
-
-@cindex Linux notes
-
-No specific notes.
-
-
-@subsubsection Mac OSX
-
-@cindex Mac OSX notes
-
-When trying to record audio, the sample rate must be specified
-explicitly:
-
-@example
-pnet->addMarSystem(mng.create("AudioSource", "srcRec"));
-pnet->updctrl("mrs_real/israte", 44100.0);
-pnet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
-@end example
-
-
-@subsubsection Windows
-
-@cindex Window notes
-
-No specific notes.
 
 
 

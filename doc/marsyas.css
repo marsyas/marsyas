@@ -8,6 +8,7 @@ body
  * because otherwise this comment won't show up.  (?) */
 h3 { color: purple; }
 h4 { color: darkblue; }
+h5 { color: darkgreen; }
 hr { border: 0; color: green; background-color: green; }
 strong { color: red; }
 table.cartouche { color: red; }

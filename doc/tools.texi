@@ -389,9 +389,9 @@ not require the marsyas executables to be installed (by default they
 execute @file{bin/release/PROGNAME} ), but marsyas must be
 compiled.
 
-The tests also require Python to be installed.  Python is installed by
-default on Linux and MacOS X machines; Windows users may install it from
-@uref{http://python.org}.
+@warning{The tests also require Python to be installed.  Python is
+installed by default on Linux and MacOS X machines; Windows users
+may install it from @uref{http://python.org}.}
 
 Developers interested in the inner workings of these tests may find the
 information in @develref{Regression tests (devel)}.
@@ -426,11 +426,11 @@ often.
 @node Coffee tests
 @subsection Coffee tests
 
-These are a longer set of tests; they may take up to 5 minutes to run.
-They also require files that are not part of the Marsyas svn or
-tarballs.  They are available on the web, see @ref{Optional programs and
-datasets}.  The location of these files must be passed to the script,
-for example
+These are a longer set of tests; they may take up to 5 minutes to
+run.  They also require files that are not part of the Marsyas svn
+or tarballs.  They are available on the web, see @ref{Datasets}.
+The location of these files must be passed to the script, for
+example
 
 @example
 scripts/commit_tests.py ../../marsyas-coffee/
