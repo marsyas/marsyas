@@ -38,7 +38,7 @@ sendreport() {
 	if [ `which mail` ]
 	then
 		mail -s "$subject" gpermus@gmail.com < $report
-#		mail -s "$subject" gtzan@cs.uvic.ca < $report
+		mail -s "$subject" gtzan@cs.uvic.ca < $report
 # can't deliver to this email address
 #		mail -s "$subject" lgmartins@users.sourceforge.net < $report
 	fi
@@ -102,6 +102,8 @@ cd doc/
 testthing "make html" $manualsLog "HTML manuals"
 testthing "make pdf" $manualsLog "PDF manuals"
 testthing "make pdf" $doxyLog "Doxygen docs"
+# FIXME: commented out pending macports bug fix #14329
+#testthing "make sources" $doxyLog "source-highlight examples"
 cd ..
 
 testthing "make dist" $distLog "Make dist"
