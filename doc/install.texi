@@ -62,7 +62,11 @@ checking the sourceforge website.
 * MacOS X with autotools::      
 * MaxOS X with qmake::          
 * Windows XP with MinGW and qmake::  
+* Windows XP with Cygwin and autotools::  
+* Windows XP with MSVC::        
+* Windows Vista with MinGW and qmake::  
 * Windows Vista with Cygwin and autotools::  
+* Windows Vista with MSVC::     
 @end menu
 
 @node Linux with autotools
@@ -423,6 +427,28 @@ qmake
 mingw32-make.exe release
 @end verbatim
 
+
+@node Windows XP with Cygwin and autotools
+@subsection Windows XP with Cygwin and autotools
+
+@verbatim
+@end verbatim
+
+
+@node Windows XP with MSVC
+@subsection Windows XP with MSVC
+
+@verbatim
+@end verbatim
+
+
+@node Windows Vista with MinGW and qmake
+@subsection Windows Vista with MinGW and qmake
+
+@verbatim
+@end verbatim
+
+
 @node Windows Vista with Cygwin and autotools
 @subsection Windows Vista with Cygwin and autotools
 
@@ -458,6 +484,14 @@ installed)
 ./configure
 make
 @end verbatim
+
+
+@node Windows Vista with MSVC
+@subsection Windows Vista with MSVC
+
+@verbatim
+@end verbatim
+
 
 
 @node Optional Installs

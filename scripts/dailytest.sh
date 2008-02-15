@@ -99,11 +99,11 @@ testthing "scripts/regtest_sanity.py" $sanityLog Sanity
 testthing "scripts/regtest_coffee.py $coffeeDir" $coffeeLog Coffee
 
 cd doc/
-testthing "make html" $manualsLog "HTML manuals"
-testthing "make pdf" $manualsLog "PDF manuals"
-testthing "make pdf" $doxyLog "Doxygen docs"
 # FIXME: commented out pending macports bug fix #14329
 #testthing "make sources" $doxyLog "source-highlight examples"
+testthing "make doxy" $doxyLog "Doxygen docs"
+testthing "make pdf" $manualsLog "PDF manuals"
+testthing "make html" $manualsLog "HTML manuals"
 cd ..
 
 testthing "make dist" $distLog "Make dist"
