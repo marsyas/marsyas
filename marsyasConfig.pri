@@ -26,7 +26,7 @@ CONFIG += marsyasQt4Apps
 ######################################################################
 
 unix:CONFIG	+= release
-win32:win32-msvc2005:CONFIG += debug_and_release
+win32:win32-msvc:CONFIG += debug_and_release
 
 ######################################################################
 # enable/disable ASSERTIONS/WARNINGS/DIAGNOSTICS/LOGS, etc
@@ -300,10 +300,10 @@ macx {
 	}
 }
 
-win32-msvc2005 {
-	message(Using win32-msvc2005 configuration)
-	win32-msvc2005:QMAKE_CXXFLAGS_DEBUG += /ZI /Od
-	win32-msvc2005:QMAKE_LFLAGS_DEBUG += /INCREMENTAL
+win32-msvc {
+	message(Using win32-msvc configuration)
+	win32-msvc:QMAKE_CXXFLAGS_DEBUG += /ZI /Od
+	win32-msvc:QMAKE_LFLAGS_DEBUG += /INCREMENTAL
 
 	DEFINES += 	MARSYAS_WIN32 \
 				WIN32 \
