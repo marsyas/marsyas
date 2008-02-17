@@ -13,18 +13,18 @@ CONFIG(debug, debug|release) {
 }
 
 CONFIG(release, debug|release){
-	win32-msvc2005: LIBS  += marsyas.lib
-	!win32-msvc2005: LIBS = -lmarsyas $$LIBS
+	win32-msvc: LIBS  += marsyas.lib
+	!win32-msvc: LIBS = -lmarsyas $$LIBS
 	LIBPATH +=  $$quote( \"$$BASEDIR/lib/release\" )
-	win32-msvc2005:PRE_TARGETDEPS += $$quote( \"$$BASEDIR/lib/release/marsyas.lib\" )
-	!win32-msvc2005:PRE_TARGETDEPS += $$quote( \"$$BASEDIR/lib/release/libmarsyas.a\" )
+	win32-msvc:PRE_TARGETDEPS += $$quote( \"$$BASEDIR/lib/release/marsyas.lib\" )
+	!win32-msvc:PRE_TARGETDEPS += $$quote( \"$$BASEDIR/lib/release/libmarsyas.a\" )
 }
 CONFIG(debug, debug|release){
-	win32-msvc2005:LIBS 	+= 	marsyas.lib
-	!win32-msvc2005: LIBS = -lmarsyas $$LIBS 	
+	win32-msvc:LIBS 	+= 	marsyas.lib
+	!win32-msvc: LIBS = -lmarsyas $$LIBS 	
 	LIBPATH += $$quote( \"$$BASEDIR/lib/debug\" )
-	win32-msvc2005:PRE_TARGETDEPS += $$quote( \"$$BASEDIR/lib/debug/marsyas.lib\" )
-	!win32-msvc2005:PRE_TARGETDEPS += $$quote( \"$$BASEDIR/lib/debug/libmarsyas.a\" )
+	win32-msvc:PRE_TARGETDEPS += $$quote( \"$$BASEDIR/lib/debug/marsyas.lib\" )
+	!win32-msvc:PRE_TARGETDEPS += $$quote( \"$$BASEDIR/lib/debug/libmarsyas.a\" )
 }
 
 
