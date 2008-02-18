@@ -259,7 +259,7 @@ sfplugin -p musp_classify.mpl new.wav
 @end example
 
 Feature extractors that start with SV produce one value 
-for each value and can be used for non-realtime classification 
+for each file and can be used for non-realtime classification 
 such as genre classification. The following command can 
 be used to generate a weka file for genre classification. 
 
