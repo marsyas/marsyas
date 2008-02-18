@@ -61,12 +61,10 @@ checking the sourceforge website.
 * Linux with qmake::            
 * MacOS X with autotools::      
 * MaxOS X with qmake::          
-* Windows XP with MinGW and qmake::  
-* Windows XP with Cygwin and autotools::  
-* Windows XP with MSVC::        
-* Windows Vista with MinGW and qmake::  
-* Windows Vista with Cygwin and autotools::  
-* Windows Vista with MSVC::     
+* Windows XP/Vista using Visual Studio command-line and qmake::  
+* Windows XP/Vista using Visual Studio IDE and qmake::  
+* Windows XP/Vista with MinGW and qmake::  
+* Windows XP/Vista with Cygwin and autotools::  
 @end menu
 
 @node Linux with autotools
@@ -369,9 +367,27 @@ perform our automatic tests.  For more information, see
 
 
 
+@node Windows XP/Vista using Visual Studio command-line and qmake
+@subsection Windows XP/Vista using Visual Studio command-line and qmake
 
-@node Windows XP with MinGW and qmake
-@subsection Windows XP with MinGW and qmake
+@verbatim
+@end verbatim
+
+
+@node Windows XP/Vista using Visual Studio IDE and qmake
+@subsection Windows XP/Vista using Visual Studio IDE and qmake
+
+@verbatim
+@end verbatim
+
+
+@menu
+* Windows XP/Vista with MinGW and qmake::  
+* Windows XP/Vista with Cygwin and autotools::  
+@end menu
+
+@node Windows XP/Vista with MinGW and qmake
+@subsection Windows XP/Vista with MinGW and qmake
 
 @verbatim
 A) Compiling MARSYAS using MinGW compiler under Windows XP
@@ -428,29 +444,8 @@ mingw32-make.exe release
 @end verbatim
 
 
-@node Windows XP with Cygwin and autotools
-@subsection Windows XP with Cygwin and autotools
-
-@verbatim
-@end verbatim
-
-
-@node Windows XP with MSVC
-@subsection Windows XP with MSVC
-
-@verbatim
-@end verbatim
-
-
-@node Windows Vista with MinGW and qmake
-@subsection Windows Vista with MinGW and qmake
-
-@verbatim
-@end verbatim
-
-
-@node Windows Vista with Cygwin and autotools
-@subsection Windows Vista with Cygwin and autotools
+@node Windows XP/Vista with Cygwin and autotools
+@subsection Windows XP/Vista with Cygwin and autotools
 
 @verbatim
 B) MARSYAS, Cygwin under Windows XP, Vista
@@ -485,12 +480,6 @@ installed)
 make
 @end verbatim
 
-
-@node Windows Vista with MSVC
-@subsection Windows Vista with MSVC
-
-@verbatim
-@end verbatim
 
 
 
