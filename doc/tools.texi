@@ -20,6 +20,7 @@ source code for those files is in @file{apps/@{DIR@}/}.
 * Simple Soundfile Interaction::  
 * Feature Extraction::          
 * Synthesis::                   
+* Machine Learning::            
 * Marsystem Interaction::       
 * All of the above::            
 * Regression tests::            
@@ -304,6 +305,25 @@ sftransform is an example of having a doubly nested
 network with two FFT/inverse FFT identity transformations. 
 It's not particularly useful but show how 
 to nested networks can be created.
+
+
+@node Machine Learning
+@section Machine Learning
+
+@menu
+* kea::                         
+@end menu
+
+@node kea
+@subsection @code{kea}
+@cindex kea
+
+kea does machine learning and classification, but requires the
+features to be extracted with another program (general bextract).
+
+@example
+kea -w WEKAFILE -c CLASSIFIED -m MODE
+@end example
 
 
 
