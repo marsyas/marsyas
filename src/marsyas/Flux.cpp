@@ -137,8 +137,8 @@ Flux::myProcess(realvec& in, realvec& out)
 	}
 
 	//used for toy_with_onsets.m (DO NOT DELETE! - COMMENT INSTEAD)
-	MATLAB_PUT(out, "Flux_out");
-	MATLAB_EVAL("FluxTS = [FluxTS, Flux_out];");
+	//MATLAB_PUT(out, "Flux_out");
+	//MATLAB_EVAL("FluxTS = [FluxTS, Flux_out];");
 }
 
 

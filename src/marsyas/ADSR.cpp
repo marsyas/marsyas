@@ -155,9 +155,9 @@ ADSR::myProcess(realvec& in, realvec& out)
 		}//for
 
 		//used for toy_with_onsets.m (DO NOT DELETE! - COMMENT INSTEAD)
-		MATLAB_PUT(out, "ADSR_out");
-		MATLAB_EVAL("onsetAudio = [onsetAudio, ADSR_out];");
-		MATLAB_EVAL("toy_with_onsets");
+		//MATLAB_PUT(out, "ADSR_out");
+		//MATLAB_EVAL("onsetAudio = [onsetAudio, ADSR_out];");
+		//MATLAB_EVAL("toy_with_onsets");
 
 }
 

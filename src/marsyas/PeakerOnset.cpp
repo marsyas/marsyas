@@ -163,10 +163,10 @@ PeakerOnset::myProcess(realvec& in, realvec& out)
 	}
 
 	//used for toy_with_onsets.m (DO NOT DELETE! - COMMENT INSTEAD)
-	MATLAB_PUT(in, "PeakerOnset_in");
-	MATLAB_EVAL("plot(PeakerOnset_in,'r');hold on; plot(ShiftInput_out); hold off");
-	MATLAB_PUT(out,"PeakerOnset_out");
-	MATLAB_EVAL("onsetTS = [onsetTS, PeakerOnset_out];");
+	//MATLAB_PUT(in, "PeakerOnset_in");
+	//MATLAB_EVAL("plot(PeakerOnset_in,'r');hold on; plot(ShiftInput_out); hold off");
+	//MATLAB_PUT(out,"PeakerOnset_out");
+	//MATLAB_EVAL("onsetTS = [onsetTS, PeakerOnset_out];");
 }
 
 
