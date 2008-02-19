@@ -268,7 +268,6 @@ pkginclude_HEADERS = \
 	StereoSpectrumSources.h \
 	EnhADRessStereoSpectrum.h \
 	McAulayQuatieri.h \
-	Flux2.h \
 	PeakerOnset.h \
 	Reverse.h \
 	Gain.h

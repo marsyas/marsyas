@@ -345,7 +345,6 @@ HEADERS += \
 	StereoSpectrumSources.h \
 	EnhADRessStereoSpectrum.h \
 	McAulayQuatieri.h \
-	Flux2.h \
 	PeakerOnset.h \
 	Reverse.h \
 	Gain.h
@@ -582,7 +581,6 @@ SOURCES += \
 	StereoSpectrumSources.cpp \
 	enhADRessStereoSpectrum.cpp \
 	McAulayQuatieri.cpp \
-	Flux2.cpp \
 	PeakerOnset.cpp \
 	Reverse.cpp \
 	Gain.cpp

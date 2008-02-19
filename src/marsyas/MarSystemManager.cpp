@@ -167,7 +167,6 @@
 #include "StereoSpectrumSources.h"
 #include "EnhADRessStereoSpectrum.h"
 #include "McAulayQuatieri.h"
-#include "Flux2.h"
 #include "PeakerOnset.h"
 #include "ADSR.h"
 #include "Reverse.h"
@@ -324,7 +323,6 @@ MarSystemManager::MarSystemManager()
   registerPrototype("EnhADRess", new EnhADRess("Enhadresspr"));
   registerPrototype("StereoSpectrumSources", new StereoSpectrumSources("stereospectrumsourcespr"));
   registerPrototype("EnhADRessStereoSpectrum", new EnhADRessStereoSpectrum("enhadressstereospectrumpr"));
-	registerPrototype("Flux2", new Flux2("flux2p"));
 	registerPrototype("PeakerOnset", new PeakerOnset("pkronsetpr"));
 	registerPrototype("ADSR", new ADSR("adsrpr"));
   registerPrototype("Reverse", new Reverse("reversepr"));
