@@ -11,7 +11,7 @@
 
 figure(1)
 onsetTS2 = [onsetTS(onsetWinSize+1:end), zeros(1,onsetWinSize)];
-plot(segmentAudio);
+plot(segmentData);
 hold on
 plot(1:hopSize:hopSize*length(FluxTS),FluxTS/max(FluxTS), 'r');
 %plot(1:hopSize:hopSize*length(FluxTSfilt),FluxTSfilt*1000, 'g');
@@ -22,9 +22,9 @@ hold off
 
 figure(2)
 l = length(Accum_out);
-e = length(segmentAudio);
+e = length(segmentData);
 b = e-l+1;
-plot(b:1:e, segmentAudio(b:1:e));
+plot(b:1:e, segmentData(b:1:e));
 hold on
 ll = l/hopSize+1;
 ee = (length(FluxTS)-onsetWinSize);
@@ -35,5 +35,5 @@ plot((bb-1)*hopSize:hopSize:(ee-1)*hopSize,FluxTS(bb:ee)/max(FluxTS(bb:ee)), 'r'
 stem((bb-1)*hopSize:hopSize:(ee-1)*hopSize,onsetTS2(bb:ee), 'k');
 hold off
 
-wavplay(segmentAudio(b:1:e), 44100);
+wavplay(segmentData(b:1:e), 44100);
 

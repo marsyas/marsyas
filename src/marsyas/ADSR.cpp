@@ -116,8 +116,6 @@ ADSR::myUpdate(MarControlPtr sender)
 void 
 ADSR::myProcess(realvec& in, realvec& out)
 {
-	//checkFlow(in,out);
-
 	for (o=0; o < inObservations_; o++)
 		for (t = 0; t < inSamples_; t++)
 		{
@@ -156,9 +154,10 @@ ADSR::myProcess(realvec& in, realvec& out)
 			//cout <<"val=" << value_<< endl;
 		}//for
 
+		//used for toy_with_onsets.m (DO NOT DELETE! - COMMENT INSTEAD)
 		MATLAB_PUT(out, "ADSR_out");
 		MATLAB_EVAL("onsetAudio = [onsetAudio, ADSR_out];");
-
 		MATLAB_EVAL("toy_with_onsets");
-}//process
+
+}
 

@@ -232,6 +232,7 @@ Accumulator::myProcess(realvec& in, realvec& out)
 		}
 	}
 
+	//used for toy_with_onsets.m (DO NOT DELETE! - COMMENT INSTEAD)
 	MATLAB_PUT(out, "Accum_out");
-	MATLAB_EVAL("segmentAudio = [segmentAudio, Accum_out];");
+	MATLAB_EVAL("segmentData = [segmentData, Accum_out];");
 }

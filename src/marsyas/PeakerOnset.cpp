@@ -85,10 +85,6 @@ PeakerOnset::myProcess(realvec& in, realvec& out)
 	ctrl_confidence_->setValue(0.0);
 	out.setval(0.0);
 
-	//cout << "++++++++++++++++" << endl;
-	MATLAB_PUT(in, "PeakerOnset_in");
-	MATLAB_EVAL("plot(PeakerOnset_in,'r');hold on; plot(ShiftInput_out); hold off");
-		
 	mrs_natural w = ctrl_onsetWinSize_->to<mrs_natural>();
 
 	if(w == 0)
@@ -166,6 +162,9 @@ PeakerOnset::myProcess(realvec& in, realvec& out)
 		cout<<"Onset Detected!" << endl;
 	}
 
+	//used for toy_with_onsets.m (DO NOT DELETE! - COMMENT INSTEAD)
+	MATLAB_PUT(in, "PeakerOnset_in");
+	MATLAB_EVAL("plot(PeakerOnset_in,'r');hold on; plot(ShiftInput_out); hold off");
 	MATLAB_PUT(out,"PeakerOnset_out");
 	MATLAB_EVAL("onsetTS = [onsetTS, PeakerOnset_out];");
 }

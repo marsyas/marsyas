@@ -535,6 +535,7 @@ toy_with_onsets(string sfName)
 		"decibels");
 	
 	//configure zero-phase Butterworth filter of Flux time series (from J.P.Bello TASLP paper)
+	// Coefficients taken from MATLAB butter(2, 0.28)
 	realvec bcoeffs(1,3);
 	bcoeffs(0) = 0.1174;
 	bcoeffs(1) = 0.2347;
@@ -549,13 +550,11 @@ toy_with_onsets(string sfName)
 		acoeffs);
 
 	onsetnet->updctrl("mrs_natural/inSamples", hopSize);
-	//onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/ShiftInput/si/mrs_natural/winSize", winSize);
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/ShiftInput/si/mrs_natural/winSize", winSize);
 
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_natural/onsetWinSize", onsetWinSize);
-	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/threshold", thres); //!!!!!!!!!!!!!
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/threshold", thres); //!!!
 	
-	//onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Memory/mem/mrs_natural/memSize", 4*onsetWinSize+1);
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/ShiftInput/sif/mrs_natural/winSize", 4*onsetWinSize+1);
 	
 	mrs_natural winds = 1+onsetWinSize+mrs_natural(ceil(mrs_real(winSize)/hopSize/2.0));
@@ -569,13 +568,14 @@ toy_with_onsets(string sfName)
 	onsetnet->updctrl("Fanout/onsetmix/Gain/gainaudio/mrs_real/gain", 1.0);
 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/Gain/gainonsets/mrs_real/gain", 0.8);
 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/aTarget", 1.0);
- 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/aTime", winSize/80/fs); //!!!!!!!!!!!!!
+ 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/aTime", winSize/80/fs); //!!!
  	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/susLevel", 0.0);
- 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/dTime", winSize/4/fs); // !!!!!!!!!!!!!!!
+ 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/dTime", winSize/4/fs); //!!!
 	
 	//onsetnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 	
 	//MATLAB Engine inits
+	//used for toy_with_onsets.m
 	MATLAB_EVAL("clear;");
 	MATLAB_PUT(winSize, "winSize");
 	MATLAB_PUT(hopSize, "hopSize");
@@ -583,7 +583,7 @@ toy_with_onsets(string sfName)
 	MATLAB_EVAL("srcAudio = [];");
 	MATLAB_EVAL("onsetAudio = [];");
 	MATLAB_EVAL("FluxTS = [];");
-	MATLAB_EVAL("segmentAudio = [];");
+	MATLAB_EVAL("segmentData = [];");
 	MATLAB_EVAL("onsetTS = [];");
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -591,9 +591,9 @@ toy_with_onsets(string sfName)
 	///////////////////////////////////////////////////////////////////////////////////////
 	while(onsetnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
 	{
-		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/nton", 1.0); //!!!!!!!!!!!!
+		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/nton", 1.0); //note on
 		onsetnet->tick();
-		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/ntoff", 0.0); // !!!!!!!!!!!!!!!
+		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/ntoff", 0.0); //note off
 	}
 }
 

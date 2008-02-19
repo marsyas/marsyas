@@ -97,9 +97,9 @@ Flux2::myProcess(realvec& in, realvec& out)
 		//MATLAB_PUT(prevWindow_, "prevWindow_");
 	}
 
+	//used for toy_with_onsets.m (DO NOT DELETE! - COMMENT INSTEAD)
 	MATLAB_PUT(out, "Flux2_out");
 	MATLAB_EVAL("FluxTS = [FluxTS, Flux2_out];");
-	//MATLAB_EVAL("plot(FluxTS);");
 }
 
 
