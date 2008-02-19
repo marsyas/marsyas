@@ -26,24 +26,30 @@ namespace Marsyas
 /** 
     \class Flux
     \ingroup Analysis
-    \brief Flux calculate the flux between the current and prev. vector
+    \brief Flux calculate the flux between the current and prev. spectrum (e.g. output of PowerSpectrum)
 
     The flux is defined as the norm of the difference vector between 
-    two succesive spectra. 
-*/
+    two successive magnitue/power spectra, although different implementations are possible.
 
+		Controls:
+		- \b mrs_string/mode [w]: select from the different available implementations for Flux: "marsyas" and "DixonDAFX06"
+*/
 
   class Flux: public MarSystem
   {
   private: 
-    void myUpdate(MarControlPtr sender);
-    
     realvec prevWindow_;
     mrs_real diff_,flux_, max_;
     mrs_real logtmp_;
+
+		MarControlPtr ctrl_mode_;
+
+		void addControls();
+		void myUpdate(MarControlPtr sender);
+
   public:
     Flux(std::string name);
-  
+		Flux(const Flux& a);
     ~Flux();
     MarSystem* clone() const;  
   

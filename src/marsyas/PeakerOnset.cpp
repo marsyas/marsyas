@@ -30,7 +30,7 @@ PeakerOnset::PeakerOnset(string name):MarSystem("PeakerOnset", name)
 
 PeakerOnset::PeakerOnset(const PeakerOnset& a) : MarSystem(a)
 {
-	ctrl_onsetWinSize_ = getctrl("mrs_natural/onsetWinSize");
+	ctrl_lookAheadSamples_ = getctrl("mrs_natural/lookAheadSamples");
 	ctrl_threshold_ = getctrl("mrs_real/threshold");
 	ctrl_onsetDetected_ = getctrl("mrs_bool/onsetDetected");
 	ctrl_confidence_ = getctrl("mrs_real/confidence");
@@ -51,7 +51,7 @@ PeakerOnset::clone() const
 void
 PeakerOnset::addControls()
 {
-	addctrl("mrs_natural/onsetWinSize", 0, ctrl_onsetWinSize_);
+	addctrl("mrs_natural/lookAheadSamples", 0, ctrl_lookAheadSamples_);
 	addctrl("mrs_real/threshold", 0.0, ctrl_threshold_);
 	addctrl("mrs_bool/onsetDetected", false, ctrl_onsetDetected_);
 	addctrl("mrs_real/confidence", 0.0, ctrl_confidence_);
@@ -71,10 +71,10 @@ PeakerOnset::myUpdate(MarControlPtr sender)
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 	ctrl_onObsNames_->setValue("onset_confidence");
 
-	if(inSamples_ < 1 + 2 * ctrl_onsetWinSize_->to<mrs_natural>())
+	if(inSamples_ < 1 + 2 * ctrl_lookAheadSamples_->to<mrs_natural>())
 	{
 		MRSWARN("PeakerOnset::myUpdate() - inSamples is too small for specified onsetWinSize: onset detection not possible to be performed!");
-		ctrl_onsetWinSize_->setValue(0, NOUPDATE);
+		ctrl_lookAheadSamples_->setValue(0, NOUPDATE);
 	}
 }
 
@@ -85,7 +85,7 @@ PeakerOnset::myProcess(realvec& in, realvec& out)
 	ctrl_confidence_->setValue(0.0);
 	out.setval(0.0);
 
-	mrs_natural w = ctrl_onsetWinSize_->to<mrs_natural>();
+	mrs_natural w = ctrl_lookAheadSamples_->to<mrs_natural>();
 
 	if(w == 0)
 		return;
@@ -157,9 +157,9 @@ PeakerOnset::myProcess(realvec& in, realvec& out)
 	if(isOnset)
 	{
 		ctrl_onsetDetected_->setValue(true);
-		ctrl_confidence_->setValue(1.0); //!!!!!!!!!!!!! [!] must still find a way to output a confidence...
+		ctrl_confidence_->setValue(1.0); //[!] must still find a way to output a confidence...
 		out.setval(1.0);
-		cout<<"Onset Detected!" << endl;
+		//cout<<"Onset Detected!" << endl;
 	}
 
 	//used for toy_with_onsets.m (DO NOT DELETE! - COMMENT INSTEAD)

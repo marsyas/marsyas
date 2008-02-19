@@ -468,7 +468,7 @@ toy_with_onsets(string sfName)
 					onsetdetector->addMarSystem(mng.create("Windowing", "win")); //<---
 					onsetdetector->addMarSystem(mng.create("Spectrum","spk"));
 					onsetdetector->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-					onsetdetector->addMarSystem(mng.create("Flux2", "flux")); 
+					onsetdetector->addMarSystem(mng.create("Flux", "flux")); 
 					//onsetdetector->addMarSystem(mng.create("Memory","mem"));
 					onsetdetector->addMarSystem(mng.create("ShiftInput","sif"));
 					onsetdetector->addMarSystem(mng.create("Filter","filt1"));
@@ -522,7 +522,7 @@ toy_with_onsets(string sfName)
 
 	mrs_natural winSize = 2048;//2048;
 	mrs_natural hopSize = 512;//411;
-	mrs_natural onsetWinSize = 6;
+	mrs_natural lookAheadSamples = 6;
 	mrs_real thres = 1.5;
 
 	mrs_real textureWinMinLen = 0.050; //secs
@@ -533,6 +533,9 @@ toy_with_onsets(string sfName)
 	//best result till now are using dB power Spectrum!
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PowerSpectrum/pspk/mrs_string/spectrumType",
 		"decibels");
+
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Flux/flux/mrs_string/mode",
+		"DixonDAFX06");
 	
 	//configure zero-phase Butterworth filter of Flux time series (from J.P.Bello TASLP paper)
 	// Coefficients taken from MATLAB butter(2, 0.28)
@@ -552,12 +555,12 @@ toy_with_onsets(string sfName)
 	onsetnet->updctrl("mrs_natural/inSamples", hopSize);
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/ShiftInput/si/mrs_natural/winSize", winSize);
 
-	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_natural/onsetWinSize", onsetWinSize);
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_natural/lookAheadSamples", lookAheadSamples);
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/threshold", thres); //!!!
 	
-	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/ShiftInput/sif/mrs_natural/winSize", 4*onsetWinSize+1);
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/ShiftInput/sif/mrs_natural/winSize", 4*lookAheadSamples+1);
 	
-	mrs_natural winds = 1+onsetWinSize+mrs_natural(ceil(mrs_real(winSize)/hopSize/2.0));
+	mrs_natural winds = 1+lookAheadSamples+mrs_natural(ceil(mrs_real(winSize)/hopSize/2.0));
 	cout << "timesToKeep = " << winds << endl;
 	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/timesToKeep", winds);
 	onsetnet->updctrl("Accumulator/onsetaccum/mrs_string/mode","explicitFlush");
@@ -579,7 +582,7 @@ toy_with_onsets(string sfName)
 	MATLAB_EVAL("clear;");
 	MATLAB_PUT(winSize, "winSize");
 	MATLAB_PUT(hopSize, "hopSize");
-	MATLAB_PUT(onsetWinSize, "onsetWinSize");
+	MATLAB_PUT(lookAheadSamples, "lookAheadSamples");
 	MATLAB_EVAL("srcAudio = [];");
 	MATLAB_EVAL("onsetAudio = [];");
 	MATLAB_EVAL("FluxTS = [];");

@@ -39,19 +39,19 @@ namespace Marsyas
 	Input = [zzzzzzzzzXyyy]
 
 	Point "X" at the input will be evaluated. The onsetWinSize control specifies a "look ahead" parameter,
-	i.e. how many samples (represented above as "y") after "X" will be used for evaluating if it is an onset or not.
+	i.e. how many samples (represented above as "y") after "X" will be used for evaluating if it is an onset or not (i.e. look ahead samples).
 
 	Controls:
-	- \b mrs_real/onsetWinSize [w] : specifies the "look ahead" window for the detection of an onset at the input.
+	- \b mrs_real/lookAheadSamples [w]: specifies the "look ahead" nr of "samples" (the number of "y"s in the above example ) for the detection of an onset at the input.
 	- \b mrs_real/threshold [w]: specifies threshold (in % of local mean) for onset detection
-	- \b mrs_real/confidence [r] : outputs the confidence that point "X" is an onset (it will 0.0 if it is not detected as an onset)
-	- \b mrs_bool/onsetDetected [r] : flags if an onset was detected on point "X".
+	- \b mrs_real/confidence [r]: outputs the confidence that point "X" is an onset (it will 0.0 if it is not detected as an onset)
+	- \b mrs_bool/onsetDetected [r]: flags if an onset was detected on point "X".
 */
 
 class PeakerOnset: public MarSystem
 {
 private:
-	MarControlPtr ctrl_onsetWinSize_;
+	MarControlPtr ctrl_lookAheadSamples_;
 	MarControlPtr ctrl_threshold_;
 	MarControlPtr ctrl_onsetDetected_;
 	MarControlPtr ctrl_confidence_;

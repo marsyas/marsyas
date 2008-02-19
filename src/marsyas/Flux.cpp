@@ -23,9 +23,16 @@ using namespace Marsyas;
 
 Flux::Flux(string name):MarSystem("Flux",name)
 {
+	addControls();
+
 	diff_ = 0.0;
 	flux_ = 0.0;
 	max_ = 0.0;
+}
+
+Flux::Flux(const Flux& a) : MarSystem(a)
+{
+	ctrl_mode_ = getctrl("mrs_string/mode");
 }
 
 Flux::~Flux()
@@ -36,6 +43,12 @@ MarSystem*
 Flux::clone() const 
 {
 	return new Flux(*this);
+}
+
+void
+Flux::addControls()
+{
+	addctrl("mrs_string/mode", "marsyas", ctrl_mode_);
 }
 
 void
@@ -55,29 +68,77 @@ Flux::myUpdate(MarControlPtr sender)
 void 
 Flux::myProcess(realvec& in, realvec& out)
 {
+	mrs_string mode = ctrl_mode_->to<mrs_string>();
+
 	for (t = 0; t < inSamples_; t++)
 	{
-		flux_ = 0.0;
-		diff_ = 0.0;
-		max_ = 0.0;
-		for(o = 1; o < inObservations_; ++o)
+		if(mode == "marsyas")
 		{
-			logtmp_ = log(in(o,t) + MINREAL);
-			diff_ = pow(logtmp_  - prevWindow_(o,t), 2.0);
-			if(diff_ > max_)
-				max_ = diff_;
-			flux_ += diff_;
-
-			prevWindow_(o,t) = logtmp_;
-		}
-
-		if(max_ != 0.0)
-			flux_ /= (max_ * inObservations_);
-		else
 			flux_ = 0.0;
+			diff_ = 0.0;
+			max_ = 0.0;
+			for(o = 1; o < inObservations_; ++o)
+			{
+				logtmp_ = log(in(o,t) + MINREAL);
+				diff_ = pow(logtmp_  - prevWindow_(o,t), 2.0);
+				if(diff_ > max_)
+					max_ = diff_;
+				flux_ += diff_;
 
-		out(0,t) = flux_;
+				prevWindow_(o,t) = logtmp_;
+			}
+
+			if(max_ != 0.0)
+				flux_ /= (max_ * inObservations_);
+			else
+				flux_ = 0.0;
+
+			out(0,t) = flux_;
+		}
+		else if(mode=="DixonDAFX06")
+		{
+			flux_ = 0.0;
+			//diff_ = 0.0;
+			//max_ = 0.0;
+			for(o = 1; o < inObservations_; ++o)
+			{
+				//Simon's version
+				mrs_real tmp = in(o,t)  - prevWindow_(o,t);
+				diff_ = (tmp+abs(tmp))/2;
+
+				//lmartins version
+				//diff_ = in(o,t)*in(o,t) - prevWindow_(o,t)*prevWindow_(o,t);
+				//diff_ = (diff_+abs(diff_))/2.0;
+
+				//if(diff_ > max_)
+				//	max_ = diff_;
+
+				flux_ += diff_;
+				prevWindow_(o,t) = in(o,t);
+
+				//from Juan's Matlab
+				//			mrs_real tmp = pow(in(o,t), 2.0)  - pow(prevWindow_(o,t), 2.0);
+				//			mrs_real tmp2 = (tmp+abs(tmp))/2;
+				//			diff_ = sqrt(tmp2);
+				//			if(diff_ > max_)
+				//				max_ = diff_;
+				//			flux_ += diff_;
+				//			prevWindow_(o,t) = in(o,t);
+			}
+
+			//Normalizing with max_ was a bad idea
+			// 		if(max_ != 0.0)
+			// 			flux_ /= (max_ * inObservations_);
+			// 		else
+			// 			flux_ = 0.0;
+			// 
+			out(0,t) = flux_;
+		}
 	}
+
+	//used for toy_with_onsets.m (DO NOT DELETE! - COMMENT INSTEAD)
+	MATLAB_PUT(out, "Flux_out");
+	MATLAB_EVAL("FluxTS = [FluxTS, Flux_out];");
 }
 
 
