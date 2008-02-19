@@ -478,70 +478,64 @@ Marsyas using Visual Studio.
 @end verbatim
 
 
-@menu
-* Windows XP/Vista with MinGW and qmake::  
-* Windows XP/Vista with Cygwin and autotools::  
-@end menu
-
 @node Windows XP/Vista with MinGW and qmake
 @subsection Windows XP/Vista with MinGW and qmake
 
-@verbatim
-A) Compiling MARSYAS using MinGW compiler under Windows XP
+@enumerate
 
-1) Download the Qt open source edition for C++ developers: Windows
-Download
-from: http://trolltech.com/downloads/opensource.
-qt-win-opensource-4.3.3-mingw.exe
+@item
+Download the Qt open source edition for C++ developers:
+@uref{http://trolltech.com/developer/downloads/qt/windows,
+Windows download}.  The file should be called something like
+@file{qt-win-opensource-4.3.3-mingw.exe}
 
+@item
 Run the downloaded executable and then just follow the
-installation
-instructions If you don't have MinGW installed click on the
-corresponding check box to have it installed.
+installation instructions.  If you don't have MinGW installed,
+click on the corresponding check box to have it installed.
 
+@item
+Add these two items to your @env{PATH} environment variable:
+@file{c:\Qt\4.3.3\bin} and @file{c:\MinGW\bin}
 
-2) Add c:\Qt\4.3.3\bin to your PATH environment variable
-Add c:\MinGW\bin to your PATH environment variable
-(One way to do is Under the System tab of the Control Panel click
-on 
-Advanced
-and Environment Variables and then at the end of the PATH
-environment
-variable type:  
-;c:\Qt\4.3.3\bin;c:\MinGW\bin )
+One way to do this is Under the System tab of the Control Panel
+click on Advanced and Environment Variables and then at the end of
+the @env{PATH} environment variable type:
+@code{;c:\Qt\4.3.3\bin;c:\MinGW\bin}
 
 Alternatively the Qt install creates a Qt 4.3.3 Command Prompt
-that
-you can use instead of cmd.exe and has the environment variables
-already set up.
+that you can use instead of cmd.exe and has the environment
+variables already set up.
 
+@item
+Download and install the DirectX sdk (I used
+dxsdk_november2007.exe from the microsoft website).  Add a new
+environment variable called @env{DXSDK_DIR} with value of the
+directory direct X is installed. 
 
-5) Download and install the DirectX sdk
-(I used dxsdk_november2007.exe from the microsoft website)
-Add a new environment variable called DXSDK_DIR with value 
-the directory direct X is installed. 
+@item
+Download an SVN client.  We recommend
+@uref{http://toroisesvn.net/downloads, TortoiseSVN}.
 
+@item
+Right-click on your desktop and do a svn checkout for marsyas.
+The URL of the repository is
+@code{https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk}.
 
-6) Download an SVN client (TortoiseSVN from 
-http://toroisesvn.net/downloads)
-is a good choise as it integrates nicely with Windows Explorer
+Checkout directory: where you want to install marsyas.   For
+example @file{c:\marsyas-0.2.14}
 
-6) Right-click on your desktop and
-do a svn checkout for marsyas
-URL of repository: 
-https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk
-Checkout directory: where you want to install marsyas
-For example c:\marsyas-0.2.14
+@item
+Run a command shell (either cmd.exe if you have set the
+environment variables correct or the Qt 4.3.3 command prompt)
 
-7) Run a command shell (either cmd.exe if you have set the
-environment 
-variables
-correct or the Qt 4.3.3 command prompt)
-
+@example
 cd c:\marsyas-0.2.14
 qmake
 mingw32-make.exe release
-@end verbatim
+@end example
+
+@end enumerate
 
 
 @node Windows XP/Vista with Cygwin and autotools
@@ -1111,9 +1105,6 @@ marsyas-developers@@lists.sourceforge.net
 @end example
 
 
-
-
-@c zz
 
 
 @node Optional programs
