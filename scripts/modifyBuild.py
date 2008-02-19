@@ -96,7 +96,7 @@ def modify_lib_release_makefile(source_file,action):
 				newfile.write(insertLine+'\n')
 			newfile.write(line)
 		if (action==2):
-			if (line[29:].find(source_file)>=0):
+			if (line[27:].find(source_file)>=0):
 				print "Removed line 1 of 1 from " + fileToEdit
 				continue
 			newfile.write(line)

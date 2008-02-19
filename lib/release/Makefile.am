@@ -276,7 +276,6 @@ libmarsyas_a_SOURCES    = \
 	$(top_srcdir)/src/marsyas/StereoSpectrumSources.cpp \
 	$(top_srcdir)/src/marsyas/EnhADRessStereoSpectrum.cpp \
 	$(top_srcdir)/src/marsyas/McAulayQuatieri.cpp \
-	$(top_srcdir)/src/marsyas/Flux2.cpp \
 	$(top_srcdir)/src/marsyas/PeakerOnset.cpp \
 	$(top_srcdir)/src/marsyas/Reverse.cpp \
 			$(top_srcdir)/src/marsyas/Gain.cpp
