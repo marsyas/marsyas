@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import sys
 import os
 import filecmp
@@ -83,7 +83,6 @@ def doTests(test_filename, temp_filename):
 			else:
 				print temp_filename
 				print test_answers[i]
-				print "blah"
 				logfile.write("Test " + str(i) + " FAILED:   " + test_commands[i]+'\n')
 				problem = 1
 		else:
