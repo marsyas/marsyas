@@ -209,7 +209,7 @@ MarGrid::extract()
       
       cout << "Processed " << index << " files " << endl;	  
       total_->process(som_in,som_res);
-      
+
       for (int o=0; o < total_onObservations; o++) 
 	som_fmatrix(o, index) = som_res(o, 0);
     }

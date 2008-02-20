@@ -134,7 +134,7 @@ MarSystem* createSTFTextractor()
 {
 	MarSystemManager mng;
 
-	/* 	MarSystem* extractor = mng.create("Fanout", "STFTextractor");
+ 	MarSystem* extractor = mng.create("Fanout", "STFTextractor");
 
 	// Time domain features
 	extractor->addMarSystem(mng.create("ZeroCrossings", "zcrs"));
@@ -151,10 +151,6 @@ MarSystem* createSTFTextractor()
 	extractor->linkctrl("mrs_natural/winSize", "Series/spectralShape/PowerSpectrumNet/powerSpect/mrs_natural/winSize");
 	extractor->linkctrl("mrs_string/enableChild", "Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/enableChild");
 	extractor->linkctrl("mrs_string/disableChild", "Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/disableChild");
-	*/ 
-
-
-	MarSystem* extractor = mng.create("TimbreFeatures", "STFTextractor");
 	
 	return extractor;
 }

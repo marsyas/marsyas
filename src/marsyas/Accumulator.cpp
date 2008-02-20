@@ -91,10 +91,11 @@ Accumulator::myUpdate(MarControlPtr sender)
 		marsystems_[0]->update();
 
 		childOnSamples_ = marsystems_[0]->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
+		nTimes_ = ctrl_nTimes_->to<mrs_natural>();
 
 // 		if(ctrl_mode_->to<mrs_string>() == "countTicks")
 // 		{
-// 			nTimes_ = ctrl_nTimes_->to<mrs_natural>();
+
 // 			//minOnSamples_ = nTimes_;
 // 			//maxOnSamples_ = nTimes_;
 // 			//ctrl_minOnSamples_->setValue(ctrl_nTimes_, NOUPDATE);
@@ -118,8 +119,13 @@ Accumulator::myUpdate(MarControlPtr sender)
 	else
 	{
 		MarSystem::myUpdate(sender);
-		ctrl_nTimes_->setValue(1, NOUPDATE);
-		nTimes_ = 1;
+
+		// gtzan - doesn't allowing setting nTimes before adding 
+		// MarSystem to accumulator - do we really need the 
+		// two following commented lines  ? 
+
+		// ctrl_nTimes_->setValue(1, NOUPDATE);
+		// nTimes_ = 1;
 	}
 
 	onObservations_ = ctrl_onObservations_->to<mrs_natural>();
@@ -220,6 +226,9 @@ Accumulator::myProcess(realvec& in, realvec& out)
 	}
 	else if(ctrl_mode_->to<mrs_string>() == "countTicks")
 	{
+
+	  nTimes_ = ctrl_nTimes_->to<mrs_natural>();
+	  
 		for (c = 0; c < nTimes_; c++) 
 		{
 			marsystems_[0]->recvControls(); // HACK STU [!]
