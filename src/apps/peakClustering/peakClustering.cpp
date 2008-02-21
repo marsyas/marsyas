@@ -99,6 +99,7 @@ bool ignoreFrequency = false;
 bool ignoreAmplitude = false;
 bool ignoreHWPS = false;
 bool ignorePan = false;
+bool ignoreOnsets = false;
 
 CommandLineOptions cmd_options;
 
@@ -145,6 +146,7 @@ printHelp(string progName)
 	cerr << "-ia --ignoreAmplitude: ignore amplitude similarity between peaks" << endl;
 	cerr << "-ih --ignoreHWPS: ignore harmonicity (HWPS) similarity between peaks" << endl;
 	cerr << "-ip --ignorePan: ignore panning similarity between peaks" << endl;
+	cerr << "-io --ignoreOnsets: ignore onset detector for dynamically adjusting the length of texture windows" << endl;
 
 	cerr << "" << endl;
 	cerr << "-h --help            : display this information " << endl;
@@ -230,6 +232,22 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	// create Spectrum Network and add it to the analysis net
 	MarSystem* spectrumNet = mng.create("Series", "spectrumNet");
 	spectrumNet->addMarSystem(mng.create("Stereo2Mono","s2m"));
+
+	//onset detector
+	MarSystem* onsetdetector = mng.create("FlowThru", "onsetdetector");
+	//onsetdetector->addMarSystem(mng.create("ShiftInput", "si"));
+	onsetdetector->addMarSystem(mng.create("Windowing", "win")); 
+	onsetdetector->addMarSystem(mng.create("Spectrum","spk"));
+	onsetdetector->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+	onsetdetector->addMarSystem(mng.create("Flux", "flux")); 
+	onsetdetector->addMarSystem(mng.create("ShiftInput","sif"));
+	onsetdetector->addMarSystem(mng.create("Filter","filt1"));
+	onsetdetector->addMarSystem(mng.create("Reverse","rev1"));
+	onsetdetector->addMarSystem(mng.create("Filter","filt2"));
+	onsetdetector->addMarSystem(mng.create("Reverse","rev2"));
+	onsetdetector->addMarSystem(mng.create("PeakerOnset","peaker")); 
+	spectrumNet->addMarSystem(onsetdetector);
+		
 	spectrumNet->addMarSystem(mng.create("Shifter", "sh"));
 	spectrumNet->addMarSystem(mng.create("Windowing", "wi"));
 	MarSystem* parallel = mng.create("Parallel", "par");
@@ -434,19 +452,109 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	//****************************************************************
 	if(synthetize >-1) 
 	{
-		//create shredder
-		synthNetCreate(&mng, outsfname, microphone_, synthetize, residual_);
-		MarSystem *peSynth = mng.create("PeSynthetize", "synthNet");
-		mainNet->addMarSystem(peSynth);
+		//create Shredder series
+		MarSystem* postNet = mng.create("Series", "postNet");
+		//	postNet->addMarSystem(mng->create("PeOverlapadd", "ob"));
+		if (synthetize < 3)
+		{
+			if(synthetize == 0)
+			{
+				postNet->addMarSystem(mng.create("PeakSynthOsc", "pso"));
+				postNet->addMarSystem(mng.create("Windowing", "wiSyn"));
+			}
+			else
+			{
+				// put a fake object for probing the series
+				postNet->addMarSystem(mng.create("Gain", "fakeGain"));
+				postNet->addMarSystem(mng.create("FlowCutSource", "fcs"));
+				// put the original source
+				if (microphone_) 
+					postNet->addMarSystem(mng.create("AudioSource", "srcSyn"));
+				else 
+					postNet->addMarSystem(mng.create("SoundFileSource", "srcSyn"));
+				// set the correct buffer size
+				postNet->addMarSystem(mng.create("ShiftInput", "siSyn"));
+				// perform an FFT
+				postNet->addMarSystem(mng.create("Spectrum", "specSyn"));
+				// convert to polar
+				postNet->addMarSystem(mng.create("Cartesian2Polar", "c2p"));
+				// perform amplitude and panning change
+				postNet->addMarSystem(mng.create("PeakSynthFFT", "psf"));
+				// convert back to cartesian
+				postNet->addMarSystem(mng.create("Polar2Cartesian", "p2c"));	
+				// perform an IFFT
+				//	 postNet->addMarSystem(mng.create("PlotSink", "plot"));
+				postNet->addMarSystem(mng.create("InvSpectrum", "invSpecSyn"));
+				// postNet->addMarSystem(mng.create("PlotSink", "plot2"));
+				postNet->addMarSystem(mng.create("Windowing", "wiSyn"));
+			}
+			postNet->addMarSystem(mng.create("OverlapAdd", "ov"));
+		}
+		else
+		{
+			postNet->addMarSystem(mng.create("PeakSynthOscBank", "pso"));
+			// postNet->addMarSystem(mng.create("ShiftOutput", "so"));
+		}
+
+		postNet->addMarSystem(mng.create("Gain", "outGain"));
+
+		MarSystem *dest;
+		if (outsfname == "MARSYAS_EMPTY") 
+			dest = new AudioSink("dest");
+		else
+		{
+			dest = new SoundFileSink("dest");
+			//dest->updctrl("mrs_string/filename", outsfname);
+		}
+
+		if(residual_)
+		{
+			MarSystem* fanout = mng.create("Fanout", "fano");
+			fanout->addMarSystem(dest);
+			MarSystem* fanSeries = mng.create("Series", "fanSeries");
+
+			if (microphone_) 
+				fanSeries->addMarSystem(mng.create("AudioSource", "src2"));
+			else 
+				fanSeries->addMarSystem(mng.create("SoundFileSource", "src2"));
+
+			fanSeries->addMarSystem(mng.create("Delay", "delay"));
+			fanout->addMarSystem(fanSeries);
+
+			postNet->addMarSystem(fanout);
+			postNet->addMarSystem(mng.create("PeakResidual", "res"));
+
+			MarSystem *destRes;
+			if (outsfname == "MARSYAS_EMPTY") 
+				destRes = new AudioSink("destRes");
+			else
+			{
+				destRes = new SoundFileSink("destRes");
+				//dest->updctrl("mrs_string/filename", outsfname);
+			}
+			postNet->addMarSystem(destRes);
+		}
+		else
+			postNet->addMarSystem(dest);
+
+		MarSystem* synthNet = mng.create("Shredder", "synthNet");
+		synthNet->addMarSystem(postNet);
+		
+		mainNet->addMarSystem(synthNet);
+
+		//link Shredder nTimes to Accumulator nTimes
+		mainNet->linkctrl("Shredder/synthNet/mrs_natural/nTimes",
+			"Accumulator/textWinNet/mrs_natural/nTimes");
 	}
 
+	
 	//****************************************************************
 
 	
 	////////////////////////////////////////////////////////////////
 	// update the controls
 	////////////////////////////////////////////////////////////////
-	mainNet->updctrl("Accumulator/textWinNet/mrs_natural/nTimes", accSize);
+	//mainNet->updctrl("Accumulator/textWinNet/mrs_natural/nTimes", accSize);
 
 	if (microphone_) 
 	{
@@ -578,12 +686,6 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	mainNet->update(); //probably not necessary... [!]
 	//------------------------------------------------------------------------
 
-	if(synthetize>-1)
-	{
-		//[TODO]
-		synthNetConfigure(mainNet, sfName, outsfname, fileResName, panningInfo, 1, Nw, D, S, accSize, microphone_, synthetize_, bopt_, -D, residual_);
-	}
-
 	if(noiseDuration_) //[WTF]
 	{
 		ostringstream ossi;
@@ -591,6 +693,135 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		cout << ossi.str() << endl;
 		// touch the gain directly
 		//	noiseGain->updctrl("0.1s", Repeat("0.1s", 1), new EvValUpd(noiseGain,"mrs_real/gain", 0.0));
+	}
+
+	//ONSET DETECTION CONFIGURATION (if enabled)
+	if(!ignoreOnsets)
+	{
+		cout << "** Onset detector enabled -> using dynamically adjusted texture windows!" << endl;
+		cout << "WinSize = " << winSize_ << endl;
+		cout << "hopSize = " << hopSize_ << endl;
+		cout << "fs = " << samplingFrequency_ << endl;
+
+		//link controls for onset detector
+		onsetdetector->linkctrl("Filter/filt2/mrs_realvec/ncoeffs",
+			"Filter/filt1/mrs_realvec/ncoeffs");
+		onsetdetector->linkctrl("Filter/filt2/mrs_realvec/dcoeffs",
+			"Filter/filt1/mrs_realvec/dcoeffs");
+		//link onset detector to accumulator and if onsets enabled, set "explicitFlush" mode
+		textWinNet->linkControl("mrs_bool/flush",
+			"Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/spectrumNet/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_bool/onsetDetected");
+
+		//update onset detector controls
+		onsetdetector->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
+		onsetdetector->updctrl("Flux/flux/mrs_string/mode", "DixonDAFX06");
+		realvec bcoeffs(1,3);//configure zero-phase Butterworth filter of Flux time series -> butter(2, 0.28)
+		bcoeffs(0) = 0.1174;
+		bcoeffs(1) = 0.2347;
+		bcoeffs(2) = 0.1174;
+		realvec acoeffs(1,3);
+		acoeffs(0) = 1.0;
+		acoeffs(1) = -0.8252;
+		acoeffs(2) = 0.2946;
+		onsetdetector->updctrl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
+		onsetdetector->updctrl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
+		mrs_natural lookAheadSamples = 6;
+		onsetdetector->updctrl("PeakerOnset/peaker/mrs_natural/lookAheadSamples", lookAheadSamples); //!!
+		onsetdetector->updctrl("PeakerOnset/peaker/mrs_real/threshold", 1.5); //!!!
+		onsetdetector->updctrl("ShiftInput/sif/mrs_natural/winSize", 4*lookAheadSamples+1);
+
+		//set Accumulator controls for explicit flush mode
+		mrs_natural winds = 1+lookAheadSamples+mrs_natural(ceil(mrs_real(winSize_)/hopSize_/2.0));
+		cout << "Accumulator/textWinNet timesToKeep = " << winds << endl;
+		mrs_real textureWinMinLen = 0.050; //secs
+		mrs_real textureWinMaxLen = 10.230; //secs
+		mrs_natural minTimes = textureWinMinLen*samplingFrequency_/hopSize_; 
+		mrs_natural maxTimes = textureWinMaxLen*samplingFrequency_/hopSize_; 
+		cout << "Accumulator/textWinNet MinTimes = " << minTimes << endl;
+		cout << "Accumulator/textWinNet MaxTimes = " << maxTimes << endl;
+		textWinNet->updctrl("mrs_string/mode", "explicitFlush");
+		textWinNet->updctrl("mrs_natural/timesToKeep", winds);
+		textWinNet->updctrl("mrs_string/mode","explicitFlush");
+		textWinNet->updctrl("mrs_natural/maxTimes", maxTimes); 
+		textWinNet->updctrl("mrs_natural/minTimes", minTimes);
+	}
+	else
+	{
+		cout << "** Onset detector disabled -> using fixed length texture windows" << endl;
+		cout << "Accumulator/textWinNet nTimes = " << accSize << endl;
+		mainNet->updctrl("Accumulator/textWinNet/mrs_natural/nTimes", accSize);
+	}
+
+	if(synthetize>-1)
+	{
+		mrs_natural delay = -D;
+		if (synthetize < 3)
+		{
+			if(synthetize==0)
+			{
+				//mainNet->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/nbSinusoids", S);
+				mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/delay", delay); // Nw/2+1 
+				mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/synSize", D*2);
+			}
+			else 
+			{
+				// linking between the first slice and the psf
+				mainNet->linkControl("Shredder/synthNet/Series/postNet/mrs_realvec/input0", "PeSynthetize/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_realvec/peaks");
+				//
+				mainNet->updctrl("Shredder/synthNet/Series/postNet/Windowing/wiSyn/mrs_string/type", "Hanning");
+				mainNet->updctrl("Shredder/synthNet/Series/postNet/FlowCutSource/fcs/mrs_natural/setSamples", D);	
+				mainNet->updctrl("Shredder/synthNet/Series/postNet/FlowCutSource/fcs/mrs_natural/setObservations", 1);	
+				// setting the panning mode mono/stereo
+				mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_natural/nbChannels", synthetize_);
+				mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_string/panning", panningInfo);
+				// setting the FFT size
+				mainNet->updctrl("Shredder/synthNet/Series/postNet/ShiftInput/siSyn/mrs_natural/winSize", D*2);
+				// setting the name of the original file
+				if (microphone_) 
+				{
+					mainNet->updctrl("Shredder/synthNet/Series/postNet/AudioSource/srcSyn/mrs_natural/inSamples", D);
+					mainNet->updctrl("Shredder/synthNet/Series/postNet/AudioSource/srcSyn/mrs_natural/inObservations", 1);
+				}
+				else
+				{
+					mainNet->updctrl("Shredder/synthNet/Series/postNet/SoundFileSource/srcSyn/mrs_string/filename", sfName);
+					// pvseries->updctrl("Shredder/synthNet/Series/postNet/SoundFileSource/srcSyn/mrs_natural/pos", 0);
+					mainNet->updctrl("Shredder/synthNet/Series/postNet/SoundFileSource/srcSyn/mrs_natural/onSamples", D);
+					mainNet->updctrl("Shredder/synthNet/Series/postNet/SoundFileSource/srcSyn/mrs_natural/onObservations", 1);
+				}
+				// setting the synthesis starting time (default 0)
+			}
+		}
+		else
+			mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthOscBank/pso/mrs_natural/Interpolation", D);
+
+		//mainNet->updctrl("Shredder/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Interpolation", D); //[WTF]
+
+		if (outsfname == "MARSYAS_EMPTY") 
+			mainNet->updctrl("Shredder/synthNet/Series/postNet/AudioSink/dest/mrs_natural/bufferSize", bopt_);
+
+		if(residual_)
+		{
+			mainNet->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/Delay/delay/mrs_natural/delay", delay); // Nw+1-D
+
+			if (microphone_) 
+			{
+				mainNet->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/AudioSource/src2/mrs_natural/inSamples", D);
+				mainNet->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/AudioSource/src2/mrs_natural/inObservations", 1);
+			}
+			else
+			{
+				mainNet->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_string/filename", sfName);
+				mainNet->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/pos", 0);
+				mainNet->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/inSamples", D);
+				mainNet->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/inObservations", 1);
+			}
+
+			mainNet->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/SoundFileSink/dest/mrs_string/filename", outsfname);//[!]
+			mainNet->updctrl("Shredder/synthNet/Series/postNet/SoundFileSink/destRes/mrs_string/filename", fileResName);//[!]
+		}
+		else
+			mainNet->updctrl("Shredder/synthNet/Series/postNet/SoundFileSink/dest/mrs_string/filename", outsfname);//[!]
 	}
 
 	//***************************************************************************************************************
@@ -694,6 +925,7 @@ initOptions()
 	cmd_options.addBoolOption("ignoreAmplitude", "ia", ignoreAmplitude);
 	cmd_options.addBoolOption("ignoreHWPS", "ih", ignoreHWPS);
 	cmd_options.addBoolOption("ignorePan", "ip", ignorePan);
+	cmd_options.addBoolOption("ignoreOnsets", "io", ignoreOnsets);
 }
 
 void 
@@ -732,6 +964,7 @@ loadOptions()
 	ignoreAmplitude = cmd_options.getBoolOption("ignoreAmplitude");
 	ignoreHWPS = cmd_options.getBoolOption("ignoreHWPS");
 	ignorePan = cmd_options.getBoolOption("ignorePan");
+	ignoreOnsets = cmd_options.getBoolOption("ignoreOnsets");
 }
 
 int
