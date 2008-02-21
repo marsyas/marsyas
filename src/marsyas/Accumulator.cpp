@@ -91,21 +91,7 @@ Accumulator::myUpdate(MarControlPtr sender)
 		marsystems_[0]->update();
 
 		childOnSamples_ = marsystems_[0]->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
-		nTimes_ = ctrl_nTimes_->to<mrs_natural>();
-
-// 		if(ctrl_mode_->to<mrs_string>() == "countTicks")
-// 		{
-
-// 			//minOnSamples_ = nTimes_;
-// 			//maxOnSamples_ = nTimes_;
-// 			//ctrl_minOnSamples_->setValue(ctrl_nTimes_, NOUPDATE);
-// 			//ctrl_maxOnSamples_->setValue(ctrl_nTimes_, NOUPDATE);
-// 		}
-// 		else if(ctrl_mode_->to<mrs_string>() == "explicitFlush")
-// 		{
-// 			//nTimes_ = ctrl_maxOnSamples_->to<mrs_natural>() / childOnSamples_;
-// 			nTimes_ = ctrl_nTimes_->to<mrs_natural>();//ctrl_nTimes_->setValue(nTimes_, NOUPDATE);
-// 		}
+		//nTimes_ = ctrl_nTimes_->to<mrs_natural>();
 
 		// forward flow propagation 
 		setctrl(ctrl_onSamples_, nTimes_ * childOnSamples_); //dynamic resizing of onSamples! 
@@ -119,13 +105,6 @@ Accumulator::myUpdate(MarControlPtr sender)
 	else
 	{
 		MarSystem::myUpdate(sender);
-
-		// gtzan - doesn't allowing setting nTimes before adding 
-		// MarSystem to accumulator - do we really need the 
-		// two following commented lines  ? 
-
-		// ctrl_nTimes_->setValue(1, NOUPDATE);
-		// nTimes_ = 1;
 	}
 
 	onObservations_ = ctrl_onObservations_->to<mrs_natural>();
@@ -142,19 +121,6 @@ Accumulator::myUpdate(MarControlPtr sender)
 		oss << "Acc" << nTimes_ << "_" << onObsName << ",";
 	}
 	setctrl(ctrl_onObsNames_, oss.str());
-
-	//if no values were set to minTimes and maxTimes
-	//set them equal to nTimes
-// 	if(ctrl_maxTimes_ == -1)
-// 		ctrl_maxTimes_->setValue(nTimes_);
-// 	if(ctrl_minTimes_ == -1)
-// 		ctrl_minTimes_->setValue(nTimes_);
-
-//  	if(ctrl_timesToKeep_->to<mrs_natural>() > ctrl_minTimes_->to<mrs_natural>())
-//  	{
-//  		MRSWARN("Accumulator::myUpdate() - timesToKeep > minTimes! Setting minTimes = timesToKeep = " << ctrl_timesToKeep_->to<mrs_natural>());
-//  		ctrl_minTimes_->setValue(ctrl_timesToKeep_, NOUPDATE);
-//  	}
 
 	onSamples_ = ctrl_onSamples_->to<mrs_natural>();
 
@@ -175,7 +141,6 @@ Accumulator::myProcess(realvec& in, realvec& out)
 {
 	if(marsystemsSize_ == 0)
 	{
-		//ctrl_nTimes_->setValue(1);
 		out = in;
 		return;
 	}
@@ -226,9 +191,7 @@ Accumulator::myProcess(realvec& in, realvec& out)
 	}
 	else if(ctrl_mode_->to<mrs_string>() == "countTicks")
 	{
-
-	  nTimes_ = ctrl_nTimes_->to<mrs_natural>();
-	  
+	  //nTimes_ = ctrl_nTimes_->to<mrs_natural>();
 		for (c = 0; c < nTimes_; c++) 
 		{
 			marsystems_[0]->recvControls(); // HACK STU [!]
