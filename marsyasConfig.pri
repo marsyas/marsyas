@@ -26,7 +26,7 @@ CONFIG += marsyasQt4Apps
 ######################################################################
 
 unix:CONFIG	+= release
-win32:win32-msvc|win32-msvc2005:CONFIG += debug_and_release
+win32-msvc|win32-msvc2005:CONFIG += debug_and_release
 
 ######################################################################
 # enable/disable ASSERTIONS/WARNINGS/DIAGNOSTICS/LOGS, etc
@@ -52,8 +52,8 @@ CONFIG += marsyasMIDIIO
 # ------------------------------------
 # choose which Audio APIs to use:
 # ------------------------------------
-win32:CONFIG += marsyasAUDIOIO_DS
-#win32:CONFIG += marsyasAUDIOIO_ASIO
+win32-msvc|win32-msvc2005:CONFIG += marsyasAUDIOIO_DS
+win32-msvc|win32-msvc2005:CONFIG += marsyasAUDIOIO_ASIO
 unix:!macx:CONFIG += marsyasAUDIOIO_ALSA
 #unix:!macx:CONFIG += marsyasAUDIOIO_JACK
 #unix:!macx:CONFIG += marsyasAUDIOIO_OSS
