@@ -39,6 +39,10 @@ according to current input time (t)
 	private:
 		mrs_real factor_;
 		mrs_natural delay_;
+
+  	MarControlPtr ctrl_samplingFreq_;
+		MarControlPtr ctrl_synSize_;
+		MarControlPtr ctrl_delay_;
 		MarControlPtr ctrl_harmonize_;
 
 		void addControls();

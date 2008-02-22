@@ -136,8 +136,7 @@ PeakConvert::myUpdate(MarControlPtr sender)
 
 	setctrl(ctrl_onSamples_, ctrl_inSamples_);
 	setctrl(ctrl_onObservations_, frameMaxNumPeaks_*nbParameters_);
-	
-	setctrl(ctrl_osrate_, ctrl_israte_); //see HACK at the end of this routine... [!] [TODO]
+	setctrl(ctrl_osrate_, ctrl_israte_);
 	
 	ostringstream oss;
 	for(mrs_natural j=0; j< nbParameters_; ++j) //j = param index
@@ -183,10 +182,6 @@ PeakConvert::myUpdate(MarControlPtr sender)
 		downFrequency_ = 0;
 		upFrequency_ = size_;
 	}
-
-	//HACK [!] - see PeakSynthOsc::myUpdate() //[TODO]
-	setctrl(ctrl_osrate_, timeSrate);
-
 }
 
 mrs_real

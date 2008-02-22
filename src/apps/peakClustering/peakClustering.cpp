@@ -14,7 +14,7 @@
 #include "SimilarityMatrix.h"
 
 //[TODO]
-#include "PeUtilities.h"
+//#include "PeUtilities.h"
 
 using namespace std;
 using namespace Marsyas;
@@ -700,7 +700,10 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	{
 		cout << "** Onset detector enabled -> using dynamically adjusted texture windows!" << endl;
 		cout << "WinSize = " << winSize_ << endl;
+		cout << "N = " << N << endl;
+		cout << "Nw = " << Nw << endl;
 		cout << "hopSize = " << hopSize_ << endl;
+		cout << "D = " << D << endl;
 		cout << "fs = " << samplingFrequency_ << endl;
 
 		//link controls for onset detector
@@ -759,7 +762,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		{
 			if(synthetize==0)
 			{
-				//mainNet->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/nbSinusoids", S);
+				mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_real/samplingFreq", samplingFrequency_);
 				mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/delay", delay); // Nw/2+1 
 				mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/synSize", D*2);
 			}
