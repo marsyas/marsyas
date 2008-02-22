@@ -23,11 +23,7 @@ using namespace Marsyas;
 
 OverlapAdd::OverlapAdd(string name):MarSystem("OverlapAdd",name)
 {
-  //type_ = "OverlapAdd";
-  //name_ = name;
-
 }
-
 
 OverlapAdd::~OverlapAdd()
 {
@@ -39,7 +35,6 @@ OverlapAdd::clone() const
   return new OverlapAdd(*this);
 }
 
-
 void
 OverlapAdd::myUpdate(MarControlPtr sender)
 {
@@ -49,18 +44,14 @@ OverlapAdd::myUpdate(MarControlPtr sender)
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->to<mrs_real>());    
 
 	back_.stretch(ctrl_onObservations_->to<mrs_natural>(), ctrl_onSamples_->to<mrs_natural>());
-	back_.setval(0);
+	//back_.setval(0);
 }
 
 void 
 OverlapAdd::myProcess(realvec& in, realvec& out)
 {
-
-
-	// in*=win_;
 	for(o=0 ; o<onObservations_; o++)
 	{
-
 		for(t=0;t<onSamples_;t++)
 			out(o, t) = back_(o, t)+in(o, t);
 

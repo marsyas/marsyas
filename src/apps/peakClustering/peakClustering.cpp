@@ -604,7 +604,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	
 	mainNet->updctrl("PeakConvert/conv/mrs_natural/frameMaxNumPeaks", S); 
 	mainNet->updctrl("PeakConvert/conv/mrs_string/frequencyInterval", intervalFrequency);  
-	// mainNet->updctrl("PeakConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
+	//mainNet->updctrl("PeakConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
 
 	mainNet->updctrl("FlowThru/clustNet/Series/NCutNet/Fanout/stack/NormCut/NCut/mrs_natural/numClusters", C); 
 	mainNet->updctrl("FlowThru/clustNet/Series/NCutNet/PeakClusterSelect/clusterSelect/mrs_natural/numClustersToKeep", nbSelectedClusters_);

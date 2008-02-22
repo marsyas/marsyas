@@ -66,7 +66,6 @@ PeakSynthOsc::myUpdate(MarControlPtr sender)
 	(void) sender;
 	ctrl_onSamples_->setValue(ctrl_synSize_, NOUPDATE);
 	ctrl_onObservations_->setValue(1, NOUPDATE);
-	//setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->to<mrs_real>()); //HACK!! [!] - see PeakConvert::myUpdate()
 	ctrl_osrate_->setValue(ctrl_samplingFreq_, NOUPDATE);
 	ctrl_onObsNames_->setValue("audio,", NOUPDATE);
 
