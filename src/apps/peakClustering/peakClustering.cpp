@@ -765,6 +765,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 				mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_real/samplingFreq", samplingFrequency_);
 				mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/delay", delay); // Nw/2+1 
 				mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/synSize", D*2);
+				mainNet->updctrl("Shredder/synthNet/Series/postNet/Windowing/wiSyn/mrs_string/type", "Hanning");
 			}
 			else 
 			{
