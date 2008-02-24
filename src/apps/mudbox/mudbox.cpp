@@ -79,6 +79,7 @@ printHelp(string progName)
 	cerr << "rmsilence  	   : toy_with removing silences " << endl;
 	cerr << "scheduler       : toy_with scheduler " << endl;
 	cerr << "schedulerExpr   : toy_with scheduler with expressions " << endl;
+	cerr << "SNR : toy_with Siganl-to-Noise Ratio" << endl;
 	cerr << "SOM		         : toy_with support vector machine " << endl;
 	cerr << "spectralSNR     : toy_with spectral SNR " << endl;
 	cerr << "stereoFeatures  : toy_with stereo features " << endl;
@@ -2731,6 +2732,15 @@ void toy_with_spectralSNR(string fname0, string fname1)
 
 
 
+void toy_with_SNR(string fname0, string fname1)
+{
+  cout << "Toying with SNR" << endl;
+  cout << "SIGNAL = "  << fname0 << endl;
+  cout << "NOISE = " << fname1 << endl;
+  
+}
+
+
 void toy_with_SOM(string collectionName) 
 {
 	MarSystemManager mng;
@@ -3715,6 +3725,8 @@ main(int argc, const char **argv)
 		toy_with_stereo2mono(fname0);
 	else if (toy_withName == "spectralSNR")
 		toy_with_spectralSNR(fname0, fname1);
+	else if (toy_withName == "SNR")
+	  toy_with_SNR(fname0, fname1);
 	else if (toy_withName == "SOM") 
 		toy_with_SOM("music.mf");
 	else if (toy_withName == "tempo") 
