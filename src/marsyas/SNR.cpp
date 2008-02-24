@@ -24,11 +24,16 @@ using namespace Marsyas;
 SNR::SNR(string name):MarSystem("SNR", name)
 {
 	addControls();
+	nsum_ = 0.0;
+	dsum_ = 0.0;
 }
 
 SNR::SNR(const SNR& a) : MarSystem(a)
 {
 	ctrl_mode_ = getctrl("mrs_string/mode");
+	ctrl_done_ = getctrl("mrs_bool/done");
+	nsum_ = 0.0;
+	dsum_ = 0.0;
 }
 
 
@@ -46,6 +51,8 @@ void
 SNR::addControls()
 {
   addctrl("mrs_string/mode", "standard", ctrl_mode_);
+  addctrl("mrs_bool/done", false, ctrl_done_);
+  
 }
 
 void
@@ -57,23 +64,30 @@ SNR::myUpdate(MarControlPtr sender)
   ctrl_onObservations_->setValue((mrs_natural)1, NOUPDATE);
   ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
   ctrl_onObsNames_->setValue("SNR_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
+
+
 }
 
 void
 SNR::myProcess(realvec& in, realvec& out)
 {
-  nsum_ = 0.0;
-  dsum_ = 0.0;
+
   const mrs_string& mode = ctrl_mode_->to<mrs_string>();
 
-  
-  
   for (t = 0; t < inSamples_; t++)
     {
       nsum_ += (in(0,t) * in(0,t));
       diff_ = (in(0,t) - in(1,t));
       dsum_ += (diff_ * diff_);
     }
-  out(0,0) = 20 * log10(nsum_ / dsum_ + 0.000000001); 
+  
+  out(0,0) = 10 * log10(nsum_ / dsum_);
+  if (ctrl_done_->to<mrs_bool>() == true) 
+    {
+      nsum_ = 0.0;
+      dsum_ = 0.0;
+    }
+
+
 
 }

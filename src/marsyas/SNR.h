@@ -42,6 +42,7 @@ private:
 	void myUpdate(MarControlPtr sender);
 
 	MarControlPtr ctrl_mode_;
+	MarControlPtr ctrl_done_;
 	mrs_real nsum_;
 	mrs_real dsum_;
 	mrs_real diff_;

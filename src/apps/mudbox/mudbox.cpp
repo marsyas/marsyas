@@ -2737,6 +2737,32 @@ void toy_with_SNR(string fname0, string fname1)
   cout << "Toying with SNR" << endl;
   cout << "SIGNAL = "  << fname0 << endl;
   cout << "NOISE = " << fname1 << endl;
+
+  MarSystemManager mng;
+  
+
+  MarSystem* net = mng.create("Series", "net");
+  MarSystem* input = mng.create("Parallel", "input");
+  input->addMarSystem(mng.create("SoundFileSource", "signalSrc"));
+  input->addMarSystem(mng.create("SoundFileSource", "noiseSrc"));
+
+  net->addMarSystem(input);
+  net->addMarSystem(mng.create("SNR", "snr"));
+  
+  net->updctrl("Parallel/input/SoundFileSource/signalSrc/mrs_string/filename", 
+	       fname0);
+  net->updctrl("Parallel/input/SoundFileSource/noiseSrc/mrs_string/filename", 
+	       fname1);
+
+  net->updctrl("mrs_natural/inSamples", 1024);
+
+  while (net->getctrl("Parallel/input/SoundFileSource/signalSrc/mrs_bool/notEmpty")->to<mrs_bool>() == true)
+    {
+      net->tick();
+    }
+  
+  cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>() << endl;
+  
   
 }
 
