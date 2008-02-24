@@ -103,7 +103,7 @@ PeakerOnset::myProcess(realvec& in, realvec& out)
 		if(checkPointValue < in(t))
 		{
 			isOnset = false;
-			//cout << "failed 1st condition!" << endl;
+			MRSDIAG("PeakerOnset::myProcess() - Failed 1st condition!");
 			break;
 		}
 	}
@@ -145,10 +145,13 @@ PeakerOnset::myProcess(realvec& in, realvec& out)
 	for(t=0; t < inSamples_; t++)
 		m += in(t);
 	m /= inSamples_;
-	if(checkPointValue < (m * ctrl_threshold_->to<mrs_real>()))
+	//checkPoint value should be higher than the window mean and mean should
+	//be a significant value (otherwise we most probably are in a silence segment,
+	//and we do not want to detect onsets on segments!)
+	if(checkPointValue <= (m * ctrl_threshold_->to<mrs_real>()) || m < 10e-20)
 	{
 		isOnset = false;
-		//cout << "failed 2nd condition!" << endl;
+		MRSDIAG("PeakerOnset::myProcess() - Failed 2nd condition!");
 	}
 
 	//third condition from Dixon2006 (DAFx paper) is not implemented
@@ -159,7 +162,7 @@ PeakerOnset::myProcess(realvec& in, realvec& out)
 		ctrl_onsetDetected_->setValue(true);
 		ctrl_confidence_->setValue(1.0); //[!] must still find a way to output a confidence...
 		out.setval(1.0);
-		//cout<<"Onset Detected!" << endl;
+		MRSDIAG("PeakerOnset::myProcess() - Onset Detected!");
 	}
 
 	//used for toy_with_onsets.m (DO NOT DELETE! - COMMENT INSTEAD)

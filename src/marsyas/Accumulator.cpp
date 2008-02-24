@@ -166,8 +166,10 @@ Accumulator::myProcess(realvec& in, realvec& out)
 			timesCount++;
 		}
 
+		#if MARSYAS_LOG_DIAGNOSTICS
 		if(!ctrl_flush_->to<mrs_bool>())
-			cout << "Onset not detected... max length of segment reached!" << endl;
+			MRSDIAG("Accumulator::myProcess() - Onset not detected... max length of segment reached!");
+		#endif
 
 		//adjust output number of samples dynamically (this calls update()!!)
 		//to the number of accumulated samples (minus the ones to keep for next time)

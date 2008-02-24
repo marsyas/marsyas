@@ -99,7 +99,7 @@ bool ignoreFrequency = false;
 bool ignoreAmplitude = false;
 bool ignoreHWPS = false;
 bool ignorePan = false;
-bool ignoreOnsets = false;
+bool useOnsets = false;
 
 CommandLineOptions cmd_options;
 
@@ -146,7 +146,8 @@ printHelp(string progName)
 	cerr << "-ia --ignoreAmplitude: ignore amplitude similarity between peaks" << endl;
 	cerr << "-ih --ignoreHWPS: ignore harmonicity (HWPS) similarity between peaks" << endl;
 	cerr << "-ip --ignorePan: ignore panning similarity between peaks" << endl;
-	cerr << "-io --ignoreOnsets: ignore onset detector for dynamically adjusting the length of texture windows" << endl;
+	
+	cerr << "-uo --useOnsets: ignore onset detector for dynamically adjusting the length of texture windows" << endl;
 
 	cerr << "" << endl;
 	cerr << "-h --help            : display this information " << endl;
@@ -696,7 +697,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	}
 
 	//ONSET DETECTION CONFIGURATION (if enabled)
-	if(!ignoreOnsets)
+	if(useOnsets)
 	{
 		cout << "** Onset detector enabled -> using dynamically adjusted texture windows!" << endl;
 		cout << "WinSize = " << winSize_ << endl;
@@ -737,11 +738,11 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		mrs_natural winds = 1+lookAheadSamples+mrs_natural(ceil(mrs_real(winSize_)/hopSize_/2.0));
 		cout << "Accumulator/textWinNet timesToKeep = " << winds << endl;
 		mrs_real textureWinMinLen = 0.050; //secs
-		mrs_real textureWinMaxLen = 10.230; //secs
+		mrs_real textureWinMaxLen = 1.0; //secs
 		mrs_natural minTimes = textureWinMinLen*samplingFrequency_/hopSize_; 
 		mrs_natural maxTimes = textureWinMaxLen*samplingFrequency_/hopSize_; 
-		cout << "Accumulator/textWinNet MinTimes = " << minTimes << endl;
-		cout << "Accumulator/textWinNet MaxTimes = " << maxTimes << endl;
+		cout << "Accumulator/textWinNet MinTimes = " << minTimes << " (i.e. " << textureWinMinLen << " secs)" << endl;
+		cout << "Accumulator/textWinNet MaxTimes = " << maxTimes << " (i.e. " << textureWinMaxLen << " secs)" <<endl;
 		textWinNet->updctrl("mrs_string/mode", "explicitFlush");
 		textWinNet->updctrl("mrs_natural/timesToKeep", winds);
 		textWinNet->updctrl("mrs_string/mode","explicitFlush");
@@ -751,7 +752,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	else
 	{
 		cout << "** Onset detector disabled -> using fixed length texture windows" << endl;
-		cout << "Accumulator/textWinNet nTimes = " << accSize << endl;
+		cout << "Accumulator/textWinNet nTimes = " << accSize << " (i.e. " << accSize*hopSize_/samplingFrequency_ << " secs)" << endl;
 		mainNet->updctrl("Accumulator/textWinNet/mrs_natural/nTimes", accSize);
 	}
 
@@ -929,7 +930,7 @@ initOptions()
 	cmd_options.addBoolOption("ignoreAmplitude", "ia", ignoreAmplitude);
 	cmd_options.addBoolOption("ignoreHWPS", "ih", ignoreHWPS);
 	cmd_options.addBoolOption("ignorePan", "ip", ignorePan);
-	cmd_options.addBoolOption("ignoreOnsets", "io", ignoreOnsets);
+	cmd_options.addBoolOption("useOnsets", "uo", useOnsets);
 }
 
 void 
@@ -968,7 +969,7 @@ loadOptions()
 	ignoreAmplitude = cmd_options.getBoolOption("ignoreAmplitude");
 	ignoreHWPS = cmd_options.getBoolOption("ignoreHWPS");
 	ignorePan = cmd_options.getBoolOption("ignorePan");
-	ignoreOnsets = cmd_options.getBoolOption("ignoreOnsets");
+	useOnsets = cmd_options.getBoolOption("useOnsets");
 }
 
 int

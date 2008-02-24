@@ -528,8 +528,10 @@ toy_with_onsets(string sfName)
 
 	mrs_real textureWinMinLen = 0.050; //secs
 	mrs_natural minTimes = textureWinMinLen*fs/hopSize; //12;//onsetWinSize+1;//15;
-	cout << "MinTimes = " << minTimes << endl;
-	mrs_natural maxTimes = 1000; //whatever... just a big number for now...
+	cout << "MinTimes = " << minTimes << " (i.e. " << textureWinMinLen << " secs)" << endl;
+	mrs_real textureWinMaxLen = 3.000; //secs
+	mrs_natural maxTimes = textureWinMaxLen*fs/hopSize;//1000; //whatever... just a big number for now...
+	cout << "MaxTimes = " << maxTimes << " (i.e. " << textureWinMaxLen << " secs)" << endl;
 
 	//best result till now are using dB power Spectrum!
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PowerSpectrum/pspk/mrs_string/spectrumType",
