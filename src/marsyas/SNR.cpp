@@ -25,6 +25,8 @@ SNR::SNR(string name):MarSystem("SNR", name)
 {
 	addControls();
 	nsum_ = 0.0;
+	nbsum_ = 0.0;
+	psum_ = 0.0;
 	dsum_ = 0.0;
 }
 
@@ -34,6 +36,8 @@ SNR::SNR(const SNR& a) : MarSystem(a)
 	ctrl_done_ = getctrl("mrs_bool/done");
 	nsum_ = 0.0;
 	dsum_ = 0.0;
+	nbsum_ = 0.0;
+	psum_ = 0.0;
 }
 
 
@@ -61,7 +65,7 @@ SNR::myUpdate(MarControlPtr sender)
   (void) sender;
   MRSDIAG("SNR.cpp - SNR:myUpdate");
   ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
-  ctrl_onObservations_->setValue((mrs_natural)1, NOUPDATE);
+  ctrl_onObservations_->setValue((mrs_natural)2, NOUPDATE);
   ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
   ctrl_onObsNames_->setValue("SNR_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
 
@@ -77,15 +81,22 @@ SNR::myProcess(realvec& in, realvec& out)
   for (t = 0; t < inSamples_; t++)
     {
       nsum_ += (in(0,t) * in(0,t));
+      nbsum_ += (in(1,t) * in(1,t));
+      psum_ += (in(0,t) * in(1,t));
       diff_ = (in(0,t) - in(1,t));
       dsum_ += (diff_ * diff_);
     }
-  
   out(0,0) = 10 * log10(nsum_ / dsum_);
+  
+  r_ = (psum_ / sqrt(nsum_ * nbsum_));
+  out(1,0) = 10 * log10(1 / (1 - (r_ * r_)));
+  
   if (ctrl_done_->to<mrs_bool>() == true) 
     {
       nsum_ = 0.0;
+      nbsum_ = 0.0;
       dsum_ = 0.0;
+      psum_ = 0.0;
     }
 
 

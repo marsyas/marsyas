@@ -44,8 +44,11 @@ private:
 	MarControlPtr ctrl_mode_;
 	MarControlPtr ctrl_done_;
 	mrs_real nsum_;
+	mrs_real nbsum_;
+	mrs_real  psum_;
 	mrs_real dsum_;
 	mrs_real diff_;
+	mrs_real r_;
 public:
 	SNR(std::string name);
 	SNR(const SNR& a);
