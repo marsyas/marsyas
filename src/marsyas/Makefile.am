@@ -270,6 +270,7 @@ pkginclude_HEADERS = \
 	McAulayQuatieri.h \
 	PeakerOnset.h \
 	Reverse.h \
+	SNR.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 

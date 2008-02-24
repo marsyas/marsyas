@@ -345,6 +345,7 @@ libmarsyas_a_SOURCES = \
 	$(top_srcdir)/src/marsyas/McAulayQuatieri.cpp \
 	$(top_srcdir)/src/marsyas/PeakerOnset.cpp \
 	$(top_srcdir)/src/marsyas/Reverse.cpp \
+	$(top_srcdir)/src/marsyas/SNR.cpp \
 			$(top_srcdir)/src/marsyas/Gain.cpp
 
 subdir = lib/release
@@ -446,7 +447,8 @@ am_libmarsyas_a_OBJECTS = svm.$(OBJEXT) RtAudio.$(OBJEXT) \
 	ADRessSpectrum.$(OBJEXT) ADRessStereoSpectrum.$(OBJEXT) \
 	EnhADRess.$(OBJEXT) StereoSpectrumSources.$(OBJEXT) \
 	EnhADRessStereoSpectrum.$(OBJEXT) McAulayQuatieri.$(OBJEXT) \
-	PeakerOnset.$(OBJEXT) Reverse.$(OBJEXT) Gain.$(OBJEXT)
+	PeakerOnset.$(OBJEXT) Reverse.$(OBJEXT) SNR.$(OBJEXT) \
+	Gain.$(OBJEXT)
 libmarsyas_a_OBJECTS = $(am_libmarsyas_a_OBJECTS)
 libmarsyasqt_a_AR = $(AR) cru
 libmarsyasqt_a_LIBADD =
@@ -573,7 +575,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Rolloff.Po ./$(DEPDIR)/RtAudio.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RtMidi.Po ./$(DEPDIR)/SCF.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SFM.Po ./$(DEPDIR)/SMO.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/SOM.Po ./$(DEPDIR)/SVMClassifier.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/SNR.Po ./$(DEPDIR)/SOM.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/SVMClassifier.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ScheduledEvent.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Scheduler.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SchedulerManager.Po \
@@ -936,6 +939,7 @@ EnhADRessStereoSpectrum.$(OBJEXT): \
 McAulayQuatieri.$(OBJEXT): $(top_srcdir)/src/marsyas/McAulayQuatieri.cpp
 PeakerOnset.$(OBJEXT): $(top_srcdir)/src/marsyas/PeakerOnset.cpp
 Reverse.$(OBJEXT): $(top_srcdir)/src/marsyas/Reverse.cpp
+SNR.$(OBJEXT): $(top_srcdir)/src/marsyas/SNR.cpp
 Gain.$(OBJEXT): $(top_srcdir)/src/marsyas/Gain.cpp
 libmarsyas.a: $(libmarsyas_a_OBJECTS) $(libmarsyas_a_DEPENDENCIES) 
 	-rm -f libmarsyas.a
@@ -1117,6 +1121,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SCF.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SFM.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SMO.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SNR.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SOM.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SVMClassifier.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ScheduledEvent.Po@am__quote@
@@ -3958,6 +3963,18 @@ Reverse.obj: $(top_srcdir)/src/marsyas/Reverse.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/Reverse.Po' tmpdepfile='$(DEPDIR)/Reverse.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Reverse.obj `cygpath -w $(top_srcdir)/src/marsyas/Reverse.cpp`
+
+SNR.o: $(top_srcdir)/src/marsyas/SNR.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/SNR.cpp' object='SNR.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/SNR.Po' tmpdepfile='$(DEPDIR)/SNR.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SNR.o `test -f '$(top_srcdir)/src/marsyas/SNR.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/marsyas/SNR.cpp
+
+SNR.obj: $(top_srcdir)/src/marsyas/SNR.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/SNR.cpp' object='SNR.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/SNR.Po' tmpdepfile='$(DEPDIR)/SNR.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SNR.obj `cygpath -w $(top_srcdir)/src/marsyas/SNR.cpp`
 
 Gain.o: $(top_srcdir)/src/marsyas/Gain.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/Gain.cpp' object='Gain.o' libtool=no @AMDEPBACKSLASH@
