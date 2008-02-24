@@ -53,38 +53,48 @@ HWPS::addControls()
 void 
 HWPS::harmonicWrap(mrs_real peak1Freq, mrs_real peak2Freq, realvec& peak1SetFreqs, realvec& peak2SetFreqs)
 {
-	// shift frequencies
-	peak1SetFreqs -= peak1Freq;
-	peak2SetFreqs -= peak2Freq;
 
-	// fundamental frequency estimate
-	mrs_real hF = min(peak1Freq, peak2Freq);
-	//mrs_real mhF = min(hF, abs(peak1Freq-peak2Freq));
+  // fundamental frequency estimate
+  mrs_real hF; 
 
-	/*
-	MATLAB_PUT(peak1SetFreqs, "P1");
-	MATLAB_PUT(peak2SetFreqs, "P2");
-	MATLAB_EVAL("clf ; subplot(3, 1, 1);  hold ; stem(P1, A1); stem(P2, A2, 'r')");
-	*/
+  // Use the lowest in frequency highest amplitude 
+  // peak of the frames under consideration
+  hF = min(peak1SetFreqs(0), peak2SetFreqs(0));
 
-	// wrap frequencies around fundamental freq estimate
-	peak1SetFreqs /= hF;
-	peak2SetFreqs /= hF;
+  // Original HWPS using the considered peaks for folding 
+  // hF = min(peak1Freq, peak2Freq);     
 
-	for (mrs_natural k=0 ; k<peak1SetFreqs.getSize() ; k++)
-	{
-		peak1SetFreqs(k)=fmod(peak1SetFreqs(k), 1);
-		//if(peak1SetFreqs(k)<0)
-		while(peak1SetFreqs(k)<0)//replacing "if" in case of strongly negative (=> multiple wraps)
-			peak1SetFreqs(k)+=1;
-	}
-	for (mrs_natural k=0 ; k<peak2SetFreqs.getSize() ; k++)
-	{
-		peak2SetFreqs(k)=fmod(peak2SetFreqs(k), 1);
-		//if(peak2SetFreqs(k)<0)
-		while(peak2SetFreqs(k)<0) //replacing "if" in case of strongly negative (=> multiple wraps)
-			peak2SetFreqs(k)+=1;
-	}
+  // mrs_real mhF = min(hF, abs(peak1Freq-peak2Freq));
+  
+  // shift frequencies
+  peak1SetFreqs -= peak1Freq;
+  peak2SetFreqs -= peak2Freq;
+
+
+  /*
+    MATLAB_PUT(peak1SetFreqs, "P1");
+    MATLAB_PUT(peak2SetFreqs, "P2");
+    MATLAB_EVAL("clf ; subplot(3, 1, 1);  hold ; stem(P1, A1); stem(P2, A2, 'r')");
+  */
+
+   // wrap frequencies around fundamental freq estimate
+  peak1SetFreqs /= hF;
+  peak2SetFreqs /= hF;
+
+  for (mrs_natural k=0 ; k<peak1SetFreqs.getSize() ; k++)
+    {
+      peak1SetFreqs(k)=fmod(peak1SetFreqs(k), 1);
+      //if(peak1SetFreqs(k)<0)
+      while(peak1SetFreqs(k)<0)//replacing "if" in case of strongly negative (=> multiple wraps)
+	peak1SetFreqs(k)+=1;
+    }
+  for (mrs_natural k=0 ; k<peak2SetFreqs.getSize() ; k++)
+    {
+      peak2SetFreqs(k)=fmod(peak2SetFreqs(k), 1);
+      //if(peak2SetFreqs(k)<0)
+      while(peak2SetFreqs(k)<0) //replacing "if" in case of strongly negative (=> multiple wraps)
+	peak2SetFreqs(k)+=1;
+    }
 }
 
 void

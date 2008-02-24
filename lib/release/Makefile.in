@@ -343,7 +343,6 @@ libmarsyas_a_SOURCES = \
 	$(top_srcdir)/src/marsyas/StereoSpectrumSources.cpp \
 	$(top_srcdir)/src/marsyas/EnhADRessStereoSpectrum.cpp \
 	$(top_srcdir)/src/marsyas/McAulayQuatieri.cpp \
-	$(top_srcdir)/src/marsyas/Flux2.cpp \
 	$(top_srcdir)/src/marsyas/PeakerOnset.cpp \
 	$(top_srcdir)/src/marsyas/Reverse.cpp \
 			$(top_srcdir)/src/marsyas/Gain.cpp
@@ -447,8 +446,7 @@ am_libmarsyas_a_OBJECTS = svm.$(OBJEXT) RtAudio.$(OBJEXT) \
 	ADRessSpectrum.$(OBJEXT) ADRessStereoSpectrum.$(OBJEXT) \
 	EnhADRess.$(OBJEXT) StereoSpectrumSources.$(OBJEXT) \
 	EnhADRessStereoSpectrum.$(OBJEXT) McAulayQuatieri.$(OBJEXT) \
-	Flux2.$(OBJEXT) PeakerOnset.$(OBJEXT) Reverse.$(OBJEXT) \
-	Gain.$(OBJEXT)
+	PeakerOnset.$(OBJEXT) Reverse.$(OBJEXT) Gain.$(OBJEXT)
 libmarsyas_a_OBJECTS = $(am_libmarsyas_a_OBJECTS)
 libmarsyasqt_a_AR = $(AR) cru
 libmarsyasqt_a_LIBADD =
@@ -507,7 +505,6 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/FileName.Po ./$(DEPDIR)/Filter.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/FlowCutSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/FlowThru.Po ./$(DEPDIR)/Flux.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Flux2.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/FullWaveRectifier.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Gain.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/GaussianClassifier.Po \
@@ -937,7 +934,6 @@ StereoSpectrumSources.$(OBJEXT): \
 EnhADRessStereoSpectrum.$(OBJEXT): \
 	$(top_srcdir)/src/marsyas/EnhADRessStereoSpectrum.cpp
 McAulayQuatieri.$(OBJEXT): $(top_srcdir)/src/marsyas/McAulayQuatieri.cpp
-Flux2.$(OBJEXT): $(top_srcdir)/src/marsyas/Flux2.cpp
 PeakerOnset.$(OBJEXT): $(top_srcdir)/src/marsyas/PeakerOnset.cpp
 Reverse.$(OBJEXT): $(top_srcdir)/src/marsyas/Reverse.cpp
 Gain.$(OBJEXT): $(top_srcdir)/src/marsyas/Gain.cpp
@@ -1020,7 +1016,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FlowCutSource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FlowThru.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Flux.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Flux2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FullWaveRectifier.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Gain.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GaussianClassifier.Po@am__quote@
@@ -3939,18 +3934,6 @@ McAulayQuatieri.obj: $(top_srcdir)/src/marsyas/McAulayQuatieri.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/McAulayQuatieri.Po' tmpdepfile='$(DEPDIR)/McAulayQuatieri.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o McAulayQuatieri.obj `cygpath -w $(top_srcdir)/src/marsyas/McAulayQuatieri.cpp`
-
-Flux2.o: $(top_srcdir)/src/marsyas/Flux2.cpp
-@AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/Flux2.cpp' object='Flux2.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/Flux2.Po' tmpdepfile='$(DEPDIR)/Flux2.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Flux2.o `test -f '$(top_srcdir)/src/marsyas/Flux2.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/marsyas/Flux2.cpp
-
-Flux2.obj: $(top_srcdir)/src/marsyas/Flux2.cpp
-@AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/Flux2.cpp' object='Flux2.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/Flux2.Po' tmpdepfile='$(DEPDIR)/Flux2.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Flux2.obj `cygpath -w $(top_srcdir)/src/marsyas/Flux2.cpp`
 
 PeakerOnset.o: $(top_srcdir)/src/marsyas/PeakerOnset.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/PeakerOnset.cpp' object='PeakerOnset.o' libtool=no @AMDEPBACKSLASH@
