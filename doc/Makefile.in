@@ -108,9 +108,11 @@ TEXI2PDF = texi2pdf -b #  -o out-www/
 #info_TEXINFOS   = marsyas-user.texi marsyas-devel.texi
 EXTRA_DIST = intro.texi install.texi tools.texi architecture.texi system.texi writing.texi programming.texi contributing.texi autotest.texi macros.itexi README images/ source-doc/
 
-CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
-             marsyas.ats  marsyas.evs  marsyas.fns  marsyas.ovs \
-             marsyas.tmp  marsyas.toc  marsyas.info marsyas.cps 
+CLEANFILES = marsyas-*.acs marsyas-*.cvs marsyas-*.mss  marsyas-*.prs \
+             marsyas-*.ats marsyas-*.evs marsyas-*.fns  marsyas-*.ovs \
+             marsyas-*.tmp marsyas-*.toc marsyas-*.cps marsyas-*.info \
+             marsyas-*.log marsyas-*.aux marsyas-*.ky marsyas-*.fn \
+             marsyas-*.pg marsyas-*.tp marsyas-*.vr marsyas-*.cp 
 
 
 QT_EXAMPLES = ../src/examples/Qt4-tutorial/*.h ../src/examples/Qt4-tutorial/*.cpp
@@ -239,7 +241,7 @@ uninstall-am: uninstall-info-am
 
 
 clean-local:
-	-rm -rf out-www
+	rm -rf out-www
 
 #DIST_COMMON = sources pdf html
 
