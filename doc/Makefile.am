@@ -33,12 +33,14 @@ EXTRA_DIST += macros.itexi README
 EXTRA_DIST += images/
 EXTRA_DIST += source-doc/
 
-CLEANFILES = marsyas.acs  marsyas.cvs  marsyas.mss  marsyas.prs \
-             marsyas.ats  marsyas.evs  marsyas.fns  marsyas.ovs \
-             marsyas.tmp  marsyas.toc  marsyas.info marsyas.cps 
+CLEANFILES = marsyas-*.acs marsyas-*.cvs marsyas-*.mss  marsyas-*.prs \
+             marsyas-*.ats marsyas-*.evs marsyas-*.fns  marsyas-*.ovs \
+             marsyas-*.tmp marsyas-*.toc marsyas-*.cps marsyas-*.info \
+             marsyas-*.log marsyas-*.aux marsyas-*.ky marsyas-*.fn \
+             marsyas-*.pg marsyas-*.tp marsyas-*.vr marsyas-*.cp 
 
 clean-local:
-	-rm -rf out-www
+	rm -rf out-www
 
 QT_EXAMPLES = ../src/examples/Qt4-tutorial/*.h ../src/examples/Qt4-tutorial/*.cpp
 QT_EXAMPLES_AS_PERL = ../src/examples/Qt4-tutorial/*.pro
