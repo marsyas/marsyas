@@ -203,6 +203,9 @@ public:
   void sqr();
   void sqroot();
   void norm();
+  void normMaxMin();
+		
+		
   void norm(mrs_real mean, mrs_real std);
   void renorm(mrs_real old_mean, mrs_real old_std, mrs_real new_mean, mrs_real new_std);
   mrs_natural invert(realvec& res);//lmartins: this seems to be both inplace and returning the inverse matrix in "res"... why both?!? [!][?] 

@@ -521,6 +521,31 @@ realvec::norm()
 	}
 }
 
+
+void 
+realvec::normMaxMin() 
+{
+	mrs_real max = DBL_MIN;
+	mrs_real min = DBL_MAX;
+	
+	for (mrs_natural i=0; i < size_; i++) 
+	{
+		if (data_[i] > max)
+			max = data_[i];
+		if (data_[i] < min) 
+			min = data_[i];
+	}
+	
+
+	for (mrs_natural i=0; i < size_; i++) 
+	{	
+		data_[i] = (data_[i] - min) / (max - min);
+	}
+	
+	
+}
+
+
 void
 realvec::norm(mrs_real mean, mrs_real std)
 {
