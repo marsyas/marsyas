@@ -52,7 +52,7 @@ CONFIG += marsyasMIDIIO
 # ------------------------------------
 # choose which Audio APIs to use:
 # ------------------------------------
-win32-msvc|win32-msvc2005:CONFIG += marsyasAUDIOIO_DS
+win32-msvc|win32-msvc2005|win32-g++:CONFIG += marsyasAUDIOIO_DS
 #win32-msvc|win32-msvc2005:CONFIG += marsyasAUDIOIO_ASIO
 unix:!macx:CONFIG += marsyasAUDIOIO_ALSA
 #unix:!macx:CONFIG += marsyasAUDIOIO_JACK
