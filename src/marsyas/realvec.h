@@ -20,6 +20,7 @@
 #define MARSYAS_REALVEC_H 
 
 #include <cmath>
+#include <cfloat>
 #include <string>
 #include <iostream>
 #include <fstream>
