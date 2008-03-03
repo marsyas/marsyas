@@ -1,6 +1,6 @@
 #!/bin/sh
 ### change as necessary
-marsyasDir=~/usr/src/marsyas/
+marsyasDir=~/marsyas-svn/
 
 cd $marsyasDir/doc/
 tar -czf marsyas-docs.tar.gz out-www/
