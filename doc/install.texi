@@ -2,7 +2,6 @@
 @chapter Source installation
 
 This chapter shows the steps to get a working version of Marsyas.
-Complete each section fully before attempting the next section.
 
 @menu
 * Download::                    
@@ -584,6 +583,7 @@ make
 * Vim editor support::          
 * MATLAB setup::                
 * Datasets::                    
+* Compiling Marsyas/Qt applications::  
 @end menu
 
 @node Vim editor support
@@ -658,7 +658,16 @@ data set used for large regression tests in Marsyas.
 @end itemize
 
 
+@node Compiling Marsyas/Qt applications
+@subsection Compiling Marsyas/Qt applications
 
+@verbatim
+TODO.
+
+src/Qt4Apps/APPNAME/
+qmake
+make
+@end verbatim
 
 
 @node Structure of distribution
