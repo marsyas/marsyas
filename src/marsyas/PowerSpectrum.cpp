@@ -136,7 +136,7 @@ PowerSpectrum::myProcess(realvec& in, realvec& out)
 		} 
 	}
 
-	MATLAB_PUT(out, "PowerSpectrum");
+	//MATLAB_PUT(out, "PowerSpectrum");
 }
 
 

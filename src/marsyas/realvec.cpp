@@ -51,6 +51,7 @@ realvec::~realvec()
 
 realvec::realvec(mrs_natural size)
 {
+	data_ = NULL;
 	size_ = size;
 	allocatedSize_ = size;
 	if (size_ > 0) 
@@ -61,6 +62,7 @@ realvec::realvec(mrs_natural size)
 
 realvec::realvec(mrs_natural rows, mrs_natural cols)
 {
+	data_ = NULL;
 	size_ = rows * cols;
 	allocatedSize_ = size_;
 	if (size_ > 0) 
@@ -85,45 +87,34 @@ realvec::operator=(const realvec& a)
 {
 	if (this != &a)
 	{
-		if (size_ != a.size_)
+		//check if we need to allocate more memory
+		if (allocatedSize_ < a.size_)
 		{
-			//lmartins: [!]
-			//Why doesn't this delete all data and creates a new realvec?
-			//it would be then easier to use this operator in client code 
-			//(i.e. no need to assure that the realvec implicated in the 
-			// =  operation are equal sized)
-			/*
-			MRSERR("realvec::operator= : Different realvec sizes\n");
-			MRSERR("realvec left unchanged\n");
-
-			MRSERR("Left size = " + size_);
-			MRSERR("Right size = " + a.size_);
-			return *this;
-			*/
-			//Replacing above code by the following one (which still maintains backward compatibility
-			// with any previous code in Marsyas that resizes l.h. realvec before using the = operator).
-
-			//			MRSWARN("realvec::operator= : Different realvec sizes! l.h. realvec will be deleted and then recreated during attribution.");
-			// [ML] this code is used by stretch on realvec_ctrl, removed warning until sloved issue [!]
-
+			//if data_ is not NULL, delete it
 			delete [] data_;
 			data_ = NULL;
-			if( a.size_ > 0 )
+
+			allocatedSize_ = 0;
+			size_ = 0;
+
+			//allocate memory, if size > 0
+			if(a.size_ > 0)
+			{
 				data_ = new mrs_real[a.size_];
-			for (mrs_natural i=0; i<a.size_; i++)
-				data_[i] = a.data_[i];
-			size_ = a.size_;
-			allocatedSize_ = a.allocatedSize_;
-			rows_ = a.rows_;
-			cols_ = a.cols_;
+				allocatedSize_ = a.size_; //"a" may have more allocated memory than its current size!
+				size_ = a.size_;
+			}
 		}
-		else
-		{
-			for (mrs_natural i=0; i < size_; i++)
-				data_[i] = a.data_[i];
-			rows_ = a.rows_;
-			cols_ = a.cols_;
-		}
+
+		//copy data
+		for (mrs_natural i=0; i < a.size_; i++)
+			data_[i] = a.data_[i];
+		
+		//update internal parameters
+		size_ = a.size_;
+		//allocatedSize_ = a.allocatedSize_; //!!
+		rows_ = a.rows_;
+		cols_ = a.cols_;
 	}
 
 	return *this;
@@ -138,17 +129,12 @@ realvec::getData() const
 void
 realvec::appendRealvec(const realvec newValues)
 {
-//   don't get cute until everything else is working.  -gp
-//  if (origSize == 0)
-//  {
-//      (*orig) = (*newValues);
-//  }
-//  else {
 	mrs_natural origSize = size_;
-    stretch( origSize + newValues.getSize() );
-    for (mrs_natural i=0; i<newValues.getSize(); i++)
+
+  stretch(origSize + newValues.getSize());
+
+  for (mrs_natural i=0; i<newValues.getSize(); i++)
 		data_[origSize + i] = newValues.data_[i];
-//  }
 }
 
 realvec
@@ -281,35 +267,40 @@ void
 realvec::stretch(mrs_natural size) 
 {
 	if (size_ == size) 
-		return;
+		return; //no need for more memory allocation
 
 	if(size < allocatedSize_)
 	{
 		size_ = size;
 		rows_ = 1;
 		cols_ = size_;
-		return;
+		return; //no need for more memory allocation
 	}
 
-	mrs_real *ndata = NULL;
+	//we need more memory allocation!
+	mrs_real* ndata = NULL;
 	if (size > 0) 
 		ndata = new mrs_real[size];
-	// zero new data 
+
+	// zero new data, but keep existing data 
 	for (mrs_natural i=0; i < size; i++)
 	{
 		if (i < size_) 
-			ndata[i] = data_[i];
+			ndata[i] = data_[i]; //copy existing data
 		else 
-			ndata[i] = 0.0;
+			ndata[i] = 0.0; //zero new data
 	}
+	
+	//deallocate existing memory...
 	delete [] data_;
-	data_ = NULL;
+	//...and point to new data memory (if any - it can be NULL, when size == 0)
 	data_ = ndata;
+	
+	//update internal parameters
 	size_ = size;
 	allocatedSize_ = size;
 	rows_ = 1;
 	cols_ = size;
-
 }
 
 /* keep the old data and possibly extend */ 
@@ -1435,9 +1426,13 @@ realvec::covariance(realvec& res) const
 		res.stretch(rows_, rows_); //covariance matrix
 		//check if there are sufficient data points for a good covariance estimation...
 		if(cols_ < (rows_ + 1))
+		{
 			MRSWARN("realvec::covariance() : nr. data points < nr. observations + 1 => covariance matrix is SINGULAR!");
+		}
 		if( (mrs_real)cols_ < ((mrs_real)rows_*(mrs_real)(rows_-1.0)/2.0))
+		{
 			MRSWARN("realvec::covariance() : too few data points => ill-calculation of covariance matrix!");
+		}
 
 		realvec meanobs;
 		this->meanObs(meanobs);//observation means //[TODO]
@@ -1485,9 +1480,13 @@ realvec::covariance2(realvec& res) const
 		res.stretch(rows_, rows_); //covariance matrix
 		//check if there are sufficient data points for a good covariance estimation...
 		if(cols_ < (rows_ + 1))
+		{
 			MRSWARN("realvec::covariance() : nr. data points < nr. observations + 1 => covariance matrix is SINGULAR!");
+		}
 		if( (mrs_real)cols_ < ((mrs_real)rows_*(mrs_real)(rows_-1.0)/2.0))
+		{
 			MRSWARN("realvec::covariance() : too few data points => ill-calculation of covariance matrix!");
+		}
 
 		for (mrs_natural r1=0; r1< rows_; r1++)
 		{
