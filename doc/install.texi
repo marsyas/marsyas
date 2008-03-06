@@ -59,8 +59,8 @@ checking the sourceforge website.
 * Linux with qmake::            
 * MacOS X with autotools::      
 * MaxOS X with qmake::          
-* Windows XP/Vista using Visual Studio 2005 command-line and qmake::  
-* Windows XP/Vista using Visual Studio 2005 IDE and qmake::  
+* Windows XP/Vista with Visual Studio 2005 command-line and qmake::  
+* Windows XP/Vista with Visual Studio 2005 IDE and qmake::  
 * Windows XP/Vista with Visual Studio 2008 Command-line::  
 * Windows XP/Vista with MinGW and qmake::  
 * Windows XP/Vista with Cygwin and autotools::  
@@ -366,91 +366,109 @@ perform our automatic tests.  For more information, see
 
 
 
-@node Windows XP/Vista using Visual Studio 2005 command-line and qmake
-@subsection Windows XP/Vista using Visual Studio 2005 command-line and qmake
+@node Windows XP/Vista with Visual Studio 2005 command-line and qmake
+@subsection Windows XP/Vista with Visual Studio 2005 command-line and qmake
 
-@verbatim
-
-1) Download and install either the free Visual Studio Express or 
+@enumerate
+@item
+Download and install either the free Visual Studio Express or 
 the full payed Visual Studio (these instructions 
 were used succesfully with the 2008 version but probably apply to other 
 version also). 
 
-2) Using the Visual Studio 2008 Command Prompt provided 
+@item
+Using the Visual Studio 2008 Command Prompt provided 
 under Visual C++ 9.0 Express Edition\Visual Studio Tools 
 check that the command-line compiling works: 
 
+@example
 c:\nmake 
+@end example
 
 You will see some version number and it should complain 
 that no MAKEFILE was found and no target specified 
 
-
-3) Download and install the DirectX sdk
+@item
+Download and install the DirectX sdk
 (I used dxsdk_november2007.exe from the microsoft website)
 Add a new environment variable called DXSDK_DIR with value 
 the directory direct X is installed. 
 
+@item
+Download the Qt open source edition for C++ developers: Windows
+Download from:
 
-
-4) Download the Qt open source edition for C++ developers: Windows
-Download
-from: http://trolltech.com/downloads/opensource 
+@example
+http://trolltech.com/downloads/opensource
+@end example
 
 Make sure you download the source code not the mingw.exe 
-installer. 
-qt-win-opensource-src-4.3.3.zip 
+installer.   The filename should look like
+@file{qt-win-opensource-src-4.3.3.zip}
 
-
-5) Unzip the file into a directory (for example 
-c:\qt-win-opensource-4.3.3 
+@item
+Unzip the file into a directory (for example 
+@file{c:\qt-win-opensource-4.3.3}
 and then using the VIsual Studio 2008 Command Prompt 
 go to that directory and do: 
+
+@example
 set QMAKESPEC=win32-msvc
 configure 
 nmake 
+@end example
 
-
+@item
 Have a snack as compiling Qt takes a while. 
 When it is completed you need to add 
-c:\qt-win-opensource-4.3.3 (or whatever directory name you used) 
+@file{c:\qt-win-opensource-4.3.3}
+(or whatever directory name you used) 
 to your PATH environment variable. 
 (One way to do is Under the System tab of the Control Panel click
-on 
-Advanced
+on Advanced
 and Environment Variables and then at the end of the PATH
 environment
-variable type:  
+variable type:
+
+@example
 ;c:\Qt\4.3.3\bin;c:\MinGW\bin )
+@end example
 
 
+@item
+Download an SVN client.  We recommend
+@uref{http://toroisesvn.net/downloads, TortoiseSVN}.
 
-
-6) Download an SVN client (TortoiseSVN from 
-http://toroisesvn.net/downloads)
-is a good choise as it integrates nicely with Windows Explorer
-
-7) Right-click on your desktop and
+@item
+Right-click on your desktop and
 do a svn checkout for marsyas
 URL of repository: 
+
+@example
 https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk
+@end example
+
 Checkout directory: where you want to install marsyas
-For example c:\marsyas-0.2.14
+For example @file{c:\marsyas-0.2.14}
 
-
-8) You are finally ready to compile Marsyas. Using 
+@item
+You are finally ready to compile Marsyas. Using 
 the Visual Studio 2008 Command Prompt go to 
-c:\marsyas-0.2.14 and do (it's a good idea to double check 
+@file{c:\marsyas-0.2.14} and do (it's a good idea to double check 
 that the PATH contains the correct Qt installed directory 
 and the DXSDK_DIR is set correctly as follows): 
 
+@example
 set PATH
 set DXSDK_DIR
+@end example
 
 If things look ok your ready to go: 
 
+@example
 qmake 
 nmake release 
+@end example
 
 (When you run qmake you should see a message 
 saying that the win32-msvc configuration is used). 
@@ -464,10 +482,8 @@ version compiled using Visual Studio in your PATH. If you
 have installed Qt with MinGW support you need to make 
 sure that it is not in your PATH if you want to compile 
 Marsyas using Visual Studio. 
+@end enumerate
 
-
-
-@end verbatim
 
 Additional recommended installations:
 
@@ -479,8 +495,8 @@ some very useful scripts which are written in Python.
 @end itemize
 
 
-@node Windows XP/Vista using Visual Studio 2005 IDE and qmake
-@subsection Windows XP/Vista using Visual Studio 2005 IDE and qmake
+@node Windows XP/Vista with Visual Studio 2005 IDE and qmake
+@subsection Windows XP/Vista with Visual Studio 2005 IDE and qmake
 
 Requirements:
 
@@ -759,87 +775,112 @@ some very useful scripts which are written in Python.
 @node Windows XP/Vista with Visual Studio 2008 Command-line
 @subsection Windows XP/Vista with Visual Studio 2008 Command-line
 
-@verbatim
-1) Download and install either the free Visual Studio Express or
+@enumerate
+@item
+Download and install either the free Visual Studio Express or
 the full payed Visual Studio (these instructions
 were used succesfully with the 2008 version but probably apply to
 other
 version also).
 
-2) Using the Visual Studio 2008 Command Prompt provided
+@item
+Using the Visual Studio 2008 Command Prompt provided
 under Visual C++ 9.0 Express Edition\Visual Studio Tools
 check that the command-line compiling works:
 
+@example
 c:\nmake
+@end example
 
 You will see some version number and it should complain
 that no MAKEFILE was found and no target specified
 
 
-3) Download and install the DirectX sdk
+@item
+Download and install the DirectX sdk
 (I used dxsdk_november2007.exe from the microsoft website)
 Add a new environment variable called DXSDK_DIR with value
 the directory direct X is installed.
 
 
-
-4) Download the Qt open source edition for C++ developers: Windows
+@item
+Download the Qt open source edition for C++ developers: Windows
 Download
-from: http://trolltech.com/downloads/opensource
+from:
+
+@example
+http://trolltech.com/downloads/opensource
+@end example
 
 Make sure you download the source code not the mingw.exe
 installer.
-qt-win-opensource-src-4.3.3.zip
+@file{qt-win-opensource-src-4.3.3.zip}
 
 
-5) Unzip the file into a directory (for example
-c:\qt-win-opensource-4.3.3
+@item
+Unzip the file into a directory (for example
+@file{c:\qt-win-opensource-4.3.3}
 and then using the VIsual Studio 2008 Command Prompt
 go to that directory and do:
+
+@example
 set QMAKESPEC=win32-msvc
 configure
 nmake
+@end example
 
 
+@item
 Have a snack as compiling Qt takes a while.
 When it is completed you need to add
-c:\qt-win-opensource-4.3.3 (or whatever directory name you used)
+@file{c:\qt-win-opensource-4.3.3} (or whatever directory name you used)
 to your PATH environment variable.
 (One way to do is Under the System tab of the Control Panel click
 on
 Advanced
 and Environment Variables and then at the end of the PATH
 environment
-variable type: ;c:\Qt\4.3.3\bin;c:\MinGW\bin )
+variable type:
+
+@example
+;c:\Qt\4.3.3\bin;c:\MinGW\bin
+@end example
 
 
+@item
+Download an SVN client.  We recommend
+@uref{http://toroisesvn.net/downloads, TortoiseSVN}.
 
-
-6) Download an SVN client (TortoiseSVN from
-http://toroisesvn.net/downloads)
-is a good choise as it integrates nicely with Windows Explorer
-
-7) Right-click on your desktop and
+@item
+Right-click on your desktop and
 do a svn checkout for marsyas
 URL of repository:
+
+@example
 https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk
+@end example
+
 Checkout directory: where you want to install marsyas
-For example c:\marsyas-0.2.14
+For example @file{c:\marsyas-0.2.14}
 
-
-8) You are finally ready to compile Marsyas. Using
+@item
+You are finally ready to compile Marsyas. Using
 the Visual Studio 2008 Command Prompt go to
-c:\marsyas-0.2.14 and do (it's a good idea to double check
+@file{c:\marsyas-0.2.14} and do (it's a good idea to double check
 that the PATH contains the correct Qt installed directory
 and the DXSDK_DIR is set correctly as follows):
 
+@example
 set PATH
 set DXSDK_DIR
+@end example
 
 If things look ok your ready to go:
 
+@example
 qmake
 nmake release
+@end example
 
 (When you run qmake you should see a message
 saying that the win32-msvc configuration is used).
@@ -853,7 +894,8 @@ version compiled using Visual Studio in your PATH. If you
 have installed Qt with MinGW support you need to make
 sure that it is not in your PATH if you want to compile
 Marsyas using Visual Studio.
-@end verbatim
+
+@end enumerate
 
 Additional recommended installations:
 
@@ -938,48 +980,46 @@ some very useful scripts which are written in Python.
 @node Windows XP/Vista with Cygwin and autotools
 @subsection Windows XP/Vista with Cygwin and autotools
 
-@verbatim
-B) MARSYAS, Cygwin under Windows XP, Vista
+@enumerate
+@item
+Download and install the basic cygwin environment
+from @uref{http://www.cygwin.com}
 
-1) Download and install the basic cygwin environment
-from http://www.cygwin.com
+@item
+You will also need to install gcc (the compiler), the gnu make
+utility, automake and a subversion client which are not included
+in the basic install. Once cygwin is installed click on Setup
+again and under the development category select the corresponding
+entries.  For example select gcc-g++ by clicking on the Skip
+column (a version number will replace Skip). Similarly for the
+other packages.
 
-2) You will also need to install gcc (the compiler),
-the gnu make utility, automkake and a subversion client which are
-not 
-included
-in the basic install. Once cygwin is installed
-click on Setup again and under the development category
-select the corresponding entries.
-For example select gcc-g++  by clicking
-on the Skip column (a version number will replace Skip)
-Similarly for the other packages.
-
-
-3) Download the marsyas trunk from subversion
-
-(from the cygwin terminal)
-svn co https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk 
-marsyas-0.2.14
-
-(replace marsyas-0.2.14 with the location you want marsyas to be
-installed)
-
-3) Open the cygwin terminal
-
-./configure
-make
-@end verbatim
+@item
+Download the marsyas trunk from subversion.  From the cygwin
+terminal, type:
 
 @example
-nmake (nmake debug or nmake all for debug or debug and release builds)
+svn co https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk marsyas-0.2.14
+@end example
+
+@noindent
+(replace marsyas-0.2.14 with the directory you want marsyas to be
+installed)
+
+@item
+Open the cygwin terminal and go to the cygwin directory.
+
+@example
+./configure
+make
 @end example
 
 This builds marsyas.lib, all (at least most of them) command line apps
-(sfplay, bextract, etc) and MarPlayer and MarPhasevocoder.
+(sfplay, bextract, etc).
+@end enumerate
 
 To generate a MSVC .vcproj for a project just cd into the app dir (e.g.
-apps/Qt4Apps/Meaws) and do:
+apps/Qt4Apps/MarPhasevocoder) and do:
 
 @example
 qmake -t vcapp 
@@ -1088,15 +1128,26 @@ data set used for large regression tests in Marsyas.
 @node Compiling Marsyas/Qt applications
 @subsection Compiling Marsyas/Qt applications
 
-@verbatim
-TODO.
+If you compiled Marsyas with qmake, then the Marsyas/Qt
+applications will be compiled already.
 
-src/Qt4Apps/APPNAME/
+If you compiled Marsyas with autotools, then you must compile each
+Marsyas/Qt application separately.  From the top of the source
+tree, go to
+
+@example
+cd src/Qt4Apps/
+cd @var{APPNAME}
+@end example
+
+@noindent
+where @var{APPNAME} is the name of the application you wish to
+compile.  Then type
+
+@example
 qmake
 make
-@end verbatim
-
-
+@end example
 
 
 @node Structure of distribution
