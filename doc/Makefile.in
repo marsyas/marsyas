@@ -241,7 +241,7 @@ uninstall-am: uninstall-info-am
 
 
 clean-local:
-	rm -rf out-www
+	-rm -rf out-www
 
 #DIST_COMMON = sources pdf html
 
