@@ -272,6 +272,44 @@ but it's only a matter of time before this feature is added.
 The generated file genre.arff can the be loaded into Weka 
 where classification experiments can be conducted. 
 
+POST-REFACTORING INSTRUCTIONS  - TODO, organize
+
+@verbatim
+1) Get a whole bunch of .wav files that you plan to analyze.
+(it is possible to decode mp3s but you need to install an external
+library called libmad
+and change a configuration setting in marsyasConfig.pri and
+recompile so I am leaving
+that out for now). Put all the .wav files you are interested in
+analyzing in a directory.
+
+2) The from bin\release do
+
+mkcollection -c mymusic_blues.mf
+c:\path\to_where_the_wav_files_are
+mkcollection -c mymusic_country.mf
+c:\path\to_where_the_wav_files_are
+
+This will create a text file called mymusic.mf that is a list of
+all the .wav files.
+
+3) Then from bin\release do:
+
+bextract -e REFACTORED mymusic_blues.mf mymusic_country.mf -w
+mymusic.arff
+
+The file mymusic.arff is in the ARFF format used by the Weka
+machine learning tool.
+It is a text file that is straighforward to parse. After a header
+it contists of lines
+of comma separated feature values. Each line corresponds to a
+file. Viewing
+it in a text editor will make this clearer.
+
+4) Remove the header and parse the feature vectors and after that
+you are done with Marsyas and can focus on visualization
+@end verbatim
+
 
 @node Synthesis
 @section Synthesis

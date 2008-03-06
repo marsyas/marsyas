@@ -40,7 +40,7 @@ CLEANFILES = marsyas-*.acs marsyas-*.cvs marsyas-*.mss  marsyas-*.prs \
              marsyas-*.pg marsyas-*.tp marsyas-*.vr marsyas-*.cp 
 
 clean-local:
-	rm -rf out-www
+	-rm -rf out-www
 
 QT_EXAMPLES = ../src/examples/Qt4-tutorial/*.h ../src/examples/Qt4-tutorial/*.cpp
 QT_EXAMPLES_AS_PERL = ../src/examples/Qt4-tutorial/*.pro

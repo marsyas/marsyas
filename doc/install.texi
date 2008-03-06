@@ -1,4 +1,5 @@
-@node Source installation
+
+        @node Source installation
 @chapter Source installation
 
 This chapter shows the steps to get a working version of Marsyas.
@@ -60,8 +61,9 @@ checking the sourceforge website.
 * Linux with qmake::            
 * MacOS X with autotools::      
 * MaxOS X with qmake::          
-* Windows XP/Vista using Visual Studio command-line and qmake::  
-* Windows XP/Vista using Visual Studio IDE and qmake::  
+* Windows XP/Vista using Visual Studio 2005 command-line and qmake::  
+* Windows XP/Vista using Visual Studio 2005 IDE and qmake::  
+* Windows XP/Vista with Visual Studio 2008 Command-line::  
 * Windows XP/Vista with MinGW and qmake::  
 * Windows XP/Vista with Cygwin and autotools::  
 @end menu
@@ -366,8 +368,8 @@ perform our automatic tests.  For more information, see
 
 
 
-@node Windows XP/Vista using Visual Studio command-line and qmake
-@subsection Windows XP/Vista using Visual Studio command-line and qmake
+@node Windows XP/Vista using Visual Studio 2005 command-line and qmake
+@subsection Windows XP/Vista using Visual Studio 2005 command-line and qmake
 
 @verbatim
 
@@ -470,10 +472,110 @@ Marsyas using Visual Studio.
 @end verbatim
 
 
-@node Windows XP/Vista using Visual Studio IDE and qmake
-@subsection Windows XP/Vista using Visual Studio IDE and qmake
+@node Windows XP/Vista using Visual Studio 2005 IDE and qmake
+@subsection Windows XP/Vista using Visual Studio 2005 IDE and qmake
 
 @verbatim
+@end verbatim
+
+
+@node Windows XP/Vista with Visual Studio 2008 Command-line
+@subsection Windows XP/Vista with Visual Studio 2008 Command-line
+
+@verbatim
+1) Download and install either the free Visual Studio Express or
+the full payed Visual Studio (these instructions
+were used succesfully with the 2008 version but probably apply to
+other
+version also).
+
+2) Using the Visual Studio 2008 Command Prompt provided
+under Visual C++ 9.0 Express Edition\Visual Studio Tools
+check that the command-line compiling works:
+
+c:\nmake
+
+You will see some version number and it should complain
+that no MAKEFILE was found and no target specified
+
+
+3) Download and install the DirectX sdk
+(I used dxsdk_november2007.exe from the microsoft website)
+Add a new environment variable called DXSDK_DIR with value
+the directory direct X is installed.
+
+
+
+4) Download the Qt open source edition for C++ developers: Windows
+Download
+from: http://trolltech.com/downloads/opensource
+
+Make sure you download the source code not the mingw.exe
+installer.
+qt-win-opensource-src-4.3.3.zip
+
+
+5) Unzip the file into a directory (for example
+c:\qt-win-opensource-4.3.3
+and then using the VIsual Studio 2008 Command Prompt
+go to that directory and do:
+set QMAKESPEC=win32-msvc
+configure
+nmake
+
+
+Have a snack as compiling Qt takes a while.
+When it is completed you need to add
+c:\qt-win-opensource-4.3.3 (or whatever directory name you used)
+to your PATH environment variable.
+(One way to do is Under the System tab of the Control Panel click
+on
+Advanced
+and Environment Variables and then at the end of the PATH
+environment
+variable type: ;c:\Qt\4.3.3\bin;c:\MinGW\bin )
+
+
+
+
+6) Download an SVN client (TortoiseSVN from
+http://toroisesvn.net/downloads)
+is a good choise as it integrates nicely with Windows Explorer
+
+7) Right-click on your desktop and
+do a svn checkout for marsyas
+URL of repository:
+https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk
+Checkout directory: where you want to install marsyas
+For example c:\marsyas-0.2.14
+
+
+8) You are finally ready to compile Marsyas. Using
+the Visual Studio 2008 Command Prompt go to
+c:\marsyas-0.2.14 and do (it's a good idea to double check
+that the PATH contains the correct Qt installed directory
+and the DXSDK_DIR is set correctly as follows):
+
+set PATH
+set DXSDK_DIR
+
+If things look ok your ready to go:
+
+qmake
+nmake release
+
+(When you run qmake you should see a message
+saying that the win32-msvc configuration is used).
+
+The executables will be placed in the bin\release
+subdirectory. Try for example to play a soundfile
+using sfplay or MarPlayer.
+
+IMPORTANT NOTE: It is necessary to have the correct Qt
+version compiled using Visual Studio in your PATH. If you
+have installed Qt with MinGW support you need to make
+sure that it is not in your PATH if you want to compile
+Marsyas using Visual Studio.
 @end verbatim
 
 
@@ -535,6 +637,7 @@ mingw32-make.exe release
 @end example
 
 @end enumerate
+
 
 
 @node Windows XP/Vista with Cygwin and autotools
