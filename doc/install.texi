@@ -1,5 +1,4 @@
-
-        @node Source installation
+@node Source installation
 @chapter Source installation
 
 This chapter shows the steps to get a working version of Marsyas.
@@ -9,7 +8,6 @@ This chapter shows the steps to get a working version of Marsyas.
 * Main Install::                
 * Optional Installs::           
 * Structure of distribution::   
-* Old Windows Stuff::           
 @end menu
 
 @node Download
@@ -471,490 +469,20 @@ Marsyas using Visual Studio.
 
 @end verbatim
 
+Additional recommended installations:
+
+@itemize
+@item
+@uref{http://python.org, Python}: Installed by default on Linux and MacOS X
+machines; Windows users may install it from this site.  Marsyas contains
+some very useful scripts which are written in Python.
+@end itemize
+
 
 @node Windows XP/Vista using Visual Studio 2005 IDE and qmake
 @subsection Windows XP/Vista using Visual Studio 2005 IDE and qmake
 
-@verbatim
-@end verbatim
-
-
-@node Windows XP/Vista with Visual Studio 2008 Command-line
-@subsection Windows XP/Vista with Visual Studio 2008 Command-line
-
-@verbatim
-1) Download and install either the free Visual Studio Express or
-the full payed Visual Studio (these instructions
-were used succesfully with the 2008 version but probably apply to
-other
-version also).
-
-2) Using the Visual Studio 2008 Command Prompt provided
-under Visual C++ 9.0 Express Edition\Visual Studio Tools
-check that the command-line compiling works:
-
-c:\nmake
-
-You will see some version number and it should complain
-that no MAKEFILE was found and no target specified
-
-
-3) Download and install the DirectX sdk
-(I used dxsdk_november2007.exe from the microsoft website)
-Add a new environment variable called DXSDK_DIR with value
-the directory direct X is installed.
-
-
-
-4) Download the Qt open source edition for C++ developers: Windows
-Download
-from: http://trolltech.com/downloads/opensource
-
-Make sure you download the source code not the mingw.exe
-installer.
-qt-win-opensource-src-4.3.3.zip
-
-
-5) Unzip the file into a directory (for example
-c:\qt-win-opensource-4.3.3
-and then using the VIsual Studio 2008 Command Prompt
-go to that directory and do:
-set QMAKESPEC=win32-msvc
-configure
-nmake
-
-
-Have a snack as compiling Qt takes a while.
-When it is completed you need to add
-c:\qt-win-opensource-4.3.3 (or whatever directory name you used)
-to your PATH environment variable.
-(One way to do is Under the System tab of the Control Panel click
-on
-Advanced
-and Environment Variables and then at the end of the PATH
-environment
-variable type: ;c:\Qt\4.3.3\bin;c:\MinGW\bin )
-
-
-
-
-6) Download an SVN client (TortoiseSVN from
-http://toroisesvn.net/downloads)
-is a good choise as it integrates nicely with Windows Explorer
-
-7) Right-click on your desktop and
-do a svn checkout for marsyas
-URL of repository:
-https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk
-Checkout directory: where you want to install marsyas
-For example c:\marsyas-0.2.14
-
-
-8) You are finally ready to compile Marsyas. Using
-the Visual Studio 2008 Command Prompt go to
-c:\marsyas-0.2.14 and do (it's a good idea to double check
-that the PATH contains the correct Qt installed directory
-and the DXSDK_DIR is set correctly as follows):
-
-set PATH
-set DXSDK_DIR
-
-If things look ok your ready to go:
-
-qmake
-nmake release
-
-(When you run qmake you should see a message
-saying that the win32-msvc configuration is used).
-
-The executables will be placed in the bin\release
-subdirectory. Try for example to play a soundfile
-using sfplay or MarPlayer.
-
-IMPORTANT NOTE: It is necessary to have the correct Qt
-version compiled using Visual Studio in your PATH. If you
-have installed Qt with MinGW support you need to make
-sure that it is not in your PATH if you want to compile
-Marsyas using Visual Studio.
-@end verbatim
-
-
-@node Windows XP/Vista with MinGW and qmake
-@subsection Windows XP/Vista with MinGW and qmake
-
-@enumerate
-
-@item
-Download the Qt open source edition for C++ developers:
-@uref{http://trolltech.com/developer/downloads/qt/windows,
-Windows download}.  The file should be called something like
-@file{qt-win-opensource-4.3.3-mingw.exe}
-
-@item
-Run the downloaded executable and then just follow the
-installation instructions.  If you don't have MinGW installed,
-click on the corresponding check box to have it installed.
-
-@item
-Add these two items to your @env{PATH} environment variable:
-@file{c:\Qt\4.3.3\bin} and @file{c:\MinGW\bin}
-
-One way to do this is Under the System tab of the Control Panel
-click on Advanced and Environment Variables and then at the end of
-the @env{PATH} environment variable type:
-@code{;c:\Qt\4.3.3\bin;c:\MinGW\bin}
-
-Alternatively the Qt install creates a Qt 4.3.3 Command Prompt
-that you can use instead of cmd.exe and has the environment
-variables already set up.
-
-@item
-Download and install the DirectX sdk (I used
-dxsdk_november2007.exe from the microsoft website).  Add a new
-environment variable called @env{DXSDK_DIR} with value of the
-directory direct X is installed. 
-
-@item
-Download an SVN client.  We recommend
-@uref{http://toroisesvn.net/downloads, TortoiseSVN}.
-
-@item
-Right-click on your desktop and do a svn checkout for marsyas.
-The URL of the repository is
-@code{https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk}.
-
-Checkout directory: where you want to install marsyas.   For
-example @file{c:\marsyas-0.2.14}
-
-@item
-Run a command shell (either cmd.exe if you have set the
-environment variables correct or the Qt 4.3.3 command prompt)
-
-@example
-cd c:\marsyas-0.2.14
-qmake
-mingw32-make.exe release
-@end example
-
-@end enumerate
-
-
-
-@node Windows XP/Vista with Cygwin and autotools
-@subsection Windows XP/Vista with Cygwin and autotools
-
-@verbatim
-B) MARSYAS, Cygwin under Windows XP, Vista
-
-1) Download and install the basic cygwin environment
-from http://www.cygwin.com
-
-2) You will also need to install gcc (the compiler),
-the gnu make utility, automkake and a subversion client which are
-not 
-included
-in the basic install. Once cygwin is installed
-click on Setup again and under the development category
-select the corresponding entries.
-For example select gcc-g++  by clicking
-on the Skip column (a version number will replace Skip)
-Similarly for the other packages.
-
-
-3) Download the marsyas trunk from subversion
-
-(from the cygwin terminal)
-svn co https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk 
-marsyas-0.2.14
-
-(replace marsyas-0.2.14 with the location you want marsyas to be
-installed)
-
-3) Open the cygwin terminal
-
-./configure
-make
-@end verbatim
-
-
-
-
-@node Optional Installs
-@section Optional Installs
-
-@menu
-* Vim editor support::          
-* MATLAB setup::                
-* Datasets::                    
-* Compiling Marsyas/Qt applications::  
-@end menu
-
-@node Vim editor support
-@subsection Vim editor support
-
-A syntax file for vim color highlighting is in @file{misc/marsyas.vim}.
-To use this file, copy it to @file{$HOME/.vim/syntax} add the following
-lines to @file{$HOME/.vim/filetype.vim}:
-
-@example
-if exists("did_load_filetypes")
-  finish
-endif
-augroup filetypedetect
-  au! BufNewFile,BufRead *.cpp          setf marsyas
-  au! BufNewFile,BufRead *.h            setf marsyas
-augroup END
-@end example
-
-
-@node MATLAB setup
-@subsection MATLAB setup
-
-@unnumberedsubsubsec ... on OSX (Intel)
-
-(the powerPC version is slightly different)
-
-@enumerate
-@item
-MATLAB and X11 for OS X must be installed
-
-@item
-The configure script assumes it is installed in
-/Applications/MATLAB74
-(this should be an environment variable; this might be fixed soon ).
-
-@item
-The marsaysMATLABrelease configuration must be enabled
-(uncommented in marsyasConfig.pri, or do something for autotools)
-
-@item
-Compile Marsyas using qmake, make
-
-@item
-try out marsyasTests -t MATLABengine. MATLAB
-should open and various benchmarks and communication
-between Marsyas and MATLAB should happen. If not
-email the mailing lists for some help.
-
-@item
-There must be a symbolic link to the matlab executable
-from /usr/bin/matlab:
-ln -s /Applications/MATLAB74/bin/matlab /usr/bin/matlab
-
-@item
-You must start X11 windows manually. "open -a X11", or click on the X11
-icon in your /Applications/util/ folder.
-@end enumerate
-
-
-@node Datasets
-@subsection Datasets
-
-Useful datasets:
-
-@itemize
-@item
-@uref{http://marsyas.sness.net/marsyas-coffee/marsyas-coffee-latest.tar.bz2,
-marsyas-coffee}:
-data set used for large regression tests in Marsyas.
-
-@end itemize
-
-
-@node Compiling Marsyas/Qt applications
-@subsection Compiling Marsyas/Qt applications
-
-@verbatim
-TODO.
-
-src/Qt4Apps/APPNAME/
-qmake
-make
-@end verbatim
-
-
-@node Structure of distribution
-@section Structure of distribution 
-
-@c file structure
-
-Marsyas is primarily targeted to researchers and software developers who
-want to build new systems and applications using existing building
-blocks.  Therefore familiarity with the directory structure of the
-Marsyas distribution is important for any serious work with the
-framework. 
-
-The main marsyas directory consists of the following important files: 
-
-@itemize
-@item @b{NEWS:} important changes in each release.
-
-@item @b{AUTHORS:} who we are, what we do.
-
-@item @b{marsyasConfig.pri:} edit this file to select your configure
-options when using qmake.
-
-@item @b{INSTALL, COPYING, README, Changelog:} standard text files for
-GNU projects, but not relevant to ours.  We use @code{svn log} messages
-instead of the Changelog, and the documentation is covered in this
-manual.
-
-@end itemize 
-
-
-@noindent
-In addition there are the following subdirectories: 
-
-@itemize 
-@item @b{src:} all the C++ source files.
-
-@item @b{src/marsyas:} the main directory containing all the important
-source code of Marsyas.  The source files in this subdirectory are
-compiled into a static library that other programs can use to access
-Marsyas functionality. 
-
-@item @b{src/apps:} the source code for executables.
-
-@item @b{src/examples:} easy-to-read source code for simple executables.
-
-@item @b{src/marsyasqt_wrapper:} source for the static library
-MarsyasQt, which allows the use of Marsyas in Qt applications.
-
-@item @b{src/Qt4Apps:} provides GUI interfaces using Qt4. These will not
-work with earlier versions of Qt. You must have Qt4 installed in order
-to use or compile these applications. A README file is supplied with
-each one that has instructions on how to compile and run it.
-
-@item @b{bin:} executable files are compiled in @file{bin/release} or
-@file{bin/debug}.
-
-@item @b{doc:} contains the user manual (which you are currently
-reading).
-
-@item @b{config:} configuration files used by autotools.
-
-@item @b{scripts:} useful scripts to help programming with Marsyas.
-
-@item @b{scripts/MATLAB:} MATLAB scripts.
-
-@item @b{regressionTests:} data files for our automatic tests.
-
-@end itemize 
-
-
-
-@node Old Windows Stuff
-@section Old Windows Stuff
-
-@menu
-* System preparation::          
-* Compiling::                   
-@end menu
-
-@node System preparation
-@subsection System preparation
-
-@menu
-* Requirements on Windows::     
-* Optional programs::           
-@end menu
-
-@node Requirements on Windows
-@subsubsection Requirements on Windows
-
-On Windows, you may use either MinGW, Microsoft Visual Studio, or
-Cygwin.
-
-@unnumberedsubsubsec MinGW
-
-MinGW is a collection of compilers, compiler tools, libraries, and
-header files, which can compile code on Windows.  This is the main
-supported compiler for Qt/OpenSource; it is installed by default as part
-of the normal Qt installation on Windows.
-
-Required:
-
-@itemize
-@item @uref{http://www.mingw.org/, MinGW} (installed by default by
-Qt/OpenSource)
-@item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech}
-development platform, version 4.2.3 or above.
-@item Microsoft DirectX SDK and Platform SDK
-@end itemize
-
-
-@unnumberedsubsubsec Cygwin
-
-Cygwin is a unix environment for Windows.
-
-Required:
-
-@itemize
-@item @uref{http://www.cygwin.com/,Cygwin}, with gcc and autotools
-installed (these should be installed by default)
-@item Microsoft DirectX SDK and Platform SDK
-@end itemize
-
-Strongly recommended:
-
-@itemize
-@item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech}
-development platform, version 4.2.3 or above.
-@end itemize
-
-
-
-@unnumberedsubsubsec Microsoft Visual Studio
-
-Windows XP SP2 and Vista has been tested; in theory other versions
-of Windows should work, but they have not been tested.
-
-
-@subheading Vista
-
-@verbatim
-
-1) Obtain an svn client for Windows (I have used
-Tortoise svn (nice GUI integration with explorer) and
-the svn command-line in Cygwin)
-
-Check out the latest trunk by:
-svn co https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk
-
-2) Download and install Microsoft Visual Studio Express
-(free IDE/compiler from Microsoft)
-
-3) Download and install the Microsoft Windows SDK
-(seems to be what has replaced the Platform SDK in Vista)
-
-4) On my machine it is installed in c:\Program Files\Microsoft
-SDKs\Windows\v6.0
-
-5) You will need to add the Bin, Lib, and Include directories of
-the SDK to the corresponding environment variables so that nmake
-can compile Marsyas. The easiest way to do that is to copy the
-vcvars32.bat found in
-c:\Program Files\Microsoft Visual Studio 8\Common7\Tools
-in order to edit it appropriately to set the PATH, LIB, INCLUDE
-variables to include the corresponding directories in the SDK (the
-file is read-only by default) and then execute the corresponding
-batch file.
-
-6) Then download and install Qt 4.3.2
-Follow the instructions to compile and install
-
-7) Once all these steps are completed you can compile Marsyas by
-doing
-qmake
-nmake
-from the command line. The Visual Studio Express has a special
-command-line terminal that's much better than the default one.
-
-@end verbatim
-
-@subheading Windows XP SP2
-
-Required:
+Requirements:
 
 @itemize
 @item Latest version of
@@ -1218,29 +746,230 @@ marsyas-developers@@lists.sourceforge.net
 
 
 
-
-@node Optional programs
-@subsubsection Optional programs
-
-Useful programs:
+Additional recommended installations:
 
 @itemize
 @item
 @uref{http://python.org, Python}: Installed by default on Linux and MacOS X
 machines; Windows users may install it from this site.  Marsyas contains
 some very useful scripts which are written in Python.
+@end itemize
 
+
+@node Windows XP/Vista with Visual Studio 2008 Command-line
+@subsection Windows XP/Vista with Visual Studio 2008 Command-line
+
+@verbatim
+1) Download and install either the free Visual Studio Express or
+the full payed Visual Studio (these instructions
+were used succesfully with the 2008 version but probably apply to
+other
+version also).
+
+2) Using the Visual Studio 2008 Command Prompt provided
+under Visual C++ 9.0 Express Edition\Visual Studio Tools
+check that the command-line compiling works:
+
+c:\nmake
+
+You will see some version number and it should complain
+that no MAKEFILE was found and no target specified
+
+
+3) Download and install the DirectX sdk
+(I used dxsdk_november2007.exe from the microsoft website)
+Add a new environment variable called DXSDK_DIR with value
+the directory direct X is installed.
+
+
+
+4) Download the Qt open source edition for C++ developers: Windows
+Download
+from: http://trolltech.com/downloads/opensource
+
+Make sure you download the source code not the mingw.exe
+installer.
+qt-win-opensource-src-4.3.3.zip
+
+
+5) Unzip the file into a directory (for example
+c:\qt-win-opensource-4.3.3
+and then using the VIsual Studio 2008 Command Prompt
+go to that directory and do:
+set QMAKESPEC=win32-msvc
+configure
+nmake
+
+
+Have a snack as compiling Qt takes a while.
+When it is completed you need to add
+c:\qt-win-opensource-4.3.3 (or whatever directory name you used)
+to your PATH environment variable.
+(One way to do is Under the System tab of the Control Panel click
+on
+Advanced
+and Environment Variables and then at the end of the PATH
+environment
+variable type: ;c:\Qt\4.3.3\bin;c:\MinGW\bin )
+
+
+
+
+6) Download an SVN client (TortoiseSVN from
+http://toroisesvn.net/downloads)
+is a good choise as it integrates nicely with Windows Explorer
+
+7) Right-click on your desktop and
+do a svn checkout for marsyas
+URL of repository:
+https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk
+Checkout directory: where you want to install marsyas
+For example c:\marsyas-0.2.14
+
+
+8) You are finally ready to compile Marsyas. Using
+the Visual Studio 2008 Command Prompt go to
+c:\marsyas-0.2.14 and do (it's a good idea to double check
+that the PATH contains the correct Qt installed directory
+and the DXSDK_DIR is set correctly as follows):
+
+set PATH
+set DXSDK_DIR
+
+If things look ok your ready to go:
+
+qmake
+nmake release
+
+(When you run qmake you should see a message
+saying that the win32-msvc configuration is used).
+
+The executables will be placed in the bin\release
+subdirectory. Try for example to play a soundfile
+using sfplay or MarPlayer.
+
+IMPORTANT NOTE: It is necessary to have the correct Qt
+version compiled using Visual Studio in your PATH. If you
+have installed Qt with MinGW support you need to make
+sure that it is not in your PATH if you want to compile
+Marsyas using Visual Studio.
+@end verbatim
+
+Additional recommended installations:
+
+@itemize
+@item
+@uref{http://python.org, Python}: Installed by default on Linux and MacOS X
+machines; Windows users may install it from this site.  Marsyas contains
+some very useful scripts which are written in Python.
+@end itemize
+
+
+@node Windows XP/Vista with MinGW and qmake
+@subsection Windows XP/Vista with MinGW and qmake
+
+@enumerate
+
+@item
+Download the Qt open source edition for C++ developers:
+@uref{http://trolltech.com/developer/downloads/qt/windows,
+Windows download}.  The file should be called something like
+@file{qt-win-opensource-4.3.3-mingw.exe}
+
+@item
+Run the downloaded executable and then just follow the
+installation instructions.  If you don't have MinGW installed,
+click on the corresponding check box to have it installed.
+
+@item
+Add these two items to your @env{PATH} environment variable:
+@file{c:\Qt\4.3.3\bin} and @file{c:\MinGW\bin}
+
+One way to do this is Under the System tab of the Control Panel
+click on Advanced and Environment Variables and then at the end of
+the @env{PATH} environment variable type:
+@code{;c:\Qt\4.3.3\bin;c:\MinGW\bin}
+
+Alternatively the Qt install creates a Qt 4.3.3 Command Prompt
+that you can use instead of cmd.exe and has the environment
+variables already set up.
+
+@item
+Download and install the DirectX sdk (I used
+dxsdk_november2007.exe from the microsoft website).  Add a new
+environment variable called @env{DXSDK_DIR} with value of the
+directory direct X is installed. 
+
+@item
+Download an SVN client.  We recommend
+@uref{http://toroisesvn.net/downloads, TortoiseSVN}.
+
+@item
+Right-click on your desktop and do a svn checkout for marsyas.
+The URL of the repository is
+@code{https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk}.
+
+Checkout directory: where you want to install marsyas.   For
+example @file{c:\marsyas-0.2.14}
+
+@item
+Run a command shell (either cmd.exe if you have set the
+environment variables correct or the Qt 4.3.3 command prompt)
+
+@example
+cd c:\marsyas-0.2.14
+qmake
+mingw32-make.exe release
+@end example
+
+@end enumerate
+
+Additional recommended installations:
+
+@itemize
+@item
+@uref{http://python.org, Python}: Installed by default on Linux and MacOS X
+machines; Windows users may install it from this site.  Marsyas contains
+some very useful scripts which are written in Python.
 @end itemize
 
 
 
+@node Windows XP/Vista with Cygwin and autotools
+@subsection Windows XP/Vista with Cygwin and autotools
 
-@node Compiling
-@subsection Compiling
+@verbatim
+B) MARSYAS, Cygwin under Windows XP, Vista
 
-@subsubsection ...on Windows (MinGW or Visual Studio)
+1) Download and install the basic cygwin environment
+from http://www.cygwin.com
 
-After Configuring, simply type
+2) You will also need to install gcc (the compiler),
+the gnu make utility, automkake and a subversion client which are
+not 
+included
+in the basic install. Once cygwin is installed
+click on Setup again and under the development category
+select the corresponding entries.
+For example select gcc-g++  by clicking
+on the Skip column (a version number will replace Skip)
+Similarly for the other packages.
+
+
+3) Download the marsyas trunk from subversion
+
+(from the cygwin terminal)
+svn co https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk 
+marsyas-0.2.14
+
+(replace marsyas-0.2.14 with the location you want marsyas to be
+installed)
+
+3) Open the cygwin terminal
+
+./configure
+make
+@end verbatim
 
 @example
 nmake (nmake debug or nmake all for debug or debug and release builds)
@@ -1263,6 +992,179 @@ marsyas dir and do:
 qmake -t vclib
 @end example
 
+Additional recommended installations:
 
+@itemize
+@item
+@uref{http://python.org, Python}: Installed by default on Linux and MacOS X
+machines; Windows users may install it from this site.  Marsyas contains
+some very useful scripts which are written in Python.
+@end itemize
+
+
+
+@node Optional Installs
+@section Optional Installs
+
+@menu
+* Vim editor support::          
+* MATLAB setup::                
+* Datasets::                    
+* Compiling Marsyas/Qt applications::  
+@end menu
+
+@node Vim editor support
+@subsection Vim editor support
+
+A syntax file for vim color highlighting is in @file{misc/marsyas.vim}.
+To use this file, copy it to @file{$HOME/.vim/syntax} add the following
+lines to @file{$HOME/.vim/filetype.vim}:
+
+@example
+if exists("did_load_filetypes")
+  finish
+endif
+augroup filetypedetect
+  au! BufNewFile,BufRead *.cpp          setf marsyas
+  au! BufNewFile,BufRead *.h            setf marsyas
+augroup END
+@end example
+
+
+@node MATLAB setup
+@subsection MATLAB setup
+
+@unnumberedsubsubsec ... on OSX (Intel)
+
+(the powerPC version is slightly different)
+
+@enumerate
+@item
+MATLAB and X11 for OS X must be installed
+
+@item
+The configure script assumes it is installed in
+/Applications/MATLAB74
+(this should be an environment variable; this might be fixed soon ).
+
+@item
+The marsaysMATLABrelease configuration must be enabled
+(uncommented in marsyasConfig.pri, or do something for autotools)
+
+@item
+Compile Marsyas using qmake, make
+
+@item
+try out marsyasTests -t MATLABengine. MATLAB
+should open and various benchmarks and communication
+between Marsyas and MATLAB should happen. If not
+email the mailing lists for some help.
+
+@item
+There must be a symbolic link to the matlab executable
+from /usr/bin/matlab:
+ln -s /Applications/MATLAB74/bin/matlab /usr/bin/matlab
+
+@item
+You must start X11 windows manually. "open -a X11", or click on the X11
+icon in your /Applications/util/ folder.
+@end enumerate
+
+
+@node Datasets
+@subsection Datasets
+
+Useful datasets:
+
+@itemize
+@item
+@uref{http://marsyas.sness.net/marsyas-coffee/marsyas-coffee-latest.tar.bz2,
+marsyas-coffee}:
+data set used for large regression tests in Marsyas.
+
+@end itemize
+
+
+@node Compiling Marsyas/Qt applications
+@subsection Compiling Marsyas/Qt applications
+
+@verbatim
+TODO.
+
+src/Qt4Apps/APPNAME/
+qmake
+make
+@end verbatim
+
+
+
+
+@node Structure of distribution
+@section Structure of distribution 
+
+@c file structure
+
+Marsyas is primarily targeted to researchers and software developers who
+want to build new systems and applications using existing building
+blocks.  Therefore familiarity with the directory structure of the
+Marsyas distribution is important for any serious work with the
+framework. 
+
+The main marsyas directory consists of the following important files: 
+
+@itemize
+@item @b{NEWS:} important changes in each release.
+
+@item @b{AUTHORS:} who we are, what we do.
+
+@item @b{marsyasConfig.pri:} edit this file to select your configure
+options when using qmake.
+
+@item @b{INSTALL, COPYING, README, Changelog:} standard text files for
+GNU projects, but not relevant to ours.  We use @code{svn log} messages
+instead of the Changelog, and the documentation is covered in this
+manual.
+
+@end itemize 
+
+
+@noindent
+In addition there are the following subdirectories: 
+
+@itemize 
+@item @b{src:} all the C++ source files.
+
+@item @b{src/marsyas:} the main directory containing all the important
+source code of Marsyas.  The source files in this subdirectory are
+compiled into a static library that other programs can use to access
+Marsyas functionality. 
+
+@item @b{src/apps:} the source code for executables.
+
+@item @b{src/examples:} easy-to-read source code for simple executables.
+
+@item @b{src/marsyasqt_wrapper:} source for the static library
+MarsyasQt, which allows the use of Marsyas in Qt applications.
+
+@item @b{src/Qt4Apps:} provides GUI interfaces using Qt4. These will not
+work with earlier versions of Qt. You must have Qt4 installed in order
+to use or compile these applications. A README file is supplied with
+each one that has instructions on how to compile and run it.
+
+@item @b{bin:} executable files are compiled in @file{bin/release} or
+@file{bin/debug}.
+
+@item @b{doc:} contains the user manual (which you are currently
+reading).
+
+@item @b{config:} configuration files used by autotools.
+
+@item @b{scripts:} useful scripts to help programming with Marsyas.
+
+@item @b{scripts/MATLAB:} MATLAB scripts.
+
+@item @b{regressionTests:} data files for our automatic tests.
+
+@end itemize 
 
 

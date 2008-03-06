@@ -275,6 +275,18 @@ where classification experiments can be conducted.
 POST-REFACTORING INSTRUCTIONS  - TODO, organize
 
 @verbatim
+bextract -e REFACTORED music-speech.mf -w ms.arff -p ms.mpl
+sfplugin -p ms.mpl debussy.au
+sfplugin -p ms.mpl undergrad.au
+@end verbatim
+
+identical to: (test.mf contains debussy.au and undergrad.au)
+
+@verbatim
+bextract -e REFACTORED music-speech.mf -w ms.arff -p ms.mpl -tc test.mf
+@end verbatim
+
+@verbatim
 1) Get a whole bunch of .wav files that you plan to analyze.
 (it is possible to decode mp3s but you need to install an external
 library called libmad
