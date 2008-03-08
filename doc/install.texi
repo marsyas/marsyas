@@ -259,6 +259,12 @@ libmad and writing warnings to a file, one would do:
 @warning{If you want to write Marsyas/Qt programs, you must configure
 with @code{--enable-marsyasqt}}
 
+@warning{on MacOS X and when using Qt-4.3.0 or higher, you must
+add @w{@code{export QMAKESPEC=/usr/local/Qt4.3/mkspecs/macx-g++/}}
+to your @file{~/.profile} or @file{~/.bash_profile} and then close
+(and re-open) your terminal window before following the steps
+below!}
+
 A frequent variation (if you don't have root priviledges) 
 is to install Marsyas in your home directory:
 
@@ -328,10 +334,11 @@ development platform, version 4.2.3 or above.
 @end itemize
 
 @c  the @warning{} needs everything on one line.  :(
-@warning{on MacOS X and when using Qt-4.3.0 or higher, you must add
-@w{@code{export QMAKESPEC=/usr/local/Qt4.3/mkspecs/macx-g++/}} to your
-@file{~/.profile} and then close (and re-open) your terminal
-window before following the steps below!}
+@warning{on MacOS X and when using Qt-4.3.0 or higher, you must
+add @w{@code{export QMAKESPEC=/usr/local/Qt4.3/mkspecs/macx-g++/}}
+to your @file{~/.profile} or @file{~/.bash_profile} and then close
+(and re-open) your terminal window before following the steps
+below!}
 
 @subsubheading Configuring
 
