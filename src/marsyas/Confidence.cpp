@@ -134,7 +134,9 @@ Confidence::myUpdate(MarControlPtr sender)
 	  write_ = 1;
 	}
     }
-  hopDuration_ = getctrl("mrs_natural/hopSize")->to<mrs_natural>() / getctrl("mrs_real/osrate")->to<mrs_real>();
+  hopDuration_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>() / getctrl("mrs_real/osrate")->to<mrs_real>();
+
+  
   nbFrames_ = -getctrl("mrs_natural/memSize")->to<mrs_natural>()+1;
   lastLabel_ = "MARSYAS_EMPTY";
 }
