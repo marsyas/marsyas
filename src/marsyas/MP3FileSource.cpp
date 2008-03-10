@@ -107,8 +107,8 @@ MP3FileSource::addControls()
 	
   addctrl("mrs_string/currentlyPlaying", "daufile", ctrl_currentlyPlaying_);
   addctrl("mrs_natural/currentLabel", 0, ctrl_currentLabel_);
-  addctrl("mrs_natural/labelNames",",", ctrl_currentLabel_);
-  addctrl("mrs_natural/nLabels", 0, ctrl_currentLabel_);
+  addctrl("mrs_string/labelNames",",", ctrl_labelNames_);
+  addctrl("mrs_natural/nLabels", 0, ctrl_nLabels_);
   
 }
 
@@ -318,7 +318,7 @@ MP3FileSource::getHeader(string filename)
     
   }
   
-  // PrintFrameInfo(&frame.header);
+  PrintFrameInfo(&frame.header);
 
 
   mrs_natural nChannels = MAD_NCHANNELS(&frame.header);
@@ -349,13 +349,18 @@ MP3FileSource::getHeader(string filename)
   setctrl("mrs_real/israte", sampleRate); 
   setctrl("mrs_natural/size", size_ / 2);
   setctrl("mrs_natural/bitRate", bitRate);
+
   update();
   
   
   ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
   ctrl_currentLabel_->setValue(0, NOUPDATE);
   ctrl_nLabels_->setValue(0, NOUPDATE);
+
+
   ctrl_labelNames_->setValue(",", NOUPDATE);
+
+
 
   offset = 0;
   pos_ = samplesOut_ = frameCount_ = 0;
@@ -383,6 +388,7 @@ MP3FileSource::myUpdate(MarControlPtr sender)
 	(void) sender;
   MRSDIAG("MP3FileSource::myUpdate");
   
+
   
   israte_ = ctrl_israte_->to<mrs_real>();
   inSamples_ = ctrl_inSamples_->to<mrs_natural>();
@@ -417,6 +423,7 @@ MP3FileSource::myUpdate(MarControlPtr sender)
       currentPos_ = pos_;
     }
   
+
   filename_ = getctrl("mrs_string/filename")->to<mrs_string>();    
   duration_ = getctrl("mrs_real/duration")->to<mrs_real>();
   advance_ = getctrl("mrs_bool/advance")->to<mrs_bool>();
@@ -440,6 +447,8 @@ MP3FileSource::myUpdate(MarControlPtr sender)
     reservoir_.stretch(nChannels,reservoirSize_);
   }
   preservoirSize_ = reservoirSize_;
+
+
 
 }
 
@@ -588,6 +597,8 @@ MP3FileSource::getLinear16(realvec& slice)
  */
 void MP3FileSource::myProcess(realvec& in, realvec& out)
 {
+
+
 	(void) in;
   //checkFlow(in,out);
 
