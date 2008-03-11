@@ -66,7 +66,7 @@ Annotator::myUpdate(MarControlPtr sender)
 
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
   ctrl_onObservations_->setValue(ctrl_inObservations_->to<mrs_natural>()+1, NOUPDATE);
-  ctrl_osrate_->setValue(ctrl_osrate_, NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
   ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);  
 
 
