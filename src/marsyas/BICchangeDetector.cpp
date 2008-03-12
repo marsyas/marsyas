@@ -112,7 +112,7 @@ BICchangeDetector::myUpdate(MarControlPtr sender)
 		QGMMmodel_.resetModel();
 		prevDists_->updctrl("mrs_bool/reset", true);
 		pdists_.setval(0.0);
-		ctrl_reset_->setValue(false);
+		ctrl_reset_->setValue(false, NOUPDATE);
 	}
 }
 
