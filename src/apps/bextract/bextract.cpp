@@ -2055,7 +2055,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/currentlyPlaying");
       bextractNetwork->linkctrl("mrs_natural/label", 
 				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/currentLabel");
-      
+      bextractNetwork->linkctrl("mrs_bool/advance", 
+				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_bool/advance");
       
      }
   else // running feature extraction

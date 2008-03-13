@@ -503,16 +503,14 @@ MarSystemManager::MarSystemManager()
   
 
 
-    MarSystem* stereoFeatures = mng.create("Fanout", "stereoFeatures");
-    MarSystem* stereoTimbreFeatures = mng.create("Parallel", "stereoTimbreFeatures");
-    MarSystem* featExtractorLeft = mng.create("TimbreFeatures", "featExtractorLeft");
-    MarSystem* featExtractorRight = mng.create("TimbreFeatures", "featExtractorRight");
-    selectFeatureSet(featExtractorLeft);
-    selectFeatureSet(featExtractorRight);
+    MarSystem* stereoFeatures = create("Fanout", "stereoFeatures");
+    MarSystem* stereoTimbreFeatures = create("Parallel", "stereoTimbreFeatures");
+    MarSystem* featExtractorLeft = create("TimbreFeatures", "featExtractorLeft");
+    MarSystem* featExtractorRight = create("TimbreFeatures", "featExtractorRight");
     stereoTimbreFeatures->addMarSystem(featExtractorLeft);
     stereoTimbreFeatures->addMarSystem(featExtractorRight);
     stereoFeatures->addMarSystem(stereoTimbreFeatures);
-    stereoFeatures->addMarSystem(mng.create("StereoPanningSpectrumFeatures", "SPSFeatures"));
+    stereoFeatures->addMarSystem(create("StereoPanningSpectrumFeatures", "SPSFeatures"));
     registerPrototype("StereoFeatures", stereoFeatures);
 
 
