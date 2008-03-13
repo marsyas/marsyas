@@ -62,6 +62,8 @@ mrs_bool flx_ = false;
 mrs_bool lsp_ = false;
 mrs_bool lpcc_ = false;
 
+mrs_bool single_vector_ = false;
+
 mrs_bool spectralFeatures_ = false;
 mrs_bool zcrs_ = false;
 mrs_bool timbralFeatures_ = false;
@@ -1932,6 +1934,12 @@ selectClassifier(MarSystem *msys,string classifierName )
   
 }
 
+void 
+selectStereoFeatureSet(MarSystem* stereoFeatures)
+{
+  if (!spsf_)
+    stereoFeatures->updctrl("mrs_string/disableChild", "StereoPanningSpectrumFeatures/SPSFeatures");
+}
   
 void 
 selectFeatureSet(MarSystem *featExtractor)
@@ -1978,21 +1986,24 @@ selectFeatureSet(MarSystem *featExtractor)
 
 void 
 bextract_train_refactored(string pluginName,  string wekafname,  
-			  mrs_natural memSize, string classifierName)
+			  mrs_natural memSize, string classifierName, mrs_bool single_vector)
 {
   MRSDIAG("bextract.cpp - bextract_train_refactored");
   cout << "BEXTRACT REFACTORED" << endl;
-  
   MarSystemManager mng;
+  
+  // Overall extraction and classification network 
+  MarSystem* bextractNetwork = mng.create("Series", "bextractNetwork");
+
   // Build the overall feature calculation network 
   MarSystem* featureNetwork = mng.create("Series", "featureNetwork");
   
-  // Windowed SoundFileSource with hopSize and winSize 
+  // Add a sound file source (which can also read collections)
   MarSystem *src = mng.create("SoundFileSource", "src");
   featureNetwork->addMarSystem(src);
 
   // create audio sink and mute it it is stored in the output plugin 
-  // which can be used for real-time classification 
+  // that can be used for real-time classification 
   if (pluginName != EMPTYSTRING)
   {
 	  MarSystem* dest = mng.create("AudioSink", "dest");      
@@ -2000,147 +2011,169 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	  featureNetwork->addMarSystem(dest);
   }
   
+  // Select whether stereo or mono feature extraction is to be used
   if (stereo_ == true) 
     {
-      cout << "Stereo Feature Extraction enabled" << endl;
-      MarSystem* stereoFeatures = mng.create("Fanout", "stereoFeatures");
-
-      MarSystem* stereoTimbreFeatures = mng.create("Parallel", "stereoTimbreFeatures");
-      MarSystem* featExtractorLeft = mng.create("TimbreFeatures", "featExtractorLeft");
-      MarSystem* featExtractorRight = mng.create("TimbreFeatures", "featExtractorRight");
-      selectFeatureSet(featExtractorLeft);
-      selectFeatureSet(featExtractorRight);
-      stereoTimbreFeatures->addMarSystem(featExtractorLeft);
-      stereoTimbreFeatures->addMarSystem(featExtractorRight);
-      stereoFeatures->addMarSystem(stereoTimbreFeatures);
-      stereoFeatures->addMarSystem(mng.create("StereoPanningSpectrumFeatures", "SPSFeatures"));
-      
-      if (!spsf_)
-	stereoFeatures->updctrl("mrs_string/disableChild", "StereoPanningSpectrumFeatures/SPSFeatures");
-
+      MarSystem* stereoFeatures = mng.create("StereoFeatures", "stereoFeatures");
+      selectStereoFeatureSet(stereoFeatures);
       featureNetwork->addMarSystem(stereoFeatures);
     }
   else 
     {
       featureNetwork->addMarSystem(mng.create("Stereo2Mono", "m2s"));
-      // Select feature set(s) to use 
       MarSystem* featExtractor = mng.create("TimbreFeatures", "featExtractor");
       selectFeatureSet(featExtractor);
       featureNetwork->addMarSystem(featExtractor);
     }
+  
   // texture statistics 
   featureNetwork->addMarSystem(mng.create("TextureStats", "tStats"));
   featureNetwork->updctrl("TextureStats/tStats/mrs_natural/memSize", memSize);
-  
+
+  // Use accumulator if computing single vector / file 
+  if (single_vector)
+    {
+      MarSystem* acc = mng.create("Accumulator", "acc");
+      acc->updctrl("mrs_natural/nTimes", 1000);
+      acc->addMarSystem(featureNetwork);
+      bextractNetwork->addMarSystem(acc);
+      MarSystem* song_statistics = mng.create("Fanout", "song_statistics");
+      song_statistics->addMarSystem(mng.create("Mean", "mn"));
+      song_statistics->addMarSystem(mng.create("StandardDeviation", "std"));
+      bextractNetwork->addMarSystem(song_statistics);
+      bextractNetwork->linkctrl("mrs_string/filename", 
+				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename");
+      bextractNetwork->linkctrl("mrs_bool/notEmpty", 
+				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_bool/notEmpty");
+      bextractNetwork->linkctrl("mrs_natural/pos", 
+			       "Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/pos");
+      bextractNetwork->linkctrl("mrs_real/duration", 
+			       "Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_real/duration");
+      bextractNetwork->linkctrl("mrs_bool/initAudio", 
+			       "Accumulator/acc/Series/featureNetwork/AudioSink/dest/mrs_bool/initAudio");
+      bextractNetwork->linkctrl("mrs_string/currentlyPlaying", 
+				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/currentlyPlaying");
+      bextractNetwork->linkctrl("mrs_natural/label", 
+				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/currentLabel");
+      
+      
+     }
+  else // running feature extraction
+    {
+      bextractNetwork->addMarSystem(featureNetwork);
+      // link controls to top-level to make life simpler       
+      bextractNetwork->linkctrl("mrs_string/filename", 
+				"Series/featureNetwork/SoundFileSource/src/mrs_string/filename");
+      bextractNetwork->linkctrl("mrs_bool/notEmpty", 
+				"Series/featureNetwork/SoundFileSource/src/mrs_bool/notEmpty");
+      bextractNetwork->linkctrl("mrs_natural/pos", 
+			       "Series/featureNetwork/SoundFileSource/src/mrs_natural/pos");
+      bextractNetwork->linkctrl("mrs_real/duration", 
+			       "Series/featureNetwork/SoundFileSource/src/mrs_real/duration");
+      bextractNetwork->linkctrl("mrs_bool/initAudio", 
+			       "Series/featureNetwork/AudioSink/dest/mrs_bool/initAudio");
+      bextractNetwork->linkctrl("mrs_string/currentlyPlaying", 
+				"Series/featureNetwork/SoundFileSource/src/mrs_string/currentlyPlaying");
+      bextractNetwork->linkctrl("mrs_natural/currentLabel", 
+				"Series/featureNetwork/SoundFileSource/src/mrs_natural/currentLabel");
+    }
+
   // labeling, weka output, classifier and confidence for real-time output 
-  featureNetwork->addMarSystem(mng.create("Annotator", "annotator"));
+  bextractNetwork->addMarSystem(mng.create("Annotator", "annotator"));
   if (wekafname != EMPTYSTRING)
-    featureNetwork->addMarSystem(mng.create("WekaSink", "wsink"));
-  featureNetwork->addMarSystem(mng.create("Classifier", "cl"));
-  featureNetwork->addMarSystem(mng.create("Confidence", "confidence"));
-
-  // link controls
-  featureNetwork->linkctrl("mrs_string/filename", 
-			   "SoundFileSource/src/mrs_string/filename");
-  featureNetwork->linkctrl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
-  featureNetwork->linkctrl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
-
-  featureNetwork->linkctrl("mrs_bool/initAudio", "AudioSink/dest/mrs_bool/initAudio");
+    bextractNetwork->addMarSystem(mng.create("WekaSink", "wsink"));
+  bextractNetwork->addMarSystem(mng.create("Classifier", "cl"));
+  bextractNetwork->addMarSystem(mng.create("Confidence", "confidence"));
 
   // link confidence and annotation with SoundFileSource that plays the collection 
-  featureNetwork->linkctrl("Confidence/confidence/mrs_string/fileName", 
-						   "SoundFileSource/src/mrs_string/currentlyPlaying");
-  featureNetwork->linkctrl("WekaSink/wsink/mrs_string/currentlyPlaying", 
-			   "SoundFileSource/src/mrs_string/currentlyPlaying");
-  featureNetwork->linkctrl("Annotator/annotator/mrs_natural/label",
-						   "SoundFileSource/src/mrs_natural/currentLabel");
-  
+  bextractNetwork->linkctrl("Confidence/confidence/mrs_string/fileName", 
+			    "mrs_string/filename");
+  bextractNetwork->linkctrl("WekaSink/wsink/mrs_string/currentlyPlaying", 
+			    "mrs_string/currentlyPlaying");
+  bextractNetwork->linkctrl("Annotator/annotator/mrs_natural/label",
+			    "mrs_natural/currentLabel");
+
   // links with WekaSink
   if (wekafname != EMPTYSTRING)
     {
-      featureNetwork->linkctrl("Confidence/confidence/mrs_string/labelNames",  
-			       "WekaSink/wsink/mrs_string/labelNames");
-      featureNetwork->linkctrl("SoundFileSource/src/mrs_natural/nLabels", 
-			       "WekaSink/wsink/mrs_natural/nLabels");
+      bextractNetwork->linkctrl("Confidence/confidence/mrs_string/labelNames",  
+				"WekaSink/wsink/mrs_string/labelNames");
+      bextractNetwork->linkctrl("Series/featureNetwork/SoundFileSource/src/mrs_natural/nLabels", 
+				"WekaSink/wsink/mrs_natural/nLabels");
     }
-  
+
   // src has to be configured with hopSize frame length in case a ShiftInput
   // is used in the feature extraction network
-  featureNetwork->updctrl("mrs_natural/inSamples", hopSize);
+  bextractNetwork->updctrl("mrs_natural/inSamples", hopSize);
   if (stereo_) 
-    {
-      featureNetwork->updctrl("Fanout/stereoFeatures/Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_natural/winSize", 
-			      winSize);
-      featureNetwork->updctrl("Fanout/stereoFeatures/Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_natural/winSize", 
-			      winSize);
-    }
+    featureNetwork->updctrl("StereoFeatures/stereoFeatures/mrs_natural/winSize", 
+			    winSize);
   else
-    {
-      featureNetwork->updctrl("TimbreFeatures/featExtractor/mrs_natural/winSize", 
-			      winSize);      
-    }
-
+    featureNetwork->updctrl("TimbreFeatures/featExtractor/mrs_natural/winSize", 
+			    winSize);      
+  
   if (start > 0.0) 
-	  offset = (mrs_natural) (start * src->getctrl("mrs_real/israte")->to<mrs_real>());
-  featureNetwork->updctrl("SoundFileSource/src/mrs_natural/pos", 
-						  offset);      
-  featureNetwork->updctrl("SoundFileSource/src/mrs_real/duration", 
-						  length);
+    offset = (mrs_natural) (start * src->getctrl("mrs_real/israte")->to<mrs_real>());
+  bextractNetwork->updctrl("mrs_natural/pos", offset);      
+  bextractNetwork->updctrl("mrs_real/duration", 
+			   length);
 
   // confidence is silent during training
-  featureNetwork->updctrl("Confidence/confidence/mrs_bool/mute", true);
-  featureNetwork->updctrl("Confidence/confidence/mrs_bool/print",true);
+  bextractNetwork->updctrl("Confidence/confidence/mrs_bool/mute", true);
+  bextractNetwork->updctrl("Confidence/confidence/mrs_bool/print",true);
   
   // select classifier to be used 
-  selectClassifier(featureNetwork, classifierName);
+  selectClassifier(bextractNetwork, classifierName);
   
   // load the collection which is automatically created by bextract 
   // based on the command-line arguments 
-  featureNetwork->updctrl("mrs_string/filename", "bextract_single.mf");
+  bextractNetwork->updctrl("mrs_string/filename", "bextract_single.mf");
 
   // play sound if playback is enabled 
   if (pluginName != EMPTYSTRING && playback) 
-  {
-	  featureNetwork->updctrl("AudioSink/dest/mrs_bool/mute", false);
-	  featureNetwork->updctrl("mrs_bool/initAudio", true);
-  }
+    {
+      featureNetwork->updctrl("AudioSink/dest/mrs_bool/mute", false);
+      featureNetwork->updctrl("mrs_bool/initAudio", true);
+    }
   
   // don't use linkctrl so that only value is copied once and linking doesn't 
   // remain for the plugin 
-  featureNetwork->updctrl("Confidence/confidence/mrs_string/labelNames", 
-			  featureNetwork->getctrl("SoundFileSource/src/mrs_string/labelNames"));
-  featureNetwork->updctrl("Classifier/cl/mrs_natural/nClasses", 
+  bextractNetwork->updctrl("Confidence/confidence/mrs_string/labelNames", 
+			   featureNetwork->getctrl("SoundFileSource/src/mrs_string/labelNames"));
+  bextractNetwork->updctrl("Classifier/cl/mrs_natural/nClasses", 
 			  featureNetwork->getctrl("SoundFileSource/src/mrs_natural/nLabels"));
-  featureNetwork->updctrl("Confidence/confidence/mrs_natural/nLabels", 
+  bextractNetwork->updctrl("Confidence/confidence/mrs_natural/nLabels", 
 			  featureNetwork->getctrl("SoundFileSource/src/mrs_natural/nLabels"));
+
 
   // setup WekaSink - has to be done after all updates so that changes are correctly 
   // written to file
   if (wekafname != EMPTYSTRING)
     {
-      featureNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
-      featureNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  			
-    }
+      bextractNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
+      bextractNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  		    }
+
   // main processing loop for training
-  MarControlPtr ctrl_notEmpty = featureNetwork->getctrl("mrs_bool/notEmpty");
+  MarControlPtr ctrl_notEmpty = bextractNetwork->getctrl("mrs_bool/notEmpty");
   MarControlPtr ctrl_currentlyPlaying = featureNetwork->getctrl("SoundFileSource/src/mrs_string/currentlyPlaying");
   mrs_string previouslyPlaying, currentlyPlaying;
 
+
   while (ctrl_notEmpty->to<mrs_bool>())
     {
-	  currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
+      currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
       if (currentlyPlaying != previouslyPlaying) 
-		  cout << "Processing : " << currentlyPlaying << endl;
-
-      featureNetwork->tick();
+	cout << "Processing : " << currentlyPlaying << endl;
+      
+      bextractNetwork->tick();
       previouslyPlaying = currentlyPlaying;
       
     }
   cout << "Finished feature extraction" << endl;
   
   // prepare network for real-time playback/prediction
-  featureNetwork->updctrl("Classifier/cl/mrs_string/mode","predict"); 
-  featureNetwork->tick();		
+  bextractNetwork->updctrl("Classifier/cl/mrs_string/mode","predict"); 
+  bextractNetwork->tick();		
   cout << "Finished classifier training" << endl;
   
   // have the plugin play audio 
@@ -2152,18 +2185,18 @@ bextract_train_refactored(string pluginName,  string wekafname,
   
   // don't output to WekaSink
   if (wekafname != EMPTYSTRING)
-    featureNetwork->updctrl("WekaSink/wsink/mrs_bool/mute", true);  
+    bextractNetwork->updctrl("WekaSink/wsink/mrs_bool/mute", true);  
   
   // enable confidence 
-  featureNetwork->updctrl("Confidence/confidence/mrs_bool/mute", false);
+  bextractNetwork->updctrl("Confidence/confidence/mrs_bool/mute", false);
   
   // output trained classifier models
   if (pluginName == EMPTYSTRING) // output to stdout 
-    cout << (*featureNetwork) << endl;      
+    cout << (*bextractNetwork) << endl;      
   else // save to .mpl file
     {
       ofstream oss(pluginName.c_str());
-      oss << (*featureNetwork) << endl;
+      oss << (*bextractNetwork) << endl;
     }
 
 
@@ -2171,7 +2204,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
   if (testCollection != EMPTYSTRING) 
     {
       cout << "bextract_train_refactored: predicting test collection: " << testCollection << endl;
-      featureNetwork->updctrl("mrs_string/filename", testCollection);
+      bextractNetwork->updctrl("mrs_string/filename", testCollection);
       
       while (ctrl_notEmpty->to<mrs_bool>())
 	{
@@ -2179,7 +2212,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	  if (currentlyPlaying != previouslyPlaying) 
 	    cout << "Processing : " << currentlyPlaying << endl;
 	  
-	  featureNetwork->tick();
+	  bextractNetwork->tick();
 	  previouslyPlaying = currentlyPlaying;
 	}
     }
@@ -2543,6 +2576,7 @@ initOptions()
   cmd_options.addBoolOption("LinearPredictionCepstralCoefficients", "lpcc", false);
   
   cmd_options.addBoolOption("TimbralFeatures", "timbral", false);
+  cmd_options.addBoolOption("SingleVector", "sv", false);
 }
 
 void 
@@ -2582,11 +2616,12 @@ loadOptions()
   flx_ = cmd_options.getBoolOption("SpectralFlux");
   lsp_ = cmd_options.getBoolOption("LinearSpectralPair");
   lpcc_ = cmd_options.getBoolOption("LinearPredictionCepstralCoefficients");
-  
+
   spectralFeatures_ = cmd_options.getBoolOption("SpectralFeatures");
   zcrs_ = cmd_options.getBoolOption("ZeroCrossings");
   timbralFeatures_ = cmd_options.getBoolOption("TimbralFeatures");
-  
+
+  single_vector_ = cmd_options.getBoolOption("SingleVector");
 
   // default feature set
   if ((mfcc_ == false) &&
@@ -3002,7 +3037,8 @@ main(int argc, const char **argv)
 	{
 	  if (classifierName == EMPTYSTRING) 
 	    classifierName = DEFAULT_CLASSIFIER;
-	  bextract_train_refactored(pluginName, wekafname, memSize, classifierName);
+	  
+	  bextract_train_refactored(pluginName, wekafname, memSize, classifierName, single_vector_);
 	}
     }
 

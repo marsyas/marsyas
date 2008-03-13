@@ -502,6 +502,21 @@ MarSystemManager::MarSystemManager()
   registerPrototype("StereoPanningSpectrumFeatures", stereoFeatNet);
   
 
+
+    MarSystem* stereoFeatures = mng.create("Fanout", "stereoFeatures");
+    MarSystem* stereoTimbreFeatures = mng.create("Parallel", "stereoTimbreFeatures");
+    MarSystem* featExtractorLeft = mng.create("TimbreFeatures", "featExtractorLeft");
+    MarSystem* featExtractorRight = mng.create("TimbreFeatures", "featExtractorRight");
+    selectFeatureSet(featExtractorLeft);
+    selectFeatureSet(featExtractorRight);
+    stereoTimbreFeatures->addMarSystem(featExtractorLeft);
+    stereoTimbreFeatures->addMarSystem(featExtractorRight);
+    stereoFeatures->addMarSystem(stereoTimbreFeatures);
+    stereoFeatures->addMarSystem(mng.create("StereoPanningSpectrumFeatures", "SPSFeatures"));
+    registerPrototype("StereoFeatures", stereoFeatures);
+
+
+
   //--------------------------------------------------------------------------------
   // Phase Vocoder composite prototype
   //--------------------------------------------------------------------------------
