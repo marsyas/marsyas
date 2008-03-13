@@ -160,7 +160,6 @@ Confidence::myProcess(realvec& in, realvec& out)
 	    if (o==0) 
 	      {
 		label = (mrs_natural)in(o,t);
-		// cout << "Label = " << label << endl;
 		confidences_(label) = confidences_(label) + 1;
 	      } 
 	  }

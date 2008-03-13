@@ -157,26 +157,13 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/onObservations", onObservations_);
   
 
-  /* if (myIsrate_ == 44100.0) 
-  {
-    downsampler_->updctrl("mrs_natural/inSamples", 2* inSamples_);
-    setctrl("mrs_natural/onSamples", inSamples_);
-    setctrl("mrs_real/israte", myIsrate_/2.0);
-    setctrl("mrs_real/osrate", myIsrate_/2.0);
-    temp_.create(inObservations_, 2 * inSamples_);
-    tempi_.create(inObservations_, 2 * inSamples_);
-    isrc_->updctrl("mrs_natural/inSamples", 2 * inSamples_);
-  }
-  else
-  */ 
-  {
-    isrc_->updctrl("mrs_natural/inSamples", inSamples_);
-    setctrl("mrs_natural/onSamples", inSamples_);
-    setctrl("mrs_real/israte", myIsrate_);
-    setctrl("mrs_real/osrate", myIsrate_);
-    setctrl("mrs_natural/onObservations", onObservations_);
-    temp_.create(inObservations_, inSamples_);
-  }
+  isrc_->updctrl("mrs_natural/inSamples", inSamples_);
+  setctrl("mrs_natural/onSamples", inSamples_);
+  setctrl("mrs_real/israte", myIsrate_);
+  setctrl("mrs_real/osrate", myIsrate_);
+  setctrl("mrs_natural/onObservations", onObservations_);
+  temp_.create(inObservations_, inSamples_);
+
   
   isrc_->updctrl("mrs_real/repetitions", repetitions_);
   isrc_->updctrl("mrs_natural/pos", pos_);
@@ -191,17 +178,18 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
 void
 CollectionFileSource::myProcess(realvec& in, realvec &out)
 {
-	//checkFlow(in,out);
+  
   
   if (advance_) 
   {
     cindex_ = cindex_ + 1;
     if (cindex_ >= col_.size() -1)  
-		{
-		  setctrl("mrs_bool/notEmpty", false);
-		  notEmpty_ = false;      
-		  advance_ = false;
-		}
+      {
+	setctrl("mrs_bool/notEmpty", false);
+	notEmpty_ = false;      
+	advance_ = false;
+	return;
+      }
     
     setctrl("mrs_natural/cindex", cindex_);
     
@@ -216,20 +204,9 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
     setctrl("mrs_natural/onObservations", onObservations_);
     
     
-    /* if (myIsrate_ == 44100.0)
-      {
-	isrc_->process(tempi_,temp_);
-	setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
-	setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
-	downsampler_->process(temp_,out);
-      }
-    else 
-    */ 
-      {
-	isrc_->process(in,out);
-	setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
-	setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
-      }
+    isrc_->process(in,out);
+    setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
+    setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
     
     update();      
     return;
@@ -237,24 +214,14 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
   
   else
     {
-      /*      if (myIsrate_ == 44100.0)
-	{
-	  isrc_->process(tempi_,temp_);
-	  setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
-	  setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
-	  downsampler_->process(temp_,out);
-	}
-      else
-      */ 
 
-	{
-	  isrc_->process(in,out);
-	  setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
-	  setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
-	}
+      isrc_->process(in,out);
+      setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
+      setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
       
       if (!isrc_->getctrl("mrs_bool/notEmpty")->isTrue())
 	{
+
 	  
 	  if (cindex_ < col_.size() -1)
 	    {
@@ -286,6 +253,7 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 	    }
 	}
     } 
+
 }  
 
 

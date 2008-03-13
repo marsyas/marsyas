@@ -156,7 +156,7 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 		src_->setctrl("mrs_real/repetitions", getctrl("mrs_real/repetitions"));
 		src_->setctrl("mrs_real/duration", getctrl("mrs_real/duration"));
 		src_->setctrl("mrs_bool/advance", getctrl("mrs_bool/advance"));
-		src_->setctrl("mrs_natural/cindex", getctrl("mrs_natural/cindex"));
+		// src_->setctrl("mrs_natural/cindex", getctrl("mrs_natural/cindex"));
 		src_->setctrl("mrs_bool/shuffle", getctrl("mrs_bool/shuffle"));
 		src_->setctrl("mrs_bool/notEmpty", getctrl("mrs_bool/notEmpty"));
 		src_->setctrl("mrs_natural/pos", getctrl("mrs_natural/pos"));

@@ -83,7 +83,7 @@ GaussianClassifier::myUpdate(MarControlPtr sender)
 
 
   string mode = getctrl("mrs_string/mode")->to<mrs_string>();
-  if (mode == "predict")
+  if ((mode == "predict")&&(prev_mode_ == "predict"))
     {
       means_ = getctrl("mrs_realvec/means")->to<mrs_realvec>();
       covars_ = getctrl("mrs_realvec/covars")->to<mrs_realvec>();
@@ -143,12 +143,9 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
       for (t = 0; t < inSamples_; t++)  
 	{
 	  label = in(inObservations_-1, t);
-
-
 	  for (o=0; o < inObservations_-1; o++)
 	    {
 	      v = in(o,t);
-
 	      means_((mrs_natural)label,o) = means_((mrs_natural)label,o) + v;
 	      covars_((mrs_natural)label,o) = covars_((mrs_natural)label,o) + v*v;
 	      out(0,t) = (mrs_real)label;	      
@@ -156,13 +153,13 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 
 	    }
 	  labelSizes_((mrs_natural)label) = labelSizes_((mrs_natural)label) + 1;
-
 	}
     }
 
 
   if ((prev_mode_ == "train") && (mode == "predict"))
     {
+
 
       for (l=0; l < nlabels; l++)
 	for (o=0; o < inObservations_; o++)
@@ -207,7 +204,7 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 		  prediction = l;
 		}
 	    }
-
+	  
 	  out(0,t) = (mrs_real)prediction;
 
 	  out(1,t) = (mrs_real)label;
