@@ -219,7 +219,7 @@ Transcriber::ampSegment(const realvec& ampList, realvec& boundaries)
 	{
 		boundaries.create(2);
 		boundaries(0) = 0.0;
-		boundaries(1) = ampList.getSize();
+		boundaries(1) = ampList.getSize()-1;
 	}
 	realvec region, *newBoundaries, regionBounds;
 	mrs_natural start, length;
@@ -265,7 +265,7 @@ Transcriber::filterAmpBoundaries(realvec& regionAmps, realvec &regionBounds)
 	regionAmps /= regionAmps.maxval();
 
 	mrs_natural start, length;
-	mrs_real valleyMinVal = 0.2;
+	mrs_real valleyMinVal = 0.20;
 	mrs_real valley;
 	realvec region;
 	for (mrs_natural i=0; i<regionBounds.getSize(); i++)
@@ -368,6 +368,18 @@ Transcriber::discardBeginEndSilences(const realvec& pitchList, const realvec&
 		length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
 		notePitch = findMedianWithoutZeros(start, length, pitchList);
 	}
+}
+
+void
+Transcriber::discardEndingTotalSilenceAmpsOnly(realvec& ampList)
+{
+	mrs_natural i = ampList.getSize()-1;
+	// Remove ending silences.
+	while ( (i>0) && (ampList(i) == 0.0))
+	{
+		i--;
+	}
+	ampList.stretch(i);
 }
 
 void

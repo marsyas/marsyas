@@ -47,6 +47,7 @@ public:
 	static void ampSegment(const realvec& ampList, realvec& boundaries);
 	static void filterAmpBoundaries(realvec& ampList, realvec&
 	                                boundaries);
+	static void discardEndingTotalSilenceAmpsOnly(realvec& ampList);
 	//@}
 
 
