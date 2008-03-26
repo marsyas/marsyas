@@ -173,10 +173,13 @@ pca()
   net->tick();
 
 
+  // the output of the PCA 
+ const mrs_realvec& pca_transformed_data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
-  cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>() << endl;
-
-
+ cout << "Output first transformed feature using PCA" << endl;
+ for (int t=0; t < pca_transformed_data.getCols(); t++) 
+    cout << pca_transformed_data(0,t) << endl;
+  
 
   
 
