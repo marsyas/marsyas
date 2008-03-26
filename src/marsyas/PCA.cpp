@@ -17,7 +17,7 @@
 */
 
 #include "PCA.h"
-
+  
 using namespace std;
 using namespace Marsyas;
 
@@ -47,7 +47,7 @@ PCA::addControls()
 {
    npcs_.create(3,3);
    
-   addctrl("mrs_natural/npc",3);
+   addctrl("mrs_natural/npc",4);
    setctrlState("mrs_natural/npc",true);
    addctrl("mrs_realvec/pcs",npcs_);
    dims_ = 0;
@@ -67,19 +67,20 @@ PCA::myUpdate(MarControlPtr sender)
   
   npc_ = getctrl("mrs_natural/npc")->to<mrs_natural>();
     
-  if( npcs_.getRows() != inObservations_ || npcs_.getCols() != npc_ )
-      npcs_.create(inObservations_,npc_);
+  if( npcs_.getRows() != inObservations_-1 || npcs_.getCols() != npc_ )
+      npcs_.create(inObservations_-1,npc_);
   
-  if( npc_ != onObservations_ ){
+  if( npc_ != onObservations_-1 ){
      
-     updctrl("mrs_natural/onObservations", npc_ );
-     onObservations_ = npc_;     
+     updctrl("mrs_natural/onObservations", npc_ +1);
+     onObservations_ = npc_+1;     
   }
     
-  if( dims_ != inObservations_ ) 
+  if( dims_ != inObservations_-1 ) 
   {
-     dims_ = inObservations_;
+     dims_ = inObservations_-1;
      corr_matrix_.create(dims_,dims_);
+     temp_matrix_.create(dims_, inSamples_);
   }
   
   ostringstream oss;
@@ -94,64 +95,87 @@ void
 PCA::myProcess(realvec& in, realvec& out)
 {
   //checkFlow(in,out);
-      
+  
+
   mrs_natural o1,o2;
    
   realvec in_data_( in );
 
-  mrs_real* evals = new mrs_real[inObservations_];
-  mrs_real* interm = new mrs_real[inObservations_];  
+  
+  mrs_real* evals = new mrs_real[inObservations_-1];
+  mrs_real* interm = new mrs_real[inObservations_-1];  
+
+
+  for (o=0; o < inObservations_-1; o++)
+    for (t = 0; t < inSamples_; t++)
+      {
+	temp_matrix_(o, t) = in(o,t);
+      }
+
+  cout << temp_matrix_ << endl;
   
   //in.meanSample(means_);//original code
   //in.stdSample(means_,stds_); //original code
   //means_.create(in.getRows());//not needed anymore if using new realvec::operator=() ;-)
   //stds_.create(in.getRows());//not needed anymore if using new realvec::operator=() ;-)
-  in.meanObs(means_); 
-  in.stdObs(stds_); 
+  temp_matrix_.meanObs(means_); 
+  temp_matrix_.stdObs(stds_); 
 
   // Adjust data : ( X - means(X) ) / ( sqrt(n) * stds(X) )
-  for (o=0; o < inObservations_; o++)
-     for (t = 0; t < inSamples_; t++)
-		 in(o,t) = ( in(o,t) - means_(o) ) / ( sqrt((mrs_real)inSamples_) * stds_(o) ) ;
+  for (o=0; o < inObservations_-1; o++)
+    for (t = 0; t < inSamples_; t++)
+      temp_matrix_(o,t) = ( temp_matrix_(o,t) - means_(o) ) / ( sqrt((mrs_real)inSamples_) * stds_(o) ) ;
+
+  cout << temp_matrix_ << endl;
   
   // Calculate the correlation matrix
-  for ( o1 = 0 ; o1 < inObservations_-1 ; o1++ )
+  for ( o1 = 0 ; o1 < inObservations_-2 ; o1++ )
   {
      corr_matrix_(o1,o1) = 1.0;
-     for ( o2 = o1+1 ; o2 < inObservations_ ; o2++ )
+     for ( o2 = o1+1 ; o2 < inObservations_-1 ; o2++ )
      {
         corr_matrix_(o1,o2) = 0.0;
         for( t=0 ; t < inSamples_ ; t++ )
-           corr_matrix_(o1,o2) += in(o1,t) * in(o2,t);
+           corr_matrix_(o1,o2) += temp_matrix_(o1,t) * temp_matrix_(o2,t);
         corr_matrix_(o2,o1) = corr_matrix_(o1,o2);
      }
   }
-  corr_matrix_(inObservations_-1, inObservations_-1) = 1.0;
+  corr_matrix_(inObservations_-2, inObservations_-2) = 1.0;
   
   // Triangular decomposition
-  tred2(corr_matrix_, inObservations_, evals, interm);
+  tred2(corr_matrix_, inObservations_-1, evals, interm);
   // Reduction of symmetric tridiagonal matrix
-  tqli( evals, interm, inObservations_, corr_matrix_);
+  tqli( evals, interm, inObservations_-1, corr_matrix_);
        
   /* evals now contains the eigenvalues,
      corr_matrix_ now contains the associated eigenvectors. */
-    
+  
+  cout << "EIGENVALUES" << endl;
+  for (int j=0; j < inObservations_-1; j++)
+    cout << evals[j] << endl;
+
+
+
   /* Project row data onto the top "npc_" principal components. */  
   for( t=0 ; t<inSamples_ ; t++ )
   {
-     for( o=0 ; o<inObservations_ ; o++ )
+     for( o=0 ; o<inObservations_ -1; o++ )
         interm[o] = in(o,t); 
      
-     for( o=0 ; o<onObservations_ ; o++ )
+     for( o=0 ; o<onObservations_ -1; o++ )
      {
-        out(o,t) = 0.0;
-        for(o2=0 ; o2 < inObservations_ ; o2++)
+        out(o,t) = 0.0; 
+        for(o2=0 ; o2 < inObservations_ -1; o2++)
         {
-           out(o,t) += interm[o2] * corr_matrix_(o2,inObservations_-o-1);
-           npcs_(o2,o) = corr_matrix_(o2,inObservations_-o-1);
+           out(o,t) += interm[o2] * corr_matrix_(o2,inObservations_-o-2);
+           npcs_(o2,o) = corr_matrix_(o2,inObservations_-o-2);
         }
      }
   }    
+
+  // copy the labels
+  for( t=0 ; t<inSamples_ ; t++ )
+    out(onObservations_-1, t) = in(inObservations_-1, t);
   setctrl("mrs_realvec/pcs",npcs_);
 
   delete [] evals;

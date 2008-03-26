@@ -25,7 +25,6 @@ EXTRA_DIST += MATLAB/
 EXTRA_DIST += distributed/
 
 
-EXTRA_DIST += PCA.cpp PCA.h
 EXTRA_DIST += marsyas.pro
 EXTRA_DIST += NetworkUDPSink.cpp NetworkSocket.cpp NetworkTCPSink.cpp NetworkTCPSource.cpp NetworkUDPSource.cpp
 
@@ -271,6 +270,7 @@ pkginclude_HEADERS = \
 	PeakerOnset.h \
 	Reverse.h \
 	SNR.h \
+	PCA.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 

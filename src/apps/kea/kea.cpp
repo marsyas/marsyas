@@ -132,6 +132,56 @@ distance_matrix()
 
 
 void 
+pca() 
+{
+  cout << "Principal Component Analysis of .arff file" << endl;
+  if (wekafname_ == EMPTYSTRING) 
+    {
+      cout << "Weka .arff file not specified" << endl;
+      return;
+    }
+
+  cout << "PCA using .arff file: " << wekafname_ << endl;
+
+  MarSystemManager mng;
+
+  MarSystem* net = mng.create("Series", "net");
+  MarSystem* accum = mng.create("Accumulator", "accum");
+  MarSystem* wsrc = mng.create("WekaSource", "wsrc");
+  accum->addMarSystem(wsrc);
+  accum->updctrl("WekaSource/wsrc/mrs_string/filename", wekafname_);
+  mrs_natural nInstances = 
+    accum->getctrl("WekaSource/wsrc/mrs_natural/nInstances")->to<mrs_natural>();
+  accum->updctrl("mrs_natural/nTimes", nInstances);
+
+  net->addMarSystem(accum);
+  net->addMarSystem(mng.create("PCA", "pca"));
+  net->addMarSystem(mng.create("WekaSink", "wsink"));
+  net->updctrl("WekaSink/wsink/mrs_natural/nLabels", 
+	       net->getctrl("Accumulator/accum/WekaSource/wsrc/mrs_natural/nClasses"));
+  net->updctrl("WekaSink/wsink/mrs_string/labelNames", net->getctrl("Accumulator/accum/WekaSource/wsrc/mrs_string/classNames"));
+  net->updctrl("WekaSink/wsink/mrs_string/filename", "pca_out.arff");
+
+
+
+
+
+
+
+
+  net->tick();
+  cout << net->getctrl("Accumulator/accum/mrs_realvec/processedData")->to<mrs_realvec>() << endl;
+  cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>() << endl;
+
+
+
+  
+
+  
+
+}
+
+void 
 train()
 {
   cout << "Training classifier using .arff file: " << wekafname_ << endl;
@@ -248,6 +298,8 @@ main(int argc, const char **argv)
     train();
   if (mode_ == "distance_matrix") 
     distance_matrix();
+  if (mode_ == "pca")
+    pca();
   exit(0);
 }
 

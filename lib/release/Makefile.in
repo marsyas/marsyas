@@ -346,6 +346,7 @@ libmarsyas_a_SOURCES = \
 	$(top_srcdir)/src/marsyas/PeakerOnset.cpp \
 	$(top_srcdir)/src/marsyas/Reverse.cpp \
 	$(top_srcdir)/src/marsyas/SNR.cpp \
+	$(top_srcdir)/src/marsyas/PCA.cpp \
 			$(top_srcdir)/src/marsyas/Gain.cpp
 
 subdir = lib/release
@@ -448,7 +449,7 @@ am_libmarsyas_a_OBJECTS = svm.$(OBJEXT) RtAudio.$(OBJEXT) \
 	EnhADRess.$(OBJEXT) StereoSpectrumSources.$(OBJEXT) \
 	EnhADRessStereoSpectrum.$(OBJEXT) McAulayQuatieri.$(OBJEXT) \
 	PeakerOnset.$(OBJEXT) Reverse.$(OBJEXT) SNR.$(OBJEXT) \
-	Gain.$(OBJEXT)
+	PCA.$(OBJEXT) Gain.$(OBJEXT)
 libmarsyas_a_OBJECTS = $(am_libmarsyas_a_OBJECTS)
 libmarsyasqt_a_AR = $(AR) cru
 libmarsyasqt_a_LIBADD =
@@ -542,9 +543,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Normalize.Po ./$(DEPDIR)/NumericLib.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/OggFileSource.Po ./$(DEPDIR)/OnePole.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/OneRClassifier.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/OverlapAdd.Po ./$(DEPDIR)/Panorama.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Parallel.Po ./$(DEPDIR)/PeUtilities.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Peak2Rms.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/OverlapAdd.Po ./$(DEPDIR)/PCA.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Panorama.Po ./$(DEPDIR)/Parallel.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/PeUtilities.Po ./$(DEPDIR)/Peak2Rms.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PeakClusterSelect.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PeakConvert.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PeakFeatureSelect.Po \
@@ -940,6 +941,7 @@ McAulayQuatieri.$(OBJEXT): $(top_srcdir)/src/marsyas/McAulayQuatieri.cpp
 PeakerOnset.$(OBJEXT): $(top_srcdir)/src/marsyas/PeakerOnset.cpp
 Reverse.$(OBJEXT): $(top_srcdir)/src/marsyas/Reverse.cpp
 SNR.$(OBJEXT): $(top_srcdir)/src/marsyas/SNR.cpp
+PCA.$(OBJEXT): $(top_srcdir)/src/marsyas/PCA.cpp
 Gain.$(OBJEXT): $(top_srcdir)/src/marsyas/Gain.cpp
 libmarsyas.a: $(libmarsyas_a_OBJECTS) $(libmarsyas_a_DEPENDENCIES) 
 	-rm -f libmarsyas.a
@@ -1074,6 +1076,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OnePole.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OneRClassifier.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OverlapAdd.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PCA.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Panorama.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parallel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeUtilities.Po@am__quote@
@@ -3975,6 +3978,18 @@ SNR.obj: $(top_srcdir)/src/marsyas/SNR.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/SNR.Po' tmpdepfile='$(DEPDIR)/SNR.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SNR.obj `cygpath -w $(top_srcdir)/src/marsyas/SNR.cpp`
+
+PCA.o: $(top_srcdir)/src/marsyas/PCA.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/PCA.cpp' object='PCA.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/PCA.Po' tmpdepfile='$(DEPDIR)/PCA.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PCA.o `test -f '$(top_srcdir)/src/marsyas/PCA.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/marsyas/PCA.cpp
+
+PCA.obj: $(top_srcdir)/src/marsyas/PCA.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/PCA.cpp' object='PCA.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/PCA.Po' tmpdepfile='$(DEPDIR)/PCA.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PCA.obj `cygpath -w $(top_srcdir)/src/marsyas/PCA.cpp`
 
 Gain.o: $(top_srcdir)/src/marsyas/Gain.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/Gain.cpp' object='Gain.o' libtool=no @AMDEPBACKSLASH@

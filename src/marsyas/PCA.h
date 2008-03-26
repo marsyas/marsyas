@@ -48,6 +48,7 @@ private:
    
    realvec in_data_;
    realvec corr_matrix_;
+   realvec temp_matrix_;
    mrs_natural dims_;
    mrs_natural npc_;
    realvec npcs_;

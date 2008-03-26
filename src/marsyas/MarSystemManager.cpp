@@ -171,6 +171,7 @@
 #include "ADSR.h"
 #include "Reverse.h"
 #include "SNR.h"
+#include "PCA.h"
 #include "Gain.h"
 // please leave Gain at the end; it makes scripts happy.
 
@@ -328,6 +329,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("ADSR", new ADSR("adsrpr"));
   registerPrototype("Reverse", new Reverse("reversepr"));
   registerPrototype("SNR", new SNR("snrpr"));
+  registerPrototype("PCA", new PCA("pcapr"));
   registerPrototype("Gain", new Gain("gp"));
   // Please leave Gain at the end; it makes scripts happy.
 

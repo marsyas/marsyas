@@ -100,7 +100,7 @@ qmake = @qmake@
 
 MAINTAINERCLEANFILES = Makefile.in
 
-EXTRA_DIST = Doxyfile Qt/ MATLAB/ distributed/ PCA.cpp PCA.h marsyas.pro NetworkUDPSink.cpp NetworkSocket.cpp NetworkTCPSink.cpp NetworkTCPSource.cpp NetworkUDPSource.cpp
+EXTRA_DIST = Doxyfile Qt/ MATLAB/ distributed/ marsyas.pro NetworkUDPSink.cpp NetworkSocket.cpp NetworkTCPSink.cpp NetworkTCPSource.cpp NetworkUDPSource.cpp
 
 pkginclude_HEADERS = \
 	MrsLog.h \
@@ -342,6 +342,7 @@ pkginclude_HEADERS = \
 	PeakerOnset.h \
 	Reverse.h \
 	SNR.h \
+	PCA.h \
 	Gain.h
 
 subdir = src/marsyas

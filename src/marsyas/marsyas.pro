@@ -210,7 +210,6 @@ HEADERS += \
 	OggFileSource.h \
 	OnePole.h \
 	OverlapAdd.h \
-	PCA.h \
 	Parallel.h \
 	PeakConvert.h \
 	PeakResidual.h \
@@ -348,6 +347,7 @@ HEADERS += \
 	PeakerOnset.h \
 	Reverse.h \
 	SNR.h \
+	PCA.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 	 
@@ -452,7 +452,6 @@ SOURCES += \
 	OggFileSource.cpp \
 	OnePole.cpp \
 	OverlapAdd.cpp \
-	PCA.cpp \
 	Parallel.cpp \
 	PeakConvert.cpp \
 	PeakResidual.cpp \
@@ -585,6 +584,7 @@ SOURCES += \
 	PeakerOnset.cpp \
 	Reverse.cpp \
 	SNR.cpp \
+	PCA.cpp \
 	Gain.cpp
 # please leave Gain.cpp at the end like this; it makes scripts happy.
 
