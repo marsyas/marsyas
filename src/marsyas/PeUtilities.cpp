@@ -534,7 +534,7 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
 
 void
 Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname, string ressfname, std::string panningInfo, mrs_natural nbChannels, mrs_natural Nw, 
-													 mrs_natural D, mrs_natural S, mrs_natural accSize, bool microphone, mrs_natural synType, mrs_natural bopt, mrs_natural delay, bool residual)
+													 mrs_natural D, mrs_natural S, mrs_natural accSize, bool microphone, mrs_natural synType, mrs_natural bopt, mrs_natural delay, mrs_real fs, bool residual)
 {
 	// FIXME Unused parameters
 	(void) nbChannels;
@@ -549,6 +549,8 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 			//pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/nbSinusoids", S);
 			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/delay", delay); // Nw/2+1 
 			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/synSize", D*2);
+			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_real/samplingFreq", fs);
+			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Windowing/wiSyn/mrs_string/type", "Hanning");
 		}
 		else 
 		{

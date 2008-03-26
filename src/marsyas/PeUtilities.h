@@ -75,7 +75,7 @@ make them a static class or delete the whole thing or something.
 
 	void synthNetCreate(MarSystemManager *mng, std::string outsfname, bool microphone, mrs_natural synType, bool residual=0);
 	void synthNetConfigure(MarSystem *pvseries, std::string sfName, std::string outsfname, std::string ressfname, std::string panningInfo, mrs_natural nbChannels, mrs_natural Nw, 
-		mrs_natural D, mrs_natural S, mrs_natural accSize, bool microphone, mrs_natural synType, mrs_natural bopt, mrs_natural delay, bool residual=0);
+		mrs_natural D, mrs_natural S, mrs_natural accSize, bool microphone, mrs_natural synType, mrs_natural bopt, mrs_natural delay, mrs_real fs, bool residual=0);
 
 // 	mrs_real harmonicWeighting(mrs_real, mrs_real, mrs_real);
 // 	mrs_real harmonicWeightingBasic(mrs_real, mrs_real);
