@@ -128,7 +128,38 @@ NormMaxMin::myProcess(realvec& in, realvec& out)
     }
   
   range_ = upper_ - lower_;
-  
+
+
+  if (mode_ == "twopass") 
+    {
+      // first pass calculate min/max limits
+      for (o=0; o < inObservations_; o++)
+	for (t = 0; t < inSamples_; t++)
+	  {
+	    if (in(o,t) > maximums_(o))
+	      maximums_(o) = in(o,t);
+	    if (in(o,t) < minimums_(o))	
+	      minimums_(o) = in(o,t);
+	    out(o,t) = in(o,t);
+	  }
+      // second pass for normalization 
+      for (o=0; o < inObservations_; o++)
+	for (t = 0; t < inSamples_; t++)
+	  {
+	    
+	    if (ignoreLast) 
+	      {
+		if (o < inObservations_-1)
+		  out(o,t) = lower_ + range_ * ((in(o,t) - minimums_(o)) / (maximums_(o) - minimums_(o)));
+		else 
+		  out(o,t) = in(o,t);
+	      }
+	    else
+	      {
+		out(o,t) = lower_ + range_ * ((in(o,t) - minimums_(o)) / (maximums_(o) - minimums_(o)));
+	      }
+	  }
+    }
   
   if ((prev_mode_ == "predict") && (mode_ == "train"))
     {

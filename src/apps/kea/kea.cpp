@@ -156,21 +156,24 @@ pca()
 
   net->addMarSystem(accum);
   net->addMarSystem(mng.create("PCA", "pca"));
+  net->addMarSystem(mng.create("NormMaxMin", "norm"));
   net->addMarSystem(mng.create("WekaSink", "wsink"));
+
+  net->updctrl("PCA/pca/mrs_natural/npc", 3);
+  net->updctrl("NormMaxMin/norm/mrs_bool/ignoreLast", true);
+  net->updctrl("NormMaxMin/norm/mrs_string/mode", "twopass");
+  net->updctrl("NormMaxMin/norm/mrs_real/lower", 0.0);
+  net->updctrl("NormMaxMin/norm/mrs_real/upper", 255.0);
+  
   net->updctrl("WekaSink/wsink/mrs_natural/nLabels", 
 	       net->getctrl("Accumulator/accum/WekaSource/wsrc/mrs_natural/nClasses"));
   net->updctrl("WekaSink/wsink/mrs_string/labelNames", net->getctrl("Accumulator/accum/WekaSource/wsrc/mrs_string/classNames"));
   net->updctrl("WekaSink/wsink/mrs_string/filename", "pca_out.arff");
 
-
-
-
-
-
-
-
   net->tick();
-  cout << net->getctrl("Accumulator/accum/mrs_realvec/processedData")->to<mrs_realvec>() << endl;
+
+
+
   cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>() << endl;
 
 

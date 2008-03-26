@@ -112,7 +112,6 @@ PCA::myProcess(realvec& in, realvec& out)
 	temp_matrix_(o, t) = in(o,t);
       }
 
-  cout << temp_matrix_ << endl;
   
   //in.meanSample(means_);//original code
   //in.stdSample(means_,stds_); //original code
@@ -126,7 +125,6 @@ PCA::myProcess(realvec& in, realvec& out)
     for (t = 0; t < inSamples_; t++)
       temp_matrix_(o,t) = ( temp_matrix_(o,t) - means_(o) ) / ( sqrt((mrs_real)inSamples_) * stds_(o) ) ;
 
-  cout << temp_matrix_ << endl;
   
   // Calculate the correlation matrix
   for ( o1 = 0 ; o1 < inObservations_-2 ; o1++ )
@@ -150,11 +148,6 @@ PCA::myProcess(realvec& in, realvec& out)
   /* evals now contains the eigenvalues,
      corr_matrix_ now contains the associated eigenvectors. */
   
-  cout << "EIGENVALUES" << endl;
-  for (int j=0; j < inObservations_-1; j++)
-    cout << evals[j] << endl;
-
-
 
   /* Project row data onto the top "npc_" principal components. */  
   for( t=0 ; t<inSamples_ ; t++ )
