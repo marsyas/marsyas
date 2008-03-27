@@ -2112,8 +2112,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
     {
       bextractNetwork->linkctrl("Confidence/confidence/mrs_string/labelNames",  
 				"WekaSink/wsink/mrs_string/labelNames");
-      bextractNetwork->linkctrl("mrs_natural/nLabels", 
-				"WekaSink/wsink/mrs_natural/nLabels");
+      bextractNetwork->linkctrl("WekaSink/wsink/mrs_natural/nLabels", "mrs_natural/nLabels"); 
     }
 
   // src has to be configured with hopSize frame length in case a ShiftInput
