@@ -12,6 +12,7 @@ marsyasConsoleApps {
 		#boomchick \
 		classifyFile \
 		extract \
+		kea \
 		mudbox \
 		#midiTest \
 		#mixer \

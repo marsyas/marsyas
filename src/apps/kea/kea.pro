@@ -2,7 +2,7 @@ include ( ../consoleApps.pri )
 
 TEMPLATE = app
 CONFIG += console
-TARGET = train
+TARGET = kea
 
 SOURCES += kea.cpp
 	
