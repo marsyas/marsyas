@@ -146,10 +146,25 @@ PCA::myProcess(realvec& in, realvec& out)
   tred2(corr_matrix_, inObservations_-1, evals_, interm_);
   // Reduction of symmetric tridiagonal matrix
   tqli( evals_, interm_, inObservations_-1, corr_matrix_);
+
+  /* 
+  mrs_real percent_eig = 0.0;
+  mrs_real sum_eig = 0.0;
+  for (int m = inObservations_-2; m >= 0; m--) 
+    sum_eig += evals_[m];
+  
+  
+  for (int m = inObservations_-2; m >= 0; m--) 
+    {
+      percent_eig += evals_[m];
+      cout << evals_[m] / sum_eig << "\t";
+      cout << percent_eig / sum_eig << endl;
+    }
+  */ 
        
   /* evals now contains the eigenvalues,
      corr_matrix_ now contains the associated eigenvectors. */
-  
+     
 
   /* Project row data onto the top "npc_" principal components. */  
   for( t=0 ; t<inSamples_ ; t++ )
