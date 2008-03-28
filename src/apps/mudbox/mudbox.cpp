@@ -598,11 +598,12 @@ toy_with_onsets(string sfName)
 	mrs_natural timestamps_samples = 0;
 	mrs_real sampling_rate = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
 	cout << "Sampling rate = " << sampling_rate << endl;
+	
 	while(onsetnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
 	{
 		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/nton", 1.0); //note on
 		onsetnet->tick();
-		timestamps_samples += onsetnet->getctrl("mrs_natural/onSples")->to<mrs_natural>();
+		timestamps_samples = onsetnet->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
 		// cout << timestamps_samples / sampling_rate << endl;
 		cout << timestamps_samples << endl;;
 		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/ntoff", 0.0); //note off

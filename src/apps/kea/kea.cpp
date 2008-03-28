@@ -163,7 +163,7 @@ pca()
   net->updctrl("NormMaxMin/norm/mrs_bool/ignoreLast", true);
   net->updctrl("NormMaxMin/norm/mrs_string/mode", "twopass");
   net->updctrl("NormMaxMin/norm/mrs_real/lower", 0.0);
-  net->updctrl("NormMaxMin/norm/mrs_real/upper", 255.0);
+  net->updctrl("NormMaxMin/norm/mrs_real/upper", 512.0);
   
   net->updctrl("WekaSink/wsink/mrs_natural/nLabels", 
 	       net->getctrl("Accumulator/accum/WekaSource/wsrc/mrs_natural/nClasses"));
@@ -177,9 +177,15 @@ pca()
  const mrs_realvec& pca_transformed_data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
  cout << "Output first transformed feature using PCA" << endl;
+ 
  for (int t=0; t < pca_transformed_data.getCols(); t++) 
-    cout << pca_transformed_data(0,t) << endl;
-  
+   {
+     cout << pca_transformed_data(0,t) << "\t";
+     cout << pca_transformed_data(1,t) << "\t";
+     cout << pca_transformed_data(2,t) << "\t";
+     cout << pca_transformed_data(3,t) << "\t";
+     cout << endl;
+   }
 
   
 

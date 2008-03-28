@@ -34,6 +34,8 @@ PCA::PCA(string name):MarSystem("PCA",name)
 
 PCA::~PCA()
 {
+  delete [] evals_;
+  delete [] interm_;
 }
 
 MarSystem* 
@@ -51,6 +53,8 @@ PCA::addControls()
    setctrlState("mrs_natural/npc",true);
    addctrl("mrs_realvec/pcs",npcs_);
    dims_ = 0;
+   evals_ = NULL;
+   interm_ = NULL;
 }
 
 void
@@ -81,6 +85,8 @@ PCA::myUpdate(MarControlPtr sender)
      dims_ = inObservations_-1;
      corr_matrix_.create(dims_,dims_);
      temp_matrix_.create(dims_, inSamples_);
+     evals_ = new mrs_real[dims_];
+     interm_ = new mrs_real[dims_];
   }
   
   ostringstream oss;
@@ -99,11 +105,7 @@ PCA::myProcess(realvec& in, realvec& out)
 
   mrs_natural o1,o2;
    
-  realvec in_data_( in );
 
-  
-  mrs_real* evals = new mrs_real[inObservations_-1];
-  mrs_real* interm = new mrs_real[inObservations_-1];  
 
 
   for (o=0; o < inObservations_-1; o++)
@@ -141,9 +143,9 @@ PCA::myProcess(realvec& in, realvec& out)
   corr_matrix_(inObservations_-2, inObservations_-2) = 1.0;
   
   // Triangular decomposition
-  tred2(corr_matrix_, inObservations_-1, evals, interm);
+  tred2(corr_matrix_, inObservations_-1, evals_, interm_);
   // Reduction of symmetric tridiagonal matrix
-  tqli( evals, interm, inObservations_-1, corr_matrix_);
+  tqli( evals_, interm_, inObservations_-1, corr_matrix_);
        
   /* evals now contains the eigenvalues,
      corr_matrix_ now contains the associated eigenvectors. */
@@ -153,14 +155,14 @@ PCA::myProcess(realvec& in, realvec& out)
   for( t=0 ; t<inSamples_ ; t++ )
   {
      for( o=0 ; o<inObservations_ -1; o++ )
-        interm[o] = in(o,t); 
+        interm_[o] = in(o,t); 
      
      for( o=0 ; o<onObservations_ -1; o++ )
      {
         out(o,t) = 0.0; 
         for(o2=0 ; o2 < inObservations_ -1; o2++)
         {
-           out(o,t) += interm[o2] * corr_matrix_(o2,inObservations_-o-2);
+           out(o,t) += interm_[o2] * corr_matrix_(o2,inObservations_-o-2);
            npcs_(o2,o) = corr_matrix_(o2,inObservations_-o-2);
         }
      }
@@ -171,8 +173,7 @@ PCA::myProcess(realvec& in, realvec& out)
     out(onObservations_-1, t) = in(inObservations_-1, t);
   setctrl("mrs_realvec/pcs",npcs_);
 
-  delete [] evals;
-  delete [] interm;
+
 }
 
 /*  Reduce a real, symmetric matrix to a symmetric, tridiag. matrix. */
