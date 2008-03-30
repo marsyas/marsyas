@@ -312,8 +312,10 @@ mrs_real realvec::operator()(const mrs_natural r, const mrs_natural c) const
 inline 
 mrs_real& realvec::operator()(const mrs_natural r, const mrs_natural c)
 {
+
   MRSASSERT(r < rows_);
   MRSASSERT(c < cols_);
+
 
   return data_[c * rows_ + r];  
 }

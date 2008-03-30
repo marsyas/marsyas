@@ -79,7 +79,7 @@ private:
   QVector<int> counterSizes;
   QVector<int> labels;
   
-  
+  bool initAudio_;
   QList<QPixmap> piecePixmaps;
   QList<QRect> pieceRects;
   QList<QPoint> pieceLocations;

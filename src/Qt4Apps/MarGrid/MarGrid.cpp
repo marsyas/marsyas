@@ -39,7 +39,7 @@ MarGrid::MarGrid(QWidget *parent)
   cell_size = 50;
   som_width = 12;;
   som_height = 12;
-   
+  initAudio_ = false;
   winWidth = cell_size * som_width;
   winHeight = cell_size * som_height;
 
@@ -59,15 +59,14 @@ MarGrid::MarGrid(QWidget *parent)
   // Create playback network
   pnet_ = mng.create("Series", "pnet_");
   pnet_->addMarSystem(mng.create("SoundFileSource", "src"));
+  // pnet_->addMarSystem(mng.create("Stereo2Mono", "s2m"));
   pnet_->addMarSystem(mng.create("Gain", "gain"));
   pnet_->addMarSystem(mng.create("AudioSink", "dest"));
   pnet_->linkctrl("mrs_bool/notEmpty","SoundFileSource/src/mrs_bool/notEmpty");
 
-  pnet_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
 
   mwr_ = new MarSystemQtWrapper(pnet_);
-  mwr_->start();
-  
   filePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_string/filename");
 
 
@@ -82,7 +81,7 @@ MarGrid::setupTrain(QString fname)
   // Build network for feature extraction 
   MarSystem* extractNet = mng.create("Series", "extractNet");
   extractNet->addMarSystem(mng.create("SoundFileSource", "src"));
-  
+  extractNet->addMarSystem(mng.create("Stereo2Mono", "s2m"));
   MarSystem* spectralNet = mng.create("Series", "spectralNet");
   spectralNet->addMarSystem(mng.create("Windowing", "ham"));
   spectralNet->addMarSystem(mng.create("Spectrum", "spk"));
@@ -162,6 +161,7 @@ MarGrid::setupTrain(QString fname)
   
   
   total_->updctrl("mrs_natural/inSamples", 512);
+
   
   trainFname = fname;
   predictFname = "test.mf";
@@ -203,7 +203,7 @@ MarGrid::extract()
       total_->updctrl("mrs_natural/label", index);
       total_->updctrl("mrs_bool/memReset", true);
       total_->updctrl("mrs_natural/cindex", index);
-      
+      total_->updctrl("mrs_bool/advance", true);      
       string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
       cout << current  << " - ";
       
@@ -349,7 +349,7 @@ MarGrid::predict()
       total_->updctrl("mrs_bool/memReset", true);
       total_->updctrl("mrs_natural/cindex", index);
       string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
-      
+      total_->updctrl("mrs_bool/advance", true);            
       total_->process(som_in, som_res);
       norm_->process(som_res, norm_som_res);
       som_->process(norm_som_res, predict_res);
@@ -435,11 +435,23 @@ void MarGrid::mousePressEvent(QMouseEvent *event)
       emit playingFile(posFiles[counter].c_str());
       
       mwr_->updctrl(filePtr_, posFiles[counter]);
+      if (initAudio_ == false)
+	{
+	  cout << "Before start mwr" << endl;
+	  mwr_->start();
+	  cout << "After start mwr" << endl;
+	  cout << *pnet_ << endl;
+	  mwr_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	  cout << "Initializing audio" << endl;
+	  initAudio_ = true;
+	  cout << "Before playing" << endl;
+	  cout << pnet_ << endl;
+	}
       mwr_->play();
       
     }
   else 
-      mwr_->pause();
+    mwr_->pause();
   
   cout << "Playlist: " << endl;
   for (int i=0; i < posFiles.size(); i++) 

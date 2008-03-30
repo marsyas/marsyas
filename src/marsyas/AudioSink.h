@@ -59,6 +59,7 @@ private:
   realvec reservoir_;
   mrs_natural reservoirSize_;
   mrs_natural preservoirSize_;
+  mrs_natural pnChannels_;
   
   mrs_natural start_;
   mrs_natural end_;

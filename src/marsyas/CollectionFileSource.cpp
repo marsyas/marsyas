@@ -178,7 +178,7 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
 void
 CollectionFileSource::myProcess(realvec& in, realvec &out)
 {
-  
+
   
   if (advance_) 
   {

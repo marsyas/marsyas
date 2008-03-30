@@ -29,6 +29,7 @@ AudioSink::AudioSink(string name):MarSystem("AudioSink", name)
 	end_ = 0;
   
 	preservoirSize_ = 0;
+	pnChannels_ = 1;
 
 	data_ = NULL;
 #ifdef MARSYAS_AUDIOIO
@@ -107,12 +108,14 @@ AudioSink::myUpdate(MarControlPtr sender)
     }
   
 
-	if (reservoirSize_ > preservoirSize_)
+	if ((reservoirSize_ > preservoirSize_)||(nChannels_ != pnChannels_))
     {
-		reservoir_.stretch(nChannels_, reservoirSize_);
+      cout << "NCHANNELS = " << nChannels_ << endl;
+      reservoir_.stretch(nChannels_, reservoirSize_);
     }
-    
+	
 	preservoirSize_ = reservoirSize_;
+	pnChannels_ = nChannels_;
   
 }
 
