@@ -229,7 +229,7 @@ train()
   
   net->updctrl("WekaSource/wsrc/mrs_string/filename", wekafname_);
   // net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "PercentageSplit,50%");
-  net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "kFold,[NS],10");
+  net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "kFold,NS,10");
   // net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "UseTestSet,lg.arff");
   net->updctrl("mrs_natural/inSamples", 1);
 

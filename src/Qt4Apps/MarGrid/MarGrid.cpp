@@ -37,8 +37,8 @@ MarGrid::MarGrid(QWidget *parent)
   int winWidth, winHeight;
   
   cell_size = 50;
-  som_width = 12;;
-  som_height = 12;
+  som_width = 6;;
+  som_height = 6;
   initAudio_ = false;
   winWidth = cell_size * som_width;
   winHeight = cell_size * som_height;
@@ -69,7 +69,8 @@ MarGrid::MarGrid(QWidget *parent)
   mwr_ = new MarSystemQtWrapper(pnet_);
   filePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_string/filename");
 
-
+  
+  
   setupTrain("music.mf");
 }
 
@@ -433,21 +434,17 @@ void MarGrid::mousePressEvent(QMouseEvent *event)
     {
       cout << "Playing:" << posFiles[counter] << endl;
       emit playingFile(posFiles[counter].c_str());
-      
       mwr_->updctrl(filePtr_, posFiles[counter]);
+      
       if (initAudio_ == false)
 	{
-	  cout << "Before start mwr" << endl;
 	  mwr_->start();
-	  cout << "After start mwr" << endl;
-	  cout << *pnet_ << endl;
 	  mwr_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-	  cout << "Initializing audio" << endl;
-	  initAudio_ = true;
-	  cout << "Before playing" << endl;
-	  cout << pnet_ << endl;
+	  initAudio_ == true;
 	}
       mwr_->play();
+
+
       
     }
   else 
@@ -483,10 +480,16 @@ MarGrid::mouseMoveEvent(QMouseEvent* event)
     {
       cout << "*********" << endl;
       cout << "Playing: " << posFiles[counter] << endl;
-      emit playingFile(posFiles[counter].c_str());
+      emit playingFile(posFiles[counter].c_str());      
       mwr_->updctrl(filePtr_, posFiles[counter]);
+      if (initAudio_ == false)
+	{
+	  mwr_->start();
+	  mwr_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	  initAudio_ == true;
+	}
       mwr_->play();
-      
+   
     }
    else 
      mwr_->pause();

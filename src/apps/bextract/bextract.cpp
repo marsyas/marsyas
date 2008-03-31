@@ -1967,19 +1967,19 @@ selectFeatureSet(MarSystem *featExtractor)
 	if (zcrs_) 
 		featExtractor->updctrl("mrs_string/enableTDChild", "ZeroCrossings/zcrs");
 	if (spectralFeatures_) 
-    {
+	  {
 		featExtractor->updctrl("mrs_string/enableSPChild", "Centroid/cntrd");
 		featExtractor->updctrl("mrs_string/enableSPChild", "Flux/flux");
 		featExtractor->updctrl("mrs_string/enableSPChild", "Rolloff/rlf");
-    }
+	  }
 	if (timbralFeatures_) 
-    {
-		featExtractor->updctrl("mrs_string/enableTDChild", "ZeroCrossings/zcrs");
-		featExtractor->updctrl("mrs_string/enableSPChild", "MFCC/mfcc");
-		featExtractor->updctrl("mrs_string/enableSPChild", "Centroid/cntrd");
-		featExtractor->updctrl("mrs_string/enableSPChild", "Flux/flux");
-		featExtractor->updctrl("mrs_string/enableSPChild", "Rolloff/rlf");
-    }
+	  {
+	    featExtractor->updctrl("mrs_string/enableTDChild", "ZeroCrossings/zcrs");
+	    featExtractor->updctrl("mrs_string/enableSPChild", "MFCC/mfcc");
+	    featExtractor->updctrl("mrs_string/enableSPChild", "Centroid/cntrd");
+	    featExtractor->updctrl("mrs_string/enableSPChild", "Flux/flux");
+	    featExtractor->updctrl("mrs_string/enableSPChild", "Rolloff/rlf");
+	  }
 	
 }
 
@@ -2185,7 +2185,6 @@ bextract_train_refactored(string pluginName,  string wekafname,
       currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
       if (currentlyPlaying != previouslyPlaying)
 	cout << "Processed: " << currentlyPlaying << endl;
-      
       previouslyPlaying = currentlyPlaying;
       }
   cout << "Finished feature extraction" << endl;

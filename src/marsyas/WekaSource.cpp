@@ -174,6 +174,7 @@ WekaSource::myUpdate(MarControlPtr sender)
 	validationModeEnum_ = kFoldStratified;
       else
       {
+	cout << "cp = " << cp << endl;
 	MRSASSERT(0);
 	(void)42;
       }
@@ -401,7 +402,8 @@ void WekaSource::handleFoldingNonStratifiedValidation(bool trainMode, realvec &o
       (void) 42;
     }//switch
 
-  MRSASSERT(row->size()==out.getCols());
+
+  MRSASSERT(row->size()==out.getRows());
   for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ii++)
     {
       out(ii, 0) = row->at(ii);

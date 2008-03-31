@@ -453,7 +453,7 @@ void drumClassify( string drumFile) {
 void 
 toy_with_onsets(string sfName) 
 {
-	cout << "toying with onsets" << endl;
+  // cout << "toying with onsets" << endl;
 	MarSystemManager mng;
 
 	// assemble the processing network 
@@ -528,10 +528,10 @@ toy_with_onsets(string sfName)
 
 	mrs_real textureWinMinLen = 0.050; //secs
 	mrs_natural minTimes = textureWinMinLen*fs/hopSize; //12;//onsetWinSize+1;//15;
-	cout << "MinTimes = " << minTimes << " (i.e. " << textureWinMinLen << " secs)" << endl;
+	// cout << "MinTimes = " << minTimes << " (i.e. " << textureWinMinLen << " secs)" << endl;
 	mrs_real textureWinMaxLen = 3.000; //secs
 	mrs_natural maxTimes = textureWinMaxLen*fs/hopSize;//1000; //whatever... just a big number for now...
-	cout << "MaxTimes = " << maxTimes << " (i.e. " << textureWinMaxLen << " secs)" << endl;
+	// cout << "MaxTimes = " << maxTimes << " (i.e. " << textureWinMaxLen << " secs)" << endl;
 
 	//best result till now are using dB power Spectrum!
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PowerSpectrum/pspk/mrs_string/spectrumType",
@@ -564,7 +564,7 @@ toy_with_onsets(string sfName)
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/ShiftInput/sif/mrs_natural/winSize", 4*lookAheadSamples+1);
 	
 	mrs_natural winds = 1+lookAheadSamples+mrs_natural(ceil(mrs_real(winSize)/hopSize/2.0));
-	cout << "timesToKeep = " << winds << endl;
+	// cout << "timesToKeep = " << winds << endl;
 	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/timesToKeep", winds);
 	onsetnet->updctrl("Accumulator/onsetaccum/mrs_string/mode","explicitFlush");
 	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/maxTimes", maxTimes); 
@@ -597,13 +597,13 @@ toy_with_onsets(string sfName)
 	///////////////////////////////////////////////////////////////////////////////////////
 	mrs_natural timestamps_samples = 0;
 	mrs_real sampling_rate = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
-	cout << "Sampling rate = " << sampling_rate << endl;
+	// cout << "Sampling rate = " << sampling_rate << endl;
 	
 	while(onsetnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
 	{
 		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/nton", 1.0); //note on
 		onsetnet->tick();
-		timestamps_samples = onsetnet->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
+		timestamps_samples += onsetnet->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
 		// cout << timestamps_samples / sampling_rate << endl;
 		cout << timestamps_samples << endl;;
 		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/ntoff", 0.0); //note off
