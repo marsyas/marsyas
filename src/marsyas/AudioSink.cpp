@@ -103,7 +103,7 @@ AudioSink::myUpdate(MarControlPtr sender)
 		reservoirSize_ = 2 * bufferSize_;
 	else 
     {
-		if (2 * inSamples_ > preservoirSize_) 
+		if (2 * inSamples_ > preservoirSize_)      
 			reservoirSize_ = 2 * inSamples_;
     }
   
