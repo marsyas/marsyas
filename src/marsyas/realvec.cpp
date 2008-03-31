@@ -185,7 +185,7 @@ realvec::mean() const
 }
 
 void
-realvec::sort() //assumes one dimensional vector only!
+realvec::sort() //non-descending sort - assumes one dimensional vector only!
 {
 	std::sort(data_, data_+size_);
 }

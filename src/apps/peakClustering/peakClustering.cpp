@@ -147,7 +147,7 @@ printHelp(string progName)
 	cerr << "-ih --ignoreHWPS: ignore harmonicity (HWPS) similarity between peaks" << endl;
 	cerr << "-ip --ignorePan: ignore panning similarity between peaks" << endl;
 	
-	cerr << "-uo --useOnsets: ignore onset detector for dynamically adjusting the length of texture windows" << endl;
+	cerr << "-uo --useOnsets: use onset detector for dynamically adjusting the length of texture windows" << endl;
 
 	cerr << "" << endl;
 	cerr << "-h --help            : display this information " << endl;

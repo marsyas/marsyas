@@ -199,7 +199,7 @@ public:
   mrs_real sum() const;
   mrs_real std() const;
   mrs_real var() const;
-  void sort();//assumes one dimensional vector only!
+  void sort();//non-descending sort - assumes one dimensional vector only!
   void abs();
   void sqr();
   void sqroot();
