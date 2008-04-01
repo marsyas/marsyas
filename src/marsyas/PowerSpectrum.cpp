@@ -124,8 +124,8 @@ PowerSpectrum::myProcess(realvec& in, realvec& out)
 				out(o,t) = sqrt(re_ * re_ + im_ * im_);
 				break;
 			case PSD_DB:
-				dB_ = (mrs_real)(20 * log10(re_ * re_ + im_ * im_ + 0.000000001));
-				if (dB_ < -100) dB_ = -100;
+				dB_ = (mrs_real)(20*log10(re_ * re_ + im_ * im_ + 0.000000001)); //FIXME[!] This should be 10*log10(...)! But it ruins toy_with_onsets() performance
+				if (dB_ < -100)	dB_ = -100;
 				out(o,t) = dB_;	  
 				break;
 			case PSD_PD:
@@ -137,6 +137,7 @@ PowerSpectrum::myProcess(realvec& in, realvec& out)
 	}
 
 	//MATLAB_PUT(out, "PowerSpectrum");
+	//MATLAB_EVAL("plot(PowerSpectrum)");
 }
 
 
