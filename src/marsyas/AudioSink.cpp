@@ -110,7 +110,7 @@ AudioSink::myUpdate(MarControlPtr sender)
 
 	if ((reservoirSize_ > preservoirSize_)||(nChannels_ != pnChannels_))
     {
-      cout << "NCHANNELS = " << nChannels_ << endl;
+      //cout << "NCHANNELS = " << nChannels_ << endl;
       reservoir_.stretch(nChannels_, reservoirSize_);
     }
 	
