@@ -654,8 +654,8 @@ MarSystemManager::MarSystemManager()
 		"Windowing/wi/mrs_bool/zeroPhasing");
 	peAnalysePr->linkctrl("mrs_natural/frameMaxNumPeaks", 
 		"PeakConvert/conv/mrs_natural/frameMaxNumPeaks");
-	peAnalysePr->linkctrl("mrs_natural/Decimation", 
-		"PeakConvert/conv/mrs_natural/Decimation");
+	//peAnalysePr->linkctrl("mrs_natural/Decimation", 
+	//	"PeakConvert/conv/mrs_natural/Decimation");
 	peAnalysePr->updctrl("Shifter/sh/mrs_natural/shift", 1);
 	registerPrototype("PeakAnalyse", peAnalysePr);
 

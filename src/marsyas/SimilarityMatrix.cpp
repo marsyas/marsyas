@@ -90,9 +90,10 @@ SimilarityMatrix::myUpdate(MarControlPtr sender)
 		marsystems_[0]->setctrl("mrs_string/inObsNames", oss.str());
 		marsystems_[0]->update();
 
-		//link covMatrix control
-		string childCname = marsystems_[0]->getPrefix() + "mrs_string/covMatrix";
-		linkctrl(childCname, "mrs_string/covMatrix");
+		//link covMatrix control 
+		MarControlPtr ctrl_childCovMat = marsystems_[0]->getctrl("mrs_realvec/covMatrix");
+		if(!ctrl_childCovMat.isInvalid())
+			ctrl_childCovMat->linkTo(ctrl_covMatrix_);
 
 		//allocate space for the metric result (must be a real value)
 		metricResult_.create(1,1);

@@ -317,9 +317,9 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	MarSystem* fsimMat = mng.create("SimilarityMatrix","FREQsimMat");
 	fsimMat->addMarSystem(mng.create("Metric","FreqL2Norm"));
 	fsimMat->updctrl("Metric/FreqL2Norm/mrs_string/metric","euclideanDistance");
-	//fsimMat->updctrl("mrs_natural/calcCovMatrix", SimilarityMatrix::diagCovMatrix);
-	fsimMat->updctrl("mrs_string/normalize", "MinMax");
-	fsimMat->linkctrl("mrs_realvec/covMatrix", "Metric/FreqL2Norm/mrs_realvec/covMatrix");
+	fsimMat->updctrl("mrs_natural/calcCovMatrix", SimilarityMatrix::diagCovMatrix);
+	//fsimMat->updctrl("mrs_string/normalize", "MinMax");
+	//fsimMat->linkctrl("mrs_realvec/covMatrix", "Metric/FreqL2Norm/mrs_realvec/covMatrix");
 	freqSim->addMarSystem(fsimMat);	
 	//--------
 	freqSim->addMarSystem(mng.create("RBF","FREQrbf"));
@@ -339,9 +339,9 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	MarSystem* asimMat = mng.create("SimilarityMatrix","AMPsimMat");
 	asimMat->addMarSystem(mng.create("Metric","AmpL2Norm"));
 	asimMat->updctrl("Metric/AmpL2Norm/mrs_string/metric","euclideanDistance");
-	//asimMat->updctrl("mrs_natural/calcCovMatrix", SimilarityMatrix::diagCovMatrix);
-	asimMat->updctrl("mrs_string/normalize", "MinMax");
-	asimMat->linkctrl("mrs_realvec/covMatrix", "Metric/AmpL2Norm/mrs_realvec/covMatrix");
+	asimMat->updctrl("mrs_natural/calcCovMatrix", SimilarityMatrix::diagCovMatrix);
+	//asimMat->updctrl("mrs_string/normalize", "MinMax");
+	//asimMat->linkctrl("mrs_realvec/covMatrix", "Metric/AmpL2Norm/mrs_realvec/covMatrix");
 	ampSim->addMarSystem(asimMat);	
 	//--------
 	ampSim->addMarSystem(mng.create("RBF","AMPrbf"));
@@ -380,9 +380,9 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	MarSystem* psimMat = mng.create("SimilarityMatrix","PANsimMat");
 	psimMat->addMarSystem(mng.create("Metric","PanL2Norm"));
 	psimMat->updctrl("Metric/PanL2Norm/mrs_string/metric","euclideanDistance");
-	//psimMat->updctrl("mrs_natural/calcCovMatrix", SimilarityMatrix::diagCovMatrix);
-	psimMat->updctrl("mrs_string/normalize", "MinMax");
-	psimMat->linkctrl("mrs_realvec/covMatrix", "Metric/PanL2Norm/mrs_realvec/covMatrix");
+	psimMat->updctrl("mrs_natural/calcCovMatrix", SimilarityMatrix::diagCovMatrix);
+	//psimMat->updctrl("mrs_string/normalize", "MinMax");
+	//psimMat->linkctrl("mrs_realvec/covMatrix", "Metric/PanL2Norm/mrs_realvec/covMatrix");
 	panSim->addMarSystem(psimMat);	
 	//--------
 	panSim->addMarSystem(mng.create("RBF","PANrbf"));

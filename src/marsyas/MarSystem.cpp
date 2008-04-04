@@ -797,7 +797,15 @@ MarSystem::linkControl(string cname1, string cname2, bool update)
 
 	//a control is inherently connected to itself!
 	if(ctrl1() == ctrl2())
-		return true;
+	{
+		if (ctrl1() == NULL)
+		{
+			MRSWARN("MarSystem::linkControl - Impossible to link two non-existing controls: " + cname1+" --> "+cname2);
+			return false;
+		}
+		else
+			return true;
+	}
 
 	//make sure 2nd control exists somewhere in the network
 	if(ctrl2.isInvalid())
