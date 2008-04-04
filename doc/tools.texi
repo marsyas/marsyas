@@ -103,11 +103,7 @@ will be added to the collection.  @code{mkcollection} only will add
 files with @code{.wav} and @code{ .au} extensions but
 does not check that they are valid soundfiles.  In general
 collection files should contain soundfiles with the same sampling rate
-as Marsyas does not perform automatic sampling conversion. The
-exception to this rule is collection that mix files at 22050Hz and
-44100Hz sampling rates, in which case the 44100Hz files are downsampled
-to 22050Hz. No implicit downsampling is performed to collections that
-contain only 44100Hz files.
+as Marsyas does not perform automatic sampling conversion on collections. 
 
 
 @node Simple Soundfile Interaction
@@ -162,6 +158,7 @@ sfplay foo.wav
 sfplay -s 10.0 -l 3.2 -r 2.5 -g 0.5 foo.wav bar.au -f output.wav
 sfplay -l 3.0 reggae.mf
 sfplay foo.wav -p playback.mpl 
+sfplugin -p playback.mpl bar.wav
 @end example
 
 

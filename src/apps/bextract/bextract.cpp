@@ -2182,6 +2182,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
       bextractNetwork->tick();
       if (single_vector)
 	bextractNetwork->updctrl("mrs_bool/advance", true);
+      
       currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
       if (currentlyPlaying != previouslyPlaying)
 	cout << "Processed: " << currentlyPlaying << endl;
