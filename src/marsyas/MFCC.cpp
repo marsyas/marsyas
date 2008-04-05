@@ -26,6 +26,7 @@ MFCC::MFCC(string name):MarSystem("MFCC",name)
 	pfftSize_ = 0;
 	psamplingRate_ = 0;
 	mfcc_offsets_ = NULL;
+	cepstralCoefs_ = 13;
 }
 
 MFCC::MFCC(const MFCC& a) : MarSystem(a)
@@ -33,6 +34,7 @@ MFCC::MFCC(const MFCC& a) : MarSystem(a)
 	pfftSize_ = 0;
 	psamplingRate_ = 0;
 	mfcc_offsets_ = NULL;
+	cepstralCoefs_ = 13;
 }
 
 MFCC::~MFCC()
@@ -63,15 +65,16 @@ MFCC::myUpdate(MarControlPtr sender)
 	
 	samplingRate_ = (mrs_natural) (ctrl_israte_->to<mrs_real>() * fftSize_);
 
+	ostringstream oss;
+	mrs_string in_names = ctrl_inObsNames_->to<mrs_string>();
+	for (i=0; i < cepstralCoefs_; i++)
+	  oss << "MFCC" << i << "_" << in_names;
+	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
+	 
 	if ((pfftSize_ != fftSize_) || (psamplingRate_ != samplingRate_))
 	{
+
 		cepstralCoefs_ = 13;
-		ostringstream oss;
-
-		for (i=0; i < cepstralCoefs_; i++)
-		  oss << "MFCC" << i << "_" << ctrl_inObsNames_->to<mrs_string>();
-		ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
-
 		freqs_.create(42);
 		lowestFrequency_ = 133.3333f;
 		linearFilters_ = 13;
