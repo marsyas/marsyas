@@ -70,6 +70,9 @@ namespace Marsyas
 
 #define MRSERR(x) {std::ostringstream oss; MrsLog::mrsErr((std::ostringstream&)(oss << x));}
 
+#define MRS_WARNINGS_OFF MrsLog::warnings_off_ = true;
+#define MRS_WARNINGS_ON MrsLog::warnings_off_ = false;
+
 #if MARSYAS_LOG_DIAGNOSTICS
 #define MRSDIAG(x) {std::ostringstream oss; MrsLog::mrsDiagnostic((std::ostringstream&)(oss << x));}
 #else

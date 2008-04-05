@@ -483,6 +483,14 @@ MarSystemManager::MarSystemManager()
   timbre_features_pr->linkctrl("mrs_string/disableLPCChild", 
 							   "Series/lpcFeatures/Fanout/lpcf/mrs_string/disableChild");
 
+    timbre_features_pr->linkctrl("mrs_string/disableBranch", 
+				 "mrs_string/disableChild");
+
+    timbre_features_pr->updctrl("mrs_string/disableBranch", "Series/lpcFeatures");
+    timbre_features_pr->updctrl("mrs_string/disableSPChild", "all");
+    timbre_features_pr->updctrl("mrs_string/disableTDChild", "all");
+    timbre_features_pr->updctrl("mrs_string/disableLPCChild", "all");
+
   registerPrototype("TimbreFeatures", timbre_features_pr);
 
 

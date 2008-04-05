@@ -26,6 +26,7 @@ using namespace std;
 using namespace Marsyas;
 
 string MrsLog::fname_ = "marsyas.log";
+bool MrsLog::warnings_off_ = false;
 
 void 
 MrsLog::setLogFile(string fname)
@@ -63,22 +64,25 @@ MrsLog::mrsErr(const ostringstream& oss)
 void 
 MrsLog::mrsWarning(const ostringstream& oss)
 {
+  if (!warnings_off_) 
+    {
 #ifdef MARSYAS_LOG2STDOUT
-	cout << "[MRS_WARNING] " << oss.str() << endl;
+      cout << "[MRS_WARNING] " << oss.str() << endl;
 #endif
-
+      
 #ifdef MARSYAS_LOG2FILE
-	ofstream ofs(fname_.c_str(), ios::out | ios::app);
-	if (ofs.fail())
-		return;
-	if (!(ofs << "[MRS_WARNING] " <<  oss.str() << endl))
-	{
-		ofs.close();
-		return;
-	}
-	ofs.close();
+      ofstream ofs(fname_.c_str(), ios::out | ios::app);
+      if (ofs.fail())
 	return;
+      if (!(ofs << "[MRS_WARNING] " <<  oss.str() << endl))
+	{
+	  ofs.close();
+	  return;
+	}
+      ofs.close();
+      return;
 #endif
+    }
 }
 
 void 

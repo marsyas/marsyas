@@ -178,9 +178,14 @@ Confidence::myProcess(realvec& in, realvec& out)
 		  max_l = l;
 		}
 	    }
+
+	  
 	  if (print_) 
-	    cout << nbFrames_*hopDuration_ << "\t" << labelNames_[max_l] << "\t" << 
+	    {
+	    cout << fixed << setprecision(3) << nbFrames_*hopDuration_ << "\t";
+	    cout << fixed << setprecision(0) << labelNames_[max_l] << "\t" <<
 	      ((confidences_(max_l) / count_)) * 100.0 << endl;
+	    }
 
 
 	  if (getctrl("mrs_bool/fileOutput")->to<mrs_bool>())

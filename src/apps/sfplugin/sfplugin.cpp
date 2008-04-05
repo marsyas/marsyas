@@ -19,6 +19,7 @@ CommandLineOptions cmd_options;
 
 int helpopt;
 int usageopt;
+bool verboseopt;
 
 long offset = 0;
 long duration = 1000 * 44100;
@@ -71,8 +72,10 @@ void sfplugin(vector<string> soundfiles, string pluginName)
 	ifstream pluginStream(pluginName.c_str());
 
 	MarSystemManager mngr;
-	MarSystem* msys = mngr.getMarSystem(pluginStream);
 
+	MRS_WARNINGS_OFF;
+	MarSystem* msys = mngr.getMarSystem(pluginStream);
+	MRS_WARNINGS_ON;
 	if (msys == 0) 
 	{
 		cout << "Manager does not support system " << endl;
@@ -87,10 +90,11 @@ void sfplugin(vector<string> soundfiles, string pluginName)
 	string sfName;
 
 	// output the plugin 
-	cout << *msys << endl;
+	if (verboseopt)
+	  cout << *msys << endl;
 
 	vector<string>::iterator sfi;  
-
+	
 
 	for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
 	{
@@ -180,6 +184,7 @@ loadOptions()
 	fileName   = cmd_options.getStringOption("filename");
 	loop = cmd_options.getBoolOption("loop");
 	onetick = cmd_options.getBoolOption("onetick");
+	verboseopt = cmd_options.getBoolOption("verbose");
 }
 
 int

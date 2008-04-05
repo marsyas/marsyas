@@ -74,7 +74,7 @@ mrs_bool timbralFeatures_ = false;
 string workspaceDir = EMPTYSTRING;
 string pluginName = EMPTYSTRING;
 string wekafname = EMPTYSTRING;
-string extractorName = EMPTYSTRING;
+string extractorName = "REFACTORED";
 string classifierName = EMPTYSTRING;
 string collectionName = EMPTYSTRING;
 string predictCollection = EMPTYSTRING;
@@ -1944,9 +1944,6 @@ selectStereoFeatureSet(MarSystem* stereoFeatures)
 void 
 selectFeatureSet(MarSystem *featExtractor)
 {
-	featExtractor->updctrl("mrs_string/disableSPChild", "all");
-	featExtractor->updctrl("mrs_string/disableTDChild", "all");
-	featExtractor->updctrl("mrs_string/disableLPCChild", "all");
 	
 	if (mfcc_) 
 		featExtractor->updctrl("mrs_string/enableSPChild", "MFCC/mfcc");
@@ -2102,14 +2099,14 @@ bextract_train_refactored(string pluginName,  string wekafname,
   // link confidence and annotation with SoundFileSource that plays the collection 
   bextractNetwork->linkctrl("Confidence/confidence/mrs_string/fileName", 
 			    "mrs_string/filename");
-  bextractNetwork->linkctrl("WekaSink/wsink/mrs_string/currentlyPlaying", 
-			    "mrs_string/currentlyPlaying");
   bextractNetwork->linkctrl("Annotator/annotator/mrs_natural/label",
 			    "mrs_natural/currentLabel");
 
   // links with WekaSink
   if (wekafname != EMPTYSTRING)
     {
+      bextractNetwork->linkctrl("WekaSink/wsink/mrs_string/currentlyPlaying", 
+			    "mrs_string/currentlyPlaying");
       bextractNetwork->linkctrl("Confidence/confidence/mrs_string/labelNames",  
 				"WekaSink/wsink/mrs_string/labelNames");
       bextractNetwork->linkctrl("WekaSink/wsink/mrs_natural/nLabels", "mrs_natural/nLabels"); 
@@ -2566,7 +2563,7 @@ initOptions()
   cmd_options.addRealOption("length", "l", -1.0f);
   cmd_options.addStringOption("plugin", "p", EMPTYSTRING);
   cmd_options.addStringOption("wekafile", "w", EMPTYSTRING);
-  cmd_options.addStringOption("extractor", "e", EMPTYSTRING);
+  cmd_options.addStringOption("extractor", "e", "REFACTORED");
   cmd_options.addNaturalOption("memory", "m", 40);
   cmd_options.addNaturalOption("nwinsamples", "ws", 512);
   cmd_options.addRealOption("samplingRate", "sr", 22050.0);
