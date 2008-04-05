@@ -2046,8 +2046,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
 				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/pos");
       bextractNetwork->linkctrl("mrs_real/duration", 
 				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_real/duration");
-      bextractNetwork->linkctrl("mrs_bool/initAudio", 
-				"Accumulator/acc/Series/featureNetwork/AudioSink/dest/mrs_bool/initAudio");
+      if (pluginName != EMPTYSTRING)      
+	bextractNetwork->linkctrl("mrs_bool/initAudio", 
+				  "Accumulator/acc/Series/featureNetwork/AudioSink/dest/mrs_bool/initAudio");
       bextractNetwork->linkctrl("mrs_string/currentlyPlaying", 
 				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/currentlyPlaying");
       
@@ -2077,8 +2078,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
 				"Series/featureNetwork/SoundFileSource/src/mrs_natural/pos");
       bextractNetwork->linkctrl("mrs_real/duration", 
 				"Series/featureNetwork/SoundFileSource/src/mrs_real/duration");
-      bextractNetwork->linkctrl("mrs_bool/initAudio", 
-				"Series/featureNetwork/AudioSink/dest/mrs_bool/initAudio");
+      if (pluginName != EMPTYSTRING)
+	bextractNetwork->linkctrl("mrs_bool/initAudio", 
+				  "Series/featureNetwork/AudioSink/dest/mrs_bool/initAudio");
       bextractNetwork->linkctrl("mrs_string/currentlyPlaying", 
 				"Series/featureNetwork/SoundFileSource/src/mrs_string/currentlyPlaying");
       bextractNetwork->linkctrl("mrs_natural/currentLabel", 
@@ -2565,10 +2567,10 @@ initOptions()
   cmd_options.addStringOption("wekafile", "w", EMPTYSTRING);
   cmd_options.addStringOption("extractor", "e", "REFACTORED");
   cmd_options.addNaturalOption("memory", "m", 40);
-  cmd_options.addNaturalOption("nwinsamples", "ws", 512);
+  cmd_options.addNaturalOption("winsamples", "ws", 512);
   cmd_options.addRealOption("samplingRate", "sr", 22050.0);
   cmd_options.addNaturalOption("accSize", "as", 1298);
-  cmd_options.addNaturalOption("nhopsamples", "hp", 512);
+  cmd_options.addNaturalOption("hopsamples", "hp", 512);
   cmd_options.addStringOption("classifier", "cl", EMPTYSTRING);
   cmd_options.addBoolOption("tline", "t", false);
   cmd_options.addBoolOption("pluginmute", "pm", false);
@@ -2588,7 +2590,7 @@ initOptions()
   cmd_options.addBoolOption("SpectralFlux","flx", false);
   cmd_options.addBoolOption("SpectralFeatures", "spfe", false);
   cmd_options.addBoolOption("ZeroCrossings", "zcrs", false);
-  cmd_options.addBoolOption("LinearSpectralPair", "lsp", false);
+  cmd_options.addBoolOption("LineSpectralPair", "lsp", false);
   cmd_options.addBoolOption("LinearPredictionCepstralCoefficients", "lpcc", false);
   
   cmd_options.addBoolOption("TimbralFeatures", "timbral", false);

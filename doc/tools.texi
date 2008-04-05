@@ -215,109 +215,190 @@ bextract is one of the most powerful executables provided by
 Marsyas. It can be used for complete feature extraction and
 classification experiments with multiple files. It serves as a
 canonical example of how audio analysis algorithms can be expressed in
-the framework.
+the framework. This documentation refers to the latest refactored 
+version of bextract. The old-style bextract using the -e command-line 
+option to specify the feature extractor is still supported but 
+use of it discouraged. 
 
 Suppose that you want to build a real-time music/speech descriminator
 based on a collection of music files named music.mf and a collection
 of speech files named speech.mf.  These collections can either be
 created manually or using the mkcollection utility. The following
-commandline will extract means and variances of Mel-Frequency cepstral
-coefficients (MFCC) over a texture window of 1 sec.  The results are
-stored in a wekaOut.arff which is a text file storing the feature
-values that can be used in the Weka machine learning environment for
-experimentation with different classifiers. At the same time that the
-features are extracted, a simple Gaussian classifier is trained and
-when feature extraction is completed the whole network of feature
-extraction and classification is stored and can be used for real-time
-audio classification directly as a Marsyas plugin.  The plugin makes a
-classification decision every 20ms but aggregates the results by
-majority voting to display output approximately every 1 second. The
-whole network is stored in musp_classify.mpl which is loaded into
-sfplugin and a new file named new.wav is passed through. The screen
-output shows the classification results and confidence.
-
-Users familiar with marsyas 0.1 will notice that currently the machine
-learning part of marsyas 0.2 is not as sophisticated as the one of
-0.1. For example there is no evaluate executable for performing
-cross-validation experiments and the only classifier currently
-implemented is a simple multidimensional Gaussian classifiar. For my
-own research I have been increasingly using Weka for all the machine
-learning experiments so porting this functionality to the new version
-is not a high priority. On the other hand I have a clear notion of how
-they can be integrated and most of the necessary components and APIs
-are already in place. Eventually I would like to port most of Weka
-into Marsyas but it will be some time until that happens.
-
-
+commandline will extract means and variances of timbral features 
+(time-domain Zero-Crossings, Spectral Centroid, Rolloff, Flux and 
+Mel-Frequency Cepstral Coefficients (MFCC) over a texture window of 1 sec.  
 
 @example 
-bextract -e STFTMFCC all.mf -p classify.mpl -w wekaOut.arff
-sfplugin -p musp_classify.mpl new.wav 
-@end example
-
-Feature extractors that start with SV produce one value 
-for each file and can be used for non-realtime classification 
-such as genre classification. The following command can 
-be used to generate a weka file for genre classification. 
-
-@example 
-bextract -e SVSTFT classical.mf jazz.mf rock.mf -w genre.arff
+bextract music.mf speech.mf -w ms.arff -p ms.mpl 
+bextract ms.mf -w ms.arff -p ms.mpl 
+bextract -mfcc classical.mf jazz.mf rock.mf -w genre.arff
 @end example 
 
-Currently no classifier is generated for the SV feature extractors 
-but it's only a matter of time before this feature is added. 
-The generated file genre.arff can the be loaded into Weka 
-where classification experiments can be conducted. 
+Both of these commands are equivalent assuming that 
+ms.mf is a labeled collection with the same files 
+as music.mf and speech.mf. The third-command specifies 
+that only the MFCC features should be extracted and is 
+an example of classifying three classes. 
 
-POST-REFACTORING INSTRUCTIONS  - TODO, organize
+The results are stored in a ms.arff which is a text file storing the
+feature values that can be used in the Weka machine learning environment
+for experimentation with different classifiers.  After a header
+describing the features (attribute in Weka terminology) it consists of
+lines of comma separated feature values. Each line corresponds to a
+feature vector. The attributes in the generated .arff file have long
+descriptive names that show the process used to calculate the attribute.
+In order to associate filenames and the subsequences of feature vectors
+corresponding to them each subsequence corresponding to a file is
+prefixed by the filename as a comment in the .arff file. It is a text
+file that is straighforward to parse. Viewing it in a text editor will
+make this clearer.
 
-@verbatim
-bextract -e REFACTORED music-speech.mf -w ms.arff -p ms.mpl
-sfplugin -p ms.mpl debussy.au
-sfplugin -p ms.mpl undergrad.au
-@end verbatim
+In addition to Weka, the native Marsyas kea tool can be used to perform 
+evaluations (cross-validation, accuracies, confusion matrices) 
+similar to Weka although with more limited functionality. 
 
-identical to: (test.mf contains debussy.au and undergrad.au)
+At the same time that the features are extracted, a classifier (by
+default a simple Naive Bayes classifier) is trained and when feature
+extraction is completed the whole network of feature extraction and
+classification is stored and can be used for real-time audio
+classification directly as a Marsyas plugin stored in ms.mpl.
 
-@verbatim
-bextract -e REFACTORED music-speech.mf -w ms.arff -p ms.mpl -tc test.mf
-@end verbatim
+The resulting plugin makes a classification decision every 20ms but
+aggregates the results by majority voting (using the Confidence
+MarSystem) to display time-stamped output approximately every 1
+second. The whole network is stored in ms.mpl which is loaded into
+sfplugin and file_to_be_classified is played and classified at the same
+time. The screen output shows the classification results and
+confidence. The second command shows that the live run-time
+classification can be integrated with bextract. In both cases 
+collections can be used instead of single files. 
 
-@verbatim
-1) Get a whole bunch of .wav files that you plan to analyze.
-(it is possible to decode mp3s but you need to install an external
-library called libmad
-and change a configuration setting in marsyasConfig.pri and
-recompile so I am leaving
-that out for now). Put all the .wav files you are interested in
-analyzing in a directory.
+@example 
+sfplugin -p ms.mpl music_file_to_be_classifed.wav
+sfplugin -p ms.mpl speech_file_to_be_classifed.wav
+bextract -e ms.mf -tc file_to_classified.wav 
+bextract -e ms.mf -tc collection_to_classified.wav 
+@end example 
 
-2) The from bin\release do
+Using the command-line option -sv turns on single vector 
+feature extraction where one feature vector is extracted per file. 
+The single-vector feature representation is useful for 
+many Music Information Retrieval tasks (MIR) such 
+as genre classification, similarity retrieval, and visualization 
+of music collections. The following command can 
+be used to generate a weka file for genre classification with one 
+vector per file. 
 
-mkcollection -c mymusic_blues.mf
-c:\path\to_where_the_wav_files_are
-mkcollection -c mymusic_country.mf
-c:\path\to_where_the_wav_files_are
+@example 
+./bextract -sv cl.mf ja.mf ro.mf -w genres.arff -p genres.mpl
+@end example 
 
-This will create a text file called mymusic.mf that is a list of
-all the .wav files.
+The resulting genres.arff file has only one feature vector line 
+for each soundfile in the collections. 
 
-3) Then from bin\release do:
 
-bextract -e REFACTORED mymusic_blues.mf mymusic_country.mf -w
-mymusic.arff
+Feature sets refer to collections of features that can 
+be included in the feature extraction. It includes 
+several individual feature sets proposed in the MIR 
+and audio analysis literature as well as some common combinations 
+of them. (for details and the most updated list of supported 
+sets experienced users can consult the selectFeatureSet() function 
+in bextract.cpp). The feature sets can be separated into three 
+lagre groups depending what front-end is used: time-domain, 
+spectral-domain, lpc-based. 
 
-The file mymusic.arff is in the ARFF format used by the Weka
-machine learning tool.
-It is a text file that is straighforward to parse. After a header
-it contists of lines
-of comma separated feature values. Each line corresponds to a
-file. Viewing
-it in a text editor will make this clearer.
+The following feature sets are supported (for definitions consult 
+the MIR literature, check the corresponding code implementations 
+and send us email with question for details you don't understand) : 
 
-4) Remove the header and parse the feature vectors and after that
-you are done with Marsyas and can focus on visualization
-@end verbatim
+@table @samp
+@item -timbral --TimbralFeatures 
+      Time ZeroCrossings, Spectral  Centroid, Flux and Rolloff, 
+and Mel-Frequency Cepstral Coefficients (MFCC). Equivalent to
+-mfcc -zcrs -ctd -rlf -flx. This also the default extracted feature set. 
+
+@item -spfe --SpectralFeatures
+      Spectral Centroid, Flux and Rolloff. Equivalent to 
+-zcrs -ctd -rlf -flx. 
+
+@item -mfcc --MelFrequencyCepstralCoefficients
+      Mel-Frequency Cepstral Coefficients.
+
+@item -ctd --SpectralCentroid
+@item -rlf -- SpectralCentroid
+@item -flx --SpectralFlux
+@item -zcrs --ZeroCrossings
+@item -sfm --SpectralFlatnessMeasure 
+@item -scf --SpectralCrestFactor
+@item -lsp --LineSpectralPair 
+@item -lpcc --LinearPredictionCepstralCoefficients
+@end table
+
+By default stereo files are donwmixed to mono by summing the two
+channels before extracting features.  However, bextract also supports
+the extraction of feature based on stereo information. There are 
+feature sets that can only be extracted from stereo files. In addition 
+it is possible to use any of the feature sets described above 
+and extract features for both left and right channels that are 
+concatenated to form a feature vector. 
+
+@table @samp 
+@item -spsf --StereoPanningSpectrumFeatures 
+@item -st --stereo
+      Calculate whatever feature sets are activated for both left 
+and right channels.  
+@end table
+
+For example the first command calculate MFCC for both 
+left and right channels.  The second command calculates 
+the Stereo Panning Spectrum Features which require both 
+channels and also the Spectral Centroid for both left 
+and right. 
+
+@example 
+bextract -st -mfcc mymusic.mf -w mymusic.arff
+bextract -spsf -st --SpectralCentroid -w mymusic.arff 
+@end example 
+
+The feature extraction can be configured in many ways 
+(only some of which are possible through command-line 
+options). The following options can be used to control 
+various aspects of the feature extraction process
+(most of the default values assume 22050 Hz sampling rate): 
+
+
+@table @samp 
+@item -s --start
+      starting offset (in seconds) into each soundifle from which features will be extracted
+@item -l --length
+      length (in seconds) of each soundfile from which features will be extracted. A length of -1.0 indicates that the entire duration of the file should be used (the default behavior) 
+@item -ws --winsamples
+      size in samples of the analysis window (default 512) 
+@item -hp --hopsamples 
+      size in samples of the hop analysis size (default 512 - no overlap) 
+@item -as --accSize 
+      size in analysis frames of how many feature vectors are summarized 
+when single vectors per file are calculated (default 1298 - approximately 30 seconds)
+@item -m --memory 
+      size in analysis frames of how many features vectors are summarized 
+for each texture window (default 40 - approximately 1 second) 
+@item -cl --classifier 
+      classifier used for training and prediction (default GS - a simple Naive Bayes Classifier) 
+@item -e --extractor 
+      old-style specification of feature extraction maintained for backward compatibility (usage discouraged) 
+@item -p --plugin 
+      filename of generated Marsyas plugin (.mpl file) 
+@item -w --wekafile 
+      filename of generated .arff file (for Weka or kea)  
+@item -tc --test 
+      filename of collection or soundfile used for real-time prediction 
+after a model is trained 
+@end table
+
+
+
+
+
 
 
 @node Synthesis
