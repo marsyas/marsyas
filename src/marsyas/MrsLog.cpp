@@ -37,7 +37,7 @@ MrsLog::setLogFile(string fname)
 void 
 MrsLog::mrsMessage(const ostringstream& oss)
 {
-	cout << "[MRS_MESSAGE] " << oss.str() << endl;
+  cout << "[MRS_MESSAGE] " << oss.str();
 }
 
 void 

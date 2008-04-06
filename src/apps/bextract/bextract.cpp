@@ -289,6 +289,7 @@ printUsage(string progName)
 	MRSDIAG("bextract.cpp - printUsage");
 	cerr << "Usage : " << progName << " [-e extractor] [-h help] [-s start(seconds)] [-l length(seconds)] [-m memory]  [-u usage] collection1 collection2 ... collectionN" << endl;
 	cerr << endl;
+	exit(0);
 }
 
 void 
@@ -331,8 +332,8 @@ printHelp(string progName)
 	cerr << "NOTE:" << endl;
 	cerr << "All extractors calculate means and variances over a memory size window" << endl;
 	cerr << "SV can be appended in front of any extractor to extract a single vector (mean, variances) over a 30-second clip (for example SVSTF) " << endl;
-
-
+	
+	exit(0);
 }
 
 void 

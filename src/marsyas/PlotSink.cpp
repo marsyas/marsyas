@@ -83,6 +83,7 @@ PlotSink::myProcess(realvec& in, realvec& out)
   else 
     {
       string sep =ctrl_separator_->to<mrs_string>();
+      ostringstream oss;
       //output input content as a Marsyas Message (stdout by default)
       for (t = 0; t < inSamples_; t++)
 	{
@@ -90,14 +91,15 @@ PlotSink::myProcess(realvec& in, realvec& out)
 	    {
 	      if (o < inObservations_ - 1)
 		{
-		  MRSMSG(out(o,t) << sep);
+		  oss << out(o,t) << sep; 
 		}
 	      else
 		{
-		  MRSMSG(out(o,t));
+		  oss << out(o,t);
 		}
 	    }
-	  MRSMSG(endl);
+	  string s = oss.str(); 
+	  MRSMSG(s << endl);
 	}
     }
 }
