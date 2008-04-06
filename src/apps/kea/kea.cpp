@@ -14,7 +14,8 @@ int usageopt_;
 string wekafname_;
 string mode_;
 CommandLineOptions cmd_options_;
-string workdir_;
+string inputdir_;
+string outputdir_;
 string distancematrix_;
 string classifier_;
  
@@ -22,7 +23,7 @@ void
 printUsage(string progName)
 {
   MRSDIAG("kea.cpp - printUsage");
-  cerr << "Usage : " << progName << " [-m mode -c classifier -wd workdir -w weka file] " << endl;
+  cerr << "Usage : " << progName << " [-m mode -c classifier -id inputdir -od outputdir -w weka file] " << endl;
   cerr << endl;
   exit(1);
 }
@@ -40,9 +41,10 @@ printHelp(string progName)
   cerr << "-u --usage      : display short usage info" << endl;
   cerr << "-h --help       : display this information " << endl;
   cerr << "-w --wekafname : .arff file for training " << endl;
-  cerr << "-c --classifier : classifier to use " << endl;
+  cerr << "-cl --classifier : classifier to use " << endl;
   cerr << "-m --mode: mode of operation" << endl;
-  cerr << "-wd --workdir: workspace directory" << endl;
+  cerr << "-id --inputdir: input directory" << endl;
+  cerr << "-od --outputdir: output directory" << endl;
   cerr << "-dm --distancematrix: distance matrix in MIREX format" << endl;
   exit(1);
 }
@@ -53,11 +55,7 @@ distance_matrix()
 {
   cout << "Distance matrix calculation using " << wekafname_ << endl;
 
-  if (workdir_ != EMPTYSTRING) 
-    wekafname_  = workdir_ + wekafname_;
-
-
-
+  wekafname_  = inputdir_ + wekafname_;
 
   MarSystemManager mng; 
 
@@ -87,7 +85,7 @@ distance_matrix()
   oss << "Marsyas-kea distance matrix for MIREX 2007 Audio Similarity Exchange " << endl;
 
   Collection l;
-  l.read(workdir_ + "extract.txt");
+  l.read(inputdir_ + "extract.txt");
   
 
 
@@ -140,6 +138,8 @@ pca()
       cout << "Weka .arff file not specified" << endl;
       return;
     }
+
+  wekafname_  = inputdir_ + wekafname_;
 
   cout << "PCA using .arff file: " << wekafname_ << endl;
 
@@ -204,8 +204,7 @@ train()
       return;
     }
 
-  if (workdir_ != EMPTYSTRING) 
-    wekafname_  = workdir_ + wekafname_;
+  wekafname_  = inputdir_ + wekafname_;
 
   cout << "Training classifier using .arff file: " << wekafname_ << endl;
   cout << "Classifier type : " << classifier_ << endl;
@@ -262,8 +261,9 @@ initOptions()
   cmd_options_.addBoolOption("usage", "u", false);
   cmd_options_.addStringOption("wekafname", "w", EMPTYSTRING);
   cmd_options_.addStringOption("mode", "m", "train");
-  cmd_options_.addStringOption("workdir", "wd", EMPTYSTRING);
-  cmd_options_.addStringOption("distancematrix", "dm", EMPTYSTRING);
+  cmd_options_.addStringOption("inputdir", "id", "./");
+  cmd_options_.addStringOption("outputdir", "od", "./");
+  cmd_options_.addStringOption("distancematrix", "dm", "dm.txt");
   cmd_options_.addStringOption("classifier", "cl", "GS");
 }
 
@@ -275,7 +275,8 @@ loadOptions()
   usageopt_ = cmd_options_.getBoolOption("usage");
   wekafname_ = cmd_options_.getStringOption("wekafname");
   mode_ = cmd_options_.getStringOption("mode");
-  workdir_ = cmd_options_.getStringOption("workdir");
+  inputdir_ = cmd_options_.getStringOption("inputdir");
+  outputdir_ = cmd_options_.getStringOption("outputdir");
   distancematrix_ = cmd_options_.getStringOption("distancematrix");
   classifier_ = cmd_options_.getStringOption("classifier");
 }

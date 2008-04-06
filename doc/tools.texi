@@ -119,7 +119,7 @@ as Marsyas does not perform automatic sampling conversion on collections.
 @subsection @code{sfinfo}
 @cindex sfinfo
 
-sfinfo is a simple command-line utility for displaying 
+@code{sfinfo} is a simple command-line utility for displaying 
 information about a soundfile. It is also a simple 
 example of how printing out the controls can show 
 information like channels, sampling rate etc.  
@@ -133,7 +133,7 @@ sfinfo foo.wav
 @subsection @code{sfplay}
 @cindex sfplay 
 
-sfplay is a flexible command-line soundfile player that allows
+@code{sfplay} is a flexible command-line soundfile player that allows
 playback of multiple soundfiles in various formats with either
 real-time audio output or soundfile output. The following two example
 show two extremes of using of sfplay: simple playback of foo.wav and
@@ -176,7 +176,7 @@ sfplugin -p playback.mpl bar.wav
 @subsection @code{pitchextract}
 @cindex pitchextract
 
-pitchextract is used to extract the fundamental frequency 
+@code{pitchextract} is used to extract the fundamental frequency 
 contour from monophonic audio signals. A simple sinusoidal 
 playback is provided for playback of the resulting contour. 
 
@@ -185,25 +185,17 @@ playback is provided for playback of the resulting contour.
 @subsection @code{extract}
 @cindex extract
 
-extract is a single-file executable for feature extraction. 
-It can be used as part of external systems for feature 
-extraction therefore it outputs the results in a simple 
-tab-separated text file. For more serious feature extraction 
-over multiple files check bextract which is what I use most 
-of the time. It also serves as an example of a network 
-of MarSystems with relatively complicated structure.  
-The following commands extract a single vector of features 
-based on the first 30 seconds of the provided 
-soundfile. By default the feature extractor is based on 
-extracting features based on the magnitude of the Short Time 
-Fourier Transform (STFT) (i.e means and variances of Spectral 
-Centroid, Rolloff, Flux). The second command extracts 
-the means and variances of Mel-Frequency Cepstral 
-Coefficients. 
+@code{extract} is a single-file executable for feature extraction.  It can be
+used as part of external systems for feature extraction therefore it
+outputs the results in a simple comma-separated output to stdout. For
+more serious feature extraction over multiple files bextract should be
+used. It can also server as a simple example of how feature extraction
+is expressed in Marsyas by looking at the source code of extract.cpp.
+
+@code{extract} will be removed from the Marsyas trunk in the near future. 
 
 @example 
 extract foo.wav 
-extract -e SVMFCC foo.wav
 @end example 
 
 
@@ -211,12 +203,12 @@ extract -e SVMFCC foo.wav
 @subsection @code{bextract}
 @cindex bextract
 
-bextract is one of the most powerful executables provided by
+@code{bextract} is one of the most powerful executables provided by
 Marsyas. It can be used for complete feature extraction and
 classification experiments with multiple files. It serves as a
 canonical example of how audio analysis algorithms can be expressed in
 the framework. This documentation refers to the latest refactored 
-version of bextract. The old-style bextract using the -e command-line 
+version of bextract. The old-style @code{bextract} using the -e command-line 
 option to specify the feature extractor is still supported but 
 use of it discouraged. 
 
@@ -270,7 +262,7 @@ second. The whole network is stored in ms.mpl which is loaded into
 sfplugin and file_to_be_classified is played and classified at the same
 time. The screen output shows the classification results and
 confidence. The second command shows that the live run-time
-classification can be integrated with bextract. In both cases 
+classification can be integrated with @code{bextract}. In both cases 
 collections can be used instead of single files. 
 
 @example 
@@ -446,12 +438,71 @@ to nested networks can be created.
 @subsection @code{kea}
 @cindex kea
 
-kea does machine learning and classification, but requires the
-features to be extracted with another program (general bextract).
+The previous version of Marsyas 0.1 contained machine learning 
+functionality but until 2007 the new version 0.2 mostly relied on 
+Weka for machine learning experiments. Although this  
+situation was satisfactory for writing papers it was not possible 
+to create real-time networks integrating machine learning. 
+Therefore an effort was made to establish programming 
+conventions for how machine learning MarSystems should be 
+implemented. Last but not least we have always wanted to 
+have as much functionality related to audio processing 
+systems implemented natively in Marsyas. 
+
+@code{kea} is one of the outcomes of this effort. Kea (a rare bird 
+from New Zealand) is the Marsyas counterpart of Weka 
+and provides similar capabilities with the command-line 
+interface to Weka although much more limited (at least 
+for now). 
+
+Any weka .arff file can be used as input to kea 
+although ususally the input is the extracted .arff 
+files from @code{bextract}. The following command-line options 
+are supported. 
+
+@table @samp 
+@item -m --mode
+      specifies the mode of operation (train, distance_matrix, pca). The 
+default mode is train. 
+@item -cl --classifier
+      the type of classifier to use if mode is train 
+ Available classifiers are GS, ZEROR, SVM 
+@item -w --wekefile 
+      the name of the weka file 
+@item -dm --distance_matrix 
+      filename for the distance matrix output if mode is distance_matrix 
+@end table
+
+The main mode (train) basically performs 10-fold non-stratified 
+cross-validation to evaluate the classification performance 
+of the specified classifier on the provided .arff file. In addition 
+to classification accuracy It outputs several other summary 
+measures of the classifier's performance as well as the confusion 
+matrix. The format of the output is similar to Weka. 
+
+The mode distance_matrix is used to compute a NxN similarity matrix
+based on the input .arff file containing N feature vector instances. The
+output format is the one used for MIREX 2007 music similarity task. This
+functionality relies on specific naming conventions related to the
+Marsyas MIREX2007 submission. By default the output goes to dm.txt but
+can be specified by the -dm command-line option. The following 
+examples show different ways @code{kea} can be used. 
+
+The pca mode reduces the input feature vectors by projecting 
+them to the first 3 principal components using Principal 
+Component Analysis (PCA). Each component is normalized 
+to lie in the range [0-512]. The resulting transformed 
+features are simply written to stdout. 
 
 @example
-kea -w WEKAFILE -c CLASSIFIED -m MODE
+kea -w iris.arff 
+kea -m train -w iris.arff 
+kea -m distance_matrix -dm dmatrix.txt -w iris.arff
+kea -m pca -w iris.arff
 @end example
+
+
+
 
 
 
