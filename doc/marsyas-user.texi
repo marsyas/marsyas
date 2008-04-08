@@ -62,6 +62,8 @@ translation approved by the Free Software Foundation.
 * Source installation::         Installation instructions for different operating systems.
 * Available tools::             Various sample tools built using marsyas
 components.
+* Available graphical tools::   Various sample tools built using
+marsyas and Qt.
 * Architecture concepts::       Important concepts about Marsyas.
 * System details::              Details about Marsyas.
 * Writing applications::        Writing programs that use Marsyas.
@@ -74,6 +76,7 @@ components.
 @include intro.texi
 @include install.texi
 @include tools.texi
+@include qttools.texi
 @include architecture.texi
 @include system.texi
 @include writing.texi

@@ -1,0 +1,31 @@
+@node Available graphical tools
+@chapter Available graphical tools
+
+
+@menu
+* MarPlayer::                   
+* MarPhaseVocoder::             
+* MarGrid::                     
+* MarMonitors::                 
+* MarLPC::                      
+@end menu
+
+
+@node MarPlayer
+@section MarPlayer
+
+
+@node MarPhaseVocoder
+@section MarPhaseVocoder
+
+
+@node MarGrid
+@section MarGrid
+
+@node MarMonitors
+@section MarMonitors
+
+@node MarLPC
+@section MarLPC
+
+
