@@ -148,7 +148,7 @@ The second command may require you to be root.
 
 After you have compiled Marsyas, it is highly recommended that you
 perform our automatic tests.  For more information, see
-@ref{Regression tests}.
+@ref{Tests}.
 
 
 @node Linux with qmake
@@ -207,7 +207,7 @@ library directly in the source tree.
 
 After you have compiled Marsyas, it is highly recommended that you
 perform our automatic tests.  For more information, see
-@ref{Regression tests}.
+@ref{Tests}.
 
 
 @node MacOS X with autotools
@@ -296,7 +296,7 @@ The second command may require you to be root.
 
 After you have compiled Marsyas, it is highly recommended that you
 perform our automatic tests.  For more information, see
-@ref{Regression tests}.
+@ref{Tests}.
 
 @subsubheading Post-install Warnings
 
@@ -370,7 +370,7 @@ library directly in the source tree.
 
 After you have compiled Marsyas, it is highly recommended that you
 perform our automatic tests.  For more information, see
-@ref{Regression tests}.
+@ref{Tests}.
 
 
 

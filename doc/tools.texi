@@ -17,13 +17,14 @@ source code for those files is in @file{apps/@{DIR@}/}.
 
 @menu
 * Collections and input files::  
-* Simple Soundfile Interaction::  
+* Soundfile Interaction::       
 * Feature Extraction::          
 * Synthesis::                   
 * Machine Learning::            
+* Auditory Scene Analysis::     
 * Marsystem Interaction::       
+* Tests::                       
 * All of the above::            
-* Regression tests::            
 @end menu
 
 
@@ -106,27 +107,14 @@ collection files should contain soundfiles with the same sampling rate
 as Marsyas does not perform automatic sampling conversion on collections. 
 
 
-@node Simple Soundfile Interaction
-@section Simple Soundfile Interaction
+@node Soundfile Interaction
+@section Soundfile Interaction
 
 @menu
-* sfinfo::                      
 * sfplay::                      
+* record::                      
+* orcarecord::                  
 @end menu
-
-
-@node sfinfo
-@subsection @code{sfinfo}
-@cindex sfinfo
-
-@code{sfinfo} is a simple command-line utility for displaying 
-information about a soundfile. It is also a simple 
-example of how printing out the controls can show 
-information like channels, sampling rate etc.  
-
-@example 
-sfinfo foo.wav 
-@end example 
 
 
 @node sfplay
@@ -162,12 +150,20 @@ sfplugin -p playback.mpl bar.wav
 @end example
 
 
+@node record
+@subsection @code{record}
+
+
+@node orcarecord
+@subsection @code{orcarecord}
+
+
+
 @node Feature Extraction
 @section Feature Extraction
 
 @menu
 * pitchextract::                
-* extract::                     
 * bextract::                    
 @end menu
 
@@ -179,24 +175,6 @@ sfplugin -p playback.mpl bar.wav
 @code{pitchextract} is used to extract the fundamental frequency 
 contour from monophonic audio signals. A simple sinusoidal 
 playback is provided for playback of the resulting contour. 
-
-
-@node extract
-@subsection @code{extract}
-@cindex extract
-
-@code{extract} is a single-file executable for feature extraction.  It can be
-used as part of external systems for feature extraction therefore it
-outputs the results in a simple comma-separated output to stdout. For
-more serious feature extraction over multiple files bextract should be
-used. It can also server as a simple example of how feature extraction
-is expressed in Marsyas by looking at the source code of extract.cpp.
-
-@code{extract} will be removed from the Marsyas trunk in the near future. 
-
-@example 
-extract foo.wav 
-@end example 
 
 
 @node bextract
@@ -398,7 +376,6 @@ after a model is trained
 
 @menu
 * phasevocoder::                
-* sftransform::                 
 @end menu
 
 @node phasevocoder
@@ -415,16 +392,6 @@ pitch-shifting and time-scaling.
 @example
 phasevocoder -p 1.4 -s 100
 @end example
-
-
-@node sftransform
-@subsection @code{sftransform}
-@cindex sftransform
-
-sftransform is an example of having a doubly nested 
-network with two FFT/inverse FFT identity transformations. 
-It's not particularly useful but show how 
-to nested networks can be created.
 
 
 @node Machine Learning
@@ -503,7 +470,20 @@ kea -m pca -w iris.arff
 
 
 
+@node Auditory Scene Analysis
+@section Auditory Scene Analysis
 
+
+@menu
+* peakSynth::                   
+* peakClustering::              
+@end menu
+
+@node peakSynth
+@subsection @code{peakSynth}
+
+@node peakClustering
+@subsection @code{peakClustering}
 
 
 @node Marsystem Interaction
@@ -512,6 +492,7 @@ kea -m pca -w iris.arff
 @menu
 * sfplugin::                    
 * msl::                         
+* Scheduler::                   
 @end menu
 
 @node sfplugin
@@ -567,19 +548,12 @@ to come up with some alternative syntax (I have some ideas
 in that direction). 
 
 
-@node All of the above
-@section All of the above
-
-@subsection Mudbox
-
-@WANTED{funny description of mudbox -- I'm look at you, George}
-
-Developers interested in contributing to this mess should read
-@develref{Playing in the mudbox}.
+@node Scheduler
+@subsection @code{scheduler}
 
 
-@node Regression tests
-@section Regression tests
+@node Tests
+@section Tests
 
 Marsyas contains a suite of tests which attempt@footnote{Somewhat
 unsuccessfully, unfortunately.} to make sure that new functionality (or
@@ -598,6 +572,7 @@ information in @develref{Regression tests (devel)}.
 @menu
 * Sanity tests::                
 * Coffee tests::                
+* midiTest::                    
 @end menu
 
 
@@ -639,5 +614,21 @@ Results will be printed on the command line, with more information in
 the file @file{tests/results.log}.
 
 These tests are a useful excuse for taking a coffee break.
+
+
+@node midiTest
+@subsection @code{midiTest}
+
+
+
+@node All of the above
+@section All of the above
+
+@subsection Mudbox
+
+@WANTED{funny description of mudbox -- I'm look at you, George}
+
+Developers interested in contributing to this mess should read
+@develref{Playing in the mudbox}.
 
 
