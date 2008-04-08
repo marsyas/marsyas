@@ -61,7 +61,8 @@ checking the sourceforge website.
 * MaxOS X with qmake::          
 * Windows XP/Vista with Visual Studio 2005 command-line and qmake::  
 * Windows XP/Vista with Visual Studio 2005 IDE and qmake::  
-* Windows XP/Vista with Visual Studio 2008 Command-line::  
+* Windows XP/Vista with Visual Studio 2008 command-line and qmake::  
+* Windows XP/Vista with Visual Studio 2008 IDE and qmake::  
 * Windows XP/Vista with MinGW and qmake::  
 * Windows XP/Vista with Cygwin and autotools::  
 @end menu
@@ -779,8 +780,8 @@ some very useful scripts which are written in Python.
 @end itemize
 
 
-@node Windows XP/Vista with Visual Studio 2008 Command-line
-@subsection Windows XP/Vista with Visual Studio 2008 Command-line
+@node Windows XP/Vista with Visual Studio 2008 command-line and qmake
+@subsection Windows XP/Vista with Visual Studio 2008 command-line and qmake
 
 @enumerate
 @item
@@ -912,6 +913,11 @@ Additional recommended installations:
 machines; Windows users may install it from this site.  Marsyas contains
 some very useful scripts which are written in Python.
 @end itemize
+
+
+@node Windows XP/Vista with Visual Studio 2008 IDE and qmake
+@subsection Windows XP/Vista with Visual Studio 2008 IDE and qmake
+
 
 
 @node Windows XP/Vista with MinGW and qmake
@@ -1054,27 +1060,37 @@ some very useful scripts which are written in Python.
 @section Optional Installs
 
 @menu
-* Vim editor support::          
-* MATLAB setup::                
-* Datasets::                    
 * Compiling Marsyas/Qt applications::  
+* MATLAB setup::                
+* MP3 and Vorbis support::      
+* SWIG bindings::               
+* Vim editor support::          
+* Datasets::                    
 @end menu
 
-@node Vim editor support
-@subsection Vim editor support
 
-A syntax file for vim color highlighting is in @file{misc/marsyas.vim}.
-To use this file, copy it to @file{$HOME/.vim/syntax} add the following
-lines to @file{$HOME/.vim/filetype.vim}:
+@node Compiling Marsyas/Qt applications
+@subsection Compiling Marsyas/Qt applications
+
+If you compiled Marsyas with qmake, then the Marsyas/Qt
+applications will be compiled already.
+
+If you compiled Marsyas with autotools, then you must compile each
+Marsyas/Qt application separately.  From the top of the source
+tree, go to
 
 @example
-if exists("did_load_filetypes")
-  finish
-endif
-augroup filetypedetect
-  au! BufNewFile,BufRead *.cpp          setf marsyas
-  au! BufNewFile,BufRead *.h            setf marsyas
-augroup END
+cd src/Qt4Apps/
+cd @var{APPNAME}
+@end example
+
+@noindent
+where @var{APPNAME} is the name of the application you wish to
+compile.  Then type
+
+@example
+qmake
+make
 @end example
 
 
@@ -1117,6 +1133,48 @@ You must start X11 windows manually. "open -a X11", or click on the X11
 icon in your /Applications/util/ folder.
 @end enumerate
 
+@unnumberedsubsubsec ... on Linux
+
+@unnumberedsubsubsec ... on Widows
+
+@WANTED{Gustavo -- fill this in :) }
+
+
+@node MP3 and Vorbis support
+@subsection MP3 and Vorbis support
+
+
+
+@node SWIG bindings
+@subsection SWIG bindings
+
+@unnumberedsubsubsec Python
+
+@unnumberedsubsubsec Ruby
+
+@unnumberedsubsubsec Lua
+
+@unnumberedsubsubsec Java
+
+
+
+@node Vim editor support
+@subsection Vim editor support
+
+A syntax file for vim color highlighting is in @file{misc/marsyas.vim}.
+To use this file, copy it to @file{$HOME/.vim/syntax} add the following
+lines to @file{$HOME/.vim/filetype.vim}:
+
+@example
+if exists("did_load_filetypes")
+  finish
+endif
+augroup filetypedetect
+  au! BufNewFile,BufRead *.cpp          setf marsyas
+  au! BufNewFile,BufRead *.h            setf marsyas
+augroup END
+@end example
+
 
 @node Datasets
 @subsection Datasets
@@ -1130,31 +1188,6 @@ marsyas-coffee}:
 data set used for large regression tests in Marsyas.
 
 @end itemize
-
-
-@node Compiling Marsyas/Qt applications
-@subsection Compiling Marsyas/Qt applications
-
-If you compiled Marsyas with qmake, then the Marsyas/Qt
-applications will be compiled already.
-
-If you compiled Marsyas with autotools, then you must compile each
-Marsyas/Qt application separately.  From the top of the source
-tree, go to
-
-@example
-cd src/Qt4Apps/
-cd @var{APPNAME}
-@end example
-
-@noindent
-where @var{APPNAME} is the name of the application you wish to
-compile.  Then type
-
-@example
-qmake
-make
-@end example
 
 
 @node Structure of distribution
