@@ -75,10 +75,9 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	MRSDIAG("pitchextract.cpp - pitchextract");	
 
 	MarSystemManager mng;
-	
-	
 	// Build pitch contour extraction network 
 	MarSystem* pitchContour     = mng.create("Series", "pitchContour");
+
 	MarSystem* pitchExtractor = mng.create("Series", "pitchExtractor");
 	pitchExtractor->addMarSystem(mng.create("SoundFileSource", "src"));
 	pitchExtractor->addMarSystem(mng.create("Stereo2Mono", "s2m"));
@@ -97,29 +96,56 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	pitchAccumulator->updctrl("mrs_natural/nTimes", contourSize);
 	pitchContour->addMarSystem(pitchAccumulator);
 	
-	// Extract the pitch contour 
-	pitchContour->tick();
-	
-	mrs_realvec contour = pitchContour->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-	mrs_natural len = contour.getSize() / 2;
+	// Extract the pitch contour using Accumulator 
+	// pitchContour->tick();
+	// mrs_realvec contour = pitchContour->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	// de-interleave the pitch contour
+	// for (int i=0; i < len; i++) 
+	// {
+	// confidences(i) = contour(2*i);
+	// pitches(i) = contour(2*i+1);
+	// }
+
+
+	// Using explicit loop 
+	mrs_natural len = contourSize;
 	mrs_realvec pitches(len);
 	mrs_realvec confidences(len);
+	mrs_realvec pitchres;
+	mrs_realvec peak_in;
+	mrs_realvec peak_out;
+	int i;
+	for (i=0; i < contourSize; i++) 
+	  {
+	    pitchExtractor->tick();
+	    pitchres = pitchExtractor->getctrl("mrs_realvec/processedData")->to<mrs_realvec>(); 
+	    confidences(i) = pitchres(0);
+	    pitches(i) = pitchres(1);
+	    peak_in = pitchExtractor->getctrl("PitchPraat/pitchPraat/AutoCorrelation/acr/mrs_realvec/processedData")->to<mrs_realvec>();
+	    mrs_natural pos = pitchExtractor->getctrl("SoundFileSource/src/mrs_natural/pos")->to<mrs_natural>();
+	    MATLAB_PUT(peak_in, "peak_in");
+	    MATLAB_PUT(pos, "pos");
+	    MATLAB_EVAL("plot(peak_in); title(num2str(pos));");
+	    getchar();
+
+	  }
 	
-	// de-interleave the pitch contour
-	for (int i=0; i < len; i++) 
-	{
-		confidences(i) = contour(2*i);
-		pitches(i) = contour(2*i+1);
-	}
+
+	
 
 	// Normalize confidence to 0-1 range
 	confidences.normMaxMin();
 
 	// Optionally plot the pitches 
 	
+	mrs_realvec foo(len);
 	MATLAB_PUT(confidences, "confidences");
 	MATLAB_PUT(pitches, "pitches");
 	MATLAB_EVAL("plot(confidences)");
+	getchar();
+	MATLAB_EVAL("a = pitches .* pitches;");
+	MATLAB_GET("a", foo);
+	MATLAB_EVAL("plot(a)");
 	getchar();
 	MATLAB_EVAL("plot(pitches)");
 	getchar();	

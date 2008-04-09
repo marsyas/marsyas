@@ -238,11 +238,11 @@ case "x$with_matlab" in
 	       case "${host}" 	 in
  	           *-*-linux-gnu*)    	       
 
-		   	MATLABLIBS="-L${MATLABPREFIX}/bin/glnxa64 -L${MATLABPREFIX}/sys/os/glnxa64 -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz -lhdf5"
+		   	MATLABLIBS="-L${MATLABPREFIX}/bin/glnxa64 -L${MATLABPREFIX}/sys/os/glnxa64 -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz -lhdf5 -lxerces-c"
 			INCLUDES="-I${MATLABPREFIX}/extern/include" 
 	;;
 	      *-*-darwin*) 	
-	 MATLABLIBS="-L${MATLABPREFIX}/bin/maci -L${MATLABPREFIX}/sys/os/maci -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz -lhdf5"
+	 MATLABLIBS="-L${MATLABPREFIX}/bin/maci -L${MATLABPREFIX}/sys/os/maci -leng -lmx -lut -lmat -licudata -licuuc -licui18n -licuio -lz -lhdf5 -lxerces-c"
 	INCLUDES="-I${MATLABPREFIX}/extern/include"
 		;;
 
