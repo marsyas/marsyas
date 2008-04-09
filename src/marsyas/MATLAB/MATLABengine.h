@@ -66,10 +66,10 @@ private:
   MATLABengine();
   
 public:
-  ~MATLABengine();
+  virtual ~MATLABengine();
   
   static MATLABengine *getMatlabEng();
-  
+  void closeMatlabEng();
   void evalString(const std::ostringstream& oss);
   
   //------------------------------------------------

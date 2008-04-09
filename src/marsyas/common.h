@@ -109,10 +109,12 @@ namespace Marsyas
   #define MATLAB_PUT(var, name) {MATLABengine::getMatlabEng()->putVariable(var, name);}
 	#define MATLAB_GET(name, var) MATLABengine::getMatlabEng()->getVariable(name, var)
 	#define MATLAB_EVAL(s) {std::ostringstream oss; MATLABengine::getMatlabEng()->evalString((std::ostringstream&)(oss << s));}
+#define MATLAB_CLOSE() MATLABengine::getMatlabEng()->closeMatlabEng()
 #else
 	#define MATLAB_PUT(var, name)
 	#define MATLAB_GET(name, var) -1
-	#define MATLAB_EVAL(s)
+	#define MATLAB_EVAL(s) 
+       #define MATLAB_CLOSE()
 #endif
 
 /************************************************************************/

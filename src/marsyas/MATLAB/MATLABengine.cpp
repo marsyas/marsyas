@@ -54,6 +54,7 @@ MATLABengine::MATLABengine()
 	engOutputBuffer(engine_, buffer_, BUFSIZE);*/
 }
 
+
 MATLABengine::~MATLABengine()
 {
 //	delete [] buffer_;
@@ -68,6 +69,15 @@ MATLABengine::getMatlabEng()
   
   return instance_;
 }
+
+
+void 
+MATLABengine::closeMatlabEng() 
+{
+  delete instance_;
+  instance_=0;
+}
+
 
 //-------------------------------------------------------------------
 //					setters

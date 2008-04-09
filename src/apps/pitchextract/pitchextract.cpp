@@ -123,10 +123,11 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	    pitches(i) = pitchres(1);
 	    peak_in = pitchExtractor->getctrl("PitchPraat/pitchPraat/AutoCorrelation/acr/mrs_realvec/processedData")->to<mrs_realvec>();
 	    mrs_natural pos = pitchExtractor->getctrl("SoundFileSource/src/mrs_natural/pos")->to<mrs_natural>();
-	    MATLAB_PUT(peak_in, "peak_in");
+	    /* MATLAB_PUT(peak_in, "peak_in");
 	    MATLAB_PUT(pos, "pos");
 	    MATLAB_EVAL("plot(peak_in); title(num2str(pos));");
 	    getchar();
+	    */ 
 
 	  }
 	
@@ -149,7 +150,7 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	getchar();
 	MATLAB_EVAL("plot(pitches)");
 	getchar();	
-	
+	MATLAB_CLOSE();
 	
 	// Playback the pitches
 	if (playPitches) 
