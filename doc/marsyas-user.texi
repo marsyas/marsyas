@@ -68,6 +68,7 @@ marsyas and Qt.
 * System details::              Details about Marsyas.
 * Writing applications::        Writing programs that use Marsyas.
 * Programming MarSystems::      Writing new MarSystem blocks.
+* Missing Docs::                FIXME
 * The Index::                   The Index.
 @end menu
 
@@ -82,9 +83,12 @@ marsyas and Qt.
 @include writing.texi
 @include programming.texi
 
-@c to be scrapped soon.   -gp
-@c @include unsorted.texi
 
+@node Missing Docs
+@unnumbered Missing Docs
+
+@c no particular reason why we use "vr" for this.
+@printindex vr
 
 
 @node The Index

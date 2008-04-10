@@ -42,6 +42,8 @@
 @end macro
 
 @macro WANTED{TEXT}
+@c no particular reason why we use "vr" for this.
+@vindex \TEXT\
 @quotation
 @quotation
 @cartouche
