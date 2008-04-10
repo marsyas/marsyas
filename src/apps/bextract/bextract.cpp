@@ -316,8 +316,8 @@ printHelp(string progName)
 	cerr << "-sr --samplingrate : sampling rate " << endl;
 	cerr << "-w --weka        : weka .arff filename " << endl;
 	cerr << "-wd --workdir : working directory for input/output of files" << endl;
-	cerr << "-ws --nwinsamples: analysis window size in samples " << endl;
-	cerr << "-hp --nhopsamples: analysis hop size in samples " << endl;
+	cerr << "-ws --winsamples: analysis window size in samples " << endl;
+	cerr << "-hp --hopsamples: analysis hop size in samples " << endl;
 	cerr << "-t --timeline    : flag 2nd input collection as timelines for the 1st collection";
 	cerr << endl;
 
@@ -2612,8 +2612,8 @@ loadOptions()
   extractorName = cmd_options.getStringOption("extractor");
   classifierName = cmd_options.getStringOption("classifier");
   memSize = cmd_options.getNaturalOption("memory");
-  winSize = cmd_options.getNaturalOption("nwinsamples");
-  hopSize = cmd_options.getNaturalOption("nhopsamples");
+  winSize = cmd_options.getNaturalOption("winsamples");
+  hopSize = cmd_options.getNaturalOption("hopsamples");
   samplingRate_ = cmd_options.getRealOption("samplingRate");
   accSize_ = cmd_options.getNaturalOption("accSize");
   tline = cmd_options.getBoolOption("tline");
