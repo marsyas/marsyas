@@ -186,18 +186,19 @@ Confidence::myProcess(realvec& in, realvec& out)
 	    cout << fixed << setprecision(0) << labelNames_[max_l] << "\t" <<
 	      ((confidences_(max_l) / count_)) * 100.0 << endl;
 	    }
-
+ 
 
 	  if (getctrl("mrs_bool/fileOutput")->to<mrs_bool>())
 	    {
 	      if (write_)
 		{ 
-		  outputFileSyn_ << nbFrames_*hopDuration_ << "\t" << labelNames_[max_l] << "\t" << 
+		  outputFileSyn_ << fixed << setprecision(3) << nbFrames_*hopDuration_ << "\t";
+		  outputFileSyn_ << setprecision(0) << labelNames_[max_l] << "\t" << 
 		    ((confidences_(max_l) / count_)) * 100.0 << endl;
 		  
 		  if(lastLabel_ == "MARSYAS_EMPTY" || lastLabel_ != labelNames_[max_l])
 		    {
-		      outputFileTran_ << nbFrames_*hopDuration_ << "\t" << labelNames_[max_l] << endl;
+		      outputFileTran_ << fixed << setprecision(3) << nbFrames_*hopDuration_ << "\t" << labelNames_[max_l] << endl;
 		      lastLabel_ = labelNames_[max_l];
 		    }
 		}
