@@ -126,7 +126,6 @@ Confidence::myUpdate(MarControlPtr sender)
 	  oriName_ = getctrl("mrs_string/fileName")->to<mrs_string>();
 	  FileName Sfname(oriName_);
 	  string tmp = Sfname.nameNoExt() +"_synSeg.txt";
-	  cout << Sfname.nameNoExt() << endl;
 	  //      getchar();
 	  outputFileSyn_.open(tmp.c_str(), ios::out);
 	  tmp = Sfname.nameNoExt() +"_tranSeg.txt";
@@ -180,12 +179,6 @@ Confidence::myProcess(realvec& in, realvec& out)
 	    }
 
 	  
-	  if (print_) 
-	    {
-	    cout << fixed << setprecision(3) << nbFrames_*hopDuration_ << "\t";
-	    cout << fixed << setprecision(0) << labelNames_[max_l] << "\t" <<
-	      ((confidences_(max_l) / count_)) * 100.0 << endl;
-	    }
  
 
 	  if (getctrl("mrs_bool/fileOutput")->to<mrs_bool>())
@@ -201,6 +194,15 @@ Confidence::myProcess(realvec& in, realvec& out)
 		      outputFileTran_ << fixed << setprecision(3) << nbFrames_*hopDuration_ << "\t" << labelNames_[max_l] << endl;
 		      lastLabel_ = labelNames_[max_l];
 		    }
+		}
+	    }
+	  else
+	    {
+	      if (print_) 
+		{
+		  cout << fixed << setprecision(3) << nbFrames_*hopDuration_ << "\t";
+		  cout << fixed << setprecision(0) << labelNames_[max_l] << "\t" <<
+		    ((confidences_(max_l) / count_)) * 100.0 << endl;
 		}
 	    }
 	  if (cond || forcePrint_)

@@ -67,7 +67,6 @@ printHelp(string progName)
 void sfplugin(vector<string> soundfiles, string pluginName)
 {
 	MRSDIAG("sfplugin.cpp - sfplugin");
-	cout << "pluginName = " << pluginName << endl;
 	// read the plugin from the file 
 	ifstream pluginStream(pluginName.c_str());
 
@@ -100,7 +99,6 @@ void sfplugin(vector<string> soundfiles, string pluginName)
 	{
 		// udpate source filename 
 		sfName = *sfi;
-		cout << "sfName = " << sfName << endl;
 
 		msys->updctrl("mrs_string/filename", sfName);
 		msys->updctrl("mrs_bool/initAudio", true);     
