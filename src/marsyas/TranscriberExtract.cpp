@@ -143,8 +143,6 @@ TranscriberExtract::getAmpsFromRealvecSink(MarSystem* rvSink)
 	rvSink->updctrl("mrs_bool/done", true);
 	realvec ampList(data.getSize());
 	ampList = data;
-	// normalize amplitudes
-	ampList /= ampList.maxval();
 	return ampList;
 }
 
