@@ -46,6 +46,7 @@ namespace Marsyas
 		realvec vars_;
 		realvec covMatrix_;
 
+		MarControlPtr ctrl_stdDev_;
 		MarControlPtr ctrl_covMatrix_;
 		MarControlPtr ctrl_calcCovMatrix_;
 		MarControlPtr ctrl_normalize_;
@@ -56,8 +57,9 @@ namespace Marsyas
   public:
 		enum covMatrixType {
 			noCovMatrix = 0,
-			diagCovMatrix = 1,
-			fullCovMatrix = 2
+			fixedStdDev = 1,
+			diagCovMatrix = 2,
+			fullCovMatrix = 3
 		};
     
 		SimilarityMatrix(std::string name);

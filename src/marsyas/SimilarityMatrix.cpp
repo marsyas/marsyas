@@ -32,6 +32,7 @@ SimilarityMatrix::SimilarityMatrix(const SimilarityMatrix& a) : MarSystem(a)
 	ctrl_covMatrix_ = getctrl("mrs_realvec/covMatrix");
 	ctrl_calcCovMatrix_ = getctrl("mrs_natural/calcCovMatrix");
 	ctrl_normalize_ = getctrl("mrs_string/normalize");
+	ctrl_stdDev_ = getctrl("mrs_real/stdDev");
 }
 
 SimilarityMatrix::~SimilarityMatrix()
@@ -50,6 +51,7 @@ SimilarityMatrix::addControls()
 	addControl("mrs_realvec/covMatrix", realvec(), ctrl_covMatrix_);
 	addControl("mrs_natural/calcCovMatrix", SimilarityMatrix::noCovMatrix, ctrl_calcCovMatrix_);
 	addControl("mrs_string/normalize", "none", ctrl_normalize_);
+	addControl("mrs_real/stdDev", 1.0, ctrl_stdDev_);
 }
 
 void
@@ -130,7 +132,20 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 				in.normObs(); // (x - mean)/std
 
 			//calculate the Covariance Matrix from the input, if defined
-			if(ctrl_calcCovMatrix_->to<mrs_natural>() & SimilarityMatrix::diagCovMatrix)
+			if(ctrl_calcCovMatrix_->to<mrs_natural>() & SimilarityMatrix::fixedStdDev)
+			{
+				//fill covMatrix diagonal with fixed value (remaining values are zero)
+				MarControlAccessor acc(ctrl_covMatrix_);
+				realvec& covMatrix = acc.to<mrs_realvec>();
+				covMatrix.create(inObservations_, inObservations_);
+				mrs_real var = ctrl_stdDev_->to<mrs_real>();
+				var *= var;
+				for(mrs_natural i=0; i< inObservations_; ++i)
+				{
+					covMatrix(i,i) = var;
+				}
+			}
+			else if(ctrl_calcCovMatrix_->to<mrs_natural>() & SimilarityMatrix::diagCovMatrix)
 			{
 				in.varObs(vars_); //FASTER -> only get the vars for each feature
 				mrs_natural dim = vars_.getSize();
@@ -172,7 +187,7 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 					marsystems_[0]->process(stackedFeatVecs_, metricResult_);
 					out(i,j) = metricResult_(0,0);
 					//metric should be symmetric!
-					out(j, i) = out(i, j); 			
+					out(j, i) = out(i, j); 
 				}
 			}
 		}
@@ -191,6 +206,8 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 	}
 	//MATLAB_PUT(out, "simMatrix");
 	//MATLAB_EVAL("figure(1);imagesc(simMatrix);");
+	MATLAB_PUT(out, "simMat");
+	MATLAB_EVAL(name_+"=["+name_+",simMat(:)'];");
 }
 
 
