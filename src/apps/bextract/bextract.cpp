@@ -1187,9 +1187,8 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
   // get parameters
   mrs_real srate = samplingRate_;
 
-
-
   total->updctrl("mrs_natural/inSamples", winSize);
+
 
   total->updctrl("Accumulator/acc/Series/featureNetwork/" + src->getType() + "/src/mrs_natural/pos", offset);      
 
@@ -2032,7 +2031,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
   if (single_vector)
     {
       MarSystem* acc = mng.create("Accumulator", "acc");
-      acc->updctrl("mrs_natural/nTimes", 1000);
+      acc->updctrl("mrs_natural/nTimes", accSize_);
       acc->addMarSystem(featureNetwork);
       bextractNetwork->addMarSystem(acc);
       MarSystem* song_statistics = mng.create("Fanout", "song_statistics");
@@ -2569,7 +2568,6 @@ initOptions()
   cmd_options.addStringOption("extractor", "e", "REFACTORED");
   cmd_options.addNaturalOption("memory", "m", 40);
   cmd_options.addNaturalOption("winsamples", "ws", 512);
-  cmd_options.addRealOption("samplingRate", "sr", 22050.0);
   cmd_options.addNaturalOption("accSize", "as", 1298);
   cmd_options.addNaturalOption("hopsamples", "hp", 512);
   cmd_options.addStringOption("classifier", "cl", EMPTYSTRING);
@@ -2614,7 +2612,6 @@ loadOptions()
   memSize = cmd_options.getNaturalOption("memory");
   winSize = cmd_options.getNaturalOption("winsamples");
   hopSize = cmd_options.getNaturalOption("hopsamples");
-  samplingRate_ = cmd_options.getRealOption("samplingRate");
   accSize_ = cmd_options.getNaturalOption("accSize");
   tline = cmd_options.getBoolOption("tline");
   pluginMute  = cmd_options.getBoolOption("pluginmute");
@@ -2918,7 +2915,6 @@ main(int argc, const char **argv)
   cout << "Window Size (in samples): " << winSize << endl;
   cout << "Hop Size (in samples): " << hopSize << endl;
   cout << "Memory Size (in analysis windows):" << memSize << endl;
-  cout << "Sampling rate: " << samplingRate_ << endl;
   cout << "Accumulator size (in analysis windows):" << accSize_ << endl;
   cout << endl;
   cout << "Extractor = " << extractorName << endl;
