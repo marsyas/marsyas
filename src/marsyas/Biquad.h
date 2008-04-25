@@ -55,6 +55,7 @@ private:
 
 public:
 	Biquad(std::string name);
+	Biquad(const Biquad& orig);
 	~Biquad();
 	
 	MarSystem* clone() const;

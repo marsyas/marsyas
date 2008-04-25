@@ -32,8 +32,16 @@ Biquad::Biquad(string name):MarSystem("Biquad",name)
     addControls();
 }
 
+Biquad::Biquad(const Biquad& orig): MarSystem(orig) 
+{
+ filter = new Filter("filter");
+ b.create(3);
+ a.create(3);
+}
+
 Biquad::~Biquad()
 {
+  delete filter;;
 }
 
 

@@ -146,7 +146,6 @@
 #include "RBF.h"
 #include "NormMatrix.h"
 #include "WHaSp.h"
-#include "FanOutIn.h"
 #include "PeakLabeler.h"
 #include "PeakClusterSelect.h"
 #include "PeakViewSink.h"
@@ -306,7 +305,6 @@ MarSystemManager::MarSystemManager()
   registerPrototype("RBF", new RBF("rbfpr"));
   registerPrototype("NormMatrix", new NormMatrix("normmatrixpr"));
   registerPrototype("WHaSp", new WHaSp("whasppr"));
-  registerPrototype("FanOutIn", new FanOutIn("fanoutinpr"));
   registerPrototype("PeakLabeler", new PeakLabeler("pelabelerpr"));
   registerPrototype("PeakClusterSelect", new PeakClusterSelect("peclusterselectpr"));
   registerPrototype("PeakViewSink", new PeakViewSink("peakviewsinkpr"));
@@ -556,6 +554,7 @@ MarSystemManager::MarSystemManager()
 		   "Gain/gt/mrs_real/gain");
   registerPrototype("PhaseVocoder", pvocpr);
 
+
   //--------------------------------------------------------------------------------
   // prototype for pitch Extraction using SACF
   //--------------------------------------------------------------------------------
@@ -640,6 +639,7 @@ MarSystemManager::MarSystemManager()
   pitchPraat->updctrl("mrs_natural/highSamples", highSamples);
   registerPrototype("PitchPraat", pitchPraat);
 
+
 	//--------------------------------------------------------------------------------
 	// prototype for Peak Extraction stuff
 	//--------------------------------------------------------------------------------
@@ -688,10 +688,10 @@ MarSystemManager::MarSystemManager()
   //--------------------------------------------------------------------------------
   // prototype for Stereo Features
   //--------------------------------------------------------------------------------
-  MarSystem* stereoFeats = new Fanout("StereoFeaturespr");
-  stereoFeats->addMarSystem(create("StereoSpectrumFeatures","stereospkfeats"));
-  stereoFeats->addMarSystem(create("StereoSpectrumSources","stereospksources"));
-  registerPrototype("StereoFeatures", stereoFeats);
+  MarSystem* stereoFeats2 = new Fanout("StereoFeatures2pr");
+  stereoFeats2->addMarSystem(create("StereoSpectrumFeatures","stereospkfeats"));
+  stereoFeats2->addMarSystem(create("StereoSpectrumSources","stereospksources"));
+  registerPrototype("StereoFeatures2", stereoFeats2);
 
   //--------------------------------------------------------------------------------
   // prototype for Classifier 
