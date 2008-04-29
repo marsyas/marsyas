@@ -29,7 +29,8 @@ public:
 	                                       const mrs_natural length,
 	                                       const realvec& array);
 	static realvec findValleys(const realvec& list);
-	static realvec findPeaks(const realvec& list);
+	static realvec findPeaks(const realvec& list, const
+			mrs_real cutoff);
 	static mrs_real findNextPeakValue(const realvec& list,
 	                                  const mrs_natural start);
 	//@}
@@ -44,7 +45,8 @@ public:
 
 	/** \name Amplitude stuff */
 	//@{
-	static void ampSegment(const realvec& ampList, realvec& boundaries);
+	static void ampSegment(const realvec& ampList, realvec&
+		boundaries,const mrs_real cutoff);
 	static void filterAmpBoundaries(realvec& ampList, realvec&
 	                                boundaries);
 	static void discardEndingTotalSilenceAmpsOnly(realvec& ampList);

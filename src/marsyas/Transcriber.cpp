@@ -42,7 +42,7 @@ Transcriber::findMedianWithoutZeros(const mrs_natural start,
 }
 
 realvec
-Transcriber::findPeaks(const realvec& list)
+Transcriber::findPeaks(const realvec& list, const mrs_real cutoff)
 {
 	realvec peaks(1);
 	mrs_natural valIndex = 0;
@@ -51,12 +51,11 @@ Transcriber::findPeaks(const realvec& list)
 	mrs_natural minSpace = MIN_NOTE_FRAMES;
 	mrs_natural prevValIndex = 0;
 	mrs_real prevValValue = 1.0;
-	mrs_real minPeakValue = 0.1;
 	for (mrs_natural i=minSpace; i<list.getSize()-minSpace; i++)
 	{
 		if ( (list(i) > list(i-1)) &&
 		        (list(i) > list(i+1)) &&
-		        (list(i) > minPeakValue) )
+		        (list(i) > cutoff) )
 		{
 			localMax = list(i);
 			if (i < prevValIndex+minSpace)
@@ -213,7 +212,8 @@ Transcriber::findPitchBoundaries(const realvec& pitchList)
 
 // amplitude stuff
 void
-Transcriber::ampSegment(const realvec& ampList, realvec& boundaries)
+Transcriber::ampSegment(const realvec& ampList, realvec&
+boundaries, const mrs_real cutoff)
 {
 	if (boundaries.getSize() == 0)
 	{
@@ -230,7 +230,7 @@ Transcriber::ampSegment(const realvec& ampList, realvec& boundaries)
 		length = (mrs_natural) (boundaries(i+1) - boundaries(i));
 		region = ampList.getSubVector(start, length);
 		//regionBounds = findValleys(region);
-		regionBounds = findPeaks(region);
+		regionBounds = findPeaks(region, cutoff);
 //		filterAmpBoundaries(region, regionBounds);
 		regionBounds += start;
 		newBoundaries->appendRealvec(regionBounds);
