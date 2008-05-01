@@ -101,8 +101,13 @@ TranscriberExtract::getAllFromAudio(const std::string audioFilename, realvec&
 realvec
 TranscriberExtract::getPitchesFromAudio(const std::string audioFilename)
 {
+	mrs_real normalize = getNormalizingGain(audioFilename);
+	std::cout<<normalize<<std::endl;
+
 	MarSystem* pnet = mng.create("Series", "pnet");
 	mrs_real srate = addFileSource(pnet, audioFilename);
+	pnet->addMarSystem(mng.create("Gain", "normalizing"));
+	pnet->updctrl("Gain/normalizing/mrs_real/gain",normalize);
 	MarSystem* rvSink = mng.create("RealvecSink", "rvSink");
 	pnet->addMarSystem(makePitchNet(srate, 100.0, rvSink));
 
@@ -112,6 +117,32 @@ TranscriberExtract::getPitchesFromAudio(const std::string audioFilename)
 	realvec pitchList = getPitchesFromRealvecSink(rvSink, srate);
 	delete pnet;
 	return pitchList;
+}
+
+realvec
+TranscriberExtract::getAmpsFromAudio(const std::string audioFilename)
+{
+	mrs_real normalize = getNormalizingGain(audioFilename);
+
+	MarSystem* pnet = mng.create("Series", "pnet");
+	mrs_real srate = addFileSource(pnet, audioFilename);
+	pnet->addMarSystem(mng.create("Gain", "normalizing"));
+	pnet->updctrl("Gain/normalizing/mrs_real/gain",normalize);
+	MarSystem* rvSink = mng.create("RealvecSink", "rvSink");
+	pnet->addMarSystem(makeAmplitudeNet(rvSink));
+
+	while ( pnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>() )
+		pnet->tick();
+
+	realvec rmsList = getAmpsFromRealvecSink(rvSink);
+	delete pnet;
+
+	// normalize RMS
+	rmsList -= rmsList.minval();
+	mrs_real maxRms = rmsList.maxval();
+	if (maxRms != 0)
+		rmsList /= maxRms;
+	return rmsList;
 }
 
 realvec
@@ -150,6 +181,33 @@ void
 TranscriberExtract::toMidi(realvec& pitchList)
 {
 	pitchList.apply( hertz2pitch );
+}
+
+mrs_real
+TranscriberExtract::getNormalizingGain(const std::string audioFilename)
+{
+	mrs_real maxVal = 0.0;
+
+	MarSystem* pnet = mng.create("Series", "pnet");
+	addFileSource(pnet, audioFilename);
+	// forces Marsyas to write to processedData
+	pnet->addMarSystem(mng.create("Gain", "null"));
+
+	while ( pnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>() )
+	{
+		pnet->tick();
+	        const realvec& processedData =
+                    pnet->getctrl("SoundFileSource/src/mrs_realvec/processedData")->to<mrs_realvec>();
+		for (mrs_natural i=0; i< processedData.getSize(); i++)
+		{
+			mrs_real val = fabs(processedData(i));
+			if (val > maxVal)
+				maxVal = val;
+		}
+	}
+
+	delete pnet;
+	return 1.0/maxVal;
 }
 
 

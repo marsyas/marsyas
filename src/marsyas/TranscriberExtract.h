@@ -23,6 +23,7 @@ public:
 	                              const std::string infile);
 
 	static realvec getPitchesFromAudio(const std::string audioFilename);
+	static realvec getAmpsFromAudio(const std::string audioFilename);
 	static MarSystem* makePitchNet(const mrs_real srate,
 	                               const mrs_real lowFreq = 100.0,
 	                               MarSystem* rvSink = NULL);
@@ -35,6 +36,7 @@ public:
 	                            pitchList, realvec& ampList, realvec&
 	                            boundaries);
 	static void toMidi(realvec& pitchList);
+	static mrs_real getNormalizingGain(const std::string audioFilename);
 
 private:
 
