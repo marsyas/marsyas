@@ -102,7 +102,6 @@ realvec
 TranscriberExtract::getPitchesFromAudio(const std::string audioFilename)
 {
 	mrs_real normalize = getNormalizingGain(audioFilename);
-	std::cout<<normalize<<std::endl;
 
 	MarSystem* pnet = mng.create("Series", "pnet");
 	mrs_real srate = addFileSource(pnet, audioFilename);
