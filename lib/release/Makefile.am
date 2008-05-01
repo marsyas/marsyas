@@ -168,7 +168,6 @@ libmarsyas_a_SOURCES    = \
 			  $(top_srcdir)/src/marsyas/Color.cpp \
 			  $(top_srcdir)/src/marsyas/Communicator.cpp \
 			  $(top_srcdir)/src/marsyas/Server.cpp \
-			  $(top_srcdir)/src/marsyas/AbsMax.cpp \
 			  $(top_srcdir)/src/marsyas/FullWaveRectifier.cpp \
 			  $(top_srcdir)/src/marsyas/Norm.cpp \
 			  $(top_srcdir)/src/marsyas/DownSampler.cpp \
@@ -280,6 +279,7 @@ libmarsyas_a_SOURCES    = \
 	$(top_srcdir)/src/marsyas/Reverse.cpp \
 	$(top_srcdir)/src/marsyas/SNR.cpp \
 	$(top_srcdir)/src/marsyas/PCA.cpp \
+	$(top_srcdir)/src/marsyas/AbsMax.cpp \
 			$(top_srcdir)/src/marsyas/Gain.cpp
 # please leave Gain.cpp at the end like this; it make scripts happy.
 

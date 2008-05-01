@@ -155,7 +155,6 @@ pkginclude_HEADERS = \
 	Color.h \
 	Communicator.h \
 	Server.h \
-	AbsMax.h \
 	FullWaveRectifier.h \
 	Norm.h \
 	DownSampler.h \
@@ -271,6 +270,7 @@ pkginclude_HEADERS = \
 	Reverse.h \
 	SNR.h \
 	PCA.h \
+	AbsMax.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 

@@ -112,7 +112,6 @@ HEADERS += \
 	ADSR.h \
 	AMDF.h \
 	ANN_node.h \
-	AbsMax.h \
 	AbsSoundFileSink.h \
 	AbsSoundFileSource.h \
 	Accumulator.h \
@@ -348,6 +347,7 @@ HEADERS += \
 	Reverse.h \
 	SNR.h \
 	PCA.h \
+	AbsMax.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 	 
@@ -355,7 +355,6 @@ SOURCES += \
 	ADSR.cpp \
 	AMDF.cpp \
 	ANN_node.cpp \
-	AbsMax.cpp \
 	AbsSoundFileSink.cpp \
 	AbsSoundFileSource.cpp \
 	Accumulator.cpp \
@@ -585,6 +584,7 @@ SOURCES += \
 	Reverse.cpp \
 	SNR.cpp \
 	PCA.cpp \
+	AbsMax.cpp \
 	Gain.cpp
 # please leave Gain.cpp at the end like this; it makes scripts happy.
 
