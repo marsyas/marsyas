@@ -9,6 +9,7 @@ TARGET = marsyasqt
 INCLUDEPATH += $$quote( "$$BASEDIR/src/marsyas" )
 
 HEADERS += MarSystemQtWrapper.h \
+	QtMarAbout.h \
 	QtMarPlot.h \
 	OscMapper.h \
 	qoscclient.h \
