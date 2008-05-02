@@ -166,6 +166,8 @@ realvec::transpose()
 mrs_real 
 realvec::median() const
 {
+	if (size_ == 0)
+		return 0;
 	realvec tmp(*this);
 	mrs_real *tmpData = tmp.data_;
 	std::sort(tmpData, tmpData+size_);
