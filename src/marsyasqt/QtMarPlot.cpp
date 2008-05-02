@@ -46,7 +46,7 @@ QtMarPlot::paintEvent(QPaintEvent *)
 
 	mrs_natural i;
 	mrs_natural x,y;
-	mrs_real hScale = width() / endOffset_ - startOffset_;
+	mrs_real hScale = width() / (mrs_real) (endOffset_ - startOffset_);
 	mrs_real vScale = height() / (highVal_ - minVal_); // maximum scaled pitch/median
 	mrs_real vMean = (minVal_+highVal_)/2;
 	mrs_natural midY = height()/2;
