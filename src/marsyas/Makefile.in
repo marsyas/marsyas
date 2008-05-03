@@ -227,7 +227,6 @@ pkginclude_HEADERS = \
 	Color.h \
 	Communicator.h \
 	Server.h \
-	AbsMax.h \
 	FullWaveRectifier.h \
 	Norm.h \
 	DownSampler.h \
@@ -343,6 +342,7 @@ pkginclude_HEADERS = \
 	Reverse.h \
 	SNR.h \
 	PCA.h \
+	AbsMax.h \
 	Gain.h
 
 subdir = src/marsyas
