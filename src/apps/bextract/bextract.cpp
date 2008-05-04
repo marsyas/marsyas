@@ -344,6 +344,8 @@ void
 tempo_histoSumBands(MarSystem* total1, string sfName, realvec& beatfeatures,
 					realvec& iwin, realvec& estimate)
 {
+
+	
 	estimate.setval(0.0);
 
 	mrs_real srate;
@@ -355,7 +357,8 @@ tempo_histoSumBands(MarSystem* total1, string sfName, realvec& beatfeatures,
 
 	total1->updctrl("SoundFileSource/src1/mrs_string/filename", sfName);
 
-	srate = total1->getctrl("SoundFileSource/src1/mrs_real/israte")->to<mrs_real>();
+	srate = total1->getctrl("SoundFileSource/src1/mrs_real/osrate")->to<mrs_real>();
+
 
 	mrs_natural ifactor = 8;
 	total1->updctrl("DownSampler/initds/mrs_natural/factor", ifactor);  
@@ -367,6 +370,8 @@ tempo_histoSumBands(MarSystem* total1, string sfName, realvec& beatfeatures,
 
 	// only do 30 seconds 
 	duration = (mrs_natural) (30.0 * srate);
+
+	
 
 	total1->updctrl("mrs_natural/inSamples", hopSize);
 	total1->updctrl("SoundFileSource/src1/mrs_natural/pos", offset);      
@@ -416,9 +421,11 @@ tempo_histoSumBands(MarSystem* total1, string sfName, realvec& beatfeatures,
 
 	total1->updctrl("SoundFileSource/src1/mrs_natural/pos", 0);
 
+	
 	while (total1->getctrl("SoundFileSource/src1/mrs_bool/notEmpty")->to<mrs_bool>())
 	{
 		total1->process(iwin, estimate);
+		
 		numPlayed++;
 		wc ++;
 		samplesPlayed += onSamples;
@@ -1350,6 +1357,7 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 				{
 					srate = total->getctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 					iwin.create((mrs_natural)1, (mrs_natural)(((srate / 22050.0) * 2 * 65536) / 16)); // [!] hardcoded!
+					
 					tempo_histoSumBands(total1, l.entry(i), beatfeatures, 
 										iwin, estimate);
 				}
@@ -1422,6 +1430,7 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 			if (withBeatFeatures) 
 			{
 				srate = total->getctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+
 				iwin.create((mrs_natural)1, (mrs_natural)(((srate / 22050.0) * 2 * 65536) / 16)); // [!] hardcoded!
 				tempo_histoSumBands(total1, l.entry(i), beatfeatures, 
 									iwin, estimate);
