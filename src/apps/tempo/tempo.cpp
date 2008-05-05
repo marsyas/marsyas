@@ -433,8 +433,8 @@ tempo_new(string sfName, string resName)
   mrs_real t1 = estimate(1);
   mrs_real t2 = estimate(3);  
 
-  mrs_natural p1 = (mrs_natural)(round ((srate * 60.0) / (factor * t1)));
-  mrs_natural p2 = (mrs_natural)(round ((srate * 60.0) / (factor * t2)));
+  mrs_natural p1 = (mrs_natural)((int)((srate * 60.0) / (factor * t1)+0.5));
+  mrs_natural p2 = (mrs_natural)((int)((srate * 60.0) / (factor * t2)+0.5));
   
 
   mrs_real mx = 0.0;

@@ -23,7 +23,7 @@ INCLUDES += -I$(top_srcdir)/src/marsyas -I$(top_srcdir)/otherlibs/RtAudio -I$(to
 bin_PROGRAMS = sfplay phasevocoder sfplugin bextract mkcollection \
 	mudbox record classifyFile peakSynth peakClustering sfinfo \
 	extract midiTest boomchick pitchextract orcarecord \
-	virtualsensor kea scheduler msl regressionChecks
+	virtualsensor kea scheduler msl tempo regressionChecks
 
 sfplay_SOURCES = $(top_srcdir)/src/apps/sfplay/sfplay.cpp
 sfplay_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
@@ -49,6 +49,10 @@ mudbox_SOURCES = $(top_srcdir)/src/apps/mudbox/mudbox.cpp
 mudbox_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 	       $(Libs)
 
+tempo_SOURCES = $(top_srcdir)/src/apps/tempo/tempo.cpp
+tempo_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
+	       $(Libs)
+
 regressionChecks_SOURCES = \
 	$(top_srcdir)/src/apps/regressionChecks/regressionChecks.cpp \
 	$(top_srcdir)/src/apps/regressionChecks/common-reg.cpp \
@@ -58,6 +62,11 @@ regressionChecks_SOURCES = \
 
 regressionChecks_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 	       $(Libs)
+
+
+
+
+
 
 record_SOURCES = $(top_srcdir)/src/apps/record/record.cpp
 record_LDADD = $(top_builddir)/lib/release/libmarsyas.a \

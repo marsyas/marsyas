@@ -103,7 +103,7 @@ MAINTAINERCLEANFILES = Makefile.in
 bin_PROGRAMS = sfplay phasevocoder sfplugin bextract mkcollection \
 	mudbox record classifyFile peakSynth peakClustering sfinfo \
 	extract midiTest boomchick pitchextract orcarecord \
-	virtualsensor kea scheduler msl regressionChecks
+	virtualsensor kea scheduler msl tempo regressionChecks
 
 
 sfplay_SOURCES = $(top_srcdir)/src/apps/sfplay/sfplay.cpp
@@ -133,6 +133,11 @@ mkcollection_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 
 mudbox_SOURCES = $(top_srcdir)/src/apps/mudbox/mudbox.cpp
 mudbox_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
+	       $(Libs)
+
+
+tempo_SOURCES = $(top_srcdir)/src/apps/tempo/tempo.cpp
+tempo_LDADD = $(top_builddir)/lib/release/libmarsyas.a \
 	       $(Libs)
 
 
@@ -230,7 +235,8 @@ bin_PROGRAMS = sfplay$(EXEEXT) phasevocoder$(EXEEXT) sfplugin$(EXEEXT) \
 	peakClustering$(EXEEXT) sfinfo$(EXEEXT) extract$(EXEEXT) \
 	midiTest$(EXEEXT) boomchick$(EXEEXT) pitchextract$(EXEEXT) \
 	orcarecord$(EXEEXT) virtualsensor$(EXEEXT) kea$(EXEEXT) \
-	scheduler$(EXEEXT) msl$(EXEEXT) regressionChecks$(EXEEXT)
+	scheduler$(EXEEXT) msl$(EXEEXT) tempo$(EXEEXT) \
+	regressionChecks$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 
 am_bextract_OBJECTS = bextract.$(OBJEXT)
@@ -315,6 +321,10 @@ am_sfplugin_OBJECTS = sfplugin.$(OBJEXT)
 sfplugin_OBJECTS = $(am_sfplugin_OBJECTS)
 sfplugin_DEPENDENCIES = $(top_builddir)/lib/release/libmarsyas.a
 sfplugin_LDFLAGS =
+am_tempo_OBJECTS = tempo.$(OBJEXT)
+tempo_OBJECTS = $(am_tempo_OBJECTS)
+tempo_DEPENDENCIES = $(top_builddir)/lib/release/libmarsyas.a
+tempo_LDFLAGS =
 am_virtualsensor_OBJECTS = virtualsensor.$(OBJEXT)
 virtualsensor_OBJECTS = $(am_virtualsensor_OBJECTS)
 virtualsensor_DEPENDENCIES = $(top_builddir)/lib/release/libmarsyas.a
@@ -343,7 +353,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/regressionChecks.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/scheduler.Po ./$(DEPDIR)/sfinfo.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sfplay.Po ./$(DEPDIR)/sfplugin.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/virtualsensor.Po
+@AMDEP_TRUE@	./$(DEPDIR)/tempo.Po ./$(DEPDIR)/virtualsensor.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -358,9 +368,9 @@ DIST_SOURCES = $(bextract_SOURCES) $(boomchick_SOURCES) \
 	$(phasevocoder_SOURCES) $(pitchextract_SOURCES) \
 	$(record_SOURCES) $(regressionChecks_SOURCES) \
 	$(scheduler_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) \
-	$(sfplugin_SOURCES) $(virtualsensor_SOURCES)
+	$(sfplugin_SOURCES) $(tempo_SOURCES) $(virtualsensor_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(bextract_SOURCES) $(boomchick_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) $(kea_SOURCES) $(midiTest_SOURCES) $(mkcollection_SOURCES) $(msl_SOURCES) $(mudbox_SOURCES) $(orcarecord_SOURCES) $(peakClustering_SOURCES) $(peakSynth_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(regressionChecks_SOURCES) $(scheduler_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplugin_SOURCES) $(virtualsensor_SOURCES)
+SOURCES = $(bextract_SOURCES) $(boomchick_SOURCES) $(classifyFile_SOURCES) $(extract_SOURCES) $(kea_SOURCES) $(midiTest_SOURCES) $(mkcollection_SOURCES) $(msl_SOURCES) $(mudbox_SOURCES) $(orcarecord_SOURCES) $(peakClustering_SOURCES) $(peakSynth_SOURCES) $(phasevocoder_SOURCES) $(pitchextract_SOURCES) $(record_SOURCES) $(regressionChecks_SOURCES) $(scheduler_SOURCES) $(sfinfo_SOURCES) $(sfplay_SOURCES) $(sfplugin_SOURCES) $(tempo_SOURCES) $(virtualsensor_SOURCES)
 
 all: all-am
 
@@ -489,6 +499,10 @@ sfplugin.$(OBJEXT): $(top_srcdir)/src/apps/sfplugin/sfplugin.cpp
 sfplugin$(EXEEXT): $(sfplugin_OBJECTS) $(sfplugin_DEPENDENCIES) 
 	@rm -f sfplugin$(EXEEXT)
 	$(CXXLINK) $(sfplugin_LDFLAGS) $(sfplugin_OBJECTS) $(sfplugin_LDADD) $(LIBS)
+tempo.$(OBJEXT): $(top_srcdir)/src/apps/tempo/tempo.cpp
+tempo$(EXEEXT): $(tempo_OBJECTS) $(tempo_DEPENDENCIES) 
+	@rm -f tempo$(EXEEXT)
+	$(CXXLINK) $(tempo_LDFLAGS) $(tempo_OBJECTS) $(tempo_LDADD) $(LIBS)
 virtualsensor.$(OBJEXT): \
 	$(top_srcdir)/src/apps/virtualsensor/virtualsensor.cpp
 virtualsensor$(EXEEXT): $(virtualsensor_OBJECTS) $(virtualsensor_DEPENDENCIES) 
@@ -525,6 +539,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sfinfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sfplay.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sfplugin.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tempo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/virtualsensor.Po@am__quote@
 
 distclean-depend:
@@ -829,6 +844,18 @@ sfplugin.obj: $(top_srcdir)/src/apps/sfplugin/sfplugin.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/sfplugin.Po' tmpdepfile='$(DEPDIR)/sfplugin.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sfplugin.obj `cygpath -w $(top_srcdir)/src/apps/sfplugin/sfplugin.cpp`
+
+tempo.o: $(top_srcdir)/src/apps/tempo/tempo.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/src/apps/tempo/tempo.cpp' object='tempo.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/tempo.Po' tmpdepfile='$(DEPDIR)/tempo.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tempo.o `test -f '$(top_srcdir)/src/apps/tempo/tempo.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/apps/tempo/tempo.cpp
+
+tempo.obj: $(top_srcdir)/src/apps/tempo/tempo.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/src/apps/tempo/tempo.cpp' object='tempo.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/tempo.Po' tmpdepfile='$(DEPDIR)/tempo.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tempo.obj `cygpath -w $(top_srcdir)/src/apps/tempo/tempo.cpp`
 
 virtualsensor.o: $(top_srcdir)/src/apps/virtualsensor/virtualsensor.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/src/apps/virtualsensor/virtualsensor.cpp' object='virtualsensor.o' libtool=no @AMDEPBACKSLASH@
