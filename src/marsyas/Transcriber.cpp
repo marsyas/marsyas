@@ -152,7 +152,8 @@ Transcriber::findNextPeakValue(const realvec& list, const mrs_natural
 // pitch stuff
 
 void
-Transcriber::pitchSegment(const realvec& pitchList, realvec& boundaries)
+Transcriber::pitchSegment(const realvec& pitchList, realvec&
+boundaries, const mrs_natural width)
 {
 	if (boundaries.getSize() == 0)
 	{
@@ -168,7 +169,7 @@ Transcriber::pitchSegment(const realvec& pitchList, realvec& boundaries)
 		start = (mrs_natural) boundaries(i);
 		length = (mrs_natural) (boundaries(i+1) - boundaries(i));
 		region = pitchList.getSubVector(start, length);
-		regionBounds = findPitchBoundaries(region);
+		regionBounds = findPitchBoundaries(region, width);
 		regionBounds += start;
 		newBoundaries->appendRealvec(regionBounds);
 	}
@@ -177,9 +178,11 @@ Transcriber::pitchSegment(const realvec& pitchList, realvec& boundaries)
 }
 
 realvec
-Transcriber::findPitchBoundaries(const realvec& pitchList)
+Transcriber::findPitchBoundaries(const realvec& pitchList, const
+mrs_natural width)
 {
-	mrs_natural minSpace = MIN_NOTE_FRAMES;
+	//mrs_natural minSpace = MIN_NOTE_FRAMES;
+	mrs_natural minSpace = width;
 	mrs_real noteBoundary = 0.5;
 
 	realvec boundaries(1);

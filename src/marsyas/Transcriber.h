@@ -38,8 +38,10 @@ public:
 
 	/** \name Pitch stuff */
 	//@{
-	static void pitchSegment(const realvec& pitchList, realvec& boundaries);
-	static realvec findPitchBoundaries(const realvec& pitchList);
+	static void pitchSegment(const realvec& pitchList,
+realvec& boundaries, const mrs_natural width);
+	static realvec findPitchBoundaries(const realvec&
+pitchList, const mrs_natural width);
 	//@}
 
 
