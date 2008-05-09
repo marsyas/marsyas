@@ -216,6 +216,10 @@ FanOutIn::myProcess(realvec& in, realvec& out)
 			out.setval(0); //identity operator
 		if(ctrl_combinator_->to<mrs_string>() == "*")
 			out.setval(1); //identity operator
+		if(ctrl_combinator_->to<mrs_string>() == "max")
+			out.setval(-1.0*MAXREAL);
+		if(ctrl_combinator_->to<mrs_string>() == "min")
+			out.setval(MAXREAL); 
 		
 		if(wrongOutConfig_)
 		{
@@ -233,9 +237,25 @@ FanOutIn::myProcess(realvec& in, realvec& out)
 			{
 				marsystems_[i]->process(in, *(slices_[i]));
 				if(ctrl_combinator_->to<mrs_string>() == "+")
+				{
 					out += *(slices_[i]);
+				}
 				if(ctrl_combinator_->to<mrs_string>() == "*")
+				{				
 					out *= *(slices_[i]);
+				}
+				if(ctrl_combinator_->to<mrs_string>() == "max")
+				{
+					for(mrs_natural l=0; l<out.getRows(); ++l)
+						for(mrs_natural c=0; c<out.getCols(); ++c)
+							out(l,c) = max(out(l,c), (*(slices_[i]))(l,c));
+				}
+				if(ctrl_combinator_->to<mrs_string>() == "min")
+				{
+					for(mrs_natural l=0; l<out.getRows(); ++l)
+						for(mrs_natural c=0; c<out.getCols(); ++c)
+							out(l,c) = min(out(l,c), (*(slices_[i]))(l,c));
+				}
 			}
 		}
 	}
