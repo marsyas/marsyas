@@ -107,15 +107,15 @@ MAINTAINERCLEANFILES = Makefile.in
 
 pkginclude_HEADERS = \
 			  $(top_srcdir)/otherlibs/libsvm/svm.h \
-			  $(top_srcdir)/otherlibs/RtAudio/RtAudio.h \
-			  $(top_srcdir)/otherlibs/RtAudio/RtError.h \
+			  $(top_srcdir)/otherlibs/RtAudio/RtAudio3.h \
+			  $(top_srcdir)/otherlibs/RtAudio/RtError3.h \
 			  $(top_srcdir)/otherlibs/RtMidi/RtMidi.h \
 			  $(top_srcdir)/otherlibs/RtMidi/RtError.h
 
 
 libmarsyas_a_SOURCES = \
 			  $(top_srcdir)/otherlibs/libsvm/svm.cpp \
-			  $(top_srcdir)/otherlibs/RtAudio/RtAudio.cpp \
+			  $(top_srcdir)/otherlibs/RtAudio/RtAudio3.cpp \
 			  $(top_srcdir)/otherlibs/RtMidi/RtMidi.cpp \
 			  $(top_srcdir)/src/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/src/marsyas/VScheduler.cpp \
@@ -356,7 +356,7 @@ LIBRARIES = $(lib_LIBRARIES)
 
 libmarsyas_a_AR = $(AR) cru
 libmarsyas_a_LIBADD =
-am_libmarsyas_a_OBJECTS = svm.$(OBJEXT) RtAudio.$(OBJEXT) \
+am_libmarsyas_a_OBJECTS = svm.$(OBJEXT) RtAudio3.$(OBJEXT) \
 	RtMidi.$(OBJEXT) MrsLog.$(OBJEXT) VScheduler.$(OBJEXT) \
 	Scheduler.$(OBJEXT) ScheduledEvent.$(OBJEXT) \
 	SchedulerManager.$(OBJEXT) TmTimer.$(OBJEXT) TmTime.$(OBJEXT) \
@@ -573,7 +573,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/RealvecSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Reassign.Po ./$(DEPDIR)/Repeat.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Reverse.Po ./$(DEPDIR)/Rms.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Rolloff.Po ./$(DEPDIR)/RtAudio.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Rolloff.Po ./$(DEPDIR)/RtAudio3.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RtMidi.Po ./$(DEPDIR)/SCF.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SFM.Po ./$(DEPDIR)/SMO.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SNR.Po ./$(DEPDIR)/SOM.Po \
@@ -682,7 +682,7 @@ uninstall-libLIBRARIES:
 clean-libLIBRARIES:
 	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
 svm.$(OBJEXT): $(top_srcdir)/otherlibs/libsvm/svm.cpp
-RtAudio.$(OBJEXT): $(top_srcdir)/otherlibs/RtAudio/RtAudio.cpp
+RtAudio3.$(OBJEXT): $(top_srcdir)/otherlibs/RtAudio/RtAudio3.cpp
 RtMidi.$(OBJEXT): $(top_srcdir)/otherlibs/RtMidi/RtMidi.cpp
 MrsLog.$(OBJEXT): $(top_srcdir)/src/marsyas/MrsLog.cpp
 VScheduler.$(OBJEXT): $(top_srcdir)/src/marsyas/VScheduler.cpp
@@ -1119,7 +1119,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Reverse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Rms.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Rolloff.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RtAudio.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RtAudio3.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RtMidi.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SCF.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SFM.Po@am__quote@
@@ -1219,17 +1219,17 @@ svm.obj: $(top_srcdir)/otherlibs/libsvm/svm.cpp
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o svm.obj `cygpath -w $(top_srcdir)/otherlibs/libsvm/svm.cpp`
 
-RtAudio.o: $(top_srcdir)/otherlibs/RtAudio/RtAudio.cpp
-@AMDEP_TRUE@	source='$(top_srcdir)/otherlibs/RtAudio/RtAudio.cpp' object='RtAudio.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/RtAudio.Po' tmpdepfile='$(DEPDIR)/RtAudio.TPo' @AMDEPBACKSLASH@
+RtAudio3.o: $(top_srcdir)/otherlibs/RtAudio/RtAudio3.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/otherlibs/RtAudio/RtAudio3.cpp' object='RtAudio3.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RtAudio3.Po' tmpdepfile='$(DEPDIR)/RtAudio3.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RtAudio.o `test -f '$(top_srcdir)/otherlibs/RtAudio/RtAudio.cpp' || echo '$(srcdir)/'`$(top_srcdir)/otherlibs/RtAudio/RtAudio.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RtAudio3.o `test -f '$(top_srcdir)/otherlibs/RtAudio/RtAudio3.cpp' || echo '$(srcdir)/'`$(top_srcdir)/otherlibs/RtAudio/RtAudio3.cpp
 
-RtAudio.obj: $(top_srcdir)/otherlibs/RtAudio/RtAudio.cpp
-@AMDEP_TRUE@	source='$(top_srcdir)/otherlibs/RtAudio/RtAudio.cpp' object='RtAudio.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/RtAudio.Po' tmpdepfile='$(DEPDIR)/RtAudio.TPo' @AMDEPBACKSLASH@
+RtAudio3.obj: $(top_srcdir)/otherlibs/RtAudio/RtAudio3.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/otherlibs/RtAudio/RtAudio3.cpp' object='RtAudio3.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RtAudio3.Po' tmpdepfile='$(DEPDIR)/RtAudio3.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RtAudio.obj `cygpath -w $(top_srcdir)/otherlibs/RtAudio/RtAudio.cpp`
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RtAudio3.obj `cygpath -w $(top_srcdir)/otherlibs/RtAudio/RtAudio3.cpp`
 
 RtMidi.o: $(top_srcdir)/otherlibs/RtMidi/RtMidi.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/otherlibs/RtMidi/RtMidi.cpp' object='RtMidi.o' libtool=no @AMDEPBACKSLASH@

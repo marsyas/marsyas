@@ -1,15 +1,15 @@
 /************************************************************************/
-/*! \class RtAudio
+/*! \class RtAudio3
     \brief Realtime audio i/o C++ classes.
 
-    RtAudio provides a common API (Application Programming Interface)
+    RtAudio3 provides a common API (Application Programming Interface)
     for realtime audio input/output across Linux (native ALSA, Jack,
     and OSS), SGI, Macintosh OS X (CoreAudio), and Windows
     (DirectSound and ASIO) operating systems.
 
-    RtAudio WWW site: http://music.mcgill.ca/~gary/rtaudio/
+    RtAudio3 WWW site: http://music.mcgill.ca/~gary/rtaudio/
 
-    RtAudio: realtime audio i/o C++ classes
+    RtAudio3: realtime audio i/o C++ classes
     Copyright (c) 2001-2005 Gary P. Scavone
 
     Permission is hereby granted, free of charge, to any person
@@ -37,14 +37,14 @@
 */
 /************************************************************************/
 
-// RtAudio: Version 3.0.2 (14 October 2005)
+// RtAudio3: Version 3.0.2 (14 October 2005)
 
 #ifndef __RTAUDIO_H
 #define __RTAUDIO_H
 
 
 
-#include "RtError.h"
+#include "RtError3.h"
 #include <string>
 #include <vector>
 
@@ -67,7 +67,7 @@
 #endif
 
 // This global structure type is used to pass callback information
-// between the private RtAudio stream structure and global callback
+// between the private RtAudio3 stream structure and global callback
 // handling functions.
 struct CallbackInfo {
   void *object;    // Used as a "this" pointer.
@@ -89,18 +89,18 @@ struct CallbackInfo {
 // any necessary byte-swapping between the host format and the
 // soundcard.  Thus, endian-ness is not a concern in the following
 // format definitions.
-typedef unsigned long RtAudioFormat;
-static const RtAudioFormat RTAUDIO_SINT8 = 0x1;    /*!< 8-bit signed integer. */
-static const RtAudioFormat RTAUDIO_SINT16 = 0x2;   /*!< 16-bit signed integer. */
-static const RtAudioFormat RTAUDIO_SINT24 = 0x4;   /*!< Upper 3 bytes of 32-bit signed integer. */
-static const RtAudioFormat RTAUDIO_SINT32 = 0x8;   /*!< 32-bit signed integer. */
-static const RtAudioFormat RTAUDIO_FLOAT32 = 0x10; /*!< Normalized between plus/minus 1.0. */
-static const RtAudioFormat RTAUDIO_FLOAT64 = 0x20; /*!< Normalized between plus/minus 1.0. */
+typedef unsigned long RtAudio3Format;
+static const RtAudio3Format RTAUDIO_SINT8 = 0x1;    /*!< 8-bit signed integer. */ 
+static const RtAudio3Format RTAUDIO_SINT16 = 0x2;   /*!< 16-bit signed integer. */
+static const RtAudio3Format RTAUDIO_SINT24 = 0x4;   /*!< Upper 3 bytes of 32-bit signed integer. */
+static const RtAudio3Format RTAUDIO_SINT32 = 0x8;   /*!< 32-bit signed integer. */
+static const RtAudio3Format RTAUDIO_FLOAT32 = 0x10; /*!< Normalized between plus/minus 1.0. */
+static const RtAudio3Format RTAUDIO_FLOAT64 = 0x20; /*!< Normalized between plus/minus 1.0. */
 
-typedef int (*RtAudioCallback)(char *buffer, int bufferSize, void *userData);
+typedef int (*RtAudio3Callback)(char *buffer, int bufferSize, void *userData);
 
 //! The public device information structure for returning queried values.
-struct RtAudioDeviceInfo {
+struct RtAudio3DeviceInfo {
   std::string name;      /*!< Character string device identifier. */
   bool probed;          /*!< true if the device capabilities were successfully probed. */
   int outputChannels;   /*!< Maximum output channels supported by device. */
@@ -108,10 +108,10 @@ struct RtAudioDeviceInfo {
   int duplexChannels;   /*!< Maximum simultaneous input/output channels supported by device. */
   bool isDefault;       /*!< true if this is the default output or input device. */
   std::vector<int> sampleRates; /*!< Supported sample rates (queried from list of standard rates). */
-  RtAudioFormat nativeFormats;  /*!< Bit mask of supported data formats. */
+  RtAudio3Format nativeFormats;  /*!< Bit mask of supported data formats. */
 
   // Default constructor.
-  RtAudioDeviceInfo()
+  RtAudio3DeviceInfo()
     :probed(false), outputChannels(0), inputChannels(0),
        duplexChannels(0), isDefault(false), nativeFormats(0) {}
 };
@@ -121,7 +121,7 @@ struct RtAudioDeviceInfo {
 // RtApi class declaration.
 //
 // Note that RtApi is an abstract base class and cannot be
-// explicitly instantiated.  The class RtAudio will create an
+// explicitly instantiated.  The class RtAudio3 will create an
 // instance of an RtApi subclass (RtApiOss, RtApiAlsa,
 // RtApiJack, RtApiCore, RtApiAl, RtApiDs, or RtApiAsio).
 //
@@ -140,16 +140,16 @@ public:
   virtual ~RtApi();
   void openStream( int outputDevice, int outputChannels,
                    int inputDevice, int inputChannels,
-                   RtAudioFormat format, int sampleRate,
+                   RtAudio3Format format, int sampleRate,
                    int *bufferSize, int numberOfBuffers );
   void openStream( int outputDevice, int outputChannels,
                    int inputDevice, int inputChannels,
-                   RtAudioFormat format, int sampleRate,
+                   RtAudio3Format format, int sampleRate,
                    int *bufferSize, int *numberOfBuffers );
-  virtual void setStreamCallback( RtAudioCallback callback, void *userData ) = 0;
+  virtual void setStreamCallback( RtAudio3Callback callback, void *userData ) = 0;
   virtual void cancelStreamCallback() = 0;
   int getDeviceCount(void);
-  RtAudioDeviceInfo getDeviceInfo( int device );
+  RtAudio3DeviceInfo getDeviceInfo( int device );
   char * const getStreamBuffer();
   RtApi::StreamState getStreamState() const;
   virtual void tickStream() = 0;
@@ -176,7 +176,7 @@ protected:
   struct ConvertInfo {
     int channels;
     int inJump, outJump;
-    RtAudioFormat inFormat, outFormat;
+    RtAudio3Format inFormat, outFormat;
     std::vector<int> inOffset;
     std::vector<int> outOffset;
   };
@@ -197,8 +197,8 @@ protected:
     int nBuffers;
     int nUserChannels[2];    // Playback and record, respectively.
     int nDeviceChannels[2];  // Playback and record channels, respectively.
-    RtAudioFormat userFormat;
-    RtAudioFormat deviceFormat[2]; // Playback and record, respectively.
+    RtAudio3Format userFormat;
+    RtAudio3Format deviceFormat[2]; // Playback and record, respectively.
     StreamMutex mutex;
     CallbackInfo callbackInfo;
     ConvertInfo convertInfo[2];
@@ -221,7 +221,7 @@ protected:
     bool hasDuplexSupport; /*!< true if device supports duplex mode. */
     bool isDefault;        /*!< true if this is the default output or input device. */
     std::vector<int> sampleRates; /*!< Supported sample rates. */
-    RtAudioFormat nativeFormats;  /*!< Bit mask of supported data formats. */
+    RtAudio3Format nativeFormats;  /*!< Bit mask of supported data formats. */
 
     // Default constructor.
     RtApiDevice()
@@ -248,7 +248,7 @@ protected:
 
   /*!
     Protected, api-specific method which attempts to fill an
-    RtAudioDevice structure for a given device.  This function MUST be
+    RtAudio3Device structure for a given device.  This function MUST be
     implemented by all subclasses.  If an error is encountered during
     the probe, a "warning" message is reported and the value of
     "probed" remains false (no exception is thrown).  A successful
@@ -265,7 +265,7 @@ protected:
     value of SUCCESS.
   */
   virtual bool probeDeviceOpen( int device, StreamMode mode, int channels, 
-                                int sampleRate, RtAudioFormat format,
+                                int sampleRate, RtAudio3Format format,
                                 int *bufferSize, int numberOfBuffers );
 
   /*!
@@ -287,7 +287,7 @@ protected:
   void clearStreamInfo();
 
   //! Protected common error method to allow global control over error handling.
-  void error( RtError::Type type );
+  void error( RtError3::Type type );
 
   /*!
     Protected common method used to check whether a stream is open.
@@ -302,32 +302,32 @@ protected:
   void convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info );
 
   //! Protected common method used to perform byte-swapping on buffers.
-  void byteSwapBuffer( char *buffer, int samples, RtAudioFormat format );
+  void byteSwapBuffer( char *buffer, int samples, RtAudio3Format format );
 
   //! Protected common method which returns the number of bytes for a given format.
-  int formatBytes( RtAudioFormat format );
+  int formatBytes( RtAudio3Format format );
 };
 
 
 // **************************************************************** //
 //
-// RtAudio class declaration.
+// RtAudio3 class declaration.
 //
-// RtAudio is a "controller" used to select an available audio i/o
+// RtAudio3 is a "controller" used to select an available audio i/o
 // interface.  It presents a common API for the user to call but all
-// functionality is implemented by the class RtAudioApi and its
-// subclasses.  RtAudio creates an instance of an RtAudioApi subclass
-// based on the user's API choice.  If no choice is made, RtAudio
+// functionality is implemented by the class RtAudio3Api and its
+// subclasses.  RtAudio3 creates an instance of an RtAudio3Api subclass
+// based on the user's API choice.  If no choice is made, RtAudio3
 // attempts to make a "logical" API selection.
 //
 // **************************************************************** //
 
-class RtAudio
+class RtAudio3
 {
 public:
 
   //! Audio API specifier arguments.
-  enum RtAudioApi {
+  enum RtAudio3Api {
     UNSPECIFIED,    /*!< Search for a working compiled API. */
     LINUX_ALSA,     /*!< The Advanced Linux Sound Architecture API. */
     LINUX_OSS,      /*!< The Linux Open Sound System API. */
@@ -342,14 +342,14 @@ public:
   /*!
     Probes the system to make sure at least one audio input/output
     device is available and determines the api-specific identifier for
-    each device found.  An RtError error can be thrown if no devices
+    each device found.  An RtError3 error can be thrown if no devices
     are found or if a memory allocation error occurs.
 
     If no API argument is specified and multiple API support has been
     compiled, the default order of use is JACK, ALSA, OSS (Linux
     systems) and ASIO, DS (Windows systems).
   */
-  RtAudio( RtAudioApi api=UNSPECIFIED );
+  RtAudio3( RtAudio3Api api=UNSPECIFIED );
 
   //! A constructor which can be used to open a stream during instantiation.
   /*!
@@ -359,14 +359,14 @@ public:
     parameters is selected.  If an output or input channel value is
     zero, the corresponding device value is ignored.  When a stream is
     successfully opened, its identifier is returned via the "streamId"
-    pointer.  An RtError can be thrown if no devices are found
+    pointer.  An RtError3 can be thrown if no devices are found
     for the given parameters, if a memory allocation error occurs, or
     if a driver error occurs. \sa openStream()
   */
-  RtAudio( int outputDevice, int outputChannels,
+  RtAudio3( int outputDevice, int outputChannels,
            int inputDevice, int inputChannels,
-           RtAudioFormat format, int sampleRate,
-           int *bufferSize, int numberOfBuffers, RtAudioApi api=UNSPECIFIED );
+           RtAudio3Format format, int sampleRate,
+           int *bufferSize, int numberOfBuffers, RtAudio3Api api=UNSPECIFIED );
 
   //! An overloaded constructor which opens a stream and also returns \c numberOfBuffers parameter via pointer argument.
   /*!
@@ -377,21 +377,21 @@ public:
     that the \c numberofBuffers parameter is not used with the Linux
     Jack, Macintosh CoreAudio, and Windows ASIO APIs.
   */
-  RtAudio( int outputDevice, int outputChannels,
+  RtAudio3( int outputDevice, int outputChannels,
            int inputDevice, int inputChannels,
-           RtAudioFormat format, int sampleRate,
-           int *bufferSize, int *numberOfBuffers, RtAudioApi api=UNSPECIFIED );
+           RtAudio3Format format, int sampleRate,
+           int *bufferSize, int *numberOfBuffers, RtAudio3Api api=UNSPECIFIED );
 
   //! The destructor.
   /*!
     Stops and closes an open stream and devices and deallocates
     buffer and structure memory.
   */
-  ~RtAudio();
+  ~RtAudio3();
 
   //! A public method for opening a stream with the specified parameters.
   /*!
-    An RtError is thrown if a stream cannot be opened.
+    An RtError3 is thrown if a stream cannot be opened.
 
     \param outputDevice: If equal to 0, the default or first device
            found meeting the given parameters is opened.  Otherwise, the
@@ -405,7 +405,7 @@ public:
            the getDeviceInfo() method.
     \param inputChannels: The desired number of input channels.  If
            equal to zero, the inputDevice identifier is ignored.
-    \param format: An RtAudioFormat specifying the desired sample data format.
+    \param format: An RtAudio3Format specifying the desired sample data format.
     \param sampleRate: The desired sample rate (sample frames per second).
     \param *bufferSize: A pointer value indicating the desired internal buffer
            size in sample frames.  The actual value used by the device is
@@ -418,7 +418,7 @@ public:
   */
   void openStream( int outputDevice, int outputChannels,
                    int inputDevice, int inputChannels,
-                   RtAudioFormat format, int sampleRate,
+                   RtAudio3Format format, int sampleRate,
                    int *bufferSize, int numberOfBuffers );
 
   //! A public method for opening a stream and also returning \c numberOfBuffers parameter via pointer argument.
@@ -432,7 +432,7 @@ public:
   */
   void openStream( int outputDevice, int outputChannels,
                    int inputDevice, int inputChannels,
-                   RtAudioFormat format, int sampleRate,
+                   RtAudio3Format format, int sampleRate,
                    int *bufferSize, int *numberOfBuffers );
 
   //! A public method which sets a user-defined callback function for a given stream.
@@ -452,17 +452,17 @@ public:
     through the use of the setStreamCallback() and
     cancelStreamCallback() methods (the blocking tickStream() method
     can be used before a callback is set and/or after a callback is
-    cancelled).  An RtError will be thrown if called when no stream is
+    cancelled).  An RtError3 will be thrown if called when no stream is
     open or a thread errors occurs.
   */
-  void setStreamCallback(RtAudioCallback callback, void *userData) { rtapi_->setStreamCallback( callback, userData ); };
+  void setStreamCallback(RtAudio3Callback callback, void *userData) { rtapi_->setStreamCallback( callback, userData ); };
 
   //! A public method which cancels a callback process and function for the stream.
   /*!
     This method shuts down a callback process and de-references the
     user function for the stream.  Callback functionality can
     subsequently be restarted on the stream via the
-    setStreamCallback() method.  An RtError will be thrown if called
+    setStreamCallback() method.  An RtError3 will be thrown if called
     when no stream is open.
    */
   void cancelStreamCallback() { rtapi_->cancelStreamCallback(); };
@@ -470,21 +470,21 @@ public:
   //! A public method which returns the number of audio devices found.
   int getDeviceCount(void) { return rtapi_->getDeviceCount(); };
 
-  //! Return an RtAudioDeviceInfo structure for a specified device number.
+  //! Return an RtAudio3DeviceInfo structure for a specified device number.
   /*!
     Any device integer between 1 and getDeviceCount() is valid.  If
     a device is busy or otherwise unavailable, the structure member
     "probed" will have a value of "false" and all other members are
     undefined.  If the specified device is the current default input
     or output device, the "isDefault" member will have a value of
-    "true".  An RtError will be thrown for an invalid device argument.
+    "true".  An RtError3 will be thrown for an invalid device argument.
   */
-  RtAudioDeviceInfo getDeviceInfo(int device) { return rtapi_->getDeviceInfo( device ); };
+  RtAudio3DeviceInfo getDeviceInfo(int device) { return rtapi_->getDeviceInfo( device ); };
 
   //! A public method which returns a pointer to the buffer for an open stream.
   /*!
     The user should fill and/or read the buffer data in interleaved format
-    and then call the tickStream() method.  An RtError will be
+    and then call the tickStream() method.  An RtError3 will be
     thrown if called when no stream is open.
   */
   char * const getStreamBuffer() { return rtapi_->getStreamBuffer(); };
@@ -492,7 +492,7 @@ public:
   //! Public method used to trigger processing of input/output data for a stream.
   /*!
     This method blocks until all buffer data is read/written.  An
-    RtError will be thrown if a driver error occurs or if called when
+    RtError3 will be thrown if a driver error occurs or if called when
     no stream is open.
   */
   void tickStream() { rtapi_->tickStream(); };
@@ -500,27 +500,27 @@ public:
   //! Public method which closes a stream and frees any associated buffers.
   /*!
     If a stream is not open, this method issues a warning and
-    returns (an RtError is not thrown).
+    returns (an RtError3 is not thrown).
   */
   void closeStream()  { rtapi_->closeStream(); };
 
   //! Public method which starts a stream.
   /*!
-    An RtError will be thrown if a driver error occurs or if called
+    An RtError3 will be thrown if a driver error occurs or if called
     when no stream is open.
   */
   void startStream() { rtapi_->startStream(); };
 
   //! Stop a stream, allowing any samples remaining in the queue to be played out and/or read in.
   /*!
-    An RtError will be thrown if a driver error occurs or if called
+    An RtError3 will be thrown if a driver error occurs or if called
     when no stream is open.
   */
   void stopStream() { rtapi_->stopStream(); };
 
   //! Stop a stream, discarding any samples remaining in the input/output queue.
   /*!
-    An RtError will be thrown if a driver error occurs or if called
+    An RtError3 will be thrown if a driver error occurs or if called
     when no stream is open.
   */
   void abortStream() { rtapi_->abortStream(); };
@@ -528,7 +528,7 @@ public:
 
  protected:
 
-  void initialize( RtAudioApi api );
+  void initialize( RtAudio3Api api );
 
   RtApi *rtapi_;
 };
@@ -550,7 +550,7 @@ public:
   void stopStream();
   void abortStream();
   int streamWillBlock();
-  void setStreamCallback( RtAudioCallback callback, void *userData );
+  void setStreamCallback( RtAudio3Callback callback, void *userData );
   void cancelStreamCallback();
 
   private:
@@ -558,7 +558,7 @@ public:
   void initialize(void);
   void probeDeviceInfo( RtApiDevice *info );
   bool probeDeviceOpen( int device, StreamMode mode, int channels, 
-                        int sampleRate, RtAudioFormat format,
+                        int sampleRate, RtAudio3Format format,
                         int *bufferSize, int numberOfBuffers );
 };
 
@@ -577,11 +577,11 @@ public:
   void startStream();
   void stopStream();
   void abortStream();
-  void setStreamCallback( RtAudioCallback callback, void *userData );
+  void setStreamCallback( RtAudio3Callback callback, void *userData );
   void cancelStreamCallback();
   // This function is intended for internal use only.  It must be
   // public because it is called by the internal callback handler,
-  // which is not a member of RtAudio.  External use of this function
+  // which is not a member of RtAudio3.  External use of this function
   // will most likely produce highly undesireable results!
   void callbackEvent( unsigned long nframes );
 
@@ -590,7 +590,7 @@ public:
   void initialize(void);
   void probeDeviceInfo( RtApiDevice *info );
   bool probeDeviceOpen( int device, StreamMode mode, int channels, 
-                        int sampleRate, RtAudioFormat format,
+                        int sampleRate, RtAudio3Format format,
                         int *bufferSize, int numberOfBuffers );
 };
 
@@ -610,7 +610,7 @@ public:
   void stopStream();
   void abortStream();
   int streamWillBlock();
-  void setStreamCallback( RtAudioCallback callback, void *userData );
+  void setStreamCallback( RtAudio3Callback callback, void *userData );
   void cancelStreamCallback();
 
   private:
@@ -618,7 +618,7 @@ public:
   void initialize(void);
   void probeDeviceInfo( RtApiDevice *info );
   bool probeDeviceOpen( int device, StreamMode mode, int channels, 
-                        int sampleRate, RtAudioFormat format,
+                        int sampleRate, RtAudio3Format format,
                         int *bufferSize, int numberOfBuffers );
 };
 
@@ -641,12 +641,12 @@ public:
   void startStream();
   void stopStream();
   void abortStream();
-  void setStreamCallback( RtAudioCallback callback, void *userData );
+  void setStreamCallback( RtAudio3Callback callback, void *userData );
   void cancelStreamCallback();
 
   // This function is intended for internal use only.  It must be
   // public because it is called by the internal callback handler,
-  // which is not a member of RtAudio.  External use of this function
+  // which is not a member of RtAudio3.  External use of this function
   // will most likely produce highly undesireable results!
   void callbackEvent( AudioDeviceID deviceId, void *inData, void *outData );
 
@@ -655,7 +655,7 @@ public:
   void initialize(void);
   void probeDeviceInfo( RtApiDevice *info );
   bool probeDeviceOpen( int device, StreamMode mode, int channels, 
-                        int sampleRate, RtAudioFormat format,
+                        int sampleRate, RtAudio3Format format,
                         int *bufferSize, int numberOfBuffers );
 };
 
@@ -677,7 +677,7 @@ public:
   void stopStream();
   void abortStream();
   int streamWillBlock();
-  void setStreamCallback( RtAudioCallback callback, void *userData );
+  void setStreamCallback( RtAudio3Callback callback, void *userData );
   void cancelStreamCallback();
 
   public:
@@ -732,7 +732,7 @@ public:
   void initialize(void);
   void probeDeviceInfo( RtApiDevice *info );
   bool probeDeviceOpen( int device, StreamMode mode, int channels, 
-                        int sampleRate, RtAudioFormat format,
+                        int sampleRate, RtAudio3Format format,
                         int *bufferSize, int numberOfBuffers );
 
   bool coInitialized;
@@ -757,12 +757,12 @@ public:
   void startStream();
   void stopStream();
   void abortStream();
-  void setStreamCallback( RtAudioCallback callback, void *userData );
+  void setStreamCallback( RtAudio3Callback callback, void *userData );
   void cancelStreamCallback();
 
   // This function is intended for internal use only.  It must be
   // public because it is called by the internal callback handler,
-  // which is not a member of RtAudio.  External use of this function
+  // which is not a member of RtAudio3.  External use of this function
   // will most likely produce highly undesireable results!
   void callbackEvent( long bufferIndex );
 
@@ -771,7 +771,7 @@ public:
   void initialize(void);
   void probeDeviceInfo( RtApiDevice *info );
   bool probeDeviceOpen( int device, StreamMode mode, int channels, 
-                        int sampleRate, RtAudioFormat format,
+                        int sampleRate, RtAudio3Format format,
                         int *bufferSize, int numberOfBuffers );
 
   bool coInitialized;
@@ -796,7 +796,7 @@ public:
   void stopStream();
   void abortStream();
   int streamWillBlock();
-  void setStreamCallback( RtAudioCallback callback, void *userData );
+  void setStreamCallback( RtAudio3Callback callback, void *userData );
   void cancelStreamCallback();
 
   private:
@@ -804,7 +804,7 @@ public:
   void initialize(void);
   void probeDeviceInfo( RtApiDevice *info );
   bool probeDeviceOpen( int device, StreamMode mode, int channels, 
-                        int sampleRate, RtAudioFormat format,
+                        int sampleRate, RtAudio3Format format,
                         int *bufferSize, int numberOfBuffers );
 };
 

@@ -20,7 +20,7 @@
 #define MARSYAS_AUDIOSOURCE2_H
 
 #ifdef MARSYAS_AUDIOIO
-#include "RtAudio.h"
+#include "RtAudio3.h"
 #endif 
 #include "MarSystem.h" 
 
@@ -39,7 +39,7 @@ class AudioSource2:public MarSystem
 {
 	private:
 #ifdef MARSYAS_AUDIOIO
-		RtAudio *audio_;
+		RtAudio3 *audio_;
 #endif 
 		int bufferSize_;
 

@@ -128,7 +128,7 @@ AudioSource::initRtAudio()
   
   //marsyas represents audio data as float numbers
 #ifdef MARSYAS_AUDIOIO
-  RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
+  RtAudio3Format rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
 #endif 
 
 
@@ -143,11 +143,11 @@ AudioSource::initRtAudio()
     } 
   try 
     {
-      audio_ = new RtAudio(0, 0, 0, rtChannels_, rtFormat,
+      audio_ = new RtAudio3(0, 0, 0, rtChannels_, rtFormat,
 			   rtSrate_, &bufferSize_, nBuffers_);
       data_ = (mrs_real *) audio_->getStreamBuffer();
     }
-  catch (RtError &error) 
+  catch (RtError3 &error) 
     {
       error.printMessage();
     }
@@ -225,7 +225,7 @@ AudioSource::myProcess(realvec& in, realvec& out)
 	  audio_->tickStream();
 
 	}
-      catch (RtError &error) 
+      catch (RtError3 &error) 
 	{
 	  error.printMessage();
 	}

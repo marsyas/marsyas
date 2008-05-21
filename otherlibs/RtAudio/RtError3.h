@@ -1,10 +1,10 @@
 /************************************************************************/
 /*! \class RtError
-    \brief Exception handling class for RtAudio & RtMidi.
+    \brief Exception handling class for RtAudio3 & RtMidi.
 
     The RtError class is quite simple but it does allow errors to be
-    "caught" by RtError::Type. See the RtAudio and RtMidi
-    documentation to know which methods can throw an RtError.
+    "caught" by RtError3::Type. See the RtAudio3 and RtMidi
+    documentation to know which methods can throw an RtError3.
 
 */
 /************************************************************************/
@@ -15,10 +15,10 @@
 #include <iostream>
 #include <string>
 
-class RtError
+class RtError3
 {
 public:
-  //! Defined RtError types.
+  //! Defined RtError3 types.
   enum Type {
     WARNING,           /*!< A non-critical error. */
     DEBUG_WARNING,     /*!< A non-critical error which might be useful for debugging. */
@@ -39,10 +39,10 @@ protected:
 
 public:
   //! The constructor.
-  RtError(const std::string& message, Type type = RtError::UNSPECIFIED) : message_(message), type_(type) {}
+  RtError3(const std::string& message, Type type = RtError3::UNSPECIFIED) : message_(message), type_(type) {}
 
   //! The destructor.
-  virtual ~RtError(void) {};
+  virtual ~RtError3(void) {};
 
   //! Prints thrown error message to stderr.
   virtual void printMessage(void) { std::cerr << '\n' << message_ << "\n\n"; }

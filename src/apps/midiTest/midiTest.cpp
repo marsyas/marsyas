@@ -45,7 +45,7 @@ void midiInfo()
     try {
         midiin = new RtMidiIn();
     }
-    catch (RtError &error) {
+    catch (RtError3 &error) {
         error.printMessage();
         exit(1);
     }
@@ -54,7 +54,7 @@ void midiInfo()
     try {
         midiin->openPort(portopt);
     }
-    catch (RtError &error) {
+    catch (RtError3 &error) {
         error.printMessage();
         exit(1);
 
@@ -141,7 +141,7 @@ void PluckLive(string deviceopt, mrs_real pos, mrs_real fre, mrs_real loz, mrs_r
     try {
         midiin = new RtMidiIn();
     }
-    catch (RtError &error) {
+    catch (RtError3 &error) {
         error.printMessage();
         exit(1);
     }
@@ -150,7 +150,7 @@ void PluckLive(string deviceopt, mrs_real pos, mrs_real fre, mrs_real loz, mrs_r
     try {
         midiin->openPort(portopt);
     }
-    catch (RtError &error) {
+    catch (RtError3 &error) {
         error.printMessage();
         exit(1);
 
@@ -369,7 +369,7 @@ void midiBoomChickAnnotate(mrs_natural bufferSize,
        try {
        rtmidi = new RtMidi();
        }
-       catch (RtError &error) {
+       catch (RtError3 &error) {
        exit(1);
        }
      */ 
@@ -492,7 +492,7 @@ void midiBoomChickAnnotate(mrs_natural bufferSize,
    try {
    rtmidi = new RtMidi();
    }
-   catch (RtError &error) {
+   catch (RtError3 &error) {
    exit(1);
    }
 

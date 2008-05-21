@@ -16,7 +16,7 @@
 #include "CommandLineOptions.h"
 #include "FileName.h"
 #ifdef MARSYAS_AUDIOIO
-#include "RtAudio.h"
+#include "RtAudio3.h"
 #endif 
 #ifdef MARSYAS_MIDIIO
 #include "RtMidi.h"
@@ -125,13 +125,13 @@ toy_with_audiodevices()
 #ifdef MARSYAS_AUDIOIO
 	std::cout << "Testing audio devices" << endl;
 
-	RtAudio *audio = 0;
-	RtAudioDeviceInfo info;
+	RtAudio3 *audio = 0;
+	RtAudio3DeviceInfo info;
 	try
 	{
-		audio = new RtAudio();
+		audio = new RtAudio3();
 	}
-	catch (RtError &error)
+	catch (RtError3 &error)
 	{
 		error.printMessage();
 		exit(EXIT_FAILURE);
@@ -146,7 +146,7 @@ toy_with_audiodevices()
 		{
 			info = audio->getDeviceInfo(i);
 		}
-		catch (RtError &error)
+		catch (RtError3 &error)
 		{
 			error.printMessage();
 			break;

@@ -78,7 +78,7 @@ void MidiInput::myUpdate(MarControlPtr sender)
         try { 
             midiin = new RtMidiIn();
         } 
-        catch (RtError &error) { 
+        catch (RtError3 &error) { 
             error.printMessage();
             return;
         }
@@ -91,7 +91,7 @@ void MidiInput::myUpdate(MarControlPtr sender)
             try { 
 	      midiin->openVirtualPort("MarsyasInput");
             }
-            catch (RtError &error) 
+            catch (RtError3 &error) 
 	      {
                 error.printMessage();
                 return;
@@ -102,7 +102,7 @@ void MidiInput::myUpdate(MarControlPtr sender)
             try { 
 	      midiin->openPort(getctrl("mrs_natural/port")->to<mrs_natural>());
             }
-            catch (RtError &error) 
+            catch (RtError3 &error) 
 	      {
                 error.printMessage();
                 return;

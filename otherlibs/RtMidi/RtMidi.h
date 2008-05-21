@@ -40,7 +40,7 @@
 #ifndef RTMIDI_H
 #define RTMIDI_H
 
-#include "RtError.h"
+#include "RtError3.h"
 #include <string>
 
 class RtMidi
@@ -70,7 +70,7 @@ class RtMidi
   // A basic error reporting function for internal use in the RtMidi
   // subclasses.  The behavior of this function can be modified to
   // suit specific needs.
-  void error( RtError::Type type );
+  void error( RtError3::Type type );
 
   void *apiData_;
   bool connected_;

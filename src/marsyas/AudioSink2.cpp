@@ -127,7 +127,7 @@ AudioSink2::initRtAudio()
 {
 #ifdef MARSYAS_AUDIOIO
 	//marsyas represents audio data as float numbers
-	RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
+	RtAudio3Format rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
 
 	// hardwire channels to stereo playback even for mono
 	int rtChannels = 2;
@@ -136,12 +136,12 @@ AudioSink2::initRtAudio()
 	delete audio_;
 	try 
 	{
-		audio_ = new RtAudio(0, rtChannels, 0, 0, rtFormat,
+		audio_ = new RtAudio3(0, rtChannels, 0, 0, rtFormat,
 			rtSrate_, &bufferSize_, 4);
 
 		data_ = (mrs_real *) audio_->getStreamBuffer();
 	}
-	catch (RtError &error) 
+	catch (RtError3 &error) 
 	{
 		error.printMessage();
 	}
@@ -269,7 +269,7 @@ AudioSink2::myProcess(realvec& in, realvec& out)
 		{
 		  audio_->tickStream();
 		}
-		catch (RtError &error) 
+		catch (RtError3 &error) 
 		{
 			error.printMessage();
 		}

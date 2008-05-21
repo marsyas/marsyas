@@ -167,14 +167,14 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 		try {
 			midiin = new RtMidiIn();
 		}
-		catch (RtError &error) {
+		catch (RtError3 &error) {
 			error.printMessage();
 			exit(1);
 		}
 		try {
 			midiin->openPort(midi_);
 		}
-		catch (RtError &error) {
+		catch (RtError3 &error) {
 			error.printMessage();
 			exit(1);
 
@@ -333,14 +333,14 @@ phasevocPoly(string sfName, mrs_natural N, mrs_natural Nw,
 		try {
 			midiin = new RtMidiIn();
 		}
-		catch (RtError &error) {
+		catch (RtError3 &error) {
 			error.printMessage();
 			exit(1);
 		}
 		try {
 			midiin->openPort(midi_);
 		}
-		catch (RtError &error) {
+		catch (RtError3 &error) {
 			error.printMessage();
 			exit(1);
 		}
@@ -732,7 +732,7 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
 		{
 			midiin = new RtMidiIn();
 		}
-		catch (RtError &error) 
+		catch (RtError3 &error) 
 		{
 			error.printMessage();
 			exit(1);
@@ -741,7 +741,7 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
 		{
 			midiin->openPort(midi_);
 		}
-		catch (RtError &error) 
+		catch (RtError3 &error) 
 		{
 			error.printMessage();
 			exit(1);
