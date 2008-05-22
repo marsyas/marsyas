@@ -41,6 +41,8 @@ pkginclude_HEADERS = \
 			  $(top_srcdir)/otherlibs/libsvm/svm.h \
 			  $(top_srcdir)/otherlibs/RtAudio/RtAudio3.h \
 			  $(top_srcdir)/otherlibs/RtAudio/RtError3.h \
+			  $(top_srcdir)/otherlibs/RtAudio/RtAudio.h \
+			  $(top_srcdir)/otherlibs/RtAudio/RtError.h \
 			  $(top_srcdir)/otherlibs/RtMidi/RtMidi.h \
 			  $(top_srcdir)/otherlibs/RtMidi/RtError.h
 
@@ -49,6 +51,7 @@ INCLUDES += -I$(top_srcdir)/src/marsyas -I$(top_srcdir)/otherlibs/RtAudio -I$(to
 libmarsyas_a_SOURCES    = \
 			  $(top_srcdir)/otherlibs/libsvm/svm.cpp \
 			  $(top_srcdir)/otherlibs/RtAudio/RtAudio3.cpp \
+			  $(top_srcdir)/otherlibs/RtAudio/RtAudio.cpp \
 			  $(top_srcdir)/otherlibs/RtMidi/RtMidi.cpp \
 			  $(top_srcdir)/src/marsyas/MrsLog.cpp \
 			  $(top_srcdir)/src/marsyas/VScheduler.cpp \
