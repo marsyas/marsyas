@@ -23,9 +23,11 @@ CONFIG(debug, debug|release) {
 ######################################################################
 marsyasAUDIOIO {
 	SOURCES += \
-		$$quote( "$$BASEDIR/otherlibs/RtAudio/RtAudio.cpp" )
+		$$quote( "$$BASEDIR/otherlibs/RtAudio/RtAudio3.cpp" ) \
+		$$quote( "$$BASEDIR/otherlibs/RtAudio/RtAudio.cpp" ) \
 		
 	HEADERS += \
+		$$quote( "$$BASEDIR/otherlibs/RtAudio/RtAudio3.h" ) \
 		$$quote( "$$BASEDIR/otherlibs/RtAudio/RtAudio.h" ) \
 		$$quote( "$$BASEDIR/otherlibs/RtAudio/RtError.h" )
 		
