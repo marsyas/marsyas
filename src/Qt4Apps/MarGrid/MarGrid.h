@@ -48,11 +48,13 @@ public:
     void clear();
 
 public slots: 
-  void setupTrain(QString fname);
-  void setupPredict(QString fname);
-  void extract();
-  void predict();
-  void train();
+		void setupTrain(QString fname);
+		void setupPredict(QString fname);
+		void setPlaybackMode(bool continuous);
+		
+		void extract();
+		void predict();
+		void train();
 signals: 
   void playingFile(QString str);
   
@@ -96,7 +98,8 @@ private:
   int cell_size;
   int grid_x;
   int grid_y;
-  
+  bool continuous_;
+		
 
   Marsyas::realvec norm_som_fmatrix;
   Marsyas::MarSystem* som_;

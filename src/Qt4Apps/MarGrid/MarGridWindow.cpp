@@ -50,6 +50,8 @@ MarGridWindow::MarGridWindow()
 
   connect(this, SIGNAL(trainFile(QString)), margrid, SLOT(setupTrain(QString)));
   connect(this, SIGNAL(predictFile(QString)), margrid, SLOT(setupPredict(QString)));
+  connect(this, SIGNAL(playbackMode(bool)), margrid, SLOT(setPlaybackMode(bool)));
+  
 
   QGridLayout *gridLayout = new QGridLayout;
   gridLayout->addWidget(trainLabel, 0,0,1,3);
@@ -83,10 +85,13 @@ MarGridWindow::createMenus()
   fileMenu = menuBar()->addMenu(tr("&File"));
   fileMenu->addAction(openTrainAct);
   fileMenu->addAction(openPredictAct);
+  fileMenu->addAction(playbackAct);
   
   menuBar()->addSeparator();
   helpMenu = menuBar()->addMenu(tr("&Help"));
   helpMenu->addAction(aboutAct);
+
+  
 }
 
 
@@ -109,6 +114,8 @@ MarGridWindow::openPredictFile()
 }
 
 
+
+
 void 
 MarGridWindow::createActions()
 {
@@ -124,7 +131,14 @@ MarGridWindow::createActions()
   // connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
   aboutAct = new QAction(tr("&About"), this);
   aboutAct->setStatusTip(tr("Show the application's About box"));
-  connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
+  connect(aboutAct, SIGNAL(triggered(bool)), this, SLOT(about()));
+
+
+
+  playbackAct = new QAction(tr("&Continuous Playback mode"), this);
+  playbackAct->setStatusTip(tr("Continuous Playback mode"));
+  playbackAct->setCheckable(true);
+  connect(playbackAct, SIGNAL(toggled(bool)), this, SIGNAL(playbackMode(bool)));
 }
 
 

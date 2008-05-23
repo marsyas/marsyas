@@ -37,9 +37,11 @@ MarGrid::MarGrid(QWidget *parent)
   int winWidth, winHeight;
   
   cell_size = 50;
-  som_width = 6;;
-  som_height = 6;
+  som_width = 12;;
+  som_height = 12;
   initAudio_ = false;
+  continuous_ = false;
+  
   winWidth = cell_size * som_width;
   winHeight = cell_size * som_height;
 
@@ -69,11 +71,18 @@ MarGrid::MarGrid(QWidget *parent)
   mwr_ = new MarSystemQtWrapper(pnet_);
   filePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_string/filename");
 
-  
+
+  mwr_->start();
   
   setupTrain("music.mf");
 }
 
+
+void 
+MarGrid::setPlaybackMode(bool continuous)
+{
+	continuous_ = continuous;
+}
 
 
 void 
@@ -435,17 +444,13 @@ void MarGrid::mousePressEvent(QMouseEvent *event)
       cout << "Playing:" << posFiles[counter] << endl;
       emit playingFile(posFiles[counter].c_str());
       mwr_->updctrl(filePtr_, posFiles[counter]);
-      
-      if (initAudio_ == false)
-	{
-	  mwr_->start();
-	  mwr_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-	  initAudio_ == true;
-	}
+	  if (initAudio_ == false) 
+	  {
+		  mwr_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+		  initAudio_ = true;
+	  }
+	  
       mwr_->play();
-
-
-      
     }
   else 
     mwr_->pause();
@@ -476,27 +481,31 @@ MarGrid::mouseMoveEvent(QMouseEvent* event)
   
   int counter = counters[k];
 
-  if (posFiles.size() != 0) 
-    {
-      cout << "*********" << endl;
-      cout << "Playing: " << posFiles[counter] << endl;
-      emit playingFile(posFiles[counter].c_str());      
-      mwr_->updctrl(filePtr_, posFiles[counter]);
-      if (initAudio_ == false)
-	{
-	  mwr_->start();
-	  mwr_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-	  initAudio_ == true;
-	}
-      mwr_->play();
-   
-    }
-   else 
-     mwr_->pause();
-  
-  cout << "Playlist: " << endl;
-  for (int i=0; i < posFiles.size(); i++) 
-    cout << posFiles[i] << endl;
+  if (continuous_)
+  {
+	  
+	  if (posFiles.size() != 0) 
+	  {
+		  cout << "*********" << endl;
+		  cout << "Playing: " << posFiles[counter] << endl;
+		  emit playingFile(posFiles[counter].c_str());      
+		  mwr_->updctrl(filePtr_, posFiles[counter]);
+		  
+		  if (initAudio_ == false) 
+		  {
+			  mwr_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+			  initAudio_ = true;
+		  }
+		  
+		  mwr_->play();
+	  }
+	  else 
+		  mwr_->pause();
+	  
+	  cout << "Playlist: " << endl;
+	  for (int i=0; i < posFiles.size(); i++) 
+		  cout << posFiles[i] << endl;
+  }
   
   repaint();
   

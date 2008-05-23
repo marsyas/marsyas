@@ -48,23 +48,27 @@ public slots:
    void playingFile(QString);
   void openTrainFile();
   void openPredictFile();
+		
  signals: 
-   void trainFile(QString);
-   void predictFile(QString);
-
+		void trainFile(QString);
+		void predictFile(QString);
+		void playbackMode(bool);
+		
 private:
-  void createMenus();
-  void createActions();
-
-
-  QMenu*   fileMenu;  
-  QMenu*   helpMenu;
-  QAction* openTrainAct;
-  QAction* openPredictAct;
-  QAction* aboutAct;
-  QLabel*  playLabel;  
-  QLabel* trainLabel;
-  QLabel* predictLabel;
+		void createMenus();
+		void createActions();
+		
+		
+		QMenu*   fileMenu;  
+		QMenu*   helpMenu;
+		QAction* openTrainAct;
+		QAction* openPredictAct;
+		QAction* aboutAct;
+		QAction* playbackAct;
+		
+		QLabel*  playLabel;  
+		QLabel* trainLabel;
+		QLabel* predictLabel;
   
 };
 
