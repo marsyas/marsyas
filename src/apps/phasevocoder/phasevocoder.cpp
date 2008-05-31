@@ -44,65 +44,79 @@ CommandLineOptions cmd_options;
 void 
 printUsage(string progName)
 {
-  MRSDIAG("phasevocoder.cpp - printUsage");
-  cerr << "Usage : " << progName << " [file]" << endl;
-  cerr << endl;
-  cerr << "If no filename is given the default live audio input is used. " << endl;
+	MRSDIAG("phasevocoder.cpp - printUsage");
+	cerr << "Usage : " << progName << " [file]" << endl;
+	cerr << endl;
+	cerr << "If no filename is given the default live audio input is used. " << endl;
 }
 
 void 
 printHelp(string progName)
 {
-  MRSDIAG("phasevocoder.cpp - printHelp");
-  cerr << "phasevocoder, MARSYAS, Copyright George Tzanetakis " << endl;
-  cerr << "--------------------------------------------" << endl;
-  cerr << "Usage : " << progName << " [file]" << endl;
-  cerr << endl;
-  cerr << "if no filename is given the default live audio input is used. " << endl;
-  cerr << "Options:" << endl;
-  cerr << "-n --fftsize         : size of fft " << endl;
-  cerr << "-w --winsize         : size of window " << endl;
-  cerr << "-d --decimation      : decimation size " << endl;
-  cerr << "-i --interpolatation : interpolation size" << endl;
-  cerr << "-p --pitchshift      : pitch shift" << endl;
-  cerr << "-s --sinusoids       : number of sinusoids" << endl;
-  cerr << "-v --voices          : number of voices" << endl;
-  cerr << "-m --midiport        : midi input port number" << endl;
-  cerr << "-b --buffersize      : audio buffer size" << endl;
-  cerr << "-g --gain            : gain (0.0-1.0) " << endl;
-  cerr << "-f --filename        : output filename" << endl;
-  cerr << "-q --quit            : don't display console output" << endl;
-  cerr << "-u --usage           : display short usage info" << endl;
-  cerr << "-h --help            : display this information " << endl;
+	MRSDIAG("phasevocoder.cpp - printHelp");
+	cerr << "phasevocoder, MARSYAS, Copyright George Tzanetakis " << endl;
+	cerr << "--------------------------------------------" << endl;
+	cerr << "Usage : " << progName << " [file]" << endl;
+	cerr << endl;
+	cerr << "if no filename is given the default live audio input is used. " << endl;
+	cerr << "Options:" << endl;
+	cerr << "-n --fftsize         : size of fft " << endl;
+	cerr << "-w --winsize         : size of window " << endl;
+	cerr << "-d --decimation      : decimation size " << endl;
+	cerr << "-i --interpolatation : interpolation size" << endl;
+	cerr << "-p --pitchshift      : pitch shift" << endl;
+	cerr << "-s --sinusoids       : number of sinusoids" << endl;
+	cerr << "-v --voices          : number of voices" << endl;
+	cerr << "-m --midiport        : midi input port number" << endl;
+	cerr << "-b --buffersize      : audio buffer size" << endl;
+	cerr << "-g --gain            : gain (0.0-1.0) " << endl;
+	cerr << "-f --filename        : output filename" << endl;
+	cerr << "-q --quit            : don't display console output" << endl;
+	cerr << "-u --usage           : display short usage info" << endl;
+	cerr << "-h --help            : display this information " << endl;
   
-  exit(1);
+	exit(1);
 }
 
 // original monophonic phasevocoder 
 void 
 phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw, 
-		    mrs_natural D, mrs_natural I, mrs_real P, 
-		    string outsfname)
+			   mrs_natural D, mrs_natural I, mrs_real P, 
+			   string outsfname)
 {
 	if (!quietopt_)
 		cout << "phasevocSeries" << endl;
 	MarSystemManager mng;
   
-  // create the phasevocoder network
-  MarSystem* pvseries = mng.create("Series", "pvseries");
+	// create the phasevocoder network
+	MarSystem* pvseries = mng.create("Series", "pvseries");
+
+	bool oscbank_ = false;
   
-  if (microphone_) 
-    pvseries->addMarSystem(mng.create("AudioSource", "src"));
-  else 
-    pvseries->addMarSystem(mng.create("SoundFileSource", "src"));
-    
-  pvseries->addMarSystem(mng.create("ShiftInput", "si"));
-  pvseries->addMarSystem(mng.create("PvFold", "fo"));
-  pvseries->addMarSystem(mng.create("Spectrum", "spk"));
-  pvseries->addMarSystem(mng.create("PvConvert", "conv"));
-  pvseries->addMarSystem(mng.create("PvOscBank", "ob"));
-  pvseries->addMarSystem(mng.create("ShiftOutput", "so"));
-  pvseries->addMarSystem(mng.create("Gain", "gain"));
+  
+	if (microphone_) 
+		pvseries->addMarSystem(mng.create("AudioSource", "src"));
+	else 
+		pvseries->addMarSystem(mng.create("SoundFileSource", "src"));
+	pvseries->addMarSystem(mng.create("Stereo2Mono", "s2m"));
+  
+	pvseries->addMarSystem(mng.create("ShiftInput", "si"));
+	pvseries->addMarSystem(mng.create("PvFold", "fo"));
+  
+	pvseries->addMarSystem(mng.create("Spectrum", "spk"));
+	pvseries->addMarSystem(mng.create("PvConvert", "conv"));
+	if (oscbank_)	  
+		pvseries->addMarSystem(mng.create("PvOscBank", "ob"));
+	else 
+	{
+		pvseries->addMarSystem(mng.create("PvUnconvert", "uconv"));
+		pvseries->addMarSystem(mng.create("InvSpectrum", "ispectrum"));
+		pvseries->addMarSystem(mng.create("PvOverlapadd", "pover"));
+	}
+  
+	pvseries->addMarSystem(mng.create("ShiftOutput", "so"));
+	pvseries->addMarSystem(mng.create("Gain", "gain"));
+	
   
 	MarSystem *dest;
 	if (outsfname == EMPTYSTRING) 
@@ -112,7 +126,7 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 		dest = new SoundFileSink("dest");
 		//dest->updctrl("mrs_string/filename", outsfname);
 	}
-  pvseries->addMarSystem(dest);
+	pvseries->addMarSystem(dest);
 
 	if (outsfname == EMPTYSTRING) 
 		pvseries->updctrl("AudioSink/dest/mrs_natural/bufferSize", bopt);
@@ -134,23 +148,39 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 			pvseries->updctrl("SoundFileSource/src/mrs_real/repetitions", -1.0);
 	}
   
+	cout << "pvoc Nw =  " << Nw << endl;
+	cout << "pvoc N = " << N << endl;
+	
+	pvseries->updctrl("ShiftInput/si/mrs_natural/winSize", Nw);
+	pvseries->updctrl("PvFold/fo/mrs_natural/FFTSize", N);
+	pvseries->updctrl("PvFold/fo/mrs_natural/Decimation", D);
+	pvseries->updctrl("PvConvert/conv/mrs_natural/Decimation",D);      
+	pvseries->updctrl("PvConvert/conv/mrs_natural/Sinusoids", (mrs_natural) sopt);  
 
-  pvseries->updctrl("ShiftInput/si/mrs_natural/winSize", Nw);
-  pvseries->updctrl("PvFold/fo/mrs_natural/FFTSize", N);
-  pvseries->updctrl("PvFold/fo/mrs_natural/winSize", Nw);
-  pvseries->updctrl("PvFold/fo/mrs_natural/Decimation", D);
-  pvseries->updctrl("PvConvert/conv/mrs_natural/Decimation",D);      
-  pvseries->updctrl("PvConvert/conv/mrs_natural/Sinusoids", (mrs_natural) sopt);  
-  pvseries->updctrl("PvOscBank/ob/mrs_natural/Interpolation", I);
-  pvseries->updctrl("PvOscBank/ob/mrs_real/PitchShift", P);
-  pvseries->updctrl("ShiftOutput/so/mrs_natural/Interpolation", I);
-  pvseries->updctrl("Gain/gain/mrs_real/gain", gopt_);
+	if (oscbank_) 
+	{
+		pvseries->updctrl("PvOscBank/ob/mrs_natural/Interpolation", I);
+		pvseries->updctrl("PvOscBank/ob/mrs_real/PitchShift", P);
+		cout << "NW = " << Nw << endl;
+		
+		pvseries->updctrl("PvOscBank/ob/mrs_natural/winSize", Nw);
+	}
+	else 
+	{
+		pvseries->updctrl("PvUnconvert/uconv/mrs_natural/Interpolation", I);
+		pvseries->updctrl("PvOverlapadd/pover/mrs_natural/FFTSize", N);
+		pvseries->updctrl("PvOverlapadd/pover/mrs_natural/winSize", Nw);
+		pvseries->updctrl("PvOverlapadd/pover/mrs_natural/Interpolation", I);
+	}
+  
+	pvseries->updctrl("ShiftOutput/so/mrs_natural/Interpolation", I);
+	pvseries->updctrl("Gain/gain/mrs_real/gain", gopt_);
 
 
 	if (!quietopt_)
 		cout << *pvseries << endl;
 
-  if (outsfname == EMPTYSTRING) 
+	if (outsfname == EMPTYSTRING) 
 		pvseries->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
 	int type;
@@ -230,17 +260,21 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 #endif //MARSYAS_MIDIIO
 
 		pvseries->tick();
-
 		if (!microphone_) 
 			if (pvseries->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>() == false)
 				break;
 	}
+
+
+
+	// MATLAB_CLOSE();
+	
 }
 
 void 
 phasevocPoly(string sfName, mrs_natural N, mrs_natural Nw, 
-						 mrs_natural D, mrs_natural I, mrs_real P, 
-						 string outsfname)
+			 mrs_natural D, mrs_natural I, mrs_real P, 
+			 string outsfname)
 {
 	cout << "Phasevocoder::polyphonic" << endl;
 
@@ -377,7 +411,7 @@ phasevocPoly(string sfName, mrs_natural N, mrs_natural Nw,
 							diff = voices[i] - 60.0;
 							if (voices[i] != 0)
 								pvoices[i]->updctrl("mrs_real/PitchShift", 
-								pow((double)1.06, (double)diff));	  	      
+													pow((double)1.06, (double)diff));	  	      
 							// cout << pow((double) 1.06, (double) diff) << endl;
 						}
 					}
@@ -390,8 +424,8 @@ phasevocPoly(string sfName, mrs_natural N, mrs_natural Nw,
 
 void 
 phasevocCrossSynth(string sfName, mrs_natural N, mrs_natural Nw, 
-		 mrs_natural D, mrs_natural I, mrs_real P, 
-		 string outsfname)
+				   mrs_natural D, mrs_natural I, mrs_real P, 
+				   string outsfname)
 {
 	cout << "PHASE-VOCODER CROSS-SYNTHESIS MAG/PHASE" << endl;
 	MarSystemManager mng;
@@ -430,54 +464,54 @@ phasevocCrossSynth(string sfName, mrs_natural N, mrs_natural Nw,
 
 	// link controls
 	total->linkctrl("mrs_string/filename1", 
-		"Fanout/pvfan/Series/branch1/SoundFileSource/src1/mrs_string/filename");
+					"Fanout/pvfan/Series/branch1/SoundFileSource/src1/mrs_string/filename");
 
 	total->linkctrl("mrs_string/filename2", 
-		"Fanout/pvfan/Series/branch2/SoundFileSource/src2/mrs_string/filename");
+					"Fanout/pvfan/Series/branch2/SoundFileSource/src2/mrs_string/filename");
 
 	total->linkctrl("mrs_real/repetitions", 
-		"Fanout/pvfan/Series/branch1/SoundFileSource/src1/mrs_real/repetitions");
+					"Fanout/pvfan/Series/branch1/SoundFileSource/src1/mrs_real/repetitions");
 
 	total->linkctrl("mrs_real/repetitions", 
-		"Fanout/pvfan/Series/branch2/SoundFileSource/src2/mrs_real/repetitions");
+					"Fanout/pvfan/Series/branch2/SoundFileSource/src2/mrs_real/repetitions");
 
 	total->linkctrl("mrs_natural/inSamples1", 
-		"Fanout/pvfan/Series/branch1/SoundFileSource/src1/mrs_natural/inSamples");
+					"Fanout/pvfan/Series/branch1/SoundFileSource/src1/mrs_natural/inSamples");
 
 	total->linkctrl("mrs_natural/inSamples2", 
-		"Fanout/pvfan/Series/branch2/SoundFileSource/src2/mrs_natural/inSamples");
+					"Fanout/pvfan/Series/branch2/SoundFileSource/src2/mrs_natural/inSamples");
 
 	total->linkctrl("mrs_natural/Decimation", 
-		"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/Decimation");
+					"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/Decimation");
 
 	//total->linkctrl("mrs_natural/Decimation", 
 
 	total->linkctrl("mrs_natural/Decimation", 
-		"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/Decimation");
+					"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/Decimation");
 
 	total->linkctrl("mrs_natural/Decimation", 
-		"PvConvert/conv/mrs_natural/Decimation");
+					"PvConvert/conv/mrs_natural/Decimation");
 	total->linkctrl("mrs_natural/Sinusoids",
-		"PvConvert/conv/mrs_natural/Sinusoids");
+					"PvConvert/conv/mrs_natural/Sinusoids");
 
 	total->linkctrl("mrs_natural/FFTSize", 
-		"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/FFTSize");
+					"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/FFTSize");
 	total->linkctrl("mrs_natural/FFTSize", 
-		"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/FFTSize");  
+					"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/FFTSize");  
 
 	total->linkctrl("mrs_natural/winSize", 
-		"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/winSize");
+					"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/winSize");
 	total->linkctrl("mrs_natural/winSize", 
-		"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/winSize");  
+					"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/winSize");  
 
 	total->linkctrl("mrs_natural/Interpolation",
-		"ShiftOutput/so/mrs_natural/Interpolation");  
+					"ShiftOutput/so/mrs_natural/Interpolation");  
 
 	total->linkctrl("mrs_natural/Interpolation",
-		"PvOscBank/ob/mrs_natural/Interpolation");  
+					"PvOscBank/ob/mrs_natural/Interpolation");  
 
 	total->linkctrl("mrs_real/PitchShift", 
-		"PvOscBank/ob/mrs_real/PitchShift");
+					"PvOscBank/ob/mrs_real/PitchShift");
 
 	// update controls
 	total->updctrl("mrs_string/filename1", "/home/gtzan/data/sound/Nov2005Concert/ele1.wav");
@@ -503,8 +537,8 @@ phasevocCrossSynth(string sfName, mrs_natural N, mrs_natural Nw,
 
 void 
 phasevocConvolve(string sfName, mrs_natural N, mrs_natural Nw, 
-								 mrs_natural D, mrs_natural I, mrs_real P, 
-								 string outsfname)
+				 mrs_natural D, mrs_natural I, mrs_real P, 
+				 string outsfname)
 {
 	cout << "PHASE-VOCODER CROSS-SYNTHESIS WITH CONVOLUTION" << endl;
 	MarSystemManager mng;
@@ -544,60 +578,60 @@ phasevocConvolve(string sfName, mrs_natural N, mrs_natural Nw,
 
 	// link controls
 	total->linkctrl("mrs_string/filename1", 
-		"Fanout/pvfan/Series/branch1/SoundFileSource/src1/mrs_string/filename");
+					"Fanout/pvfan/Series/branch1/SoundFileSource/src1/mrs_string/filename");
 
 	// total->linkctrl("mrs_string/filename2", 
 	// "Fanout/pvfan/Series/branch2/SoundFileSource/src2/mrs_string/filename");
 
 	total->linkctrl("mrs_real/repetitions", 
-		"Fanout/pvfan/Series/branch1/SoundFileSource/src1/mrs_real/repetitions");
+					"Fanout/pvfan/Series/branch1/SoundFileSource/src1/mrs_real/repetitions");
 
 	// total->linkctrl("mrs_real/repetitions", 
 	// "Fanout/pvfan/Series/branch2/SoundFileSource/src2/mrs_real/repetitions");
 
 	total->linkctrl("mrs_natural/inSamples1", 
-		"Fanout/pvfan/Series/branch1/SoundFileSource/src1/mrs_natural/inSamples");
+					"Fanout/pvfan/Series/branch1/SoundFileSource/src1/mrs_natural/inSamples");
 
 	// total->linkctrl("mrs_natural/inSamples2", 
 	// "Fanout/pvfan/Series/branch2/SoundFileSource/src2/mrs_natural/inSamples");
 
 	total->linkctrl("mrs_natural/inSamples2", 
-		"Fanout/pvfan/Series/branch2/AudioSource/src2/mrs_natural/inSamples");
+					"Fanout/pvfan/Series/branch2/AudioSource/src2/mrs_natural/inSamples");
 
 	
 	total->linkctrl("mrs_natural/Decimation", 
-		"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/Decimation");
+					"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/Decimation");
 
 
 	total->linkctrl("mrs_natural/Decimation", 
-		"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/Decimation");
+					"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/Decimation");
 
 	total->linkctrl("mrs_natural/Decimation", 
-		"PvConvert/conv/mrs_natural/Decimation");
+					"PvConvert/conv/mrs_natural/Decimation");
 
 	total->linkctrl("mrs_natural/Sinusoids",
-		"PvConvert/conv/mrs_natural/Sinusoids");
+					"PvConvert/conv/mrs_natural/Sinusoids");
 
 	total->linkctrl("mrs_natural/FFTSize", 
-		"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/FFTSize");
+					"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/FFTSize");
 
 	total->linkctrl("mrs_natural/FFTSize", 
-		"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/FFTSize");  
+					"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/FFTSize");  
 
 	total->linkctrl("mrs_natural/winSize", 
-		"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/winSize");
+					"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/winSize");
 
 	total->linkctrl("mrs_natural/winSize", 
-		"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/winSize");  
+					"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/winSize");  
 
 	total->linkctrl("mrs_natural/Interpolation",
-		"ShiftOutput/so/mrs_natural/Interpolation");  
+					"ShiftOutput/so/mrs_natural/Interpolation");  
 
 	total->linkctrl("mrs_natural/Interpolation",
-		"PvOscBank/ob/mrs_natural/Interpolation");  
+					"PvOscBank/ob/mrs_natural/Interpolation");  
 
 	total->linkctrl("mrs_real/PitchShift", 
-		"PvOscBank/ob/mrs_real/PitchShift");
+					"PvOscBank/ob/mrs_real/PitchShift");
 
 	// update controls
 	total->updctrl("mrs_string/filename1", "/home/gtzan/data/sound/Nov2005Concert/ele1.wav");
@@ -625,9 +659,9 @@ phasevocConvolve(string sfName, mrs_natural N, mrs_natural Nw,
 
 void 
 phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N, 
-			       mrs_natural Nw, 
-			       mrs_natural D, mrs_natural I, mrs_real P, 
-			       string outsfname)
+							   mrs_natural Nw, 
+							   mrs_natural D, mrs_natural I, mrs_real P, 
+							   string outsfname)
 {
 
 	cout << "HETEROPHONICS - RADIODRUM " << endl;
@@ -692,8 +726,8 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
 		}
 	}
 
-  total->addMarSystem(mixer);
-  total->addMarSystem(mng.create("Sum", "sum"));
+	total->addMarSystem(mixer);
+	total->addMarSystem(mng.create("Sum", "sum"));
 
 	if (outsfname == EMPTYSTRING) 
 	{
@@ -707,21 +741,21 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
 		total->updctrl("SoundFileSink/dest/mrs_string/filename", outsfname);
 	}
   
-  int type;
-  string cname;
+	int type;
+	string cname;
 
-  mrs_real diff;
+	mrs_real diff;
 	mrs_natural fc = 0;
-  mrs_real time = 0.0;
-  mrs_real epsilon = 0.0029024;
+	mrs_real time = 0.0;
+	mrs_real epsilon = 0.0029024;
   
-  diff = 0.0;
+	diff = 0.0;
   
-  bool trigger = true;
+	bool trigger = true;
   
-  total->updctrl("mrs_natural/inSamples", D);
+	total->updctrl("mrs_natural/inSamples", D);
   
-  cout << "Ready to start processing " << endl;
+	cout << "Ready to start processing " << endl;
 
 #ifdef MARSYAS_MIDIIO
 	RtMidiIn *midiin = NULL;
@@ -749,19 +783,19 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
 	}
 #endif 
 
-  // midi message 
-  std::vector<unsigned char> message;
-  int nBytes;
-  int byte2, byte3;
-  double s1x;
-  double s1y;
-  double s1z;
+	// midi message 
+	std::vector<unsigned char> message;
+	int nBytes;
+	int byte2, byte3;
+	double s1x;
+	double s1y;
+	double s1z;
   
-  double s2x;
-  double s2y;
-  double s2z;
+	double s2x;
+	double s2y;
+	double s2z;
   
-  double stamp;
+	double stamp;
   
 	while(1)
 	{
@@ -832,29 +866,29 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
 
 void 
 phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw, 
-		  mrs_natural D, mrs_natural I, mrs_real P, 
-		  string outsfname)
+					  mrs_natural D, mrs_natural I, mrs_real P, 
+					  string outsfname)
 {
 
-  cout << "HETEROPHONICS " << endl;
+	cout << "HETEROPHONICS " << endl;
   
-  // Heterophonics contains piece-specific code
-  // for a piece performed in November 2005 at UVic 
-  // It combines a polyphonic phasevocoder 
-  // with real-time pitch tracking 
+	// Heterophonics contains piece-specific code
+	// for a piece performed in November 2005 at UVic 
+	// It combines a polyphonic phasevocoder 
+	// with real-time pitch tracking 
   
-  // hardwire 3 voices 
-  // the first two a pitch shifted version of the input 
-  // the third is pitch shifted background material 
-  // load from various soundfiles 
-  vopt_ = 4;
+	// hardwire 3 voices 
+	// the first two a pitch shifted version of the input 
+	// the third is pitch shifted background material 
+	// load from various soundfiles 
+	vopt_ = 4;
     
-  MarSystemManager mng;
-  MarSystem* total = mng.create("Series", "total");
-  MarSystem* mixer = mng.create("Fanout", "mixer");
-  MarSystem* bpvoc = mng.create("PhaseVocoder", "bpvoc");
+	MarSystemManager mng;
+	MarSystem* total = mng.create("Series", "total");
+	MarSystem* mixer = mng.create("Fanout", "mixer");
+	MarSystem* bpvoc = mng.create("PhaseVocoder", "bpvoc");
   
-  // vector of voices
+	// vector of voices
 	vector<MarSystem*> pvoices;
 	for (int i=0; i < vopt_; i++)
 	{
@@ -898,10 +932,10 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 		}
 	}
 
-  MarSystem* mic;
-  mic = mng.create("AudioSource", "mic");
-  total->addMarSystem(mixer);
-  total->addMarSystem(mng.create("Sum", "sum"));
+	MarSystem* mic;
+	mic = mng.create("AudioSource", "mic");
+	total->addMarSystem(mixer);
+	total->addMarSystem(mng.create("Sum", "sum"));
 
 	if (outsfname == EMPTYSTRING) 
 	{
@@ -915,109 +949,109 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 		total->updctrl("SoundFileSink/dest/mrs_string/filename", outsfname);
 	}
   
-  // vectors used for sharing between phasevocoder 
-  // network and pitch extraction network 
-  realvec in, min, out, pin;
+	// vectors used for sharing between phasevocoder 
+	// network and pitch extraction network 
+	realvec in, min, out, pin;
    
-  mic->updctrl("mrs_natural/inSamples", D);
-  mic->updctrl("mrs_natural/inObservations", 1);
-  total->updctrl("mrs_natural/inSamples", D);
-  total->updctrl("mrs_natural/inObservations", 1);
+	mic->updctrl("mrs_natural/inSamples", D);
+	mic->updctrl("mrs_natural/inObservations", 1);
+	total->updctrl("mrs_natural/inSamples", D);
+	total->updctrl("mrs_natural/inObservations", 1);
   
-  in.create( (long)1, (long)D);
-  min.create((long)1, (long)D);
-  out.create(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-	     total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+	in.create( (long)1, (long)D);
+	min.create((long)1, (long)D);
+	out.create(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+			   total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
   
-  pin.create((long)1, (long)512);
+	pin.create((long)1, (long)512);
 
-  string cname;
-  mrs_real diff;
-  mrs_natural fc = 0;
+	string cname;
+	mrs_real diff;
+	mrs_natural fc = 0;
   
-  // Build the pitch extractor network 
-  MarSystem* pitchExtractor = mng.create("Series", "pitchExtractor");
-  pitchExtractor->addMarSystem(mng.create("AutoCorrelation", "acr"));
-  pitchExtractor->updctrl("AutoCorrelation/acr/mrs_real/magcompress", 0.67);
-  pitchExtractor->addMarSystem(mng.create("HalfWaveRectifier", "hwr"));
+	// Build the pitch extractor network 
+	MarSystem* pitchExtractor = mng.create("Series", "pitchExtractor");
+	pitchExtractor->addMarSystem(mng.create("AutoCorrelation", "acr"));
+	pitchExtractor->updctrl("AutoCorrelation/acr/mrs_real/magcompress", 0.67);
+	pitchExtractor->addMarSystem(mng.create("HalfWaveRectifier", "hwr"));
   
-  MarSystem* fanout = mng.create("Fanout", "fanout");
-  fanout->addMarSystem(mng.create("Gain", "id1"));
-  fanout->addMarSystem(mng.create("TimeStretch", "tsc"));
-  pitchExtractor->addMarSystem(fanout);
+	MarSystem* fanout = mng.create("Fanout", "fanout");
+	fanout->addMarSystem(mng.create("Gain", "id1"));
+	fanout->addMarSystem(mng.create("TimeStretch", "tsc"));
+	pitchExtractor->addMarSystem(fanout);
   
-  MarSystem* fanin = mng.create("Fanin", "fanin");
-  fanin->addMarSystem(mng.create("Gain", "id2"));
-  fanin->addMarSystem(mng.create("Negative", "nid"));
+	MarSystem* fanin = mng.create("Fanin", "fanin");
+	fanin->addMarSystem(mng.create("Gain", "id2"));
+	fanin->addMarSystem(mng.create("Negative", "nid"));
   
-  pitchExtractor->addMarSystem(fanin);
-  pitchExtractor->addMarSystem(mng.create("HalfWaveRectifier", "hwr"));
-  pitchExtractor->addMarSystem(mng.create("Peaker", "pkr"));
-  pitchExtractor->addMarSystem(mng.create("MaxArgMax", "mxr"));
+	pitchExtractor->addMarSystem(fanin);
+	pitchExtractor->addMarSystem(mng.create("HalfWaveRectifier", "hwr"));
+	pitchExtractor->addMarSystem(mng.create("Peaker", "pkr"));
+	pitchExtractor->addMarSystem(mng.create("MaxArgMax", "mxr"));
 
-  // update controls 
-  pitchExtractor->updctrl("mrs_natural/inSamples", 512);
-  pitchExtractor->updctrl("Fanout/fanout/TimeStretch/tsc/mrs_real/factor", 0.5);  
+	// update controls 
+	pitchExtractor->updctrl("mrs_natural/inSamples", 512);
+	pitchExtractor->updctrl("Fanout/fanout/TimeStretch/tsc/mrs_real/factor", 0.5);  
 
-   // Convert pitch bounds to samples 
-  mrs_natural lowPitch = 32;
-  mrs_natural highPitch = 100;
+	// Convert pitch bounds to samples 
+	mrs_natural lowPitch = 32;
+	mrs_natural highPitch = 100;
   
-  mrs_real lowFreq = pitch2hertz(lowPitch);
-  mrs_real highFreq = pitch2hertz(highPitch);
-  mrs_natural lowSamples = 
-    hertz2samples(highFreq, 22050.0);
-  mrs_natural highSamples = 
-    hertz2samples(lowFreq, 22050.0);
-  pitchExtractor->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.1);
-  pitchExtractor->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.5);
-  pitchExtractor->updctrl("Peaker/pkr/mrs_natural/peakStart", lowSamples);
-  pitchExtractor->updctrl("Peaker/pkr/mrs_natural/peakEnd", highSamples);
-  pitchExtractor->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 1);
+	mrs_real lowFreq = pitch2hertz(lowPitch);
+	mrs_real highFreq = pitch2hertz(highPitch);
+	mrs_natural lowSamples = 
+		hertz2samples(highFreq, 22050.0);
+	mrs_natural highSamples = 
+		hertz2samples(lowFreq, 22050.0);
+	pitchExtractor->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.1);
+	pitchExtractor->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.5);
+	pitchExtractor->updctrl("Peaker/pkr/mrs_natural/peakStart", lowSamples);
+	pitchExtractor->updctrl("Peaker/pkr/mrs_natural/peakEnd", highSamples);
+	pitchExtractor->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 1);
    
-  MarSystem* gainExtractor = mng.create("MaxArgMax", "mgain");
-  gainExtractor->updctrl("mrs_natural/inSamples", 512);
+	MarSystem* gainExtractor = mng.create("MaxArgMax", "mgain");
+	gainExtractor->updctrl("mrs_natural/inSamples", 512);
   
-  realvec pitchres(pitchExtractor->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), pitchExtractor->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+	realvec pitchres(pitchExtractor->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), pitchExtractor->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
   
-  realvec mgres(gainExtractor->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-		gainExtractor->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+	realvec mgres(gainExtractor->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+				  gainExtractor->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
    
-  mrs_real pitch = 0.0;
-  mrs_real prev_pitch = 0.0;
+	mrs_real pitch = 0.0;
+	mrs_real prev_pitch = 0.0;
   
-  mrs_real glide0;
-  mrs_real glide1;
+	mrs_real glide0;
+	mrs_real glide1;
    
-  mrs_real time = 0.0;
-  mrs_real epsilon = 0.0029024;
+	mrs_real time = 0.0;
+	mrs_real epsilon = 0.0029024;
   
-  mrs_natural epoch =0;
-  diff = 0.0;
+	mrs_natural epoch =0;
+	diff = 0.0;
    
-  bool trigger = true;
+	bool trigger = true;
   
-  pvoices[0]->updctrl("mrs_real/gain", 0.0);
-  pvoices[1]->updctrl("mrs_real/gain", 0.0);
+	pvoices[0]->updctrl("mrs_real/gain", 0.0);
+	pvoices[1]->updctrl("mrs_real/gain", 0.0);
   
-  vector<string> tablas;
-  tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/Ge2.wav");
-  tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/Ge3_s1.wav");
-  tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/ke1_s1.wav");
-  tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/na10_s1.wav");
-  tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/Dhi1_s1.wav");
-  tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/na10_s1.wav");
-  tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/tun1_s1.wav");
-  tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/na7.wav");
-  tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/te10.wav");
-  tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/Dha12_s1.wav");
-  tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/tun1_s1.wav");
-  tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/te12_s1.wav");
+	vector<string> tablas;
+	tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/Ge2.wav");
+	tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/Ge3_s1.wav");
+	tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/ke1_s1.wav");
+	tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/na10_s1.wav");
+	tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/Dhi1_s1.wav");
+	tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/na10_s1.wav");
+	tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/tun1_s1.wav");
+	tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/na7.wav");
+	tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/te10.wav");
+	tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/Dha12_s1.wav");
+	tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/tun1_s1.wav");
+	tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/te12_s1.wav");
 
-  mrs_natural note, prev_note = 0;
+	mrs_natural note, prev_note = 0;
 
-  mrs_natural noteCount = 0;
-  mrs_natural sealCount = 0;
+	mrs_natural noteCount = 0;
+	mrs_natural sealCount = 0;
    
 	while(1)
 	{

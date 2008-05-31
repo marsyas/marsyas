@@ -41,8 +41,11 @@ private:
   realvec lastfreq_;
   realvec index_;
   realvec table_;
+		realvec temp_;
+		
   mrs_natural L_;
   mrs_natural N_;
+  mrs_natural Nw_;
   mrs_natural NP_;
   mrs_real P_;
   mrs_real Iinv_;

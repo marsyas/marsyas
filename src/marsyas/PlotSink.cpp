@@ -63,7 +63,8 @@ PlotSink::myProcess(realvec& in, realvec& out)
   // create in the matlab variable containing the data
   MATLAB_PUT(in, "in_data")
     // tentatively plot it
-    MATLAB_EVAL("plot(in_data); axis([1 length(in_data) 0 1])");
+	  // MATLAB_EVAL("plot(in_data); axis([1 length(in_data) 0 1])");
+	  MATLAB_EVAL("plot(in_data);");
   return;
 #endif
   

@@ -67,7 +67,7 @@ ShiftOutput::myProcess(realvec& in, realvec& out)
 	if(interp_ > inSamples_)
 		out.setval(0.0);
 
-  for(o=0; o< inObservations_; ++o)
+	for(o=0; o< inObservations_; ++o)
 		for (t = 0; t < min(inSamples_,interp_); t++)
 			out(o,t) = in(o,t);
 }

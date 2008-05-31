@@ -25,7 +25,8 @@ PvOverlapadd::PvOverlapadd(string name):MarSystem("PvOverlapadd",name)
 {
   //type_ = "PvOverlapadd";
   //name_ = name;
-
+	n_ = 0;
+	
 	addControls();
 }
 
@@ -59,14 +60,22 @@ PvOverlapadd::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));    
 
-  mrs_natural N,Nw,I;
+  mrs_natural N,Nw;
   N = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
   Nw = getctrl("mrs_natural/onSamples")->to<mrs_natural>();
-  I = getctrl("mrs_natural/Interpolation")->to<mrs_natural>();
+  I_ = getctrl("mrs_natural/Interpolation")->to<mrs_natural>();
+
+  n_ = - Nw;
+  
+
   // create synthesis window 
+
+
   
   swin_.create(Nw);
   awin_.create(Nw);
+  temp_.create(N);
+  
   
   for (t=0; t < Nw; t++)
     {
@@ -78,26 +87,27 @@ PvOverlapadd::myUpdate(MarControlPtr sender)
    * FFT length) aways from the center of the analysis
    * window 
    */ 
-  if (Nw > N) 
+  /* if (Nw > N) 
     {
-      mrs_real x;
+		mrs_real x;
       x = (mrs_real)(-(Nw -1) / 2.0);
       for (t=0; t < Nw; t++, x += 1.0)
-	{
-	  if (x != 0.0) 
-	    {
-	      awin_(t) *= N * sin (PI * x/N) / (PI *x);
-	      swin_(t) *= I * sin (PI * x/I) / (PI *x);
-	    }
-	}
+	  {
+		  if (x != 0.0) 
+		  {
+			  awin_(t) *= N * sin (PI * x/N) / (PI *x);
+			  swin_(t) *= I_ * sin (PI * x/I_) / (PI *x);
+		  }
+	  }
     }
+  */ 
   
   /* normalize window for unit gain */ 
   mrs_real sum = (mrs_real)0.0;
   
   for (t =0; t < Nw; t++)
-    {
-      sum += awin_(t);
+  {
+		sum += awin_(t);
     }
   
   mrs_real afac = (mrs_real)(2.0/ sum);
@@ -109,12 +119,12 @@ PvOverlapadd::myUpdate(MarControlPtr sender)
     {
       sum = (mrs_real)0.0;
       
-      for (t = 0; t < Nw; t+= I)
-	{
-	  sum += swin_(t) * swin_(t);
-	}
+      for (t = 0; t < Nw; t+= I_)
+	  {
+		  sum += swin_(t) * swin_(t);
+	  }
       for (sum = (mrs_real)1.0/sum, t =0; t < Nw; t++)
-	swin_(t) *= sum;
+		  swin_(t) *= sum;
     }
 
 	//lmartins: This was missing the defaultUpdate() call which could be havoc!! [!]
@@ -126,14 +136,21 @@ void
 PvOverlapadd::myProcess(realvec& in, realvec& out)
 {
 
+
+
+
   
   // add assertions for sizes
   mrs_natural N,Nw;
-  int n;
   
   N = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
   Nw = getctrl("mrs_natural/onSamples")->to<mrs_natural>();
-  n  = getctrl("mrs_natural/Time")->to<mrs_natural>();
+  n_ += I_;
+
+
+  mrs_natural n;
+  n  = n_;
+  
   
   while (n < 0) 
     n += N;
@@ -141,12 +158,28 @@ PvOverlapadd::myProcess(realvec& in, realvec& out)
 
 
   for (t=0; t < Nw; t++)
-    {
-      out(0,t) += (in(0,n) * swin_(t));
-      
-      if (++n == N)
-	n = 0;
-    }
+  {
+	  temp_(t) += (in(0,n) * swin_(t));
+	  
+	  if (++n == N)
+		  n = 0;
+  }
+  
+  
+  
+
+  
+  for (t=0; t < N; t++) 
+	  out(0,t) = temp_(t);
+
+  for  (t=0; t < N-I_; t++)
+	  temp_(t) = temp_(t+I_);
+  for (t=N-I_; t<N; t++) 
+	  temp_(t) = 0.0;
+
+
+
+  
 }
 
 

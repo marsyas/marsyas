@@ -56,14 +56,14 @@ InvSpectrum::myProcess(realvec& in, realvec& out)
   //checkFlow(in,out);
   for(o=0 ; o<onObservations_; o++)
 	{
-  for (t=0; t < onSamples_; t++)
-    tempVec_(t) = in(t,o);
-
-    mrs_real *tmp = tempVec_.getData();
-    myfft_.rfft(tmp, onSamples_/2, FFT_INVERSE);  
-  for (t=0; t < onSamples_; t++)
-    out(o,t) = tempVec_(t);
-
+		for (t=0; t < onSamples_; t++)
+			tempVec_(t) = in(t,o);
+		
+		mrs_real *tmp = tempVec_.getData();
+		myfft_.rfft(tmp, onSamples_/2, FFT_INVERSE);  
+		for (t=0; t < onSamples_; t++)
+			out(o,t) = tempVec_(t);
+		
 	}
 }
 

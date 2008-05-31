@@ -81,24 +81,36 @@ PvConvert::myUpdate(MarControlPtr sender)
 
 	factor_ = ((getctrl("mrs_real/osrate")->to<mrs_real>()) / 
 		(mrs_real)( getctrl("mrs_natural/Decimation")->to<mrs_natural>()* TWOPI));
+
+	
+
 	fundamental_ = (mrs_real) (getctrl("mrs_real/osrate")->to<mrs_real>() / (mrs_real)getctrl("mrs_natural/inObservations")->to<mrs_natural>());
+
+
+	
+	
 	kmax_ = getctrl("mrs_natural/Sinusoids")->to<mrs_natural>();
 }
 
 void 
-PvConvert::process1(realvec& in, realvec& out)
+PvConvert::myProcess(realvec& in, realvec& out)
 {
+	
 	mrs_natural N2 = inObservations_/2;
+	
 	mrs_real a;
 	mrs_real b;
 	mrs_real phasediff;
+
+
+	
 
 	// handle amplitudes
 	for (t=0; t <= N2; t++)
 	{
 		if (t==0)
 		{
-			a = in(2*t,0);
+			a = in(0,0);
 			b = 0.0;
 		}
 		else if (t == N2)
@@ -113,50 +125,52 @@ PvConvert::process1(realvec& in, realvec& out)
 		}
 
 		// computer magnitude value 
-		mag_(t) = sqrt(a*a + b*b);
-		// sortedmags_(t) = mag_(t);
-		// compute phase
-		phase_(t) = -atan2(b,a);
+		out(2*t,0) = sqrt(a*a + b*b);
 
-	}
-
-	bool found = false;
-
-	for (t=2; t <= N2; t++)
-	{
-		mrs_real val = mag_(t);
-		if ((val > mag_(t-1)) && (val > mag_(t+1))) 
-			found = true;
-		else
-			found = false;
-
-		out(2*t,0) = 0.0;
-		out(2*t+1,0) = t * fundamental_;
-
-		if (found) 
+		
+		if (out(2*t,0) == 0.0)
+			phasediff = 0.0;
+		else 
 		{
-			if (val == 0.0) 
-				phasediff = 0.0;
-			else 
-			{
-				out(2*t,0) = val;
-				phasediff = phase_(t) - lastphase_(t);
-				lastphase_(t) = phase_(t);	
-			}
-
-			// phase unwrapping 
+			phase_(t) = -atan2(b,a);
+			phasediff = phase_(t) - lastphase_(t);
+			lastphase_(t) = phase_(t);
+			
 			while (phasediff > PI) 
 				phasediff -= TWOPI;
 			while (phasediff < -PI) 
 				phasediff += TWOPI;
-
-			out(2*t+1, 0) = phasediff * factor_ + t * fundamental_;      
 		}
+		
+
+		// convert to Hz */ 
+		out(2*t+1,0) = phasediff * factor_ + t * fundamental_;
 	}
+
+	/* MATLAB_PUT(mag_, "PVConv_mag");
+	MATLAB_EVAL("plot(PVConv_mag);");
+	getchar();
+	*/ 
+	
+	
+	// bool found = false;
+
+
 }
 
+
+
+
+
+
+
+
+
+
+
+
 void 
-PvConvert::myProcess(realvec& in, realvec& out)
+PvConvert::process1(realvec& in, realvec& out)
 {
 	mrs_natural N2 = inObservations_/2;
 	mrs_real a;

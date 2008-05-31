@@ -39,7 +39,11 @@ class PvOverlapadd: public MarSystem
 private:
   realvec swin_;
   realvec awin_;
-  
+		realvec temp_;
+		
+		mrs_natural I_;
+		mrs_natural n_;
+		
   void addControls();
 	void myUpdate(MarControlPtr sender);
  

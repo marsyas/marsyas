@@ -112,8 +112,16 @@ ShiftInput::myProcess(realvec& in, realvec& out)
 	}
 
 	//used for toy_with_onsets.m (DO NOT DELETE! - COMMENT INSTEAD)
-	//MATLAB_PUT(in, "ShiftInput_in");
-	//MATLAB_PUT(out, "ShiftInput_out");
+	// MATLAB_PUT(in, "ShiftInput_in");
+	// MATLAB_PUT(out, "ShiftInput_out");
+	// MATLAB_EVAL("size(ShiftInput_in)");
+	
+// 	MATLAB_EVAL("plot(ShiftInput_in)");
+//	getchar();
+//  MATLAB_EVAL("plot(ShiftInput_out)");
+//	getchar();
+	
+	
 }
 
 

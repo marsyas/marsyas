@@ -67,71 +67,92 @@ PvFold::myUpdate(MarControlPtr sender)
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
   
   N_ = getctrl("mrs_natural/onSamples")->to<mrs_natural>();
+  
   Nw_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
   D_ = getctrl("mrs_natural/Decimation")->to<mrs_natural>();
 
   // create analysis window if necessary
-  if (Nw_ != PNw_)
-    {
+  if ((Nw_ != PNw_)||(N_ != PN_))
+  {
       n_ = -Nw_;
       awin_.stretch(Nw_);
+
+
+	  cout << "PvFold Nw_ = " << Nw_ << endl;
+	  
       for (t=0; t < Nw_; t++)
-	{
-	  awin_(t) = (mrs_real)(0.54 - 0.46 * cos(TWOPI * t/(Nw_-1)));
-	}
+	  {
+		  awin_(t) = (mrs_real)(0.54 - 0.46 * cos(TWOPI * t/(Nw_-1)));
+	  }
       /* when Nw_ > N also apply interpolating (sinc) windows 
        * to ensure that window are 0 at increments of N (the 
        * FFT length) aways from the center of the analysis
        * window 
        */ 
       if (Nw_ > N_) 
-	{
-	  mrs_real x;
-	  x = (mrs_real)(-(Nw_ -1) / 2.0);
-	  for (t=0; t < Nw_; t++, x += 1.0)
-	    {
-	      if (x != 0.0) 
-		awin_(t) *= N_ * sin (PI * x/N_) / (PI *x);
-	    }
-	}
+	  {
+		  
+		  mrs_real x;
+		  x = (mrs_real)(-(Nw_ -1) / 2.0);
+		  for (t=0; t < Nw_; t++, x += 1.0)
+		  {
+			  if (x != 0.0) 
+				  awin_(t) *= N_ * sin (PI * x/N_) / (PI *x);
+		  }
+	  }
       /* normalize window for unit gain */ 
       mrs_real sum = 0.0;
       
       for (t =0; t < Nw_; t++)
-	{
-	  sum += awin_(t);
-	}
+	  {
+		  sum += awin_(t);
+	  }
       
       mrs_real afac = (mrs_real)(2.0/ sum);
       awin_ *= afac;
-    }
-
+  }
+  
   PNw_ = Nw_;
+  PN_ = N_;
+  
 }
 
 void 
 PvFold::myProcess(realvec& in, realvec& out)
 {
   //checkFlow(in,out);
-  
-  n_ += D_;
 
-  for (t=0; t < N_; t++)
+
+
+
+
+
+	
+
+
+	n_ += D_;
+	
+	for (t=0; t < N_; t++)
     {
-      out(0,t) = 0.0;
-    }
-  while (n_ < 0)
-    n_ += N_;
-  n_ %= N_;
-  for (t=0; t < Nw_; t++)
-    {
-      out(0,n_) += in(0,t)*awin_(t);
-      if (++n_ == N_)
-	n_ = 0;
+		out(0,t) = 0.0;
     }
 	
-//	MATLAB_PUT(out, "peaks");
-//	MATLAB_EVAL("plot(peaks)");
+	
+	mrs_natural n;
+	n = n_;
+	
+	while (n < 0)
+		n += N_;
+	n %= N_;
+	for (t=0; t < Nw_; t++)
+    {
+		out(0,n) += in(0,t)*awin_(t);
+		if (++n == N_)
+			n = 0;
+    }
+
+
+  
 }
 
 
