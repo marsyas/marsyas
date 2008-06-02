@@ -78,7 +78,6 @@ PvFold::myUpdate(MarControlPtr sender)
       awin_.stretch(Nw_);
 
 
-	  cout << "PvFold Nw_ = " << Nw_ << endl;
 	  
       for (t=0; t < Nw_; t++)
 	  {
