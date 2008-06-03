@@ -1,0 +1,6 @@
+/Users/gtzan/data/sound/music_speech/music/bagpipe.au	music
+/Users/gtzan/data/sound/music_speech/music/ballad.au	music
+/Users/gtzan/data/sound/music_speech/speech/allison.au	speech
+/Users/gtzan/data/sound/music_speech/speech/voices.au	speech
+
+
