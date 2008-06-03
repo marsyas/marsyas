@@ -119,19 +119,19 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 
 	  if (mode == "loose_phaselock")
 	  {
-		  if ((t >= 1) || (t < 10))
+		  if ((t >= 1) || (t < N2_))
 		  {
-			  avg_re = mag_(t) * cos(phase_(t)) -
-				  mag_(t-1) * cos(phase_(t-1)) -
-				  mag_(t+1) * cos(phase_(t));
+			  avg_re = mag_(t) * cos(phase_(t)) +
+				  0.25 * mag_(t-1) * cos(phase_(t-1)) +
+				  0.25 * mag_(t+1) * cos(phase_(t));
 			  
 			  
 			  avg_im = -mag_(t) * sin(phase_(t)) -
-				  -mag_(t-1) * sin(phase_(t-1)) -
-				  -mag_(t+1) * sin(phase_(t));
+				  -0.25 * mag_(t-1) * sin(phase_(t-1)) -
+				  -0.25 * mag_(t+1) * sin(phase_(t));
 			  lphase_(t) = -atan2(avg_im,avg_re);
 		  }
-		  lmag_(t) = sqrt(avg_re * avg_re + avg_im * avg_im);
+		  lmag_(t) = mag_(t);
 		  out(re,0) = lmag_(t) * cos(lphase_(t));
 		  if (t != N2_)
 			  out(im,0) = -lmag_(t) * sin(lphase_(t));

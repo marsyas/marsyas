@@ -66,6 +66,7 @@ namespace Marsyas
 
 			void myProcessFull(realvec& in, realvec& out);
 			void myProcessSorted(realvec& in, realvec& out);
+			void myProcessNeighbors(realvec& in, realvec& out);
 			void myProcess(realvec& in, realvec& out);
   
 	};

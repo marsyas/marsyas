@@ -168,10 +168,11 @@ PvConvert::myProcess(realvec& in, realvec& out)
 	const mrs_string& mode = ctrl_mode_->to<mrs_string>();
 	if (mode == "full") 
 		myProcessFull(in,out);
-	else
+	else if (mode == "sorted")
 		myProcessSorted(in,out);
+	else if (mode == "neighbors") 
+		myProcessNeighbors(in,out);
 	
-
 }
 
 
@@ -260,6 +261,100 @@ PvConvert::myProcessSorted(realvec& in, realvec& out)
 		}
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void 
+PvConvert::myProcessNeighbors(realvec& in, realvec& out)
+{
+
+	mrs_natural N2 = inObservations_/2;
+	mrs_real a;
+	mrs_real b;
+	mrs_real phasediff;
+
+	// handle amplitudes
+	for (t=0; t <= N2; t++)
+	{
+		if (t==0)
+		{
+			a = in(2*t,0);
+			b = 0.0;
+		}
+		else if (t == N2)
+		{
+			a = in(1, 0);
+			b = 0.0;
+		}
+		else
+		{
+			a = in(2*t, 0);
+			b = in(2*t+1, 0);
+		}
+
+		// computer magnitude value 
+		mag_(t) = sqrt(a*a + b*b);
+		sortedmags_(t) = mag_(t);
+		// compute phase
+		phase_(t) = -atan2(b,a);
+
+
+	}
+	
+	mrs_real* data = sortedmags_.getData();
+	sort(data, data+(N2+1), greater<mrs_real>());
+
+	bool found;
+	mrs_real val;
+
+	for (t=0; t <= N2; t++)
+	{
+
+		phasediff = phase_(t) - lastphase_(t);
+		lastphase_(t) = phase_(t);	
+		
+		// phase unwrapping 
+		while (phasediff > PI) 
+			phasediff -= TWOPI;
+		while (phasediff < -PI) 
+			phasediff += TWOPI;      
+
+		if ((t > 3) && (t <= N2-2))
+		{
+			if (
+				(mag_(t) > mag_(t-1)) && 
+				// (mag_(t) > mag_(t-2)) && 
+				// (mag_(t) > mag_(t+2)) &&  
+				(mag_(t) > mag_(t+1))
+				)
+
+			{
+				val = mag_(t);
+			}
+			else 
+				val = 0.0;
+		}
+		
+		if (val == 0.0) 
+			phasediff = 0.0;
+		
+		out(2*t,0) = val;
+		out(2*t+1, 0) = phasediff * factor_ + t * fundamental_;      
+	}
+}
+
+		
 
 
 
