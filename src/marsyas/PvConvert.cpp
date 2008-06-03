@@ -19,7 +19,6 @@
 
 #include "PvConvert.h"
 
-#include <algorithm>
 
 using namespace std;
 using namespace Marsyas;
@@ -34,6 +33,12 @@ PvConvert::PvConvert(string name):MarSystem("PvConvert",name)
 
 	addControls();
 }
+
+PvConvert::PvConvert(const PvConvert& a):MarSystem(a)
+{
+	ctrl_mode_ = getctrl("mrs_string/mode");
+}
+
 
 
 PvConvert::~PvConvert()
@@ -53,6 +58,7 @@ PvConvert::addControls()
 	addctrl("mrs_natural/Decimation",MRS_DEFAULT_SLICE_NSAMPLES/4);
 	addctrl("mrs_natural/Sinusoids", 1);
 	setctrlState("mrs_natural/Sinusoids", true);
+	addctrl("mrs_string/mode", "sorted", ctrl_mode_);
 }
 
 void
@@ -93,7 +99,7 @@ PvConvert::myUpdate(MarControlPtr sender)
 }
 
 void 
-PvConvert::process1(realvec& in, realvec& out)
+PvConvert::myProcessFull(realvec& in, realvec& out)
 {
 	
 	mrs_natural N2 = inObservations_/2;
@@ -156,13 +162,25 @@ PvConvert::process1(realvec& in, realvec& out)
 
 
 
+void 
+PvConvert::myProcess(realvec& in, realvec& out)
+{
+	const mrs_string& mode = ctrl_mode_->to<mrs_string>();
+	if (mode == "full") 
+		myProcessFull(in,out);
+	else
+		myProcessSorted(in,out);
+	
+
+}
 
 
 
 
 void 
-PvConvert::myProcess(realvec& in, realvec& out)
+PvConvert::myProcessSorted(realvec& in, realvec& out)
 {
+
 	mrs_natural N2 = inObservations_/2;
 	mrs_real a;
 	mrs_real b;

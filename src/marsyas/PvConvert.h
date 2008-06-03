@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2008 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -29,43 +29,46 @@ namespace Marsyas
     \brief PvConvert
 
     PvConvert N real and imaginary spectrum values to 
-N/2+1 pairs of magnitude and phase values. The phases 
-are unwrapped and successive phase differences are 
-used to compute estimates of the instantaneous frequencies 
-for each phase vocoder analysis channel; decimation rate 
-and sampling rate are used to render these frequencies 
-directly in Hz. 
+	N/2+1 pairs of magnitude and phase values. The phases 
+	are unwrapped and successive phase differences are 
+	used to compute estimates of the instantaneous frequencies 
+	for each phase vocoder analysis channel; decimation rate 
+	and sampling rate are used to render these frequencies 
+	directly in Hz. 
 */
 
 
-class PvConvert: public MarSystem
-{
-private:
-  realvec lastphase_;
-  realvec phase_;
-  realvec mag_;
+	class PvConvert: public MarSystem
+	{
+		private:
+			realvec lastphase_;
+			realvec phase_;
+			realvec mag_;
  
-  mrs_real fundamental_;
-  mrs_real factor_;
-  realvec sortedmags_;
-  realvec sortedpos_;
+			mrs_real fundamental_;
+			mrs_real factor_;
+			realvec sortedmags_;
+			realvec sortedpos_;
   
-  mrs_natural kmax_;
-  mrs_natural size_, psize_;
+			mrs_natural kmax_;
+			mrs_natural size_, psize_;
+			MarControlPtr ctrl_mode_;
+		
+			void addControls();
+			void myUpdate(MarControlPtr sender);
 
-  void addControls();
-	void myUpdate(MarControlPtr sender);
+		public:
+			PvConvert(std::string name);
+			PvConvert(const PvConvert&);
+			
+			~PvConvert();
+			MarSystem* clone() const;    
 
-public:
-  PvConvert(std::string name);
+			void myProcessFull(realvec& in, realvec& out);
+			void myProcessSorted(realvec& in, realvec& out);
+			void myProcess(realvec& in, realvec& out);
   
-  ~PvConvert();
-  MarSystem* clone() const;    
-
-  void myProcess(realvec& in, realvec& out);
-  void process1(realvec& in, realvec& out);
-  
-};
+	};
 
 }//namespace Marsyas
 

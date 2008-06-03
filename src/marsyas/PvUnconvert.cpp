@@ -18,6 +18,8 @@
 
 #include "PvUnconvert.h"
 
+#include <algorithm> 
+
 using namespace std;
 using namespace Marsyas;
 
@@ -27,6 +29,12 @@ PvUnconvert::PvUnconvert(string name):MarSystem("PvUnconvert",name)
   //name_ = name;
 
 	addControls();
+}
+
+
+PvUnconvert::PvUnconvert(const PvUnconvert& a):MarSystem(a)
+{
+	ctrl_mode_ = getctrl("mrs_string/mode");
 }
 
 
@@ -47,6 +55,8 @@ void
 PvUnconvert::addControls()
 {
   addctrl("mrs_natural/Interpolation", MRS_DEFAULT_SLICE_NSAMPLES/4);
+  addctrl("mrs_string/mode", "loose_phaselock", ctrl_mode_);
+  
 }
 
 void
@@ -63,10 +73,18 @@ PvUnconvert::myUpdate(MarControlPtr sender)
 	
 	N2_ = onObservations/2;
 	lastphase_.create(N2_+1);
+
+	mag_.create(N2_+1);	
+	phase_.create(N2_+1);
+	lphase_.create(N2_+1);
+	lmag_.create(N2_+1);
 	
 	
 	fundamental_ = (mrs_real) (israte  / onObservations);
 	factor_ = (((getctrl("mrs_natural/Interpolation")->to<mrs_natural>()* TWOPI)/(israte)));
+
+
+	
 	
 	//lmartins: This was missing the defaultUpdate() call which could be havoc!! [!]
 	//with the MarSystem refactoring the chances for such a issue are greatly reduced now!
@@ -76,16 +94,11 @@ PvUnconvert::myUpdate(MarControlPtr sender)
 void 
 PvUnconvert::myProcess(realvec& in, realvec& out)
 {
-	
-  //checkFlow(in,out);
-  
-  mrs_real phase;
   mrs_natural re, amp, im, freq;
-  mrs_real magn;
+  mrs_real avg_re;
+  mrs_real avg_im;
 
-
-  mrs_realvec mag;
-  mag.create(N2_+1);
+  const mrs_string& mode = ctrl_mode_->to<mrs_string>();	    
   
   for (t=0; t <= N2_; t++)
   {
@@ -96,22 +109,41 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 		  re = 1;
 	  }
 	  
-      magn = in(re, 0);
-	  mag(t) = magn;
-	  
-      lastphase_(t) += (in(freq,0) - t * fundamental_);
-      phase = lastphase_(t) * factor_;
-	  
+	  mag_(t) = in(re,0);
 	  if (t==N2_)
-		  magn = 0.0;
+		  mag_(t) = 0.0;
 	  
-      out(re,0) = magn * cos(phase);
-	  
-      if (t != N2_)
-		  out(im,0) = -magn * sin(phase);
+	  lastphase_(t) += (in(freq,0) - t * fundamental_);
+      phase_(t) = lastphase_(t) * factor_;
 
-    }
 
+	  if (mode == "loose_phaselock")
+	  {
+		  if ((t >= 1) || (t < 10))
+		  {
+			  avg_re = mag_(t) * cos(phase_(t)) -
+				  mag_(t-1) * cos(phase_(t-1)) -
+				  mag_(t+1) * cos(phase_(t));
+			  
+			  
+			  avg_im = -mag_(t) * sin(phase_(t)) -
+				  -mag_(t-1) * sin(phase_(t-1)) -
+				  -mag_(t+1) * sin(phase_(t));
+			  lphase_(t) = -atan2(avg_im,avg_re);
+		  }
+		  lmag_(t) = sqrt(avg_re * avg_re + avg_im * avg_im);
+		  out(re,0) = lmag_(t) * cos(lphase_(t));
+		  if (t != N2_)
+			  out(im,0) = -lmag_(t) * sin(lphase_(t));
+	  }
+	  else
+	  {
+		  out(re,0) = mag_(t) * cos(phase_(t));
+		  if (t != N2_)
+			  out(im,0) = -mag_(t) * sin(phase_(t));
+	  }
+  }
+  
 }
 
  

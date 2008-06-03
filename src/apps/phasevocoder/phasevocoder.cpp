@@ -33,11 +33,15 @@ int bopt = 128;
 int vopt_ = 1;
 mrs_real gopt_ = 1.0;
 mrs_natural eopt_ = 0;
+bool oscbank_ = false;
 
 mrs_real popt = 1.0;
 bool auto_ = false;
 mrs_natural midi_ = -1;
 bool microphone_ = false;
+mrs_string convertmode_ = "sorted";
+mrs_string unconvertmode_ = "classic";
+
 
 CommandLineOptions cmd_options;
 
@@ -74,7 +78,10 @@ printHelp(string progName)
 	cerr << "-q --quit            : don't display console output" << endl;
 	cerr << "-u --usage           : display short usage info" << endl;
 	cerr << "-h --help            : display this information " << endl;
-  
+	cerr << "-ob --oscbank        : oscbank resynthesis instead of IFFT " << endl;
+	cerr << "-cm --convertmode    : mode for which frequencies/bins to resynthesize " << endl;
+	
+	
 	exit(1);
 }
 
@@ -90,16 +97,15 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
   
 	// create the phasevocoder network
 	MarSystem* pvseries = mng.create("Series", "pvseries");
-
-	bool oscbank_ = true;
-  
+	// oscbank_ = false;
+	
   
 	if (microphone_) 
 		pvseries->addMarSystem(mng.create("AudioSource", "src"));
 	else 
 		pvseries->addMarSystem(mng.create("SoundFileSource", "src"));
 	pvseries->addMarSystem(mng.create("Stereo2Mono", "s2m"));
-  
+	
 	pvseries->addMarSystem(mng.create("ShiftInput", "si"));
 	pvseries->addMarSystem(mng.create("PvFold", "fo"));
   
@@ -148,26 +154,25 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 			pvseries->updctrl("SoundFileSource/src/mrs_real/repetitions", -1.0);
 	}
   
-	cout << "pvoc Nw =  " << Nw << endl;
-	cout << "pvoc N = " << N << endl;
 	
 	pvseries->updctrl("ShiftInput/si/mrs_natural/winSize", Nw);
 	pvseries->updctrl("PvFold/fo/mrs_natural/FFTSize", N);
 	pvseries->updctrl("PvFold/fo/mrs_natural/Decimation", D);
 	pvseries->updctrl("PvConvert/conv/mrs_natural/Decimation",D);      
-	pvseries->updctrl("PvConvert/conv/mrs_natural/Sinusoids", (mrs_natural) sopt);  
+	pvseries->updctrl("PvConvert/conv/mrs_natural/Sinusoids", (mrs_natural) sopt);
+	pvseries->updctrl("PvConvert/conv/mrs_string/mode", convertmode_);
+	
 
 	if (oscbank_) 
 	{
 		pvseries->updctrl("PvOscBank/ob/mrs_natural/Interpolation", I);
 		pvseries->updctrl("PvOscBank/ob/mrs_real/PitchShift", P);
-		cout << "NW = " << Nw << endl;
-		
 		pvseries->updctrl("PvOscBank/ob/mrs_natural/winSize", Nw);
 	}
 	else 
 	{
 		pvseries->updctrl("PvUnconvert/uconv/mrs_natural/Interpolation", I);
+		pvseries->updctrl("PvUnconvert/uconv/mrs_string/mode",unconvertmode_);
 		pvseries->updctrl("PvOverlapadd/pover/mrs_natural/FFTSize", N);
 		pvseries->updctrl("PvOverlapadd/pover/mrs_natural/winSize", Nw);
 		pvseries->updctrl("PvOverlapadd/pover/mrs_natural/Interpolation", I);
@@ -1331,6 +1336,10 @@ initOptions()
 	cmd_options.addBoolOption("auto", "a", auto_);
 	cmd_options.addNaturalOption("midi", "m", midi_);
 	cmd_options.addNaturalOption("epochHeterophonics", "e", eopt_);
+	cmd_options.addBoolOption("oscbank", "ob", oscbank_);
+	cmd_options.addStringOption("convertmode", "cm", convertmode_);
+	cmd_options.addStringOption("unconvertmode", "ucm", unconvertmode_);
+	
 }
 
 void 
@@ -1349,10 +1358,13 @@ loadOptions()
 	bopt = cmd_options.getNaturalOption("bufferSize");
 	popt = cmd_options.getRealOption("pitchshift");
 	auto_ = cmd_options.getBoolOption("auto");
+	oscbank_ = cmd_options.getBoolOption("oscbank");
 	midi_ = cmd_options.getNaturalOption("midi");
 	vopt_ = cmd_options.getNaturalOption("voices");
 	gopt_ = cmd_options.getRealOption("gain");
 	eopt_ = cmd_options.getNaturalOption("epochHeterophonics");
+	convertmode_ = cmd_options.getStringOption("convertmode");
+	unconvertmode_ = cmd_options.getStringOption("unconvertmode");	
 }
 
 int

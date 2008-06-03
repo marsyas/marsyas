@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2008 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -29,35 +29,43 @@ namespace Marsyas
     \brief PvUnconvert
 
     PvUnconvert N real and imaginary spectrum values to 
-N/2+1 pairs of magnitude and phase values. The phases 
-are unwrapped and successive phase differences are 
-used to compute estimates of the instantaneous frequencies 
-for each phase vocoder analysis channel; decimation rate 
-and sampling rate are used to render these frequencies 
-directly in Hz. 
+	N/2+1 pairs of magnitude and phase values. The phases 
+	are unwrapped and successive phase differences are 
+	used to compute estimates of the instantaneous frequencies 
+	for each phase vocoder analysis channel; decimation rate 
+	and sampling rate are used to render these frequencies 
+	directly in Hz. 
 */
 
 
-class PvUnconvert: public MarSystem
-{
-private:
-  realvec lastphase_;
-  mrs_real fundamental_;
-  mrs_real factor_;
-  mrs_natural N2_;
+	class PvUnconvert: public MarSystem
+	{
+		private:
+			realvec lastphase_;
+			mrs_real fundamental_;
+			mrs_real factor_;
+			mrs_natural N2_;
+			realvec mag_;
+			realvec phase_;
+			realvec lphase_;
+			realvec lmag_;
+			
+			MarControlPtr ctrl_mode_;
+			
+		
+			void addControls();
+			void myUpdate(MarControlPtr sender);
   
-  void addControls();
-	void myUpdate(MarControlPtr sender);
-  
-public:
-  PvUnconvert(std::string name);
+		public:
+			PvUnconvert(std::string name);
+			PvUnconvert(const PvUnconvert&);
+			
+			~PvUnconvert();
+			MarSystem* clone() const;    
 
-  ~PvUnconvert();
-  MarSystem* clone() const;    
-
-  void myProcess(realvec& in, realvec& out);
+			void myProcess(realvec& in, realvec& out);
   
-};
+	};
 
 }//namespace Marsyas
 

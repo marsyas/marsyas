@@ -68,7 +68,6 @@ PvOverlapadd::myUpdate(MarControlPtr sender)
   D_ = getctrl("mrs_natural/Decimation")->to<mrs_natural>();
   
   n_ = - (Nw * I_) / D_;
-  cout << "Initial n = " << n_ << endl;
   
 
   // create synthesis window 
