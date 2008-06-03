@@ -91,7 +91,7 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 	// create the phasevocoder network
 	MarSystem* pvseries = mng.create("Series", "pvseries");
 
-	bool oscbank_ = false;
+	bool oscbank_ = true;
   
   
 	if (microphone_) 
@@ -171,6 +171,7 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 		pvseries->updctrl("PvOverlapadd/pover/mrs_natural/FFTSize", N);
 		pvseries->updctrl("PvOverlapadd/pover/mrs_natural/winSize", Nw);
 		pvseries->updctrl("PvOverlapadd/pover/mrs_natural/Interpolation", I);
+		pvseries->updctrl("PvOverlapadd/pover/mrs_natural/Decimation",D);
 	}
   
 	pvseries->updctrl("ShiftOutput/so/mrs_natural/Interpolation", I);

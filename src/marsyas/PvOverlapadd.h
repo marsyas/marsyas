@@ -41,7 +41,7 @@ private:
   realvec awin_;
 		realvec temp_;
 		
-		mrs_natural I_;
+		mrs_natural I_, D_;
 		mrs_natural n_;
 		
   void addControls();

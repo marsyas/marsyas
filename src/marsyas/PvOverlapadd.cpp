@@ -50,6 +50,7 @@ PvOverlapadd::addControls()
   setctrlState("mrs_natural/winSize", true);
   addctrl("mrs_natural/FFTSize", MRS_DEFAULT_SLICE_NSAMPLES);
   addctrl("mrs_natural/Interpolation", MRS_DEFAULT_SLICE_NSAMPLES /4);
+  addctrl("mrs_natural/Decimation", MRS_DEFAULT_SLICE_NSAMPLES /4);
 }
 
 void
@@ -64,8 +65,10 @@ PvOverlapadd::myUpdate(MarControlPtr sender)
   N = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
   Nw = getctrl("mrs_natural/onSamples")->to<mrs_natural>();
   I_ = getctrl("mrs_natural/Interpolation")->to<mrs_natural>();
-
-  n_ = - Nw;
+  D_ = getctrl("mrs_natural/Decimation")->to<mrs_natural>();
+  
+  n_ = - (Nw * I_) / D_;
+  cout << "Initial n = " << n_ << endl;
   
 
   // create synthesis window 

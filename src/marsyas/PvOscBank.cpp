@@ -65,8 +65,6 @@ PvOscBank::myUpdate(MarControlPtr sender)
 	setctrl("mrs_natural/onObservations", (mrs_natural)1);
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
 
-	// mrs_natural inObservations = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
-
 	//defaultUpdate();
 	inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 
@@ -122,12 +120,6 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 
 
 	Nw_ = getctrl("mrs_natural/winSize")->to<mrs_natural>();
-	cout << "Nw_ =" << N_ << endl;
-	
-	
-	cout << "NP_ " << NP_ << endl;
-	cout << "inSamples_ = " << inSamples_ << endl;
-	cout << "inObservations_ = " << inObservations_ << endl;
 	
   
 	for (t=0; t < NP_; t++)

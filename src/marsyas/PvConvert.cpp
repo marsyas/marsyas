@@ -93,7 +93,7 @@ PvConvert::myUpdate(MarControlPtr sender)
 }
 
 void 
-PvConvert::myProcess(realvec& in, realvec& out)
+PvConvert::process1(realvec& in, realvec& out)
 {
 	
 	mrs_natural N2 = inObservations_/2;
@@ -147,15 +147,6 @@ PvConvert::myProcess(realvec& in, realvec& out)
 		out(2*t+1,0) = phasediff * factor_ + t * fundamental_;
 	}
 
-	/* MATLAB_PUT(mag_, "PVConv_mag");
-	MATLAB_EVAL("plot(PVConv_mag);");
-	getchar();
-	*/ 
-	
-	
-	// bool found = false;
-
-
 }
 
 
@@ -170,7 +161,7 @@ PvConvert::myProcess(realvec& in, realvec& out)
 
 
 void 
-PvConvert::process1(realvec& in, realvec& out)
+PvConvert::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural N2 = inObservations_/2;
 	mrs_real a;
