@@ -1969,7 +1969,11 @@ selectFeatureSet(MarSystem *featExtractor)
 	if (flx_)
 		featExtractor->updctrl("mrs_string/enableSPChild", "Flux/flux");
 	if (lsp_) 
+	{
+		cout << "LSP selected" << endl;
 		featExtractor->updctrl("mrs_string/enableLPCChild", "Series/lspbranch");
+	}
+	
 	if (lpcc_) 
 		featExtractor->updctrl("mrs_string/enableLPCChild", "Series/lpccbranch");
 	if (ctd_)
@@ -2643,7 +2647,7 @@ loadOptions()
 	ctd_ = cmd_options.getBoolOption("SpectralCentroid");
 	rlf_ = cmd_options.getBoolOption("SpectralRolloff");
 	flx_ = cmd_options.getBoolOption("SpectralFlux");
-	lsp_ = cmd_options.getBoolOption("LinearSpectralPair");
+	lsp_ = cmd_options.getBoolOption("LineSpectralPair");
 	lpcc_ = cmd_options.getBoolOption("LinearPredictionCepstralCoefficients");
 
 	spectralFeatures_ = cmd_options.getBoolOption("SpectralFeatures");
