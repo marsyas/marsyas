@@ -495,10 +495,14 @@ MarSystemManager::MarSystemManager()
   MarSystem* stereobranches = create("Parallel", "stereobranches");
   MarSystem* left = create("Series", "left");
   MarSystem* right = create("Series", "right");
+  left->addMarSystem(create("ShiftInput", "sileft"));
   left->addMarSystem(create("Windowing", "hamleft"));
   left->addMarSystem(create("Spectrum", "spkleft"));
+  right->addMarSystem(create("ShiftInput", "siright"));
+	  
   right->addMarSystem(create("Windowing", "hamright"));
   right->addMarSystem(create("Spectrum", "spkright"));
+  
   stereobranches->addMarSystem(left);
   stereobranches->addMarSystem(right);
   
@@ -517,6 +521,20 @@ MarSystemManager::MarSystemManager()
     stereoTimbreFeatures->addMarSystem(featExtractorRight);
     stereoFeatures->addMarSystem(stereoTimbreFeatures);
     stereoFeatures->addMarSystem(create("StereoPanningSpectrumFeatures", "SPSFeatures"));
+
+		stereoFeatures->linkctrl("mrs_natural/winSize", "Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_natural/winSize");
+
+		stereoFeatures->linkctrl("mrs_natural/winSize", "Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_natural/winSize");
+		
+		stereoFeatures->linkctrl("mrs_natural/winSize", "StereoPanningSpectrumFeatures/SPSFeatures/Parallel/stereobranches/Series/left/ShiftInput/sileft/mrs_natural/winSize");
+
+
+		stereoFeatures->linkctrl("mrs_natural/winSize", "StereoPanningSpectrumFeatures/SPSFeatures/Parallel/stereobranches/Series/right/ShiftInput/siright/mrs_natural/winSize");
+		
+
+
+
+
     registerPrototype("StereoFeatures", stereoFeatures);
 
 
