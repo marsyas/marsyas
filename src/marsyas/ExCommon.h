@@ -81,6 +81,7 @@ unsigned int ex_string_to_typeid(std::string tp);
 std::string ex_typeid_to_string(unsigned int tp);
 
 std::string dtos(double d);
+std::string dtos(float d);
 std::string ltos(long l);
 std::string btos(bool b);
 long stol(std::string n);

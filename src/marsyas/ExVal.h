@@ -62,7 +62,9 @@ protected:
 public:
     ExVal()                               {list_=NULL;fun_=NULL;clear();};
     ExVal(const std::string x)            {list_=NULL;fun_=NULL;set(x);};
-    ExVal(mrs_real x)                     {list_=NULL;fun_=NULL;set(x);};
+    ExVal(double x)                     {list_=NULL;fun_=NULL;set(x);};
+    ExVal(float x)                     {list_=NULL;fun_=NULL;set(x);};
+//     ExVal(mrs_real x)                     {list_=NULL;fun_=NULL;set(x);};
     ExVal(mrs_natural x)                  {list_=NULL;fun_=NULL;set(x);};
     ExVal(mrs_bool x)                     {list_=NULL;fun_=NULL;set(x);};
     ExVal(ExFun* x)                       {list_=NULL;fun_=NULL;set((ExFun*)x);};
@@ -94,7 +96,8 @@ public:
 
     void set(ExFun* x);
     void set(const std::string x);
-    void set(mrs_real x);
+    void set(double x);
+    void set(float x);
     void set(mrs_natural x);
     void set(mrs_bool x);
     void set(const ExVal& v);

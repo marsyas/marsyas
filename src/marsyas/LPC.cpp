@@ -456,7 +456,7 @@ LPC::myProcess(realvec& in, realvec& out)
 	{
 		for(mrs_natural j = 0; j < order_; j++)
 		{
-			out(j) = (out(j) * pow(gamma, (double)j+1));
+			out(j) = (out(j) * pow((mrs_real)gamma, (mrs_real)j+1));
 		}
 	}
 	

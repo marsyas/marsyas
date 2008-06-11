@@ -81,7 +81,7 @@ LSP::myProcess(realvec& in, realvec& out)
 	if( gamma != 1.0)
 		for(mrs_natural j = 0; j < order_ ; j++)
 		{
-			ak[j] = in(j)*pow(gamma, (double)j+1);//*(-1.0);//apply pole-shifting
+			ak[j] = in(j)*pow((mrs_real)gamma, (mrs_real)j+1);//*(-1.0);//apply pole-shifting
 		}
 	else
 		for(mrs_natural j = 0; j < order_ ; j++)
@@ -98,8 +98,8 @@ LSP::myProcess(realvec& in, realvec& out)
 		Q[order_+1] = polar(1.0, 0.0);
 		for(mrs_natural k = 0; k < order_; k++)
 		{
-			P[order_-k] = polar(ak[k] + ak[order_-1-k], 0.0);
-			Q[order_-k] = polar(ak[k] - ak[order_-1-k], 0.0);
+			P[order_-k] = polar((double)(ak[k] + ak[order_-1-k]), 0.0);
+			Q[order_-k] = polar((double)(ak[k] - ak[order_-1-k]), 0.0);
 		}
 		P[0] = polar(1.0, 0.0);
 		Q[0] = polar(-1.0, 0.0);

@@ -24,7 +24,8 @@ std::string ex_typeid_to_string(unsigned int tp)
     if (tp==ExT_mrs_scheduler) return "mrs_scheduler";
     return 0;
 }
-std::string Marsyas::dtos(mrs_real d) { char nn[256]; sprintf(nn,"%f",d); return std::string(nn); }
+std::string Marsyas::dtos(double d) { char nn[256]; sprintf(nn,"%f",d); return std::string(nn); }
+std::string Marsyas::dtos(float d) { char nn[256]; sprintf(nn,"%f",d); return std::string(nn); }
 std::string Marsyas::ltos(mrs_natural l) { char nn[256]; sprintf(nn,"%ld",l); return std::string(nn); }
 std::string Marsyas::btos(mrs_bool b) { return (b) ? "true" : "false"; }
 mrs_natural Marsyas::stol(std::string n)

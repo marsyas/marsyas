@@ -73,7 +73,7 @@ SFM::myUpdate(MarControlPtr sender)
 	//nominal band edges (Hz)
 	for(i = 0 ; i < nrBands_ + 1 ; i++)
 	{
-		edge_(i)= 1000.0f * pow(2.0f, (0.25f * (i - 8))); // 1/4 octave resolution (MPEG7)
+		edge_(i)= 1000.0f * pow((mrs_real)2.0f, (mrs_real)(0.25f * (i - 8))); // 1/4 octave resolution (MPEG7)
 	}
 	// overlapped low and high band edges (Hz)
 	for (i = 0; i < nrBands_; i++)
@@ -137,7 +137,7 @@ SFM::myProcess(realvec& in, realvec& out)
 		{
 			c = in(k); //power spectrum coeff
 			aritMean += c / bandwidth;
-			geoMean *= pow(c, 1.0/bandwidth);
+			geoMean *= pow((mrs_real)c, (mrs_real)1.0/bandwidth);
 		}
 		if (aritMean != 0.0)
 		{

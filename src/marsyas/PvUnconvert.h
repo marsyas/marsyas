@@ -41,7 +41,7 @@ namespace Marsyas
 	class PvUnconvert: public MarSystem
 	{
 		private:
-			realvec lastphase_;
+			// realvec lastphase_;
 			mrs_real fundamental_;
 			mrs_real factor_;
 			mrs_natural N2_;
@@ -51,6 +51,9 @@ namespace Marsyas
 			realvec lmag_;
 			
 			MarControlPtr ctrl_mode_;
+			MarControlPtr ctrl_lastphases_;
+			MarControlPtr ctrl_analysisphases_;
+			MarControlPtr ctrl_phaselock_;
 			
 		
 			void addControls();

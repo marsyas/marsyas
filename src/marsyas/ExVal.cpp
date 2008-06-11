@@ -47,7 +47,8 @@ void ExVal::clear()
 }
 void ExVal::set(ExFun* x)       { clear(); type_=(x==NULL) ? "" : x->getType(); fun_=x; }
 void ExVal::set(const string x) { clear(); type_="mrs_string";    string_=x; }
-void ExVal::set(mrs_real x)     { clear(); type_="mrs_real";      real_=x; }
+void ExVal::set(double x)     { clear(); type_="mrs_real";      real_=x; }
+void ExVal::set(float x)     { clear(); type_="mrs_real";      real_=x; }
 void ExVal::set(mrs_natural x)  { clear(); type_="mrs_natural";   natural_=x; }
 void ExVal::set(mrs_bool x)     { clear(); type_="mrs_bool";      bool_=x; }
 void ExVal::set(TmTimer** t)    { clear(); type_="mrs_timer";     timer_=t; }

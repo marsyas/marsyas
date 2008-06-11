@@ -37,6 +37,8 @@ PvConvert::PvConvert(string name):MarSystem("PvConvert",name)
 PvConvert::PvConvert(const PvConvert& a):MarSystem(a)
 {
 	ctrl_mode_ = getctrl("mrs_string/mode");
+	ctrl_phases_ = getctrl("mrs_realvec/phases");
+	
 }
 
 
@@ -59,6 +61,8 @@ PvConvert::addControls()
 	addctrl("mrs_natural/Sinusoids", 1);
 	setctrlState("mrs_natural/Sinusoids", true);
 	addctrl("mrs_string/mode", "sorted", ctrl_mode_);
+	addctrl("mrs_realvec/phases", realvec(), ctrl_phases_);
+	
 }
 
 void
@@ -77,7 +81,10 @@ PvConvert::myUpdate(MarControlPtr sender)
 	if (size_ != psize_)
 	{
 		lastphase_.stretch(size_);
-		phase_.stretch(size_);
+		// phase_.stretch(size_);
+		MarControlAccessor acc(ctrl_phases_);
+		realvec& phase = acc.to<mrs_realvec>();
+		phase.stretch(size_);
 		mag_.stretch(size_);
 		sortedmags_.stretch(size_);
 		sortedpos_.stretch(size_);
@@ -108,9 +115,9 @@ PvConvert::myProcessFull(realvec& in, realvec& out)
 	mrs_real b;
 	mrs_real phasediff;
 
-
+	MarControlAccessor acc(ctrl_phases_);
+	mrs_realvec& phases = acc.to<mrs_realvec>();
 	
-
 	// handle amplitudes
 	for (t=0; t <= N2; t++)
 	{
@@ -132,15 +139,16 @@ PvConvert::myProcessFull(realvec& in, realvec& out)
 
 		// computer magnitude value 
 		out(2*t,0) = sqrt(a*a + b*b);
-
+		
 		
 		if (out(2*t,0) == 0.0)
 			phasediff = 0.0;
 		else 
 		{
-			phase_(t) = -atan2(b,a);
-			phasediff = phase_(t) - lastphase_(t);
-			lastphase_(t) = phase_(t);
+			phases(t) = -atan2(b,a);
+
+			phasediff = phases(t) - lastphase_(t);
+			lastphase_(t) = phases(t);
 			
 			while (phasediff > PI) 
 				phasediff -= TWOPI;
@@ -152,6 +160,9 @@ PvConvert::myProcessFull(realvec& in, realvec& out)
 		// convert to Hz */ 
 		out(2*t+1,0) = phasediff * factor_ + t * fundamental_;
 	}
+
+	
+
 
 }
 
@@ -182,6 +193,11 @@ void
 PvConvert::myProcessSorted(realvec& in, realvec& out)
 {
 
+
+	MarControlAccessor acc(ctrl_phases_);
+	mrs_realvec& phases = acc.to<mrs_realvec>();
+
+
 	mrs_natural N2 = inObservations_/2;
 	mrs_real a;
 	mrs_real b;
@@ -210,7 +226,7 @@ PvConvert::myProcessSorted(realvec& in, realvec& out)
 		mag_(t) = sqrt(a*a + b*b);
 		sortedmags_(t) = mag_(t);
 		// compute phase
-		phase_(t) = -atan2(b,a);
+		phases(t) = -atan2(b,a);
 	}
 
 	mrs_real* data = sortedmags_.getData();
@@ -236,8 +252,8 @@ PvConvert::myProcessSorted(realvec& in, realvec& out)
 		out(2*t,0) = 0.0;
 		out(2*t+1,0) = t * fundamental_;
 
-		phasediff = phase_(t) - lastphase_(t);
-		lastphase_(t) = phase_(t);	
+		phasediff = phases(t) - lastphase_(t);
+		lastphase_(t) = phases(t);	
 
 		// phase unwrapping 
 		while (phasediff > PI) 
@@ -279,6 +295,11 @@ void
 PvConvert::myProcessNeighbors(realvec& in, realvec& out)
 {
 
+
+	MarControlAccessor acc(ctrl_phases_);
+	mrs_realvec& phases = acc.to<mrs_realvec>();
+
+
 	mrs_natural N2 = inObservations_/2;
 	mrs_real a;
 	mrs_real b;
@@ -307,7 +328,7 @@ PvConvert::myProcessNeighbors(realvec& in, realvec& out)
 		mag_(t) = sqrt(a*a + b*b);
 		sortedmags_(t) = mag_(t);
 		// compute phase
-		phase_(t) = -atan2(b,a);
+		phases(t) = -atan2(b,a);
 
 
 	}
@@ -321,8 +342,8 @@ PvConvert::myProcessNeighbors(realvec& in, realvec& out)
 	for (t=0; t <= N2; t++)
 	{
 
-		phasediff = phase_(t) - lastphase_(t);
-		lastphase_(t) = phase_(t);	
+		phasediff = phases(t) - lastphase_(t);
+		lastphase_(t) = phases(t);	
 		
 		// phase unwrapping 
 		while (phasediff > PI) 

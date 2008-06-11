@@ -42,7 +42,7 @@ namespace Marsyas
 	{
 		private:
 			realvec lastphase_;
-			realvec phase_;
+			// realvec phase_;
 			realvec mag_;
  
 			mrs_real fundamental_;
@@ -53,7 +53,8 @@ namespace Marsyas
 			mrs_natural kmax_;
 			mrs_natural size_, psize_;
 			MarControlPtr ctrl_mode_;
-		
+			MarControlPtr ctrl_phases_;
+			
 			void addControls();
 			void myUpdate(MarControlPtr sender);
 

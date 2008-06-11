@@ -87,9 +87,9 @@ public:
 	inline MarControlPtr(MarControl control);
 	inline MarControlPtr(MarControlValue *value);
 	inline MarControlPtr(int ne);
-	inline MarControlPtr(float ne);
+    inline MarControlPtr(float ne);
 	inline MarControlPtr(mrs_natural ne);
-	inline MarControlPtr(mrs_real re);
+	inline MarControlPtr(double re);
 	inline MarControlPtr(const char *c);
 	inline MarControlPtr(std::string st);
 	inline MarControlPtr(bool be);
@@ -176,7 +176,8 @@ public:
 	inline MarControl(MarControlValue *value, std::string cname = "", MarSystem* msys = 0, bool state = false);
 
 	// basic types constructors / for compatibility purposes
-	inline MarControl(mrs_real re, std::string cname = "", MarSystem* msys = 0, bool state = false);
+	inline MarControl(double re, std::string cname = "", MarSystem* msys = 0, bool state = false);
+	inline MarControl(float  re, std::string cname = "", MarSystem* msys = 0, bool state = false);
 	inline MarControl(mrs_natural ne, std::string cname = "", MarSystem* msys = 0, bool state = false);
 	inline MarControl(std::string st, std::string cname = "", MarSystem* msys = 0, bool state = false);
 	inline MarControl(bool be, std::string cname = "", MarSystem* msys = 0, bool state = false);
@@ -297,6 +298,7 @@ inline MarControlPtr::MarControlPtr(float ne)
 	TRACE_ADDCONTROL;
 }
 
+
 inline MarControlPtr::MarControlPtr(mrs_natural ne)
 {
 	control_ = new MarControl(ne);
@@ -304,7 +306,7 @@ inline MarControlPtr::MarControlPtr(mrs_natural ne)
 	TRACE_ADDCONTROL;
 }
 
-inline MarControlPtr::MarControlPtr(mrs_real re)
+inline MarControlPtr::MarControlPtr(double re)
 {
 	control_ = new MarControl(re);
 	control_->ref();
@@ -539,7 +541,7 @@ MarControl::MarControl(MarControlValue *value, std::string cname, MarSystem* msy
 }
 
 inline
-MarControl::MarControl(mrs_real re, std::string cname, MarSystem* msys, bool state)
+MarControl::MarControl(double re, std::string cname, MarSystem* msys, bool state)
 {
 	#ifdef MARSYAS_QT
 	qRegisterMetaType<MarControl*>("MarControl*");
@@ -553,6 +555,24 @@ MarControl::MarControl(mrs_real re, std::string cname, MarSystem* msys, bool sta
 	value_		= new MarControlValueT<mrs_real>(re);
 	value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
 }
+
+
+inline
+MarControl::MarControl(float re, std::string cname, MarSystem* msys, bool state)
+{
+	#ifdef MARSYAS_QT
+	qRegisterMetaType<MarControl*>("MarControl*");
+	#endif
+
+	refCount_ = 0;
+	msys_			= msys;
+	cname_		= cname;
+	state_		= state;
+	desc_			= "";
+	value_		= new MarControlValueT<mrs_real>(re);
+	value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
+}
+
 
 inline
 MarControl::MarControl(mrs_natural ne, std::string cname, MarSystem* msys, bool state)

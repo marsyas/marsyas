@@ -80,7 +80,7 @@ Flux::myProcess(realvec& in, realvec& out)
 			for(o = 1; o < inObservations_; ++o)
 			{
 				logtmp_ = log(in(o,t) + MINREAL);
-				diff_ = pow(logtmp_  - prevWindow_(o,t), 2.0);
+				diff_ = pow((mrs_real)logtmp_  - prevWindow_(o,t), (mrs_real)2.0);
 				if(diff_ > max_)
 					max_ = diff_;
 				flux_ += diff_;

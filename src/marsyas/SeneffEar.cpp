@@ -362,7 +362,7 @@ SeneffEar::myUpdate(MarControlPtr sender)
       maxAbs2 = Y(0)*Y(0);
       for (mrs_natural j = 1; j < y.getCols()/2; j++) if ((abs2 = Y(2*j)*Y(2*j) + Y(2*j+1)*Y(2*j+1)) > maxAbs2) maxAbs2 = abs2;
       gain = 1/(y.getCols()*sqrt(maxAbs2));
-      rolloff = min((FilterBankRThetaCoeffs(i,3)/PI*fs/2)/1600,(mrs_real)1.0);
+      rolloff = min((mrs_real)((FilterBankRThetaCoeffs(i,3)/PI*fs/2)/1600),(mrs_real)1.0);
       for (mrs_natural j = 0; j < SeneffForwardCoeffsNormalized.getRows(); j++) SeneffForwardCoeffsNormalized(j,i) = SeneffForwardCoeffs(j,i)*gain*rolloff;
     }
     //then update the resonatorFilter

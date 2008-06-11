@@ -182,6 +182,9 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 	pvseries->updctrl("ShiftOutput/so/mrs_natural/Interpolation", I);
 	pvseries->updctrl("Gain/gain/mrs_real/gain", gopt_);
 
+	pvseries->linkctrl("PvConvert/conv/mrs_realvec/phases", 
+					   "PvUnconvert/uconv/mrs_realvec/analysisphases");
+	
 
 	if (!quietopt_)
 		cout << *pvseries << endl;
@@ -225,6 +228,9 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 	if (outsfname != EMPTYSTRING)
 		dest->updctrl("mrs_string/filename", outsfname);
 
+	int numticks = 0;
+	
+
 	while(1)
 	{
 #ifdef MARSYAS_MIDIIO
@@ -265,7 +271,26 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 		}
 #endif //MARSYAS_MIDIIO
 
+		/* if ((numticks % 100) == 0) 
+		{
+			pvseries->updctrl("PvUnconvert/uconv/mrs_bool/phaselock", true);
+			pvseries->updctrl("PvFold/fo/mrs_natural/Decimation", I);
+			pvseries->updctrl("PvConvert/conv/mrs_natural/Decimation",I);   
+			pvseries->updctrl("PvOverlapadd/pover/mrs_natural/Decimation",I);   			
+		}
+		else 
+		{
+			pvseries->updctrl("PvFold/fo/mrs_natural/Decimation", D);
+			pvseries->updctrl("PvConvert/conv/mrs_natural/Decimation",D);   
+			pvseries->updctrl("PvOverlapadd/pover/mrs_natural/Decimation",D);   			
+		}
+		*/ 
+		
+		
 		pvseries->tick();
+
+		numticks++;
+		
 		if (!microphone_) 
 			if (pvseries->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>() == false)
 				break;

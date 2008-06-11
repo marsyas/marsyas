@@ -1954,6 +1954,7 @@ selectStereoFeatureSet(MarSystem* stereoFeatures)
 		stereoFeatures->updctrl("mrs_string/disableChild", "StereoPanningSpectrumFeatures/SPSFeatures");
 	if (mfcc_) 
 	{
+		// stereoFeatures->updctrl("mrs_string/enableSPChild", "MFCC/mfcc");
 		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableSPChild", "MFCC/mfcc");
 		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableSPChild", "MFCC/mfcc");
 	}

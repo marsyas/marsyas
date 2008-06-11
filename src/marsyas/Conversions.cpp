@@ -161,7 +161,7 @@ mrs_real Marsyas::amplitude2dB(mrs_real a)
 
 mrs_real Marsyas::dB2amplitude(mrs_real a)
 {
-	return pow(10.0, a/20);
+	return pow((mrs_real)10.0, (mrs_real)(a/20));
 }
 
 mrs_real

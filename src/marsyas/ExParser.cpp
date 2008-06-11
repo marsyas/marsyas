@@ -447,7 +447,7 @@ void ExParser::Factor(std::string& l, ExNode** u) {
 		}
 		case 2: {
 			Get();
-			*u=new ExNode(atof(t->val));
+			*u=new ExNode((mrs_real)atof(t->val));
 			break;
 		}
 		case 29: {

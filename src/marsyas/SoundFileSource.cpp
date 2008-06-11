@@ -76,7 +76,7 @@ SoundFileSource::addControls()
 
 	addctrl("mrs_natural/size", 0);
 
-	addctrl("mrs_real/frequency", 0.0);
+	addctrl("mrs_real/frequency", (mrs_real)0.0);
 	setctrlState("mrs_real/frequency",true);
 
 	addctrl("mrs_bool/noteon", false);

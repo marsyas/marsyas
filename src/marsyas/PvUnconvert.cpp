@@ -35,6 +35,10 @@ PvUnconvert::PvUnconvert(string name):MarSystem("PvUnconvert",name)
 PvUnconvert::PvUnconvert(const PvUnconvert& a):MarSystem(a)
 {
 	ctrl_mode_ = getctrl("mrs_string/mode");
+	ctrl_lastphases_ = getctrl("mrs_realvec/lastphases");
+	ctrl_analysisphases_ = getctrl("mrs_realvec/analysisphases");
+	ctrl_phaselock_ = getctrl("mrs_bool/phaselock");
+	
 }
 
 
@@ -48,7 +52,7 @@ MarSystem*
 PvUnconvert::clone() const 
 {
   return new PvUnconvert(*this);
-}
+}  
 
 
 void 
@@ -56,7 +60,9 @@ PvUnconvert::addControls()
 {
   addctrl("mrs_natural/Interpolation", MRS_DEFAULT_SLICE_NSAMPLES/4);
   addctrl("mrs_string/mode", "loose_phaselock", ctrl_mode_);
-  
+  addctrl("mrs_realvec/lastphases", realvec(), ctrl_lastphases_);
+  addctrl("mrs_realvec/analysisphases", realvec(), ctrl_analysisphases_);
+  addctrl("mrs_bool/phaselock", true, ctrl_phaselock_);
 }
 
 void
@@ -72,7 +78,20 @@ PvUnconvert::myUpdate(MarControlPtr sender)
 	mrs_real israte = getctrl("mrs_real/israte")->to<mrs_real>();
 	
 	N2_ = onObservations/2;
-	lastphase_.create(N2_+1);
+
+	{
+		MarControlAccessor acc(ctrl_lastphases_);
+		mrs_realvec& lastphases = acc.to<mrs_realvec>();
+		lastphases.create(N2_+1);
+	}
+
+	{
+		MarControlAccessor acc(ctrl_analysisphases_);
+		mrs_realvec& analysisphases = acc.to<mrs_realvec>();
+		analysisphases.create(N2_+1);
+	}
+
+
 
 	mag_.create(N2_+1);	
 	phase_.create(N2_+1);
@@ -83,67 +102,76 @@ PvUnconvert::myUpdate(MarControlPtr sender)
 	fundamental_ = (mrs_real) (israte  / onObservations);
 	factor_ = (((getctrl("mrs_natural/Interpolation")->to<mrs_natural>()* TWOPI)/(israte)));
 
-
-	
-	
-	//lmartins: This was missing the defaultUpdate() call which could be havoc!! [!]
-	//with the MarSystem refactoring the chances for such a issue are greatly reduced now!
 	
 }
 
 void 
 PvUnconvert::myProcess(realvec& in, realvec& out)
 {
-  mrs_natural re, amp, im, freq;
-  mrs_real avg_re;
-  mrs_real avg_im;
+	
 
-  const mrs_string& mode = ctrl_mode_->to<mrs_string>();	    
-  
-  for (t=0; t <= N2_; t++)
-  {
-      re = amp = 2*t; 
-      im = freq = 2*t+1;
-      if (t== N2_)
-	  {
-		  re = 1;
-	  }
-	  
-	  mag_(t) = in(re,0);
-	  if (t==N2_)
-		  mag_(t) = 0.0;
-	  
-	  lastphase_(t) += (in(freq,0) - t * fundamental_);
-      phase_(t) = lastphase_(t) * factor_;
+	MarControlAccessor acc(ctrl_lastphases_);
+	mrs_realvec& lastphases = acc.to<mrs_realvec>();
+	MarControlAccessor  acc1(ctrl_analysisphases_);
+	mrs_realvec& analysisphases = acc1.to<mrs_realvec>();
+	
+	if (ctrl_phaselock_->to<mrs_bool>())
+	{
+		lastphases = analysisphases;
+		ctrl_phaselock_->setValue(false);
+	}
+	
 
-
-	  if (mode == "loose_phaselock")
-	  {
-		  if ((t >= 1) || (t < N2_))
-		  {
-			  avg_re = mag_(t) * cos(phase_(t)) +
-				  0.25 * mag_(t-1) * cos(phase_(t-1)) +
-				  0.25 * mag_(t+1) * cos(phase_(t));
-			  
-			  
-			  avg_im = -mag_(t) * sin(phase_(t)) -
-				  -0.25 * mag_(t-1) * sin(phase_(t-1)) -
-				  -0.25 * mag_(t+1) * sin(phase_(t));
-			  lphase_(t) = -atan2(avg_im,avg_re);
-		  }
-		  lmag_(t) = mag_(t);
-		  out(re,0) = lmag_(t) * cos(lphase_(t));
-		  if (t != N2_)
-			  out(im,0) = -lmag_(t) * sin(lphase_(t));
-	  }
-	  else
-	  {
-		  out(re,0) = mag_(t) * cos(phase_(t));
-		  if (t != N2_)
-			  out(im,0) = -mag_(t) * sin(phase_(t));
-	  }
-  }
-  
+	mrs_natural re, amp, im, freq;
+	mrs_real avg_re;
+	mrs_real avg_im;
+	
+	const mrs_string& mode = ctrl_mode_->to<mrs_string>();	    
+	
+	for (t=0; t <= N2_; t++)
+	{
+		re = amp = 2*t; 
+		im = freq = 2*t+1;
+		if (t== N2_)
+		{
+			re = 1;
+		}
+		
+		mag_(t) = in(re,0);
+		if (t==N2_)
+			mag_(t) = 0.0;
+		
+		lastphases(t) += (in(freq,0) - t * fundamental_);
+		phase_(t) = lastphases(t) * factor_;
+		
+		
+		if (mode == "loose_phaselock")
+		{
+			if ((t >= 1) || (t < N2_))
+			{
+				avg_re = mag_(t) * cos(phase_(t)) +
+					0.25 * mag_(t-1) * cos(phase_(t-1)) +
+					0.25 * mag_(t+1) * cos(phase_(t));
+				
+				
+				avg_im = -mag_(t) * sin(phase_(t)) -
+					-0.25 * mag_(t-1) * sin(phase_(t-1)) -
+					-0.25 * mag_(t+1) * sin(phase_(t));
+				lphase_(t) = -atan2(avg_im,avg_re);
+			}
+			lmag_(t) = mag_(t);
+			out(re,0) = lmag_(t) * cos(lphase_(t));
+			if (t != N2_)
+				out(im,0) = -lmag_(t) * sin(lphase_(t));
+		}
+		else
+		{
+			out(re,0) = mag_(t) * cos(phase_(t));
+			if (t != N2_)
+				out(im,0) = -mag_(t) * sin(phase_(t));
+		}
+	}
+	
 }
 
  
