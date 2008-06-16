@@ -18,6 +18,7 @@
 
 
 #include "PvConvert.h"
+#include <algorithm>
 
 
 using namespace std;
