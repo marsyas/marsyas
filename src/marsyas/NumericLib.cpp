@@ -376,20 +376,20 @@ NumericLib::root_of_parabola(void)
 	/* B2 = q2MULLER_[q2MULLER_(f0MULLER_-f1MULLER_) + 2(f2MULLER_-f1MULLER_)] + (f2MULLER_-f1MULLER_)*/
 	/* C2 = (1+q2MULLER_)f[2]*/
 	A2   = Cmul(q2MULLER_,Csub(Cadd(f2MULLER_,Cmul(q2MULLER_,f0MULLER_)),
-		Cmul(f1MULLER_,RCadd(1.,q2MULLER_))));
+							   Cmul(f1MULLER_,RCadd((mrs_real)1.,q2MULLER_))));
 	B2   = Cadd(Csub(f2MULLER_,f1MULLER_),Cmul(q2MULLER_,Cadd(Cmul(q2MULLER_,
-		Csub(f0MULLER_,f1MULLER_)),RCmul(2.,Csub(f2MULLER_,f1MULLER_)))));
-	C2   = Cmul(f2MULLER_,RCadd(1.,q2MULLER_));
+																   Csub(f0MULLER_,f1MULLER_)),RCmul((mrs_real)2.,Csub(f2MULLER_,f1MULLER_)))));
+	C2   = Cmul(f2MULLER_,RCadd((mrs_real)1.,q2MULLER_));
 	/* discr = B2^2 - 4A2C2                   */
-	discr = Csub(Cmul(B2,B2),RCmul(4.,Cmul(A2,C2)));
+	discr = Csub(Cmul(B2,B2),RCmul((mrs_real)4.,Cmul(A2,C2)));
 	/* denominators of q2MULLER_                     */
 	N1 = Csub(B2,Csqrt(discr));  
 	N2 = Cadd(B2,Csqrt(discr));  
 	/* choose denominater with largest modulus    */
 	if (Cabs(N1)>Cabs(N2) && Cabs(N1)>DBL_EPSILON)
-		q2MULLER_ = Cdiv(RCmul(-2.,C2),N1);  
+		q2MULLER_ = Cdiv(RCmul((mrs_real)-2.,C2),N1);  
 	else if (Cabs(N2)>DBL_EPSILON)
-		q2MULLER_ = Cdiv(RCmul(-2.,C2),N2);  
+		q2MULLER_ = Cdiv(RCmul((mrs_real)-2.,C2),N2);  
 	else 
 		q2MULLER_ = Ccomplex(cos((mrs_real)iterMULLER_),sin((mrs_real)iterMULLER_));  
 }
@@ -432,8 +432,8 @@ NumericLib::suppress_overflow(mrs_natural nred)
 		if (help>1. && fabs(nred*log10(help))>BOUND6) {
 			kiter++;      /* if |x2MULLER_|>1 and |x2MULLER_|^nred>10^BOUND6 */ 
 			if (kiter<KITERMAX) { /* then halve the distance between   */
-				h2MULLER_=RCmul(.5,h2MULLER_); /* new and old x2MULLER_       */
-				q2MULLER_=RCmul(.5,q2MULLER_); 
+				h2MULLER_=RCmul((mrs_real).5,h2MULLER_); /* new and old x2MULLER_       */
+				q2MULLER_=RCmul((mrs_real).5,q2MULLER_); 
 				x2MULLER_=Csub(x2MULLER_,h2MULLER_);
 				loop=NumLib_TRUE;
 			} else 
@@ -465,8 +465,8 @@ NumericLib::convergence_check(mrs_natural *overflow,mrs_real f1absq,mrs_real f2a
 {
 	if ((f2absq>(CONVERGENCE*f1absq)) && (Cabs(q2MULLER_)>epsilon) && 
 		(iterMULLER_<ITERMAXMULLER)) {
-			q2MULLER_ = RCmul(.5,q2MULLER_); /* in case of overflow:            */
-			h2MULLER_ = RCmul(.5,h2MULLER_); /* halve q2MULLER_ and h2MULLER_; compute new x2MULLER_ */
+		q2MULLER_ = RCmul((mrs_real).5,q2MULLER_); /* in case of overflow:            */
+		h2MULLER_ = RCmul((mrs_real).5,h2MULLER_); /* halve q2MULLER_ and h2MULLER_; compute new x2MULLER_ */
 			x2MULLER_ = Csub(x2MULLER_,h2MULLER_);
 			*overflow = NumLib_TRUE;
 		}
@@ -522,8 +522,8 @@ NumericLib::check_x_value(mrs_complex *xb,mrs_real *f2absqb,mrs_natural *rootd,
 	if ((f2absq<=(BOUND1*f1absq)) && (f2absq>=(BOUND2*f1absq))) {
 		/* function-value changes slowly     */
 		if (Cabs(h2MULLER_)<BOUND3) {  /* if |h[2]| is small enough =>      */
-			q2MULLER_ = RCmul(2.,q2MULLER_);  /* mrs_real q2MULLER_ and h[2]                */
-			h2MULLER_ = RCmul(2.,h2MULLER_);     
+			q2MULLER_ = RCmul((mrs_real)2.,q2MULLER_);  /* mrs_real q2MULLER_ and h[2]                */
+			h2MULLER_ = RCmul((mrs_real)2.,h2MULLER_);     
 		} else {                /* otherwise: |q2MULLER_| = 1 and           */
 			/*            h[2] = h[2]*q2MULLER_         */
 			q2MULLER_ = Ccomplex(cos((mrs_real)iterMULLER_),sin((mrs_real)iterMULLER_));
@@ -860,13 +860,13 @@ NumericLib::quadratic(mrs_complex *pred,mrs_complex *root)
 
 	/* discr = p1^2-4*p2*p0                 */   
 	discr   = Csub(Cmul(pred[1],pred[1]),
-		RCmul(4.,Cmul(pred[2],pred[0])));
+				   RCmul((mrs_real)4.,Cmul(pred[2],pred[0])));
 	/* Z1 = -p1+sqrt(discr)                 */
-	Z1      = Cadd(RCmul(-1.,pred[1]),Csqrt(discr));
+	Z1      = Cadd(RCmul((mrs_real)-1.,pred[1]),Csqrt(discr));
 	/* Z2 = -p1-sqrt(discr)                 */
-	Z2      = Csub(RCmul(-1.,pred[1]),Csqrt(discr));
+	Z2      = Csub(RCmul((mrs_real)-1.,pred[1]),Csqrt(discr));
 	/* N  = 2*p2                            */
-	N       = RCmul(2.,pred[2]);
+	N       = RCmul((mrs_real)2.,pred[2]);
 	root[0] = Cdiv(Z1,N); /* first root  = Z1/N                   */
 	root[1] = Cdiv(Z2,N); /* second root = Z2/N                   */
 }
@@ -879,7 +879,7 @@ NumericLib::lin_or_quad(mrs_complex *pred,mrs_natural nred,mrs_complex *root)
 /*mrs_natural      nred;   highest exponent of the deflated polynomial     */
 {
 	if (nred==1) {     /* root = -p0/p1                           */
-		root[0] = Cdiv(RCmul(-1.,pred[0]),pred[1]);
+		root[0] = Cdiv(RCmul((mrs_real)-1.,pred[0]),pred[1]);
 		return 0;      /* and return no error                     */
 	} else if (nred==2) { /* quadratic polynomial                 */
 		quadratic(pred,root);

@@ -595,7 +595,7 @@ class ExFun_RealAbs : public ExFun//{{{
 class ExFun_RealLog2 : public ExFun//{{{
 {   public:
     ExFun_RealLog2() : ExFun("mrs_real","Real.log2(mrs_real)",true) { }
-    virtual ExVal calc() { return log10((params[0]->eval()).toReal())/log10(2.0); }
+	virtual ExVal calc() { return log10((params[0]->eval()).toReal())/log10(2.0); }
     ExFun* copy() { return new ExFun_RealLog2(); }
 };//}}}
 class ExFun_RealRand : public ExFun//{{{

@@ -329,7 +329,7 @@ public:
 	//    'M' | 'm' --> digits in the mantissa
 	//    'R' | 'r' --> approximation method : 1=rounding 0=chopping
 	//    'E' | 'e' --> eps
-	static double machp(const char *cmach);
+	static mrs_real machp(const char *cmach);
 
 	//////////////////////////////////////////////////
 	//Hungarian assignment routine

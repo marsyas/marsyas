@@ -204,7 +204,7 @@ Spectrum2Chroma::myUpdate(MarControlPtr sender)
 			{
 				for(t = 0; t < N2; ++t)
 				{
-					chromaMap_(o,t) = exp(-0.5 * pow( (fftfreqbins(t)/nbins - ctroct)/octwidth , 2.0) );
+					chromaMap_(o,t) = exp(-0.5 * pow((mrs_real) (fftfreqbins(t)/nbins - ctroct)/octwidth , (mrs_real)2.0) );
 				}
 			}
 		}

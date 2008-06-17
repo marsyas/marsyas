@@ -169,7 +169,7 @@ Spectrum2Mel::myUpdate(MarControlPtr sender)
 
 			// .. then intersect them with each other and zero
 			for(t=0; t < N2; ++t)
-				melMap_(i,t) = max(0.0, min(loslope(t), hislope(t)));
+				melMap_(i,t) = max((mrs_real)0.0, (mrs_real)min(loslope(t), hislope(t)));
 		}
 
 		if(ctrl_constAmp_->to<mrs_bool>() == false)

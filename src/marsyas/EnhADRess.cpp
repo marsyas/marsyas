@@ -124,7 +124,7 @@ EnhADRess::myProcess(realvec& in, realvec& out)
 			deltaPhase_ = abs(phaseL_ - phaseR_);
 			
 			//wrap phase into the 0~2*PI range
-			deltaPhase_ = fmod(deltaPhase_, 2*PI);
+			deltaPhase_ = (mrs_real)fmod((double)deltaPhase_, (double)2*PI);
 
 			//left amplitude value
 			Lk_ = sqrt(rel_*rel_ + iml_*iml_);
