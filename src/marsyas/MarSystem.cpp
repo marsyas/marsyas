@@ -121,9 +121,71 @@ MarSystem::MarSystem(const MarSystem& a)
 	if(isComposite_)
 	{
 		for (mrs_natural i=0; i< a.marsystemsSize_; i++)
-			addMarSystem((*a.marsystems_[i]).clone());
+		{
+			MarSystem* clonedChild = (*a.marsystems_[i]).clone();
+			addMarSystem(clonedChild);
+			clonedChild->relinkControls((*a.marsystems_[i]));
+		}
 	}
 
+	this->relinkControls(a);
+
+// 	// "re-link" controls  => mutexes [?]
+// 	for(ctrlIter_ = a.controls_.begin(); ctrlIter_ != a.controls_.end(); ++ctrlIter_)
+// 	{
+// 		// get original links...
+// 		vector<pair<MarControlPtr, MarControlPtr> > originalLinks = ctrlIter_->second->getLinks();
+// 
+// 		// ...clear clone's links...
+// 		//controls_[ctrlIter_->first]->unlinkFromAll(); //[?] is this really necessary? 
+// 
+// 		//... and re-establish links between the new cloned controls
+// 		vector<pair<MarControlPtr, MarControlPtr> >::const_iterator linksIter;
+// 		for (linksIter = originalLinks.begin(); linksIter != originalLinks.end(); ++linksIter)
+// 		{
+// 			//ignore the root link (not important for relinking)
+// 			if(linksIter->first() == linksIter->second())
+// 				continue;
+// 						
+// 			//check if this control links to someone, and link them accordingly...
+// 			if(linksIter->first() == ctrlIter_->second())
+// 			{
+// 				MarControlPtr ctrl2Link2 = this->getControl(linksIter->second->getMarSystem()->getAbsPath() + linksIter->second->getName(), true);
+// 				//controls from siblings may not exist yet at this time, so we must not try to link
+// 				//to their yet invalid controls. Just link with controls from
+// 				//the parent or already existing siblings and children. The remaining ones will be linked
+// 				//by the siblings when they get created.
+// 				if (!ctrl2Link2.isInvalid())
+// 				{
+// 					controls_[ctrlIter_->first]->linkTo(ctrl2Link2);
+// 				}
+// 			}
+// 			//...or check if someone links to this control, and link them accordingly
+// 			else if(linksIter->second() == ctrlIter_->second())
+// 			{
+// 				MarControlPtr linkedCtrl = this->getControl(linksIter->first->getMarSystem()->getAbsPath() + linksIter->first->getName(), true);
+// 				//controls from siblings may not exist yet at this time, so we must not try to link
+// 				//to their yet invalid controls. Just link with controls from
+// 				//the parent or already existing siblings and children. The remaining ones will be linked
+// 				//by the siblings when they get created.
+// 				if (!linkedCtrl.isInvalid())
+// 				{
+// 					linkedCtrl->linkTo(controls_[ctrlIter_->first]);
+// 				}
+// 			}
+// 		}
+// 	}
+
+	//recreate schedule objects  => mutexes [?]
+	scheduler_.removeAll();
+	TmTimer* t = new TmSampleCount(NULL, this, "mrs_natural/inSamples");
+	scheduler_.addTimer(t);
+	delete t;
+}
+
+void
+MarSystem::relinkControls(const MarSystem& a)
+{
 	// "re-link" controls  => mutexes [?]
 	for(ctrlIter_ = a.controls_.begin(); ctrlIter_ != a.controls_.end(); ++ctrlIter_)
 	{
@@ -140,7 +202,7 @@ MarSystem::MarSystem(const MarSystem& a)
 			//ignore the root link (not important for relinking)
 			if(linksIter->first() == linksIter->second())
 				continue;
-						
+
 			//check if this control links to someone, and link them accordingly...
 			if(linksIter->first() == ctrlIter_->second())
 			{
@@ -169,12 +231,6 @@ MarSystem::MarSystem(const MarSystem& a)
 			}
 		}
 	}
-
-	//recreate schedule objects  => mutexes [?]
-	scheduler_.removeAll();
-	TmTimer* t = new TmSampleCount(NULL, this, "mrs_natural/inSamples");
-	scheduler_.addTimer(t);
-	delete t;
 }
 
 MarSystem::~MarSystem()

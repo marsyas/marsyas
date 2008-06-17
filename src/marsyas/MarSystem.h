@@ -197,6 +197,7 @@ public:
   virtual ~MarSystem();
 
 	virtual MarSystem* clone() const = 0;
+	void relinkControls(const MarSystem& a); 
 	
   // Naming methods 
   virtual void setName(std::string name);

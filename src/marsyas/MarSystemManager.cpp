@@ -403,7 +403,8 @@ MarSystemManager::MarSystemManager()
   pspectpr->addMarSystem(create("PowerSpectrum", "pspk"));
   pspectpr->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","power");
   pspectpr->linkctrl("mrs_real/cutoff","Spectrum/spk/mrs_real/cutoff");
-  pspectpr->linkctrl("mrs_natural/winSize","ShiftInput/si/mrs_natural/winSize");  registerPrototype("PowerSpectrumNet", pspectpr);
+  pspectpr->linkctrl("mrs_natural/winSize","ShiftInput/si/mrs_natural/winSize");  
+	registerPrototype("PowerSpectrumNet", pspectpr);
   
   MarSystem* pspectpr1 = create("Series", "pspectpr1");
   pspectpr1->addMarSystem(create("Spectrum","spk"));
@@ -423,9 +424,10 @@ MarSystemManager::MarSystemManager()
   stft_features_pr->addMarSystem(create("SFM", "sfm"));
   registerPrototype("STFT_features", stft_features_pr);
 
+	////////////////////////////////////////////////////////////////////
   // timbre_features prototype 
-  MarSystem* timbre_features_pr = new Fanout("timbre_features_pr");
-
+	////////////////////////////////////////////////////////////////////
+	MarSystem* timbre_features_pr = new Fanout("timbre_features_pr");
   // time domain branch 
   MarSystem* timeDomainFeatures = create("Series", "timeDomain");
   timeDomainFeatures->addMarSystem(create("ShiftInput", "si"));
@@ -433,7 +435,6 @@ MarSystemManager::MarSystemManager()
   tdf->addMarSystem(create("ZeroCrossings", "zcrs"));
   timeDomainFeatures->addMarSystem(tdf);
   timbre_features_pr->addMarSystem(timeDomainFeatures);
-  
   // FFT branch 
   MarSystem* spectralShape = create("Series", "spectralShape");
   spectralShape->addMarSystem(create("ShiftInput", "si"));
@@ -442,60 +443,52 @@ MarSystemManager::MarSystemManager()
   MarSystem* spectrumFeatures = create("STFT_features", "spectrumFeatures");
   spectralShape->addMarSystem(spectrumFeatures);
   timbre_features_pr->addMarSystem(spectralShape);
-
-  // LPC branch 
+	// LPC branch 
   MarSystem* lpcFeatures = create("Series", "lpcFeatures");
   lpcFeatures->addMarSystem(create("Filter", "preEmph"));
   lpcFeatures->updctrl("Filter/preEmph/mrs_realvec/ncoeffs", ncoeffs);
   lpcFeatures->updctrl("Filter/preEmph/mrs_realvec/dcoeffs", dcoeffs);
   lpcFeatures->addMarSystem(create("ShiftInput", "si"));
   lpcFeatures->addMarSystem(create("Windowing", "ham"));
-  
   MarSystem* lpcf = create("Fanout", "lpcf");
-  
   MarSystem* lspbranch = create("Series", "lspbranch");
   MarSystem* lpccbranch = create("Series","lpccbranch");
-  
   lspbranch->addMarSystem(create("LPC", "lpc"));
   lspbranch->updctrl("LPC/lpc/mrs_natural/order", 18);
   lspbranch->addMarSystem(create("LSP", "lsp"));
-  
   lpccbranch->addMarSystem(create("LPC", "lpc"));
   lpccbranch->updctrl("LPC/lpc/mrs_natural/order", 12);
   lpccbranch->addMarSystem(create("LPCC", "lpcc"));
-  
-  
   lpcf->addMarSystem(lspbranch);
   lpcf->addMarSystem(lpccbranch);
   lpcFeatures->addMarSystem(lpcf);
-
   timbre_features_pr->addMarSystem(lpcFeatures);
 
-	  timbre_features_pr->addctrl("mrs_string/enableSPChild", "");
-	  
-  timbre_features_pr->linkctrl("mrs_natural/winSize","Series/timeDomain/ShiftInput/si/mrs_natural/winSize");
-  timbre_features_pr->linkctrl("mrs_natural/winSize","Series/spectralShape/ShiftInput/si/mrs_natural/winSize");
-  timbre_features_pr->linkctrl("mrs_natural/winSize","Series/lpcFeatures/ShiftInput/si/mrs_natural/winSize");
-	  timbre_features_pr->linkctrl("Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/enableChild", "mrs_string/enableSPChild");
-
+	timbre_features_pr->addControl("mrs_natural/winSize", MRS_DEFAULT_SLICE_NSAMPLES);
+	timbre_features_pr->linkctrl("Series/timeDomain/ShiftInput/si/mrs_natural/winSize", "mrs_natural/winSize");
+  timbre_features_pr->linkctrl("Series/spectralShape/ShiftInput/si/mrs_natural/winSize", "mrs_natural/winSize");
+  timbre_features_pr->linkctrl("Series/lpcFeatures/ShiftInput/si/mrs_natural/winSize", "mrs_natural/winSize");
+	
+	timbre_features_pr->addControl("mrs_string/enableSPChild", "");
+	timbre_features_pr->linkctrl("Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/enableChild", "mrs_string/enableSPChild");
+	timbre_features_pr->addControl("mrs_string/disableSPChild", "");
+	timbre_features_pr->linkctrl("Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/disableChild","mrs_string/disableSPChild"); 
 		  
-  timbre_features_pr->linkctrl("mrs_string/enableTDChild", 
-			       "Series/timeDomain/Fanout/tdf/mrs_string/enableChild");
-  timbre_features_pr->linkctrl("mrs_string/enableLPCChild", 
-							   "Series/lpcFeatures/Fanout/lpcf/mrs_string/enableChild");
-  timbre_features_pr->linkctrl("mrs_string/disableSPChild", "Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/disableChild");  
-  timbre_features_pr->linkctrl("mrs_string/disableTDChild", "Series/timeDomain/Fanout/tdf/mrs_string/disableChild");
-  timbre_features_pr->linkctrl("mrs_string/disableLPCChild", 
-							   "Series/lpcFeatures/Fanout/lpcf/mrs_string/disableChild");
+  timbre_features_pr->linkctrl("mrs_string/enableTDChild",  "Series/timeDomain/Fanout/tdf/mrs_string/enableChild");
+	timbre_features_pr->linkctrl("mrs_string/disableTDChild", "Series/timeDomain/Fanout/tdf/mrs_string/disableChild");
 
-    timbre_features_pr->updctrl("mrs_string/disableSPChild", "all");
-    timbre_features_pr->updctrl("mrs_string/disableTDChild", "all");
-    timbre_features_pr->updctrl("mrs_string/disableLPCChild", "all");
+  timbre_features_pr->linkctrl("mrs_string/enableLPCChild", "Series/lpcFeatures/Fanout/lpcf/mrs_string/enableChild");
+  timbre_features_pr->linkctrl("mrs_string/disableLPCChild","Series/lpcFeatures/Fanout/lpcf/mrs_string/disableChild");
+
+  timbre_features_pr->updctrl("mrs_string/disableSPChild", "all");
+  timbre_features_pr->updctrl("mrs_string/disableTDChild", "all");
+  timbre_features_pr->updctrl("mrs_string/disableLPCChild", "all");
 
   registerPrototype("TimbreFeatures", timbre_features_pr);
 
-
+	///////////////////////////////////////////////////////////////////
   // StereoPanningSpectrumFeatures 
+	///////////////////////////////////////////////////////////////////
   MarSystem *stereoFeatNet = create("Series", "stereoFeatNet");
   MarSystem* stereobranches = create("Parallel", "stereobranches");
   MarSystem* left = create("Series", "left");
@@ -504,7 +497,6 @@ MarSystemManager::MarSystemManager()
   left->addMarSystem(create("Windowing", "hamleft"));
   left->addMarSystem(create("Spectrum", "spkleft"));
   right->addMarSystem(create("ShiftInput", "siright"));
-	  
   right->addMarSystem(create("Windowing", "hamright"));
   right->addMarSystem(create("Spectrum", "spkright"));
   
@@ -516,37 +508,31 @@ MarSystemManager::MarSystemManager()
   stereoFeatNet->addMarSystem(create("StereoSpectrumFeatures", "sspkf"));
   registerPrototype("StereoPanningSpectrumFeatures", stereoFeatNet);
   
-
-
-    MarSystem* stereoFeatures = create("Fanout", "stereoFeatures");
-		MarSystem* stereoTimbreFeatures = create("Parallel", "stereoTimbreFeatures");
-    MarSystem* featExtractorLeft = create("TimbreFeatures", "featExtractorLeft");
-    MarSystem* featExtractorRight = create("TimbreFeatures", "featExtractorRight");
-    stereoTimbreFeatures->addMarSystem(featExtractorLeft);
-    stereoTimbreFeatures->addMarSystem(featExtractorRight);
-    stereoFeatures->addMarSystem(stereoTimbreFeatures);
-    stereoFeatures->addMarSystem(create("StereoPanningSpectrumFeatures", "SPSFeatures"));
-
-		stereoFeatures->addctrl("mrs_natural/winSize", MRS_DEFAULT_SLICE_NSAMPLES); 
-		
-		stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_natural/winSize", "mrs_natural/winSize"); 
-
-		stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_natural/winSize", "mrs_natural/winSize");
-		
-		stereoFeatures->linkctrl("StereoPanningSpectrumFeatures/SPSFeatures/Parallel/stereobranches/Series/left/ShiftInput/sileft/mrs_natural/winSize", "mrs_natural/winSize");
-
-
-		stereoFeatures->linkctrl("StereoPanningSpectrumFeatures/SPSFeatures/Parallel/stereobranches/Series/right/ShiftInput/siright/mrs_natural/winSize", "mrs_natural/winSize");
-
-
-		stereoFeatures->addctrl("mrs_string/enableSPChild", "");
-		stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableSPChild", "Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableSPChild");
-		stereoFeatures->linkctrl("mrs_string/enableSPChild", "Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableSPChild");
-		
-
-    registerPrototype("StereoFeatures", stereoFeatures);
-
-
+	/////////////////////////////////////////////////////////////////
+	// combined stereo features
+	/////////////////////////////////////////////////////////////////
+  MarSystem* stereoFeatures = create("Fanout", "stereoFeatures");
+	MarSystem* stereoTimbreFeatures = create("Parallel", "stereoTimbreFeatures");
+  MarSystem* featExtractorLeft = create("TimbreFeatures", "featExtractorLeft");
+  MarSystem* featExtractorRight = create("TimbreFeatures", "featExtractorRight");
+  stereoTimbreFeatures->addMarSystem(featExtractorLeft);
+  stereoTimbreFeatures->addMarSystem(featExtractorRight);
+  stereoFeatures->addMarSystem(stereoTimbreFeatures);
+  stereoFeatures->addMarSystem(create("StereoPanningSpectrumFeatures", "SPSFeatures"));
+	
+	//link winSize controls
+	stereoFeatures->addctrl("mrs_natural/winSize", MRS_DEFAULT_SLICE_NSAMPLES); 
+	stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_natural/winSize", "mrs_natural/winSize"); 
+	stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_natural/winSize", "mrs_natural/winSize");
+	stereoFeatures->linkctrl("StereoPanningSpectrumFeatures/SPSFeatures/Parallel/stereobranches/Series/left/ShiftInput/sileft/mrs_natural/winSize", "mrs_natural/winSize");
+	stereoFeatures->linkctrl("StereoPanningSpectrumFeatures/SPSFeatures/Parallel/stereobranches/Series/right/ShiftInput/siright/mrs_natural/winSize", "mrs_natural/winSize");
+	
+	//link enable controls 
+	stereoFeatures->addctrl("mrs_string/enableSPChild", "");
+	stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableSPChild", "Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableSPChild");
+	stereoFeatures->linkctrl("mrs_string/enableSPChild", "Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableSPChild");
+	
+  registerPrototype("StereoFeatures", stereoFeatures);
 
   //--------------------------------------------------------------------------------
   // Phase Vocoder composite prototype

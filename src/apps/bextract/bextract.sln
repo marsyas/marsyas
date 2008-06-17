@@ -1,38 +1,38 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bextract", "bextract.vcproj", "{AA3A3A51-F39B-3C2A-8B1F-B6D232F4EB34}"
-	GlobalSection(Qt) = preSolution
-		Integration = True
-	EndGlobalSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bextract", "bextract.vcproj", "{0BF5F74A-1916-31EA-8BBB-4A8B216219DA}"
 	ProjectSection(ProjectDependencies) = postProject
-		{A25F3CDB-66D9-3769-8405-BA82EDE1B6C4} = {A25F3CDB-66D9-3769-8405-BA82EDE1B6C4}
+		{7CE6807B-F9BA-361B-AB22-182C6C198DD2} = {7CE6807B-F9BA-361B-AB22-182C6C198DD2}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "marsyas", "..\..\marsyas\marsyas.vcproj", "{A25F3CDB-66D9-3769-8405-BA82EDE1B6C4}"
-	GlobalSection(Qt) = preSolution
-		Integration = True
-	EndGlobalSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "marsyas", "..\..\marsyas\marsyas.vcproj", "{7CE6807B-F9BA-361B-AB22-182C6C198DD2}"
 EndProject
 Global
-	GlobalSection(Qt) = preSolution
-		Integration = True
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AA3A3A51-F39B-3C2A-8B1F-B6D232F4EB34}.Debug|Win32.ActiveCfg = Debug|Win32
-		{AA3A3A51-F39B-3C2A-8B1F-B6D232F4EB34}.Debug|Win32.Build.0 = Debug|Win32
-		{AA3A3A51-F39B-3C2A-8B1F-B6D232F4EB34}.Release|Win32.ActiveCfg = Release|Win32
-		{AA3A3A51-F39B-3C2A-8B1F-B6D232F4EB34}.Release|Win32.Build.0 = Release|Win32
-		{A25F3CDB-66D9-3769-8405-BA82EDE1B6C4}.Debug|Win32.ActiveCfg = Debug|Win32
-		{A25F3CDB-66D9-3769-8405-BA82EDE1B6C4}.Debug|Win32.Build.0 = Debug|Win32
-		{A25F3CDB-66D9-3769-8405-BA82EDE1B6C4}.Release|Win32.ActiveCfg = Release|Win32
-		{A25F3CDB-66D9-3769-8405-BA82EDE1B6C4}.Release|Win32.Build.0 = Release|Win32
+		{0BF5F74A-1916-31EA-8BBB-4A8B216219DA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0BF5F74A-1916-31EA-8BBB-4A8B216219DA}.Debug|Win32.Build.0 = Debug|Win32
+		{0BF5F74A-1916-31EA-8BBB-4A8B216219DA}.Release|Win32.ActiveCfg = Release|Win32
+		{0BF5F74A-1916-31EA-8BBB-4A8B216219DA}.Release|Win32.Build.0 = Release|Win32
+		{7CE6807B-F9BA-361B-AB22-182C6C198DD2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7CE6807B-F9BA-361B-AB22-182C6C198DD2}.Debug|Win32.Build.0 = Debug|Win32
+		{7CE6807B-F9BA-361B-AB22-182C6C198DD2}.Release|Win32.ActiveCfg = Release|Win32
+		{7CE6807B-F9BA-361B-AB22-182C6C198DD2}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
+	GlobalSection(Qt) = preSolution
+		Integration = True
 	EndGlobalSection
 EndGlobal
