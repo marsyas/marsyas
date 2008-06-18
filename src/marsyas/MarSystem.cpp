@@ -838,15 +838,23 @@ MarSystem::getControlLocalPath(string cname) const
 bool
 MarSystem::linkControl(string cname1, string cname2, bool update) 
 {
-	//links the control cname1 (which must be local or from a child) with the   
-	//control cname2 (which must exist somewhere). cname1 must be a valid absolute 
-	//control pathname, a local control pathname, or a path to a child control:  
-	//if the cname1 control does not exist, it will be created and added to 
-	//the MarSystem in question.
-	//cname 2 must be a valid absolute, relative or local control pathname
-	//to an EXISTING control.
-	// When linking ctrl1 to ctrl2, ctrl1 will get the current value of ctrl2!
-
+	//Links the control cname1 with the control cname 2.
+	//
+	//Link fails case both cname1 and cname2 point to non-existing controls. 
+	//
+	//cname1 should point to a local or child control (using an absolute control pathname,
+	//a local control pathname or a relative pathname).
+	//If control corresponding to cname1 does not exist locally or in any child, 
+	//a proxy control is created and added to the corresponding MarSystem.
+	//In all these cases, cname1 control will assume the current value of the cname2 control.
+	//
+	//cname2 should point to an existing control, anywhere in the network (i.e. not necessarily a 
+	//local or a child's control).
+	//cname 2 can be a absolute, local or relative pathname.
+	//In case cname2 points to a non-existing control, if its pathname corresponds to a local or
+	//a child's control, a proxy control will be created in the corresponding MarSystem.
+	//In this case, the value of the cname2 control will be set to the current value of the cname1 control. 
+	
 	//try to get the controls
 	MarControlPtr ctrl1 = getControl(cname1, false, true);//search local and child controls
 	MarControlPtr ctrl2 = getControl(cname2, true, true);//search everywhere in the network (including locally, at parent and among children)
@@ -863,11 +871,58 @@ MarSystem::linkControl(string cname1, string cname2, bool update)
 			return true;
 	}
 
-	//make sure 2nd control exists somewhere in the network
+	//if  2nd control does not exist somewhere in the network,
+	//try to create one locally or in children (and assign it the value of the 1st control)
 	if(ctrl2.isInvalid())
 	{
-		MRSWARN("MarSystem::linkControl - 2nd control does not exist anywhere: " + cname2 + " -> THIS MAY BE NORMAL WHEN LOADING A MARSYSTEM NETWORK FROM A .mpl FILE!");
-		return false;
+		//MRSWARN("MarSystem::linkControl - 2nd control does not exist anywhere: " + cname2 + " -> THIS MAY BE NORMAL WHEN LOADING A MARSYSTEM NETWORK FROM A .mpl FILE!");
+		//return false;
+
+		string relativecname = getControlRelativePath(cname2);
+		string localcname = getControlLocalPath(cname2);
+
+		//if cname2 is a local control path, add it to this MarSystem
+		if(localcname != "")
+		{
+			if(!addControl(cname2, ctrl1->clone(), ctrl2))
+			{
+				MRSWARN("MarSystem::linkControl - Error creating new proxy control " + cname2 + " @ " + getAbsPath());
+				return false;
+			}
+			MRSDIAG("MarSystem::linkControl - Added new proxy control " + cname2 + " @ " + getAbsPath());
+		}
+		//if cname2 is a relative path, check among children for a matching MarSystem
+		//where to add the new link control
+		else if(relativecname != "")
+		{
+			//get the MarSystem path from relativecname
+			string::size_type pos = relativecname.find("/mrs_", 0);
+			string relativepath = relativecname.substr(0, pos);
+
+			MarSystem* msys = getChildMarSystem(relativepath);
+			if(msys)
+			{
+				string cname = relativecname.substr(pos+1, relativecname.length());
+				if(!msys->addControl(cname, ctrl1->clone(), ctrl2))
+				{
+					MRSWARN("MarSystem::linkControl - Error creating new link control " + cname2 + " @ " + msys->getAbsPath());
+					return false;
+				}
+				MRSDIAG("MarSystem::linkControl - Added new proxy control " + cname2 + " @ " + msys->getAbsPath());
+			}
+			else
+			{
+				MRSWARN("MarSystem::linkControl - Error creating new link control: " + cname2 + "is an invalid path");
+				return false;
+			}
+		}
+		//if cname1 path is not a valid path, nor a path pointing to any of the children
+		//it is not possible to add the new link control...
+		else
+		{
+			MRSWARN("MarSystem::linkControl - Error creating new link control: " + cname2 + "is an invalid path");
+			return false;
+		}
 	}
 
 	//check if the first control already exists or if we have
@@ -885,6 +940,7 @@ MarSystem::linkControl(string cname1, string cname2, bool update)
 				MRSWARN("MarSystem::linkControl - Error creating new link control " + cname1 + " @ " + getAbsPath());
 				return false;
 			}
+			MRSDIAG("MarSystem::linkControl - Added new proxy control " + cname1 + " @ " + getAbsPath());
 		}
 		//if cname1 is a relative path, check among children for a matching MarSystem
 		//where to add the new link control
@@ -903,6 +959,7 @@ MarSystem::linkControl(string cname1, string cname2, bool update)
 					MRSWARN("MarSystem::linkControl - Error creating new link control " + cname1 + " @ " + msys->getAbsPath());
 					return false;
 				}
+				MRSDIAG("MarSystem::linkControl - Added new proxy control " + cname1 + " @ " + msys->getAbsPath());
 			}
 			else
 			{
@@ -920,7 +977,7 @@ MarSystem::linkControl(string cname1, string cname2, bool update)
 	}
 
 	//now both controls exist 
-	//just link them (ctrl1 will be synced with the value of ctrl2).
+	//just link them
 	return ctrl1->linkTo(ctrl2, update);
 }
 
