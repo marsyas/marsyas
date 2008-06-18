@@ -29,6 +29,7 @@ PvUnconvert::PvUnconvert(string name):MarSystem("PvUnconvert",name)
   //name_ = name;
 
 	addControls();
+	transient_counter_ = 0;
 }
 
 
@@ -38,6 +39,7 @@ PvUnconvert::PvUnconvert(const PvUnconvert& a):MarSystem(a)
 	ctrl_lastphases_ = getctrl("mrs_realvec/lastphases");
 	ctrl_analysisphases_ = getctrl("mrs_realvec/analysisphases");
 	ctrl_phaselock_ = getctrl("mrs_bool/phaselock");
+	transient_counter_ = 0;
 	
 }
 
@@ -115,11 +117,31 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 	MarControlAccessor  acc1(ctrl_analysisphases_);
 	mrs_realvec& analysisphases = acc1.to<mrs_realvec>();
 	
-	if (ctrl_phaselock_->to<mrs_bool>())
+	
+
+	/* if (ctrl_phaselock_->to<mrs_bool>())
 	{
+		transient_counter_ = 4;
+		cout << "PHASELOCKING PV" << endl;
 		lastphases = analysisphases;
 		ctrl_phaselock_->setValue(false);
 	}
+	transient_counter_--;
+	
+
+	if (transient_counter_ >= 0.0) 
+	{
+		cout << "TRANSIENT FRAME" << endl;
+		
+	}
+	*/ 
+	
+	
+
+
+	
+	
+	
 	
 
 	mrs_natural re, amp, im, freq;
@@ -138,6 +160,9 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 		}
 		
 		mag_(t) = in(re,0);
+
+
+
 		if (t==N2_)
 			mag_(t) = 0.0;
 		

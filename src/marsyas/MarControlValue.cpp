@@ -38,25 +38,8 @@ MarControlValue::setDebugValue()
 }
 #endif
 
-// void
-// MarControlValue::callMarSystemsUpdate()
-// {
-// 	//must keep a copy of the current value in case
-// 	//this control is "toggled" in the following update calls
-// 	//so it can be "reinjected" into all MarSystem::update() methods
-// 	//(otherwise, only the first MarSystem in the loop below would
-// 	//get the current value - all the remaining ones would get the value
-// 	//"toggled" bu the first MarSystem update() call) 
-// 	tempValue_ = value_;
-// 	
-// 	//iterate over all the MarControls that own this MarControlValue
-// 	//and call any necessary MarSystem updates after this value change
-// 	for(lit_ = links_.begin(); lit_ != links_.end(); ++lit_)
-// 	{
-// 		value_ = tempValue_; //make sure to use the current value, not a "toggled" one
-// 		lit_->first->callMarSystemUpdate(); //lit->first is a pointer to a MarControl*
-// 	}
-// }
+
+
 
 string
 MarControlValue::getType() const
@@ -69,6 +52,14 @@ MarControlValue::getRegisteredType()
 {
 	return MarControlManager::getManager()->getRegisteredType(this->getTypeID());
 }
+
+
+void 
+MarControlValue::current_link_update() 
+{
+	current_link_->callMarSystemUpdate();
+}
+
 
 /************************************************************************/
 /* MarControlValueT realvec specialization                              */

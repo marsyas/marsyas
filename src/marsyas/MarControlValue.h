@@ -47,6 +47,9 @@ class MarControlValue
 
 protected:
 	std::string type_;
+	MarControl* current_link_;
+		
+
 
 	#ifdef MARSYAS_DEBUG
 	std::string value_debug_;
@@ -79,7 +82,8 @@ protected:
 	void setDebugValue();
 	#endif
 
-	//void callMarSystemsUpdate();
+		void current_link_update();
+		
 	
 public:
 	virtual ~MarControlValue() {}
@@ -212,7 +216,7 @@ class MarControlValueT<bool> : public MarControlValue
 protected:
 	bool value_;
 	bool tempValue_;
-
+    
 public:
 	static bool invalidValue;
 
@@ -369,8 +373,12 @@ MarControlValueT<T>::callMarSystemsUpdate()
 	for(lit_ = links_.begin(); lit_ != links_.end(); ++lit_)
 	{
 		value_ = tempValue_; //make sure to use the current value, not a "toggled" one
-		lit_->first->callMarSystemUpdate(); //lit->first is a pointer to a MarControl*
+		current_link_ = lit_->first;
+		current_link_update();
+		
 	}
+
+
 }
 
 template<class T>
@@ -440,7 +448,7 @@ MarControlValueT<bool>::set(bool &val, bool update)
 	value_ = val;
 
 #ifdef MARSYAS_DEBUG
-	setDebugValue();
+	setDebugalue();
 #endif
 
 	if(update)

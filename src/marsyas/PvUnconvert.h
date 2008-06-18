@@ -49,6 +49,9 @@ namespace Marsyas
 			realvec phase_;
 			realvec lphase_;
 			realvec lmag_;
+
+			int transient_counter_;
+			
 			
 			MarControlPtr ctrl_mode_;
 			MarControlPtr ctrl_lastphases_;

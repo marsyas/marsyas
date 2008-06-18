@@ -40,6 +40,7 @@ bool auto_ = false;
 mrs_natural midi_ = -1;
 bool microphone_ = false;
 mrs_string convertmode_ = "sorted";
+mrs_string onsetsfile_ = "";
 mrs_string unconvertmode_ = "classic";
 
 
@@ -80,8 +81,7 @@ printHelp(string progName)
 	cerr << "-h --help            : display this information " << endl;
 	cerr << "-ob --oscbank        : oscbank resynthesis instead of IFFT " << endl;
 	cerr << "-cm --convertmode    : mode for which frequencies/bins to resynthesize " << endl;
-	
-	
+	cerr << "-on --onsets         : file with onsets " << endl;
 	exit(1);
 }
 
@@ -93,6 +93,35 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 {
 	if (!quietopt_)
 		cout << "phasevocSeries" << endl;
+
+		vector<int> onsets;
+	if (onsetsfile_ != "") 
+	{
+		cout << "ONSETS FILE IS " << onsetsfile_ << endl;
+		
+
+		
+		ifstream infile(onsetsfile_.c_str());
+		int onset_index;
+		while (!infile.eof())
+		{
+			infile >> onset_index;
+			onsets.push_back(onset_index);
+		}
+		
+		for (int j=0; j < onsets.size(); j++) 
+		{
+			onsets[j] /= 128;
+			cout << "on = " << onsets[j] << endl;
+		}
+	}
+	
+
+	
+	
+
+
+
 	MarSystemManager mng;
   
 	// create the phasevocoder network
@@ -229,6 +258,9 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 		dest->updctrl("mrs_string/filename", outsfname);
 
 	int numticks = 0;
+
+	int onset_counter = 20;
+	
 	
 
 	while(1)
@@ -294,8 +326,55 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 		if (!microphone_) 
 			if (pvseries->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>() == false)
 				break;
-	}
 
+		
+		/* mrs_bool onset_found = false;
+		
+		if (onsetsfile_ != "") 
+		{
+			for (int j=0; j < onsets.size(); j++) 
+			{
+				
+				if (numticks == onsets[j])
+				{
+					onset_found = true;
+					onset_counter = 20;
+					break;
+				}
+			}
+			
+			onset_counter--;
+			
+
+			if (onset_counter >= 0) 
+			{
+				cout << "p transient frame" << endl;
+
+				
+				pvseries->updctrl("PvUnconvert/uconv/mrs_bool/phaselock", true);
+				pvseries->updctrl("PvUnconvert/uconv/mrs_natural/Interpolation",D);
+				pvseries->updctrl("PvOverlapadd/pover/mrs_natural/Interpolation",D);
+				pvseries->updctrl("ShiftOutput/so/mrs_natural/Interpolation", D);
+				cout << "PHASELOCKING" << endl;
+			}
+			else 
+			{
+				pvseries->updctrl("PvUnconvert/uconv/mrs_natural/Interpolation", I);
+				pvseries->updctrl("PvOverlapadd/pover/mrs_natural/Interpolation",I);
+				pvseries->updctrl("ShiftOutput/so/mrs_natural/Interpolation", I);		
+			}
+		}
+		
+		*/ 
+		
+		
+
+
+
+		 
+		
+	}
+		
 
 
 	// MATLAB_CLOSE();
@@ -1363,6 +1442,7 @@ initOptions()
 	cmd_options.addNaturalOption("epochHeterophonics", "e", eopt_);
 	cmd_options.addBoolOption("oscbank", "ob", oscbank_);
 	cmd_options.addStringOption("convertmode", "cm", convertmode_);
+	cmd_options.addStringOption("onsets", "on", onsetsfile_);
 	cmd_options.addStringOption("unconvertmode", "ucm", unconvertmode_);
 	
 }
@@ -1390,6 +1470,7 @@ loadOptions()
 	eopt_ = cmd_options.getNaturalOption("epochHeterophonics");
 	convertmode_ = cmd_options.getStringOption("convertmode");
 	unconvertmode_ = cmd_options.getStringOption("unconvertmode");	
+	onsetsfile_ = cmd_options.getStringOption("onsets");
 }
 
 int
