@@ -448,7 +448,7 @@ MarControlValueT<bool>::set(bool &val, bool update)
 	value_ = val;
 
 #ifdef MARSYAS_DEBUG
-	setDebugalue();
+	setDebugValue();
 #endif
 
 	if(update)
