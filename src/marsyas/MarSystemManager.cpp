@@ -464,21 +464,21 @@ MarSystemManager::MarSystemManager()
   lpcFeatures->addMarSystem(lpcf);
   timbre_features_pr->addMarSystem(lpcFeatures);
 
-	timbre_features_pr->addControl("mrs_natural/winSize", MRS_DEFAULT_SLICE_NSAMPLES);
+	//timbre_features_pr->addControl("mrs_natural/winSize", MRS_DEFAULT_SLICE_NSAMPLES);
 	timbre_features_pr->linkctrl("Series/timeDomain/ShiftInput/si/mrs_natural/winSize", "mrs_natural/winSize");
   timbre_features_pr->linkctrl("Series/spectralShape/ShiftInput/si/mrs_natural/winSize", "mrs_natural/winSize");
   timbre_features_pr->linkctrl("Series/lpcFeatures/ShiftInput/si/mrs_natural/winSize", "mrs_natural/winSize");
 	
-	timbre_features_pr->addControl("mrs_string/enableSPChild", "");
+	//timbre_features_pr->addControl("mrs_string/enableSPChild", "");
 	timbre_features_pr->linkctrl("Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/enableChild", "mrs_string/enableSPChild");
-	timbre_features_pr->addControl("mrs_string/disableSPChild", "");
+	//timbre_features_pr->addControl("mrs_string/disableSPChild", "");
 	timbre_features_pr->linkctrl("Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/disableChild","mrs_string/disableSPChild"); 
 		  
-  timbre_features_pr->linkctrl("mrs_string/enableTDChild",  "Series/timeDomain/Fanout/tdf/mrs_string/enableChild");
-	timbre_features_pr->linkctrl("mrs_string/disableTDChild", "Series/timeDomain/Fanout/tdf/mrs_string/disableChild");
+  timbre_features_pr->linkctrl("Series/timeDomain/Fanout/tdf/mrs_string/enableChild", "mrs_string/enableTDChild");
+	timbre_features_pr->linkctrl("Series/timeDomain/Fanout/tdf/mrs_string/disableChild", "mrs_string/disableTDChild");
 
-  timbre_features_pr->linkctrl("mrs_string/enableLPCChild", "Series/lpcFeatures/Fanout/lpcf/mrs_string/enableChild");
-  timbre_features_pr->linkctrl("mrs_string/disableLPCChild","Series/lpcFeatures/Fanout/lpcf/mrs_string/disableChild");
+  timbre_features_pr->linkctrl("Series/lpcFeatures/Fanout/lpcf/mrs_string/enableChild", "mrs_string/enableLPCChild");
+  timbre_features_pr->linkctrl("Series/lpcFeatures/Fanout/lpcf/mrs_string/disableChild", "mrs_string/disableLPCChild");
 
   timbre_features_pr->updctrl("mrs_string/disableSPChild", "all");
   timbre_features_pr->updctrl("mrs_string/disableTDChild", "all");
@@ -521,16 +521,16 @@ MarSystemManager::MarSystemManager()
   stereoFeatures->addMarSystem(create("StereoPanningSpectrumFeatures", "SPSFeatures"));
 	
 	//link winSize controls
-	stereoFeatures->addctrl("mrs_natural/winSize", MRS_DEFAULT_SLICE_NSAMPLES); 
+	//stereoFeatures->addctrl("mrs_natural/winSize", MRS_DEFAULT_SLICE_NSAMPLES); 
 	stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_natural/winSize", "mrs_natural/winSize"); 
 	stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_natural/winSize", "mrs_natural/winSize");
 	stereoFeatures->linkctrl("StereoPanningSpectrumFeatures/SPSFeatures/Parallel/stereobranches/Series/left/ShiftInput/sileft/mrs_natural/winSize", "mrs_natural/winSize");
 	stereoFeatures->linkctrl("StereoPanningSpectrumFeatures/SPSFeatures/Parallel/stereobranches/Series/right/ShiftInput/siright/mrs_natural/winSize", "mrs_natural/winSize");
 	
 	//link enable controls 
-	stereoFeatures->addctrl("mrs_string/enableSPChild", "");
+	//stereoFeatures->addctrl("mrs_string/enableSPChild", "");
 	stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableSPChild", "Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableSPChild");
-	stereoFeatures->linkctrl("mrs_string/enableSPChild", "Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableSPChild");
+	stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableSPChild", "mrs_string/enableSPChild");
 	
   registerPrototype("StereoFeatures", stereoFeatures);
 

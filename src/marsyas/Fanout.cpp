@@ -95,7 +95,10 @@ Fanout::myUpdate(MarControlPtr sender)
 		string s;
 		s = marsystems_[i]->getType() + "/" + marsystems_[i]->getName();
 		if (disableChild_ == s)
+		{
 			disableChildIndex_ = i;
+			MRSDIAG("Fanout::myUpdate(): DISABLING child: " + marsystems_[i]->getAbsPath());
+		}
 	}
 	if (disableChildIndex_ != -1)
 	{
@@ -110,6 +113,7 @@ Fanout::myUpdate(MarControlPtr sender)
 			enabled(i) = 0.0;
 			localIndices_(i) = 0.0;
 			setctrl("mrs_string/disableChild", ",");
+			MRSDIAG("Fanout::myUpdate(): DISABLING child: " + marsystems_[i]->getAbsPath());
 		}
 	}
 	//check child MarSystem to disable (passed as an index)
@@ -119,6 +123,7 @@ Fanout::myUpdate(MarControlPtr sender)
 		enabled(disable_) = 0.0;
 		localIndices_(disable_) = 0.0;
 		setctrl("mrs_natural/disable", -1);
+		MRSDIAG("Fanout::myUpdate(): DISABLING child: " + marsystems_[disable_]->getAbsPath());
 	}
 	else
 		setctrl("mrs_natural/disable", -1);
@@ -131,7 +136,10 @@ Fanout::myUpdate(MarControlPtr sender)
 		string s;
 		s = marsystems_[i]->getType() + "/" + marsystems_[i]->getName();
 		if (enableChild_ == s)
+		{
 			enableChildIndex_ = i;
+			MRSDIAG("Fanout::myUpdate(): ENABLING child: " + marsystems_[i]->getAbsPath());
+		}
 	}
 	if (enableChildIndex_ != -1)
 	{
