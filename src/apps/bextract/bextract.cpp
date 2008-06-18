@@ -1947,95 +1947,6 @@ selectClassifier(MarSystem *msys,string classifierName )
   
 }
 
-void 
-selectStereoFeatureSet(MarSystem* stereoFeatures)
-{
-	if (!spsf_)
-		stereoFeatures->updctrl("mrs_string/disableChild", "StereoPanningSpectrumFeatures/SPSFeatures");
-	if (mfcc_) 
-	{
-		// stereoFeatures->updctrl("mrs_string/enableSPChild", "MFCC/mfcc");
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableSPChild", "MFCC/mfcc");
-		// stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableSPChild", "MFCC/mfcc");
-
-	}
- 	if (sfm_) 
-	{
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableSPChild", "SFM/sfm");
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableSPChild", "SFM/sfm");
-	}
-	if (scf_) 
-	{
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableSPChild", "SCF/scf");
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableSPChild", "SCF/scf");
-	}
- 	if (rlf_)
-	{
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableSPChild", "Rolloff/rlf");
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableSPChild", "Rolloff/rlf");
-	}
-	
- 	if (flx_)
-	{
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableSPChild", "Flux/flux");
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableSPChild", "Flux/flux");
-	}
- 	if (lsp_) 
-	{
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableLPCChild", "Series/lspbranch");
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableLPCChild", "Series/lspbranch");
- 	}
-	
-	if (lpcc_) 
-	{
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableLPCChild", "Series/lpccbranch");
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableLPCChild", "Series/lpccbranch");
-	}
-	
-	if (ctd_)
-	{
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableSPChild", "Centroid/cntrd");
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableSPChild", "Centroid/cntrd");
-	}
-	
-
- 	if (zcrs_) 
-	{
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableTDChild", "ZeroCrossings/zcrs");
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableTDChild", "ZeroCrossings/zcrs");
-
-	}
-	
- 	if (spectralFeatures_) 
- 	{
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableSPChild", "Centroid/cntrd");
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableSPChild", "Centroid/cntrd");
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableSPChild", "Flux/flux");
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableSPChild", "Flux/flux");
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableSPChild", "Rolloff/rlf");
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableSPChild", "Rolloff/rlf");
-	}
-	
-	
- 	if (timbralFeatures_) 
- 	{
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableSPChild", "Centroid/cntrd");
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableSPChild", "Centroid/cntrd");
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableSPChild", "Flux/flux");
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableSPChild", "Flux/flux");
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableSPChild", "Rolloff/rlf");
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableSPChild", "Rolloff/rlf")
-;		
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableTDChild", "ZeroCrossings/zcrs");
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableTDChild", "ZeroCrossings/zcrs");
-
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableSPChild", "MFCC/mfcc");
-		stereoFeatures->updctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableSPChild", "MFCC/mfcc");
- 	}
-	
-
-
-}
   
 void 
 selectFeatureSet(MarSystem *featExtractor)
@@ -2110,7 +2021,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	if (stereo_ == true) 
     {
 		MarSystem* stereoFeatures = mng.create("StereoFeatures", "stereoFeatures");
-		selectStereoFeatureSet(stereoFeatures);
+		selectFeatureSet(stereoFeatures);
 		featureNetwork->addMarSystem(stereoFeatures);
     }
 	else 
