@@ -89,17 +89,17 @@ region_[i].color.setRGB(r,g,b);
 */
 
 void 
-TimeLine::regular(unsigned int spacing, unsigned int size)
+TimeLine::regular(mrs_natural spacing, mrs_natural size)
 {
 	if (size_ != 0)
 	{
-		cerr << "TimeLine has data already \n";
+		MRSERR("TimeLine::regular() - TimeLine has data already!");
 		return;
 	}
 
 	size_ = size;
-	int reg_index = 0;
-	int i;
+	mrs_natural reg_index = 0;
+	mrs_natural i;
 	lineSize_ = 2048;
 	if ((size_ % spacing) != 0)
 		numRegions_ = (size_ / spacing) + 1;
@@ -132,12 +132,12 @@ TimeLine::regular(unsigned int spacing, unsigned int size)
 void
 TimeLine::scan(realvec segmentation)
 {
-	int i;
-	int peakCount=0;
+	mrs_natural i;
+	mrs_natural peakCount=0;
 
 	if (size_ != 0)
 	{
-		cerr << "TimeLine has data already \n";
+		MRSERR("TimeLine::scan() - TimeLine has data already!");
 		return;
 	}
 
@@ -156,8 +156,7 @@ TimeLine::scan(realvec segmentation)
 		regions_.push_back(region);
 	}
 
-
-	int reg_index = 0;
+	mrs_natural reg_index = 0;
 	for (i=0; i<size_; i++)
 	{
 		if (segmentation(i) == 1)
@@ -174,23 +173,23 @@ TimeLine::scan(realvec segmentation)
 /* get_num_of_regions:
 Returns the number of regions of this timeline. 
 */
-int
+mrs_natural
 TimeLine::numRegions()
 {
 	return numRegions_;
 }
 
-unsigned int
-TimeLine::numClasses()
+mrs_natural
+TimeLine::numClasses() const
 {
-	vector<unsigned int> classes;
+	vector<mrs_natural> classes;
 	bool found = false;
 	
 	for(mrs_natural i = 0; i < numRegions_; ++i)
 	{
 		found = false;
 		//check if this region's class Id was already counted
-		for(unsigned int c = 0; c < (unsigned int)classes.size(); ++c)
+		for(mrs_natural c = 0; c < (mrs_natural)classes.size(); ++c)
 		{
 			if(classes[c] == regions_[i].classId)
 			{
@@ -203,20 +202,45 @@ TimeLine::numClasses()
 			classes.push_back(regions_[i].classId);
 	}
 
-	return (unsigned int)classes.size();
+	return (mrs_natural)classes.size();
 }
 
+vector<mrs_string>
+TimeLine::getClassNames() const
+{
+	vector<mrs_string> classNames;
+	bool found = false;
 
-int 
-TimeLine::start(int regionNum)
+	for(mrs_natural i = 0; i < numRegions_; ++i)
+	{
+		found = false;
+		//check if this region's class name was already considered
+		for(mrs_natural c = 0; c < (mrs_natural)classNames.size(); ++c)
+		{
+			if(classNames[c] == regions_[i].name)
+			{
+				found = true;
+				break;
+			}
+		}
+		//if this is a new className, store it
+		if(!found)
+			classNames.push_back(regions_[i].name);
+	}
+
+	return classNames;
+}
+
+mrs_natural 
+TimeLine::start(mrs_natural regionNum)
 {
 	if (regionNum < numRegions_)
 		return regions_[regionNum].start;
 	else return 0;
 }
 
-string 
-TimeLine::name(int regionNum)
+mrs_string 
+TimeLine::name(mrs_natural regionNum)
 {
 	if (regionNum < numRegions_)
 		return regions_[regionNum].name;
@@ -224,14 +248,14 @@ TimeLine::name(int regionNum)
 }
 
 void 
-TimeLine::setName(int regionNum, string name)
+TimeLine::setName(mrs_natural regionNum, mrs_string name)
 {
 	if (regionNum < numRegions_)
 		regions_[regionNum].name = name;
 }
 
 void 
-TimeLine::setClassId(int regionNum, int classId)
+TimeLine::setClassId(mrs_natural regionNum, mrs_natural classId)
 {
 	if (regionNum < numRegions_)
 	{
@@ -239,8 +263,8 @@ TimeLine::setClassId(int regionNum, int classId)
 	}
 }
 
-int 
-TimeLine::end(int regionNum)
+mrs_natural 
+TimeLine::end(mrs_natural regionNum)
 {
 	if (regionNum < numRegions_)
 		return regions_[regionNum].end;
@@ -248,7 +272,7 @@ TimeLine::end(int regionNum)
 }
 
 void 
-TimeLine::smooth(unsigned int smoothSize)
+TimeLine::smooth(mrs_natural smoothSize)
 {
 	TimeRegion region;
 	TimeRegion pregion;
@@ -272,7 +296,7 @@ TimeLine::smooth(unsigned int smoothSize)
 		}
 	}
 
-	for (int i=1; i < numRegions_; i++)
+	for (mrs_natural i=1; i < numRegions_; i++)
 	{
 		region = regions_[i];
 		pregion = regions_[i-1];
@@ -286,7 +310,7 @@ TimeLine::smooth(unsigned int smoothSize)
 }
 
 void 
-TimeLine::remove(int regionNum)
+TimeLine::remove(mrs_natural regionNum)
 {
 
 	if (regionNum >= 1) 
@@ -297,8 +321,8 @@ TimeLine::remove(int regionNum)
 	}
 }
 
-int 
-TimeLine::getRClassId(int regionNum)
+mrs_natural 
+TimeLine::getRClassId(mrs_natural regionNum)
 {
 	if (regionNum < numRegions_)
 		return regions_[regionNum].classId;
@@ -306,11 +330,11 @@ TimeLine::getRClassId(int regionNum)
 		return 0;
 }
 
-unsigned int
-TimeLine::getClassId(unsigned int index)
+mrs_natural
+TimeLine::getClassId(mrs_natural index)
 {
 	TimeRegion region;
-	for (int i=0; i < numRegions_; i++)
+	for (mrs_natural i=0; i < numRegions_; i++)
 	{
 		region = regions_[i];
 		if ((region.start <= index) && (index < region.end))
@@ -325,35 +349,39 @@ TimeLine::getClassId(unsigned int index)
 /* load:
 Load a TimeLine from a file. 
 */
-void
-TimeLine::load(string filename)
+bool
+TimeLine::load(mrs_string filename)
 {
 	ifstream in;
 	filename_ = filename;
 
 	in.open(filename.c_str());
 	if(!in.is_open())
-		cerr << "Problem opening file " << filename_;
+	{
+		MRSERR("TimeLine::load() -  Problem opening file " << filename_);
+		return false;
+	}
 
 	in >> numRegions_; // read numRegions
-	cerr << "Number of regions is " << numRegions_ << endl;
+	MRSDIAG("TimeLine::load() - Number of regions is " << numRegions_);
 
 	in >> lineSize_; //read lineSize
-	cerr << "Skip size is " << lineSize_ << endl;
+	MRSDIAG("TimeLine::load() - Skip size is " << lineSize_);
 
 	in >> size_; //read size
-	cerr << "Size is " << size_ << endl;
+	MRSDIAG("TimeLine::load() - Size is " << size_);
 
-	for (int i=0; i < numRegions_; i++)
+	regions_.clear();
+	for (mrs_natural i=0; i < numRegions_; i++)
 	{
 		TimeRegion region;
 		regions_.push_back(region);
 	}
 
-	for (int i=0; i<numRegions_; i++)
+	for (mrs_natural i=0; i<numRegions_; i++)
 	{
-		unsigned int token;
-		string stoken1, stoken2;
+		mrs_natural token;
+		mrs_string stoken1, stoken2;
 		in >> token;
 		regions_[i].start = token;
 		in >> token;
@@ -363,12 +391,14 @@ TimeLine::load(string filename)
 		in >> stoken1 >> stoken2;
 		regions_[i].name = stoken1 +" "+stoken2;
 	}
+
+	return true;
 }
 
 void
 TimeLine::info()
 {
-	int i;
+	mrs_natural i;
 	cerr << "Number of regions = " << numRegions_ << endl;
 	cerr << "Skip size  = " << lineSize_ << endl;
 	cerr << "TimeLine size (# skip_size_ blocks ) = " << size_ << endl;
@@ -384,7 +414,7 @@ TimeLine::info()
 void 
 TimeLine::printnew(FILE *fp)
 {
-	int i;
+	mrs_natural i;
 	fprintf(fp, "%d\n", numRegions_);
 	fprintf(fp, "%d\n", lineSize_);
 	fprintf(fp, "%d\n", size_);
@@ -408,7 +438,7 @@ TimeLine::printnew(FILE *fp)
 }
 
 void 
-TimeLine::write(string filename)
+TimeLine::write(mrs_string filename)
 {
 	ofstream os(filename.c_str());
 	os << (*this) << endl;
@@ -421,7 +451,7 @@ Marsyas::operator<<(ostream& o, const TimeLine& tline)
 	o << tline.lineSize_ << endl;
 	o << tline.size_ << endl;
 
-	for (int i=0; i<tline.numRegions_; i++)
+	for (mrs_natural i=0; i<tline.numRegions_; i++)
 	{
 		o << tline.regions_[i].start ;
 		o << " " << tline.regions_[i].classId;
@@ -434,7 +464,7 @@ Marsyas::operator<<(ostream& o, const TimeLine& tline)
 void 
 TimeLine::print(FILE *fp)
 {
-	int i;
+	mrs_natural i;
 	fprintf(fp, "%d\n", numRegions_);
 	fprintf(fp, "%d\n", lineSize_);
 	fprintf(fp, "%d\n", size_);
@@ -507,8 +537,8 @@ void
 TimeLine::receive(Communicator* com)
 {
 	static char *buf = new char[256];
-	int i;
-	string message;
+	mrs_natural i;
+	mrs_string message;
 
 	com->receive_message(buf);
 	// message = buf;
@@ -531,8 +561,8 @@ void
 TimeLine::send(Communicator* com)
 {
 	static char *buf = new char[256];
-	int i;
-	string message;
+	mrs_natural i;
+	mrs_string message;
 
 	sprintf(buf, "%d\n", numRegions_);
 	message = buf;

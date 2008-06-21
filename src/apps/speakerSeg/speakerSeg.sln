@@ -1,12 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "speakerSeg", "speakerSeg.vcproj", "{51877C0B-D217-3C2E-90CB-6E2353AB22C6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "speakerSeg", "speakerSeg.vcproj", "{7134E970-3297-3BE1-A3D2-BED2B711FDDE}"
 	ProjectSection(ProjectDependencies) = postProject
-		{9FCFBC27-E006-3BF5-A417-145B7E34ADBC} = {9FCFBC27-E006-3BF5-A417-145B7E34ADBC}
+		{7CE6807B-F9BA-361B-AB22-182C6C198DD2} = {7CE6807B-F9BA-361B-AB22-182C6C198DD2}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "marsyas", "..\..\marsyas\marsyas.vcproj", "{9FCFBC27-E006-3BF5-A417-145B7E34ADBC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "marsyas", "..\..\marsyas\marsyas.vcproj", "{7CE6807B-F9BA-361B-AB22-182C6C198DD2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,14 +14,14 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{51877C0B-D217-3C2E-90CB-6E2353AB22C6}.Debug|Win32.ActiveCfg = Debug|Win32
-		{51877C0B-D217-3C2E-90CB-6E2353AB22C6}.Debug|Win32.Build.0 = Debug|Win32
-		{51877C0B-D217-3C2E-90CB-6E2353AB22C6}.Release|Win32.ActiveCfg = Release|Win32
-		{51877C0B-D217-3C2E-90CB-6E2353AB22C6}.Release|Win32.Build.0 = Release|Win32
-		{9FCFBC27-E006-3BF5-A417-145B7E34ADBC}.Debug|Win32.ActiveCfg = Debug|Win32
-		{9FCFBC27-E006-3BF5-A417-145B7E34ADBC}.Debug|Win32.Build.0 = Debug|Win32
-		{9FCFBC27-E006-3BF5-A417-145B7E34ADBC}.Release|Win32.ActiveCfg = Release|Win32
-		{9FCFBC27-E006-3BF5-A417-145B7E34ADBC}.Release|Win32.Build.0 = Release|Win32
+		{7134E970-3297-3BE1-A3D2-BED2B711FDDE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7134E970-3297-3BE1-A3D2-BED2B711FDDE}.Debug|Win32.Build.0 = Debug|Win32
+		{7134E970-3297-3BE1-A3D2-BED2B711FDDE}.Release|Win32.ActiveCfg = Release|Win32
+		{7134E970-3297-3BE1-A3D2-BED2B711FDDE}.Release|Win32.Build.0 = Release|Win32
+		{7CE6807B-F9BA-361B-AB22-182C6C198DD2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7CE6807B-F9BA-361B-AB22-182C6C198DD2}.Debug|Win32.Build.0 = Debug|Win32
+		{7CE6807B-F9BA-361B-AB22-182C6C198DD2}.Release|Win32.ActiveCfg = Release|Win32
+		{7CE6807B-F9BA-361B-AB22-182C6C198DD2}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -172,6 +172,7 @@
 #include "SNR.h"
 #include "PCA.h"
 #include "AbsMax.h"
+#include "TimelineLabeler.h"
 #include "Gain.h"
 // please leave Gain at the end; it makes scripts happy.
 
@@ -330,6 +331,7 @@ MarSystemManager::MarSystemManager()
   registerPrototype("SNR", new SNR("snrpr"));
   registerPrototype("PCA", new PCA("pcapr"));
   registerPrototype("AbsMax", new AbsMax("absmaxpr"));
+  registerPrototype("TimelineLabeler", new TimelineLabeler("timelinelabelerpr"));
   registerPrototype("Gain", new Gain("gp"));
   // Please leave Gain at the end; it makes scripts happy.
 

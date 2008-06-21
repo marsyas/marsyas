@@ -271,6 +271,7 @@ pkginclude_HEADERS = \
 	SNR.h \
 	PCA.h \
 	AbsMax.h \
+	TimelineLabeler.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 

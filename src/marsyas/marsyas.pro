@@ -350,6 +350,7 @@ HEADERS += \
 	SNR.h \
 	PCA.h \
 	AbsMax.h \
+	TimelineLabeler.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 	 
@@ -587,6 +588,7 @@ SOURCES += \
 	SNR.cpp \
 	PCA.cpp \
 	AbsMax.cpp \
+	TimelineLabeler.cpp \
 	Gain.cpp
 # please leave Gain.cpp at the end like this; it makes scripts happy.
 

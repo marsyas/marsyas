@@ -56,55 +56,56 @@ of one sample and are defined by lineSize.
 
 struct TimeRegion
 {
-  unsigned int start;
-  unsigned int classId;
+  mrs_natural start;
+  mrs_natural classId;
   Color color;
-  unsigned int end;
-  std::string name;
+  mrs_natural end;
+  mrs_string name;
 };
 
 class TimeLine
 {
 protected:
-  int srate_;
-  std::vector<std::string> classNames_;
-  std::string filename_;
+  mrs_natural srate_;
+  std::vector<mrs_string> classNames_;
+  mrs_string filename_;
 	std::vector<TimeRegion> regions_;
 
 public:
-	int numRegions_;
-	int lineSize_;
-	int size_;
+	mrs_natural numRegions_; //FIXME
+	mrs_natural lineSize_; //FIXME
+	mrs_natural size_; //FIXME
 
   TimeLine();
   ~TimeLine();
   void scan(realvec segmentation);
-  void regular(unsigned int spacing, unsigned int size);
+  void regular(mrs_natural spacing, mrs_natural size);
   /* void color(FeatMatrix &map); */
-  int numRegions();
-  int start(int regionNum);
-  int end(int regionNum);
-  std::string name(int regionNum);
-  void setName(int regionNum, std::string name);
-  void setClassId(int regionNum, int classId);
-  int getRClassId(int regionNum);
-  void remove(int regionNum);
+  mrs_natural numRegions();
+  mrs_natural start(mrs_natural regionNum);
+  mrs_natural end(mrs_natural regionNum);
+  std::string name(mrs_natural regionNum);
+  void setName(mrs_natural regionNum, mrs_string name);
+  void setClassId(mrs_natural regionNum, mrs_natural classId);
+  mrs_natural getRClassId(mrs_natural regionNum);
+  void remove(mrs_natural regionNum);
   
   void init(realvec values);
-  void load(std::string filename);
+  bool load(mrs_string filename);
   void receive(Communicator* com);
   void send(Communicator* com);
   void info();
 
-  unsigned int getClassId(unsigned int index);
-	unsigned int numClasses();
+  mrs_natural getClassId(mrs_natural index);
+	mrs_natural numClasses() const;
+	std::vector<mrs_string> getClassNames() const;
  
   //void lengths_info();
   void print(FILE *fp);
   void printnew(FILE *fp);
-  void smooth(unsigned int smoothSize);
+  void smooth(mrs_natural smoothSize);
   
-  void write(std::string filename);  
+  void write(mrs_string filename);  
   friend std::ostream& operator<<(std::ostream&, const TimeLine&);  
   //void print_mp3(FILE *fp);
   //void print_mmf(FILE *fp);
