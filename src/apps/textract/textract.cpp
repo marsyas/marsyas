@@ -234,16 +234,16 @@ void textract_trainAccumulator(string sfName, mrs_natural offset, mrs_natural du
 
 	for (int r = 0; r < tline.numRegions(); r++)
 	{
-		cout << "start = " << tline.start(r) << endl;
-		cout << "end = " << tline.end(r) << endl;
+		cout << "start = " << tline.regionStart(r) << endl;
+		cout << "end = " << tline.regionEnd(r) << endl;
 
-		total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/pos", (mrs_natural)tline.start(r) * tline.lineSize_);
-		total->updctrl("mrs_natural/inSamples", tline.lineSize_);
+		total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/pos", (mrs_natural)tline.regionStart(r) * tline.lineSize());
+		total->updctrl("mrs_natural/inSamples", tline.lineSize());
 		if (tlineName == EMPTYSTRING)
 		{
-			if ((tline.getRClassId(r) > 0) && (tline.getRClassId(r) != 4))//[?]
+			if ((tline.regionClass(r) > 0) && (tline.regionClass(r) != 4))//[?]
 			{
-				total->updctrl("WekaSink/wsink/mrs_natural/label", tline.getRClassId(r)-1);
+				total->updctrl("WekaSink/wsink/mrs_natural/label", tline.regionClass(r)-1);
 			}
 		}
 		else

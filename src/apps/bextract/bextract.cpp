@@ -1745,17 +1745,17 @@ bextract_train(vector<Collection> cls, Collection cl,
 			{
 				cout << "-----------------------------------------------" << endl;
 				cout << "Region " << r+1 << "/" << tline.numRegions() << endl;
-				cout << "Region start   = " << tline.start(r) << endl;
-				cout << "Region classID = " << tline.getRClassId(r) << endl; 
-				cout << "Region end     = " << tline.end(r) << endl;
+				cout << "Region start   = " << tline.regionStart(r) << endl;
+				cout << "Region classID = " << tline.regionClass(r) << endl; 
+				cout << "Region end     = " << tline.regionEnd(r) << endl;
 
 				// set current region class in Annotator
-				featureNetwork->updctrl("Annotator/annotator/mrs_natural/label", tline.getRClassId(r));
+				featureNetwork->updctrl("Annotator/annotator/mrs_natural/label", tline.regionClass(r));
 
 				// set current region class in WEKA sink 
 				if (wekafname != EMPTYSTRING)
 				{
-					featureNetwork->updctrl("WekaSink/wsink/mrs_natural/label", tline.getRClassId(r)); //[?]
+					featureNetwork->updctrl("WekaSink/wsink/mrs_natural/label", tline.regionClass(r)); //[?]
 				}
 
 				// reset texture analysis stats between regions
@@ -1763,8 +1763,8 @@ bextract_train(vector<Collection> cls, Collection cl,
 					featureNetwork->updctrl("TextureStats/tStats/mrs_bool/reset", true);
 
 				//define audio region boundaries
-				mrs_natural start = (mrs_natural)(tline.start(r) * tline.lineSize_); //region start sample
-				mrs_natural end = (mrs_natural)(tline.end(r) * tline.lineSize_); //region end sample
+				mrs_natural start = (mrs_natural)(tline.regionStart(r) * tline.lineSize()); //region start sample
+				mrs_natural end = (mrs_natural)(tline.regionEnd(r) * tline.lineSize()); //region end sample
 
 				mrs_natural fileSize = featureNetwork->getctrl(src->getType() + "/src/mrs_natural/size")->to<mrs_natural>();
 				if(end > fileSize)
@@ -1921,6 +1921,12 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	MarSystem *src = mng.create("SoundFileSource", "src");
 	featureNetwork->addMarSystem(src);
 
+	// Add a TimelineLabeler, if necessary
+	if(tline)
+	{
+		featureNetwork->addMarSystem(mng.create("TimelineLabeler", "timelineLabeler"));
+	}
+
 	// create audio sink and mute it it is stored in the output plugin 
 	// that can be used for real-time classification 
 	if (pluginName != EMPTYSTRING)
@@ -1974,12 +1980,29 @@ bextract_train_refactored(string pluginName,  string wekafname,
 		bextractNetwork->linkctrl("mrs_string/currentlyPlaying", 
 			"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/currentlyPlaying");
 
-		bextractNetwork->linkctrl("mrs_natural/currentLabel", 
-			"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/currentLabel");
-		bextractNetwork->linkctrl("mrs_natural/nLabels", 
-			"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/nLabels");
-		bextractNetwork->linkctrl("mrs_string/labelNames", 
-			"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/labelNames");
+		if(tline)
+		{
+			bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/labelFiles",
+				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/labelNames");
+			bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/currentLabelFile",
+				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/currentLabel");
+			
+			bextractNetwork->linkctrl("mrs_natural/currentLabel", 
+				"Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/currentLabel");
+			bextractNetwork->linkctrl("mrs_string/labelNames", 
+				"Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/labelNames");
+			bextractNetwork->linkctrl("mrs_natural/nLabels", 
+				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/nLabels");
+		}
+		else
+		{
+			bextractNetwork->linkctrl("mrs_natural/currentLabel", 
+				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/currentLabel");
+			bextractNetwork->linkctrl("mrs_natural/nLabels", 
+				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/nLabels");
+			bextractNetwork->linkctrl("mrs_string/labelNames", 
+				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/labelNames");
+		}
 
 		bextractNetwork->linkctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_bool/advance",
 			"mrs_bool/advance");
@@ -2001,12 +2024,32 @@ bextract_train_refactored(string pluginName,  string wekafname,
 			"mrs_bool/initAudio");
 		bextractNetwork->linkctrl("mrs_string/currentlyPlaying", 
 			"Series/featureNetwork/SoundFileSource/src/mrs_string/currentlyPlaying");
-		bextractNetwork->linkctrl("mrs_natural/currentLabel", 
-			"Series/featureNetwork/SoundFileSource/src/mrs_natural/currentLabel");
-		bextractNetwork->linkctrl("mrs_natural/nLabels", 
-			"Series/featureNetwork/SoundFileSource/src/mrs_natural/nLabels");
-		bextractNetwork->linkctrl("mrs_string/labelNames", 
-			"Series/featureNetwork/SoundFileSource/src/mrs_string/labelNames");
+		
+		if(tline)
+		{
+			bextractNetwork->linkctrl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/currentLabelFile",
+				"Series/featureNetwork/SoundFileSource/src/mrs_natural/currentLabel");
+			bextractNetwork->linkctrl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/labelFiles", 
+				"Series/featureNetwork/SoundFileSource/src/mrs_string/labelNames");
+			//bextractNetwork->linkctrl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/nLabels",
+			//	"Series/featureNetwork/SoundFileSource/src/mrs_natural/nLabels");
+						
+			bextractNetwork->linkctrl("mrs_natural/currentLabel", 
+				"Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/currentLabel");
+			bextractNetwork->linkctrl("mrs_string/labelNames", 
+				"Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/labelNames");
+			bextractNetwork->linkctrl("mrs_natural/nLabels",
+				"Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/nLabels");
+		}
+		else
+		{
+			bextractNetwork->linkctrl("mrs_natural/currentLabel", 
+				"Series/featureNetwork/SoundFileSource/src/mrs_natural/currentLabel");
+			bextractNetwork->linkctrl("mrs_natural/nLabels", 
+				"Series/featureNetwork/SoundFileSource/src/mrs_natural/nLabels");
+			bextractNetwork->linkctrl("mrs_string/labelNames", 
+				"Series/featureNetwork/SoundFileSource/src/mrs_string/labelNames");
+		}
 	}
 
 	// labeling, weka output, classifier and confidence for real-time output 
@@ -2435,7 +2478,7 @@ readCollection(Collection& l, string name)
 {
 	MRSDIAG("sfplay.cpp - readCollection");
 	ifstream from1(name.c_str());
-	mrs_natural attempts  =0;
+	mrs_natural attempts=0;
 
 	MRSDIAG("Trying current working directory: " + name);
 	if (from1.good() == false)

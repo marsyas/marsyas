@@ -45,6 +45,7 @@ private:
 
 	MarControlPtr ctrl_labelNames_;
 	MarControlPtr ctrl_currentLabel_;
+	MarControlPtr ctrl_nLabels_;
 
 	mrs_string labelFiles_;
 	std::vector<mrs_string> labelFilesVec_;

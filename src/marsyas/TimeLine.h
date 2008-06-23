@@ -58,7 +58,7 @@ struct TimeRegion
 {
   mrs_natural start;
   mrs_natural classId;
-  Color color;
+  //Color color;
   mrs_natural end;
   mrs_string name;
 };
@@ -66,49 +66,56 @@ struct TimeRegion
 class TimeLine
 {
 protected:
-  mrs_natural srate_;
-  std::vector<mrs_string> classNames_;
-  mrs_string filename_;
+	mrs_string filename_;
+	mrs_natural numRegions_;
+	mrs_natural lineSize_;
+	mrs_natural size_;
+	mrs_natural srate_;
+  
+	std::vector<mrs_string> classNames_;
 	std::vector<TimeRegion> regions_;
 
 public:
-	mrs_natural numRegions_; //FIXME
-	mrs_natural lineSize_; //FIXME
-	mrs_natural size_; //FIXME
-
   TimeLine();
   ~TimeLine();
-  void scan(realvec segmentation);
-  void regular(mrs_natural spacing, mrs_natural size);
-  /* void color(FeatMatrix &map); */
-  mrs_natural numRegions();
-  mrs_natural start(mrs_natural regionNum);
-  mrs_natural end(mrs_natural regionNum);
-  std::string name(mrs_natural regionNum);
-  void setName(mrs_natural regionNum, mrs_string name);
-  void setClassId(mrs_natural regionNum, mrs_natural classId);
-  mrs_natural getRClassId(mrs_natural regionNum);
-  void remove(mrs_natural regionNum);
   
-  void init(realvec values);
-  bool load(mrs_string filename);
-  void receive(Communicator* com);
-  void send(Communicator* com);
-  void info();
+	void regular(mrs_natural spacing, mrs_natural size, mrs_natural lineSize = MRS_DEFAULT_SLICE_NSAMPLES);
+	void segment(realvec segmentation, mrs_natural lineSize = MRS_DEFAULT_SLICE_NSAMPLES);
+  
+	mrs_string filename() const {return filename_;};
+	mrs_natural size()const {return size_;};
+	mrs_natural lineSize()const {return lineSize_;};
+	
+	mrs_natural numRegions() const {return numRegions_;};
+	std::vector<mrs_string> getRegionNames() const;
+  mrs_natural regionStart(mrs_natural regionNum) const;
+  mrs_natural regionEnd(mrs_natural regionNum) const;
+  mrs_string regionName(mrs_natural regionNum) const;
+	mrs_natural regionClass(mrs_natural regionNum) const;
+	
+	void setRegionName(mrs_natural regionNum, mrs_string name);
+  void setRegionClass(mrs_natural regionNum, mrs_natural classId);
+  void removeRegion(mrs_natural regionNum);
 
-  mrs_natural getClassId(mrs_natural index);
 	mrs_natural numClasses() const;
-	std::vector<mrs_string> getClassNames() const;
+	//mrs_natural sampleRegion(mrs_natural sample) const;
+	mrs_natural sampleClass(mrs_natural sample) const;
+		
+	void smooth(mrs_natural smoothSize);
  
-  //void lengths_info();
-  void print(FILE *fp);
-  void printnew(FILE *fp);
-  void smooth(mrs_natural smoothSize);
-  
+	void info() const;
+	bool load(mrs_string filename);
   void write(mrs_string filename);  
-  friend std::ostream& operator<<(std::ostream&, const TimeLine&);  
-  //void print_mp3(FILE *fp);
+  friend std::ostream& operator<<(std::ostream&, const TimeLine&);
+
+	void receive(Communicator* com);
+	void send(Communicator* com);
+
+	void print(FILE *fp);
+	void printnew(FILE *fp);
+	//void print_mp3(FILE *fp);
   //void print_mmf(FILE *fp);
+	/* void color(FeatMatrix &map); */
   
 };
 

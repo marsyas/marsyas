@@ -32,64 +32,10 @@ TimeLine::TimeLine()
 
 TimeLine::~TimeLine()
 {
-
 }
-
-/*
-void
-TimeLine::color(Feature_map &map)
-{
-int i;
-float_vector f1 = map.get_feat(9);
-float_vector f2 = map.get_feat(0);
-float_vector f3 = map.get_feat(3);
-float r;
-float g;
-float b;
-
-Gen_Plotter plotter;  
-//f1.norm(0.5, 0.2);
-//f2.norm(0.5, 0.2);
-//f3.norm(0.5, 0.2);
-
-f1.norm(0.00074, 0.0017, 0.5, 0.2);
-f2.norm(40.5, 20.5, 0.5, 0.2);
-f3.norm(5.63, 2.71, 0.5, 0.2);
-
-//plotter.plot_wait(f1);
-//plotter.plot_wait(f2);
-//plotter.plot_wait(f3);  
-
-int start;
-int end;
-for (i=0; i<num_of_regions_; i++)
-{
-start = region_[i].start;
-end = region_[i].end;
-r = fabs(f1.mean(start,end));
-g = fabs(f2.mean(start,end));
-b = fabs(f3.mean(start,end));
-
-//r = 0.5;
-//g = 0.5;
-//b = 0.5;
-
-// Clip to colors
-if (r > 1.0) r = 1.0;
-if (g > 1.0) g = 1.0;      
-if (b > 1.0) b = 1.0;      
-if (r < 0.0) r = 0.0;
-if (g < 0.0) g = 0.0;      
-if (b < 0.0) b = 0.0;      
-
-region_[i].color.setRGB(r,g,b);
-}
-
-}
-*/
 
 void 
-TimeLine::regular(mrs_natural spacing, mrs_natural size)
+TimeLine::regular(mrs_natural spacing, mrs_natural size, mrs_natural lineSize)
 {
 	if (size_ != 0)
 	{
@@ -100,12 +46,11 @@ TimeLine::regular(mrs_natural spacing, mrs_natural size)
 	size_ = size;
 	mrs_natural reg_index = 0;
 	mrs_natural i;
-	lineSize_ = 2048;
+	lineSize_ = lineSize;
 	if ((size_ % spacing) != 0)
 		numRegions_ = (size_ / spacing) + 1;
 	else
 		numRegions_ = (size_ / spacing);
-
 
 	for (i=0; i < numRegions_; i++)
 	{
@@ -117,20 +62,19 @@ TimeLine::regular(mrs_natural spacing, mrs_natural size)
 	{
 		if ((i % spacing) == 0)
 		{
-			if (reg_index > 0) regions_[reg_index-1].end = i;
+			if (reg_index > 0) 
+				regions_[reg_index-1].end = i-1;
 			regions_[reg_index].start = i;
-			// regions_[reg_index].classId = reg_index+1;
 			regions_[reg_index].classId = 0;
 			reg_index++;
 		}
 	}  
 	regions_[numRegions_-1].end = size_;
 	regions_[reg_index-1].end = size_;
-
 }
 
 void
-TimeLine::scan(realvec segmentation)
+TimeLine::segment(realvec segmentation, mrs_natural lineSize)
 {
 	mrs_natural i;
 	mrs_natural peakCount=0;
@@ -147,8 +91,9 @@ TimeLine::scan(realvec segmentation)
 		if (segmentation(i) == 1)
 			peakCount++;
 	}
-	numRegions_ = peakCount-1;
-	lineSize_ = 512;			// must change to argument [!]
+	
+	numRegions_ = peakCount-1; //[?]
+	lineSize_ = lineSize;
 
 	for (i=0; i < numRegions_; i++)
 	{
@@ -159,24 +104,17 @@ TimeLine::scan(realvec segmentation)
 	mrs_natural reg_index = 0;
 	for (i=0; i<size_; i++)
 	{
-		if (segmentation(i) == 1)
+		if (segmentation(i) == 1) //[?]
 		{
-			if (reg_index > 0) regions_[reg_index-1].end = i;
-			if (reg_index == peakCount -1) break;
+			if (reg_index > 0) 
+				regions_[reg_index-1].end = i;
+			if (reg_index == peakCount -1) 
+				break;
 			regions_[reg_index].start = i;
 			regions_[reg_index].classId = 0;
 			reg_index++;
 		}
 	}
-}
-
-/* get_num_of_regions:
-Returns the number of regions of this timeline. 
-*/
-mrs_natural
-TimeLine::numRegions()
-{
-	return numRegions_;
 }
 
 mrs_natural
@@ -206,7 +144,7 @@ TimeLine::numClasses() const
 }
 
 vector<mrs_string>
-TimeLine::getClassNames() const
+TimeLine::getRegionNames() const
 {
 	vector<mrs_string> classNames;
 	bool found = false;
@@ -232,7 +170,7 @@ TimeLine::getClassNames() const
 }
 
 mrs_natural 
-TimeLine::start(mrs_natural regionNum)
+TimeLine::regionStart(mrs_natural regionNum) const
 {
 	if (regionNum < numRegions_)
 		return regions_[regionNum].start;
@@ -240,7 +178,7 @@ TimeLine::start(mrs_natural regionNum)
 }
 
 mrs_string 
-TimeLine::name(mrs_natural regionNum)
+TimeLine::regionName(mrs_natural regionNum) const
 {
 	if (regionNum < numRegions_)
 		return regions_[regionNum].name;
@@ -248,14 +186,14 @@ TimeLine::name(mrs_natural regionNum)
 }
 
 void 
-TimeLine::setName(mrs_natural regionNum, mrs_string name)
+TimeLine::setRegionName(mrs_natural regionNum, mrs_string name)
 {
 	if (regionNum < numRegions_)
 		regions_[regionNum].name = name;
 }
 
 void 
-TimeLine::setClassId(mrs_natural regionNum, mrs_natural classId)
+TimeLine::setRegionClass(mrs_natural regionNum, mrs_natural classId)
 {
 	if (regionNum < numRegions_)
 	{
@@ -264,7 +202,7 @@ TimeLine::setClassId(mrs_natural regionNum, mrs_natural classId)
 }
 
 mrs_natural 
-TimeLine::end(mrs_natural regionNum)
+TimeLine::regionEnd(mrs_natural regionNum) const
 {
 	if (regionNum < numRegions_)
 		return regions_[regionNum].end;
@@ -272,7 +210,7 @@ TimeLine::end(mrs_natural regionNum)
 }
 
 void 
-TimeLine::smooth(mrs_natural smoothSize)
+TimeLine::smooth(mrs_natural smoothSize) //[?]
 {
 	TimeRegion region;
 	TimeRegion pregion;
@@ -288,7 +226,7 @@ TimeLine::smooth(mrs_natural smoothSize)
 		{
 			// if ((pregion.end - pregion.start) > (nregion.end - nregion.start))
 			// {
-			remove(i);
+			removeRegion(i);
 			i = i-1;
 			// }
 			// else 
@@ -303,16 +241,15 @@ TimeLine::smooth(mrs_natural smoothSize)
 
 		if (region.classId == pregion.classId)
 		{
-			remove(i);
+			removeRegion(i);
 			i = i-1;
 		}
 	}
 }
 
 void 
-TimeLine::remove(mrs_natural regionNum)
+TimeLine::removeRegion(mrs_natural regionNum)
 {
-
 	if (regionNum >= 1) 
 	{
 		regions_[regionNum-1].end = regions_[regionNum].end;
@@ -322,7 +259,7 @@ TimeLine::remove(mrs_natural regionNum)
 }
 
 mrs_natural 
-TimeLine::getRClassId(mrs_natural regionNum)
+TimeLine::regionClass(mrs_natural regionNum) const
 {
 	if (regionNum < numRegions_)
 		return regions_[regionNum].classId;
@@ -331,7 +268,7 @@ TimeLine::getRClassId(mrs_natural regionNum)
 }
 
 mrs_natural
-TimeLine::getClassId(mrs_natural index)
+TimeLine::sampleClass(mrs_natural index) const
 {
 	TimeRegion region;
 	for (mrs_natural i=0; i < numRegions_; i++)
@@ -341,14 +278,10 @@ TimeLine::getClassId(mrs_natural index)
 		{
 			return region.classId;
 		}
-
 	}
 	return 0;
 }
 
-/* load:
-Load a TimeLine from a file. 
-*/
 bool
 TimeLine::load(mrs_string filename)
 {
@@ -366,7 +299,7 @@ TimeLine::load(mrs_string filename)
 	MRSDIAG("TimeLine::load() - Number of regions is " << numRegions_);
 
 	in >> lineSize_; //read lineSize
-	MRSDIAG("TimeLine::load() - Skip size is " << lineSize_);
+	MRSDIAG("TimeLine::load() - lineSize size is " << lineSize_);
 
 	in >> size_; //read size
 	MRSDIAG("TimeLine::load() - Size is " << size_);
@@ -389,25 +322,27 @@ TimeLine::load(mrs_string filename)
 		in >> token;
 		regions_[i].end = token;
 		in >> stoken1 >> stoken2;
-		regions_[i].name = stoken1 +" "+stoken2;
+		regions_[i].name = stoken1 +" "+stoken2; //[?]
 	}
 
 	return true;
 }
 
 void
-TimeLine::info()
+TimeLine::info() const
 {
 	mrs_natural i;
-	cerr << "Number of regions = " << numRegions_ << endl;
-	cerr << "Skip size  = " << lineSize_ << endl;
-	cerr << "TimeLine size (# skip_size_ blocks ) = " << size_ << endl;
+	MRSMSG("Number of regions = " << numRegions_ << endl);
+	MRSMSG("Line size  = " << lineSize_ << endl);
+	MRSMSG("TimeLine size (# line size blocks ) = " << size_ << endl);
 
 	for (i=0; i < numRegions_; i++)
 	{
-		cerr << "Region " << i << " start    = " << regions_[i].start << endl;
-		cerr << "Region " << i << " class id = " << regions_[i].classId << endl;
-		cerr << "Region " << i << " end      = " << regions_[i].end   << endl;
+		MRSMSG("--------------------------------------------" << endl);
+		MRSMSG("Region " << i << " start    = " << regions_[i].start << endl);
+		MRSMSG("Region " << i << " class id = " << regions_[i].classId << endl);
+		MRSMSG("Region " << i << " name     = " << regions_[i].name << endl);
+		MRSMSG("Region " << i << " end      = " << regions_[i].end   << endl);
 	}
 }
 
@@ -609,6 +544,59 @@ TimeLine::send(Communicator* com)
 		com->send_message(message);
 	}
 }
+
+/*
+void
+TimeLine::color(Feature_map &map)
+{
+int i;
+float_vector f1 = map.get_feat(9);
+float_vector f2 = map.get_feat(0);
+float_vector f3 = map.get_feat(3);
+float r;
+float g;
+float b;
+
+Gen_Plotter plotter;  
+//f1.norm(0.5, 0.2);
+//f2.norm(0.5, 0.2);
+//f3.norm(0.5, 0.2);
+
+f1.norm(0.00074, 0.0017, 0.5, 0.2);
+f2.norm(40.5, 20.5, 0.5, 0.2);
+f3.norm(5.63, 2.71, 0.5, 0.2);
+
+//plotter.plot_wait(f1);
+//plotter.plot_wait(f2);
+//plotter.plot_wait(f3);  
+
+int start;
+int end;
+for (i=0; i<num_of_regions_; i++)
+{
+start = region_[i].start;
+end = region_[i].end;
+r = fabs(f1.mean(start,end));
+g = fabs(f2.mean(start,end));
+b = fabs(f3.mean(start,end));
+
+//r = 0.5;
+//g = 0.5;
+//b = 0.5;
+
+// Clip to colors
+if (r > 1.0) r = 1.0;
+if (g > 1.0) g = 1.0;      
+if (b > 1.0) b = 1.0;      
+if (r < 0.0) r = 0.0;
+if (g < 0.0) g = 0.0;      
+if (b < 0.0) b = 0.0;      
+
+region_[i].color.setRGB(r,g,b);
+}
+
+}
+*/
 
 
 

@@ -26,13 +26,4 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(Qt) = preSolution
-		Integration = True
-	EndGlobalSection
-	GlobalSection(Qt) = preSolution
-		Integration = True
-	EndGlobalSection
-	GlobalSection(Qt) = preSolution
-		Integration = True
-	EndGlobalSection
 EndGlobal
