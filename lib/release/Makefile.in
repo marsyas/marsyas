@@ -350,6 +350,7 @@ libmarsyas_a_SOURCES = \
 	$(top_srcdir)/src/marsyas/SNR.cpp \
 	$(top_srcdir)/src/marsyas/PCA.cpp \
 	$(top_srcdir)/src/marsyas/AbsMax.cpp \
+	$(top_srcdir)/src/marsyas/TimelineLabeler.cpp \
 			$(top_srcdir)/src/marsyas/Gain.cpp
 
 subdir = lib/release
@@ -452,7 +453,8 @@ am_libmarsyas_a_OBJECTS = svm.$(OBJEXT) RtAudio3.$(OBJEXT) \
 	EnhADRess.$(OBJEXT) StereoSpectrumSources.$(OBJEXT) \
 	EnhADRessStereoSpectrum.$(OBJEXT) McAulayQuatieri.$(OBJEXT) \
 	PeakerOnset.$(OBJEXT) Reverse.$(OBJEXT) SNR.$(OBJEXT) \
-	PCA.$(OBJEXT) AbsMax.$(OBJEXT) Gain.$(OBJEXT)
+	PCA.$(OBJEXT) AbsMax.$(OBJEXT) TimelineLabeler.$(OBJEXT) \
+	Gain.$(OBJEXT)
 libmarsyas_a_OBJECTS = $(am_libmarsyas_a_OBJECTS)
 libmarsyasqt_a_AR = $(AR) cru
 libmarsyasqt_a_LIBADD =
@@ -605,6 +607,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Summary.Po ./$(DEPDIR)/Talk.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Thread.Po ./$(DEPDIR)/TimeLine.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TimeStretch.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/TimelineLabeler.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TimerFactory.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TmControlValue.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TmGetTime.Po \
@@ -946,6 +949,7 @@ Reverse.$(OBJEXT): $(top_srcdir)/src/marsyas/Reverse.cpp
 SNR.$(OBJEXT): $(top_srcdir)/src/marsyas/SNR.cpp
 PCA.$(OBJEXT): $(top_srcdir)/src/marsyas/PCA.cpp
 AbsMax.$(OBJEXT): $(top_srcdir)/src/marsyas/AbsMax.cpp
+TimelineLabeler.$(OBJEXT): $(top_srcdir)/src/marsyas/TimelineLabeler.cpp
 Gain.$(OBJEXT): $(top_srcdir)/src/marsyas/Gain.cpp
 libmarsyas.a: $(libmarsyas_a_OBJECTS) $(libmarsyas_a_DEPENDENCIES) 
 	-rm -f libmarsyas.a
@@ -1165,6 +1169,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Thread.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeLine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeStretch.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimelineLabeler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimerFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TmControlValue.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TmGetTime.Po@am__quote@
@@ -4007,6 +4012,18 @@ AbsMax.obj: $(top_srcdir)/src/marsyas/AbsMax.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/AbsMax.Po' tmpdepfile='$(DEPDIR)/AbsMax.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbsMax.obj `cygpath -w $(top_srcdir)/src/marsyas/AbsMax.cpp`
+
+TimelineLabeler.o: $(top_srcdir)/src/marsyas/TimelineLabeler.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/TimelineLabeler.cpp' object='TimelineLabeler.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/TimelineLabeler.Po' tmpdepfile='$(DEPDIR)/TimelineLabeler.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TimelineLabeler.o `test -f '$(top_srcdir)/src/marsyas/TimelineLabeler.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/marsyas/TimelineLabeler.cpp
+
+TimelineLabeler.obj: $(top_srcdir)/src/marsyas/TimelineLabeler.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/TimelineLabeler.cpp' object='TimelineLabeler.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/TimelineLabeler.Po' tmpdepfile='$(DEPDIR)/TimelineLabeler.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TimelineLabeler.obj `cygpath -w $(top_srcdir)/src/marsyas/TimelineLabeler.cpp`
 
 Gain.o: $(top_srcdir)/src/marsyas/Gain.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/Gain.cpp' object='Gain.o' libtool=no @AMDEPBACKSLASH@

@@ -111,7 +111,7 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 		
 		for (int j=0; j < onsets.size(); j++) 
 		{
-			onsets[j] /= 128;
+			onsets[j] /= D;
 			cout << "on = " << onsets[j] << endl;
 		}
 	}
@@ -303,20 +303,6 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 		}
 #endif //MARSYAS_MIDIIO
 
-		/* if ((numticks % 100) == 0) 
-		{
-			pvseries->updctrl("PvUnconvert/uconv/mrs_bool/phaselock", true);
-			pvseries->updctrl("PvFold/fo/mrs_natural/Decimation", I);
-			pvseries->updctrl("PvConvert/conv/mrs_natural/Decimation",I);   
-			pvseries->updctrl("PvOverlapadd/pover/mrs_natural/Decimation",I);   			
-		}
-		else 
-		{
-			pvseries->updctrl("PvFold/fo/mrs_natural/Decimation", D);
-			pvseries->updctrl("PvConvert/conv/mrs_natural/Decimation",D);   
-			pvseries->updctrl("PvOverlapadd/pover/mrs_natural/Decimation",D);   			
-		}
-		*/ 
 		
 		
 		pvseries->tick();
@@ -328,7 +314,7 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 				break;
 
 		
-		/* mrs_bool onset_found = false;
+		mrs_bool onset_found = false;
 		
 		if (onsetsfile_ != "") 
 		{
@@ -338,24 +324,16 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 				if (numticks == onsets[j])
 				{
 					onset_found = true;
-					onset_counter = 20;
 					break;
 				}
 			}
 			
-			onset_counter--;
-			
-
-			if (onset_counter >= 0) 
+			if (onset_found) 
 			{
-				cout << "p transient frame" << endl;
-
-				
 				pvseries->updctrl("PvUnconvert/uconv/mrs_bool/phaselock", true);
 				pvseries->updctrl("PvUnconvert/uconv/mrs_natural/Interpolation",D);
 				pvseries->updctrl("PvOverlapadd/pover/mrs_natural/Interpolation",D);
 				pvseries->updctrl("ShiftOutput/so/mrs_natural/Interpolation", D);
-				cout << "PHASELOCKING" << endl;
 			}
 			else 
 			{
@@ -365,7 +343,6 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 			}
 		}
 		
-		*/ 
 		
 		
 
@@ -375,7 +352,8 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 		
 	}
 		
-
+	cout << "num ticks = " << numticks << endl;
+	
 
 	// MATLAB_CLOSE();
 	

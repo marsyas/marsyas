@@ -146,7 +146,8 @@ PvConvert::myProcessFull(realvec& in, realvec& out)
 			phasediff = 0.0;
 		else 
 		{
-			phases(t) = -atan2(b,a);
+			phases(t) = -atan2(b,a);						
+
 
 			phasediff = phases(t) - lastphase_(t);
 			lastphase_(t) = phases(t);

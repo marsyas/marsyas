@@ -49,7 +49,9 @@ namespace Marsyas
 			realvec phase_;
 			realvec lphase_;
 			realvec lmag_;
-
+			realvec regions_;
+			realvec iphase_;
+			
 			int transient_counter_;
 			
 			

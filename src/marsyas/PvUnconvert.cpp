@@ -98,7 +98,10 @@ PvUnconvert::myUpdate(MarControlPtr sender)
 	mag_.create(N2_+1);	
 	phase_.create(N2_+1);
 	lphase_.create(N2_+1);
+	iphase_.create(N2_+1);
+	
 	lmag_.create(N2_+1);
+	regions_.create(N2_+1);
 	
 	
 	fundamental_ = (mrs_real) (israte  / onObservations);
@@ -119,29 +122,11 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 	
 	
 
-	/* if (ctrl_phaselock_->to<mrs_bool>())
+	if (ctrl_phaselock_->to<mrs_bool>())
 	{
-		transient_counter_ = 4;
-		cout << "PHASELOCKING PV" << endl;
 		lastphases = analysisphases;
 		ctrl_phaselock_->setValue(false);
 	}
-	transient_counter_--;
-	
-
-	if (transient_counter_ >= 0.0) 
-	{
-		cout << "TRANSIENT FRAME" << endl;
-		
-	}
-	*/ 
-	
-	
-
-
-	
-	
-	
 	
 
 	mrs_natural re, amp, im, freq;
@@ -150,6 +135,7 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 	
 	const mrs_string& mode = ctrl_mode_->to<mrs_string>();	    
 	
+
 	for (t=0; t <= N2_; t++)
 	{
 		re = amp = 2*t; 
@@ -166,10 +152,17 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 		if (t==N2_)
 			mag_(t) = 0.0;
 		
-		lastphases(t) += (in(freq,0) - t * fundamental_);
-		phase_(t) = lastphases(t) * factor_;
-		
-		
+
+	}
+
+	int previous_peak=0;
+	int peak = 0;
+
+	
+	for (t=0; t <= N2_; t++)
+	{
+		re = amp = 2*t; 
+		im = freq = 2*t+1;
 		if (mode == "loose_phaselock")
 		{
 			if ((t >= 1) || (t < N2_))
@@ -189,15 +182,102 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 			if (t != N2_)
 				out(im,0) = -lmag_(t) * sin(lphase_(t));
 		}
-		else
+		else if (mode == "identity_phaselock")
 		{
-			out(re,0) = mag_(t) * cos(phase_(t));
-			if (t != N2_)
-				out(im,0) = -mag_(t) * sin(phase_(t));
+			// calculate significant peaks and corresponding non-overlapping 
+			// intervals 
+			if ((t > 2) && (t <= N2_-2))
+			{
+				if ((mag_(t) > mag_(t-1)) &&
+					(mag_(t) > mag_(t-2)) &&
+					(mag_(t) > mag_(t+1)) && 
+					(mag_(t) > mag_(t+2)))
+				{
+					peak = t;
+					for (int j=previous_peak; j< previous_peak + (int)((peak-previous_peak)/2.0); j++) 
+					{
+						regions_(j) = previous_peak;
+					}
+					
+					for (int j= previous_peak + (int)((peak-previous_peak)/2.0); j < peak; j++) 
+					{
+						regions_(j) = peak;					
+					}
+					previous_peak = peak;
+				}
+			}
 		}
 	}
 	
+	// cout << regions_ << endl;
+	
+			
+
+		for (t=0; t <= N2_; t++)
+		{
+			re = amp = 2*t; 
+			im = freq = 2*t+1;
+
+			if (mode == "identity_phaselock")
+			{
+
+
+
+
+
+
+				if ((t > 2) && (t <= N2_-2))
+				{
+					if ((mag_(t) > mag_(t-1)) &&
+						(mag_(t) > mag_(t-2)) &&
+						(mag_(t) > mag_(t+1)) && 
+						(mag_(t) > mag_(t+2)))
+					{
+						lastphases(t) += (in(freq,0) - t * fundamental_);
+						phase_(t) = lastphases(t) * factor_;
+					}
+					else
+					{
+						iphase_(t) = phase_(regions_(t)) + analysisphases(t) - analysisphases(regions_(t));
+						lastphases(t) += (iphase_(t));
+						phase_(t) = lastphases(t) * factor_;
+					}
+					
+				}
+				else 
+					iphase_(t) = phase_(t);
+
+
+				
+				out(re,0) = mag_(t) * cos(iphase_(t));
+				if (t != N2_)
+					out(im,0) = -mag_(t) * sin(iphase_(t));
+				
+			}
+			
+			else if (mode == "loose_phaselock") 
+			{
+			}
+			else 
+			{
+				
+				lastphases(t) += (in(freq,0) - t * fundamental_);
+				phase_(t) = lastphases(t) * factor_;
+
+				out(re,0) = mag_(t) * cos(phase_(t));
+				if (t != N2_)
+					out(im,0) = -mag_(t) * sin(phase_(t));
+				
+
+			}
+		}
+		
+		
+		
+
+	
 }
+
 
  
 

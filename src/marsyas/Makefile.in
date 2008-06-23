@@ -343,6 +343,7 @@ pkginclude_HEADERS = \
 	SNR.h \
 	PCA.h \
 	AbsMax.h \
+	TimelineLabeler.h \
 	Gain.h
 
 subdir = src/marsyas
