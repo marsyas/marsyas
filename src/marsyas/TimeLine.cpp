@@ -174,7 +174,7 @@ TimeLine::regionStart(mrs_natural regionNum) const
 {
 	if (regionNum < numRegions_)
 		return regions_[regionNum].start;
-	else return 0;
+	else return -1;
 }
 
 mrs_string 
@@ -206,7 +206,7 @@ TimeLine::regionEnd(mrs_natural regionNum) const
 {
 	if (regionNum < numRegions_)
 		return regions_[regionNum].end;
-	else return 0;
+	else return -1;
 }
 
 void 
@@ -288,6 +288,9 @@ TimeLine::load(mrs_string filename)
 	ifstream in;
 	filename_ = filename;
 
+	if(filename == "")
+		return false;
+
 	in.open(filename.c_str());
 	if(!in.is_open())
 	{
@@ -321,8 +324,9 @@ TimeLine::load(mrs_string filename)
 		regions_[i].classId = token;
 		in >> token;
 		regions_[i].end = token;
-		in >> stoken1 >> stoken2;
-		regions_[i].name = stoken1 +" "+stoken2; //[?]
+		in >> stoken1;// >> stoken2; //used for .cue files in IEEE TASLP paper...
+		//regions_[i].name = stoken1 +" "+stoken2; //used for .cue files in IEEE TASLP paper...
+		regions_[i].name = stoken1;
 	}
 
 	return true;

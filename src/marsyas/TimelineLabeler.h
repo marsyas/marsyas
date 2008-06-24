@@ -26,15 +26,28 @@ namespace Marsyas
 {
 /**
 	\class TimelineLabeler
-	\ingroup Special
-	\brief Basic example on how to use controls efficiently in MarSystems
-
-	This example is the same as Gain; it scales the output by
-multiplying each sample with a real number.
+	\ingroup Annotator
+	\brief A MarSystem that loads a TimeLine object with label info corresponding to an audio file, where at each timeline region a class
+	or label is assigned. Can be used for training a classifier, using the different labeled regions of the signal as ground truth.
+	
+	This MarSystem is intended to be used in series right after a SoundFileSource (or other sound source MarSystem
+	- e.g. a CollectionFileSource), linking its labelFiles and currentLabelFile controls to the SoundFileSource labelNames
+	and currentLabel controls, respectively. It then exposes the same controls that SoundFileSource would expose if not using
+	timelines at all, so that the label, labelNames and nLabels controls  of an Annotator or an WekaSink MarSystem can be
+	linked to this MarSystem similarly to the way they are connected to a SoundFileSource MarSystem.
 
 	Controls:
-	- \b mrs_real/gain [w] : sets the gain multiplier.
-	- \b mrs_bool/dummy [rw] : does nothing.
+	- \b mrs_string/labelFiles [w] : list of label files (Marsyas timeline files - .mtl) to be opened, 
+	depending on the currentLabelFile control (see below). It should have a format like, 
+	for e.g.: "audio1.tml,audio2.tml,audio3.tml,", which is what is obtained when using a CollectionFileSource
+	to read a audio1.wav TAB audio1.tml collection file (just link this control to its mrs_string/labelNames control).
+	- \b mrs_natural/currentLabelFile [w] : selects which one of the labelFiles (see above) should be selected. Usually
+	this control is to be linked to the currentLabel control of a SoundFileSource.
+	- \b mrs_string/labelNames [r] : list of classes in the currently loaded timeline, in the format "label1,label2,label3,".
+	- \b mrs_natural/nLabels [r] : number of distict labels in the labelNames (see above) controls (for the example given above,
+	it would have a value of 3).
+	- \b mrs_natural/currentLabel [r] : indicates the label of the current audio stream position (as a numeric index to the
+	label in labelNames control - see above).
 */
 
 class TimelineLabeler: public MarSystem

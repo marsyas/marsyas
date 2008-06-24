@@ -75,7 +75,7 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
 
 	//fill labelFilesVec
 	mrs_string newLabelFiles = ctrl_labelFiles_->to<mrs_string>();
-	if(labelFiles_ != newLabelFiles)
+	if(labelFiles_ != newLabelFiles && newLabelFiles != "")
 	{
 		labelFiles_ = newLabelFiles;
 		mrs_natural i;
@@ -88,29 +88,40 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
 		}
 	}
 
-	//load currentLabelFile into the internal timeline (if not already loaded)
-	if(labelFilesVec_.size() && (labelFilesVec_[ctrl_currentLabelFile_->to<mrs_natural>()]) != timeline_.filename())
+	//load currentLabelFile into the internal timeline memory (if not already loaded)
+	mrs_natural curLabelFile = ctrl_currentLabelFile_->to<mrs_natural>();
+	if(curLabelFile < (mrs_natural)labelFilesVec_.size()) //make sure the selected label file exists...
 	{
-		if(timeline_.load(labelFilesVec_[ctrl_currentLabelFile_->to<mrs_natural>()]))
+		mrs_string fname = labelFilesVec_[curLabelFile];
+		if(fname != timeline_.filename() && fname != "") // check this is a different label file than the one currently loaded
 		{
-			//get the number of classes in the currently loaded timeline
-			numClasses_ = (mrs_natural)timeline_.numClasses();
+			//try to read the label file into memory
+			if(timeline_.load(fname))
+			{
+				//get the number of classes in the currently loaded timeline
+				numClasses_ = (mrs_natural)timeline_.numClasses();
 
-			//get the labels of the classes in the currently loaded timeline
-			ostringstream sstr;
-			vector<mrs_string> classNames = timeline_.getRegionNames();
-			for(mrs_natural i=0; i < numClasses_; ++i)
-				sstr << classNames[i] << ",";
-			ctrl_labelNames_->setValue(sstr.str(), NOUPDATE);
+				//get the labels of the classes in the currently loaded timeline
+				ostringstream sstr;
+				vector<mrs_string> classNames = timeline_.getRegionNames();
+				for(mrs_natural i=0; i < numClasses_; ++i)
+					sstr << classNames[i] << ",";
+				ctrl_labelNames_->setValue(sstr.str(), NOUPDATE);
 
-			ctrl_currentLabelFile_ = ctrl_currentLabelFile_->to<mrs_natural>();
+				ctrl_currentLabelFile_ = ctrl_currentLabelFile_->to<mrs_natural>();
+			}
+			else //some problem occurred when reading the timeline file...
+			{
+				MRSWARN("TimelineLabeler::myUpdate() - error reading label file " << labelFilesVec_[ctrl_currentLabelFile_->to<mrs_natural>()]);
+				numClasses_ = 0;
+				ctrl_labelNames_->setValue(",", NOUPDATE);
+			}
 		}
-		else //some problem occurred when reading the timeline file...
-		{
-			MRSWARN("TimelineLabeler::myUpdate() - error reading label file " << labelFilesVec_[ctrl_currentLabelFile_->to<mrs_natural>()]);
-			numClasses_ = 0;
-			ctrl_labelNames_->setValue(",", NOUPDATE);
-		}
+	}
+	else
+	{
+		numClasses_ = 0;
+		ctrl_labelNames_->setValue(",", NOUPDATE);
 	}
 	
 	ctrl_nLabels_->setValue(numClasses_, NOUPDATE);
@@ -138,8 +149,14 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 	if (samplePos_+inSamples_/2 < regionEnd)
 		ctrl_currentLabel_->setValue(timeline_.regionClass(curRegion_));
 	else
-		ctrl_currentLabel_->setValue(timeline_.regionClass(++curRegion_));
-
+	{
+		//check if this is the last region in the timeline. If not,
+		//move on to next region and use its region class. Otherwise,
+		//just use the class info from the current region...
+		if(curRegion_ < timeline_.numRegions()-1)
+			ctrl_currentLabel_->setValue(timeline_.regionClass(++curRegion_));
+	}
+	
 	samplePos_ += inSamples_;
 }
 

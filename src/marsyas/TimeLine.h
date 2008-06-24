@@ -31,26 +31,31 @@ namespace Marsyas
 {
 /** 
 \class TimeLine 
-	\ingroup none
+\ingroup DataStruture
 \brief TimeLine is a list of TimeRegions. 
 
 TimeLine is a list of TimeRegions. It represents a segmentation in
-time of sound.  Each segment is defined by its boundaries and a
-class id. A class_name table is used to derive the class names from
-the class id's.  A simple float_vector representation is used for
-the TimeLine where the class #::ids and the boundaries are
-interleaved.  For example the following numbers:
+time of sound.  Each region is defined by its boundaries, a class id and
+a name.  
+The units used to define the boundaries of each segment can be arbitrary 
+integer multiples of one sample and are defined by lineSize (e.g. if
+lineSize is set to 1024, if the start of a region is set to 2, it means
+that it starts at sample 2*1024 = 2048).
 
-0 1 100 0 258 3 640
+TimeLines can be saved and loaded from files. The current format is as follows:
 
-mean from time 0 to 100 class is 1
-from time 100 to 258 class is 0
-etc.
-
-The units used to define the boundaries of 
-each segment can be arbitrary integer multiples
-of one sample and are defined by lineSize.  
-
+Nr. of Regions (mrs_natural)
+lineSize (in samples - mrs_natural)
+size (in lineSize units - mrs_natural)
+region1 start (mrs_natural)
+region1 classid (mrs_natura)
+region1 end (mrs_natural)
+region1 name (mrs_string)
+region2 start (mrs_natural)
+region2 classid (mrs_natura)
+region2 end (mrs_natural)
+region2 name (mrs_string)
+...
 */
 
 
