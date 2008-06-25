@@ -890,6 +890,7 @@ MarSystem::linkControl(string cname1, string cname2, bool update)
 				return false;
 			}
 			MRSDIAG("MarSystem::linkControl - Added new proxy control " + cname2 + " @ " + getAbsPath());
+			ctrl2->setState(false); //proxy controls never need to have state!
 		}
 		//if cname2 is a relative path, check among children for a matching MarSystem
 		//where to add the new link control
@@ -909,6 +910,7 @@ MarSystem::linkControl(string cname1, string cname2, bool update)
 					return false;
 				}
 				MRSDIAG("MarSystem::linkControl - Added new proxy control " + cname2 + " @ " + msys->getAbsPath());
+				ctrl2->setState(false); //proxy controls never need to have state!
 			}
 			else
 			{
@@ -941,6 +943,7 @@ MarSystem::linkControl(string cname1, string cname2, bool update)
 				return false;
 			}
 			MRSDIAG("MarSystem::linkControl - Added new proxy control " + cname1 + " @ " + getAbsPath());
+			ctrl1->setState(false); //proxy controls never need to have state!
 		}
 		//if cname1 is a relative path, check among children for a matching MarSystem
 		//where to add the new link control
@@ -960,6 +963,7 @@ MarSystem::linkControl(string cname1, string cname2, bool update)
 					return false;
 				}
 				MRSDIAG("MarSystem::linkControl - Added new proxy control " + cname1 + " @ " + msys->getAbsPath());
+				ctrl1->setState(false); //proxy controls never need to have state!
 			}
 			else
 			{
