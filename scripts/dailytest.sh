@@ -38,8 +38,7 @@ sendreport() {
 	if [ `which mail` ]
 	then
 		mail -s "$subject" gtzan@cs.uvic.ca < $report
-# can't deliver to this email address
-#		mail -s "$subject" lgmartins@users.sourceforge.net < $report
+		mail -s "$subject" lgmartins@users.sourceforge.net < $report
 	fi
 }
 
