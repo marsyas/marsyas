@@ -77,13 +77,13 @@ protected:
 	mrs_natural size_;
 	mrs_natural srate_;
   
-	std::vector<mrs_string> classNames_;
 	std::vector<TimeRegion> regions_;
 
 public:
   TimeLine();
   ~TimeLine();
   
+	void clear();
 	void regular(mrs_natural spacing, mrs_natural size, mrs_natural lineSize = MRS_DEFAULT_SLICE_NSAMPLES);
 	void segment(realvec segmentation, mrs_natural lineSize = MRS_DEFAULT_SLICE_NSAMPLES);
   

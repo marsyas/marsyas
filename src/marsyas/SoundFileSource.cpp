@@ -126,11 +126,10 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 
 			ostringstream oss;
 			for (int ch = 0; ch < ctrl_onObservations_->to<mrs_natural>(); ch++) 
-			  {
-			    oss << "AudioCh" << ch << ",";
-			  }
+			{
+				oss << "AudioCh" << ch << ",";
+			}
 			ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
-
 
 			ctrl_israte_->setValue(src_->ctrl_israte_, NOUPDATE);
 			ctrl_osrate_->setValue(src_->ctrl_osrate_, NOUPDATE);
@@ -302,7 +301,7 @@ SoundFileSource::myProcess(realvec& in, realvec &out)
 		setctrl("mrs_bool/notEmpty", src_->notEmpty_);//[!]
 		*/ 
 		// replaced by gtzan 
-		ctrl_pos_->setValue(src_->pos_, NOUPDATE);
+		ctrl_pos_->setValue(src_->getctrl("mrs_natural/pos")->to<mrs_natural>(), NOUPDATE);
 		ctrl_loop_->setValue(src_->rewindpos_, NOUPDATE);
 		ctrl_notEmpty_->setValue(src_->notEmpty_, NOUPDATE);
 		ctrl_currentlyPlaying_->setValue(src_->getctrl("mrs_string/currentlyPlaying"));
@@ -311,7 +310,7 @@ SoundFileSource::myProcess(realvec& in, realvec &out)
 		ctrl_nLabels_->setValue(src_->getctrl("mrs_natural/nLabels"));
 	}
 
-	if (advance_) 
+	if (advance_) //[!] shouldn't this be done in ::myUpdate()?!?
 	{
 		ctrl_advance_->setValue(false);
 	}

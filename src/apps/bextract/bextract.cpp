@@ -1986,6 +1986,10 @@ bextract_train_refactored(string pluginName,  string wekafname,
 				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/labelNames");
 			bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/currentLabelFile",
 				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/currentLabel");
+			bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/pos",
+				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/pos");
+			bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_bool/advance",
+				"Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_bool/advance");
 			
 			bextractNetwork->linkctrl("mrs_natural/currentLabel", 
 				"Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/currentLabel");
@@ -2031,8 +2035,10 @@ bextract_train_refactored(string pluginName,  string wekafname,
 				"Series/featureNetwork/SoundFileSource/src/mrs_natural/currentLabel");
 			bextractNetwork->linkctrl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/labelFiles", 
 				"Series/featureNetwork/SoundFileSource/src/mrs_string/labelNames");
-			//bextractNetwork->linkctrl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/nLabels",
-			//	"Series/featureNetwork/SoundFileSource/src/mrs_natural/nLabels");
+			bextractNetwork->linkctrl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/pos",
+				"Series/featureNetwork/SoundFileSource/src/mrs_natural/pos");
+			bextractNetwork->linkctrl("Series/featureNetwork/SoundFileSource/src/mrs_bool/advance",
+				"Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_bool/advance");
 						
 			bextractNetwork->linkctrl("mrs_natural/currentLabel", 
 				"Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/currentLabel");

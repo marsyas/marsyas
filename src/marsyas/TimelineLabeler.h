@@ -33,8 +33,9 @@ namespace Marsyas
 	This MarSystem is intended to be used in series right after a SoundFileSource (or other sound source MarSystem
 	- e.g. a CollectionFileSource), linking its labelFiles and currentLabelFile controls to the SoundFileSource labelNames
 	and currentLabel controls, respectively. It then exposes the same controls that SoundFileSource would expose if not using
-	timelines at all, so that the label, labelNames and nLabels controls  of an Annotator or an WekaSink MarSystem can be
+	timelines at all, so that the label, labelNames and nLabels controls of an Annotator or an WekaSink MarSystem can be
 	linked to this MarSystem similarly to the way they are connected to a SoundFileSource MarSystem.
+	TimelineLabaler assumes that the regions in the timeline are non-overlapping and ordered  by their start sample. 
 
 	Controls:
 	- \b mrs_string/labelFiles [w] : list of label files (Marsyas timeline files - .mtl) to be opened, 
@@ -55,13 +56,20 @@ class TimelineLabeler: public MarSystem
 private:
 	MarControlPtr ctrl_labelFiles_;
 	MarControlPtr ctrl_currentLabelFile_;
+	MarControlPtr ctrl_selectLabel_;
 
 	MarControlPtr ctrl_labelNames_;
 	MarControlPtr ctrl_currentLabel_;
 	MarControlPtr ctrl_nLabels_;
 
+	MarControlPtr ctrl_playRegionsOnly_;
+	MarControlPtr ctrl_pos_;
+	MarControlPtr ctrl_advance_;
+
 	mrs_string labelFiles_;
 	std::vector<mrs_string> labelFilesVec_;
+
+	mrs_string selectedLabel_;
 
 	TimeLine timeline_;
 	mrs_natural numClasses_;

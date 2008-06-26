@@ -26,12 +26,21 @@ TimeLine::TimeLine()
 	srate_ = 0;
 	lineSize_ = 0;
 	size_ = 0;
-	classNames_.reserve(100);
-	filename_ = "Unknown";
+	filename_ = "";
 }
 
 TimeLine::~TimeLine()
 {
+}
+
+void
+TimeLine::clear()
+{
+	filename_ = "";
+	srate_ = 0;
+	lineSize_ = 0;
+	size_ = 0;
+	regions_.clear();
 }
 
 void 
@@ -328,6 +337,8 @@ TimeLine::load(mrs_string filename)
 		//regions_[i].name = stoken1 +" "+stoken2; //used for .cue files in IEEE TASLP paper...
 		regions_[i].name = stoken1;
 	}
+
+	in.close();
 
 	return true;
 }

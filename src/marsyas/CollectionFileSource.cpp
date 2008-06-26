@@ -148,16 +148,16 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
 		ctrl_nLabels_->setValue(col_.getNumLabels(), NOUPDATE);
 	}
 
-	myIsrate_ = isrc_->getctrl("mrs_real/israte")->to<mrs_real>();
+	myIsrate_ = isrc_->getctrl("mrs_real/israte")->to<mrs_real>();//[!] why get an INPUT flow control?!
 	onObservations_ = isrc_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
 
-	setctrl("mrs_real/israte", myIsrate_);
+	setctrl("mrs_real/israte", myIsrate_);//[!] why set an INPUT flow control?!?
 	setctrl("mrs_real/osrate", myIsrate_);
 	setctrl("mrs_natural/onObservations", onObservations_);
 
 	isrc_->updctrl("mrs_natural/inSamples", inSamples_);
 	setctrl("mrs_natural/onSamples", inSamples_);
-	setctrl("mrs_real/israte", myIsrate_);
+	setctrl("mrs_real/israte", myIsrate_);//[!] why set an INPUT flow control?!?
 	setctrl("mrs_real/osrate", myIsrate_);
 	setctrl("mrs_natural/onObservations", onObservations_);
 	temp_.create(inObservations_, inSamples_);
@@ -205,12 +205,10 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 	}
 	else
 	{
-		isrc_->process(in,out);
-		setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
-		setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
-
-		if (!isrc_->getctrl("mrs_bool/notEmpty")->isTrue())
+		//finished current file. Advance to next one in collection (if any)
+		if (!getctrl("mrs_bool/notEmpty")->isTrue())
 		{
+			//check if there a following file ion the collection
 			if (cindex_ < col_.size() -1)
 			{
 				cindex_ = cindex_ + 1;
@@ -231,14 +229,17 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 				ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
 				ctrl_nLabels_->setValue(col_.getNumLabels(), NOUPDATE);
 			}
-			else 
+			else //no more files in collection
 			{
 				setctrl("mrs_bool/notEmpty", false);
 				notEmpty_ = false;
 			}
 		}
-	} 
 
+		isrc_->process(in,out);
+		setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
+		setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
+	} 
 }  
 
 
