@@ -177,7 +177,7 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 	if (advance_) 
 	{
 		cindex_ = cindex_ + 1;
-		if (cindex_ >= col_.size() -1)  
+		if (cindex_ > col_.size() -1)  
 		{
 			setctrl("mrs_bool/notEmpty", false);
 			notEmpty_ = false;      
@@ -196,11 +196,11 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 		setctrl("mrs_real/osrate", myIsrate_);
 		setctrl("mrs_natural/onObservations", onObservations_);
 
+		update();   
+
 		isrc_->process(in,out);
 		setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
 		setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
-
-		update();      
 		return;
 	}
 	else

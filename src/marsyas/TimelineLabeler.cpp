@@ -75,7 +75,7 @@ TimelineLabeler::addControls()
 	addctrl("mrs_bool/advance", false, ctrl_advance_);
 	addctrl("mrs_natural/pos", 0, ctrl_pos_);
 
-	addctrl("mrs_bool/playRegionsOnly", false, ctrl_playRegionsOnly_);
+	addctrl("mrs_bool/playRegionsOnly", true, ctrl_playRegionsOnly_);
 
 	addctrl("mrs_string/labelNames", ",", ctrl_labelNames_);
 	addctrl("mrs_natural/currentLabel", 0, ctrl_currentLabel_);
@@ -109,6 +109,7 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
 	//////////////////////////////////////////////////////////////////////////////////
 	//load currentLabelFile into the internal timeline memory (if not already loaded)
 	//////////////////////////////////////////////////////////////////////////////////
+	mrs_bool newTimeline = false;
 	mrs_natural curLabelFile = ctrl_currentLabelFile_->to<mrs_natural>();
 	if(curLabelFile < (mrs_natural)labelFilesVec_.size()) //sanity check to avoid out of boundaries in vector
 	{
@@ -121,6 +122,7 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
 			//It is different - try to read the timeline into memory
 			if(timeline_.load(fname))
 			{
+				newTimeline = true;
 				//get the number of classes in the currently loaded timeline
 				numClasses_ = (mrs_natural)timeline_.numClasses();
 				ctrl_nLabels_->setValue(numClasses_, NOUPDATE);
@@ -157,7 +159,7 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
 	/////////////////////////////////////////////////////////////////////////
 	if(timeline_.numRegions() > 0 &&
 		 ctrl_playRegionsOnly_->to<mrs_bool>() &&
-		 ctrl_selectLabel_->to<mrs_string>() != selectedLabel_)
+		 (ctrl_selectLabel_->to<mrs_string>() != selectedLabel_ || newTimeline))
 	{
 		selectedLabel_ = ctrl_selectLabel_->to<mrs_string>();
 
@@ -212,7 +214,11 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 	//check if this audio frame belongs to current region or to the next one
 	//(i.e. if at least half of the current audio frame belongs to the current region)
 	////////////////////////////////////////////////////////////////////////////////////
-	samplePos_ = samplePos_-inSamples_/2;
+	if(samplePos_ == 0)
+		samplePos_ += inSamples_/2; //UGLY HACK because of the way SoundFileSource and CollectionFileSource are implemented...
+	else
+		samplePos_ -= inSamples_/2;	
+	
 	if (samplePos_ >= regionStart && samplePos_<= regionEnd)
 		ctrl_currentLabel_->setValue(timeline_.regionClass(curRegion_));
 	else//move on to following region, if any...
