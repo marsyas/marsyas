@@ -95,6 +95,7 @@ printHelp(string progName)
 	cerr << "updctrl         : toy_with updating control with pointers " << endl;
 
 	cerr << "simpleSFPlay    : plays a sound file" << endl;
+	cerr << "SFPlay          : plays only labelled regions in an audio file" << endl;
 	cerr << "getControls     : toy_with getControls functionality " << endl;
 	cerr << "mono2stereo     : toy_with mono2stereo MarSystem " << endl;
 	exit(1);
@@ -634,6 +635,52 @@ toy_with_simpleSFPlay(string sfName)
 		//cout << "pos " << playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() << endl;
 
 		playbacknet->tick();
+
+		//toy_with if setting "mrs_natural/pos" to 0 for rewinding is working
+		//if(playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() > 100000)
+		//	playbacknet->updctrl("mrs_natural/pos", 0);
+	}
+	cout << "tick " << isEmpty << endl;
+	delete playbacknet;
+}
+
+void
+toy_with_SFPlay(string sfName)
+{
+	MarSystemManager mng;
+
+
+	MarSystem* playbacknet = mng.create("Series", "playbacknet");
+
+	playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+
+	playbacknet->addMarSystem(mng.create("TimelineLabeler", "tll"));
+	playbacknet->linkControl("TimelineLabeler/tll/mrs_string/labelFiles", "SoundFileSource/src/mrs_string/labelNames");
+	playbacknet->linkControl("TimelineLabeler/tll/mrs_natural/currentLabelFile", "SoundFileSource/src/mrs_natural/currentLabel");
+	playbacknet->linkControl("TimelineLabeler/tll/mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
+	playbacknet->linkControl("TimelineLabeler/tll/mrs_bool/advance", "SoundFileSource/src/mrs_bool/advance");
+
+	playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
+
+
+	playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+	playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+	playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+	playbacknet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
+
+	playbacknet->updctrl("TimelineLabeler/tll/mrs_string/selectLabel", "sing");
+	playbacknet->updctrl("TimelineLabeler/tll/mrs_bool/playRegionsOnly", true);
+
+	mrs_bool isEmpty;
+	//cout << *playbacknet << endl;
+	while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
+	{
+
+		playbacknet->tick();
+
+		cout << "pos " << playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() << endl;
+		cout << "current_label" << playbacknet->getctrl("TimelineLabeler/tll/mrs_natural/currentLabel")->to<mrs_natural>() << endl;
 
 		//toy_with if setting "mrs_natural/pos" to 0 for rewinding is working
 		//if(playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() > 100000)
@@ -3781,6 +3828,8 @@ main(int argc, const char **argv)
 		toy_with_weka(fname0);
 	else if (toy_withName == "simpleSFPlay") 
 		toy_with_simpleSFPlay(fname0);
+	else if (toy_withName == "SFPlay") 
+		toy_with_SFPlay(fname0);
 	else if (toy_withName == "getControls") 
 		toy_with_getControls(fname0);
 	else if (toy_withName == "mono2stereo")
