@@ -39,6 +39,7 @@ mrs_real gopt;
 mrs_real sropt;
 mrs_natural copt;
 mrs_natural yearopt;
+mrs_bool datopt;
 
 CommandLineOptions cmd_options;
 
@@ -68,6 +69,7 @@ void printHelp(string progName)
     cerr << "-l --length     : record length in seconds " << endl;
     cerr << "-s --srate      : samping rate " << endl;
     cerr << "-c --channels   : number of channels to record " << endl;
+    cerr << "-d --dat        : Record dat from the TASCAM FW-1804 " << endl;
     cerr << endl;
     exit(1);
 }
@@ -85,6 +87,7 @@ void initOptions()
     cmd_options.addRealOption("srate", "s", 44100.0);
     cmd_options.addNaturalOption("channels", "c", 1);
     cmd_options.addNaturalOption("year", "y", 2005);
+    cmd_options.addBoolOption("dat", "d", false);
 }
 
 
@@ -97,6 +100,7 @@ void loadOptions()
     gopt = cmd_options.getRealOption("gain");
     sropt = cmd_options.getRealOption("srate"); 
     copt = cmd_options.getNaturalOption("channels");
+    datopt = cmd_options.getBoolOption("dat");
 }
 
 
@@ -236,6 +240,80 @@ void record_orcas(mrs_real length, mrs_natural year,
     delete asrc;
 }
 
+void record_orcas_dat(mrs_real length, mrs_natural year, string id1)
+{ 
+
+    copt = 17;
+    sropt = 44100.0;
+    int bufferSize = 6144;
+
+
+    MarSystemManager mng;
+
+    MarSystem* asrc = mng.create("AudioSource", "asrc");
+    MarSystem* dest1 = mng.create("SoundFileSink", "dest1");
+
+    ostringstream oss1;
+    oss1 << "/Users/orcalab/orcaArchive/" << year << "/" << id1 << ".wav";
+
+    string fname1 = oss1.str();
+
+    dest1->updctrl("mrs_natural/inObservations", 2);
+    dest1->updctrl("mrs_natural/inSamples", bufferSize);
+    dest1->updctrl("mrs_real/israte", sropt);
+    dest1->updctrl("mrs_string/filename", fname1);
+
+    asrc->setctrl("mrs_natural/nChannels", copt);
+    asrc->setctrl("mrs_natural/inSamples", bufferSize);
+    asrc->setctrl("mrs_natural/bufferSize", bufferSize);
+    asrc->setctrl("mrs_real/israte", sropt);
+    asrc->updctrl("mrs_bool/initAudio", true);
+    asrc->update();
+
+    mrs_real srate = asrc->getctrl("mrs_real/israte")->to<mrs_real>();
+    mrs_natural inSamples = asrc->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+    mrs_natural iterations = (mrs_natural)((srate * length * 60.0) / inSamples);
+
+    realvec rin;
+    realvec rout;
+    realvec orca1;
+
+    rin.create(copt, bufferSize);
+    rout.create(copt, bufferSize);
+
+    orca1.create(2, bufferSize);
+
+    mrs_natural t;
+
+    cout << "Recording " << length << " minutes to files: " << endl;
+    cout << fname1 << endl;
+
+    mrs_natural minutes =0;
+
+    for (mrs_natural i = 0; i < iterations; i++) 
+    {
+        if (((i % 430)==0)&&(i != 0))
+        {
+            minutes ++;
+            cout << minutes << ":" << lengthopt << endl;
+        }
+        asrc->process(rin,rout);
+        for (t=0; t < bufferSize; t++)
+        { 
+            orca1(16,t) = rout(0,t);
+            orca1(17,t) = rout(1,t);
+        }
+        dest1->process(orca1,orca1);
+
+    }
+
+    cout << "Recording complete" << endl;
+    cout << "Recorded to file: " << endl;
+    cout << fname1 << endl;
+    delete dest1;
+    delete asrc;
+}
+
 
     int
 main(int argc, const char **argv)
@@ -266,18 +344,23 @@ main(int argc, const char **argv)
     vector<string> soundfiles = cmd_options.getRemaining();
     vector<string>::iterator sfi;
 
+	string id1;
+	string id2;
+	string id3;
+	string id4;
 
+	if (!datopt) {
        cout << "Recording to year" << yearopt << endl;
-       string id1;
-       string id2;
-       string id3;
-       string id4;
        id1 = soundfiles[0];
        id2 = soundfiles[1];
        id3 = soundfiles[2];
        id4 = soundfiles[3];
-
        record_orcas(lengthopt, yearopt, id1, id2, id3, id4);
+	} else {
+       cout << "Recording DAT to year" << yearopt << endl;
+       id1 = soundfiles[0];
+       record_orcas_dat(lengthopt, yearopt, id1);
+	}
 
     return 0;
 }
