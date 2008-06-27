@@ -30,6 +30,7 @@ TimelineLabeler::TimelineLabeler(string name):MarSystem("TimelineLabeler", name)
 	numClasses_ = 0;
 	selectedLabel_ = "init";
 	curRegion_ = 0;
+	foundNextRegion_ = false;
 }
 
 TimelineLabeler::TimelineLabeler(const TimelineLabeler& a) : MarSystem(a)
@@ -48,6 +49,7 @@ TimelineLabeler::TimelineLabeler(const TimelineLabeler& a) : MarSystem(a)
 	numClasses_ = 0;
 	selectedLabel_ = "init";
 	curRegion_ = 0;
+	foundNextRegion_ = false;
 }
 
 TimelineLabeler::~TimelineLabeler()
@@ -78,7 +80,7 @@ TimelineLabeler::addControls()
 	addctrl("mrs_bool/playRegionsOnly", true, ctrl_playRegionsOnly_);
 
 	addctrl("mrs_string/labelNames", ",", ctrl_labelNames_);
-	addctrl("mrs_natural/currentLabel", 0, ctrl_currentLabel_);
+	addctrl("mrs_natural/currentLabel", -1, ctrl_currentLabel_);
 	addctrl("mrs_natural/nLabels", 0, ctrl_nLabels_);
 }
 
@@ -135,6 +137,7 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
 				ctrl_labelNames_->setValue(sstr.str(), NOUPDATE);
 
 				curRegion_ = 0;
+				foundNextRegion_ = true;
 			}
 			else //some problem occurred when reading the timeline file...
 			{
@@ -158,31 +161,36 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
 	// Fast forward to first region start sample, if set to do so
 	/////////////////////////////////////////////////////////////////////////
 	if(timeline_.numRegions() > 0 &&
-		 ctrl_playRegionsOnly_->to<mrs_bool>() &&
-		 (ctrl_selectLabel_->to<mrs_string>() != selectedLabel_ || newTimeline))
+		 ((ctrl_selectLabel_->to<mrs_string>() != selectedLabel_) || newTimeline))
 	{
 		selectedLabel_ = ctrl_selectLabel_->to<mrs_string>();
 
-		//fast forward to the start of first region (which my not start at the 
-		//beginning of the audio file) with a label corresponding to the one specified
-		//by ctrl_selectLabel_
-		curRegion_ = 0;
-		if(selectedLabel_ == "") //i.e. any label is accepted
+		if(ctrl_playRegionsOnly_->to<mrs_bool>())
 		{
-			//fast forward to first region in timeline
-			ctrl_pos_->setValue(timeline_.regionStart(0)*timeline_.lineSize(), NOUPDATE);
-			curRegion_ = 0;
-		}
-		else //look for the first region with the selected label...
-		{			
-			for(mrs_natural i=0; i < timeline_.numRegions(); ++i)
+			//fast forward to the start of first region (which my not start at the 
+			//beginning of the audio file) with a label corresponding to the one specified
+			//by ctrl_selectLabel_
+			if(selectedLabel_ == "") //i.e. any label is accepted
 			{
-				if(timeline_.regionName(i) == selectedLabel_)
+				//fast forward to first region in timeline
+				ctrl_pos_->setValue(timeline_.regionStart(0)*timeline_.lineSize(), NOUPDATE);
+				curRegion_ = 0;
+				foundNextRegion_ = true;
+			}
+			else //look for the first region with the selected label...
+			{			
+				curRegion_ = 0;
+				foundNextRegion_ = true;
+				for(mrs_natural i=0; i < timeline_.numRegions(); ++i)
 				{
-					//fast forward to found region
-					ctrl_pos_->setValue(timeline_.regionStart(i), NOUPDATE);
-					curRegion_ = i;
-					break;
+					if(timeline_.regionName(i) == selectedLabel_)
+					{
+						//fast forward to found region
+						ctrl_pos_->setValue(timeline_.regionStart(i), NOUPDATE);
+						curRegion_ = i;
+						//foundNextRegion_ = true;
+						break;
+					}
 				}
 			}
 		}
@@ -198,7 +206,7 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
  	if(timeline_.numRegions() == 0)
  	{
 		MRSWARN("TimelineLabeler::myProcess() - no regions/labels exist in loaded timeline: " << timeline_.filename());
-		ctrl_currentLabel_->setValue(0); //no labels defined...
+		ctrl_currentLabel_->setValue(-1); //no labels defined...
  		return;
  	}
 
@@ -220,18 +228,39 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 		samplePos_ -= inSamples_/2;	
 	
 	if (samplePos_ >= regionStart && samplePos_<= regionEnd)
-		ctrl_currentLabel_->setValue(timeline_.regionClass(curRegion_));
-	else//move on to following region, if any...
 	{
-		////////////////////////////////////////////////////////
-		//look for the next region in this timeline
-		////////////////////////////////////////////////////////
-		if(selectedLabel_ == "" || selectedLabel_ == "init")//i.e. just move to next region, whatever label
-			curRegion_++;
-		else // look for and move to next region with a specific label 
-			while(timeline_.regionName(curRegion_)!= selectedLabel_ && curRegion_ < timeline_.numRegions())
+		if(timeline_.regionName(curRegion_) == selectedLabel_ || 
+			 selectedLabel_ == "" ||
+			 selectedLabel_ == "init")
+		{
+			 ctrl_currentLabel_->setValue(timeline_.regionClass(curRegion_));
+		}
+		else
+			ctrl_currentLabel_->setValue(-1);
+		
+		foundNextRegion_ = false;
+	}
+	else//out of the current region...
+	{
+		//check if next region was already found
+		if(!foundNextRegion_)
+		{
+			////////////////////////////////////////////////////////
+			//look for the next region in this timeline
+			////////////////////////////////////////////////////////
+			if(selectedLabel_ == "" || selectedLabel_ == "init")//i.e. just move to next region, whatever label
 				curRegion_++;
-
+			else // look for and move to next region with a specific label 
+			{
+				curRegion_++;
+				while(timeline_.regionName(curRegion_)!= selectedLabel_ && curRegion_ < timeline_.numRegions())
+				{
+					curRegion_++;
+				}
+			}
+			foundNextRegion_ = true;
+		}
+		
 		///////////////////////////////////////////////////////////////////
 		//check if we found a new/subsequent region in the current timeline...
 		///////////////////////////////////////////////////////////////////
@@ -261,10 +290,10 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 					ctrl_pos_->setValue(regionStart);
 				}
 				//i.e. outside a region: signal that no label is defined for this audio frame
-				ctrl_currentLabel_->setValue(0); 
+				ctrl_currentLabel_->setValue(-1); 
 			}
 		}
-		else //no more new regions in this timeline...
+		else //no more regions in this timeline...
 		{
 			//Should we ask for another audiofile/timeline ot just play the current file till its end?
 			if(ctrl_playRegionsOnly_->to<mrs_bool>())
@@ -276,7 +305,7 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 				//fast forward to next region (at next tick)
 				ctrl_advance_->setValue(true);
 			}
-			ctrl_currentLabel_->setValue(0); //i.e. no region/label defined for this audio frame
+			ctrl_currentLabel_->setValue(-1); //i.e. no region/label defined for this audio frame
 		}
 	}
 }

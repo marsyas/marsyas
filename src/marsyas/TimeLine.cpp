@@ -27,6 +27,7 @@ TimeLine::TimeLine()
 	lineSize_ = 0;
 	size_ = 0;
 	filename_ = "";
+	numRegions_ = 0;
 }
 
 TimeLine::~TimeLine()
@@ -41,6 +42,7 @@ TimeLine::clear()
 	lineSize_ = 0;
 	size_ = 0;
 	regions_.clear();
+	numRegions_ = 0;
 }
 
 void 

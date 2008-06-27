@@ -75,6 +75,7 @@ private:
 	mrs_natural numClasses_;
 	mrs_natural curRegion_;
 	mrs_natural samplePos_;
+	mrs_bool foundNextRegion_;
 
 	void addControls();
 	void myUpdate(MarControlPtr sender);
