@@ -196,6 +196,12 @@ WekaSink::myProcess(realvec& in, realvec& out)
 			(*mos_) << "% " << ctrl_currentlyPlaying_->to<mrs_string>() << endl;
 			prev_playing_ = ctrl_currentlyPlaying_->to<mrs_string>();
 		}
+		
+		label = (mrs_natural)in(inObservations_-1, t);
+
+		if(label<0) //ignore unlabeled data (i.e. label = -1)
+				continue;
+
 		for (o=0; o < inObservations_; o++)
 		{
 			out(o,t) = in(o,t);
@@ -221,7 +227,6 @@ WekaSink::myProcess(realvec& in, realvec& out)
 			}
 		}
 
-		label = (mrs_natural)in(inObservations_-1, t);
 		ostringstream oss;
 		if ((count % downsample_) == 0)
 		{

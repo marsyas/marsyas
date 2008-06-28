@@ -177,10 +177,23 @@ void WekaData::Sort(mrs_natural attr)
 void WekaData::Append(const realvec& in)
 {
   MRSASSERT(in.getRows()==cols_);
-  vector<mrs_real> *data = new vector<mrs_real>(cols_);
+
+	mrs_natural count=0;
+	//count number of labeled instances 
+	for(mrs_natural i=0; i < in.getRows(); ++i)
+	{
+		if(in(i, in.getRows()-1)>=0)
+			count++;
+	}
+  vector<mrs_real> *data = new vector<mrs_real>(count);
+	count = 0;
   for(mrs_natural ii=0; ii<in.getRows(); ii++)
     {
-      data->at(ii) = in(ii, 0);
+      //only store labeled instances
+			if(in(ii, in.getRows()-1)>=0)
+			{
+				data->at(count++) = in(ii, 0);
+			}
     }
   Append(data);
 }//Append
