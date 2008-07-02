@@ -61,6 +61,7 @@ void
 PvUnconvert::addControls()
 {
   addctrl("mrs_natural/Interpolation", MRS_DEFAULT_SLICE_NSAMPLES/4);
+  addctrl("mrs_natural/Decimation", MRS_DEFAULT_SLICE_NSAMPLES/4);
   addctrl("mrs_string/mode", "loose_phaselock", ctrl_mode_);
   addctrl("mrs_realvec/lastphases", realvec(), ctrl_lastphases_);
   addctrl("mrs_realvec/analysisphases", realvec(), ctrl_analysisphases_);
@@ -205,6 +206,9 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 
 	
 			
+	mrs_real interpolation = getctrl("mrs_natural/Interpolation")->to<mrs_natural>() * 1.0;
+	mrs_real decimation = getctrl("mrs_natural/Decimation")->to<mrs_natural>() * 1.0;
+	mrs_real tratio = interpolation / decimation;
 	
 	for (t=0; t <= N2_; t++)
 	{
@@ -220,22 +224,32 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 					(mag_(t) > mag_(t+1)) && 
 					(mag_(t) > mag_(t+2)))
 				{
-					lastphases(t) += (in(freq,0) - t * fundamental_);
-					iphase_(t) = lastphases(t) * factor_;
+					phase_(t) = lastphases(t) + tratio * in(freq,0);
+					while (phase_(t) > PI) 
+						phase_(t) -= TWOPI;
+					while (phase_(t) < -PI) 
+						phase_(t) += TWOPI;
+					lastphases(t) = phase_(t);			
 				}
 				else
 				{
 					iphase_(t) = phase_(regions_(t)) + analysisphases(t) - analysisphases(regions_(t));
-					lastphases(t) += (iphase_(t));
-					phase_(t) = lastphases(t) * factor_;
+					while (iphase_(t) > PI) 
+						iphase_(t) -= TWOPI;
+					while (iphase_(t) < -PI) 
+						iphase_(t) += TWOPI;
+					lastphases(t) = iphase_(t);
 				}
 			}
 			else 
 			{
-				mag_(t) = 0.0;
+				phase_(t) = lastphases(t) + tratio * in(freq,0);
+				while (phase_(t) > PI) 
+					phase_(t) -= TWOPI;
+				while (phase_(t) < -PI) 
+					phase_(t) += TWOPI;
+				lastphases(t) = phase_(t);			
 				
-				lastphases(t) += (in(freq,0) - t * fundamental_);
-				iphase_(t) = lastphases(t) * factor_;
 			}
 			
 			if (t == N2_) 
@@ -251,15 +265,17 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 		}
 		else // classic
 		{
-			cout << "classic " << endl;
-			
-			lastphases(t) += (in(freq,0) - t * fundamental_);
-			phase_(t) = lastphases(t) * factor_;
-			
 			if (t == N2_) 
 			{
 				re = 1;
 			}
+			
+			phase_(t) = lastphases(t) + tratio * in(freq,0);
+			while (phase_(t) > PI) 
+				phase_(t) -= TWOPI;
+			while (phase_(t) < -PI) 
+				phase_(t) += TWOPI;
+			lastphases(t) = phase_(t);
 			
 			out(re,0) = mag_(t) * cos(phase_(t));
 			if (t != N2_)

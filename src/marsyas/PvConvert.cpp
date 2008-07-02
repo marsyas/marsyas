@@ -118,6 +118,12 @@ PvConvert::myProcessFull(realvec& in, realvec& out)
 
 	MarControlAccessor acc(ctrl_phases_);
 	mrs_realvec& phases = acc.to<mrs_realvec>();
+
+
+	mrs_real decimation = getctrl("mrs_natural/Decimation")->to<mrs_natural>() * 1.0;
+	
+	mrs_real omega_k;
+	
 	
 	// handle amplitudes
 	for (t=0; t <= N2; t++)
@@ -137,6 +143,9 @@ PvConvert::myProcessFull(realvec& in, realvec& out)
 			a = in(2*t, 0);
 			b = in(2*t+1, 0);
 		}
+ 
+		// omega_k = (TWOPI * t) / (N2 * 2);
+		omega_k = (TWOPI * decimation * t) / (N2*2) ;
 
 		// computer magnitude value 
 		out(2*t,0) = sqrt(a*a + b*b);
@@ -149,7 +158,8 @@ PvConvert::myProcessFull(realvec& in, realvec& out)
 			phases(t) = -atan2(b,a);						
 
 
-			phasediff = phases(t) - lastphase_(t);
+			phasediff = phases(t) - lastphase_(t) - omega_k;
+			// phasediff = phases(t) - lastphase_(t);
 			lastphase_(t) = phases(t);
 			
 			while (phasediff > PI) 
@@ -160,7 +170,8 @@ PvConvert::myProcessFull(realvec& in, realvec& out)
 		
 
 		// convert to Hz */ 
-		out(2*t+1,0) = phasediff * factor_ + t * fundamental_;
+		// out(2*t+1,0) = phasediff * factor_ + t * fundamental_;
+		out(2*t+1, 0) = omega_k + phasediff;
 	}
 
 	

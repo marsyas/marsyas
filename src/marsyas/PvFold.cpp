@@ -81,7 +81,7 @@ PvFold::myUpdate(MarControlPtr sender)
 	  
       for (t=0; t < Nw_; t++)
 	  {
-		  awin_(t) = (mrs_real)(0.54 - 0.46 * cos(TWOPI * t/(Nw_-1)));
+		  awin_(t) = (mrs_real)(0.5 * (1 - cos(TWOPI * t/(Nw_-1))));
 	  }
       /* when Nw_ > N also apply interpolating (sinc) windows 
        * to ensure that window are 0 at increments of N (the 
@@ -135,7 +135,6 @@ PvFold::myProcess(realvec& in, realvec& out)
 		out(0,t) = out(0, t+half_Nw_);
 		out(0,t+half_Nw_) = tmp;
 	}
-	
 	
 	/* cout << "PvFold n_" << n_ << endl;
   //checkFlow(in,out);

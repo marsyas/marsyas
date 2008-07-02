@@ -82,8 +82,8 @@ PvOverlapadd::myUpdate(MarControlPtr sender)
   
   for (t=0; t < Nw; t++)
     {
-      awin_(t) = (mrs_real)(0.54 - 0.46 * cos(TWOPI * t/(Nw-1)));
-      swin_(t) = (mrs_real)(0.54 - 0.46 * cos(TWOPI * t/(Nw-1)));
+		awin_(t) = (mrs_real)(0.5 * (1  - cos(TWOPI * t/(Nw-1))));
+		swin_(t) = (mrs_real)(0.5 * (1  - cos(TWOPI * t/(Nw-1))));
     }
   /* when Nw > N also apply interpolating (sinc) windows 
    * to ensure that window are 0 at increments of N (the 

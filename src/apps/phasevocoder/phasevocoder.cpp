@@ -201,6 +201,7 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 	else 
 	{
 		pvseries->updctrl("PvUnconvert/uconv/mrs_natural/Interpolation", I);
+		pvseries->updctrl("PvUnconvert/uconv/mrs_natural/Decimation", D);
 		pvseries->updctrl("PvUnconvert/uconv/mrs_string/mode",unconvertmode_);
 		pvseries->updctrl("PvOverlapadd/pover/mrs_natural/FFTSize", N);
 		pvseries->updctrl("PvOverlapadd/pover/mrs_natural/winSize", Nw);
