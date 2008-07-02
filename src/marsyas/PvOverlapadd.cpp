@@ -77,6 +77,7 @@ PvOverlapadd::myUpdate(MarControlPtr sender)
   swin_.create(Nw);
   awin_.create(Nw);
   temp_.create(N);
+  tin_.create(N);
   
   
   for (t=0; t < Nw; t++)
@@ -137,18 +138,14 @@ PvOverlapadd::myUpdate(MarControlPtr sender)
 void 
 PvOverlapadd::myProcess(realvec& in, realvec& out)
 {
-
-
-
-
-  
+	
+	
   // add assertions for sizes
   mrs_natural N,Nw;
   
   N = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
   Nw = getctrl("mrs_natural/onSamples")->to<mrs_natural>();
   n_ += I_;
-
 
   mrs_natural n;
   n  = n_;
@@ -160,27 +157,40 @@ PvOverlapadd::myProcess(realvec& in, realvec& out)
 
 
   for (t=0; t < Nw; t++)
-  {
-	  temp_(t) += (in(0,n) * swin_(t));
-	  
-	  if (++n == N)
-		  n = 0;
-  }
-  
-  
+	  tin_(t) = in(0, t);
   
 
+  // undo circular shift 
+  int half_Nw_ = Nw/2;
+  mrs_real tmp;
+  for (t=0; t < half_Nw_; t++) 
+  {
+	  tmp = tin_(t);
+	  tin_(t) = tin_(t+half_Nw_);
+	  tin_(t+half_Nw_) = tmp;
+  }
+  
+
+
+  for (t=0; t < Nw; t++)
+  {
+	  temp_(t) += (tin_(t) * swin_(t));
+  }
+  
+
+  
+	  
   
   for (t=0; t < N; t++) 
 	  out(0,t) = temp_(t);
-
+  
   for  (t=0; t < N-I_; t++)
 	  temp_(t) = temp_(t+I_);
   for (t=N-I_; t<N; t++) 
 	  temp_(t) = 0.0;
-
-
-
+  
+  
+  
   
 }
 

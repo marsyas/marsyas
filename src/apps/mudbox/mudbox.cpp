@@ -271,7 +271,8 @@ toy_with_CollectionFileSource(string sfName)
 	  playbacknet->tick();
 	  // playbacknet->updctrl("SoundFileSource/src/mrs_natural/cindex", cindex);
 		cout << playbacknet->getctrl("SoundFileSource/src/mrs_string/currentlyPlaying")->to<mrs_string>() << endl;
-
+		cout << playbacknet->getctrl("SoundFileSource/src/mrs_natural/pos")->to<mrs_natural>() << endl;
+		
 		// cindex++;
 		// cout << "cindex = " << cindex << endl;
 		//toy_with if setting "mrs_natural/pos" to 0 for rewinding is working

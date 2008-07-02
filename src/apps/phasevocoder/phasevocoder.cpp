@@ -209,8 +209,8 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 	}
   
 	pvseries->updctrl("ShiftOutput/so/mrs_natural/Interpolation", I);
-	pvseries->updctrl("Gain/gain/mrs_real/gain", gopt_);
-
+	pvseries->updctrl("Gain/gain/mrs_real/gain", 2.0);
+	
 	pvseries->linkctrl("PvConvert/conv/mrs_realvec/phases", 
 					   "PvUnconvert/uconv/mrs_realvec/analysisphases");
 	
@@ -303,6 +303,12 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 		}
 #endif //MARSYAS_MIDIIO
 
+		if (numticks == 0) 
+		{
+			cout << "initializing phases" << endl;
+			
+			pvseries->updctrl("PvUnconvert/uconv/mrs_bool/phaselock", true);		
+		}
 		
 		
 		pvseries->tick();

@@ -135,7 +135,6 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 	
 	const mrs_string& mode = ctrl_mode_->to<mrs_string>();	    
 	
-
 	for (t=0; t <= N2_; t++)
 	{
 		re = amp = 2*t; 
@@ -144,48 +143,76 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 		{
 			re = 1;
 		}
-		
 		mag_(t) = in(re,0);
-
-
-
 		if (t==N2_)
 			mag_(t) = 0.0;
-		
-
 	}
 
-	int previous_peak=0;
-	int peak = 0;
 
+	if (mode == "identity_phaselock")
+	{
+		int previous_peak=0;
+		int peak = 0;
+		
+		// calculate significant peaks and corresponding non-overlapping 
+		// intervals 
+		if ((t > 2) && (t <= N2_-2))
+		{
+			if ((mag_(t) > mag_(t-1)) &&
+				(mag_(t) > mag_(t-2)) &&
+				(mag_(t) > mag_(t+1)) && 
+				(mag_(t) > mag_(t+2)))
+			{
+				peak = t;
+				for (int j=previous_peak; j< previous_peak + (int)((peak-previous_peak)/2.0); j++) 
+				{
+					regions_(j) = previous_peak;
+				}
+				
+				for (int j= previous_peak + (int)((peak-previous_peak)/2.0); j < peak; j++) 
+				{
+					regions_(j) = peak;					
+				}
+				previous_peak = peak;
+			}
+		}
+	}
+	
+	// cout << regions_ << endl;
+
+
+// 	for (t=0; t <= N2_; t++)
+// 		{
+// 			re = amp = 2*t; 
+// 			im = freq = 2*t+1;
+// 			if ((t >= 1) || (t < N2_))
+// 			{
+// 				avg_re = mag_(t) * cos(phase_(t)) +
+// 					0.25 * mag_(t-1) * cos(phase_(t-1)) +
+// 					0.25 * mag_(t+1) * cos(phase_(t));
+				
+				
+// 				avg_im = -mag_(t) * sin(phase_(t)) -
+// 					-0.25 * mag_(t-1) * sin(phase_(t-1)) -
+// 					-0.25 * mag_(t+1) * sin(phase_(t));
+// 				lphase_(t) = -atan2(avg_im,avg_re);
+// 			}
+// 			lmag_(t) = mag_(t);
+// 			out(re,0) = lmag_(t) * cos(lphase_(t));
+// 			if (t != N2_)
+// 				out(im,0) = -lmag_(t) * sin(lphase_(t));
+// 		}
+
+	
+			
 	
 	for (t=0; t <= N2_; t++)
 	{
 		re = amp = 2*t; 
 		im = freq = 2*t+1;
-		if (mode == "loose_phaselock")
+		
+		if (mode == "identity_phaselock")
 		{
-			if ((t >= 1) || (t < N2_))
-			{
-				avg_re = mag_(t) * cos(phase_(t)) +
-					0.25 * mag_(t-1) * cos(phase_(t-1)) +
-					0.25 * mag_(t+1) * cos(phase_(t));
-				
-				
-				avg_im = -mag_(t) * sin(phase_(t)) -
-					-0.25 * mag_(t-1) * sin(phase_(t-1)) -
-					-0.25 * mag_(t+1) * sin(phase_(t));
-				lphase_(t) = -atan2(avg_im,avg_re);
-			}
-			lmag_(t) = mag_(t);
-			out(re,0) = lmag_(t) * cos(lphase_(t));
-			if (t != N2_)
-				out(im,0) = -lmag_(t) * sin(lphase_(t));
-		}
-		else if (mode == "identity_phaselock")
-		{
-			// calculate significant peaks and corresponding non-overlapping 
-			// intervals 
 			if ((t > 2) && (t <= N2_-2))
 			{
 				if ((mag_(t) > mag_(t-1)) &&
@@ -193,84 +220,52 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 					(mag_(t) > mag_(t+1)) && 
 					(mag_(t) > mag_(t+2)))
 				{
-					peak = t;
-					for (int j=previous_peak; j< previous_peak + (int)((peak-previous_peak)/2.0); j++) 
-					{
-						regions_(j) = previous_peak;
-					}
-					
-					for (int j= previous_peak + (int)((peak-previous_peak)/2.0); j < peak; j++) 
-					{
-						regions_(j) = peak;					
-					}
-					previous_peak = peak;
+					lastphases(t) += (in(freq,0) - t * fundamental_);
+					iphase_(t) = lastphases(t) * factor_;
 				}
-			}
-		}
-	}
-	
-	// cout << regions_ << endl;
-	
-			
-
-		for (t=0; t <= N2_; t++)
-		{
-			re = amp = 2*t; 
-			im = freq = 2*t+1;
-
-			if (mode == "identity_phaselock")
-			{
-
-
-
-
-
-
-				if ((t > 2) && (t <= N2_-2))
+				else
 				{
-					if ((mag_(t) > mag_(t-1)) &&
-						(mag_(t) > mag_(t-2)) &&
-						(mag_(t) > mag_(t+1)) && 
-						(mag_(t) > mag_(t+2)))
-					{
-						lastphases(t) += (in(freq,0) - t * fundamental_);
-						phase_(t) = lastphases(t) * factor_;
-					}
-					else
-					{
-						iphase_(t) = phase_(regions_(t)) + analysisphases(t) - analysisphases(regions_(t));
-						lastphases(t) += (iphase_(t));
-						phase_(t) = lastphases(t) * factor_;
-					}
-					
+					iphase_(t) = phase_(regions_(t)) + analysisphases(t) - analysisphases(regions_(t));
+					lastphases(t) += (iphase_(t));
+					phase_(t) = lastphases(t) * factor_;
 				}
-				else 
-					iphase_(t) = phase_(t);
-
-
-				
-				out(re,0) = mag_(t) * cos(iphase_(t));
-				if (t != N2_)
-					out(im,0) = -mag_(t) * sin(iphase_(t));
-				
-			}
-			
-			else if (mode == "loose_phaselock") 
-			{
 			}
 			else 
 			{
+				mag_(t) = 0.0;
 				
 				lastphases(t) += (in(freq,0) - t * fundamental_);
-				phase_(t) = lastphases(t) * factor_;
-
-				out(re,0) = mag_(t) * cos(phase_(t));
-				if (t != N2_)
-					out(im,0) = -mag_(t) * sin(phase_(t));
-				
-
+				iphase_(t) = lastphases(t) * factor_;
 			}
+			
+			if (t == N2_) 
+				re = 1;
+			
+			out(re,0) = mag_(t) * cos(iphase_(t));
+			if (t != N2_)
+				out(im,0) = -mag_(t) * sin(iphase_(t));
+			
 		}
+		else if (mode == "loose_phaselock") 
+		{
+		}
+		else // classic
+		{
+			cout << "classic " << endl;
+			
+			lastphases(t) += (in(freq,0) - t * fundamental_);
+			phase_(t) = lastphases(t) * factor_;
+			
+			if (t == N2_) 
+			{
+				re = 1;
+			}
+			
+			out(re,0) = mag_(t) * cos(phase_(t));
+			if (t != N2_)
+				out(im,0) = -mag_(t) * sin(phase_(t));
+		}
+	}
 		
 		
 		

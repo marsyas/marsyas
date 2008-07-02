@@ -119,15 +119,27 @@ PvFold::myUpdate(MarControlPtr sender)
 void 
 PvFold::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
-
-
-
-
-
 
 	
+	for (t=0; t < Nw_; t++)
+    {
+		out(0,t) = in(0,t)*awin_(t);
+	}
 
+	// circular shift 
+	int half_Nw_ = Nw_/2;
+	mrs_real tmp;
+	for (t=0; t < half_Nw_; t++) 
+	{
+		tmp = out(0,t);
+		out(0,t) = out(0, t+half_Nw_);
+		out(0,t+half_Nw_) = tmp;
+	}
+	
+	
+	/* cout << "PvFold n_" << n_ << endl;
+  //checkFlow(in,out);
+	cout << "PvFold D_ = " << D_ << endl;
 
 	n_ += D_;
 	
@@ -145,10 +157,11 @@ PvFold::myProcess(realvec& in, realvec& out)
 	n %= N_;
 	for (t=0; t < Nw_; t++)
     {
-		out(0,n) += in(0,t)*awin_(t);
+		out(0,n) = in(0,t)*awin_(t);
 		if (++n == N_)
 			n = 0;
     }
+	*/ 
 
 
   

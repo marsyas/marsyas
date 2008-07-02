@@ -40,6 +40,8 @@ private:
   realvec swin_;
   realvec awin_;
 		realvec temp_;
+		realvec tin_;
+		
 		
 		mrs_natural I_, D_;
 		mrs_natural n_;
