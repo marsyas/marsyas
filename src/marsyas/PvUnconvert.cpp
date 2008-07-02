@@ -135,6 +135,11 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 	mrs_real avg_im;
 	
 	const mrs_string& mode = ctrl_mode_->to<mrs_string>();	    
+
+	mrs_real interpolation = getctrl("mrs_natural/Interpolation")->to<mrs_natural>() * 1.0;
+	mrs_real decimation = getctrl("mrs_natural/Decimation")->to<mrs_natural>() * 1.0;
+	mrs_real tratio = interpolation / decimation;
+
 	
 	for (t=0; t <= N2_; t++)
 	{
@@ -152,6 +157,7 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 
 	if (mode == "identity_phaselock")
 	{
+		
 		int previous_peak=0;
 		int peak = 0;
 		
@@ -178,6 +184,28 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 			}
 		}
 	}
+
+
+	if (mode == "loose_phaselock")
+	{
+		for (t=0; t <= N2_; t++)
+		{
+			re = amp = 2*t; 
+			im = freq = 2*t+1;
+			if (t == N2_) 
+				re = 1;		
+			
+			phase_(t) = lastphases(t) + tratio * in(freq,0);
+			while (phase_(t) > PI) 
+				phase_(t) -= TWOPI;
+			while (phase_(t) < -PI) 
+				phase_(t) += TWOPI;
+
+		}
+		
+	}
+	
+		
 	
 	// cout << regions_ << endl;
 
@@ -186,37 +214,20 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 // 		{
 // 			re = amp = 2*t; 
 // 			im = freq = 2*t+1;
-// 			if ((t >= 1) || (t < N2_))
-// 			{
-// 				avg_re = mag_(t) * cos(phase_(t)) +
-// 					0.25 * mag_(t-1) * cos(phase_(t-1)) +
-// 					0.25 * mag_(t+1) * cos(phase_(t));
-				
-				
-// 				avg_im = -mag_(t) * sin(phase_(t)) -
-// 					-0.25 * mag_(t-1) * sin(phase_(t-1)) -
-// 					-0.25 * mag_(t+1) * sin(phase_(t));
-// 				lphase_(t) = -atan2(avg_im,avg_re);
-// 			}
-// 			lmag_(t) = mag_(t);
-// 			out(re,0) = lmag_(t) * cos(lphase_(t));
-// 			if (t != N2_)
-// 				out(im,0) = -lmag_(t) * sin(lphase_(t));
 // 		}
 
 	
 			
-	mrs_real interpolation = getctrl("mrs_natural/Interpolation")->to<mrs_natural>() * 1.0;
-	mrs_real decimation = getctrl("mrs_natural/Decimation")->to<mrs_natural>() * 1.0;
-	mrs_real tratio = interpolation / decimation;
 	
-	for (t=0; t <= N2_; t++)
+	// propagate phases for peaks 
+	if (mode == "identity_phaselock")
 	{
-		re = amp = 2*t; 
-		im = freq = 2*t+1;
+		cout << "Peaks resynthesis" << endl;
 		
-		if (mode == "identity_phaselock")
+		for (t=0; t <= N2_; t++)
 		{
+			re = amp = 2*t; 
+			im = freq = 2*t+1;
 			if ((t > 2) && (t <= N2_-2))
 			{
 				if ((mag_(t) > mag_(t-1)) &&
@@ -230,15 +241,7 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 					while (phase_(t) < -PI) 
 						phase_(t) += TWOPI;
 					lastphases(t) = phase_(t);			
-				}
-				else
-				{
-					iphase_(t) = phase_(regions_(t)) + analysisphases(t) - analysisphases(regions_(t));
-					while (iphase_(t) > PI) 
-						iphase_(t) -= TWOPI;
-					while (iphase_(t) < -PI) 
-						iphase_(t) += TWOPI;
-					lastphases(t) = iphase_(t);
+					iphase_(t) = phase_(t);
 				}
 			}
 			else 
@@ -248,20 +251,60 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 					phase_(t) -= TWOPI;
 				while (phase_(t) < -PI) 
 					phase_(t) += TWOPI;
+				iphase_(t) = phase_(t);
 				lastphases(t) = phase_(t);			
-				
 			}
+		}
+	}
+	
+	
+	for (t=0; t <= N2_; t++)
+	{
+		re = amp = 2*t; 
+		im = freq = 2*t+1;
+		if (t == N2_) 
+			re = 1;		
+
+		if (mode == "identity_phaselock")
+		{
 			
-			if (t == N2_) 
-				re = 1;
-			
+			if ((t > 2) && (t <= N2_-2))
+			{
+				iphase_(t) = phase_(regions_(t)) + analysisphases(t) - analysisphases(regions_(t));
+				while (iphase_(t) > PI) 
+					iphase_(t) -= TWOPI;
+				while (iphase_(t) < -PI) 
+					iphase_(t) += TWOPI;
+				lastphases(t) = iphase_(t);
+			}
 			out(re,0) = mag_(t) * cos(iphase_(t));
 			if (t != N2_)
 				out(im,0) = -mag_(t) * sin(iphase_(t));
-			
 		}
 		else if (mode == "loose_phaselock") 
 		{
+			 if (t == N2_) 
+				 re = 1;		
+			
+ 			if ((t >= 2) && (t < N2_-2))
+ 			{
+ 				avg_re = mag_(t) * cos(phase_(t)) +
+ 					0.25 * mag_(t-1) * cos(phase_(t-1)) +
+ 					0.25 * mag_(t+1) * cos(phase_(t));
+ 				avg_im = -mag_(t) * sin(phase_(t)) -
+ 					-0.25 * mag_(t-1) * sin(phase_(t-1)) -
+ 					-0.25 * mag_(t+1) * sin(phase_(t));
+ 				lphase_(t) = -atan2(avg_im,avg_re);
+ 			}
+			else 
+				lphase_(t) = phase_(t);
+			
+ 			lmag_(t) = mag_(t);
+ 			out(re,0) = lmag_(t) * cos(lphase_(t));
+ 			if (t != N2_)
+ 				out(im,0) = -lmag_(t) * sin(lphase_(t));
+
+			lastphases(t) = lphase_(t);
 		}
 		else // classic
 		{
@@ -275,19 +318,22 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 				phase_(t) -= TWOPI;
 			while (phase_(t) < -PI) 
 				phase_(t) += TWOPI;
-			lastphases(t) = phase_(t);
-			
 			out(re,0) = mag_(t) * cos(phase_(t));
 			if (t != N2_)
 				out(im,0) = -mag_(t) * sin(phase_(t));
+			lastphases(t) = phase_(t);
+			
+
 		}
 	}
-		
+}
+
+
+
 		
 		
 
 	
-}
 
 
  
