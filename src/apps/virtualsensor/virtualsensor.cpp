@@ -114,135 +114,6 @@ void loadOptions()
 
 
 
-
-void drumExtract(vector<Collection> cls, string classNames)
-{
-    MarSystemManager mng;
-    MarSystem* src = mng.create("SoundFileSource", "src");
-    src->updctrl("mrs_natural/inSamples", 4096);
-
-
-    mrs_natural inObservations = src->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
-    mrs_natural inSamples = src->getctrl("mrs_natural/inSamples")->to<mrs_natural>();  
-
-    realvec in(inObservations, inSamples);
-    realvec out(inObservations, inSamples);
-
-    mrs_natural cj,i;
-    mrs_natural win = 0;
-    mrs_natural startPos = 0;
-    mrs_natural endPos = 0;
-    mrs_natural startWin = 0;
-    mrs_natural endWin = 0;
-
-    MarSystem* extractNet = mng.create("Series", "extractNet");
-    extractNet->addMarSystem(src);
-
-    MarSystem* spectimeFanout = mng.create("Fanout", "spectimeFanout");
-    spectimeFanout->addMarSystem(mng.create("ZeroCrossings", "zcrs"));
-    spectimeFanout->addMarSystem(mng.create("Rms", "rms"));
-
-    MarSystem* spectralNet = mng.create("Series", "spectralNet");
-    spectralNet->addMarSystem(mng.create("Windowing", "ham"));
-    spectralNet->addMarSystem(mng.create("Spectrum", "spk"));
-    spectralNet->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-    MarSystem* featureFanout = mng.create("Fanout", "featureFanout");
-    featureFanout->addMarSystem(mng.create("Centroid", "centroid"));
-    featureFanout->addMarSystem(mng.create("Rolloff", "rolloff"));
-    // featureFanout->addMarSystem(mng.create("MFCC", "mfcc"));
-    // featureFanout->addMarSystem(mng.create("Kurtosis", "kurtosis"));
-    // featureFanout->addMarSystem(mng.create("Skewness", "skewness"));
-    spectralNet->addMarSystem(featureFanout);
-
-    spectimeFanout->addMarSystem(spectralNet);
-
-    extractNet->addMarSystem(spectimeFanout);
-
-    extractNet->addMarSystem(mng.create("Annotator", "ann"));
-    extractNet->addMarSystem(mng.create("WekaSink",  "wsink"));
-    extractNet->addMarSystem(mng.create("GaussianClassifier", "classifier"));  
-
-    extractNet->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
-    extractNet->updctrl("WekaSink/wsink/mrs_string/labelNames",classNames);  
-    extractNet->updctrl("WekaSink/wsink/mrs_string/filename", "art.arff");
-
-
-    extractNet->updctrl("GaussianClassifier/classifier/mrs_natural/nLabels", (mrs_natural)cls.size());
-    extractNet->updctrl("GaussianClassifier/classifier/mrs_string/mode","train");     
-
-
-    for (cj=0; cj < (mrs_natural)cls.size(); cj++)
-    {
-        Collection l = cls[cj];
-        extractNet->updctrl("Annotator/ann/mrs_natural/label", cj);
-
-        for (i=0; i < l.size(); i++)
-        { 
-            win = 0;
-            startPos = 0;
-            endPos = 0;
-            startWin = 0;
-            endWin = 0;
-            src->updctrl("mrs_string/filename", l.entry(i));
-            cout << "Processing " << l.entry(i) << endl;
-
-            src->updctrl("mrs_natural/inSamples", 4096);
-
-            while(src->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
-            {
-                src->process(in,out);
-
-                for (mrs_natural t = 0; t < inSamples; t++)
-                {
-                    if ((fabs(out(0,t)) > 0.1)&&(startPos == 0))
-                    {
-
-                        startPos = t;
-                        startWin = win;
-                    }
-                    if ((fabs(out(0,t)) > 0.999)&&(endPos == 0))
-                    {
-                        endPos = t;
-                        endWin = win;
-                    }
-
-                }      
-                win++;
-            }
-            endPos = startPos + 512;
-
-            extractNet->updctrl("mrs_natural/inSamples", 
-                    endPos - startPos);
-            extractNet->updctrl("SoundFileSource/src/mrs_natural/pos", startPos);
-            extractNet->tick();
-
-
-
-        }
-    }
-
-
-    extractNet->updctrl("GaussianClassifier/classifier/mrs_bool/done", true);
-    extractNet->updctrl("GaussianClassifier/classifier/mrs_string/mode","predict");   	  
-    extractNet->tick();  
-
-    cout << (*extractNet) << endl;
-
-
-    cout << "Wrote " << extractNet->getctrl("WekaSink/wsink/mrs_string/filename")->to<mrs_string>() << endl;
-
-
-    return;
-
-    /* src->updctrl("mrs_string/filename", filename);
-       src->updctrl("mrs_natural/inSamples", 4096);
-
-
-       extractNet->tick();
-     */ 
-}
-
-
 void readCollection(Collection& l, string name)
 {
     MRSDIAG("sfplay.cpp - readCollection");
@@ -298,11 +169,12 @@ void recordVirtualSensor(mrs_real length)
     recordNet->updctrl("MidiInput/midiin/mrs_bool/virtualPort", true);
     
     // recordNet->addMarSystem(dest); 
+    // OSX tends to like 44100 sampling rate so we make it happy
     recordNet->updctrl("mrs_real/israte", 44100.0); 
     recordNet->updctrl("mrs_real/osrate", 44100.0); 
     recordNet->linkctrl("mrs_bool/notEmpty", "AudioSource/asrc/mrs_bool/notEmpty");
     // this buffer size is needed for the Tascam FW 1804
-    recordNet->updctrl("AudioSource/asrc/mrs_natural/bufferSize",6144);
+    //recordNet->updctrl("AudioSource/asrc/mrs_natural/bufferSize",6144);
     recordNet->updctrl("AudioSource/asrc/mrs_bool/initAudio", true);
 
     pnet->addMarSystem(srm);
@@ -327,6 +199,7 @@ void recordVirtualSensor(mrs_real length)
 
     pnet->updctrl("mrs_real/israte", 44100.0); 
     //pnet->updctrl("mrs_real/osrate", 44100.0); 
+    // output of all hits concatenated
     pnet->updctrl("SoundFileSink/dest/mrs_string/filename", "vsens.au");   
 
     mrs_real srate = recordNet->getctrl("AudioSource/asrc/mrs_real/israte")->to<mrs_real>();
@@ -362,9 +235,12 @@ void recordVirtualSensor(mrs_real length)
 	pnet->tick();
       }
     
-    // 	for (i=0; i < nBytes; i++) 
-    // 	  std::cout << "Byte " << i << " = " << (int) message[i] << ", "; 
-    //       std::cout << endl;
+    /*
+    // uncomment this block if you would like to see the midi message during a hit
+    for (i=0; i < nBytes; i++) 
+        std::cout << "Byte " << i << " = " << (int) message[i] << ", "; 
+    std::cout << endl;
+    */
 }
 
 void readRMSmake(mrs_real length, string AudioFile) 
@@ -919,25 +795,156 @@ int main(int argc, const char **argv)
     */
 
     //    cout << "INSTRUMENTO OPT"<< instrumentopt << endl;
-    
+
     if (instrumentopt == 0)
-      recordVirtualSensor( lengthopt );
+        recordVirtualSensor( lengthopt );
     else if (instrumentopt == 1)
-      readSitarSensors( lengthopt );
+        readSitarSensors( lengthopt );
     else if (instrumentopt == 2)
-      recordSitarSensors( lengthopt );
+        recordSitarSensors( lengthopt );
     else if (instrumentopt == 3)
-      readFrettoPitch( lengthopt );
+        readFrettoPitch( lengthopt );
     else if (instrumentopt == 4)
-      {
-	Collection l;
-	l.read("rms.mf");
-	
-	for (int i=0; i < l.size(); i++)
-	  {
-	    readRMSmake( lengthopt, l.entry(i) );
-	  }
-      }
+    {
+        Collection l;
+        l.read("rms.mf");
+
+        for (int i=0; i < l.size(); i++)
+        {
+            readRMSmake( lengthopt, l.entry(i) );
+        }
+    }
+
     exit(0);
 }
+
+// old version of extracting drum 
+// written before silenceremove marsystem was written
+void drumExtract(vector<Collection> cls, string classNames)
+{
+    MarSystemManager mng;
+    MarSystem* src = mng.create("SoundFileSource", "src");
+    src->updctrl("mrs_natural/inSamples", 4096);
+
+
+    mrs_natural inObservations = src->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+    mrs_natural inSamples = src->getctrl("mrs_natural/inSamples")->to<mrs_natural>();  
+
+    realvec in(inObservations, inSamples);
+    realvec out(inObservations, inSamples);
+
+    mrs_natural cj,i;
+    mrs_natural win = 0;
+    mrs_natural startPos = 0;
+    mrs_natural endPos = 0;
+    mrs_natural startWin = 0;
+    mrs_natural endWin = 0;
+
+    MarSystem* extractNet = mng.create("Series", "extractNet");
+    extractNet->addMarSystem(src);
+
+    MarSystem* spectimeFanout = mng.create("Fanout", "spectimeFanout");
+    spectimeFanout->addMarSystem(mng.create("ZeroCrossings", "zcrs"));
+    spectimeFanout->addMarSystem(mng.create("Rms", "rms"));
+
+    MarSystem* spectralNet = mng.create("Series", "spectralNet");
+    spectralNet->addMarSystem(mng.create("Windowing", "ham"));
+    spectralNet->addMarSystem(mng.create("Spectrum", "spk"));
+    spectralNet->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+    MarSystem* featureFanout = mng.create("Fanout", "featureFanout");
+    featureFanout->addMarSystem(mng.create("Centroid", "centroid"));
+    featureFanout->addMarSystem(mng.create("Rolloff", "rolloff"));
+    // featureFanout->addMarSystem(mng.create("MFCC", "mfcc"));
+    // featureFanout->addMarSystem(mng.create("Kurtosis", "kurtosis"));
+    // featureFanout->addMarSystem(mng.create("Skewness", "skewness"));
+    spectralNet->addMarSystem(featureFanout);
+
+    spectimeFanout->addMarSystem(spectralNet);
+
+    extractNet->addMarSystem(spectimeFanout);
+
+    extractNet->addMarSystem(mng.create("Annotator", "ann"));
+    extractNet->addMarSystem(mng.create("WekaSink",  "wsink"));
+    extractNet->addMarSystem(mng.create("GaussianClassifier", "classifier"));  
+
+    extractNet->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
+    extractNet->updctrl("WekaSink/wsink/mrs_string/labelNames",classNames);  
+    extractNet->updctrl("WekaSink/wsink/mrs_string/filename", "art.arff");
+
+
+    extractNet->updctrl("GaussianClassifier/classifier/mrs_natural/nLabels", (mrs_natural)cls.size());
+    extractNet->updctrl("GaussianClassifier/classifier/mrs_string/mode","train");     
+
+
+    for (cj=0; cj < (mrs_natural)cls.size(); cj++)
+    {
+        Collection l = cls[cj];
+        extractNet->updctrl("Annotator/ann/mrs_natural/label", cj);
+
+        for (i=0; i < l.size(); i++)
+        { 
+            win = 0;
+            startPos = 0;
+            endPos = 0;
+            startWin = 0;
+            endWin = 0;
+            src->updctrl("mrs_string/filename", l.entry(i));
+            cout << "Processing " << l.entry(i) << endl;
+
+            src->updctrl("mrs_natural/inSamples", 4096);
+
+            while(src->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
+            {
+                src->process(in,out);
+
+                for (mrs_natural t = 0; t < inSamples; t++)
+                {
+                    if ((fabs(out(0,t)) > 0.1)&&(startPos == 0))
+                    {
+
+                        startPos = t;
+                        startWin = win;
+                    }
+                    if ((fabs(out(0,t)) > 0.999)&&(endPos == 0))
+                    {
+                        endPos = t;
+                        endWin = win;
+                    }
+
+                }      
+                win++;
+            }
+            endPos = startPos + 512;
+
+            extractNet->updctrl("mrs_natural/inSamples", 
+                    endPos - startPos);
+            extractNet->updctrl("SoundFileSource/src/mrs_natural/pos", startPos);
+            extractNet->tick();
+
+
+
+        }
+    }
+
+
+    extractNet->updctrl("GaussianClassifier/classifier/mrs_bool/done", true);
+    extractNet->updctrl("GaussianClassifier/classifier/mrs_string/mode","predict");   	  
+    extractNet->tick();  
+
+    cout << (*extractNet) << endl;
+
+
+    cout << "Wrote " << extractNet->getctrl("WekaSink/wsink/mrs_string/filename")->to<mrs_string>() << endl;
+
+
+    return;
+
+    /* src->updctrl("mrs_string/filename", filename);
+       src->updctrl("mrs_natural/inSamples", 4096);
+
+
+       extractNet->tick();
+     */ 
+}
+
 
