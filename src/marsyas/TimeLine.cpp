@@ -177,6 +177,9 @@ TimeLine::getRegionNames() const
 			classNames.push_back(regions_[i].name);
 	}
 
+	sort(classNames.begin(), classNames.end());
+	
+
 	return classNames;
 }
 
