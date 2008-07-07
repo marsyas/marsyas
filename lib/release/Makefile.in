@@ -351,6 +351,7 @@ libmarsyas_a_SOURCES = \
 	$(top_srcdir)/src/marsyas/PCA.cpp \
 	$(top_srcdir)/src/marsyas/AbsMax.cpp \
 	$(top_srcdir)/src/marsyas/TimelineLabeler.cpp \
+	$(top_srcdir)/src/marsyas/RadioDrumInput.cpp \
 			$(top_srcdir)/src/marsyas/Gain.cpp
 
 subdir = lib/release
@@ -454,7 +455,7 @@ am_libmarsyas_a_OBJECTS = svm.$(OBJEXT) RtAudio3.$(OBJEXT) \
 	EnhADRessStereoSpectrum.$(OBJEXT) McAulayQuatieri.$(OBJEXT) \
 	PeakerOnset.$(OBJEXT) Reverse.$(OBJEXT) SNR.$(OBJEXT) \
 	PCA.$(OBJEXT) AbsMax.$(OBJEXT) TimelineLabeler.$(OBJEXT) \
-	Gain.$(OBJEXT)
+	RadioDrumInput.$(OBJEXT) Gain.$(OBJEXT)
 libmarsyas_a_OBJECTS = $(am_libmarsyas_a_OBJECTS)
 libmarsyasqt_a_AR = $(AR) cru
 libmarsyasqt_a_LIBADD =
@@ -573,7 +574,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/PvFold.Po ./$(DEPDIR)/PvOscBank.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PvOverlapadd.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PvUnconvert.Po ./$(DEPDIR)/QGMMModel.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/RBF.Po ./$(DEPDIR)/RawFileSource.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/RBF.Po ./$(DEPDIR)/RadioDrumInput.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/RawFileSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RealvecSink.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RealvecSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Reassign.Po ./$(DEPDIR)/Repeat.Po \
@@ -950,6 +952,7 @@ SNR.$(OBJEXT): $(top_srcdir)/src/marsyas/SNR.cpp
 PCA.$(OBJEXT): $(top_srcdir)/src/marsyas/PCA.cpp
 AbsMax.$(OBJEXT): $(top_srcdir)/src/marsyas/AbsMax.cpp
 TimelineLabeler.$(OBJEXT): $(top_srcdir)/src/marsyas/TimelineLabeler.cpp
+RadioDrumInput.$(OBJEXT): $(top_srcdir)/src/marsyas/RadioDrumInput.cpp
 Gain.$(OBJEXT): $(top_srcdir)/src/marsyas/Gain.cpp
 libmarsyas.a: $(libmarsyas_a_OBJECTS) $(libmarsyas_a_DEPENDENCIES) 
 	-rm -f libmarsyas.a
@@ -1119,6 +1122,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PvUnconvert.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/QGMMModel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RBF.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RadioDrumInput.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RawFileSource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RealvecSink.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RealvecSource.Po@am__quote@
@@ -4024,6 +4028,18 @@ TimelineLabeler.obj: $(top_srcdir)/src/marsyas/TimelineLabeler.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/TimelineLabeler.Po' tmpdepfile='$(DEPDIR)/TimelineLabeler.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TimelineLabeler.obj `cygpath -w $(top_srcdir)/src/marsyas/TimelineLabeler.cpp`
+
+RadioDrumInput.o: $(top_srcdir)/src/marsyas/RadioDrumInput.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/RadioDrumInput.cpp' object='RadioDrumInput.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RadioDrumInput.Po' tmpdepfile='$(DEPDIR)/RadioDrumInput.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RadioDrumInput.o `test -f '$(top_srcdir)/src/marsyas/RadioDrumInput.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/marsyas/RadioDrumInput.cpp
+
+RadioDrumInput.obj: $(top_srcdir)/src/marsyas/RadioDrumInput.cpp
+@AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/RadioDrumInput.cpp' object='RadioDrumInput.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RadioDrumInput.Po' tmpdepfile='$(DEPDIR)/RadioDrumInput.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RadioDrumInput.obj `cygpath -w $(top_srcdir)/src/marsyas/RadioDrumInput.cpp`
 
 Gain.o: $(top_srcdir)/src/marsyas/Gain.cpp
 @AMDEP_TRUE@	source='$(top_srcdir)/src/marsyas/Gain.cpp' object='Gain.o' libtool=no @AMDEPBACKSLASH@

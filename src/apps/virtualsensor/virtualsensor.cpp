@@ -216,7 +216,7 @@ void recordVirtualSensor(mrs_real length)
 	// r = midiin->rval;
 	cout << "rval: " << r << endl;
 	cout << t << " of "<< iterations << endl; 
-	if (r > 61)
+	if (r> 61)
 	  {
 	    cout << "middle" << endl;
 	    pnet->setctrl("Annotator/ann/mrs_natural/label", 1);
@@ -250,7 +250,7 @@ void extractHits() {
 
     mrs_natural windowsize = 512;
     mrs_string sfname = "input.wav";
-
+   
     MarSystem* playbacknet = mng.create("Series", "playbacknet");
     playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
     playbacknet->addMarSystem(mng.create("PeakerAdaptive", "peaker"));
@@ -281,12 +281,136 @@ void extractHits() {
     delete playbacknet;
 }
 
+void drumExtract3() {
+    MarSystemManager mng;
+
+    mrs_natural windowsize = 512;
+
+    MidiInput* midiin = new MidiInput("midiin");
+
+    MarSystem* playbacknet = mng.create("Series", "playbacknet");
+    playbacknet->addMarSystem(mng.create("AudioSource", "src"));
+    playbacknet->addMarSystem(mng.create("PeakerAdaptive", "peaker"));
+    playbacknet->addMarSystem(midiin);
+
+        
+    playbacknet->updctrl("mrs_natural/inSamples", windowsize);
+    playbacknet->updctrl("mrs_real/israte", 44100.0);
+    playbacknet->updctrl("mrs_real/osrate", 44100.0);
+    playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+    int srate = playbacknet->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+
+    // values optimized for window size of 512
+    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/inSamples", srate);
+    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakSpacing", 4.0);
+    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakStrength", 0.5);
+    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakStart", 0);
+    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakEnd", srate);
+    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakGain", 1.0);
+    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakStrengthReset", 2);
+    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakDecay", 0.999);
+
+    MarSystem* extractNet= mng.create("Series", "extractNet");
+
+    extractNet->addMarSystem(mng.create("Windowing", "ham"));
+    extractNet->addMarSystem(mng.create("Spectrum", "spk"));
+    extractNet->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+    MarSystem* featureFanout = mng.create("Fanout", "featureFanout");
+    featureFanout->addMarSystem(mng.create("Centroid", "centroid"));
+    featureFanout->addMarSystem(mng.create("Rolloff", "rolloff"));
+    featureFanout->addMarSystem(mng.create("MFCC", "mfcc"));
+    featureFanout->addMarSystem(mng.create("Kurtosis", "kurtosis"));
+    featureFanout->addMarSystem(mng.create("Skewness", "skewness"));
+    extractNet->addMarSystem(featureFanout);
+
+    extractNet->addMarSystem(mng.create("Annotator", "ann"));
+    extractNet->addMarSystem(mng.create("WekaSink",  "wsink"));
+
+    extractNet->updctrl("Annotator/ann/mrs_natural/label", 0);
+    extractNet->updctrl("WekaSink/wsink/mrs_natural/nLabels", 2);
+    extractNet->updctrl("WekaSink/wsink/mrs_string/labelNames","edge, center");  
+    extractNet->updctrl("WekaSink/wsink/mrs_string/filename", "art.arff");
+
+    extractNet->updctrl("mrs_natural/inSamples",windowsize);
+    extractNet->updctrl("mrs_natural/onSamples",windowsize);
+    extractNet->updctrl("mrs_real/israte", 44100.0);
+    extractNet->updctrl("mrs_real/osrate", 44100.0);
+
+//    cout << *extractNet << endl;
+
+    realvec in1, out1, analysisvec, out2;
+    in1.create(playbacknet->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+            playbacknet->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+    out1.create(playbacknet->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+            playbacknet->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+    
+    analysisvec.create(extractNet->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+            extractNet->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+    out2.create(extractNet->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+            extractNet->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+
+    mrs_natural count = 1;
+    mrs_natural radialposition;
+    
+    while ( true ) 
+    { 
+        playbacknet->process(in1,out1);
+
+        for (int i = 0; i < windowsize;i++)
+        {   
+            if ( out1(i) > 0)
+            {
+                int windowposition = i;
+        
+                for (int j = 0; j < windowsize; j++){
+                    analysisvec(windowposition++) = out1(j);
+                }
+
+                playbacknet->process(in1,out1);
+
+                for (int j = 0; j < windowsize-i; j++){
+                    analysisvec(windowposition++) = out1(j);
+                }
+
+
+                if (radialposition> 61)
+                {
+                    extractNet->setctrl("Annotator/ann/mrs_natural/label", 1);
+                }
+                /* else if (r > 61) 
+                   {
+                   cout << "middle" << endl;
+                   pnet->setctrl("Annotator/ann/mrs_natural/label", 1);
+                   }
+                 */ 
+                else
+                {
+                    extractNet->setctrl("Annotator/ann/mrs_natural/label", 0);
+                }
+
+
+                cout << "drumit   "<< count++ << endl;
+                cout << "value    "<< out1(i) << endl;
+                cout << "radiodrum    "<< radialposition << endl;
+
+                //cout << *extractNet << endl;
+                extractNet->process(analysisvec, out2);
+            
+                break;
+            }    
+        }   
+    }   
+    delete playbacknet;
+}
+
+
 void drumExtract2() {
     MarSystemManager mng;
 
     mrs_natural windowsize = 512;
-    mrs_string sfname = "input.wav";
 
+    mrs_string sfname = "input.wav";
     MarSystem* playbacknet = mng.create("Series", "playbacknet");
     playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
     playbacknet->addMarSystem(mng.create("PeakerAdaptive", "peaker"));
@@ -372,6 +496,7 @@ void drumExtract2() {
                 cout << "drumit   "<< count++ << endl;
                 cout << "time     "<< (mrs_real)(currentindex/44100.0) << endl;
                 cout << "value    "<< out1(i) << endl;
+
                 /*
                 // this block is used for printing each extracted window to a soundfile
                 ostringstream oss;

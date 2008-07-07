@@ -173,6 +173,7 @@
 #include "PCA.h"
 #include "AbsMax.h"
 #include "TimelineLabeler.h"
+#include "RadioDrumInput.h"
 #include "Gain.h"
 // please leave Gain at the end; it makes scripts happy.
 

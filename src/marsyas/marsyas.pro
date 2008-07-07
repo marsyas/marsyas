@@ -351,6 +351,7 @@ HEADERS += \
 	PCA.h \
 	AbsMax.h \
 	TimelineLabeler.h \
+	RadioDrumInput.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 	 
@@ -589,6 +590,7 @@ SOURCES += \
 	PCA.cpp \
 	AbsMax.cpp \
 	TimelineLabeler.cpp \
+	RadioDrumInput.cpp \
 	Gain.cpp
 # please leave Gain.cpp at the end like this; it makes scripts happy.
 
