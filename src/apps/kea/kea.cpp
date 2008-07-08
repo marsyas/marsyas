@@ -194,6 +194,15 @@ pca()
 }
 
 void 
+train_predict() 
+{
+	
+
+}
+
+
+
+void 
 train()
 {
   cout << "Training classifier using .arff file: " << wekafname_ << endl;

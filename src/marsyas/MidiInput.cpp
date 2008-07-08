@@ -126,10 +126,9 @@ void MidiInput::mycallback(double deltatime, std::vector< unsigned char > * mess
     {
       if (nBytes > 2) 
         {
-	  mythis->byte3 = message->at(2); 
-	  mythis->byte2 = message->at(1);
-	  mythis->byte1 = message->at(0);
-
+			mythis->byte3 = message->at(2); 
+			mythis->byte2 = message->at(1);
+			mythis->byte1 = message->at(0);
         }
       
     }
