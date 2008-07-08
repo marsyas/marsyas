@@ -33,9 +33,12 @@ RadioDrumInput::RadioDrumInput(string name):MarSystem("RadioDrumInput",name)
 
 RadioDrumInput::RadioDrumInput(const RadioDrumInput& a): MarSystem(a) 
 {
-    ctrl_byte1_ = getctrl("mrs_natural/byte1");
-    ctrl_byte2_ = getctrl("mrs_natural/byte2");
-    ctrl_byte3_ = getctrl("mrs_natural/byte3");
+    rx_ = getctrl("mrs_natural/rightstickx");
+    ry_ = getctrl("mrs_natural/rightsticky");
+    rz_ = getctrl("mrs_natural/rightstickz");
+    lx_ = getctrl("mrs_natural/leftstickx");
+    ly_ = getctrl("mrs_natural/leftsticky");
+    lz_ = getctrl("mrs_natural/leftstickz");
 }
 
 RadioDrumInput::~RadioDrumInput()
@@ -55,9 +58,12 @@ void RadioDrumInput::addControls()
     addctrl("mrs_natural/port", 0);
     addctrl("mrs_bool/initmidi", false);
     setctrlState("mrs_bool/initmidi", true);
-    addctrl("mrs_natural/byte1", 0, ctrl_byte1_);
-    addctrl("mrs_natural/byte2", 0, ctrl_byte2_);
-    addctrl("mrs_natural/byte3", 0, ctrl_byte3_);
+    addctrl("mrs_natural/rightstickx", 0, rx_);
+    addctrl("mrs_natural/rightsticky", 0, ry_);
+    addctrl("mrs_natural/rightstickz", 0, rz_); 
+    addctrl("mrs_natural/leftstickx", 0, lx_); 
+    addctrl("mrs_natural/leftsticky", 0, ly_); 
+    addctrl("mrs_natural/leftstickz", 0, lz_);
 }
 
 void RadioDrumInput::myUpdate(MarControlPtr sender)
@@ -92,7 +98,6 @@ void RadioDrumInput::myUpdate(MarControlPtr sender)
         } 
         initMidi = !initMidi;
     }
-
 #endif
 }
 
@@ -105,14 +110,23 @@ void RadioDrumInput::mycallback(double deltatime, std::vector< unsigned char > *
 
     RadioDrumInput* mythis = (RadioDrumInput*) userData;
 
-    if (nBytes > 0) 
+    // fix this to make more sense with specific radio drum input
+    if (nBytes ==  3) 
     {
-        if (nBytes > 2) 
-        {
-            mythis->byte3 = message->at(2); 
-            mythis->byte2 = message->at(1);
-            mythis->byte1 = message->at(0);
 
+        if ( message->at(0) == 144){
+            if(message->at(1) == 1)
+                mythis->rightstickx = message->at(2);
+            else  if ( message->at(1)==2)
+                mythis->rightsticky = message->at(2);
+            else  if ( message->at(1)==3)
+                mythis->rightstickz = message->at(2);
+            else  if ( message->at(1)==4)
+                mythis->leftstickx = message->at(2);
+            else  if ( message->at(1)==5)
+                mythis->leftsticky = message->at(2);
+            else  if ( message->at(1)==6)
+                mythis->leftstickz = message->at(2);
         }
 
     }
@@ -126,9 +140,12 @@ void RadioDrumInput::myProcess(realvec& in, realvec& out)
         {
             out(o,t) =  in(o,t);
         }
-    
-    ctrl_byte1_->setValue((mrs_natural)byte1, NOUPDATE);
-    ctrl_byte2_->setValue((mrs_natural)byte2, NOUPDATE);
-    ctrl_byte3_->setValue((mrs_natural)byte3, NOUPDATE);
+
+    rx_->setValue((mrs_natural)rightstickx, NOUPDATE);
+    ry_->setValue((mrs_natural)rightsticky, NOUPDATE);
+    rz_->setValue((mrs_natural)rightstickz, NOUPDATE);
+    lx_->setValue((mrs_natural)leftstickx, NOUPDATE);
+    ly_->setValue((mrs_natural)leftsticky, NOUPDATE);
+    lz_->setValue((mrs_natural)leftstickz, NOUPDATE);
 
 }

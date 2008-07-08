@@ -49,10 +49,14 @@ Controls:
             RtMidiIn* rdin;
 #endif 
             int byte3, byte2, byte1;  
+            int rightstickx,rightsticky,rightstickz,leftstickx,leftsticky,leftstickz;  
             bool initMidi;
-            MarControlPtr ctrl_byte1_;
-            MarControlPtr ctrl_byte2_;
-            MarControlPtr ctrl_byte3_;
+            MarControlPtr rx_;
+            MarControlPtr ry_;
+            MarControlPtr rz_;
+            MarControlPtr lx_;
+            MarControlPtr ly_;
+            MarControlPtr lz_;
 
         public:
             RadioDrumInput(std::string name);

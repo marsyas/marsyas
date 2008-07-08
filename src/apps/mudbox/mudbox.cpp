@@ -74,6 +74,7 @@ printHelp(string progName)
 	cerr << "panorama     : toy_with Panorama amplitude panning " << endl;
 	cerr << "parallel        : toy_with Parallel composite " << endl;
 	cerr << "probe           : toy_with Probe functionality " << endl;
+	cerr << "radiodrum  	   : toy_with radiodrum" << endl;
 	cerr << "realvec         : toy_with realvec functions " << endl;
 	cerr << "reverb          : toy_with reverb " << endl;
 	cerr << "rmsilence  	   : toy_with removing silences " << endl;
@@ -283,6 +284,29 @@ toy_with_CollectionFileSource(string sfName)
 }
 
 
+
+
+void 
+toy_with_RadioDrumInput()
+{  
+	MarSystemManager mng;
+
+	MarSystem* playbacknet = mng.create("Series", "playbacknet");
+	playbacknet->addMarSystem(mng.create("AudioSource", "src"));
+	playbacknet->addMarSystem(mng.create("RadioDrumInput", "rd"));
+
+	playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	playbacknet->updctrl("RadioDrumInput/rd/mrs_bool/initmidi", true);
+
+	while (true) 
+	{
+	  playbacknet->tick();
+		
+		 cout << "rightstick= " << 89 << endl;
+		 cout << "leftstick= " << 89 << endl;
+	}
+	delete playbacknet;
+}
 
 
 
@@ -3856,6 +3880,9 @@ main(int argc, const char **argv)
 		toy_phisem();
 	else if (toy_withName == "windowedsource")
 		toy_with_windowedsource(fname0);
+	else if (toy_withName == "radiodrum")
+		toy_with_RadioDrumInput();
+
 
 	else 
 	{
