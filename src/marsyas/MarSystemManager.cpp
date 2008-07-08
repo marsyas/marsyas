@@ -278,6 +278,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("ClassOutputSink", new ClassOutputSink("classoutputsinkp"));
 	registerPrototype("Filter", new Filter("filterp"));
 	registerPrototype("Biquad", new Biquad("biquadp"));
+	registerPrototype("RadioDrumInput", new RadioDrumInput("radiodrump"));
 	registerPrototype("ERB", new ERB("erbp"));
 	registerPrototype("ClipAudioRange", new ClipAudioRange("clpr"));
 	registerPrototype("HarmonicEnhancer", new HarmonicEnhancer("hepr"));

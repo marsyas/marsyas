@@ -113,19 +113,20 @@ void RadioDrumInput::mycallback(double deltatime, std::vector< unsigned char > *
     // fix this to make more sense with specific radio drum input
     if (nBytes ==  3) 
     {
-
-        if ( message->at(0) == 144){
-            if(message->at(1) == 1)
+        
+        // 160 is to detect poly pressure on channel 1 0xA0
+        if ( message->at(0) == 160){
+            if(message->at(1) == 8)
                 mythis->rightstickx = message->at(2);
-            else  if ( message->at(1)==2)
+            else  if ( message->at(1)==9)
                 mythis->rightsticky = message->at(2);
-            else  if ( message->at(1)==3)
+            else  if ( message->at(1)==10)
                 mythis->rightstickz = message->at(2);
-            else  if ( message->at(1)==4)
+            else  if ( message->at(1)==11)
                 mythis->leftstickx = message->at(2);
-            else  if ( message->at(1)==5)
+            else  if ( message->at(1)==12)
                 mythis->leftsticky = message->at(2);
-            else  if ( message->at(1)==6)
+            else  if ( message->at(1)==13)
                 mythis->leftstickz = message->at(2);
         }
 

@@ -295,17 +295,24 @@ toy_with_RadioDrumInput()
 	playbacknet->addMarSystem(mng.create("AudioSource", "src"));
 	playbacknet->addMarSystem(mng.create("RadioDrumInput", "rd"));
 
-	playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	playbacknet->updctrl("mrs_natural/inSamples", 512);
+	playbacknet->updctrl("mrs_real/osrate", 44100.0);
+	playbacknet->updctrl("mrs_real/israte", 44100.0);
+	playbacknet->updctrl("AudioSource/src/mrs_bool/initAudio", true);
 	playbacknet->updctrl("RadioDrumInput/rd/mrs_bool/initmidi", true);
-
 	while (true) 
 	{
 	  playbacknet->tick();
-		
-		 cout << "rightstick= " << 89 << endl;
-		 cout << "leftstick= " << 89 << endl;
-	}
-	delete playbacknet;
+      
+      /*
+      printf("right stick x position:  %li left stick x position: %li \r", 
+              playbacknet->getctrl("RadioDrumInput/rd/mrs_natural/rightstickx")->to<mrs_natural>(), 
+              playbacknet->getctrl("RadioDrumInput/rd/mrs_natural/leftstickx")->to<mrs_natural>() );
+      */
+      cout << "rightstick= " << playbacknet->getctrl("RadioDrumInput/rd/mrs_natural/rightstickx")->to<mrs_natural>() << endl;
+      cout << "leftstick= " <<  playbacknet->getctrl("RadioDrumInput/rd/mrs_natural/leftstickx")->to<mrs_natural>() << endl;
+    }
+    delete playbacknet;
 }
 
 
