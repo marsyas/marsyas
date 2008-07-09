@@ -309,7 +309,7 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 
 		if (numticks == 0) 
 		{
-			cout << "initializing phases" << endl;
+
 			pvseries->updctrl("PvUnconvert/uconv/mrs_bool/phaselock", true);		
 		}
 		
@@ -361,7 +361,7 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 		
 	}
 		
-	cout << "num ticks = " << numticks << endl;
+
 	
 
 	// MATLAB_CLOSE();

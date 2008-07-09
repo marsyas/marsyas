@@ -55,6 +55,7 @@ namespace Marsyas
 			
 			
 			MarControlPtr ctrl_mode_;
+			MarControlPtr ctrl_peakPicking_;
 			MarControlPtr ctrl_lastphases_;
 			MarControlPtr ctrl_analysisphases_;
 			MarControlPtr ctrl_phaselock_;
@@ -64,7 +65,10 @@ namespace Marsyas
 		
 			void addControls();
 			void myUpdate(MarControlPtr sender);
-  
+
+			int subband(int bin);
+			bool isPeak(int bin);
+			
 		public:
 			PvUnconvert(std::string name);
 			PvUnconvert(const PvUnconvert&);

@@ -36,6 +36,8 @@ PvUnconvert::PvUnconvert(string name):MarSystem("PvUnconvert",name)
 PvUnconvert::PvUnconvert(const PvUnconvert& a):MarSystem(a)
 {
 	ctrl_mode_ = getctrl("mrs_string/mode");
+	ctrl_peakPicking_ = getctrl("mrs_string/peakPicking");
+	
 	ctrl_lastphases_ = getctrl("mrs_realvec/lastphases");
 	ctrl_analysisphases_ = getctrl("mrs_realvec/analysisphases");
 	ctrl_regions_ = getctrl("mrs_realvec/regions");
@@ -64,6 +66,7 @@ PvUnconvert::addControls()
   addctrl("mrs_natural/Interpolation", MRS_DEFAULT_SLICE_NSAMPLES/4);
   addctrl("mrs_natural/Decimation", MRS_DEFAULT_SLICE_NSAMPLES/4);
   addctrl("mrs_string/mode", "loose_phaselock", ctrl_mode_);
+  addctrl("mrs_string/peakPicking", "multires", ctrl_peakPicking_);
   addctrl("mrs_realvec/lastphases", realvec(), ctrl_lastphases_);
   addctrl("mrs_realvec/analysisphases", realvec(), ctrl_analysisphases_);
   addctrl("mrs_realvec/regions", realvec(), ctrl_regions_);
@@ -119,6 +122,44 @@ PvUnconvert::myUpdate(MarControlPtr sender)
 	
 }
 
+
+int
+PvUnconvert::subband(int bin)
+{
+	int si;
+	
+	if (bin  < 16) 
+		si = 1;
+	else if ((bin >= 16) && (bin < 32))
+		si = 1;
+	else 
+		si = (int)(log(bin*1.0) / log(2.0))-3;
+
+	return si;	
+}
+
+
+bool 
+PvUnconvert::isPeak(int bin) 
+{
+
+	bool res = true;
+	
+	int h = subband(bin);
+	
+	for (int i = bin-h; i < bin+h; i++)
+	{
+		if (mag_(bin) < mag_(i))
+			res = false;
+	}
+	
+	return res;
+
+
+}
+
+
+
 void 
 PvUnconvert::myProcess(realvec& in, realvec& out)
 {
@@ -150,8 +191,9 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 	mrs_real tratio = interpolation / decimation;
 	mrs_real beta = 0.66 + tratio/3.0;
 	
-
-
+	
+	
+	
 
 	
 	// calculate magnitude 
@@ -169,25 +211,6 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 	}
 
 
-	if (mode == "identity_phaselock")
-	{
-		
-		
-		for (t=0; t <= N2_; t++)
-		{
-		
-			if ((t > 2) && (t <= N2_-2))
-			{
-				if ((mag_(t) > mag_(t-1)) &&
-					(mag_(t) > mag_(t-2)) &&
-					(mag_(t) > mag_(t+1)) && 
-					(mag_(t) > mag_(t+2)))
-				{
-				}
-			}
-		}
-		
-	}
 	
 
 	if (mode == "loose_phaselock")
@@ -208,9 +231,11 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 		}
 	}
 	
-		
+
+	// cout << regions << endl;
 	
-	// propagate phases for peaks 
+	
+	// propagate phases for peaks and calculate regions of influence 
 	if ((mode == "identity_phaselock")||(mode == "scaled_phaselock"))
 	{
 		int previous_peak=0;
@@ -221,31 +246,24 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 			im = freq = 2*t+1;
 
 			
+			
 
 			if ((t > 2) && (t <= N2_-2))
 			{
-				if ((mag_(t) > mag_(t-1)) &&
-					(mag_(t) > mag_(t-2)) &&
-					(mag_(t) > mag_(t+1)) && 
-					(mag_(t) > mag_(t+2)))
+				if (isPeak(t))
 				{
-
-
 					if (mode == "identity_phaselock")
 						phase_(t) = lastphases(t) + tratio * in(freq,0);
 					else if (mode == "scaled_phaselock")
 						phase_(t) = lastphases(regions(t)) + tratio * in(freq,0);
-					
-
+			
 					while (phase_(t) > PI) 
 						phase_(t) -= TWOPI;
 					while (phase_(t) < -PI) 
 						phase_(t) += TWOPI;
 					lastphases(t) = phase_(t);			
 					iphase_(t) = phase_(t);
-
-
-
+					
 					// calculate significant peaks and corresponding 
 					// non-overlapping intervals 
 					peak = t;
@@ -259,12 +277,6 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 						regions(j) = peak;					
 					}
 					previous_peak = peak;
-					
-
-
-
-
-
 				}
 			}
 			else 
@@ -301,8 +313,17 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 				while (analysisphases(t) < -PI) 
 					analysisphases(t) += TWOPI;				
 				
-
 				iphase_(t) = phase_(regions(t)) + beta * (analysisphases(t) - analysisphases(regions(t)));
+				
+
+				// sinusoidal trajectory continuation heuristic 
+				/* if (t - regions(t) > subband(t))
+					iphase_(t) = phase_(regions(t)) + beta * (analysisphases(t) - analysisphases(regions(t)));
+				else 
+					iphase_(t) = lastphases(t) + tratio * in(freq,0);
+					iphase_(t) = analysisphases(t);
+					*/ 
+				
 				while (iphase_(t) > PI) 
 					iphase_(t) -= TWOPI;
 				while (iphase_(t) < -PI) 
@@ -313,7 +334,7 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 
 			if (ctrl_phaselock_->to<mrs_bool>())
 			{
-				cout << "Phase locking to analysis phases" << endl;
+
 				iphase_ = analysisphases;
 				ctrl_phaselock_->setValue(false);
 			}
@@ -344,7 +365,7 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 
 			if (ctrl_phaselock_->to<mrs_bool>())
 			{
-				cout << "Phase locking to analysis phases" << endl;
+
 				lphase_ = analysisphases;
 				ctrl_phaselock_->setValue(false);
 			}
@@ -377,7 +398,7 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 
 			if (ctrl_phaselock_->to<mrs_bool>())
 			{
-				cout << "Phase locking to analysis phases" << endl;
+
 				phase_ = analysisphases;
 				ctrl_phaselock_->setValue(false);
 			}
