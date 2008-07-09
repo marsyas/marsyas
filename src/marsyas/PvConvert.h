@@ -54,6 +54,8 @@ namespace Marsyas
 			mrs_natural size_, psize_;
 			MarControlPtr ctrl_mode_;
 			MarControlPtr ctrl_phases_;
+			MarControlPtr ctrl_regions_;
+			
 			
 			void addControls();
 			void myUpdate(MarControlPtr sender);

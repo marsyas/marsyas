@@ -214,8 +214,11 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 	
 	pvseries->linkctrl("PvConvert/conv/mrs_realvec/phases", 
 					   "PvUnconvert/uconv/mrs_realvec/analysisphases");
-	
 
+	pvseries->linkctrl("PvUnconvert/uconv/mrs_realvec/regions",
+					   "PvConvert/conv/mrs_realvec/regions");
+	
+	
 	if (!quietopt_)
 		cout << *pvseries << endl;
 

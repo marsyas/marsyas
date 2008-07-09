@@ -39,6 +39,7 @@ PvConvert::PvConvert(const PvConvert& a):MarSystem(a)
 {
 	ctrl_mode_ = getctrl("mrs_string/mode");
 	ctrl_phases_ = getctrl("mrs_realvec/phases");
+	ctrl_regions_ = getctrl("mrs_realvec/regions");
 	
 }
 
@@ -63,6 +64,8 @@ PvConvert::addControls()
 	setctrlState("mrs_natural/Sinusoids", true);
 	addctrl("mrs_string/mode", "sorted", ctrl_mode_);
 	addctrl("mrs_realvec/phases", realvec(), ctrl_phases_);
+	addctrl("mrs_realvec/regions", realvec(), ctrl_regions_);
+	
 	
 }
 
@@ -85,7 +88,11 @@ PvConvert::myUpdate(MarControlPtr sender)
 		// phase_.stretch(size_);
 		MarControlAccessor acc(ctrl_phases_);
 		realvec& phase = acc.to<mrs_realvec>();
+		MarControlAccessor acc1(ctrl_regions_);
+		realvec& regions = acc1.to<mrs_realvec>();
+
 		phase.stretch(size_);
+		regions.stretch(size_);
 		mag_.stretch(size_);
 		sortedmags_.stretch(size_);
 		sortedpos_.stretch(size_);
@@ -119,11 +126,17 @@ PvConvert::myProcessFull(realvec& in, realvec& out)
 	MarControlAccessor acc(ctrl_phases_);
 	mrs_realvec& phases = acc.to<mrs_realvec>();
 
+	MarControlAccessor acc1(ctrl_regions_);
+	mrs_realvec& regions = acc1.to<mrs_realvec>();
+	
 
 	mrs_real decimation = getctrl("mrs_natural/Decimation")->to<mrs_natural>() * 1.0;
 	
 	mrs_real omega_k;
-	
+
+	const mrs_string& mode = ctrl_mode_->to<mrs_string>();	
+
+
 	
 	// handle amplitudes
 	for (t=0; t <= N2; t++)
@@ -156,10 +169,18 @@ PvConvert::myProcessFull(realvec& in, realvec& out)
 		else 
 		{
 			phases(t) = -atan2(b,a);						
-
-
-			phasediff = phases(t) - lastphase_(t) - omega_k;
-			// phasediff = phases(t) - lastphase_(t);
+			
+			if (mode == "analysis_scaled_phaselock")
+			{
+				// scaled phase-locking 
+				phasediff = phases(t) - lastphase_(regions(t)) - omega_k;
+			}
+			else
+			{
+				// classic, identity, loose phase_propagation 
+				phasediff = phases(t) - lastphase_(t) - omega_k;
+			}
+			
 			lastphase_(t) = phases(t);
 			
 			while (phasediff > PI) 
@@ -169,8 +190,6 @@ PvConvert::myProcessFull(realvec& in, realvec& out)
 		}
 		
 
-		// convert to Hz */ 
-		// out(2*t+1,0) = phasediff * factor_ + t * fundamental_;
 		out(2*t+1, 0) = omega_k + phasediff;
 	}
 
@@ -190,7 +209,7 @@ void
 PvConvert::myProcess(realvec& in, realvec& out)
 {
 	const mrs_string& mode = ctrl_mode_->to<mrs_string>();
-	if (mode == "full") 
+	if ((mode == "full")||(mode == "analysis_scaled_phaselock"))
 		myProcessFull(in,out);
 	else if (mode == "sorted")
 		myProcessSorted(in,out);

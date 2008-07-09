@@ -38,6 +38,7 @@ PvUnconvert::PvUnconvert(const PvUnconvert& a):MarSystem(a)
 	ctrl_mode_ = getctrl("mrs_string/mode");
 	ctrl_lastphases_ = getctrl("mrs_realvec/lastphases");
 	ctrl_analysisphases_ = getctrl("mrs_realvec/analysisphases");
+	ctrl_regions_ = getctrl("mrs_realvec/regions");
 	ctrl_phaselock_ = getctrl("mrs_bool/phaselock");
 	transient_counter_ = 0;
 	
@@ -65,6 +66,7 @@ PvUnconvert::addControls()
   addctrl("mrs_string/mode", "loose_phaselock", ctrl_mode_);
   addctrl("mrs_realvec/lastphases", realvec(), ctrl_lastphases_);
   addctrl("mrs_realvec/analysisphases", realvec(), ctrl_analysisphases_);
+  addctrl("mrs_realvec/regions", realvec(), ctrl_regions_);
   addctrl("mrs_bool/phaselock", false, ctrl_phaselock_);
 }
 
@@ -95,6 +97,13 @@ PvUnconvert::myUpdate(MarControlPtr sender)
 	}
 
 
+	{
+		MarControlAccessor acc(ctrl_regions_);
+		mrs_realvec& regions = acc.to<mrs_realvec>();
+		regions.create(N2_+1);
+	}
+
+
 
 	mag_.create(N2_+1);	
 	phase_.create(N2_+1);
@@ -102,7 +111,6 @@ PvUnconvert::myUpdate(MarControlPtr sender)
 	iphase_.create(N2_+1);
 	
 	lmag_.create(N2_+1);
-	regions_.create(N2_+1);
 	
 	
 	fundamental_ = (mrs_real) (israte  / onObservations);
@@ -120,6 +128,9 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 	mrs_realvec& lastphases = acc.to<mrs_realvec>();
 	MarControlAccessor  acc1(ctrl_analysisphases_);
 	mrs_realvec& analysisphases = acc1.to<mrs_realvec>();
+
+	MarControlAccessor  acc2(ctrl_regions_);
+	mrs_realvec& regions = acc2.to<mrs_realvec>();
 	
 	
 	
@@ -137,6 +148,10 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 	mrs_real interpolation = getctrl("mrs_natural/Interpolation")->to<mrs_natural>() * 1.0;
 	mrs_real decimation = getctrl("mrs_natural/Decimation")->to<mrs_natural>() * 1.0;
 	mrs_real tratio = interpolation / decimation;
+	mrs_real beta = 0.66 + tratio/3.0;
+	
+
+
 
 	
 	// calculate magnitude 
@@ -157,13 +172,10 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 	if (mode == "identity_phaselock")
 	{
 		
-		int previous_peak=0;
-		int peak = 0;
 		
 		for (t=0; t <= N2_; t++)
 		{
-			// calculate significant peaks and corresponding non-overlapping 
-			// intervals 
+		
 			if ((t > 2) && (t <= N2_-2))
 			{
 				if ((mag_(t) > mag_(t-1)) &&
@@ -171,17 +183,6 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 					(mag_(t) > mag_(t+1)) && 
 					(mag_(t) > mag_(t+2)))
 				{
-					peak = t;
-					for (int j=previous_peak; j< previous_peak + (int)((peak-previous_peak)/2.0); j++) 
-					{
-						regions_(j) = previous_peak;
-					}
-					
-					for (int j= previous_peak + (int)((peak-previous_peak)/2.0); j < peak; j++) 
-					{
-						regions_(j) = peak;					
-					}
-					previous_peak = peak;
 				}
 			}
 		}
@@ -210,12 +211,17 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 		
 	
 	// propagate phases for peaks 
-	if (mode == "identity_phaselock")
+	if ((mode == "identity_phaselock")||(mode == "scaled_phaselock"))
 	{
+		int previous_peak=0;
+		int peak = 0;
 		for (t=0; t <= N2_; t++)
 		{
 			re = amp = 2*t; 
 			im = freq = 2*t+1;
+
+			
+
 			if ((t > 2) && (t <= N2_-2))
 			{
 				if ((mag_(t) > mag_(t-1)) &&
@@ -223,13 +229,42 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 					(mag_(t) > mag_(t+1)) && 
 					(mag_(t) > mag_(t+2)))
 				{
-					phase_(t) = lastphases(t) + tratio * in(freq,0);
+
+
+					if (mode == "identity_phaselock")
+						phase_(t) = lastphases(t) + tratio * in(freq,0);
+					else if (mode == "scaled_phaselock")
+						phase_(t) = lastphases(regions(t)) + tratio * in(freq,0);
+					
+
 					while (phase_(t) > PI) 
 						phase_(t) -= TWOPI;
 					while (phase_(t) < -PI) 
 						phase_(t) += TWOPI;
 					lastphases(t) = phase_(t);			
 					iphase_(t) = phase_(t);
+
+
+
+					// calculate significant peaks and corresponding 
+					// non-overlapping intervals 
+					peak = t;
+					for (int j=previous_peak; j< previous_peak + (int)((peak-previous_peak)/2.0); j++) 
+					{
+						regions(j) = previous_peak;
+					}
+					
+					for (int j= previous_peak + (int)((peak-previous_peak)/2.0); j < peak; j++) 
+					{
+						regions(j) = peak;					
+					}
+					previous_peak = peak;
+					
+
+
+
+
+
 				}
 			}
 			else 
@@ -244,6 +279,8 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 			}
 		}
 	}
+
+
 	
 
 	// resynthesis for all bins 
@@ -254,12 +291,18 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 		if (t == N2_) 
 			re = 1;		
 
-		if (mode == "identity_phaselock")
+		if ((mode == "identity_phaselock")||(mode == "scaled_phaselock"))
 		{
-			
+
 			if ((t > 2) && (t <= N2_-2))
 			{
-				iphase_(t) = phase_(regions_(t)) + analysisphases(t) - analysisphases(regions_(t));
+				while (analysisphases(t) > PI) 
+					analysisphases(t) -= TWOPI;
+				while (analysisphases(t) < -PI) 
+					analysisphases(t) += TWOPI;				
+				
+
+				iphase_(t) = phase_(regions(t)) + beta * (analysisphases(t) - analysisphases(regions(t)));
 				while (iphase_(t) > PI) 
 					iphase_(t) -= TWOPI;
 				while (iphase_(t) < -PI) 

@@ -49,7 +49,6 @@ namespace Marsyas
 			realvec phase_;
 			realvec lphase_;
 			realvec lmag_;
-			realvec regions_;
 			realvec iphase_;
 			
 			int transient_counter_;
@@ -59,6 +58,8 @@ namespace Marsyas
 			MarControlPtr ctrl_lastphases_;
 			MarControlPtr ctrl_analysisphases_;
 			MarControlPtr ctrl_phaselock_;
+			MarControlPtr ctrl_regions_;
+			
 			
 		
 			void addControls();
