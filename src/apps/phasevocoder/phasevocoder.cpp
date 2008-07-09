@@ -307,7 +307,6 @@ phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw,
 		if (numticks == 0) 
 		{
 			cout << "initializing phases" << endl;
-			
 			pvseries->updctrl("PvUnconvert/uconv/mrs_bool/phaselock", true);		
 		}
 		

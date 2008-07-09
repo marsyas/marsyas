@@ -65,7 +65,7 @@ PvUnconvert::addControls()
   addctrl("mrs_string/mode", "loose_phaselock", ctrl_mode_);
   addctrl("mrs_realvec/lastphases", realvec(), ctrl_lastphases_);
   addctrl("mrs_realvec/analysisphases", realvec(), ctrl_analysisphases_);
-  addctrl("mrs_bool/phaselock", true, ctrl_phaselock_);
+  addctrl("mrs_bool/phaselock", false, ctrl_phaselock_);
 }
 
 void
@@ -122,13 +122,11 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 	mrs_realvec& analysisphases = acc1.to<mrs_realvec>();
 	
 	
-
-	if (ctrl_phaselock_->to<mrs_bool>())
-	{
-		lastphases = analysisphases;
-		ctrl_phaselock_->setValue(false);
-	}
 	
+	static int count = 0;
+	count++;
+	
+
 
 	mrs_natural re, amp, im, freq;
 	mrs_real avg_re;
@@ -141,6 +139,7 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 	mrs_real tratio = interpolation / decimation;
 
 	
+	// calculate magnitude 
 	for (t=0; t <= N2_; t++)
 	{
 		re = amp = 2*t; 
@@ -161,30 +160,34 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 		int previous_peak=0;
 		int peak = 0;
 		
-		// calculate significant peaks and corresponding non-overlapping 
-		// intervals 
-		if ((t > 2) && (t <= N2_-2))
+		for (t=0; t <= N2_; t++)
 		{
-			if ((mag_(t) > mag_(t-1)) &&
-				(mag_(t) > mag_(t-2)) &&
-				(mag_(t) > mag_(t+1)) && 
-				(mag_(t) > mag_(t+2)))
+			// calculate significant peaks and corresponding non-overlapping 
+			// intervals 
+			if ((t > 2) && (t <= N2_-2))
 			{
-				peak = t;
-				for (int j=previous_peak; j< previous_peak + (int)((peak-previous_peak)/2.0); j++) 
+				if ((mag_(t) > mag_(t-1)) &&
+					(mag_(t) > mag_(t-2)) &&
+					(mag_(t) > mag_(t+1)) && 
+					(mag_(t) > mag_(t+2)))
 				{
-					regions_(j) = previous_peak;
+					peak = t;
+					for (int j=previous_peak; j< previous_peak + (int)((peak-previous_peak)/2.0); j++) 
+					{
+						regions_(j) = previous_peak;
+					}
+					
+					for (int j= previous_peak + (int)((peak-previous_peak)/2.0); j < peak; j++) 
+					{
+						regions_(j) = peak;					
+					}
+					previous_peak = peak;
 				}
-				
-				for (int j= previous_peak + (int)((peak-previous_peak)/2.0); j < peak; j++) 
-				{
-					regions_(j) = peak;					
-				}
-				previous_peak = peak;
 			}
 		}
+		
 	}
-
+	
 
 	if (mode == "loose_phaselock")
 	{
@@ -200,30 +203,15 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 				phase_(t) -= TWOPI;
 			while (phase_(t) < -PI) 
 				phase_(t) += TWOPI;
-
+			
 		}
-		
 	}
 	
 		
 	
-	// cout << regions_ << endl;
-
-
-// 	for (t=0; t <= N2_; t++)
-// 		{
-// 			re = amp = 2*t; 
-// 			im = freq = 2*t+1;
-// 		}
-
-	
-			
-	
 	// propagate phases for peaks 
 	if (mode == "identity_phaselock")
 	{
-		cout << "Peaks resynthesis" << endl;
-		
 		for (t=0; t <= N2_; t++)
 		{
 			re = amp = 2*t; 
@@ -257,7 +245,8 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 		}
 	}
 	
-	
+
+	// resynthesis for all bins 
 	for (t=0; t <= N2_; t++)
 	{
 		re = amp = 2*t; 
@@ -277,6 +266,15 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 					iphase_(t) += TWOPI;
 				lastphases(t) = iphase_(t);
 			}
+
+
+			if (ctrl_phaselock_->to<mrs_bool>())
+			{
+				cout << "Phase locking to analysis phases" << endl;
+				iphase_ = analysisphases;
+				ctrl_phaselock_->setValue(false);
+			}
+			
 			out(re,0) = mag_(t) * cos(iphase_(t));
 			if (t != N2_)
 				out(im,0) = -mag_(t) * sin(iphase_(t));
@@ -300,11 +298,26 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 				lphase_(t) = phase_(t);
 			
  			lmag_(t) = mag_(t);
+
+			if (ctrl_phaselock_->to<mrs_bool>())
+			{
+				cout << "Phase locking to analysis phases" << endl;
+				lphase_ = analysisphases;
+				ctrl_phaselock_->setValue(false);
+			}
+			
+			while (lphase_(t) > PI) 
+				lphase_(t) -= TWOPI;
+			while (lphase_(t) < -PI) 
+				lphase_(t) += TWOPI;
+			lastphases(t) = lphase_(t);
+
+
+
+
  			out(re,0) = lmag_(t) * cos(lphase_(t));
  			if (t != N2_)
  				out(im,0) = -lmag_(t) * sin(lphase_(t));
-
-			lastphases(t) = lphase_(t);
 		}
 		else // classic
 		{
@@ -318,6 +331,14 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 				phase_(t) -= TWOPI;
 			while (phase_(t) < -PI) 
 				phase_(t) += TWOPI;
+
+			if (ctrl_phaselock_->to<mrs_bool>())
+			{
+				cout << "Phase locking to analysis phases" << endl;
+				phase_ = analysisphases;
+				ctrl_phaselock_->setValue(false);
+			}
+			
 			out(re,0) = mag_(t) * cos(phase_(t));
 			if (t != N2_)
 				out(im,0) = -mag_(t) * sin(phase_(t));
