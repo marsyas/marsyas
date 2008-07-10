@@ -45,6 +45,7 @@ AudioSink::AudioSink(string name):MarSystem("AudioSink", name)
 	rtSrate_ = 0;
 	bufferSize_ = 0;
 	rtChannels_ = 0;
+	rtDevice_ = 0;
   
 
 
@@ -78,6 +79,7 @@ AudioSink::addControls()
 	addctrl("mrs_bool/initAudio", false);
 	setctrlState("mrs_bool/initAudio", true);
   
+	addctrl("mrs_natural/device", 0);
   
 }
 
@@ -126,6 +128,7 @@ AudioSink::initRtAudio()
 	rtSrate_ = (int)getctrl("mrs_real/israte")->to<mrs_real>();
 	srate_ = rtSrate_;
 	bufferSize_ = (int)getctrl("mrs_natural/bufferSize")->to<mrs_natural>();
+	rtDevice_= (int)getctrl("mrs_natural/device")->to<mrs_natural>();
 
 #ifdef MARSYAS_MACOSX
 	if (rtSrate_ == 22050) 
@@ -154,7 +157,7 @@ AudioSink::initRtAudio()
   
 	try 
     {
-		audio_ = new RtAudio3(0, rtChannels, 0, 0, rtFormat,
+		audio_ = new RtAudio3(rtDevice_, rtChannels, 0, 0, rtFormat,
 							 rtSrate_, &bufferSize_, 4);
 
 		data_ = (mrs_real *) audio_->getStreamBuffer();
@@ -168,6 +171,13 @@ AudioSink::initRtAudio()
     {
 		audio_->startStream();
     }
+
+    if (rtDevice_ !=0){
+        RtAudio3DeviceInfo info;
+        info = audio_->getDeviceInfo(rtDevice_);
+        cout << "Using output device: " << info.name << endl;
+    }
+
 #endif 
 
 	//update bufferSize control which may have been changed

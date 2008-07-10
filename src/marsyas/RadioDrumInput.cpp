@@ -101,6 +101,37 @@ void RadioDrumInput::myUpdate(MarControlPtr sender)
 #endif
 }
 
+/*
+    From the Radio Drum Manual
+-----------------------------------------
+
+                                             MIDI COMMAND (THREE BYTES)
+                                             BYTE1 BYTE2 BYTE3**
+    trigger from stick 1 & whack strength       A0    1    WHACK
+                          & X1                  A0   15       X1
+                          & Y1                  A0   16       Y1
+    trigger from stick 2 & whack strength       A0    2    WHACK
+                          & X2                  A0   17       X2
+                          & Y2                  A0   18       Y2
+    trigger from B15+ button                    A0    3        1
+    down trigger from B14- foot switch          A0    3        2
+    up trigger from B14- foot switch            A0    3        3
+    down trigger from B15- foot switch          A0    3        4
+    up trigger from B15- foot switch            A0    3        5
+    pot 1 current value                         A0    4     POT1
+    pot 2 current value                         A0    5     POT2
+    pot 3 current value                         A0    6     POT3
+    pot 4 current value                         A0    7     POT4
+    stick 1 x current position                  A0    8       X1
+    stick 1 y current position                  A0    9       Y1
+    stick 1 z current position                  A0   10       Z1
+    stick 2 x current position                  A0   11       X2
+    stick 2 y current position                  A0   12       Y2
+    stick 2 z current position                  A0   13       Z2
+
+All data in BYTE3 is encoded in the standard midi range 0-127
+
+*/ 
 void RadioDrumInput::mycallback(double deltatime, std::vector< unsigned char > * message, void *userData) 
 {
     // FIXME Unused parameter

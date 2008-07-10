@@ -52,11 +52,12 @@ private:
 #endif 
   int bufferSize_;
   int nBuffers_;
-	int rtSrate_;
-	int rtChannels_;
- 
-	mrs_natural ri_;
-	mrs_natural nChannels_;
+  int rtSrate_;
+  int rtChannels_;
+  int rtDevice_;
+
+  mrs_natural ri_;
+  mrs_natural nChannels_;
   mrs_real *data_;  
   realvec reservoir_;
   mrs_natural reservoirSize_;
@@ -64,18 +65,18 @@ private:
 
   mrs_real gain_;
 
-	bool isInitialized_;
-	bool stopped_;
-  
-  void addControls();
-	void myUpdate(MarControlPtr sender);
+  bool isInitialized_;
+  bool stopped_;
 
-	void initRtAudio();
+  void addControls();
+  void myUpdate(MarControlPtr sender);
+
+  void initRtAudio();
 
   void start();
   void stop();
 
-	void localActivate(bool state);
+  void localActivate(bool state);
   
 public:
   AudioSource(std::string name);

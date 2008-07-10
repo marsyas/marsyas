@@ -37,6 +37,7 @@ AudioSource::AudioSource(string name):MarSystem("AudioSource", name)
   rtSrate_ = 0;
   bufferSize_ = 0;
   rtChannels_ = 0;
+  rtDevice_ = 0;
   nChannels_ = 0;
 
   addControls();
@@ -76,6 +77,8 @@ AudioSource::addControls()
   
   addctrl("mrs_bool/notEmpty", true);
   addctrl("mrs_real/gain", 1.0); 
+
+  addctrl("mrs_natural/device", 0);
 }
 
 void 
@@ -123,10 +126,9 @@ AudioSource::initRtAudio()
   rtSrate_ = (int)getctrl("mrs_real/israte")->to<mrs_real>();
   rtChannels_ = (int)getctrl("mrs_natural/nChannels")->to<mrs_natural>();
   nBuffers_ = (int)getctrl("mrs_natural/nBuffers")->to<mrs_natural>();
-
-
+  rtDevice_ = (int)getctrl("mrs_natural/device")->to<mrs_natural>();
   
-  //marsyas represents audio data as float numbers
+//marsyas represents audio data as float numbers
 #ifdef MARSYAS_AUDIOIO
   RtAudio3Format rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
 #endif 
@@ -143,7 +145,7 @@ AudioSource::initRtAudio()
     } 
   try 
     {
-      audio_ = new RtAudio3(0, 0, 0, rtChannels_, rtFormat,
+      audio_ = new RtAudio3(0, 0, rtDevice_, rtChannels_, rtFormat,
 			   rtSrate_, &bufferSize_, nBuffers_);
       data_ = (mrs_real *) audio_->getStreamBuffer();
     }
@@ -158,6 +160,13 @@ AudioSource::initRtAudio()
 
   if (audio_ != NULL)
       audio_->stopStream(); 
+
+
+    if (rtDevice_ !=0){
+        RtAudio3DeviceInfo info;
+        info = audio_->getDeviceInfo(rtDevice_);
+        cout << "Using input device: " << info.name << endl;
+    } 
 
 #endif 
   isInitialized_ = true;
@@ -253,13 +262,4 @@ AudioSource::myProcess(realvec& in, realvec& out)
  /* MATLAB_PUT(out, "AudioSource_out");
   MATLAB_EVAL("plot(AudioSource_out)");*/
 }
-
-
-
-
-
-
-
-
-
 

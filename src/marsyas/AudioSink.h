@@ -50,31 +50,32 @@ private:
   int rtSrate_;
   int rtChannels_;
   int srate_;
+  int rtDevice_;
 
-	bool isInitialized_;
-	bool stopped_;
-    
+  bool isInitialized_;
+  bool stopped_;
+
   mrs_natural nChannels_;
   mrs_real *data_;  
   realvec reservoir_;
   mrs_natural reservoirSize_;
   mrs_natural preservoirSize_;
   mrs_natural pnChannels_;
-  
+
   mrs_natural start_;
   mrs_natural end_;
   mrs_natural diff_;
   mrs_natural rsize_;
-  
-  void addControls();
-	void myUpdate(MarControlPtr sender);
 
-	void initRtAudio();
+  void addControls();
+  void myUpdate(MarControlPtr sender);
+
+  void initRtAudio();
 	
   void start();
   void stop();
 
-	void localActivate(bool state);
+  void localActivate(bool state);
     
 public:
   AudioSink(std::string name);
