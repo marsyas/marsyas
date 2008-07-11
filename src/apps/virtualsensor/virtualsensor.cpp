@@ -244,16 +244,63 @@ void recordVirtualSensor(mrs_real length)
     */
 }
 
-
-void extractHits() {
-    MarSystemManager mng;
+void testrmspreprocess() {
+    // -i 8
 
     mrs_natural windowsize = 512;
     mrs_string sfname = "input.wav";
    
+    MarSystemManager mng;
     MarSystem* playbacknet = mng.create("Series", "playbacknet");
     playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
-    playbacknet->addMarSystem(mng.create("PeakerAdaptive", "peaker"));
+    //playbacknet->addMarSystem(mng.create("Rms", "rms"));
+    playbacknet->addMarSystem(mng.create("SoundFileSink", "dest"));
+    //playbacknet->addMarSystem(mng.create("PeakerAdaptive", "peaker"));
+    playbacknet->addMarSystem(mng.create("Peaker", "peaker"));
+
+
+    playbacknet->updctrl("mrs_natural/inSamples", windowsize);
+    playbacknet->updctrl("mrs_real/israte", 44100.0);
+    playbacknet->updctrl("mrs_real/osrate", 44100.0);
+    playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfname);
+    playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", "rmsOutput.wav");
+    int srate = playbacknet->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+
+    /*
+    // values optimized for window size of 512
+    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/inSamples", srate);
+    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakSpacing", 4.0);
+    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakStrength", 0.7);
+    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakStart", 0);
+    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakEnd", srate);
+    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakGain", 1.0);
+    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakStrengthReset", 2);
+    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakDecay", 0.999);
+    */
+
+    playbacknet->updctrl("Peaker/peaker/mrs_real/peakStrength", 0.7);
+    playbacknet->updctrl("Peaker/peaker/mrs_real/peakSpacing", 0.3);
+
+    while(playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+        playbacknet->tick();
+    //cout << *playbacknet << endl;
+
+    delete playbacknet;
+}
+
+
+void extractHits() {
+    // -i 6
+
+    MarSystemManager mng;
+
+    mrs_natural windowsize = 8;
+    mrs_string sfname = "input.wav";
+   
+    MarSystem* playbacknet = mng.create("Series", "playbacknet");
+    playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+    //playbacknet->addMarSystem(mng.create("PeakerAdaptive", "peaker"));
+    playbacknet->addMarSystem(mng.create("Peaker", "peaker"));
     playbacknet->addMarSystem(mng.create("SoundFileSink", "dest"));
 
     playbacknet->updctrl("mrs_natural/inSamples", windowsize);
@@ -264,15 +311,22 @@ void extractHits() {
     playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", "output.wav");
     int srate = playbacknet->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
+    /*
     // values optimized for window size of 512
     playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/inSamples", srate);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakSpacing", 4.0);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakStrength", 0.8);
+    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakSpacing", 1.0);
+    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakStrength", 0.1);
     playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakStart", 0);
     playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakEnd", srate);
     playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakGain", 1.0);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakStrengthReset", 2);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakDecay", 0.999);
+    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakStrengthReset", 1);
+    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakDecay", 0.99);
+    */
+
+
+    playbacknet->updctrl("Peaker/peaker/mrs_real/peakStrength", 0.001);
+    playbacknet->updctrl("Peaker/peaker/mrs_real/peakSpacing", 0.0);
+    //playbacknet->updctrl("Peaker/peaker/mrs_natural/peakEnd", srate);
 
     while(playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
         playbacknet->tick();
@@ -303,6 +357,7 @@ void drumExtract3() {
     //playbacknet->addMarSystem(mng.create("SoundFileSink", "dest"));
         
     playbacknet->updctrl("mrs_natural/inSamples", windowsize);
+    //playbacknet->updctrl("mrs_natural/onSamples", windowsize);
     playbacknet->updctrl("mrs_real/israte", 44100.0);
     playbacknet->updctrl("mrs_real/osrate", 44100.0);
     //playbacknet->updctrl("AudioSource/src/mrs_natural/device", 2);
@@ -1114,6 +1169,8 @@ int main(int argc, const char **argv)
         extractHits();
     else if (instrumentopt == 7)    
         drumExtract3();
+    else if (instrumentopt == 8)    
+        testrmspreprocess();
 
     exit(0);
 }
