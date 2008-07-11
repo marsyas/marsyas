@@ -160,6 +160,7 @@ toy_with_audiodevices()
 		else
 		{
 			std::cout << "Probe Status = Successful\n";
+			std::cout << "Device Number = " << i << '\n';
 			std::cout << "Output Channels = " << info.outputChannels << '\n';
 			std::cout << "Input Channels = " << info.inputChannels << '\n';
 			std::cout << "Duplex Channels = " << info.duplexChannels << '\n';

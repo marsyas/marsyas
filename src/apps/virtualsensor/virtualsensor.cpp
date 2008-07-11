@@ -267,7 +267,7 @@ void extractHits() {
     // values optimized for window size of 512
     playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/inSamples", srate);
     playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakSpacing", 4.0);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakStrength", 0.5);
+    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakStrength", 0.8);
     playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakStart", 0);
     playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakEnd", srate);
     playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakGain", 1.0);
@@ -286,25 +286,39 @@ void drumExtract3() {
 
     mrs_natural windowsize = 512;
 
-    MidiInput* midiin = new MidiInput("midiin");
+    MarSystem* audioget= mng.create("Series", "playbacknet");
+    audioget->addMarSystem(mng.create("AudioSource", "src"));
+    //audioget->addMarSystem(mng.create("SoundFileSink", "predest"));
+    audioget->updctrl("mrs_natural/inSamples", windowsize);
+    audioget->updctrl("mrs_real/israte", 44100.0);
+    audioget->updctrl("mrs_real/osrate", 44100.0);
+    //audioget->updctrl("AudioSource/src/mrs_natural/device", 2);
+    audioget->updctrl("AudioSource/src/mrs_bool/initAudio", true);
 
     MarSystem* playbacknet = mng.create("Series", "playbacknet");
-    playbacknet->addMarSystem(mng.create("AudioSource", "src"));
+    //playbacknet->addMarSystem(mng.create("AudioSource", "src"));
+    //playbacknet->addMarSystem(mng.create("SoundFileSink", "predest"));
+    playbacknet->addMarSystem(mng.create("RadioDrumInput", "rd"));
     playbacknet->addMarSystem(mng.create("PeakerAdaptive", "peaker"));
-    playbacknet->addMarSystem(midiin);
-
+    //playbacknet->addMarSystem(mng.create("SoundFileSink", "dest"));
         
     playbacknet->updctrl("mrs_natural/inSamples", windowsize);
     playbacknet->updctrl("mrs_real/israte", 44100.0);
     playbacknet->updctrl("mrs_real/osrate", 44100.0);
-    playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+    //playbacknet->updctrl("AudioSource/src/mrs_natural/device", 2);
+    //playbacknet->updctrl("AudioSource/src/mrs_bool/initAudio", true);
+    playbacknet->updctrl("RadioDrumInput/rd/mrs_bool/initmidi", true);
+
+    //audioget->updctrl("SoundFileSink/predest/mrs_string/filename", "prepeakpicking.au");
+    //playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", "postpeakpicking.au");
+    //cout << *playbacknet<< endl;
 
     int srate = playbacknet->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
     // values optimized for window size of 512
     playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/inSamples", srate);
     playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakSpacing", 4.0);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakStrength", 0.5);
+    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakStrength", 0.7);
     playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakStart", 0);
     playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakEnd", srate);
     playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakGain", 1.0);
@@ -313,6 +327,8 @@ void drumExtract3() {
 
     MarSystem* extractNet= mng.create("Series", "extractNet");
 
+    //extractNet->addMarSystem(mng.create("ZeroCrossings", "zerocross"));
+    //extractNet->addMarSystem(mng.create("RMS", "rms"));
     extractNet->addMarSystem(mng.create("Windowing", "ham"));
     extractNet->addMarSystem(mng.create("Spectrum", "spk"));
     extractNet->addMarSystem(mng.create("PowerSpectrum", "pspk"));
@@ -326,10 +342,8 @@ void drumExtract3() {
 
     extractNet->addMarSystem(mng.create("Annotator", "ann"));
     extractNet->addMarSystem(mng.create("WekaSink",  "wsink"));
-
-    extractNet->updctrl("Annotator/ann/mrs_natural/label", 0);
     extractNet->updctrl("WekaSink/wsink/mrs_natural/nLabels", 2);
-    extractNet->updctrl("WekaSink/wsink/mrs_string/labelNames","edge, center");  
+    extractNet->updctrl("WekaSink/wsink/mrs_string/labelNames","center, edge");  
     extractNet->updctrl("WekaSink/wsink/mrs_string/filename", "art.arff");
 
     extractNet->updctrl("mrs_natural/inSamples",windowsize);
@@ -339,12 +353,15 @@ void drumExtract3() {
 
 //    cout << *extractNet << endl;
 
-    realvec in1, out1, analysisvec, out2;
-    in1.create(playbacknet->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
-            playbacknet->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
-    out1.create(playbacknet->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-            playbacknet->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+    realvec in1, out1, analysisvec, out2,  peakpickout;
+    in1.create(audioget->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+            audioget->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+    out1.create(audioget->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+            audioget->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
     
+    peakpickout.create(playbacknet->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+            playbacknet->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+
     analysisvec.create(extractNet->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
             extractNet->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
     out2.create(extractNet->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
@@ -355,11 +372,12 @@ void drumExtract3() {
     
     while ( true ) 
     { 
-        playbacknet->process(in1,out1);
+        audioget->process(in1,out1);
+        playbacknet->process(out1,peakpickout);
 
         for (int i = 0; i < windowsize;i++)
         {   
-            if ( out1(i) > 0)
+            if ( peakpickout(i) > 0)
             {
                 int windowposition = i;
         
@@ -367,15 +385,17 @@ void drumExtract3() {
                     analysisvec(windowposition++) = out1(j);
                 }
 
-                playbacknet->process(in1,out1);
+                audioget->process(in1,out1);
 
                 for (int j = 0; j < windowsize-i; j++){
                     analysisvec(windowposition++) = out1(j);
                 }
+                   
+                radialposition = playbacknet->getctrl("RadioDrumInput/rd/mrs_natural/rightstickx")->to<mrs_natural>(); 
 
-
-                if (radialposition> 61)
+                if (radialposition > 79)
                 {
+                    // hitting the edge
                     extractNet->setctrl("Annotator/ann/mrs_natural/label", 1);
                 }
                 /* else if (r > 61) 
@@ -386,15 +406,14 @@ void drumExtract3() {
                  */ 
                 else
                 {
+                    // hitting the center
                     extractNet->setctrl("Annotator/ann/mrs_natural/label", 0);
                 }
 
-
                 cout << "drumit   "<< count++ << endl;
-                cout << "value    "<< out1(i) << endl;
+                cout << "label    " << extractNet->getctrl("Annotator/ann/mrs_natural/label")->to<mrs_natural>() << endl;
                 cout << "radiodrum    "<< radialposition << endl;
 
-                //cout << *extractNet << endl;
                 extractNet->process(analysisvec, out2);
             
                 break;
@@ -1093,6 +1112,8 @@ int main(int argc, const char **argv)
         drumExtract2();
     else if (instrumentopt == 6)    
         extractHits();
+    else if (instrumentopt == 7)    
+        drumExtract3();
 
     exit(0);
 }
