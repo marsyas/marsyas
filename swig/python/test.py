@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+
 from marsyas import MarSystemManager,MarControlPtr
 
 msm = MarSystemManager()
@@ -16,7 +17,7 @@ pipe.addMarSystem(sink)
 filename = pipe.getControl("SoundFileSource/file/mrs_string/filename")
 notempty = pipe.getControl("SoundFileSource/file/mrs_bool/notEmpty")
 iniAudio = pipe.getControl("AudioSink/sink/mrs_bool/initAudio")
-
+outData  = pipe.getControl("Gain/gain/mrs_realvec/processedData")
 import sys
 
 for arg in sys.argv[1:] :
@@ -24,6 +25,8 @@ for arg in sys.argv[1:] :
 
 	if notempty.to_bool(): # If file has data
 		iniAudio.setValue_bool(1)
-
+		
 		while notempty.to_bool(): # Play it
 			pipe.tick()
+			plotdata = outData.to_realvec()
+

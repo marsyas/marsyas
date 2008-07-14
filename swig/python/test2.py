@@ -33,10 +33,14 @@ pnet.linkControl("mrs_real/frequency", "SineSource/src/mrs_real/frequency");
 for j in range (1,12): 
     pnet.updControl("mrs_real/frequency", marsyas.MarControlPtr.from_real(j * 220.0))
 #    pnet.updControl("SineSource/src/mrs_real/frequency", j * 220.0)
-
+    out = pnet.getControl("Gain/gain/mrs_realvec/processedData") 
     for i in range (1,10):	
-    	    	pnet.tick()
+		pnet.tick()
 
-
+		
+pnet.updControl("AudioSink/dest/mrs_bool/mute", marsyas.MarControlPtr.from_bool(True)) 
+del dest 
+del pnet  
+print "Done" 
 
 
