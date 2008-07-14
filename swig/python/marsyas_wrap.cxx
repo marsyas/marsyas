@@ -4566,12 +4566,14 @@ SWIG_AsVal_bool (PyObject *obj, bool *val)
 
 SWIGINTERN MarControlPtr MarControlPtr_from_bool(mrs_bool x){ return MarControlPtr(x); }
 SWIGINTERN MarControlPtr MarControlPtr_from_string(mrs_string x){ return MarControlPtr(x); }
+SWIGINTERN MarControlPtr MarControlPtr_from_realvec(realvec x){ return MarControlPtr(x); }
 SWIGINTERN mrs_string MarControlPtr_getType(MarControlPtr *self){ return (*self)->getType(); }
 SWIGINTERN mrs_string MarControlPtr_getName(MarControlPtr *self){ return (*self)->getName(); }
 SWIGINTERN mrs_bool MarControlPtr_setValue_natural(MarControlPtr *self,mrs_natural x){ return (*self)->setValue(x); }
 SWIGINTERN mrs_bool MarControlPtr_setValue_real(MarControlPtr *self,mrs_real x){ return (*self)->setValue(x); }
 SWIGINTERN mrs_bool MarControlPtr_setValue_bool(MarControlPtr *self,mrs_bool x){ return (*self)->setValue(x); }
 SWIGINTERN mrs_bool MarControlPtr_setValue_string(MarControlPtr *self,mrs_string x){ return (*self)->setValue(x); }
+SWIGINTERN mrs_bool MarControlPtr_setValue_realvec(MarControlPtr *self,realvec x){ return (*self)->setValue(x); }
 SWIGINTERN mrs_natural MarControlPtr_to_natural(MarControlPtr *self){ return (*self)->to<mrs_natural>(); }
 
 SWIGINTERNINLINE PyObject *
@@ -4586,6 +4588,7 @@ SWIGINTERN mrs_real MarControlPtr_to_real(MarControlPtr *self){ return (*self)->
 
 SWIGINTERN mrs_string MarControlPtr_to_string(MarControlPtr *self){ return (*self)->to<mrs_string>(); }
 SWIGINTERN mrs_bool MarControlPtr_to_bool(MarControlPtr *self){ return (*self)->to<mrs_bool>(); }
+SWIGINTERN realvec MarControlPtr_to_realvec(MarControlPtr *self){ return (*self)->to<mrs_realvec>(); }
 
 #include <marsyas/realvec.h>
 
@@ -6940,6 +6943,51 @@ SWIGINTERN PyObject *_wrap_MarSystem_tick(PyObject *SWIGUNUSEDPARM(self), PyObje
   }
   arg1 = reinterpret_cast< MarSystem * >(argp1);
   (arg1)->tick();
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MarSystem_process(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MarSystem *arg1 = (MarSystem *) 0 ;
+  realvec *arg2 = 0 ;
+  realvec *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:MarSystem_process",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MarSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarSystem_process" "', argument " "1"" of type '" "MarSystem *""'"); 
+  }
+  arg1 = reinterpret_cast< MarSystem * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_realvec,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MarSystem_process" "', argument " "2"" of type '" "realvec &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MarSystem_process" "', argument " "2"" of type '" "realvec &""'"); 
+  }
+  arg2 = reinterpret_cast< realvec * >(argp2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3, SWIGTYPE_p_realvec,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MarSystem_process" "', argument " "3"" of type '" "realvec &""'"); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MarSystem_process" "', argument " "3"" of type '" "realvec &""'"); 
+  }
+  arg3 = reinterpret_cast< realvec * >(argp3);
+  (arg1)->process(*arg2,*arg3);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -9307,6 +9355,36 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_MarControlPtr_from_realvec(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  realvec arg1 ;
+  MarControlPtr result;
+  void *argp1 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MarControlPtr_from_realvec",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_realvec,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarControlPtr_from_realvec" "', argument " "1"" of type '" "realvec""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MarControlPtr_from_realvec" "', argument " "1"" of type '" "realvec""'");
+    } else {
+      realvec * temp = reinterpret_cast< realvec * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  result = MarControlPtr_from_realvec(arg1);
+  resultobj = SWIG_NewPointerObj((new MarControlPtr(static_cast< const MarControlPtr& >(result))), SWIGTYPE_p_MarControlPtr, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_MarControlPtr_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   MarControlPtr *arg1 = (MarControlPtr *) 0 ;
@@ -9477,6 +9555,45 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_MarControlPtr_setValue_realvec(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MarControlPtr *arg1 = (MarControlPtr *) 0 ;
+  realvec arg2 ;
+  mrs_bool result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MarControlPtr_setValue_realvec",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MarControlPtr, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarControlPtr_setValue_realvec" "', argument " "1"" of type '" "MarControlPtr *""'"); 
+  }
+  arg1 = reinterpret_cast< MarControlPtr * >(argp1);
+  {
+    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_realvec,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MarControlPtr_setValue_realvec" "', argument " "2"" of type '" "realvec""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MarControlPtr_setValue_realvec" "', argument " "2"" of type '" "realvec""'");
+    } else {
+      realvec * temp = reinterpret_cast< realvec * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  result = MarControlPtr_setValue_realvec(arg1,arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_MarControlPtr_to_natural(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   MarControlPtr *arg1 = (MarControlPtr *) 0 ;
@@ -9559,6 +9676,28 @@ SWIGINTERN PyObject *_wrap_MarControlPtr_to_bool(PyObject *SWIGUNUSEDPARM(self),
   arg1 = reinterpret_cast< MarControlPtr * >(argp1);
   result = MarControlPtr_to_bool(arg1);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MarControlPtr_to_realvec(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MarControlPtr *arg1 = (MarControlPtr *) 0 ;
+  realvec result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MarControlPtr_to_realvec",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MarControlPtr, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MarControlPtr_to_realvec" "', argument " "1"" of type '" "MarControlPtr *""'"); 
+  }
+  arg1 = reinterpret_cast< MarControlPtr * >(argp1);
+  result = MarControlPtr_to_realvec(arg1);
+  resultobj = SWIG_NewPointerObj((new realvec(static_cast< const realvec& >(result))), SWIGTYPE_p_realvec, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -10634,6 +10773,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"delete_Map_String_MarControlPtr", _wrap_delete_Map_String_MarControlPtr, METH_VARARGS, NULL},
 	 { (char *)"Map_String_MarControlPtr_swigregister", Map_String_MarControlPtr_swigregister, METH_VARARGS, NULL},
 	 { (char *)"MarSystem_tick", _wrap_MarSystem_tick, METH_VARARGS, NULL},
+	 { (char *)"MarSystem_process", _wrap_MarSystem_process, METH_VARARGS, NULL},
 	 { (char *)"MarSystem_update", _wrap_MarSystem_update, METH_VARARGS, NULL},
 	 { (char *)"MarSystem_addMarSystem", _wrap_MarSystem_addMarSystem, METH_VARARGS, NULL},
 	 { (char *)"MarSystem_getType", _wrap_MarSystem_getType, METH_VARARGS, NULL},
@@ -10692,16 +10832,19 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"MarControlPtr_from_real", _wrap_MarControlPtr_from_real, METH_VARARGS, NULL},
 	 { (char *)"MarControlPtr_from_bool", _wrap_MarControlPtr_from_bool, METH_VARARGS, NULL},
 	 { (char *)"MarControlPtr_from_string", _wrap_MarControlPtr_from_string, METH_VARARGS, NULL},
+	 { (char *)"MarControlPtr_from_realvec", _wrap_MarControlPtr_from_realvec, METH_VARARGS, NULL},
 	 { (char *)"MarControlPtr_getType", _wrap_MarControlPtr_getType, METH_VARARGS, NULL},
 	 { (char *)"MarControlPtr_getName", _wrap_MarControlPtr_getName, METH_VARARGS, NULL},
 	 { (char *)"MarControlPtr_setValue_natural", _wrap_MarControlPtr_setValue_natural, METH_VARARGS, NULL},
 	 { (char *)"MarControlPtr_setValue_real", _wrap_MarControlPtr_setValue_real, METH_VARARGS, NULL},
 	 { (char *)"MarControlPtr_setValue_bool", _wrap_MarControlPtr_setValue_bool, METH_VARARGS, NULL},
 	 { (char *)"MarControlPtr_setValue_string", _wrap_MarControlPtr_setValue_string, METH_VARARGS, NULL},
+	 { (char *)"MarControlPtr_setValue_realvec", _wrap_MarControlPtr_setValue_realvec, METH_VARARGS, NULL},
 	 { (char *)"MarControlPtr_to_natural", _wrap_MarControlPtr_to_natural, METH_VARARGS, NULL},
 	 { (char *)"MarControlPtr_to_real", _wrap_MarControlPtr_to_real, METH_VARARGS, NULL},
 	 { (char *)"MarControlPtr_to_string", _wrap_MarControlPtr_to_string, METH_VARARGS, NULL},
 	 { (char *)"MarControlPtr_to_bool", _wrap_MarControlPtr_to_bool, METH_VARARGS, NULL},
+	 { (char *)"MarControlPtr_to_realvec", _wrap_MarControlPtr_to_realvec, METH_VARARGS, NULL},
 	 { (char *)"MarControlPtr_swigregister", MarControlPtr_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_realvec", _wrap_new_realvec, METH_VARARGS, NULL},
 	 { (char *)"delete_realvec", _wrap_delete_realvec, METH_VARARGS, NULL},

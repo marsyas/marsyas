@@ -76,6 +76,16 @@ Peaker::myProcess(realvec& in, realvec& out)
 
 	out.setval(0.0);
 
+	cout << "peakStart = " << peakStart << endl;
+	cout << "peakEnd = " << peakEnd << endl;
+	cout << "inSamples= " << inSamples_ << endl;
+	cout << "in = " << in << endl;
+	cout << "out = " << out << endl;
+	
+
+	peakStrength = 0.0;
+	
+
 	for (o = 0; o < inObservations_; o++)
 	{
 		rms_ = 0.0;
@@ -93,13 +103,16 @@ Peaker::myProcess(realvec& in, realvec& out)
 
 		bool peakFound = false;
 
+		
+
 		for (t=peakStart+1; t < peakEnd-1; t++)
 		{
 			// peak has to be larger than neighbors 
-			if ((in(o,t-1) < in(o,t)) 
-				&& (in(o,t+1) < in(o,t))
+			if ((in(o,t-1) <= in(o,t)) 
+				&& (in(o,t+1) <= in(o,t))
 				&& (in(o,t) > 0.0)
 				&& (in(o,t) > (peakStrength * rms_)))
+				
 			{
 				// check for another peak in the peakSpacing area
 				max = in(o,t);
@@ -109,7 +122,7 @@ Peaker::myProcess(realvec& in, realvec& out)
 				{
 					if (t+j < peakEnd-1)
 						if (in(o,t+j) > max)
-						{
+						{ 
 							max = in(o,t+j);
 							maxIndex = t+j;
 						}

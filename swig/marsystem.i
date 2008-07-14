@@ -19,6 +19,7 @@ class MarSystem {
                 MarSystem(); // Hide constructor
         public:
                 void tick (); // Perform one processing step
+                void process(realvec& in, realvec& out);
                 void update (); // Update system w.r.t controls
                 
                 void addMarSystem (MarSystem *msys); // attach a dependant MarSystem

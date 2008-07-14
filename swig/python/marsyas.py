@@ -131,6 +131,7 @@ class MarSystem(_object):
     def __init__(self): raise AttributeError, "No constructor defined"
     __repr__ = _swig_repr
     def tick(*args): return _marsyas.MarSystem_tick(*args)
+    def process(*args): return _marsyas.MarSystem_process(*args)
     def update(*args): return _marsyas.MarSystem_update(*args)
     def addMarSystem(*args): return _marsyas.MarSystem_addMarSystem(*args)
     def getType(*args): return _marsyas.MarSystem_getType(*args)
@@ -231,22 +232,27 @@ class MarControlPtr(_object):
     if _newclass:from_bool = staticmethod(_marsyas.MarControlPtr_from_bool)
     __swig_getmethods__["from_string"] = lambda x: _marsyas.MarControlPtr_from_string
     if _newclass:from_string = staticmethod(_marsyas.MarControlPtr_from_string)
+    __swig_getmethods__["from_realvec"] = lambda x: _marsyas.MarControlPtr_from_realvec
+    if _newclass:from_realvec = staticmethod(_marsyas.MarControlPtr_from_realvec)
     def getType(*args): return _marsyas.MarControlPtr_getType(*args)
     def getName(*args): return _marsyas.MarControlPtr_getName(*args)
     def setValue_natural(*args): return _marsyas.MarControlPtr_setValue_natural(*args)
     def setValue_real(*args): return _marsyas.MarControlPtr_setValue_real(*args)
     def setValue_bool(*args): return _marsyas.MarControlPtr_setValue_bool(*args)
     def setValue_string(*args): return _marsyas.MarControlPtr_setValue_string(*args)
+    def setValue_realvec(*args): return _marsyas.MarControlPtr_setValue_realvec(*args)
     def to_natural(*args): return _marsyas.MarControlPtr_to_natural(*args)
     def to_real(*args): return _marsyas.MarControlPtr_to_real(*args)
     def to_string(*args): return _marsyas.MarControlPtr_to_string(*args)
     def to_bool(*args): return _marsyas.MarControlPtr_to_bool(*args)
+    def to_realvec(*args): return _marsyas.MarControlPtr_to_realvec(*args)
 MarControlPtr_swigregister = _marsyas.MarControlPtr_swigregister
 MarControlPtr_swigregister(MarControlPtr)
 MarControlPtr_from_natural = _marsyas.MarControlPtr_from_natural
 MarControlPtr_from_real = _marsyas.MarControlPtr_from_real
 MarControlPtr_from_bool = _marsyas.MarControlPtr_from_bool
 MarControlPtr_from_string = _marsyas.MarControlPtr_from_string
+MarControlPtr_from_realvec = _marsyas.MarControlPtr_from_realvec
 
 class realvec(_object):
     __swig_setmethods__ = {}

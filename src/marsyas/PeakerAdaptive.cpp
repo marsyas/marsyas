@@ -73,6 +73,8 @@ PeakerAdaptive::myProcess(realvec& in, realvec& out)
 
 	out.setval(0.0);
 
+	
+
 	for (o = 0; o < inObservations_; o++)
 	{
 		peakSpacing = (mrs_real)(peakSpacing * inSamples_);
