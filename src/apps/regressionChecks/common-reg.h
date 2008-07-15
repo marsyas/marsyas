@@ -2,6 +2,7 @@
 #define COMMON_REG_H
 
 #include <iostream>
+#include <cstdlib>
 #include "MarSystemManager.h"
 #include "Collection.h"
 #include "FileName.h"

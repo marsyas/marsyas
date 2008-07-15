@@ -21,6 +21,7 @@ record: record a clip using AudioSource
  */
 
 #include <cstdio>
+#include <cstdlib>
 #include <unistd.h>
 #include "Collection.h"
 #include "MarSystemManager.h"

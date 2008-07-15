@@ -22,6 +22,7 @@
 #include <string>
 #include <vector>
 #include <utility>
+#include <typeinfo>
 
 #include "common.h"
 #include "realvec.h"

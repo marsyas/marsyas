@@ -23,6 +23,8 @@
 #include "MarSystem.h"	
 #include "Gain.h" 
 
+#include <cstdlib>
+
 namespace Marsyas
 {
 /** 

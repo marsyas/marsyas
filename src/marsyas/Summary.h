@@ -33,6 +33,8 @@ MarSystem results.
 
 #include "MarSystem.h"
 
+#include <cstring>
+
 namespace Marsyas
 {
 

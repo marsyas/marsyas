@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <cstdlib>
 #include "Collection.h"
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"

@@ -5,6 +5,8 @@
 #include <list>
 #include <vector>
 #include <cfloat> 
+#include <cstdlib> 
+#include <cstring> 
  
 namespace Marsyas
 {

@@ -3,6 +3,7 @@
 
 // core/fundamental  Marsyas checks
 #include "common-reg.h"
+#include <cstdlib>
 #ifdef MARSYAS_AUDIOIO
 #include "RtAudio3.h"
 #endif

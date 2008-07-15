@@ -19,6 +19,8 @@
 #ifndef MARSYAS_AUFILESINK_H
 #define MARSYAS_AUFILESINK_H
 
+#include <cstring>
+
 #include "AbsSoundFileSink.h"
 #include "AuFileSource.h"
 #include "FileName.h"

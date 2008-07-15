@@ -1,5 +1,7 @@
 
 #include <cstdio>
+#include <cstdlib>
+#include <alogrithm>
 
 #include "Collection.h"
 #include "MarSystemManager.h" 

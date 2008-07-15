@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <cstdlib>
 
 #ifdef MARSYAS_MIDIIO
 #include "RtMidi.h"

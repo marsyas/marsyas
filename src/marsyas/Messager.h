@@ -33,6 +33,8 @@
 #include <sys/select.h> 
 #endif 
 
+#include <cstring>
+
 #include "Thread.h"
 #include "NetworkSocket.h"
 #include "common.h" 

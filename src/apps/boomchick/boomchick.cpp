@@ -6,6 +6,7 @@
 #include "CommandLineOptions.h"
 #include "mididevices.h"
 #include <string> 
+#include <cstdlib> 
 #include <fstream>
 #include <iostream>
 #include <iomanip> 

@@ -23,6 +23,7 @@
 #include "AbsSoundFileSource2.h"
 
 #include <string>
+#include <cstring>
 #include <cstdio>
 
 namespace Marsyas

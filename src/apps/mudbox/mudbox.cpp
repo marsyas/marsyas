@@ -9,6 +9,7 @@
 // the build process.  
 
 #include <cstdio>
+#include <cstdlib>
 #include <string>
 
 #include "common.h"

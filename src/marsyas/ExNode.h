@@ -42,6 +42,7 @@ class ExNode_NatDbl : public ExNode_Fun {
 #define __EX_NODE_H__
 #include <string>
 #include <iostream>
+#include <cstdlib>
 #include "ExVal.h"
 #include "ExSymTbl.h"
 #include "MarControl.h"

@@ -49,6 +49,7 @@
 
 #include <string>
 #include <vector>
+#include <limits>
 #include "RtError.h"
 
 /*! \typedef typedef unsigned long RtAudioFormat;

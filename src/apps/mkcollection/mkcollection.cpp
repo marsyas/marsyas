@@ -26,6 +26,8 @@ Daniel German at UVic added recursive reading of subdirectories
 #endif
 
 #include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <sys/stat.h>
 #include <assert.h>
 

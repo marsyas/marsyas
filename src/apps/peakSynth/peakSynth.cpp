@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <cstdlib>
 
 #include "MarSystemManager.h"
 #include "Conversions.h"

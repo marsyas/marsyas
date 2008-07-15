@@ -5,6 +5,7 @@
 #include "basicChecks.h"
 #include "analysisChecks.h"
 
+#include <cstdlib>
 
 CommandLineOptions cmd_options;
 string testName;

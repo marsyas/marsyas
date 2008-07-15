@@ -28,6 +28,7 @@
 #include "Scheduler.h"
 #include "TmControlValue.h"
 #include <string> 
+#include <cstdlib> 
 
 namespace Marsyas
 {

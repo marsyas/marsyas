@@ -2,6 +2,7 @@
 #include "common.h"
 
 #include <cstdio>
+#include <cstdlib>
 
 #include "Collection.h"
 #include "MarSystemManager.h"

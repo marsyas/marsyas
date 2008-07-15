@@ -13,6 +13,8 @@
 #include <list>
 #include <vector>
 #include <iostream> 
+#include <cstdlib> 
+#include <cstring> 
 using namespace std;
 
 namespace Marsyas

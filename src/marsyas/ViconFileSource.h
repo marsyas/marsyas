@@ -21,6 +21,9 @@
 
 #include "MarSystem.h" 
 
+#include <cstdlib>
+#include <cstring>
+
 namespace Marsyas
 {
 /**

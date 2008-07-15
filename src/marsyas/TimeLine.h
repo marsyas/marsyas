@@ -23,6 +23,7 @@
 #include "Color.h"
 
 #include <string>
+#include <algorithm>
 #include "Communicator.h"
 
 #include <vector>
