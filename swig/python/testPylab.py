@@ -22,19 +22,18 @@ filename = pipe.getControl("SoundFileSource/file/mrs_string/filename")
 notempty = pipe.getControl("SoundFileSource/file/mrs_bool/notEmpty")
 outData  = pipe.getControl("SoundFileSource/file/mrs_realvec/processedData")
 
-import sys
+# replace with a proper path for your system 
+filename.setValue_string("/Users/gtzan/data/sound/music_speech/music/bmarsalis.au")
 
-for arg in sys.argv[1:] :
-	filename.setValue_string(arg)
+i = 0
 
-	i = 0
-	while notempty.to_bool(): # Play it
-		pipe.tick()
-		plotdata = outData.to_realvec()
-		hold(False)
-		plot(plotdata)
-		show()
-		foo = raw_input("Press enter to continue >")
-		print foo
-		print i
-		i = i + 1
+plotdata = outData.to_realvec()
+for i in range(1,5):  # Show first five windows of the time domain waveform 
+	pipe.tick()
+	plotdata = outData.to_realvec()
+	hold(False)
+	plot(plotdata)
+	show()
+	foo = raw_input("Press enter to continue >")
+	i = i + 1
+

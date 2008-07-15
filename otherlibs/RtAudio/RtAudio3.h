@@ -47,6 +47,7 @@
 #include "RtError3.h"
 #include <string>
 #include <vector>
+#include <limits> 
 
 // Operating system dependent thread functionality.
 #if defined(__WINDOWS_DS__) || defined(__WINDOWS_ASIO__)

@@ -299,7 +299,7 @@ AC_ARG_ENABLE([binding],[AC_HELP_STRING([--enable-bindings],[Enable SWIG generat
 if test "x${enable_bindings}" == "xyes" ; then
 	AC_MRS_LANG([RUBY],[ruby])
 	AC_MRS_LANG([PYTHON],[python])
-	AC_MRS_LANG([LUA],[lua])
+	#AC_MRS_LANG([LUA],[lua])
 	AC_PATH_PROG([SWIG],[swig])
 	AC_PATH_PROG([ECHO],[echo])
 	AC_CONFIG_COMMANDS([ruby_setup],[( cd swig/ruby ; sh setup.sh )])
