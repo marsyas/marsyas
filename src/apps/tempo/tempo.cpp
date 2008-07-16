@@ -1,7 +1,7 @@
 
 #include <cstdio>
 #include <cstdlib>
-#include <alogrithm>
+#include <algorithm>
 
 #include "Collection.h"
 #include "MarSystemManager.h" 
@@ -235,8 +235,11 @@ tempo_new(string sfName, string resName)
   // prepare network 
   MarSystem *total = mng.create("Series", "src");
 
+
+
   
   total->addMarSystem(mng.create("SoundFileSource", "src"));
+  total->addMarSystem(mng.create("Stereo2Mono", "s2m"));
   total->addMarSystem(mng.create("ShiftInput", "si"));
 
 
@@ -275,16 +278,17 @@ tempo_new(string sfName, string resName)
 
 
 
-
   mrs_natural ifactor = 8;;
   total->updctrl("DownSampler/initds/mrs_natural/factor", ifactor);  
   
   total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-  nChannels = total->getctrl("SoundFileSource/src/mrs_natural/nChannels")->to<mrs_natural>();
+
+
   srate = total->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
   // srate = total->getctrl("DownSampler/initds/mrs_real/osrate")->to<mrs_real>();
   // cout << "srate = " << srate << endl;
-  
+
+
 
   
   // update the controls 
@@ -296,8 +300,8 @@ tempo_new(string sfName, string resName)
   // cout << "hopSize = " << hopSize << endl;
   
 
-  offset = (mrs_natural) (start * srate * nChannels);
-  duration = (mrs_natural) (length * srate * nChannels);
+  offset = (mrs_natural) (start * srate); 
+duration = (mrs_natural) (length * srate);
   
   // total->updctrl("PlotSink/psink1/mrs_string/filename", "acr");
   // total->updctrl("PlotSink/psink2/mrs_string/filename", "peaks");
@@ -322,6 +326,9 @@ tempo_new(string sfName, string resName)
   total->updctrl("DownSampler/ds/mrs_natural/factor", factor);  
 
   srate = total->getctrl("DownSampler/initds/mrs_real/osrate")->to<mrs_real>();  
+
+
+
 
   // Peak picker 4BPMs at 60BPM resolution from 50 BPM to 250 BPM 
   mrs_natural pkinS = total->getctrl("Peaker/pkr/mrs_natural/onSamples")->to<mrs_natural>();
@@ -367,7 +374,12 @@ tempo_new(string sfName, string resName)
   mrs_natural repeatId = 1;
 
   onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->to<mrs_natural>();
+  
 
+
+  
+
+   
 
 
   while (total->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
@@ -376,13 +388,14 @@ tempo_new(string sfName, string resName)
 
       numPlayed++;
       if (samplesPlayed > repeatId * duration)
-	{
-	  total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);   
-	  repeatId++;
-	}
+	  {
+		  total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);   
+		  repeatId++;
+	  }
       wc ++;
       samplesPlayed += onSamples;
     }
+
 
 
   // phase calculation 
@@ -396,7 +409,7 @@ tempo_new(string sfName, string resName)
   total1->addMarSystem(mng.create("DownSampler", "ds1"));
   total1->updctrl("SoundFileSource/src1/mrs_string/filename", sfName);
 
-  nChannels = total1->getctrl("SoundFileSource/src1/mrs_natural/nChannels")->to<mrs_natural>();
+
   srate = total1->getctrl("SoundFileSource/src1/mrs_real/osrate")->to<mrs_real>();
   
 

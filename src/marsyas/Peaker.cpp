@@ -76,12 +76,6 @@ Peaker::myProcess(realvec& in, realvec& out)
 
 	out.setval(0.0);
 
-	cout << "peakStart = " << peakStart << endl;
-	cout << "peakEnd = " << peakEnd << endl;
-	cout << "inSamples= " << inSamples_ << endl;
-	cout << "in = " << in << endl;
-	cout << "out = " << out << endl;
-	
 
 	peakStrength = 0.0;
 	
