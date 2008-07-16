@@ -86,9 +86,192 @@ printHelp(string progName)
 	exit(1);
 }
 
+
+
+void 
+phasevocoder(string sfName, mrs_natural N, mrs_natural Nw, 
+			 mrs_natural D, mrs_natural I, mrs_real P, 
+			 string outsfname)
+{
+	if (!quietopt_)
+		cout << "phasevocSeries" << endl;
+
+	vector<int> onsets;
+	if (onsetsfile_ != "") 
+	{
+		cout << "ONSETS FILE IS " << onsetsfile_ << endl;
+		ifstream infile(onsetsfile_.c_str());
+		int onset_index;
+		while (!infile.eof())
+		{
+			infile >> onset_index;
+			onsets.push_back(onset_index);
+		}
+		// convert to analysis frame rate 
+		for (int j=0; j < onsets.size(); j++) 
+		{
+			onsets[j] /= D;
+			cout << "on = " << onsets[j] << endl;
+		}
+	}
+	
+	MarSystemManager mng;
+	// create the phasevocoder network
+	MarSystem* pvseries = mng.create("Series", "pvseries");
+	// oscbank_ = false;
+	
+	if (microphone_) 
+		pvseries->addMarSystem(mng.create("AudioSource", "src"));
+	else 
+		pvseries->addMarSystem(mng.create("SoundFileSource", "src"));
+	
+	pvseries->addMarSystem(mng.create("Stereo2Mono", "s2m"));
+	pvseries->addMarSystem(mng.create("ShiftInput", "si"));
+	pvseries->addMarSystem(mng.create("PvFold", "fo"));
+	pvseries->addMarSystem(mng.create("Spectrum", "spk"));
+	pvseries->addMarSystem(mng.create("PvConvert", "conv"));
+	if (oscbank_)	  
+		pvseries->addMarSystem(mng.create("PvOscBank", "ob"));
+	else 
+	{
+		pvseries->addMarSystem(mng.create("PvUnconvert", "uconv"));
+		pvseries->addMarSystem(mng.create("InvSpectrum", "ispectrum"));
+		pvseries->addMarSystem(mng.create("PvOverlapadd", "pover"));
+	}
+  
+	pvseries->addMarSystem(mng.create("ShiftOutput", "so"));
+	pvseries->addMarSystem(mng.create("Gain", "gain"));
+	
+  
+	MarSystem *dest;
+	if (outsfname == EMPTYSTRING) 
+		dest = new AudioSink("dest");
+	else
+	{
+		dest = new SoundFileSink("dest");
+		//dest->updctrl("mrs_string/filename", outsfname);
+	}
+	pvseries->addMarSystem(dest);
+
+	if (outsfname == EMPTYSTRING) 
+		pvseries->updctrl("AudioSink/dest/mrs_natural/bufferSize", bopt);
+
+	// update the controls
+	if (microphone_) 
+	{
+		pvseries->updctrl("mrs_natural/inSamples", D);
+		pvseries->updctrl("mrs_natural/inObservations", 1);
+	}
+	else
+	{
+		pvseries->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+		pvseries->updctrl("mrs_natural/inSamples", D);
+		pvseries->updctrl("mrs_natural/inObservations", 1);
+
+		// if audio output loop to infinity and beyond 
+		if (outsfname == EMPTYSTRING) 
+			pvseries->updctrl("SoundFileSource/src/mrs_real/repetitions", -1.0);
+	}
+  
+	
+	pvseries->updctrl("ShiftInput/si/mrs_natural/winSize", Nw);
+	pvseries->updctrl("PvFold/fo/mrs_natural/FFTSize", N);
+	pvseries->updctrl("PvFold/fo/mrs_natural/Decimation", D);
+	pvseries->updctrl("PvConvert/conv/mrs_natural/Decimation",D);      
+	pvseries->updctrl("PvConvert/conv/mrs_natural/Sinusoids", (mrs_natural) sopt);
+	pvseries->updctrl("PvConvert/conv/mrs_string/mode", convertmode_);
+	
+
+	if (oscbank_) 
+	{
+		pvseries->updctrl("PvOscBank/ob/mrs_natural/Interpolation", I);
+		pvseries->updctrl("PvOscBank/ob/mrs_real/PitchShift", P);
+		pvseries->updctrl("PvOscBank/ob/mrs_natural/winSize", Nw);
+	}
+	else 
+	{
+		pvseries->updctrl("PvUnconvert/uconv/mrs_natural/Interpolation", I);
+		pvseries->updctrl("PvUnconvert/uconv/mrs_natural/Decimation", D);
+		pvseries->updctrl("PvUnconvert/uconv/mrs_string/mode",unconvertmode_);
+		pvseries->updctrl("PvOverlapadd/pover/mrs_natural/FFTSize", N);
+		pvseries->updctrl("PvOverlapadd/pover/mrs_natural/winSize", Nw);
+		pvseries->updctrl("PvOverlapadd/pover/mrs_natural/Interpolation", I);
+		pvseries->updctrl("PvOverlapadd/pover/mrs_natural/Decimation",D);
+	}
+  
+	pvseries->updctrl("ShiftOutput/so/mrs_natural/Interpolation", I);
+	pvseries->updctrl("Gain/gain/mrs_real/gain", 2.0);
+	
+	pvseries->linkctrl("PvConvert/conv/mrs_realvec/phases", 
+					   "PvUnconvert/uconv/mrs_realvec/analysisphases");
+
+	pvseries->linkctrl("PvUnconvert/uconv/mrs_realvec/regions",
+					   "PvConvert/conv/mrs_realvec/regions");
+	if (!quietopt_)
+		cout << *pvseries << endl;
+
+	if (outsfname == EMPTYSTRING) 
+		pvseries->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+
+	if (outsfname != EMPTYSTRING)
+		dest->updctrl("mrs_string/filename", outsfname);
+
+	int numticks = 0;
+	int onset_counter = 20;
+
+	while(1)
+	{
+		// initialize synthesis phases to analysis phases
+		if ((numticks == 0)&&(oscbank_ == false)) 
+			pvseries->updctrl("PvUnconvert/uconv/mrs_bool/phaselock", true);		
+		
+		pvseries->tick();
+		numticks++;
+		
+		if (!microphone_) 
+			if (pvseries->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>() == false)
+				break;
+
+		mrs_bool onset_found = false;
+		if (onsetsfile_ != "") 
+		{
+			for (int j=0; j < onsets.size(); j++) 
+			{
+				if (numticks == onsets[j])
+				{
+					onset_found = true;
+					break;
+				}
+			}
+			if (onset_found) 
+			{
+				// initialize synthesis phases to analysis phases				
+				pvseries->updctrl("PvUnconvert/uconv/mrs_bool/phaselock", true);		
+				pvseries->updctrl("PvUnconvert/uconv/mrs_bool/phaselock", true);
+				pvseries->updctrl("PvUnconvert/uconv/mrs_natural/Interpolation",D);
+				pvseries->updctrl("PvOverlapadd/pover/mrs_natural/Interpolation",D);
+				pvseries->updctrl("ShiftOutput/so/mrs_natural/Interpolation", D);
+			}
+			else 
+			{
+				pvseries->updctrl("PvUnconvert/uconv/mrs_natural/Interpolation", I);
+				pvseries->updctrl("PvOverlapadd/pover/mrs_natural/Interpolation",I);
+				pvseries->updctrl("ShiftOutput/so/mrs_natural/Interpolation", I);		
+			}
+		}
+	}
+}
+
+
+
+	
+
+
+
 // original monophonic phasevocoder 
 void 
-phasevocSeries(string sfName, mrs_natural N, mrs_natural Nw, 
+phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw, 
 			   mrs_natural D, mrs_natural I, mrs_real P, 
 			   string outsfname)
 {
@@ -1514,7 +1697,8 @@ main(int argc, const char **argv)
 		microphone_ = false;
 		if (vopt_ == 1) 
 		{
-			phasevocSeries(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);
+			// phasevocSeriesOld(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);
+			phasevocoder(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);			
 		}
 		else
 		{
@@ -1543,7 +1727,7 @@ main(int argc, const char **argv)
 			cout << "Using live microphone input" << endl;
 		microphone_ = true;
 		if (vopt_ == 1) 
-			phasevocSeries("microphone", fftSize_, winSize_, dopt, iopt, popt, fileName);
+			phasevocSeriesOld("microphone", fftSize_, winSize_, dopt, iopt, popt, fileName);
 		else
 			if (eopt_ ==0) 
 				phasevocPoly("microphone", fftSize_, winSize_, dopt, iopt, popt, fileName);      

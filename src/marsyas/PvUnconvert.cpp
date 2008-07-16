@@ -129,12 +129,13 @@ PvUnconvert::subband(int bin)
 	int si;
 	
 	if (bin  < 16) 
-		si = 1;
+		si = 0;
 	else if ((bin >= 16) && (bin < 32))
 		si = 1;
-	else 
+	else if (bin < 512)
 		si = (int)(log(bin*1.0) / log(2.0))-3;
-
+	else if (bin > 512)
+		si = 6;
 	return si;	
 }
 
@@ -142,20 +143,17 @@ PvUnconvert::subband(int bin)
 bool 
 PvUnconvert::isPeak(int bin) 
 {
-
 	bool res = true;
 	
 	int h = subband(bin);
+	h = 2;
 	
 	for (int i = bin-h; i < bin+h; i++)
 	{
 		if (mag_(bin) < mag_(i))
 			res = false;
 	}
-	
 	return res;
-
-
 }
 
 
@@ -189,12 +187,13 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 	mrs_real interpolation = getctrl("mrs_natural/Interpolation")->to<mrs_natural>() * 1.0;
 	mrs_real decimation = getctrl("mrs_natural/Decimation")->to<mrs_natural>() * 1.0;
 	mrs_real tratio = interpolation / decimation;
+
+
+	
 	mrs_real beta = 0.66 + tratio/3.0;
 	
-	
-	
-	
-
+	if (mode == "identity_phaselock") 
+		beta = 1.0;
 	
 	// calculate magnitude 
 	for (t=0; t <= N2_; t++)
@@ -211,8 +210,6 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 	}
 
 
-	
-
 	if (mode == "loose_phaselock")
 	{
 		for (t=0; t <= N2_; t++)
@@ -222,12 +219,7 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 			if (t == N2_) 
 				re = 1;		
 			
-			phase_(t) = lastphases(t) + tratio * in(freq,0);
-			while (phase_(t) > PI) 
-				phase_(t) -= TWOPI;
-			while (phase_(t) < -PI) 
-				phase_(t) += TWOPI;
-			
+			phase_(t) = lastphases(t) + interpolation * in(freq,0);
 		}
 	}
 	
@@ -244,26 +236,16 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 		{
 			re = amp = 2*t; 
 			im = freq = 2*t+1;
-
 			
-			
-
 			if ((t > 2) && (t <= N2_-2))
 			{
 				if (isPeak(t))
 				{
 					if (mode == "identity_phaselock")
-						phase_(t) = lastphases(t) + tratio * in(freq,0);
+						iphase_(t) = lastphases(t) + interpolation * in(freq,0);
 					else if (mode == "scaled_phaselock")
-						phase_(t) = lastphases(regions(t)) + tratio * in(freq,0);
+						iphase_(t) = lastphases(regions(t)) + interpolation * in(freq,0);
 			
-					while (phase_(t) > PI) 
-						phase_(t) -= TWOPI;
-					while (phase_(t) < -PI) 
-						phase_(t) += TWOPI;
-					lastphases(t) = phase_(t);			
-					iphase_(t) = phase_(t);
-					
 					// calculate significant peaks and corresponding 
 					// non-overlapping intervals 
 					peak = t;
@@ -281,13 +263,7 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 			}
 			else 
 			{
-				phase_(t) = lastphases(t) + tratio * in(freq,0);
-				while (phase_(t) > PI) 
-					phase_(t) -= TWOPI;
-				while (phase_(t) < -PI) 
-					phase_(t) += TWOPI;
-				iphase_(t) = phase_(t);
-				lastphases(t) = phase_(t);			
+				iphase_(t) = lastphases(t) + interpolation * in(freq,0);
 			}
 		}
 	}
@@ -308,33 +284,27 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 
 			if ((t > 2) && (t <= N2_-2))
 			{
+				// unwrap analysis phases 
 				while (analysisphases(t) > PI) 
 					analysisphases(t) -= TWOPI;
 				while (analysisphases(t) < -PI) 
-					analysisphases(t) += TWOPI;				
+					analysisphases(t) += TWOPI;
 				
-				iphase_(t) = phase_(regions(t)) + beta * (analysisphases(t) - analysisphases(regions(t)));
-				
-
+				iphase_(t) = iphase_(regions(t)) + beta * (analysisphases(t) - analysisphases(regions(t)));
 				// sinusoidal trajectory continuation heuristic 
 				/* if (t - regions(t) > subband(t))
 					iphase_(t) = phase_(regions(t)) + beta * (analysisphases(t) - analysisphases(regions(t)));
 				else 
-					iphase_(t) = lastphases(t) + tratio * in(freq,0);
-					iphase_(t) = analysisphases(t);
-					*/ 
+				{
+					iphase_(t) = lastphases(t) + interpolation * in(freq,0);
+				}
+				*/ 
 				
-				while (iphase_(t) > PI) 
-					iphase_(t) -= TWOPI;
-				while (iphase_(t) < -PI) 
-					iphase_(t) += TWOPI;
-				lastphases(t) = iphase_(t);
 			}
-
-
+			
 			if (ctrl_phaselock_->to<mrs_bool>())
 			{
-
+				
 				iphase_ = analysisphases;
 				ctrl_phaselock_->setValue(false);
 			}
@@ -342,11 +312,13 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 			out(re,0) = mag_(t) * cos(iphase_(t));
 			if (t != N2_)
 				out(im,0) = -mag_(t) * sin(iphase_(t));
+			lastphases(t) = iphase_(t);
+			
 		}
 		else if (mode == "loose_phaselock") 
 		{
-			 if (t == N2_) 
-				 re = 1;		
+			if (t == N2_) 
+				re = 1;		
 			
  			if ((t >= 2) && (t < N2_-2))
  			{
@@ -370,18 +342,17 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 				ctrl_phaselock_->setValue(false);
 			}
 			
-			while (lphase_(t) > PI) 
+			/* while (lphase_(t) > PI) 
 				lphase_(t) -= TWOPI;
 			while (lphase_(t) < -PI) 
 				lphase_(t) += TWOPI;
-			lastphases(t) = lphase_(t);
+			*/ 
 
-
-
-
+			
  			out(re,0) = lmag_(t) * cos(lphase_(t));
  			if (t != N2_)
  				out(im,0) = -lmag_(t) * sin(lphase_(t));
+			lastphases(t) = lphase_(t);
 		}
 		else // classic
 		{
@@ -389,16 +360,9 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 			{
 				re = 1;
 			}
-			
-			phase_(t) = lastphases(t) + tratio * in(freq,0);
-			while (phase_(t) > PI) 
-				phase_(t) -= TWOPI;
-			while (phase_(t) < -PI) 
-				phase_(t) += TWOPI;
-
+			phase_(t) = lastphases(t) + interpolation * in(freq,0);
 			if (ctrl_phaselock_->to<mrs_bool>())
 			{
-
 				phase_ = analysisphases;
 				ctrl_phaselock_->setValue(false);
 			}
@@ -407,8 +371,6 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 			if (t != N2_)
 				out(im,0) = -mag_(t) * sin(phase_(t));
 			lastphases(t) = phase_(t);
-			
-
 		}
 	}
 }

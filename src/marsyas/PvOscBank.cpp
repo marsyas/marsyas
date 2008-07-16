@@ -101,7 +101,8 @@ PvOscBank::myUpdate(MarControlPtr sender)
 void 
 PvOscBank::myProcess(realvec& in, realvec& out)
 {
-  
+	cout << "OSCBANK " << endl;
+	
 	//checkFlow(in,out);
 	temp_.setval(0.0);
 

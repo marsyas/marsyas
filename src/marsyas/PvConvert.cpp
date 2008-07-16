@@ -131,7 +131,8 @@ PvConvert::myProcessFull(realvec& in, realvec& out)
 	
 
 	mrs_real decimation = getctrl("mrs_natural/Decimation")->to<mrs_natural>() * 1.0;
-	
+	mrs_real one_over_decimation = 1.0 / decimation;
+	 
 	mrs_real omega_k;
 
 	const mrs_string& mode = ctrl_mode_->to<mrs_string>();	
@@ -157,8 +158,7 @@ PvConvert::myProcessFull(realvec& in, realvec& out)
 			b = in(2*t+1, 0);
 		}
  
-		// omega_k = (TWOPI * t) / (N2 * 2);
-		omega_k = (TWOPI * decimation * t) / (N2*2) ;
+		omega_k = (TWOPI * t) / (N2*2) ;
 
 		// computer magnitude value 
 		out(2*t,0) = sqrt(a*a + b*b);
@@ -173,12 +173,12 @@ PvConvert::myProcessFull(realvec& in, realvec& out)
 			if (mode == "analysis_scaled_phaselock")
 			{
 				// scaled phase-locking 
-				phasediff = phases(t) - lastphase_(regions(t)) - omega_k;
+				phasediff = phases(t) - lastphase_(regions(t)) - decimation * omega_k;
 			}
 			else
 			{
 				// classic, identity, loose phase_propagation 
-				phasediff = phases(t) - lastphase_(t) - omega_k;
+				phasediff = phases(t) - lastphase_(t) - decimation * omega_k;
 			}
 			
 			lastphase_(t) = phases(t);
@@ -190,18 +190,9 @@ PvConvert::myProcessFull(realvec& in, realvec& out)
 		}
 		
 
-		out(2*t+1, 0) = omega_k + phasediff;
+		out(2*t+1, 0) = omega_k + one_over_decimation * phasediff;
 	}
-
-	
-
-
 }
-
-
-
-
-
 
 
 
