@@ -380,7 +380,7 @@ void drumClassify( string drumFile) {
 	// Our Classifier
 	extractNet->addMarSystem(mng.create("GaussianClassifier", "classifier"));  
 	extractNet->updctrl("GaussianClassifier/classifier/mrs_string/mode","predict");
-	extractNet->updctrl("GaussianClassifier/classifier/mrs_natural/nLabels",2);
+	extractNet->updctrl("GaussianClassifier/classifier/mrs_natural/nClasses",2);
 
 	realvec means;
 	realvec vars; 
@@ -3084,13 +3084,13 @@ toy_with_weka(string fname)
 		net->getctrl("WekaSource/wsrc/mrs_string/classNames"));
 
 
-	net->updctrl("GaussianClassifier/gcl/mrs_natural/nLabels", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+	net->updctrl("GaussianClassifier/gcl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
 	net->linkctrl("GaussianClassifier/gcl/mrs_string/mode", "Summary/summary/mrs_string/mode");
 
 	while(net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>() == false)
 	{
 		string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
-
+		cout << mode << endl;
 		net->tick();
 		net->updctrl("GaussianClassifier/gcl/mrs_string/mode", mode);
 		// net->updctrl("Summary/summary/mrs_string/mode", mode);
