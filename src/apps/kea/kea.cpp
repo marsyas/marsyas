@@ -236,10 +236,11 @@ train()
     net->updctrl("Classifier/cl/mrs_string/enableChild", "SVMClassifier/svmcl");    
   // net->updctrl("WekaSource/wsrc/mrs_string/attributesToInclude", "1,2,3");
   
-  net->updctrl("WekaSource/wsrc/mrs_string/filename", wekafname_);
+
   // net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "PercentageSplit,50%");
   net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "kFold,NS,10");
   // net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "UseTestSet,lg.arff");
+  net->updctrl("WekaSource/wsrc/mrs_string/filename", wekafname_);
   net->updctrl("mrs_natural/inSamples", 1);
 
   net->updctrl("Summary/summary/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));

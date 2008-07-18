@@ -3075,8 +3075,8 @@ toy_with_weka(string fname)
 	net->addMarSystem(mng.create("Summary", "summary"));
 	// net->updctrl("WekaSource/wsrc/mrs_string/attributesToInclude", "1,2,3");
 
-	net->updctrl("WekaSource/wsrc/mrs_string/filename", fname);
 	net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "PercentageSplit,50%");
+	net->updctrl("WekaSource/wsrc/mrs_string/filename", fname);
 	net->updctrl("mrs_natural/inSamples", 1);
 
 	net->updctrl("Summary/summary/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
