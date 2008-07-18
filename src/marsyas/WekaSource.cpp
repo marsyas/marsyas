@@ -82,6 +82,7 @@ WekaSource::addControls()
 void 
 WekaSource::myUpdate(MarControlPtr sender)
 {
+	
 	(void) sender;
   MRSDIAG("WekaSource.cpp - WekaSource:myUpdate");
   
@@ -97,7 +98,7 @@ WekaSource::myUpdate(MarControlPtr sender)
       
       loadFile(filename_, attributesToInclude_, data_);
       // data_.Dump("org.txt", classesFound_);
-    }
+
 
 
   string names;
@@ -226,8 +227,6 @@ WekaSource::myUpdate(MarControlPtr sender)
     {
       data_.Shuffle();
       data_.Dump("shuffle.txt", classesFound_);
-
-
       validationModeEnum_ = PercentageSplit;
       
       cp = (char *)strtok(NULL, ",");
@@ -237,7 +236,9 @@ WekaSource::myUpdate(MarControlPtr sender)
       MRSASSERT(percentageSplit_>0&&percentageSplit_<100);
       
       percentageIndex_ = ((mrs_natural)data_.size() * percentageSplit_) / 100;
+
       percentageIndex_--; //adjust to count from 0 
+
       if(percentageIndex_ < 1) percentageIndex_ = 1;
       currentIndex_ = 0;
       
@@ -245,6 +246,8 @@ WekaSource::myUpdate(MarControlPtr sender)
   
   //		cout << "=== Summary ===" << endl << endl;
   
+
+    }
 
 }//myUpdate
 
