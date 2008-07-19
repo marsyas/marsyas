@@ -1,4 +1,4 @@
-EXTRA_DIST = Makefile.python.in realvec.i marsyas.i marsyas.py marsyas_wrap.cxx setup.py.in test2.py test.py
+EXTRA_DIST = Makefile.python.in marsyas.i marsyas.py marsyas_wrap.cxx setup.py.in test2.py test.py
 DISTCLEANFILES = Makefile.python setup.py
 
 all install clean :

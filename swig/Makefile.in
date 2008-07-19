@@ -96,7 +96,7 @@ am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
 qmake = @qmake@
-EXTRA_DIST = marsystemmanager.i marsystem.i marcontrolptr.i types.i
+EXTRA_DIST = marsystemmanager.i marsystem.i marcontrolptr.i types.i realvec.i
 
 SUBDIRS = @BINDINGS@
 DIST_SUBDIRS = java lua python ruby
