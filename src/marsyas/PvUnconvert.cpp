@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2008 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -41,7 +41,11 @@ PvUnconvert::PvUnconvert(const PvUnconvert& a):MarSystem(a)
 	ctrl_lastphases_ = getctrl("mrs_realvec/lastphases");
 	ctrl_analysisphases_ = getctrl("mrs_realvec/analysisphases");
 	ctrl_regions_ = getctrl("mrs_realvec/regions");
+	ctrl_magnitudes_ = getctrl("mrs_realvec/magnitudes");
+	ctrl_peaks_ = getctrl("mrs_realvec/peaks");
+	
 	ctrl_phaselock_ = getctrl("mrs_bool/phaselock");
+	
 	transient_counter_ = 0;
 	
 }
@@ -70,6 +74,8 @@ PvUnconvert::addControls()
   addctrl("mrs_realvec/lastphases", realvec(), ctrl_lastphases_);
   addctrl("mrs_realvec/analysisphases", realvec(), ctrl_analysisphases_);
   addctrl("mrs_realvec/regions", realvec(), ctrl_regions_);
+  addctrl("mrs_realvec/magnitudes", realvec(), ctrl_magnitudes_);
+  addctrl("mrs_realvec/peaks", realvec(), ctrl_peaks_);
   addctrl("mrs_bool/phaselock", false, ctrl_phaselock_);
 }
 
@@ -106,9 +112,19 @@ PvUnconvert::myUpdate(MarControlPtr sender)
 		regions.create(N2_+1);
 	}
 
+	{
+		MarControlAccessor acc(ctrl_magnitudes_);
+		mrs_realvec& magnitudes = acc.to<mrs_realvec>();
+		magnitudes.create(N2_+1);
+	}
+
+	{
+		MarControlAccessor acc(ctrl_peaks_);
+		mrs_realvec& peaks = acc.to<mrs_realvec>();
+		peaks.create(N2_+1);
+	}
 
 
-	mag_.create(N2_+1);	
 	phase_.create(N2_+1);
 	lphase_.create(N2_+1);
 	iphase_.create(N2_+1);
@@ -141,7 +157,7 @@ PvUnconvert::subband(int bin)
 
 
 bool 
-PvUnconvert::isPeak(int bin) 
+PvUnconvert::isPeak(int bin, mrs_realvec& magnitudes) 
 {
 	bool res = true;
 	
@@ -150,7 +166,7 @@ PvUnconvert::isPeak(int bin)
 	
 	for (int i = bin-h; i < bin+h; i++)
 	{
-		if (mag_(bin) < mag_(i))
+		if (magnitudes(bin) < magnitudes(i))
 			res = false;
 	}
 	return res;
@@ -171,12 +187,17 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 	MarControlAccessor  acc2(ctrl_regions_);
 	mrs_realvec& regions = acc2.to<mrs_realvec>();
 	
+	MarControlAccessor acc3(ctrl_magnitudes_);
+	mrs_realvec& magnitudes = acc3.to<mrs_realvec>();
+	
+	MarControlAccessor acc4(ctrl_peaks_);
+	mrs_realvec& peaks = acc4.to<mrs_realvec>();
+	
+	peaks.setval(0.0);
 	
 	
 	static int count = 0;
 	count++;
-	
-
 
 	mrs_natural re, amp, im, freq;
 	mrs_real avg_re;
@@ -191,7 +212,6 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 
 	
 	mrs_real beta = 0.66 + tratio/3.0;
-	
 	if (mode == "identity_phaselock") 
 		beta = 1.0;
 	
@@ -204,9 +224,9 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 		{
 			re = 1;
 		}
-		mag_(t) = in(re,0);
+		magnitudes(t) = in(re,0);
 		if (t==N2_)
-			mag_(t) = 0.0;
+			magnitudes(t) = 0.0;
 	}
 
 
@@ -239,8 +259,10 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 			
 			if ((t > 2) && (t <= N2_-2))
 			{
-				if (isPeak(t))
+				if (isPeak(t, magnitudes))
 				{
+
+					
 					if (mode == "identity_phaselock")
 						iphase_(t) = lastphases(t) + interpolation * in(freq,0);
 					else if (mode == "scaled_phaselock")
@@ -251,11 +273,13 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 					peak = t;
 					for (int j=previous_peak; j< previous_peak + (int)((peak-previous_peak)/2.0); j++) 
 					{
+						peaks(j) = magnitudes(previous_peak);
 						regions(j) = previous_peak;
 					}
 					
 					for (int j= previous_peak + (int)((peak-previous_peak)/2.0); j < peak; j++) 
 					{
+						peaks(j) = magnitudes(peak);
 						regions(j) = peak;					
 					}
 					previous_peak = peak;
@@ -309,11 +333,10 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 				ctrl_phaselock_->setValue(false);
 			}
 			
-			out(re,0) = mag_(t) * cos(iphase_(t));
+			out(re,0) = magnitudes(t) * cos(iphase_(t));
 			if (t != N2_)
-				out(im,0) = -mag_(t) * sin(iphase_(t));
+				out(im,0) = -magnitudes(t) * sin(iphase_(t));
 			lastphases(t) = iphase_(t);
-			
 		}
 		else if (mode == "loose_phaselock") 
 		{
@@ -322,18 +345,18 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 			
  			if ((t >= 2) && (t < N2_-2))
  			{
- 				avg_re = mag_(t) * cos(phase_(t)) +
- 					0.25 * mag_(t-1) * cos(phase_(t-1)) +
- 					0.25 * mag_(t+1) * cos(phase_(t));
- 				avg_im = -mag_(t) * sin(phase_(t)) -
- 					-0.25 * mag_(t-1) * sin(phase_(t-1)) -
- 					-0.25 * mag_(t+1) * sin(phase_(t));
+ 				avg_re = magnitudes(t) * cos(phase_(t)) +
+ 					0.25 * magnitudes(t-1) * cos(phase_(t-1)) +
+ 					0.25 * magnitudes(t+1) * cos(phase_(t));
+ 				avg_im = -magnitudes(t) * sin(phase_(t)) -
+ 					-0.25 * magnitudes(t-1) * sin(phase_(t-1)) -
+ 					-0.25 * magnitudes(t+1) * sin(phase_(t));
  				lphase_(t) = -atan2(avg_im,avg_re);
  			}
 			else 
 				lphase_(t) = phase_(t);
 			
- 			lmag_(t) = mag_(t);
+ 			lmag_(t) = magnitudes(t);
 
 			if (ctrl_phaselock_->to<mrs_bool>())
 			{
@@ -367,9 +390,9 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 				ctrl_phaselock_->setValue(false);
 			}
 			
-			out(re,0) = mag_(t) * cos(phase_(t));
+			out(re,0) = magnitudes(t) * cos(phase_(t));
 			if (t != N2_)
-				out(im,0) = -mag_(t) * sin(phase_(t));
+				out(im,0) = -magnitudes(t) * sin(phase_(t));
 			lastphases(t) = phase_(t);
 		}
 	}

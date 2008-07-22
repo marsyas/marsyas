@@ -537,32 +537,59 @@ MarSystemManager::MarSystemManager()
 	//--------------------------------------------------------------------------------
 	// Phase Vocoder composite prototype
 	//--------------------------------------------------------------------------------
-	MarSystem* pvocpr = new Series("pvocpr");
-	pvocpr->addMarSystem(new ShiftInput("si"));
-	pvocpr->addMarSystem(new PvFold("fo"));
-	pvocpr->addMarSystem(new Spectrum("spk"));
-	pvocpr->addMarSystem(new PvConvert("conv"));
-	pvocpr->addMarSystem(new PvOscBank("ob"));
-	pvocpr->addMarSystem(new ShiftOutput("so"));
-	pvocpr->addMarSystem(new Gain("gt")); 
-	pvocpr->linkctrl("mrs_natural/winSize", 
-		"ShiftInput/si/mrs_natural/winSize");
-	pvocpr->linkctrl("mrs_natural/Decimation", 
-		"PvFold/fo/mrs_natural/Decimation");
-	pvocpr->linkctrl("mrs_natural/Decimation", 
-		"PvConvert/conv/mrs_natural/Decimation");
-	pvocpr->linkctrl("mrs_natural/Sinusoids", 
-		"PvConvert/conv/mrs_natural/Sinusoids");
-	pvocpr->linkctrl("mrs_natural/FFTSize", 
-		"PvFold/fo/mrs_natural/FFTSize");
-	pvocpr->linkctrl("mrs_natural/Interpolation", 
-		"PvOscBank/ob/mrs_natural/Interpolation");
-	pvocpr->linkctrl("mrs_natural/Interpolation", 
-		"ShiftOutput/so/mrs_natural/Interpolation");
-	pvocpr->linkctrl("mrs_real/PitchShift", 
-		"PvOscBank/ob/mrs_real/PitchShift");
-	pvocpr->linkctrl("mrs_real/gain", 
-		"Gain/gt/mrs_real/gain");
+		MarSystem* pvocpr = new Series("pvocpr");
+		pvocpr->addMarSystem(new ShiftInput("si"));
+		pvocpr->addMarSystem(new PvFold("fo"));
+		pvocpr->addMarSystem(new Spectrum("spk"));
+		pvocpr->addMarSystem(new PvConvert("conv"));
+		pvocpr->addMarSystem(new PvUnconvert("uconv"));
+		pvocpr->addMarSystem(new InvSpectrum("ispectrum"));
+		pvocpr->addMarSystem(new PvOverlapadd("pover"));
+		pvocpr->addMarSystem(new ShiftOutput("so")); 
+		
+		pvocpr->linkctrl("ShiftInput/si/mrs_natural/winSize", 
+					   "mrs_natural/winSize");
+		pvocpr->linkctrl("PvOverlapadd/pover/mrs_natural/winSize", 
+					   "mrs_natural/winSize");
+		pvocpr->linkctrl("PvFold/fo/mrs_natural/Decimation", 
+					   "mrs_natural/Decimation");
+		pvocpr->linkctrl("PvConvert/conv/mrs_natural/Decimation", 
+					   "mrs_natural/Decimation");
+		pvocpr->linkctrl("PvUnconvert/uconv/mrs_natural/Decimation", 
+					   "mrs_natural/Decimation");
+		pvocpr->linkctrl("PvOverlapadd/pover/mrs_natural/Decimation", 
+					   "mrs_natural/Decimation");
+		
+		pvocpr->linkctrl("PvUnconvert/uconv/mrs_natural/Interpolation", 
+					   "mrs_natural/Interpolation");
+		pvocpr->linkctrl("PvOverlapadd/pover/mrs_natural/Interpolation", 
+					   "mrs_natural/Interpolation");
+		pvocpr->linkctrl("ShiftOutput/so/mrs_natural/Interpolation", 
+					   "mrs_natural/Interpolation");
+		
+		pvocpr->linkctrl("PvFold/fo/mrs_natural/FFTSize", 
+					   "mrs_natural/FFTSize");
+		pvocpr->linkctrl("PvOverlapadd/pover/mrs_natural/FFTSize", 
+					   "mrs_natural/FFTSize");
+		
+		pvocpr->linkctrl("PvConvert/conv/mrs_realvec/phases", 
+					   "PvUnconvert/uconv/mrs_realvec/analysisphases");
+		
+		pvocpr->linkctrl("PvUnconvert/uconv/mrs_realvec/regions",
+					   "PvConvert/conv/mrs_realvec/regions");
+		
+		pvocpr->linkctrl("PvConvert/conv/mrs_natural/Sinusoids",
+					   "mrs_natural/Sinusoids");
+		pvocpr->linkctrl("PvConvert/conv/mrs_string/mode", 
+					   "mrs_string/convertMode");
+		pvocpr->linkctrl("PvUnconvert/uconv/mrs_string/mode", 
+					   "mrs_string/unconvertMode");
+		pvocpr->linkctrl("PvUnconvert/uconv/mrs_bool/phaselock", 
+					   "mrs_bool/phaselock");
+		
+
+
+
 	registerPrototype("PhaseVocoder", pvocpr);
 
 

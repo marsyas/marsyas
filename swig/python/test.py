@@ -9,7 +9,6 @@ file = msm.create("SoundFileSource","file")
 sink = msm.create("AudioSink","sink")
 gain = msm.create("Gain", "gain")
 pipe = msm.create("Series","pipe")
-
 pipe.addMarSystem(file)
 pipe.addMarSystem(gain)
 pipe.addMarSystem(sink)

@@ -60,6 +60,8 @@ namespace Marsyas
 			MarControlPtr ctrl_analysisphases_;
 			MarControlPtr ctrl_phaselock_;
 			MarControlPtr ctrl_regions_;
+			MarControlPtr ctrl_magnitudes_;
+			MarControlPtr ctrl_peaks_;
 			
 			
 		
@@ -67,7 +69,7 @@ namespace Marsyas
 			void myUpdate(MarControlPtr sender);
 
 			int subband(int bin);
-			bool isPeak(int bin);
+			bool isPeak(int bin, mrs_realvec& magnitudes);
 			
 		public:
 			PvUnconvert(std::string name);

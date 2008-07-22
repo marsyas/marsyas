@@ -116,116 +116,40 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 	}
 	
 	MarSystemManager mng;
+	
 	// create the phasevocoder network
 	MarSystem* pvseries = mng.create("Series", "pvseries");
-	// oscbank_ = false;
+	pvseries->addMarSystem(mng.create("SoundFileSource", "src"));
+	pvseries->addMarSystem(mng.create("PhaseVocoder", "pvoc"));
+	pvseries->addMarSystem(mng.create("SoundFileSink", "dest"));
 	
-	if (microphone_) 
-		pvseries->addMarSystem(mng.create("AudioSource", "src"));
-	else 
-		pvseries->addMarSystem(mng.create("SoundFileSource", "src"));
+						   
+	pvseries->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+	pvseries->updctrl("mrs_natural/inSamples", D);
 	
-	pvseries->addMarSystem(mng.create("Stereo2Mono", "s2m"));
-	pvseries->addMarSystem(mng.create("ShiftInput", "si"));
-	pvseries->addMarSystem(mng.create("PvFold", "fo"));
-	pvseries->addMarSystem(mng.create("Spectrum", "spk"));
-	pvseries->addMarSystem(mng.create("PvConvert", "conv"));
-	if (oscbank_)	  
-		pvseries->addMarSystem(mng.create("PvOscBank", "ob"));
-	else 
-	{
-		pvseries->addMarSystem(mng.create("PvUnconvert", "uconv"));
-		pvseries->addMarSystem(mng.create("InvSpectrum", "ispectrum"));
-		pvseries->addMarSystem(mng.create("PvOverlapadd", "pover"));
-	}
-  
-	pvseries->addMarSystem(mng.create("ShiftOutput", "so"));
-	pvseries->addMarSystem(mng.create("Gain", "gain"));
+	pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/winSize", Nw);
+	pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/FFTSize", N);
+	pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/Interpolation", I);
+	pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/Decimation", D);
+	pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/Sinusoids", 
+					  (mrs_natural)sopt);
+	pvseries->updctrl("PhaseVocoder/pvoc/mrs_string/convertMode", convertmode_);
+	pvseries->updctrl("PhaseVocoder/pvoc/mrs_string/unconvertMode",
+					  unconvertmode_);
 	
-  
-	MarSystem *dest;
-	if (outsfname == EMPTYSTRING) 
-		dest = new AudioSink("dest");
-	else
-	{
-		dest = new SoundFileSink("dest");
-		//dest->updctrl("mrs_string/filename", outsfname);
-	}
-	pvseries->addMarSystem(dest);
+	pvseries->updctrl("SoundFileSink/dest/mrs_string/filename", outsfname);
 
-	if (outsfname == EMPTYSTRING) 
-		pvseries->updctrl("AudioSink/dest/mrs_natural/bufferSize", bopt);
-
-	// update the controls
-	if (microphone_) 
-	{
-		pvseries->updctrl("mrs_natural/inSamples", D);
-		pvseries->updctrl("mrs_natural/inObservations", 1);
-	}
-	else
-	{
-		pvseries->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-		pvseries->updctrl("mrs_natural/inSamples", D);
-		pvseries->updctrl("mrs_natural/inObservations", 1);
-
-		// if audio output loop to infinity and beyond 
-		if (outsfname == EMPTYSTRING) 
-			pvseries->updctrl("SoundFileSource/src/mrs_real/repetitions", -1.0);
-	}
-  
 	
-	pvseries->updctrl("ShiftInput/si/mrs_natural/winSize", Nw);
-	pvseries->updctrl("PvFold/fo/mrs_natural/FFTSize", N);
-	pvseries->updctrl("PvFold/fo/mrs_natural/Decimation", D);
-	pvseries->updctrl("PvConvert/conv/mrs_natural/Decimation",D);      
-	pvseries->updctrl("PvConvert/conv/mrs_natural/Sinusoids", (mrs_natural) sopt);
-	pvseries->updctrl("PvConvert/conv/mrs_string/mode", convertmode_);
-	
-
-	if (oscbank_) 
-	{
-		pvseries->updctrl("PvOscBank/ob/mrs_natural/Interpolation", I);
-		pvseries->updctrl("PvOscBank/ob/mrs_real/PitchShift", P);
-		pvseries->updctrl("PvOscBank/ob/mrs_natural/winSize", Nw);
-	}
-	else 
-	{
-		pvseries->updctrl("PvUnconvert/uconv/mrs_natural/Interpolation", I);
-		pvseries->updctrl("PvUnconvert/uconv/mrs_natural/Decimation", D);
-		pvseries->updctrl("PvUnconvert/uconv/mrs_string/mode",unconvertmode_);
-		pvseries->updctrl("PvOverlapadd/pover/mrs_natural/FFTSize", N);
-		pvseries->updctrl("PvOverlapadd/pover/mrs_natural/winSize", Nw);
-		pvseries->updctrl("PvOverlapadd/pover/mrs_natural/Interpolation", I);
-		pvseries->updctrl("PvOverlapadd/pover/mrs_natural/Decimation",D);
-	}
-  
-	pvseries->updctrl("ShiftOutput/so/mrs_natural/Interpolation", I);
-	pvseries->updctrl("Gain/gain/mrs_real/gain", 2.0);
-	
-	pvseries->linkctrl("PvConvert/conv/mrs_realvec/phases", 
-					   "PvUnconvert/uconv/mrs_realvec/analysisphases");
-
-	pvseries->linkctrl("PvUnconvert/uconv/mrs_realvec/regions",
-					   "PvConvert/conv/mrs_realvec/regions");
 	if (!quietopt_)
 		cout << *pvseries << endl;
 
-	if (outsfname == EMPTYSTRING) 
-		pvseries->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-
-
-	if (outsfname != EMPTYSTRING)
-		dest->updctrl("mrs_string/filename", outsfname);
-
 	int numticks = 0;
 	int onset_counter = 20;
-
 	while(1)
 	{
 		// initialize synthesis phases to analysis phases
 		if ((numticks == 0)&&(oscbank_ == false)) 
-			pvseries->updctrl("PvUnconvert/uconv/mrs_bool/phaselock", true);		
-		
+			pvseries->updctrl("PhaseVocoder/pvoc/mrs_bool/phaselock", true);
 		pvseries->tick();
 		numticks++;
 		
@@ -247,17 +171,12 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 			if (onset_found) 
 			{
 				// initialize synthesis phases to analysis phases				
-				pvseries->updctrl("PvUnconvert/uconv/mrs_bool/phaselock", true);		
-				pvseries->updctrl("PvUnconvert/uconv/mrs_bool/phaselock", true);
-				pvseries->updctrl("PvUnconvert/uconv/mrs_natural/Interpolation",D);
-				pvseries->updctrl("PvOverlapadd/pover/mrs_natural/Interpolation",D);
-				pvseries->updctrl("ShiftOutput/so/mrs_natural/Interpolation", D);
+				pvseries->updctrl("PhaseVocoder/pvoc/mrs_bool/phaselock", true);
+				pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/Interpolation",D);
 			}
 			else 
 			{
-				pvseries->updctrl("PvUnconvert/uconv/mrs_natural/Interpolation", I);
-				pvseries->updctrl("PvOverlapadd/pover/mrs_natural/Interpolation",I);
-				pvseries->updctrl("ShiftOutput/so/mrs_natural/Interpolation", I);		
+				pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/Interpolation", I);
 			}
 		}
 	}
