@@ -174,6 +174,7 @@
 #include "AbsMax.h"
 #include "TimelineLabeler.h"
 #include "RadioDrumInput.h"
+#include "NoiseGate.h"
 #include "Gain.h"
 // please leave Gain at the end; it makes scripts happy.
 
@@ -279,6 +280,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Filter", new Filter("filterp"));
 	registerPrototype("Biquad", new Biquad("biquadp"));
 	registerPrototype("RadioDrumInput", new RadioDrumInput("radiodrump"));
+	registerPrototype("NoiseGate", new NoiseGate("noisegatep"));
 	registerPrototype("ERB", new ERB("erbp"));
 	registerPrototype("ClipAudioRange", new ClipAudioRange("clpr"));
 	registerPrototype("HarmonicEnhancer", new HarmonicEnhancer("hepr"));
