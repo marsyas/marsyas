@@ -110,6 +110,8 @@ PvUnconvert::myUpdate(MarControlPtr sender)
 		MarControlAccessor acc(ctrl_regions_);
 		mrs_realvec& regions = acc.to<mrs_realvec>();
 		regions.create(N2_+1);
+		for (int i=0; i < N2_+1; i++) 
+			regions(i) = i;
 	}
 
 	{
@@ -157,18 +159,22 @@ PvUnconvert::subband(int bin)
 
 
 bool 
-PvUnconvert::isPeak(int bin, mrs_realvec& magnitudes) 
+PvUnconvert::isPeak(int bin, mrs_realvec& magnitudes, mrs_real maxAmp) 
 {
 	bool res = true;
 	
 	int h = subband(bin);
 	h = 2;
+
+	if ((bin > 2) && (bin <= N2_-2))
+		for (int i = bin-h; i < bin+h; i++)
+		{
+			if (magnitudes(bin) < magnitudes(i))
+				res = false;
+		}
 	
-	for (int i = bin-h; i < bin+h; i++)
-	{
-		if (magnitudes(bin) < magnitudes(i))
-			res = false;
-	}
+	if (magnitudes(bin) < 0.005 * maxAmp) 
+		res = false;
 	return res;
 }
 
@@ -215,6 +221,8 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 	if (mode == "identity_phaselock") 
 		beta = 1.0;
 	
+	mrs_real maxAmp =0.0;
+	
 	// calculate magnitude 
 	for (t=0; t <= N2_; t++)
 	{
@@ -227,6 +235,8 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 		magnitudes(t) = in(re,0);
 		if (t==N2_)
 			magnitudes(t) = 0.0;
+		if (magnitudes(t) > maxAmp) 
+			maxAmp = magnitudes(t);
 	}
 
 
@@ -243,34 +253,41 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 		}
 	}
 	
-
-	// cout << regions << endl;
-	
-	
 	// propagate phases for peaks and calculate regions of influence 
 	if ((mode == "identity_phaselock")||(mode == "scaled_phaselock"))
 	{
 		int previous_peak=0;
 		int peak = 0;
+		int peakCount = 0;
+		
 		for (t=0; t <= N2_; t++)
 		{
 			re = amp = 2*t; 
 			im = freq = 2*t+1;
-			
-			if ((t > 2) && (t <= N2_-2))
+			if (t == N2_) 
+				re = 1;				
+			if (isPeak(t, magnitudes, maxAmp))
 			{
-				if (isPeak(t, magnitudes))
+				peakCount++;
+				if (mode == "identity_phaselock")
+					iphase_(t) = lastphases(t) + interpolation * in(freq,0);
+				else if (mode == "scaled_phaselock")
+					iphase_(t) = lastphases(regions(t)) + interpolation * in(freq,0);
+			}
+		}
+		
+		for (t=0; t <= N2_; t++)
+		{
+			if (isPeak(t, magnitudes, maxAmp))
+			{
+				// calculate significant peaks and corresponding 
+				// non-overlapping intervals 
+				peak = t;
+				
+				if (peak-previous_peak == 1)
+					regions(peak) = peak;
+				else 
 				{
-
-					
-					if (mode == "identity_phaselock")
-						iphase_(t) = lastphases(t) + interpolation * in(freq,0);
-					else if (mode == "scaled_phaselock")
-						iphase_(t) = lastphases(regions(t)) + interpolation * in(freq,0);
-			
-					// calculate significant peaks and corresponding 
-					// non-overlapping intervals 
-					peak = t;
 					for (int j=previous_peak; j< previous_peak + (int)((peak-previous_peak)/2.0); j++) 
 					{
 						peaks(j) = magnitudes(previous_peak);
@@ -282,39 +299,38 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 						peaks(j) = magnitudes(peak);
 						regions(j) = peak;					
 					}
-					previous_peak = peak;
 				}
+				previous_peak = peak;
 			}
-			else 
-			{
-				iphase_(t) = lastphases(t) + interpolation * in(freq,0);
-			}
+			
 		}
 	}
-
-
 	
-
+	
+	
 	// resynthesis for all bins 
 	for (t=0; t <= N2_; t++)
 	{
 		re = amp = 2*t; 
 		im = freq = 2*t+1;
-		if (t == N2_) 
-			re = 1;		
-
+		
 		if ((mode == "identity_phaselock")||(mode == "scaled_phaselock"))
 		{
+			if (t == N2_) 
+				re = 1;		
+	
 
-			if ((t > 2) && (t <= N2_-2))
-			{
-				// unwrap analysis phases 
-				while (analysisphases(t) > PI) 
-					analysisphases(t) -= TWOPI;
-				while (analysisphases(t) < -PI) 
-					analysisphases(t) += TWOPI;
-				
-				iphase_(t) = iphase_(regions(t)) + beta * (analysisphases(t) - analysisphases(regions(t)));
+			// unwrap analysis phases 
+			while (analysisphases(t) > PI) 
+				analysisphases(t) -= TWOPI;
+			while (analysisphases(t) < -PI) 
+				analysisphases(t) += TWOPI;
+			
+			iphase_(t) = iphase_(regions(t)) + 
+				beta * (analysisphases(t) - analysisphases(regions(t)));
+			
+
+			
 				// sinusoidal trajectory continuation heuristic 
 				/* if (t - regions(t) > subband(t))
 					iphase_(t) = phase_(regions(t)) + beta * (analysisphases(t) - analysisphases(regions(t)));
@@ -324,15 +340,12 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 				}
 				*/ 
 				
-			}
+			// }
 			
 			if (ctrl_phaselock_->to<mrs_bool>())
 			{
-				
-				iphase_ = analysisphases;
-				ctrl_phaselock_->setValue(false);
+				iphase_(t) = analysisphases(t);
 			}
-			
 			out(re,0) = magnitudes(t) * cos(iphase_(t));
 			if (t != N2_)
 				out(im,0) = -magnitudes(t) * sin(iphase_(t));
@@ -386,8 +399,7 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 			phase_(t) = lastphases(t) + interpolation * in(freq,0);
 			if (ctrl_phaselock_->to<mrs_bool>())
 			{
-				phase_ = analysisphases;
-				ctrl_phaselock_->setValue(false);
+				phase_(t) = analysisphases(t);
 			}
 			
 			out(re,0) = magnitudes(t) * cos(phase_(t));
@@ -396,6 +408,13 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 			lastphases(t) = phase_(t);
 		}
 	}
+
+	// Reset phaselock control 
+	if (ctrl_phaselock_->to<mrs_bool>())
+	{
+		ctrl_phaselock_->setValue(false);
+	}
+
 }
 
 

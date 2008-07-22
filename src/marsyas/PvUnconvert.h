@@ -69,7 +69,7 @@ namespace Marsyas
 			void myUpdate(MarControlPtr sender);
 
 			int subband(int bin);
-			bool isPeak(int bin, mrs_realvec& magnitudes);
+			bool isPeak(int bin, mrs_realvec& magnitudes, mrs_real maxAmp);
 			
 		public:
 			PvUnconvert(std::string name);
