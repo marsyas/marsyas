@@ -398,9 +398,17 @@ void drumExtract3() {
 
     extractNet->addMarSystem(mng.create("Annotator", "ann"));
     extractNet->addMarSystem(mng.create("WekaSink",  "wsink"));
+
     extractNet->updctrl("WekaSink/wsink/mrs_natural/nLabels", 2);
     extractNet->updctrl("WekaSink/wsink/mrs_string/labelNames","center, edge");  
     extractNet->updctrl("WekaSink/wsink/mrs_string/filename", "art.arff");
+
+    /*
+    // use this block to label regression
+    extractNet->updctrl("WekaSink/wsink/mrs_bool/regression", true);
+    extractNet->updctrl("WekaSink/wsink/mrs_bool/putHeader", true);    
+    extractNet->updctrl("WekaSink/wsink/mrs_string/filename", "art.arff");
+    */
 
     extractNet->updctrl("mrs_natural/inSamples",windowsize);
     extractNet->updctrl("mrs_natural/onSamples",windowsize);
@@ -448,7 +456,9 @@ void drumExtract3() {
                 }
                    
                 radialposition = playbacknet->getctrl("RadioDrumInput/rd/mrs_natural/rightstickx")->to<mrs_natural>(); 
-
+		// use this for regression and comment out the next block
+                //extractNet->setctrl("Annotator/ann/mrs_natural/label", radialposition);
+	
                 if (radialposition > 79)
                 {
                     // hitting the edge
@@ -478,7 +488,6 @@ void drumExtract3() {
     }   
     delete playbacknet;
 }
-
 
 void drumExtract2() {
     MarSystemManager mng;
