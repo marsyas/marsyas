@@ -24,7 +24,7 @@ using namespace Marsyas;
 SoundFileSource::SoundFileSource(string name):MarSystem("SoundFileSource",name)
 {
 	src_ = NULL;
-
+    updateCurrDuration = false;
 	addControls();
 }
 
@@ -41,6 +41,7 @@ SoundFileSource::clone() const
 
 SoundFileSource::SoundFileSource(const SoundFileSource& a):MarSystem(a)
 {
+	updateCurrDuration = false;
 	src_ = NULL;
 
 	ctrl_pos_ = getctrl("mrs_natural/pos");
@@ -102,6 +103,10 @@ SoundFileSource::addControls()
 	addctrl("mrs_natural/nLabels", 0, ctrl_nLabels_);
 	addctrl("mrs_string/labelNames", ",", ctrl_labelNames_);
 	ctrl_mute_ = getctrl("mrs_bool/mute");
+
+  addctrl("mrs_real/fullDuration", 0.);
+  setctrlState("mrs_real/fullDuration", true);
+
 }
 
 void
@@ -193,6 +198,14 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 			setctrl("mrs_real/frequency", src_->getctrl("mrs_real/frequency"));
 			setctrl("mrs_bool/noteon", src_->getctrl("mrs_bool/noteon"));
 		}
+		else if (src_->getctrl("mrs_string/filetype")->to<mrs_string>() == "mp3")
+		{
+			updateCurrDuration = true;
+			//setctrl("mrs_real/fullDuration", src_->getctrl("mrs_real/fullDuration"));
+			//std::cout<<"setting mrs/fullDuration to "<<src_->durFull_<<std::endl;
+			//setctrl("mrs_real/fullDuration", src_->durFull_);
+		}
+
 	}  
 }
 
@@ -308,6 +321,12 @@ SoundFileSource::myProcess(realvec& in, realvec &out)
 		ctrl_currentLabel_->setValue(src_->getctrl("mrs_natural/currentLabel"));
 		ctrl_labelNames_->setValue(src_->getctrl("mrs_string/labelNames"));
 		ctrl_nLabels_->setValue(src_->getctrl("mrs_natural/nLabels"));
+
+		if (updateCurrDuration)
+		{
+			setctrl("mrs_real/fullDuration", src_->durFull_);
+		}
+
 	}
 
 	if (advance_) //[!] shouldn't this be done in ::myUpdate()?!?

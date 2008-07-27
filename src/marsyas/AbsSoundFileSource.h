@@ -45,6 +45,7 @@ public:
   mrs_natural pos_;
   mrs_natural rewindpos_;
   bool notEmpty_;
+  mrs_real durFull_;
 
   MarControlPtr ctrl_currentlyPlaying_;
   MarControlPtr ctrl_currentLabel_;

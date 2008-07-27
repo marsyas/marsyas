@@ -92,6 +92,7 @@ MP3FileSource::addControls()
   setctrlState("mrs_real/repetitions", true);
   addctrl("mrs_real/duration", -1.0);
   setctrlState("mrs_real/duration", true);
+  
 
   addctrl("mrs_bool/advance", false);
   setctrlState("mrs_bool/advance", true);
@@ -109,7 +110,6 @@ MP3FileSource::addControls()
   addctrl("mrs_natural/currentLabel", 0, ctrl_currentLabel_);
   addctrl("mrs_string/labelNames",",", ctrl_labelNames_);
   addctrl("mrs_natural/nLabels", 0, ctrl_nLabels_);
-  
 }
 
 
@@ -209,6 +209,8 @@ MP3FileSource::getHeader(string filename)
 {
 
 #ifdef MARSYAS_MAD  
+  durFull_ = 0.;
+  update();
   // if we have a file open already, close it
   closeFile();
   reservoir_.setval(0.0);
@@ -253,8 +255,9 @@ MP3FileSource::getHeader(string filename)
     }
   
   fileSize_ = myStat.st_size;
+
   
-  
+
   // initialize mad structs and fill the stream
   madStructInitialize();
   fillStream();	
@@ -307,7 +310,8 @@ MP3FileSource::getHeader(string filename)
 	  else 
 	    {
 	      MRSERR("MP3FileSource: unrecoverable frame level error, quitting.");
-	      
+		  pos_ = 0;
+	      return;
 	    }
 	  
 	  frameCount_++;
@@ -318,7 +322,7 @@ MP3FileSource::getHeader(string filename)
     
   }
   
-  PrintFrameInfo(&frame.header);
+  //PrintFrameInfo(&frame.header);
 
 
   mrs_natural nChannels = MAD_NCHANNELS(&frame.header);
@@ -335,7 +339,6 @@ MP3FileSource::getHeader(string filename)
   mrs_real duration_ = 2 * (fileSize_ * 8) / bitRate;
   advance_ = getctrl("mrs_bool/advance")->to<mrs_bool>();
   cindex_ = getctrl("mrs_natural/cindex")->to<mrs_natural>();
-  
   
   size_ = (mrs_natural) ((duration_ * sampleRate) / nChannels);
 
@@ -485,9 +488,14 @@ MP3FileSource::getLinear16(realvec& slice)
       return pos_;
     }
     
-    
     if (mad_frame_decode(&frame, &stream )) 
       {
+  		long bufferSize = ((long)stream.bufend-(long)stream.buffer)*8  - stream.md_len*8;
+			
+		if (frame.header.bitrate!=0 && bufferSize>0) durFull_ += (float)bufferSize/(float)frame.header.bitrate;
+		//std::cout<<"decoded: bufptr="<<(int)stream.buffer<<" cnt="<<frameCount_<<" bps="<<frame.header.bitrate<<" bufSize="<<bufferSize<<" dur="<<durFull_<<std::endl;
+		//std::cout<<"possible buffersize c="<<bufferSize<<" 1="<<((long)stream.next_frame-(long)stream.this_frame)*8<<" 2="<<stream.anc_bitlen<<" 3="<<stream.md_len*8<<std::endl;
+		
 	if(MAD_RECOVERABLE(stream.error)) 
 	  {
 	    
@@ -769,3 +777,4 @@ inline signed int MP3FileSource::scale(mad_fixed_t sample)
   return sample >> (MAD_F_FRACBITS + 1 - 16);
 }
 #endif 
+

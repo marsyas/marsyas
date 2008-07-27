@@ -115,8 +115,6 @@ public:
 
   void myProcess(realvec& in, realvec& out);
   void getHeader(std::string filename);
-  
-
 
   
 };

@@ -101,6 +101,8 @@ private:
 
 	void addControls();
 	void myUpdate(MarControlPtr sender);
+
+	bool updateCurrDuration;
   
 public:
   SoundFileSource(std::string name);
