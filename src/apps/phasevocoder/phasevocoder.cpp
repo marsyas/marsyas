@@ -143,21 +143,24 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 	if (!quietopt_)
 		cout << *pvseries << endl;
 
+	
 	int numticks = 0;
-	int onset_counter = 20;
-	while(1)
+	int onset_counter = 5;
+	pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/Interpolation",I);
+	
+	while(pvseries->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
 	{
 		// initialize synthesis phases to analysis phases
 		if ((numticks == 0)&&(oscbank_ == false)) 
 			pvseries->updctrl("PhaseVocoder/pvoc/mrs_bool/phaselock", true);
+		
 		pvseries->tick();
+		
 		numticks++;
 		
-		if (!microphone_) 
-			if (pvseries->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>() == false)
-				break;
-
+		
 		mrs_bool onset_found = false;
+
 		if (onsetsfile_ != "") 
 		{
 			for (int j=0; j < onsets.size(); j++) 
@@ -170,9 +173,19 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 			}
 			if (onset_found) 
 			{
+				onset_counter = 0;
+				cout << "ONSET" << endl;
+			}
+
+			
+			onset_counter++;
+			
+			if (onset_counter ==2)
+			{
 				// initialize synthesis phases to analysis phases				
 				pvseries->updctrl("PhaseVocoder/pvoc/mrs_bool/phaselock", true);
-				pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/Interpolation",D);
+				pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/Interpolation", D);			
+				cout << "onset_counter = " << onset_counter << endl;
 			}
 			else 
 			{

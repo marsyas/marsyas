@@ -93,46 +93,49 @@ PvUnconvert::myUpdate(MarControlPtr sender)
 	
 	N2_ = onObservations/2;
 
+	if (N2_+1 != phase_.getSize())
 	{
-		MarControlAccessor acc(ctrl_lastphases_);
-		mrs_realvec& lastphases = acc.to<mrs_realvec>();
-		lastphases.create(N2_+1);
+		
+		{
+			MarControlAccessor acc(ctrl_lastphases_);
+			mrs_realvec& lastphases = acc.to<mrs_realvec>();
+			lastphases.create(N2_+1);
+		}
+		
+		{
+			MarControlAccessor acc(ctrl_analysisphases_);
+			mrs_realvec& analysisphases = acc.to<mrs_realvec>();
+			analysisphases.create(N2_+1);
+		}
+		
+		
+		{
+			MarControlAccessor acc(ctrl_regions_);
+			mrs_realvec& regions = acc.to<mrs_realvec>();
+			regions.create(N2_+1);
+			for (int i=0; i < N2_+1; i++) 
+				regions(i) = i;
+		}
+		
+		{
+			MarControlAccessor acc(ctrl_magnitudes_);
+			mrs_realvec& magnitudes = acc.to<mrs_realvec>();
+			magnitudes.create(N2_+1);
+		}
+		
+		{
+			MarControlAccessor acc(ctrl_peaks_);
+			mrs_realvec& peaks = acc.to<mrs_realvec>();
+			peaks.create(N2_+1);
+		}
+		
+		
+		phase_.create(N2_+1);
+		lphase_.create(N2_+1);
+		iphase_.create(N2_+1);
+		lmag_.create(N2_+1);
 	}
 
-	{
-		MarControlAccessor acc(ctrl_analysisphases_);
-		mrs_realvec& analysisphases = acc.to<mrs_realvec>();
-		analysisphases.create(N2_+1);
-	}
-
-
-	{
-		MarControlAccessor acc(ctrl_regions_);
-		mrs_realvec& regions = acc.to<mrs_realvec>();
-		regions.create(N2_+1);
-		for (int i=0; i < N2_+1; i++) 
-			regions(i) = i;
-	}
-
-	{
-		MarControlAccessor acc(ctrl_magnitudes_);
-		mrs_realvec& magnitudes = acc.to<mrs_realvec>();
-		magnitudes.create(N2_+1);
-	}
-
-	{
-		MarControlAccessor acc(ctrl_peaks_);
-		mrs_realvec& peaks = acc.to<mrs_realvec>();
-		peaks.create(N2_+1);
-	}
-
-
-	phase_.create(N2_+1);
-	lphase_.create(N2_+1);
-	iphase_.create(N2_+1);
-	
-	lmag_.create(N2_+1);
-	
 	
 	fundamental_ = (mrs_real) (israte  / onObservations);
 	factor_ = (((getctrl("mrs_natural/Interpolation")->to<mrs_natural>()* TWOPI)/(israte)));
@@ -329,8 +332,6 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 			iphase_(t) = iphase_(regions(t)) + 
 				beta * (analysisphases(t) - analysisphases(regions(t)));
 			
-
-			
 				// sinusoidal trajectory continuation heuristic 
 				/* if (t - regions(t) > subband(t))
 					iphase_(t) = phase_(regions(t)) + beta * (analysisphases(t) - analysisphases(regions(t)));
@@ -346,6 +347,7 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 			{
 				iphase_(t) = analysisphases(t);
 			}
+			
 			out(re,0) = magnitudes(t) * cos(iphase_(t));
 			if (t != N2_)
 				out(im,0) = -magnitudes(t) * sin(iphase_(t));
@@ -413,6 +415,7 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 	if (ctrl_phaselock_->to<mrs_bool>())
 	{
 		ctrl_phaselock_->setValue(false);
+		
 	}
 
 }

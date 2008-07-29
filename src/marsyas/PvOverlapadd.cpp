@@ -71,12 +71,9 @@ PvOverlapadd::myUpdate(MarControlPtr sender)
   
 
   // create synthesis window 
-
-
-  
   swin_.create(Nw);
   awin_.create(Nw);
-  temp_.create(N);
+  temp_.stretch(N);
   tin_.create(N);
   
   
@@ -176,8 +173,6 @@ PvOverlapadd::myProcess(realvec& in, realvec& out)
   {
 	  temp_(t) += (tin_(t) * swin_(t));
   }
-  
-
   
 	  
   

@@ -364,7 +364,7 @@ PvConvert::myProcessNeighbors(realvec& in, realvec& out)
 
 	for (t=0; t <= N2; t++)
 	{
-
+		
 		phasediff = phases(t) - lastphase_(t);
 		lastphase_(t) = phases(t);	
 		
