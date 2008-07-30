@@ -1,7 +1,7 @@
 #ifndef MARSYAS_PHISEMFILTER_H
 #define MARSYAS_PHISEMFILTER_H	
 
-#include <MarSystem.h>
+#include "MarSystem.h"
 
 namespace Marsyas
 {

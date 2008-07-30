@@ -1,7 +1,7 @@
 #ifndef MARSYAS_PHISEMSOURCE_H
 #define MARSYAS_PHISEMSOURCE_H	
 
-#include <MarSystem.h>
+#include "MarSystem.h"
 
 #include <cstdlib>
 

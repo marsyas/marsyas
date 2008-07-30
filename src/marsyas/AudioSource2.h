@@ -19,10 +19,10 @@
 #ifndef MARSYAS_AUDIOSOURCE2_H
 #define MARSYAS_AUDIOSOURCE2_H
 
+#include "MarSystem.h" 
 #ifdef MARSYAS_AUDIOIO
 #include "RtAudio3.h"
 #endif 
-#include "MarSystem.h" 
 
 namespace Marsyas
 {
