@@ -4,9 +4,9 @@
 INCLUDE_DIRECTORIES(../../otherlibs/libsvm/)
 INCLUDE_DIRECTORIES(../../otherlibs/RtAudio/)
 
-INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY})
-INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/src/)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
+#INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY})
+#INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR})
 
 # I've put the most OS-specific files at the top, to test the
 # library support before compiling the un-problematic files
@@ -243,7 +243,7 @@ SET( MarSystem_SOURCES
   ../../otherlibs/RtAudio/RtAudio3.cpp
   ../../otherlibs/libsvm/svm.cpp
 )
-#  ../config.h
+
 SET(Marsyas_HEADERS
   MarSystemManager.h
   MarSystem.h
