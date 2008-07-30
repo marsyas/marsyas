@@ -1,0 +1,9 @@
+#ifndef _config_h
+#define _config_h
+#cmakedefine MARSYAS_LINUX
+#cmakedefine MARSYAS_MACOSX
+#cmakedefine MARSYAS_WIN32
+
+#cmakedefine MARSYAS_AUDIOIO
+
+#endif
