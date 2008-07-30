@@ -285,6 +285,7 @@ libmarsyas_a_SOURCES    = \
 	$(top_srcdir)/src/marsyas/AbsMax.cpp \
 	$(top_srcdir)/src/marsyas/TimelineLabeler.cpp \
 	$(top_srcdir)/src/marsyas/RadioDrumInput.cpp \
+	$(top_srcdir)/src/marsyas/AudioSourceRt4.cpp \
 			$(top_srcdir)/src/marsyas/Gain.cpp
 # please leave Gain.cpp at the end like this; it make scripts happy.
 

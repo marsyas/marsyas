@@ -352,6 +352,7 @@ HEADERS += \
 	AbsMax.h \
 	TimelineLabeler.h \
 	RadioDrumInput.h \
+	AudioSourceRt4.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 	 
@@ -591,6 +592,7 @@ SOURCES += \
 	AbsMax.cpp \
 	TimelineLabeler.cpp \
 	RadioDrumInput.cpp \
+	AudioSourceRt4.cppp \
 	Gain.cpp
 # please leave Gain.cpp at the end like this; it makes scripts happy.
 

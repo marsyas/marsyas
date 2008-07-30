@@ -273,6 +273,7 @@ pkginclude_HEADERS = \
 	AbsMax.h \
 	TimelineLabeler.h \
 	RadioDrumInput.h \
+	AudioSourceRt4.h \
 	Gain.h
 # please leave Gain.h at the end like this; it makes scripts happy.
 

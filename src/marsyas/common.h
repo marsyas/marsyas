@@ -121,6 +121,16 @@ namespace Marsyas
        #define MATLAB_CLOSE()
 #endif
 
+#if defined(__WINDOWS_ASIO__) || defined (__WINDOWS_DS__)
+#include <windows.h> 
+#define SLEEP(milliseconds) Sleep((DWORD) milliseconds) 
+#else 
+#include <unistd.h> 
+#define SLEEP(milliseconds) usleep((unsigned long) (milliseconds) * 1000.0) 
+#endif 
+
+
+
 /************************************************************************/
 /*  Mutex MACROS for Multi-threaded Marsyas                             */
 /************************************************************************/
