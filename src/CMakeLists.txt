@@ -1,32 +1,49 @@
+## global setup
 cmake_minimum_required(VERSION 2.6)
-PROJECT(Marsyas)
+project(Marsyas)
 
-IF(UNIX)
-  IF(APPLE)
-    SET(MARSYAS_MACOSX 1)
-  ELSE(APPLE)
-    SET(MARSYAS_LINUX 1)
-  ENDIF(APPLE)
-  if(WIN32)
-    SET(MARSYAS_CYGWIN 1)
-  ENDIF(WIN32)
-ENDIF(UNIX)
-IF(MSVC)
-  SET(MARSYAS_WIN32 1)
-ENDIF(MSVC)
+## find OS
+if(UNIX)
+  if(APPLE)
+    set(MARSYAS_MACOSX 1)
+  elseif(CYGWIN)
+    set(MARSYAS_CYGWIN 1)
+  else(UNIX)
+    set(MARSYAS_LINUX 1)
+  endif(APPLE)
+elseif(MSVC)
+  set(MARSYAS_WIN32 1)
+endif(UNIX)
 
-SET(MARSYAS_AUDIOIO 1)
-ADD_DEFINITIONS(-D__MACOSX_CORE__)
+## user options
+option(WITH_QT "Build the QT library and applications" ON)
+option(MARSYAS_AUDIOIO "Build the audio I/O interface" ON)
+option(MARSYAS_MIDIIO "Build the MIDI I/O interface" ON)
+add_definitions(-D__MACOSX_CORE__)
 
-CONFIGURE_FILE(config.h.in config.h)
-ADD_DEFINITIONS(-DCMAKE_CONFIG_H)
-INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
 
-ADD_SUBDIRECTORY(marsyas)
-ADD_SUBDIRECTORY(apps)
+## DETECT PACKAGES
+if(WITH_QT)
+        include(FindQt4)
+endif(WITH_QT)
+#include(FindThreads)
 
-IF (QT)
-  FIND_PACKAGE (Qt4 REQUIRED)
-  ADD_SUBDIRECTORY(marsyasqt)
-ENDIF (QT)
+
+
+## config file to get user options into code
+configure_file(${CMAKE_SOURCE_DIR}/config.h.in ${CMAKE_BINARY_DIR}/config.h)
+include_directories(${CMAKE_BINARY_DIR})
+##### temp -- will be deleted when we get rid of autoconf
+add_definitions(-DCMAKE_CONFIG_H)
+
+
+## next level
+####### can't this to work on OSX
+#add_subdirectory(otherlibs)
+add_subdirectory(marsyas)
+add_subdirectory(apps)
+
+if(QT4_FOUND)
+        add_subdirectory(marsyasqt)
+endif(QT4_FOUND)
 

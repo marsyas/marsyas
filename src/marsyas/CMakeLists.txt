@@ -1,16 +1,12 @@
-#cmake_minimum_required(VERSION 2.6)
-#PROJECT(Marsyas CXX)
+### temp
+include_directories(../../otherlibs/libsvm/)
 
-INCLUDE_DIRECTORIES(../../otherlibs/libsvm/)
-INCLUDE_DIRECTORIES(../../otherlibs/RtAudio/)
-
-#INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY})
-#INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR})
+include_directories(../otherlibs/RtAudio/)
+include_directories(../otherlibs/RtMidi/)
 
 # I've put the most OS-specific files at the top, to test the
 # library support before compiling the un-problematic files
-SET( MarSystem_SOURCES
+set( MarSystem_SOURCES
   Thread.cpp
   vmblock.cpp
   SVMClassifier.cpp
@@ -240,11 +236,9 @@ SET( MarSystem_SOURCES
   RadioDrumInput.cpp
   Gain.cpp
 
-  ../../otherlibs/RtAudio/RtAudio3.cpp
-  ../../otherlibs/libsvm/svm.cpp
 )
 
-SET(Marsyas_HEADERS
+set(Marsyas_HEADERS
   MarSystemManager.h
   MarSystem.h
   common.h
@@ -268,10 +262,25 @@ SET(Marsyas_HEADERS
   AudioSink.h
 )
 
-ADD_LIBRARY(Marsyas STATIC ${MarSystem_SOURCES} )
+## OTHERLIBS
+## (this is a hack, but I can't get it to work otherwise
+list(APPEND MarSystem_SOURCES ../../otherlibs/libsvm/svm.cpp)
+
+if (MARSYAS_AUDIOIO)
+  list(APPEND MarSystem_SOURCES ../../otherlibs/RtAudio/RtAudio.cpp)
+  list(APPEND MarSystem_SOURCES ../../otherlibs/RtAudio/RtAudio3.cpp)
+endif (MARSYAS_AUDIOIO)
+
+if (MARSYAS_MIDIIO)
+  list(APPEND MarSystem_SOURCES ../../otherlibs/RtMidi/RtMidi.cpp)
+endif (MARSYAS_MIDIIO)
 
 
-INSTALL(FILES ${Marsyas_HEADERS} DESTINATION include/marsyas)
-INSTALL(TARGETS Marsyas LIBRARY DESTINATION lib
+## ACTUAL BUILD
+
+add_library(marsyas STATIC ${MarSystem_SOURCES} )
+
+install(FILES ${Marsyas_HEADERS} DESTINATION include/marsyas)
+install(TARGETS marsyas LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib)
 
