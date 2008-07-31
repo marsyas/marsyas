@@ -19,18 +19,18 @@ endif(UNIX)
 option(WITH_QT "Build the QT library and applications" ON)
 option(MARSYAS_AUDIOIO "Build the audio I/O interface" ON)
 option(MARSYAS_MIDIIO "Build the MIDI I/O interface" ON)
-add_definitions(-D__MACOSX_CORE__)
 
 
 ## DETECT PACKAGES
 if(WITH_QT)
         include(FindQt4)
 endif(WITH_QT)
+#### not certain if this is necessary
 #include(FindThreads)
 
 
 
-## config file to get user options into code
+## CONFIG.H
 configure_file(${CMAKE_SOURCE_DIR}/config.h.in ${CMAKE_BINARY_DIR}/config.h)
 include_directories(${CMAKE_BINARY_DIR})
 ##### temp -- will be deleted when we get rid of autoconf
@@ -38,7 +38,7 @@ add_definitions(-DCMAKE_CONFIG_H)
 
 
 ## next level
-####### can't this to work on OSX
+####### can't get this to work on OSX
 #add_subdirectory(otherlibs)
 add_subdirectory(marsyas)
 add_subdirectory(apps)

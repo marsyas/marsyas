@@ -267,6 +267,24 @@ set(Marsyas_HEADERS
 list(APPEND MarSystem_SOURCES ../../otherlibs/libsvm/svm.cpp)
 
 if (MARSYAS_AUDIOIO)
+  ## setup RtAudio audio driver
+  if (MARSYAS_MACOSX)
+    add_definitions(-D__MACOSX_CORE__)
+  elseif(MARSYAS_LINUX)
+    add_definitions(-D__MACOSX_ALSA__)
+    ## maybe this should be moved to MIDIIO ?  Do we still
+    ## do MIDI, anyway?!
+    add_definitions(-D__MACOSX_ALSASEQ__)
+  elseif(MARSYAS_CYGWIN)
+    add_definitions(-D__WINDOWS_DS__)
+    add_definitions(-D__WINDOWS_MM__)
+    add_definitions(-D__OS_WINDOWS_RTMIDI__)
+  elseif(MARSYAS_WIN32)
+    add_definitions(-D__WINDOWS_DS__)
+    add_definitions(-D__WINDOWS_MM__)
+    add_definitions(-D__OS_WINDOWS_RTMIDI__)
+  endif (MARSYAS_MACOSX)
+  ## include the RtAudio files in the library
   list(APPEND MarSystem_SOURCES ../../otherlibs/RtAudio/RtAudio.cpp)
   list(APPEND MarSystem_SOURCES ../../otherlibs/RtAudio/RtAudio3.cpp)
 endif (MARSYAS_AUDIOIO)
