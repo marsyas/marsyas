@@ -223,9 +223,9 @@ set( MarSystem_SOURCES
   ADRess.cpp
   ADRessSpectrum.cpp
   ADRessStereoSpectrum.cpp
-  enhADRess.cpp
+  EnhADRess.cpp
   StereoSpectrumSources.cpp
-  enhADRessStereoSpectrum.cpp
+  EnhADRessStereoSpectrum.cpp
   McAulayQuatieri.cpp
   PeakerOnset.cpp
   Reverse.cpp
