@@ -294,6 +294,13 @@ if (MARSYAS_MIDIIO)
 endif (MARSYAS_MIDIIO)
 
 
+if (WIN32)
+  list (APPEND MarSystem_SOURCES
+    common.h
+  )
+endif (WIN32)
+
+
 ## ACTUAL BUILD
 
 add_library(marsyas STATIC ${MarSystem_SOURCES} )
