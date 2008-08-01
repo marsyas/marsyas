@@ -298,7 +298,7 @@ if (WIN32)
   list (APPEND MarSystem_SOURCES
     common.h
   )
-  add_definition(-DNOMINMAX)
+  add_definitions(-DNOMINMAX)
 endif (WIN32)
 
 
