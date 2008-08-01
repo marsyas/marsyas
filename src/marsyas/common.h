@@ -124,7 +124,15 @@ namespace Marsyas
        #define MATLAB_CLOSE()
 #endif
 
-#if defined(__WINDOWS_ASIO__) || defined (__WINDOWS_DS__)
+
+/************************************************************************/
+/*  Sleep MACRO                                                         */
+/************************************************************************/
+// FIXME: old definition; I don't think it works well.
+// #if defined(__WINDOWS_ASIO__) || defined (__WINDOWS_DS__)
+
+// FIXME: do we need to include _CYGWIN and _MINGW as well?
+#if defined(MARSYAS_WIN32)
 #include <windows.h> 
 #define SLEEP(milliseconds) Sleep((DWORD) milliseconds) 
 #else 
