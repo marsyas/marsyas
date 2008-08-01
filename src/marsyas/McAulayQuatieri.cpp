@@ -82,7 +82,7 @@ McAulayQuatieri::myUpdate(MarControlPtr sender)
 }
 
 mrs_real
-McAulayQuatieri::peakTrack(realvec& vec, mrs_natural frame, mrs_natural grp1, mrs_natural grp2)
+McAulayQuatieri::peakTrack(realvec& vec, mrs_natural frame, mrs_natural grpOne, mrs_natural grpTwo)
 {
 	mrs_real dist;
 	mrs_natural candidate;
@@ -100,23 +100,23 @@ McAulayQuatieri::peakTrack(realvec& vec, mrs_natural frame, mrs_natural grp1, mr
 	peakView tmpPeakView(vec);
 
 	//get the trackID for any future track to be born (in STEP 3 - see below)
-	mrs_natural nextTrack = tmpPeakView.getFrameNumPeaks(0, grp1);
+	mrs_natural nextTrack = tmpPeakView.getFrameNumPeaks(0, grpOne);
 
 	//iterate over peaks in current frame
-	for(mrs_natural n = 0; n < tmpPeakView.getFrameNumPeaks(frame, grp1); ++n)
+	for(mrs_natural n = 0; n < tmpPeakView.getFrameNumPeaks(frame, grpOne); ++n)
 	{
 		mrs_real lastdist = MAXREAL;
 		candidate = -1;
 
 		// STEP 1
 		// find a candidate match on the next frame for each peak (i.e. track) in current frame
-		for(mrs_natural m = lastMatched + 1; m < tmpPeakView.getFrameNumPeaks(frame+1, grp2); ++m)
+		for(mrs_natural m = lastMatched + 1; m < tmpPeakView.getFrameNumPeaks(frame+1, grpTwo); ++m)
 		{
 			//set track parameter of all peaks of next frame to -1 so we know later
 			//which ones were not matched (=> BIRTH of new tracks)
-			tmpPeakView(m, peakView::pkTrack, frame+1, grp2) = -1.0;
+			tmpPeakView(m, peakView::pkTrack, frame+1, grpTwo) = -1.0;
 
-			dist = abs(tmpPeakView(n, peakView::pkFrequency, frame, grp1) - tmpPeakView(m, peakView::pkFrequency, frame+1, grp2));
+			dist = abs(tmpPeakView(n, peakView::pkFrequency, frame, grpOne) - tmpPeakView(m, peakView::pkFrequency, frame+1, grpTwo));
 			if (dist < delta && dist < lastdist)
 			{
 				//found a candidate!
@@ -130,10 +130,10 @@ McAulayQuatieri::peakTrack(realvec& vec, mrs_natural frame, mrs_natural grp1, mr
 		if(candidate >= 0) //check if a candidate was found
 		{
 			//confirm if this is not the last peak in current frame
-			if(n < tmpPeakView.getFrameNumPeaks(frame, grp1)-1)
+			if(n < tmpPeakView.getFrameNumPeaks(frame, grpOne)-1)
 			{
 				//check the next remaining peak in current frame and see if it is a better match for the found candidate
-				dist = abs(tmpPeakView(n+1, peakView::pkFrequency, frame, grp1) - tmpPeakView(candidate, peakView::pkFrequency, frame+1, grp2));
+				dist = abs(tmpPeakView(n+1, peakView::pkFrequency, frame, grpOne) - tmpPeakView(candidate, peakView::pkFrequency, frame+1, grpTwo));
 				if(dist < lastdist)
 				{
 					// it is a better match! Check two additional conditions: 
@@ -141,10 +141,10 @@ McAulayQuatieri::peakTrack(realvec& vec, mrs_natural frame, mrs_natural grp1, mr
 					// 2. it is inside the frequency interval specified by delta
 					if(candidate - 1 > lastMatched)
 					{
-						if(abs(tmpPeakView(n, peakView::pkFrequency, frame, grp1) - tmpPeakView(candidate-1, peakView::pkFrequency, frame+1, grp2)) < delta)
+						if(abs(tmpPeakView(n, peakView::pkFrequency, frame, grpOne) - tmpPeakView(candidate-1, peakView::pkFrequency, frame+1, grpTwo)) < delta)
 						{
 							//found a peak to continue the track -> confirm candidate!
-							tmpPeakView(candidate-1, peakView::pkTrack, frame+1, grp2) = tmpPeakView(n, peakView::pkTrack, frame, grp1);
+							tmpPeakView(candidate-1, peakView::pkTrack, frame+1, grpTwo) = tmpPeakView(n, peakView::pkTrack, frame, grpOne);
 							lastMatched = candidate-1;
 							matchedTracks++;
 						}
@@ -153,7 +153,7 @@ McAulayQuatieri::peakTrack(realvec& vec, mrs_natural frame, mrs_natural grp1, mr
 				else
 				{
 					//no better match than this one, so confirm candidate!
-					tmpPeakView(candidate, peakView::pkTrack, frame+1, grp2) = tmpPeakView(n, peakView::pkTrack, frame, grp1);
+					tmpPeakView(candidate, peakView::pkTrack, frame+1, grpTwo) = tmpPeakView(n, peakView::pkTrack, frame, grpOne);
 					lastMatched = candidate;
 					matchedTracks++;
 				}
@@ -162,7 +162,7 @@ McAulayQuatieri::peakTrack(realvec& vec, mrs_natural frame, mrs_natural grp1, mr
 			{
 				//if this was the last peak in current frame, so inherently it was the best match.
 				//Candidate is therefore automatically confirmed and can be propagated.
-				tmpPeakView(candidate, peakView::pkTrack, frame+1, grp2) = tmpPeakView(n, peakView::pkTrack, frame, grp1);
+				tmpPeakView(candidate, peakView::pkTrack, frame+1, grpTwo) = tmpPeakView(n, peakView::pkTrack, frame, grpOne);
 				lastMatched = candidate;
 				matchedTracks++;
 			}
@@ -171,10 +171,10 @@ McAulayQuatieri::peakTrack(realvec& vec, mrs_natural frame, mrs_natural grp1, mr
 
 	// STEP 3
 	// check for any unmatched peaks in the next frame and give BIRTH to new tracks!
-	for(mrs_natural m = 0; m < tmpPeakView.getFrameNumPeaks(frame+1, grp2); ++m)
+	for(mrs_natural m = 0; m < tmpPeakView.getFrameNumPeaks(frame+1, grpTwo); ++m)
 	{
-		if(tmpPeakView(m, peakView::pkTrack, frame+1, grp2) == -1.0)
-			tmpPeakView(m, peakView::pkTrack, frame+1, grp2) = nextTrack++; //BIRTH of new track
+		if(tmpPeakView(m, peakView::pkTrack, frame+1, grpTwo) == -1.0)
+			tmpPeakView(m, peakView::pkTrack, frame+1, grpTwo) = nextTrack++; //BIRTH of new track
 	}
 
 	return matchedTracks;

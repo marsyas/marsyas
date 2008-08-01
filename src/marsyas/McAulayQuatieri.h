@@ -60,7 +60,7 @@ private:
 	realvec memory_;
 	realvec tmp_;
 
-	mrs_real peakTrack(realvec& vec, mrs_natural frame, mrs_natural grp1, mrs_natural grp2);
+	mrs_real peakTrack(realvec& vec, mrs_natural frame, mrs_natural grpOne, mrs_natural grpTwo);
 
 	void addControls();
 	void myUpdate(MarControlPtr sender);
