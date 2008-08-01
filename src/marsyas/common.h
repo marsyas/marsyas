@@ -55,6 +55,9 @@ namespace Marsyas
 /************************************************************************/
 /*  Numerical defines                                                   */
 /************************************************************************/
+#ifdef WIN32
+#define NOMINMAX
+#endif
 #define MAXREAL std::numeric_limits<mrs_real>::max()
 #define MINREAL std::numeric_limits<mrs_real>::min()
 #define MAXNATURAL std::numeric_limits<mrs_natural>::max()
