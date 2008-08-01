@@ -3,7 +3,10 @@
 #cmakedefine MARSYAS_LINUX
 #cmakedefine MARSYAS_MACOSX
 #cmakedefine MARSYAS_WIN32
+#cmakedefine MARSYAS_CYGWIN
+#cmakedefine MARSYAS_MINGW
 
 #cmakedefine MARSYAS_AUDIOIO
+#cmakedefine MARSYAS_MIDIIO
 
 #endif

@@ -4,15 +4,17 @@ project(Marsyas)
 
 ## find OS
 if(UNIX)
-  if(APPLE)
-    set(MARSYAS_MACOSX 1)
-  elseif(CYGWIN)
-    set(MARSYAS_CYGWIN 1)
-  else(UNIX)
-    set(MARSYAS_LINUX 1)
-  endif(APPLE)
+	if(APPLE)
+		set(MARSYAS_MACOSX 1)
+	elseif(CYGWIN)
+		set(MARSYAS_CYGWIN 1)
+	elseif(UNIX)
+		set(MARSYAS_LINUX 1)
+	endif(APPLE)
 elseif(MSVC)
-  set(MARSYAS_WIN32 1)
+	set(MARSYAS_WIN32 1)
+elseif(MINGW)
+	set(MARSYAS_MINGW 1)
 endif(UNIX)
 
 ## user options
@@ -23,7 +25,7 @@ option(MARSYAS_MIDIIO "Build the MIDI I/O interface" ON)
 
 ## DETECT PACKAGES
 if(WITH_QT)
-        include(FindQt4)
+	include(FindQt4)
 endif(WITH_QT)
 #### not certain if this is necessary
 #include(FindThreads)
@@ -45,5 +47,6 @@ add_subdirectory(apps)
 
 if(QT4_FOUND)
         add_subdirectory(marsyasqt)
+        add_subdirectory(Qt4Apps)
 endif(QT4_FOUND)
 
