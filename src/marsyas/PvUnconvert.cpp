@@ -87,7 +87,6 @@ PvUnconvert::myUpdate(MarControlPtr sender)
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->to<mrs_natural>() - 2);
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->to<mrs_real>() / getctrl("mrs_natural/onObservations")->to<mrs_natural>());  
 	
-	mrs_natural inObservations = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 	mrs_natural onObservations = getctrl("mrs_natural/onObservations")->to<mrs_natural>();
 	mrs_real israte = getctrl("mrs_real/israte")->to<mrs_real>();
 	

@@ -301,19 +301,6 @@ PvConvert::myProcessSorted(realvec& in, realvec& out)
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 void 
 PvConvert::myProcessNeighbors(realvec& in, realvec& out)
 {
@@ -359,7 +346,6 @@ PvConvert::myProcessNeighbors(realvec& in, realvec& out)
 	mrs_real* data = sortedmags_.getData();
 	sort(data, data+(N2+1), greater<mrs_real>());
 
-	bool found;
 	mrs_real val;
 
 	for (t=0; t <= N2; t++)

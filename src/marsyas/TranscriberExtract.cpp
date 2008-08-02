@@ -124,7 +124,9 @@ TranscriberExtract::getAmpsFromAudio(const std::string audioFilename)
 	mrs_real normalize = getNormalizingGain(audioFilename);
 
 	MarSystem* pnet = mng.create("Series", "pnet");
-	mrs_real srate = addFileSource(pnet, audioFilename);
+	mrs_real srate;
+	srate  = addFileSource(pnet, audioFilename);
+	
 	pnet->addMarSystem(mng.create("Gain", "normalizing"));
 	pnet->updctrl("Gain/normalizing/mrs_real/gain",normalize);
 	MarSystem* rvSink = mng.create("RealvecSink", "rvSink");

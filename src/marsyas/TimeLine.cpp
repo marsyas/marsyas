@@ -370,9 +370,9 @@ void
 TimeLine::printnew(FILE *fp)
 {
 	mrs_natural i;
-	fprintf(fp, "%d\n", numRegions_);
-	fprintf(fp, "%d\n", lineSize_);
-	fprintf(fp, "%d\n", size_);
+	fprintf(fp, "%d\n", (int)numRegions_);
+	fprintf(fp, "%d\n", (int)lineSize_);
+	fprintf(fp, "%d\n", (int)size_);
 
 	for (i=0; i<numRegions_; i++)
 	{
@@ -383,7 +383,7 @@ TimeLine::printnew(FILE *fp)
 		// fprintf(fp, "%d ", regions_[i].start);
 		fprintf(fp, "%6.0f ", smsec);
 
-		fprintf(fp, "%d ", regions_[i].classId);
+		fprintf(fp, "%d ", (int)regions_[i].classId);
 		emsec = ((regions_[i].end * lineSize_ * 1.0f) / 22050.0f) * 1000;
 		// fprintf(fp, "%d ", regions_[i].end);
 		fprintf(fp, "%6.0f\n", emsec);
@@ -420,16 +420,16 @@ void
 TimeLine::print(FILE *fp)
 {
 	mrs_natural i;
-	fprintf(fp, "%d\n", numRegions_);
-	fprintf(fp, "%d\n", lineSize_);
-	fprintf(fp, "%d\n", size_);
+	fprintf(fp, "%d\n", (int) numRegions_);
+	fprintf(fp, "%d\n", (int)lineSize_);
+	fprintf(fp, "%d\n", (int)size_);
 
 	for (i=0; i<numRegions_; i++)
 	{
-		fprintf(fp, "%d ", regions_[i].start);
-		fprintf(fp, "%d ", regions_[i].classId);
-		fprintf(fp, "%d\n", regions_[i].end);
-		fprintf(fp, "Region %d\n", i+1);
+		fprintf(fp, "%d ", (int)regions_[i].start);
+		fprintf(fp, "%d ", (int)regions_[i].classId);
+		fprintf(fp, "%d\n", (int)regions_[i].end);
+		fprintf(fp, "Region %d\n", (int)i+1);
 	}
 }
 
@@ -519,25 +519,25 @@ TimeLine::send(Communicator* com)
 	mrs_natural i;
 	mrs_string message;
 
-	sprintf(buf, "%d\n", numRegions_);
+	sprintf(buf, "%d\n", (int)numRegions_);
 	message = buf;
 	com->send_message(message);
 
-	sprintf(buf, "%d\n", lineSize_);
+	sprintf(buf, "%d\n", (int)lineSize_);
 	message = buf;
 	com->send_message(message);
 
-	sprintf(buf, "%d\n", size_);
+	sprintf(buf, "%d\n", (int)size_);
 	message = buf;
 	com->send_message(message);
 
 	for (i=0; i<numRegions_; i++)
 	{
-		sprintf(buf, "%d ", regions_[i].start);
+		sprintf(buf, "%d ", (int)regions_[i].start);
 		message = buf;
 		com->send_message(message);
 
-		sprintf(buf, "%d ", regions_[i].classId);
+		sprintf(buf, "%d ", (int)regions_[i].classId);
 		message = buf;
 		com->send_message(message);
 
@@ -555,11 +555,11 @@ TimeLine::send(Communicator* com)
 
 		*/
 
-		sprintf(buf, "%d\n", regions_[i].end);
+		sprintf(buf, "%d\n", (int)regions_[i].end);
 		message = buf;
 		com->send_message(message);      
 
-		sprintf(buf, "Region %d\n", i);
+		sprintf(buf, "Region %d\n", (int)i);
 		message = buf;
 		com->send_message(message);
 	}

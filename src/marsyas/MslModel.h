@@ -89,6 +89,7 @@ private:
 class MslCommand
 {
 public:
+    virtual ~MslCommand();
 	virtual bool verify(cmdList_t &) { return true; };
 	virtual bool execute() = 0;
 	virtual std::string helpMsg() const { return " "; };
@@ -105,7 +106,6 @@ protected:
 class MslMarSystemCommand : public MslCommand
 {
 public:
-
 
 private:
 

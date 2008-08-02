@@ -239,7 +239,7 @@ void
 Collection::concatenate(vector<Collection> cls) 
 {
   unsigned int cj;
-  unsigned int i;
+  int i;
   
   for (cj = 0; cj < cls.size(); cj++)
     {

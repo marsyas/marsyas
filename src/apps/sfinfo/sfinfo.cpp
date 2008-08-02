@@ -98,7 +98,6 @@ main(int argc, const char **argv)
   MRSDIAG("sfinfo.cpp - main");
 
   string progName = argv[0];  
-  progName = progName.erase(0,3);
   
   if (argc == 1)
     printUsage(progName);

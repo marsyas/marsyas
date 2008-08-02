@@ -76,7 +76,7 @@ void
 SNR::myProcess(realvec& in, realvec& out)
 {
 
-  const mrs_string& mode = ctrl_mode_->to<mrs_string>();
+//  const mrs_string& mode = ctrl_mode_->to<mrs_string>();
 
   for (t = 0; t < inSamples_; t++)
     {
