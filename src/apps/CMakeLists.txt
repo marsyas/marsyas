@@ -30,6 +30,11 @@ elseif (MARSYAS_LINUX)
 	endif (MARSYAS_MIDIIO)
 endif (MARSYAS_MACOSX)
 
+#set (RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/apps)
+#set_target_properties (PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/apps)
+#set (EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/apps)
+#set (EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 add_subdirectory(sfplay)
 add_subdirectory(bextract)
 add_subdirectory(sfinfo)
+

@@ -96,6 +96,9 @@ include_directories(${CMAKE_BINARY_DIR})
 add_definitions(-DCMAKE_CONFIG_H)
 
 
+set (LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
+set (EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+
 ## next level
 ####### can't get this to work on OSX
 #add_subdirectory(otherlibs)
