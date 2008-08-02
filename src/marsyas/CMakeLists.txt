@@ -1,8 +1,18 @@
 ### temp
-include_directories(../../otherlibs/libsvm/)
+include_directories(${CMAKE_SOURCE_DIR}/otherlibs/libsvm/)
 
-include_directories(../otherlibs/RtAudio/)
-include_directories(../otherlibs/RtMidi/)
+if (MARSYAS_AUDIOIO)
+	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/)
+endif (MARSYAS_AUDIOIO)
+
+if (MARSYAS_MIDIIO)
+	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/)
+endif (MARSYAS_MIDIIO)
+
+if (MARSYAS_MAD)
+	include_directories(${mad_INCLUDE_DIR})
+endif (MARSYAS_MAD)
+
 
 # I've put the most OS-specific files at the top, to test the
 # library support before compiling the un-problematic files
@@ -308,6 +318,10 @@ endif (WIN32)
 ## ACTUAL BUILD
 
 add_library(marsyas STATIC ${MarSystem_SOURCES} )
+
+if (MARSYAS_MAD)
+	TARGET_LINK_LIBRARIES(marsyas ${mad_LIBRARY})
+endif (MARSYAS_MAD)
 
 install(FILES ${Marsyas_HEADERS} DESTINATION include/marsyas)
 install(TARGETS marsyas LIBRARY DESTINATION lib

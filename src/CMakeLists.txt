@@ -66,9 +66,16 @@ option(WITH_QT "Build the QT library and applications" OFF)
 
 
 ## DETECT PACKAGES
-if(WITH_QT)
+set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
+
+if (WITH_QT)
 	include(FindQt4)
-endif(WITH_QT)
+endif (WITH_QT)
+
+if (WITH_MAD)
+	find_package(mad REQUIRED)
+	set (MARSYAS_MAD 1)
+endif (WITH_MAD)
 #### not certain if this is necessary
 #include(FindThreads)
 

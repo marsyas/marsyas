@@ -21,5 +21,6 @@
 #cmakedefine MARSYAS_LOG2GUI
 
 
+#cmakedefine MARSYAS_MAD
 
 #endif
