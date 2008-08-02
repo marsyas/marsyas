@@ -6,6 +6,7 @@ This chapter shows the steps to get a working version of Marsyas.
 @menu
 * Download::                    
 * Main Install::                
+* Old Install::                 
 * Optional Installs::           
 * Structure of distribution::   
 @end menu
@@ -53,6 +54,88 @@ checking the sourceforge website.
 
 @node Main Install
 @section Main Install
+
+This section discusses how to install Marsyas.
+
+@menu
+* Prerequisites::               
+* Configuring with CMake::      
+* Compiling::                   
+@end menu
+
+@node Prerequisites
+@subsection Prerequisites
+
+Before compiling Marsyas, you @strong{must} install CMake 2.6 or
+higher.  CMake is available in source and binary forms from:
+
+@quotation
+@uref{http://www.cmake.org/HTML/Download.html}
+@end quotation
+
+
+@node Configuring with CMake
+@subsection Configuring with CMake
+
+CMake produces build systems as desired -- Makefiles on Linux /
+MacOS X / Cygwin, XCode projects on MacOS X, and MSVC projects on
+Windows.  It can also create Eclipse and KDevelop3 projects.
+
+@subsubsection Windows
+
+FIXME: insert screenshot
+
+@enumerate
+@item Run the CMake GUI.
+
+@item Select the Marsyas @code{src} directory.
+
+@item Select a new directory in which to build Marsyas.
+
+@item Press the @emph{Configure} button.  
+
+@item View the selected options, and change any as desired.  If
+you change any options, run @emph{Configure...} again.
+
+@item Press the @emph{Ok} button to create the build system.
+
+@end enumerate
+
+
+@subsubsection Unix (including MacOS X)
+
+@image{images/ccmake-unix}
+
+@enumerate
+
+@item Open the terminal, create a directory for the build, and run
+@code{cmake}.
+
+@verbatim
+cd MY-MARSYAS-DIR
+mkdir build
+cd build
+cmake ../src/
+ccmake ../src/
+@end verbatim
+
+@item Modify any variables in the interactive editor
+@code{ccmake}.  Once you have finished changing options, press
+@code{[c]} to configure the project again.
+
+@end enumerate
+
+
+
+
+@node Compiling
+@subsection Compiling
+
+Foo
+
+
+@node Old Install
+@section Old Install
 
 @menu
 * Linux with autotools::        
