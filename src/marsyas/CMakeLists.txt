@@ -271,7 +271,11 @@ if (MARSYAS_AUDIOIO)
   if (MARSYAS_MACOSX)
     add_definitions(-D__MACOSX_CORE__)
   elseif(MARSYAS_LINUX)
-    add_definitions(-D__MACOSX_ALSA__)
+    if (OSS)
+      add_definitions(-D__LINUX_OSS__)
+    else (OSS)
+      add_definitions(-D__MACOSX_ALSA__)
+    endif (OSS)
     ## maybe this should be moved to MIDIIO ?  Do we still
     ## do MIDI, anyway?!
     add_definitions(-D__MACOSX_ALSASEQ__)

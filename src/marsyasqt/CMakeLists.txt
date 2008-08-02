@@ -4,7 +4,7 @@ INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/marsyas/)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/marsyasqt/)
 
-SET(MarsyasQt_SOURCES
+SET(marsyasqt_SOURCES
   MarSystemQtWrapper.cpp
   QtMarPlot.cpp
   Marx2DGraph.cpp
@@ -13,7 +13,7 @@ SET(MarsyasQt_SOURCES
   qoscserver.cpp
   qosctypes.cpp
 )
-SET(MarsyasQt_HEADERS
+SET(marsyasqt_HEADERS
   MarSystemQtWrapper.h
   QtMarAbout.h
   QtMarPlot.h
@@ -24,14 +24,14 @@ SET(MarsyasQt_HEADERS
   qosctypes.h
 )
 
-QT4_WRAP_CPP( MarsyasQt_moc_SOURCES ${MarsyasQt_HEADERS})
+QT4_WRAP_CPP( marsyasqt_moc_SOURCES ${marsyasqt_HEADERS})
 
-ADD_LIBRARY(MarsyasQt STATIC ${MarsyasQt_SOURCES}
-${MarsyasQt_moc_SOURCES})
-TARGET_LINK_LIBRARIES( MarsyasQt ${QT_LIBRARIES} marsyas)
+ADD_LIBRARY(marsyasqt STATIC ${marsyasqt_SOURCES}
+${marsyasqt_moc_SOURCES})
+TARGET_LINK_LIBRARIES( marsyasqt ${QT_LIBRARIES} marsyas)
 
-INSTALL(FILES ${MarsyasQt_HEADERS} DESTINATION include/marsyasqt)
-INSTALL(TARGETS MarsyasQt LIBRARY DESTINATION lib
+INSTALL(FILES ${marsyasqt_HEADERS} DESTINATION include/marsyasqt)
+INSTALL(TARGETS marsyasqt LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib)
 
 

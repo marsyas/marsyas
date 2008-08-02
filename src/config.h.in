@@ -9,4 +9,17 @@
 #cmakedefine MARSYAS_AUDIOIO
 #cmakedefine MARSYAS_MIDIIO
 
+#cmakedefine MARSYAS_ASSERT
+#cmakedefine MARSYAS_PROFILING
+#cmakedefine MARSYAS_DEBUG
+
+#cmakedefine MARSYAS_LOG_WARNINGS
+#cmakedefine MARSYAS_LOG_DEBUGS
+#cmakedefine MARSYAS_LOG_DIAGNOSTICS
+#cmakedefine MARSYAS_LOG2FILE
+#cmakedefine MARSYAS_LOG2STDOUT
+#cmakedefine MARSYAS_LOG2GUI
+
+
+
 #endif
