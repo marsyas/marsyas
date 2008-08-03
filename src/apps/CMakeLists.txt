@@ -37,4 +37,5 @@ endif (MARSYAS_MACOSX)
 add_subdirectory(sfplay)
 add_subdirectory(bextract)
 add_subdirectory(sfinfo)
+add_subdirectory(phasevocoder)
 

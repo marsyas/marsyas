@@ -1,19 +1,17 @@
 #include <cstdio>
 #include <cstdlib>
 
-#ifdef MARSYAS_MIDIIO
-#include "RtMidi.h"
-#else
 
-#endif
 #include "MarSystemManager.h"
 //#include "Messager.h"
 #include "Conversions.h"
 #include "CommandLineOptions.h"
-#include "AudioSink.h"
-#include "SoundFileSink.h"
 
 #include <string>
+
+#ifdef MARSYAS_MIDIIO
+#include "RtMidi.h"
+#endif 
 
 using namespace std;
 using namespace Marsyas;
@@ -271,10 +269,10 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
   
 	MarSystem *dest;
 	if (outsfname == EMPTYSTRING) 
-		dest = new AudioSink("dest");
+		dest = mng.create("AudioSink", "dest");
 	else
 	{
-		dest = new SoundFileSink("dest");
+		dest = mng.create("SoundFileSink", "dest");
 		//dest->updctrl("mrs_string/filename", outsfname);
 	}
 	pvseries->addMarSystem(dest);
