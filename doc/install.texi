@@ -126,12 +126,18 @@ ccmake ../src/
 @end enumerate
 
 
-
-
 @node Compiling
 @subsection Compiling
 
-Foo
+Once the build system has been created, simply compile Marsyas
+using whatever tools you normally use -- @code{make} on Unix, MSVC
+on Windows, etc.
+
+On Unix, use @code{make install} to install Marsyas.  There is no
+functionality to install Marsyas outside of the source tree on
+Windows.
+
+@c FIXME: check about lack of install on Windows.
 
 
 @node Old Install
