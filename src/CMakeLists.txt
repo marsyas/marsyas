@@ -13,10 +13,10 @@ if(UNIX)
 	elseif(UNIX)
 		set(MARSYAS_LINUX 1)
 	endif(APPLE)
-elseif(MSVC)
-	set(MARSYAS_WIN32 1)
 elseif(MINGW)
 	set(MARSYAS_MINGW 1)
+elseif(MSVC)
+	set(MARSYAS_WIN32 1)
 endif(UNIX)
 
 include (TestBigEndian)
@@ -26,9 +26,10 @@ test_big_endian(MARSYAS_BIGENDIAN)
 ## user options
 option(MARSYAS_AUDIOIO "Build the audio I/O interface" ON)
 option(MARSYAS_MIDIIO "Build the MIDI I/O interface" ON)
-# still used?
 option(OSS "[LINUX ONLY] Use OSS instead of ALSA" OFF)
 
+
+# FIXME: waiting to confirm
 option(MARSYAS_ASSERT "Build with assertions" OFF)
 mark_as_advanced (MARSYAS_ASSERT)
 option(MARSYAS_PROFILING "Build with profiling" OFF)
