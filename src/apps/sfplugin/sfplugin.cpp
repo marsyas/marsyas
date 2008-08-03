@@ -82,7 +82,6 @@ void sfplugin(vector<string> soundfiles, string pluginName)
 		exit(1);
 	}
 	mrs_real srate;
-	mrs_natural nChannels;
 
 	// run audio through the plugin for each file in the collection
 	// assume there is a SoundFileSource in the plugin 

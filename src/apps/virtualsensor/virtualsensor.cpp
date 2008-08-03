@@ -265,7 +265,8 @@ void testrmspreprocess() {
     playbacknet->updctrl("mrs_real/osrate", 44100.0);
     playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfname);
     playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", "rmsOutput.wav");
-    int srate = playbacknet->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+    int srate; 
+    srate = playbacknet->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
     /*
     // values optimized for window size of 512
@@ -310,7 +311,8 @@ void extractHits() {
 
     playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfname);
     playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", "output.wav");
-    int srate = playbacknet->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+    int srate;
+    srate = playbacknet->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
     /*
     // values optimized for window size of 512
@@ -1040,7 +1042,8 @@ void recordSitarSensors(mrs_real length)
 
     mrs_real srate = recordNet->getctrl("AudioSource/asrc/mrs_real/israte")->to<mrs_real>();
     mrs_natural inSamples = recordNet->getctrl("AudioSource/asrc/mrs_natural/inSamples")->to<mrs_natural>();
-    mrs_natural iterations = (mrs_natural)((srate * length) / inSamples);
+    mrs_natural iterations;
+	iterations = (mrs_natural)((srate * length) / inSamples);
 
     int r,f;
 

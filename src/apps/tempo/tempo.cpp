@@ -228,7 +228,6 @@ tempo_new(string sfName, string resName)
   
   MarSystemManager mng;
 
-  mrs_natural nChannels;
   mrs_real srate = 0.0;
 
   
