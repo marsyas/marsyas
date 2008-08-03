@@ -1,4 +1,9 @@
+if (MARSYAS_MIDIIO) 
+	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/)
+endif (MARSYAS_MIDIIO) 
+
 include_directories(${CMAKE_SOURCE_DIR}/marsyas/)
+
 
 
 ## setup OS_LIBS
