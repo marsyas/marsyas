@@ -2,6 +2,10 @@ if (MARSYAS_MIDIIO)
 	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/)
 endif (MARSYAS_MIDIIO) 
 
+if (MARSYAS_MIDIIO) 
+	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/)
+endif (MARSYAS_MIDIIO) 
+
 include_directories(${CMAKE_SOURCE_DIR}/marsyas/)
 
 
@@ -43,4 +47,4 @@ add_subdirectory(sfplay)
 add_subdirectory(bextract)
 add_subdirectory(sfinfo)
 add_subdirectory(phasevocoder)
-
+add_subdirectory(mudbox)

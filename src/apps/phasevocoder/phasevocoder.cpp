@@ -106,7 +106,7 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 			onsets.push_back(onset_index);
 		}
 		// convert to analysis frame rate 
-		for (int j=0; j < onsets.size(); j++) 
+		for (unsigned int j=0; j < onsets.size(); j++) 
 		{
 			onsets[j] /= D;
 			cout << "on = " << onsets[j] << endl;
@@ -161,7 +161,7 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 
 		if (onsetsfile_ != "") 
 		{
-			for (int j=0; j < onsets.size(); j++) 
+			for (unsigned int j=0; j < onsets.size(); j++) 
 			{
 				if (numticks == onsets[j])
 				{
@@ -223,7 +223,7 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
 			onsets.push_back(onset_index);
 		}
 		
-		for (int j=0; j < onsets.size(); j++) 
+		for (unsigned int j=0; j < onsets.size(); j++) 
 		{
 			onsets[j] /= D;
 			cout << "on = " << onsets[j] << endl;
@@ -377,7 +377,8 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
 
 	int numticks = 0;
 
-	int onset_counter = 20;
+	int onset_counter;
+	onset_counter = 20;
 	
 	
 
@@ -441,7 +442,7 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
 		
 		if (onsetsfile_ != "") 
 		{
-			for (int j=0; j < onsets.size(); j++) 
+			for (unsigned int j=0; j < onsets.size(); j++) 
 			{
 				
 				if (numticks == onsets[j])
@@ -956,13 +957,17 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
 	string cname;
 
 	mrs_real diff;
-	mrs_natural fc = 0;
-	mrs_real time = 0.0;
-	mrs_real epsilon = 0.0029024;
+	mrs_natural fc;
+	fc = 0;
+	mrs_real time;
+	time = 0.0;
+	mrs_real epsilon;
+	epsilon = 0.0029024;
   
 	diff = 0.0;
   
-	bool trigger = true;
+	bool trigger;
+	trigger = true;
   
 	total->updctrl("mrs_natural/inSamples", D);
   
@@ -1235,12 +1240,14 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 	mrs_real glide1;
    
 	mrs_real time = 0.0;
-	mrs_real epsilon = 0.0029024;
+	mrs_real epsilon;
+	epsilon  = 0.0029024;
   
 	mrs_natural epoch =0;
 	diff = 0.0;
    
-	bool trigger = true;
+	bool trigger;
+	trigger = true;
   
 	pvoices[0]->updctrl("mrs_real/gain", 0.0);
 	pvoices[1]->updctrl("mrs_real/gain", 0.0);

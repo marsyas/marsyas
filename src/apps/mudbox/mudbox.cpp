@@ -631,7 +631,8 @@ toy_with_onsets(string sfName)
 	//process input file (till EOF)
 	///////////////////////////////////////////////////////////////////////////////////////
 	mrs_natural timestamps_samples = 0;
-	mrs_real sampling_rate = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
+	mrs_real sampling_rate;
+	sampling_rate = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
 	// cout << "Sampling rate = " << sampling_rate << endl;
 	
 	while(onsetnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
