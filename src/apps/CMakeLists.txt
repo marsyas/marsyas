@@ -1,18 +1,18 @@
+## setup Marsyas includes
+include_directories(${CMAKE_SOURCE_DIR}/marsyas/)
+
+if (MARSYAS_AUDIOIO) 
+	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/)
+endif (MARSYAS_AUDIOIO) 
+
 if (MARSYAS_MIDIIO) 
 	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/)
 endif (MARSYAS_MIDIIO) 
 
-if (MARSYAS_MIDIIO) 
-	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/)
-endif (MARSYAS_MIDIIO) 
-
-include_directories(${CMAKE_SOURCE_DIR}/marsyas/)
-
-
 
 ## setup OS_LIBS
 if (MARSYAS_MACOSX)
-	find_library (COREFOUNDATION_LIBRARY CoreFoundation )
+	find_library (COREFOUNDATION_LIBRARY CoreFoundation)
 	mark_as_advanced (COREFOUNDATION_LIBRARY)
 	set (OS_LIBS ${COREFOUNDATION_LIBRARY})
 	if (MARSYAS_AUDIOIO)
@@ -25,7 +25,9 @@ if (MARSYAS_MACOSX)
 		mark_as_advanced (COREMIDI_LIBRARY)
 		list (APPEND OS_LIBS ${COREMIDI_LIBRARY})
 	endif (MARSYAS_MIDIIO)
-elseif (MARSYAS_LINUX)
+endif (MARSYAS_MACOSX)
+
+if (MARSYAS_LINUX)
 	set (OS_LIBS)
 	if (MARSYAS_AUDIOIO)
 		find_library(ASOUND_LIBRARY asound)
@@ -37,12 +39,34 @@ elseif (MARSYAS_LINUX)
 		mark_as_advanced(ASOUND_LIBRARY)
 		list (APPEND OS_LIBS ${ASOUND_LIBRARY})
 	endif (MARSYAS_MIDIIO)
-endif (MARSYAS_MACOSX)
+endif (MARSYAS_LINUX)
 
-#set (RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/apps)
-#set_target_properties (PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/apps)
-#set (EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/apps)
-#set (EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+if (MARSYAS_WIN32)
+	set (OS_LIBS)
+	if (MARSYAS_AUDIOIO)
+	endif (MARSYAS_AUDIOIO)
+	if (MARSYAS_MIDIIO)
+	endif (MARSYAS_MIDIIO)
+endif (MARSYAS_LINUX)
+
+if (MARSYAS_MINGW)
+	set (OS_LIBS)
+	if (MARSYAS_AUDIOIO)
+	endif (MARSYAS_AUDIOIO)
+	if (MARSYAS_MIDIIO)
+	endif (MARSYAS_MIDIIO)
+endif (MARSYAS_LINUX)
+
+if (MARSYAS_CYGWIN)
+	set (OS_LIBS)
+	if (MARSYAS_AUDIOIO)
+	endif (MARSYAS_AUDIOIO)
+	if (MARSYAS_MIDIIO)
+	endif (MARSYAS_MIDIIO)
+endif (MARSYAS_LINUX)
+
+
+## build apps
 add_subdirectory(sfplay)
 add_subdirectory(bextract)
 add_subdirectory(sfinfo)
@@ -51,3 +75,4 @@ add_subdirectory(mudbox)
 add_subdirectory(sfplugin)
 add_subdirectory(tempo) 
 add_subdirectory(virtualsensor)
+
