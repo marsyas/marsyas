@@ -18,7 +18,7 @@ elseif(MINGW)
 elseif(MSVC)
 	set(MARSYAS_WIN32 1)
 	if(MARSYAS_AUDIOIO)
-	   set(__WINDOWS_DS__)
+	   set(__WINDOWS_DS__ 1)
         endif 
 endif(UNIX)
 
