@@ -26,7 +26,9 @@ test_big_endian(MARSYAS_BIGENDIAN)
 ## user options
 option(MARSYAS_AUDIOIO "Build the audio I/O interface" ON)
 option(MARSYAS_MIDIIO "Build the MIDI I/O interface" ON)
-option(OSS "[LINUX ONLY] Use OSS instead of ALSA" OFF)
+if (MARSYAS_LINUX)
+	option(OSS "[LINUX ONLY] Use OSS instead of ALSA" OFF)
+endif (MARSYAS_LINUX)
 
 
 # FIXME: waiting to confirm
