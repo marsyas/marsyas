@@ -17,6 +17,9 @@ elseif(MINGW)
 	set(MARSYAS_MINGW 1)
 elseif(MSVC)
 	set(MARSYAS_WIN32 1)
+	if(MARSYAS_AUDIOIO)
+	   set(__WINDOWS_DS__)
+        endif 
 endif(UNIX)
 
 include (TestBigEndian)
