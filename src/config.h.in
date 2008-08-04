@@ -6,8 +6,12 @@
 #cmakedefine MARSYAS_CYGWIN
 #cmakedefine MARSYAS_MINGW
 
+#cmakedefine MARSYAS_BIGENDIAN
+
 #cmakedefine MARSYAS_AUDIOIO
 #cmakedefine MARSYAS_MIDIIO
+
+
 
 #cmakedefine MARSYAS_ASSERT
 #cmakedefine MARSYAS_PROFILING
