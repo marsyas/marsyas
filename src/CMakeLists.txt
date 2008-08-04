@@ -19,7 +19,7 @@ elseif(MSVC)
 	set(MARSYAS_WIN32 1)
 	if(MARSYAS_AUDIOIO)
 	   set(__WINDOWS_DS__ 1)
-        endif 
+        endif(MARSYAS_AUDIOIO)
 endif(UNIX)
 
 include (TestBigEndian)
