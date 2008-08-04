@@ -1,6 +1,9 @@
 #ifndef _LIBSVM_H
 #define _LIBSVM_H
 
+#define _CRT_SECURE_NO_WARNINGS
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif

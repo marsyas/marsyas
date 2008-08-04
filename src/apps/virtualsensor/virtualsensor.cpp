@@ -22,7 +22,6 @@ record: record a clip using AudioSource
 
 #include <cstdio>
 #include <cstdlib>
-#include <unistd.h>
 #include "Collection.h"
 #include "MarSystemManager.h"
 #include "Accumulator.h"
@@ -1065,7 +1064,7 @@ void recordSitarSensors(mrs_real length)
     pnet->updctrl(strike, true);
 
     // Wait
-    sleep(1);
+    SLEEP(1);
 
     pnet->updctrl(arm, DEVIBOT_NA);
     pnet->updctrl(velocity, 50);

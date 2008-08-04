@@ -1,3 +1,12 @@
+if (MARSYAS_WIN32)
+	if (MARSYAS_AUDIOIO)
+	   set(__WINDOWS_DS__ 1)
+	   set(MARSYAS_DS 1)
+	endif (MARSYAS_AUDIOIO)
+endif(MARSYAS_WIN32)
+
+
+
 ### temp
 include_directories(${CMAKE_SOURCE_DIR}/otherlibs/libsvm/)
 

@@ -91,7 +91,8 @@ TmControlValue::toReal()
 {
     if(type_ != tmcv_real)
         MRSWARN("MarControlValue::toReal Incorrect type");
-    return r;
+	else 
+		return r;
 }
 
 bool
@@ -99,7 +100,8 @@ TmControlValue::toBool()
 {
     if(type_ != tmcv_bool)
         MRSWARN("MarControlValue::toBool Incorrect type");
-    return b;
+	else
+		return b;
 }
 
 mrs_natural
@@ -107,7 +109,8 @@ TmControlValue::toNatural()
 {
     if(type_ != tmcv_natural)
         MRSWARN("MarControlValue::toNatural Incorrect type");
-    return n;
+	else 
+       return n;
 }
 
 string
@@ -115,7 +118,8 @@ TmControlValue::toString()
 {
     if(type_ != tmcv_string)
         MRSWARN("MarControlValue::toString Incorrect type");
-    return s;
+	else 
+		return s;
 }
 
 MarSystem*
@@ -123,7 +127,8 @@ TmControlValue::toMarSystem()
 {
   if(type_ != tmcv_marsystem)
       MRSWARN("MarControlValue::toMarSystem Incorrect type");
-  return ms;
+  else
+   return ms;
 }
 
 int

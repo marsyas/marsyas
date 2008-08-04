@@ -16,17 +16,24 @@
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"
 #include "FileName.h"
-#ifdef MARSYAS_AUDIOIO
-#include "RtAudio3.h"
-#endif 
-#ifdef MARSYAS_MIDIIO
-#include "RtMidi.h"
-#endif 
+
 #include "MarSystemTemplateBasic.h"
 #include "MarSystemTemplateAdvanced.h"
 #include "EvValUpd.h"
 #include "Collection.h"
 #include "NumericLib.h"
+
+
+#ifdef MARSYAS_MIDIIO
+#include "RtMidi.h"
+#endif 
+
+#ifdef MARSYAS_AUDIOIO
+#include "RtAudio3.h"
+#endif 
+
+
+
 
 using namespace std;
 using namespace Marsyas;

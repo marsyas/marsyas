@@ -6,6 +6,9 @@
 #include <string.h>
 #include <stdarg.h>
 #include "svm.h"
+
+#define _CRT_SECURE_NO_WARNINGS 
+
 typedef float Qfloat;
 typedef signed char schar;
 #ifndef min

@@ -274,7 +274,7 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 				if (mode == "identity_phaselock")
 					iphase_(t) = lastphases(t) + interpolation * in(freq,0);
 				else if (mode == "scaled_phaselock")
-					iphase_(t) = lastphases(regions(t)) + interpolation * in(freq,0);
+					iphase_(t) = lastphases((mrs_natural)regions(t)) + interpolation * in(freq,0);
 			}
 		}
 		
@@ -328,8 +328,8 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 			while (analysisphases(t) < -PI) 
 				analysisphases(t) += TWOPI;
 			
-			iphase_(t) = iphase_(regions(t)) + 
-				beta * (analysisphases(t) - analysisphases(regions(t)));
+			iphase_(t) = iphase_((mrs_natural)regions(t)) + 
+				beta * (analysisphases(t) - analysisphases((mrs_natural)regions(t)));
 			
 				// sinusoidal trajectory continuation heuristic 
 				/* if (t - regions(t) > subband(t))

@@ -14,7 +14,7 @@
 
 #if !defined(__STK_H)
 #define __STK_H
-
+#define _CRT_SECURE_NO_WARNINGS
 #include <string>
 
 namespace Marsyas

@@ -127,6 +127,7 @@ HWPS::myUpdate(MarControlPtr sender)
 	//the input has the two vectors/matrices to process stacked vertically
 	if(inObservations_ % 2 != 0)
 		MRSWARN("HWPS::myUpdate - input flow controls do not seem to be in a valid format!");
+
 	vec_i_.create(ctrl_inObservations_->to<mrs_natural>()/2);
 	vec_j_.create(ctrl_inObservations_->to<mrs_natural>()/2);
 }

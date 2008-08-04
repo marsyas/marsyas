@@ -23,6 +23,7 @@
 #ifndef BASIS_H_INCLUDED
 #define BASIS_H_INCLUDED
 
+#define _CRT_SECURE_NO_WARNINGS
 
 
 /***********************************************************************
