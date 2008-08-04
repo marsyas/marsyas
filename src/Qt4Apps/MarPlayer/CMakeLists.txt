@@ -18,7 +18,7 @@ SET(MarPlayer_HEADERS
 
 QT4_WRAP_UI(MarPlayer_UIHEADERS MarPlayerForm.ui)
 QT4_WRAP_CPP(MarPlayer_moc_SOURCES ${MarPlayer_HEADERS})
-QT4_ADD_RESOURCES(MarPlayerForm.qrc)
-ADD_EXECUTABLE(MarPlayer ${MarPlayer_SOURCES} ${MarPlayer_UIHEADERS} ${MarPlayer_moc_SOURCES})
+QT4_ADD_RESOURCES(MarPlayer_RESOURCES MarPlayerForm.qrc)
+ADD_EXECUTABLE(MarPlayer ${MarPlayer_SOURCES} ${MarPlayer_UIHEADERS} ${MarPlayer_moc_SOURCES} ${MarPlayer_RESOURCES})
 TARGET_LINK_LIBRARIES(MarPlayer marsyas marsyasqt ${OS_LIBS})
 
