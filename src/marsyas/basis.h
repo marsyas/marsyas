@@ -247,7 +247,12 @@ typedef long double  LONG_REAL;  /* more precise floating point type  */
 #undef boolean
 #undef FALSE
 #undef TRUE
-typedef enum {FALSE, TRUE} boolean;
+// this appears to work, but I'm not too happy about it. -gp
+#ifndef TRUE
+  #ifndef boolean
+    typedef enum {FALSE, TRUE} boolean;
+  #endif
+#endif
 /*.IX{FALSE}*/
 /*.IX{TRUE}*/
 /*.IX{boolean}*/
